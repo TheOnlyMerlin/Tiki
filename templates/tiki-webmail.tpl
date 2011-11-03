@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {title help="Webmail" admpage="webmail"}{tr}Webmail{/tr}{/title}
 
 {include file='tiki-mytiki_bar.tpl'}
@@ -40,7 +38,7 @@
 
 {if $locSection eq 'settings'}
 	{tabset  name='tabs_webmail_settings'}
-		{tab name="{tr}List{/tr}"}
+		{tab name="List"}
 			{if count($accounts) != 0}
 				<h2>{tr}Personal e-mail accounts{/tr}</h2>
 				<table class="normal">
@@ -268,15 +266,11 @@
 									</td>
 								</tr>
 							{/if}
-
-							{if $tiki_p_admin_group_webmail eq 'y'}
-								{include file='categorize.tpl'}
-							{/if}
 		
 							<tr>
 								<td>{tr}Auto-refresh page time{/tr}</td>
 								<td colspan="3">
-									<input type="text" name="autoRefresh" size="4" value="{$info.autoRefresh|escape}" /> {tr}seconds (0 = no auto refresh){/tr}
+									<input type="text" name="autoRefresh" size="4" value="{$info.autoRefresh|escape}" /> seconds (0 = no auto refresh)
 								</td>
 							</tr>
 							<tr>

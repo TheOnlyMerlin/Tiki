@@ -28,6 +28,11 @@ function module_categories_info() {
 				'description' => tra('Show subcategories objects when accessing a linked category. Possible values: on (default), off.'),
 				'filter' => 'word'
 			),
+			'style' => array(
+				'name' => tra('PHP Layers menu style'),
+				'description' => tra('Sets the menu style if PHP Layers is enabled. Possible values: tree (default), vert, horiz, plain, phptree.'),
+				'filter' => 'word'
+			),
 			'categId' => array(
 				'name' => tra('Category ID'),
 				'description' => tra('Limits displayed categories to a subtree of categories starting with the category with the given ID. Example value: 11. Default: 0 (don\'t limit display).'),
@@ -65,10 +70,10 @@ function module_categories( $mod_reference, &$module_params ) {
 	$urlEnd .= "&amp;deep=$deep";
 	$name = "";
 
-	$categories = $categlib->getCategories();
+	$categories = $categlib->get_all_categories_respect_perms(null, 'view_category');
 
 	if ( empty($categories) ) {
-		return;
+		$module_params['error'] = tra("You do not have permission to use this feature");
 	}
 	if (isset($module_params['categId'])) {
 		$categId = $module_params['categId'];
@@ -92,23 +97,28 @@ function module_categories( $mod_reference, &$module_params ) {
 		$categories = $filtered_categories;
 		unset($filtered_categories);
 	}
+
+	if (isset($module_params['style']))
+		$style = $module_params['style'];
+	else
+		$style = 'tree';
 		
-	include_once ('lib/tree/BrowseTreeMaker.php');
+	include_once ('lib/tree/categ_browse_tree.php');
 	$tree_nodes = array();
 	include_once('tiki-sefurl.php');
 	foreach ($categories as $cat) {
 		if (isset($module_params['selflink']) && $module_params['selflink'] == 'y') {
-			$url = filter_out_sefurl('tiki-index.php?page=' . urlencode($cat['name']));
+			$url = filter_out_sefurl('tiki-index.php?page='.tr($cat['name']), $smarty);
 		} else {
-			$url = filter_out_sefurl('tiki-browse_categories.php?parentId=' . $cat['categId'], 'category', $cat['name']) .$urlEnd;
+			$url = filter_out_sefurl('tiki-browse_categories.php?parentId=' . $cat['categId'], $smarty, 'category', $cat['name']) .$urlEnd;
 		}
 		$tree_nodes[] = array(
 			"id" => $cat["categId"],
 			"parent" => $cat["parentId"],
-			"data" => '<a class="catname" href="'.$url.'">' . htmlspecialchars($cat['name']) . '</a><br />'
+			"data" => '<a class="catname" href="'.$url.'">' . tr($cat['name']) . '</a><br />'
 		);
 	}
-	$tm = new BrowseTreeMaker('mod_categ' . $module_params['module_position'] . $module_params['module_ord']);
+	$tm = new CatBrowseTreeMaker('mod_categ' . $module_params['module_position'] . $module_params['module_ord']);
 	$res = $tm->make_tree($categId, $tree_nodes);
 	$smarty->assign('tree', $res);
 

@@ -17,7 +17,8 @@ class Search_ContentSource_CommentSource implements Search_ContentSource_Interfa
 
 		$this->db = TikiDb::get();
 
-		$this->permissionMap = TikiLib::lib('object')->map_object_type_to_permission();
+		$categlib = TikiLib::lib('categ');
+		$this->permissionMap = $categlib->map_object_type_to_permission();
 	}
 
 	function getDocuments()
@@ -44,7 +45,6 @@ class Search_ContentSource_CommentSource implements Search_ContentSource_Interfa
 			'contributors' => $typeFactory->multivalue(array($comment['userName'])),
 
 			'comment_content' => $typeFactory->wikitext($comment['data']),
-			'parent_thread_id' => $typeFactory->identifier($comment['parentId']),
 
 			'parent_object_type' => $typeFactory->identifier($comment['objectType']),
 			'parent_object_id' => $typeFactory->identifier($comment['object']),
@@ -68,7 +68,6 @@ class Search_ContentSource_CommentSource implements Search_ContentSource_Interfa
 			'url',
 
 			'comment_content',
-			'parent_thread_id',
 
 			'parent_view_permission',
 			'parent_object_id',

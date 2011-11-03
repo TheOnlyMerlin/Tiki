@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {title help="MyTiki"}{tr}My Tiki{/tr}{/title}
 
   {include file='tiki-mytiki_bar.tpl'}
@@ -45,8 +43,7 @@
                 </td>
                 <td class="action">
                   <a class="link" href="tiki-editpage.php?page={$user_pages[ix].pageName|escape:"url"}">
-									{capture assign=title}{tr _0=$user_pages[ix].pageName}Edit: %0{/tr}{/capture}{*FIXME*}
-                    {icon _id='page_edit' title=$title}
+                    {icon _id='page_edit' title="{tr}Edit:{/tr} `$user_pages[ix].pageName`"}
                   </a>
                 </td>
               </tr>

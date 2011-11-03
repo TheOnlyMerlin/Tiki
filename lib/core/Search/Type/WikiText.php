@@ -24,16 +24,5 @@ class Search_Type_WikiText implements Search_Type_Interface
 
 		return $out;
 	}
-
-	function filter(array $filters)
-	{
-		$value = $this->value;
-
-		foreach ($filters as $f) {
-			$value = $f->filter($value);
-		}
-
-		return new self($value);
-	}
 }
 

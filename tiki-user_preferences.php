@@ -31,7 +31,7 @@ if (isset($_REQUEST['userId']) || isset($_REQUEST['view_user'])) {
 	if (empty($_REQUEST['view_user'])) $userwatch = $tikilib->get_user_login($_REQUEST['userId']);
 	else $userwatch = $_REQUEST['view_user'];
 	if ($userwatch != $user) {
-		if ($userwatch === false) {
+		if ($userwatch === NULL) {
 			$smarty->assign('msg', tra("Unknown user"));
 			$smarty->display("error.tpl");
 			die;
@@ -57,7 +57,7 @@ if (isset($_REQUEST['userId']) || isset($_REQUEST['view_user'])) {
 // Custom fields
 include_once ('lib/registration/registrationlib.php');
 $customfields = $registrationlib->get_customfields();
-foreach ($customfields as $i => $c) {
+foreach($customfields as $i => $c) {
 	$customfields[$i]['value'] = $tikilib->get_user_preference($userwatch, $c['prefName']);
 }
 $smarty->assign_by_ref('customfields', $customfields);
@@ -151,7 +151,7 @@ if ($prefs['feature_userPreferences'] == 'y' && isset($_REQUEST["new_prefs"])) {
 	$tikilib->set_user_preference($userwatch, 'email is public', $email_isPublic);
 	$tikilib->set_user_preference($userwatch, 'mailCharset', $_REQUEST['mailCharset']);
 	// Custom fields
-	foreach ($customfields as $custpref => $prefvalue) {
+	foreach($customfields as $custpref => $prefvalue) {
 		if (isset($_REQUEST[$customfields[$custpref]['prefName']])) $tikilib->set_user_preference($userwatch, $customfields[$custpref]['prefName'], $_REQUEST[$customfields[$custpref]['prefName']]);
 	}
 	if (isset($_REQUEST["realName"]) && ($prefs['auth_ldap_nameattr'] == '' || $prefs['auth_method'] != 'ldap')) {
@@ -160,7 +160,7 @@ if ($prefs['feature_userPreferences'] == 'y' && isset($_REQUEST["new_prefs"])) {
        global $cachelib;
        $cachelib->invalidate('userlink.'.$user.'0');
      }
-	}
+   }
 	if ($prefs['feature_community_gender'] == 'y') {
 		if (isset($_REQUEST["gender"])) $tikilib->set_user_preference($userwatch, 'gender', $_REQUEST["gender"]);
 	}
@@ -177,7 +177,7 @@ if ($prefs['feature_userPreferences'] == 'y' && isset($_REQUEST["new_prefs"])) {
 	}
 
 	// Custom fields
-	foreach ($customfields as $custpref => $prefvalue) {
+	foreach($customfields as $custpref => $prefvalue) {
 		// print $customfields[$custpref]['prefName'];
 		// print $_REQUEST[$customfields[$custpref]['prefName']];
 		$tikilib->set_user_preference($userwatch, $customfields[$custpref]['prefName'], $_REQUEST[$customfields[$custpref]['prefName']]);
@@ -272,7 +272,7 @@ if (isset($_REQUEST['chgadmin'])) {
 			die;
 		}
 	}
-	if (!empty($_REQUEST['email']) && ($prefs['login_is_email'] != 'y' || $user == 'admin') && $_REQUEST['email'] != $userlib->get_user_email($userwatch)) {
+	if (!empty($_REQUEST['email']) && $prefs['login_is_email'] != 'y' && $_REQUEST['email'] != $userlib->get_user_email($userwatch)) {
 		$userlib->change_user_email($userwatch, $_REQUEST['email'], $pass);
 		$tikifeedback[] = array('num' => 1, 'mes' => sprintf(tra("Email is set to %s"), $_REQUEST['email']));
 		if ($prefs['feature_intertiki'] == 'y' && !empty($prefs['feature_intertiki_mymaster']) && $prefs['feature_intertiki_import_preferences'] == 'y') { //send to the master
@@ -397,7 +397,7 @@ if ($prefs['userTracker'] == 'y') {
 $smarty->assign('usertrackerId', $usertrackerId);
 $smarty->assign('useritemId', $useritemId);
 // Custom fields
-foreach ($customfields as $custpref => $prefvalue) {
+foreach($customfields as $custpref => $prefvalue) {
 	$customfields[$custpref]['value'] = $tikilib->get_user_preference($userwatch, $customfields[$custpref]['prefName'], $customfields[$custpref]['value']);
 	$smarty->assign($customfields[$custpref]['prefName'], $customfields[$custpref]['value']);
 }

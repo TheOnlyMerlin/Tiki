@@ -14,7 +14,6 @@ function wikiplugin_rss_info() {
 		'icon' => 'pics/icons/rss.png',
 		'format' => 'html',
 		'filter' => 'striptags',
-		'tags' => array( 'basic' ),
 		'params' => array(
 			'id' => array(
 				'required' => true,
@@ -112,10 +111,10 @@ function wikiplugin_rss($data,$params) {
 	$items = $rsslib->get_feed_items( $params['id'], $params['max'] );
 
 	$title = null;
-	if ( count( $params['id'] ) == 1 ) {
+	if( count( $params['id'] ) == 1 ) {
 		$module = $rsslib->get_rss_module( reset( $params['id'] ) );
 
-		if ( $module['sitetitle'] ) {
+		if( $module['sitetitle'] ) {
 			$title = array(
 				'title' => $module['sitetitle'],
 				'link' => $module['siteurl'],

@@ -37,7 +37,7 @@ class CalendarLib extends TikiLib
 		global $categlib; require_once( 'lib/categories/categlib.php' );
 		
 		$join = '';
-		if ( $jail = $categlib->get_jail() ) {
+		if( $jail = $categlib->get_jail() ) {
 			$categlib->getSqlJoin($jail, 'calendar', 'tcal.`calendarId`', $join, $mid, $bindvars);
 		}	
 
@@ -590,7 +590,7 @@ class CalendarLib extends TikiLib
 		if ($fhandle = fopen($fname, 'r')) {
 			$fields = fgetcsv($fhandle, 1000);
 		}
-		if ($fields === false || !array_search('name', $fields)) {
+		if ($fields === false) {
 			$smarty->assign('msg', tra("The file is not a CSV file or has not a correct syntax"));
 			$smarty->display("error.tpl");
 			die;
@@ -631,11 +631,10 @@ class CalendarLib extends TikiLib
 	// Returns an array of a maximum of $maxrows upcoming (but possibly past) events in the given $order. If $calendarId is set, events not in the specified calendars are filtered. $calendarId can be a calendar identifier or an array of calendar identifiers. If $maxDaysEnd is a natural, events ending after $maxDaysEnd days are filtered. If $maxDaysStart is a natural, events starting after $maxDaysStart days are filtered. Events ending more than $priorDays in the past are filtered.
 	// Each event is represented by a string-indexed array with indices start, end, name, description, calitemId, calendarId, user, lastModif, url, allday in the same format as tiki_calendar_items fields, as well as location for the event's locations, parsed for the parsed description and category for the event's calendar category.
 	function upcoming_events($maxrows = -1, $calendarId = null, $maxDaysEnd = -1, $order = 'start_asc', $priorDays = 0, $maxDaysStart = -1) {
-		global $prefs;
 		$cond = '';
 		$bindvars = array();
 		if (isset($calendarId)) {
-			if (is_array($calendarId)) {
+			if(is_array($calendarId)) {
 				$cond = $cond."and (0=1";
 				foreach($calendarId as $id) {
 					$cond = $cond." or i.`calendarId` = ? ";
@@ -650,7 +649,7 @@ class CalendarLib extends TikiLib
 		$cond .= " and `end` >= (unix_timestamp(now()) - ?*3600*34)";
 		$bindvars[] = $priorDays;
 
-		if ($maxDaysEnd > 0)
+		if($maxDaysEnd > 0)
 		{
 			$maxSeconds = ($maxDaysEnd * 24 * 60 * 60);
 			$cond .= " and `end` <= (unix_timestamp(now())) +".$maxSeconds;
@@ -844,19 +843,7 @@ class CalendarLib extends TikiLib
 			$daysnames_abr[] = tra('Su');
 		}
 	}
-
-	/**
-	 * Get calendar and its events
-	 * 
-	 * @param $calIds
-	 * @param $viewstart
-	 * @param $viewend
-	 * @param $group_by
-	 * @param $item_name
-	 * @param bool $listmode if set to true populate listevents key of the returned array
-	 * @return array
-	 */
-	function getCalendar($calIds, &$viewstart, &$viewend, $group_by = '', $item_name = 'events', $listmode = false) {
+	function getCalendar($calIds, &$viewstart, &$viewend, $group_by = '', $item_name = 'events') {
 		global $user, $prefs, $smarty;
 
 		// Global vars used by tiki-calendar_setup.php (this has to be changed)
@@ -991,7 +978,7 @@ $request_year, $dayend, $myurl;
 			}
 		}
 
-		if ((isset($_SESSION['CalendarViewList']) && $_SESSION['CalendarViewList'] == 'list') || $listmode) {
+		if ( isset($_SESSION['CalendarViewList']) && $_SESSION['CalendarViewList'] == 'list' ) {
 			if ( is_array($listtikievents) ) {
 				foreach ( $listtikievents as $le ) {
 					if ( is_array($le) ) {

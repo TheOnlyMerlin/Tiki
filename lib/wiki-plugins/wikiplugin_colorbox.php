@@ -13,7 +13,6 @@ function wikiplugin_colorbox_info() {
 		'prefs' => array( 'feature_file_galleries', 'feature_shadowbox', 'wikiplugin_colorbox' ),
 		'introduced' => 5,
 		'icon' => 'pics/icons/pictures.png',
-		'tags' => array( 'basic' ),		
 		'params' => array(
 			'fgalId' => array(
 				'required' => false,
@@ -111,7 +110,7 @@ function wikiplugin_colorbox_info() {
 			'parsedescriptions' => array(
 				'required' => false,
 				'name' => tra('Parse Descriptions'),
-				'description' => tra('Parse the file descriptions as wiki syntax'),
+				'description' => tra('Wiki parse the file descriptions'),
 				'filter' => 'alpha',
 				'accepted' => 'y or n',
 				'default' => 'n',

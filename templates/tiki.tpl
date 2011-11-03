@@ -1,4 +1,4 @@
-{* $Id$ *}<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}" lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}"{if !empty($page_id)} id="page_{$page_id}"{/if}>
 	<head>
 		{include file='header.tpl'}
@@ -20,7 +20,7 @@
 		{/if}
 
 		{* TikiTest ToolBar *}
-		{if $prefs.feature_tikitests eq 'y' and !empty($tikitest_state) and $tikitest_state neq 0}
+		{if $prefs.feature_tikitests eq 'y' and $tikitest_state neq 0}
 			{include file='tiki-tests_topbar.tpl'}
 		{/if}
 
@@ -31,7 +31,7 @@
 		<div id="fixedwidth" class="fixedwidth"> {* enables fixed-width layouts *}
 			{if $prefs.feature_layoutshadows eq 'y'}<div id="main-shadow">{eval var=$prefs.main_shadow_start}{/if}
 			<div id="main">
-				{if ($prefs.feature_fullscreen != 'y' or $smarty.session.fullscreen != 'y') and ($prefs.layout_section ne 'y' or $prefs.feature_top_bar ne 'n')}
+				{if ($prefs.feature_fullscreen != 'y' or $smarty.session.fullscreen != 'y') }
 					{if $prefs.module_zones_top eq 'fixed' or ($prefs.module_zones_top ne 'n' && $top_modules|@count > 0)}
 						{if $prefs.feature_layoutshadows eq 'y'}<div id="header-shadow">{eval var=$prefs.header_shadow_start}{/if}
 							<div class="header_outer">
@@ -87,7 +87,7 @@
 												{/section}
 											</div>
 										{/if}
-										{if (isset($section) && $section neq 'share') && $prefs.feature_share eq 'y' && $tiki_p_share eq 'y' and (!isset($edit_page) or $edit_page ne 'y' and $prefs.feature_site_send_link ne 'y')}
+										{if $section neq 'share' && $prefs.feature_share eq 'y' && $tiki_p_share eq 'y' and (!isset($edit_page) or $edit_page ne 'y' and $prefs.feature_site_send_link ne 'y')}
 											<div class="share">
 												<a title="{tr}Share this page{/tr}" href="tiki-share.php?url={$smarty.server.REQUEST_URI|escape:'url'}">{tr}Share this page{/tr}</a>
 											</div>
@@ -119,39 +119,36 @@
 
 								{if $prefs.feature_fullscreen != 'y' or $smarty.session.fullscreen != 'y'}
 									{if  $prefs.feature_left_column eq 'fixed' or ($prefs.feature_left_column ne 'n' && $left_modules|@count > 0 && $show_columns.left_modules ne 'n')}
-										<div id="col2"{if $prefs.feature_left_column eq 'user'} style="display:{if isset($cookie.show_col2) and $cookie.show_col2 ne 'y'} none{elseif isset($ie6)} block{else} table-cell{/if};"{/if}{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
+										<aside id="col2"{if $prefs.feature_left_column eq 'user'} style="display:{if isset($cookie.show_col2) and $cookie.show_col2 ne 'y'} none{elseif isset($ie6)} block{else} table-cell{/if};"{/if}{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
 											<div id="left_modules" class="content modules">
 												{section name=homeix loop=$left_modules}
 													{$left_modules[homeix].data}
 												{/section}
 											</div>
-										</div>
+										</aside>
 									{/if}
 								{/if}
 							</div>{* -- END of #c1c2 -- *}
 							{if $prefs.feature_fullscreen != 'y' or $smarty.session.fullscreen != 'y'}
-								{if  $prefs.feature_right_column eq 'fixed' or ($prefs.feature_right_column ne 'n' && $right_modules|@count > 0 && $show_columns.right_modules ne 'n') or $module_pref_errors}
-									<div class="clearfix" id="col3"{if $prefs.feature_right_column eq 'user'} style="display:{if isset($cookie.show_col3) and $cookie.show_col3 ne 'y'} none{elseif isset($ie6)} block{else} table-cell{/if};"{/if}{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
+								{if  $prefs.feature_right_column eq 'fixed' or ($prefs.feature_right_column ne 'n' && $right_modules|@count > 0 && $show_columns.right_modules ne 'n')}
+									<aside class="clearfix" id="col3"{if $prefs.feature_right_column eq 'user'} style="display:{if isset($cookie.show_col3) and $cookie.show_col3 ne 'y'} none{elseif isset($ie6)} block{else} table-cell{/if};"{/if}{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
 										<div id="right_modules" class="content modules">
 											{if $module_pref_errors}
 												{remarksbox type="warning" title="{tr}Module errors{/tr}"}
 													{tr}The following modules could not be loaded{/tr}
-													<form method="post" action="tiki-admin.php">
+													<p>
 														{foreach from=$module_pref_errors key=index item=pref_error}
-															<p>{$pref_error.mod_name}:</p>
-															{preference name=$pref_error.pref_name}
+															<b>{$pref_error.mod_name}:</b><br />
+															{tr}Preference was not set:{/tr} '{$pref_error.pref_name}'<br />
 														{/foreach}
-														<div class="submit">
-															<input type="submit" value="{tr}Change{/tr}"/>
-														</div>
-													</form>
+													</p>
 												{/remarksbox}
 											{/if}
 											{section name=homeix loop=$right_modules}
 												{$right_modules[homeix].data}
 											{/section}
 										</div>
-									</div>
+									</aside>
 									<br style="clear:both" />
 								{/if}
 							{/if}
@@ -159,7 +156,7 @@
 						</div>{* -- END of #middle -- *}
 					{if $prefs.feature_layoutshadows eq 'y'}{eval var=$prefs.middle_shadow_end}</div>{/if}
 				</div>{* end .middle_outer *}
-				{if ($prefs.feature_fullscreen != 'y' or $smarty.session.fullscreen != 'y') and ($prefs.layout_section ne 'y' or $prefs.feature_bot_bar ne 'n')}
+				{if $prefs.feature_fullscreen != 'y' or $smarty.session.fullscreen != 'y'}
 					{if $prefs.module_zones_bottom eq 'fixed' or ($prefs.module_zones_bottom ne 'n' && $bottom_modules|@count > 0)}
 						{if $prefs.feature_layoutshadows eq 'y'}<div id="footer-shadow">{eval var=$prefs.footer_shadow_start}{/if}
 							<footer class="footer" id="footer">
@@ -180,7 +177,7 @@
 		</div> {* -- END of fixedwidth -- *}
 
 		{include file='footer.tpl'}
-		{if isset($prefs.socialnetworks_user_firstlogin) && $prefs.socialnetworks_user_firstlogin == 'y'}
+		{if $prefs.socialnetworks_user_firstlogin == 'y'}
 			{include file='tiki-socialnetworks_firstlogin_launcher.tpl'}
 		{/if}
 

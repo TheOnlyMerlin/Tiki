@@ -34,7 +34,7 @@ if (!$galleryId) {
 	die;
 }
 
-$tikilib->get_perm_object($galleryId, 'image gallery');
+$tikilib->get_perm_object( $galleryId, 'image gallery' );
 $access->check_permission('tiki_p_view_image_gallery');
 
 $gal_info = $imagegallib->get_gallery($galleryId);
@@ -50,7 +50,7 @@ $arrscales = $imagegallib->get_gallery_scale_info($galleryId);
 // adjust scale size to existing ones
 if ($scalesize && !$prefs['preset_galleries_info'] == 'y') {
 	$testscale = 0;
-	foreach ( $arrscales as $arrscale ) {
+	foreach( $arrscales as $arrscale ) {
 		if ($scalesize <= $arrscale['scale']) {
 			$testscale = $arrscale['scale'];
 			break;
@@ -159,7 +159,7 @@ $resultscale = $scalesize < $maxsize ? $scalesize : 0;
 $scaleinfo['nextscale'] = 0;
 $scaleinfo['prevscale'] = 0;
 $testscale = $resultscale ? $resultscale : $maxsize;
-foreach ($arrscales as $arrscale) {
+foreach($arrscales as $arrscale) {
 	if ($testscale == $arrscale['scale']) {
 		continue;
 	}

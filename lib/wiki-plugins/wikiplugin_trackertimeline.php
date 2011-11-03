@@ -150,7 +150,7 @@ function wikiplugin_trackertimeline( $data, $params ) {
 	global $trklib, $smarty, $tikilib;
 	require_once 'lib/trackers/trackerlib.php';
 
-	if ( ! isset( $params['tracker'] ) )
+	if( ! isset( $params['tracker'] ) )
 		return "^" . tr("Missing parameter: %0", 'tracker') . "^";
 
 	$default = array('scale1' => 'hour', 'simile_timeline' => 'n');
@@ -161,7 +161,7 @@ function wikiplugin_trackertimeline( $data, $params ) {
 	$end = strtotime( $params['upper'] );
 	$size = $end - $start;
 
-	if ( $size <= 0 )
+	if( $size <= 0 )
 		return "^" . tr("Start date after end date.") . "^";
 
 	$fieldIds = array(
@@ -172,11 +172,11 @@ function wikiplugin_trackertimeline( $data, $params ) {
 		$params['group'] => 'group',
 	);
 
-	if ( isset($params['link_page']) ) {
+	if( isset($params['link_page']) ) {
 		$fieldIds[ $params['link_page'] ] = 'link';
 	}
 
-	if ( !empty($params['image_field']) ) {
+	if( !empty($params['image_field']) ) {
 		$fieldIds[ $params['image_field'] ] = 'image';
 	}
 
@@ -196,15 +196,15 @@ function wikiplugin_trackertimeline( $data, $params ) {
 
 		// Filter elements
 		if ($params['simile_timeline'] !== 'y') {
-			if ( $detail['start'] >= $detail['end'] )
+			if( $detail['start'] >= $detail['end'] )
 				continue;
-			if ( $detail['end'] <= $start || $detail['start'] > $end )
+			if( $detail['end'] <= $start || $detail['start'] > $end )
 				continue;
 		} else {
-			if ( !empty($detail['end']) && $detail['start'] > $detail['end'] ) {
+			if( !empty($detail['end']) && $detail['start'] > $detail['end'] ) {
 				continue;
 			}
-			if ( (!empty($detail['end']) && $detail['end'] < $start) || $detail['start'] > $end ) {
+			if( (!empty($detail['end']) && $detail['end'] < $start) || $detail['start'] > $end ) {
 				continue;
 			}
 		}
@@ -220,7 +220,7 @@ function wikiplugin_trackertimeline( $data, $params ) {
 		$detail['encoded'] = json_encode( $detail );
 
 		// Add to data list
-		if ( ! array_key_exists( $detail['group'], $data ) )
+		if( ! array_key_exists( $detail['group'], $data ) )
 			$data[$detail['group']] = array();
 		$data[ $detail['group'] ][] = $detail;
 	}
@@ -235,7 +235,7 @@ function wikiplugin_trackertimeline( $data, $params ) {
 
 		$smarty->assign( 'wp_ttl_data', $data );
 		$layouts = array();
-		if ( isset( $params['scale2'] ) && $layout = wp_ttl_genlayout( $start, $end, $size, $params['scale2'] ) ) {
+		if( isset( $params['scale2'] ) && $layout = wp_ttl_genlayout( $start, $end, $size, $params['scale2'] ) ) {
 			$layouts[] = $layout;
 		}
 		$layouts[] = wp_ttl_genlayout( $start, $end, $size, isset($params['scale1']) ? $params['scale1'] : 'hour' );
@@ -247,8 +247,17 @@ function wikiplugin_trackertimeline( $data, $params ) {
 
 		global $headerlib;
 
-		// static js moved to lib
-		$headerlib->add_jsfile('lib/simile_tiki/tiki-timeline.js');
+		// the simile api has to be included in the head to work it seems (tiki js files live at end of body now)
+		$headerlib->add_js('
+(function() {
+var head = document.getElementsByTagName("head")[0];
+var script = document.createElement("script");
+script.type = "text/javascript";
+script.language = "JavaScript";
+script.src = "http://static.simile.mit.edu/timeline/api-2.3.0/timeline-api.js?bundle=true";
+head.appendChild(script);
+})();
+');
 
 		// prepare the data for SIMILE widget - to be included in the page for now (ajax feed to come)
 		$ttl_data = array();
@@ -279,11 +288,77 @@ function wikiplugin_trackertimeline( $data, $params ) {
 				'events' => $events,
 			);
 		}
+		$js = 'ajaxLoadingShow("ttl_timeline");';
 		$js .= 'var ttl_eventData = ' . json_encode($ttl_data) . ";\n";
 
 		$js .= '
-setTimeout( function(){ ttlInit("ttl_timeline",ttl_eventData,"' . $params['scale1'] . '","' . $params['scale2'] . '"); }, 1000);
+var ttlTimelineReady = false, ttlInitCount = 0, ttlTimeline, ttlInit = function() {
+	// wait for Timeline to be loaded
+	if (ttlInitCount < 12 && (typeof window.Timeline === "undefined" ||
+			typeof window.Timeline.createBandInfo === "undefined" ||
+			typeof window.Timeline.DateTime === "undefined" ||
+			typeof window.Timeline.GregorianDateLabeller === "undefined" ||
+			typeof window.Timeline.GregorianDateLabeller.getMonthName === "undefined" )) {
+
+		if (ttlInitCount > 10) {	// at least 5 secs - reload
+			location.replace(location.href);
+		}
+		window.setTimeout( function() { ttlInit(); }, 500);
+		ttlInitCount++;
+		return;
+	}
+
+	if (!ttlTimelineReady) {	// just seems to need a little bit longer...
+		ttlTimelineReady = true;
+		window.setTimeout( function() { ttlInit(); }, 500);
+		return;
+	}
+	
+	var ttl_eventSource = new Timeline.DefaultEventSource();
+	ttl_eventSource.loadJSON(ttl_eventData, ".");	// The data
+	
+	var bandInfos = [
+		window.Timeline.createBandInfo({
+			width:          "' . (empty($params['scale2']) ? '100%' : '70%' ) . '",
+			intervalUnit:   window.Timeline.DateTime.' . (strtoupper($params['scale1'])) . ',
+			eventSource:	ttl_eventSource,
+			intervalPixels: 100
+		})';
+		if (!empty($params['scale2'])) {
+			$js .= ',
+		window.Timeline.createBandInfo({
+			width:          "30%",
+			intervalUnit:   window.Timeline.DateTime.' . (strtoupper($params['scale2'])) . ',
+			eventSource:	ttl_eventSource,
+			intervalPixels: 200,
+			layout:			"overview"
+		})';
+		}
+		$js .= '];';
+		if (!empty($params['scale2'])) {
+			$js .= '
+	bandInfos[1].syncWith = 0;
+	bandInfos[1].highlight = true;
+	//bandInfos[1].eventPainter.setLayout(bandInfos[0].eventPainter.getLayout());
 ';
+		}
+		$js .= '
+	ttlTimeline = window.Timeline.create(document.getElementById("ttl_timeline"), bandInfos);
+	ajaxLoadingHide();
+	ttlTimeline.layout(); // display the Timeline
+
+}	// end ttlInit
+ttlInit();
+
+var ttlResizeTimerID = null;
+$(window).resize( function () {
+	if (ttlTimeline && ttlResizeTimerID == null) {
+		ttlResizeTimerID = window.setTimeout(function() {
+			resizeTimerID = null;
+			ttlTimeline.layout();
+		}, 500);
+	}
+});';
 
 		$headerlib->add_jq_onready( $js, 10);
 		$out = '<div id="ttl_timeline" style="height: 250px; border: 1px solid #aaa"></div>';
@@ -300,7 +375,7 @@ function wp_ttl_organize( $name, $base, $size, &$list, &$new ) {
 
 	$pos = $base;
 	foreach( $first as $item ) {
-		if ( $item['lstart'] < $pos ) {
+		if( $item['lstart'] < $pos ) {
 			$remaining[] = $item;
 			continue;
 		}
@@ -311,18 +386,18 @@ function wp_ttl_organize( $name, $base, $size, &$list, &$new ) {
 		$list[] = $item;
 	}
 
-	if ( count( $remaining ) ) {
+	if( count( $remaining ) ) {
 		wp_ttl_organize( "$name ", $base, $size, $remaining, $new );
 		$new["$name "] = $remaining;
 	}
 }
 
 function wp_ttl_sort_cb( $a, $b ) {
-	if ( $a['start'] == $b['start'] )
+	if( $a['start'] == $b['start'] )
 		return 0;
-	if ( $a['start'] < $b['start'] )
+	if( $a['start'] < $b['start'] )
 		return -1;
-	if ( $a['start'] > $b['start'] )
+	if( $a['start'] > $b['start'] )
 		return 1;
 }
 
@@ -338,7 +413,7 @@ function wp_ttl_genlayout( $start, $end, $full, $type ) {
 	case 'day': 
 		$size = 86400;
 
-		if ( date( 'H:i:s', $start ) == '00:00:00' ) {
+		if( date( 'H:i:s', $start ) == '00:00:00' ) {
 			$pos = $start;
 		} else {
 			$pos = strtotime( date( 'Y-m-d 00:00:00', $start + $size ) );
@@ -347,7 +422,7 @@ function wp_ttl_genlayout( $start, $end, $full, $type ) {
 	case 'week':
 		$size = 604800;
 
-		if ( date( 'H:i:sw', $start ) == '00:00:000' ) {
+		if( date( 'H:i:sw', $start ) == '00:00:000' ) {
 			$pos = $start;
 		} else {
 			$pos = strtotime( date( 'Y-m-d 00:00:00', $start + $size ) );
@@ -357,7 +432,7 @@ function wp_ttl_genlayout( $start, $end, $full, $type ) {
 
 		break;
 	case 'month':
-		if ( date( 'd H:i:s', $start ) == '01 00:00:00' ) {
+		if( date( 'd H:i:s', $start ) == '01 00:00:00' ) {
 			$pos = $start;
 		} else {
 			$pos = strtotime( date( 'Y-m-01 00:00:00', strtotime( 'next month', $start ) ) );
@@ -367,8 +442,7 @@ function wp_ttl_genlayout( $start, $end, $full, $type ) {
 
 		break;
 	case 'year':
-	default:
-		if ( date( 'm-d H:i:s', $start ) == '01-01 00:00:00' ) {
+		if( date( 'm-d H:i:s', $start ) == '01-01 00:00:00' ) {
 			$pos = $start;
 		} else {
 			$pos = strtotime( date( 'Y-01-01 00:00:00', strtotime( 'next year', $start ) ) );

@@ -1,6 +1,4 @@
-{* $Id$ *}
 {* include file for module edit form - to be called by ajax *}
-
 			
 <div id="module_params">
 	<div class="cbox-data">
@@ -11,12 +9,13 @@
 				<option value="{$name|escape}" {if $assign_name eq $name || $assign_selected eq $name}selected="selected"{/if}>{$info.name}</option>
 			{/foreach}
 		</select>
-		{if isset($assign_info)}<div class="description">{$assign_info.description}{if isset($assign_info.documentation)} {help url=$assign_info.documentation}{/if}</div>{/if}
+		<div class="description">{$assign_info.description} {help url=$assign_info.documentation}</div>
 	</div>
 	{if !empty($assign_name)}
 		{if isset($assign_info.type) and $assign_info.type eq 'function'}
 			<ul>
 				<li><a href="#param_section_basic">{tr}Basic{/tr}</a></li>
+				{* get_strings {tr}Module{/tr}{tr}Appearance{/tr}{tr}Visibility{/tr} *}
 				{foreach from=$assign_info.params key=sect item=params}
 					<li><a href="#param_section_{$sect}">{tr}{$sect|capitalize}{/tr}</a></li>
 				{/foreach}
@@ -105,9 +104,10 @@
 							<div class="admin2cols adminoptionbox clearfix">
 								<div class="q1">
 									<label for="assign_params[{$name|escape}]">{$param.name|escape}{if $param.required} <span class="attention">({tr}required{/tr})</span>{/if}</label>
+									<br />&nbsp;
 								</div>
 								<div class="description q234">
-									<input type="text" id="assign_params[{$name|escape}]" name="assign_params[{$name|escape}]" value="{$param.value|escape}"{if !empty($param.filter)} class="{$param.filter}" {/if}/>
+									<input type="text" id="assign_params[{$name|escape}]" name="assign_params[{$name|escape}]" value="{$param.value|escape}" class="{$param.filter}" />
 									<br />
 									{$param.description|escape}
 									{if !empty($param.default)} - {tr}Default:{/tr} {$param.default|escape}{/if}

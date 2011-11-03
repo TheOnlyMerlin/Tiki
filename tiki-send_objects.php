@@ -9,7 +9,6 @@ require_once ('tiki-setup.php');
 include_once ('lib/pear/XML/Server.php');
 include_once ('lib/structures/structlib.php');
 
-//get_strings tra("Send Pages");
 $access->check_feature('feature_comm');
 $access->check_permission_either( array('tiki_p_send_pages', 'tiki_p_send_articles') );
 
@@ -109,10 +108,10 @@ if (isset($_REQUEST['send'])) {
 	// Create XMLRPC object
 	$client = new XML_RPC_Client($_REQUEST['path'], $_REQUEST['site'], 80);
 	$client->setDebug((isset($_REQUEST['dbg']) && $_REQUEST['dbg'] == 'on') ? true : false);
-	foreach ($sendstructures as $structure) {
+	foreach($sendstructures as $structure) {
 		$spages = $structlib->s_get_structure_pages($structure);
 		$pos = 0;
-		foreach ($spages as $spage) {
+		foreach($spages as $spage) {
 			$listPageNames[$spage['page_ref_id']] = $spage['pageName'];
 			$page_info = $tikilib->get_page_info($spage['pageName']);
 			$pos++;
@@ -133,8 +132,8 @@ if (isset($_REQUEST['send'])) {
 																		);
 			$result = $client->send($searchMsg);
 			if (!$result) {
-				$errorMsg = tra('Cannot login to server maybe the server is down');
-				$msg.= $errorMsg;
+				$errorMsg = 'Cannot login to server maybe the server is down';
+				$msg.= tra($errorMsg);
 			} else {
 				if (!$result->faultCode()) {
 					$msg.= tra('Page') . ': ' . $spage['pageName'] . ' ' . tra('successfully sent') . '<br />';
@@ -147,7 +146,7 @@ if (isset($_REQUEST['send'])) {
 		}
 	}
 
-	foreach ($sendpages as $page) {
+	foreach($sendpages as $page) {
 		$page_info = $tikilib->get_page_info($page);
 		if ($page_info) {
 			$searchMsg = new XML_RPC_Message('sendPage'
@@ -163,8 +162,8 @@ if (isset($_REQUEST['send'])) {
 																			);
 			$result = $client->send($searchMsg);
 			if (!$result) {
-				$errorMsg = tra('Cannot login to server maybe the server is down');
-				$msg.= $errorMsg;
+				$errorMsg = 'Cannot login to server maybe the server is down';
+				$msg.= tra($errorMsg);
 			} else {
 				if (!$result->faultCode()) {
 					$msg.= tra('Page') . ': ' . $page . ' ' . tra('successfully sent') . '<br />';
@@ -177,7 +176,7 @@ if (isset($_REQUEST['send'])) {
 		}
 	}
 	global $artlib; require_once 'lib/articles/artlib.php';
-	foreach ($sendarticles as $article) {
+	foreach($sendarticles as $article) {
 		$page_info = $artlib->get_article($article);
 		if ($page_info) {
 			$searchMsg = new XML_RPC_Message('sendArticle'
@@ -208,8 +207,8 @@ if (isset($_REQUEST['send'])) {
 																			);
 			$result = $client->send($searchMsg);
 			if (!$result) {
-				$errorMsg = tra('Cannot login to server maybe the server is down');
-				$msg.= $errorMsg;
+				$errorMsg = 'Cannot login to server maybe the server is down';
+				$msg.= tra($errorMsg);
 			} else {
 				if (!$result->faultCode()) {
 					$msg.= tra('Article:') . ' ' . $page_info['title'] . ' ' . tra('successfully sent') . '<br />';
@@ -225,8 +224,8 @@ if (isset($_REQUEST['send'])) {
 $smarty->assign('msg', $msg);
 $smarty->assign('sendpages', $sendpages);
 $sendstructures_names = array();
-foreach ($sendstructures as $key => $id) {
-	foreach ($structures['data'] as $structure) {
+foreach($sendstructures as $key => $id) {
+	foreach($structures['data'] as $structure) {
 		if ($structure['page_ref_id'] == $id) {
 			$sendstructures_names[$key] = $structure['pageName'];
 		}
@@ -243,7 +242,7 @@ $smarty->assign('form_sendarticles', $form_sendarticles);
 $pages = $tikilib->list_pageNames(0, -1, 'pageName_asc', $find);
 $smarty->assign('pages', $pages['data']);
 
-if ( $prefs['feature_articles'] == 'y' ) {
+if( $prefs['feature_articles'] == 'y' ) {
 	global $artlib; require_once 'lib/articles/artlib.php';
 	$articles = $artlib->list_articles(0, -1, 'publishDate_desc', $find, 0, $tikilib->now, $user);
 	$smarty->assign('articles', $articles['data']);

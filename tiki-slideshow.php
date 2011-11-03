@@ -7,12 +7,17 @@
 
 $section = 'wiki page';
 require_once ('tiki-setup.php');
-global $tikilib;
+
 include_once ('lib/structures/structlib.php');
 include_once ('lib/wiki/wikilib.php');
 include_once ('lib/wiki-plugins/wikiplugin_slideshow.php');
 
-$access->check_feature('feature_wiki');
+if ($prefs['feature_wiki'] != 'y') {
+	$smarty->assign('msg', tra("This feature is disabled").": feature_wiki");
+
+	$smarty->display("error_raw.tpl");
+	die;
+}
 
 //make the other things know we are loading a slideshow
 $tikilib->is_slideshow = true;
@@ -33,7 +38,7 @@ if (!isset($_SESSION["thedate"])) {
 if (!isset($_REQUEST["page"])) {
 	$_REQUEST["page"] = $wikilib->get_default_wiki_page();
 }
-$page = htmlspecialchars($_REQUEST['page']);
+$page = $_REQUEST['page'];
 $smarty->assign('page', $page);
 
 // If the page doesn't exist then display an error
@@ -43,7 +48,7 @@ if (!($info = $tikilib->page_exists($page))) {
 }
 
 if (isset($_REQUEST['theme'])) {
-	echo json_encode($tikilib->getSlideshowTheme($_REQUEST['theme'])); 
+	print_r(getSlideshowTheme($_REQUEST['theme'], true));
 	die; 
 }
 
@@ -84,9 +89,8 @@ if ($prefs['count_admin_pvs'] == 'y' || $user != 'admin') {
 }
 
 // Get page data
-$parserlib = TikiLib::lib('parser');
 $info = $tikilib->get_page_info($page);
-$pdata = $parserlib->parse_data_raw($info["data"]);
+$pdata = $tikilib->parse_data_raw($info["data"]);
 
 if (!isset($_REQUEST['pagenum']))
 	$_REQUEST['pagenum'] = 1;
@@ -96,8 +100,8 @@ $pdata = $wikilib->get_page($pdata, $_REQUEST['pagenum']);
 $smarty->assign('pages', $pages);
 
 // Put ~pp~, ~np~ and <pre> back. --rlpowell, 24 May 2004
-$parserlib->replace_preparse( $info["data"], $preparsed, $noparsed );
-$parserlib->replace_preparse( $pdata, $preparsed, $noparsed );
+$tikilib->replace_preparse( $info["data"], $preparsed, $noparsed );
+$tikilib->replace_preparse( $pdata, $preparsed, $noparsed );
 
 $smarty->assign_by_ref('parsed', $pdata);
 //$smarty->assign_by_ref('lastModif',date("l d of F, Y  [H:i:s]",$info["lastModif"]));
@@ -114,9 +118,6 @@ include_once ('tiki-section_options.php');
 $headerlib->add_cssfile( 'lib/jquery.s5/jquery.s5.css' );
 $headerlib->add_jsfile( 'lib/jquery.s5/jquery.s5.js' );
 $headerlib->add_jq_onready( '
-	//slideshow corrupts s5 and is not needed in s5 at all
-	$("#toc").remove();
-	
 	window.s5Settings = (window.s5Settings ? window.s5Settings : {});
 	
 	$.s5.start($.extend(window.s5Settings, {
@@ -134,7 +135,7 @@ $headerlib->add_jq_onready( '
 			
 			return menu;
 		},
-		themeName: (window.s5Settings.themeName ? window.s5Settings.themeName : "default")
+		themeName: "default"
 	}));
 	
 	$("#main").hide();
@@ -142,39 +143,17 @@ $headerlib->add_jq_onready( '
 	$.fn.extend({
 		s5ThemeHandler: function(s) {
 			return this
+				.val(window.s5Settings.themeName)
 				.change(function() {
-					if (window.s5Busy) return;
-					window.s5Busy = true;
-					
 					var theme = $(this).val();
 					theme = (theme ? theme : "default");
 					
 					window.s5Settings.themeName = theme;
-					$.modal(tr("Updating Theme..."));
 					$.get("tiki-slideshow.php", {theme: theme}, function(o) {
-						$.s5.makeTheme($.parseJSON(o));
-						
-						if (window.slideshowSettings) {
-							window.slideshowSettings.theme = theme;
-							
-							$.post("tiki-wikiplugin_edit.php", {
-								index: 1,
-								page: "'.$page.'",
-								type: "slideshow",
-								label: tr("Update slideshow theme"),
-								content: "~same~",
-								params: (window.slideshowSettings ? window.slideshowSettings : {})
-							}, function() {
-								$.modal();
-								window.s5Busy = false;
-							});
-						} else {
-							$.modal();
-							window.s5Busy = false;
-						}
+						theme = $.parseJSON(o);
+						$.s5.makeTheme(theme);
 					}); 
-				})
-				.val(window.s5Settings.themeName);
+				});
 		}
 	});
 	
@@ -185,8 +164,11 @@ $headerlib->add_jq_onready( '
 			if (!$.s5.note.document) return;
 			
 			$($.s5.note.document).find(".tiki-slideshow-theme").val($(this).val());
-		})
-		.change();
+		});
+	
+	if (window.s5Settings.themeName == "default") {
+		$(".tiki-slideshow-theme").change();
+	}
 ');
 
 ask_ticket('index-raw');

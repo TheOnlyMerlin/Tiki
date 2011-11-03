@@ -8,7 +8,7 @@
 $section = 'blogs';
 require_once ('tiki-setup.php');
 include_once ('lib/blogs/bloglib.php');
-//get_strings tra('List Blog Posts')
+$smarty->assign('headtitle', tra('Blogs'));
 if ($prefs['feature_categories'] == 'y') {
 	include_once ('lib/categories/categlib.php');
 }

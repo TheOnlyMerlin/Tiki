@@ -13,7 +13,6 @@ function wikiplugin_gauge_info() {
 		'prefs' => array('wikiplugin_gauge'),
 		'body' => tra('description'),
 		'icon' => 'pics/icons/chart_bar.png',
-		'tags' => array( 'basic' ),		
 		'params' => array(
 			'value' => array(
 				'required' => true,
@@ -163,19 +162,19 @@ function wikiplugin_gauge($data, $params) {
     $h_size_rest = 100-$h_size;
 
     if ($h_size == 100) {
-        $h_td = '<td style="background:' . $color . ';">&nbsp;</td>';
+        $h_td = '<td style="background-color:' . $color . ';">&nbsp;</td>';
         } else {
             if ($h_size_rest == 100) {
-                $h_td = '<td style="background:' . $bgcolor . ';">&nbsp;</td>';
+                $h_td = '<td style="background-color:' . $bgcolor . ';">&nbsp;</td>';
             } else {
-                $h_td = '<td style="background:' . $color . ';" width="' . $h_size . '%' .'">&nbsp;</td>';
-                $h_td .= '<td style="background:' . $bgcolor . ';" width="' . $h_size_rest .  '%' . '">&nbsp;</td>';
+                $h_td = '<td style="background-color:' . $color . ';" width="' . $h_size . '%' .'">&nbsp;</td>';
+                $h_td .= '<td style="background-color:' . $bgcolor . ';" width="' . $h_size_rest .  '%' . '">&nbsp;</td>';
             }
         }
 
 
-	$html  ='<table class="plugin_gauge" border="0" width="100%"><tr>' . $label_td . '<td width="' . $size . '" height="' . $height . '">';
-	$html .='<table class="plugin_gauge-bar" border="0" width="100%"><tr>' . $h_td . '</tr></table>';
+	$html  ='<table border="0" cellpadding="0" cellspacing="0"><tr>' . $label_td . '<td width="' . $size . '" height="' . $height . '">';
+	$html .='<table border="0" cellpadding="0" cellspacing="0" width="100%"><tr>' . $h_td . '</tr></table>';
 	$html .='</td>' . ($showvalue ? $perc_td : '') . '<td>&nbsp;</td></tr>';
 
 	if (!empty($data)) {

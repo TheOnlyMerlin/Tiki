@@ -29,7 +29,7 @@ class OAuthLib extends TikiDb_Bridge
 				$client->setParameterGet($configuration['secretAsGet'], $access->getTokenSecret());
 			}
 		} else {
-			$client = TikiLib::lib('tiki')->get_http_client();
+			$client = new Zend_Http_Client;
 		}
 
 		$client->setUri($arguments['url']);
@@ -65,7 +65,7 @@ class OAuthLib extends TikiDb_Bridge
 		} catch (Zend_Oauth_Exception $e) {
 			$oauth_ex = $e->getPrevious();
 			$prevErr = "";
-			if ($oauth_ex != null)
+			if($oauth_ex != null)
 				$prevErr = $oauth_ex->getMessage();
 			die($e->getMessage().". Origin: ".$prevErr);
 		}
@@ -86,7 +86,7 @@ class OAuthLib extends TikiDb_Bridge
 			} catch (Zend_Oauth_Exception $e) {
 				$oauth_ex = $e->getPrevious();
 				$prevErr = "";
-				if ($oauth_ex != null)
+				if($oauth_ex != null)
 					$prevErr = $oauth_ex->getMessage();
 				die($e->getMessage().". Origin: ".$prevErr);
 			}

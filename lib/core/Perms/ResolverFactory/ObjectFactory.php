@@ -5,6 +5,8 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+require_once 'lib/core/Perms/ResolverFactory.php';
+
 /**
  * Obtains the object permissions for each object. Bulk loading provides
  * loading for multiple objects in a single query.
@@ -14,7 +16,7 @@ class Perms_ResolverFactory_ObjectFactory implements Perms_ResolverFactory
 	private $known = array();
 
 	function getHash( array $context ) {
-		if ( isset( $context['type'], $context['object'] ) ) {
+		if( isset( $context['type'], $context['object'] ) ) {
 			return 'object:' . $context['type'] . ':' . $this->cleanObject( $context['object'] );
 		} else {
 			return '';
@@ -22,7 +24,7 @@ class Perms_ResolverFactory_ObjectFactory implements Perms_ResolverFactory
 	}
 
 	function bulk( array $baseContext, $bulkKey, array $values ) {
-		if ( $bulkKey != 'object' || ! isset( $baseContext['type'] ) ) {
+		if( $bulkKey != 'object' || ! isset( $baseContext['type'] ) ) {
 			return $values;
 		}
 		
@@ -36,7 +38,7 @@ class Perms_ResolverFactory_ObjectFactory implements Perms_ResolverFactory
 
 		foreach( $values as $v ) {
 			$hash = $this->getHash( array_merge( $baseContext, array( 'object' => $v ) ) );
-			if ( ! isset( $this->known[$hash] ) ) {
+			if( ! isset( $this->known[$hash] ) ) {
 				$this->known[$hash] = array();
 				$key = md5( $baseContext['type'] . $this->cleanObject( $v ) );
 				$objects[$key] = $v;
@@ -44,7 +46,7 @@ class Perms_ResolverFactory_ObjectFactory implements Perms_ResolverFactory
 			}
 		}
 
-		if ( count( $objects ) == 0 ) {
+		if( count( $objects ) == 0 ) {
 			return array();
 		}
 
@@ -61,7 +63,7 @@ class Perms_ResolverFactory_ObjectFactory implements Perms_ResolverFactory
 			$hash = $hashes[$object];
 			$found[] = $objects[$object];
 
-			if ( ! isset( $this->known[$hash][$group] ) ) {
+			if( ! isset( $this->known[$hash][$group] ) ) {
 				$this->known[$hash][$group] = array();
 			}
 
@@ -72,7 +74,7 @@ class Perms_ResolverFactory_ObjectFactory implements Perms_ResolverFactory
 	}
 
 	function getResolver( array $context ) {
-		if ( ! isset( $context['type'], $context['object'] ) ) {
+		if( ! isset( $context['type'], $context['object'] ) ) {
 			return null;
 		}
 
@@ -82,15 +84,16 @@ class Perms_ResolverFactory_ObjectFactory implements Perms_ResolverFactory
 
 		$perms = $this->known[$hash];
 
-		if ( count( $perms ) == 0 ) {
+		if( count( $perms ) == 0 ) {
 			return null;
 		} else {
+			require_once 'lib/core/Perms/Resolver/Static.php';
 			return new Perms_Resolver_Static( $perms, 'object' );
 		}
 	}
 
 	private function sanitize( $name ) {
-		if ( strpos( $name, 'tiki_p_' ) === 0 ) {
+		if( strpos( $name, 'tiki_p_' ) === 0 ) {
 			return substr( $name, strlen( 'tiki_p_' ) );
 		} else {
 			return $name;

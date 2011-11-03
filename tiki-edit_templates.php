@@ -45,31 +45,20 @@ if (isset($_REQUEST["template"])) {
 	}
 }
 
-$relativeDirectories = array('', 'mail/', 'map/', 'modules/', 'styles/'.str_replace('.css', '', $prefs['style']).'/');
-
 // do editing stuff only if you have the permission to:
 if ($tiki_p_edit_templates == 'y') {
 	if ((isset($_REQUEST["save"]) || isset($_REQUEST['saveTheme'])) && !empty($_REQUEST['template'])) {
 		$access->check_feature('feature_edit_templates');
 		check_ticket('edit-templates');
 		if (isset($_REQUEST['saveTheme'])) {
-			$domainStyleTemplatesDirectory = $smarty->main_template_dir;
 			if (!empty($tikidomain)) {
-				$domainStyleTemplatesDirectory .= '/'.$tikidomain;
-			}
-			$domainStyleTemplatesDirectory .= '/styles/' . $style_base;
-			if (!is_dir($domainStyleTemplatesDirectory)) {
-				mkdir($domainStyleTemplatesDirectory);
-			}
-			$file = $domainStyleTemplatesDirectory . '/' . $_REQUEST['template'];
-			$relativeDirectory = dirname($_REQUEST['template']);
-			if ($relativeDirectory && !is_dir($domainStyleTemplatesDirectory . '/' . $relativeDirectory)) {
-				if (in_array($relativeDirectory . '/', $relativeDirectories)) {
-					mkdir($domainStyleTemplatesDirectory . '/' . $relativeDirectory);
-				} else {
-					$smarty->assign('msg', tr('Template directory %0 unknown', $relativeDirectory));
-					$smarty->display('error.tpl');
-				}
+				if (!is_dir($smarty->template_dir.'/'.$tikidomain.'/styles/'.$style_base))
+					mkdir($smarty->template_dir.'/'.$tikidomain.'/styles/'.$style_base);
+				$file = $smarty->template_dir.'/'.$tikidomain.'/styles/'.$style_base.'/'.$_REQUEST['template'];
+			} else {
+				if (!is_dir($smarty->template_dir.'/styles/'.$style_base))
+					mkdir($smarty->template_dir.'/styles/'.$style_base);
+				$file = $smarty->template_dir.'/styles/'.$style_base.'/'.$_REQUEST['template'];
 			}
 		} else {
 			$file = $smarty->get_filename($_REQUEST['template']);
@@ -117,10 +106,12 @@ if (isset($_REQUEST["template"])) {
 
 if ($mode == 'listing') {
 	// Get templates from the templates directory
+	$local = 'styles/'.str_replace('.css', '', $prefs['style']).'/';
+	$where = array('', 'mail/', 'map/', 'modules/', $local);
 	$files = array();
-	chdir($smarty->main_template_dir);
-	foreach ($relativeDirectories as $relativeDirectory) {
-		$files = array_merge($files, glob($relativeDirectory . '*.tpl'));
+	chdir($smarty->template_dir);
+	foreach ($where as $w) {
+		$files = array_merge($files, glob($w . '*.tpl'));
 	}
 	chdir($tikipath);
 	$smarty->assign('files', $files);

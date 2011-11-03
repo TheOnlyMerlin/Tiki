@@ -12,8 +12,6 @@ function prefs_search_list() {
 			'name' => tra('Parse the results'),
 			'hint' => tra('May impact performance'),
 			'type' => 'flag',
-			'default' => 'y',
-			'dbfeatures' => array('mysql_fulltext'),
 		),
 		'search_default_where' => array(
 			'name' => tra('Default where'),
@@ -34,19 +32,16 @@ function prefs_search_list() {
 						'trackeritem' => tra('Tracker Items'),
 						'sheet' => tra('Spreadsheets'),
 					),
-			'default' => '',
 		),
 		'search_default_interface_language' => array(
 			'name' => tra('Restrict search language by default'),
 			'description' => tra('If enabled, only search content in the interface language, by default.'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'search_autocomplete' => array(
 			'name' => tra('Autocomplete on page names'),
 			'type' => 'flag',
 			'dependencies' => array('feature_jquery_autocomplete', 'javascript_enabled'),
-			'default' => 'n',
 		),
 	);
 }

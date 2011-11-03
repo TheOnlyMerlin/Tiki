@@ -5,6 +5,8 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+require_once 'lib/core/TikiDb.php';
+
 class TikiDb_Pdo_Result
 {
 	var $result;
@@ -56,9 +58,9 @@ class TikiDb_Pdo extends TikiDb
 
 		$this->convertQueryTablePrefixes( $query );
 
-		if ( $offset != -1 && $numrows != -1 )
+		if( $offset != -1 && $numrows != -1 )
 			$query .= " LIMIT $numrows OFFSET $offset";
-		elseif ( $numrows != -1 )
+		elseif( $numrows != -1 )
 			$query .= " LIMIT $numrows";
 
 		$starttime=$this->startTimer();
@@ -88,9 +90,9 @@ class TikiDb_Pdo extends TikiDb
 			return false;
 		} else {
 			$this->setErrorMessage( "" );
-			if (($values && !$pq->columnCount()) || (!$values && !$result->columnCount())) {
+			if(($values && !$pq->columnCount()) || (!$values && !$result->columnCount())) {
 				return array(); // Return empty result set for statements of manipulation
-			} elseif ( !$values) {
+			} elseif( !$values) {
 				return $result->fetchAll(PDO::FETCH_ASSOC);
 			} else {
 				return $pq->fetchAll(PDO::FETCH_ASSOC);
@@ -100,7 +102,7 @@ class TikiDb_Pdo extends TikiDb
 
 	function fetchAll($query = null, $values = null, $numrows = -1, $offset = -1, $reporterrors = true ) // {{{
 	{
-		$result = $this->_query($query, $values, $numrows, $offset);
+		$result = $this->_query($query,$values, $numrows, $offset);
 		if (! is_array( $result ) ) {
 			if ($reporterrors) {
 				$this->handleQueryError($query, $values, $result);

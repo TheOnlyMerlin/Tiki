@@ -40,14 +40,11 @@ class Search_GlobalSource_CategorySource implements Search_GlobalSource_Interfac
 
 		if (empty($categories)) {
 			$categories[] = 'orphan';
-			$deepcategories = $categories;
-		} else {
-			$deepcategories = $this->getWithParent($categories);
 		}
 
 		return array(
 			'categories' => $typeFactory->multivalue($categories),
-			'deep_categories' => $typeFactory->multivalue($deepcategories),
+			'deep_categories' => $typeFactory->multivalue($this->getWithParent($categories)),
 		);
 	}
 
@@ -65,8 +62,14 @@ class Search_GlobalSource_CategorySource implements Search_GlobalSource_Interfac
 	private function getParents($categId)
 	{
 		if (! isset($this->parentCategories[$categId])) {
-			$category = $this->categlib->get_category($categId);
-			$this->parentCategories[$categId] = array_keys($category['tepath']);
+			$path = $this->categlib->get_category_path($categId);
+
+			$categories = array();
+			foreach($path as $categ) {
+				$categories[] = $categ['categId'];
+			}
+
+			$this->parentCategories[$categId] = $categories;
 		}
 
 		return $this->parentCategories[$categId];

@@ -98,27 +98,7 @@ $tikidomainslash = (!empty($tikidomain) ? $tikidomain . '/' : '');
 $re = false;
 $default_api_tiki = $api_tiki;
 $api_tiki = '';
-if ( file_exists($local_php) ) {
-	$re = include($local_php);
-}
-
-global $systemConfiguration;
-$systemConfiguration = new Zend_Config(array(
-	'preference' => array(),
-	'rules' => array(),
-), array(
-	'readOnly' => false,
-));
-if (isset ($system_configuration_file)) {
-	if (! is_readable($system_configuration_file)) {
-		die('Configuration file could not be read.');
-	}
-	if (! isset($system_configuration_identifier)) {
-		$system_configuration_identifier = null;
-	}
-	$systemConfiguration = $systemConfiguration->merge(new Zend_Config_Ini($system_configuration_file, $system_configuration_identifier));
-}
-
+if ( file_exists($local_php) ) $re = include($local_php);
 if ( empty( $api_tiki ) ) {
 	$api_tiki_forced = false;
 	$api_tiki = $default_api_tiki;
@@ -138,6 +118,7 @@ if ( $re === false ) {
 
 if ( $dbversion_tiki == '1.10' ) $dbversion_tiki = '2.0';
 
+require_once 'lib/core/TikiDb/ErrorHandler.php';
 class TikiDb_LegacyErrorHandler implements TikiDb_ErrorHandler
 {
 	function handle( TikiDb $db, $query, $values, $result ) // {{{
@@ -167,23 +148,33 @@ class TikiDb_LegacyErrorHandler implements TikiDb_ErrorHandler
 			$stacktrace = false;
 		}
 
-		require_once 'installer/installlib.php';
-		$installer = new Installer;
 
-		require_once('tiki-setup.php');
+		if ( ! isset($_SESSION['fatal_error']) ) {
+			// Do not show the error if an error has already occured during the same script execution (error.tpl already called), because tiki should have died before another error.
+			// This happens when error.tpl is called by tiki.sql... and tiki.sql is also called again in error.tpl, entering in an infinite loop.
 
-		$smarty->assign( 'msg', $msg );
-		$smarty->assign( 'base_query', $query );
-		$smarty->assign( 'values', $values );
-		$smarty->assign( 'built_query', $q );
-		$smarty->assign( 'stacktrace', $stacktrace );
-		$smarty->assign( 'requires_update', $installer->requiresUpdate() );
+			require_once 'installer/installlib.php';
+			$installer = new Installer;
 
-		header("Cache-Control: no-cache, pre-check=0, post-check=0");
+			require_once('tiki-setup.php');
+			if ( ! $smarty ) {
+				require_once 'lib/init/smarty.php';
+			}
 
-		$smarty->display('database-connection-error.tpl');
-		$this->log($msg.' - '.$q);
-		die;
+			$smarty->assign( 'msg', $msg );
+			$smarty->assign( 'base_query', $query );
+			$smarty->assign( 'values', $values );
+			$smarty->assign( 'built_query', $q );
+			$smarty->assign( 'stacktrace', $stacktrace );
+			$smarty->assign( 'requires_update', $installer->requiresUpdate() );
+
+			header("Cache-Control: no-cache, pre-check=0, post-check=0");
+
+			$smarty->display('database-connection-error.tpl');
+			unset($_SESSION['fatal_error']);
+			$this->log($msg.' - '.$q);
+			die;
+		}
 	} // }}}
 	function log($msg) {
 		global $user, $tikilib;
@@ -200,7 +191,7 @@ if ($api_tiki == 'pdo' && extension_loaded("pdo") && in_array('mysql', PDO::getA
 require $dbInitializer;
 init_connection( TikiDb::get() );
 
-if ( isset( $shadow_host, $shadow_user, $shadow_pass, $shadow_dbs ) ) {
+if( isset( $shadow_host, $shadow_user, $shadow_pass, $shadow_dbs ) ) {
 	global $dbMaster, $dbSlave;
 	// Set-up the replication
 	$dbMaster = TikiDb::get();
@@ -226,10 +217,10 @@ function init_connection( $db ) {
 	$db->setServerType( $db_tiki );
 	$db->setErrorHandler( new TikiDb_LegacyErrorHandler );
 
-	if ( isset( $db_table_prefix ) )
+	if( isset( $db_table_prefix ) )
 		$db->setTablePrefix( $db_table_prefix );
 
-	if ( isset( $common_users_table_prefix ) )
+	if( isset( $common_users_table_prefix ) )
 		$db->setUsersTablePrefix( $common_users_table_prefix );
 }
 

@@ -1,4 +1,4 @@
-{* $Id$ *}
+{* $Header: /cvsroot/tikiwiki/_mods/wiki-plugins/files/templates/wikiplugin_files.tpl,v 1.1 2008/01/18 22:00:48 sylvieg Exp $ *}
 
 {if $params.showtitle eq 'y'}
 {if $data}<h4>{$data|escape}</h4>{else}
@@ -15,7 +15,7 @@
 	{/if}
 	<br />
 {/if}
-{if empty($params.galleryId[1]) && $gal_info.name}{tr}File Gallery:{/tr} <a href="tiki-list_file_gallery.php?galleryId={$gal_info.galleryId}" title="{tr}list{/tr}">{$gal_info.name|escape}</a>{/if}
+{if $gal_info.name}{tr}File Gallery:{/tr} <a href="tiki-list_file_gallery.php?galleryId={$gal_info.galleryId}" title="{tr}list{/tr}">{$gal_info.name|escape}</a>{/if}
 </h4>
 {/if}
 {/if}

@@ -79,9 +79,11 @@ class ArtLib extends TikiLib
 																			, $data['isfloat']
 																			);
 		$this->transfer_attributes_from_submission($subId, $articleId);
-
-		$query = "update `tiki_objects` set `type`= ?, `itemId`= ?, `href`=? where `itemId` = ? and `type`= ?";
-		$this->query($query, array('article', (int)$articleId, "tiki-read_article.php?articleId=$articleId", (int)$subId, 'submission'));
+		global $prefs;
+		if ($prefs['feature_categories'] == 'y') {
+			global $categlib; include_once('lib/categories/categlib.php');
+			$categlib->approve_submission($subId, $articleId);
+		}
 		$query = 'update `tiki_objects` set `href`=?, `type`=? where `href`=?';
 		$this->query($query, array("'tiki-read_article.php?articleId=$articleId", 'article', "tiki-edit_submission.php?subId=$subId"));
 		
@@ -152,9 +154,6 @@ class ArtLib extends TikiLib
 				$smarty->assign('mail_data', $article_data['heading'] . "\n----------------------\n");
 				$smarty->assign('mail_heading', $heading);
 				$smarty->assign('mail_body', $body);
-				
-				// the strings below are used to localize messages in the template file
-				//get_strings tr('New article post:') tr('Edited article post:') tr('Deleted article post:')
 				sendEmailNotification($nots, 'watch', 'user_watch_article_post_subject.tpl', $_SERVER['SERVER_NAME'], 'user_watch_article_post.tpl');
 			}
 
@@ -1128,17 +1127,12 @@ class ArtLib extends TikiLib
 					$multilinguallib->sqlTranslationOrphan('article', '`tiki_articles`', 'articleId', $val, $join, $mid, $bindvars);
 					$mid = ' where '.$mid;
 				}
-				if ($typeF == 'articleId' || $typeF == 'notArticleId') {
-					$mid .= empty($mid)? ' where ': ' and ';
-					$mid .= '`articleId` '.($typeF =='notArticleId'?'not in ':'in').' ('.implode(',', array_fill(0, count($val), '?')).')';
-					$bindvars = array_merge($bindvars, $val);
-				}
 			}
 		}
 
 		if ($find) {
 			$findesc = '%' . $find . '%';
-			$mid .= empty($mid)? ' where ': ' and ';
+			if (empty($mid)) $mid = ' where ';
 			$mid .= " (`title` like ? or `heading` like ? or `body` like ? or `author` like ? or `authorName` like ?) ";
 			$bindvars = array($findesc, $findesc, $findesc, $findesc, $findesc);
 		}
@@ -1281,10 +1275,6 @@ class ArtLib extends TikiLib
 		}
 		if ($jail) {
 			$categlib->getSqlJoin($jail, 'article', '`tiki_articles`.`articleId`', $fromSql, $mid2, $bindvars);
-		}
-
-		if (empty($sort_mode)) {
-			$sort_mode = 'publishDate_desc';
 		}
 
 		if ( $prefs['rating_advanced'] == 'y' ) {

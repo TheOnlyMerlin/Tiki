@@ -5,6 +5,8 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+require_once 'lib/core/Perms/ResolverFactory.php';
+
 /**
  * The global ResolverFactory is used as the fallback factory. It provides
  * a constant hash (so it will be queries only once) and obtains the global
@@ -27,13 +29,14 @@ class Perms_ResolverFactory_GlobalFactory implements Perms_ResolverFactory
 			$group = $row['groupName'];
 			$perm = $this->sanitize( $row['permName'] );
 
-			if ( ! isset( $perms[$group] ) ) {
+			if( ! isset( $perms[$group] ) ) {
 				$perms[$group] = array();
 			}
 
 			$perms[$group][] = $perm;
 		}
 
+		require_once 'lib/core/Perms/Resolver/Static.php';
 		return new Perms_Resolver_Static( $perms );
 	}
 
@@ -42,7 +45,7 @@ class Perms_ResolverFactory_GlobalFactory implements Perms_ResolverFactory
 	}
 
 	private function sanitize( $name ) {
-		if ( strpos( $name, 'tiki_p_' ) === 0 ) {
+		if( strpos( $name, 'tiki_p_' ) === 0 ) {
 			return substr( $name, strlen( 'tiki_p_' ) );
 		} else {
 			return $name;

@@ -30,7 +30,7 @@ if (!isset($_REQUEST["id"])) {
 $useCache = isset($_REQUEST['cache']) && $_REQUEST['cache'] == 'y'; // cache only the image in list mode
 
 // If image_type has no value, we default to "article" to preserve previous behaviour
-if (!isset($_REQUEST["image_type"])) {
+if(!isset($_REQUEST["image_type"])) {
 	$_REQUEST["image_type"]="article";
 }
 
@@ -84,7 +84,7 @@ if ( isset($_REQUEST["reload"]) || !$useCache || !is_file($cachefile) ) {
 	}
 	$type = $storedData["image_type"];
 	$data =& $storedData["image_data"];
-	header("Content-type: ".$type);
+	header ("Content-type: ".$type);
 	if (!empty($_REQUEST['width'])) {
 		require_once('lib/images/images.php');
 		$image = new Image($data);
@@ -102,6 +102,6 @@ if ( isset($_REQUEST["reload"]) || !$useCache || !is_file($cachefile) ) {
 }
 
 $size = getimagesize($cachefile);
-header("Content-type: ".$size['mime']);
+header ("Content-type: ".$size['mime']);
 readfile($cachefile);
 

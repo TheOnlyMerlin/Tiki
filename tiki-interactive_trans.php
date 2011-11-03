@@ -25,13 +25,13 @@ if (!empty($_REQUEST['interactive_translation_mode'])) {
 /* Called by the JQuery ajax request. No response expected.
  * Save strings translated using interactive translation to database.
  */ 
-if ( isset( $_REQUEST['source'], $_REQUEST['trans'] ) && count($_REQUEST['source']) == count($_REQUEST['trans']) ) {
+if( isset( $_REQUEST['source'], $_REQUEST['trans'] ) && count($_REQUEST['source']) == count($_REQUEST['trans']) ) {
 	$translations = new LanguageTranslations;
 	
-	foreach ( $_REQUEST['trans'] as $k => $translation ) {
+	foreach( $_REQUEST['trans'] as $k => $translation ) {
 		$source = $_REQUEST['source'][$k];
 
-		$translations->updateTrans($source, $translation);
+		$translations->updateTrans( $source, $translation );
 	}
 
 	exit;

@@ -13,7 +13,6 @@ function wikiplugin_sheet_info() {
 		'prefs' => array( 'wikiplugin_sheet', 'feature_sheet' ),
 		'body' => tra('Sheet Heading'),
 		'icon' => 'pics/icons/sheet_get_range.png',
-		'tags' => array( 'basic' ),
 		'params' => array(
 			'id' => array(
 				'required' => false,
@@ -126,12 +125,13 @@ function wikiplugin_sheet($data, $params) {
 	$subsheets = isset($subsheets) && $subsheets == 'n' ? false : true;
 	$class = (isset($class)) ? " $class"  : '';
 	
-	$sheetlib = TikiLib::lib("sheet");
+	if( !class_exists( 'TikiSheet' ) )
+		require "lib/sheet/grid.php";
 
 	static $index = 0;
 	++$index;
 
-	if (empty($id) && empty($url)) {
+	if (!isset($id) && !isset($url)) {
 		if( $tiki_p_edit_sheet != 'y' || $tiki_p_edit != 'y' ) {
 			return ("<b>missing id parameter for plugin</b><br />");
 		} else {
@@ -156,12 +156,14 @@ function wikiplugin_sheet($data, $params) {
 				document.getElementById('$formId').submit();
 				</script>
 				~/np~
-EOF;
+				EOF;
 			} else {
+				$intro = tra('Incomplete call to plugin: No target sheet.');
 				$label = tra('Create New Sheet');
 				return <<<EOF
 ~np~
 <form method="post" action="">
+	<p>$intro</p>
 	<p>
 		<input type="submit" name="create_sheet" value="$label"/>
 		<input type="hidden" name="index" value="$index"/>
@@ -172,32 +174,27 @@ EOF;
 			}
 		}
 	}
-	
-	$sheet = new TikiSheet();
-	
-	if (empty($url)) {
-		$info;
-		if (!empty($id)) {
-			$info = $sheetlib->get_sheet_info($id);
-		}
-	
+
+	if (!empty($id)) {
+		$info = $sheetlib->get_sheet_info($id);
 		if (empty($info)) {
-			return tra("Error loading spreadsheet");
+			return ("<b>missing id parameter for plugin</b><br />");
 		}
-		
 		$objectperms = Perms::get('sheet', $id);
 		if (!$objectperms->view_sheet  && !($user && $info['author'] == $user)) {
 			return (tra('Permission denied'));
 		}
+	}
+
+	// Build required objects
+	$sheet = new TikiSheet($id);
+	$db = new TikiSheetDatabaseHandler( $id );
+	$out = new TikiSheetOutputHandler( $data );
+
+	// Fetch sheet from database
+	$sheet->import( $db );
 	
-		// Build required objects
-		$db = new TikiSheetDatabaseHandler( $id );
-		$out = new TikiSheetOutputHandler( $data );
-	
-		// Fetch sheet from database
-		$sheet->import( $db );
-	
-	} else {
+	if (!empty($range)) {
 		$r = $sheet->setRange($range);
 		if (!isset($simple)) {
 			$simple = 'y';
@@ -241,11 +238,11 @@ EOF;
 	$ret = '<div id="tiki_sheet' . $sheet->instance . '" class="tiki_sheet' . $class . '" style="overflow:hidden;' . $style . '">' . $ret . '</div>';
 	
 	if( $editable && ($objectperms->edit_sheet  || $objectperms->admin_sheet || $tiki_p_admin == 'y')) {
-		$smarty->loadPlugin('smarty_function_button');
+		require_once $smarty->_get_plugin_filepath('function','button');
 		
 		//If you've given the sheet a url, you can't edit it, disable if not possible
 		if (!isset($url)) {
-			$button_params = array('_text' => tra("Edit Sheet"), '_script' => "tiki-view_sheets.php?sheetId=$id&parse=edit$urlHeight&page=$page");
+			$button_params = array('_text' => tra("Edit Sheet"), '_script' => "tiki-view_sheets.php?sheetId=$id&parse=edit$urlHeight");
 		}
 		
 		$ret .= smarty_function_button( $button_params, $smarty);

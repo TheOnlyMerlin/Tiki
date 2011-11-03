@@ -25,8 +25,7 @@ fieldset {
 	border: solid 1px #444444;
 }
 
-legend {
-	color: #444444} /* IE7 */
+legend {color: #444444} /* IE7 */
 
 input,
 textarea,
@@ -342,9 +341,18 @@ a.flip:hover {
 	color: #000000;
 }
 
+.option a:link,
+.option a:visited,
+a.linkmenu, .rsslink, .linkmenu:visited, .rsslink:visited {}
+
 .linkmenu:hover {
 	color: #000000;
 }
+
+.option a:hover,
+.option a:active {}
+
+a.linkmodule {}
 
 a.linkmodule:hover {
 	color: #000000;
@@ -374,7 +382,7 @@ a.linkmodule:hover {
 	background: #fafafa;
 }
 
-.site_report a {
+#site_report a {
 	border-left: 1px solid #696969;
 	border-right: 1px solid #696969;
 }
@@ -393,6 +401,8 @@ a.linkmodule:hover {
 #col3 .box {
 	border-bottom: 1px solid #cfcfcf;
 }
+
+.box a.flipmodtitle img {}
 
 a.flipmodtitle:hover img {
 	border: 1px #cccccc solid !important;
@@ -433,8 +443,7 @@ a.flipmodtitle:hover img {
 	background: #fff;
 }
 
-.highlight {
-	background: #e5e5e5;
+.highlight {background: #e5e5e5;
 }
 
 /***** Tables, Tabs and Lists ****/
@@ -444,8 +453,14 @@ tr.odd {
 	background: #f0f0f0;
 }
 
+tr.odd:hover {
+}
+
 tr.even {
 	background: #dcdcdc;
+}
+
+tr.even:hover {
 }
 
 td.odd {
@@ -457,6 +472,11 @@ td.even {
 	background: #dcdcdc;
 	color: #000;
 }
+
+tr.even td.even,
+tr.odd td.odd {}
+
+td.third {}
 
 /* headings */
 
@@ -573,11 +593,6 @@ a.forumnameread {
 	background-color: #f8f8f8;
 }
 
-.statuson {
-	background: #565656;
-	border: 1px inset #343434;
-	
-}
 /*** Feature-specific selectors ***/
 /***** Wiki *****/
 
@@ -633,6 +648,8 @@ a.pagetitle:hover {
 }
 
 /* Needed esp. for light-on-dark theme */
+.toolbar {
+}
 
 /* Wiki plugins */
 /* Code plugin  */
@@ -877,6 +894,10 @@ body.tiki_blogs .postbody-title,
 	color: #822222;
 }
 
+.Calfgal,
+.Calfgal a,
+.Calfgal a:visited {}
+
 .Calforum,
 .Calforum a,
 .Calforum a:visited {
@@ -912,6 +933,8 @@ body.tiki_blogs .postbody-title,
 .Caltrack a:visited {
 	color: #00BD02;
 }
+
+.Calweb {}
 
 .Calwiki,
 .Calwiki a,
@@ -972,6 +995,8 @@ body.tiki_blogs .postbody-title,
 .calprio9 a {
 	color: #666666;
 }
+
+.caltoggle {}
 
 .opaque {
 	border: 1px solid #212121;
@@ -1116,6 +1141,9 @@ body.tiki_blogs .postbody-title,
 .plugin-form-float {
 	border: solid 2px #696969;
 }
+
+/***** Ajax *****/
+#ajaxLoading {}
 
 /***** TikiSheet Default Style *****/
 .default thead td,

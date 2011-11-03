@@ -38,20 +38,10 @@ class Captcha
 	 *
 	 * @return null
 	 */
-	function __construct( $type = '' ) {
+	function __construct() {
 		global $prefs;
-
-		if (empty($type)) {
-			if ($prefs['recaptcha_enabled'] == 'y' && !empty($prefs['recaptcha_privkey']) && !empty($prefs['recaptcha_pubkey'])) {
-				$type = 'recaptcha';
-			} else if (extension_loaded('gd') && function_exists('imagepng') && function_exists('imageftbbox')) {
-				$type = 'default';
-			} else {
-				$type = 'dumb';
-			}
-		}
-
-		if ($type === 'recaptcha') {
+		
+		if ($prefs['recaptcha_enabled'] == 'y' && !empty($prefs['recaptcha_privkey']) && !empty($prefs['recaptcha_pubkey'])) {
 			require_once('lib/core/Zend/Captcha/ReCaptcha.php');
 			$this->captcha = new Zend_Captcha_ReCaptcha(array(
 				'privkey' => $prefs['recaptcha_privkey'],
@@ -62,7 +52,7 @@ class Captcha
 			$this->type = 'recaptcha';
 
 			$this->recaptchaCustomTranslations();
-		} else if ($type === 'default') {
+		} else if (extension_loaded('gd') && function_exists('imagepng') && function_exists('imageftbbox')) {
 			$this->captcha = new Zend_Captcha_Image(array(
 				'wordLen' => $prefs['captcha_wordLen'],
 				'timeout' => 600,
@@ -73,7 +63,7 @@ class Captcha
 				'dotNoiseLevel' => $prefs['captcha_noise'],
 			));
 			$this->type = 'default';
-		} else {		// implied $type==='dumb'
+		} else {
 			require_once('lib/core/Zend/Captcha/Dumb.php');
 			$this->captcha = new Zend_Captcha_Dumb;
 			$this->type = 'dumb';
@@ -89,7 +79,7 @@ class Captcha
 	 */
 	function generate() {
 		try {
-			$key = $this->captcha->generate();
+			$this->captcha->generate();
 			if ($this->type == 'default') {
 				// the following needed to keep session active for ajax checking 
 				$session = $this->captcha->getSession();
@@ -97,7 +87,6 @@ class Captcha
 				$this->captcha->setSession($session);
 				$this->captcha->setKeepSession(false);
 			}
-			return $key;
 		} catch (Zend_Exception $e) {
 		}
 	}
@@ -125,17 +114,14 @@ class Captcha
 	 * @return bool true or false 
 	 *
 	 */
-	function validate($input = null) {
-		if (is_null($input)) {
-			$input = $_REQUEST;
-		}
+	function validate() {
 		if ($this->type == 'recaptcha') {
 			return $this->captcha->isValid(array(
-				'recaptcha_challenge_field' => $input['recaptcha_challenge_field'],
-				'recaptcha_response_field' => $input['recaptcha_response_field']
+				'recaptcha_challenge_field' => $_REQUEST['recaptcha_challenge_field'],
+				'recaptcha_response_field' => $_REQUEST['recaptcha_response_field']
 			));
 		} else {
-			return $this->captcha->isValid($input['captcha']);
+			return $this->captcha->isValid($_REQUEST['captcha']);
 		}
 	}
 

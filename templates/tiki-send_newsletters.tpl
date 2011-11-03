@@ -1,7 +1,6 @@
-{* $Id$ *}
 {$showBoxCheck}
 
-{title help="Newsletters"}{tr}Send Newsletters{/tr}{/title}
+{title help="Newsletters"}{tr}Send Newsletters{/tr} {if $nlId ne '0'}{$nlName}{/if}{/title}
 
 {if $tiki_p_admin_newsletters eq "y"}
 	<div class="navbar">
@@ -249,7 +248,7 @@
 						<label for="editwikitxt">{tr}Data Txt:{/tr}</label>
 					</td>
 					<td id="txtcol2" >
-						<textarea id='editwikitxt' name="datatxt" rows="20" cols="80">{$info.datatxt|escape}</textarea>
+						<textarea id='editwikitxt' name="datatxt" rows="{$rows}" cols="{$cols}">{$info.datatxt|escape}</textarea>
 					</td>
 				</tr>
 
@@ -266,7 +265,7 @@
 							{tr}Be careful not to paste articles that must not be seen by the recipients{/tr} 
 						{/remarksbox}
 						{/if}
-						<textarea id='articlecliptxt' name="articleClip" rows="20" cols="80" readonly="readonly">{$articleClip}</textarea>
+						<textarea id='articlecliptxt' name="articleClip" rows="{$rows}" cols="{$cols}" readonly="readonly">{$articleClip}</textarea>		
 					</td>
 				</tr>				
 				
@@ -310,9 +309,8 @@
 			</table>
 		</form>
 	{/tab}
-	
-	{assign var=name value="{tr _0=$cant_drafts}Drafts&nbsp;(%0){/tr}"}
-	{tab name=$name}
+
+	{tab name="{tr}Drafts{/tr}&nbsp;(`$cant_drafts`)"}
 	{* --- tab with drafts --- *}
 		{assign var=channels value=$drafts}
 		{assign var=view_editions value='n'}
@@ -330,12 +328,11 @@
 		{assign var=find value=$dr_find}
 		{assign var=find_bak value=$ed_find}
 		{assign var=tab value=2}
-		<h2>{$name}</h2>
+		<h2>{tr}Drafts{/tr}&nbsp;({$cant_drafts})</h2>
 		{include file='sent_newsletters.tpl'}
 	{/tab}
 
-	{assign var=name value="{tr _0=$cant_editions}Sent Editions&nbsp;(%0){/tr}"}
-	{tab name=$name}
+	{tab name="{tr}Sent editions{/tr}&nbsp;($cant_editions)"}
 	{* --- tab with editions --- *}
 		{assign var=channels value=$editions}
 		{assign var=view_editions value='y'}
@@ -353,7 +350,7 @@
 		{assign var=find value=$ed_find}
 		{assign var=find_bak value=$dr_find}
 		{assign var=tab value=3}
-		<h2>{$name}</h2>
+		<h2>{tr}Sent editions{/tr}&nbsp;({$cant_editions})</h2>
 		{include file='sent_newsletters.tpl'}
 		{/tab}
 	{/tabset}

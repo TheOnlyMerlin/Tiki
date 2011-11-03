@@ -41,11 +41,11 @@ class NotificationLib extends TikiLib
 	}
 	function get_mail_events($event, $object) {
 		global $tikilib;
-		require_once('lib/objectlib.php');
+		global $categlib; require_once('lib/categories/categlib.php');
 		$query = "select * from `tiki_user_watches` where `event`=? and (`object`=? or `object`='*')";
 		$result = $this->query($query, array($event, $object) );
 		$ret = array();
-		$map = ObjectLib::map_object_type_to_permission();
+		$map = CategLib::map_object_type_to_permission();
 		while ($res = $result->fetchRow()) {
 			if (empty($res['user']) || $tikilib->user_has_perm_on_object($res['user'], $object, $res['type'], $map[$res['type']])) {
 				$ret[] = $res['email'];
@@ -94,13 +94,6 @@ class NotificationLib extends TikiLib
 			'url' => '',
 			'available' => $prefs['feature_articles'] == 'y'
 		);
-		$watches['blog_post'] = array(
-			'label' => tra('A new blog post is published') ,
-			'type' => 'blog',
-			'url' => '',
-			'available' => $prefs['feature_blogs'] == 'y',
-			'object' => '*'
-		);
 		$watches['wiki_page_changes'] = array(
 			'label' => tra('A wiki page is created, deleted or edited, except for minor changes.') ,
 			'type' => 'wiki page',
@@ -135,12 +128,6 @@ class NotificationLib extends TikiLib
 		$watches['auth_token_called'] = array(
 			'label' => tra('Token is called') ,
 			'type' => 'security',
-			'url' => '',
-			'object' => '*'
-		);
-		$watches['user_joins_group'] = array(
-			'label' => tra('User joins a group') ,
-			'type' => 'users',
 			'url' => '',
 			'object' => '*'
 		);

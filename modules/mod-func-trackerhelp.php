@@ -14,17 +14,17 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 function module_trackerhelp_info() {
 	return array(
 		'name' => tra('Tracker Help'),
-		'description' => tra('Display the fields of a tracker (name and identifier)'),
+		'description' => tra('Display the fieldId of a tracker'),
 		'prefs' => array("feature_trackers"),
 		'params' => array(
 			'height' => array(
-				'name' => tra('Text field height'),
-				'description' => tra('Number of lines'),
+				'name' => tra('Textarea rows'),
+				'description' => tra('Textarea rows'),
 				'filter' => 'int'
 			),
 			'cols' => array(
-				'name' => tra('Text field width'),
-				'description' => tra('Number of characters'),
+				'name' => tra('Textarea cols'),
+				'description' => tra('Textarea cols'),
 				'filter' => 'int'
 			),
 		)

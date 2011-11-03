@@ -12,13 +12,6 @@ function prefs_http_list() {
 			'type' => 'text',
 			'size' => 5,
 			'filter' => 'digits',
-			'default' => '80',
-		),
-		'http_skip_frameset' => array(
-			'name' => tra('HTTP Lookup Skip Framesets'),
-			'description' => tra('When performing and HTTP request to an external source, verify if the result is a frameset and use heuristic to provide the real content.'),
-			'type' => 'flag',
-			'default' => 'n',
 		),
 	);	
 }

@@ -74,7 +74,7 @@ if (isset($_REQUEST["save"])) {
 		'status',
 		'status_calview'
 	);
-	foreach ($extra as $ex) {
+	foreach($extra as $ex) {
 		if (isset($_REQUEST['show'][$ex]) and $_REQUEST['show'][$ex] == 'on') {
 			$options["show_$ex"] = 'y';
 		} else {
@@ -162,7 +162,7 @@ if ($prefs['feature_groupalert'] == 'y') {
 	$info["groupforAlert"] = $groupalertlib->GetGroup('calendar', $_REQUEST["calendarId"]);
 	$all_groups = $userlib->list_all_groups();
 	if (is_array($all_groups)) {
-		foreach ($all_groups as $g) {
+		foreach($all_groups as $g) {
 			$groupforAlertList[$g] = ($g == $info['groupforAlert']) ? 'selected' : '';
 		}
 	}
@@ -227,7 +227,7 @@ if (!isset($_REQUEST["offset"])) {
 }
 $smarty->assign_by_ref('offset', $offset);
 $calendars = $calendarlib->list_calendars($offset, $maxRecords, $sort_mode, $find);
-foreach (array_keys($calendars["data"]) as $i) {
+foreach(array_keys($calendars["data"]) as $i) {
 	$calendars["data"][$i]["individual"] = $userlib->object_has_one_permission($i, 'calendar');
 }
 $smarty->assign_by_ref('cant', $calendars['cant']);
@@ -242,6 +242,10 @@ $days_names = array(
 	tra("Saturday")
 );
 $smarty->assign('days_names',$days_names);
+;
+// $cat_type = 'calendar';
+// $cat_objid = $_REQUEST["calendarId"];
+// include_once ("categorize_list.php");
 include_once ('tiki-section_options.php');
 ask_ticket('admin-calendars');
 // disallow robots to index page:

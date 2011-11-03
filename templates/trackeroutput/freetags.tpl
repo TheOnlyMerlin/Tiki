@@ -5,7 +5,8 @@
 		{/foreach}
 	{else}
 		{foreach from=$field.freetags item=taginfo}
-			{object_link type=freetag id=$taginfo}&nbsp; &nbsp; 
+			{capture name=tagurl}{if (strstr($taginfo, ' '))}"{$taginfo}"{else}{$taginfo}{/if}{/capture}
+			<a class="freetag" href="tiki-browse_freetags.php?tag={$smarty.capture.tagurl|escape:'url'}">{$taginfo|escape}</a>&nbsp; &nbsp; 
 		{/foreach}		
 	{/if}
 {else}

@@ -1,4 +1,3 @@
-{* $Id$ *}
 <table>
 	<tr>
 		{foreach from=$column item=col}
@@ -23,4 +22,4 @@
 		</tr>
 	{/foreach}
 </table>
-{pagination_links resultset=$results}{/pagination_links}
+{pagination_links cant=$count step=$maxRecords offset=$offset}{/pagination_links}

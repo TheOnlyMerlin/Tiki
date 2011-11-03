@@ -18,9 +18,9 @@ class Tiki_Profile_ChannelList
 
 		foreach( $lines as $line ) {
 			$parts = explode( ',', $line );
-			if ( count( $parts ) < 3 )
+			if( count( $parts ) < 3 )
 				continue;
-			elseif ( count( $parts ) == 3 )
+			elseif( count( $parts ) == 3 )
 				$parts[] = 'Admins';
 
 			$parts = array_map( 'trim', $parts );
@@ -37,34 +37,15 @@ class Tiki_Profile_ChannelList
 		return $list;
 	} // }}}
 
-	function canExecuteChannels( array $channelNames, array $groups, $skipInputCheck = false ) // {{{
+	function canExecuteChannels( array $channelNames, array $groups ) // {{{
 	{
 		foreach( $channelNames as $channel ) {
-			if ( ! array_key_exists( $channel, $this->channels ) )
+			if( ! array_key_exists( $channel, $this->channels ) )
 				return false;
 			
 			// At least one match is required
-			if ( count( array_intersect( $groups, $this->channels[$channel]['groups'] ) ) == 0 )
+			if( count( array_intersect( $groups, $this->channels[$channel]['groups'] ) ) == 0 )
 				return false;
-
-			// Checking against input if required (note that unlike normal groups, all must match)
-			foreach ($this->channels[$channel]['groups'] as $g) {
-				if ($skipInputCheck) {
-					break;
-				}
-				if (preg_match('/\$profilerequest\:(\w+)\$/', $g, $matches)) {
-					for ($i = 1; $i < count($matches); $i++) {
-						if (empty($_REQUEST[$matches[$i]])) {
-							return false;
-						} else {
-							$tocheck = str_replace($matches[0], $_REQUEST[$matches[$i]], $g);
-							if (!in_array($tocheck, $groups)) {
-								return false;
-							}
-						}
-					}
-				}
-			}
 		}
 
 		return true;
@@ -77,7 +58,7 @@ class Tiki_Profile_ChannelList
 		foreach( $channelNames as $channelName ) {
 			$info = $this->channels[$channelName];
 			
-			if ( $profile = Tiki_Profile::fromNames( $info['domain'], $info['profile'] ) )
+			if( $profile = Tiki_Profile::fromNames( $info['domain'], $info['profile'] ) )
 				$profiles[$channelName] = $profile;
 		}
 

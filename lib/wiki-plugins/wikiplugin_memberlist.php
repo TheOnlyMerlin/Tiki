@@ -17,82 +17,19 @@ function wikiplugin_memberlist_info() {
 			'groups' => array(
 				'required' => true,
 				'name' => tra('Groups'),
-				'description' => tra('List of groups to handle through the interface (use "*" for all). Colon separated.'),
+				'description' => tra('List of groups to handle through the interface. Colon separated.'),
 				'separator' => ':',
 				'filter' => 'groupname',
 				'default' => '',
 			),
-			'showDescriptions' => array(
-				'required' => false,
-				'name' => tra('Show Descriptions'),
-				'description' => tra('Display group descriptions below list name.'),
-				'filter' => 'alpha',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				),
-				'default' => 'n',
-			),
-			'displayMode' => array(
-				'required' => false,
-				'name' => tra('Display mode'),
-				'description' => tra('How to show the member lists.'),
-				'filter' => 'text',
-				'options' => array(
-					array('text' => 'Default (plain)', 'value' => ''),
-					array('text' => tra('Tabs'), 'value' => 'tabs'),
-					// more soon...
-				),
-				'default' => '',
-			),
-			'max' => array(
-				'required' => false,
-				'name' => tra('Maximum'),
-				'description' => tra('Maximum number of users to list in each group (default 100).'),
-				'default' => 100,
-				'filter' => 'digits',
-			),
-			'membersOnly' => array(
-				'required' => false,
-				'name' => tra('Members Only'),
-				'description' => tra('Only shows groups containing a certain user. Enter "%user%" to show groups for the current logged in user.'),
-				'default' => '',
-				'filter' => 'username',
-			),
-			'sort_mode' => array(
-				'required' => false,
-				'name' => tra('Sort mode'),
-				'description' => tra('Sort mode for member listing.'),
-				'default' => 'login_asc',
-				'filter' => 'text',
-			),
-			'readOnly' => array(
-				'required' => false,
-				'name' => tra('Read only'),
-				'description' => tra('Read only mode. All ability to modify membership is hidden.'),
-				'default' => 'n',
-				'filter' => 'alpha',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				),
-			),
-			'including' => array(
-				'required' => false,
-				'name' => tra('Including Group'),
-				'description' => tra('Only groups including the group that you specify will be listed'),
-				'default' => '',
-                        )
 		),
 	);
 }
 
 function wikiplugin_memberlist( $data, $params ) {
-	global $prefs, $userlib, $user;
+	global $prefs;
 	static $execution = 0;
-	$exec_key = 'memberlist-execution-' . ++ $execution;
+	$key = 'memberlist-execution-' . ++ $execution;
 
 	if( ! isset( $params['groups'] ) ) {
 		return "^Missing group list^";
@@ -100,65 +37,11 @@ function wikiplugin_memberlist( $data, $params ) {
 
 	$groups = $params['groups'];
 
-	$defaults = array();
-	$plugininfo = wikiplugin_memberlist_info();
-	foreach ($plugininfo['params'] as $key => $param) {
-		$defaults["$key"] = $param['default'];
-	}
-	$params = array_merge($defaults, $params);
-
-	if ($prefs['feature_user_watches'] == 'y') {
-		if(!empty($user)) {
-			$tikilib = TikiLib::lib('tiki');
-			if( isset($_REQUEST['watch'] ) ) {
-				$tikilib->add_user_watch($user, 'user_joins_group', $_REQUEST['watch'],'group');
-			} else if( isset($_REQUEST['unwatch'] ) ) {
-				$tikilib->remove_user_watch($user, 'user_joins_group', $_REQUEST['unwatch'],'group');
-			}
-		}
-	}
-
-	if (count($groups) === 1 && $groups[0] === '*') {	// all available
-		$groups = $userlib->list_all_groups();
-	}
-
-	if (!empty($params['membersOnly'])) {
-		if ($params['membersOnly'] === '%user%') {
-			$params['membersOnly'] = $GLOBALS['user'];
-		}
-		$usergroups = $userlib->get_user_groups($params['membersOnly']);
-		$in_group = array();
-		foreach ($groups as $group) {
-			if (in_array($group, $usergroups) && $group != 'Anonymous') {
-				$in_group[] = $group;
-			}
-		}
-		$groups = $in_group;
-		unset($in_group);
-	}
-
-	if (!empty($params['including'])) {
-		$includinggroups = $userlib->get_including_groups($params['including']);
-		$in_group = array();
-		foreach ($groups as $group) {
-			if (in_array($group, $includinggroups)) {
-				$in_group[] = $group;
-			}
-		}
-		$groups = $in_group;
-		unset($in_group);
-	}
-
 	Perms::bulk( array( 'type' => 'group' ), 'object', $groups );
 
-	if ($params['readOnly'] == 'y') {
-		$readOnly = true;
-	} else {
-		$readOnly = false;
-	}
-	$validGroups = wikiplugin_memberlist_get_group_details( $groups, $params['max'], $params['sort_mode'], $readOnly );
+	$validGroups = wikiplugin_memberlist_get_group_details( $groups );
 
-	if( isset($_POST[$exec_key]) ) {
+	if( isset($_POST[$key]) ) {
 		if( isset( $_POST['join'] ) ) {
 			wikiplugin_memberlist_join( $validGroups, $_POST['join'] );
 		}
@@ -197,50 +80,27 @@ function wikiplugin_memberlist( $data, $params ) {
 		}
 	}
 
-	if ($params['showDescriptions'] === 'y') {
-		foreach( $validGroups as $name => &$group ) {
-			$group['info'] = $userlib->get_group_info($name);
-		}
-	}
-
 	global $smarty;
-	$smarty->assign( 'execution_key', $exec_key );
+	$smarty->assign( 'execution_key', $key );
 	$smarty->assign( 'can_apply', $canApply );
 	$smarty->assign( 'memberlist_groups', $validGroups );
-	$smarty->assign('displayMode', $params['displayMode']);
-
-	// seems conditonally adding tabs in the tpl doesn't work (unclosed {tabset} errors etc) - a Smarty 3 change?
-	if (empty($params['displayMode']) && $prefs['feature_tabs'] === 'y') {
-		$oldTabs = $prefs['feature_tabs'];
-		$prefs['feature_tabs'] = 'n';
-		// css workarounds for when in non tabs mode
-		TikiLib::lib('header')->add_css('.memberlist > fieldset { border: none; margin:  0; padding:  0; }
-.memberlist > fieldset > legend { display: none; }');
-	}
-	$out = '~np~' . $smarty->fetch( 'wiki-plugins/wikiplugin_memberlist.tpl' ) . '~/np~';
-
-	if (empty($params['displayMode']) && !empty($oldTabs)) {
-		$prefs['feature_tabs'] = $oldTabs;
-	}
-	return $out;
+	return '~np~' . $smarty->fetch( 'wiki-plugins/wikiplugin_memberlist.tpl' ) . '~/np~';
 }
 
-function wikiplugin_memberlist_get_members( $groupName, $maxRecords = -1, $sort_mode = 'login_asc') {
+function wikiplugin_memberlist_get_members( $groupName ) {
 	global $userlib;
 
-	$raw = $userlib->get_users( 0, $maxRecords, $sort_mode, '', '', false, $groupName );
+	$raw = $userlib->get_users( 0, -1, 'login_asc', '', '', false, $groupName );
 	$users = array();
 
-	if (isset($raw['data'])) {
-		foreach( $raw['data'] as $user ) {
-			$users[] = $user['login'];
-		}
+	foreach( $raw['data'] as $user ) {
+		$users[] = $user['login'];
 	}
 
 	return $users;
 }
 
-function wikiplugin_memberlist_get_group_details( $groups, $maxRecords = -1, $sort_mode = 'login_asc', $readOnly = false ) {
+function wikiplugin_memberlist_get_group_details( $groups ) {
 	global $user, $prefs, $userlib;
 	$validGroups = array();
 	foreach( $groups as $groupName ) {
@@ -254,15 +114,15 @@ function wikiplugin_memberlist_get_group_details( $groups, $maxRecords = -1, $so
 			$isMember = in_array( $groupName, $perms->getGroups() );
 
 			$validGroups[$groupName] = array(
-				'can_join' => $perms->group_join && ! $isMember && $user && ! $readOnly,
-				'can_leave' => $perms->group_join && $isMember && $user && ! $readOnly,
-				'can_add' => $perms->group_add_member && ! $readOnly,
-				'can_remove' => $perms->group_remove_member && ! $readOnly,
+				'can_join' => $perms->group_join && ! $isMember && $user,
+				'can_leave' => $perms->group_join && $isMember && $user,
+				'can_add' => $perms->group_add_member,
+				'can_remove' => $perms->group_remove_member,
 				'is_member' => $isMember,
 			);
 
 			if( $perms->group_view_members ) {
-				$validGroups[$groupName]['members'] = wikiplugin_memberlist_get_members( $groupName, $maxRecords, $sort_mode );
+				$validGroups[$groupName]['members'] = wikiplugin_memberlist_get_members( $groupName );
 
 				if( $prefs['feature_group_transition'] == 'y' ) {
 					require_once 'lib/transitionlib.php';
@@ -271,12 +131,6 @@ function wikiplugin_memberlist_get_group_details( $groups, $maxRecords = -1, $so
 					foreach( $validGroups[$groupName]['members'] as $username ) {
 						$validGroups[$groupName]['transitions'][$username] = $transitionlib->getAvailableTransitionsFromState( $groupName, $username );
 					}
-				}
-
-				if (!empty($user)) {
-					 $validGroups[$groupName]['isWatching'] = TikiLib::lib('tiki')->user_watches($user, 'user_joins_group', $groupName, 'group') > 0;
-				} else {
-					 $validGroups[$groupName]['isWatching'] = false;
 				}
 			}
 		}

@@ -17,13 +17,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 require_once( 'tiki-filter-base.php' );
 
 // Define and load Smarty components
-$prefs = array();
-$prefs['smarty_notice_reporting'] = 'n';
-$prefs['smarty_compilation'] = 'always';
-$prefs['smarty_security'] = 'y';
-require_once 'lib/init/initlib.php';
-set_error_handler("tiki_error_handling", error_reporting());
-require_once ( 'lib/init/smarty.php');
+require_once ( 'lib/smarty/libs/Smarty.class.php');
 require_once ('installer/installlib.php');
 
 class InstallerDatabaseErrorHandler implements TikiDb_ErrorHandler
@@ -110,7 +104,7 @@ function write_local_php($dbb_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tik
 		if ( ! empty( $api_tiki ) ) {
 			$filetowrite .= "\$api_tiki='" . $api_tiki . "';\n";
 		}
-		if ( ! empty( $client_charset ) ) {
+		if( ! empty( $client_charset ) ) {
 			$filetowrite .= "\$client_charset='$client_charset';\n";
 		}
 		$filetowrite .= "// If you experience text encoding issues after updating (e.g. apostrophes etc showing up as strange characters) \n";
@@ -118,10 +112,7 @@ function write_local_php($dbb_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tik
 		$filetowrite .= "// \$client_charset='utf8';\n";
 		$filetowrite .= "// See http://tiki.org/ReleaseNotes5.0#Known_Issues and http://doc.tiki.org/Understanding+Encoding for more info\n\n";
 		$filetowrite .= "// If your php installation does not not have pdo extension\n";
-		$filetowrite .= "// \$api_tiki = 'adodb';\n\n";
-		$filetowrite .= "// Want configurations managed at the system level or restrict some preferences? http://doc.tiki.org/System+Configuration\n";
-		$filetowrite .= "// \$system_configuration_file = '/etc/tiki.ini';\n";
-		$filetowrite .= "// \$system_configuration_identifier = 'example.com';\n\n";
+		$filetowrite .= "// \$api_tiki = 'adodb';\n";
 		fwrite($fw, $filetowrite);
 		fclose($fw);
 	}
@@ -146,14 +137,16 @@ function create_dirs($domain=''){
 	$ret = "";
 	foreach ($dirs as $dir) {
 		$dir = $dir.'/'.$domain;
-
+		// Create directories as needed
 		if (!is_dir($dir)) {
-			$created = @mkdir($dir, 02775); // Try creating the directory			
-			if (!$created) {
-				$ret .= "The directory '$docroot/$dir' could not be created.\n";
-			}
+			@mkdir($dir,02775);
+		}
+		@chmod($dir,02775);
+		// Check again and report problems
+		if (!is_dir($dir)) {
+			$ret .= "The directory '$docroot/$dir' does not exist.\n";
 		} else if (!TikiInit::is_writeable($dir)) {
-			@chmod($dir, 02775);
+			@chmod($dir,02777);
 			if (!TikiInit::is_writeable($dir)) {
 				$ret .= "The directory '$docroot/$dir' is not writeable.\n";
 			}
@@ -170,6 +163,49 @@ function isWindows() {
 	}
 
 	return $windows;
+}
+
+class Smarty_Tiki_Installer extends Smarty
+{
+
+	function Smarty_Tiki_Installer($tikidomain) {
+		parent::Smarty();
+		if ($tikidomain) {
+			$tikidomain .= '/'; 
+		}
+		$this->template_dir = realpath('templates/');
+		$this->compile_dir = realpath("templates_c/$tikidomain");
+		$this->config_dir = realpath('configs/');
+		$this->cache_dir = realpath("templates_c/$tikidomain");
+		$this->caching = 0;
+		$this->assign('app_name', 'Tiki');
+		include_once('lib/setup/third_party.php');
+		$this->plugins_dir = array(	// the directory order must be like this to overload a plugin
+			TIKI_SMARTY_DIR,
+			SMARTY_DIR.'plugins'
+		);
+
+		// In general, it's better that use_sub_dirs = false
+		// If ever you are on a very large/complex/multilingual site and your
+		// templates_c directory is > 10 000 files, (you can check at tiki-admin_system.php)
+		// you can change to true and maybe you will get better performance.
+		// http://smarty.php.net/manual/en/variable.use.sub.dirs.php
+		//
+		$this->use_sub_dirs = false;
+
+		// security_settings['MODIFIER_FUNCS'], ['IF_FUNCS'] and secure_dir not needed in installer
+
+		$this->security_settings['ALLOW_SUPER_GLOBALS'] = true;
+		//$this->debugging = true;
+		//$this->debug_tpl = 'debug.tpl';
+	}
+
+	function fetch($_smarty_tpl_file, $_smarty_cache_id = null, $_smarty_compile_id = null, $_smarty_display = false) {
+		global $language;
+		$_smarty_cache_id = $language . $_smarty_cache_id;
+		$_smarty_compile_id = $language . $_smarty_compile_id;
+		return parent::fetch($_smarty_tpl_file, $_smarty_cache_id, $_smarty_compile_id, $_smarty_display);
+	}
 }
 
 function check_session_save_path() {
@@ -229,7 +265,7 @@ function get_webserver_uid() {
 }
 
 function error_and_exit() {
-	global $errors, $docroot;
+	global $errors, $docroot, $wwwgroup, $wwwuser;
 
         $PHP_CONFIG_FILE_PATH = PHP_CONFIG_FILE_PATH;
 
@@ -339,14 +375,14 @@ function fix_admin_account( $account ) {
 	global $installer;
 
 	$result = $installer->query( 'SELECT `id` FROM `users_groups` WHERE `groupName` = "Admins"' );
-	if ( ! $row = $result->fetchRow() ) {
+	if( ! $row = $result->fetchRow() ) {
 		$installer->query( 'INSERT INTO `users_groups` (`groupName`) VALUES("Admins")' );
 	}
 	
 	$installer->query( 'INSERT IGNORE INTO `users_grouppermissions` (`groupName`, `permName`) VALUES("Admins", "tiki_p_admin")' );
 
 	$result = $installer->query( 'SELECT `userId` FROM `users_users` WHERE `login` = ?', array( $account ) );
-	if ( $row = $result->fetchRow() ) {
+	if( $row = $result->fetchRow() ) {
 		$id = $row['userId'];
 		$installer->query( 'INSERT IGNORE INTO `users_usergroups` (`userId`, `groupName`) VALUES(?, "Admins")', array( $id ) );
 	}
@@ -371,7 +407,6 @@ function initTikiDB( &$api, &$driver, $host, $user, $pass, $dbname, $client_char
 	global $tikifeedback;
 	$dbcon = false;
 
-	// This section handles the case of adodb (not the preferred case)
 	if ( ( isset($api) && $api == 'adodb' ) || ! extension_loaded('pdo') ) {
 		$api = 'adodb';
 		$dbTiki = ADONewConnection( $driver );
@@ -379,34 +414,6 @@ function initTikiDB( &$api, &$driver, $host, $user, $pass, $dbname, $client_char
 		if (! $dbcon = (bool) @$dbTiki->Connect($host, $user, $pass, $dbname) ) {
 			$tikifeedback[] = array( 'num' => 1, 'mes' => $dbTiki->ErrorMsg() );
 		}
-
-		// Attempt to create database. This might work if the $user has create database permissions.
-		if ( ! $dbcon ) {
-			$dbh = ADONewConnection( $driver );
-			if ( @$dbh->Connect($host, $user, $pass) ) {
-				$dbname_clean = preg_replace('/[^a-z0-9$_]/',"",$dbname);
-				$sql="CREATE DATABASE IF NOT EXISTS `$dbname_clean` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
-				$dbcon=$dbh->Execute($sql);
-				if ( $dbcon ) {
-					$tikifeedback[] = array( 'num' => 1, 'mes'=> tra("Database `%0` was created.",'',false,array($dbname_clean)) );
-				} else {
-					$tikifeedback[] = array( 'num' => 1, 'mes'=> tra("Database `%0` creation failed. You need to create the database.",'',false,array($dbname_clean)) );
-				}
-			} else {
-				$tikifeedback[] = array( 'num' => 1, 'mes' => $dbh->ErrorMsg() );
-			}
-
-			if ( $dbcon ) {
-				$dbTiki = ADONewConnection( $driver );
-				$db = new TikiDb_Adodb( $dbTiki );
-				if (! $dbcon = (bool) @$dbTiki->Connect($host, $user, $pass, $dbname) ) {
-					$tikifeedback[] = array( 'num' => 1, 'mes' => $dbTiki->ErrorMsg() );
-				}
-			}
-
-		}
-
-	// This section handles the case of PDO (preferred case)
 	} else {
 		$db_hoststring = "host=$host";
 
@@ -425,40 +432,12 @@ function initTikiDB( &$api, &$driver, $host, $user, $pass, $dbname, $client_char
 			$dbcon = false;
 			$tikifeedback[] = array( 'num' => 1, 'mes'=> $e->getMessage() );
 		}
-
-		if ( ! $dbcon ) {
-			try {
-				$dbh = new PDO("$driver:$db_hoststring", $user, $pass);
-				$dbname_clean = preg_replace('/[^a-z0-9$_]/',"",$dbname);
-				$sql="CREATE DATABASE IF NOT EXISTS `$dbname_clean` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
-				$dbcon=$dbh->exec($sql);
-				if ( $dbcon ) {
-					$tikifeedback[] = array( 'num' => 1, 'mes'=> tra("Database `%0` was created.",'',false,array($dbname_clean)) );
-				} else {
-					$tikifeedback[] = array( 'num' => 1, 'mes'=> tra("Database `%0` creation failed. You need to create the database.",'',false,array($dbname_clean)) );
-				}
-			} catch ( PDOException $e ) {
-				$dbcon = false;
-				$tikifeedback[] = array( 'num' => 1, 'mes'=> $e->getMessage() );
-			}
-
-			if ( $dbcon ) {
-				try {
-					$dbTiki = new PDO( "$driver:$db_hoststring;dbname=$dbname", $user, $pass );
-					$db = new TikiDb_Pdo( $dbTiki );
-				} catch ( PDOException $e ) {
-					$dbcon = false;
-					$tikifeedback[] = array( 'num' => 1, 'mes'=> $e->getMessage() );
-				}
-			}
-
-		}
 	}
 
 	if ( $dbcon ) {
 		$db->setErrorHandler(new InstallerDatabaseErrorHandler);
 
-		if ( ! empty( $client_charset ) ) {
+		if( ! empty( $client_charset ) ) {
 			$db->query("SET CHARACTER SET $client_charset");
 		}
 
@@ -471,11 +450,11 @@ function initTikiDB( &$api, &$driver, $host, $user, $pass, $dbname, $client_char
 function convert_database_to_utf8( $dbname ) {
 	$db = TikiDb::get();
 
-	if ( $result = $db->fetchAll( 'SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = ?', $dbname ) ) {
-		$db->query( "ALTER DATABASE `$dbname` CHARACTER SET utf8 COLLATE utf8_unicode_ci" );
+	if( $result = $db->fetchAll( 'SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = ?', $dbname ) ) {
+		$db->query( "ALTER DATABASE `$dbname` CHARACTER SET utf8 COLLATE utf8_general_ci" );
 
 		foreach( $result as $row ) {
-			$db->query( "ALTER TABLE `{$row['TABLE_NAME']}` CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci" );
+			$db->query( "ALTER TABLE `{$row['TABLE_NAME']}` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci" );
 		}
 	} else {
 		die('MySQL INFORMATION_SCHEMA not available. Your MySQL version is too old to perform this operation.');
@@ -487,7 +466,7 @@ function fix_double_encoding( $dbname, $previous ) {
 
 	$text_fields = $db->fetchAll( "SELECT TABLE_NAME, COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND CHARACTER_SET_NAME IS NOT NULL", array($dbname) );
 
-	if ( $text_fields ) {
+	if( $text_fields ) {
 		foreach( $text_fields as $field ) {
 			$db->query( "UPDATE `{$field['TABLE_NAME']}` SET `{$field['COLUMN_NAME']}` = CONVERT(CONVERT(CONVERT(CONVERT(`{$field['COLUMN_NAME']}` USING binary) USING utf8) USING $previous) USING binary)" );
 		}
@@ -549,6 +528,9 @@ $_SESSION["install-logged-$multi"] = 'y';
 
 // Init smarty
 global $tikidomain;
+$smarty = new Smarty_Tiki_Installer($tikidomain);
+$smarty->load_filter('pre', 'tr');
+$smarty->load_filter('output', 'trimwhitespace');
 $smarty->assign('mid', 'tiki-install.tpl');
 $smarty->assign('virt', isset($virt) ? $virt : null );
 $smarty->assign('multi', isset($multi) ? $multi : null );
@@ -557,9 +539,8 @@ $smarty->assign('lang', $language);
 // Try to set a longer execution time for the installer
 @ini_set('max_execution_time', '0');
 $max_execution_time = ini_get('max_execution_time');
-$smarty->assign('max_exec_set_failed', 'n');
 if ($max_execution_time != 0) {
-	$smarty->assign('max_exec_set_failed', 'y');
+	$smarty->assign('max_exec_set_failed', 'y');	
 }
 
 // Tiki Database schema version
@@ -571,7 +552,7 @@ $smarty->assign('tiki_version_name', preg_replace('/^(\d+\.\d+)([^\d])/', '\1 \2
 $dbservers = array();
 if (function_exists('mysqli_connect'))	$dbservers['mysqli'] = tra('MySQL Improved (mysqli)');
 if (function_exists('mysql_connect'))	$dbservers['mysql'] = tra('MySQL classic (mysql)');
-$smarty->assignByRef('dbservers', $dbservers);
+$smarty->assign_by_ref('dbservers', $dbservers);
 
 $errors = '';
 
@@ -621,7 +602,7 @@ include('lib/tikilib.php');
 
 // Get list of available languages
 $languages = TikiLib::list_languages(false, null, true);
-$smarty->assignByRef("languages", $languages);
+$smarty->assign_by_ref("languages", $languages);
 
 $client_charset = '';
 
@@ -665,7 +646,6 @@ if ( file_exists($local) ) {
 	$ADODB_FETCH_MODE = ADODB_FETCH_ASSOC;
 
 	$dbcon = false;
-	$smarty->assign( 'resetdb', 'n' );
 	if ( isset( $dbservers[$db_tiki] ) ) { // avoid errors in ADONewConnection() (wrong darabase driver etc...)
 		if ( $dbcon = initTikiDB( $api_tiki, $db_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $client_charset, $dbTiki ) ) {
 			$smarty->assign( 'resetdb', isset($_REQUEST['reset']) ? 'y' : 'n' );
@@ -710,7 +690,7 @@ if (
 	) && isset($_REQUEST['dbinfo'])
 ) {
 	if ( ! empty($_REQUEST['name']) ) {
-		if ( isset( $_REQUEST['force_utf8'] ) ) {
+		if( isset( $_REQUEST['force_utf8'] ) ) {
 			$client_charset = 'utf8';
 		} else {
 			$client_charset = '';
@@ -731,25 +711,12 @@ if (
 		$tikifeedback[] = array('num'=>1, 'mes'=>tra("No database name specified"));
 	}
 }
-// Mark that InnoDB is to be used, if selected
-if (isset($_REQUEST['useInnoDB'])) {
-	if (intval($_REQUEST['useInnoDB']) > 0) {
-		if ($installer != null) {
-			$installer->useInnoDB = true;	
-		}
-	}
-}
 
 if ( $dbcon ) {
 	$smarty->assign('dbcon', 'y');
-	$smarty->assign('dbname', $dbs_tiki);
 } else {
 	$smarty->assign('dbcon', 'n');
 }
-
-// Some initializations to avoid PHP error messages
-$smarty->assign('tikidb_created', FALSE );
-$smarty->assign('tikidb_is20', FALSE );
 
 if ($dbcon) {
 	$has_tiki_db = has_tiki_db();
@@ -797,6 +764,7 @@ if (
 		$tikilib = new TikiLib;
 		require_once 'lib/userslib.php';
 		$userlib = new UsersLib;
+		require_once 'lib/setup/compat.php';
 		require_once 'lib/tikidate.php';
 		$tikidate = new TikiDate();
 	}
@@ -808,15 +776,13 @@ if (
 		$install_type = 'update';
 	}
 	
-	// Try to activate Apache htaccess file by copying _htaccess into .htaccess
+	// Try to activate Apache htaccess file by renaming _htaccess into .htaccess
 	// Do nothing (but warn the user to do it manually) if:
 	//   - there is no  _htaccess file,
-	//   - there is already an existing .htaccess (that is not necessarily the one that comes from Tiki),
-	//   - the copy does not work (e.g. due to filesystem permissions)
+	//   - there is already an existing .htaccess (that is not necessarily the one that comes from TikiWiki),
+	//   - the rename does not work (e.g. due to filesystem permissions)
 	//
-	// TODO: Perform up-to-date check as in the SEFURL admin panel
-	// TODO: Equivalent for IIS
-	if ( strpos($_SERVER['SERVER_SOFTWARE'],'Apache') !== false && !file_exists('.htaccess') && !@symlink('_htaccess', '.htaccess') && ! @copy('_htaccess', '.htaccess')) {
+	if ( strpos($_SERVER['SERVER_SOFTWARE'],'Apache') !== false && !file_exists('.htaccess') && ! @rename('_htaccess', '.htaccess') ) {
 		$smarty->assign('htaccess_error', 'y');
 	}
 }
@@ -849,7 +815,7 @@ if ( isset( $_GET['lockenter'] ) || isset( $_GET['nolockenter'] ) ) {
 	exit;
 }
 
-$smarty->assignByRef('tikifeedback', $tikifeedback);
+$smarty->assign_by_ref('tikifeedback', $tikifeedback);
 
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 
@@ -858,7 +824,7 @@ $smarty->assign('email_test_tw', $email_test_tw);
 
 //  Sytem requirements test.
 if ($install_step == '2') {
-	$smarty->assign('mail_test_performed', 'n');
+
 	if (isset($_REQUEST['perform_mail_test']) && $_REQUEST['perform_mail_test'] == 'y') {
 
 		$email_test_to = $email_test_tw;
@@ -877,11 +843,13 @@ if ($install_step == '2') {
 			$validator = new Zend_Validate_EmailAddress();
 			if (!$validator->isValid($email_test_to)) {
 				$smarty->assign('email_test_err', tra('Email address not valid, test mail not sent'));
+				$smarty->assign('perform_mail_test', 'n');
 				$email_test_ready = false;
 			}
 		} else {	// no email supplied, check copy checkbox
 			if ($_REQUEST['email_test_cc'] != '1') {
 				$smarty->assign('email_test_err', tra('Email address empty and "copy" checkbox not set, test mail not sent'));
+				$smarty->assign('perform_mail_test', 'n');
 				$email_test_ready = false;
 			}
 		}
@@ -900,13 +868,13 @@ if ($install_step == '2') {
 			$email_test_body .= "\t".tra('Sent:').' '.date(DATE_RFC822) . "\n";
 			
 			$sentmail = mail($email_test_to, $email_test_subject, $email_test_body, $email_test_headers);
-			if ($sentmail){
+			if($sentmail){
 				$mail_test = 'y';
 			} else {
 				$mail_test = 'n';
 			}
 			$smarty->assign('mail_test', $mail_test);
-			$smarty->assign('mail_test_performed', 'y');
+			$smarty->assign('perform_mail_test', 'y');
 			
 		}
 	}
@@ -975,7 +943,7 @@ if ( isset($_REQUEST['general_settings']) && $_REQUEST['general_settings'] == 'y
 	$installer->query($query);
 	$installer->query("UPDATE `users_users` SET `email` = '".$_REQUEST['admin_email']."' WHERE `users_users`.`userId`=1");
 
-	if ( isset( $_REQUEST['admin_account'] ) && ! empty( $_REQUEST['admin_account'] ) ) {
+	if( isset( $_REQUEST['admin_account'] ) && ! empty( $_REQUEST['admin_account'] ) ) {
 		fix_admin_account( $_REQUEST['admin_account'] );
 	}
 	if (isset($_REQUEST['fix_disable_accounts']) && $_REQUEST['fix_disable_accounts'] == 'on') {
@@ -1015,11 +983,11 @@ jqueryTiki.effect_tabs_speed = 400;
 $headerlib->add_js($js, 100);
 
 
-$smarty->assignByRef('headerlib',$headerlib);
+$smarty->assign_by_ref('headerlib',$headerlib);
 
 $smarty->assign('install_step', $install_step);
 $smarty->assign('install_type', $install_type);
-$smarty->assignByRef('prefs', $prefs);
+$smarty->assign_by_ref('prefs', $prefs);
 $smarty->assign('detected_https',isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == 'on');
 
 if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6') !== false) {
@@ -1028,30 +996,22 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6') !== false) {
 
 $client_charset = '';
 
-if ( file_exists( $local ) ) {
+if( file_exists( $local ) ) {
 	include $local;
 }
 
 $smarty->assign( 'client_charset_in_file', $client_charset );
 
-if ( isset( $_POST['convert_to_utf8'] ) ) {
+if( isset( $_POST['convert_to_utf8'] ) ) {
 	convert_database_to_utf8( $dbs_tiki );
 }
 
-$smarty->assign('double_encode_fix_attempted', 'n');
-if ( isset( $_POST['fix_double_encoding'] ) && ! empty($_POST['previous_encoding']) ) {
+if( isset( $_POST['fix_double_encoding'] ) && ! empty($_POST['previous_encoding']) ) {
 	fix_double_encoding( $dbs_tiki, $_POST['previous_encoding'] );
 	$smarty->assign('double_encode_fix_attempted', 'y');
 }
 
-if ( $install_step == '4' ) {
-	// Show the innodb option in the (re)install section if InnoDB is present
-	if (isset($installer) and $installer->hasInnoDB()) {
-		$smarty->assign( 'hasInnoDB', true );
-	} else {
-		$smarty->assign( 'hasInnoDB', false );
-	}
-	
+if( $install_step == '4' ) {
 	$value = '';
 	if ( ($db = TikiDB::get()) && ($result = $db->fetchAll( 'show variables like "character_set_database"') )) {
 		$res = reset( $result );
@@ -1064,7 +1024,7 @@ if ( $install_step == '4' ) {
 
 if (((isset($value) && $value == 'utf8') || $install_step == '7') && $db = TikiDB::get()) {
 	$result = $db->fetchAll( 'SELECT TABLE_COLLATION FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_COLLATION NOT LIKE "utf8%"', $dbs_tiki );
-	if (!empty ($result) ) {
+	if(!empty ($result) ) {
 		$smarty->assign('legacy_collation', $result[0]['TABLE_COLLATION']);
 	}
 }
@@ -1077,5 +1037,4 @@ $mid_data = $smarty->fetch('tiki-install.tpl');
 $smarty->assign('mid_data', $mid_data);
 
 $smarty->assign( 'title', $title );
-$smarty->assign( 'phpErrors', $phpErrors );
 $smarty->display("tiki-install_screens.tpl");

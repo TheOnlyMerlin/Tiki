@@ -30,7 +30,7 @@ if (!($info = $tikilib->get_page_info($page))) {
 }
 
 $tikilib->get_perm_object($page, 'wiki page', $info);
-$access->check_permission(array('tiki_p_edit'));
+$access->check_permission( array('tiki_p_edit') );
 
 if ($_REQUEST["version"] <> "last") {
 	$smarty->assign_by_ref('version', $_REQUEST["version"]);
@@ -66,7 +66,7 @@ if (isset($_REQUEST["copy"]) || isset($_REQUEST["confirm"])) {
 		if ($result) {
 			if ($prefs['feature_sefurl'] == 'y') {
 				include_once('tiki-sefurl.php');
-				header('location: '. urlencode(filter_out_sefurl("tiki-index.php?page=$newName", 'wiki')));
+				header('location: '. urlencode(filter_out_sefurl("tiki-index.php?page=$newName", $smarty, 'wiki')));
 			} else {
 				header('location: tiki-index.php?page=' . urlencode($newName));
 			}

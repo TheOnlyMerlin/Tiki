@@ -11,58 +11,8 @@
  * Letter key: ~w~
  *
  */
-// TODO: validate parameters (several required)
 class Tracker_Field_DynamicList extends Tracker_Field_Abstract
 {
-	public static function getTypes()
-	{
-		return array(
-			'w' => array(
-				'name' => tra('Dynamic Items List'),
-				'description' => tra('Dynamically updates a selection list based on linked data from another tracker.'),
-				'help' => 'Dynamic items list',				
-				'prefs' => array('trackerfield_dynamiclist'),
-				'tags' => array('advanced'),
-				'default' => 'n',
-				'params' => array(
-					'trackerId' => array(
-						'name' => tr('Tracker ID'),
-						'description' => tr('Tracker to link with'),
-						'filter' => 'int',
-					),
-					'filterFieldIdThere' => array(
-						'name' => tr('Field ID (Other tracker)'),
-						'description' => tr('Field ID to link with in the other tracker'),
-						'filter' => 'int',
-					),
-					'filterFieldIdHere' => array(
-						'name' => tr('Field ID (This tracker)'),
-						'description' => tr('Field ID to link with in the current tracker'),
-						'filter' => 'int',
-					),
-					'listFieldIdThere' => array(
-						'name' => tr('Listed Field'),
-						'description' => tr('Field ID to be displayed in the drop list.'),
-						'filter' => 'int',
-					),
-					'statusThere' => array(
-						'name' => tr('Status Filter'),
-						'description' => tr('Restrict listed items to specific statuses.'),
-						'filter' => 'alpha',
-						'options' => array(
-							'opc' => tr('all'),
-							'o' => tr('open'),
-							'p' => tr('pending'),
-							'c' => tr('closed'),
-							'op' => tr('open, pending'),
-							'pc' => tr('pending, closed'),
-						),
-					),
-				),
-			),
-		);
-	}
-
 	function getFieldData(array $requestData = array())
 	{
 		$ins_id = $this->getInsertId();
@@ -93,17 +43,13 @@ $("select[name=ins_' . $this->getOption(2) . ']").change(function(e, val) {
 		function(data, status) {
 			$ddl = $("select[name=' . $this->getInsertId() . ']");
 			$ddl.empty();
-			if (data) {
-				$.each( data, function (i,v) {
-					$ddl.append(
-						$("<option/>")
-							.attr("value", v)
-							.text(v)
-					);
-				});
-				if (val) {
-					$ddl.val(val);
-				}
+			$.each( data, function (i,v) {
+				$ddl.append(
+					$("<option value=" + v + ">" + v + "</option>")
+				);					
+			});
+			if (val) {
+				$ddl.val(val);
 			}
 		}
 	);

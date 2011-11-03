@@ -10,7 +10,6 @@ require_once ('tiki-setup.php');
 include_once ('lib/directory/dirlib.php');
 $access->check_feature('feature_directory');
 $access->check_permission('tiki_p_view_directory');
-//get_strings tra('Browse Directory')
 // If no parent category then the parent category is 0
 if (!isset($_REQUEST["parent"])) $_REQUEST["parent"] = 0;
 $smarty->assign('parent', $_REQUEST["parent"]);
@@ -18,7 +17,6 @@ $all = 0;
 if ($_REQUEST["parent"] == 0) {
 	$parent_name = 'Top';
 	$all = 1;
-	$smarty->assign('parent_info', "");
 } else {
 	$parent_info = $dirlib->dir_get_category($_REQUEST['parent']);
 	$smarty->assign('parent_info', $parent_info);
@@ -33,7 +31,7 @@ $path = $dirlib->dir_get_category_path_browse($_REQUEST["parent"]);
 $smarty->assign_by_ref('path', $path);
 $crumbs[] = new Breadcrumb(tra('Directory'), '', 'tiki-directory_browse.php?parent=0', 'Directory', tra('How to use Directory'));
 // Now append the path to the parent category
-array_splice($crumbs, count($crumbs), 0, $dirlib->dir_build_breadcrumb_trail($_REQUEST["parent"]));
+array_splice($crumbs, count($crumbs) , 0, $dirlib->dir_build_breadcrumb_trail($_REQUEST["parent"]));
 $smarty->assign('trail', $crumbs);
 $headtitle = breadcrumb_buildHeadTitle($crumbs);
 $smarty->assign_by_ref('headtitle', $headtitle);

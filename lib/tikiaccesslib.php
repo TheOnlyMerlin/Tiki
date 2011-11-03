@@ -41,11 +41,11 @@ class TikiAccessLib extends TikiLib
 
 	function check_page($user='y', $features=array(), $permissions=array(), $permission_name='') {
 		require_once ('tiki-setup.php');
-		if ( $features ) {
+		if( $features ) {
 			$this->check_feature($features);
 		}
 		$this->check_user($user);
-		if ( $permissions ) {
+		if( $permissions ) {
 			$this->check_permission($permissions, $permission_name);
 		}
 	}
@@ -64,7 +64,7 @@ class TikiAccessLib extends TikiLib
 		require_once ('tiki-setup.php');
 
 		$perms = Perms::get();
-		if ( $perms->admin && isset($_REQUEST['check_feature']) && isset($_REQUEST['lm_preference']) ) {
+		if( $perms->admin && isset($_REQUEST['check_feature']) && isset($_REQUEST['lm_preference']) ) {
 			global $prefslib; require_once 'lib/prefslib.php';
 			
 			$prefslib->applyChanges( (array) $_REQUEST['lm_preference'], $_REQUEST );
@@ -97,7 +97,7 @@ class TikiAccessLib extends TikiLib
 		if ( !$allowed ) {		
 			global $smarty;
 		
-			if ( $perms->admin ) {
+			if( $perms->admin ) {
 				$smarty->assign('required_preferences', $features);
 			}
 				
@@ -107,27 +107,15 @@ class TikiAccessLib extends TikiLib
 		}		
 	}
 
-	function check_permission($permissions, $permission_name='', $objectType=false, $objectId=false) {
+	function check_permission($permissions, $permission_name='') {
 		require_once ('tiki-setup.php');
-		if ( ! is_array($permissions) ) {
-			$permissions = array($permissions);
-		}
+		if ( ! is_array($permissions) ) { $permissions = array($permissions); }
 		foreach ($permissions as $permission) {
-			if (false !== $objectType) {
-				$objectPermissions = Perms::get( $objectType, $objectId );
-				if ($objectPermissions->$permission) {
-					continue;
-				}
-			} elseif ($GLOBALS[$permission] == 'y') {
-				continue;
-			}
-
-			if ($permission_name) {
-				$permission = $permission_name;
-			}
-			$this->display_error('', tra("You do not have permission to use this feature:")." ". $permission, '403', false);
-			if (!$user) {
-				$_SESSION['loginfrom'] = $_SERVER['REQUEST_URI'];
+			global $$permission;
+			if ($$permission != 'y') {
+				if ($permission_name) { $permission = $permission_name; }
+				$this->display_error('', tra("You do not have permission to use this feature").": ". $permission, '403', false);
+				if (!$user) $_SESSION['loginfrom'] = $_SERVER['REQUEST_URI'];
 			}
 		}
 	}
@@ -182,7 +170,7 @@ class TikiAccessLib extends TikiLib
 	function check_script($scriptname, $page) {
 		global $prefs;
 		if (basename($scriptname) == $page) {
-			if ( !isset($prefs['feature_usability']) || $prefs['feature_usability'] == 'n' ) {
+			if( !isset($prefs['feature_usability']) || $prefs['feature_usability'] == 'n' ) {
 				$msg = tra("This script cannot be called directly");                
 				$this->display_error($page, $msg);
 			} else { 
@@ -225,9 +213,11 @@ class TikiAccessLib extends TikiLib
 		}
 	}
 
+	// you must call ask_ticket('error') before calling this
 	function display_error($page, $errortitle="", $errortype="", $enableRedirect = true, $message='') {
-		global $smarty, $prefs, $tikiroot, $userlib, $user;
+		global $smarty, $wikilib, $prefs, $tikiroot, $userlib, $user;
 		require_once ('tiki-setup.php');
+		include_once('lib/wiki/wikilib.php');
 
 		// Don't redirect when calls are made for web services
 		if ( $enableRedirect && $prefs['feature_redirect_on_error'] == 'y' && ! $this->is_machine_request()
@@ -252,28 +242,21 @@ class TikiAccessLib extends TikiLib
 		// Display the template		
 		switch( $errortype ) {
 		case '404':
-			header("HTTP/1.0 404 Not Found");
+			header ("HTTP/1.0 404 Not Found");
 			$detail['page'] = $page;
 			$detail['message'] .= ' (404)';
 			break;
 		case '403':
-			header("HTTP/1.0 403 Forbidden");
+			if( $this->is_machine_request() )
+				header ("HTTP/1.0 403 Forbidden");
 			break;
 		case '503':
-			header("HTTP/1.0 503 Service Unavailable");
-			break;
-		default:
-			$errortype = (int) $errortype;
-			$title = strip_tags($detail['errortitle']);
-			header("HTTP/1.0 $errortype $title");
+			if( $this->is_machine_request() )
+				header ("HTTP/1.0 503 Service Unavailable");
 			break;
 		}
 
-		if ( $this->is_serializable_request() ) {
-			$errorreport = TikiLib::lib('errorreport');
-			$errorreport->report($errortitle);
-			$errorreport->send_headers();
-
+		if( $this->is_serializable_request() ) {
 			$this->output_serialized( $detail );
 		} else {
 			if (($errortype == 401 || $errortype == 403) && empty($user) && ($prefs['permission_denied_login_box'] == 'y' || !empty($prefs['permission_denied_url']))) {
@@ -282,7 +265,7 @@ class TikiAccessLib extends TikiLib
 			$smarty->assign('errortitle', $detail['errortitle']);
 			$smarty->assign('msg', $detail['message']);
 			$smarty->assign('errortype', $detail['code']);
-			if ( isset( $detail['page'] ) )
+			if( isset( $detail['page'] ) )
 				$smarty->assign('page', $page);
 			$smarty->display("error.tpl");
 		}
@@ -290,7 +273,7 @@ class TikiAccessLib extends TikiLib
 	}
 
 	function get_home_page($page='') {
-		global $prefs, $tikilib, $use_best_language, $userlib, $user;
+		global $prefs, $tikilib, $use_best_language;
 
 		if (!isset($page) || $page == '') {
 			if ($prefs['useGroupHome'] == 'y') {
@@ -303,7 +286,7 @@ class TikiAccessLib extends TikiLib
 			} else {
 				$page = $prefs['wikiHomePage'];
 			}
-			if (!$tikilib->page_exists($prefs['wikiHomePage'])) {
+			if(!$tikilib->page_exists($prefs['wikiHomePage'])) {
 				$tikilib->create_page($prefs['wikiHomePage'],0,'',$this->now,'Tiki initialization');
 			}
 			if ($prefs['feature_best_language'] == 'y') {
@@ -321,10 +304,10 @@ class TikiAccessLib extends TikiLib
 	 */
 	function redirect( $url='', $msg='', $code = 302 ) {
 		global $prefs;
-		if ( $url == '' ) $url = $prefs['tikiIndex'];
+		if( $url == '' ) $url = $prefs['tikiIndex'];
 		if (trim( $msg )) {
 			$session = session_id();
-			if ( empty( $session ) ) {
+			if( empty( $session ) ) {
 				if (strpos( $url, '?' )) {
 					$url .= '&msg=' . urlencode( $msg );
 				} else {
@@ -371,13 +354,13 @@ class TikiAccessLib extends TikiLib
 
 		// if current user has appropriate rights, allow.
 		foreach($rssrights as $perm) {
-			if ($perms->$perm) {
+			if($perms->$perm) {
 				return;
 			}
 		}
 
 		// deny if no basic auth allowed.
-		if ($prefs['feed_basic_auth'] != 'y') {
+		if($prefs['feed_basic_auth'] != 'y') {
 			return $result;
 		}
 
@@ -390,7 +373,7 @@ class TikiAccessLib extends TikiLib
 			return $result;
 		}
 
-		if ( $this->http_auth() ) {
+		if( $this->http_auth() ) {
 			$perms = Perms::get();
 			foreach ($rssrights as $perm) {
 				if ($perms->$perm) {
@@ -407,8 +390,12 @@ class TikiAccessLib extends TikiLib
 	{
 		global $tikidomain, $userlib, $user, $smarty;
 
-		if ( ! $tikidomain ) {
+		if( ! $tikidomain ) {
 			$tikidomain = "Default";
+		}
+		if (empty($_SERVER['PHP_AUTH_USER']) && !empty($_REQUEST['user']) && !empty($_REQUEST['pass'])) {
+			$_SERVER['PHP_AUTH_USER'] = $_REQUEST['user'];
+			$_SERVER['PHP_AUTH_PW'] = $_REQUEST['pass'];
 		}
 
 		if (! isset($_SERVER['PHP_AUTH_USER']) ) {
@@ -439,10 +426,10 @@ class TikiAccessLib extends TikiLib
 		}
 	}
 
-	function get_accept_types($acceptFeed = false) {
+	function get_accept_types() {
 		$accept = explode( ',', $_SERVER['HTTP_ACCEPT'] );
 
-		if ( isset( $_REQUEST['httpaccept'] ) ) {
+		if( isset( $_REQUEST['httpaccept'] ) ) {
 			$accept = array_merge( explode( ',', $_REQUEST['httpaccept'] ), $accept );
 		}
 
@@ -451,22 +438,18 @@ class TikiAccessLib extends TikiLib
 		foreach( $accept as $type ) {
 			$known = null;
 
-			if ( strpos( $t = 'application/json', $type ) !== false )
+			if( strpos( $t = 'application/json', $type ) !== false )
 				$known = 'json';
-			elseif ( strpos( $t = 'text/javascript', $type ) !== false )
+			elseif( strpos( $t = 'text/javascript', $type ) !== false )
 				$known = 'json';
-			elseif ( strpos( $t = 'text/x-yaml', $type ) !== false )
+			elseif( strpos( $t = 'text/x-yaml', $type ) !== false )
 				$known = 'yaml';
-			elseif ( strpos( $t = 'application/rss+xml', $type ) !== false )
-				$known = 'rss';
-			elseif ( strpos( $t = 'application/atom+xml', $type ) !== false )
-				$known = 'atom';
 
-			if ( $known && ! isset( $types[$known] ) )
+			if( $known && ! isset( $types[$known] ) )
 				$types[$known] = $t;
 		}
 
-		if ( empty( $types ) )
+		if( empty( $types ) )
 			$types['html'] = 'text/html';
 
 		return $types;
@@ -486,40 +469,20 @@ class TikiAccessLib extends TikiLib
 		return false;
 	}
 
-	function is_serializable_request($acceptFeed = false) {
-		foreach( $this->get_accept_types($acceptFeed) as $name => $full ) {
+	function is_serializable_request() {
+		foreach( $this->get_accept_types() as $name => $full ) {
 			switch( $name ) {
 			case 'json':
 			case 'yaml':
 				return true;
-			case 'rss':
-			case 'atom':
-				if ($acceptFeed) {
-					return true;
-				}
 			}
 		}
 
 		return false;
 	}
 
-	function is_xml_http_request() {
-		return ! empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
-	}
-
-	/**
-	 * Will process the output by serializing in the best way possible based on the request's accept headers.
-	 * To output as an RSS/Atom feed, a descriptor may be provided to map the array data to the feed's properties
-	 * and to supply additional information. The descriptor must contain the following keys:
-	 * [feedTitle] Feed's title, static value
-	 * [feedDescription] Feed's description, static value
-	 * [entryTitleKey] Key to lookup for each entry to find the title
-	 * [entryUrlKey] Key to lookup to find the URL of each entry
-	 * [entryModificationKey] Key to lookup to find the modification date
-	 * [entryObjectDescriptors] Optional. Array containing two key names, object key and object type to lookup missing information (url and title)
-	 */
-	function output_serialized( $data, $feed_descriptor = null ) {
-		foreach( $this->get_accept_types(! is_null($feed_descriptor)) as $name => $full ) {
+	function output_serialized( $data ) {
+		foreach( $this->get_accept_types() as $name => $full ) {
 			switch( $name ) {
 			case 'json':
 				header( "Content-Type: $full" );
@@ -530,24 +493,13 @@ class TikiAccessLib extends TikiLib
 				echo $data;
 				return;
 			case 'yaml':
+				require_once( 'Horde/Yaml.php' );
+				require_once( 'Horde/Yaml/Loader.php' );
+				require_once( 'Horde/Yaml/Node.php' );
+				require_once( 'Horde/Yaml/Exception.php' );
+
 				header( "Content-Type: $full" );
 				echo Horde_Yaml::dump($data);
-				return;
-			case 'rss':
-				$rsslib = TikiLib::lib('rss');
-				$writer = $rsslib->generate_feed_from_data($data, $feed_descriptor);
-				$writer->setFeedLink($this->tikiUrl($_SERVER['REQUEST_URI']), 'rss');
-
-				header('Content-Type: application/rss+xml');
-				echo $writer->export('rss');
-				return;
-			case 'atom':
-				$rsslib = TikiLib::lib('rss');
-				$writer = $rsslib->generate_feed_from_data($data, $feed_descriptor);
-				$writer->setFeedLink($this->tikiUrl($_SERVER['REQUEST_URI']), 'atom');
-
-				header('Content-Type: application/atom+xml');
-				echo $writer->export('atom');
 				return;
 			case 'html':
 				header( "Content-Type: $full" );

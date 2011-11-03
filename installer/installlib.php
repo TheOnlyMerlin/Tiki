@@ -25,8 +25,6 @@ class Installer extends TikiDb_Bridge
 
 	var $success = array();
 	var $failures = array();
-	
-	var $useInnoDB = false;
 
 	function Installer() // {{{
 	{
@@ -37,18 +35,13 @@ class Installer extends TikiDb_Bridge
 	function cleanInstall() // {{{
 	{
 		$this->runFile( dirname(__FILE__) . '/../db/tiki.sql' );
-		if ($this->useInnoDB) {
-			$this->runFile( dirname(__FILE__) . '/../db/tiki_innodb.sql' );
-		} else {
-			$this->runFile( dirname(__FILE__) . '/../db/tiki_myisam.sql' );
-		}
 		$this->buildPatchList();
 		$this->buildScriptList();
 
 		// Base SQL file contains the distribution tiki patches up to this point
 		$patches = $this->patches;
 		foreach( $patches as $patch ) {
-			if ( preg_match( '/_tiki$/', $patch ) ) {
+			if( preg_match( '/_tiki$/', $patch ) ) {
 				$this->recordPatch( $patch );
 			}
 		}
@@ -58,19 +51,14 @@ class Installer extends TikiDb_Bridge
 
 	function update() // {{{
 	{
-		// Mark InnoDB usage for updates
-		if (strcasecmp($this->getCurrentEngine(),"InnoDB") == 0) {
-			$this->useInnoDB = true;
-		}
-
-		if ( ! $this->tableExists( 'tiki_schema' ) ) {
+		if( ! $this->tableExists( 'tiki_schema' ) ) {
 			// DB too old to handle auto update
 
-			if ( file_exists( dirname(__FILE__) . '/../db/custom_upgrade.sql' ) ) {
+			if( file_exists( dirname(__FILE__) . '/../db/custom_upgrade.sql' ) ) {
 				$this->runFile( dirname(__FILE__) . '/../db/custom_upgrade.sql' );
 			} else {
 				// If 1.9
-				if ( ! $this->tableExists( 'tiki_minichat' ) ) {
+				if( ! $this->tableExists( 'tiki_minichat' ) ) {
 					$this->runFile( dirname(__FILE__) . '/../db/tiki_1.9to2.0.sql' );
 				}
 
@@ -82,7 +70,7 @@ class Installer extends TikiDb_Bridge
 		$dbversion_tiki = $TWV->getBaseVersion();
 
 		$secdb = dirname(__FILE__) . '/../db/tiki-secdb_' . $dbversion_tiki . '_mysql.sql';
-		if ( file_exists( $secdb ) )
+		if( file_exists( $secdb ) )
 			$this->runFile( $secdb );
 		
 		$patches = $this->patches;
@@ -96,7 +84,7 @@ class Installer extends TikiDb_Bridge
 
 	function installPatch( $patch ) // {{{
 	{
-		if ( ! in_array( $patch, $this->patches ) )
+		if( ! in_array( $patch, $this->patches ) )
 			return;
 
 		$schema = dirname(__FILE__) . "/schema/$patch.sql";
@@ -106,19 +94,19 @@ class Installer extends TikiDb_Bridge
 		$post = "post_$patch";
 		$standalone = "upgrade_$patch";
 
-		if ( file_exists( $script ) ) {
+		if( file_exists( $script ) ) {
 			require $script;
 		}
 
-		if ( function_exists( $standalone ) )
+		if( function_exists( $standalone ) )
 			$standalone( $this );
 		else {
-			if ( function_exists( $pre ) )
+			if( function_exists( $pre ) )
 				$pre( $this );
 	
 			$status = $this->runFile( $schema );
 	
-			if ( function_exists( $post ) )
+			if( function_exists( $post ) )
 				$post( $this );
 		}
 
@@ -132,11 +120,11 @@ class Installer extends TikiDb_Bridge
 	{
 		$file = dirname(__FILE__) . "/script/$script.php";
 
-		if ( file_exists( $file ) ) {
+		if( file_exists( $file ) ) {
 			require $file;
 		}
 
-		if ( function_exists( $script ) )
+		if( function_exists( $script ) )
 			$script( $this );
 
 		$this->executed[] = $script;
@@ -158,17 +146,14 @@ class Installer extends TikiDb_Bridge
 		// split the file into several queries?
 		$statements = preg_split("#(;\s*\n)|(;\s*\r\n)#", $command);
 
+		$prestmt="";
+		$do_exec=true;
 		$status = true;
 		foreach ($statements as $statement) {
 			if (trim($statement)) {
 				if (preg_match('/^\s*(?!-- )/m', $statement)) {// If statement is not commented
 					$display_errors = ini_get('display_errors');
 					ini_set('display_errors', 'Off');
-
-					if ($this->useInnoDB) {
-						// Convert all MyISAM statments to InnoDB
-						$statement = str_ireplace("MyISAM", "InnoDB", $statement);
-					}
 
 					if ($this->query($statement, array(), -1, -1, true, $file) === false) {
 						$status = false;
@@ -178,7 +163,7 @@ class Installer extends TikiDb_Bridge
 			}
 		}
 
-		$this->query("update `tiki_preferences` set `value`= `value`+1 where `name`='versionOfPreferencesCache'");
+		$this->query("update `tiki_preferences` set `value`= `value`+1 where `name`='lastUpdatePrefs'");
 		return $status;
 	} // }}}
 
@@ -187,7 +172,7 @@ class Installer extends TikiDb_Bridge
 		$error = '';
 		$result = $this->queryError( $query, $error, $values );
 
-		if ( $result && empty($error) ) {
+		if( $result && empty($error) ) {
 			$this->success[] = $query;
 			return $result;
 		} else {
@@ -216,7 +201,7 @@ class Installer extends TikiDb_Bridge
 
 		$installed = array();
 		$results = $this->query( "SELECT patch_name FROM tiki_schema" );
-		if ( $results ) {
+		if( $results ) {
 			while( $row = $results->fetchRow() ) {
 				$installed[] = reset($row);
 			}
@@ -255,5 +240,4 @@ class Installer extends TikiDb_Bridge
 	{
 		return count( $this->patches ) > 0 ;
 	} // }}}
-	
 }

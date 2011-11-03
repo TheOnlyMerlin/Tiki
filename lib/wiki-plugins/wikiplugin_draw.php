@@ -9,10 +9,9 @@ function wikiplugin_draw_info() {
 	return array(
 		'name' => tra('Draw'),
 		'documentation' => 'PluginDraw',
-		'description' => tra('Display or create an image from TikiDraw that is stored into the File Gallery'),
-		'prefs' => array( 'feature_draw' , 'wikiplugin_draw'),
+		'description' => tra('Display or create a drawing that is stored in the File Gallery'),
+		'prefs' => array( 'feature_draw', 'wikiplugin_draw' ),
 		'icon' => 'pics/icons/shape_square_edit.png',
-		'tags' => array( 'basic' ),		
 		'params' => array(
 			'id' => array(
 				'required' => false,
@@ -29,7 +28,7 @@ function wikiplugin_draw_info() {
 				'description' => tra('Width in pixels or percentage. Default value is page width. e.g. "200px" or "100%"'),
 				'filter' => 'striptags',
 				'accepted' => 'Number of pixels followed by \'px\' or percent followed by % (e.g. "200px" or "100%").',
-				'default' => 'Image width',
+				'default' => 'Drawing width',
 				'since' => '7.1'
 			),
 			'height' => array(
@@ -38,45 +37,27 @@ function wikiplugin_draw_info() {
 				'description' => tra('Height in pixels or percentage. Default value is complete drawing height.'),
 				'filter' => 'striptags',
 				'accepted' => 'Number of pixels followed by \'px\' or percent followed by % (e.g. "200px" or "100%").',
-				'default' => 'Image height',
+				'default' => 'Drawing height',
 				'since' => '7.1'
-			),
-			'archive' => array(
-				'required' => false,
-				'name' => tra('Force Display Archive'),
-				'description' => tra('The latest revision of file is automatically shown, by setting archive to y, it bypasses this check and shows the archive rather than the latest revision'),
-				'filter' => 'striptags',
-				'accepted' => 'y or n',
-				'default' => 'n',
-				'since' => '8',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
 			),
 		),
 	);
 }
 
 function wikiplugin_draw($data, $params) {
-	global $dbTiki, $tiki_p_edit, $tiki_p_admin,$tiki_p_upload_files, $prefs, $user, $page, $tikilib, $smarty, $headerlib, $globalperms;
+	global $dbTiki, $tiki_p_edit, $tiki_p_admin, $prefs, $user, $page, $tikilib, $smarty, $headerlib;
 	global $filegallib; include_once ('lib/filegals/filegallib.php');
+	
 	extract ($params,EXTR_SKIP);
 	
-	static $drawIndex = 0;
-	++$drawIndex;
+	static $index = 0;
+	++$index;
 	
 	if (!isset($id)) {
-		//check permissions
-		if ($tiki_p_upload_files != 'y') {
-			return;
-		}
-		
-		$label = tra('Draw New SVG Image');
+		$label = tra('Create a new SVG drawing');
 		$page = htmlentities($page);
 		$content = htmlentities($data);
-		$formId = "form$drawIndex";
+		$formId = "form$index";
 		$gals=$filegallib->list_file_galleries(0,-1,'name_desc',$user);
 		
 		$galHtml = "";
@@ -85,54 +66,26 @@ function wikiplugin_draw($data, $params) {
 				$galHtml .= "<option value='".$gal['id']."'>".$gal['name']."</option>";
 		}
 		
-		$in = tr(" in ");
-		
 		return <<<EOF
 		~np~
-		<form method="get" action="tiki-edit_draw.php">
+		<form method="post" action="tiki-edit_draw.php">
 			<p>
-				<input type="submit" name="label" value="$label" class="newSvgButton" />$in
+				<input type="submit" name="label" value="$label" class="newSvgButton" />
 				<select name="galleryId">
+					<option>Where will this drawing be stored?</option>
 					$galHtml
 				</select>
-				<input type="hidden" name="index" value="$drawIndex"/>
+				<input type="hidden" name="index" value="$index"/>
 				<input type="hidden" name="page" value="$page"/>
-				<input type="hidden" name="archive" value="$archive"/>
 			</p>
 		</form>
 		~/np~
 EOF;
 	}
 	
-	$fileInfo = $filegallib->get_file_info( $id );
-
-	if ($archive != 'y') {
-		if (!empty($fileInfo['archiveId']) && $fileInfo['archiveId'] > 0) {
-			$id = $fileInfo['archiveId'];
-			$fileInfo = $filegallib->get_file_info( $id );
-		}
-	}
-	
-	if (!isset($fileInfo['created'])) {
-		return tra("File not found.");
-	} else {
-		$globalperms = Perms::get( array( 'type' => 'file gallery', 'object' => $fileInfo['galleryId'] ) );
-		
-		if ($globalperms->view_file_gallery != 'y') return "";
-		
-		$label = tra('Edit SVG Image');
-		$ret = "<img src='tiki-download_file.php?fileId=$id' style='".
-			(isset($height) ? "height: $height;" : "" ).
-			(isset($width) ? "width: $width;" : "" ).
-		"' />";
-	
-		if ($globalperms->upload_files == 'y') {
-			$ret .= "<a href='tiki-edit_draw.php?fileId=$id&page=$page&index=$drawIndex&label=$label&width=$width&height=$height'>
-					<img src='pics/icons/page_edit.png' alt='$label' width='16' height='16' title='$label' class='icon' />
-				</a>";
-		}
-		
-		
-		return '~np~' . $ret . '~/np~';
-	}
+	$label = tra('Edit SVG drawing');
+	return '~np~' . "<img src='tiki-download_file.php?fileId=$id' />
+		<a href='tiki-edit_draw.php?galleryId=1&fileId=$id'>
+			<img src='pics/icons/page_edit.png' alt='Edit SVG drawing' width='16' height='16' title='Edit SVG drawing' class='icon' />
+		</a>" . '~/np~';
 }

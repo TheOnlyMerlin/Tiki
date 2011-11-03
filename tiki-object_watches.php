@@ -23,17 +23,12 @@ $all_groups = $userlib->list_all_groups();
 $smarty->assign_by_ref('all_groups', $all_groups);
 if ($objectType == 'Category') {
 	$smarty->assign('cat', 'y');
-	$categoryIdentifier = $_REQUEST['objectId'];
-	if ($categoryIdentifier) {
-		$category = $categlib->get_category($_REQUEST['objectId']);
-		$extendedTargets = $category['descendants'];
-		$smarty->assign('isTop', 'n');
-	} else {
-		$extendedTargets = $categlib->getCategories();
-		$smarty->assign('isTop', 'y');
-	}
-	if (count($extendedTargets) > 0) {
+	$desc_cnt = $categlib->get_category_descendants($_REQUEST['objectId']);
+	if (count($desc_cnt) > 1) {
 		$smarty->assign('desc', 'y');
+	}
+	if ($_REQUEST['objectId'] == 0) {
+		$smarty->assign('isTop', 'y');
 	}
 }
 
@@ -52,7 +47,7 @@ if (isset($_REQUEST['assign'])) {
 	if (!isset($_REQUEST['checked'])) $_REQUEST['checked'] = array();
 	$old_watches = $tikilib->get_groups_watching($_REQUEST['objectId'], $_REQUEST['watch_event'], $objectType);
 	check_ticket('object_watches');
-	foreach ($all_groups as $g) {
+	foreach($all_groups as $g) {
 		if (in_array($g, $_REQUEST['checked']) && !in_array($g, $old_watches)) {
 			$tikilib->add_group_watch($g, $_REQUEST['watch_event'], $_REQUEST['objectId'], $objectType,
 				$objectName, $objectHref);
@@ -66,10 +61,11 @@ if (isset($_REQUEST['assign'])) {
 		$group_watches = $_REQUEST['checked'];
 	}
 	if 	($objectType == 'Category') {
+		global $descendants;	
 		$addedGroupsDesc = array();
 		$deletedGroupsDesc = array();
 		$catTreeNodes = array();
-		foreach ($all_groups as $g) {
+		foreach($all_groups as $g) {
 			if (isset($_REQUEST[$g]) && $_REQUEST[$g] == 'cat_add_desc') {
 				$categlib->group_watch_category_and_descendants($g, $_REQUEST['objectId'], $objectName, false);
 				if ($g != 'Anonymous') {
@@ -86,19 +82,22 @@ if (isset($_REQUEST['assign'])) {
 		$smarty->assign_by_ref('addedGroupsDesc', $addedGroupsDesc);
 		$smarty->assign_by_ref('deletedGroupsDesc', $deletedGroupsDesc);
 		
-		if (!empty($addedGroupsDesc) || !empty($deletedGroupsDesc)) {
-			foreach ($extendedTargets as $d) {
-				$catinfo = $categlib->get_category($d);
-				$catTreeNodes[] = array(
-					'id' => $catinfo['categId'],
-					'parent' => $catinfo['parentId'],
-					'data' => $catinfo['name'], 
-				);
+		if (count($descendants) > 0) {
+			foreach($descendants as $d) {
+				if ($d != 0) {
+					$catinfo = $categlib->get_category($d);
+					$catTreeNodes[] = array(
+						'id' => $catinfo['categId'],
+						'parent' => $catinfo['parentId'],
+						'data' => $catinfo['name'], 
+					);
+				}
+				include_once('lib/tree/categ_browse_tree.php');
+				$tm = new CatBrowseTreeMaker('categ');
+				$res = $tm->make_tree($catTreeNodes[0]['parent'], $catTreeNodes);
+				$smarty->assign('tree', $res);
+				$smarty->assign_by_ref('catTreeNodes', $catTreeNodes);
 			}
-			include_once('lib/tree/BrowseTreeMaker.php');
-			$tm = new BrowseTreeMaker('categ');
-			$res = $tm->make_tree($catTreeNodes[0]['parent'], $catTreeNodes);
-			$smarty->assign('tree', $res);
 		}
 	}
 } else {

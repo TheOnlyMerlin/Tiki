@@ -162,7 +162,7 @@ class WikiLib extends TikiLib
 
 	// This method renames a wiki page
 	// If you think this is easy you are very very wrong
-	function wiki_rename_page($oldName, $newName, $renameHome = true) {
+	function wiki_rename_page($oldName, $newName) {
 		global $prefs, $tikilib;
 		// if page already exists, stop here
 		$newName = trim($newName);
@@ -240,7 +240,7 @@ class WikiLib extends TikiLib
 			$htmlSearch = '/<a class="wiki" href="' . $quotedOldHtmlName . '"/i';
 			$htmlReplace = '<a class="wiki" href="' . urlencode($newName) . '"';
 			$data = preg_replace($htmlSearch, $htmlReplace, $data);
-			
+						
 			$htmlWantedSearch = '/(' . $quotedOldName . ')?<a class="wiki wikinew" href="tiki-editpage\.php\?page=' . $quotedOldHtmlName . '"[^<]+<\/a>/i';
 			$data = preg_replace($htmlWantedSearch, '((' . $newName . '))', $data);
 
@@ -287,21 +287,13 @@ class WikiLib extends TikiLib
 
 		$this->rename_object( 'wiki page', $oldName, $newName );
 
-		// update categories if new name has a category default
-		$categlib = TikiLib::lib('categ');
-		$categories = $categlib->get_object_categories('wiki page', $newName);
-		$info = $this->get_page_info($newName);
-		$categlib->update_object_categories($categories, $newName, 'wiki page', $info['description'], $newName, $newcathref);
-
 		$query = "update `tiki_wiki_attachments` set `page`=? where `page`=?";
 		$this->query($query, array( $newName, $oldName ) );
 
 		// group home page
-		if ($renameHomes) {
-			$query = "update `users_groups` set `groupHome`=? where `groupHome`=?";
-			$this->query($query, array( $newName, $oldName ) );
-		}
-		
+		$query = "update `users_groups` set `groupHome`=? where `groupHome`=?";
+		$this->query($query, array( $newName, $oldName ) );
+
 		//breadcrumb
 		if (isset($_SESSION["breadCrumb"]) && in_array($oldName, $_SESSION["breadCrumb"])) {
 			$pos = array_search($oldName, $_SESSION["breadCrumb"]);
@@ -343,7 +335,7 @@ class WikiLib extends TikiLib
 		require_once('lib/search/refresh-functions.php');
 		refresh_index('pages', $newName);
 
-		if ($renameHomes && $prefs['wikiHomePage'] == $oldName) {
+		if ($prefs['wikiHomePage'] == $oldName) {
 			$tikilib->set_preference('wikiHomePage', $newName);
 		}
 		if ($prefs['feature_trackers'] == 'y') {
@@ -389,41 +381,24 @@ class WikiLib extends TikiLib
 			$parse_options['suppress_icons'] = true;
 		}
 
-		$wiki_cache = ($prefs['feature_wiki_icache'] == 'y' && !is_null($info['wiki_cache'])) ? $info['wiki_cache'] : $prefs['wiki_cache']; 
-		if ($wiki_cache > 0 && (empty($user) || $prefs['wiki_cache'] == 0) ) {
+		$wiki_cache = !is_null($info['wiki_cache']) ? $info['wiki_cache'] : $prefs['wiki_cache']; 
+		if ($wiki_cache > 0 && empty($user) ) {
 			$cache_info = $this->get_cache_info($page);
 			if (!empty($cache_info['cache_timestamp']) && $cache_info['cache_timestamp'] + $wiki_cache >= $this->now) {
 				$content = $cache_info['cache'];
 				// get any cached JS and add to headerlib JS
-				$jsFiles = $headerlib->getJsFromHTML( $content, false, true );
-				
-				foreach($jsFiles as $jsFile) {
-					$headerlib->add_jsfile($jsFile);
-				}
-				
 				$headerlib->add_js( implode( "\n", $headerlib->getJsFromHTML( $content )));
-				
 				// now remove all the js from the source
-				$content = $headerlib->removeJsFromHtml($content);
-				
+				$content = preg_replace('/\s*<script.*javascript.*>.*\/script>\s*/Umis', '', $content);
 				$canBeRefreshed = true;
 			} else {
-				$jsFile1 = $headerlib->getJsfiles();
 				$js1 = $headerlib->getJs();
-				
-				$content = $this->parse_data( $info['data'], $parse_options );
-				
+				$content = $this->parse_data($info['data'], $parse_options );
 				// get any JS added to headerlib during parse_data and add to the bottom of the data to cache
-				$jsFile2 = $headerlib->getJsfiles();
 				$js2 = $headerlib->getJs();
-
-				$jsFile = array_diff( $jsFile2, $jsFile1 );
 				$js = array_diff( $js2, $js1 );
-				
-				$jsFile = implode( "\n", $jsFile);
-				$js = $headerlib->wrap_js( implode( "\n", $js) );				
-				
-				$this->update_cache($page, $content . $jsFile . $js);
+				$js = $headerlib->wrap_js( implode( "\n", $js) );
+				$this->update_cache($page, $content . $js);
 			}
 		} else {
 			$content = $this->parse_data($info['data'], $parse_options );
@@ -432,6 +407,7 @@ class WikiLib extends TikiLib
 	}
 
 	function update_cache($page, $data) {
+
 		$query = "update `tiki_pages` set `cache`=?, `cache_timestamp`=? where `pageName`=?";
 		$result = $this->query($query, array( $data, $this->now, $page ) );
 		return true;
@@ -500,18 +476,6 @@ class WikiLib extends TikiLib
 		} else {
 			$mid = " where `page`=? ";
 			$bindvars=array($page);
-		}
-
-		if ($sort_mode !== 'created_desc') {
-			$pos = strrpos($sort_mode, '_');
-			if ($pos !== false && $pos > 0) {	// check the sort order is valid for attachments
-				$shortsort = substr($sort_mode, 0, $pos);
-			} else {
-				$shortsort = $sort_mode;
-			}
-			if (!in_array(array('user','attId','page','filename','filesize','filetype','hits','created','comment'), $shortsort)) {
-				$sort_mode = 'created_desc';
-			}
 		}
 
 		$query = "select `user`,`attId`,`page`,`filename`,`filesize`,`filetype`,`hits`,`created`,`comment` from `tiki_wiki_attachments` $mid order by ".$this->convertSortMode($sort_mode);
@@ -689,12 +653,12 @@ class WikiLib extends TikiLib
 		global $user, $tikilib, $prefs, $semanticlib;
 
 		// If pagealias are defined, they should be used instead of generic search
-		if( $prefs['feature_wiki_pagealias'] == 'y' || !empty($prefs["wiki_prefixalias_tokens"])) {
+		if( $prefs['feature_wiki_pagealias'] == 'y' ) {
 			require_once 'lib/wiki/semanticlib.php';
 
 			$toPage = $page;
 			$tokens = explode( ',', $prefs['wiki_pagealias_tokens'] ); 
-
+					
 			$prefixes = explode( ',', $prefs["wiki_prefixalias_tokens"]);
 			foreach ($prefixes as $p) {
 				$p = trim($p);
@@ -703,7 +667,7 @@ class WikiLib extends TikiLib
 					$tokens = 'prefixalias';
 				}
 			}
-
+					
 			$links = $semanticlib->getLinksUsing(
 				$tokens,
 				array( 'toPage' => $toPage ) );
@@ -853,14 +817,12 @@ class WikiLib extends TikiLib
 
 	function list_plugins($with_help = false, $area_id = 'editwiki') {
 		global $prefs;
-		$parserlib = TikiLib::lib('parser');
-		
 		if ($with_help) {
 			global $cachelib, $headerlib, $prefs;
 			if (empty($_REQUEST['xjxfun'])) { $headerlib->add_jsfile( 'tiki-jsplugin.php?language='.$prefs['language'], 'dynamic' ); }
 			$cachetag = 'plugindesc' . $this->get_language() . $area_id . '_js=' . $prefs['javascript_enabled'];
 			if (! $plugins = $cachelib->getSerialized( $cachetag ) ) {
-				$list = $parserlib->plugin_get_list();
+				$list = $this->plugin_get_list();
 
 				$plugins = array();
 				foreach ($list as $name) {
@@ -897,9 +859,9 @@ class WikiLib extends TikiLib
 	//
 	function get_plugin_description($name, &$enabled, $area_id = 'editwiki') {
 		global $tikilib;
-		$parserlib = TikiLib::lib('parser');
+		$data = '';
 
-		if( ( ! $info = $parserlib->plugin_info( $name ) ) && $parserlib->plugin_exists( $name, true ) )
+		if( ( ! $info = $this->plugin_info( $name ) ) && $this->plugin_exists( $name, true ) )
 		{
 			$enabled = true;
 
@@ -919,7 +881,7 @@ class WikiLib extends TikiLib
 
 			if( isset( $ret['prefs'] ) )
 			{
-				global $prefs;
+				global $prefs, $headerlib;
 
 				// If the plugin defines required preferences, they should all be to 'y'
 				foreach( $ret['prefs'] as $pref )
@@ -993,7 +955,7 @@ class WikiLib extends TikiLib
 		}
 		if ($prefs['feature_sefurl'] == 'y') {
 			include_once('tiki-sefurl.php');
-			return  filter_out_sefurl($href, 'wiki');
+			return  filter_out_sefurl($href, $smarty, 'wiki');
 		} else {
 			return $href;
 		}

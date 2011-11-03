@@ -11,14 +11,10 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	exit;
 }
 
-require_once('lib/core/TikiDb.php');
 require_once('lib/core/TikiDb/Bridge.php');
 
 //TODO: move language functions (like $tikilib->list_languages()) from $tikilib to this class
 /**
- * @package   Tiki
- * @subpackage    Language
- *
  * Generic methods for managing languages in Tiki
  */
 class Language extends TikiDb_Bridge
@@ -29,7 +25,6 @@ class Language extends TikiDb_Bridge
 	 * @return array list of languages
 	 */
 	public static function getLanguages() {
-		require_once('lib/init/tra.php');
 		global $langmapping; require_once('lang/langmapping.php');
 		return array_keys($langmapping);
 	}
@@ -91,14 +86,12 @@ class Language extends TikiDb_Bridge
 	 * should not apper in english strings.
 	 */
 	public static function removePhpSlashes ($string) {
-		$removePHPslashes = array(
-			'\n'   => "\n",
-			'\r'   => "\r",
-			'\t'   => "\t",
-			'\\\\' => '\\',
-			'\$'   => '$',
-			'\"'   => '"'
-		);
+		$removePHPslashes = Array ('\n'   => "\n",
+				   '\r'   => "\r",
+				   '\t'   => "\t",
+				   '\\\\' => '\\',
+				   '\$'   => '$',
+				   '\"'   => '"');
 	  
 		if (preg_match ('/\{0-7]{1,3}|\x[0-9A-Fa-f]{1,2}/', $string, $match)) {
 			trigger_error ("Octal or hexadecimal string '".$match[1]."' not supported", E_WARNING);

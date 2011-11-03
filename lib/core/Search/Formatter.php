@@ -28,11 +28,10 @@ class Search_Formatter
 
 	function format($list)
 	{
-		$list = Search_ResultSet::create($list);
 		$defaultValues = $this->plugin->getFields();
 
 		$fields = array_keys($defaultValues);
-		$subDefault = array();
+		$subDefaults = array();
 		foreach ($this->subFormatters as $key => $plugin) {
 			$subDefault[$key] = $plugin->getFields();
 			$fields = array_merge($fields, array_keys($subDefault[$key]));
@@ -42,7 +41,7 @@ class Search_Formatter
 			$list = $this->dataSource->getInformation($list, $fields);
 		}
 
-		if (in_array('highlight', $fields)) {
+		if (in_array('highlight', $fields) && $list instanceof Search_ResultSet) {
 			foreach ($list as & $entry) {
 				$entry['highlight'] = $list->highlight($entry);
 			}
@@ -58,7 +57,7 @@ class Search_Formatter
 			$subEntries = array();
 			foreach ($this->subFormatters as $key => $plugin) {
 				$subInput = new Search_Formatter_ValueFormatter(array_merge($subDefault[$key], $row));
-				$subEntries[$key] = $this->render($plugin, Search_ResultSet::create(array($plugin->prepareEntry($subInput))), $this->plugin->getFormat(), $list);
+				$subEntries[$key] = $this->render($plugin, array($plugin->prepareEntry($subInput)), $this->plugin->getFormat(), $list);
 			}
 
 			$row = array_merge($row, $subEntries);
@@ -66,21 +65,28 @@ class Search_Formatter
 			$data[] = $this->plugin->prepareEntry(new Search_Formatter_ValueFormatter($row));
 		}
 
-		$list = $list->replaceEntries($data);
-
-		return $this->render($this->plugin, $list, Search_Formatter_Plugin_Interface::FORMAT_WIKI);
+		return $this->render($this->plugin, $data, Search_Formatter_Plugin_Interface::FORMAT_WIKI, $list);
 	}
 	
-	private function render($plugin, $resultSet, $target)
+	private function render($plugin, $data, $target, $resultSet)
 	{
+		$count = count($resultSet);
+		$maxRecords = $count;
+		$offset = 0;
+
+		if ($resultSet instanceof Search_ResultSet) {
+			$offset = $resultSet->getOffset();
+			$maxRecords = $resultSet->getMaxRecords();
+		}
+
 		$pluginFormat = $plugin->getFormat();
-		$rawOutput = $plugin->renderEntries($resultSet);
+		$rawOutput = $plugin->renderEntries($data, $count, $offset, $maxRecords);
 
 		if ($target == $pluginFormat) {
 			$out = $rawOutput;
-		} elseif ($target == Search_Formatter_Plugin_Interface::FORMAT_WIKI && $pluginFormat == Search_Formatter_Plugin_Interface::FORMAT_HTML) {
+		} elseif($target == Search_Formatter_Plugin_Interface::FORMAT_WIKI && $pluginFormat == Search_Formatter_Plugin_Interface::FORMAT_HTML) {
 			$out = "~np~$rawOutput~/np~";
-		} elseif ($target == Search_Formatter_Plugin_Interface::FORMAT_HTML && $pluginFormat == Search_Formatter_Plugin_Interface::FORMAT_WIKI) {
+		} elseif($target == Search_Formatter_Plugin_Interface::FORMAT_HTML && $pluginFormat == Search_Formatter_Plugin_Interface::FORMAT_WIKI) {
 			$out = "~/np~$rawOutput~np~";
 		}
 

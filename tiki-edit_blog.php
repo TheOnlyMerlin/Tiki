@@ -16,6 +16,7 @@ if (isset($_REQUEST["blogId"])) {
 	$blogId = $_REQUEST["blogId"];
 } else {
 	$blogId = 0;
+	$smarty->assign('headtitle',tra('Create Blog'));
 }
 
 $smarty->assign('individual', 'n');
@@ -25,7 +26,7 @@ $tikilib->get_perm_object($blogId, 'blog');
 $smarty->assign('blogId', $blogId);
 $smarty->assign('title', '');
 $smarty->assign('description', '');
-$smarty->assign('public', 'y');
+$smarty->assign('public', 'n');
 $smarty->assign('use_find', 'y');
 $smarty->assign('add_date', 'y');
 $smarty->assign('use_title', 'y');
@@ -66,6 +67,7 @@ if (isset($_REQUEST["blogId"]) && $_REQUEST["blogId"] > 0) {
 		}
 	}
 
+	$smarty->assign('headtitle', tra('Edit blog:') . ' ' . $data['title']);
 	$smarty->assign('title', $data["title"]);
 	$smarty->assign('description', $data["description"]);
 	$smarty->assign('public', $data["public"]);
@@ -91,10 +93,13 @@ if (isset($_REQUEST["heading"]) and $tiki_p_edit_templates == 'y') {
 	// Sanitization cleanup
 	$heading = preg_replace('/st<x>yle="[^"]*"/', 'style_dangerous', $_REQUEST["heading"]);
 } elseif (!isset($data["heading"])) {
-	$heading = file_get_contents($smarty->get_filename('blog_heading.tpl'));
-	if (!$heading) {
+	$n = $smarty->get_filename('blog_heading.tpl', 'r');
+	@$fp = fopen($n, 'r');
+	if ($fp) {
+		$heading = fread($fp, filesize($n));
+		@fclose($fp);
+	} else
 		$heading = '';
-	} 
 } else {
 	$heading = $data["heading"];
 }
@@ -103,10 +108,13 @@ if (isset($_REQUEST["post_heading"]) and $tiki_p_edit_templates == 'y') {
 	// Sanitization cleanup
 	$post_heading = preg_replace('/st<x>yle="[^"]*"/', 'style_dangerous', $_REQUEST["post_heading"]);
 } elseif (!isset($data["post_heading"])) {
-	$post_heading = file_get_contents($smarty->get_filename('blog_post_heading.tpl'));
-	if (!$post_heading) {
+	$n = $smarty->get_filename('blog_post_heading.tpl', 'r');
+	@$fp = fopen($n, 'r');
+	if ($fp) {
+		$post_heading = fread($fp, filesize($n));
+		@fclose($fp);
+	} else
 		$post_heading = '';
-	} 
 } else {
 	$post_heading = $data["post_heading"];
 }
@@ -156,7 +164,7 @@ if (isset($_REQUEST["save"]) && $prefs['feature_categories'] == 'y' && $prefs['f
 		$cat_href = "tiki-view_blog.php?blogId=" . $cat_objid;
 		include_once ("categorize.php");
 
-		header("location: tiki-list_blogs.php?blogId=$bid");
+		header ("location: tiki-list_blogs.php?blogId=$bid");
 		die;
 	}
 }

@@ -13,12 +13,11 @@ function wikiplugin_mediaplayer_info() {
 		'extraparams' =>true,
 		'prefs' => array( 'wikiplugin_mediaplayer' ),
 		'icon' => 'pics/icons/mime/avi.png',
-		'tags' => array( 'basic' ),
 		'params' => array(
 			'fullscreen' => array(
 				'required' => false,
 				'name' => tra('Allow Fullscreen'),
-				'description' => tra('Allow fullscreen mode.').tra(' true|false'),
+				'description' => tra('Allow fullscreen mode.').' true|false',
 				'filter' => 'alpha',
 				'options' => array(
 					array(

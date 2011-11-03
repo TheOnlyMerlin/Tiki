@@ -43,14 +43,12 @@ if ($output["data"] == "EMPTY") {
 	$changes = $bloglib->list_blog_posts($_REQUEST["$id"], false, 0, $prefs['feed_blog_max'], $dateId . '_desc', '', '', $tikilib->now);
 	$tmp = array();
 	include_once ('tiki-sefurl.php');
-	foreach ($changes["data"] as $data) {
-		$data["$descId"] = $tikilib->parse_data($data[$descId],
-			array(
-				'print' => true,
-				'is_html' => true,
-			)
-		);
-		$data['sefurl'] = filter_out_sefurl(sprintf($readrepl, $data['postId']), 'blogpost', urlencode($data['title']));
+	foreach($changes["data"] as $data) {
+		$data["$descId"] = $tikilib->parse_data($data[$descId], array(
+			'print' => true,
+			'is_html' => true,
+		));
+		$data['sefurl'] = filter_out_sefurl(sprintf($readrepl, $data['postId']) , $smarty, 'blogpost', urlencode($data['title']));
 		$tmp[] = $data;
 	}
 	$changes["data"] = $tmp;

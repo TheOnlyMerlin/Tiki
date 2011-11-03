@@ -43,20 +43,22 @@ class Search_Formatter_Plugin_SmartyTemplate implements Search_Formatter_Plugin_
 		return $entry->getPlainValues();
 	}
 
-	function renderEntries(Search_ResultSet $entries)
+	function renderEntries($entries, $count, $offset, $maxRecords)
 	{
 		$smarty = new Smarty;
 		$smarty->security = true;
 		$smarty->compile_dir = dirname(__FILE__) . '/../../../../../templates_c';
 		$smarty->template_dir = dirname($this->templateFile);
 		$smarty->plugins_dir = array(	// the directory order must be like this to overload a plugin
-			dirname(__FILE__) . '/../../../../../' . TIKI_SMARTY_DIR,
+			TIKI_SMARTY_DIR,
 			SMARTY_DIR.'plugins'
 		);
+		$smarty->security_settings['MODIFIER_FUNCS'] = array_merge(
+			$smarty->security_settings['MODIFIER_FUNCS'],
+			array('ucfirst', 'ucwords', 'urlencode', 'md5', 'implode', 'explode', 'is_array', 'htmlentities', 'var_dump', 'strip_tags')
+		);
 
-		$smarty->enableSecurity('Tiki_Security_Policy');
-
-		if ( $this->changeDelimiters ) {
+		if( $this->changeDelimiters ) {
 			$smarty->left_delimiter = '{{';
 			$smarty->right_delimiter = '}}';
 		}
@@ -66,11 +68,9 @@ class Search_Formatter_Plugin_SmartyTemplate implements Search_Formatter_Plugin_
 		}
 
 		$smarty->assign('results', $entries);
-		$smarty->assign('count', count($entries));
-		$smarty->assign('offset', $entries->getOffset());
-		$smarty->assign('offsetplusone', $entries->getOffset() + 1);
-		$smarty->assign('offsetplusmaxRecords', $entries->getOffset() + $entries->getMaxRecords());
-		$smarty->assign('maxRecords', $entries->getMaxRecords());
+		$smarty->assign('count', $count);
+		$smarty->assign('offset', $offset);
+		$smarty->assign('maxRecords', $maxRecords);
 
 		return $smarty->fetch($this->templateFile);
 	}

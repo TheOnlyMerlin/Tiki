@@ -1,4 +1,4 @@
-{* $Id$ *}<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}" lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}">
 	<head>
 {include file='header.tpl'}
@@ -15,8 +15,7 @@
       
       {if $prefs.feature_page_title eq 'y'}<h1><a  href="tiki-index_p.php?page={$page|escape:"url"}" class="pagetitle">{$page}</a>
 {if $lock}
-{capture assign=title}{tr _0=$page_user}Locked by %0{/tr}{/capture}{*FIXME*}
-{icon _id='lock' alt="{tr}Locked{/tr}" title=$title}
+{icon _id='lock' alt="{tr}Locked{/tr}" title="{tr}Locked by{/tr} `$page_user`"}
 {/if}
 </h1>{/if}
 <table >

@@ -28,7 +28,6 @@ function wikiplugin_module_info() {
 		'validate' => 'all',
 		'icon' => 'pics/icons/module.png',
 		'extraparams' =>true,
-		'tags' => array( 'basic' ),
 		'params' => array(
 			'module' => array(
 				'required' => true,
@@ -74,19 +73,19 @@ function wikiplugin_module_info() {
 			'max' => array(
 				'required' => false,
 				'name' => tra('Max'),
-				'description' => tra('Number of rows (default: 10)'),
+				'description' => 'Number of rows (default: 10)',
 				'default' => 10,
 				'advanced' => true,
 			),
 			'np' => array(
 				'required' => false,
 				'name' => tra('Parse'),
-				'description' => tra('Parse wiki syntax.') . ' ' . tra('Default:') . ' ' . tra('No'),
+				'description' => tra('Parse wiki syntax (default is to parse)'),
 				'default' => '1',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => '0'), 
-					array('text' => tra('No'), 'value' => '1'), 
+					array('text' => tra('Yes'), 'value' => '1'), 
+					array('text' => tra('No'), 'value' => '0'), 
 				),
 				'advanced' => true,
 			),

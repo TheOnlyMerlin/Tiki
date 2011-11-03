@@ -104,8 +104,7 @@ OUT;
 	<tr><th>Object</th><th>Type</th></tr>
 	<tr><td>HomePage</td><td>wiki page</td></tr>
 	<tr><td>SomePage</td><td>wiki page</td></tr>
-</table>
-~/np~</div>
+</table>~/np~</div>
 OUT;
 		$this->assertXmlStringEqualsXmlString($expect, "<div>$output</div>");
 	}
@@ -127,8 +126,7 @@ OUT;
 	<tr><th>Object</th><th>Type</th></tr>
 	<tr><td>HomePage</td><td>wiki page</td></tr>
 	<tr><td>SomePage</td><td>wiki page</td></tr>
-</table>
-~/np~</div>
+</table>~/np~</div>
 OUT;
 		$this->assertXmlStringEqualsXmlString($expect, "<div>$output</div>");
 	}
@@ -153,8 +151,7 @@ OUT;
 None~np~</td><td>wiki page</td></tr>
 	<tr><td>~/np~SomePage
 About~np~</td><td>wiki page</td></tr>
-</table>
-~/np~</div>
+</table>~/np~</div>
 OUT;
 		$this->assertXmlStringEqualsXmlString($expect, "<div>$output</div>");
 	}
@@ -189,8 +186,8 @@ OUT;
 		$source = $this->getMock('Search_Formatter_DataSource_Interface');
 		$source->expects($this->once())
 			->method('getInformation')
-			->with($this->equalTo(Search_ResultSet::create($searchResult)), $this->equalTo(array('object_id', 'description')))
-			->will($this->returnValue(Search_ResultSet::create($withData)));
+			->with($this->equalTo($searchResult), $this->equalTo(array('object_id', 'description')))
+			->will($this->returnValue($withData));
 
 		$plugin = new Search_Formatter_Plugin_WikiTemplate("* {display name=object_id} ({display name=description})\n");
 
@@ -248,8 +245,7 @@ OUT;
 	<caption>Count: 1</caption>
 	<tr><th>Object</th><th>Type</th></tr>
 	<tr><td><a href="HomePage">HomePage</a></td><td>wiki page</td></tr>
-</table>
-~/np~</div>
+</table>~/np~</div>
 OUT;
 		$this->assertXmlStringEqualsXmlString($expect, "<div>$output</div>");
 	}

@@ -6,7 +6,7 @@
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-$access->check_script($_SERVER["SCRIPT_NAME"], basename(__FILE__));
+$access->check_script($_SERVER["SCRIPT_NAME"],basename(__FILE__));
 
 if ( isset($_SESSION['try_style']) ) {
 	$prefs['style'] = $_SESSION['try_style'];
@@ -25,7 +25,7 @@ if ( $prefs['useGroupTheme'] == 'y' && $group_style = $userlib->get_user_group_t
 	$smarty->assign_by_ref('group_style', $group_style);
 }
 if (empty($prefs['style']) || $tikilib->get_style_path('', '', $prefs['style']) == '') {
-	$prefs['style'] = 'fivealive.css';
+	$prefs['style'] = 'thenews.css';
 }
 		
 $headerlib->add_cssfile($tikilib->get_style_path('', '', $prefs['style']), 51);

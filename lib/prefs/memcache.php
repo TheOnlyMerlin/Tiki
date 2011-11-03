@@ -13,14 +13,11 @@ function prefs_memcache_list() {
 			'type' => 'flag',
 			'hint' => tra('Requires the PHP memcache extension.'),
 			'extensions' => array( 'memcache' ),
-			'default' => 'n',
 		),
 		'memcache_compress' => array(
 			'name' => tra('Memcache compression'),
 			'description' => tra('Enable compression for memcache storage.'),
 			'type' => 'flag',
-			'default' => 'y',
-			'extensions' => array( 'memcache' ),
 		),
 		'memcache_servers' => array(
 			'name' => tra('Memcache servers'),
@@ -31,8 +28,6 @@ function prefs_memcache_list() {
 			'serialize' => 'prefs_memcache_serialize_servers',
 			'unserialize' => 'prefs_memcache_unserialize_servers',
 			'size' => 10,
-			'default' => false,
-			'extensions' => array( 'memcache' ),
 		),
 		'memcache_prefix' => array(
 			'name' => tra('Memcache key prefix'),
@@ -40,8 +35,6 @@ function prefs_memcache_list() {
 			'filter' => 'word',
 			'size' => 10,
 			'type' => 'text',
-			'default' => 'tiki_',
-			'extensions' => array( 'memcache' ),
 		),
 		'memcache_expiration' => array(
 			'name' => tra('Memcache expiration'),
@@ -49,32 +42,24 @@ function prefs_memcache_list() {
 			'type' => 'text',
 			'size' => 10,
 			'filter' => 'digits',
-			'default' => 3600,
-			'extensions' => array( 'memcache' ),
 		),
 		'memcache_wiki_data' => array(
 			'name' => tra('Cache wiki data in memcache'),
 			'type' => 'flag',
-			'default' => 'y',
-			'extensions' => array( 'memcache' ),
 		),
 		'memcache_wiki_output' => array(
 			'name' => tra('Cache wiki output in memcache'),
 			'type' => 'flag',
-			'default' => 'y',
-			'extensions' => array( 'memcache' ),
 		),
 		'memcache_forum_output' => array(
 			'name' => tra('Cache forum output in memcache'),
 			'type' => 'flag',
-			'default' => 'y',
-			'extensions' => array( 'memcache' ),
 		),
 	);
 }
 
 function prefs_memcache_serialize_servers( $data ) {
-	if ( ! is_array( $data ) ) {
+	if( ! is_array( $data ) ) {
 		$data = unserialize( $data );
 	}
 	$out = '';
@@ -91,7 +76,7 @@ function prefs_memcache_unserialize_servers( $string ) {
 	$data = array();
 
 	foreach( explode( "\n", $string ) as $row ) {
-		if ( preg_match( "/^\s*([^:]+):(\d+)\s*(\((\d+)\))?\s*$/", $row, $parts ) ) {
+		if( preg_match( "/^\s*([^:]+):(\d+)\s*(\((\d+)\))?\s*$/", $row, $parts ) ) {
 			$data[] = array(
 				'host' => $parts[1],
 				'port' => $parts[2],
@@ -100,7 +85,7 @@ function prefs_memcache_unserialize_servers( $string ) {
 		}
 	}
 
-	if ( count( $data ) ) {
+	if( count( $data ) ) {
 		return $data;
 	} else {
 		return false;

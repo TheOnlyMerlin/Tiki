@@ -91,15 +91,8 @@ class BookmarkLib extends TikiLib
 		if (empty($name))
 			return false;
 
-		// Find the next folderId
-		$query = "select max(`folderId`) from `tiki_user_bookmarks_folders` WHERE `user`=?";
-		$maxId = $this->getOne($query, array($user));
-		if( intval($maxId) == 0 ) {
-			$maxId = 0;
-		}
-		
-		$query = "insert into `tiki_user_bookmarks_folders`(`folderId`, `name`,`parentId`,`user`) values(?,?,?,?)";
-		$result = $this->query($query,array($maxId + 1,$name,$parentId,$user));
+		$query = "insert into `tiki_user_bookmarks_folders`(`name`,`parentId`,`user`) values(?,?,?)";
+		$result = $this->query($query,array($name,$parentId,$user));
 	}
 
 	function replace_url($urlId, $folderId, $name, $url, $user) {

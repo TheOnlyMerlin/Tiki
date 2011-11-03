@@ -26,12 +26,12 @@ class TikiHelpLib
  */
 /* static */
 function help_doclink($params) {
-    global $prefs;
+    global $prefs, $helpurl;
     
      extract($params);
     // Param = zone
 		$ret = '';
-    if (empty($url) && empty($desc) && empty($crumb)) {
+    if(empty($url) && empty($desc) && empty($crumb)) {
         return;
     }
     if (!empty($crumb)) {

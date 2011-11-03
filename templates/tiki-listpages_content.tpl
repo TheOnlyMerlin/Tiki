@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {if $cant_pages > 1 or $initial or $find}
 	{initials_filter_links}
 {/if}
@@ -297,8 +295,8 @@
 
 		{if $prefs.wiki_list_categories eq 'y'}
 			<td class="text">
-				{foreach $listpages[changes].categname as $categ}
-					{if !$categ@first}<br />{/if}
+				{foreach item=categ from=$listpages[changes].categname name=categ}
+					{if !$smarty.foreach.categ.first}<br />{/if}
 					{$categ|escape}
 				{/foreach}
 			</td>
@@ -306,8 +304,8 @@
 
 		{if $prefs.wiki_list_categories_path eq 'y'}
 			<td class="text">
-				{foreach $listpages[changes].categpath as $categpath}
-					{if !$categpath@first}<br />{/if}
+				{foreach item=categpath from=$listpages[changes].categpath}
+					{if !$smarty.foreach.categpath.first}<br />{/if}
 					{$categpath|escape}
 				{/foreach}
 			</td>
@@ -345,15 +343,15 @@
 	{sectionelse}
 		{capture assign='find_htmlescaped'}{$find|escape}{/capture}
 		{if $find ne ''}	
-			{norecords _colspan=$cntcol _text="{tr}No pages found with:{/tr} &quot;$find_htmlescaped&quot;."}
+			{norecords _colspan=$cntcol _text="No pages found with: &quot;$find_htmlescaped&quot;."}
 		{elseif $find ne '' && $initial ne ''}
-			{norecords _colspan=$cntcol _text="{tr}No pages found with:{/tr} &quot;$find_htmlescaped&quot; and starting with &quot; $initial &quote;."}
+			{norecords _colspan=$cntcol _text="No pages found with: &quot;$find_htmlescaped&quot; and starting with &quot; $initial &quote;."}
 		{elseif $find ne '' && $aliases_were_found == 'y'}
-			{norecords _colspan=$cntcol _text="{tr}No pages found with:{/tr} &quot;$find_htmlescaped&dquot;. <br/>However, some page aliases fitting the query were found (see Aliases section above)."}
+			{norecords _colspan=$cntcol _text="No pages found with: &quot;$find_htmlescaped&dquot;. <br/>However, some page aliases fitting the query were found (see Aliases section above)."}
 		{elseif $find ne '' && $initial ne '' && $aliases_were_found == 'y'}
-			{norecords _colspan=$cntcol _text="{tr}No pages found with:{/tr} &quot;$find_htmlescaped&quot;and starting with &quot; $initial &quote;. <br/>However, some page aliases fitting the query were found (see Aliases section above)."}
+			{norecords _colspan=$cntcol _text="No pages found with: &quot;$find_htmlescaped&quot;and starting with &quot; $initial &quote;. <br/>However, some page aliases fitting the query were found (see Aliases section above)."}
 		{else}
-			{norecords _colspan=$cntcol _text="{tr}No pages found.{/tr}"}
+			{norecords _colspan=$cntcol _text="No pages found."}
 		{/if}
 	{/section}
 </table>

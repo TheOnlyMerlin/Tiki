@@ -13,7 +13,6 @@ function wikiplugin_articles_info()
 		'description' => tra('Display multiple articles'),
 		'prefs' => array( 'feature_articles', 'wikiplugin_articles' ),
 		'icon' => 'pics/icons/table_multiple.png',
-		'tags' => array( 'basic' ),		
 		'params' => array(
 			'usePagination' => array(
 				'required' => false,
@@ -30,28 +29,28 @@ function wikiplugin_articles_info()
 			'max' => array(
 				'required' => false,
 				'name' => tra('Maximum Displayed'),
-				'description' => tra('The number of articles to display in the list (no max set by default)') . '. ' . tra('If Pagination is set to y (Yes), this will determine the amount of articles per page'),
+				'description' => tra('The number of articles to display in the list (no max set by default)') . tra('If Pagination is set to y (Yes), this will determine the amount of articles per page'),
 				'filter' => 'int',
 				'default' => -1
 			),
 			'topic' => array(
 				'required' => false,
 				'name' => tra('Topic Name Filter'),
-				'description' => tra('Filter the list of articles by topic. Example: ') . '[!]topic+topic+topic',
+				'description' => tra('Filter the list of aricles by their topic. Example: ') . '[!]topic+topic+topic',
 				'filter' => 'striptags',
 				'default' => ''
 			),
 			'topicId' => array(
 				'required' => false,
 				'name' => tra('Topic ID Filter'),
-				'description' => tra('Filter the list of articles by topic ID. Example: ') . '[!]topicId+topicId+topicId',
+				'description' => tra('Filter the list of aricles by their topic ID. Example: ') . '[!]topicId+topicId+topicId',
 				'filter' => 'striptags',
 				'default' => ''
 			),
 			'type' => array(
 				'required' => false,
 				'name' => tra('Type Filter'),
-				'description' => tra('Filter the list of articles by types. Example: ') . '[!]type+type+type',
+				'description' => tra('Filter the list of aricles by their types. Example: ') . '[!]type+type+type',
 				'filter' => 'striptags',
 				'default' => ''
 			),
@@ -72,33 +71,9 @@ function wikiplugin_articles_info()
 			'sort' => array(
 				'required' => false,
 				'name' => tra('Sort order'),
-				'description' => tra('The column and order of the sort in columnName_asc or columnName_desc format. Defaults to "publishDate_desc" (other column examples are "title", "lang", "authorName" & "topicName")').'. '.tra('Use random to have random items.'),
+				'description' => tra('The column and order of the sort in columnName_asc or columnName_desc format. Defaults to "publishDate_desc" (other column examples are "title", "lang", "authorName" & "topicName")').' '.tra('Use random to have random items.'),
 				'filter' => 'word',
 				'default' => 'publishDate_desc'
-			),
-			'order' => array(
-				'required' => false,
-				'name' => tra('Specific order'),
-				'description' => tra('List of ArticleId that must appear in this order if present'),
-				'filter' => 'digits',
-				'separator' => '|',
-				'default' => ''
-			),
-			'articleId' => array(
-				'required' => false,
-				'name' => tra('Only these articles'),
-				'description' => tra('List of ArticleId to display separated by |'),
-				'filter' => 'digits',
-				'separator' => '|',
-				'default' => ''
-			),
-			'notArticleId' => array(
-				'required' => false,
-				'name' => tra('Not these articles'),
-				'description' => tra('List of ArticleId that can not be displayed separated by |'),
-				'filter' => 'digits',
-				'separator' => '|',
-				'default' => ''
 			),
 			'quiet' => array(
 				'required' => false,
@@ -139,41 +114,23 @@ function wikiplugin_articles_info()
 			'start' => array(
 				'required' => false,
 				'name' => tra('Starting Article'),
-				'description' => tra('The article number that the list should start with (starts with first article by default)') . '. ' . tra('This will not work if Pagination is used.'),
+				'description' => tra('The article number that the list should start with (starts with first article by default)') . tra('This will not work if Pagination is used.'),
 				'filter' => 'int',
 				'default' => 0
 			),
 			'dateStart' => array(
 				'required' => false,
 				'name' => tra('Start Date'),
-				'description' => tra('Earliest date to select articles from.') . tra(' (YYYY-MM-DD)'),
+				'description' => tra('Earliest date to select articles from.') . ' (YYYY-MM-DD)',
 				'filter' => 'date',
 				'default' => ''
 			),
 			'dateEnd' => array(
 				'required' => false,
 				'name' => tra('End date'),
-				'description' => tra('Latest date to select articles from.') . tra(' (YYYY-MM-DD)'),
+				'description' => tra('Latest date to select articles from.') . ' (YYYY-MM-DD)',
 				'filter' => 'date',
 				'default' => ''
-			),
-			'periodQuantity' => array(
-				'required' => false,
-				'name' => tra('Period quantity'),
-				'description' => tr('Numeric value to display only last articles published within a user defined time-frame. Used in conjunction with the next parameter "Period unit", this parameter indicates how many of those units are to be considered to define the time frame. If this parameter is set, "Start Date" and "End date" are ignored.'),
-				'filter' => 'int',
-				'default' => '',
-			),
-			'periodUnit' => array(
-				'required' => false,
-				'name' => tra('Period unit'),
-				'description' => tr('Time unit used with "Period quantity"'),
-				'filter' => 'word',
-				'options' => array(
-					array('text' => tr('Day'), 'value' => 'day'),
-					array('text' => tr('Week'), 'value' => 'week'),
-					array('text' => tr('Month'), 'value' => 'month'),
-				),
 			),
 			'overrideDates' => array(
 				'required' => false,
@@ -246,7 +203,7 @@ function wikiplugin_articles($data, $params)
 	}
 
 	$urlnext = '';
-	if ($usePagination == 'y')
+	if($usePagination == 'y')
 	{
 		//Set offset when pagniation is used
 		if (!isset($_REQUEST["offset"])) {
@@ -256,7 +213,7 @@ function wikiplugin_articles($data, $params)
 		}
 		
 		//Default to 10 when pagination is used
-		if (($max == -1)){
+		if(($max == -1)){
 			$countPagination = 10;
 		}
 		foreach ($auto_args as $arg) {
@@ -264,7 +221,7 @@ function wikiplugin_articles($data, $params)
 				$paramsnext[$arg] = $$arg;
 		}
 		$paramsnext['_type'] = 'absolute_path';
-		$smarty->loadPlugin('smarty_function_query');
+		require_once $smarty->_get_plugin_filepath('function', 'query');
 		$urlnext = smarty_function_query($paramsnext, $smarty);
 	}
 
@@ -272,41 +229,13 @@ function wikiplugin_articles($data, $params)
 	$smarty->assign_by_ref('urlparam', $urlparam);
 	$smarty->assign_by_ref('urlnext', $urlnext);
 	
-	if (!isset($containerClass)) {$containerClass = 'wikiplugin_articles';}
+	if(!isset($containerClass)) {$containerClass = 'wikiplugin_articles';}
 	$smarty->assign('container_class', $containerClass);
-
-	$dateStartTS = 0;
-	$dateEndTS = 0;
 	
-	// if a period of time is set, date start and end are ignored
-	if (isset($periodQuantity)) {
-		switch ($periodUnit) {
-			case 'day':
-				$periodUnit = 86400;
-				break;
-			case 'week':
-				$periodUnit = 604800;
-				break;
-			case 'month':
-				$periodUnit = 2628000;
-				break;
-			default:
-				break;
-		}
-		
-		if (is_int($periodUnit)) {
-			$dateStartTS = $tikilib->now - ($periodQuantity * $periodUnit);
-			$dateEndTS = $tikilib->now;
-		}
-	} else {
-		if (isset($dateStart)) {
-			$dateStartTS = strtotime($dateStart);
-		}
-		
-		if (isset($dateEnd)) {
-			$dateEndTS = strtotime($dateEnd);
-		}
-	}
+	if (isset($dateStart)) 	$dateStartTS = strtotime($dateStart);
+	if (isset($dateEnd))	$dateEndTS = strtotime($dateEnd);
+	$dateStartTS = !empty($dateStartTS) ? $dateStartTS : 0;
+	$dateEndTS = !empty($dateEndTS) ? $dateEndTS : 0;
 	
 	if (isset($fullbody) && $fullbody == 'y') {
 		$smarty->assign('fullbody', 'y');
@@ -319,12 +248,6 @@ function wikiplugin_articles($data, $params)
 
 	if (!empty($translationOrphan)) {
 		$filter['translationOrphan'] = $translationOrphan;
-	}
-	if (!empty($articleId)) {
-		$filter['articleId'] = $articleId;
-	}
-	if (!empty($notArticleId)) {
-		$filter['notArticleId'] = $notArticleId;
 	}
 	
 	include_once("lib/comments/commentslib.php");
@@ -368,30 +291,13 @@ function wikiplugin_articles($data, $params)
 		$smarty->assign_by_ref('type', $type);
 	}
 	
-	if ($usePagination == 'y'){
+	if($usePagination == 'y'){
 		$smarty->assign('maxArticles', $max);
 		$smarty->assign_by_ref('offset', $start);
 		$smarty->assign_by_ref('cant', $listpages['cant']);
 	}
-	if (!empty($order)) {
-		foreach ($listpages['data'] as $i=>$article) {
-			$memo[$article['articleId']] = $i;
-		}
-		foreach ($order as $articleId) {
-			if (isset($memo[$articleId])) {
-				$list[] = $listpages['data'][$memo[$articleId]];
-			}
-		}
-		foreach ($listpages['data'] as $i=>$article) {
-			if (!in_array($article['articleId'], $order)) {
-				$list[] = $article;
-			}
-		}
-		$smarty->assign_by_ref('listpages', $list);
-	} else {
-		$smarty->assign_by_ref('listpages', $listpages["data"]);
-	}
 	$smarty->assign('usePagination', $usePagination);
+	$smarty->assign_by_ref('listpages', $listpages["data"]);
 	$smarty->assign_by_ref('actions', $actions);
 
 	if (isset($titleonly) && $titleonly == 'y') {

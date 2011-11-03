@@ -9,7 +9,7 @@ $section = 'mytiki';
 
 require_once ('tiki-setup.php');
 
-if ( $user != '' && $prefs['feature_use_fgal_for_user_files'] == 'y' ) {
+if ( $user != '' && $prefs['feature_use_fgal_for_user_files'] == 'y' ){
 	$filegallib = TikiLib::lib('filegal');
 	$idGallery = $filegallib->get_user_file_gallery();
 
@@ -75,7 +75,7 @@ for ($i = 0; $i < 5; $i++) {
 // Process removal here
 if (isset($_REQUEST["delete"]) && isset($_REQUEST["userfile"])) {
 	check_ticket('user-files');
-	foreach (array_keys($_REQUEST["userfile"]) as $file) {
+	foreach(array_keys($_REQUEST["userfile"]) as $file) {
 		$userfileslib->remove_userfile($user, $file);
 	}
 }

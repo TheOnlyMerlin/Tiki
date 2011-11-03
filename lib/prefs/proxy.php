@@ -8,15 +8,13 @@
 function prefs_proxy_list() {
 	return array (
 		'proxy_host' => array(
-			'name' => tra('Proxy host name'),
+			'name' => tra('Host name'),
 			'description' => tra('Proxy host - without http:// or similar, just the host name'),
 			'type' => 'text',
 			'size' => '20',
-			'filter' => 'url',
 			'dependencies' => array(
 				'use_proxy',
 			),
-			'default' => '',
 		),
 		'proxy_port' => array(
 			'name' => tra('Port'),
@@ -27,21 +25,6 @@ function prefs_proxy_list() {
 			'dependencies' => array(
 				'use_proxy',
 			),
-			'default' => '',
-		),
-		'proxy_user' => array(
-			'name' => tra('Proxy username'),
-			'type' => 'text',
-			'size' => 10,
-			'filter' => 'none',
-			'default' => '',
-		),
-		'proxy_pass' => array(
-			'name' => tra('Proxy password'),
-			'type' => 'text',
-			'size' => 10,
-			'filter' => 'none',
-			'default' => '',
 		),
 	);
 }

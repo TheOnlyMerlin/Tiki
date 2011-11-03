@@ -13,90 +13,20 @@
  */
 class Tracker_field_Image extends Tracker_Field_File
 {
-	private $imgMimeTypes;
-	private $imgMaxSize;
-
-	public static function getTypes()
-	{
-		return array(
-			'i' => array(
-				'name' => tr('Image'),
-				'description' => tr('Allow users to upload images on the tracker item.'),
-				'help' => 'Image Tracker Field',
-				'prefs' => array('trackerfield_image'),
-				'tags' => array('basic'),
-				'default' => 'y',
-				'params' => array(
-					'xListSize' => array(
-						'name' => tr('List image width'),
-						'description' => tr('Display size in pixels'),
-						'filter' => 'int',
-						'default' => 30,
-					),
-					'yListSize' => array(
-						'name' => tr('List image height'),
-						'description' => tr('Display size in pixels'),
-						'filter' => 'int',
-						'default' => 30,
-					),
-					'xDetailSize' => array(
-						'name' => tr('Detail image width'),
-						'description' => tr('Display size in pixels'),
-						'filter' => 'int',
-						'default' => 300,
-					),
-					'yDefailSize' => array(
-						'name' => tr('Detail image height'),
-						'description' => tr('Display size in pixels'),
-						'filter' => 'int',
-						'default' => 300,
-					),
-					'uploadLimitScale' => array(
-						'name' => tr('Maximum image size'),
-						'description' => tr('Maximum image width or height in pixels.'),
-						'filter' => 'int',
-						'default' => '1000',
-					),
-					'shadowbox' => array(
-						'name' => tr('Shadowbox'),
-						'description' => tr('Shadowbox usage on this field'),
-						'filter' => 'alpha',
-						'options' => array(
-							'' => tr('Do not use'),
-							'individual' => tr('One box per item'),
-							'group' => tr('Use the same box for all images'),
-						),
-					),
-					'imageMissingIcon' => array(
-						'name' => tr('Missing Icon'),
-						'description' => tr('Icon to use when no images have been uploaded.'),
-						'filter' => 'url',
-					),
-				),
-			),
-		);
-	}
-
-	function __construct($fieldInfo, $itemData, $trackerDefinition) {
-		parent::__construct($fieldInfo, $itemData, $trackerDefinition);
-		$this->imgMimeTypes = array('image/jpeg', 'image/gif', 'image/png', 'image/pjpeg', 'image/bmp');
-		$this->imgMaxSize = (1048576 * 4); // 4Mo
-	}
-
 	function getFieldData(array $requestData = array())
 	{
 		global $prefs, $smarty;
 		
 		$ins_id = $this->getInsertId();
 
-		if (!empty($prefs['fgal_match_regex']) && !empty($_FILES[$ins_id]['name'])) {
+		if (!empty($prefs['fgal_match_regex'])) {
 			if (!preg_match('/' . $prefs['fgal_match_regex'] . '/', $_FILES[$ins_id]['name'], $reqs)) {
 				$smarty->assign('msg', tra('Invalid imagename (using filters for filenames)'));
 				$smarty->display("error.tpl");
 				die;
 			}
 		}
-		if (!empty($prefs['fgal_nmatch_regex']) && !empty($_FILES[$ins_id]['name'])) {
+		if (!empty($prefs['fgal_nmatch_regex'])) {
 			if (preg_match('/' . $prefs['fgal_nmatch_regex'] . '/', $_FILES[$ins_id]['name'], $reqs)) {
 				$smarty->assign('msg', tra('Invalid imagename (using filters for filenames)'));
 				$smarty->display("error.tpl");
@@ -110,7 +40,7 @@ class Tracker_field_Image extends Tracker_Field_File
 		}
 	}
 
-	function renderInnerOutput( $context = array() )
+	function renderInnerOutput( $context )
 	{
 		global $prefs;
 		$smarty = TikiLib::lib('smarty');
@@ -160,7 +90,7 @@ class Tracker_field_Image extends Tracker_Field_File
 				return '';
 			}
 		}
-		$smarty->loadPlugin('smarty_function_html_image');
+		require_once $smarty->_get_plugin_filepath('function', 'html_image');
 		$ret = smarty_function_html_image($params, $smarty);
 		if (!empty($pre))
 			$ret = $pre.$ret.'</a>';
@@ -169,63 +99,8 @@ class Tracker_field_Image extends Tracker_Field_File
 
 	function renderInput($context = array())
 	{
-		return $this->renderTemplate('trackerinput/image.tpl', $context, array(
-			'image_tag' => $this->renderInnerOutput($context),
-		));
-	}
-
-	function handleSave($value, $oldValue)
-	{
-		if (! empty($value)) {
-			$old_file = $oldValue;
-
-			if ($value == 'blank') {
-				if (file_exists($old_file)) {
-					unlink($old_file);
-				}
-
-				return array(
-					'value' => '',
-				);
-			}
-
-			$type = $this->getConfiguration('file_type');
-
-			if ($this->isImageType($type)) {
-				if ($maxSize = $this->getOption(4)) {
-					$imagegallib = TikiLib::lib('imagegal');
-					$imagegallib->image = $value;
-					$imagegallib->readimagefromstring();
-					$imagegallib->getimageinfo();
-					if ($imagegallib->xsize > $maxSize || $imagegallib->xsize > $maxSize) {
-						$imagegallib->rescaleImage($maxSize, $maxSize);
-						return array(
-							'value' => $imagegallib->image,
-						);
-					}
-				}
-				$filesize = $this->getConfiguration('file_size');
-				if ($filesize <= $this->imgMaxSize) {
-					$itemId = $this->getItemId();
-					$file_name = $this->getImageFilename($this->getConfiguration('file_name'), $itemId, $this->getConfiguration('fieldId'));
-
-					file_put_contents($file_name, $value);
-					chmod($file_name, 0644); // seems necessary on some system (see move_uploaded_file doc on php.net
-
-					if (file_exists($old_file) && $old_file != $file_name) {
-						unlink($old_file);
-					}
-
-					return array(
-						'value' => $file_name,
-					);
-				}
-			}
-		}
-
-		return array(
-			'value' => false,
-		);
+		$context['image_tag'] = $this->renderInnerOutput($context);
+		return $this->renderTemplate('trackerinput/image.tpl', $context);
 	}
 
 	/**
@@ -241,8 +116,7 @@ class Tracker_field_Image extends Tracker_Field_File
 	 * 
 	 * @return array(int $resized_width, int $resized_height)
 	 */
-	private function get_resize_dimensions( $image_width, $image_height, $max_width = null, $max_height = null, $upscale = false)
-	{
+	private function get_resize_dimensions( $image_width, $image_height, $max_width = null, $max_height = null, $upscale = false) {
 		if (!$upscale && $image_width <= $max_width && $image_height <= $max_height) {
 			return array($image_width, $image_height);
 		}
@@ -250,26 +124,11 @@ class Tracker_field_Image extends Tracker_Field_File
 			$ratio = $max_width / $image_width;
 		} else {
 			$ratio = $max_height / $image_height;
-			if ($max_width && round($image_width * $ratio) > $max_width) {
+			if (round($image_width * $ratio) > $max_width) {
 				$ratio = $max_width / $image_width;
 			}
 		}
 		return array(round($image_width * $ratio), round($image_height * $ratio));
 	}
-
-	function getImageFilename($name, $itemId, $fieldId)
-	{
-		do {
-			$name = md5(uniqid("$name.$itemId.$fieldId"));
-		} while (file_exists("img/trackers/$name"));
-
-		return "img/trackers/$name";
-	}
-
-	function isImageType($mimeType)
-	{
-		return in_array($mimeType, $this->imgMimeTypes);
-	}
-
 }
 

@@ -1,7 +1,7 @@
 {title help="Spreadsheet"}{$title}{/title}
 
 <p>
-  {$description|escape}
+  {$description}
 </p>
 
 {if ($mode eq 'graph')}

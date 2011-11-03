@@ -7,6 +7,8 @@
 
 define( 'CUSTOM_ERROR_LEVEL', defined( 'E_DEPRECATED' ) ? E_ALL ^ E_DEPRECATED : E_ALL );
 
+require_once(dirname(__FILE__) . '/TikiTestCase.php');
+
 ini_set( 'display_errors', 'on' );
 error_reporting( CUSTOM_ERROR_LEVEL );
 
@@ -21,14 +23,13 @@ $paths = array(
 
 ini_set( 'include_path', implode( PATH_SEPARATOR, $paths ) );
 
-function __autoload_tikitest( $name ) {
+function __autoload( $name ) {
 	$path = str_replace( '_', '/', $name ) . '.php';
 	@ include_once( $path );
 }
-spl_autoload_register('__autoload_tikitest');
 
 if (!is_file(dirname(__FILE__) . '/local.php')) {
-	die("\nYou need to setup a new database and create a local.php file for the test suite inside " . dirname(__FILE__) . "\n\n");
+	die("\nYou need setup a new database, install Tiki on it and create a local.php file for the test suite inside " . dirname(__FILE__) . "\n\n");
 }
 
 require_once(dirname(__FILE__) . '/local.php');
@@ -47,6 +48,7 @@ if (!@$dbTiki->Connect($host_tiki, $user_tiki, $pass_tiki, $dbs_tiki)) {
 	die("\nUnable to connect to the database\n\n");
 }
 
+require_once('lib/core/TikiDb/Adodb.php');
 TikiDb::set(new TikiDb_Adodb($dbTiki));
 
 // update db if needed
@@ -64,7 +66,6 @@ if (!$installer->tableExists('tiki_preferences')) {
 $pwd = getcwd();
 chdir( dirname(__FILE__) . '/../..' );
 require_once 'lib/init/smarty.php';
-$smarty->addPluginsDir('../smarty_tiki/');
 require_once 'lib/cache/cachelib.php';
 require_once 'lib/tikilib.php';
 require_once 'lib/wiki/wikilib.php';
@@ -81,19 +82,6 @@ $_SESSION = array(
 	)
 );
 chdir($pwd);
-
-require_once(dirname(__FILE__) . '/TikiTestCase.php');
-require_once(dirname(__FILE__) . '/TestableTikiLib.php');
-
-global $systemConfiguration;
-$systemConfiguration = new Zend_Config(
-	array(
-		'preference' => array(),
-		'rules' => array(),
-	),
-	array('readOnly' => false)
-);
-
 global $user_overrider_prefs;
 $user_overrider_prefs = array();
 require_once 'lib/setup/prefs.php';

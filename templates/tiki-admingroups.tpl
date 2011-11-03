@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {title help="Groups+Management" admpage="login"}{tr}Admin groups{/tr}{/title}
 
 <div class="navbar">
@@ -60,10 +58,7 @@
 				<td class="text">{tr}{$users[user].groupDesc|escape|nl2br}{/tr}</td>
 				<td class="text">
 					{section name=ix loop=$users[user].included}
-						{if !in_array($users[user].included[ix], $users[user].included_direct)}<i>{/if}
-						{$users[user].included[ix]|escape}
-						{if !in_array($users[user].included[ix], $users[user].included_direct)}</i>{/if}
-						<br />
+						{$users[user].included[ix]|escape}<br />
 					{/section}
 				</td>
 				<td class="text">
@@ -94,19 +89,6 @@
 {tab name=$tabaddeditgroup_admgrp}
 {* ----------------------- tab with form --------------------------------------- *}
 
-	{if !empty($user) and $prefs.feature_user_watches eq 'y'}
-		<div class="floatright">
-			{if not $group_info.isWatching}
-				{self_link watch=$groupname}
-					{icon _id='eye' alt="{tr}Group is NOT being monitored. Click icon to START monitoring.{/tr}"}
-				{/self_link}
-			{else}
-				{self_link unwatch=$groupname}
-					{icon _id='no_eye' alt="{tr}Group IS being monitored. Click icon to STOP monitoring.{/tr}"}
-				{/self_link}
-			{/if}
-		</div>
-	{/if}
 	<h2>{$tabaddeditgroup_admgrp}</h2>
 
 	<form action="tiki-admingroups.php" method="post">
@@ -151,7 +133,7 @@
 
 			<tr>
 				<td>
-					{tr}Also inheriting permissions from the following groups (indirect inheritance through the groups selected above).{/tr}
+					<label for="indirectly_inherited_groups">{tr}Also inheriting permissions from the following groups (indirect inheritance through the groups selected above).{/tr}</label>
 				</td>
 				<td>
 					{if $indirectly_inherited_groups|@count > 0}
@@ -210,9 +192,9 @@
 			
 			{if $prefs.groupTracker eq 'y'}
 				<tr>
-					<td><label for="groupstracker">{tr}Group Information Tracker{/tr}</label></td>
+					<td><label for="groupTracker">{tr}Group Information Tracker{/tr}</label></td>
 					<td>
-						<select name="groupstracker" id="groupstracker">
+						<select name="groupstracker">
 							<option value="0">{tr}choose a group tracker ...{/tr}</option>
 							{foreach key=tid item=tit from=$trackers}
 								<option value="{$tid}"{if $tid eq $grouptrackerid} {assign var="ggr" value="$tit"}selected="selected"{/if}>{$tit|escape}</option>
@@ -241,7 +223,7 @@
 				<tr>
 					<td><label for="userstracker">{tr}Users Information Tracker{/tr}</label></td>
 					<td>
-						<select name="userstracker" id="userstracker">
+						<select name="userstracker">
 							<option value="0">{tr}choose a users tracker ...{/tr}</option>
 							{foreach key=tid item=tit from=$trackers}
 								<option value="{$tid}"{if $tid eq $userstrackerid} {assign var="ugr" value="$tit"}selected="selected"{/if}>{$tit|escape}</option>
@@ -280,18 +262,6 @@
 				<td><input type="text" name="expireAfter" value="{$group_info.expireAfter|escape}" />{tr}Days{/tr}<br /><i>{tr}0 or empty for never{/tr}</i></td>
 			</tr>
 			<tr>
-				<td>{tr}Or, users are automatically unassigned from the group at an anniversary date{/tr}</td>
-				<td><input type="text" name="anniversary" value="{$group_info.anniversary|escape}" /><br /><i>{tr}MMDD for annual or DD for monthly{/tr}</i></td>
-			</tr>
-			<tr>
-				<td>{tr}Payment for membership extension is prorated at a minimum interval of a{/tr}</td>
-				<td><select name="prorateInterval">
-				<option value="day" {if $group_info.prorateInterval eq 'day'}selected="selected"{/if}>{tr}Day{/tr}</option>
-				<option value="month" {if $group_info.prorateInterval eq 'month'}selected="selected"{/if}>{tr}Month{/tr}</option>
-				<option value="year" {if $group_info.prorateInterval eq 'year'}selected="selected"{/if}>{tr}Year{/tr}</option>
-				</select></td>
-			</tr>
-			<tr>
 				<td>{tr}Users are automatically assigned at registration in the group if their emails match the pattern{/tr}</td>
 				<td><input type="text" size="40" name="emailPattern" value="{$group_info.emailPattern|escape}" /><br />{tr}Example: {/tr}/@tw\.org$/ <br />{tr}Example:{/tr} /@(tw.org$)|(tw\.com$)/</td>
 			</tr>
@@ -302,9 +272,7 @@
 						{tr}Assign group <em>management</em> permissions:{/tr}
 					</td>
 					<td>
-						{self_link _script="tiki-objectpermissions.php" objectType="group" objectId=$groupname objectName=$groupname permType="group"}
-							{icon _text="{tr}Assign Permissions{/tr}" _id="key"}
-						{/self_link}
+						{icon href="tiki-objectpermissions.php?objectType=group&objectId=$groupname&objectName=$groupname&permType=group" _text="{tr}Assign Permissions{/tr}" _id="key"}
 					</td>
 				</tr>
 				<tr>
@@ -367,28 +335,7 @@
 				{/foreach}
 		</table>
 		{pagination_links cant=$membersCount step=$prefs.maxRecords offset=$membersOffset offset_arg='membersOffset'}{/pagination_links}
-
 		<div class="box">{$membersCount} {tr}users in group{/tr} {$groupname|escape}</div>
-
-		<h2>{tr}Banned members List:{/tr} {$groupname|escape}</h2>
-		<table class="normal">
-			<tr>
-				<th>{tr}User{/tr}</th>
-				<th>{tr}Action{/tr}</th>
-			</tr>
-			{cycle values="even,odd" print=false}
-			<tr>
-				{foreach from=$bannedlist item=member}
-					<tr class="{cycle}">
-					<td class="username">{$member|userlink}</td>
-					<td class="action">
-						{self_link user=$member|escape:"url" action=unbanuser group=$groupname|escape:url _title="{tr}Unban user{/tr}"}
-							{icon _id='cross_admin' alt="{tr}Unban user{/tr}"}
-						{/self_link}
-					</td>
-					</tr>
-				{/foreach}
-		</table>
 		{if ! empty($userslist)}
 			<form method="post" action="tiki-admingroups.php">
 				<p>
@@ -399,7 +346,6 @@
 						{/foreach}
 					</select>
 					<input type="submit" name="adduser" value="{tr}Add to group{/tr}"/>
-					<input type="submit" name="banuser" value="{tr}Ban user from group{/tr}"/>
 				</p>
 			</form>
 		{/if}

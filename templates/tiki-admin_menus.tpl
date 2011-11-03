@@ -40,6 +40,11 @@
 							{if $tiki_p_edit_menu_option eq 'y'}
 								<a class="link" href="tiki-admin_menu_options.php?menuId={$channels[user].menuId}" title="{tr}Configure/Options{/tr}">{icon _id='table' alt="{tr}Configure/Options{/tr}"}</a>
 							{/if}
+							{if $channels[user].individual eq 'y'}
+								<a title="{tr}Active Permissions{/tr}" class="link" href="tiki-objectpermissions.php?objectName={$channels[user].name|escape:"url"}&amp;objectType=menus&amp;permType=menus&amp;objectId={$channels[user].menuId}">{icon _id='key_active' alt="{tr}Active Permissions{/tr}"}</a>
+							{else}
+								<a title="{tr}Permissions{/tr}" class="link" href="tiki-objectpermissions.php?objectName={$channels[user].name|escape:"url"}&amp;objectType=menus&amp;permType=menus&amp;objectId={$channels[user].menuId}">{icon _id='key' alt="{tr}Permissions{/tr}"}</a>
+							{/if}
 							{if $tiki_p_edit_menu eq 'y'}
 								{self_link remove=$channels[user].menuId _title="{tr}Delete{/tr}"}{icon _id='cross' alt="{tr}Delete{/tr}"}{/self_link}
 							{/if}
@@ -138,8 +143,7 @@
 		</table>
 
 		{remarksbox type="tip" title="{tr}Tip{/tr}"}
-			
-			{tr}You can use menus by assigning the menu <a href="tiki-admin_modules.php">module</a> (to the top, left, right, etc.), or you can customize a template, using {literal}{menu id=x}{/literal}, where x is the ID of the menu.{/tr}
+			{tr}To use menus in a <a href="tiki-admin_modules.php">module</a>, <a href="tiki-admin.php?page=look">Look and Feel</a> or a template, use {literal}{menu id=x}{/literal}, where x is the ID of the menu.{/tr}
 			<hr />
 			{tr}To use a menu in a tiki format:{/tr} {literal}{menu id=X}{/literal}
 			<br />

@@ -1,4 +1,3 @@
-{* $Id$ *}
 {if $tiki_p_view_shoutbox eq 'y'}
   {tikimodule title=$tpl_module_title name="shoutbox" flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox notitle=$module_params.notitle}
     {if $tiki_p_post_shoutbox eq 'y'}
@@ -46,10 +45,10 @@
 		{/if}
 		{if $prefs.feature_socialnetworks eq 'y' && $user neq ''}
 			{if $prefs.socialnetworks_twitter_consumer_key neq '' && $tweet}
-			<div><input type="hidden" name="tweet" value="-1" /><input type="checkbox" name="shout_tweet" value='1' /> {tr}Tweet with Twitter{/tr}</div>
+			<div><input type="hidden" name="tweet" value="-1" /><input type="checkbox" name="shout_tweet" value='1' /> {tr}Tweet with twitter{/tr}</div>
             {/if}
 			{if $prefs.socialnetworks_facebook_application_id neq '' && $facebook}
-			<div><input type="hidden" name="facebook" value="-1" /><input type="checkbox" name="shout_facebook" value='1' /> {tr}Post on my Facebook wall{/tr}</div>
+			<div><input type="hidden" name="facebook" value="-1" /><input type="checkbox" name="shout_facebook" value='1' /> {tr}Post on my facebook wall{/tr}</div>
             {/if}
         {/if}
 	    <input type="submit" id="shout_send" name="shout_send" value="{$buttontext}" />
@@ -65,7 +64,7 @@
 	    {* Show user message in style according to 'tooltip' module parameter *}
 	    {assign var=cdate value=$smarty.capture.date}
 	    {if $tooltip == 1}{* TODO: Improve $userlink modifier one day to handle other attibutes better? *}
-          <b>{strip}{$userlink|replace:"\" href=":"&lt;br /&gt;&lt;em&gt;{tr}Shout date:{/tr} $cdate&lt;/em&gt;\" href="}{/strip}</b>:
+          <b>{strip}{$userlink|replace:"\" href=":"&lt;br /&gt;&lt;em&gt;{tr}Shout date:{/tr} `$cdate`&lt;/em&gt;\" href="}{/strip}</b>:
         {else}
           <b>{strip}{$userlink}{/strip}</b>, {$cdate}:
         {/if}

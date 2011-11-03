@@ -27,13 +27,10 @@ class Category_Manipulator
 		$this->objectId = $objectId;
 	}
 
-	function addRequiredSet( array $categories, $default, $filter=null, $type=null ) {
-		$categories = array_unique($categories);
+	function addRequiredSet( array $categories, $default ) {
 		$this->constraints['required'][] = array(
 			'set' => $categories,
 			'default' => $default,
-			'filter' => $filter,
-			'type' => $type
 		);
 	}
 
@@ -78,7 +75,7 @@ class Category_Manipulator
 		foreach( $categories as $categ ) {
 			$perms = Perms::get( array( 'type' => 'category', 'object' => $categ ) );
 
-			if ( $this->overrideAll || ( $canModify && $perms->$permission ) || in_array( $categ, $this->overrides ) ) {
+			if( $this->overrideAll || ( $canModify && $perms->$permission ) || in_array( $categ, $this->overrides ) ) {
 				$out[] = $categ;
 			}
 		}
@@ -93,20 +90,20 @@ class Category_Manipulator
 	}
 
 	private function prepare() {
-		if ( $this->prepared ) {
+		if( $this->prepared ) {
 			return;
 		}
 
 		$categories = $this->managed;
 		Perms::bulk( array( 'type' => 'category' ), 'object', $categories );
 
-		if ( count( $this->managed ) ) {
+		if( count( $this->managed ) ) {
 			$base = array_diff( $this->current, $this->managed );
 			$managed = array_intersect( $this->new, $this->managed );
 			$this->new = array_merge( $base, $managed );
 		}
 		
-		if ( count( $this->unmanaged ) ) {
+		if( count( $this->unmanaged ) ) {
 			$base = array_intersect( $this->current, $this->unmanaged );
 			$managed = array_diff( $this->new, $this->unmanaged );
 			$this->new = array_merge( $base, $managed );
@@ -121,24 +118,10 @@ class Category_Manipulator
 		foreach( $this->constraints['required'] as $constraint ) {
 			$set = $constraint['set'];
 			$default = $constraint['default'];
-			$filter = $constraint['filter'];
-			$type = $constraint['type'];
 
 			$interim = array_intersect( $this->new, $set );
 
-			if (!empty($type) && $type != $this->objectType) {
-				return;
-			}
-				
-			if (!empty($filter)) {
-				$objectlib = TikiLib::lib('object');
-				$info = $objectlib->get_info($this->objectType, $this->objectId);
-				if (!preg_match($filter, $info['title'])) {
-					return;
-				}
-			}
-
-			if ( count( $interim ) == 0 && ! in_array( $default, $this->new ) ) {
+			if( count( $interim ) == 0 && ! in_array( $default, $this->new ) ) {
 				$this->new[] = $default;
 				$this->overrides[] = $default;
 			}

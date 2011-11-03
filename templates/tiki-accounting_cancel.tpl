@@ -1,4 +1,3 @@
-{* $Id$ *}
 {title help="accounting"}
 	{$book.bookName}
 {/title}
@@ -35,7 +34,7 @@
 			<td>{$d.itemAccountId}</td>
 			<td>
 				{if $book.bookCurrencyPos==-1}{$book.bookCurrency}{/if}
-				{$d.itemAmount|number_format:$book.bookDecimals:$book.bookDecPoint:$book.bookThousand}
+				{$d.itemAmount|currency:$book.bookDecPoint:$book.bookThousand}
 				{if $book.bookCurrencyPos==1}{$book.bookCurrency}{/if}
 			</td>
 		</tr>
@@ -52,7 +51,7 @@
 	   		<td>{$c.itemAccountId}</td>
 			<td>
 				{if $book.bookCurrencyPos==-1}{$book.bookCurrency}{/if}
-				{$c.itemAmount|number_format:$book.bookDecimals:$book.bookDecPoint:$book.bookThousand}
+				{$c.itemAmount|currency:$book.bookDecPoint:$book.bookThousand}
 				{if $book.bookCurrencyPos==1}{$book.bookCurrency}{/if}
 			</td>
 	 	</tr>

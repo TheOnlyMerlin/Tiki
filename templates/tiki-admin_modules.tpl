@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {strip}
 {title help="Modules" admpage="module"}{tr}Admin Modules{/tr}{/title}
 
@@ -27,7 +25,8 @@
 	{/remarksbox}
 {/if}
 
-{remarksbox type="note" title="{tr}Modules{/tr}" icon="star"}
+{remarksbox type="note" title="{tr}Modules Revamp{/tr}" icon="star"}
+	<em>{tr}New. This feature is still under development{/tr}</em><br />
 	<ul>
 		<li>{tr}Drag the modules around to re-order then click save when ready{/tr}</li>
 		<li>{tr}Double click them to edit{/tr}</li>
@@ -123,7 +122,7 @@
 				<input type="hidden" name="moduleId" value="{$moduleId}" />
 			{/if}
 			<fieldset>
-					{* because changing the module name will auto-submit the form, no reason to display these fields until a module is selected *}
+					{* because changing the module name willl auto-submit the form, no reason to display these fields until a module is selected *}
 					{include file='admin_modules_form.tpl'}
 				{if empty($assign_name)}
 					<div class="input_submit_container">
@@ -201,7 +200,7 @@
 					<h3>{tr}Objects that can be included{/tr}</h3>
 					{pagination_links cant=$maximum step=$maxRecords offset=$offset}{/pagination_links}
 					<table>
-						{if $prefs.feature_polls eq "y"}
+						{if $polls}
 							<tr>
 								<td>
 									<label for="list_polls">{tr}Available polls:{/tr}</label>
@@ -410,7 +409,7 @@
 						<div class="q1 tips"
 								title="{$info.name} &lt;em&gt;({$name})&lt;/em&gt;|{$info.description}
 								{if not $info.enabled}&lt;br /&gt;&lt;small&gt;&lt;em&gt;({tr}Requires{/tr} {' &amp; '|implode:$info.prefs})&lt;/em&gt;&lt;/small&gt;{/if}">
-							{icon _id="module"} <strong>{$info.name}</strong> <em>{$name}</em>
+							{icon _id="module"} <strong>{$info.name}</strong>
 						</div>
 						<div class="description q23">
 							{$info.description}

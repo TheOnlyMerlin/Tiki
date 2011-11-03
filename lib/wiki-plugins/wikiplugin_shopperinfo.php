@@ -13,7 +13,6 @@ function wikiplugin_shopperinfo_info() {
 		'prefs' => array('wikiplugin_shopperinfo', 'payment_feature'),
 		'filter' => 'wikicontent',
 		'format' => 'html',
-		'tags' => array( 'experimental' ),
 		'params' => array(
 			'values' => array(
 				'required' => true,
@@ -47,7 +46,7 @@ function wikiplugin_shopperinfo( $data, $params ) {
 	if ($user && $params['showifloggedin'] != 'y' || empty($params['values'])) {
 		return '';
 	}
-	if ( $_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['shopperinfo'])) {
+	if( $_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['shopperinfo'])) {
 		global $access;
 
 		foreach ($params['values'] as $v) {

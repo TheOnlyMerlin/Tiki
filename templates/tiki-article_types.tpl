@@ -1,5 +1,4 @@
-{* $Id$ *}
-{title admpage="articles" url="tiki-article_types.php" help=Articles}{tr}Admin Article Types{/tr}{/title}
+{title url="tiki-article_types.php" help=Articles}{tr}Admin Article Types{/tr}{/title}
 
 <div class="navbar">
 	{button _onclick="javascript:toggle('wiki-edithelp');return false;" _text="{tr}Show Help{/tr}" _ajax="n"}
@@ -53,6 +52,7 @@
 				{cycle print=false values="even,odd"}
 				<input type="hidden" name="type_array[{$types[user].type|escape}]" />
 				<tr class="{cycle}">
+					{*get_strings {tr}Article{/tr}{tr}Review{/tr}{tr}Event{/tr}{tr}Classified{/tr} *}
 					<td class="integer">{$types[user].article_cnt}</td>
 					<td class="checkbox">
 						<input type="checkbox" name="use_ratings[{$types[user].type|escape}]" {if $types[user].use_ratings eq 'y'}checked="checked"{/if} />

@@ -67,7 +67,7 @@ class RegistrationLib extends TikiLib
 		// split function reference : http://www.php.net/manual/en/function.split.php
 		list ($Username, $Domain) = explode ("@", $Email);
         
-		if ($prefs['validateEmail'] == 'n') {
+		if($prefs['validateEmail'] == 'n') {
 			$Return[0]=true;
 			$Return[1]="The email appears to be correct."; 
 			Return $Return;
@@ -76,11 +76,11 @@ class RegistrationLib extends TikiLib
 		// That MX(mail exchanger) record exists in domain check .
 		// checkdnsrr function reference : http://www.php.net/manual/en/function.checkdnsrr.php
 		if ( checkdnsrr ( $Domain, "MX" ) )  {
-			if ($Debug) echo "Confirmation : MX record about {$Domain} exists.<br>";
+			if($Debug) echo "Confirmation : MX record about {$Domain} exists.<br>";
 			// If MX record exists, save MX record address.
 			// getmxrr function reference : http://www.php.net/manual/en/function.getmxrr.php
 			if ( getmxrr ($Domain, $MXHost))  {
-				if ($Debug) {
+				if($Debug) {
 					echo "Confirmation : Is confirming address by MX LOOKUP.<br>";
 					$j=0;
 					foreach($MXHost as $mxh) {
@@ -180,7 +180,8 @@ class RegistrationLib extends TikiLib
         
 		if ($email_valid != 'no') {
 			if ($prefs['validateUsers'] == 'y') {
-				$apass = md5($tikilib->genPass());
+				//$apass = addslashes(substr(md5($tikilib->genPass()), 0, 25));
+				$apass = addslashes(md5($tikilib->genPass()));
 				$registrationlib_apass = $apass;
 				$userlib->add_user($_REQUEST['name'], $apass, $_REQUEST["email"], $_REQUEST["pass"]);
 			} else {
@@ -204,7 +205,7 @@ class RegistrationLib extends TikiLib
 	 *  @returns ?
 	 */
 	/*private*/
-	function local_check_registration($registration, $from_intertiki = false) {
+	function local_check_registration($registration) {
 		global $_SESSION, $prefs, $userlib, $captchalib;
         
 		if (empty($registration['name']))
@@ -245,15 +246,11 @@ class RegistrationLib extends TikiLib
 			return new RegistrationError('name', tra("Username cannot contain uppercase letters"));
 		}
 
-		if (strlen($registration['name']) < $this->merged_prefs['min_username_length']) {
-			return new RegistrationError('name',
-				tr("Username must be at least %0 characters long", $this->merged_prefs['min_username_length']));
-		}
+		if (strlen($registration['name']) < $this->merged_prefs['min_username_length'])
+			return new RegistrationError('name', tra("Username must be at least") . ' ' . $this->merged_prefs['min_username_length'] . ' ' . tra("characters long"));
 			
-		if (strlen($registration['name']) > $this->merged_prefs['max_username_length']) {
-			return new RegistrationError('name', 
-				tr("Username cannot contain more than %0 characters", $this->merged_prefs['max_username_length']));
-		}
+		if (strlen($registration['name']) > $this->merged_prefs['max_username_length'])
+			return new RegistrationError('name', tra("Username cannot contain more than") . ' ' . $this->merged_prefs['max_username_length'] . ' ' . tra("characters"));
 		
 		$newPass = $registration['pass'] ? $registration['pass'] : $registration["genepass"];
 		$polerr = $userlib->check_password_policy($newPass);
@@ -295,11 +292,11 @@ class RegistrationLib extends TikiLib
 
 		$newPass = $registration['pass'] ? $registration['pass'] : $registration["genepass"];
 		if ($this->merged_prefs['validateUsers'] == 'y' || (isset($this->merged_prefs['validateRegistration']) && $this->merged_prefs['validateRegistration'] == 'y')) {
-			$apass = md5($tikilib->genPass());
+			$apass = addslashes(md5($tikilib->genPass()));
 			$userlib->send_validation_email($registration['name'], $apass, $registration['email'], '', '', isset($registration['chosenGroup']) ? $registration['chosenGroup'] : '');
 			$userlib->add_user($registration['name'], $newPass, $registration["email"], '', false, $apass, $openid_url , $this->merged_prefs['validateRegistration'] == 'y'?'a':'u');
 			$logslib->add_log('register', 'created account ' . $registration['name']);
-			$result=tra('You will receive an email with the information needed to log into this site the first time.');
+			$result=tra('You will receive an email with information to login for the first time into this site');
 		} else {
 			$userlib->add_user($registration['name'], $newPass, $registration["email"], '', false, NULL, $openid_url);
 			$logslib->add_log('register', 'created account ' . $registration['name']);
@@ -312,6 +309,35 @@ class RegistrationLib extends TikiLib
 		}
 		$userlib->set_email_group($registration['name'], $registration['email']);
 		// save default user preferences
+		$tikilib->set_user_preference($registration['name'], 'theme', $prefs['style']);
+		$tikilib->set_user_preference($registration['name'], 'userbreadCrumb', $prefs['users_prefs_userbreadCrumb']);
+		$tikilib->set_user_preference($registration['name'], 'language', $prefs['users_prefs_language']);
+		$tikilib->set_user_preference($registration['name'], 'display_timezone', $prefs['users_prefs_display_timezone']);
+		$tikilib->set_user_preference($registration['name'], 'user_information', $prefs['users_prefs_user_information']);
+		$tikilib->set_user_preference($registration['name'], 'user_dbl', $prefs['users_prefs_user_dbl']);
+		$tikilib->set_user_preference($registration['name'], 'display_12hr_clock', $prefs['users_prefs_display_12hr_clock']);
+		$tikilib->set_user_preference($registration['name'], 'diff_versions', $prefs['users_prefs_diff_versions']);
+		$tikilib->set_user_preference($registration['name'], 'show_mouseover_user_info', $prefs['users_prefs_show_mouseover_user_info']);
+		$tikilib->set_user_preference($registration['name'], 'email is public', $prefs['users_prefs_email_is_public']);
+		$tikilib->set_user_preference($registration['name'], 'mailCharset', $prefs['users_prefs_mailCharset']);
+		$tikilib->set_user_preference($registration['name'], 'realName', '');
+		$tikilib->set_user_preference($registration['name'], 'homePage', '');
+		$tikilib->set_user_preference($registration['name'], 'lat', floatval(0));
+		$tikilib->set_user_preference($registration['name'], 'lon', floatval(0));
+		$tikilib->set_user_preference($registration['name'], 'country', '');
+		$tikilib->set_user_preference($registration['name'], 'mess_maxRecords', $prefs['users_prefs_mess_maxRecords']);
+		$tikilib->set_user_preference($registration['name'], 'mess_archiveAfter', $prefs['users_prefs_mess_archiveAfter']);
+		$tikilib->set_user_preference($registration['name'], 'mess_sendReadStatus', $prefs['users_prefs_mess_sendReadStatus']);
+		$tikilib->set_user_preference($registration['name'], 'minPrio', $prefs['users_prefs_minPrio']);
+		$tikilib->set_user_preference($registration['name'], 'allowMsgs', $prefs['users_prefs_allowMsgs']);
+		$tikilib->set_user_preference($registration['name'], 'mytiki_pages', $prefs['users_prefs_mytiki_pages']);
+		$tikilib->set_user_preference($registration['name'], 'mytiki_blogs', $prefs['users_prefs_mytiki_blogs']);
+		$tikilib->set_user_preference($registration['name'], 'mytiki_articles', $prefs['users_prefs_mytiki_articles']);
+		$tikilib->set_user_preference($registration['name'], 'mytiki_gals', $prefs['users_prefs_mytiki_gals']);
+		$tikilib->set_user_preference($registration['name'], 'mytiki_msgs', $prefs['users_prefs_mytiki_msgs']);
+		$tikilib->set_user_preference($registration['name'], 'mytiki_tasks', $prefs['users_prefs_mytiki_tasks']);
+		$tikilib->set_user_preference($registration['name'], 'mytiki_items', $prefs['users_prefs_mytiki_items']);
+		$tikilib->set_user_preference($registration['name'], 'tasks_maxRecords', $prefs['users_prefs_tasks_maxRecords']);
 
 		// Custom fields
 		$customfields = $this->get_customfields();

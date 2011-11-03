@@ -32,8 +32,8 @@ class TikiImporter_Wiki extends TikiImporter
 	static public function importOptions()
 	{
 		$options  = array(
-	        array('name' => 'wikiRevisions', 'type' => 'text', 'value' => 1, 'label' => tra('Number of page revisions to import (0 for all revisions):')),
-	        array('name' => 'alreadyExistentPageName', 'type' => 'select', 'label' => tra('What to do with page names that already exists in Tiki?'),
+	        array('name' => 'wikiRevisions', 'type' => 'text', 'value' => 1, 'label' => tra('Number of page revisions to import (0 for all revisions)')),
+	        array('name' => 'alreadyExistentPageName', 'type' => 'select', 'label' => tra('What to do with page names that already exists in TikiWiki?'),
 	            'options' => array(
 	                array('name' => 'doNotImport', 'label' => tra('Do not import')),
 	                array('name' => 'override', 'label' => tra('Override')),
@@ -177,7 +177,7 @@ class TikiImporter_Wiki extends TikiImporter
                     if (empty($categId)) {
                        $categId = $categlib->add_category(0, $cat, '');
                     }
-                    $categlib->categorize_any('wiki page', $page['name'], $categId);
+                    $categlib->categorize_page( $page['name'], $categId);
                 }
             }
         }

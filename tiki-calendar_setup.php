@@ -26,7 +26,7 @@ if ( ! ($prefs['feature_calendar'] == 'y' || $prefs['feature_action_calendar'] =
 
 global $calendarlib; include_once('lib/calendar/calendarlib.php');
 
-$trunc = "40"; // put in a pref, number of chars displayed in cal cells
+$trunc = "20"; // put in a pref, number of chars displayed in cal cells
 
 if (!empty($_REQUEST['focus'])) {
 	$_REQUEST['todate'] = $_SESSION['CalendarFocusDate'] = $_REQUEST['focus'];
@@ -141,7 +141,7 @@ $wd = TikiLib::date_format('%w', $focusdate);
 //prepare for select first day of week (Hausi)
 if ($firstDayofWeek == 1) {
 	$wd--;
-	if ($wd == -1) {
+	if($wd == -1) {
 		$wd = 6;
 	}
 }
@@ -228,11 +228,11 @@ if ( $calendarViewMode['casedefault'] == 'month' ||
    $TmpWeekday = TikiLib::date_format("%w", $viewend);
    if ( $viewlist != 'list' ) {
 	   //$viewend += (6 - $TmpWeekday) * $d;
-		$viewend = $tikilib->make_time(
-			23, 59, 59,
-			TikiLib::date_format("%m", $viewend),
-			TikiLib::date_format("%d", $viewend) + ( 6 - $TmpWeekday ),
-			TikiLib::date_format("%Y", $viewend)
+	$viewend = $tikilib->make_time(
+		23, 59, 59,
+	   	TikiLib::date_format("%m", $viewend),
+		TikiLib::date_format("%d", $viewend) + ( 6 - $TmpWeekday ),
+		TikiLib::date_format("%Y", $viewend)
 	);
    }
 
@@ -302,10 +302,10 @@ if ( $calendarViewMode['casedefault'] == 'month' ||
 
 //	$viewend = $viewstart + ($d - 1);
 	$viewend = $tikilib->make_time(
-			0, 0, 0,
-			TikiLib::date_format("%m", $viewstart),
-			TikiLib::date_format("%d", $viewstart) + 1,
-			TikiLib::date_format("%Y", $viewstart)
+		0, 0, 0,
+	   	TikiLib::date_format("%m", $viewstart),
+		TikiLib::date_format("%d", $viewstart) + 1,
+		TikiLib::date_format("%Y", $viewstart)
 	) - 1;
 
 	$dayend = $daystart;
@@ -326,19 +326,18 @@ $weeks = array();
 $cell = array();
 
 if (!function_exists('correct_start_day')) {
-	function correct_start_day($d) {
-		global $prefs;
-
-		$tmp = $d - $prefs['calendar_firstDayofWeek'];
-		if ($tmp < 0 ) {
-			$tmp += 7;
-		}
-		return $tmp;
+function correct_start_day($d) {
+	global $prefs;
+	
+	$tmp = $d - $prefs['calendar_firstDayofWeek'];
+	if ($tmp < 0 ) {
+		$tmp += 7;
 	}
+	return $tmp;
+}
 }
 
-if (empty($myurl)) {
+if (empty($myurl))
 	$myurl = 'tiki-calendar.php';
-}
 $jscal_url = "$myurl?todate=%s";
 $smarty->assign('jscal_url', $jscal_url);

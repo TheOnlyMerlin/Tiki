@@ -7,6 +7,7 @@
 $section = 'cms';
 require_once ('tiki-setup.php');
 include_once ('lib/articles/artlib.php');
+$smarty->assign('headtitle', tra('List Articles'));
 $access->check_feature('feature_articles');
 $access->check_permission('tiki_p_read_article');
 $auto_query_args = array('sort_mode', 'category', 'offset', 'maxRecords', 'find', 'find_from_Month', 'find_from_Day', 'find_from_Year', 'find_to_Month', 'find_to_Day', 'find_to_Year', 'type', 'topic', 'cat_categories', 'categId', 'lang', 'mode', 'mapview', 'searchmap', 'searchlist');
@@ -30,7 +31,7 @@ if (isset($_REQUEST["remove"])) {
 		$smarty->display("error.tpl");
 		die;
 	}
-	$access->check_authenticity(tr('Are you sure you want to permanently remove the article with identifier %0?', $_REQUEST["remove"]));
+	$access->check_authenticity(tr('Are you sure you want to permanently remove article id %0?', $_REQUEST["remove"]));
 	$artlib->remove_article($_REQUEST["remove"]);
 }
 if (isset($_REQUEST['submit_mult'])) {
@@ -45,7 +46,7 @@ if (isset($_REQUEST['submit_mult'])) {
 				die;
 			}
 		}
-		$access->check_authenticity(tr('Are you sure you want to permanently remove these %0 articles?', count($_REQUEST["checked"])));
+		$access->check_authenticity(tr('Are you sure you want to permanently remove %0 articles?', count($_REQUEST["checked"])));
 
 		foreach ($_REQUEST["checked"] as $aId) {
 			$artlib->remove_article($aId);
@@ -122,27 +123,22 @@ if (!isset($_REQUEST["topic"])) {
 }
 
 $filter['categId'] = 0;
-if ($prefs['feature_categories'] == 'y') {
-	if (!empty($_REQUEST['cat_categories'])) {
-		if (count($_REQUEST['cat_categories']) > 1) {
-			unset($_REQUEST['categId']);
-		} else {
-			$_REQUEST['categId'] = $_REQUEST['cat_categories'][0];
-		}
-	} else {
-		$_REQUEST['cat_categories'] = array();
-	}
+if ($prefs['feature_categories'] == 'y' && !empty($_REQUEST['cat_categories'])) {
 	$filter['categId'] = $_REQUEST['cat_categories'];
-	$smarty->assign('findSelectedCategoriesNumber', count($_REQUEST['cat_categories']));
-	if (!empty($_REQUEST['categId'])) {
-		$filter['categId'] = array((int) $_REQUEST['categId']);
-		$smarty->assign('find_categId', $_REQUEST['categId']);
+	if (count($_REQUEST['cat_categories']) > 1) {
+		$smarty->assign('find_cat_categories', $_REQUEST['cat_categories']);
+		unset($_REQUEST['categId']);
 	} else {
-		$smarty->assign('find_categId', '');
+		$_REQUEST['categId'] = $_REQUEST['cat_categories'][0];
+		unset($_REQUEST['cat_categories']);
 	}
-	$selectedCategories = $filter['categId'];
+} else {
+		$_REQUEST['cat_categories'] = array();
 }
-
+if ($prefs['feature_categories'] == 'y' && !empty($_REQUEST['categId'])) {
+	$filter['categId'] = $_REQUEST['categId'];
+	$smarty->assign('find_categId', $_REQUEST['categId']);
+}
 if (!isset($_REQUEST['lang'])) {
 	$_REQUEST['lang'] = '';
 }
@@ -175,9 +171,9 @@ $smarty->assign_by_ref('types', $types);
 if ($prefs['feature_categories'] == 'y') {
 	global $categlib;
 	include_once ('lib/categories/categlib.php');
-	$categories = $categlib->getCategories();
+	$categories = $categlib->get_all_categories_respect_perms(null, 'view_category');
 	$smarty->assign_by_ref('categories', $categories);
-	$smarty->assign('cat_tree', $categlib->generate_cat_tree($categories, true, $selectedCategories));	
+	$smarty->assign('cat_tree', $categlib->generate_cat_tree($categories, true, $_REQUEST['cat_categories']));	
 }
 if ($prefs['feature_multilingual'] == 'y') {
 	$languages = array();
@@ -185,7 +181,7 @@ if ($prefs['feature_multilingual'] == 'y') {
 	$smarty->assign_by_ref('languages', $languages);
 }
 if ($tiki_p_edit_article != 'y' && $tiki_p_remove_article != 'y') { //check one editable
-	foreach ($listpages['data'] as $page) {
+	foreach($listpages['data'] as $page) {
 		if ($page['author'] == $user && $page['creator_edit'] == 'y') {
 			$smarty->assign('oneEditPage', 'y');
 			break;

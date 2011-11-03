@@ -52,13 +52,13 @@ if (!empty($_REQUEST['pollId'])) {
 	$smarty->assign_by_ref('pollId', $_REQUEST['pollId']);
 } else {
 	$polls = $polllib->list_active_polls(0, $_REQUEST['maxRecords'], 'votes_desc', $_REQUEST['find']);
-	foreach ($polls['data'] as $pId) {
+	foreach($polls['data'] as $pId) {
 		$pollIds[] = $pId['pollId'];
 	}
 }
 $poll_info_arr = array();
 $start_year = date('Y', $now);
-foreach ($pollIds as $pK => $pId) { // iterate each poll
+foreach($pollIds as $pK => $pId) { // iterate each poll
 	$poll_info = $polllib->get_poll($pId);
 	$start_year = min($start_year, date('Y', $poll_info['publishDate']));
 	if ($which_date == 'all') {
@@ -78,8 +78,7 @@ foreach ($pollIds as $pK => $pId) { // iterate each poll
 	$poll_info_arr[$pK]['options'] = $options;
 } // end iterate each poll
 
-function scoresort($a, $b)
-{
+function scoresort($a, $b) {
 	if (isset($_REQUEST['scoresort_asc'])) {
 		$i = $_REQUEST['scoresort_asc'];
 	} else {
@@ -132,6 +131,15 @@ if ($tiki_p_view_poll_voters == 'y' && !empty($_REQUEST['list']) && isset($_REQU
 	$list_votes = $tikilib->list_votes('poll' . $_REQUEST['pollId'], $_REQUEST['offset'], $prefs['maxRecords'], $_REQUEST['sort_mode'], $_REQUEST['find'], 'tiki_poll_options', 'title', $vote_from_date, $vote_to_date);
 	$smarty->assign_by_ref('list_votes', $list_votes['data']);
 	$smarty->assign_by_ref('cant_pages', $list_votes['cant']);
+}
+// Poll comments
+if ($prefs['feature_poll_comments'] == 'y' && isset($_REQUEST['pollId'])) {
+	$comments_per_page = $prefs['poll_comments_per_page'];
+	$thread_sort_mode = $prefs['poll_comments_default_ordering'];
+	$comments_vars = array('pollId');
+	$comments_prefix_var = 'poll:';
+	$comments_object_var = 'pollId';
+	include_once ('comments.php');
 }
 $smarty->assign_by_ref('poll_info_arr', $poll_info_arr);
 $smarty->assign_by_ref('start_year', $start_year);

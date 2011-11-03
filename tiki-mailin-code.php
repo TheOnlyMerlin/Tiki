@@ -9,6 +9,7 @@ require_once ('tiki-setup.php');
 $access->check_script($_SERVER["SCRIPT_NAME"], basename(__FILE__));
 include_once ('lib/mailin/mailinlib.php');
 require_once ("lib/webmail/net_pop3.php");
+include_once ("lib/webmail/class.rc4crypt.php");
 include_once ("lib/mail/mimelib.php");
 include_once ("lib/webmail/tikimaillib.php");
 include_once ('lib/wiki/wikilib.php');
@@ -54,7 +55,7 @@ if (empty($accs['data'])) {
 }
 $content = '<br /><br />';
 // foreach account
-foreach ($accs['data'] as $acc) {
+foreach($accs['data'] as $acc) {
 	$content.= "<b>Processing account</b><br />";
 	$content.= "Account :" . $acc['account'] . "<br />";
 	$content.= "Type    :" . $acc['type'] . "<br />";

@@ -5,7 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-global $headerlib, $access;
+global $headerlib, $ajaxlib, $access;
 require_once ('tiki-setup.php');
 
 $access->check_feature( array('feature_webmail', 'feature_ajax' ) );	// AJAX_TODO
@@ -16,7 +16,7 @@ if (!isset($_REQUEST['callback'])) {	// "normal" (non-AJAX) page load
 	$divId = 'mod-webmail_inbox'.$module_params['module_position'].$module_params['module_ord'];
 	$module_params['module_id'] = $divId;
 	
-	//$ajaxlib->registerTemplate('modules/mod-webmail_inbox.tpl');
+	$ajaxlib->registerTemplate('modules/mod-webmail_inbox.tpl');
 	
 	$_SESSION['webmailinbox'][$divId]['module_params'] = $module_params;
 	
@@ -130,7 +130,10 @@ function showWebmailMessage(inMsg) {
 });
 ");
 	
+} else {	// end if (!isset($_REQUEST['callback'])) - AJAX call
+
 }
+
 if (!empty($_REQUEST['action'])) {
 	switch ($_REQUEST['action']) {	// placeholder: more to do
 		default:

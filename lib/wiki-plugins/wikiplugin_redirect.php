@@ -13,7 +13,6 @@ function wikiplugin_redirect_info() {
 		'prefs' => array( 'wikiplugin_redirect' ),
 		'validate' => 'arguments',
 		'icon' => 'pics/icons/arrow_right.png',
-		'tags' => array( 'basic' ),
 		'params' => array(
 			'page' => array(
 				'required' => false,
@@ -68,7 +67,8 @@ function wikiplugin_redirect($data, $params, $offset, $options) {
 
 			if ($_SESSION['current_perspective'] !== $perspective) {
 		
-				if ( $perspectivelib->perspective_exists( $perspective ) ) {
+				if( $perspectivelib->perspective_exists( $perspective ) ) {
+					$_SESSION['need_reload_prefs'] = true;
 					$_SESSION['current_perspective'] = $perspective;
 				}
 				if (empty($page) && empty($url)) {

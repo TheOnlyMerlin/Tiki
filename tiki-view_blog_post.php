@@ -69,7 +69,7 @@ if ($ownsblog == 'n' && $tiki_p_blog_admin != 'y' && $post_info['created'] > $ti
 }	
 $post_info['adjacent'] = $bloglib->_get_adjacent_posts($blogId, $post_info['created'], $tiki_p_blog_admin == 'y'? null: $tikilib->now, $user);
 
-if (isset($post_info['priv']) && ($post_info['priv'] == 'y')) {
+if(isset($post_info['priv']) && ($post_info['priv'] == 'y')) {
 	$post_info['title'] .= ' (' . tra("private") . ')';
 }
 
@@ -126,12 +126,31 @@ $post_info['last_page'] = $pages;
 $post_info['pagenum'] = $_REQUEST['page'];
 $smarty->assign('post_info', $post_info);
 
+if ($prefs['feature_blogposts_comments'] == 'y') {
+	if (isset($_REQUEST['comments_per_page'])) {
+		$comments_per_page = $_REQUEST['comments_per_page']; 
+	} else {
+		$comments_per_page = $prefs['blog_comments_per_page'];
+	}
+	$thread_sort_mode = $prefs['blog_comments_default_ordering'];
+	$comments_vars = array(
+		'postId',
+		'offset',
+		'find',
+		'sort_mode',
+		'blogId'
+	);
+	$comments_prefix_var = 'blog post:';
+	$comments_object_var = 'postId';
+	include_once ("comments.php");
+}
+
 $cat_type = 'blog';
 $cat_objid = $blogId;
 include_once ('tiki-section_options.php');
 if ($user && $prefs['feature_notepad'] == 'y' && $tiki_p_notepad == 'y' && isset($_REQUEST['savenotepad'])) {
 	check_ticket('view-blog-post');
-	$tikilib->replace_note($user, 0, $post_info['title'] ? $post_info['title'] : $tikilib->date_format("%d/%m/%Y [%H:%M]", $post_info['created']), $post_info['data']);
+	$tikilib->replace_note($user, 0, $post_info['title'] ? $post_info['title'] : $tikilib->date_format("%d/%m/%Y [%H:%M]", $post_info['created']) , $post_info['data']);
 }
 
 ask_ticket('view-blog-post');

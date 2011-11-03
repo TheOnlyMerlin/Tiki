@@ -62,7 +62,7 @@ if (!isset($_SESSION["breadCrumb"])) {
 
 if (!in_array($page, $_SESSION["breadCrumb"])) {
 	if (count($_SESSION["breadCrumb"]) > $prefs['userbreadCrumb']) {
-		array_shift($_SESSION["breadCrumb"]);
+		array_shift ($_SESSION["breadCrumb"]);
 	}
 
 	array_push($_SESSION["breadCrumb"], $page);
@@ -97,11 +97,22 @@ if ($tiki_p_admin_wiki == 'y') {
 	$smarty->assign('canundo', 'y');
 }
 
-if ( isset( $_REQUEST['pagenum'] ) && $_REQUEST['pagenum'] > 0 ) {
-	$pageRenderer->setPageNumber((int) $_REQUEST['pagenum']);
+if( isset( $_REQUEST['pagenum'] ) && $_REQUEST['pagenum'] > 0 ) {
+	$pageRenderer->setPageNumber( (int) $_REQUEST['pagenum'] );
 }
 
 $pageRenderer->useRaw();
+
+// Comments engine!
+if ($prefs['feature_wiki_comments'] == 'y') {
+	$comments_per_page = $prefs['wiki_comments_per_page'];
+
+	$thread_sort_mode = $prefs['wiki_comments_default_ordering'];
+	$comments_vars = array('page');
+	$comments_prefix_var = 'wiki page:';
+	$comments_object_var = 'page';
+	include_once ("comments.php");
+}
 
 include_once ('tiki-section_options.php');
 $pageRenderer->runSetups();
@@ -124,7 +135,7 @@ if ( isset($_REQUEST['download']) && $_REQUEST['download'] !== 'n' ) {
 
 // add &full to URL to output the whole html head and body
 if (isset($_REQUEST['full']) && $_REQUEST['full'] != 'n') {
-	$smarty->assign('mid', 'tiki-show_page_raw.tpl');
+	$smarty->assign('mid','tiki-show_page_raw.tpl');
 	// use tiki_full to include include CSS and JavaScript
 	$smarty->display("tiki_full.tpl");
 } else if (isset($_REQUEST['textonly']) && $_REQUEST['textonly'] != 'n') {

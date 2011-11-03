@@ -1,15 +1,11 @@
 <?php
 // (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 /**
- * Smarty plugin
- * @package Smarty
- * @subpackage plugins
- *
  * \brief Smarty {tikimodule}{/tikimodule} block handler
  *
  * To make a module it is enough to place smth like following
@@ -29,25 +25,27 @@
  * flip="n" is the default.
  * and the param decorations="n" to suppress module decorations
  * decorations="y" is the default.
- *
- * \Note
- * error was used only in case the name was not there.
- * I fixed that error case. -- mose
+
+\Note
+error was used only in case the name was not there.
+I fixed that error case. -- mose
+ 
  */
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
 
-function smarty_block_tikimodule($params, $content, $smarty)
-{
+
+function smarty_block_tikimodule($params, $content, &$smarty) {
+	global $prefs;
 	extract($params);
 	if (!isset($content))   return "";
 	if (!isset($error))  $error = '';
 	if (!isset($overflow))  $overflow = false;
-	if (!isset($title))     $title = substr(strip_tags($content), 0, 12). (strlen(strip_tags($content)) > 12 ? "..." : "");
+	if (!isset($title))     $title = substr(strip_tags($content),0,12). (strlen(strip_tags($content)) > 12 ? "..." : "");
 	if (!isset($name))		$name  = $title; else $name  = $name;
 	$name = urlencode($name);
 	if (!isset($flip) || ($flip != 'y' && $flip != 'yc')) $flip = 'n';
@@ -74,6 +72,6 @@ function smarty_block_tikimodule($params, $content, $smarty)
 	$smarty->assign('module_decorations', $decorations);
 	if ( empty($type) ) $type = "module";
 	$smarty->assign('module_type', $type);
-	$smarty->assignByRef('module_content', $content);
+	$smarty->assign_by_ref('module_content', $content);
 	return $smarty->fetch('module.tpl');
 }

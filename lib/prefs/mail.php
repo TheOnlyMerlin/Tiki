@@ -15,7 +15,6 @@ function prefs_mail_list() {
 				'CRLF' => tra('CRLF (standard)'),
 				'LF' => tra('LF (some Unix MTA)'),
 			),
-			'default' => 'LF',
 		),
 	);
 }

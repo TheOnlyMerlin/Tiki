@@ -9,10 +9,6 @@ class Search_Index_Lucene implements Search_Index_Interface
 {
 	private $lucene;
 	private $highlight = true;
-	private $cache;
-	private $lastModif;
-	private $directory;
-	private $maxResults = 0;
 
 	function __construct($directory, $lang = 'en', $highlight = true)
 	{
@@ -21,57 +17,43 @@ class Search_Index_Lucene implements Search_Index_Interface
 		default:
 			Zend_Search_Lucene_Analysis_Analyzer::setDefault(new StandardAnalyzer_Analyzer_Standard_English());
 		}
-
-		$this->directory = $directory;
-		$this->lastModif = file_exists($directory) ? filemtime($directory) : 0;
-
-		$this->highlight = (bool) $highlight;
-	}
-
-	private function getLucene()
-	{
-		if ($this->lucene) {
-			return $this->lucene;
-		}
-
 		try {
-			$this->lucene = Zend_Search_Lucene::open($this->directory);
+			$this->lucene = Zend_Search_Lucene::open($directory);
 		} catch (Zend_Search_Lucene_Exception $e) {
-			$this->lucene = Zend_Search_Lucene::create($this->directory);
+			$this->lucene = Zend_Search_Lucene::create($directory);
 		}
 
 		$this->lucene->setMaxBufferedDocs(100);
-		$this->lucene->setMaxMergeDocs(5000);
+		$this->lucene->setMaxMergeDocs(200);
 		$this->lucene->setMergeFactor(50);
 
-		return $this->lucene;
+		$this->highlight = (bool) $highlight;
 	}
 
 	function addDocument(array $data)
 	{
 		$document = $this->generateDocument($data);
 
-		$this->getLucene()->addDocument($document);
+		$this->lucene->addDocument($document);
 	}
 
 	function optimize()
 	{
-		$this->getLucene()->optimize();
+		$this->lucene->optimize();
 	}
 
 	function invalidateMultiple(Search_Expr_Interface $expr)
 	{
 		$documents = array();
 
-		$lucene = $this->getLucene();
 		$query = $this->buildQuery($expr);
-		foreach ($lucene->find($query) as $hit) {
+		foreach ($this->lucene->find($query) as $hit) {
 			$document = $hit->getDocument();
 			$documents[] = array(
 				'object_type' => $document->object_type,
 				'object_id' => $document->object_id,
 			);
-			$lucene->delete($hit->id);
+			$this->lucene->delete($hit->id);
 		}
 
 		return $documents;
@@ -79,12 +61,22 @@ class Search_Index_Lucene implements Search_Index_Interface
 
 	function find(Search_Expr_Interface $query, Search_Query_Order $sortOrder, $resultStart, $resultCount)
 	{
-		$data = $this->internalFind($query, $sortOrder);
+		$query = $this->buildQuery($query);
 
-		$result = array_slice($data['result'], $resultStart, $resultCount);
+		$hits = $this->lucene->find($query, $this->getSortField($sortOrder), $this->getSortType($sortOrder), $this->getSortOrder($sortOrder));
+		$result = array();
 
-		$resultSet = new Search_ResultSet($result, count($data['result']), $resultStart, $resultCount);
-		$resultSet->setEstimate($data['count']);
+		foreach ($hits as $key => $hit) {
+			if ($key >= $resultStart) {
+				$result[] = array_merge($this->extractValues($hit->getDocument()), array('relevance' => round($hit->score, 2)));
+
+				if (count($result) == $resultCount) {
+					break;
+				}
+			}
+		}
+
+		$resultSet = new Search_ResultSet($result, count($hits), $resultStart, $resultCount);
 
 		if ($this->highlight) {
 			$resultSet->setHighlightHelper(new Search_Index_Lucene_HighlightHelper($query));
@@ -93,57 +85,6 @@ class Search_Index_Lucene implements Search_Index_Interface
 		}
 
 		return $resultSet;
-	}
-
-	function setCache($cache)
-	{
-		$this->cache = $cache;
-	}
-
-	function setMaxResults($max)
-	{
-		$this->maxResults = (int) $max;
-	}
-
-	private function internalFind(& $query, $sortOrder)
-	{
-		if ($this->cache) {
-			$args = func_get_args();
-			$cacheKey = serialize($args);
-
-			$entry = $this->cache->getSerialized($cacheKey, 'searchresult', $this->lastModif);
-
-			if ($entry) {
-				$query = $entry['query'];
-				return $entry['hits'];
-			}
-		}
-
-		$query = $this->buildQuery($query);
-		$hits = $this->getLucene()->find($query, $this->getSortField($sortOrder), $this->getSortType($sortOrder), $this->getSortOrder($sortOrder));
-
-		$result = array();
-		foreach ($hits as $key => $hit) {
-			$result[] = array_merge($this->extractValues($hit->getDocument()), array('relevance' => round($hit->score, 2)));
-
-			if ($this->maxResults && count($result) >= $this->maxResults) {
-				break;
-			}
-		}
-
-		$return = array(
-			'result' => $result,
-			'count' => count($hits),
-		);
-
-		if ($this->cache) {
-			$this->cache->cacheItem($cacheKey, serialize(array(
-				'query' => $query,
-				'hits' => $return,
-			)), 'searchresult');
-		}
-
-		return $return;
 	}
 
 	private function extractValues($document)
@@ -228,27 +169,18 @@ class Search_Index_Lucene implements Search_Index_Interface
 		} elseif ($node instanceof Search_Expr_Range) {
 			$from = $node->getToken('from');
 			$to = $node->getToken('to');
+			$range = new Zend_Search_Lucene_Search_Query_Range(
+				$this->buildTerm($from)->getTerm(),
+				$this->buildTerm($to)->getTerm(),
+				true // inclusive
+			);
 
-			$from = $this->buildTerm($from);
-			$to = $this->buildTerm($to);
-
-			// Range search not supported for phrases, so revert to normal token matching
-			if (method_exists($from, 'getTerm')) {
-				$range = new Zend_Search_Lucene_Search_Query_Range(
-					$from->getTerm(),
-					$to->getTerm(),
-					true // inclusive
-				);
-
-				$term = $range;
-			} else {
-				$term = $from;
-			}
+			$term = $range;
 		} elseif ($node instanceof Search_Expr_Token) {
 			$term = $this->buildTerm($node);
 		}
 
-		if ($term && method_exists($term, 'getTerm') && (string) $term->getTerm()->text) {
+		if ($term) {
 			$term->setBoost($node->getWeight());
 		}
 
@@ -285,8 +217,8 @@ class Search_Index_Lucene implements Search_Index_Interface
 		case 'Search_Type_PlainText':
 		case 'Search_Type_MultivalueText':
 			$whole = $value->getValue();
-			$whole = str_replace(array('*', '?', '~', '+'), '', $whole);
-			$whole = str_replace(array('[', ']', '{', '}', '(', ')', ':', '-'), ' ', $whole);
+			$whole = str_replace(array('*', '?', '~', '+', '-'), '', $whole);
+			$whole = str_replace(array('[', ']', '{', '}', '(', ')', ':'), '', $whole);
 
 			$parts = explode(' ', $whole);
 			if (count($parts) === 1) {

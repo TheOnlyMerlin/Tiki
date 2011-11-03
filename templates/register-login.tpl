@@ -1,6 +1,5 @@
 {if $prefs.user_register_prettytracker eq 'y' and $prefs.user_register_prettytracker_tpl and $prefs.socialnetworks_user_firstlogin != 'y'}
-	<input type="text" name="name" id="name" />
-	&nbsp;<strong class='mandatory_star'>*</strong>
+	<input type="text" name="name" id="name" /><strong class='mandatory_star'>*</strong>
 {else}
 	<tr>
 		<td>
@@ -17,7 +16,7 @@
 			{else}
 				{if $prefs.min_username_length > 1}
 					<div class="highlight">
-						<em>{tr _0=$prefs.min_username_length}Minimum %0 characters long{/tr}</em>
+						<em>{tr}Minimum {$prefs.min_username_length} characters long{/tr}</em>
 					</div>
 				{/if}
 				{if $prefs.lowercase_username eq 'y'}

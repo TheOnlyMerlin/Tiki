@@ -346,12 +346,12 @@ a.flip:hover,
 	background: #eee;
 	color: #000;
 }
-
-.box-share > div {
+	
+#site_report {
 	text-align: center;
 }
 
-.site_report a {
+#site_report a {
 	border-left: 1px solid #696969;
 	border-right: 1px solid #696969;
 	padding: 0 5px;
@@ -359,6 +359,9 @@ a.flip:hover,
 }
 
 /* default look for editplugin icon links */
+.editplugin {
+	/*background: #fff; color: #000;*/
+}
 .plugin-desc {
 	padding: 5px;
 }
@@ -377,11 +380,6 @@ a.flip:hover,
 	color: black;
 	padding: 10px;
 	border: solid 2px black;
-}
-
-.wikitext .plugin_gauge,
-.wikitext .plugin_gauge-bar {
-	border: none;
 }
 
 /***** Boxes *****/
@@ -475,6 +473,15 @@ img.icon {
 	font-weight: bold;
 }
 	
+.comment .rbox-title,
+.comment .rbox-data {}
+
+.note .rbox-title,
+.note .rbox-data {}
+
+.tip .rbox-title,
+.tip .rbox-data {}
+
 .error .rbox-title,
 .errors .rbox-title,
 .warning .rbox-title {
@@ -513,14 +520,12 @@ img.icon {
 }
 
 /* odd and even classes for tr, td, and li */
-.odd,
-table.normal tr:nth-child(2n+1) {
+.odd {
 	background: #f0f0f0;
 	color: #000;
 }
 
-.even,
-table.normal tr:nth-child(2n) {
+.even {
 	background: #fff;
 	color: #000;
 }
@@ -711,23 +716,6 @@ p.editdate {
 	padding: 2px;
 }
 
-.wpimg-meta-col1 {
-	text-align: right;
-	font-weight: bold;
-	width: 225px;
-	margin-right: 5px;
-}
-
-.wpimg-meta-col2 {
-	width: 375px;
-}
-
-.wpimg-meta-section {
-	border-bottom: solid 1px lightgray;
-	width: 600px;
-	margin-right: 5px;
-}
-
 .magnify {
 	float: right;
 	padding-top: 2px;
@@ -758,7 +746,7 @@ p.editdate {
 	background: #ccffcc;
 	color: #000;
 	/*word-wrap:break-word;*/
-	max-width: 553px;
+	max-width: 400px;
 }
 
 .diffdeleted {
@@ -766,7 +754,7 @@ p.editdate {
 	color: #000;
 	text-decoration: line-through;
 	/*word-wrap:break-word;*/
-	max-width: 553px;
+	max-width: 400px;
 }
 
 .diffinldel {
@@ -960,6 +948,10 @@ p.norecords {
 .catfeatures {
 	font-weight: bold;
 	list-style: none
+}
+
+.catfeatures li {
+	text-transform: capitalize;
 }
 
 .catitems {
@@ -1453,6 +1445,7 @@ textarea.tshoutbox{
 }
  /* wikiplugin_tracker */
 .trackerCategoryName {white-space:nowrap;}
+/* End of file */
 
 #captchaImg {
 	border: 1px solid black;
@@ -1552,82 +1545,3 @@ label.error {
 	padding-left: 16px;
 }
 
-
-.comment.archived {
-	display: none;
-}
-
-.all .comment.archived {
-	display: block;
-}
-
-.tracker-item-files li {
-	clear: right;
-}
-
-.tracker-item-files label {
-	clear: right;
-	float: right;
-}
-
-.tracker-item-files {
-	-moz-column-count: 2;
-	-moz-column-gap: 30px;
-	-webkit-column-count: 2;
-	-webkit-column-gap: 30px;
-}
-
-.file-drop {
-	min-height: 100px;
-}
-
-form.simple label {
-	clear: both;
-	padding-bottom: 1em;
-}
-
-form.simple label.depends {
-	padding-left: 20px;
-}
-
-form.simple label .description {
-	padding-left: 20px;
-}
-
-form.simple textarea,
-form.simple input[type="text"],
-form.simple input[type="file"],
-form.simple input[type="url"],
-form.simple input[type="email"],
-form.simple input[type="number"],
-form.simple select
-{
-	display: block;
-	clear: left;
-	width: 100%;
-}
-
-/* $.fn.modal */
-.mask {
-	position:absolute; 
-	z-index:999;
-	background-color:#FFFFFF;
-	display:none;
-}
-
-.boxes .dialog {
-	width: auto;
-	height: auto;
-	font-weight: bold;
-	z-index: 9999;
-	text-align: center;
-}
-.structuremenu .menuSection {
-	margin-left: 6px;
-	border-left: 1px dotted gray;
-}
-.structuremenu .menuSection .option, .structuremenu .menuSection .optionline {
-	background: transparent url(../../img/icons2/h_trenner.gif) center left no-repeat; padding-left: 21px;
-}
-
-/* End of file */

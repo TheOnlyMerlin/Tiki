@@ -544,10 +544,7 @@ if (array_key_exists('CalendarViewGroups',$_SESSION) && count($_SESSION['Calenda
 global $wikilib; include_once('lib/wiki/wikilib.php');
 $plugins = $wikilib->list_plugins(true, 'editwiki');
 $smarty->assign_by_ref('plugins', $plugins);
+$smarty->assign('headtitle',tra('Calendar event : ').$calitem['name']);
 $smarty->assign('impossibleDates',$impossibleDates);
-if ( !empty($_REQUEST['fullcalendar']) ) {
-	$smarty->display('calendar.tpl');
-} else {
-	$smarty->assign('mid', 'tiki-calendar_edit_item.tpl');
-	$smarty->display('tiki.tpl');
-}
+$smarty->assign('mid', 'tiki-calendar_edit_item.tpl');
+$smarty->display("tiki.tpl");

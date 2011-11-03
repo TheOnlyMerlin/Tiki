@@ -14,7 +14,6 @@ function wikiplugin_quote_info() {
 		'body' => tra('Quoted text'),
 		'icon' => 'pics/icons/quotes.png',
 		'filter' => 'text',
-		'tags' => array( 'basic' ),
 		'params' => array(
 			'replyto' => array(
 				'required' => false,

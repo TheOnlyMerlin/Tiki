@@ -12,7 +12,7 @@ include_once ('lib/registration/registrationlib.php');
 include_once ('lib/trackers/trackerlib.php');
 if (isset($_REQUEST['userId'])) {
 	$userwatch = $tikilib->get_user_login($_REQUEST['userId']);
-	if ($userwatch === false) {
+	if ($userwatch === NULL) {
 		$smarty->assign('errortype', 'no_redirect_login');
 		$smarty->assign('msg', tra("Unknown user"));
 		$smarty->display("error.tpl");
@@ -186,7 +186,7 @@ if ($prefs['user_tracker_infos']) {
 	$userTrackerId = $trackerinfo[0];
 	array_shift($trackerinfo);
 	$fields = $trklib->list_tracker_fields($userTrackerId, 0, -1, 'position_asc', '', true, array('fieldId' => $trackerinfo));
-	foreach ($fields['data'] as $field) {
+	foreach($fields['data'] as $field) {
 		$lll[$field['fieldId']] = $field;
 	}
 	$items = $trklib->list_items($userTrackerId, 0, 1, '', $lll, $trklib->get_field_id_from_type($userTrackerId, 'u', '1%'), '', '', '', $userwatch);

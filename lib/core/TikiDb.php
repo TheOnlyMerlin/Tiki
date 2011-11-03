@@ -5,6 +5,8 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+require_once 'lib/core/TikiDb/ErrorHandler.php';
+
 abstract class TikiDb
 {
 	private static $instance;
@@ -144,9 +146,10 @@ abstract class TikiDb
 
 	protected function handleQueryError( $query, $values, $result ) // {{{
 	{
-		if ( $this->errorHandler )
+		if( $this->errorHandler )
 			$this->errorHandler->handle( $this, $query, $values, $result );
 		else {
+			require_once 'TikiDb/Exception.php';
 			throw new TikiDb_Exception( $this->getErrorMessage() );
 		}
 	} // }}}
@@ -158,7 +161,7 @@ abstract class TikiDb
 
 		if ( !is_null($db_table_prefix) && !empty($db_table_prefix) ) {
 
-			if ( !is_null($common_users_table_prefix) && !empty($common_users_table_prefix) ) {
+			if( !is_null($common_users_table_prefix) && !empty($common_users_table_prefix) ) {
 				$query = str_replace("`users_", "`".$common_users_table_prefix."users_", $query);
 			} else {
 				$query = str_replace("`users_", "`".$db_table_prefix."users_", $query);
@@ -230,7 +233,7 @@ abstract class TikiDb
 		$field = implode('.', $parts);
 		$bindvars = array_merge( $bindvars, $values );
 
-		if ( count( $values ) > 0 ) {
+		if( count( $values ) > 0 ) {
 			$values = rtrim( str_repeat( '?,', count( $values ) ), ',' );
 			return " $field IN( $values ) ";
 		} else {
@@ -267,66 +270,4 @@ abstract class TikiDb
 	{
 		return new TikiDb_Table($this, $tableName);
 	} // }}}
-
-	function begin() // {{{
-	{
-		return new TikiDb_Transaction;
-	} // }}}
-
-	/**
-	* Get a list of installed engines in the MySQL instance
-	* $return array of engine names
-	*/
-	function getEngines() {
-		$engines = array();
-		$result = $this->query('show engines');
-		if ( $result ) {
-			while ( $res = $result->fetchRow() ) {
-				$engines[] = $res['Engine'];
-			}		
-		}		
-		return $engines;
-	}
-	
-	/**
-	 * Check if InnoDB is an avaible engine
-	 * @return true if the InnoDB engine is available
-	 */ 
-	function hasInnoDB() {
-		$engines = $this->getEngines();
-		foreach($engines as $engine) {
-			if (strcmp(strtoupper($engine), 'INNODB') == 0) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Detect the engine used in the current schema.
-	 * Assumes that all tables use the same table engine
-	 * @return string identifying the current engine, or an empty string if not installed
-	 */ 
-	function getCurrentEngine() {
-		$engine = '';
-		$result = $this->query('SHOW TABLE STATUS LIKE ?', 'tiki_schema');
-		if ( $result ) {
-			$res = $result->fetchRow();
-			$engine  = $res['Engine'];
-		}
-		return $engine;
-	}
-
-	/**
-	 * Determine if MySQL fulltext search is supported by the current DB engine
-	 * Assumes that all tables use the same table engine
-	 * @return true if it is supported, otherwise false
-	 */ 
-	function isMySQLFulltextSearchSupported() {
-		$currentEngine = $this->getCurrentEngine();
-		if (strcasecmp($currentEngine,"MyISAM") == 0) {
-			return true;
-		}
-		return false;
-	}
 }

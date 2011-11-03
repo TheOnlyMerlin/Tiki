@@ -19,7 +19,6 @@ function wikiplugin_file_info()
 		'body' => tra('Label for the link to the file (ignored if the file is a wiki attachment)'),
 		'icon' => 'pics/icons/file-manager.png',
 		'inline' => true,
-		'tags' => array( 'basic' ),		
 		'params' => array(
 			'type' => array(
 				'required' => true,
@@ -187,7 +186,7 @@ function wikiplugin_file( $data, $params )
 
 	$filedata = array_merge( $filedata, $params );
 
-	if ( ! $filedata["name"] ) {
+	if( ! $filedata["name"] ) {
 		return;
 	}
 
@@ -195,11 +194,11 @@ function wikiplugin_file( $data, $params )
 	$forward['file'] = $filedata['name'];
 	$forward['inline'] = 1;
 	$forward['page'] = $filedata['page'];
-	if ($filedata['showdesc'])
+	if($filedata['showdesc'])
 		$forward['showdesc'] = 1;
-	if ($filedata['image'])
+	if($filedata['image'])
 		$forward['image'] = 1;
 	$middle = $filedata["desc"];
 
-	return TikiLib::lib('parser')->plugin_execute( 'attach', $middle, $forward );
+	return $tikilib->plugin_execute( 'attach', $middle, $forward );
 }

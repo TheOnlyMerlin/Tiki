@@ -12,7 +12,6 @@ $access->check_feature(array('feature_wiki_templates','feature_cms_templates'), 
 include_once ('lib/templates/templateslib.php');
 
 $access->check_permission('tiki_p_edit_content_templates');
-//get_strings tra('Content Templates')
 
 if (!isset($_REQUEST["templateId"])) {
 	$_REQUEST["templateId"] = 0;
@@ -123,12 +122,12 @@ if (isset($_REQUEST["save"])) {
 	check_ticket('admin-content-templates');
 	$type = $_REQUEST['template_type'];
 
-	if ( $type == 'page' ) {
+	if( $type == 'page' ) {
 		$content = 'page:' . $_REQUEST['page_name'];
 	} else {
 		$content = $_REQUEST["content"];
 	}
-	if (isset($_REQUEST["name"]) && $_REQUEST["name"] != "") {
+	if(isset($_REQUEST["name"]) && $_REQUEST["name"] != ""){
 		$tid = $templateslib->replace_template($_REQUEST["templateId"], $_REQUEST["name"], $content, $type);
 		$smarty->assign("templateId", '0');
 		$info["name"] = '';
@@ -181,7 +180,7 @@ if (isset($_REQUEST["save"])) {
 		$info["section_events"] = (isset($_REQUEST["section_events"]) && $_REQUEST["section_events"] == 'on') ? 'y' : 'n';
 		$info["section_html"] = (isset($_REQUEST["section_html"]) && $_REQUEST["section_html"] == 'on') ? 'y' : 'n';
 		$smarty->assign('info', $info);
-		$smarty->assign('emptyname', "true");
+		$smarty->assign('emptyname',"true");
 	}
 }
 if (!isset($_REQUEST["sort_mode"])) {

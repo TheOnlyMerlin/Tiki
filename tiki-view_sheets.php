@@ -8,9 +8,7 @@
 $section = 'sheet';
 $tiki_sheet_div_style = '';
 require_once ('tiki-setup.php');
-
-$sheetlib = TikiLib::lib("sheet");
-
+require_once ('lib/sheet/grid.php');
 $auto_query_args = array(
 	'sheetId',
 	'readdate',
@@ -18,8 +16,7 @@ $auto_query_args = array(
 	'simple',
 	'height',
 	'file',
-	'fileId',
-	'page',
+	'fileId'
 );
 $access->check_feature('feature_sheet');
 $access->check_feature('feature_jquery_ui');
@@ -46,7 +43,6 @@ if (!$sheetlib->user_can_view( $_REQUEST['sheetId'] )) {
 	die;
 }
 
-$smarty->assign('page', $_REQUEST['page']);
 $smarty->assign('objectperms', $objectperms);
 
 if (isset($_REQUEST['height'])) {
@@ -62,7 +58,7 @@ if (!isset($_REQUEST['parse'])) {
 	$_REQUEST['parse'] = 'y';
 }
 
-$smarty->assign('parse', $_REQUEST['parse']);
+$smarty->assign( 'parse', $_REQUEST['parse'] );
 
 $smarty->assign('sheetId', $_REQUEST["sheetId"]);
 $smarty->assign('chart_enabled', (function_exists('imagepng') || function_exists('pdf_new')) ? 'y' : 'n');
@@ -93,7 +89,9 @@ if ($prefs['feature_contribution'] == 'y') {
 if (isset($_REQUEST['s']) && !empty($_REQUEST['s']) ) { //save
 	if ( $_REQUEST['sheetId'] ) {
 		$result = $sheetlib->save_sheet( $_REQUEST['s'], $_REQUEST["sheetId"] );
-
+		
+	} elseif ( $_REQUEST['file'] ) {
+		//$result = $sheetlib->save_sheet( $_REQUEST['s'], null, $_REQUEST['file'], $_REQUEST['type'] );
 	}
 	die($result);
 //Clone
@@ -126,42 +124,26 @@ if (isset($_REQUEST['s']) && !empty($_REQUEST['s']) ) { //save
 }
 
 //Edit & View
-if ( isset($_REQUEST['relate']) && isset($_REQUEST['trackerId']) ) {
-	if ( $_REQUEST['relate'] == 'add' ) {
-		$sheetlib->add_related_tracker( $_REQUEST["sheetId"], $_REQUEST['trackerId'] );
-		$smarty->assign('msg', tra("Tracker Added To Spreadsheet"));
-	} elseif ( $_REQUEST['relate'] == 'remove' ) {
-		$sheetlib->remove_related_tracker( $_REQUEST["sheetId"], $_REQUEST['trackerId'] );
-		$smarty->assign('msg', tra("Tracker Removed From Spreadsheet"));
-	}
-} elseif ( isset($_REQUEST['relate']) && isset($_REQUEST['childSheetId']) ) {
-	if ( $_REQUEST['relate'] == 'add' ) {
-		$sheetlib->add_related_sheet( $_REQUEST["sheetId"], $_REQUEST['childSheetId'] );
-		$smarty->assign('msg', tra("Spreadsheet added"));
-	} elseif ( $_REQUEST['relate'] == 'remove' ) {
-		$sheetlib->remove_related_sheet($_REQUEST["sheetId"], $_REQUEST['childSheetId'] );
-		$smarty->assign('msg', tra("Spreadsheet removed"));
-	}
-} elseif ( isset($_REQUEST['relate']) && isset($_REQUEST['fileId']) ) {
-	if ( $_REQUEST['relate'] == 'add' ) {
-		$sheetlib->add_related_file( $_REQUEST["sheetId"], $_REQUEST['fileId'] );
-		$smarty->assign('msg', tra("File added"));
-	} elseif ( $_REQUEST['relate'] == 'remove' ) {
-		$sheetlib->remove_related_file( $_REQUEST["sheetId"], $_REQUEST['fileId'] );
-		$smarty->assign('msg', tra("File removed"));
-	}
-} elseif ( isset($_REQUEST['fileId']) ) {
-	include_once('lib/filegals/filegallib.php');
-	$access->check_feature('feature_file_galleries');
-	$fileInfo = $filegallib->get_file_info( $_REQUEST['fileId'] );
-	$handler = new TikiSheetCSVHandler($fileInfo);
+if ( isset($_REQUEST['file']) ) {
+	//File sheets
+	$handler = new TikiSheetCSVHandler( $_REQUEST['file'] );
 	$grid = new TikiSheet();
 	$grid->import( $handler );
-	$tableHtml[0] = $grid->getTableHtml();
+	$tableHtml[0] = $grid->getTableHtml( true , null, false );
 	$smarty->assign('notEditable', 'true');
 	
 	if ($handler->truncated) $smarty->assign('msg', tra('Spreadsheet truncated'));
-
+} elseif ( isset($_REQUEST['fileId']) ) {
+	include_once('lib/filegals/filegallib.php');
+	$access->check_feature('feature_file_galleries');
+	$handler = new TikiSheetFileGalleryCSVHandler($_REQUEST['fileId']);
+	
+	$grid = new TikiSheet();
+	$grid->import( $handler );
+	$tableHtml[0] = $grid->getTableHtml( true , null, false );
+	$smarty->assign('notEditable', 'true');
+	
+	if ($handler->truncated) $smarty->assign('msg', tra('Spreadsheet truncated'));
 } else {
 	//Database sheet
 	$handler = new TikiSheetDatabaseHandler( $_REQUEST["sheetId"] );
@@ -171,7 +153,7 @@ if ( isset($_REQUEST['relate']) && isset($_REQUEST['trackerId']) ) {
 		$handler->setReadDate($_REQUEST['readdate']);
 	}
 	
-	$grid = new TikiSheet();
+	$grid = new TikiSheet( $_REQUEST["sheetId"] );
 	$grid->import( $handler );
 		
 	//ensure that sheet isn't being edited, then parse values if needed
@@ -184,14 +166,11 @@ if ( isset($_REQUEST['relate']) && isset($_REQUEST['trackerId']) ) {
 	$smarty->assign('parseValues', $grid->parseValues);
 			
 	$tableHtml[0] = $grid->getTableHtml( true, $_REQUEST['readdate'] );
-	
-	if (strlen($relatedTrackersAsHtml) > 0) {
-		$tableHtml[0] = $tableHtml[0] . $relatedTrackersAsHtml;
-	}
 }
+
 	
 if (isset($_REQUEST['sheetonly']) && $_REQUEST['sheetonly'] == 'y') {
-	foreach ( $tableHtml as $table ) {
+	foreach( $tableHtml as $table ) {
 		echo $table;
 	}
 	die;
@@ -201,57 +180,40 @@ $smarty->assign('grid_content', $tableHtml);
 $smarty->assign('menu', $smarty->fetch('tiki-view_sheets_menu.tpl'));
 
 $sheetlib->setup_jquery_sheet();
-if (!empty($_REQUEST['parse']) && $_REQUEST['parse'] == 'edit') {
-	$headerlib->add_jq_onready('
-		$.sheet.tikiOptions.editable = true;
-	');
-} else {
-	$headerlib->add_jq_onready('
-		$.sheet.tikiOptions.editable = false;
-	');
-}
-
 $headerlib->add_jq_onready('
 	$.sheet.tikiOptions = $.extend($.sheet.tikiOptions, {
-		menu: $("#sheetMenu").clone().html()
+		editable: ("'. $_REQUEST['parse'] .'" == "edit" ? true : false),
+		menu: $("#sheetMenu").html()
 	});
 	
-	jST = $("div.tiki_sheet")
-		.sheet($.sheet.tikiOptions);
+	$.sheet.tikiSheet = $("div.tiki_sheet").sheet($.sheet.tikiOptions);
 	
-	jST.id = "'.$_REQUEST['sheetId'].'";
-	jST.file = "'.$_REQUEST['file'].'";
+	$.sheet.tikiSheet.id = "'.$_REQUEST['sheetId'].'";
+	$.sheet.tikiSheet.file = "'.$_REQUEST['file'].'";
 	
-	$.sheet.link.setupUI();
-	$.sheet.readyState();
-	
-	$(window).bind("beforeunload", function() {
-		$($.sheet.instance).each(function() {
-			if (this.isDirty) {
-				return true;
-			}
-		});
-	});
+	$.sheet.link.setupUI($.sheet.tikiSheet);
+	$.sheet.manageState($.sheet.tikiSheet);
 	
 	$("#edit_button a")
 		.click(function() {
-			$.sheet.manageState(true, "edit");
+			$.sheet.manageState($.sheet.tikiSheet, true, "edit");
 			return false;
 		});
 						
 	$("#save_button a")
 		.click( function () {
-			$.sheet.saveSheet(function() {
-				$.sheet.manageState(true);
+			$("#saveState").hide();
+			
+			$.sheet.saveSheet($.sheet.tikiSheet, function() {
+				$.sheet.manageState($.sheet.tikiSheet, true, "");
 			});
 			
 			return false;
 		});
 	
 	$("#cancel_button")
-		.click(function() {			
-			$.sheet.manageState(true);
-			return false;
+		.click(function() {
+			$("#saveState").hide();
 		});
 ');
 

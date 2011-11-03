@@ -107,7 +107,7 @@ function wikiplugin_trackerstat($data, $params)
 		return tra('Permission denied');
 	}
 	if (!empty($show_lastmodif)) {
-		$date = $trklib->lastModif ($trackerId);
+		$date = $trklib->lastModif($trackerId);
 		if (!function_exists('smarty_modifier_tiki_date_format')) {
 			include('lib/smarty_tiki/modifier.tiki_date_format.php');
 		}
@@ -185,19 +185,12 @@ function wikiplugin_trackerstat($data, $params)
 		}
 		if ($allFields['data'][$i]['type'] == 'e') {
 			global $categlib; include_once('lib/categories/categlib.php');
-			$parent = (int) $allFields['data'][$i]['options']; // FIXME: Lazy access to the first option. Only works when a field only has its first option set.
-			if ($parent > 0) {
-				$filter = array('identifier'=>$parent, 'type'=>'children');
-				$listCategs = $categlib->getCategories($filter, true, false); 
-			} else {
-				$listCategs = array();
-			}
+			$listCategs = $categlib->get_child_categories($allFields['data'][$i]['options']);
 			if ($tracker_info['oneUserItem'] == 'y') {
 				$itemId = $trklib->get_user_item($trackerId, $tracker_info);
 			}
-			$j = 0;
-			foreach ($listCategs as $category) {
-				$objects = $categlib->get_category_objects($category['categId'], 'trackeritem', array('table'=>'tiki_tracker_items', 'join'=>'itemId', 'filter'=>'trackerId', 'bindvars'=>$trackerId));
+			for ($j = 0, $jcount_listcategs = count($listCategs); $j < $jcount_listcategs; ++$j) {
+				$objects = $categlib->get_category_objects($listCategs[$j]['categId'], 'trackeritem', array('table'=>'tiki_tracker_items', 'join'=>'itemId', 'filter'=>'trackerId', 'bindvars'=>$trackerId));
 				if ($status == 'opc' || $tracker_info['showStatus'] == 'n') {
 					$v[$j]['count'] = count($objects);
 				} else {
@@ -208,7 +201,7 @@ function wikiplugin_trackerstat($data, $params)
 							++$v[$j]['count'];
 					}
 				}
-				$v[$j]['value'] = $category['name'];
+				$v[$j]['value'] = $listCategs[$j]['name'];
 				if ($tracker_info['oneUserItem'] == 'y') {
 					foreach($objects as $o) {
 						if ($o['itemId'] == $itemId) {
@@ -217,8 +210,7 @@ function wikiplugin_trackerstat($data, $params)
 						}
 					}
 				}
-				$v[$j]['href'] = "trackerId=$trackerId&amp;filterfield=$fieldId&amp;filtervalue[$fieldId][]=".$category['categId'];
-				$j++;
+				$v[$j]['href'] = "trackerId=$trackerId&amp;filterfield=$fieldId&amp;filtervalue[$fieldId][]=".$listCategs[$j]['categId'];
 			}
 		} else	if ($allFields['data'][$i]['type'] == 'h') {//header
 			$stat['name'] = $allFields["data"][$i]['name'];

@@ -12,20 +12,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 define('PATTERN_TO_CLEAN_TEXT', '/[^0-9a-zA-Z_]/');
 define('CLEAN_CHAR', '-');
 define('TITLE_SEPARATOR', '-');
-
-/**
- * Turns a traditional URL into a Search Engine Friendly one, if requested
- *
- * @param string $tpl_output	original "unfriendly" url
- * @param string $type			type of object (article|blog|blogpost etc)
- * @param string $title			title of object
- * @param null $with_next		unknown
- * @param string $with_title	unknown
- * @return string			sefurl
- */
-
-
-function filter_out_sefurl($tpl_output, $type = null, $title = '', $with_next = null, $with_title='y') {
+function filter_out_sefurl($tpl_output, &$smarty, $type = null, $title = '', $with_next = null, $with_title='y') {
 	global $sefurl_regex_out, $tikilib, $prefs, $base_url;
 	if ($prefs['feature_sefurl'] != 'y' or ( preg_match('#^http(|s)://#',$tpl_output) and strpos($tpl_output, $base_url) !== 0 ) ) {
 		return $tpl_output;
@@ -47,48 +34,36 @@ function filter_out_sefurl($tpl_output, $type = null, $title = '', $with_next = 
 			$cachelib->cacheItem('sefurl_regex_out', serialize($sefurl_regex_out));
 		}
 	}
-	if ($type == 'article' && empty($with_next) && $with_title == 'y') {
-		if ($prefs['feature_sefurl_title_article'] == 'y') {
-			global $artlib;
-			include_once ('lib/articles/artlib.php');
-			if (preg_match('/articleId=([0-9]+)/', $tpl_output, $matches) || preg_match('/article([0-9]+)/', $tpl_output, $matches)) {
-				if (empty($title)) $title = $artlib->get_title($matches[1]);
-				$title = preg_replace(PATTERN_TO_CLEAN_TEXT, CLEAN_CHAR, $tikilib->take_away_accent($title));
-				$title = preg_replace('/' . CLEAN_CHAR . CLEAN_CHAR . '+/', '-', $title);
-				$title = preg_replace('/' . CLEAN_CHAR . '+$/', '', $title);
-			}
-		} else {
-			$title = '';
+	if ($type == 'article' && $prefs['feature_sefurl_title_article'] == 'y' && empty($with_next) && $with_title == 'y') {
+		global $artlib;
+		include_once ('lib/articles/artlib.php');
+		if (preg_match('/articleId=([0-9]+)/', $tpl_output, $matches) || preg_match('/article([0-9]+)/', $tpl_output, $matches)) {
+			if (empty($title)) $title = $artlib->get_title($matches[1]);
+			$title = preg_replace(PATTERN_TO_CLEAN_TEXT, CLEAN_CHAR, $tikilib->take_away_accent($title));
+			$title = preg_replace('/' . CLEAN_CHAR . CLEAN_CHAR . '+/', '-', $title);
+			$title = preg_replace('/' . CLEAN_CHAR . '+$/', '', $title);
 		}
 	}
-	if ($type == 'blog' && empty($with_next) && $with_title == 'y') {
-		if ($prefs['feature_sefurl_title_blog'] == 'y') {
-			global $bloglib;
-			include_once ('lib/blogs/bloglib.php');
-			if (preg_match('/blogId=([0-9]+)/', $tpl_output, $matches) || preg_match('/blog([0-9]+)/', $tpl_output, $matches)) {
-				if (empty($title)) $title = $bloglib->get_title($matches[1]);
-				$title = preg_replace(PATTERN_TO_CLEAN_TEXT, CLEAN_CHAR, $tikilib->take_away_accent($title));
-				$title = preg_replace('/' . CLEAN_CHAR . CLEAN_CHAR . '+/', '-', $title);
-				$title = preg_replace('/' . CLEAN_CHAR . '+$/', '', $title);
-			}
-		} else {
-			$title = '';
+	if ($type == 'blog' && $prefs['feature_sefurl_title_blog'] == 'y' && empty($with_next) && $with_title == 'y') {
+		global $bloglib;
+		include_once ('lib/blogs/bloglib.php');
+		if (preg_match('/blogId=([0-9]+)/', $tpl_output, $matches) || preg_match('/blog([0-9]+)/', $tpl_output, $matches)) {
+			if (empty($title)) $title = $bloglib->get_title($matches[1]);
+			$title = preg_replace(PATTERN_TO_CLEAN_TEXT, CLEAN_CHAR, $tikilib->take_away_accent($title));
+			$title = preg_replace('/' . CLEAN_CHAR . CLEAN_CHAR . '+/', '-', $title);
+			$title = preg_replace('/' . CLEAN_CHAR . '+$/', '', $title);
 		}
 	}
-	if ($type == 'blogpost' && empty($with_next) && $with_title == 'y') {
-		if ($prefs['feature_sefurl_title_blog'] == 'y') {
-			global $bloglib;
-			include_once ('lib/blogs/bloglib.php');
-			if (preg_match('/postId=([0-9]+)/', $tpl_output, $matches)) {
-				if (empty($title)) {
-					if ($post_info = $bloglib->get_post($matches[1])) $title = $post_info['title'];
-				}
-				$title = preg_replace(PATTERN_TO_CLEAN_TEXT, CLEAN_CHAR, $tikilib->take_away_accent($title));
-				$title = preg_replace('/' . CLEAN_CHAR . CLEAN_CHAR . '+/', '-', $title);
-				$title = preg_replace('/' . CLEAN_CHAR . '+$/', '', $title);
+	if ($type == 'blogpost' && $prefs['feature_sefurl_title_blog'] == 'y' && empty($with_next) && $with_title == 'y') {
+		global $bloglib;
+		include_once ('lib/blogs/bloglib.php');
+		if (preg_match('/postId=([0-9]+)/', $tpl_output, $matches)) {
+			if (empty($title)) {
+				if ($post_info = $bloglib->get_post($matches[1])) $title = $post_info['title'];
 			}
-		} else {
-			$title = '';
+			$title = preg_replace(PATTERN_TO_CLEAN_TEXT, CLEAN_CHAR, $tikilib->take_away_accent($title));
+			$title = preg_replace('/' . CLEAN_CHAR . CLEAN_CHAR . '+/', '-', $title);
+			$title = preg_replace('/' . CLEAN_CHAR . '+$/', '', $title);
 		}
 	}
 	if ($type == 'tracker item' || $type == 'trackeritem') {
@@ -104,11 +79,11 @@ function filter_out_sefurl($tpl_output, $type = null, $title = '', $with_next = 
 		$title = preg_replace('/' . CLEAN_CHAR . CLEAN_CHAR . '+/', '-', $title);
 		$title = preg_replace('/' . CLEAN_CHAR . '+$/', '', $title);	
 	}
-	foreach ($sefurl_regex_out as $regex) {
+	foreach($sefurl_regex_out as $regex) {
 		if (empty($type) || $type == $regex['type']) {
 			// if a question mark in pattern, deal with possible additional terms
 			// The '?&' isn't pretty but seems to work.
-			//if ( strpos($regex['left'],'?') !== FALSE ) {
+			//if( strpos($regex['left'],'?') !== FALSE ) {
 			//	$tpl_output = preg_replace( '/'.$regex['left'].'&/', $regex['right'].'?&', $tpl_output );
 			//}
 			$tpl_output = preg_replace('/' . $regex['left'] . '/', $regex['right'], $tpl_output);
@@ -118,7 +93,7 @@ function filter_out_sefurl($tpl_output, $type = null, $title = '', $with_next = 
 		$tpl_output.= TITLE_SEPARATOR . $title;
 	}
 	if (is_array($prefs['feature_sefurl_paths'])) {
-		foreach ($prefs['feature_sefurl_paths'] as $path) {
+		foreach($prefs['feature_sefurl_paths'] as $path) {
 			if (isset($_REQUEST[$path])) {
 				$tpl_output = urlencode($_REQUEST[$path]) . "/$tpl_output";
 			}

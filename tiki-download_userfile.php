@@ -25,11 +25,11 @@ $file = &$info["filename"];
 $content = &$info["data"];
 
 session_write_close();
-header("Content-type: $type");
-header("Content-Disposition: inline; filename=\"$file\"");
+header ("Content-type: $type");
+header ("Content-Disposition: inline; filename=\"$file\"");
 
 if ($info["path"]) {
-	readfile($prefs['uf_use_dir'] . $info["path"]);
+	readfile ($prefs['uf_use_dir'] . $info["path"]);
 } else {
 	echo "$content";
 }

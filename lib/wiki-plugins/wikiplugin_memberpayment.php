@@ -50,29 +50,10 @@ function wikiplugin_memberpayment_info() {
 			),
 			'howtitle' => array(
 				'required' => false,
-				'name' => tra('Tiki Payments Invoice Title'),
+				'name' => tra('How Title'),
 				'description' => tra('Title of the input form.').' '. tra('Use %0 for the group name, %4 for the number of days or %5 for the number of years').' '.tra('Supports wiki syntax'),
 				'filter' => 'text',
 				'default' => 'Membership to %0 for %1 (x%2)',
-			),
-			'preventdoublerequest' => array(
-				'required' => false,
-				'name' => tra('Prevent double request'),
-				'description' => tra('Prevent user from extended if there is already a pending request'),
-				'filter' => 'alpha',
-				'default' => 'n',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				)
-			),
-			'freeperiods' => array(
-				'required' => false,
-				'name' => tra('Give specified numbers of free periods'),
-				'description' => tra('Give specified numbers of free periods, the first one could be prorated, in addition to those bought'),
-				'filter' => 'int',
-				'default' => 0,
 			),
 		),
 	);
@@ -82,7 +63,6 @@ function wikiplugin_memberpayment( $data, $params, $offset ) {
 	global $smarty, $userlib, $prefs, $user, $headerlib;
 	global $paymentlib; require_once 'lib/payment/paymentlib.php';
 	static $iPluginMemberpayment = 0;
-	$attributelib = TikiLib::lib('attribute');
 
 	$iPluginMemberpayment++;
 	$smarty->assign('iPluginMemberpayment', $iPluginMemberpayment);
@@ -90,7 +70,7 @@ function wikiplugin_memberpayment( $data, $params, $offset ) {
 	$default = array( 'currentuser'=>'n', 'inputtitle'=>'', 'howtitle' => '');
 	$params = array_merge( $default, $params );
 
-	if ( ( $info = $userlib->get_group_info( $params['group'] ) ) && ( $info['expireAfter'] > 0 || $info['anniversary'] > '') ) {
+	if( ( $info = $userlib->get_group_info( $params['group'] ) ) && $info['expireAfter'] > 0 ) {
 		$smarty->assign( 'wp_member_offset', $offset );
 		$smarty->assign( 'wp_member_price', $params['price'] );
 		if (($info['expireAfter']/365)*365 == $info['expireAfter'] && $info['expireAfter'] >= 365) {
@@ -98,95 +78,25 @@ function wikiplugin_memberpayment( $data, $params, $offset ) {
 		}
 		$smarty->assign( 'wp_member_group', $info );
 		$smarty->assign( 'wp_member_currentuser', $params['currentuser'] );
-		$smarty->assign( 'wp_member_prorated', 0); // default
-		
-		if ($info['anniversary'] > '') {
-			if (strlen($info['anniversary']) == 4) {
-				$ann_month = substr($info['anniversary'],0,2);
-				$ann_day = substr($info['anniversary'],2,2);
-			} elseif (strlen($info['anniversary']) == 2) {
-				$ann_month = 0;
-				$ann_day = $info['anniversary'];
-			}
-			$smarty->assign( 'wp_member_anniversary_month', $ann_month );
-			$smarty->assign( 'wp_member_anniversary_day', $ann_day );
-			if ($params['currentuser'] == 'y') {
-				$extend_until_info = $userlib->get_extend_until_info($user, $params['group']);
-				if (!empty($extend_until_info['ratio_prorated_first_period']) && $extend_until_info['ratio_prorated_first_period'] < 1) {
-					$smarty->assign( 'wp_member_prorated', round($extend_until_info['ratio_prorated_first_period'] * $params['price'], 2) );
-				}	
-			}
-		}
-		
-		// setup free period display
-		if (!empty($params['freeperiods'])) {
-			if (isset($extend_until_info['ratio_prorated_first_period']) && $extend_until_info['ratio_prorated_first_period'] < 1) {
-				$smarty->assign('wp_member_freeperiods', $params['freeperiods'] - 1);
-				$smarty->assign('wp_member_freeprorated', 1);
-			} else {
-				$smarty->assign('wp_member_freeperiods', $params['freeperiods']);
-				$smarty->assign('wp_member_freeprorated', 0);
-			}
-		} else {
-			$smarty->assign('wp_member_freeperiods', 0);
-			$smarty->assign('wp_member_freeprorated', 0);
-		}
-		
-		$smarty->assign('wp_member_requestpending', 'n');
-        $smarty->assign('wp_member_paymentid', 0);
-		if (isset($params['currentuser']) && $params['currentuser'] == 'y' && !empty($params['preventdoublerequest']) && $params['preventdoublerequest'] == 'y') {
-			$attname = 'tiki.memberextend.' . $info['id'];
-			$attributes = $attributelib->get_attributes('user', $user);
-			if (isset($attributes[$attname])) {
-				$smarty->assign('wp_member_requestpending', 'y');
-				$smarty->assign('wp_member_paymentid', $attributes[$attname]);
-			}
-		}
-		
-		if ( isset($_POST['wp_member_offset']) && $_POST['wp_member_offset'] == $offset && !empty($_POST['wp_member_periods'])) {
+
+		if( isset($_POST['wp_member_offset']) && $_POST['wp_member_offset'] == $offset ) {
 			$users = $params['currentuser'] == 'y'? array($user): explode( '|', $_POST['wp_member_users'] );
 			$users = array_map( 'trim', $users );
 			$users = array_filter( $users, array( $userlib, 'user_exists' ) );
 			$users = array_filter( $users );
 
-			if (!empty($params['preventdoublerequest']) && $params['preventdoublerequest'] == 'y') {
-				foreach ($users as $u) {
-					$attname = 'tiki.memberextend.' . $info['id']; 
-					$attributes = $attributelib->get_attributes('user', $u);
-					if (isset($attributes[$attname])) {
-						return '{REMARKSBOX(type=warning, title=Plugin Memberpayment Error)}' . tra('The user ') . $u 
-					. tra(' already has a pending extension request payment invoice ') . $attributes[$attname] . '{REMARKSBOX}';
-					}
-				}
-			}
-			$periods = (int) $_POST['wp_member_periods'];
+			$periods = max( 1, (int) $_POST['wp_member_periods'] );
 
-			if ( count($users) == 1 ) {
+			if( count($users) == 1 ) {
 				$desc = tr('Membership to %0 for %1 (x%2)', $params['group'], reset( $users ), $periods );
 			} else {
 				$desc = tr('Membership to %0 for %1 users (x%2)', $params['group'], count( $users ), $periods );
 			}
 
 			$cost = round( count($users) * $periods * $params['price'], 2 );
-			// reduce cost due to prorated amount if applicable
-			if (empty($params['freeperiods']) && $info['anniversary'] > '') {
-				foreach ($users as $u) {
-					$extend_until_info = $userlib->get_extend_until_info($u, $params['group'], $periods);
-					$cost = $cost - (1 - $extend_until_info['ratio_prorated_first_period']) * $params['price'];
-				}
-				$cost = round( $cost, 2 );
-			} elseif ($periods && !empty($params['freeperiods'])) { 
-				// give free periods (purchase of at least 1 full real period required)
-				$periods += $params['freeperiods'];
-			}
 
 			$id = $paymentlib->request_payment( $desc, $cost, $prefs['payment_default_delay'] );
-			$paymentlib->register_behavior( $id, 'complete', 'extend_membership', array( $users, $params['group'], $periods, $info['id'] ) );
-
-			foreach ($users as $u) {
-				$attributelib->set_attribute('user', $u, 'tiki.memberextend.' . $info['id'], $id);
-			}
-			$paymentlib->register_behavior( $id, 'cancel', 'cancel_membership_extension', array( $users, $info['id'] ) );
+			$paymentlib->register_behavior( $id, 'complete', 'extend_membership', array( $users, $params['group'], $periods ) );
 
 			$smarty->assign( 'wp_member_title', $params['howtitle'] );
 			require_once 'lib/smarty_tiki/function.payment.php';

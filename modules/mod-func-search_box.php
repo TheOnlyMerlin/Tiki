@@ -14,12 +14,12 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 function module_search_box_info() {
 	return array(
 		'name' => tra('Search box'),
-		'description' => tra('Small search form for wiki, articles, blogs, etc.') . ' ' . tra('Deprecated - use the Search module instead.'),
+		'description' => tra('Small search form (for wiki, articles, blogs, etc.)'),
 		'prefs' => array(), // feature_search_fulltext does not depend on feature_search
 		'params' => array(
 			'tiki' => array(
 				'name' => tra('Tiki'),
-				'description' => tr('If set to "y", the search performed is a "Tiki search". Default: "n" (full text search)')
+				'description' => tra('If set to "y", the search performed is a "Tiki search".') . " " . tra('Default:') . ' "n"' . tra(' (full text search)')
 			)
 		)
 	);

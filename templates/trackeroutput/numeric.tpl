@@ -1,6 +1,6 @@
 {strip}
 {if $field.value}
-	{if $context.list_mode neq 'csv' and $field.options_array[2]}
+	{if $field.options_array[2]}
 		<span class="formunit">{$field.options_array[2]|escape}</span>
 	{/if}
 
@@ -14,7 +14,7 @@
 		{$field.value|number_format:$field.options_array[4]:$field.options_array[5]:$field.options_array[6]|escape}
 	{/if}
 
-	{if $context.list_mode neq 'csv' and $field.options_array[3]}
+	{if $field.options_array[3]}
 		<span class="formunit">{$field.options_array[3]|escape}</span>
 	{/if}
 {/if}

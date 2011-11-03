@@ -54,14 +54,14 @@ if (isset($_REQUEST['register'])) {
 	check_ticket('register');
 	$cookie_name = $prefs['session_cookie_name'];
 
-	if ( ini_get('session.use_cookie') && ! isset( $_COOKIE[$cookie_name] ) )
+	if( ini_get('session.use_cookie') && ! isset( $_COOKIE[$cookie_name] ) )
 	    register_error(tra("You have to enable cookies to be able to login to this site"));
 
 	$smarty->assign('errortype', 'no_redirect_login');
 
 	$result=$registrationlib->register_new_user($_REQUEST);
 	if (is_a($result,"RegistrationError")) {
-		if ($result->field == 'email') // i'm not sure why email is a special case..
+		if ($result->field == 'email' && $result->field == 'email_not_valid') // i'm not sure why email is a special case..
 			$email_valid='n';
 		else
 			register_error($result->msg);
@@ -74,13 +74,6 @@ if (isset($_REQUEST['register'])) {
 	}
 
 }
-$outputtowiki='';
-$outputwiki='';
-if($prefs['user_register_prettytracker_output'] == 'y'){
-	$outputtowiki=$prefs["user_register_prettytracker_outputtowiki"];	
-	$outputwiki=$prefs["user_register_prettytracker_outputwiki"];
-}
-
 
 if ($registrationlib->merged_prefs['userTracker'] == 'y') {
 	$re = $userlib->get_group_info(isset($_REQUEST['chosenGroup']) ? $_REQUEST['chosenGroup'] : 'Registered');
@@ -89,9 +82,9 @@ if ($registrationlib->merged_prefs['userTracker'] == 'y') {
 		if(isset($_REQUEST['name'])) $user = $_REQUEST['name']; // so that one can set user preferences at registration time
 		if ($registrationlib->merged_prefs["user_register_prettytracker"] == 'y' && !empty($registrationlib->merged_prefs["user_register_prettytracker_tpl"])) {
 			if (substr($registrationlib->merged_prefs["user_register_prettytracker_tpl"], -4) == ".tpl") {
-				$userTrackerData = wikiplugin_tracker('', array('trackerId' => $re['usersTrackerId'], 'fields' => $re['registrationUsersFieldIds'], 'showdesc' => 'y', 'showmandatory' => 'y', 'embedded' => 'n', 'action' => tra('Register'), 'registration' => 'y', 'tpl' => $re["user_register_prettytracker_tpl"], 'userField' => $re['usersFieldId'], 'outputwiki' => $outputwiki, 'outputtowiki' => $outputtowiki));
+				$userTrackerData = wikiplugin_tracker('', array('trackerId' => $re['usersTrackerId'], 'fields' => $re['registrationUsersFieldIds'], 'showdesc' => 'y', 'showmandatory' => 'y', 'embedded' => 'n', 'action' => tra('Register'), 'registration' => 'y', 'tpl' => $registrationlib->merged_prefs["user_register_prettytracker_tpl"], 'userField' => $re['usersFieldId'], 'outputwiki' => $prefs["user_register_prettytracker_outputwiki"], 'outputtowiki' => $prefs["user_register_prettytracker_outputtowiki"]));
 			} else {
-				$userTrackerData = wikiplugin_tracker('', array('trackerId' => $re['usersTrackerId'], 'fields' => $re['registrationUsersFieldIds'], 'showdesc' => 'y', 'showmandatory' => 'y', 'embedded' => 'n', 'action' => tra('Register'), 'registration' => 'y', 'wiki' => $re["user_register_prettytracker_tpl"], 'userField' => $re['usersFieldId'],'outputwiki' => $outputwiki, 'outputtowiki' => $outputtowiki));
+				$userTrackerData = wikiplugin_tracker('', array('trackerId' => $re['usersTrackerId'], 'fields' => $re['registrationUsersFieldIds'], 'showdesc' => 'y', 'showmandatory' => 'y', 'embedded' => 'n', 'action' => tra('Register'), 'registration' => 'y', 'wiki' => $registrationlib->merged_prefs["user_register_prettytracker_tpl"], 'userField' => $re['usersFieldId'], 'outputwiki' => $prefs["user_register_prettytracker_outputwiki"], 'outputtowiki' => $prefs["user_register_prettytracker_outputtowiki"]));
 			}	
 		} else {
 			$userTrackerData = wikiplugin_tracker('', array('trackerId' => $re['usersTrackerId'], 'fields' => $re['registrationUsersFieldIds'], 'showdesc' => 'y', 'showmandatory' => 'y', 'embedded' => 'n', 'action' => tra('Register'), 'registration' => 'y', 'userField' => $re['usersFieldId']));

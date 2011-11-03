@@ -83,6 +83,7 @@ class TikiMail extends HtmlMimeMail
 		if (!empty($prefs['email_footer'])) {
 			$text .= CRLF . $prefs['email_footer'];
 		}
+
 		if ($this->charset != "utf-8")
 			parent::setText(encodeString($this->encodeNonInCharset($text, false), $this->charset));
 		else
@@ -193,7 +194,7 @@ function closetags ( $html ) {
     $closedtags = $result[1];
     $len_opened = count ( $openedtags );
     # all tags are closed
-    if ( count ( $closedtags ) == $len_opened ) {
+    if( count ( $closedtags ) == $len_opened ) {
         return $html;
     }
     $openedtags = array_reverse ( $openedtags );

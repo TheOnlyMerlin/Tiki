@@ -47,7 +47,7 @@ function wikiplugin_webservice_info() {
 				'required' => false,
 				'safe' => true,
 				'name' => tra('Parameters'),
-				'description' => tra('Parameters formatted like a query : param1=value1&amp;param2=value2.'),
+				'description' => tra('Parameters formated like an query : param1=value1&param2=value2.'),
 				'default' => '',
 			),
 
@@ -57,6 +57,10 @@ function wikiplugin_webservice_info() {
 
 function wikiplugin_webservice( $data, $params ) {
 	require_once 'lib/ointegratelib.php';
+	require_once( 'lib/Horde/Yaml.php' );
+	require_once( 'lib/Horde/Yaml/Loader.php' );
+	require_once( 'lib/Horde/Yaml/Node.php' );
+	require_once( 'lib/Horde/Yaml/Exception.php' );
 
 	if( isset( $params['bodyname'] ) && ! empty($params['bodyname']) ) {
 		$params[ $params['bodyname'] ] = $data;

@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {if $user}
 {if !isset($tpl_module_title)}{assign var=tpl_module_title value="{tr}Login{/tr}"}{/if}
 {tikimodule error=$module_params.error title=$tpl_module_title name="login_infos" flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox notitle=$module_params.notitle}
@@ -9,7 +7,7 @@
 {if $prefs.userTracker eq 'y'}
 <div>{tr}User information:{/tr} </div>
 <div>
-&nbsp;&nbsp;<a href="tiki-view_tracker_item.php?view=+user" class="linkmodule">{$user|escape}</a>
+&nbsp;&nbsp;<a href="tiki-view_tracker_item.php?view=+user" class="linkmodule">{$user}</a>
 </div>
 {/if}
 
@@ -17,7 +15,7 @@
 {if $prefs.groupTracker eq 'y'}
 <div>{tr}Group information:{/tr}</div>
 <div class="box-data">
-&nbsp;&nbsp;<a href="tiki-view_tracker_item.php?view=+group" class="linkmodule">{$default_group|escape}</a>
+&nbsp;&nbsp;<a href="tiki-view_tracker_item.php?view=+group" class="linkmodule">{$default_group}</a>
 </div>
 {/if}
 

@@ -1,14 +1,13 @@
 <?php
 // (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 // @param numeric $id: id of the payment
 // @params url $returnurl: optional return url
-function smarty_function_payment( $params, $smarty )
-{
+function smarty_function_payment( $params, $smarty ) {
 	global $tikilib, $prefs, $userlib, $user, $globalperms;
 	global $paymentlib; require_once 'lib/payment/paymentlib.php';
 	$invoice = (int) $params['id'];
@@ -24,7 +23,7 @@ function smarty_function_payment( $params, $smarty )
 	
 	// Unpaid payments can be seen by anyone as long as they know the number
 	// Just like your bank account, anyone can drop money in it.
-	if ( $info && $objectperms->payment_view && (($info['state'] == 'outstanding' || $info['state'] == 'overdue') && $prefs['payment_user_only_his_own'] != 'y' || $info['state'] == 'past' && $prefs['payment_user_only_his_own_past'] != 'y' || $theguy )) {
+	if( $info && $objectperms->payment_view && (($info['state'] == 'outstanding' || $info['state'] == 'overdue') && $prefs['payment_user_only_his_own'] != 'y' || $info['state'] == 'past' && $prefs['payment_user_only_his_own_past'] != 'y' || $theguy )) { 
 		if ($prefs['payment_system'] == 'cclite' && isset($_POST['cclite_payment_amount']) && $_POST['cclite_payment_amount'] == $info['amount_remaining']) {
 			global $access, $cclitelib, $cartlib;
 			require_once 'lib/payment/cclitelib.php';
@@ -55,7 +54,7 @@ function smarty_function_payment( $params, $smarty )
 			require_once 'lib/payment/creditspaylib.php';
 			$userpaycredits = new UserPayCredits;
 			$userpaycredits->setPrice($info['amount_remaining']);
-			$smarty->assign('userpaycredits', $userpaycredits->credits);
+			$smarty->assign('userpaycredits',$userpaycredits->credits);
 		}
 
 		

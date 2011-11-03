@@ -69,7 +69,7 @@ class WikiParser_OutputLinkTest extends TikiTestCase
 		$link->setWikiLinkBuilder( array( $this, 'getWikiLink' ) );
 		
 		$this->assertXmlStringEqualsXmlString(
-			'<a href="Test" title="Testing" class="wiki wiki_page">Test</a>',
+			'<a href="Test" title="Testing" class="wiki">Test</a>',
 			$link->getHtml() );
 	}
 
@@ -86,7 +86,7 @@ class WikiParser_OutputLinkTest extends TikiTestCase
 		$link->setWikiLinkBuilder( array( $this, 'getWikiLink' ) );
 		
 		$this->assertXmlStringEqualsXmlString(
-			'<a href="Test1.2" title="Testing" class="wiki wiki_page">Test</a>',
+			'<a href="Test1.2" title="Testing" class="wiki">Test</a>',
 			$link->getHtml() );
 	}
 
@@ -104,7 +104,7 @@ class WikiParser_OutputLinkTest extends TikiTestCase
 		$link->setWikiLinkBuilder( array( $this, 'getWikiLink' ) );
 		
 		$this->assertXmlStringEqualsXmlString(
-			'<a href="Test" title="Testing" class="wiki wiki_page abc">Test</a>',
+			'<a href="Test" title="Testing" class="wiki abc">Test</a>',
 			$link->getHtml() );
 	}
 
@@ -128,7 +128,7 @@ class WikiParser_OutputLinkTest extends TikiTestCase
 		) );
 		
 		$this->assertXmlStringEqualsXmlString(
-			'<a href="http://example.com/Test" class="wiki ext_page out">Test</a>',
+			'<a href="http://example.com/Test" class="wiki external">Test</a>',
 			$link->getHtml() );
 	}
 
@@ -142,7 +142,7 @@ class WikiParser_OutputLinkTest extends TikiTestCase
 		) );
 		
 		$this->assertXmlStringEqualsXmlString(
-			'<a href="http://example.com/Test" class="wiki ext_page out">ABC</a>',
+			'<a href="http://example.com/Test" class="wiki external">ABC</a>',
 			$link->getHtml() );
 	}
 
@@ -161,12 +161,12 @@ class WikiParser_OutputLinkTest extends TikiTestCase
 		$link->setHandlePlurals( true );
 		
 		$this->assertXmlStringEqualsXmlString(
-			'<a href="Policy" title="Some Page" class="wiki wiki_page">Policies</a>',
+			'<a href="Policy" title="Some Page" class="wiki">Policies</a>',
 			$link->getHtml() );
 	}
 
 	function getPageInfo( $page ) {
-		if ( isset( $this->info[$page] ) ) {
+		if( isset( $this->info[$page] ) ) {
 			return $this->info[$page];
 		}
 	}

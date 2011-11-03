@@ -38,14 +38,11 @@ class XmlLib extends TikiLib
 	/* Export a list of pages or a structure */
 	function export_pages($pages=null, $structure=null, $zipFile='dump/xml.zip', $config=null)
 	{
-		if (! class_exists('ZipArchive')) {
+		if (!($this->zip = new ZipArchive())) {
 			$this->errors[] = 'Problem zip initialisation';
 			$this->errorsArgs[] = '';
 			return false;
 		}
-
-		$this->zip = new ZipArchive;
-
 		if (!$this->zip->open($zipFile, ZIPARCHIVE::OVERWRITE)) {
 			$this->errors[] = 'Can not open the file';
 			$this->errorsArgs[] = $zipFile;
@@ -102,7 +99,7 @@ class XmlLib extends TikiLib
 	function export_page($page)
 	{
 		global $tikilib, $prefs, $smarty, $tikidomain;
-		$parserlib = TikiLib::lib('parser');
+		
 		$info = $tikilib->get_page_info($page);
 		if (empty($info)) {
 			$this->errors[] = 'Page does not exist';
@@ -129,7 +126,7 @@ class XmlLib extends TikiLib
 		if ($prefs['feature_wiki_pictures'] == 'y' && $this->config['images'] && preg_match_all('/\{img\s*\(?([^\}]+)\)?\s*\}/i', $info['data'], $matches)) {
 			global $tikiroot;
 			foreach ($matches[1] as $match) {
-				$args = $parserlib->plugin_split_args($match);
+				$args = $tikilib->plugin_split_args($match);
 				if (empty($args['src'])) {
 				} elseif (preg_match('|img/wiki_up/(.*)|', $args['src'], $m)) {
 					$file = empty($tikidomain)?$args['src']: str_replace('img/wiki_up/', "img/wiki_up/$tikidomain/", $args['src']);
@@ -227,6 +224,7 @@ class XmlLib extends TikiLib
 	/* import pages or structure */
 	function import_pages($zipFile='dump/xml.zip', $config=null)
 	{
+		global $tikilib, $wikilib, $prefs, $tiki_p_wiki_attach_files, $user, $tiki_p_edit_comments, $dbTiki, $tikidomain;
 		if (!empty($config)) {
 			$this->config = array_merge($this->config, $config);
 		}
@@ -271,8 +269,9 @@ class XmlLib extends TikiLib
 	/* create a page from an xml parsing result */
 	function create_page($info)
 	{
-		global $tikilib, $wikilib, $prefs, $tiki_p_wiki_attach_files, $tiki_p_edit_comments, $dbTiki, $tikidomain;
+		global $tikilib, $wikilib, $prefs, $tiki_p_wiki_attach_files, $user, $tiki_p_edit_comments, $dbTiki, $tikidomain;
 
+		$dir = $info['name'];
 		if (($info['data'] = $this->zip->getFromName($info['zip'])) === false) {
 			$this->errors[] = 'Can not unzip';
 			$this->errorsArgs[] = $info['zip'];

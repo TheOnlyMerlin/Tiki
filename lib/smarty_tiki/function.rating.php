@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -9,7 +9,7 @@ function smarty_function_rating( $params, $smarty )
 {
 	global $ratinglib; require_once 'lib/rating/ratinglib.php';
 
-	if ( ! isset( $params['type'], $params['id'] ) ) {
+	if( ! isset( $params['type'], $params['id'] ) ) {
 		return tra('No object information provided for rating.');
 	}
 
@@ -21,20 +21,20 @@ function smarty_function_rating( $params, $smarty )
 		$changemandated = false;
 	}
 
-	if ( isset( $_REQUEST['rating_value'][$type][$id], $_REQUEST['rating_prev'][$type][$id] ) ) {
+	if( isset( $_REQUEST['rating_value'][$type][$id], $_REQUEST['rating_prev'][$type][$id] ) ) {
 		$value = $_REQUEST['rating_value'][$type][$id];
 		$prev = $_REQUEST['rating_prev'][$type][$id];
-		if ( ( !$changemandated || $value != $prev ) && $ratinglib->record_vote( $type, $id, $value ) ) {
+		if( ( !$changemandated || $value != $prev ) && $ratinglib->record_vote( $type, $id, $value ) ) {
 
 			// Handle type-specific actions
-			if ( $type == 'comment' ) {
+			if( $type == 'comment' ) {
 				global $commentslib, $user; require_once 'lib/comments/commentslib.php';
 
-				if ( $user ) {
+				if( $user ) {
 					$commentslib->vote_comment( $id, $user, $value );
 				}
 			}
-		} elseif ( $value != $prev ) {
+		} elseif( $value != $prev ) {
 			return tra('An error occured.');
 		}
 	}

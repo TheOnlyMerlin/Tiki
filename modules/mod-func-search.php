@@ -19,14 +19,14 @@ function module_search_info() {
 		'params' => array(
 			'legacy_mode' => array(
 				'name' => tra('Legacy Mode'),
-				'description' => tra('Setting to emulate previous behaviour.') . ' ' . tra('Default:') . ' ""' . ' ("search"=search_box, "page"=search_wiki_page, "quick"=quick_edit)'
+				'description' => tra('Setting to emulate previous behaviour.') . ' ' . tra('Default:') . ' ""' . tra(' ("search"=search_box, "page"=search_wiki_page, "quick"=quick_edit)')
 			),
 			'tiki_search' => array(
 				'name' => tra('Tiki'),
 				'description' => tra('If set to "y" the search performed is a "Tiki search".') . ' ' . tra('Default:') . ' "n"' . tra(' (full text search)')
 			),
 			'show_object_filter' => array(
-				'name' => tra('Show Object Type Filter'),
+				'name' => tra('Show Search Filter'),
 				'description' => tra('If set to "y" shows a dropdown of sections to search.') . ' ' . tra('Default:') . ' "n"' . tra(' (no object filter)')
 			),
 			'use_autocomplete' => array(
@@ -63,15 +63,15 @@ function module_search_info() {
 			),
 			// initially from quick-edit
 			'search_action' => array(
-				'name' => tra('Search Form Action'),
-				'description' => tra("If set, send the form to the given location (relative to Tiki's root) for processing.") . " " . tra('Default:') . tra(' tiki-searchresults.php or tiki-searchindex.php (for Tiki search)'),
+				'name' => 'Search Form Action',
+				'description' => tra("If set, send the form to the given location (relative to Tiki's root) for processing.") . " " . tra('Default:') . ' tiki-searchresults.php or tiki-searchindex.php (for Tiki search)'
 			),
 			'search_submit' => array(
 				'name' => tra('Edit Submit Label'),
-				'description' => tra('The label on the button to submit the form.') . " " . tra('Default:') . ' ' . tra('Search'),
+				'description' => tra('The label on the button to submit the form.') . " " . tra('Default:') . ' ' . tra('Search')
 			),
 			'go_action' => array(
-				'name' => tra('Go Form Action'),
+				'name' => 'Go Form Action',
 				'description' => tra("If set, send the form to the given location (relative to Tiki's root) for processing.") . " " . tra('Default:') . ' tiki-editpage.php'
 			),
 			'go_submit' => array(
@@ -79,7 +79,7 @@ function module_search_info() {
 				'description' => tra('The label on the button to submit the form.') . " " . tra('Default:') . ' ' . tra('Go')
 			),
 			'edit_action' => array(
-				'name' => tra('Edit Form Action'),
+				'name' => 'Edit Form Action',
 				'description' => tra("If set, send the form to the given location (relative to Tiki's root) for processing.") . " " . tra('Default:') . ' tiki-editpage.php'
 			),
 			'edit_submit' => array(
@@ -87,14 +87,12 @@ function module_search_info() {
 				'description' => tra('The label on the button to submit the form.') . " " . tra('Default:') . ' ' . tra('Edit')
 			),
 			'input_size' => array(
-				'name' => tra('Input field width'),
-				'description' => tra('Width of the text input field (in characters).') . ' ' . tra('Example value:') . ' 15.' .' ' . tra('Default:') . tra(' 0 (leave automatic width)'),
-				'filter' => 'int'
+				'name' => 'Input size',
+				'description' => tra('Size attribute (horizontal, in characters) of the text input field.') . ' ' . tra('Default:') . ' 14'
 			),
 			'select_size' => array(
-				'name' => tra('Select size'),
-				'description' => tra('Size of the Search Filter dropdown list.') . " " . tra('Default:') . " 10",
-				'filter' => 'int'
+				'name' => 'Select size',
+				'description' => tra('Size of the Search Filter dropdown list.') . " " . tra('Default:') . " 10"
 			),
 			'search_heading' => array(
 				'name' => tra('Heading'),
@@ -165,7 +163,6 @@ function module_search( $mod_reference, $smod_params ) {	// modifies $smod_param
 		'templateId' => '',
 		'categId' => '',
 		'compact' => 'n',
-		'title' => tra('Search'),
 	);
 	
 	$smod_params = array_merge($defaults, $smod_params);

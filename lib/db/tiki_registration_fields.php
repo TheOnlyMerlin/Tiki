@@ -6,7 +6,7 @@
 // $Id$
 
 /**
- * @package Tiki
+ * @package Tikiwiki
  * @subpackage db
  */
 

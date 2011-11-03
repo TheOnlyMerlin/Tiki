@@ -48,20 +48,16 @@ class Search_Formatter_Plugin_WikiTemplate implements Search_Formatter_Plugin_In
 			$name = $match->getName();
 
 			if ($name === 'display') {
-				$match->replaceWith((string) $this->processDisplay($valueFormatter, $match->getBody(), $match->getArguments()));
+				$match->replaceWith($this->processDisplay($valueFormatter, $match->getBody(), $match->getArguments()));
 			}
 		}
 
 		return $matches->getText();
 	}
 
-	function renderEntries(Search_ResultSet $entries)
+	function renderEntries($entries, $count, $offset, $maxRecords)
 	{
-		$out = '';
-		foreach ($entries as $entry) {
-			$out .= $entry;
-		}
-		return $out;
+		return implode('', $entries);
 	}
 
 	private function processDisplay($valueFormatter, $body, $arguments)
@@ -77,9 +73,7 @@ class Search_Formatter_Plugin_WikiTemplate implements Search_Formatter_Plugin_In
 			$format = 'plain';
 		}
 
-		unset($arguments['format']);
-		unset($arguments['name']);
-		return $valueFormatter->$format($name, $arguments);
+		return $valueFormatter->$format($name);
 	}
 }
 

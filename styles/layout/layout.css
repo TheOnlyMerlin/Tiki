@@ -640,7 +640,7 @@ img.icon {
 /* New Toolbars */
 
 .textarea-toolbar {
-	width: 100%;
+	width: 99%;
 }
 
 .textarea-toolbar img.icon {
@@ -725,7 +725,7 @@ a.toolbar {			/* each tool button */
 	font-family: sans-serif; 
 }
 
-.box-share > div {
+#site_report {
 	text-align: center;
 }
 
@@ -741,9 +741,6 @@ a.toolbar {			/* each tool button */
 
 .icon_edit_section {
 	float: right;
-}
-.icon_edit_section img.icon {
-	margin-top: -1px !important;
 }
 
 /***** Boxes *****/
@@ -900,12 +897,6 @@ wikitext or custom content area. Similarly for three or four modules (or divs) a
 	padding: 0;
 	margin: 0;
 	width: 100%;
-}
-
-.ui-accordion .normal,
-.ui-accordion .normalnoborder,
-.ui-accordion .admin {
-	width: auto;
 }
 
 td {
@@ -1077,7 +1068,7 @@ tr.diffheader {
 
 /* wikiplugin tracker */
 table.wikiplugin_tracker td {
-	vertical-align: top;
+	vertical-align: middle;
 	padding-bottom:1.2em;
 }
 	
@@ -1116,11 +1107,6 @@ ul.floatleft li {
 /* fancytable (sortable) plugin */
 .fancysort .header {
 	cursor: pointer;
-}
-
-/* timesheet plugin */
-#jtrack-holder {
-    width: auto;
 }
 
 /** Wiki tocs **/
@@ -1955,7 +1941,7 @@ ul.freetagged li {
 }
 
 @media print {
-	.tikihelp, .navbar, .categbar, .tabstoggle, .tabs, #show-errors-button {display:none;}
+	.tikihelp, .navbar, categbar, .tabstoggle, .tabs, #show-errors-button {display:none;}
 }
 
 
@@ -2028,18 +2014,12 @@ ul.freetagged li {
 
 /* Preferences        */
 .pref_dependency {
-	margin-left: 33px;
+	margin-left: 20px;
 	font-size: 95%;
 }
 
 img.pref_dependency {
 	opacity: 0.25;
-}
-
-.pref_note {
-	margin-left: 33px;
-	font-size: 90%;
-	font-style: italic;
 }
 
 /* Perspectives (edit) */
@@ -2109,12 +2089,12 @@ img.pref_dependency {
 /* Kaltura browse entries */
 
 /* remove margins from the image */ 
-.kaltura .items img { 
+.items img { 
     margin: 0; 
 }
  
 /* make A tags our floating scrollable items */ 
-.kaltura .items a { 
+.items a { 
     display: block; 
     float: left; 
     margin: 20px 15px; 
@@ -2159,17 +2139,8 @@ div.aclabel, span.aclabel, label.aclabel {
 	list-style: none;
 }
 
-/* Locator module */
-
 .minimap {
 	height: 180px;
-}
-
-.minimap .olControlAttribution,
-.map-container .olControlAttribution{
-    right: 3px;
-    bottom: 3px;
-	text-align: right;
 }
 
 /* FileGals Flash Upload */
@@ -2186,27 +2157,5 @@ div.aclabel, span.aclabel, label.aclabel {
 	position: absolute;
 	z-index: 2;
 }
-/* tiki-wiki_topline.tpl Backlinks button */
-.backlinks_button {
-	position: relative;
-	display: inline-block;
-	vertical-align: middle;
-	background: none;
-	width: 20px;
-}
-.backlinks_button .cssmenu_horiz ul li {
-	border: 1px solid #999;
-	border-radius: 3px;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-}
-.backlinks_button li.tabmark {
-	background: none;
-	border: 0px;
-	top: 0px;
-	padding: 0px;
-}
-.backlinks_button .clearfix:after {
-	display: inline-block;
-}
+
 /* End of File */

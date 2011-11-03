@@ -1,12 +1,6 @@
-{* $Id$ *}
-
 {title help="Shoutbox"}{tr}Shoutbox{/tr}{/title}
 
 {if $tiki_p_admin_shoutbox eq 'y'}
-  <div class="navbar">
-		{button href="tiki-admin_shoutbox_words.php" _text="{tr}Banned Words{/tr}"}
-  </div>
-
 	<h2>{tr}Change shoutbox general settings{/tr}</h2>
 	<form action="tiki-shoutbox.php" method="post">
 		<table class="formcolor">
@@ -41,10 +35,10 @@
 					<textarea rows="4" cols="60" name="message">{$message|escape}</textarea>
 					{if $prefs.feature_socialnetworks eq 'y' && $user neq ''}
 						{if $prefs.socialnetworks_twitter_consumer_key neq ''}
-							<div><input type="checkbox" name="tweet" id="tweet" value='1' /> {tr}Tweet with Twitter{/tr}<br /></div>
+							<div><input type="checkbox" name="tweet" id="tweet" value='1' /> {tr}Tweet with twitter{/tr}<br /></div>
 						{/if}
 						{if $prefs.socialnetworks_facebook_application_id neq ''}
-							<div><input type="checkbox" name="facebook" id="facebook" value='1' /> {tr}Post on my Facebook wall{/tr}</div>
+							<div><input type="checkbox" name="facebook" id="facebook" value='1' /> {tr}Post on my facebook wall{/tr}</div>
 						{/if}
 					{/if}
 				</td>

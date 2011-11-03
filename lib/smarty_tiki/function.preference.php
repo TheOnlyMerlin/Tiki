@@ -1,35 +1,28 @@
 <?php
 // (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function smarty_function_preference( $params, $smarty )
-{
-	global $prefslib, $prefs, $user_overrider_prefs; require_once 'lib/prefslib.php';
-	if ( ! isset( $params['name'] ) ) {
-		return 'Preference name not specified.';
+function smarty_function_preference( $params, $smarty ) {
+	global $prefslib, $prefs; require_once 'lib/prefslib.php';
+	if( ! isset( $params['name'] ) ) {
+		return tra( 'Preference name not specified.' );
 	}
 
 	$source = null;
-	if ( isset( $params['source'] ) ) {
+	if( isset( $params['source'] ) ) {
 		$source = $params['source'];
 	}
 	$get_pages = isset( $params['get_pages']) && $params['get_pages'] != 'n' ? true : false;
 
-	if ( $info = $prefslib->getPreference( $params['name'], true, $source, $get_pages ) ) {
-		if ( isset($params['label']) ) {
+	if( $info = $prefslib->getPreference( $params['name'], true, $source, $get_pages ) ) {
+		if( isset($params['label']) ) {
 			$info['name'] = $params['label'];
 		}
-		if ($source === null && in_array($params['name'], $user_overrider_prefs) && isset($prefs[$params['name']])) {
-			$info['value'] = $prefs['site_' . $params['name']];
-		}
-
-		if (isset($params['visible']) && $params['visible'] == 'always') {
-			// Modified preferences are never hidden, so pretend it's modified when forcing display
-			$info['tags'][] = 'modified';
-			$info['tagstring'] .= ' modified';
+		if (isset($params['default'])) {// use for site_language
+			$info['value'] = $params['default'];
 		}
 
 		if ($get_pages) {
@@ -51,29 +44,16 @@ function smarty_function_preference( $params, $smarty )
 
 		$smarty->assign( 'p', $info );
 
-		if ( isset( $params['mode'] ) && $params['mode'] == 'invert' ) {
+		if( isset( $params['mode'] ) && $params['mode'] == 'invert' ) {
 			$smarty->assign( 'mode', 'invert' );
 		} else {
 			$smarty->assign( 'mode', 'normal' );
 		}
 		
-		//we reset the codemirror/syntax vars so that they are blank because they are reused for other params
-		$smarty->assign( 'codemirror' );
-		$smarty->assign( 'syntax' );
-		
-		if ( !empty( $params['syntax'] ) ) {
-			$smarty->assign( 'codemirror', 'true' );
-			$smarty->assign( 'syntax', $params['syntax'] );
-		}
-		
 		return $smarty->fetch( 'prefs/' . $info['type'] . '.tpl' );
 	} else {
-		$info = array(
-			'value' => tra('Error'),
-			'default_val' => tra('Error'),
-			'name' => tr( 'Preference %0 is not defined', $params['name'] ),
-			'tags' => array('modified', 'basic', 'all'),
-			'tagstring' => 'modified basic all',
+		$info = array('value' => tra('Error'), 'default_val' => tra('Error'),
+			'name' => tr( 'Preference %0 is not defined', $params['name'] )
 		);
 		if (strpos($_SERVER["SCRIPT_NAME"], 'tiki-edit_perspective.php') !== false) {
 			$info['hint'] = tra('Drag this out of the perspective and resave it.');

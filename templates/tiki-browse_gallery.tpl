@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {title}{tr}Browsing Gallery:{/tr} {$name}{/title}
 
 <div class="navbar">
@@ -159,7 +157,7 @@
             	<a class="gallink" href="tiki-edit_image.php?galleryId={$galleryId}&amp;edit={$item.imageId}" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
           {/if}
           <a class="gallink" href="tiki-browse_image.php?galleryId={$galleryId}&amp;sort_mode={$sort_mode}&amp;imageId={$item.imageId}&amp;scalesize={$defaultscale}" {if $prefs.gal_image_mouseover neq 'n'}{popup fullhtml="1" text=$over_info.$key|escape:"javascript"|escape:"html"}{/if}>{icon _id='magnifier' alt="{tr}Details{/tr}"}</a>
-          <a {jspopup href="tiki-browse_image.php?galleryId=$galleryId&amp;sort_mode=$sort_mode&amp;imageId="|cat:$item.imageId|cat:"&amp;scalesize=$defaultscale&amp;popup=1"} class="gallink">
+          <a {jspopup href="tiki-browse_image.php?galleryId=$galleryId&amp;sort_mode=$sort_mode&amp;imageId=`$item.imageId`&amp;scalesize=$defaultscale&amp;popup=1"} class="gallink">
 {icon _id='layers' alt="{tr}popup{/tr}"}</a>
           <br />
 	</small>
@@ -184,12 +182,9 @@
   ||  $tiki_p_post_comments  == 'y'
   ||  $tiki_p_edit_comments  == 'y')}
   <div id="page-bar" class="clearfix">
-		<span class="button"><a id="comment-toggle" href="{service controller=comment action=list type="image gallery" objectId=$galleryId}#comment-container">{tr}Comments{/tr}</a></span>
-		{jq}
-			$('#comment-toggle').comment_toggle();
-		{/jq}
+  	   {include file='comments_button.tpl'}
   </div>
-  <div id="comment-container"></div>
+  {include file='comments.tpl'}
 {/if}
 
 <table class="normal noslideshow">

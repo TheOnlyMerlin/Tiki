@@ -8,8 +8,8 @@
 function wikiplugin_zoterolist_info()
 {
 	return array(
-		'name' => tra('Zotero Reference List'),
-		'description' => tra('Produces the complete reference list from the Zotero server.'),
+		'name' => tr('Zotero Reference List'),
+		'description' => tr('Produces the complete reference list from the Zotero server.'),
 		'prefs' => array('zotero_enabled', 'wikiplugin_zoterolist'),
 		'params' => array(
 			'tag' => array(
@@ -25,7 +25,7 @@ function wikiplugin_zoterolist_info()
 function wikiplugin_zoterolist($data, $params)
 {
 	if (! isset($params['tag'])) {
-		return WikiParser_PluginOutput::argumentError(array('tag'));
+		return WikiParser_PluginOutput::argumentError('tag');
 	}
 
 	$cachelib = TikiLib::lib('cache');

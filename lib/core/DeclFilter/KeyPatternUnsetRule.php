@@ -5,6 +5,8 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+require_once 'lib/core/DeclFilter/UnsetRule.php';
+
 class DeclFilter_KeyPatternUnsetRule extends DeclFilter_UnsetRule
 {
 	private $keys;
@@ -17,7 +19,7 @@ class DeclFilter_KeyPatternUnsetRule extends DeclFilter_UnsetRule
 	function match( $key )
 	{
 		foreach( $this->keys as $pattern ) {
-			if ( preg_match( $pattern, $key ) ) {
+			if( preg_match( $pattern, $key ) ) {
 				return true;
 			}
 		}

@@ -3,7 +3,7 @@
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Id $
 
 // this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -69,7 +69,7 @@ class SocialNetworksLib extends LogsLib
 	function getTwitterRequestToken() {
 		global $prefs;
 
-		if (!$this->twitterRegistered()) {
+		if(!$this->twitterRegistered()) {
 			return false;
 		}
 
@@ -97,7 +97,7 @@ class SocialNetworksLib extends LogsLib
 	function getTwitterAccessToken($user) {
 		global $prefs;
 
-		if ($prefs['socialnetworks_twitter_consumer_key']=='' or $prefs['socialnetworks_twitter_consumer_secret']=='' or !isset($_SESSION['TWITTER_REQUEST_TOKEN'])) {
+		if($prefs['socialnetworks_twitter_consumer_key']=='' or $prefs['socialnetworks_twitter_consumer_secret']=='' or !isset($_SESSION['TWITTER_REQUEST_TOKEN'])) {
 			return false;
 		}
 
@@ -118,7 +118,7 @@ class SocialNetworksLib extends LogsLib
 	 */
 	function facebookRegistered() {
 		global $prefs;
-		return ($prefs['socialnetworks_facebook_application_id']!='' and $prefs['socialnetworks_facebook_application_secr']!='');
+		return ($prefs['socialnetworks_facebook_application_id']!='' and $prefs['socialnetworks_facebook_api_key']!='' and $prefs['socialnetworks_facebook_application_secr']!='');
 	}
 	
 	/**
@@ -126,7 +126,7 @@ class SocialNetworksLib extends LogsLib
 	 */
 	function getFacebookRequestToken() {
 		global $prefs;
-		if (!$this->facebookRegistered()) {
+		if(!$this->facebookRegistered()) {
 			return false;
 		}
 		$scopes = array();
@@ -166,7 +166,7 @@ class SocialNetworksLib extends LogsLib
 	 */
 	function getFacebookAccessToken() {
 		global $prefs, $user, $userlib;
-		if ($prefs['socialnetworks_facebook_application_id']=='' or $prefs['socialnetworks_facebook_application_secr']=='') {
+		if($prefs['socialnetworks_facebook_application_id']=='' or $prefs['socialnetworks_facebook_api_key']=='' or $prefs['socialnetworks_facebook_application_secr']=='') {
 			return false;
 		}
 
@@ -195,7 +195,7 @@ class SocialNetworksLib extends LogsLib
         $ret=preg_split('/(\r\n\r\n|\r\r|\n\n)/',$ret,2);
 		$ret=$ret[1];
 
-		if (substr($ret,0,13)=='access_token=') {
+		if(substr($ret,0,13)=='access_token=') {
 			$access_token = substr($ret,13);
 			if ($endoftoken = strpos($access_token,'&')) {
 				// Returned string may have other var like expiry
@@ -259,7 +259,7 @@ class SocialNetworksLib extends LogsLib
 			$this->add_log('tweet','user not registered with twitter');
 			return -1; 
 		}
-		if ($cutMessage) {
+		if($cutMessage) {
 			$message=substr($message,0,140);
 		} else {
 			if (strlen($message)>140) {
@@ -333,7 +333,7 @@ class SocialNetworksLib extends LogsLib
 	 */
 	function facebookGraph($user, $action, $params, $addtoken=true, $method = 'POST') {
 		global $prefs;
-		if (!$this->facebookRegistered()) {
+		if(!$this->facebookRegistered()) {
 			$this->add_log('facebookGraph','application not set up');
 			return false;
 		}
@@ -360,10 +360,10 @@ class SocialNetworksLib extends LogsLib
 				 "Expect: 100-continue\r\n".
 				 "Connection: close\r\n";
 		if ($method == 'POST') {
-                        $request .= "Content-type: application/x-www-form-urlencoded\r\n".
-                                "Content-length: ". strlen($data) ."\r\n";
-                }
-                $request .= "\r\n";
+			$request .= "Content-type: application/x-www-form-urlencoded\r\n".
+				"Content-length: ". strlen($data) ."\r\n";
+		}
+		$request .= "\r\n";
 		if ($method == 'POST') {
 			$request .= $data;
 		}
@@ -381,6 +381,7 @@ class SocialNetworksLib extends LogsLib
 			fclose($fp);
   		}
 		$ret=preg_split('/(\r\n\r\n|\r\r|\n\n)/',$ret,2);
+
 		return $ret[1];
 	}
 	
@@ -409,9 +410,11 @@ class SocialNetworksLib extends LogsLib
 		} else {
 			$params['message']=substr($message,0,400);
 		}
+
 		$ret=$this->facebookGraph($user, 'me/feed/', $params);
+
 		$result=json_decode($ret);
-		if (isset($result->id)) {
+		if(isset($result->id)) {
 			return $result->id;
 		} else {
 			return false;
@@ -455,9 +458,7 @@ class SocialNetworksLib extends LogsLib
 		if ($key=='') {
 			return false;
 		}
-
-		$httpclient = TikiLib::lib('tiki')->get_http_client();
-		$httpclient->setUri("http://api.bit.ly/$action");
+		$httpclient = new Zend_Http_Client("http://api.bit.ly/$action");
 		
 		$params['login']=$login;
 		$params['apiKey']=$key;

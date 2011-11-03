@@ -14,7 +14,6 @@ function wikiplugin_sup_info() {
 		'body' => tra('text'),
 		'icon' => 'pics/icons/text_superscript.png',
 		'filter' => 'wikicontent',
-		'tags' => array( 'basic' ),
 		'params' => array(
 		),
 	);

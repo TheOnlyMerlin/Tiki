@@ -9,14 +9,12 @@ $section = 'file_galleries';
 require_once ('tiki-setup.php');
 include_once ('lib/filegals/filegallib.php');
 $access->check_feature(array('feature_file_galleries', 'feature_file_galleries_batch'));
-//get_strings tra('Directory batch')
+
 // Now check permissions to access this page
 $access->check_permission('tiki_p_batch_upload_file_dir');
 
-$auto_query_args = array( 'galleryId' );
-
 // check directory path
-if (!isset($prefs['fgal_batch_dir']) or !is_dir($prefs['fgal_batch_dir'])) {
+if (!isset($prefs['fgal_batch_dir']) or !is_dir($prefs['fgal_batch_dir']) && $_REQUEST['batch_upload'] != 'svg') {
 	$msg = tra("Incorrect directory chosen for batch upload of files.") . "<br />";
 	if ($tiki_p_admin == 'y') {
 		$msg.= tra("Please setup that dir on ") . '<a href="tiki-admin.php?page=fgal">' . tra('File Galleries Admin Panel') . '</a>.';
@@ -67,7 +65,7 @@ function getDirContent($sub) {
 		die;
 	}
 
-	foreach ($allfile as $filefile) {
+	foreach($allfile as $filefile) {
 		if ('.' === $filefile{0}) {
 			continue;
 		}
@@ -122,9 +120,6 @@ function buildFileList() {
 }
 
 if (isset($_REQUEST["batch_upload"]) and isset($_REQUEST['files']) and is_array($_REQUEST['files'])) {
-
-	@ini_set('max_execution_time', 0); // will not work if safe_mode is on
-
 	// default is: file names from request
 	$fileArray = $_REQUEST['files'];
 	$totfiles = count($fileArray);
@@ -195,15 +190,29 @@ if (isset($_REQUEST["batch_upload"]) and isset($_REQUEST['files']) and is_array(
 			$fileId = $filegallib->insert_file($tmpGalId, $name, $tmpDesc, $file, $result['data'], $filesize, $type, $user, $result['fhash']);
 			if ($fileId) {
 				$feedback[] = tra('Upload was successful') . ': ' . $name;
-				@unlink($filepath);	// seems to return false sometimes even if the file was deleted
-				if (!file_exists($filepath)) {
-					$feedback[] = sprintf(tra('File %s removed from Batch directory.') , $file);
+				if (@unlink($filepath)) {
+					$feedback[] = sprintf(tra('File %s removed from Batch directory.') , $name);
 				} else {
-					$feedback[] = "!!! " . sprintf(tra('Impossible to remove file %s from Batch directory.') , $file);
+					$feedback[] = "!!! " . sprintf(tra('Impossible to remove file %s from Batch directory.') , $name);
 				}
 			}
 		}
 	}
+} elseif (isset($_REQUEST["batch_upload"]) && $_REQUEST["batch_upload"] == 'svg') {
+	$tmpGalId = (int)$_REQUEST["galleryId"];
+	$file = $_REQUEST['name'].'.svg';
+	if (isset($_REQUEST["subToDesc"])) {
+		// get last subdir 'last' from 'some/path/last'
+		$tmpDesc = preg_replace('/.*([^\/]*)\/([^\/]+)$/U', '$1', $file);
+	} else {
+		$tmpDesc = '';
+	}
+	include_once ('lib/mime/mimetypes.php');
+	$type = $mimetypes["svg"];
+	
+	$fileId = $filegallib->insert_file($tmpGalId, $_REQUEST['name'], $tmpDesc, $file, $_REQUEST['data'], strlen($_REQUEST['data']), $type, $user, date());
+	echo $fileId;
+	die;
 }
 
 $a_file = array();

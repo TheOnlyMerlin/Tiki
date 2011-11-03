@@ -1,4 +1,3 @@
-{* $Id$ *}
 {title}{tr}Organizer{/tr}{/title}
 
 <div class="categbar">
@@ -8,31 +7,19 @@
 	{/if}
 </div>
 
-{remarksbox title="{tr}Move objects between categories{/tr}"}
-	<ol>
-		<li>{tr}Click on the category name you want to list. The list of objects in that category will become visible.{/tr}</li>
-		<li>{tr}Select the objects you want to affect. Controls will appear in the category browser.{/tr}</li>
-		<li>{tr}Use the plus and minus signs to add or remove the categories on selected objects.{/tr}</li>
-	</ol>
-{/remarksbox}
-
 <div class="category-browser">
 	{$tree}
 </div>
-{filter action="tiki-edit_categories.php" filter=$filter}{/filter}
 <div class="object-list">
-	{if $result && count($result)}
+	{if $objects and $objects.data}
 		<ol>
-			{foreach from=$result item=object}
-				<li{permission type=$object.type object=$object.object_id name="modify_object_categories"} class="available"{/permission}>
-					<input type="checkbox" name="object[]" value="{$object.object_type|escape}:{$object.object_id|escape}"/>
-					{object_link type=$object.object_type id=$object.object_id}
+			{foreach from=$objects.data item=object}
+				<li{permission type=$object.type object=$object.itemId name="modify_object_categories"} class="available"{/permission}>
+					<input type="checkbox" name="object[]" value="{$object.type|escape}:{$object.itemId|escape}"/>
+					<a href="{$object.href|escape}">{$object.name|escape}</a>
 				</li>
 			{/foreach}
 		</ol>
-		{if $result->hasMore()}
-			<p>{tr}More results available. Please refine the search criterias.{/tr}</p>
-		{/if}
 		<p>
 			<a class="select-all" href="#selectall">{tr}Select all{/tr}</a>
 			<a class="unselect-all" href="#unselectall">{tr}Unselect all{/tr}</a>
@@ -40,44 +27,45 @@
 	{/if}
 </div>
 
+{remarksbox title="{tr}Move objects between categories{/tr}"}
+<ol>
+	<li>{tr}Click on the category name you want to list. The list of objects in that category will become visible.{/tr}</li>
+	<li>{tr}Select the objects you want to affect. Controls will appear in the category browser.{/tr}</li>
+	<li>{tr}Use the plus and minus signs to add or remove the categories on selected objects.{/tr}</li>
+</ol>
+{/remarksbox}
 {jq}
 function perform_selection_action(action, row) {
-	var objects = [], categId = $(row).find('a').data('categ');
+	var objects = [], url = $(row).find('a').attr('href');
 
 	$('.object-list :checked').each(function () {
 		objects.push($(this).val());
 	});
 
-	$('.control', row).fadeTo(10, .20);
-
 	$.ajax({
 		type: 'POST',
-		url: $.service('category', action),
+		url: url,
 		dataType: 'json',
 		data: {
-			categId: categId,
-			objects: objects,
-			confirm: 1
+			action: action,
+			objects: objects
 		},
 		success: function (data) {
 			$('.object-count', row).text(data.count);
-		},
-		complete: function () {
-			$('.control', row).fadeTo(10, 1);
 		}
 	});
 }
 
 $('.categ-add')
 	.click(function () {
-		perform_selection_action('categorize', $(this).closest('li')[0]);
+		perform_selection_action('add', $(this).closest('li')[0]);
 	})
 	.addClass('ui-icon')
 	.addClass('ui-icon-circle-plus');
 
 $('.categ-remove')
 	.click(function () {
-		perform_selection_action('uncategorize', $(this).closest('li')[0]);
+		perform_selection_action('remove', $(this).closest('li')[0]);
 	})
 	.addClass('ui-icon')
 	.addClass('ui-icon-circle-minus');

@@ -85,29 +85,34 @@ class CCLiteLib extends TikiDb_Bridge
 	public function is_valid( $ipn_data, $payment_info ) {
 		global $prefs;
 
-		if ( ! is_array( $payment_info ) ) {
+		// Make sure this is not a fake, must be verified even if discarded, otherwise will be resent
+		if( ! $this->confirmed_by_cclite( $ipn_data ) ) {
+			return false;
+		}
+
+		if( ! is_array( $payment_info ) ) {
 			return false;
 		}
 
 		// Skip other events
-		if ( $ipn_data['payment_status'] != 'Completed' ) {
+		if( $ipn_data['payment_status'] != 'Completed' ) {
 			return false;
 		}
 
 		// Make sure it is addressed to the right account
-		if ( $ipn_data['receiver_email'] != $prefs['payment_cclite_business'] ) {
+		if( $ipn_data['receiver_email'] != $prefs['payment_cclite_business'] ) {
 			return false;
 		}
 
 		// Require same currency
-		if ( $ipn_data['mc_currency'] != $payment_info['currency'] ) {
+		if( $ipn_data['mc_currency'] != $payment_info['currency'] ) {
 			return false;
 		}
 
 		// Skip duplicate translactions
 		foreach( $payment_info['payments'] as $payment ) {
-			if ( $payment['type'] == 'cclite' ) {
-				if ( $payment['details']['txn_id'] == $ipn_data['txn_id'] ) {
+			if( $payment['type'] == 'cclite' ) {
+				if( $payment['details']['txn_id'] == $ipn_data['txn_id'] ) {
 					return false;
 				}
 			}
@@ -165,6 +170,24 @@ class CCLiteLib extends TikiDb_Bridge
 		$r = $this->cclite_send_request('logoff');
 		
 		return $res;
+	}
+
+	private function confirmed_by_cclite( $ipn_data ) {
+		global $prefs;
+
+		return true;	// for now TODO
+
+		require_once 'lib/core/Zend/Http/Client.php';
+		$client = new Zend_Http_Client( $prefs['payment_cclite_environment'] );
+
+		$base = array( 'cmd' => '_notify-validate' );
+
+		$client->setParameterPost( array_merge( $base, $ipn_data ) );
+		$response = $client->request( 'POST' );
+
+		$body = $response->getBody();
+
+		return 'VERIFIED' === $body;
 	}
 
 	/**

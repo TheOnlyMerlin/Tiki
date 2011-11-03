@@ -1,4 +1,3 @@
-{* $Id$ *}
 {title help="accounting"}
 	{$book.bookName}
 {/title}
@@ -22,9 +21,6 @@
 		<div><div class="aclabel">{tr}End date{/tr}</div>{$book.bookEndDate}</div>
 		<div><div class="aclabel">{tr}Closed{/tr}</div>{if $book.bookClosed=='y'}{tr}Yes{/tr}{else}{tr}No{/tr}{/if}</div>
 		<div><div class="aclabel">{tr}Currency{/tr}</div>{$book.bookCurrency} ({if $book.bookCurrencyPos==-1}{tr}before{/tr}{elseif $book.bookCurrencyPos==1}{tr}after{/tr}{else}{tr}don't display{/tr}{/if})</div>
-		<div><div class="aclabel">{tr}Decimals{/tr}</div>{$book.bookDecimals}</div>
-		<div><div class="aclabel">{tr}Decimal Point{/tr}</div>{$book.bookDecPoint}</div>
-		<div><div class="aclabel">{tr}Thousands Separator{/tr}</div>{$book.bookThousand}</div>
 		<div><div class="aclabel">{tr}Auto Tax{/tr}</div>{if $book.bookAutoTax=='y'}{tr}Yes{/tr}{else}{tr}No{/tr}{/if}</div>
 	</div>
 </div>

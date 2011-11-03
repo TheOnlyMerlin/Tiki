@@ -13,35 +13,25 @@
  */
 class Tracker_Field_UserGroups extends Tracker_Field_Abstract
 {
-	public static function getTypes()
-	{
-		return array(
-			'usergroups' => array(
-				'name' => tr('User Groups'),
-				'description' => tr('Displays the list of groups for the user associated with the tracker items.'),
-				'help' => 'User Groups',
-				'prefs' => array('trackerfield_usergroups'),
-				'tags' => array('advanced'),
-				'default' => 'n',
-				'params' => array(
-				),
-			),
-		);
-	}
-
 	function getFieldData(array $requestData = array())
 	{
-		$itemId = $this->getItemId();
+		$ins_id = $this->getInsertId();
 		
-		if ($itemId) {
-			$itemUser = $this->getTrackerDefinition()->getItemUser($itemId);
+		if (isset($requestData[$ins_id])) {
+			$value = $requestData[$ins_id];
+		} else {
+			$itemId = $this->getItemId();
 			
-			if (!empty($itemUser)) {
-				$tikilib = TikiLib::lib('tiki');
-				$value = array_diff($tikilib->get_user_groups($itemUser), array('Registered', 'Anonymous'));
+			if ($itemId) {
+				$itemUser = $this->getTrackerDefinition()->getItemUser($itemId);
+				
+				if (!empty($itemUser)) {
+					global $tikilib;
+					$value = array_diff($tikilib->get_user_groups($itemUser), array('Registered', 'Anonymous'));
+				}
 			}
 		}
-	
+		
 		return array('value' => $value);
 	}
 	
@@ -53,24 +43,5 @@ class Tracker_Field_UserGroups extends Tracker_Field_Abstract
 	function renderOutput($context = array())
 	{
 		return $this->renderTemplate('trackeroutput/usergroups.tpl', $context);
-	}
-
-	function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
-	{
-		$data = $this->getFieldData();
-
-		return array(
-			$baseKey => $typeFactory->multivalue($data['value']),
-		);
-	}
-
-	function getProvidedFields($baseKey)
-	{
-		return array($baseKey);
-	}
-
-	function getGlobalFields($baseKey)
-	{
-		return array($baseKey => true);
 	}
 }

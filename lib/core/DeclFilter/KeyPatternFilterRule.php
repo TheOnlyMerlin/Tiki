@@ -5,6 +5,9 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+require_once 'lib/core/DeclFilter/FilterRule.php';
+require_once 'lib/core/TikiFilter.php';
+
 class DeclFilter_KeyPatternFilterRule extends DeclFilter_FilterRule
 {
 	private $rules;
@@ -17,7 +20,7 @@ class DeclFilter_KeyPatternFilterRule extends DeclFilter_FilterRule
 	private function getMatchingPattern( $key )
 	{
 		foreach( $this->rules as $pattern => $filter ) {
-			if ( preg_match( $pattern, $key ) ) {
+			if( preg_match( $pattern, $key ) ) {
 				return $pattern;
 			}
 		}

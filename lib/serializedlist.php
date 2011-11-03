@@ -31,11 +31,11 @@ abstract class SerializedList
 	 * @param string $name
 	 */
 	public function __construct($name) {
-		global $prefs;
+		global $tikilib, $prefs;
 		
 		$this->initPrefPrefix();
 		
-		$this->name = strtolower( TikiLib::remove_non_word_characters_and_accents( $name ));
+		$this->name = strtolower( preg_replace('/[\s,\/\|]+/', '_', $tikilib->take_away_accent( $name )) );
 		if (!empty($this->name) && !empty($prefs[$this->getPrefName()])) {
 			$this->loadPref();
 		} else {
@@ -66,7 +66,7 @@ abstract class SerializedList
 	public function getPrefList() {
 		global $prefs;
 		
-		if ( isset($prefs[$this->getListName()]) ) {
+		if( isset($prefs[$this->getListName()]) ) {
 			$custom = @unserialize($prefs[$this->getListName()]);
 			sort($custom);
 		} else {
@@ -89,9 +89,10 @@ abstract class SerializedList
 		
 		$tikilib->set_preference( $this->getPrefName(), serialize( $this->data ) );
 		
-		if ( !in_array( $this->name, $list ) ) {
+		if( !in_array( $this->name, $list ) ) {
 			$list[] = $this->name;
 			$tikilib->set_preference( $this->getListName(), serialize($list) );
+			$tikilib->set_lastUpdatePrefs();
 		}
 	}
 
@@ -100,13 +101,14 @@ abstract class SerializedList
 		
 
 		$prefName = $this->getPrefName();
-		if ( isset($prefs[$prefName]) ) {
+		if( isset($prefs[$prefName]) ) {
 			$tikilib->delete_preference( $prefName );
 		}
 		$list = $this->getPrefList();
-		if ( in_array( $this->name, $list ) ) {
+		if( in_array( $this->name, $list ) ) {
 			$list = array_diff($list, array($this->name));
 			$tikilib->set_preference( $this->getListName(), serialize($list) );
+			$tikilib->set_lastUpdatePrefs();
 		}
 	}
 	

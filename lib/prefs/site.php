@@ -12,8 +12,6 @@ function prefs_site_list() {
 			'description' => tra('Close site (except for those with permission)'),
 			'type' => 'flag',
 			'perspective' => false,
-			'tags' => array('basic'),
-			'default' => 'n',
 		),
 		'site_closed_msg' => array(
 			'name' => tra('Message to display'),
@@ -23,8 +21,6 @@ function prefs_site_list() {
 			'dependencies' => array(
 				'site_closed',
 			),
-			'default' => 'Site is closed for maintenance; please come back later.',
-			'tags' => array('basic'),
 		),
 		'site_busy_msg' => array(
 			'name' => tra('Message to display'),
@@ -34,20 +30,17 @@ function prefs_site_list() {
 			'dependencies' => array(
 				'use_load_threshold',
 			),
-			'default' => 'Server is currently too busy; please come back later.',
 		),
 		'site_crumb_seper' => array(
 			'name' => tra('Locations (breadcrumbs)'),
 			'description' => tra('Locations (breadcrumbs)'),
 			'type' => 'text',
 			'size' => '5',
-			'default' => '»',
 		),
 		'site_nav_seper' => array(
 			'name' => tra('Choices'),
 			'type' => 'text',
 			'size' => '5',
-			'default' => '|',
 		),
 		'site_title_location' => array(
 			'name' => tra('Site title location'),
@@ -58,7 +51,6 @@ function prefs_site_list() {
 				'before' => tra('Before'),
 				'none' => tra('None'),
 			),
-			'default' => 'none',
 		),
 		'site_title_breadcrumb' => array(
 			'name' => tra('Browser title display mode'),
@@ -70,35 +62,20 @@ function prefs_site_list() {
 				'pagetitle' => tra('Current only'),
 				'desc' => tra('Description'),
 			),
-			'default' => 'invertfull',
 		),
 		'site_favicon' => array(
 			'name' => tra('Favicon icon file name'),
 			'type' => 'text',
-			'size' => '50',
-			'default' => 'favicon.png',
-			'tags' => array('basic'),
+			'size' => '15',
 		),
 		'site_favicon_type' => array(
-			'name' => tra('Favicon MIME type'),
+			'name' => tra('Favicon icon MIME type'),
 			'type' => 'list',
-			'description' => tra('Typical file extensions:<table><tr><td>image/jpeg</td><td><strong>.jpg</strong></td></tr><tr><td>imp/png</td><td><strong>.png</strong></td></tr><tr><td>img/gif</td><td><strong>.gif</strong></td></tr><tr><td>image/vnd.microsoft.icon</td><td><strong>.ico</strong></td></tr></table>'),
 			'options' => array(
-				'image/jpeg' => tra('image/jpeg'),
 				'image/png' => tra('image/png'),
-				'image/gif' => tra('image/gif'),
-				'image/vnd.microsoft.icon' => tra('image/vnd.microsoft.icon'),
+				'image/bmp' => tra('image/bmp'),
+				'image/x-icon' => tra('image/x-icon'),
 			),
-			'default' => 'image/png',
-			'tags' => array('basic'),
-		),
-		'site_favicon_msie' => array(
-			'name' => tra('MS Internet Exploder Favicon .ico file name'),
-			'type' => 'text',
-			'size' => '50',
-			'hint' => 'IE can only use .ico type favicons. This setting, if not empty, will override the regular favicon when the users browser is IE.',
-			'default' => '',
-			'tags' => array('experimental'),
 		),
 		'site_terminal_active' => array(
 			'name' => tra('Site Terminal'),
@@ -107,7 +84,6 @@ function prefs_site_list() {
 			'dependencies' => array(
 				'feature_perspective',
 			),
-			'default' => 'n',
 		),
 		'site_terminal_config' => array(
 			'name' => tra('Site Terminal Configuration'),
@@ -116,7 +92,6 @@ function prefs_site_list() {
 			'perspective' => false,
 			'size' => 10,
 			'hint' => tra('One per line. Network prefix in CIDR notation (address/mask size), separated by comma with the perspective ID.') . ' ' . tra('Example:') . ' 192.168.12.0/24,12',
-			'default' => '',
 		),
 	);
 }

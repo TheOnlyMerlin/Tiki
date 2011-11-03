@@ -64,7 +64,7 @@ if (!empty($_REQUEST['edit_assign'])) {
     $grps = '';
     if (!empty($info['groups'])) {
         $module_groups = unserialize($info["groups"]);
-        foreach ($module_groups as $amodule) {
+        foreach($module_groups as $amodule) {
             $grps = $grps . ' $amodule ';
         }
     }
@@ -157,7 +157,7 @@ if (isset($_REQUEST["assign"]) || isset($_REQUEST["preview"])) { // Verify that 
 	$missing_params = array();
 	$modinfo = $modlib->get_module_info( $_REQUEST['assign_name'] );
 	if ($_REQUEST['moduleId'] > 0) {
-		foreach ($modinfo["params"] as $pname => $param) {
+		foreach($modinfo["params"] as $pname => $param) {
 			if ($param["required"] && empty($_REQUEST["assign_params"][$pname]))
 				$missing_params[] = $param["name"];
 		}
@@ -210,7 +210,7 @@ if (isset($_REQUEST["preview"])) {
 				$module_rows = 10;
             include_once ($phpfuncfile);
             $function = 'module_' . $_REQUEST["assign_name"];
-            if ( function_exists( $function ) ) {
+            if( function_exists( $function ) ) {
                 $function( array("name" => $_REQUEST["assign_name"], "position" => $_REQUEST["assign_position"], "ord" => $_REQUEST["assign_order"], "cache_time" => $_REQUEST["assign_cache"], "rows" => $module_rows), $_REQUEST["assign_params"] ); // Warning: First argument should have all tiki_modules table fields. This is just a best effort.
             }
         }
@@ -233,19 +233,19 @@ if (isset($_REQUEST["preview"])) {
     $smarty->assign_by_ref('assign_cache', $_REQUEST["assign_cache"]);
     $module_groups = $_REQUEST["groups"];
     $grps = '';
-    foreach ($module_groups as $amodule) {
+    foreach($module_groups as $amodule) {
         $grps = $grps . " $amodule ";
     }
     $smarty->assign('module_groups', $grps);
     $smarty->assign_by_ref('preview_data', $data);
 
 	$modlib->dispatchValues( $_REQUEST['assign_params'], $modinfo['params'] );
-	$smarty->assign('assign_info', $modinfo);
+	$smarty->assign( 'assign_info', $modinfo );
 }
 if (isset($_REQUEST["assign"])) {
     check_ticket('admin-modules');
-    $assign_name = urldecode($_REQUEST["assign_name"]);
-    $smarty->assign_by_ref('assign_name', $assign_name);
+    $_REQUEST["assign"] = urldecode($_REQUEST["assign"]);
+    $smarty->assign_by_ref('assign_name', $_REQUEST["assign_name"]);
     $smarty->assign_by_ref('assign_position', $_REQUEST["assign_position"]);
     $smarty->assign_by_ref('assign_params', $_REQUEST["assign_params"]);
     $smarty->assign_by_ref('assign_order', $_REQUEST["assign_order"]);
@@ -262,18 +262,18 @@ if (isset($_REQUEST["assign"])) {
     $smarty->assign_by_ref('assign_type', $_REQUEST["assign_type"]);
     $module_groups = $_REQUEST["groups"];
     $grps = '';
-    foreach ($module_groups as $amodule) {
+    foreach($module_groups as $amodule) {
         $grps = $grps . " $amodule ";
     }
     $smarty->assign('module_groups', $grps);
 	if (empty($missing_params)) {
-		$modlib->assign_module(isset($_REQUEST['moduleId']) ? $_REQUEST['moduleId'] : 0, $assign_name, '', $_REQUEST["assign_position"], $_REQUEST["assign_order"], $_REQUEST["assign_cache"], $module_rows, serialize($module_groups) , $_REQUEST["assign_params"], $_REQUEST["assign_type"]);
-		$logslib->add_log('adminmodules', 'assigned module ' . $assign_name);
+		$modlib->assign_module(isset($_REQUEST['moduleId']) ? $_REQUEST['moduleId'] : 0, $_REQUEST["assign_name"], '', $_REQUEST["assign_position"], $_REQUEST["assign_order"], $_REQUEST["assign_cache"], $module_rows, serialize($module_groups) , $_REQUEST["assign_params"], $_REQUEST["assign_type"]);
+		$logslib->add_log('adminmodules', 'assigned module ' . $_REQUEST["assign_name"]);
 		$modlib->reorder_modules();
 		header("location: tiki-admin_modules.php");
 	} else {
 		$modlib->dispatchValues( $_REQUEST['assign_params'], $modinfo['params'] );
-		$smarty->assign('assign_info', $modinfo);
+		$smarty->assign( 'assign_info', $modinfo );
 	}
 }
 
@@ -313,7 +313,9 @@ foreach ($all_modules_info as &$mod) {
 }
 uasort($all_modules_info, 'compare_names');
 $smarty->assign_by_ref( 'all_modules_info', $all_modules_info);
-$smarty->assign('module_list_show_all', !empty($_REQUEST['module_list_show_all']));
+if (!empty($_REQUEST['module_list_show_all'])) {
+	$smarty->assign('module_list_show_all', true);
+}
 
 $orders = array();
 for ($i = 1;$i < 50;$i++) {
@@ -371,20 +373,20 @@ $wikistructures = $structlib->list_structures('0', '100', 'pageName_asc', '');
 $smarty->assign('wikistructures', $wikistructures["data"]);
 $maximum = max( $maximum, $wikistructures['cant'] );
 
-$smarty->assign('maxRecords', $maxRecords);
-$smarty->assign('offset', $offset);
-$smarty->assign('maximum', $maximum);
+$smarty->assign( 'maxRecords', $maxRecords );
+$smarty->assign( 'offset', $offset );
+$smarty->assign( 'maximum', $maximum );
 
 $assigned_modules = $modlib->get_assigned_modules();
 $module_zones = array();
-foreach ( $modlib->module_zones as $initial => $zone) {
+foreach( $modlib->module_zones as $initial => $zone) {
 	$module_zones[$initial] = array(
 		'id' => $zone,
-		'name' => tra(substr($zone, 0, strpos($zone, '_')))
+		'name' => substr($zone, 0, strpos($zone, '_'))
 	);
 }
-$smarty->assign_by_ref('assigned_modules', $assigned_modules);
-$smarty->assign_by_ref('module_zones', $module_zones);
+$smarty->assign_by_ref( 'assigned_modules', $assigned_modules );
+$smarty->assign_by_ref( 'module_zones', $module_zones );
 
 $prefs['module_zones_top'] = 'fixed';
 $prefs['module_zones_topbar'] = 'fixed';
@@ -400,6 +402,7 @@ $headerlib->add_css('.module:hover {
 }');
 $headerlib->add_cssfile('css/admin.css');
 $headerlib->add_jsfile('lib/modules/tiki-admin_modules.js');
+$headerlib->add_jsfile('lib/jquery/jquery.json-2.2.js');
 
 $sameurl_elements = array(
     'offset',
@@ -412,8 +415,6 @@ ask_ticket('admin-modules');
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 
 if (!empty($_REQUEST['edit_module'])) {	// pick up ajax calls
-	// the strings below are used to display the tab titles in the edit module box 
-	//get_strings tr('Module') tr('Appearance') tr('Visibility')
 	$smarty->display("admin_modules_form.tpl");
 } else {
 	$smarty->assign('mid', 'tiki-admin_modules.tpl');

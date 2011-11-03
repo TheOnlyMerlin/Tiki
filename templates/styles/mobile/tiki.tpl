@@ -1,4 +1,4 @@
-{* $Id$ *}<!DOCTYPE html>
+<!DOCTYPE html>
 {* override for mobile *}
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}" lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}"{if !empty($page_id)} id="page_{$page_id}"{/if}>
 	<head>
@@ -21,7 +21,7 @@
 			</div>
 		{/if}
 
-		{if $prefs.feature_tikitests eq 'y' and !empty($tikitest_state) and $tikitest_state neq 0}
+		{if $prefs.feature_tikitests eq 'y' and $tikitest_state neq 0}
 			{include file='tiki-tests_topbar.tpl'}
 		{/if}
 
@@ -81,9 +81,7 @@
 							<div class="clearfix {if $prefs.feature_fullscreen != 'y' or $smarty.session.fullscreen != 'y'}nofullscreen{else}fullscreen{/if}" id="c1c2">
 								<div class="clearfix" id="wrapper">
 									<div id="col1" class="{if $prefs.feature_left_column eq 'fixed' or ($prefs.feature_left_column ne 'n' && $left_modules|@count > 0 && $show_columns.left_modules ne 'n')}marginleft{/if}{if  $prefs.feature_right_column eq 'fixed' or ($prefs.feature_right_column ne 'n' && $right_modules|@count > 0 && $show_columns.right_modules ne 'n')} marginright{/if}"{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
-									{if $prefs.feature_layoutshadows eq 'y'}<div id="tiki-center-shadow">{eval var=$prefs.center_shadow_start}{/if}
-										<div id="tiki-center" {*id needed for ajax editpage link*} class="clearfix content">
-										{if ($prefs.feature_fullscreen != 'y' or $smarty.session.fullscreen != 'y')}
+										{if $smarty.session.fullscreen neq 'y'}
 											{if $prefs.feature_left_column eq 'user' or $prefs.feature_right_column eq 'user'}
 												<div class="clearfix" id="showhide_columns">
 													{if  $prefs.feature_left_column eq 'fixed' or ($prefs.feature_left_column eq 'user' && $left_modules|@count > 0 && $show_columns.left_modules ne 'n')}
@@ -107,7 +105,7 @@
 												{/section}
 											</div>
 										{/if}
-										{if (isset($section) && $section neq 'share') && $prefs.feature_share eq 'y' && $tiki_p_share eq 'y' and (!isset($edit_page) or $edit_page ne 'y' and $prefs.feature_site_send_link ne 'y')}
+										{if $section neq 'share' && $prefs.feature_share eq 'y' && $tiki_p_share eq 'y' and (!isset($edit_page) or $edit_page ne 'y' and $prefs.feature_site_send_link ne 'y')}
 											<div class="share">
 												<a title="{tr}Share this page{/tr}" href="tiki-share.php?url={$smarty.server.REQUEST_URI|escape:'url'}">{tr}Share this page{/tr}</a>
 											</div>
@@ -117,7 +115,8 @@
 												<a title="{tr}Email this page{/tr}" href="tiki-tell_a_friend.php?url={$smarty.server.REQUEST_URI|escape:'url'}">{tr}Email this page{/tr}</a>
 											</div>
 										{/if}
-											{error_report}
+										{if $prefs.feature_layoutshadows eq 'y'}<div id="tiki-center-shadow">{eval var=$prefs.center_shadow_start}{/if}
+										<div id="tiki-center" {*id needed for ajax editpage link*} class="clearfix content">
 											{if $display_msg}
 												{remarksbox type="note" title="{tr}Notice{/tr}"}{$display_msg|escape}{/remarksbox}
 											{/if}
@@ -138,8 +137,10 @@
 								</div>{* end #wrapper *}
 
 								{if $prefs.feature_fullscreen != 'y' or $smarty.session.fullscreen != 'y'}
+									<hr class="hidden" />{* for semantic separation of center and side columns *}
 									{if  $prefs.feature_left_column eq 'fixed' or ($prefs.feature_left_column ne 'n' && $left_modules|@count > 0 && $show_columns.left_modules ne 'n')}
-										<div id="col2"{if $prefs.feature_left_column eq 'user'} style="display:{if isset($cookie.show_col2) and $cookie.show_col2 ne 'y'} none{else} block{/if}{* mobile *};"{/if}{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
+										<aside id="col2"{if $prefs.feature_left_column eq 'user'} style="display:{if isset($cookie.show_col2) and $cookie.show_col2 ne 'y'} none{else} block{/if}{* mobile *};"{/if}{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
+											<h2 class="hidden">Sidebar</h2>
 											<div id="left_modules" class="content modules">
 												<div data-role="collapsible-set" data-theme="{$prefs.mobile_theme_modules}">{* mobile *}
 													{section name=homeix loop=$left_modules}
@@ -147,13 +148,14 @@
 													{/section}
 												</div>{* mobile *}
 											</div>
-										</div>
+										</aside>
 									{/if}
 								{/if}
 							</div>{* -- END of #c1c2 -- *}
 							{if $prefs.feature_fullscreen != 'y' or $smarty.session.fullscreen != 'y'}
-								{if  $prefs.feature_right_column eq 'fixed' or ($prefs.feature_right_column ne 'n' && $right_modules|@count > 0 && $show_columns.right_modules ne 'n') or $module_pref_errors}
-									<div class="clearfix" id="col3"{if $prefs.feature_right_column eq 'user'} style="display:{if isset($cookie.show_col3) and $cookie.show_col3 ne 'y'} none{else} block{/if}{* mobile *};"{/if}{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
+								{if  $prefs.feature_right_column eq 'fixed' or ($prefs.feature_right_column ne 'n' && $right_modules|@count > 0 && $show_columns.right_modules ne 'n')}
+									<aside class="clearfix" id="col3"{if $prefs.feature_right_column eq 'user'} style="display:{if isset($cookie.show_col3) and $cookie.show_col3 ne 'y'} none{else} block{/if}{* mobile *};"{/if}{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
+										<h2 class="hidden">Sidebar</h2>
 										<div id="right_modules" class="content modules">
 											<div data-role="collapsible-set" data-theme="{$prefs.mobile_theme_modules}">{* mobile *}
 												{if $module_pref_errors}
@@ -161,15 +163,12 @@
 														<h3 href="#" class="error">{tr}Module errors{/tr}</h3>
 														{remarksbox type="warning" title="{tr}Module errors{/tr}"}
 															{tr}The following modules could not be loaded{/tr}
-															<form method="post" action="tiki-admin.php">
+															<p>
 																{foreach from=$module_pref_errors key=index item=pref_error}
-																	<p>{$pref_error.mod_name}:</p>
-																	{preference name=$pref_error.pref_name}
+																	<b>{$pref_error.mod_name}:</b><br />
+																	{tr}Preference was not set:{/tr} '{$pref_error.pref_name}'<br />
 																{/foreach}
-																<div class="submit">
-																	<input type="submit" value="{tr}Change{/tr}"/>
-																</div>
-															</form>
+															</p>
 														{/remarksbox}
 													</div>
 												{/if}
@@ -178,7 +177,7 @@
 												{/section}
 											</div>{* mobile *}
 										</div>
-									</div>
+									</aside>
 									<br style="clear:both" />
 								{/if}
 							{/if}
@@ -186,12 +185,12 @@
 						</div>{* -- END of #middle -- *}
 					{if $prefs.feature_layoutshadows eq 'y'}{eval var=$prefs.middle_shadow_end}</div>{/if}
 				</div>{* end .middle_outer *}
-				{if ($prefs.feature_fullscreen != 'y' or $smarty.session.fullscreen != 'y') and ($prefs.layout_section ne 'y' or $prefs.feature_bot_bar ne 'n')}
+				{if $prefs.feature_fullscreen != 'y' or $smarty.session.fullscreen != 'y'}
 					{if $prefs.module_zones_bottom eq 'fixed' or ($prefs.module_zones_bottom ne 'n' && $bottom_modules|@count > 0)}
 						{if $prefs.feature_layoutshadows eq 'y'}<div id="footer-shadow">{eval var=$prefs.footer_shadow_start}{/if}
 							<footer id="footer" data-role="footer" data-theme="{$prefs.mobile_theme_footer}">
 								<div class="footer_liner">
-									<div class="fixedwidth footerbgtrap">
+									<div class="footerbgtrap">
 										<div id="bottom_modules" class="content modules"{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
 											{section name=homeix loop=$bottom_modules}
 												{$bottom_modules[homeix].data}
@@ -207,7 +206,7 @@
 		</div> {* -- END of fixedwidth -- *}
 
 		{*include file='footer.tpl'*}{* mobile *}
-		{if isset($prefs.socialnetworks_user_firstlogin) && $prefs.socialnetworks_user_firstlogin == 'y'}
+		{if $prefs.socialnetworks_user_firstlogin == 'y'}
 			{include file='tiki-socialnetworks_firstlogin_launcher.tpl'}
 		{/if}
 

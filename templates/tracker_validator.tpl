@@ -1,12 +1,8 @@
-{* $Id$ *}
 {jq}
 $("#editItemForm{{$trackerEditFormId}}").validate({
 	{{$validationjs}},
-	ignore: '.ignore',
 	submitHandler: function(){process_submit(this.currentForm);}
 });
-{/jq}
-{jq}
 process_submit = function(me) {
 	if (!$(me).attr("is_validating")) {
 		$(me).attr("is_validating", true);
@@ -17,11 +13,6 @@ process_submit = function(me) {
 		return false;
 	}
 	$(me).attr("is_validating", false);
-
-	// disable submit button(s)
-	// FIXME after 8.0b1 - this seems to prevent the "save" field being sent in the request on webkit
-	//$(me).find("input[type=submit]").attr("disabled", true);
-
 	me.submit();
 };
 {/jq}

@@ -11,9 +11,8 @@ function wikiplugin_subscribegroup_info() {
 		'documentation' => 'PluginSubscribeGroup',
 		'description' => tra('Allow users to subscribe to a group'),
 		'prefs' => array( 'wikiplugin_subscribegroup' ),
-		'body' => tra('text displayed before the button'),
+		'body' => tra('text displyed before the button'),
 		'icon' => 'pics/icons/group_add.png',
-		'tags' => array( 'basic' ),
 		'params' => array(
 			'group' => array(
 				'required' => true,
@@ -45,18 +44,6 @@ function wikiplugin_subscribegroup_info() {
 				'description' => tra('Unsubscribe button label, containing %s as the placeholder for the group name.'),
 				'default' => tra('OK')
 			),
-			'postsubscribe_url' => array(
-				'required' => false,
-				'name' => tra('Postsubscribe URL'),
-				'description' => tra('URL to send the user to after subscribing, if required.'),
-				'default' => ''
-			),
-			'postunsubscribe_url' => array(
-				'required' => false,
-				'name' => tra('Postunsubscribe URL'),
-				'description' => tra('URL to send the user to after unsubscribing, if required.'),
-				'default' => ''
-			)
 		),
 	);
 }
@@ -96,17 +83,9 @@ function wikiplugin_subscribegroup($data, $params) {
 		if (isset($groups[$group])) {
 			$userlib->remove_user_from_group($user, $group);
 			unset($groups[$group]);
-			if (!empty($postunsubscribe_url)) {
-				header( "Location: $postunsubscribe_url" );
-				die;
-			}
 		} else {
 			$userlib->assign_user_to_group($user, $group);
 			$groups[$group] = 'real';
-			if (!empty($postsubscribe_url)) {
-				header( "Location: $postsubscribe_url" );
-				die;
-			}
 		}
 	}
 

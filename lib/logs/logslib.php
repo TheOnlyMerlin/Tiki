@@ -100,7 +100,7 @@ class LogsLib extends TikiLib
 	}
 	function clean_logs($date)
 	{
-		$query = "delete from `tiki_actionlog` where `objectType`='system' and `lastModif`<=?";
+		$query = "delete from `tiki_actionlog` where `object`='system' and `objectType`='system' and `lastModif`<=?";
 		$this->query($query, array((int)$date));
 	}
 
@@ -176,7 +176,12 @@ class LogsLib extends TikiLib
 		$actions = array();
 		if ( $logObject ) {
 			$param = substr( $param, 0, '200' );
-			if ($logCateg && count($categs) > 0) {
+			if (!$logCateg) {
+			$query = "insert into `tiki_actionlog` (`action`, `object`, `lastModif`, `user`, `ip`, `comment`, `objectType`, `client`) values(?,?,?,?,?,?,?,?)";
+			$this->query($query, array($action, $object, (int)$date, $who, $ip, $param, $objectType, $client));
+			$actions[] = $this->lastInsertId();
+		} else {
+			if (count($categs) > 0) {
 				foreach ($categs as $categ) {
 					$query = "insert into `tiki_actionlog` (`action`, `object`, `lastModif`, `user`, `ip`, `comment`, `objectType`, `categId`, `client`) values(?,?,?,?,?,?,?,?,?)";
 					$this->query($query, array($action, $object, (int)$date, $who, $ip, $param, $objectType, $categ, $client));
@@ -187,6 +192,7 @@ class LogsLib extends TikiLib
 				$this->query($query, array($action, $object, (int)$date, $who, $ip, $param, $objectType, $client));
 				$actions[] = $this->lastInsertId();
 			}
+		}
 		}
 		if (!empty($contributions)) {
 			foreach ($actions as $a) {
@@ -807,7 +813,7 @@ class LogsLib extends TikiLib
 
 	function export($actionlogs, $unit = 'b')
 	{
-	$csv = "user,date,time,action,type,object,category,categId,ip, unit,+,-,contribution\r\n";
+	$csv = "user,date,time,action,type,object,category,categId,ip, unit,+,-,contribution,\r\n";
 	foreach ($actionlogs as $action) {
 		if (!isset($action['object'])) {
 			$action['object'] = '';

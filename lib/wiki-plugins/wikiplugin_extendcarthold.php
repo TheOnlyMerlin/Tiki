@@ -13,7 +13,6 @@ function wikiplugin_extendcarthold_info() {
 		'prefs' => array('wikiplugin_extendcarthold', 'payment_feature'),
 		'filter' => 'wikicontent',
 		'format' => 'html',
-		'tags' => array( 'experimental' ),		
 		'params' => array(
 		),
 	);

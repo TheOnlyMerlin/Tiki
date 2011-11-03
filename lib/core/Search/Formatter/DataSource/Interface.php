@@ -7,6 +7,6 @@
 
 interface  Search_Formatter_DataSource_Interface
 {
-	function getInformation(Search_ResultSet $resultSet, array $fields);
+	function getInformation($resultSet, array $fields);
 }
 

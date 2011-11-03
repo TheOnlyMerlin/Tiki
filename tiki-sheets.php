@@ -7,8 +7,7 @@
 
 $section = 'sheet';
 require_once ('tiki-setup.php');
-
-$sheetlib = TikiLib::lib("sheet");
+require_once ('lib/sheet/grid.php');
 
 $access->check_feature('feature_sheet');
 
@@ -77,7 +76,8 @@ if (isset($_REQUEST["edit_mode"]) && $_REQUEST["edit_mode"]) {
 	}
 }
 $cat_type = 'sheet';
-
+$cat_objid = $_REQUEST['sheetId'];
+include_once ('categorize_list.php');
 // Process the insertion or modification of a sheet here
 if (isset($_REQUEST["edit"])) {
 	$access->check_permission('tiki_p_edit_sheet');
@@ -96,6 +96,7 @@ if (isset($_REQUEST["edit"])) {
 	}
 	$smarty->assign_by_ref('parseValues', $_REQUEST['parseValues']);
 	$gid = $sheetlib->replace_sheet($_REQUEST["sheetId"], $_REQUEST["title"], $_REQUEST["description"], $_REQUEST['creator'], $_REQUEST['parentSheetId']);
+	$cat_type = 'sheet';
 	$cat_objid = $gid;
 	$cat_desc = substr($_REQUEST["description"], 0, 200);
 	$cat_name = $_REQUEST["title"];
@@ -109,9 +110,6 @@ if (isset($_REQUEST["removesheet"])) {
 	$sheetlib->remove_sheet($_REQUEST["sheetId"]);
 	header("Location: tiki-sheets.php");
 }
-$cat_objid = $_REQUEST['sheetId'];
-include_once ('categorize_list.php');
-
 if (!isset($_REQUEST["sort_mode"])) {
 	$sort_mode = 'title_asc';
 } else {
@@ -128,7 +126,7 @@ if (!isset($_REQUEST["offset"])) {
 }
 $smarty->assign_by_ref('offset', $offset);
 // Get the list of sheets available for this user (or public galleries)
-$sheets = $sheetlib->list_sheets($offset, $maxRecords, $sort_mode, $find);
+$sheets = $sheetlib->list_sheets($offset, $maxRecords, $sort_mode, $find, true);
 $smarty->assign_by_ref('cant_pages', $sheets["cant"]);
 $smarty->assign_by_ref('sheets', $sheets["data"]);
 

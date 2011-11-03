@@ -1,11 +1,10 @@
-{* $Id$ *}
 {* Note: if you edit this file, make sure to make corresponding edits on tiki-edit_submission.tpl*}
 
 {include file='tiki-articles-js.tpl'}
 
-{title help="Articles" admpage="articles"}
+{title help="Articles"}
 	{if $articleId}
-		{tr}Edit:{/tr} {$title}
+		{tr}Edit:{/tr} {$title|escape}
 	{else}
 		{tr}Edit article{/tr}
 	{/if}
@@ -244,7 +243,7 @@
 		</tr>
 		<tr id='heading_only2' {if $types.$type.heading_only ne 'y'}style="display:;"{else}style="display:none;"{/if}>
 			<td colspan="2">
-				{textarea name="body" id="body"}{$body}{/textarea}
+				{textarea name="body" rows=$rows cols=$cols id="body"}{$body}{/textarea}
 			</td>
 		</tr>
 
@@ -335,7 +334,7 @@ $("#editpageform").submit(function(evt) {
 		});
 		if (isHtml) {
 			this.saving = false;
-			return confirm(tr('You appear to be using HTML in your article but have not selected "Allow full HTML".\nThis will result in HTML tags being removed.\nDo you want to save your edits anyway?'));
+			return confirm(tr('You appear to be using HTML in your article but have not selected "Allow HTML".\nThis will result in HTML tags being removed.\nDo you want to save your edits anyway?'));
 		}
 	}
 	return true;

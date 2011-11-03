@@ -1,23 +1,14 @@
-{* $Id$ *}
 {* Note: if you edit this file, make sure to make corresponding edits on tiki-edit_article.tpl *}
 
 {include file='tiki-articles-js.tpl'}
-{if !empty($errors)}
-	{remarksbox type='errors' title="{tr}Errors{/tr}"}
-		{foreach from=$errors item=m name=errors}
-			{$m}
-			{if !$smarty.foreach.errors.last}<br />{/if}
-		{/foreach}
-	{/remarksbox}
-{/if}
 {if $preview}
 	{include file='tiki-preview_article.tpl'}
 {/if}
 
 {if $subId}
-	{title help="Articles" admpage="articles" url="tiki-edit_submission.php?subId=$subId"}{tr}Edit:{/tr} {$title}{/title}
+	{title help="Articles" url="tiki-edit_submission.php?subId=$subId"}{tr}Edit:{/tr} {$title|escape}{/title}
 {else}
-	{title help="Articles" admpage="articles"}{tr}Submit article{/tr}{/title}
+	{title help="Articles"}{tr}Submit article{/tr}{/title}
 {/if}
 
 <div class="navbar">
@@ -235,7 +226,7 @@
 		</tr>
 		<tr id='heading_only2' {if $types.$type.heading_only ne 'y'}style="display:;"{else}style="display:none;"{/if}>
 			<td colspan="2">
-				{textarea name="body" id="body"}{$body}{/textarea}
+				{textarea name="body" rows=$rows cols=$cols id="body"}{$body}{/textarea}
 			</td>
 		</tr>
 
@@ -283,7 +274,6 @@
 
 	<div align="center">
 		<input type="submit" class="wikiaction" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;" />
-		{if $prefs.feature_antibot eq 'y'}<div align="center">{include file='antibot.tpl' antibot_table='y'}</div>{/if}
 		<input type="submit" class="wikiaction" name="submit" value="{tr}Submit Article{/tr}" onclick="needToConfirm=false;" />
 		{if $tiki_p_autoapprove_submission eq 'y'}
 			<input type="submit" class="wikiaction" name="save" value="{tr}Auto-Approve Article{/tr}" onclick="needToConfirm=false;" />

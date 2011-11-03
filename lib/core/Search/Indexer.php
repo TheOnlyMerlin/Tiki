@@ -14,8 +14,6 @@ class Search_Indexer
 	private $cacheGlobals = null;
 	private $cacheTypes = array();
 
-	private $contentFilters = array();
-
 	function __construct(Search_Index_Interface $searchIndex)
 	{
 		$this->searchIndex = $searchIndex;
@@ -31,14 +29,8 @@ class Search_Indexer
 		$this->globalSources[] = $globalSource;
 	}
 
-	function addContentFilter(Zend_Filter_Interface $filter)
-	{
-		$this->contentFilters[] = $filter;
-	}
-
 	/**
 	 * Rebuild the entire index.
-	 * @return array
 	 */
 	function rebuild()
 	{
@@ -59,8 +51,7 @@ class Search_Indexer
 		if (is_array($searchArgument)) {
 			$query = new Search_Query;
 			foreach ($searchArgument as $object) {
-				$obj2array=(array)$object;
-				$query->addObject($obj2array['object_type'], $obj2array['object_id']);
+				$query->addObject($object['object_type'], $object['object_id']);
 			}
 
 			$result = $query->invalidate($this->searchIndex);
@@ -70,8 +61,7 @@ class Search_Indexer
 		}
 
 		foreach ($objectList as $object) {
-			$obj2array=(array)$object;
-			$this->addDocument($obj2array['object_type'], $obj2array['object_id']);
+			$this->addDocument($object['object_type'], $object['object_id']);
 		}
 	}
 
@@ -90,13 +80,7 @@ class Search_Indexer
 				}
 
 				foreach ($data as $entry) {
-					try {
-						$this->addDocumentFromContentData($objectType, $objectId, $entry, $typeFactory, $globalFields);
-					} catch(Exception $e) {
-						 TikiLib::lib('errorreport')->report(
-							 tr('Indexing failed while processing "%0" (type %1) with the error "%2"', $objectId, $objectType, $e->getMessage())
-						 );
-					}
+					$this->addDocumentFromContentData($objectType, $objectId, $entry, $typeFactory, $globalFields);
 				}
 
 				return count($data);
@@ -120,25 +104,7 @@ class Search_Indexer
 			'contents' => $typeFactory->plaintext($this->getGlobalContent($data, $globalFields)),
 		);
 
-		$data = array_merge(array_filter($data), $base);
-		$data = $this->applyFilters($data);
-
-		$this->searchIndex->addDocument($data);
-	}
-
-	private function applyFilters($data)
-	{
-		$keys = array_keys($data);
-
-		foreach ($keys as $key) {
-			$value = $data[$key];
-
-			if (is_callable(array($value, 'filter'))) {
-				$data[$key] = $value->filter($this->contentFilters);
-			}
-		}
-
-		return $data;
+		$this->searchIndex->addDocument(array_merge(array_filter($data), $base));
 	}
 
 	private function getGlobalContent(array & $data, $globalFields)
@@ -161,8 +127,7 @@ class Search_Indexer
 		return $content;
 	}
 
-	private function getGlobalFields($objectType)
-	{
+	private function getGlobalFields($objectType) {
 		if (is_null($this->cacheGlobals)) {
 			$this->cacheGlobals = array();
 			foreach ($this->globalSources as $source) {

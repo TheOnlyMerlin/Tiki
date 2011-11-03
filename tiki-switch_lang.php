@@ -9,17 +9,18 @@ require_once ('tiki-setup.php');
 
 $access->check_feature('change_language');
 
-if (isset($_SERVER['HTTP_REFERER'])) $orig_url = $_SERVER['HTTP_REFERER'];
+if (isset($_GET['from'])) $orig_url = $_GET['from'];
+elseif (isset($_SERVER['HTTP_REFERER'])) $orig_url = $_SERVER['HTTP_REFERER'];
 else $orig_url = $prefs['tikiIndex'];
 
 if ($prefs['feature_sefurl'] == 'y' && !strstr($orig_url, '.php')) { 
 	if (preg_match('/cat[0-9]+-?/', $orig_url)) {
 		include_once('tiki-sefurl.php');
-		$orig_url = filter_out_sefurl(preg_replace('#(.*)\/cat([0-9]+)(.*)#', '/tiki-browse_categories.php?parentId=$2$3', $orig_url), 'category');
+		$orig_url = filter_out_sefurl(preg_replace('#(.*)\/cat([0-9]+)(.*)#', '/tiki-browse_categories.php?parentId=$2$3', $orig_url), $smarty, 'category');
 	} elseif (preg_match('/article[0-9]+-?/', $orig_url)) {
 		$orig_url = preg_replace('#\/article([0-9]+)(.*)#', '/tiki-read_article.php?articleId=$1', $orig_url);
 	} else {
-		$orig_url = preg_replace('#\/([^\/\?]+)(\?.*)?$#', '/tiki-index.php?page=$1', $orig_url);
+		$orig_url = preg_replace('#\/([^\/]+)$#', '/tiki-index.php?page=$1', $orig_url);
 	}
 } elseif (!strstr($orig_url, '.php')) {
         $params = parse_url($orig_url);
@@ -72,11 +73,19 @@ if (strstr($orig_url, 'tiki-index.php') || strstr($orig_url, 'tiki-read_article.
 	$orig_url = preg_replace('/(.*)&no_bl=y(.*)/', '$1$2', $orig_url);
 	if ($prefs['feature_sefurl'] == 'y') {
 		include_once('tiki-sefurl.php');
-		$orig_url = filter_out_sefurl($orig_url);
+		$orig_url = filter_out_sefurl($orig_url, $smarty);
 	}
 }
+$orig_url = preg_replace('/(.*\?.*)switchLang=[a-zA-Z-_]*&?(.*)/', '$1$2', $orig_url);
+$orig_url = preg_replace('/(.*[?&]lang=)[a-zA-Z-_]*(&?.*)/', '$1' . $_REQUEST['language'] . '$2', $orig_url); // for tiki-view_lang.php?lang=en
 if (isset($_GET['language'])) {
-	setLanguage($_GET['language']);
+	$language = $_GET['language'];
+	if ($user && $prefs['change_language'] == 'y') {
+		$tikilib->set_user_preference($user, 'language', $language);
+	} else {
+		$_SESSION['s_prefs']['language'] = $language;
+		$prefs['language'] = $language;
+	}
 }
 header("location: $orig_url");
 exit;

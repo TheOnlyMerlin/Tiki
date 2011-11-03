@@ -28,7 +28,7 @@ if (!empty($_REQUEST['export'])) {
 }
 $maxPos = $menulib->get_max_option($_REQUEST["menuId"]);
 $smarty->assign('menuId', $_REQUEST["menuId"]);
-$editable_menu_info = $menulib->get_menu($_REQUEST["menuId"]);
+$editable_menu_info = $tikilib->get_menu($_REQUEST["menuId"]);
 $smarty->assign('editable_menu_info', $editable_menu_info);
 if (!isset($_REQUEST["optionId"])) {
 	$_REQUEST["optionId"] = 0;
@@ -62,6 +62,7 @@ if (isset($_REQUEST["remove"])) {
 	$menulib->remove_menu_option($_REQUEST["remove"]);
 	$maxPos = $menulib->get_max_option($_REQUEST["menuId"]);
 	$smarty->assign('position', $maxPos + 10);
+	$smarty->clear_cache(null, "menu" . $_REQUEST["menuId"]);
 }
 if (isset($_REQUEST["up"])) {
 	check_ticket('admin-menu-options');
@@ -74,11 +75,12 @@ if (isset($_REQUEST["down"])) {
 }
 if (isset($_REQUEST['delsel_x']) && isset($_REQUEST['checked'])) {
 	check_ticket('admin-menu-options');
-	foreach ($_REQUEST['checked'] as $id) {
+	foreach($_REQUEST['checked'] as $id) {
 		$menulib->remove_menu_option($id);
 	}
 	$maxPos = $menulib->get_max_option($_REQUEST['menuId']);
 	$smarty->assign('position', $maxPos + 10);
+	$smarty->clear_cache(null, 'menu' . $_REQUEST['menuId']);
 }
 if (isset($_REQUEST["save"])) {
 	if (!isset($_REQUEST['groupname'])) $_REQUEST['groupname'] = '';
@@ -88,6 +90,7 @@ if (isset($_REQUEST["save"])) {
 	check_ticket('admin-menu-options');
 	$menulib->replace_menu_option($_REQUEST["menuId"], $_REQUEST["optionId"], $_REQUEST["name"], $_REQUEST["url"], $_REQUEST["type"], $_REQUEST["position"], $_REQUEST["section"], $_REQUEST["perm"], $_REQUEST["groupname"], $_REQUEST['level'], $_REQUEST['icon']);
 	$modlib->clear_cache();
+	$smarty->clear_cache(null, "menu" . $_REQUEST["menuId"]);
 	$smarty->assign('position', $_REQUEST["position"] + 10);
 	$smarty->assign('name', '');
 	$smarty->assign('optionId', 0);
@@ -132,7 +135,7 @@ $smarty->assign_by_ref('channels', $channels["data"]);
 $smarty->assign_by_ref('allchannels', $allchannels["data"]);
 if (isset($info['groupname']) && !is_array($info['groupname'])) $info['groupname'] = explode(',', $info['groupname']);
 $all_groups = $userlib->list_all_groups();
-if (is_array($all_groups)) foreach ($all_groups as $g) $option_groups[$g] = (is_array($info['groupname']) && in_array($g, $info['groupname'])) ? 'selected="selected"' : '';
+if (is_array($all_groups)) foreach($all_groups as $g) $option_groups[$g] = (is_array($info['groupname']) && in_array($g, $info['groupname'])) ? 'selected="selected"' : '';
 $smarty->assign_by_ref('option_groups', $option_groups);
 ask_ticket('admin-menu-options');
 // disallow robots to index page:

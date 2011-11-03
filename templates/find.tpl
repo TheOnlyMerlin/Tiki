@@ -1,5 +1,3 @@
-{* $Id$ *}
-
 {*
 	parameters used in this template:
 
@@ -32,7 +30,7 @@
 
 <div class="clearfix">
 		<form method="post" action="{$smarty.server.PHP_SELF}" class="findtable">
-		{if !empty($filegals_manager)}<input type="hidden" name="filegals_manager" value="{$filegals_manager|escape}" />{/if}
+		{if $filegals_manager neq ''}<input type="hidden" name="filegals_manager" value="{$filegals_manager|escape}" />{/if}
 
 		{query _type='form_input' maxRecords='NULL' type='NULL' types='NULL' find='NULL' topic='NULL' lang='NULL' exact_match='NULL' categId='NULL' cat_categories='NULL' filegals_manager='NULL' save='NULL' offset='NULL' searchlist='NULL' searchmap='NULL'}
 
@@ -49,8 +47,8 @@
 	</label>
 
 {if isset($exact_match)}
-	<label class="findexactmatch" for="findexactmatch" style="white-space: nowrap">
-			{tr}Exact match{/tr}
+	<label class="findexactmatch" for="findexactmatch">
+			{tr}Exact&nbsp;match{/tr}
 		<input type="checkbox" name="exact_match" id="findexactmatch" {if $exact_match ne 'n'}checked="checked"{/if}/>
 	</label>
 {/if}
@@ -58,7 +56,7 @@
 {if !empty($find_show_sub) and $find_show_sub eq 'y'}
 	<label class="findsub">
 		{tr}and all the sub-objects{/tr}
-		<input type="checkbox" name="find_sub" id="find_sub" {if !empty($find_sub) and $find_sub eq 'y'}checked="checked"{/if}/>
+		<input type="checkbox" name="find_sub" id="find_sub" {if $find_sub eq 'y'}checked="checked"{/if}/>
 	</label>
 {/if}
 
@@ -84,7 +82,7 @@
 	</select>
 {/if}
 
-{if (isset($find_show_languages) && $find_show_languages eq 'y') and $prefs.feature_multilingual eq 'y'}
+{if $find_show_languages eq 'y' and $prefs.feature_multilingual eq 'y'}
 	<span class="findlang">
 		<select name="lang" class="in">
 			<option value='' {if $find_lang eq ''}selected="selected"{/if}>{tr}any language{/tr}</option>
@@ -113,7 +111,7 @@
 	</span>
 {/if}
 
-{if isset($find_show_date_range) && $find_show_date_range eq 'y'}
+{if $find_show_date_range eq 'y'}
 	<div id="date_range_find">
 		<span class="findDateFrom">
 			{tr}From{/tr}
@@ -126,22 +124,20 @@
 	</div>
 {/if}
 
-{if ((isset($find_show_categories) && $find_show_categories eq 'y') or (isset($find_show_categories_multi) && $find_show_categories_multi eq 'y')) and $prefs.feature_categories eq 'y' and !empty($categories)}
+{if ($find_show_categories eq 'y' or $find_show_categories_multi eq 'y') and $prefs.feature_categories eq 'y' and !empty($categories)}
 	<div class="category_find">
-	{if $find_show_categories_multi eq 'n' || $findSelectedCategoriesNumber <= 1}
-	<div id="category_singleselect_find">
+	<div id="category_singleselect_find" style="display: {if $find_show_categories_multi eq 'y' && $find_cat_categories|@count > 1}none{else}block{/if};">
 		<select name="categId" class="findcateg">
 			<option value='' {if $find_categId eq ''}selected="selected"{/if}>{tr}any category{/tr}</option>
-			{foreach $categories as $identifier => $category}
-				<option value="{$identifier}" {if $find_categId eq $identifier}selected="selected"{/if}>
-					{$category.categpath|tr_if|escape}
+			{section name=ix loop=$categories}
+				<option value="{$categories[ix].categId|escape}" {if $find_categId eq $categories[ix].categId}selected="selected"{/if}>
+					{$categories[ix].categpath|tr_if|escape}
 				</option>
-			{/foreach}
+			{/section}
 		</select>
 		{if $prefs.javascript_enabled eq 'y' && $find_show_categories_multi eq 'y'}<a href="#" onclick="show('category_multiselect_find');hide('category_singleselect_find');">{tr}Multiple select{/tr}</a>{/if}
 	</div>
-	{/if}
-	<div id="category_multiselect_find" style="display: {if $find_show_categories_multi eq 'y' && $findSelectedCategoriesNumber > 1}block{else}none{/if};">
+	<div id="category_multiselect_find" style="display: {if $find_show_categories_multi eq 'y' && $find_cat_categories|@count > 1}block{else}none{/if};">
   		<div class="multiselect"> 
   			{if count($categories) gt 0}
 				{$cat_tree}
@@ -210,14 +206,14 @@
 	</label>
 {/if}
 
-{if !empty($find_other)}
+{if !empty($find_other) }
 	<label class="find_other" for="find_other">
 		   {tr}{$find_other}{/tr}
-		   <input type="text" name="find_other" id="find_other" value="{if !empty($find_other_val)}{$find_other_val|escape}{/if}"/>
+		   <input type="text" name="find_other" id="find_other" value="{$find_other_val|escape}"/>
 	</label>
 {/if}
 
-{if isset($find_show_num_rows) && $find_show_num_rows eq 'y'}
+{if $find_show_num_rows eq 'y'}
 	<label class="findnumrows" for="findnumrows">
 			{tr}Number of displayed rows{/tr}
 			<input type="text" name="maxRecords" id="findnumrows" value="{$maxRecords|escape}" size="3" />
@@ -231,10 +227,10 @@
 			<a href="{$smarty.server.PHP_SELF}?{query find='' type='' types='' topic='' lang='' langOrphan='' exact_match='' categId='' maxRecords='' find_from_Month='' find_from_Day='' find_from_Year='' find_to_Month='' find_to_Day='' find_to_Year=''}" title="{tr}Clear Filter{/tr}">{tr}Clear Filter{/tr}</a>
 		</span>
 	{/if}
-	{if (isset($gmapbuttons) && $gmapbuttons) and (isset($mapview) && $mapview)}
+	{if $gmapbuttons and $mapview}
 		<input type="submit" name="searchlist" value="{tr}List View{/tr}" />
 		<input type="hidden" name="mapview" value="y" />
-	{elseif (isset($gmapbuttons) && $gmapbuttons)}
+	{elseif $gmapbuttons}
 		<input type="submit" name="searchmap" value="{tr}Map View{/tr}" />
 		<input type="hidden" name="mapview" value="n" />
 	{/if}

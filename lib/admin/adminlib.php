@@ -63,6 +63,9 @@ class AdminLib extends TikiLib
 	function remove_dsn($dsnId) {
 		$info = $this->get_dsn($dsnId);
 
+		$perm_name = 'tiki_p_dsn_' . $info['name'];
+		$query = "delete from `users_permissions` where `permName`=?";
+		$this->query($query,array($perm_name));
 		$query = "delete from `tiki_dsn` where `dsnId`=?";
 		$this->query($query,array($dsnId));
 		return true;
@@ -132,12 +135,22 @@ class AdminLib extends TikiLib
 			$result = $this->query($query,array($name, $extwiki));
 		}
 
+		// And now replace the perm if not created
+		$perm_name = 'tiki_p_extwiki_' . $name;
+		$query = "delete from `users_permissions`where `permName`=?";
+		$this->query($query,array($perm_name));
+		$query = "insert into `users_permissions`(`permName`,`permDesc`,`type`,`level`) values
+    			(?,?,?,?)";
+		$this->query($query,array($perm_name,'Can use extwiki $extwiki','extwiki','editor'));
 		return true;
 	}
 
 	function remove_extwiki($extwikiId) {
 		$info = $this->get_extwiki($extwikiId);
 
+		$perm_name = 'tiki_p_extwiki_' . $info['name'];
+		$query = "delete from `users_permissions` where `permName`=?";
+		$this->query($query,array($perm_name));
 		$query = "delete from `tiki_extwiki` where `extwikiId`=?";
 		$this->query($query,array($extwikiId));
 		return true;
@@ -357,8 +370,6 @@ class AdminLib extends TikiLib
 	// changed for virtualhost support
 	function dump() {
 		global $tikidomain, $prefs;
-		$parserlib = TikiLib::lib('parser');
-		
 		$dump_path = "dump";
 		if ($tikidomain) {
 			$dump_path.= "/$tikidomain";
@@ -374,7 +385,7 @@ class AdminLib extends TikiLib
 		while ($res = $result->fetchRow()) {
 			$pageName = $res["pageName"] . '.html';
 
-			$dat = $parserlib->parse_data($res["data"]);
+			$dat = $this->parse_data($res["data"]);
 			// Now change index.php?page=foo to foo.html
 			// and index.php to HomePage.html
 			$dat = preg_replace("/tiki-index.php\?page=([^\'\"\$]+)/", "$1.html", $dat);

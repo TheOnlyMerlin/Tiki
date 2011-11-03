@@ -22,32 +22,15 @@ class Search_Formatter_ValueFormatter
 	function __call($format, $arguments)
 	{
 		$name = array_shift($arguments);
-		if (! $arguments = array_shift($arguments)) {
-			$arguments = array();
-		}
 
-		// ugly exception for wikiplugin - TODO better?
-		if ($format !== 'wikiplugin' && (! isset($this->valueSet[$name]) || is_null($this->valueSet[$name]))) {
+		if (empty($this->valueSet[$name])) {
 			return tr("No value for '%0'", $name);
 		}
 
 		$class = 'Search_Formatter_ValueFormatter_' . ucfirst($format);
 		if (class_exists($class)) {
-			global $prefs;
-			$cachelib = TikiLib::lib('cache');
-			$cacheName = $format . ':' . $name . ':' . $prefs['language'] . ':' . serialize($this->valueSet[$name]);
-			$cacheType = 'search_valueformatter';
-
-			if (in_array($format, $prefs['unified_cached_formatters']) && $cachelib->isCached($cacheName, $cacheType)) {
-				return $cachelib->getCached($cacheName, $cacheType);
-			} else {
-				$formatter = new $class($arguments);
-				$ret = $formatter->render($name, $this->valueSet[$name], $this->valueSet);
-				if (in_array($format, $prefs['unified_cached_formatters'])) {
-					$cachelib->cacheItem($cacheName, $ret, $cacheType);
-				}
-				return ($ret);
-			}
+			$formatter = new $class;
+			return $formatter->render($this->valueSet[$name], $this->valueSet);
 		} else {
 			return tr("Unknown formatting rule '%0' for '%1'", $format, $name);
 		}

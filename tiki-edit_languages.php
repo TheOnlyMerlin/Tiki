@@ -40,16 +40,8 @@ if (!isset($_REQUEST["action"])) {
 }
 $smarty->assign('action', $_REQUEST["action"]);
 
-if (isset($_REQUEST['only_db_translations']) && $_REQUEST['only_db_translations'] != 'n') {
+if (isset($_REQUEST['only_db_translations'])) {
 	$smarty->assign('only_db_translations', 'y');
-} else {
-	$smarty->assign('only_db_translations', 'n');
-}
-
-if (isset($_REQUEST['only_db_untranslated']) && $_REQUEST['only_db_untranslated'] != 'n') {
-	$smarty->assign('only_db_untranslated', 'y');
-} else {
-	$smarty->assign('only_db_untranslated', 'n');
 }
 
 // Adding strings
@@ -89,7 +81,7 @@ if ($action == "edit_rec_sw" || $action == "edit_tran_sw") {
 	
 	//check if user has translated something
 	for ($i = 0; $i < $maxRecords; $i++) {
-		// Handle edits in untranslated strings
+		// Handle edits in translate recorded
 		if (isset($_REQUEST["edit_tran_$i"]) || isset($_REQUEST['translate_all'])) {
 			// Handle edits in edit translations
 			if (strlen($_REQUEST["tran_$i"]) > 0 && strlen($_REQUEST["source_$i"]) > 0) {
@@ -111,7 +103,7 @@ if ($action == "edit_rec_sw" || $action == "edit_tran_sw") {
 	$query = "select `source`, `tran` from `tiki_language` where `lang`=?";
 	$result = $tikilib->fetchAll($query, array($edit_language));
 
-	foreach ( $result as $row ) {
+	foreach( $result as $row ) {
 		${"lang_$edit_language"}[ $row['source'] ] = $row['tran'];
 	}
 
@@ -128,15 +120,9 @@ if ($action == "edit_rec_sw" || $action == "edit_tran_sw") {
 	$data = array();
 
 	if ($action == "edit_rec_sw") {
-		if (isset($_REQUEST['only_db_untranslated']) && $_REQUEST['only_db_untranslated'] != 'n') {
-			// display only database stored untranslated strings
-			$data = $translations->getDbUntranslated($maxRecords, $offset, $find);
-		} else {
-			// display all untranslated strings (language.php + db)
-			$data = $translations->getAllUntranslated($maxRecords, $offset, $find);
-		}
+		$data = $translations->getRecordedUntranslated($sort_mode, $maxRecords, $offset, $find);
 	} elseif ($action == "edit_tran_sw") {
-		if (isset($_REQUEST['only_db_translations']) && $_REQUEST['only_db_translations'] != 'n') {
+		if (isset($_REQUEST['only_db_translations'])) {
 			// display only database stored translations
 			$data = $translations->getDbTranslations($sort_mode, $maxRecords, $offset, $find);
 		} else {
@@ -144,7 +130,6 @@ if ($action == "edit_rec_sw" || $action == "edit_tran_sw") {
 			$data = $translations->getAllTranslations($maxRecords, $offset, $find);
 		}
 	}
-
 	$smarty->assign_by_ref('translations', $data['translations']);
 	$smarty->assign('total', $data['total']);
 	$smarty->assign('hasDbTranslations', $translations->hasDbTranslations);
@@ -162,9 +147,9 @@ if (isset($_REQUEST["exp_language"])) {
 if (isset($_REQUEST['downloadFile'])) {
 	check_ticket('edit-languages');
 	$data = $export_language->createCustomFile();
-	header("Content-type: application/unknown");
-	header("Content-Disposition: inline; filename=language.php");
-	header("Content-encoding: UTF-8");
+	header ("Content-type: application/unknown");
+	header ("Content-Disposition: inline; filename=language.php");
+	header ("Content-encoding: UTF-8");
 	echo $data;
 	exit (0);
 }
@@ -193,7 +178,7 @@ ask_ticket('edit-languages');
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 
 $headerlib->add_cssfile('css/admin.css');
-$headerlib->add_jsfile('lib/language/js/tiki-edit_languages.js');
+$headerlib->add_jsfile('lib/language/tiki-edit_languages.js');
 
 $headtitle = tra('Edit languages');
 $description = tra('Edit or export languages');

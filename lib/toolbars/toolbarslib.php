@@ -30,31 +30,31 @@ abstract class Toolbar
 		//we detect sheet first because it has unique buttons
 		if ( $section == 'sheet' && $tag = ToolbarSheet::fromName( $tagName ) )
 			return $tag;
-		elseif ( $tag = Toolbar::getCustomTool( $tagName ) )
+		elseif( $tag = Toolbar::getCustomTool( $tagName ) )
 			return $tag;
-		elseif ( $tag = ToolbarInline::fromName( $tagName ) )
+		elseif( $tag = ToolbarInline::fromName( $tagName ) )
 			return $tag;
-		elseif ( $tag = ToolbarBlock::fromName( $tagName ) )
+		elseif( $tag = ToolbarBlock::fromName( $tagName ) )
 			return $tag;
-		elseif ( $tag = ToolbarLineBased::fromName( $tagName ) )
+		elseif( $tag = ToolbarLineBased::fromName( $tagName ) )
 			return $tag;
-		elseif ( $tag = ToolbarCkOnly::fromName( $tagName ) )
+		elseif( $tag = ToolbarCkOnly::fromName( $tagName ) )
 			return $tag;
-		elseif ( $tag = ToolbarWikiplugin::fromName( $tagName ) )
+		elseif( $tag = ToolbarWikiplugin::fromName( $tagName ) )
 			return $tag;
-		elseif ( $tag = ToolbarPicker::fromName( $tagName ) )
+		elseif( $tag = ToolbarPicker::fromName( $tagName ) )
 			return $tag;
-		elseif ( $tag = ToolbarDialog::fromName( $tagName ) )
+		elseif( $tag = ToolbarDialog::fromName( $tagName ) )
 			return $tag;
-		elseif ( $tagName == 'fullscreen' )
+		elseif( $tagName == 'fullscreen' )
 			return new ToolbarFullscreen;
-		elseif ( $tagName == 'tikiimage' )
+		elseif( $tagName == 'tikiimage' )
 			return new ToolbarFileGallery;
-		elseif ( $tagName == 'help' )
+		elseif( $tagName == 'help' )
 			return new ToolbarHelptool;
-		elseif ( $tagName == 'switcheditor' )
+		elseif( $tagName == 'switcheditor' )
 			return new ToolbarSwitchEditor;
-		elseif ( $tagName == '-' )
+		elseif( $tagName == '-' )
 			return new ToolbarSeparator;
 		
 	} // }}}
@@ -62,8 +62,7 @@ abstract class Toolbar
 	public static function getList( $include_custom = true ) // {{{
 	{
 		global $tikilib;
-		$parserlib = TikiLib::lib('parser');
-		$plugins = $parserlib->plugin_get_list();
+		$plugins = $tikilib->plugin_get_list();
 		
 		foreach( $plugins as & $name ) {
 			$name = "wikiplugin_$name";
@@ -157,7 +156,7 @@ abstract class Toolbar
 	{
 
 		global $prefs;
-		if ( isset($prefs['toolbar_custom_list']) ) {
+		if( isset($prefs['toolbar_custom_list']) ) {
 			$custom = @unserialize($prefs['toolbar_custom_list']);
 			sort($custom);
 		} else {
@@ -169,7 +168,7 @@ abstract class Toolbar
 	
 	public static function getCustomTool($name) {
 		global $prefs;
-		if ( isset($prefs["toolbar_tool_$name"]) ) {
+		if( isset($prefs["toolbar_tool_$name"]) ) {
 			$data = unserialize($prefs["toolbar_tool_$name"]);
 			$tag = Toolbar::fromData( $name, $data );
 			return $tag;
@@ -185,9 +184,9 @@ abstract class Toolbar
 	}
 
 	public static function saveTool($name, $label, $icon = 'pics/icons/shading.png', $token = '', $syntax = '', $type = 'Inline', $plugin = '') {
-		global $tikilib;
+		global $prefs, $tikilib;
 		
-		$name = strtolower( TikiLib::remove_non_word_characters_and_accents( $name ));
+		$name = strtolower( preg_replace('/[\s,\/\|]+/', '_', $tikilib->take_away_accent( $name )) );
 		$standard_names = Toolbar::getList(false);
 		$custom_list = Toolbar::getCustomList();
 		if (in_array($name, $standard_names)) {		// don't allow custom tools with the same name as standard ones
@@ -203,9 +202,10 @@ abstract class Toolbar
 		
 		$tikilib->set_preference( $prefName, serialize( $data ) );
 		
-		if ( !in_array( $name, $custom_list ) ) {
+		if( !in_array( $name, $custom_list ) ) {
 			$custom_list[] = $name;
 			$tikilib->set_preference( 'toolbar_custom_list', serialize($custom_list) );
+			$tikilib->set_lastUpdatePrefs();
 		}
 	}
 
@@ -215,14 +215,14 @@ abstract class Toolbar
 		$name = strtolower( $name );
 
 		$prefName = "toolbar_tool_$name";
-		if ( isset($prefs[$prefName]) ) {
+		if( isset($prefs[$prefName]) ) {
 			$tikilib->delete_preference( $prefName );
 			
 			$list = array();
-			if ( isset($prefs['toolbar_custom_list']) ) {
+			if( isset($prefs['toolbar_custom_list']) ) {
 				$list = unserialize($prefs['toolbar_custom_list']);
 			}
-			if ( in_array( $name, $list ) ) {
+			if( in_array( $name, $list ) ) {
 				$list = array_diff($list, array($name));
 				$tikilib->set_preference( 'toolbar_custom_list', serialize($list) );
 			}
@@ -234,10 +234,11 @@ abstract class Toolbar
 		global $tikilib;
 		
 		$tikilib->query('DELETE FROM `tiki_preferences` WHERE `name` LIKE \'toolbar_tool_%\'');
-		$tikilib->delete_preference('toolbar_custom_list');
+		$tikilib->query('DELETE FROM `tiki_preferences` WHERE `name` = \'toolbar_custom_list\'');
 		
 		//global $cachelib; require_once("lib/cache/cachelib.php");
 		//$cachelib->invalidate('tiki_preferences_cache');
+		$tikilib->set_lastUpdatePrefs();
 	}
 	
 
@@ -265,7 +266,7 @@ abstract class Toolbar
 				$tag = new ToolbarSeparator();
 				break;
 			case 'CkOnly':
-				$tag = new ToolbarCkOnly( $tagName );
+				$tag = new ToolbarCkOnly();
 				break;
 			case 'Fullscreen':
 				$tag = new ToolbarFullscreen();
@@ -304,7 +305,7 @@ abstract class Toolbar
 		global $prefs;
 
 		foreach( $this->requiredPrefs as $prefName )
-			if ( ! isset($prefs[$prefName]) || $prefs[$prefName] != 'y' )
+			if( ! isset($prefs[$prefName]) || $prefs[$prefName] != 'y' )
 				return false;
 
 		return true;
@@ -358,18 +359,12 @@ abstract class Toolbar
 		return $this->label;
 	} // }}}
 
-	function getWysiwygToken( $areaId ) // {{{
+	function getWysiwygToken() // {{{
 	{
 		return $this->wysiwyg;
 	} // }}}
 	
-	
-	function getWysiwygWikiToken( $areaId ) // {{{ // wysiwyg_htmltowiki
-	{
-		return null;
-	} // }}}
-	
-	function getSyntax( $areaId ) // {{{
+	function getSyntax() // {{{
 	{
 		return '';
 	} // }}}
@@ -546,27 +541,6 @@ class ToolbarCkOnly extends Toolbar
 		return null;
 	} // }}}
 	
-	function getWysiwygWikiToken( $areaId ) // {{{ // wysiwyg_htmltowiki
-	{
-		switch ($this->wysiwyg) {
-			case 'autosave':
-			case 'Copy':
-			case 'Cut':
-			case 'Format':
-			case 'Indent':
-			case 'JustifyLeft':
-			case 'Outdent':
-			case 'Paste':
-			case 'Redo': 
-			case 'RemoveFormat':
-			case 'ShowBlocks': 
-			case 'Source':
-			case 'Undo':
-				 return $this->wysiwyg; break;
-			default: return null;
-		}
-	} // }}}	
-	
 	function getLabel() // {{{
 	{
 		return $this->wysiwyg;
@@ -598,6 +572,7 @@ class ToolbarInline extends Toolbar
 
 	public static function fromName( $tagName ) // {{{
 	{
+		global $prefs;
 		switch( $tagName ) {
 		case 'bold':
 			$label = tra('Bold');
@@ -643,7 +618,7 @@ class ToolbarInline extends Toolbar
 		return $tag;
 	} // }}}
 
-	function getSyntax( $areaId ) // {{{
+	function getSyntax() // {{{
 	{
 		return $this->syntax;
 	} // }}}
@@ -654,12 +629,7 @@ class ToolbarInline extends Toolbar
 
 		return $this;
 	} // }}}
-	
-	function getWysiwygWikiToken( $areaId ) // {{{ // wysiwyg_htmltowiki
-	{
-		return $this->getWysiwygToken($areaId);
-	} // }}}
-	
+
 	function getWikiHtml( $areaId ) // {{{
 	{
 		if ($this->syntax == '~np~text~/np~') {	// closing ~/np~ tag breaks toolbar when inside nested plugins
@@ -768,6 +738,7 @@ class ToolbarLineBased extends ToolbarInline // Will change in the future
 
 	public static function fromName( $tagName ) // {{{
 	{
+		global $prefs;
 		switch( $tagName ) {
 		case 'list':
 			$label = tra('Unordered List');
@@ -806,6 +777,7 @@ class ToolbarLineBased extends ToolbarInline // Will change in the future
 class ToolbarPicker extends Toolbar
 {
 	private $list;
+	private $index;
 	private $name;
 	
 	public static function fromName( $tagName ) // {{{
@@ -872,7 +844,6 @@ class ToolbarPicker extends Toolbar
 			$icon = tra('pics/icons/palette_bg.png');
 			$wysiwyg = 'BGColor';
 			$styleType = 'background-color';
-			$rawList = array();
 			
 			$hex = array('0', '3', '6', '8', '9', 'C', 'F');
 			$count_hex = count($hex);
@@ -928,18 +899,6 @@ class ToolbarPicker extends Toolbar
 		return $this;
 	} // }}}
 
-	
-	function getWysiwygWikiToken( $areaId ) // {{{ // wysiwyg_htmltowiki
-	{
-		switch ($this->wysiwyg) {
-			case 'BGColor':
-			case 'TextColor':
-				 return $this->wysiwyg; break;
-			default: return null;
-		}
-	} // }}}
-	
-	
 	function setList( $list ) // {{{
 	{
 		$this->list = $list;
@@ -967,8 +926,9 @@ class ToolbarPicker extends Toolbar
 	static private function setupJs() {
 		
 		static $pickerAdded = false;
+		global $headerlib;
 
-		if ( ! $pickerAdded ) {
+		if( ! $pickerAdded ) {
 			$pickerAdded = true;
 		}
 	}
@@ -1013,9 +973,9 @@ class ToolbarDialog extends Toolbar
 			$list = array('Wiki Link',
 						'<label for="tbWLinkDesc">Show this text</label>',
 						'<input type="text" id="tbWLinkDesc" class="ui-widget-content ui-corner-all" style="width: 98%" />',
-						'<label for="tbWLinkPage">Link to this page</label>',
+						'<label for="tbWLinkURL">Link to this page</label>',
 						'<input type="text" id="tbWLinkPage" class="ui-widget-content ui-corner-all" style="width: 98%" />',
-						$prefs['wikiplugin_alink'] == 'y' ? '<label for="tbWLinkAnchor">Anchor:</label>' : '',
+						$prefs['wikiplugin_alink'] == 'y' ? '<label for="tbWLinkRel">Anchor:</label>' : '',
 						$prefs['wikiplugin_alink'] == 'y' ? '<input type="text" id="tbWLinkAnchor" class="ui-widget-content ui-corner-all" style="width: 98%" />' : '',
 						$prefs['feature_semantic'] == 'y' ? '<label for="tbWLinkRel">Semantic relation:</label>' : '',
 						$prefs['feature_semantic'] == 'y' ? '<input type="text" id="tbWLinkRel" class="ui-widget-content ui-corner-all" style="width: 98%" />' : '',
@@ -1062,7 +1022,7 @@ class ToolbarDialog extends Toolbar
 			$list = array('Find Text',
 						'<label>Search:</label>',
 						'<input type="text" id="tbFindSearch" class="ui-widget-content ui-corner-all" />',
-						'<label for="tbFindCase" style="display:inline;">Case Insensitivity:</label>',
+						'<label for="tbLinkNoCache" style="display:inline;">Case Insensitivity:</label>',
 						'<input type="checkbox" id="tbFindCase" checked="checked" class="ui-widget-content ui-corner-all" />',
 						'<p class="description">Note: Uses regular expressions</p>',	// TODO add option to not
 						'{"open": function() { dialogFindOpen(area_id); },'.
@@ -1079,13 +1039,13 @@ class ToolbarDialog extends Toolbar
 			$tool_prefs[] = 'feature_wiki_replace';
 			
 			$list = array('Text Replace',
-						'<label for="tbReplaceSearch">Search:</label>',
+						'<label>Search:</label>',
 						'<input type="text" id="tbReplaceSearch" class="ui-widget-content ui-corner-all" />',
-						'<label for="tbReplaceReplace">Replace:</label>',
+						'<label>Replace:</label>',
 						'<input type="text" id="tbReplaceReplace" class="ui-widget-content ui-corner-all clearfix" />',
-						'<label for="tbReplaceCase" style="display:inline;">Case Insensitivity:</label>',
+						'<label for="tbLinkNoCache" style="display:inline;">Case Insensitivity:</label>',
 						'<input type="checkbox" id="tbReplaceCase" checked="checked" class="ui-widget-content ui-corner-all" />',
-						'<br /><label for="tbReplaceAll" style="display:inline;">Replace All:</label>',
+						'<br /><label for="tbLinkNoCache" style="display:inline;">Replace All:</label>',
 						'<input type="checkbox" id="tbReplaceAll" checked="checked" class="ui-widget-content ui-corner-all" />',
 						'<p class="description">Note: Uses regular expressions</p>',	// TODO add option to not
 						'{"open": function() { dialogReplaceOpen(area_id); },'.
@@ -1141,8 +1101,9 @@ class ToolbarDialog extends Toolbar
 	static private function setupJs() {
 		
 		static $dialogAdded = false;
+		global $headerlib;
 
-		if ( ! $dialogAdded ) {
+		if( ! $dialogAdded ) {
 			$dialogAdded = true;
 		}
 	}
@@ -1197,6 +1158,7 @@ class ToolbarFullscreen extends Toolbar
 {
 	function __construct() // {{{
 	{
+		global $prefs;
 		$this->setLabel( tra('Full Screen Edit') )
 			->setIcon( 'pics/icons/application_get.png' )
 			->setWysiwygToken( 'Maximize' )
@@ -1210,7 +1172,7 @@ class ToolbarFullscreen extends Toolbar
 							htmlentities($this->label, ENT_QUOTES, 'UTF-8'), 'qt-fullscreen');
 		
 		
-//		if ( isset($_REQUEST['zoom']) )
+//		if( isset($_REQUEST['zoom']) )
 //			$name = 'preview';
 //		return '<input type="image" name="'.$name.'" alt="' . htmlentities($this->label, ENT_QUOTES, 'UTF-8') . '" class="toolbar qt-fullscreen" '.
 //				'title="' . htmlentities($this->label, ENT_QUOTES, 'UTF-8') . '" value="wiki_edit" onclick="needToConfirm=false;" src="' . htmlentities($this->icon, ENT_QUOTES, 'UTF-8') . '"/>';
@@ -1228,19 +1190,17 @@ class ToolbarHelptool extends Toolbar
 	
 	function getWikiHtml( $areaId ) // {{{
 	{
+
 		global $wikilib, $smarty, $plugins, $section;
 		if (!isset($plugins)) {
 			include_once ('lib/wiki/wikilib.php');
 			$plugins = $wikilib->list_plugins(true, $areaId);
 		}
-		
-		$sheethelp = '';
-		
 		if ($section == 'sheet') {
-			$sheethelp .= $smarty->fetch('tiki-edit_help_sheet.tpl');
-			$sheethelp .= $smarty->fetch('tiki-edit_help_sheet_interface.tpl');
+			$sheethelp = $smarty->fetch('tiki-edit_help_sheet.tpl') . $smarty->fetch('tiki-edit_help_sheet_interface.tlp');
+		} else {
+			$sheethelp = '';
 		}
-		
 		$smarty->assign_by_ref('plugins', $plugins);
 		return  $smarty->fetch('tiki-edit_help.tpl') .
 				$smarty->fetch('tiki-edit_help_plugins.tpl') .
@@ -1251,7 +1211,7 @@ class ToolbarHelptool extends Toolbar
 	function getWysiwygToken( $areaId ) // {{{
 	{
 
-		global $wikilib, $smarty, $plugins;
+		global $wikilib, $smarty, $plugins, $section, $prefs;
 		
 		include_once ('lib/wiki/wikilib.php');
 		$plugins = $wikilib->list_plugins(true, $areaId);
@@ -1308,7 +1268,7 @@ class ToolbarFileGallery extends Toolbar
 	
 	function getSyntax( $areaId ) {
 		global $smarty;
-		$smarty->loadPlugin('smarty_function_filegal_manager_url');
+		require_once $smarty->_get_plugin_filepath('function','filegal_manager_url');
 		return 'openFgalsWindow(\''.htmlentities(smarty_function_filegal_manager_url(array('area_id'=>$areaId), $smarty)).'\');';
 	}
 
@@ -1348,20 +1308,20 @@ class ToolbarSwitchEditor extends Toolbar
 
 	function getWikiHtml( $areaId ) // {{{
 	{
+		global $smarty;
+		
 		return $this->getSelfLink('switchEditor(\'wysiwyg\', $(this).parents(\'form\')[0]);',
 							htmlentities($this->label, ENT_QUOTES, 'UTF-8'), 'qt-switcheditor');
 	} // }}}
 
 	function getWysiwygToken( $areaId ) // {{{
 	{
-		global $prefs;
 		if (!empty($this->wysiwyg)) {
 			$this->name = $this->wysiwyg;	// temp
 			
-		if ($prefs['feature_wysiwyg'] == 'y' && $prefs['wysiwyg_optional'] == 'y') {
-				global $headerlib;
-				$label = addcslashes($this->label, "'");
-				$headerlib->add_jq_onready(<<< JS
+			global $headerlib;
+			$label = addcslashes($this->label, "'");
+			$headerlib->add_jq_onready(<<< JS
 if (typeof window.CKEDITOR !== "undefined") {
 	window.CKEDITOR.config.extraPlugins += (window.CKEDITOR.config.extraPlugins ? ',{$this->name}' : '{$this->name}' );
 	window.CKEDITOR.plugins.add( '{$this->name}', {
@@ -1378,23 +1338,16 @@ if (typeof window.CKEDITOR !== "undefined") {
 				command : '{$this->name}',
 				icon: editor.config._TikiRoot + '{$this->icon}'
 			});
+	
 		}
 	});
 }
 JS
-, 10);			
-			}
+, 10);		
 			
 		}
 		return $this->wysiwyg;
 	} // }}}
-	
-	
-	function getWysiwygWikiToken( $areaId ) // {{{ // wysiwyg_htmltowiki
-	{
-		return $this->getWysiwygToken($areaId); 
-	} // }}}	
-	
 	
 	function isAccessible() // {{{
 	{
@@ -1421,11 +1374,9 @@ class ToolbarWikiplugin extends Toolbar
 	public static function fromName( $name ) // {{{
 	{
 		global $tikilib;
-		$parserlib = TikiLib::lib('parser');
-		
-		if ( substr( $name, 0, 11 ) == 'wikiplugin_'  ) {
+		if( substr( $name, 0, 11 ) == 'wikiplugin_'  ) {
 			$name = substr( $name, 11 );
-			if ( $info = $parserlib->plugin_info( $name ) ) {
+			if( $info = $tikilib->plugin_info( $name ) ) {
 				if (isset($info['icon']) and $info['icon'] != '') {
 					$icon = $info['icon'];
 				} else {
@@ -1459,9 +1410,8 @@ class ToolbarWikiplugin extends Toolbar
 	function isAccessible() // {{{
 	{
 		global $tikilib;
-		$parserlib = TikiLib::lib('parser');
 		$dummy_output = '';
-		return parent::isAccessible() && $parserlib->plugin_enabled( $this->pluginName, $dummy_output );
+		return parent::isAccessible() && $tikilib->plugin_enabled( $this->pluginName, $dummy_output );
 	} // }}}
 
 	private static function getToken( $name ) // {{{
@@ -1482,7 +1432,7 @@ class ToolbarWikiplugin extends Toolbar
 			if ($this->wysiwyg === 'Image') {	// cke's own image tool overrides this so set it up to use our filegal
 				global $headerlib,  $smarty, $prefs;
 				// can't do upload the cke way yet
-				//$smarty->loadPlugin('smarty_function_filegal_manager_url');
+				//require_once $smarty->_get_plugin_filepath('function','filegal_manager_url');
 				//$url =  smarty_function_filegal_manager_url(array('area_id'=> 'fgal_picker'), $smarty);
 				//$headerlib->add_js('CKEDITOR.config.filebrowserUploadUrl = "'.$url.'"', 5);
 				$url = 'tiki-list_file_gallery.php?galleryId='.$prefs['home_file_gallery'].'&filegals_manager=fgal_picker';
@@ -1503,6 +1453,7 @@ class ToolbarSheet extends Toolbar
 
 	public static function fromName( $tagName ) // {{{
 	{
+		global $prefs;
 		switch( $tagName ) {
 			case 'sheetsave':
 				$label = tra('Save Sheet');
@@ -1615,7 +1566,7 @@ class ToolbarSheet extends Toolbar
 		return $tag;
 	} // }}}
 
-	function getSyntax( $areaId ) // {{{
+	function getSyntax() // {{{
 	{
 		return $this->syntax;
 	} // }}}
@@ -1710,13 +1661,13 @@ class ToolbarsList
 				$thetags = $rtags;
 			}
 			foreach( $thetags as $tagName ) {
-				if ( $tagName == '-' ) {
-					if ( count($group) ) {
+				if( $tagName == '-' ) {
+					if( count($group) ) {
 						$elements[$i][] = $group;
 						$group = array();
 					}
 				} else {
-					if ( ( $tag = Toolbar::getTag( $tagName ) ) 
+					if( ( $tag = Toolbar::getTag( $tagName ) ) 
 						&& $tag->isAccessible() ) {
 	
 						$group[] = $tag;
@@ -1724,15 +1675,15 @@ class ToolbarsList
 				}
 			}
 	
-			if ( count($group) ) {
+			if( count($group) ) {
 				$elements[$i][] = $group;
 			}
 		}
-		if ( count( $elements ) )
+		if( count( $elements ) )
 			$this->lines[] = $elements;
 	} // }}}
 
-	function getWysiwygArray( $areaId, $isHtml = true) // {{{
+	function getWysiwygArray( $areaId ) // {{{
 	{
 		$lines = array();
 		foreach( $this->lines as $line ) {
@@ -1740,27 +1691,19 @@ class ToolbarsList
 
 			foreach( $line as $bit ) {
 				foreach( $bit as $group) {
-					$group_count = 0;
 					foreach( $group as $tag ) {
-						if ($isHtml) {
-							if ( $token = $tag->getWysiwygToken( $areaId ) ) {
-								$lineOut[] = $token; $group_count++;
-							}
-						} else {
-							if ( $token = $tag->getWysiwygWikiToken( $areaId ) ) {
-								$lineOut[] = $token; $group_count++;
-							}
-						}
+	
+						if( $token = $tag->getWysiwygToken( $areaId ) )
+							$lineOut[] = $token;
 					}
-					if ($group_count) { // don't add separators for empty groups
-						$lineOut[] = '-';	
-					}
+	
+					$lineOut[] = '-';
 				}
 			}
 
 			$lineOut = array_slice( $lineOut, 0, -1 );
 
-			if ( count($lineOut) )
+			if( count($lineOut) )
 				$lines[] = array($lineOut);
 		}
 
@@ -1777,7 +1720,7 @@ class ToolbarsList
 		if ($prefs['feature_jquery_autocomplete'] != 'y') {
 			$headerlib->add_jsfile('lib/jquery/jquery-autocomplete/jquery.autocomplete.min.js');
 		}
-		
+
 		$c = 0;
 		foreach( $this->lines as $line ) {
 			$lineHtml = '';
@@ -1805,7 +1748,7 @@ class ToolbarsList
 						$groupHtml .= $tag->getWikiHtml( $areaId );
 					}
 					
-					if ( !empty($groupHtml) ) {
+					if( !empty($groupHtml) ) {
 						$param = empty($lineBit) ? '' : ' class="toolbar-list"';
 						$lineBit .= "<span$param>$groupHtml</span>";
 					}
@@ -1818,13 +1761,12 @@ class ToolbarsList
 						$lineHtml = $lineBit;
 					}
 				}
-				
 				// adding admin icon if no right part - messy - TODO better
 				if ($c == 0 && empty($lineBit) && !empty($right)) {
 					$lineHtml .= "<div class='helptool-admin'>$right</div>";
 				} 
 			}
-			if ( !empty($lineHtml) ) {
+			if( !empty($lineHtml) ) {
 				$html .= "<div>$lineHtml</div>";
 			}
 			$c++;
@@ -1847,30 +1789,5 @@ class ToolbarsList
 		}
 		return false;
 	} // }}}
-}
-
-
-/**
- * Definition of the CKE Toolbar Combos
- */
-class ToolbarCombos
-{
-	
-	/**
-	 * Get the content of the format combo
-	 * 
-	 * Valid toolbar types are:
-	 * - 'html': WYSIWYG-HTML
-	 * - 'wiki': Visual Wiki 
-	 * 
-	 * @param string $tb_type The CKE toolbar type 
-	 */
-	static function getFormatTags($tb_type) {
-		switch ($tb_type) {
-			case 'wiki': return 'p;h1;h2;h3;h4;h5;h6'; break;
-			case 'html': 
-			default: return 'p;h1;h2;h3;h4;h5;h6;pre;address;div'; // CKE default
-		}
-	}
 }
 

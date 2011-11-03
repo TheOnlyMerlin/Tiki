@@ -14,21 +14,15 @@ require_once 'lib/language/Language.php';
  */
 class LanguageTest extends TikiTestCase
 {
-	public function testAddPhpSlashes()
-	{
+	public function testAddPhpSlashes() {
 		$string = "\n \t \r " . '\\ $ "';
 		$expectedResult = '\n \t \r \\\\ \$ \"';
 		$this->assertEquals($expectedResult, Language::addPhpSlashes($string));
 	}
 
-	public function testRemovePhpSlashes()
-	{
+	public function testRemovePhpSlashes() {
 		$string = '\n \t \r \\\\ \$ \"';
 		$expectedResult = "\n \t \r " . '\\ $ "';
 		$this->assertEquals($expectedResult, Language::removePhpSlashes($string));
 	}
-	
-	// TODO: We need a way to create a Tiki database just for the tests
-	/*public function testGetDbTranslatedLanguages() {
-	}*/
 }

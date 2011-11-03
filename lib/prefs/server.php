@@ -5,11 +5,12 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_server_list($partial = false) {
-
+function prefs_server_list() {
+	global $prefs, $tikilib;
+	
 	// Skipping the getTimeZoneList() from tikidate which just emulates the pear date format
 	// Generating it is extremely costly in terms of memory.
-	if ( class_exists( 'DateTimeZone' ) ) {
+	if( class_exists( 'DateTimeZone' ) ) {
 		$timezones = DateTimeZone::listIdentifiers();
 	} elseif ( class_exists('DateTime')) {
 		$timezones = array_keys( DateTime::getTimeZoneList() );
@@ -20,7 +21,9 @@ function prefs_server_list($partial = false) {
 
 	sort( $timezones );
 
-	global $tikidate;
+	if ($prefs['server_timezone'] == 'GMT' && !in_array('GMT', $timezones) && in_array('UTC', $timezones)) {
+		$tikilib->set_preference( 'server_timezone', 'UTC' );
+	}
 	
 	return array(
 		'server_timezone' => array(
@@ -28,8 +31,6 @@ function prefs_server_list($partial = false) {
 			'description' => tra('Indicates the default time zone to use for the server.'),
 			'type' => 'list',
 			'options' => array_combine( $timezones, $timezones ),
-			'default' => isset($tikidate) ? $tikidate->getTimezoneId() : 'UTC',
-			'tags' => array('basic'),
 		),
 	);
 }

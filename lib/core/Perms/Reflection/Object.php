@@ -5,6 +5,9 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+require_once 'lib/core/Perms/Reflection/Container.php';
+require_once 'lib/core/Perms/Reflection/PermissionSet.php';
+
 class Perms_Reflection_Object implements Perms_Reflection_Container
 {
 	protected $factory;
@@ -40,7 +43,7 @@ class Perms_Reflection_Object implements Perms_Reflection_Container
 	}
 
 	function getParentPermissions() {
-		if ( $permissions = $this->getCategoryPermissions() ) {
+		if( $permissions = $this->getCategoryPermissions() ) {
 			return $permissions;
 		} else {
 			return $this->factory->get( 'global', null )->getDirectPermissions();
@@ -62,7 +65,7 @@ class Perms_Reflection_Object implements Perms_Reflection_Container
 			}
 		}
 
-		if ( $count != 0 ) {
+		if( $count != 0 ) {
 			return $set;
 		}
 	}

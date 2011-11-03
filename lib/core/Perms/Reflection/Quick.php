@@ -5,6 +5,8 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+require_once 'lib/core/Perms/Reflection/PermissionSet.php';
+
 class Perms_Reflection_Quick
 {
 	private $configured = array();
@@ -14,7 +16,7 @@ class Perms_Reflection_Quick
 	);
 
 	function configure( $name, array $permissions ) {
-		if ( $name != 'none' && $name != 'userdefined' ) {
+		if( $name != 'none' && $name != 'userdefined' ) {
 			$this->configured[$name] = $permissions;
 		}
 	}
@@ -30,10 +32,10 @@ class Perms_Reflection_Quick
 	}
 
 	private function addPermissions( $out, $current, $group, $quick ) {
-		if ( $quick == 'userdefined' ) {
+		if( $quick == 'userdefined' ) {
 			$array = $current->getPermissionArray();
 
-			if ( isset( $array[$group] ) ) {
+			if( isset( $array[$group] ) ) {
 				$out->add( $group, $array[$group] );
 			}
 		} else {
@@ -44,7 +46,7 @@ class Perms_Reflection_Quick
 	private function getTypePermissions( $quick ) {
 		$out = array();
 
-		if ( isset( $this->inheritance[$quick] ) ) {
+		if( isset( $this->inheritance[$quick] ) ) {
 			foreach( $this->inheritance[$quick] as $parent ) {
 				$out = array_merge( $out, $this->getDirectTypePermissions( $parent ) );
 			}
@@ -55,7 +57,7 @@ class Perms_Reflection_Quick
 	}
 
 	private function getDirectTypePermissions( $type ) {
-		if ( isset( $this->configured[$type] ) ) {
+		if( isset( $this->configured[$type] ) ) {
 			return $this->configured[$type];
 		} else {
 			return array();
@@ -67,7 +69,7 @@ class Perms_Reflection_Quick
 		$permissions = $current->getPermissionArray();
 
 		foreach( $groupList as $group ) {
-			if ( isset( $permissions[$group] ) ) {
+			if( isset( $permissions[$group] ) ) {
 				$out[$group] = $this->getType( $permissions[$group] );
 			} else {
 				$out[$group] = 'none';
@@ -81,7 +83,7 @@ class Perms_Reflection_Quick
 		foreach( array_keys( $this->configured ) as $name ) {
 			$candidate = $this->getTypePermissions( $name );
 
-			if ( count( array_diff( $candidate, $permissions ) ) == 0 
+			if( count( array_diff( $candidate, $permissions ) ) == 0 
 				&& count( array_diff( $permissions, $candidate ) ) == 0 ) {
 				return $name;
 			}

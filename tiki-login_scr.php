@@ -8,18 +8,14 @@
 $section_class = 'tiki_login';	// This will be body class instead of $section
 include_once ("tiki-setup.php");
 if (isset($_REQUEST['user'])) {
-	if ($_REQUEST['user'] == 'admin' && (!isset($_SESSION["groups_are_emulated"]) || $_SESSION["groups_are_emulated"] != "y")) {
-		$smarty->assign('showloginboxes', 'y');
-		$smarty->assign('adminuser', $_REQUEST['user']);
-	} else {
-		$smarty->assign('loginuser', $_REQUEST['user']);
-	}
+	if ($_REQUEST['user'] == 'admin' && $_SESSION["groups_are_emulated"] != "y") $smarty->assign('showloginboxes', 'y');
+	else $smarty->assign('loginuser', $_REQUEST['user']);
 }
-if (($prefs['useGroupHome'] != 'y' || $prefs['limitedGoGroupHome'] == 'y') && !isset($_SESSION['loginfrom'])) {
+if ($prefs['useGroupHome'] != 'y' && !isset($_SESSION['loginfrom'])) {
 	$_SESSION['loginfrom'] = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $prefs['tikiIndex']);
 }
 
-$headerlib->add_js('$(document).ready( function() {$("#login-user").focus().select();} );');
+$headerlib->add_js( '$(document).ready( function() {$("#login-user").focus().select();} );' );
 
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');

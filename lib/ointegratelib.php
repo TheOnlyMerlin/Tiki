@@ -26,60 +26,65 @@ class OIntegrate
 		switch( $from )
 		{
 		case 'html':
-			if ( $to == 'tikiwiki' )
+			if( $to == 'tikiwiki' )
 				return new OIntegrate_Converter_HtmlToTiki;
-			elseif ( $to == 'html' )
+			elseif( $to == 'html' )
 				return new OIntegrate_Converter_Direct;
 			break;	
 		case 'tikiwiki':
-			if ( $to == 'html' )
+			if( $to == 'html' )
 				return new OIntegrate_Converter_TikiToHtml;
-			elseif ( $to == 'tikiwiki' )
+			elseif( $to == 'tikiwiki' )
 				return new OIntegrate_Converter_EncodeHtml;
 		}
 	} // }}}
 
 	function performRequest( $url, $postBody = null ) // {{{
 	{
-		$cachelib = TikiLib::lib('cache');
-		$tikilib = TikiLib::lib('tiki');
+		global $cachelib;
+		require_once 'lib/cache/cachelib.php';
 
 		if ( $cache = $cachelib->getSerialized( $url.$postBody )) {
-			if ( time() < $cache['expires'] )
+			if( time() < $cache['expires'] )
 				return $cache['data'];
 
 			$cachelib->invalidate( $url.$postBody );
 		}
 
-		$client = $tikilib->get_http_client( $url );
-		$method = null;
-
-		if ( empty($postBody) ) {
-			$method = 'GET';
-			$client->setHeaders(array(
-				'Accept' => 'application/json,text/x-yaml',
-				'OIntegrate-Version' => '1.0',
-			));
+		if( empty($postBody) ) {
+			$opts = array(
+				'http' => array(
+					'method' => 'GET',
+					'header' =>
+						"Accept: application/json,text/x-yaml\r\n"
+						. "OIntegrate-Version: 1.0\r\n",
+					'content' => '',
+				),
+			);
 		} else {
-			$client->setHeaders(array(
-				'Accept' => 'application/json,text/x-yaml',
-				'OIntegrate-Version' => '1.0',
-			));
-			$client->setRawData( $postBody, 'application/x-www-form-urlencoded' );
+			$opts = array(
+				'http' => array(
+					'method' => 'POST',
+					'header' =>
+						"Accept: application/json,text/x-yaml\r\n"
+						. "OIntegrate-Version: 1.0\r\n"
+						. "Content-Type: application/x-www-form-urlencoded\r\n"
+						. "Content-Length: " . strlen($postBody) . "\r\n",
+					'content' => $postBody,
+				),
+			);
 		}
 
-		if ( count( $this->schemaVersion ) ) {
-			$client->setHeaders( 'OIntegrate-SchemaVersion', implode( ', ', $this->schemaVersion ) );
-		}
-		if ( count( $this->acceptTemplates ) ) {
-			$client->setHeaders( 'OIntegrate-AcceptTemplate', implode( ', ', $this->acceptTemplates ) );
-		}
+		if( count( $this->schemaVersion ) )
+			$opts['http']['header'] .= "OIntegrate-SchemaVersion: " . implode( ', ', $this->schemaVersion ) . "\r\n";
+		if( count( $this->acceptTemplates ) )
+			$opts['http']['header'] .= "OIntegrate-AcceptTemplate: " . implode( ', ', $this->acceptTemplates ) . "\r\n";
 
-		$httpResponse = $client->request($method);
-		$content = $httpResponse->getBody();
+		$context = stream_context_create( $opts );
+		$content = file_get_contents( $url, false, $context );
 
-		$contentType = $httpResponse->getHeader('Content-Type');
-		$cacheControl = $httpResponse->getHeader('Cache-Control');
+		$contentType = $this->extractHeader( $http_response_header, 'Content-Type' );
+		$cacheControl = $this->extractHeader( $http_response_header, 'Cache-Control' );
 
 		$response = new OIntegrate_Response;
 		$response->contentType = $contentType;
@@ -90,15 +95,15 @@ class OIntegrate
 		$filter->addCatchAllFilter( 'xss' );
 
 		$response->data = $filter->filter( $response->data );
-		$response->version = $httpResponse->getHeader('OIntegrate-Version');
-		$response->schemaVersion = $httpResponse->getHeader('OIntegrate-SchemaVersion');
-		if ( ! $response->schemaVersion && isset( $response->data->_version ) )
+		$response->version = $this->extractHeader( $http_response_header, 'OIntegrate-Version' );
+		$response->schemaVersion = $this->extractHeader( $http_response_header, 'OIntegrate-SchemaVersion' );
+		if( ! $response->schemaVersion && isset( $response->data->_version ) )
 			$response->schemaVersion = $response->data->_version;
-		$response->schemaDocumentation = $httpResponse->getHeader('OIntegrate-SchemaDocumentation');
+		$response->schemaDocumentation = $this->extractHeader( $http_response_header, 'OIntegrate-SchemaDocumentation' );
 
 		global $prefs;
 		// Respect cache duration asked for
-		if ( preg_match( '/max-age=(\d+)/', $cacheControl, $parts ) ) {
+		if( preg_match( '/max-age=(\d+)/', $cacheControl, $parts ) ) {
 			$expiry = time() + $parts[1];
 
 			$cachelib->cacheItem( $url, serialize( array(
@@ -106,7 +111,7 @@ class OIntegrate
 				'data' => $response,
 			) ) );
 		// Unless service specifies not to cache result, apply a default cache
-		} elseif ( false !== strpos( $cacheControl, 'no-cache' ) && $prefs['webservice_consume_defaultcache'] > 0 ) {
+		} elseif( false !== strpos( $cacheControl, 'no-cache' ) && $prefs['webservice_consume_defaultcache'] > 0 ) {
 			$expiry = time() + $prefs['webservice_consume_defaultcache'];
 
 			$cachelib->cacheItem( $url, serialize( array(
@@ -118,12 +123,23 @@ class OIntegrate
 		return $response;
 	} // }}}
 
+	private function extractHeader( $headerList, $name ) // {{{
+	{
+		$name = strtolower( $name );
+		foreach( $headerList as $line )
+			if( strpos( strtolower($line), $name ) === 0 ) {
+				list( $header, $value ) = explode( ':', $line, 2 );
+
+				return trim( $value );
+			}
+	} // }}}
+
 	function unserialize( $type, $data ) // {{{
 	{
 		$parts = explode( ';', $type );
 		$type = trim($parts[0]);
 
-		if ( empty($data) ) {
+		if( empty($data) ) {
 			return null;
 		}
 
@@ -131,7 +147,7 @@ class OIntegrate
 		{
 		case 'application/json':
 		case 'text/javascript':
-			if ( $out = json_decode( $data, true ) )
+			if( $out = json_decode( $data, true ) )
 				return $out;
 
 			// Handle invalid JSON too...
@@ -145,9 +161,9 @@ class OIntegrate
 			return Horde_Yaml::load( $data );
 		default:
 			// Attempt anything...
-			if ( $out = $this->unserialize( 'application/json', $data ) )
+			if( $out = $this->unserialize( 'application/json', $data ) )
 				return $out;
-			if ( $out = $this->unserialize( 'text/x-yaml', $data ) )
+			if( $out = $this->unserialize( 'text/x-yaml', $data ) )
 				return $out;
 		}
 	} // }}}
@@ -181,7 +197,7 @@ class OIntegrate_Response
 		$response->data = $data;
 		$response->schemaVersion = $schemaVersion;
 
-		if ( $cacheLength > 0 )
+		if( $cacheLength > 0 )
 			$response->cacheControl = "max-age=$cacheLength";
 		else
 			$response->cacheControl = "no-cache";
@@ -191,14 +207,14 @@ class OIntegrate_Response
 
 	function addTemplate( $engine, $output, $templateLocation ) // {{{
 	{
-		if ( ! array_key_exists( '_template', $this->data ) )
+		if( ! array_key_exists( '_template', $this->data ) )
 			$this->data['_template'] = array();
-		if ( ! array_key_exists( $engine, $this->data['_template'] ) )
+		if( ! array_key_exists( $engine, $this->data['_template'] ) )
 			$this->data['_template'][$engine] = array();
-		if ( ! array_key_exists( $output, $this->data['_template'][$engine] ) )
+		if( ! array_key_exists( $output, $this->data['_template'][$engine] ) )
 			$this->data['_template'][$engine][$output] = array();
 
-		if ( 0 !== strpos( $templateLocation, 'http' ) ) {
+		if( 0 !== strpos( $templateLocation, 'http' ) ) {
 			$host = $_SERVER['HTTP_HOST'];
 			$proto = 'http';
 			$path = dirname( $_SERVER['SCRIPT_NAME'] );
@@ -214,7 +230,7 @@ class OIntegrate_Response
 	{
 		header( 'OIntegrate-Version: 1.0' );
 		header( 'OIntegrate-SchemaVersion: ' . $this->schemaVersion );
-		if ( $this->schemaDocumentation )
+		if( $this->schemaDocumentation )
 			header( 'OIntegrate-SchemaDocumentation: ' . $this->schemaDocumentation );
 		header( 'Cache-Control: ' . $this->cacheControl );
 
@@ -229,12 +245,12 @@ class OIntegrate_Response
 	function render( $engine, $engineOutput, $outputContext, $templateFile ) // {{{
 	{
 		$engine = OIntegrate::getEngine( $engine, $engineOutput );
-		if ( ! $output = OIntegrate::getConverter( $engineOutput, $outputContext ) ) {
+		if( ! $output = OIntegrate::getConverter( $engineOutput, $outputContext ) ) {
 			$this->errors = array( 1001, 'Output converter not found.' );
 			return;
 		}
 
-		if ( ! $engine ) {
+		if( ! $engine ) {
 			$this->errors = array( 1000, 'Engine not found' );
 			return;
 		}
@@ -245,14 +261,14 @@ class OIntegrate_Response
 
 	function getTemplates( $supportedPairs = null ) // {{{
 	{
-		if ( !is_array( $this->data ) || ! isset( $this->data['_template'] ) || ! is_array( $this->data['_template'] ) )
+		if( !is_array( $this->data ) || ! isset( $this->data['_template'] ) || ! is_array( $this->data['_template'] ) )
 			return array();
 
 		$templates = array();
 
 		foreach( $this->data['_template'] as $engine => $outputs ) {
 			foreach( $outputs as $output => $files ) {
-				if ( is_array( $supportedPairs ) && ! in_array( "$engine/$output", $supportedPairs ) )
+				if( is_array( $supportedPairs ) && ! in_array( "$engine/$output", $supportedPairs ) )
 					continue;
 
 				$files = (array) $files;
@@ -314,7 +330,7 @@ class OIntegrate_Engine_Smarty implements OIntegrate_Engine // {{{
 		$smarty->template_dir = dirname($templateFile);
 		$smarty->plugins_dir = array();
 
-		if ( $this->changeDelimiters ) {
+		if( $this->changeDelimiters ) {
 			$smarty->left_delimiter = '{{';
 			$smarty->right_delimiter = '}}';
 		}

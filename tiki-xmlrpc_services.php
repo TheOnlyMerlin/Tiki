@@ -6,9 +6,9 @@
 // $Id$
 
 include_once('tiki-setup.php');
-require_once("lib/pear/XML/Server.php");
+require_once("XML/Server.php");
 include_once('lib/blogs/bloglib.php');
-if ($prefs['feature_xmlrpc'] != 'y') {
+if($prefs['feature_xmlrpc'] != 'y') {
   die;  
 }
 

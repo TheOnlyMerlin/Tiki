@@ -10,35 +10,8 @@
  * 
  * - url key ~L~
  */
-class Tracker_Field_Url extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
+class Tracker_Field_Url extends Tracker_Field_Abstract
 {
-	public static function getTypes()
-	{
-		return array(
-			'L' => array(
-				'name' => tr('URL'),
-				'description' => tr('Creates a link to a specified URL.'),
-				'help' => 'URL Tracker Field',
-				'prefs' => array('trackerfield_url'),
-				'tags' => array('basic'),
-				'default' => 'y',
-				'params' => array(
-					'linkToURL' => array(
-						'name' => tr('Display'),
-						'description' => tr('How the URL should be rendered'),
-                                                'filter' => 'int',	
-						'options' => array(
-							0 => tr('URL as link'),
-							1 => tr('Plain text'),
-							2 => tr('Site title as link'),
-							3 => tr('URL as link plus site title'),
-						),
-					),
-				),
-			),
-		);
-	}
-
 	function getFieldData(array $requestData = array())
 	{
 		$ins_id = $this->getInsertId();
@@ -56,50 +29,20 @@ class Tracker_Field_Url extends Tracker_Field_Abstract implements Tracker_Field_
 
 		$url = $this->getConfiguration('value');
 		
-		if (empty($url) || $context['list_mode'] == 'csv' ) {
+		if (empty($url) || $context['list_mode'] == 'csv') {
 			return $url;
-		} elseif ($this->getOption(0) == 2) {
-			$smarty->loadPlugin('smarty_function_object_link');
-			return smarty_function_object_link(array(
-				'type' => 'external',
-				'id' => $url,
-			), $smarty);
-		} elseif (!$this->getOption(0)) {
-			$smarty->loadPlugin('smarty_function_object_link');
-			return smarty_function_object_link(array(
-				'type' => 'external',
-				'id' => $url,
-				'title' => $url,
-			), $smarty);
-		} elseif ($this->getOption(0) == 3) {
-			$smarty->loadPlugin('smarty_function_object_link');
-			return smarty_function_object_link(array(
-				'type' => 'external_extended',
-				'id' => $url,
-			), $smarty);
 		} else {
-			return $url;
+			require_once $smarty->_get_plugin_filepath('function', 'object_link');
+			return smarty_function_object_link(array(
+				'type' => 'external',
+				'id' => $url,
+			), $smarty);
 		}
 	}
 
 	function renderInput($context = array())
 	{
 		return $this->renderTemplate("trackerinput/url.tpl", $context);
-	}
-
-	function importRemote($value)
-	{
-		return $value;
-	}
-
-	function exportRemote($value)
-	{
-		return $value;
-	}
-
-	function importRemoteField(array $info, array $syncInfo)
-	{
-		return $info;
 	}
 }
 

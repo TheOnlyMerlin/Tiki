@@ -19,12 +19,12 @@ function tr($content) {
 	return tra( $content, '', false, array_slice( $args, 1 ) );
 }
 
-function tra($content, $lg='', $unused = false, $args = array()) {
+function tra($content, $lg='', $no_interactive = false, $args = array()) {
 	global $prefs;
 	static $languages = array();
 
 	if ($lg == '') {
-		if ( $prefs['language'] ) {
+		if( $prefs['language'] ) {
 			$lang = $prefs['language'];
 		} else {
 			$lang = $prefs['site_language'];
@@ -33,12 +33,12 @@ function tra($content, $lg='', $unused = false, $args = array()) {
 		$lang = $lg;
 	}
 
-	if ( ! isset( $languages[$lang] ) ) {
+	if( ! isset( $languages[$lang] ) ) {
 		$languages[ $lang ] = true;
 		init_language( $lang );
 	}
 
-	$out = tra_impl( $content, $lang, $args );
+	$out = tra_impl( $content, $lang, $no_interactive, $args );
 
 	record_string( $content, $out );
 
@@ -47,30 +47,19 @@ function tra($content, $lg='', $unused = false, $args = array()) {
 
 function init_language( $lg ) {
 	global $tikidomain, $prefs;
-	if (is_file("lang/$lg/language.php")) {
+	if( is_file("lang/$lg/language.php")) {
 		global ${"lang_$lg"};
 
 		$lang = array();
 		include("lang/$lg/language.php");
-		
-		// include mods language files if any
-		$files = glob("lang/$lg/language_*.php");
-		if (is_array($files)) {
-			foreach ($files as $file) {
-				require($file);
-				$lang = array_merge($lang, $lang_mod);
-			}
-		}
-
 		if (is_file("lang/$lg/custom.php")) {
 			include_once("lang/$lg/custom.php");
 		}
-		
 		if (!empty($tikidomain) && is_file("lang/$lg/$tikidomain/custom.php")) {
 			include_once("lang/$lg/$tikidomain/custom.php");
 		}
 
-		if ( isset( $prefs['lang_use_db'] ) && $prefs['lang_use_db'] == 'y' ) {
+		if( isset( $prefs['lang_use_db'] ) && $prefs['lang_use_db'] == 'y' ) {
 			global $tikilib;
 
 			$query = "select `source`, `tran` from `tiki_language` where `lang`=?";
@@ -85,7 +74,7 @@ function init_language( $lg ) {
 	}
 }
 
-function tra_impl($content, $lg='', $args = array()) {
+function tra_impl($content, $lg='', $no_interactive = false, $args = array()) {
 	global $prefs, $tikilib;
 
 	if (empty($content)) {
@@ -123,7 +112,7 @@ function tra_impl($content, $lg='', $args = array()) {
 }
 
 function tr_replace( $content, $args ) {
-	if ( ! count( $args ) ) {
+	if( ! count( $args ) ) {
 		$out = $content;
 	} else {
 		$needles = array();
@@ -140,7 +129,7 @@ function tr_replace( $content, $args ) {
 
 function record_string( $original, $printed ) {
 	global $interactive_collected_strings;
-	if ( interactive_enabled() ) {
+	if( interactive_enabled() ) {
 		$interactive_collected_strings[ md5( $original . '___' . $printed ) ] = array( $original, html_entity_decode( $printed ) );
 	}
 }

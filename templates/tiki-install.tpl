@@ -62,7 +62,7 @@
 
 {elseif $install_step eq '1'}
 <h1>{tr}Read the License{/tr}</h1>
-<p>{tr}Tiki is software distributed under the LGPL license.{/tr} </p>
+<p>{tr}Tiki is software distributed under the LGPL license.{/tr} {tr} <a href="http://creativecommons.org/licenses/LGPL/2.1/" target="_blank">Here is a human-readable summary of the license below, including many translations.</a>{/tr}</p>
 <div align="center" style="margin-top:1em;">
 <iframe src="license.txt" width="700" height="300" style="width:700px;height:300px"> </iframe>
 	<form action="tiki-install.php" method="post">
@@ -105,12 +105,12 @@
 	<br />
 	<h2>{tr}Mail{/tr}</h2><a name="mail"> </a>
 	<p>{tr}Tiki uses the PHP <strong>mail</strong> function to send email notifications and messages.{/tr}</p>
-{if $mail_test_performed ne 'y'}
+{if $perform_mail_test ne 'y'}
 	<p>{tr}To test your system configuration, Tiki will attempt to send a test message to you.{/tr}</p>
 	<div>
 	<form action="tiki-install.php#mail" method="post">
 		<div style="padding:1em 7em;">
-			<label for="email_test_to">{tr}Test email:{/tr}</label>
+			<label for="admin_email_test">{tr}Test email:{/tr}</label>
 			<input type="text" size="40" name="email_test_to" id="email_test_to" value="{if isset($email_test_to)}{$email_test_to}{/if}" />
 			{if isset($email_test_err)}<span class="attention"><em>{$email_test_err}</em></span>
 			{else}<em>{tr}Email address to send test to.{/tr}</em>{/if}
@@ -187,8 +187,7 @@
 	<div align="center" style="padding:1em">
 		<p>
 			<img src="pics/icons/information.png" alt="{tr}Information{/tr}" style="vertical-align: bottom;" />
-			{tr}Tiki found an existing database connection in your local.php file.{/tr}<br />
-			<em>{tr _0=$dbname}Database name: &quot;%0&quot;{/tr}</em>
+			{tr}Tiki found an existing database connection in your local.php file.{/tr}
 		</p>
 		<form action="tiki-install.php" method="post">
 			<input type="hidden" name="install_step" value="4" />
@@ -246,7 +245,7 @@
 		<div style="padding:5px;">
 			<label for="name">{tr}Database name:{/tr}</label>
 			<div style="margin-left:1em;">
-			<input type="text" id="name" name="name" size="40" value="{if isset($smarty.request.name)}{$smarty.request.name|escape:"html"}{/if}" /> <a href="javascript:void(0)" onclick="flip('name_help');" title="{tr}Help{/tr}"><img src="pics/icons/help.png" alt="{tr}Help{/tr}" /></a>
+			<input type="text" id="name" name="name" size="40" value="{$smarty.request.name|escape:"html"}" /> <a href="javascript:void(0)" onclick="flip('name_help');" title="{tr}Help{/tr}"><img src="pics/icons/help.png" alt="{tr}Help{/tr}" /></a>
 		
 			<br /><em>{tr}Enter the name of the database that Tiki will use.{/tr}</em> 
 			<div style="margin-left:1em;display:none;" id="name_help">
@@ -258,7 +257,7 @@
 		<fieldset><legend>{tr}Database user{/tr}</legend>
 		<p>{tr}Enter a database user with administrator permission for the Database.{/tr}</p>
 		<div style="padding:5px;">
-			<label for="user">{tr}User name:{/tr}</label> <input type="text" id="user" name="user" value="{if (isset($smarty.request.user))}{$smarty.request.user|escape:"html"}{/if}" />
+			<label for="user">{tr}User name:{/tr}</label> <input type="text" id="user" name="user" value="{$smarty.request.user|escape:"html"}" />
 		</div>
 		<div style="padding:5px;">
 			<label for="pass">{tr}Password:{/tr}</label> <input type="password" id="pass" name="pass" />
@@ -298,7 +297,7 @@
 	  		{if isset($legacy_collation)}
 				<strong style="color: red">Something is wrong with the database encoding.</strong> The schema has UTF-8 as default encoding but some tables in the schema have a different collation, {$legacy_collation}. Converting to UTF-8 may solve this but may also make matters worse. You should investigate what happened or only proceed with backups.
 			{else}
-				{tr _0=$database_charset}<p>Your database encoding is <strong>not</strong> in UTF-8.</p><p>Current encoding is <em>%0</em>. The languages that will be available for content on the site will be limited. If you plan on using languages not covered by the character set, you should re-create or alter the database so the default encoding is <em>utf8</em>.</p>{/tr}
+				{tr 0=$database_charset}<p>Your database encoding is <strong>not</strong> in UTF-8.</p><p>Current encoding is <em>%0</em>. The languages that will be available for content on the site will be limited. If you plan on using languages not covered by the character set, you should re-create or alter the database so the default encoding is <em>utf8</em>.</p>{/tr}
 			{/if}
 			<p><a href="http://doc.tiki.org/Understanding+Encoding">{tr}More information{/tr}</a></p>
 
@@ -326,7 +325,7 @@
 	<tr>
 		<td valign="top">
 			<fieldset><legend>{tr}Install{/tr}</legend>
-				{if $tikidb_created}<p style="text-align:center"><img src="pics/icons/sticky.png" alt="{tr}Warning{/tr}" style="vertical-align:middle" /> <strong>{tr}Warning:{/tr}</strong> {tr _0=$dbname}This will destroy your current database &quot;%0&quot;.{/tr}</p>{/if}
+				{if $tikidb_created}<p style="text-align:center"><img src="pics/icons/sticky.png" alt="{tr}Warning{/tr}" style="vertical-align:middle" /> <strong>{tr}Warning:{/tr}</strong> {tr}This will destroy your current database.{/tr}</p>{/if}
 				{if $tikidb_created}
 				<script type='text/javascript'><!--//--><![CDATA[//><!--
 				{literal}
@@ -343,20 +342,10 @@
 				{else}
 				<div id="install-table">
 				{/if}
-					{if $hasInnoDB}
-						<label>
-							{tr}Select database engine{/tr}
-							<select name="useInnoDB">
-								<option value="0">{tr}MyISAM{/tr}</option>
-								<option value="1">{tr}InnoDB (experimental){/tr}</option>
-							</select>
-						</label>
-					{else}
-						<input type="hidden" name="useInnoDB" value="0" />
-					{/if}
 				<p align="center">
 					<input type="submit" name="scratch" value=" {if $tikidb_created}{tr}Reinstall{/tr}{else}{tr}Install{/tr}{/if} " style="margin: 32px;" />
 				</p>
+
 			</div>
 			</fieldset>
 		</td>
@@ -459,7 +448,7 @@
 {if isset($htaccess_error) and $htaccess_error eq 'y'}
 <h3>{tr}.htaccess File{/tr} <a title="{tr}Help{/tr}" href="http://doc.tiki.org/Installation" target="help"><img style="border:0" src='pics/icons/help.png' alt="{tr}Help{/tr}" /></a></h3>
 {tr}We recommend enabling the <strong>.htaccess</strong> file for your Tiki{/tr}. {tr}This will enable you to use SEFURLs (search engine friendly URLs) and help improve site security{/tr}. 
-<p>{tr _0="<strong>_htaccess</strong>" _1="<strong>.htaccess</strong>"}To enable this file, simply copy the %0 file (located in the main directory of your Tiki installation) to %1.{/tr}</p>
+<p>{tr}To enable this file, simply rename the <strong>_htaccess</strong> file (located in the main directory of your Tiki installation) to <strong>.htaccess</strong>.{/tr}</p>
 {/if}
 
 <p>&nbsp;</p>

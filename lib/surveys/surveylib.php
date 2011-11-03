@@ -88,8 +88,7 @@ class SurveyLib extends TikiLib
 	function replace_survey_question($questionId, $question, $type
 		, $surveyId, $position, $options, $mandatory = 'n'
 		, $min_answers = 0, $max_answers = 0
-	)
-	{
+	) {
 		if ($mandatory != 'y')
 			$mandatory = 'n';
 		$min_answers = (int)$min_answers;

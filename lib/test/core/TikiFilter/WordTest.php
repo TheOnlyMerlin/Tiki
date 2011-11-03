@@ -12,6 +12,8 @@
 
 class TikiFilter_WordTest extends TikiTestCase
 {
+	private $array;
+
 	function testFilter()
 	{
 		$filter = new TikiFilter_Word();

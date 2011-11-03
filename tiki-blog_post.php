@@ -54,11 +54,12 @@ if ($postId > 0) {
 			die;
 		}
 	}
-	if (isset($data['wysiwyg']) && !isset($_REQUEST['wysiwyg'])) {
+	if(isset($data['wysiwyg']) && !isset($_REQUEST['wysiwyg'])) {
 		$_REQUEST['wysiwyg'] = $data['wysiwyg'];
 	}
 }
 
+$smarty->assign('headtitle', tra('Edit Post'));
 $smarty->assign('blogId', $blogId);
 $smarty->assign('postId', $postId);
 
@@ -173,8 +174,7 @@ if (isset($_REQUEST["blogpriv"]) && $_REQUEST["blogpriv"] == 'on') {
 
 if (isset($_REQUEST["preview"])) {
 	$post_info = array();
-	$parserlib = TikiLib::lib('parser');
-	$parsed_data = $parserlib->apply_postedit_handlers($edit_data);
+	$parsed_data = $tikilib->apply_postedit_handlers($edit_data);
 	$parsed_data = $tikilib->parse_data($parsed_data, array('is_html' => $is_wysiwyg));
 	$smarty->assign('data', $edit_data);
 	$post_info['parsed_data'] = $parsed_data;
@@ -229,7 +229,7 @@ if (isset($_REQUEST['save']) && !$contribution_needed) {
 	// TAG Stuff
 	$cat_type = 'blog post';
 	$cat_objid = $postId;
-	$cat_desc = TikiFilter::get('purifier')->filter(substr($edit_data, 0, 200));
+	$cat_desc = substr($edit_data, 0, 200);
 	$cat_name = $title;
 	$cat_href = "tiki-view_blog_post.php?postId=" . urlencode($postId);
 	$cat_lang = $_REQUEST['lang'];
@@ -237,8 +237,8 @@ if (isset($_REQUEST['save']) && !$contribution_needed) {
 	include_once ("categorize.php");
 
 	require_once('tiki-sefurl.php');	
-	$url = filter_out_sefurl("tiki-view_blog_post.php?postId=$postId", 'blogpost');
-	header("location: $url");
+	$url = filter_out_sefurl("tiki-view_blog_post.php?postId=$postId", $smarty, 'blogpost');
+	header ("location: $url");
 	die;
 }
 
@@ -255,7 +255,7 @@ $cat_type = 'blog post';
 $cat_objid = $postId;
 include_once ("categorize_list.php");
 
-if ( $prefs['geo_locate_blogpost'] == 'y' ) {
+if( $prefs['geo_locate_blogpost'] == 'y' ) {
 	$smarty->assign('geolocation_string', TikiLib::lib('geo')->get_coordinates_string('blog post', $postId));
 }
 

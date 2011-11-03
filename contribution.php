@@ -11,8 +11,15 @@
 
 // param: $contributionItemId: id of the comment if in coment/forum
 
-require_once('tiki-setup.php');
-$access->check_script($_SERVER["SCRIPT_NAME"], basename(__FILE__));
+if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__)) !== FALSE) {
+  //smarty is not there - we need setup
+  require_once('tiki-setup.php');
+  $smarty->assign('msg',tra('This script cannot be called directly'));
+  $smarty->display('error.tpl');
+  die;
+}
+
+require_once('tiki-setup.php'); 
 global $prefs;
 
 if ($prefs['feature_contribution'] == 'y') {

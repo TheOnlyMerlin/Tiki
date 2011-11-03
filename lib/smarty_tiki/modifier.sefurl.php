@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -8,13 +8,12 @@
 // Translate only if feature_multilingual is on
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 	header("location: index.php");
 	exit;
 }
 
-function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_langs='', $with_title='y', $title='' )
-{
+function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_langs='', $with_title='y', $title='' ) {
 	global $prefs, $tikilib, $wikilib, $smarty;
 	require_once('lib/wiki/wikilib.php');
 
@@ -90,9 +89,6 @@ function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_lan
 	case 'category':
 		$href = $sefurl ? "cat$source": "tiki-browse_categories.php?parentId=$source";
 		break;
-	case 'freetag':
-		$href = "tiki-browse_freetags.php?tag=" . urlencode($source);
-		break;
 	default:
 		$href = $source;
 		break;
@@ -102,7 +98,7 @@ function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_lan
 	}
 	if ($prefs['feature_sefurl'] == 'y' && $smarty) {
 		include_once('tiki-sefurl.php');
-		return filter_out_sefurl($href, $type, $title, $with_next, $with_title);
+		return filter_out_sefurl($href, $smarty, $type, $title, $with_next, $with_title);
 	} else {
 		return $href;
 	}

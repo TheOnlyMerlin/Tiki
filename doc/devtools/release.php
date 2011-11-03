@@ -113,8 +113,10 @@ if ( ! $options['no-readme-update'] && important_step("Update '" . README_FILENA
 }
 
 if ( ! $options['no-lang-update'] && important_step("Update language files") ) {
-	passthru("$phpCommand get_strings.php");
-	$removeFiles = glob('lang/*/language.php.old');
+	passthru("$phpCommand get_strings.php quiet");
+	$removeFiles = glob('lang/*/old.php');
+	$removeFiles[] = TEMP_DIR . '/permstrings.tpl';
+	$removeFiles[] = TEMP_DIR . '/prefnames.tpl';
 	foreach ( $removeFiles as $rf ) unlink($rf);
 	unset($removeFiles);
 	info('>> Language files updated and temporary files removed.');
@@ -316,25 +318,6 @@ function check_smarty_syntax(&$error_msg) {
 	$prefs['maxRecords'] = 25;
 	$prefs['log_tpl'] = 'y';
 	$prefs['feature_sefurl_filter'] = 'y';
-	require_once 'lib/init/smarty.php';
-	set_error_handler('check_smarty_syntax_error_handler');
-
-	$smarty->compileAllTemplates('.tpl', true);
-}
-
-function check_smarty_syntax2(&$error_msg) {
-	global $tikidomain, $prefs, $smarty;
-	$tikidomain = '';
-
-	// Initialize $prefs with some variables needed by the tra() function and smarty autosave plugin
-	$prefs = array(
-		'lang_use_db' => 'n',
-		'language' => 'en',
-		'site_language' => 'en',
-		'feature_ajax' => 'n'
-	);
-
-	// Load Tiki Smarty
 	require_once 'lib/init/smarty.php';
 	set_error_handler('check_smarty_syntax_error_handler');
 

@@ -23,7 +23,7 @@
       <div class='opaque'>
         <div class='box-title'>{tr}Actions{/tr}</div>
         <div class='box-data'>
-          {include file='fgal_context_menu.tpl' menu_icon=$prefs.use_context_menu_icon menu_text=$prefs.use_context_menu_text changes=$smarty.section.changes.index}
+          {include file='fgal_context_menu.tpl' menu_icon=$prefs.use_context_menu_icon menu_text=$prefs.use_context_menu_text}
         </div>
       </div>
       {/strip}{/capture}
@@ -97,17 +97,8 @@
                   {icon _id="pics/large/fileopen48x48.png" width="48" height="48"}
                 </a>
               {else}
-                <a {$link}
-                	{if $prefs.feature_shadowbox eq 'y' && $filegals_manager eq ''}
-                		rel="shadowbox[gallery];type={if $key_type eq 'image/png' or $key_type eq 'image/jpe' or $key_type eq 'image/gif'}img{else}iframe{/if}"{/if}{if $over_infos neq ''} {popup fullhtml="1" text=$over_infos|escape:"javascript"|escape:"html"}{else} title="{if $files[changes].name neq ''}{$files[changes].name|escape}{/if}{if $files[changes].description neq ''} ({$files[changes].description|escape}){/if}"
-                	{/if}>
-                	
-                {if  $key_type neq "image/svg"}
-                	<img src="{$files[changes].id|sefurl:thumbnail}" alt="" />
-                {else} {*Since we can't resize an svg thumbnail at this time, we just show and scale it down *}
-                	<img src="{$files[changes].id|sefurl:display}" alt=""  style="width:{$thumbnail_size}px;height:{$thumbnailcontener_size}px;" />
-                {/if} 
-				  
+                <a {$link}{if $prefs.feature_shadowbox eq 'y' && $filegals_manager eq ''} rel="shadowbox[gallery];type={if $key_type eq 'image/png' or $key_type eq 'image/jpe' or $key_type eq 'image/gif'}img{else}iframe{/if}"{/if}{if $over_infos neq ''} {popup fullhtml="1" text=$over_infos|escape:"javascript"|escape:"html"}{else} title="{if $files[changes].name neq ''}{$files[changes].name|escape}{/if}{if $files[changes].description neq ''} ({$files[changes].description|escape}){/if}"{/if}>
+				  <img src="{$files[changes].id|sefurl:thumbnail}" alt="" />
                 </a>
               {/if}
             </div>
@@ -214,6 +205,7 @@
 
 </div>
 <br clear="all" />
+
 {if $gal_info.show_checked neq 'n' and $tiki_p_admin_file_galleries eq 'y' and ( !isset($show_selectall) or $show_selectall eq 'y' )
 			and ($prefs.fgal_show_thumbactions eq 'y' or $show_details eq 'y')}
 	{select_all checkbox_names='file[],subgal[]' label="{tr}Select All{/tr}"}

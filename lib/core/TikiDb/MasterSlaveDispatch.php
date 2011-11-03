@@ -5,6 +5,8 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+require_once 'lib/core/TikiDb.php';
+
 class TikiDb_MasterSlaveDispatch extends TikiDb
 {
 	private $master;
@@ -125,7 +127,7 @@ class TikiDb_MasterSlaveDispatch extends TikiDb
 	} // }}}
 
 	private function getApplicable( $query = '' ) {
-		if ( empty( $query ) ) {
+		if( empty( $query ) ) {
 			return $this->lastUsed = $this->slave;
 		}
 

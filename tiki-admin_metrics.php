@@ -20,7 +20,7 @@ $smarty->assign('metric_datatype_all', $metric_datatype_all);
 $headerlib->add_cssfile("css/metrics.css");
 
 $dsn_list = $adminlib->list_dsn( 0, -1, 'name_asc', '' );
-$smarty->assign('dsn_list', $dsn_list['data']);
+$smarty->assign( 'dsn_list', $dsn_list['data'] );
 
 /* Edit or delete a metric */
 if (isset($_REQUEST["metric_submit"])) {
@@ -30,7 +30,7 @@ if (isset($_REQUEST["metric_submit"])) {
 	    die;
 	}
 	if (strlen($_REQUEST["metric_name"]) > $prefs['metrics_metric_name_length']) {
-	    $smarty->assign('msg',tr("Cannot create or update metric: Metric name must be under %0 characters in length.", $prefs['metrics_metric_name_length']));
+	    $smarty->assign('msg',tra("Cannot create or update metric: Metric name must be under " . $prefs['metrics_metric_name_length'] . " characters in length."));
 	    $smarty->display("error.tpl");
 	    die;	
 	}
@@ -79,7 +79,7 @@ if (isset($_REQUEST["tab_submit"])) {
 	    die;
 	}
 	if (strlen($_REQUEST["tab_name"]) > $prefs['metrics_tab_name_length']) {
-	    $smarty->assign('msg',tr("Cannot create or update tab: Tab name must be under %0 characters in length.", $prefs['metrics_tab_name_length']));
+	    $smarty->assign('msg',tra("Cannot create or update tab: Tab name must be under " . $prefs['metrics_tab_name_length'] . " characters in length."));
 	    $smarty->display("error.tpl");
 	    die;	
 	}
@@ -272,7 +272,7 @@ if (isset($_REQUEST["assign"])) {
 	$smarty->assign('assign_metric', $_REQUEST["assign_metric"]);
 	$smarty->assign('assign_tab', $_REQUEST["assign_tab"]);
 	$metricslib->createUpdateMetricAssigned($assigned_id, $_REQUEST["assign_metric"], $_REQUEST["assign_tab"]);
-	header("location: tiki-admin_metrics.php");
+	header ("location: tiki-admin_metrics.php");
 }
 
 $metrics_list = $metricslib->getAllMetrics();

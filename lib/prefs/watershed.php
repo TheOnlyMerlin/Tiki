@@ -12,7 +12,6 @@ function prefs_watershed_list()
 			'name' => tra('Log errors to Tiki log'),
 			'description' => tra('Errors will be logged to the Tiki log'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'watershed_channel_trackerId' => array(
 			'name' => tra('Tracker ID of Channel tracker'),
@@ -20,7 +19,6 @@ function prefs_watershed_list()
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => '',
 		),
 		'watershed_brand_fieldId' => array(
 			'name' => tra('Field ID of BrandId'),
@@ -28,7 +26,6 @@ function prefs_watershed_list()
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => '',
 		),
 		'watershed_channel_fieldId' => array(
 			'name' => tra('Field ID of ChannelCode'),
@@ -36,7 +33,6 @@ function prefs_watershed_list()
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => '',
 		),
 		'watershed_archive_trackerId' => array(
 			'name' => tra('Tracker ID of Archive tracker'),
@@ -44,7 +40,6 @@ function prefs_watershed_list()
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => '',
 		),
 		'watershed_archive_fieldId' => array(
 			'name' => tra('Field ID of videoId'),
@@ -52,7 +47,6 @@ function prefs_watershed_list()
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => '',
 		),
 		'watershed_archive_brand_fieldId' => array(
 			'name' => tra('Field ID of BrandId for Archive'),
@@ -60,7 +54,6 @@ function prefs_watershed_list()
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => '',
 		),
 		'watershed_archive_channel_fieldId' => array(
 			'name' => tra('Field ID of ChannelCode for Archive'),
@@ -68,7 +61,6 @@ function prefs_watershed_list()
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => '',
 		),
 		'watershed_archive_rtmpurl_fieldId' => array(
 			'name' => tra('Field ID of rtmpURL for Archive (url field type)'),
@@ -76,7 +68,6 @@ function prefs_watershed_list()
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => '',
 		),
 		'watershed_archive_flvurl_fieldId' => array(
 			'name' => tra('Field ID of flvURL for Archive (url field type)'),
@@ -84,7 +75,6 @@ function prefs_watershed_list()
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => '',
 		),
 		'watershed_archive_date_fieldId' => array(
 			'name' => tra('Field ID of Date string for Archive'),
@@ -92,7 +82,6 @@ function prefs_watershed_list()
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => '',
 		),
 		'watershed_archive_duration_fieldId' => array(
 			'name' => tra('Field ID of Duration for Archive'),
@@ -100,7 +89,6 @@ function prefs_watershed_list()
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => '',
 		),
 		'watershed_archive_filesize_fieldId' => array(
 			'name' => tra('Field ID of Filesize for Archive'),
@@ -108,7 +96,6 @@ function prefs_watershed_list()
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => '',
 		),
 		'watershed_archive_title_fieldId' => array(
 			'name' => tra('Field ID of Title for Archive'),
@@ -116,7 +103,6 @@ function prefs_watershed_list()
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => '',
 		),
 		'watershed_archive_desc_fieldId' => array(
 			'name' => tra('Field ID of Description for Archive (textarea field type)'),
@@ -124,7 +110,6 @@ function prefs_watershed_list()
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => '',
 		),
 		'watershed_archive_tags_fieldId' => array(
 			'name' => tra('Field ID of Tags for Archive (freetags field type)'),
@@ -132,7 +117,6 @@ function prefs_watershed_list()
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => '',
 		),
 		'watershed_fme_key' => array(
 			'name' => tra('Flash Media Encoder shared secret'),
@@ -140,7 +124,6 @@ function prefs_watershed_list()
 			'type' => 'text',
 			'size' => '30',
 			'filter' => 'text',
-			'default' => '',
 		),
 	);	
 }

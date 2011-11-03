@@ -22,7 +22,7 @@ function wikiplugin_chart_info() {
 			'type' => array(
 				'required' => true,
 				'name' => tra('Chart Type'),
-				'description' => 'BarStackGraphic | MultibarGraphic | MultilineGraphic | PieChartGraphic', // Removed translation call since these are all system names. TODO: Make an actual English sentence from this
+				'description' => tra('BarStackGraphic | MultibarGraphic | MultilineGraphic | PieChartGraphic'),
 			),
 			'width' => array(
 				'required' => true,
@@ -52,22 +52,22 @@ function wikiplugin_chart_info() {
 			'y1' => array(
 				'required' => false,
 				'name' => tra('Dependant series'),
-				'description' => tra('Description needed'),
+				'description' => tra(''),
 			),
 			'y2' => array(
 				'required' => false,
 				'name' => tra('Dependant series'),
-				'description' => tra('Description needed'),
+				'description' => tra(''),
 			),
 			'y3' => array(
 				'required' => false,
 				'name' => tra('Dependant series'),
-				'description' => tra('Description needed'),
+				'description' => tra(''),
 			),
 			'y4' => array(
 				'required' => false,
 				'name' => tra('Dependant series'),
-				'description' => tra('Description needed'),
+				'description' => tra(''),
 			),
 			'color' => array(
 				'required' => false,

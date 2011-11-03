@@ -46,7 +46,7 @@ unset($tmp);
 // If unallowed chars (regarding to RFC1738) have been found in REQUEST_URI, then urlencode them
 $unallowed_uri_chars = array("'", '"', '<', '>', '{', '}', '|', '\\', '^', '~', '`');
 $unallowed_uri_chars_encoded = array_map('urlencode', $unallowed_uri_chars);
-if (isset($_SERVER['REQUEST_URI']))
+if(isset($_SERVER['REQUEST_URI']))
 	$_SERVER['REQUEST_URI'] = str_replace($unallowed_uri_chars, $unallowed_uri_chars_encoded, $_SERVER['REQUEST_URI']);
 
 // Same as above, but for PHP_SELF which does not contain URL params
@@ -93,7 +93,6 @@ TikiInit::appendIncludePath($tikipath.'lib/core');
 TikiInit::appendIncludePath($tikipath);
 require_once 'Zend/Loader/Autoloader.php';
 Zend_Loader_Autoloader::getInstance()
-	->registerNamespace('Horde')
 	->registerNamespace('TikiFilter')
 	->registerNamespace('DeclFilter')
 	->registerNamespace('JitFilter')
@@ -104,9 +103,5 @@ Zend_Loader_Autoloader::getInstance()
 	->registerNamespace('WikiParser')
 	->registerNamespace('StandardAnalyzer')
 	->registerNamespace('Tracker')
-	->registerNamespace('Event_')
-	->registerNamespace('Services_')
-	->registerNamespace('TikiDb')
-	->registerNamespace('Report')
-	->registerNamespace('HtmlFeed')
-	->registerNamespace('FileGallery');
+	->registerNamespace('TikiDb');
+

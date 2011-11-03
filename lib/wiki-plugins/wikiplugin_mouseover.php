@@ -22,7 +22,6 @@ function wikiplugin_mouseover_info() {
 		'prefs' => array( 'wikiplugin_mouseover' ),
 		'body' => tra('Hidden content, unless the label parameter is undefined, in which case this is the label.'),
 		'icon' => 'pics/icons/comment_add.png',
-		'tags' => array( 'basic' ),
 		'params' => array(
 			'label' => array(
 				'required' => true,
@@ -187,7 +186,7 @@ function wikiplugin_mouseover( $data, $params ) {
 
 	$default = array('parse'=>'y', 'parselabel'=>'y');
 	$params = array_merge($default, $params);
-	if ( ! isset($params['url']) ) {
+	if( ! isset($params['url']) ) {
 		$url = 'javascript:void(0)';
 	} else {
 		$url = $params['url'];
@@ -221,10 +220,10 @@ function wikiplugin_mouseover( $data, $params ) {
 		}
 	}
 
-	if ( $parse ) {
+	if( $parse ) {
 		$text = $tikilib->parse_data($text);
 	}
-	if ( $params['parselabel'] == 'y' ) {
+	if( $params['parselabel'] == 'y' ) {
 		$label = "~/np~$label~np~";
 	}
 
