@@ -133,6 +133,13 @@ if ($prefs['feature_debug_console'] == 'y') {
 	include_once ('lib/debug/debugger.php');
 }
 if ($prefs['feature_integrator'] == 'y') require_once ('lib/setup/integrator.php');
+if ($prefs['feature_search'] == 'y' && $prefs['feature_search_fulltext'] != 'y' && $prefs['search_refresh_index_mode'] == 'random') {
+	include_once ('lib/search/refresh.php');
+	include_once('lib/search/refresh-functions.php');
+
+	register_shutdown_function('refresh_search_index');
+
+}
 if (isset($_REQUEST['comzone'])) require_once ('lib/setup/comments_zone.php');
 if ($prefs['feature_lastup'] == 'y') require_once ('lib/setup/last_update.php');
 if (!empty($_SESSION['interactive_translation_mode']) && ($_SESSION['interactive_translation_mode'] == 'on')) {
@@ -219,18 +226,17 @@ if ( $prefs['feature_bidi'] == 'y' ) {
 if ($prefs['javascript_enabled'] != 'n') {
 
 	if ( isset($prefs['javascript_cdn']) && $prefs['javascript_cdn'] == 'google' ) {
-		$headerlib->add_jsfile_dependancy( 'http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js' );
+		$headerlib->add_jsfile( 'http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js', 'external' );
 	} else {
 		if ( $prefs['tiki_minify_javascript'] === 'y' ) {
-			$headerlib->add_jsfile_dependancy( 'lib/jquery/jquery.min.js' );
+			$headerlib->add_jsfile( 'lib/jquery/jquery.min.js' );
 		} else {
-			$headerlib->add_jsfile_dependancy( 'lib/jquery/jquery.js' );
+			$headerlib->add_jsfile( 'lib/jquery/jquery.js' );
 		}
 	}
 
 	$headerlib->add_jsfile( 'lib/jquery_tiki/tiki-jquery.js' );
-	$headerlib->add_jsfile( 'lib/jquery_tiki/tiki-maps.js' );
-	$headerlib->add_jsfile('lib/jquery/jquery.json-2.2.js' );	
+	$headerlib->add_jsfile('lib/jquery/jquery.json-2.2.js');	
 
 	if ($prefs['feature_syntax_highlighter'] == 'y') {
 		//add codemirror stuff
@@ -271,12 +277,12 @@ if ($prefs['javascript_enabled'] != 'n') {
 
 		if ( $prefs['feature_jquery_ui'] == 'y' ) {
 			if ( isset($prefs['javascript_cdn']) && $prefs['javascript_cdn'] == 'google' ) {
-				$headerlib->add_jsfile_dependancy( 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/jquery-ui.min.js' );
+				$headerlib->add_jsfile( 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/jquery-ui.min.js', 'external' );
 			} else {
 				if ( $prefs['tiki_minify_javascript'] === 'y' ) {
-					$headerlib->add_jsfile_dependancy( 'lib/jquery/jquery-ui/ui/minified/jquery-ui.min.js' );
+					$headerlib->add_jsfile( 'lib/jquery/jquery-ui/ui/minified/jquery-ui.min.js' );
 				} else {
-					$headerlib->add_jsfile_dependancy( 'lib/jquery/jquery-ui/ui/jquery-ui.js' );
+					$headerlib->add_jsfile( 'lib/jquery/jquery-ui/ui/jquery-ui.js' );
 				}
 			}
 			$headerlib->add_jsfile( 'lib/jquery/jquery-ui/external/jquery.bgiframe-2.1.2.js' );
@@ -420,4 +426,3 @@ if ( isset($token_error) ) {
 
 require_once( 'lib/setup/plugins_actions.php' );
 
-$headerlib->lockMinifiedJs();

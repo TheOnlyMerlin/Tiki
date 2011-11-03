@@ -1,17 +1,16 @@
 <?php
 // (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
 
-function smarty_function_debugger($params, $smarty)
-{
+function smarty_function_debugger($params, $smarty) {
 	
 	global $prefs;
 	if ($prefs['feature_debug_console'] == 'y') {
@@ -95,7 +94,7 @@ debugconsole_pos = getCookie('debugconsole_position')
 if (debugconsole_pos) {debugconsole_pos = debugconsole_pos.split(',');}
 if (debugconsole_pos) {
 	\$('#debugconsole').css({'left': debugconsole_pos[0] + 'px', 'top': debugconsole_pos[1] + 'px'});
-}
+} 
 " );
 		}
 		$ret = $smarty->fetch('debug/function.debugger.tpl');

@@ -63,13 +63,10 @@ function get_default_prefs() {
 		// webservices
 		'webservice_consume_defaultcache' => 300, // 5 min
 
-		// File galleries
-		
-		// Root galleries fake preferences. These are automatically overridden by schema upgrade scripts for installations that pre-date the existence of these root galleries.
-		'fgal_root_id' => 1, // Ancestor of "default" type galleries. For old installs, overriden by 20090811_filegals_container_tiki.sql
-		'fgal_root_user_id' => 2, // Ancestor of "user" type galleries (feature_use_fgal_for_user_files). For old installs, overriden by 20101126_fgal_add_gallerie_user_tiki.php
-		'fgal_root_wiki_attachments_id' => 3, // Ancestor of wiki "attachments" type galleries (feature_use_fgal_for_wiki_attachments). For old installs, overriden by 20101210_fgal_add_wiki_attachments_tiki.php
-
+		// filegals
+		'fgal_root_id' => 1,
+		'fgal_root_user_id' => 2,
+		'fgal_root_wiki_attachments_id' => 3,
 		'fgal_enable_auto_indexing' => 'y',
 		'fgal_asynchronous_indexing' => 'y',
 		'fgal_sort_mode' => '',
@@ -323,20 +320,6 @@ function get_default_prefs() {
 	return $prefs;
 }
 
-function isInternetExploder()
-{
-    if (isset($_SERVER['HTTP_USER_AGENT']) && 
-    (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false))
-        return true;
-    else
-        return false;
-}
-
-function boolean_to_string($value)
-{
-    return $value ? 'True' : 'False';
-}
-
 
 function initialize_prefs() {
 	global $prefs, $tikiroot, $tikilib, $user_overrider_prefs, $in_installer, $section;
@@ -404,31 +387,6 @@ function initialize_prefs() {
 	$prefs = array_merge( $defaults, $modified ); // Preferences are the sum of modified preferences and those with the default value.
 	global $systemConfiguration;
 	$prefs = array_merge($prefs, $systemConfiguration->preference->toArray());
-    $prefs['favicon_debug'] = array();
-    $prefs['favicon_debug'][] = 'This is my temporary debug log/scratchpad';
-    $prefs['favicon_debug'][] = 'There is prolly a smarter way to do this.';
-	$prefs['favicon_debug'][] = 'HTTP_USER_AGENT == ' . (isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '');
-	$prefs['favicon_debug'][] = 'Using Internet Exploder == ' . boolean_to_string( isInternetExploder());
-	
-	// For standards compliant browsers, we want a favicon link like...
-	//   <link rel="icon" type="image/jpeg" href="http://www.example.com/image.jpg">
-	
-	// For Internet Exploder, we want a favicon link like...
-	//   <link rel="SHORTCUT ICON" href="http://www.example.com/alternateimage.ico"/>
-	
-    $prefs['actual_site_favicon_rel' ] = 'icon';
-	$prefs['actual_site_favicon_type'] = $prefs['site_favicon_type'];
-	$prefs['actual_site_favicon'     ] = $prefs['site_favicon'];	
-	if (isInternetExploder() && ((!empty($prefs['site_favicon_msie']))  || ($prefs['site_favicon_type']=='image/vnd.microsoft.icon'))) {
-	  // If the $prefs['site_favicon_msie'] preference is empty, we can re-use the regular $prefs['site_favicon'],
-	  //  but only if it of a type that Exploder understands (.ico image/vnd.microsoft.icon) .
-      $prefs['actual_site_favicon_rel' ] = 'SHORTCUT ICON';
-	  $prefs['actual_site_favicon_type'] = '';
-	  if ((!empty($prefs['site_favicon_msie'])) && ($prefs['actual_site_favicon'] != $prefs['site_favicon_msie'])) {
-	    $prefs['actual_site_favicon'] = $prefs['site_favicon_msie'];		
-        $prefs['favicon_debug'][] = 'Overriding the favicon to suite IE.';
-		}
-	  }
 }
 
 /**

@@ -1,12 +1,11 @@
 <?php
 // (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function smarty_function_preference( $params, $smarty )
-{
+function smarty_function_preference( $params, $smarty ) {
 	global $prefslib, $prefs, $user_overrider_prefs; require_once 'lib/prefslib.php';
 	if ( ! isset( $params['name'] ) ) {
 		return 'Preference name not specified.';

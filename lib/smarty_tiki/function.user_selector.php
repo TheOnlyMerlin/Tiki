@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -18,13 +18,12 @@
  *     editable = $tiki_p_admin
  * 	   allowNone = 'n'
  *  }
- *
+ * 
  * Display a drop down menu of all users or
  * an input box with autocomplete if there are more users
  * than $prefs['user_selector_threshold']
  */
-function smarty_function_user_selector($params, $smarty)
-{
+function smarty_function_user_selector($params, $smarty) {
 	global $prefs, $user, $userlib, $headerlib, $tikilib, $tiki_p_admin;
 	require_once 'lib/userslib.php';
 	$smarty->loadPlugin('smarty_modifier_username');

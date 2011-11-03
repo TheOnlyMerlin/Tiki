@@ -1,12 +1,12 @@
 <?php
 // (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
@@ -55,7 +55,7 @@ function smarty_function_menu($params, $smarty)
 		$headerlib->add_jsfile('lib/menubuilder/menu.js');
 		$tpl = 'tiki-user_cssmenu.tpl';
 		$smarty->assign('menu_type', $type);
-		if (! isset($css_id)) {//adding $css_id parameter to customize menu id and prevent automatic id renaming when a menu is removed
+		if (! isset($css_id)){//adding $css_id parameter to customize menu id and prevent automatic id renaming when a menu is removed
 			$smarty->assign('idCssmenu', $idCssmenu++);	
 		} else {
 			$smarty->assign('idCssmenu', $css_id);
@@ -84,7 +84,7 @@ function smarty_function_menu($params, $smarty)
 		//echo '<pre>'; print_r($channels); echo '</pre>';
 	} else if (!empty($id)) {
 		$menu_info = $menulib->get_menu($id);
-		$channels = $menulib->list_menu_options($id, 0, -1, 'position_asc', '', '', isset($prefs['mylevel'])?$prefs['mylevel']:0);
+		$channels = $menulib->list_menu_options($id,0,-1,'position_asc','','',isset($prefs['mylevel'])?$prefs['mylevel']:0);
 		$channels = $menulib->sort_menu_options($channels);
 		$cachelib->cacheItem($cacheName, serialize(array($menu_info, $channels)), $cacheType);
 	} else {
@@ -92,8 +92,8 @@ function smarty_function_menu($params, $smarty)
 	}
 	$channels = $menulib->setSelected($channels, isset($sectionLevel)?$sectionLevel:'', isset($toLevel)?$toLevel: '', $params);
 
-	$smarty->assign('menu_channels', $channels['data']);
-	$smarty->assign('menu_info', $menu_info);
+	$smarty->assign('menu_channels',$channels['data']);
+	$smarty->assign('menu_info',$menu_info);
 	$data = $smarty->fetch($tpl);
 	$data = preg_replace('/<ul>\s*<\/ul>/', '', $data);
 	$data = preg_replace('/<ol>\s*<\/ol>/', '', $data);
@@ -107,7 +107,6 @@ function smarty_function_menu($params, $smarty)
 	}
 }
 
-function compare_menu_options($a, $b)
-{
+function compare_menu_options($a, $b) {
 	return strcmp(tra($a['name']), tra($b['name']));
 }

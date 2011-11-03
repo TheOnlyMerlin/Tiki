@@ -743,7 +743,9 @@ if ( !isset($_REQUEST['preview']) && !isset($_REQUEST['save']) ) {
 		// Parsing page data as first time seeing html page in normal editor
 		$smarty->assign('msg', "Parsing html to wiki");
 		
-		if (!$is_html) {
+		// $disable_wysiwyg_html is a helper var for wysiwyg_htmltowiki and is defined in editmode.php  
+		global $disable_wysiwyg_html; 
+		if ($disable_wysiwyg_html) {
 			// we come from WYSIWYG-Wiki
 			$parsed = $edit_data; 
 		} else {			
@@ -758,7 +760,9 @@ if ( !isset($_REQUEST['preview']) && !isset($_REQUEST['save']) ) {
 		// Parsing page data as first time seeing wiki page in wysiwyg editor
 		$smarty->assign('msg', "Parsing wiki to html");
 		
-		if (!$is_html && $prefs['wysiwyg_htmltowiki'] === 'y') {
+		// $disable_wysiwyg_html is a helper var for wysiwyg_htmltowiki and is defined in editmode.php
+		global $disable_wysiwyg_html;
+		if ($disable_wysiwyg_html) {
 			// we switch to WYSIWYG-Wiki
 			$parsed = $edit_data; 
 			$is_html = false;

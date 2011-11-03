@@ -4689,6 +4689,24 @@ class UsersLib extends TikiLib
 				'scope' => 'object',
 			),
 			array(
+				'name' => 'tiki_p_plugin_viewdetail',
+				'description' => tra('Can view unapproved plugin details'),
+				'level' => 'registered',
+				'type' => 'wiki',
+				'admin' => false,
+				'prefs' => array('feature_wiki'),
+				'scope' => 'global',
+			),
+			array(
+				'name' => 'tiki_p_plugin_approve',
+				'description' => tra('Can approve plugin execution'),
+				'level' => 'editors',
+				'type' => 'wiki',
+				'admin' => false,
+				'prefs' => array('feature_wiki'),
+				'scope' => 'global',
+			),
+			array(
 				'name' => 'tiki_p_view_backlink',
 				'description' => tra('View page backlinks'),
 				'level' => 'basic',
@@ -4722,6 +4740,15 @@ class UsersLib extends TikiLib
 				'type' => 'wiki',
 				'admin' => false,
 				'prefs' => array('feature_page_contribution'),
+				'scope' => 'global',
+			),
+			array(
+				'name' => 'tiki_p_plugin_preview',
+				'description' => tra('Can execute unapproved plugin registered'),
+				'level' => 'admin',
+				'type' => 'wiki',
+				'admin' => false,
+				'prefs' => array(),
 				'scope' => 'global',
 			),
 			array(
@@ -4993,33 +5020,6 @@ class UsersLib extends TikiLib
 				'type' => 'tiki',
 				'admin' => false,
 				'prefs' => array(),
-				'scope' => 'global',
-			),
-			array(
-				'name' => 'tiki_p_plugin_viewdetail',
-				'description' => tra('Can view unapproved plugin details'),
-				'level' => 'registered',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki'),
-				'scope' => 'global',
-			),
-			array(
-				'name' => 'tiki_p_plugin_preview',
-				'description' => tra('Can execute unapproved plugin registered'),
-				'level' => 'admin',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array(),
-				'scope' => 'global',
-			),
-			array(
-				'name' => 'tiki_p_plugin_approve',
-				'description' => tra('Can approve plugin execution'),
-				'level' => 'editors',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array('feature_wiki'),
 				'scope' => 'global',
 			),
 			array(
@@ -5702,7 +5702,7 @@ class UsersLib extends TikiLib
 
 		// Validate password here
 		if ( ( $prefs['auth_method'] != 'cas' || $user == 'admin' ) && strlen($pass) < $prefs['min_pass_length'] ) {
-			$errors[] = tr("Password should be at least %0 characters long", $prefs['min_pass_length']);
+			$errors[] = tra("Password should be at least").' '.$prefs['min_pass_length'].' '.tra("characters long");
 		}
 
 		// Check this code

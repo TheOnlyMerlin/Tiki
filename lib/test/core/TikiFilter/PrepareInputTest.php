@@ -7,11 +7,6 @@
 
 class TikiFilter_PrepareInputTest extends PHPUnit_Framework_TestCase
 {
-	function setUp()
-	{
-		$this->obj = new TikiFilter_PrepareInput('.');
-	}
-	
 	function testNormalInput()
 	{
 		$input = array(
@@ -19,7 +14,9 @@ class TikiFilter_PrepareInputTest extends PHPUnit_Framework_TestCase
 			'hello' => 'world',
 		);
 
-		$this->assertEquals($input, $this->obj->prepare($input));
+		$prepareInput = new TikiFilter_PrepareInput('.');
+
+		$this->assertEquals($input, $prepareInput->prepare($input));
 	}
 
 	function testConvertArray()
@@ -46,44 +43,9 @@ class TikiFilter_PrepareInputTest extends PHPUnit_Framework_TestCase
 			),
 		);
 
-		$this->assertEquals($expect, $this->obj->prepare($input));
-	}
-	
-	function testNormalFlatten()
-	{
-		$input = array(
-			'foo' => 'bar',
-			'hello' => 'world',
-		);
-		
-		$this->assertEquals($input, $this->obj->flatten($input));
-	}
-	
-	function testConvertArrayFlatten()
-	{
-		$input = array(
-			'foo' => array(
-				'baz' => 'bar',
-				'bar' => 'baz',
-			),
-			'hello' => 'world',
-			'a' => array(
-				'b' => array(
-					'c' => '1',
-					'd' => '2',
-				),
-			),
-		);
-		
-		$expect = array(
-			'foo.baz' => 'bar',
-			'foo.bar' => 'baz',
-			'hello' => 'world',
-			'a.b.c' => '1',
-			'a.b.d' => '2',
-		);
-		
-		$this->assertEquals($expect, $this->obj->flatten($input));
+		$prepareInput = new TikiFilter_PrepareInput('.');
+
+		$this->assertEquals($expect, $prepareInput->prepare($input));
 	}
 }
 

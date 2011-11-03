@@ -6,15 +6,14 @@
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
 
 class FileGalLib extends TikiLib
 {
-	function isPodCastGallery($galleryId, $gal_info=null)
-	{
+	function isPodCastGallery($galleryId, $gal_info=null) {
 		if (empty($gal_info))
 			$gal_info = $this->get_file_gallery_info((int)$galleryId);
 		if (($gal_info["type"]=="podcast") || ($gal_info["type"]=="vidcast")) {
@@ -24,8 +23,7 @@ class FileGalLib extends TikiLib
 		}
 	}
 
-	private function get_gallery_save_dir($galleryId, $galInfo = null)
-	{
+	private function get_gallery_save_dir($galleryId, $galInfo = null) {
 		global $prefs;
 
 		$podCastException = $this->isPodCastGallery($galleryId, $galInfo);
@@ -41,13 +39,12 @@ class FileGalLib extends TikiLib
 		}
 	}
 
-	private function get_file_checksum($galleryId, $path, $data)
-	{
+	private function get_file_checksum($galleryId, $path, $data) {
 
 		$savedir = $this->get_gallery_save_dir($galleryId);
 
 		if (false !== $savedir) {
-			if ( filesize($savedir . $path) > 0 ) {
+			if ( filesize ($savedir . $path) > 0 ) {
 				return md5_file($savedir . $path);
 			} else {
 				return md5(time());
@@ -57,8 +54,7 @@ class FileGalLib extends TikiLib
 		}
 	}
 
-	private function find_unique_name($directory, $start)
-	{
+	private function find_unique_name($directory, $start) {
 		$fhash = md5($start);
 
 		while (file_exists($directory . $fhash)) {
@@ -68,48 +64,43 @@ class FileGalLib extends TikiLib
 		return $fhash;
 	}
 
-	function get_attachment_gallery( $objectId, $objectType )
-	{
+	function get_attachment_gallery( $objectId, $objectType ) {
 		switch ( $objectType ) {
-			case 'wiki page': return $this->get_wiki_attachment_gallery($objectId);
+			case 'wiki page': return $this->get_wiki_attachment_gallery( $objectId );
 		}
 
 		return false;
 	}
 
-	function get_wiki_attachment_gallery( $pageName )
-	{
+	function get_wiki_attachment_gallery( $pageName ) {
 		global $prefs;
 
 		// Get the Wiki Attachment Gallery for this wiki page or create it if it does not exist
-		if ( ! $return = $this->getGalleryId($pageName, $prefs['fgal_root_wiki_attachments_id']) ) {
+		if ( ! $return = $this->getGalleryId( $pageName, $prefs['fgal_root_wiki_attachments_id'] ) ) {
 
 			// Create the attachment gallery only if the wiki page really exists
-			if ( $this->get_page_id_from_name($pageName) > 0 ) {
+			if ( $this->get_page_id_from_name( $pageName ) > 0 ) {
 
-				$return = $this->replace_file_gallery(
-					array(
-						'name' => $pageName,
-						'user' => 'admin',
-						'type' => 'attachments',
-						'public' => 'y',
-						'visible' => 'y',
-						'parentId' => $prefs['fgal_root_wiki_attachments_id']
-					)
-				);
+				$return = $this->replace_file_gallery( array(
+					'name' => $pageName,
+					'user' => 'admin',
+					'type' => 'attachments',
+					'public' => 'y',
+					'visible' => 'y',
+					'parentId' => $prefs['fgal_root_wiki_attachments_id']
+				) );
 			}
 		}
 
 		return $return;
 	}
 
-	function get_user_file_gallery()
-	{
+	function get_user_file_gallery() {
 		global $user, $prefs;
 		$tikilib = TikiLib::lib('tiki');
 		
 		// Feature check + Anonymous don't have their own Users File Gallery
-		if ( $user == '' || $prefs['feature_use_fgal_for_user_files'] == 'n' || $prefs['feature_userfiles'] == 'n' || ( $userId = $tikilib->get_user_id($user) ) <= 0  ) {
+		if ( $user == '' || $prefs['feature_use_fgal_for_user_files'] == 'n' || $prefs['feature_userfiles'] == 'n' || ( $userId = $tikilib->get_user_id( $user ) ) <= 0  ) {
 			return false;
 		}
 
@@ -129,13 +120,12 @@ class FileGalLib extends TikiLib
 		$fgal_info['visible'] = 'y';
 
 		// Create the user gallery if it does not exist yet
-		$idGallery = $this->replace_file_gallery($fgal_info);
+		$idGallery = $this->replace_file_gallery( $fgal_info );
 
 		return $idGallery;
 	}
 
-	function remove_file($fileInfo, $galInfo='', $disable_notifications = false)
-	{
+	function remove_file($fileInfo, $galInfo='', $disable_notifications = false) {
 		global $prefs, $user;
 
 		if ( empty( $fileInfo['fileId'] ) ) {
@@ -147,19 +137,23 @@ class FileGalLib extends TikiLib
 
 		$this->deleteBacklinks(null, $fileId);
 		if ($fileInfo['path']) {
-			unlink($savedir . $fileInfo['path']);
+			unlink ($savedir . $fileInfo['path']);
 		}
 		$archives = $this->get_archives($fileId);
 		foreach ($archives['data'] as $archive) {
 			if ($archive['path']) {
-				unlink($savedir . $archive['path']);
+				unlink ($savedir . $archive['path']);
 			}
 			$this->remove_object('file', $archive['fileId']);
 		}
 
 		$files = $this->table('tiki_files');
-		$files->delete(array('fileId' => $fileId));
-		$files->deleteMultiple(array('archiveId' => $fileId));
+		$files->delete(array(
+			'fileId' => $fileId,
+		));
+		$files->deleteMultiple(array(
+			'archiveId' => $fileId,
+		));
 
 		$this->remove_draft($fileId);
 		$this->remove_object('file', $fileId);
@@ -175,8 +169,7 @@ class FileGalLib extends TikiLib
 		return true;
 	}
 
-	function insert_file($galleryId, $name, $description, $filename, $data, $size, $type, $creator, $path, $comment='', $author=null, $created='', $lockedby=NULL, $deleteAfter=NULL, $id=0)
-	{
+	function insert_file($galleryId, $name, $description, $filename, $data, $size, $type, $creator, $path, $comment='', $author=null, $created='', $lockedby=NULL, $deleteAfter=NULL, $id=0) {
 		global $prefs, $user;
 
 		if (! $this->is_filename_valid($filename)) {
@@ -242,12 +235,18 @@ class FileGalLib extends TikiLib
 				$final_event = 'tiki.file.create';
 			}
 		} else {
-			$filesTable->update($fileData, array('fileId' => $id));
+			$filesTable->update($fileData, array(
+				'fileId' => $id,
+			));
 			$fileId = $id;
 			$final_event = null;
 		}
 
-		$galleriesTable->update(array('lastModif' => $this->now), array('galleryId' => $galleryId));
+		$galleriesTable->update(array(
+			'lastModif' => $this->now,
+		), array(
+			'galleryId' => $galleryId,
+		));
 
 		if ($prefs['feature_score'] == 'y') {
 		    $this->score_event($user, 'fgallery_new_file');
@@ -269,9 +268,9 @@ class FileGalLib extends TikiLib
 
 		//Watches
 		$smarty->assign('galleryId', $galleryId);
-		$smarty->assign('fname', $name);
-		$smarty->assign('filename', $filename);
-		$smarty->assign('fdescription', $description);
+                $smarty->assign('fname', $name);
+                $smarty->assign('filename', $filename);
+                $smarty->assign('fdescription', $description);
 
 		$this->notify($galleryId, $name, $filename, $description, 'upload file', $user, $fileId);
 
@@ -292,8 +291,7 @@ class FileGalLib extends TikiLib
 	 * @param string $checksum
 	 * @param string $lockedby
 	 */
-	function insert_draft($fileId,$filename,$size,$type,$data,$creator,$path,$checksum,$lockedby)
-	{
+	function insert_draft($fileId,$filename,$size,$type,$data,$creator,$path,$checksum,$lockedby) {
 		global $prefs;
 		$filesTable = $this->table('tiki_files');
 		$fileDraftsTable = $this->table('tiki_file_drafts');
@@ -346,8 +344,7 @@ class FileGalLib extends TikiLib
 	 * @param int $fileId
 	 * @param string $user
 	 */
-	function remove_draft($fileId,$user=null)
-	{
+	function remove_draft($fileId,$user=null) {
 		$fileDraftsTable = $this->table('tiki_file_drafts');
 
 		if (isset($user)) {
@@ -368,8 +365,7 @@ class FileGalLib extends TikiLib
 	 * @global string $user
 	 * @param int $fileId
 	 */
-	function validate_draft($fileId)
-	{
+	function validate_draft($fileId) {
 		global $prefs, $user;
 
 		$fileDraftsTable = $this->table('tiki_file_drafts');
@@ -432,8 +428,7 @@ class FileGalLib extends TikiLib
 		}
 	}
 
-	function save_archive($id, $galleryId, $count_archives, $name, $description, $filename, $data, $size, $type, $creator, $path, $comment, $author, $created, $lockedby)
-	{
+	function save_archive($id, $galleryId, $count_archives, $name, $description, $filename, $data, $size, $type, $creator, $path, $comment, $author, $created, $lockedby) {
 		global $prefs;
 
 		$filesTable = $this->table('tiki_files');
@@ -501,8 +496,7 @@ class FileGalLib extends TikiLib
 		return $idNew;
 	}
 
-	function set_file_gallery($file, $gallery)
-	{
+	function set_file_gallery($file, $gallery) {
 		$files = $this->table('tiki_files');
 		$files->updateMultiple(array(
 			'galleryId' => $gallery,
@@ -513,8 +507,7 @@ class FileGalLib extends TikiLib
 		return true;
 	}
 
-	function remove_file_gallery($id, $galleryId=0, $recurse = true)
-	{
+	function remove_file_gallery($id, $galleryId=0, $recurse = true) {
 		global $prefs;
 		$fileGalleries = $this->table('tiki_file_galleries');
 		$id = (int)$id;
@@ -557,15 +550,13 @@ class FileGalLib extends TikiLib
 		return true;
 	}
 
-	function get_file_gallery_info($id)
-	{
+	function get_file_gallery_info($id) {
 		return $this->table('tiki_file_galleries')->fetchFullRow(array(
 			'galleryId' => (int) $id,
 		));
 	}
 
-	function move_file_gallery($galleryId, $new_parent_id)
-	{
+	function move_file_gallery($galleryId, $new_parent_id) {
 		if ( (int)$galleryId <= 0 || (int)$new_parent_id == 0 || $galleryId == $new_parent_id ) return false;
 
 		$cachelib = TikiLib::lib('cache');
@@ -577,9 +568,7 @@ class FileGalLib extends TikiLib
 			'galleryId' => (int) $galleryId,
 		));
 	}
-
-	function default_file_gallery()
-	{
+	function default_file_gallery() {
 		global $prefs;
 		return array(
 			'name' => '',
@@ -626,8 +615,7 @@ class FileGalLib extends TikiLib
 			'template' => null,
 		);
 	}
-	function replace_file_gallery($fgal_info)
-	{
+	function replace_file_gallery($fgal_info) {
 
 		global $prefs;
 		$galleriesTable = $this->table('tiki_file_galleries');
@@ -680,9 +668,7 @@ class FileGalLib extends TikiLib
 		// event_handler($action,$object_type,$object_id,$options);
 		return $galleryId;
 	}
-	
-	function get_all_galleries_cache_name($user)
-	{
+	function get_all_galleries_cache_name($user) {
 		$tikilib = TikiLib::lib('tiki');
 		$categlib = TikiLib::lib('categ');
 
@@ -697,14 +683,11 @@ class FileGalLib extends TikiLib
 		}
 		return md5($tmp);
 	}
-
-	function get_all_galleries_cache_type()
-	{
+	function get_all_galleries_cache_type() {
 		return 'fgals_';
 	}
 
-	function process_batch_file_upload($galleryId, $file, $user, $description, &$errors)
-	{
+	function process_batch_file_upload($galleryId, $file, $user, $description, &$errors) {
 		include_once ('lib/pclzip/pclzip.lib.php');
 		include_once ('lib/mime/mimelib.php');
 		$extract_dir = 'temp/'.basename($file).'/';
@@ -761,7 +744,7 @@ class FileGalLib extends TikiLib
 				$name = $file;
 				$type = tiki_get_mime($extract_dir.$file);
 				$fileId = $this->insert_file($galleryId, $name, $description, $name, $data, $size, $type, $user, $fhash);
-				unlink($extract_dir.$file);
+				unlink ($extract_dir.$file);
 			}
 		}
 
@@ -770,8 +753,7 @@ class FileGalLib extends TikiLib
 		return true;
 	}
 
-	function get_file_info($fileId, $include_search_data = true, $include_data = true, $use_draft = false)
-	{
+	function get_file_info($fileId, $include_search_data = true, $include_data = true, $use_draft = false) {
 		global $prefs, $user;
 
 		$return = $this->get_files_info(null, (int)$fileId, $include_search_data, $include_data);
@@ -796,13 +778,11 @@ class FileGalLib extends TikiLib
 		return $file;
 	}
 
-	function get_files_info_from_gallery_id($galleryId, $include_search_data = false, $include_data = false)
-	{
+	function get_files_info_from_gallery_id($galleryId, $include_search_data = false, $include_data = false) {
 		return $this->get_files_info((int)$galleryId, null, $include_search_data, $include_data);
 	}
 
-	function get_files_info($galleryIds = null, $fileIds = null, $include_search_data = false, $include_data = false)
-	{
+	function get_files_info($galleryIds = null, $fileIds = null, $include_search_data = false, $include_data = false) {
 		$files = $this->table('tiki_files');
 
 		$fields = array('fileId', 'galleryId', 'name', 'description', 'created', 'filename', 'filesize', 'filetype', 'user', 'author', 'hits', 'votes', 'points', 'path', 'reference_url', 'is_reference', 'hash', 'lastModif', 'lastModifUser', 'lockedby', 'comment', 'archiveId');
@@ -831,8 +811,7 @@ class FileGalLib extends TikiLib
 		return $files->fetchAll($fields, $conditions);
 	}
 
-	function update_file($id, $name, $description, $user, $comment = NULL)
-	{
+	function update_file($id, $name, $description, $user, $comment = NULL) {
 
 		// Update the fields in the database
 		$updateData = array(
@@ -867,8 +846,7 @@ class FileGalLib extends TikiLib
 		return $result;
 	}
 
-	function replace_file($id, $name, $description, $filename, $data, $size, $type, $creator, $path, $comment='', $gal_info, $didFileReplace, $author='', $created='', $lockedby=NULL, $deleteAfter=NULL)
-	{
+	function replace_file($id, $name, $description, $filename, $data, $size, $type, $creator, $path, $comment='', $gal_info, $didFileReplace, $author='', $created='', $lockedby=NULL, $deleteAfter=NULL) {
 		global $prefs, $user;
 
 		if (! $this->is_filename_valid($filename)) {
@@ -896,7 +874,7 @@ class FileGalLib extends TikiLib
 
 		$search_data = '';
 		if ($prefs['fgal_enable_auto_indexing'] != 'n') {
-			$search_data = $this->get_search_text_for_data($data, $path, $type, $gal_info['galleryId']);
+			$search_data = $this->get_search_text_for_data($data,$path,$type, $gal_info['galleryId']);
 			if ($search_data === false)
 				return false;
 		}
@@ -995,8 +973,7 @@ class FileGalLib extends TikiLib
 		return $id;
 	}
 
-	function change_file_handler($mime_type,$cmd)
-	{
+	function change_file_handler($mime_type,$cmd) {
 		$handlers = $this->table('tiki_file_handlers');
 
 		$mime_type = trim($mime_type);
@@ -1010,14 +987,12 @@ class FileGalLib extends TikiLib
 		return true;
 	}
 
-	function delete_file_handler($mime_type)
-	{
+	function delete_file_handler($mime_type) {
 		$handlers = $this->table('tiki_file_handlers');
 		return (bool) $handlers->delete(array('mime_type' => $mime_type));
 	}
 
-	function get_file_handlers($for_execution = false)
-	{
+	function get_file_handlers($for_execution = false) {
 		$cachelib = TikiLib::lib('cache');
 
 		if ($for_execution && ! $default = $cachelib->getSerialized('file_handlers')) {
@@ -1071,8 +1046,7 @@ class FileGalLib extends TikiLib
 		return array_merge($default, $database);
 	}
 
-	function reindex_all_files_for_search_text()
-	{
+	function reindex_all_files_for_search_text() {
 		$files = $this->table('tiki_files');
 
 		$rows = $files->fetchAll(array('fileId', 'filename', 'filesize', 'filetype', 'data', 'path', 'galleryId'), array(
@@ -1093,8 +1067,7 @@ class FileGalLib extends TikiLib
 		refresh_index('files');
 	}
 
-	function get_parse_app($type, $skipDefault = true)
-	{
+	function get_parse_app($type, $skipDefault = true) {
 		static $fileParseApps;
 		
 		if (! $fileParseApps) {
@@ -1116,8 +1089,7 @@ class FileGalLib extends TikiLib
 		}
 	}
 
-	function get_search_text_for_data($data,$path,$type, $galleryId)
-	{
+	function get_search_text_for_data($data,$path,$type, $galleryId) {
 
 		if (!isset($data) && !isset($path)) {
 			return false;
@@ -1154,8 +1126,7 @@ class FileGalLib extends TikiLib
 		return $contents;
 	}
 
-	function notify ($galleryId, $name, $filename, $description, $action, $user, $fileId=false)
-	{
+	function notify ($galleryId, $name, $filename, $description, $action, $user, $fileId=false) {
 		global $prefs;
 		if ($prefs['feature_user_watches'] == 'y') {
                         //  Deal with mail notifications.
@@ -1166,8 +1137,7 @@ class FileGalLib extends TikiLib
 		}
 	}
 	/* lock a file */
-	function lock_file($fileId, $user)
-	{
+	function lock_file($fileId, $user) {
 		$this->table('tiki_files')->update(array(
 			'lockedby' => $user,
 		), array(
@@ -1175,17 +1145,14 @@ class FileGalLib extends TikiLib
 		));
 	}
 	/* unlock a file */
-	function unlock_file($fileId)
-	{
+	function unlock_file($fileId) {
 		$this->lock_file($fileId, null);
 	}
 	/* get archives of a file */
-	function get_archives($fileId, $offset=0, $maxRecords=-1, $sort_mode='created_desc', $find='')
-	{
+	function get_archives($fileId, $offset=0, $maxRecords=-1, $sort_mode='created_desc', $find='') {
 		return $this->get_files($offset, $maxRecords, $sort_mode, $find, $fileId, true, false, false, true, false, false, false, false, '', false, true);
 	}
-	function duplicate_file_gallery($galleryId, $name, $description = '')
-	{
+	function duplicate_file_gallery($galleryId, $name, $description = '') {
 		global $user;
 		$info = $this->get_file_gallery_info($galleryId);
 		$info['user'] = $user;
@@ -1210,8 +1177,7 @@ class FileGalLib extends TikiLib
 		));
 	}
 	// not the best optimisation as using a library using files and not content
-	function zip($fileIds, &$error, $zipName='')
-	{
+	function zip($fileIds, &$error, $zipName='') {
 		global $tiki_p_admin_file_galleries, $userlib, $tikilib, $prefs, $user;
 		$list = array();
 		$temp = 'temp/'.md5($tikilib->now).'/';
@@ -1267,8 +1233,7 @@ class FileGalLib extends TikiLib
 		return $info;
 	}
 
-	function getGalleriesParentIds()
-	{
+	function getGalleriesParentIds() {
 		static $return = null;
 
 		if ( $return === null ) {
@@ -1286,8 +1251,7 @@ class FileGalLib extends TikiLib
 	 * @param Array &$subtree Output - The children Ids are appended
 	 * @param int $parentId The parent whichs children are to be listed
 	 */
-	function _getGalleryChildrenIdsList( $allIds, &$subtree, $parentId )
-	{
+	function _getGalleryChildrenIdsList( $allIds, &$subtree, $parentId ) {
 		foreach ( $allIds as $k => $v ) {
 			if ( $v['parentId'] == $parentId ) {
 				$galleryId = $v['galleryId'];
@@ -1306,8 +1270,7 @@ class FileGalLib extends TikiLib
 	 * @param Array &$subtree Output - The children Ids are appended
 	 * @param int $parentId The parent whichs children are to be listed
 	 */
-	function _getGalleryChildrenIdsTree( $allIds, &$subtree, $parentId )
-	{
+	function _getGalleryChildrenIdsTree( $allIds, &$subtree, $parentId ) {
 		foreach ( $allIds as $v ) {
 			if ( $v['parentId'] == $parentId ) {
 				$galleryId = $v['galleryId'];
@@ -1318,8 +1281,7 @@ class FileGalLib extends TikiLib
 	}
 	// Get a tree or a list of a gallery children ids, optionnally under a specific parentId
 	// To avoid a query to the database for each node, this function retrieves all gallery ids and recursively build the tree using this info
-	function getGalleryChildrenIds( &$subtree, $parentId = -1, $format = 'tree' )
-	{
+	function getGalleryChildrenIds( &$subtree, $parentId = -1, $format = 'tree' ) {
 		$allIds = $this->getGalleriesParentIds();
 
 		switch ( $format ) {
@@ -1332,8 +1294,7 @@ class FileGalLib extends TikiLib
 	}
 
 	// Get a tree or a list of ids of the specified gallery and its children
-	function getGalleryIds( &$subtree, $parentId = -1, $format = 'tree' )
-	{
+	function getGalleryIds( &$subtree, $parentId = -1, $format = 'tree' ) {
 
 		switch ( $format ) {
 			case 'list':
@@ -1354,8 +1315,7 @@ class FileGalLib extends TikiLib
 	 * @param bool $wholeSpecialGallery If true, will return the subgalleries of the special gallery (User File Galleries, Wiki Attachment Galleries, File Galleries, ...) that contains the $parentId gallery
 	 * @param string $permission If set, will limit the list of subgalleries to those having this permission for the current user
 	 */
-	function getSubGalleries( $parentId = 0, $wholeSpecialGallery = true, $permission = '' )
-	{
+	function getSubGalleries( $parentId = 0, $wholeSpecialGallery = true, $permission = '' ) {
 
 		// Use the special File Galleries root if no other special gallery root id is specified
 		if ( $parentId == 0 ) {
@@ -1398,9 +1358,7 @@ class FileGalLib extends TikiLib
 	 * @param int $galleryId The id of the gallery 
 	 * @return The special root gallery Id
 	 */
-	// WARNING: Semi-private function. "Public callers" should only pass the galleryId parameter.
-	function getGallerySpecialRoot( $galleryId, $treeParentId = null, &$tree = null /* Pass by reference for performance */)
-	{
+	function getGallerySpecialRoot( $galleryId, $treeParentId = null, &$tree = null ) {
 		global $prefs;
 
 		if ( ( $treeParentId === null xor $tree === null ) || $galleryId <= 0 ) {
@@ -1439,104 +1397,67 @@ class FileGalLib extends TikiLib
 	}
 
 	// Get the tree of 'Wiki Attachment File Galleries' filegal of the specified wiki page
-	function getWikiAttachmentFilegalsIdsTree( $pageName )
-	{
+	function getWikiAttachmentFilegalsIdsTree( $pageName ) {
 		$return = array();
 		$this->getGalleryIds( $return, $this->get_wiki_attachment_gallery( $pageName ), 'tree' );
 		return $return;
 	}
 
 	// Get the tree of 'Users File Galleries' filegal of the current user
-	function getUserFilegalsIdsTree()
-	{
+	function getUserFilegalsIdsTree() {
 		$return = array();
 		$this->getGalleryIds( $return, $this->get_user_file_gallery(), 'tree' );
 		return $return;
 	}
 
 	// Get the tree of 'File Galleries' filegal 
-	function getFilegalsIdsTree()
-	{
+	function getFilegalsIdsTree() {
 		global $prefs;
 		$return = array();
 		$this->getGalleryIds( $return, $prefs['fgal_root_id'], 'tree' );
 		return $return;
 	}
 
-	// Return HTML code to display the complete file galleries tree for the special root containing the given gallery.
-	// If $galleryIdentifier is not given, default to the "default" / normal / "File Galleries" file galleries.
-	function getTreeHTML($galleryIdentifier = NULL)
-	{
-		global $prefs, $smarty;
-		require_once ('lib/tree/BrowseTreeMaker.php');
-		$galleryIdentifier = is_null($galleryIdentifier) ? $prefs['fgal_root_id'] : $galleryIdentifier;
-		$subGalleries = $this->getSubGalleries($galleryIdentifier);
-	
-		$smarty->loadPlugin('smarty_function_icon');
-		$icon = '&nbsp;' . smarty_function_icon(array('_id' => 'folder'), $smarty) . '&nbsp;';
-		
-		$smarty->loadPlugin('smarty_block_self_link');
-		$linkParameters = array('_script' => 'tiki-list_file_gallery.php', '_class' => 'fgalname');
-		if (!empty($_REQUEST['filegals_manager'])) {
-			$linkParameters['filegals_manager'] = $_REQUEST['filegals_manager'];
-		}
-		$nodes = array();
-		foreach ($subGalleries['data'] as $subGallery) {
-			$linkParameters['galleryId'] = $subGallery['id'];
-			$nodes[] = array(
-				'id' => $subGallery['id'],
-				'parent' => $subGallery['parentId'],
-				'data' => smarty_block_self_link($linkParameters, $icon . htmlspecialchars($subGallery['name']), $smarty), 
-			);
-		}
-		$browseTreeMaker = new BrowseTreeMaker('Galleries');
-		return $browseTreeMaker->make_tree($this->getGallerySpecialRoot($galleryIdentifier), $nodes);
+	// Get default tree for filegals
+	function getFilegalsTree( $currentGalleryId = null ) {
+		return $this->getTree( $this->getFilegalsIdsTree(), $currentGalleryId );
 	}
-	
-	// Return the given gallery's path relative to its special root. The path starts with a constant component, File Galleries for default galleries.
-	// It would be File Galleries > Foo for a root default file gallery named "Foo". Other constant components are "User File Galleries" and "Wiki Attachment File Galleries".
-	// Returns an array with 2 elements, "Array" and "HTML".
-	// Array is a numerically-indexed array with one element per path component. Each value is the name of the component (usually a file gallery name). Keys are file gallery OIDs.
-	// HTML is a string of HTML code to display the path.
-	function getPath($galleryIdentifier)
-	{
-		global $prefs, $user;
-		$rootIdentifier = $this->getGallerySpecialRoot($galleryIdentifier);
-		$root = $this->get_file_gallery_info($galleryIdentifier);
-		if ( $user != '' && $prefs['feature_use_fgal_for_user_files'] == 'y' ) {
-			$userGallery = $this->get_user_file_gallery();
-			if ($userGallery == $prefs['fgal_root_user_id']) {
-				$rootIdentifier = $userGallery;
-			}
-		}
+
+	// Build galleries browsing tree and current gallery path array
+	function getTree( $idTree, $currentGalleryId = null ) {
+		global $prefs;
+
+		$allGalleries = $this->getSubGalleries();
+
+		$idTreeKeys = array_keys( $idTree );
+		$rootGalleryId = $idTreeKeys[0];
+		if ( $currentGalleryId === null ) $currentGalleryId = $rootGalleryId;
+
+		$script = 'tiki-list_file_gallery.php';
+		$tree = array('link' => $script, 'id' => $rootGalleryId );
+
 		$path = array();
-		for ($node = $this->get_file_gallery_info($galleryIdentifier); $node && $node['galleryId'] != $rootIdentifier; $node = $this->get_file_gallery_info($node['parentId'])) {
+		for ($node = $this->get_file_gallery_info($currentGalleryId); $node && $node['galleryId'] != $rootGalleryId; $node = $this->get_file_gallery_info($node['parentId'])) {
 			$path[$node['galleryId']] = $node['name'];
 		}
-		if (isset($userGallery) && $rootIdentifier == $userGallery) {
-			$path[$rootIdentifier] = tra('User File Galleries');
-		} elseif ($rootIdentifier == $prefs['fgal_root_wiki_attachments_id']) {
-			$path[$rootIdentifier] = tra('Wiki Attachment File Galleries');
-		} else {
-			$path[$rootIdentifier] = tra('File Galleries');
-		}
+		$path[$rootGalleryId] = tra('File Galleries');
 		$path = array_reverse($path, true);
 		
 		$pathHtml = '';
 		foreach ( $path as $identifier => $name ) {
 			if ( $pathHtml != '' ) $pathHtml .= ' &nbsp;&gt;&nbsp;';
-			$pathHtml .= '<a href="tiki-list_file_gallery.php?galleryId=' . $identifier . (!empty($_REQUEST['filegals_manager']) ? '&amp;filegals_manager=' . urlencode($_REQUEST['filegals_manager']) : '') . '">' . htmlspecialchars($name) . '</a>';
+			$pathHtml .= '<a href="' . $script . '?galleryId=' . $identifier . (!empty($_REQUEST['filegals_manager']) ? '&amp;filegals_manager=' . urlencode($_REQUEST['filegals_manager']) : '') . '">' . htmlspecialchars($name) . '</a>';
 		}
 
 		return array(
-			'HTML' => $pathHtml,
-			'Array' => $path
+			'tree' => $tree,
+			'path' => $pathHtml,
+			'pathArray' => $path
 		);
 	}
 
 	// get the size in k used in a fgal and its children
-	function getUsedSize($galleryId=0)
-	{
+	function getUsedSize($galleryId=0) {
 		$files = $this->table('tiki_files');
 
 		$conditions = array();
@@ -1551,8 +1472,7 @@ class FileGalLib extends TikiLib
 	}
 
 	// get the min quota in M of a fgal and its parents
-	function getQuota($galleryId=0)
-	{
+	function getQuota($galleryId=0) {
 		global $prefs;
 		if (empty($galleryId) || $prefs['fgal_quota_per_fgal'] == 'n') {
 			return $prefs['fgal_quota'];
@@ -1568,8 +1488,7 @@ class FileGalLib extends TikiLib
 		return $quota;
 	}
 	// get the max quota in M of the children of a fgal
-	function getMaxQuotaDescendants($galleryId=0)
-	{
+	function getMaxQuotaDescendants($galleryId=0) {
 		if (empty($galleryId)) {
 			return 0;
 		}
@@ -1583,8 +1502,7 @@ class FileGalLib extends TikiLib
 	}
 	// check quota is smaller than parent quotas and bigger than children quotas
 	// return -1: too small, 0: ok, +1: too big
-	function checkQuotaSetting($quota, $galleryId=0, $parentId=0)
-	{
+	function checkQuotaSetting($quota, $galleryId=0, $parentId=0) {
 		if (empty($quota)) {
 			return 0;
 		}
@@ -1601,8 +1519,7 @@ class FileGalLib extends TikiLib
 		return 0;
 	}
 	// get specific columns for a gallery and its parents
-	function getGalleryParentsColumns($galleryId, $columns)
-	{
+	function getGalleryParentsColumns($galleryId, $columns) {
 		$cols = array_diff($columns, array('size', 'galleryId', 'parentId'));
 		$cols[] = 'galleryId';
 		$cols[] = 'parentId';
@@ -1612,8 +1529,7 @@ class FileGalLib extends TikiLib
 		$this->_getGalleryParentsColumns($all, $list, $galleryId, $columns);
 		return $list;	
 	}
-	function _getGalleryParentsColumns($all, &$list, $galleryId, $columns=array())
-	{
+	function _getGalleryParentsColumns($all, &$list, $galleryId, $columns=array()) {
 		foreach ($all as $fgal) {
 			if ($fgal['galleryId'] == $galleryId) {
 				if (in_array('size', $columns)) { // to be optimized
@@ -1626,8 +1542,7 @@ class FileGalLib extends TikiLib
 		}
 	}
 	// check a size in K can be added to a gallery return false if problem
-	function checkQuota($size, $galleryId, &$error)
-	{
+	function checkQuota($size, $galleryId, &$error) {
 		global $prefs, $smarty;
 		$error = '';
 		if (!empty($prefs['fgal_quota'])) {
@@ -1673,8 +1588,7 @@ class FileGalLib extends TikiLib
 		return true;			
 	}
 	// update backlinks of an object
-	function replaceBacklinks($context, $fileIds=array())
-	{
+	function replaceBacklinks($context, $fileIds=array()) {
 		$objectlib = TikiLib::lib('object');
 		$objectId = $objectlib->get_object_id($context['type'], $context['object']);
 		if (empty($objectId) && !empty( $fileIds)) {
@@ -1685,8 +1599,7 @@ class FileGalLib extends TikiLib
 		}
 		//echo 'REPLACEBACKLINK'; print_r($context);print_r($fileIds);echo '<pre>'; debug_print_backtrace(); echo '</pre>';die;
 	}
-	function _replaceBacklinks($objectId, $fileIds=array())
-	{
+	function _replaceBacklinks($objectId, $fileIds=array()) {
 		$backlinks = $this->table('tiki_file_backlinks');
 		$this->_deleteBacklinks($objectId);
 
@@ -1698,8 +1611,7 @@ class FileGalLib extends TikiLib
 		}
 	}
 	// delete backlinks associated to an object
-	function deleteBacklinks($context, $fileId=null)
-	{
+	function deleteBacklinks($context, $fileId=null) {
 		if (empty($fileId)) {
 			$objectlib = TikiLib::lib('object');
 			$objectId = $objectlib->get_object_id($context['type'], $context['object']);
@@ -1710,8 +1622,7 @@ class FileGalLib extends TikiLib
 			$this->_deleteBacklinks(null, $fileId);
 		}
 	}
-	function _deleteBacklinks($objectId, $fileId=null)
-	{
+	function _deleteBacklinks($objectId, $fileId=null) {
 		$backlinks = $this->table('tiki_file_backlinks');
 		if (empty($fileId)) {
 			$backlinks->delete(array('objectId' => (int) $objectId));
@@ -1720,14 +1631,12 @@ class FileGalLib extends TikiLib
 		}
 	}
 	// get the backlinks of an object
-	function getFileBacklinks($fileId, $sort_mode='type_asc')
-	{
+	function getFileBacklinks($fileId, $sort_mode='type_asc') {
 		$query = 'select tob.* from `tiki_file_backlinks` tfb left join `tiki_objects` tob on (tob.`objectId`=tfb.`objectId`) where `fileId`=? order by '.$this->convertSortMode($sort_mode);
 		return $this->fetchAll($query, array((int)$fileId));
 	}
 	// can not see a file if all its backlinks are not viewable
-	function hasOnlyPrivateBacklinks($fileId)
-	{
+	function hasOnlyPrivateBacklinks($fileId) {
 		$objects = $this->getFileBacklinks($fileId);
 		if (empty($objects)) {
 			return false;
@@ -1768,8 +1677,7 @@ class FileGalLib extends TikiLib
 		return true;
 	}
 	// sync the backlinks used by a text of an object
-	function syncFileBacklinks($data, $context)
-	{
+	function syncFileBacklinks($data, $context) {
 		$fileIds = array();
 		$parserlib = TikiLib::lib('parser');
 		$plugins = $parserlib->getPlugins($data, array('IMG', 'FILE'));
@@ -1815,8 +1723,7 @@ class FileGalLib extends TikiLib
 		$this->syncFileBacklinks($content, $args);
 	}
 
-	function getLinkFileId($url)
-	{
+	function getLinkFileId($url) {
 		if (preg_match('/^tiki-download_file.php\?.*fileId=([0-9]+)/', $url, $matches)) {
 			return $matches[1];
 		}
@@ -1824,13 +1731,11 @@ class FileGalLib extends TikiLib
 			return $matches[2];
 		}
 	}
-	private function syncParsedText( $data, $context )
-	{
+	private function syncParsedText( $data, $context ) {
 		// Compatbility function
 		$this->object_post_save( $context, array( 'content' => $data ) );
 	}
-	function refreshBacklinks()
-	{
+	function refreshBacklinks() {
 		$result = $this->table('tiki_pages')->fetchAll(array('data', 'description', 'pageName'), array());
 		foreach ($result as $res) {
 			$this->syncParsedText($res['data'], array('type'=> 'wiki page', 'object'=> $res['pageName'], 'description'=> $res['description'], 'name'=>$res['pageName'], 'href'=>'tiki-index.php?page='.$res['pageName']));
@@ -1881,8 +1786,7 @@ class FileGalLib extends TikiLib
 	}
 	/* move files to file system
 	 * return '' if ok otherwise error message */
-	function moveFiles($to='to_fs', &$feedbacks)
-	{
+	function moveFiles($to='to_fs', &$feedbacks) {
 		$files = $this->table('tiki_files');
 
 		if ($to == 'to_db') {
@@ -1908,8 +1812,7 @@ class FileGalLib extends TikiLib
 		$feedbacks[] = "$msg $nb";
 		return '';
 	}
-	function moveFile($to='to_fs', $file_id)
-	{
+	function moveFile($to='to_fs', $file_id) {
 		global $prefs;
 		$files = $this->table('tiki_files');
 
@@ -1944,8 +1847,7 @@ class FileGalLib extends TikiLib
 		return '';
 	}
 	// find the fileId in the pool of fileId archives files that is closer before the date 
-	function getArchiveJustBefore($fileId, $date)
-	{
+	function getArchiveJustBefore($fileId, $date) {
 		$files = $this->table('tiki_files');
 
 		$archiveId = $files->fetchOne('archiveId', array('fileId' => $fileId));
@@ -1959,8 +1861,7 @@ class FileGalLib extends TikiLib
 		), 1, 0, array('created' => 'DESC'));
 	}
 
-	function get_objectid_from_virtual_path($path, $parentId = -1)
-	{
+	function get_objectid_from_virtual_path($path, $parentId = -1) {
 		if ( empty($path) || $path[0] != '/' ) return false;
 
 		if ( $path == '/' ) {
@@ -2017,8 +1918,7 @@ class FileGalLib extends TikiLib
 		return false;
 	}
 
-	function get_full_virtual_path($id, $type = 'file')
-	{
+	function get_full_virtual_path($id, $type = 'file') {
 		if ( ! $id > 0 ) return false;
 
 		switch( $type ) {
@@ -2046,8 +1946,7 @@ class FileGalLib extends TikiLib
 		return false;
 	}
 
-	function getFiletype($not=array())
-	{
+	function getFiletype($not=array()) {
 		if (empty($not)) {
 			$query = 'select distinct(`filetype`) from `tiki_files` order by `filetype` asc'; 
 		} else {
@@ -2060,8 +1959,7 @@ class FileGalLib extends TikiLib
 		}
 		return $ret;
 	}
-	function setDefault($fgalIds)
-	{
+	function setDefault($fgalIds) {
 		global $prefs;
 		$defaults = array(
 			'sort_mode' => $prefs['fgal_sort_mode'],
@@ -2095,15 +1993,13 @@ class FileGalLib extends TikiLib
 			'galleryId' => $galleries->in($fgalIds),
 		));
 	}
-	function getGalleryId($name, $parentId)
-	{
+	function getGalleryId($name, $parentId) {
 		return $this->table('tiki_file_galleries')->fetchOne('galleryId', array(
 			'name' => $name,
 			'parentId' => $parentId,
 		));
 	}
-	function deleteOldFiles()
-	{
+	function deleteOldFiles() {
 		global $prefs, $smarty;
 		include_once('lib/webmail/tikimaillib.php');
 		$query = 'select * from `tiki_files` where `deleteAfter` < '.$this->now.' - `lastModif` and `deleteAfter` is not NULL and `deleteAfter` != \'\' order by galleryId asc';
@@ -2131,8 +2027,7 @@ class FileGalLib extends TikiLib
 		}
 	}
 	// get the wiki_syntax - use parent's if none
-	function getWikiSyntax($galleryId=0)
-	{
+	function getWikiSyntax($galleryId=0) {
 		if (isset($_REQUEST['filegals_manager'])) {		// for use in plugin edit popup
 			if ($_REQUEST['filegals_manager'] === 'fgal_picker_id') {
 				return '%fileId%';		// for use in plugin edit popup
@@ -2161,8 +2056,7 @@ class FileGalLib extends TikiLib
 		return $syntax;
 	}
 
-	function add_file_hit($id)
-	{
+	function add_file_hit($id) {
 		global $prefs, $user;
 
 		$files = $this->table('tiki_files');
@@ -2205,8 +2099,7 @@ class FileGalLib extends TikiLib
 		return true;
 	}
 
-	function add_file_gallery_hit($id)
-	{
+	function add_file_gallery_hit($id) {
 		global $prefs, $user;
 		if ($prefs['count_admin_pvs'] == 'y' || $user != 'admin') {
 			$fileGalleries = $this->table('tiki_file_galleries');
@@ -2219,8 +2112,7 @@ class FileGalLib extends TikiLib
 		return true;
 	}
 
-	function get_file($id, $randomGalleryId='')
-	{
+	function get_file($id, $randomGalleryId='') {
 		if (empty($randomGalleryId)) {
 			$where = '`fileId`=?';
 			$bindvars[] = (int)$id;
@@ -2238,8 +2130,7 @@ class FileGalLib extends TikiLib
 	 *
 	 * @param int $id
 	 */
-	function get_file_draft($id)
-	{
+	function get_file_draft($id) {
 		global $user;
 
 		$file = $this->get_file($id);
@@ -2268,22 +2159,19 @@ class FileGalLib extends TikiLib
 		return $file;
 	}
 
-	function get_file_by_name($galleryId, $name, $column='name')
-	{
+	function get_file_by_name($galleryId, $name, $column='name') {
 		$query = "select `path`,`galleryId`,`filename`,`filetype`,`data`,`filesize`,`name`,`description`, `created` from `tiki_files` where `galleryId`=? AND `$column`=? ORDER BY created DESC LIMIT 1";
 		$result = $this->query($query,array((int) $galleryId, $name));
 		$res = $result->fetchRow();
 		return $res;
 	}
 
-	function list_files($offset=0, $maxRecords=-1, $sort_mode='created_desc', $find='')
-	{
+	function list_files($offset=0, $maxRecords=-1, $sort_mode='created_desc', $find='') {
 		global $prefs;
 		return $this->get_files($offset, $maxRecords, $sort_mode, $find, $prefs['fgal_root_id'], false, false, true, true, false, false, true, true);
 	}
 
-	function list_file_galleries($offset = 0, $maxRecords = -1, $sort_mode = 'name_desc', $user='', $find='', $parentId=-1, $with_archive=false, $with_subgals=true, $with_subgals_size=false, $with_files=false, $with_files_data=false, $with_parent_name=true, $with_files_count=true,$recursive=true)
-	{
+	function list_file_galleries($offset = 0, $maxRecords = -1, $sort_mode = 'name_desc', $user='', $find='', $parentId=-1, $with_archive=false, $with_subgals=true, $with_subgals_size=false, $with_files=false, $with_files_data=false, $with_parent_name=true, $with_files_count=true,$recursive=true) {
 		return $this->get_files($offset, $maxRecords, $sort_mode, $find, $parentId, $with_archive, $with_subgals, $with_subgals_size, $with_files, $with_files_data, $with_parent_name, $with_files_count, $recursive, $user);
 	}
 
@@ -2699,8 +2587,7 @@ class FileGalLib extends TikiLib
 		return array('data' => $ret, 'cant' => $cant);
 	}
 	
-	function list_visible_file_galleries($offset = 0, $maxRecords = -1, $sort_mode = 'name_desc', $user = '', $find = null)
-	{
+	function list_visible_file_galleries($offset = 0, $maxRecords = -1, $sort_mode = 'name_desc', $user = '', $find = null) {
 		// If $user is admin then get ALL galleries, if not only user galleries are shown
 
 		$fileGalleries = $this->table('tiki_file_galleries');
@@ -2726,8 +2613,7 @@ class FileGalLib extends TikiLib
 		);
 	}
 
-	function get_file_gallery($id = -1, $defaultsFallback = true)
-	{
+	function get_file_gallery($id = -1, $defaultsFallback = true) {
 		static $defaultValues = null;
 
 		if ( $defaultValues === null && $defaultsFallback ) {
@@ -2753,8 +2639,7 @@ class FileGalLib extends TikiLib
 	}
 
 	// convert markup to be inserted onclick - replace: %fileId%, %name%, %description% etc
-	private function process_fgal_syntax($syntax, $file)
-	{
+	private function process_fgal_syntax($syntax, $file) {
 		$replace_keys = array('fileId', 'name', 'filename', 'description', 'hits', 'author', 'filesize', 'filetype');
 		foreach($replace_keys as $k) {
 			if (isset($file[$k])) {
@@ -2764,8 +2649,7 @@ class FileGalLib extends TikiLib
 		return $syntax;
 	}
 
-	private function print_msg($msg, $id, $htmlEntities = false)
-	{
+	private function print_msg($msg, $id, $htmlEntities = false) {
 		global $prefs;
 
 		if ( $htmlEntities ) {
@@ -2788,8 +2672,7 @@ class FileGalLib extends TikiLib
 	}
 
 	/*shared*/
-	public function actionHandler($action, $params)
-	{
+	public function actionHandler($action, $params) {
 		$method_name = '_actionHandler_' . $action;
 		if ( ! is_callable( array( $this, $method_name ) ) )
 			return false;
@@ -2797,8 +2680,7 @@ class FileGalLib extends TikiLib
 		return call_user_func( array( $this, $method_name ), $params );
 	}
 
-	private function _actionHandler_removeFile( $params )
-	{
+	private function _actionHandler_removeFile( $params ) {
 		// mandatory params: int fileId
 		// optional params: boolean draft, array gal_info
 		if ( ! empty( $params ) && isset( $params['fileId'] ) ) {
@@ -2853,8 +2735,7 @@ class FileGalLib extends TikiLib
 		}
 	}
 
-	private function _actionHandler_uploadFile( $params )
-	{
+	private function _actionHandler_uploadFile( $params ) {
 		global $user, $prefs, $tikilib, $logslib, $smarty, $tiki_p_admin, $tiki_p_batch_upload_files;
 
 		$batch_job = false;
@@ -3358,8 +3239,7 @@ class FileGalLib extends TikiLib
 		return $this->insert_file($gal_info['galleryId'], $name, '', $name, $data, $size, $type, $user, $fhash, '');
 	}
 
-	private function convert_from_data($gal_info, & $fhash, $data)
-	{
+	private function convert_from_data($gal_info, & $fhash, $data) {
 		$savedir = $this->get_gallery_save_dir($gal_info['galleryId']);
 		$fhash = '';
 
@@ -3597,8 +3477,7 @@ class FileGalLib extends TikiLib
 
 		return true;
 	}
-	function moveAllWikiUpToFgal($fgalId, &$errors, &$feedbacks)
-	{
+	function moveAllWikiUpToFgal($fgalId, &$errors, &$feedbacks) {
 		$tikilib = TikiLib::lib('tiki');
 		
 		$maxRecords = 100;
@@ -3609,8 +3488,7 @@ class FileGalLib extends TikiLib
 			}
 		}
 	}
-	function moveWikiUpToFgal($page_info, $fgalId, &$errors, &$feedbacks)
-	{
+	function moveWikiUpToFgal($page_info, $fgalId, &$errors, &$feedbacks) {
 		global $user;
 		$tikilib = TikiLib::lib('tiki');
 		include_once('lib/mime/mimelib.php');

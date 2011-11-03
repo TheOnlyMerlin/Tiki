@@ -67,13 +67,6 @@ function wikiplugin_memberpayment_info() {
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
-			'freeperiods' => array(
-				'required' => false,
-				'name' => tra('Give specified numbers of free periods'),
-				'description' => tra('Give specified numbers of free periods, the first one could be prorated, in addition to those bought'),
-				'filter' => 'int',
-				'default' => 0,
-			),
 		),
 	);
 }
@@ -117,21 +110,7 @@ function wikiplugin_memberpayment( $data, $params, $offset ) {
 				}	
 			}
 		}
-		
-		// setup free period display
-		if (!empty($params['freeperiods'])) {
-			if (isset($extend_until_info['ratio_prorated_first_period']) && $extend_until_info['ratio_prorated_first_period'] < 1) {
-				$smarty->assign('wp_member_freeperiods', $params['freeperiods'] - 1);
-				$smarty->assign('wp_member_freeprorated', 1);
-			} else {
-				$smarty->assign('wp_member_freeperiods', $params['freeperiods']);
-				$smarty->assign('wp_member_freeprorated', 0);
-			}
-		} else {
-			$smarty->assign('wp_member_freeperiods', 0);
-			$smarty->assign('wp_member_freeprorated', 0);
-		}
-		
+
 		$smarty->assign('wp_member_requestpending', 'n');
         $smarty->assign('wp_member_paymentid', 0);
 		if (isset($params['currentuser']) && $params['currentuser'] == 'y' && !empty($params['preventdoublerequest']) && $params['preventdoublerequest'] == 'y') {
@@ -143,7 +122,7 @@ function wikiplugin_memberpayment( $data, $params, $offset ) {
 			}
 		}
 		
-		if ( isset($_POST['wp_member_offset']) && $_POST['wp_member_offset'] == $offset && !empty($_POST['wp_member_periods'])) {
+		if ( isset($_POST['wp_member_offset']) && $_POST['wp_member_offset'] == $offset ) {
 			$users = $params['currentuser'] == 'y'? array($user): explode( '|', $_POST['wp_member_users'] );
 			$users = array_map( 'trim', $users );
 			$users = array_filter( $users, array( $userlib, 'user_exists' ) );
@@ -159,7 +138,7 @@ function wikiplugin_memberpayment( $data, $params, $offset ) {
 					}
 				}
 			}
-			$periods = (int) $_POST['wp_member_periods'];
+			$periods = max( 1, (int) $_POST['wp_member_periods'] );
 
 			if ( count($users) == 1 ) {
 				$desc = tr('Membership to %0 for %1 (x%2)', $params['group'], reset( $users ), $periods );
@@ -169,15 +148,12 @@ function wikiplugin_memberpayment( $data, $params, $offset ) {
 
 			$cost = round( count($users) * $periods * $params['price'], 2 );
 			// reduce cost due to prorated amount if applicable
-			if (empty($params['freeperiods']) && $info['anniversary'] > '') {
+			if ($info['anniversary'] > '') {
 				foreach ($users as $u) {
 					$extend_until_info = $userlib->get_extend_until_info($u, $params['group'], $periods);
 					$cost = $cost - (1 - $extend_until_info['ratio_prorated_first_period']) * $params['price'];
 				}
 				$cost = round( $cost, 2 );
-			} elseif ($periods && !empty($params['freeperiods'])) { 
-				// give free periods (purchase of at least 1 full real period required)
-				$periods += $params['freeperiods'];
 			}
 
 			$id = $paymentlib->request_payment( $desc, $cost, $prefs['payment_default_delay'] );

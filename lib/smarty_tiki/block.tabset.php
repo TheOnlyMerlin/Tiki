@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -15,7 +15,7 @@
  * params: name (optional but unique per page if set)
  * params: toggle=y on n default
  *
- * usage:
+ * usage: 
  * \code
  *	{tabset name='tabs}
  * 		{tab name='tab1'}tab content{/tab}
@@ -26,7 +26,7 @@
  */
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
@@ -39,7 +39,7 @@ function smarty_block_tabset($params, $content, $smarty, &$repeat)
 		$params['toggle'] = 'n';
 	}
 	if ( $repeat ) {
-		// opening
+		// opening 
 		if (!is_array($smarty_tabset)) {
 			$smarty_tabset = array();
 		}
@@ -90,7 +90,7 @@ function smarty_block_tabset($params, $content, $smarty, &$repeat)
 				}
 				$button_params['_auto_args']='*';
 				$button_params['_onclick'] = "setCookie('$smarty_tabset_name','".($cookietab == 'n' ? 1 : 'n' )."', 'tabs') ;";
-				$notabs = smarty_function_button($button_params, $smarty);
+				$notabs = smarty_function_button($button_params,$smarty);
 				$notabs = "<div class='tabstoggle floatright'>$notabs</div>";
 				$content_class = '';
 			} else {

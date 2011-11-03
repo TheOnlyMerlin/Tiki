@@ -242,9 +242,6 @@ class TikiLib extends TikiDb_Bridge
 		case 'scorm':
 			require_once 'lib/filegals/scormlib.php';
 			return self::$libraries[$name] = new ScormLib;
-		case 'mod':
-			global $modlib; require_once 'lib/modules/modlib.php';
-			return self::$libraries[$name] = $modlib;
 		}
 	}
 
@@ -1677,7 +1674,7 @@ class TikiLib extends TikiDb_Bridge
 
 		// In other cases, we look in db
 		$id = $this->table('users_users')->fetchOne('userId', array('login' => $u));
-		$id = ($id === false) ? -1 : $id;
+		$id = ($id === NULL) ? -1 : $id;
 		if ( $current ) $_SESSION['u_info']['id'] = $id;
 		return $id;
 	}
@@ -3880,12 +3877,12 @@ class TikiLib extends TikiDb_Bridge
 		);
 
 		// Update HTML wanted links when wysiwyg is in use - this is not an elegant fix
-		// but will do for now until the "use wiki syntax in WYSIWYG" feature is ready
+		// but will do for now until the "use wiki syntax in WYSIWYG" feature is ready 
 		if ($prefs['feature_wysiwyg'] == 'y' && $prefs['wysiwyg_htmltowiki'] != 'y') {
 			$wikilib = TikiLib::lib('wiki');
 			$temppage = md5($this->now . $name);
-			$wikilib->wiki_rename_page($name, $temppage, false);
-			$wikilib->wiki_rename_page($temppage, $name, false);
+			$wikilib->wiki_rename_page($name, $temppage);
+			$wikilib->wiki_rename_page($temppage, $name);
 		}
 		
 		return true;
@@ -4882,11 +4879,7 @@ class TikiLib extends TikiDb_Bridge
 	{
 		global $tikiroot;
 
-		if (preg_match('/^http(s?):/', $relative)) {
-			$base = $relative;
-		} else {
-			$base = $this->httpPrefix() . $tikiroot . $relative;
-		}
+		$base = $this->httpPrefix() . $tikiroot . $relative;
 
 		if ( count($args) ) {
 			$base .= '?';
