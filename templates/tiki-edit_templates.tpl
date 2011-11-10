@@ -1,4 +1,4 @@
-{if isset($template)}
+{if $template}
 	{title help="Edit+Templates" url="tiki-edit_templates.php?mode=listing&template=$template"}
 		{if $prefs.feature_edit_templates ne 'y' or $tiki_p_edit_templates ne 'y'}
 			{tr}View template:{/tr}

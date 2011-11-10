@@ -15,7 +15,6 @@ abstract class Connect_Abstract
 		'gmap_key',
 		'recaptcha_pubkey',
 		'recaptcha_privkey',
-		'registerPasscode',
 	);
 
 	// preferences that we should ask to collect

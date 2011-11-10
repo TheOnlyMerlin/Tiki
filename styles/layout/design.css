@@ -346,12 +346,12 @@ a.flip:hover,
 	background: #eee;
 	color: #000;
 }
-
-.box-share > div {
+	
+#site_report {
 	text-align: center;
 }
 
-.site_report a {
+#site_report a {
 	border-left: 1px solid #696969;
 	border-right: 1px solid #696969;
 	padding: 0 5px;
@@ -667,6 +667,20 @@ p.editdate {
 
 [class].wikitext .fancylist li p {
 	margin-left: -3px;
+}
+
+/* wikiplugin quote */
+.quoteheader {
+	background : url('images/quoteleft.gif') no-repeat;
+	padding-left:50px;
+	height:35px;
+}
+
+.quotebody {
+	margin-left:35px;
+	padding-left:10px;
+        font-style: italic;
+        border-left: 2px solid #D3D3D3;
 }
 
 /* wikiplugin remarksbox */

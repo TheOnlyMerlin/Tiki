@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -12,7 +12,7 @@
  */
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
@@ -53,8 +53,8 @@ function smarty_modifier_escape($string, $esc_type = 'html', $char_set = 'UTF-8'
             return rawurlencode($string);
 
         case 'urlpathinfo':
-            return str_replace('%2F', '/', rawurlencode($string));
-
+            return str_replace('%2F','/',rawurlencode($string));
+            
         case 'quotes':
             // escape unescaped single quotes
             return preg_replace("%(?<!\\\\)'%", "\\'", $string);
@@ -66,7 +66,7 @@ function smarty_modifier_escape($string, $esc_type = 'html', $char_set = 'UTF-8'
                 $return .= '%' . bin2hex($string[$x]);
             }
             return $return;
-
+            
         case 'hexentity':
             $return = '';
             for ($x=0, $x_strlen_string = strlen($string); $x < $x_strlen_string; $x++) {
@@ -83,19 +83,19 @@ function smarty_modifier_escape($string, $esc_type = 'html', $char_set = 'UTF-8'
 
         case 'javascript':
             // escape quotes and backslashes, newlines, etc.
-            return strtr($string, array('\\'=>'\\\\', "'"=>"\\'", '"'=>'\\"', "\r"=>'\\r', "\n"=>'\\n', '</'=>'<\/'));
-
+            return strtr($string, array('\\'=>'\\\\',"'"=>"\\'",'"'=>'\\"',"\r"=>'\\r',"\n"=>'\\n','</'=>'<\/'));
+            
         case 'mail':
             // safe way to display e-mail address on a web page
-            return str_replace(array('@', '.'), array(' [AT] ', ' [DOT] '), $string);
-
+            return str_replace(array('@', '.'),array(' [AT] ', ' [DOT] '), $string);
+            
         case 'nonstd':
            // escape non-standard chars, such as ms document quotes
            $_res = '';
            for($_i = 0, $_len = strlen($string); $_i < $_len; $_i++) {
                $_ord = ord(substr($string, $_i, 1));
                // non-standard char, escape it
-               if ($_ord >= 126) {
+               if ($_ord >= 126){
                    $_res .= '&#' . $_ord . ';';
                }
                else {

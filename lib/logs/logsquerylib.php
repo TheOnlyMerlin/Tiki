@@ -104,24 +104,6 @@ class LogsQueryLib
 			->id($id);
 	}
 	
-	static function listTypes() {
-		global $tikilib;
-		$result = array();
-		foreach($tikilib->fetchAll("SELECT objectType FROM tiki_actionlog GROUP By objectType") as $row) {
-			$result[] = $row['objectType'];
-		}
-		return $result;
-	}
-	
-	static function listActions() {
-		global $tikilib;
-		$result = array();
-		foreach($tikilib->fetchAll("SELECT action FROM tiki_actionlog GROUP By action") as $row) {
-			$result[] = $row['action'];
-		}
-		return $result;
-	}
-	
 	static function url($id = "") {
 		return LogsQueryLib::type("url")
 			->id($id);
@@ -181,57 +163,6 @@ class LogsQueryLib
 		return $this;
 	}
 	
-	function countByDateFilterId($ids = array()) {
-		global $tikilib;
-		
-		$this->countByDate();
-
-		$result = array();
-		
-		foreach($ids as $id) {
-			foreach($this->id($id)->fetchAll() as $log) {
-				if (empty($result[$log['date']])) $result[$log['date']] = 0;
-				$result[$log['date']] += $log['count'];
-			}
-		}
-		
-		return $result;
-	}
-	
-	function countUsersFilterId($ids = array()) {
-		global $tikilib;
-		
-		$this->groupType = "";
-
-		$result = array();
-		
-		foreach($ids as $id) {
-			foreach($this->id($id)->fetchAll() as $log) {
-				if (empty($result[$log['user']])) $result[$log['user']] = 0;
-				
-				$result[$log['user']]++;
-			}
-		}
-		
-		return $result;
-	}
-	
-	function countUsersIPFilterId($ids = array()) {
-		global $tikilib;
-		
-		$this->groupType = "";
-
-		$result = array();
-		
-		foreach($ids as $id) {
-			foreach($this->id($id)->fetchAll() as $log) {
-				$result[json_encode(array("ip"=>$log['ip'],"user"=>$log['user']))]++;
-			}
-		}
-		
-		return $result;
-	}
-	
 	function fetchAll() {
 		global $tikilib;
 		
@@ -272,7 +203,7 @@ class LogsQueryLib
 				: ""
 			)."
 		";
-
+		
 		$params = array($this->type);
 		
 		if (!empty($this->id)) $params[] = $this->id;

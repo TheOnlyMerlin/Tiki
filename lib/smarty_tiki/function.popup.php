@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -22,14 +22,14 @@
  * @param    array
  * @param    Smarty
  * @return   string now formatted to use convertOverlib() in tiki-jquery.js
- *
+ * 
  * params still relevant:
- *
+ * 
  *     text        Required: the text/html to display in the popup window
  *     trigger     'onMouseOver' or 'onClick' (onMouseOver default)
  *     sticky      false/true
  *     width       in pixels?
- *     fullhtml
+ *     fullhtml    
  */
 function smarty_function_popup($params, $smarty)
 {
@@ -48,7 +48,7 @@ function smarty_function_popup($params, $smarty)
             case 'caption':
             case 'closetext':
             case 'status':
-                $append .= ',\'' . strtoupper($_key) . "=" . str_replace("'", "\'", $_value) . "'";
+                $append .= ',\'' . strtoupper($_key) . "=" . str_replace("'","\'",$_value) . "'";
                 break;
 
             case 'fgcolor':

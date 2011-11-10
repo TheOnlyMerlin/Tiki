@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -21,14 +21,14 @@
  */
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
 
 function smarty_block_textarea($params, $content, $smarty, $repeat)
 {
-	global $prefs, $headerlib, $smarty, $is_html;
+	global $prefs, $headerlib, $smarty, $disable_wysiwyg_html;
 
 	if ( $repeat ) return;
 
@@ -77,6 +77,9 @@ function smarty_block_textarea($params, $content, $smarty, $repeat)
 	$html = '';
 	$html .= '<input type="hidden" name="mode_wysiwyg" value="" /><input type="hidden" name="mode_normal" value="" />';
 
+	// setup for wysiwyg editing (introduced for wysiwyg_htmltowiki)  
+	$html .= "<input type=\"hidden\" name=\"disable_wysiwyg_html\" value=\"$disable_wysiwyg_html\" />";
+	
 	$auto_save_referrer = '';
 	$auto_save_warning = '';
 	$as_id = $params['id'];
@@ -102,8 +105,8 @@ function smarty_block_textarea($params, $content, $smarty, $repeat)
 		if (empty($_REQUEST['autosave'])) {
 			$_REQUEST['autosave'] = 'n';
 		}
-		if (has_autosave($as_id, $auto_save_referrer)) {		//  and $params['preview'] == 0 -  why not?
-			$auto_saved = str_replace("\n", "\r\n", get_autosave($as_id, $auto_save_referrer));
+		if (has_autosave($as_id, $auto_save_referrer)) {		//  and $params['preview'] == 0 -  why not?  
+			$auto_saved = str_replace("\n","\r\n", get_autosave($as_id, $auto_save_referrer));
 			if ( strcmp($auto_saved, $content) === 0 ) {
 				$auto_saved = '';
 			}
@@ -154,7 +157,7 @@ function smarty_block_textarea($params, $content, $smarty, $repeat)
 		//// for js debugging - copy _source from ckeditor distribution to libs/ckeditor to use
 		//// note, this breaks ajax page load via wikitopline edit icon
 		//$headerlib->add_jsfile('lib/ckeditor/ckeditor_source.js');
-		$headerlib->add_jsfile('lib/ckeditor/ckeditor.js', 0 , true);
+		$headerlib->add_jsfile('lib/ckeditor/ckeditor.js',0 , true);
 		$headerlib->add_jsfile('lib/ckeditor/adapters/jquery.js', 0, true);
 		$headerlib->add_jsfile('lib/ckeditor_tiki/tikilink_dialog.js');
 	
@@ -164,7 +167,7 @@ function smarty_block_textarea($params, $content, $smarty, $repeat)
 		$cktools = substr($cktools, 1, strlen($cktools) - 2);	// remove surrouding [ & ]
 		$cktools = str_replace(']],[[', '],"/",[', $cktools);	// add new row chars - done here so as not to break existing f/ck
 		
-		$ckeformattags = ToolbarCombos::getFormatTags($is_html ? 'html' : 'wiki');
+		$ckeformattags = $disable_wysiwyg_html ? ToolbarCombos::getFormatTags('wiki') : ToolbarCombos::getFormatTags('html');
 		
 		$html .= '<input type="hidden" name="wysiwyg" value="y" />';
 		$headerlib->add_jq_onready('
@@ -175,7 +178,8 @@ window.CKEDITOR.plugins.addExternal( "tikiplugin", "'.$tikiroot.'lib/ckeditor_ti
 window.CKEDITOR.config.ajaxAutoSaveTargetUrl = "'.$tikiroot.'tiki-auto_save.php";	// URL to post to (also used for plugin processing)
 ');	// before all
 		
-		if (!$is_html) {
+		global $wysiwyg_wiki;
+		if ($wysiwyg_wiki) {
 			$headerlib->add_jq_onready('
 window.CKEDITOR.config.extraPlugins += (window.CKEDITOR.config.extraPlugins ? ",tikiwiki" : "tikiwiki" );
 window.CKEDITOR.plugins.addExternal( "tikiwiki", "'.$tikiroot.'lib/ckeditor_tiki/plugins/tikiwiki/");
@@ -270,7 +274,7 @@ function CKeditor_OnComplete() {
 		if ( $textarea_attributes != '' ) {
 			$smarty->assign('textarea_attributes', $textarea_attributes);
 		}
-		$smarty->assignByRef('textareadata', htmlspecialchars($content));
+		$smarty->assignByRef('pagedata', htmlspecialchars($content));
 		$html .= $smarty->fetch('wiki_edit.tpl');
 
 		$html .= "\n".'<input type="hidden" name="wysiwyg" value="n" />';

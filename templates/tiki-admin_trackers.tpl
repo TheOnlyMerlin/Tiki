@@ -58,11 +58,6 @@
 					{else}
 						<a title="{tr}Permissions{/tr}" class="link" href="tiki-objectpermissions.php?objectName={$tracker.name|escape:"url"}&amp;objectType=tracker&amp;permType=trackers&amp;objectId={$tracker.trackerId}">{icon _id='key' alt="{tr}Permissions{/tr}"}</a>
 					{/if}
-					{if $tracker.items > 0}
-						<a title="{tr}Clear{/tr}" class="link clear confirm-prompt" href="{service controller=tracker action=clear trackerId=$tracker.trackerId}">{icon _id='bin' alt="{tr}Clear{/tr}"}</a>
-					{else}
-						{icon _id='bin_empty' alt="{tr}Clear{/tr}"}
-					{/if}
 					<a title="{tr}Delete{/tr}" class="link remove confirm-prompt" href="{service controller=tracker action=remove trackerId=$tracker.trackerId}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>
 				</td>
 			</tr>
@@ -83,12 +78,6 @@
 			message: "{tr}Do you really remove this tracker?{/tr}",
 			success: function (data) {
 				$(this).closest('tr').remove();
-			}
-		});
-		$('.clear.confirm-prompt').requireConfirm({
-			message: "{tr}Do you really want to clear all the items from this tracker? (N.B. there is no undo and notifications will not be sent){/tr}",
-			success: function (data) {
-				history.go(0);	// reload
 			}
 		});
 		$('.tablename.dialog').click(function () {
@@ -165,7 +154,7 @@
 	{/jq}
 {/tab}
 
-{tab name="{tr}Duplicate/Import Tracker{/tr}"}
+{tab name="{tr}Duplicate Tracker{/tr}"}
 {* --- tab with raw form --- *}
 	<h2>{tr}Duplicate Tracker{/tr}</h2>
 
@@ -214,7 +203,7 @@
 	<form class="simple" method="post" action="{service controller=tracker action=import}">
 		<label>
 			{tr}Raw data{/tr}
-			<textarea name="raw" rows="20"></textarea>
+			<textarea name="raw"></textarea>
 		</label>
 		<label>
 			<input type="checkbox" name="preserve" value="1"/>

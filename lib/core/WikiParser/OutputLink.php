@@ -55,7 +55,7 @@ class WikiParser_OutputLink
 		$this->anchor = $anchor;
 	}
 
-	function getHtml($ck_editor = false) {
+	function getHtml() {
 		$page = $this->identifier;
 		$description = $this->identifier;
 		if ( $this->description ) {
@@ -67,7 +67,7 @@ class WikiParser_OutputLink
 				'href' => $link . $this->anchor,
 				'class' => $class,
 			) );
-		} elseif ( ($info = $this->findWikiPage( $page )) || $ck_editor ) {
+		} elseif ( $info = $this->findWikiPage( $page ) ) {
 			if (!empty($info['pageName'])) {
 				$page = $info['pageName'];
 			}
@@ -79,7 +79,7 @@ class WikiParser_OutputLink
 			return $this->outputLink( $description, array(
 				'href' => call_user_func( $this->wikiBuilder, $page ) . $this->anchor,
 				'title' => $title,
-				'class' => 'wiki wiki_page',
+				'class' => 'wiki',
 			) );
 		} else {
 			return $description . $this->outputLink( '?', array(
@@ -129,7 +129,7 @@ class WikiParser_OutputLink
 
 				$page = $remotePage;
 				$pattern = $this->externals[$token];
-				$class = 'wiki ext_page ' . $token;
+				$class = 'wiki external ' . $token;
 				return str_replace( '$page', urlencode( $page ), $pattern );
 			}
 		}

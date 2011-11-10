@@ -1,12 +1,12 @@
 <?php
 // (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 	header("location: index.php");
 	exit;
 }
@@ -25,8 +25,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
  *  - _defaultdir: directory to use when the _id param does not include the path
  *  - _extension: Filename extension - default 'png'
  */
-function smarty_function_icon($params, $smarty)
-{
+function smarty_function_icon($params, $smarty) {
 	if ( ! is_array($params) ) $params = array();
 	global $prefs, $tc_theme, $tc_theme_option, $cachelib, $url_path, $base_url, $tikipath, $tikilib;
 
@@ -88,7 +87,7 @@ function smarty_function_icon($params, $smarty)
 		if ( ($pos = strrpos($params['_id'], '.')) !== false )
 			$icons_extension = substr($params['_id'], $pos);
 
-		$params['_id'] = preg_replace('/^' . str_replace('/', '\/', $icons_basedir) . '|' . $icons_extension.'$/', '', $params['_id']);
+		$params['_id'] = preg_replace('/^'.str_replace('/', '\/',$icons_basedir).'|'.$icons_extension.'$/', '', $params['_id']);
 	} else {
 		$icons_basedir = $basedirs[0].'/';
 	}

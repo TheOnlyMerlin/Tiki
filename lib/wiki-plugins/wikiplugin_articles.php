@@ -76,30 +76,6 @@ function wikiplugin_articles_info()
 				'filter' => 'word',
 				'default' => 'publishDate_desc'
 			),
-			'order' => array(
-				'required' => false,
-				'name' => tra('Specific order'),
-				'description' => tra('List of ArticleId that must appear in this order if present'),
-				'filter' => 'digits',
-				'separator' => '|',
-				'default' => ''
-			),
-			'articleId' => array(
-				'required' => false,
-				'name' => tra('Only these articles'),
-				'description' => tra('List of ArticleId to display separated by |'),
-				'filter' => 'digits',
-				'separator' => '|',
-				'default' => ''
-			),
-			'notArticleId' => array(
-				'required' => false,
-				'name' => tra('Not these articles'),
-				'description' => tra('List of ArticleId that can not be displayed separated by |'),
-				'filter' => 'digits',
-				'separator' => '|',
-				'default' => ''
-			),
 			'quiet' => array(
 				'required' => false,
 				'name' => tra('Quiet'),
@@ -324,12 +300,6 @@ function wikiplugin_articles($data, $params)
 	if (!empty($translationOrphan)) {
 		$filter['translationOrphan'] = $translationOrphan;
 	}
-	if (!empty($articleId)) {
-		$filter['articleId'] = $articleId;
-	}
-	if (!empty($notArticleId)) {
-		$filter['notArticleId'] = $notArticleId;
-	}
 	
 	include_once("lib/comments/commentslib.php");
 	$commentslib = new Comments($dbTiki);
@@ -377,25 +347,8 @@ function wikiplugin_articles($data, $params)
 		$smarty->assign_by_ref('offset', $start);
 		$smarty->assign_by_ref('cant', $listpages['cant']);
 	}
-	if (!empty($order)) {
-		foreach ($listpages['data'] as $i=>$article) {
-			$memo[$article['articleId']] = $i;
-		}
-		foreach ($order as $articleId) {
-			if (isset($memo[$articleId])) {
-				$list[] = $listpages['data'][$memo[$articleId]];
-			}
-		}
-		foreach ($listpages['data'] as $i=>$article) {
-			if (!in_array($article['articleId'], $order)) {
-				$list[] = $article;
-			}
-		}
-		$smarty->assign_by_ref('listpages', $list);
-	} else {
-		$smarty->assign_by_ref('listpages', $listpages["data"]);
-	}
 	$smarty->assign('usePagination', $usePagination);
+	$smarty->assign_by_ref('listpages', $listpages["data"]);
 	$smarty->assign_by_ref('actions', $actions);
 
 	if (isset($titleonly) && $titleonly == 'y') {

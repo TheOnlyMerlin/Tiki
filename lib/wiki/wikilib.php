@@ -162,7 +162,7 @@ class WikiLib extends TikiLib
 
 	// This method renames a wiki page
 	// If you think this is easy you are very very wrong
-	function wiki_rename_page($oldName, $newName, $renameHome = true) {
+	function wiki_rename_page($oldName, $newName) {
 		global $prefs, $tikilib;
 		// if page already exists, stop here
 		$newName = trim($newName);
@@ -287,21 +287,13 @@ class WikiLib extends TikiLib
 
 		$this->rename_object( 'wiki page', $oldName, $newName );
 
-		// update categories if new name has a category default
-		$categlib = TikiLib::lib('categ');
-		$categories = $categlib->get_object_categories('wiki page', $newName);
-		$info = $this->get_page_info($newName);
-		$categlib->update_object_categories($categories, $newName, 'wiki page', $info['description'], $newName, $newcathref);
-
 		$query = "update `tiki_wiki_attachments` set `page`=? where `page`=?";
 		$this->query($query, array( $newName, $oldName ) );
 
 		// group home page
-		if ($renameHomes) {
-			$query = "update `users_groups` set `groupHome`=? where `groupHome`=?";
-			$this->query($query, array( $newName, $oldName ) );
-		}
-		
+		$query = "update `users_groups` set `groupHome`=? where `groupHome`=?";
+		$this->query($query, array( $newName, $oldName ) );
+
 		//breadcrumb
 		if (isset($_SESSION["breadCrumb"]) && in_array($oldName, $_SESSION["breadCrumb"])) {
 			$pos = array_search($oldName, $_SESSION["breadCrumb"]);
@@ -343,7 +335,7 @@ class WikiLib extends TikiLib
 		require_once('lib/search/refresh-functions.php');
 		refresh_index('pages', $newName);
 
-		if ($renameHomes && $prefs['wikiHomePage'] == $oldName) {
+		if ($prefs['wikiHomePage'] == $oldName) {
 			$tikilib->set_preference('wikiHomePage', $newName);
 		}
 		if ($prefs['feature_trackers'] == 'y') {

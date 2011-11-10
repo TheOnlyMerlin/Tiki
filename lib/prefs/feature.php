@@ -2178,18 +2178,7 @@ function prefs_feature_list($partial = false) {
 		'feature_hotwords_nw' => array(
 			'name' => tra('Open Hotwords in new window'),
 			'type' => 'flag',
-			'dependencies' => array(
-				'feature_hotwords',
-			),
 			'default' => 'n',
-		),
-		'feature_hotwords_sep' => array(
-			'name' => tra('Characters that limit a hotword'),
-			'type' => 'text',
-			'dependencies' => array(
-				'feature_hotwords',
-			),
-			'default' => ' \n\t\r\,\;\(\)\.\:\[\]\{\}\!\?\"',
 		),
 		'feature_use_quoteplugin' => array(
 			'name' => tra('Use Quote plugin rather than ">" for quoting'),
@@ -2326,7 +2315,6 @@ function prefs_feature_list($partial = false) {
 		'feature_fixed_width' => array(
 			'name' => tra('Fixed width'),
 			'type' => 'flag',
-			'tags' => array('basic'),
 			'description' => tra('Constrains the width of the site.'),
 			'default' => 'y',
 		),
@@ -2447,16 +2435,6 @@ function prefs_feature_list($partial = false) {
 			),
 			'admin' => 'blogs',
 			'perspective' => false,			
-		),
-		'feature_time_sheet' => array(
-			'name' => tra('Time Sheet'),
-			'type' => 'flag',
-			'help' => 'TimeSheet',
-			'keywords' => 'timesheet time sheet project',
-			'description' => tra('A project time manager'),
-			'default' => 'n',
-			'warning' => tra('Experimental'),
-			'tags' => array('experimental'),
 		),
 	);
 }

@@ -21,9 +21,9 @@ class HeaderLib
 	var $css;
 	var $rssfeeds;
 	var $metatags;
+	var $hasDoneOutput;
 	var $minified;
 	var $wysiwyg_parsing;
-	var $lockMinifiedJs;
 
 	function __construct() {
 		$this->title = '';
@@ -35,9 +35,9 @@ class HeaderLib
 		$this->css = array();
 		$this->rssfeeds = array();
 		$this->metatags = array();
+		$this->hasDoneOutput = false;
 		$this->minified = array();
 		$this->wysiwyg_parsing = false;
-		$this->lockMinifiedJs = false;
 	}
 
 	function convert_cdn( $file, $type = null ) {
@@ -58,15 +58,7 @@ class HeaderLib
 		$this->title = urlencode($string);
 	}
 
-	function add_jsfile_dependancy($file) {
-		$this->add_jsfile($file, -1);
-	}
-	
 	function add_jsfile($file,$rank=0,$minified=false) {
-		if ($this->lockMinifiedJs == true) {
-			$rank = 'external';
-		}
-		
 		if (!$this->wysiwyg_parsing && (empty($this->jsfiles[$rank]) or !in_array($file,$this->jsfiles[$rank]))) {
 			$this->jsfiles[$rank][] = $file;
 			if ($minified) {
@@ -79,11 +71,21 @@ class HeaderLib
 		if (!$this->wysiwyg_parsing && (empty($this->js_config[$rank]) or !in_array($script,$this->js_config[$rank]))) {
 			$this->js_config[$rank][] = $script;
 		}
+		if ($this->hasDoneOutput) {	// if called after smarty parse header.tpl return the script so the caller can do something with it
+			return $this->wrap_js($script);
+		} else {
+			return '';
+		}
 	}
 
 	function add_js($script,$rank=0) {
 		if (!$this->wysiwyg_parsing && (empty($this->js[$rank]) or !in_array($script,$this->js[$rank]))) {
 			$this->js[$rank][] = $script;
+		}
+		if ($this->hasDoneOutput) {	// if called after smarty parse header.tpl return the script so the caller can do something with it
+			return $this->wrap_js($script);
+		} else {
+			return '';
 		}
 	}
 
@@ -96,6 +98,11 @@ class HeaderLib
 	function add_jq_onready($script,$rank=0) {
 		if (!$this->wysiwyg_parsing && (empty($this->jq_onready[$rank]) or !in_array($script,$this->jq_onready[$rank]))) {
 			$this->jq_onready[$rank][] = $script;
+		}
+		if ($this->hasDoneOutput) {	// if called after smarty parse header.tpl return the script so the caller can do something with it
+			return $this->wrap_js("\$(document).ready(function(){".$script."});\n");
+		} else {
+			return '';
 		}
 	}
 
@@ -204,6 +211,7 @@ class HeaderLib
 			}
 			$back.= "\n";
 		}
+		$this->hasDoneOutput = true;
 		return $back;
 	}
 
@@ -235,19 +243,9 @@ class HeaderLib
 		}
 		return $back;
 	}
-	
-	public function lockMinifiedJs() {
-		$this->lockMinifiedJs = true; 
-	}
-	
+
 	public function getMinifiedJs() {
 		global $tikidomainslash;
-		
-		$dependancy = array();
-		if ( isset( $this->jsfiles[-1] ) ) {
-			$dependancy = $this->jsfiles[-1];
-			unset( $this->jsfiles[-1] );
-		}
 		
 		$dynamic = array();
 		if ( isset( $this->jsfiles['dynamic'] ) ) {
@@ -272,7 +270,6 @@ class HeaderLib
 				foreach( $files as $f ) {
 					$content = file_get_contents( $f );
 					if ( ! preg_match('/min\.js$/', $f) and $this->minified[$f] !== true) {
-						set_time_limit(600);
 						$minified .= JSMin::minify( $content );
 					} else {
 						$minified .= "\n// skipping minification for $f \n" . $content;
@@ -286,7 +283,6 @@ class HeaderLib
 
 		$minified_files[] = $file;
 		return array(
-			'dependancy'=> $dependancy,
 			'external' => $external,
 			'dynamic' => $dynamic,
 			$minified_files,
@@ -438,6 +434,11 @@ class HeaderLib
 		return "<script type=\"text/javascript\">\n<!--//--><![CDATA[//><!--\n".$inJs."//--><!]]>\n</script>\n";
 	}
 
+	function hasOutput() {
+		return $this->hasDoneOutput;
+	}
+	
+	
 	/**
 	 * Get JavaScript tags from html source - used for AJAX responses and cached pages
 	 * 

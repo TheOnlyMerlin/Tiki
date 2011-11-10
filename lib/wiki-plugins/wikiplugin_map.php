@@ -68,19 +68,19 @@ function wikiplugin_map($data, $params) {
 
 	require_once 'lib/smarty_tiki/modifier.escape.php';
 
-	$width = '100%';
+	$width = '400';
 	if (isset($params['width'])) {
-		$width = intval($params['width']) . 'px';
+		$width = (int) $params['width'];
 	}
 
-	$height = '100%';
+	$height = '300';
 	if (isset($params['height'])) {
-		$height = intval($params['height']) . 'px';
+		$height = (int) $params['height'];
 	}
 
 	TikiLib::lib('header')->add_map();
 	$scope = smarty_modifier_escape(wp_map_getscope($params));
-	return "<div class=\"map-container\" data-marker-filter=\"$scope\" style=\"width: {$width}; height: {$height};\"></div>";
+	return "<div class=\"map-container\" data-marker-filter=\"$scope\" style=\"width: {$width}px; height: {$height}px;\"></div>";
 }
 
 function wp_map_getscope($params)

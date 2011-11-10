@@ -74,7 +74,7 @@ function wikiplugin_module_info() {
 			'max' => array(
 				'required' => false,
 				'name' => tra('Max'),
-				'description' => tra('Number of rows (default: 10)'),
+				'description' => 'Number of rows (default: 10)',
 				'default' => 10,
 				'advanced' => true,
 			),

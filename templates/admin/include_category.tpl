@@ -4,11 +4,6 @@
 	{button href="tiki-admin_categories.php" _text="{tr}Administer categories{/tr}"}
 	{button href="tiki-edit_categories.php" _text="{tr}Organize Objects{/tr}" _title="{tr}Organize Objects{/tr}"}	
 </div>
-{if !empty($feedbacks) || !empty($assignWikiCategories)}
-	{remarksbox type="feedback" title="{tr}Feedback{/tr}"}
-		{tr}Ok{/tr}
-	{/remarksbox}
-{/if}
 
 <form action="tiki-admin.php?page=category" method="post">
 	<input type="hidden" name="categorysetup" />
@@ -58,7 +53,6 @@
 		</div>
 		{preference name=category_jail}
 		{preference name=category_defaults}
-		{if !empty($prefs.category_defaults)}{button href="tiki-admin.php?page=category&amp;assignWikiCategories=y" _text="{tr}Re-apply the last saved category defaults to the wiki pages{/tr}"}{/if}
 		{preference name=category_autogeocode_within}
 		{preference name=category_autogeocode_replace}
 		{preference name=category_autogeocode_fudge}
