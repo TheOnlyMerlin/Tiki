@@ -42,6 +42,9 @@
   <parameter name="SetAclParameter12" description="Sets the ACL on modules/cache " defaultValue="{ApplicationPath}/modules/cache" tags="Hidden">
     <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/modules/cache$" />
   </parameter>
+  <parameter name="SetAclParameter13" description="Sets the ACL on admin" defaultValue="{ApplicationPath}/admin" tags="Hidden">
+   <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/admin$" />
+  </parameter>
 
   <!-- Database Parameters -->
 
