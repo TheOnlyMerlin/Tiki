@@ -1,4 +1,4 @@
-{title help="Tiki+Importer"}{tr}Tiki Importer{/tr}{/title}
+{title help="Tiki+Importer"}Tiki Importer{/title}
 
 <br />
 
@@ -16,7 +16,7 @@
     {/remarksbox}
        
     <br />
-    <label for="importerClassName">{tr}Select the software to import from:{/tr}</label>
+    <label for="importerClassName">{tr}Select the software to import from{/tr}:</label>
     <form method="post" name="chooseSoftware" action="tiki-importer.php">
         <select name="importerClassName" id="importerClassName">
             <option value=""></option>
@@ -32,11 +32,11 @@
         <input type="hidden" name="importerClassName" value="{$importerClassName}"/>
         {foreach from=$importerOptions item=option}
             {if $option.type eq 'checkbox'}
-                <input type="checkbox" name="{$option.name}" id="{$option.name}"/><label for="{$option.name}">{$option.label}</label><br />
+                <input type="checkbox" name="{$option.name}" id="{$option.name}"/><label for="{$option.name}">{tr}{$option.label}{/tr}</label><br />
             {elseif $option.type eq 'text'}
-                <label>{$option.label}<input type="text" name="{$option.name}" {if isset($option.value)}value="{$option.value}"{/if}/></label><br />
+                <label>{tr}{$option.label}{/tr}: <input type="text" name="{$option.name}" {if isset($option.value)}value="{$option.value}"{/if}/></label><br />
             {elseif $option.type eq 'select'}
-		        <label for="{$option.name}">{$option.label}</label><br />
+		        <label for="{$option.name}">{tr}{$option.label}{/tr}</label><br />
 		        <select id="{$option.name}" name="{$option.name}">
 		        {foreach from=$option.options item=selectOption}
                     <option value="{$selectOption.name}">{$selectOption.label}</option>
@@ -49,43 +49,16 @@
         <input type="submit" value="{tr}Import{/tr}"/>
     </form>
 {elseif !empty($importFeedback)}
-    <h4>{tr}Congratulations! You have successful imported your data to Tiki.{/tr}</h4>
-    
-    {if isset($importFeedback.importedPages)}
-    	<p>
-	    	{if isset($importFeedback.totalPages)}
-		    	{tr _0=$importFeedback.importedPages _1=$importFeedback.totalPages}%0 pages imported from a total of %1{/tr}
-		    {else}
-		    	{tr _0=$importFeedback.importedPages}%0 pages imported{/tr}
-		    {/if}
-		    &nbsp;{tr}(you can see the list of wiki pages in your site <a href="tiki-listpages.php">here</a>).{/tr}
-		</p>
-	{/if}
-
-	{if isset($importFeedback.importedPosts)}
-       	<p>{tr _0=$importFeedback.importedPosts}%0 posts imported.{/tr}</p>
-	{/if}
-	
-	{if isset($importFeedback.importedTags)}
-       	<p>{tr _0=$importFeedback.importedTags}%0 tags imported.{/tr}</p>
-	{/if}
-	
-	{if isset($importFeedback.importedCategories)}
-       	<p>{tr _0=$importFeedback.importedCategories}%0 categories imported.{/tr}</p>
-	{/if}
+    <h4>{tr}Congratulations! You have successful imported your data to Tikiwiki.{/tr}</h4>
+    <p>{$importFeedback.importedPages} {tr}pages imported from a total of{/tr} {$importFeedback.totalPages}</p>
+    <p>{tr}You can see the list of wiki pages in your site{/tr} <a href="tiki-listpages.php">{tr}here{/tr}</a></p>
 
     {if !empty($importErrors)}
-        <br />
+        <br /><br />
         <p><b>{tr}Errors:{/tr}</b></p>
-        <textarea rows="15" cols="100" codemirror="false">{$importErrors}</textarea> 
+        <textarea rows="15" cols="100">{$importErrors}</textarea> 
     {/if}
     <br /><br />
     <p><b>{tr}Importer log:{/tr}</b></p>
-    <textarea rows="15" cols="100" codemirror="false">{$importLog}</textarea>
-    
-    {if isset($wordpressUrls)}
-    	<br /><br />
-    	<p><b>{tr}Suggested .htaccess rules:{/tr}</b></p>
-    	<textarea rows="15" cols="100" codemirror="false">{$wordpressUrls}</textarea>
-    {/if}
+    <textarea rows="15" cols="100">{$importLog}</textarea>
 {/if}

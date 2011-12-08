@@ -29,38 +29,19 @@
 			</td>
 		</tr> 
 		<tr>
-			<td><label for="destination">{tr}Destination:{/tr}</label></td>
-			<td>
-				<select id="destination" name="destination">
-					<option value="login" selected="selected">{tr}User{/tr}</option>
-					<option value="email">{tr}Email{/tr}</option>
-				</select>
-				{jq}
-				$("select[name='destination']").change(function () {
-					$("#loginrow").hide();
-					$("#emailrow").hide();
-					$("input[name='login']").attr("disabled","disabled");
-					$("input[name='email']").attr("disabled","disabled");
-					$("#" + $("select[name='destination']").val() + "row").show();
-					$("input[name='" + $("select[name='destination']").val() + "']").focus();
-					$("input[name='" + $("select[name='destination']").val() + "']").removeAttr("disabled");
-				}
-				);
-				{/jq}
-			</td>
-		</tr>
-		<tr id="loginrow">
 			<td><label for="flogin">{tr}User:{/tr}</label></td>
 			<td>
 				<input type="text" id="flogin" name="login" />
-				{autocomplete element='#flogin' type='username'}
-				<a href="#" onclick="javascript:document.getElementById('flogin').value='{$user}'" class="link">{tr}Myself{/tr}</a>
+				{jq}$("#flogin").tiki("autocomplete", "username"){/jq}
 			</td>
 		</tr>
-		<tr id="emailrow" style="display:none">
+		<tr>
 			<td><label for="femail">{tr}Email:{/tr}</label></td>        
 			<td>
 				<input type="text" id='femail' name="email" />
+				{if $admin_mail neq ''}
+					<a href="#" onclick="javascript:document.getElementById('femail').value='{$admin_mail}';document.getElementById('flogin').value='admin'" class="link">{tr}Preload Admin Account{/tr}</a>
+				{/if}
 			</td>
 		</tr> 
 		<tr>
@@ -91,25 +72,25 @@
 		{cycle print=false values="even,odd"}
 		{section name=user loop=$channels}
 			<tr class="{cycle}">
-				<td class="checkbox">
+				<td>
 					<input type="checkbox" name="checked[]" value="{$channels[user].watchtype}{$channels[user].watchId|escape}" {if $smarty.request.checked and in_array($channels[user].watchId,$smarty.request.checked)}checked="checked"{/if} />
 				</td>
-				<td class="text">{$channels[user].event}</td>
-				<td class="text">
+				<td>{$channels[user].event}</td>
+				<td>
 					{if $channels[user].url}
 						<a href="{$channels[user].url}" title="{$channels[user].title|escape}">{$channels[user].object|escape}</a>
 					{else}
 						{$channels[user].object|escape}
 					{/if}
 					</td>
-				<td class="email">
+				<td>
 					{if $channels[user].watchtype eq 'user'}
 						{$channels[user].email}
 					{else}
 						<em>{tr}Multiple{/tr}</em>
 					{/if}
 				</td>
-				<td class="text">
+				<td>
 					{if $channels[user].watchtype eq 'group'}
 						{icon _id='group'}
 					{else}
@@ -117,12 +98,10 @@
 					{/if}
 					{$channels[user].user|escape}
 				</td>
-				<td class="action">
-					<a class="link" href="{$smarty.server.PHP_SELF}?{query removeevent=$channels[user].watchId removetype=$channels[user].watchtype}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
-				</td>
+				<td><a class="link" href="{$smarty.server.PHP_SELF}?{query removeevent=$channels[user].watchId removetype=$channels[user].watchtype}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a></td>
 			</tr>
 		{sectionelse}
-         {norecords _colspan=6}
+			<tr class="odd"><td colspan="6"><b>{tr}No records found.{/tr}</b></td></tr>
 		{/section}
 	</table>
 	{if $channels}

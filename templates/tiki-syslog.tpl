@@ -3,7 +3,6 @@
 
 <div class="navbar">
 	 {button _text="{tr}Log SQL{/tr}" href="tiki-sqllog.php"}
-	 {button _text="{tr}Export through Action Log{/tr}" href="tiki-admin_actionlog.php#Report"}
 </div>
 
 {if $tikifeedback}
@@ -38,13 +37,13 @@
 {cycle values="odd,even" print=false}
 {section name=ix loop=$list}
 <tr class="{cycle}">
-<td class="id">{$list[ix].actionId}</td>
-<td class="text">{$list[ix].object|escape}</td>
-<td class="date"><span title="{$list[ix].lastModif|tiki_long_datetime}">{$list[ix].lastModif|tiki_short_datetime}</span></td>
-<td class="username">{$list[ix].user|userlink}</td>
-<td class="text" title="{$list[ix].action|escape:'html'}">{$list[ix].action|truncate:60|escape:'html'}</td>
-<td class="text">{$list[ix].ip|escape:"html"}</td>
-<td class="text"><span title="{$list[ix].client|escape:'html'}">{$list[ix].client|truncate:30:"..."|escape:'html'}</span></td>
+<td>{$list[ix].actionId}</td>
+<td>{$list[ix].object|escape}</td>
+<td><span title="{$list[ix].lastModif|tiki_long_datetime}">{$list[ix].lastModif|tiki_short_datetime}</span></td>
+<td>{$list[ix].user|userlink}</td>
+<td title="{$list[ix].action|escape:'html'}">{$list[ix].action|truncate:60|escape:'html'}</td>
+<td>{$list[ix].ip|escape:"html"}</td>
+<td><span title="{$list[ix].client|escape:'html'}">{$list[ix].client|truncate:30:"..."|escape:'html'}</span></td>
 </tr>
 {/section}
 </table>

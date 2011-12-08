@@ -1,37 +1,32 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_home_list($partial = false)
-{
+function prefs_home_list() {
 
 	return array(
 		'home_blog' => array(
 			'name' => tra('Home Blog (main blog)'),
 			'type' => 'list',
-			'options' => $partial ? array() : listblog_pref(),
-			'default' => 0,
+			'options' => listblog_pref(),
 		),
 		'home_forum' => array(
 			'name' => tra('Home Forum (main forum)'),
 			'type' => 'list',
-			'options' => $partial ? array() : listforum_pref(),
-			'default' => 0,
+			'options' => listforum_pref(),
 		),
 		'home_file_gallery' => array(
 			'name' => tra('Home File Gallery (main file gallery)'),
 			'type' => 'list',
-			'options' => $partial ? array() : listfgal_pref(),
-			'default' => 1,
+			'options' => listfgal_pref(),
 		),
 		'home_gallery' => array(
 			'name' => tra('Home Gallery (main gallery)'),
 			'type' => 'list',
-			'options' => $partial ? array() : listimgal_pref(),
-			'default' => 0,
+			'options' => listimgal_pref(),
 		),
 	);
 }
@@ -70,9 +65,9 @@ function listimgal_pref()
  */
 function listfgal_pref()
 {
-	$filegallib = TikiLib::lib('filegal');
+	global $tikilib;
 
-	$allfgals = $filegallib->list_visible_file_galleries(0, -1, 'name_desc', 'admin', '');
+	$allfgals = $tikilib->list_visible_file_galleries(0, -1, 'name_desc', 'admin', '');
 
 	$listfgals = array();
 

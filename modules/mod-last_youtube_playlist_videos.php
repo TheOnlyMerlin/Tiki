@@ -1,12 +1,7 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
@@ -25,13 +20,23 @@ Zend_Loader::loadClass('Zend_Gdata_YouTube');
 
 $data = array();
 
-if (!empty($module_params['id'])) {
+if ( !empty($module_params['id']) ) {
 	$id = $module_params['id'];
 	require_once('lib/wiki-plugins/wikiplugin_youtube.php');
 	$feedUrl = 'http://gdata.youtube.com/feeds/api/playlists/' . $id . '?orderby=published';
 	$yt = new Zend_Gdata_YouTube();
 	$yt->setMajorProtocolVersion(2);
-	$yt->setHttpClient($tikilib->get_http_client());
+
+	if ( $prefs['use_proxy'] == 'y' ) {
+		// Configure the proxy connection
+		$config = array(
+		    'adapter'    => 'Zend_Http_Client_Adapter_Proxy',
+		    'proxy_host' => $prefs['proxy_host'],
+		    'proxy_port' => $prefs['proxy_port']
+		);
+		$proxiedHttpClient = new Zend_Http_Client($feedUrl, $config);
+		$yt->setHttpClient($proxiedHttpClient);
+	}
 
 	try {
 		$playlistVideoFeed = $yt->getPlaylistVideoFeed($feedUrl);
@@ -39,8 +44,8 @@ if (!empty($module_params['id'])) {
 
 		// Prepare params for video display
 		$params = array();
-		if (isset($module_params['width'])) $params['width'] = $module_params['width'];
-		if (isset($module_params['height'])) $params['height'] = $module_params['height'];
+		if ( isset($module_params['width']) ) $params['width'] = $module_params['width'];
+		if ( isset($module_params['height']) ) $params['height'] = $module_params['height'];
 
 		// Get information from all videos from playlist
 		// Limit to $module_rows first videos if $module_rows is set
@@ -52,7 +57,7 @@ if (!empty($module_params['id'])) {
 			$data[$id]['videos'][$videoId]['description'] = $videoEntry->getVideoDescription();
 			$params['movie'] = $videoId;
 			$data[$id]['videos'][$videoId]['xhtml'] = wikiplugin_youtube('', $params);
-			if (($module_rows > 0) && ($count_videos >= $module_rows)) break;
+			if ( ($module_rows > 0) && ($count_videos >= $module_rows) ) break;
 			$count_videos++;
 		}
 

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -19,12 +19,12 @@ function tr($content) {
 	return tra( $content, '', false, array_slice( $args, 1 ) );
 }
 
-function tra($content, $lg='', $unused = false, $args = array()) {
+function tra($content, $lg='', $no_interactive = false, $args = array()) {
 	global $prefs;
 	static $languages = array();
 
 	if ($lg == '') {
-		if ( $prefs['language'] ) {
+		if( $prefs['language'] ) {
 			$lang = $prefs['language'];
 		} else {
 			$lang = $prefs['site_language'];
@@ -33,12 +33,12 @@ function tra($content, $lg='', $unused = false, $args = array()) {
 		$lang = $lg;
 	}
 
-	if ( ! isset( $languages[$lang] ) ) {
+	if( ! isset( $languages[$lang] ) ) {
 		$languages[ $lang ] = true;
 		init_language( $lang );
 	}
 
-	$out = tra_impl( $content, $lang, $args );
+	$out = tra_impl( $content, $lang, $no_interactive, $args );
 
 	record_string( $content, $out );
 
@@ -47,30 +47,19 @@ function tra($content, $lg='', $unused = false, $args = array()) {
 
 function init_language( $lg ) {
 	global $tikidomain, $prefs;
-	if (is_file("lang/$lg/language.php")) {
+	if( is_file("lang/$lg/language.php")) {
 		global ${"lang_$lg"};
 
 		$lang = array();
-		include("lang/$lg/language.php");
-		
-		// include mods language files if any
-		$files = glob("lang/$lg/language_*.php");
-		if (is_array($files)) {
-			foreach ($files as $file) {
-				require($file);
-				$lang = array_merge($lang, $lang_mod);
-			}
-		}
-
+		include_once("lang/$lg/language.php");
 		if (is_file("lang/$lg/custom.php")) {
 			include_once("lang/$lg/custom.php");
 		}
-		
 		if (!empty($tikidomain) && is_file("lang/$lg/$tikidomain/custom.php")) {
 			include_once("lang/$lg/$tikidomain/custom.php");
 		}
 
-		if ( isset( $prefs['lang_use_db'] ) && $prefs['lang_use_db'] == 'y' ) {
+		if( isset( $prefs['lang_use_db'] ) && $prefs['lang_use_db'] == 'y' ) {
 			global $tikilib;
 
 			$query = "select `source`, `tran` from `tiki_language` where `lang`=?";
@@ -85,45 +74,49 @@ function init_language( $lg ) {
 	}
 }
 
-function tra_impl($content, $lg='', $args = array()) {
+function tra_impl($content, $lg='', $no_interactive = false, $args = array()) {
 	global $prefs, $tikilib;
 
-	if (empty($content)) {
-		return '';
-	}
-	
-	global ${"lang_$lg"};
-	
-	if ($lg and isset(${"lang_$lg"}[$content])) {
-		return tr_replace( ${"lang_$lg"}[$content], $args );
-	} else {
-		// If no translation has been found and if the string ends with a punctuation,
-		//   try to translate punctuation separately (e.g. if the content is 'Login:' or 'Login :',
-		//   then it will try to translate 'Log In' and ':' separately).
-		// This should avoid duplicated strings like 'Log In' and 'Log In:' that were needed before
-		//   (because there is no space before ':' in english, but there is one in others like french)
-		$lastCharacter = $content[strlen($content) - 1];
-		if (in_array($lastCharacter, array(':', '!', ';', '.', ',', '?'))) { // Modify get_strings.php accordingly
-			$new_content = substr($content, 0, -1);
-			if ( isset(${"lang_$lg"}[$new_content]) ) {
-				return tr_replace( ${"lang_$lg"}[$new_content].( isset(${"lang_$lg"}[$lastCharacter]) ? ${"lang_$lg"}[$lastCharacter] : $lastCharacter ), $args );
+	if ($content != '') {
+		global $lang;
+		global ${"lang_$lg"};
+		if ($lg and isset(${"lang_$lg"}[$content])) {
+			return tr_replace( ${"lang_$lg"}[$content], $args );
+		} else {
+			// If no translation has been found and if the string ends with a punctuation,
+			//   try to translate punctuation separately (e.g. if the content is 'Login:' or 'Login :',
+			//   then it will try to translate 'Login' and ':' separately).
+			// This should avoid duplicated strings like 'Login' and 'Login:' that were needed before
+			//   (because there is no space before ':' in english, but there is one in others like french)
+			$punctuations = array(':', '!', ';', '.', ',', '?'); // Modify get_strings.php accordingly
+			$content_length = strlen($content);
+			foreach ( $punctuations as $p ) {
+				if ( $content[$content_length - 1] == $p ) {
+					$new_content = substr($content, 0, $content_length - 1);
+					if ( isset(${"lang_$lg"}[$new_content]) ) {
+						return tr_replace( ${"lang_$lg"}[$new_content].( isset(${"lang_$lg"}[$p]) ? ${"lang_$lg"}[$p] : $p ), $args );
+					}
+				}
 			}
 		}
 	}
 
-	if (isset($prefs['record_untranslated']) && $prefs['record_untranslated'] == 'y' && $lg != 'en' && isset($tikilib)) { // ### Trebly:B00624-01:added test on tikilib existence : on the first launch of tra tikilib is not yet set
+	if (isset($prefs['record_untranslated']) && $prefs['record_untranslated'] == 'y' && !empty($content) && $lg != 'en') {
 		$query = 'select `id` from `tiki_untranslated` where `source`=? and `lang`=?';
-      	if (!$tikilib->getOne($query, array($content,$lg))) {
-      		$query = "insert into `tiki_untranslated` (`source`,`lang`) values (?,?)";
-      		$tikilib->query($query, array($content,$lg),-1,-1,false);
-      	}
+		    // ### Trebly:B00624-01:added test on tikilib existence : on the first launch of tra tikilib is not yet set  
+        if (isset($tikilib)) {
+      		if (!$tikilib->getOne($query, array($content,$lg))) {
+      			$query = "insert into `tiki_untranslated` (`source`,`lang`) values (?,?)";
+      			$tikilib->query($query, array($content,$lg),-1,-1,false);
+      		}
+      	}	
 	}
 
 	return tr_replace( $content, $args );
 }
 
 function tr_replace( $content, $args ) {
-	if ( ! count( $args ) ) {
+	if( ! count( $args ) ) {
 		$out = $content;
 	} else {
 		$needles = array();
@@ -140,7 +133,7 @@ function tr_replace( $content, $args ) {
 
 function record_string( $original, $printed ) {
 	global $interactive_collected_strings;
-	if ( interactive_enabled() ) {
+	if( interactive_enabled() ) {
 		$interactive_collected_strings[ md5( $original . '___' . $printed ) ] = array( $original, html_entity_decode( $printed ) );
 	}
 }

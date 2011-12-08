@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -26,7 +26,7 @@ function escapechannel($channel) {
 }
 function initchannelssession($chans) {
 	$_SESSION['minichat_channels'] = array();
-	foreach ($chans as $chan) {
+	foreach($chans as $chan) {
 		$vals = explode(';', $chan);
 		$channel = escapechannel($vals[0]);
 		$_SESSION['minichat_channels'][] = $channel;
@@ -53,7 +53,7 @@ if (substr($msg, 0, 1) == '/') {
 			break;
 		}
 	}
-	foreach ($chans as $chan) {
+	foreach($chans as $chan) {
 		$vals = explode(';', $chan);
 		$channel = escapechannel($vals[0]);
 		$lastid = (int)$vals[1];

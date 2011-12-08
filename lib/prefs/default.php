@@ -1,12 +1,11 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_default_list()
-{
+function prefs_default_list() {
 	return array(
 		'default_mail_charset' => array(
 			'name' => tra('Default charset for sending mail'),
@@ -16,13 +15,11 @@ function prefs_default_list()
 				'utf-8' => tra('utf-8'),
 				'iso-8859-1' => tra('iso-8859-1'),
 			),
-			'default' =>'utf-8',
 		),
 		'default_map' => array(
 			'name' => tra('default mapfile'),
 			'type' => 'text',
 			'size' => '50',
-			'default' => '',
 		),
 		'default_wiki_diff_style' => array(
 			'name' => tra('Default diff style'),
@@ -41,7 +38,6 @@ function prefs_default_list()
 				'unidiff' => tra('Unified diff'),
 				'sideview' => tra('Side-by-side view'),
 			),
-			'default' => 'sidediff',
 		),
 		'default_rows_textarea_wiki' => array(
 			'name' => tra('Wiki'),
@@ -49,7 +45,6 @@ function prefs_default_list()
 			'size' => '3',
 			'shorthint' => tra('rows'),
 			'filter' => 'digits',
-			'default' => '20',
 		),
 		'default_rows_textarea_comment' => array(
 			'name' => tra('Default number of rows for comment box'),
@@ -57,7 +52,6 @@ function prefs_default_list()
 			'size' => '3',
 			'shorthint' => tra('rows'),
 			'filter' => 'digits',
-			'default' => '6',
 		),
 		'default_rows_textarea_forum' => array(
 			'name' => tra('Forum'),
@@ -65,7 +59,6 @@ function prefs_default_list()
 			'size' => '3',
 			'shorthint' => tra('rows'),
 			'filter' => 'digits',
-			'default' => '20',
 		),
 		'default_rows_textarea_forumthread' => array(
 			'name' => tra('Forum reply'),
@@ -73,7 +66,6 @@ function prefs_default_list()
 			'size' => '3',
 			'shorthint' => tra('rows'),
 			'filter' => 'digits',
-			'default' => '10',
 		),
 		'default_kaltura_editor' => array(
 			'name' => tra('Default Editor'),
@@ -82,7 +74,6 @@ function prefs_default_list()
 				'kse' => tra('Simple'),
 				'kae' => tra('Advanced'),
 			),
-			'default' => 'kse',
 		),
 	);
 }

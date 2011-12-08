@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -92,7 +92,7 @@ class Multilingual_MachineTranslation_GoogleTranslateWrapper
    	function __construct ($sourceLang, $targetLang, $html=true) {
    		$this->sourceLang = $sourceLang;
    		$this->targetLang = $targetLang;
-   		if ($html) {
+   		if($html) {
    			$this->markup = $this->htmlMarkup;
    		} else {
    			$this->translatingHTML = false;

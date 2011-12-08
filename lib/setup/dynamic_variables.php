@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,7 +13,7 @@ if ( isset($tiki_p_edit_dynvar) && $tiki_p_edit_dynvar == 'y' ) {
     if ( isset($_REQUEST['_dyn_update']) ) {
 		global $prefs;
 
-		if ( $prefs['feature_multilingual'] == 'y' && $prefs['wiki_dynvar_multilingual'] == 'y' && isset( $_REQUEST['page'] ) ) {
+		if( $prefs['feature_multilingual'] == 'y' && $prefs['wiki_dynvar_multilingual'] == 'y' && isset( $_REQUEST['page'] ) ) {
 			$lang = $tikilib->getOne( 'SELECT `lang` FROM `tiki_pages` WHERE `pageName` = ?', array( $_REQUEST['page'] ) );
 		} else {
 			$lang = null;

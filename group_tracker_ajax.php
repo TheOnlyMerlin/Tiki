@@ -3,11 +3,8 @@
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Id: list-tracker_field_values_ajax.php 33195 2011-03-02 17:43:40Z changi67 $
 require_once('tiki-setup.php');
-
-$access->check_feature('feature_tracker', 'feature_ajax', 'wikiplugin_tracker');
-
 include_once ('lib/wiki-plugins/wikiplugin_tracker.php');
 $json_data = array();
 $re = $userlib->get_group_info(isset($_REQUEST['chosenGroup']) ? $_REQUEST['chosenGroup'] : 'Registered');
@@ -18,6 +15,6 @@ if (!empty($re['usersTrackerId']) && !empty($re['registrationUsersFieldIds'])) {
 	$json_data['debug'] = $re;
 }
 	
-header('Content-Type: application/json');
+header( 'Content-Type: application/json' );
 
 $access->output_serialized($json_data);

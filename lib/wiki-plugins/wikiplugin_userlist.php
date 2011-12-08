@@ -1,12 +1,21 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_userlist_info()
-{
+// Displays a list of users
+// Use:
+// {USERLIST(sep=>", ",max=>10,sort=>asc|desc,layout=>table)}substring{USERLIST}
+//
+// If no pattern is given returns all users or all that contain 'substring'
+
+function wikiplugin_userlist_help() {
+        return tra("Displays a list of registered users").":<br />~np~{USERLIST(sep=>\"SEPARATOR\",max=>MAXROWS,sort=>asc|desc,layout=>table)}substring{USERLIST}~/np~";
+}
+
+function wikiplugin_userlist_info() {
 	return array(
 		'name' => tra('User List'),
 		'documentation' => 'PluginUserList',
@@ -90,53 +99,48 @@ function wikiplugin_userlist_info()
 	);
 }
 
-function wikiplugin_userlist($data, $params)
-{
-	global $tikilib, $userlib, $prefs, $tiki_p_admin, $tiki_p_admin_users, $user;
+function wikiplugin_userlist($data, $params) {
+    global $tikilib, $userlib, $prefs, $tiki_p_admin, $tiki_p_admin_users;
 
-	extract($params, EXTR_SKIP);
+    extract ($params,EXTR_SKIP);
 
-	if (!isset($sep)) $sep=', ';
-	if (!isset($max)) {
-		$numRows = -1;
-	} else {
-		$numRows = (int) $max;
-	}
+    if (!isset($sep)) $sep=', ';
+    if (!isset($max)) { $numRows = -1; } else { $numRows = (int) $max; }
 
 	$from = '';
-	if ($data) {
-		$mid = '`login` like ?';
-		$findesc = '%' . $data . '%';
-		$bindvars=array($findesc);
-	} else {
-		$mid = '1';
-		$bindvars=array();
-	}
-	$pre=''; $post='';
-	if (isset($layout)) {
-		if ($layout=='table') {
-			$pre='<table class=\'sortable\' id=\''.$tikilib->now.'\'><tr><th>'.tra('users').'</th></tr><tr><td>';
-			$sep = '</td></tr><tr><td>';
+    if ($data) {
+        $mid = '`login` like ?';
+        $findesc = '%' . $data . '%';
+	 $bindvars=array($findesc);
+    } else {
+        $mid = '1';
+        $bindvars=array();
+    }
+    $pre=''; $post='';
+    if (isset($layout)) {
+        if ($layout=='table') {
+        	$pre='<table class=\'sortable\' id=\''.$tikilib->now.'\'><tr><th>'.tra('users').'</th></tr><tr><td>';
+        	$sep = '</td></tr><tr><td>';
         	$post='</td></tr></table>';
-		}
-	}
+        }
+    }
 	if (isset($group)) {
 		$from .= ", users_usergroups uug";
 		$mid .= ' and uug.`groupName` = ? and uu.`userId` = uug.`userId`';
 		$bindvars[] = $group;
 	}
-	if (isset($sort)) {
-		$sort=strtolower($sort);
-		if (($sort=='asc') || ($sort=='desc')) {
-			$mid .= ' ORDER BY `login` '.$sort;
-		}
-	}
+    if (isset($sort)) {
+    	$sort=strtolower($sort);
+        if (($sort=='asc') || ($sort=='desc')) {
+            $mid .= ' ORDER BY `login` '.$sort;
+        }
+    }
     
-	$query = "select `login`, uu.`userId` from `users_users` uu $from where $mid";
-	$result = $tikilib->query($query, $bindvars, $numRows);
-	$ret = array();
+    $query = "select `login`, uu.`userId` from `users_users` uu $from where $mid";
+    $result = $tikilib->query($query, $bindvars, $numRows);
+    $ret = array();
 
-	while ($row = $result->fetchRow()) {
+    while ($row = $result->fetchRow()) {
 		$res = '';
 		if (isset($link)) {
 			if ($link == 'userpage') {
@@ -163,15 +167,15 @@ function wikiplugin_userlist($data, $params)
 			}
 		}
 		$displayName = $row['login'];
-		if ( $params['realname'] ) {
-			$realName = $tikilib->get_user_preference($row['login'], 'realName');
+		if( $params['realname'] ) {
+			$realName = $tikilib->get_user_preference( $row['login'], 'realName' );
 			
-			if ( $realName ) {
+			if( $realName ) {
 				$displayName = $realName;
 			}
 		}
 
         $ret[] = $res.$displayName.($res?'</a>':'');
-	}
-	return $pre.implode($sep, $ret).$post;
+    }
+    return $pre.implode ( $sep, $ret ).$post;
 }

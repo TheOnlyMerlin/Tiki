@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,6 +9,7 @@ require_once ('tiki-setup.php');
 // To include a link in your tpl do
 //<a href="tiki-tell_a_friend.php?url={$smarty.server.REQUEST_URI|escape:'url'}">{tr}Email this page{/tr}</a>
 
+$smarty->assign('headtitle', tra('Send a link to a friend '));
 if (empty($_REQUEST['report'])) {
 	$access->check_feature('feature_tell_a_friend');
 	$access->check_permission('tiki_p_tell_a_friend');
@@ -38,9 +39,9 @@ if (strstr($_REQUEST['url'], 'tiki-tell_a_friend.php')) {
 	$_REQUEST['url'] = preg_replace('/.*tiki-tell_a_friend.php\?url=/', '', $_REQUEST['url']);
 	header('location: tiki-tell_a_friend.php?url=' . $_REQUEST['url']);
 }
-$url_for_friend = $tikilib->httpPrefix(true) . $_REQUEST['url'];
+$url_for_friend = $tikilib->httpPrefix( true ) . $_REQUEST['url'];
 $smarty->assign('url', $_REQUEST['url']);
-$smarty->assign('prefix', $tikilib->httpPrefix(true));
+$smarty->assign('prefix', $tikilib->httpPrefix( true ));
 $errors = array();
 if (isset($_REQUEST['send'])) {
 	check_ticket('tell-a-friend');
@@ -57,7 +58,7 @@ if (isset($_REQUEST['send'])) {
 		$_REQUEST['addresses'] = $email;
 		$emails[] = $email;
 	}
-	foreach ($emails as $email) {
+	foreach($emails as $email) {
 		include_once ('lib/registration/registrationlib.php');
 		if (function_exists('validate_email')) {
 			$ok = validate_email($email, $prefs['validateEmail']);
@@ -96,24 +97,24 @@ if (isset($_REQUEST['send'])) {
 			$subject = $smarty->fetch('mail/tellAFriend_subject.tpl');
 		}
 
-		if ( $prefs['auth_token_tellafriend'] == 'y' && $prefs['auth_token_access'] == 'y' && isset($_POST['share_access']) ) {
+		if( $prefs['auth_token_tellafriend'] == 'y' && $prefs['auth_token_access'] == 'y' && isset($_POST['share_access']) ) {
 			require_once 'lib/auth/tokens.php';
-			$tokenlib = AuthTokens::build($prefs);
+			$tokenlib = AuthTokens::build( $prefs );
 
-			$url_for_friend = $tokenlib->includeToken($url_for_friend, $globalperms->getGroups());
+			$url_for_friend = $tokenlib->includeToken( $url_for_friend, $globalperms->getGroups() );
 		}
 
-		$smarty->assign('url_for_friend', $url_for_friend);
+		$smarty->assign( 'url_for_friend', $url_for_friend );
 		$txt = $smarty->fetch('mail/tellAFriend.tpl');
 		$mail->setSubject($subject);
 		$mail->setText($txt);
 		$mail->buildMessage();
 		$ok = true;
-		foreach ($emails as $email) {
+		foreach($emails as $email) {
 			$ok = $ok && $mail->send(array($email));
 		}
 		if ($ok) {
-			$access->redirect($_REQUEST['url'], tra('Your link was sent.'));
+			$access->redirect( $_REQUEST['url'], tra('Your link was sent.') );
 		} else {
 			$errors = tra("The mail can't be sent. Contact the administrator");
 		}

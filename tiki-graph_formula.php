@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -55,8 +55,8 @@ function convert_formula( $formula )
 
 	// Make sure only valid functions are used
 	preg_match_all( '/([a-z0-9_]+)/i', $formula, $out, PREG_PATTERN_ORDER );
-	foreach ( $out[0] as $match )
-		if ( !is_numeric( $match ) && !in_array( strtolower( $match ), $valid ) && $match !== 'x' )
+	foreach( $out[0] as $match )
+		if( !is_numeric( $match ) && !in_array( strtolower( $match ), $valid ) && $match !== 'x' )
 			die( "Invalid function call {$match}" );
 	
 	// Replace spaces for commas
@@ -69,7 +69,7 @@ function convert_formula( $formula )
 
 $access->check_permission('feature_sheet');
 
-if ( !( is_numeric( $_GET['w'] )
+if( !( is_numeric( $_GET['w'] )
 	&& is_numeric( $_GET['h'] )
 	&& is_numeric( $_GET['s'] )
 	&& $_GET['s'] <= 500 && $_GET['s'] > 0
@@ -99,7 +99,7 @@ $graph->setTitle( $_GET['title'] );
 $size = ($_GET['max'] - $_GET['min']) / $_GET['s'];
 
 $data = array();
-foreach ( array_values( $_GET['f'] ) as $key=>$formula )
+foreach( array_values( $_GET['f'] ) as $key=>$formula )
 {
 	$formula = convert_formula( $formula );
 	

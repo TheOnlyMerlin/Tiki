@@ -1,26 +1,10 @@
-{if !isset($actions) or $actions eq "y"}
-	{if $prefs.art_home_title ne ''}
-		{title help="Articles" admpage="articles"}
-			{if $prefs.art_home_title eq 'topic' and !empty($topic)}{tr}{$topic|escape}{/tr}
-			{elseif $prefs.art_home_title eq 'type' and !empty($type)}{tr}{$type|escape}{/tr}
-			{else}{tr}Articles{/tr}{/if}
-		{/title}
-	{/if}
+{if $prefs.art_home_title ne ''}
+	{title help="Articles" admpage="cms"}
+		{if $prefs.art_home_title eq 'topic' and !empty($topic)}{tr}{$topic|escape}{/tr}
+		{elseif $prefs.art_home_title eq 'type' and !empty($type)}{tr}{$type|escape}{/tr}
+		{else}{tr}Articles{/tr}{/if}
+	{/title}
 {/if}
-	<div class="clearfix" style="clear: both;">
-		<div style="float: right; padding-left:10px; white-space: nowrap">
-		{if $user and $prefs.feature_user_watches eq 'y'}
-			{if $user_watching_articles eq 'n'}
-					{self_link watch_event='article_*' watch_object='*' watch_action='add' _icon='eye' _alt="{tr}Monitor Articles{/tr}" _title="{tr}Monitor Articles{/tr}"}{/self_link}
-			{else}
-					{self_link watch_event='article_*' watch_object='*' watch_action='remove' _icon='no_eye' _alt="{tr}Stop Monitoring Articles{/tr}" _title="{tr}Stop Monitoring Articles{/tr}"}{/self_link}
-			{/if}
-		{/if}
-		{if $prefs.feature_group_watches eq 'y' and $tiki_p_admin_users eq 'y'}
-			<a href="tiki-object_watches.php?watch_event=article_*&amp;objectId=*" class="icon">{icon _id='eye_group' alt="{tr}Group Monitor{/tr}"}</a>
-		{/if}
-		</div>
-	</div>
 {section name=ix loop=$listpages}
 	{capture name=href}{if empty($urlparam)}{$listpages[ix].articleId|sefurl:article}{else}{$listpages[ix].articleId|sefurl:article:with_next}{$urlparam}{/if}{/capture}
 	{if $listpages[ix].disp_article eq 'y'}
@@ -35,7 +19,7 @@
 		<div class="article{if !empty($container_class)} {$container_class}{/if}">
 			{if $listpages[ix].show_topline eq 'y' and $listpages[ix].topline}<div class="articletopline">{$listpages[ix].topline|escape}</div>{/if}
 			<div class="articletitle">
-				<h2>{object_link type=article id=$listpages[ix].articleId url=$smarty.capture.href title=$listpages[ix].title}</h2>
+				<h2><a href="{$smarty.capture.href}">{$listpages[ix].title|escape}</a></h2>
 				{if $listpages[ix].show_subtitle eq 'y' and $listpages[ix].subtitle}<div class="articlesubtitle">{$listpages[ix].subtitle|escape}</div>{/if}
 				{if ($listpages[ix].show_author eq 'y')
 				 or ($listpages[ix].show_pubdate eq 'y')
@@ -59,7 +43,7 @@
 			</div>
 			{if $listpages[ix].use_ratings eq 'y'}
 				<div class="articleheading">
-					{tr}Rating:{/tr} 
+					{tr}Rating{/tr}: 
 					{repeat count=$listpages[ix].rating}
 						{icon _id='star' alt="{tr}star{/tr}"}
 					{/repeat}

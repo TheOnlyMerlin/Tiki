@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,7 +13,7 @@ $access->check_permission('tiki_p_admin');
 
 $auto_query_args = array('find', 'sort_mode', 'offset', 'theme', 'theme-option', 'categId');
 
-$categories = $categlib->getCategories(NULL, true, false);
+$categories = $categlib->get_all_categories();
 $smarty->assign('categories', $categories);
 $smarty->assign('categId', isset($_REQUEST['categId']) ? $_REQUEST['categId'] : 0);
 
@@ -32,7 +32,7 @@ if (isset($_REQUEST['assigcat'])) {
 if (isset($_REQUEST["delete"])) {
 	if (isset($_REQUEST["categ"])) {
 		check_ticket('theme-control');
-		foreach (array_keys($_REQUEST["categ"]) as $cat) {
+		foreach(array_keys($_REQUEST["categ"]) as $cat) {
 			$tcontrollib->tc_remove_cat($cat);
 		}
 	}

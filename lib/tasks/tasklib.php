@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -53,7 +53,7 @@ class TaskLib extends TikiLib
 		
 		$result = $this->query($query,$value); 
 		if ($res = $result->fetchRow()) {
-			if ( ($res['user'] == $user and  $res['rights_by_creator'] == NULL) or ($res['creator'] == $user)) {
+			if( ($res['user'] == $user and  $res['rights_by_creator'] == NULL) or ($res['creator'] == $user)) {
 				$res['disabled'] = false;
 			} else {
 				$res['disabled'] = true;

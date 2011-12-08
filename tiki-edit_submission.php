@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,7 +14,6 @@ if ($prefs['feature_freetags'] == 'y') {
 }
 $access->check_feature('feature_submissions');
 $access->check_permission('tiki_p_submit_article');
-$errors = array();
 
 if ($tiki_p_admin != 'y') {
 	if ($tiki_p_use_HTML != 'y') {
@@ -43,10 +42,6 @@ $smarty->assign('imageIsChanged', (isset($_REQUEST['imageIsChanged']) && $_REQUE
 $smarty->assign('allowhtml', 'y');
 $publishDate = $tikilib->now;
 $expireDate = $tikilib->make_time(0,0,0,$tikilib->date_format("%m"), $tikilib->date_format("%d"), $tikilib->date_format("%Y")+1);
-//Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-include_once ('lib/userprefs/userprefslib.php');
-$smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
-
 $smarty->assign('title', '');
 $smarty->assign('topline', '');
 $smarty->assign('subtitle', '');
@@ -122,7 +117,7 @@ if (isset($_REQUEST["subId"])) {
 	$body = $article_data["body"];
 	$heading = $article_data["heading"];
 
-	$parsed_body = $tikilib->parse_data($body, array('is_html' => $prefs['article_body_is_html'] === 'y'));
+	$parsed_body = $tikilib->parse_data($body);
 	$parsed_heading = $tikilib->parse_data($heading);
 
 	$smarty->assign('parsed_body', $parsed_body);
@@ -148,30 +143,18 @@ if (isset($_REQUEST["allowhtml"])) {
 	}
 }
 
-if ((isset($_REQUEST["save"]) || isset($_REQUEST["submit"])) && empty($user) && $prefs['feature_antibot'] == 'y' && !$captchalib->validate()) {
-	$errors[] = $captchalib->getErrors();
-}
-
 $smarty->assign('preview', 0);
 
 // If we are in preview mode then preview it!
-if (isset($_REQUEST["preview"]) || !empty($errors)) {
+if (isset($_REQUEST["preview"])) {
 	check_ticket('edit-submission'); 
 	# convert from the displayed 'site' time to 'server' time
 
-	//Convert 12-hour clock hours to 24-hour scale to compute time
-	if (!empty($_REQUEST['publish_Meridian'])) {
-		$_REQUEST['publish_Hour'] = date('H', strtotime($_REQUEST['publish_Hour'] . ':00 ' . $_REQUEST['publish_Meridian']));
-	}
-	if (!empty($_REQUEST['expire_Meridian'])) {
-		$_REQUEST['expire_Hour'] = date('H', strtotime($_REQUEST['expire_Hour'] . ':00 ' . $_REQUEST['expire_Meridian']));
-	}
-	
 	$publishDate = TikiLib::make_time($_REQUEST["publish_Hour"], $_REQUEST["publish_Minute"], 0, $_REQUEST["publish_Month"], $_REQUEST["publish_Day"], $_REQUEST["publish_Year"]);
 	$expireDate = TikiLib::make_time($_REQUEST["expire_Hour"], $_REQUEST["expire_Minute"], 0, $_REQUEST["expire_Month"], $_REQUEST["expire_Day"], $_REQUEST["expire_Year"]);
 
 	$smarty->assign('reads', '0');
-	if (isset($_REQUEST['preview'])) $smarty->assign('preview', 1);
+	$smarty->assign('preview', 1);
 	$smarty->assign('edit_data', 'y');
 	$smarty->assign('title', strip_tags($_REQUEST["title"], '<a><pre><p><img><hr>'));
 	$smarty->assign('authorName', $_REQUEST["authorName"]);
@@ -266,7 +249,7 @@ if (isset($_REQUEST["preview"]) || !empty($errors)) {
 
 	$smarty->assign('size', strlen($body));
 
-	$parsed_body = $tikilib->parse_data($body, array('is_html' => $prefs['article_body_is_html'] === 'y'));
+	$parsed_body = $tikilib->parse_data($body);
 	$parsed_heading = $tikilib->parse_data($heading);
 
 	$smarty->assign('parsed_body', $parsed_body);
@@ -277,18 +260,11 @@ if (isset($_REQUEST["preview"]) || !empty($errors)) {
 }
 
 // Pro
-if ((isset($_REQUEST["save"]) || isset($_REQUEST["submit"])) && empty($errors)) {
-	check_ticket('edit-submission');
+if (isset($_REQUEST["save"]) || isset($_REQUEST["submit"])) {
+	check_ticket('edit-submission'); 
 	include_once ("lib/imagegals/imagegallib.php");
 
 	# convert from the displayed 'site' time to UTC time
-	//Convert 12-hour clock hours to 24-hour scale to compute time
-	if (!empty($_REQUEST['publish_Meridian'])) {
-		$_REQUEST['publish_Hour'] = date('H', strtotime($_REQUEST['publish_Hour'] . ':00 ' . $_REQUEST['publish_Meridian']));
-	}
-	if (!empty($_REQUEST['expire_Meridian'])) {
-		$_REQUEST['expire_Hour'] = date('H', strtotime($_REQUEST['expire_Hour'] . ':00 ' . $_REQUEST['expire_Meridian']));
-	}
 	$publishDate = TikiLib::make_time($_REQUEST["publish_Hour"], $_REQUEST["publish_Minute"], 0, $_REQUEST["publish_Month"], $_REQUEST["publish_Day"], $_REQUEST["publish_Year"]);
 	$expireDate = TikiLib::make_time($_REQUEST["expire_Hour"], $_REQUEST["expire_Minute"], 0, $_REQUEST["expire_Month"], $_REQUEST["expire_Day"], $_REQUEST["expire_Year"]);
 
@@ -404,11 +380,11 @@ if ((isset($_REQUEST["save"]) || isset($_REQUEST["submit"])) && empty($errors)) 
 	@$artlib->delete_image_cache("preview",$previewId);
 	if ( isset($_REQUEST["save"]) && $tiki_p_autoapprove_submission == 'y' ) {
 		$artlib->approve_submission($subid);
-		header("location: tiki-view_articles.php");
+		header ("location: tiki-view_articles.php");
 		die;
 	}
 
-	header("location: tiki-list_submissions.php");
+	header ("location: tiki-list_submissions.php");
 	die;
 }
 
@@ -422,11 +398,10 @@ $smarty->assign_by_ref('topics', $topics);
 // get list of valid types
 $types = $artlib->list_types_byname();
 if ($prefs["article_custom_attributes"] == 'y') {
-	$article_attributes = $artlib->get_article_attributes($subId, true);	
+	$article_attributes = $artlib->get_article_attributes($_REQUEST["subId"], true);	
 	$smarty->assign('article_attributes', $article_attributes);
 	$all_attributes = array();
-	$js_string= "";
-	foreach ($types as &$t) {
+	foreach($types as &$t) {
 		// javascript needs htmlid to show/hide to be properties of basic array
 		$type_attributes = $artlib->get_article_type_attributes($t["type"]);
 		$all_attributes = array_merge($all_attributes, $type_attributes);
@@ -472,7 +447,6 @@ $smarty->assign('siteTimeZone', $prefs['display_timezone']);
 global $wikilib; include_once('lib/wiki/wikilib.php');
 $plugins = $wikilib->list_plugins(true, 'body');
 $smarty->assign_by_ref('plugins', $plugins);
-$smarty->assign('errors', $errors);
 
 $smarty->assign('showtags', 'n');
 $smarty->assign('qtcycle', '');

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -45,7 +45,7 @@ class DbgSList extends DebuggerCommand
 		$mask = count($p) > 0 ? str_replace('$', '', trim($p[0])) : '';
 		// Get list of vars
 		global $smarty;
-		$tpl_vars = $smarty->getTemplateVars();
+		$tpl_vars = $smarty->get_template_vars();
 		// convert to vector of names and sort
 		$vars = array();
 		$len = strlen($mask);

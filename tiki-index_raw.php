@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -43,15 +43,15 @@ if (!($info = $tikilib->get_page_info($page))) {
 	die;
 }
 
-require_once 'lib/wiki/renderlib.php';
-$pageRenderer = new WikiRenderer($info, $user);
-$objectperms = $pageRenderer->applyPermissions();
+// Now check permissions to access this page
+$tikilib->get_perm_object( $page, 'wiki page', $info);
+if ($tiki_p_view != 'y') {
+	$smarty->assign('errortype', 401);
+	$smarty->assign('msg', tra("You do not have permission to view this page."));
 
-if ($prefs['flaggedrev_approval'] == 'y' && isset($_REQUEST['latest']) && $objectperms->wiki_view_latest) {
-	$pageRenderer->forceLatest();
+	$smarty->display("error_raw.tpl");
+	die;
 }
-
-$access->check_permission('tiki_p_view');
 
 // BreadCrumbNavigation here
 // Remember to reverse the array when posting the array
@@ -62,7 +62,7 @@ if (!isset($_SESSION["breadCrumb"])) {
 
 if (!in_array($page, $_SESSION["breadCrumb"])) {
 	if (count($_SESSION["breadCrumb"]) > $prefs['userbreadCrumb']) {
-		array_shift($_SESSION["breadCrumb"]);
+		array_shift ($_SESSION["breadCrumb"]);
 	}
 
 	array_push($_SESSION["breadCrumb"], $page);
@@ -78,6 +78,9 @@ if (!in_array($page, $_SESSION["breadCrumb"])) {
 if ($prefs['count_admin_pvs'] == 'y' || $user != 'admin') {
 	$tikilib->add_hit($page);
 }
+
+// Get page data
+$info = $tikilib->get_page_info($page);
 
 // Verify lock status
 if ($info["flag"] == 'L') {
@@ -97,14 +100,63 @@ if ($tiki_p_admin_wiki == 'y') {
 	$smarty->assign('canundo', 'y');
 }
 
-if ( isset( $_REQUEST['pagenum'] ) && $_REQUEST['pagenum'] > 0 ) {
-	$pageRenderer->setPageNumber((int) $_REQUEST['pagenum']);
+$tikilib->parse_wiki_argvariable($info['data']);
+// Get ~pp~, ~np~ and <pre> out of the way. --rlpowell, 24 May 2004
+$preparsed = array();
+$noparsed = array();
+$tikilib->parse_first( $info["data"], $preparsed, $noparsed );
+
+$pdata = $tikilib->parse_data_raw($info["data"]);
+
+if (!isset($_REQUEST['pagenum']))
+	$_REQUEST['pagenum'] = 1;
+
+$pages = $wikilib->get_number_of_pages($pdata);
+$pdata = $wikilib->get_page($pdata, $_REQUEST['pagenum']);
+$smarty->assign('pages', $pages);
+
+if ($pages > $_REQUEST['pagenum']) {
+	$smarty->assign('next_page', $_REQUEST['pagenum'] + 1);
+} else {
+	$smarty->assign('next_page', $_REQUEST['pagenum']);
 }
 
-$pageRenderer->useRaw();
+if ($_REQUEST['pagenum'] > 1) {
+	$smarty->assign('prev_page', $_REQUEST['pagenum'] - 1);
+} else {
+	$smarty->assign('prev_page', 1);
+}
+
+$smarty->assign('first_page', 1);
+$smarty->assign('last_page', $pages);
+$smarty->assign('pagenum', $_REQUEST['pagenum']);
+
+// Put ~pp~, ~np~ and <pre> back. --rlpowell, 24 May 2004
+$tikilib->replace_preparse( $info["data"], $preparsed, $noparsed );
+$tikilib->replace_preparse( $pdata, $preparsed, $noparsed );
+
+$smarty->assign_by_ref('parsed', $pdata);
+//$smarty->assign_by_ref('lastModif',date("l d of F, Y  [H:i:s]",$info["lastModif"]));
+$smarty->assign_by_ref('lastModif', $info["lastModif"]);
+
+if (empty($info["user"])) {
+	$info["user"] = 'anonymous';
+}
+
+$smarty->assign_by_ref('lastUser', $info["user"]);
+
+// Comments engine!
+if ($prefs['feature_wiki_comments'] == 'y') {
+	$comments_per_page = $prefs['wiki_comments_per_page'];
+
+	$thread_sort_mode = $prefs['wiki_comments_default_ordering'];
+	$comments_vars = array('page');
+	$comments_prefix_var = 'wiki page:';
+	$comments_object_var = 'page';
+	include_once ("comments.php");
+}
 
 include_once ('tiki-section_options.php');
-$pageRenderer->runSetups();
 ask_ticket('index-raw');
 
 // Display the Index Template
@@ -124,7 +176,7 @@ if ( isset($_REQUEST['download']) && $_REQUEST['download'] !== 'n' ) {
 
 // add &full to URL to output the whole html head and body
 if (isset($_REQUEST['full']) && $_REQUEST['full'] != 'n') {
-	$smarty->assign('mid', 'tiki-show_page_raw.tpl');
+	$smarty->assign('mid','tiki-show_page_raw.tpl');
 	// use tiki_full to include include CSS and JavaScript
 	$smarty->display("tiki_full.tpl");
 } else if (isset($_REQUEST['textonly']) && $_REQUEST['textonly'] != 'n') {

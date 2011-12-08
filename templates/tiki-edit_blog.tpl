@@ -1,5 +1,5 @@
 {if $blogId > 0}
-  {title help="Blogs" url="tiki-edit_blog.php?blogId=$blogId" admpage="blogs"}{tr}Edit Blog:{/tr} {$title}{/title}
+  {title help="Blogs" url="tiki-edit_blog.php?blogId=$blogId" admpage="blogs"}{tr}Edit Blog:{/tr} {$title|escape}{/title}
 {else}
   {title help="Blogs"}{tr}Create Blog{/tr}{/title}
 {/if}
@@ -13,7 +13,7 @@
 	{/if}
 </div>
 
-{if isset($category_needed) && $category_needed eq 'y'}
+{if $category_needed eq 'y'}
 	{remarksbox type='Warning' title="{tr}Warning{/tr}"}
 	<div class="highlight"><em class='mandatory_note'>{tr}A category is mandatory{/tr}</em></div>
 	{/remarksbox}
@@ -27,24 +27,24 @@
   <input type="hidden" name="blogId" value="{$blogId|escape}" />
   {tabset name='tabs_editblog'}
     {tab name="{tr}General Settings{/tr}"}
-      <table class="formcolor">
+      <table class="normal">
         <tr class="editblogform">
           <td><label for="blog-title">{tr}Title{/tr}</label></td>
-          <td><input type="text" size="61" maxlength="200" name="title" id="blog-title" value="{$title|escape}" /></td>
+          <td><input type="text" name="title" id="blog-title" value="{$title|escape}" /></td>
         </tr>
         <tr class="editblogform">
           <td>
             <label for="blog-desc">{tr}Description{/tr}</label>
           </td>
           <td>
-            <textarea class="wikiedit" name="description" id="blog-desc" rows="20" cols="80" wrap="virtual">{$description|escape}</textarea>
+            <textarea class="wikiedit" name="description" id="blog-desc" rows="{$rows}" cols="{$cols}" wrap="virtual">{$description|escape}</textarea>
           </td>
         </tr>
         <tr class="editblogform">
           <td>{tr}Creator{/tr}</td>
           <td>
             <select name="creator">
-              {if ($tiki_p_admin eq 'y' or $tiki_p_blog_admin eq 'y') and !empty($users)}
+              {if $tiki_p_admin eq 'y' or $tiki_p_blog_admin eq 'y'}
                 {foreach from=$users key=userId item=u}
                   <option value="{$u|escape}"{if $u eq $creator} selected="selected"{/if}>{$u|escape}</option>
                 {/foreach}
@@ -55,23 +55,23 @@
           </td>
         </tr>
         <tr class="editblogform">
-          <td class="checkbox"><input type="checkbox" name="public" id="blogs-allow_others" {if $public eq 'y'}checked='checked'{/if}/></td>
           <td><label for="blogs-allow_others">{tr}Allow other users to post in this blog{/tr}</label></td>
+          <td><input type="checkbox" name="public" id="blogs-allow_others" {if $public eq 'y'}checked='checked'{/if}/></td>
         </tr>	
         <tr class="editblogform">
-          <td class="checkbox"><input type="checkbox" name="alwaysOwner" id="blogs-always_owner" {if $alwaysOwner eq 'y'}checked='checked'{/if}/></td>
-          <td><label for="blogs-always_owner">{tr}If others post to blog, author should always be owner{/tr}</label></td>
+          <td><label for="blogs-always_owner">{tr}If others post to blog, Author should always be Owner{/tr}</label></td>
+          <td><input type="checkbox" name="alwaysOwner" id="blogs-always_owner" {if $alwaysOwner eq 'y'}checked='checked'{/if}/></td>
         </tr>
         <tr class="editblogform">
-          <td class="checkbox"><input type="checkbox" name="use_find" id="blogs-search" {if $use_find eq 'y'}checked='checked'{/if}/></td>
           <td><label for="blogs-search">{tr}Allow search{/tr}</label></td>
+          <td><input type="checkbox" name="use_find" id="blogs-search" {if $use_find eq 'y'}checked='checked'{/if}/></td>
         </tr>
         <tr class="editblogform">
-          <td class="checkbox">
+          <td><label for="blogs-comments">{tr}Allow comments{/tr}</label></td>
+          <td>
             <input type="checkbox" name="allow_comments" id="blogs-comments" {if $allow_comments eq 'y' or $allow_comments eq 'c'}checked='checked'{/if}{if $prefs.feature_blogposts_comments ne 'y'} disabled="disabled"{/if} />
             {if $prefs.feature_blogposts_comments ne 'y'}Global post-level comments is disabled.{/if}
           </td>
-          <td><label for="blogs-comments">{tr}Allow comments{/tr}</label></td>
         </tr>
 
         {include file='categorize.tpl'}
@@ -79,7 +79,7 @@
       </table>
     {/tab}
     {tab name="{tr}Display Options{/tr}"}
-      <table class="formcolor">
+      <table class="normal">
         <tr class="editblogform">
           <td><label for="blogs-number">{tr}Number of posts to show per page{/tr}</label></td>
           <td><input type="text" name="maxPosts" id="blogs-number" value="{$maxPosts|escape}" /></td>
@@ -142,15 +142,15 @@
 					</tr>
           <tr class="editblogform">
             <td colspan="2">
-              <textarea name="heading" id="blogs-heading" rows='10' cols='80'>{$heading|escape}</textarea>
+              <textarea name="heading" id="blogs-heading" rows='10' cols='{$cols}'>{$heading|escape}</textarea>
             </td>
           </tr>
 
-          {if strlen($heading) > 0 and $show_blog_heading_preview eq 'y'}
+          {if strlen($heading) > 0 and $blogId > 0}
             <tr class="editblogform">
               <td colspan="2">
                 {button href="#" _flip_id='blog_heading_preview' _class='link' _text="{tr}Heading preview{/tr}" _flip_default_open='n'}
-                <div id="blog_heading_preview" style="display: {if $show_blog_heading_preview eq 'y'}block{else}none{/if};">
+                <div id="blog_heading_preview" style="display: {if isset($smarty.session.tiki_cookie_jar.show_blog_heading_preview) and $smarty.session.tiki_cookie_jar.show_blog_heading_preview eq 'y'}block{else}none{/if};">
                   {eval var=$heading}
                 </div>
               </td>
@@ -164,7 +164,7 @@
 					</tr>
           <tr class="editblogform">
             <td colspan="2">
-              <textarea name="post_heading" id="blogs-post_heading" rows='10' cols='80'>{$post_heading|escape}</textarea>
+              <textarea name="post_heading" id="blogs-post_heading" rows='10' cols='{$cols}'>{$post_heading|escape}</textarea>
             </td>
           </tr>
 

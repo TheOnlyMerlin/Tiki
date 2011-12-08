@@ -1,12 +1,11 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_jquery_list($partial = false)
-{
+function prefs_jquery_list() {
 
 	global $prefs;
 
@@ -17,7 +16,7 @@ function prefs_jquery_list($partial = false)
 		'fade'  => tra('Fade'),
 	);	
 
-	if (! $partial && $prefs['feature_jquery_ui'] == 'y') {
+	if ($prefs['feature_jquery_ui'] == 'y') {
 		$jquery_effect_options['blind_ui'] = tra('Blind (UI)');
 		$jquery_effect_options['clip_ui'] = tra('Clip (UI)');
 		$jquery_effect_options['drop_ui'] = tra('Drop (UI)');
@@ -33,15 +32,12 @@ function prefs_jquery_list($partial = false)
 			'type' => 'list',
 			'options' => $jquery_effect_options,
 			'help' => 'JQuery#Effects',
-			'default' => '',				// Default effect for general show/hide: ['' | 'slide' | 'fade' | and
-											// see http://docs.jquery.com/UI/Effects: 'blind' | 'clip' | 'explode' etc]
 		),
 		'jquery_effect_tabs' => array(
 			'name' => tra('Effect for tabs'),
 			'type' => 'list',
 			'options' => $jquery_effect_options,
 			'help' => 'JQuery#Effects',
-			'default' => 'slide',	// Different effect for tabs (['none' | 'normal' (for jq) | 'slide' etc]
 		),
 		'jquery_effect_speed' => array(
 			'name' => tra('Speed'),
@@ -51,7 +47,6 @@ function prefs_jquery_list($partial = false)
 				'normal' => tra('Normal'),
 				'slow' => tra('Slow'),
 			),
-			'default' => 'normal', 	// ['slow' | 'normal' | 'fast' | milliseconds (int) ]
 		),
 		'jquery_effect_direction' => array(
 			'name' => tra('Direction'),
@@ -64,7 +59,6 @@ function prefs_jquery_list($partial = false)
 				'up' => tra('Up'),
 				'down' => tra('Down'),
 			),
-			'default' => 'vertical', 	// ['horizontal' | 'vertical' | 'left' | 'right' | 'up' | 'down' ]
 		),
 		'jquery_effect_tabs_speed' => array(
 			'name' => tra('Speed'),
@@ -74,7 +68,6 @@ function prefs_jquery_list($partial = false)
 				'normal' => tra('Normal'),
 				'slow' => tra('Slow'),
 			),
-			'default' => 'fast',
 		),
 		'jquery_effect_tabs_direction' => array(
 			'name' => tra('Direction'),
@@ -87,26 +80,6 @@ function prefs_jquery_list($partial = false)
 				'up' => tra('Up'),
 				'down' => tra('Down'),
 			),
-			'default' => 'vertical',
 		),
-		'jquery_ui_selectmenu' => array(
-			'name' => tra('jQuery-ui Select Menu'),
-			'description' => tra('Styled replacement for dropdown select menus.'),
-			'type' => 'flag',
-			'default' => 'n',
-			'dependencies' => array(
-				'feature_jquery_ui',
-			),
-		),
-		'jquery_ui_selectmenu_all' => array(
-			'name' => tra('Use Select Menu on all select elements'),
-			'description' => tra('Applies jQuery-ui Select Menu to every select menu.'),
-			'type' => 'flag',
-			'default' => 'n',
-			'tags' => array('experimental'),
-			'dependencies' => array(
-				'jquery_ui_selectmenu',
-			),
-		),
-	);
+	);	
 }

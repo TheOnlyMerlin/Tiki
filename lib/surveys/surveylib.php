@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,53 +7,12 @@
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
-	header("location: index.php");
-	exit;
+  header("location: index.php");
+  exit;
 }
 
 class SurveyLib extends TikiLib
 {
-	function list_surveys($offset, $maxRecords, $sort_mode, $find)
-	{
-		if ($find) {
-			$findesc = '%' . $find . '%';
-			$mid = " where (`name` like ? or `description` like ?)";
-			$bindvars=array($findesc, $findesc);
-		} else {
-			$mid = '';
-			$bindvars=array();
-		}
-
-		$query = "select `surveyId` from `tiki_surveys` $mid";
-		$result = $this->fetchAll($query, $bindvars);
-		$res = $ret = $retids = array();
-		$n = 0;
-
-		//FIXME Perm:filter ?
-		foreach ( $result as $res ) {
-			$objperm = $this->get_perm_object($res['surveyId'], 'survey', '', false);
-			if ( $objperm['tiki_p_take_survey'] ) {
-				if ( ($maxRecords == -1) || (($n >= $offset) && ($n < ($offset + $maxRecords))) ) {
-					$retids[] = $res['surveyId'];
-				}
-				$n++;
-			}
-		}
-		if ( $n > 0 ) {
-			$query = 'select * from `tiki_surveys` where `surveyId` in (' . implode(',', $retids) . ') order by ' . $this->convertSortMode($sort_mode);
-			$result = $this->fetchAll($query);
-			foreach ( $result as $res ) {
-				$res["questions"] = $this->getOne('select count(*) from `tiki_survey_questions` where `surveyId`=?', array( (int) $res['surveyId']));
-				$ret[] = $res;
-			}
-		} 
-		
-		$retval = array();
-		$retval["data"] = $ret;
-		$retval["cant"] = $n;
-		return $retval;
-	}
-	
 	function add_survey_hit($surveyId)
 	{
 		global $prefs, $user;
@@ -129,8 +88,7 @@ class SurveyLib extends TikiLib
 	function replace_survey_question($questionId, $question, $type
 		, $surveyId, $position, $options, $mandatory = 'n'
 		, $min_answers = 0, $max_answers = 0
-	)
-	{
+	) {
 		if ($mandatory != 'y')
 			$mandatory = 'n';
 		$min_answers = (int)$min_answers;
@@ -217,7 +175,6 @@ class SurveyLib extends TikiLib
 	function list_survey_questions($surveyId, $offset, $maxRecords, $sort_mode, $find)
 	{
 		global $tikilib;
-		$filegallib = TikiLib::lib('filegal');
 		$bindvars = array((int) $surveyId);
 		if ($find) {
 			$findesc = '%' . $find . '%';
@@ -297,7 +254,7 @@ class SurveyLib extends TikiLib
 		
 			// For a multiple choice from a file gallery, show all files in the stats results, even if there was no vote for those files
 			if ($res['type'] == 'g' && $res['options'] > 0) {
-				$files = $filegallib->get_files(0, -1, '', '', $options[0], false, false, false, true, false, false, false, false, '', false, false);
+				$files = $this->get_files(0, -1, '', '', $options[0], false, false, false, true, false, false, false, false, '', false, false);
 				foreach ($files['data'] as $f) {
 					if ( ! isset($ids[$f['id']]) ) {
 						$ret2[] = array(

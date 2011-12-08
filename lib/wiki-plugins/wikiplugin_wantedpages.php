@@ -1,22 +1,53 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+/* wikiplugin_wantedpages.php
+ * Tikiwiki plugin to display wanted Wiki pages
+ * <grk@ducked.net> and <gray@ritualmagick.org>
+ * Minor tweaks by avgasse <amedee@amedee.be>
+*/
+
 require_once 'lib/wiki/pluginslib.php';
 
-function wikiplugin_wantedpages_info()
-{
+function wikiplugin_wantedpages_help() {
+	$help = tra("Lists ''wanted'' Wiki pages: ")."\n";
+	$help .= "~np~{WANTEDPAGES(";
+	$help .= "ignore=>".tra("Page-Pattern")."'splitby'".tra("Page-Pattern").", splitby=>+, ";
+	$help .= "skipext=>0|1, collect=>from|to, debug=>0|1, table=>sep|co|br, ";
+	$help .= "level=>strict|full|complete|custom)}".tra("Custom-Level-Regex");
+	$help .= "{WANTEDPAGES}~/np~".tra("^Parameters: key=>value,...\n")."||\n";
+	$help .= tra("__key__ | __default__ | __comments__\n");
+	$help .= "ignore | ".tra("empty string")." | " . tra("A wildcard pattern of originating pages to be ignored.") . "<br />";
+	$help .= tra("(refer to PHP function fnmatch() for details)\n");
+	$help .= "splitby | '+' | " . tra("The character, by which ignored patterns are separated.") . "<br />";
+	$help .= tra("possible values: characters\n");
+	$help .= "skipext | 0 | " . tra("Whether to include external wikis in the list.") . "<br />";
+	$help .= tra("possible values: ")."0 / 1\n";
+	$help .= "collect | \"from\" | " . tra("Collect either originating or wanted pages in a cell and display them in the second column.") . "<br />";
+	$help .= tra("possible values: ")."from / to\n";
+	$help .= "debug | 0 | " . tra("Switch-on debug output with details about the items.") . "<br />";
+	$help .= tra("possible values: ")."0 / 1 / 2 \n";
+	$help .= "table | \"sep\" | " . tra("Multiple collected items are separated in distinct table rows, or by comma or line break in one cell.") . "<br />";
+	$help .= tra("possible values: ")."sep / co / br\n";
+	$help .= "level | ".tra("empty string")." | " . tra("Filter the list of wanted pages according to page_regex or custom filter. The default value is the site's __current__ page_regex.") . "<br />";
+	$help .= tra("possible values: ")."strict / full / complete / custom\n";
+	$help .= tra("Custom-Level-Regex") . " | ".tra("empty string")." | " . tra("A custom filter for wanted pages to be listed (only used when level=>custom).") . "<br />";
+	$help .= tra("possible values: ") . tra("a valid regex-expression (PCRE)") . "\n";
+	$help .= "||^";
+    return $help;
+}
+
+function wikiplugin_wantedpages_info() {
 	return array(
 		'name' => tra('Wanted Pages'),
-		'documentation' => 'PluginWantedPages',
-		'description' => tra('Show location of links to pages not yet created'),
+		'documentation' => 'PluginWantedPages',		
+		'description' => tra('Lists \'\'wanted\'\' wiki pages'),
 		'prefs' => array( 'wikiplugin_wantedpages' ),
 		'body' => tra('Custom level regex. A custom filter for wanted pages to be listed (only used when level=>custom). Possible values: a valid regex-expression (PCRE).'),
-		'icon' => 'pics/icons/page_white_find.png',
-		'tags' => array( 'basic' ),	
 		'params' => array(
 			'ignore' => array(
 				'required' => false,
@@ -105,8 +136,7 @@ function wikiplugin_wantedpages_info()
 class WikiPluginWantedPages extends PluginsLib
 {
 
-	function getDefaultArguments()
-	{
+	function getDefaultArguments() {
 		return array(	'ignore' => '', // originating pages to be ignored
 						'splitby' => '+', // split ignored pages by this character
 						'skipext' => 0, // false, display external wiki links
@@ -118,48 +148,31 @@ class WikiPluginWantedPages extends PluginsLib
 						    // tries to allocate as little memory as possible.
 	}
 	
-	function getName ()
-	{
+	function getName () {
 		return 'WantedPages';
 	}
 	
-	function getDescription ()
-	{
+	function getDescription () {
 		return wikiplugin_wantedpages_help();
 	}
 	
-	function getVersion ()
-	{
-		return preg_replace("/[Revision: $]/", '', "\$Revision: 1.7 $");
+	function getVersion () {
+		return preg_replace("/[Revision: $]/", '',
+	                "\$Revision: 1.7 $");
 	}
 	
-	function run($data, $params)
-	{
+	function run($data, $params) {
 		global $prefs, $page_regex;
 	
 		// Grab and handle our Tiki parameters...
 		extract($params, EXTR_SKIP);
-		if (!isset($ignore)) {
-			$ignore = '';
-		}
-		if (!isset($splitby)) {
-			$splitby = '+';
-		}
-		if (!isset($skipext)) {
-			$skipext = false;
-		}
-		if (!isset($debug)) {
-			$debug = false;
-		}
-		if (!isset($collect)) {
-			$collect = 'from';
-		}
-		if (!isset($table)) {
-			$table = 'sep';
-		}
-		if (!isset($level)) {
-			$level = '';
-		}
+		if (!isset($ignore))  {$ignore = ''; }
+		if (!isset($splitby)) {	$splitby = '+';	}
+		if (!isset($skipext)) {	$skipext = false; }
+		if (!isset($debug))   {$debug = false; }
+		if (!isset($collect)) {	$collect = 'from'; }
+		if (!isset($table))   {	$table = 'sep'; }
+		if (!isset($level))   {	$level = ''; }
 	
 		// for regexes and external wiki details, see tikilib.php
 		if ($level == 'strict') {
@@ -188,7 +201,7 @@ class WikiPluginWantedPages extends PluginsLib
 		}
 	
 		// get array of fromPages to be ignored
-		$ignorepages = explode($splitby, $ignore);
+		$ignorepages = explode($splitby,$ignore);
 	
 		// Currently we only look in wiki pages.
 		// Wiki links in articles, blogs, etc are ignored.
@@ -203,9 +216,9 @@ class WikiPluginWantedPages extends PluginsLib
 		$tmp = array();
 	
 		while ($row = $result->fetchRow()) {
-			foreach ($ignorepages as $ipage) {
+			foreach($ignorepages as $ipage) {
 				// test whether a substring ignores this page, ignore case
-				if (fnmatch(TikiLib::strtolower($ipage), TikiLib::strtolower($row['fromPage'])) === true) {
+				if (fnmatch(strtolower($ipage), strtolower($row['fromPage'])) === true) {
 					if ($debug == 2) { // the "hardcore case"
 						echo $row['toPage'] . ' [from: ' . $row['fromPage'] . ']: ' . tra('ignored') . '<br />';
 					} elseif ($debug) { // add this page to the table
@@ -236,7 +249,7 @@ class WikiPluginWantedPages extends PluginsLib
 					$tmp = debug_print($row, $debug, tra('dash-WikiWord'));
 					continue;
 				}
-			} elseif ($WikiWord) { // a WikiWord, can we allow this?
+			} elseif ($WikiWord){ // a WikiWord, can we allow this?
 				if ($prefs['feature_wikiwords'] != 'y') {
 					$tmp = debug_print($row, $debug, tra('WikiWord'));
 					continue;
@@ -263,7 +276,7 @@ class WikiPluginWantedPages extends PluginsLib
 		$out = array();
 		$linkin  = (!$debug) ? '((' : '~np~'; // this is how toPages are handled
 		$linkout = (!$debug) ? '))' : '~/np~';
-		foreach ($tmp as $row) { // row[toPage, fromPage, reason]
+		foreach($tmp as $row) { // row[toPage, fromPage, reason]
 			if ($debug) { // modified rejected toPages with reason
 				$row[0] = '<em>' . tra($row[2]) . '</em>: ' . $row[0];
 			}
@@ -343,8 +356,7 @@ class WikiPluginWantedPages extends PluginsLib
 	} // run()
 } // class WikiPluginWantedPages
 
-function wikiplugin_wantedpages($data, $params)
-{
+function wikiplugin_wantedpages($data, $params) {
   $plugin = new WikiPluginWantedPages();
   return $plugin->run($data, $params);
 }
@@ -353,19 +365,18 @@ function wikiplugin_wantedpages($data, $params)
 // From php help "fnmatch", http://www.php.net/manual/de/function.fnmatch.php
 // comment by "soywiz at gmail dot com 26-Jul-2005 07:07" (as of Jan. 21 2006)
 if (!function_exists('fnmatch')) {
-	function fnmatch($pattern, $string) 
-	{
+	function fnmatch($pattern, $string) {
 	   for ($op = 0, $npattern = '', $n = 0, $l = strlen($pattern); $n < $l; $n++) {
 	       switch ($c = $pattern[$n]) {
 	           case '\\':
 	               $npattern .= '\\' . @$pattern[++$n];
-                break;
+	           break;
 	           case '.': case '+': case '^': case '$': case '(': case ')': case '{': case '}': case '=': case '!': case '<': case '>': case '|':
 	               $npattern .= '\\' . $c;
-                break;
+	           break;
 	           case '?': case '*':
 	               $npattern .= '.' . $c;
-  	             break;
+	           break;
 	           case '[': case ']': default:
 	               $npattern .= $c;
 	               if ($c == '[') {
@@ -374,7 +385,7 @@ if (!function_exists('fnmatch')) {
 	                   if ($op == 0) return false;
 	                   $op--;
 	               }
-  	             break;
+	           break;
 	       }
 	   }
 	   if ($op != 0) return false;
@@ -386,8 +397,7 @@ if (!function_exists('fnmatch')) {
 // From php help "Regular Expression Functions (Perl-Compatible)", http://www.php.net/pcre/
 // comment by "alexbodn at 012 dot n@t dot il 09-Jan-2006 11:45" (as of Jan. 21 2006)
 if (!function_exists('preg_ispreg')) {
-	function preg_ispreg($str)
-	{
+	function preg_ispreg($str) {
 		$prefix = '';
 		$sufix = '';
 	    if ($str[0] != '^')
@@ -402,8 +412,7 @@ if (!function_exists('preg_ispreg')) {
 } //!exists(preg_ispreg)
 
 if (!function_exists('debug_print')) {
-	function debug_print($row, $debug, $message)
-	{
+	function debug_print($row, $debug, $message) {
 		if ($debug == 2) {
 			echo $row['toPage'] . ' [from: ' . $row['fromPage'] . ']: ' . $message . '<br />';
 			return;

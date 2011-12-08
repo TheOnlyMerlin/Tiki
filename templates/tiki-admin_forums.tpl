@@ -33,7 +33,7 @@
 		{assign var=numbercol value=8}
 		<tr>
 			{if $channels}
-				{assign var=numbercol value=$numbercol+1}
+				{assign var=numbercol value=`$numbercol+1`}
 				<th style="text-align:center">
 					{select_all checkbox_names='checked[]'}
 				</th>
@@ -64,13 +64,13 @@
 				<td>
 					<a class="link" href="tiki-view_forum.php?forumId={$channels[user].forumId}" title="{tr}View{/tr}">{$channels[user].name|escape}</a>
 				</td>
-				<td class="integer">{$channels[user].threads}</td>
-				<td class="integer">{$channels[user].comments}</td>
-				<td class="integer">{$channels[user].users}</td>
-				<td class="integer">{$channels[user].age}</td>
-				<td class="integer">{$channels[user].posts_per_day|string_format:"%.2f"}</td>
-				<td class="integer">{$channels[user].hits}</td>
-				<td class="action">
+				<td style="text-align:right;">{$channels[user].threads}</td>
+				<td style="text-align:right;">{$channels[user].comments}</td>
+				<td style="text-align:right;">{$channels[user].users}</td>
+				<td style="text-align:right;">{$channels[user].age}</td>
+				<td style="text-align:right;">{$channels[user].posts_per_day|string_format:"%.2f"}</td>
+				<td style="text-align:right;">{$channels[user].hits}</td>
+				<td style="text-align:right;">
 					<a class="link" href="tiki-view_forum.php?forumId={$channels[user].forumId}" title="{tr}View{/tr}">{icon _id='table' alt="{tr}View{/tr}"}</a>
 
 {if $tiki_p_forum_lock eq 'y'}
@@ -94,7 +94,9 @@
 				</td>
 			</tr>
 		{sectionelse}
-			{norecords _colspan=$numbercol}
+			<tr>
+				<td class="odd" colspan="{$numbercol}">{tr}No records found.{/tr}</td>
+			</tr>
 		{/section}
 	</table>
 	
@@ -172,14 +174,14 @@
 				<td>{tr}Moderator user:{/tr}</td>
 				<td>
 					<input id="moderator_user" type="text" name="moderator" value="{$moderator|escape}"/>
-					{autocomplete element='#moderator_user' type='username'}
+					{jq}$('#moderator_user').tiki('autocomplete', 'username');{/jq}
 				</td>
 			</tr>
 			<tr>
 				<td>{tr}Moderator group:{/tr}</td>
 				<td>
 					<input id="moderator_group" type="text" name="moderator_group" value="{$moderator_group|escape}"/>
-					{autocomplete element='#moderator_group' type='groupname'}
+					{jq}$('#moderator_group').tiki('autocomplete', 'groupname');{/jq}
 				</td>
 			</tr>
 			<tr>
@@ -427,21 +429,6 @@
 					</a>
 				</td>
 			</tr>
-			
-			{if $prefs.feature_multilingual eq 'y'}
-				<tr>
-					<td>{tr}Language{/tr}</td>
-					<td>
-						<select name="forumLanguage" id="forumLanguage">
-							<option value="">{tr}Unknown{/tr}</option>
-							{section name=ix loop=$languages}
-								<option value="{$languages[ix].value|escape}"{if $forumLanguage eq $languages[ix].value or (!($data.page_id) and $forumLanguage eq '' and $languages[ix].value eq $prefs.language)} selected="selected"{/if}>{$languages[ix].name}</option>
-							{/section}
-						</select>
-					</td>
-				</tr>
-			{/if}
-			
 			<tr>
 				<td colspan="2">
 

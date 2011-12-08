@@ -1,20 +1,19 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
 
-function module_upcoming_events_info()
-{
+function module_upcoming_events_info() {
 	return array(
-		'name' => tra('Upcoming Events'),
+		'name' => tra('Upcoming events'),
 		'description' => tra('Lists the specified number of calendar events, ordered by their start date.'),
 		'prefs' => array("feature_calendar"),
 		'params' => array(
@@ -34,12 +33,12 @@ function module_upcoming_events_info()
 			),
 			'cellpadding' => array(
 				'name' => tra('cellpadding'),
-				'description' => tra('If set to an integer, apply this cellpadding to the HTML table generated.'),
+				'description' => 'If set to an integer, apply this cellpadding to the HTML table generated.',
 				'filter' => 'int'
 			),
 			'cellspacing' => array(
 				'name' => tra('cellspacing'),
-				'description' => tra('If set to an integer, apply this cellspacing to the HTML table generated.'),
+				'description' => 'If set to an integer, apply this cellspacing to the HTML table generated.',
 				'filter' => 'int'
 			),
 			'showDescription' => array(
@@ -81,8 +80,7 @@ function module_upcoming_events_info()
 	);
 }
 
-function module_upcoming_events($mod_reference, $module_params)
-{
+function module_upcoming_events( $mod_reference, $module_params ) {
 	global $calendarlib, $userlib, $globalperms, $smarty;
 	include_once ('lib/calendar/calendarlib.php');
 	
@@ -99,7 +97,7 @@ function module_upcoming_events($mod_reference, $module_params)
 				$canView = 'y';
 			}
 		} else {
-			$objectperms = Perms::get(array('type' => 'calendar', 'object' => $cal_id));
+			$objectperms = Perms::get( array( 'type' => 'calendar', 'object' => $cal_id ) );
 			if ($objectperms->view_calendar || $objectperms->admin_calendar) {
 				$canView = 'y';
 			}
@@ -118,7 +116,7 @@ function module_upcoming_events($mod_reference, $module_params)
 		$events = $calendarlib->upcoming_events($mod_reference['rows'],
 			array_intersect($calIds, $viewable),
 			-1,
-			'start_asc',
+			'start_asc', 
 			isset($module_params["priorDays"]) ? (int) $module_params["priorDays"] : 0,
 			isset($module_params["maxDays"]) ? (int) $module_params["maxDays"] : 365
 		);

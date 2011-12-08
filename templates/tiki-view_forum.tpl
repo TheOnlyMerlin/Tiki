@@ -1,6 +1,6 @@
 {* $Id$ *}
 
-{title help="forums" admpage="forums"}{$forum_info.name}{/title}
+{title help="forums" admpage="forums"}{$forum_info.name|escape}{/title}
 
 {if $forum_info.show_description eq 'y'}
 	<div class="description">{wiki}{$forum_info.description}{/wiki}</div>
@@ -18,7 +18,7 @@
 						{button	href="tiki-view_forum.php?openpost=1&amp;forumId=$thisforum_info&amp;comments_threadId=0&amp;comments_threshold=$comments_threshold&amp;comments_offset=$comments_offset&amp;thread_sort_mode=$thread_sort_mode&amp;comments_per_page=$comments_per_page" _onclick="javascript:show('forumpost');return false;" _text="{tr}New Topic{/tr}"}
 					{/if}
 				{/if}
-				{if $tiki_p_admin_forum eq 'y' or !isset($all_forums) or $all_forums|@count > 1}
+				{if $tiki_p_admin_forum eq 'y' or !isset($all_forums) or $all_forums|@count > 1 }
 				{* No need for users to go to forum list if they are already looking at the only forum BUT note that all_forums only defined with quickjump feature *}
 					{button href="tiki-forums.php" _text="{tr}Forum List{/tr}"}
 				{/if}
@@ -75,7 +75,7 @@
 						{if $category_watched eq 'y'}
 							{tr}Watched by categories:{/tr}
 							{section name=i loop=$watching_categories}
-								<a href="tiki-browse_categories.php?parentId={$watching_categories[i].categId}">{$watching_categories[i].name|escape}</a>
+								<a href="tiki-browse_categories.php?parentId={$watching_categories[i].categId}">{$watching_categories[i].name}</a>
 								&nbsp;
 							{/section}
 						{/if}	
@@ -201,8 +201,13 @@
 			<tr>
 				<td>{tr}Edit{/tr}
 				</td>
-				<td>					
-					{textarea id='editpost' name="comments_data" _simple="y" _toolbars=$prefs.feature_forum_parse}{$comment_data}{/textarea}
+				<td>
+					{if $prefs.feature_forum_parse eq 'y'}
+						{toolbars area_id='editpost'}
+					{/if}
+					<textarea id='editpost' name="comments_data" rows="{$rows}" cols="{$cols}">{$comment_data|escape}</textarea>
+					<input type="hidden" name="rows" value="{$rows}"/>
+					<input type="hidden" name="cols" value="{$cols}"/>
 				</td>
 			</tr>
 				{if ($forum_info.att eq 'att_all') or ($forum_info.att eq 'att_admin' and $tiki_p_admin_forum eq 'y') or ($forum_info.att eq 'att_perm' and $tiki_p_forum_attach eq 'y')}
@@ -260,7 +265,7 @@
 		</form>
 		<br />
 		
-		<table class="formcolor" id="commentshelp">
+		<table class="normal" id="commentshelp">
 			<tr>
 				<td class="even">
 					<b>{tr}Editing posts:{/tr}</b>
@@ -298,8 +303,8 @@
 			<tr>
 				<th colspan='18'>{tr}Moderator Actions{/tr}</th>
 			</tr>
-			<tr class="odd">	
-				<td class="action" colspan="3">
+			<tr>	
+				<td class="odd" colspan="3">
 					{if $all_forums|@count > 1}
 						<input type="image" name="movesel" src="pics/icons/task_submitted.png" alt="{tr}Move{/tr}" title="{tr}Move Selected Topics{/tr}" />
 					{/if}
@@ -317,8 +322,8 @@
 				</td>
 			</tr>
 			{if $smarty.request.movesel_x} 
-				<tr class="odd">
-					<td colspan="18">
+				<tr>
+					<td class="odd" colspan="18">
 						{tr}Move to:{/tr}
 						<select name="moveto">
 							{section name=ix loop=$all_forums}
@@ -332,8 +337,8 @@
 				</tr>
 			{/if}
 			{if $smarty.request.splitsel_x} 
-				<tr class="odd">
-					<td colspan="18">
+				<tr>
+					<td class="odd" colspan="18">
 						{tr}Merge into topic:{/tr}
 						<select name="mergetopic">
 							{section name=ix loop=$comments_coms}
@@ -380,9 +385,7 @@
 			{if $forum_info.att_list_nb eq 'y'}
 				<th>{tr}Atts{/tr}</th>
 			{/if}
-			{if $prefs.feature_multilingual eq 'y'}
-				<th>{tr}Language{/tr}</th>
-			{/if}
+				
 			<th>{tr}Actions{/tr}</th>
 		</tr>
 		
@@ -395,11 +398,11 @@
 			{/if}
 			<tr class="{cycle}">
 				{if $tiki_p_admin_forum eq 'y'}
-					<td class="checkbox">
+					<td>
 						<input type="checkbox" name="forumtopic[]" value="{$comments_coms[ix].threadId|escape}" {if $smarty.request.forumtopic and in_array($comments_coms[ix].threadId,$smarty.request.forumtopic)}checked="checked"{/if} />
 					</td>
 				{/if}	
-				<td class="icon">
+				<td style="text-align:center;">
 					{if $newtopic neq ''}
 						{assign var=nticon value=$newtopic}
 						{assign var=ntalt value="-{tr}New{/tr}"}
@@ -423,7 +426,7 @@
 					{/if}
 				</td>
 				{if $forum_info.topic_smileys eq 'y'}
-					<td class="icon">
+					<td style="text-align:center;">
 						{if strlen($comments_coms[ix].smiley) > 0}
 							<img src='img/smiles/{$comments_coms[ix].smiley}' alt=''/>
 						{else}
@@ -432,8 +435,8 @@
 					</td>
 				{/if}
 
-				<td class="text">
-					<a {if $comments_coms[ix].is_marked}class="forumnameread"{else}class="forumname"{/if} href="tiki-view_forum_thread.php?comments_parentId={$comments_coms[ix].threadId}{if $comments_threshold}&amp;topics_threshold={$comments_threshold}{/if}{if $comments_offset or $smarty.section.ix.index}&amp;topics_offset={math equation="x + y" x=$comments_offset y=$smarty.section.ix.index}{/if}{if $thread_sort_mode ne $forum_info.topicOrdering}&amp;topics_sort_mode={$thread_sort_mode}{/if}{if $topics_find}&amp;topics_find={$comments_find}{/if}">{$comments_coms[ix].title|escape}</a>
+				<td>
+					<a {if $comments_coms[ix].is_marked}class="forumnameread"{else}class="forumname"{/if} href="tiki-view_forum_thread.php?comments_parentId={$comments_coms[ix].threadId}{if $comments_threshold}&amp;topics_threshold={$comments_threshold}{/if}{if $comments_offset or $smarty.section.ix.index}&amp;topics_offset={math equation="x + y" x=$comments_offset y=$smarty.section.ix.index}{/if}{if $thread_sort_mode ne 'commentDate_desc'}&amp;topics_sort_mode={$thread_sort_mode}{/if}{if $topics_find}&amp;topics_find={$comments_find}{/if}&amp;forumId={$forum_info.forumId}">{$comments_coms[ix].title|escape}</a>
 					{if $forum_info.topic_summary eq 'y'}
 						<div class="subcomment">
 							{$comments_coms[ix].summary|truncate:240:"...":true|escape}
@@ -441,16 +444,16 @@
 					{/if}
 				</td>
 				{if $forum_info.topics_list_replies eq 'y'}
-					<td class="integer">{$comments_coms[ix].replies}</td>
+					<td style="text-align:right;">{$comments_coms[ix].replies}</td>
 				{/if}
 				{if $forum_info.topics_list_reads eq 'y'}
-					<td class="integer">{$comments_coms[ix].hits}</td>
+					<td style="text-align:right;">{$comments_coms[ix].hits}</td>
 				{/if}
 				{if $forum_info.topics_list_pts eq 'y'}
-					<td class="integer">{$comments_coms[ix].average|string_format:"%.2f"}</td>
+					<td style="text-align:right;">{$comments_coms[ix].average|string_format:"%.2f"}</td>
 				{/if}
 				{if $forum_info.topics_list_lastpost eq 'y'}
-					<td class="text">
+					<td>
 						{if $forum_info.topics_list_lastpost_avatar eq 'y' and $prefs.feature_userPreferences eq 'y'}
 							<div style="float:left;padding-right:2px"><img src="tiki-show_user_avatar.php?user={$comments_coms[ix].lastPostData.userName|escape:"url"}&amp;always" title="{$comments_coms[ix].lastPostData.userName|username}" /></div>
 						{/if}
@@ -463,22 +466,20 @@
 						</div>
 					</td>
 				{elseif $forum_info.topics_list_lastpost_avatar eq 'y' and $prefs.feature_userPreferences eq 'y'}
-					<td class="text">
+					<td>
 						<img src="tiki-show_user_avatar.php?user={$comments_coms[ix].lastPostData.userName|escape:"url"}$amp;always" title="{$comments_coms[ix].lastPostData.userName|username}" />
 					</td>
 				{/if}
 				{if $forum_info.topics_list_author eq 'y'}
-					<td class="text">
+					<td>
 						{if $forum_info.topics_list_author_avatar eq 'y' and $prefs.feature_userPreferences eq 'y'}
-							<div style="float:left;padding-right:2px">
-								<img src="tiki-show_user_avatar.php?user={$comments_coms[ix].userName|escape:"url"}" title="{$comments_coms[ix].userName|username}" />
-							</div>
+							<div style="float:left;padding-right:2px"><img src="tiki-show_user_avatar.php?user={$comments_coms[ix].userName|escape:"url"}" title="{$comments_coms[ix].userName|username}" /></div>
 						{/if}
 						<div style="float:left">
 							{$comments_coms[ix].userName|userlink}</td>
 						</div>
 				{elseif $forum_info.topics_list_author_avatar eq 'y' and $prefs.feature_userPreferences eq 'y'}
-					<td class="text">
+					<td>
 						<img src="tiki-show_user_avatar.php?user={$comments_coms[ix].userName|escape:"url"}" title="{$comments_coms[ix].userName|username}" />
 					</td>
 				{/if}
@@ -490,14 +491,7 @@
 						{if !empty($comments_coms[ix].nb_attachments)}</a>{/if}
 					</td>
 				{/if}
-				
-				{if $prefs.feature_multilingual eq 'y'}
-					<td>
-						{$forum_info.forumLanguage}
-					</td>
-				{/if}
-				
-				<td class="text" nowrap="nowrap">
+				<td style="text-align:right;" nowrap="nowrap">
 					{if count($comments_coms[ix].attachments) or $tiki_p_admin_forum eq 'y'}
 						{if count($comments_coms[ix].attachments)}
 							<img src='img/icons/attachment.gif' alt='attachments' />
@@ -518,13 +512,15 @@
 						{/if}
 					{/if}
 
-					{if $tiki_p_admin_forum eq 'y'}
+					{if $tiki_p_admin_forum eq 'y' }
 						<a href="tiki-view_forum.php?comments_remove=1&amp;comments_threadId={$comments_coms[ix].threadId}&amp;forumId={$forum_info.forumId}&amp;comments_threshold={$comments_threshold}&amp;comments_offset={$comments_offset}&amp;thread_sort_mode={$thread_sort_mode}&amp;comments_per_page={$comments_per_page}" class="admlink">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 					{/if}
 				</td>
 			</tr>
 		{sectionelse}
-			{norecords _colspan=8 _text="No topics yet"}
+			<tr>
+				<td class="odd" colspan="8">{tr}No topics yet{/tr}</td>
+			</tr>
 		{/section}
 	</table>
 </form>
@@ -570,13 +566,13 @@
 
 <div id="filteroptions" style="display:none;">
 			<form id='time_control' method="post" action="tiki-view_forum.php">
-				{if $comments_offset neq 0}
+				{if $comments_offset neq 0 }
 					<input type="hidden" name="comments_offset" value="{$comments_offset|escape}" />
 				{/if}
-				{if $comments_threadId neq 0}
+				{if $comments_threadId neq 0 }
 					<input type="hidden" name="comments_threadId" value="{$comments_threadId|escape}" />
 				{/if}
-				{if $comments_threshold neq 0}
+				{if $comments_threshold neq 0 }
 					<input type="hidden" name="comments_threshold" value="{$comments_threshold|escape}" />
 				{/if}
 				<input type="hidden" name="thread_sort_mode" value="{$thread_sort_mode|escape}" />
@@ -606,7 +602,7 @@
 							<label for="show_archived">{tr}Show archived posts{/tr}</label>
 						</th>
 						<td>
-							<input style="margin-left:20px" type="checkbox" id="show_archived" name="show_archived" {if $show_archived eq 'y'}checked="checked"{/if} />
+							<input style="margin-left:20px" type="checkbox" id="show_archived" name="show_archived" {if $show_archived eq 'y' }checked="checked"{/if} />
 						</td>
 					</tr>
 				{/if}

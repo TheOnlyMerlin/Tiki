@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -486,8 +486,8 @@ class ZipWriter
 		$this->offset = 0; // Current file position.
 
 		$zipname = addslashes($zipname);
-		header("Content-Type: application/zip; name=\"$zipname\"");
-		header("Content-Disposition: attachment; filename=\"$zipname\"");
+		header ("Content-Type: application/zip; name=\"$zipname\"");
+		header ("Content-Disposition: attachment; filename=\"$zipname\"");
 	//header( "Content-Disposition: inline; filename=$zipname" );
 	}
 

@@ -1,4 +1,4 @@
-{title help="Transitions"}{tr}Transitions{/tr}{/title}
+{title help="Category Transitions"}{tr}Transitions{/tr}{/title}
 
 {tabset}
 	{tab name="{tr}Subset Selection{/tr}"}
@@ -38,13 +38,13 @@
 					{/if}
 				</ul>
 				<p>
-					<label for="transition-group-auto">{tr}Type in a group name and click "enter"{/tr}</label>
-					<input type="text" id="transition-group-auto"/> 
+					<label for="transition-group-auto">{tr}Group name{/tr}</label>
+					<input type="text" id="transition-group-auto"/>
 				</p>
 			</fieldset>
 
 			<p>
-				{tr}Once you have selected at least two, click:{/tr} <input type="submit" value="{tr}Select{/tr}"/> {tr}and then, click the "New/Edit" tab which will appear above.{/tr}
+				<input type="submit" value="{tr}Select{/tr}"/>
 			</p>
 		</form>
 		{jq}
@@ -80,14 +80,34 @@
 	{/tab}
 	{if $available_states|@count > 0}
 	{tab name="{tr}Transitions{/tr}"}
-		{$headerlib->add_dracula()}
-		<div id="graph-canvas" class="graph-canvas" data-graph-nodes="{$graph_nodes|escape}" data-graph-edges="{$graph_edges|escape}"></div>
+		<div id="graph-canvas"></div>
 		<a href="#" id="graph-draw" class="button">{tr}Draw Transition Diagram{/tr}</a>
 		{jq}
 		$('#graph-draw').click( function( e ) {
+			e.preventDefault();
 			$(this).hide();
-			$('#graph-canvas').drawGraph();
-			return false;
+			var width = $('#graph-canvas').width();
+			var height = Math.ceil( width * 9 / 16 );
+			var nodes = {{$graph_nodes}};
+			var edges = {{$graph_edges}};
+
+			var g = new Graph;
+			for( k in nodes ) {
+				g.addNode( nodes[k] );
+			}
+			for( k in edges ) {
+				var style = { directed: true };
+				if( edges[k].preserve ) {
+					style.color = 'red';
+				}
+				g.addEdge( edges[k].from, edges[k].to, style );
+			}
+
+			var layouter = new Graph.Layout.Spring(g);
+			layouter.layout();
+			
+			var renderer = new Graph.Renderer.Raphael('graph-canvas', g, width, height );
+			renderer.draw();
 		} );
 		{/jq}
 		<table class="normal">
@@ -103,11 +123,11 @@
 			<tbody>
 				{foreach from=$transitions item=trans}
 					<tr>
-						<td class="text">{$trans.name|escape}</td>
-						<td class="text">{$trans.from_label|escape} {if $trans.preserve} - <em>{tr}preserved{/tr}</em>{/if}</td>
-						<td class="text">{$trans.to_label|escape}</td>
-						<td class="integer">{self_link transitionId=$trans.transitionId action=edit cookietab=4}{$trans.guards|@count|escape}{/self_link}</td>
-						<td class="action">
+						<td>{$trans.name|escape}</td>
+						<td>{$trans.from_label|escape} {if $trans.preserve} - <em>{tr}preserved{/tr}</em>{/if}</td>
+						<td>{$trans.to_label|escape}</td>
+						<td>{self_link transitionId=$trans.transitionId action=edit cookietab=4}{$trans.guards|@count|escape}{/self_link}</td>
+						<td>
 							{self_link transitionId=$trans.transitionId action=edit cookietab=3}{icon _id=page_edit alt="{tr}Edit{/tr}"}{/self_link}
 							{self_link transitionId=$trans.transitionId action=remove}{icon _id=cross alt="{tr}Remove{/tr}"}{/self_link}
 							<a class="link" href="tiki-objectpermissions.php?objectName={$trans.name|escape:url}&amp;objectType=transition&amp;permType=transition&amp;objectId={$trans.transitionId|escape:"url"}">
@@ -128,7 +148,7 @@
 		<form method="post" action="tiki-admin_transitions.php?action={if $selected_transition}edit{else}new{/if}&amp;cookietab=2" style="text-align: left;">
 			{if $selected_transition}
 				<h2>
-					{tr _0=$selected_transition.name}Edit <em>%0</em>{/tr}
+					{tr 0=$selected_transition.name}Edit <em>%0</em>{/tr}
 					<input type="hidden" name="transitionId" value="{$selected_transition.transitionId|escape}"/>
 					(<a href="tiki-admin_transitions.php">{tr}Create new{/tr}</a>)
 				</h2>

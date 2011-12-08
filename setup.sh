@@ -1,13 +1,13 @@
-# (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-# 
+# $Header: /cvsroot/tikiwiki/tiki/fixperms.sh,v 1.9.2.2 2008-02-07 21:59:14 lphuberdeau Exp $
+
+# Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 # All Rights Reserved. See copyright.txt for details and a complete list of authors.
 # Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-# $Id$
 
 # This file is a replacement for setup.sh
 # in test in 1.9 version
 
-DIRS="backups db dump img/wiki img/wiki_up img/trackers modules/cache temp temp/cache temp/public templates_c templates styles maps whelp mods files tiki_tests/tests temp/unified-index"
+DIRS="backups db dump img/wiki img/wiki_up img/trackers modules/cache temp temp/cache temp/public templates_c templates styles maps whelp mods files tiki_tests/tests"
 
 AUSER=nobody
 AGROUP=nobody
@@ -167,7 +167,6 @@ what to answer, just press enter to each question (to use default value)"
 	fi
 
 #	chmod 664 robots.txt tiki-install.php
-
 	echo " done."
 
 elif [ "$COMMAND" = 'open' ]; then
@@ -187,7 +186,6 @@ elif [ "$COMMAND" = 'open' ]; then
 	fi
 
 	chmod -R a=rwX .
-
 	echo " done"
 else
 	echo "Type 'fix' or 'open' as command argument."

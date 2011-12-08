@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,7 +13,7 @@ class Image extends ImageAbstract
 	var $gdversion;
 	var $havegd = false;
 
-	function __construct($image, $isfile = false, $format = 'jpeg') {
+	function __construct($image, $isfile = false) {
 
 		// Which GD Version do we have?
 		$exts = get_loaded_extensions();
@@ -26,7 +26,6 @@ class Image extends ImageAbstract
 				$this->loaded = false;
 			} else {
 				parent::__construct($image, false);
-				$this->format = $format;
 				$this->loaded = false;
 			}
 		} else {
@@ -61,11 +60,6 @@ class Image extends ImageAbstract
 	function _resize($x, $y) {
 		if ($this->data) {
 			$t = imagecreatetruecolor($x, $y);
-			// trick to have a transparent background for png instead of black
-			imagesavealpha($t, true);			
-			$trans_colour = imagecolorallocatealpha($t, 0, 0, 0, 127);
-			imagefill($t, 0, 0, $trans_colour);
-
 			imagecopyresampled($t, $this->data, 0, 0, 0, 0, $x, $y, $this->get_width(), $this->get_height());
 			$this->data = $t;
 			unset($t);
@@ -94,7 +88,7 @@ class Image extends ImageAbstract
 					imagejpeg($this->data);
 					break;
 				case 'gif':
-					imagegif ($this->data);
+					imagegif($this->data);
 					break;
 				case 'png':
 					imagepng($this->data);
@@ -209,7 +203,7 @@ class Image extends ImageAbstract
 			}
 		}
 		if (!$this->loaded || !$this->data) {
-			$this->_load_data();
+		$this->_load_data();
 		}
 		if ($this->data) {
 			return imagesy($this->data);
@@ -228,7 +222,7 @@ class Image extends ImageAbstract
 			}
 		}
 		if (!$this->loaded || !$this->data) {
-			$this->_load_data();
+		$this->_load_data();
 		}
 		if ($this->data) {
 			return imagesx($this->data);

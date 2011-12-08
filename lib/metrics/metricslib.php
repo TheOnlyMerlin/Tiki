@@ -277,7 +277,7 @@ class MetricsLib extends TikiDb_Bridge
 		$query = "SELECT *
 				FROM metrics_metric
 				WHERE metric_name = ?";
-		$result = $this->query($query, array($metric_name), 1);
+		$res = $this->query($query, array($metric_name), 1);
 		if ($res = $result->fetchRow()) {
 			$res = $this->_metricConvertValues($res);
 		}

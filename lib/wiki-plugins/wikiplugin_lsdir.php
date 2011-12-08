@@ -1,19 +1,29 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
+/*
+ * Tikiwiki LSDIR plugin: lists files in a directory
+ * 
+ * Syntax:
+ * 
+ *  {LSDIR([dir=>/dirpath/],[urlprefix=>prefix],[sortby=>name|atime|ctime|mtime|size],[sortmode=>asc|desc],[filter=>search_text],[limit=>#])}
+ *  {LSDIR}
+ */
 
-function wikiplugin_lsdir_info()
-{
+function wikiplugin_lsdir_help() {
+	return tra("Lists files in a directory").":<br />~np~{LSDIR(dir=>/dirpath/,urlprefix=>http://localhost/,sort=>name,filter=>.ext,limit=>5)}{LSDIR}~/np~";
+}
+
+function wikiplugin_lsdir_info() {
 	return array(
 		'name' => tra('List Directory'),
-		'documentation' => 'PluginLsDir',
+		'documentation' => tra('PluginLsDir'),	
 		'description' => tra('Lists files in a directory'),
 		'prefs' => array( 'wikiplugin_lsdir' ),
 		'validate' => 'all',
-		'icon' => 'pics/icons/folder_find.png',
 		'params' => array(
 			'dir' => array(
 				'required' => true,
@@ -57,8 +67,7 @@ function wikiplugin_lsdir_info()
 	);
 }
 
-function wikiplugin_lsdir($data, $params)
-{
+function wikiplugin_lsdir($data, $params) {
 	global $tikilib;
 //	$dir = '';
 	$dir = $params['dir'];
@@ -127,7 +136,7 @@ function wikiplugin_lsdir($data, $params)
 	}
 	
 	while ($file = readdir($dh)) {
-		if (empty($filter) || stristr($file, $filter)) {
+		if (empty($filter) || stristr($file,$filter)) {
 			//Don't list subdirectories
 			if (!is_dir("$dir/$file")) {
 				if ($sort == 'name') {
@@ -147,7 +156,7 @@ function wikiplugin_lsdir($data, $params)
 		krsort($tmp_array);
 	}
 	
-	foreach ($tmp_array as $filename) {
+	foreach($tmp_array as $filename) {
 		if ($count >= $limit) {
 			break 1;
 		}

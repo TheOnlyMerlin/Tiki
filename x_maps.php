@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,13 +14,13 @@ $xajax = new xajax("x_maps.php");
 $xajax->setFlag('debug',true);
 $xajax->configure('statusMessages',true);
 
-if ($prefs['feature_maps'] != 'y' || $prefs['ajax_xajax'] != 'y') {
+if($prefs['feature_maps'] != 'y' || $prefs['ajax_xajax'] != 'y') {
   $objResponse = new xajaxResponse();
   $objResponse->alert(tra("Feature disabled"));
   return $objResponse;
 }
 
-if ($tiki_p_map_view != 'y') {
+if($tiki_p_map_view != 'y') {
   $objResponse = new xajaxResponse();
   $objResponse->alert(tra("You do not have permissions to view the maps"));
   return $objResponse;

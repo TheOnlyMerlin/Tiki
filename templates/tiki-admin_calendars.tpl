@@ -5,19 +5,18 @@
 {/if}
 
 <div class="navbar">
-	{if !empty($calendarId) && $tiki_p_admin_calendar eq 'y'}
-		{button _text="{tr}Create Calendar{/tr}" href="tiki-admin_calendars.php?cookietab=2"}
+	{if !empty($calendarId)}
+		{button _text="{tr}Create Calendar{/tr}" href="tiki-admin_calendars.php?show=mod"}
 	{/if}
 	{button _text="{tr}View Calendars{/tr}" href="tiki-calendar.php"}
-	{if $tiki_p_admin_calendar eq 'y'}
-		{button _text="{tr}Import{/tr}" href="tiki-calendar_import.php"}
-	{/if}
+	{button _text="{tr}Import{/tr}" href="tiki-calendar_import.php"}
 </div>
 
 {tabset name='tabs_admin_calendars'}
 	{tab name="{tr}List of Calendars{/tr}"}
 		<h2>{tr}List of Calendars{/tr}</h2>
 
+		{if count($calendars) gt 0}
 			{include file='find.tpl'}
 			<table class="normal">
 				<tr>
@@ -49,59 +48,57 @@
 					<th>
 						<a href="tiki-admin_calendars.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'personal_desc'}personal_asc{else}personal_desc{/if}">{tr}Perso{/tr}</a>
 					</th>
-					<th>{tr}Perms{/tr}</th>
-					<th>{tr}Action{/tr}</th>
+					<th>&nbsp;</th>
+					<th>&nbsp;</th>
 				</tr>
 				{cycle values="odd,even" print=false}
 				{foreach key=id item=cal from=$calendars}
 					<tr class="{cycle}">
-						<td class="id">{$id}</td>
-						<td class="text">
-							<a class="tablename" href="tiki-admin_calendars.php?calendarId={$id}&cookietab=2" title="{tr}Edit{/tr}">{$cal.name|escape}</a>
+						<td>{$id}</td>
+						<td>
+							<a class="tablename" href="tiki-admin_calendars.php?calendarId={$id}" title="{tr}Edit{/tr}">{$cal.name|escape}</a>
 							{if $cal.show_calname eq 'y'} {icon _id=layers alt="{tr}Show in popup box{/tr}"}{/if}
 						</td>
-						<td class="text">
+						<td>
 							{$cal.customlocations|yesno}{if $cal.show_location eq 'y'}{icon _id=layers alt="{tr}Show in popup box{/tr}"}{/if}
 						</td>
-						<td class="text">
+						<td>
 							{$cal.customparticipants|yesno}{if $cal.show_participants eq 'y'}{icon _id=layers alt="{tr}Show in popup box{/tr}"}{/if}
 						</td>
-						<td class="text">
+						<td>
 							{$cal.customcategories|yesno}{if $cal.show_category eq 'y'}{icon _id=layers alt="{tr}Show in popup box{/tr}"}{/if}
 						</td>
-						<td class="text">
+						<td>
 							{$cal.customlanguages|yesno}{if $cal.show_language eq 'y'}{icon _id=layers alt="{tr}Show in popup box{/tr}"}{/if}
 						</td>
-						<td class="text">
+						<td>
 							{$cal.customurl|yesno}{if $cal.show_url eq 'y'}{icon _id=layers alt="{tr}Show in popup box{/tr}"}{/if}
 						</td>
-						<td class="text">{$cal.custompriorities|yesno}</td>
-						<td class="text">{$cal.customsubscription|yesno}</td>
-						<td class="text">{$cal.personal|yesno}</td>
-						<td class="text">
+						<td>{$cal.custompriorities|yesno}</td>
+						<td>{$cal.customsubscription|yesno}</td>
+						<td>{$cal.personal|yesno}</td>
+						<td>
 							<a title="{tr}Permissions{/tr}" class="link" href="tiki-objectpermissions.php?objectName={$cal.name|escape:"url"}&amp;objectType=calendar&amp;permType=calendar&amp;objectId={$id}">{if $cal.individual gt 0}{icon _id='key_active' alt="{tr}Permissions{/tr}"}</a>&nbsp;{$cal.individual}{else}{icon _id='key' alt="{tr}Permissions{/tr}"}</a>{/if}
 						</td>
-						<td class="action">
-							<a title="{tr}Edit{/tr}" class="link" href="tiki-admin_calendars.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;calendarId={$id}&cookietab=2">{icon _id='page_edit'}</a>
+						<td>
+							<a title="{tr}Edit{/tr}" class="link" href="tiki-admin_calendars.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;calendarId={$id}">{icon _id='page_edit'}</a>
 							<a title="{tr}View Calendar{/tr}" class="link" href="tiki-calendar.php?calIds[]={$id}">{icon _id='magnifier' alt="{tr}View{/tr}"}</a>
 							<a title="{tr}Delete{/tr}" class="link" href="tiki-admin_calendars.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;drop={$id}&amp;calendarId={$id}" title="{tr}Delete{/tr}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>
 							<a title="{tr}Add Event{/tr}" class="link" href="tiki-calendar_edit_item.php?calendarId={$id}">{icon _id='add' alt="{tr}Add Event{/tr}"}</a>
 						</td>
 					</tr>
-				{foreachelse}
-					{norecords _colspan=12}
 				{/foreach}
 			</table>
 
 			{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
+
+		{else}
+			<b>{tr}No records found{/tr}</b>
+		{/if}
 	{/tab}
-	{if $calendarId gt 0}
-		{assign var="edtab" value="{tr}Edit Calendar{/tr}"}
-	{else}
-		{assign var="edtab" value="{tr}Create Calendar{/tr}"}
-	{/if}
-	{tab name=$edtab}
-		<h2>{$edtab}</h2>
+
+	{tab name="{tr}Create / Edit Calendar{/tr}"}
+		<h2>{tr}Create/Edit Calendars{/tr}</h2>
 
 		<form action="tiki-admin_calendars.php" method="post">
 			<input type="hidden" name="calendarId" value="{$calendarId|escape}" />
@@ -110,7 +107,7 @@
 					{include file='categorize.tpl'}
 				{/if}
 				<tr>
-					<td>{tr}Name:{/tr}</td>
+					<td>{tr}Name{/tr}:</td>
 					<td>
 						<input type="text" name="name" value="{$name|escape}" />
 						{tr}Show in popup box{/tr}
@@ -118,7 +115,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>{tr}Description:{/tr}</td>
+					<td>{tr}Description{/tr}:</td>
 					<td>
 						<textarea name="description" rows="5" wrap="virtual" style="width:100%;">{$description|escape}</textarea>
 						<br />
@@ -127,7 +124,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>{tr}Custom Locations:{/tr}</td>
+					<td>{tr}Custom Locations{/tr}:</td>
 					<td>
 						<select name="customlocations">
 							<option value='y' {if $customlocations eq 'y'}selected="selected"{/if}>{tr}Yes{/tr}</option>
@@ -138,7 +135,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>{tr}Custom Participants:{/tr}</td>
+					<td>{tr}Custom Participants{/tr}:</td>
 					<td>
 						<select name="customparticipants">
 							<option value='y' {if $customparticipants eq 'y'}selected="selected"{/if}>{tr}Yes{/tr}</option>
@@ -149,7 +146,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>{tr}Custom Classifications:{/tr}</td>
+					<td>{tr}Custom Classifications{/tr}:</td>
 					<td>
 						<select name="customcategories">
 							<option value='y' {if $customcategories eq 'y'}selected="selected"{/if}>{tr}Yes{/tr}</option>
@@ -160,7 +157,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>{tr}Custom Languages:{/tr}</td>
+					<td>{tr}Custom Languages{/tr}:</td>
 					<td>
 						<select name="customlanguages">
 							<option value='y' {if $customlanguages eq 'y'}selected="selected"{/if}>{tr}Yes{/tr}</option>
@@ -171,7 +168,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>{tr}Custom URL:{/tr}</td>
+					<td>{tr}Custom URL{/tr}:</td>
 					<td>
 						<select name="options[customurl]">
 							<option value='y' {if $customurl eq 'y'}selected="selected"{/if}>{tr}Yes{/tr}</option>
@@ -183,7 +180,7 @@
 				</tr>
 				{if $prefs.feature_newsletters eq 'y'}
 					<tr>
-						<td>{tr}Custom Subscription List:{/tr}</td>
+						<td>{tr}Custom Subscription List{/tr}:</td>
 						<td>
 							<select name="customsubscription">
 								<option value='y' {if $customsubscription eq 'y'}selected="selected"{/if}>{tr}Yes{/tr}</option>
@@ -193,7 +190,7 @@
 					</tr>
 				{/if}
 				<tr>
-					<td>{tr}Custom Priorities:{/tr}</td>
+					<td>{tr}Custom Priorities{/tr}:</td>
 					<td>
 						<select name="custompriorities">
 							<option value='y' {if $custompriorities eq 'y'}selected="selected"{/if}>{tr}Yes{/tr}</option>
@@ -202,7 +199,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>{tr}Personal Calendar:{/tr}</td>
+					<td>{tr}Personal Calendar{/tr}:</td>
 					<td>
 						<select name="personal">
 							<option value='y' {if $personal eq 'y'}selected="selected"{/if}>{tr}Yes{/tr}</option>
@@ -211,19 +208,27 @@
 					</td>
 				</tr>
 				<tr>
-					<td>{tr}Start of day:{/tr}</td>
+					<td>{tr}Start of day{/tr}:</td>
 					<td>
-						{html_select_time prefix="startday_" time=$info.startday display_minutes=false display_seconds=false use_24_hours=$use_24hr_clock}
+						<select name="startday_Hour">
+							{foreach key=h item=d from=$hours}
+								<option value="{$h}"{if $h eq $startday} selected="selected"{/if}>{$d}</option>
+							{/foreach}
+						</select>
 					</td>
 				</tr>
 				<tr>
-					<td>{tr}End of day:{/tr}</td>
+					<td>{tr}End of day{/tr}:</td>
 					<td>
-						{html_select_time prefix="endday_" time=$info.endday display_minutes=false display_seconds=false use_24_hours=$use_24hr_clock}
+						<select name="endday_Hour">
+							{foreach key=h item=d from=$hours}
+								<option value="{$h}"{if $h eq $endday} selected="selected"{/if}>{$d}</option>
+							{/foreach}
+						</select>
 					</td>
 				</tr>
 				<tr>
-					<td>{tr}Days to display:{/tr}</td>
+					<td>{tr}Days to display{/tr}:</td>
 					<td>
 						{section name="viewdays" start=0 loop=7}
 							{$days_names[$smarty.section.viewdays.index]}&nbsp;<input type="checkbox" name="viewdays[]" value="{$smarty.section.viewdays.index}" {if !empty($info.viewdays) && in_array($smarty.section.viewdays.index,$info.viewdays)} checked="checked" {/if} />
@@ -231,7 +236,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>{tr}Standard Colors:{/tr}</td>
+					<td>{tr}Standard Colors{/tr}:</td>
 					<td>
 						<select name="options[customcolors]" onChange="javascript:document.getElementById('fgColorField').disabled=(this.options[this.selectedIndex].value != 0);document.getElementById('bgColorField').disabled=(this.options[this.selectedIndex].value != 0);">
 							<option value="" />
@@ -246,13 +251,13 @@
 					</td>
 				</tr>
 				<tr>
-					<td>{tr}Custom foreground color:{/tr}</td>
+					<td>{tr}Custom foreground color{/tr}:</td>
 					<td>
 						<input id="fgColorField" type="text" name="options[customfgcolor]" value="{$customfgcolor}" size="6" /><i>{tr}Ex:{/tr} FFFFFF</i>
 					</td>
 				</tr>
 				<tr>
-					<td>{tr}Custom background color:{/tr}</td>
+					<td>{tr}Custom background color{/tr}:</td>
 					<td>
 						<input id="bgColorField" type="text" name="options[custombgcolor]" value="{$custombgcolor}" size="6" /><i>{tr}Ex:{/tr} 000000</i>
 					</td>
@@ -265,7 +270,7 @@
 							<option value='n' {if $info.customstatus eq 'n'}selected="selected"{/if}>{tr}No{/tr}</option>
 						</select>
 						<br />
-						{tr}Default event status:{/tr}
+						{tr}Default event status{/tr}:
 						{html_options name='options[defaulteventstatus]' options=$eventstatus selected=$defaulteventstatus}
 						<br />
 						{tr}Show in popup box{/tr}<input type="checkbox" name="show[status]" value="on"{if $info.show_status eq 'y'} checked="checked"{/if} />
@@ -299,7 +304,7 @@
 				</tr>
 			</table>
 			<br />
-			{if $calendarId ne 0}{$name|escape} : {/if}
+			{if $calendarId}{$name|escape} : {/if}
 			{tr}Delete events older than:{/tr} <input type="text" name="days" value="0"/> {tr}days{/tr} <input type="submit" name="clean" value="{tr}Delete{/tr}" />
 		</form>
 	{/tab}

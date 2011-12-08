@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -36,6 +36,6 @@ if (!in_array($_REQUEST['validator'], $validatorslib->available)) {
 $validatorslib->setInput($_REQUEST["input"]);
 $result = $validatorslib->validateInput($_REQUEST["validator"], $_REQUEST["parameter"], $_REQUEST["message"]);
 
-header('Content-Type: application/json');
-echo json_encode($result);
+header( 'Content-Type: application/json' );
+echo json_encode( $result );
 

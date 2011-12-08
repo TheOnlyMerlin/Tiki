@@ -1,27 +1,34 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_avatar_info()
-{
+// Displays the user Avatar
+// Use:
+// {AVATAR()}username{AVATAR}
+//  (page=>some)         Avatar is a link to "some"
+//  (float=>left|right)  Avatar is floated to left or right
+//
+// If no avatar nothing is displayed
+function wikiplugin_avatar_help() {
+	return tra("Displays the user Avatar").":<br />~np~{AVATAR(page=>SomeWikiPage,float=>left|right)}".tra("username")."{AVATAR}~/np~";
+}
+
+function wikiplugin_avatar_info() {
 	return array(
 		'name' => tra('Avatar'),
-		'documentation' => 'PluginAvatar',
-		'description' => tra('Display a user\'s avatar'),
+		'documentation' => tra('PluginAvatar'),
+		'description' => tra('Displays the user Avatar'),
 		'prefs' => array('wikiplugin_avatar'),
 		'body' => tra('username'),
-		'icon' => 'pics/icons/user.png',
 		'params' => array(
 			'page' => array(
 				'required' => false,
 				'name' => tra('Page'),
-				'description' => tra(
-								'The wiki page the avatar will link to. If empty and the user\'s information is public, 
-								then the avatar will link automatically the that user\'s user information page'
-				),
+				'description' => tra('The wiki page the avatar will link to. If empty and the user\'s information is public, 
+										then the avatar will link automatically the that user\'s user information page'),
 				'default' => ''
 			),
 			'float' => array(
@@ -39,11 +46,12 @@ function wikiplugin_avatar_info()
 	);
 }
 
-function wikiplugin_avatar($data, $params)
-{
-	global $tikilib, $userlib;
+function wikiplugin_avatar($data, $params) {
+	global $tikilib;
 
-	extract($params, EXTR_SKIP);
+	global $userlib;
+
+	extract ($params,EXTR_SKIP);
 
 	if (isset($float))
 		$avatar = $tikilib->get_user_avatar($data, $float);

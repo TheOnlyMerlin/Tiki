@@ -1,32 +1,65 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_module_info()
-{
+/*
+Displays a module inline in a wiki page
+
+Parameters
+module name : module=>lambda
+float : float=>(left|none|right)
+max : max=>20
+np : np=>(0|1) # (for non-parsed content)
+flip : flip=>(n|y)
+decorations : decorations=>(y|n)
+module args : arg=>value (depends on module)
+
+Example:
+{MODULE(module=>last_modified_pages,float=>left,max=>3,maxlen=>22)}
+{MODULE}
+
+about module params : all params are passed in $module_params
+so if you need to use params just add them in MODULE()
+
+*/
+
+/**
+ * \warning zaufi: using cached module template is break the idea of
+ *   having different (than system default) parameters for modules...
+ *   so cache checking and maintaining currently commented out
+ *   'till another solution will be implemented :)
+ */
+
+function wikiplugin_module_help() {
+	return tra("Displays a module inline in a wiki page").":<br />~np~{MODULE(module=>,float=>left|right|none,decorations=>y|n,flip=>y|n,max=>,np=>0|1,notitle=y|n,args...)}{MODULE}~/np~";
+}
+
+function wikiplugin_module_info() {
 	global $modlib, $smarty;
 	require_once ('lib/modules/modlib.php');
 
 	$all_modules = $modlib->get_all_modules();
-	$all_modules_info = array_combine($all_modules, array_map(array( $modlib, 'get_module_info' ), $all_modules));
-	uasort($all_modules_info, 'compare_names');
+	$all_modules_info = array_combine( 
+		$all_modules, 
+		array_map( array( $modlib, 'get_module_info' ), $all_modules ) 
+	);
+	asort($all_modules_info);
 	$modules_options = array();
-	foreach ($all_modules_info as $module => $module_info) {
+	foreach($all_modules_info as $module => $module_info) {
 		$modules_options[] = array('text' => $module_info['name'] . ' (' . $module . ')', 'value' => $module);
 	}
 
 	return array(
 		'name' => tra('Insert Module'),
-		'documentation' => 'PluginModule',
-		'description' => tra('Display a module'),
+		'documentation' => tra('PluginModule'),
+		'description' => tra('Displays a module inline in a wiki page. More parameters can be added, not supported by User Interface.'),
 		'prefs' => array( 'wikiplugin_module' ),
 		'validate' => 'all',
 		'icon' => 'pics/icons/module.png',
 		'extraparams' =>true,
-		'tags' => array( 'basic' ),
 		'params' => array(
 			'module' => array(
 				'required' => true,
@@ -72,19 +105,19 @@ function wikiplugin_module_info()
 			'max' => array(
 				'required' => false,
 				'name' => tra('Max'),
-				'description' => tra('Number of rows (default: 10)'),
+				'description' => 'Number of rows (default: 10)',
 				'default' => 10,
 				'advanced' => true,
 			),
 			'np' => array(
 				'required' => false,
 				'name' => tra('Parse'),
-				'description' => tra('Parse wiki syntax.') . ' ' . tra('Default:') . ' ' . tra('No'),
+				'description' => tra('Parse wiki syntax (default is to parse)'),
 				'default' => '1',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => '0'), 
-					array('text' => tra('No'), 'value' => '1'), 
+					array('text' => tra('Yes'), 'value' => '1'), 
+					array('text' => tra('No'), 'value' => '0'), 
 				),
 				'advanced' => true,
 			),
@@ -102,13 +135,12 @@ function wikiplugin_module_info()
 	);
 }
 
-function wikiplugin_module($data, $params)
-{
+function wikiplugin_module($data, $params) {
 	global $tikilib, $cache_time, $smarty, $dbTiki, $prefs, $ranklib, $tikidomain, $user, $tiki_p_tasks, $tiki_p_create_bookmarks, $imagegallib, $module_params;
 
 	$out = '';
 	
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 
 	if (!isset($float)) {
 		$float = 'nofloat';
@@ -158,7 +190,7 @@ function wikiplugin_module($data, $params)
 		);
 
 		global $modlib; require_once 'lib/modules/modlib.php';
-		$out = $modlib->execute_module($module_reference);
+		$out = $modlib->execute_module( $module_reference );
 	}
 
 	if ($out) {

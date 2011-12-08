@@ -1,21 +1,28 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_googledoc_info()
-{
+/*
+ * Google Docs plugin. Creates an iframe and loads the Google Doc within the frame.
+ *
+ * MatWho 13/09/08
+ */
+
+function wikiplugin_googledoc_help() {
+	return tra("googledoc").":~np~{GOOGLEDOC(type=sheet|doc|pres|spreadsheet|document|presentation, key=XXXXX name=xxx, size=small|medium|large, width=100, height=100, align=top|middle|bottom|left|right, frameborder=1|0, marginheight=0, marginwidth=0, scrolling=yes|no|auto, editLink=top|bottom|both)}{GOOGLEDOC}~/np~";
+}
+
+function wikiplugin_googledoc_info() {
 	return array(
 		'name' => tra('Google Doc'),
-		'documentation' => 'PluginGoogleDoc',
-		'description' => tra('Display a Google document'),
+		'documentation' => tra('PluginGoogleDoc'),
+		'description' => tra('Displays a Google document'),
 		'prefs' => array( 'wikiplugin_googledoc' ),
 		'body' => tra('Leave this empty.'),
 //		'validate' => 'all',
-		'icon' => 'pics/icons/google.png',
-		'tags' => array( 'basic' ),		
 		'params' => array(
 			'type' => array(
 				'safe' => true,
@@ -92,7 +99,7 @@ function wikiplugin_googledoc_info()
 			'frameborder' => array(
 				'safe' => true,
 				'required' => false,
-				'name' => tra('Frame Border'),
+				'name' => 'Frame Border',
 				'description' => tra('Choose whether to show a border around the iframe'),
 				'default' => 0,
 				'options' => array(
@@ -146,9 +153,9 @@ function wikiplugin_googledoc_info()
 	);
 }
 
-function wikiplugin_googledoc($data, $params)
-{
-	extract($params, EXTR_SKIP);
+function wikiplugin_googledoc($data, $params) {
+
+	extract ($params, EXTR_SKIP);
 	
 	if (empty($type)) {
 		return tra('Required parameter "type" missing');
@@ -157,7 +164,7 @@ function wikiplugin_googledoc($data, $params)
 		return tra('Required parameter "key" missing');
 	}
 
-	if ($type =="sheet" or $type=="spreadsheet") {
+    if ($type =="sheet" or $type=="spreadsheet") {
 		$srcUrl="\"http://spreadsheets.google.com/pub?key=$key &output=html&widget=true\"";
 		$editHtml=" <P><A HREF=$srcUrl Target=\"$frameName\">Edit this Google Document</A></P>";
 	}
@@ -184,15 +191,9 @@ function wikiplugin_googledoc($data, $params)
 	$ret .= '<iframe ';
 	$ret .= " name=\"$frameName\"";
 	
-	if ($size == 'small') {
-		$width= 410; $height= 342;
-	}
-	if ($size == 'medium') {
-		$width= 555; $height= 451;
-	}
-	if ($size == 'large') {
-		$width= 700; $height= 559;
-	}
+	if($size == 'small') { $width= 410; $height= 342;}
+	if($size == 'medium'){ $width= 555; $height= 451;}
+	if($size == 'large') { $width= 700; $height= 559;}
 	
 	if (isset($width)) {
 		$ret .= " width=\"$width\"";

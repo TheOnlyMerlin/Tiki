@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -69,5 +69,6 @@ $smarty->assign_by_ref('listdistance', $listdistance);
 $smarty->assign_by_ref('listuserscountry', $listuserscountry);
 $section = 'users';
 include_once ('tiki-section_options.php');
+// Display the template
 $smarty->assign('mid', 'tiki-list_users.tpl');
 $smarty->display("tiki.tpl");

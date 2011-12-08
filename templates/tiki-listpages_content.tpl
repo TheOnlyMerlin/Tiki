@@ -5,11 +5,7 @@
 {/if}
 
 {if $tiki_p_remove eq 'y' or $prefs.feature_wiki_multiprint eq 'y'}
-	{if $checkboxes_on eq 'n'}
-		{assign var='checkboxes_on' value='n'}
-	{else}
-		{assign var='checkboxes_on' value='y'}
-	{/if}
+	{assign var='checkboxes_on' value='y'}
 {else}
 	{assign var='checkboxes_on' value='n'}
 {/if}
@@ -150,13 +146,6 @@
 			<th>{tr}Categories{/tr}</th>
 		{/if}
 
-		{if $prefs.wiki_list_rating eq 'y'}
-			{assign var='cntcol' value=$cntcol+1}
-			<th>
-				{self_link _sort_arg='sort_mode' _sort_field='rating' _title="{tr}Ratings{/tr}"}{tr}Ratings{/tr}{/self_link}
-			</th>
-		{/if}
-
 		{if $show_actions eq 'y'}
 			{assign var='cntcol' value=$cntcol+1}
 			<th>{tr}Actions{/tr}</th>
@@ -171,20 +160,22 @@
 
 	<tr class="{cycle}">
 		{if $checkboxes_on eq 'y'}
-			<td class="checkbox">
+			<td>
 				<input type="checkbox" name="checked[]" value="{$listpages[changes].pageName|escape}"/>
 			</td>
 		{/if}
 
 		{if $prefs.wiki_list_id eq 'y'}
-			<td class="integer">
+			<td>
 				<a href="{$listpages[changes].pageName|sefurl}" class="link" title="{tr}View page{/tr}&nbsp;{$listpages[changes].pageName|escape}">{$listpages[changes].page_id}</a>
 			</td>
 		{/if}
 
 		{if $prefs.wiki_list_name eq 'y'}
-			<td class="text">
-				{object_link type=wiki id=$listpages[changes].pageName url=$listpages[changes].pageName|sefurl:'wiki':'':$all_langs title=$listpages[changes].pageName|truncate:$prefs.wiki_list_name_len:"...":true}
+			<td>
+				<a href="{$listpages[changes].pageName|sefurl:'wiki':'':$all_langs}" class="link" title="{tr}View page{/tr}&nbsp;{$listpages[changes].pageName|escape}">
+					{$listpages[changes].pageName|truncate:$prefs.wiki_list_name_len:"...":true|escape}
+				</a>
 				{if $prefs.wiki_list_description eq 'y' && $listpages[changes].description neq ""}
 					<div class="subcomment">
 						{$listpages[changes].description|truncate:$prefs.wiki_list_description_len:"...":true}
@@ -197,7 +188,7 @@
 		{/if}
 
 		{foreach from=$wplp_used key=lc item=ln}
-			<td class="text">
+			<td>
 				{if $listpages[changes].translations[$lc]}
 					<a href="{$listpages[changes].translations[$lc]|sefurl}" class="link" title="{tr}View page{/tr}&nbsp;{$listpages[changes].translations[$lc]|escape}">
 						{$listpages[changes].translations[$lc]|escape}
@@ -207,13 +198,13 @@
 		{/foreach}
 
 		{if $prefs.wiki_list_hits eq 'y'}	
-			<td class="integer">
+			<td style="text-align:right;">
 				{$listpages[changes].hits}
 			</td>
 		{/if}
 
 		{if $prefs.wiki_list_lastmodif eq 'y' or $prefs.wiki_list_comment eq 'y'}
-			<td class="date">
+			<td>
 				{if $prefs.wiki_list_lastmodif eq 'y'}
 					<div>{$listpages[changes].lastModif|tiki_short_datetime}</div>
 				{/if}
@@ -226,25 +217,25 @@
 		{/if}
 
 		{if $prefs.wiki_list_creator eq 'y'}
-			<td class="username">
+			<td>
 				{$listpages[changes].creator|userlink}
 			</td>
 		{/if}
 
 		{if $prefs.wiki_list_user eq 'y'}
-			<td class="username">
+			<td>
 				{$listpages[changes].user|userlink}
 			</td>
 		{/if}
 
 		{if $prefs.wiki_list_lastver eq 'y'}
-			<td class="integer">
+			<td style="text-align:right;">
 				{$listpages[changes].version}
 			</td>
 		{/if}
 
 		{if $prefs.wiki_list_status eq 'y'}
-			<td class="icon">
+			<td style="text-align:center;">
 				{if $listpages[changes].flag eq 'locked'}
 					{icon _id='lock' alt="{tr}Locked{/tr}"}
 				{else}
@@ -255,75 +246,68 @@
 
 		{if $prefs.wiki_list_versions eq 'y'}
 			{if $prefs.feature_history eq 'y' and $tiki_p_wiki_view_history eq 'y'}
-				<td class="integer">
+				<td style="text-align:right;">
 					<a class="link" href="tiki-pagehistory.php?page={$listpages[changes].pageName|escape:"url"}">
 						{$listpages[changes].versions}
 					</a>
 				</td>
 			{else}
-				<td class="integer">
+				<td style="text-align:right;">
 					{$listpages[changes].versions}
 				</td>
 			{/if}
 		{/if}
 
 		{if $prefs.wiki_list_links eq 'y'}
-			<td class="integer">
+			<td style="text-align:right;">
 				{$listpages[changes].links}
 			</td>
 		{/if}
 
 		{if $prefs.wiki_list_backlinks eq 'y'}
 			{if $prefs.feature_backlinks eq 'y'}
-				<td class="integer">
+				<td style="text-align:right;">
 					<a class="link" href="tiki-backlinks.php?page={$listpages[changes].pageName|escape:"url"}">
 						{$listpages[changes].backlinks}
 					</a>
 				</td>
 			{else}
-				<td class="integer">{$listpages[changes].backlinks}</td>
+				<td style="text-align:right;">{$listpages[changes].backlinks}</td>
 			{/if}
 		{/if}
 
 		{if $prefs.wiki_list_size eq 'y'}
-			<td class="integer">{$listpages[changes].len|kbsize}</td>
+			<td style="text-align:right;">{$listpages[changes].len|kbsize}</td>
 		{/if}
 
 		{if $prefs.wiki_list_language eq 'y'}
-			<td class="text">
+			<td>
 				{$listpages[changes].lang}
 			</td>
 		{/if}
 
 		{if $prefs.wiki_list_categories eq 'y'}
-			<td class="text">
-				{foreach $listpages[changes].categname as $categ}
-					{if !$categ@first}<br />{/if}
+			<td>
+				{foreach item=categ from=$listpages[changes].categname name=categ}
+					{if !$smarty.foreach.categ.first}<br />{/if}
 					{$categ|escape}
 				{/foreach}
 			</td>
 		{/if}
 
 		{if $prefs.wiki_list_categories_path eq 'y'}
-			<td class="text">
-				{foreach $listpages[changes].categpath as $categpath}
-					{if !$categpath@first}<br />{/if}
+			<td>
+				{foreach item=categpath from=$listpages[changes].categpath}
+					{if !$smarty.foreach.categpath.first}<br />{/if}
 					{$categpath|escape}
 				{/foreach}
 			</td>
 		{/if}
 
-		{if $prefs.wiki_list_rating eq 'y'}
-			<td class="integer">
-				{$listpages[changes].rating}
-			</td>
-		{/if}
-
 		{if $show_actions eq 'y'}
-			<td class="action">
+			<td>
 				{if $listpages[changes].perms.tiki_p_edit eq 'y'}
 					<a class="link" href="tiki-editpage.php?page={$listpages[changes].pageName|escape:"url"}">{icon _id='page_edit'}</a>
-					<a class="link" href="tiki-copypage.php?page={$listpages[changes].pageName|escape:"url"}&amp;version=last">{icon _id='page_copy' alt="{tr}Copy{/tr}"}</a>
 				{/if}
 
 				{if $prefs.feature_history eq 'y' and $listpages[changes].perms.tiki_p_wiki_view_history eq 'y'}
@@ -341,20 +325,16 @@
 				{/if}
 			</td>
 		{/if}
+
+		{cycle print=false}
 		</tr>
 	{sectionelse}
-		{capture assign='find_htmlescaped'}{$find|escape}{/capture}
-		{if $find ne ''}	
-			{norecords _colspan=$cntcol _text="{tr}No pages found with:{/tr} &quot;$find_htmlescaped&quot;."}
-		{elseif $find ne '' && $initial ne ''}
-			{norecords _colspan=$cntcol _text="{tr}No pages found with:{/tr} &quot;$find_htmlescaped&quot; and starting with &quot; $initial &quote;."}
-		{elseif $find ne '' && $aliases_were_found == 'y'}
-			{norecords _colspan=$cntcol _text="{tr}No pages found with:{/tr} &quot;$find_htmlescaped&dquot;. <br/>However, some page aliases fitting the query were found (see Aliases section above)."}
-		{elseif $find ne '' && $initial ne '' && $aliases_were_found == 'y'}
-			{norecords _colspan=$cntcol _text="{tr}No pages found with:{/tr} &quot;$find_htmlescaped&quot;and starting with &quot; $initial &quote;. <br/>However, some page aliases fitting the query were found (see Aliases section above)."}
-		{else}
-			{norecords _colspan=$cntcol _text="{tr}No pages found.{/tr}"}
-		{/if}
+		<tr>
+			<td colspan="{$cntcol}" class="odd">
+				<b>{tr}No pages found{/tr}{if $find ne ''} {tr}with{/tr} &quot;{$find|escape}&quot;{/if}{if $initial ne ''}{tr} {if $find ne ''}and {/if}starting with{/tr} &quot;{$initial}&quot;{/if}.</b>
+				{if $aliases_were_found == 'y'}<br /><b>{tr}However, some page aliases fitting the query were found (see Aliases section above).{/tr}</b>{/if}
+			</td>
+		</tr>
 	{/section}
 </table>
 

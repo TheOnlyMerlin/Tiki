@@ -1,9 +1,12 @@
-<!DOCTYPE html>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
     <link rel="StyleSheet"  href="styles/{$prefs.style}" type="text/css" />
+    {include file='bidi.tpl'}
     <title>Live support:{$role} window</title>
     {literal}
 	<script type="text/javascript" src="lib/live_support/live-support.js">
@@ -11,7 +14,7 @@
 	{/literal}
 	{$headerlib->output_headers()}
   </head>
-  <body onunload="javascript:chat_close(document.getElementById('role').value,document.getElementById('username').value);" style="background-color: white">
+  <body onunload="javascript:chat_close(document.getElementById('role').value,document.getElementById('username').value);">
   	<input type="hidden" id="reqId" value="{$reqId|escape}" />
   	<input type="hidden" id="senderId" value="{$senderId|escape}" />
   	<input type="hidden" id="role" value="{$role|escape}" />

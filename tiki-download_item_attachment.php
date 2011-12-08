@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -33,8 +33,7 @@ if (isset($info['user']) && $info['user'] == $user) {
 } elseif (!empty($itemUser) && $user == $itemUser) {
 } elseif ((isset($itemInfo['status']) and $itemInfo['status'] == 'p' && !$tikilib->user_has_perm_on_object($user, $itemInfo['trackerId'], 'tracker', 'tiki_p_view_trackers_pending')) 
 	||  (isset($itemInfo['status']) and $itemInfo['status'] == 'c' && !$tikilib->user_has_perm_on_object($user, $itemInfo['trackerId'], 'tracker', 'tiki_p_view_trackers_closed'))
-	||  ($tiki_p_admin_trackers != 'y' && !$tikilib->user_has_perm_on_object($user, $itemInfo['trackerId'], 'tracker', 'tiki_p_view_trackers'))
-	||  ($tiki_p_admin_trackers != 'y' && !$tikilib->user_has_perm_on_object($user, $itemInfo['trackerId'], 'tracker', 'tiki_p_tracker_view_attachments'))
+	||  ($tiki_p_admin_trackers != 'y' && !$tikilib->user_has_perm_on_object($user, $itemInfo['trackerId'], 'tracker', 'tiki_p_view_trackers') )
     ) {
 	$smarty->assign('errortype', 401);
 		$smarty->assign('msg', tra('Permission denied'));
@@ -55,10 +54,10 @@ $content = &$info["data"];
 session_write_close();
 //print("File:$file<br />");
 //die;
-header("Content-type: $type");
+header ("Content-type: $type");
 if (isset($_REQUEST["display"])) {
 //die;
-	header("Content-Disposition: inline; filename=\"".urlencode($file)."\"");
+	header ("Content-Disposition: inline; filename=\"".urlencode($file)."\"");
 } else {
 	header( "Content-Disposition: attachment; filename=\"$file\"" );
 }

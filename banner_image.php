@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -19,7 +19,7 @@ if (is_file($bannercachefile) and (!isset($_REQUEST["reload"]))) {
 	$size = getimagesize($bannercachefile);
 	$type = $size['mime'];
 
-	header("Content-type: $type");
+	header ("Content-type: $type");
 	readfile($bannercachefile);
 	exit;
 }
@@ -29,11 +29,7 @@ require_once ('tiki-setup.php');
 $access->check_feature('feature_banners');
 
 $bannercachefile = $prefs['tmpDir'];
-
-if ($tikidomain) { 
-	$bannercachefile .= "/$tikidomain"; 
-}
-
+if ($tikidomain) { $bannercachefile.= "/$tikidomain"; }
 $bannercachefile.= "/banner.". (int)$_REQUEST["id"];
 
 if (is_file($bannercachefile) and (!isset($_REQUEST["reload"]))) {
@@ -51,13 +47,13 @@ if (is_file($bannercachefile) and (!isset($_REQUEST["reload"]))) {
 	$type = $data["imageType"];
 	$data = $data["imageData"];
 	if ($data) {
-		$fp = fopen($bannercachefile, "wb");
-		fputs($fp, $data);
+		$fp = fopen($bannercachefile,"wb");
+		fputs($fp,$data);
 		fclose($fp);
 	}
 }
 
-header("Content-type: $type");
+header ("Content-type: $type");
 if (is_file($bannercachefile)) {
 	readfile($bannercachefile);
 } else {

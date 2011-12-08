@@ -1,9 +1,13 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
+
+require_once 'lib/core/Perms/Reflection/Container.php';
+require_once 'lib/core/Perms/Reflection/PermissionSet.php';
+require_once 'lib/core/Perms/Reflection/PermissionComparator.php';
 
 class Perms_Applier
 {
@@ -18,8 +22,6 @@ class Perms_Applier
 		foreach( $this->objects as $object ) {
 			$this->applyOnObject( $object, $set );
 		}
-		$cachelib = TikiLib::lib('cache');
-		$cachelib->empty_type_cache('fgals_perms');
 	}
 
 	function restrictPermissions( array $permissions ) {
@@ -30,10 +32,10 @@ class Perms_Applier
 		$current = $object->getDirectPermissions();
 		$parent = $object->getParentPermissions();
 
-		if ( $parent ) {
+		if( $parent ) {
 			$comparator = new Perms_Reflection_PermissionComparator( $set, $parent );
 
-			if ( $comparator->equal() && $this->isPossible( $current, $set ) ) {
+			if( $comparator->equal() && $this->isPossible( $current, $set ) ) {
 				$null = new Perms_Reflection_PermissionSet;
 
 				$this->realApply( $object, $current, $null );
@@ -45,7 +47,7 @@ class Perms_Applier
 	}
 
 	private function isPossible( $current, $target ) {
-		if ( $this->restriction === false ) {
+		if( $this->restriction === false ) {
 			return true;
 		}
 
@@ -54,7 +56,7 @@ class Perms_Applier
 		
 		foreach( $changes as $addition ) {
 			list( $group, $permission ) = $addition;
-			if ( ! isset( $this->restriction[$permission] ) ) {
+			if( ! isset( $this->restriction[$permission] ) ) {
 				return false;
 			}
 		}
@@ -77,7 +79,7 @@ class Perms_Applier
 	}
 
 	private function attempt( $object, $method, $group, $permission ) {
-		if ( $this->restriction === false || isset( $this->restriction[$permission] ) ) {
+		if( $this->restriction === false || isset( $this->restriction[$permission] ) ) {
 			call_user_func( array( $object, $method ), $group, $permission );
 		}
 	}

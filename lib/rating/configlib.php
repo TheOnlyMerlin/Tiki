@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -33,19 +33,19 @@ class RatingConfigLib extends TikiDb_Bridge
 	function get_expired_object_list( $max ) {
 		global $prefs;
 
-		if ( $prefs['feature_wiki'] == 'y' ) {
+		if( $prefs['feature_wiki'] == 'y' ) {
 			$this->query( 'INSERT IGNORE INTO `tiki_rating_obtained` ( `ratingConfigId`, `type`, `object`, `value`, `expire` )
 				SELECT `ratingConfigId`, "wiki page", `page_id`, 0, 0
 				FROM `tiki_pages`, `tiki_rating_configs`' );
 		}
 
-		if ( $prefs['feature_wiki_comments'] == 'y' || $prefs['feature_forums'] == 'y' ) {
+		if( $prefs['feature_wiki_comments'] == 'y' || $prefs['feature_forums'] == 'y' ) {
 			$this->query( 'INSERT IGNORE INTO `tiki_rating_obtained` ( `ratingConfigId`, `type`, `object`, `value`, `expire` )
 				SELECT `ratingConfigId`, "comment", `threadId`, 0, 0
 				FROM `tiki_comments`, `tiki_rating_configs`' );
 		}
 
-		if ( $prefs['feature_articles'] == 'y' ) {
+		if( $prefs['feature_articles'] == 'y' ) {
 			$this->query( 'INSERT IGNORE INTO `tiki_rating_obtained` ( `ratingConfigId`, `type`, `object`, `value`, `expire` )
 				SELECT `ratingConfigId`, "article", `articleId`, 0, 0
 				FROM `tiki_articles`, `tiki_rating_configs`' );

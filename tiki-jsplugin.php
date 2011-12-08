@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -20,8 +20,11 @@ header('content-type: application/x-javascript');
 header('Cache-Control: no-cache, pre-check=0, post-check=0');
 header('Expires: ' . gmdate('D, d M Y H:i:s', time()+3600*24*365*10) . ' GMT');
 
-require_once 'tiki-filter-base.php';
+require_once('lib/init/initlib.php');
+TikiInit::appendIncludePath(dirname(__FILE__) . '/lib/core');
 
+// Apply filters on the body
+include 'lib/core/TikiFilter.php';
 $filter = TikiFilter::get('xss');
 $_REQUEST['plugin'] = isset($_GET['plugin']) ? $_GET['plugin'] = $filter->filter($_GET['plugin']) : '';
 $filter = TikiFilter::get('alpha');
@@ -31,20 +34,19 @@ $all = empty( $_REQUEST['plugin'] );
 
 $files = array();
 
-if ( $all )
+if( $all )
 {
 	$cache = "temp/cache/wikiplugin_ALL_".$_REQUEST['language'];
 
-	if ( file_exists( $cache ) )
+	if( file_exists( $cache ) )
 	{
 		readfile( $cache );
 		exit;
 	}
 
 	include 'tiki-setup.php';
-	
-	$parserlib = TikiLib::lib('parser');
-	$plugins = $parserlib->plugin_get_list();
+
+	$plugins = $tikilib->plugin_get_list();
 }
 else
 {
@@ -52,7 +54,7 @@ else
 
 	$cache = 'temp/cache/wikiplugin_'.$plugin.'_'.$_REQUEST['language'];
 
-	if ( file_exists( $cache ) )
+	if( file_exists( $cache ) )
 	{
 		readfile( $cache );
 		exit;
@@ -65,11 +67,10 @@ else
 
 ob_start();
 
-$parserlib = TikiLib::lib('parser');
 ?>
-if ( typeof tiki_plugins == 'undefined' ) { var tiki_plugins = {}; }
-<?php foreach ( $plugins as $plugin ):
-	if ( ! $info = $parserlib->plugin_info( $plugin ) )
+if( typeof tiki_plugins == 'undefined' ) { var tiki_plugins = {}; }
+<?php foreach( $plugins as $plugin ):
+	if( ! $info = $tikilib->plugin_info( $plugin ) )
 		continue;
 ?>
 tiki_plugins.<?php echo $plugin ?> = <?php echo json_encode( $info ) ?>;

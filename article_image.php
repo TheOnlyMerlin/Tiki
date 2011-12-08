@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -30,30 +30,28 @@ if (!isset($_REQUEST["id"])) {
 $useCache = isset($_REQUEST['cache']) && $_REQUEST['cache'] == 'y'; // cache only the image in list mode
 
 // If image_type has no value, we default to "article" to preserve previous behaviour
-if (!isset($_REQUEST["image_type"])) {
+if(!isset($_REQUEST["image_type"])) {
 	$_REQUEST["image_type"]="article";
 }
 
 switch ($_REQUEST["image_type"]) {
 	case "article":
 		$image_cache_prefix="article";
-    	break;
+		break;
 	case "submission":
 		$image_cache_prefix="article_submission";
-    	break;
+		break;
 	case "topic":
 		$image_cache_prefix="article_topic";
-    	break;
+		break;
 	case "preview":
 		$image_cache_prefix="article_preview";
-    	break;
+		break;
 	default:
 		die;
 }
 $cachefile = $prefs['tmpDir'];
-if ($tikidomain) { 
-	$cachefile .= "/$tikidomain";
-}
+if ($tikidomain) { $cachefile.= "/$tikidomain"; }
 $cachefile.= "/$image_cache_prefix.".$_REQUEST["id"];
 
 // If "reload" parameter is set, recreate the cached image file from database values.
@@ -62,17 +60,17 @@ if ( isset($_REQUEST["reload"]) || !$useCache || !is_file($cachefile) ) {
 	switch ($_REQUEST["image_type"]) {
 		case "article":
 			$storedData = $artlib->get_article_image($_REQUEST["id"]);
-    		break;
+			break;
 		case "submission":
 			$storedData = $artlib->get_submission($_REQUEST["id"]);
-    		break;
+			break;
 		case "topic":
 			$storedData = $artlib->get_topic_image($_REQUEST["id"]);
-    		break;
+			break;
 		case "preview":
 			// We can't get the data from the database. No fallback solution.
 			// No image displayed
-    		break;
+			break;
 		default:
 			// Invalid value
 			die;
@@ -84,7 +82,7 @@ if ( isset($_REQUEST["reload"]) || !$useCache || !is_file($cachefile) ) {
 	}
 	$type = $storedData["image_type"];
 	$data =& $storedData["image_data"];
-	header("Content-type: ".$type);
+	header ("Content-type: ".$type);
 	if (!empty($_REQUEST['width'])) {
 		require_once('lib/images/images.php');
 		$image = new Image($data);
@@ -93,8 +91,8 @@ if ( isset($_REQUEST["reload"]) || !$useCache || !is_file($cachefile) ) {
 		if (empty($data)) die;
 	}
 	if ($useCache && $data) {
-		$fp = fopen($cachefile, "wb");
-		fputs($fp, $data);
+		$fp = fopen($cachefile,"wb");
+		fputs($fp,$data);
 		fclose($fp);
 	}
 	echo $data;
@@ -102,6 +100,6 @@ if ( isset($_REQUEST["reload"]) || !$useCache || !is_file($cachefile) ) {
 }
 
 $size = getimagesize($cachefile);
-header("Content-type: ".$size['mime']);
+header ("Content-type: ".$size['mime']);
 readfile($cachefile);
 

@@ -1,9 +1,9 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Id $
 
 // this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
@@ -69,7 +69,7 @@ class SocialNetworksLib extends LogsLib
 	function getTwitterRequestToken() {
 		global $prefs;
 
-		if (!$this->twitterRegistered()) {
+		if(!$this->twitterRegistered()) {
 			return false;
 		}
 
@@ -97,7 +97,7 @@ class SocialNetworksLib extends LogsLib
 	function getTwitterAccessToken($user) {
 		global $prefs;
 
-		if ($prefs['socialnetworks_twitter_consumer_key']=='' or $prefs['socialnetworks_twitter_consumer_secret']=='' or !isset($_SESSION['TWITTER_REQUEST_TOKEN'])) {
+		if($prefs['socialnetworks_twitter_consumer_key']=='' or $prefs['socialnetworks_twitter_consumer_secret']=='' or !isset($_SESSION['TWITTER_REQUEST_TOKEN'])) {
 			return false;
 		}
 
@@ -118,7 +118,7 @@ class SocialNetworksLib extends LogsLib
 	 */
 	function facebookRegistered() {
 		global $prefs;
-		return ($prefs['socialnetworks_facebook_application_id']!='' and $prefs['socialnetworks_facebook_application_secr']!='');
+		return ($prefs['socialnetworks_facebook_application_id']!='' and $prefs['socialnetworks_facebook_api_key']!='' and $prefs['socialnetworks_facebook_application_secr']!='');
 	}
 	
 	/**
@@ -126,34 +126,16 @@ class SocialNetworksLib extends LogsLib
 	 */
 	function getFacebookRequestToken() {
 		global $prefs;
-		if (!$this->facebookRegistered()) {
+		if(!$this->facebookRegistered()) {
 			return false;
 		}
-		$scopes = array();
-		if ($prefs["socialnetworks_facebook_offline_access"] == 'y') {
-			$scopes[] = 'offline_access';
-		}
-		if ($prefs["socialnetworks_facebook_publish_stream"] == 'y') {
-			$scopes[] = 'publish_stream';
-		}
-		if ($prefs["socialnetworks_facebook_manage_events"] == 'y') {
-			$scopes[] = 'create_event';
-			$scopes[] = 'rsvp_event';
-		}
-		if ($prefs["socialnetworks_facebook_sms"] == 'y') {
-			$scopes[] = 'sms';
-		}
-		if ($prefs["socialnetworks_facebook_manage_pages"] == 'y') {
-			$scopes[] = 'manage_pages';
-		}
-		$scope = implode(',', $scopes);
 		$url=$this->getURL();
 		if (strpos($url,'?')!=0) {
 			$url=preg_replace('/\?.*/','',$url);
 		}
 		$url=urlencode($url.'?request_facebook');
 		$url='https://graph.facebook.com/oauth/authorize?client_id=' . $prefs['socialnetworks_facebook_application_id'] . 
-			 '&scope=' . $scope . '&redirect_uri='.$url;
+			 '&scope=offline_access,publish_stream,create_event,rsvp_event,sms,manage_pages&redirect_uri='.$url;
 		header("Location: $url");
 		die();
 	}
@@ -164,9 +146,9 @@ class SocialNetworksLib extends LogsLib
 	 * @param string $user  user Id of the user to store the access token for
 	 * @return bool 		true on success
 	 */
-	function getFacebookAccessToken() {
-		global $prefs, $user, $userlib;
-		if ($prefs['socialnetworks_facebook_application_id']=='' or $prefs['socialnetworks_facebook_application_secr']=='') {
+	function getFacebookAccessToken($user) {
+		global $prefs;
+		if($prefs['socialnetworks_facebook_application_id']=='' or $prefs['socialnetworks_facebook_api_key']=='' or $prefs['socialnetworks_facebook_application_secr']=='') {
 			return false;
 		}
 
@@ -195,49 +177,8 @@ class SocialNetworksLib extends LogsLib
         $ret=preg_split('/(\r\n\r\n|\r\r|\n\n)/',$ret,2);
 		$ret=$ret[1];
 
-		if (substr($ret,0,13)=='access_token=') {
-			$access_token = substr($ret,13);
-			if ($endoftoken = strpos($access_token,'&')) {
-				// Returned string may have other var like expiry
-				$access_token = substr($access_token,0,$endoftoken);
-			}
-			$fb_profile = json_decode($this->facebookGraph('', 'me', array('access_token' => $access_token), false, 'GET'));
-			if (empty($fb_profile->id)) {
-				return false;
-			}
-			if (!$user) {
-				if ($prefs["socialnetworks_facebook_login"] != 'y') {
-					return false;
-				}
-				$local_user = $this->getOne("select `user` from `tiki_user_preferences` where `prefName` = 'facebook_id' and `value` = ?", array($fb_profile->id));
-				if ($local_user) {
-					$user = $local_user;
-				} elseif ($prefs["socialnetworks_facebook_autocreateuser"] == 'y') {
-					$randompass = $userlib->genPass();
-					$user = 'fb_' . $fb_profile->id;
-                	$userlib->add_user($user, $randompass, '');
-                	$this->set_user_preference($user, 'realName', $fb_profile->name);
-                	if ($prefs["socialnetworks_facebook_firstloginpopup"] == 'y') {
-                		$this->set_user_preference($user, 'socialnetworks_user_firstlogin', 'y');
-                	}
-				} else {
-					global $smarty;
-					$smarty->assign('errortype', 'login');
-					$smarty->assign('msg', tra('You need to link your local account to Facebook before you can login using it'));
-        			$smarty->display('error.tpl');
-					die;
-				}
-				global $user_cookie_site;
-				$_SESSION[$user_cookie_site] = $user;
-				$userlib->update_expired_groups();
-				$this->set_user_preference($user, 'facebook_id', $fb_profile->id);
-				$this->set_user_preference($user, 'facebook_token', $access_token);
-				header("Location: tiki-index.php");
-				die;
-			} else {
-				$this->set_user_preference($user, 'facebook_id', $fb_profile->id);			
-				$this->set_user_preference($user, 'facebook_token', $access_token);
-			}
+		if(substr($ret,0,13)=='access_token=') {
+			$this->set_user_preference($user, 'facebook_token', substr($ret,13));
 			return true;
 		} else {
 			return false;
@@ -259,7 +200,7 @@ class SocialNetworksLib extends LogsLib
 			$this->add_log('tweet','user not registered with twitter');
 			return -1; 
 		}
-		if ($cutMessage) {
+		if($cutMessage) {
 			$message=substr($message,0,140);
 		} else {
 			if (strlen($message)>140) {
@@ -331,9 +272,9 @@ class SocialNetworksLib extends LogsLib
 	 * @param	bool	$addtoken	should the access token be added to the parameters if the calling function did not pass this parameter
 	 * @return	string				body of the response page (json encoded object)
 	 */
-	function facebookGraph($user, $action, $params, $addtoken=true, $method = 'POST') {
+	function facebookGraph($user, $action, $params, $addtoken=true) {
 		global $prefs;
-		if (!$this->facebookRegistered()) {
+		if(!$this->facebookRegistered()) {
 			$this->add_log('facebookGraph','application not set up');
 			return false;
 		}
@@ -350,23 +291,14 @@ class SocialNetworksLib extends LogsLib
 		}
 		
 		$data=http_build_query($params,'','&');
-		if ($method == 'GET') {
-			$action .= "?$data";
-		}
-
-		$request="$method $action HTTP/1.1\r\n".
+		$request="POST $action HTTP/1.1\r\n".
 				 "Host: graph.facebook.com\r\n".
 				 "Accept: */*\r\n".
+				 "Content-type: application/x-www-form-urlencoded\r\n".
+				 "Content-length: ". strlen($data) ."\r\n".
 				 "Expect: 100-continue\r\n".
-				 "Connection: close\r\n";
-		if ($method == 'POST') {
-                        $request .= "Content-type: application/x-www-form-urlencoded\r\n".
-                                "Content-length: ". strlen($data) ."\r\n";
-                }
-                $request .= "\r\n";
-		if ($method == 'POST') {
-			$request .= $data;
-		}
+				 "Connection: close\r\n\r\n".
+				 $data;
 
   		$fp = fsockopen("ssl://graph.facebook.com", 443);
   		if ($fp===false) {
@@ -411,7 +343,7 @@ class SocialNetworksLib extends LogsLib
 		}
 		$ret=$this->facebookGraph($user, 'me/feed/', $params);
 		$result=json_decode($ret);
-		if (isset($result->id)) {
+		if(isset($result->id)) {
 			return $result->id;
 		} else {
 			return false;
@@ -455,9 +387,7 @@ class SocialNetworksLib extends LogsLib
 		if ($key=='') {
 			return false;
 		}
-
-		$httpclient = TikiLib::lib('tiki')->get_http_client();
-		$httpclient->setUri("http://api.bit.ly/$action");
+		$httpclient = new Zend_Http_Client("http://api.bit.ly/$action");
 		
 		$params['login']=$login;
 		$params['apiKey']=$key;

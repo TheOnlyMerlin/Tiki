@@ -1,31 +1,14 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-/**
- * AttributeLib 
- * 
- * @uses TikiDb_Bridge
- */
 class AttributeLib extends TikiDb_Bridge
 {
-	private $attributes;
-
-	function __construct()
-	{
-		$this->attributes = $this->table('tiki_object_attributes');
-	}
-
-	function get_attributes( $type, $objectId )
-	{
-		return $this->attributes->fetchMap(
-						'attribute', 
-						'value', 
-						array('type' => $type,'itemId' => $objectId,)
-		);
+	function get_attributes( $type, $objectId ) {
+		return $this->fetchMap( 'SELECT `attribute`, `value` FROM `tiki_object_attributes` WHERE `type` = ? AND `itemId` = ?', array( $type, $objectId ) );
 	}
 	
 	/**
@@ -38,48 +21,26 @@ class AttributeLib extends TikiDb_Bridge
 	 * attribute naming, and document new tiki.*.* names that you add 
 	 * (also grep "set_attribute" just in case there are undocumented names already used)
 	 */
-	function set_attribute( $type, $objectId, $attribute, $value )
-	{
-		if ( false === $name = $this->get_valid($attribute) ) {
+	function set_attribute( $type, $objectId, $attribute, $value ) {
+		if( false === $name = $this->get_valid( $attribute ) ) {
 			return false;
 		}
 
-		if ( $value == '' ) {
-			$this->attributes->delete(
-							array(
-								'type' => $type,
-								'itemId' => $objectId,
-								'attribute' => $name,
-							)
-			);
+		if( $value == '' ) {
+			$this->query( 'DELETE FROM `tiki_object_attributes` WHERE `type` = ? AND `itemId` = ? AND `attribute` = ?',
+				array( $type, $objectId, $name ) );
 		} else {
-			$this->attributes->insertOrUpdate(
-							array('value' => $value), 
-							array(
-								'type' => $type,
-								'itemId' => $objectId,
-								'attribute' => $name,
-							)
-			);
+			$this->query( 'INSERT INTO `tiki_object_attributes` (`type`, `itemId`, `attribute`, `value`) VALUES( ?, ?, ?, ? ) ON DUPLICATE KEY UPDATE `value` = ?',
+				array( $type, $objectId, $name, $value, $value ) );
 		}
+
 
 		return true;
 	}
 
-	private function get_valid( $name )
-	{
+	private function get_valid( $name ) {
 		$filter = TikiFilter::get('attribute_type');
-		return $filter->filter($name);
-	}
-
-	function find_objects_with($attribute, $value)
-	{
-		$attribute = $this->get_valid($attribute);
-
-		return $this->attributes->fetchAll(
-						array('type', 'itemId'), 
-						array('attribute' => $attribute, 'value' => $value,)
-		);
+		return $filter->filter( $name );
 	}
 }
 

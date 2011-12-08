@@ -1,20 +1,21 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_flash_info()
-{
+// Wiki plugin to display a SWF file
+// damian aka damosoft 30 March 2004
+
+function wikiplugin_flash_info() {
 	return array(
-		'name' => tra('Flash Video'),
-		'documentation' => 'PluginFlash',
-		'description' => tra('Embed a video or audio file'),
+		'name' => tra('Flash video'),
+		'documentation' => tra('PluginFlash'),
+		'description' => tra('Displays a Flash (.swf) file in the wiki page'),
 		'prefs' => array('wikiplugin_flash'),
 		'extraparams' => true,
-		'tags' => array( 'basic' ),		
-		'icon' => 'pics/icons/mime/swf.png',
+		'icon' => 'pics/icons/page_white_flash.png',
 		'params' => array(
 			'type' => array(
 				'required' => true,
@@ -46,22 +47,22 @@ function wikiplugin_flash_info()
 			),
 			'youtube' => array(
 				'required' => true,
-				'name' => tra('YouTube URL'),
-				'description' => tra('Entire URL to the YouTube video.') . ' ' . tra('Example:') . ' http://www.youtube.com/watch?v=1i2ZnU4iR24',
+				'name' => tra('Youtube URL'),
+				'description' => tra('Entire URL to the YouTube video. Example: http://www.youtube.com/watch?v=1i2ZnU4iR24'),
 				'parent' => array('name' => 'type', 'value' => 'youtube'),
 				'default' => '',
 			),
 			'vimeo' => array(
 				'required' => true,
 				'name' => tra('Vimeo URL'),
-				'description' => tra('Entire URL to the Vimeo video.') . ' ' . tra('Example:') . ' http://vimeo.com/3319966',
+				'description' => tra('Entire URL to the Vimeo video. Example: http://vimeo.com/3319966'),
 				'parent' => array('name' => 'type', 'value' => 'vimeo'),
 				'default' => '',
 			),
 			'bliptv' => array(
 				'required' => true,
 				'name' => tra('Blip.tv URL'),
-				'description' => tra('Blip.tv embed URL.') . ' ' . tra('Example:') . ' http://blip.tv/play/AYGd_GAC',
+				'description' => tra('Blip.tv embed URL. Example: http://blip.tv/play/AYGd_GAC'),
 				'parent' => array('name' => 'type', 'value' => 'bliptv'),
 				'default' => '',
 			),
@@ -96,8 +97,7 @@ function wikiplugin_flash_info()
 	);
 }
 
-function wikiplugin_flash($data, $params)
-{
+function wikiplugin_flash($data, $params) {
 	global $tikilib, $prefs, $userlib, $user;
 	
 	// Handle file from a podcast file gallery

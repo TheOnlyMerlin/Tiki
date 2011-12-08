@@ -1,19 +1,19 @@
-{title}{tr}Stats for survey:{/tr} {$survey_info.name}{/title}
+{title}{tr}Stats for survey:{/tr} {$survey_info.name|escape}{/title}
 
 <div class="navbar">
 	{self_link print='y'}{icon _id='printer' align='right' hspace='1' alt="{tr}Print{/tr}"}{/self_link}
 	{button href="tiki-list_surveys.php" _text="{tr}List Surveys{/tr}"}
 	{button href="tiki-survey_stats.php" _text="{tr}Survey Stats{/tr}"}
 	{if $tiki_p_admin_surveys eq 'y'}
-		{button _keepall='y' href="tiki-admin_surveys.php" surveyId=$surveyId _text="{tr}Edit this Survey{/tr}"}
-		{button _keepall='y' href="tiki-survey_stats_survey.php" surveyId=$surveyId clear=$surveyId _text="{tr}Clear Stats{/tr}"}
+		{button href="tiki-admin_surveys.php?surveyId=`$surveyId`" _text="{tr}Edit this Survey{/tr}"}
+		{button href="tiki-survey_stats_survey.php?surveyId=`$surveyId`&amp;clear=`$surveyId`" _text="{tr}Clear Stats{/tr}"}
 		{button href="tiki-admin_surveys.php" _text="{tr}Admin Surveys{/tr}"}
 	{/if}
 </div>
 <br />
 
 {section name=ix loop=$channels}
-  <table class="formcolor">
+  <table class="normal">
   <tr>
     <th colspan="4">{$channels[ix].question|escape|nl2br}</th>
   </tr>

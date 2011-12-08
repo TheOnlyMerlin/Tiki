@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,7 +7,7 @@
 
 //this script may only be included - so its better to err & die if called directly.
 //smarty is not there - we need setup
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
@@ -29,12 +29,8 @@ $fgal_listing_conf = array(
 	'hits' => array('name' => tra('Hits')),
 	'lastDownload' => array('name' => tra('Last download')),
 	'lockedby' => array('name' => tra('Locked by'), 'icon' => 'lock_gray'),
-	'backlinks' => array('name' => tra('Backlinks')),
-	'deleteAfter' => array('name'=>tra('Delete After')),
-	'share' => array('name'=>tra('Share with')),
-	'source' => array('name' => tra('Source')),
+	'backlinks' => array('name' => tra('Backlinks'))
 );
-
 if (isset($section) && $section == 'admin') {
 	foreach ($fgal_listing_conf as $k=>$v) {
 		$fgal_listing_conf_admin[$k.'_admin'] = $v;
@@ -51,9 +47,7 @@ foreach ( $fgal_listing_conf as $k => $v ) {
 	} elseif ( isset($gal_info) && isset($gal_info['show_'.$show_k]) ) {
 		$fgal_listing_conf[$k]['value'] = $gal_info['show_'.$show_k];
 	} else {
-		if (isset($prefs['fgal_list_'.$k]) ) {
-			$fgal_listing_conf[$k]['value'] = $prefs['fgal_list_'.$k];
-		}
+		$fgal_listing_conf[$k]['value'] = $prefs['fgal_list_'.$k];
 	}
 }
 // Do not show "Locked by" info if the gallery is not lockable
@@ -65,9 +59,7 @@ $smarty->assign_by_ref('fgal_listing_conf', $fgal_listing_conf);
 
 if (isset($section) && $section == 'admin') {
 	foreach ($fgal_listing_conf_admin as $k=>$v) {
-		if (isset($prefs['fgal_list_'.$k]) ) {
-			$fgal_listing_conf_admin[$k]['value'] = $prefs['fgal_list_'.$k];
-		}
+		$fgal_listing_conf_admin[$k]['value'] = $prefs['fgal_list_'.$k];
 	}
 	$smarty->assign_by_ref('fgal_listing_conf_admin', $fgal_listing_conf_admin);
 }

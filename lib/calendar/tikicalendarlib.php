@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -147,7 +147,7 @@ class TikiCalendarLib extends CalendarLib
 
 	function getTikiItems($with_infos = true) {
 		global $prefs;
-		global $tiki_p_view, $tiki_p_view_image_gallery, $tiki_p_read_article, $tiki_p_read_blog, $tiki_p_forum_read, $tiki_p_view_directory, $tiki_p_view_file_gallery, $tiki_p_view_faqs, $tiki_p_take_quiz, $tiki_p_view_trackers, $tiki_p_take_survey, $tiki_p_subscribe_newsletters;
+		global $tiki_p_view, $tiki_p_view_image_gallery, $tiki_p_read_article, $tiki_p_read_blog, $tiki_p_forum_read, $tiki_p_view_directory, $tiki_p_view_file_gallery, $tiki_p_view_faqs, $tiki_p_take_quiz, $tiki_p_view_trackers, $tiki_p_take_survey, $tiki_p_subscribe_newsletters, $tiki_p_view_chart;
 
 		$return = array(
 			"wiki" => array( "label" => tra("Wiki"), "feature" => ''.$prefs['feature_wiki'], "right" => "$tiki_p_view"),

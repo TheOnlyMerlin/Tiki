@@ -1,9 +1,11 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
+
+require_once 'lib/core/Perms/Resolver.php';
 
 /**
  * Interface providing convenient access to permissions in
@@ -44,7 +46,6 @@ class Perms_Accessor implements ArrayAccess
 	function getResolver() {
 		return $this->resolver;
 	}
-
 	function from() {
 		return $this->resolver->from();
 	}
@@ -63,7 +64,7 @@ class Perms_Accessor implements ArrayAccess
 
 	function __get( $name ) {
 
-		if ( $this->resolver ) {
+		if( $this->resolver ) {
 			$name = $this->sanitize( $name );
 			
 			return $this->checkPermission( $name );
@@ -73,9 +74,9 @@ class Perms_Accessor implements ArrayAccess
 	}
 
 	private function checkPermission( $name ) {
-		if ( $this->checkSequence ) {
+		if( $this->checkSequence ) {
 			foreach( $this->checkSequence as $check ) {
-				if ( $check->check( $this->resolver, $this->context, $name, $this->groups ) ) {
+				if( $check->check( $this->resolver, $this->context, $name, $this->groups ) ) {
 					return true;
 				}
 			}
@@ -88,20 +89,20 @@ class Perms_Accessor implements ArrayAccess
 
 	function globalize( $permissions, $smarty = null, $sanitize = true ) {
 		foreach( $permissions as $perm ) {
-			if ( $sanitize ) {
+			if( $sanitize ) {
 				$perm = $this->sanitize( $perm );
 			}
 			$val = $this->checkPermission( $perm ) ? 'y' : 'n';
 			$GLOBALS[ $this->prefix . $perm ] = $val;
 
-			if ( $smarty ) {
+			if( $smarty ) {
 				$smarty->assign( 'tiki_p_' . $perm, $val );
 			}
 		}
 	}
 
 	private function sanitize( $name ) {
-		if ( $this->prefix && $name{0} == $this->prefix{0} && strpos( $name, $this->prefix ) === 0 ) {
+		if( $this->prefix && $name{0} == $this->prefix{0} && strpos( $name, $this->prefix ) === 0 ) {
 			return substr( $name, strlen( $this->prefix ) );
 		} else {
 			return $name;
@@ -120,18 +121,5 @@ class Perms_Accessor implements ArrayAccess
 
 	public function offsetExists( $name ) {
 		return true;
-	}
-
-	public function applicableGroups() {
-		if ( $this->checkSequence ) {
-			$groups = array();
-			foreach( $this->checkSequence as $check ) {
-				$groups = array_merge( $groups, $check->applicableGroups( $this->resolver ) );
-			}
-
-			return array_unique($groups);
-		} else {
-			return $this->resolver->applicableGroups();
-		}
 	}
 }

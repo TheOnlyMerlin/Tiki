@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -16,6 +16,10 @@ include_once ('lib/calendar/calrecurrence.php');
 if ($prefs['feature_groupalert'] == 'y') {
 	include_once ('lib/groupalert/groupalertlib.php');
 }
+if ($prefs['ajax_xajax'] == "y") {
+	require_once ('lib/ajax/ajaxlib.php');
+}
+
 $auto_query_args = array('calitemId');
 
 $daysnames = array("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Satursday");
@@ -32,7 +36,7 @@ $hours_minmax = '';
 $caladd = array();
 $rawcals = $calendarlib->list_calendars();
 if ($rawcals['cant'] == 0 && $tiki_p_admin_calendar == 'y') {
-	$smarty->assign('msg', tra('You need to <a href="tiki-admin_calendars.php?cookietab=2">create a calendar</a>'));
+	$smarty->assign('msg', tra('You need to <a href="tiki-admin_calendars.php">create a calendar</a>'));
 	$smarty->display("error.tpl");
 	die;
 }
@@ -110,9 +114,9 @@ if (isset($_REQUEST['act']) || isset($_REQUEST['preview']) || isset($_REQUEST['c
 		$_REQUEST['end_date_Day'] = TikiLib::date_format("%d", $save['date_end']);
 		$_REQUEST['end_date_Year'] = TikiLib::date_format("%Y", $save['date_end']);
 	}
-	
-	$save['allday'] = (isset($_REQUEST['allday']) && $_REQUEST['allday'] == 'true') ? 1 : 0;
-	if (isset($_REQUEST['allday']) && $_REQUEST['allday'] == 'true') {
+
+    $save['allday'] = (isset($_REQUEST['allday']) && $_REQUEST['allday'] == 'true') ? 1 : 0;
+	if ($_REQUEST['allday'] == 'true') {
 		$save['start'] = TikiLib::make_time(
 			0,
 			0,
@@ -137,9 +141,8 @@ if (isset($_REQUEST['act']) || isset($_REQUEST['preview']) || isset($_REQUEST['c
 			$save['duration'] = max(0, $save['end'] - $save['start']);
 		}
 	} else {
-		//Convert 12-hour clock hours to 24-hour scale to compute time
-		if (!empty($_REQUEST['start_Meridian'])) {
-			$_REQUEST['start_Hour'] = date('H', strtotime($_REQUEST['start_Hour'] . ':00 ' . $_REQUEST['start_Meridian']));
+		if (!empty($_REQUEST['start_Meridian']) && $_REQUEST['start_Meridian'] == 'pm') {
+			$_REQUEST['start_Hour'] += 12;
 		}
 		$save['start'] = TikiLib::make_time(
 			$_REQUEST['start_Hour'],
@@ -154,9 +157,8 @@ if (isset($_REQUEST['act']) || isset($_REQUEST['preview']) || isset($_REQUEST['c
 			$save['duration'] = max(0, $_REQUEST['duration_Hour']*60*60 + $_REQUEST['duration_Minute']*60);
 			$save['end'] = $save['start'] + $save['duration'];
 		} else {
-			//Convert 12-hour clock hours to 24-hour scale to compute time
-			if (!empty($_REQUEST['end_Meridian'])) {
-				$_REQUEST['end_Hour'] = date('H', strtotime($_REQUEST['end_Hour'] . ':00 ' . $_REQUEST['end_Meridian']));
+			if (!empty($_REQUEST['end_Meridian']) && $_REQUEST['end_Meridian'] == 'pm') {
+				$_REQUEST['end_Hour'] += 12;
 			}
 			$save['end'] = TikiLib::make_time(
 				$_REQUEST['end_Hour'],
@@ -355,9 +357,9 @@ if (isset($_REQUEST["delete"]) and ($_REQUEST["delete"]) and isset($_REQUEST["ca
 		$calendar = $calendarlib->get_calendar($calitem['calendarId']);
   }
 	$smarty->assign('edit',true);
-	$hour_minmax = abs(ceil(($calendar['startday']-1)/(60*60))) . '-' . ceil(($calendar['endday'])/(60*60));
+	$hour_minmax = ceil(($calendar['startday']-1)/(60*60)).'-'. ceil(($calendar['endday'])/(60*60));
 } elseif (isset($_REQUEST['preview']) || $impossibleDates) {
-	$save['parsed'] = $tikilib->parse_data($save['description'], array('is_html' => $prefs['calendar_description_is_html'] === 'y'));
+	$save['parsed'] = $tikilib->parse_data($save['description']);
 	$save['parsedName'] = $tikilib->parse_data($save['name']);
 	$id = $save['calitemId'];
 	$calitem = $save;
@@ -400,36 +402,13 @@ if (isset($_REQUEST["delete"]) and ($_REQUEST["delete"]) and isset($_REQUEST["ca
 	$calendar = $calendarlib->get_calendar($calitem['calendarId']);
 	$smarty->assign('edit',true);
 	$hour_minmax = ceil(($calendar['startday'])/(60*60)).'-'. ceil(($calendar['endday'])/(60*60));
-//Add event buttons - either button on top of page or one of the buttons on a specific day
 } elseif (isset($calID) and $tiki_p_add_events == 'y') {
-	$calendar = $calendarlib->get_calendar($calID);
 	if (isset($_REQUEST['todate'])) {
 		$now = $_REQUEST['todate'];
 	} else {
 		$now = $tikilib->now;
 	}
-	//if current time of day is within the calendar day (between startday and endday), then use now as start, otherwise use beginning of calendar day
-	$now_start = TikiLib::make_time(
-		abs(ceil($calendar['startday']/(60*60))),
-		0,
-		0,
-		TikiLib::date_format('%m', $now),
-		TikiLib::date_format('%d', $now),
-		TikiLib::date_format('%Y', $now)
-	);
-	$now_end = TikiLib::make_time(
-		abs(ceil($calendar['endday']/(60*60))),
-		0,
-		0,
-		TikiLib::date_format('%m', $now),
-		TikiLib::date_format('%d', $now),
-		TikiLib::date_format('%Y', $now)
-	);
-	$now_start = ($now_start <= $now && ($now_start + (60*60)) < $now_end) ? $now : $now_start;
-	
-	//if $now_end is midnight, make it one second before
-	$now_end = TikiLib::date_format('%H%M%s', $now_start + (60*60)) == '000000' ? $now_start + (60*60) -1 : $now_start + (60*60);
-	
+	$calendar = $calendarlib->get_calendar($calID);
 	$calitem = array(
 		'calitemId'=>0,
 		'user'=>$user,
@@ -441,14 +420,14 @@ if (isset($_REQUEST["delete"]) and ($_REQUEST["delete"]) and isset($_REQUEST["ca
 		'locationId'=>0,
 		'categoryId'=>0,
 		'nlId'=>0,
-		'start'=>$now_start,
-		'end'=>$now_end,
+		'start'=>$now,
+		'end'=>$now+(60*60),
 		'duration'=>(60*60),
 		'recurrenceId'=>0,
 		);
-	$hour_minmax = abs(ceil(($calendar['startday']-1)/(60*60))). '-' . ceil(($calendar['endday'])/(60*60));
 	$id = 0;
 	$smarty->assign('edit',true);
+	$hour_minmax = ceil(($calendar['startday']-1)/(60*60)).'-'. ceil(($calendar['endday'])/(60*60));
 } else {
   $smarty->assign('errortype', 401);
   $smarty->assign('msg', tra("You do not have permission to view this page"));
@@ -472,9 +451,6 @@ if ($calendar['customlocations'] == 'y') {
 	$listlocs = array();
 }
 $smarty->assign('listlocs', $listlocs);
-
-include_once ('lib/userprefs/userprefslib.php');
-$smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
 
 if ($calendar['customcategories'] == 'y') {
 	$listcats = $calendarlib->list_categories($calID);
@@ -540,14 +516,20 @@ $smarty->assign('calendar', $calendar);
 $smarty->assign('calendarId', $calID);
 if (array_key_exists('CalendarViewGroups',$_SESSION) && count($_SESSION['CalendarViewGroups']) == 1)
 	$smarty->assign('calendarView',$_SESSION['CalendarViewGroups'][0]);
+if ($prefs['ajax_xajax'] == "y") {
+function edit_calendar_ajax() {
+    global $ajaxlib, $xajax;
+    $ajaxlib->registerTemplate("tiki-calendar_edit_item.tpl");
+    $ajaxlib->registerFunction("loadComponent");
+    $ajaxlib->processRequests();
+}
+edit_calendar_ajax();
+}
 
 global $wikilib; include_once('lib/wiki/wikilib.php');
 $plugins = $wikilib->list_plugins(true, 'editwiki');
 $smarty->assign_by_ref('plugins', $plugins);
+$smarty->assign('headtitle',tra('Calendar event : ').$calitem['name']);
 $smarty->assign('impossibleDates',$impossibleDates);
-if ( !empty($_REQUEST['fullcalendar']) ) {
-	$smarty->display('calendar.tpl');
-} else {
-	$smarty->assign('mid', 'tiki-calendar_edit_item.tpl');
-	$smarty->display('tiki.tpl');
-}
+$smarty->assign('mid', 'tiki-calendar_edit_item.tpl');
+$smarty->display("tiki.tpl");

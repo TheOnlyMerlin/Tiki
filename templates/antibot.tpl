@@ -1,4 +1,5 @@
 {if empty($user)}
+	{$headerlib->add_jsfile('lib/captcha/captchalib.js')}
 	{if $antibot_table ne 'y'}
 		<tr{if !empty($tr_style)} class="{$tr_style}"{/if}>
 		<td{if !empty($td_style)} class="{$td_style}"{/if}>
@@ -15,7 +16,8 @@
 			{if $captchalib->type eq 'recaptcha'}
 				{$captchalib->render()}
 			{else}
-				<input type="hidden" name="captcha[id]" id="captchaId" value="{$captchalib->generate()}" />
+				{$captchalib->generate()}
+				<input type="hidden" name="captcha[id]" id="captchaId" value="{$captchalib->getId()}" />
 				{if $captchalib->type eq 'default'}
 					<img id="captchaImg" src="{$captchalib->getPath()}" alt="{tr}Anti-Bot verification code image{/tr}" height="50" />
 				{else}

@@ -1,13 +1,14 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-global $access;
 $access->check_script($_SERVER["SCRIPT_NAME"],basename(__FILE__));
+
+require_once('lib/core/Zend/Captcha/Image.php');
 
 /**
  * A simple class to switch between Zend_Captcha_Image and
@@ -38,20 +39,10 @@ class Captcha
 	 *
 	 * @return null
 	 */
-	function __construct( $type = '' ) {
+	function __construct() {
 		global $prefs;
-
-		if (empty($type)) {
-			if ($prefs['recaptcha_enabled'] == 'y' && !empty($prefs['recaptcha_privkey']) && !empty($prefs['recaptcha_pubkey'])) {
-				$type = 'recaptcha';
-			} else if (extension_loaded('gd') && function_exists('imagepng') && function_exists('imageftbbox')) {
-				$type = 'default';
-			} else {
-				$type = 'dumb';
-			}
-		}
-
-		if ($type === 'recaptcha') {
+		
+		if ($prefs['recaptcha_enabled'] == 'y' && !empty($prefs['recaptcha_privkey']) && !empty($prefs['recaptcha_pubkey'])) {
 			require_once('lib/core/Zend/Captcha/ReCaptcha.php');
 			$this->captcha = new Zend_Captcha_ReCaptcha(array(
 				'privkey' => $prefs['recaptcha_privkey'],
@@ -62,7 +53,7 @@ class Captcha
 			$this->type = 'recaptcha';
 
 			$this->recaptchaCustomTranslations();
-		} else if ($type === 'default') {
+		} else if (extension_loaded('gd') && function_exists('imagepng') && function_exists('imageftbbox')) {
 			$this->captcha = new Zend_Captcha_Image(array(
 				'wordLen' => $prefs['captcha_wordLen'],
 				'timeout' => 600,
@@ -73,7 +64,7 @@ class Captcha
 				'dotNoiseLevel' => $prefs['captcha_noise'],
 			));
 			$this->type = 'default';
-		} else {		// implied $type==='dumb'
+		} else {
 			require_once('lib/core/Zend/Captcha/Dumb.php');
 			$this->captcha = new Zend_Captcha_Dumb;
 			$this->type = 'dumb';
@@ -88,18 +79,7 @@ class Captcha
 	 * @return void
 	 */
 	function generate() {
-		try {
-			$key = $this->captcha->generate();
-			if ($this->type == 'default') {
-				// the following needed to keep session active for ajax checking 
-				$session = $this->captcha->getSession();
-				$session->setExpirationHops(2, null, true);
-				$this->captcha->setSession($session);
-				$this->captcha->setKeepSession(false);
-			}
-			return $key;
-		} catch (Zend_Exception $e) {
-		}
+		$this->captcha->generate();
 	}
 
 	/** Return captcha ID
@@ -125,17 +105,14 @@ class Captcha
 	 * @return bool true or false 
 	 *
 	 */
-	function validate($input = null) {
-		if (is_null($input)) {
-			$input = $_REQUEST;
-		}
+	function validate() {
 		if ($this->type == 'recaptcha') {
 			return $this->captcha->isValid(array(
-				'recaptcha_challenge_field' => $input['recaptcha_challenge_field'],
-				'recaptcha_response_field' => $input['recaptcha_response_field']
+				'recaptcha_challenge_field' => $_REQUEST['recaptcha_challenge_field'],
+				'recaptcha_response_field' => $_REQUEST['recaptcha_response_field']
 			));
 		} else {
-			return $this->captcha->isValid($input['captcha']);
+			return $this->captcha->isValid($_REQUEST['captcha']);
 		}
 	}
 

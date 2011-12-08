@@ -1,19 +1,17 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_invite_info()
-{
+function wikiplugin_invite_info() {
 	return array(
-		'name' => tra('Invite'),
-		'documentation' => 'PluginInvite',
-		'description' => tra('Invite a user to join your groups'),
+		'name' => tra( 'Invite' ),
+		'documentation' => tra('PluginInvite'),
+		'description' => tra( 'Invite an email in groups.' ),
 		'prefs' => array( 'wikiplugin_invite' ),
 		'body' => tra('Confirmation message after posting form'),
-		'icon' => 'pics/icons/group.png',
 		'params' => array(
 			'including' => array(
 				'required' => false,
@@ -33,8 +31,7 @@ function wikiplugin_invite_info()
 		)
 	);
 }
-function wikiplugin_invite( $data, $params)
-{
+function wikiplugin_invite( $data, $params) {
 	global $prefs, $tikilib, $userlib, $user, $smarty, $tiki_p_invite_to_my_groups;
 
 	if ($tiki_p_invite_to_my_groups != 'y') {
@@ -88,7 +85,7 @@ function wikiplugin_invite( $data, $params)
 			include_once ('lib/webmail/tikimaillib.php');
 			$mail = new TikiMail();
 			$machine = parse_url($_SERVER['REQUEST_URI']);
-			$machine = $tikilib->httpPrefix(true).dirname($machine['path']);
+			$machine = $tikilib->httpPrefix( true ).dirname($machine['path']);
 			$smarty->assign_by_ref('machine', $machine);
 			$subject = sprintf($smarty->fetch('mail/mail_invite_subject.tpl'), $_SERVER['SERVER_NAME']);
 			$mail->setSubject($subject);

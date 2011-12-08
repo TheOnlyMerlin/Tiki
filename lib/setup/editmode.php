@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,15 +9,9 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) != FALSE) {
 	header('location: index.php');
 	exit;
 }
-global $parsemode_setup, $tiki_p_admin, $tiki_p_use_HTML, $prefs, $info, $jitRequest, $is_html;
+global $parsemode_setup, $tiki_p_admin, $tiki_p_use_HTML, $prefs, $info, $jitRequest;
 $parsemode_setup = 'y';
-if (!isset($is_html)) {
-	if (isset($info['is_html'])) {
-		$is_html = $info['is_html'];
-	} else {
-		$is_html = false;
-	}
-}
+$is_html = false;
 if ($prefs['feature_wysiwyg'] == 'y' && $prefs['javascript_enabled'] == 'y') {
 	if (isset($_REQUEST['mode_wysiwyg']) && $_REQUEST['mode_wysiwyg']=='y' and $prefs['wysiwyg_optional'] == 'y') {
 		$_SESSION['wysiwyg'] = 'y';
@@ -39,12 +33,8 @@ if ($prefs['feature_wysiwyg'] == 'y' && $prefs['javascript_enabled'] == 'y') {
 } else {
 	$_SESSION['wysiwyg'] = 'n';
 }
-
-
 if ($_SESSION['wysiwyg'] == 'y') {
-//	if ($prefs['wysiwyg_htmltowiki'] !== 'y' && !$info['is_html']) { // use wysiwyg_htmltowiki for wiki pages only
-//		$is_html = true;
-//	}
+	$is_html = true;
 } elseif ($prefs['feature_wiki_allowhtml'] == 'y' and ($tiki_p_admin == 'y' or $tiki_p_use_HTML == 'y')) {
 	if (isset($_REQUEST['preview']) || isset($jitRequest['edit'])) {
 		if (isset($_REQUEST["allowhtml"]) && $_REQUEST["allowhtml"] == "on") {

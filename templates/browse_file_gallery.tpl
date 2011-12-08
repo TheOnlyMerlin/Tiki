@@ -23,7 +23,7 @@
       <div class='opaque'>
         <div class='box-title'>{tr}Actions{/tr}</div>
         <div class='box-data'>
-          {include file='fgal_context_menu.tpl' menu_icon=$prefs.use_context_menu_icon menu_text=$prefs.use_context_menu_text changes=$smarty.section.changes.index}
+          {include file='fgal_context_menu.tpl' menu_icon=$prefs.use_context_menu_icon menu_text=$prefs.use_context_menu_text}
         </div>
       </div>
       {/strip}{/capture}
@@ -52,9 +52,9 @@
             {assign var=propval value=$propval|kbsize:true}
           {/if}
     
-          {if isset($gal_info.$propkey) and $propval neq '' and $propname neq 'name' and ( $gal_info.$propkey eq 'a' or $gal_info.$propkey eq 'o' or ( $gal_info.$propkey eq 'y' and $show_details neq 'y' ) )}
+          {if isset($gal_info.$propkey) and $propval neq '' and $propname neq 'name' and ( $gal_info.$propkey eq 'a' or $gal_info.$propkey eq 'o' or ( $gal_info.$propkey eq 'y' and $show_details neq 'y' ) ) }
             <b>{$fgal_listing_conf.$propname.name}</b>: {$propval}<br />
-            {assign var=nb_over_infos value=$nb_over_infos+1}
+            {assign var=nb_over_infos value=`$nb_over_infos+1`}
           {/if}
         {/foreach}
         </div>
@@ -97,17 +97,8 @@
                   {icon _id="pics/large/fileopen48x48.png" width="48" height="48"}
                 </a>
               {else}
-                <a {$link}
-                	{if $prefs.feature_shadowbox eq 'y' && $filegals_manager eq ''}
-                		rel="shadowbox[gallery];type={if $key_type eq 'image/png' or $key_type eq 'image/jpe' or $key_type eq 'image/gif'}img{else}iframe{/if}"{/if}{if $over_infos neq ''} {popup fullhtml="1" text=$over_infos|escape:"javascript"|escape:"html"}{else} title="{if $files[changes].name neq ''}{$files[changes].name|escape}{/if}{if $files[changes].description neq ''} ({$files[changes].description|escape}){/if}"
-                	{/if}>
-                	
-                {if  $key_type neq "image/svg"}
-                	<img src="{$files[changes].id|sefurl:thumbnail}" alt="" />
-                {else} {*Since we can't resize an svg thumbnail at this time, we just show and scale it down *}
-                	<img src="{$files[changes].id|sefurl:display}" alt=""  style="width:{$thumbnail_size}px;height:{$thumbnailcontener_size}px;" />
-                {/if} 
-				  
+                <a {$link}{if $prefs.feature_shadowbox eq 'y' && $filegals_manager eq ''} rel="shadowbox[gallery];type={if $key_type eq 'image/png' or $key_type eq 'image/jpe' or $key_type eq 'image/gif'}img{else}iframe{/if}"{/if}{if $over_infos neq ''} {popup fullhtml="1" text=$over_infos|escape:"javascript"|escape:"html"}{else} title="{if $files[changes].name neq ''}{$files[changes].name|escape}{/if}{if $files[changes].description neq ''} ({$files[changes].description|escape}){/if}"{/if}>
+				  <img src="{$files[changes].id|sefurl:thumbnail}" alt="" />
                 </a>
               {/if}
             </div>
@@ -123,7 +114,7 @@
           {else}
             {assign var=key_name value="show_$propname"}
           {/if}
-          {if isset($gal_info.$key_name) and ( $gal_info.$key_name eq 'y' or $gal_info.$key_name eq 'a' or $gal_info.$key_name eq 'i' or $propname eq 'name' )}
+          {if isset($gal_info.$key_name) and ( $gal_info.$key_name eq 'y' or $gal_info.$key_name eq 'a' or $gal_info.$key_name eq 'i' or $propname eq 'name' ) }
             {assign var=propval value=$files[changes].$propname|truncate:$key_name_len|escape}
         
             {* Format property values *}
@@ -214,6 +205,7 @@
 
 </div>
 <br clear="all" />
+
 {if $gal_info.show_checked neq 'n' and $tiki_p_admin_file_galleries eq 'y' and ( !isset($show_selectall) or $show_selectall eq 'y' )
 			and ($prefs.fgal_show_thumbactions eq 'y' or $show_details eq 'y')}
 	{select_all checkbox_names='file[],subgal[]' label="{tr}Select All{/tr}"}

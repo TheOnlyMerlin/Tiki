@@ -3,7 +3,9 @@
 {title help="Webmail" admpage="webmail"}{tr}Webmail{/tr}{/title}
 
 {include file='tiki-mytiki_bar.tpl'}
-<table width="100%" border="0">
+<br /><br />
+
+<table width="100%" border=0>
 	<tr>
 		<td>
 			{self_link _icon='img/webmail/mailbox.gif' locSection='mailbox' _width='48' _height='48'}{tr}Mailbox{/tr}{/self_link}
@@ -40,7 +42,7 @@
 
 {if $locSection eq 'settings'}
 	{tabset  name='tabs_webmail_settings'}
-		{tab name="{tr}List{/tr}"}
+		{tab name="List"}
 			{if count($accounts) != 0}
 				<h2>{tr}Personal e-mail accounts{/tr}</h2>
 				<table class="normal">
@@ -55,39 +57,41 @@
 					{section name=ix loop=$accounts}
 						{if $accounts[ix].current eq 'y' and $accounts[ix].user eq $user or $accounts[ix].accountId eq $mailCurrentAccount}{assign var=active value=true}{else}{assign var=active value=false}{/if}
 						<tr class="{cycle}">
-							<td class="icon">
+							<td>
 								{if !$active}
 									{self_link _icon='star_grey' current=$accounts[ix].accountId}{tr}Activate{/tr}{/self_link}
 								{else}
 									{icon _id='star' alt="{tr}This is the active account.{/tr}"}
 								{/if}
 							</td>
-							<td class="username">
+							<td>
 								{if !$active}
 									{self_link current=$accounts[ix].accountId _title="{tr}Activate{/tr}"}{$accounts[ix].account}{/self_link}
 								{else}
-									{$accounts[ix].account|escape}
+									<strong>{$accounts[ix].account|escape}</strong>
 								{/if}
 							</td>
-							<td class="text">
-								{if !empty($accounts[ix].imap)}{tr}IMAP:{/tr} {$accounts[ix].imap} ({$accounts[ix].port})
-								{elseif !empty($accounts[ix].mbox)}{tr}Mbox:{/tr} {$accounts[ix].mbox}
-								{elseif !empty($accounts[ix].maildir)}{tr}Maildir:{/tr} {$accounts[ix].maildir}
-								{elseif !empty($accounts[ix].pop)}{tr}POP3:{/tr} {$accounts[ix].pop} ({$accounts[ix].port}){/if}
+							<td>
+								{if !empty($accounts[ix].imap)}{tr}IMAP{/tr}: {$accounts[ix].imap} ({$accounts[ix].port})
+								{elseif !empty($accounts[ix].mbox)}{tr}Mbox{/tr}: {$accounts[ix].mbox}
+								{elseif !empty($accounts[ix].maildir)}{tr}Maildir{/tr}: {$accounts[ix].maildir}
+								{elseif !empty($accounts[ix].pop)}{tr}POP3{/tr}: {$accounts[ix].pop} ({$accounts[ix].port}){/if}
 							</td>
-							<td class="username">
+							<td>
 								{$accounts[ix].username}
 							</td>
-							<td class="action">
-								{self_link _icon='page_edit' accountId=$accounts[ix].accountId}{tr}Edit{/tr}{/self_link}
+							<td>
 								{self_link _icon='cross' remove=$accounts[ix].accountId}{tr}Delete{/tr}{/self_link}
+								{self_link _icon='page_edit' accountId=$accounts[ix].accountId}{tr}Edit{/tr}{/self_link}
 								{if !$active}
 									{self_link _icon='accept' current=$accounts[ix].accountId}{tr}Activate{/tr}{/self_link}
 								{/if}
 							</td>
 						</tr>
 					{sectionelse}
-						{norecords _colspan=5}
+						<tr>
+							<td colspan="5" class="odd">{tr}No records found.{/tr}</td>
+						</tr>
 					{/section}
 				</table>
 			{/if}
@@ -107,31 +111,31 @@
 						{section name=ixp loop=$pubAccounts}
 							{if $pubAccounts[ixp].current eq 'y' and $pubAccounts[ixp].user eq $user or $pubAccounts[ixp].accountId eq $mailCurrentAccount}{assign var=active value=true}{else}{assign var=active value=false}{/if}
 							<tr class="{cycle}">
-								<td class="icon">
+								<td>
 									{if !$active}
 										{self_link _icon='star_grey' current=$pubAccounts[ixp].accountId}{tr}Activate{/tr}{/self_link}
 									{else}
 										{icon _id='star' alt="{tr}This is the active account.{/tr}"}
 									{/if}
 								</td>
-								<td class="username">
+								<td>
 									{if !$active}
 										{self_link current=$pubAccounts[ixp].accountId _title="{tr}Activate{/tr}"}{$pubAccounts[ixp].account}{/self_link}
 									{else}
-										{$pubAccounts[ixp].account|escape}
+										<strong>{$pubAccounts[ixp].account|escape}</strong>
 									{/if}
 								</td>
-								<td class="text">
-									{if !empty($pubAccounts[ixp].imap)}{tr}IMAP:{/tr} {$pubAccounts[ixp].imap} ({$pubAccounts[ixp].port})
-									{elseif !empty($pubAccounts[ixp].mbox)}{tr}Mbox:{/tr} {$pubAccounts[ixp].mbox}
-									{elseif !empty($pubAccounts[ixp].maildir)}{tr}Maildir:{/tr} {$pubAccounts[ixp].maildir}
-									{elseif !empty($pubAccounts[ixp].pop)}{tr}POP3:{/tr} {$pubAccounts[ixp].pop} ({$pubAccounts[ixp].port}){/if}
+								<td>
+									{if !empty($pubAccounts[ixp].imap)}{tr}IMAP{/tr}: {$pubAccounts[ixp].imap} ({$pubAccounts[ixp].port})
+									{elseif !empty($pubAccounts[ixp].mbox)}{tr}Mbox{/tr}: {$pubAccounts[ixp].mbox}
+									{elseif !empty($pubAccounts[ixp].maildir)}{tr}Maildir{/tr}: {$pubAccounts[ixp].maildir}
+									{elseif !empty($pubAccounts[ixp].pop)}{tr}POP3{/tr}: {$pubAccounts[ixp].pop} ({$pubAccounts[ixp].port}){/if}
 								</td>
-								<td class="username">{$pubAccounts[ixp].username}</td>
-								<td class="action">
+								<td>{$pubAccounts[ixp].username}</td>
+								<td>
 									{if $tiki_p_admin_group_webmail eq 'y'or $tiki_p_admin eq 'y'}
-										{self_link _icon='page_edit' accountId=$pubAccounts[ixp].accountId}{tr}Edit{/tr}{/self_link}
 										{self_link _icon='cross' remove=$pubAccounts[ixp].accountId}{tr}Delete{/tr}{/self_link}
+										{self_link _icon='page_edit' accountId=$pubAccounts[ixp].accountId}{tr}Edit{/tr}{/self_link}
 									{/if}
 									{if !$active}
 										{self_link _icon='accept' current=$pubAccounts[ixp].accountId}{tr}Activate{/tr}{/self_link}
@@ -139,7 +143,9 @@
 								</td>
 							</tr>
 						{sectionelse}
-							{norecords _colspan=5}
+							<tr>
+								<td colspan="5" class="odd">{tr}No records found.{/tr}</td>
+							</tr>
 						{/section}
 					</table>
 				{/if}
@@ -268,15 +274,11 @@
 									</td>
 								</tr>
 							{/if}
-
-							{if $tiki_p_admin_group_webmail eq 'y'}
-								{include file='categorize.tpl'}
-							{/if}
 		
 							<tr>
 								<td>{tr}Auto-refresh page time{/tr}</td>
 								<td colspan="3">
-									<input type="text" name="autoRefresh" size="4" value="{$info.autoRefresh|escape}" /> {tr}seconds (0 = no auto refresh){/tr}
+									<input type="text" name="autoRefresh" size="4" value="{$info.autoRefresh|escape}" /> seconds (0 = no auto refresh)
 								</td>
 							</tr>
 							<tr>
@@ -360,12 +362,12 @@
 				{else}
 					{assign var=class value=""}
 				{/if}
-				<tr class="{$class}">
-					<td class="checkbox">
+				<tr>
+					<td class="{$class}">
 						<input type="checkbox" name="msg[]" value="{$list[ix].msgid}" />
 						<input type="hidden" name="realmsg[{$list[ix].msgid}]" value="{$list[ix].realmsgid|escape}" />
 					</td>
-					<td class="icon">
+					<td class="{$class}">
 						{if $list[ix].isFlagged eq 'y'}
 							<a href="javascript: submit_form('{$list[ix].realmsgid|escape}','n')"><img src="img/webmail/flagged.gif" alt="{tr}Flagged{/tr}"></a>
 						{else}
@@ -377,13 +379,13 @@
 							<img src="img/webmail/replied.gif" alt="{tr}Replied{/tr}"/>
 						{/if}
 					</td>
-					<td class="email">{$list[ix].sender.name}</td>
-					<td class="text">
+					<td class="{$class}">{$list[ix].sender.name}</td>
+					<td class="{$class}">
 						{self_link msgid=$list[ix].msgid locSection='read'}{$list[ix].subject}{/self_link}
 						{if $list[ix].has_attachment}<img src="img/webmail/clip.gif" alt="{tr}Clip{/tr}"/>{/if}
 					</td>
-					<td class="date">{$list[ix].timestamp|tiki_short_datetime}</td>
-					<td class="integer">{$list[ix].size|kbsize}</td>
+					<td class="{$class}">{$list[ix].timestamp|tiki_short_datetime}</td>
+					<td align="right" class="{$class}">{$list[ix].size|kbsize}</td>
 				</tr>
 			{/section}
 		</table>
@@ -507,14 +509,14 @@
 			{assign var='wmclass' value='webmail_message'}
 		{/if}
 		<div>
-			{button _flip_id=$wmid _text="{tr}Part:{/tr} "|cat:$bodies[ix].contentType _flip_default_open=$wmopen}
+			{button _flip_id=$wmid _text="{tr}Part{/tr}: "|cat:$bodies[ix].contentType _flip_default_open=$wmopen}
 		</div>
 		<div id="{$wmid}" class="{$wmclass}" {if $wmopen eq 'n'}style="display:none"{/if}>
 {$bodies[ix].body}
 		</div>
 	{/section}
 	<div>
-		{button _flip_id='webmail_message_source_'|cat:$msgid _text="{tr}Source:{/tr} " _flip_default_open='n'}
+		{button _flip_id='webmail_message_source_'|cat:$msgid _text="{tr}Source{/tr}: " _flip_default_open='n'}
 	</div>
 	<div id="webmail_message_source_{$msgid}" class="webmail_message webmail_mono" style="display:none">
 {$allbodies|nl2br}
@@ -588,14 +590,13 @@
 					<tr>
 						<td>&nbsp;</td>
 						<td colspan="3">
-							<!--textarea name="body" cols="60" rows="30">{$body}</textarea-->
 							{textarea name='body'}{$body}{/textarea}
 						</td>
 					</tr>
 					<tr>
 						<td>{tr}Use HTML mail{/tr}</td>
 						<td colspan="3">
-							<input type="checkbox" name="useHTML"{if $useHTML eq "y" || $smarty.session.wysiwyg eq "y"} checked="checked"{/if} />
+							<input type="checkbox" name="useHTML"{if $useHTML eq "y" || $smarty.session.wysiwyg eq "y"}checked="checked"{/if} />
 						</td>
 					</tr>
 				</table>
@@ -617,18 +618,18 @@
 						</tr>
 						{section name=ix loop=$not_contacts}
 							<tr>
-								<td class="checkbox">
+								<td>
 									<input type="checkbox" name="add[{$smarty.section.ix.index}]" />
 									<input type="hidden" name="addemail[{$smarty.section.ix.index}]" value="{$not_contacts[ix]|escape}" />
 								</td>
-								<td class="email">{$not_contacts[ix]}</td>
-								<td class="text">
+								<td>{$not_contacts[ix]}</td>
+								<td>
 									<input type="text" name="addFirstName[{$smarty.section.ix.index}]" />
 								</td>
-								<td class="text">
+								<td>
 									<input type="text" name="addLastName[{$smarty.section.ix.index}]" />
 								</td>
-								<td class="text">
+								<td>
 									<input type="text" name="addNickname[{$smarty.section.ix.index}]" />
 								</td>
 							</tr>

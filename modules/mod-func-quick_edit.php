@@ -1,23 +1,21 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
 
-function module_quick_edit_info()
-{
+function module_quick_edit_info() {
 	return array(
 		'name' => tra('Quick Edit'),
-		// Search actually lacks customTip, customTipTitle and headerwiki, added in r27746.
-		'description' => tra('Enables to quickly create or edit Wiki pages.') . ' ' . tra('Deprecated - use the Search module instead.'),
-		'prefs' => array('feature_wiki'),
+		'description' => tra('Enables to quickly create or edit Wiki pages.'),
+		'prefs' => array( 'feature_wiki' ),
 		'params' => array(
 			'templateId' => array(
 				'name' => tra('Template identifier'),
@@ -33,12 +31,15 @@ function module_quick_edit_info()
 			),
 			'size' => array(
 				'name' => tra('INPUT SIZE'),
-				'description' => tra('Size attribute (horizontal, in characters) of the text input field for page names.') . " " . tra('Default:') . " 15",
-				'filter' => 'int'
+				'description' => tra('Size attribute (horizontal, in characters) of the text input fields for page names and description. The size of the other fields is relative to the module width') . " " . tra('Default:') . " 15"
 			),
 			'mod_quickedit_heading' => array(
 				'name' => tra('Heading'),
 				'description' => tra('Optional heading to display at the top of the module\'s content.')
+			),
+			'categId' => array(
+				'name' => tra('Category identifier'),
+				'description' => tra('If set to a category identifier, pages created through the module are automatically categorized only in the specified category.') . " " . tra('Not set by default.')
 			),
 			'addcategId' => array(
 				'name' => tra('Category to preselect'),
@@ -56,13 +57,26 @@ function module_quick_edit_info()
 				'name' => tra('Custom header template'),
 				'description' => tra('Wiki page to be used as a template to show content on top of edit page'),
 			),
+			'pastetext' => array(
+				'name' => tra('input field for copy/paste'),
+				'description' => tra('If set to 1 , a text area for copy/paste page content is shown') . " " . tra('Default:') . ' 0',
+				'filter' => 'int',
+			),
+			'enterdescription' => array(
+				'name' => tra('show description field'),
+				'description' => tra('If set to 1, a text field to enter the page description is shown (requires feature_wiki_description)') . " " . tra('Default:') . ' 0',
+			),
+			'chooseCateg' => array(
+				'name' => tra('choose category'),
+				'description' => tra('If set to 1, this allows the user to choose a category instead of preselecting one') . " " . tra('Default:') . ' 0',
+			),
 		)
 	);
 }
 
-function module_quick_edit($mod_reference, $module_params)
-{
+function module_quick_edit( $mod_reference, $module_params ) {
 	global $smarty, $prefs;
+	global $categlib; include_once 'lib/categories/categlib.php';
 	
 	$smarty->assign('tpl_module_title', tra("Quick Edit a Wiki Page"));
 	
@@ -92,6 +106,11 @@ function module_quick_edit($mod_reference, $module_params)
 	} else {
 		$mod_quickedit_heading = false;
 	}
+	if (isset($module_params["categId"])) {
+		$categId = $module_params["categId"];
+	} else {
+		$categId = '';
+	}
 	if (isset($module_params["addcategId"])) {
 		$addcategId = $module_params["addcategId"];
 	} else {
@@ -112,10 +131,31 @@ function module_quick_edit($mod_reference, $module_params)
 	} else {
 		$wikiHeaderTpl = '';
 	}
-
+	if (isset($module_params["pastetext"])) {
+		$pastetext=$module_params["pastetext"];
+	} else {
+		$pastetext=0;
+	}
+	if (isset($module_params["enterdescription"])) {
+		$enterdescription=$module_params["enterdescription"];
+	} else {
+		$enterdescription=0;
+	}
+		if (isset($module_params["chooseCateg"])) {
+		$chooseCateg=$module_params["chooseCateg"];
+		$cats=$categlib->list_categs();
+		$smarty->assign('qcats',$cats);
+	} else {
+		$chooseCateg=0;
+	}
+	
+	$smarty->assign('chooseCateg',$chooseCateg);
+	$smarty->assign('enterdescription',$enterdescription);
+	$smarty->assign('pastetext',$pastetext);
 	$smarty->assign('wikiHeaderTpl', $wikiHeaderTpl);
 	$smarty->assign('customTip', $customTip);
 	$smarty->assign('customTipTitle', $customTipTitle);
+	$smarty->assign('categId', $categId);
 	$smarty->assign('addcategId', $addcategId);
 	$smarty->assign('size', $size);
 	$smarty->assign('mod_quickedit_heading', $mod_quickedit_heading);

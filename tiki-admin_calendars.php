@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -53,15 +53,8 @@ if (isset($_REQUEST["save"])) {
 	}
 	if (!preg_match('/^[0-9a-fA-F]{3,6}$/', $options['customfgcolor'])) $options['customfgcolor'] = '';
 	if (!preg_match('/^[0-9a-fA-F]{3,6}$/', $options['custombgcolor'])) $options['custombgcolor'] = '';
-	//Convert 12-hour clock hours to 24-hour scale to compute time
-	if (!empty($_REQUEST['startday_Meridian'])) {
-		$_REQUEST['startday_Hour'] = date('H', strtotime($_REQUEST['startday_Hour'] . ':00 ' . $_REQUEST['startday_Meridian']));
-	}
-	if (!empty($_REQUEST['endday_Meridian'])) {
-		$_REQUEST['endday_Hour'] = date('H', strtotime($_REQUEST['endday_Hour'] . ':00 ' . $_REQUEST['endday_Meridian']));
-	}
 	$options['startday'] = $_REQUEST['startday_Hour'] * 60 * 60;
-	$options['endday'] = $_REQUEST['endday_Hour'] == 0 ? (24 * 60 * 60) - 1 : ($_REQUEST['endday_Hour'] * 60 * 60);
+	$options['endday'] = $_REQUEST['endday_Hour'] * 60 * 60 - 1;
 	$extra = array(
 		'calname',
 		'description',
@@ -74,7 +67,7 @@ if (isset($_REQUEST["save"])) {
 		'status',
 		'status_calview'
 	);
-	foreach ($extra as $ex) {
+	foreach($extra as $ex) {
 		if (isset($_REQUEST['show'][$ex]) and $_REQUEST['show'][$ex] == 'on') {
 			$options["show_$ex"] = 'y';
 		} else {
@@ -83,7 +76,6 @@ if (isset($_REQUEST["save"])) {
 	}
 	if (isset($_REQUEST['viewdays'])) $options['viewdays'] = $_REQUEST['viewdays'];
 	$_REQUEST["calendarId"] = $calendarlib->set_calendar($_REQUEST["calendarId"], $user, $_REQUEST["name"], $_REQUEST["description"], $customflags, $options);
-	$info = $calendarlib->get_calendar($_REQUEST['calendarId']);
 	if ($prefs['feature_groupalert'] == 'y') {
 		$groupalertlib->AddGroup('calendar', $_REQUEST["calendarId"], $_REQUEST['groupforAlert'], !empty($_REQUEST['showeachuser']) ? $_REQUEST['showeachuser'] : 'n');
 	}
@@ -101,8 +93,6 @@ if (isset($_REQUEST["save"])) {
 		$cat_href = "tiki-calendar.php?calIds[]=" . $_REQUEST["calendarId"];
 		include_once("categorize.php");
 	}
-	$cookietab=1;
-	$_REQUEST['calendarId'] = 0;
 }
 if (isset($_REQUEST['clean']) && isset($_REQUEST['days'])) {
 	check_ticket('admin-calendars');
@@ -121,7 +111,7 @@ if ($prefs['feature_categories'] == 'y') {
 		}
 	}
 }
-if ($_REQUEST['calendarId'] != 0) {
+if ($_REQUEST["calendarId"]) {
 	$cookietab = 2;
 } else {
 	$info = array();
@@ -152,9 +142,9 @@ if ($_REQUEST['calendarId'] != 0) {
 	$info["defaulteventstatus"] = 1;
 	$info['viedays'] = $prefs['calendar_view_days'];
 	if (!empty($_REQUEST['show']) && $_REQUEST['show'] == 'mod') {
-		$cookietab = 2;
+		$cookietab = '2';
 	} else {
-		if (!isset($cookietab)) { $cookietab = 1; }
+		if (!isset($cookietab)) { $cookietab = '1'; }
 	}
 }
 if ($prefs['feature_groupalert'] == 'y') {
@@ -162,7 +152,7 @@ if ($prefs['feature_groupalert'] == 'y') {
 	$info["groupforAlert"] = $groupalertlib->GetGroup('calendar', $_REQUEST["calendarId"]);
 	$all_groups = $userlib->list_all_groups();
 	if (is_array($all_groups)) {
-		foreach ($all_groups as $g) {
+		foreach($all_groups as $g) {
 			$groupforAlertList[$g] = ($g == $info['groupforAlert']) ? 'selected' : '';
 		}
 	}
@@ -195,11 +185,34 @@ $smarty->assign('show_participants', $info["show_participants"]);
 $smarty->assign('show_url', $info["show_url"]);
 $smarty->assign('calendarId', $_REQUEST["calendarId"]);
 $smarty->assign('personal', $info["personal"]);
-$smarty->assign('startday', $info["startday"] < 0 ? 0 : $info['startday']);
-$smarty->assign('endday', $info["endday"] < 0 ? 0 : $info['endday']);
-//Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-include_once ('lib/userprefs/userprefslib.php');
-$smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
+$smarty->assign('startday', $info["startday"] < 0 ? 0 : round($info['startday'] / (60 * 60)));
+$smarty->assign('endday', $info["endday"] < 0 ? 0 : round($info['endday'] / (60 * 60)));
+$smarty->assign('hours', array(
+	'0' => '12:00 midnight',
+	'1' => '1:00 am',
+	'2' => '2:00 am',
+	'3' => '3:00 am',
+	'4' => '4:00 am',
+	'5' => '5:00 am',
+	'6' => '6:00 am',
+	'7' => '7:00 am',
+	'8' => '8:00 am',
+	'9' => '9:00 am',
+	'10' => '10:00 am',
+	'11' => '11:00 am',
+	'12' => '12:00 noon',
+	'13' => '1:00 pm',
+	'14' => '2:00 pm',
+	'15' => '3:00 pm',
+	'16' => '4:00 pm',
+	'17' => '5:00 pm',
+	'18' => '6:00 pm',
+	'19' => '7:00 pm',
+	'20' => '8:00 pm',
+	'21' => '9:00 pm',
+	'22' => '10:00 pm',
+	'23' => '11:00 pm'
+));
 
 $smarty->assign('defaulteventstatus', $info['defaulteventstatus']);
 $smarty->assign('eventstatus', array(
@@ -209,7 +222,7 @@ $smarty->assign('eventstatus', array(
 ));
 $smarty->assign_by_ref('info', $info);
 if (!isset($_REQUEST["sort_mode"])) {
-	$sort_mode = 'name_asc';
+	$sort_mode = 'name_desc';
 } else {
 	$sort_mode = $_REQUEST["sort_mode"];
 }
@@ -227,7 +240,7 @@ if (!isset($_REQUEST["offset"])) {
 }
 $smarty->assign_by_ref('offset', $offset);
 $calendars = $calendarlib->list_calendars($offset, $maxRecords, $sort_mode, $find);
-foreach (array_keys($calendars["data"]) as $i) {
+foreach(array_keys($calendars["data"]) as $i) {
 	$calendars["data"][$i]["individual"] = $userlib->object_has_one_permission($i, 'calendar');
 }
 $smarty->assign_by_ref('cant', $calendars['cant']);
@@ -242,6 +255,10 @@ $days_names = array(
 	tra("Saturday")
 );
 $smarty->assign('days_names',$days_names);
+;
+// $cat_type = 'calendar';
+// $cat_objid = $_REQUEST["calendarId"];
+// include_once ("categorize_list.php");
 include_once ('tiki-section_options.php');
 ask_ticket('admin-calendars');
 // disallow robots to index page:

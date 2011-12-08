@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -25,11 +25,11 @@ $file = &$info["filename"];
 $content = &$info["data"];
 
 session_write_close();
-header("Content-type: $type");
-header("Content-Disposition: inline; filename=\"$file\"");
+header ("Content-type: $type");
+header ("Content-Disposition: inline; filename=\"$file\"");
 
 if ($info["path"]) {
-	readfile($prefs['uf_use_dir'] . $info["path"]);
+	readfile ($prefs['uf_use_dir'] . $info["path"]);
 } else {
 	echo "$content";
 }

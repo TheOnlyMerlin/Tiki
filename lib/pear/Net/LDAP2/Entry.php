@@ -11,8 +11,8 @@
 * @author    Tarjej Huse <tarjei@bergfald.no>
 * @author    Benedikt Hallinger <beni@php.net>
 * @copyright 2009 Tarjej Huse, Jan Wagner, Benedikt Hallinger
-* @license   http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
-* @version   SVN: $Id: Entry.php 302695 2010-08-23 12:37:08Z beni $
+* @license   http://www.gnu.org/copyleft/lesser.html LGPL
+* @version   CVS: $Id: Entry.php,v 1.12 2009/05/26 13:52:44 beni Exp $
 * @link      http://pear.php.net/package/Net_LDAP2/
 */
 
@@ -20,7 +20,7 @@
 * Includes
 */
 require_once 'PEAR.php';
-require_once 'Net/LDAP2/Util.php';
+require_once 'Util.php';
 
 /**
 * Object representation of a directory entry
@@ -419,7 +419,6 @@ class Net_LDAP2_Entry extends PEAR
     * The returned hash has the form
     * <code>array('attributename' => 'single value',
     *       'attributename' => array('value1', value2', value3'))</code>
-    * Only attributes present at the entry will be returned.
     *
     * @access public
     * @return array Hash of all attributes with their values
@@ -438,20 +437,15 @@ class Net_LDAP2_Entry extends PEAR
     *
     * The first parameter is the name of the attribute
     * The second parameter influences the way the value is returned:
-    * 'single':  only the first value is returned as string
-    * 'all':     all values including the value count are returned in an array
+    * 'single': only the first value is returned as string
+    * 'all': all values including the value count are returned in an
+    *               array
     * 'default': in all other cases an attribute value with a single value is
     *            returned as string, if it has multiple values it is returned
     *            as an array (without value count)
     *
-    * If the attribute is not set at this entry (no value or not defined in
-    * schema), an empty string is returned.
-    *
-    * You may use Net_LDAP2_Schema->checkAttribute() to see if the attribute
-    * is defined for the objectClasses of this entry.
-    *
-    * @param string  $attr         Attribute name
-    * @param string  $option       Option
+    * @param string $attr   Attribute name
+    * @param string $option Option
     *
     * @access public
     * @return string|array|PEAR_Error string, array or PEAR_Error
@@ -460,16 +454,12 @@ class Net_LDAP2_Entry extends PEAR
     {
         $attr = $this->getAttrName($attr);
 
-        // If the attribute is not set at the entry, return an empty value.
-        // Users should do schema checks if they want to know if an attribute is
-        // valid for an entrys OCLs.
-        if (!array_key_exists($attr, $this->_attributes)) {
-            $value = array('');
-        } else {
-            $value = $this->_attributes[$attr];
+        if (false == array_key_exists($attr, $this->_attributes)) {
+            return PEAR::raiseError("Unknown attribute ($attr) requested");
         }
 
-        // format the attribute values depending on $option
+        $value = $this->_attributes[$attr];
+
         if ($option == "single" || (count($value) == 1 && $option != 'all')) {
             $value = array_shift($value);
         }
@@ -658,9 +648,7 @@ class Net_LDAP2_Entry extends PEAR
     *
     * The parameter has to an array of the following form:
     * array("attributename" => "single value",
-    *       "attribute2name" => array("value1", "value2"),
-    *       "deleteme1" => null,
-    *       "deleteme2" => "")
+    *       "attribute2name" => array("value1", "value2"))
     * If the attribute does not yet exist it will be added instead (see also $force).
     * If the attribue value is null, the attribute will de deleted.
     *
@@ -688,10 +676,7 @@ class Net_LDAP2_Entry extends PEAR
         foreach ($attr as $k => $v) {
             $k = $this->getAttrName($k);
             if (false == is_array($v)) {
-                // delete attributes with empty values; treat ints as string
-                if (is_int($v)) {
-                    $v = "$v";
-                }
+                // delete attributes with empty values
                 if ($v == null) {
                     $this->delete($k);
                     continue;

@@ -25,16 +25,17 @@
 	{* ----------------------- tab with list --------------------------------------- *}
 	<h2>{tr}List of existing groups{/tr}</h2>
 
-	{include file='find.tpl' find_show_num_rows='y'}
+	{if $cant_pages > $maxRecords }
+		{include file='find.tpl' find_show_num_rows='y'}
+	{/if}	
 
 	{if $cant_pages > $maxRecords or !empty($initial) or !empty($find)}
 		{initials_filter_links}
 	{/if}
 
-	<form name="checkform" method="post" action="{$smarty.server.PHP_SELF}">
 	<table class="normal">
 		<tr>
-			<th style="width: 20px;">{select_all checkbox_names='checked[]'}</th>
+			<th style="width: 20px;">&nbsp;</th>
 			<th>{tr}ID{/tr}</th>
 			<th>
 				<a href="tiki-admingroups.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'groupName_desc'}groupName_asc{else}groupName_desc{/if}">{tr}Name{/tr}</a>
@@ -43,7 +44,6 @@
 				<a href="tiki-admingroups.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'groupDesc_desc'}groupDesc_asc{else}groupDesc_desc{/if}">{tr}Description{/tr}</a>
 			</th>
 			<th>{tr}Inherits Permissions from{/tr}</th>
-			<th>{tr}Homepage{/tr}</th>			
 			<th>{tr}User Choice{/tr}</th>
 			<th>{tr}Permissions{/tr}</th>
 			<th style="width: 20px;">&nbsp;</th>
@@ -51,33 +51,24 @@
 		{cycle values="even,odd" print=false}
 		{section name=user loop=$users}
 			<tr class="{cycle}">
-				<td class="checkbox">
-					{if $users[user].groupName ne 'Admins' and $users[user].groupName ne 'Anonymous' and $users[user].groupName ne 'Registered'}
-						<input type="checkbox" name="checked[]" value="{$users[user].groupName|escape}" />
-					{/if}
+				<td style="width: 20px;">
+					<a class="link" href="tiki-admingroups.php?group={$users[user].groupName|escape:"url"}&amp;cookietab=2{if $prefs.feature_tabs ne 'y'}#tab2{/if}" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
 				</td>
-				<td class="id">{$users[user].id|escape}</td>
-				<td class="text">
+				<td>{$users[user].id|escape}</td>
+				<td>
 					<a class="link" href="tiki-admingroups.php?group={$users[user].groupName|escape:"url"}&amp;cookietab=2{if $prefs.feature_tabs ne 'y'}#tab2{/if}" title="{tr}Edit{/tr}">{$users[user].groupName|escape}</a>
 				</td>
-				<td class="text">{tr}{$users[user].groupDesc|escape|nl2br}{/tr}</td>
-				<td class="text">
+				<td>{tr}{$users[user].groupDesc|escape|nl2br}{/tr}</td>
+				<td>
 					{section name=ix loop=$users[user].included}
-						{if !in_array($users[user].included[ix], $users[user].included_direct)}<i>{/if}
-						{$users[user].included[ix]|escape}
-						{if !in_array($users[user].included[ix], $users[user].included_direct)}</i>{/if}
-						<br />
+						{$users[user].included[ix]|escape}<br />
 					{/section}
 				</td>
-				<td class="text">
-					<a class="link" href="tiki-index.php?page={$users[user].groupHome|escape:"url"}" title="{tr}Group Homepage{/tr}">{tr}{$users[user].groupHome}{/tr}</a>
-				</td>
-				<td class="text">{tr}{$users[user].userChoice}{/tr}</td>
-				<td class="text">
+				<td>{tr}{$users[user].userChoice}{/tr}</td>
+				<td>
 					<a class="link" href="tiki-objectpermissions.php?group={$users[user].groupName|escape:"url"}" title="{tr}Permissions{/tr}">{icon _id='key' alt="{tr}Permissions{/tr}"} {$users[user].permcant}</a>
 				</td>
-				<td class="action">
-					<a class="link" href="tiki-admingroups.php?group={$users[user].groupName|escape:"url"}&amp;cookietab=2{if $prefs.feature_tabs ne 'y'}#tab2{/if}" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
+				<td style="width: 20px;">
 					{if $users[user].groupName ne 'Anonymous' and $users[user].groupName ne 'Registered' and $users[user].groupName ne 'Admins'}
 						<a class="link" href="tiki-admingroups.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;action=delete&amp;group={$users[user].groupName|escape:"url"}" title="{tr}Delete{/tr}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 					{/if}
@@ -85,16 +76,7 @@
 			</tr>
 		{/section}
 	</table>
-	<p align="left"> {*on the left to have it close to the checkboxes*}
-		<label>{tr}Perform action with checked:{/tr}
-			<select name="submit_mult">
-				<option value="" selected="selected">-</option>
-				<option value="remove_groups" >{tr}Remove{/tr}</option>
-			</select>
-		</label>
-		<input type="submit" value="{tr}OK{/tr}" />
-	</p>
-	</form>
+
 	{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
 {/tab}
 
@@ -107,19 +89,6 @@
 {tab name=$tabaddeditgroup_admgrp}
 {* ----------------------- tab with form --------------------------------------- *}
 
-	{if !empty($user) and $prefs.feature_user_watches eq 'y'}
-		<div class="floatright">
-			{if not $group_info.isWatching}
-				{self_link watch=$groupname}
-					{icon _id='eye' alt="{tr}Group is NOT being monitored. Click icon to START monitoring.{/tr}"}
-				{/self_link}
-			{else}
-				{self_link unwatch=$groupname}
-					{icon _id='no_eye' alt="{tr}Group IS being monitored. Click icon to STOP monitoring.{/tr}"}
-				{/self_link}
-			{/if}
-		</div>
-	{/if}
 	<h2>{$tabaddeditgroup_admgrp}</h2>
 
 	<form action="tiki-admingroups.php" method="post">
@@ -164,13 +133,13 @@
 
 			<tr>
 				<td>
-					{tr}Also inheriting permissions from the following groups (indirect inheritance through the groups selected above).{/tr}
+					<label for="indirectly_inherited_groups">{tr}Also inheriting permissions from the following groups (indirect inheritance through the groups selected above).{/tr}</label>
 				</td>
 				<td>
 					{if $indirectly_inherited_groups|@count > 0}
 						{*	PROBLEM WITH FOREACH BELOW... *}
 						{foreach key=num item=gr from=$indirectly_inherited_groups}
-							{$gr|escape};
+							{$gr};
 						{/foreach}
 					{else}
 						{tr}None{/tr}						
@@ -188,7 +157,11 @@
 						{remarksbox type="tip" title="{tr}Tip{/tr}"}
 							{tr}Use wiki page name or full URL{/tr}. {tr}For other Tiki features, use relative links (such as <em>http:tiki-forums.php</em>).{/tr}
 						{/remarksbox}
-						{autocomplete element='#groups_home' type='pagename'}
+						{if $prefs.javascript_enabled eq 'y' and $prefs.feature_jquery_autocomplete eq 'y'}
+							{jq}
+								$("#groups_home").tiki("autocomplete", "pagename");
+							{/jq}
+						{/if}
 					</td>
 				</tr>
 			{/if}
@@ -223,9 +196,9 @@
 			
 			{if $prefs.groupTracker eq 'y'}
 				<tr>
-					<td><label for="groupstracker">{tr}Group Information Tracker{/tr}</label></td>
+					<td><label for="groupTracker">{tr}Group Information Tracker{/tr}</label></td>
 					<td>
-						<select name="groupstracker" id="groupstracker">
+						<select name="groupstracker">
 							<option value="0">{tr}choose a group tracker ...{/tr}</option>
 							{foreach key=tid item=tit from=$trackers}
 								<option value="{$tid}"{if $tid eq $grouptrackerid} {assign var="ggr" value="$tit"}selected="selected"{/if}>{$tit|escape}</option>
@@ -236,7 +209,7 @@
 							<select name="groupfield">
 								<option value="0">{tr}choose a field ...{/tr}</option>
 								{section name=ix loop=$groupFields}
-									<option value="{$groupFields[ix].fieldId}"{if $groupFields[ix].fieldId eq $groupfieldid} selected="selected"{/if}>{$groupFields[ix].name|escape}</option>
+									<option value="{$groupFields[ix].fieldId}"{if $groupFields[ix].fieldId eq $groupfieldid} selected="selected"{/if}>{$groupFields[ix].name}</option>
 								{/section}
 							</select>
 						{/if}
@@ -254,10 +227,10 @@
 				<tr>
 					<td><label for="userstracker">{tr}Users Information Tracker{/tr}</label></td>
 					<td>
-						<select name="userstracker" id="userstracker">
+						<select name="userstracker">
 							<option value="0">{tr}choose a users tracker ...{/tr}</option>
 							{foreach key=tid item=tit from=$trackers}
-								<option value="{$tid}"{if $tid eq $userstrackerid} {assign var="ugr" value="$tit"}selected="selected"{/if}>{$tit|escape}</option>
+								<option value="{$tid}"{if $tid eq $userstrackerid} {assign var="ugr" value="$tit"}selected="selected"{/if}>{$tit}</option>
 							{/foreach}
 						</select>
 						{if $userstrackerid}
@@ -265,7 +238,7 @@
 							<select name="usersfield">
 								<option value="0">{tr}choose a field ...{/tr}</option>
 								{section name=ix loop=$usersFields}
-									<option value="{$usersFields[ix].fieldId}"{if $usersFields[ix].fieldId eq $usersfieldid} selected="selected"{/if}>{$usersFields[ix].fieldId} - {$usersFields[ix].name|escape}</option>
+									<option value="{$usersFields[ix].fieldId}"{if $usersFields[ix].fieldId eq $usersfieldid} selected="selected"{/if}>{$usersFields[ix].fieldId} - {$usersFields[ix].name}</option>
 								{/section}
 							</select>
 						{/if}
@@ -293,18 +266,6 @@
 				<td><input type="text" name="expireAfter" value="{$group_info.expireAfter|escape}" />{tr}Days{/tr}<br /><i>{tr}0 or empty for never{/tr}</i></td>
 			</tr>
 			<tr>
-				<td>{tr}Or, users are automatically unassigned from the group at an anniversary date{/tr}</td>
-				<td><input type="text" name="anniversary" value="{$group_info.anniversary|escape}" /><br /><i>{tr}MMDD for annual or DD for monthly{/tr}</i></td>
-			</tr>
-			<tr>
-				<td>{tr}Payment for membership extension is prorated at a minimum interval of a{/tr}</td>
-				<td><select name="prorateInterval">
-				<option value="day" {if $group_info.prorateInterval eq 'day'}selected="selected"{/if}>{tr}Day{/tr}</option>
-				<option value="month" {if $group_info.prorateInterval eq 'month'}selected="selected"{/if}>{tr}Month{/tr}</option>
-				<option value="year" {if $group_info.prorateInterval eq 'year'}selected="selected"{/if}>{tr}Year{/tr}</option>
-				</select></td>
-			</tr>
-			<tr>
 				<td>{tr}Users are automatically assigned at registration in the group if their emails match the pattern{/tr}</td>
 				<td><input type="text" size="40" name="emailPattern" value="{$group_info.emailPattern|escape}" /><br />{tr}Example: {/tr}/@tw\.org$/ <br />{tr}Example:{/tr} /@(tw.org$)|(tw\.com$)/</td>
 			</tr>
@@ -315,9 +276,7 @@
 						{tr}Assign group <em>management</em> permissions:{/tr}
 					</td>
 					<td>
-						{self_link _script="tiki-objectpermissions.php" objectType="group" objectId=$groupname objectName=$groupname permType="group"}
-							{icon _text="{tr}Assign Permissions{/tr}" _id="key"}
-						{/self_link}
+						{icon href="tiki-objectpermissions.php?objectType=group&objectId=$groupname&objectName=$groupname&permType=group" _text="{tr}Assign Permissions{/tr}" _id="key"}
 					</td>
 				</tr>
 				<tr>
@@ -369,10 +328,10 @@
 			<tr>
 				{foreach from=$memberslist item=member}
 					<tr class="{cycle}">
-					<td class="username">{$member.login|userlink}</td>
-					<td class="date">{$member.created|tiki_short_datetime}</td>
-					<td class="date">{if !empty($member.expire)}{$member.expire|tiki_short_datetime}{/if}</td>
-					<td class="action">
+					<td>{$member.login|userlink}</td>
+					<td>{$member.created|tiki_short_datetime}</td>
+					<td>{if !empty($member.expire)}{$member.expire|tiki_short_datetime}{/if}</td>
+					<td>
 						<a href="tiki-adminusers.php?user={$member.login|escape:"url"}&amp;action=removegroup&amp;group={$groupname|escape:url}" class="link" title="{tr}Remove from Group{/tr}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 						<a href="tiki-adminusers.php?user={$member.userId|escape:"url"}&amp;cookietab=2{if $prefs.feature_tabs ne 'y'}#tab2{/if}" class="link" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
 					</td>
@@ -380,28 +339,7 @@
 				{/foreach}
 		</table>
 		{pagination_links cant=$membersCount step=$prefs.maxRecords offset=$membersOffset offset_arg='membersOffset'}{/pagination_links}
-
 		<div class="box">{$membersCount} {tr}users in group{/tr} {$groupname|escape}</div>
-
-		<h2>{tr}Banned members List:{/tr} {$groupname|escape}</h2>
-		<table class="normal">
-			<tr>
-				<th>{tr}User{/tr}</th>
-				<th>{tr}Action{/tr}</th>
-			</tr>
-			{cycle values="even,odd" print=false}
-			<tr>
-				{foreach from=$bannedlist item=member}
-					<tr class="{cycle}">
-					<td class="username">{$member|userlink}</td>
-					<td class="action">
-						{self_link user=$member|escape:"url" action=unbanuser group=$groupname|escape:url _title="{tr}Unban user{/tr}"}
-							{icon _id='cross_admin' alt="{tr}Unban user{/tr}"}
-						{/self_link}
-					</td>
-					</tr>
-				{/foreach}
-		</table>
 		{if ! empty($userslist)}
 			<form method="post" action="tiki-admingroups.php">
 				<p>
@@ -412,7 +350,6 @@
 						{/foreach}
 					</select>
 					<input type="submit" name="adduser" value="{tr}Add to group{/tr}"/>
-					<input type="submit" name="banuser" value="{tr}Ban user from group{/tr}"/>
 				</p>
 			</form>
 		{/if}

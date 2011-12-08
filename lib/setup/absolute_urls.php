@@ -1,12 +1,12 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-$access->check_script($_SERVER["SCRIPT_NAME"], basename(__FILE__));
+$access->check_script($_SERVER["SCRIPT_NAME"],basename(__FILE__));
 
 // check if the current port is not 80 or 443
 if (isset($_SERVER["SERVER_PORT"])) {
@@ -31,14 +31,14 @@ if ( $prefs['http_port'] == 80 ) $prefs['http_port'] = '';
 //
 $https_mode = false;
 if ( ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' )
-	 || ( $prefs['https_port'] == '' && isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443 )
+	|| ( $prefs['https_port'] == '' && $_SERVER['SERVER_PORT'] == 443 )
 	|| ( $prefs['https_port'] > 0 && $_SERVER['SERVER_PORT'] == $prefs['https_port'] )
 	|| $prefs['https_login'] == 'force_nocheck'
 ) $https_mode = true;
 
 $url_scheme = $https_mode ? 'https' : 'http';
 $url_host = (isset($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST']  : $_SERVER['SERVER_NAME'];
-list($url_host,)=preg_split('/:/', $url_host);	// Strip url port
+list($url_host,)=preg_split('/:/',$url_host);	// Strip url port
 $url_port = $https_mode ? $prefs['https_port'] : $prefs['http_port'];
 $url_path = $tikiroot;
 $base_host = $url_scheme.'://'.$url_host.(($url_port!='')?':'.$url_port:'');
@@ -46,14 +46,9 @@ $base_url = $url_scheme.'://'.$url_host.(($url_port!='')?':'.$url_port:'').$url_
 $base_url_http = 'http://'.$url_host.(($prefs['http_port']!='')?':'.$prefs['http_port']:'').$url_path;
 $base_url_https = 'https://'.$url_host.(($prefs['https_port']!='')?':'.$prefs['https_port']:'').$url_path;
 // for <base> tag, which needs the " absolute URI that acts as the base URI for resolving relative URIs", not just the root of the site
-$base_uri = !empty($_SERVER['REDIRECT_SCRIPT_URI']) ?
-		$_SERVER['REDIRECT_SCRIPT_URI'] : isset($_SERVER['SCRIPT_URI']) ?
-				$_SERVER['SCRIPT_URI'] : isset($_SERVER['REQUEST_URI']) ?
-				$base_host . $_SERVER['REQUEST_URI'] : '';
+$base_uri = !empty($_SERVER['REDIRECT_SCRIPT_URI']) ? $_SERVER['REDIRECT_SCRIPT_URI'] : isset($_SERVER['SCRIPT_URI']) ? $_SERVER['SCRIPT_URI'] : $base_url;
 global $smarty;
-if (!empty($base_uri) && is_object($smarty)) {
-	$smarty->assign('base_uri', $base_uri);
-}
+$smarty->assign('base_uri', $base_uri);
 
 // SSL options
 

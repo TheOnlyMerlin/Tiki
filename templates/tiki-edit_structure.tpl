@@ -69,9 +69,7 @@
 {if $subtree[ix].pos eq ''}
 	<th><a class='link' href='{sefurl page=$subtree[ix].pageName structure=$structure_name page_ref_id=$subtree[ix].page_ref_id}' title="{tr}View{/tr}">{icon _id='magnifier' alt="{tr}View{/tr}"}</a>
 		{if $editable == 'y'}
-		{if $subtree[ix].flag == 'L'}
-			{capture assign=title}{tr _0=$subtree[ix].user}locked by %0{/tr}{/capture}
-			{icon _id='lock' alt="{tr}Locked{/tr}" title=$title}
+		{if $subtree[ix].flag == 'L'}{icon _id='lock' alt="locked" title="locked by `$subtree[ix].user`"}
 		{else}<a class="link" href='tiki-editpage.php?page={$subtree[ix].pageName|escape:"url"}'>{icon _id='page_edit'}</a>{/if}
 		{/if}
 		{if $tiki_p_watch_structure eq 'y'}
@@ -96,9 +94,7 @@
 		{if $editable == 'y'}<a href='tiki-edit_structure.php?page_ref_id={$subtree[ix].page_ref_id}&amp;move_node=1'>{icon _id='resultset_previous' alt="{tr}Promote{/tr}"}</a><a href='tiki-edit_structure.php?page_ref_id={$subtree[ix].page_ref_id}&amp;move_node=4'>{icon _id='resultset_next' alt="{tr}Demote{/tr}"}</a><a href='tiki-edit_structure.php?page_ref_id={$subtree[ix].page_ref_id}&amp;move_node=2'>{icon _id='resultset_up' alt="{tr}Previous{/tr}"}</a><a href='tiki-edit_structure.php?page_ref_id={$subtree[ix].page_ref_id}&amp;move_node=3'>{icon _id='resultset_down' style="margin-right:10px;" alt="{tr}Next{/tr}"}{/if}</a>
 		{if $subtree[ix].viewable == 'y'}<a class='link' href='{sefurl page=$subtree[ix].pageName structure=$structure_name page_ref_id=$subtree[ix].page_ref_id}' title="{tr}View{/tr}">{icon _id='magnifier' alt="{tr}View{/tr}"}</a>{else}&nbsp;{/if}
 		{if $subtree[ix].editable == 'y'}
-		{if $subtree[ix].flag == 'L'}
-			{capture assign=title}{tr _0=$subtree[ix].user}locked by %0{/tr}{/capture}
-			{icon _id='lock' alt="{tr}Locked{/tr}" title=$title}
+		{if $subtree[ix].flag == 'L'}{icon _id='lock' alt="locked" title="locked by `$subtree[ix].user`"}
 		{else}<a class="link" href='tiki-editpage.php?page={$subtree[ix].pageName|escape:"url"}'>{icon _id='page_edit'}</a>{/if}
 		{/if}
 		{if $tiki_p_watch_structure eq 'y'}
@@ -125,21 +121,23 @@
 <form action="tiki-edit_structure.php" method="post">
 <input type="hidden" name="page_ref_id" value="{$page_ref_id}" />
 
-<h2>{tr}Current Node:{/tr} {$pageName}</h2>
+<h2>{tr}Current Node{/tr}: {$pageName}</h2>
 <table class="formcolor">
   <tr>
-  <td><label for="pageAlias">{tr}Page alias:{/tr}</label></td>
+  <td><label for="pageAlias">{tr}Page alias{/tr}:</label></td>
   <td>
   <input type="text" name="pageAlias" id="pageAlias" value="{$pageAlias}" />  <input type="submit" name="create" value="{tr}Update{/tr}" />
   </td>
   </tr>
-	{autocomplete element='#pageAlias' type='pagename'}
+  {if $prefs.javascript_enabled eq 'y' and $prefs.feature_jquery_autocomplete eq 'y'}
+  {jq}$("#pageAlias").tiki("autocomplete", "pagename");{/jq}
+  {/if}
   <tr>
   <td>{tr}Move in this structure{/tr}</td>
   <td>
   <a href='tiki-edit_structure.php?page_ref_id={$page_ref_id}&amp;move_node=1'>{icon _id='resultset_previous' alt="{tr}Promote{/tr}"}</a><a href='tiki-edit_structure.php?page_ref_id={$page_ref_id}&amp;move_node=4'>{icon _id='resultset_next' alt="{tr}Demote{/tr}"}</a><a href='tiki-edit_structure.php?page_ref_id={$page_ref_id}&amp;move_node=2'>{icon _id='resultset_up' alt="{tr}Previous{/tr}"}</a><a href='tiki-edit_structure.php?page_ref_id={$page_ref_id}&amp;move_node=3'>{icon _id='resultset_down' style="margin-right:10px;" alt="{tr}Next{/tr}"}</a>
 </td></tr>
-<tr><td><label for="structure_id">{tr}Move to another structure:{/tr}</label></td>
+<tr><td><label for="structure_id">{tr}Move to another structure{/tr}:</label></td>
 <td>
 <select name="structure_id" id="structure_id"{if $structures|@count eq '1'} disabled="disabled"{/if}>
 {section name=ix loop=$structures}
@@ -156,11 +154,11 @@
   </td>
   </tr>
 </table>
-<h3>{tr}Add pages to current node:{/tr}</h3>
+<h3>{tr}Add pages to current node{/tr}:</h3>
 <table class="formcolor">
   <tr>
   <td>
-  <label for="after_ref_id">{tr}After page:{/tr}</label>
+  <label for="after_ref_id">{tr}After page{/tr}:</label>
   </td>
   <td>
   <select name="after_ref_id" id="after_ref_id">
@@ -172,19 +170,23 @@
   </tr>
   <tr>
   <td>
-  <label for="name">{tr}Create Page:{/tr}</label>
+  <label for="name">{tr}Create Page{/tr}:</label>
   </td>
   <td>
   <input type="text" name="name" id="name" />
-	{autocomplete element='#name' type='pagename'}
   </td>
   </tr>
+  {if $prefs.javascript_enabled eq 'y' and $prefs.feature_jquery_autocomplete eq 'y'}
+  {jq}$("#name").tiki("autocomplete", "pagename");{/jq}
+  {/if}
   <tr>
   <td>
-  <label for="name2">{tr}Use pre-existing page:{/tr}</label><br /><br />
+  <label for="name2">{tr}Use pre-existing page{/tr}:</label><br /><br />
         <input type="text" name="find_objects" id="find_objects" value="{$find_objects|escape}" />
         <input type="submit" value="{tr}Filter{/tr}" name="search_objects" />
-        {autocomplete element='#find_objects' type='pagename'}
+          {if $prefs.javascript_enabled eq 'y' and $prefs.feature_jquery_autocomplete eq 'y'}
+          {jq}$("#find_objects").tiki("autocomplete", "pagename");{/jq}
+          {/if}
 
         {if $prefs.feature_categories eq 'y'}	
 		<select name="categId">
@@ -214,12 +216,12 @@
 {if $prefs.feature_wiki_categorize_structure == 'y' && $all_editable == 'y'}
 <form action="tiki-edit_structure.php" method="post">
 <input type="hidden" name="page_ref_id" value="{$page_ref_id}" />
-<h3>{tr}Categorize all pages in structure together:{/tr}</h3>
+<h3>{tr}Categorize all pages in structure together{/tr}:</h3>
 <table class="normal">
 {include file='categorize.tpl'}
 </table>
 <input type="submit" name="recategorize" value="{tr}Update{/tr}" />
-&nbsp;&nbsp;{tr}Remove existing categories from ALL pages before recategorizing:{/tr} <input type="checkbox" name="cat_override" />
+&nbsp;&nbsp;{tr}Remove existing categories from ALL pages before recategorizing{/tr}: <input type="checkbox" name="cat_override" />
 </form>
 {/if}
 <br />

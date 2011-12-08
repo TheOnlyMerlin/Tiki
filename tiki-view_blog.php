@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,10 +8,6 @@
 $section = 'blogs';
 require_once ('tiki-setup.php');
 include_once ('lib/blogs/bloglib.php');
-
-$auto_query_args = array(
-	'blogId'
-);
 
 if ($prefs['feature_freetags'] == 'y') {
 	include_once ('lib/freetag/freetaglib.php');
@@ -27,7 +23,7 @@ if ($prefs['feature_categories'] == 'y') {
 $access->check_feature('feature_blogs');
 
 if (isset($_REQUEST["blogTitle"])) {
-	$blog_data = $bloglib->get_blog_by_title(trim(trim($_REQUEST["blogTitle"]), "\x22\x27"));
+	$blog_data = $bloglib->get_blog_by_title(trim(trim($_REQUEST["blogTitle"]) , "\x22\x27"));
 	if ((!empty($blog_data)) && (!empty($blog_data["blogId"]))) {
 		$_REQUEST["blogId"] = $blog_data["blogId"];
 	}
@@ -37,7 +33,7 @@ if (!isset($_REQUEST["blogId"])) {
 	$smarty->display("error.tpl");
 	die;
 }
-$tikilib->get_perm_object($_REQUEST["blogId"], 'blog'); 
+$tikilib->get_perm_object( $_REQUEST["blogId"], 'blog' ); 
 
 
 $access->check_permission('tiki_p_read_blog');
@@ -119,7 +115,7 @@ $date_max = isset($_REQUEST['date_max']) ? $_REQUEST['date_max'] : $tikilib->now
 $listpages = $bloglib->list_blog_posts($_REQUEST["blogId"], true, $offset, $blog_data["maxPosts"], $sort_mode, $find, $date_min, $date_max);
 $temp_max = count($listpages["data"]);
 for ($i = 0; $i < $temp_max; $i++) {
-	$listpages["data"][$i]["parsed_data"] = $tikilib->parse_data($bloglib->get_page($listpages["data"][$i]["data"], 1), array('is_html' => true));
+	$listpages["data"][$i]["parsed_data"] = $tikilib->parse_data($bloglib->get_page($listpages["data"][$i]["data"], 1), array('is_html' => ($listpages["data"][$i]["wysiwyg"]=='y'?TRUE:FALSE)));
 	if ($prefs['feature_freetags'] == 'y') { // And get the Tags for the posts
 		$listpages["data"][$i]["freetags"] = $freetaglib->get_tags_on_object($listpages["data"][$i]["postId"], "blog post");
 	}
@@ -141,7 +137,7 @@ if ($prefs['feature_theme_control'] == 'y') {
 if ($user && $prefs['feature_notepad'] == 'y' && $tiki_p_notepad == 'y' && isset($_REQUEST['savenotepad'])) {
 	check_ticket('blog');
 	$post_info = $bloglib->get_post($_REQUEST['savenotepad']);
-	$tikilib->replace_note($user, 0, $post_info['title'] ? $post_info['title'] : $tikilib->date_format("%d/%m/%Y [%H:%M]", $post_info['created']), $post_info['data']);
+	$tikilib->replace_note($user, 0, $post_info['title'] ? $post_info['title'] : $tikilib->date_format("%d/%m/%Y [%H:%M]", $post_info['created']) , $post_info['data']);
 }
 if ($prefs['feature_user_watches'] == 'y') {
 	if ($user && isset($_REQUEST['watch_event'])) {
@@ -163,7 +159,7 @@ if ($prefs['feature_user_watches'] == 'y') {
 		if (count($watching_categories_temp) > 0) {
 			$smarty->assign('category_watched', 'y');
 			$watching_categories = array();
-			foreach ($watching_categories_temp as $wct) {
+			foreach($watching_categories_temp as $wct) {
 				$watching_categories[] = array(
 					"categId" => $wct,
 					"name" => $categlib->get_category_name($wct)
@@ -173,7 +169,10 @@ if ($prefs['feature_user_watches'] == 'y') {
 		}
 	}
 }
-
+if ($prefs['feature_mobile'] == 'y' && isset($_REQUEST['mode']) && $_REQUEST['mode'] == 'mobile') {
+	include_once ("lib/hawhaw/hawtikilib.php");
+	HAWTIKI_view_blog($listpages, $blog_data);
+}
 if ($prefs['feature_actionlog'] == 'y') {
 	$logslib->add_action('Viewed', $_REQUEST['blogId'], 'blog', '');
 }
