@@ -2,6 +2,10 @@
 JQuery/Tiki readme
 -------------------------
 
+jonnybradley 8 December 2011
+
+Update:
+	jquery-ui-selectmenu to latest "dev" version 1.9 (version.txt is out of date)
 
 jonnybradley 17 November 2011
 
