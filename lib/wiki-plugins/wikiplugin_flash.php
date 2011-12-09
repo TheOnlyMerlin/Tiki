@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_flash_info()
-{
+function wikiplugin_flash_info() {
 	return array(
 		'name' => tra('Flash Video'),
 		'documentation' => 'PluginFlash',
@@ -96,8 +95,7 @@ function wikiplugin_flash_info()
 	);
 }
 
-function wikiplugin_flash($data, $params)
-{
+function wikiplugin_flash($data, $params) {
 	global $tikilib, $prefs, $userlib, $user;
 	
 	// Handle file from a podcast file gallery

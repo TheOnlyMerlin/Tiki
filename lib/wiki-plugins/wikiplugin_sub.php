@@ -5,10 +5,9 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_sub_info()
-{
+function wikiplugin_sub_info() {
 	return array(
-		'name' => tra('Subscript'),
+		'name' => tra( 'Subscript' ),
 		'documentation' => 'PluginSub',
 		'description' => tra('Apply subscript font to text'),
 		'prefs' => array( 'wikiplugin_sub' ),
@@ -22,8 +21,8 @@ function wikiplugin_sub_info()
 
 function wikiplugin_sub($data, $params)
 {
-	global $tikilib;
+        global $tikilib;
 
-	extract($params, EXTR_SKIP);
+        extract ($params,EXTR_SKIP);
 	return "<sub>$data</sub>";
 }

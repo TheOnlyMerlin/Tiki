@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -11,7 +11,7 @@
  *
  * smarty_block_title : add a title to a template.
  *
- * params:
+ * params: 
  *    help: name of the doc page on doc.tiki.org
  *    admpage: admin panel name
  *    url: link on the title
@@ -20,7 +20,7 @@
  */
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
@@ -41,7 +41,7 @@ function smarty_block_title($params, $content, $template, $repeat)
 	}
 
 	// Set the variable for the HTML title tag
-	$template->smarty->assign('headtitle', $content);
+	$template->smarty->assign( 'headtitle', $content );
 
 	$class = 'pagetitle';
 	$current = current_object();
@@ -62,16 +62,16 @@ function smarty_block_title($params, $content, $template, $repeat)
 	if ($template->getTemplateVars('print_page') != 'y') {
 		if ( $prefs['feature_help'] == 'y' && $prefs['helpurl'] != '' && $params['help'] != '' ) {
 			$html .= '<a href="' . $prefs['helpurl'] . rawurlencode($params['help']) . '" class="titletips" title="' . tra('Help page:') . ' ' . htmlspecialchars($content) . '">'
-			. smarty_function_icon(array('_id' => 'help'), $template)
+			. smarty_function_icon(array('_id' => 'help') , $template)
 			. "</a>\n";
 		}
 
 		if ($prefs['feature_edit_templates'] == 'y' && $tiki_p_edit_templates == 'y' && ($tpl = $template->getTemplateVars('mid'))) {
-			$html .= '<a href="tiki-edit_templates.php?template=' . $tpl . '" class="titletips" title="' . tra('View or edit tpl:') . ' ' . htmlspecialchars($content) . '">'
+			$html .= '<a href="tiki-edit_templates.php?template=' . $tpl . '" class="titletips" title="' . tra('View or edit tpl:') . ' ' . htmlspecialchars($content) . '">' 
 			. smarty_function_icon(array('_id' => 'shape_square_edit', 'alt' => tra('Edit Template')), $template)
 			. "</a>\n";
 		} elseif ($prefs['feature_view_tpl'] == 'y' &&  $tiki_p_view_templates == 'y' && ($tpl = $template->getTemplateVars('mid'))) {
-			$html .= '<a href="tiki-edit_templates.php?template=' . $tpl . '" class="titletips" title="' . tra('View tpl:') . ' ' . htmlspecialchars($content) . '">'
+			$html .= '<a href="tiki-edit_templates.php?template=' . $tpl . '" class="titletips" title="' . tra('View tpl:') . ' ' . htmlspecialchars($content) . '">' 
 			. smarty_function_icon(array('_id' => 'shape_square', 'alt' => tra('View Template')), $template)
 			. "</a>\n";
 			

@@ -17,22 +17,10 @@ require_once('Language.php');
 class Language_WriteFile
 {
 	/**
-	 * Representation of the language file.
-	 * @var Language_File
-	 */
-	protected $parseFile;
-	
-	/**
 	 * Path to a language.php file
 	 * @var string
 	 */
 	protected $filePath;
-	
-	/**
-	 * Path to temporary language file.
-	 * @var string
-	 */
-	protected $tmpFilePath;
 	
 	/**
 	 * Current language translations.
@@ -40,37 +28,38 @@ class Language_WriteFile
 	 */
 	protected $translations;
 	
-	public function __construct(Language_File $parseFile)
-	{
-		$this->parseFile = $parseFile;
-		$this->filePath = $parseFile->filePath;
-		$this->tmpFilePath = $this->filePath . '.tmp';
-		
-		if (!is_writable($this->filePath)) {
-			throw new Language_Exception("Can't write to file $this->filePath.");
-		}
-	}
-	
 	/**
 	 * Update language.php file with new strings.
 	 * 
 	 * @param array $strings English strings collected from source files
+	 * @param string path to language.php file
 	 * @param bool $outputFiles whether file paths were string was found should be included or not in the output
 	 * @return null
 	 */
-	public function writeStringsToFile(array $strings, $outputFiles = false)
+	public function writeStringsToFile(array $strings, $filePath, $outputFiles = false)
 	{
 		if (empty($strings)) {
 			return false;
 		}
 		
-		// backup original language file
-		copy($this->filePath, $this->filePath . '.old');
+		if (!file_exists($filePath)) {
+			throw new Language_Exception("File $filePath does not exist.");
+		}
 		
-		$this->translations = $this->parseFile->getTranslations();
+		if (!is_writable($filePath)) {
+			throw new Language_Exception("Can't write to file $filePath.");
+		}
+		
+		$this->filePath = $filePath;
+		$tmpFilePath = $this->filePath . '.tmp';
+		
+		// backup original language file
+		copy($filePath, $filePath . '.old');
+		
+		$this->translations = $this->getCurrentTranslations();
 		$entries = $this->mergeStringsWithTranslations($strings, $this->translations);
 		
-		$handle = fopen($this->tmpFilePath, 'w');
+		$handle = fopen($tmpFilePath, 'w');
 		
 		if ($handle) {
 			fwrite($handle, "<?php\n");
@@ -85,7 +74,7 @@ class Language_WriteFile
 			fclose($handle);
 		}
 		
-		rename($this->tmpFilePath, $this->filePath);	
+		rename($tmpFilePath, $this->filePath);	
 	}
 
 	/**
@@ -143,8 +132,8 @@ TXT;
 				$string['translation'] = $translations[$string['name']];
 			} else {
 				// Handle punctuations at the end of the string (cf. comments in lib/init/tra.php)
-				// For example, if the string is 'Login:', we put 'Login' for translation instead
-				// (except if we already have an explicit translation for 'Login:', in which case we don't reach this else)
+				// For example, if $string->name == 'Login:', we don't keep it if we also have a string 'Log In'
+				// (except if we already have an explicit translation for 'Log In:')
 				$stringLength = strlen($string['name']);
 				$stringLastChar = $string['name'][$stringLength - 1];
 				
@@ -190,5 +179,22 @@ TXT;
 		}
 		
 		return $string;
+	}
+	
+	/**
+	 * Return an array with available translations for
+	 * current language.
+	 * 
+	 * @return array language translations
+	 */
+	protected function getCurrentTranslations()
+	{
+		require($this->filePath);
+
+		if (isset($lang) && !empty($lang)) {
+			return $lang;
+		} else {
+			return array();
+		}
 	}
 }

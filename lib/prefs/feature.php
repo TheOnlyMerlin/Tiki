@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_feature_list($partial = false)
-{
+function prefs_feature_list($partial = false) {
 
 	global $prefs;
 	
@@ -633,15 +632,6 @@ function prefs_feature_list($partial = false)
 			'default' => 'n',
 			'tags' => array('basic'),			
 		),
-		'feature_slideshow_pdfexport' => array(
-			'name' => tra('Slideshow (jQuery.s5) PDF Export'),
-			'description' => tra('Web based slideshow to pdf export'),
-			'help' => 'Slideshow',
-			'type' => 'flag',
-			'keywords' => 'slide slides presentation pdf',
-			'default' => 'n',
-			'tags' => array('experimental'),			
-		),
 		'feature_invoice' => array(
 			'name' => tra('Invoice'),
 			'description' => tra('Invoice system'),
@@ -1212,7 +1202,7 @@ function prefs_feature_list($partial = false)
 			'help' => 'Perspectives',
 			'type' => 'flag',
 			'perspective' => false,
-			'default' => 'n',
+			'default' => 'n', // If enabling by default, lib/setup/prefs.php needs updating
 			'view' => 'tiki-edit_perspective.php',
 		),
 		'feature_wiki_replace' => array(
@@ -2188,18 +2178,7 @@ function prefs_feature_list($partial = false)
 		'feature_hotwords_nw' => array(
 			'name' => tra('Open Hotwords in new window'),
 			'type' => 'flag',
-			'dependencies' => array(
-				'feature_hotwords',
-			),
 			'default' => 'n',
-		),
-		'feature_hotwords_sep' => array(
-			'name' => tra('Characters that limit a hotword'),
-			'type' => 'text',
-			'dependencies' => array(
-				'feature_hotwords',
-			),
-			'default' => ' \n\t\r\,\;\(\)\.\:\[\]\{\}\!\?\"',
 		),
 		'feature_use_quoteplugin' => array(
 			'name' => tra('Use Quote plugin rather than ">" for quoting'),
@@ -2336,7 +2315,6 @@ function prefs_feature_list($partial = false)
 		'feature_fixed_width' => array(
 			'name' => tra('Fixed width'),
 			'type' => 'flag',
-			'tags' => array('basic'),
 			'description' => tra('Constrains the width of the site.'),
 			'default' => 'y',
 		),
@@ -2457,36 +2435,6 @@ function prefs_feature_list($partial = false)
 			),
 			'admin' => 'blogs',
 			'perspective' => false,			
-		),
-		'feature_time_sheet' => array(
-			'name' => tra('Time Sheet'),
-			'type' => 'flag',
-			'help' => 'TimeSheet',
-			'keywords' => 'timesheet time sheet project',
-			'description' => tra('A project time manager'),
-			'default' => 'n',
-			'warning' => tra('Experimental'),
-			'tags' => array('experimental'),
-		),
-		'feature_htmlfeed' => array(
-			'name' => tra('Html Feed'),
-			'type' => 'flag',
-			'help' => 'HtmlFeed',
-			'keywords' => 'html feed ads ad share',
-			'description' => tra('A way to push and pull html bits around from one site to another'),
-			'default' => 'n',
-			'warning' => tra('Experimental'),
-			'tags' => array('experimental'),
-		),
-		'feature_textbacklinkprotocol' => array(
-			'name' => tra('TextBacklink-Protocol'),
-			'type' => 'flag',
-			'help' => 'TextBacklinkProtocol',
-			'keywords' => 'textbacklink share feed',
-			'description' => tra('A Dynamic Compendia'),
-			'default' => 'n',
-			'warning' => tra('Experimental'),
-			'tags' => array('experimental'),
 		),
 	);
 }

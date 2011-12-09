@@ -1,18 +1,17 @@
 <?php
 // (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
 
-function smarty_function_query($params, $smarty)
-{
+function smarty_function_query($params, $smarty) {
 	global $auto_query_args, $prefs;
 	static $request = NULL;
 
@@ -28,7 +27,7 @@ function smarty_function_query($params, $smarty)
 
 	if ( isset($params['_noauto']) && $params['_noauto'] == 'y' ) {
 		$query = array();
-		foreach ( $params as $param_name => $param_value ) {
+		foreach( $params as $param_name => $param_value ) {
 			if ( $param_name[0] == '_' || $param_value == 'NULL' || $param_value == NULL ) continue;
 			$query[$param_name] = $param_value;
 		}
@@ -48,25 +47,30 @@ function smarty_function_query($params, $smarty)
 			} else {
 				$request = array();
 			}
+
+			// Remove Xajax special arguments
+			foreach ( array('xjxargs', 'xjxr', 'xjx', 'xjxfun', 'xjxr') as $k ) {
+				unset($request[$k]);
+			}
 		}
 		$query = $request;
 
 		if ( is_array($params) ) {
-			foreach ( $params as $param_name => $param_value ) {
+			foreach( $params as $param_name => $param_value ) {
 				// Arguments starting with an underscore are special and must not be included in URL
 				if ( $param_name[0] == '_' ) continue;
 				if ($param_name == 'page') {
 					$list = array($param_value);
 				} else {
-					$list = explode(",", $param_value);
+					$list = explode(",",$param_value);
 				}
-				if ( isset($_REQUEST[$param_name]) and in_array($_REQUEST[$param_name], $list) ) {
-					$query[$param_name] = $list[(array_search($_REQUEST[$param_name], $list)+1)%count($list)];
+				if ( isset($_REQUEST[$param_name]) and in_array($_REQUEST[$param_name],$list) ) {
+					$query[$param_name] = $list[(array_search($_REQUEST[$param_name],$list)+1)%count($list)];
 					if ( $query[$param_name] === NULL or $query[$param_name] == 'NULL' ) {
 						unset($query[$param_name]);
 					}
-				} elseif ( isset($query[$param_name]) and in_array($query[$param_name], $list) ) {
-					$query[$param_name] = $list[(array_search($query[$param_name], $list)+1)%count($list)];
+				} elseif ( isset($query[$param_name]) and in_array($query[$param_name],$list) ) {
+					$query[$param_name] = $list[(array_search($query[$param_name],$list)+1)%count($list)];
 					if ( $query[$param_name] === NULL or $query[$param_name] == 'NULL' ) {
 						unset($query[$param_name]);
 					}
@@ -126,7 +130,7 @@ function smarty_function_query($params, $smarty)
 		// Check for anchor used as script
 		if ( !empty($params['_script']) && $params['_script'][0] == '#' ) {
 			if ( empty($params['_anchor']) ) {
-				$params['_anchor'] = substr($params['_script'], 1);
+				$params['_anchor'] = substr($params['_script'],1);
 			}
 			if ( empty($params['_anchor']) ) {
 				$params['_type'] = 'anchor';
@@ -141,7 +145,7 @@ function smarty_function_query($params, $smarty)
 
 			// If _script does not already specifies the directory and if there is one in PHP_SELF server var, use it
 			if ( $php_self != 'javascript:void(0)' && strpos($php_self, '/') === false && $_SERVER['PHP_SELF'][0] == '/' && stripos($params['_script'], 'mailto:') !== 0) {
-				$php_self = str_replace('\\', '/', dirname($_SERVER['PHP_SELF'])) . '/' . $php_self;
+				$php_self = str_replace('\\','/',dirname($_SERVER['PHP_SELF'])).'/'.$php_self;
 			}
 
 		} elseif ( empty($params['_anchor']) || ! empty($ret) ) {
@@ -151,13 +155,10 @@ function smarty_function_query($params, $smarty)
 			//
 			if (isset($params['controller'], $params['action'])) {
 				$smarty->loadPlugin('smarty_function_service');
-				$php_self = smarty_function_service(
-								array(
-									'controller' => $params['controller'],
-									'action' => $params['action'],
-								), 
-								$smarty
-				);
+				$php_self = smarty_function_service(array(
+					'controller' => $params['controller'],
+					'action' => $params['action'],
+				), $smarty);
 			} else {
 				$php_self = htmlspecialchars($_SERVER['PHP_SELF']);
 			}
@@ -172,13 +173,13 @@ function smarty_function_query($params, $smarty)
 		switch ( $params['_type'] ) {
 			case 'absolute_uri':
 				$ret = $base_host.$php_self.( $ret == '' ? '' : '?'.$ret );
-							break;
+				break;
 			case 'absolute_path':
 				$ret = $php_self.( $ret == '' ? '' : '?'.$ret );
-							break;
+				break;
 			case 'relative':
 				$ret = basename($php_self).( $ret == '' ? '' : '?'.$ret );
-							break;
+				break;
 			case 'form_input': case 'arguments': case 'anchor': /* default */
 		}
 	}

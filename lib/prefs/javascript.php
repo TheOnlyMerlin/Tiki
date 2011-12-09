@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_javascript_list()
-{
+function prefs_javascript_list() {
 	return array(
 		'javascript_cdn' => array(
 			'name' => tra('Use CDN for JavaScript'),
@@ -21,3 +20,4 @@ function prefs_javascript_list()
 		),
 	);
 }
+

@@ -1,12 +1,12 @@
 <?php
 // (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
@@ -57,22 +57,14 @@ function smarty_function_html_select_duration($params, $smarty)
 		$prefix = $params['prefix'].'_unit';
 	}
 	$html_result .= '<select name="'.$prefix.'">';
-
-	$html_result .= smarty_function_html_options(
-					array(
-						'values' => $values,
-						'output' => $output,
-						'selected' => $selected
-					), 
-					$smarty
-	);
-
+	$html_result .= smarty_function_html_options(array(
+		'values' => $values,
+		'output' => $output,
+		'selected' => $selected), $smarty);
 	$html_result .= '</select>';
-	return $html_result;
+    return $html_result;
 }
-
-function compute_select_duration($params, $prefix='Duration')
-{
+function compute_select_duration($params, $prefix='Duration') {
 	return $_REQUEST[$prefix] * $_REQUEST[$prefix.'_unit'];
 }
 

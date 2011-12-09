@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_keep_list()
-{
+function prefs_keep_list() {
 	return array(
 		'keep_versions' => array(
 			'name' => tra('Never delete versions younger than'),

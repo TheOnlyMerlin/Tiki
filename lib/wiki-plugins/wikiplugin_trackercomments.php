@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_trackercomments_info()
-{
+function wikiplugin_trackercomments_info() {
 	return array(
 		'name' => tra('Tracker Comments'),
 		'documentation' => 'PluginTrackerComments',
@@ -44,11 +43,10 @@ function wikiplugin_trackercomments_info()
 		)
 	);
 }
-function wikiplugin_trackercomments($data, $params)
-{
+function wikiplugin_trackercomments($data, $params) {
 	global $trklib; include_once('lib/trackers/trackerlib.php');
 	global $user;
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 	$ret = '';
 	if ($shownbitems == 'y') {
 		$ret .= tra('Comments found:').' '.$trklib->nbComments($user);

@@ -5,14 +5,13 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_subscribegroup_info()
-{
+function wikiplugin_subscribegroup_info() {
 	return array(
 		'name' => tra('Subscribe Group'),
 		'documentation' => 'PluginSubscribeGroup',
 		'description' => tra('Allow users to subscribe to a group'),
 		'prefs' => array( 'wikiplugin_subscribegroup' ),
-		'body' => tra('text displayed before the button'),
+		'body' => tra('text displyed before the button'),
 		'icon' => 'pics/icons/group_add.png',
 		'tags' => array( 'basic' ),
 		'params' => array(
@@ -62,8 +61,7 @@ function wikiplugin_subscribegroup_info()
 	);
 }
 
-function wikiplugin_subscribegroup($data, $params)
-{
+function wikiplugin_subscribegroup($data, $params) {
 	global $tiki_p_subscribe_groups, $userlib, $user, $smarty;
 	static $iSubscribeGroup = 0;
 	++$iSubscribeGroup;
@@ -73,7 +71,7 @@ function wikiplugin_subscribegroup($data, $params)
 	if ($tiki_p_subscribe_groups != 'y') {
 		return tra('Permission denied');
 	}
-	extract($params, EXTR_SKIP);
+	extract ($params, EXTR_SKIP);
 
 	if (empty($group)) {
 		if (!empty($_REQUEST['group'])) {
@@ -99,14 +97,14 @@ function wikiplugin_subscribegroup($data, $params)
 			$userlib->remove_user_from_group($user, $group);
 			unset($groups[$group]);
 			if (!empty($postunsubscribe_url)) {
-				header("Location: $postunsubscribe_url");
+				header( "Location: $postunsubscribe_url" );
 				die;
 			}
 		} else {
 			$userlib->assign_user_to_group($user, $group);
 			$groups[$group] = 'real';
 			if (!empty($postsubscribe_url)) {
-				header("Location: $postsubscribe_url");
+				header( "Location: $postsubscribe_url" );
 				die;
 			}
 		}

@@ -32,14 +32,19 @@ abstract class Tracker_Field_Abstract implements Tracker_Field_Interface, Tracke
 				'show' => 'view',
 			));
 
-
-			$classList = array('tablename');
-			$metadata = TikiLib::lib('object')->get_metadata('trackeritem', $itemId, $classList);
-
 			$arguments = array(
-				'class' => implode(' ', $classList),
+				'class' => 'tablename',
 				'href' => 'tiki-view_tracker_item.php?' . http_build_query($query, '', '&'),
 			);
+
+			$geolocation = TikiLib::lib('geo')->get_coordinates('trackeritem', $itemId);
+
+			if ($geolocation) {
+				$arguments['class'] .= ' geolocated';
+				$arguments['data-geo-lat'] = $geolocation['lat'];
+				$arguments['data-geo-lon'] = $geolocation['lon'];
+			}
+			
 			if (!empty($context['url']) && strpos($context['url'], 'itemId') !== false) {
 				$context['url'] = preg_replace('/([&|\?])itemId=?[^&]*/', '\\1itemId=' . $itemId, $context['url']);
 				$arguments['href'] = $context['url'];
@@ -58,7 +63,6 @@ abstract class Tracker_Field_Abstract implements Tracker_Field_Interface, Tracke
 				}
 			}
 
-			$pre .= $metadata;
 			$pre .= '>';
 			$post = '</a>';
 
@@ -199,10 +203,8 @@ abstract class Tracker_Field_Abstract implements Tracker_Field_Interface, Tracke
 		
 		if (isset($this->itemData[$key])) {
 			$value =$this->itemData[$key];
-		} else if (isset($this->definition['value'])) {
-			$value = $this->definition['value'];
 		} else {
-			$value = null;
+			$value = isset($this->itemData[$key]) ? $this->itemData[$key] : null;
 		}
 
 		return $value === null ? $default : $value;

@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_calendar_list()
-{
+function prefs_calendar_list() {
 	return array(
 		'calendar_view_days' => array(
 			'name' => tra('Days to display in the Calendar'),
@@ -97,11 +96,6 @@ function prefs_calendar_list()
 			'dependencies' => array(
 				'wikiplugin_addtogooglecal'
 			),
-			'default' => 'n',
-		),
-		'calendar_export' => array(
-			'name' => tra('Show Export Calendars button'),
-			'type' => 'flag',
 			'default' => 'n',
 		),
 		'calendar_fullcalendar' => array(

@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_snarf_info()
-{
+function wikiplugin_snarf_info() {
 	return array(
 		'name' => tra('Snarf'),
 		'documentation' => 'PluginSnarf',
@@ -170,7 +169,7 @@ function wikiplugin_snarf($data, $params)
 
 	// If the user specified a more specialized regex
 	if ( isset($params['regex']) && isset($params['regexres']) && preg_match('/^(.)(.)+\1[^e]*$/', $params['regex']) ) {
-		$snarf = preg_replace($params['regex'], $params['regexres'], $snarf);
+		$snarf = preg_replace( $params['regex'], $params['regexres'], $snarf );
 	}
 
 	if ( $data == '' ) $data = NULL;

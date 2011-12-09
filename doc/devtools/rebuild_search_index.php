@@ -9,7 +9,4 @@
 
 include_once('tiki-setup.php');
 require_once 'lib/search/searchlib-unified.php';
-
-$loggit = (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] === 'loggit');
-
-$unifiedsearchlib->rebuild($loggit);
+$unifiedsearchlib->rebuild();

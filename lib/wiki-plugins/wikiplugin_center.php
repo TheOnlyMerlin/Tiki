@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_center_info()
-{
+function wikiplugin_center_info() {
 	return array(
 		'name' => tra('Center'),
 		'documentation' => 'PluginCenter',
@@ -21,11 +20,10 @@ function wikiplugin_center_info()
 	);
 }
 
-function wikiplugin_center($data, $params)
-{
+function wikiplugin_center($data, $params) {
 	global $tikilib;
 
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 	$data = '<div align="center">' . trim($data). '</div>';
 	return $data;
 }

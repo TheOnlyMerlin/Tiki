@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_bloglist_info()
-{
+function wikiplugin_bloglist_info() {
 	return array(
 		'name' => tra('Blog List'),
 		'documentation' => 'PluginBlogList',		
@@ -70,8 +69,7 @@ function wikiplugin_bloglist_info()
 	);
 }
 
-function wikiplugin_bloglist($data, $params)
-{
+function wikiplugin_bloglist($data, $params) {
 	global $tikilib, $smarty, $prefs;
 
 	if (!isset($params['Id'])) {
@@ -96,9 +94,7 @@ function wikiplugin_bloglist($data, $params)
 	$dateStartTS = !empty($dateStartTS) ? $dateStartTS : 0;
 	$dateEndTS = !empty($dateEndTS) ? $dateEndTS : $tikilib->now;
 
-	if (!isset($params['containerClass'])) {
-		$params['containerClass'] = 'wikiplugin_bloglist';
-	}
+	if(!isset($params['containerClass'])) {$params['containerClass'] = 'wikiplugin_bloglist';}
 	$smarty->assign('container_class', $params['containerClass']);
 	
 	if ($params['simpleList'] == 'y') {
@@ -109,7 +105,7 @@ function wikiplugin_bloglist($data, $params)
 	} else {
 		global $bloglib; include_once('lib/blogs/bloglib.php');
 		
-		$blogItems = $bloglib->list_blog_posts($params['Id'], false, $params['offset'], $params['Items'], $params['sort_mode'], $params['find'], $dateStartTS, $dateEndTS);
+		$blogItems = $bloglib->list_blog_posts($params['Id'], false, $params['offset'], $params['Items'],  $params['sort_mode'], $params['find'], $dateStartTS, $dateEndTS);
 		$temp_max = count($blogItems["data"]);
 		for ($i = 0; $i < $temp_max; $i++) {
 			$blogItems["data"][$i]["parsed_data"] = $tikilib->parse_data($bloglib->get_page($blogItems["data"][$i]["data"], 1));

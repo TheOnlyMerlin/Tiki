@@ -16,11 +16,6 @@
 	{if $tikidomain}
 		{tr}The file will be saved in:{/tr} styles/{$tikidomain}
 	{/if}
-	{if !empty($editstyle) && !$writable}
-		{remarksbox type="warning" title="{tr}Warning{/tr}"}
-				{tr}Cannot write the file{/tr}
-		{/remarksbox}
-	{/if}
 	<div style="padding:4px;border-bottom:1px solid #c3b3a3;">
 		<textarea name="data" rows="42" cols="80" wrap="virtual" style="padding:7px;padding-right:0;">{$data|escape}</textarea>
 	</div>
@@ -37,7 +32,7 @@
 	<input type="submit" name="edit" value="{tr}Edit{/tr}" />
 
 	{section name=l loop=$css}
-	<div style="padding:4px;text-align:left">
+	<div style="padding:4px;">
 		<div style="float:right;">{$css[l].id|escape}</div>
 		<div class="comment"><pre><em>{$css[l].comment|escape}</em></pre></div>
 		{section name=i loop=$css[l].items}

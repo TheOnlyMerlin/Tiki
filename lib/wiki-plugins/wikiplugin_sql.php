@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_sql_info()
-{
+function wikiplugin_sql_info() {
 	return array(
 		'name' => tra('SQL'),
 		'documentation' => 'PluginSQL',
@@ -26,17 +25,16 @@ function wikiplugin_sql_info()
 	);
 }
 
-function wikiplugin_sql($data, $params)
-{
+function wikiplugin_sql($data, $params) {
 
 	global $tikilib;
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 
 	if (!isset($db)) {
 		return tra('Missing db param');
 	}
 
-	$perms = Perms::get(array( 'type' => 'dsn', 'object' => $db ));
+	$perms = Perms::get( array( 'type' => 'dsn', 'object' => $db ) );
 	if ( ! $perms->dsn_query ) {
 		return tra('You do not have permission to use this feature');
 	}
@@ -44,13 +42,14 @@ function wikiplugin_sql($data, $params)
 	$bindvars = array();
 	$data = html_entity_decode($data);
 	if ($nb = preg_match_all("/\?/", $data, $out)) {
-		foreach ($params as $key => $value) {
+		foreach($params as $key => $value) {
 			if (preg_match('/^[0-9]*$/', $key)) {
 				if (strpos($value, "$") === 0) {
 					$value = substr($value, 1);
 					global $$value;
 					$bindvars[$key] = $$value;
-				} else {
+				}
+				else {
 					$bindvars[$key] = $value;
 				}
 			}
@@ -64,8 +63,8 @@ function wikiplugin_sql($data, $params)
 	$sql_oke = true;
  	$dbmsg = '';
 
-	if ($db = $tikilib->get_db_by_name($db) ) {
-		$result = $db->query($data, $bindvars);
+	if ($db = $tikilib->get_db_by_name( $db ) ) {
+		$result = $db->query( $data, $bindvars );
 	} else {
 		return '~np~' . tra('Could not obtain valid DSN connection.') . '~/np~';
 	}

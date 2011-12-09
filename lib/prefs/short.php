@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_short_list()
-{
+function prefs_short_list() {
 	return array(
 		'short_date_format' => array(
 			'name' => tra('Short date format'),

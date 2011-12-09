@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_unsuccessful_list()
-{
+function prefs_unsuccessful_list() {
 	return array(
 		'unsuccessful_logins' => array(
 			'name' => tra('Re-validate user by email after'),

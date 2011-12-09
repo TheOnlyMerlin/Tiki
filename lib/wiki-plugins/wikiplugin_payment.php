@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_payment_info()
-{
+function wikiplugin_payment_info() {
 	return array(
 		'name' => tra('Payment'),
 		'documentaion' => 'PluginPayment',
@@ -25,10 +24,10 @@ function wikiplugin_payment_info()
 	);
 }
 
-function wikiplugin_payment( $data, $params )
-{
+function wikiplugin_payment( $data, $params ) {
 	global $smarty;
 
 	require_once 'lib/smarty_tiki/function.payment.php';
-	return '^~np~' . smarty_function_payment($params, $smarty) . '~/np~^';
+	return '^~np~' . smarty_function_payment( $params, $smarty ) . '~/np~^';
 }
+

@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_usercount_info()
-{
+function wikiplugin_usercount_info() {
 	return array(
 		'name' => tra('User Count'),
 		'documentation' => 'PluginUserCount',
@@ -19,11 +18,12 @@ function wikiplugin_usercount_info()
 	);
 }
 
-function wikiplugin_usercount($data, $params)
-{
-	global $tikilib, $userlib;
+function wikiplugin_usercount($data, $params) {
+	global $tikilib;
 
-	extract($params, EXTR_SKIP);
+	global $userlib;
+
+	extract ($params,EXTR_SKIP);
 
 	$numusers = $userlib->count_users($data);
 

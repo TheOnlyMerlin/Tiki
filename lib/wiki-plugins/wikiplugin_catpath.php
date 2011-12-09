@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_catpath_info()
-{
+function wikiplugin_catpath_info() {
 	return array(
 		'name' => tra('Category Path'),
 		'documentation' => 'PluginCatPath',
@@ -36,8 +35,7 @@ function wikiplugin_catpath_info()
 	);
 }
 
-function wikiplugin_catpath($data, $params)
-{
+function wikiplugin_catpath($data, $params) {
 	global $dbTiki, $smarty, $tikilib, $prefs, $categlib;
 
 	if (!is_object($categlib)) {
@@ -48,7 +46,7 @@ function wikiplugin_catpath($data, $params)
 		return "<span class='warn'>" . tra("Categories are disabled"). "</span>";
 	}
 
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 
 	// default divider is '>'
 	if (!(isset($divider))) {

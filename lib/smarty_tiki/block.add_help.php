@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -16,13 +16,12 @@
  */
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
 
-function smarty_block_add_help($params, $content, $smarty, &$repeat)
-{
+function smarty_block_add_help($params, $content, $smarty, &$repeat) {
 	global $prefs;
 	global $help_sections;
 
@@ -51,8 +50,7 @@ function smarty_block_add_help($params, $content, $smarty, &$repeat)
 		
 		$title = tra('Help');
 		
-		$headerlib->add_js(
-						'
+		$headerlib->add_js('
 var openEditHelp = function() {
 	var opts, edithelp_pos = getCookie("edithelp_position");
 	opts = { width: 460, height: 500, title: "' . $title . '", autoOpen: false, beforeclose: function(event, ui) {
@@ -74,11 +72,10 @@ var openEditHelp = function() {
 	}
 	$("#help_sections").dialog(opts).dialog("open");
 	
-};'
-);
+};');
 		$self_link_params['_onclick'] = 'openEditHelp();return false;';
-
-		return smarty_block_self_link($self_link_params, "", $smarty);
+ 
+		return smarty_block_self_link($self_link_params,"",$smarty);
 	} else {
 		return ;
 	}

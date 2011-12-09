@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_box_list()
-{
+function prefs_box_list() {
 	return array(
 		'box_shadow_start' => array(
 			'name' => tra('Module (box) shadow start'),

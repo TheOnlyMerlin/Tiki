@@ -725,7 +725,7 @@ a.toolbar {			/* each tool button */
 	font-family: sans-serif; 
 }
 
-.box-share > div {
+#site_report {
 	text-align: center;
 }
 
@@ -741,9 +741,6 @@ a.toolbar {			/* each tool button */
 
 .icon_edit_section {
 	float: right;
-}
-.icon_edit_section img.icon {
-	margin-top: -1px !important;
 }
 
 /***** Boxes *****/
@@ -1116,11 +1113,6 @@ ul.floatleft li {
 /* fancytable (sortable) plugin */
 .fancysort .header {
 	cursor: pointer;
-}
-
-/* timesheet plugin */
-#jtrack-holder {
-    width: auto;
 }
 
 /** Wiki tocs **/
@@ -2023,7 +2015,7 @@ ul.freetagged li {
 }
 
 h4.ui-accordion-header {
-	padding-left: 2.2em;
+	padding-left: 28px;
 }
 
 /* Preferences        */

@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_googleanalytics_info()
-{
+function wikiplugin_googleanalytics_info() {
 	return array(
 		'name' => tra('Google Analytics'),
 		'documentation' => 'PluginGoogleAnalytics',
@@ -24,9 +23,8 @@ function wikiplugin_googleanalytics_info()
 	);
 }
 
-function wikiplugin_googleanalytics($data, $params)
-{
-	extract($params, EXTR_SKIP);
+function wikiplugin_googleanalytics($data, $params) {
+	extract($params,EXTR_SKIP);
 	if (empty($account)) {
 		return tra('Missing parameter');
 	}

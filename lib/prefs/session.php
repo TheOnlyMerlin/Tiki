@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_session_list()
-{
+function prefs_session_list() {
 	return array (
 		'session_storage' => array(
 			'name' => tra('Session storage location'),

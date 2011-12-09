@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_ftp_info()
-{
+function wikiplugin_ftp_info() {
 	return array(
 		'name' => tra('FTP'),
 		'documentation' => 'PluginFTP',
@@ -44,10 +43,9 @@ function wikiplugin_ftp_info()
 	);
 }
 
-function wikiplugin_ftp($data, $params)
-{
+function wikiplugin_ftp($data, $params) {
 	global $smarty;
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 	if (empty($server) || empty($user) || empty($password)) {
 		return tra('missing parameters');
 	}

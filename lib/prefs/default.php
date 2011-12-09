@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_default_list()
-{
+function prefs_default_list() {
 	return array(
 		'default_mail_charset' => array(
 			'name' => tra('Default charset for sending mail'),

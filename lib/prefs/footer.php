@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_footer_list()
-{
+function prefs_footer_list() {
 	return array(
 		'footer_shadow_start' => array(
 			'name' => tra('Footer shadow start'),

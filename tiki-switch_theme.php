@@ -6,45 +6,65 @@
 // $Id$
 
 require_once ('tiki-setup.php');
-
-$access->check_feature('change_theme');
-if (!empty($group_style)) {
-	$access->display_error(NULL, 'A group theme is defined.');
-}
-
-if (isset($_REQUEST['theme-option'])) {
-	$themeOption = $_REQUEST['theme-option'];
-}
-
-if (isset($_REQUEST['theme-themegen'])) {
-	$themeGenerator_theme = $_REQUEST['theme-themegen'];
-}
-
-if (isset($_REQUEST['theme'])) {
-	$theme = $_REQUEST['theme'];
-
-	if (empty($theme)) {
-		$theme = $prefs['site_style'];
-		$themeOption = $prefs['site_style_option'];
-		$themeGenerator_theme = $prefs['site_themegenerator_theme'];
-	} elseif ($theme != $prefs['style']) { // use default theme option when changing main theme
-		$themeOption = '';
-	}
-	
-	$tikilib->set_user_preference($user, 'theme', $theme);
-}
-if (isset($themeOption)) {
-	  $tikilib->set_user_preference($user, 'theme-option', empty($themeOption) ? 'None' : $themeOption);
-}
-
-if (isset($themeGenerator_theme) && $prefs['themegenerator_feature'] === 'y') {
-	$tikilib->set_user_preference($user, 'themegenerator_theme', $themeGenerator_theme);
-}
-
+include_once ('lib/tikilib.php');
 if (isset($_SERVER['HTTP_REFERER'])) {
 	$orig_url = $_SERVER['HTTP_REFERER'];
 } else {
 	$orig_url = $prefs['tikiIndex'];
+}
+if (isset($_REQUEST['theme'])) {
+	$new_theme = $_REQUEST['theme'];
+	if (empty($new_theme) || $new_theme != $prefs['style']) { // use default theme option when setting 'site default' or changing main theme
+		$_REQUEST['theme-option'] = '';
+	}
+	if ($prefs['change_theme'] == 'y') {
+		if ($user && ($prefs['feature_userPreferences'] == 'y' || $tikilib->get_user_preference($user, 'theme') ) && $group_theme == '') {
+			$tikilib->set_user_preference($user, 'theme', $new_theme);
+		}
+		if (empty($new_theme)) {
+			$prefs['style'] = $prefs['site_style'];
+			$prefs['style_option'] = $prefs['site_style_option'];
+			$_SESSION['s_prefs']['style_option'] = $prefs['site_style_option'];
+			unset($_REQUEST['theme-option']);
+			if ($user && ($prefs['feature_userPreferences'] == 'y' || $tikilib->get_user_preference($user, 'theme-option') ) && empty($group_style)) {
+				$tikilib->set_user_preference($user, 'theme-option', $prefs['site_style_option']);
+			}
+			if ($prefs['themegenerator_feature'] === 'y') {
+				$prefs['themegenerator_theme'] = $prefs['site_themegenerator_theme'];
+				$_SESSION['s_prefs']['themegenerator_theme'] = $prefs['site_themegenerator_theme'];
+				if ($user && ($prefs['feature_userPreferences'] == 'y' || $tikilib->get_user_preference($user, 'theme-themegen') ) && empty($group_style)) {
+					$tikilib->set_user_preference($user, 'themegenerator_theme', $prefs['site_themegenerator_theme']);
+				}
+				unset($_REQUEST['theme-themegen']);
+			}
+		} else {
+			$prefs['style'] = $new_theme;
+		}
+	}
+	$_SESSION['s_prefs']['style'] = $prefs['style'];
+}
+if (isset($_REQUEST['theme-option'])) {
+	$new_theme_option = $_REQUEST['theme-option'];
+	if ($prefs['change_theme'] == 'y') {
+		if ($user && ($prefs['feature_userPreferences'] == 'y' || $tikilib->get_user_preference($user, 'theme-option') ) && empty($group_style)) {
+			  $tikilib->set_user_preference($user, 'theme-option', empty($new_theme_option) ? 'None' : $new_theme_option);
+			  $prefs['style_option'] = $new_theme_option;
+		} else {
+			  $prefs['style_option'] = $new_theme_option;
+			  $_SESSION['s_prefs']['style_option'] = $new_theme_option;
+		}
+	}
+}
+
+if ($prefs['themegenerator_feature'] === 'y' && isset($_REQUEST['theme-themegen'])) {
+	if ($prefs['change_theme'] == 'y') {
+		$themegen_theme = $_REQUEST['theme-themegen'];
+		$prefs['themegenerator_theme'] = $themegen_theme;
+		$_SESSION['s_prefs']['themegenerator_theme'] = $themegen_theme;
+		if ($user) {
+			$tikilib->set_user_preference($user, 'themegenerator_theme', $themegen_theme);
+		}
+	}
 }
 header("location: $orig_url");
 exit;

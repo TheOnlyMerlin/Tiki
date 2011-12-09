@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -15,7 +15,7 @@
  * params: name (optional but unique per page if set)
  * params: toggle=y on n default
  *
- * usage:
+ * usage: 
  * \code
  *	{tabset name='tabs}
  * 		{tab name='tab1'}tab content{/tab}
@@ -26,7 +26,7 @@
  */
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
@@ -39,7 +39,7 @@ function smarty_block_tabset($params, $content, $smarty, &$repeat)
 		$params['toggle'] = 'n';
 	}
 	if ( $repeat ) {
-		// opening
+		// opening 
 		if (!is_array($smarty_tabset)) {
 			$smarty_tabset = array();
 		}
@@ -50,7 +50,7 @@ function smarty_block_tabset($params, $content, $smarty, &$repeat)
 			$short_name = str_replace(array('tiki-', '.php'), '', basename($_SERVER['SCRIPT_NAME']));
 			$smarty_tabset_name = 't_' . $short_name . $tabset_index;
 		}
-		$smarty_tabset_name = TikiLib::remove_non_word_characters_and_accents($smarty_tabset_name);
+		$smarty_tabset_name = TikiLib::remove_non_word_characters_and_accents( $smarty_tabset_name );
 		$smarty_tabset[$tabset_index] = array( 'name' => $smarty_tabset_name, 'tabs' => array());
 		if (!isset($smarty_tabset_i_tab)) {
 			$smarty_tabset_i_tab = 1;
@@ -62,7 +62,7 @@ function smarty_block_tabset($params, $content, $smarty, &$repeat)
 		// work out cookie value if there
 		if ( isset($_REQUEST['cookietab']) && $tabset_index === 1) {	// overrides cookie if added to request as in tiki-admin.php?page=look&cookietab=6
 			$cookietab = empty($_REQUEST['cookietab']) ? 1 : $_REQUEST['cookietab'];
-			setCookieSection($smarty_tabset_name, $cookietab, 'tabs');	// too late to set it here as output has started
+			setCookieSection( $smarty_tabset_name, $cookietab, 'tabs' );	// too late to set it here as output has started
 		}
 
 		// If the tabset specifies the tab, override any kind of memory
@@ -90,7 +90,7 @@ function smarty_block_tabset($params, $content, $smarty, &$repeat)
 				}
 				$button_params['_auto_args']='*';
 				$button_params['_onclick'] = "setCookie('$smarty_tabset_name','".($cookietab == 'n' ? 1 : 'n' )."', 'tabs') ;";
-				$notabs = smarty_function_button($button_params, $smarty);
+				$notabs = smarty_function_button($button_params,$smarty);
 				$notabs = "<div class='tabstoggle floatright'>$notabs</div>";
 				$content_class = '';
 			} else {
@@ -132,13 +132,11 @@ function smarty_block_tabset($params, $content, $smarty, &$repeat)
 
 		// add some jq to initialize the tab, needed when page is cached
 		if ($tabset_index === 1) {		// override cookie with query cookietab
-			$headerlib->add_jq_onready(
-							'
+			$headerlib->add_jq_onready('
 var ctab = location.search.match(/cookietab=(\d+)/);
 if (ctab) {
 	setCookie("'.$smarty_tabset_name.'", ctab[1],"tabs");
-}'
-			);
+}');
 		}
 		if ($cookietab != getCookie($smarty_tabset_name, 'tabs', 1)) {	// has been changed by code but now too late to reset
 			$headerlib->add_jq_onready('setCookie("'.$smarty_tabset_name.'","tabs",'.$cookietab.');');

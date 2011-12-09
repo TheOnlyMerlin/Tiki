@@ -39,7 +39,7 @@
 						<input size="16" name="userfile[0]" type="file" id="attach-upload" />
 						<label for="attach-comment">{tr}Comment:{/tr}</label><input type="text" name="s_f_attachments-comment" maxlength="250" id="attach-comment" />
 						<input type="submit" name="s_f_attachments-upload" value="{tr}Attach{/tr}"/>
-						<input type="hidden" name="s_f_attachments-page" value="{$page|escape}"/>
+						{query _type='form_input' page=$page}
 					</td>
 				</tr>
 			</table>

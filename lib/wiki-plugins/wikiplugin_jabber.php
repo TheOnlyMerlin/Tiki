@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_jabber_info()
-{
+function wikiplugin_jabber_info() {
 	return array(
 		'name' => tra('Jabber'),
 		'documentation' => 'PluginJabber',
@@ -42,11 +41,10 @@ function wikiplugin_jabber_info()
 	);
 }
 
-function wikiplugin_jabber($data,$params)
-{
+function wikiplugin_jabber($data,$params) {
   global $userlib;
   global $user;
-  extract($params, EXTR_SKIP);
+  extract($params,EXTR_SKIP);
 
   if (!isset($height)) {
     $height = 200;

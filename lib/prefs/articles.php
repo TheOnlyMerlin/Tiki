@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_articles_list()
-{
+function prefs_articles_list() {
 	return array(
 		'articles_feature_copyrights' => array(
 			'name' => tra('Articles'),

@@ -14,9 +14,6 @@ if ( basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__) ) {
   exit;
 }
 
-// 
-// This section is being phased out. Please use the instructions at http://dev.tiki.org/Creating+New+Preferences instead.
-// 
 
 // Prefs for which we want to use the site value (they will be prefixed with 'site_')
 // ( this is also used in tikilib, not only when reloading prefs )
@@ -41,6 +38,7 @@ function get_default_prefs() {
 		'tiki_release' => '0',
 		'tiki_needs_upgrade' => 'n',
 		'tiki_version_last_check' => 0,
+		'versionOfPreferencesCache' => 1, // Fake preference to manage caches of modified preferences
 
 
 		'groups_are_emulated' => 'n',
@@ -65,13 +63,10 @@ function get_default_prefs() {
 		// webservices
 		'webservice_consume_defaultcache' => 300, // 5 min
 
-		// File galleries
-		
-		// Root galleries fake preferences. These are automatically overridden by schema upgrade scripts for installations that pre-date the existence of these root galleries.
-		'fgal_root_id' => 1, // Ancestor of "default" type galleries. For old installs, overriden by 20090811_filegals_container_tiki.sql
-		'fgal_root_user_id' => 2, // Ancestor of "user" type galleries (feature_use_fgal_for_user_files). For old installs, overriden by 20101126_fgal_add_gallerie_user_tiki.php
-		'fgal_root_wiki_attachments_id' => 3, // Ancestor of wiki "attachments" type galleries (feature_use_fgal_for_wiki_attachments). For old installs, overriden by 20101210_fgal_add_wiki_attachments_tiki.php
-
+		// filegals
+		'fgal_root_id' => 1,
+		'fgal_root_user_id' => 2,
+		'fgal_root_wiki_attachments_id' => 3,
 		'fgal_enable_auto_indexing' => 'y',
 		'fgal_asynchronous_indexing' => 'y',
 		'fgal_sort_mode' => '',
@@ -220,6 +215,8 @@ function get_default_prefs() {
 
 		// categories
 		'category_i18n_unsynced' => array(),
+		'expanded_category_jail' => '',
+		'expanded_category_jail_key' => '',
 
 		// look and feel
 
@@ -275,6 +272,8 @@ function get_default_prefs() {
 		'show_comzone' => 'n',
 		'use_proxy' => 'n',
 		'webserverauth' => 'n',
+	
+		'case_patched' => 'n',
 
 		'feature_intertiki_imported_groups' => '',
 		'feature_contributor_wiki' => '',
@@ -323,37 +322,43 @@ function get_default_prefs() {
 
 
 function initialize_prefs() {
-	global $prefs, $tikilib, $user_overrider_prefs, $in_installer, $section, $systemConfiguration;
+	global $prefs, $tikiroot, $tikilib, $user_overrider_prefs, $in_installer, $section;
 
-	if (!empty($in_installer)) {
-		$prefs = get_default_prefs();
-		return;
-	}
-	$cachelib = TikiLib::lib('cache');
+	// Determine whether we already have a valid session cache of modified preferences.
+	if (isset($_SESSION['s_prefs'])) {
+		// Compare the session's version of the cache of preferences with the latest. The versionOfPreferencesCache pseudo-preference is basic and retrieved in tiki-setup_base.
+		// Reload if the session cache of modified preferences is older than the first-level cache of modified preferences.
+		$_SESSION['need_reload_prefs'] = empty($_SESSION['s_prefs']['versionOfPreferencesCache']) || $prefs['versionOfPreferencesCache'] > $_SESSION['s_prefs']['versionOfPreferencesCache'];
 
-	if ($cachelib->isCached('global_preferences')) {
-		$prefs = $cachelib->getSerialized('global_preferences');
+		// Reload if the virtual host or tikiroot has changed
+		if (!isset($_SESSION['lastPrefsSite'])) $_SESSION['lastPrefsSite'] = '';
+		//   (this is needed when using the same php sessions for more than one tiki)
+		if ( $_SESSION['lastPrefsSite'] != $_SERVER['SERVER_NAME'].'|'.$tikiroot ) {
+			$_SESSION['lastPrefsSite'] = $_SERVER['SERVER_NAME'].'|'.$tikiroot;
+			$_SESSION['need_reload_prefs'] = true;
+		}
 	} else {
-		$defaults = get_default_prefs();
-	
-		// Find which preferences need to be serialized/unserialized, based on the default values (those with arrays as values) and preferences with special serializations
-		$serializedPreferences = array();
-		global $prefslib; require_once 'lib/prefslib.php';
-		foreach ( $defaults as $preference => $value ) {
-			if ( is_array($value) || in_array($preference, array('category_defaults', 'memcache_servers'))) {
-				$serializedPreferences[] = $preference;
-			}
+		$_SESSION['need_reload_prefs'] = true;
+	}
+
+	$defaults = get_default_prefs();
+	if ( ! $_SESSION['need_reload_prefs'] ) {
+		$modified = $_SESSION['s_prefs'];
+	} else { // Generate or re-generate a session cache of modified preferences.
+		// Find which preferences need to be serialized/unserialized, based on the default values (those with arrays as values)
+		if ( ! isset($_SESSION['serialized_prefs']) ) {
+			$_SESSION['serialized_prefs'] = array();
+			foreach ( $defaults as $p => $v )
+			if ( is_array($v) ) $_SESSION['serialized_prefs'][] = $p;
 		}
-	
-		$modified = $tikilib->getModifiedPreferences();
-	
+
+		$modified = empty($in_installer) ? $tikilib->getModifiedPreferences() : array();
+
 		// Unserialize serialized preferences
-		foreach ( $serializedPreferences as $serializedPreference ) {
-			if ( isset($modified[$serializedPreference]) && ! is_array($modified[$serializedPreference]) ) {
-				$modified[$serializedPreference] = unserialize($modified[$serializedPreference]);
-			}
+		foreach ( $_SESSION['serialized_prefs'] as $p ) {
+			if ( isset($modified[$p]) && ! is_array($modified[$p]) ) $modified[$p] = @unserialize($modified[$p]);
 		}
-	
+
 		// Keep some useful sites values available before overriding with user prefs
 		// (they could be used in templates, so we need to set them even for Anonymous)
 		foreach ( $user_overrider_prefs as $uop ) {
@@ -363,23 +368,25 @@ function initialize_prefs() {
 				$modified['site_'.$uop] = $defaults[$uop];
 			}
 		}
-	
-		$prefs = $modified + $defaults;
-		$cachelib->cacheItem('global_preferences', serialize($prefs));
+
+		// Assign prefs to the session
+		$_SESSION['s_prefs'] = $modified;
 	}
 
-	if ( $prefs['feature_perspective'] == 'y') {
+	// Perspectives are disabled by default so the preference has to be modified
+	if ( isset($modified['feature_perspective']) && $modified['feature_perspective'] == 'y' && empty($in_installer) ) {
 		if ( ! isset( $section ) || $section != 'admin' ) {
 			require_once 'lib/perspectivelib.php';
-			if ( $persp = $perspectivelib->get_current_perspective( $prefs ) ) {
-				$perspectivePreferences = $perspectivelib->get_preferences( $persp );
-				$prefs = $perspectivePreferences + $prefs;
+			if ( $persp = $perspectivelib->get_current_perspective( $modified ) ) {
+				$changes = $perspectivelib->get_preferences( $persp );
+				$modified = array_merge( $modified, $changes );
 			}
 		}
 	}
 
-	// Override preferences with system-configured preferences.
-	$prefs = $systemConfiguration->preference->toArray() + $prefs;
+	$prefs = array_merge( $defaults, $modified ); // Preferences are the sum of modified preferences and those with the default value.
+	global $systemConfiguration;
+	$prefs = array_merge($prefs, $systemConfiguration->preference->toArray());
 }
 
 /**

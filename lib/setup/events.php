@@ -52,10 +52,6 @@ if ($prefs['feature_trackers'] == 'y') {
 		$events->bind('tiki.trackeritem.save', array('Tracker_Field_Language', 'update_language'));
 	}
 
-	if ($prefs['trackerfield_icon'] == 'y') {
-		$events->bind('tiki.trackeritem.save', array('Tracker_Field_Icon', 'updateIcon'));
-	}
-
 	$events->bind('tiki.trackeritem.save', Event_Lib::defer('trk', 'update_tracker_summary'));
 	$events->bind('tiki.trackeritem.save', Event_Lib::defer('trk', 'invalidate_item_cache'));
 }
@@ -83,7 +79,6 @@ $events->bind('tiki.save', Event_Lib::defer('tiki', 'plugin_post_save_actions'))
 $events->bind('tiki.wiki.update', 'tiki.wiki.save');
 $events->bind('tiki.wiki.create', 'tiki.wiki.save');
 $events->bind('tiki.wiki.save', 'tiki.save');
-$events->bind('tiki.wiki.view', 'tiki.view');
 
 $events->bind('tiki.trackeritem.update', 'tiki.trackeritem.save');
 $events->bind('tiki.trackeritem.create', 'tiki.trackeritem.save');
@@ -96,9 +91,9 @@ $events->bind('tiki.file.save', 'tiki.save');
 $events->bind('tiki.user.update', 'tiki.user.save');
 $events->bind('tiki.user.create', 'tiki.user.save');
 
-function tiki_save_refresh_index($args)
-{
+function tiki_save_refresh_index($args) {
 	require_once('lib/search/refresh-functions.php');
 	$isBulk = isset($args['bulk_import']) && $args['bulk_import'];
 	refresh_index($args['type'], $args['object'], ! $isBulk);
 }
+

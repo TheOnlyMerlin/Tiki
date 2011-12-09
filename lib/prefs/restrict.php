@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_restrict_list()
-{
+function prefs_restrict_list() {
 	return array(
 		'restrict_language' => array(
 			'name' => tra('Restrict supported languages'),

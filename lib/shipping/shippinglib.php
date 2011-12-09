@@ -10,11 +10,6 @@ interface ShippingProvider
 	function getRates( array $from, array $to, array $packages );
 }
 
-abstract class CustomShippingProvider implements ShippingProvider
-{
-	abstract function getName();
-}
-
 class ShippingLib
 {
 	private $providers = array();
@@ -77,21 +72,6 @@ class ShippingLib
 
 		return $out;
 	}
-
-	static function getCustomShippingProvider($name) {
-
-		$file = dirname(__FILE__) . '/custom/' . $name . '.php';
-		$className = 'CustomShippingProvider_' . ucfirst($name);
-		if (is_readable($file)) {
-			require_once $file;
-			if (class_exists($className) && method_exists($className, 'getName')) {
-				$provider = new $className;
-				return $provider;
-			}
-		}
-		TikiLib::lib('errorreport')->report(tr('Problem reading custom shipping provider "%0"', $name));
-	}
-
 }
 
 global $shippinglib, $prefs;
@@ -115,6 +95,3 @@ if( $prefs['shipping_ups_enable'] == 'y' ) {
 	) ) );
 }
 
-if ( !empty($prefs['shipping_custom_provider']) ) {
-	$shippinglib->addProvider( ShippingLib::getCustomShippingProvider( $prefs['shipping_custom_provider'] ));
-}

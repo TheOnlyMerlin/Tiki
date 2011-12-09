@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_mail_info()
-{
+function wikiplugin_mail_info() {
 	global $prefs;
 
 	return array(
@@ -96,8 +95,7 @@ function wikiplugin_mail_info()
 	);
 }
 
-function wikiplugin_mail($data, $params)
-{
+function wikiplugin_mail($data, $params) {
 	global $userlib, $smarty, $tikilib, $user;
 	static $ipluginmail=0;
 	$smarty->assign_by_ref('ipluginmail', $ipluginmail);
@@ -161,8 +159,7 @@ function wikiplugin_mail($data, $params)
 	$smarty->assign_by_ref('params', $params);
 	return '~np~'.$smarty->fetch('wiki-plugins/wikiplugin_mail.tpl').'~/np~';
 }
-function wikiplugin_mail_to($params)
-{
+function wikiplugin_mail_to($params) {
 	global $userlib;
 	$to = array();
 	if (!empty($params['mail_user_dd'])) {

@@ -7,15 +7,6 @@
 
 class Search_Formatter_ValueFormatter_Trackerrender implements Search_Formatter_ValueFormatter_Interface
 {
-	private $list_mode = 'n';
-
-	function __construct($arguments)
-	{
-		if (isset($arguments['list_mode']) && $arguments['list_mode'] !== 'n') {
-			$this->list_mode = 'y';
-		}
-	}
-	
 	function render($name, $value, array $entry)
 	{
 		if (substr($name, 0, 14) !== 'tracker_field_') {
@@ -40,7 +31,6 @@ class Search_Formatter_ValueFormatter_Trackerrender implements Search_Formatter_
 			'field' => $field,
 			'process' => 'y',
 			'search_render' => 'y',
-			'list_mode' => $this->list_mode,
 		)) . '~/np~';
 	}
 }

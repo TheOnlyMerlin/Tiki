@@ -13,28 +13,35 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 
 /* Automatically set params used for absolute URLs - BEGIN */
 
-// Note: need to substitute \ for / for windows.
-$tikipath = str_replace('\\','/',realpath(dirname(__FILE__)));
+// Note: need to susbsitute \ for / for windows.
+$tiki_setup_dir = str_replace('\\','/',realpath(dirname(__FILE__)));
+$tiki_script_filename = str_replace('\\','/',getcwd());
 
-if (getcwd()) {
-	$scriptDirectory = getcwd();
+if ($tiki_script_filename !== false) {
+	$tiki_script_filename .= '/index.php';
 } else {
 	// On some systems, SCRIPT_FILENAME contains the full path to the cgi script
 	// that calls the script we are looking for. In this case, we have to
 	// fallback to PATH_TRANSLATED. This one may be wrong on some systems, this
 	// is why SCRIPT_FILENAME is tried first.
-	if ( substr($_SERVER['SCRIPT_FILENAME'], 0, strlen($tiki_setup_dir)) != $tikipath ) {
+	if ( substr($_SERVER['SCRIPT_FILENAME'], 0, strlen($tiki_setup_dir)) != $tiki_setup_dir ) {
 		// PATH_TRANSLATED is not always set on PHP5, so try to get first value of get_included_files() in this case	
-		$scriptDirectory = empty($_SERVER['PATH_TRANSLATED']) ? current(get_included_files()) : $_SERVER['PATH_TRANSLATED'];
+		$tiki_script_filename = empty($_SERVER['PATH_TRANSLATED']) ? current(get_included_files()) : $_SERVER['PATH_TRANSLATED'];
 	} else {
-		$scriptDirectory = $_SERVER['SCRIPT_FILENAME'];
+		$tiki_script_filename = $_SERVER['SCRIPT_FILENAME'];
 	}
-	$scriptDirectory = dirname(realpath($scriptDirectory));
+	
+	// Note: need to substitute \ for / for Windows.
+	$tiki_script_filename = str_replace('\\', '/', realpath($tiki_script_filename));
 }
-// Note: need to substitute \ for / for Windows.
-$scriptDirectory = str_replace('\\', '/', $scriptDirectory);
+$tmp = dirname(str_replace($tiki_setup_dir,'',$tiki_script_filename));
 
-$dir_level = substr_count(str_replace($tikipath, '', $scriptDirectory), "/");
+if ($tmp != '/') {
+	$dir_level = substr_count($tmp,"/");
+} else {
+	$dir_level = 0;
+}
+unset($tmp);
 
 // If unallowed chars (regarding to RFC1738) have been found in REQUEST_URI, then urlencode them
 $unallowed_uri_chars = array("'", '"', '<', '>', '{', '}', '|', '\\', '^', '~', '`');
@@ -50,10 +57,14 @@ $_SERVER['SCRIPT_NAME'] = str_replace($unallowed_uri_chars, $unallowed_uri_chars
 
 // Note: need to substitute \ for / for Windows.
 $tikiroot = str_replace('\\','/',dirname($_SERVER['SCRIPT_NAME']));
+$tikipath = dirname($tiki_script_filename);
+$tikiroot_relative = '';
 
 if ($dir_level > 0) {
 	$tikiroot = preg_replace('#(/[^/]+){'.$dir_level.'}$#','',$tikiroot);
-	chdir($tikipath);
+	$tikipath = preg_replace('#(/[^/]+){'.$dir_level.'}$#','',$tikipath);
+	$tikiroot_relative = str_repeat('../',$dir_level);
+	chdir($tikiroot_relative);
 }
 
 if ( substr($tikiroot,-1,1) != '/' ) $tikiroot .= '/';
@@ -67,9 +78,12 @@ if ( empty($inputConfiguration) ) {
 array_unshift($inputConfiguration,array(
   'staticKeyFilters' => array(
 		'cookietab'	=>	'int',
+		'xjxfun'	=> 'striptags',
+		'xjxr'		=>	'int',
 		'callback'  => 'word',
   ),
 	'staticKeyFiltersForArrays' => array(
+		'xjxargs' => 'xss',
 	)
 ));
 
@@ -92,7 +106,5 @@ Zend_Loader_Autoloader::getInstance()
 	->registerNamespace('Tracker')
 	->registerNamespace('Event_')
 	->registerNamespace('Services_')
-	->registerNamespace('TikiDb')
-	->registerNamespace('Report')
-	->registerNamespace('Feed')
-	->registerNamespace('FileGallery');
+	->registerNamespace('TikiDb');
+

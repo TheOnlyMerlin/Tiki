@@ -1007,7 +1007,7 @@ class TikiSheetCSVHandler extends TikiSheetDataHandler
  } // }}}1
  
 
-/** TikiSheetTrackerHandler {{{1
+/** TikiSheetCSVHandler {{{1
  * Class that stores the sheet representation in a
  * standard text file as a serialized PHP object.
  */
@@ -1089,82 +1089,6 @@ class TikiSheetTrackerHandler extends TikiSheetDataHandler
 	}
  } // }}}1
 
-
-/** TikiSheetTrackerHandler {{{1
- * Class that stores the sheet representation in a
- * standard text file as a serialized PHP object.
- */
-class TikiSheetSimpleArrayHandler extends TikiSheetDataHandler
-{
-	var $values = array();
-	
-	function TikiSheetSimpleArrayHandler( $simpleArray = array() )
-	{		
-		$this->values = $simpleArray['values'];
-		$this->name = $simpleArray['name'];
-		$this->type = "simpleArray";
-		$this->cssName = 'readonly';
-	}
-
-	// _load {{{2
-	function _load( &$sheet ) {
-		$i = 0;
-
-		foreach($this->values as $row) {
-			$j = 0;	
-			foreach($row as $key => $col) {
-				$sheet->initCell( $i, $j );
-				
-				if (!empty($col[0]) && $col[0] == '=' ) {
-					$sheet->setCalculation( substr($col, 1) );
-				}
-				
-				if (is_array($col)) {
-					foreach($col as $colKey => $val) {
-						if (empty($val)) {
-							array_splice($col, $colKey, 1);
-						}
-					}
-					$col = implode(",", $col);
-				}
-				
-				$col = htmlspecialchars($col);
-				
-				$sheet->setValue( $i == 0 ? $key : $col );
-				
-				$sheet->setSize( 1, 1 );
-				$j++;
-			}
-			$i++;
-		}
-		
-		return true;
-	}
-
-	// _save {{{2
-	function _save( &$sheet )
-	{
-		return false;
-	}
-	
-	// name {{{2
-	function name()
-	{
-		return $this->name;
-	}
-
-	// supports {{{2
-	function supports( $type )
-	{
-		return ( ( TIKISHEET_LOAD_DATA ) & $type ) > 0;
-	}
-
-	// version {{{2
-	function version()
-	{
-		return "1.0";
-	}
- } // }}}1
 
  /** TikiSheetCSVExcelHandler {{{1
  * Class that stores the sheet representation in a

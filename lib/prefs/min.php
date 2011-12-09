@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_min_list()
-{
+function prefs_min_list() {
 	return array(
 		'min_username_length' => array(
 			'name' => tra('Minimum length'),

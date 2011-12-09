@@ -6,10 +6,8 @@
 // $Id$
 
 require_once ('tiki-setup.php');
-if ( ! headers_sent($header_file, $header_line) ) {
-	// rfc2616 wants this to have an absolute URI
-	header('Location: '.$base_url.$prefs['tikiIndex']);
+if ( ! headers_sent() ) {
+	header('location: '.$prefs['tikiIndex']);
 } else {
-	echo "Header already sent in ".$header_file." at line ".$header_line;
-	exit();
+	die("header already sent");
 }

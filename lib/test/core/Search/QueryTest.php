@@ -14,11 +14,9 @@ class Search_QueryTest extends PHPUnit_Framework_TestCase
 
 		$query->search($index);
 		
-		$expr = new Search_Expr_And(
-						array(
-							new Search_Expr_Token('hello', 'plaintext', 'contents'),
-						)
-		);
+		$expr = new Search_Expr_And(array(
+			new Search_Expr_Token('hello', 'plaintext', 'contents'),
+		));
 
 		$this->assertEquals($expr, $index->getLastQuery());
 	}
@@ -30,16 +28,12 @@ class Search_QueryTest extends PHPUnit_Framework_TestCase
 
 		$query->search($index);
 		
-		$expr = new Search_Expr_And(
-						array(
-							new Search_Expr_Or(
-											array(
-												new Search_Expr_Token('hello', 'plaintext', 'contents'),
-												new Search_Expr_Token('world', 'plaintext', 'contents'),
-											)
-							),
-						)
-		);
+		$expr = new Search_Expr_And(array(
+			new Search_Expr_Or(array(
+				new Search_Expr_Token('hello', 'plaintext', 'contents'),
+				new Search_Expr_Token('world', 'plaintext', 'contents'),
+			)),
+		));
 
 		$this->assertEquals($expr, $index->getLastQuery());
 	}
@@ -52,12 +46,10 @@ class Search_QueryTest extends PHPUnit_Framework_TestCase
 
 		$query->search($index);
 		
-		$expr = new Search_Expr_And(
-						array(
-							new Search_Expr_Token('hello', 'plaintext', 'contents'),
-							new Search_Expr_Token('wiki page', 'identifier', 'object_type'),
-						)
-		);
+		$expr = new Search_Expr_And(array(
+			new Search_Expr_Token('hello', 'plaintext', 'contents'),
+			new Search_Expr_Token('wiki page', 'identifier', 'object_type'),
+		));
 
 		$this->assertEquals($expr, $index->getLastQuery());
 	}
@@ -70,16 +62,12 @@ class Search_QueryTest extends PHPUnit_Framework_TestCase
 
 		$query->search($index);
 
-		$expr = new Search_Expr_And(
-						array(
-							new Search_Expr_And(
-											array(
-												new Search_Expr_Token('1', 'multivalue', 'categories'),
-												new Search_Expr_Token('2', 'multivalue', 'categories'),
-											)
-							),
-						)
-		);
+		$expr = new Search_Expr_And(array(
+			new Search_Expr_And(array(
+				new Search_Expr_Token('1', 'multivalue', 'categories'),
+				new Search_Expr_Token('2', 'multivalue', 'categories'),
+			)),
+		));
 
 		$this->assertEquals($expr, $index->getLastQuery());
 	}
@@ -92,16 +80,12 @@ class Search_QueryTest extends PHPUnit_Framework_TestCase
 
 		$query->search($index);
 
-		$expr = new Search_Expr_And(
-						array(
-							new Search_Expr_And(
-											array(
-												new Search_Expr_Token('1', 'multivalue', 'deep_categories'),
-												new Search_Expr_Token('2', 'multivalue', 'deep_categories'),
-											)
-							),
-						)
-		);
+		$expr = new Search_Expr_And(array(
+			new Search_Expr_And(array(
+				new Search_Expr_Token('1', 'multivalue', 'deep_categories'),
+				new Search_Expr_Token('2', 'multivalue', 'deep_categories'),
+			)),
+		));
 
 		$this->assertEquals($expr, $index->getLastQuery());
 	}
@@ -114,16 +98,12 @@ class Search_QueryTest extends PHPUnit_Framework_TestCase
 
 		$query->search($index);
 
-		$expr = new Search_Expr_And(
-						array(
-							new Search_Expr_Or(
-											array(
-												new Search_Expr_Token('en', 'identifier', 'language'),
-												new Search_Expr_Token('fr', 'identifier', 'language'),
-											)
-							),
-						)
-		);
+		$expr = new Search_Expr_And(array(
+			new Search_Expr_Or(array(
+				new Search_Expr_Token('en', 'identifier', 'language'),
+				new Search_Expr_Token('fr', 'identifier', 'language'),
+			)),
+		));
 
 		$this->assertEquals($expr, $index->getLastQuery());
 	}
@@ -170,17 +150,13 @@ class Search_QueryTest extends PHPUnit_Framework_TestCase
 
 		$query->search($index);
 
-		$expr = new Search_Expr_And(
-						array(
-							new Search_Expr_Or(
-											array(
-												new Search_Expr_Token('Registered', 'multivalue', 'allowed_groups'),
-												new Search_Expr_Token('Editor', 'multivalue', 'allowed_groups'),
-												new Search_Expr_Token('Project Lead ABC', 'multivalue', 'allowed_groups'),
-											)
-							),
-						)
-		);
+		$expr = new Search_Expr_And(array(
+			new Search_Expr_Or(array(
+				new Search_Expr_Token('Registered', 'multivalue', 'allowed_groups'),
+				new Search_Expr_Token('Editor', 'multivalue', 'allowed_groups'),
+				new Search_Expr_Token('Project Lead ABC', 'multivalue', 'allowed_groups'),
+			)),
+		));
 
 		$this->assertEquals($expr, $index->getLastQuery());
 	}
@@ -216,9 +192,9 @@ class Search_QueryTest extends PHPUnit_Framework_TestCase
 
 		$query->search($index);
 
-		$expr = new Search_Expr_And(
-						array(new Search_Expr_Range(1000, 2000, 'timestamp', 'modification_date'))
-		);
+		$expr = new Search_Expr_And(array(
+			new Search_Expr_Range(1000, 2000, 'timestamp', 'modification_date')
+		));
 
 		$this->assertEquals($expr, $index->getLastQuery());
 	}
@@ -231,16 +207,12 @@ class Search_QueryTest extends PHPUnit_Framework_TestCase
 
 		$query->search($index);
 
-		$expr = new Search_Expr_And(
-						array(
-							new Search_Expr_And(
-											array(
-												new Search_Expr_Token('1', 'multivalue', 'freetags'),
-												new Search_Expr_Token('2', 'multivalue', 'freetags'),
-											)
-							),
-						)
-		);
+		$expr = new Search_Expr_And(array(
+			new Search_Expr_And(array(
+				new Search_Expr_Token('1', 'multivalue', 'freetags'),
+				new Search_Expr_Token('2', 'multivalue', 'freetags'),
+			)),
+		));
 
 		$this->assertEquals($expr, $index->getLastQuery());
 	}
@@ -253,26 +225,18 @@ class Search_QueryTest extends PHPUnit_Framework_TestCase
 
 		$query->search($index);
 
-		$expr = new Search_Expr_And(
-						array(
-							new Search_Expr_Or(
-											array(
-												new Search_Expr_Or(
-																array(
-																	new Search_Expr_Token('hello', 'plaintext', 'contents'),
-																	new Search_Expr_Token('world', 'plaintext', 'contents'),
-																)
-												),
-												new Search_Expr_Or(
-																array(
-																	new Search_Expr_Token('hello', 'plaintext', 'title'),
-																	new Search_Expr_Token('world', 'plaintext', 'title'),
-																)
-												),
-											)
-							),
-						)
-		);
+		$expr = new Search_Expr_And(array(
+			new Search_Expr_Or(array(
+				new Search_Expr_Or(array(
+					new Search_Expr_Token('hello', 'plaintext', 'contents'),
+					new Search_Expr_Token('world', 'plaintext', 'contents'),
+				)),
+				new Search_Expr_Or(array(
+					new Search_Expr_Token('hello', 'plaintext', 'title'),
+					new Search_Expr_Token('world', 'plaintext', 'title'),
+				)),
+			)),
+		));
 
 		$this->assertEquals($expr, $index->getLastQuery());
 	}
@@ -281,34 +245,24 @@ class Search_QueryTest extends PHPUnit_Framework_TestCase
 	{
 		$index = new Search_Index_Memory;
 		$query = new Search_Query;
-		$query->setWeightCalculator(
-						new Search_Query_WeightCalculator_Field(
-										array(
-											'title' => 5.5,
-											'allowed_groups' => 0.0001,
-										)
-						)
-		);
+		$query->setWeightCalculator(new Search_Query_WeightCalculator_Field(array(
+			'title' => 5.5,
+			'allowed_groups' => 0.0001,
+		)));
 		$query->filterContent('hello', array('contents', 'title'));
 		$query->filterPermissions(array('Anonymous'));
 
 		$query->search($index);
 
-		$expr = new Search_Expr_And(
-						array(
-							new Search_Expr_Or(
-											array(
-												new Search_Expr_Token('hello', 'plaintext', 'contents', 1.0),
-												new Search_Expr_Token('hello', 'plaintext', 'title', 5.5),
-											)
-							),
-							new Search_Expr_Or(
-											array(
-												new Search_Expr_Token('Anonymous', 'multivalue', 'allowed_groups', 0.0001),
-											)
-							),
-						)
-		);
+		$expr = new Search_Expr_And(array(
+			new Search_Expr_Or(array(
+				new Search_Expr_Token('hello', 'plaintext', 'contents', 1.0),
+				new Search_Expr_Token('hello', 'plaintext', 'title', 5.5),
+			)),
+			new Search_Expr_Or(array(
+				new Search_Expr_Token('Anonymous', 'multivalue', 'allowed_groups', 0.0001),
+			)),
+		));
 
 		$this->assertEquals($expr, $index->getLastQuery());
 	}

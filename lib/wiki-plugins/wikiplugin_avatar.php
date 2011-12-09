@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_avatar_info()
-{
+function wikiplugin_avatar_info() {
 	return array(
 		'name' => tra('Avatar'),
 		'documentation' => 'PluginAvatar',
@@ -18,10 +17,8 @@ function wikiplugin_avatar_info()
 			'page' => array(
 				'required' => false,
 				'name' => tra('Page'),
-				'description' => tra(
-								'The wiki page the avatar will link to. If empty and the user\'s information is public, 
-								then the avatar will link automatically the that user\'s user information page'
-				),
+				'description' => tra('The wiki page the avatar will link to. If empty and the user\'s information is public, 
+										then the avatar will link automatically the that user\'s user information page'),
 				'default' => ''
 			),
 			'float' => array(
@@ -39,11 +36,12 @@ function wikiplugin_avatar_info()
 	);
 }
 
-function wikiplugin_avatar($data, $params)
-{
-	global $tikilib, $userlib;
+function wikiplugin_avatar($data, $params) {
+	global $tikilib;
 
-	extract($params, EXTR_SKIP);
+	global $userlib;
+
+	extract ($params,EXTR_SKIP);
 
 	if (isset($float))
 		$avatar = $tikilib->get_user_avatar($data, $float);

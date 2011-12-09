@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_messu_list()
-{
+function prefs_messu_list() {
 	return array(
 		'messu_mailbox_size' => array(
 			'name' => tra('Maximum mailbox size (messages, 0=unlimited)'),

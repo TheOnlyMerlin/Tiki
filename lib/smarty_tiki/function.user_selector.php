@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -18,13 +18,12 @@
  *     editable = $tiki_p_admin
  * 	   allowNone = 'n'
  *  }
- *
+ * 
  * Display a drop down menu of all users or
  * an input box with autocomplete if there are more users
  * than $prefs['user_selector_threshold']
  */
-function smarty_function_user_selector($params, $smarty)
-{
+function smarty_function_user_selector($params, $smarty) {
 	global $prefs, $user, $userlib, $headerlib, $tikilib, $tiki_p_admin;
 	require_once 'lib/userslib.php';
 	$smarty->loadPlugin('smarty_modifier_username');
@@ -32,8 +31,7 @@ function smarty_function_user_selector($params, $smarty)
 	static $iUserSelector = 0;
 	$iUserSelector++;
 	
-	$defaults = array( 
-			'user' => $user,
+	$defaults = array( 'user' => $user,
 			'group' => 'all',
 			'groupIds' => '',
 			'contact'=> 'false',
@@ -101,14 +99,14 @@ function smarty_function_user_selector($params, $smarty)
 		}
 		$ret .= '<select name="' . $params['name'] . '" id="' . $params['id'] . '"' . $sz . $ed . ' style="'.$params['style'].'">';
 		if ($params['allowNone'] === 'y') {
-			$ret .= '<option value=""' . (empty($params['user']) ? ' selected="selected"' : '') . ' >' . tra('None') .'</option>';
+			$ret .= '<option value=""' . (empty($params['user']) ? ' selected="selected"' : '') . ' >' . tra( 'None' ) .'</option>';
 		}
-		foreach ($users as $usr) {
+		foreach($users as $usr) {
 			if ($params['editable'] == 'y' || $usr == $params['user']) {
-				if (isset($params['select'])) {
-					$ret .= '<option value="' . htmlspecialchars($usr) . '"' . ($usr == $params['select'] ? ' selected="selected"' : '') . ' >' . smarty_modifier_username($usr) .'</option>';
+			    if (isset($params['select'])) {
+					$ret .= '<option value="' . htmlspecialchars($usr) . '"' . ($usr == $params['select'] ? ' selected="selected"' : '') . ' >' . smarty_modifier_username( $usr ) .'</option>';
 				} else {
-					$ret .= '<option value="' . htmlspecialchars($usr) . '"' . ($usr == $params['user'] ? ' selected="selected"' : '') . ' >' . smarty_modifier_username($usr) .'</option>';
+					$ret .= '<option value="' . htmlspecialchars($usr) . '"' . ($usr == $params['user'] ? ' selected="selected"' : '') . ' >' . smarty_modifier_username( $usr ) .'</option>';
 				}
 			}
 		}

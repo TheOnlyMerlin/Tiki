@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_votings_info()
-{
+function wikiplugin_votings_info() {
 	return array(
 		'name' => tra('Votings'),
 		'documentation' => 'PluginVotings',
@@ -31,8 +30,7 @@ function wikiplugin_votings_info()
 		)
 	);
 }
-function wikiplugin_votings($data, $params)
-{
+function wikiplugin_votings($data, $params) {
 	global $smarty, $user;
 	if (!isset($params['objectkey'])) {
 		return '';
@@ -42,7 +40,10 @@ function wikiplugin_votings($data, $params)
 
 	$votings = TikiDb::get()->table('tiki_user_votings');
 
-	$data = $votings->fetchRow(array('count' => $votings->count(), 'total' => $votings->sum('optionId')), array('id' => $key));
+	$data = $votings->fetchRow(array(
+		'count' => $votings->count(),
+		'total' => $votings->sum('optionId'),
+	), array('id' => $key));
 
 	$result = $votings->fetchAll(array('user'), array('id' => $key));
 

@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_blogs_list()
-{
+function prefs_blogs_list() {
 	return array(
 		'blogs_feature_copyrights' => array(
 			'name' => tra('Blogs'),

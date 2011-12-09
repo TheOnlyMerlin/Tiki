@@ -1,29 +1,28 @@
 <?php
 // (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
 
 // Handle special actions of the smarty_function_attachments smarty plugin
-function s_f_attachments_actionshandler( $params )
-{
+function s_f_attachments_actionshandler( $params ) {
 	global $prefs, $user, $tikilib;
 	if ( $prefs['feature_wiki_attachments'] != 'y' ) return false;
 
 	/*** Works only for wiki attachments yet ***/
 	if ( ! empty( $params['upload'] ) && empty( $params['fileId'] ) && empty( $params['page'] ) ) return false; ///FIXME
 
-	if ( ! empty($params['page']) ) {
+	if ( ! empty( $params['page'] ) ) {
 		require_once ("lib/wiki/renderlib.php");
-		$info =& $tikilib->get_page_info($params['page']);
-		$pageRenderer = new WikiRenderer($info, $user, $info['data']);
+		$info =& $tikilib->get_page_info( $params['page'] );
+		$pageRenderer = new WikiRenderer( $info, $user, $info['data']);
 		$objectperms = $pageRenderer->applyPermissions();
 	}
 
@@ -42,35 +41,30 @@ function s_f_attachments_actionshandler( $params )
 					}
 					$pageRenderer->setShowAttachments( 'y' );
 				*/
-				$filegallib->actionHandler('removeFile', array( 'fileId' => $v ));
-							break;
+				$filegallib->actionHandler( 'removeFile', array( 'fileId' => $v ) );
+				break;
 
 			case 'upload':
-				if ( isset($objectperms) && ( $objectperms->wiki_admin_attachments || $objectperms->wiki_attach_files ) ) {
+				if ( isset( $objectperms ) && ( $objectperms->wiki_admin_attachments || $objectperms->wiki_attach_files ) ) {
 					/* check_ticket('index'); */
 
 					global $smarty;
 					$smarty->loadPlugin('smarty_function_query');
 
-					$galleryId = $filegallib->get_attachment_gallery($params['page'], 'wiki page');
-					$filegallib->actionHandler(
-									'uploadFile', array(
-										'galleryId' => array($galleryId),
-										'comment' => $params['comment'],
-										'returnUrl' => smarty_function_query(
-														array(
-															'_type' => 'absolute_path',
-															's_f_attachments-upload' => 'NULL',
-															's_f_attachments-page' => 'NULL',
-															's_f_attachments-comment' => 'NULL'
-														), 
-														$smarty 
-										)
-									) 
-					);
+					$galleryId = $filegallib->get_attachment_gallery( $params['page'], 'wiki page' );
+					$filegallib->actionHandler( 'uploadFile', array(
+						'galleryId' => array($galleryId),
+						'comment' => $params['comment'],
+						'returnUrl' => smarty_function_query( array(
+								'_type' => 'absolute_path',
+								's_f_attachments-upload' => 'NULL',
+								's_f_attachments-page' => 'NULL',
+								's_f_attachments-comment' => 'NULL'
+							), $smarty )
+					) );
 				}
 
-							break;
+				break;
 		}
 	}
 
@@ -84,8 +78,7 @@ function s_f_attachments_actionshandler( $params )
  *   _id : id of the object (for a wiki page, use it's name)
  *   _type : type of the object ( e.g. "wiki page" - see objectTypes in lib/setup/sections.php )
  */
-function smarty_function_attachments($params, $template)
-{
+function smarty_function_attachments($params, $template) {
 	if ( ! is_array($params) || ! isset($params['_id']) || ! isset($params['_type']) ) return;
 
 	global $smarty, $prefs, $tikilib, $userlib;
@@ -94,17 +87,15 @@ function smarty_function_attachments($params, $template)
 	/*** For the moment, only wiki attachments are handled through file galleries ***/
 	if ( $prefs['feature_wiki_attachments'] != 'y' ) return;
 
-	$galleryId = $filegallib->get_attachment_gallery($params['_id'], $params['_type']);
+	$galleryId = $filegallib->get_attachment_gallery( $params['_id'], $params['_type'] );
 
 	/*** If anything in this function is changed, please change lib/wiki-plugins/wikiplugin_attach.php as well. ***/
 
-	if ( empty($galleryId) || ! $gal_info = $filegallib->get_file_gallery($galleryId) ) {
+	if ( empty( $galleryId ) || ! $gal_info = $filegallib->get_file_gallery( $galleryId ) ) {
 		include_once('lib/smarty_tiki/block.remarksbox.php');
-		return smarty_block_remarksbox(
-						array('type' => 'errors', 'title' => tra('Wrong attachments gallery')),
-						tra('You are attempting to display a gallery that is not a valid attachment gallery') . ' (ID=' . $galleryId . ')',
-						$smarty
-		) . "\n";
+		return smarty_block_remarksbox( array( 'type' => 'errors', 'title' => tra('Wrong attachments gallery')),
+			tra('You are attempting to display a gallery that is not a valid attachment gallery') . ' (ID=' . $galleryId . ')',
+		$smarty)."\n";
 	}
 
 ////	if ( $this->showAttachments !== false )
