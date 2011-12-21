@@ -35,7 +35,7 @@ class Text_Wiki_Render_Tiki_Redirect extends Text_Wiki_Render {
         if ($options['type'] == 'end') {
             return '")/}';
         } else if ($options['type'] == 'start') {
-            return '{REDIRECT(pageName="';
+            return '{REDIRECT(page="';
         }
     }
 }
