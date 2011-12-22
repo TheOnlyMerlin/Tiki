@@ -17,12 +17,14 @@ class Text_Wiki_Render_Tiki_Center extends Text_Wiki_Render {
     
     function token($options)
     {
+	global $prefs;
+
         if ($options['type'] == 'start') {
-            return '::';
+            return $prefs['feature_use_three_colon_centertag'] == 'y'? ':::': '::';
         }
         
         if ($options['type'] == 'end') {
-            return '::';
+            return $prefs['feature_use_three_colon_centertag'] == 'y'? ':::': '::';
         }
     }
 }

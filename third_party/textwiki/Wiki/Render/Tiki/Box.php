@@ -17,12 +17,14 @@ class Text_Wiki_Render_Tiki_Box extends Text_Wiki_Render {
     
     function token($options)
     {
+	global $prefs;
+
         if ($options['type'] == 'start') {
-            return '^';
+            return $prefs['feature_simplebox_delim'];
         }
         
         if ($options['type'] == 'end') {
-            return '^';
+            return $prefs['feature_simplebox_delim'];
         }
     }
 }
