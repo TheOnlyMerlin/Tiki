@@ -1,5 +1,5 @@
  /*
- * jQuery UI selectmenu version 1.2.0
+ * jQuery UI selectmenu dev version
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -30,6 +30,7 @@ $.widget("ui.selectmenu", {
 		maxHeight: null,
 		icons: null,
 		format: null,
+		escapeHtml: false,
 		bgImage: function() {},
 		wrapperElement: "<div />"
 	},
@@ -131,8 +132,13 @@ $.widget("ui.selectmenu", {
 					case $.ui.keyCode.TAB:
 						ret = true;
 						break;
+					case $.ui.keyCode.PAGE_UP:
 					case $.ui.keyCode.HOME:
 						self.index(0);
+						break;
+					case $.ui.keyCode.PAGE_DOWN:
+					case $.ui.keyCode.END:
+						self.index(self._optionLis.length);
 						break;
 					default:
 						ret = true;
@@ -145,15 +151,17 @@ $.widget("ui.selectmenu", {
 				}
 				return true;
 			})
-			.bind('mouseover.selectmenu focus.selectmenu', function() {
-				if (!o.disabled) {
-					$(this).addClass(self.widgetBaseClass + '-focus ui-state-hover');
-				}
+			.bind('mouseover.selectmenu', function() {
+				if (!o.disabled) $(this).addClass('ui-state-hover');
 			})
-			.bind('mouseout.selectmenu blur.selectmenu', function() {
-				if (!o.disabled) {
-					$(this).removeClass(self.widgetBaseClass + '-focus ui-state-hover');
-				}
+			.bind('mouseout.selectmenu', function() {
+				if (!o.disabled) $(this).removeClass('ui-state-hover');
+			})
+			.bind('focus.selectmenu', function() {
+				if (!o.disabled) $(this).addClass('ui-state-focus');
+			})
+			.bind('blur.selectmenu', function() {
+				if (!o.disabled) $(this).removeClass('ui-state-focus');
 			});
 
 		// document click closes menu
@@ -272,21 +280,19 @@ $.widget("ui.selectmenu", {
 
 		// serialize selectmenu element options
 		var selectOptionData = [];
-		this.element
-			.find('option')
-			.each(function() {
-				var opt = $(this);
-				selectOptionData.push({
-					value: opt.attr('value'),
-					text: self._formatText(opt.text()),
-					selected: opt.attr('selected'),
-					disabled: opt.attr('disabled'),
-					classes: opt.attr('class'),
-					typeahead: opt.attr('typeahead'),
-					parentOptGroup: opt.parent('optgroup'),
-					bgImage: o.bgImage.call(opt)
-				});
+		this.element.find('option').each(function() {
+			var opt = $(this);
+			selectOptionData.push({
+				value: opt.attr('value'),
+				text: self._formatText(opt.text()),
+				selected: opt.attr('selected'),
+				disabled: opt.attr('disabled'),
+				classes: opt.attr('class'),
+				typeahead: opt.attr('typeahead'),
+				parentOptGroup: opt.parent('optgroup'),
+				bgImage: o.bgImage.call(opt)
 			});
+		});
 
 		// active state class is only used in popup style
 		var activeClass = (self.options.style == "popup") ? " ui-state-active" : "";
@@ -419,13 +425,10 @@ $.widget("ui.selectmenu", {
 		// reset height to auto
 		this.list.css( 'height', 'auto' );
 		var listH = this.listWrap.height();
-		// calculate default max height
-		if ( o.maxHeight && o.maxHeight < listH ) {
-			this.list.height( o.maxHeight );
-		} else {
-			var winH = $( window ).height() / 3;
-			if ( winH < listH ) this.list.height( winH );
-		}
+		var winH = $( window ).height();
+		// calculate default max height		
+		var maxH = o.maxHeight ? Math.min( o.maxHeight, winH ) : winH / 3;
+		if ( listH > maxH ) this.list.height( maxH );		
 		
 		// save reference to actionable li's (not group label li's)
 		this._optionLis = this.list.find( 'li:not(.' + self.widgetBaseClass + '-group)' );
@@ -439,6 +442,9 @@ $.widget("ui.selectmenu", {
 		
 		// update value
 		this.index( this._selectedIndex() );
+		
+		// set selected item so movefocus has intial state
+		this._selectedOptionLi().addClass(this.widgetBaseClass + '-item-focus');
 
 		// needed when selectmenu is placed at the very bottom / top of the page
 		window.setTimeout( function() {
@@ -470,7 +476,6 @@ $.widget("ui.selectmenu", {
 	_typeAhead: function( code, eventType ) {
 		var self = this,
 			c = String.fromCharCode(code).toLowerCase(),
-			items = this.list.find( 'li a' ),
 			matchee = null,
 			nextIndex = null;
 
@@ -508,11 +513,10 @@ $.widget("ui.selectmenu", {
 			this._selectedOptionLi().data('index') :
 			this._focusedOptionLi().data('index')) || 0;
 
-		for (var i = 0; i < items.length; i++) {
-			var thisText = items.eq(i).text().substr(0, matchee.length).toLowerCase();
+		for (var i = 0; i < this._optionLis.length; i++) {
+			var thisText = this._optionLis.eq(i).text().substr(0, matchee.length).toLowerCase();
 
 			if ( thisText === matchee ) {
-
 				if ( self._typeAhead_cycling ) {
 					if ( nextIndex === null )
 						nextIndex = i;
@@ -532,7 +536,7 @@ $.widget("ui.selectmenu", {
 			// index? Because we don't what is the exact action to do, it
 			// depends if the user is typing on the element or on the popped
 			// up menu
-			items.eq(nextIndex).trigger( eventType );
+			this._optionLis.eq(nextIndex).find("a").trigger( eventType );
 		}
 
 		self._typeAhead_timer = window.setTimeout(function() {
@@ -624,9 +628,14 @@ $.widget("ui.selectmenu", {
 			this.open(event);
 		}
 	},
-
+	
 	_formatText: function(text) {
-		return (this.options.format ? this.options.format(text) : text);
+		if (this.options.format) {
+			text = this.options.format(text);
+		} else if (this.options.escapeHtml) {
+			text = $('<div />').text(text).html();
+		}
+		return text;
 	},
 
 	_selectedIndex: function() {
@@ -662,7 +671,7 @@ $.widget("ui.selectmenu", {
 				(amt > 0) ? ++amt : --amt;
 				this._moveSelection(amt, newIndex);
 			} else {
-				return this._optionLis.eq(newIndex).trigger('mouseup');
+				this._optionLis.eq(newIndex).trigger('mouseover').trigger('mouseup');
 			}
 		}
 	},
@@ -701,7 +710,7 @@ $.widget("ui.selectmenu", {
 	},
 
 	_scrollPage: function(direction) {
-		var numPerPage = Math.floor(this.list.outerHeight() / this.list.find('li:first').outerHeight());
+		var numPerPage = Math.floor(this.list.outerHeight() / this._optionLis.first().outerHeight());
 		numPerPage = (direction == 'up' ? -numPerPage : numPerPage);
 		this._moveFocus(numPerPage);
 	},
@@ -851,7 +860,6 @@ $.widget("ui.selectmenu", {
 			var selected = this._selectedOptionLi();
 			var _offset = "0 " + ( this.list.offset().top  - selected.offset().top - ( this.newelement.outerHeight() + selected.outerHeight() ) / 2);
 		}
-		// update zIndex if jQuery UI is able to process
 		this.listWrap
 			.zIndex( this.element.zIndex() + 1 )
 			.position({
@@ -860,7 +868,7 @@ $.widget("ui.selectmenu", {
 				my: o.positionOptions.my,
 				at: o.positionOptions.at,
 				offset: o.positionOptions.offset || _offset,
-				collision: o.positionOptions.collision || 'flip'
+				collision: o.positionOptions.collision || o.style == "popup" ? 'fit' :'flip'
 			});
 	}
 });

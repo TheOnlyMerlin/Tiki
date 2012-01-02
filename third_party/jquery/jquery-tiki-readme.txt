@@ -6,6 +6,7 @@ jonnybradley 2 January 2012
 
 Update:
 	jquery.js & jquery.min.js 1.6.2 to 1.6.4
+	jquery-ui-selectmenu to latest "dev" version 1.9
 
 jonnybradley 8 December 2011
 
