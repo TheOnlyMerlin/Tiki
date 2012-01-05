@@ -2,16 +2,19 @@ contributor:
 $Author: xavi $
 
 revision: 
-$Revision: 0.70 $
+$Revision: 0.71 $
 
 lastmodif:
-$Date: 2011-09-02 00:29:00 $
+$Date: 2012-01-03 00:29:00 $
 
 files: 
 wiki-plugins/r/lib/wiki-plugins/wikiplugin_r.php lib/wiki-plugins/wikiplugin_r.php
 wiki-plugins/r/lib/wiki-plugins/wikiplugin_rr.php lib/wiki-plugins/wikiplugin_rr.php
 wiki-plugins/r/pics/icons/r.png pics/icons/r.png
 wiki-plugins/r/temp/.htaccess temp/.htaccess
+wiki-plugins/r/lang/en/language_r.php lang/en/language_r.php
+wiki-plugins/r/lang/ca/language_r.php lang/ca/language_r.php
+wiki-plugins/r/lang/es/language_r.php lang/es/language_r.php
 
 Author:
 Xavier de Pedro (xavi)
@@ -41,3 +44,4 @@ Changelog:
 0.61 Removed codemirror css and js files since they are now part of Tiki 7. Plugin made compatible again with Tiki <7. Carriage returns allowed inside R code in pretty trackers through wiki page templates, because PluginR removes all br p /p tags from the content to be parsed by R. Thanks Jonnyb for tips.
 0.62 Ported to work with Tiki7.x also (thanks jonnyb), and minor issue fixed with servers where R has no X11 support.
 0.70 Added optional generation of SVG and/or PDF files from each plot, in order to allow producing high quality vectorial plots which can be enlarged or edited without loosing quality. Also minor enhancement added for better display of png images when inside tiki slideshows in Tiki 6.5+ and 7.2+.
+0.71 Same value pairs for onefile param as with otehr params. Added language files (they work in Tiki8+).

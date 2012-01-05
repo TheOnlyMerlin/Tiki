@@ -67,7 +67,7 @@ function wikiplugin_rr_info() {
 				'required' => false,
 				'safe' => true,
 				'name' => tra('height'),
-				'description' => tra('Height of the graph (Optional). Options: an integer number in inches (default) or in units specified. If ommitted but width is set, height will be proportional to keep aspect ratio'),
+				'description' => tra('Height of the graph (Optional). Options: an integer number in pixels (default) or in units specified. If ommitted but width is set, height will be proportional to keep aspect ratio'),
 				'filter' => 'int',
 				'advanced' => true,
 			),
@@ -125,8 +125,8 @@ function wikiplugin_rr_info() {
 				'name' => tra('onefile'),
 				'description' => tra('should all plots appear in one file? This would be the default value; but if you answer no, they will attempt to appear in separate files in the server, even if you currently will not be able to fetch them easily through the internet browser. This param can be used with figure types svg and pdf; however, not many svg viewers support several plots in one svg file'),
 				'options' => array(
-					array('text' => tra('No'), 'value' => 'FALSE'),
-					array('text' => tra('Yes'), 'value' => 'TRUE'),
+					array('text' => tra('No'), 'value' => '0'),
+					array('text' => tra('Yes'), 'value' => '1'),
 				),
 				'advanced' => true,
 			),
@@ -366,6 +366,8 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params, $user) {
 
 	if (isset($params["onefile"])) {
 		$onefile = $params["onefile"];
+		if ($onefile="1") { $onefile = TRUE; }
+		if ($onefile="0") { $onefile = FALSE; }
 	}else{
 		$onefile = TRUE;
 	}
