@@ -26,8 +26,7 @@ class Search_Formatter_ValueFormatter
 			$arguments = array();
 		}
 
-		// ugly exception for wikiplugin - TODO better?
-		if ($format !== 'wikiplugin' && (! isset($this->valueSet[$name]) || is_null($this->valueSet[$name]))) {
+		if (! isset($this->valueSet[$name]) || is_null($this->valueSet[$name])) {
 			return tr("No value for '%0'", $name);
 		}
 

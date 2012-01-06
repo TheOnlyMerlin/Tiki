@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_mail_list()
-{
+function prefs_mail_list() {
 	return array(
 		'mail_crlf' => array(
 			'name' => tra('Mail end of line'),

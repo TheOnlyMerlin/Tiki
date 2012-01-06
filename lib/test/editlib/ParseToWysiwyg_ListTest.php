@@ -11,41 +11,37 @@
  */
 class EditLib_ParseToWysiwyg_ListTest extends TikiTestCase
 {
-
+	
 	private $el = null; // the EditLib
 	private $dir = '';  // the unmodifed directory
-
-	function __construct()
-	{
+	
+	function __construct() {
 		$this->dir = getcwd();
 	}
-
-
-	function setUp()
-	{
-
+		
+	
+	function setUp() {
+		
 		$_SERVER['HTTP_HOST'] = ''; // editlib expects that HTTP_HOST is defined
 
 		$this->el = new EditLib();
 		chdir($this->dir);
 		chdir('../../'); // the tiki installation directory
 	}
-
-
-	function tearDown()
-	{
+	
+		
+	function tearDown() {
 		chdir($this->dir);
 	}	
-
-
+	
+	
 	/**
 	 * Test bullet lists
 	 * 
 	 * Test single lines with different numbers of '*' 
 	 */		
-	function testBulletList()
-	{
-
+	function testBulletList() {
+		
 		/*
 		 * *Item 1
 		 * *Item 2 
@@ -57,8 +53,8 @@ class EditLib_ParseToWysiwyg_ListTest extends TikiTestCase
 		$out = $this->el->parseToWysiwyg($inData);
 		$out = preg_replace('/\n/', '\n', $out); // fix LF encoding for comparison		
 		$this->assertEquals($ex, $out);			
-
-
+		
+		
 		/*
 		 * *Item 1
 		 * **Item 1a
@@ -73,17 +69,16 @@ class EditLib_ParseToWysiwyg_ListTest extends TikiTestCase
 		$out = preg_replace('/\n/', '\n', $out); // fix LF encoding for comparison		
 		$this->assertEquals($ex, $out);			
 	}
-
-
+	
+	
 	/**
 	 * Test the continuation of bullet lists
 	 * 
 	 * Test level one and two
 	 */
-	function testBulletListContinuation()
-	{
-
-
+	function testBulletListContinuation()  {
+		
+		
 		/*
 		 * *Item 1
 		 * +Continuation
@@ -97,8 +92,8 @@ class EditLib_ParseToWysiwyg_ListTest extends TikiTestCase
 		$out = $this->el->parseToWysiwyg($inData);
 		$out = preg_replace('/\n/', '\n', $out); // fix LF encoding for comparison		
 		$this->assertEquals($ex, $out);			
-
-
+		
+		
 		/*
 		 * **Item 1
 		 * ++Continuation
@@ -113,16 +108,15 @@ class EditLib_ParseToWysiwyg_ListTest extends TikiTestCase
 		$out = preg_replace('/\n/', '\n', $out); // fix LF encoding for comparison		
 		$this->assertEquals($ex, $out);					
 	}
-
-
+	
+	
 	/**
 	 * Test numbered lists
 	 * 
 	 * Test single lines with different numbers of '#' 
 	 */			
-	function testNumberedList()
-	{
-
+	function testNumberedList() {
+		
 		/*
 		 * #Item 1
 		 * #Item 2 
@@ -134,8 +128,8 @@ class EditLib_ParseToWysiwyg_ListTest extends TikiTestCase
 		$out = $this->el->parseToWysiwyg($inData);
 		$out = preg_replace('/\n/', '\n', $out); // fix LF encoding for comparison		
 		$this->assertEquals($ex, $out);			
-
-
+		
+		
 		/*
 		 * #Item 1
 		 * ##Item 1a
@@ -150,17 +144,16 @@ class EditLib_ParseToWysiwyg_ListTest extends TikiTestCase
 		$out = preg_replace('/\n/', '\n', $out); // fix LF encoding for comparison		
 		$this->assertEquals($ex, $out);					
 	}
-
-
+	
+	
 	/**
 	 * Test the continuation of numbered lists
 	 * 
 	 * Test level one and two
 	 */
-	function testNumberedListContinuation()
-	{
-
-
+	function testNumberedListContinuation() {
+		
+		
 		/*
 		 * #Item 1
 		 * +Continuation
@@ -174,8 +167,8 @@ class EditLib_ParseToWysiwyg_ListTest extends TikiTestCase
 		$out = $this->el->parseToWysiwyg($inData);
 		$out = preg_replace('/\n/', '\n', $out); // fix LF encoding for comparison		
 		$this->assertEquals($ex, $out);		
-
-
+				
+		
 		/*
 		 * ##Item 1
 		 * ++Continuation
@@ -190,6 +183,6 @@ class EditLib_ParseToWysiwyg_ListTest extends TikiTestCase
 		$out = preg_replace('/\n/', '\n', $out); // fix LF encoding for comparison		
 		$this->assertEquals($ex, $out);					
 	}
-
+	
 }
 

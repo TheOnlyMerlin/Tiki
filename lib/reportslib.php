@@ -10,7 +10,7 @@ class reportsLib extends TikiLib
 
 	//Sends the Email
 	public function sendEmail($user_data, $report_preferences, $report_cache) {
-		global $prefs, $smarty, $tikilib, $base_url;
+		global $prefs, $smarty, $tikilib;
 
 		include_once('lib/webmail/tikimaillib.php');
 		$mail = new TikiMail();
@@ -19,7 +19,7 @@ class reportsLib extends TikiLib
 		$smarty->assign('report_user', ucfirst($user_data['login']));
 		$smarty->assign('report_interval', ucfirst($report_preferences['interval']));
 		$smarty->assign('report_date', date("l d.m.Y"));
-		$smarty->assign('report_last_report_date', TikiLib::date_format($prefs['long_date_format'], strtotime($report_preferences['last_report'])));
+		$smarty->assign('report_last_report_date', date("l d.m.Y", strtotime($report_preferences['last_report'])));
 		$smarty->assign('report_total_changes', count($report_cache));
 		if ($prefs['feature_contribution'] == 'y' && !empty($contributions)) {
 			global $contributionlib; include_once('lib/contribution/contributionlib.php');
@@ -28,26 +28,18 @@ class reportsLib extends TikiLib
 
 		$smarty->assign('report_body', $this->makeHtmlEmailBody($report_cache, $report_preferences));
 
-		$userWatchesUrl = $base_url . 'tiki-user_watches.php';
-		
-		if ($report_preferences['type'] == 'html') {
-			$userWatchesUrl = "<a href=$userWatchesUrl>$userWatchesUrl</a>"; 
-		}
-		
-		$smarty->assign('userWatchesUrl', $userWatchesUrl);
-		
 		$mail->setUser($user_data['login']);
-		
 		if (is_array($report_cache)) {
-			if (count($report_cache) == 1) {
-				$subject = tr('Report from %0 (1 change)', TikiLib::date_format($prefs['short_date_format'], time()));
+			if (count($report_cache)==1) {
+				$changes = "1 ".tra("change");
 			} else {
-				$subject = tr('Report from %0 (%1 changes)', TikiLib::date_format($prefs['short_date_format'], time()), count($report_cache));
+				$changes = count($report_cache)." ".tra("changes");
 			}
 		} else {
-			$subject = tr('Report from %0 (no changes)', TikiLib::date_format($prefs['short_date_format'], time()));
+			$changes = tra("No changes");
 		}
 
+		$subject = tra(ucfirst($report_preferences['interval'])." report from")." ".date("d.m.Y", time())." (".$changes.")";
 		$mail->setSubject($subject);
 
 		$userlang = $tikilib->get_user_preference($user_data['login'], "language", $prefs['site_language']);
@@ -57,7 +49,7 @@ class reportsLib extends TikiLib
 		if ($report_preferences['type']=='plain') {
 			$mail->setText($mail_data);
 		} else {
-			$mail->setHtml(nl2br($mail_data));
+			$mail->setHtml($mail_data);
 		}
 		
 		$mail->buildMessage();

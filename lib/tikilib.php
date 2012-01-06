@@ -11,6 +11,11 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	exit;
 }
 
+//if ( ! defined('DATE_FORMAT_UNIXTIME') ) define('DATE_FORMAT_UNIXTIME', 5);
+
+// performance collecting:
+//require_once ('lib/tikidblib-debug.php');
+
 // This class is included by all the Tiki php scripts, so it's important
 // to keep the class as small as possible to improve performance.
 // What goes in this class:
@@ -237,15 +242,6 @@ class TikiLib extends TikiDb_Bridge
 		case 'scorm':
 			require_once 'lib/filegals/scormlib.php';
 			return self::$libraries[$name] = new ScormLib;
-		case 'mod':
-			global $modlib; require_once 'lib/modules/modlib.php';
-			return self::$libraries[$name] = $modlib;
-		case 'faq':
-			global $faqlib; require_once 'lib/faqs/faqlib.php';
-			return self::$libraries[$name] = $faqlib;
-		case 'quiz':
-			global $quizlib; require_once 'lib/quizzes/quizlib.php';
-			return self::$libraries[$name] = $quizlib;
 		}
 	}
 
@@ -547,6 +543,19 @@ class TikiLib extends TikiDb_Bridge
 		} catch (Exception $e) {
 			TikiLib::lib('errorreport')->report($e->getMessage());
 		}
+	}
+
+	/* convert data to iso-8601 format */
+	// used for atom export. date() use is okay, as we use server timezone in such case
+	function iso_8601 ($timestamp)
+	{
+		$main_date = $this->date_format("%Y-%m-%d\T%H:%M:%S", $timestamp);
+
+		$tz = $this->date("%O", $timestamp);
+
+		$return = $main_date . $tz;
+
+		return $return;
 	}
 
 	/*shared*/
@@ -1173,6 +1182,161 @@ class TikiLib extends TikiDb_Bridge
 		return(isset($this->online_users_cache[$whichuser]));
 	}
 
+	/*shared*/
+	function get_quiz($quizId)
+	{
+		$query = "select * from `tiki_quizzes` where `quizId`=?";
+
+		$result = $this->query($query, array((int) $quizId));
+
+		if (!$result->numRows())
+			return false;
+
+		$res = $result->fetchRow();
+		return $res;
+	}
+
+	function compute_quiz_stats()
+	{
+		$query = "select `quizId`  from `tiki_user_quizzes`";
+
+		$result = $this->fetchAll($query, array());
+
+		$quizStatsSum = $this->table('tiki_quiz_stats_sum');
+
+		foreach ( $result as $res ) {
+			$quizId = $res["quizId"];
+
+			$quizName = $this->getOne("select `name`  from `tiki_quizzes` where `quizId`=?", array((int)$quizId));
+			$timesTaken = $this->getOne("select count(*) from `tiki_user_quizzes` where `quizId`=?", array((int)$quizId));
+			$avgpoints = $this->getOne("select avg(`points`) from `tiki_user_quizzes` where `quizId`=?", array((int)$quizId));
+			$maxPoints = $this->getOne("select max(`maxPoints`) from `tiki_user_quizzes` where `quizId`=?", array((int)$quizId));
+			$avgavg = ($maxPoints != 0) ? $avgpoints / $maxPoints * 100 : 0.0;
+			$avgtime = $this->getOne("select avg(`timeTaken`) from `tiki_user_quizzes` where `quizId`=?", array((int)$quizId));
+
+			$quizStatsSum->delete(array('quizId' => (int) $quizId,));
+			$quizStatsSum->insert(
+							array(
+								'quizId' => (int) $quizId,
+								'quizName' => $quizName,
+								'timesTaken' => (int) $timesTaken,
+								'avgpoints' => (float) $avgpoints,
+								'avgtime' => $avgtime,
+								'avgavg' => $avgavg,
+							)
+			);
+		}
+	}
+
+	function list_quizzes($offset, $maxRecords, $sort_mode = 'name_desc', $find = null)
+	{
+		
+		$quizzes = $this->table('tiki_quizzes');
+		$conditions = array();
+
+		if ( ! empty($find) ) {
+			$findesc = '%' . $find . '%';
+			$conditions['search'] = $quizzes->expr('(`name` like ? or `description` like ?)', array($findesc, $findesc));
+		}
+
+		$result = $quizzes->fetchColumn('quizId', $conditions);
+		$res = $ret = $retids = array();
+		$n = 0;
+
+		//FIXME Perm:filter ?
+		foreach ( $result as $res ) {
+			$objperm = Perms::get('quizzes', $res);
+
+			if ( $objperm->take_quiz ) {
+				if ( ($maxRecords == -1) || (($n >= $offset) && ($n < ($offset + $maxRecords))) ) {
+					$retids[] = $res;
+				}
+				$n++;
+			}
+		}
+
+		if ($n > 0) {
+			$result = $quizzes->fetchAll(
+							$quizzes->all(),
+							array('quizId' => $quizzes->in($retids)),
+							-1, -1, $quizzes->expr($this->convertSortMode($sort_mode))
+			);
+
+			$questions = $this->table('tiki_quiz_questions');
+			$results = $this->table('tiki_quiz_results');
+
+			foreach ( $result as $res ) {
+				$res['questions'] = $questions->fetchCount(array('quizId' => (int) $res['quizId']));
+				$res['results'] = $results->fetchCount(array('quizId' => (int) $res['quizId']));
+				$ret[] = $res;
+			}
+		}
+
+		return array(
+			'data' => $ret,
+			'cant' => $n,
+		);
+	}
+
+	/*shared*/
+	function list_quiz_sum_stats($offset, $maxRecords, $sort_mode, $find)
+	{
+		$this->compute_quiz_stats();
+
+		$stats = $this->table('tiki_quiz_stats_sum');
+		$conditions = array();
+
+		if ($find) {
+			$conditions['quizName'] = $stats->like("%$find%");
+		}
+
+		return array(
+			'data' => $stats->fetchAll($stats->all(), $conditions, $maxRecords, $offset, $stats->expr($this->convertSortMode($sort_mode))),
+			'cant' => $stats->fetchCount($conditions),
+		);
+	}
+
+	function list_surveys($offset, $maxRecords, $sort_mode, $find)
+	{
+		if ($find) {
+		  $findesc = '%' . $find . '%';
+		  $mid = " where (`name` like ? or `description` like ?)";
+		  $bindvars=array($findesc, $findesc);
+		} else {
+		  $mid = '';
+		  $bindvars=array();
+		}
+
+		$query = "select `surveyId` from `tiki_surveys` $mid";
+		$result = $this->fetchAll($query, $bindvars);
+		$res = $ret = $retids = array();
+		$n = 0;
+
+		//FIXME Perm:filter ?
+		foreach ( $result as $res ) {
+		  $objperm = $this->get_perm_object($res['surveyId'], 'survey', '', false);
+		  if ( $objperm['tiki_p_take_survey'] ) {
+			if ( ($maxRecords == -1) || (($n >= $offset) && ($n < ($offset + $maxRecords))) ) {
+			  $retids[] = $res['surveyId'];
+			}
+			$n++;
+		  }
+		}
+		if ( $n > 0 ) {
+		  $query = 'select * from `tiki_surveys` where `surveyId` in (' . implode(',', $retids) . ') order by ' . $this->convertSortMode($sort_mode);
+		  $result = $this->fetchAll($query);
+		  foreach ( $result as $res ) {
+			$res["questions"] = $this->getOne('select count(*) from `tiki_survey_questions` where `surveyId`=?', array( (int) $res['surveyId']));
+			$ret[] = $res;
+		  }
+		} 
+		
+		$retval = array();
+		$retval["data"] = $ret;
+		$retval["cant"] = $n;
+		return $retval;
+	}
+
 	/*
 	 * Score methods begin
 	 */
@@ -1469,8 +1633,7 @@ class TikiLib extends TikiDb_Bridge
 
 	function get_usage_chart_data()
 	{
-		TikiLib::lib('quiz')->compute_quiz_stats();
-		
+		$this->compute_quiz_stats();
 		$data['xdata'][] = tra('wiki');
 		$data['ydata'][] = $this->getOne('select sum(`hits`) from `tiki_pages`', array());
 		$data['xdata'][] = tra('img-g');
@@ -1515,7 +1678,7 @@ class TikiLib extends TikiDb_Bridge
 
 		// In other cases, we look in db
 		$id = $this->table('users_users')->fetchOne('userId', array('login' => $u));
-		$id = ($id === false) ? -1 : $id;
+		$id = ($id === NULL) ? -1 : $id;
 		if ( $current ) $_SESSION['u_info']['id'] = $id;
 		return $id;
 	}
@@ -1603,6 +1766,58 @@ class TikiLib extends TikiDb_Bridge
 		}
 		return $cacheId;
 	}
+
+	// Functions for FAQs ////
+	function list_faqs($offset, $maxRecords, $sort_mode, $find)
+	{
+	  $mid = '';
+	  if ( $find ) {
+		$findesc = '%' . $find . '%';
+		$mid = ' where (`title` like ? or `description` like ?)';
+		$bindvars = array($findesc, $findesc);
+	  } else $bindvars = array();
+
+	  $query = "select `faqId` from `tiki_faqs` $mid";
+	  $result = $this->fetchAll($query, $bindvars);
+	  $res = $ret = $retids = array();
+	  $n=0;
+
+		//FIXME Perm:filter ?
+	  foreach ( $result as $res ) {
+		$objperm = $this->get_perm_object($res['faqId'], 'faq', '', false);
+		if ($objperm['tiki_p_view_faqs'] == 'y') {
+		  if (($maxRecords == -1) || (($n>=$offset) && ($n < ($offset + $maxRecords)))) {
+			$retids[] = $res['faqId'];
+			$n++;
+		  }
+		}
+	  }
+
+	  if ($n > 0) {
+		$query = "select  * from `tiki_faqs` where faqId in (" . implode(',', $retids) . ") order by " . $this->convertSortMode($sort_mode);
+		$result = $this->fetchAll($query);
+		foreach ( $result as $res ) {
+		  $res['suggested'] = $this->getOne('select count(*) from `tiki_suggested_faq_questions` where `faqId`=?', array((int) $res['faqId']));
+		  $res['questions'] = $this->getOne('select count(*) from `tiki_faq_questions` where `faqId`=?', array((int) $res['faqId']));
+		  $ret[] = $res;
+		}
+	  }
+
+	  $retval['data'] = $ret;
+	  $retval['cant'] = $n;
+	  return $retval;
+	}
+
+	/*shared */
+	function get_faq($faqId)
+	{
+		$query = "select * from `tiki_faqs` where `faqId`=?";
+		$result = $this->query($query, array((int)$faqId));
+		if (!$result->numRows()) return false;
+		$res = $result->fetchRow();
+		return $res;
+	}
+	// End Faqs ////
 
 	/*shared*/
 	function genPass()
@@ -1790,6 +2005,27 @@ class TikiLib extends TikiDb_Bridge
 		$objectRelations->deleteMultiple(array('target_type' => $type,	'target_itemId' => $id));
 
 		return true;
+	}
+
+	/*shared*/
+	// function enhancing php in_array() function
+	function in_multi_array($needle, $haystack)
+	{
+		$in_multi_array = false;
+
+		if (in_array($needle, $haystack)) {
+			$in_multi_array = true;
+		} else {
+			while (list($tmpkey, $tmpval) = each($haystack)) {
+				if (is_array($haystack[$tmpkey])) {
+					if ($this->in_multi_array($needle, $haystack[$tmpkey])) {
+						$in_multi_array = true;
+						break;
+					}
+				}
+			}
+		}
+		return $in_multi_array;
 	}
 
 	/*shared*/
@@ -3171,6 +3407,11 @@ class TikiLib extends TikiDb_Bridge
 	// NOTE: prefslib contains a similar method now called getModifiedPrefsForExport
 	function getModifiedPreferences()
 	{
+		$cachelib = TikiLib::lib('cache');
+		if ( $data = $cachelib->getSerialized('modified_preferences')) {
+			return $data;
+		}
+
 		$defaults = get_default_prefs();
 		$modified = array();
 
@@ -3183,6 +3424,9 @@ class TikiLib extends TikiDb_Bridge
 			if ( !isset($defaults[$name]) || (string) $defaults[$name] != (string) $value )
 				$modified[$name] = $value;
 		}
+
+		$cachelib->cacheItem('modified_preferences', serialize($modified));
+
 		return $modified;
 	}
 
@@ -3225,24 +3469,8 @@ class TikiLib extends TikiDb_Bridge
 
 	function delete_preference($name)
 	{
-		global $user_overrider_prefs, $user_preferences, $user, $prefs;
-		$prefslib = TikiLib::lib('prefs');
-		
 		$this->table('tiki_preferences')->delete(array('name' => $name));
-		$cachelib = TikiLib::lib('cache');
-		$cachelib->invalidate('global_preferences');
-
-		$definition = $prefslib->getPreference($name);
-		$value = $definition['default'];
-		if (isset($prefs)) {
-			if ( in_array($name, $user_overrider_prefs) ) {
-				$prefs['site_'.$name] = $value;
-			} elseif ( isset($user_preferences[$user][$name] ) ) {
-				$prefs[$name] = $user_preferences[$user][$name];
-			} else {
-				$prefs[$name] = $value;
-			}
-		}
+		$this->invalidateModifiedPreferencesCaches();
 	}
 
 	function set_preference($name, $value)
@@ -3260,8 +3488,7 @@ class TikiLib extends TikiDb_Bridge
 		$menulib = TikiLib::lib('menu');
 		$menulib->empty_menu_cache();
 
-		$cachelib = TikiLib::lib('cache');
-		$cachelib->invalidate('global_preferences');
+		$this->invalidateModifiedPreferencesCaches();
 
 		$preferences = $this->table('tiki_preferences');
 		$preferences->insertOrUpdate(array('value' => is_array($value) ? serialize($value) : $value), array('name' => $name));
@@ -3269,13 +3496,28 @@ class TikiLib extends TikiDb_Bridge
 		if ( isset($prefs) ) {
 			if ( in_array($name, $user_overrider_prefs) ) {
 				$prefs['site_'.$name] = $value;
+				$_SESSION['s_prefs']['site_'.$name] = $value;
 			} elseif ( isset($user_preferences[$user][$name] ) ) {
 				$prefs[$name] = $user_preferences[$user][$name];
+				$_SESSION['s_prefs'][$name] = $user_preferences[$user][$name];
 			} else {
 				$prefs[$name] = $value;
+				$_SESSION['s_prefs'][$name] = $value;
 			}
 		}
 		return true;
+	}
+
+	// Invalidate the first-level "Cachelib" modified preferences cache as well as the session preferences caches 
+	function invalidateModifiedPreferencesCaches()
+	{
+		global $prefs;
+		$preferences = $this->table('tiki_preferences');
+		$preferences->update(array('value' => $preferences->increment(1)), array('name' => 'versionOfPreferencesCache'));
+		++$prefs['versionOfPreferencesCache'];
+		
+		$cachelib = TikiLib::lib('cache');
+		$cachelib->invalidate('modified_preferences');
 	}
 
 	function _get_values($table, $field_name, $var_names = null, &$global_ref, $query_cond = '', $bindvars = null)
@@ -3428,21 +3670,28 @@ class TikiLib extends TikiDb_Bridge
 
 		if ( $my_user == $user ) {
 			$prefs[$name] = $value;
+			$_SESSION['s_prefs'][$name] = $value;
 			if ( $name == 'theme' && $prefs['change_theme'] == 'y' ) { // FIXME: Remove this exception
 				$prefs['style'] = $value;
+				$_SESSION['s_prefs']['style'] = $value;
 				if ( $value == '' ) {
 					$prefs['style'] = $prefs['site_style'];
+					$_SESSION['s_prefs']['style'] = $prefs['site_style'];
 				}
 			} elseif ( $name == 'theme-option' && $prefs['change_theme'] == 'y' ) { // FIXME: Remove this exception as well?
 				$prefs['style_option'] = $value;
+				$_SESSION['s_prefs']['style_option'] = $value;
 				if ( $value == '' ) {
 					$prefs['style_option'] = $prefs['site_style_option'];
+					$_SESSION['s_prefs']['style_option'] = $prefs['site_style_option'];
 				} else if ( $value == 'None' ) {
 					$prefs['style_option'] = '';
+					$_SESSION['s_prefs']['style_option'] = '';
 				}
 			} elseif ( $value == '' ) {
 				if ( in_array($name, $user_overrider_prefs) ) {
 					$prefs[$name] = $prefs['site_'.$name];
+					$_SESSION['s_prefs'][$name] = $prefs['site_'.$name];
 				}
 			}
 		}
@@ -3633,12 +3882,12 @@ class TikiLib extends TikiDb_Bridge
 		);
 
 		// Update HTML wanted links when wysiwyg is in use - this is not an elegant fix
-		// but will do for now until the "use wiki syntax in WYSIWYG" feature is ready
+		// but will do for now until the "use wiki syntax in WYSIWYG" feature is ready 
 		if ($prefs['feature_wysiwyg'] == 'y' && $prefs['wysiwyg_htmltowiki'] != 'y') {
 			$wikilib = TikiLib::lib('wiki');
 			$temppage = md5($this->now . $name);
-			$wikilib->wiki_rename_page($name, $temppage, false);
-			$wikilib->wiki_rename_page($temppage, $name, false);
+			$wikilib->wiki_rename_page($name, $temppage);
+			$wikilib->wiki_rename_page($temppage, $name);
 		}
 		
 		return true;
@@ -3879,10 +4128,6 @@ class TikiLib extends TikiDb_Bridge
 		if ( is_null($saveLastModif) ) {
 			$saveLastModif = $this->now;
 		}
-		
-		if (!isset($edit_description)) {
-			$edit_description = $info['description'];
-		}
 
 		if (!isset($edit_description)) {
 			$edit_description = $info['description'];
@@ -4078,7 +4323,8 @@ class TikiLib extends TikiDb_Bridge
 
 				// when plugin status is pending, $status equals plugin fingerprint
 				if ($prefs['wikipluginprefs_pending_notification'] == 'y' && $status !== true && $status != 'rejected') {
-					$this->plugin_pending_notification($plugin_name, $body, $arguments, $context);
+					//TODO: create preference to enable and disable notifications
+					$this->plugin_pending_notification($plugin_name, $context);
 				}
 				
 				$parserlib->plugin_find_implementation($plugin_name, $body, $arguments);
@@ -4097,43 +4343,21 @@ class TikiLib extends TikiDb_Bridge
 	 * approved to everyone with permission to approve it.
 	 * 
 	 * @param string $plugin_name
-	 * @param string $body plugin body
-	 * @param array $arguments plugin arguments
 	 * @param array $context object type and id
 	 * @return void
 	 */
-	private function plugin_pending_notification($plugin_name, $body, $arguments, $context)
+	private function plugin_pending_notification($plugin_name, $context)
 	{
 		require_once('lib/webmail/tikimaillib.php');
-		global $prefs, $base_url, $smarty;
+		global $prefs, $base_url;
+		$objectlib = TikiLib::lib('object');
+		$userlib = TikiLib::lib('user');
+		
+		$object = $objectlib->get_object($context['type'], $context['object']);
 		
 		$mail = new TikiMail(null, $prefs['sender_email']);
 		$mail->setSubject(tr("Plugin %0 pending approval", $plugin_name));
-		
-		$smarty->assign('plugin_name', $plugin_name);
-		$smarty->assign('type', $context['type']);
-		$smarty->assign('objectId', $context['object']);
-		$smarty->assign('arguments', $arguments);
-		$smarty->assign('body', $body);
-		
-		$mail->setHtml(nl2br($smarty->fetch('mail/plugin_pending_notification.tpl')));
-		
-		$recipients = $this->plugin_get_email_users_with_perm();
-		
-		$mail->setBcc(join(', ', $recipients));
-		
-		$mail->send(array($prefs['sender_email']));
-	}
-	
-	/**
-	 * Return a list of e-mails from the users with permission
-	 * to approve a plugin.
-	 * 
-	 * @return array
-	 */
-	private function plugin_get_email_users_with_perm()
-	{
-		$userlib = TikiLib::lib('user');
+		$mail->setHtml(tr("Plugin %0 is pending approval on %1", $plugin_name, "<a href='$base_url{$object['href']}'>{$object['name']}</a>"));
 		
 		$allGroups = $userlib->get_groups();
 		$accessor = Perms::get($context);
@@ -4156,8 +4380,10 @@ class TikiLib extends TikiDb_Bridge
 		
 		$recipients = array_filter($recipients);
 		$recipients = array_unique($recipients);
+
+		$mail->setBcc(join(', ', $recipients));
 		
-		return $recipients;
+		$mail->send(array($prefs['sender_email']));
 	}
 	
 	function get_display_timezone($_user = false)
@@ -4315,6 +4541,17 @@ class TikiLib extends TikiDb_Bridge
 		return $this->date_format($this->get_short_datetime_format(), $timestamp, $user);
 	}
 	
+	function format_sql_date($sqlstamp)
+	{
+		global $user;
+		$tikilib = TikiLib::lib('tiki');
+		$tz = $tikilib->get_display_timezone($user);
+		$unixstamp = strtotime($sqlstamp . $tz);
+		$format = $tikilib->get_short_date_format();
+		$date = strftime($format, $unixstamp);
+		return $date;
+	}
+
 	/**
 		Per http://www.w3.org/TR/NOTE-datetime
 	 */
@@ -4651,11 +4888,7 @@ class TikiLib extends TikiDb_Bridge
 	{
 		global $tikiroot;
 
-		if (preg_match('/^http(s?):/', $relative)) {
-			$base = $relative;
-		} else {
-			$base = $this->httpPrefix() . $tikiroot . $relative;
-		}
+		$base = $this->httpPrefix() . $tikiroot . $relative;
 
 		if ( count($args) ) {
 			$base .= '?';
@@ -5077,20 +5310,71 @@ JS;
 		if ( $magic_quotes_gpc ) remove_gpc($arr);
 	}
 
+	function bindvars_to_sql_in(&$bindvars, $remove_duplicates = false, $cast_to_int = false)
+	{
+		if ( ! is_array($bindvars) ) return false;
+		$query = ' IN (';
+		$bindvars2 = array();
+		foreach ( $bindvars as $id ) {
+			if ( $cast_to_int ) $id = (int)$id;
+			if ( $remove_duplicates && in_array($id, $bindvars2) ) continue;
+			$bindvars2[] = $id;
+			if ( $query == '' ) $query .= ',';
+			$query .= '?';
+		}
+		if ( $remove_duplicates ) $bindvars = $bindvars2;
+		return ' IN (' . $query . ')';
+	}
+
 	function get_jail()
 	{
 		global $prefs;
-		// if jail is zero, we should allow non-categorized objects to be seen as well, i.e. consider as no jail
 		if ( $prefs['feature_categories'] == 'y' && ! empty( $prefs['category_jail'] ) && $prefs['category_jail'] != array(0 => 0) ) {
+			// if jail is zero, we should allow non-categorized objects to be seen as well, i.e. consider as no jail
 			$categlib = TikiLib::lib('categ');
-			$expanded = array();
-			foreach ( $prefs['category_jail'] as $categId ) {
-				$expanded = array_merge($expanded, $categlib->get_category_descendants($categId));
+			$key = $prefs['category_jail'];
+			$categories = $prefs['category_jail'];
+			if ( $prefs['expanded_category_jail_key'] != $key ) {
+				$additional = array();
+
+				if (!empty($categories)) {
+					foreach ( $categories as $categId ) {
+						$desc = $categlib->get_category_descendants($categId);
+						$additional = array_merge($additional, $desc);
+					}
+				}
+
+				$prefs['expanded_category_jail'] = $_SESSION['s_prefs']['expanded_category_jail'] = implode(',', $additional);
+				$_SESSION['s_prefs']['expanded_category_jail_key'] = $key;
+
+				return $additional;
 			}
-			return $expanded;
+
+			return explode(',', $prefs['expanded_category_jail']);
 		} else {
 			return array();
 		}
+	}
+
+	// Determine if the provided IP address is valid or not.
+	// Currently only supports IPV4.
+	function isValidIP($ip, $ver = 4)
+	{
+		$result = false;
+	
+		$octets = explode('.', $ip);
+		if (count($octets) == 4) {
+			for ($c = 0; $c < 4; $c++) {
+				if ($octets[$c] < 0 || $octets[$c] > 255) {
+					$result = false;
+					break;
+				} else {
+					$result = true;
+				}
+			}
+		}
+
+		return $result;
 	}
 
 	protected function rename_object( $type, $old, $new )

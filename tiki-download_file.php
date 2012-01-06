@@ -18,12 +18,29 @@ if ( isset($_GET['fileId']) && isset($_GET['thumbnail']) && isset($_COOKIE[ sess
 	session_start();
 
 	if ( isset($_SESSION['allowed'][$_GET['fileId']]) ) {
-		require_once 'tiki-setup_base.php';
+		require_once 'tiki-filter-base.php';
+		include('db/tiki-db.php');
+		$db = TikiDb::get();
 
 		$query = "select * from `tiki_files` where `fileId`=?";
-		$result = $tikilib->query($query, array((int)$_GET['fileId']));
+		$result = $db->query($query, array((int)$_GET['fileId']));
 		if ( $result ) {
 			$info = $result->fetchRow();
+
+			if ( isset($_SESSION['s_prefs']) ) {
+				$prefs = $_SESSION['s_prefs'];
+			} else {
+				$query = "select `value` from `tiki_preferences` where `name` = 'fgal_use_dir';";
+				$result = $db->query($query);
+				if ( $result ) {
+					$tmp = $result->fetchRow();
+					$prefs['fgal_use_dir'] = $tmp['value'];
+				}
+			}
+			if ( !isset($prefs['fgal_use_dir']) ) {
+				$prefs['fgal_use_dir'] = '';
+			}
+
 			$skip = true;
 		} else {
 			$info = array();
@@ -52,6 +69,33 @@ if ( ! ini_get('safe_mode') ) {
 	@set_time_limit(0);
 }
 
+/*
+	 Borrowed from http://php.net/manual/en/function.readfile.php#54295 to come
+	 over the 2MB readfile() limitation
+ */
+function readfile_chunked($filename,$retbytes=true) {
+	$chunksize = 1*(1024*1024); // how many bytes per chunk
+	$buffer = '';
+	$cnt =0;
+	$handle = fopen($filename, 'rb');
+	if ($handle === false) {
+		return false;
+	}
+	while (!feof($handle)) {
+		$buffer = fread($handle, $chunksize);
+		echo $buffer;
+		@ob_flush();
+		flush();
+		if ($retbytes) {
+			$cnt += strlen($buffer);
+		}
+	}
+	$status = fclose($handle);
+	if ($retbytes && $status) {
+		return $cnt; // return num. bytes delivered like readfile() does.
+	}
+	return $status;
+}
 $zip = false;
 $error = '';
 
@@ -73,7 +117,7 @@ if (!$skip) {
 		$access->display_error('', tra('Incorrect param'), 400);
 	}
 	if ( ! is_array($info) ) {
-		$access->display_error(NULL, tra('File has been deleted'), 404);
+		$access->display_error('', tra('File has been deleted'), 404);
 	}
 
 	if ( $prefs['auth_tokens'] == 'n' || !$is_token_access ) {
@@ -354,7 +398,7 @@ if ( ! $content_changed and !isset($_GET['display']) ) {
 
 if ( !empty($filepath) and !$content_changed ) {
 	header('Content-Length: '.filesize($filepath));
-	readfile($filepath);
+	readfile_chunked($filepath);
 } else {
 	if ( function_exists('mb_strlen') ) {
 		header('Content-Length: '.mb_strlen($content, '8bit'));

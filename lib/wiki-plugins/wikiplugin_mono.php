@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_mono_info()
-{
+function wikiplugin_mono_info() {
 	return array(
 		'name' => tra('Monospace'),
 		'documentation' => 'PluginMono',
@@ -25,11 +24,10 @@ function wikiplugin_mono_info()
 	);
 }
 
-function wikiplugin_mono($data, $params)
-{
+function wikiplugin_mono($data, $params) {
 	global $tikilib;
 
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 
 	$code = /* htmlentities( htmlspecialchars(*/ trim($data) /* ) )*/;
 	$code = preg_replace("/\n/", "<br />", $code);

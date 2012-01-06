@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_googledoc_info()
-{
+function wikiplugin_googledoc_info() {
 	return array(
 		'name' => tra('Google Doc'),
 		'documentation' => 'PluginGoogleDoc',
@@ -146,9 +145,9 @@ function wikiplugin_googledoc_info()
 	);
 }
 
-function wikiplugin_googledoc($data, $params)
-{
-	extract($params, EXTR_SKIP);
+function wikiplugin_googledoc($data, $params) {
+
+	extract ($params, EXTR_SKIP);
 	
 	if (empty($type)) {
 		return tra('Required parameter "type" missing');
@@ -157,7 +156,7 @@ function wikiplugin_googledoc($data, $params)
 		return tra('Required parameter "key" missing');
 	}
 
-	if ($type =="sheet" or $type=="spreadsheet") {
+    if ($type =="sheet" or $type=="spreadsheet") {
 		$srcUrl="\"http://spreadsheets.google.com/pub?key=$key &output=html&widget=true\"";
 		$editHtml=" <P><A HREF=$srcUrl Target=\"$frameName\">Edit this Google Document</A></P>";
 	}
@@ -184,15 +183,9 @@ function wikiplugin_googledoc($data, $params)
 	$ret .= '<iframe ';
 	$ret .= " name=\"$frameName\"";
 	
-	if ($size == 'small') {
-		$width= 410; $height= 342;
-	}
-	if ($size == 'medium') {
-		$width= 555; $height= 451;
-	}
-	if ($size == 'large') {
-		$width= 700; $height= 559;
-	}
+	if($size == 'small') { $width= 410; $height= 342;}
+	if($size == 'medium'){ $width= 555; $height= 451;}
+	if($size == 'large') { $width= 700; $height= 559;}
 	
 	if (isset($width)) {
 		$ret .= " width=\"$width\"";

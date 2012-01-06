@@ -52,14 +52,12 @@
 				{preference name=feature_tell_a_friend}
 				{preference name=feature_share}
 				{preference name=feature_credits}
-				{preference name=feature_time_sheet}
 				{preference name=feature_invoice}
 				{preference name=feature_accounting}
 				{preference name=payment_feature}				
 				{preference name=feature_draw}
 				{preference name=feature_docs}
 				{preference name=feature_slideshow}
-				{preference name=feature_slideshow_pdfexport}
 				{preference name=feature_dynamic_content}
 				{preference name=feature_perspective}
 				{preference name=feature_areas}
@@ -75,11 +73,6 @@
 				{preference name=feature_faqs}
 				{preference name=feature_galleries}
 				{preference name=feature_html_pages}	
-				
-				{preference name=feature_jison_wiki_parser}
-				
-				{preference name=feature_htmlfeed}
-				{preference name=feature_forwardlinkprotocol}
 			</div>
 		</fieldset>
 

@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_multidomain_list()
-{
+function prefs_multidomain_list() {
 	return array(
 		'multidomain_active' => array(
 			'name' => tra('Multi-domain'),

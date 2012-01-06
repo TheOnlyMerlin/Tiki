@@ -16,56 +16,53 @@ class EditLibTest extends TikiTestCase
 	private $el = null; // the EditLib
 	private $dir = '';  // the unmodifed directory
 
-	function __construct()
-	{
+	function __construct() {
 		$this->dir = getcwd();
 	}
-
-
-	function setUp()
-	{
+		
+	
+	function setUp() {
 		$this->el = new EditLib();
 		chdir($this->dir);
 		chdir('../../'); // the tiki installation directory
 	}
-
-
-	function tearDown()
-	{
+	
+		
+	function tearDown() {
 		chdir($this->dir);
 	}
 
-
-	function testParseColor()
-	{
+	
+	function testParseColor() {
+		
 		$el = new EditLib();
-
-		$col = 'rgb(255 , 0 , 0)'; 
+		
+		$col = 'rgb( 255 , 0 , 0 )'; 
 		$hex = $el->parseColor($col);
 		$this->assertEquals('#FF0000', $hex);
-
+		
 		$col = 'rgb(255,0,0)';
 		$hex = $el->parseColor($col);
 		$this->assertEquals('#FF0000', $hex);
-
+		
 		$col = 'rgb(0, 255,0)';
 		$hex = $el->parseColor($col);
 		$this->assertEquals('#00FF00', $hex);
-
+		
 		$col = 'rgb(0,0,255)';
 		$hex = $el->parseColor($col);
 		$this->assertEquals('#0000FF', $hex);
-
+		
 		$col = '#FF0000';
 		$hex = $el->parseColor($col);
 		$this->assertEquals('#FF0000', $hex);
 	}
-
-
-	function testParseStyleAttribute()
-	{
+	
+	
+	function testParseStyleAttribute() {
+		
 		$el = new EditLib();
-
+		
 		/*
 		 * empty style -> empty array
 		 */
@@ -74,7 +71,7 @@ class EditLibTest extends TikiTestCase
 		$el->parseStyleAttribute($style, $parsed);
 		$this->assertEquals(0, count($parsed));
 
-
+		
 		/*
 		 * delimiters only -> empty array
 		 */
@@ -82,8 +79,8 @@ class EditLibTest extends TikiTestCase
 		$parsed = array();
 		$el->parseStyleAttribute($style, $parsed);
 		$this->assertEquals(0, count($parsed));
-
-
+		
+		
 		/*
 		 * examples, no shortand lists
 		 */
@@ -95,7 +92,7 @@ class EditLibTest extends TikiTestCase
 		$this->assertEquals('rgb(1,2,3) url(background.gif)', $parsed['unknown-list']);
 		$this->assertTrue(isset($parsed['unknown-size']));
 		$this->assertEquals(12, $parsed['unknown-size']);
-
+		
 		$style = 'unknown-list:rgb(1,2,3) url(background.gif);unknown-size:12';
 		$parsed = array();
 		$el->parseStyleAttribute($style, $parsed);
@@ -104,7 +101,7 @@ class EditLibTest extends TikiTestCase
 		$this->assertEquals('rgb(1,2,3) url(background.gif)', $parsed['unknown-list']);
 		$this->assertTrue(isset($parsed['unknown-size']));
 		$this->assertEquals(12, $parsed['unknown-size']);
-
+		
 		$style = ' unknown-list : rgb( 1 , 2 , 3 ) url( background.gif )   ;   unknown-size: 12 ; ';
 		$parsed = array();
 		$el->parseStyleAttribute($style, $parsed);
@@ -114,7 +111,7 @@ class EditLibTest extends TikiTestCase
 		$this->assertTrue(isset($parsed['unknown-size']));
 		$this->assertEquals(12, $parsed['unknown-size']);	
 
-
+		
 		/*
 		 * examples with shorthand list 'background'
 		 */
@@ -124,7 +121,7 @@ class EditLibTest extends TikiTestCase
 		$this->assertEquals(1, count($parsed));
 		$this->assertTrue(isset($parsed['background-color']));
 		$this->assertEquals('#FF0000', $parsed['background-color']);
-
+		
 		$style = 'background:#FF0000';
 		$parsed = array();
 		$el->parseStyleAttribute($style, $parsed);
@@ -145,14 +142,14 @@ class EditLibTest extends TikiTestCase
 		$this->assertEquals(1, count($parsed));
 		$this->assertTrue(isset($parsed['background-color']));
 		$this->assertEquals('rgb(255, 0, 0)', $parsed['background-color']);				
-
+		
 		$style = 'background-color:rgb(255, 0, 0); background: rgb(0, 255, 0);';		
 		$parsed = array();
 		$el->parseStyleAttribute($style, $parsed);
 		$this->assertEquals(1, count($parsed));
 		$this->assertTrue(isset($parsed['background-color']));
 		$this->assertEquals('rgb(0, 255, 0)', $parsed['background-color']);		
-
+		
 		$style = 'background-color:rgb(255, 0, 0); background: rgb(0, 255, 0) #0000FF;';
 		$parsed = array();
 		$el->parseStyleAttribute($style, $parsed);
@@ -169,12 +166,13 @@ class EditLibTest extends TikiTestCase
 		$this->assertTrue(isset($parsed['background']));
 		$this->assertEquals('unknown1 unknown2', $parsed['background']);				
 	}
-
-
-	function testParseStyleList()
-	{
+	
+	
+	function testParseStyleList() {
+		
 		$el = new EditLib();
-
+		
+		
 		/*
 		 * empty
 		 */
@@ -182,8 +180,8 @@ class EditLibTest extends TikiTestCase
 		$parsed = array();
 		$el->parseStyleList($list, $parsed);
 		$this->assertEquals(0, count($parsed));
-
-
+		
+		
 		/*
 		 * mixed examples
 		 */
@@ -193,7 +191,7 @@ class EditLibTest extends TikiTestCase
 		$this->assertEquals(2, count($parsed));
 		$this->assertEquals('rgb(0, 255, 0)', $parsed[0]);
 		$this->assertEquals('#0000FF', $parsed[1]);
-
+		
 		$list = 'rgb( 1 , 2 , 3 )   20px    url( background-example.gif )';
 		$parsed = array();
 		$el->parseStyleList($list, $parsed);
@@ -202,10 +200,10 @@ class EditLibTest extends TikiTestCase
 		$this->assertEquals('20px', $parsed[1]);
 		$this->assertEquals('url( background-example.gif )', $parsed[2]);
 	}
-
-
-	function testParseToWikiSpaces()
-	{
+	
+	
+	function testParseToWikiSpaces() {
+		
 		/*
 		 * The EditLib eats spaces after the tags
 		 */
@@ -213,8 +211,8 @@ class EditLibTest extends TikiTestCase
 		$res = $this->el->parseToWiki($inData);
 		$this->assertEquals('abc __ bold __ def', $res);
 	}
-
-
+	
+	
 	/**
 	 * Nested color specifications
 	 * 
@@ -222,8 +220,8 @@ class EditLibTest extends TikiTestCase
 	 * In Wiki, the colors specifications cannot be nested.
 	 * Hence some reordering is required.
 	 */
-	function testParseToWikiNestedColors()
-	{
+	function testParseToWikiNestedColors() {
+
 		/*
 		 * <span><span>text</span></span>
 		 */
@@ -234,8 +232,8 @@ class EditLibTest extends TikiTestCase
 		$res = $this->el->parseToWiki($inData);
 		$ex = '~~#FF0000:~~ ,#FFFF00:fg and bg colored~~~~';
 		$this->assertEquals($ex, $res);
-
-
+		
+		
 		/*
 		 * <span>text<span>text</span>text</span>text
 		 */
@@ -250,7 +248,7 @@ class EditLibTest extends TikiTestCase
 		$res = $this->el->parseToWiki($inData);
 		$ex = '~~#FF0000:fg colored ~~ ,#FFFF00:both colored ~~fg colored ~~regular';
 		$this->assertEquals($ex, $res);
-
+		
 		$inData = '<span style="background-color: rgb(255, 0, 0);">';
 		$inData .= 'bg colored ';
 		$inData .= '<span style="color: rgb(255, 255, 0);">';
@@ -263,12 +261,11 @@ class EditLibTest extends TikiTestCase
 		$ex = '~~ ,#FF0000:bg colored ~~#FFFF00:both colored ~~bg colored ~~regular';
 		$this->assertEquals($ex, $res);
 	}
-
+	
 	/**
 	 * Nested colors with wiki inline
 	 */
-	function testParseToWikiNestedColorsWithWikiInline()
-	{
+	function testParseToWikiNestedColorsWithWikiInline() {
 
 		$inData =  '<span style="color: rgb(255, 0, 0);">';
 		$inData .= 'red ';
@@ -285,22 +282,21 @@ class EditLibTest extends TikiTestCase
 		$res = $this->el->parseToWiki($inData);
 		$this->assertEquals($ex, $res);
 	}
-
+	
 	/**
 	 * Nested wiki inline tags
 	 * 
 	 * This test verifies that the tags are written in the correct
 	 * order to the output stream.
 	 */
-	function testParseToWikiNestedInline()
-	{
-
+	function testParseToWikiNestedInline() {
+		
 		$ex = '__bold\'\'bold italic\'\'__\n__\'\'bold italic\'\'__';
 		$inData = '<strong>bold<em>bold italic<br />bold italic</em></strong>';
 		$res = $this->el->parseToWiki($inData);
 		$res = preg_replace('/\n/', '\n', $res); // fix LF encoding for comparison
 		$this->assertEquals($ex, $res);
-
+		
 		$ex = '__bold\'\'bold italic\'\'__\n__bold__';
 		$inData = '<strong>bold<em>bold italic</em><br />bold</strong>';
 		$res = $this->el->parseToWiki($inData);
@@ -313,10 +309,9 @@ class EditLibTest extends TikiTestCase
 		$res = preg_replace('/\n/', '\n', $res); // fix LF encoding for comparison
 		$this->assertEquals($ex, $res);	
 	}
-
-
-	function testSpanNestedDecorations()
-	{
+	
+	
+	function testSpanNestedDecorations() {
 		$this->markTestIncomplete('Work in progress.');
 		$ex = '--===text===--';
 		$inData = '<span style="text-decoration:line-through underline;">text</span>';

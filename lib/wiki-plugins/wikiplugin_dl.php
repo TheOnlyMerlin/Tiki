@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_dl_info()
-{
+function wikiplugin_dl_info() {
 	return array(
 		'name' => tra('Definition List'),
 		'documentation' => 'PluginDL',
@@ -20,13 +19,12 @@ function wikiplugin_dl_info()
 	);
 }
 
-function wikiplugin_dl($data, $params)
-{
+function wikiplugin_dl($data, $params) {
 	global $tikilib;
 
 	global $replacement;
 	if (isset($param))
-		extract($params, EXTR_SKIP);
+		extract ($params,EXTR_SKIP);
 	$result = '<dl>';
 	$lines = explode("\n", $data);
 

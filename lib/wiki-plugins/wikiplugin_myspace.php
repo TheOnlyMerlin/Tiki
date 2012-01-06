@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_myspace_info()
-{
+function wikiplugin_myspace_info() {
 	return array(
 		'name' => tra('MySpace'),
 		'documentation' => 'PluginMySpace',
@@ -24,10 +23,9 @@ function wikiplugin_myspace_info()
 	);
 }
 
-function wikiplugin_myspace($data, $params)
-{
+function wikiplugin_myspace($data, $params) {
 	
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 
 	if (!isset($page)) {
 		return "error page parameter requested";

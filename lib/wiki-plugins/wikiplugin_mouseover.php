@@ -5,13 +5,12 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_mouseover_info()
-{
+function wikiplugin_mouseover_info() {
 	global $prefs;
 	include_once('lib/prefs/jquery.php');
 	$jqprefs = prefs_jquery_list();
 	$jqjx = array();
-	foreach ($jqprefs['jquery_effect']['options'] as $k => $v) {
+	foreach($jqprefs['jquery_effect']['options'] as $k => $v) {
 		$jqfx[] = array('text' => $v, 'value' => $k);
 	}
 	
@@ -183,8 +182,7 @@ function wikiplugin_mouseover_info()
 	);
 }
 
-function wikiplugin_mouseover( $data, $params )
-{
+function wikiplugin_mouseover( $data, $params ) {
 	global $smarty, $tikilib;
 
 	$default = array('parse'=>'y', 'parselabel'=>'y');
@@ -233,7 +231,7 @@ function wikiplugin_mouseover( $data, $params )
 	static $lastval = 0;
 	$id = "mo" . ++$lastval;
 
-	$url = htmlentities($url, ENT_QUOTES, 'UTF-8');
+	$url = htmlentities( $url, ENT_QUOTES, 'UTF-8' );
 
 	global $headerlib;
 	

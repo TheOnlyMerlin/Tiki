@@ -1,12 +1,8 @@
 {* $Id$ *}
-{if $drawFullscreen neq 'true'}
-	{title help="Draw"}{$name}{/title}
-{/if}
+{title help="Draw"}{$name}{/title}
 
-<form id="tiki_draw" class="submit no-ajax" style="text-align: center;" onsubmit="return false;">
-	<span style="display: none;">
-		<textarea id="fileData">{$data}</textarea>
-	</span>
+<div id="tiki_draw" style="text-align: center;">
+	<div id="fileData" style="display: none;">{$data}</div>
 	
 	<input type="hidden" id="fileId" value="{$fileId}" />
 	<input type="hidden" id="galleryId" value="{$galleryId}" />
@@ -14,19 +10,13 @@
 	<input type="hidden" id="fileWidth" value="{$width}" />
 	<input type="hidden" id="fileHeight" value="{$hight}" />
 	<input type="hidden" id="archive" value="{$archive}" />
-	<input type="hidden" name="action" value="replace" />
 	
 	<div id="drawEditor">
 		<div id="drawMenu">
-			{if $drawFullscreen neq 'true'}
-				<button id="drawSave" onclick="$('#tiki_draw').saveDraw();return false;">{tr}Save{/tr}</button>
-				<button id="drawSaveBack" onclick="$('#tiki_draw').saveAndBackDraw();return false;">{tr}Save and Back{/tr}</button>
-				<button id="drawRename" onclick="$('#fileName').val($('#tiki_draw').renameDraw());return false;">{tr}Rename{/tr}</button>
-				<button id="drawBack">{tr}Back{/tr}</button>
-				<button id="drawFullscreen">{tr}Toggle Fullscreen{/tr}</button>
-			{else}
-				<input type="submit" style="display: none;" value="{tr}Save{/tr}" />
-			{/if}
+			<button id="drawSave" style="float left;">{tr}Save{/tr}</button>
+			<button id="drawRename">{tr}Rename{/tr}</button>
+			<button id="drawBack">{tr}Back{/tr}</button>
+			<button id="drawFullscreen">{tr}Toggle Fullscreen{/tr}</button>
 		</div>
 	</div>
 	

@@ -1,18 +1,18 @@
 <?php
 // (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
-  exit;
-}
+  exit;         
+}  
 
-function smarty_function_object_link( $params, $smarty )
-{
+function smarty_function_object_link( $params, $smarty ) {
+
 	if ( ! isset( $params['type'], $params['id'] ) && ! isset( $params['identifier'] ) ) {
 		return tra('No object information provided.');
 	}
@@ -27,7 +27,7 @@ function smarty_function_object_link( $params, $smarty )
 	$title = isset( $params['title'] ) ? $params['title'] : null;
 	$url = isset( $params['url'] ) ? $params['url'] : null;
 
-	switch ( $type ) {
+	switch( $type ) {
 	case 'wiki page':
 	case 'wikipage':
 	case 'wiki':
@@ -36,35 +36,32 @@ function smarty_function_object_link( $params, $smarty )
 		if (! $title) {
 			$title = $object;
 		}
-					break;
+		break;
 	case 'user':
 		$function = 'smarty_function_object_link_user';
-					break;
+		break;
 	case 'external':
 	case 'external_extended':
 		$function = 'smarty_function_object_link_external';
-					break;
+		break;
 	case 'relation_source':
 		$function = 'smarty_function_object_link_relation_source';
-					break;
+		break;
 	case 'relation_target':
 		$function = 'smarty_function_object_link_relation_target';
-					break;
+		break;
 	case 'freetag':
 		$function = 'smarty_function_object_link_freetag';
-					break;
+		break;
 	default:
 		$function = 'smarty_function_object_link_default';
-					break;
+		break;
 	}
 
-	return $function($smarty, $object, $title, $type, $url);
+	return $function( $smarty, $object, $title, $type, $url );
 }
 
-function smarty_function_object_link_default( $smarty, $object, $title = null, $type = 'wiki page', $url = null )
-{
-	global $base_url;
-	
+function smarty_function_object_link_default( $smarty, $object, $title = null, $type = 'wiki', $url = null ) {
 	require_once 'lib/smarty_tiki/modifier.sefurl.php';
 
 	if (! function_exists('smarty_modifier_escape')) {
@@ -80,70 +77,65 @@ function smarty_function_object_link_default( $smarty, $object, $title = null, $
 		return '';
 	}
 
-	$escapedPage = smarty_modifier_escape($title ? $title : tra('No title specified'));
+	$escapedPage = smarty_modifier_escape( $title ? $title : tra('No title specified') );
 
 	if ($url) {
-		$escapedHref = smarty_modifier_escape($url);
+		$escapedHref = smarty_modifier_escape( $url );
 	} else {
-		$escapedHref = smarty_modifier_escape(smarty_modifier_sefurl($object, $type));
+		$escapedHref = smarty_modifier_escape( smarty_modifier_sefurl( $object, $type ) );
 	}
 
-	$classList = array();
+	$class = '';
+	$metadata = '';
+
+	if ($coordinates = TikiLib::lib('geo')->get_coordinates($type, $object)) {
+		$class = ' class="geolocated"';
+		$metadata = " data-geo-lat=\"{$coordinates['lat']}\" data-geo-lon=\"{$coordinates['lon']}\"";
+		
+		if (isset($coordinates['zoom'])) {
+			$metadata .= " data-geo-zoom=\"{$coordinates['zoom']}\"";
+		}
+	}
 	
 	if ( $type == "blog post" ) {
-		$classList[] = "link";
+		$class = ' class="link"';
 	} elseif ( $type == "freetag" ) {
-		$classList[] = 'freetag';
+		$class = ' class="freetag"';
 	}
 
-	$metadata = TikiLib::lib('object')->get_metadata($type, $object, $classList);
-	$class = ' class="' . implode(' ', $classList) . '"';
-
-	$html = '<a href="' . $base_url . $escapedHref . '"' . $class . $metadata . '>' . $escapedPage . '</a>';
+	$html = '<a href="' . $escapedHref . '"' . $class . $metadata . '>' . $escapedPage . '</a>';
 
 	$attributelib = TikiLib::lib('attribute');
 	$attributes = $attributelib->get_attributes($type, $object);
-
 	global $prefs;
 	if (isset($attributes['tiki.content.source']) && $prefs['fgal_source_show_refresh'] == 'y') {
 		require_once 'lib/smarty_tiki/function.icon.php';
 		$smarty->loadPlugin('smarty_function_service');
-		$html .= '<a class="file-refresh" href="' . 
-						smarty_function_service(
-										array(
-											'controller' => 'file',
-											'action' => 'refresh',
-											'fileId' => intval($object),
-										), 
-										$smarty
-						) . '">' . 
-						smarty_function_icon(
-										array('_id' => 'arrow_refresh',), 
-										$smarty
-						) . '</a>';
+		$html .= '<a class="file-refresh" href="' . smarty_function_service(array(
+			'controller' => 'file',
+			'action' => 'refresh',
+			'fileId' => intval($object),
+		), $smarty) . '">' . smarty_function_icon(array(
+			'_id' => 'arrow_refresh',
+		), $smarty) . '</a>';
 
-		TikiLib::lib('header')->add_js(
-						'
-			$(".file-refresh").removeClass("file-refresh").click(function () {
+		TikiLib::lib('header')->add_js('$(".file-refresh").removeClass("file-refresh").click(function () {
 			$.getJSON($(this).attr("href"));
 			$(this).remove();
 			return false;
-		});'
-		);
+		});');
 	}
 
 	return $html;
 }
 
-function smarty_function_object_link_user( $smarty, $user, $title = null )
-{
+function smarty_function_object_link_user( $smarty, $user, $title = null ) {
 	require_once 'lib/smarty_tiki/modifier.userlink.php';
 
-	return smarty_modifier_userlink($user, 'link', 'not_set', $title ? $title : '');
+	return smarty_modifier_userlink( $user, 'link', 'not_set', $title ? $title : '' );
 }
 
-function smarty_function_object_link_external( $smarty, $link_orig, $title = null, $type = null )
-{
+function smarty_function_object_link_external( $smarty, $link_orig, $title = null, $type = null ) {
 	global $cachelib; require_once 'lib/cache/cachelib.php';
 	global $tikilib;
 
@@ -154,23 +146,22 @@ function smarty_function_object_link_external( $smarty, $link_orig, $title = nul
 	}
 
 	if ( ! $title ) {
-		if ( ! $title = $cachelib->getCached($link, 'object_link_ext_title') ) {
-			$body = $tikilib->httprequest($link);
-			if ( preg_match('|<title>(.+)</title>|', $body, $parts) ) {
+		if ( ! $title = $cachelib->getCached( $link, 'object_link_ext_title' ) ) {
+			$body = $tikilib->httprequest( $link );
+			if ( preg_match( '|<title>(.+)</title>|', $body, $parts ) ) {
 				$title = TikiFilter::get('text')->filter($parts[1]);
 			} else {
 				$title = $link_orig;
 			}
 
-			$cachelib->cacheItem($link, $title, 'object_link_ext_title');
+			$cachelib->cacheItem( $link, $title, 'object_link_ext_title' );
 		}
 	}
 
 	require_once 'lib/smarty_tiki/modifier.escape.php';
-	$escapedHref = smarty_modifier_escape($link);
-	$escapedLink = smarty_modifier_escape($link_orig);
-	$escapedTitle = smarty_modifier_escape($title);
-
+	$escapedHref = smarty_modifier_escape( $link );
+	$escapedLink = smarty_modifier_escape( $link_orig );
+	$escapedTitle = smarty_modifier_escape( $title );
 	if ( $type == 'external_extended' && "$link_orig" != "$title") {
 		$data = '<a href="' . $escapedHref . '">' . $escapedLink . '</a>'
 					. "<div class='link_extend_title'><em>" . $escapedTitle . "</em></div>";
@@ -181,30 +172,27 @@ function smarty_function_object_link_external( $smarty, $link_orig, $title = nul
 	return $data;
 }
 
-function smarty_function_object_link_relation_source($smarty, $relationId, $title = null)
-{
-	return smarty_function_object_link_relation_end($smarty, 'source', $relationId, $title);
+function smarty_function_object_link_relation_source( $smarty, $relationId, $title = null ) {
+	return smarty_function_object_link_relation_end( $smarty, 'source', $relationId, $title );
 }
 
-function smarty_function_object_link_relation_target($smarty, $relationId, $title = null)
-{
-	return smarty_function_object_link_relation_end($smarty, 'target', $relationId, $title);
+function smarty_function_object_link_relation_target( $smarty, $relationId, $title = null ) {
+	return smarty_function_object_link_relation_end( $smarty, 'target', $relationId, $title );
 }
 
-function smarty_function_object_link_relation_end( $smarty, $end, $relationId, $title = null )
-{
+function smarty_function_object_link_relation_end( $smarty, $end, $relationId, $title = null ) {
 	global $relationlib; require_once 'lib/attributes/relationlib.php';
 	global $attributelib; require_once 'lib/attributes/attributelib.php';
 	global $cachelib; require_once 'lib/cache/cachelib.php';
 
 	$cacheKey = "$relationId:$end:$title";
 
-	if ( ! $out = $cachelib->getCached($cacheKey, 'relation_link') ) {
-		$relation = $relationlib->get_relation($relationId);
+	if ( ! $out = $cachelib->getCached( $cacheKey, 'relation_link' ) ) {
+		$relation = $relationlib->get_relation( $relationId );
 
 		if ( $relation ) {
 			if ( ! $title ) {
-				$attributes = $attributelib->get_attributes('relation', $relationId);
+				$attributes = $attributelib->get_attributes( 'relation', $relationId );
 				$key = 'tiki.relation.' . $end;
 
 				if ( isset( $attributes[$key] ) && ! empty( $attributes[$key] ) ) {
@@ -212,19 +200,16 @@ function smarty_function_object_link_relation_end( $smarty, $end, $relationId, $
 				}
 			}
 
-			$type = $relation[$end . '_type'];
-			$object = $relation[$end . '_itemId'];
+			$type = $relation[ $end . '_type' ];
+			$object = $relation[ $end . '_itemId' ];
 
-			$out = smarty_function_object_link(
-							array(
-								'type' => $type,
-								'id' => $object,
-								'title' => $title,
-							), 
-							$smarty
-			);
+			$out = smarty_function_object_link( array(
+				'type' => $type,
+				'id' => $object,
+				'title' => $title,
+			), $smarty );
 
-			$cachelib->cacheItem($cacheKey, $out, 'relation_link');
+			$cachelib->cacheItem( $cacheKey, $out, 'relation_link' );
 		} else {
 			$out = tra('Relation not found.');
 		}
@@ -233,8 +218,7 @@ function smarty_function_object_link_relation_end( $smarty, $end, $relationId, $
 	return $out;
 }
 
-function smarty_function_object_link_freetag( $smarty, $tag, $title = null )
-{
+function smarty_function_object_link_freetag( $smarty, $tag, $title = null ) {
 	global $prefs;
 	if ($prefs['feature_freetags'] != 'y') {
 		return tr('freetags disabled');

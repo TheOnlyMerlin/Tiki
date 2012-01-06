@@ -33,33 +33,8 @@ class Services_Tracker_Utilities
 		}
 
 		$trklib = TikiLib::lib('trk');
-		$categorizedFields = $definition->getCategorizedFields();
-		$errors = $trklib->check_field_values(array('data' => $fields), $categorizedFields, $trackerId, $itemId ? $itemId : '');
-
-		if (count($errors['err_mandatory']) == 0 && count($errors['err_value']) == 0) {
-			$newItem = $trklib->replace_item($trackerId, $itemId, array('data' => $fields), $status, 0, true);
-			return $newItem;
-		}
-
-		$errorreportlib = TikiLib::lib('errorreport');
-		if ($errors['err_mandatory'] > 0) {
-			$names = array();
-			foreach ($errors['err_mandatory'] as $f) {
-				$names[] = $f['name'];
-			}
-
-			$errorreportlib->report(tr('Following mandatory fields are missing: %0', implode(', ', $names)));
-		}
-
-		foreach ($errors['err_value'] as $f) {
-			if (! empty($f['errorMsg'])) {
-				$errorreportlib->report(tr('Invalid value in %0: %1', $f['name'], $f['errorMsg']));
-			} else {
-				$errorreportlib->report(tr('Invalid value in %0', $f['name']));
-			}
-		}
-
-		return false;
+		$newItem = $trklib->replace_item($trackerId, $itemId, array('data' => $fields), $status, 0, true);
+		return $newItem;
 	}
 
 	function createField(array $data)
@@ -129,21 +104,12 @@ class Services_Tracker_Utilities
 		);
 	}
 
-    /**
-     * @param array $conditions     e.g. array('trackerId' => 42)
-     * @param int $maxRecords       default -1 (all)
-     * @param int $offset           default -1
-     * @param array $fields         array of fields to fetch (by permNames)
-     *
-     * @return mixed
-     */
-
-    function getItems(array $conditions, $maxRecords = -1, $offset = -1, $fields = array())
+	function getItems(array $conditions, $maxRecords = -1, $offset = -1)
 	{
 		$keyMap = array();
 		$definition = Tracker_Definition::get($conditions['trackerId']);
 		foreach ($definition->getFields() as $field) {
-      		if (! empty($field['permName']) && (empty($fields) || in_array($field['permName'], $fields))) {
+			if (! empty($field['permName'])) {
 				$keyMap[$field['fieldId']] = $field['permName'];
 			}
 		}
@@ -289,16 +255,6 @@ class Services_Tracker_Utilities
 			'visibleBy' => $field->visibleBy->groupname(),
 			'errorMsg' => $field->errorMsg->text(),
 		);
-
-		// enable prefs for imported fields if required
-		$factory = new Tracker_Field_Factory(false);
-		$completeList = $factory->getFieldTypes();
-
-		if (! $this->isEnabled($completeList[$data['type']])) {
-			foreach ($completeList[$data['type']]['prefs'] as $pref) {
-				TikiLib::lib('tiki')->set_preference( $pref, 'y');
-			}
-		}
 
 		$this->updateField($trackerId, $fieldId, $data);
 	}

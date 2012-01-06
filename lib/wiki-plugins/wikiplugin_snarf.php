@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_snarf_info()
-{
+function wikiplugin_snarf_info() {
 	return array(
 		'name' => tra('Snarf'),
 		'documentation' => 'PluginSnarf',

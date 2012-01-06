@@ -215,12 +215,12 @@ class ImageAbstract
 		return $this->width;
 	}
 
-/*	function set_img_info($image, $isfile = true, $xmp = false) {
+	function set_img_info($image, $isfile = true, $xmp = false) {
 		$tempfile = '';
-		$cwd = '';*/
+		$cwd = '';
 		/*getimagesize requires a filename so create a temporary one
 		if the image is in the database*/
-/*		if (!$isfile) {
+		if (!$isfile) {
 			$cwd = getcwd(); 								//get current working directory
 			$tempfile = tempnam("$cwd/tmp", 'temp_image_');	//create tempfile and return the path/name
 			$temphandle = fopen($tempfile, 'w');			//open for writing
@@ -233,11 +233,7 @@ class ImageAbstract
 		$this->height = $this->header[1];
 		$this->otherinfo = $otherinfo;
 		//TODO write function to cover all supported image types
-		if ($this->header['mime'] == 'image/jpeg' && function_exists('exif_read_data')) {
-			$this->exif = exif_read_data($image, 0, true);
-		} else {
-			$this->exif = false;
-		}
+		$this->exif = $this->header['mime'] == 'image/jpeg' ? exif_read_data($image, 0, true) : false;
 		//TODO write function to cover all supported image types
 		$this->iptc_raw = !empty($otherinfo['APP13']) ? iptcparse($otherinfo['APP13']) : false;
 		//Adds labels to iptc fields
@@ -265,5 +261,5 @@ class ImageAbstract
 			}
 		}
 		return $iptc_raw;
-	}*/
+	}
 }

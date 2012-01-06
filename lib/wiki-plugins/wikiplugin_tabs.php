@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_tabs_info()
-{
+function wikiplugin_tabs_info() {
 	return array(
 		'name' => tra('Tabs'),
 		'documentation' => 'PluginTabs',
@@ -53,8 +52,7 @@ function wikiplugin_tabs_info()
 	);
 }
 
-function wikiplugin_tabs($data, $params)
-{
+function wikiplugin_tabs($data, $params) {
 	global $tikilib, $smarty;
 	if (!empty($params['name'])) {
 		$tabsetname = $params['name'];
@@ -85,12 +83,12 @@ function wikiplugin_tabs($data, $params)
 		$tabData = explode('/////', $data);
 	}
 	
-	$smarty->assign('tabsetname', $tabsetname);
-	$smarty->assign_by_ref('tabs', $tabs);
-	$smarty->assign('toggle', $toggle);
-	$smarty->assign_by_ref('tabcontent', $tabData);
+	$smarty->assign( 'tabsetname', $tabsetname );
+	$smarty->assign_by_ref( 'tabs', $tabs );
+	$smarty->assign('toggle', $toggle );
+	$smarty->assign_by_ref( 'tabcontent', $tabData );
 
-	$content = $smarty->fetch('wiki-plugins/wikiplugin_tabs.tpl');
+	$content = $smarty->fetch( 'wiki-plugins/wikiplugin_tabs.tpl' );
 
 	return $content;
 }

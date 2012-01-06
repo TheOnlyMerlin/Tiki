@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_cookie_list()
-{
+function prefs_cookie_list() {
 	return array(
 		'cookie_name' => array(
 			'name' => tra('Cookie name'),

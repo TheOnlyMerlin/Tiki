@@ -26,7 +26,7 @@
 	{remarksbox type="note" title="{tr}Note{/tr}"}{$saved_msg}{/remarksbox}
 {/if}
 
-{if $user and $prefs.feature_user_watches eq 'y' and $category_watched eq 'y'}
+{if isset($user) and $user and $prefs.feature_user_watches eq 'y' and $category_watched eq 'y'}
 	<div class="categbar" style="clear: both; text-align: right">
 		{tr}Watched by categories:{/tr}
 		{section name=i loop=$watching_categories}
@@ -109,17 +109,15 @@
 			{tr}This text was automatically translated by Google Translate from the following page: {/tr}<a href="tiki-index.php?page={$page}">{$page}</a>
 		{/remarksbox}
 	{/if}
-	
-	<div id="page-data">
-		{if isset($pageLang) and ($pageLang eq 'ar' or $pageLang eq 'he')}
-			<div style="direction:RTL; unicode-bidi:embed; text-align: right; {if $pageLang eq 'ar'}font-size: large;{/if}">
-				{$parsed}
-			</div>
-		{else}
+
+	{if isset($pageLang) and ($pageLang eq 'ar' or $pageLang eq 'he')}
+		<div style="direction:RTL; unicode-bidi:embed; text-align: right; {if $pageLang eq 'ar'}font-size: large;{/if}">
 			{$parsed}
-		{/if}
-	</div>
-	
+		</div>
+	{else}
+		{$parsed}
+	{/if}
+
 	{* Information below the wiki content must not overlap the wiki content that could contain floated elements *}
 	<hr class="hrwikibottom" /> 
 

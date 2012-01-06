@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_http_list()
-{
+function prefs_http_list() {
 	return array(
 		'http_port' => array(
 			'name' => tra('HTTP port'),

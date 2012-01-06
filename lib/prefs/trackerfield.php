@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_trackerfield_list($partial = false)
-{
+function prefs_trackerfield_list($partial = false) {
 	$factory = new Tracker_Field_Factory(false);
 	$types = $factory->getFieldTypes();
 	

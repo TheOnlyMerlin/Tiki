@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_galleriffic_info()
-{
+function wikiplugin_galleriffic_info() {
 	return array(
 		'name' => tra('Galleriffic'),
 		'documentation' => 'PluginGalleriffic',
@@ -48,7 +47,7 @@ function wikiplugin_galleriffic_info()
 			'imgHeight' => array(
 				'required' => false,
 				'name' => tra('Image slideshow height'),
-				'description' => tra('Height in pixels or percentage of the largest images.'),
+				'description' => tra('Width in pixels or percentage of the largest images.'),
 				'filter' => 'striptags',
 				'accepted' => 'Number of pixels followed by \'px\' or percent followed by % (e.g. "200px" or "100%").',
 				'default' => '502px',
@@ -67,7 +66,7 @@ function wikiplugin_galleriffic($data, $params)
 		$default["$key"] = $param['default'];
 	}
 	$params = array_merge($default, $params);
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 
     $filegallib = TikiLib::lib('filegal');
 	$files = $filegallib->get_files(0, -1, $params['sort_mode'], '', $params['fgalId']);

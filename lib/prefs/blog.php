@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_blog_list()
-{
+function prefs_blog_list() {
 	return array(
 		'blog_comments_per_page' => array(
 			'name' => tra('Default number per page'),

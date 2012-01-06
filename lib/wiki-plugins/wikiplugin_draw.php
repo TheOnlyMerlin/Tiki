@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_draw_info()
-{
+function wikiplugin_draw_info() {
 	return array(
 		'name' => tra('Draw'),
 		'documentation' => 'PluginDraw',
@@ -60,11 +59,10 @@ function wikiplugin_draw_info()
 	);
 }
 
-function wikiplugin_draw($data, $params)
-{
+function wikiplugin_draw($data, $params) {
 	global $dbTiki, $tiki_p_edit, $tiki_p_admin,$tiki_p_upload_files, $prefs, $user, $page, $tikilib, $smarty, $headerlib, $globalperms;
 	global $filegallib; include_once ('lib/filegals/filegallib.php');
-	extract(array_merge($params, array()), EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 	
 	static $drawIndex = 0;
 	++$drawIndex;
@@ -79,10 +77,10 @@ function wikiplugin_draw($data, $params)
 		$page = htmlentities($page);
 		$content = htmlentities($data);
 		$formId = "form$drawIndex";
-		$gals=$filegallib->list_file_galleries(0, -1, 'name_desc', $user);
+		$gals=$filegallib->list_file_galleries(0,-1,'name_desc',$user);
 		
 		$galHtml = "";
-		foreach ($gals['data'] as $gal) {
+		foreach($gals['data'] as $gal) {
 			if ($gal['name'] != "Wiki Attachments" && $gal['name'] != "Users File Galleries")
 				$galHtml .= "<option value='".$gal['id']."'>".$gal['name']."</option>";
 		}
@@ -106,31 +104,30 @@ function wikiplugin_draw($data, $params)
 EOF;
 	}
 	
-	$fileInfo = $filegallib->get_file_info($id);
+	$fileInfo = $filegallib->get_file_info( $id );
 
-	//this sets the image to latest in a group of archives
 	if ($archive != 'y') {
 		if (!empty($fileInfo['archiveId']) && $fileInfo['archiveId'] > 0) {
 			$id = $fileInfo['archiveId'];
-			$fileInfo = $filegallib->get_file_info($id);
+			$fileInfo = $filegallib->get_file_info( $id );
 		}
 	}
 	
 	if (!isset($fileInfo['created'])) {
 		return tra("File not found.");
 	} else {
-		$globalperms = Perms::get(array( 'type' => 'file gallery', 'object' => $fileInfo['galleryId'] ));
+		$globalperms = Perms::get( array( 'type' => 'file gallery', 'object' => $fileInfo['galleryId'] ) );
 		
 		if ($globalperms->view_file_gallery != 'y') return "";
 		
 		$label = tra('Edit SVG Image');
-		$ret = "<embed type='image/svg+xml' src='tiki-download_file.php?fileId=$id&display' style='".
+		$ret = "<img src='tiki-download_file.php?fileId=$id' style='".
 			(isset($height) ? "height: $height;" : "" ).
 			(isset($width) ? "width: $width;" : "" ).
 		"' />";
 	
 		if ($globalperms->upload_files == 'y') {
-			$ret .= "<a href='tiki-edit_draw.php?fileId=$id&page=$page&index=$drawIndex&label=$label&width=$width&height=$height' onclick='return $(this).ajaxEditDraw();'  title='Edit: ".$fileInfo['filename']."' data-fileid='".$fileInfo['fileId']."' data-galleryid='".$fileInfo['galleryId']."'>
+			$ret .= "<a href='tiki-edit_draw.php?fileId=$id&page=$page&index=$drawIndex&label=$label&width=$width&height=$height'>
 					<img src='pics/icons/page_edit.png' alt='$label' width='16' height='16' title='$label' class='icon' />
 				</a>";
 		}

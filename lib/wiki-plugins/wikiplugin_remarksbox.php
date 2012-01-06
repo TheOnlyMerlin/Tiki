@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_remarksbox_info()
-{
+function wikiplugin_remarksbox_info() {
 	return array(
 		'name' => tra('Remarks Box'),
 		'documentation' => 'PluginRemarksBox',
@@ -76,8 +75,7 @@ function wikiplugin_remarksbox_info()
 	);
 }
 
-function wikiplugin_remarksbox($data, $params)
-{
+function wikiplugin_remarksbox($data, $params) {
 	global $smarty;
 	require_once('lib/smarty_tiki/block.remarksbox.php');
 	

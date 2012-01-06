@@ -1214,6 +1214,10 @@ img.externallink {
 	color: #424242;
 }
 
+.fancytoclevel {
+	list-style-image: url(../img/icons/footprint.gif);
+}
+
 li.toclevel {
 	margin-left: 2em;
 }

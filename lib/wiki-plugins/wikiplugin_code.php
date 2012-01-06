@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_code_info()
-{
+function wikiplugin_code_info() {
 	return array(
 		'name' => tra('Code'),
 		'documentation' => 'PluginCode',
@@ -75,8 +74,7 @@ function wikiplugin_code_info()
 	);
 }
 
-function wikiplugin_code($data, $params)
-{
+function wikiplugin_code($data, $params) {
 	global $prefs;
 	static $code_count;
 	

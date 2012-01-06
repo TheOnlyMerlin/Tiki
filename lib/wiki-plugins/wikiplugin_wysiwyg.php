@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_wysiwyg_info()
-{
+function wikiplugin_wysiwyg_info() {
 	return array(
 		'name' => 'WYSIWYG',
 		'documentation' => 'PluginWYSIWYG',
@@ -20,11 +19,10 @@ function wikiplugin_wysiwyg_info()
 } // wikiplugin_wysiwyg_info()
 
 
-function wikiplugin_wysiwyg($data, $params)
-{
+function wikiplugin_wysiwyg($data, $params) {
 	global $tikilib;
 
-	$html = $tikilib->parse_data($data, array('is_html' => true));
+	$html = $tikilib->parse_data( $data, array('is_html' => true));
 	return $html;
 	
 } // wikiplugin_wysiwyg()

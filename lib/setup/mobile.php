@@ -42,6 +42,7 @@ if ( !isset($_REQUEST['mobile_mode']) || $_REQUEST['mobile_mode'] === 'y' ) {
 		// a few requirements
 		$prefs['feature_html_head_base_tag'] = 'y';
 		$prefs['style'] = 'mobile.css'; // set in perspectives but seems to need a nudge here
+		//$_SESSION['s_prefs']['style'] = 'mobile.css';
 
 		if (!is_array($prefs['mobile_perspectives'])) {
 			$prefs['mobile_perspectives'] = unserialize($prefs['mobile_perspectives']);

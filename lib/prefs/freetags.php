@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_freetags_list()
-{
+function prefs_freetags_list() {
 	return array (
 			'freetags_multilingual' => array(
 			'name' => tra('Multilingual tags'),

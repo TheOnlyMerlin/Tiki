@@ -77,6 +77,7 @@ function inArray(item, array) {
     return false;
 }
 var allTimeZoneCodes = ' . json_encode(array_map("strtoupper", $tz)) . ';
+var local_tz = "";
 var now = new Date();
 var now_string = now.toString();
 var m = now_string.match(/[ \(]([A-Z]{3,6})[ \)]?[ \d]*$/);	// try three or more char tz first at the end or just before the year
@@ -98,8 +99,11 @@ if (m.substring(0,4) == "GMT-") {
 	m = "Etc/GMT+" + m.substring(4);
 } 
 if (inArray(m, allTimeZoneCodes)) {
-	setCookie("local_tz", m);
+	local_tz = m;
+} else {
+	local_tz = "UTC";
 }
+setCookie("local_tz", local_tz);
 ');
 
 	$js = '
@@ -133,7 +137,6 @@ jqueryTiki.syntaxHighlighter = '.($prefs['feature_syntax_highlighter'] == 'y' ? 
 jqueryTiki.selectmenu = '.($prefs['jquery_ui_selectmenu'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.selectmenuAll = '.($prefs['jquery_ui_selectmenu_all'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.mapTileSets = ' . json_encode($tikilib->get_preference('geo_tilesets', array('openstreetmap'), true)) . ';
-jqueryTiki.infoboxTypes = ' . json_encode(Services_Object_Controller::supported()) . ';
 jqueryTiki.googleStreetView = '.($prefs['geo_google_streetview'] == 'y' ? 'true' : 'false') . ';
 ';	// NB replace "normal" speeds with int to workaround issue with jQuery 1.4.2
 

@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_auth_list()
-{
+function prefs_auth_list() {
 	return array(
 		'auth_method' => array(
 			'name' => tra('Authentication method'),
@@ -41,7 +40,7 @@ function prefs_auth_list()
 			'size' => 5,
 			'perspective' => false,
 			'filter' => 'digits',
-			'shorthint' => tra('(seconds)'),
+			'shorthint' => '(seconds)',
 			'default' => 3600*24*7,
 		),
 		'auth_token_access_maxhits' => array(

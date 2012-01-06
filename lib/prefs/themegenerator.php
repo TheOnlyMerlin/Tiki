@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_themegenerator_list($partial = false)
-{
+function prefs_themegenerator_list($partial = false) {
 	global $prefs, $themegenlib;
 
 	if (! $partial) {
@@ -18,7 +17,7 @@ function prefs_themegenerator_list($partial = false)
 		if (count($list) > 0) {
 			$list = array_filter($list);
 			sort($list);
-			foreach ( $list as $item ) {
+			foreach( $list as $item ) {
 				$tm = new ThemeGenTheme($item);
 				$d = $tm->getData();
 				if ((empty($d['theme']) || $d['theme'] === $prefs['style']) &&

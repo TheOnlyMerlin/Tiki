@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_layout_list()
-{
+function prefs_layout_list() {
 	return array(
 		'layout_section' => array(
 			'name' => tra('Layout per section'),

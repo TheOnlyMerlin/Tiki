@@ -10,8 +10,7 @@ function wikiplugin_carousel_info()
 	return array(
 		'name' => tra('Carousel'),
 		'documentation' => 'PluginCarousel',
-		'description' => tra('Display images in a self-advancing carousel'),
-		'introduced' => 8.0,
+		'description' => tra('Carousel on a file gallery'),
 		'prefs' => array('wikiplugin_carousel', 'feature_file_galleries', 'feature_jquery_carousel'),
 		'icon' => 'pics/icons/wand.png',
 		'tags' => array( 'basic' ),		
@@ -148,7 +147,7 @@ function wikiplugin_carousel( $body, $params )
 	$params['displayThumbnails'] = ($params['displayThumbnails'] == 1);
 	$params['displayThumbnailNumbers'] = ($params['displayThumbnailNumbers'] == 1);
 	$params['displayThumbnailBackground'] = ($params['displayThumbnailBackground'] == 1);
-	foreach ( $params as &$param) {
+	foreach( $params as &$param) {
 		if (is_numeric($param)) {
 			$param = (float) $param;	// seems to leave ints as ints
 		}

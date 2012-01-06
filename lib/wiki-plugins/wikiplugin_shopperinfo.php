@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_shopperinfo_info()
-{
+function wikiplugin_shopperinfo_info() {
 	return array(
 		'name' => tra('Collect Anonymous Shopper Info'),
 		'documentation' => tra('PluginShopperinfo'),
@@ -43,8 +42,7 @@ function wikiplugin_shopperinfo_info()
 	);
 }
 
-function wikiplugin_shopperinfo( $data, $params )
-{
+function wikiplugin_shopperinfo( $data, $params ) {
 	global $smarty, $user, $access;
 	if ($user && $params['showifloggedin'] != 'y' || empty($params['values'])) {
 		return '';
@@ -55,7 +53,7 @@ function wikiplugin_shopperinfo( $data, $params )
 		foreach ($params['values'] as $v) {
 			// Check all filled in
 			if (empty($_POST[$v])) {
-				$access->redirect($_SERVER['REQUEST_URI'], tr('Please fill in all fields')); 
+				$access->redirect( $_SERVER['REQUEST_URI'], tr('Please fill in all fields') ); 
 				die;
 			}
 		}
@@ -78,3 +76,4 @@ function wikiplugin_shopperinfo( $data, $params )
 	$form = $smarty->fetch('wiki-plugins/wikiplugin_shopperinfo.tpl');
 	return $form;	
 } 
+			

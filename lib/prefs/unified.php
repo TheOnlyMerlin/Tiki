@@ -38,15 +38,6 @@ function prefs_unified_list()
 			'default' => 200,
 			'size' => 6,
 		),
-		'unified_lucene_max_resultset_limit' => array(
-			'name' => tra('Lucene Maximum Result Set Limit'),
-			'description' => tra('Maximum size of result set to consider. Default 1000, 0 = unlimited.'),
-			'hint' => tra('This is used when calculating result scores and sort order which can lead to out of memory errors on large data sets. The default of 1000 is safe with the PHP memory_limit set to 128M'),
-			'type' => 'text',
-			'filter' => 'int',
-			'default' => 1000,
-			'size' => 6,
-		),
 		'unified_incremental_update' => array(
 			'name' => tra('Incremental Index Update'),
 			'description' => tra('Update the index incrementally as the site content is modified. This may lead to lower performance and accuracy than processing the index on a periodic basis.'),
@@ -87,28 +78,18 @@ function prefs_unified_list()
 			'tags' => array('advanced'),
 		),
 		'unified_forum_deepindexing' => array(
-			'name' => tra('Index forum replies together with root post'),
-			'description' => tra('If enabled, forum replies will be indexed together with the root post as a single document instead of being separately indexed'),
-			'type' => 'flag',
-			'default' => 'y',
-		),
-		'unified_cached_formatters' => array(
-			'name' => tra('Search formatters to cache'),
-			'description' => tra('Comma separated list of search formatters to cache the output of'),
-			'type' => 'text',
-			'separator' => ',',
-			'default' => array('trackerrender','categorylist'),
-		),
-		'unified_trackerfield_keys' => array(
-			'name' => tra('Format to use for tracker field keys'),
-			'description' => tra('Choose between field ids and permanent names for the tracker indexing'),
-			'type' => 'list',
-			'default' => 'permName',
-			'options' => array(
-				'permName' =>tr('Permanent Name'),
-				'fieldId' => tr('Field ID (Backward compatibility mode with Tiki 7 and 8)'),
-			),
-		),
+                        'name' => tra('Index forum replies together with root post'),
+                        'description' => tra('If enabled, forum replies will be indexed together with the root post as a single document instead of being separately indexed'),
+                        'type' => 'flag',
+                        'default' => 'y',
+                ),
+                'unified_cached_formatters' => array(
+                        'name' => tra('Search formatters to cache'),
+                        'description' => tra('Comma separated list of search formatters to cache the output of'),
+                        'type' => 'text',
+                        'separator' => ',',
+                        'default' => array('trackerrender','categorylist'),
+                ),
 	);
 }
 

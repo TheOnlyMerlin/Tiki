@@ -17,9 +17,6 @@ class Tracker_Item
 	public static function fromInfo($info)
 	{
 		$obj = new self;
-		if (empty($info['trackerId']) && !empty($info['itemId'])) {
-			$info['trackerId'] = TikiLib::lib('trk')->get_tracker_for_item($info['itemId']);
-		}
 		$obj->info = $info;
 		$obj->definition = Tracker_Definition::get($info['trackerId']);
 		$obj->initialize();
@@ -128,14 +125,10 @@ class Tracker_Item
 
 	private function getTrackerPermissions()
 	{
-		if ($this->definition) {
-			$trackerId = $this->definition->getConfiguration('trackerId');
-			return Perms::get('tracker', $trackerId);
-		}
-
-		$accessor = new Perms_Accessor;
-		$accessor->setResolver(new Perms_Resolver_Default(false));
-		return $accessor;
+		if($this->definition === false)
+			return null;
+		$trackerId = $this->definition->getConfiguration('trackerId');
+		return Perms::get('tracker', $trackerId);
 	}
 
 	private function getItemPermissions()
@@ -191,8 +184,6 @@ class Tracker_Item
 
 	function canViewField($fieldId)
 	{
-		$fieldId = $this->prepareFieldId($fieldId);
-
 		// Nothing stops the tracker administrator from doing anything
 		if ($this->perms->admin_trackers) {
 			return true;
@@ -226,8 +217,6 @@ class Tracker_Item
 
 	function canModifyField($fieldId)
 	{
-		$fieldId = $this->prepareFieldId($fieldId);
-
 		// Nothing stops the tracker administrator from doing anything
 		if ($this->perms->admin_trackers) {
 			return true;
@@ -288,38 +277,6 @@ class Tracker_Item
 		return empty($this->info);
 	}
 
-	public function prepareInput($input)
-	{
-		$input = $input->none();
-		$fields = $this->definition->getFields();
-		$output = array();
-
-		$factory = $this->definition->getFieldFactory();
-		foreach ($fields as $field) {
-			$fid = $field['fieldId'];
-
-			if ($this->canModifyField($fid)) {
-				$field['ins_id'] = "ins_$fid";
-
-				$handler = $factory->getHandler($field);
-				$output[] = array_merge($field, $handler->getFieldData($input));
-			}
-		}
-		
-		return $output;
-	}
-
-	private function prepareFieldId($fieldId)
-	{
-		if (! is_numeric($fieldId)) {
-			if ($field = $this->definition->getFieldFromPermName($fieldId)) {
-				$fieldId = $field['fieldId'];
-			}
-		}
-
-		return $fieldId;
-	}
-	
 	/**
 	 * Getter method for the permissions of this
 	 * item.

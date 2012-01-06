@@ -250,7 +250,7 @@ $("select[name=' . $this->getInsertId() . ']").change(function(e, val) {
 		}
 	}
 
-		function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
+        function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
 	{
 		$data = $this->getLinkData(array(), 0);
 		$item = $data['value']; 
@@ -313,12 +313,10 @@ $("select[name=' . $this->getInsertId() . ']").change(function(e, val) {
 				$this->getOption(4, 'opc'),
 				false
 			);
-			$data['listdisplay'] = array_unique(
-				TikiLib::lib('trk')->concat_all_items_from_fieldslist(
-					$this->getOption(0),
-					$this->getOption(3),
-					$this->getOption(4, 'opc')
-				)
+			$data['listdisplay'] = TikiLib::lib('trk')->concat_all_items_from_fieldslist(
+				$this->getOption(0),
+				$this->getOption(3),
+				$this->getOption(4, 'opc')
 			);
 			if (!$this->getOption(11) || $this->getOption(11) != 'multi') {
 				$data['list'] = array_unique($data['list']);

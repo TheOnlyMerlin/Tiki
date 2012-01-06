@@ -107,17 +107,15 @@ class Search_ContentSource_TrackerItemSource implements Search_ContentSource_Int
 
 	private function getIndexableHandlers($definition, $item = array())
 	{
-		global $prefs;
-		$indexKey = $prefs['unified_trackerfield_keys'];
 		$factory = $definition->getFieldFactory();
 
 		$handlers = array();
 		foreach ($definition->getFields() as $field) {
-			$fieldKey = 'tracker_field_' . $field[$indexKey];
+			$fieldId = $field['fieldId'];
 			$handler = $factory->getHandler($field, $item);
 
 			if ($handler instanceof Tracker_Field_Indexable) {
-				$handlers[$fieldKey] = $handler;
+				$handlers['tracker_field_' . $fieldId] = $handler;
 			}
 		}
 

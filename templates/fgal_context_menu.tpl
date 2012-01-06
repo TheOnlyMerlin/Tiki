@@ -51,20 +51,12 @@
 	
 	{if $files[$changes].type|truncate:6:'':true eq 'image/'}
 		<a href="{$files[$changes].id|sefurl:display}">
-			{icon _id='magnifier' _menu_text=$menu_text _menu_icon=$menu_icon alt="{tr}Display{/tr}"}
+		{icon _id='magnifier' _menu_text=$menu_text _menu_icon=$menu_icon alt="{tr}Display{/tr}"}
 		</a>
-		{if $files[$changes].perms.tiki_p_upload_files eq 'y' and $prefs.feature_draw eq 'y'}
-			{if
-				$files[$changes].type eq 'image/svg+xml' 	or 
-				$files[$changes].type eq 'image/jpeg' 		or
-				$files[$changes].type eq 'image/gif' 		or 
-				$files[$changes].type eq 'image/png' 		or
-				$files[$changes].type eq 'image/tiff'
-			}
-				<a class="draw dialog" data-name="{$files[$changes].filename}" title="{tr}Edit: {/tr}{$files[$changes].filename}" href="tiki-edit_draw.php?fileId={$files[$changes].id}&galleryId={$files[$changes].galleryId}" data-fileid='{$files[$changes].id}' data-galleryid='{$files[$changes].galleryId}' onclick='return $(this).ajaxEditDraw();'>
-					{icon _id='page_edit' _menu_text=$menu_text _menu_icon=$menu_icon alt="{tr}Edit{/tr}"}
-				</a>
-			{/if}
+		{if $files[$changes].type eq 'image/svg+xml' and $files[$changes].perms.tiki_p_upload_files eq 'y' and $prefs.feature_draw eq 'y'}
+			<a href="tiki-edit_draw.php?fileId={$files[$changes].id}&galleryId={$files[$changes].galleryId}">
+			{icon _id='page_edit' _menu_text=$menu_text _menu_icon=$menu_icon alt="{tr}Edit{/tr}"}
+			</a>
 		{/if}
 	{elseif $files[$changes].type eq 'text/csv' and $prefs.feature_sheet eq 'y'}
 		<a href="tiki-view_sheets.php?fileId={$files[$changes].id}">
@@ -160,18 +152,16 @@
 				{if $files[$changes].lockedby}
 					{self_link _icon='lock_delete' _menu_text=$menu_text _menu_icon=$menu_icon lock='n' fileId=$files[$changes].fileId galleryId=$files[$changes].galleryId}{tr}Unlock{/tr}{/self_link}
 				{else}
-					{if (isset($files[$changes].p_download_files) and  $files[$changes].p_download_files eq 'y')
-	 or (!isset($files[$changes].p_download_files) and $files[$changes].perms.tiki_p_download_files eq 'y')}
-						{if $prefs.javascript_enabled eq 'y'}
+					{if $prefs.javascript_enabled eq 'y'}
 
-						{* with javascript, the main page will be reloaded to lock the file and change it's lockedby informations *}
-						<a href="#" onclick="window.open('{$files[$changes].fileId|sefurl:file}&lock=y'); document.location.href = '{self_link _type='absolute_uri' _tag='n' fileId=$files[$changes].fileId lock=y galleryId=$files[$changes].galleryId}{/self_link}'; return false;">{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='disk_lock' alt="{tr}Download and lock{/tr}"}</a>
+					{* with javascript, the main page will be reloaded to lock the file and change it's lockedby informations *}
+					<a href="#" onclick="window.open('{$files[$changes].fileId|sefurl:file}&lock=y'); document.location.href = '{self_link _type='absolute_uri' _tag='n' fileId=$files[$changes].fileId lock=y galleryId=$files[$changes].galleryId}{/self_link}'; return false;">{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='disk_lock' alt="{tr}Download and lock{/tr}"}</a>
 
-						{else}
+					{else}
 
-						{* without javascript, the lockedby informations won't be refreshed until the user do it itself *}
-						<a href="{$files[$changes].fileId|sefurl:file}&amp;lock=y">{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='disk_lock' alt="{tr}Download and lock{/tr}"}</a>
-						{/if}
+					{* without javascript, the lockedby informations won't be refreshed until the user do it itself *}
+					<a href="{$files[$changes].fileId|sefurl:file}&amp;lock=y">{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='disk_lock' alt="{tr}Download and lock{/tr}"}</a>
+
 					{/if}
 					{self_link _icon='lock_add' _menu_text=$menu_text _menu_icon=$menu_icon lock='y' fileId=$files[$changes].fileId galleryId=$files[$changes].galleryId}{tr}Lock{/tr}{/self_link}
 				{/if}

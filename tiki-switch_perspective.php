@@ -8,7 +8,7 @@
 require_once 'tiki-setup.php';
 require_once 'lib/perspectivelib.php';
 
-$access->check_feature('feature_perspective');
+$access->check_feature( 'feature_perspective' );
 
 $_SESSION['current_perspective'] = 0;
 
@@ -18,7 +18,7 @@ if ( isset($_REQUEST['perspective']) ) {
 }
 
 if ( isset($_REQUEST['back']) && isset($_SERVER['HTTP_REFERER']) ) {
-	header('Location: ' . $_SERVER['HTTP_REFERER']);
+	header( 'Location: ' . $_SERVER['HTTP_REFERER'] );
 } else {
 	header( 'Location: index.php' );
 }

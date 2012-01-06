@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_subscribegroups_info()
-{
+function wikiplugin_subscribegroups_info() {
 	return array(
 		'name' => tra('Subscribe Groups'),
 		'documentation' => 'PluginSubscribeGroups',
@@ -125,13 +124,12 @@ function wikiplugin_subscribegroups_info()
 	);
 }
 
-function wikiplugin_subscribegroups($data, $params)
-{
+function wikiplugin_subscribegroups($data, $params) {
 	global $tiki_p_subscribe_groups, $userlib, $user, $smarty;
 	if ($tiki_p_subscribe_groups != 'y' || empty($user)) {
 		return tra('You do not have permission to subscribe to groups.');
 	}
-	extract($params, EXTR_SKIP);
+	extract ($params, EXTR_SKIP);
 
 	if (!empty($_REQUEST['assign'])) {
 		$group = $_REQUEST['assign'];
@@ -142,7 +140,7 @@ function wikiplugin_subscribegroups($data, $params)
 	}
 
 	if (!empty($groups)) {
-		$groups = explode(':', $groups);
+		$groups = explode(':',$groups);
 	}
 	if (!empty($including)) {
 		$groups = $userlib->get_including_groups($including);
@@ -155,7 +153,7 @@ function wikiplugin_subscribegroups($data, $params)
 	}
 	if ($group) {
 		$garray = (array) $group;
-		foreach ($garray as &$g) {
+		foreach($garray as &$g) {
 			if ($g == 'Anonymous' || $g == 'Registered') {
 				return tra('Incorrect parameter');
 			}
@@ -253,7 +251,7 @@ function wikiplugin_subscribegroups($data, $params)
 			$possibleGroups[] = $gr['groupName'];
 		}
 	}
-	$smarty->assign('basegroupnames', $basegroupnames);
+	$smarty->assign('basegroupnames',$basegroupnames);
 
 	if (isset($subscribe)) {
 		$smarty->assign_by_ref('subscribe', $subscribe);

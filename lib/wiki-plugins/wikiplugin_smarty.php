@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_smarty_info()
-{
+function wikiplugin_smarty_info() {
 	return array(
 		'name' => tra('Smarty function'),
 		'documentation' => 'PluginSmarty',
@@ -28,8 +27,7 @@ function wikiplugin_smarty_info()
 	);
 }
 
-function wikiplugin_smarty($data, $params)
-{
+function wikiplugin_smarty($data, $params) {
 	global $smarty;
 	if (empty($params['name'])) {
 		return tra('Incorrect parameter');
@@ -37,7 +35,7 @@ function wikiplugin_smarty($data, $params)
 	$path = 'lib/smarty_tiki/function.'.$params['name'].'.php';
 	if (!file_exists($path)) {
 		$path = 'lib/smarty/libs/plugins/function.'.$params['name'].'.php';
-		if (!file_exists($path)) {
+		if(!file_exists($path)){
 			return tra('Incorrect parameter');
 		}
 	}

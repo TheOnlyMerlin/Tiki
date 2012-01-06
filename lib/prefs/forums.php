@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_forums_list()
-{
+function prefs_forums_list() {
 	return array(
 		'forums_ordering' => array(
 			'name' => tra('Default Ordering'),

@@ -14,6 +14,8 @@ class WikiParser_PluginParser
 	{
 		if ( ! $this->argumentParser || ! $this->pluginRunner )
 			return $text;
+
+
 	}
 
 	function setArgumentParser( /* WikiParser_PluginArgumentParser */ $parser )

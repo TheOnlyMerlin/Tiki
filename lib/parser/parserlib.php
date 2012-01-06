@@ -608,7 +608,7 @@ class ParserLib extends TikiDb_Bridge
 				continue;
 			}
 
-			if ( $this->plugin_is_editable($plugin_name) && (empty($options['preview_mode']) || !$options['preview_mode']) && empty($options['indexing']) && (empty($options['print']) || !$options['print']) && !$options['suppress_icons'] ) {
+			if ( $this->plugin_is_editable($plugin_name) && (empty($options['preview_mode']) || !$options['preview_mode']) && (empty($options['print']) || !$options['print']) && !$options['suppress_icons'] ) {
 				$headerlib = TikiLib::lib('header');
 				$headerlib->add_jsfile('tiki-jsplugin.php?language='.$prefs['language'], 'dynamic');
 				include_once('lib/smarty_tiki/function.icon.php');
@@ -645,12 +645,11 @@ if ( \$('#$id') ) {
 					}
 				}
 
-				$ret .= '~np~<a id="' .$id. '" href="javascript:void(1)" class="editplugin"'.$iconDisplayStyle.'>'.smarty_function_icon(array('_id'=>'wiki_plugin_edit', 'alt'=>tra('Edit Plugin').':'.$plugin_name), $smarty)."</a>~/np~";
+				$ret = $ret.'~np~<a id="' .$id. '" href="javascript:void(1)" class="editplugin"'.$iconDisplayStyle.'>'.smarty_function_icon(array('_id'=>'wiki_plugin_edit', 'alt'=>tra('Edit Plugin').':'.$plugin_name), $smarty)."</a>~/np~";
 			}
 
 			// End plugin handling
 
-			$ret = str_replace('~/np~~np~', '', $ret);
 			$match->replaceWith($ret);
 		}
 
@@ -1199,7 +1198,7 @@ if ( \$('#$id') ) {
 		$icon = isset($info['icon']) ? $info['icon'] : 'pics/icons/wiki_plugin_edit.png';
 
 		// some plugins are just too flakey to do wysiwyg, so show the "source" for them ;(
-		if (in_array($name, array('trackerlist', 'kaltura', 'toc', 'freetagged', 'draw'))) {
+		if (in_array($name, array('trackerlist', 'kaltura', 'toc', 'freetagged'))) {
 			$plugin_result = str_replace(array('{', '}'), array('%7B' , '%7D'), $ck_editor_plugin);
 		} else {
 			// Tiki 7+ adds ~np~ to plugin output so remove them
@@ -1390,8 +1389,7 @@ if ( \$('#$id') ) {
 
 		// Replace Hotwords
 		if ($prefs['feature_hotwords'] == 'y') {
-			$sep =  $prefs['feature_hotwords_sep'];
-			$sep = empty($sep)? " \n\t\r\,\;\(\)\.\:\[\]\{\}\!\?\"":"$sep";
+			$sep =  " \n\t\r\,\;\(\)\.\:\[\]\{\}\!\?\"";
 			foreach ($words as $word => $url) {
 				// \b is a word boundary, \s is a space char
 				$pregword = preg_replace("/\//", "\/", $word);
@@ -1659,7 +1657,7 @@ if ( \$('#$id') ) {
 			$this->parse_htmlchar($data);
 		}
 		//needs to be before text color syntax because of use of htmlentities in lib/core/WikiParser/OutputLink.php
-		$data = $this->parse_data_wikilinks($data, $simple_wiki, $options['ck_editor']);
+		$data = $this->parse_data_wikilinks($data, $simple_wiki);
 		
 		if (!$simple_wiki) {
 			// Replace colors ~~foreground[,background]:text~~
@@ -1773,7 +1771,7 @@ if ( \$('#$id') ) {
 	}
 
 	//*
-	private function parse_data_wikilinks( $data, $simple_wiki, $ck_editor = false )
+	private function parse_data_wikilinks( $data, $simple_wiki )
 	{
 		global $page_regex, $prefs;
 
@@ -1807,7 +1805,7 @@ if ( \$('#$id') ) {
 				$description = strtok('|');
 			}
 
-			$replacement = $this->get_wiki_link_replacement($pages[2][$i], array('description' => $description,'reltype' => $pages[1][$i],'anchor' => $anchor), $ck_editor);
+			$replacement = $this->get_wiki_link_replacement($pages[2][$i], array('description' => $description,'reltype' => $pages[1][$i],'anchor' => $anchor));
 
 			$data = str_replace($exactMatch, $replacement, $data);
 		}
@@ -1817,7 +1815,7 @@ if ( \$('#$id') ) {
 
 		foreach ($pages[2] as $idx => $page_parse) {
 			$exactMatch = $pages[0][$idx];
-			$replacement = $this->get_wiki_link_replacement($page_parse, array( 'reltype' => $pages[1][$idx] ), $ck_editor);
+			$replacement = $this->get_wiki_link_replacement($page_parse, array( 'reltype' => $pages[1][$idx] ));
 
 			$data = str_replace($exactMatch, $replacement, $data);
 		}
@@ -1837,7 +1835,7 @@ if ( \$('#$id') ) {
 			$words = ( $prefs['feature_hotwords'] == 'y' ) ? $this->get_hotwords() : array();
 			foreach ( array_unique($pages[1]) as $page_parse ) {
 				if ( ! array_key_exists($page_parse, $words) ) {
-					$repl = $this->get_wiki_link_replacement($page_parse, array('plural' => $prefs['feature_wiki_plurals'] == 'y' ), $ck_editor);
+					$repl = $this->get_wiki_link_replacement($page_parse, array('plural' => $prefs['feature_wiki_plurals'] == 'y' ));
 
 					$data = preg_replace("/(?<=[ \n\t\r\,\;]|^)$page_parse(?=$|[ \n\t\r\,\;\.])/", "$1" . $repl . "$2", $data);
 				}
@@ -1875,7 +1873,11 @@ if ( \$('#$id') ) {
 			if ($prefs['popupLinks'] == 'y') {
 				$target = 'target="_blank"';
 			}
-			if (!strstr($link, '://')) {
+
+			if (!isset($_SERVER['SERVER_NAME']) && isset($_SERVER['HTTP_HOST'])) {
+				$_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'];
+			}
+			if (empty($_SERVER['SERVER_NAME']) || strstr($link, $_SERVER["SERVER_NAME"]) || !strstr($link, '://')) {
 				$target = '';
 			} else {
 				$class = 'class="wiki external"';
@@ -2858,7 +2860,7 @@ if ( \$('#$id') ) {
 	}
 
 	//*
-	function get_wiki_link_replacement( $pageLink, $extra = array(), $ck_editor = false )
+	function get_wiki_link_replacement( $pageLink, $extra = array() )
 	{
 		global $tikilib, $prefs;
 		$wikilib = TikiLib::lib('wiki');
@@ -2902,7 +2904,7 @@ if ( \$('#$id') ) {
 			$link->setLanguage($GLOBALS['pageLang']);
 		}
 
-		return $link->getHtml($ck_editor);
+		return $link->getHtml();
 	}
 
 	//*

@@ -30,7 +30,7 @@ if (!isset($_REQUEST["page"])) {
 
 $auto_query_args = array('page', 'oldver', 'newver', 'compare', 'diff_style', 'show_translation_history', 'show_all_versions', 'history_offset', 'paginate', 'history_pagesize');
 
-$tikilib->get_perm_object($_REQUEST['page'], 'wiki page');
+$tikilib->get_perm_object( $_REQUEST['page'], 'wiki page' );
 
 // Now check permissions to access this page
 if (!isset($_REQUEST["source"])) {
@@ -138,7 +138,7 @@ if (count($history) > 0) {
 	$lastuser = '';		// calculate edit session info
 	$lasttime = 0;		// secs
 	$idletime = 1800; 	// max gap between edits in sessions 30 mins? Maybe should use a pref?
-	for ($i = 0, $cnt = count($history); $i < $cnt; $i++) {
+	for($i = 0, $cnt = count($history); $i < $cnt; $i++) {
 		
 		if ($history[$i]['user'] != $lastuser || $lasttime - $history[$i]['lastModif'] > $idletime) {
 			$sessions[] = $history[$i];
@@ -161,7 +161,7 @@ if (count($history) > 0) {
 		}
 	}
 	if ($_REQUEST['show_all_versions'] == "n") {
-		for ($i = 0, $cnt = count($history); $i < $cnt; $i++) {	// remove versions inside sessions
+		for($i = 0, $cnt = count($history); $i < $cnt; $i++) {	// remove versions inside sessions
 			if (!empty($history[$i]['session']) && $i < $cnt - 1) {
 				$seshend = $history[$i]['session'];
 				$i++;
@@ -267,10 +267,6 @@ if (isset($_REQUEST['source_idx'])) {
 if (isset($_REQUEST['preview_idx'])) {
 	$preview = $history_versions[$_REQUEST['preview_idx']];
 } else {
-	if (isset($_REQUEST['preview_date'])) {
-		$_REQUEST['preview'] = (int)$histlib->get_version_by_time($page, $_REQUEST["preview_date"]);
-	}
-	
 	if (isset($_REQUEST['preview'])) {
 		$preview = (int)$_REQUEST["preview"];
 		if ($_REQUEST['preview'] > 0) {
@@ -295,7 +291,11 @@ if (isset($source)) {
 	} else {
 		$version = $histlib->get_version($page, $source);
 		if ($version) {
-			$smarty->assign('sourced', $version["data"]);
+			if ($version['is_html'] == 1) {
+				$smarty->assign('sourced', $version['data']);
+			} else {
+				$smarty->assign('sourced', nl2br($version["data"]));
+			}
 			$smarty->assign('source', $source);
 		}
 	}
@@ -387,8 +387,7 @@ if ($prefs['feature_multilingual'] == 'y') {
 $current_version = $info["version"];
 $not_comparing = empty($_REQUEST['compare']) ? 'true' : 'false';
 
-$headerlib->add_jq_onready(
-<<<JS
+$headerlib->add_jq_onready(<<<JS
 \$("input[name=oldver], input[name=newver]").change(function () {
 	var ver = parseInt(\$(this).val(), 10), ver2;
 	if (ver == 0) { ver = $current_version; }
@@ -431,16 +430,7 @@ if ($info["flag"] == 'L') {
 	$smarty->assign('lock', false);
 }
 
-if (isset($_REQUEST['nohistory'])) {
-	$smarty->assign('noHistory', true);
-}
-
 ask_ticket('page-history');
-
-TikiLib::events()->trigger('tiki.wiki.view',array_merge(array(
-	'type' => 'wiki',
-	'object' => $page,
-), $info));
 
 // disallow robots to index page:
 $smarty->assign('page_user', $info['user']);

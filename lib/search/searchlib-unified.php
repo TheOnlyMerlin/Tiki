@@ -56,11 +56,6 @@ class UnifiedSearchLib
 		}
 	}
 
-	function getQueueCount() {
-		$queuelib = TikiLib::lib('queue');
-		return $queuelib->count(self::INCREMENT_QUEUE);
-	}
-
 	private function rebuildInProgress() {
 		global $prefs;
 		$tempName = $prefs['unified_lucene_location'] . '-new';
@@ -68,7 +63,7 @@ class UnifiedSearchLib
 		return file_exists($tempName);
 	}
 
-	function rebuild($loggit = false)
+	function rebuild()
 	{
 		global $prefs;
 		$tempName = $prefs['unified_lucene_location'] . '-new';
@@ -85,7 +80,7 @@ class UnifiedSearchLib
 
 		// Build in -new
 		TikiLib::lib('queue')->clear(self::INCREMENT_QUEUE);
-		$indexer = $this->buildIndexer($index, $loggit);
+		$indexer = $this->buildIndexer($index);
 		$stat = $indexer->rebuild();
 
 		// Force destruction to clear locks
@@ -161,10 +156,10 @@ class UnifiedSearchLib
 		return $types;
 	}
 
-	private function buildIndexer($index, $loggit = false)
+	private function buildIndexer($index)
 	{
 		global $prefs;
-		$indexer = new Search_Indexer($index, $loggit);
+		$indexer = new Search_Indexer($index);
 		$this->addSources($indexer);
 		
 		if ($prefs['unified_tokenize_version_numbers'] == 'y') {
@@ -245,8 +240,6 @@ class UnifiedSearchLib
 			$aggregator->addGlobalSource(new Search_GlobalSource_AdvancedRatingSource);
 		}
 
-		$aggregator->addGlobalSource(new Search_GlobalSource_Geolocation);
-
 		if ($mode == 'indexing') {
 			$aggregator->addGlobalSource(new Search_GlobalSource_PermissionSource(Perms::getInstance()));
 			$aggregator->addGlobalSource(new Search_GlobalSource_RelationSource);
@@ -261,7 +254,6 @@ class UnifiedSearchLib
 			$index = new Search_Index_Lucene($prefs['unified_lucene_location'], $prefs['language'], $prefs['unified_lucene_highlight'] == 'y');
 			$index->setCache(TikiLib::lib('cache'));
 			$index->setMaxResults($prefs['unified_lucene_max_result']);
-			$index->setResultSetLimit($prefs['unified_lucene_max_resultset_limit']);
 
 			return $index;
 		}

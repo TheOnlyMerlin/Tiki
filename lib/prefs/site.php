@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_site_list()
-{
+function prefs_site_list() {
 	return array (
 		'site_closed' => array(
 			'name' => tra('Close site (except for those with permission)'),

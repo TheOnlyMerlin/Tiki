@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_group_info()
-{
+function wikiplugin_group_info() {
 	return array(
 		'name' => tra('Group'),
 		'documentation' => 'PluginGroup',
@@ -42,13 +41,12 @@ function wikiplugin_group_info()
 	);
 }
 
-function wikiplugin_group($data, $params)
-{
+function wikiplugin_group($data, $params) {
 	global $user, $prefs, $tikilib, $smarty;
 	$dataelse = '';
-	if (strpos($data, '{ELSE}')) {
-		$dataelse = substr($data, strpos($data, '{ELSE}')+6);
-		$data = substr($data, 0, strpos($data, '{ELSE}'));
+	if (strpos($data,'{ELSE}')) {
+		$dataelse = substr($data,strpos($data,'{ELSE}')+6);
+		$data = substr($data,0,strpos($data,'{ELSE}'));
 	}
 
 	if (!empty($params['friends']) && $prefs['feature_friends'] == 'y') {
@@ -91,7 +89,7 @@ function wikiplugin_group($data, $params)
 		$ok = false;
 
 		foreach ($userGroups as $grp) {
-			if (in_array($grp, $groups)) {
+		    if (in_array($grp, $groups)) {
 				$ok = true;
 				$smarty->assign('groupValid', 'y');
 				break;
@@ -104,7 +102,7 @@ function wikiplugin_group($data, $params)
 	if (!empty($notgroups)) {
 		$ok = true;
 		foreach ($userGroups as $grp) {
-			if (in_array($grp, $notgroups)) {
+		    if (in_array($grp, $notgroups)) {
 				$ok = false;
 				$smarty->assign('notgroupValid', 'y');
 				break;

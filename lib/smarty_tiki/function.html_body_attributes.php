@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -10,8 +10,7 @@
  * eromneg adding additional File Gallery popup body class
  */
 
-function smarty_function_html_body_attributes($params, $smarty)
-{
+function smarty_function_html_body_attributes($params, $smarty) {
 	global $section, $prefs, $cookietab, $page, $smarty, $tiki_p_edit, $section_class, $user;
 	
 	$back = '';
@@ -21,7 +20,7 @@ function smarty_function_html_body_attributes($params, $smarty)
 	$dblclickedit = $smarty->getTemplateVars('dblclickedit');
 	
 	if (isset($section) && $section == 'wiki page' && $prefs['user_dbl'] == 'y' and $dblclickedit == 'y' and $tiki_p_edit == 'y') {
-		$back .= ' ondblclick="location.href=\'tiki-editpage.php?page=' . rawurlencode($page) . '\';"';
+		$back .= ' ondblclick="location.href=\'tiki-editpage.php?page='.rawurlencode($page).'\';"';
 	}
 	
 	if (isset($section_class)) {
@@ -53,11 +52,11 @@ function smarty_function_html_body_attributes($params, $smarty)
 	}
 	
 	if (!empty($onload)) {
-		$back .= ' onload="' . $onload . '"';
+		$back .= ' onload="'.$onload.'"';
 	}
 	
 	if (!empty($class)) {
-		$back .= ' class="' . $class . '"';
+		$back .= ' class="'.$class.'"';
 	}
 	
 	return $back;

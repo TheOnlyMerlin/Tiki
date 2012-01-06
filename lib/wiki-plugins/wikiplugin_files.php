@@ -5,22 +5,20 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_files_info()
-{
+function wikiplugin_files_info() {
 	return array(
 		'name' => tra('Files'),
 		'documentation' => 'PluginFiles',
-		'description' => tra('List files by ID, gallery or category, or show a slideshow of image files'),
-		'introduced' => 7.0,
+		'description' => tra('List files in a gallery or category'),
 		'prefs' => array( 'feature_file_galleries', 'wikiplugin_files' ),
-		'body' => tra('Title for the file listing, or the link text when slideshow = y'),
+		'body' => tra('Title'),
 		'icon' => 'pics/large/file-manager.png',
 		'tags' => array( 'basic' ),		
 		'params' => array(
 			'galleryId' => array(
 				'required' => false,
 				'name' => tra('File Galleries ID'),
-				'description' => tra('To list only files contained in these file galleries (multiple IDs separated by colon)'),
+				'description' => tra('To list only files contained in these file galleries'),
 				'default' => '',
 				'separator' => ':',
 			),
@@ -45,7 +43,6 @@ function wikiplugin_files_info()
 				'name' => tra('Sort Order'),
 				'description' => tra('Order ascending or descending based on any field in the file gallery table. Default is name_asc'),
 				'default' => 'name_asc',
-				'filter' => 'text'
 			),
 			'showaction' => array(
 				'required' => false,
@@ -76,7 +73,7 @@ function wikiplugin_files_info()
 			'showtitle' => array(
 				'required' => false,
 				'name' => tra('Show Title'),
-				'description' => tra('Show the title of the file gallery (shown by default). Also shown on slide show pop up window if a single galleryId is used.'),
+				'description' => tra('Show the title of the file gallery (shown by default)'),
 				'filter' => 'alpha',
 				'default' => 'y',
 				'options' => array(
@@ -112,7 +109,7 @@ function wikiplugin_files_info()
 			'showname' => array(
 				'required' => false,
 				'name' => tra('Show Name'),
-				'description' => tra('Show the name given to the file upon upload into the file gallery (shown by default). Set to Yes (y) to show as a caption in a slide show.'),
+				'description' => tra('Show the name given to the file upon upload into the file gallery (shown by default)'),
 				'default' => 'y',
 				'filter' => 'alpha',
 				'options' => array(
@@ -124,7 +121,7 @@ function wikiplugin_files_info()
 			'showfilename' => array(
 				'required' => false,
 				'name' => tra('Show Filename'),
-				'description' => tra('Show each file\'s filename (shown by default except in slide show). Set to Yes (y) to show as a caption in a slide show.'),
+				'description' => tra('Show each file\'s filename (shown by default)'),
 				'filter' => 'alpha',
 				'default' => 'y',
 				'advanced' => true,
@@ -137,7 +134,7 @@ function wikiplugin_files_info()
 			'showsize' => array(
 				'required' => false,
 				'name' => tra('Show Size'),
-				'description' => tra('Show the size of each file in kilobytes (shown by default except in slide show)'),
+				'description' => tra('Show the size of each file in kilobytes (shown by default)'),
 				'default' => 'y',
 				'filter' => 'alpha',
 				'options' => array(
@@ -149,7 +146,7 @@ function wikiplugin_files_info()
 			'showdescription' => array(
 				'required' => false,
 				'name' => tra('Show Description'),
-				'description' => tra('Show the description of the file given upon upload into the file gallery (shown by default except in slide show). Set to Yes (y) to show as a caption in a slide show.'),
+				'description' => tra('Show the description of the file given upon upload into the file gallery (shown by default)'),
 				'filter' => 'alpha',
 				'default' => 'y',
 				'options' => array(
@@ -271,26 +268,6 @@ function wikiplugin_files_info()
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
-			'slidewidth' => array(
-				'required' => false,
-				'name' => tra('Slideshow Width'),
-				'description' => tra('Set width of slideshow popup.'),
-				'filter' => 'digits',
-				'default' => 600,
-				'since' => '9.0',
-				'advanced' => true,
-				'parent' => array('name' => 'slideshow', 'value' => 'y'),
-			),
-			'slideheight' => array(
-				'required' => false,
-				'name' => tra('Slideshow Height'),
-				'description' => tra('Set height of slideshow popup.'),
-				'filter' => 'digits',
-				'default' => 500,
-				'since' => '9.0',
-				'advanced' => true,
-				'parent' => array('name' => 'slideshow', 'value' => 'y'),
-			),
 			'showcomment' => array(
 				'required' => false,
 				'name' => tra('Show Comment'),
@@ -350,7 +327,7 @@ function wikiplugin_files_info()
 			'max' => array(
 				'required' => false,
 				'name' => tra('Max'),
-				'description' => tra('Number of rows (default: -1 = all)'),
+				'description' => 'Number of rows (default: -1 = all)',
 				'default' => -1,
 				'advanced' => true,
 			),
@@ -382,8 +359,7 @@ function wikiplugin_files_info()
 			),	 	)
 	 );
 }
-function wikiplugin_files($data, $params)
-{
+function wikiplugin_files($data, $params) {
 	global $prefs, $tikilib, $smarty, $tiki_p_admin, $tiki_p_admin_files_galleries, $user;
 	if ($prefs['feature_file_galleries'] != 'y') {
 		return('');
@@ -446,34 +422,18 @@ function wikiplugin_files($data, $params)
 		if (!empty($slideshow) && $slideshow == 'y') {
 			if ($prefs['javascript_enabled'] != 'y') return;
 			if (empty($data)) $data = tra('Slideshow');
-			// set caption field indicator for images in slide show
-			if (isset($showdescription) && $showdescription == 'y') {
-				$caption = 'd';
-			} elseif (isset($showname) && $showname == 'y') {
-				$caption = 'n';
-			} elseif (isset($showfilename) && $showfilename == 'y') {
-				$caption = 'f';
-			} else {
-				$caption = false;
-			}
-			// set title indicator for slideshow popup window
-			// only shows a title if a single galleryId is used
-			$windowtitle = "&amp;windowtitle=";
-			$windowtitle .= $showtitle == 'n' || empty($galleryId) || count($galleryId) > 1 ? 'none': urlencode($gal_info['name']);
-			
-			$creatorparam = empty($creator) ? '': "&amp;find_creator=" . urlencode($creator);
-			return "~np~<a onclick=\"javascript:window.open('tiki-list_file_gallery.php?galleryId=$galleryId[0]&amp;sort_mode=" . $sort . "&amp;caption=" . $caption . $creatorparam . $windowtitle . "&amp;slideshow','','menubar=no,width=" . $slidewidth . ",height=" . $slideheight . ",resizable=yes'); return false\" href=\"#\">".tra($data).'</a>~/np~';
+			return "~np~<a onclick=\"javascript:window.open('tiki-list_file_gallery.php?galleryId=$galleryId[0]&amp;find_creator=" . urlencode($creator) . "&amp;slideshow','','menubar=no,width=600,height=500,resizable=yes');\" href=\"#\">".tra($data).'</a>~/np~';
 		}
 		$find = isset($_REQUEST['find'])?  $_REQUEST['find']: '';
 		$fs = $filegallib->get_files(0, $max, $sort, $find, $galleryId, false, $withsubgals=='y', false, true, false, $show_parentName=='y', true, $recursive, '', false, false, false, $filter);
 		if (isset($categId)) {
 			$objects = $categlib->list_category_objects($categId, 0, -1, 'itemId_asc', 'file');
 			$objects_in_categs = array();
-			foreach ($objects['data'] as $o) {
+			foreach($objects['data'] as $o) {
 				$objects_in_categs[] = $o['itemId'];
 			}
 		}
-		for ($i = 0, $count_fs_data = count($fs['data']); $i < $count_fs_data; ++$i) {
+		for ($i = 0; $i < count($fs['data']); ++$i) {
 			if (isset($categId)) { // filter the files
 				if (!in_array($fs['data'][$i]['fileId'], $objects_in_categs)) {
 					continue;
@@ -509,7 +469,7 @@ function wikiplugin_files($data, $params)
 
 			$fs = $filegallib->get_files(0, $max, $sort, '', $og['itemId'], false, $withsubgals=='y', false, true, false, $show_parentName=='y', true, $recursive, '', false, false, false, $filter);			                                                      
 			if ($fs['cant']) {
-				for ($i = 0, $count_fs_data = count($fs['data']); $i < $count_fs_data; ++$i) {
+				for ($i = 0; $i < count($fs['data']); ++$i) {
 					$fs['data'][$i]['gallery'] = $gal_info['name'];
 					$fs['data'][$i]['galleryId'] = $gal_info['galleryId'];
 					$fs['data'][$i]['p_download_files'] = $p_download_files;
@@ -552,9 +512,7 @@ function wikiplugin_files($data, $params)
 	if (!empty($showcreated)) $gal_info['show_created'] = $showcreated;
 	if (!empty($showcreator)) $gal_info['show_creator'] = $showcreator;
 	if (!empty($showauthor)) $gal_info['show_author'] = $showauthor;
-	if (!empty($showmodified)) {
-		$gal_info['show_lastmodif'] = $gal_info['show_modified'] = $showmodified;
-	}
+	if (!empty($showmodified)) {$gal_info['show_lastmodif'] = $gal_info['show_modified'] = $showmodified;}
 	if (!empty($showlockedby)) $gal_info['show_lockedby'] = $showlockedby;
 	if (!empty($showhits)) $gal_info['show_hits'] = $showhits;
 	if (!empty($showfiles)) $gal_info['show_files'] = $showfiles;
@@ -585,8 +543,7 @@ function wikiplugin_files($data, $params)
 	$smarty->assign('sort_arg', "wp_files_sort_mode$iplugin");
 	return '~np~'.$smarty->fetch('wiki-plugins/wikiplugin_files.tpl').'~/np~';
 }
-function  wikiplugin_files_check_perm_file($fileId)
-{
+	function  wikiplugin_files_check_perm_file($fileId) {
 		global $filegallib, $tikilib, $tiki_p_admin, $user, $tiki_p_admin_files_galleries;
 		$info = $filegallib->get_file_info($fileId);
 		$gal_info = $filegallib->get_file_gallery($info['galleryId']);
@@ -611,4 +568,4 @@ function  wikiplugin_files_check_perm_file($fileId)
 		$info['parentName'] = $gal_info['name'];
 		$info['size'] = $info['filesize'];
 		return $info;
-}
+	}

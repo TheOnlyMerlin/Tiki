@@ -5,8 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_metatag_list()
-{
+function prefs_metatag_list() {
 	return array(
 		'metatag_keywords' => array(
 			'name' => tra('Keywords'),
@@ -87,8 +86,6 @@ function prefs_metatag_list()
 			'type' => 'text',
 			'size' => '50',
 			'default' => '',
-			//'warning' => tra('This feature uses non-standard HTML.'),
-			'tags' => array('experimental'),
 		),
 	);
 }

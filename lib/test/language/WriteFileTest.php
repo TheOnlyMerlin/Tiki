@@ -20,30 +20,38 @@ class Language_WriteFileTest extends TikiTestCase
 		$this->langFile = new vfsStreamFile('language.php');
 		$lang->addChild($this->langFile);
 
-		$this->parseFile = $this->getMock('Language_File', array('getTranslations'), array(vfsStream::url('lang/language.php')));
-		
 		$this->filePath = vfsStream::url('lang/language.php');
 		
-		$this->obj = new Language_WriteFile($this->parseFile);
+		$this->obj = new Language_WriteFile;
 	}
 
-	public function testConstruct_shouldRaiseExceptionIfFileIsNotWritable()
+	public function testWriteStringsToFile_shouldRaiseExceptionForInvalidFile()
 	{
-		$this->langFile->chmod(0444);
+		$strings = array(
+			'First string' => array('name' => 'First string'),
+		);
 		$this->setExpectedException('Language_Exception');
-		new Language_WriteFile($this->parseFile);
+		$this->obj->writeStringsToFile($strings, vfsStream::url('lang/invalidFile'));
 	}
 	
 	public function testWriteStringsToFile_shouldReturnFalseIfEmptyParam()
 	{
-		$this->assertFalse($this->obj->writeStringsToFile(array()));
+		$this->assertFalse($this->obj->writeStringsToFile(array(), $this->filePath));
+	}
+	
+	public function testWriteStringsToFile_shouldRaiseExceptionIfFileIsNotWritable()
+	{
+		$strings = array(
+			'First string' => array('name' => 'First string'),
+		);
+		$this->langFile->chmod(0444);
+		$this->setExpectedException('Language_Exception');
+		$this->obj->writeStringsToFile($strings, vfsStream::url('lang/language.php'));
 	}
 	
 	public function testWriteStringsToFile_shouldWriteSimpleStrings()
 	{
-		$this->parseFile->expects($this->once())->method('getTranslations')->will($this->returnValue(array()));
-		
-		$obj = $this->getMock('Language_WriteFile', array('fileHeader'), array($this->parseFile));
+		$obj = $this->getMock('Language_WriteFile', array('fileHeader'));
 		$obj->expects($this->once())->method('fileHeader')->will($this->returnValue("// File header\n\n"));
 
 		$strings = array(
@@ -52,7 +60,7 @@ class Language_WriteFileTest extends TikiTestCase
 			'etc' => array('name' => 'etc'),
 		);
 		
-		$obj->writeStringsToFile($strings);
+		$obj->writeStringsToFile($strings, $this->filePath);
 		
 		// check if a backup of old language file (in this case an empty file) was created 
 		$this->assertTrue(file_exists($this->filePath . '.old'));
@@ -78,18 +86,17 @@ class Language_WriteFileTest extends TikiTestCase
 	 */
 	public function testWriteStringsToFile_shouldKeepTranslationsEvenIfTheyAreEqualToEnglishString($strings)
 	{
-		$this->parseFile->expects($this->exactly(1))->method('getTranslations')->will($this->returnValue(
+		$obj = $this->getMock('Language_WriteFile', array('getCurrentTranslations', 'fileHeader'));
+		$obj->expects($this->exactly(1))->method('getCurrentTranslations')->will($this->returnValue(
 			array(
 				'Unused string' => 'Some translation',
 				'Used string' => 'Another translation',
 				'Translation is the same as English string' => 'Translation is the same as English string',
 			)
 		));
-		
-		$obj = $this->getMock('Language_WriteFile', array('fileHeader'), array($this->parseFile));	
 		$obj->expects($this->once())->method('fileHeader')->will($this->returnValue("// File header\n\n"));
 				
-		$obj->writeStringsToFile($strings);
+		$obj->writeStringsToFile($strings, $this->filePath);
 		
 		$this->assertEquals(file_get_contents(__DIR__ . '/fixtures/language_with_translations.php'), file_get_contents($this->filePath));
 	}
@@ -99,18 +106,17 @@ class Language_WriteFileTest extends TikiTestCase
 	 */
 	public function testWriteStringsToFile_shouldIgnoreUnusedStrings($strings)
 	{
-		$this->parseFile->expects($this->exactly(1))->method('getTranslations')->will($this->returnValue(
+		$obj = $this->getMock('Language_WriteFile', array('getCurrentTranslations', 'fileHeader'));
+		$obj->expects($this->exactly(1))->method('getCurrentTranslations')->will($this->returnValue(
 			array(
 				'Unused string' => 'Some translation',
 				'Used string' => 'Another translation',
 				'Translation is the same as English string' => 'Translation is the same as English string',
 			)
 		));
-		
-		$obj = $this->getMock('Language_WriteFile', array('fileHeader'), array($this->parseFile));
 		$obj->expects($this->once())->method('fileHeader')->will($this->returnValue("// File header\n\n"));
 				
-		$obj->writeStringsToFile($strings);
+		$obj->writeStringsToFile($strings, $this->filePath);
 		
 		$this->assertEquals(file_get_contents(__DIR__ . '/fixtures/language_with_translations.php'), file_get_contents($this->filePath));
 	}
@@ -118,20 +124,35 @@ class Language_WriteFileTest extends TikiTestCase
 	/**
 	 * @dataProvider writeStringsToFile_provider
 	 */
+	public function testWriteStringsToFile_shouldUnsetTranslationFromStringObjects($strings)
+	{
+		$obj = $this->getMock('Language_WriteFile', array('getCurrentTranslations'));
+		$obj->expects($this->exactly(1))->method('getCurrentTranslations')->will($this->returnValue(
+			array(
+				'First string' => 'Some translation',
+			)
+		));
+		
+		$obj->writeStringsToFile($strings, $this->filePath);
+		$this->assertFalse(isset($strings['First string']['translation']));
+	}
+	
+	/**
+	 * @dataProvider writeStringsToFile_provider
+	 */
 	public function testWriteStringsToFile_shouldOutputFileWhereStringsWasFound($strings)
 	{
-		$this->parseFile->expects($this->exactly(1))->method('getTranslations')->will($this->returnValue(
+		$obj = $this->getMock('Language_WriteFile', array('getCurrentTranslations', 'fileHeader'));
+		$obj->expects($this->exactly(1))->method('getCurrentTranslations')->will($this->returnValue(
 			array(
 				'Unused string' => 'Some translation',
 				'Used string' => 'Another translation',
 				'Translation is the same as English string' => 'Translation is the same as English string',
 			)
 		));
-		
-		$obj = $this->getMock('Language_WriteFile', array('fileHeader'), array($this->parseFile));
 		$obj->expects($this->once())->method('fileHeader')->will($this->returnValue("// File header\n\n"));
 				
-		$obj->writeStringsToFile($strings, true);
+		$obj->writeStringsToFile($strings, $this->filePath, true);
 		
 		$this->assertEquals(file_get_contents(__DIR__ . '/fixtures/language_with_translations_and_file_paths.php'), file_get_contents($this->filePath));
 	}
@@ -141,7 +162,8 @@ class Language_WriteFileTest extends TikiTestCase
 	 */
 	public function testWriteStringsToFile_shouldConsiderStringsWithPunctuationInEndASpecialCase($strings)
 	{
-		$this->parseFile->expects($this->exactly(1))->method('getTranslations')->will($this->returnValue(
+		$obj = $this->getMock('Language_WriteFile', array('getCurrentTranslations', 'fileHeader'));
+		$obj->expects($this->exactly(1))->method('getCurrentTranslations')->will($this->returnValue(
 			array(
 				'Unused string' => 'Some translation',
 				'Used string' => 'Another translation',
@@ -150,15 +172,13 @@ class Language_WriteFileTest extends TikiTestCase
 				'Add user:' => 'Translation',
 			)
 		));
-		
-		$obj = $this->getMock('Language_WriteFile', array('fileHeader'), array($this->parseFile));
 		$obj->expects($this->once())->method('fileHeader')->will($this->returnValue("// File header\n\n"));
 		
 		$strings['Login:'] = array('name' => 'Login:');
 		$strings['Add user:'] = array('name' => 'Add user:');
 		$strings['All users:'] = array('name' => 'All users:');
 		
-		$obj->writeStringsToFile($strings);
+		$obj->writeStringsToFile($strings, $this->filePath);
 		
 		$this->assertEquals(file_get_contents(__DIR__ . '/fixtures/language_punctuations.php'), file_get_contents($this->filePath));
 	}
@@ -168,7 +188,8 @@ class Language_WriteFileTest extends TikiTestCase
 	 */
 	public function testWriteStringsToFile_shouldProperlyHandleSpecialCharactersInsideStrings($strings)
 	{
-		$this->parseFile->expects($this->exactly(1))->method('getTranslations')->will($this->returnValue(
+		$obj = $this->getMock('Language_WriteFile', array('getCurrentTranslations', 'fileHeader'));
+		$obj->expects($this->exactly(1))->method('getCurrentTranslations')->will($this->returnValue(
 			array(
 				'Unused string' => 'Some translation',
 				'Used string' => 'Another translation',
@@ -176,27 +197,24 @@ class Language_WriteFileTest extends TikiTestCase
 				"Congratulations!\n\nYour server can send emails.\n\n" => "Gratulation!\n\nDein Server kann Emails senden.\n\n",
 			)
 		));
-		
-		$obj = $this->getMock('Language_WriteFile', array('fileHeader'), array($this->parseFile));
 		$obj->expects($this->once())->method('fileHeader')->will($this->returnValue("// File header\n\n"));
 		
 		$strings["Congratulations!\n\nYour server can send emails.\n\n"] = array('name' => "Congratulations!\n\nYour server can send emails.\n\n");
 		$strings['Handling actions of plugin "%s" failed'] = array('name' => 'Handling actions of plugin "%s" failed');
 		
-		$obj->writeStringsToFile($strings);
+		$obj->writeStringsToFile($strings, $this->filePath);
 		
 		$this->assertEquals(file_get_contents(__DIR__ . '/fixtures/language_escape_special_characters.php'), file_get_contents($this->filePath));
 	}
 	
 	public function testWriteStringsToFile_shouldNotKeepTranslationsWithPunctuationOnSuccessiveCalls()
 	{
-		$this->parseFile->expects($this->at(0))->method('getTranslations')->will($this->returnValue(
+		$obj = $this->getMock('Language_WriteFile', array('getCurrentTranslations', 'fileHeader'));
+		$obj->expects($this->at(0))->method('getCurrentTranslations')->will($this->returnValue(
 			array(
 				'Errors' => 'Ошибки',
 			)
 		));
-		
-		$obj = $this->getMock('Language_WriteFile', array('fileHeader'), array($this->parseFile));
 		$obj->expects($this->any())->method('fileHeader')->will($this->returnValue("// File header\n\n"));
 		
 		$strings = array(
@@ -204,9 +222,9 @@ class Language_WriteFileTest extends TikiTestCase
 			'Errors:' => array('name' => 'Errors:'),
 		);
 				
-		$obj->writeStringsToFile($strings);
+		$obj->writeStringsToFile($strings, $this->filePath);
 		
-		$this->parseFile->expects($this->at(0))->method('getTranslations')->will($this->returnValue(
+		$obj->expects($this->at(0))->method('getCurrentTranslations')->will($this->returnValue(
 			array(
 				'Errors:' => 'خطاها:',
 			)
@@ -214,7 +232,7 @@ class Language_WriteFileTest extends TikiTestCase
 		
 		$this->assertEquals(file_get_contents(__DIR__ . '/fixtures/language_writestringstofile_first_call.php'), file_get_contents($this->filePath));
 		
-		$obj->writeStringsToFile($strings);
+		$obj->writeStringsToFile($strings, $this->filePath);
 		
 		$this->assertEquals(file_get_contents(__DIR__ . '/fixtures/language_writestringstofile_second_call.php'), file_get_contents($this->filePath));
 	}

@@ -1,18 +1,17 @@
 <?php
 // (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
+if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__)) !== false) {
   header('location: index.php');
   exit;
 }
 
-function module_webmail_inbox_info()
-{
+function module_webmail_inbox_info() {
 	return array(
 		'name' => tra('Webmail Inbox'),
 		'description' => tra('Displays Webmail Inbox.'),
@@ -86,8 +85,7 @@ function module_webmail_inbox_info()
 	);
 }
 
-function module_webmail_inbox($mod_reference, $module_params)
-{
+function module_webmail_inbox( $mod_reference, $module_params ) {
 	global $prefs, $webmaillib, $headerlib, $user, $webmail_reload, $webmail_start, $webmail_list_page, $smarty;
 	if (!$user) {
 		$smarty->assign('tpl_module_title', tra('Webmail error'));
@@ -120,7 +118,7 @@ function module_webmail_inbox($mod_reference, $module_params)
 	$webmail_reload = (isset($module_params['reload']) && $module_params['reload'] == 'y');
 	$webmail_start = isset($_SESSION['webmailinbox'][$mod_reference['moduleId']]['start']) ? $_SESSION['webmailinbox'][$mod_reference['moduleId']]['start'] : 0;
 	
-	if (isset($_REQUEST['refresh_mail'])) {
+	if (isset($_REQUEST['refresh_mail']) || (isset($_REQUEST['xjxfun']) && $_REQUEST['xjxfun'] == 'refreshWebmail')) {	// YUK!
 		webmail_refresh();
 	}
 	
@@ -139,8 +137,7 @@ function module_webmail_inbox($mod_reference, $module_params)
 	$smarty->assign('module_rows', $module_rows);
 }
 
-function webmail_refresh() 	// called in ajax mode
-{
+function webmail_refresh() {	// called in ajax mode
 	global $webmaillib, $user, $smarty, $webmail_list_page, $webmail_account, $webmail_reload, $webmail_start, $module_params, $trklib, $contactlib;
 	include_once('lib/trackers/trackerlib.php');
 	include_once ('lib/webmail/contactlib.php');
@@ -182,7 +179,7 @@ function webmail_refresh() 	// called in ajax mode
 		list($a_mail['isRead'], $a_mail['isFlagged'], $a_mail['isReplied']) = $webmaillib->get_mail_flags($webmail_account['accountId'], $user, $a_mail['realmsgid']);
 		
 		// handle take/taken operator here
-		$itemid = $trklib->get_item_id($module_params['trackerId'], $module_params['messageFId'], $a_mail['realmsgid']);
+		$itemid = $trklib->get_item_id( $module_params['trackerId'], $module_params['messageFId'], $a_mail['realmsgid']);
 		if ($itemid > 0) {
 			$a_mail['operator'] = $trklib->get_item_value($module_params['trackerId'], $itemid, $module_params['operatorFId']);
 		} else {

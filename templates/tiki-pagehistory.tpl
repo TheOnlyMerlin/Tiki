@@ -51,9 +51,7 @@
 			</form>
 		{/remarksbox}
 	{/if}
-	<div class="wikitext" id="page-data">
-		{$previewd}
-	</div>
+	<div class="wikitext">{$previewd}</div>
 {/if}
 
 {if $source}
@@ -73,7 +71,7 @@
 			{/if}
 		{/if}
 	</div>
-	<textarea class="wikiedit readonly" style="width:100%;height:400px" readonly="readonly" id="page_source">{$sourced|escape}</textarea>
+	<textarea class="wikiedit readonly" style="width:100%;height:400px" readonly="readonly" id="page_source">{$sourced}</textarea>
 	{if $prefs.feature_jquery_ui eq "y"}{jq}$("#page_source").resizable();{/jq}{/if}
 {/if}
 
