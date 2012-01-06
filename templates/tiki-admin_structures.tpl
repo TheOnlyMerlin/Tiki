@@ -15,7 +15,7 @@
 
 {if $askremove eq 'y'}
 	{remarksbox type='confirm' title="{tr}Please Confirm{/tr}"}
-		{tr}You will remove structure:{/tr} {$removename|escape}<br />
+		{tr}You will remove structure{/tr}: {$removename|escape}<br />
 		{button href="?rremove=$remove&amp;page=$removename" _text="{tr}Destroy the structure leaving the wiki pages{/tr}"}
 		{if $tiki_p_remove == 'y'}
 			{button href="?rremovex=$remove&amp;page=$removename" _text="{tr}Destroy the structure and remove the pages{/tr}"}
@@ -62,7 +62,7 @@
 {tabset}
 	{tab name="{tr}Structures{/tr}"}
 		{if $channels or ($find ne '')}
-			{include file='find.tpl' find_show_languages='y' find_show_categories='y' find_show_num_rows='y'}
+			{include file='find.tpl' find_show_languages='y' find_show_categories='y' find_show_num_rows='y' }
 		{/if}
 		<br />
 		<form>
@@ -76,11 +76,11 @@
 				{section loop=$channels name=ix}
 					<tr class="{cycle}">
 						{if $tiki_p_admin eq 'y'}
-							<td class="checkbox">
+							<td>
 								<input type="checkbox" name="action[]" value='{$channels[ix].page_ref_id}' style="border:1px;font-size:80%;" />
 							</td>
 						{/if}
-						<td class="text">
+						<td>
 							<a class="tablename" href="tiki-edit_structure.php?page_ref_id={$channels[ix].page_ref_id}" title="{tr}Edit structure{/tr}">
 								{$channels[ix].pageName}
 								{if $channels[ix].page_alias}
@@ -88,7 +88,7 @@
 								{/if}
 							</a>
 						</td>
-						<td class="action">
+						<td>
 							<a class="tablename" href="tiki-edit_structure.php?page_ref_id={$channels[ix].page_ref_id}" title="{tr}View structure{/tr}">{icon _id='information' alt="{tr}View structure{/tr}"}</a>
 							<a class='link' href='{sefurl page=$channels[ix].pageName structure=$channels[ix].pageName page_ref_id=$channels[ix].page_ref_id}' title="{tr}View page{/tr}">{icon _id='magnifier' alt="{tr}View page{/tr}"}</a>
 
@@ -115,13 +115,15 @@
 						</td>
 					</tr>
 				{sectionelse}
-					{if $tiki_p_admin eq 'y'}{norecords _colspan=3}{else}{norecords _colspan=2}{/if}
+					<tr>
+						<td colspan="{if $tiki_p_admin eq 'y'}3{else}2{/if}" class="odd">{tr}No records found.{/tr}<td>
+					</tr>
 				{/section}
 			</table>
 
 			{if $tiki_p_admin eq 'y'}
 				<div style="text-align:left">
-					{tr}Perform action with checked:{/tr}
+					{tr}Perform action with checked{/tr}:
 					<select name="batchaction">
 						<option value="">{tr}...{/tr}</option>
 						<option value="delete">{tr}Delete{/tr}</option>
@@ -136,19 +138,19 @@
 	{/tab}
 
 	{if $tiki_p_edit_structures == 'y'}
-		{tab name="{tr}Create New Structure{/tr}"}
+		{tab name="{tr}Create New structure{/tr}"}
 			<form action="tiki-admin_structures.php" method="post">
 				<table class="formcolor">
 					<tr>
-						<td><label for="name">{tr}Structure ID:{/tr}</label></td>
+						<td><label for="name">{tr}Structure ID{/tr}:</label></td>
 						<td><input type="text" name="name" id="name" /></td>
 					</tr>
 					<tr>
-						<td><label for="alias">{tr}Alias:{/tr}</label></td>
+						<td><label for="alias">{tr}Alias{/tr}:</label></td>
 						<td><input type="text" name="alias" id="alias" /></td>
 					</tr>
 					<tr>
-						<td><label for="tree">{tr}Tree:{/tr}</label><br />(optional)</td>
+						<td><label for="tree">{tr}Tree{/tr}:</label><br />(optional)</td>
 						<td colspan="2">
 							<textarea rows="5" cols="60" id="tree" name="tree" style="width:95%"></textarea>
 							{remarksbox type="tip" title="{tr}Note{/tr}"}{tr}Use single spaces to indent structure levels{/tr}{/remarksbox}

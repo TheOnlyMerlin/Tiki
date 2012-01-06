@@ -1,12 +1,12 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
@@ -14,40 +14,40 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 class UserPrefsLib extends TikiLib
 {
 
-	function set_user_avatar($user, $type, $avatarLibName, $avatarName, $avatarSize, $avatarType, $avatarData)
-	{
+	function set_user_avatar($user, $type, $avatarLibName, $avatarName, $avatarSize, $avatarType, $avatarData) {
 		global $prefs, $userlib, $tikidomainslash;
 		$query = "update `users_users` set `avatarType` = ?, `avatarLibName` = ?, `avatarName` = ?, `avatarSize` = ?, `avatarFileType` = ?, `avatarData` = ?  where `login`=?";
-		$result = $this->query($query, array($type, $avatarLibName, $avatarName, ($avatarSize ? $avatarSize : NULL), $avatarType, $avatarData, $user));
+		$result = $this->query($query,array($type,$avatarLibName,$avatarName,($avatarSize?$avatarSize:NULL),$avatarType,$avatarData,$user));
 		if ($prefs['feature_intertiki'] == 'y' && !empty($prefs['feature_intertiki_mymaster']) && $prefs['feature_intertiki_import_preferences'] == 'y') { //send to the master
 			$userlib->interSendUserInfo($prefs['interlist'][$prefs['feature_intertiki_mymaster']], $user);
 		}
 
-		$image = 'temp/public/' . $tikidomainslash . 'avatar_' . $user . '.*';
-		foreach ( glob($image) as $file ) {
+		$image = 'temp/public/'.$tikidomainslash.'avatar_' . $user . '.*';
+		foreach( glob( $image ) as $file ) {
 			unlink($file);
 		}
 	}
 
-	function get_user_avatar_img($user)
-	{
+	function get_user_avatar_img($user) {
 		$query = "select * from `users_users` where `login`=?";
-		$result = $this->query($query, array($user));
+		$result = $this->query($query,array($user));
 		if (!$result->numRows()) return false;
 		$res = $result->fetchRow();
 		return $res;
 	}
 
-	function set_file_gallery_image($u, $filename, $size, $type, $data)
-	{
+	function set_file_gallery_image($u, $filename, $size, $type, $data) {
 		global $prefs, $tikilib;
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib;
+		if (!is_object($filegallib)) {
+				require_once( 'lib/filegals/filegallib.php' );
+		}
 		if (!$prefs["user_picture_gallery_id"]) {
 			return false;
 		}
 		if ($user_image_id = $tikilib->get_user_preference($u, 'user_fg_image_id')) {
 			$didFileReplace = false;
-			$gal_info = $filegallib->get_file_gallery($prefs["user_picture_gallery_id"]);
+			$gal_info = $tikilib->get_file_gallery($prefs["user_picture_gallery_id"]);
 			$filegallib->replace_file($user_image_id, $u, $u, $filename, $data, $size, $type, $u, '', '', $gal_info, $didFileReplace);	
 		} else {
 			$user_image_id = $filegallib->insert_file($prefs["user_picture_gallery_id"], $u, $u, $filename, $data, $size, $type, $u, '', '', '');
@@ -56,10 +56,12 @@ class UserPrefsLib extends TikiLib
 		return $user_image_id;
 	}
 	
-	function remove_file_gallery_image($u)
-	{
+	function remove_file_gallery_image($u) {
 		global $prefs, $tikilib;
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib;
+		if (!is_object($filegallib)) {
+				require_once( 'lib/filegals/filegallib.php' );
+		}
 		if ($user_image_id = $tikilib->get_user_preference($u, 'user_fg_image_id')) {
 			$file_info = $filegallib->get_file_info($user_image_id, false, false);
 			$filegallib->remove_file($file_info, '', true); 
@@ -70,16 +72,14 @@ class UserPrefsLib extends TikiLib
 		}
 	}
 	
-	function get_user_picture_id($u)
-	{
+	function get_user_picture_id($u) {
 		global $tikilib;
 		return $tikilib->get_user_preference($u, 'user_fg_image_id');		
 	}
 	
-	function get_userprefs($user)
-	{
+	function get_userprefs($user) {
 		$query = "select * from `tiki_user_preferences` where `user`=?";
-		$result = $this->query($query, array($user));
+		$result = $this->query($query,array($user));
 		$ret = array();
 
 		while ($res = $result->fetchRow()) {
@@ -89,8 +89,7 @@ class UserPrefsLib extends TikiLib
 		return $ret;
 	}
 	
-	function get_userdistance($usersrc, $userdst)
-	{
+	function get_userdistance($usersrc,$userdst) {
 		if ($usersrc == $userdst)
 			return null;
 		$user1=$this->get_userprefs($usersrc);
@@ -110,17 +109,6 @@ class UserPrefsLib extends TikiLib
 		} else {
 			return(NULL);
 		}
-	}
-	
-	function get_user_clock_pref($user)
-	{
-		global $prefs; global $tikilib;
-		$userclock = $tikilib->get_user_preference($user, 'display_12hr_clock');
-		$use_24hr_clock = true;
-		if ((isset($userclock) && $userclock == 'y') || (!isset($userclock) && $prefs['users_prefs_display_12hr_clock'] == 'y')) {
-			$use_24hr_clock = false;
-		}
-		return $use_24hr_clock;
 	}
 }
 $userprefslib = new UserPrefsLib;

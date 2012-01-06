@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -28,7 +28,7 @@ if ( ($id = (int)$_GET['id']) > 0 ) {
 		$info = $filegallib->get_file_info($id);
 
 		if ( $info['galleryId'] > 0 ) {
-			$gal_info = $filegallib->get_file_gallery($info['galleryId']);
+			$gal_info = $tikilib->get_file_gallery($info['galleryId']);
 		
 			// Check perms
 			$tikilib->get_perm_object($info['galleryId'], 'file gallery', $gal_info, true);
@@ -50,10 +50,10 @@ header('Cache-Control: no-cache');
 header('Content-type: image/gif');
 header('Content-length: 85');
 print base64_decode(
-				'R0lGODlhAQABALMAAAAAAIAAAACAA'.
-				'ICAAAAAgIAAgACAgMDAwICAgP8AAA'.
-				'D/AP//AAAA//8A/wD//wBiZCH5BAE'.
-				'AAA8ALAAAAAABAAEAAAQC8EUAOw=='
+	'R0lGODlhAQABALMAAAAAAIAAAACAA'.
+	'ICAAAAAgIAAgACAgMDAwICAgP8AAA'.
+	'D/AP//AAAA//8A/wD//wBiZCH5BAE'.
+	'AAA8ALAAAAAABAAEAAAQC8EUAOw=='
 );
 flush();
 exit;

@@ -20,7 +20,7 @@
 	{/if}
 	<div class="articletitle">
 		<h2>
-			{object_link type=article id=$articleId title=$arttitle}
+			{$arttitle|escape}
 		</h2>
 		{if $show_subtitle eq 'y' and $subtitle}
 			<div class="articlesubtitle">{$subtitle|escape}</div>
@@ -53,7 +53,7 @@
 		</form>
 	{/if}
 
-	{if $prefs.art_trailer_pos ne 'between'}{include file='article_trailer.tpl'}{/if}
+	{if $prefs.art_trailer_pos ne 'between'}{include file='article_trailer.tpl}{/if}
 
 	<div class="articleheading">
 		<table cellpadding="0" cellspacing="0" width="100%">
@@ -61,7 +61,7 @@
 				<td valign="top">
 				{capture name=imgTitle}{if $show_image_caption eq 'y' and $image_caption}{$image_caption|escape}{elseif $topicName}{tr}{$topicName}{/tr}{/if}{/capture}
 				{if $topicId}
-					<a href="tiki-view_articles.php?topic={$topicId}" title="{if $show_image_caption and $image_caption}{$image_caption|escape}{else}{tr}List all articles of this same topic:{/tr} {tr}{$topicName}{/tr}{/if}">
+					<a href="tiki-view_articles.php?topic={$topicId}" title="{if $show_image_caption and $image_caption}{$image_caption|escape}{else}{tr}List all articles of this same topic{/tr}: {tr}{$topicName}{/tr}{/if}">
 				{/if}
 				{if $prefs.art_header_text_pos eq 'below' && $list_image_x > 0}
 					{assign var="big_image" value=y}
@@ -108,7 +108,7 @@
 					{if $article_attributes}
 						<div class="articleattributes">
 							{foreach from=$article_attributes key=attname item=attvalue}
-							{$attname|escape}: {$attvalue|escape}<br />
+							{tr}{$attname|escape}{/tr}: {$attvalue|escape}<br />
 							{/foreach}
 						</div>
 					{/if}
@@ -119,7 +119,7 @@
 		</table>
 	</div>
 
-	{if $prefs.art_trailer_pos eq 'between'}{include file='article_trailer.tpl'}{/if}
+	{if $prefs.art_trailer_pos eq 'between'}{include file='article_trailer.tpl}{/if}
 
 	<div class="articlebody clearfix">
 		{if $tiki_p_read_article eq 'y'}
@@ -164,18 +164,16 @@
 </div>
 
 {if $prefs.feature_article_comments == 'y' && 
-		($tiki_p_read_comments == 'y' || $tiki_p_post_comments == 'y' || $tiki_p_edit_comments == 'y')}
+		(($tiki_p_read_comments == 'y' && $comments_cant != 0) || $tiki_p_post_comments == 'y' || $tiki_p_edit_comments == 'y')}
 
-	<div id="comment-container" data-target="{service controller=comment action=list type=article objectId=$articleId}"></div>
-	{jq}
-		var id = '#comment-container';
-		$(id).comment_load($(id).data('target'));
-	{/jq}
+	<div id="page-bar" class="clearfix">
+		{include file='comments_button.tpl'}
+	</div>
+
+	{include file='comments.tpl'}
 {/if}
 
 {if $is_categorized eq 'y' and $prefs.feature_categories eq 'y' and $prefs.feature_categoryobjects eq 'y'}
 	{$display_catobjects}
 {/if}
-{if $is_categorized eq 'y' and $prefs.feature_categories eq 'y' and $prefs.category_morelikethis_algorithm ne ''}
-	{include file='category_related_objects.tpl'}
-{/if}
+

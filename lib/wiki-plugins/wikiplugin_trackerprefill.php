@@ -1,18 +1,22 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_trackerprefill_info()
-{
+function wikiplugin_trackerprefill_help() {
+	$help = tra('Displays a button to link to a page with a tracker plugin with prefilled tracker fields.');
+	$help .= '~np~{TRACKERPREFILL(page=trackerpage,label=text,field1=id,value1=, field2=id,value2=... /)}';
+	return $help;
+}
+
+function wikiplugin_trackerprefill_info() {
 	return array(
 		'name' => tra('Tracker Prefill'),
-		'documentation' => 'PluginTrackerPrefill',
-		'description' => tra('Create a button to prefill tracker fields'),
+		'documentation' => tra('PluginTrackerPrefill'),
+		'description' => tra('Displays a button to link to a page with a tracker plugin with prefilled tracker fields.'),
 		'prefs' => array( 'feature_trackers', 'wikiplugin_trackerprefill' ),
-		'icon' => 'pics/icons/application_form.png',
 		'params' => array(
 			'page' => array(
 				'required' => true,
@@ -101,8 +105,7 @@ function wikiplugin_trackerprefill_info()
 	);
 }
 
-function wikiplugin_trackerprefill($data, $params)
-{
+function wikiplugin_trackerprefill($data, $params) {
 	global $smarty;
 	$prefills = array();
 	foreach ($params as $param=>$value) {

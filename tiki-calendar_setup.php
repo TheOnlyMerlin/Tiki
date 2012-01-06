@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -26,7 +26,7 @@ if ( ! ($prefs['feature_calendar'] == 'y' || $prefs['feature_action_calendar'] =
 
 global $calendarlib; include_once('lib/calendar/calendarlib.php');
 
-$trunc = "40"; // put in a pref, number of chars displayed in cal cells
+$trunc = "20"; // put in a pref, number of chars displayed in cal cells
 
 if (!empty($_REQUEST['focus'])) {
 	$_REQUEST['todate'] = $_SESSION['CalendarFocusDate'] = $_REQUEST['focus'];
@@ -54,24 +54,17 @@ $smarty->assign('focuscell', $focuscell);
 $smarty->assign('today', $tikilib->make_time(0,0,0, $tikilib->date_format('%m'), $tikilib->date_format('%d'), $tikilib->date_format('%Y')));
 
 // Get viewmode from URL, session or prefs if it has not already been defined by the calling script (for example by modules, to force a month view)
-// ###trebly:B10111:[FIX-ADD-ENH]->  there are several meaning for the same var $calendarViewMode
 if ( ! isset($calendarViewMode) ) {
-// ###trebly:B10111:[FIX-ADD-ENH]-> $calendarViewMode become an array, several bugs comes from confusion of global values and parameters by ref
-// for calendars : (main-)calendar, action_calendar, mod_calendar, mod_action_calendar the changes of values by url request is terrible
-// for the moment 01/11/2011:11:55 just one value is used with index 'default', but initialisation is done. 
-// The init is actually into two places, tiki-calendar_setup.php and tiki-calendar_export.php will be grouped for clean
-// $prefs would be added when need, $_SESSION, $PARAMS too this now generates not any change in the behavior.
-$calendarViewMode=array('casedefault'=>'month','calgen'=>'month','calaction'=>'month','modcalgen'=>'month','modcalaction'=>'month','trackercal'=>'month');
 	if (!empty($_REQUEST['viewmode'])) {
-		$calendarViewMode['casedefault'] = $_REQUEST['viewmode'];
+		$calendarViewMode = $_REQUEST['viewmode'];
 	} elseif (!empty($_SESSION['CalendarViewMode'])) {
-		$calendarViewMode['casedefault'] = $_SESSION['CalendarViewMode'];
+		$calendarViewMode = $_SESSION['CalendarViewMode'];
 	} else {
-		$calendarViewMode['casedefault'] = $prefs['calendar_view_mode'];
+		$calendarViewMode = $prefs['calendar_view_mode'];
 	}
 }
-$_SESSION['CalendarViewMode'] = $calendarViewMode['casedefault'];
-$smarty->assign_by_ref('viewmode', $calendarViewMode['casedefault']);
+$_SESSION['CalendarViewMode'] = $calendarViewMode;
+$smarty->assign_by_ref('viewmode', $calendarViewMode);
 
 if (isset($_REQUEST["viewlist"])) {
 	$viewlist = $_REQUEST['viewlist'];
@@ -118,8 +111,8 @@ $smarty->assign('short_format_day', tra('%m/%d'));
 
 $focus_day_limited = min($focus_day, 28); // To make "previous month" work if the current focus is on, for example, the last day of march.
 
-$focus_prev = $calendarlib->focusPrevious($focus, $calendarViewMode['casedefault']);
-$focus_next = $calendarlib->focusNext($focus, $calendarViewMode['casedefault']);
+$focus_prev = $calendarlib->focusPrevious($focus, $calendarViewMode);
+$focus_next = $calendarlib->focusNext($focus, $calendarViewMode);
 
 $smarty->assign('focus_prev', $focus_prev['date']);
 $smarty->assign('focus_next', $focus_next['date']);
@@ -141,7 +134,7 @@ $wd = TikiLib::date_format('%w', $focusdate);
 //prepare for select first day of week (Hausi)
 if ($firstDayofWeek == 1) {
 	$wd--;
-	if ($wd == -1) {
+	if($wd == -1) {
 		$wd = 6;
 	}
 }
@@ -157,19 +150,19 @@ $smarty->assign('viewyear', $focus_year);
 // calculate timespan for sql query
 if ($viewlist == 'list' && $prefs['calendar_list_begins_focus'] == 'y') {
 	$daystart = $focusdate;
-} elseif ($calendarViewMode['casedefault'] == 'month' || $calendarViewMode['casedefault'] == 'quarter' || $calendarViewMode['casedefault'] == 'semester') {
+} elseif ($calendarViewMode == 'month' || $calendarViewMode == 'quarter' || $calendarViewMode == 'semester') {
 	$daystart = $tikilib->make_time(0,0,0, $focus_month, 1, $focus_year);
-} elseif ($calendarViewMode['casedefault'] == 'year') {
+} elseif ($calendarViewMode == 'year') {
 	$daystart = $tikilib->make_time(0,0,0, 1, 1, $focus_year);
 } else {
 	$daystart = $tikilib->make_time(0,0,0, $focus_month, $focus_day, $focus_year);
 }
 $viewstart = $daystart; // viewstart is the beginning of the display, daystart is the beginning of the selected period
 
-if ( $calendarViewMode['casedefault'] == 'month' ||
-	 $calendarViewMode['casedefault'] == 'quarter' ||
-	 $calendarViewMode['casedefault'] == 'semester' ||
-	 $calendarViewMode['casedefault'] == 'year' ) {
+if ( $calendarViewMode == 'month' ||
+	 $calendarViewMode == 'quarter' ||
+	 $calendarViewMode == 'semester' ||
+	 $calendarViewMode == 'year' ) {
 
    $TmpWeekday = TikiLib::date_format("%w", $viewstart);
 
@@ -212,13 +205,13 @@ if ( $calendarViewMode['casedefault'] == 'month' ||
 	   $df = 1;
 	}
 	   
-   if ($calendarViewMode['casedefault'] == 'month') {
+   if ($calendarViewMode == 'month') {
      $viewend = $tikilib->make_time(0,0,0,$focus_month + 1, $df, $focus_year);
-   } elseif ($calendarViewMode['casedefault'] == 'quarter') {
+   } elseif ($calendarViewMode == 'quarter') {
      $viewend = $tikilib->make_time(0,0,0,$focus_month + 3, $df, $focus_year);
-   } elseif ($calendarViewMode['casedefault'] == 'semester') {
+   } elseif ($calendarViewMode == 'semester') {
      $viewend = TikiLib::make_time(0,0,0,$focus_month + 6, $df, $focus_year);
-   } elseif ($calendarViewMode['casedefault'] == 'year') {
+   } elseif ($calendarViewMode == 'year') {
      $viewend = $tikilib->make_time(0,0,0,1, $df, $focus_year+1);
    } else {
      $viewend = $tikilib->make_time(0,0,0,$focus_month + 1, 0, $focus_year);
@@ -228,11 +221,11 @@ if ( $calendarViewMode['casedefault'] == 'month' ||
    $TmpWeekday = TikiLib::date_format("%w", $viewend);
    if ( $viewlist != 'list' ) {
 	   //$viewend += (6 - $TmpWeekday) * $d;
-		$viewend = $tikilib->make_time(
-			23, 59, 59,
-			TikiLib::date_format("%m", $viewend),
-			TikiLib::date_format("%d", $viewend) + ( 6 - $TmpWeekday ),
-			TikiLib::date_format("%Y", $viewend)
+	$viewend = $tikilib->make_time(
+		23, 59, 59,
+	   	TikiLib::date_format("%m", $viewend),
+		TikiLib::date_format("%d", $viewend) + ( 6 - $TmpWeekday ),
+		TikiLib::date_format("%Y", $viewend)
 	);
    }
 
@@ -250,7 +243,7 @@ if ( $calendarViewMode['casedefault'] == 'month' ||
 
    $numberofweeks = $lastweek - $firstweek;
 
-} elseif ( $calendarViewMode['casedefault'] == 'week' ) {
+} elseif ( $calendarViewMode == 'week' ) {
 	$firstweek = $currentweek;
 	$lastweek = $currentweek;
 
@@ -302,10 +295,10 @@ if ( $calendarViewMode['casedefault'] == 'month' ||
 
 //	$viewend = $viewstart + ($d - 1);
 	$viewend = $tikilib->make_time(
-			0, 0, 0,
-			TikiLib::date_format("%m", $viewstart),
-			TikiLib::date_format("%d", $viewstart) + 1,
-			TikiLib::date_format("%Y", $viewstart)
+		0, 0, 0,
+	   	TikiLib::date_format("%m", $viewstart),
+		TikiLib::date_format("%d", $viewstart) + 1,
+		TikiLib::date_format("%Y", $viewstart)
 	) - 1;
 
 	$dayend = $daystart;
@@ -326,19 +319,18 @@ $weeks = array();
 $cell = array();
 
 if (!function_exists('correct_start_day')) {
-	function correct_start_day($d) {
-		global $prefs;
-
-		$tmp = $d - $prefs['calendar_firstDayofWeek'];
-		if ($tmp < 0 ) {
-			$tmp += 7;
-		}
-		return $tmp;
+function correct_start_day($d) {
+	global $prefs;
+	
+	$tmp = $d - $prefs['calendar_firstDayofWeek'];
+	if ($tmp < 0 ) {
+		$tmp += 7;
 	}
+	return $tmp;
+}
 }
 
-if (empty($myurl)) {
+if (empty($myurl))
 	$myurl = 'tiki-calendar.php';
-}
 $jscal_url = "$myurl?todate=%s";
 $smarty->assign('jscal_url', $jscal_url);

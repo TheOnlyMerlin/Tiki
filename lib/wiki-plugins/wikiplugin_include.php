@@ -1,19 +1,54 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_include_info() 
-{
+/**
+ * INCLUDE plugin
+ * Includes a wiki page in another.
+ *
+ * Usage:
+ * {INCLUDE(page=>name [,start=>start-marker] [,stop=>stop-marker])}{INCLUDE}
+ *
+ * Params:
+ * @param	page	Gives the name of the page to include
+ * @param	start	Gives a string to search for to begin the include. Text
+ *			before that marker (and the marker itself) will not be included.
+ *			Default is the beginning of the included page.
+ *			The marker must appear on a line by itself; white space
+ *			before or after the marker is ignored.
+ * @param	stop		Gives a string to search for to end the include. Text
+ *			after that marker (and the marker itself) will not be included.
+ *			Default is the beginning of the included page.
+ *			The marker must appear on a line by itself; white space
+ *			before or after the marker is ignored.
+ *
+ * If both start and stop are specified and the pair of strings occurs
+ * multiple times in the included page, each section so delimited will
+ * be included in the calling page.
+ *
+ * NOTE: The design and implementation of the start/stop feature is experimental
+ *	 and needs some feedback (and, no doubt, improvement) from the community. 
+ *       In order to prevent infinite loops, any page can only be included
+ *   directly or indirectly 5 times (set in $max_times).
+ *
+ * @package Tikiwiki
+ * @subpackage TikiPlugins
+ * @version $Revision: 1.11 $
+ */
+
+function wikiplugin_include_help() {
+	return tra("Include a page").":<br />~np~{INCLUDE(page=> [,start=>] [,stop=>])}{INCLUDE}~/np~";
+}
+
+function wikiplugin_include_info() {
 	return array(
 		'name' => tra('Include'),
-		'documentation' => 'PluginInclude',
-		'description' => tra('Include content from a wiki page'),
+		'documentation' => tra('PluginInclude'),
+		'description' => tra('Include a page\'s content.'),
 		'prefs' => array('wikiplugin_include'),
-		'icon' => 'pics/icons/page_copy.png',
-		'tags' => array( 'basic' ),
 		'params' => array(
 			'page' => array(
 				'required' => true,
@@ -50,14 +85,13 @@ function wikiplugin_include_info()
 	);
 }
 
-function wikiplugin_include($data, $params, $offset)
-{
+function wikiplugin_include($data, $params, $offset) {
 	global $tikilib,$userlib,$user;
-   static $included_pages, $data;
+    static $included_pages, $data;
 
 	$max_times = 5;
-	$params = array_merge(array( 'nopage_text' => '', 'pagedenied_text' => '' ), $params);
-	extract($params, EXTR_SKIP);
+	$params = array_merge( array( 'nopage_text' => '', 'pagedenied_text' => '' ), $params );
+	extract ($params,EXTR_SKIP);
 	if (!isset($page)) {
 		return ("<b>missing page for plugin INCLUDE</b><br />");
 	}
@@ -135,23 +169,6 @@ function wikiplugin_include($data, $params, $offset)
 			$text = implode("\n", $explText);
 		}
 	}
-	
-	$parserlib = TikiLib::lib('parser');
-	$options = null;
-	if (!empty($_REQUEST['page'])) {
-		$options['page'] = $_REQUEST['page'];
-	}
-	$parserlib->parse_wiki_argvariable($text, $options);
-	// append an edit button
-	global $smarty;
-	if (isset($perms) && $perms['tiki_p_edit'] === 'y') {
-		global $smarty;
-		$smarty->loadPlugin('smarty_block_ajax_href');
-		$smarty->loadPlugin('smarty_function_icon');
-		$tip = tra('Include Plugin'). ' | ' . tra('Edit the included page:').' &quot;' . $page . '&quot;';
-		$text .= '<a class="editplugin tips" '.	// ironically smarty_block_self_link doesn't work for this! ;)
-				smarty_block_ajax_href(array('template' => 'tiki-editpage.tpl'), 'tiki-editpage.php?page='.urlencode($page).'&returnto='.urlencode($GLOBALS['page']), $smarty, false) .
-				smarty_function_icon(array( '_id' => 'page_edit', 'title' => $tip, 'class' => 'icon tips'), $smarty) . '</a>';
-	}
+	$tikilib->parse_wiki_argvariable($text);
 	return $text;
 }

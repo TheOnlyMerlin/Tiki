@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -54,23 +54,16 @@ if ($postId > 0) {
 			die;
 		}
 	}
-	if (isset($data['wysiwyg']) && !isset($_REQUEST['wysiwyg'])) {
+	if(isset($data['wysiwyg']) && !isset($_REQUEST['wysiwyg'])) {
 		$_REQUEST['wysiwyg'] = $data['wysiwyg'];
 	}
 }
 
+$smarty->assign('headtitle', tra('Edit Post'));
 $smarty->assign('blogId', $blogId);
 $smarty->assign('postId', $postId);
 
-//Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-include_once ('lib/userprefs/userprefslib.php');
-$smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
-
 if (isset($_REQUEST["publish_Hour"])) {
-	//Convert 12-hour clock hours to 24-hour scale to compute time
-	if (!empty($_REQUEST['publish_Meridian'])) {
-		$_REQUEST['publish_Hour'] = date('H', strtotime($_REQUEST['publish_Hour'] . ':00 ' . $_REQUEST['publish_Meridian']));
-	}
 	$publishDate = $tikilib->make_time($_REQUEST["publish_Hour"], $_REQUEST["publish_Minute"], 0, $_REQUEST["publish_Month"], $_REQUEST["publish_Day"], $_REQUEST["publish_Year"]);
 } else {
 	$publishDate = $tikilib->now;
@@ -173,8 +166,7 @@ if (isset($_REQUEST["blogpriv"]) && $_REQUEST["blogpriv"] == 'on') {
 
 if (isset($_REQUEST["preview"])) {
 	$post_info = array();
-	$parserlib = TikiLib::lib('parser');
-	$parsed_data = $parserlib->apply_postedit_handlers($edit_data);
+	$parsed_data = $tikilib->apply_postedit_handlers($edit_data);
 	$parsed_data = $tikilib->parse_data($parsed_data, array('is_html' => $is_wysiwyg));
 	$smarty->assign('data', $edit_data);
 	$post_info['parsed_data'] = $parsed_data;
@@ -222,23 +214,18 @@ if (isset($_REQUEST['save']) && !$contribution_needed) {
 		$smarty->assign('postId', $postId);
 	}
 
-	if ($prefs['geo_locate_blogpost'] == 'y' && ! empty($_REQUEST['geolocation'])) {
-		TikiLib::lib('geo')->set_coordinates('blog post', $postId, $_REQUEST['geolocation']);
-	}
-
 	// TAG Stuff
 	$cat_type = 'blog post';
 	$cat_objid = $postId;
-	$cat_desc = TikiFilter::get('purifier')->filter(substr($edit_data, 0, 200));
+	$cat_desc = substr($edit_data, 0, 200);
 	$cat_name = $title;
 	$cat_href = "tiki-view_blog_post.php?postId=" . urlencode($postId);
 	$cat_lang = $_REQUEST['lang'];
 	include_once ("freetag_apply.php");
-	include_once ("categorize.php");
 
 	require_once('tiki-sefurl.php');	
-	$url = filter_out_sefurl("tiki-view_blog_post.php?postId=$postId", 'blogpost');
-	header("location: $url");
+	$url = filter_out_sefurl("tiki-view_blog_post.php?postId=$postId", $smarty, 'blogpost');
+	header ("location: $url");
 	die;
 }
 
@@ -249,14 +236,6 @@ if ($contribution_needed) {
 	if ($prefs['feature_freetags'] == 'y') {
 		$smarty->assign('taglist', $_REQUEST["freetag_string"]);
 	}
-}
-
-$cat_type = 'blog post';
-$cat_objid = $postId;
-include_once ("categorize_list.php");
-
-if ( $prefs['geo_locate_blogpost'] == 'y' ) {
-	$smarty->assign('geolocation_string', TikiLib::lib('geo')->get_coordinates_string('blog post', $postId));
 }
 
 include_once ('tiki-section_options.php');

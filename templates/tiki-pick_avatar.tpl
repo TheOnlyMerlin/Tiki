@@ -18,15 +18,9 @@
 	</div>
 {/if}
 <h2>{if $user eq $userwatch}{tr}Your current avatar{/tr}{else}{tr}Avatar{/tr}{/if}</h2>
-{if $avatar}
-<div>
-{if isset($user_picture_id)}{tr}Thumbnail{/tr}<br />{/if}
-{$avatar}
-</div>
-{if isset($user_picture_id)}
-<div>{tr}Full size{/tr}<br />
-<img src="tiki-download_file.php?fileId={$user_picture_id|escape}&amp;display=y"></img>
-</div>
+{if $avatar}{$avatar}
+{if $user_picture_id}
+{wikiplugin _name="img" thumb="y" fileId="$user_picture_id"}{/wikiplugin}
 {/if}
 {else}{tr}no avatar{/tr}{/if}
 {if sizeof($avatars) eq 0 and $avatar}

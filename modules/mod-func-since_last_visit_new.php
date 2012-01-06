@@ -1,20 +1,19 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 	header("location: index.php");
 	exit;
 }
 
-function module_since_last_visit_new_info()
-{
+function module_since_last_visit_new_info() {
 	return array(
-		'name' => tra('Since Last Visit'),
+		'name' => tra('Since last visit'),
 		'description' => tra('Displays to logged in users new or updated objects since a point in time, by default their last login date and time.'),
 		'params' => array(
 			'showuser' => array(
@@ -31,23 +30,18 @@ function module_since_last_visit_new_info()
 			),
 			'date_as_link' => array(
 				'name' => tra('Show date as a calendar link'),
-				'description' => tra('If set to "n", do not add a link to tiki calendar on the date in the header (even if feature calendar is set).') . ' ' . tra('Default:') . ' "y"'
+				'description' => tra('If set to "n", do not add a link to tiki calendar on the date in the header (even if feature calendar is set)') . ' ' . tra('Default:') . ' "y"'
 			),
 			'fold_sections' => array(
 				'name' => tra('Fold sections by default'),
-				'description' => tra('If set to "y", fold automatically sections and show only the title (user has to click on each section in order to see the details of modifications).') . ' ' . tra('Default:') . ' "n"'
+				'description' => tra('If set to "y", fold automatically sections and show only the title (user has to click on each section in order to see the details of modifications)') . ' ' . tra('Default:') . ' "n"'
 			),
 			'use_jquery_ui' => array(
-				'name' => tra('Use jQuery presentation'),
-				'description' => tra('If set to "y", use jQuery to show the result.') . ' ' . tra('Default:') . ' "n"'
-			),
-			'daysAtLeast' =>  array(
-				'name' => tra('Minimum timespan'),
-				'description' => tra('Instead of the last login time, go back this minimum time, specified in days, in case the last login time is more recent.') . ' ' . tra('Default value:') . ' "0"',
-				'filter' => 'int'
+				'name' => tra('Use Jquery presentation'),
+				'description' => tra('If set to "y", it will use jquery to show the result') . ' ' . tra('Default:') . ' "n"'
 			),
 		),
-		'common_params' => array('nonums', 'rows'),
+		'common_params' => array( 'nonums', 'rows' ),
 	);
 }
 
@@ -58,12 +52,6 @@ function module_since_last_visit_new($mod_reference, $params = null)
 	include_once('tiki-sefurl.php');
 	
 	if (!$user) return false;
-
-	if (!isset($params['use_jquery_ui']) || $params['use_jquery_ui'] != 'y') {
-		$smarty->assign('use_jquery_ui', 'n');
-	} else {
-		$smarty->assign('use_jquery_ui', 'y');
-	}
 
 	if (!isset($params['date_as_link']) || $params['date_as_link'] != 'n') {
 		$smarty->assign('date_as_link', 'y');
@@ -84,12 +72,9 @@ function module_since_last_visit_new($mod_reference, $params = null)
 
 	global $tikilib, $userlib, $prefs;
 	$ret = array();
-	if ($params == null) $params = array();
+	if ( $params == null ) $params = array();
 
-	if ((empty($params['calendar_focus']) || $params['calendar_focus'] != 'ignore')
-			&& strpos($_SERVER["SCRIPT_NAME"], "tiki-calendar.php")
-			&& isset($_REQUEST["todate"]) && $_REQUEST["todate"]
-	) {
+	if ((empty($params['calendar_focus']) || $params['calendar_focus'] != 'ignore') && strpos($_SERVER["SCRIPT_NAME"],"tiki-calendar.php") && isset($_REQUEST["todate"]) && $_REQUEST["todate"]) {
 		$last = $_REQUEST["todate"];
 		$_SESSION["slvn_last_login"] = $last;
 		$smarty->assign('tpl_module_title', tra('Changes since'));
@@ -98,15 +83,8 @@ function module_since_last_visit_new($mod_reference, $params = null)
 		$smarty->assign('tpl_module_title', tra('Changes since'));
 	} else {
 		$last = $tikilib->getOne("select `lastLogin` from `users_users` where `login`=?",array($user));
+		if (!$last) $last = time();
 		$smarty->assign('tpl_module_title', tra('Since your last visit...'));
-		if (!$last || !empty($params['daysAtLeast'])) {
-			$now = TikiLib::lib('tiki')->now;
-			if (!$last) $last = $now;
-			if (!empty($params['daysAtLeast']) && $now - $last < $params['daysAtLeast']*60*60*24) {
-				$last = $now - $params['daysAtLeast']*60*60*24;
-				$smarty->assign('tpl_module_title', tr('In the last %0 days...', $params['daysAtLeast']));
-			}
-		}
 	}
 	$ret["lastLogin"] = $last;
 
@@ -125,17 +103,17 @@ function module_since_last_visit_new($mod_reference, $params = null)
 		case "article":
 			$perm = 'tiki_p_read_article';
 			$ret["items"]["comments"]["list"][$count]["href"]
-				= filter_out_sefurl($ret["items"]["comments"]["list"][$count]["href"], 'article', $res['title']);
+				= filter_out_sefurl($ret["items"]["comments"]["list"][$count]["href"], $smarty, 'article', $res['title']);
 			break;
 		case "post":
 			$perm = 'tiki_p_read_blog';
 			$ret["items"]["comments"]["list"][$count]["href"]
-				= filter_out_sefurl($ret["items"]["comments"]["list"][$count]["href"], 'blogpost', $res['title']);
+				= filter_out_sefurl($ret["items"]["comments"]["list"][$count]["href"], $smarty, 'blogpost', $res['title']);
 			break;
 		case "blog":
 			$perm = 'tiki_p_read_blog';
 			$ret["items"]["comments"]["list"][$count]["href"]
-				= filter_out_sefurl($ret["items"]["comments"]["list"][$count]["href"], 'blog', $res['title']);
+				= filter_out_sefurl($ret["items"]["comments"]["list"][$count]["href"], $smarty, 'blog', $res['title']);
 			break;
 		case "faq":
 			$perm = 'tiki_p_view_faqs';
@@ -198,9 +176,9 @@ function module_since_last_visit_new($mod_reference, $params = null)
 				}
 				$ret["items"]["posts"]["list"][$count]["title"] = $tikilib->get_short_datetime($res["commentDate"]) ." ". tra("by") ." ". $res["userName"];
 				if ($res["parentId"] == 0 || $prefs['forum_reply_notitle'] != 'y') {
-					$ret["items"]["posts"]["list"][$count]["label"] = $res["title"];
+					$ret["items"]["posts"]["list"][$count]["label"] = $res["title"]; 
 				} else {
-					$ret["items"]["posts"]["list"][$count]["label"] = $res["topic_title"];
+					$ret["items"]["posts"]["list"][$count]["label"] = $res["topic_title"]; 
 				}
 				++$count;	
 			}
@@ -211,7 +189,7 @@ function module_since_last_visit_new($mod_reference, $params = null)
 
 	/////////////////////////////////////////////////////////////////////////
 	// WIKI PAGES
-	if ($prefs['feature_wiki'] == 'y') {
+	if ($prefs['feature_wiki'] == 'y') {  
 		$ret["items"]["pages"]["label"] = tra('wiki pages changed');
 		$ret["items"]["pages"]["cname"] = "slvn_pages_menu";
 		$query = "select `pageName`, `user`, `lastModif`  from `tiki_pages` where `lastModif`>? order by `lastModif` desc";
@@ -220,9 +198,9 @@ function module_since_last_visit_new($mod_reference, $params = null)
 		$count = 0;
 		while ($res = $result->fetchRow()) {
 			if ($userlib->user_has_perm_on_object($user,$res['pageName'], 'wiki page', 'tiki_p_view')) {
-				$ret["items"]["pages"]["list"][$count]["href"]  = filter_out_sefurl('tiki-index.php?page=' . urlencode($res['pageName']));;
+				$ret["items"]["pages"]["list"][$count]["href"]  = filter_out_sefurl('tiki-index.php?page=' . urlencode($res['pageName']), $smarty);;
 				$ret["items"]["pages"]["list"][$count]["title"] = $tikilib->get_short_datetime($res["lastModif"]) ." ". tra("by") ." ". $res["user"];
-				$ret["items"]["pages"]["list"][$count]["label"] = $res["pageName"];
+				$ret["items"]["pages"]["list"][$count]["label"] = $res["pageName"]; 
 				$count++;
 			}
 		}
@@ -232,11 +210,11 @@ function module_since_last_visit_new($mod_reference, $params = null)
 
 	/////////////////////////////////////////////////////////////////////////
 	// ARTICLES
-	if ($prefs['feature_articles'] == 'y') {
+	if ($prefs['feature_articles'] == 'y' ) {    
 		$ret["items"]["articles"]["label"] = tra('new articles');
 		$ret["items"]["articles"]["cname"] = "slvn_articles_menu";
 
-		if ($userlib->user_has_permission($user, "tiki_p_edit_article")) {
+		if($userlib->user_has_permission($user, "tiki_p_edit_article")) {
 			$query = "select `articleId`,`title`,`publishDate`,`authorName` from `tiki_articles` where `created`>? and `expireDate`>?";
 			$bindvars = array((int)$last,time());
 		} else {
@@ -248,9 +226,9 @@ function module_since_last_visit_new($mod_reference, $params = null)
 		$count = 0;
 		while ($res = $result->fetchRow()) {
 			if ($userlib->user_has_perm_on_object($user,$res['articleId'], 'article', 'tiki_p_read_article')) {
-				$ret["items"]["articles"]["list"][$count]["href"]  = filter_out_sefurl('tiki-read_article.php?articleId=' . $res['articleId'], 'article', $res['title']);
+				$ret["items"]["articles"]["list"][$count]["href"]  = filter_out_sefurl('tiki-read_article.php?articleId=' . $res['articleId'], $smarty, 'article', $res['title']);
 				$ret["items"]["articles"]["list"][$count]["title"] = $tikilib->get_short_datetime($res["publishDate"]) ." ". tra("by") ." ". $res["authorName"];
-				$ret["items"]["articles"]["list"][$count]["label"] = $res["title"];
+				$ret["items"]["articles"]["list"][$count]["label"] = $res["title"]; 
 				$count++;
 			}
 		}
@@ -260,7 +238,7 @@ function module_since_last_visit_new($mod_reference, $params = null)
 
 	/////////////////////////////////////////////////////////////////////////
 	// FAQs
-	if ($prefs['feature_faqs'] == 'y') {
+	if ($prefs['feature_faqs'] == 'y') {    
 		$ret["items"]["faqs"]["label"] = tra('new FAQs');
 		$ret["items"]["faqs"]["cname"] = "slvn_faqs_menu";
 
@@ -272,7 +250,7 @@ function module_since_last_visit_new($mod_reference, $params = null)
 			if ($userlib->user_has_perm_on_object($user, $res['faqId'], 'faq', 'tiki_p_view_faq')) {
 				$ret["items"]["faqs"]["list"][$count]["href"]  = "tiki-view_faq.php?faqId=" . $res["faqId"];
 				$ret["items"]["faqs"]["list"][$count]["title"] = $tikilib->get_short_datetime($res["created"]);
-				$ret["items"]["faqs"]["list"][$count]["label"] = $res["title"];
+				$ret["items"]["faqs"]["list"][$count]["label"] = $res["title"]; 
 				$count++;
 			}
 		}
@@ -282,7 +260,7 @@ function module_since_last_visit_new($mod_reference, $params = null)
 
 	/////////////////////////////////////////////////////////////////////////
 	// BLOGS
-	if ($prefs['feature_blogs'] == 'y') {
+	if ($prefs['feature_blogs'] == 'y') {    
 		$ret["items"]["blogs"]["label"] = tra('new blogs');
 		$ret["items"]["blogs"]["cname"] = "slvn_blogs_menu";
 
@@ -292,9 +270,9 @@ function module_since_last_visit_new($mod_reference, $params = null)
 		$count = 0;
 		while ($res = $result->fetchRow()) {
 			if ($userlib->user_has_perm_on_object($user, $res['blogId'], 'blog', 'tiki_p_read_blog')) {
-				$ret["items"]["blogs"]["list"][$count]["href"]  = filter_out_sefurl('tiki-view_blog.php?blogId=' . $res['blogId'], 'blog', $res['title']);
+				$ret["items"]["blogs"]["list"][$count]["href"]  = filter_out_sefurl('tiki-view_blog.php?blogId=' . $res['blogId'], $smarty, 'blog', $res['title']);
 				$ret["items"]["blogs"]["list"][$count]["title"] = $tikilib->get_short_datetime($res["created"]) ." ". tra("by") ." ". $res["user"];
-				$ret["items"]["blogs"]["list"][$count]["label"] = $res["title"];
+				$ret["items"]["blogs"]["list"][$count]["label"] = $res["title"]; 
 				$count++;
 			}
 		}
@@ -310,9 +288,9 @@ function module_since_last_visit_new($mod_reference, $params = null)
 		$count = 0;
 		while ($res = $result->fetchRow()) {
 			if ($userlib->user_has_perm_on_object($user,$res['blogId'], 'blog', 'tiki_p_read_blog')) {
-				$ret["items"]["blogPosts"]["list"][$count]["href"]  = filter_out_sefurl('tiki-view_blog_post.php?postId=' . $res['postId'], 'blogpost', $res['title']);
+				$ret["items"]["blogPosts"]["list"][$count]["href"]  = filter_out_sefurl('tiki-view_blog_post.php?postId=' . $res['postId'], $smarty, 'blogpost', $res['title']);
 				$ret["items"]["blogPosts"]["list"][$count]["title"] = $tikilib->get_short_datetime($res["created"]) ." ". tra("by") ." ". $res["user"];
-				$ret["items"]["blogPosts"]["list"][$count]["label"] = $res["title"];
+				$ret["items"]["blogPosts"]["list"][$count]["label"] = $res["title"]; 
 				$count++;
 			}
 		}
@@ -334,7 +312,7 @@ function module_since_last_visit_new($mod_reference, $params = null)
 			if ($userlib->user_has_perm_on_object($user,$res['galleryId'], 'image gallery', 'tiki_p_view_image_gallery')) {
 				$ret["items"]["imageGalleries"]["list"][$count]["href"]  = "tiki-browse_gallery.php?galleryId=" . $res["galleryId"];
 				$ret["items"]["imageGalleries"]["list"][$count]["title"] = $tikilib->get_short_datetime($res["created"]) ." ". tra("by") ." ". $res["user"];
-				$ret["items"]["imageGalleries"]["list"][$count]["label"] = $res["name"];
+				$ret["items"]["imageGalleries"]["list"][$count]["label"] = $res["name"]; 
 				$count++;
 			}
 		}
@@ -351,7 +329,7 @@ function module_since_last_visit_new($mod_reference, $params = null)
 			if ($userlib->user_has_perm_on_object($user,$res['galleryId'], 'image gallery', 'tiki_p_view_image_gallery')) {
 				$ret["items"]["images"]["list"][$count]["href"]  = "tiki-browse_image.php?galleryId=" . $res["galleryId"]. "&imageId=" .$res["imageId"];
 				$ret["items"]["images"]["list"][$count]["title"] = $tikilib->get_short_datetime($res["created"]) ." ". tra("by") ." ". $res["user"];
-				$ret["items"]["images"]["list"][$count]["label"] = $res["name"];
+				$ret["items"]["images"]["list"][$count]["label"] = $res["name"]; 
 				$count++;
 			}
 		}
@@ -373,7 +351,7 @@ function module_since_last_visit_new($mod_reference, $params = null)
 			if ($userlib->user_has_perm_on_object($user, $res['galleryId'], 'file gallery', 'tiki_p_view_file_gallery')) {
 				$ret["items"]["fileGalleries"]["list"][$count]["href"]  = "tiki-list_file_gallery.php?galleryId=" . $res["galleryId"];
 				$ret["items"]["fileGalleries"]["list"][$count]["title"] = $tikilib->get_short_datetime($res["created"]) ." ". tra("by") ." ". $res["user"];
-				$ret["items"]["fileGalleries"]["list"][$count]["label"] = $res["name"];
+				$ret["items"]["fileGalleries"]["list"][$count]["label"] = $res["name"]; 
 				$count++;
 			}
 		}
@@ -390,7 +368,7 @@ function module_since_last_visit_new($mod_reference, $params = null)
 			if ($userlib->user_has_perm_on_object($user,$res['galleryId'], 'file gallery', 'tiki_p_view_file_gallery')) {
 				$ret["items"]["files"]["list"][$count]["href"]  = "tiki-list_file_gallery.php?galleryId=" . $res["galleryId"];
 				$ret["items"]["files"]["list"][$count]["title"] = $tikilib->get_short_datetime($res["created"]) ." ". tra("by") ." ". $res["user"];
-				$ret["items"]["files"]["list"][$count]["label"] = $res["name"]. " (".$res["filename"].")";
+				$ret["items"]["files"]["list"][$count]["label"] = $res["name"]. " (".$res["filename"].")"; 
 				$count++;
 			}
 		}
@@ -411,12 +389,12 @@ function module_since_last_visit_new($mod_reference, $params = null)
 		while ($res = $result->fetchRow()) {
 			$ret["items"]["polls"]["list"][$count]["href"]  = "tiki-poll_results.php?pollId=" . $res["pollId"];
 			$ret["items"]["polls"]["list"][$count]["title"] = $tikilib->get_short_datetime($res["publishDate"]);
-			$ret["items"]["polls"]["list"][$count]["label"] = $res["title"];
+			$ret["items"]["polls"]["list"][$count]["label"] = $res["title"]; 
 			$count++;
 		}
 		$ret["items"]["polls"]["count"] = $count;
 	}
-
+  
 
 	/////////////////////////////////////////////////////////////////////////
 	// NEW USERS
@@ -429,9 +407,9 @@ function module_since_last_visit_new($mod_reference, $params = null)
 		$count = 0;
 		$slvn_tmp_href = $userlib->user_has_permission($user, "tiki_p_admin") ? "tiki-assignuser.php?assign_user=" : "tiki-user_information.php?view_user=";
 		while ($res = $result->fetchRow()) {
-			$ret["items"]["users"]["list"][$count]["href"]  = $slvn_tmp_href . rawurlencode($res["login"]);
+			$ret["items"]["users"]["list"][$count]["href"]  = $slvn_tmp_href . $res["login"];
 			$ret["items"]["users"]["list"][$count]["title"] = $tikilib->get_short_datetime($res["registrationDate"]);
-			$ret["items"]["users"]["list"][$count]["label"] = $res["login"];
+			$ret["items"]["users"]["list"][$count]["label"] = $res["login"]; 
 			$count++;
 		}
 		$ret["items"]["users"]["count"] = $count;
@@ -441,7 +419,7 @@ function module_since_last_visit_new($mod_reference, $params = null)
 	// TRACKER ITEMS
 	// This breaks out tracker updates into sub-sections, by tracker, separating new items and updated items.
 		// NEW TRACKER ITEMS
-	if ($prefs['feature_trackers'] == 'y' && (!isset($params['showtracker']) || $params['showtracker'] != 'n')) {
+	if ($prefs['feature_trackers'] == 'y' && (!isset($params['showtracker']) || $params['showtracker'] != 'n')) {    
 		$ret["items"]["trackers"]["label"] = tra('new tracker items');
 		$ret["items"]["trackers"]["cname"] = "slvn_trackers_menu";
 
@@ -466,9 +444,9 @@ function module_since_last_visit_new($mod_reference, $params = null)
 
 				$ret["items"]["trackers"]["tid"][$res['trackerId']]["label"] = tra('in') . ' ' . tra($tracker_name[$res["trackerId"]]);
 				$ret["items"]["trackers"]["tid"][$res['trackerId']]["cname"] = "slvn_tracker" . $res["trackerId"] . "_menu";
-				$ret['items']['trackers']['tid'][$res['trackerId']]['list'][$counta[$res['trackerId']]]['href']  = filter_out_sefurl('tiki-view_tracker_item.php?itemId=' . $res['itemId'], 'trackeritem');
+				$ret["items"]["trackers"]["tid"][$res['trackerId']]["list"][$counta[$res['trackerId']]]["href"]  = "tiki-view_tracker_item.php?itemId=" . $res["itemId"];
 				$ret["items"]["trackers"]["tid"][$res['trackerId']]["list"][$counta[$res['trackerId']]]["title"] = $tikilib->get_short_datetime($res["created"]);
-
+	   
 				// routine to verify field in tracker that's used as label
 				$cacheKey = 'trackerItemLabel'.$res['itemId'];
 				if (! $label = $cachelib->getCached($cacheKey)) {
@@ -520,7 +498,7 @@ function module_since_last_visit_new($mod_reference, $params = null)
 				$ret["items"]["utrackers"]["tid"][$res['trackerId']]["cname"] = "slvn_utracker" . $res["trackerId"] . "_menu";
 				$ret["items"]["utrackers"]["tid"][$res['trackerId']]["list"][$countb[$res['trackerId']]]["href"]  = "tiki-view_tracker_item.php?itemId=" . $res["itemId"];
 				$ret["items"]["utrackers"]["tid"][$res['trackerId']]["list"][$countb[$res['trackerId']]]["title"] = $tikilib->get_short_datetime($res["lastModif"]);
-	
+	   
 				// routine to verify field in tracker that's used as label
 				$cacheKey = 'trackerItemLabel'.$res['itemId'];
 				if (! $label = $cachelib->getCached($cacheKey)) {

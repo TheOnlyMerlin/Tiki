@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,7 +12,7 @@ if ( basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__) ) {
 }
 
 // The following constant is at least used in the release.php script and in the error handling functions
-define('THIRD_PARTY_LIBS_PATTERN', '#lib/(pear|ajax|adodb)#');
+define( 'THIRD_PARTY_LIBS_PATTERN', '#lib/(pear|ajax|adodb)#' );
 
 define('TIKI_SMARTY_DIR', 'lib/smarty_tiki/');
 // add a line like the following in db/local.php to use an external smarty installation: $smarty_path='/usr/share/php/smarty/'

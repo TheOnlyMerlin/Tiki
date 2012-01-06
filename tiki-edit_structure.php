@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -117,7 +117,7 @@ if (isset($_REQUEST["create"])) {
 		$structlib->s_create_page($_REQUEST['page_ref_id'], $after, $_REQUEST['name'], '', $structure_info['page_ref_id']);
 		$userlib->copy_object_permissions($page_info["pageName"], $_REQUEST["name"],'wiki page');
 	} 
-	elseif (!empty($_REQUEST['name2'])) {
+	elseif(!empty($_REQUEST['name2'])) {
 		foreach ($_REQUEST['name2'] as $name) {
 			$new_page_ref_id = $structlib->s_create_page($_REQUEST['page_ref_id'], $after, $name, '', $structure_info['page_ref_id']);
       $after = $new_page_ref_id;      
@@ -129,7 +129,7 @@ if (isset($_REQUEST["create"])) {
 		$pages_added = array();
 		if (!(empty($_REQUEST['name']))) { 
 			$pages_added[] = $_REQUEST['name'];
-		} elseif (!empty($_REQUEST['name2'])) {
+		} elseif(!empty($_REQUEST['name2'])) {
   			foreach ($_REQUEST['name2'] as $name) {
 				$pages_added[] = $name;
   			}
@@ -327,7 +327,7 @@ if ($prefs['feature_wiki_categorize_structure'] == 'y' && $all_editable == 'y') 
 	include_once("categorize_list.php");
 } elseif ($prefs['feature_categories'] == 'y') {
 	global $categlib; include_once('lib/categories/categlib.php');
-	$categories = $categlib->getCategories();
+	$categories = $categlib->get_all_categories_respect_perms($user, 'view_category');
 	$smarty->assign_by_ref('categories', $categories);
 }
 

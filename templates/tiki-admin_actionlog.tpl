@@ -46,7 +46,7 @@
 							<select multiple="multiple" size="{if $groups|@count > 5}5{else}{math equation=x+y x=$groups|@count y=1}{/if}" name="selectedGroups[]">
 								<option value="">{tr}All{/tr}</option>
 								{foreach from=$groups key=ix item=group}
-									<option value="{$group|escape}" {if $selectedGroups[$group] eq 'y'}selected="selected"{/if}>{$group|escape}</option>
+									<option value="{$group|escape}" {if $selectedGroups[$group] eq 'y'}selected="selected"{/if}>{$group}</option>
 								{/foreach}
 							</select>
 						</td>
@@ -209,9 +209,6 @@
 						</th>
 					{/if}
 					<th>
-						{tr}IP{/tr}
-					</th>
-					<th>
 						<a href="tiki-admin_actionlog.php?startDate={$startDate}&amp;endDate={$endDate}&amp;sort_mode=add_{if $sort_mode eq 'add_desc'}asc{else}desc{/if}{$url}">+{if $unit eq 'kb'}{tr}kb{/tr}{else}{tr}bytes{/tr}{/if}</a>
 					</th>
 					<th>
@@ -231,20 +228,19 @@
 				{cycle values="even,odd" print=false}
 				{foreach from=$actionlogs item=actionlog}
 					<tr class="{cycle}">
-						<td class="username">
-							{if $actionlog.user}{$actionlog.user|escape}{else}{tr}Anonymous{/tr}{/if}
+						<td>
+							{if $actionlog.user}{$actionlog.user}{else}{tr}Anonymous{/tr}{/if}
 						</td>
-						<td class="date">
+						<td>
 							{$actionlog.lastModif|tiki_short_datetime}
 						</td>
-						<td class="text">
-							{tr}{$actionlog.action|escape}{/tr}
-							{if $actionlog.action eq 'Categorized' || $actionlog.action eq 'Uncategorized'}/{$actionlog.comment|replace:"categId=":""}{/if}
+						<td>
+							{tr}{$actionlog.action}{/tr}
 						</td>
-						<td class="text">
+						<td>
 							{tr}{$actionlog.objectType}{/tr}
 						</td>
-						<td class="text">
+						<td>
 							{if $actionlog.link}
 								<a href="{$actionlog.link}" target="_blank" title="{tr}View{/tr}">{$actionlog.object|escape}</a>
 							{else}
@@ -256,9 +252,6 @@
 								{assign var=ic value=$actionlog.categId}{$categNames[$ic]|escape}
 							</td>
 						{/if}
-						<td class="text">
-							{tr}{$actionlog.ip}{/tr}
-						</td>
 						<td class="{if $actionlog.add} diffadded{/if}">
 							{if $actionlog.add or $actionlog.add eq '0'}{$actionlog.add}{else}&nbsp;{/if}
 						</td>
@@ -269,7 +262,7 @@
 							<td>
 								{foreach name=contribution from=$actionlog.contributions item=contribution}
 									{if !$smarty.foreach.contribution.first}, {/if}
-									{$contribution.name|escape}
+									{$contribution.name}
 								{/foreach}
 							</td>
 							{if $prefs.feature_contributor_wiki eq 'y'}
@@ -280,15 +273,16 @@
 									{/foreach}
 								</td>
 							{/if}
+							{if $tiki_p_admin eq 'y' and ($prefs.feature_contribution eq 'y' or $prefs.feature_categories eq 'y')}
+								<td>
+									{if $actionlog.actionId}
+										<a class="link" href="tiki-admin_actionlog.php?actionId={$actionlog.actionId}&amp;startDate={$startDate}&amp;endDate={$endDate}#action" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
+										{self_link _class='link' remove='y' actionId=$actionlog.actionId _icon='cross' _title="{tr}Remove{/tr}"}{/self_link}
+									{/if}
+								</td>
+							{/if}
 						{/if}
-						{if $tiki_p_admin eq 'y' and ($prefs.feature_contribution eq 'y' or $prefs.feature_categories eq 'y')}
-							<td class="action">
-								{if $actionlog.actionId}
-									<a class="link" href="tiki-admin_actionlog.php?actionId={$actionlog.actionId}&amp;startDate={$startDate}&amp;endDate={$endDate}#action" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
-									{self_link _class='link' remove='y' actionId=$actionlog.actionId _icon='cross' _title="{tr}Remove{/tr}"}{/self_link}
-								{/if}
-							</td>
-						{/if}
+						<!-- {cycle} -->
 					</tr>
 				{/foreach}
 			</table>
@@ -377,7 +371,7 @@
 
 		{if $showCateg eq 'y' and $volCateg|@count ne 0 and $tiki_p_admin eq 'y'}
 			<table class="normal">
-				<caption>{tr}Volume per category{/tr}</caption>
+				<caption>{tr}Volumn per category{/tr}</caption>
 				<tr>
 					<th>{tr}Category{/tr}</th>
 					{foreach item=type from=$typeVol}
@@ -401,7 +395,7 @@
 
 		{if $showCateg eq 'y' and $volUserCateg|@count ne 0}
 			<table class="normal">
-				<caption>{tr}Volume per category and per user{/tr}</caption>
+				<caption>{tr}Volumn per category and per user{/tr}</caption>
 				<tr>
 					<th>{tr}Category{/tr}</th>
 					<th>{tr}User{/tr}</th>
@@ -431,20 +425,20 @@
 				<tr>
 					<th>{tr}User{/tr}</th>
 					{foreach key=title item=nb from=$userActions.0}
-						{if $title ne 'user'}<th>{$title|replace:"/":" "|escape}</th>{/if}
+						{if $title ne 'user'}<th>{$title|replace:"/":" "}</th>{/if}
 					{/foreach}
 				</tr>
 				{cycle values="even,odd" print=false}
 				{foreach item=stat from=$userActions name=userActions}
 					<tr class="{cycle}">
-						<td class="username">{$stat.user|escape}</td>
+						<td>{$stat.user}</td>
 						{foreach key=a item=nb from=$stat}
-							{if $a ne 'user'}<td class="integer">{$nb}</td>{/if}
+							{if $a ne 'user'}<td>{$nb}</td>{/if}
 						{/foreach}
 					</tr>
 				{/foreach}
 			</table>
-			{tr}Total number of users:{/tr} {$smarty.foreach.userActions.total}
+			{tr}Total number of users{/tr}: {$smarty.foreach.userActions.total}
 		{/if}
 
 		{if $objectActions|@count ne 0}
@@ -453,22 +447,22 @@
 				<tr>
 					<th>{tr}Object{/tr}</th>
 					{foreach key=title item=nb from=$objectActions[0]}
-						{if $title ne 'object' and $title ne 'link'}<th>{$title|replace:"/":" "|escape}</th>{/if}
+						{if $title ne 'object' and $title ne 'link'}<th>{$title|replace:"/":" "}</th>{/if}
 					{/foreach}
 				</tr>
 				{cycle values="even,odd" print=false}
 				{foreach item=stat from=$objectActions name=objectActions}
 					<tr class="{cycle}">
-						<td class="text">
+						<td>
 							{if $stat.link}<a href="{$stat.link}" target="_blank" title="{tr}View{/tr}">{$stat.object|escape}</a>{else}{$stat.object|escape}{/if}
 						</td>
 						{foreach key=a item=nb from=$stat}
-							{if $a ne 'object' and $a ne 'link'}<td class="integer">{$nb}</td>{/if}
+							{if $a ne 'object' and $a ne 'link'}<td>{$nb}</td>{/if}
 						{/foreach}
 					</tr>
 				{/foreach}
 			</table>
-			{tr}Total number of objects:{/tr} {$smarty.foreach.objectActions.total}
+			{tr}Total number of objects{/tr}: {$smarty.foreach.objectActions.total}
 		{/if}
 
 		{if $showCateg eq 'y' and $tiki_p_admin eq 'y'}
@@ -477,14 +471,14 @@
 				<tr>
 					<th>{tr}Category{/tr}</th>
 					{foreach key=title item=nb from=$statCateg[0]}
-						{if $title ne 'category'}<th>{$title|replace:"/":" "|escape}</th>{/if}
+						{if $title ne 'category'}<th>{$title|replace:"/":" "}</th>{/if}
 					{/foreach}
 				</tr>
 				{foreach key=categId item=stat from=$statCateg}
 					<tr class="{cycle}">
-						<td class="text">{$stat.category|escape}</td>
+						<td>{$stat.category}</td>
 						{foreach key=a item=nb from=$statCateg[$categId]}
-							{if $a ne 'category'}<td class="integer">{$nb}</td>{/if}
+							{if $a ne 'category'}<td>{$nb}</td>{/if}
 						{/foreach}
 						<!-- {cycle} -->
 					</tr>
@@ -504,11 +498,11 @@
 				</tr>
 				{foreach key=categUser item=stat from=$statUserCateg}
 					<tr class="{cycle}">
-						<td class="text">{$stat.category|escape}</td>
-						<td class="username">{$stat.user|escape}</td>
+						<td>{$stat.category}</td>
+						<td>{$stat.user}</td>
 						{foreach key=a item=nb from=$stat}
 							{if $a ne 'category' and $a ne 'user'}
-								<td class="integer">{$nb}</td>
+								<td>{$nb}</td>
 							{/if}
 						{/foreach}
 					</tr>
@@ -520,9 +514,9 @@
 			<table>
 				<caption>
 					{if $selectedUsers}
-						{tr}Volume per the users' group and per contribution{/tr}
+						{tr}Volumn per the users'group and per contribution{/tr}
 					{else}
-						{tr}Volume per group and per contribution{/tr}
+						{tr}Volumn per group and per contribution{/tr}
 					{/if}
 				</caption>
 				<tr>
@@ -534,10 +528,10 @@
 				{foreach from=$groupContributions key=group item=contributions}
 					{foreach from=$contributions key=contribution item=stat}
 						<tr class="{cycle}">
-							<td class="text">{$group|escape}</td>
-							<td class="text">{$contribution|escape}</td>
-							<td class="integer">{$stat.add}</td>
-							<td class="integer">{$stat.del}</td>
+							<td>{$group}</td>
+							<td>{$contribution}</td>
+							<td>{$stat.add}</td>
+							<td>{$stat.del}</td>
 						</tr>
 					{/foreach}
 				{/foreach}
@@ -546,7 +540,7 @@
 
 		{if $prefs.feature_contribution eq 'y' && isset($userContributions) && $userContributions|@count >= 1}
 			<table>
-				<caption>{tr}Volume per user and per contribution{/tr}</caption>
+				<caption>{tr}Volumn per user and per contribution{/tr}</caption>
 				<tr>
 					<th>{tr}User{/tr}</th>
 					<th>{tr}Contribution{/tr}</th>
@@ -556,10 +550,10 @@
 				{foreach from=$userContributions key=user item=contributions}
 					{foreach from=$contributions key=contribution item=stat}
 						<tr class="{cycle}">
-							<td class="username">{$user|escape}</td>
-							<td class="text">{$stat.name|escape}</td>
-							<td class="integer">{$stat.stat.add}</td>
-							<td class="integer">{$stat.stat.del}</td>
+							<td>{$user}</td>
+							<td>{$stat.name}</td>
+							<td>{$stat.stat.add}</td>
+							<td>{$stat.stat.del}</td>
 						</tr>
 					{/foreach}
 				{/foreach}
@@ -568,20 +562,20 @@
 
 		{if $prefs.feature_contribution eq 'y' && isset($contributionStat)}
 			<table>
-				<caption>{if $selectedUsers}{tr}Volume per users' contribution and time{/tr}{else}{tr}Volume per contribution and time{/tr}{/if}</caption>
+				<caption>{if $selectedUsers}{tr}Volumn per users'contribution and time{/tr}{else}{tr}Volumn per contribution and time{/tr}{/if}</caption>
 				<tr>
 					<th>{tr}Contribution{/tr}</th>
 					<th colspan="{$contributionNbCols}">{if $contribTime eq 'd'}{tr}Days{/tr}{else}{tr}Weeks{/tr}{/if}</th>
 				</tr>
 				<tr>
 					<th></th>
-					{section name=foo start=0 loop=$contributionNbCols}
+					{section name=foo start=0 loop=`$contributionNbCols`}
 						<th>{$smarty.section.foo.index+1}</th>
 					{/section}
 				</tr>
 				{foreach from=$contributionStat key=contributionId item=contribution}
 					<tr class="{cycle}">
-						<td>{$contribution.name|escape}</td>
+						<td>{$contribution.name}</td>
 						{foreach from=$contribution.stat item=stat}
 							<td>
 								{if !empty($stat.add)}<span class="diffadded">{$stat.add}</span>{/if}
@@ -649,16 +643,16 @@
 			{foreach from=$action_log_conf_selected item=actionlog}
 				<tr class="{cycle}">
 					{if $tiki_p_admin eq 'y'}
-						<td class="checkbox">
+						<td>
 							<input type="checkbox" name="{$actionlog.code}" {if $actionlog.status eq 'y' or $actionlog.status eq 'v'}checked="checked"{/if} />
 						</td>
 					{/if}
 					{if $tiki_p_admin eq 'y' or $actionlog.status eq 'y' or $actionlog.status eq 'v'}
-						<td class="checkbox">
+						<td>
 							<input type="checkbox" name="v_{$actionlog.code}" {if $actionlog.status eq 'v'}checked="checked"{/if} />
 						</td>
-						<td class="text">{tr}{$actionlog.action}{/tr}</td>
-						<td class="text">{tr}{$actionlog.objectType}{/tr}</td>
+						<td>{tr}{$actionlog.action}{/tr}</td>
+						<td>{tr}{$actionlog.objectType}{/tr}</td>
 					{/if}
 				</tr>
 			{/foreach}

@@ -2,7 +2,7 @@ Tiki Copyright
 ----------------
 
 The following list attempts to gather the copyright holders for Tiki
-as of version 8.0.
+as of version 6.0.
 
 Accounts listed below with commits have contributed source code to CVS or SVN. 
 Please note that even more people contributed on various other aspects (documentation, 
@@ -12,13 +12,13 @@ This is how we implement the Tiki Social Contract.
 http://tiki.org/Social+Contract
 
 List of members of the Community
-As of 2011-12-09, the community has:
+As of 2011-12-08, the community has:
   * 519 members on SourceForge.net,
   * 260 of those people who made at least one code commit
 
 This list is automatically generated and alphabetically sorted
 from subversion repository by the following script:
-  doc/devtools/release.php
+  doc/devtools/release_copyright.php
 
 Counting the commits is not as trivial as it may sound. If your number of commits
 seems incorrect, it could be that the script is not detecting them all. This 
@@ -1200,8 +1200,8 @@ SF Role: Developer
 Nickname: jonnybradley
 Name: jonny Bradley
 First Commit: 2007-08-15
-Last Commit: 2011-12-09
-Number of Commits: 4038
+Last Commit: 2011-12-08
+Number of Commits: 4037
 SF Role: Developer
 
 Nickname: jorgercosta
@@ -1987,8 +1987,8 @@ Number of Commits: 1
 
 Nickname: pkdille
 First Commit: 2007-03-14
-Last Commit: 2011-12-09
-Number of Commits: 1727
+Last Commit: 2011-12-08
+Number of Commits: 1722
 SF Role: Developer
 
 Nickname: plillevold
@@ -2171,8 +2171,8 @@ SF Role: Developer
 Nickname: robertplummer
 Name: Robert Plummer
 First Commit: 2010-06-30
-Last Commit: 2011-12-09
-Number of Commits: 659
+Last Commit: 2011-12-08
+Number of Commits: 657
 
 Nickname: robferguson
 Name: Rob Ferguson
@@ -2250,8 +2250,8 @@ Number of Commits: 3
 Nickname: sampaioprimo
 Name: Rodrigo Sampaio Primo
 First Commit: 2005-10-17
-Last Commit: 2011-12-09
-Number of Commits: 1035
+Last Commit: 2011-12-06
+Number of Commits: 1031
 SF Role: Developer
 
 Nickname: scarle

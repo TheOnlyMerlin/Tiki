@@ -54,9 +54,9 @@
 <div class="categbar" align="right">
     {if $user and $prefs.feature_user_watches eq 'y'}
         {if $category_watched eq 'y'}
-            {tr}Watched by categories:{/tr}
+            {tr}Watched by categories{/tr}:
             {section name=i loop=$watching_categories}
-			    <a href="tiki-browse_categories.php?parentId={$watching_categories[i].categId}">{$watching_categories[i].name|escape}</a>&nbsp;
+			    <a href="tiki-browse_categories.php?parentId={$watching_categories[i].categId}">{$watching_categories[i].name}</a>&nbsp;
             {/section}
         {/if}			
     {/if}
@@ -90,23 +90,22 @@
           <a href="{$item.galleryId|sefurl:gallery}"><img alt="{tr}subgallery{/tr} {$item.name}" class="athumb" src="show_image.php?id={$item.imageId}&amp;thumb=1" /></a>
 	  <br />
 	  <small class="caption">
-		{tr}Subgallery:{/tr} 
+		{tr}Subgallery{/tr}: 
 			{if $showname=='y' || $showfilename=='y'}{$item.name}<br />{/if}
-			{if $showimageid=='y'}{tr}ID:{/tr} {$item.galleryId}<br />{/if}
+			{if $showimageid=='y'}{tr}ID{/tr}: {$item.galleryId}<br />{/if}
 			{if $showcategories=='y'}
-				{tr}Categories:{/tr}
-					<ul>
-					{section name=categ loop=$item.categories}
-						<li>{$item.categories[categ]}</li>
-					{/section}
-					</ul><br />
+				{tr}Categories{/tr}:
+                       		{section name=categ loop=item.categories}
+                        		<li>{$item.categories[categ]}</li>
+                		{/section}
+                		</ul><br />
 			{/if}
 			{if $showdescription=='y'}{$item.description}<br />{/if}
-			{if $showcreated=='y'}{tr}Created:{/tr} {$item.created|tiki_short_date}<br />{/if}
-			{if $showuser=='y'}{tr}User:{/tr} {$item.user|userlink}<br />{/if}
+			{if $showcreated=='y'}{tr}Created{/tr}: {$item.created|tiki_short_date}<br />{/if}
+			{if $showuser=='y'}{tr}User{/tr}: {$item.user|userlink}<br />{/if}
 			{if $showxysize=='y' || $showfilesize=='y'}({$item.images} Images){/if}
 			{if $showhits=='y'}[{$item.hits} {if $item.hits == 1}{tr}Hit{/tr}{else}{tr}Hits{/tr}{/if}]<br />{/if}
-		</small>
+                        </small>
 	  </td>
          {if $key%$rowImages eq $rowImages2}
            </tr><tr>
@@ -128,10 +127,10 @@
 	  <small class="caption">
 	  {if $prefs.gal_image_mouseover neq 'only'}
 		{if $showname=='y'}{$item.name}<br />{/if}
-		{if $showfilename=='y'}{tr}Filename:{/tr} {$item.filename}<br />{/if}
-		{if $showimageid=='y'}{tr}ID:{/tr} {$item.imageId}<br />{/if}
+		{if $showfilename=='y'}{tr}Filename{/tr}: {$item.filename}<br />{/if}
+		{if $showimageid=='y'}{tr}ID{/tr}: {$item.imageId}<br />{/if}
 		{if $showcategories=='y'}
-		    	{tr}Categories:{/tr}
+		    	{tr}Categories{/tr}:
                         <ul class='categories'>
                         {section name=categ loop=$item.categories}
                         	<li>{$item.categories[categ]}</li>
@@ -139,8 +138,8 @@
                         </ul><br />
                 {/if}
 		{if $showdescription=='y'}{$item.description}<br />{/if}
-		{if $showcreated=='y'}{tr}Created:{/tr} {$item.created|tiki_short_date}<br />{/if}
-		{if $showuser=='y'}{tr}User:{/tr} {$item.user|userlink}<br />{/if}
+		{if $showcreated=='y'}{tr}Created{/tr}: {$item.created|tiki_short_date}<br />{/if}
+		{if $showuser=='y'}{tr}User{/tr}: {$item.user|userlink}<br />{/if}
 		{if $showxysize=='y'}({$item.xsize}x{$item.ysize}){/if}
 		{if $showfilesize=='y'}({$item.filesize} Bytes){/if}
 		{if $showhits=='y'}[{$item.hits} {if $item.hits == 1}{tr}Hit{/tr}{else}{tr}Hits{/tr}{/if}]{/if}
@@ -159,7 +158,7 @@
             	<a class="gallink" href="tiki-edit_image.php?galleryId={$galleryId}&amp;edit={$item.imageId}" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
           {/if}
           <a class="gallink" href="tiki-browse_image.php?galleryId={$galleryId}&amp;sort_mode={$sort_mode}&amp;imageId={$item.imageId}&amp;scalesize={$defaultscale}" {if $prefs.gal_image_mouseover neq 'n'}{popup fullhtml="1" text=$over_info.$key|escape:"javascript"|escape:"html"}{/if}>{icon _id='magnifier' alt="{tr}Details{/tr}"}</a>
-          <a {jspopup href="tiki-browse_image.php?galleryId=$galleryId&amp;sort_mode=$sort_mode&amp;imageId="|cat:$item.imageId|cat:"&amp;scalesize=$defaultscale&amp;popup=1"} class="gallink">
+          <a {jspopup href="tiki-browse_image.php?galleryId=$galleryId&amp;sort_mode=$sort_mode&amp;imageId=`$item.imageId`&amp;scalesize=$defaultscale&amp;popup=1"} class="gallink">
 {icon _id='layers' alt="{tr}popup{/tr}"}</a>
           <br />
 	</small>
@@ -169,7 +168,9 @@
          {/if}
         {/foreach}
         {else}
-				{norecords _colspan=6}
+          <tr><td colspan="6">
+            <p class="norecords">{tr}No records found{/tr}</p>
+          </td></tr>
         {/if}
     </table>
   </div>
@@ -182,20 +183,18 @@
   && (($tiki_p_read_comments == 'y'
   && $comments_cant != 0)
   ||  $tiki_p_post_comments  == 'y'
-  ||  $tiki_p_edit_comments  == 'y')}
+  ||  $tiki_p_edit_comments  == 'y')
+}
   <div id="page-bar" class="clearfix">
-		<span class="button"><a id="comment-toggle" href="{service controller=comment action=list type="image gallery" objectId=$galleryId}#comment-container">{tr}Comments{/tr}</a></span>
-		{jq}
-			$('#comment-toggle').comment_toggle();
-		{/jq}
+  	   {include file='comments_button.tpl'}
   </div>
-  <div id="comment-container"></div>
+  {include file='comments.tpl'}
 {/if}
 
 <table class="normal noslideshow">
 	<tr>
 		<td class="even" colspan="2" style="border:0px; font-size:x-small">
-			{tr}You can view this gallery's configured image (first, random, etc.) in your browser using:{/tr}
+			{tr}You can view this gallery's configured image (first, random, etc.) in your browser using{/tr}:
 		</td>
 	<tr>
 		<td width="6px" style="border:0px">
@@ -208,7 +207,7 @@
 	</tr>
 	<tr>
 		<td class="even" style="border-bottom:0px; font-size:x-small" colspan="2">
-			{tr}You can include the gallery's image in an HTML page using:{/tr}
+			{tr}You can include the gallery's image in an HTML page using{/tr}:
 		</td>
 	</tr>
 	<tr>
@@ -221,7 +220,7 @@
 	</tr>
 	<tr>
   		<td class="even" style="border-bottom:0px; font-size:x-small" colspan="2">
-			{tr}You can include the image in a tiki page using:{/tr}
+			{tr}You can include the image in a tiki page using{/tr}:
 		</td>
 	<tr>
 		<td width="6px" style="border:0px">

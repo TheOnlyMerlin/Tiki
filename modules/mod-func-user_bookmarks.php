@@ -1,28 +1,26 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
 
-function module_user_bookmarks_info()
-{
+function module_user_bookmarks_info() {
 	return array(
-		'name' => tra('My Bookmarks'),
+		'name' => tra('User bookmarks'),
 		'description' => tra('Lightweight interface to user bookmarks, enabling to view them concisely, do some manipulations and bookmark the page being viewed'),
 		'prefs' => array("feature_user_bookmarks"),
 		'params' => array()
 	);
 }
 
-function module_user_bookmarks($mod_reference, $module_params)
-{
+function module_user_bookmarks( $mod_reference, $module_params ) {
 	global $tikilib, $smarty;
 	
 	global $bookmarklib, $imagegallib, $user, $prefs, $tiki_p_create_bookmarks;
@@ -88,8 +86,7 @@ function module_user_bookmarks($mod_reference, $module_params)
 	
 				// Check if we are bookmarking a file gallery
 				if (strstr($_SERVER["REQUEST_URI"], 'tiki-list_file_gallery')) {
-					$filegallib = TikiLib::lib('filegal');
-					$info = $filegallib->get_file_gallery($setup_query_data["galleryId"]);
+					$info = $tikilib->get_file_gallery($setup_query_data["galleryId"]);
 	
 					$name = $info["name"];
 				}

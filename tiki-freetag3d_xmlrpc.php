@@ -1,19 +1,21 @@
 <?php 
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-include_once('tiki-setup.php');
+include_once("lib/init/initlib.php");
+require_once('db/tiki-db.php');
+require_once('lib/tikilib.php');
+require_once('lib/userslib.php');
 require_once("XML/Server.php");
 require_once("lib/freetag/freetaglib.php");
 
-$access->check_feature('feature_freetags', 'freetags_feature_3d');
 
 $map = array ("getSubGraph" => array( "function" => "getSubGraph" ) );
 
-$server = new XML_RPC_Server($map);
+$server = new XML_RPC_Server( $map );
 
 function getSubGraph($params) {
     global $freetaglib, $dbTiki, $base_url, $prefs;
@@ -51,7 +53,8 @@ function getSubGraph($params) {
 
 	    $node = array();
 
-	    $actionUrl = $base_url.'tiki-browse_freetags.php?tag='.$nodeName;
+	    if ( $prefs['feature_ajax'] == 'y' ) $actionUrl = "javascript:browseToTag('$nodeName');";
+	    else $actionUrl = $base_url.'tiki-browse_freetags.php?tag='.$nodeName;
 
 	    $node['neighbours'] = new XML_RPC_Value($neighbours, "array");
 	    if (!empty($color)) {

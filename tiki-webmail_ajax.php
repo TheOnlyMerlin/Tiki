@@ -1,62 +1,47 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-global $headerlib, $access;
+global $headerlib, $ajaxlib, $access;
 require_once ('tiki-setup.php');
+require_once('lib/ajax/ajaxlib.php');
 
-$access->check_feature(array('feature_webmail', 'feature_ajax' ));	// AJAX_TODO
-$access->check_permission_either(array('tiki_p_use_webmail', 'tiki_p_use_group_webmail'));
+$access->check_feature( array('feature_webmail', 'ajax_xajax' ) );
+$access->check_permission_either( array('tiki_p_use_webmail', 'tiki_p_use_group_webmail') );
 
-if (!isset($_REQUEST['callback'])) {	// "normal" (non-AJAX) page load
+if (!isset($_REQUEST['xjxfun'])) {	// "normal" (non-AJAX) page load
 
 	$divId = 'mod-webmail_inbox'.$module_params['module_position'].$module_params['module_ord'];
 	$module_params['module_id'] = $divId;
 	
-	//$ajaxlib->registerTemplate('modules/mod-webmail_inbox.tpl');
+	$ajaxlib->registerTemplate('modules/mod-webmail_inbox.tpl');
 	
 	$_SESSION['webmailinbox'][$divId]['module_params'] = $module_params;
 	
 	// set up xajax javascript
-	$headerlib->add_js(
-					"
+	$headerlib->add_js( "
+
 function doTakeWebmail(messageID) {
 	
+	xajax.config.requestURI = 'tiki-webmail_ajax.php';	// tell it where to send the request
+	xajax.config.statusMessages = true;
+	xajax.config.waitCursor = false;
+	xajax_takeGroupMail('$divId', messageID);
 	showWebmailMessage('".tra('Taking')."...');
 	\$('#$divId .webmail_refresh_message').show();
-	
-	\$.getJSON('tiki-webmail_ajax.php',
-		{ destDiv: '$divId', action: 'take', messageID: messageID },
-		function (data) {
-			if (data.returnURL) {
-				window.location.replace(data.returnURL);
-			} else {
-				alert('error');
-			}
-		}
-	);
-	
 }
 
 function doPutBackWebmail(messageID) {
 	
+	xajax.config.requestURI = 'tiki-webmail_ajax.php';	// tell it where to send the request
+	xajax.config.statusMessages = true;
+	xajax.config.waitCursor = false;
+	xajax_putBackGroupMail('$divId', messageID);
 	showWebmailMessage('".tra('Putting back')."...');
 	\$('#$divId .webmail_refresh_message').show();
-	
-	\$.getJSON('tiki-webmail_ajax.php',
-		{ destDiv: '$divId', action: 'putBack', messageID: messageID },
-		function (data) {
-			if (data) {
-				\$('#$divId .webmail_refresh_message').hide();
-				clearWebmailMessage();
-			} else {
-				alert('error');
-			}
-		}
-	);
 }
 
 var refreshWebmailRequest;
@@ -64,21 +49,19 @@ var refreshWebmailRequest;
 function doRefreshWebmail(start, reload) {
 	if (\$('.box-webmail_inbox .box-data').css('display') != 'none') {
 		if (\$('#$divId .webmail_refresh_busy').css('display') == 'none') {
+			xajax.config.requestURI = 'tiki-webmail_ajax.php';	// tell it where to send the request
+			xajax.config.statusMessages = true;
+			xajax.config.waitCursor = false;
+			
+			// set up a local callback
+			refreshWebmailCallback = xajax.callback.create();
+			refreshWebmailCallback.onRequest = function (oRequest) { refreshWebmailRequest = oRequest; }
+			refreshWebmailCallback.onComplete = function (oRequest) { refreshWebmailRequest = false; }
+			// and a global one so oither AJAX request cancel mail checking (also doesn't seem to really speed things up so far...)
+			xajax.callback.global.onRequest = function() { cancelRefreshWebmail(); };
+			
+			xajax_refreshWebmail('$divId', start, reload);
 			showWebmailMessage('".tra('Checking')."...');
-			
-			\$.getJSON('tiki-webmail_ajax.php',
-				{ destDiv: '$divId', action: 'refresh' },
-				function (data) {
-					if (data) {
-						refreshWebmailRequest = false;
-						\$('#$divId .webmail_refresh_message').hide();
-						clearWebmailMessage();
-					} else {
-						alert('error');
-					}
-				}
-			);
-			
 		} else {
 			cancelRefreshWebmail();
 		}
@@ -90,6 +73,7 @@ function doRefreshWebmail(start, reload) {
 
 function cancelRefreshWebmail() {
 	if (refreshWebmailRequest) {
+		xajax.abortRequest(refreshWebmailRequest);
 		showWebmailMessage('".tra('Aborted')."...');
 		setTimeout('clearWebmailMessage();', 1000);
 	}
@@ -128,22 +112,14 @@ function showWebmailMessage(inMsg) {
 	// doesn't seem to help - gets processed after doRefreshWebmail anyway
 	cancelRefreshWebmail();
 });
-"
-);
+");
 	
-}
-if (!empty($_REQUEST['action'])) {
-	switch ($_REQUEST['action']) {	// placeholder: more to do
-		default:
-			$access->output_serialized(refreshWebmail($_REQUEST['destDiv']));
-			die();
-	}
+} else {	// end if (!isset($_REQUEST['xjxfun'])) - AJAX call
+
 }
 
-
-function refreshWebmail($destDiv = 'mod-webmail_inbox', $inStart = 0, $inReload = false)
-{
-	global $user, $smarty, $prefs, $module_params;
+function refreshWebmail($destDiv = 'mod-webmail_inbox', $inStart = 0, $inReload = false) {
+	global $user, $smarty, $prefs, $ajaxlib, $module_params;
 	
 	if (isset($_SESSION['webmailinbox'][$destDiv]['module_params'])) {
 		$module_params = $_SESSION['webmailinbox'][$destDiv]['module_params'];
@@ -164,15 +140,14 @@ function refreshWebmail($destDiv = 'mod-webmail_inbox', $inStart = 0, $inReload 
 	
 	include('lib/wiki-plugins/wikiplugin_module.php');
 	$data = wikiplugin_module('', $module_params);
-//	$objResponse = new xajaxResponse();
-//	$objResponse->script('setTimeout("initWebmail()",1000)');
-//	
-//	$objResponse->assign($destDiv,"innerHTML",$data);
-//	return $objResponse;
+	$objResponse = new xajaxResponse();
+	$objResponse->script('setTimeout("initWebmail()",1000)');
+	
+	$objResponse->assign($destDiv,"innerHTML",$data);
+	return $objResponse;
 }
 
-function takeGroupMail($destDiv = 'mod-webmail_inbox', $msgId = 1)
-{
+function takeGroupMail($destDiv = 'mod-webmail_inbox', $msgId = 1) {
 	global $prefs, $trklib, $user, $webmaillib, $contactlib, $dbTiki, $tikilib, $categlib, $module_params;
 	
 	include_once ('lib/webmail/webmaillib.php');
@@ -201,7 +176,7 @@ function takeGroupMail($destDiv = 'mod-webmail_inbox', $msgId = 1)
 	$objResponse = new xajaxResponse();
 	
 	// check if already taken
-	$itemid = $trklib->get_item_id($module_params['trackerId'], $module_params['messageFId'], $realmsgid);
+	$itemid = $trklib->get_item_id( $module_params['trackerId'], $module_params['messageFId'], $realmsgid);
 	if ($itemid > 0) {
 		$objResponse->script('doRefreshWebmail();alert("Sorry, that mail has been taken by another operator. Refreshing list...");');
 		
@@ -268,7 +243,7 @@ function takeGroupMail($destDiv = 'mod-webmail_inbox', $msgId = 1)
 					'showstatus="n" showcreated="n" showlastmodif="n" filterfield="'.$module_params['fromFId'].'" filtervalue="'.$m['sender']['email'].'"}';
 		$data .= "\n\n";
 				
-		$tikilib->create_page($pageName, 0, $data, $tikilib->now, $comment, $user, $tikilib->get_ip_address(), $description);
+		$tikilib->create_page($pageName, 0, $data, $tikilib->now, $comment, $user, $tikilib->get_ip_address(),$description);
 		$categlib->update_object_categories(array($categlib->get_category_id('Help Team Pages')), $pageName, 'wiki page');		// TODO remove hard-coded cat name
 	}
 	
@@ -277,16 +252,11 @@ function takeGroupMail($destDiv = 'mod-webmail_inbox', $msgId = 1)
 	return $objResponse;
 }
 
-function putBackGroupMail($destDiv = 'mod-webmail_inbox', $msgId = 1)
-{
+function putBackGroupMail($destDiv = 'mod-webmail_inbox', $msgId = 1) {
 	global $prefs, $trklib, $user, $webmaillib, $dbTiki, $module_params;
 	
-	if (!isset($webmaillib)) {
-		include_once ('lib/webmail/webmaillib.php');
-	}
-	if (!isset($trklib)) {
-		include_once('lib/trackers/trackerlib.php');
-	}
+	if (!isset($webmaillib)) { include_once ('lib/webmail/webmaillib.php'); }
+	if (!isset($trklib)) { include_once('lib/trackers/trackerlib.php'); }
 
 	if (isset($_SESSION['webmailinbox'][$destDiv]['module_params'])) {
 		$module_params = $_SESSION['webmailinbox'][$destDiv]['module_params'];
@@ -298,7 +268,7 @@ function putBackGroupMail($destDiv = 'mod-webmail_inbox', $msgId = 1)
 	
 	$m = $ls[$msgId - 1];
 	
-	$itemid = $trklib->get_item_id($module_params['trackerId'], $module_params['messageFId'], $m['realmsgid']);
+	$itemid = $trklib->get_item_id( $module_params['trackerId'], $module_params['messageFId'], $m['realmsgid']);
 	if ($itemid > 0 && $user == $trklib->get_item_value($module_params['trackerId'], $itemid, $module_params['operatorFId'])) {	// simple security check
 		$trklib->remove_tracker_item($itemid);
 	}
@@ -308,6 +278,7 @@ function putBackGroupMail($destDiv = 'mod-webmail_inbox', $msgId = 1)
 	return $objResponse;
 }
 
-//$ajaxlib->registerFunction(array('refreshWebmail', array('callback' => 'refreshWebmailCallback')));
-//$ajaxlib->registerFunction('takeGroupMail');
-//$ajaxlib->registerFunction('putBackGroupMail');
+$ajaxlib->registerFunction(array('refreshWebmail', array('callback' => 'refreshWebmailCallback')));
+$ajaxlib->registerFunction('takeGroupMail');
+$ajaxlib->registerFunction('putBackGroupMail');
+$ajaxlib->processRequests();

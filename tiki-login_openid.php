@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -95,7 +95,7 @@ function displayRegisatrationForms($data, $messages) // {{{
 	$listgroups = $userlib->get_groups(0, -1, 'groupName_asc', '', '', 'n');
 	$nbChoiceGroups = 0;
 	$mandatoryChoiceGroups = true;
-	foreach ($listgroups['data'] as $gr) {
+	foreach($listgroups['data'] as $gr) {
 		if ($gr['registrationChoice'] == 'y') {
 			++$nbChoiceGroups;
 			$theChoiceGroup = $gr['groupName'];

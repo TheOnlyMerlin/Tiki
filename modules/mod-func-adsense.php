@@ -1,12 +1,12 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
@@ -25,51 +25,50 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 // Usage example :
 // {MODULE(module=>adsense,client=pub-xxxxxxxxxxxxxxxx,display=468*60_as,color_border=edeed5,color_bg=edeed5,color_link=0000CC,color_url=008000,color_text=000000)}{MODULE}
 
-function module_adsense_info()
-{
+function module_adsense_info() {
 	return array(
 		'name' => tra('Google AdSense'),
 		'description' => tra('Displays a text/image Google AdSense advertisement. This module should be updated to support new Google code.'),
-		'prefs' => array(),
+		'prefs' => array( ),
 		'params' => array(
 			'ad_channel' => array(
-				'name' => tra('ad_channel'),
+				'name' => 'ad_channel',
 				'description' => tra('Advertisement channel, as optionally provided by Google.'),
 				'filter' => 'striptags',
 			),
 			'client' => array(
-				'name' => tra('client'),
+				'name' => 'client',
 				'description' => tra('As provided by Google. Format: "pub-xxxxxxxxxxxxxxxx"'),
 				'required' => true,
 			),
 			'display' => array(
-				'name' => tra('display'),
+				'name' => 'display',
 				'description' => tra('Global banner format as provided by Google. For example: "display=468*60_as"'),
 				'filter' => 'striptags',
 				'required' => true,
 			),
 			'color_bg' => array(
-				'name' => tra('color_bg'),
+				'name' => 'color_bg',
 				'description' => tra('Background color, as optionally provided by Google.'),
 				'filter' => 'striptags',
 			),
 			'color_border' => array(
-				'name' => tra('color_border'),
+				'name' => 'color_border',
 				'description' => tra('Border color, as optionally provided by Google.'),
 				'filter' => 'striptags',
 			),
 			'color_link' => array(
-				'name' => tra('color_link'),
+				'name' => 'color_link',
 				'description' => tra('Link color, as optionally provided by Google.'),
 				'filter' => 'striptags',
 			),
 			'color_text' => array(
-				'name' => tra('color_text'),
+				'name' => 'color_text',
 				'description' => tra('Text color, as optionally provided by Google.'),
 				'filter' => 'striptags',
 			),
 			'color_url' => array(
-				'name' => tra('color_url'),
+				'name' => 'color_url',
 				'description' => tra('URL color, as optionally provided by Google.'),
 				'filter' => 'striptags',
 			)
@@ -77,8 +76,7 @@ function module_adsense_info()
 	);
 }
 
-function module_adsense($mod_reference, $module_params)
-{
+function module_adsense( $mod_reference, $module_params ) {
 	global $smarty;
 
 	$smarty->assign(array('ad_channel' => $module_params['ad_channel'],

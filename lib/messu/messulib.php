@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -73,26 +73,20 @@ class Messu extends TikiLib
 				$smarty->assign('mail_body', stripslashes($body));
 				$mail = new TikiMail($user);
 				$lg = $this->get_user_preference($user, 'language', $prefs['site_language']);
-				if (empty($subject)) {
-					$s = $smarty->fetchLang($lg, 'mail/messu_message_notification_subject.tpl');
-					$mail->setSubject(sprintf($s, $_SERVER["SERVER_NAME"]));
-				} else {
-					$mail->setSubject($subject);
-				}
+				$s = $smarty->fetchLang($lg, 'mail/messu_message_notification_subject.tpl');
+				$mail->setSubject(sprintf($s, $_SERVER["SERVER_NAME"]));
 				$mail_data = $smarty->fetchLang($lg, 'mail/messu_message_notification.tpl');
 				$mail->setText($mail_data);
-
-				if ($userlib->user_exists($from)) {
-					$from_email = $userlib->get_user_email($from);
-					if ($bcc_sender === 'y' && !empty($from_email)) {
-						$mail->setHeader("Bcc", $from_email);
-					}
-					if ($replyto_email !== 'y' && $userlib->get_user_preference($from,'email is public','n') == 'n') {
-						$from_email = '';	// empty $from_email if not to be used - saves getting it twice
-					}
-					if (!empty($from_email)) {
-						$mail->setHeader("Reply-To", $from_email);
-					}
+				
+				$from_email = $userlib->get_user_email($from);
+				if ($bcc_sender === 'y' && !empty($from_email)) {
+					$mail->setHeader("Bcc", $from_email);
+				}
+				if ($replyto_email !== 'y' && $userlib->get_user_preference($from,'email is public','n') == 'n') {
+					$from_email = '';	// empty $from_email if not to be used - saves getting it twice
+				}
+				if (!empty($from_email)) {
+					$mail->setHeader("Reply-To", $from_email);
 				}
 				if (!empty($prefs['sender_email'])) {
 					$mail->setHeader("From", $prefs['sender_email']);
@@ -100,9 +94,8 @@ class Messu extends TikiLib
 					$mail->setHeader("From", $from_email);
 				}
 
-				if (!$mail->send(array($email), 'mail')) {
+				if (!$mail->send(array($email), 'mail'))
 					return false; //TODO echo $mail->errors;
-				}
 			}
 		}
 		return true;

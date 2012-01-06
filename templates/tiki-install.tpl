@@ -1,28 +1,17 @@
-<div id="fixedwidth" class="fixedwidth"> {* enables fixed-width layouts *}
-	<div class="header_outer">
-		<div class="header_container">
-			<div class="header_fixedwidth fixedwidth">
-				<header class="header" id="header">
-					<div class="content clearfix modules" id="top_modules" style="min-height: 168px;">
-						<div id="sitelogo" style="float: left">
-							<img alt="{tr}Tiki Wiki CMS Groupware{/tr}" src="{if isset($ie6)}img/tiki/tikisitelogo.gif{else}img/tiki/Tiki_WCG.png{/if}" />
-						</div>
-						<div id="sitetitles" style="float: left;">
-							<div id="sitetitle" style="font-size: 42px;">
-								{tr}Tiki installer{/tr}
-							</div>
-							<div id="sitesubtitle" style="font-size: 30px; margin-top: 16px;">
-								{$tiki_version_name} <a title="{tr}Help{/tr}" href="http://doc.tiki.org/Installation" target="help"><img style="border:0" src='pics/icons/help.png' alt="{tr}Help{/tr}" /></a>
-							</div>
-						</div>
-					</div>
-				</header>
+<div id="fixedwidth"> {* enables fixed-width layouts *}
+	<div id="main">
+<div id="header">
+	<div id="siteheader" class="clearfix">
+		<div id="header-top">
+			<div id="sitelogo" style="padding-left:0; padding-top: 0px"><h1 style="margin: 0"><img style="border:medium none; vertical-align:middle" alt="{tr}Tiki Wiki CMS Groupware{/tr}" src="{if isset($ie6)}img/tiki/tikisitelogo.gif{else}img/tiki/Tiki_WCG.png{/if}" />
+				<span style="vertical-align:middle; margin-left:120px; color: #fff;">{tr}Tiki installer{/tr} {$tiki_version_name} <a title="{tr}Help{/tr}" href="http://doc.tiki.org/Installation" target="help"><img style="border:0" src='pics/icons/help.png' alt="{tr}Help{/tr}" /></a></span></h1>
 			</div>
 		</div>
 	</div>
-<div class="middle_outer">
-<div class="fixedwidth">
-<div id="middle" class="clearfix fixedwidth" style="padding-top: 55px">
+	<div id="tiki-top"></div> {* added for background image consistency *}
+</div>
+
+<div id="middle" class="clearfix">
 	<div id="c1c2" class="clearfix">
 		<div id="wrapper" class="clearfix">
 			<div id="col1" class="marginleft">
@@ -62,7 +51,7 @@
 
 {elseif $install_step eq '1'}
 <h1>{tr}Read the License{/tr}</h1>
-<p>{tr}Tiki is software distributed under the LGPL license.{/tr} </p>
+<p>{tr}Tiki is software distributed under the LGPL license.{/tr} {tr} <a href="http://creativecommons.org/licenses/LGPL/2.1/" target="_blank">Here is a human-readable summary of the license below, including many translations.</a>{/tr}</p>
 <div align="center" style="margin-top:1em;">
 <iframe src="license.txt" width="700" height="300" style="width:700px;height:300px"> </iframe>
 	<form action="tiki-install.php" method="post">
@@ -105,12 +94,12 @@
 	<br />
 	<h2>{tr}Mail{/tr}</h2><a name="mail"> </a>
 	<p>{tr}Tiki uses the PHP <strong>mail</strong> function to send email notifications and messages.{/tr}</p>
-{if $mail_test_performed ne 'y'}
+{if $perform_mail_test ne 'y'}
 	<p>{tr}To test your system configuration, Tiki will attempt to send a test message to you.{/tr}</p>
 	<div>
 	<form action="tiki-install.php#mail" method="post">
 		<div style="padding:1em 7em;">
-			<label for="email_test_to">{tr}Test email:{/tr}</label>
+			<label for="admin_email_test">{tr}Test email:{/tr}</label>
 			<input type="text" size="40" name="email_test_to" id="email_test_to" value="{if isset($email_test_to)}{$email_test_to}{/if}" />
 			{if isset($email_test_err)}<span class="attention"><em>{$email_test_err}</em></span>
 			{else}<em>{tr}Email address to send test to.{/tr}</em>{/if}
@@ -187,8 +176,7 @@
 	<div align="center" style="padding:1em">
 		<p>
 			<img src="pics/icons/information.png" alt="{tr}Information{/tr}" style="vertical-align: bottom;" />
-			{tr}Tiki found an existing database connection in your local.php file.{/tr}<br />
-			<em>{tr _0=$dbname}Database name: &quot;%0&quot;{/tr}</em>
+			{tr}Tiki found an existing database connection in your local.php file.{/tr}
 		</p>
 		<form action="tiki-install.php" method="post">
 			<input type="hidden" name="install_step" value="4" />
@@ -246,7 +234,7 @@
 		<div style="padding:5px;">
 			<label for="name">{tr}Database name:{/tr}</label>
 			<div style="margin-left:1em;">
-			<input type="text" id="name" name="name" size="40" value="{if isset($smarty.request.name)}{$smarty.request.name|escape:"html"}{/if}" /> <a href="javascript:void(0)" onclick="flip('name_help');" title="{tr}Help{/tr}"><img src="pics/icons/help.png" alt="{tr}Help{/tr}" /></a>
+			<input type="text" id="name" name="name" size="40" value="{$smarty.request.name|escape:"html"}" /> <a href="javascript:void(0)" onclick="flip('name_help');" title="{tr}Help{/tr}"><img src="pics/icons/help.png" alt="{tr}Help{/tr}" /></a>
 		
 			<br /><em>{tr}Enter the name of the database that Tiki will use.{/tr}</em> 
 			<div style="margin-left:1em;display:none;" id="name_help">
@@ -258,7 +246,7 @@
 		<fieldset><legend>{tr}Database user{/tr}</legend>
 		<p>{tr}Enter a database user with administrator permission for the Database.{/tr}</p>
 		<div style="padding:5px;">
-			<label for="user">{tr}User name:{/tr}</label> <input type="text" id="user" name="user" value="{if (isset($smarty.request.user))}{$smarty.request.user|escape:"html"}{/if}" />
+			<label for="user">{tr}User name:{/tr}</label> <input type="text" id="user" name="user" value="{$smarty.request.user|escape:"html"}" />
 		</div>
 		<div style="padding:5px;">
 			<label for="pass">{tr}Password:{/tr}</label> <input type="password" id="pass" name="pass" />
@@ -295,10 +283,10 @@
 </p>
 	  {if ($database_charset neq 'utf8' or isset($legacy_collation)) and $tikidb_created}
 	  	{remarksbox icon=error title="{tr}Encoding Issue{/tr}"}
-	  		{if isset($legacy_collation)}
+			{if isset($legacy_collation)}
 				<strong style="color: red">Something is wrong with the database encoding.</strong> The schema has UTF-8 as default encoding but some tables in the schema have a different collation, {$legacy_collation}. Converting to UTF-8 may solve this but may also make matters worse. You should investigate what happened or only proceed with backups.
 			{else}
-				{tr _0=$database_charset}<p>Your database encoding is <strong>not</strong> in UTF-8.</p><p>Current encoding is <em>%0</em>. The languages that will be available for content on the site will be limited. If you plan on using languages not covered by the character set, you should re-create or alter the database so the default encoding is <em>utf8</em>.</p>{/tr}
+				{tr 0=$database_charset}<p>Your database encoding is <strong>not</strong> in UTF-8.</p><p>Current encoding is <em>%0</em>. The languages that will be available for content on the site will be limited. If you plan on using languages not covered by the character set, you should re-create or alter the database so the default encoding is <em>utf8</em>.</p>{/tr}
 			{/if}
 			<p><a href="http://doc.tiki.org/Understanding+Encoding">{tr}More information{/tr}</a></p>
 
@@ -326,7 +314,7 @@
 	<tr>
 		<td valign="top">
 			<fieldset><legend>{tr}Install{/tr}</legend>
-				{if $tikidb_created}<p style="text-align:center"><img src="pics/icons/sticky.png" alt="{tr}Warning{/tr}" style="vertical-align:middle" /> <strong>{tr}Warning:{/tr}</strong> {tr _0=$dbname}This will destroy your current database &quot;%0&quot;.{/tr}</p>{/if}
+				{if $tikidb_created}<p style="text-align:center"><img src="pics/icons/sticky.png" alt="{tr}Warning{/tr}" style="vertical-align:middle" /> <strong>{tr}Warning:{/tr}</strong> {tr}This will destroy your current database.{/tr}</p>{/if}
 				{if $tikidb_created}
 				<script type='text/javascript'><!--//--><![CDATA[//><!--
 				{literal}
@@ -343,20 +331,10 @@
 				{else}
 				<div id="install-table">
 				{/if}
-					{if $hasInnoDB}
-						<label>
-							{tr}Select database engine{/tr}
-							<select name="useInnoDB">
-								<option value="0">{tr}MyISAM{/tr}</option>
-								<option value="1">{tr}InnoDB (experimental){/tr}</option>
-							</select>
-						</label>
-					{else}
-						<input type="hidden" name="useInnoDB" value="0" />
-					{/if}
 				<p align="center">
 					<input type="submit" name="scratch" value=" {if $tikidb_created}{tr}Reinstall{/tr}{else}{tr}Install{/tr}{/if} " style="margin: 32px;" />
 				</p>
+
 			</div>
 			</fieldset>
 		</td>
@@ -435,31 +413,24 @@
 
 <div id="sql_failed_log" style="display:none">
  <p>{tr}During an upgrade, it is normal to have SQL failures resulting with <strong>Table already exists</strong> messages.{/tr}</p>
-{assign var='patch' value=''}
+{assign var='patch' value=''} 
 {foreach from=$installer->failures item=item}
-	{if $patch ne $item[2]}
-		{if $patch ne ''}
-			</textarea>
-		{/if}
-		<p>
-			<input type="checkbox" name="validPatches[]" value="{$item[2]|escape}" id="ignore_{$item[2]|escape}" />
-			<label for="ignore_{$item[2]|escape}">{$item[2]|escape}</label>
-		</p>
-		<textarea rows="6" cols="80">{assign var='patch' value=$item[2]}
-	{/if}
-	{$item[0]}
-	{$item[1]}
+{if $patch ne $item[2]}{if $patch ne ''}</textarea>{/if}<p><input type="checkbox" name="validPatches[]" value={$item[2]|escape} />{$item[2]|escape}</p>
+<textarea rows="6" cols="80">{assign var='patch' value=$item[2]}{/if}
+{$item[0]}
+{$item[1]}
+
 {/foreach}
 </textarea>
 <p>If you think that the errors of a patch can be ignored, please check the checkbox associated to it before clicking on continue.</p>
-<p>{select_all checkbox_names='validPatches[]' label="{tr}Check all errors{/tr}"}</p>
+
 </div>
 {/if}
 
 {if isset($htaccess_error) and $htaccess_error eq 'y'}
 <h3>{tr}.htaccess File{/tr} <a title="{tr}Help{/tr}" href="http://doc.tiki.org/Installation" target="help"><img style="border:0" src='pics/icons/help.png' alt="{tr}Help{/tr}" /></a></h3>
 {tr}We recommend enabling the <strong>.htaccess</strong> file for your Tiki{/tr}. {tr}This will enable you to use SEFURLs (search engine friendly URLs) and help improve site security{/tr}. 
-<p>{tr _0="<strong>_htaccess</strong>" _1="<strong>.htaccess</strong>"}To enable this file, simply copy the %0 file (located in the main directory of your Tiki installation) to %1.{/tr}</p>
+<p>{tr}To enable this file, simply rename the <strong>_htaccess</strong> file (located in the main directory of your Tiki installation) to <strong>.htaccess</strong>.{/tr}</p>
 {/if}
 
 <p>&nbsp;</p>
@@ -501,12 +472,12 @@
 		<select name="https_login" id="https_login" onchange="hidedisabled('httpsoptions',this.value);">
 			<option value="disabled"{if $prefs.https_login eq 'disabled'} selected="selected"{/if}>{tr}Disabled{/tr}</option>
 			<option value="allowed"{if $prefs.https_login eq 'allowed'} selected="selected"{/if}>{tr}Allow secure (https) login{/tr}</option>
-			<option value="encouraged"{if $prefs.https_login eq 'encouraged' or ($prefs.https_login eq '' and $detected_https eq 'on' )} selected="selected"{/if}>{tr}Encourage secure (https) login{/tr}</option>
+			<option value="encouraged"{if $prefs.https_login eq 'encouraged' or ($prefs.https_login eq '' and $detected_https eq 'on' ) } selected="selected"{/if}>{tr}Encourage secure (https) login{/tr}</option>
 			<option value="force_nocheck"{if $prefs.https_login eq 'force_nocheck'} selected="selected"{/if}>{tr}Consider we are always in HTTPS, but do not check{/tr}</option>
 			<option value="required"{if $prefs.https_login eq 'required'} selected="selected"{/if}>{tr}Require secure (https) login{/tr}</option>
 		</select>
 	</div>
-	<div id="httpsoptions" style="display:{if $prefs.https_login eq 'disabled' or ( $prefs.https_login eq '' and $detected_https eq '')}none{else}block{/if};">
+	<div id="httpsoptions" style="display:{if $prefs.https_login eq 'disabled' or ( $prefs.https_login eq '' and $detected_https eq '') }none{else}block{/if};">
 		<div style="padding:5px">
 			<label for="https_port">{tr}HTTPS port:{/tr}</label> <input type="text" name="https_port" id="https_port" size="5" value="{$prefs.https_port|escape}" />
 		</div>
@@ -631,7 +602,7 @@
 				<p>{tr}We can try to fix it, but <strong>make sure you have backups, and can restore them</strong>.{/tr}</p>
 				{if $client_charset_in_file eq 'utf8'}
 					<p>
-						{tr}Previous table encoding:{/tr}
+						{tr}Previous table encoding{/tr}:
 						<select name="previous_encoding" id="previous_encoding">
 							<option value="">{tr}Please select{/tr}</option>
 							<option value="armscii8" title="Armenian, Binary">armscii8</option>
@@ -765,18 +736,12 @@
 		</div>
 	</div>
 </div>			
-</div>			
+			
 	  	</div>
-	</div>
 </div>
-<footer id="footer">
-	<div class="footer_liner">
-		<div class="footerbgtrap fixedwidth" style="padding: 10px 0;">
-			<a href="http://tiki.org" target="_blank" title="{tr}Powered by{/tr} {tr}Tiki Wiki CMS Groupware{/tr} &#169; 2002&#8211;{$smarty.now|date_format:"%Y"} "><img src="img/tiki/tikibutton.png" alt="{tr}Powered by Tiki Wiki CMS Groupware{/tr}" style="width:88px; height:31px; border:0" /></a>
-		</div>
-	</div>
-</footer>
+<hr />
+
+<p align="center"><a href="http://tiki.org" target="_blank" title="{tr}Powered by{/tr} {tr}Tiki Wiki CMS Groupware{/tr} &#169; 2002&#8211;{$smarty.now|date_format:"%Y"} "><img src="img/tiki/tikibutton.png" alt="{tr}Powered by Tiki Wiki CMS Groupware{/tr}" style="width:88px; height:31px; border:0" /></a></p>
 
 		</div>{* -- END of main -- *}
-	</div> {* -- END of outerwrapper -- *}
-</div> {* -- END of fixedwidth -- *}
+	</div> {* -- END of fixedwidth -- *}

@@ -31,11 +31,11 @@
 					{assign var=month_today value=$smarty.now|tiki_date_format:"%m"}
 
 					{if $cell[w][d].focus}
-						{cycle values="odd,even" print=false}
+						{cycle values="calodd,caleven" print=false}
 					{else}
-						{cycle values="notoddoreven" print=false}
+						{cycle values="caldark" print=false}
 					{/if}
-					<td class="{cycle advance=false}{if $date eq $today} highlight{/if}{if isset($cell[w][d].items[0]) and ($cell[w][d].items[0].modifiable eq "y" 
+					<td class="{cycle advance=false}{if $date eq $today} calfocuson{/if}{if isset($cell[w][d].items[0]) and ($cell[w][d].items[0].modifiable eq "y" 
 								|| $cell[w][d].items[0].visible eq 'y')} focus{/if}" width="14%" style="text-align:center; font-size:0.8em;">
 
 						{if isset($cell[w][d].over)}
@@ -44,20 +44,15 @@
 							{assign var=over value=$cell[w][d].items[0].over}{else}{assign var=over value=""}
 						{/if}
 						{if isset($cell[w][d].items[0]) and ($cell[w][d].items[0].modifiable eq "y" || $cell[w][d].items[0].visible eq 'y')}
-							{if empty($calendar_popup) or $calendar_popup eq "y"}
-								<a style="text-decoration: underline; font-weight: bold" href="{$myurl}?todate={$date}&amp;viewmode={$viewmodelink}" 
-								{if $sticky_popup eq 'y' or ($prefs.calendar_sticky_popup eq "y" and $cell[w][d].items[0].calitemId)}
+							<a style="text-decoration: underline; font-weight: bold" href="{$myurl}?todate={$date}&amp;viewmode={$viewmodelink}" 
+							{if $sticky_popup eq 'y' or ($prefs.calendar_sticky_popup eq "y" and $cell[w][d].items[0].calitemId)}
 									{popup sticky=true fullhtml="1" text=$over|escape:"javascript"|escape:"html"}
 								{else}
 									{popup fullhtml="1" text=$over|escape:"javascript"|escape:"html"}
 								{/if}
 								>
 								{$day_cursor}
-								</a>
-							{else}
-								{$day_cursor}
-								{$over}
-							{/if}
+							</a>
 						{elseif $linkall eq 'y'}
 							<a style="text-decoration: underline; font-weight: bold" href="{$myurl}?todate={$cell[w][d].day}&amp;viewmode={$viewmodelink}">{$day_cursor}</a>
 						{else}

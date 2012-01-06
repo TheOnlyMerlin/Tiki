@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -38,7 +38,7 @@ if ($prefs['feature_theme_control'] == 'y') {
 		$tc_categs = $categlib->get_object_categories($cat_type, $cat_objid);
 		if (count($tc_categs)) {
 			$cat_themes = array();	// collect all the category themes
-			foreach ($tc_categs as $cat) {
+			foreach($tc_categs as $cat) {
 				$ct = $tcontrollib->tc_get_theme_by_categ($cat);
 				if (!empty($ct) && !in_array($ct, $cat_themes)) {
 					$cat_themes[] = $ct;
@@ -65,14 +65,14 @@ if ($prefs['feature_theme_control'] == 'y') {
 	if ($tc_theme) {
 		if ($old_tc_theme) {
 			$headerlib->drop_cssfile($tikilib->get_style_path('', '', $old_tc_theme));
-			$headerlib->drop_cssfile($tikilib->get_style_path($old_tc_theme, $old_tc_theme_option, $old_tc_theme_option));
+			$headerlib->drop_cssfile($tikilib->get_style_path( $old_tc_theme, $old_tc_theme_option, $old_tc_theme_option));
 		}
 		$headerlib->drop_cssfile($tikilib->get_style_path('', '', $prefs['style']));
 		$headerlib->add_cssfile($tikilib->get_style_path('', '', $tc_theme), 51);
 
-		$headerlib->drop_cssfile($tikilib->get_style_path($prefs['style'], $prefs['style_option'], $prefs['style_option']));
+		$headerlib->drop_cssfile($tikilib->get_style_path( $prefs['style'], $prefs['style_option'], $prefs['style_option']));
 		if (!empty($tc_theme_option)) { // special handling for 'None' case
-			$headerlib->add_cssfile($tikilib->get_style_path($tc_theme, $tc_theme_option, $tc_theme_option), 52);
+			$headerlib->add_cssfile($tikilib->get_style_path( $tc_theme, $tc_theme_option, $tc_theme_option), 52);
 		}
 		// Reset IE specific CSS
 		global $style_ie6_css, $style_ie7_css, $style_ie8_css, $style_base;
@@ -80,6 +80,6 @@ if ($prefs['feature_theme_control'] == 'y') {
 		$style_ie7_css = $tikilib->get_style_path($tc_theme, $tc_theme_option, 'ie7.css');
 		$style_ie8_css = $tikilib->get_style_path($tc_theme, $tc_theme_option, 'ie8.css');
 		
-		$style_base = $tikilib->get_style_base($tc_theme);
+		$style_base = $tikilib->get_style_base($tc_theme);			
 	}
 }

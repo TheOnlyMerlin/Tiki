@@ -19,11 +19,11 @@
 					<table class="formcolor">
 						<tr>
 							<td>
-								<label for="name">{tr}Name:{/tr}</label>
+								<label for="name">{tr}Name{/tr}:</label>
 							</td>
 							<td>
-								{if $galleryId eq $treeRootId}
-									<b>{tr}{$gal_info.name}{/tr}</b>
+								{if $galleryId eq $prefs.fgal_root_id}
+									<b>{tr}File Galleries{/tr}</b>
 									<input type="hidden" name="name" value="{$gal_info.name|escape}" />
 								{else}
 									<input type="text" size="50" id="name" name="name" value="{$gal_info.name|escape}" style="width:100%"/>
@@ -32,43 +32,12 @@
 								{/if}
 							</td>
 						</tr>
-						{if $prefs.feature_file_galleries_templates eq 'y'}
- 						<tr>
- 							<td>
-								<label for="fgal_template">{tr}Template:{/tr}</label>
-							</td>
-							<td>
-								<select name="fgal_template" id="fgal_template">
-									<option value=""{if $templateId eq ""} selected="selected"{/if}>{tr}None{/tr}</option>
-									{foreach from=$all_templates key=key item=item}
-										<option value="{$item.id}"{if $gal_info.template eq $item.id} selected="selected"{/if}>{$item.label|escape}</option>
-									{/foreach}
-									{jq}
-$('#fgal_template').change( function() {
-	var otherTabs = $('span.tabinactive');
-	var otherParams = $('#description').parents('tr').nextAll('tr');
-
-	if ($(this).val() != '') {
-		// Select template, hide parameters
-		otherTabs.hide();
-		otherParams.hide();
-	} else {
-		// No template, show parameters
-		otherTabs.show();
-		otherParams.show();
-	}
-}).change();
-								{/jq}
-								</select>
-							</td>
-						</tr>
-						{/if}
 						<tr>
 							<td>
-								<label for="fgal_type">{tr}Type:{/tr}</label>
+								<label for="fgal_type">{tr}Type{/tr}:</label>
 							</td>
 							<td>
-								{if $galleryId eq $treeRootId}
+								{if $galleryId eq $prefs.fgal_root_id}
 									{tr}System{/tr}
 									<input type="hidden" name="fgal_type" value="system" />
 								{else}
@@ -82,7 +51,7 @@ $('#fgal_template').change( function() {
 						</tr>
 						<tr>
 							<td>
-								<label for="description">{tr}Description:{/tr}</label>
+								<label for="description">{tr}Description{/tr}:</label>
 							</td>
 							<td>
 								<textarea rows="5" cols="40" id="description" name="description" style="width:100%">{$gal_info.description|escape}</textarea>
@@ -127,22 +96,22 @@ $('#fgal_template').change( function() {
 						</tr>
 						<tr>
 							<td>
-								<label for="archives">{tr}Maximum number of archives for each file:{/tr}</label>
+								<label for="archives">{tr}Maximum number of archives for each file{/tr}:</label>
 							</td>
 							<td>
 								<input size="5" type="text" id="archives" name="archives" value="{$gal_info.archives|escape}" />
 								<br />
 								<em>{tr}Use{/tr} 0={tr}unlimited{/tr}, -1={tr}none{/tr}.</em>
-								{if $galleryId neq $treeRootId}
+								{if $galleryId neq $prefs.fgal_root_id}
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<label for="parentId">{tr}Parent gallery:{/tr}</label>
+								<label for="parentId">{tr}Parent gallery{/tr}:</label>
 							</td>
 							<td>
 								<select name="parentId" id="parentId">
-									<option value="{$treeRootId}"{if $parentId eq $treeRootId} selected="selected"{/if}>{tr}none{/tr}</option>
+									<option value="{$prefs.fgal_root_id}"{if $parentId eq $prefs.fgal_root_id} selected="selected"{/if}>{tr}none{/tr}</option>
 									{foreach from=$all_galleries key=key item=item}
 										{if $galleryId neq $item.id}
 										<option value="{$item.id}"{if $parentId eq $item.id} selected="selected"{/if}>{$item.label|escape}</option>
@@ -157,7 +126,7 @@ $('#fgal_template').change( function() {
 
 						{if $tiki_p_admin eq 'y' or $tiki_p_admin_file_galleries eq 'y'}
 							<tr>
-								<td><label for="user">{tr}Owner of the gallery:{/tr}</label></td>
+								<td><label for="user">{tr}Owner of the gallery{/tr}:</label></td>
 								<td>
 									{user_selector user=$creator id='user'}
 								</td>
@@ -173,7 +142,7 @@ $('#fgal_template').change( function() {
 											{capture name='use'}
 												{math equation="round((100*x)/(1024*1024*y))" x=$gal_info.usedSize y=$gal_info.quota}
 											{/capture}
-											{quotabar length='100' value=$smarty.capture.use}
+											{quotabar length='100' value=`$smarty.capture.use`}
 										{/if}
 										{if !empty($gal_info.maxQuota)}<br />{tr}Max:{/tr} {$gal_info.maxQuota} {tr}Mb{/tr}{/if}
 										{if !empty($gal_info.minQuota)}<br />{tr}Min:{/tr} {$gal_info.minQuota} {tr}Mb{/tr}{/if}
@@ -204,7 +173,7 @@ $('#fgal_template').change( function() {
 
 						<tr>
 							<td>
-								{tr}Maximum width for images in gallery:{/tr}
+								{tr}Maximum width for images in gallery{/tr}:
 							</td>
 							<td>
 								<input size="5" type="text" name="image_max_size_x" value="{$gal_info.image_max_size_x|escape}" /> px
@@ -214,7 +183,7 @@ $('#fgal_template').change( function() {
 						</tr>
 						<tr>
 							<td>
-								{tr}Maximum height for images in gallery:{/tr}
+								{tr}Maximum height for images in gallery{/tr}:
 							</td>
 							<td>
 								<input size="5" type="text" name="image_max_size_y" value="{$gal_info.image_max_size_y|escape}" /> px
@@ -224,7 +193,7 @@ $('#fgal_template').change( function() {
 						</tr>
 						<tr>
 							<td>
-								{tr}Wiki markup to enter when image selected from "file gallery manager":{/tr}
+								{tr}Wiki markup to enter when image selected from "file gallery manager"{/tr}:
 							</td>
 							<td>
 								<input size="80" type="text" name="wiki_syntax" value="{$gal_info.wiki_syntax|escape}" />
@@ -243,7 +212,7 @@ $('#fgal_template').change( function() {
 				{tab name="{tr}Display Properties{/tr}"}
 					<table class="formcolor">
 						<tr>
-							<td><label for="sortorder">{tr}Default sort order:{/tr}</label></td>
+							<td><label for="sortorder">{tr}Default sort order{/tr}:</label></td>
 							<td>
 								<select name="sortorder" id="sortorder">
 									{foreach from=$options_sortorder key=key item=item}
@@ -260,20 +229,20 @@ $('#fgal_template').change( function() {
 						</tr>
 						<tr>
 							<td>
-								<label for="max_desc">{tr}Max description display size:{/tr}</label>
+								<label for="max_desc">{tr}Max description display size{/tr}:</label>
 							</td>
 							<td>
 								<input type="text" id="max_desc" name="max_desc" value="{$max_desc|escape}" />
 							</td>
 							<td>
-								<label for="maxRows">{tr}Max rows per page:{/tr}</label>
+								<label for="maxRows">{tr}Max rows per page{/tr}:</label>
 							</td>
 							<td>
 								<input type="text" id="maxRows" name="maxRows" value="{$maxRows|escape}" />
 							</td>
 						</tr>
-						<tr>
-							<td colspan="2">{tr}Select which items to display when listing galleries:{/tr}
+						<tr
+							<td colspan="2">{tr}Select which items to display when listing galleries{/tr}:
 								<table>
 									{include file='fgal_listing_conf.tpl'}
 								</table>

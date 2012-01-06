@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -35,11 +35,8 @@ if (!$post_info) {
 	$smarty->assign('msg', tra("Post not found"));
 	$smarty->display("error.tpl");
 	die;
-} else {
-	//$smarty->assign('msg', tra("Post found"));
-	//$smarty->display("error.tpl");
-	$bloglib->add_blog_post_hit($postId);
 }
+
 $blogId = $post_info['blogId'];
 
 $blog_data = $bloglib->get_blog($blogId);
@@ -72,7 +69,7 @@ if ($ownsblog == 'n' && $tiki_p_blog_admin != 'y' && $post_info['created'] > $ti
 }	
 $post_info['adjacent'] = $bloglib->_get_adjacent_posts($blogId, $post_info['created'], $tiki_p_blog_admin == 'y'? null: $tikilib->now, $user);
 
-if (isset($post_info['priv']) && ($post_info['priv'] == 'y')) {
+if(isset($post_info['priv']) && ($post_info['priv'] == 'y')) {
 	$post_info['title'] .= ' (' . tra("private") . ')';
 }
 
@@ -86,20 +83,13 @@ if ($prefs['feature_freetags'] == 'y') {
 	}
 }
 
-if ($prefs['feature_categories'] == 'y') {
-	$cat_type = 'blog post';
-	$cat_objid = $postId;
-	require_once('categorize_list.php');	
-}
-$bloglib->add_blog_post_hit($postId);
-$bloglib->add_blog_post_hit($postId);
 $smarty->assign('ownsblog', $ownsblog);
 $post_info['data'] = TikiLib::htmldecode($post_info['data']);
 $smarty->assign('postId', $postId);
 $smarty->assign('blog_data', $blog_data);
 $smarty->assign('blogId', $blogId);
 $smarty->assign('headtitle', $post_info['title'] . ' : ' . $blog_data['title']);
-$smarty->assign('title', $post_info['title'] . ' : ' . $blog_data['title']);
+
 if (!isset($_REQUEST['offset'])) $_REQUEST['offset'] = 0;
 if (!isset($_REQUEST['sort_mode'])) $_REQUEST['sort_mode'] = 'created_desc';
 if (!isset($_REQUEST['find'])) $_REQUEST['find'] = '';
@@ -109,7 +99,7 @@ $smarty->assign('find', $_REQUEST["find"]);
 $offset = $_REQUEST["offset"];
 $sort_mode = $_REQUEST["sort_mode"];
 $find = $_REQUEST["find"];
-$parsed_data = $tikilib->parse_data($post_info["data"], array('is_html' => true));
+$parsed_data = $tikilib->parse_data($post_info["data"], array('is_html' => ($post_info["wysiwyg"]=='y'?TRUE:FALSE)));
 if (!isset($_REQUEST['page'])) $_REQUEST['page'] = 1;
 $pages = $bloglib->get_number_of_pages($parsed_data);
 $post_info['parsed_data'] = $bloglib->get_page($parsed_data, $_REQUEST['page']);
@@ -129,12 +119,31 @@ $post_info['last_page'] = $pages;
 $post_info['pagenum'] = $_REQUEST['page'];
 $smarty->assign('post_info', $post_info);
 
+if ($prefs['feature_blogposts_comments'] == 'y') {
+	$comments_per_page = $prefs['blog_comments_per_page'];
+	$thread_sort_mode = $prefs['blog_comments_default_ordering'];
+	$comments_vars = array(
+		'postId',
+		'offset',
+		'find',
+		'sort_mode',
+		'blogId'
+	);
+	$comments_prefix_var = 'post:';
+	$comments_object_var = 'postId';
+	include_once ("comments.php");
+}
+
 $cat_type = 'blog';
 $cat_objid = $blogId;
 include_once ('tiki-section_options.php');
 if ($user && $prefs['feature_notepad'] == 'y' && $tiki_p_notepad == 'y' && isset($_REQUEST['savenotepad'])) {
 	check_ticket('view-blog-post');
-	$tikilib->replace_note($user, 0, $post_info['title'] ? $post_info['title'] : $tikilib->date_format("%d/%m/%Y [%H:%M]", $post_info['created']), $post_info['data']);
+	$tikilib->replace_note($user, 0, $post_info['title'] ? $post_info['title'] : $tikilib->date_format("%d/%m/%Y [%H:%M]", $post_info['created']) , $post_info['data']);
+}
+if ($prefs['feature_mobile'] == 'y' && isset($_REQUEST['mode']) && $_REQUEST['mode'] == 'mobile') {
+	include_once ("lib/hawhaw/hawtikilib.php");
+	HAWTIKI_view_blog_post($post_info);
 }
 
 ask_ticket('view-blog-post');

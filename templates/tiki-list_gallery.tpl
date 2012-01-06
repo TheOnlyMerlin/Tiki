@@ -45,7 +45,9 @@
 <td>{$images[changes].filesize|kbsize}&nbsp;</td>
 </tr>
 {sectionelse}
-	{norecords _colspan=6}
+<tr><td colspan="6">
+<b>{tr}No records found{/tr}</b>
+</td></tr>
 {/section}
 </table>
 

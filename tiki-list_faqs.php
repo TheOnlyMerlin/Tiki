@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,6 +11,7 @@ include_once ('lib/faqs/faqlib.php');
 $auto_query_args = array('offset', 'find', 'sort_mode', 'faqId');
 $access->check_feature('feature_faqs');
 $access->check_permission('tiki_p_view_faqs');
+$smarty->assign('headtitle', tra('FAQs'));
 if (!isset($_REQUEST["faqId"])) {
 	$_REQUEST["faqId"] = 0;
 }
@@ -73,7 +74,7 @@ if (isset($_REQUEST["find"])) {
 }
 $smarty->assign('find', $find);
 $smarty->assign_by_ref('sort_mode', $sort_mode);
-$channels = $faqlib->list_faqs($offset, $maxRecords, $sort_mode, $find);
+$channels = $tikilib->list_faqs($offset, $maxRecords, $sort_mode, $find);
 $smarty->assign_by_ref('channels', $channels["data"]);
 $smarty->assign_by_ref('cant', $channels["cant"]);
 $cat_type = 'faq';

@@ -20,17 +20,17 @@
 {/if}
 
 {if $confirm eq 'y'}
-	<table class="formcolor">
+	<table class="normal">
 		<tr>
 			<th colspan="2" class="highlight">{tr}Subscription confirmed!{/tr}</th>
 		</tr>
 		<tr>
-			<td>{tr}Name:{/tr}</td>
-			<td>{$nl_info.name|escape}</td>
+			<td class="even">{tr}Name{/tr}:</td>
+			<td class="even">{$nl_info.name|escape}</td>
 		</tr>
 		<tr>
-			<td>{tr}Description:{/tr}</td>
-			<td>{$nl_info.description|escape|nl2br}</td>
+			<td class="even">{tr}Description{/tr}:</td>
+			<td class="even">{$nl_info.description|escape|nl2br}</td>
 		</tr>
 	</table>
 	<br />
@@ -45,13 +45,13 @@
 	</h2>
 	<form method="post" action="tiki-newsletters.php">
 		<input type="hidden" name="nlId" value="{$nlId|escape}" />
-		<table class="formcolor">
+		<table class="normal">
 			<tr>
-				<td class="even">{tr}Name:{/tr}</td>
+				<td class="even">{tr}Name{/tr}:</td>
 				<td class="even"><strong>{$nl_info.name|escape}</strong></td>
 			</tr>
 			<tr>
-				<td class="even">{tr}Description:{/tr}</td>
+				<td class="even">{tr}Description{/tr}:</td>
 				<td class="even">{$nl_info.description|escape|nl2br}</td>
 			</tr>
 			{if ($nl_info.allowUserSub eq 'y') or ($tiki_p_admin_newsletters eq 'y')}
@@ -80,32 +80,29 @@
 {if $showlist eq 'y'}
 	<h2>{tr}Available Newsletters{/tr}</h2>
 
-	{if $channels or $find ne ''}
+	{if $channels or $find ne''}
 		{include file='find.tpl'}
 	{/if}
 
 	<table class="normal">
 		<tr>
 			<th>{self_link _sort_arg='sort_mode' _sort_field='name'}{tr}Newsletter{/tr}{/self_link}</th>
-			<th style="width:100px">{tr}Action{/tr}</th>
+			<th style="width:80px">{tr}Action{/tr}</th>
 		</tr>
 		{cycle values="odd,even" print=false}
 		{section name=user loop=$channels}
-			{if $channels[user].tiki_p_subscribe_newsletters eq 'y' or $channels[user].tiki_p_list_newsletters eq 'y'}
+			{if $channels[user].tiki_p_subscribe_newsletters eq 'y'}
 				<tr class="{cycle}">
-					<td class="text">
+					<td>
 						<a class="tablename" href="tiki-newsletters.php?nlId={$channels[user].nlId}&amp;info=1" title="{tr}Subscribe to Newsletter{/tr}">{$channels[user].name|escape}</a>
 						<div class="subcomment">{$channels[user].description|escape|nl2br}</div>
 					</td>
-					<td class="action">
+					<td>
 						{if $channels[user].tiki_p_subscribe_newsletters eq 'y'}
 							<a class="link" href="tiki-newsletters.php?nlId={$channels[user].nlId}&amp;info=1" title="{tr}Subscribe to Newsletter{/tr}">{icon _id='newspaper_add' alt="{tr}Subscribe to Newsletter{/tr}"}</a>
 						{/if}
 						{if $channels[user].tiki_p_send_newsletters eq 'y'}
 							<a class="link" href="tiki-send_newsletters.php?nlId={$channels[user].nlId}" title="{tr}Send Newsletter{/tr}">{icon _id='email' alt="{tr}Send Newsletter{/tr}"}</a>
-						{/if}
-						{if $tiki_p_view_newsletter eq 'y'}
-							<a class="link" href="tiki-newsletter_archives.php?nlId={$channels[user].nlId}" title="{tr}Archives{/tr}">{icon _id='database' alt="{tr}Archives{/tr}"}</a>
 						{/if}
 						{if $channels[user].tiki_p_admin_newsletters eq 'y'}
 							<a class="link" href="tiki-admin_newsletters.php?nlId={$channels[user].nlId}&amp;cookietab=2#anchor2"
@@ -115,7 +112,7 @@
 				</tr>
 			{/if}
 		{sectionelse}
-			{norecords _colspan=2}
+			<tr><td class="odd" colspan="2"><strong>{tr}No records found.{/tr}</strong></td></tr>
 		{/section}
 	</table>
 

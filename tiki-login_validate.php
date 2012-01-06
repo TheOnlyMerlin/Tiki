@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,14 +15,7 @@ $access->check_feature(array('validateUsers','validateRegistration'), '', 'login
 $isvalid = false;
 if (isset($_REQUEST["user"])) {
 	if (isset($_REQUEST["pass"])) {
-		if (empty($_REQUEST['pass'])) {// case: user invalidated his account with wrong password- no email was sent - admin must reactivate
-			$userlib->change_user_waiting($_REQUEST['user'], NULL);
-			$userlib->set_unsuccessful_logins($_REQUEST['user'], 0);
-			$smarty->assign('msg', tra("Account validated successfully."));
-			$smarty->assign('mid', 'tiki-information.tpl');
-			$smarty->display("tiki.tpl");
-			die;
-		} elseif (!empty($_SESSION['last_validation'])) {
+		if (!empty($_SESSION['last_validation'])) {
 			if ($_SESSION['last_validation']['actpass'] == $_REQUEST["pass"] && $_SESSION['last_validation']['user'] == $_REQUEST["user"]) {
 				list($isvalid, $_REQUEST["user"], $error) = $userlib->validate_user($_REQUEST["user"], $_SESSION['last_validation']['pass'], '', '', true);
 			} else {
@@ -52,7 +45,7 @@ if ($isvalid) {
 		$userlib->confirm_user($_REQUEST['user']);
 		$foo = parse_url($_SERVER["REQUEST_URI"]);
 		$foo1 = str_replace('tiki-login_validate', 'tiki-login_scr', $foo['path']);
-		$machine = $tikilib->httpPrefix(true) . $foo1;
+		$machine = $tikilib->httpPrefix( true ) . $foo1;
 		$smarty->assign('mail_machine', $machine);
 		$smarty->assign('mail_site', $_SERVER['SERVER_NAME']);
 		$smarty->assign('mail_user', $_REQUEST['user']);

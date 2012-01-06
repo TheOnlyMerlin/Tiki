@@ -3,65 +3,48 @@
 	<base href="{$base_uri|escape}" />
 {/if}
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
 <meta name="generator" content="Tiki Wiki CMS Groupware - http://tiki.org" />
-
-{* --- Canonical URL --- *}
-{include file="canonical.tpl"}	
-
 {if !empty($forum_info.name) & $prefs.metatag_threadtitle eq 'y'}
 	<meta name="keywords" content="{tr}Forum{/tr} {$forum_info.name|escape} {$thread_info.title|escape} {if $prefs.feature_freetags eq 'y'}{foreach from=$freetags.data item=taginfo}{$taginfo.tag|escape} {/foreach}{/if}" />
-{elseif isset($galleryId) && $galleryId neq '' && $prefs.metatag_imagetitle neq 'n'}
+{elseif isset($galleryId) && $galleryId ne '' & $prefs.metatag_imagetitle ne 'n'}
 	<meta name="keywords" content="{tr}Images Galleries{/tr} {$title|escape} {if $prefs.feature_freetags eq 'y'}{foreach from=$freetags.data item=taginfo}{$taginfo.tag|escape} {/foreach}{/if}" />
-{elseif $prefs.metatag_keywords neq '' or !empty($metatag_local_keywords)}
-	<meta name="keywords" content="{$prefs.metatag_keywords|escape} {if $prefs.feature_freetags eq 'y'}{foreach from=$freetags.data item="taginfo"}{$taginfo.tag|escape} {/foreach}{/if} {$metatag_local_keywords|escape}" />
+{elseif $prefs.metatag_keywords ne '' or !empty($metatag_local_keywords)}
+	<meta name="keywords" content="{$prefs.metatag_keywords|escape} {if $prefs.feature_freetags eq 'y'}{foreach from=$freetags.data item=taginfo}{$taginfo.tag|escape} {/foreach}{/if} {$metatag_local_keywords|escape}" />
 {/if}
-{if $prefs.metatag_author neq ''}
+{if $prefs.metatag_author ne ''}
 	<meta name="author" content="{$prefs.metatag_author|escape}" />
 {/if}
-{if $section eq "blogs"}
-	{if $blog_data.title eq ''}
-	<meta name="description" content="Blog listing" />
-	{elseif $postId eq ''}
-	<meta name="description" content="{$blog_data.title|escape}" />
-	{else} 
-	<meta name="description" content="{$post_info.title|escape} - {$blog_data.title|escape}" />
-	{/if}
-{elseif $prefs.metatag_pagedesc eq 'y' and $description ne ''}
+{if $prefs.metatag_pagedesc eq 'y' and $description ne ''}
 	<meta name="description" content="{$description|escape}" />
 {elseif $prefs.metatag_description ne '' or (isset($description) and $description eq '')}
 	<meta name="description" content="{$prefs.metatag_description|escape}" />
 {/if}
-{if $prefs.metatag_geoposition neq ''}
+{if $prefs.metatag_geoposition ne ''}
 	<meta name="geo.position" content="{$prefs.metatag_geoposition|escape}" />
 {/if}
-{if $prefs.metatag_georegion neq ''}
+{if $prefs.metatag_georegion ne ''}
 	<meta name="geo.region" content="{$prefs.metatag_georegion|escape}" />
 {/if}
-{if $prefs.metatag_geoplacename neq ''}
+{if $prefs.metatag_geoplacename ne ''}
 	<meta name="geo.placename" content="{$prefs.metatag_geoplacename|escape}" />
 {/if}
-{if (isset($prefs.metatag_robots) and $prefs.metatag_robots neq '') and (!isset($metatag_robots) or $metatag_robots eq '')}
+{if $prefs.metatag_robots ne '' && $metatag_robots eq '' }
         <meta name="robots" content="{$prefs.metatag_robots|escape}" />
 {/if}
-{if (!isset($prefs.metatag_robots) or $prefs.metatag_robots eq '') and (isset($metatag_robots) and $metatag_robots neq '')}
+{if $prefs.metatag_robots eq '' && $metatag_robots ne '' }
         <meta name="robots" content="{$metatag_robots|escape}" />
 {/if}
-{if (isset($prefs.metatag_robots) and $prefs.metatag_robots neq '') and (isset($metatag_robots) and $metatag_robots neq '')}
+{if $prefs.metatag_robots ne '' && $metatag_robots ne '' }
         <meta name="robots" content="{$prefs.metatag_robots|escape}, {$metatag_robots|escape}" />
 {/if}
-{if $prefs.metatag_revisitafter neq ''}
+{if $prefs.metatag_revisitafter ne ''}
 	<meta name="revisit-after" content="{$prefs.metatag_revisitafter|escape}" />
 {/if}
 
 {* --- tiki block --- *}
 <title>{strip}
-{if !empty($sswindowtitle)}
-	{if $sswindowtitle eq 'none'}
-		&nbsp;
-	{else}
-		{$sswindowtitle|escape}
-	{/if}
-{else}
 	{if $prefs.site_title_location eq 'before'}{$prefs.browsertitle|tr_if|escape} {$prefs.site_nav_seper} {/if}
 	{capture assign="page_description_title"}{strip}
 		{if ($prefs.feature_breadcrumbs eq 'y' or $prefs.site_title_breadcrumb eq "desc") && isset($trail)}
@@ -72,15 +55,19 @@
 		{$page_description_title}
 	{else}
 		{if !empty($tracker_item_main_value)}
-			{$tracker_item_main_value|truncate:255|escape}
-		{elseif !empty($title) and !is_array($title)}
-			{$title|escape}
+			{$tracker_item_main_value|escape}
 		{elseif !empty($page)}
-			{$page|escape}
+			{if $beingStaged eq 'y' and $prefs.wikiapproval_hideprefix == 'y'}
+				{$approvedPageName|escape}
+			{else}
+				{$page|escape}
+			{/if}
 		{elseif !empty($description)}{$description|escape}
 		{* add $description|escape if you want to put the description + update breadcrumb_build replace return $crumbs->title; with return empty($crumbs->description)? $crumbs->title: $crumbs->description; *}
 		{elseif !empty($arttitle)}
 			{$arttitle|escape}
+		{elseif !empty($title) and !is_array($title)}
+			{$title|escape}
 		{elseif !empty($thread_info.title)}
 			{$thread_info.title|escape}
 		{elseif !empty($forum_info.name)}
@@ -92,19 +79,23 @@
 		{elseif !empty($tracker_info.name)}
 			{$tracker_info.name|escape}
 		{elseif !empty($headtitle)}
-			{$headtitle|stringfix:"&nbsp;"|escape}{* use $headtitle last if feature specific title not found *}
+			{$headtitle|tr_if|escape}{* use $headtitle last if feature specific title not found *}
 		{/if}
 	{/if}
 	{if $prefs.site_title_location eq 'after'} {$prefs.site_nav_seper} {$prefs.browsertitle|tr_if|escape}{/if}
-{/if}
 {/strip}</title>
 
 {if $prefs.site_favicon}
 	<link rel="icon" href="{$prefs.site_favicon|escape}" />
 {/if}
 
+{* --- phplayers block --- *}
+{if $prefs.feature_phplayers eq 'y' and isset($phplayers_headers)}
+	{$phplayers_headers}
+{/if}
+
 {* --- universaleditbutton.org --- *}
-{if (isset($editable) and $editable) and ($tiki_p_edit eq 'y' or $page|lower eq 'sandbox' or $tiki_p_admin_wiki eq 'y')}
+{if (isset($editable) and $editable) and ($tiki_p_edit eq 'y' or $page|lower eq 'sandbox' or $tiki_p_admin_wiki eq 'y' or $canEditStaging eq 'y')}
 	<link rel="alternate" type="application/x-wiki" title="{tr}Edit this page!{/tr}" href="tiki-editpage.php?page={$page|escape:url}" />
 {/if}
 
@@ -149,10 +140,6 @@
 		<script type="text/javascript" src="http://w.sharethis.com/button/sharethis.js#type=website&amp;buttonText=&amp;onmouseover=false&amp;send_services=aim"></script>
 	{/if}
 {/if}
-
-<!--[if lt IE 9]>{* according to http://remysharp.com/2009/01/07/html5-enabling-script/ *}
-	<script src="lib/html5shim/html5.js" type="text/javascript"></script>
-<![endif]-->
 
 {if $headerlib}		{$headerlib->output_headers()}{/if}
 

@@ -27,13 +27,13 @@
 	<br />
 {/if}
 <label>
-	<input type="radio" name="which_date" value="between"{if $which_date eq 'between'} checked="checked"{/if} />{tr}Vote range displayed:{/tr} 
+	<input type="radio" name="which_date" value="between"{if $which_date eq 'between'} checked="checked"{/if} />{tr}Vote range displayed{/tr}: 
 </label>
 <label>
-	{tr}Start:{/tr} {html_select_date prefix="from_" time="$vote_from_date" start_year="$start_year"}
+	{tr}Start{/tr}: {html_select_date prefix="from_" time="$vote_from_date" start_year="$start_year"}
 </label>
 <label>
-	{tr}End:{/tr} {html_select_date prefix="to_" time="$vote_to_date" start_year="$start_year"}
+	{tr}End{/tr}: {html_select_date prefix="to_" time="$vote_to_date" start_year="$start_year"}
 </label>
 <br />
 {if empty($pollId) or $poll_info.voteConsiderationSpan > 0}
@@ -72,8 +72,26 @@
 {/if}
 
 {*----------------------------------- Results *}
-{include file='tiki-poll_results_bar.tpl' poll_info=$poll_info_arr[x] showtitle=n}
+<div class="pollresults">
+{cycle values="even,odd" print=false}
+<table class="pollresults">
+{section name=ix loop=$poll_info_arr[x].options}
+<tr class="{cycle}"><td class="pollr">
+{if $smarty.section.x.total > 1}<a href="tiki-poll_results.php?{if !empty($scoresort_desc)}scoresort_asc{else}scoresort_desc{/if}={$smarty.section.ix.index}">{/if}
+{$poll_info_arr[x].options[ix].title|escape}
+{if $smarty.section.x.total > 1}</a>{/if}
 
+</td>
+    <td class="pollr">{quotabar length=$poll_info_arr[x].options[ix].width}  {$poll_info_arr[x].options[ix].percent}% ({$poll_info_arr[x].options[ix].votes})
+    </td>
+    </tr>
+{/section}
+</table>
+<br />
+{tr}Total{/tr}: {$poll_info_arr[x].votes} {tr}votes{/tr}<br /><br />
+{if isset($poll_info_arr[x].total) and $poll_info_arr[x].total > 0}{tr}Average:{/tr} {math equation="x/y" x=$poll_info_arr[x].total y=$poll_info_arr[x].votes format="%.2f"}{/if}
+<br />
+</div>
 {/section}
 
 {*---------------------------List Votes *}
@@ -104,34 +122,33 @@
 	<th>{self_link _sort_arg='sort_mode' _sort_field='ip'}{tr}IP{/tr}{/self_link}</th>
 	<th>{self_link _sort_arg='sort_mode' _sort_field='title'}{tr}Option{/tr}{/self_link}</th>
 	<th>{self_link _sort_arg='sort_mode' _sort_field='time'}{tr}Date{/tr}{/self_link}</th>
-	{if $tiki_p_admin eq 'y'}<th>{tr}Actions{/tr}</th>{/if}
 </tr>
 {cycle values="odd,even" print=false}
 {section name=ix loop=$list_votes}
 <tr class="{cycle}">
-	<td class="username">{$list_votes[ix].user|userlink}</td>
-	<td class="text">{$list_votes[ix].ip|escape}</td>
-	<td class="text">{$list_votes[ix].title|escape}</td>
-	<td class="date">{$list_votes[ix].time|tiki_short_date}</td>
-	{if $tiki_p_admin eq 'y'}<td class="action">{self_link deletevote=1 user=$list_votes[ix].user ip=$list_votes[ix].ip optionId=$list_votes[ix].optionId}{icon _id=cross}{/self_link}</td>{/if}
+	<td>{$list_votes[ix].user|userlink}</td>
+	<td>{$list_votes[ix].ip|escape}</td>
+	<td>{$list_votes[ix].title|escape}</td>
+	<td>{$list_votes[ix].time|tiki_short_date}</td>
 </tr>
 {sectionelse}
-	{norecords _colspan=4}
+<tr>
+	<td colspan="4">{tr}No records found{/tr}</td>
+</tr>
 {/section}
 </table>
-{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
+{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset }{/pagination_links}
 {/if}
 
 {*---------------------- comments *}
 {if $prefs.feature_poll_comments == 'y' && !empty($pollId)
-  && ($tiki_p_read_comments  == 'y'
+  && (($tiki_p_read_comments  == 'y'
+    && $comments_cant != 0)
   ||  $tiki_p_post_comments  == 'y'
-  ||  $tiki_p_edit_comments  == 'y')}
+  ||  $tiki_p_edit_comments  == 'y')
+}
   <div id="page-bar" class="clearfix">
-		<span class="button"><a id="comment-toggle" href="{service controller=comment action=list type=poll objectId=$pollId}#comment-container">{tr}Comments{/tr}</a></span>
-		{jq}
-			$('#comment-toggle').comment_toggle();
-		{/jq}
+  	   {include file='comments_button.tpl'}
   </div>
-  <div id="comment-container"></div>
+  {include file='comments.tpl'}
 {/if}

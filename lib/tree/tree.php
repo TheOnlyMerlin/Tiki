@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -26,28 +26,29 @@ require_once ('lib/debug/debugger.php');
  *
  * Define base interface and provide common algorithm for tree generation
  *
+ * Format of element in array for make_tree() call:
+ *  id     => number of ID of current node
+ *  parent => number of ID of parant node
+ *  data   => user provided data to be placed as node text
+ *
  */
-abstract class TreeMaker
+class TreeMaker
 {
 	/// Unique prefix for cookies generated for this tree
 	var $prefix;
 
 	/// Constructor
-	function __construct($prefix) {
+	function TreeMaker($prefix) {
 		$this->prefix = $prefix;
 	}
 
-	// * $ar: Bidimensional array of nodes. Each node has these elements:
-	// *  id     => Identifier of the node
-	// *  parent => Identifier of the node's parent
-	// *  data   => Node content (HTML)
-	/// Returns HTML code for tree
+	/// Generate HTML code for tree
 	function make_tree($rootid, $ar) {
 		return $this->make_tree_r($rootid, $ar);
 	}
 
-	/// Recursively make a tree
-	protected function make_tree_r($rootid, &$ar) {
+	/// Recursive make (do not call directly)
+	function make_tree_r($rootid, &$ar) {
 		global $debugger;
 
 		$debugger->msg("TreeMaker::make_tree_r: Root ID=" . $rootid);
@@ -66,9 +67,7 @@ abstract class TreeMaker
 
 			$ind = "";
 			//
-			$count = -1;
 			foreach ($cli as $i) {
-				$count++;
 				$child_result = $this->make_tree_r($i["id"], $tmp);
 
 				$have_childs = (strlen($child_result) > 0);
@@ -81,9 +80,9 @@ abstract class TreeMaker
 				
 				if ($have_childs) {
 					$flipper = $this->node_flipper_code($i);
-					$nsc = $this->node_start_code_flip($i, $count);
+					$nsc = $this->node_start_code_flip($i);
 				} else {
-					$nsc = $this->node_start_code($i, $count);
+					$nsc = $this->node_start_code($i);
 					$flipper = '';
 				}	
 
@@ -102,6 +101,7 @@ abstract class TreeMaker
 				$nec = $this->node_end_code($i);
 				// Form result
 				$result .= $nsc . $flipper . $ndsc . $i["data"] . $nl . $ind . $ncsc. $nl . $ind . $ind . $child_result . $ncec . $nl . $ind . $ind . $ndec . $nec . $nl . $ind; // this sort is for lists kind of tree
+#				$result .= $nsc . $flipper . $ndsc . $i["data"] . $ndec . $ncsc . $child_result . $ncec . $nec; // this sort is for old div/table kind of tree
 			}
 		}
 
@@ -109,7 +109,8 @@ abstract class TreeMaker
 	}
 	/**
 	 * To change behavior (xhtml layout :) of generated tree
-	 * it is enough to redefine following methods.
+	 * it is enough to redefine following methods..
+	 * (thanx that PHP have implicit virtual functions :)
 	 *
 	 * General layout of generated tree code looks like this:
 	 *
@@ -137,11 +138,11 @@ abstract class TreeMaker
 		return '';
 	}
 	
-	function node_start_code($nodeinfo, $count=0) {
+	function node_start_code($nodeinfo) {
 		return '';
 	}
 
-	function node_start_code_flip($nodeinfo, $count=0) {
+	function node_start_code_flip($nodeinfo) {
 		return '';
 	}
 	

@@ -68,7 +68,7 @@ fieldset {
 }
 
 /* margin and padding for span surrounding the "button" links, same definition for button form element */
-/*button,
+button,
 .button,
 .button.highlight {
 	margin: 1px 2px;
@@ -81,7 +81,7 @@ fieldset {
 .button input,
 .calbuttonBox a {
 	padding: 1px 4px;
-}*/
+}
 
 #genPass .button a,
 #genPass .button a:visited,
@@ -89,22 +89,12 @@ fieldset {
 	padding: 1px 4px !important;
 }
 
-.button,
-.button: hover,
-button,
-button:hover,
 input[type=reset],
 input[type=submit],
 input[type=reset]:hover,
 input[type=submit]:hover {
-	margin: 0 2px 2px 0;
-	font-size: inherit;
-	font-family: inherit;
-	padding: 0;
-}
-
-input {
-	padding: 0;
+	padding: 1px 4px;
+	margin-right: 1px;
 }
 
 /* highlight on interface text to draw attention; also
@@ -135,9 +125,52 @@ input[type=radio] {
 	border: 0;
 }
 
+/***** Site Header & Identity *****/
+
+#header-top {
+	position: relative;
+}
+
+#siteheader {
+	background: transparent;
+}
+
+#customcodewith_ad {
+	width: 400px;
+}
+
+#sitead.floatright {
+	padding-right: 40px;
+}
+
+#sitead.floatleft {
+	padding-left: 40px;
+}
+
+#sioptionscentered #sitead.floatleft {
+	padding-left: 10px;
+}
 
 #sitelogo img {
 	margin-top: 10px;
+}
+
+#bannertopright {
+	padding-right: 4px;
+}
+
+#sitelocbar {
+	float: left;
+	padding: 2px 2px 3px 10px;
+	font-size: small;
+}
+
+#siteloginbar {
+	text-align: right;
+	position: absolute;
+	bottom: 3px;
+	right: 10px;
+	font-size: 90%;
 }
 
 .pass a,
@@ -346,12 +379,12 @@ a.flip:hover,
 	background: #eee;
 	color: #000;
 }
-
-.box-share > div {
+	
+#site_report {
 	text-align: center;
 }
 
-.site_report a {
+#site_report a {
 	border-left: 1px solid #696969;
 	border-right: 1px solid #696969;
 	padding: 0 5px;
@@ -359,6 +392,9 @@ a.flip:hover,
 }
 
 /* default look for editplugin icon links */
+.editplugin {
+	/*background: #fff; color: #000;*/
+}
 .plugin-desc {
 	padding: 5px;
 }
@@ -377,11 +413,6 @@ a.flip:hover,
 	color: black;
 	padding: 10px;
 	border: solid 2px black;
-}
-
-.wikitext .plugin_gauge,
-.wikitext .plugin_gauge-bar {
-	border: none;
 }
 
 /***** Boxes *****/
@@ -475,6 +506,15 @@ img.icon {
 	font-weight: bold;
 }
 	
+.comment .rbox-title,
+.comment .rbox-data {}
+
+.note .rbox-title,
+.note .rbox-data {}
+
+.tip .rbox-title,
+.tip .rbox-data {}
+
 .error .rbox-title,
 .errors .rbox-title,
 .warning .rbox-title {
@@ -508,19 +548,16 @@ img.icon {
 }
 
 .simplebox {
-	border: 1px solid #999;
 	padding: 3px;
 }
 
 /* odd and even classes for tr, td, and li */
-.odd,
-table.normal tr:nth-child(2n+1) {
+.odd {
 	background: #f0f0f0;
 	color: #000;
 }
 
-.even,
-table.normal tr:nth-child(2n) {
+.even {
 	background: #fff;
 	color: #000;
 }
@@ -555,27 +592,6 @@ td.form {
 	padding: 0.2em;
 }
 
-td.integer {
-	text-align: right;
-}
-td.date {
-	text-align: center;
-}
-td.checkbox {
-	text-align: center;
-	width: 20px;	
-}
-td.action {
-	white-space: nowrap;
-}
-td.norecords {
-	text-align: left;
-	font-weight: bold;
-}
-td.id, td.icon {
-	text-align: center;
-}
-
 caption {
 	font-weight: bold;
 }
@@ -606,44 +622,6 @@ p.editdate {
 	font-style: italic;
 }
 
-/* wikiplugin_code */
-.codelisting {
-	overflow: auto;
-}
-
-/* wikiplugin_fade */
-.wpfade-hidden {
-	background-repeat: no-repeat;
-	background-image: url(../../img/toggle-expand-dark.png);
-	margin-left: -19px; 
-	padding-left: 19px;
-}
-
-.wpfade-shown {
-	background-repeat: no-repeat;
-	background-image: url(../../img/toggle-collapse-dark.png);
-	margin-left: -19px; 
-	padding-left: 19px;
-}
-
-.wpfade-span-plain {
-	cursor:pointer;
-}
-
-.wpfade-span-icon {
-	cursor:pointer;
-	margin-left:19px;	
-}
-
-.wpfade-div-plain {
-	display: none;
-}
-
-.wpfade-div-icon {
-	display: none;
-	margin-left:19px;
-}
-
 /* wikiplugin_fancylist */
 .wikitext .fancylist {
 	margin: .5em 0;
@@ -669,20 +647,6 @@ p.editdate {
 	margin-left: -3px;
 }
 
-/* wikiplugin quote */
-.quoteheader {
-	background : url('images/quoteleft.gif') no-repeat;
-	padding-left:50px;
-	height:35px;
-}
-
-.quotebody {
-	margin-left:35px;
-	padding-left:10px;
-        font-style: italic;
-        border-left: 2px solid #D3D3D3;
-}
-
 /* wikiplugin remarksbox */
 .wikitext .rbox-data ul {
 	list-style-type: disc;
@@ -697,13 +661,11 @@ p.editdate {
 }
 
 .trackerplugindesc {
-	color: #BEBCBC;
-	font-style: italic;
+	color: #BEBCBC; font-style: italic
 }
 
 .charCount {
-	color: #BEBCBC;
-	font-style: italic;
+	color: #BEBCBC; font-style: italic
 }
 
 /* mouseover plugin */
@@ -715,36 +677,12 @@ p.editdate {
 
 /* img plugin */
 .imgbox {
-	border: 1px solid #a9a9a9;
-  background-color: #f9f9f9;
-	padding: 5px;
+	    border: 1px solid #a9a9a9;
+        background-color: #f9f9f9;
 }
 
 .thumbcaption {
-	font-size: 90%;
-	padding: 2px;
-}
-
-.wpimg-meta-col1 {
-	text-align: right;
-	font-weight: bold;
-	width: 225px;
-	margin-right: 5px;
-}
-
-.wpimg-meta-col2 {
-	width: 375px;
-}
-
-.wpimg-meta-section {
-	border-bottom: solid 1px lightgray;
-	width: 600px;
-	margin-right: 5px;
-}
-
-.magnify {
-	float: right;
-	padding-top: 2px;
+		font-size: 90%;
 }
 
 /* TOC */
@@ -768,11 +706,15 @@ p.editdate {
 	border-top: 1px solid #696969;
 }
 
+.diffbody {
+	color: #000;
+}
+
 .diffadded {
 	background: #ccffcc;
 	color: #000;
 	/*word-wrap:break-word;*/
-	max-width: 553px;
+	max-width: 400px;
 }
 
 .diffdeleted {
@@ -780,7 +722,7 @@ p.editdate {
 	color: #000;
 	text-decoration: line-through;
 	/*word-wrap:break-word;*/
-	max-width: 553px;
+	max-width: 400px;
 }
 
 .diffinldel {
@@ -798,6 +740,10 @@ p.editdate {
 
 .diffadded .diffchar {
 	color: blue;
+}
+
+.plugin-desc {
+	padding: 5px;
 }
 
 /***** Articles ****/
@@ -836,12 +782,6 @@ small.description {
 	display: block;
 }
 
-.description {
-	font-size: .95em;
-	font-style: italic;
-}
-
-
 /*body.tiki_blogs*/ .post .title {
 	margin-top: 0;
 }
@@ -863,7 +803,7 @@ dl.note-list {
 }
 
 #note-editor-comment {
-	background: yellow;
+	background: #fff;
 	color: #000;
 	border: #999 1px solid;
 }
@@ -974,6 +914,10 @@ p.norecords {
 .catfeatures {
 	font-weight: bold;
 	list-style: none
+}
+
+.catfeatures li {
+	text-transform: capitalize;
 }
 
 .catitems {
@@ -1128,12 +1072,6 @@ textarea.tshoutbox{
 	font-size: 95%;
 }
 
-/***** User Tasks *****/
-.taskcount {
-	font-style: italic;
-}
-
-
 /***** Messages *****/
 
 .prio1,
@@ -1217,9 +1155,6 @@ textarea.tshoutbox{
 .tiki_admin .note .rbox-data li.odd {
 	list-style: none;
 }
-
-/* Button from 'Show php error messages' hidden box */
-.button[id="show-errors-button"]{font-size:5%;}
 
 /* admin boxes etc (.admbox) now defined in css/admin.css */
 
@@ -1342,34 +1277,13 @@ textarea.tshoutbox{
 
 /* jq tablesorter */
 .fancysort th.headerSortUp {
-	background-repeat: no-repeat;
-	background-position: right;
-	background-image: url(../../pics/icons/resultset_up.png) !important;
+	background-repeat: no-repeat; background-position: right; background-image: url(../../pics/icons/resultset_up.png) !important;
 }
-
 .fancysort th.headerSortDown {
-	background-repeat: no-repeat;
-	background-position: right;
-	background-image: url(../../pics/icons/resultset_down.png) !important;
+	background-repeat: no-repeat; background-position: right; background-image: url(../../pics/icons/resultset_down.png) !important;
 }
-
 .fancysort th.header {
-	background-repeat: no-repeat;
-	background-position: right;
-	background-image: url(../../pics/icons/resultset.png);
-}
-
-/* jq tracker header */
-.trackerHeaderOpen {
-	background-repeat: no-repeat;
-	background-position: right;
-	background-image: url(../../pics/icons/resultset_down.png);
-}
-
-.trackerHeaderClose {
-	background-repeat: no-repeat;
-	background-position: right;
-	background-image: url(../../pics/icons/resultset_next.png);
+	background-repeat: no-repeat; background-position: right; background-image: url(../../pics/icons/resultset.png);
 }
 
 /* Perspectives (edit) */
@@ -1470,13 +1384,10 @@ textarea.tshoutbox{
 }
  /* wikiplugin_tracker */
 .trackerCategoryName {white-space:nowrap;}
+/* End of file */
 
 #captchaImg {
 	border: 1px solid black;
-}
-
-.ui-tabs .ui-tabs-nav li a {
-	padding: 0.3em 0.8em 0.1em;
 }
 /* interactive translations */
 
@@ -1491,13 +1402,6 @@ textarea.tshoutbox{
 	color: #000;
 }
 
-.tree.root .object-count {
-	float: right;
-	font-weight: bold;
-	margin-left: 10px;
-	margin-right: 10px;
-	color: #999;
-}
 
 /* jquery validation */
 
@@ -1505,146 +1409,4 @@ label.error {
 	background : url('../../pics/icons/error.png') no-repeat;
 	color:red;
 	padding-left:20px;
-	margin-left: 0.5em;
 }
-
-/* FileGals Upload Progress Bar */
-
-.progressName {
-	text-align: left;
-	white-space: nowrap;
-	overflow: hidden;
-	font-weight: bold;
-}
-
-.progressBarInProgress,
-.progressBarComplete,
-.progressBarError {
-	width: 0%;
-	height: 20px;
-	background-color: blue;
-	margin-top: 2px;
-	color: white;
-	text-align: center;
-	font-weight: bold;
-}
-
-.progressBarComplete {
-	width: 100%;
-	background-color: green;
-	visibility: hidden;
-}
-
-.progressBarError {
-	width: 100%;
-	background-color: red;
-	visibility: hidden;
-}
-
-.progressBarStatus {
-	margin-top: 2px;
-	width: 337px;
-	text-align: left;
-	white-space: nowrap;
-}
-
-.progressWrapper {
-	width: 357px;
-	overflow: hidden;
-}
-
-.progressContainer {
-	margin: 5px;
-	padding: 4px;
-	border: solid 1px #E8E8E8;
-	background-color: #F7F7F7;
-	overflow: hidden;
-}
-
-#fgalexplorer > div > ul {
-	padding: 0;
-	margin: 0;
-}
-#fgalexplorer > div > ul ul {
-	padding-left: 16px;
-}
-
-
-.comment.archived {
-	display: none;
-}
-
-.all .comment.archived {
-	display: block;
-}
-
-.tracker-item-files li {
-	clear: right;
-}
-
-.tracker-item-files label {
-	clear: right;
-	float: right;
-}
-
-.tracker-item-files {
-	-moz-column-count: 2;
-	-moz-column-gap: 30px;
-	-webkit-column-count: 2;
-	-webkit-column-gap: 30px;
-}
-
-.file-drop {
-	min-height: 100px;
-}
-
-form.simple label {
-	clear: both;
-	padding-bottom: 1em;
-}
-
-form.simple label.depends {
-	padding-left: 20px;
-}
-
-form.simple label .description {
-	padding-left: 20px;
-}
-
-form.simple textarea,
-form.simple input[type="text"],
-form.simple input[type="file"],
-form.simple input[type="url"],
-form.simple input[type="email"],
-form.simple input[type="number"],
-form.simple select
-{
-	display: block;
-	clear: left;
-	width: 100%;
-}
-
-/* $.fn.modal */
-.mask {
-	position:absolute; 
-	z-index:999;
-	background-color:#FFFFFF;
-	display:none;
-}
-
-.boxes .dialog {
-	width: auto;
-	height: auto;
-	font-weight: bold;
-	z-index: 9999;
-	text-align: center;
-}
-.structuremenu .menuSection {
-	margin-left: 6px;
-	border-left: 1px dotted gray;
-}
-.structuremenu .menuSection .option, .structuremenu .menuSection .optionline {
-	background: transparent url(../../img/icons2/h_trenner.gif) center left no-repeat; padding-left: 21px;
-}
-
-/* End of file */

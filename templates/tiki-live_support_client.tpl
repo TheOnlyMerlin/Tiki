@@ -1,9 +1,12 @@
-<!DOCTYPE html>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
     <link rel="StyleSheet"  href="styles/{$prefs.style}" type="text/css" />
+    {include file='bidi.tpl'}
     <title>{tr}Live support:User window{/tr}</title>
     {literal}
 	<script type="text/javascript" src="lib/live_support/live-support.js">
@@ -11,7 +14,7 @@
 	{/literal}
 	{$headerlib->output_headers()}
   </head>
-  <body onunload="client_close();" style="background-color: white">
+  <body onunload="client_close();">
   	<div id='request_chat' align="center">
   		<input type="hidden" id="reqId" />
 		<input type="hidden" id="tiki_user" value="{$user|escape}" />

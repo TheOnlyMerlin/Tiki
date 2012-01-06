@@ -1,21 +1,17 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_div_info()
-{
+function wikiplugin_div_info() {
 	return array(
 		'name' => tra('Div'),
-		'documentation' => 'PluginDiv',
-		'description' => tra('Define and format sections of a page or text'),
+		'documentation' => tra('PluginDiv'),
+		'description' => tra('Insert a division block, span, blockquote or other text formatting on wiki page.'),
 		'prefs' => array('wikiplugin_div'),
 		'body' => tra('text'),
-		'icon' => 'pics/icons/script_code_red.png',
-		'filter' => 'wikicontent',
-		'tags' => array( 'basic' ),		
 		'params' => array(
 			'type' => array(
 				'required' => false,
@@ -47,7 +43,6 @@ function wikiplugin_div_info()
 				'name' => tra('Box width'),
 				'description' => tra('In pixels or percentage. Default is original size'),
 				'default' => '',
-				'filter' => 'text',
 			),
 			'align' => array(
 				'required' => false,
@@ -66,10 +61,8 @@ function wikiplugin_div_info()
 			'float' => array(
 				'required' => false,
 				'name' => tra('Float Position'),
-				'description' => tra(
-								'Set the alignment for the entire element. For elements with a width of less than 100%, other elements will wrap around it 
-								unless the clear parameter is appropriately set.)'
-				),
+				'description' => tra('Set the alignment for the entire element. For elements with a width of less than 100%, other elements will wrap around it 
+										unless the clear parameter is appropriately set.)'),
 				'filter' => 'alpha',
 				'default' => '',
 				'options' => array(
@@ -111,12 +104,11 @@ function wikiplugin_div_info()
 	);
 }
 
-function wikiplugin_div($data, $params)
-{
+function wikiplugin_div($data, $params) {
 
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 	$possibletypes = array('div','span','pre','b','i','tt','p','blockquote');
-	$t    = (isset($type) and in_array($type, $possibletypes)) ? "$type"  : "div";
+	$t    = (isset($type) and in_array($type,$possibletypes)) ? "$type"  : "div";
 	$c    = (isset($class)) ? " class='$class'"  : "";
 	$id    = (isset($id)) ? " id='$id'"  : "";
 	$w    = (isset($width)) ? " width: $width;"  : "";

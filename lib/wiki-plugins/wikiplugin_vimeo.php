@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,8 +7,7 @@
 
 require_once('lib/wiki-plugins/wikiplugin_flash.php');
 
-function wikiplugin_vimeo_info()
-{
+function wikiplugin_vimeo_info() {
 	return array(
 		'name' => tra('Vimeo'),
 		'documentation' => 'PluginVimeo',
@@ -69,8 +68,7 @@ function wikiplugin_vimeo_info()
 	);
 }
 
-function wikiplugin_vimeo($data, $params)
-{
+function wikiplugin_vimeo($data, $params) {
 	if (isset($params['url'])) {
 		$params['vimeo'] = $params['url'];
 		unset($params['url']);

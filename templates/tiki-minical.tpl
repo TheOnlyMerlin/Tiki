@@ -15,13 +15,13 @@
 <table class="normal" >
 	<tr>
 		<td>
-			<b>{tr}Upcoming Events{/tr}</b>
+			<b>{tr}Upcoming events{/tr}</b>
 			<br />
 			<table class="normal">
 				{section name=ix loop=$upcoming}
 					<tr>
 						<td class="even">
-							{$upcoming[ix].start|tiki_short_datetime}
+							{$upcoming[ix].start|tiki_date_format:"%b %d %H:%M"}
 							{if $upcoming[ix].topicId}
 								{if $upcoming[ix].topic.isIcon eq 'y'}
 									<img title="{$upcoming[ix].topic.name}" src="{$upcoming[ix].topic.path}" alt="{tr}topic image{/tr}" />
@@ -33,7 +33,8 @@
 						</td>
 					</tr>
 				{sectionelse}
-					{norecords}
+					<tr>
+						<td class="odd">{tr}No records found.{/tr}</td></tr>
 				{/section}	
 			</table>
 		</td>
@@ -191,7 +192,7 @@
 			<td>{tr}Start{/tr}</td>
 			<td>
 				{html_select_date time=$ev_pdate end_year="+4" field_order=$prefs.display_field_order} {tr}at{/tr}
-				{html_select_time minute_interval=5 time=$ev_pdate_h display_seconds=false use_24_hours=$use_24hr_clock}
+				{html_select_time minute_interval=5 time=$ev_pdate_h display_seconds=false use_24_hours=true}
 			</td>
 		</tr>
 		<tr>

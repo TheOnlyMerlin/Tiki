@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -52,7 +52,7 @@ if (!@$dbTiki->Execute('select login from users_users limit 1')) {
 				"				<li><p>".tra("Did you complete the <a href='tiki-install.php' >Tiki Installer?")."</a></p></li>\n" .
 				"			</ol>\n" .
 				"		</div>\n" .
-				"		<p>".tra("Please see <a href=\"http://doc.tiki.org/\">the documentation</a> for more information.")."</p>\n";
+				"		<p>".tra("Please see <a href=\"http://doc.tikiwiki.org/\">the documentation</a> for more information.")."</p>\n";
 	$dberror = true;
 	include_once('tiki-install.php');
 }

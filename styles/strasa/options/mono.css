@@ -25,8 +25,7 @@ fieldset {
 	border: solid 1px #444444;
 }
 
-legend {
-	color: #444444} /* IE7 */
+legend {color: #444444} /* IE7 */
 
 input,
 textarea,
@@ -69,7 +68,7 @@ input[type=reset],
 input[type=submit],
 .button input,
 .calbuttonBox,
-.siteloginbar input.wikiaction {
+#siteloginbar input.wikiaction {
 	color: #fff;
 	background: #565656;
 	border-color: #878787 #343434 #343434 #878787;
@@ -86,8 +85,8 @@ button:hover,
 input[type=reset]:hover,
 input[type=submit]:hover,
 .button input:hover,
-.calbutt:hover,
-.siteloginbar input.wikiaction:hover {
+.calbuttonBox:hover,
+#siteloginbar input.wikiaction:hover {
 	background-color: #333333;
 	color: #fff;
 }
@@ -118,6 +117,10 @@ ul.jumplinks a:active {
 
 #c1c2 #col2 .content {
 	background: url('mono/box_bottom.gif') no-repeat 0 100%;
+}
+
+#col3 .content {
+	border-top: 1px solid #cfcfcf;
 }
 
 #footer {
@@ -163,17 +166,22 @@ ul.jumplinks a:active {
 }
 
 /* Site Header & Identity */
-.header_fixedwidth {
+#header-top {
 	color: #fff;
 	background: #444 url(mono/headerbg.jpg) repeat-x 0 100%;
 
 }
 
-#topbar_modules .box-login_box {
+#siteloginbar {
 	background: url('mono/login.jpg') 0 0 no-repeat;
 }
 
-#topbar_modules .siteloginbar .register {
+* html #siteloginbar {
+	text-align: right;
+	width: 100%;
+	background: #fff url(mono/loginlong.jpg) 0 0 no-repeat}
+
+#siteloginbar .register {
 	background: url('mono/register.jpg') no-repeat;
 }
 
@@ -237,6 +245,84 @@ a.flip:hover {
 /* end layout divs, etc. */
 /** Border boxes (if any) **/
 /****** Menus ******/
+/** PHP Layers Menus **/
+
+#header .horbaritem a {
+	border-color: transparent;
+	color: #ebebeb;
+}
+
+.horbaritem a:hover {
+	background: #fff;
+	color: #eee !important;
+}
+
+#header .horbaritem a:hover {
+	background: url('mono/headermenuitem-hover.png') bottom center repeat-x;
+	border-color: #336699;
+	color: #fff;
+}
+
+.mdksubframe {
+	border: 1px solid #08698f;
+	background: #212121;
+}
+
+.mdkitem a {
+	color: #ebebeb;
+}
+
+.mdkitem a:hover {
+	background: transparent url('mono/headerbg.jpg') repeat-x;
+	color: #fff;
+}
+
+#col2 .mdkitem a {
+	color: #666666;
+}
+
+#col2 .mdkitem a:hover {
+	color: #000;
+}
+
+/* Tree menu (also on Browse Categories */
+
+#col2 .treemenudiv {
+	background: #e5e5e5;
+}
+
+.phplmnormal,
+a.phplmnormal:hover,
+a.phplm:link,
+a.phplm:visited,
+a.phplm:hover,
+a.phplm:active {
+	color: #666666;
+}
+
+a.phplm:visited {
+	color: #666666;
+}
+
+a.phplm:hover {
+	color: #000;
+}
+
+a.phplm:active {
+	color: #666666;
+}
+
+a.phplmselected:link,
+a.phplmselected:visited,
+a.phplmselected:hover,
+a.phplmselected:active {
+	color: black;
+}
+
+a.phplmselected:hover {
+	color: #808080;
+}
+
 /** CSS (suckerfish) menus **/
 
 .cssmenu_horiz li ul li,
@@ -250,7 +336,7 @@ a.flip:hover {
 	border-top: 1px solid #233039;
 }
 
-.header .cssmenu_horiz li:hover {
+#header .cssmenu_horiz li:hover {
 	background: #212121;
 }
 
@@ -282,31 +368,31 @@ a.flip:hover {
 	color: #000000;
 }
 
-.header .cssmenu_horiz a,
-.header .cssmenu_horiz a:visited {
+#header .cssmenu_horiz a,
+#header .cssmenu_horiz a:visited {
 	background: none;
 	border: none;
 	color: #fff;
 	padding: 3px 5px 6px 
 }
 
-.header .cssmenu_horiz a:hover {
+#header .cssmenu_horiz a:hover {
 	background: #000;
 	border: none;
 	color: #fff;
 }
 
-.header .cssmenu_horiz li ul li {
+#header .cssmenu_horiz li ul li {
 	border: 1px solid #a9a9a9;
 	background: #4c4c4c;
 }
 
-.header .cssmenu_horiz li ul li:first-child,
+#header .cssmenu_horiz li ul li:first-child,
 .cssmenu_vert li ul li:first-child {
 	border-top: 1px solid #a9a9a9;
 }
 
-.header .cssmenu_horiz li ul li a:hover {
+#header .cssmenu_horiz li ul li a:hover {
 	background: #000;
 }
 
@@ -322,11 +408,11 @@ a.flip:hover {
 	background: url(mono/arrows-000000.png) no-repeat 0 0;	
 }
 
-.header .cssmenu_horiz li a .sf-sub-indicator {
+#header .cssmenu_horiz li a .sf-sub-indicator {
 	background: url(../../../lib/jquery/superfish/images/arrows-ffffff.png) no-repeat -10px -100px;
 }
 
-.header .cssmenu_horiz li ul li a .sf-sub-indicator {
+#header .cssmenu_horiz li ul li a .sf-sub-indicator {
 	background: url(../../../lib/jquery/superfish/images/arrows-ffffff.png) no-repeat 0 0;
 }
 
@@ -342,9 +428,18 @@ a.flip:hover {
 	color: #000000;
 }
 
+.option a:link,
+.option a:visited,
+a.linkmenu, .rsslink, .linkmenu:visited, .rsslink:visited {}
+
 .linkmenu:hover {
 	color: #000000;
 }
+
+.option a:hover,
+.option a:active {}
+
+a.linkmodule {}
 
 a.linkmodule:hover {
 	color: #000000;
@@ -374,7 +469,7 @@ a.linkmodule:hover {
 	background: #fafafa;
 }
 
-.site_report a {
+#site_report a {
 	border-left: 1px solid #696969;
 	border-right: 1px solid #696969;
 }
@@ -393,6 +488,8 @@ a.linkmodule:hover {
 #col3 .box {
 	border-bottom: 1px solid #cfcfcf;
 }
+
+.box a.flipmodtitle img {}
 
 a.flipmodtitle:hover img {
 	border: 1px #cccccc solid !important;
@@ -433,8 +530,7 @@ a.flipmodtitle:hover img {
 	background: #fff;
 }
 
-.highlight {
-	background: #e5e5e5;
+.highlight {background: #e5e5e5;
 }
 
 /***** Tables, Tabs and Lists ****/
@@ -444,8 +540,14 @@ tr.odd {
 	background: #f0f0f0;
 }
 
+tr.odd:hover {
+}
+
 tr.even {
 	background: #dcdcdc;
+}
+
+tr.even:hover {
 }
 
 td.odd {
@@ -457,6 +559,11 @@ td.even {
 	background: #dcdcdc;
 	color: #000;
 }
+
+tr.even td.even,
+tr.odd td.odd {}
+
+td.third {}
 
 /* headings */
 
@@ -573,11 +680,6 @@ a.forumnameread {
 	background-color: #f8f8f8;
 }
 
-.statuson {
-	background: #565656;
-	border: 1px inset #343434;
-	
-}
 /*** Feature-specific selectors ***/
 /***** Wiki *****/
 
@@ -633,6 +735,8 @@ a.pagetitle:hover {
 }
 
 /* Needed esp. for light-on-dark theme */
+.toolbar {
+}
 
 /* Wiki plugins */
 /* Code plugin  */
@@ -877,6 +981,10 @@ body.tiki_blogs .postbody-title,
 	color: #822222;
 }
 
+.Calfgal,
+.Calfgal a,
+.Calfgal a:visited {}
+
 .Calforum,
 .Calforum a,
 .Calforum a:visited {
@@ -912,6 +1020,8 @@ body.tiki_blogs .postbody-title,
 .Caltrack a:visited {
 	color: #00BD02;
 }
+
+.Calweb {}
 
 .Calwiki,
 .Calwiki a,
@@ -972,6 +1082,8 @@ body.tiki_blogs .postbody-title,
 .calprio9 a {
 	color: #666666;
 }
+
+.caltoggle {}
 
 .opaque {
 	border: 1px solid #212121;
@@ -1116,6 +1228,9 @@ body.tiki_blogs .postbody-title,
 .plugin-form-float {
 	border: solid 2px #696969;
 }
+
+/***** Ajax *****/
+#ajaxLoading {}
 
 /***** TikiSheet Default Style *****/
 .default thead td,

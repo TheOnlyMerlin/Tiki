@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,16 +8,12 @@
 $section = 'sheet';
 require_once ('tiki-setup.php');
 require_once ('lib/sheet/grid.php');
-$auto_query_args = array(
-	'sheetId',
-	'readdate',
-);
 
 $access->check_feature('feature_sheet');
 
 $info = $sheetlib->get_sheet_info( $_REQUEST['sheetId'] );
 if (empty($info)) {
-	$smarty->assign('msg', tra('Incorrect parameter'));
+	$smarty->assign('Incorrect parameter');
 	$smarty->display('error.tpl');
 	die;
 }
@@ -37,24 +33,24 @@ $smarty->assign('title', $info['title']);
 $smarty->assign('description', $info['description']);
 
 $smarty->assign('page_mode', 'form' );
-$smarty->assign('sheetId', $_REQUEST['sheetId'] );
 
 // Process the insertion or modification of a gallery here
+
 $grid = new TikiSheet;
 
-$history = $sheetlib->sheet_history( $_REQUEST['sheetId'] );
-$smarty->assign_by_ref( 'history', $history );
-
-if ( isset($_REQUEST['encoding']) )
+if( $_SERVER['REQUEST_METHOD'] == 'POST' )
 {
 	$smarty->assign('page_mode', 'submit' );
 
-	$handler = new TikiSheetDatabaseHandler( $_REQUEST['sheetId'], $_REQUEST['readdate'] );
+	$sheetId = $_REQUEST['sheetId'];
+    $encoding = $_REQUEST['encoding'];
+
+	$handler = new TikiSheetDatabaseHandler( $sheetId );
 	$grid->import( $handler );
 
 	$handler = $_REQUEST['handler'];
 	
-	if ( !in_array( $handler, TikiSheet::getHandlerList() ) )
+	if( !in_array( $handler, TikiSheet::getHandlerList() ) )
 	{
 		$smarty->assign('msg', "Handler is not allowed.");
 
@@ -62,7 +58,7 @@ if ( isset($_REQUEST['encoding']) )
 		die;
 	}
 
-	$handler = new $handler( "php://stdout" , 'UTF-8', $_REQUEST['encoding'] );
+	$handler = new $handler( "php://stdout" , 'UTF-8', $encoding );
 	$grid->export( $handler );
 
 	exit;
@@ -73,10 +69,10 @@ else
 
 	$handlers = TikiSheet::getHandlerList();
 	
-	foreach ( $handlers as $key=>$handler )
+	foreach( $handlers as $key=>$handler )
 	{
 		$temp = new $handler;
-		if ( !$temp->supports( TIKISHEET_SAVE_DATA | TIKISHEET_SAVE_CALC ) )
+		if( !$temp->supports( TIKISHEET_SAVE_DATA | TIKISHEET_SAVE_CALC ) )
 			continue;
 
 		$list[$key] = array(

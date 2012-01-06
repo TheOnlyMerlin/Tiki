@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,11 +9,10 @@ include_once ('tiki-setup.php');
 if ($prefs['feature_xmlrpc'] != 'y' || $prefs['wiki_feature_3d'] != 'y') {
 	die;
 }
-require_once ("lib/pear/XML/Server.php");
+require_once ("XML/Server.php");
 $map = array("getSubGraph" => array("function" => "getSubGraph"));
 $server = new XML_RPC_Server($map);
-function getSubGraph($params)
-{
+function getSubGraph($params) {
 	global $dbTiki, $base_url;
 	$userlib = new UsersLib;
 	$nodeName = $params->getParam(0);
@@ -27,14 +26,14 @@ function getSubGraph($params)
 	$neighbours = array();
 	while ($i <= $depth && count($queue) > 0) {
 		$nextQueue = array();
-		foreach ($queue as $nodeName) {
+		foreach($queue as $nodeName) {
 			$similar = $userlib->related_users($nodeName, 5);
 			if (isset($neighbours[$nodeName])) {
 				$myNeighbours = $neighbours[$nodeName];
 			} else {
 				$myNeighbours = array();
 			}
-			foreach ($similar as $user) {
+			foreach($similar as $user) {
 				$myNeighbours[] = $user['login'];
 				$neighbours[$user['login']][] = $nodeName;
 			}

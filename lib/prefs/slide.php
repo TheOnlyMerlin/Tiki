@@ -3,8 +3,23 @@
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id: slide.php 25210 2010-02-14 20:52:22Z changi67 $
+// $Id$
 
-// Since the preference(s) once contained in this file were removed from Tiki, this file 
-// is purposely here and empty to make sure users which upgrade via FTP overwrite the file 
-// and avoid a Fatal error: Call to undefined method 
+function prefs_slide_list() {
+	global $tikilib;
+	$slide_styles = array();
+
+	$list_slide_styles = $tikilib->list_slide_styles();
+
+	foreach ($list_slide_styles as $onestyle) {
+		$slide_styles[$onestyle] = substr($onestyle, 0, strripos($onestyle, '.css'));
+	}
+
+	return array(
+		'slide_style' => array(
+			'name' => tra('Slideshow theme'),
+			'type' => 'list',
+			'options' => $slide_styles,
+		),
+	);
+}

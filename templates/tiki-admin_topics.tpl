@@ -1,6 +1,6 @@
 {* $Id$ *}
 
-{title admpage="articles" help="Articles"}{tr}Admin Topics{/tr}{/title}
+{title help="Articles"}{tr}Admin Topics{/tr}{/title}
 
 <h2>{tr}Create a new topic{/tr}</h2>
 
@@ -40,21 +40,21 @@
 	{cycle print=false values="even,odd"}
 	{section name=user loop=$topics}
 		<tr class="{cycle}">
-			<td class="integer">{$topics[user].topicId}</td>
-			<td class="text">
+			<td>{$topics[user].topicId}</td>
+			<td>
 				<a class="link" href="tiki-view_articles.php?topic={$topics[user].topicId}">{$topics[user].name|escape}</a>
 			</td>
-			<td class="text">
+			<td>
 				{if $topics[user].image_size}
 					<img alt="{tr}topic image{/tr}" src="article_image.php?image_type=topic&amp;id={$topics[user].topicId}&amp;reload=1" />
 				{else}
 					&nbsp;
 				{/if}
 			</td>
-			<td class="text">{$topics[user].active}</td>
-			<td class="integer">{$topics[user].arts}</td>
+			<td>{$topics[user].active}</td>
+			<td>{$topics[user].arts}</td>
 			{if $prefs.feature_submissions eq 'y'}<td>{$topics[user].subs}</td>{/if}
-			<td class="action">
+			<td>
 				 <a class="link" href="tiki-edit_topic.php?topicid={$topics[user].topicId}">{icon _id='page_edit'}</a>
 				{if $topics[user].individual eq 'y'}
 					<a title="{tr}Active Permissions{/tr}" class="link" href="tiki-objectpermissions.php?objectName={$topics[user].name|escape:"url"}&amp;objectType=topic&amp;permType=cms&amp;objectId={$topics[user].topicId}">{icon _id='key_active' alt="{tr}Active Permissions{/tr}"}</a>
@@ -71,6 +71,8 @@
 			</td>
 		</tr>
 	{sectionelse}
-		{if $prefs.feature_submissions eq 'y'}{norecords _colspan=7}{else}{norecords _colspan=6}{/if}
+		<tr>
+			<td colspan="{if $prefs.feature_submissions eq 'y'}7{else}6{/if}" class="odd">{tr}No records found{/tr}</td>
+		</tr>
 	{/section}
 </table>

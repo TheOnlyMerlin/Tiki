@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +10,8 @@ require_once ('tiki-setup.php');
 include_once ('lib/categories/categlib.php');
 include_once ('lib/articles/artlib.php');
 
-//get_strings tra('New Article')
+$smarty->assign('headtitle',tra('Edit article'));
+
 if ($prefs['feature_freetags'] == 'y') {
 	global $freetaglib;
 	include_once('lib/freetag/freetaglib.php');
@@ -48,7 +49,7 @@ if (isset($_REQUEST['cancel_edit'])) {
 		die;
 	}
 	include_once('tiki-sefurl.php');
-	header('location: '.filter_out_sefurl("tiki-read_article.php?articleId=$articleId", 'article', $artice_data['title']));
+	header ('location: '.filter_out_sefurl("tiki-read_article.php?articleId=$articleId", $smarty, 'article', $artice_data['title']));
 	die;
 }
 
@@ -75,11 +76,6 @@ $smarty->assign('allowhtml', '');
 $publishDate = $tikilib->now;
 $cur_time = explode(',', $tikilib->date_format('%Y,%m,%d,%H,%M,%S', $publishDate));
 $expireDate = $tikilib->make_time($cur_time[3], $cur_time[4], $cur_time[5], $cur_time[1], $cur_time[2], $cur_time[0]+1);
-
-//Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-include_once ('lib/userprefs/userprefslib.php');
-$smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
-
 $smarty->assign('title', '');
 $smarty->assign('topline', '');
 $smarty->assign('subtitle', '');
@@ -117,11 +113,11 @@ if (isset($_REQUEST["articleId"]) and $_REQUEST["articleId"] > 0) {
 	$publishDate = $article_data["publishDate"];
 	$expireDate = $article_data["expireDate"];
 	$smarty->assign('title', $article_data["title"]);
-	$smarty->assign('topline', $article_data["topline"]);
-	$smarty->assign('subtitle', $article_data["subtitle"]);
-	$smarty->assign('linkto', $article_data["linkto"]);
-	$smarty->assign('image_caption', $article_data["image_caption"]);
-	$smarty->assign('lang', $article_data["lang"]);
+  $smarty->assign('topline', $article_data["topline"]);
+  $smarty->assign('subtitle', $article_data["subtitle"]);
+  $smarty->assign('linkto', $article_data["linkto"]);
+  $smarty->assign('image_caption', $article_data["image_caption"]);
+  $smarty->assign('lang', $article_data["lang"]);
 	$smarty->assign('authorName', $article_data["authorName"]);
 	$smarty->assign('topicId', $article_data["topicId"]);
 	$smarty->assign('useImage', $article_data["useImage"]);
@@ -155,7 +151,7 @@ if (isset($_REQUEST["articleId"]) and $_REQUEST["articleId"] > 0) {
 
 	$body = $article_data["body"];
 	$heading = $article_data["heading"];
-	$smarty->assign('parsed_body', $tikilib->parse_data($body, array('is_html' => $prefs['article_body_is_html'] === 'y')));
+	$smarty->assign('parsed_body', $tikilib->parse_data($body));
 	$smarty->assign('parsed_heading', $tikilib->parse_data($heading));
 }
 
@@ -175,8 +171,6 @@ if (isset($_REQUEST["allowhtml"])) {
 	} else {
 		$smarty->assign('allowhtml', 'n');
 	}
-} else if ($prefs['article_body_is_html'] === 'y') {
-	$smarty->assign('allowhtml', 'y');
 }
 if (isset($_REQUEST["ispublished"])) {
 	if ($_REQUEST["ispublished"] == "on") {
@@ -206,21 +200,13 @@ else
 // If we are in preview mode then preview it!
 if (isset($_REQUEST["preview"]) or !empty($errors)) {
 	# convert from the displayed 'site' time to 'server' time
-	if (isset($_REQUEST["_Hour"])) {
-		//Convert 12-hour clock hours to 24-hour scale to compute time
-		if (!empty($_REQUEST['publish_Meridian'])) {
-			$_REQUEST['publish_Hour'] = date('H', strtotime($_REQUEST['publish_Hour'] . ':00 ' . $_REQUEST['publish_Meridian']));
-		}
-		$publishDate = $tikilib->make_time($_REQUEST["publish_Hour"], $_REQUEST["publish_Minute"], 0, $_REQUEST["publish_Month"], $_REQUEST["publish_Day"], $_REQUEST["publish_Year"]);
+	if (isset($_REQUEST["publish_Hour"])) {
+	$publishDate = $tikilib->make_time($_REQUEST["publish_Hour"], $_REQUEST["publish_Minute"], 0, $_REQUEST["publish_Month"], $_REQUEST["publish_Day"], $_REQUEST["publish_Year"]);
 	} else {
 		$publishDate = $tikilib->now;
 	}
 	if (isset($_REQUEST["expire_Hour"])) {
-	//Convert 12-hour clock hours to 24-hour scale to compute time
-		if (!empty($_REQUEST['expire_Meridian'])) {
-			$_REQUEST['expire_Hour'] = date('H', strtotime($_REQUEST['expire_Hour'] . ':00 ' . $_REQUEST['expire_Meridian']));
-		}
-		$expireDate = $tikilib->make_time($_REQUEST["expire_Hour"], $_REQUEST["expire_Minute"], 0, $_REQUEST["expire_Month"], $_REQUEST["expire_Day"], $_REQUEST["expire_Year"]);
+	$expireDate = $tikilib->make_time($_REQUEST["expire_Hour"], $_REQUEST["expire_Minute"], 0, $_REQUEST["expire_Month"], $_REQUEST["expire_Day"], $_REQUEST["expire_Year"]);
 	} else {
 		$expireDate = $publishDate;
 	}
@@ -321,7 +307,7 @@ if (isset($_REQUEST["preview"]) or !empty($errors)) {
 
 	$smarty->assign('size', strlen($body));
 
-	$parsed_body = $tikilib->parse_data($body, array('is_html' => $prefs['article_body_is_html'] === 'y'));
+	$parsed_body = $tikilib->parse_data($body);
 	$parsed_heading = $tikilib->parse_data($heading);
 
 	$smarty->assign('parsed_body', $parsed_body);
@@ -337,20 +323,12 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 
 	# convert from the displayed 'site' time to 'server' time
 	if (isset($_REQUEST["publish_Hour"])) {
-		//Convert 12-hour clock hours to 24-hour scale to compute time
-		if (!empty($_REQUEST['publish_Meridian'])) {
-			$_REQUEST['publish_Hour'] = date('H', strtotime($_REQUEST['publish_Hour'] . ':00 ' . $_REQUEST['publish_Meridian']));
-		}
-		$publishDate = $tikilib->make_time($_REQUEST["publish_Hour"], $_REQUEST["publish_Minute"], 0, $_REQUEST["publish_Month"], $_REQUEST["publish_Day"], $_REQUEST["publish_Year"]);
+	$publishDate = $tikilib->make_time($_REQUEST["publish_Hour"], $_REQUEST["publish_Minute"], 0, $_REQUEST["publish_Month"], $_REQUEST["publish_Day"], $_REQUEST["publish_Year"]);
 	} else {
 		$publishDate = $tikilib->now;
 	}
 	if (isset($_REQUEST["expire_Hour"])) {
-	//Convert 12-hour clock hours to 24-hour scale to compute time
-		if (!empty($_REQUEST['expire_Meridian'])) {
-			$_REQUEST['expire_Hour'] = date('H', strtotime($_REQUEST['expire_Hour'] . ':00 ' . $_REQUEST['expire_Meridian']));
-		}
-		$expireDate = $tikilib->make_time($_REQUEST["expire_Hour"], $_REQUEST["expire_Minute"], 0, $_REQUEST["expire_Month"], $_REQUEST["expire_Day"], $_REQUEST["expire_Year"]);
+	$expireDate = $tikilib->make_time($_REQUEST["expire_Hour"], $_REQUEST["expire_Minute"], 0, $_REQUEST["expire_Month"], $_REQUEST["expire_Day"], $_REQUEST["expire_Year"]);
 	} else {
 		$expireDate = $tikilib->now;
 	}
@@ -399,7 +377,7 @@ if (isset($_REQUEST['save']) && empty($errors)) {
     $fp = fopen($tmp_dest, "rb");
 		$imgdata = fread($fp, filesize($tmp_dest));
 		fclose ($fp);
-		if (is_file($tmp_dest)) {
+		if(is_file($tmp_dest)) {
 			@unlink($tmp_dest);
 		}
 		$imgtype = $_FILES['userfile1']['type'];
@@ -423,14 +401,14 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 
 	if ($prefs['feature_multilingual'] == 'y' && $_REQUEST['lang'] && isset($article_data) && $article_data['lang'] != $_REQUEST["lang"]) {
 		include_once("lib/multilingual/multilinguallib.php");
-		if ($multilinguallib->updateObjectLang('article', $article_data['articleId'], $_REQUEST["lang"], true)) {
+		if ($multilinguallib->updatePageLang('article', $article_data['articleId'], $_REQUEST["lang"], true)) {
 			$_REQUEST['lang'] = $article_data['lang'];
 			$smarty->assign('msg', tra("The language can't be changed as its set of translations has already this language"));
 			$smarty->display("error.tpl");
 			die;
 		}
 	}
-	if ($_REQUEST['ispublished'] == "on")
+	if($_REQUEST['ispublished'] == "on")
 		$ispublished = 'y';
 	else
 		$ispublished = 'n';
@@ -468,6 +446,7 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 	$cat_objid = $artid;
 	$cat_desc = substr($_REQUEST["heading"], 0, 200);
 	$cat_name = $_REQUEST["title"];
+	$cat_object_exists = (bool) $artid;
 	$cat_lang = $_REQUEST['lang'];
 	$cat_href = "tiki-read_article.php?articleId=" . $cat_objid;
 	include_once("categorize.php");
@@ -485,11 +464,6 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 		 }
 		 $artlib->set_article_attributes($artid, $attributeArray);
 	}
-
-	if ($prefs['geo_locate_article'] == 'y' && ! empty($_REQUEST['geolocation'])) {
-		TikiLib::lib('geo')->set_coordinates('article', $artid, $_REQUEST['geolocation']);
-	}
-
 	// Remove image cache because image may have changed, and we
 	// don't want to show the old image
 	@$artlib->delete_image_cache("article",$_REQUEST["id"]);
@@ -497,7 +471,7 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 	@$artlib->delete_image_cache("preview",$previewId);
 
 	include_once('tiki-sefurl.php');
-	header('location: '.	filter_out_sefurl("tiki-read_article.php?articleId=$artid", 'article', $_REQUEST['title']));
+	header ('location: '.	filter_out_sefurl("tiki-read_article.php?articleId=$artid", $smarty, 'article', $_REQUEST['title']));
 }
 $smarty->assign_by_ref('errors', $errors);
 
@@ -521,11 +495,11 @@ if (array($types)) {
 $smarty->assign('type', $type);
 }
 if ($prefs["article_custom_attributes"] == 'y') {
-	$article_attributes = $artlib->get_article_attributes($articleId);	
+	$article_attributes = $artlib->get_article_attributes($_REQUEST["articleId"]);	
 	$smarty->assign('article_attributes', $article_attributes);
 	$all_attributes = array();
 	$js_string = '';
-	foreach ($types as &$t) {
+	foreach($types as &$t) {
 		// javascript needs htmlid to show/hide to be properties of basic array
 		$type_attributes = $artlib->get_article_type_attributes($t["type"]);
 		$all_attributes = array_merge($all_attributes, $type_attributes);
@@ -553,12 +527,9 @@ if ($prefs['feature_multilingual'] == 'y') {
 	$smarty->assign_by_ref('languages', $languages);
 }
 
-if ( $prefs['geo_locate_article'] == 'y' ) {
-	$smarty->assign('geolocation_string', TikiLib::lib('geo')->get_coordinates_string('article', $articleId));
-}
-
 $cat_type = 'article';
 $cat_objid = $articleId;
+$cat_object_exists = (bool) $articleId;
 include_once ("categorize_list.php");
 
 if ($prefs['feature_freetags'] == 'y') {

@@ -1,20 +1,17 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_trackerlist_info()
-{
+function wikiplugin_trackerlist_info() {
 	return array(
 		'name' => tra('Tracker List'),
-		'documentation' => 'PluginTrackerList',
-		'description' => tra('List, filter and sort the items in a tracker'),
+		'documentation' => tra('PluginTrackerList'),
+		'description' => tra('Displays the output of a tracker content, fields are indicated with numeric ids.'),
 		'prefs' => array( 'feature_trackers', 'wikiplugin_trackerlist' ),
-		'tags' => array( 'basic' ),		
 		'body' => tra('Notice'),
-		'format' => 'html',
 		'icon' => 'pics/icons/database_table.png',
 		'filter' => 'text',
 		'params' => array(
@@ -221,7 +218,7 @@ function wikiplugin_trackerlist_info()
 			'max' => array(
 				'required' => false,
 				'name' => tra('Maximum Items'),
-				'description' => tra('Maximum number of items to display or -1 for all values. Defaults to max records preference, if set.'),
+				'description' => tra('Maximum number of items to display. Defaults to max records preference, if set.'),
 				'filter' => 'int',
 				'default' => '',
 			),
@@ -231,18 +228,6 @@ function wikiplugin_trackerlist_info()
 				'description' => tra('Offset of first item. Default is no offset.'),
 				'filter' => 'int',
 				'default' => 0,
-			),
-			'forceoffset' => array(
-				'required' => false,
-				'name' => tra('Fix offset always (no pagination)'),
-				'description' => tra('Fix offset to that specified, disallow pagination.'),
-				'filter' => 'alpha',
-				'default' => 'n',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				)
 			),
 			'showpagination' => array(
 				'required' => false,
@@ -323,15 +308,14 @@ function wikiplugin_trackerlist_info()
 			'view' => array(
 				'required' => false,
 				'name' => tra('View'),
-				'description' => tra('Display only the items of the current user, the current page name or the current IP address'),
+				'description' => tra('Display only the items of the current user or the current page name'),
 				'filter' => 'alpha',
 				'advanced' => true,
 				'default' => '',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Page'), 'value' => 'page'), 
-					array('text' => tra('User'), 'value' => 'user'),
-					array('text' => tra('IP address'), 'value' => 'ip')
+					array('text' => tra('User'), 'value' => 'user')
 				)
 			),
 			'tpl' => array(
@@ -345,14 +329,6 @@ function wikiplugin_trackerlist_info()
 				'required' => false,
 				'name' => tra('Wiki Page'),
 				'description' => tra('Use content of the wiki page as template to display the item. The page should have the permission tiki_p_use_as_template set, and that page should be only open for edition to fully trusted users such as other site admins'),
-				'filter' => 'pagename',
-				'advanced' => true,
-				'default' => '',
-			),
-			'tplwiki' => array(
-				'required' => false,
-				'name' => tra('Template file in a Wiki page'),
-				'description' => tra('Use content of the wiki page as template to display the item but with as little parsing on the content as with a tpl on disk. The page should have the permission tiki_p_use_as_template set, and that page should be only open for edition to fully trusted users such as other site admins'),
 				'filter' => 'pagename',
 				'advanced' => true,
 				'default' => '',
@@ -408,10 +384,8 @@ function wikiplugin_trackerlist_info()
 			'list_mode' => array(
 				'required' => false,
 				'name' => tra('List Mode'),
-				'description' => tra(
-								'Set output format. Yes (y) displays tracker list view with truncated values (default); 
-								No (n) displays in tracker item view; Comma Separated Values (csv) outputs without any HTML formatting.'
-				),
+				'description' => tra('Set output format. Yes (y) displays tracker list view with truncated values (default); 
+										No (n) displays in tracker item view; Comma Separated Values (csv) outpits without any HTML formatting.'),
 				'filter' => 'alpha',
 				'default' => 'y',
 				'options' => array(
@@ -465,42 +439,6 @@ function wikiplugin_trackerlist_info()
 					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
-			),
-			'showopenitem' => array(
-					'required' => false,
-					'name' => tra('Show Open Item'),
-					'description' => tra('Show an open item  option (not shown by default)'),
-					'filter' => 'alpha',
-					'default' => 'n',
-					'options' => array(
-							array('text' => '', 'value' => ''),
-							array('text' => tra('Yes'), 'value' => 'y'),
-							array('text' => tra('No'), 'value' => 'n')
-					)
-			),
-			'showcloseitem' => array(
-					'required' => false,
-					'name' => tra('Show Close Item'),
-					'description' => tra('Show a close item option (not shown by default)'),
-					'filter' => 'alpha',
-					'default' => 'n',
-					'options' => array(
-							array('text' => '', 'value' => ''),
-							array('text' => tra('Yes'), 'value' => 'y'),
-							array('text' => tra('No'), 'value' => 'n')
-					)
-			),
-			'showpenditem' => array(
-					'required' => false,
-					'name' => tra('Show Pending Item'),
-					'description' => tra('Show a pending item option (not shown by default)'),
-					'filter' => 'alpha',
-					'default' => 'n',
-					'options' => array(
-							array('text' => '', 'value' => ''),
-							array('text' => tra('Yes'), 'value' => 'y'),
-							array('text' => tra('No'), 'value' => 'n')
-					)
 			),
 			'showwatch' => array(
 				'required' => false,
@@ -569,18 +507,6 @@ function wikiplugin_trackerlist_info()
 					array('text' => tra('Semester'), 'value' => 'semester'), 
 					array('text' => tra('Year'), 'value' => 'year')
 				)
-			),
-			'calendarpopup' => array(
-				'required' => false,
-				'name' => tra('Calendar Popup'),
-				'description' => tra('Calendar items will pop-up, overrides Sticky Popup if turned off. Set to y (Yes) by default.'),
-				'filter' => 'alpha',
-				'default' => 'y',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				),
 			),
 			'calendarstickypopup' => array(
 				'required' => false,
@@ -664,32 +590,12 @@ function wikiplugin_trackerlist_info()
 					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
-			),
-			'periodQuantity' => array(
-				'required' => false,
-				'name' => tr('Period quantity'),
-				'description' => tr('Numeric value to display only last tracker items created within a user defined time-frame. Used in conjunction with the next parameter "Period unit", this parameter indicates how many of those units are to be considered to define the time frame. Use in conjunction with "max=-1" to list all items (by default "max" is set to 10).'),
-				'filter' => 'int',
-				'default' => '',
-			),
-			'periodUnit' => array(
-				'required' => false,
-				'name' => tr('Period unit'),
-				'description' => tr('Time unit used with "Period quantity"'),
-				'filter' => 'word',
-				'options' => array(
-					array('text' => tr('Hour'), 'value' => 'hour'),
-					array('text' => tr('Day'), 'value' => 'day'),
-					array('text' => tr('Week'), 'value' => 'week'),
-					array('text' => tr('Month'), 'value' => 'month'),
-				),
-			),
+			)
 		)
 	);
 }
 
-function wikiplugin_trackerlist($data, $params)
-{
+function wikiplugin_trackerlist($data, $params) {
 	global $smarty, $tikilib, $dbTiki, $userlib, $tiki_p_admin_trackers, $prefs, $_REQUEST, $tiki_p_view_trackers, $user, $page, $tiki_p_tracker_vote_ratings, $tiki_p_tracker_view_ratings, $trklib, $tiki_p_traker_vote_rating, $tiki_p_export_tracker, $tiki_p_watch_trackers;
 	require_once("lib/trackers/trackerlib.php");
 	global $notificationlib;  include_once('lib/notifications/notificationlib.php');//needed if plugin tracker after plugin trackerlist
@@ -700,18 +606,16 @@ function wikiplugin_trackerlist($data, $params)
 				'calendarbeginmonth' => 'y', 'calendarviewnavbar' => 'y', 'calendartitle'=>'', 'calendardelta' => '', 'force_compile' => 'n');
 	$params = array_merge($default, $params);
 	
-	extract($params, EXTR_SKIP);
-
-	$skip_status_perm_check = false;
+	extract ($params,EXTR_SKIP);
 
 	if ($prefs['feature_trackers'] != 'y' || !isset($trackerId) || !($tracker_info = $trklib->get_tracker($trackerId))) {
 		return $smarty->fetch("wiki-plugins/error_tracker.tpl");
 	} else {
 
 		global $auto_query_args;
-		$auto_query_args_local = array('trackerId', 'tr_initial',"tr_sort_mode$iTRACKERLIST",'tr_user', 'filterfield', 'filtervalue', 'exactvalue', 'itemId');
+		$auto_query_args_local = array('trackerId', 'tr_initial',"tr_sort_mode$iTRACKERLIST",'tr_user', 'filterfield', 'filtervalue', 'exactvalue');
 		$auto_query_args = empty($auto_query_args)? $auto_query_args_local: array_merge($auto_query_args, $auto_query_args_local);
-		$smarty->assign('listTrackerId', $trackerId);
+		$smarty->assign('trackerId', $trackerId);
 		$tracker_info = $trklib->get_tracker($trackerId);
 		if ($t = $trklib->get_tracker_options($trackerId)) {
 			$tracker_info = array_merge($tracker_info, $t);
@@ -758,13 +662,11 @@ function wikiplugin_trackerlist($data, $params)
 			if ($sort == 'y') {
 				$allfields = $trklib->sort_fields($allfields, $listfields);
 			}
-		} elseif (!empty($wiki) || !empty($tpl) || !empty($tplwiki)) {
+		} elseif (!empty($wiki) || !empty($tpl)) {
 				if (!empty($wiki)) {
-					$listfields = $trklib->get_pretty_fieldIds($wiki, 'wiki', $outputPretty);
-				} elseif (!empty($tplwiki)) {
-					$listfields = $trklib->get_pretty_fieldIds($tplwiki, 'wiki', $outputPretty);
+					$listfields = $trklib->get_pretty_fieldIds($wiki, 'wiki');
 				} else {
-					$listfields = $trklib->get_pretty_fieldIds($tpl, 'tpl', $outputPretty);
+					$listfields = $trklib->get_pretty_fieldIds($tpl, 'tpl');
 				}
 		} else {
 			$listfields = '';
@@ -807,44 +709,8 @@ function wikiplugin_trackerlist($data, $params)
 				return tra('incorrect filterfield');
 			}
 		}
-		
-		$filter = array();
-		
-		if (isset($periodQuantity)) {
-			switch ($periodUnit) {
-				case 'hour':
-					$periodUnit = 3600;
-    				break;
-				case 'day':
-					$periodUnit = 86400;
-    				break;
-				case 'week':
-					$periodUnit = 604800;
-    				break;
-				case 'month':
-					$periodUnit = 2628000;
-    				break;
-				default:
-    				break;
-			}
-			
-			if (is_int($periodUnit)) {
-				$filter['createdAfter'] = $tikilib->now - ($periodQuantity * $periodUnit);
-				$filter['createdBefore'] = $tikilib->now;
-			}
-		}
-
 		if (isset($_REQUEST['reloff']) && empty($_REQUEST['itemId']) && !empty($_REQUEST['trackerId'])) { //coming from a pagination
-			$items = $trklib->list_items(
-							$_REQUEST['trackerId'],
-							$_REQUEST['reloff'], 1, '', '',
-							isset($_REQUEST['filterfield']) ? preg_split('/\s*:\s*/', $_REQUEST['filterfield']) : '',
-							isset($_REQUEST['filtervalue']) ? preg_split('/\s*:\s*/', $_REQUEST['filtervalue']) : '',
-							isset($_REQUEST['status']) ? preg_split('/\s*:\s*/', $_REQUEST['status']) : '',
-							isset($_REQUEST['initial']) ? $_REQUEST['initial'] : '',
-							isset($_REQUEST['exactvalue']) ? preg_split('/\s*:\s*/', $_REQUEST['exactvalue']) : '',
-							$filter
-			);
+			$items = $trklib->list_items($_REQUEST['trackerId'], $_REQUEST['reloff'], 1, '', '', isset($_REQUEST['filterfield'])?preg_split('/\s*:\s*/',$_REQUEST['filterfield']):'', isset($_REQUEST['filtervalue'])? preg_split('/\s*:\s*/', $_REQUEST['filtervalue']):'', isset($_REQUEST['status'])? preg_split('/\s*:\s*/', $_REQUEST['status']):'', isset($_REQUEST['initial'])?$_REQUEST['initial']:'', isset($_REQUEST['exactvalue'])?preg_split('/\s*:\s*/', $_REQUEST['exactvalue']):'');
 			if (isset($items['data'][0]['itemId'])) {
 				$_REQUEST['cant'] = $items['cant'];
 				$_REQUEST['itemId'] = $items['data'][0]['itemId'];
@@ -856,11 +722,11 @@ function wikiplugin_trackerlist($data, $params)
 			foreach ($allfields['data'] as $f) {
 				if ($f['type'] == 's' && isset($tracker_info['useRatings']) and $tracker_info['useRatings'] == 'y' && ($f['name'] == 'Rating' || $f['name'] = tra('Rating'))) {
 					$i = $f['fieldId'];
-					if (isset($_REQUEST["ins_$i"]) && ($_REQUEST["ins_$i"] == 'NULL' || in_array($_REQUEST["ins_$i"], explode(',', $tracker_info['ratingOptions'])))) {
+					if (isset($_REQUEST["ins_$i"]) && ($_REQUEST["ins_$i"] == 'NULL' || in_array($_REQUEST["ins_$i"], explode(',',$tracker_info['ratingOptions'])))) {
 						$trklib->replace_rating($trackerId, $_REQUEST['itemId'], $i, $user, $_REQUEST["ins_$i"]);
 						$hasVoted = true; 
 					}
-				} elseif ($f['type'] == '*' || $f['type'] == 'STARS') {
+				} elseif ($f['type'] == '*') {
 					$i = $f['fieldId'];
 					if (isset($_REQUEST["ins_$i"])) {
 						$trklib->replace_star($_REQUEST["ins_$i"], $trackerId, $_REQUEST['itemId'], $f, $user);
@@ -870,14 +736,7 @@ function wikiplugin_trackerlist($data, $params)
 			}
 			if ($hasVoted) {
 				// Must strip NULL for remove my vote case
-				$url = preg_replace('/[(\?)|&]vote=y/', '$1', preg_replace('/[(\?)|&]ins_[0-9]+=-?[0-9|N|U|L]*/', '$1', $_SERVER['REQUEST_URI']));
-				// reduce duplicate itemIds in query string
-				$occurences = preg_match_all('/[(\?)|&]itemId=[0-9]+/', $url, $matches);
-				if ($params['list_mode'] == 'y' && $occurences > 0) {
-					$url = preg_replace('/[(\?)|&]itemId=[0-9]+/', '$1', $url, $occurences);	
-				} elseif ($occurences > 1) {
-					$url = preg_replace('/&itemId=[0-9]+/', '', $url, $occurences - 1);	
-				}
+				$url = preg_replace('/[(\?)|&]vote=y/', '$1', preg_replace('/[(\?)|&]itemId=[0-9]+/', '$1', preg_replace('/[(\?)|&]ins_[0-9]+=-?[0-9|N|U|L]*/', '$1', $_SERVER['REQUEST_URI'])));
 				header("Location: $url");
 				die;
 			}
@@ -906,7 +765,7 @@ function wikiplugin_trackerlist($data, $params)
 		}
 
 		if (empty($listfields)) {
-			foreach ($allfields['data'] as $f) {
+			foreach($allfields['data'] as $f) {
 				$listfields[] = $f['fieldId'];
 			}
 		}
@@ -974,18 +833,6 @@ function wikiplugin_trackerlist($data, $params)
 			$showdelete = 'n';
 		}
 		$smarty->assign_by_ref('showdelete', $showdelete);
-		if (!isset($showpenditem)) {
-			$showpenditem = 'n';
-		}
-		$smarty->assign_by_ref('showpenditem', $showpenditem);
-		if (!isset($showcloseitem)) {
-			$showcloseitem = 'n';
-		}
-		$smarty->assign_by_ref('showcloseitem', $showcloseitem);
-		if (!isset($showopenitem)) {
-			$showopenitem = 'n';
-		}
-		$smarty->assign_by_ref('showopenitem', $showopenitem);
 		if (!isset($showpagination)) {
 			$showpagination = 'y';
 		}
@@ -1095,14 +942,14 @@ function wikiplugin_trackerlist($data, $params)
 			$max = $prefs['maxRecords'];
 		}
 
-		if (isset($_REQUEST['tr_offset']) && (!isset($forceoffset) || $forceoffset == 'n')) {
+		if (isset($_REQUEST['tr_offset'])) {
 			$tr_offset = $_REQUEST['tr_offset'];
 		} else if (isset($offset) && $offset >= 0) {
 			$tr_offset = $offset;
 		} else {
 			$tr_offset = 0;
 		}
-		$smarty->assign_by_ref('tr_offset', $tr_offset);
+		$smarty->assign_by_ref('tr_offset',$tr_offset);
 
 			
 		$tr_initial = '';
@@ -1111,7 +958,7 @@ function wikiplugin_trackerlist($data, $params)
 			  //$query_array['tr_initial'] = $_REQUEST['tr_initial'];
 				$tr_initial = $_REQUEST['tr_initial'];
 			}
-			$smarty->assign('initials', explode(' ', 'a b c d e f g h i j k l m n o p q r s t u v w x y z'));
+			$smarty->assign('initials', explode(' ','a b c d e f g h i j k l m n o p q r s t u v w x y z'));
 		}
 		$smarty->assign_by_ref('tr_initial', $tr_initial);
 
@@ -1125,9 +972,6 @@ function wikiplugin_trackerlist($data, $params)
 					$exactvalue[] = $_REQUEST['tr_user'];
 					$smarty->assign_by_ref('tr_user', $exactvalue);
 				}
-				if ($tracker_info['writerCanModify'] == 'y') {
-					$skip_status_perm_check = true;
-				}
 			}
 		}
 		if (isset($view) && $view == 'page' && isset($_REQUEST['page'])) {
@@ -1137,15 +981,6 @@ function wikiplugin_trackerlist($data, $params)
 				$exactvalue[] = $_REQUEST['page'];
 			}
 		}
-		
-		if (isset($view) && $view == 'ip') {
-			if ($f = $trklib->get_field_id_from_type($trackerId, 'I', '1%')) {
-				$filterfield[] = $f;
-				$filtervalue[] = '';
-				$ip = $tikilib->get_ip_address();
-				$exactvalue[] = $ip;
-			}
-		}
 			
 		if (!isset($filtervalue)) {
 			$filtervalue = '';
@@ -1153,8 +988,6 @@ function wikiplugin_trackerlist($data, $params)
 			foreach ($filtervalue as $i=>$f) {
 				if ($f == '#user') {
 					$filtervalue[$i] = $user;
-				} else if ($f == '#default_group') {
-					$filtervalue[$i] = $_SESSION['u_info']['group'];
 				}
 			}
 		}
@@ -1173,10 +1006,11 @@ function wikiplugin_trackerlist($data, $params)
 		}
 
 		if (isset($itemId)) {
-			if (is_string($itemId) && strstr($itemId, ':')) {	// JB Tiki7: This doesn't quite make sense as itemId is an array
-				$itemId = explode(':', $itemId);				//			 Probably just some redundant code TOKIL
-			}
-			$filter['tti.`itemId`'] = $itemId;
+			if (strstr($itemId, ':'))
+				$itemId = explode(':', $itemId);
+			$filter = array('tti.`itemId`'=> $itemId);
+		} else {
+			$filter = '';
 		}
 		
 		$newItemRateField = false;
@@ -1203,12 +1037,7 @@ function wikiplugin_trackerlist($data, $params)
 								$exactvalue[] = $evs[$i];
 							} elseif (preg_match('/(not)?categories\(([0-9]+)\)/', $evs[$i], $matches)) {
 								global $categlib; include_once('lib/categories/categlib.php');
-								if (ctype_digit($matches[2]) && $matches[2] > 0) {
-									$filter = array('identifier'=>$matches[2], 'type'=>'descendants'); 
-								} else {
-									$filter = NULL;
-								}
-								$categs = $categlib->getCategories($filter, true, false);
+								$categs = $categlib->list_categs($matches[2]);
 								$l = array($matches[2]);
 								foreach ($categs as $cat) {
 									$l[] = $cat['categId'];
@@ -1242,7 +1071,7 @@ function wikiplugin_trackerlist($data, $params)
 									$l = $trklib->get_item_value(0, $matches[4], $matches[2]);
 									$field = $trklib->get_tracker_field($matches[2]);
 									if ($field['type'] == 'r') {
-										$refItemId = $l;
+										$refItemId = $trklib->get_item_id($field['options_array'][0], $field['options_array'][1], $l);
 										$l = $trklib->get_item_value($field['options_array'][0], $refItemId, $field['options_array'][3]);
 									}
 								}
@@ -1324,7 +1153,7 @@ function wikiplugin_trackerlist($data, $params)
 					$allfields["data"][$i]['type'] = $refField['type'];
 				}
 			} 
-			if ((in_array($allfields["data"][$i]['fieldId'], $listfields) or in_array($allfields["data"][$i]['fieldId'], $popupfields))and $allfields["data"][$i]['isPublic'] == 'y') {
+			if ((in_array($allfields["data"][$i]['fieldId'],$listfields) or in_array($allfields["data"][$i]['fieldId'],$popupfields))and $allfields["data"][$i]['isPublic'] == 'y') {
 				$passfields["{$allfields["data"][$i]['fieldId']}"] = $allfields["data"][$i];
 			}
 			if (isset($check['fieldId']) && $allfields["data"][$i]['fieldId'] == $check['fieldId']) {
@@ -1333,7 +1162,7 @@ function wikiplugin_trackerlist($data, $params)
 					$allfields["data"][$i]['isPublic'] == 'n'; //don't show it
 				$check['ix'] = count($passfields) -1;
 			}
-			if ($allfields["data"][$i]['name'] == 'page' && empty($filterfield) && empty($displayList) && !empty($view) && $view == 'page') {
+			if ($allfields["data"][$i]['name'] == 'page' && empty($filterfield) && empty($displayList)) {
 				$filterfield = $allfields["data"][$i]['fieldId'];
 				$filtervalue = $_REQUEST['page'];
 			}
@@ -1342,17 +1171,15 @@ function wikiplugin_trackerlist($data, $params)
 				$newItemRateField = $allfields["data"][$i]['fieldId'];
 			}
 		}
-		$smarty->assign_by_ref('filterfield', $filterfield);
-		$smarty->assign_by_ref('filtervalue', $filtervalue);
+		$smarty->assign_by_ref('filterfield',$filterfield);
+		$smarty->assign_by_ref('filtervalue',$filtervalue);
 		$smarty->assign_by_ref('fields', $passfields);
-		$smarty->assign_by_ref('exactvalue', $exactvalue);
+		$smarty->assign_by_ref('exactvalue',$exactvalue);
 		$smarty->assign_by_ref('listfields', $listfields);
 		$smarty->assign_by_ref('popupfields', $popupfields);
 		if (!empty($filterfield)) {
 			$urlquery['filterfield'] =  is_array($filtervalue) ? implode(':', $filterfield) : $filterfield;
-			if (!is_array($filtervalue)) {
-				$filtervalue = array($filtervalue);
-			}
+			if (!is_array($filtervalue)) { $filtervalue = array($filtervalue); }
 			$urlquery['filtervalue'] = is_array($filtervalue) ? implode(':', $filtervalue) : $filtervalue;
 			$urlquery['exactvalue'] = is_array($exactvalue) ? implode(':', $exactvalue) : $exactvalue;
 			$urlquery['trackerId'] = $trackerId;
@@ -1374,7 +1201,7 @@ function wikiplugin_trackerlist($data, $params)
 						$exportUrl .= $filtervalue[$i];
 					}
 				}
-			} elseif (!empty($filterfield)) {
+			} elseif(!empty($filterfield)) {
 				$exportUrl .= "&amp;f_$filterfield=";
 				if (empty($filtervalue))
 					$exportUrl .= $exactvalue;
@@ -1387,40 +1214,10 @@ function wikiplugin_trackerlist($data, $params)
 		if (!empty($_REQUEST['delete'])) {
 			if (($item_info = $trklib->get_item_info($_REQUEST['delete'])) && $trackerId == $item_info['trackerId']) {
 				if ($tiki_p_admin_trackers == 'y'
-					|| ($perms['tiki_p_remove_tracker_items'] == 'y' && $item_info['status'] != 'p' && $item_info['status'] != 'c')
-					|| ($perms['tiki_p_remove_tracker_items_pending'] == 'y' && $item_info['status'] == 'p')
-					|| ($perms['tiki_p_remove_tracker_items_closed'] == 'y' && $item_info['status'] == 'c')	) {
+					|| ($perms['tiki_p_modify_tracker_items'] == 'y' && $item_info['status'] != 'p' && $item_info['status'] != 'c')
+					|| ($perms['tiki_p_modify_tracker_items_pending'] == 'y' && $item_info['status'] == 'p')
+					|| ($perms['tiki_p_modify_tracker_items_closed'] == 'y' && $item_info['status'] == 'c')	) {
 					$trklib->remove_tracker_item($_REQUEST['delete']);
-				}
-			}
-		}
-		if (!empty($_REQUEST['closeitem'])) {
-			if (($item_info = $trklib->get_item_info($_REQUEST['closeitem'])) && $trackerId == $item_info['trackerId']) {
-				if ($tiki_p_admin_trackers == 'y'
-					|| ($perms['tiki_p_modify_tracker_items'] == 'y' && $item_info['status'] != 'p' && $item_info['status'] != 'c')
-					|| ($perms['tiki_p_modify_tracker_items_pending'] == 'y' && $item_info['status'] == 'p')
-					|| ($perms['tiki_p_modify_tracker_items_closed'] == 'y' && $item_info['status'] == 'c') ) {
-					$trklib->change_status(array(array('itemId' => $_REQUEST['closeitem'])), 'c');
-				}
-			}
-		}
-		if (!empty($_REQUEST['penditem'])) {
-			if (($item_info = $trklib->get_item_info($_REQUEST['penditem'])) && $trackerId == $item_info['trackerId']) {
-				if ($tiki_p_admin_trackers == 'y'
-					|| ($perms['tiki_p_modify_tracker_items'] == 'y' && $item_info['status'] != 'p' && $item_info['status'] != 'c')
-					|| ($perms['tiki_p_modify_tracker_items_pending'] == 'y' && $item_info['status'] == 'p')
-					|| ($perms['tiki_p_modify_tracker_items_closed'] == 'y' && $item_info['status'] == 'c') ) {
-					$trklib->change_status(array(array('itemId' => $_REQUEST['penditem'])), 'p');
-				}
-			}
-		}
-		if (!empty($_REQUEST['openitem'])) {
-			if (($item_info = $trklib->get_item_info($_REQUEST['openitem'])) && $trackerId == $item_info['trackerId']) {
-				if ($tiki_p_admin_trackers == 'y'
-					|| ($perms['tiki_p_modify_tracker_items'] == 'y' && $item_info['status'] != 'p' && $item_info['status'] != 'c')
-					|| ($perms['tiki_p_modify_tracker_items_pending'] == 'y' && $item_info['status'] == 'p')
-					|| ($perms['tiki_p_modify_tracker_items_closed'] == 'y' && $item_info['status'] == 'c') ) {
-					$trklib->change_status(array(array('itemId' => $_REQUEST['openitem'])), 'o');
 				}
 			}
 		}
@@ -1435,8 +1232,8 @@ function wikiplugin_trackerlist($data, $params)
 					$focus = $calendarlib->focusNext($focus, str_replace('+', '', $calendardelta));
 				}
 			}
-			$calendarlib->focusStartEnd($focus, $calendarViewMode['casedefault'], $calendarbeginmonth, $startPeriod, $startNextPeriod);
-			$cell = $calendarlib->getTableViewCells($startPeriod, $startNextPeriod, $calendarViewMode['casedefault'], $calendarlib->firstDayofWeek($user));
+			$calendarlib->focusStartEnd($focus, $calendarviewmode, $calendarbeginmonth, $startPeriod, $startNextPeriod);
+			$cell = $calendarlib->getTableViewCells($startPeriod, $startNextPeriod, $calendarviewmode, $calendarlib->firstDayofWeek($user));
 			$filterfield[] = $calendarfielddate[0];
 			$filtervalue[] = '';
 			$exactvalue[] = array('>=' => $startPeriod['date']);
@@ -1490,7 +1287,7 @@ function wikiplugin_trackerlist($data, $params)
 				}
 			}
 			// End Optimization
-			$items = $trklib->list_items($trackerId, $tr_offset, $max, $tr_sort_mode, $passfields, $filterfield, $filtervalue, $tr_status, $tr_initial, $exactvalue, $filter, $allfields, $skip_status_perm_check);
+			$items = $trklib->list_items($trackerId, $tr_offset, $max, $tr_sort_mode, $passfields, $filterfield, $filtervalue, $tr_status, $tr_initial, $exactvalue, $filter, $allfields);
 			if (isset($silent) && $silent == 'y' && empty($items['cant'])) {
 				return;
 			}
@@ -1502,7 +1299,7 @@ function wikiplugin_trackerlist($data, $params)
 			
 			if ($newItemRateField && !empty($items['data'])) {
 				foreach ($items['data'] as $f=>$v) {
-					$items['data'][$f]['my_rate'] = $tikilib->get_user_vote("tracker.".$trackerId.'.'.$items['data'][$f]['itemId'], $user);
+					$items['data'][$f]['my_rate'] = $tikilib->get_user_vote("tracker.".$trackerId.'.'.$items['data'][$f]['itemId'],$user);
 				}
 			}
 			if ($tracker_info['useComments'] == 'y' && $tracker_info['showComments'] == 'y') {
@@ -1559,13 +1356,6 @@ function wikiplugin_trackerlist($data, $params)
 						$smarty->assign('showpopup', 'n');
 						$items['data'][$i]['over'] = $smarty->fetch('tracker_pretty_item.tpl');
 					}
-					if (!empty($tplwiki)) {
-						$smarty->assign('fields', $item['field_values']);
-						$smarty->assign('item', $item);
-						$smarty->assign('wiki', "tplwiki:$tplwiki");
-						$smarty->assign('showpopup', 'n');
-						$items['data'][$i]['over'] = $smarty->fetch('tracker_pretty_item.tpl');
-					}
 					if (empty($items['data'][$i]['over'])) {
 						$items['data'][$i]['over'] = $trklib->get_isMain_value($trackerId, $item['itemId']);
 					}
@@ -1580,28 +1370,25 @@ function wikiplugin_trackerlist($data, $params)
 				$smarty->assign('module_params', array('viewmode'=>'n', 'showaction'=>'n', 'notitle'=>empty($calendartitle)?'y':'n', 'title'=>$calendartitle, 'viewnavbar' => $calendarviewnavbar, 'decorations'=> empty($calendartitle)?'n':'y'));
 				$smarty->assign('tpl_module_title', tra($calendartitle));
 				$smarty->assign('now', $tikilib->now);
-				$smarty->assign('calendarViewMode', $calendarViewMode['casedefault']);
-				$smarty->assign('viewmodelink', $calendarViewMode['casedefault']);
-				$smarty->assign('viewmode', $calendarViewMode['casedefault']);
-				$focus_prev = $calendarlib->focusPrevious($focus, $calendarViewMode['casedefault']);
+				$smarty->assign('calendarViewMode', $calendarviewmode);
+				$smarty->assign('viewmodelink', $calendarviewmode);
+				$smarty->assign('viewmode', $calendarviewmode);
+				$focus_prev = $calendarlib->focusPrevious($focus, $calendarviewmode);
 				$smarty->assign('focus_prev', $focus_prev['date']);
-				$focus_next = $calendarlib->focusNext($focus, $calendarViewMode['casedefault']);
+				$focus_next = $calendarlib->focusNext($focus, $calendarviewmode);
 				$smarty->assign('focus_next', $focus_next['date']);
 				$smarty->assign('daystart', $startPeriod['date']);
 				$dayend =  $calendarlib->infoDate($startNextPeriod['date']-1);
 				$smarty->assign('dayend', $dayend['date']);
-				$smarty->assign('today', TikiLib::make_time(0, 0, 0, TikiLib::date_format('%m'), TikiLib::date_format('%d'), TikiLib::date_format('%Y')));
+				$smarty->assign('today', TikiLib::make_time(0,0,0, TikiLib::date_format('%m'), TikiLib::date_format('%d'), TikiLib::date_format('%Y')));
 				$smarty->assign('sticky_popup', $calendarstickypopup);
-				$smarty->assign('calendar_popup', $calendarpopup);
 				$smarty->assign('showpopup', 'n');
 				global $headerlib; include_once('lib/headerlib.php');
-				$headerlib->add_cssfile('css/calendar.css', 20);
+				$headerlib->add_cssfile('css/calendar.css',20);
 				return '~np~'.$smarty->fetch('modules/mod-calendar_new.tpl').'~/np~';
 			}
-			if (!empty($wiki)) {
+			if (!isset($tpl) && !empty($wiki)) {
 				$tpl = "wiki:$wiki";
-			} elseif (!empty($tplwiki)) {
-				$tpl = "tplwiki:$tplwiki";
 			} elseif (empty($tpl)) {
 				$tpl = '';
 			}
@@ -1679,7 +1466,7 @@ function wikiplugin_trackerlist($data, $params)
 				$smarty->assign('trackerlistmapview', false);
 			}
 
-			$tracker = $trklib->get_tracker($trackerId, 0, -1);
+			$tracker = $tikilib->get_tracker($trackerId,0,-1);
 			/*foreach ($query_array as $k=>$v) {
 				if (!is_array($v)) { //only to avoid an error: eliminate the params that are not simple (ex: if you have in the same page a tracker list plugin and a tracker plugin, filling the tracker plugin interfers with the tracker list. In any case this is buggy if two tracker list plugins in the same page and if one needs the query value....
 					$quarray[] = urlencode($k) ."=". urlencode($v);
@@ -1702,39 +1489,28 @@ function wikiplugin_trackerlist($data, $params)
 					$smarty->force_compile = true;
 				}
 				
-				
-				//this options preloads the javascript for displaying sheets
 				if (!empty($displaysheet) && $displaysheet == 'y') {
-					$headerlib = TikiLib::lib("header");
-					$sheetlib = TikiLib::lib("sheet");
-					
-					$sheetlib->setup_jquery_sheet();
-					$headerlib->add_jq_onready(
-									'$("div.trackercontainer").sheet($.extend($.sheet.tikiOptions,{
-										editable:false,
-										buildSheet: true,
-										minSize: {rows: 0, cols: 0}
-									}));'
-					);
-					
+					global $headerlib;
+					$headerlib->add_jq_onready('
+						if (typeof ajaxLoadingShow == "function") {
+							ajaxLoadingShow("role_main");
+						}
+						setTimeout (function () {
+							$("div.trackercontainer").tiki("sheet", "",{
+								editable:false,
+								buildSheet: true,
+								minSize: {rows: 0, cols: 0}
+							});
+						}, 0);', 500);
 					$smarty->assign('displaysheet', 'true');
 				}
 				
-				//this method sets up the sheet just like it would for jquery.sheet, but assumes that the javascript will be handled elsewere
-				if (!empty($tableassheet) && $tableassheet == 'y') {
-					$smarty->assign('tableassheet', 'true');
-				}
-				$smarty->assign('context', $params);
-				try {
-					$str = $smarty->fetch('wiki-plugins/wikiplugin_trackerlist.tpl');
-				} catch (SmartyException $e) {
-					$str = $e->getMessage();
-				}
+				$str = $smarty->fetch('wiki-plugins/wikiplugin_trackerlist.tpl');
 				if ($save_fc !== null) {
 					$smarty->force_compile = $save_fc;	// presumably will be false but put it back anyway
 				}
 				
-				return $str;
+				return "~np~".$str."~/np~";
 			}
 		} else {
 			$smarty->assign('msg', tra("No field indicated"));

@@ -1,20 +1,30 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_box_info()
-{
+/*
+ * Tiki-Wiki BOX plugin.
+ * 
+ * Syntax:
+ * 
+ *  {BOX([title=>Title],[bg=>color|#999fff],[width=>num[%]],[align=>left|right|center])}
+ *   Content inside box
+ *  {BOX}
+ */
+function wikiplugin_box_help() {
+	return tra("Insert theme-styled box on wiki page").":<br />~np~{BOX(title=>Title, bg=>color, width=>num[%], align=>left|right|center, float=>|left|right),class=class, id=id}".tra("text")."{BOX}~/np~";
+}
+
+function wikiplugin_box_info() {
 	return array(
 		'name' => tra('Box'),
-		'documentation' => 'PluginBox',
-		'description' => tra('Creates a formatted box with a title bar'),
+		'documentation' => tra('PluginBox'),
+		'description' => tra('Insert theme-styled box on wiki page'),
 		'prefs' => array('wikiplugin_box'),
 		'body' => tra('text'),
-		'icon' => 'pics/icons/layout_header.png',
-		'tags' => array( 'basic' ),		
 		'params' => array(
 			'title' => array(
 				'required' => false,
@@ -47,10 +57,8 @@ function wikiplugin_box_info()
 			'float' => array(
 				'required' => false,
 				'name' => tra('Float Position'),
-				'description' => tra(
-								'Set the alignment for the entire box. For elements with a width of less than 100%, other elements will wrap around it 
-								unless the clear parameter is appropriately set.)'
-				),
+				'description' => tra('Set the alignment for the entire box. For elements with a width of less than 100%, other elements will wrap around it 
+										unless the clear parameter is appropriately set.)'),
 				'filter' => 'alpha',
 				'default' => '',
 				'options' => array(
@@ -85,14 +93,13 @@ function wikiplugin_box_info()
 	);
 }
 
-function wikiplugin_box($data, $params)
-{
+function wikiplugin_box($data, $params) {
 	global $tikilib;
 	
 	// Remove first <ENTER> if exists...
 	// if (substr($data, 0, 2) == "\r\n") $data = substr($data, 2);
     
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 	$bg   = (isset($bg))    ? " background:$bg" : "";
 	$id = (isset($id)) ? " id=\"$id\" ":'';
 	$class = (isset($class))? ' '.$class: ' ';

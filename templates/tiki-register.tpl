@@ -62,7 +62,7 @@
 {/if}	
 <div class="simplebox highlight" id="divRegCapson" style="visibility:hidden">{icon _id=error style="vertical-align:middle"} {tr}CapsLock is on.{/tr}</div>
 
-{if 0 and $prefs.feature_ajax eq 'y'}{* AJAX_TODO *}
+{if $prefs.ajax_xajax eq 'y'}
 		<script src="lib/registration/register_ajax.js" type="text/javascript"></script>
 {/if}
 
@@ -109,7 +109,7 @@
 		</fieldset>
 		
 		{remarksbox type="note"  title="{tr}Note{/tr}"}
-			{tr _0=$prefs.sender_email|default:"this domain"|escape}If you use an email filter, be sure to add %0 to your accepted list{/tr}
+			{tr 0=$prefs.sender_email|default:"this domain"|escape}If you use an email filter, be sure to add %0 to your accepted list{/tr}
 		{/remarksbox}
 	{/if}
 	
@@ -119,7 +119,7 @@
 			<td>
 		{/if}
 				<p>
-					{tr}Associate OpenID with an existing Tiki account{/tr}
+					{tr}Associate OpenID with an existing Tikiwiki account{/tr}
 				</p>
 				{include file="modules/mod-login_box.tpl"} 
 		{if $allowRegister eq 'y'}

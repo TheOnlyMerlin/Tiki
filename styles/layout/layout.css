@@ -1,6 +1,5 @@
 /* $Id$
-/*	This file (layout.css) is to be imported by theme stylesheets. */
-	
+	This file (layout.css) is to be imported by theme stylesheets. */
 
 /***** XHTML Elements *****/
 body {
@@ -23,13 +22,8 @@ html[dir=ltr]>body {
 	width: auto;
 }
 
-/* Make HTML 5 elements display block-level */  
-header, nav, article, footer, address {  
-    display: block;  
-} 
-
 /* general #fixedwidth wrapper when fixed width is off */
-.fixedwidth {
+#fixedwidth {
 	display: table;
 	margin: auto;
 	margin-top: 0;
@@ -38,28 +32,14 @@ header, nav, article, footer, address {
 }
 
 /* when fixed width is set to on */
-.fixed_width .fixedwidth {
-	display: table;
-}
-
-.fixed_width > .fixedwidth {
+.fixed_width #fixedwidth {
 	width: 990px;
+}
+.fixed_width #main {
 	margin-top: 18px;
 	margin-bottom: 5px;
 }
-
-/* avoid table-like height properties in .header_fixedwidth */
-.header_container .fixedwidth {
-	display: block;
-	width: auto;
-	margin-left: 0; /* so header contents stay left rather than centered when wide middle content extends page to the right. */
-}
-
-body.fixed_width .fixedwidth .fixedwidth {
-	margin: 0 auto;
-}
-
-.fixed_width .fixedwidth[id] {
+.fixed_width #fixedwidth[id] {
 	height: auto;
 }
 
@@ -68,8 +48,7 @@ body.fixed_width .fixedwidth .fixedwidth {
 }
 
 .fullscreen #c1c2 #wrapper #col1.marginright {
-	margin-right: 30px;
-}	
+	margin-right: 30px}	
 
 .button {
 	display: inline-block;
@@ -106,9 +85,7 @@ input[type=submit] {
 #col2 select,
 #col3 select,
 #col3 input[type="text"],
-#col2 input[type="text"],
-#col3 input[type="password"],
-#col2 input[type="password"] {
+#col2 input[type="text"] {
 	width: 95%;
 }
 
@@ -149,6 +126,21 @@ img {
 }
 
 /***** Site Header & Identity *****/
+#siteheader {
+/*	text-align: left;*/
+	vertical-align: middle;
+	padding: 0;
+	margin: 0;
+}
+
+#sioptionscentered {
+	text-align: center;
+}
+
+#sioptionscentered #logo img {
+	margin: auto;
+}
+
 .floatright {
 	float: right;
 	clear: none;
@@ -159,44 +151,51 @@ img {
 	clear: none;
 }
 
-#sitetitle,
-#sitesubtitle { 
-	line-height: 1;
+#sitead {
+	margin: auto;
 }
 
-/* default minimum height in case only login, etc. (absolutely positioned) is assigned */
-#top_modules {
-	min-height: 20px;
+.sl-login {
+	display: inline;
 }
 
-/* Siteloginbar (no popup, items arranged horizontally) */
-#top_modules .box-login_box {
+#siteloginbar #register,
+#siteloginbar #pass {
+	float: right;
+	padding-left: 5px;
+}
+	
+#siteloginbar * {
+	white-space: nowrap;
+}
+
+#siteloginbar form {
+	padding-right: 0;
+}
+
+/* Sitelogin Popup */
+.tiki_register_login {
+	bottom: 3px;
 	position: absolute;
 	right: 10px;
-	bottom: 1px;
 }
 
-#top_modules .box-login_box .siteloginbar {
-	margin-bottom: 5px;
+#siteloginbar_popup {
+	bottom: 0;
+	position: absolute;
+	right: 4em;
 }
 
-.siteloginbar div {
-	display: inline-block;
-}
-
-#top_modules .siteloginbar_poppedup {
-	margin-left: -20%;
-/*	margin-top: -2px;*/
-}
-
-.siteloginbar_popup .tabcontent fieldset {
+#siteloginbar_popup .tabcontent fieldset {
 	margin: 0;
 	margin-left: -4px;
 	border: none;
 }
 
-.siteloginbar_poppedup div {
-	text-align: right;
+#siteloginbar_popup h1 {
+	font-size: 1em;
+	font-weight: normal;
+	margin: auto;
 }
 
 li#register_link {
@@ -208,88 +207,128 @@ li#register_link {
 	padding-right: 26px !important;
 }
 
-.siteloginbar_popup .cssmenu_horiz {
-	width: inherit;
-	margin: inherit;
-	padding: inherit;
+#siteloginbar_popup .cssmenu_horiz #register_link ul {
+	margin-left: -5.5em;
 }
 
-.siteloginbar_popup .cssmenu_horiz ul li {
+#siteloginbar_popup .cssmenu_horiz #login_link ul {
+	margin-left: -9em;
+}
+
+#siteloginbar_popup .cssmenu_horiz #logout_link ul {
+	margin-left: -2.5em;
+}
+
+#siteloginbar_popup #siteloginbar {
+	bottom: auto;
+	font-size: inherit;
+	position: static;
+	right: auto;
+	text-align: left;
+}
+
+#siteloginbar_popup #siteloginbar * {
+	white-space: normal;
+}
+
+#siteloginbar_popup .cssmenu_horiz ul li {
 	width: 100%;
 	font-size: inherit;
 }
 
-.siteloginbar_popup form {
+#siteloginbar_popup form {
 	text-align: left;
 	width: auto;
 	white-space: normal !important;
 }
 
+#siteloginbar_popup .sl-login,
+#siteloginbar_popup .pass {
+	display: block;
+	width: auto;
+	margin-bottom: 4px;
+}
+
+#sitesubtitle { 
+	line-height: 0.9em;
+}
+	/*
+li#login_link .register {
+	display: none;
+}*/
+
 li#logout_link a {
 	padding-right: 40px;
 }
 
-.siteloginbar_popup #logout_link {
+/* from r27359 */
+#siteloginbar_popup #logout_link .cbox {
 	text-align: center;
 }
 
-.siteloginbar_popup .cssmenu_horiz div a.login_link {
-	display: block;
+#siteloginbar_popup .cssmenu_horiz div {
+	
 }
 
-.siteloginbar_popup .cssmenu_horiz div a {
+#siteloginbar_popup .cssmenu_horiz div a {
 	display: inline;
 }
 
-.siteloginbar_poppedup {
+#siteloginbar_popup .cbox {
 	padding: 10px;
 	margin: 2px 2px 3px 1px;
 }
 
-.siteloginbar_poppedup * {
-	line-height: 1.1;
+#siteloginbar_popup .cbox * {
+	line-height: 14px;
 	margin: 2px;
 }
 
-.siteloginbar_popup label {
-	clear: both;
-	float: left;
+#siteloginbar_popup .cbox label {
+	clear: both; float: left;
 }
 
-.siteloginbar_popup #sl-login-user,
-.siteloginbar_popup #sl-login-pass {
+#siteloginbar_popup .cbox div {
+	clear: both;
+}
+
+#siteloginbar_popup #sl-login-user,
+#siteloginbar_popup #sl-login-pass {
 	float: right;
 	width: 60%;
 }
 
-.siteloginbar_popup .rme {
+#siteloginbar_popup .rme {
 	display: block;
 	padding: 5px 0;
 	text-align: right;
 }
 
-.siteloginbar_popup .pass {
+#siteloginbar_popup .pass {
+	display: inline;
+}
+
+#siteloginbar_popup .pass a {
 	float: left;
 	margin: 0;
 	padding: 0;
-	text-align: left;
-	width: 47%;
+	text-align: center;
+	width: 30%;
 }
 
-.siteloginbar_popup .pass a {
-	text-align: left;
-}
-
-.siteloginbar_popup .register {
+#siteloginbar_popup .register a {
 	float: right;
 	margin: 0;
 	padding: 0;
-	width: 47%;
+	text-align: center;
+	width: 30%;
 }
-.siteloginbar_popup .wikiaction {
+#siteloginbar_popup .wikiaction {
 	clear: both;
 	float: right;
 }
+/* end from r27359 */
+
 /* end Sitelogin Popup */
 
 #sitesearchbar {
@@ -311,15 +350,83 @@ li#logout_link a {
 	white-space: nowrap;
 }
 
-#top_modules .box-quickadmin {
-	position: absolute;
-	right: 1em;
-	top: 40%;
-	padding: 0 .5em .2em 0;
+/****** Menus_links ******/
+/** CSS (suckerfish) menus **/
+
+/** PHP Layers Menus **/
+.horbar table {
+	width: auto;
+	text-align: left;
+	white-space: nowrap;
+}
+	
+.horbaritem a,
+.horbaritem a:link,
+.horbaritem a:visited {
+	white-space: nowrap;
+	display: block;
 }
 
-#bottom_modules .box-rsslist br {
-	display: none;
+.mdksubmenu {
+	z-index: 999;
+	position: absolute;
+	left: 0;
+	top: 0;
+	visibility: hidden;
+}
+
+.mdksubmenu table {
+	width: auto;
+} 
+
+.mdksubframe { /*decorate*/
+	z-index: 1000;
+	position: relative;
+	display: block;
+}
+
+.mdkitem {
+	position: relative;
+	text-align: left;
+	white-space: nowrap;
+}
+	
+.mdkitem a {
+	position: relative;
+	display: block;
+}
+
+.mdkitem .mdkfwdarr {
+	position: absolute;
+	top: 5px;
+	right: 12px;
+} 
+
+.treemenudiv {
+	display: block;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.imgs {
+	border: 0;
+	width: 16px;
+	height: 18px;
+}
+
+ul.tree {
+	list-style-type: none;
+}
+
+ul.tree li {
+	white-space: nowrap;
+}
+
+/** Links in other menus **/
+
+.linkmenu,
+.linkmenu:visited {
+	/*display: block;*/
 }
 
 /***** Misc. *****/
@@ -345,7 +452,12 @@ li#logout_link a {
 .minimize-modules-left #col2 .separatoricon-url,
 .minimize-modules-right #col3 .box .menuLevel1 .menuText,
 .minimize-modules-right #col3 .separatoricon-url {
-  display: inline !important;
+	display: inline !important;
+}
+
+.minimize-modules-left #col2 .box,
+.minimize-modules-right #col3 .box {
+	/*      overflow: hidden;*/ /* This conflicts with CSS Menus */
 }
 
 .moduleflip-vert {
@@ -391,12 +503,32 @@ li#logout_link a {
 	padding: 0 !important;
 }
 
+/* Minimize PHPLayers Menus */
+.mdkverbar-with-icons .mdkitem {
+	background: none;
+}
 
+.mdkverbar-with-icons .mdkitem a {
+	padding: 0;
+	width: 175px;
+}
+
+.mdkverbar-with-icons .mdkitem img {
+	vertical-align: middle;
+}
+
+.minimize-modules-left #col2 .mdkverbar-with-icons .mdkitem,
 .minimize-modules-left #col2,
+.minimize-modules-right #col3 .mdkverbar-with-icons .mdkitem,
 .minimize-modules-right #col3 {
 	width: 60px !important;
 }
 
+.minimize-modules-left #col2 .mdkverbar-with-icons .mdkitem a,
+.minimize-modules-right #col3 .mdkverbar-with-icons .mdkitem a {
+	width: 50px !important;
+	overflow: hidden;
+}
 
 /* Minimize CSS Menus */
 .minimize-modules-left #col2 .cssmenu_vert,
@@ -419,6 +551,7 @@ li#logout_link a {
 }
 
 /* centercolumn */
+	
 .fullscreen .tellafriend,
 .fullscreen .share {
 	margin-right: 100px;
@@ -468,8 +601,8 @@ ul.jumplinks,
 	z-index: 9;
 }
 
-.jumplinks a:focus,
-.jumplinks a:active {
+ul.jumplinks a:focus,
+ul.jumplinks a:active {
 	position: absolute;
 	top: 9010px;
 	left: 9010px;
@@ -495,6 +628,15 @@ ul.jumplinks,
 }
 
 /****** Misc. Global Classes (layout and style) ****/
+.hidden {
+	position: absolute;
+	left: -10000px;
+	top: 0;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
 .floatlist {
 	clear: left;
 	list-style-type: none;
@@ -605,13 +747,6 @@ img.icon {
 	white-space: nowrap;
 }
 
-/** Titles (not boxed) bold lines alone not in summary used by categobjects.tpl + ? **/
-.simple_title {
-	font-weight: bold;
-	display: block;
-	padding: 8px 5px 5px 0;
-}
-
 /** Find form **/
 .findtable {
   text-align: center;
@@ -640,7 +775,7 @@ img.icon {
 /* New Toolbars */
 
 .textarea-toolbar {
-	width: 100%;
+	width: 99%;
 }
 
 .textarea-toolbar img.icon {
@@ -668,36 +803,19 @@ a.toolbar {			/* each tool button */
 
 .toolbars-picker {	/* colours, smilies etc */
 	position: absolute;
-	width: 128px;
+	width: 288px;
 	z-index: 300;
 	line-height: 12px;
 }
 
-.toolbars-picker.specialchar {	/* colours, smilies etc */
-	width: 25em;
-}
-
 .toolbars-picker a {
-	padding: 0px;
-	margin: 0px;
+	padding: 0;
 	display: inline-block;
 	border: #fff 1px solid;
-	overflow: hidden;
-}
-
-.toolbars-picker.color a ,.toolbars-picker.bgcolor a {
-	width: 14px;
-	height: 12px;
 }
 
 .toolbars-picker a:hover {
 	border: #f00 1px solid;
-}
-
-.toolbars-picker-reset {
-	width: 100% !important;
-	text-align: center;
-	border: none !important;
 }
 
 /* New Help section */
@@ -712,20 +830,19 @@ a.toolbar {			/* each tool button */
 	height: 500px;
 }
 
+.help_section {
+}
+
+.help_sections h3 {
+}
+
 .help_sections > div {
 	font-size: .9em;
-	height: 90%;
+	height: 100%;
 	overflow: auto;
 }
 
-/* Inline_help : the inline_help are text displayed dependinf of user option : beginner, confirmed, expert */
-.simple_inlinehelp {
-	font-style: italic;
-	font-size: small;
-	font-family: sans-serif; 
-}
-
-.box-share > div {
+#site_report {
 	text-align: center;
 }
 
@@ -742,20 +859,11 @@ a.toolbar {			/* each tool button */
 .icon_edit_section {
 	float: right;
 }
-.icon_edit_section img.icon {
-	margin-top: -1px !important;
-}
 
 /***** Boxes *****/
 /** Modules **/
-
-.modules {
-	position: relative;
-}
-
-/* use default col width from *lite.css for modules in centre section */
-#role_main .module {
-	max-width: 180px;
+.box {
+	overflow: hidden;
 }
 
 h3.box-title {
@@ -766,7 +874,9 @@ h3.box-title {
 
 .moduleflip,
 .box-title span img.flipmodimage {
-	display: none;
+	display: none !important;
+	/*float: right;
+	position: relative;*/
 	position: absolute;
 	right: 1%;
 	top: 0;
@@ -774,7 +884,7 @@ h3.box-title {
 
 .box:hover .moduleflip,
 .box:hover .box-title span img.flipmodimage {
-	display: block;
+	display: block !important;
 }
 
 .box:hover img.flipmodimage {
@@ -839,7 +949,7 @@ h3.box-title {
 	width: auto;
 	z-index: 1;
 	position: relative;
-	bottom: 0;
+	bottom: -1px;
 }
 	
 .rbox-title .icon {
@@ -848,8 +958,8 @@ h3.box-title {
 }
 	
 .rbox-data {
-	position: relative;	
-	top: -.37em;
+	position: relative;
+	top: 0;
 	z-index: 0;
 }
 
@@ -902,12 +1012,6 @@ wikitext or custom content area. Similarly for three or four modules (or divs) a
 	width: 100%;
 }
 
-.ui-accordion .normal,
-.ui-accordion .normalnoborder,
-.ui-accordion .admin {
-	width: auto;
-}
-
 td {
 	vertical-align: top;
 }
@@ -921,7 +1025,7 @@ tr.diffheader {
 
 /** Tabs **/
 .tabs {
-	margin: 10px 3px 0 3px;
+	margin: 10px 3px -1px 3px;
 	padding: 0;
 	position: relative;
 	z-index: 2;
@@ -931,28 +1035,9 @@ tr.diffheader {
 	display: none;
 }
 
-.tabstoggle {
-	font-size: .8em;
-	position: relative;
-	width: 15%;
-	margin-top: 2px;
-	clear: none;
-}
-
-.tabstoggle .button {
-	margin: 0;
-	padding: 0;
-	position: absolute;
-	right: 0;
-}
-
 .tabs .container {
 	float: left;
-	width: 84%;
-}
-
-.tabs .full_width {
-	width: 100%;
+	width: 92%;
 }
 
 .tabmark {
@@ -960,7 +1045,7 @@ tr.diffheader {
 	margin: 0;
 	margin-right: 5px;
 	padding: 1px 0;
-	white-space: nowrap;
+	cursor: pointer;
 }
 	
 .tabmark a {
@@ -987,8 +1072,9 @@ tr.diffheader {
 	position: relative;
 	padding: 4px;
 	top: 0;
-	border-top: none;
-	margin: 0px;
+/*	padding-top: 21px;
+	margin-bottom: 25px;
+	margin-top: -1px;*/
 }
 
 .tabcontent table {
@@ -1005,6 +1091,10 @@ tr.diffheader {
 }
 
 /***** Wiki *****/
+#description,
+.description {
+	display: block;
+}
 
 #pageid {
 	float: left;
@@ -1077,7 +1167,7 @@ tr.diffheader {
 
 /* wikiplugin tracker */
 table.wikiplugin_tracker td {
-	vertical-align: top;
+	vertical-align: middle;
 	padding-bottom:1.2em;
 }
 	
@@ -1114,13 +1204,28 @@ ul.floatleft li {
 }
 
 /* fancytable (sortable) plugin */
+
 .fancysort .header {
 	cursor: pointer;
 }
 
-/* timesheet plugin */
-#jtrack-holder {
-    width: auto;
+/* img plugin */
+.imgbox {
+        padding: 5px;
+}
+
+.thumbcaption {
+        padding: 2px;
+}
+
+.magnify {
+        float: right;
+        padding-top: 0.1cm;
+}
+
+img.magnify {
+        height: 12px;
+        width: 12px;
 }
 
 /** Wiki tocs **/
@@ -1141,6 +1246,10 @@ ul.floatleft li {
 	clear: both;
 }
 
+.fancytoclevel {
+	list-style-image: url(../../img/icons/footprint.gif);
+}
+
 /* TOC */
 .toc * {
 	list-style: none;
@@ -1148,6 +1257,8 @@ ul.floatleft li {
 
 /* Wiki diff layout */
 .diff td {
+	overflow-x: auto;
+	overflow-y: visible;
 	white-space: normal;
 	
 }
@@ -1406,6 +1517,9 @@ body.tiki_forums .normal {
 
 .postfooter-nav {
 	width: 100%;
+}
+
+.postfooter-nav {
 	display: block;
 	margin-top: 1em;
 }
@@ -1486,13 +1600,8 @@ body.tiki_forums .normal {
 	font-size: 1.2em;
 }
 
-/* applied mainly to titles : option ? help-inline-level user defined  */
-.simple_comment {
-	font-style: italic;
-	font-size: x-small;
-}
-
 /* Comment Annotations */
+
 dl.note-list {
 	margin: .5em;
 }
@@ -1525,6 +1634,8 @@ textarea#editpost2 {
 .subcomment {
 	margin-left: 10px;
 }
+
+.commentsedithelp {}
 
 /**** Image Galleries ****/
 .galtable {
@@ -1572,6 +1683,10 @@ img.athumb {
 	margin-left: 10px;
 }
 
+#browse_image {
+	width: 100%
+}
+
 /* Random image module - top and bottom margin better
 when module used without decorations. */
 #random_image {
@@ -1606,7 +1721,7 @@ body.filegal_popup #tiki-center {
 	vertical-align: middle;
 	height: 15px;
 }
-
+	
 /* also for categorize.tpl */
 .multiselect {
 	vertical-align: middle;
@@ -1669,20 +1784,6 @@ body.filegal_popup #tiki-center {
 }
 
 /***** Categories, Tags *****/
-
-.catlists .catitems {
-	display :inline-block;
-}
-
-.catlists_block  .catitems_block  li {
-	display: block;
-}
-
-.catlists_title {
-	padding: 10px 5px 5px 0px;
-	display: block;
-}
-
 .categpath {
 	display: block;
 }
@@ -1762,8 +1863,8 @@ a.freetag:hover {/* freetags.css (line 8)*/
 }
 
 li.freetag {
-	list-style: none;
-	display: inline;
+	list-style: none !important;
+	display: inline !important;
 	margin: 0;
 	padding: 0;
 }
@@ -1771,10 +1872,10 @@ li.freetag {
 ul.freetag {
 	margin: 0;
 	padding: 0;
-	display: inline;
+	display: inline !important;
 }
 
-.freetag a {display: inline}
+.freetag a {display: inline !important}
 
 .freetagObjectOdd {
 	margin: 2px;
@@ -1882,10 +1983,6 @@ ul.freetagged li {
 	text-align: right;
 }
 
-.left {
-	text-align: left;
-}
-
 /* admin boxes etc (.admbox) now defined in css/admin.css */
 
 /***** Ajax, jquery. etc. *****/
@@ -1951,9 +2048,22 @@ ul.freetagged li {
 }
 
 @media print {
-	.tikihelp, .navbar, .categbar, .tabstoggle, .tabs, #show-errors-button {display:none;}
+	.tikihelp, .navbar, categbar, .tabstoggle, .tabs, #show-errors-button {display:none;}
 }
 
+.tabstoggle {
+	font-size: .8em;
+	position: relative;
+	width: 8%;
+	margin-top: 2px;
+}
+
+.tabstoggle .button {
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	right: 0;
+}
 
 /* treeTable definitions - used in object-perms so far */
 
@@ -1971,12 +2081,6 @@ ul.freetagged li {
 
 .treeTable .parent td {
 	font-style: italic;
-}
-
-/* tree browser */
-
-.tree {
-	list-style: none;
 }
 
 .thumbnailcontener {
@@ -1999,15 +2103,6 @@ ul.freetagged li {
 	float: left;
 }
 
-.tree li {
-	display: block;
-	width: 98%;
-}
-
-.tree li ul li {
-	width: auto;
-}
-
 /* jquery-ui dialogs help */
 
 .ui-dialog label {
@@ -2018,27 +2113,22 @@ ul.freetagged li {
 	z-index: 1024;
 }
 
-h4.ui-accordion-header {
-	padding-left: 2.2em;
+.ui-accordion-header {
+	padding-left: 28px;
 }
 
 /* Preferences        */
 .pref_dependency {
-	margin-left: 33px;
+	margin-left: 20px;
 	font-size: 95%;
 }
 
-img.pref_dependency {
-	opacity: 0.25;
-}
-
-.pref_note {
-	margin-left: 33px;
-	font-size: 90%;
-	font-style: italic;
-}
-
 /* Perspectives (edit) */
+.dropzone {
+}
+
+.dropzone > div:hover {
+} 
 
 .podcast {
 	margin-left: -25px;
@@ -2061,7 +2151,6 @@ img.pref_dependency {
 	top: 0;
 	height: 40px;
 	padding: 1em;
-	z-index: 1000;
 }
 
 #intertrans-form {
@@ -2087,127 +2176,21 @@ img.pref_dependency {
 	width: 50%;
 }
 
-/* tiki-edit_languages.php */
-#edit_translations td {
-	vertical-align: middle;
-}
-
-#edit_translations input {
-	margin: 2px 0 2px 0;
-}
-
-#edit_translations tr.last {
-	border-bottom: #74C0E2 solid 2px;
-}
-
 /***** Kaltura *****/
 
 /* Kaltura browse entries */
 
 /* remove margins from the image */ 
-.kaltura .items img { 
+.items img { 
     margin: 0; 
 }
  
 /* make A tags our floating scrollable items */ 
-.kaltura .items a { 
+.items a { 
     display: block; 
     float: left; 
     margin: 20px 15px; 
 }
 
-/***** Accounting *****/
-div.aclabel, span.aclabel, label.aclabel {
-	float: left;
-	min-width: 150px;
-}
 
-/* Fancy filter */
-.filter .fancyfilter {
-	min-height: 1.5em;
-	min-width: 20em;
-	float: left;
-	margin-right: 5px;
-	border: thin solid black;
-	padding: 0.1em;
-	cursor: text;
-}
-
-.filter .fancyfilter .token {
-	display: inline-block;
-	background: #ccc;
-	cursor: default;
-}
-
-.filter .fancyfilter .token .ui-icon-close {
-	float: right;
-	cursor: pointer;
-}
-
-.filter .category-picker {
-	display:none;
-}
-
-.Zend_Tag_Cloud li, .Zend_Tag_Cloud {
-	display: inline-block;
-	padding: 0;
-	margin: 0;
-	list-style: none;
-}
-
-/* Locator module */
-
-.minimap {
-	height: 180px;
-}
-
-.minimap .olControlAttribution,
-.map-container .olControlAttribution{
-    right: 3px;
-    bottom: 3px;
-	text-align: right;
-}
-
-/* FileGals Flash Upload */
-.flashButton {
-	display: inline;
-	overflow: hidden;
-}
-.flashButtonText {
-	position: absolute;
-	z-index: 1;
-}
-.flashButton object {
-	opacity: 0;
-	position: absolute;
-	z-index: 2;
-}
-/* tiki-wiki_topline.tpl Backlinks button */
-.backlinks_button {
-	position: relative;
-	display: inline-block;
-	vertical-align: middle;
-	background: none;
-	width: 20px;
-}
-.backlinks_button .cssmenu_horiz ul li {
-	border: 1px solid #999;
-	border-radius: 3px;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-}
-.backlinks_button li.tabmark {
-	background: none;
-	border: 0px;
-	top: 0px;
-	padding: 0px;
-}
-.backlinks_button .clearfix:after {
-	display: inline-block;
-}
-
-/* for autocomplete menus to appear infront of ckeditor 3.6 dialogs this needs to be !important sadly */
-.ui-menu {
-	z-index: 10100 !important;
-}
 /* End of File */

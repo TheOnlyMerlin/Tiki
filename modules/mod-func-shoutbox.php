@@ -1,18 +1,19 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 /*
- * AJAXified Shoutbox module (jonnybradley for mpvolt Aug/Sept 2008 - de-AJAXified for Tiki 7 Dec 2010 jb)
- *
+ * AJAXified Shoutbox module (jonnybradley for mpvolt Aug/Sept 2008)
+ * 
+ * Prefers Ajax enabled (Admin/Features/Experimental - ajax_xajax) but will work the old way without it
  * Anonymous may need tiki_p_view_shoutbox and tiki_p_post_shoutbox setting (in Group admin)
  * Enable Admin/Wiki/Wiki Features/feature_antibot to prevent spam ("Anonymous editors must input anti-bot code")
- *
+ * 
  */
-
+ 
 /*
  * Added twitter+facebook support (joernott for poiesipedia.com May 2010)
  *
@@ -22,18 +23,16 @@
  */
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
+if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__)) !== false) {
   header('location: index.php');
   exit;
 }
 
-function module_shoutbox_info()
-{
+function module_shoutbox_info() {
 	return array(
 		'name' => tra('Shoutbox'),
 		'description' => tra('The shoutbox is a quick messaging tool. Messages reload each time the page changes. Anyone with the right permission can see all messages. Another permission allows to send messages.'),
-		'prefs' => array('feature_shoutbox'),
-		'documentation' => 'Module shoutbox',
+		'prefs' => array( 'feature_shoutbox' ),
 		'params' => array(
 			'tooltip' => array(
 				'name' => tra('Tooltip'),
@@ -55,12 +54,12 @@ function module_shoutbox_info()
 			),
 			'tweet' => array(
 				'name'=> tra('Tweet'),
-				'description' => tra('If set to "1" and the user has authorized us to tweet messages with Twitter, the user can decide, if he wants to shout via Twitter.'),
+				'description' => tra('If set to "1" and the user has authorized us to tweet messages with Twitter, the user can decide, if he wants to shout via twitter.'),
 				'filter' => 'word'
 			),
 			'facebook' => array(
 				'name'=> tra('Facebook'),
-				'description' => tra('If set to "1" and the user has authorized us with Facebook, the user can decide, if he wants to add the shout to his Facebook wall.'),
+				'description' => tra('If set to "1" and the user has authorized us with Facebook, the user can decide, if he wants to add the shout to his facebook wall.'),
 				'filter' => 'word'
 			)
 			
@@ -68,29 +67,27 @@ function module_shoutbox_info()
 	);
 }
 
-function doProcessShout($inFormValues)
-{
+function doProcessShout($inFormValues) {
 	global $shoutboxlib, $user, $smarty, $prefs, $captchalib;
 //	$smarty->assign('tweet',$inFormValues['tweet']);
-	if (array_key_exists('shout_msg', $inFormValues) && strlen($inFormValues['shout_msg']) > 2) {
+	if (array_key_exists('shout_msg',$inFormValues) && strlen($inFormValues['shout_msg']) > 2) {
 		if (empty($user) && $prefs['feature_antibot'] == 'y' && (!$captchalib->validate())) {
 			$smarty->assign('shout_error', $captchalib->getErrors());
 			$smarty->assign_by_ref('shout_msg', $inFormValues['shout_msg']);
 		} else {
 			
-			$shoutboxlib->replace_shoutbox(0, $user, $inFormValues['shout_msg'], ($inFormValues['shout_tweet']==1), ($inFormValues['shout_facebook']==1));
+			$shoutboxlib->replace_shoutbox(0, $user, $inFormValues['shout_msg'],($inFormValues['shout_tweet']==1), ($inFormValues['shout_facebook']==1));
 		}
 	}
 }
 
-function module_shoutbox($mod_reference, $module_params)
-{
+function module_shoutbox( $mod_reference, $module_params ) {
 	global $tikilib; require_once ('lib/tikilib.php');
 	global $shoutboxlib, $prefs, $user, $tiki_p_view_shoutbox, $tiki_p_admin_shoutbox, $tiki_p_post_shoutbox, $base_url, $smarty, $access;
 	include_once ('lib/shoutbox/shoutboxlib.php');
 
 	if ($tiki_p_view_shoutbox == 'y') {
-		if (true || $prefs['feature_ajax'] !== 'y') {
+		if ($prefs['ajax_xajax'] !== 'y') {
 			$setup_parsed_uri = parse_url($_SERVER['REQUEST_URI']);
 	
 			if (isset($setup_parsed_uri['query'])) {
@@ -106,26 +103,34 @@ function module_shoutbox($mod_reference, $module_params)
 				foreach ($sht_query as $sht_name => $sht_val) {
 					$sht[] = $sht_name . '=' . $sht_val;
 				}
-				$shout_father.= '?'.implode('&amp;', $sht) . '&amp;';
+				$shout_father.= '?'.implode('&amp;',$sht).'&amp;';
 			} else {
 				$shout_father.= '?';
 			}
-		} else {	// $prefs['feature_ajax'] == 'y'			// AJAX_TODO
+		} else {	// $prefs['ajax_xajax'] == 'y'
 			$shout_father = 'tiki-shoutbox.php?';
+			global $ajaxlib;
+			require_once('lib/ajax/ajaxlib.php');
 		}
 	
 		$smarty->assign('shout_ownurl', $shout_father);
 		if (isset($_REQUEST['shout_remove'])) {
 			$info = $shoutboxlib->get_shoutbox($_REQUEST['shout_remove']);
-			if ($tiki_p_admin_shoutbox == 'y'  || $info['user'] == $user) {
+			if ($tiki_p_admin_shoutbox == 'y'  || $info['user'] == $user ) {
 				$access->check_authenticity();
 				$shoutboxlib->remove_shoutbox($_REQUEST["shout_remove"]);
 			}
 		}
 	
 		if ($tiki_p_post_shoutbox == 'y') {
-			if (isset($_REQUEST['shout_send'])) {
-				doProcessShout($_REQUEST);
+			if ($prefs['ajax_xajax'] == 'y') {
+				if (!isset($_REQUEST['xajax'])) {	// xajaxRequestUri needs to be set to tiki-shoutbox.php in JS before calling the func
+					$ajaxlib->registerFunction('processShout');
+				}
+			} else {
+				if (isset($_REQUEST['shout_send'])) {
+					doProcessShout($_REQUEST);
+				}
 			}
 		}
 	
@@ -139,5 +144,10 @@ function module_shoutbox($mod_reference, $module_params)
 		$smarty->assign('waittext', isset($module_params['waittext']) ? $module_params['waittext'] : tra('Please wait...'));
 		$smarty->assign('tweet', isset($module_params['tweet']) &&($tikilib->get_user_preference($user,'twitter_token')!='') ? $module_params['tweet'] : "0");
 		$smarty->assign('facebook', isset($module_params['facebook']) &&($tikilib->get_user_preference($user,'facebook_token')!='') ? $module_params['facebook'] : "0");
+		if ($prefs['ajax_xajax'] == 'y') {
+			if (!isset($_REQUEST['xajax'])) {
+				$ajaxlib->registerTemplate('mod-shoutbox.tpl');
+			}
+		}
 	}
 }

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -23,23 +23,26 @@ if ($tiki_p_admin != 'y') {
 	$user_groups = array();
 }
 
-$modules = $modlib->get_modules_for_user( $user );
+// additional module zones added to this array will be exposed to tiki.tpl
+// TODO change modules user interface to enable additional zones
+$module_zones = array(
+	'l' => 'left_modules',
+	'r' => 'right_modules',
+);
+
+$modules = $modlib->get_modules_for_user( $user, $module_zones );
 record_module_loading_errors();
 
 $show_columns = array_fill_keys( array_keys( $modules ), 'n' );
 
-foreach ( $modules as $zone => & $moduleList ) {
-	if ($prefs['feature_fullscreen'] != 'y' || empty($_SESSION['fullscreen']) || $_SESSION['fullscreen'] != 'y' ||
-			strpos($zone, 'page') === 0) {	// pagetop and pagebottom zones appear in fullscreen
+foreach( $modules as $zone => & $moduleList ) {
+	foreach( $moduleList as & $mod_reference ) {
+		$show_columns[$zone] = 'y';
 
-		foreach ( $moduleList as & $mod_reference ) {
-			$show_columns[$zone] = 'y';
-
-			$mod_reference['data'] = $modlib->execute_module( $mod_reference );
-		}
-
-		$smarty->assign_by_ref( $zone, $moduleList );
+		$mod_reference['data'] = $modlib->execute_module( $mod_reference );
 	}
+
+	$smarty->assign_by_ref( $zone, $moduleList );
 }
 
 $smarty->assign_by_ref( 'show_columns', $show_columns );

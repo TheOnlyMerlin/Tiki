@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,25 +10,12 @@ if (!isset($title)) $title = 'Tiki Installer';
 if (!isset($content)) $content = 'No content specified. Something went wrong.<br/>Please tell your administrator.<br/>If you are the administrator, you may want to check for / file a bug report.';
 if (!isset($dberror)) $dberror = false;
 
-// Check that PHP version is sufficient
-
-if (version_compare(PHP_VERSION, '5.2.0', '<')) {
-	$title = 'PHP 5.2 is required';
-	$content = '<p>Please contact your system administrator ( if you are not the one ;) ). Your version: '.PHP_VERSION.'.</p>';
+// Check that PHP version is at least 5
+if (version_compare(PHP_VERSION, '5.1.0', '<')) {
+	$title = 'PHP 5.1 is required';
+	$content = '<p>Please contact your system administrator ( if you are not the one ;) ).</p>';
 	createPage($title, $content);
 }
-
-require_once('lib/init/initlib.php');
-$tikipath = dirname(__FILE__) . '/';
-TikiInit::prependIncludePath($tikipath.'lib/pear');
-TikiInit::appendIncludePath($tikipath.'lib/core');
-TikiInit::appendIncludePath($tikipath);
-require_once 'Zend/Loader/Autoloader.php';
-Zend_Loader_Autoloader::getInstance()
-	->registerNamespace('TikiFilter')
-	->registerNamespace('DeclFilter')
-	->registerNamespace('JitFilter')
-	->registerNamespace('TikiDb');
 
 include_once('db/tiki-db.php');	// to set up multitiki etc if there
 
@@ -84,7 +71,8 @@ if (isset($_SESSION['accessible'])) {
 	// Thus, display a form.
 	$title = 'Tiki Installer Security Precaution';
 	$content = '
-							<p style="margin-top: 24px;">You are attempting to run the Tiki Installer. For your protection, this installer can be used only by a site administrator.</p>
+							<p>&nbsp;</p>
+							<p>You are attempting to run the Tiki Installer. For your protection, this installer can be used only by a site administrator.</p>
 							<p>To verify that you are a site administrator, enter your <strong><em>database</em></strong> credentials (database username and password) here.</p>
 							<p>If you have forgotten your database credentials, find the directory where you have unpacked your Tiki and have a look inside the <strong><code>db</code></strong> folder into the <strong><code>local.php</code></strong> file.</p>
 							<form method="post" action="' . $_SERVER['REQUEST_URI'] . '">
@@ -109,42 +97,24 @@ function createPage($title, $content){
 		<link type="text/css" rel="stylesheet" href="styles/fivealive.css" />
 		<title>$title</title>
 	</head>
-	<body class="tiki_wiki fixed_width">
-	<div id="fixedwidth" class="fixedwidth">
-		<div class="header_outer">
-			<div class="header_container">
-				<div class="clearfix fixedwidth header_fixedwidth">
-					<header id="header" class="header">
-						<div class="content clearfix modules" id="top_modules" style="display: table; width: 990px;">
-							<div id="sitelogo">
-								<img alt="Site Logo" src="img/tiki/Tiki_WCG.png" style="margin-bottom: 10px;" />
-							</div>
-						</div>
-					</header>
+	<body class="tiki_wiki">
+		<div id="header">
+			<div id="siteheader">
+			 	<div id="header-top" class="clearfix">
+					<div id="sitelogo">
+						<img alt="Site Logo" src="img/tiki/Tiki_WCG.png" />
+					</div>
+				</div>
+				<div id="tiki-top" class="clearfix">
 				</div>	
 			</div>
 		</div>
-		<div class="middle_outer">
-			<div id="middle" class="fixedwidth">
-				<div id="tiki-top" class="clearfix">
-								<h1 style="font-size: 30px; line-height: 30px; color: #fff; text-shadow: 3px 2px 0 #781437; margin: 8px 0 0 10px; padding: 0;">
-									$title
-								</h1>
-							</div>
-				</div>
-					<div id="middle" style="width: 990px; text-align: center;">
-						$content
-					</div>
-				</div>
-			</div><!--
-		<footer id="footer" class="footer" style="margin-top: 50px;">
-	<div class="footer_liner">
-		<div class="footerbgtrap fixedwidth" style="padding: 10px 0;">
-			<a href="http://tiki.org" target="_blank" title="Powered by Tiki Wiki CMS Groupware"><img src="img/tiki/tikibutton.png" alt="Powered by Tiki Wiki CMS Groupware" /></a>
+		<div id="middle" style="display: table; margin: 0 auto; width: 990px;">
+			<div id="tiki-center" style="text-align:center; ">
+				<h1 style="position: absolute; top: 160px; color: #fff; text-shadow: 3px 2px 0 #781437;">$title</h1>
+				$content
+			</div>
 		</div>
-	</div>
-</footer>-->
-</div>
 	</body>
 </html>
 END;

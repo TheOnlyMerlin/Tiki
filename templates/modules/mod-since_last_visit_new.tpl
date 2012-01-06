@@ -17,12 +17,12 @@
 	{if $slvn_info.cant == 0}
 		<div class="separator">{tr}Nothing has changed{/tr}</div>
 	{else}
-		{if $prefs.feature_jquery_ui eq "y" and $use_jquery_ui eq "y"}
+		{if $prefs.feature_jquery_ui eq "y" and $module_params.use_jquery_ui eq "y"}
 			{assign var=fragment value=1}
 			<div id="mytabs">
 	  		<ul>
 				{foreach key=pos item=slvn_item from=$slvn_info.items}
-					{if $slvn_item.count > 0}
+					{if $slvn_item.count > 0 }
 						<li>
 							<a href="#fragment-{$fragment}">
 								{if $pos eq "blogs" or $pos eq "blogPosts"}
@@ -31,7 +31,7 @@
 									<img src="pics/large/stock_bold.png" alt="{tr}Articles{/tr}" title="{tr}Articles{/tr}"/>
 								{elseif $pos eq "posts"}
 									<img src="pics/large/stock_index.png" alt="{tr}Forums{/tr}" title="{tr}Forums{/tr}"/>
-								{elseif $pos eq "fileGalleries" or $pos eq "files"}
+								{elseif $pos eq "fileGalleries" or $pos eq "files" }
 									<img src="pics/large/file-manager.png" alt="{tr}File Gallery{/tr}" title="{tr}File Gallery{/tr}"/>
 								{elseif $pos eq "poll"}
 									<img src="pics/large/stock_missing-image.png" alt="{tr}Poll{/tr}" title="{tr}Poll{/tr}"/>
@@ -50,22 +50,22 @@
 								{/if}
 							</a>
 						</li>
-					{assign var=fragment value=$fragment+1}
+					{assign var=fragment value=`$fragment+1`}
 					{/if}
 				{/foreach}
 			</ul>
 			{assign var=fragment value=1}
 		{/if}
 		{foreach key=pos item=slvn_item from=$slvn_info.items}
-			{if $slvn_item.count > 0}
-				{if $prefs.feature_jquery_ui eq "y" and $use_jquery_ui eq "y"}<div id="fragment-{$fragment}">{/if}
+			{if $slvn_item.count > 0 }
+				{if $prefs.feature_jquery_ui eq "y" and $module_params.use_jquery_ui eq "y"}<div id="fragment-{$fragment}">{/if}
 				{assign var=cname value=$slvn_item.cname}
 				{if $slvn_item.count eq $module_rows}
 					<div class="separator"><a class="separator" href="javascript:flip('{$cname}');">{tr}Multiple{/tr} {$slvn_item.label}, {tr}including{/tr}</a></div>
 				{else}
 					<div class="separator"><a class="separator" href="javascript:flip('{$cname}');">{$slvn_item.count}&nbsp;{$slvn_item.label}</a></div>
 				{/if}
-				{assign var=showcname value="show_"|cat:$cname}
+				{assign var=showcname value=show_$cname}
 	
 	        	{if $pos eq 'trackers' or $pos eq 'utrackers'}
 					<div id="{$cname}" style="display:{if !isset($cookie.$showcname) or $cookie.$showcname eq 'y'}{$default_folding}{else}{$opposite_folding}{/if};">
@@ -74,7 +74,7 @@
 					 	{foreach key=tp item=tracker from=$slvn_item.tid}
 					 		{assign var=tcname value=$tracker.cname}
 					 		<div class="separator" style="margin-left: 10px; display:{if !isset($cookie.$showcname) or $cookie.$showcname eq 'y'}{$default_folding}{else}{$opposite_folding}{/if};">
-					 			{assign var=showtcname value="show_"|cat:$tcname}
+					 			{assign var=showtcname value=show_$tcname}
 					 			<a class="separator" href="javascript:flip('{$tcname}');">{$tracker.count}&nbsp;{$tracker.label|escape}</a>
 					 			<div id="{$tcname}" style="display:{if !isset($cookie.$showtcname) or $cookie.$showtcname eq 'y'}{$default_folding}{else}{$opposite_folding}{/if};">
 					 				{if $nonums != 'y'}<ol>{else}<ul>{/if}
@@ -106,14 +106,14 @@
 						{if $nonums != 'y'}</ol>{else}</ul>{/if}
 					</div>
 				{/if}
-				{if $prefs.feature_jquery_ui eq "y" and $use_jquery_ui eq "y"}
+				{if $prefs.feature_jquery_ui eq "y" and $module_params.use_jquery_ui eq "y"}
 					</div>
-	           {assign var=fragment value=$fragment+1}
+	           {assign var=fragment value=`$fragment+1`}
 				{/if}
 			{/if}
 		{/foreach}
-		{if $prefs.feature_jquery_ui eq "y" and $use_jquery_ui eq "y"}</div>{/if}
+		{if $prefs.feature_jquery_ui eq "y" and $module_params.use_jquery_ui eq "y"}</div>{/if}
 	{/if}
-	{if $prefs.feature_jquery_ui eq "y" and $use_jquery_ui eq "y"}{jq} $(function() {$("#mytabs").tabs({});}); {/jq}{/if}
+	{if $prefs.feature_jquery_ui eq "y" and $module_params.use_jquery_ui eq "y"}{jq} $(function() {$("#mytabs").tabs({});}); {/jq}{/if}
 	{/tikimodule}
 {/if}

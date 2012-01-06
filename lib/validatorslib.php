@@ -1,5 +1,5 @@
 <?php 
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -53,11 +53,7 @@ class Validators
 			if ($field_value['validation'] || $field_value['isMandatory'] == 'y') {				
 				$validationjs .= $prefix . $field_value['fieldId'] . ': { ';
 				if ($field_value['isMandatory'] == 'y') {
-					if ($field_value['type'] == 'D') {
-						$validationjs .= 'required_in_group: [1, ".group_'.$prefix.$field_value['fieldId'].'"], ';
-					} else {
-						$validationjs .= 'required: true, ';		
-					}
+					$validationjs .= 'required: true, ';		
 				}
 				if ($field_value['validation']) {
 					$validationjs .= 'remote: { ';
@@ -75,7 +71,7 @@ class Validators
 					} else {
 						$validationjs .= 'parameter: "' .$field_value['validationParam'].'", ';
 					}
-					$validationjs .= 'message: "' .tra($field_value['validationMessage']).'", ';
+					$validationjs .= 'message: "' .$field_value['validationMessage'].'", ';
 					$validationjs .= 'input: function() { ';
 					if ( $prefix == 'ins_' && $field_value['type'] == 'a') {
 						$validationjs .= 'return $("#area_'.$field_value['fieldId'].'").val(); ';
@@ -98,18 +94,14 @@ class Validators
 		foreach ($fields_data as $field_value) {
 			if ($field_value['validationMessage'] && $field_value['isMandatory'] == 'y') {
 				$validationjs .= $prefix . $field_value['fieldId'] . ': { ';
-				$validationjs .= 'required: "' .tra($field_value['validationMessage']).'" ';
+				$validationjs .= 'required: "' .$field_value['validationMessage'].'" ';
 				$validationjs .= '}, ';	
-			} elseif ($field_value['isMandatory'] == 'y') {
-				$validationjs .= $prefix . $field_value['fieldId'] . ': { ';
-				$validationjs .= 'required: "' .tra('This field is required').'" ';
-				$validationjs .= '}, ';
 			}
 		}
 		$validationjs .= $custom_messages;
 		// remove last comma (not supported in IE7)
                 $validationjs = rtrim($validationjs, " ,");
-		$validationjs .= '} ';
+		$validationjs .= '} ';		
 		return $validationjs;
 	}
 }

@@ -1,7 +1,7 @@
 {* $Id$ *}
 {$showBoxCheck}
 
-{title help="Newsletters"}{tr}Send Newsletters{/tr}{/title}
+{title help="Newsletters"}{tr}Send Newsletters{/tr} {if $nlId ne '0'}{$nlName}{/if}{/title}
 
 {if $tiki_p_admin_newsletters eq "y"}
 	<div class="navbar">
@@ -17,13 +17,6 @@
 {if $upload_err_msg neq ''}
 	{remarksbox type='warning' title="{tr}Warning{/tr}" icon='error'}
 		{$upload_err_msg}
-	{/remarksbox}
-{/if}
-
-{if $mailto_link}
-	{remarksbox type=info title="External Client"}
-		{tr}You can also send newsletters using an external client:{/tr}
-		<a href="{$mailto_link|escape}">{tr}Compose{/tr}</a>
 	{/remarksbox}
 {/if}
 
@@ -71,7 +64,7 @@
 			<input type="hidden" name="cookietab" value="3" />
 			<input type="hidden" name="datatxt" value="{$info.datatxt|escape}" />
 			<input type="hidden" name="replyto" value="{$replyto|escape}" />
-			<input type="hidden" name="wysiwyg" value="{$info.wysiwyg|escape}" />
+			<input type="hidden" name="wysiwyg" value="{$wysiwyg|escape}" />
 			<input type="submit" name="send" value="{tr}Send{/tr}" onclick="document.getElementById('confirmArea').style.display = 'none'; document.getElementById('sendingArea').style.display = 'block';" />
 			<input type="submit" name="cancel" value="{tr}Cancel{/tr}" />
 			{foreach from=$info.files item=newsletterfile key=fileid}
@@ -106,7 +99,7 @@
 	<h3>{tr}HTML version{/tr}</h3>
 	<div class="simplebox wikitext">{$previewdata}</div>
 
-	{if $allowTxt eq 'y'}
+	{if $allowTxt eq 'y' }
 		<h3>{tr}Text version{/tr}</h3>
 		{if $info.datatxt}<div class="simplebox wikitext" >{$info.datatxt|escape|nl2br}</div>{/if}
 		{if $txt}<div class="simplebox wikitext">{$txt|escape|nl2br}</div>{/if}
@@ -133,20 +126,7 @@
 
 	<div id="sendingArea" style="display:none">
 		<h3>{tr}Sending Newsletter{/tr} ...</h3>
-		<div id="confirmed"></div>
 		<iframe id="resultIframe" name="resultIframe" frameborder="0" style="width: 600px; height: 400px"></iframe>
-		{jq}
-			$('#resultIframe').bind('load', function () {
-				var root = this.contentDocument.documentElement, iframe = this;
-				$('#confirmed').append($('.confirmation', root));
-				$('.throttle', root).each(function () {
-					var url = 'tiki-send_newsletters.php?resume=' + $(this).data('edition');
-					setTimeout(function () {
-						$(iframe).attr('src', url);
-					}, parseInt($(this).data('rate'), 10) * 1000);
-				});
-			});
-		{/jq}
 	</div>
 
 {else}
@@ -158,7 +138,7 @@
 		<h3>{tr}HTML version{/tr}</h3>
 		<div class="simplebox wikitext">{$previewdata}</div>
 
-		{if $allowTxt eq 'y'}
+		{if $allowTxt eq 'y' }
 			<h3>{tr}Text version{/tr}</h3>
 			{if $info.datatxt}<div class="simplebox wikitext" >{$info.datatxt|escape|nl2br}</div>{/if}
 			{if $txt}<div class="simplebox wikitext">{$txt|escape|nl2br}</div>{/if}
@@ -249,7 +229,7 @@
 						<label for="editwikitxt">{tr}Data Txt:{/tr}</label>
 					</td>
 					<td id="txtcol2" >
-						<textarea id='editwikitxt' name="datatxt" rows="20" cols="80">{$info.datatxt|escape}</textarea>
+						<textarea id='editwikitxt' name="datatxt" rows="{$rows}" cols="{$cols}">{$info.datatxt|escape}</textarea>
 					</td>
 				</tr>
 
@@ -261,12 +241,7 @@
 					<td id="clipcol2" >
 						{tr}To include the article clipping into your newsletter, cut and paste it into the contents.{/tr}
 						<br />{tr}If autoclipping is enabled, you can also enter "~~~articleclip~~~" which will be replaced with the latest	clip when sending.{/tr}
-						{if !empty($articleClip)}
-						{remarksbox type="warning" title="{tr}Notice{/tr}"}
-							{tr}Be careful not to paste articles that must not be seen by the recipients{/tr} 
-						{/remarksbox}
-						{/if}
-						<textarea id='articlecliptxt' name="articleClip" rows="20" cols="80" readonly="readonly">{$articleClip}</textarea>
+						<textarea id='articlecliptxt' name="articleClip" rows="{$rows}" cols="{$cols}" readonly="readonly">{$articleClip}</textarea>		
 					</td>
 				</tr>				
 				
@@ -310,9 +285,8 @@
 			</table>
 		</form>
 	{/tab}
-	
-	{assign var=name value="{tr _0=$cant_drafts}Drafts&nbsp;(%0){/tr}"}
-	{tab name=$name}
+
+	{tab name="{tr}Drafts{/tr}&nbsp;(`$cant_drafts`)"}
 	{* --- tab with drafts --- *}
 		{assign var=channels value=$drafts}
 		{assign var=view_editions value='n'}
@@ -330,12 +304,11 @@
 		{assign var=find value=$dr_find}
 		{assign var=find_bak value=$ed_find}
 		{assign var=tab value=2}
-		<h2>{$name}</h2>
-		{include file='sent_newsletters.tpl'}
+		<h2>{tr}Drafts{/tr}&nbsp;({$cant_drafts})</h2>
+		{include file='sent_newsletters.tpl' }
 	{/tab}
 
-	{assign var=name value="{tr _0=$cant_editions}Sent Editions&nbsp;(%0){/tr}"}
-	{tab name=$name}
+	{tab name="{tr}Sent editions{/tr}&nbsp;($cant_editions)"}
 	{* --- tab with editions --- *}
 		{assign var=channels value=$editions}
 		{assign var=view_editions value='y'}
@@ -353,8 +326,8 @@
 		{assign var=find value=$ed_find}
 		{assign var=find_bak value=$dr_find}
 		{assign var=tab value=3}
-		<h2>{$name}</h2>
-		{include file='sent_newsletters.tpl'}
+		<h2>{tr}Sent editions{/tr}&nbsp;({$cant_editions})</h2>
+		{include file='sent_newsletters.tpl' }
 		{/tab}
 	{/tabset}
 {/if}

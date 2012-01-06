@@ -1,9 +1,8 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 $inputConfiguration = array(
 	array( 'staticKeyFilters' => array(
@@ -51,7 +50,7 @@ if (!empty($_REQUEST['categId'])) {
 if ($prefs['feature_categories'] == 'y') {
 	global $categlib;
 	include_once ('lib/categories/categlib.php');
-	$categories = $categlib->getCategories(NULL, true, false);
+	$categories = $categlib->get_all_categories();
 	$smarty->assign('categories', $categories);
 }
 if (isset($_REQUEST["maxRecords"])) {
@@ -102,13 +101,13 @@ if (isset($_REQUEST['search']) && $searchtext) {
 			
 			$beforeSnippet = substr($r["data"], $snippetStart, $leftpartLength) . $lefthash . $foundtext . $righthash . substr($r["data"], $rightpartStart, $rightpartLength);
 			$beforeSnippet = htmlentities($beforeSnippet);
-			$beforeSnippet = str_replace($lefthash, '<strong>', $beforeSnippet);
-			$beforeSnippet = str_replace($righthash, '</strong>', $beforeSnippet);
+			$beforeSnippet = str_replace($lefthash,'<strong>',$beforeSnippet);
+			$beforeSnippet = str_replace($righthash,'</strong>',$beforeSnippet);
 			
 			$afterSnippet = substr($r["data"], $snippetStart, $leftpartLength) . $lefthash . $replacetext . $righthash . substr($r["data"], $rightpartStart, $rightpartLength);
 			$afterSnippet = htmlentities($afterSnippet);
-			$afterSnippet = str_replace($lefthash, '<strong>', $afterSnippet);
-			$afterSnippet = str_replace($righthash, '</strong>', $afterSnippet);
+			$afterSnippet = str_replace($lefthash,'<strong>',$afterSnippet);
+			$afterSnippet = str_replace($righthash,'</strong>',$afterSnippet);
 			
 			$r["beforeSnippet"][] = $beforeSnippet;
 			$r["afterSnippet"][] = $afterSnippet;

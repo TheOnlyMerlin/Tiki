@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -35,16 +35,11 @@ if (!empty($_REQUEST['reply']) || !empty($_REQUEST['replyall'])) {
 	$_REQUEST['subject'] = tra("Re:") . preg_replace('/^(' . tra('Re:') . ')+/', '', $_REQUEST['subject']);
 	$smarty->assign('reply', 'y');
 }
-foreach (array(
+foreach(array(
 	'to',
 	'cc',
 	'bcc'
-			  ) as $dest) {
-	if (is_array($_REQUEST[$dest])) {
-		$sep = strstr(implode('', $_REQUEST[$dest]), ',') === false?', ': '; ';
-		$_REQUEST[$dest] = implode($sep, $_REQUEST[$dest]);
-	}
-}
+) as $dest) if (is_array($_REQUEST[$dest])) $_REQUEST[$dest] = implode(', ', array_filter($_REQUEST[$dest], 'ctype_alnum'));
 $smarty->assign('to', $_REQUEST['to']);
 $smarty->assign('cc', $_REQUEST['cc']);
 $smarty->assign('bcc', $_REQUEST['bcc']);
@@ -77,7 +72,7 @@ if (isset($_REQUEST['send'])) {
 	}
 	// Remove invalid users from the to, cc and bcc fields
 	$users = array();
-	foreach ($arr_to as $a_user) {
+	foreach($arr_to as $a_user) {
 		if (!empty($a_user)) {
 			$a_user = str_replace('\\;', ';', $a_user);
 			if ($userlib->user_exists($a_user)) {
@@ -87,17 +82,17 @@ if (isset($_REQUEST['send'])) {
 					if (($messulib->count_messages($a_user) < $prefs['messu_mailbox_size']) || ($prefs['messu_mailbox_size'] == 0)) {
 						$users[] = $a_user;
 					} else {
-						$message.= sprintf(tra("User %s can not receive messages, mailbox is full"), htmlspecialchars($a_user)) . "<br />";
+						$message.= sprintf(tra("User %s can not receive messages, mailbox is full") ,htmlspecialchars($a_user)) . "<br />";
 					}
 				} else {
-					$message.= sprintf(tra("User %s can not receive messages"), htmlspecialchars($a_user)) . "<br />";
+					$message.= sprintf(tra("User %s can not receive messages") , htmlspecialchars($a_user)) . "<br />";
 				}
 			} else {
-				$message.= sprintf(tra("Invalid user: %s"), htmlspecialchars($a_user)) . "<br />";
+				$message.= sprintf(tra("Invalid user: %s") , htmlspecialchars($a_user)) . "<br />";
 			}
 		}
 	}
-	foreach ($arr_cc as $a_user) {
+	foreach($arr_cc as $a_user) {
 		if (!empty($a_user)) {
 			$a_user = str_replace('\\;', ';', $a_user);
 			if ($userlib->user_exists($a_user)) {
@@ -107,17 +102,17 @@ if (isset($_REQUEST['send'])) {
 					if (($messulib->count_messages($a_user) < $prefs['messu_mailbox_size']) || ($prefs['messu_mailbox_size'] == 0)) {
 						$users[] = $a_user;
 					} else {
-						$message.= sprintf(tra("User %s can not receive messages, mailbox is full"), htmlspecialchars($a_user)) . "<br />";
+						$message.= sprintf(tra("User %s can not receive messages, mailbox is full") , htmlspecialchars($a_user)) . "<br />";
 					}
 				} else {
-					$message.= sprintf(tra("User %s can not receive messages"), htmlspecialchars($a_user)) . "<br />";
+					$message.= sprintf(tra("User %s can not receive messages") , htmlspecialchars($a_user)) . "<br />";
 				}
 			} else {
-				$message.= sprintf(tra("Invalid user: %s"), htmlspecialchars($a_user)) . "<br />";
+				$message.= sprintf(tra("Invalid user: %s") , htmlspecialchars($a_user)) . "<br />";
 			}
 		}
 	}
-	foreach ($arr_bcc as $a_user) {
+	foreach($arr_bcc as $a_user) {
 		if (!empty($a_user)) {
 			$a_user = str_replace('\\;', ';', $a_user);
 			if ($userlib->user_exists($a_user)) {
@@ -127,13 +122,13 @@ if (isset($_REQUEST['send'])) {
 					if (($messulib->count_messages($a_user) < $prefs['messu_mailbox_size']) || ($prefs['messu_mailbox_size'] == 0)) {
 						$users[] = $a_user;
 					} else {
-						$message.= sprintf(tra("User %s can not receive messages, mailbox is full"), htmlspecialchars($a_user)) . "<br />";
+						$message.= sprintf(tra("User %s can not receive messages, mailbox is full") , htmlspecialchars($a_user)) . "<br />";
 					}
 				} else {
-					$message.= sprintf(tra("User %s can not receive messages"), htmlspecialchars($a_user)) . "<br />";
+					$message.= sprintf(tra("User %s can not receive messages") , htmlspecialchars($a_user)) . "<br />";
 				}
 			} else {
-				$message.= sprintf(tra("Invalid user: %s"), htmlspecialchars($a_user)) . "<br />";
+				$message.= sprintf(tra("Invalid user: %s") , htmlspecialchars($a_user)) . "<br />";
 			}
 		}
 	}
@@ -151,18 +146,9 @@ if (isset($_REQUEST['send'])) {
 		die;
 	}
 	// Insert the message in the inboxes of each user
-	foreach ($users as $a_user) {
-		$result = $messulib->post_message(
-						$a_user,
-						$user,
-						$_REQUEST['to'],
-						$_REQUEST['cc'],
-						$_REQUEST['subject'],
-						$_REQUEST['body'],
-						$_REQUEST['priority'],
-						$_REQUEST['replyto_hash'],
-						isset($_REQUEST['replytome']) ? 'y' : '', isset($_REQUEST['bccme']) ? 'y' : ''
-		);
+	foreach($users as $a_user) {
+		$result = $messulib->post_message($a_user, $user, $_REQUEST['to'], $_REQUEST['cc'], $_REQUEST['subject'], $_REQUEST['body'], $_REQUEST['priority'], $_REQUEST['replyto_hash'],
+								isset($_REQUEST['replytome']) ? 'y' : '', isset($_REQUEST['bccme']) ? 'y' : '');
 		if ($result) {
 			if ($prefs['feature_score'] == 'y') {
 				$tikilib->score_event($user, 'message_send');

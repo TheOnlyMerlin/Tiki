@@ -1,9 +1,11 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
+
+require_once 'lib/core/DeclFilter/Rule.php';
 
 abstract class DeclFilter_FilterRule implements DeclFilter_Rule
 {
@@ -15,7 +17,7 @@ abstract class DeclFilter_FilterRule implements DeclFilter_Rule
 	{
 		$filter = $this->getFilter( $key );
 		
-		if ( $this->composite ) {
+		if( $this->composite ) {
 			$this->applyRecursive( $data[$key], $filter );
 		} else {
 			$data[$key] = $filter->filter( $data[$key] );
@@ -29,7 +31,7 @@ abstract class DeclFilter_FilterRule implements DeclFilter_Rule
 
 	private function applyRecursive( &$data, $filter )
 	{
-		if ( is_array( $data ) ) {
+		if( is_array( $data ) ) {
 			foreach( $data as &$value ) {
 				$this->applyRecursive( $value, $filter );
 			}

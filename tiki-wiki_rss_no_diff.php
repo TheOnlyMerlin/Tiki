@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -19,8 +19,8 @@ if ($prefs['feed_wiki'] != 'y') {
 }
 
 $res=$access->authorize_rss(array('tiki_p_view', 'tiki_p_wiki_view_ref'));
-if ($res) {
-   if ($res['header'] == 'y') {
+if($res) {
+   if($res['header'] == 'y') {
       header('WWW-Authenticate: Basic realm="'.$tikidomain.'"');
       header('HTTP/1.0 401 Unauthorized');
    }

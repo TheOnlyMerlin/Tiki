@@ -1,9 +1,11 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
+
+require_once 'lib/core/Perms/ResolverFactory.php';
 
 /**
  * The global ResolverFactory is used as the fallback factory. It provides
@@ -27,13 +29,14 @@ class Perms_ResolverFactory_GlobalFactory implements Perms_ResolverFactory
 			$group = $row['groupName'];
 			$perm = $this->sanitize( $row['permName'] );
 
-			if ( ! isset( $perms[$group] ) ) {
+			if( ! isset( $perms[$group] ) ) {
 				$perms[$group] = array();
 			}
 
 			$perms[$group][] = $perm;
 		}
 
+		require_once 'lib/core/Perms/Resolver/Static.php';
 		return new Perms_Resolver_Static( $perms );
 	}
 
@@ -42,7 +45,7 @@ class Perms_ResolverFactory_GlobalFactory implements Perms_ResolverFactory
 	}
 
 	private function sanitize( $name ) {
-		if ( strpos( $name, 'tiki_p_' ) === 0 ) {
+		if( strpos( $name, 'tiki_p_' ) === 0 ) {
 			return substr( $name, strlen( 'tiki_p_' ) );
 		} else {
 			return $name;

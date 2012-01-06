@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,6 +13,7 @@ $inputConfiguration = array(
 		'passAgain' => 'text', 
 	) )
 );
+
 require_once ('tiki-setup.php');
 require_once ('lib/registration/registrationlib.php');
 if (is_a($registrationlib->merged_prefs, "RegistrationError")) register_error($registrationlib->merged_prefs->msg);
@@ -54,14 +55,14 @@ if (isset($_REQUEST['register'])) {
 	check_ticket('register');
 	$cookie_name = $prefs['session_cookie_name'];
 
-	if ( ini_get('session.use_cookie') && ! isset( $_COOKIE[$cookie_name] ) )
+	if( ini_get('session.use_cookie') && ! isset( $_COOKIE[$cookie_name] ) )
 	    register_error(tra("You have to enable cookies to be able to login to this site"));
 
 	$smarty->assign('errortype', 'no_redirect_login');
 
 	$result=$registrationlib->register_new_user($_REQUEST);
-	if (is_a($result, "RegistrationError")) {
-		if ($result->field == 'email') // i'm not sure why email is a special case..
+	if (is_a($result,"RegistrationError")) {
+		if ($result->field == 'email' && $result->field == 'email_not_valid') // i'm not sure why email is a special case..
 			$email_valid='n';
 		else
 			register_error($result->msg);
@@ -74,29 +75,22 @@ if (isset($_REQUEST['register'])) {
 	}
 
 }
-$outputtowiki='';
-$outputwiki='';
-if ($prefs['user_register_prettytracker_output'] == 'y') {
-	$outputtowiki=$prefs["user_register_prettytracker_outputtowiki"];	
-	$outputwiki=$prefs["user_register_prettytracker_outputwiki"];
-}
-
 
 if ($registrationlib->merged_prefs['userTracker'] == 'y') {
 	$re = $userlib->get_group_info(isset($_REQUEST['chosenGroup']) ? $_REQUEST['chosenGroup'] : 'Registered');
 	if (!empty($re['usersTrackerId']) && !empty($re['registrationUsersFieldIds'])) {
 		include_once ('lib/wiki-plugins/wikiplugin_tracker.php');
-		if(isset($_REQUEST['name'])) $user = $_REQUEST['name']; // so that one can set user preferences at registration time
+		$user = $_REQUEST['name']; // so that one can set user preferences at registration time
 		if ($registrationlib->merged_prefs["user_register_prettytracker"] == 'y' && !empty($registrationlib->merged_prefs["user_register_prettytracker_tpl"])) {
 			if (substr($registrationlib->merged_prefs["user_register_prettytracker_tpl"], -4) == ".tpl") {
-				$userTrackerData = wikiplugin_tracker('', array('trackerId' => $re['usersTrackerId'], 'fields' => $re['registrationUsersFieldIds'], 'showdesc' => 'y', 'showmandatory' => 'y', 'embedded' => 'n', 'action' => tra('Register'), 'registration' => 'y', 'tpl' => $re["user_register_prettytracker_tpl"], 'userField' => $re['usersFieldId'], 'outputwiki' => $outputwiki, 'outputtowiki' => $outputtowiki));
+				$userTrackerData = wikiplugin_tracker('', array('trackerId' => $re['usersTrackerId'], 'fields' => $re['registrationUsersFieldIds'], 'showdesc' => 'y', 'showmandatory' => 'y', 'embedded' => 'n', 'action' => tra('Register'), 'registration' => 'y', 'tpl' => $registrationlib->merged_prefs["user_register_prettytracker_tpl"]));
 			} else {
-				$userTrackerData = wikiplugin_tracker('', array('trackerId' => $re['usersTrackerId'], 'fields' => $re['registrationUsersFieldIds'], 'showdesc' => 'y', 'showmandatory' => 'y', 'embedded' => 'n', 'action' => tra('Register'), 'registration' => 'y', 'wiki' => $re["user_register_prettytracker_tpl"], 'userField' => $re['usersFieldId'],'outputwiki' => $outputwiki, 'outputtowiki' => $outputtowiki));
+				$userTrackerData = wikiplugin_tracker('', array('trackerId' => $re['usersTrackerId'], 'fields' => $re['registrationUsersFieldIds'], 'showdesc' => 'y', 'showmandatory' => 'y', 'embedded' => 'n', 'action' => tra('Register'), 'registration' => 'y', 'wiki' => $registrationlib->merged_prefs["user_register_prettytracker_tpl"]));
 			}	
 		} else {
-			$userTrackerData = wikiplugin_tracker('', array('trackerId' => $re['usersTrackerId'], 'fields' => $re['registrationUsersFieldIds'], 'showdesc' => 'y', 'showmandatory' => 'y', 'embedded' => 'n', 'action' => tra('Register'), 'registration' => 'y', 'userField' => $re['usersFieldId']));
+			$userTrackerData = wikiplugin_tracker('', array('trackerId' => $re['usersTrackerId'], 'fields' => $re['registrationUsersFieldIds'], 'showdesc' => 'y', 'showmandatory' => 'y', 'embedded' => 'n', 'action' => tra('Register'), 'registration' => 'y'));
 		}
-		$tr = TikiLib::lib('trk')->get_tracker($re['usersTrackerId']);
+		$tr = $tikilib->get_tracker($re['usersTrackerId']);
 		if (!empty($tr['description'])) {
 			$smarty->assign('userTrackerHasDescription', true);
 		}
@@ -123,14 +117,50 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 // xajax
 
 
-//if ($prefs['feature_ajax'] == 'y') {	//AJAX_TODO
-//	$ajaxlib->registerFunction('chkRegName');
-//	$ajaxlib->registerFunction('chkRegEmail');
-//	$ajaxlib->registerTemplate('tiki-register.tpl');
-//}
+if ($prefs['ajax_xajax'] == 'y') {
+	global $ajaxlib;
+	include_once ('lib/ajax/ajaxlib.php');
+//	include_once ('tiki-regsiter_ajax.php');
+	$ajaxlib->registerFunction('chkRegName');
+	$ajaxlib->registerFunction('chkRegEmail');
+	$ajaxlib->registerTemplate('tiki-register.tpl');
+	$ajaxlib->processRequests();
+}
 
-function register_error($msg)
-{
+
+function chkRegName($name) {
+	global $smarty, $ajaxlib, $userlib;
+	$pre_no = " <img src='pics/icons/exclamation.png' style='vertical-align: middle;' alt='Error' /> ";
+	$pre_yes = " <img src='pics/icons/accept.png' style='vertical-align:middle' alt='Correct' /> ";
+	$ajaxlib->registerTemplate('tiki-register.tpl');
+	$objResponse = new xajaxResponse();
+	if ( empty($name) ) {
+		$objResponse->assign('ajax_msg_name', "innerHTML", $pre_no.tra("Missing User Name"));
+	} elseif ( $userlib->user_exists($name) ) {
+		$objResponse->assign('ajax_msg_name', "innerHTML", $pre_no.tra("User Already Exists"));
+	} else {
+		$objResponse->assign('ajax_msg_name', "innerHTML", $pre_yes.tra("Valid User Name"));
+	}
+	return $objResponse;
+}
+
+function chkRegEmail($mail) {
+	global $smarty, $ajaxlib;
+	$pre_no = " <img src='pics/icons/exclamation.png' style='vertical-align: middle;' alt='Error' /> ";
+	$pre_yes = " <img src='pics/icons/accept.png' style='vertical-align:middle' alt='Correct' /> ";
+	$ajaxlib->registerTemplate('tiki-register.tpl');
+	$objResponse = new xajaxResponse();
+	if (empty($mail)) {
+		$objResponse->assign("ajax_msg_mail", "innerHTML", $pre_no.tra("Missing Email"));
+	} elseif (!preg_match('/^[_a-z0-9\.\-]+@[_a-z0-9\.\-]+\.[a-z]{2,4}$/i', $mail)) {
+		$objResponse->assign("ajax_msg_mail", "innerHTML", $pre_no.tra('This is not a valid mail adress'));
+	} else {
+		$objResponse->assign("ajax_msg_mail", "innerHTML", $pre_yes.tra("Valid Email"));
+	}
+	return $objResponse;
+}
+
+function register_error($msg) {
 	global $smarty;
 	$smarty->assign('msg', $msg);
 	$smarty->assign('errortype', 0);

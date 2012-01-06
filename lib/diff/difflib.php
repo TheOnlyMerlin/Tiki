@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -157,4 +157,17 @@ function diffChar($orig, $final, $words=0, $function='character') {
       $new = "Text_Diff_Renderer_$function";
 	$renderer = new $new(count($line1));
 	return $renderer->render($z);
+}
+
+// Tiki's current PHP requirement is 4.1, but is_a() requires PHP 4.2+,
+// so we define it here if function doesn't exist
+if (!function_exists('is_a')) {
+	function is_a($object, $class_name) {
+		$class = get_class($object);
+		if ($class == $class_name) {
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+	}
 }

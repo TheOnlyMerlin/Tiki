@@ -26,7 +26,7 @@
 					{if $useImage eq 'y'}
 						{if $hasImage eq 'y'}
 							{if $imageIsChanged eq 'y'}
-								<img alt="{tr}Article image{/tr}" src="article_image.php?image_type=preview&amp;id={$previewId}" {if $image_x > 0}width="{$image_x}"{/if}{if $image_y > 0}height="{$image_y}"{/if} />
+								<img alt="{tr}Article image{/tr}" src="article_image.php?image_type=preview&amp;id={$previewId}" {if $image_x > 0}width="{$image_x}"{/if}{if $image_y > 0 }height="{$image_y}"{/if} />
 							{else}
 								{if $subId}
 									<img alt="{tr}Article image{/tr}" src="article_image.php?image_type=submission&amp;id={$subId}" />
@@ -44,6 +44,10 @@
 				</td>
 			</tr>
 		</table>
+	</div>
+
+	<div style="padding:5px;" class="articletrailer">
+		({$size} {tr}bytes{/tr})
 	</div>
 
 	<div class="articlebody">

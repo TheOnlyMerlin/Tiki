@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,11 +8,6 @@
 interface ShippingProvider
 {
 	function getRates( array $from, array $to, array $packages );
-}
-
-abstract class CustomShippingProvider implements ShippingProvider
-{
-	abstract function getName();
 }
 
 class ShippingLib
@@ -77,27 +72,12 @@ class ShippingLib
 
 		return $out;
 	}
-
-	static function getCustomShippingProvider($name) {
-
-		$file = dirname(__FILE__) . '/custom/' . $name . '.php';
-		$className = 'CustomShippingProvider_' . ucfirst($name);
-		if (is_readable($file)) {
-			require_once $file;
-			if (class_exists($className) && method_exists($className, 'getName')) {
-				$provider = new $className;
-				return $provider;
-			}
-		}
-		TikiLib::lib('errorreport')->report(tr('Problem reading custom shipping provider "%0"', $name));
-	}
-
 }
 
 global $shippinglib, $prefs;
 $shippinglib = new ShippingLib;
 
-if( !empty($prefs['shipping_fedex_enable']) && $prefs['shipping_fedex_enable'] === 'y' ) {
+if( $prefs['shipping_fedex_enable'] == 'y' ) {
 	require_once 'lib/shipping/provider_fedex.php';
 	$shippinglib->addProvider( new ShippingProvider_FedEx( array(
 		'key' => $prefs['shipping_fedex_key'],
@@ -106,7 +86,7 @@ if( !empty($prefs['shipping_fedex_enable']) && $prefs['shipping_fedex_enable'] =
 	) ) );
 }
 
-if( !empty($prefs['shipping_ups_enable']) && $prefs['shipping_ups_enable'] === 'y' ) {
+if( $prefs['shipping_ups_enable'] == 'y' ) {
 	require_once 'lib/shipping/provider_ups.php';
 	$shippinglib->addProvider( new ShippingProvider_Ups( array(
 		'username' => $prefs['shipping_ups_username'],
@@ -115,6 +95,3 @@ if( !empty($prefs['shipping_ups_enable']) && $prefs['shipping_ups_enable'] === '
 	) ) );
 }
 
-if ( !empty($prefs['shipping_custom_provider']) ) {
-	$shippinglib->addProvider( ShippingLib::getCustomShippingProvider( $prefs['shipping_custom_provider'] ));
-}

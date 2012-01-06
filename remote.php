@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -63,7 +63,7 @@ function validate($params) {
 	}
 	
 	list($isvalid, $dummy, $error) = $userlib->validate_user($login,$pass,'','');
-	if (!$isvalid) {
+	if(!$isvalid) {
 		$msg = tra('Invalid username or password');
 		if ($prefs['intertiki_errfile']) logit($prefs['intertiki_errfile'],$msg,$login,INTERTIKI_BADUSER,$prefs['known_hosts'][$key]['name']);
 		$logslib->add_log('intertiki',$msg.' from '.$prefs['known_hosts'][$key]['name'],$login);

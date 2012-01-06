@@ -8,9 +8,9 @@
 
 {if !empty($mail_pass)}
 {tr}Your authentication credentials are:{/tr}
-	{tr}Username:{/tr} {$mail_user}
+	{tr}Login:{/tr} {$mail_user}
 	{tr}Password:{/tr} {$mail_pass}
 {/if}
 
-{tr}Welcome to the site!{/tr}
+{tr}Welcome on the site!{/tr}
 

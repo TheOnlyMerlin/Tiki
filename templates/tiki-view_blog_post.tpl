@@ -9,13 +9,10 @@
 	{include file='blog_post_related_content.tpl'}
 </div>
 
-{if $prefs.feature_blogposts_comments == 'y' && $blog_data.allow_comments == 'y'
-		&& ($tiki_p_read_comments == 'y'
+{if $prefs.feature_blogposts_comments == 'y'
+		&& ($blog_data.allow_comments == 'y' or $blog_data.allow_comments == 'c')
+		&& (($tiki_p_read_comments == 'y' && $comments_cant != 0)
 			|| $tiki_p_post_comments == 'y'
 			|| $tiki_p_edit_comments == 'y')}
-	<div id="comment-container" data-target="{service controller=comment action=list type="blog post" objectId=$postId}"></div>
-	{jq}
-		var id = '#comment-container';
-		$(id).comment_load($(id).data('target'));
-	{/jq}
+	{include file='comments.tpl' show_comzone='y'}
 {/if}
