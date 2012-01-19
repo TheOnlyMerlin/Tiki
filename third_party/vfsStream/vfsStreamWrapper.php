@@ -110,17 +110,19 @@ class vfsStreamWrapper
     /**
      * sets the root content
      *
-     * @param  vfsStreamContent  $root
+     * @param   vfsStreamContainer  $root
+     * @return  vfsStreamContainer
      */
-    public static function setRoot(vfsStreamContent $root)
+    public static function setRoot(vfsStreamContainer $root)
     {
         self::$root = $root;
+        return self::$root;
     }
 
     /**
      * returns the root content
      *
-     * @return  vfsStreamContent
+     * @return  vfsStreamContainer
      */
     public static function getRoot()
     {
@@ -500,20 +502,36 @@ class vfsStreamWrapper
         if (null === $content || $content->isWritable(vfsStream::getCurrentUser(), vfsStream::getCurrentGroup()) === false) {
             return false;
         }
+
+        if ($content->getType() !== vfsStreamContent::TYPE_FILE) {
+            trigger_error('unlink(' . $path . '): Operation not permitted', E_USER_WARNING);
+            return false;
+        }
         
-        if (self::$root->getName() === $realPath) {
+        return $this->doUnlink($realPath);
+    }
+
+    /**
+     * removes a path
+     *
+     * @param   string  $path
+     * @return  bool
+     */
+    protected function doUnlink($path)
+    {
+        if (self::$root->getName() === $path) {
             // delete root? very brave. :)
             self::$root = null;
             clearstatcache();
             return true;
         }
-        
-        $names   = $this->splitPath($realPath);
+
+        $names   = $this->splitPath($path);
         $content = $this->getContent($names['dirname']);
         if ($content->isWritable(vfsStream::getCurrentUser(), vfsStream::getCurrentGroup()) === false) {
             return false;
         }
-        
+
         clearstatcache();
         return $content->removeChild($names['basename']);
     }
@@ -554,7 +572,7 @@ class vfsStreamWrapper
 
         $dstParentContent->addChild($dstContent);
         // Removing the source
-        return $this->unlink($path_from);
+        return $this->doUnlink($srcRealPath);
     }
 
     /**
@@ -575,6 +593,11 @@ class vfsStreamWrapper
         }
         
         $path = $this->resolvePath(vfsStream::path($path));
+        if (null !== $this->getContent($path)) {
+            trigger_error('mkdir(): Path vfs://' . $path . ' exists', E_USER_WARNING);
+            return false;
+        }
+
         if (null === self::$root) {
             self::$root = vfsStream::newDirectory($path, $permissions);
             return true;
