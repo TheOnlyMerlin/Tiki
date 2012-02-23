@@ -2,6 +2,11 @@
 JQuery/Tiki readme
 -------------------------
 
+23 feb 2012
+
+New:
+	jquery.ui.nestedSortable.js v1.3.4 (add-on to jquery-ui.sortable)
+
 6 feb 2012
 
 Update:
