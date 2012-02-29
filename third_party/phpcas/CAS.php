@@ -61,7 +61,7 @@ if (version_compare(PHP_VERSION, '5', '>=') && !(function_exists('domxml_new_doc
 /**
  * phpCAS version. accessible for the user by phpCAS::getVersion().
  */
-define('PHPCAS_VERSION', '${phpcas.version}');
+define('PHPCAS_VERSION', '1.1.3');
 
 // ------------------------------------------------------------------------
 //  CAS VERSIONS
