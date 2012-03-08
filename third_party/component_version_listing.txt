@@ -1,3 +1,5 @@
+# More info on https://dev.tiki.org/External+Libraries
+
 Package          | @version     | uploaded       | @revision
 -----------------+--------------+----------------+-------------
 adodb            | 5.12         | 09/08/2011     | 35914
@@ -14,8 +16,8 @@ mobileESP        |              | 7 June 2011    | 34807
 pclzip           | 2.8          | 11/08/2009     | 20759
 phpcas           | 1.1.1        | 26/05/2010     | 27326
 phplayers        | 1.5.2.1      | 24/09/2010     | 29564
-phpseclib	 |		| 06/03/2012	 | 40049
-rangy		 | 1.2.2	| 06/03/2012	 | 40052
+phpseclib	     |              | 06/03/2012  	 | 40049
+rangy	           | 1.2.2        | 06/03/2012	    | 40052
 simile_timeline  |              | 16/09/2011     | 37297
 slideshow        |              | 22/01/2010     | 24598
 smarty           | 2.6.26       | 03/03/2011     | 33205
