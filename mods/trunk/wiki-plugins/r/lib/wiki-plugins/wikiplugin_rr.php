@@ -1,13 +1,13 @@
 <?php
 // Parses R code (r-project.org) and shows the output in a wiki page.
 // Corresponding author: Xavier de Pedro. <xavier.depedro (a) ub.edu> 
-// Contributors: Rodrigo Sampaio, Lukáš Mašek, Louis-Philippe Huberdau, Sylvie Greverend
+// Contributors: Rodrigo Sampaio, Lukáš Mašek, Louis-Philippe Huberdau, Sylvie Greverend, Jean-Marc Libs
 // Usage:
 // {R()}R code{R}. See documentation: http://doc.tiki.org/PluginR 
 //	
 // $Id$
 /* 
-From the R Plugin for Mediawiki
+From the R Extension for Mediawiki
 (C) 2006- Sigbert Klinke (sigbert@wiwi.hu-berlin.de), Markus Cozowicz, Michael Cassin
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -620,6 +620,7 @@ function checkCommands ($input) {
         	'png', 'jpeg', 'pdf',
         	'get', 'rgl.init', # Suggested by Carlos J. Gil Bellosta , and Miguel Angel Rodriguez Muinos from list r-help-es
         	'call', 'eval',     # added by suggestion of M. Cassin 
+        	'paste',     # added by suggestion of Philippe Grosjean from Numerical Ecology of Aquatic Systems, Mons University, Belgium 
         	'ggsave' );     # from ggplot: http://rgm2.lab.nig.ac.jp/RGM2/R_man-2.9.0/library/ggplot2/man/ggsave-ao.html
 	# 'pdf',
 	$found = array();
