@@ -452,7 +452,7 @@ echo $wrap;
 					$input_array = explode( "\n", $input);
 					reset($input_array);
 					while( list($key,$line) = each($input_array) ) {
-						if ( preg_match('/^# newgraph$/', trim($line)) ) {
+						if ( preg_match('/^#\s*newgraph$/', trim($line)) ) {
 							$image_number++;
 							$input_array[$key] = 'png(filename = "' . $rgo . "_$image_number.png" . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' ;
 						}
@@ -487,7 +487,7 @@ echo $wrap;
 					$input_array = explode( "\n", $input);
 					reset($input_array);
 					while( list($key,$line) = each($input_array) ) {
-						if ( preg_match('/^# newgraph$/', trim($line)) ) {
+						if ( preg_match('/^#\s*newgraph$/', trim($line)) ) {
 							$image_number++;
 							$input_array[$key] = 'png(filename = "' . $rgo . "_$image_number.png" . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' ;
 						}
