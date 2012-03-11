@@ -277,7 +277,7 @@ function wikiplugin_rr($data, $params) {
 		defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache' .$tikidomainslash);
 	}
 
-	defined('graph_file_name')  || define('graph_file_name', $sha1 . '.png');
+#	defined('graph_file_name')  || define('graph_file_name', $sha1 . '.png');
 
 	if ( isset($params["attId"]) && ($type == "text/csv" || $type == "text/comma-separated-values")) {
 		$path = $_SERVER["SCRIPT_NAME"];
@@ -446,7 +446,18 @@ echo $wrap;
 					$content .= $input . "\n";
 				} else { # else of choice between svg, pdf and png
 					// Produce the standard png file
-					$content .= 'png(filename = "' . $rgo . '.png' . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
+					$image_number = 1;
+					$content .= 'png(filename = "' . $rgo . "_$image_number.png" . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
+					// Parse the user input for more graphs
+					$input_array = explode( "\n", $input);
+					reset($input_array);
+					while( list($key,$line) = each($input_array) ) {
+						if ( preg_match('/^# newgraph$/', trim($line)) ) {
+							$image_number++;
+							$input_array[$key] = 'png(filename = "' . $rgo . "_$image_number.png" . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' ;
+						}
+					}
+					$input = implode("\n",$input_array);
 					// Add the user input code at the end
 					$content .= $input . "\n";
 				} # enf of choice between svg and png
@@ -470,7 +481,18 @@ echo $wrap;
 					$content .= $input . "\n";
 				} else { # else of choice between svg, pdf and png
 					// Produce the standard png file
-					$content .= 'png(filename = "' . $rgo . '.png' . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
+					$image_number = 1;
+					$content .= 'png(filename = "' . $rgo . "_$image_number.png" . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
+					// Parse the user input for more graphs
+					$input_array = explode( "\n", $input);
+					reset($input_array);
+					while( list($key,$line) = each($input_array) ) {
+						if ( preg_match('/^# newgraph$/', trim($line)) ) {
+							$image_number++;
+							$input_array[$key] = 'png(filename = "' . $rgo . "_$image_number.png" . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' ;
+						}
+					}
+					$input = implode("\n",$input_array);
 					// Add the user input code at the end
 					$content .= $input . "\n";
 				} # enf of choice between svg and png
@@ -493,9 +515,11 @@ echo $wrap;
 		if ($r_exitcode == 0) {
 			// Write the start tag of an html comment to comment out the tag to remove echo from R console. The closing html comment tag is added inside $cont after the "option(echo=FALSE)"
 			fwrite ($fd, $prg . '<pre id="routput' . $r_count . '" name="routput' . $r_count . '" style="'.$pre_style.'"><!-- ' . $cont . '</pre>');
-			if (file_exists($rgo . '.png')) {
-				fwrite ($fd, $prg . '<img src="' . $rgo_rel . '.png' . '" class="fixedSize"' . ' alt="' . $rgo_rel . '.png' . '">');
-		 	}
+			for ( $i=1; $i<=$image_number; $i++) {
+				if (file_exists($rgo . "_$i" . '.png')) {
+					fwrite ($fd, $prg . '<img src="' . $rgo_rel . "_$i" . '.png' . '" class="fixedSize"' . ' alt="' . $rgo_rel . "_$i" . '.png' . '">');
+		 		}
+			}
 			if ( !empty($user) && isset($params["svg"]) && $params["svg"]=="1" || ( isset($params["pdf"]) && $params["pdf"]=="1" ) ){
 				fwrite ($fd, $prg . '</br>');
 		 	}

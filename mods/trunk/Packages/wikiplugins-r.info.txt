@@ -2,10 +2,10 @@ contributor:
 $Author: xavi $
 
 revision: 
-$Revision: 0.71 $
+$Revision: 0.72 $
 
 lastmodif:
-$Date: 2012-01-03 00:29:00 $
+$Date: 2012-03-11 00:34:00 $
 
 files: 
 wiki-plugins/r/lib/wiki-plugins/wikiplugin_r.php lib/wiki-plugins/wikiplugin_r.php
@@ -29,10 +29,10 @@ Description:
 Allows using R syntax for statistics, scientific computing & graphs (see http://www.r-project.org). In wiki syntax, type {R()}{R} or with some params, as reported at the documentation. This same version works for Tiki3 up to Tiki8.
 
 Docurl:
-http://doc.tikiwiki.org/PluginR
+https://doc.tiki.org/PluginR
 
 Devurl:
-http://dev.tikiwiki.org/PluginR
+https://dev.tiki.org/PluginR
 
 Changelog:
 0.1  initial package
@@ -45,3 +45,4 @@ Changelog:
 0.62 Ported to work with Tiki7.x also (thanks jonnyb), and minor issue fixed with servers where R has no X11 support.
 0.70 Added optional generation of SVG and/or PDF files from each plot, in order to allow producing high quality vectorial plots which can be enlarged or edited without loosing quality. Also minor enhancement added for better display of png images when inside tiki slideshows in Tiki 6.5+ and 7.2+.
 0.71 Same value pairs for onefile param as with otehr params. Added language files (they work in Tiki8+).
+0.72 Added the ability to create and display several png's when the R call wants to generate new graphs from any command and the user writes "# newgraph" before the new graph so that pluginR opens up the required new graphic device.
