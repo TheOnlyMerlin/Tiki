@@ -2,6 +2,11 @@
 JQuery/Tiki readme
 -------------------------
 
+26 mar 2012
+
+Update:
+	jquery.mobile 1.0.1 to 1.1.0-rc.1 (left files as originally named and added global var $jqm_version
+
 23 feb 2012
 
 New:
