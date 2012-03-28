@@ -9,6 +9,11 @@ Update:
 	jqury-ui 1.8.15 to 1.8.18 (again, version string left in filenames and added $headerlib->jqueryui_version)
 	jquery.mobile 1.0.1 to 1.1.0-rc.1 (left files as originally named and added $headerlib->jquerymobile_version)
 
+	plugins:
+		jquery-ui-timepicker-addon.js to 0.9.9
+		jquery.ui.selectmenu.js to latest github
+		jquery.json-2.3.js from jquery.json-2.2.js
+
 23 feb 2012
 
 New:
