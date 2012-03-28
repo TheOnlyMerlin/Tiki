@@ -8,6 +8,7 @@ Update:
 	jquery 1.6.4 to 1.7.2 (added $headerlib->jquery_version and kept filenames with version as supplied)
 	jqury-ui 1.8.15 to 1.8.18 (again, version string left in filenames and added $headerlib->jqueryui_version)
 	jquery.mobile 1.0.1 to 1.1.0-rc.1 (left files as originally named and added $headerlib->jquerymobile_version)
+		jquery.mobile 1.1.0-rc.1 to 1.1.0-git (latest version from git as 1.1.0-rc.1 appears not to be compatible with jquery 1.7.2)
 
 	plugins:
 		jquery-ui-timepicker-addon.js to 0.9.9
