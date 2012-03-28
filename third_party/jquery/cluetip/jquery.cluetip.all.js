@@ -1,7 +1,7 @@
 /*!
  * jQuery clueTip plugin v1.2.5
  *
- * Date: Mon Jan 16 23:33:54 2012 EST
+ * Date: Sat Feb 04 22:52:27 2012 EST
  * Requires: jQuery v1.3+
  *
  * Copyright 2011, Karl Swedberg
@@ -203,8 +203,7 @@
           cluetipContents = false,
           isActive = false,
           closeOnDelay = 0,
-          tipAttribute = opts[opts.attribute] ||
-            ( opts.attribute == 'href' ? $link.attr(opts.attribute) : $link.attrProp(opts.attribute) || $link.attr(opts.attribute) ),
+          tipAttribute = opts[opts.attribute] || $link.attrProp(opts.attribute) || $link.attr(opts.attribute),
           ctClass = opts.cluetipClass;
 
       cluezIndex = +opts.cluezIndex;
@@ -216,7 +215,6 @@
       // if hideLocal is set to true, on DOM ready hide the local content that will be displayed in the clueTip
       if (opts.local && opts.localPrefix) {tipAttribute = opts.localPrefix + tipAttribute;}
       if (opts.local && opts.hideLocal && tipAttribute) { $(tipAttribute + ':first').hide(); }
-
       var tOffset = parseInt(opts.topOffset, 10), lOffset = parseInt(opts.leftOffset, 10);
       // vertical measurement variables
       var tipHeight, wHeight,
@@ -747,4 +745,19 @@
 
   $.fn.cluetip.defaults = $.cluetip.defaults;
 
+})(jQuery);
+(function($) {
+  // Back-compat file for clueTip 1.2
+  // This modifies the the $.fn.cluetip object to make the plugin work the way it did before clueTip version 1.2
+  $.extend(true, $.fn.cluetip, {
+    backCompat: true,
+    template: ['<div id="cluetip">',
+      '<div id="cluetip-outer" class="cluetip-outer">',
+        '<h3 id="cluetip-title" class="cluetip-title ui-widget-header ui-cluetip-header"></h3>',
+        '<div id="cluetip-inner" class="cluetip-inner ui-widget-content ui-cluetip-content"></div>',
+      '</div>',
+      '<div id="cluetip-extra"></div>',
+      '<div id="cluetip-arrows" class="cluetip-arrows"></div>',
+    '</div>'].join('')
+  });
 })(jQuery);
