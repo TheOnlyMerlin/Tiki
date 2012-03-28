@@ -12,7 +12,7 @@
     <h2 class="top-header">Overview</h2>
     <div id="overview-main">
         <p>The jQuery UI Slider plugin makes selected elements into sliders. There are various options such as multiple handles, and ranges. The handle can be moved with the mouse or the arrow keys.</p>
-<p>All callbacks receive two arguments: The original browser event and a prepared ui object, view below for a documentation of this object (if you name your second argument 'ui'):
+<p>The start, slide, and stop callbacks receive two arguments: The original browser event and a prepared ui object, view below for a documentation of this object (if you name your second argument 'ui'):
 </p><p>The slider widget will create handle elements with the class 'ui-slider-handle' on initialization. You can specify custom handle elements by creating and appending the elements and adding the 'ui-slider-handle' class before init. It will only create the number of handles needed to match the length of value/values. For example, if you specify 'values: [1, 5, 18]' and create one custom handle, the plugin will create the other two.
 </p>
 <ul>
@@ -852,9 +852,9 @@ $( ".selector" ).slider( "option", "values", [1,5,9] );</code></pre>
 
 </p><!-- 
 Pre-expand include size: 36451 bytes
-Post-expand include size: 55582 bytes
-Template argument size: 27644 bytes
+Post-expand include size: 55605 bytes
+Template argument size: 27667 bytes
 Maximum: 2097152 bytes
 -->
 
-<!-- Saved in parser cache with key jqdocs_docs:pcache:idhash:3776-1!1!0!!en!2 and timestamp 20110801231449 -->
+<!-- Saved in parser cache with key jqdocs_docs:pcache:idhash:3776-1!1!0!!en!2 and timestamp 20120220184652 -->

@@ -100,9 +100,9 @@ var selected = $tabs.tabs('option', 'selected'); // =&gt; 0</pre>
 </p>
 <pre>$('#example').tabs({
     load: function(event, ui) {
-        $('a', ui.panel).click(function() {
+        $(ui.panel).delegate('a', 'click', function(event) {
             $(ui.panel).load(this.href);
-            return false;
+            event.preventDefault();
         });
     }
 });</pre>
@@ -175,7 +175,7 @@ resizeMap() will call Google Maps' checkResize() on the particular map.
         <ul>
 <li>UI Core</li>
 <li>UI Widget</li>
-<li><strong>Optional:</strong> <a href="http://plugins.jquery.com/project/cookie" class="external text" title="http://plugins.jquery.com/project/cookie">jquery.cookie.js</a> for use with <a href="http://jqueryui.com/demos/tabs/#option-cookie" class="external text" title="http://jqueryui.com/demos/tabs/#option-cookie">cookie option</a> (also included in development-bundle&gt;external folder.)</li>
+<li><strong>Optional:</strong> <a href="https://github.com/carhartl/jquery-cookie" class="external text" title="https://github.com/carhartl/jquery-cookie">jquery.cookie.js</a> for use with <a href="http://jqueryui.com/demos/tabs/#option-cookie" class="external text" title="http://jqueryui.com/demos/tabs/#option-cookie">cookie option</a> (also included in development-bundle&gt;external folder.)</li>
 </ul>
     </div>
     <div id="overview-example">
@@ -1316,7 +1316,7 @@ $( ".selector" ).tabs( "option", "tabTemplate", '&lt;div&gt;&lt;a href&#61;"#&#1
     </dl>
   </div>
   <div class="method-description">
-    <p>Remove a tab. The second argument is the zero-based index of the tab to be removed.</p>
+    <p>Remove a tab. The second argument is the zero-based index of the tab to be removed. Instead of an index, the href of the tab may be passed.</p>
   </div>
 </li>
 
@@ -1338,7 +1338,7 @@ $( ".selector" ).tabs( "option", "tabTemplate", '&lt;div&gt;&lt;a href&#61;"#&#1
     </dl>
   </div>
   <div class="method-description">
-    <p>Enable a disabled tab.  To enable more than one tab at once reset the disabled property like: <code>$('#example').tabs("option","disabled",[]);</code>. The second argument is the zero-based index of the tab to be enabled.</p>
+    <p>Enable a disabled tab.  To enable more than one tab at once reset the disabled property like: <code>$('#example').tabs("option","disabled",[]);</code>. The second argument is the zero-based index of the tab to be enabled. Instead of an index, the href of the tab may be passed.</p>
   </div>
 </li>
 
@@ -1360,7 +1360,7 @@ $( ".selector" ).tabs( "option", "tabTemplate", '&lt;div&gt;&lt;a href&#61;"#&#1
     </dl>
   </div>
   <div class="method-description">
-    <p>Disable a tab. The selected tab cannot be disabled. To disable more than one tab at once use: <code>$('#example').tabs("option","disabled", [1, 2, 3]);</code>  The second argument is the zero-based index of the tab to be disabled.</p>
+    <p>Disable a tab. The selected tab cannot be disabled. To disable more than one tab at once use: <code>$('#example').tabs("option","disabled", [1, 2, 3]);</code>  The second argument is the zero-based index of the tab to be disabled. Instead of an index, the href of the tab may be passed.</p>
   </div>
 </li>
 
@@ -1540,10 +1540,10 @@ $( ".selector" ).tabs( "option", "tabTemplate", '&lt;div&gt;&lt;a href&#61;"#&#1
 </div>
 
 </p><!-- 
-Pre-expand include size: 57666 bytes
-Post-expand include size: 97459 bytes
-Template argument size: 57562 bytes
+Pre-expand include size: 57707 bytes
+Post-expand include size: 99225 bytes
+Template argument size: 58465 bytes
 Maximum: 2097152 bytes
 -->
 
-<!-- Saved in parser cache with key jqdocs_docs:pcache:idhash:3777-1!1!0!!en!2 and timestamp 20110801231514 -->
+<!-- Saved in parser cache with key jqdocs_docs:pcache:idhash:3777-1!1!0!!en!2 and timestamp 20120220184658 -->

@@ -6,7 +6,8 @@ JQuery/Tiki readme
 
 Update:
 	jquery 1.6.4 to 1.7.2 (added $headerlib->jquery_version and kept filenames with version as supplied)
-	jquery.mobile 1.0.1 to 1.1.0-rc.1 (left files as originally named and added global var $jquerymobile_version
+	jqury-ui 1.8.15 to 1.8.18 (again, version string left in filenames and added $headerlib->jqueryui_version)
+	jquery.mobile 1.0.1 to 1.1.0-rc.1 (left files as originally named and added $headerlib->jquerymobile_version)
 
 23 feb 2012
 
