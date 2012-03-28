@@ -14,6 +14,7 @@ Update:
 		jquery.ui.selectmenu.js to latest github
 		jquery.json-2.3.js from jquery.json-2.2.js
 		jquery.infinitecarousel3.js 2.0.2 to 3.0.2
+		jquery.colorbox.js 1.3.13 to 1.3.19
 
 23 feb 2012
 
