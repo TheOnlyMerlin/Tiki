@@ -17,6 +17,7 @@ $.widget("ui.selectmenu", {
 	eventPrefix: "selectmenu",
 	options: {
 		transferClasses: true,
+		appendTo: "body",
 		typeAhead: 1000,
 		style: 'dropdown',
 		positionOptions: {
@@ -31,8 +32,7 @@ $.widget("ui.selectmenu", {
 		icons: null,
 		format: null,
 		escapeHtml: false,
-		bgImage: function() {},
-		wrapperElement: "<div />"
+		bgImage: function() {}
 	},
 
 	_create: function() {
@@ -58,7 +58,7 @@ $.widget("ui.selectmenu", {
 			'aria-haspopup': true,
 			'aria-owns': this.ids[ 2 ]
 		});
-		this.newelementWrap = $( o.wrapperElement )
+		this.newelementWrap = $( "<span />" )
 			.append( this.newelement )
 			.insertAfter( this.element );
 		
@@ -202,10 +202,9 @@ $.widget("ui.selectmenu", {
 			'aria-labelledby': this.ids[1],
 			'id': this.ids[2]
 		});
-		this.listWrap = $( o.wrapperElement )
-			.addClass( self.widgetBaseClass + '-menu' )
-			.append( this.list )
-			.appendTo( 'body' );
+		this.listWrap = $( "<div />", {
+			'class': self.widgetBaseClass + '-menu'
+		}).append( this.list ).appendTo( o.appendTo );
 		
 		// transfer menu click to menu button
 		this.list
@@ -308,7 +307,7 @@ $.widget("ui.selectmenu", {
 					thisLiAttr[ 'class' ] = this.namespace + '-state-disabled';
 				}					
 				var thisAAttr = {
-					html: selectOptionData[i].text,
+					html: selectOptionData[i].text || '&nbsp;',
 					href : '#nogo',
 					tabindex : -1,
 					role : 'option',
@@ -447,9 +446,10 @@ $.widget("ui.selectmenu", {
 		this._selectedOptionLi().addClass(this.widgetBaseClass + '-item-focus');
 
 		// needed when selectmenu is placed at the very bottom / top of the page
-		window.setTimeout( function() {
+		clearTimeout(this.refreshTimeout);
+		this.refreshTimeout = window.setTimeout(function () {
 			self._refreshPosition();
-		}, 200 );
+		}, 200);
 	},
 
 	destroy: function() {
@@ -612,6 +612,10 @@ $.widget("ui.selectmenu", {
 	select: function(event) {
 		if (this._disabled(event.currentTarget)) { return false; }
 		this._trigger("select", event, this._uiHash());
+	},
+	
+	widget: function() {
+		return this.listWrap.add( this.newelementWrap );
 	},
 
 	_closeOthers: function(event) {
