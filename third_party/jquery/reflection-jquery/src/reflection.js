@@ -1,6 +1,6 @@
 /*!
-	reflection.js for jQuery v1.02
-	(c) 2006-2008 Christophe Beyls <http://www.digitalia.be>
+	reflection.js for jQuery v1.1
+	(c) 2006-2011 Christophe Beyls <http://www.digitalia.be>
 	MIT-style license.
 */
 
@@ -9,7 +9,7 @@
 $.fn.extend({
 	reflect: function(options) {
 		options = $.extend({
-			height: 0.33,
+			height: 1/3,
 			opacity: 0.5
 		}, options);
 
@@ -17,25 +17,18 @@ $.fn.extend({
 			var img = this;
 			if (/^img$/i.test(img.tagName)) {
 				function doReflect() {
-					var reflection, reflectionHeight = Math.floor(img.height * options.height), wrapper, context, gradient;
+					var imageWidth = img.width, imageHeight = img.height, reflection, reflectionHeight, wrapper, context, gradient;
+					reflectionHeight = Math.floor((options.height > 1) ? Math.min(imageHeight, options.height) : imageHeight * options.height);
 
-					if ($.browser.msie) {
-						reflection = $("<img />").attr("src", img.src).css({
-							width: img.width,
-							height: img.height,
-							marginBottom: -img.height + reflectionHeight,
-							filter: "flipv progid:DXImageTransform.Microsoft.Alpha(opacity=" + (options.opacity * 100) + ", style=1, finishOpacity=0, startx=0, starty=0, finishx=0, finishy=" + (options.height * 100) + ")"
-						})[0];
-					} else {
-						reflection = $("<canvas />")[0];
-						if (!reflection.getContext) return;
+					reflection = $("<canvas />")[0];
+					if (reflection.getContext) {
 						context = reflection.getContext("2d");
 						try {
-							$(reflection).attr({width: img.width, height: reflectionHeight});
+							$(reflection).attr({width: imageWidth, height: reflectionHeight});
 							context.save();
-							context.translate(0, img.height-1);
+							context.translate(0, imageHeight-1);
 							context.scale(1, -1);
-							context.drawImage(img, 0, 0, img.width, img.height);
+							context.drawImage(img, 0, 0, imageWidth, imageHeight);
 							context.restore();
 							context.globalCompositeOperation = "destination-out";
 
@@ -43,18 +36,26 @@ $.fn.extend({
 							gradient.addColorStop(0, "rgba(255, 255, 255, " + (1 - options.opacity) + ")");
 							gradient.addColorStop(1, "rgba(255, 255, 255, 1.0)");
 							context.fillStyle = gradient;
-							context.rect(0, 0, img.width, reflectionHeight);
+							context.rect(0, 0, imageWidth, reflectionHeight);
 							context.fill();
 						} catch(e) {
 							return;
 						}
+					} else {
+						if (!$.browser.msie) return;
+						reflection = $("<img />").attr("src", img.src).css({
+							width: imageWidth,
+							height: imageHeight,
+							marginBottom: reflectionHeight - imageHeight,
+							filter: "FlipV progid:DXImageTransform.Microsoft.Alpha(Opacity=" + (options.opacity * 100) + ", FinishOpacity=0, Style=1, StartX=0, StartY=0, FinishX=0, FinishY=" + (reflectionHeight / imageHeight * 100) + ")"
+						})[0];
 					}
 					$(reflection).css({display: "block", border: 0});
 
 					wrapper = $(/^a$/i.test(img.parentNode.tagName) ? "<span />" : "<div />").insertAfter(img).append([img, reflection])[0];
 					wrapper.className = img.className;
 					$.data(img, "reflected", wrapper.style.cssText = img.style.cssText);
-					$(wrapper).css({width: img.width, height: img.height + reflectionHeight, overflow: "hidden"});
+					$(wrapper).css({width: imageWidth, height: imageHeight + reflectionHeight, overflow: "hidden"});
 					img.style.cssText = "display: block; border: 0px";
 					img.className = "reflected";
 				}

@@ -16,6 +16,7 @@ Update:
 		jquery.infinitecarousel3.js 2.0.2 to 3.0.2
 		jquery.colorbox.js 1.3.13 to 1.3.19
 		jquery.cluetip.js 1.0.7 to 1.2.5 (quite major - several fixes required)
+		reflection-jquery 1.02 to 1.1
 
 23 feb 2012
 
