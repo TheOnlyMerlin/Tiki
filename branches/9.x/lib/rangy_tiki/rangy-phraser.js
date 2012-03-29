@@ -1,0 +1,234 @@
+rangy.createModule("Phraser", function(api, module) {
+    api.requireModules( ["WrappedSelection", "WrappedRange"] );
+    
+    function getParts(val, id) {
+    	var words = [];
+    	var chs = [];
+    	var i = 0;
+    	
+    	id = (!id ? val : id);
+    	
+   		if (!api.words[id]) {
+       		api.analyse(val, {
+       			wordHandler: function(word) {
+       				i++;
+       				words.push(word);
+       				return word;
+       			},
+       			charHandler: function(ch) {
+       				if (!chs[i]) chs[i] = '';
+	       				chs[i] += ch;
+	       			
+       				return ch;
+       			}
+       		});
+       		
+       		api.words[id] = words;
+       		api.chs[id] = chs;
+   		} else {
+   			words = api.words[id];
+   			chs = api.chs[id];
+   		}
+   		
+   		return {
+   			words: words,
+   			chs: chs
+   		};
+    }
+    
+    function expandIndexesToCh(htmlParts, indexes, ch) {
+        for(var i = indexes.start; i > 0; i--) {
+        	if (htmlParts.chs[i])
+        		if (htmlParts.chs[i].match(ch)) {
+        			indexes.start = i;
+        			i = -1;
+        		}
+        }
+        
+        for(var i = indexes.end; i < htmlParts.words.length; i++) {
+        	if (htmlParts.chs[i])
+        		if (htmlParts.chs[i].match(ch)) {
+	        		indexes.end = i - 1;
+	        		i = htmlParts.words.length;
+	        	}
+        }
+        
+        return indexes;
+    }
+    
+    function getWrappedHtml(html, indexes) {
+    	var i = 0;
+	    return api.analyse(html, {
+   			wordHandler: function(word) {
+   				if (i >= indexes.start && i <= indexes.end) {
+   					word = '<span class="rangyPhrase new" style="border: none;">' + word + '</span>';
+   				}
+   				
+       			if (i == indexes.start) {
+       				word = '<span class="rangyPhraseStart new" style="border: none;"/>' + word;
+       			}
+       			
+       			//it is possible that word's start and end index are the same'
+       			if (i == indexes.end) {
+       				word = word + '<span class="rangyPhraseEnd new" style="border: none;"/>';	       						
+       			}
+       			
+       			i++;
+       			return word;
+       		},
+       		charHandler: function(ch) {
+       			if (i > indexes.start && i <= indexes.end) {
+   					ch = '<span class="rangyPhrase new" style="border: none;">' + ch + '</span>';
+   				}
+   				return ch;
+       		}
+   		});
+    }
+    
+    function o(rootNode, doc) {
+    	if (rootNode) {
+        	doc = doc || dom.getDocument(rootNode);
+		} else {
+			doc = doc || document;
+            rootNode = doc.documentElement;
+        }
+		return (rootNode = $(rootNode));
+    }
+    
+    var dom = api.dom;
+    api = $.extend(api, {
+    	words: {},
+    	chs: {},
+    	tags: {},
+    	analyse: function(phrase, options) {
+		    options = $.extend({
+		    	wordHandler: 	function(word) { return word; },
+	    		tagHandler: 	function(tag) { return tag; },
+	    		charHandler: 	function(ch) { return ch; }
+		    }, options);
+		    
+		    Phraser = $.extend(Phraser, options);
+		    
+		    return Phraser.parse(phrase);
+	    },
+	    phraseIndexes: function(parentWords, phraseWords, allMatches) {
+	    	var phraseLength = phraseWords.length - 1,
+			phraseConcat = phraseWords.join('|'),
+			parentConcat = parentWords.join('|'),
+			boundaries = parentConcat.split(phraseConcat),
+			indexes = [];
+	
+			for (var i = 0, j = boundaries.length; i < j; i++) {
+				boundaryLength = boundaries[i].split('|').length - 1;
+	
+				indexes.push({
+					start: boundaryLength,
+					end: boundaryLength + phraseLength
+				});
+	
+				i++;
+			}
+			
+			if (allMatches)
+				return indexes;
+			
+			return indexes[0];
+	    },
+	    setPhraseSelection: function(rootNode, phrase, doc) {
+	    	phrase = this.setPhrase(rootNode, phrase, doc);
+	    	
+	    	var range = api.createRange(doc);
+	    	
+			range.setStartBefore(phrase.start[0]);
+			range.setEndAfter(phrase.end[0]);
+			
+			var sel = api.getSelection(window);
+			var ranges = [range];
+			sel.setRanges(ranges);
+			phrase.range = range;
+			return phrase;
+	    },
+	    expandPhrase: function(phrase, ch, rootNode, doc) {
+	    	rootNode = o(rootNode, doc);
+			
+			var parent = rootNode.html();
+       		var parentParts = getParts(parent, rootNode.attr('id'));
+       		var phraseParts = getParts(phrase);
+	    	
+	    	var indexes = this.phraseIndexes(parentParts.words, phraseParts.words);
+	    	indexes = expandIndexesToCh(parentParts, indexes, ch);
+	    	
+	    	var newPhrase = '';
+	    	if (indexes.start > -1 && indexes.end > -1) {
+	    		for(var i = indexes.start; i <= indexes.end + 1; i++) {
+	    			if (parentParts.chs[i] && i != indexes.start) newPhrase += parentParts.chs[i];
+	    			if (parentParts.words[i] && i != indexes.end + 1) newPhrase += parentParts.words[i];
+	    		}
+	    		
+	    		return newPhrase
+			}
+			return phrase;
+	    },
+	    setPhrase: function(rootNode, phrase, doc) {
+			rootNode = o(rootNode, doc);
+			
+			var parent = rootNode.html();
+       		var parentWords = this.sanitizeToWords(parent);
+       		var phraseWords = this.sanitizeToWords(phrase);
+       		
+	        var indexes = this.phraseIndexes(parentWords, phraseWords);
+	        
+	        if (indexes.start > -1 && indexes.end > -1) {
+				rootNode.html(getWrappedHtml(parent, indexes));
+			}
+	        
+	        return {
+	        	selection: 	rootNode.find('.rangyPhrase.new').removeClass('new'),
+	        	start: 		rootNode.find('.rangyPhraseStart.new').removeClass('new'),
+	        	end: 		rootNode.find('.rangyPhraseEnd.new').removeClass('new'),
+	        	phrase: 	phrase,
+	        	indexes: 	indexes,
+	        	parentWords: parentWords,
+	        	phraseWords: phraseWords,
+	        	rootNode:	rootNode
+	        };
+	    },
+	    isUnique: function(rootNode, phrase, doc) {
+	    	rootNode = o(rootNode, doc);
+	    	
+			var parentWords = this.sanitizeToWords(rootNode.html());
+	        var phraseWords = this.sanitizeToWords(phrase);
+       		
+       		var indexes = this.phraseIndexes(parentWords, phraseWords, true);
+	        
+	        if (indexes.length > 1) {
+	        	return false;
+	        } else {
+	        	return true;
+	        }
+	    },
+		hasPhrase: function (parent, phrase) {
+			parent = this.sanitizeToWords(parent);
+			phrase = this.sanitizeToWords(phrase);
+	
+			parent = parent.join('|');
+			phrase = phrase.join('|');
+	
+			return (parent.indexOf(phrase) > -1 ? true : false);
+		},
+		sanitizeToWords: function (html) {
+			var sanitized = html.replace(/<(.|\n)*?>/g, ' ');
+			
+			sanitized = sanitized.replace(/\W/g, ' ');
+			sanitized = sanitized.split(' ');
+			
+			var sanitizedFiltered = [];
+			for(i in sanitized) {
+				if (sanitized[i])
+					sanitizedFiltered.push(sanitized[i]);
+			}
+			
+			return sanitizedFiltered;
+		}
+    });
+});
