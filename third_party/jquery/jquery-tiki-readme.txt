@@ -2,6 +2,11 @@
 JQuery/Tiki readme
 -------------------------
 
+1 April 2012
+
+New:
+	code.photoswipe 3.0.4 - image lib for jquery.mobile
+
 28 mar 2012
 
 Update:
