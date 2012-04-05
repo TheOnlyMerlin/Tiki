@@ -1,12 +1,12 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
+if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__)) !== false) {
   header('location: index.php');
   exit;
 }
@@ -28,9 +28,9 @@ $dbTiki = ADONewConnection($db_tiki);
 if (!@$dbTiki->Connect($host_tiki, $user_tiki, $pass_tiki, $dbs_tiki)) {
 	require_once 'lib/init/smarty.php';
 
-	$smarty->assign('msg', $dbTiki->ErrorMsg());
-	$smarty->assign('where', 'connection');
-	echo $smarty->fetch('database-connection-error.tpl');
+	$smarty->assign( 'msg', $dbTiki->ErrorMsg() );
+	$smarty->assign( 'where', 'connection');
+	echo $smarty->fetch( 'database-connection-error.tpl' );
 	exit;
 }
 
@@ -52,18 +52,17 @@ if (!@$dbTiki->Execute('select login from users_users limit 1')) {
 				"				<li><p>".tra("Did you complete the <a href='tiki-install.php' >Tiki Installer?")."</a></p></li>\n" .
 				"			</ol>\n" .
 				"		</div>\n" .
-				"		<p>".tra("Please see <a href=\"http://doc.tiki.org/\">the documentation</a> for more information.")."</p>\n";
+				"		<p>".tra("Please see <a href=\"http://doc.tikiwiki.org/\">the documentation</a> for more information.")."</p>\n";
 	$dberror = true;
 	include_once('tiki-install.php');
 }
 
-if ( ! function_exists('close_connection') ) {
-	function close_connection()
-	{
+if( ! function_exists( 'close_connection' ) ) {
+	function close_connection() {
 		global $dbTiki;
 		$dbTiki->Close();
 	}
 }
 
 require_once 'lib/core/TikiDb/Adodb.php';
-TikiDb::set(new TikiDb_Adodb($dbTiki));
+TikiDb::set( new TikiDb_Adodb( $dbTiki ) );

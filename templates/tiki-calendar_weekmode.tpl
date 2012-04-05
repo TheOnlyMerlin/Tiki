@@ -3,7 +3,7 @@
   <tr valign="middle" style="height:36px">
     <td id="topLeft" class="calHeading" width="9%"><strong>{$viewstart|tiki_date_format:"%Y"}</strong></td>
 {section name=dn loop=$daysnames}
-	{if in_array($smarty.section.dn.index,$viewdays)}
+	{if in_array($smarty.section.dn.index,$viewdays) }
     <td id="top_{$smarty.section.dn.index}" class="calHeading{if $today eq $viewWeekDays[dn]}On{/if}" width="13%">
 	  <a href="{$myurl}?viewmode=day&amp;todate={$viewWeekDays[dn]}" title="{tr}View this Day{/tr}">{$daysnames[dn]}</a><br />
 {* test display_field_order and use %d/%m or %m/%d on each day 'cell' *}
@@ -12,17 +12,17 @@
 	{else}<strong><a href="{$myurl}?focus={$viewWeekDays[dn]}&amp;viewmode=week" title="{tr}Change Focus{/tr}">{$viewWeekDays[dn]|tiki_date_format:"%m/%d"}</a></strong>
 	{/if}	 
 {* add additional check to NOT show add event icon if no calendar displayed *}	 
-	  {if $tiki_p_add_events eq 'y' and count($listcals) > 0 and $displayedcals|@count > 0}<a href="tiki-calendar_edit_item.php?todate={$viewWeekDays[dn]}{if $displayedcals|@count eq 1}&amp;calendarId={$displayedcals[0]}{/if}">{icon _id='calendar_add' alt="{tr}Add Event{/tr}"}</a>{/if}
+	  {if $tiki_p_add_events eq 'y' and count($listcals) > 0 and $displayedcals|@count > 0 }<a href="tiki-calendar_edit_item.php?todate={$viewWeekDays[dn]}{if $displayedcals|@count eq 1}&amp;calendarId={$displayedcals[0]}{/if}">{icon _id='calendar_add' alt="{tr}Add Event{/tr}"}</a>{/if}
 	</td>
 	{/if}
 {/section}
   </tr>
-{foreach key=k item=h from=$hr_display}
+{foreach key=k item=h from=$hours}
   <tr valign="middle" style="height:24px">
-	<td id="rowLeft_{$h[0]}" class="calHours">{$h[1]}</td>
+	<td id="rowLeft_{$h}" class="calHours">{if ($h < 10)}0{/if}{$h}:00</td>
 	{section name=weekday loop=$weekdays}
-		{if in_array($smarty.section.weekday.index,$viewdays)}
-			<td id="row_{$h[0]}_{$smarty.section.weekday.index}" class="calWeek">&nbsp;</td>
+		{if in_array($smarty.section.weekday.index,$viewdays) }
+			<td id="row_{$h}_{$smarty.section.weekday.index}" class="calWeek">&nbsp;</td>
 		{/if}
 	{/section}
   </tr>
@@ -30,7 +30,7 @@
 </table>
 {foreach key=k item=h from=$hours name=hours}
 	{section name=weekday loop=$weekdays}
-		{if in_array($smarty.section.weekday.index,$viewdays)}
+		{if in_array($smarty.section.weekday.index,$viewdays) }
 		{if $manyEvents[weekday].tooMany eq false}
 			{section name=hr loop=$hrows[weekday][$h]}
 				{assign var=event value=$hrows[weekday][$h][hr]}
@@ -52,7 +52,7 @@
 					href="tiki-calendar_edit_item.php?viewcalitemId={$event.calitemId}"
 				{/if}
 			{/if}
-		    ><img src="img/icons/more_info.gif" alt="{tr}Details{/tr}" /></a>
+		    ><img src="pics/icons/more_info.gif" alt="{tr}Details{/tr}" /></a>
 		  </span>
 	  	  <abbr class="dtstart" title="{if $event.result.allday eq '1'}{tr}All day{/tr}{else}{$event.startTimeStamp|isodate}{/if}" {if $event.status eq '2'}style="text-decoration:line-through"{/if}>{$event.name|escape}</abbr>
 	  </div>
@@ -68,7 +68,7 @@
 		{/if}>
 		<div style="position:absolute;top:50%;left:50%;margin-left:-40px;margin-top:-30px">
 		  <a style="padding:0 3px;" href="{$myurl}?viewmode=day&todate={$viewWeekDays[weekday]}"
-		  ><img src="img/icons/multiple_cal.png" alt="{tr}Details{/tr}" /></a>
+		  ><img src="pics/icons/multiple_cal.png" alt="{tr}Details{/tr}" /></a>
 		</div>
 	  </div>
 		{/if}

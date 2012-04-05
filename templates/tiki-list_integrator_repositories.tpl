@@ -19,12 +19,12 @@
   {cycle values="odd,even" print=false}
   {section name=rep loop=$repositories}
     <tr class="{cycle}">
-      <td class="text">
+      <td>
         <a href="tiki-integrator.php?repID={$repositories[rep].repID|escape}">
           {$repositories[rep].name}
         </a>
       </td>
-      <td class="text">{$repositories[rep].description}</td>
+      <td>{$repositories[rep].description}</td>
     </tr>
   {/section}
 </table>

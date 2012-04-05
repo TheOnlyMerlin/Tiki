@@ -55,16 +55,17 @@ h3.box-title {
 	position: static;
 }
 .moduleflip {
-	display: block;
 	position: static;
 	float: right;
 	margin-top: -16px;
 }
-
+.moduleflip {
+	display: block;
+}
 .box img.flipmodimage {
 	height: 13px;
 	width: 13px;
-	border: none;
+	border: 1px solid transparent;
 	background: #fff;
 }
 #col2 img.flipmodimage {
@@ -75,6 +76,9 @@ h3.box-title {
 	right: 20px;
 }
 
+.box img.flipmodimage {
+	border: none;
+}
 .box-data {
 	padding: 7px 7px 30px 7px;
 }

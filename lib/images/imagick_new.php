@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -10,8 +10,7 @@ require_once('lib/images/abstract.php');
 class Image extends ImageAbstract
 {
 
-	function __construct($image, $isfile = false, $format = 'jpeg')
-	{
+	function __construct($image, $isfile = false, $format = 'jpeg') {
 		if ( $isfile ) {
 			$this->filename = $image;
 			parent::__construct(NULL, false);
@@ -20,8 +19,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-	function _load_data()
-	{
+	function _load_data() {
 		if (!$this->loaded) {
 			if (!empty($this->filename)) {
 				$this->data = new Imagick();
@@ -43,19 +41,17 @@ class Image extends ImageAbstract
 				catch (ImagickException $e) {
 					$this->data = null;
 				}
-			}
+			}	
 		}
 	}
 
-	function _resize($x, $y)
-	{
+	function _resize($x, $y) {
 		if ($this->data) {
 			return $this->data->scaleImage($x, $y);
 		}
 	}
 
-	function resizethumb()
-	{
+	function resizethumb() {
 		if ( $this->thumb !== null ) {
 			$this->data = new Imagick();
 			try {
@@ -66,7 +62,7 @@ class Image extends ImageAbstract
 				$this->loaded = true;
 				$this->data = null;
 			}
-		} else {
+		} else { 
 			$this->_load_data();
 		}
 		if ($this->data) {
@@ -74,8 +70,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-	function set_format($format)
-	{
+	function set_format($format) {
 		$this->_load_data();
 		if ($this->data) {
 			$this->format = $format;
@@ -83,21 +78,18 @@ class Image extends ImageAbstract
 		}
 	}
 
-	function get_format()
-	{
+	function get_format() {
 		return $this->format;
 	}
 
-	function display()
-	{
+	function display() {
 		$this->_load_data();
 		if ($this->data) {
 			return $this->data->getImageBlob();
 		}
 	}
 
-	function rotate($angle)
-	{
+	function rotate($angle) {
 		$this->_load_data();
 		if ($this->data) {
 			$this->data->rotateImage(-$angle);
@@ -107,8 +99,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-	function is_supported($format)
-	{
+	function is_supported($format) {
 		$image = new Imagick();
 		$format = strtoupper(trim($format));
 
@@ -122,15 +113,13 @@ class Image extends ImageAbstract
 		return in_array($format, $image->queryFormats());
 	}
 
-	function get_height()
-	{
+	function get_height() {
 		$this->_load_data();
 		if ($this->data)
 			return $this->data->getImageHeight();
 	}
 
-	function get_width()
-	{
+	function get_width() {
 		$this->_load_data();
 		if ($this->data)
 			return $this->data->getImageWidth();

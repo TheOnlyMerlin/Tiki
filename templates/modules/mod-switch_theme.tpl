@@ -1,7 +1,7 @@
 {* $Id$ *}
 {if empty($group_style)}
 {if !isset($tpl_module_title)}
-	{capture assign=tpl_module_title}{tr}Theme:{/tr} <em>{$style|replace:'.css':''|truncate:15|ucwords}</em>{/capture}
+	{capture assign=tpl_module_title}{tr}Theme{/tr}: <em>{$style|replace:'.css':''|truncate:15|ucwords}</em>{/capture}
 {/if}
 {tikimodule error=$module_params.error title=$tpl_module_title name="switch_theme" flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox notitle=$module_params.notitle}
 	<form method="get" action="tiki-switch_theme.php"{if !empty($tc_theme)} class="disabled"{/if}>
@@ -20,16 +20,6 @@
 				<option value="{$style_options[ix]|escape}"{if $prefs.style_option eq $style_options[ix]} selected="selected"{/if}>{$style_options[ix]|replace:'.css':''|truncate:15|ucwords}</option>
 			{/section}
 		</select>
-		{/if}
-		{if $prefs.themegenerator_feature eq "y"}
-			<select name="theme-themegen" onchange="this.form.submit();"{if !empty($tc_theme)} disabled="disabled"{/if}>
-					<option value="">{tr}None{/tr}</option>
-					{section name=ix loop=$themegen_list}
-						{if !empty($themegen_list[ix])}
-							<option value="{$themegen_list[ix]|escape}"{if $prefs.themegenerator_theme eq $themegen_list[ix]} selected="selected"{/if}>{$themegen_list[ix]|truncate:15|ucwords}</option>
-						{/if}
-					{/section}
-			</select>
 		{/if}
 		<noscript>
 			<button type="submit">{tr}Switch{/tr}</button>

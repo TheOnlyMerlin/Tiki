@@ -17,6 +17,16 @@ h3.box-title,
 	background: none;
 }
 
+.box {
+	border: none;
+}
+
+/* may need to change these 
+#tiki-top {
+color:#fff;
+font-size:1.1em;
+}
+*/
 h1, h2, h3, h4, h5 {
 	font-family: Arial, Helvetica, sans-serif;
 }
@@ -107,6 +117,8 @@ input[type="submit"], input[type="file"], select {
 	border: solid 1px #24880c;
 	background: #eef5ee;
 	color: #24880c;
+/*	height: 2em;
+	vertical-align: middle;*/
 }
 
 .button a,
@@ -167,6 +179,24 @@ h1 a.pagetitle:hover {
 	padding-left: 3px;
 	text-decoration: none;
 }
+/*
+h1 a {
+	font-size: large;
+	font-weight: normal;
+	text-decoration: none;
+	font-size: 25px;
+	text-align: center;
+	color: #fff;
+	margin-top: 0px;
+	padding-top: 4px;
+	padding-bottom: 4px; 
+	padding-left: 3px;
+}
+
+h1 a:hover {
+	background-color: transparent;
+	color: #86BE7D;
+}*/
 
 .box {
 	background-color: #eef5ee;
@@ -234,8 +264,50 @@ h3.box-title a {
 	color: #fff;
 }
 
+/*
+ * PHP Layers Menus
+ */
+.mdkhorbar {
+	color: black;
+	background-color: #fff;
+	border: 1px outset #525252;
+}
+
+.horbar {
+	background-color: #0174BB;
+	margin-left: 0;
+	text-align: center;
+}
+
 #tiki-top .cssmenu_horiz li a {
 	background-color: #0174BB;
+}
+
+.horbaritem {
+	text-align: right;
+}
+.horbaritem a {
+	text-align: right;
+	color: #fff;
+	font-size: 1em;
+	font-weight: bold;
+	text-decoration: none;
+	float: left;
+}
+.horbaritem a:hover {
+	color: #F0F0F0;
+	background-color: #24880c;
+}
+
+.mdkhorbaritem {
+	float: left;
+	white-space: nowrap;
+	font-size: 1em;
+}
+
+.mdkhorbaritem a {
+	display: block;
+	text-decoration: none;
 }
 
 .cssmenu_vert a {
@@ -248,10 +320,43 @@ h3.box-title a {
 .cssmenu_horiz a,
 .cssmenu_vert a,
 #tiki-top .cssmenu_horiz li ul li a,
-#tiki-top .cssmenu_horiz li:hover ul li a {
+#tiki-top .cssmenu_horiz li:hover ul li a,
+.mdkhorbaritem a:link {
 	color: #000;
 	font-size: 13px;
 }
+
+.mdkhorbaritem a:visited {
+	color: #000;
+}
+
+.mdkhorbaritem a:hover  {
+	background-color: #abcdef;
+}
+
+.mdkhorbaritem a:active {
+	color: #ff0000;
+}
+
+.mdkverbar {
+	color: black;
+	border: 1px solid #fdfefd;
+}
+
+.mdksubmenu {
+	position: absolute;
+	left: 0;
+	top: 0;
+	visibility: hidden;
+}
+
+.mdksubframe {
+	position: relative;
+	display: block;
+	background-color: #fff;
+	border: 1px solid #fdfefd;
+}
+
 /*dropdown background and border */
 .cssmenu_vert li ul li,
 .cssmenu_horiz li ul li {
@@ -269,6 +374,35 @@ h3.box-title a {
 .cssmenu_horiz li ul li:first-child {
 	border-top: 1px solid #3676c4;
 }
+
+.mdkitem {
+	position: relative;
+	white-space: nowrap;
+	font-size: 10px;
+	font-weight: bold;
+}
+
+.mdkitem a {
+	position: relative;
+	display: block;
+	text-decoration: none;
+}
+
+.mdkitem a:hover {
+	color: #000;
+	background-color: #abcdef;
+}
+
+.mdkitem a:active {
+	color: #ff0000;
+}
+
+.mdkitem .mdkfwdarr {
+	position: absolute;
+	top: 5px;
+	right: 12px;
+}
+
 
 .separator {
 	text-align: start;
@@ -333,6 +467,7 @@ h3.box-title a {
 	border-bottom: 1px solid #24880c;
 	list-style:none;
 	margin: 0px;
+	padding: -30px;
 }
 
 
@@ -350,13 +485,6 @@ tr.diffheader {
 	border: solid 1px #24880c;
 	font-size: 1em;
 	width: 15px;
-}
-
-th a,
-th a.link,
-td.heading a,
-tr.diffheader a {
-    color: #fff;
 }
 
 

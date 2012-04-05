@@ -1,9 +1,9 @@
 {tikimodule error=$module_params.error title=$tpl_module_title name="upcoming_events" flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox notitle=$module_params.notitle}
-{if count($modUpcomingEvents)}
+{if $modUpcomingEvents[0] neq ''}
 	{if isset($module_params.date_format)}
 		{assign var=date_format value=$module_params.date_format}
 	{else}
-		{assign var=date_format value=$prefs.short_date_format|cat:' '|cat:$prefs.short_time_format}
+		{assign var=date_format value="`$prefs.short_date_format` `$prefs.short_time_format`"}
 	{/if}
 	<table border="0" cellpadding="{if isset($module_params.cellpadding)}{$module_params.cellpadding}{else}0{/if}" cellspacing="{if isset($module_params.cellspacing)}{$module_params.cellspacing}{else}0{/if}">
 		{section name=ix loop=$modUpcomingEvents}
@@ -45,6 +45,6 @@
 {/if}
 
 {if $tiki_p_add_events eq 'y' && (empty($module_params.showaction) || $module_params.showaction ne 'n')}
-	<p><a href="tiki-calendar_edit_item.php"><img src="img/icons/add.png" alt="" /> {tr}Add Event{/tr}</a></p>
+	<p><a href="tiki-calendar_edit_item.php"><img src="pics/icons/add.png" alt="" /> {tr}Add Event{/tr}</a></p>
 {/if}
 {/tikimodule}

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -63,13 +63,11 @@ if (isset($_REQUEST["step4"])) {
 		if (!$_REQUEST["fForumid"] || !$_REQUEST["tForumid"]) {
 			$smarty->assign('failed', 'true');
 		} else {
-			$moo = $import->importSQLForum(
-							$_REQUEST["ftype"],
-							$_REQUEST["prefix"],
-							$_REQUEST["server"],
-							$_REQUEST["fForumid"], 
-							$_REQUEST["tForumid"]
-			);
+			$moo = $import->importSQLForum($_REQUEST["ftype"],
+											$_REQUEST["prefix"],
+											$_REQUEST["server"],
+											$_REQUEST["fForumid"], 
+											$_REQUEST["tForumid"]);
 			$smarty->assign('failed', 'false');
 		}
 	} else {										// Error
@@ -90,11 +88,9 @@ if (isset($_REQUEST["step4"])) {
 	if ($_REQUEST["import"] == 'same') {			// Same db and server
 	} else if ($_REQUEST["import"] == 'other') {	// Different db & server
 	} else if ($_REQUEST["import"] == 'sql') {		// Import from SQL file
-		$sqlForums = $import->parseForumList(
-						$_REQUEST["ftype"], 
-						$_REQUEST["prefix"],
-						$_REQUEST["server"]
-		);
+		$sqlForums = $import->parseForumList($_REQUEST["ftype"], 
+											$_REQUEST["prefix"],
+											$_REQUEST["server"]);
 		$smarty->assign('fromForums', $sqlForums);
 		if (count($sqlForums) == 0) {
 				$smarty->assign('noforumsF', 'true');

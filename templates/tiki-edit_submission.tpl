@@ -2,24 +2,14 @@
 {* Note: if you edit this file, make sure to make corresponding edits on tiki-edit_article.tpl *}
 
 {include file='tiki-articles-js.tpl'}
-{if !empty($errors)}
-	{remarksbox type='errors' title="{tr}Errors{/tr}"}
-		{foreach from=$errors item=m name=errors}
-			{$m}
-			{if !$smarty.foreach.errors.last}<br />{/if}
-		{/foreach}
-	{/remarksbox}
-{/if}
 {if $preview}
-	<h2>{tr}Preview{/tr}</h2>
-	
-	{include file='article.tpl'}
+	{include file='tiki-preview_article.tpl'}
 {/if}
 
 {if $subId}
-	{title help="Articles" admpage="articles" url="tiki-edit_submission.php?subId=$subId"}{tr}Edit:{/tr} {$arttitle}{/title}
+	{title help="Articles" url="tiki-edit_submission.php?subId=$subId"}{tr}Edit:{/tr} {$title|escape}{/title}
 {else}
-	{title help="Articles" admpage="articles"}{tr}Submit article{/tr}{/title}
+	{title help="Articles"}{tr}Submit article{/tr}{/title}
 {/if}
 
 <div class="navbar">
@@ -56,7 +46,7 @@
 		<tr>
 			<td>{tr}Title{/tr}</td>
 			<td>
-				<input type="text" name="title" value="{$arttitle|escape}" maxlength="255" size="60" />
+				<input type="text" name="title" value="{$title|escape}" maxlength="255" size="60" />
 			</td>
 		</tr>
 		<tr id='show_subtitle' {if $types.$type.show_subtitle eq 'y'}style="display:;"{else}style="display:none;"{/if}>
@@ -72,7 +62,7 @@
 			</td>
 		</tr>
 		{if $prefs.feature_multilingual eq 'y'}
-			<tr id='show_lang'>
+			<tr id='show_lang' {if $types.$type.show_lang eq 'y'}style="display:;"{else}style="display:none;"{/if}>
 				<td>{tr}Language{/tr}</td>
 				<td>
 					<select name="lang">
@@ -237,17 +227,17 @@
 		</tr>
 		<tr id='heading_only2' {if $types.$type.heading_only ne 'y'}style="display:;"{else}style="display:none;"{/if}>
 			<td colspan="2">
-				{textarea name="body" id="body"}{$body}{/textarea}
+				{textarea name="body" rows=$rows cols=$cols id="body"}{$body}{/textarea}
 			</td>
 		</tr>
 
 		<tr id='show_pubdate' {if $types.$type.show_pubdate eq 'y' || $types.$type.show_pre_publ ne 'y'}style="display:;"{else}style="display:none;"{/if}>
 			<td>{tr}Publish Date{/tr}</td>
 			<td>
-				{html_select_date prefix="publish_" time=$publishDate start_year="-5" end_year="+10" field_order=$prefs.display_field_order}
+				{html_select_date prefix="publish_" time=$publishDateSite start_year="-5" end_year="+10" field_order=$prefs.display_field_order}
 				{tr}at{/tr}
 				<span dir="ltr">
-					{html_select_time prefix="publish_" time=$publishDate display_seconds=false use_24_hours=$use_24hr_clock}
+					{html_select_time prefix="publish_" time=$publishDateSite display_seconds=false}
 					&nbsp;
 					{$siteTimeZone}
 				</span>
@@ -257,10 +247,10 @@
 		<tr id='show_expdate' {if $types.$type.show_expdate eq 'y' || $types.$type.show_post_expire ne 'y'}style="display:;"{else}style="display:none;"{/if}>
 			<td>{tr}Expiration Date{/tr}</td>
 			<td>
-				{html_select_date prefix="expire_" time=$expireDate start_year="-5" end_year="+10" field_order=$prefs.display_field_order}
+				{html_select_date prefix="expire_" time=$expireDateSite start_year="-5" end_year="+10" field_order=$prefs.display_field_order}
 				{tr}at{/tr} 
 				<span dir="ltr">
-					{html_select_time prefix="expire_" time=$expireDate display_seconds=false use_24_hours=$use_24hr_clock}
+					{html_select_time prefix="expire_" time=$expireDateSite display_seconds=false}
 					&nbsp;
 					{$siteTimeZone}
 				</span>
@@ -273,7 +263,7 @@
 			{assign var='attfullname' value=$att.itemId}
 			<tr id={$attid} {if $types.$type.$attid eq 'y'}style="display:;"{else}style="display:none;"{/if}>
 				<td>{$attname|escape}</td>
-				<td><input type="text" name="{$attfullname}" value="{$article_attributes.$attfullname|escape}" size="60" maxlength="255" /></td>
+				<td><input type="text" name="{$attfullname}" value="{$article_attributes.$attfullname|escape}" size="60" /></td>
 			</tr>
 			{/foreach}
 		{/if}
@@ -285,7 +275,6 @@
 
 	<div align="center">
 		<input type="submit" class="wikiaction" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;" />
-		{if $prefs.feature_antibot eq 'y'}<div align="center">{include file='antibot.tpl' antibot_table='y'}</div>{/if}
 		<input type="submit" class="wikiaction" name="submit" value="{tr}Submit Article{/tr}" onclick="needToConfirm=false;" />
 		{if $tiki_p_autoapprove_submission eq 'y'}
 			<input type="submit" class="wikiaction" name="save" value="{tr}Auto-Approve Article{/tr}" onclick="needToConfirm=false;" />

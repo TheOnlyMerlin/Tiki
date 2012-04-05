@@ -17,7 +17,7 @@
 {/remarksbox}
 {remarksbox type="note" title="{tr}Note{/tr}"}
 	<p><strong>{tr}Tiki "mods" are undergoing refurbishment.{/tr}</strong></p>
-	<p>{tr}You will probably find mods shown as being compatible with older versions of Tiki will work with later versions with little or no modification.{/tr}</p>
+	<p>{tr}You will probably some find mods shown as being compatible with older versions of Tiki will work with later versions with little or no modification.{/tr}</p>
 	<p><em>{tr}Your help is needed! Please visit <a href="http://dev.tiki.org/Mods">dev.tiki.org</a> to find out more.{/tr}</em></p>
 {/remarksbox}
 
@@ -276,11 +276,11 @@ function update_button_install() {
 											{if $more->devurl}Development : <br />{foreach key=ku item=iu from=$more->devurl}<a href="{$iu}">{$iu}</a><br />{/foreach}{/if}
 											{if $more->help}{$more.help}<br />{/if}
 											{if $more->help}{$more.help}<br />{/if}
-											{if $more->author}{tr}Author:{/tr} {$more->author[0]}<br />{/if}
-											{if $more->licence}{tr}licence:{/tr} {$more->licence}<br />{/if}
+											{if $more->author}{tr}Author{/tr}: {$more->author[0]}<br />{/if}
+											{if $more->licence}{tr}licence{/tr}: {$more->licence}<br />{/if}
 											
-											{tr}Last Modification:{/tr} {$more->lastmodif}<br />
-											{tr}by:{/tr} {$more->contributor[0]}<br />
+											{tr}Last Modification{/tr}: {$more->lastmodif}<br />
+											{tr}by{/tr}: {$more->contributor[0]}<br />
 										</div>
 									</td><td>
 										{foreach key=kk item=ii from=$more->files}

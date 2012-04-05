@@ -16,26 +16,29 @@
 	margin-left: 0;
 }
 
+.wikiactions .icons,
+.wikiactions form {/*display: inline*/}
+
 .codelisting {
 	padding-bottom: 1.8em;
 }
 
-body.fixed_width #editpageform {
+#editpageform {
 	width: 520px;
 }
 
-#header {
+#header-top {
 	z-index: 5;
 }
 
-#top_modules {
-	position: relative;
-	z-index: 5
-}
-
-#topbar_modules {
+#tiki-top {
 	position: relative;
 	z-index: 4;
+}
+
+#middle {
+	z-index: 3;
+	position: relative;
 }
 
 #col2,
@@ -50,8 +53,7 @@ body.fixed_width #editpageform {
 }
 
 h3.box-title {
-	z-index: 2;
-	line-height: 1;
+	z-index: 0;
 }
 
 .cssmenu_vert ul li {
@@ -63,11 +65,4 @@ h3.box-title {
 	position: relative;
 }
 
-#middle {
-	display: table;
-}
 
-/* For IE 6/7 (trigger hasLayout) */
-.clearfix {
-    zoom: 1;
-}

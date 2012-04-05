@@ -5,7 +5,7 @@
 <div class="navbar">
 	{button href="tiki-admin_integrator.php" _text="{tr}Configure Repositories{/tr}"}
   {button href="tiki-list_integrator_repositories.php" _text="{tr}List Repositories{/tr}</a>"}
-	{assign var=thisrepID value=$repID|escape} 
+	{assign var=thisrepID value=$repID|escape } 
 	{button href="tiki-admin_integrator.php?action=edit&amp;repID=$thisrepID" _text="{tr}Configure this Repository{/tr}"}
 	{button href="tiki-integrator.php?repID=$thisrepID" _text="{tr}View this Repository{/tr}"}
 	{button href="tiki-admin_integrator_rules.php?repID=$thisrepID" _text="{tr}New Rule{/tr}"}
@@ -130,21 +130,22 @@
         {else}{$rules[rule].ord|escape}
         {/if}
       </td>
-      <td class="text">{$rules[rule].srch|escape}</td>
-      <td class="text">{$rules[rule].repl|escape}</td>
-      <td class="text">{$rules[rule].type|escape}</td>
-      <td class="text">{$rules[rule].casesense|escape}</td>
-      <td class="action">
+      <td>{$rules[rule].srch|escape}</td>
+      <td>{$rules[rule].repl|escape}</td>
+      <td>{$rules[rule].type|escape}</td>
+      <td>{$rules[rule].casesense|escape}</td>
+      <td>
         <a href="tiki-admin_integrator_rules.php?action=edit&amp;repID={$repID|escape}&amp;ruleID={$rules[rule].ruleID|escape}" title="{tr}Edit{/tr}">{icon _id='wrench' alt="{tr}Configure/Options{/tr}"}</a>
-        <a href="tiki-admin_integrator_rules.php?action=rm&amp;repID={$repID|escape}&amp;ruleID={$rules[rule].ruleID|escape}"
-		title="{tr}Delete{/tr}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>
+        &nbsp;&nbsp;<a href="tiki-admin_integrator_rules.php?action=rm&amp;repID={$repID|escape}&amp;ruleID={$rules[rule].ruleID|escape}"
+		title="{tr}Delete{/tr}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>&nbsp;&nbsp;
       </td>
 
     {* Show description as colspaned row if it is not an empty *}
     {if (strlen($rules[rule].description) > 0)}
     </tr><tr class="{cycle}">
-      <td colspan="5" class="text">{$rules[rule].description|escape}</td>
+      <td colspan="5">{$rules[rule].description|escape}</td>
     {/if}
     </tr>
   {/section}
 </table>
+<br /><br />

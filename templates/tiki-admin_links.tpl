@@ -1,4 +1,4 @@
-{title help="FeaturedLinksAdmin"}{tr}Featured Links{/tr}{/title}
+{title help="FeaturedLinksAdmin"}{tr}Featured links{/tr}{/title}
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}To use these links, you must assign the featured_links <a class="rbox-link" href="tiki-admin_modules.php">module</a>.{/tr}{/remarksbox}
 
@@ -19,18 +19,18 @@
 	{cycle values="odd,even" print=false}
 	{section name=user loop=$links}
 		<tr class="{cycle}">
-			<td class="text">{$links[user].url}</td>
-			<td class="text">{$links[user].title|escape}</td>
-			<td class="integer">{$links[user].hits}</td>
-			<td class="id">{$links[user].position}</td>
-			<td class="text">{$links[user].type}</td>
-			<td class="action">
-				<a title="{tr}Edit{/tr}" class="link" href="tiki-admin_links.php?editurl={$links[user].url|escape:"url"}">{icon _id='page_edit'}</a>
+			<td>{$links[user].url}</td>
+			<td>{$links[user].title|escape}</td>
+			<td>{$links[user].hits}</td>
+			<td>{$links[user].position}</td>
+			<td>{$links[user].type}</td>
+			<td>
+				<a title="{tr}Edit{/tr}" class="link" href="tiki-admin_links.php?editurl={$links[user].url|escape:"url"}">{icon _id='page_edit'}</a> &nbsp;
 				<a title="{tr}Delete{/tr}" class="link" href="tiki-admin_links.php?remove={$links[user].url|escape:"url"}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 			</td>
 		</tr>
 	{sectionelse}
-		{norecords _colspan=6}
+		<tr><td colspan="6" class="odd"><b>{tr}No records found{/tr}</b></td></tr>
 	{/section}
 </table>
 <br />

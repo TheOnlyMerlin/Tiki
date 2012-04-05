@@ -1,7 +1,7 @@
 {title help="Theme+Control"}{tr}Theme Control Center: Objects{/tr}{/title}
 
 {remarksbox type="notice" title="{tr}Notice{/tr}"}
-<b>{tr}Theme is selected as follows:{/tr}</b><br />
+<b>{tr}Theme is selected as follows{/tr}:</b><br />
 1. {tr}If a theme is assigned to the individual object that theme is used.{/tr}<br />
 2. {tr}If not then if a theme is assigned to the object's category that theme is used{/tr}<br />
 3. {tr}If not then a theme for the section is used{/tr}<br />
@@ -86,12 +86,12 @@
 		{cycle values="odd,even" print=false}
 		{section name=user loop=$channels}
 			<tr class="{cycle}">
-				<td class="checkbox">
+				<td>
 					<input type="checkbox" name="obj[{$channels[user].objId}]" />
 				</td>
-				<td class="text">{$channels[user].type}</td>
-				<td class="text">{$channels[user].name}</td>
-				<td class="text">{$channels[user].theme}</td>
+				<td>{$channels[user].type}</td>
+				<td>{$channels[user].name}</td>
+				<td>{$channels[user].theme}</td>
 			</tr>
 		{/section}
 	</table>

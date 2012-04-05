@@ -3,9 +3,9 @@
 
 {include file='tiki-articles-js.tpl'}
 
-{title help="Articles" admpage="articles"}
+{title help="Articles"}
 	{if $articleId}
-		{tr}Edit:{/tr} {$arttitle}
+		{tr}Edit:{/tr} {$title|escape}
 	{else}
 		{tr}Edit article{/tr}
 	{/if}
@@ -17,9 +17,7 @@
 </div>
 
 {if $preview}
-	<h2>{tr}Preview{/tr}</h2>
-	
-	{include file='article.tpl'}
+	{include file='tiki-preview_article.tpl'}
 {/if}
 
 {if !empty($errors)}
@@ -42,9 +40,6 @@
 	<input type="hidden" name="image_type" value="{$image_type|escape}" />
 	<input type="hidden" name="image_name" value="{$image_name|escape}" />
 	<input type="hidden" name="image_size" value="{$image_size|escape}" />
-	{if isset($translationOf)}
-		<input type="hidden" name="translationOf" value="{$translationOf|escape}" />
-	{/if}
 	<table class="formcolor">
 		<tr id='show_topline' {if $types.$type.show_topline eq 'y'}style="display:;"{else}style="display:none;"{/if}>
 			<td>{tr}Topline{/tr} *</td>
@@ -55,7 +50,7 @@
 		<tr>
 			<td>{tr}Title{/tr}</td>
 			<td>
-				<input type="text" name="title" value="{$arttitle|escape}" maxlength="255" size="60" />
+				<input type="text" name="title" value="{$title|escape}" maxlength="255" size="60" />
 			</td>
 		</tr>
 		<tr id='show_subtitle' {if $types.$type.show_subtitle eq 'y'}style="display:;"{else}style="display:none;"{/if}>
@@ -71,7 +66,7 @@
 			</td>
 		</tr>
 		{if $prefs.feature_multilingual eq 'y'}
-			<tr id='show_lang'>
+			<tr id='show_lang' {if $types.$type.show_lang eq 'y'}style="display:;"{else}style="display:none;"{/if}>
 				<td>{tr}Language{/tr}</td>
 				<td>
 					<select name="lang">
@@ -80,11 +75,6 @@
 							<option value="{$languages[ix].value|escape}"{if $lang eq $languages[ix].value} selected="selected"{/if}>{$languages[ix].name}</option>
 						{/section}
 					</select>
-					<br />
-					{if $articleId != 0}
-						{tr _0="tiki-edit_article.php?translationOf=$articleId"}To translate, do not change the language and the content.
-						Instead, <a href="%0">create a new translation</a> in the new language.{/tr}
-					{/if}
 				</td>
 			</tr>
 		{/if}
@@ -148,16 +138,6 @@
 				</select>
 			</td>
 		</tr>
-		{if $prefs.geo_locate_article eq 'y'}
-			<tr>
-				<td>{tr}Location{/tr}</td>
-				<td>
-					{$headerlib->add_map()}
-					<div class="map-container" data-target-field="geolocation" style="height: 250px; width: 250px;"></div>
-					<input type="hidden" name="geolocation" value="{$geolocation_string}" />
-				</td>
-			</tr>
-		{/if}
 		<tr id='show_image_1' {if $types.$type.show_image eq 'y'}style="display:;"{else}style="display:none;"{/if}>
 			<td>{tr}Own Image{/tr}</td>
 			<td>
@@ -197,20 +177,18 @@
 			</td>
 		</tr>
 		<tr id='show_image_4' {if $types.$type.show_image eq 'y'}style="display:;"{else}style="display:none;"{/if}>
-			<td>{tr}Maximum dimensions of custom image in view mode (Read Article){/tr}</td>
+			<td>{tr}View mode{/tr}</td>
 			<td>
-				<label>{tr}Width{/tr}</label> <input type="text" name="image_x"{if $image_x > 0} value="{$image_x|escape}"{/if} /> {tr}pixels{/tr}
+				<label>{tr}Image width{/tr}</label> <input type="text" name="image_x"{if $image_x > 0} value="{$image_x|escape}"{/if} /> {tr}pixels{/tr}
 				{icon _id='help' alt="{tr}If different than the uploaded image{/tr}"}<br />
-				<label>{tr}Height{/tr} <input type="text" name="image_y"{if $image_y > 0} value="{$image_y|escape}"{/if} /></label> {tr}pixels{/tr}
+				<label>{tr}Image height{/tr} <input type="text" name="image_y"{if $image_y > 0} value="{$image_y|escape}"{/if} /></label> {tr}pixels{/tr}
 			</td>
 		</tr>
 		<tr id='show_image_5' {if $types.$type.show_image eq 'y'}style="display:;"{else}style="display:none;"{/if}>
-			<td>{tr}Maximum dimensions of custom image in list mode (View Articles){/tr}</td>
+			<td>{tr}List mode{/tr}</td>
 			<td>
-				<label>{tr}Width{/tr}</label> <input type="text" name="list_image_x" value="{$list_image_x|escape}" /> {tr}pixels{/tr}
-				{icon _id='help' alt="{tr}If different than in view mode{/tr}"}<br />
-				<label>{tr}Height{/tr}</label> <input type="text" name="list_image_y" value="{$list_image_y|escape}" /> {tr}pixels{/tr}
-				
+				<label>{tr}Image width{/tr}</label> <input type="text" name="list_image_x" value="{$list_image_x|escape}" /> {tr}pixels{/tr}
+				{icon _id='help' alt="{tr}If different than in view mode{/tr}"}
 			</td>
 		</tr>
 		<tr id='show_image_caption' {if $types.$type.show_image_caption eq 'y'}style="display:;"{else}style="display:none;"{/if}>
@@ -244,11 +222,7 @@
 		</tr>
 		<tr>
 			<td colspan="2">
-				{if $types.$type.heading_only eq 'y'}
-					{textarea name="heading" rows="5" cols="80" Height="200px" id="subheading"}{$heading}{/textarea}
-				{else}
-					{textarea _simple="y" name="heading" rows="5" cols="80" Height="200px" id="subheading" comments="y"}{$heading}{/textarea}
-				{/if}
+				{textarea _simple="y" name="heading" rows="5" cols="80" Height="200px" id="subheading" comments="y"}{$heading}{/textarea}
 			</td>
 		</tr>
 
@@ -260,17 +234,17 @@
 		</tr>
 		<tr id='heading_only2' {if $types.$type.heading_only ne 'y'}style="display:;"{else}style="display:none;"{/if}>
 			<td colspan="2">
-				{textarea name="body" id="body"}{$body}{/textarea}
+				{textarea name="body" rows=$rows cols=$cols id="body"}{$body}{/textarea}
 			</td>
 		</tr>
 
 		<tr id='show_pubdate' {if $types.$type.show_pubdate eq 'y' || $types.$type.show_pre_publ ne 'y'}style="display:;"{else}style="display:none;"{/if}>
 			<td>{tr}Publish Date{/tr}</td>
 			<td>
-				{html_select_date prefix="publish_" time=$publishDate start_year="-10" end_year="+10" field_order=$prefs.display_field_order}
+				{html_select_date prefix="publish_" time=$publishDateSite start_year="-5" end_year="+10" field_order=$prefs.display_field_order}
 				{tr}at{/tr}
 				<span dir="ltr">
-					{html_select_time prefix="publish_" time=$publishDate display_seconds=false use_24_hours=$use_24hr_clock}
+					{html_select_time prefix="publish_" time=$publishDateSite display_seconds=false}
 					&nbsp;
 					{$siteTimeZone}
 				</span>
@@ -280,10 +254,10 @@
 		<tr id='show_expdate' {if $types.$type.show_expdate eq 'y' || $types.$type.show_post_expire ne 'y'}style="display:;"{else}style="display:none;"{/if}>
 			<td>{tr}Expiration Date{/tr}</td>
 			<td>
-				{html_select_date prefix="expire_" time=$expireDate start_year="-10" end_year="+10" field_order=$prefs.display_field_order}
+				{html_select_date prefix="expire_" time=$expireDateSite start_year="-5" end_year="+10" field_order=$prefs.display_field_order}
 				{tr}at{/tr} 
 				<span dir="ltr">
-					{html_select_time prefix="expire_" time=$expireDate display_seconds=false use_24_hours=$use_24hr_clock}
+					{html_select_time prefix="expire_" time=$expireDateSite display_seconds=false}
 					&nbsp;
 					{$siteTimeZone}
 				</span>
@@ -292,8 +266,7 @@
 
 		{if $tiki_p_use_HTML eq 'y'}
 			<tr>
-				<td>{tr}Allow full HTML{/tr} <em>({tr}Keep any html tag.{/tr})</em>
-				<br><em>{tr}If uncheck will keep anyway some html tags (a,p,pre,img,hr,b,i){/tr}.</em></td>
+				<td>{tr}Allow full HTML{/tr} <em>({tr}for this edit session{/tr})</em></td>
 				<td>
 					<input type="checkbox" name="allowhtml" {if $allowhtml eq 'y'}checked="checked"{/if}/>
 				</td>
@@ -324,7 +297,7 @@
 			{assign var='attfullname' value=$att.itemId}
 			<tr id={$attid} {if $types.$type.$attid eq 'y'}style="display:;"{else}style="display:none;"{/if}>
 				<td>{$attname|escape}</td>
-				<td><input type="text" name="{$attfullname}" value="{$article_attributes.$attfullname|escape}" size="60" maxlength="255" /></td>
+				<td><input type="text" name="{$attfullname}" value="{$article_attributes.$attfullname|escape}" size="60" /></td>
 			</tr>
 			{/foreach}
 		{/if}
@@ -352,7 +325,7 @@ $("#editpageform").submit(function(evt) {
 		});
 		if (isHtml) {
 			this.saving = false;
-			return confirm(tr('You appear to be using HTML in your article but have not selected "Allow full HTML".\nThis will result in HTML tags being removed.\nDo you want to save your edits anyway?'));
+			return confirm(tr('You appear to be using HTML in your article but have not selected "Allow HTML".\nThis will result in HTML tags being removed.\nDo you want to save your edits anyway?'));
 		}
 	}
 	return true;

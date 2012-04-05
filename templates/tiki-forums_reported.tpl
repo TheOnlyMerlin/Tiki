@@ -1,4 +1,4 @@
-{title help="Forums" admpage="forums"}{tr}Reported messages for forum{/tr}&nbsp;{$forum_info.name}{/title}
+{title help="Forums" admpage="forums"}{tr}Reported messages for forum{/tr}&nbsp;{$forum_info.name|escape}{/title}
 
 <div class="navbar">
 	{button href="tiki-view_forum.php?forumId=$forumId" _text="{tr}Back to forum{/tr}"}
@@ -41,18 +41,25 @@
 {cycle values="odd,even" print=false}
 {section name=ix loop=$items}
 <tr class="{cycle}">
-	<td class="checkbox">
+	<td style="text-align:center;">
 	  <input type="checkbox" name="msg[{$items[ix].threadId}]" />
 	</td>
-	<td class="text">
+  
+	<td style="text-align:left;">
 		<a class="link" href="tiki-view_forum_thread.php?topics_offset=0&amp;topics_sort_mode=commentDate_desc&amp;topics_threshold=0&amp;topics_find=&amp;forumId={$items[ix].forumId}&amp;comments_parentId={$items[ix].parentId}">{$items[ix].title|escape}</a>
 	</td>
+	
 	<td style="text-align:left;">
 		{$items[ix].user|username}
 	</td>
+
 </tr>
 {sectionelse}
-	{norecords _colspan=2}
+<tr class="{cycle}">
+	<td colspan="2">
+	{tr}No records to display{/tr}
+	</td>
+</tr>	
 {/section}
 </table>
 {if $items}

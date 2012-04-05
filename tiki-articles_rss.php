@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -18,8 +18,8 @@ if ($prefs['feed_articles'] != 'y') {
 }
 
 $res=$access->authorize_rss(array('tiki_p_read_article','tiki_p_admin_cms', 'tiki_p_articles_read_heading'));
-if ($res) {
-   if ($res['header'] == 'y') {
+if($res) {
+   if($res['header'] == 'y') {
       header('WWW-Authenticate: Basic realm="'.$tikidomain.'"');
       header('HTTP/1.0 401 Unauthorized');
    }
@@ -31,7 +31,7 @@ $feed = "articles";
 if (isset($_REQUEST["topic"])) {
     $topic = $_REQUEST["topic"];
     $uniqueid = $feed.".".$topic;
-    $topic = (int) preg_replace('/[^0-9]/', '', $topic);
+    $topic = (int) preg_replace('/[^0-9]/','', $topic);
 } elseif (isset($_REQUEST['topicname'])) {
 	global $artlib; require_once 'lib/articles/artlib.php';
 	$topic = $artlib->fetchtopicId($_REQUEST['topicname']);
@@ -56,7 +56,7 @@ if (isset($_REQUEST['lang'])) {
 }
 $uniqueid .= '/'.$articleLang;
 
-if ($topic and !$tikilib->user_has_perm_on_object($user, $topic, 'topic', 'tiki_p_topic_read')) {
+if ($topic and !$tikilib->user_has_perm_on_object($user,$topic,'topic','tiki_p_topic_read')) {
 	$smarty->assign('errortype', 401);
 	$errmsg=tra("You do not have permission to view this section");
 	require_once ('tiki-rss_error.php');
@@ -82,10 +82,10 @@ if ($output["data"]=="EMPTY") {
 	$changes = $artlib -> list_articles(0, $prefs['feed_articles_max'], $dateId.'_desc', '', 0, $tikilib->now, $user, $type, $topic, 'y', '', '', '', '', $articleLang, '', '', false, 'y');
 	$tmp = array();
 	include_once('tiki-sefurl.php');
-	foreach ($changes["data"] as $data) {
+	foreach ($changes["data"] as $data)  {
 		$data["$descId"] = $tikilib->parse_data($data[$descId], array('print'=>true));
 		$data["body"] = null;
-		$data['sefurl'] = filter_out_sefurl(sprintf($readrepl, $data['articleId']), 'article', $data['title']);
+		$data['sefurl'] = filter_out_sefurl(sprintf($readrepl, $data['articleId']), $smarty, 'article', $data['title']);
 		$tmp[] = $data;
 	}
 	$changes["data"] = $tmp;

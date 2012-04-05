@@ -40,15 +40,17 @@
 	{cycle values="odd,even" print=false}
 	{section name=user loop=$words}
 		<tr class="{cycle}">
-			<td class="text">{$words[user].word}</td>
-			<td class="text">{$words[user].url}</td>
-			<td class="action">
+			<td>{$words[user].word}</td>
+			<td>{$words[user].url}</td>
+			<td>
 				<a class="link" href="tiki-admin_hotwords.php?remove={$words[user].word|escape:"url"}{if $offset}&amp;offset={$offset}{/if}&amp;sort_mode={$sort_mode}" title="{tr}Delete{/tr}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>
 			</td>
 		</tr>
 	{sectionelse}
-		{norecords _colspan=3}
+		<tr>
+			<td colspan="3" class="odd">{tr}No records found{/tr}</td>
+		</tr>
 	{/section}
 </table>
 
-{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
+{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset }{/pagination_links}

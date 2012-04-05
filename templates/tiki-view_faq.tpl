@@ -1,4 +1,4 @@
-{title help="FAQs"}{tr}{$faq_info.title}{/tr}{/title}
+{title help="FAQs"}{tr}{$faq_info.title|escape}{/tr}{/title}
 <div class="description">{$faq_info.description|escape}</div>
 
 <div class="navbar">
@@ -62,7 +62,8 @@
 			&& (($tiki_p_read_comments == 'y'
 			&& $comments_cant != 0)
 		|| $tiki_p_post_comments == 'y'
-		|| $tiki_p_edit_comments == 'y')}
+		|| $tiki_p_edit_comments == 'y')
+	}
 		{include file='comments_button.tpl'}
 	{/if}
 </div>
@@ -78,14 +79,14 @@
 			<input type="hidden" name="faqId" value="{$faqId|escape}" />
 			<table class="formcolor">
 				<tr>
-					<td>{tr}Question:{/tr}</td>
+					<td>{tr}Question{/tr}:</td>
 					<td>
 						<textarea rows="2" cols="80" name="suggested_question" style="width:95%;">{if $pendingquestion}{$pendingquestion}{/if}</textarea>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						{tr}Answer:{/tr}
+						{tr}Answer{/tr}:
 					</td>
 					<td>
 						<textarea rows="2" cols="80" name="suggested_answer" style="width:95%;">{if $pendinganswer}{$pendinganswer}{/if}</textarea>
@@ -111,7 +112,7 @@
 				{cycle values="odd,even" print=false}
 				{section name=ix loop=$suggested}
 					<tr class="{cycle}">
-						<td class="text">{$suggested[ix].question}</td>
+						<td>{$suggested[ix].question}</td>
 					</tr>
 				{/section}
 			</table>
@@ -131,12 +132,9 @@
 {/if}
 
 {if $prefs.feature_faq_comments == 'y'
-&& ($tiki_p_read_comments == 'y'
+&& (($tiki_p_read_comments == 'y'
+&& $comments_cant != 0)
 || $tiki_p_post_comments == 'y'
 || $tiki_p_edit_comments == 'y')}
-<div id="comment-container" data-target="{service controller=comment action=list type=faq objectId=$faqId}"></div>
-{jq}
-	var id = '#comment-container';
-	$(id).comment_load($(id).data('target'));
-{/jq}
+	{include file='comments.tpl'}
 {/if}

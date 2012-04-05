@@ -5,10 +5,10 @@
 	</tr>
   </table>
   <table border="0" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;border:1px solid #ccc">
-{foreach key=k item=h from=$hr_display}
+{foreach key=k item=h from=$hours}
   <tr valign="middle" style="height:24px">
-    <td id="rowLeft_{$h[0]}" class="calHours" style="width:10%">{$h[1]}</td>
-    <td id="row_{$h[0]}" class="calWeek" style="background:none">&nbsp;</td>
+    <td id="rowLeft_{$h}" class="calHours" style="width:10%">{if ($h < 10)}0{/if}{$h}:00</td>
+    <td id="row_{$h}" class="calWeek" style="background:none">&nbsp;</td>
   </tr>
 {/foreach}
 </table>
@@ -35,7 +35,7 @@
 				{/if}
 			{/if}
 
-		><img src="img/icons/more_info.gif" alt="{tr}Details{/tr}" /></a></span>
+		><img src="pics/icons/more_info.gif" alt="{tr}Details{/tr}" /></a></span>
 		{if $myurl eq "tiki-action_calendar.php"}
 		<a href="{$event.url}" class="url" title="{$event.web|escape}" class="linkmenu summary" style="color:#{$infocals.$calendarId.customfgcolor};{if $event.status eq '2'}text-decoration:line-through{/if}">{$event.name}</a>
 		{else}

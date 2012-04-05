@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,13 +15,11 @@ if ($prefs['feed_blogs'] != 'y') {
 	$errmsg = tra("rss feed disabled");
 	require_once ('tiki-rss_error.php');
 }
-$res = $access->authorize_rss(
-				array(
-					'tiki_p_read_blog',
-					'tiki_p_blog_admin',
-					'tiki_p_blog_view_ref'
-				)
-);
+$res = $access->authorize_rss(array(
+	'tiki_p_read_blog',
+	'tiki_p_blog_admin',
+	'tiki_p_blog_view_ref'
+));
 if ($res) {
 	if ($res['header'] == 'y') {
 		header('WWW-Authenticate: Basic realm="' . $tikidomain . '"');
@@ -50,15 +48,12 @@ if ($output["data"] == "EMPTY") {
 	$changes = $bloglib->list_all_blog_posts(0, $prefs['feed_blogs_max'], $dateId . '_desc', '', $now);
 	$tmp = array();
 	include_once ('tiki-sefurl.php');
-	foreach ($changes["data"] as $data) {
+	foreach($changes["data"] as $data) {
 		global $bloglib;
-		$data["$descId"] = $tikilib->parse_data(
-						$data[$descId], 
-						array(
-							'print' => true
-						)
-		);
-		$data['sefurl'] = filter_out_sefurl(sprintf($readrepl, $data['postId'], $data['blogId']), 'blogpost', $data['title']);
+		$data["$descId"] = $tikilib->parse_data($data[$descId], array(
+			'print' => true
+		));
+		$data['sefurl'] = filter_out_sefurl(sprintf($readrepl, $data['postId'], $data['blogId']) , $smarty, 'blogpost', $data['title']);
 		$tmp[] = $data;
 	}
 	$changes["data"] = $tmp;

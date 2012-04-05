@@ -1,34 +1,36 @@
-{title help="User+Bookmarks"}{tr}My Bookmarks{/tr}{/title}
+{title help="User+Bookmarks"}{tr}User Bookmarks{/tr}{/title}
 
 {include file='tiki-mytiki_bar.tpl'}
 
 {if $parentId>0}[<a class="link" href="tiki-user_bookmarks.php">{tr}top{/tr}</a>] {/if}{tr}Current folder:{/tr} {$path}<br />
+<br />
 <h2>{tr}Folders{/tr}</h2>
-<table class="normal">
-	<tr>
-		<th>{tr}Name{/tr}</th>
-		<th>{tr}Action{/tr}</th>
-	</tr>
-{cycle values="odd,even" print=false}
-	{section name=ix loop=$folders}
-		<tr class="{cycle}">
-			<td class="text"><a href="tiki-user_bookmarks.php?parentId={$folders[ix].folderId}">
-				{icon _id='folder' alt="{tr}Folder in{/tr}"}</a>&nbsp;{$folders[ix].name|escape} ({$folders[ix].urls})
-			</td>
-			<td class="action">
-				<a class="link" href="tiki-user_bookmarks.php?parentId={$parentId}&amp;editfolder={$folders[ix].folderId}">
-					{icon _id='page_edit'}
-				</a> &nbsp;
-				<a class="link" href="tiki-user_bookmarks.php?parentId={$parentId}&amp;removefolder={$folders[ix].folderId}">
-					{icon _id='cross' alt="{tr}Remove{/tr}" title="{tr}Remove Folder{/tr}"}
-				</a>
-			</td>
+	<table class="normal">
+		<tr>
+			<th>{tr}Name{/tr}</th>
+			<th>{tr}Action{/tr}</th>
 		</tr>
-	{sectionelse}
-		{norecords _colspan=2}
-	{/section}
-</table>
+{cycle values="odd,even" print=false}
+		{section name=ix loop=$folders}
+			<tr class="{cycle}">
+				<td><a href="tiki-user_bookmarks.php?parentId={$folders[ix].folderId}">
+					{icon _id='folder' alt="{tr}Folder in{/tr}"}</a>&nbsp;{$folders[ix].name|escape} ({$folders[ix].urls})
+				</td>
+				<td>
+					<a class="link" href="tiki-user_bookmarks.php?parentId={$parentId}&amp;editfolder={$folders[ix].folderId}">
+						{icon _id='page_edit'}
+					</a> &nbsp;
+					<a class="link" href="tiki-user_bookmarks.php?parentId={$parentId}&amp;removefolder={$folders[ix].folderId}">
+						{icon _id='cross' alt="{tr}Remove{/tr}" title="{tr}Remove Folder{/tr}"}
+					</a>
+				</td>
+			</tr>
+		{sectionelse}
+			<tr><td colspan="2" class="odd">{tr}No records found.{/tr}</td></tr>
+		{/section}
+	</table>
 
+<br />
 <h2>{tr}Bookmarks{/tr}</h2>
 <table class="normal">
 	<tr>
@@ -39,13 +41,13 @@
 {cycle values="odd,even" print=false}
 	{section name=ix loop=$urls}
 		<tr class="{cycle}">
-			<td class="text"><a class="link" target="_blank" href="{$urls[ix].url}">{$urls[ix].name|escape}</a>
+			<td><a class="link" target="_blank" href="{$urls[ix].url}">{$urls[ix].name|escape}</a>
 				{if $tiki_p_cache_bookmarks eq 'y' and $urls[ix].datalen > 0}
 					(<a href="tiki-user_cached_bookmark.php?urlid={$urls[ix].urlId}" class="link" target="_blank">{tr}Cache{/tr}</a>)
 				{/if}
 			</td>
-			<td class="text">{textformat wrap="60" wrap_cut=true wrap_char="<br />"}{$urls[ix].url}{/textformat}</td>
-			<td class="action">
+			<td>{textformat wrap="60" wrap_cut=true wrap_char="<br />"}{$urls[ix].url}{/textformat}</td>
+			<td>
 				<a class="link" href="tiki-user_bookmarks.php?parentId={$parentId}&amp;editurl={$urls[ix].urlId}">{icon _id='page_edit'}</a>
 				{if $tiki_p_cache_bookmarks eq 'y' and $urls[ix].datalen > 0}
 					<a class="link" href="tiki-user_bookmarks.php?parentId={$parentId}&amp;refreshurl={$urls[ix].urlId}">
@@ -56,11 +58,12 @@
 			</td>
 		</tr>
 	{sectionelse}
-		{norecords _colspan=3}
+		<tr><td colspan="3" class="odd">{tr}No records found.{/tr}</td></tr>
 	{/section}
 </table>
+<br />
 <h2>{tr}Admin folders and bookmarks{/tr}</h2>
-<table class="formcolor">
+<table class="normal" cellpadding="0" cellspacing="0">
 	<tr>
 		<td>
 			<h3>{if $editfolder}{tr}Edit{/tr}{else}{tr}Add{/tr}{/if} {tr}a folder{/tr}</h3>

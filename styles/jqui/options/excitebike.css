@@ -79,6 +79,10 @@ body.cke_show_borders {
 	color: #fff;
 }
 	
+#middle {
+/* background: #9fda58 url(../../../lib/jquery/jquery-ui/themes/trontastic/images/ui-bg_gloss-wave_85_9fda58_500x100.png) repeat-x;
+*/}
+
 .footerbgtrap {
 	display: block;
 	border: 1px solid #1484e6;
@@ -260,12 +264,14 @@ tr.odd td,
 td.odd,
 li.odd {
 	background: #eeeeee;
+/* border-right: ; */
 }
 
 tr.even td,
 td.even,
 li.even {
 	background: #f8f8f8;
+/* border-right: ; */
 }
 
 .tabs {

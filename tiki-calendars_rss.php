@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -16,8 +16,8 @@ if (!isset($prefs['feed_calendar']) || $prefs['feed_calendar'] != 'y') {
 }
 
 $res=$access->authorize_rss(array('tiki_p_view_calendar','tiki_p_admin_calendar'));
-if ($res) {
-   if ($res['header'] == 'y') {
+if($res) {
+   if($res['header'] == 'y') {
       header('WWW-Authenticate: Basic realm="'.$tikidomain.'"');
       header('HTTP/1.0 401 Unauthorized');
    }
@@ -32,7 +32,7 @@ if (isset($_REQUEST["calendarIds"])) {
     if (!is_array($calendarIds)) {
 	$calendarIds = array($calendarIds);
     }	
-    $uniqueid = $feed.".".implode(".", $calendarIds);
+    $uniqueid = $feed.".".implode(".",$calendarIds);
 } else {
     $uniqueid = $feed;
     $calendarIds = array();
@@ -56,13 +56,13 @@ if ($output["data"]=="EMPTY") {
 	foreach ($allCalendars['data'] as $cal) {
 
 	    $visible = false;
-	    if (count($calendarIds) == 0 || in_array($cal['calendarId'], $calendarIds)) {
+	    if (count($calendarIds) == 0 || in_array($cal['calendarId'],$calendarIds)) {
 			if ($cal["personal"] == "y") {
 			    if ($user) {
 					$visible = true;
 			    }
 			} else {
-			    if ($userlib->object_has_one_permission($cal['calendarId'], 'calendar')) {
+			    if ($userlib->object_has_one_permission($cal['calendarId'],'calendar')) {
 					if ($userlib->object_has_permission($user, $cal['calendarId'], 'calendar', 'tiki_p_view_calendar')) {
 					    $visible = true;
 					} 
@@ -84,7 +84,7 @@ if ($output["data"]=="EMPTY") {
 	require_once("lib/smarty_tiki/modifier.tiki_long_datetime.php");
 	require_once("lib/smarty_tiki/modifier.compactisodate.php");
 
-	foreach ($items as &$item) {
+	foreach($items as &$item) {
 		$start_d = smarty_modifier_compactisodate($item["start"]);
 		$end_d = smarty_modifier_compactisodate($item["end"]);
 	

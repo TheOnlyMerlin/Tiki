@@ -26,7 +26,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td>{tr}Use in:{/tr}</td>
+			<td>{tr}Use in{/tr}:</td>
 			<td>
 				{if $prefs.feature_cms_templates eq 'y'}
 					<input type="checkbox" name="section_cms" {if $info.section_cms eq 'y'}checked="checked"{/if} /> 
@@ -36,11 +36,6 @@
 				{if $prefs.feature_wiki_templates eq 'y'}
 					<label><input type="checkbox" name="section_wiki" {if $info.section_wiki eq 'y'}checked="checked"{/if} />
 					{tr}Wiki{/tr}</label>
-					<br />
-				{/if}
-				{if $prefs.feature_file_galleries_templates eq 'y'}
-					<label><input type="checkbox" name="section_file_galleries" {if $info.section_file_galleries eq 'y'}checked="checked"{/if} />
-					{tr}File Galleries{/tr}</label>
 					<br />
 				{/if}
 				{if $prefs.feature_newsletters eq 'y'}
@@ -58,14 +53,14 @@
 					{tr}HTML Pages{/tr}</label>
 					<br />
 				{/if}
-				{if ($prefs.feature_cms_templates ne 'y') and ($prefs.feature_wiki_templates ne 'y') and ($prefs.feature_file_galleries_templates ne 'y') and ($prefs.feature_newsletters ne 'y') and ($prefs.feature_events ne 'y') and ($prefs.feature_html_pages ne 'y')}
+				{if ($prefs.feature_cms_templates ne 'y') and ($prefs.feature_wiki_templates ne 'y') and ($prefs.feature_newsletters ne 'y') and ($prefs.feature_events ne 'y') and ($prefs.feature_html_pages ne 'y')}
 					{tr}No features are configured to use templates.{/tr}
 				{/if}
 			</td>
 		</tr>
 
 		<tr>
-			<td>{tr}Template Type:{/tr}</td>
+			<td>{tr}Template Type{/tr}:</td>
 			<td>
 				<select name="template_type" class="type-selector">
 					<option value="static"{if $info.template_type eq 'static'} selected="selected"{/if}>{tr}Text area{/tr}</option>
@@ -75,7 +70,7 @@
 		</tr>
 		
 		<tr class="type-cond for-page">
-			<td>{tr}Page Name:{/tr}</td>
+			<td>{tr}Page Name{/tr}:</td>
 			<td>
 				<input type="text" name="page_name" value="{$info.page_name}"/>
 			</td>
@@ -83,7 +78,7 @@
 
 		<tr class="type-cond for-static">
 			<td colspan="2">
-				<label for="editwiki">{tr}Template:{/tr}</label>
+				<label for="editwiki">{tr}Template{/tr}:</label>
 			</td>
 		</tr>
 		<tr class="type-cond for-static">
@@ -131,9 +126,9 @@
 	{cycle values="odd,even" print=false advance=false}
 	{section name=user loop=$channels}
 		<tr class="{cycle}">
-			<td class="text">{$channels[user].name|escape}</td>
-			<td class="date">{$channels[user].created|tiki_short_datetime}</td>
-			<td class="text">
+			<td>{$channels[user].name|escape}</td>
+			<td>{$channels[user].created|tiki_short_datetime}</td>
+			<td>
 				{if count($channels[user].sections) == 0}{tr}Visible in no sections{/tr}{/if}
 				{section name=ix loop=$channels[user].sections}
 					{$channels[user].sections[ix]} 
@@ -142,7 +137,7 @@
 					</a>
 				{/section}
 			</td>
-			<td class="action">
+			<td>
 				<a title="{tr}Edit{/tr}" class="link" href="tiki-admin_content_templates.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;templateId={$channels[user].templateId}">
 					{icon _id='page_edit'}
 				</a> 
@@ -152,7 +147,11 @@
 			</td>
 		</tr>
 	{sectionelse}
-		{norecords _colspan=4}
+		<tr>
+			<td colspan="4" class="odd">
+				{tr}No records found{/tr}
+			</td>
+		</tr>
 	{/section}
 </table>
 

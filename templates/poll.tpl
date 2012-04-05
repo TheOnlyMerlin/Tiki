@@ -43,7 +43,7 @@
 			</div>
 			<div id="pollzone">
 				<div class="pollnav">
-					{button href="#" _onclick="hide('pollzone');hide('polledit');show('pollopen');return false;" _text="[-]"}
+					{button href="#" _onclick="hide('pollzone');hide('polledit');show('pollopen');return false;" _text="{tr}[-]{/tr}"}
 					{button href="#" _onclick="hide('pollzone');show('polledit');hide('pollopen');return false;" _text="{tr}Vote{/tr}"}
 				</div>
 				{foreach from=$ratings item=r}
@@ -60,7 +60,7 @@
 		{else}
 			<div id="pollzone">
 				<div class="pollnav">
-					{button href="#" _onclick="hide('pollzone');hide('polledit');show('pollopen');return false;" _text="[-]"}
+					{button href="#" _onclick="hide('pollzone');hide('polledit');show('pollopen');return false;" _text="{tr}[-]{/tr}"}
 				</div>
 				{foreach from=$ratings item=r}
 					<div>

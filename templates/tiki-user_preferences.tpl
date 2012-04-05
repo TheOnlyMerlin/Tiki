@@ -32,8 +32,8 @@
   <input type="hidden" name="view_user" value="{$userwatch|escape}" />
 
 
-  <table class="formcolor">
-    <tr>
+  <table class="normal">
+    <tr class="{cycle}">
       <td>{tr}User:{/tr}</td>
       <td>
         <strong>{$userinfo.login|escape}</strong>
@@ -43,7 +43,7 @@
       </td>
     </tr>
   
-    <tr>
+    <tr class="{cycle}">
       <td>
         {tr}Real Name:{/tr}
       </td>
@@ -54,7 +54,7 @@
       </td>
     </tr>
 
-    <tr>
+    <tr class="{cycle}">
       <td>{tr}Avatar:{/tr}</td>
       <td>
         {$avatar} 
@@ -63,7 +63,7 @@
     </tr>
   
 	{if $prefs.feature_community_gender eq 'y'}
-      <tr><td>{tr}Gender:{/tr}</td>
+      <tr class="{cycle}"><td>{tr}Gender:{/tr}</td>
         <td>
           <input type="radio" name="gender" value="Male" {if $user_prefs.gender eq 'Male'}checked="checked"{/if}/> {tr}Male{/tr}
           <input type="radio" name="gender" value="Female" {if $user_prefs.gender eq 'Female'}checked="checked"{/if}/> {tr}Female{/tr}
@@ -72,7 +72,7 @@
       </tr>
 	{/if}
 
-    <tr>
+    <tr class="{cycle}">
       <td>{tr}Country:{/tr}</td>
       <td>
         {if isset($user_prefs.country) && $user_prefs.country != "None" && $user_prefs.country != "Other"}
@@ -91,24 +91,29 @@
       </td>
     </tr>
   
-    <tr>
+    {if $prefs.feature_gmap eq 'y'}
+    <tr class="{cycle}">
       <td>{tr}Location:{/tr}</td>
       <td>
-	  	<div class="map-container" style="height: 250px;" data-target-field="location">
-		</div>
-		<input type="hidden" name="location" value="{$location|escape}"/>
+        {if $prefs.ajax_xajax eq 'y' and !empty($user_prefs.lat)}
+          {wikiplugin _name="googlemap" type="user" setdefaultxyz="" locateitemtype="user" locateitemid="$userwatch" width="200" height="100" controls="n"}{/wikiplugin}
+        {/if}
+        <p>
+          {button href="tiki-gmap_locator.php" for="user" view_user=$userinfo.login|escape for="user" _text="{tr}Use Google Map locator{/tr}" _auto_args='view_user,for'}
+        </p>
       </td>
     </tr>
+    {/if}
 
-    <tr>
-      <td>{tr}Homepage URL:{/tr}</td>
+    <tr class="{cycle}">
+      <td>{tr}URL:{/tr}</td>
       <td>
         <input type="text" size="40" name="homePage" value="{$user_prefs.homePage|escape}" />
       </td>
     </tr>
   
     {if $prefs.feature_wiki eq 'y' and $prefs.feature_wiki_userpage eq 'y'}
-      <tr>
+      <tr class="{cycle}">
         <td>{tr}Your personal Wiki Page:{/tr}</td>
         <td>
           {if $userPageExists eq 'y'}
@@ -123,14 +128,14 @@
   
 	{if $prefs.userTracker eq 'y' && $usertrackerId}
 		{if $tiki_p_admin eq 'y' and !empty($userwatch) and $userwatch neq $user}
-			<tr>
+			<tr class="{cycle}">
 				<td>{tr}User's personal tracker information:{/tr}</td>
 				<td>
 					<a class="link" href="tiki-view_tracker_item.php?trackerId={$usertrackerId}&user={$userwatch|escape:url}&view=+user">{tr}View extra information{/tr}</a>
 				</td>
 			</tr>
 		{else}
-			<tr>
+			<tr class="{cycle}">
 				<td>{tr}Your personal tracker information:{/tr}</td>
 				<td>
 					<a class="link" href="tiki-view_tracker_item.php?view=+user">{tr}View extra information{/tr}</a>
@@ -142,7 +147,7 @@
     {* Custom fields *}
     {section name=ir loop=$customfields}
       {if $customfields[ir].show}
-        <tr>
+        <tr class="{cycle}">
           <td>{$customfields[ir].label}:</td>
           <td>
             <input type="{$customfields[ir].type}" name="{$customfields[ir].prefName}" value="{$customfields[ir].value}" size="{$customfields[ir].size}" />
@@ -150,7 +155,7 @@
         </tr>
       {/if}
     {/section}
-    <tr>
+    <tr class="{cycle}">
       <td>{tr}User information:{/tr}</td>
       <td>
         <select name="user_information">
@@ -159,7 +164,7 @@
         </select>
       </td>
     </tr>
-    <tr>
+    <tr class="{cycle}">
       <td>{tr}Last login:{/tr}</td>
       <td><span class="description">{$userinfo.lastLogin|tiki_long_datetime}</span></td>
     </tr>
@@ -169,11 +174,11 @@
   </table>
 {/tab}
 {tab name="{tr}Preferences{/tr}"}
-  <table class="formcolor">
+  <table class="normal">
     <tr>
       <th colspan="2">{tr}General settings{/tr}</th>
     </tr>
-    <tr>
+    <tr class="{cycle}">
       <td>{tr}Is email public? (uses scrambling to prevent spam){/tr}</td>
       <td>
         {if $userinfo.email}
@@ -188,7 +193,7 @@
       </td>
     </tr>
     
-    <tr>
+    <tr class="{cycle}">
       <td>{tr}Does your mail reader need a special charset{/tr}</td>
       <td>
         <select name="mailCharset">
@@ -199,7 +204,7 @@
       </td>
     </tr>
     {if $prefs.change_theme eq 'y' && empty($group_style)}
-      <tr>
+      <tr class="{cycle}">
         <td>{tr}Theme:{/tr}</td>
         <td>
           <select name="mystyle">
@@ -219,7 +224,7 @@
     {/if}
   
     {if $prefs.change_language eq 'y'}
-      <tr>
+      <tr class="{cycle}">
         <td>{tr}Preferred language:{/tr}</td>
         <td>
           <select name="language">
@@ -262,7 +267,7 @@
       </tr>
     {/if}
   
-    <tr>
+    <tr class="{cycle}">
       <td>{tr}Number of visited pages to remember:{/tr}</td>
       <td>
         <select name="userbreadCrumb">
@@ -275,7 +280,7 @@
         </select>
       </td>
     </tr>
-    <tr>
+    <tr class="{cycle}">
       <td>{tr}Displayed time zone:{/tr}</td>
       <td>
         <select name="display_timezone" id="display_timezone">
@@ -289,14 +294,9 @@
         </select>
       </td>
     </tr>
-      <tr>
-        <td>{tr}Use 12-hour clock in time selectors:{/tr}</td>
-        <td>
-          <input type="checkbox" name="display_12hr_clock" {if $user_prefs.display_12hr_clock eq 'y'}checked="checked"{/if} />
-        </td>
-      </tr>
-          {if $prefs.feature_community_mouseover eq 'y'}
-      <tr>
+
+    {if $prefs.feature_community_mouseover eq 'y'}
+      <tr class="{cycle}">
         <td>{tr}Display info tooltip on mouseover for every user who allows his/her information to be public{/tr}</td>
         <td>
           <input type="checkbox" name="show_mouseover_user_info" {if $show_mouseover_user_info eq 'y'}checked="checked"{/if} />
@@ -305,7 +305,7 @@
     {/if}
 
     {if $prefs.feature_wiki eq 'y'}
-      <tr>
+      <tr class="{cycle}">
         <td>{tr}Use double-click to edit pages:{/tr}</td>
         <td>
           <input type="checkbox" name="user_dbl" {if $user_prefs.user_dbl eq 'y'}checked="checked"{/if} />
@@ -313,12 +313,33 @@
       </tr>
     {/if}
   
+    {if $prefs.feature_maps eq 'y' or $prefs.feature_gmap eq 'y'}
+      <tr class="{cycle}">
+        <td>{tr}Longitude:{/tr}</td>
+        <td>
+          <input type="text" name="lon" value="{$user_prefs.lon|escape}" /> <em>Use WGS84/decimal degrees</em>
+        </td>
+      </tr>
+      <tr class="{cycle}">
+        <td>{tr}Latitude:{/tr}</td>
+        <td>
+          <input type="text" name="lat" value="{$user_prefs.lat|escape}" /> <em>for longitude and latitude</em>
+        </td>
+      </tr>
+      <tr class="{cycle}">
+        <td>{tr}Map zoom:{/tr}</td>
+        <td>
+          <input type="text" name="zoom" value="{$user_prefs.zoom|escape}" />
+        </td>
+      </tr>
+    {/if}
+
     {if $prefs.feature_messages eq 'y' and $tiki_p_messages eq 'y'}
       <tr>
         <th colspan="2">{tr}User Messages{/tr}</th>
       </tr>
     
-      <tr>
+      <tr class="{cycle}">
         <td>{tr}Messages per page{/tr}</td>
         <td>
           <select name="mess_maxRecords">
@@ -334,20 +355,20 @@
       </tr>
 
       {if $prefs.allowmsg_is_optional eq 'y'}
-        <tr>
+        <tr class="{cycle}">
           <td>{tr}Allow messages from other users{/tr}</td>
           <td><input type="checkbox" name="allowMsgs" {if $user_prefs.allowMsgs eq 'y'}checked="checked"{/if}/></td>
         </tr>
       {/if}
 
-      <tr>
+      <tr class="{cycle}">
         <td>{tr}Notify sender when reading his mail{/tr}</td>
         <td>
           <input type="checkbox" name="mess_sendReadStatus" {if $user_prefs.mess_sendReadStatus eq 'y'}checked="checked"{/if}/>
         </td>
       </tr>
 
-      <tr>
+      <tr class="{cycle}">
         <td>{tr}Send me an email for messages with priority equal or greater than:{/tr}</td>
         <td>
           <select name="minPrio">
@@ -361,7 +382,7 @@
         </td>
       </tr>
 
-      <tr>
+      <tr class="{cycle}">
         <td>{tr}Auto-archive read messages after x days{/tr}</td>
         <td>
           <select name="mess_archiveAfter">
@@ -385,7 +406,7 @@
         <th colspan="2">{tr}User Tasks{/tr}</th>
       </tr>
     
-      <tr>
+      <tr class="{cycle}">
         <td>{tr}Tasks per page{/tr}</td>
         <td>
           <select name="tasks_maxRecords">
@@ -406,7 +427,7 @@
     </tr>
 
     {if $prefs.feature_wiki eq 'y'}
-      <tr>
+      <tr class="{cycle}">
         <td>{tr}My pages{/tr}</td>
         <td>
           <input type="checkbox" name="mytiki_pages" {if $user_prefs.mytiki_pages eq 'y'}checked="checked"{/if} />
@@ -415,7 +436,7 @@
     {/if}
 
     {if $prefs.feature_blogs eq 'y'}
-      <tr>
+      <tr class="{cycle}">
         <td>{tr}My blogs{/tr}</td>
         <td>
           <input type="checkbox" name="mytiki_blogs" {if $user_prefs.mytiki_blogs eq 'y'}checked="checked"{/if} />
@@ -424,7 +445,7 @@
     {/if}
 
     {if $prefs.feature_galleries eq 'y'}
-      <tr>
+      <tr class="{cycle}">
         <td>{tr}My galleries{/tr}</td>
         <td>
           <input type="checkbox" name="mytiki_gals" {if $user_prefs.mytiki_gals eq 'y'}checked="checked"{/if} />
@@ -433,7 +454,7 @@
     {/if}
 
     {if $prefs.feature_messages eq 'y'and $tiki_p_messages eq 'y'}
-      <tr>
+      <tr class="{cycle}">
         <td>{tr}My messages{/tr}</td>
         <td>
           <input type="checkbox" name="mytiki_msgs" {if $user_prefs.mytiki_msgs eq 'y'}checked="checked"{/if} />
@@ -442,7 +463,7 @@
     {/if}
 
     {if $prefs.feature_tasks eq 'y' and $tiki_p_tasks eq 'y'}
-      <tr>
+      <tr class="{cycle}">
         <td>{tr}My tasks{/tr}</td>
         <td>
           <input type="checkbox" name="mytiki_tasks" {if $user_prefs.mytiki_tasks eq 'y'}checked="checked"{/if} />
@@ -451,13 +472,13 @@
     {/if}
 
     {if $prefs.feature_forums eq 'y' and $tiki_p_forum_read eq 'y'}
-      <tr>
+      <tr class="{cycle}">
         <td>{tr}My forum topics{/tr}</td>
         <td>
           <input type="checkbox" name="mytiki_forum_topics" {if $user_prefs.mytiki_forum_topics eq 'y'}checked="checked"{/if} />
         </td>
       </tr>
-      <tr>
+      <tr class="{cycle}">
         <td>{tr}My forum replies{/tr}</td>
         <td>
           <input type="checkbox" name="mytiki_forum_replies" {if $user_prefs.mytiki_forum_replies eq 'y'}checked="checked"{/if} />
@@ -466,7 +487,7 @@
     {/if}
     
     {if $prefs.feature_trackers eq 'y'}
-      <tr>
+      <tr class="{cycle}">
         <td>{tr}My user items{/tr}</td>
         <td>
           <input type="checkbox" name="mytiki_items" {if $user_prefs.mytiki_items eq 'y'}checked="checked"{/if} />
@@ -475,7 +496,7 @@
     {/if}
 
     {if $prefs.feature_articles eq 'y'}
-      <tr>
+      <tr class="{cycle}">
         <td>{tr}My Articles{/tr}</td>
         <td>
           <input type="checkbox" name="mytiki_articles" {if $user_prefs.mytiki_articles eq 'y'}checked="checked"{/if} />
@@ -484,7 +505,7 @@
     {/if}
 
     {if $prefs.feature_userlevels eq 'y'}
-      <tr>
+      <tr class="{cycle}">
         <td>{tr}My level{/tr}</td>
         <td>
           <select name="mylevel">
@@ -508,10 +529,10 @@
 	{tab name="{tr}Account Information{/tr}"}
   <form action="tiki-user_preferences.php" method="post">
   <input type="hidden" name="view_user" value="{$userwatch|escape}" />
-  <table class="formcolor">
+  <table class="normal">
     {if $prefs.auth_method neq 'cas' || ($prefs.cas_skip_admin eq 'y' && $user eq 'admin')}
-      {if $prefs.change_password neq 'n' and ($prefs.login_is_email ne 'y' or $userinfo.login eq 'admin')}
-        <tr>
+      {if $prefs.change_password neq 'n' and ($prefs.login_is_email ne 'y' or $userinfo.login eq 'admin') }
+        <tr class="{cycle}">
           <td colspan="2">{tr}Leave "New password" and "Confirm new password" fields blank to keep current password{/tr}</td>
         </tr>
       {/if}
@@ -520,7 +541,7 @@
       {if $prefs.login_is_email eq 'y' and $userinfo.login neq 'admin'}
         <input type="hidden" name="email" value="{$userinfo.email|escape}" />
       {else}
-        <tr>
+        <tr class="{cycle}">
           <td>{tr}Email address:{/tr}</td>
           <td><input type="text" name="email" value="{$userinfo.email|escape}" /></td>
         </tr>
@@ -528,19 +549,19 @@
 
       {if $prefs.auth_method neq 'cas' || ($prefs.cas_skip_admin eq 'y' && $user eq 'admin')}
         {if $prefs.change_password neq 'n'}
-          <tr>
+          <tr class="{cycle}">
             <td>{tr}New password:{/tr}</td>
             <td><input type="password" name="pass1" /></td>
           </tr>
   
-          <tr>
+          <tr class="{cycle}">
             <td>{tr}Confirm new password:{/tr}</td>
             <td><input type="password" name="pass2" /></td>
           </tr>
         {/if}
       
         {if $tiki_p_admin ne 'y' or $userwatch eq $user}
-          <tr>
+          <tr class="{cycle}">
             <td>{tr}Current password (required):{/tr}</td>
             <td><input type="password" name="pass" /></td>
           </tr>
@@ -557,9 +578,9 @@
 
 {if $tiki_p_delete_account eq 'y' and $userinfo.login neq 'admin'}
 {tab name="{tr}Account Deletion{/tr}"}
-<form action="tiki-user_preferences.php" method="post" onsubmit='return confirm("{tr _0=$userwatch|escape}Are you really sure you want to delete the account %0?{/tr}");'>
+<form action="tiki-user_preferences.php" method="post" onsubmit='return confirm("{tr 0=$userwatch|escape}Are you really sure you want to delete the account %0?{/tr}");'>
 {if !empty($userwatch)}<input type="hidden" name="view_user" value="{$userwatch|escape}" />{/if}
- <table class="formcolor">
+ <table class="normal">
   <tr class="{cycle}">
    <td></td>
    <td><input type='checkbox' name='deleteaccountconfirm' value='1' /> {tr}Check this box if you really want to delete the account{/tr}</td>
