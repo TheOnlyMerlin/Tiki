@@ -2,6 +2,12 @@
 JQuery/Tiki readme
 -------------------------
 
+6 April 2012
+
+Update:
+	jquery.mobile 1.1.0-rc.1 to 1.1.0-rc.2
+
+
 1 April 2012
 
 New:
