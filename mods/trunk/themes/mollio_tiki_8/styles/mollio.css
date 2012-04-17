@@ -29,6 +29,11 @@ html>body {
 body.cke_show_borders {
 	font-size: .8em !important;
 }
+
+body.filegal_popup {
+	background: #fff; 
+}
+
  /***** Layout (overrides layout.css;
 		also styling of page layout divs)  *****/
 
