@@ -1,0 +1,53 @@
+contributor:
+$Author$
+
+revision:
+$Revision$
+
+lastmodif:
+$Date$
+
+files:
+themes/mollio_tiki_8/Readme.txt templates/styles/mollio/Readme.txt
+themes/mollio_tiki_8/styles/mollio.css styles/mollio.css
+themes/mollio_tiki_8/styles/mollio/arrows-000000.png styles/mollio/arrows-000000.png
+themes/mollio_tiki_8/styles/mollio/arrows-cc0000.png styles/mollio/arrows-cc0000.png
+themes/mollio_tiki_8/styles/mollio/content_wrap_bg.gif styles/mollio/content_wrap_bg.gif
+themes/mollio_tiki_8/styles/mollio/content_wrap_e_bg.gif styles/mollio/content_wrap_e_bg.gif
+themes/mollio_tiki_8/styles/mollio/featurebox_bg.gif styles/mollio/featurebox_bg.gif
+themes/mollio_tiki_8/styles/mollio/featurebox2_bg.gif styles/mollio/featurebox2_bg.gif
+themes/mollio_tiki_8/styles/mollio/body_bg.gif styles/mollio/body_bg.gif
+themes/mollio_tiki_8/styles/mollio/header_bg.gif styles/mollio/header_bg.gif
+themes/mollio_tiki_8/styles/mollio/ie6.css styles/mollio/ie6.css
+themes/mollio_tiki_8/styles/mollio/ie7.css styles/mollio/ie7.css
+themes/mollio_tiki_8/styles/mollio/index.php styles/mollio/index.php
+themes/mollio_tiki_8/styles/mollio/mollio.png styles/mollio/mollio.png
+themes/mollio_tiki_8/styles/mollio/sprites.gif styles/mollio/sprites.gif
+themes/mollio_tiki_8/styles/mollio/sprites_td.png styles/mollio/sprites_td.png
+themes/mollio_tiki_8/styles/mollio/td_bg.gif styles/mollio/td_bg.gif
+themes/mollio_tiki_8/styles/mollio/td_bg_light.jpg styles/mollio/td_bg_light.jpg
+themes/mollio_tiki_8/styles/mollio/options/typeF.css styles/mollio/options/typeF.css
+themes/mollio_tiki_8/styles/mollio/options/typeF/typeF.png styles/mollio/options/typeF/typeF.png
+themes/mollio_tiki_8/styles/mollio/pics/icons/folder.png styles/mollio/pics/icons/folder.png
+themes/mollio_tiki_8/styles/mollio/pics/icons/ofolder.png styles/mollio/pics/icons/ofolder.png
+themes/mollio_tiki_8/templates/styles/mollio/credits.tpl templates/styles/mollio/credits.tpl
+themes/mollio_tiki_8/templates/styles/mollio/index.php templates/styles/mollio/index.php
+
+author:
+Gary Cunningham-Lee (chibaguy)
+
+licence:
+This theme is a derived work using visual elements of the original Mollio design, which was released under three licenses: Creative Commons 2.5, GPL, and CPL.
+
+Description: 
+This is an interpretation of the Mollio design for Tiki Wiki CMS Groupware, which implements the Mollio layout variants (http://mollio.org) as a theme option or Look and Feel configuration options. Original design by Pete Ottery, while working at Daemon web development company in Sydney, Australia. Adapted for Tiki by Gary Cunningham-Lee (chibaguy).
+
+Version:
+8
+
+Changelog:
+5 Updated for Tiki 8 (fix of WYSIWYG editor background contrast problem)
+4 Updated for Tiki 7 (support for modules in Look and Feel areas, etc.) 
+3 Updated for Tiki 6
+2 Updated for Tiki 5
+1 Initial package
