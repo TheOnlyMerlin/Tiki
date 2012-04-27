@@ -251,7 +251,9 @@ function wikiplugin_rr($data, $params) {
 		defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' --save --quiet'));
 		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
 		defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash. '_itemid_' . sprintf ("%06u", $_REQUEST['itemId']));
-		mkdir(r_dir, 0700);
+                if (!file_exists ( r_dir )) {
+                        mkdir(r_dir, 0700);
+                }
 		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
 		defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash. '_itemid_' . sprintf ("%06u", $_REQUEST['itemId']));
 	}elseif (isset($params["loadandsave"]) && $params["loadandsave"]==1) {
@@ -264,7 +266,9 @@ function wikiplugin_rr($data, $params) {
 
 		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
 		defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash. $wikipage);
-		mkdir(r_dir, 0700);
+                if (!file_exists ( r_dir )) {
+                        mkdir(r_dir, 0700);
+                }
 		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
 		defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash. $wikipage);
 		defined('wikipage')  || define('wikipage', $wikipage );

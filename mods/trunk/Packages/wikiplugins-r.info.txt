@@ -2,10 +2,10 @@ contributor:
 $Author: xavi $
 
 revision: 
-$Revision: 0.72 $
+$Revision: 0.73 $
 
 lastmodif:
-$Date: 2012-03-11 00:34:00 $
+$Date: 2012-04-27 13:00:00 $
 
 files: 
 wiki-plugins/r/lib/wiki-plugins/wikiplugin_r.php lib/wiki-plugins/wikiplugin_r.php
@@ -46,3 +46,4 @@ Changelog:
 0.70 Added optional generation of SVG and/or PDF files from each plot, in order to allow producing high quality vectorial plots which can be enlarged or edited without loosing quality. Also minor enhancement added for better display of png images when inside tiki slideshows in Tiki 6.5+ and 7.2+.
 0.71 Same value pairs for onefile param as with otehr params. Added language files (they work in Tiki8+).
 0.72 Added the ability to create and display several png's when the R call wants to generate new graphs from any command and the user writes "# newgraph" before the new graph so that pluginR opens up the required new graphic device.
+0.73 Creation of folders for temp only if they are missing (therefore removing the harmless but annoying warning when they exist already)
