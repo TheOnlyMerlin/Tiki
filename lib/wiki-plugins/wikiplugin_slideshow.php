@@ -1,19 +1,18 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_slideshow_info()
-{
+function wikiplugin_slideshow_info() {
 	return array(
 		'name' => tra('Slideshow'),
 		'documentation' => 'Slideshow',
 		'description' => tra('Configure a slideshow. Extends the existing wiki page slideshow with notes & styles.'),
 		'prefs' => array( 'wikiplugin_slideshow', 'feature_slideshow', 'wiki_uses_slides' ),
 		'body' => tra('Slideshow notes - Separate with "/////"'),
-		'icon' => 'img/icons/images.png',
+		'icon' => 'pics/icons/images.png',
 		'tags' => array( 'basic' ),
 		'params' => array(
 			'theme' => array(
@@ -80,7 +79,7 @@ function wikiplugin_slideshow_info()
 				'name' => tra('Header font color'),
 				'description' => tra('Apply a color to the headers of your slideshow'),
 				'filter' => 'text',
-				'accepted' => tra('Any HTML color'),
+				'accepted' => tra('Any html color'),
 				'default' => '#56D0FF',
 				'since' => '7.0',
 			),
@@ -89,7 +88,7 @@ function wikiplugin_slideshow_info()
 				'name' => tra('Header background color'),
 				'description' => tra('Apply a color to the headers of your slideshow'),
 				'filter' => 'text',
-				'accepted' => tra('Any HTML color'),
+				'accepted' => tra('Any html color'),
 				'since' => '7.0',
 			),
 			'slidefontcolor' => array(
@@ -97,7 +96,7 @@ function wikiplugin_slideshow_info()
 				'name' => tra('Slide font color'),
 				'description' => tra('Apply a color to the slides of your slideshow'),
 				'filter' => 'text',
-				'accepted' => tra('Any HTML color'),
+				'accepted' => tra('Any html color'),
 				'default' => '#EEFAFF',
 				'since' => '7.0',
 			),
@@ -106,7 +105,7 @@ function wikiplugin_slideshow_info()
 				'name' => tra('Line Item highlight color'),
 				'description' => tra('Apply a color to the line item when mouse over'),
 				'filter' => 'text',
-				'accepted' => tra('Any HTML color'),
+				'accepted' => tra('Any html color'),
 				'default' => '',
 				'since' => '7.0',
 			),
@@ -135,10 +134,9 @@ function wikiplugin_slideshow_info()
 	);
 }
 
-function wikiplugin_slideshow($data, $params)
-{
+function wikiplugin_slideshow($data, $params) {
 	global $dbTiki, $tiki_p_admin, $prefs, $user, $page, $tikilib, $smarty;
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 
 	$theme = (isset($theme) ? $theme : 'default');
 	$themeName = '';
@@ -172,8 +170,8 @@ function wikiplugin_slideshow($data, $params)
 	
 	global $headerlib;
 	
-	$headerlib->add_js(
-					"window.slideshowSettings = {
+	$headerlib->add_js("
+		window.slideshowSettings = {
 			class: '$class',
 			backgroundurl: '$backgroundurl',
 			backgroundcolor: '$backgroundcolor',
@@ -196,10 +194,9 @@ function wikiplugin_slideshow($data, $params)
 			slideDuration: $slideduration,
 			listItemHighlightColor: '$listitemhighlightcolor',
 			textSide: '$textside',
-			themeName: '$themeName',
-			basePath: 'lib/jquery.s5/'
-		};"
-	);
+			themeName: '$themeName'
+		};
+	");
 	
 	return "~np~<div id='' class='tiki_slideshow'>$notesHtml</div>~/np~";
 }

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -27,22 +27,24 @@ abstract class Tracker_Field_Abstract implements Tracker_Field_Interface, Tracke
 	{
 		if ($this->isLink($context)) {
 			$itemId = $this->getItemId();
-			$query = array_merge(
-							$_GET, 
-							array(
-								'itemId' => $itemId,
-								'show' => 'view',
-							)
-			);
-
-
-			$classList = array('tablename');
-			$metadata = TikiLib::lib('object')->get_metadata('trackeritem', $itemId, $classList);
+			$query = array_merge($_GET, array(
+				'itemId' => $itemId,
+				'show' => 'view',
+			));
 
 			$arguments = array(
-				'class' => implode(' ', $classList),
+				'class' => 'tablename',
 				'href' => 'tiki-view_tracker_item.php?' . http_build_query($query, '', '&'),
 			);
+
+			$geolocation = TikiLib::lib('geo')->get_coordinates('trackeritem', $itemId);
+
+			if ($geolocation) {
+				$arguments['class'] .= ' geolocated';
+				$arguments['data-geo-lat'] = $geolocation['lat'];
+				$arguments['data-geo-lon'] = $geolocation['lon'];
+			}
+			
 			if (!empty($context['url']) && strpos($context['url'], 'itemId') !== false) {
 				$context['url'] = preg_replace('/([&|\?])itemId=?[^&]*/', '\\1itemId=' . $itemId, $context['url']);
 				$arguments['href'] = $context['url'];
@@ -61,7 +63,6 @@ abstract class Tracker_Field_Abstract implements Tracker_Field_Interface, Tracke
 				}
 			}
 
-			$pre .= $metadata;
 			$pre .= '>';
 			$post = '</a>';
 
@@ -127,7 +128,6 @@ abstract class Tracker_Field_Abstract implements Tracker_Field_Interface, Tracke
 			// or ($tracker_info.writerCanModify eq 'y' and $user and $my eq $user)
 			// or ($tracker_info.writerGroupCanModify eq 'y' and $group and $ours eq $group))
 			) {
-
 			return (bool) $this->getItemId();
 		}
 
@@ -150,7 +150,7 @@ abstract class Tracker_Field_Abstract implements Tracker_Field_Interface, Tracke
 			$field = $this->trackerDefinition->getField($id);
 			
 			if (!isset($this->itemData[$field['fieldId']])) {
-				foreach ($this->itemData['field_values'] as $fieldVal) {
+				foreach($this->itemData['field_values'] as $fieldVal) {
 					if ($fieldVal['fieldId'] == $id) {
 						if (isset($fieldVal['value'])) {
 							$this->itemData[$field['fieldId']] = $fieldVal['value'];
@@ -190,12 +190,6 @@ abstract class Tracker_Field_Abstract implements Tracker_Field_Interface, Tracke
 		}
 	}
 
-	/**
-	 * Return the HTML id of input tag for this
-	 * field in the item form
-	 * 
-	 * @return string
-	 */
 	protected function getInsertId()
 	{
 		return 'ins_' . $this->definition['fieldId'];
@@ -211,22 +205,14 @@ abstract class Tracker_Field_Abstract implements Tracker_Field_Interface, Tracke
 		return isset($this->definition[$key]) ? $this->definition[$key] : $default;
 	}
 
-	/**
-	 * Return the value for this item field
-	 * 
-	 * @param mixed $default the field value used if none is set
-	 * @return mixed field value
-	 */
 	protected function getValue($default = '')
 	{
 		$key = $this->getConfiguration('fieldId');
 		
 		if (isset($this->itemData[$key])) {
-			$value = $this->itemData[$key];
-		} else if (isset($this->definition['value'])) {
-			$value = $this->definition['value'];
+			$value =$this->itemData[$key];
 		} else {
-			$value = null;
+			$value = isset($this->itemData[$key]) ? $this->itemData[$key] : null;
 		}
 
 		return $value === null ? $default : $value;
@@ -244,11 +230,6 @@ abstract class Tracker_Field_Abstract implements Tracker_Field_Interface, Tracke
 
 	/**
 	 * Returns an option from the options array based on the numeric position.
-	 * For the list of options for a particular field check its getTypes() method. 
-	 * 
-	 * @param int $number
-	 * @param bool $default
-	 * @return mixed
 	 */
 	protected function getOption($number, $default = false)
 	{
@@ -284,12 +265,6 @@ abstract class Tracker_Field_Abstract implements Tracker_Field_Interface, Tracke
 	protected function renderTemplate($file, $context = array(), $data = array())
 	{
 		$smarty = TikiLib::lib('smarty');
-
-		//ensure value is set, because it may not always come from definition
-		if (!isset($this->definition['value'])) {
-			$this->definition['value'] = $this->getValue();
-		}
-
 		$smarty->assign('field', $this->definition);
 		$smarty->assign('context', $context);
 		$smarty->assign('item', $this->getItemData());

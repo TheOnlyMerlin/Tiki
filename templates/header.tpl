@@ -55,20 +55,13 @@
 
 {* --- tiki block --- *}
 <title>{strip}
-{if !empty($sswindowtitle)}
-	{if $sswindowtitle eq 'none'}
-		&nbsp;
-	{else}
-		{$sswindowtitle|escape}
-	{/if}
-{else}
 	{if $prefs.site_title_location eq 'before'}{$prefs.browsertitle|tr_if|escape} {$prefs.site_nav_seper} {/if}
 	{capture assign="page_description_title"}{strip}
 		{if ($prefs.feature_breadcrumbs eq 'y' or $prefs.site_title_breadcrumb eq "desc") && isset($trail)}
 			{breadcrumbs type=$prefs.site_title_breadcrumb loc="head" crumbs=$trail}
 		{/if}
 	{/strip}{/capture}
-	{if isset($structure) and $structure eq 'y'} {* get the alias name if item is a wiki page and it is in a structure *}
+	{if $structure eq 'y'} {* get the alias name if item is a wiki page and it is in a structure *}
 		{section loop=$structure_path name=ix}
 		{assign var="aliasname" value={$structure_path[ix].page_alias}}
 		{/section} 	
@@ -103,7 +96,6 @@
 		{/if}
 	{/if}
 	{if $prefs.site_title_location eq 'after'} {$prefs.site_nav_seper} {$prefs.browsertitle|tr_if|escape}{/if}
-{/if}
 {/strip}</title>
 
 {if $prefs.site_favicon}
@@ -143,14 +135,6 @@
 
 {if $prefs.feature_calendar eq 'y' and $prefs.feed_calendar eq 'y' and $tiki_p_view_calendar eq 'y'}
 	<link rel="alternate" type="application/rss+xml" title='{$prefs.feed_calendar_title|escape|default:"{tr}RSS Calendars{/tr}"}' href="tiki-calendars_rss.php?ver={$prefs.feed_default_version|escape:'url'}" />
-{/if}
-
-{if $prefs.feature_trackers eq 'y' and $prefs.feed_tracker eq 'y'}
-	{foreach from=$rsslist_trackers item="tracker"}
-		<link rel="alternate" type="application/rss+xml"
-			  title='{$prefs.feed_tracker_title|cat:" - "|cat:$tracker.name|escape|default:"{tr}RSS Tracker{/tr}"}'
-			  href="tiki-tracker_rss.php?ver={$prefs.feed_default_version|escape:'url'}&trackerId={$tracker.trackerId}" />
-	{/foreach}
 {/if}
 
 {if ($prefs.feature_blogs eq 'y' and $prefs.feature_blog_sharethis eq 'y') or ($prefs.feature_articles eq 'y' and $prefs.feature_cms_sharethis eq 'y')}

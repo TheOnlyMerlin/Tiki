@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -23,8 +23,8 @@ class Language_MergeFilesTest extends TikiTestCase
 
 		$sourceFilePath = vfsStream::url('root/language_source.php');
 		$targetFilePath = vfsStream::url('root/language_target.php');
-		$this->sourceFileObj = $this->getMock('Language_File', array('parse'), array($sourceFilePath));
-		$this->targetFileObj = $this->getMock('Language_File', array('parse'), array($targetFilePath));
+		$this->sourceFileObj = $this->getMock('Language_ParseFile', array('parse'), array($sourceFilePath));
+		$this->targetFileObj = $this->getMock('Language_ParseFile', array('parse'), array($targetFilePath));
 		
 		$this->obj = new Language_MergeFiles($this->sourceFileObj, $this->targetFileObj);
 	}

@@ -1,12 +1,11 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_smarty_info()
-{
+function wikiplugin_smarty_info() {
 	return array(
 		'name' => tra('Smarty function'),
 		'documentation' => 'PluginSmarty',
@@ -15,7 +14,7 @@ function wikiplugin_smarty_info()
 		'validate' => 'all',
 		'extraparams' => true,
 		'tags' => array( 'experimental' ),
-		'icon' => 'img/icons/task_submitted.png',
+		'icon' => 'pics/icons/task_submitted.png',
 		'params' => array(
 			'name' => array(
 				'required' => true,
@@ -28,8 +27,7 @@ function wikiplugin_smarty_info()
 	);
 }
 
-function wikiplugin_smarty($data, $params)
-{
+function wikiplugin_smarty($data, $params) {
 	global $smarty;
 	if (empty($params['name'])) {
 		return tra('Incorrect parameter');
@@ -37,7 +35,7 @@ function wikiplugin_smarty($data, $params)
 	$path = 'lib/smarty_tiki/function.'.$params['name'].'.php';
 	if (!file_exists($path)) {
 		$path = 'lib/smarty/libs/plugins/function.'.$params['name'].'.php';
-		if (!file_exists($path)) {
+		if(!file_exists($path)){
 			return tra('Incorrect parameter');
 		}
 	}

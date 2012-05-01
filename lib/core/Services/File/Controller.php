@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -24,21 +24,15 @@ class Services_File_Controller
 		$name = $input->name->text();
 		$type = $input->type->text();
 		$data = $input->data->none();
-		$fileId = $input->fileId->int();
 
 		$data = base64_decode($data);
 
 		if (function_exists('finfo_buffer')) {
-			$php53 = defined('FILEINFO_MIME_TYPE');
-			$finfo = new finfo($php53 ? FILEINFO_MIME_TYPE : FILEINFO_MIME);
+			$finfo = new finfo(FILEINFO_MIME);
 			$type = $finfo->buffer($data);
 		}
 
-		if ($fileId) {
-			$this->updateFile($gal_info, $name, $size, $type, $data, $fileId);
-		} else {
-			$fileId = $this->uploadFile($gal_info, $name, $size, $type, $data);
-		}
+		$fileId = $this->uploadFile($gal_info, $name, $size, $type, $data);
 
 		if ($fileId === false) {
 			throw new Services_Exception(tr('File could not be uploaded. Restrictions apply.'), 406);
@@ -145,12 +139,6 @@ class Services_File_Controller
 	{
 		$filegallib = TikiLib::lib('filegal');
 		return $filegallib->upload_single_file($gal_info, $name, $size, $type, $data);
-	}
-
-	private function updateFile($gal_info, $name, $size, $type, $data, $fileId)
-	{
-		$filegallib = TikiLib::lib('filegal');
-		return $filegallib->update_single_file($gal_info, $name, $size, $type, $data, $fileId);
 	}
 }
 

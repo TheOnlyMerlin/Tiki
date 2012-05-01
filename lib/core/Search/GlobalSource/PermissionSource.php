@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -57,12 +57,10 @@ class Search_GlobalSource_PermissionSource implements Search_GlobalSource_Interf
 	
 	private function getAllowedGroups($objectType, $objectId, $viewPermission)
 	{
-		$accessor = $this->perms->getAccessor(
-						array(
-							'type' => $objectType,
-							'object' => $objectId,
-						)
-		);
+		$accessor = $this->perms->getAccessor(array(
+			'type' => $objectType,
+			'object' => $objectId,
+		));
 
 		$groups = array();
 		foreach ($this->getCheckList($accessor) as $groupName) {

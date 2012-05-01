@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -76,8 +76,7 @@ $fgal_options = array(
 	'show_explorer' => array('name' => tra('Explorer')),
 	'show_path' => array('name' => tra('Path')),
 	'show_slideshow' => array('name' => tra('Slideshow')),
-	'default_view' => array('name' => tra('Default View')),
-	'icon_fileId' => array('name' => tra('Gallery Icon')),
+	'default_view' => array('name' => tra('Default View'))
 );
 
 if (isset($_REQUEST['view']) && $_REQUEST['view'] == 'admin') {
@@ -85,7 +84,6 @@ if (isset($_REQUEST['view']) && $_REQUEST['view'] == 'admin') {
 	$fgal_options['show_path'] = 'n';
 	$fgal_options['show_slideshow'] = 'n';
 	$fgal_options['default_view'] = 'list';
-	$fgal_options['icon_fileId'] = '';
 } else {
 	foreach ( $fgal_options as $k_gal => $v ) {
 		$k_prefs = 'fgal_'.$k_gal;

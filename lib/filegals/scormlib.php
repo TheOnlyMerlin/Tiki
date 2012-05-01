@@ -1,11 +1,11 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
@@ -24,12 +24,9 @@ class ScormLib
 	function handle_file_creation($args)
 	{
 		if ($metadata = $this->getRequestMetadata($args)) {
-			$this->createItem(
-							$metadata, 
-							array(
-								'scormPackage' => $args['object'],
-							)
-			);
+			$this->createItem($metadata, array(
+				'scormPackage' => $args['object'],
+			));
 		}
 	}
 
@@ -43,13 +40,9 @@ class ScormLib
 
 			foreach ($items as $item ) {
 				if ($item['type'] == 'trackeritem') {
-					$this->updateItem(
-									$item['itemId'], 
-									$metadata, 
-									array(
-										'scormPackage' => $args['object'],
-									)
-					);
+					$this->updateItem($item['itemId'], $metadata, array(
+						'scormPackage' => $args['object'],
+					));
 				}
 			}
 
@@ -154,13 +147,10 @@ class ScormLib
 		$fields = $this->buildFields($definition, $metadata, $additional);
 
 		$utilities = new Services_Tracker_Utilities;
-		$utilities->insertItem(
-						$definition, 
-						array(
-							'status' => 'o',
-							'fields' => $fields,
-						)
-		);
+		$utilities->insertItem($definition, array(
+			'status' => 'o',
+			'fields' => $fields,
+		));
 	}
 
 	private function updateItem($itemId, $metadata, $additional)
@@ -169,14 +159,11 @@ class ScormLib
 		$fields = $this->buildFields($definition, $metadata, $additional);
 
 		$utilities = new Services_Tracker_Utilities;
-		$utilities->updateItem(
-						$definition, 
-						array(
-							'itemId' => (int) $itemId,
-							'status' => 'o',
-							'fields' => $fields,
-						)
-		);
+		$utilities->updateItem($definition, array(
+			'itemId' => (int) $itemId,
+			'status' => 'o',
+			'fields' => $fields,
+		));
 	}
 
 	private function getScormTracker()
@@ -194,7 +181,7 @@ class ScormLib
 			if ($field = $definition->getFieldFromPermName($key)) {
 				if ($field['type'] === 'F') {
 					$fields[$key] = $this->getTagString($values);
-				} elseif ($field['isMultilingual'] == 'y') {
+				} elseif($field['isMultilingual'] == 'y') {
 					$fields[$key] = reset($values);
 				} else {
 					$fields[$key] = $this->getForDefaultLanguage($values);

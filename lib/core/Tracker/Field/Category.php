@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -154,8 +154,7 @@ class Tracker_Field_Category extends Tracker_Field_Abstract implements Tracker_F
 		return $output;
 	}
 	
-	private function describeCategoryList($categs) 
-	{
+	private function describeCategoryList($categs) {
 	    $categlib = TikiLib::lib('categ');
 	    $res = '';
 	    foreach ($categs as $cid) {
@@ -222,12 +221,10 @@ class Tracker_Field_Category extends Tracker_Field_Abstract implements Tracker_F
 	private function getRemoteCategoriesAsOptions($syncInfo, $parentId, $descending)
 	{
 		$controller = new Services_RemoteController($syncInfo['provider'], 'category');
-		$categories = $controller->list_categories(
-						array(
-							'parentId' => $parentId,
-							'descends' => $descending,
-						)
-		);
+		$categories = $controller->list_categories(array(
+			'parentId' => $parentId,
+			'descends' => $descending,
+		));
 
 		$parts = array();
 		foreach ($categories as $categ) {

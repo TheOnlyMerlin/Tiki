@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,6 +7,7 @@
 
 $section = 'mytiki';
 include_once ('tiki-setup.php');
+include_once('lib/reportslib.php');
 
 $access->check_user($user);
 $access->check_feature('feature_user_watches');
@@ -81,16 +82,16 @@ if (isset($_REQUEST["add"])) {
 				$watch_type = 'wiki page';
 				$watch_label = tra('Language watch') . ": {$lang['name']}";
 				$watch_url = "tiki-user_watches.php";
-    			break;
+				break;
 
 			case 'category_changed_in_lang':
 				if ( $selected_categ && $langwatch ) {
 					$watch_object = $selected_categ['categId'];
 					$watch_type = $langwatch['value'];
-					$watch_label = tr('Category watch: %0, Language: %1', $selected_categ['name'], $langwatch['name']);
+					$watch_label = tr('Category watch: %0, Language: %1', $selected_categ['name'], $langwatch['name'] );
 					$watch_url = "tiki-browse_categories.php?lang={$lang['value']}&parentId={$selected_categ['categId']}";
 				}
-    			break;
+				break;
 
 			default:
 				if (!isset($notification_types[$_REQUEST['event']])) {
@@ -185,7 +186,6 @@ if ($prefs['feature_messages'] == 'y' && $tiki_p_messages == 'y') {
 $eok = $userlib->get_user_email($user);
 $smarty->assign('email_ok', empty($eok) ? 'n' : 'y');
 ask_ticket('user-watches');
-$reportsUsers = Reports_Factory::build('Reports_Users');
-$smarty->assign_by_ref('report_preferences', $reportsUsers->get($user));
+$smarty->assign_by_ref('report_preferences', $reportslib->get_report_preferences_by_user($user));
 $smarty->assign('mid', 'tiki-user_watches.tpl');
 $smarty->display("tiki.tpl");

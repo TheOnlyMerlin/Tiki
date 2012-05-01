@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,51 +9,36 @@
 // RULE2: put array('') in default prefs for serialized values
 
 //this script may only be included - so its better to die if called directly.
-if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
-	header("location: index.php");
-	exit;
+if ( basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__) ) {
+  header("location: index.php");
+  exit;
 }
 
-// 
-// This section is being phased out. Please use the instructions at http://dev.tiki.org/Creating+New+Preferences instead.
-// 
 
 // Prefs for which we want to use the site value (they will be prefixed with 'site_')
 // ( this is also used in tikilib, not only when reloading prefs )
-$user_overrider_prefs = array(
-				'language', 
-				'style', 
-				'style_option', 
-				'userbreadCrumb', 
-				'tikiIndex', 
-				'wikiHomePage',
-				'default_calendars', 
-				'metatag_robots', 
-				'themegenerator_theme'
-);
-
+$user_overrider_prefs = array('language', 'style', 'style_option', 'userbreadCrumb', 'tikiIndex', 'wikiHomePage',
+								'default_calendars', 'metatag_robots', 'themegenerator_theme');
 initialize_prefs();
 
-function get_default_prefs()
-{
+function get_default_prefs() {
 	static $prefs;
 	if ( is_array($prefs) )
 		return $prefs;
 
 	global $cachelib; require_once 'lib/cache/cachelib.php';
-	if ( $prefs = $cachelib->getSerialized('tiki_default_preferences_cache') ) {
+	if ( $prefs = $cachelib->getSerialized("tiki_default_preferences_cache") ) {
 		return $prefs;
 	}
 
 	$prefslib = TikiLib::lib('prefs');
 	$prefs = $prefslib->getDefaults();
-	$prefs = array_merge(
-					$prefs, 
-					array(
+	$prefs = array_merge($prefs, array(
 		// tiki and version
 		'tiki_release' => '0',
 		'tiki_needs_upgrade' => 'n',
 		'tiki_version_last_check' => 0,
+		'versionOfPreferencesCache' => 1, // Fake preference to manage caches of modified preferences
 
 
 		'groups_are_emulated' => 'n',
@@ -78,16 +63,10 @@ function get_default_prefs()
 		// webservices
 		'webservice_consume_defaultcache' => 300, // 5 min
 
-		// File galleries
-
-		// Root galleries fake preferences. These are automatically overridden by schema upgrade scripts 
-		//  for installations that pre-date the existence of these root galleries.
-		'fgal_root_id' => 1, // Ancestor of "default" type galleries. For old installs, overriden by 20090811_filegals_container_tiki.sql
-		'fgal_root_user_id' => 2, // Ancestor of "user" type galleries (feature_use_fgal_for_user_files). For old installs, 
-															// overriden by 20101126_fgal_add_gallerie_user_tiki.php
-		'fgal_root_wiki_attachments_id' => 3, // Ancestor of wiki "attachments" type galleries (feature_use_fgal_for_wiki_attachments). 
-																					// For old installs, overriden by 20101210_fgal_add_wiki_attachments_tiki.php
-
+		// filegals
+		'fgal_root_id' => 1,
+		'fgal_root_user_id' => 2,
+		'fgal_root_wiki_attachments_id' => 3,
 		'fgal_enable_auto_indexing' => 'y',
 		'fgal_asynchronous_indexing' => 'y',
 		'fgal_sort_mode' => '',
@@ -160,7 +139,6 @@ function get_default_prefs()
 		'cms_left_column' => 'y',
 		'cms_right_column' => 'y',
 		'cms_top_bar' => 'n',
-		'cms_last_viewed_month' => '0',
 
 
 		// trackers
@@ -200,19 +178,19 @@ function get_default_prefs()
 		'rss_mapfiles' => 'n',
 		'title_rss_mapfiles' => '',
 
-
+	
 		// auth
 		'min_user_length' => 1,
 		'auth_pear' => 'tiki',
 		'auth_ldap_url' => '',
-		'auth_pear_host' => 'localhost',
-		'auth_pear_port' => '389',
+		'auth_pear_host' => "localhost",
+		'auth_pear_port' => "389",
 		'auth_ldap_groupnameatr' => '',
 		'auth_ldap_groupdescatr' => '',
 		'auth_ldap_syncuserattr' => 'uid',
 		'auth_ldap_syncgroupattr' => 'cn',
 
-
+		
 		'auth_phpbb_dbport' => '',
 		'auth_phpbb_dbtype' => 'mysql',
 
@@ -237,6 +215,8 @@ function get_default_prefs()
 
 		// categories
 		'category_i18n_unsynced' => array(),
+		'expanded_category_jail' => '',
+		'expanded_category_jail_key' => '',
 
 		// look and feel
 
@@ -254,10 +234,10 @@ function get_default_prefs()
 		// full list in lib/toolbars/toolbarslib.php Toolbar::getList()
 		// cannot contain spaces, commas, forward-slash or pipe chars
 		'toolbar_global' => '
-			bold,italic,underline,strike, sub, sup,-,color,-,wikiplugin_img,tikiimage,wikiplugin_file,tikifile,tikilink,link, unlink, anchor,-,
+			bold,italic,underline,strike, sub, sup,-,color,-,wikiplugin_img,tikiimage,wikiplugin_file,tikilink,link, unlink, anchor,-,
 			undo, redo,-,find,replace,-, removeformat,specialchar,smiley|help,switcheditor,autosave/
 			templates, cut, copy, paste, pastetext, pasteword,-,h1,h2,h3, left,center,-,
-			blockquote,list,numlist,wikiplugin_mouseover,wikiplugin_module,wikiplugin_html,wikiplugin_wysiwyg,wikiplugin_draw, outdent, indent,-,
+			blockquote,list,numlist,wikiplugin_mouseover,wikiplugin_module,wikiplugin_html, outdent, indent,-,
 			pagebreak,rule,-,table,-,wikiplugin_code, source, showblocks,nonparsed|fullscreen/
 			format,style,-,fontname,fontsize/
 		',
@@ -287,10 +267,13 @@ function get_default_prefs()
 		'feature_usability' => 'n',
 		'minical_reminders' => 0,
 		'php_docroot' => 'http://php.net/',
+		'ip_can_be_checked' => 'n',
 		'shoutbox_autolink' => 'n',
 		'show_comzone' => 'n',
 		'use_proxy' => 'n',
 		'webserverauth' => 'n',
+	
+		'case_patched' => 'n',
 
 		'feature_intertiki_imported_groups' => '',
 		'feature_contributor_wiki' => '',
@@ -311,8 +294,7 @@ function get_default_prefs()
 		'feature_lastup' => 'y',
 
 		'terminology_profile_installed' => 'n',
-	)
-	);
+	));
 
 	// Special default values
 
@@ -334,48 +316,47 @@ function get_default_prefs()
 		}
 	}
 
-	$cachelib->cacheItem("tiki_default_preferences_cache", serialize($prefs));
+	$cachelib->cacheItem("tiki_default_preferences_cache",serialize($prefs));
 	return $prefs;
 }
 
 
-function initialize_prefs()
-{
-	global $prefs, $user_overrider_prefs, $in_installer, $section, $systemConfiguration;
+function initialize_prefs() {
+	global $prefs, $tikiroot, $tikilib, $user_overrider_prefs, $in_installer, $section;
 
-	if (!empty($in_installer)) {
-		$prefs = get_default_prefs();
-		return;
-	}
-	$cachelib = TikiLib::lib('cache');
+	// Determine whether we already have a valid session cache of modified preferences.
+	if (isset($_SESSION['s_prefs'])) {
+		// Compare the session's version of the cache of preferences with the latest. The versionOfPreferencesCache pseudo-preference is basic and retrieved in tiki-setup_base.
+		// Reload if the session cache of modified preferences is older than the first-level cache of modified preferences.
+		$_SESSION['need_reload_prefs'] = empty($_SESSION['s_prefs']['versionOfPreferencesCache']) || $prefs['versionOfPreferencesCache'] > $_SESSION['s_prefs']['versionOfPreferencesCache'];
 
-	if ($cachelib->isCached('global_preferences')) {
-		$prefs = $cachelib->getSerialized('global_preferences');
+		// Reload if the virtual host or tikiroot has changed
+		if (!isset($_SESSION['lastPrefsSite'])) $_SESSION['lastPrefsSite'] = '';
+		//   (this is needed when using the same php sessions for more than one tiki)
+		if ( $_SESSION['lastPrefsSite'] != $_SERVER['SERVER_NAME'].'|'.$tikiroot ) {
+			$_SESSION['lastPrefsSite'] = $_SERVER['SERVER_NAME'].'|'.$tikiroot;
+			$_SESSION['need_reload_prefs'] = true;
+		}
 	} else {
-		$defaults = get_default_prefs();
+		$_SESSION['need_reload_prefs'] = true;
+	}
 
-		// Find which preferences need to be serialized/unserialized, based on the default 
-		//  values (those with arrays as values) and preferences with special serializations
-		$serializedPreferences = array();
-		global $prefslib; require_once 'lib/prefslib.php';
-		foreach ( $defaults as $preference => $value ) {
-			if ( is_array($value) || in_array($preference, array('category_defaults', 'memcache_servers'))) {
-				$serializedPreferences[] = $preference;
-			}
+	$defaults = get_default_prefs();
+	if ( ! $_SESSION['need_reload_prefs'] ) {
+		$modified = $_SESSION['s_prefs'];
+	} else { // Generate or re-generate a session cache of modified preferences.
+		// Find which preferences need to be serialized/unserialized, based on the default values (those with arrays as values)
+		if ( ! isset($_SESSION['serialized_prefs']) ) {
+			$_SESSION['serialized_prefs'] = array();
+			foreach ( $defaults as $p => $v )
+			if ( is_array($v) ) $_SESSION['serialized_prefs'][] = $p;
 		}
 
-		$tikilib = TikiLib::lib("tiki");
-		if (method_exists($tikilib, "getModifiedPreferences")) {
-			$modified = TikiLib::lib("tiki")->getModifiedPreferences();
-		} else {
-			$modified = array();
-		}
+		$modified = empty($in_installer) ? $tikilib->getModifiedPreferences() : array();
 
 		// Unserialize serialized preferences
-		foreach ( $serializedPreferences as $serializedPreference ) {
-			if ( isset($modified[$serializedPreference]) && ! is_array($modified[$serializedPreference]) ) {
-				$modified[$serializedPreference] = unserialize($modified[$serializedPreference]);
-			}
+		foreach ( $_SESSION['serialized_prefs'] as $p ) {
+			if ( isset($modified[$p]) && ! is_array($modified[$p]) ) $modified[$p] = @unserialize($modified[$p]);
 		}
 
 		// Keep some useful sites values available before overriding with user prefs
@@ -388,22 +369,24 @@ function initialize_prefs()
 			}
 		}
 
-		$prefs = $modified + $defaults;
-		$cachelib->cacheItem('global_preferences', serialize($prefs));
+		// Assign prefs to the session
+		$_SESSION['s_prefs'] = $modified;
 	}
 
-	if ( $prefs['feature_perspective'] == 'y') {
+	// Perspectives are disabled by default so the preference has to be modified
+	if ( isset($modified['feature_perspective']) && $modified['feature_perspective'] == 'y' && empty($in_installer) ) {
 		if ( ! isset( $section ) || $section != 'admin' ) {
-			global $perspectivelib; require_once 'lib/perspectivelib.php';
-			if ( $persp = $perspectivelib->get_current_perspective($prefs) ) {
-				$perspectivePreferences = $perspectivelib->get_preferences($persp);
-				$prefs = $perspectivePreferences + $prefs;
+			require_once 'lib/perspectivelib.php';
+			if ( $persp = $perspectivelib->get_current_perspective( $modified ) ) {
+				$changes = $perspectivelib->get_preferences( $persp );
+				$modified = array_merge( $modified, $changes );
 			}
 		}
 	}
 
-	// Override preferences with system-configured preferences.
-	$prefs = $systemConfiguration->preference->toArray() + $prefs;
+	$prefs = array_merge( $defaults, $modified ); // Preferences are the sum of modified preferences and those with the default value.
+	global $systemConfiguration;
+	$prefs = array_merge($prefs, $systemConfiguration->preference->toArray());
 }
 
 /**
@@ -411,17 +394,17 @@ function initialize_prefs()
  * Assumes that all tables use the same table engine
  * @return string identifying the current engine, or an empty string if not installed
  */ 
-function getCurrentEngine()
-{
-	return TikiLib::lib("tiki")->getCurrentEngine();
+function getCurrentEngine() {
+	global $tikilib;
+	return $tikilib->getCurrentEngine();
 }
-
+	
 /**
  * Determine if MySQL fulltext search is supported by the current DB engine
  * Assumes that all tables use the same table engine
  * @return true if it is supported, otherwise false
  */ 
-function isMySQLFulltextSearchSupported()
-{
-	return TikiLib::lib("tiki")->isMySQLFulltextSearchSupported();
+function isMySQLFulltextSearchSupported() {
+	global $tikilib;
+	return $tikilib->isMySQLFulltextSearchSupported();
 }

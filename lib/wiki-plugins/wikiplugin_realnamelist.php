@@ -1,19 +1,18 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_realnamelist_info()
-{
+function wikiplugin_realnamelist_info() {
 	return array(
-		'name' => tra('User List with Real Names'),
+		'name' => tra('User List with Real Names)'),
 		'documentation' => 'PluginRealNameList',
 		'description' => tra('Show user real names for members of a group').tra(' (experimental, should be merged with UserList)'),
 		'prefs' => array( 'wikiplugin_realnamelist' ),
 		'body' => tra('Group name - only users belonging to a group or groups with group names containing this text will be included in the list. If empty all site users will be included.'),
-		'icon' => 'img/icons/group.png',
+		'icon' => 'pics/icons/group.png',
 		'params' => array(
 			'sep' => array(
 				'required' => false,
@@ -77,19 +76,13 @@ function wikiplugin_realnamelist_info()
 	);
 }
 
-function wikiplugin_realnamelist($data, $params)
-{
+function wikiplugin_realnamelist($data, $params) {
 	global $tikilib, $userlib, $prefs, $tiki_p_admin, $tiki_p_admin_users;
 
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 
-	if (!isset($sep))
-		$sep=', ';
-	if (!isset($max)) {
-		$numRows = -1;
-	} else {
-		$numRows = (int) $max;
-	}
+	if (!isset($sep)) $sep=', ';
+	if (!isset($max)) { $numRows = -1; } else { $numRows = (int) $max; }
 
 	if ($data) {
 		$mid = 'g.`groupName` like ?';
@@ -157,13 +150,13 @@ function wikiplugin_realnamelist($data, $params)
 					$res = '<a href="tiki-user_information.php?userId='.$row['userId'].'" title="'.tra('User Information').'">';
 				} else {
 					$user_information = $tikilib->get_user_preference($row['login'], 'user_information', 'public');
-					if (isset($user) && $user_information != 'private' && $row['login'] != $user) {
+					if (isset($user) && $user_information == 'private' && $row['login'] != $user) {
 						$res = '<a href="tiki-user_information.php?userId='.$row['userId'].'" title="'.tra('User Information').'">';
 					}
 				}
 			}
 		}
-		if ( $row['value'] != '' ) {
+		if( $row['value'] != '' ) {
 			$row['login'] = $row['value'];
 		} else {
 			$temp = $row['login'];
@@ -171,5 +164,5 @@ function wikiplugin_realnamelist($data, $params)
 		}
 		$ret[] = $res.$row['login'].($res?'</a>':'');
 	}
-	return $pre.implode($sep, $ret).$post;
+	return $pre.implode ( $sep, $ret ).$post;
 }

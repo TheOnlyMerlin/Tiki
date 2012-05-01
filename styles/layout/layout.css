@@ -1,5 +1,5 @@
 /* $Id$
-/*	This file (layout.css) is to be imported by theme stylesheets. */
+	This file (layout.css) is to be imported by theme stylesheets. */
 	
 
 /***** XHTML Elements *****/
@@ -31,7 +31,9 @@ header, nav, article, footer, address {
 /* general #fixedwidth wrapper when fixed width is off */
 .fixedwidth {
 	display: table;
-	margin: 0 auto;
+	margin: auto;
+	margin-top: 0;
+	margin-bottom: 0;
 	width: 100%;
 }
 
@@ -95,16 +97,6 @@ input[type=submit] {
 /* submit buttons input type="submit" in a container */
 .input_submit_container {
 	padding: 1px;
-}
-
-/* Some default values for basic CSS menus layout */
-.cssmenu_horiz a, .cssmenu_vert a, .cssmenu_horiz ul li a {
-	line-height: 16px;
-	padding-left: .5em;
-	text-decoration: none;
-}
-.cssmenu_vert .sf-sub-indicator {
-	top: 3px; /* the default arrow is 10px high, so 16px-10px/2 */
 }
 
 .iconmenu {
@@ -198,7 +190,8 @@ img {
 }
 
 .siteloginbar_popup .tabcontent fieldset {
-	margin: 0 0 0 -4px;
+	margin: 0;
+	margin-left: -4px;
 	border: none;
 }
 
@@ -363,12 +356,12 @@ li#logout_link a {
 
 #col2 .moduleflip-vert .flipmodimage,
 .minimize-modules-right #col3 .moduleflip-vert .flipmodimage {
-	background-image: url(../../img/icons/resultset_first.png) !important;
+	background-image: url(../../pics/icons/resultset_first.png) !important;
 }
 
 #col3 .moduleflip-vert .flipmodimage,
 .minimize-modules-left #col2 .moduleflip-vert .flipmodimage {
-	background-image: url(../../img/icons/resultset_last.png) !important;
+	background-image: url(../../pics/icons/resultset_last.png) !important;
 }
 
 .minimize-modules-left #col2 .separator,
@@ -423,18 +416,6 @@ li#logout_link a {
 
 .minimize-modules-right #col3 .cssmenu_vert li.menuLevel0 > ul {
 	margin-right: 55px;
-}
-
-.mod-share-item {
-	float: left;
-}
-
-.mod-share-item a img {
-	margin-right: .5em;
-}
-
-.mod-share-item.google-root {
-	margin-left: .5em;
 }
 
 /* centercolumn */
@@ -554,10 +535,10 @@ ul.jumplinks,
 }
 
 /* Clearfix for modern browsers */
-.clearfix:before,
+.clearifx:before,
 .clearfix:after {
     content: "";
-    display: inherit;
+    display: table;
 }
 
 .clearfix:after {
@@ -594,10 +575,6 @@ ul.jumplinks,
 	text-align: center;
 	margin-left: auto;
 	margin-right: auto;
-}
-
-.pagenums input[type="text"] {
-	margin-top: -1px;
 }
 
 a.tikihelp,
@@ -694,8 +671,8 @@ a.toolbar {			/* each tool button */
 }
 
 .toolbars-picker a {
-	padding: 0;
-	margin: 0;
+	padding: 0px;
+	margin: 0px;
 	display: inline-block;
 	border: #fff 1px solid;
 	overflow: hidden;
@@ -741,7 +718,7 @@ a.toolbar {			/* each tool button */
 	font-family: sans-serif; 
 }
 
-.box-share > div {
+#site_report {
 	text-align: center;
 }
 
@@ -757,9 +734,6 @@ a.toolbar {			/* each tool button */
 
 .icon_edit_section {
 	float: right;
-}
-.icon_edit_section img.icon {
-	margin-top: -1px !important;
 }
 
 /***** Boxes *****/
@@ -818,32 +792,13 @@ h3.box-title {
 	padding-left: 1.3em;
 }
 
-.box-months_links ul {
-	list-style-type: none;
-	padding-left: 0;
-}
-
-.box-months_links ul li {
-	list-style-type: none;
-	padding-left: 0.5em;
-}
-
-.box-months_links ul li li {
-	list-style-type: none;
-	padding-left: 1.3em;
-}
-
-.collapsed ul {
-	display: none;
-}
-
 .modcontrols {
 	display: block;
 	float: right;
 	width: 64px;
 	height: 16px;
 }
-
+	
 /* MiniChat  */
 .box-minichat {
 	width: 100%;
@@ -967,28 +922,16 @@ tr.diffheader {
 
 .tabstoggle {
 	font-size: .8em;
+	position: relative;
+	width: 15%;
+	margin-top: 2px;
+	clear: none;
 }
 
 .tabstoggle .button {
-	position: relative;
-	top: 8px;
+	margin: 0;
 	padding: 0;
-}
-.tabstoggle.floatright {
-	float: none;
-	text-align: right;
-	width: auto;
-}
-
-.tabs .tabstoggle.floatright {
-	float: right;
-	width: 15%;
-	position: relative;
-	clear: none;
-}
-.tabs .tabstoggle.floatright .button {
 	position: absolute;
-	top: 0;
 	right: 0;
 }
 
@@ -1003,7 +946,8 @@ tr.diffheader {
 
 .tabmark {
 	display: inline;
-	margin: 0 5px 0 0;
+	margin: 0;
+	margin-right: 5px;
 	padding: 1px 0;
 	white-space: nowrap;
 }
@@ -1015,7 +959,6 @@ tr.diffheader {
 }
 
 .tabactive {
-	border: solid 1px #999;
 	border-bottom: none;
 	border-top-width: 2px;
 	position: relative;
@@ -1033,8 +976,8 @@ tr.diffheader {
 	position: relative;
 	padding: 4px;
 	top: 0;
-/*	border-top: none;*/
-	margin: 0;
+	border-top: none;
+	margin: 0px;
 }
 
 .tabcontent table {
@@ -1082,7 +1025,7 @@ tr.diffheader {
 		content that could contain floated elements */
 .hrwikibottom {
 	clear: both;
-	height: 0;
+	height: 0px;
 	visibility: hidden;
 }
 
@@ -1098,35 +1041,6 @@ tr.diffheader {
 
 .wikiplugin-split .codelisting {
 	width: 95%;
-}
-
-/* wikiplugin_convene */
-
-.conveneHeaderRow td {
-	text-align: center; 
-}
-
-.conveneVotes td,
-.conveneFooterRow td,
-.conveneHeaderRow td {
-	vertical-align: middle;
-}
-
-.convene-ok {    
-	background-color: #D1F3D1 !important;
-	background-image: none !important;
-	text-align: center; 
-}
-.convene-no {
-	background-color: #FFCCCA !important;
-	background-image: none !important;
-	text-align: center; 
-}
-.convene-no img { 
-	display: none;   
-}
-.conveneFooter, .conveneHeader {
-	text-align: center;
 }
 
 /* wikiplugin_footnotearea */
@@ -1193,19 +1107,6 @@ ul.floatleft li {
 	cursor: pointer;
 }
 
-/* timesheet plugin */
-#jtrack-holder {
-    width: auto !important;
-}
-
-.jtrack-item {
-	height:auto !important;
-}
-
-#right_modules #jtrack-bar, #left_modules #jtrack-bar, #right_modules .jtrack-item, #left_modules .jtrack-item {
-	font-size:76%;
-}
- 
 /** Wiki tocs **/
 .tocnav {
 	margin-bottom: 4px;
@@ -1353,11 +1254,11 @@ body.tiki_blogs .post .postfooter {
 }
 
 /* Related content */
-.related_posts, .related_articles {
+.related_posts {
 	margin-top: 3em;
 }
 
-.related_posts h4, .related_articles h4 {
+.related_posts h4 {
 	margin: 0;
 }
 
@@ -1376,7 +1277,8 @@ body.tiki_forums .normal {
 
 .post .postbody {
 	clear: both;
-	margin: 5px 0 0;
+	margin: 0;
+	margin-top: 5px;
 	padding: 0;
 }
 	
@@ -1684,7 +1586,7 @@ body.filegal_popup #tiki-center {
 /***** Trackers (etc.) *****/
 .statuson,
 .statusoff {
-	padding: 3px 2px 0 2px;
+	padding: 3px 2px 0px 2px;
 	vertical-align: middle;
 	height: 15px;
 }
@@ -1714,7 +1616,9 @@ body.filegal_popup #tiki-center {
 }
 
 .multiselect ul {
-	list-style: none outside none;
+	list-style-image: none;
+	list-style-position: outside;
+	list-style-type: none;
 	text-align: left;
 	margin: 0;
 	padding: 0;
@@ -1759,7 +1663,7 @@ body.filegal_popup #tiki-center {
 }
 
 .catlists_title {
-	padding: 10px 5px 5px 0;
+	padding: 10px 5px 5px 0px;
 	display: block;
 }
 
@@ -1925,7 +1829,9 @@ ul.freetagged li {
 /***** TikiSheets *****/
 .tiki_sheet table td { /* override .tabcontent table td */
 	padding: 0;
-	border: 1px solid #909090;
+	border-color: #909090;
+	border-width: 1px;
+	border-style: solid;
 }
 
 .plugin-desc {
@@ -2006,10 +1912,6 @@ ul.freetagged li {
 .cluetip-fullhtml {
 	margin: 0;
 	padding: 0;
-}
-
-#cluetip {
-	display: none;
 }
 
 /***** New (unsorted) *****/
@@ -2101,7 +2003,7 @@ ul.freetagged li {
 }
 
 h4.ui-accordion-header {
-	padding-left: 2.2em;
+	padding-left: 28px;
 }
 
 /* Preferences        */
@@ -2280,9 +2182,9 @@ div.aclabel, span.aclabel, label.aclabel {
 }
 .backlinks_button li.tabmark {
 	background: none;
-	border: 0;
-	top: 0;
-	padding: 0;
+	border: 0px;
+	top: 0px;
+	padding: 0px;
 }
 .backlinks_button .clearfix:after {
 	display: inline-block;
@@ -2298,8 +2200,7 @@ div.aclabel, span.aclabel, label.aclabel {
 	display: inline-block;
 	vertical-align: middle;
 	background: none;
-	height: 16px;
-	width: 18px;
+	width: 20px;
 }
 .structure_select .cssmenu_horiz ul li {
 	border: 1px solid #999;
@@ -2309,9 +2210,9 @@ div.aclabel, span.aclabel, label.aclabel {
 }
 .structure_select li.tabmark {
 	background: none;
-	border: 0;
-	top: 0;
-	padding: 0;
+	border: 0px;
+	top: 0px;
+	padding: 0px;
 }
 .structure_select .clearfix:after {
 	display: inline-block;
@@ -2319,147 +2220,5 @@ div.aclabel, span.aclabel, label.aclabel {
 .structure_select .selected {
 	font-weight: bold;
 	font-style: italic;
-}
-/* Generic language selection layout for tiki objects (wiki page, article, blogpost, etc)*/
-.lang_select {
-	position: relative;
-	display: inline-block;
-	height: 16px;
-	width: 18px;
-	vertical-align: middle;
-	text-align: left;
-}
-.lang_select .clearfix:after {
-	display: inline-block;
-}
-.lang_select .selected {
-	font-weight: bold;
-	font-style: italic;
-}
-.lang_select .cssmenu_horiz li {
-	border-radius: 3px;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	width: auto;
-}
-.lang_select .cssmenu_horiz li.tabmark {
-	background: none;
-	border: 0;
-	color: inherit;
-	padding: 0;
-	top:0;
-}
-.lang_select .cssmenu_horiz .tabmark  span {
-	background: none;
-	position: relative;
-	display: inline-block;
-	margin: 0;
-	padding: 0;
-	top: 0;
-	bottom:0;
-	left: 1px;
-	right: 0;
-}
-.lang_select li.tabmark .popup_base a {
-	color: inherit;
-	background: none;
-}
-.lang_select .tabcontent h1 {
-	font-size: 1.1em;
-	font-style: italic;
-	font-weight: normal;
-	margin-top: 0;
-	margin-bottom: 0;
-	padding-top: 1px;
-	padding-left: 0;
-	padding-bottom: 1px;
-	vertical-align: baseline;
-}
-.lang_select .tabcontent h1 a {
-	padding-left: 2px;
-	margin-left: 0;
-	font-style: normal;
-}
-
-/* Tweaks to improve spacing of text in jquery.s5 slides */
-.s5-slide * {
-	line-height: 1.3em;
-}
-.s5-slide h1, .s5-slide h2, .s5-slide h3, .s5-slide h4 {
-	line-height: 1em;
-}
-
-/* structures tiki 9 */
-
-.admintoclevel {
-	margin: .2em;
-	padding: .4em 0 .4em .2em;
-}
-
-.admintoclevel .admintoclevel {
-	margin-right: 0;
-	border-right: 0 none;
-}
-
-.admintoclevel .actions {
-	float: right;
-	padding-right: .3em;
-}
-
-.admintoclevel .actions a {
-	padding-right: .2em;
-}
-
-.admintoclevel .actions input {
-	margin-right: 2em;
-	font-style: italic;
-	opacity: 0.5;
-	border: solid 1px #ddd;
-	width: 15em;
-}
-
-#page_list_container {
-	list-style: none;
-	max-height: 20em;
-	overflow-y: auto;
-	overflow-x: hidden;
-	padding: 0;
-}
-
-#page_list_container li {
-	list-style: none;
-	margin: .2em;
-	padding: .2em;
-}
-/* end structures tiki 9 */
-
-
-/*from the codemirror website*/
-.TextArea-fullscreen  #editwiki_toolbar {
-	width: 100% ! important;
-}
-
-.TextArea-fullscreen  textarea {
-	width: inherit ! important;
-}
-
-.TextArea-fullscreen {
-	display: block;
-	width: 100%;
-	height: 100%;
-	margin: 0;
-	padding: 0;
-	border: 0px solid #BBBBBB;
-	opacity: 1;
-	width: 100%;
-	top: 0px ! important;
-	left: 0px ! important;
-	position: fixed;
-	top: expression(eval(document.body.scrollTop + 15) + "px");
-	/*left: expression(eval(document.body.scrollLeft) + "px");*/
-	background-color: gray;
-}
-.TextArea-fullscreen .cm-remove {
-	display: none;
 }
 /* End of File */

@@ -121,6 +121,7 @@ body.fixed_width .fixedwidth {
 #c1c2 #wrapper #col1 #tiki-center {
 	padding: 10px;
 	padding-right: 20px;
+	max-width: 1500px; /* limit width to prevent bg image breakup */
 }
 
 #c1c2 #col2 {
@@ -339,6 +340,7 @@ input[type="submit"],
 	background: #2098cd;
 	border: 1px solid #11597e;
 	font-weight: bold;
+	line-height: 150%;
 	border-radius: 4px;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,8 +13,7 @@ class Image extends ImageAbstract
 	var $gdversion;
 	var $havegd = false;
 
-	function __construct($image, $isfile = false, $format = 'jpeg') 
-	{
+	function __construct($image, $isfile = false, $format = 'jpeg') {
 
 		// Which GD Version do we have?
 		$exts = get_loaded_extensions();
@@ -36,17 +35,16 @@ class Image extends ImageAbstract
 		}
 	}
 
-	function _load_data() 
-	{
+	function _load_data() {
 		if (!$this->loaded && $this->havegd) {
 			if (!empty($this->filename) && is_file($this->filename)) {
 				$this->format = strtolower(substr($this->filename, strrpos($this->filename, '.') + 1));
 				list($this->width, $this->height, $type) = getimagesize($this->filename);
 				if (function_exists("image_type_to_extension")) {
-					$this->format = image_type_to_extension($type, false);
+					$this->format = image_type_to_extension($type,false);
 				} else {
 					$tmp = image_type_to_mime_type($type);
-					$this->format = strtolower(substr($tmp, strrpos($tmp, "/")+1));
+					$this->format = strtolower(substr($tmp,strrpos($tmp,"/")+1));
 				}
 				if ( $this->is_supported($this->format) ) {
 					if ( $this->format == 'jpg' ) $this->format = 'jpeg';
@@ -60,8 +58,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-	function _resize($x, $y) 
-	{
+	function _resize($x, $y) {
 		if ($this->data) {
 			$t = imagecreatetruecolor($x, $y);
 			// trick to have a transparent background for png instead of black
@@ -75,8 +72,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-	function resizethumb() 
-	{
+	function resizethumb() {
 		if ( $this->thumb !== null ) {
 			$this->data = imagecreatefromstring($this->thumb);
 			$this->loaded = true;
@@ -86,27 +82,26 @@ class Image extends ImageAbstract
 		return parent::resizethumb();
 	}
 
-	function display() 
-	{
+	function display() {
 
 		$this->_load_data();
 		if ($this->data) {
-			//@ob_end_flush();	// ignore E_NOTICE if no buffer
+			@ob_end_flush();	// ignore E_NOTICE if no buffer
 			ob_start();
 			switch ( strtolower($this->format) ) {
 				case 'jpeg':
 				case 'jpg':
 					imagejpeg($this->data);
-    				break;
+					break;
 				case 'gif':
-					imagegif($this->data);
-    				break;
+					imagegif ($this->data);
+					break;
 				case 'png':
 					imagepng($this->data);
-    				break;
+					break;
 				case 'wbmp':
 					imagewbmp($this->data);
-    				break;
+					break;
 				default:
 					ob_end_clean();
 					return NULL;
@@ -120,8 +115,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-	function rotate($angle) 
-	{
+	function rotate($angle) {
 		$this->_load_data();
 		if ($this->data) {
 			$this->data = imagerotate($this->data, $angle, 0);
@@ -131,8 +125,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-	function get_gdinfo() 
-	{
+	function get_gdinfo() {
 		$gdinfo = array();
 		$gdversion = '';
 
@@ -143,7 +136,7 @@ class Image extends ImageAbstract
 		} else {
 			//next try
 			ob_start();
-			phpinfo(INFO_MODULES);
+			phpinfo (INFO_MODULES);
 			$gdversion = preg_match('/GD Version.*2.0/', ob_get_contents()) ? '2.0' : '1.0';
 			$gdinfo["JPG Support"] = preg_match('/JPG Support.*enabled/', ob_get_contents());
 			$gdinfo["PNG Support"] = preg_match('/PNG Support.*enabled/', ob_get_contents());
@@ -161,8 +154,7 @@ class Image extends ImageAbstract
 	}
 
 	// This method do not need to be called on an instance
-	function is_supported($format) 
-	{
+	function is_supported($format) {
 
 		if ( ! function_exists('imagetypes') ) {
 			$gdinfo = isset($this) ? $this->gdinfo : Image::get_gdinfo();
@@ -205,8 +197,7 @@ class Image extends ImageAbstract
 		return false;
 	}
 
-	function _get_height() 
-	{
+	function _get_height() {
 		if ($this->loaded && $this->data) {
 			return imagesy($this->data);
 		} else if ($this->height) {
@@ -225,8 +216,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-	function _get_width() 
-	{
+	function _get_width() {
 		if ($this->loaded && $this->data) {
 			return imagesx($this->data);
 		} else if ($this->width) {

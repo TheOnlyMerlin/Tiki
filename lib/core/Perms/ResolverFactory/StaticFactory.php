@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,24 +14,20 @@ class Perms_ResolverFactory_StaticFactory implements Perms_ResolverFactory
 	private $key;
 	private $resolver;
 
-	function __construct( $key, $resolver )
-	{
+	function __construct( $key, $resolver ) {
 		$this->key = $key;
 		$this->resolver = $resolver;
 	}
 
-	function bulk( array $baseContext, $bulkKey, array $values )
-	{
+	function bulk( array $baseContext, $bulkKey, array $values ) {
 		return array();
 	}
 
-	function getHash( array $context )
-	{
+	function getHash( array $context ) {
 		return $this->key;
 	}
 
-	function getResolver( array $context )
-	{
+	function getResolver( array $context ) {
 		return $this->resolver;
 	}
 }

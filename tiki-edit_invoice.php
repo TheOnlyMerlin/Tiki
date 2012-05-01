@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,6 +7,7 @@
 
 require_once('tiki-setup.php');
 $trklib = TikiLib::lib('trk');
+TikiLib::lib('trkqry');
 
 $access->check_feature('feature_invoice');
 $access->check_permission('tiki_p_admin');
@@ -21,26 +22,34 @@ if ($trklib->get_tracker_by_name("Invoice Items") < 1) {
 (int)$_REQUEST['InvoiceId'] = $_REQUEST['InvoiceId'];
 
 //handle saving data (edit or update)
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {	
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+	//form to tracker item transformation
+	function processItem($trackerName, $fieldNames, $fieldValues, $itemId, $i) {
+		global $trklib;
+		
+		$fields = $trklib->list_tracker_fields($trklib->get_tracker_by_name($trackerName));
+		foreach ($fields['data'] as $key => $field) {
+			$fieldName = $field['name'];	
+			$fieldValue = (isset($i) ? $fieldValues[str_replace(" ", "", $fieldName)][$i] : $fieldValues[str_replace(" ", "", $fieldName)]);
+			$fields['data'][$key]['value'] = (empty($fieldValue) ? '' : $fieldValue);
+		}
+		
+		return $trklib->replace_item($trklib->get_tracker_by_name($trackerName), $itemId, $fields, 'o');
+	}
+	
 	//start invoice
-	/*
-	$_REQUEST['InvoiceId'] = $trklib->replaceItemFromRequestValues(
-					$trklib->get_tracker_by_name("Invoices"),
-					array(
-						"Client Id",
-						"Invoice Number",
-						"Date Issued",
-						"Payment Term",
-						"Tax 1 Description",
-						"Tax 1 Rate",
-						"Tax 2 Description",
-						"Tax 2 Rate",
-						"Invoice Note",
-						"Days Payment Due",
-					),
-					$_REQUEST, $_REQUEST['InvoiceId']
-	);*/
-	die;
+	$_REQUEST['InvoiceId'] = processItem("Invoices", array(
+		"Client Id",
+		"Invoice Number",
+		"Date Issued",
+		"Payment Term",
+		"Tax 1 Description",
+		"Tax 1 Rate",
+		"Tax 2 Description",
+		"Tax 2 Rate",
+		"Invoice Note",
+		"Days Payment Due",
+	), $_REQUEST, $_REQUEST['InvoiceId']);
 	//end invoice
 	
 	//start invoice items
@@ -53,22 +62,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 	
 	$_TEMP['InvoiceId'] = array();
-	for ($i = 0, $count_InvoiceItemId = count($_REQUEST['InvoiceItemId']); $i < $count_InvoiceItemId; $i++) {
+	for($i = 0, $count_InvoiceItemId = count($_REQUEST['InvoiceItemId']); $i < $count_InvoiceItemId; $i++) {
 		$_TEMP['InvoiceId'][$i] = $_REQUEST['InvoiceId'];
 		
-		$invoiceItem = $trklib->replaceItemFromRequestValues(
-						$trklib->get_tracker_by_name("Invoice Items"),
-						array(
-							"Invoice Id",
-							"Amount",
-							"Quantity",
-							"Work Description",
-							"Taxable",
-						),
-						$_TEMP,
-						$_REQUEST['InvoiceItemId'][$i],
-						$i
-		);
+		$invoiceItem = processItem("Invoice Items", array(
+			"Invoice Id",
+			"Amount",
+			"Quantity",
+			"Work Description",
+			"Taxable",
+		), $_TEMP, $_REQUEST['InvoiceItemId'][$i], $i);
 		
 		if (isset($itemsToDelete[$_REQUEST['InvoiceItemId'][$i]])) {
 			unset($itemsToDelete[$_REQUEST['InvoiceItemId'][$i]]);
@@ -84,13 +87,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 	//end delete
 	
-	header('Location: tiki-view_invoice.php?InvoiceId='.$_REQUEST['InvoiceId']);
+	header( 'Location: tiki-view_invoice.php?InvoiceId='.$_REQUEST['InvoiceId'] ) ;
 	die;
 }
 
 $invoiceItems = array();
 if (!empty($_REQUEST['InvoiceId'])) {
-	$invoice = Tracker_Query::tracker("Invoices")
+	$invoice = TrackerQueryLib::tracker("Invoices")
 		->byName()
 		->equals($_REQUEST['InvoiceId'])
 		->getOne();
@@ -98,7 +101,7 @@ if (!empty($_REQUEST['InvoiceId'])) {
 	$invoice['Item Ids'] = implode(',', $invoice['Item Ids']);
 	$smarty->assign("invoice", $invoice);
 	
-	$invoiceItems = Tracker_Query::tracker("Invoice Items")
+	$invoiceItems = TrackerQueryLib::tracker("Invoice Items")
 		->byName()
 		->fields(array("Invoice Id"))
 		->search(array($_REQUEST['InvoiceId']))
@@ -108,7 +111,7 @@ if (!empty($_REQUEST['InvoiceId'])) {
 }
 
 //give the user the last invoice number 
-$LastInvoice = Tracker_Query::tracker("Invoices")
+$LastInvoice = TrackerQueryLib::tracker("Invoices")
 	->byName()
 	->limit(0)
 	->offset(1)
@@ -120,8 +123,8 @@ $NewInvoiceNumber = (isset($LastInvoice["Invoice Number"]) ? $LastInvoice["Invoi
 $smarty->assign("NewInvoiceNumber", $NewInvoiceNumber);
 
 $smarty->assign("InvoiceId", $_REQUEST['InvoiceId']);
-$smarty->assign("clients", Tracker_Query::tracker("Invoice Clients")->byName()->query());
-$smarty->assign("setting", Tracker_Query::tracker("Invoice Settings")->byName()->getOne());
+$smarty->assign("clients", TrackerQueryLib::tracker("Invoice Clients")->byName()->query());
+$smarty->assign("setting", TrackerQueryLib::tracker("Invoice Settings")->byName()->getOne());
 
 //we add an extra item to the end of invoiceItems, so we can duplicate it on the page
 if (count($invoiceItems) < 1) {
@@ -134,8 +137,8 @@ if (count($invoiceItems) < 1) {
 }
 $smarty->assign("invoiceItems", $invoiceItems);
 
-$headerlib->add_jq_onready(
-    "function setupTotal() {
+$headerlib->add_jq_onready("
+	function setupTotal() {
 		$('#InvoiceForm :input')
 			.unbind('change')
 			.change(function() {
@@ -192,10 +195,8 @@ $headerlib->add_jq_onready(
 		
 		var InvoiceId = $('#InvoiceId');
 		InvoiceId.val(InvoiceId.val() ? InvoiceId.val() : 0);
-
-		return false;
-	});"
-);
+	});
+");
 
 // Display the template
 $smarty->assign('mid', 'tiki-edit_invoice.tpl');

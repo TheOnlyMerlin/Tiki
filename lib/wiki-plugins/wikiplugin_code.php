@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,9 +13,9 @@ function wikiplugin_code_info()
 		'description' => tra('Display code syntax with line numbers and color highlights'),
 		'prefs' => array('wikiplugin_code'),
 		'body' => tra('Code to be displayed'),
-		'icon' => 'img/icons/page_white_code.png',
+		'icon' => 'pics/icons/page_white_code.png',
 		'filter' => 'rawhtml_unsafe',
-		'tags' => array( 'basic' ),
+		'tags' => array( 'basic' ),	
 		'params' => array(
 			'caption' => array(
 				'required' => false,
@@ -64,7 +64,7 @@ function wikiplugin_code_info()
 			'mediawiki' => array(
 				'required' => false,
 				'name' => tra('Code Tag'),
-				'description' => tra('Encloses the code in an HTML code tag, for example: &lt;code&gt;user input&lt;code&gt;'),
+				'description' => tra('Encloses the code in an HTML code tag, fo rexample: &lt;code&gt;user input&lt;code&gt;'),
 				'options' => array(
 					array('text' => '', 'value' => ''),
 					array('text' => tra('Yes'), 'value' => '1'),
@@ -76,7 +76,7 @@ function wikiplugin_code_info()
 	);
 }
 
-function wikiplugin_code($data, $params, $offset, $options)
+function wikiplugin_code($data, $params)
 {
 	global $prefs;
 	static $code_count;
@@ -96,6 +96,7 @@ function wikiplugin_code($data, $params, $offset, $options)
 
 	$code = str_replace('&lt;x&gt;', '', $code);
 	$code = str_replace('<x>', '', $code);
+	$code = str_replace('<', '&lt;', $code);
 
 	$id = 'codebox'.++$code_count;
 	$boxid = " id=\"$id\" ";
@@ -116,7 +117,7 @@ function wikiplugin_code($data, $params, $offset, $options)
 		.' word-wrap:break-word;';
 	}
 
-	$out = (isset($caption) ? '<div class="codecaption">'.$caption.'</div>' : "" )
+	$out = (isset($caption) ? '<div class="codecaption">'.$caption.'</div>' : "" ) 
 		. '<pre class="codelisting" '
 		. (isset($colors) ? ' data-syntax="' . $colors . '" ' : '')
 		. (isset($ln) ? ' data-line-numbers="' . $ln . '" ' : '')
@@ -125,7 +126,7 @@ function wikiplugin_code($data, $params, $offset, $options)
 		. (isset($pre_style) ? ' style="'.$pre_style.'"' : '')
 		. $boxid.'>'
 		. '~np~'
-		. ($options['ck_editor'] ? $out : htmlentities($out, ENT_QUOTES, 'UTF-8'))
+		. $out
 		. '~/np~'
 		. '</pre>';
 

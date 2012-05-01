@@ -62,7 +62,7 @@
 			{/if}
 			{if $smod_params.compact eq "y"}
 				{icon _id="magnifier" class="search_mod_magnifier icon"}
-				<div class="search_mod_buttons box" style="display:none; position: absolute; right: 0; padding: 0 1em; z-index: 2; white-space: nowrap;">
+				<div class="search_mod_buttons box" style="display:none; position: absolute; right: 0; padding: 0 1em; z-index: 2;">
 			{/if}
 			{if $smod_params.show_search_button eq 'y'}
 					<input type = "submit" class = "wikiaction tips{if $smod_params.default_button eq 'search'} button_default{/if}"
@@ -111,10 +111,6 @@ function submitSearch{{$search_mod_usage_counter}}() {
 		$f.attr('action', '{{$smod_params.go_action|escape:javascript}}');
 	} else if ($f.attr('action') == "#") {
 		$f.attr('action', '{{$smod_params.search_action|escape:javascript}}');
-	}
-	$exact = $f.find("input[name=exact_match]");
-	if ($exact.val() != "On") {
-		$exact.remove();		// seems exact_match is true even if empty
 	}
 	return true;
 }

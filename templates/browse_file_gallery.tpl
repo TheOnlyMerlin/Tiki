@@ -87,18 +87,14 @@
 
     {math equation="x + 6" x=$thumbnail_size assign=thumbnailcontener_size}
 
-    <div id="{$checkname}_{$files[changes].id}" class="clearfix thumbnailcontener{if $is_checked eq 'y'} thumbnailcontenerchecked{/if}{if $files[changes].isgal eq 1} subgallery{/if}" style="width:{$thumbnailcontener_size}px">
+    <div id="{$checkname}_{$files[changes].id}" class="clearfix thumbnailcontener{if $is_checked eq 'y'} thumbnailcontenerchecked{/if}" style="width:{$thumbnailcontener_size}px">
       <div class="thumbnail" style="float:left; width:{$thumbnailcontener_size}px">
-        <div class="" style="width:100%;height:{$thumbnailcontener_size}px{if $show_infos neq 'y'};margin-bottom:4px{/if}">
+        <div class="thumbimagecontener" style="width:{$thumbnail_size}px;height:{$thumbnailcontener_size}px{if $show_infos neq 'y'};margin-bottom:4px{/if}">
           <div class="thumbimage">
-            <div class="thumbimagesub">{assign var=key_type value=$files[changes].type|truncate:9:'':true}
+            <div class="thumbimagesub" style="width:{$thumbnail_size}px;">{assign var=key_type value=$files[changes].type|truncate:9:'':true}
               {if $files[changes].isgal eq 1}
                 <a {$link}>
-					{if empty($files[changes].icon_fileId)}
-                		{icon _id="img/icons/large/fileopen48x48.png" width="48" height="48"}
-                	{else}
-						<img src="{$files[changes].icon_fileId|sefurl:thumbnail}" alt="" />
-					{/if}
+                  {icon _id="pics/large/fileopen48x48.png" width="48" height="48"}
                 </a>
               {else}
                 <a {$link}
@@ -121,7 +117,7 @@
 	{if $show_infos eq 'y'}
         <div class="thumbinfos">
         {foreach from=$fgal_listing_conf item=item key=propname}
-          {assign var=key_name_len value=$prefs.fgal_browse_name_max_length}
+          {assign var=key_name_len value=16}
           {if isset($item.key)}
             {assign var=key_name value=$item.key}
           {else}
@@ -154,7 +150,7 @@
             {if $propname eq 'name'}
           <div class="thumbnamecontener">
             <div class="thumbname">
-              <div class="thumbnamesub" style="width:{$thumbnail_size}px; overflow: hidden;">
+              <div class="thumbnamesub" style="width:{$thumbnail_size}px">
                 {if $gal_info.show_name eq 'f' or ($gal_info.show_name eq 'a' and $files[changes].name eq '')}
                   <a class="fgalname" {$link} title="{$files[changes].filename}">{$files[changes].filename|truncate:$key_name_len}</a>
                 {else}
@@ -185,6 +181,7 @@
       {if $prefs.fgal_show_thumbactions eq 'y' or $show_details eq 'y'}
         <div class="thumbactions" style="float:right; width:{$thumbnail_size}px">
 
+        {if $files[changes].isgal neq 1}
           {if $gal_info.show_checked neq 'n' and $tiki_p_admin_file_galleries eq 'y'}
             <label style="float:left"><input type="checkbox" onclick="flip_thumbnail_status('{$checkname}_{$files[changes].id}')" name="{$checkname}[]" value="{$files[changes].id|escape}" {if $is_checked eq 'y'}checked="checked"{/if} />{if isset($checkbox_label)}{$checkbox_label}{/if}</label>
           {/if}
@@ -196,6 +193,9 @@
               {include file='fgal_context_menu.tpl'}
             {/if}
           {/if}
+        {else}
+          &nbsp;
+        {/if}
 
         </div> {* thumbactions *}
       {/if}

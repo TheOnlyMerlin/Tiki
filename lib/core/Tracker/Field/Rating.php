@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -88,7 +88,7 @@ class Tracker_Field_Rating extends Tracker_Field_Abstract
 			$trklib = TikiLib::lib('trk');
 			$data = $this->getBaseFieldData();
 			global $user;
-			$result = $trklib->replace_star($requestData[$ins_id], $this->getConfiguration('trackerId'), $requestData['itemId'], $data, $user, true);
+			$trklib->replace_star($requestData[$ins_id], $this->getConfiguration('trackerId'), $requestData['itemId'], $data, $user, true);
 		} else {
 			$data = $this->gatherVoteData();
 		}
@@ -104,7 +104,6 @@ class Tracker_Field_Rating extends Tracker_Field_Abstract
 			'mode' => $data['mode'],
 			'labels' => $data['labels_array'],      
 			'rating_options' => $data['rating_options'],
-			'result' => $result,
 		);
 	}
 
@@ -117,14 +116,9 @@ class Tracker_Field_Rating extends Tracker_Field_Abstract
 	{
 		if ($this->getConfiguration('type') == 's') {
 			return $this->renderTemplate('trackerinput/rating.tpl', $context);
-		} else {
-			$data = $this->gatherVoteData();
-			$str = tra("Number of votes:") . ' ' .$data['numvotes'] . ', ' . tra('Average:') . ' ' . $data['voteavg'];
-			if (!empty($data['my_rate'])) {
-				$str .= ' (' . tra("Your rating:")  . ' ' . $data['my_rate'] . ')';
-			}
-			return $str;
 		}
+
+		return null;
 	}
 
 	function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
@@ -209,18 +203,15 @@ class Tracker_Field_Rating extends Tracker_Field_Abstract
 			$key = "tracker.$trackerId.$itemId.".$field['fieldId']; 
 		}
 
-		$data = $votings->fetchRow(
-						array(
-							'count' => $votings->count(),
-							'total' => $votings->sum('optionId'),
-						), 
-						array('id' => $key)
-		);
+		$data = $votings->fetchRow(array(
+			'count' => $votings->count(),
+			'total' => $votings->sum('optionId'),
+		), array('id' => $key));
 
 		$field['numvotes'] = $data['count'];
 		$field['total'] = $data['total']; 
 		if ($field['numvotes']) {
-			$field['voteavg'] = round($field['total'] / $field['numvotes'], 2);
+			$field['voteavg'] = $field['total'] / $field['numvotes'];
 		} else {
 			$field['voteavg'] = 0;
 		}

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -299,7 +299,7 @@ if (isset($_REQUEST['chgadmin'])) {
 if (isset($_REQUEST['deleteaccount']) && $tiki_p_delete_account == 'y') {
    check_ticket('user-prefs');
    if (!isset($_REQUEST['deleteaccountconfirm']) || $_REQUEST['deleteaccountconfirm'] != '1') {
-      $smarty->assign('msg', tra("If you really want to delete your account, you must check the checkbox"));
+      $smarty->assign('msg', tra("If you really want to delete you're account, you must check the checkbox"));
       $smarty->display("error.tpl");
       die;
    }

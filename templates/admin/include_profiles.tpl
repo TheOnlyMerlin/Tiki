@@ -5,7 +5,7 @@ var baseURI = '{$smarty.server.REQUEST_URI}';
 function refreshCache( entry ) { // {{{
 	var status = document.getElementById( 'profile-status-' + entry );
 	var datespan = document.getElementById( 'profile-date-' + entry );
-	var pending = 'img/icons/status_pending.gif';
+	var pending = 'img/icons2/status_pending.gif';
 
 	if( status.src == pending )
 		return;
@@ -17,7 +17,7 @@ function refreshCache( entry ) { // {{{
 		if (req.readyState == 4) {
 			if(req.status == 200) {
 				var data = eval( "(" + req.responseText + ")" );
-				status.src = 'img/icons/status_' + data.status + '.gif';
+				status.src = 'img/icons2/status_' + data.status + '.gif';
 				datespan.innerHTML = data.lastupdate;
 			} else
 				alert("Error loading page\n");
@@ -375,8 +375,8 @@ $("#repository, #categories").change(function(){
 		{foreach key=k item=entry from=$sources}
 			<tr>
 				<td>{$entry.short}</td>
-				<td><img id="profile-status-{$k}" alt="{tr}Status{/tr}" src="img/icons/status_{$entry.status}.gif"/></td>
-				<td><span id="profile-date-{$k}">{$entry.formatted}</span> <a href="javascript:refreshCache({$k})" class="icon"><img src="img/icons/arrow_refresh.png" class="icon" alt="{tr}Refresh{/tr}"/></a></td>
+				<td><img id="profile-status-{$k}" alt="{tr}Status{/tr}" src="img/icons2/status_{$entry.status}.gif"/></td>
+				<td><span id="profile-date-{$k}">{$entry.formatted}</span> <a href="javascript:refreshCache({$k})" class="icon"><img src="pics/icons/arrow_refresh.png" class="icon" alt="{tr}Refresh{/tr}"/></a></td>
 			</tr>
 		{/foreach}
 	</table>
@@ -384,7 +384,7 @@ $("#repository, #categories").change(function(){
 </fieldset>
 {else}
 	{remarksbox type="warning" title="{tr}A Friendly Warning{/tr}"}
-		{tr}JavaScript must be turned <strong>ON</strong> in order to apply Profiles. Please enable your JavaScript and try again.{/tr}
+		{tr}Javascript must be turned <b>ON</b> in order to apply Profiles. Please enable your javascript and try again.{/tr}
 	{/remarksbox}
 {/if}
 {/tab}
@@ -417,19 +417,17 @@ $("#repository, #categories").change(function(){
 					{cycle values="odd,even" print=false}
 					{foreach from=$modified_list  key="name" item="data"}
 						<li class="{cycle}">
-							<input type="checkbox" name="prefs_to_export[{$name}]" value="{$data.current.serial|escape}"
+							<input type="checkbox" name="prefs_to_export[{$name}]" value="{$data.cur|escape}"
 									 id="checkbox_{$name}"{if isset($prefs_to_export[$name])} checked="checked"{/if} />
 							<label for="checkbox_{$name}">
-								{if is_array($data.current.expanded)}{assign var=current value=$data.current.expanded|implode:", "}{else}{assign var=current value=$data.current.expanded}{/if} 
-								{$name} = '<strong>{$current|truncate:40:"...":true|escape}</strong>'{* FIXME: This one line per preference display format is ugly and doesn't work for multiline values *}
+								{$name} = <strong>{$data.cur|truncate:40:"...":true|escape}</strong>
 								<em>
 									&nbsp;&nbsp;
-									{if isset($data.default)}
-										{if empty($data.default)}
+									{if isset($data.def)}
+										{if empty($data.def)}
 											('')
 										{else}
-											{if is_array($data.default)}{assign var=default value=$data.default|implode:", "}{else}{assign var=default value=$data.default}{/if}
-											('{$default|truncate:20:"...":true|escape}')
+											({$data.def|truncate:20:"...":true|escape})
 										{/if}
 									{else}
 										({tr}no default{/tr})

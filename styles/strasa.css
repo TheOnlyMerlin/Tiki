@@ -253,6 +253,7 @@ select[name="theme-option"] {
 	width: 140px;
 }
 
+
 /* Needed for Opera (11) */
 input[type="reset"],
 input[type="submit"],

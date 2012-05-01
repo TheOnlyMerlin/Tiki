@@ -1,12 +1,11 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_tag_info()
-{
+function wikiplugin_tag_info() {
 	return array(
 		'name' => tra('Tag'),
 		'documentation' => 'PluginTag',
@@ -14,7 +13,7 @@ function wikiplugin_tag_info()
 		'prefs' => array( 'wikiplugin_tag' ),
 		'validate' => 'all',
 		'body' => tra('text'),
-		'icon' => 'img/icons/script_code_red.png',
+		'icon' => 'pics/icons/script_code_red.png',
 		'tags' => array( 'basic' ),
 		'params' => array(
 			'tag' => array(
@@ -33,9 +32,8 @@ function wikiplugin_tag_info()
 	);
 }
 
-function wikiplugin_tag($data, $params)
-{
-	extract($params, EXTR_SKIP);
+function wikiplugin_tag($data, $params) {
+	extract ($params,EXTR_SKIP);
 	if (!isset($tag)) {
 		$tag = 'span';
 	} else {
@@ -45,7 +43,7 @@ function wikiplugin_tag($data, $params)
 	
 	if (isset($style)) {
 		// trim quotes from the begin and end of style
-		$style = ' style="'.trim($style, "\'\"").'"';
+		$style = ' style="'.trim($style,"\'\"").'"';
 	} else {
 		$style = '';
 	}

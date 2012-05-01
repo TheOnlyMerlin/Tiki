@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,7 +14,7 @@ if ( isset($_GET['upload']) or isset($_REQUEST['upload']) ) {
 	unset($_REQUEST['upload']);
 }
 
-if ( isset($_POST['PHPSESSID']) && $_POST['PHPSESSID'] != '' ) {
+if ( isset($_POST['PHPSESSID']) && $_POST['PHPSESSID'] != '' ){
 	session_id($_POST['PHPSESSID']);
 }
 
@@ -30,14 +30,14 @@ if ($prefs['feature_groupalert'] == 'y') {
 	include_once ('lib/groupalert/groupalertlib.php');
 }
 @ini_set('max_execution_time', 0); //will not work in safe_mode is on
-$auto_query_args = array('galleryId', 'fileId', 'filegals_manager', 'view', 'simpleMode', 'insertion_syntax');
+$auto_query_args = array('galleryId', 'fileId', 'filegals_manager', 'view', 'simpleMode');
 
 if ( $prefs['auth_token_access'] == 'y' && !empty($token) ) {
 	$smarty->assign('token_id', $token);
 }
 
 $requestGalleryId = null;
-if ( isset( $_REQUEST['galleryId'] ) && ! is_array($_REQUEST['galleryId']) ) {
+if ( isset( $_REQUEST['galleryId'] ) && ! is_array( $_REQUEST['galleryId'] ) ) {
 	$requestGalleryId = $_REQUEST['galleryId'];
 	$_REQUEST['galleryId'] = array( $requestGalleryId );
 }
@@ -47,7 +47,7 @@ $fileId = null;
 if ( ! empty( $_REQUEST['fileId'] ) ) {
 	$fileId = $_REQUEST['fileId'];
 
-	if ( ! ( $fileInfo = $filegallib->get_file_info($fileId) ) ) {
+	if ( ! ( $fileInfo = $filegallib->get_file_info( $fileId ) ) ) {
 		$smarty->assign('msg', tra("Incorrect param"));
 		$smarty->display('error.tpl');
 		die;
@@ -98,7 +98,7 @@ if ( ! empty( $fileId ) ) {
 		$smarty->display('error.tpl');
 		die;
 	}
-	if ($gal_info['backlinkPerms'] == 'y' && $filegallib->hasOnlyPrivateBacklinks($fileId) ) {
+	if ($gal_info['backlinkPerms'] == 'y' && $filegallib->hasOnlyPrivateBacklinks( $fileId ) ) {
 		$smarty->assign('errortype', 401);
 		$smarty->assign('msg', tra("You do not have permission to edit this file"));
 		$smarty->display('error.tpl');
@@ -152,13 +152,13 @@ if ( $isUpload ) {
 		'deleteAfter',
 		'deleteAfter_unit',
 		'hit_limit',
-		'listtoalert',
-		'insertion_syntax'
+		'listtoalert'
 	);
 
 	$uploadParams = array(
 		'fileInfo' => $fileInfo,
 		'galleryId' => $_REQUEST['galleryId'],
+		'formId' => $_REQUEST['formId']
 	);
 
 	foreach ( $optionalRequestParams as $p ) {
@@ -167,7 +167,7 @@ if ( $isUpload ) {
 		}
 	}
 
-	if ( $fileInfo = $filegallib->actionHandler('uploadFile', $uploadParams) ) {
+	if ( $fileInfo = $filegallib->actionHandler( 'uploadFile', $uploadParams ) ) {
 		$fileId = $fileInfo['fileId'];
 	}
 }
@@ -179,7 +179,7 @@ $smarty->assign('editFileId', (int) $fileId);
 $smarty->assign('galleryId', empty( $_REQUEST['galleryId'][0] ) ? '' : $_REQUEST['galleryId'][0]);
 
 if ( empty( $fileId ) ) {
-	$galleries = $filegallib->getSubGalleries($requestGalleryId, true, 'upload_files');
+	$galleries = $filegallib->getSubGalleries( $requestGalleryId, true, 'upload_files' );
 	$smarty->assign_by_ref('galleries', $galleries["data"]);
 	$smarty->assign('treeRootId', $galleries['parentId']);
 
@@ -194,7 +194,7 @@ if ( empty( $fileId ) ) {
 }
 
 if ( $prefs['fgal_limit_hits_per_file'] == 'y' ) {
-	$smarty->assign('hit_limit', $filegallib->get_download_limit($fileId));
+	$smarty->assign('hit_limit', $filegallib->get_download_limit( $fileId ));
 }
 
 $cat_type = 'file';
@@ -210,11 +210,9 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 
 // Display the template
 if ( $prefs['javascript_enabled'] != 'y' or ! $isUpload ) {
-	$headerlib->add_jsfile('lib/jquery/jquery.form.js');
 	$smarty->assign('mid', 'tiki-upload_file.tpl');
 	if ( ! empty( $_REQUEST['filegals_manager'] ) ) {
 		$smarty->assign('filegals_manager', $_REQUEST['filegals_manager']);
-		$smarty->assign('insertion_syntax', $_REQUEST['insertion_syntax']);
 		$smarty->display("tiki_full.tpl");
 	} else {
 		$smarty->display("tiki.tpl");

@@ -1,12 +1,11 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_https_list()
-{
+function prefs_https_list() {
 	return array(
 		'https_external_links_for_users' => array(
 			'name' => tra('Use HTTPS when building user-specific links'),
@@ -20,9 +19,8 @@ function prefs_https_list()
 			'type' => 'text',
 			'size' => 5,
 			'filter' => 'digits',
-			'default' => '',
+			'default' => '443',
 			'keywords' => 'SSL secure', 
-			'shorthint' => tra('If left empty, port 443 will be used'),
 		),
 		'https_login' => array(
 			'name' => tra('Use HTTPS login'),

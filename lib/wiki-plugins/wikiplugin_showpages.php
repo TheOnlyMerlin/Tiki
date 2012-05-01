@@ -1,18 +1,17 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_showpages_info()
-{
+function wikiplugin_showpages_info() {
 	return array(
 		'name' => tra('Show Pages'),
 		'documentation' => 'PluginShowPages',
 		'description' => tra('Find pages by searching within page names'),
 		'prefs' => array( 'wikiplugin_showpages' ),
-		'icon' => 'img/icons/page_find.png',
+		'icon' => 'pics/icons/page_find.png',
 		'params' => array(
 			'find' => array(
 				'required' => true,
@@ -44,11 +43,10 @@ function wikiplugin_showpages_info()
 	);
 }
 
-function wikiplugin_showpages($data, $params)
-{
+function wikiplugin_showpages($data, $params) {
 	global $tikilib, $prefs;
 
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 	if (!isset($find)) {
 		return ("<b>missing find parameter for plugin SHOWPAGES</b><br />");
 	}
@@ -57,7 +55,7 @@ function wikiplugin_showpages($data, $params)
 		$max = -1;
 	}
 
-	if (!isset($display) || (strpos($display, 'name') === false && strpos($display, 'desc') === false)) {
+	if (!isset($display) || (strpos($display,'name') === false && strpos($display,'desc') === false)) {
 		$display = 'name|desc';
 	}
 
@@ -66,15 +64,15 @@ function wikiplugin_showpages($data, $params)
 	$text = '';
 
 	foreach ($data["data"] as $page) {
-		if (isset($prefs['feature_wiki_description']) && $prefs['feature_wiki_description'] == 'y' && strpos($display, 'desc') !== false) {
+		if (isset($prefs['feature_wiki_description']) && $prefs['feature_wiki_description'] == 'y' && strpos($display,'desc') !== false) {
 			$desc = $tikilib->page_exists_desc($page["pageName"]);
 		} else {
 			$desc = '';
 		}
 		$text .= "<a href=\"tiki-index.php?page=".$page["pageName"]."\" title=\"".tra("Last modified by")." ".$page["user"]."\" class=\"wiki\">";
-		$text .= (strpos($display, 'name') !== false || strlen($desc) == 0 ? $page["pageName"] : $desc);
+		$text .= (strpos($display,'name') !== false || strlen($desc) == 0 ? $page["pageName"] : $desc);
 		$text .= "</a>";
-		$text .= (strpos($display, 'name') !== false && $desc !== $page["pageName"] && strlen($desc) > 0 ? " - $desc" : "");
+		$text .= (strpos($display,'name') !== false && $desc !== $page["pageName"] && strlen($desc) > 0 ? " - $desc" : "");
 		$text .= "<br />";
 	}
 

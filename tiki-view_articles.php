@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -26,7 +26,7 @@ if (isset($_REQUEST["remove"])) {
 	$access->check_authenticity();
 	$artlib->remove_article($_REQUEST["remove"]);
 }
-// This script can receive the threshold
+// This script can receive the thresold
 // for the information as the number of
 // days to get in the log 1,3,4,etc
 // it will default to 1 recovering information for today
@@ -63,8 +63,6 @@ if (isset($_REQUEST['date_min']) || isset($_REQUEST['date_max'])) {
 	$date_min = 0;
 	$date_max = $tikilib->now;
 }
-//Keep track of month of last viewed article for article months_links module foldable display
-$_SESSION['cms_last_viewed_month'] = TikiLib::date_format("%Y-%m", $date_max);
 $min_rating = isset($_REQUEST['min_rating']) ? $_REQUEST['min_rating'] : '';
 $max_rating = isset($_REQUEST['max_rating']) ? $_REQUEST['max_rating'] : '';
 if (isset($_REQUEST["find"])) {
@@ -102,9 +100,6 @@ $listpages = $artlib->list_articles($offset, $prefs['maxArticles'], $sort_mode, 
 if ($prefs['feature_multilingual'] == 'y') {
 	include_once ("lib/multilingual/multilinguallib.php");
 	$listpages['data'] = $multilinguallib->selectLangList('article', $listpages['data']);
-	foreach ($listpages['data'] as &$article) {
-		$article['translations'] = $multilinguallib->getTranslations('article', $article['articleId'], $article["title"], $article['lang']);
-	}
 }
 $topics = $artlib->list_topics();
 $smarty->assign_by_ref('topics', $topics);

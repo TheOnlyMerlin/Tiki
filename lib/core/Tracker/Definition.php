@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -111,14 +111,10 @@ class Tracker_Definition
 
 	function getField($id)
 	{
-		if (is_numeric($id)) {
-			foreach ($this->getFields() as $f) {
-				if ($f['fieldId'] == $id) {
-					return $f;
-				}
+		foreach ($this->getFields() as $f) {
+			if ($f['fieldId'] == $id) {
+				return $f;
 			}
-		} else {
-			return $this->getFieldFromPermName($id);
 		}
 	}
 
@@ -190,15 +186,6 @@ class Tracker_Definition
 	{
 		foreach ($this->getFields() as $field) {
 			if ($field['type'] == 'G' && isset($field['options_array'][0]) && ($field['options_array'][0] == 1 || $field['options_array'][0] == 'y')) {
-				return $field['fieldId'];
-			}
-		}
-	}
-
-	function getIconField()
-	{
-		foreach ($this->getFields() as $field) {
-			if ($field['type'] == 'icon') {
 				return $field['fieldId'];
 			}
 		}

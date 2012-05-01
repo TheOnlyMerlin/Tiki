@@ -1,19 +1,18 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_group_info()
-{
+function wikiplugin_group_info() {
 	return array(
 		'name' => tra('Group'),
 		'documentation' => 'PluginGroup',
 		'description' => tra('Display content based on the user\'s groups or friends'),
 		'body' => tra('Wiki text to display if conditions are met. The body may contain {ELSE}. Text after the marker will be displayed to users not matching the conditions.'),
 		'prefs' => array('wikiplugin_group'),
-		'icon' => 'img/icons/group.png',
+		'icon' => 'pics/icons/group.png',
 		'filter' => 'wikicontent',
 		'tags' => array( 'basic' ),		
 		'params' => array(
@@ -42,13 +41,12 @@ function wikiplugin_group_info()
 	);
 }
 
-function wikiplugin_group($data, $params)
-{
+function wikiplugin_group($data, $params) {
 	global $user, $prefs, $tikilib, $smarty;
 	$dataelse = '';
-	if (strpos($data, '{ELSE}')) {
-		$dataelse = substr($data, strpos($data, '{ELSE}')+6);
-		$data = substr($data, 0, strpos($data, '{ELSE}'));
+	if (strpos($data,'{ELSE}')) {
+		$dataelse = substr($data,strpos($data,'{ELSE}')+6);
+		$data = substr($data,0,strpos($data,'{ELSE}'));
 	}
 
 	if (!empty($params['friends']) && $prefs['feature_friends'] == 'y') {
@@ -91,7 +89,7 @@ function wikiplugin_group($data, $params)
 		$ok = false;
 
 		foreach ($userGroups as $grp) {
-			if (in_array($grp, $groups)) {
+		    if (in_array($grp, $groups)) {
 				$ok = true;
 				$smarty->assign('groupValid', 'y');
 				break;
@@ -104,7 +102,7 @@ function wikiplugin_group($data, $params)
 	if (!empty($notgroups)) {
 		$ok = true;
 		foreach ($userGroups as $grp) {
-			if (in_array($grp, $notgroups)) {
+		    if (in_array($grp, $notgroups)) {
 				$ok = false;
 				$smarty->assign('notgroupValid', 'y');
 				break;

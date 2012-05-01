@@ -1,7 +1,6 @@
 /* $Id$ */
 
-a.admbox,
-a.admbox:visited {
+a.admbox {
 	height: 92px;
 	width: 92px;
 	text-align: center;
@@ -55,7 +54,8 @@ a.admbox.off img {
 	position: absolute;
 	top: 0;
 	left: 0;
-	background-image: url('../img/overlay-disabled_item.png');
+	background-image: url('../pics/overlay-disabled_item.png');
+	opacity: .5;
 }
 /* Look & feel thumbnail */
 
@@ -465,4 +465,6 @@ a.admbox.off img {
 	margin-left: 1em;
 }
 
+
 /* end profiles */
+

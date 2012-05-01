@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -42,7 +42,10 @@ function wikiplugin_zoterolist($data, $params)
 	$zoterolib = TikiLib::lib('zotero');
 	$html = $zoterolib->get_formatted_references($params['tag']);
 
-	$cachelib->cacheItem($cacheKey, serialize(array('created' => $tikilib->now, 'data' => $html)), 'zotero');
+	$cachelib->cacheItem($cacheKey, serialize(array(
+		'created' => $tikilib->now,
+		'data' => $html,
+	)), 'zotero');
 
 	if ($html) {
 		return WikiParser_PluginOutput::html($html);
@@ -50,3 +53,4 @@ function wikiplugin_zoterolist($data, $params)
 		return WikiParser_PluginOutput::error(tra('Error'), tra('No results obtained. The Zotero citation server may be down.'));
 	}
 }
+

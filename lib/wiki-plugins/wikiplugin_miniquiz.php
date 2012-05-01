@@ -1,19 +1,18 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_miniquiz_info()
-{
+function wikiplugin_miniquiz_info() {
 	return array(
 		'name' => tra('Mini Quiz'),
 		'documentation' => 'PluginMiniQuiz',
 		'description' => tra('Create a quiz using a tracker'),
 		'prefs' => array( 'feature_trackers', 'wikiplugin_miniquiz' ),
 		'body' => tra('Instructions::Feedback'),
-		'icon' => 'img/icons/green_question.png',
+		'icon' => 'pics/icons/green_question.png',
 		'params' => array(
 			'trackerId' => array(
 				'required' => true,
@@ -25,26 +24,19 @@ function wikiplugin_miniquiz_info()
 	);
 }
 
-function rcmp($a, $b)
-{
-	return mt_rand(-1, 1);
-}
-function shuf(&$ar)
-{
-	srand((double) microtime() * 10000000); uksort($ar, "rcmp");
-}
+function rcmp($a, $b) { return mt_rand(-1, 1); }
+function shuf(&$ar) { srand((double) microtime() * 10000000); uksort($ar, "rcmp"); }
 
-function wikiplugin_miniquiz($data, $params)
-{
-	global $tikilib, $user, $group, $prefs, $smarty;
+function wikiplugin_miniquiz($data, $params) {
+  global $tikilib, $user, $group, $prefs, $smarty;
 	global $trklib; include_once('lib/trackers/trackerlib.php');
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 
 	if ($prefs['feature_trackers'] != 'y' || !isset($trackerId) || !($tracker = $trklib->get_tracker($trackerId))) {
 		return $smarty->fetch("wiki-plugins/error_tracker.tpl");
 	}
 
-	$items = $trklib->list_tracker_items($trackerId, 0, -1, 'lastModif_desc', '', 'o');
+	$items = $trklib->list_tracker_items($trackerId,0,-1,'lastModif_desc','','o');
 	foreach ($items['data'] as $it) {
 		$id = $it['itemId'];
 		foreach ($it['field_values'] as $val) {
@@ -102,7 +94,7 @@ function wikiplugin_miniquiz($data, $params)
 				$bout = "^$data^";
 				$bout.= "~pp~$out~/pp~";
 				//return $bout;
-			} else {
+			} else{
 				$back.= "!Please fill the quiz!\n";
 			}
 		}

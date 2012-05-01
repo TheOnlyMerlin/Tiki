@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -32,10 +32,8 @@ Zend_Loader_Autoloader::getInstance()
 
 include_once('db/tiki-db.php');	// to set up multitiki etc if there
 
-$lockFile = 'db/'.$tikidomainslash.'lock';
-
 // if tiki installer is locked (probably after previous installation) display notice
-if (file_exists($lockFile)) {
+if (file_exists('db/'.$tikidomainslash.'lock')) {
 	$title = 'Tiki Installer Disabled';
 	$td = empty($tikidomain)? '': '/'.$tikidomain;
 	$content = '
@@ -49,7 +47,7 @@ if (file_exists($lockFile)) {
 	createPage($title, $content);
 }
 
-$tikiroot = str_replace('\\', '/', dirname($_SERVER['PHP_SELF']));
+$tikiroot = str_replace('\\','/',dirname($_SERVER['PHP_SELF']));
 $session_params = session_get_cookie_params();
 session_set_cookie_params($session_params['lifetime'], $tikiroot);
 unset($session_params);
@@ -69,13 +67,6 @@ if (file_exists('db/'.$tikidomainslash.'local.php')) {
 	if (isset($_POST['dbuser'], $_POST['dbpass'])) {
 		if (($_POST['dbuser'] == $user_tiki) && ($_POST['dbpass'] == $pass_tiki)) {
 			$_SESSION['accessible'] = true;
-		} else {
-			$_SESSION['installer_auth_failure'] = isset($_SESSION['installer_auth_failure']) ? $_SESSION['installer_auth_failure'] + 1 : 1;
-
-			// If there are too many failures during a single session, lock the installer as a precaution
-			if ($_SESSION['installer_auth_failure'] >= 20) {
-				touch($lockFile);
-			}
 		}
 	}
 } else {
@@ -107,8 +98,7 @@ if (isset($_SESSION['accessible'])) {
 
 
 
-function createPage($title, $content)
-{
+function createPage($title, $content){
 	echo <<<END
 <!DOCTYPE html 
 	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"

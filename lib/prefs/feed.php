@@ -1,12 +1,11 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_feed_list()
-{
+function prefs_feed_list() {
 	return array(
 		'feed_default_version' => array(
 			'name' => tra('Default feed format'),
@@ -85,8 +84,8 @@ function prefs_feed_list()
 			'filter' => 'digits',
 			'shorthint' => tra('seconds'),
 			'hint' => tra('Use 0 for no caching'),
-			'default' => '300', // 5 minutes
-			'detail' => tra('Feed caching is done for anonymous users only.'),
+			'default' => '0', // 0 = disabled (default)
+			'detail' => tra('Enabling caching will override existing permissions - all content will be public. Enable this option __only__ if your syndicated content should be public.'),
 		),
 		'feed_articles' => array(
 			'name' => tra('RSS for articles'),

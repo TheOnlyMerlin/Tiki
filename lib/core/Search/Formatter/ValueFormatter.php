@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,7 +8,6 @@
 class Search_Formatter_ValueFormatter
 {
 	private $valueSet;
-	static private $pageTitle = '';
 
 	function __construct($valueSet)
 	{
@@ -27,13 +26,7 @@ class Search_Formatter_ValueFormatter
 			$arguments = array();
 		}
 
-		if (isset($arguments['pagetitle']) && $arguments['pagetitle'] !== 'n' && empty(self::$pageTitle)) {
-			self::$pageTitle = $this->valueSet[$name];
-			TikiLib::lib('smarty')->assign('title', self::$pageTitle);
-		}
-
-		// ugly exception for wikiplugin - TODO better?
-		if ($format !== 'wikiplugin' && (! isset($this->valueSet[$name]) || is_null($this->valueSet[$name]))) {
+		if (! isset($this->valueSet[$name]) || is_null($this->valueSet[$name])) {
 			return tr("No value for '%0'", $name);
 		}
 
@@ -49,7 +42,7 @@ class Search_Formatter_ValueFormatter
 			} else {
 				$formatter = new $class($arguments);
 				$ret = $formatter->render($name, $this->valueSet[$name], $this->valueSet);
-				if (in_array($format, $prefs['unified_cached_formatters']) && $formatter->canCache()) {
+				if (in_array($format, $prefs['unified_cached_formatters'])) {
 					$cachelib->cacheItem($cacheName, $ret, $cacheType);
 				}
 				return ($ret);

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -146,9 +146,9 @@ class TikiDb_Table
 
 		$map = array();
 
-		foreach ( $result as $row ) {
-			$key = array_shift($row);
-			$value = array_shift($row);
+		foreach( $result as $row ) {
+			$key = array_shift( $row );
+			$value = array_shift( $row );
 
 			$map[ $key ] = $value;
 		}
@@ -156,7 +156,7 @@ class TikiDb_Table
 		return $map;
 	}
 
-	function fetchAll(array $fields = array(), array $conditions = array(), $numrows = -1, $offset = -1, $orderClause = null)
+	function fetchAll(array $fields, array $conditions, $numrows = -1, $offset = -1, $orderClause = null)
 	{
 		$bindvars = array();
 
@@ -177,9 +177,7 @@ class TikiDb_Table
 			$fieldDescription .= ', ';
 		}
 
-		$query = 'SELECT ';
-		$query .= (!empty($fieldDescription)) ? rtrim($fieldDescription, ', ') : '*';
-		$query .= ' FROM ' . $this->escapeIdentifier($this->tableName);
+		$query = 'SELECT ' . rtrim($fieldDescription, ', ') . ' FROM ' . $this->escapeIdentifier($this->tableName);
 		$query .= $this->buildConditions($conditions, $bindvars);
 		$query .= $this->buildOrderClause($orderClause);
 

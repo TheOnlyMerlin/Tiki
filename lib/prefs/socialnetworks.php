@@ -1,12 +1,11 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_socialnetworks_list()
-{
+function prefs_socialnetworks_list() {
 	return array(
 		'socialnetworks_twitter_consumer_key' => array(
 			'name' => tra('Consumer key'),
@@ -45,7 +44,6 @@ function prefs_socialnetworks_list()
 			'description' => tra('Allow users to login using Facebook'),
 			'keywords' => 'social networks',
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'socialnetworks_facebook_autocreateuser' => array(
 			'name' => tra('Auto-create Tiki user'),

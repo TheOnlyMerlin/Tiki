@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -22,7 +22,7 @@ if (isset($_REQUEST["mapview"]) && $_REQUEST["mapview"] == 'n' && !isset($_REQUE
 	$smarty->assign('mapview', false);
 }
 if (isset($_REQUEST["remove"])) {
-	$artperms = Perms::get(array( 'type' => 'article', 'object' => $_REQUEST['remove'] ));
+	$artperms = Perms::get( array( 'type' => 'article', 'object' => $_REQUEST['remove'] ) );
 
 	if ($artperms->remove_article != 'y') {
 		$smarty->assign('errortype', 401);
@@ -36,7 +36,7 @@ if (isset($_REQUEST["remove"])) {
 if (isset($_REQUEST['submit_mult'])) {
 	if ($_REQUEST['submit_mult'] === 'remove_articles' && count($_REQUEST["checked"]) > 0) {
 		foreach ($_REQUEST["checked"] as $aId) {
-			$artperms = Perms::get(array( 'type' => 'article', 'object' => $aId ));
+			$artperms = Perms::get( array( 'type' => 'article', 'object' => $aId ) );
 
 			if ($artperms->remove_article != 'y') {
 				$smarty->assign('errortype', 401);
@@ -52,7 +52,7 @@ if (isset($_REQUEST['submit_mult'])) {
 		}
 	}
 }
-// This script can receive the threshold
+// This script can receive the thresold
 // for the information as the number of
 // days to get in the log 1,3,4,etc
 // it will default to 1 recovering information for today

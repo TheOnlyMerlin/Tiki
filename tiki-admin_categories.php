@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -23,7 +23,7 @@ $smarty->assign('parentId', $_REQUEST['parentId']);
 
 
 if (!empty($_REQUEST['parentId'])) {
-	$access->check_permission('tiki_p_admin_categories', '', 'category', $_REQUEST['parentId']);
+	$access->check_permission('tiki_p_admin_categories', '', 'category', $_REQUEST['parentId'] );
 }
 
 if (!empty($_REQUEST['unassign'])) {
@@ -37,7 +37,7 @@ if (!empty($_REQUEST['move_to']) && !empty($_REQUEST['toId'])) {
 		$smarty->display('error.tpl');
 		die;
 	}
-	$access->check_permission('tiki_p_admin_categories', '', 'category', $_REQUEST['toId']);
+	$access->check_permission('tiki_p_admin_categories', '', 'category', $_REQUEST['toId'] );
 	$categlib->move_all_objects($_REQUEST['parentId'], $_REQUEST['toId']);
 }
 if (!empty($_REQUEST['copy_from']) && !empty($_REQUEST['to'])) {
@@ -47,7 +47,7 @@ if (!empty($_REQUEST['copy_from']) && !empty($_REQUEST['to'])) {
 		$smarty->display('error.tpl');
 		die;
 	}
-	$access->check_permission('tiki_p_admin_categories', '', 'category', $_REQUEST['to']);
+	$access->check_permission('tiki_p_admin_categories', '', 'category', $_REQUEST['to'] );
 	$categlib->assign_all_objects($_REQUEST['parentId'], $_REQUEST['to']);
 }
 if (isset($_REQUEST["addpage"]) && $_REQUEST["parentId"] != 0) {
@@ -152,7 +152,7 @@ if (isset($categorizedObject) && !isset($_REQUEST["addpage"])) {
 	$categlib->notify($values);
 }
 if (!empty($_REQUEST["categId"])) {
-	$access->check_permission('tiki_p_admin_categories', '', 'category', $_REQUEST['categId']);
+	$access->check_permission('tiki_p_admin_categories', '', 'category', $_REQUEST['categId'] );
 	$info = $categlib->get_category($_REQUEST["categId"]);
 } else {
 	$_REQUEST["categId"] = 0;
@@ -180,7 +180,7 @@ if (isset($_REQUEST["removeObject"])) {
 	$categlib->notify($values);
 }
 if (isset($_REQUEST["removeCat"]) && ($info = $categlib->get_category($_REQUEST['removeCat']))) {
-	$access->check_permission('tiki_p_admin_categories', '', 'category', $_REQUEST['removeCat']);
+	$access->check_permission('tiki_p_admin_categories', '', 'category', $_REQUEST['removeCat'] );
 	$access->check_authenticity(tra('Click here to delete the category:') . ' ' . $info['name']);
 	$categlib->remove_category($_REQUEST["removeCat"]);
 }
@@ -196,17 +196,13 @@ if (isset($_REQUEST["save"]) && isset($_REQUEST["name"]) && strlen($_REQUEST["na
 
 		try {
 			$categlib->update_category($_REQUEST["categId"], $_REQUEST["name"], $_REQUEST["description"], $_REQUEST["parentId"]);
-			if ($tiki_p_admin_categories == 'y' && !empty($_REQUEST['parentPerms'])) {
-				$userlib->remove_object_permission('', $_REQUEST['categId'], 'category', '');
-				$userlib->copy_object_permissions($_REQUEST['parentId'], $_REQUEST['categId'], 'category');
-			}
 		} catch(Exception $e) {
 			$errors[] = $e->getMessage();
 		}
 	} else {
 		try {
 			$newcategId = $categlib->add_category($_REQUEST["parentId"], $_REQUEST["name"], $_REQUEST["description"]);
-			if ($tiki_p_admin_categories != 'y' || !empty($_REQUEST['parentPerms'])) {
+			if ($tiki_p_admin_categories != 'y') {
 				$userlib->copy_object_permissions($_REQUEST['parentId'], $newcategId, 'category');
 			}
 		} catch(Exception $e) {
@@ -247,7 +243,7 @@ if (isset($_REQUEST['import']) && isset($_FILES['csvlist']['tmp_name'])) {
 					$smarty->display('error.tpl');
 					die;
 				}
-				$access->check_permission('tiki_p_admin_categories', '', 'category', $parentId);
+				$access->check_permission('tiki_p_admin_categories', '', 'category', $parentId );
 			} else {
 				$access->check_permission('tiki_p_admin_categories');
 				$parentId = 0;
@@ -341,18 +337,17 @@ if (isset($_REQUEST["find_objects"])) {
 	$find_objects = '';
 }
 
-function admin_categ_assign( &$max, $data_key, $data = null ) 
-{
+function admin_categ_assign( &$max, $data_key, $data = null ) {
 	global $smarty;
 
-	if ( is_null($data) ) {
+	if ( is_null( $data ) ) {
 		$data = array( 'data' => array(), 'cant' => 0 );
 	}
 
 	$smarty->assign($data_key, $data['data']);
 	$smarty->assign('cant_' . $data_key, $data['cant']);
 
-	$max = max($max, $data['cant']);
+	$max = max( $max, $data['cant'] );
 }
 
 $articles = $galleries = $file_galleries = $forums = $polls = $blogs = $pages = $faqs = $quizzes = $trackers = $directories = $objects = null;
@@ -413,12 +408,11 @@ if ( $prefs['feature_wiki'] == 'y' ) {
 }
 
 if ( $prefs['feature_faqs'] == 'y' ) {
-	$faqlib = TikiLib::lib('faq');
-	$faqs = $faqlib->list_faqs($offset, -1, 'title_asc', $find_objects);
+	$faqs = $tikilib->list_faqs($offset, -1, 'title_asc', $find_objects);
 }
 
 if ( $prefs['feature_quizzes'] == 'y' ) {
-	$quizzes = TikiLib::lib('quiz')->list_quizzes($offset, -1, 'name_asc', $find_objects);
+	$quizzes = $tikilib->list_quizzes($offset, -1, 'name_asc', $find_objects);
 }
 
 if ( $prefs['feature_trackers'] == 'y' ) {
@@ -437,18 +431,18 @@ if ( $prefs['feature_directory'] == 'y' ) {
 }
 
 $maximum = 0;
-admin_categ_assign($maximum, 'objects', $objects);
-admin_categ_assign($maximum, 'galleries', $galleries);
-admin_categ_assign($maximum, 'file_galleries', $file_galleries);
-admin_categ_assign($maximum, 'forums', $forums);
-admin_categ_assign($maximum, 'polls', $polls);
-admin_categ_assign($maximum, 'blogs', $blogs);
-admin_categ_assign($maximum, 'pages', $pages);
-admin_categ_assign($maximum, 'faqs', $faqs);
-admin_categ_assign($maximum, 'quizzes', $quizzes);
-admin_categ_assign($maximum, 'trackers', $trackers);
-admin_categ_assign($maximum, 'articles', $articles);
-admin_categ_assign($maximum, 'directories', $directories);
+admin_categ_assign( $maximum, 'objects', $objects );
+admin_categ_assign( $maximum, 'galleries', $galleries );
+admin_categ_assign( $maximum, 'file_galleries', $file_galleries );
+admin_categ_assign( $maximum, 'forums', $forums );
+admin_categ_assign( $maximum, 'polls', $polls );
+admin_categ_assign( $maximum, 'blogs', $blogs );
+admin_categ_assign( $maximum, 'pages', $pages );
+admin_categ_assign( $maximum, 'faqs', $faqs );
+admin_categ_assign( $maximum, 'quizzes', $quizzes );
+admin_categ_assign( $maximum, 'trackers', $trackers );
+admin_categ_assign( $maximum, 'articles', $articles );
+admin_categ_assign( $maximum, 'directories', $directories );
 
 $smarty->assign('maxRecords', $maxRecords);
 $smarty->assign('offset', $offset);

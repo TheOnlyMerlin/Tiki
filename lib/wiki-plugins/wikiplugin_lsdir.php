@@ -1,19 +1,18 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_lsdir_info()
-{
+function wikiplugin_lsdir_info() {
 	return array(
 		'name' => tra('List Directory'),
 		'documentation' => 'PluginLsDir',
 		'description' => tra('Lists files in a directory'),
 		'prefs' => array( 'wikiplugin_lsdir' ),
 		'validate' => 'all',
-		'icon' => 'img/icons/folder_find.png',
+		'icon' => 'pics/icons/folder_find.png',
 		'params' => array(
 			'dir' => array(
 				'required' => true,
@@ -24,7 +23,7 @@ function wikiplugin_lsdir_info()
 			'urlprefix' => array(
 				'required' => false,
 				'name' => tra('URL Prefix'),
-				'description' => tra('Make the file name a link to the file by adding the URL path preceding the file name. Example: http://yoursite.com/tiki/'),
+				'description' => tra('Make the file name a link to the file by adding the url path preceding the file name. Example: http://yoursite.com/tiki/'),
 				'default' => NULL
 			),
 			'sort' => array(
@@ -57,8 +56,7 @@ function wikiplugin_lsdir_info()
 	);
 }
 
-function wikiplugin_lsdir($data, $params)
-{
+function wikiplugin_lsdir($data, $params) {
 	global $tikilib;
 //	$dir = '';
 	$dir = $params['dir'];
@@ -127,7 +125,7 @@ function wikiplugin_lsdir($data, $params)
 	}
 	
 	while ($file = readdir($dh)) {
-		if (empty($filter) || stristr($file, $filter)) {
+		if (empty($filter) || stristr($file,$filter)) {
 			//Don't list subdirectories
 			if (!is_dir("$dir/$file")) {
 				if ($sort == 'name') {
@@ -147,7 +145,7 @@ function wikiplugin_lsdir($data, $params)
 		krsort($tmp_array);
 	}
 	
-	foreach ($tmp_array as $filename) {
+	foreach($tmp_array as $filename) {
 		if ($count >= $limit) {
 			break 1;
 		}

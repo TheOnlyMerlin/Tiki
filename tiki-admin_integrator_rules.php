@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -114,20 +114,20 @@ if (isset($_REQUEST["action"])) {
 				$smarty->assign('enabled', $rule["enabled"]);
 				$smarty->assign('description', $rule["description"]);
 			}
-    		break;
+			break;
 
 		case 'rm':
 			if ($ruleID != 0) {
 				$access->check_authenticity();
 				$integrator->remove_rule($ruleID);
 			}
-    		break;
+			break;
 
 		default:
 			$smarty->assign('msg', tra("Requested action in not supported on repository"));
 			$smarty->display("error.tpl");
 			die;
-    		break;
+			break;
 	}
 }
 // Get repository name

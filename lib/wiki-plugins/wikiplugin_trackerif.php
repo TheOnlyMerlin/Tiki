@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,7 +15,7 @@ function wikiplugin_trackerif_info()
 		'documentation' => 'PluginTrackerIf',
 		'description' => tra('Display content based on results of a tracker field test'),
 		'prefs' => array( 'wikiplugin_trackerif', 'feature_trackers', 'wikiplugin_tracker' ), // ML: is wikiplugin_tracker necessary?
-		'icon' => 'img/icons/database_table.png',
+		'icon' => 'pics/icons/database_table.png',
 		'params' => array(
 			'test' => array(
 				'required' => true,
@@ -32,22 +32,22 @@ function wikiplugin_trackerif_info()
 	);
 }
 
-function wikiplugin_trackerif ($data, $params)
+function wikiplugin_trackerif($data, $params)
 {
 	global $trklib;
 	$test = null;
 	$values = array();
 	$dataelse = '';
 
-	if (strpos($data, '{ELSE}')) {
+	if (strpos($data,'{ELSE}')) {
 		// Else bloc when test does not pass
-		$dataelse = substr($data, strpos($data, '{ELSE}')+6);
-		$data = substr($data, 0, strpos($data, '{ELSE}'));
+		$dataelse = substr($data,strpos($data,'{ELSE}')+6);
+		$data = substr($data,0,strpos($data,'{ELSE}'));
 	}
 
 	if (empty($_REQUEST["trackerId"])) {
                 $trackerId = $trklib->get_tracker_for_item($_REQUEST['itemId']);
-	} else {
+        } else {
 		$trackerId = $_REQUEST["trackerId"];
 	}
 
@@ -85,8 +85,7 @@ function wikiplugin_trackerif ($data, $params)
 	return $data;
 }
 
-function wikiplugin_trackerif_test(LDAPFilter $test, array $values)
-{
+function wikiplugin_trackerif_test(LDAPFilter $test, array $values) {
 	$return = true;
 
 	if ($test->_subfilters != null) {
@@ -96,11 +95,11 @@ function wikiplugin_trackerif_test(LDAPFilter $test, array $values)
 				case '&':
 					// And
 					$return &= wikiplugin_trackerif_test($subfilter, $values);
-    				break;
+					break;
 				case '|':
 					// Or
 					$return |= wikiplugin_trackerif_test($subfilter, $values);
-    				break;
+					break;
 			}
 		}
 
@@ -156,8 +155,7 @@ function wikiplugin_trackerif_test(LDAPFilter $test, array $values)
 	return $return;
 }
 
-function wikiplugin_trackerif_starts_with($haystack, $needle, $case=true)
-{
+function wikiplugin_trackerif_starts_with($haystack, $needle, $case=true) {
 	if ($case) {
 		return strcmp(substr($haystack, 0, strlen($needle)), $needle) === 0;
 	}
@@ -165,8 +163,7 @@ function wikiplugin_trackerif_starts_with($haystack, $needle, $case=true)
 	return strcasecmp(substr($haystack, 0, strlen($needle)), $needle) === 0;
 }
 
-function wikiplugin_trackerif_ends_with($haystack, $needle, $case=true)
-{
+function wikiplugin_trackerif_ends_with($haystack, $needle, $case=true) {
 	if ($case) {
 		return strcmp(substr($haystack, strlen($haystack) - strlen($needle)), $needle) === 0;
 	}

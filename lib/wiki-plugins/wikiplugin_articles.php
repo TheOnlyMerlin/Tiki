@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,7 +12,7 @@ function wikiplugin_articles_info()
 		'documentation' => 'PluginArticles',
 		'description' => tra('Display multiple articles'),
 		'prefs' => array( 'feature_articles', 'wikiplugin_articles' ),
-		'icon' => 'img/icons/table_multiple.png',
+		'icon' => 'pics/icons/table_multiple.png',
 		'tags' => array( 'basic' ),		
 		'params' => array(
 			'usePagination' => array(
@@ -75,30 +75,6 @@ function wikiplugin_articles_info()
 				'description' => tra('The column and order of the sort in columnName_asc or columnName_desc format. Defaults to "publishDate_desc" (other column examples are "title", "lang", "authorName" & "topicName")').'. '.tra('Use random to have random items.'),
 				'filter' => 'word',
 				'default' => 'publishDate_desc'
-			),
-			'order' => array(
-				'required' => false,
-				'name' => tra('Specific order'),
-				'description' => tra('List of ArticleId that must appear in this order if present'),
-				'filter' => 'digits',
-				'separator' => '|',
-				'default' => ''
-			),
-			'articleId' => array(
-				'required' => false,
-				'name' => tra('Only these articles'),
-				'description' => tra('List of ArticleId to display separated by |'),
-				'filter' => 'digits',
-				'separator' => '|',
-				'default' => ''
-			),
-			'notArticleId' => array(
-				'required' => false,
-				'name' => tra('Not these articles'),
-				'description' => tra('List of ArticleId that can not be displayed separated by |'),
-				'filter' => 'digits',
-				'separator' => '|',
-				'default' => ''
 			),
 			'quiet' => array(
 				'required' => false,
@@ -170,6 +146,7 @@ function wikiplugin_articles_info()
 				'description' => tr('Time unit used with "Period quantity"'),
 				'filter' => 'word',
 				'options' => array(
+					array('text' => '', 'value' => ''), 
 					array('text' => tr('Hour'), 'value' => 'hour'),
 					array('text' => tr('Day'), 'value' => 'day'),
 					array('text' => tr('Week'), 'value' => 'week'),
@@ -247,7 +224,8 @@ function wikiplugin_articles($data, $params)
 	}
 
 	$urlnext = '';
-	if ($usePagination == 'y') {
+	if ($usePagination == 'y')
+	{
 		//Set offset when pagniation is used
 		if (!isset($_REQUEST["offset"])) {
 			$start = 0;
@@ -256,7 +234,7 @@ function wikiplugin_articles($data, $params)
 		}
 		
 		//Default to 10 when pagination is used
-		if (($max == -1)) {
+		if (($max == -1)){
 			$countPagination = 10;
 		}
 		foreach ($auto_args as $arg) {
@@ -272,9 +250,7 @@ function wikiplugin_articles($data, $params)
 	$smarty->assign_by_ref('urlparam', $urlparam);
 	$smarty->assign_by_ref('urlnext', $urlnext);
 	
-	if (!isset($containerClass)) {
-		$containerClass = 'wikiplugin_articles';
-	}
+	if (!isset($containerClass)) {$containerClass = 'wikiplugin_articles';}
 	$smarty->assign('container_class', $containerClass);
 
 	$dateStartTS = 0;
@@ -285,18 +261,18 @@ function wikiplugin_articles($data, $params)
 		switch ($periodUnit) {
 			case 'hour':
 				$periodUnit = 3600;
-    			break;
+				break;
 			case 'day':
 				$periodUnit = 86400;
-    			break;
+				break;
 			case 'week':
 				$periodUnit = 604800;
-    			break;
+				break;
 			case 'month':
 				$periodUnit = 2628000;
-    			break;
+				break;
 			default:
-    			break;
+				break;
 		}
 		
 		if (is_int($periodUnit)) {
@@ -325,18 +301,12 @@ function wikiplugin_articles($data, $params)
 	if (!empty($translationOrphan)) {
 		$filter['translationOrphan'] = $translationOrphan;
 	}
-	if (!empty($articleId)) {
-		$filter['articleId'] = $articleId;
-	}
-	if (!empty($notArticleId)) {
-		$filter['notArticleId'] = $notArticleId;
-	}
 	
 	include_once("lib/comments/commentslib.php");
 	$commentslib = new Comments($dbTiki);
 	
 	$listpages = $artlib->list_articles($start, $max, $sort, '', $dateStartTS, $dateEndTS, 'admin', $type, $topicId, 'y', $topic, $categId, '', '', $lang, '', '', ($overrideDates == 'y'), 'y', $filter);
-	if ($prefs['feature_multilingual'] == 'y' && empty($translationOrphan)) {
+ 	if ($prefs['feature_multilingual'] == 'y' && empty($translationOrphan)) {
 		global $multilinguallib;
 		include_once("lib/multilingual/multilinguallib.php");
 		$listpages['data'] = $multilinguallib->selectLangList('article', $listpages['data'], $pageLang);
@@ -345,8 +315,7 @@ function wikiplugin_articles($data, $params)
 	for ($i = 0, $icount_listpages = count($listpages["data"]); $i < $icount_listpages; $i++) {
 		$listpages["data"][$i]["parsed_heading"] = $tikilib->parse_data($listpages["data"][$i]["heading"], array('min_one_paragraph' => true));
 		if ($fullbody == 'y') {
-			$listpages["data"][$i]["parsed_body"] = $tikilib->parse_data($listpages["data"][$i]["body"], array('min_one_paragraph' => true,	
-				'is_html' => isset($prefs['article_body_is_html']) && $prefs['article_body_is_html'] === 'y'));
+			$listpages["data"][$i]["parsed_body"] = $tikilib->parse_data($listpages["data"][$i]["body"], array('min_one_paragraph' => true, 'is_html' => $prefs['article_body_is_html'] === 'y'));
 		}
 		$comments_prefix_var='article:';
 		$comments_object_var=$listpages["data"][$i]["articleId"];
@@ -374,30 +343,13 @@ function wikiplugin_articles($data, $params)
 		$smarty->assign_by_ref('type', $type);
 	}
 	
-	if ($usePagination == 'y') {
+	if ($usePagination == 'y'){
 		$smarty->assign('maxArticles', $max);
 		$smarty->assign_by_ref('offset', $start);
 		$smarty->assign_by_ref('cant', $listpages['cant']);
 	}
-	if (!empty($order)) {
-		foreach ($listpages['data'] as $i=>$article) {
-			$memo[$article['articleId']] = $i;
-		}
-		foreach ($order as $articleId) {
-			if (isset($memo[$articleId])) {
-				$list[] = $listpages['data'][$memo[$articleId]];
-			}
-		}
-		foreach ($listpages['data'] as $i=>$article) {
-			if (!in_array($article['articleId'], $order)) {
-				$list[] = $article;
-			}
-		}
-		$smarty->assign_by_ref('listpages', $list);
-	} else {
-		$smarty->assign_by_ref('listpages', $listpages["data"]);
-	}
 	$smarty->assign('usePagination', $usePagination);
+	$smarty->assign_by_ref('listpages', $listpages["data"]);
 	$smarty->assign_by_ref('actions', $actions);
 
 	if (isset($titleonly) && $titleonly == 'y') {

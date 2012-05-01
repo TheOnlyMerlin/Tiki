@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -112,7 +112,7 @@ class Tracker_Field_TextArea extends Tracker_Field_Text
 
 	protected function attemptParse($text)
 	{
-		return TikiLib::lib('tiki')->parse_data($text);
+		return TikiLib::lib('tiki')->parse_data(htmlspecialchars($text));
 	}
 
 	protected function getIndexableType()

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -111,22 +111,7 @@ if (isset($_REQUEST["save"])) {
 		$articleClipTypes = '';
 	}
 	if (!isset($_REQUEST['frequency'])) $_REQUEST['frequency'] = 0;
-	$sid = $nllib->replace_newsletter(
-					$_REQUEST["nlId"],
-					$_REQUEST["name"],
-					$_REQUEST["description"],
-					$_REQUEST["allowUserSub"],
-					$_REQUEST["allowAnySub"],
-					$_REQUEST["unsubMsg"],
-					$_REQUEST["validateAddr"],
-					$_REQUEST["allowTxt"],
-					$_REQUEST["frequency"],
-					$_REQUEST["author"],
-					$_REQUEST["allowArticleClip"], 
-					$_REQUEST["autoArticleClip"], 
-					$articleClipRange, 
-					$articleClipTypes
-	);
+	$sid = $nllib->replace_newsletter($_REQUEST["nlId"], $_REQUEST["name"], $_REQUEST["description"], $_REQUEST["allowUserSub"], $_REQUEST["allowAnySub"], $_REQUEST["unsubMsg"], $_REQUEST["validateAddr"],$_REQUEST["allowTxt"],$_REQUEST["frequency"],$_REQUEST["author"], $_REQUEST["allowArticleClip"], $_REQUEST["autoArticleClip"], $articleClipRange, $articleClipTypes );
 	
 	$info = array(
 		'nlId' => 0,
@@ -159,16 +144,9 @@ if (isset($_REQUEST["find"])) {
 }
 $smarty->assign('find', $find);
 $smarty->assign_by_ref('sort_mode', $sort_mode);
-$channels = $nllib->list_newsletters(
-				$offset,
-				$maxRecords,
-				$sort_mode,
-				$find,
-				$update,	
-				array( 
-					'tiki_p_admin_newsletters'
-				)
-);
+$channels = $nllib->list_newsletters($offset, $maxRecords, $sort_mode, $find, $update, array(
+	"tiki_p_admin_newsletters"
+));
 
 // get Article types for clippings feature
 $articleTypes = array();

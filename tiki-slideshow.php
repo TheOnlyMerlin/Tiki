@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,11 +13,10 @@ include_once ('lib/wiki/wikilib.php');
 include_once ('lib/wiki-plugins/wikiplugin_slideshow.php');
 
 $access->check_feature('feature_wiki');
-$access->check_feature('feature_slideshow');
 
 //make the other things know we are loading a slideshow
 $tikilib->is_slideshow = true;
-$smarty->assign('is_slideshow', 'y');
+$smarty->assign('is_slideshow' , 'y');
 
 // Create the HomePage if it doesn't exist
 if (!$tikilib->page_exists($prefs['wikiHomePage'])) {
@@ -28,30 +27,6 @@ if (!isset($_SESSION["thedate"])) {
 	$thedate = date("U");
 } else {
 	$thedate = $_SESSION["thedate"];
-}
-
-if (isset($_REQUEST['pdf'])) {
-	$access->check_feature("feature_slideshow_pdfexport");
-	set_time_limit(777);
-	
-	$_POST["html"] = urldecode($_POST["html"]);
-	
-	define("DOMPDF_ENABLE_REMOTE", true);
-	
-	require_once("lib/jquery.s5/lib/dompdf/dompdf_config.inc.php");
-	
-	if ( isset( $_POST["html"] ) ) {
-		$dompdf = new DOMPDF();
-
-		$dompdf->load_html(urldecode($_REQUEST["html"]));
-		$dompdf->set_paper("letter", (isset($_REQUEST['landscape']) ? "landscape" : "portrait"));
-		$dompdf->render();
-		
-		$dompdf->stream("dompdf_out.pdf", array("Attachment" => false));
-		
-		exit(0);
-	}
-	die;
 }
 
 // Get the page from the request var or default it to HomePage
@@ -73,7 +48,7 @@ if (isset($_REQUEST['theme'])) {
 }
 
 // Now check permissions to access this page
-$tikilib->get_perm_object($page, 'wiki page', $info);
+$tikilib->get_perm_object( $page, 'wiki page', $info);
 if ($tiki_p_view != 'y') {
 	$smarty->assign('errortype', 401);
 	$smarty->assign('msg', tra("Permission denied. You cannot view this page."));
@@ -91,7 +66,7 @@ if (!isset($_SESSION["breadCrumb"])) {
 
 if (!in_array($page, $_SESSION["breadCrumb"])) {
 	if (count($_SESSION["breadCrumb"]) > $prefs['userbreadCrumb']) {
-		array_shift($_SESSION["breadCrumb"]);
+		array_shift ($_SESSION["breadCrumb"]);
 	}
 
 	array_push($_SESSION["breadCrumb"], $page);
@@ -121,8 +96,8 @@ $pdata = $wikilib->get_page($pdata, $_REQUEST['pagenum']);
 $smarty->assign('pages', $pages);
 
 // Put ~pp~, ~np~ and <pre> back. --rlpowell, 24 May 2004
-$parserlib->replace_preparse($info["data"], $preparsed, $noparsed);
-$parserlib->replace_preparse($pdata, $preparsed, $noparsed);
+$parserlib->replace_preparse( $info["data"], $preparsed, $noparsed );
+$parserlib->replace_preparse( $pdata, $preparsed, $noparsed );
 
 $smarty->assign_by_ref('parsed', $pdata);
 //$smarty->assign_by_ref('lastModif',date("l d of F, Y  [H:i:s]",$info["lastModif"]));
@@ -136,16 +111,14 @@ $smarty->assign_by_ref('lastUser', $info["user"]);
 
 include_once ('tiki-section_options.php');
 
-$headerlib->add_cssfile('lib/jquery.s5/jquery.s5.css');
-$headerlib->add_jsfile('lib/jquery.s5/jquery.s5.js');
-$headerlib->add_jq_onready(
-    '//slideshow corrupts s5 and is not needed in s5 at all
-	$("#toc,.cluetip-title").remove();
+$headerlib->add_cssfile( 'lib/jquery.s5/jquery.s5.css' );
+$headerlib->add_jsfile( 'lib/jquery.s5/jquery.s5.js' );
+$headerlib->add_jq_onready( '
+	//slideshow corrupts s5 and is not needed in s5 at all
+	$("#toc").remove();
 	
 	window.s5Settings = (window.s5Settings ? window.s5Settings : {});
 	
-	window.s5Settings.basePath = "lib/jquery.s5/";
-
 	$.s5.start($.extend(window.s5Settings, {
 		menu: function() {
 			return $("#tiki_slideshow_buttons").show();
@@ -213,14 +186,14 @@ $headerlib->add_jq_onready(
 			
 			$($.s5.note.document).find(".tiki-slideshow-theme").val($(this).val());
 		})
-		.change();'
-);
+		.change();
+');
 
 ask_ticket('index-raw');
 
 // Display the Index Template
 $smarty->assign('dblclickedit', 'y');
-$smarty->assign('mid', 'tiki-show_page_raw.tpl');
+$smarty->assign('mid','tiki-show_page_raw.tpl');
 
 // use tiki_full to include include CSS and JavaScript
 $smarty->display("tiki_full.tpl");

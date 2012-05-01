@@ -1,11 +1,11 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-class Search_Formatter_ValueFormatter_Categorylist extends Search_Formatter_ValueFormatter_Abstract
+class Search_Formatter_ValueFormatter_Categorylist implements Search_Formatter_ValueFormatter_Interface
 {
 	private $requiredParents = array();
 	private $excludeParents = array();
@@ -15,13 +15,13 @@ class Search_Formatter_ValueFormatter_Categorylist extends Search_Formatter_Valu
 	function __construct($arguments)
 	{
 		if (!empty($arguments['requiredParents'])) {
-			$this->requiredParents = explode(',', $arguments['requiredParents']);
+			$this->requiredParents = explode(',',$arguments['requiredParents']);
 		} else {
 			$this->requiredParents = 'all';
 		}
 
 		if (isset($arguments['excludeParents'])) {
-			$this->excludeParents = explode(',', $arguments['excludeParents']);
+			$this->excludeParents = explode(',',$arguments['excludeParents']);
 		}
 		
 		if (isset($arguments['singleList'])) {
@@ -40,19 +40,20 @@ class Search_Formatter_ValueFormatter_Categorylist extends Search_Formatter_Valu
 
 		$arr = TikiLib::lib('categ')->getCategories();
 
-		foreach ($arr as $arx) {
+		foreach($arr as $arx) {
 			$myArr[$arx['categId']] = Array('parentId' => $arx['parentId'],'name' => $arx['name']);
 		}
 
 		if ($this->singleList == 'y') {
 
-			foreach ($value as $ar) {
+			foreach ($value as $ar)
+			{
 				if ($ar == 'orphan') {
 					break;
 				}
 
 				$p_info = $myArr[$ar];
-				if ( ($this->requiredParents=='all' || in_array($p_info['parentId'], $this->requiredParents)) && !in_array($p_info['parentId'], $this->excludeParents)) {
+				if ( ($this->requiredParents=='all' || in_array( $p_info['parentId'], $this->requiredParents)) && !in_array( $p_info['parentId'], $this->excludeParents)) {
 					$params = array('type' => 'category', 'id' => $ar);
 					$link = smarty_function_object_link($params, $smarty);
 
@@ -69,21 +70,22 @@ class Search_Formatter_ValueFormatter_Categorylist extends Search_Formatter_Valu
 			}
 			if (!empty($this->separator)) {
 				$g = 0-strlen($this->separator);
-				$list = substr($list, 0, $g);
+				$list = substr($list,0,$g);
 			} else if (!empty($list)) {
 				$list .= "</ul>";
 			}
 		} else {
 			$parent  = array();
 
-			foreach ($value as $ar) {
+			foreach ($value as $ar)
+			{
 				if ($ar == 'orphan') {
 					break;
 				}
 
 				$p_info = $myArr[$ar];
 
-				if ( ($this->requiredParents=='all' || in_array($p_info['parentId'], $this->requiredParents)) && !in_array($p_info['parentId'], $this->excludeParents)) {
+				if ( ($this->requiredParents=='all' || in_array( $p_info['parentId'], $this->requiredParents)) && !in_array( $p_info['parentId'], $this->excludeParents)) {
 					$parent[$p_info['parentId']][] = $ar; 	
 				}
 			}			
@@ -91,7 +93,7 @@ class Search_Formatter_ValueFormatter_Categorylist extends Search_Formatter_Valu
 			foreach ($parent as $k=>$v) {
 				if (empty($this->separator)) {
 					$list .= "<h5>{$myArr[$k]['name']}</h5><ul class=\"categoryLinks\">";
-					foreach ($v as $t) {
+					foreach($v as $t) {
 						$params = array('type' => 'category', 'id' => $t);
 						$link = smarty_function_object_link($params, $smarty);
 						$list .= "<li>".$link."</li>";
@@ -99,7 +101,7 @@ class Search_Formatter_ValueFormatter_Categorylist extends Search_Formatter_Valu
 					$list .= "</ul>";
 				} else {
 					$list .= "{$myArr[$k]['name']}: ";
-					foreach ($v as $t) {
+					foreach($v as $t) {
 						$params = array('type' => 'category', 'id' => $t);
 						$link = smarty_function_object_link($params, $smarty);
 						$list .= $link.$this->separator;
@@ -107,7 +109,7 @@ class Search_Formatter_ValueFormatter_Categorylist extends Search_Formatter_Valu
 				}
 				if (!empty($this->separator)) {
 					$g = 0-strlen($this->separator);
-					$list = substr($list, 0, $g);
+					$list = substr($list,0,$g);
 					$list .= "<br />";
 				}
 			}

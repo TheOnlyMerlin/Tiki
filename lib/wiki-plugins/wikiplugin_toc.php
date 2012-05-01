@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,7 +12,7 @@ function wikiplugin_toc_info()
 		'documentation' => 'PluginTOC',
 		'description' => tra('Display a table of contents of pages or sub-pages'),
 		'prefs' => array( 'wikiplugin_toc', 'feature_wiki_structure' ),
-		'icon' => 'img/icons/text_list_numbers.png',
+		'icon' => 'pics/icons/text_list_numbers.png',
 		'params' => array(
 			'maxdepth' => array(
 				'name' => tra('Maximum Depth'),
@@ -41,7 +41,7 @@ function wikiplugin_toc_info()
 				)
 			),
 			'showdesc' => array(
-				'name' => tra('Show Description'),
+				'name' => tra( 'Show Description' ),
 				'description' => tra('Show the page description instead of the page name'),
 				'required' => false,
 				'default' => 0,
@@ -71,8 +71,7 @@ function wikiplugin_toc_info()
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Plain'), 'value' => 'plain'), 
-					array('text' => tra('Fancy'), 'value' => 'fancy'),
-					array('text' => tra('Admin'), 'value' => 'admin'),
+					array('text' => tra('Fancy'), 'value' => 'fancy')
  				)
 			),
 			'pagename' => array(
@@ -98,35 +97,15 @@ function wikiplugin_toc( $data, $params )
 		'pagename' => '',
 	);
 
-	$params = array_merge($defaults, $params);
-	extract($params, EXTR_SKIP);
+	$params = array_merge( $defaults, $params );
+	extract( $params, EXTR_SKIP );
 
 	global $structlib, $page_ref_id;
 	include_once ("lib/structures/structlib.php");
-
-	global $prefs;
-	if ($prefs['feature_jquery_ui'] === 'y' && $type === 'admin') {
-		TikiLib::lib('header')
-				->add_jsfile('lib/structures/tiki-edit_structure.js')
-				->add_jsfile('lib/jquery/jquery.mjs.nestedSortable.js');
-
-		$smarty = TikiLib::lib('smarty');
-		$smarty->loadPlugin('smarty_function_button');
-		$button = smarty_function_button(array(
-			'_text'		=> tra('Save'),
-			'_style'	=> 'display:none;',
-			'_class'	=> 'save_structure',
-			'_ajax'		=> 'n',
-			'_auto_args'=> 'save_structure,page_ref_id',
-		), $smarty);
-	} else {
-		$button = '';
-	}
-
 	if (empty($structId)) {
 		if (!empty($page_ref_id)) {	//And we are currently viewing a structure
 			$pageName_ref_id = null;
-			if (!empty($pagename)) {
+			if(!empty($pagename)) {
 				$pageName_ref_id = $structlib->get_struct_ref_id($pagename);
 			} else {
 				$pageName_ref_id = $page_ref_id;
@@ -135,15 +114,15 @@ function wikiplugin_toc( $data, $params )
 			$structure_info = $structlib->s_get_structure_info($pageName_ref_id);
 			if (isset($page_info)) {
 				$html = $structlib->get_toc($pageName_ref_id, $order, $showdesc, $shownum, $numberPrefix, $type, '', $maxdepth, $structure_info['pageName']);
-				return "~np~$button $html $button~/np~";
+				return "~np~$html~/np~";
 			}
 		}
 			//Dont display the {toc} string for non structure pages
 		return '';
 	} else {
 		$structure_info = $structlib->s_get_structure_info($structId);
-		$html = $structlib->get_toc($structId, $order, $showdesc, $shownum, $numberPrefix, $type, '', $maxdepth, $structure_info['pageName']);
+		$html = $structlib->get_toc($structId, $order, $showdesc, $shownum, $numberPrefix, $type,'',$maxdepth, $structure_info['pageName']);
 
-		return "~np~$button $html $button~/np~";
+		return "~np~$html~/np~";
 	}
 }

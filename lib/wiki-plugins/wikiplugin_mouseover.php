@@ -1,17 +1,16 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_mouseover_info()
-{
+function wikiplugin_mouseover_info() {
 	global $prefs;
 	include_once('lib/prefs/jquery.php');
 	$jqprefs = prefs_jquery_list();
 	$jqjx = array();
-	foreach ($jqprefs['jquery_effect']['options'] as $k => $v) {
+	foreach($jqprefs['jquery_effect']['options'] as $k => $v) {
 		$jqfx[] = array('text' => $v, 'value' => $k);
 	}
 	
@@ -22,7 +21,7 @@ function wikiplugin_mouseover_info()
 		'description' => tra('Display hidden content by mousing over a text'),
 		'prefs' => array( 'wikiplugin_mouseover' ),
 		'body' => tra('Hidden content, unless the label parameter is undefined, in which case this is the label.'),
-		'icon' => 'img/icons/comment_add.png',
+		'icon' => 'pics/icons/comment_add.png',
 		'tags' => array( 'basic' ),
 		'params' => array(
 			'label' => array(
@@ -183,8 +182,7 @@ function wikiplugin_mouseover_info()
 	);
 }
 
-function wikiplugin_mouseover( $data, $params )
-{
+function wikiplugin_mouseover( $data, $params ) {
 	global $smarty, $tikilib;
 
 	$default = array('parse'=>'y', 'parselabel'=>'y');
@@ -233,7 +231,7 @@ function wikiplugin_mouseover( $data, $params )
 	static $lastval = 0;
 	$id = "mo" . ++$lastval;
 
-	$url = htmlentities($url, ENT_QUOTES, 'UTF-8');
+	$url = htmlentities( $url, ENT_QUOTES, 'UTF-8' );
 
 	global $headerlib;
 	

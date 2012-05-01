@@ -1,20 +1,19 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_timeline_info()
-{
+function wikiplugin_timeline_info() {
 	return array(
 		'name' => tra('Timeline'),
 		'format' => 'html',
 		'documentation' => 'PluginTimeline',
 		'description' => tra('Display a timeline'),
 		'prefs' => array( 'wikiplugin_timeline' ),
-		'icon' => 'img/icons/chart_line.png',
-		'tags' => array( 'experimental' ),
+		'icon' => 'pics/icons/timeline.png',
+		'tags' => array( 'basic' ),
 		'params' => array(
 			'scope' => array(
 				'required' => false,
@@ -89,10 +88,9 @@ function wikiplugin_timeline_info()
 	);
 }
 
-function wikiplugin_timeline($data, $params)
-{
-	global $smarty;
-	$smarty->loadPlugin('smarty_modifier_escape');
+function wikiplugin_timeline($data, $params) {
+
+	require_once 'lib/smarty_tiki/modifier.escape.php';
 
 	$default = array('scale1' => 'month', 'width' => '100%', 'height' => '400px');
 	$params = array_merge($default, $params);
@@ -104,14 +102,13 @@ function wikiplugin_timeline($data, $params)
 	$headerlib = TikiLib::lib('header');
 	$headerlib->add_jsfile('lib/simile_tiki/tiki-timeline.js');
 	
-	$headerlib->add_jq_onready(
-					'// TODO set up datasource - get data from {list} output or calendar events
-					var ttl_eventData = { events: [], dateTimeFormat: ""};
-					setTimeout( function(){
-						ttlInit("ttl_timeline", ttl_eventData,"' . $params['scale1'] . '","' . $params['scale2'] . '");
-					}, 1000);
-					'
-	);
+	$headerlib->add_jq_onready('
+// TODO set up datasource - get data from {list} output or calendar events
+var ttl_eventData = { events: [], dateTimeFormat: ""};
+setTimeout( function(){
+	ttlInit("ttl_timeline", ttl_eventData,"' . $params['scale1'] . '","' . $params['scale2'] . '");
+}, 1000);
+');
 	return '<div class="timeline-container" data-marker-filter="' . $scope . '" style="width: ' . $width . '; height: ' . $height . ';"></div>';
 }
 
@@ -131,3 +128,4 @@ function wp_timeline_getscope($params)
 			return $scope;
 	}
 }
+

@@ -1,16 +1,16 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
 
-global $tikilib, $prefs, $tikiroot, $user_overrider_prefs, $tiki_p_trust_input, $smarty, $access, $local_php;	// globals are required here for tiki-setup_base.php
+global $tikilib, $prefs, $tikiroot, $user_overrider_prefs, $tiki_p_trust_input;	// globals are required here for tiki-setup_base.php
 include_once('tiki-setup_base.php');
 
 // ABOUT THE NUMBERING:
@@ -21,8 +21,7 @@ include_once('tiki-setup_base.php');
 // tiki-setup_base.php does.
 
 
-function upgrade_99999999_image_plugins_kill_tiki($installer)
-{
+function upgrade_99999999_image_plugins_kill_tiki( $installer ) {
 	global $tikilib, $installer;
 
 	include_once ('lib/profilelib/profilelib.php');

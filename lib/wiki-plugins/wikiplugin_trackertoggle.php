@@ -1,12 +1,11 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_trackertoggle_info()
-{
+function wikiplugin_trackertoggle_info() {
 	return array(
 		'name' => tra('Tracker Toggle'),
 		'documentation' => 'PluginTrackerToggle',
@@ -45,13 +44,12 @@ function wikiplugin_trackertoggle_info()
 	);
 }
 
-function wikiplugin_trackertoggle($data, $params)
-{
+function wikiplugin_trackertoggle($data, $params) {
 	global $trklib; include_once('lib/trackers/trackerlib.php');
 	global $headerlib; include_once('lib/headerlib.php');
 	$default = array('visible' => 'n');
 	$params = array_merge($default, $params);
-	extract($params, EXTR_SKIP);
+	extract($params,  EXTR_SKIP);
 	$field = $trklib->get_tracker_field($fieldId);
 	if (empty($field)) {
 		return tra('Incorrect param');

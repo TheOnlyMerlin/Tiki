@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -32,7 +32,7 @@ if (isset($_REQUEST["calendarIds"])) {
     if (!is_array($calendarIds)) {
 	$calendarIds = array($calendarIds);
     }	
-    $uniqueid = $feed.".".implode(".", $calendarIds);
+    $uniqueid = $feed.".".implode(".",$calendarIds);
 } else {
     $uniqueid = $feed;
     $calendarIds = array();
@@ -56,14 +56,19 @@ if ($output["data"]=="EMPTY") {
 	foreach ($allCalendars['data'] as $cal) {
 
 	    $visible = false;
-	    if (count($calendarIds) == 0 || in_array($cal['calendarId'], $calendarIds)) {
+	    if (count($calendarIds) == 0 || in_array($cal['calendarId'],$calendarIds)) {
 			if ($cal["personal"] == "y") {
 			    if ($user) {
 					$visible = true;
 			    }
 			} else {
-				$perms = Perms::get('calendar', $cal['calendarId']);
-				$visible = $perms->view_calendar;
+			    if ($userlib->object_has_one_permission($cal['calendarId'],'calendar')) {
+					if ($userlib->object_has_permission($user, $cal['calendarId'], 'calendar', 'tiki_p_view_calendar')) {
+					    $visible = true;
+					} 
+			    } else {
+					$visible = ($tiki_p_view_calendar == 'y');
+			    }
 			}
 	    }
 	    if ($visible) {

@@ -1,18 +1,17 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_trackerprefill_info()
-{
+function wikiplugin_trackerprefill_info() {
 	return array(
 		'name' => tra('Tracker Prefill'),
 		'documentation' => 'PluginTrackerPrefill',
 		'description' => tra('Create a button to prefill tracker fields'),
 		'prefs' => array( 'feature_trackers', 'wikiplugin_trackerprefill' ),
-		'icon' => 'img/icons/application_form.png',
+		'icon' => 'pics/icons/application_form.png',
 		'params' => array(
 			'page' => array(
 				'required' => true,
@@ -97,51 +96,11 @@ function wikiplugin_trackerprefill_info()
 				'description' => tra('Content that should be used to prefill the field.'),
 				'default' => '',
 			),
-			'field6' => array(
-				'required' => false,
-				'name' => tra('Field 6'),
-				'description' => tra('Field ID for the sixth field'),
-				'filter' => 'digits',
-				'default' => '',
-			),
-			'value6' => array(
-				'required' => false,
-				'name' => tra('Value 6'),
-				'description' => tra('Content that should be used to prefill the field.'),
-				'default' => '',
-			),
-			'field7' => array(
-				'required' => false,
-				'name' => tra('Field 7'),
-				'description' => tra('Field ID for the seventh field'),
-				'filter' => 'digits',
-				'default' => '',
-			),
-			'value7' => array(
-				'required' => false,
-				'name' => tra('Value 7'),
-				'description' => tra('Content that should be used to prefill the field.'),
-				'default' => '',
-			),
-			'field8' => array(
-				'required' => false,
-				'name' => tra('Field 8'),
-				'description' => tra('Field ID for the eighth field'),
-				'filter' => 'digits',
-				'default' => '',
-			),
-			'value8' => array(
-				'required' => false,
-				'name' => tra('Value 8'),
-				'description' => tra('Content that should be used to prefill the field.'),
-				'default' => '',
-			),			
 		),
 	);
 }
 
-function wikiplugin_trackerprefill($data, $params)
-{
+function wikiplugin_trackerprefill($data, $params) {
 	global $smarty;
 	$prefills = array();
 	foreach ($params as $param=>$value) {

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,17 +13,34 @@ if ( isset($_GET['fileId']) && isset($_GET['thumbnail']) && isset($_COOKIE[ sess
 
 	$tikiroot = dirname($_SERVER['PHP_SELF']);
 	$session_params = session_get_cookie_params();
-	session_set_cookie_params($session_params['lifetime'], $tikiroot);
+	session_set_cookie_params($session_params['lifetime'],$tikiroot);
 	unset($session_params);
 	session_start();
 
 	if ( isset($_SESSION['allowed'][$_GET['fileId']]) ) {
-		require_once 'tiki-setup_base.php';
+		require_once 'tiki-filter-base.php';
+		include('db/tiki-db.php');
+		$db = TikiDb::get();
 
 		$query = "select * from `tiki_files` where `fileId`=?";
-		$result = $tikilib->query($query, array((int)$_GET['fileId']));
+		$result = $db->query($query, array((int)$_GET['fileId']));
 		if ( $result ) {
 			$info = $result->fetchRow();
+
+			if ( isset($_SESSION['s_prefs']) ) {
+				$prefs = $_SESSION['s_prefs'];
+			} else {
+				$query = "select `value` from `tiki_preferences` where `name` = 'fgal_use_dir';";
+				$result = $db->query($query);
+				if ( $result ) {
+					$tmp = $result->fetchRow();
+					$prefs['fgal_use_dir'] = $tmp['value'];
+				}
+			}
+			if ( !isset($prefs['fgal_use_dir']) ) {
+				$prefs['fgal_use_dir'] = '';
+			}
+
 			$skip = true;
 		} else {
 			$info = array();
@@ -40,10 +57,10 @@ if (!$skip) {
 }
 
 if ($prefs["user_store_file_gallery_picture"] == 'y' && isset($_REQUEST["avatar"])) {
-	require_once ('lib/userprefs/userprefslib.php');
-	if ($user_picture_id = $userprefslib->get_user_picture_id($_REQUEST["avatar"])) {
-		$_REQUEST['fileId'] = $user_picture_id;
-	} elseif (!empty($prefs['user_default_picture_id'])) {
+        require_once ('lib/userprefs/userprefslib.php');
+        if ($user_picture_id = $userprefslib->get_user_picture_id($_REQUEST["avatar"])) {
+                $_REQUEST['fileId'] = $user_picture_id;
+        } elseif (!empty($prefs['user_default_picture_id'])) {
 		$_REQUEST['fileId'] = $prefs['user_default_picture_id'];
 	}
 }
@@ -52,6 +69,33 @@ if ( ! ini_get('safe_mode') ) {
 	@set_time_limit(0);
 }
 
+/*
+	 Borrowed from http://php.net/manual/en/function.readfile.php#54295 to come
+	 over the 2MB readfile() limitation
+ */
+function readfile_chunked($filename,$retbytes=true) {
+	$chunksize = 1*(1024*1024); // how many bytes per chunk
+	$buffer = '';
+	$cnt =0;
+	$handle = fopen($filename, 'rb');
+	if ($handle === false) {
+		return false;
+	}
+	while (!feof($handle)) {
+		$buffer = fread($handle, $chunksize);
+		echo $buffer;
+		@ob_flush();
+		flush();
+		if ($retbytes) {
+			$cnt += strlen($buffer);
+		}
+	}
+	$status = fclose($handle);
+	if ($retbytes && $status) {
+		return $cnt; // return num. bytes delivered like readfile() does.
+	}
+	return $status;
+}
 $zip = false;
 $error = '';
 
@@ -73,7 +117,7 @@ if (!$skip) {
 		$access->display_error('', tra('Incorrect param'), 400);
 	}
 	if ( ! is_array($info) ) {
-		$access->display_error(NULL, tra('File has been deleted'), 404);
+		$access->display_error('', tra('File has been deleted'), 404);
 	}
 
 	if ( $prefs['auth_tokens'] == 'n' || !$is_token_access ) {
@@ -98,7 +142,7 @@ if ( ! isset($_GET['thumbnail']) && ! isset($_GET['icon']) ) {
 
 	require_once('lib/stats/statslib.php');
 	$filegallib = TikiLib::lib('filegal');
-	if ( ! $filegallib->add_file_hit($info['fileId']) ) {
+	if ( ! $filegallib->add_file_hit($info['fileId']) )	{
 		$access->display_error('', tra('You cannot download this file right now. Your score is low or file limit was reached.'), 401);
 	}
 	$statslib->stats_hit($info['filename'], 'file', $info['fileId']);
@@ -125,7 +169,7 @@ $content = &$info['data'];
 
 $md5 = '';
 $filepath = '';
-if ( ! empty($info['path']) ) {
+if ( ! empty($info['path']) )  {
 	if (!$skip and $filegallib->isPodCastGallery($info['galleryId'])) {
 		$filepath = $prefs['fgal_podcast_dir'].$info['path'];
 	} else {
@@ -160,7 +204,7 @@ if ( ! isset($_GET['display']) || isset($_GET['x']) || isset($_GET['y']) || isse
 	$str .= isset($_GET['scale']) ? $_GET['scale'] . 's' : '';
 	$str .= isset($_GET['max']) ? $_GET['max'] . 'm' : '';
 	$str .= isset($_GET['format']) ? $_GET['format'] . 'f' : '';
-	$etag = '"' . $md5 . '-' . crc32($md5) . '-' . crc32($str) . '"';
+	$etag = '"' . $md5 . '-' . crc32($md5) . '-' . crc32( $str ) . '"';
 } else {
   $etag = '"' . $md5 . '-' . crc32($md5) . '"';
 }
@@ -184,7 +228,7 @@ header("Pragma: ");
 header('Expires: ');
 header('Cache-Control: '.( !empty($user) ? 'private' : 'public' ).',must-revalidate,post-check=0,pre-check=0');
 
-if ( $use_client_cache) {
+if ( $use_client_cache ) {
 	header('Status: 304 Not Modified', true, 304);
 	exit;
 } else {
@@ -203,6 +247,11 @@ if ( isset($_GET['preview']) || isset($_GET['thumbnail']) || isset($_GET['displa
 		$cacheName = $md5;
 		$cacheType = ( isset($_GET['thumbnail']) ? 'thumbnail_' : 'preview_' ) . ((int)$_REQUEST['fileId']).'_';
 		$use_cache = true;
+
+		if ( isset($_GET['thumbnail']) ) {
+			// For thumbnails, change the filetype to the appropriate one, which is often different from the original filetype...
+			$info['filetype'] = 'image/' . $thumbnail_format;
+		}
 	}
 
 	$build_content = true;
@@ -271,18 +320,21 @@ if ( isset($_GET['preview']) || isset($_GET['thumbnail']) || isset($_GET['displa
 					$resize = false;
 					// We resize if needed
 					if ( isset($_GET['x']) || isset($_GET['y']) ) {
-						$image->resize(isset($_GET['x']) ? (int) $_GET['x'] : 0, isset($_GET['y']) ? (int) $_GET['y'] : 0);
+						$image->resize($_GET['x']+0, $_GET['y']+0);
 						$resize = true;
-					} elseif ( isset($_GET['scale']) ) {
-				 		// We scale if needed
+					}
+					// We scale if needed
+					elseif ( isset($_GET['scale']) ) {
 						$image->scale($_GET['scale']+0);
 						$resize = true;
-					} elseif ( isset($_GET['max']) ) {
+					}
 					// We reduce size if length or width is greater that $_GET['max'] if needed
+					elseif ( isset($_GET['max']) ) {
 						$image->resizemax($_GET['max']+0);
 						$resize = true;
-					} elseif ( isset($_GET['thumbnail']) ) {
+					}
 					// We resize to a thumbnail size if needed
+					elseif ( isset($_GET['thumbnail']) ) {
 						if (is_numeric($_GET['thumbnail'])) {
 							if (empty($info_thumb)) {
 								$info_thumb = $filegallib->get_file($_GET['thumbnail']);
@@ -296,8 +348,9 @@ if ( isset($_GET['preview']) || isset($_GET['thumbnail']) || isset($_GET['displa
 							if ( $image->is_empty() ) die;
 						}
 						$image->resizethumb();
-					} elseif ( isset($_GET['preview']) ) {
+					}
 					// We resize to a preview size if needed
+					elseif ( isset($_GET['preview']) ) {
 						$image->resizemax('800');
 						$resize = true;
 					}
@@ -305,11 +358,9 @@ if ( isset($_GET['preview']) || isset($_GET['thumbnail']) || isset($_GET['displa
 					// We change the image format if needed
 					if ( isset($_GET['format']) && Image::is_supported($_GET['format']) ) {
 						$image->convert($_GET['format']);
-					} elseif ( isset($_GET['thumbnail']) ) {
-						// Or, if no format is explicitely specified and a thumbnail has to be created, we convert the image to the $thumbnail_format
-						if ($image->format == 'png') {
-							$thumbnail_format = 'png';	// preserves transparency
-						}
+					}
+					// Or, if no format is explicitely specified and a thumbnail has to be created, we convert the image to the $thumbnail_format
+					elseif ( isset($_GET['thumbnail']) ) {
 						$image->convert($thumbnail_format);
 					}
 		
@@ -354,7 +405,7 @@ if ( ! $content_changed and !isset($_GET['display']) ) {
 
 if ( !empty($filepath) and !$content_changed ) {
 	header('Content-Length: '.filesize($filepath));
-	readfile($filepath);
+	readfile_chunked($filepath);
 } else {
 	if ( function_exists('mb_strlen') ) {
 		header('Content-Length: '.mb_strlen($content, '8bit'));

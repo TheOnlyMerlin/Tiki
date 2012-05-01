@@ -38,14 +38,13 @@ function tf_export_submit(fm) {
 {foreach from=$filters item=filter}
 	{if !isset($line) || $line ne 'y'}<tr class="{cycle}">{/if}
 		<td>
-		{if $indrop ne 'y' or ($filter.format ne 'd' and  $filter.format ne 'm')}<label for="f_{$filter.fieldId}">{$filter.name|tr_if}</label>{/if}
+		<label for="f_{$filter.fieldId}">{$filter.name|tr_if}</label>
 		{if $showFieldId eq 'y'} -- {$filter.fieldId}{/if}
-		{if !isset($line) || $line ne 'y'}</td><td>{elseif $indrop ne 'y' or ($filter.format ne 'd' and  $filter.format ne 'm')}:{/if}
+		{if !isset($line) || $line ne 'y'}</td><td>{else}:{/if}
 {*------drop-down, multiple *}
 		{if $filter.format eq 'd' or  $filter.format eq 'm'}
 			<select id="f_{$filter.fieldId}" name="f_{$filter.fieldId}{if $filter.format eq "m"}[]{/if}" {if $filter.format eq "m"} size="5" multiple="multiple"{/if}> 
-			{if $indrop eq 'y'}<option value="">--{$filter.name|tr_if}--</option>{/if}
-			<option value="">{tr}Any{/tr}</option>
+			<option value=""{if !$filter.selected} selected="selected"{/if}>{tr}Any{/tr}</option>
 			{section name=io loop=$filter.opts}
 				<option value="{$filter.opts[io].id}"{if $filter.opts[io].selected eq "y"} selected="selected"{/if}>
 					{$filter.opts[io].name|tr_if|escape}

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -17,11 +17,9 @@ class Tracker_Field_Factory
 	{
 		$this->trackerDefinition = $trackerDefinition;
 		
-		$fieldMap = $this->buildTypeMap(
-					array(
-						'lib/core/Tracker/Field' => 'Tracker_Field_',
-					)
-		);
+		$fieldMap = $this->buildTypeMap(array(
+			'lib/core/Tracker/Field' => 'Tracker_Field_',
+		));
 	}
 	
 	private function getPreCacheTypeMap()
@@ -63,8 +61,6 @@ class Tracker_Field_Factory
 
 		foreach ($paths as $path => $prefix) {
 			foreach (glob("$path/*.php") as $file) {
-				if ($file === "$path/index.php")
-					continue;
 				$class = $prefix . substr($file, strlen($path) + 1, -4);
 				$reflected = new ReflectionClass($class);
 

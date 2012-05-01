@@ -1,12 +1,11 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_button_info()
-{
+function wikiplugin_button_info() {
 	return array(
 		'name' => tra('Button'),
 		'documentation' => 'PluginButton',
@@ -14,7 +13,7 @@ function wikiplugin_button_info()
 		'prefs' => array('wikiplugin_button'),
 		'validate' => 'none',
 		'extraparams' => false,
-		'icon' => 'img/icons/control_play_blue.png',
+		'icon' => 'pics/icons/control_play_blue.png',
 		'tags' => array( 'basic' ),		
 		'params' => array(
 			'href' => array(
@@ -42,8 +41,7 @@ function wikiplugin_button_info()
 	);
 }
 
-function wikiplugin_button($data, $params)
-{
+function wikiplugin_button($data, $params) {
 	global $tikilib,$smarty;
 	$parserlib = TikiLib::lib('parser');
 	

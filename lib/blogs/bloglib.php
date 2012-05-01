@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,6 +10,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	header("location: index.php");
 	exit;
 }
+include_once('lib/reportslib.php');
 
 /**
  * Class that handles all blog operations
@@ -100,7 +101,7 @@ class BlogLib extends TikiDb_Bridge
 			$join = '';
 			$where = '';
 		}
-		array_push($bindvars, $blogId);
+		array_push( $bindvars, $blogId );
 		if (!empty($where)) $where = '1=1 '.$where.' AND ';
 		$query = "SELECT * FROM `tiki_blogs` $join WHERE $where `blogId`=?";
 		$result = $this->query($query, $bindvars);
@@ -160,7 +161,7 @@ class BlogLib extends TikiDb_Bridge
 			$bindvars[]='y';
 		}
 		$query .= "order by `title` asc";
-		$result = $this->fetchAll($query, $bindvars);
+		$result = $this->fetchAll($query,$bindvars);
 		$ret = array();
 
 		//FIXME Perm::filter ?
@@ -262,8 +263,8 @@ class BlogLib extends TikiDb_Bridge
 
 		$query = "select * from `tiki_blog_posts` $mid order by ".$this->convertSortMode($sort_mode);
 		$query_cant = "select count(*) from `tiki_blog_posts` $mid";
-		$result = $this->fetchAll($query, $bindvars, $maxRecords, $offset);
-		$cant = $this->getOne($query_cant, $bindvars);
+		$result = $this->fetchAll($query,$bindvars,$maxRecords,$offset);
+		$cant = $this->getOne($query_cant,$bindvars);
 		$ret = array();
 
 		foreach ( $result as $res ) {
@@ -273,12 +274,11 @@ class BlogLib extends TikiDb_Bridge
 				continue;
 			}
 			$query = "select `title` from `tiki_blogs` where `blogId`=?";
-			$cant_com = $this->getOne(
-							"select count(*) from `tiki_comments` where `object`=? and `objectType` = ?",
-							array((string) $res["postId"],'blog')
-			);
+			$cant_com = $this->getOne("select count(*) from
+					`tiki_comments` where `object`=? and `objectType` = ?",
+					array((string) $res["postId"],'blog'));
 			$res["comments"] = $cant_com;
-			$res["blogTitle"] = $this->getOne($query, array((int)$blogId));
+			$res["blogTitle"] = $this->getOne($query,array((int)$blogId));
 			$res["size"] = strlen($res["data"]);
 			$ret[] = $res;
 		}
@@ -344,13 +344,17 @@ class BlogLib extends TikiDb_Bridge
 	 * @access public
 	 * @return boolean unconditionnal true
 	 */
-	function add_blog_post_hit($postId)
-	{
+	function add_blog_post_hit($postId) {
 		global $prefs, $user;
 		if ($prefs['count_admin_pvs'] == 'y' || $user != 'admin') {
 			$query = "update `tiki_blog_posts` set `hits` = `hits`+1 where `postId`=?";
 			$result = $this->query($query, array((int) $postId));
+			//$smarty->assign('msg', tra("making update $result"));
+			//$smarty->display("error.tpl");
+	
 		}
+		//$smarty->assign('msg', tra("making update"));
+		//$smarty->display("error.tpl");
 		return true;
 	}
 
@@ -442,8 +446,7 @@ class BlogLib extends TikiDb_Bridge
 						$heading, $use_title, $use_title_in_post, $use_description, $use_breadcrumbs, 
 						$use_author, $add_date, $use_find, $allow_comments, $show_avatar, $alwaysOwner, 
 						$post_heading, $show_related, $related_max, $use_excerpt, $created = 0, $lastModif = 0
-	)
-	{
+	)  {
 		//TODO: all the display parameters can be one single array parameter
 		global $tikilib, $prefs;
 		
@@ -455,7 +458,7 @@ class BlogLib extends TikiDb_Bridge
 			$query = "update `tiki_blogs` set `title`=? ,`description`=?,`user`=?,`public`=?,`lastModif`=?,`maxPosts`=?,`heading`=?,`use_title`=?,`use_title_in_post`=?,`use_description`=?,`use_breadcrumbs`=?,`use_author`=?,`add_date`=?,`use_find`=?,`allow_comments`=?,`show_avatar`=?,`always_owner`=?, `post_heading`=?, `show_related`=?, `related_max`=?, `use_excerpt`=? where `blogId`=?";
 
 			$result = $this->query($query, array($title, $description, $user, $public, $lastModif, $maxPosts, $heading, $use_title, $use_title_in_post, $use_description, $use_breadcrumbs, $use_author, $add_date, $use_find, $allow_comments, $show_avatar, $alwaysOwner, $post_heading, $show_related, $related_max, $use_excerpt, $blogId));
-			$tikilib->object_post_save(array('type'=>'blog', 'object'=>$blogId), array('content'=>$heading));
+			$tikilib->object_post_save( array('type'=>'blog', 'object'=>$blogId), array('content'=>$heading) );
 		} else {
 			if ($created == 0) {
 				$created = $tikilib->now;
@@ -497,8 +500,7 @@ class BlogLib extends TikiDb_Bridge
 	function list_blog_posts($blogId = 0, $allowDrafts = false, $offset = 0, 
 							$maxRecords = -1, $sort_mode = 'created_desc', $find = '', 
 							$date_min = '', $date_max = '', $approved = 'y'
-	)
-	{
+	)  {
 		global $tikilib, $tiki_p_admin, $tiki_p_blog_admin, $tiki_p_blog_post, $user;
 		global $commentslib; require_once('lib/comments/commentslib.php');
 		
@@ -523,9 +525,9 @@ class BlogLib extends TikiDb_Bridge
 		}
 		$mid[] = "tbp.blogId = tb.blogId";
 
-		if ( !$allowDrafts ) {
+		if ( !$allowDrafts ){
 			$mid[] = "`priv`!='y'";
-		} else {
+		}else{
 			// Private posts can be accessed on the following conditions:
 			// user has tiki_p_admin or tiki_p_blog_admin or has written the post
 			// If blog is configured with 'Allow other user to post in this blog', then also if user has tiki_p_blog_post or is owner of this blog
@@ -677,9 +679,9 @@ class BlogLib extends TikiDb_Bridge
 		$cant = $this->getOne($query_cant, $bindvars);
 		$ret = array();
 
-		$result = Perms::filter(array( 'type' => 'blog' ), 'object', $result, array( 'object' => 'blogId' ), array('read_blog', 'blog_view_ref'));
+		$result = Perms::filter( array( 'type' => 'blog' ), 'object', $result, array( 'object' => 'blogId' ), array('read_blog', 'blog_view_ref') );
 
-		foreach ( $result as $res ) {
+		foreach( $result as $res ) {
 			$query2 = "select `title` from `tiki_blogs` where `blogId`=?";
 			$title = $this->getOne($query2, array($res["blogId"]));
 			$res["blogtitle"] = $title;
@@ -709,7 +711,7 @@ class BlogLib extends TikiDb_Bridge
 	function blog_post($blogId, $data, $excerpt, $user, $title = '', $contributions = '', $priv = 'n', $created = 0, $is_wysiwyg=FALSE)
 	{
 		// update tiki_blogs and call activity functions
-		global $smarty, $tikilib, $prefs;
+		global $smarty, $tikilib, $prefs, $reportslib;
 
 		$wysiwyg=$is_wysiwyg==TRUE?'y':'n';
 		if (!$created) {
@@ -736,8 +738,7 @@ class BlogLib extends TikiDb_Bridge
 			if ($prefs['feature_daily_report_watches'] == 'y') {
 				$query = "select `title` from `tiki_blogs` where `blogId`=?";
 				$blogTitle = $this->getOne($query, array((int)$blogId));
-				$reportsManager = Reports_Factory::build('Reports_Manager');
-				$reportsManager->addToCache($nots, array("event"=>'blog_post', "blogId"=>$blogId, "blogTitle"=>$blogTitle, "postId"=>$id, "user"=>$user));
+				$reportslib->makeReportCache($nots, array("event"=>'blog_post', "blogId"=>$blogId, "blogTitle"=>$blogTitle, "postId"=>$id, "user"=>$user));
 			}
 			
 			if (count($nots)) {
@@ -838,7 +839,7 @@ class BlogLib extends TikiDb_Bridge
 		// When a post is deleted, all freetags asociated must also be deleted
 		$objectId = $objectlib->get_object_id('blog post', $postId);
 		$query = "DELETE FROM `tiki_freetagged_objects` WHERE `objectId` = ?";
-		$this->query($query, array((int) $objectId));
+		$this->query($query,array((int) $objectId));
 
 		$query = "delete from `tiki_blog_posts_images` where `postId`=?";
 		$this->query($query, array((int) $postId));
@@ -903,8 +904,7 @@ class BlogLib extends TikiDb_Bridge
 	 * @param int $created when the post was created
 	 * @return array
 	 */
-	function _get_adjacent_posts($blogId, $created, $publishDate = null, $user=null)
-	{
+	function _get_adjacent_posts($blogId, $created, $publishDate = null, $user=null) {
 		$res = array();
 
 		$next_query = 'SELECT postId, title FROM `tiki_blog_posts` WHERE `blogId` = ? AND `created` > ? ';
@@ -949,8 +949,7 @@ class BlogLib extends TikiDb_Bridge
 	 */
 	function update_post($postId, $blogId, $data, $excerpt, $user, $title = '', 
 						$contributions = '', $priv='n', $created = 0, $is_wysiwyg=FALSE
-	)
-	{
+	)  {
 		global $tikilib, $prefs;
 
 		$data = TikiFilter::get('purifier')->filter($data);

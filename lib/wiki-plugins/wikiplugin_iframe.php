@@ -1,12 +1,11 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_iframe_info()
-{
+function wikiplugin_iframe_info() {
 	return array(
 		'name' => tra('Iframe'),
 		'documentation' => 'PluginIframe',
@@ -16,7 +15,7 @@ function wikiplugin_iframe_info()
 		'format' => 'html',
 		'validate' => 'all',
 		'tags' => array( 'basic' ),
-		'icon' => 'img/icons/page_copy.png',
+		'icon' => 'pics/icons/page_copy.png',
 		'params' => array(
 			'name' => array(
 				'safe' => true,
@@ -50,7 +49,7 @@ function wikiplugin_iframe_info()
 				'safe' => true,
 				'required' => false,
 				'name' => tra('Alignment'),
-				'description' => tra('Align the iframe on the page'),
+				'description' => tra('Align the ifram on the page'),
 				'default' => '',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
@@ -110,10 +109,9 @@ function wikiplugin_iframe_info()
 	);
 }
 
-function wikiplugin_iframe($data, $params)
-{
+function wikiplugin_iframe($data, $params) {
 
-	extract($params, EXTR_SKIP);
+	extract ($params, EXTR_SKIP);
 	$ret = '<iframe ';
 
 	if (isset($name)) {

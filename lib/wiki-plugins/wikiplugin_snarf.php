@@ -1,19 +1,18 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_snarf_info()
-{
+function wikiplugin_snarf_info() {
 	return array(
 		'name' => tra('Snarf'),
 		'documentation' => 'PluginSnarf',
 		'description' => tra('Display the contents of another web page'),
 		'prefs' => array( 'wikiplugin_snarf' ),
 		'validate' => 'all',
-		'icon' => 'img/icons/page_copy.png',
+		'icon' => 'pics/icons/page_copy.png',
 		'params' => array(
 			'url' => array(
 				'required' => true,

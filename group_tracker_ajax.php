@@ -1,12 +1,12 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 require_once('tiki-setup.php');
 
-$access->check_feature(array('feature_trackers', 'feature_ajax', 'wikiplugin_tracker'));
+$access->check_feature('feature_tracker', 'feature_ajax', 'wikiplugin_tracker');
 
 include_once ('lib/wiki-plugins/wikiplugin_tracker.php');
 $json_data = array();
@@ -18,6 +18,6 @@ if (!empty($re['usersTrackerId']) && !empty($re['registrationUsersFieldIds'])) {
 	$json_data['debug'] = $re;
 }
 	
-header('Content-Type: application/json');
+header( 'Content-Type: application/json' );
 
 $access->output_serialized($json_data);

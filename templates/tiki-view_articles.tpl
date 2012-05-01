@@ -32,7 +32,7 @@
 				{/foreach}
 			</div>
 		{/if} 
-		<div class="article{if !empty($container_class)} {$container_class}{/if} article{$smarty.section.ix.index}">
+		<div class="article{if !empty($container_class)} {$container_class}{/if}">
 			{if $listpages[ix].show_topline eq 'y' and $listpages[ix].topline}<div class="articletopline">{$listpages[ix].topline|escape}</div>{/if}
 			<div class="articletitle">
 				<h2>{object_link type=article id=$listpages[ix].articleId url=$smarty.capture.href title=$listpages[ix].title}</h2>
@@ -43,16 +43,16 @@
 				 or ($listpages[ix].show_reads eq 'y')}	
 					<span class="titleb">
 						{if $listpages[ix].show_author eq 'y'}	
-							<span class="author">{tr}Author:{/tr} {$listpages[ix].authorName|escape}&nbsp;</span>
+							{tr}By:{/tr} {$listpages[ix].authorName|escape}&nbsp;
 						{/if}
 						{if $listpages[ix].show_pubdate eq 'y'}
-							<span class="pubdate">{tr}Published At:{/tr} {$listpages[ix].publishDate|tiki_short_datetime}&nbsp;</span>
+							{$listpages[ix].publishDate|tiki_short_datetime:'On:'}&nbsp;
 						{/if}
 						{if $listpages[ix].show_expdate eq 'y'}
-							<span class="expdate">{tr}Expires At:{/tr} {$listpages[ix].expireDate|tiki_short_datetime}&nbsp;</span>
+							{tr}expires:{/tr} {$listpages[ix].expireDate|tiki_short_datetime}&nbsp;
 						{/if}
 						{if $listpages[ix].show_reads eq 'y'}
-							<span class="reads">({$listpages[ix].nbreads} {tr}Reads{/tr})</span>
+							({$listpages[ix].nbreads} {tr}Reads{/tr})
 						{/if}
 					</span><br />
 				{/if}
@@ -78,36 +78,36 @@
 									{if $listpages[ix].hasImage eq 'y'}
 										<a href="{$smarty.capture.href}"
 												title="{if $listpages[ix].show_image_caption and $listpages[ix].image_caption}{$listpages[ix].image_caption|escape}{elseif $listpages[ix].topicName}{tr}{$listpages[ix].topicName}{/tr}{else}{tr}Read More{/tr}{/if}">
-											{$style=''}
-											<img {if $listpages[ix].isfloat eq 'y'}{$style="margin-right:4px;float:left;"}{else}class="articleimage"{/if} 
+											<img  {if $listpages[ix].isfloat eq 'y'}style="margin-right:4px;float:left;"{else}class="articleimage"{/if} 
 													alt="{if $listpages[ix].show_image_caption and $listpages[ix].image_caption}{$listpages[ix].image_caption|escape}{elseif $listpages[ix].topicName}{tr}{$listpages[ix].topicName}{/tr}{/if}"
-													{strip}src="article_image.php?image_type=article&amp;id={$listpages[ix].articleId}
-													{if $listpages[ix].list_image_x > 0 and ($largefirstimage neq 'y' or not $smarty.section.ix.first)}
-														&amp;width={$listpages[ix].list_image_x}
+													src="article_image.php?image_type=article&amp;id={$listpages[ix].articleId}
+													{if $listpages[ix].list_image_x > 0}
+														{if $largefirstimage eq 'y' and $smarty.section.ix.first}
+															{if $listpages[ix].image_x > 0}&amp;width={$listpages[ix].image_x}{/if}
+														{else}
+															&amp;width={$listpages[ix].list_image_x}&amp;cache=y
+														{/if}
 													{elseif $listpages[ix].image_x > 0}
-														&amp;width={$listpages[ix].image_x}
-													{/if}
-													&amp;cache=y"
-													{if $listpages[ix].list_image_y > 0 and ($largefirstimage neq 'y' or not $smarty.section.ix.first)}
-														{$style=$style|cat:"max-height:"|cat:$listpages[ix].list_image_y|cat:"px;"}
-													{elseif $listpages[ix].image_y > 0}
-														{$style=$style|cat:"max-height:"|cat:$listpages[ix].image_y|cat:"px;"}
-													{/if}
-													style="{$style}"
-											/>{/strip}
+														&amp;width={$listpages[ix].image_x}&amp;cache=y
+													{else}
+														&amp;cache=y
+													{/if}"
+											/>
 										</a>
 									{else}
 										{* Intentionally left blank to allow user add an image from somewhere else through the img tag and no other extra image *}
 									{/if}
 								{else}
-									{if $topics[$listpages[ix].topicId].image_size > 0}
-										<a href="{$smarty.capture.href}"
-												title="{if $listpages[ix].show_image_caption and $listpages[ix].image_caption}{$listpages[ix].image_caption|escape}{else}{tr}{$listpages[ix].topicName}{/tr}{/if}">
-											<img {if $listpages[ix].isfloat eq 'y'}style="margin-right:4px;float:left;"{else}class="articleimage"{/if} 
-													alt="{if $listpages[ix].show_image_caption and $listpages[ix].image_caption}{$listpages[ix].image_caption|escape}{else}{tr}{$listpages[ix].topicName}{/tr}{/if}"
-													src="article_image.php?image_type=topic&amp;id={$listpages[ix].topicId}" />
-										</a>
-									{/if}
+									{section name=it loop=$topics}
+										{if ($topics[it].topicId eq $listpages[ix].topicId) and ($topics[it].image_size > 0)}
+											<a href="{$smarty.capture.href}"
+													title="{if $listpages[ix].show_image_caption and $listpages[ix].image_caption}{$listpages[ix].image_caption|escape}{else}{tr}{$listpages[ix].topicName}{/tr}{/if}">
+												<img {if $listpages[ix].isfloat eq 'y'}style="margin-right:4px;float:left;"{else}class="articleimage"{/if} 
+														alt="{if $listpages[ix].show_image_caption and $listpages[ix].image_caption}{$listpages[ix].image_caption|escape}{else}{tr}{$listpages[ix].topicName}{/tr}{/if}"
+														src="article_image.php?image_type=topic&amp;id={$listpages[ix].topicId}" />
+											</a>
+										{/if}
+									{/section}
 								{/if}
 							{/if}
 							{if ($listpages[ix].show_avatar eq 'y')}
@@ -163,9 +163,7 @@
 							<a class="icon" href="tiki-print_article.php?articleId={$listpages[ix].articleId}">{icon _id='printer' alt="{tr}Print{/tr}"}</a>
 						{/if}
 						{if $prefs.feature_multilingual eq 'y' and $tiki_p_edit_article eq 'y'}
-							<div class="lang_select">
-								{include file='translated-lang.tpl' object_type='article' trads=$listpages[ix].translations articleId=$listpages[ix].articleId}
-							</div>
+							<a class="icon" href="tiki-edit_translation.php?id={$listpages[ix].articleId}&amp;type=article">{icon _id='world' alt="{tr}Translation{/tr}"}</a>
 						{/if}
 						{if $tiki_p_remove_article eq 'y'}
 							<a class="icon" href="tiki-list_articles.php?remove={$listpages[ix].articleId}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>

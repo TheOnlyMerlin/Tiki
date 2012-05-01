@@ -1,12 +1,11 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_fgal_list()
-{
+function prefs_fgal_list() {
 	return array(
 		'fgal_podcast_dir' => array(
 			'name' => tra('Podcast directory'),
@@ -122,13 +121,12 @@ function prefs_fgal_list()
 			'tags' => array('basic'),
 		),
 		'fgal_use_dir' => array(
-			'name' => tra('Path to store files in the file gallery'),
+			'name' => tra('Path'),
 			'type' => 'text',
 			'size' => 50,
 			'perspective' => false,
 			'default' => '',
 			'tags' => array('basic'),
-			'description' => tra("Set a directory on your server. Ex.: /var/www/  It's recommended that this directory not be web accessible. PHP must be able to read/write to the directory."),
 		),
 		'fgal_search_in_content' => array(
 			'name' => tra('Include the search box on the current gallery files just after the find div'),
@@ -179,7 +177,7 @@ function prefs_fgal_list()
 			'name' => tra('Keep the same fileId for the latest version of a file'),
 			'description' => tra('If checked, the fileId of the latest version of a file stays the same. Link to a file will always give you the latest version. If not checked, the fileId is attached to the file for ever, link to file will give you the precise version of a file'),
 			'type' => 'flag',
-			'default' => 'y',
+			'default' => 'n',
 		),
 		'fgal_show_thumbactions' => array(
 			'name' => tra('Show thumbnail actions'),
@@ -238,14 +236,6 @@ function prefs_fgal_list()
 			'default' => 'n',
 			'tags' => array('experimental'),
 			'help' => 'File+Gallery+config',
-		),
-		'fgal_browse_name_max_length' => array(
-			'name' => tra('Max Name Length'),
-			'description' => tra('Length to truncate file names to in browse view.'),
-			'type' => 'text',
-			'filter' => 'int',
-			'size' => 5,
-			'default' => 40,
 		),
 	);
 }

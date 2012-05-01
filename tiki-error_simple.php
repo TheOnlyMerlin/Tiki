@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,8 +12,8 @@ echo '<?xml version="1.0" encoding="UTF-8"?>
 echo '<html><head><title>maintenance</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head><body><pre><p>';
 if (isset($_REQUEST['error']) and !is_null($_REQUEST['error'])) {
 
-	$_REQUEST["error"] = substr($_REQUEST["error"], 0, 256);
-	echo htmlentities(strip_tags($_REQUEST["error"]), ENT_QUOTES, 'UTF-8');	
+	$_REQUEST["error"] = substr($_REQUEST["error"],0,256);
+	echo htmlentities(strip_tags($_REQUEST["error"]), ENT_QUOTES, 'UTF-8' );	
 
 } else {
 	echo 'There was an unspecified error.  Please go back and try again.';

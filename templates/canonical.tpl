@@ -1,20 +1,14 @@
 {* $Id$ *}
 {if $prefs.feature_canonical_url eq 'y'}
 	{if $mid eq 'tiki-show_page.tpl' or $mid eq 'tiki-index_p.tpl'}
-		<link rel="canonical" href="{$base_url_http}{$page|sefurl}" />
+		<link rel="canonical" href="{$base_url}{$page|sefurl}" />
 	{elseif $mid eq 'tiki-view_tracker_item.tpl'}
-		<link rel="canonical" href="{$base_url_http}{$itemId|sefurl:trackeritem}" />
-	{elseif $mid eq 'tiki-view_forum.tpl'}
-		<link rel="canonical" href="{$base_url_http}{$forumId|sefurl:forum}" />
+		<link rel="canonical" href="{$base_url}{$itemId|sefurl:trackeritem}" />
 	{elseif $mid eq 'tiki-view_forum_thread.tpl'}
-		<link rel="canonical" href="{$base_url_http}{$comments_parentId|sefurl:forumthread}" />
-	{elseif $mid eq 'tiki-view_blog.tpl'}
-		<link rel="canonical" href="{$base_url_http}{$blogId|sefurl:blog}" />
+		<link rel="canonical" href="{$base_url}tiki-view_forum_thread.php?comments_parentId={$comments_parentId}" />
 	{elseif $mid eq 'tiki-view_blog_post.tpl'}
-		<link rel="canonical" href="{$base_url_http}{$postId|sefurl:blogpost}" />
+		<link rel="canonical" href="{$base_url}{$postId|sefurl:blogpost}" />
 	{elseif $mid eq 'tiki-read_article.tpl'}
-		<link rel="canonical" href="{$base_url_http}{$articleId|sefurl:article}" />
-	{elseif $mid eq 'tiki-browse_categories.tpl'}
-		<link rel="canonical" href="{$base_url_http}{$parentId|sefurl:category}" />
+		<link rel="canonical" href="{$base_url}{$articleId|sefurl:article}" />
 	{/if}
 {/if}

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -202,7 +202,7 @@ class RankLib extends TikiLib
 				$aux['hits'] = $res['hits'];
 				$aux['href'] = 'tiki-view_forum_thread.php?forumId=' . $res['object'] . '&amp;comments_parentId=' . $res['threadId'];
 				$ret[] = $aux;
-		}
+			}
 
 		$retval["data"] = $ret;
 		$retval["title"] = tra("Forums most read topics");
@@ -211,21 +211,22 @@ class RankLib extends TikiLib
 		return $retval;
 	}
 
-	function forums_top_posters($qty)
-	{
-		$query = "select `user`, `posts` from `tiki_user_postings` order by ".$this->convertSortMode("posts_desc");
-		$result = $this->query($query, array(), $qty);
-		$ret = array();
+    function forums_top_posters($qty)
+		{
+        $query = "select `user`, `posts` from `tiki_user_postings` order by ".$this->convertSortMode("posts_desc");
+        $result = $this->query($query, array(), $qty);
+        $ret = array();
 
-		while ($res = $result->fetchRow()) {
-			$aux["name"] = $res["user"];
-			$aux["posts"] = $res["posts"];
-			$ret[] = $aux;
-		}
-		$retval["data"] = $ret;
+        while ($res = $result->fetchRow()) {
+            $aux["name"] = $res["user"];
+	    $aux["posts"] = $res["posts"];
+	    $ret[] = $aux;
+        }
 
-		return $retval;
-	}
+	$retval["data"] = $ret;
+
+        return $retval;
+    }
 
 	function forums_ranking_top_topics($limit)
 	{

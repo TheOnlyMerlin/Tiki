@@ -37,7 +37,7 @@
 		{if isset($tree) && count($tree) gt 0 && $tiki_p_list_file_galleries != 'n' && $fgal_options.show_explorer.value eq 'y' && $tiki_p_view_fgal_explorer eq 'y'}
 			<td width="25%" class="fgalexplorer" id="fgalexplorer" style="{if ( isset($smarty.session.tiki_cookie_jar.show_fgalexplorer) and $smarty.session.tiki_cookie_jar.show_fgalexplorer neq 'y') and ( ! isset($smarty.request.show_fgalexplorer) or $smarty.request.show_fgalexplorer neq 'y' )}display:none;{/if} width: 25%">
 				<div>
-					{$tree}
+					{tree data=$tree}
 				</div>
 			</td>
 
@@ -100,7 +100,7 @@
 							{/if}
 							
 							{if $prefs.fgal_display_zip_option eq 'y'}
-								{icon _id='img/icons/mime/zip.png' _tag='input_image' name='zipsel' alt="{tr}Download the zip{/tr}" style='vertical-align: middle;'}
+								{icon _id='pics/icons/mime/zip.png' _tag='input_image' name='zipsel' alt="{tr}Download the zip{/tr}" style='vertical-align: middle;'}
 							{/if}
 							
 							{if $tiki_p_assign_perm_file_gallery eq 'y'}

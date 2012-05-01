@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -49,6 +49,7 @@ $needed_prefs = array(
 	'tiki_cdn_ssl' => '',
 	'language' => 'en',
 	'lang_use_db' => 'n',
+	'versionOfPreferencesCache' => - 1,
 	'feature_fullscreen' => 'n',
 	'error_reporting_level' => 0,
 	'smarty_notice_reporting' => 'n',
@@ -68,6 +69,10 @@ if ($tikilib->query("SHOW TABLES LIKE 'tiki_preferences'")->numRows() == 0) {
 	exit;
 }
 $tikilib->get_preferences($needed_prefs, true, true);
+if (!isset($prefs['versionOfPreferencesCache']) || $prefs['versionOfPreferencesCache'] == - 1) {
+	$tikilib->query('delete from `tiki_preferences` where `name`=?', array('versionOfPreferencesCache'));
+	$tikilib->query('insert into `tiki_preferences`(`name`,`value`) values(?,?)', array('versionOfPreferencesCache', 1));
+}
 
 if ($prefs['session_protected'] == 'y' && ! isset($_SERVER['HTTPS'])) {
 	header("Location: https://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}");
@@ -79,6 +84,24 @@ require_once ('lib/cache/cachelib.php');
 global $logslib;
 require_once ('lib/logs/logslib.php');
 include_once ('lib/init/tra.php');
+
+if ( $prefs['memcache_enabled'] == 'y' ) {
+	require_once('lib/cache/memcachelib.php');
+	if ( is_array( $prefs['memcache_servers'] ) ) {
+		$servers = $prefs['memcache_servers'];
+	} else {
+		$servers = unserialize( $prefs['memcache_servers'] );
+	}
+
+	global $memcachelib;
+	$memcachelib = new MemcacheLib( $servers, array(
+		'enabled' => true,
+		'expiration' => (int) $prefs['memcache_expiration'],
+		'key_prefix' => $prefs['memcache_prefix'],
+		'compress' => $prefs['memcache_compress'],
+	) );
+}
+
 require_once ('lib/tikidate.php');
 $tikidate = new TikiDate();
 // set session lifetime
@@ -92,7 +115,7 @@ if ($prefs['session_storage'] == 'db') {
 	} elseif ($api_tiki == 'pdo') {
 		require_once ('lib/tikisession-pdo.php');
 	}
-} elseif ( $prefs['session_storage'] == 'memcache' && TikiLib::lib("memcach")->isEnabled() ) {
+} elseif ( $prefs['session_storage'] == 'memcache' && isset( $memcachelib ) && $memcachelib->isEnabled() ) {
 	require_once ('lib/tikisession-memcache.php');
 }
 
@@ -100,7 +123,7 @@ if ( ! isset( $prefs['session_cookie_name'] ) || empty( $prefs['session_cookie_n
 	$prefs['session_cookie_name'] = session_name();
 }
 
-session_name($prefs['session_cookie_name']);
+session_name( $prefs['session_cookie_name'] );
 
 // Only accept PHP's session ID in URL when the request comes from the tiki server itself
 // This is used by features that need to query the server to retrieve tiki's generated html and images (e.g. pdf export)
@@ -117,10 +140,10 @@ if ( $prefs['session_silent'] == 'y' && empty($_COOKIE[session_name()]) ) {
 // If called from the CDN, refuse to execute anything
 $cdn_pref = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? $prefs['tiki_cdn_ssl'] : $prefs['tiki_cdn'];
 if ( $cdn_pref ) {
-	$host = parse_url($cdn_pref, PHP_URL_HOST);
-	if (isset($_SERVER['HTTP_HOST']) && $host == $_SERVER['HTTP_HOST'] ) {
-		header("HTTP/1.0 410 Gone");
-		echo "This is a Content Delivery Network (CDN) to speed up delivery of images, CSS, and javascript files. However, PHP code is not executed.";
+	$host = parse_url( $cdn_pref, PHP_URL_HOST );
+	if ( $host == $_SERVER['HTTP_HOST'] ) {
+		header("HTTP/1.0 404 Not Found");
+		echo "File not found.";
 		exit;
 	}
 }
@@ -148,64 +171,8 @@ if ($prefs['feature_fullscreen'] == 'y') {
 // Retrieve all preferences
 require_once ('lib/setup/prefs.php');
 // Smarty needs session since 2.6.25
-global $smarty; require_once ('lib/init/smarty.php');
-
-if ($prefs['ids_enabled'] == 'y') {
-	try {
-		TikiInit::prependIncludePath('lib/phpids/lib');
-		require_once 'IDS/Init.php';
-
-		$init = IDS_Init::init('db/ids_config.ini');
-
-		$init->config['General']['filter_path'] = dirname(__FILE__) . '/lib/phpids/lib/IDS/default_filter.xml';
-		$init->config['General']['base_path'] = dirname(__FILE__) . '/lib/phpids/lib/IDS/';
-		$init->config['Caching']['caching'] = 'none';
-		$init->config['General']['HTML_Purifier_Path'] = dirname(__FILE__) . '/lib/htmlpurifier/HTMLPurifier.auto.php';
-		$init->config['General']['HTML_Purifier_Cache'] = dirname(__FILE__) . '/lib/htmlpurifier/HTMLPurifier/DefinitionCache/Serializer';
-		$init->config['Logging']['path'] = 'temp/phpids_log.txt';
-
-		// 2. Initiate the PHPIDS and fetch the results
-
-		$request = array(
-			'REQUEST' => $_REQUEST,
-			'GET' => $_GET,
-			'POST' => $_POST,
-			'COOKIE' => $_COOKIE
-		);
-
-		$ids = new IDS_Monitor($request, $init);
-
-		$result = $ids->run();
-
-		if (!$result->isEmpty()) {
-			require_once 'IDS/Log/File.php';
-			require_once 'IDS/Log/Composite.php';
-
-			if (! file_exists($init->config['Logging']['path'])) {
-				touch($init->config['Logging']['path']);
-			}
-
-			$compositeLog = new IDS_Log_Composite();
-			$compositeLog->addLogger(IDS_Log_File::getInstance($init));
-
-			$compositeLog->execute($result);
-		}
-
-		$impact = $result->getImpact();
-
-		if (! isset($_SESSION['ids_impact'])) {
-			$_SESSION['ids_impact'] = 0;
-		}
-		$_SESSION['ids_impact'] += $impact;
-
-		if ($impact > $prefs['ids_single_threshold'] || $_SESSION['ids_impact'] > $prefs['ids_session_threshold']) {
-			header('503 Service Unavailable');
-			exit;
-		}
-	} catch (Exception $e) {
-		die($e->getMessage());
-	}
-}
+require_once ('lib/init/smarty.php');
+global $smarty;
 
 // Define the special maxRecords global variable
 $maxRecords = $prefs['maxRecords'];
@@ -218,8 +185,7 @@ $access = new TikiAccessLib;
 require_once ('lib/breadcrumblib.php');
 // ------------------------------------------------------
 // DEAL WITH XSS-TYPE ATTACKS AND OTHER REQUEST ISSUES
-function remove_gpc(&$var)
-{
+function remove_gpc(&$var) {
 	if (is_array($var)) {
 		foreach ($var as $key => $val) {
 			remove_gpc($var[$key]);
@@ -245,7 +211,7 @@ $vartype['forumId'] = '+int';
 $vartype['offset'] = 'intSign';
 $vartype['prev_offset'] = 'intSign';
 $vartype['next_offset'] = 'intSign';
-$vartype['threshold'] = 'int';
+$vartype['thresold'] = 'int';
 $vartype['sort_mode'] = '+char';
 $vartype['file_sort_mode'] = 'char';
 $vartype['file_offset'] = 'int';
@@ -253,7 +219,7 @@ $vartype['file_find'] = 'string';
 $vartype['file_prev_offset'] = 'intSign';
 $vartype['file_next_offset'] = 'intSign';
 $vartype['comments_offset'] = 'int';
-$vartype['comments_threshold'] = 'int';
+$vartype['comments_thresold'] = 'int';
 $vartype['comments_parentId'] = '+int';
 $vartype['thread_sort_mode'] = '+char';
 $vartype['thread_style'] = '+char';
@@ -306,7 +272,6 @@ $vartype['type'] = 'string';
 $vartype['userole'] = 'int';
 $vartype['focus'] = 'string';
 $vartype['filegals_manager'] = 'vars';
-$vartype['filesyntax'] = 'string';
 $vartype['ver'] = 'dotvars'; // filename hash for drawlib + rss type for rsslib
 $vartype['trackerId'] = 'int';
 $vartype['articleId'] = 'int';
@@ -325,8 +290,7 @@ $vartype['parentId'] = 'int';
 $vartype['bannerId'] = 'int';
 $vartype['rssId'] = 'int';
 $vartype['page_ref_id'] = 'int';
-function varcheck(&$array, $category)
-{
+function varcheck(&$array, $category) {
 	global $patterns, $vartype, $prefs;
 	$return = array();
 	if (is_array($array)) {
@@ -434,7 +398,7 @@ if (($prefs['auth_method'] == 'ws') and (isset($_SERVER['REMOTE_USER']))) {
 		$_SESSION["$user_cookie_site"] = $user;
 	} elseif ($prefs['auth_ws_create_tiki'] == 'y') {
 		$user = $_SERVER['REMOTE_USER'];
-		if ($userlib->add_user($_SERVER['REMOTE_USER'], '', '')) {
+		if ($userlib->add_user($_SERVER['REMOTE_USER'],'', '')) {
 			$user = $_SERVER['REMOTE_USER'];
 			$_SESSION["$user_cookie_site"] = $user;
 		}
@@ -514,8 +478,8 @@ if (ini_get('register_globals')) {
 	}
 }
 $serverFilter = new DeclFilter;
-if ( ( isset($prefs['tiki_allow_trust_input']) && $prefs['tiki_allow_trust_input'] ) !== 'y' || $tiki_p_trust_input != 'y') {
-	$serverFilter->addStaticKeyFilters(array('QUERY_STRING' => 'xss', 'REQUEST_URI' => 'xss', 'PHP_SELF' => 'xss',));
+if ( $tiki_p_trust_input != 'y' ) {
+	$serverFilter->addStaticKeyFilters(array('QUERY_STRING' => 'url', 'REQUEST_URI' => 'url', 'PHP_SELF' => 'url',));
 }
 $jitServer = new JitFilter($_SERVER);
 $_SERVER = $serverFilter->filter($_SERVER);
@@ -539,24 +503,22 @@ $jitCookie->setDefaultFilter('xss');
 // Apply configured filters to all other input
 if (!isset($inputConfiguration)) $inputConfiguration = array();
 
-array_unshift(
-			 $inputConfiguration, array(
-				'staticKeyFilters' => array(
-					'menu' => 'striptags',
-					'cat_categorize' => 'alpha',
-					'tab' => 'digits',
-					'javascript_enabled' => 'alpha',
-					'XDEBUG_PROFILE' => 'int',
-				),	
-				'staticKeyFiltersForArrays' => array(
-					'cat_managed' => 'digits',
-					'cat_categories' => 'digits',
-				),
-			)
-);
+array_unshift( $inputConfiguration, array(
+	'staticKeyFilters' => array(
+		'menu' => 'striptags',
+		'cat_categorize' => 'alpha',
+		'tab' => 'digits',
+		'javascript_enabled' => 'alpha',
+		'XDEBUG_PROFILE' => 'int',
+	),
+	'staticKeyFiltersForArrays' => array(
+		'cat_managed' => 'digits',
+		'cat_categories' => 'digits',
+	),
+) );
 
 $inputFilter = DeclFilter::fromConfiguration($inputConfiguration, array('catchAllFilter'));
-if ( ( isset($prefs['tiki_allow_trust_input']) && $prefs['tiki_allow_trust_input'] !== 'y' ) || $tiki_p_trust_input != 'y') {
+if ( $tiki_p_trust_input != 'y' ) {
 	$inputFilter->addCatchAllFilter('xss');
 }
 $cookieFilter = DeclFilter::fromConfiguration($inputConfiguration, array('catchAllFilter'));
@@ -567,7 +529,7 @@ $_POST = $inputFilter->filter($_POST);
 $_COOKIE = $cookieFilter->filter($_COOKIE);
 // Rebuild request with filtered values
 $_REQUEST = array_merge($_GET, $_POST);
-if ( ( isset($prefs['tiki_allow_trust_input']) && $prefs['tiki_allow_trust_input'] !== 'y' ) || $tiki_p_trust_input != 'y') {
+if ($tiki_p_trust_input != 'y') {
 	$varcheck_vars = array('_COOKIE', '_GET', '_POST', '_ENV', '_SERVER');
 	$varcheck_errors = '';
 	foreach ($varcheck_vars as $var) {
@@ -611,9 +573,7 @@ unset($GLOBALS['HTTP_SESSION_VARS']);
 unset($GLOBALS['HTTP_POST_FILES']);
 // --------------------------------------------------------------
 if (isset($_REQUEST['highlight']) || (isset($prefs['feature_referer_highlight']) && $prefs['feature_referer_highlight'] == 'y')) {
-	if (method_exists($smarty, 'loadFilter')) {
-		$smarty->loadFilter('output', 'highlight');
-	}
+	$smarty->loadFilter('output', 'highlight');
 }
 if (function_exists('mb_internal_encoding')) {
 	mb_internal_encoding("UTF-8");
@@ -626,4 +586,6 @@ if (!isset($_SERVER['REQUEST_URI']) || empty($_SERVER['REQUEST_URI'])) {
 }
 if (is_object($smarty)) {
 	$smarty->assign("tikidomain", $tikidomain);
+} else {
+	$smarty->assign("tikidomain", "");
 }

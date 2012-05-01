@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,11 +8,6 @@
 class Event_Manager
 {
 	private $eventRegistry = array();
-
-	function reset()
-	{
-		$this->eventRegistry = array();
-	}
 
 	function bind($eventName, $callback, array $arguments = array())
 	{
@@ -30,13 +25,10 @@ class Event_Manager
 	{
 		if (isset ($this->eventRegistry[$eventName])) {
 			foreach ($this->eventRegistry[$eventName] as $callback) {
-				call_user_func(
-								$callback['callback'], 
-								array_merge(
-												$callback['arguments'],
-												$arguments
-								)
-				);
+				call_user_func($callback['callback'], array_merge(
+					$callback['arguments'],
+					$arguments
+				));
 			}
 		}
 	}

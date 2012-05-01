@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,8 +13,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 
 class BanLib extends TikiLib
 {
-	function get_rule($banId)
-	{
+	function get_rule($banId) {
 		$query = "select * from `tiki_banning` where `banId`=?";
 
 		$result = $this->query($query, array($banId));
@@ -32,8 +31,7 @@ class BanLib extends TikiLib
 		return $res;
 	}
 
-	function remove_rule($banId)
-	{
+	function remove_rule($banId) {
 		$query = "delete from `tiki_banning` where `banId`=?";
 
 		$this->query($query, array($banId));
@@ -41,8 +39,7 @@ class BanLib extends TikiLib
 		$this->query($query, array($banId));
 	}
 
-	function list_rules($offset, $maxRecords, $sort_mode, $find, $where = '')
-	{
+	function list_rules($offset, $maxRecords, $sort_mode, $find, $where = '') {
 
 		if ($find) {
 			$findesc = '%' . $find . '%';
@@ -96,8 +93,7 @@ class BanLib extends TikiLib
 		return $retval;
 	}
 
-	function export_rules($rules)
-	{
+	function export_rules($rules) {
 		$csv = "banId,mode,title,ip1,ip2,ip3,ip4,user,date_from,date_to,use_dates,created,created_readable,message,sections\n";
 		foreach ($rules as $rule) {
 			if (!isset($rule['title'])) {
@@ -145,8 +141,7 @@ class BanLib extends TikiLib
 		return $csv;
 	}
 
-	function importCSV($fname, $import_as_new)
-	{
+	function importCSV($fname, $import_as_new) {
 		global $smarty;
 
 		$fields = false;
@@ -173,11 +168,9 @@ class BanLib extends TikiLib
 			}
 			$nb++;
 
-			$this->replace_rule(
-							$d['banId'], $d['mode'], $d['title'], $d['ip1'], $d['ip2'], $d['ip3'], $d['ip4'],
-							$d['user'], strtotime($d['date_from']), strtotime($d['date_to']), $d['use_dates'], $d['message'],
-							explode('|', $d['sections'])
-			);
+			$this->replace_rule($d['banId'], $d['mode'], $d['title'], $d['ip1'], $d['ip2'], $d['ip3'], $d['ip4'],
+								$d['user'], strtotime($d['date_from']), strtotime($d['date_to']), $d['use_dates'], $d['message'],
+								explode('|', $d['sections']));
 		}
 		fclose($fhandle);
 		return $nb;
@@ -198,8 +191,7 @@ class BanLib extends TikiLib
 	  message text,
 	  primary key(banId)
 	  */
-	function replace_rule($banId, $mode, $title, $ip1, $ip2, $ip3, $ip4, $user, $date_from, $date_to, $use_dates, $message, $sections)
-	{
+	function replace_rule($banId, $mode, $title, $ip1, $ip2, $ip3, $ip4, $user, $date_from, $date_to, $use_dates, $message, $sections) {
 
 		$count = TikiDb::get()->table('tiki_banning')->fetchCount(array('banId' => $banId));
 		if ($banId && $count > 0) {

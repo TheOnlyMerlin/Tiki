@@ -1,12 +1,11 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_flash_info()
-{
+function wikiplugin_flash_info() {
 	return array(
 		'name' => tra('Flash Video'),
 		'documentation' => 'PluginFlash',
@@ -14,7 +13,7 @@ function wikiplugin_flash_info()
 		'prefs' => array('wikiplugin_flash'),
 		'extraparams' => true,
 		'tags' => array( 'basic' ),		
-		'icon' => 'img/icons/mime/swf.png',
+		'icon' => 'pics/icons/mime/swf.png',
 		'params' => array(
 			'type' => array(
 				'required' => true,
@@ -96,8 +95,7 @@ function wikiplugin_flash_info()
 	);
 }
 
-function wikiplugin_flash($data, $params)
-{
+function wikiplugin_flash($data, $params) {
 	global $tikilib, $prefs, $userlib, $user;
 	
 	// Handle file from a podcast file gallery

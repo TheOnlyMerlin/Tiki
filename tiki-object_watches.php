@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -54,7 +54,8 @@ if (isset($_REQUEST['assign'])) {
 	check_ticket('object_watches');
 	foreach ($all_groups as $g) {
 		if (in_array($g, $_REQUEST['checked']) && !in_array($g, $old_watches)) {
-			$tikilib->add_group_watch($g, $_REQUEST['watch_event'], $_REQUEST['objectId'], $objectType, $objectName, $objectHref);
+			$tikilib->add_group_watch($g, $_REQUEST['watch_event'], $_REQUEST['objectId'], $objectType,
+				$objectName, $objectHref);
 			$addedGroups[] = $g;
 		} elseif (!in_array($g, $_REQUEST['checked']) && in_array($g, $old_watches)) {
 			$tikilib->remove_group_watch($g, $_REQUEST['watch_event'], $_REQUEST['objectId'], $objectType);
@@ -64,7 +65,7 @@ if (isset($_REQUEST['assign'])) {
 		$smarty->assign_by_ref('deletedGroups', $deletedGroups);
 		$group_watches = $_REQUEST['checked'];
 	}
-	if ($objectType == 'Category') {
+	if 	($objectType == 'Category') {
 		$addedGroupsDesc = array();
 		$deletedGroupsDesc = array();
 		$catTreeNodes = array();

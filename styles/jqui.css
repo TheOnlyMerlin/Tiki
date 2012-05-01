@@ -16,7 +16,7 @@ body {
 	background: #fff}
 
 html > body,
-*:first-child+html body {font-size: 74%}
+*:first-child+html body {font-size: 74% !important}
 
  /***** Layout (overrides layout.css;
 		also styling of page layout divs)  *****/
@@ -28,7 +28,7 @@ body.fixed_width .fixedwidth .fixedwidth {
 }
 	 	 	 	
 #main {
-	text-align: left
+	text-align: left;
 }
 
 #c1c2 #wrapper #col1.marginleft  {
@@ -226,12 +226,12 @@ input[type="submit"]:hover {
 
 #top_modules .siteloginbar_popup {
 	position: absolute;
-	bottom: 0;
+	bottom: 1px;
 	right: 20px;
 }
 
 #tiki-top {
-	padding: 0 .3em 0 1em;
+	padding: .5em .3em .3em 1em;
 	border: 1px solid #aaa;
 	background: #cccccc url(../lib/jquery/jquery-ui/themes/base/images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x;
 	color: #363636;
@@ -433,7 +433,7 @@ h3.box-title,
 .errors .rbox-data {
 	color: #cd0a0a;
 	background:#fef1ec url(../lib/jquery/jquery-ui/themes/base/images/ui-bg_glass_55_fbf9ee_1x400.png) repeat-x scroll 50% 100%;
-	border: 1px solid #cd0a0a;
+	border:1px solid #cd0a0a;
 }
 
 .warning .rbox-title,
@@ -771,23 +771,18 @@ body.tiki_cms h1 a.pagetitle:hover {border-bottom: none}
 	color: #cd0a0a;
 }
 
+/***** Ajax, jquery. etc. *****/
+/***** Ajax *****/
+/*
+.ui-widget-content {
+	background: ;
+	color: ;
+}
+*/
+
 /***** New (unsorted) *****/
 
-/* Quote plugin */
-.quoteheader {
-	background : url('../img/icons/quoteleft.gif') no-repeat;
-	padding-left:50px;
-	height:35px;
-}
-
-.quotebody {
-	padding-left:46px;
-}
-
 /***** End New (unsorted) *****/
-
-/***** border radius definitions                   *****
- ***** remove if you require strict css validation *****/
 
 .footerbgtrap,
 .rbox-title,
@@ -802,9 +797,6 @@ body.tiki_cms h1 a.pagetitle:hover {border-bottom: none}
 	-webkit-border-top-right-radius: 4px;
 }
 
-fieldset,
-input,
-textarea,
 .button a,
 .button a:visited,
 button,
@@ -822,8 +814,7 @@ h3.box-title,
 body.tiki_admin .simplebox,
 a.admbox,
 a.admbox.off,
-.forum_actions,
-.admintoclevel {
+.forum_actions {
 	border-radius: 4px;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
@@ -851,10 +842,14 @@ a.admbox.off,
 	-webkit-border-bottom-right-radius: 4px;
 }
 
-.admintoclevel .admintoclevel {
-	border-top-right-radius: 0;
-	border-bottom-right-radius: 0;
+/* Quote plugin */
+.quoteheader {
+	background : url('../images/quoteleft.gif') no-repeat;
+	padding-left:50px;
+	height:35px;
 }
-/***** end border radius definitions  *****/
 
+.quotebody {
+	padding-left:46px;
+}
 /* End of File */

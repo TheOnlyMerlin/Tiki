@@ -243,9 +243,9 @@ tt {font-size: 1.2em}
 	background: url(eatlon/banner.gif) no-repeat 100% 100%;	
 }
 	
-/*#top_modules { */
-/*	min-height: 126px; */
-/*	background: url(eatlon/banner.gif) no-repeat 100% 0} */
+#top_modules {
+/*	min-height: 126px;*/
+/*	background: url(eatlon/banner.gif) no-repeat 100% 0*/}
 
 #top_modules .module.secondary_site_menu {
 	position: absolute;
@@ -272,7 +272,7 @@ tt {font-size: 1.2em}
 
 .floatright img {margin-right: 10px}
 
-#sitetitles {
+#top_modules #sitetitles {
 	margin: 10% 20px;
 	padding-left: 15px;
 }
@@ -334,10 +334,9 @@ input[id="sl-login-pass"] {background: #e1e1e2}
 	padding-right: 10px;
 	padding-top: 0;
 	margin-top: 0;
-	margin-right: 30px
-}
-
-#topbar_modules .box-search {
+	margin-right: 30px}
+	
+.box-search {
 	position: absolute;
 	right: 40px;
 	top: 0;
@@ -965,9 +964,9 @@ div.dirfooter {margin-top: 10px}
 .Calsurv a,
 .Calsurv a:visited {color: #DAA520}
 
-.Caltrack,
-.Caltrack a,
-.Caltrack a:visited {color: #00BD02}
+Caltrack,
+Caltrack a,
+Caltrack a:visited {color: #00BD02}
 
 .Calweb {font-size: 1em}
 .Calweb:hover {color: #996633}
@@ -1127,8 +1126,7 @@ div#calscreen .calfocuson {
 	background: #9faec2}
 
 /***** Admin *****/
-a.admbox,
-a.admbox:visited {
+a.admbox {
 	border: 1px solid #aaa;
 	background: #506887 center no-repeat}
 

@@ -12,7 +12,7 @@
 			<th style="width:1%">&nbsp;</th>
 		{/if}
 
-		{if $gal_info.show_parentName eq 'y'}
+		{if $show_parentName eq 'y'}
 			<th>
 				{self_link _sort_arg=$sort_arg _sort_field='parentName'}{tr}Gallery{/tr}{/self_link}
 			</th>
@@ -262,7 +262,7 @@
 					{capture assign=link}
 						{strip}
 							{if $files[changes].isgal eq 1}
-								href="tiki-list_file_gallery.php?galleryId={$files[changes].id}{if !empty($filegals_manager)}&amp;filegals_manager={$filegals_manager|escape}{/if}{if !empty($insertion_syntax)}&amp;insertion_syntax={$insertion_syntax|escape}{/if}"
+								href="tiki-list_file_gallery.php?galleryId={$files[changes].id}{if !empty($filegals_manager)}&amp;filegals_manager={$filegals_manager|escape}{/if}"
 							{else}
 		
 								{if !empty($filegals_manager)}

@@ -50,9 +50,7 @@
 			<ul id="row-{$smarty.foreach.line.iteration|escape}" class="row">
 			{foreach from=$line item=bit name=bit}
 				{foreach from=$bit item=tool name=tool}
-					{if !empty($qtelement[$tool].class)}
-						<li class="{$qtelement[$tool].class}" {if $smarty.foreach.bit.index eq 1}style="float:right;"{/if}>{$qtelement[$tool].html}</li>
-					{/if}
+					<li class="{$qtelement[$tool].class}" {if $smarty.foreach.bit.index eq 1}style="float:right;"{/if}>{$qtelement[$tool].html}</li>
 				{/foreach}
 			{/foreach}
 			{if $smarty.foreach.line.last and $rowCount gt 1}

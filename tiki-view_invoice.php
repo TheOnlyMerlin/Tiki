@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,6 +7,7 @@
 
 require_once('tiki-setup.php');
 $trklib = TikiLib::lib('trk');
+TikiLib::lib('trkqry');
 
 $access->check_feature('feature_invoice');
 $access->check_permission('tiki_p_admin');
@@ -20,7 +21,7 @@ if ($trklib->get_tracker_by_name("Invoice Items") < 1) {
 
 (int)$_REQUEST['InvoiceId'] = $_REQUEST['InvoiceId'];
 $smarty->assign('InvoiceId', $_REQUEST['InvoiceId']);
-$invoice = Tracker_Query::tracker("Invoices")
+$invoice = TrackerQueryLib::tracker("Invoices")
 	->byName()
 	->equals($_REQUEST['InvoiceId'])
 	->getOne();
@@ -37,25 +38,22 @@ if (is_array($invoice["Item Amounts"])) {
 
 $smarty->assign("invoice", $invoice);
 $smarty->assign("amount", $amount);
-$smarty->assign(
-				"client",
-				Tracker_Query::tracker("Invoice Clients")
-				->fields(array("Client Id"))->equals(array($invoice['Client Id']))
-				->byName()
-				->getOne()
+$smarty->assign("client",
+	TrackerQueryLib::tracker("Invoice Clients")
+		->fields(array("Client Id"))->equals(array($invoice['Client Id']))
+		->byName()
+		->getOne()
 );
-$smarty->assign(
-				"setting", 
-				Tracker_Query::tracker("Invoice Settings")
-				->byName()
-				->query()
+$smarty->assign("setting", 
+	TrackerQueryLib::tracker("Invoice Settings")
+		->byName()
+		->query()
 );
-$smarty->assign(
-				"invoiceItems", 
-				Tracker_Query::tracker("Invoice Items")
-				->fields(array("Invoice Id"))->equals(array($_REQUEST['InvoiceId']))
-				->byName()
-				->query()
+$smarty->assign("invoiceItems", 
+	TrackerQueryLib::tracker("Invoice Items")
+		->fields(array("Invoice Id"))->equals(array($_REQUEST['InvoiceId']))
+		->byName()
+		->query()
 );
 
 // Display the template

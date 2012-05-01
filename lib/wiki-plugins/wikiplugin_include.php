@@ -1,18 +1,17 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_include_info() 
-{
+function wikiplugin_include_info() {
 	return array(
 		'name' => tra('Include'),
 		'documentation' => 'PluginInclude',
 		'description' => tra('Include content from a wiki page'),
 		'prefs' => array('wikiplugin_include'),
-		'icon' => 'img/icons/page_copy.png',
+		'icon' => 'pics/icons/page_copy.png',
 		'tags' => array( 'basic' ),
 		'params' => array(
 			'page' => array(
@@ -50,15 +49,13 @@ function wikiplugin_include_info()
 	);
 }
 
-function wikiplugin_include($dataIn, $params, $offset)
-{
-	global $tikilib,$userlib,$user, $killtoc;
+function wikiplugin_include($dataIn, $params, $offset) {
+	global $tikilib,$userlib,$user;
     static $included_pages, $data;
 
-	$killtoc = true;
 	$max_times = 5;
-	$params = array_merge(array( 'nopage_text' => '', 'pagedenied_text' => '' ), $params);
-	extract($params, EXTR_SKIP);
+	$params = array_merge( array( 'nopage_text' => '', 'pagedenied_text' => '' ), $params );
+	extract ($params,EXTR_SKIP);
 	if (!isset($page)) {
 		return ("<b>missing page for plugin INCLUDE</b><br />");
 	}
@@ -74,8 +71,8 @@ function wikiplugin_include($dataIn, $params, $offset)
         $included_pages[$memo] = 1;
         // only evaluate permission the first time round
         // evaluate if object or system permissions enables user to see the included page
-    	$data[$memo] = $tikilib->get_page_info($page);
-    	if (!$data[$memo]) {
+		$data[$memo] = $tikilib->get_page_info($page);
+		if (!$data[$memo]) {
     		$text = $nopage_text;
     	}
 		$perms = $tikilib->get_perm_object($page, 'wiki page', $data[$memo], false);
@@ -151,7 +148,7 @@ function wikiplugin_include($dataIn, $params, $offset)
 		$smarty->loadPlugin('smarty_function_icon');
 		$tip = tra('Include Plugin'). ' | ' . tra('Edit the included page:').' &quot;' . $page . '&quot;';
 		$text .= '<a class="editplugin tips" '.	// ironically smarty_block_self_link doesn't work for this! ;)
-				smarty_block_ajax_href(array('template' => 'tiki-editpage.tpl'), 'tiki-editpage.php?page='.urlencode($page).'&returnto='.urlencode($GLOBALS['page']), $smarty, $tmp = false) . '>' .
+				smarty_block_ajax_href( array('template' => 'tiki-editpage.tpl'), 'tiki-editpage.php?page='.urlencode($page).'&returnto='.urlencode($GLOBALS['page']),$smarty, false) .
 				smarty_function_icon(array( '_id' => 'page_edit', 'title' => $tip, 'class' => 'icon tips'), $smarty) . '</a>';
 	}
 	return $text;

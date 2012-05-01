@@ -20,7 +20,5 @@
 	{if $p.hint}
 		<br/><em>{$p.hint|simplewiki}</em>
 	{/if}
-
 	{include file="prefs/shared-dependencies.tpl"}
-
 </div>

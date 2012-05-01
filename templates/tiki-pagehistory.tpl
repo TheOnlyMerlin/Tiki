@@ -51,9 +51,7 @@
 			</form>
 		{/remarksbox}
 	{/if}
-	<div class="wikitext" id="page-data">
-		{$previewd}
-	</div>
+	<div class="wikitext">{$previewd}</div>
 {/if}
 
 {if $source}
@@ -73,7 +71,7 @@
 			{/if}
 		{/if}
 	</div>
-	<textarea class="wikiedit readonly" style="width:100%;height:400px" readonly="readonly" id="page_source">{$sourced|escape}</textarea>
+	<textarea class="wikiedit readonly" style="width:100%;height:400px" readonly="readonly" id="page_source">{$sourced}</textarea>
 	{if $prefs.feature_jquery_ui eq "y"}{jq}$("#page_source").resizable();{/jq}{/if}
 {/if}
 
@@ -144,7 +142,7 @@ $("#toggle_diffs a").click(function(){
 				{if $prefs.default_wiki_diff_style eq "old"}, {tr}c=compare{/tr}, {tr}d=diff{/tr}{/if}
 				{if $tiki_p_rollback eq 'y'}, {tr}b=rollback{/tr}{/if}
 			</div>
-			<table class="formcolor" width="100%">
+			<table class="formcolor">
 				<tr>
 					{if $tiki_p_remove eq 'y'}<th><input type="submit" name="delete" value="{tr}Del{/tr}" /></th>{/if}
 					<th>{tr}Information{/tr}</th>
@@ -197,7 +195,7 @@ $("#toggle_diffs a").click(function(){
 							</td>
 						{/if}
 						<td class="button_container">{if $current eq $info.version}<strong>{/if}{$info.version}<br />{tr}Current{/tr}{if $current eq $info.version}</strong>{/if}</td>
-						<td class="button_container">{if $info.is_html}{icon _id='html'}{elseif $info.wysiwyg eq "y"}{icon _id='text_dropcaps' title='{tr}Wiki Wysiwyg{/tr}'}{/if}</td>
+						<td class="button_container">{if $current eq $info.version and $info.is_html eq "1"}{icon _id="html"}{/if}</td>
 						<td class="button_container">{self_link page=$page preview=$info.version _title="{tr}View{/tr}"}v{/self_link}
 						{if $tiki_p_wiki_view_source eq "y" and $prefs.feature_source eq "y"}
 							&nbsp;{self_link page=$page source=$info.version _title="{tr}Source{/tr}"}s{/self_link}

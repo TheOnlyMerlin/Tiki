@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -45,7 +45,7 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 					),
 					'displayFieldsList' => array(
 						'name' => tr('Multiple Fields'),
-						'description' => tr('Display the values from multiple fields instead of a single one, separated by |'),
+						'description' => tr('Display the values from multiple fields instead of a single one.'),
 						'separator' => '|',
 						'filter' => 'int',
 					),
@@ -105,15 +105,6 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 							'one' => tr('Only one random item for each value'),
 							'multi' => tr('Displays all the items for a same value with a notation value (itemId)'),
 						),
-					),
-					'selectMultipleValues' => array(
-						'name' => tr('Select multiple values'),
-						'description' => tr('Allow the user to select multiple values'),
-						'filter' => 'int',
-						'options' => array(
-							0 => tr('No'),
-							1 => tr('Yes'),
-						)
 					),
 				),
 			),
@@ -215,12 +206,6 @@ $("select[name=' . $this->getInsertId() . ']").change(function(e, val) {
 
 		}
 
-		if ($this->getOption(12)) {
-			$context['selectMultipleValues'] = true;
-		} else {
-			$context['selectMultipleValues'] = false;
-		}
-		
 		if ($preselection = $this->getPreselection()) {
 			$context['preselection'] = $preselection;
 		} else {
@@ -235,53 +220,37 @@ $("select[name=' . $this->getInsertId() . ']").change(function(e, val) {
 		$smarty = TikiLib::lib('smarty');
 
 		$item = $this->getConfiguration('value');
-
 		$dlist = $this->getConfiguration('listdisplay');
 		$list = $this->getConfiguration('list');
-		
-		if (!is_array($item)) {
-			// single value item field
-			$items = array($item);
+		if (!empty($dlist)) {
+			$label = isset($dlist[$item]) ? $dlist[$item] : '';
 		} else {
-			// item field has multiple values
-			$items = $item;
+			$label = isset($list[$item]) ? $list[$item] : '';
 		}
-		
-		$labels = array();
-		
-		foreach ($items as $key => $value) {
-			if (!empty($dlist) && isset($dlist[$value])) {
-				$labels[] = $dlist[$value];
-			} else if (isset($list[$value])) {
-				$labels[] = $list[$value];
-			}
-		}
-		
-		$label = implode(', ', $labels);
-		
-		if ($item && !is_array($item) && $context['list_mode'] !== 'csv' && $this->getOption(2)) {
+		if ($item && $context['list_mode'] !== 'csv' && $this->getOption(2)) {
 			$smarty->loadPlugin('smarty_function_object_link');
 
 			if ( $this->getOption(5) ) {
-				$link = smarty_function_object_link(
-								array(
-									'type' => 'wiki page',
-									'id' => $this->getOption(5) . '&itemId=' . $item,	// add itemId param TODO properly
-									'title' => $label,
-								),
-								$smarty
-				);
+				$link = smarty_function_object_link(array(
+					'type' => 'wiki page',
+					'id' => $this->getOption(5) . '&itemId=' . $item,	// add itemId param TODO properly
+					'title' => $label,
+				), $smarty);
 				// decode & and = chars
 				return str_replace(array('%26','%3D'), array('&','='), $link);
 			} else {
-				return smarty_function_object_link(array('type' => 'trackeritem',	'id' => $item,	'title' => $label), $smarty);
+				return smarty_function_object_link(array(
+					'type' => 'trackeritem',
+					'id' => $item,
+					'title' => $label,
+				), $smarty);
 			}
 		} elseif ($label) {
 			return $label;
 		}
 	}
 
-	function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
+        function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
 	{
 		$data = $this->getLinkData(array(), 0);
 		$item = $data['value']; 
@@ -300,8 +269,11 @@ $("select[name=' . $this->getInsertId() . ']").change(function(e, val) {
 	}
 
 	function getProvidedFields($baseKey)
-	{
-		return array($baseKey, "{$baseKey}_text");
+        {
+		return array(
+			$baseKey,
+			"{$baseKey}_text",
+		);
 	}
 
 	function getGlobalFields($baseKey)
@@ -309,16 +281,6 @@ $("select[name=' . $this->getInsertId() . ']").change(function(e, val) {
 		return array();
 	}
 
-	/**
-	 * Return both the current values and the list of available values
-	 * for this field. When creating or updating a tracker item this
-	 * function is called twice. First before the data is saved and then
-	 * before displaying the changed tracker item to the user. 
-	 * 
-	 * @param array $requestData
-	 * @param $string_id
-	 * @return array
-	 */
 	private function getLinkData($requestData, $string_id)
 	{
 		$data = array(
@@ -327,16 +289,16 @@ $("select[name=' . $this->getInsertId() . ']").change(function(e, val) {
 
 		if (!$this->getOption(3)) {	//no displayedFieldsList
 			$data['list'] = TikiLib::lib('trk')->get_all_items(
-							$this->getOption(0),
-							$this->getOption(1),
-							$this->getOption(4, 'opc'),
-							false
+				$this->getOption(0),
+				$this->getOption(1),
+				$this->getOption(4, 'opc'),
+				false
 			);
 			if (!$this->getOption(11) || $this->getOption(11) != 'multi') {
 				$data['list'] = array_unique($data['list']);
 			} elseif (array_unique($data['list']) != $data['list']) {
 				$newlist = array();
-				foreach ($data['list'] as $k => $dl) {
+				foreach($data['list'] as $k => $dl) {
 					if (in_array($dl, $newlist)) {
 						$dl = $dl . " ($k)";
 					}
@@ -346,24 +308,22 @@ $("select[name=' . $this->getInsertId() . ']").change(function(e, val) {
 			}
 		} else {
 			$data['list'] = TikiLib::lib('trk')->get_all_items(
-							$this->getOption(0),
-							$this->getOption(1),
-							$this->getOption(4, 'opc'),
-							false
+				$this->getOption(0),
+				$this->getOption(1),
+				$this->getOption(4, 'opc'),
+				false
 			);
-			$data['listdisplay'] = array_unique(
-							TikiLib::lib('trk')->concat_all_items_from_fieldslist(
-											$this->getOption(0),
-											$this->getOption(3),
-											$this->getOption(4, 'opc')
-							)
+			$data['listdisplay'] = TikiLib::lib('trk')->concat_all_items_from_fieldslist(
+				$this->getOption(0),
+				$this->getOption(3),
+				$this->getOption(4, 'opc')
 			);
 			if (!$this->getOption(11) || $this->getOption(11) != 'multi') {
 				$data['list'] = array_unique($data['list']);
 				$data['listdisplay'] = array_unique($data['listdisplay']);
 			} elseif (array_unique($data['listdisplay']) != $data['listdisplay']) {
 				$newlist = array();
-				foreach ($data['listdisplay'] as $k => $dl) {
+				foreach($data['listdisplay'] as $k => $dl) {
 					if (in_array($dl, $newlist)) {
 						$dl = $dl . " ($k)";
 					}
@@ -380,11 +340,6 @@ $("select[name=' . $this->getInsertId() . ']").change(function(e, val) {
 			}
 		}
 
-		// selectMultipleValues
-		if ($this->getOption(12) && !is_array($data['value'])) {
-			$data['value'] = explode(',', $data['value']);
-		}
-		
 		return $data;
 	}
 
@@ -414,8 +369,14 @@ $("select[name=' . $this->getInsertId() . ']").change(function(e, val) {
 	private function getRemoteItemLinks($syncInfo, $trackerId, $fieldId, $status)
 	{
 		$controller = new Services_RemoteController($syncInfo['provider'], 'tracker');
-		$items = $controller->getResultLoader('list_items', array('trackerId' => $trackerId, 'status' => $status));
-		$result = $controller->edit_field(array('trackerId' => $trackerId, 'fieldId' => $fieldId));
+		$items = $controller->getResultLoader('list_items', array(
+			'trackerId' => $trackerId,
+			'status' => $status,
+		));
+		$result = $controller->edit_field(array(
+			'trackerId' => $trackerId,
+			'fieldId' => $fieldId,
+		));
 
 		$permName = $result['field']['permName'];
 		if (empty($permName)) {
@@ -464,19 +425,6 @@ $("select[name=' . $this->getInsertId() . ']").change(function(e, val) {
 		}
 
 		return $trklib->get_item_id($remoteTrackerId, $remoteField, $localValue, $partial);
-	}
-	
-	function handleSave($value, $oldValue)
-	{
-		// if selectMultipleValues is enabled, convert the array
-		// of options to string before saving the field value in the db
-		if ($this->getOption(12)) {
-			$value = implode(',', $value);
-		}
-
-		return array(
-			'value' => $value,
-		);
 	}
 }
 

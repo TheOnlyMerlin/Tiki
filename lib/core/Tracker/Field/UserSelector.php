@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -42,7 +42,6 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 						'options' => array(
 							0 => tr('No'),
 							1 => tr('Yes'),
-							2 => tr('Only when other users modify the item'),
 						),
 					),
 					'groupIds' => array(
@@ -97,28 +96,26 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 		
 		$value = $this->getConfiguration('value');
 		$autoassign = (int) $this->getOption(0);
-		if (empty($value) && ($autoassign == 1 || $autoassign == 2)) {
+		if ($value === false && ($autoassign == 1 || $autoassign == 2)) {
 			$value = $user;
 		}
+		
 		if ($autoassign == 0 || $tiki_p_admin_trackers === 'y') {
 			$groupIds = $this->getOption(2, '');
 
 			$smarty->loadPlugin('smarty_function_user_selector');
 			return smarty_function_user_selector(
-							array(
-								'user' => $value,
-								'id'  => 'user_selector_' . $this->getConfiguration('fieldId'),
-								'select' => $value,
-								'name' => $this->getConfiguration('ins_id'),
-								'editable' => 'y',
-								'allowNone' => $this->getConfiguration('isMandatory') === 'y' ? 'n' : 'y',
-								'groupIds' => $groupIds,
-							), 
-							$smarty
-			);
+					array(	'user' => $value,
+							'id'  => 'user_selector_' . $this->getConfiguration('fieldId'),
+							'select' => $value,
+							'name' => $this->getInsertId(),
+							'editable' => 'y',
+							'allowNone' => $this->getConfiguration('isMandatory') === 'y' ? 'n' : 'y',
+							'groupIds' => $groupIds,
+					), $smarty);
 		} else {
 			$smarty->loadPlugin('smarty_modifier_username');
-			return smarty_modifier_username($value) . '<input type="hidden" name="' . $this->getInsertId() . '" value="' . $value . '">';
+			return smarty_modifier_username( $value ) . '<input type="hidden" name="' . $this->getInsertId() . '" value="' . $value . '">';
 		}
 	}
 
@@ -129,7 +126,7 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 			return '';
 		} else {
 			TikiLib::lib('smarty')->loadPlugin('smarty_modifier_username');
-			return smarty_modifier_username($value);
+			return smarty_modifier_username( $value );
 		}
 	}
 
@@ -150,12 +147,9 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 		$groupIds = array_map('intval', $groupIds);
 
 		$controller = new Services_RemoteController($syncInfo['provider'], 'user');
-		$users = $controller->getResultLoader(
-						'list_users', 
-						array(
-							'groupIds' => $groupIds,
-						)
-		);
+		$users = $controller->getResultLoader('list_users', array(
+			'groupIds' => $groupIds,
+		));
 
 		$list = array();
 		foreach ($users as $user) {

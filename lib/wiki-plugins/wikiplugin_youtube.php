@@ -1,18 +1,17 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_youtube_info()
-{
+function wikiplugin_youtube_info() {
 	return array(
 		'name' => tra('YouTube'),
 		'documentation' => 'PluginYouTube',
 		'description' => tra('Display a YouTube video'),
 		'prefs' => array( 'wikiplugin_youtube' ),
-		'icon' => 'img/icons/youtube.png',
+		'icon' => 'pics/icons/youtube.png',
 		'tags' => array( 'basic' ),		
 		'params' => array(
 			'movie' => array(
@@ -101,8 +100,7 @@ function wikiplugin_youtube_info()
 	);
 }
 
-function wikiplugin_youtube($data, $params)
-{
+function wikiplugin_youtube($data, $params) {
 	global $tikilib;
 	
  	$plugininfo = wikiplugin_youtube_info();

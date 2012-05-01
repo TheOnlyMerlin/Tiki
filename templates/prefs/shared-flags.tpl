@@ -1,13 +1,12 @@
 {if $p.helpurl}
-	<a href="{$p.helpurl|escape}" target="tikihelp" class="tikihelp" title="{$p.name|escape}: {$p.description|escape} {if $p.separator}{tr}Separator is {/tr}<b>{$p.separator|simplewiki}</b>{/if}">
+	<a href="{$p.helpurl|escape}" target="tikihelp" class="tikihelp" title="{$p.name|escape}: {$p.description|escape}">
 		{icon _id=help alt=''}
 	</a>
 {elseif $p.description}
-	<span class="tikihelp" title="{$p.name|escape}: {$p.description|escape} {if $p.separator}{tr}Separator is {/tr}<b>{$p.separator|simplewiki}</b>{/if}">
+	<span class="tikihelp" title="{$p.name|escape}: {$p.description|escape}">
 		{icon _id=information alt=''}
 	</span>
 {/if}
-
 {if $p.warning}
 	<a href="#" target="tikihelp" class="tikihelp" title="{tr}Warning:{/tr} {$p.warning|escape}">
 		{icon _id=error alt=''}

@@ -1,18 +1,17 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_img_info()
-{
+function wikiplugin_img_info() {
 	return array(
 		'name' => tra('Image'),
 		'documentation' => 'PluginImg',
 		'description' => tra('Display custom formatted images'),
 		'prefs' => array( 'wikiplugin_img'),
-		'icon' => 'img/icons/picture.png',
+		'icon' => 'pics/icons/picture.png',
 		'tags' => array( 'basic' ),
 		'params' => array(
 			'src' => array(
@@ -148,7 +147,7 @@ function wikiplugin_img_info()
 			'link' => array(
 				'required' => false,
 				'name' => tra('Link'),
-				'description' => tra('Enter a URL to the address the image should link to. Not needed if thumb parameter is set; overrides thumb setting.'),
+				'description' => tra('Enter a url to the address the image should link to. Not needed if thumb parameter is set; overrides thumb setting.'),
 				'filter' => 'url',
 				'default' => '',
 			),
@@ -315,9 +314,8 @@ function wikiplugin_img_info()
 	);
 }
 
-function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
-{
-	 global $tikidomain, $prefs, $section, $smarty, $tikiroot, $tikilib, $userlib, $user, $tiki_p_upload_files;
+ function wikiplugin_img( $data, $params, $offset, $parseOptions='' ) {
+	 global $tikidomain, $prefs, $section, $smarty, $tikiroot, $tikilib, $userlib, $user;
 
 	$imgdata = array();
 	
@@ -358,28 +356,28 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 	// Uncomment the following line to set the default parameter. Force certain max and ignore any specified width or height. Later items have priority
 //	$imgdata['mandatory'] = 'section_cms_article ? max = 400; module_* ? max = 150, width= , height=; mode_mobile ? max = 150, width= , height=;';
 
-	$imgdata = array_merge($imgdata, $params);
+	$imgdata = array_merge( $imgdata, $params );
 //////////////////////////////////////////////////Function for processing default and mandatory parameters//////////////////////////////////////
 	//function calls are just below function
 	if (!function_exists('apply_default_and_mandatory')) {	
-		function apply_default_and_mandatory($imgdata, $default) 
-		{
+	function apply_default_and_mandatory($imgdata, $default) 
+	{
 			global $section, $smarty;
 			$imgdata[$default] = trim($imgdata[$default]) . ';'; // trim whitespace and ensure at least one semicolon
-			$img_conditions_array = explode(';', $imgdata[$default]); // conditions separated by semicolons
+			$img_conditions_array = explode( ';', $imgdata[$default] ); // conditions separated by semicolons
 			if ( !empty($img_conditions_array) ) {
-				foreach ($img_conditions_array as $key => $var) { // for each condition
+				foreach($img_conditions_array as $key => $var) { // for each condition
 					if ( !empty($var) ) {
-						$img_condition = explode('?', $var); // condition separated from parameters by question mark
+						$img_condition = explode( '?', $var ); // condition separated from parameters by question mark
 						if ( !empty($img_condition) ) {
 							$img_condition_name = trim($img_condition[0]);
 							if ( !empty($img_condition[1]) ) { // if there is at least one parameter
 								$img_condition[1] = trim($img_condition[1]) . ',';	// at least one comma
-								$img_parameters_array = explode(',', $img_condition[1]); // separate multiple parameters
+								$img_parameters_array = explode( ',', $img_condition[1] ); // separate multiple parameters
 								if ( !empty($img_parameters_array) ) {  // if a parameter has been extracted
-									foreach ($img_parameters_array as $param_key => $param_var) {	// for each parameter
+									foreach($img_parameters_array as $param_key => $param_var) {	// for each parameter
 										if ( !empty($param_var) ) {	// if a parameter exists
-											$img_parameter_array = explode('=', trim($param_var)); // separate parameters and values
+											$img_parameter_array = explode( '=', trim($param_var) ); // separate parameters and values
 											if ( !empty($img_parameter_array[0]) ) {  // if a parameter with a value has been extracted
 	
 												$img_condition_status = false;	// initialise condition as not being true
@@ -388,19 +386,19 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 												switch ($img_condition_name) {
 													case 'default':
 														$img_condition_status = true; // default is always true
-    													break;
+														break;
 													case 'mode_mobile':
 														if ( isset($_REQUEST['mode']) && $_REQUEST['mode'] == 'mobile' ) $img_condition_status = true;
-	    												break;
+														break;
 													case 'module_*':
 														if ( !empty($smarty) ) {
 															$image_module_params = $smarty->getTemplateVars('module_params');
 															if ( !empty($image_module_params) ) $img_condition_status = true;
 														}
-    													break;
+														break;
 													case 'section_*':
 														if ( !empty($section) ) $img_condition_status = true;
-	    												break;
+														break;
 													case 'section_cms_article':
 														if ( !empty($section) ) {
 															if ( $section == 'cms' ) {
@@ -412,7 +410,7 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 																} // if (!empty($smarty))
 															}
 														}
-		    											break;
+														break;
 													case 'section_cms_review':
 														if ( !empty($section) ) {
 															if ( $section == 'cms' ) {
@@ -424,7 +422,7 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 																} // if (!empty($smarty))
 															}
 														}
-			    										break;
+														break;
 													case 'section_cms_event':
 														if ( !empty($section) ) {
 															if ( $section == 'cms' ) {
@@ -436,7 +434,7 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 																} // if (!empty($smarty))
 															}
 														}
-    													break;
+														break;
 													case 'section_cms_classified':
 														if ( !empty($section) ) {
 															if ( $section == 'cms' ) {
@@ -448,15 +446,15 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 																} // if (!empty($smarty))
 															}
 														}
-	    												break;
+														break;
 												} // switch ($img_condition_name)
 	
 												if ( $img_condition_status != true ) {
 													// if match not found yet, examine more specific conditions
 													if ( !empty($section) ) {	// if we have a section name
-														if ( substr($img_condition_name, 0, 8) == 'section_' ) {
+														if ( substr($img_condition_name,0,8) == 'section_' ) {
 															if ( strlen($img_condition_name) > 8 ) {
-																$img_condition_part = substr($img_condition, 8); // get part after "section_"
+																$img_condition_part = substr($img_condition,8); // get part after "section_"
 																$img_condition_part = strtolower($img_condition_part);
 																$img_condition_part = trim(strtr($img_condition_part, '_', ' ')); // replace underscore with spaces
 																if ( $section == $img_condition_part ) $img_condition_status = true;
@@ -470,82 +468,82 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 													switch (strtolower(trim($img_parameter_array[0]))) {
 														case 'src':
 															$imgdata['src'] = trim($img_parameter_array[1]);
-     													break;
+														break;
 														case 'id':
 															$imgdata['id'] = trim($img_parameter_array[1]);
-	     												break;
+														break;
 														case 'fileId':
 															$imgdata['fileId'] = trim($img_parameter_array[1]);
-		     											break;
+														break;
 														case 'randomGalleryId':
 															$imgdata['randomGalleryId'] = trim($img_parameter_array[1]);
-				     									break;
+														break;
 														case 'fgalId':
 															$imgdata['fgalId'] = trim($img_parameter_array[1]);
-					     								break;
+														break;
 														case 'sort_mode':
 															$imgdata['sort_mode'] = trim($img_parameter_array[1]);
-     													break;
+														break;
 														case 'attId':
 															$imgdata['attId'] = trim($img_parameter_array[1]);
-     													break;
+														break;
 														case 'thumb':
 															$imgdata['thumb'] = trim($img_parameter_array[1]);
-     													break;
+														break;
 														case 'button':
 															$imgdata['button'] = trim($img_parameter_array[1]);
-	     												break;
+														break;
 														case 'link':
 															$imgdata['link'] = trim($img_parameter_array[1]);
-     													break;
+														break;
 														case 'rel':
 															$imgdata['rel'] = trim($img_parameter_array[1]);
-	      											break;
+														break;
 														case 'usemap':
 															$imgdata['usemap'] = trim($img_parameter_array[1]);
-			     										break;
+														break;
 														case 'height':
 															$imgdata['height'] = trim($img_parameter_array[1]);
-				     									break;
+														break;
 														case 'width':
 															$imgdata['width'] = trim($img_parameter_array[1]);
- 					    								break;
+														break;
 														case 'max':
 															$imgdata['max'] = trim($img_parameter_array[1]);
- 					    								break;
+														break;
 														case 'imalign':
 															$imgdata['imalign'] = trim($img_parameter_array[1]);
- 					    								break;
+														break;
 														case 'styleimage':
 															$imgdata['styleimage'] = trim($img_parameter_array[1]);
- 					    								break;
+														break;
 														case 'align':
 															$imgdata['align'] = trim($img_parameter_array[1]);
- 					    								break;
+														break;
 														case 'stylebox':
 															$imgdata['stylebox'] = trim($img_parameter_array[1]);
- 					    								break;
+														break;
 														case 'styledesc':
 															$imgdata['styledesc'] = trim($img_parameter_array[1]);
- 					    								break;
+														break;
 														case 'block':
 															$imgdata['block'] = trim($img_parameter_array[1]);
- 					    								break;
+														break;
 														case 'class':
 															$imgdata['class'] = trim($img_parameter_array[1]);
- 					    								break;
+														break;
 														case 'desc':
 															$imgdata['desc'] = trim($img_parameter_array[1]);
- 					    								break;
+														break;
 														case 'title':
 															$imgdata['title'] = trim($img_parameter_array[1]);
- 					    								break;
+														break;
 														case 'metadata':
 															$imgdata['metadata'] = trim($img_parameter_array[1]);
- 					    								break;
+														break;
 														case 'alt':
 															$imgdata['alt'] = trim($img_parameter_array[1]);
- 					    								break;
+														break;
 													} // switch ($img_parameter_array[0])
 												} // if ( $img_condition_status == true )
 	
@@ -558,15 +556,15 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 					} // if ( !empty($var) )
 				} // for each condition
 			} // if ( !empty($img_conditions_array) )
-		return $imgdata;
-		}
+	return $imgdata;
 	}
+}
 ////////////////////////////////////End of function for processing default and mandatory parameters////////////////////
 	//function calls
 	if ( !empty($imgdata['default']) || !empty($imgdata['mandatory'])) {
 		if (!empty($imgdata['default'])) { 
 			$imgdata = apply_default_and_mandatory($imgdata, 'default');	//first process defaults
-			$imgdata = array_merge($imgdata, $params);					//then apply user settings, overriding defaults
+			$imgdata = array_merge( $imgdata, $params );					//then apply user settings, overriding defaults
 		}
 		//apply mandatory settings, overriding user settings
 		if (!empty($imgdata['mandatory'])) $imgdata = apply_default_and_mandatory($imgdata, 'mandatory');
@@ -582,14 +580,14 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 		return tra("''Use one and only one of the following parameters: fileId, randomGalleryId, fgalId, attId, id, or src.''");
 	}
 	// Clean up src URLs to exclude javascript
-	if (stristr(str_replace(' ', '', $imgdata['src']), 'javascript:')) {
+	if (stristr(str_replace(' ', '', $imgdata['src']),'javascript:')) {
 		$imgdata['src']  = '';
 	}
-	if (strstr($imgdata['src'], 'javascript:')) {
+	if (strstr($imgdata['src'],'javascript:')) {
 		$imgdata['src']  = '';
 	}
 	
-	if (!isset($data) or !$data) {
+ 	if (!isset($data) or !$data) {
 		$data = '&nbsp;';
 	}
 
@@ -598,7 +596,7 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 	//Process "|" or "," separated images
 	$notice = '<!--' . tra('PluginImg: User lacks permission to view image') . '-->';
 	$srcmash = $imgdata['fileId'] . $imgdata['id'] . $imgdata['attId'] . $imgdata['src'];
-	if (( strpos($srcmash, '|') !== false ) || (strpos($srcmash, ',') !== false ) || !empty($imgdata['fgalId'])) {
+	if (( strpos($srcmash, '|') !== false ) || (strpos($srcmash, ',') !== false ) || !empty($imgdata['fgalId']))  {
 		$separator = '';
 		$id = '';
 		if (!empty($imgdata['id'])) {
@@ -612,18 +610,20 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 		}		
 		if ( strpos($imgdata[$id], '|') !== false ) {
 			$separator = '|';
-		} elseif ( strpos($imgdata[$id], ',') !== false ) {
+		} elseif ( strpos($imgdata[$id], ',') !== false )  {
 			$separator = ',';
 		}
 		$repl = '';
 		$id_list = array();
 		if (!empty($separator)) {
-			$id_list = explode($separator, $imgdata[$id]);
+			$id_list = explode($separator,$imgdata[$id]);
 		} else { //fgalId parameter - show all images in a file gallery
 			$filegallib = TikiLib::lib('filegal');
 			$galdata = $filegallib->get_files(0, -1, 'created_desc', '', $imgdata['fgalId'], false, false, false, true, false, false, false, false, '', true, false, false);
-			foreach ($galdata['data'] as $filedata) {
-				$id_list[] = $filedata['id'];
+			foreach($galdata as $filedata) {
+				foreach($filedata as $dbinfo) {
+					$id_list[] = $dbinfo['id'];
+				}
 			}
 			$id = 'fileId';
 		}
@@ -631,7 +631,7 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 		foreach ($id_list as $i => $value) {
 			$params[$id] = trim($value);
 			$params['fgalId'] = '';
-			$repl .= wikiplugin_img($data, $params, $offset, $parseOptions);
+			$repl .= wikiplugin_img( $data, $params, $offset, $parseOptions );
 		}
 		if (strpos($repl, $notice) !== false) {
 			return $repl;
@@ -671,7 +671,7 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 		global $base_host, $url_path;
 		$src = $base_host.( $imgdata['src'][0] == '/' ? '' : $url_path ) . $imgdata['src'];
 	} elseif (!empty($imgdata['src']) && $tikidomain && !preg_match('|^https?:|', $imgdata['src'])) {
-		$src = preg_replace("~img/wiki_up/~", "img/wiki_up/$tikidomain/", $imgdata['src']);
+		$src = preg_replace("~img/wiki_up/~","img/wiki_up/$tikidomain/",$imgdata['src']);
 	} elseif (!empty($imgdata['src'])) {
 		$src = $imgdata['src'];
 	}
@@ -708,10 +708,10 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 				include_once('lib/imagegals/imagegallib.php');
 				$dbinfo = $imagegallib->get_image_info($imgdata['id'], 'o');
 				$dbinfo2 = $imagegallib->get_image($imgdata['id'], 'o');
-				$dbinfo = isset($dbinfo) && isset($dbinfo2) ? array_merge($dbinfo, $dbinfo2) : array();
+				$dbinfo = array_merge($dbinfo, $dbinfo2);
 				$dbinfot = $imagegallib->get_image_info($imgdata['id'], 't');
 				$dbinfot2 = $imagegallib->get_image($imgdata['id'], 't');
-				$dbinfot = isset($dbinfot) && isset($dbinfot2) ? array_merge($dbinfot, $dbinfot2) : array();
+				$dbinfot = array_merge($dbinfot, $dbinfot2);
 				$basepath = $prefs['gal_use_dir'];
 			} elseif (!isset($dbinfo) && !empty($imgdata['fileId'])) {
 				$filegallib = TikiLib::lib('filegal');
@@ -747,52 +747,61 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 				}
 			}
 		} //finished getting info from db for images in image or file galleries or attachments
-
+		
+		$xmpview = !empty($imgdata['metadata']) ? true : false;
 		//get image to get height and width and iptc data
 		if (!empty($dbinfo['data'])) {
 			$imageObj = new Image($dbinfo['data'], false);
-			$filename = $dbinfo['filename'];
+			$imageObj->set_img_info($imageObj->data, false, $xmpview);
+			if (isset($imageObj->exif['FILE']['FileName'])) {
+				$imageObj->exif['FILE']['FileName'] = $dbinfo['filename'];
+			}
 		} elseif (!empty($dbinfo['path'])) {
 			$imageObj = new Image($basepath . $dbinfo['path'], true);	
-			$filename = $dbinfo['filename'];
+			$imageObj->set_img_info($basepath . $dbinfo['path'], true, $xmpview);
+			if (isset($imageObj->exif['FILE']['FileName'])) {
+				$imageObj->exif['FILE']['FileName'] = $dbinfo['filename'];
+			}
 		} else {
 			$imageObj = new Image($src, true);
-			$filename = $src;
+			$imageObj->set_img_info($src, true, $xmpview);
 		}
-
+		if (isset($imageObj->exif['FILE']['FileDateTime'])) {
+			$imageObj->exif['FILE']['FileDateTime'] = $tikilib->get_long_datetime($imageObj->exif['FILE']['FileDateTime'], $user) .
+				' (Unixtime: ' . $imageObj->exif['FILE']['FileDateTime'] . ')';
+		}
 		//if we need iptc data
-		$xmpview = !empty($imgdata['metadata']) ? true : false;
-		if ($imgdata['desc'] == 'idesc' || $imgdata['desc'] == 'ititle' || $xmpview) {
-			$metadata = $imageObj->getMetadata(null, null, $xmpview)->typemeta;
+		if ($imgdata['desc'] == 'idesc' || $imgdata['desc'] == 'ititle' || !empty($imgdata['metadata'])) {
 			//description from image iptc
-			$idesc = isset($metadata['iptc_raw']['2#120'][0]) ? $metadata['iptc_raw']['2#120'][0] : '';	
+			$idesc = isset($imageObj->iptc_raw['2#120'][0]) ? $imageObj->iptc_raw['2#120'][0] : '';	
 			//title from image iptc	
-			$ititle = isset($metadata['iptc_raw']['2#005'][0]) ? $metadata['iptc_raw']['2#005'][0] : '';
+			$ititle = isset($imageObj->iptc_raw['2#005'][0]) ? $imageObj->iptc_raw['2#005'][0] : '';
 		}
-				
 		$fwidth = '';
 		$fheight = '';
 		if (isset($parseOptions['indexing']) && $parseOptions['indexing']) {
 			$fwidth = 1;
 			$fheight = 1;
 		} else {
-			$fwidth = $imageObj->get_width();
-			$fheight = $imageObj->get_height();
+			$fwidth = $imageObj->width;
+			$fheight = $imageObj->height;
 		}
 		//get image gal thumbnail image for height and width
 		if (!empty($dbinfot['data']) || !empty($dbinfot['path'])) {
 			if (!empty($dbinfot['data'])) {
 				$imageObjt = new Image($dbinfot['data'], false);
+				$imageObjt->set_img_info($imageObjt->data, false);
 			} elseif (!empty($dbinfot['path'])) {
 				$imageObjt = new Image($basepath . $dbinfot['path'] . '.thumb', true);	
+				$imageObjt->set_img_info($basepath . $dbinfot['path'] . '.thumb', true);
 			}
-			$fwidtht = $imageObjt->get_width();
-			$fheightt = $imageObjt->get_height();
+			$fwidtht = $imageObjt->width;
+			$fheightt = $imageObjt->height;
 		}
 	/////////////////////////////////////Add image dimensions to src string////////////////////////////////////////////
 		//Use url resizing parameters for file gallery images to set $height and $width
 		//since they can affect other elements; overrides plugin parameters
-		if (!empty($imgdata['fileId']) && strpos($src, '&') !== false) {
+		if (!empty($imgdata['fileId']) && strpos($src, '&') !== false)  {
 			$urlthumb = strpos($src, '&thumbnail');
 			$urlprev = strpos($src, '&preview');
 			$urldisp = strpos($src, '&display'); 
@@ -814,7 +823,7 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 		}
 		//Note if image gal url thumb parameter is used
 		$imgalthumb = false;
-		if (!empty($imgdata['id'])) {
+		if (!empty($imgdata['id']))  {
 			preg_match('/(?<=\&thumb=1)[0-9]+(?=.*)/', $src, $urlimthumb);
 			if (!empty($urlimthumb[0]) && $urlimthumb[0] > 0) $imgalthumb = true;
 		}
@@ -875,7 +884,7 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 					$width = $fwidth;
 				}
 			// Adjust for user settings for height and width if max isn't set.	
-			} elseif (!empty($imgdata['height']) ) {
+			} elseif (!empty($imgdata['height']) )  {
 				//use image gal thumbs when possible
 				if ((!empty($imgdata['id']) && $imgalthumb == false) 
 					&& ($imgdata['height'] < $fheightt)
@@ -889,7 +898,7 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 				} else {
 					$width = $imgdata['width'];
 				}
-			} elseif (!empty($imgdata['width'])) {
+			} elseif (!empty($imgdata['width']))  {
 				//use image gal thumbs when possible
 				if ((!empty($imgdata['id']) && $imgalthumb == false) 
 					&& ($imgdata['width'] < $fwidtht)
@@ -911,7 +920,7 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 					$thumbdef = 84;  
 				}
 				//handle image gal thumbs
-				if (!empty($imgdata['id']) && !empty($fwidtht)  && !empty($fheightt)) {
+				if (!empty($imgdata['id'])) {
 					$width = $fwidtht;
 					$height = $fheightt;
 					if ($imgalthumb == false) {
@@ -986,15 +995,7 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 	////////////////////////////////////////// Create the HTML img tag //////////////////////////////////////////////
 	//Start tag with src and dimensions
 	$src = filter_out_sefurl(htmlentities($src));
-	
-	include_once ('lib/mime/mimetypes.php');
 	$replimg = '<img src="' . $src . '"';
-	if (!empty($dbinfo['filetype'])  && !empty($mimetypes['svg']) && $dbinfo['filetype'] == $mimetypes['svg']) {
-		$replimg = '<embed type="image/svg+xml" src="' . $src . '"'; 
-	} else {
-		$replimg = '<img src="' . $src . '"';
-	}
-
 	if (!empty($imgdata_dim)) $replimg .= $imgdata_dim;
 	
 	//Create style attribute allowing for shortcut inputs 
@@ -1017,22 +1018,23 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 		$borderdef = 'border:1px solid darkgray;';   //default border when styleimage set to border
 		if ( !empty($imgdata['styleimage'])) {
 			if (!empty($imalign)) {
-				if ((strpos(trim($imgdata['styleimage'], ' '), 'float:') !== false) 
-					|| (strpos(trim($imgdata['styleimage'], ' '), 'display:') !== false)
+				if ((strpos(trim($imgdata['styleimage'],' '),'float:') !== false) 
+					|| (strpos(trim($imgdata['styleimage'],' '),'display:') !== false)
 				) {
 					$imalign = '';			//override imalign setting if style image contains alignment syntax
 				}
 			}
 			if ($imgdata['styleimage'] == 'border') {
 				$border = $borderdef;
-			} else if (strpos($imgdata['styleimage'], 'hidden') === false 
-				&& strpos($imgdata['styleimage'], 'position') === false
+			} else if (strpos($imgdata['styleimage'],'hidden') === false 
+				&& strpos($imgdata['styleimage'],'position') === false
 			) {	// quick filter for dangerous styles
 				$style = $imgdata['styleimage'];
 			}
 		}
 		$replimg .= ' style="' . $imalign . $border . $style . '"';
 	}
+	
 	//alt
 	if ( !empty($imgdata['alt']) ) {
 		$replimg .= ' alt="' . $imgdata['alt'] . '"';
@@ -1064,25 +1066,25 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 				$desc = $dbinfo['comment'];
 				$imgname = $dbinfo['comment'];
 			} elseif (isset($dbinfo)) {
-				$desc = !empty($dbinfo['description']) ? $dbinfo['description'] : '';
-				$imgname = !empty($dbinfo['name']) ? $dbinfo['name'] : '';
+				$desc = $dbinfo['description'];
+				$imgname = $dbinfo['name'];
 			}
 			switch ($imgdata['desc']) {
 				case 'desc':
 					$desconly = $desc;
-    				break;
+					break;
 				case 'idesc':
 					$desconly = $idesc;
-    				break;
+					break;
 				case 'name':
 					$desconly = $imgname;
-    				break;
+					break;
 				case 'ititle':
 					$desconly = $ititle;
-    				break;
+					break;
 				case 'namedesc':
 					$desconly = $imgname.((!empty($imgname) && !empty($desc))?' - ':'').$desc;
-    				break;
+					break;
 				default:
 					$desconly = $imgdata['desc'];
 			}
@@ -1096,13 +1098,13 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 				switch ($imgdata['title']) {
 				case 'desc':
 					$titleonly = $desc;
-    				break;
+					break;
 				case 'name':
 					$titleonly = $imgname;
-    				break;
+					break;
 				case 'namedesc':
 					$titleonly = $imgname.((!empty($imgname) && !empty($desc))?' - ':'').$desc;
-    				break;
+					break;
 				default:
 					$titleonly = $imgdata['title'];
 				}
@@ -1150,7 +1152,7 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 		// target
 		$imgtarget= '';
 		if (($prefs['popupLinks'] == 'y' && (preg_match('#^([a-z0-9]+?)://#i', $link) 
-			|| preg_match('#^www\.([a-z0-9\-]+)\.#i', $link))) || ($imgdata['thumb'] == 'popup') 
+			|| preg_match('#^www\.([a-z0-9\-]+)\.#i',$link))) || ($imgdata['thumb'] == 'popup') 
 			|| ($imgdata['thumb'] == 'browsepopup')
 		) {
 			if (!empty($javaset) || ($imgdata['rel'] == 'box')) {
@@ -1180,7 +1182,7 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 		static $lastval = 0;
 		$id = 'imgdialog-' . ++$lastval;
 		$id_link = $id . '-link';
-		$dialog = $imageObj->metadata->dialogMetadata($imageObj->metadata, $id, $filename);
+		$dialog = metaview_dialog($imageObj, $id, $dbinfo['filename']);
 		$repl .= $dialog;
 		$jq = '$(document).ready(function() {
 					$("#' . $id . '").css(\'z-index\', \'1005\').dialog({
@@ -1224,12 +1226,12 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 		//Enlarge button div and link string (innermost div)
 		if (!empty($imgdata['button'])) {
 			if (empty($link) || (!empty($link) && !empty($javaset))) {
-				if ((($imgdata['button'] == 'browse') || ($imgdata['button'] == 'browsepopup')) && !empty($imgdata['id'])) {
+				if ((($imgdata['button'] == 'browse') || ($imgdata['button'] == 'browsepopup')) && !empty($imgdata['id']))  {
 					$link_button = 'tiki-browse_image.php?imageId=' . $imgdata['id'];
 				} else {
 					if (!empty($imgdata['fileId']) && $imgdata['button'] != 'download') {
 						$link_button = $browse_full_image . '&display';
-					} elseif (!empty($imgdata['attId']) && $imgdata['thumb'] == 'download') {
+					} elseif (!empty($imgdata['attId']) && $imgdata['thumb'] == 'download'){
 						$link = $browse_full_image . '&download=y';
 					} else {
 						$link_button = $browse_full_image;
@@ -1256,11 +1258,11 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 			if (!empty($titleonly)) {
 				$repl .= ' title="' . $titleonly . '"';
 			}
-			$repl .= ">\r\t\t\t\t" . '<img class="magnify" src="./img/icons/magnifier.png" alt="'.tra('Enlarge').'" /></a>' . "\r\t\t\t</div>";
+			$repl .= ">\r\t\t\t\t" . '<img class="magnify" src="./pics/icons/magnifier.png" alt="'.tra('Enlarge').'" /></a>' . "\r\t\t\t</div>";
 		}
 		//Add metadata icon
 		if ($imgdata['metadata'] == 'view') {
-			$repl .= '<div style="float:right; margin-right:2px"><a href="#" id="' . $id_link . '"><img src="./img/icons/tag_blue.png" alt="' . tra('Metadata') . '" title="' . tra('Metadata') . '"/></a></div>';
+			$repl .= '<div style="float:right; margin-right:2px"><a href="#" id="' . $id_link . '"><img src="./pics/icons/tag_blue.png" alt="' . tra('Metadata') . '" title="' . tra('Metadata') . '"/></a></div>';
 		}
 		//Add description based on user setting (use $desconly from above) and close divs
 		isset($desconly) ? $repl .= $desconly : '';
@@ -1292,8 +1294,8 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 				if ($imgdata['stylebox'] == 'border') {
 					$class = 'class="imgbox" ';
 					if (!empty($alignbox)) {
-						if ((strpos(trim($imgdata['stylebox'], ' '), 'float:') !== false) 
-							|| (strpos(trim($imgdata['stylebox'], ' '), 'display:') !== false)
+						if ((strpos(trim($imgdata['stylebox'],' '),'float:') !== false) 
+							|| (strpos(trim($imgdata['stylebox'],' '),'display:') !== false)
 						) {
 							$alignbox = '';			//override align setting if stylebox contains alignment syntax
 						}
@@ -1305,8 +1307,8 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 			if (empty($imgdata['button']) && empty($imgdata['desc']) && empty($styleboxinit)) {
 				$styleboxplus = $alignbox . ' width:' . $boxwidth . 'px; height:' . $boxheight . 'px';
 			} elseif (!empty($styleboxinit)) {
-				if ((strpos(trim($imgdata['stylebox'], ' '), 'height:') === false) 
-					&& (strpos(trim($imgdata['stylebox'], ' '), 'width:') === false)
+				if ((strpos(trim($imgdata['stylebox'],' '),'height:') === false) 
+					&& (strpos(trim($imgdata['stylebox'],' '),'width:') === false)
 				) {
 					$styleboxplus = $styleboxinit . ' width:' . $boxwidth . 'px;';
 				} else {
@@ -1327,33 +1329,21 @@ function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 		switch ($imgdata['block']) {
 		case 'top': 
 			$repl = "\n\r<br style=\"clear:both\" />\r" . $repl;
-    		break;
+			break;
 		case 'bottom': 
 			$repl = $repl . "\n\r<br style=\"clear:both\" />\r";
-    		break;
+			break;
 		case 'both': 
 			$repl = "\n\r<br style=\"clear:both\" />\r" . $repl . "\n\r<br style=\"clear:both\" />\r";
-    		break;
+			break;
 		case 'top': 
-    		break;
+			break;
 		} 
 	} 
 	// Mobile
 	if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == 'mobile') {
 		$repl = '{img src=' . $src . "\"}\n<p>" . $imgdata['desc'] . '</p>'; 
 	}
-
-	global $tiki_p_edit;
-	if ($prefs['feature_draw'] === 'y' && $tiki_p_upload_files === 'y' && $tiki_p_edit === 'y') {
-		if ($prefs['wiki_edit_icons_toggle'] == 'y' && !isset($_COOKIE['wiki_plugin_edit_view'])) {
-			$iconDisplayStyle = " style='display:none;'";
-		} else {
-			$iconDisplayStyle = '';
-		}
-		$repl .= "<a href='tiki-edit_draw.php?fileId={$imgdata['fileId']}' onclick='return $(this).ajaxEditDraw();' title='".tr("Edit: Image") . " ".tr("(experimental)") . "'" .
-					" class='editplugin' data-fileid='{$imgdata['fileId']}' data-galleryid='{$imgdata['galleryId']}'{$iconDisplayStyle}>" .
-					"<img width='16' height='16' class='icon' alt='Edit' src='img/icons/page_edit.png' /></a>";
-	}
-	
 	return '~np~' . $repl. "\r" . '~/np~';
+//	echo '<pre>' . $imageObj->xmp->saveXML() . '</pre>';
 }

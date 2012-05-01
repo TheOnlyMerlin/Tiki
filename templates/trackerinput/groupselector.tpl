@@ -10,6 +10,5 @@
 		{/section}
 	</select>
 {elseif $field.options}
-	{$field.defvalue}
-	<input type="hidden" name="{$field.ins_id}" value="{$field.defvalue}" />
+	{$field.value}
 {/if}

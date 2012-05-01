@@ -1,18 +1,17 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_events_info()
-{
+function wikiplugin_events_info() {
 	return array(
 		'name' => tra('Events'),
 		'documentation' => 'PluginEvents',
 		'description' => tra('Display upcoming events from calendars'),
 		'prefs' => array( 'feature_calendar', 'wikiplugin_events' ),
-		'icon' => 'img/icons/calendar_view_day.png',
+		'icon' => 'pics/icons/calendar_view_day.png',
 		'tags' => array( 'basic' ),	
 		'params' => array(
 			'calendarid' => array(
@@ -61,8 +60,7 @@ function wikiplugin_events_info()
 	);
 }
 
-function wikiplugin_events($data,$params)
-{
+function wikiplugin_events($data,$params) {
 	global $calendarlib;
 	global $userlib;
 	global $tikilib;
@@ -73,20 +71,12 @@ function wikiplugin_events($data,$params)
 		include_once ('lib/calendar/calendarlib.php');
 	}
 
-	extract($params, EXTR_SKIP);
+	extract($params,EXTR_SKIP);
 
-	if (!isset($maxdays)) {
-		$maxdays=365;
-	}
-	if (!isset($max)) {
-		$max=10;
-	}
-	if (!isset($datetime)) { 
-		$datetime=1;
-	}
-	if (!isset($desc)) {
-		$desc=1;
-	}
+	if (!isset($maxdays)) {$maxdays=365;}
+	if (!isset($max)) { $max=10; }
+	if (!isset($datetime)) { $datetime=1; }
+	if (!isset($desc)) { $desc=1; }
 	
 
 	$rawcals = $calendarlib->list_calendars();
@@ -104,7 +94,7 @@ function wikiplugin_events($data,$params)
 				$canView = 'n';
 			}
 		} else {
-			if ($userlib->object_has_one_permission($cal_id, 'calendar')) {
+			if ($userlib->object_has_one_permission($cal_id,'calendar')) {
 				if ($userlib->object_has_permission($user, $cal_id, 'calendar', 'tiki_p_view_calendar')) {
 					$canView = 'y';
 				} else {
@@ -123,9 +113,11 @@ function wikiplugin_events($data,$params)
 	}
 
 	if (isset($calendarid)) {
-		$calIds=explode("|", $calendarid);
+		$calIds=explode("|",$calendarid);
 	}
-	$events = $calendarlib->upcoming_events($max, array_intersect($calIds, $viewable), $maxdays);
+	$events = $calendarlib->upcoming_events($max,
+		array_intersect($calIds, $viewable),
+		$maxdays);
  
 	$smarty->assign_by_ref('datetime', $datetime);
 	$smarty->assign_by_ref('desc', $desc);
@@ -138,12 +130,12 @@ function wikiplugin_events($data,$params)
 	$repl .= '<table class="normal">';
 	$repl .= '<tr class="heading"><td colspan="2">'.tra("Upcoming Events").'</td></tr>';
 	for ($j = 0; $j < $max; $j++) {
-		if ($datetime!=1) {
-			$eventStart=str_replace(" ", "&nbsp;", strftime($tikilib->get_short_date_format(), $events[$j]["start"]));
-			$eventEnd=str_replace(" ", "&nbsp;", strftime($tikilib->get_short_date_format(), $events[$j]["end"]));	  
-		} else {
-			$eventStart=str_replace(" ", "&nbsp;", strftime($tikilib->get_short_datetime_format(), $events[$j]["start"]));
-			$eventEnd=str_replace(" ", "&nbsp;", strftime($tikilib->get_short_datetime_format(), $events[$j]["end"]));
+	  if ($datetime!=1) {
+			$eventStart=str_replace(" ","&nbsp;",strftime($tikilib->get_short_date_format(),$events[$j]["start"]));
+			$eventEnd=str_replace(" ","&nbsp;",strftime($tikilib->get_short_date_format(),$events[$j]["end"]));	  
+	  } else {
+			$eventStart=str_replace(" ","&nbsp;",strftime($tikilib->get_short_datetime_format(),$events[$j]["start"]));
+			$eventEnd=str_replace(" ","&nbsp;",strftime($tikilib->get_short_datetime_format(),$events[$j]["end"]));
 		}
 		if ($j%2) {
 			$style="odd";

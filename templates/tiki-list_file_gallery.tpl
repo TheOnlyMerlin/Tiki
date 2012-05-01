@@ -27,7 +27,7 @@
 	</div>
 {/if}
 
-<div class="navbar"{if $prefs.mobile_mode eq 'y'} data-role="controlgroup" data-type="horizontal"{/if}>
+<div class="navbar">
 	{if $galleryId gt 0}
 
 		{if $prefs.feature_group_watches eq 'y' and ( $tiki_p_admin_users eq 'y' or $tiki_p_admin eq 'y' )}
@@ -180,7 +180,7 @@
 			<form id="search-form" class="forms" method="get" action="tiki-search{if $prefs.feature_forum_local_tiki_search eq 'y'}index{else}results{/if}.php">
 				<input type="hidden" name="where" value="files" />
 				<input type="hidden" name="galleryId" value="{$galleryId}" />
-				<label class="find_content">{tr}Search in content{/tr}
+				<label>{tr}Search in content{/tr}
 					<input name="highlight" size="30" type="text" />
 				</label>
 				<input type="submit" class="wikiaction" name="search" value="{tr}Go{/tr}"/>

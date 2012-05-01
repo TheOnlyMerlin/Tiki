@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,13 +15,17 @@ class ImageAbstract
 	var $filename = null;
 	var $thumb = null;
 	var $loaded = false;
-	var $metadata = null;			//to hold metadata from the FileMetadata class
-	
-	function __construct($image, $isfile = false)
-	{
+	var $header = null;
+	var $otherinfo = null;
+	var $exif = null;
+	var $iptc_raw = null;
+	var $iptc = null;
+	var $xmp = null;
+
+	function __construct($image, $isfile = false) {
 		if ( ! empty($image) || $this->filename !== null ) {
-			if ( is_readable($this->filename) && function_exists('exif_thumbnail') && in_array(image_type_to_mime_type(exif_imagetype($this->filename)), array('image/jpeg', 'image/tiff'))) {
-				$this->thumb = @exif_thumbnail($this->filename);
+			if ( is_readable( $this->filename ) && function_exists('exif_thumbnail') && in_array(image_type_to_mime_type(exif_imagetype($this->filename)), array('image/jpeg', 'image/tiff'))) {
+				$this->thumb = @exif_thumbnail($this->filename, $this->width, $this->height);
 				if (trim($this->thumb) == "") $this->thumb = NULL;
 			}
 			$this->classname = get_class($this);
@@ -33,8 +37,7 @@ class ImageAbstract
 		}
 	}
 
-	function _load_data()
-	{
+	function _load_data() {
 		if (!$this->loaded) {
 			if (!empty($this->filename)) {
 				$this->data = $this->get_from_file($this->filename);
@@ -45,13 +48,11 @@ class ImageAbstract
 		}
 	}
 
-	function is_empty()
-	{
+	function is_empty() {
 		return empty($this->data) && empty($this->filename);
 	}
 
-	function get_from_file($filename)
-	{
+	function get_from_file($filename) {
 		$content = NULL;
 		if ( is_readable($filename) ) {
 			$f = fopen($filename, 'rb');
@@ -62,12 +63,9 @@ class ImageAbstract
 		return $content;
 	}
 
-	function _resize($x, $y)
-	{
-	}
+	function _resize($x, $y) { }
 
-	function resize($x = 0, $y = 0)
-	{
+	function resize($x = 0, $y = 0) {
 		$this->_load_data();
 		if ($this->data) {
 			$x0 = $this->get_width();
@@ -85,8 +83,7 @@ class ImageAbstract
 		}
 	}
 
-	function resizemax($max)
-	{
+	function resizemax($max) {
 		$this->_load_data();
 		if ($this->data) {
 			$x0 = $this->get_width();
@@ -99,14 +96,12 @@ class ImageAbstract
 		}
 	}
 
-	function resizethumb()
-	{
+	function resizethumb() {
 		global $prefs;
 		$this->resizemax($prefs['fgal_thumb_max_size']);
 	}
 
-	function scale($r)
-	{
+	function scale($r) {
 		$this->_load_data();
 		$x0 = $this->get_width();
 		$y0 = $this->get_height();
@@ -114,18 +109,15 @@ class ImageAbstract
 		$this->_resize($x0 * $r, $y0 * $r);
 	}
 
-	function get_mimetype()
-	{
+	function get_mimetype() {
 		return 'image/'.strtolower($this->get_format());
 	}
 
-	function set_format($format)
-	{
+	function set_format($format) {
 		$this->format = $format;
 	}
 
-	function get_format()
-	{
+	function get_format() {
 		if ( $this->format == '' ) {
 			$this->set_format('jpeg');
 			return 'jpeg';
@@ -134,14 +126,12 @@ class ImageAbstract
 		}
 	}
 
-	function display()
-	{
+	function display() {
 		$this->_load_data();
 		return $this->data;
 	}
 
-	function convert($format)
-	{
+	function convert($format) {
 		if ( $this->is_supported($format) ) {
 			$this->set_format($format);
 			return true;
@@ -150,32 +140,25 @@ class ImageAbstract
 		}
 	}
 
-	function rotate($angle)
-	{
-	}
+	function rotate() { }
 
-	function is_supported($format)
-	{
+	function is_supported($format) {
 		return false;
 	}
 
-	function get_icon_default_format()
-	{
+	function get_icon_default_format() {
 		return 'png';
 	}
 
-	function get_icon_default_x()
-	{
+	function get_icon_default_x() {
 		return 16;
 	}
 
-	function get_icon_default_y()
-	{
+	function get_icon_default_y() {
 		return 16;
 	}
 
-	function icon($extension, $x = 0, $y = 0)
-	{
+	function icon($extension, $x = 0, $y = 0) {
 		$keep_original = ( $x == 0 && $y == 0 );
 
 		// This method is not necessarily called through an instance
@@ -214,47 +197,73 @@ class ImageAbstract
 
 	} 
 
-	function _get_height() 
-	{
-		return NULL;
-	}
+	function _get_height() { return NULL; }
 
-	function _get_width()
-	{
-		return NULL;
-	}
+	function _get_width() { return NULL; }
 
-	function get_height()
-	{
+	function get_height() {
 		if ( $this->height === NULL ) {
 			$this->height = $this->_get_height();
 		}
 		return $this->height;
 	}
 
-	function get_width()
-	{
+	function get_width() {
 		if ( $this->width === NULL ) {
 			$this->width = $this->_get_width();
 		}
 		return $this->width;
 	}
-	
-	function getMetadata($filename = null, $ispath = true, $extended = true, $mwg_compliant = true)
-	{
-		include_once('lib/metadata/metadata.php');
-		if ($filename === null) {
-			if (!empty($this->filename)) {
-				$filename = $this->filename;
-				$ispath = true;
-			} elseif (!empty($this->data)) {
-				$filename = $this->data;
-				$ispath = false;
+
+	function set_img_info($image, $isfile = true, $xmp = false) {
+		$tempfile = '';
+		$cwd = '';
+		/*getimagesize requires a filename so create a temporary one
+		if the image is in the database*/
+		if (!$isfile) {
+			$cwd = getcwd(); 								//get current working directory
+			$tempfile = tempnam("$cwd/tmp", 'temp_image_');	//create tempfile and return the path/name
+			$temphandle = fopen($tempfile, 'w');			//open for writing
+			fwrite($temphandle, $image); 					//write image to tempfile
+			fclose($temphandle);
+			$image = $tempfile;
+		}
+		$this->header = getimagesize($image, $otherinfo);
+		$this->width = $this->header[0];
+		$this->height = $this->header[1];
+		$this->otherinfo = $otherinfo;
+		//TODO write function to cover all supported image types
+		if( function_exists( 'exif_read_data' )) {
+			$this->exif = $this->header['mime'] == 'image/jpeg' ? exif_read_data($image, 0, true) : false;
+		} else {
+			$this->exif = false;
+		}		
+		//TODO write function to cover all supported image types
+		$this->iptc_raw = !empty($otherinfo['APP13']) ? iptcparse($otherinfo['APP13']) : false;
+		//Adds labels to iptc fields
+		$this->iptc = $this->iptc_raw !== false ? $this->get_iptc($this->iptc_raw) : false;
+		if ($xmp) {
+			$content = file_get_contents($image);
+			//$otherinfo doesn't have xmp data in it so extract in a separate function
+			include_once ('lib/metadata/metadata.php');
+			$this->xmp = get_xmp($content, $this->header['mime']);
+		}
+		if (!empty($tempfile)) {
+			unlink($tempfile);
+		}
+	}
+	//Adds labels to iptc fields
+	function get_iptc($iptc_raw) {
+		include_once ('lib/metadata/metadata.php');
+		$tags = get_iptc_tags();
+		foreach ($iptc_raw as $key => $value) {
+			if (array_key_exists($key, $tags)) {
+				trim($iptc_raw[$key][0]);
+				$iptc_raw[$key][1] = trim($tags[$key]);
+			} else {
+				$iptc_raw[$key][1] = '';
 			}
 		}
-		if (!is_object($this->metadata) || get_class($this->metadata) != 'FileMetadata') {
-			$this->metadata = new FileMetadata($filename, $ispath, $extended, $mwg_compliant);
-		}
-		return $this->metadata;
+		return $iptc_raw;
 	}
 }

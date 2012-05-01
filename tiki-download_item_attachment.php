@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -60,7 +60,7 @@ if (isset($_REQUEST["display"])) {
 //die;
 	header("Content-Disposition: inline; filename=\"".urlencode($file)."\"");
 } else {
-	header("Content-Disposition: attachment; filename=\"$file\"");
+	header( "Content-Disposition: attachment; filename=\"$file\"" );
 }
 header("Expires: 0");
 header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
@@ -72,10 +72,10 @@ if ($info["path"]) {
 		 header("Content-Length: ". strlen($str));
 		echo $str;
 	} else {
-		header("Content-Length: ". filesize($prefs['t_use_dir'].$info["path"]));
-		readfile($prefs['t_use_dir'] . $info["path"]);
+		header("Content-Length: ". filesize( $prefs['t_use_dir'].$info["path"] ) );
+		readfile ($prefs['t_use_dir'] . $info["path"]);
 	}
 } else {
-	header("Content-Length: ". $info[ "filesize" ]);
+	header("Content-Length: ". $info[ "filesize" ] );
 	echo "$content";
 }

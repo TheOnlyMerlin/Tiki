@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,13 +13,13 @@ function wikiplugin_split_info()
 		'description' => tra('Easily arrange content on a page into rows and columns'),
 		'prefs' => array( 'wikiplugin_split' ),
 		'filter' => 'wikicontent',
-		'icon' => 'img/icons/table.png',
+		'icon' => 'pics/icons/table.png',
 		'tags' => array( 'basic' ),
 		'params' => array(
 			'joincols' => array(
 				'required' => false,
 				'name' => tra('Join Columns'),
-				'description' => tra('Generate the colspan attribute if columns are missing'),
+				'description' => tra('Generate the colspan attribute if columns are missing' ),
 				'filter' => 'striptags',
 				'default' => 'y',
 				'options' => array(
@@ -79,9 +79,8 @@ function wikiplugin_split_info()
 		),
 	);
 }
-function wikiplugin_split_rollback($data, $hashes)
-{
-	foreach ($hashes as $hash=>$match) {
+function wikiplugin_split_rollback($data, $hashes) {
+	foreach($hashes as $hash=>$match) {
 		$data = str_replace($hash, $match, $data);
 	}
 	return $data;
@@ -116,7 +115,7 @@ function wikiplugin_split($data, $params, $pos)
 	else
 		$data2 = $data;
 	
-	extract($params, EXTR_SKIP);
+	extract ($params, EXTR_SKIP);
 	$fixedsize = (!isset($fixedsize) || $fixedsize == 'y' || $fixedsize == 1 ? true : false);
 	$joincols  = (!isset($joincols)  || $joincols  == 'y' || $joincols  == 1 ? true : false);
 	// Split data by rows and cells
@@ -225,7 +224,7 @@ function wikiplugin_split($data, $params, $pos)
 					$result .= '<div class="split"><div style="float:right">';
 					$result .= "$pos-$icell-".htmlspecialchars(substr($data, $pos, 10));
 					$result .= '<a href="tiki-editpage.php?page='.$object.'&amp;pos='.$pos.'&amp;cell='.$icell.'">'
-						.'<img src="img/icons/page_edit.png" alt="'.tra('Edit').'" title="'.tra('Edit').'" width="16" height="16" /></a></div><br />';
+						.'<img src="pics/icons/page_edit.png" alt="'.tra('Edit').'" title="'.tra('Edit').'" width="16" height="16" /></a></div><br />';
 					$ind += strlen($i);
 					while (isset($data[$ind]) && ($data[$ind] == '-' || $data[$ind] == '@'))
 						++$ind;
@@ -275,7 +274,7 @@ function  wikiplugin_split_cell($data, $pos, $cell)
 			} elseif ($matches[1] == '{SPLIT}') {
 				if (!$cell)
 					break;
-			} elseif ($matches[1] == '{SPLIT(') {
+			} elseif ($matches[1] == '{SPLIT(')  {
 				$match = '{SPLIT}';
 			} elseif ($matches[1] == '~np~') {
 				$match = '~/np~';

@@ -1,6 +1,6 @@
-{if $rsstitle and $showtitle}
+{if $title and $showtitle}
 	<div class="rsstitle">
-		<a target="_blank" href="{$rsstitle.link|escape}">{$rsstitle.title|escape}</a>
+		<a target="_blank" href="{$title.url|escape}">{$title.title|escape}</a>
 	</div>
 {/if}
 <ul class="rsslist">

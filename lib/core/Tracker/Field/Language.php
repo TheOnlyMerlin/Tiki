@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -54,13 +54,9 @@ class Tracker_Field_Language extends Tracker_Field_Abstract implements Tracker_F
 
 	function renderInput($context = array())
 	{
-		return $this->renderTemplate(
-						'trackerinput/language.tpl', 
-						$context, 
-						array(
-							'languages' => $this->getLanguages(),
-						)
-		);
+		return $this->renderTemplate('trackerinput/language.tpl', $context, array(
+			'languages' => $this->getLanguages(),
+		));
 	}
 
 	function renderOutput($context = array())
@@ -72,13 +68,9 @@ class Tracker_Field_Language extends Tracker_Field_Abstract implements Tracker_F
 		}
 
 		$languages = $this->getLanguages();
-		return $this->renderTemplate(
-						'trackeroutput/language.tpl', 
-						$context, 
-						array(
-							'label' => isset($languages[$selected]) ? $languages[$selected] : tr('None'),
-						)
-		);
+		return $this->renderTemplate('trackeroutput/language.tpl', $context, array(
+			'label' => isset($languages[$selected]) ? $languages[$selected] : tr('None'),
+		));
 	}
 
 	function handleSave($value, $oldValue)

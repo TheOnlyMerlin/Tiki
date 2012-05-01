@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -60,7 +60,7 @@ if (isset($_REQUEST['register'])) {
 	$smarty->assign('errortype', 'no_redirect_login');
 
 	$result=$registrationlib->register_new_user($_REQUEST);
-	if (is_a($result, "RegistrationError")) {
+	if (is_a($result,"RegistrationError")) {
 		if ($result->field == 'email') // i'm not sure why email is a special case..
 			$email_valid='n';
 		else
@@ -76,7 +76,7 @@ if (isset($_REQUEST['register'])) {
 }
 $outputtowiki='';
 $outputwiki='';
-if ($prefs['user_register_prettytracker_output'] == 'y') {
+if($prefs['user_register_prettytracker_output'] == 'y'){
 	$outputtowiki=$prefs["user_register_prettytracker_outputtowiki"];	
 	$outputwiki=$prefs["user_register_prettytracker_outputwiki"];
 }
@@ -86,7 +86,7 @@ if ($registrationlib->merged_prefs['userTracker'] == 'y') {
 	$re = $userlib->get_group_info(isset($_REQUEST['chosenGroup']) ? $_REQUEST['chosenGroup'] : 'Registered');
 	if (!empty($re['usersTrackerId']) && !empty($re['registrationUsersFieldIds'])) {
 		include_once ('lib/wiki-plugins/wikiplugin_tracker.php');
-		if (isset($_REQUEST['name'])) $user = $_REQUEST['name']; // so that one can set user preferences at registration time
+		if(isset($_REQUEST['name'])) $user = $_REQUEST['name']; // so that one can set user preferences at registration time
 		if ($registrationlib->merged_prefs["user_register_prettytracker"] == 'y' && !empty($registrationlib->merged_prefs["user_register_prettytracker_tpl"])) {
 			if (substr($registrationlib->merged_prefs["user_register_prettytracker_tpl"], -4) == ".tpl") {
 				$userTrackerData = wikiplugin_tracker('', array('trackerId' => $re['usersTrackerId'], 'fields' => $re['registrationUsersFieldIds'], 'showdesc' => 'y', 'showmandatory' => 'y', 'embedded' => 'n', 'action' => tra('Register'), 'registration' => 'y', 'tpl' => $re["user_register_prettytracker_tpl"], 'userField' => $re['usersFieldId'], 'outputwiki' => $outputwiki, 'outputtowiki' => $outputtowiki));
@@ -129,8 +129,7 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 //	$ajaxlib->registerTemplate('tiki-register.tpl');
 //}
 
-function register_error($msg)
-{
+function register_error($msg) {
 	global $smarty;
 	$smarty->assign('msg', $msg);
 	$smarty->assign('errortype', 0);

@@ -1,4 +1,4 @@
-# (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+# (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 # 
 # All Rights Reserved. See copyright.txt for details and a complete list of authors.
 # Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,7 +7,7 @@
 # This file is a replacement for setup.sh
 # in test in 1.9 version
 
-DIRS="db dump img/wiki img/wiki_up img/trackers modules/cache temp temp/cache temp/public templates_c templates styles maps whelp mods files tiki_tests/tests temp/unified-index"
+DIRS="backups db dump img/wiki img/wiki_up img/trackers modules/cache temp temp/cache temp/public templates_c templates styles maps whelp mods files tiki_tests/tests temp/unified-index"
 
 AUSER=nobody
 AGROUP=nobody
@@ -73,7 +73,8 @@ if [ "$COMMAND" = 'fix' ]; then
 		if [ -n "$OPT_AUSER" ]; then
 			AUSER=$OPT_AUSER
 		elif [ -z "$OPT_NOTINTERACTIVE" ]; then
-			read -p "User [$AUSER]: " REPLY
+			echo -n "User [$AUSER]: "
+			read REPLY 
 			if [ -n "$REPLY" ]; then
 				AUSER=$REPLY
 			fi
@@ -90,8 +91,8 @@ or
 but it (the script) will still fix what it can according to the permissions
 of your user. This script will now ask you some questions. If you don't know
 what to answer, just press enter to each question (to use default value)"
-
-			read -p "> Press enter to continue: " WAIT
+			
+			read WAIT
 			AUSER=$USER
 		fi
 	fi
@@ -99,7 +100,8 @@ what to answer, just press enter to each question (to use default value)"
 	if [ -n "$OPT_AGROUP" ]; then
 		AGROUP=$OPT_AGROUP
 	elif [ -z "$OPT_NOTINTERACTIVE" ]; then
-		read -p "> Group [$AGROUP]: " REPLY
+		echo -n "Group [$AGROUP]: "
+		read REPLY
 		if [ -n "$REPLY" ]; then
 			AGROUP=$REPLY
 		fi
@@ -111,7 +113,8 @@ what to answer, just press enter to each question (to use default value)"
 	elif [ -n "$OPT_NOTINTERACTIVE" ]; then
 		VIRTUALS=$(cat db/virtuals.inc)
 	else
-		read -p "> Multi [$(cat -s db/virtuals.inc | tr '\n' ' ')]: " VIRTUALS
+		echo -n "Multi ["$(cat db/virtuals.inc)"]: "
+		read VIRTUALS
 		[ -z "$VIRTUALS" ] && VIRTUALS=$(cat db/virtuals.inc)
 	fi
 
@@ -131,7 +134,7 @@ what to answer, just press enter to each question (to use default value)"
 			mkdir -p $dir
 		fi
 		echo " ok."
-		if [ -n "$VIRTUALS" ] && [ $dir != "temp/unified-index" ]; then
+		if [ -n "$VIRTUALS" ]; then
 			for vdir in $VIRTUALS; do
 				echo -n "  $dir/$vdir ... "
 				if [ ! -d "$dir/$vdir" ]; then
@@ -172,7 +175,8 @@ elif [ "$COMMAND" = 'open' ]; then
 		if [ -n "$OPT_AUSER" ]; then
 			AUSER=$OPT_AUSER
 		elif [ -z "$OPT_NOTINTERACTIVE" ]; then
-			read -p "User [$AUSER]: " REPLY
+			echo -n "User [$AUSER]: "
+			read REPLY 
 			if [ -n "$REPLY" ]; then
 				AUSER=$REPLY
 			fi

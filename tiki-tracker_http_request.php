@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -28,11 +28,11 @@ $arrayItem = explode(',', $_GET['item']);
 $sort_mode = 'f_' . $arrayFieldlist[0] . '_asc';
 header('Cache-Control: no-cache');
 header('content-type: application/x-javascript');
-Perms::bulk(array( 'type' => 'tracker' ), 'object', $arrayTrackerId);
+Perms::bulk( array( 'type' => 'tracker' ), 'object', $arrayTrackerId );
 
 
 for ($index = 0, $count_arrayTrackerId = count($arrayTrackerId); $index < $count_arrayTrackerId; $index++) {
-	$tikilib->get_perm_object($arrayTrackerId[$index], 'tracker');
+	$tikilib->get_perm_object( $arrayTrackerId[$index], 'tracker' );
 
 	if (!isset($_GET['selected'])) {
 		$selected = '';

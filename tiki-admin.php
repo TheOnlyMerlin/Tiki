@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -21,7 +21,7 @@ global $logslib; include_once('lib/logs/logslib.php');
  * 
  * @param $name		Name of feature
  * @param $message	Other message
- * @param $st		Type of change (0=disabled, 1=enabled, 2=changed, 3=info, 4=reset)
+ * @param $st		Type of change (0=disabled, 1=enabled, 2=changed, 3=info)
  * @param $num		unknown
  * @return void
  */
@@ -50,7 +50,7 @@ function simple_set_toggle($feature)
 		if ((!isset($prefs[$feature]) || $prefs[$feature] != 'y')) {
 			// not yet set at all or not set to y
 			if ($tikilib->set_preference($feature, 'y')) {
-				add_feedback($feature, tr('%0 enabled', $feature), 1, 1);
+				add_feedback( $feature, tr('%0 enabled', $feature), 1, 1 );
 				$logslib->add_action('feature', $feature, 'system', 'enabled');
 			}
 		}
@@ -101,7 +101,7 @@ function simple_set_value($feature, $pref = '', $isMultiple = false)
 		}
 	}
 	if (isset($_REQUEST[$feature]) && $old != $_REQUEST[$feature]) {
-		add_feedback($feature, ($_REQUEST[$feature]) ? tr('%0 set', $feature) : tr('%0 unset', $feature), 2);
+		add_feedback( $feature, ($_REQUEST[$feature]) ? tr('%0 set', $feature) : tr('%0 unset', $feature), 2 );
 		$logslib->add_action('feature', $feature, 'system', $old .'=>'.isset($_REQUEST['feature'])?$_REQUEST['feature']:'');
 	}
 	global $cachelib;
@@ -123,7 +123,7 @@ function simple_set_int($feature)
 		$old = $prefs[$feature];
 		if ($old != $_REQUEST[$feature]) {
 			$tikilib->set_preference($feature, $_REQUEST[$feature]);
-			add_feedback($feature, tr('%0 set', $feature), 2);
+			add_feedback( $feature, tr('%0 set', $feature), 2 );
 			$logslib->add_action('feature', $feature, 'system', $old . '=>' . $_REQUEST['feature']);
 		}
 	}
@@ -154,7 +154,7 @@ $adminPage = '';
 global $prefslib; require_once 'lib/prefslib.php';
 
 if ( isset ($_REQUEST['pref_filters']) ) {
-	$prefslib->setFilters($_REQUEST['pref_filters']);
+	$prefslib->setFilters( $_REQUEST['pref_filters'] );
 }
 
 $temp_filters = isset($_REQUEST['filters']) ? explode(' ', $_REQUEST['filters']) : null;
@@ -162,35 +162,18 @@ $smarty->assign('pref_filters', $prefslib->getFilters($temp_filters));
 
 if ( isset( $_REQUEST['lm_preference'] ) ) {
 	
-	$changes = $prefslib->applyChanges((array) $_REQUEST['lm_preference'], $_REQUEST);
+	$changes = $prefslib->applyChanges( (array) $_REQUEST['lm_preference'], $_REQUEST );
 	foreach ( $changes as $pref => $val ) {
-		if ($val['type'] == 'reset') {
-			add_feedback($pref, tr('%0 reset', $pref), 4);
-			$logslib->add_action('feature', $pref, 'system', 'reset');
+		$value = $val['new'];
+		if ( $value == 'y' ) {
+			add_feedback( $pref, tr('%0 enabled', $pref), 1, 1 );
+			$logslib->add_action('feature', $pref, 'system', 'enabled');
+		} elseif ( $value == 'n' ) {
+			add_feedback( $pref, tr('%0 disabled', $pref), 0, 1 );
+			$logslib->add_action('feature', $pref, 'system', 'disabled');
 		} else {
-			$value = $val['new'];
-			if ( $value == 'y' ) {
-				add_feedback($pref, tr('%0 enabled', $pref), 1, 1);
-				$logslib->add_action('feature', $pref, 'system', 'enabled');
-			} elseif ( $value == 'n' ) {
-				add_feedback($pref, tr('%0 disabled', $pref), 0, 1);
-				$logslib->add_action('feature', $pref, 'system', 'disabled');
-			} else {
-				add_feedback($pref, tr('%0 set', $pref), 1, 1);
-				$logslib->add_action('feature', $pref, 'system', (is_array($val['old'])?implode($val['old'], ','):$val['old']).'=>'.(is_array($value)?implode($value, ','):$value));
-			}
-			/*
-				Enable/disable addreference/showreference plugins alognwith references feature.
-			*/
-			if ($pref == 'feature_references') {
-				$tikilib->set_preference('wikiplugin_addreference', $value);
-				$tikilib->set_preference('wikiplugin_showreference', $value);
-
-				/* Add/Remove the plugin toolbars from the editor */
-				$toolbars = array('wikiplugin_addreference', 'wikiplugin_showreference');
-				$t_action = ($value=='y') ? 'add' : 'remove';
-				$tikilib->saveEditorToolbars($toolbars, 'global', 'add', $t_action);
-			}			
+			add_feedback( $pref, tr('%0 set', $pref), 1, 1 );
+			$logslib->add_action('feature', $pref, 'system', (is_array($val['old'])?implode($val['old'], ','):$val['old']).'=>'.(is_array($value)?implode($value, ','):$value));
 		}
 	}
 }
@@ -219,76 +202,76 @@ $smarty->assign('indexNeedsRebuilding', $prefslib->indexNeedsRebuilding());
 $icons = array(
 	"general" => array(
 		'position' => '0px -15px;',
-		'icon' => 'img/icons/large/icon-configuration.png',
+		'icon' => 'pics/large/icon-configuration.png',
 		'title' => tr('General'),
 		'description' => tr('Global site configuration, date formats, admin password etc.'),
 		'help' => 'General+Admin',
 	),
 	"features" => array(
 		'position' => '-100px -15px;',
-		'icon' => 'img/icons/large/boot.png',
+		'icon' => 'pics/large/boot.png',
 		'title' => tr('Features'),
 		'description' => tr('Switches for major features'),
 		'help' => 'Features+Admin',
 	),
 	"login" => array(
 		'position' => '-200px -15px;',
-		'icon' => 'img/icons/large/stock_quit.png',
+		'icon' => 'pics/large/stock_quit.png',
 		'title' => tr('Log in'),
 		'description' => tr('User registration, remember me cookie settings and authentication methods'),
 		'help' => 'Login+Config',
 	),
 	"community" => array(
 		'position' => '-300px -15px;',
-		'icon' => 'img/icons/large/users.png',
+		'icon' => 'pics/large/users.png',
 		'title' => tr('Community'),
 		'description' => tr('User specific features and settings'),
 		'help' => 'Community',
 	),
 	"profiles" => array(
 		'position' => '-400px -15px;',
-		'icon' => 'img/icons/large/profiles.png',
+		'icon' => 'pics/large/profiles.png',
 		'title' => tr('Profiles'),
 		'description' => tr('Repository configuration, browse and apply profiles'),
 		'help' => 'Profiles',
 	),
 	"look" => array(
 		'position' => '-500px -15px;',
-		'icon' => 'img/icons/large/gnome-settings-background.png',
+		'icon' => 'pics/large/gnome-settings-background.png',
 		'title' => tr('Look & Feel'),
 		'description' => tr('Theme selection, layout settings and UI effect controls'),
 		'help' => 'Look+and+Feel',
 	),
 	"textarea" => array(
 		'position' => '-100px -115px;',
-		'icon' => 'img/icons/large/editing48x48.png',
+		'icon' => 'pics/large/editing48x48.png',
 		'title' => tr('Editing and Plugins'),
 		'description' => tr('Text editing settings applicable to many areas. Plugin activation and plugin alias management'),
 		'help' => 'Text+area',
 	),
 	"module" => array(
 		'position' => '-200px -115px;',
-		'icon' => 'img/icons/large/display-capplet.png',
+		'icon' => 'pics/large/display-capplet.png',
 		'title' => tr('Module'),
 		'description' => tr('Module appearance settings'),
 		'help' => 'Module',
 	),
 	"metatags" => array(
 		'position' => '-300px -115px;',
-		'icon' => 'img/icons/large/metatags.png',
+		'icon' => 'pics/large/metatags.png',
 		'title' => tr('Meta Tags'),
 		'description' => tr('Information to include in the header of each page'),
 		'help' => 'Meta+Tags',
 	),
 	"i18n" => array(
 		'position' => '0px -115px;',
-		'icon' => 'img/icons/large/i18n.png',
+		'icon' => 'pics/large/i18n.png',
 		'title' => tr('i18n'),
 		'description' => tr('Internationalization and localization - mulitlingual features'),
 		'help' => 'i18n',
 	),
 	"maps" => array(
-		'icon' => 'img/icons/large/maps.png',
+		'icon' => 'pics/large/maps.png',
 		'position' => '-100px -515px;',
 		'title' => tr('Maps'),
 		'description' => tr('Settings and features for maps'),
@@ -296,47 +279,47 @@ $icons = array(
 	),
 	"performance" => array(
 		'position' => '-400px -115px;',
-		'icon' => 'img/icons/large/performance.png',
+		'icon' => 'pics/large/performance.png',
 		'title' => tr('Performance'),
 		'description' => tr('Server performance settings'),
 		'help' => 'Performance',
 	),
 	"security" => array(
 		'position' => '-500px -115px;',
-		'icon' => 'img/icons/large/gnome-lockscreen48x48.png',
+		'icon' => 'pics/large/gnome-lockscreen48x48.png',
 		'title' => tr('Security'),
 		'description' => tr('Site security settings'),
 		'help' => 'Security',
 	),
 	"comments" => array(
 		'position' => '0px -215px;',
-		'icon' => 'img/icons/large/comments.png',
+		'icon' => 'pics/large/comments.png',
 		'title' => tr('Comments'),
 		'description' => tr('Comments settings'),
 		'help' => 'Comments',
 	),
 	"rss" => array(
 		'position' => '-100px -215px;',
-		'icon' => 'img/icons/large/feed-icon.png',
+		'icon' => 'pics/large/feed-icon.png',
 		'title' => tr('Feeds'),
 		'help' => 'Feeds User',
 		'description' => tr('Outgoing RSS feed setup'),
 	),
 	"connect" => array(
 		'position' => '-200px -215px;',
-		'icon' => 'img/icons/large/gnome-globe.png',
+		'icon' => 'pics/large/gnome-globe.png',
 		'title' => tr('Connect'),
 		'help' => 'Connect',
 		'description' => tr('Tiki Connect - join in!'),
 	),
 	"rating" => array(
 		'position' => '-300px -215px;',
-		'icon' => 'img/icons/large/rating.png',
+		'icon' => 'pics/large/rating.png',
 		'title' => tr('Rating'),
 		'help' => 'Advanced+Rating',
 	),
 	"search" => array(
-		'icon' => 'img/icons/large/xfce4-appfinder.png',
+		'icon' => 'pics/large/xfce4-appfinder.png',
 		'position' => '-400px -415px;',
 		'title' => tr('Search'),
 		'description' => tr('Search configuration'),
@@ -344,7 +327,7 @@ $icons = array(
 	),
 	"wiki" => array(
 		'position' => '-400px -215px;',
-		'icon' => 'img/icons/large/wikipages.png',
+		'icon' => 'pics/large/wikipages.png',
 		'title' => tr('Wiki'),
 		'disabled' => $prefs['feature_wiki'] != 'y',
 		'description' => tr('Wiki page settings and features'),
@@ -352,7 +335,7 @@ $icons = array(
 	),
 	"fgal" => array(
 		'position' => '-500px -215px;',
-		'icon' => 'img/icons/large/file-manager.png',
+		'icon' => 'pics/large/file-manager.png',
 		'title' => tr('File Galleries'),
 		'disabled' => $prefs['feature_file_galleries'] != 'y',
 		'description' => tr('Defaults and configuration for file galleries'),
@@ -360,7 +343,7 @@ $icons = array(
 	),
 	"blogs" => array(
 		'position' => '0px -315px;',
-		'icon' => 'img/icons/large/blogs.png',
+		'icon' => 'pics/large/blogs.png',
 		'title' => tr('Blogs'),
 		'disabled' => $prefs['feature_blogs'] != 'y',
 		'description' => tr('Settings for blogs'),
@@ -368,7 +351,7 @@ $icons = array(
 	),
 	"gal" => array(
 		'position' => '-100px -315px;',
-		'icon' => 'img/icons/large/stock_select-color.png',
+		'icon' => 'pics/large/stock_select-color.png',
 		'title' => tr('Image Galleries'),
 		'disabled' => $prefs['feature_galleries'] != 'y',
 		'description' => tr('Defaults and configuration for image galleries (will be phased out in favour of file galleries)'),
@@ -376,14 +359,14 @@ $icons = array(
 	),
 	"articles" => array(
 		'position' => '-200px -315px;',
-		'icon' => 'img/icons/large/stock_bold.png',
+		'icon' => 'pics/large/stock_bold.png',
 		'title' => tr('Articles'),
 		'disabled' => $prefs['feature_articles'] != 'y',
 		'description' => tr('Settings and features for articles'),
 		'help' => 'Articles',
 	),
 	"forums" => array(
-		'icon' => 'img/icons/large/stock_index.png',
+		'icon' => 'pics/large/stock_index.png',
 		'position' => '-300px -315px;',
 		'title' => tr('Forums'),
 		'disabled' => $prefs['feature_forums'] != 'y',
@@ -391,7 +374,7 @@ $icons = array(
 		'help' => 'Forum',
 	),
 	"trackers" => array(
-		'icon' => 'img/icons/large/gnome-settings-font.png',
+		'icon' => 'pics/large/gnome-settings-font.png',
 		'position' => '-400px -315px;',
 		'title' => tr('Trackers'),
 		'disabled' => $prefs['feature_trackers'] != 'y',
@@ -399,7 +382,7 @@ $icons = array(
 		'help' => 'Trackers',
 	),
 	"polls" => array(
-		'icon' => 'img/icons/large/stock_missing-image.png',
+		'icon' => 'pics/large/stock_missing-image.png',
 		'position' => '-500px -315px;',
 		'title' => tr('Polls'),
 		'disabled' => $prefs['feature_polls'] != 'y',
@@ -407,7 +390,7 @@ $icons = array(
 		'help' => 'Polls',
 	),
 	"calendar" => array(
-		'icon' => 'img/icons/large/date.png',
+		'icon' => 'pics/large/date.png',
 		'position' => '0px -415px;',
 		'title' => tr('Calendar'),
 		'disabled' => $prefs['feature_calendar'] != 'y',
@@ -415,7 +398,7 @@ $icons = array(
 		'help' => 'Calendar',
 	),
 	"category" => array(
-		'icon' => 'img/icons/large/categories.png',
+		'icon' => 'pics/large/categories.png',
 		'position' => '-100px -415px;',
 		'title' => tr('Categories'),
 		'disabled' => $prefs['feature_categories'] != 'y',
@@ -423,7 +406,7 @@ $icons = array(
 		'help' => 'Category',
 	),
 	"areas" => array(
-		'icon' => 'img/icons/large/areas.png',
+		'icon' => 'pics/large/areas.png',
 		'position' => '-500px -715px;',
 		'title' => tr('Areas'),
 		'disabled' => $prefs['feature_areas'] != 'y',
@@ -431,7 +414,7 @@ $icons = array(
 		'help' => 'areas',
 	),
 	"score" => array(
-		'icon' => 'img/icons/large/stock_about.png',
+		'icon' => 'pics/large/stock_about.png',
 		'position' => '-200px -415px;',
 		'title' => tr('Score'),
 		'disabled' => $prefs['feature_score'] != 'y',
@@ -439,7 +422,7 @@ $icons = array(
 		'help' => 'Score',
 	),
 	"freetags" => array(
-		'icon' => 'img/icons/large/vcard.png',
+		'icon' => 'pics/large/vcard.png',
 		'position' => '-300px -415px;',
 		'title' => tr('Freetags'),
 		'disabled' => $prefs['feature_freetags'] != 'y',
@@ -447,7 +430,7 @@ $icons = array(
 		'help' => 'Tags',
 	),
 	"faqs" => array(
-		'icon' => 'img/icons/large/stock_dialog_question.png',
+		'icon' => 'pics/large/stock_dialog_question.png',
 		'position' => '-500px -415px;',
 		'title' => tr('FAQs'),
 		'disabled' => $prefs['feature_faqs'] != 'y',
@@ -455,7 +438,7 @@ $icons = array(
 		'help' => 'FAQ',
 	),
 	"directory" => array(
-		'icon' => 'img/icons/large/gnome-fs-server.png',
+		'icon' => 'pics/large/gnome-fs-server.png',
 		'position' => '0px -515px;',
 		'title' => tr('Directory'),
 		'disabled' => $prefs['feature_directory'] != 'y',
@@ -463,7 +446,7 @@ $icons = array(
 		'help' => 'Directory',
 	),
 	"gmap" => array(
-		'icon' => 'img/icons/large/google_maps.png',
+		'icon' => 'pics/large/google_maps.png',
 		'position' => '-200px -515px;',
 		'title' => tr('Google Maps'),
 		'disabled' => $prefs['feature_gmap'] != 'y',
@@ -471,7 +454,7 @@ $icons = array(
 		'help' => 'gmap',
 	),
 	"copyright" => array(
-		'icon' => 'img/icons/large/copyright.png',
+		'icon' => 'pics/large/copyright.png',
 		'position' => '-300px -515px;',
 		'title' => tr('Copyright'),
 		'disabled' => $prefs['feature_copyright'] != 'y',
@@ -479,7 +462,7 @@ $icons = array(
 		'help' => 'Copyright',
 	),
 	"messages" => array(
-		'icon' => 'img/icons/large/messages.png',
+		'icon' => 'pics/large/messages.png',
 		'position' => '-400px -515px;',
 		'title' => tr('Messages'),
 		'disabled' => $prefs['feature_messages'] != 'y',
@@ -487,7 +470,7 @@ $icons = array(
 		'help' => 'Inter-User+Messages',
 	),
 	"userfiles" => array(
-		'icon' => 'img/icons/large/userfiles.png',
+		'icon' => 'pics/large/userfiles.png',
 		'position' => '-500px -515px;',
 		'title' => tr('User files'),
 		'disabled' => $prefs['feature_userfiles'] != 'y',
@@ -495,7 +478,7 @@ $icons = array(
 		'help' => 'User+Files',
 	),
 	"webmail" => array(
-		'icon' => 'img/icons/large/evolution.png',
+		'icon' => 'pics/large/evolution.png',
 		'position' => '0px -615px;',
 		'title' => tr('Webmail'),
 		'disabled' => $prefs['feature_webmail'] != 'y',
@@ -503,7 +486,7 @@ $icons = array(
 		'help' => 'Webmail',
 	),
 	"wysiwyg" => array(
-		'icon' => 'img/icons/large/wysiwyg.png',
+		'icon' => 'pics/large/wysiwyg.png',
 		'position' => '-100px -615px;',
 		'title' => tr('Wysiwyg'),
 		'disabled' => $prefs['feature_wysiwyg'] != 'y',
@@ -511,7 +494,7 @@ $icons = array(
 		'help' => 'Wysiwyg',
 	),
 	"ads" => array(
-		'icon' => 'img/icons/large/ads.png',
+		'icon' => 'pics/large/ads.png',
 		'position' => '-200px -615px;',
 		'title' => tr('Site Ads and Banners'),
 		'disabled' => $prefs['feature_banners'] != 'y',
@@ -519,7 +502,7 @@ $icons = array(
 		'help' => 'Look+and+Feel',
 	),
 	"intertiki" => array(
-		'icon' => 'img/icons/large/intertiki.png',
+		'icon' => 'pics/large/intertiki.png',
 		'position' => '-300px -615px;',
 		'title' => tr('InterTiki'),
 		'disabled' => $prefs['feature_intertiki'] != 'y',
@@ -527,7 +510,7 @@ $icons = array(
 		'help' => 'InterTiki',
 	),
 	"semantic" => array(
-		'icon' => 'img/icons/large/semantic.png',
+		'icon' => 'pics/large/semantic.png',
 		'position' => '-400px -615px;',
 		'title' => tr('Semantic links'),
 		'disabled' => $prefs['feature_semantic'] != 'y',
@@ -535,7 +518,7 @@ $icons = array(
 		'help' => 'Semantic+Admin',
 	),
 	"webservices" => array(
-		'icon' => 'img/icons/large/webservices.png',
+		'icon' => 'pics/large/webservices.png',
 		'position' => '-500px -615px;',
 		'title' => tr('Webservices'),
 		'disabled' => $prefs['feature_webservices'] != 'y',
@@ -543,7 +526,7 @@ $icons = array(
 		'help' => 'WebServices',
 	),
 	"sefurl" => array(
-		'icon' => 'img/icons/large/goto.png',
+		'icon' => 'pics/large/goto.png',
 		'position' => '0px -715px;',
 		'title' => tr('Search engine friendly url'),
 		'disabled' => $prefs['feature_sefurl'] != 'y',
@@ -551,7 +534,7 @@ $icons = array(
 		'help' => 'Rewrite+Rules',
 	),
 	"video" => array(
-		'icon' => 'img/icons/large/gnome-camera-video-32.png',
+		'icon' => 'pics/large/gnome-camera-video-32.png',
 		'position' => '-100px -715px;',
 		'title' => tr('Video streaming integration'),
 		'disabled' => $prefs['feature_kaltura'] != 'y' && $prefs['feature_watershed'] != 'y',
@@ -559,14 +542,14 @@ $icons = array(
 		'help' => 'Kaltura+Config',
 	),
 	"payment" => array(
-		'icon' => 'img/icons/large/payment.png',
+		'icon' => 'pics/large/payment.png',
 		'position' => '-200px -715px;',
 		'title' => tr('Payment'),
 		'disabled' => $prefs['payment_feature'] != 'y',
 		'help' => 'Payment',
 	),
 	"socialnetworks" => array(
-		'icon' => 'img/icons/large/socialnetworks.png',
+		'icon' => 'pics/large/socialnetworks.png',
 		'position' => '-300px -715px;',
 		'title' => tr('Social networks'),
 		'disabled' => $prefs['feature_socialnetworks'] != 'y',
@@ -574,7 +557,7 @@ $icons = array(
 		'help' => 'Social+Networks',
 	),
 	"share" => array(
-		'icon' => 'img/icons/large/stock_contact.png',
+		'icon' => 'img/mytiki/stock_contact.png',
 		'position' => '-400px -715px;',
 		'title' => tr('Share'),
 		'disabled' => $prefs['feature_share'] != 'y',
@@ -622,12 +605,12 @@ if (!empty($_GET['forcecheck'])) {
 		$prefs['tiki_needs_upgrade'] = 'y';
 	} else {
 		$prefs['tiki_needs_upgrade'] = 'n';
-		add_feedback(null, tr('Current version is up to date : <b>%0</b>', $TWV->version), 3);
+		add_feedback( null, tr('Current version is up to date : <b>%0</b>', $TWV->version), 3 );
 	}
 	$smarty->assign('tiki_needs_upgrade', $prefs['tiki_needs_upgrade']);
 	// See if a major release is available.
 	if (!$TWV->isLatestMajorVersion()) {
-		add_feedback(null, tr('A new %0 major release branch is available.', $TWV->branch.'('.$TWV->latestRelease.')'), 3);
+		add_feedback( null, tr('A new %0 major release branch is available.', $TWV->branch.'('.$TWV->latestRelease.')'), 3 );
 	}
 	$tikilib->set_preference('tiki_needs_upgrade', $prefs['tiki_needs_upgrade']);
 	$tikilib->set_preference('tiki_release', $TWV->getLatestMinorRelease());
@@ -648,7 +631,7 @@ if ($prefs['feature_version_checks'] == 'y') {
 			$tikilib->set_preference('tiki_release', $TWV->getLatestMinorRelease());
 			$smarty->assign('tiki_release', $TWV->getLatestMinorRelease());
 			if (!$TWV->isLatestMajorVersion()) {
-				add_feedback(null, tr('A new %0 major release branch is available.', $TWV->branch.'('.$TWV->latestRelease.')'), 3, 1);
+				add_feedback( null, tr('A new %0 major release branch is available.', $TWV->branch.'('.$TWV->latestRelease.')'), 3, 1);
 			}
 		} else {
 			$prefs['tiki_needs_upgrade'] = 'n';
@@ -674,7 +657,7 @@ if ($prefs['feature_version_checks'] == 'y') {
 }
 
 foreach ($icons as &$icon) {
-	$icon = array_merge(array( 'disabled' => false, 'description' => '', 'icon' => 'img/icons/large/green_question48x48.png'), $icon);
+	$icon = array_merge( array( 'disabled' => false, 'description' => '', 'icon' => 'pics/large/green_question48x48.png'), $icon);
 }
 
 $smarty->assign('icons', $icons);

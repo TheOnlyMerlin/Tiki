@@ -114,7 +114,6 @@
 					success: function () {
 						$container.tracker_load_fields(trackerId);
 						$('textarea', form).val('');
-						tikitabs(1);
 					}
 				});
 
@@ -127,7 +126,7 @@
 		<form class="simple import-fields" action="{service controller=tracker action=import_fields}" method="post">
 			<label>
 				{tr}Raw Fields{/tr}
-				<textarea name="raw" rows="30"></textarea>
+				<textarea name="raw"></textarea>
 			</label>
 			
 			<label>

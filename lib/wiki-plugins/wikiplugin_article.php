@@ -1,18 +1,17 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_article_info()
-{
+function wikiplugin_article_info() {
 	return array(
 		'name' => tra('Article'),
 		'documentation' => 'PluginArticle',
 		'description' => tra('Display a field of an article'),
 		'prefs' => array( 'feature_articles', 'wikiplugin_article' ),
-		'icon' => 'img/icons/layout_content.png',
+		'icon' => 'pics/icons/layout_content.png',
 		'format' => 'html',
 		'params' => array(
 			'Field' => array(
@@ -33,12 +32,11 @@ function wikiplugin_article_info()
 	);
 }
 
-function wikiplugin_article($data, $params)
-{
+function wikiplugin_article($data, $params) {
 	global $tikilib,$user,$userlib,$tiki_p_admin_cms;
 	global $statslib; include_once('lib/stats/statslib.php');
 
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 
 	if (empty($Id)) {
 		global $artlib;	include_once('lib/articles/artlib.php');
@@ -50,7 +48,7 @@ function wikiplugin_article($data, $params)
 	} 
 
 	if ($tiki_p_admin_cms == 'y' || $tikilib->user_has_perm_on_object($user, $Id, 'article', 'tiki_p_edit_article') || (isset($article_data) && $article_data["author"] == $user && $article_data["creator_edit"] == 'y')) {
-		$add="&nbsp;<a href='tiki-edit_article.php?articleId=$Id' class='editplugin'><img src='img/icons/page_edit.png' style='border:none' /></a>";
+		$add="&nbsp;<a href='tiki-edit_article.php?articleId=$Id' class='editplugin'><img src='pics/icons/page_edit.png' style='border:none' /></a>";
 	} else {
 		$add="";
 	}

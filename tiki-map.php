@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,8 +9,7 @@ $_SERVER["SCRIPT_NAME"] = basename(__FILE__);
 require_once ('tiki-setup.php');
 
 // was lib/setup/menus.php but only used here
-function setDisplayMenu($name) 
-{
+function setDisplayMenu($name) {
 	global $smarty;
 	if ( getCookie($name, 'menu', isset($_COOKIE['menu']) ? null : 'o') == 'o' ) {
 		$smarty->assign('mnu_'.$name, 'display:block;');
@@ -90,8 +89,7 @@ if (!is_file($map_path . $mapfile) || preg_match("/(\/\.)/", $map_path . $mapfil
 	die;
 }
 // user defined error handling function to handle errors in loading mapfile
-function userErrorHandler($errno, $errmsg, $filename, $linenum, $vars) 
-{
+function userErrorHandler($errno, $errmsg, $filename, $linenum, $vars) {
 	global $smarty;
 	global $style_base;
 	global $map_path;
@@ -124,7 +122,7 @@ function userErrorHandler($errno, $errmsg, $filename, $linenum, $vars)
 	$msg.= "<pre/><br />";
 	if ($tiki_p_map_edit == 'y') {
 		$msg.= '<a class="link" href="tiki-map_edit.php?mapfile=' . $mapfile . '&mode=editing">';
-		$msg.= '<img src="img/icons/wrench.png" alt="' . tra("edit") . '" title="' . tra("edit") . '" width="16" height="16" />';
+		$msg.= '<img src="pics/icons/wrench.png" alt="' . tra("edit") . '" title="' . tra("edit") . '" width="16" height="16" />';
 		$msg.= '</a>';
 	}
 	$smarty->assign('msg', $msg);
@@ -403,22 +401,22 @@ for ($i = - 2; $i <= 2; $i++) {
 		case "-2":
 			$zoom_values[] = $i;
 			$zoom_display[] = 'Zoom out';
-    		break;
+			break;
 
 		case "0":
 			$zoom_values[] = $i;
 			$zoom_display[] = 'query';
-    		break;
+			break;
 
 		case "1":
 			$zoom_values[] = $i;
 			$zoom_display[] = 'pan';
-    		break;
+			break;
 
 		case "2":
 			$zoom_values[] = $i;
 			$zoom_display[] = 'Zoom in';
-    		break;
+			break;
 	}
 }
 $smarty->assign('zoom', $zoom);

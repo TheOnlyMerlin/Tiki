@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -84,7 +84,6 @@ if (isset($_REQUEST["filegallistprefs"])) {
 	simple_set_toggle('fgal_show_slideshow');
 	simple_set_toggle('fgal_list_ratio_hits');
 	simple_set_value('fgal_default_view');
-	simple_set_value('fgal_icon_fileId');
 	simple_set_value('fgal_list_backlinks');
 	simple_set_value('fgal_list_id_admin');
 	simple_set_value('fgal_list_type_admin');

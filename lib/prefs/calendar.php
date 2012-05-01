@@ -1,12 +1,11 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_calendar_list()
-{
+function prefs_calendar_list() {
 	return array(
 		'calendar_view_days' => array(
 			'name' => tra('Days to display in the Calendar'),
@@ -65,7 +64,7 @@ function prefs_calendar_list()
 				'15' => tra('15 minutes'),
 				'30' => tra('30 minutes'),
 			),
-			'default' => '30',
+			'default' => '5',
 		),
 		'calendar_start_year' => array(
 			'name' => tra('First year in the dropdown'),
@@ -97,11 +96,6 @@ function prefs_calendar_list()
 			'dependencies' => array(
 				'wikiplugin_addtogooglecal'
 			),
-			'default' => 'n',
-		),
-		'calendar_export' => array(
-			'name' => tra('Show Export Calendars button'),
-			'type' => 'flag',
 			'default' => 'n',
 		),
 		'calendar_fullcalendar' => array(

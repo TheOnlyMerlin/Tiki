@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -32,17 +32,17 @@ class Tracker_Field_ItemsList extends Tracker_Field_Abstract
 					),
 					'fieldIdThere' => array(
 						'name' => tr('Link Field ID'),
-						'description' => tr('Field ID from the other tracker containing an item link pointing to the item in this tracker or some other value to be matched.'),
+						'description' => tr('Field ID containing an item link pointing to the item in this tracker or some other value to be matched.'),
 						'filter' => 'int',
 					),
 					'fieldIdHere' => array(
 						'name' => tr('Value Field ID'),
-						'description' => tr('Field ID from this tracker matching the value in the link field ID from the other tracker if the field above is not an item link.'),
+						'description' => tr('Field ID matching the value in the link field ID if the field above is not an item link.'),
 						'filter' => 'int',
 					),
 					'displayFieldIdThere' => array(
 						'name' => tr('Fields to display'),
-						'description' => tr('Display alternate fields from the other tracker instead of the item title'),
+						'description' => tr('Display alternate fields instead of the item title'),
 						'filter' => 'int',
 						'separator' => '|',
 					),
@@ -85,8 +85,7 @@ class Tracker_Field_ItemsList extends Tracker_Field_Abstract
 		return tr('Read Only');
 	}
 
-	function renderOutput( $context = array() ) 
-	{
+	function renderOutput( $context = array() ) {
 		if ($context['list_mode'] === 'csv') {
 			return $this->getConfiguration('value');
 		} else {
@@ -97,17 +96,13 @@ class Tracker_Field_ItemsList extends Tracker_Field_Abstract
 			}
 
 			$list = $this->getItemLabels($items);
-			return $this->renderTemplate(
-							'trackeroutput/itemslist.tpl', 
-							$context, 
-							array(
-								'links' => (bool) $this->getOption(4),
-								'raw' => (bool) $this->getOption(3),
-								'itemIds' => implode(',', $items),
-								'items' => $list,
-								'num' => count($list),
-							)
-			);
+			return $this->renderTemplate('trackeroutput/itemslist.tpl', $context, array(
+				'links' => (bool) $this->getOption(4),
+				'raw' => (bool) $this->getOption(3),
+				'itemIds' => implode(',', $items),
+				'items' => $list,
+				'num' => count($list),
+			));
 		}
 	}
 

@@ -1,12 +1,12 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 // This script may only be included - so it's better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 	header("location: index.php");
 	die;
 }
@@ -28,13 +28,11 @@ class Tiki_Wsdl
 
 		if ( $prefs['use_proxy'] == 'y' && !strpos($wsdlUri, 'localhost') ) {
 			// Use proxy
-			$context = stream_context_create(
-							array(
+			$context = stream_context_create(array(
 								'http' => array(
-										'proxy' => $prefs['proxy_host'] .':'. $prefs['proxy_port'], 
-										'request_fulluri' => true)
-							)
-			);
+									'proxy' => $prefs['proxy_host'] .':'. $prefs['proxy_port'], 
+									'request_fulluri' => true)
+							));
 		}
 
 		// Copy content in cache
@@ -46,7 +44,7 @@ class Tiki_Wsdl
 		}
 
 		$wsdlFile = $GLOBALS['tikipath'] . 'temp/cache/' . md5($wsdlUri);
-		file_put_contents($wsdlFile, $wsdl_data);
+		file_put_contents( $wsdlFile, $wsdl_data );
 
 		// Read wsdl from local copy
 		$wsdl = new wsdl('file:' . $wsdlFile);

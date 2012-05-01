@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,10 +10,9 @@ function wikiplugin_carousel_info()
 	return array(
 		'name' => tra('Carousel'),
 		'documentation' => 'PluginCarousel',
-		'description' => tra('Display images in a self-advancing carousel'),
-		'introduced' => 8.0,
+		'description' => tra('Carousel on a file gallery'),
 		'prefs' => array('wikiplugin_carousel', 'feature_file_galleries', 'feature_jquery_carousel'),
-		'icon' => 'img/icons/wand.png',
+		'icon' => 'pics/icons/wand.png',
 		'tags' => array( 'basic' ),		
 		'params' => array(
 			'fgalId' => array(
@@ -58,7 +57,8 @@ function wikiplugin_carousel_info()
 			),
 			'displayProgressBar' => array(
 				'required' => false,
-				'name' => tra('Display progress ring'),
+				'name' => tra('Display progress bar'),
+				'description' => tra('Display progress bar.'),
 				'filter' => 'digits',
 				'options' => array(
 					array('text' => tra('Yes'), 'value' => '1'),
@@ -66,19 +66,38 @@ function wikiplugin_carousel_info()
 				),
 				'default' => '1',
 			),
-			'thumbnailType' => array(
+			'displayThumbnails' => array(
 				'required' => false,
 				'name' => tra('Display thumbnails'),
-				'description' => tra('Display thumbnails, number, count etc.'),
-				'filter' => 'text',
+				'description' => tra('Display thumbnails.'),
+				'filter' => 'digits',
 				'options' => array(
-					array('text' => tra('None'), 'value' => 'none'),
-					array('text' => tra('Buttons'), 'value' => 'buttons'),
-					array('text' => tra('Images'), 'value' => 'images'),
-					array('text' => tra('Numbers'), 'value' => 'numbers'),
-					array('text' => tra('Count'), 'value' => 'count'),
+					array('text' => tra('Yes'), 'value' => '1'),
+					array('text' => tra('No'), 'value' => '0'),
 				),
-				'default' => 'none',
+				'default' => '1',
+			),
+			'displayThumbnailNumbers' => array(
+				'required' => false,
+				'name' => tra('Display place numbers in the thumbnail boxes'),
+				'description' => tra('Display place numbers in the thumbnail boxes.'),
+				'filter' => 'digits',
+				'options' => array(
+					array('text' => tra('Yes'), 'value' => '1'),
+					array('text' => tra('No'), 'value' => '0'),
+				),
+				'default' => '1',
+			),
+			'displayThumbnailBackground' => array(
+				'required' => false,
+				'name' => tra('Use corresponding image as background for a thumbnail box'),
+				'description' => tra('Use corresponding image as background for a thumbnail box.'),
+				'filter' => 'digits',
+				'options' => array(
+					array('text' => tra('Yes'), 'value' => '1'),
+					array('text' => tra('No'), 'value' => '0'),
+				),
+				'default' => '1',
 			),
 			'thumbnailWidth' => array(
 				'required' => false,
@@ -94,61 +113,13 @@ function wikiplugin_carousel_info()
 				'filter' => 'text',
 				'default' => '20px',
 			),
-			'autoPilot' => array(
-				'required' => false,
-				'name' => tra('Start automatically'),
-				'description' => tra('Move the carousel automatically when the page loads (default false).'),
-				'filter' => 'digits',
-				'options' => array(
-					array('text' => tra('Yes'), 'value' => '1'),
-					array('text' => tra('No'), 'value' => '0'),
-				),
-				'default' => '0',
-			),
-			'displayThumbnails' => array(
-				'required' => false,
-				'name' => tra('Display thumbnails'),
-				'description' => tra('Legacy v2 param:') . ' ' . tra('Display thumbnails.'),
-				'filter' => 'digits',
-				'options' => array(
-					array('text' => tra('Yes'), 'value' => '1'),
-					array('text' => tra('No'), 'value' => '0'),
-				),
-				'default' => '1',
-				'advanced' => true,
-			),
-			'displayThumbnailNumbers' => array(
-				'required' => false,
-				'name' => tra('Display place numbers in the thumbnail boxes'),
-				'description' => tra('Legacy v2 param:') . ' ' . tra('Display place numbers in the thumbnail boxes.'),
-				'filter' => 'digits',
-				'options' => array(
-					array('text' => tra('Yes'), 'value' => '1'),
-					array('text' => tra('No'), 'value' => '0'),
-				),
-				'default' => '1',
-				'advanced' => true,
-			),
-			'displayThumbnailBackground' => array(
-				'required' => false,
-				'name' => tra('Use corresponding image as background for a thumbnail box'),
-				'description' => tra('Legacy v2 param:') . ' ' . tra('Use corresponding image as background for a thumbnail box.'),
-				'filter' => 'digits',
-				'options' => array(
-					array('text' => tra('Yes'), 'value' => '1'),
-					array('text' => tra('No'), 'value' => '0'),
-				),
-				'default' => '1',
-				'advanced' => true,
-			),
 			'thumbnailFontSize' => array(
 				'required' => false,
 				'name' => tra('Thumbnail box font size'),
-				'description' => tra('Legacy v2 param:') . ' ' . tra('Font size of thumbnail box in CSS units (default ".7em").'),
+				'description' => tra('Font size of thumbnail box in CSS units (default ".7em").'),
 				'filter' => 'text',
 				'accepted' => tra('real between 0 and 1'),
 				'default' => '.7em',
-				'advanced' => true,
 			),
 		),
 	);
@@ -172,44 +143,18 @@ function wikiplugin_carousel( $body, $params )
 	}
 
 	unset($params['fgalId'], $params['sort_mode']);
-
-	$params['displayProgressRing'] = ($params['displayProgressBar'] == 1);
-
-	if (empty($params['thumbnailType'])) {
-		$displayThumbnails = ($params['displayThumbnails'] == 1);
-		$displayThumbnailNumbers = ($params['displayThumbnailNumbers'] == 1);
-		$displayThumbnailBackground = ($params['displayThumbnailBackground'] == 1);
-
-		if ($displayThumbnailNumbers) {
-			$params['thumbnailType']= 'numbers';
-		}
-		if ($displayThumbnails) {
-			$params['thumbnailType']= 'images';
-		}
-	}
-
-	foreach ( $params as &$param) {
+	$params['displayProgressBar'] = ($params['displayProgressBar'] == 1);
+	$params['displayThumbnails'] = ($params['displayThumbnails'] == 1);
+	$params['displayThumbnailNumbers'] = ($params['displayThumbnailNumbers'] == 1);
+	$params['displayThumbnailBackground'] = ($params['displayThumbnailBackground'] == 1);
+	foreach( $params as &$param) {
 		if (is_numeric($param)) {
 			$param = (float) $param;	// seems to leave ints as ints
 		}
 	}
-
- 	if ($params['thumbnailType'] === 'images') {
-		TikiLib::lib('header')->add_css(".ic_button { float: left; width: {$params['thumbnailWidth']}; height: {$params['thumbnailHeight']};}");
-	}
-
-	unset(
-		$params['displayProgressBar'],
-		$params['displayThumbnails'],
-		$params['displayThumbnailNumbers'],
-		$params['displayThumbnailBackground'],
-		$params['thumbnailWidth'],
-		$params['thumbnailHeight'],
-		$params['thumbnailFontSize']
-	);
 	
 	TikiLib::lib('header')->add_jq_onready('setTimeout( function() { $("#' . $unique . '").tiki("carousel", "", '. json_encode($params).'); }, 1000);');
-
+	
 	$html = '<div id="'.$unique.'" class="clearfix carousel" style="width: 1px; height: 1px; overflow: hidden"><ul>';
 	foreach ($files['data'] as $file) {
 		$html .= '<li><img src="tiki-download_file.php?fileId='.$file['fileId'].'&amp;display" alt="'.htmlentities($file['description']).'" />';

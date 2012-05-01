@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,7 +13,6 @@ class Search_Index_Lucene implements Search_Index_Interface
 	private $lastModif;
 	private $directory;
 	private $maxResults = 0;
-	private $resultSetLimit = 0;
 
 	function __construct($directory, $lang = 'en', $highlight = true)
 	{
@@ -40,17 +39,10 @@ class Search_Index_Lucene implements Search_Index_Interface
 		} catch (Zend_Search_Lucene_Exception $e) {
 			$this->lucene = Zend_Search_Lucene::create($this->directory);
 		}
-		global $prefs;
-		if (!empty($prefs['unified_lucene_max_buffered_docs'])) {							// these break indexing if set empty
-			$this->lucene->setMaxBufferedDocs($prefs['unified_lucene_max_buffered_docs']);	// default is 10
-		}
-		if (!empty($prefs['unified_lucene_max_merge_docs'])) {
-			$this->lucene->setMaxMergeDocs($prefs['unified_lucene_max_merge_docs']);		// default is PHP_INT_MAX (effectively "infinite")
-		}
-		if (!empty($prefs['unified_lucene_merge_factor'])) {
-			$this->lucene->setMergeFactor($prefs['unified_lucene_merge_factor']);			// default is 10
-		}
-		$this->lucene->setResultSetLimit($this->resultSetLimit);
+
+		$this->lucene->setMaxBufferedDocs(100);
+		$this->lucene->setMaxMergeDocs(200);
+		$this->lucene->setMergeFactor(50);
 
 		return $this->lucene;
 	}
@@ -113,16 +105,6 @@ class Search_Index_Lucene implements Search_Index_Interface
 		$this->maxResults = (int) $max;
 	}
 
-	public function setResultSetLimit($resultSetLimit) 
-	{
-		$this->resultSetLimit = $resultSetLimit;
-	}
-
-	public function getResultSetLimit() 
-	{
-		return $this->resultSetLimit;
-	}
-	
 	private function internalFind(& $query, $sortOrder)
 	{
 		if ($this->cache) {
@@ -155,16 +137,10 @@ class Search_Index_Lucene implements Search_Index_Interface
 		);
 
 		if ($this->cache) {
-			$this->cache->cacheItem(
-							$cacheKey, 
-							serialize(
-											array(
-												'query' => $query,
-												'hits' => $return,
-											)
-							),
-							'searchresult'
-			);
+			$this->cache->cacheItem($cacheKey, serialize(array(
+				'query' => $query,
+				'hits' => $return,
+			)), 'searchresult');
 		}
 
 		return $return;
@@ -259,9 +235,9 @@ class Search_Index_Lucene implements Search_Index_Interface
 			// Range search not supported for phrases, so revert to normal token matching
 			if (method_exists($from, 'getTerm')) {
 				$range = new Zend_Search_Lucene_Search_Query_Range(
-								$from->getTerm(),
-								$to->getTerm(),
-								true // inclusive
+					$from->getTerm(),
+					$to->getTerm(),
+					true // inclusive
 				);
 
 				$term = $range;

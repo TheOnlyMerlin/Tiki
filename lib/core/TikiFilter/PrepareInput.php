@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -12,12 +12,6 @@ class TikiFilter_PrepareInput
 	function __construct($delimiter)
 	{
 		$this->delimiter = $delimiter;
-	}
-
-	static function delimiter($delimiter)
-	{
-		$me = new self($delimiter);
-		return $me;
 	}
 
 	function prepare(array $input)
@@ -45,20 +39,6 @@ class TikiFilter_PrepareInput
 		}
 
 		return $output;
-	}
-
-	function flatten($values, &$newValues = array(), $prefix = '')
-	{
-		foreach ($values as $key => $value) {
-			if (is_array($value)) {
-				$newPrefix = $prefix.$key.$this->delimiter;
-				$newValues =& $this->flatten($value, $newValues, $newPrefix, $this->delimiter);
-			} else {
-				$newValues[$prefix.$key] = $value;
-			}
-		}
-
-		return $newValues;
 	}
 }
 

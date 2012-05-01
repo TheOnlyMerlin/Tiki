@@ -1,18 +1,17 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_groupstat_info()
-{
+function wikiplugin_groupstat_info() {
 	return array(
 		'name' => tra('Group Stats'),
 		'documentation' => 'PluginGroupStat',
 		'description' => tra('Show the distribution of users among groups'),
 		'body' => tra('Title'),
-		'icon' => 'img/icons/calculator.png',
+		'icon' => 'pics/icons/calculator.png',
 		'params' => array(
 			'groups' => array(
 				'required' => false,
@@ -55,8 +54,7 @@ function wikiplugin_groupstat_info()
 	);
 }
 
-function wikiplugin_groupstat($data, $params)
-{
+function wikiplugin_groupstat($data, $params) {
 	global $smarty, $prefs, $userlib, $tikilib;
 
 	if (isset($params['groups'])) {
@@ -64,7 +62,7 @@ function wikiplugin_groupstat($data, $params)
 		if (isset($params['percent_of']) && $params['percent_of'] == 'site') {
 			$total = $userlib->nb_users_in_group();
 		} else {
-			$query = 'SELECT COUNT(DISTINCT `userId`) FROM `users_usergroups` WHERE `groupName` IN('.implode(',', array_fill(0, count($groups), '?')).')';
+			$query = 'SELECT COUNT(DISTINCT `userId`) FROM `users_usergroups` WHERE `groupName` IN('.implode(',', array_fill(0,count($groups),'?')).')';
 			$total = $tikilib->getOne($query, $groups);
 		}
 	} else {

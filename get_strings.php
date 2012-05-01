@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -38,7 +38,7 @@ require_once('lib/language/FileType.php');
 require_once('lib/language/FileType/Php.php');
 require_once('lib/language/FileType/Tpl.php');
 require_once('lib/language/GetStrings.php');
-require_once('lib/language/WriteFile/Factory.php');
+require_once('lib/language/WriteFile.php');
 
 require_once('lib/setup/timer.class.php');
 
@@ -92,7 +92,7 @@ if (php_sapi_name() == 'cli') {
 	}
 }
 
-$getStrings = new Language_GetStrings(new Language_CollectFiles, new Language_WriteFile_Factory, $options);
+$getStrings = new Language_GetStrings(new Language_CollectFiles, new Language_WriteFile, $options);
 
 $getStrings->addFileType(new Language_FileType_Php);
 $getStrings->addFileType(new Language_FileType_Tpl);

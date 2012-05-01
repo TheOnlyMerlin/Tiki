@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -114,14 +114,11 @@ class Services_Comment_Controller
 			if (empty($user) && $prefs['feature_antibot'] == 'y') {
 				$captchalib = TikiLib::lib('captcha');
 
-				if (! $captchalib->validate(
-								array(
-									'recaptcha_challenge_field' => $input->recaptcha_challenge_field->none(),
-									'recaptcha_response_field' => $input->recaptcha_response_field->none(),
-									'captcha' => $input->captcha->none(),
-								)
-				)
-				) {
+				if (! $captchalib->validate(array(
+					'recaptcha_challenge_field' => $input->recaptcha_challenge_field->none(),
+					'recaptcha_response_field' => $input->recaptcha_response_field->none(),
+					'captcha' => $input->captcha->none(),
+				))) {
 					$errors[] = $captchalib->getErrors();
 				}
 			}
@@ -132,23 +129,7 @@ class Services_Comment_Controller
 
 			if (count($errors) === 0) {
 				$message_id = ''; // By ref
-				$threadId = $commentslib->post_new_comment(
-								"$type:$objectId", 
-								$parentId, 
-								$user, 
-								$title, 
-								$data, 
-								$message_id, 
-								$parent ? $parent['message_id'] : '', 
-								'n', 
-								'', 
-								'', 
-								$contributions, 
-								$anonymous_name, 
-								'', 
-								$anonymous_email, 
-								$anonymous_website
-				);
+				$threadId = $commentslib->post_new_comment("$type:$objectId", $parentId, $user, $title, $data, $message_id, $parent ? $parent['message_id'] : '', 'n', '', '', $contributions, $anonymous_name, '', $anonymous_email, $anonymous_website);
 
 				if ($threadId) {
 					if ($prefs['wiki_watch_comments'] == 'y' && $type == 'wiki page') {
@@ -157,8 +138,6 @@ class Services_Comment_Controller
 					} else if ($type == 'article') {
 						require_once('lib/notifications/notificationemaillib.php');
 						sendCommentNotification('article', $objectId, $title, $data);
-					} // Blog comment mail
-					elseif ($prefs['feature_blogs'] == 'y' && $type == 'blog post') { require_once('lib/notifications/notificationemaillib.php'); sendCommentNotification('blog', $objectId, $title, $data); 
 					} elseif ($type == 'trackeritem') {
 						require_once('lib/notifications/notificationemaillib.php');
 						sendCommentNotification('trackeritem', $objectId, $title, $data, $threadId);
@@ -436,8 +415,7 @@ class Services_Comment_Controller
 		}
 	}
 
-	private function canLock($type, $objectId)
-	{
+	private function canLock($type, $objectId) {
 		global $prefs;
 
 		if ($prefs['feature_comments_locking'] != 'y') {
@@ -454,8 +432,7 @@ class Services_Comment_Controller
 		return ! $commentslib->is_object_locked("$type:$objectId");
 	}
 
-	private function canUnlock($type, $objectId)
-	{
+	private function canUnlock($type, $objectId) {
 		global $prefs;
 
 		if ($prefs['feature_comments_locking'] != 'y') {
@@ -472,8 +449,7 @@ class Services_Comment_Controller
 		return $commentslib->is_object_locked("$type:$objectId");
 	}
 
-	private function canArchive($type, $objectId)
-	{
+	private function canArchive($type, $objectId) {
 		global $prefs;
 
 		if ($prefs['comments_archive'] != 'y') {
@@ -485,14 +461,12 @@ class Services_Comment_Controller
 		return $perms->admin_comments;
 	}
 
-	private function canRemove($type, $objectId)
-	{
+	private function canRemove($type, $objectId) {
 		$perms = Perms::get($type, $objectId);
 		return $perms->remove_comments;
 	}
 
-	private function canModerate($type, $objectId)
-	{
+	private function canModerate($type, $objectId) {
 		global $prefs;
 
 		if ($prefs['feature_comments_moderation'] != 'y') {

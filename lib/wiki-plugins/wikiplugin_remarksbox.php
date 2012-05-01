@@ -1,19 +1,18 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_remarksbox_info()
-{
+function wikiplugin_remarksbox_info() {
 	return array(
 		'name' => tra('Remarks Box'),
 		'documentation' => 'PluginRemarksBox',
 		'description' => tra('Displays a comment, tip, note or warning box'),
 		'prefs' => array( 'wikiplugin_remarksbox' ),
 		'body' => tra('remarks text'),
-		'icon' => 'img/icons/comment_add.png',
+		'icon' => 'pics/icons/comment_add.png',
 		'tags' => array( 'basic' ),
 		'params' => array(
 			'type' => array(
@@ -76,14 +75,12 @@ function wikiplugin_remarksbox_info()
 	);
 }
 
-function wikiplugin_remarksbox($data, $params)
-{
+function wikiplugin_remarksbox($data, $params) {
 	global $smarty;
 	require_once('lib/smarty_tiki/block.remarksbox.php');
 	
 	// there probably is a better way @todo this
 	// but for now i'm escaping the html in ~np~s as the parser is adding odd <p> tags
-	$repeat = false;
-	$ret = '~np~'.smarty_block_remarksbox($params, '~/np~'.tra($data).'~np~', $smarty, $repeat).'~/np~';
+	$ret = '~np~'.smarty_block_remarksbox($params, '~/np~'.tra($data).'~np~', $smarty).'~/np~';
 	return $ret;
 }

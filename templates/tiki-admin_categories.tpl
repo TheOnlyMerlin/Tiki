@@ -56,12 +56,6 @@
 					<td>{tr}Description:{/tr}</td>
 					<td><textarea rows="2" cols="40" name="description">{$description|escape}</textarea></td>
 				</tr>
-				{if $tiki_p_admin_categories == 'y'}
-				<tr>
-					<td>{tr}Apply parent category{/tr}</td>
-					<td><input type="checkbox" name="parentPerms" {if empty($categId)}checked="checked"{/if} /></td>
-				</tr>
-				{/if}
 				<tr>
 					<td align="center" colspan="2"><input type="submit" name="save" value="{tr}Save{/tr}" /></td>
 				</tr>
@@ -116,7 +110,7 @@
 			{/section}
 		</table>
 
-		{pagination_links cant=$cant_objects step=$prefs.maxRecords offset=$offset}{/pagination_links}
+		{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
 	{/tab}
 	
 		{tab name="{tr}Moving objects between categories{/tr}"}
@@ -124,14 +118,14 @@
 			<form method="get" action="tiki-admin_categories.php" name="move">
 				<input type="hidden" name="parentId" value="{$parentId|escape}" />
 				<input type="submit" name="unassign" value="{tr}Unassign all objects from this category{/tr}" />
-				<hr />
+				<br />
 				<select name="toId">
 				{foreach $categories as $category}
 					<option value="{$category.categId}" {if $category.categId eq $parentId}selected="selected"{/if}>{$category.categpath|escape}</option>
 				{/foreach}
 				</select>
 				<input type="submit" name="move_to" value="{tr}Move all the objects from this category to this one{/tr}" />
-				<hr />
+				<br />
 				<select name="to">
 				{foreach $categories as $category}
 					<option value="{$category.categId}" {if $category.categId eq $parentId}selected="selected"{/if}>{$category.categpath|escape}</option>

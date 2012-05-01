@@ -61,8 +61,6 @@
 				{preference name=article_custom_attributes}
 
 				{preference name=geo_locate_article}
-				
-				{preference name=article_related_articles}
 
 				<input type="hidden" name="articlesfeatures" />
 			</fieldset>
@@ -71,19 +69,12 @@
 				<legend>
 					{tr}Article properties{/tr}
 				</legend>
-				<fieldset>
-					<legend>{tr}Default maximum dimensions of custom images{/tr}</legend>
-					<fieldset>
-						<legend>{tr}General (view mode){/tr}</legend>
-						{preference name=article_image_size_x}
-						{preference name=article_image_size_y}
-					</fieldset>
-					<fieldset>
-						<legend>{tr}List mode{/tr}</legend>
-						{preference name=article_default_list_image_size_x}
-						{preference name=article_default_list_image_size_y}
-					</fieldset>
-				</fieldset>
+				{remarksbox type="tip" title="{tr}Tip{/tr}"}
+					{tr}Give only one value (width or height) to keep the image proportions{/tr}
+				{/remarksbox}
+
+				{preference name=article_image_size_x}
+				{preference name=article_image_size_y}
 			</fieldset>
 
 			<fieldset>

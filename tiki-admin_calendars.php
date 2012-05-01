@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -23,7 +23,7 @@ if (!isset($_REQUEST["calendarId"])) {
 		$smarty->display('error.tpl');
 		die;
 	}
-	$objectperms = Perms::get('calendar', $_REQUEST['calendarId']);
+	$objectperms = Perms::get( 'calendar', $_REQUEST['calendarId'] );
 	if (!$objectperms->admin_calendar) {
 		$access->display_error('', tra('Permission denied').": ". 'tiki_p_admin_calendar', '403');
 	}
@@ -82,8 +82,6 @@ if (isset($_REQUEST["save"])) {
 		}
 	}
 	if (isset($_REQUEST['viewdays'])) $options['viewdays'] = $_REQUEST['viewdays'];
-	$options['allday'] = isset($_REQUEST['allday'])? 'y':'n';
-	$options['nameoneachday'] = isset($_REQUEST['nameoneachday'])? 'y': 'n';
 	$_REQUEST["calendarId"] = $calendarlib->set_calendar($_REQUEST["calendarId"], $user, $_REQUEST["name"], $_REQUEST["description"], $customflags, $options);
 	$info = $calendarlib->get_calendar($_REQUEST['calendarId']);
 	if ($prefs['feature_groupalert'] == 'y') {
@@ -135,7 +133,7 @@ if ($_REQUEST['calendarId'] != 0) {
 	$info["customcategories"] = 'n';
 	$info["custompriorities"] = 'n';
 	$info["customsubscription"] = 'n';
-	$info['customstatus'] = 'n';
+	$info['customstatus'] = 'y';
 	$info["customurl"] = 'n';
 	$info["customfgcolor"] = '';
 	$info["custombgcolor"] = '';
@@ -156,9 +154,7 @@ if ($_REQUEST['calendarId'] != 0) {
 	if (!empty($_REQUEST['show']) && $_REQUEST['show'] == 'mod') {
 		$cookietab = 2;
 	} else {
-		if (!isset($cookietab)) {
-			$cookietab = 1; 
-		}
+		if (!isset($cookietab)) { $cookietab = 1; }
 	}
 }
 if ($prefs['feature_groupalert'] == 'y') {
@@ -206,14 +202,11 @@ include_once ('lib/userprefs/userprefslib.php');
 $smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
 
 $smarty->assign('defaulteventstatus', $info['defaulteventstatus']);
-$smarty->assign(
-				'eventstatus', 
-				array(
-					0 => tra('Tentative') ,
-					1 => tra('Confirmed') ,
-					2 => tra('Cancelled')
-				)
-);
+$smarty->assign('eventstatus', array(
+	0 => tra('Tentative') ,
+	1 => tra('Confirmed') ,
+	2 => tra('Cancelled')
+));
 $smarty->assign_by_ref('info', $info);
 if (!isset($_REQUEST["sort_mode"])) {
 	$sort_mode = 'name_asc';
@@ -248,7 +241,7 @@ $days_names = array(
 	tra("Friday"),
 	tra("Saturday")
 );
-$smarty->assign('days_names', $days_names);
+$smarty->assign('days_names',$days_names);
 include_once ('tiki-section_options.php');
 ask_ticket('admin-calendars');
 // disallow robots to index page:

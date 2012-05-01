@@ -108,7 +108,7 @@
 				{preference name=wiki_edit_icons_toggle}
 				{preference name=wiki_edit_minor}
 				<div class="adminoptionboxchild" id="wiki_edit_minor_childcontainer">
-					{remarksbox type=note title="{tr}Note{/tr}"}{tr}Minor edits do not flag new content for translation and do not send watch notifications (unless "Watch minor edits" is enabled).{/tr}
+					{remarksbox type=note title=Note}{tr}Minor edits do not flag new content for translation and do not send watch notifications (unless "Watch minor edits" is enabled).{/tr}
 						<br />
 						{tr}Only user groups granted the tiki_p_minor permission (and admins) will be able to save minor edits when this is enabled.{/tr}
 						<a class="link" href="tiki-objectpermissions.php?permType=wiki&amp;textFilter=minor&amp;show_disabled_features=y" title="{tr}Permission{/tr}">{icon _id="key" alt="{tr}Permission{/tr}"}</a>
@@ -122,9 +122,8 @@
 
 		{tab name="{tr}Features{/tr}"}
 			<input type="hidden" name="wikifeatures" />    	
-
 			{preference name=feature_sandbox}
-			{preference name=feature_references}
+
 			{preference name=feature_wiki_comments}
 			
 			{preference name=feature_wiki_attachments}
@@ -408,8 +407,7 @@
 	{/if}
 	
 	{tab name="{tr}Tools{/tr}"}
-		<a href="tiki-search_replace.php">{tr}Mass search and replace{/tr}</a><br />
-		<a href="tiki-report_direct_object_perms.php">{tr}Report wiki pages with direct object permissions{/tr}</a><br />
+		<a href="tiki-search_replace.php">{tr}Mass search and replace{/tr}</a>
 	{/tab}
 {/tabset}
 

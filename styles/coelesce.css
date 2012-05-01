@@ -490,8 +490,7 @@ a.flip:hover,
 
 .tellafriend,
 .share {
-	float: right;
-	padding-right: 2px;
+	padding: 0;
 }
 
 .actions .share {
@@ -918,6 +917,7 @@ a.forumnameread {
 .tabmark {
 	font-size: 85%;
 	background: #5a7ea2;
+	margin-top: 8px;
 	padding: 0; /* override layout */
 	display: inline-block;
 	border: 0;
@@ -930,10 +930,6 @@ a.forumnameread {
 	padding: 3px 5px;
 }
 
-li.tabmark ul li a {
-	color: #294C83;
-
-}
 .tabmark a:active {
 	background: #fff;
 	color: red;
@@ -974,10 +970,6 @@ li.tabmark ul li a {
 	border: 1px solid #abcdef;
 	padding: 26px 0 2px 0;
 	background: #fff;
-}
-
-li.tabcontent {
-	padding: 0px 0 2px 0;
 }
 
 .statuson {
@@ -2031,8 +2023,7 @@ td.dirfooter {
 
 /* css/admin.css overrides */
 .admbox a,
-a.admbox,
-a.admbox:visited {
+a.admbox {
 	border: 1px solid #708090;
 	background-color: #dddfdf;
 }

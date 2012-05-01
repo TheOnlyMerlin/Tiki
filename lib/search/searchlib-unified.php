@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -50,32 +50,24 @@ class UnifiedSearchLib
 					$queuelib->push(self::INCREMENT_QUEUE, $message);
 				}
 
-				$errlib->report(
-								tr('Search index could not be updated. The site is misconfigured. Contact an administrator.') .
-								'<br />' . $e->getMessage()
-				);
+				$errlib->report(tr('Search index could not be updated. The site is misconfigured. Contact an administrator.') .
+								'<br />' . $e->getMessage());
 			}
 		}
 	}
 
-	function getQueueCount()
-	{
-		$queuelib = TikiLib::lib('queue');
-		return $queuelib->count(self::INCREMENT_QUEUE);
-	}
+	private function rebuildInProgress() {
+		global $prefs;
+		$tempName = $prefs['unified_lucene_location'] . '-new';
 
-	function rebuildInProgress()
-	{
-		$tempName = $this->getIndexLocation() . '-new';
 		return file_exists($tempName);
 	}
 
-	function rebuild($loggit = false)
+	function rebuild()
 	{
 		global $prefs;
-		$index_location = $this->getIndexLocation();
-		$tempName = $index_location . '-new';
-		$swapName = $index_location . '-old';
+		$tempName = $prefs['unified_lucene_location'] . '-new';
+		$swapName = $prefs['unified_lucene_location'] . '-old';
 
 		if ($prefs['unified_engine'] == 'lucene') {
 			$index = new Search_Index_Lucene($tempName);
@@ -88,7 +80,7 @@ class UnifiedSearchLib
 
 		// Build in -new
 		TikiLib::lib('queue')->clear(self::INCREMENT_QUEUE);
-		$indexer = $this->buildIndexer($index, $loggit);
+		$indexer = $this->buildIndexer($index);
 		$stat = $indexer->rebuild();
 
 		// Force destruction to clear locks
@@ -97,11 +89,11 @@ class UnifiedSearchLib
 
 		if ($prefs['unified_engine'] == 'lucene') {
 			// Current to -old
-			if (file_exists($index_location)) {
-				rename($index_location, $swapName);
+			if (file_exists($prefs['unified_lucene_location'])) {
+				rename($prefs['unified_lucene_location'], $swapName);
 			}
 			// -new to current
-			rename($tempName, $index_location);
+			rename($tempName, $prefs['unified_lucene_location']);
 
 			// Destroy old
 			$this->destroyDirectory($swapName);
@@ -113,32 +105,12 @@ class UnifiedSearchLib
 		return $stat;
 	}
 
-	/**
-	 * Get the index location depending on $tikidomain for multi-tiki
-	 *
-	 * @return string	path to index directory
-	 */
-	private function getIndexLocation()
-	{
-		global $prefs, $tikidomain;
-		$loc = $prefs['unified_lucene_location'];
-		$temp = $prefs['tmpDir'];
-		if (!empty($tikidomain) && strpos($loc, $tikidomain) === false && strpos($loc, "$temp/") === 0) {
-			$loc = str_replace("$temp/", "$temp/$tikidomain/", $loc);
-		}
-
-		return $loc;
-	}
-
 	function invalidateObject($type, $objectId)
 	{
-		TikiLib::lib('queue')->push(
-						self::INCREMENT_QUEUE,
-						array(
-							'object_type' => $type,
-							'object_id' => $objectId
-						)
-		);
+		TikiLib::lib('queue')->push(self::INCREMENT_QUEUE, array(
+			'object_type' => $type,
+			'object_id' => $objectId
+		));
 	}
 
 	public function getSupportedTypes()
@@ -153,7 +125,7 @@ class UnifiedSearchLib
 		if ($prefs['feature_blogs'] == 'y') {
 			$types['blog post'] = tra('blog post');
 		}
-
+		
 		if ($prefs['feature_articles'] == 'y') {
 			$types['article'] = tra('article');
 		}
@@ -177,21 +149,19 @@ class UnifiedSearchLib
 		if ($prefs['feature_wiki_comments'] == 'y'
 			|| $prefs['feature_article_comments'] == 'y'
 			|| $prefs['feature_poll_comments'] == 'y'
-			|| $prefs['feature_file_galleries_comments'] == 'y'
-			|| $prefs['feature_trackers'] == 'y'
-		) {
+			|| $prefs['feature_file_galleries_comments'] == 'y') {
 			$types['comment'] = tra('comment');
 		}
 
 		return $types;
 	}
 
-	private function buildIndexer($index, $loggit = false)
+	private function buildIndexer($index)
 	{
 		global $prefs;
-		$indexer = new Search_Indexer($index, $loggit);
+		$indexer = new Search_Indexer($index);
 		$this->addSources($indexer);
-
+		
 		if ($prefs['unified_tokenize_version_numbers'] == 'y') {
 			$indexer->addContentFilter(new Search_ContentFilter_VersionNumber);
 		}
@@ -270,8 +240,6 @@ class UnifiedSearchLib
 			$aggregator->addGlobalSource(new Search_GlobalSource_AdvancedRatingSource);
 		}
 
-		$aggregator->addGlobalSource(new Search_GlobalSource_Geolocation);
-
 		if ($mode == 'indexing') {
 			$aggregator->addGlobalSource(new Search_GlobalSource_PermissionSource(Perms::getInstance()));
 			$aggregator->addGlobalSource(new Search_GlobalSource_RelationSource);
@@ -283,11 +251,9 @@ class UnifiedSearchLib
 		global $prefs;
 
 		if ($prefs['unified_engine'] == 'lucene') {
-			Zend_Search_Lucene::setTermsPerQueryLimit($prefs['unified_lucene_terms_limit']);
-			$index = new Search_Index_Lucene($this->getIndexLocation(), $prefs['language'], $prefs['unified_lucene_highlight'] == 'y');
+			$index = new Search_Index_Lucene($prefs['unified_lucene_location'], $prefs['language'], $prefs['unified_lucene_highlight'] == 'y');
 			$index->setCache(TikiLib::lib('cache'));
 			$index->setMaxResults($prefs['unified_lucene_max_result']);
-			$index->setResultSetLimit($prefs['unified_lucene_max_resultset_limit']);
 
 			return $index;
 		}
@@ -330,7 +296,6 @@ class UnifiedSearchLib
 		if (! Perms::get()->admin) {
 			$query->filterPermissions(Perms::get()->getGroups());
 		}
-		$jail_query = '';
 
 		if ($jail = $categlib->get_jail()) {
 			$i = 0;
@@ -338,7 +303,7 @@ class UnifiedSearchLib
 				$i++;
 				$jail_query .= $cat;
 				if ($i < count($jail)) {
-					$jail_query .= ' or ';
+					$jail_query .= " or ";
 				}
 			}
 			$query->filterCategory($jail_query, true);
@@ -366,7 +331,7 @@ class UnifiedSearchLib
 
 		if (isset($filter['language']) && $filter['language']) {
 			$q = $filter['language'];
-			if (preg_match('/^\w+\-\w+$/', $q)) {
+			if (preg_match("/^\w+\-\w+$/", $q)) {
 				$q = "\"$q\"";
 			}
 
@@ -404,10 +369,10 @@ class UnifiedSearchLib
 					continue;
 				}
 
-				if (is_dir($path . '/' . $file)) {
-					$this->destroyDirectory($path . '/' . $file);
+				if (is_dir($path . "/" . $file)) {
+					$this->destroyDirectory($path . "/" . $file);
 				} else {
-					unlink($path . '/' . $file);
+					unlink($path . "/" . $file);
 				}
 			}
 			closedir($dir);

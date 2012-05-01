@@ -1,4 +1,11 @@
 <div class="accordion">
+	<h4>{tr}Structure{/tr}</h4>
+	<form class="simple" action="" method="post">
+		<label>
+			{tr}Tracker Export{/tr}
+			<textarea>{$export|escape}</textarea>
+		</label>
+	</form>
 	<h4>{tr}Quick Export{/tr}</h4>
 	<form method="post" class="simple no-ajax" action="{service controller=tracker action=dump_items trackerId=$trackerId}">
 		<p>{tr}Produce a CSV with basic formatting.{/tr}</p>
@@ -34,10 +41,6 @@
 		<label>
 			{tr}Carriage return inside field value{/tr}
 			<input type="text" name="CR" value="%%%" size="4" />
-		</label>
-		<label>
-			<input type="checkbox" name="keepItemlinkId" value="1" />
-			{tr}Export ItemLink type fields as the itemId of the linked item (to facilitate importing){/tr}
 		</label>
 		<label>
 			<input type="checkbox" name="parse" value="1" />
@@ -83,27 +86,6 @@
 			<input type="submit" value="{tr}Export{/tr}" />
 		</div>
 	</form>
-	{if isset($export)}
-	<h4>{tr}Structure{/tr}</h4>
-	<form class="simple" action="" method="post">
-		<label>
-			{tr}Tracker Export{/tr}
-			<textarea>{$export|escape}</textarea>
-		</label>
-	</form>
-	<h4>{tr}Profile Export{/tr}</h4>
-	<form method="post" class="simple no-ajax" action="{service controller=tracker action=export_profile trackerId=$trackerId}">
-		<p>{tr}Produce YAML for a profile.{/tr}</p>
-		{remarksbox type="info" title="{tr}New Feature{/tr}" icon="bricks"}
-			<p><em>{tr}Please note: Experimental - work in progress{/tr}</em></p>
-			<p>{tr}Linked tracker and field IDs (such as those referenced in ItemLink, ItemsList field options, for instance) are not currently converted to profile object references, so will need manual replacement.{/tr}</p>
-			<p>{tr}For example: $profileobject:field_ref${/tr}</p>
-		{/remarksbox}
-		<div class="submit">
-			<input type="submit" value="{tr}Export Profile{/tr}"/>
-		</div>
-	</form>
-	{/if}
 </div>
 {jq}
 $('.accordion').removeClass('accordion').accordion({

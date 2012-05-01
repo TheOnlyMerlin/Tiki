@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -16,11 +16,11 @@ class DeclFilter_StaticKeyFilterRule extends DeclFilter_FilterRule
 
 	function match( $key )
 	{
-		return array_key_exists($key, $this->rules);
+		return array_key_exists( $key, $this->rules );
 	}
 
 	function getFilter( $key )
 	{
-		return TikiFilter::get($this->rules[$key]);
+		return TikiFilter::get( $this->rules[$key] );
 	}
 }

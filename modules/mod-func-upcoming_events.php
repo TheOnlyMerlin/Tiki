@@ -1,18 +1,17 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
-	header('location: index.php');
-	exit;
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
+  header("location: index.php");
+  exit;
 }
 
-function module_upcoming_events_info()
-{
+function module_upcoming_events_info() {
 	return array(
 		'name' => tra('Upcoming Events'),
 		'description' => tra('Lists the specified number of calendar events, ordered by their start date.'),
@@ -64,9 +63,7 @@ function module_upcoming_events_info()
 			),
 			'date_format' => array(
 				'name' => tra('Date format'),
-				'description' => tra('Format to use for most dates. See <a href="http://www.php.net/manual/en/function.strftime.php">strftime() documentation</a>.') . 
-								" ". tra('Example value:') . ' %m/%e/%y %H:%M %Z. ' . tra('Default:') . ' ' . 
-								tra('site preference for short date format followed by site preference for short time format')
+				'description' => tra('Format to use for most dates. See <a href="http://www.php.net/manual/en/function.strftime.php">strftime() documentation</a>.') . " ". tra('Example value:') . ' %m/%e/%y %H:%M %Z. ' . tra('Default:') . ' ' . tra('site preference for short date format followed by site preference for short time format')
 			),
 			'maxlen' => array(
 				'name' => tra('Maximum length'),
@@ -83,25 +80,24 @@ function module_upcoming_events_info()
 	);
 }
 
-function module_upcoming_events($mod_reference, $module_params)
-{
+function module_upcoming_events( $mod_reference, $module_params ) {
 	global $calendarlib, $user, $globalperms, $smarty;
 	include_once ('lib/calendar/calendarlib.php');
-
+	
 	$rawcals = $calendarlib->list_calendars();
 	$calIds = array();
 	$viewable = array();
-	foreach ($rawcals['data'] as $cal_id=>$cal_data) {
+	foreach ($rawcals["data"] as $cal_id=>$cal_data) {
 		$calIds[] = $cal_id;
 		$canView = 'n';
 		if ($globalperms->admin) {
 			$canView = 'y';
-		} elseif ($cal_data['personal'] == 'y') {
-			if ($user && $user == $cal_data['user']) {
+		} elseif ($cal_data["personal"] == "y") {
+			if ($user && $user == $cal_data["user"]) {
 				$canView = 'y';
 			}
 		} else {
-			$objectperms = Perms::get(array('type' => 'calendar', 'object' => $cal_id));
+			$objectperms = Perms::get( array( 'type' => 'calendar', 'object' => $cal_id ) );
 			if ($objectperms->view_calendar || $objectperms->admin_calendar) {
 				$canView = 'y';
 			}
@@ -111,22 +107,19 @@ function module_upcoming_events($mod_reference, $module_params)
 		}
 	}
 	$smarty->assign_by_ref('infocals', $rawcals['data']);
-
+	
 	$events = array();
 	if (!empty($module_params['calendarId'])) {
 		$calIds = preg_split('/[\|:\&,]/', $module_params['calendarId']);
 	}
-
 	if (!empty($viewable))
-		$events = $calendarlib->upcoming_events(
-						$mod_reference['rows'],
-						array_intersect($calIds, $viewable),
-						-1,
-						'start_asc',
-						isset($module_params['priorDays']) ? (int) $module_params['priorDays'] : 0,
-						isset($module_params['maxDays']) ? (int) $module_params['maxDays'] : 365
+		$events = $calendarlib->upcoming_events($mod_reference['rows'],
+			array_intersect($calIds, $viewable),
+			-1,
+			'start_asc', 
+			isset($module_params["priorDays"]) ? (int) $module_params["priorDays"] : 0,
+			isset($module_params["maxDays"]) ? (int) $module_params["maxDays"] : 365
 		);
-
 	$smarty->assign('modUpcomingEvents', $events);
 	$smarty->assign('maxlen', isset($module_params["maxlen"]) ? $module_params["maxlen"] : 0);
 	$smarty->assign('showDescription', isset($module_params['showDescription']) ? $module_params['showDescription'] : 'n');

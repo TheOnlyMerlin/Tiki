@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -16,22 +16,21 @@
  */
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
 
-function smarty_block_display($params, $content, $smarty, &$repeat)
+function smarty_block_display($params, $content, $smarty)
 {
 	global $prefs, $user, $userlib;
 	
-	if ( $repeat ) return;
 	$ok = true;
 	if (!empty($params['groups'])) {
-		$groups = explode(',', $params['groups']);
+		$groups = explode(',',$params['groups']);
 		$userGroups = $userlib->get_user_groups($user);
 	}
-	#$users = explode(',', $params['users']); // TODO users param support
+	#$users = explode(',',$params['users']); // TODO users param support
 	if (!empty($params['friends']) && $prefs['feature_friends'] == 'y') {
 		$friends = explode(',', $params['friends']);
 	}
@@ -53,14 +52,14 @@ function smarty_block_display($params, $content, $smarty, &$repeat)
 	foreach ($groups as $gr) {
 		$gr = trim($gr);
 		if ($gr == 'Anonymous') $anon = true;
-		if (substr($gr, 0, 1) == '-') {
-			$nogr = substr($gr, 1);
-			if ((in_array($nogr, $userGroups) && $nogr != 'Registered') or (in_array($nogr, $userGroups) && $nogr == 'Registered' && $anon == true)) {
+		if (substr($gr,0,1) == '-') {
+			$nogr = substr($gr,1);
+			if ((in_array($nogr,$userGroups) && $nogr != 'Registered') or (in_array($nogr,$userGroups) && $nogr == 'Registered' && $anon == true)) {
 				// workaround to display to Anonymous only if Registered excluded (because Registered includes Anonymous always)
 				$ok = false;
 				$anon = false;
 			}
-		} elseif (!in_array($gr, $userGroups) && $anon == false) {
+		} elseif (!in_array($gr,$userGroups) && $anon == false) {
 			$ok = false;
 		} else {
 			$ok = true;

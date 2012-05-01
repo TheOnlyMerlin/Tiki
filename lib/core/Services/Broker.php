@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -22,13 +22,10 @@ class Services_Broker
 			$output = $this->attemptProcess($controller, $action, $request);
 
 			if (isset($output['FORWARD'])) {
-				$output['FORWARD'] = array_merge(
-								array(
-									'controller' => $controller,
-									'action' => $action,
-								), 
-								$output['FORWARD']
-				);
+				$output['FORWARD'] = array_merge(array(
+					'controller' => $controller,
+					'action' => $action,
+				), $output['FORWARD']);
 			}
 
 			if ($access->is_serializable_request()) {
@@ -37,7 +34,7 @@ class Services_Broker
 				echo $this->render($controller, $action, $output);
 			}
 		} catch (Services_Exception $e) {
-			$access->display_error(NULL, $e->getMessage(), $e->getCode());
+			$access->display_error('', $e->getMessage(), $e->getCode());
 		}
 	}
 

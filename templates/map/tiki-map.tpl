@@ -86,9 +86,9 @@
 					</div>
 					<img id="queryClose" src="img/icons/close.gif" height="13" width="13" alt="{tr}Scroll Up{/tr}"
 						style="position:absolute; top:0px; left:257px" />
-					<img id="queryUp" src="img/icons/up.gif" height="8" width="10" alt="{tr}Scroll Up{/tr}"
+					<img id="queryUp" src="img/icons2/up.gif" height="8" width="10" alt="{tr}Scroll Up{/tr}"
 						style="position:absolute; top:15px; left:257px" />
-					<img id="queryDown" src="img/icons/down.gif" height="8" width="10" alt="{tr}Scroll Down{/tr}"
+					<img id="queryDown" src="img/icons2/down.gif" height="8" width="10" alt="{tr}Scroll Down{/tr}"
 						style="position:absolute; top:188px; left:257px" />
 				  <script type="text/javascript">
 				  	var scrollActive = false, scrollStop = true, scrollIncrement = 10, scrollInterval = 60;
@@ -158,11 +158,11 @@
 			</select>
 				<input type="submit" name="Go" value="{tr}Go{/tr}" />&nbsp;
 			{/if}
-			 <input type="image" name="maponly" value="yes" src="img/icons/image.png" alt="{tr}View the Map Only{/tr}" title="{tr}View the Map Only{/tr}" />
+			 <input type="image" name="maponly" value="yes" src="img/icn/png.gif" alt="{tr}View the Map Only{/tr}" title="{tr}View the Map Only{/tr}" />
 			{if $tiki_p_map_edit eq 'y'}
 				&nbsp; 
 				<a class="link" href="tiki-map_edit.php?mapfile={$mapfile}&amp;mode=editing">
-				<img src="img/icons/wrench.png" alt="{tr}Edit{/tr}" title="{tr}Edit{/tr}" width="16" height="16" /></a>
+				<img src="pics/icons/wrench.png" alt="{tr}Edit{/tr}" title="{tr}Edit{/tr}" width="16" height="16" /></a>
 			{/if}
 			&nbsp;
 			<a href="tiki-map.php?mapfile={$mapfile}" ><small>{tr}Reset Map{/tr}</small></a><br /> 
@@ -205,7 +205,7 @@
 				<img src="img/icons/edit.gif" alt="{tr}Label{/tr}" title="{tr}Label{/tr}" /></th>
 		  		<th>
 				<img src="img/icons/question.gif" alt="{tr}Query{/tr}" title="{tr}Query{/tr}" /></th>
-		  		<th><img src="img/icons/disk.png" width="16" height="16" alt="{tr}Download{/tr}" title="{tr}Download{/tr}" /></th>
+		  		<th><img src="pics/icons/disk.png" width="16" height="16" alt="{tr}Download{/tr}" title="{tr}Download{/tr}" /></th>
 			</tr>
 			{section name=j loop=$my_layers}
 			{if $my_layers[j]->group neq ""}
@@ -276,7 +276,7 @@
 						{if $layer_download[i] eq "T"}
 						<small>
 						<a href="tiki-map_download.phtml?mapfile={$mapfile}&amp;layer={$my_layers[i]->name}">
-						<img src="img/icons/disk.png" alt="{tr}Download{/tr}" title="{tr}Download{/tr}" width="16" height="16" /></a>
+						<img src="pics/icons/disk.png" alt="{tr}Download{/tr}" title="{tr}Download{/tr}" width="16" height="16" /></a>
 						</small>
 						{/if}
 						</td>
@@ -335,7 +335,7 @@
 				{if $layer_download[j] eq "T"}
 				<small>
 				<a href="tiki-map_download.phtml?mapfile={$mapfile}&amp;layer={$my_layers[j]->name}">
-				<img src="img/icons/disk.png" alt="{tr}Download{/tr}" title="{tr}Download{/tr}" width="16" height="16" /></a>
+				<img src="pics/icons/disk.png" alt="{tr}Download{/tr}" title="{tr}Download{/tr}" width="16" height="16" /></a>
 				</small>
 				{/if}
 				</td>

@@ -1,12 +1,11 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_global_list($partial = false)
-{
+function prefs_global_list($partial = false) {
 	global $tikilib, $url_host;
 
 	$all_styles = array();
@@ -14,18 +13,18 @@ function prefs_global_list($partial = false)
 
 	if (! $partial) {
 		$all_styles = $tikilib->list_styles();
-		$languages = $tikilib->list_languages(false, null, true);
+		$languages = $tikilib->list_languages( false, null, true);
 	}
 
 	$styles = array();
 
 	foreach ($all_styles as $style) {
-		$styles[$style] = substr($style, 0, strripos($style, '.css'));
+		$styles[$style] = substr( $style, 0, strripos($style, '.css'));
 	}
 	
 	$map = array();
 
-	foreach ( $languages as $lang ) {
+	foreach( $languages as $lang ) {
 		$map[ $lang['value'] ] = $lang['name'];
 	}
 
@@ -231,7 +230,7 @@ function prefs_global_list($partial = false)
 			'name' => tra('Maximum number of records in listings'),
 			'type' => 'text',
 			'size' => '3',
-			'default' => 24,
+			'default' => 25,
 			'tags' => array('basic'),
 		),
 		'maxVersions' => array(
@@ -379,6 +378,82 @@ function prefs_global_list($partial = false)
 			'description' => tra('Disable JavaScript for testing purpose even if the browser allows it'),
 			'default' => 'n',
 		),
+
+		// Kaltura
+		'partnerId' => array(
+			'name' => tra('Partner ID'),
+			'description' => tra('Kaltura Partner ID'),
+			'type' => 'text',
+			'filter' => 'digits',
+			'size' => 10,
+			'default' => '',
+		),
+		'secret' => array(
+			'name' => tra('User secret'),
+			'description' => tra('Kaltura partner setting user secret.'),
+			'type' => 'text',
+			'size' => 45,
+			'filter' => 'alnum',
+			'default' => '',
+		),
+		'adminSecret' => array(
+			'name' => tra('Admin secret'),
+			'description' => tra('Kaltura partner setting admin secret.'),
+			'type' => 'text',
+			'size' => 45,
+			'filter' => 'alnum',
+			'default' => '',		
+		),
+		'kdpUIConf' => array(
+			'name' => tra('KDP UI Configuration ID'),
+			'description' => tra('Kaltura Dynamic Player (KDP) user interface configuration ID'),
+			'type' => 'text',
+			'size' => 20,
+			'default' => '1913592',
+		),
+		'kdpWidget' => array(
+			'name' => tra('KDP Widget ID'),
+			'description' => tra('Kaltura Dynamic Player (KDP) Widget ID. This configuration is specific to your account.'),
+			'hint' => tra("If you don't know better, use '_yourPartnerID'"),
+			'type' => 'text',
+			'size' => 20,
+			'default' => '',
+		),
+		'kcwUIConf' => array(
+			'name' => tra('KCW UI Configuration ID'),
+			'description' => tra('Kaltura Configuration Wizard (KCW) user interface configuration ID'),
+			'type' => 'text',
+			'size' => 20,
+			'default' => '1913682',
+		),
+		'kseUIConf' => array(
+			'name' => tra('Kaltura Simple Editor UI Configuration ID'),
+			'type' => 'text',
+			'size' => 20,
+			'default' => '2434291',
+		),
+		'kaeUIConf' => array(
+			'name' => tra('Kaltura Advanced Editor UI Configuration ID'),
+			'type' => 'text',
+			'size' => 20,
+			'default' => '1000865',
+		),
+		'kuser' => array(
+			'name' => tra('Kaltura "User"'),
+			'description' => tra('Owner of content shared by all Tiki users on this site. If empty then each Tiki user can only see their own media entries.'),
+			'hint' => tr("You could use your server name for this. e.g. %0", $url_host),
+			'type' => 'text',
+			'size' => 20,
+			'default' => $url_host,
+		),
+		'kServiceUrl' => array(
+			'name' => tra('Kaltura Service URL'),
+			'description' => tra('e.g. http://www.kaltura.com/'),
+			'type' => 'text',
+			'size' => 40,
+			'default' => 'http://www.kaltura.com/',
+		),
+		// End Kaltura
 	);
 }
 

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,8 +10,7 @@ require_once "lib/wiki/pluginslib.php";
 class WikiPluginBackLinks extends PluginsLib
 {
 	var $expanded_params = array("exclude", "info");
-	function getDefaultArguments()
-	{
+	function getDefaultArguments() {
 		return array('exclude' => '',
 				'include_self' => 0,
 				'noheader' => 0,
@@ -39,7 +38,7 @@ class WikiPluginBackLinks extends PluginsLib
 		global $wikilib; include_once('lib/wiki/wikilib.php');
 		$params = $this->getParams($params, true);
 		$aInfoPreset = array_keys($this->aInfoPresetNames);
-		extract($params, EXTR_SKIP);
+		extract ($params,EXTR_SKIP);
 
 		if (! isset($page)) {
 			$page = null;
@@ -51,7 +50,7 @@ class WikiPluginBackLinks extends PluginsLib
 		//
 		if ($info) {
 			$info_temp = array();
-			foreach ($info as $sInfo) {
+			foreach($info as $sInfo) {
 				if (in_array(trim($sInfo), $aInfoPreset)) {
 					$info_temp[] = trim($sInfo);
 				}
@@ -72,7 +71,7 @@ class WikiPluginBackLinks extends PluginsLib
 
 		$aBackRequest = array();
 		$aBackLinks = $wikilib->get_backlinks($page);
-		foreach ($aBackLinks as $backlink) {
+		foreach($aBackLinks as $backlink) {
 			if (!in_array($backlink["fromPage"], $exclude)) {
 				$aBackRequest[] = $backlink["fromPage"];
 			}
@@ -112,7 +111,7 @@ function wikiplugin_backlinks_info()
 		'documentation' => 'PluginBacklinks',
 		'description' => tra('Lists all pages that link to a particular page'),
 		'prefs' => array( 'feature_wiki', 'wikiplugin_backlinks' ),
-		'icon' => 'img/icons/link.png',
+		'icon' => 'pics/icons/link.png',
 		'params' => array(
 			'page' => array(
 				'required' => false,
