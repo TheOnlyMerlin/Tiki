@@ -143,7 +143,8 @@ class ParserLib extends TikiDb_Bridge
 	// This function removed the protection of html entities so that they are rendered as expected by the viewer
 	function unprotectSpecialChars($data, $is_html = false, $options = array())
 	{
-		if (($is_html != false || $options['is_html']) || $options['ck_editor']) {
+		if (( $is_html != false || ( isset($options['is_html']) && $options['is_html'])) 
+			|| (isset($options['ck_editor']) && $options['ck_editor'])) {
 			foreach($this->specialChars as $key => $specialChar) {
 				$data = str_replace($key, $specialChar['html'], $data);
 			}
@@ -550,7 +551,8 @@ if ( \$('#$id') ) {
 		else
 			$plugins = array();
 
-		sort(array_filter($plugins));
+		$plugins = array_filter($plugins);
+		sort($plugins);
 
 		return $plugins;
 	}
@@ -1984,7 +1986,7 @@ if ( \$('#$id') ) {
 		// from the page directly, intended for short data, not long text but text
 		// will work too
 		//     Now won't match HTML-style '%nn' letter codes and some special utf8 situations...
-		if (preg_match_all("/$enclose([^% 0-9A-Z][^% 0-9A-Z][^% ]*)$enclose/", $data, $dvars)) {
+		if (preg_match_all("/[^%]$enclose([^% 0-9A-Z][^% 0-9A-Z][^% ]*){$enclose}[^%]/", $data, $dvars)) {
 			// remove repeated elements
 			$dvars = array_unique($dvars[1]);
 			// Now replace each dynamic variable by a pair composed of the

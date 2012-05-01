@@ -6,20 +6,15 @@
 // $Id$
 
 require_once 'tiki-setup.php';
-require_once 'lib/videogals/kalturalib.php';
+require_once 'lib/videogals/videogallib.php';
 
-$access->check_feature('feature_kaltura');
 $access->check_permission(array('tiki_p_upload_videos'));
 //get_strings tra('Upload Media')
 
 $cwflashVars = array();
-if ($user) {
-	$cwflashVars["uid"]               = $user;
-} else {
-	$cwflashVars["uid"]               = 'Anonymous';
-}
-$cwflashVars["partnerId"]         = $prefs['kaltura_partnerId'];
-$cwflashVars["ks"]                = $kalturalib->session;
+$cwflashVars["uid"]               = $kuser;
+$cwflashVars["partnerId"]         = $prefs['partnerId'];
+$cwflashVars["ks"]                = $ksession;
 $cwflashVars["afterAddEntry"]     = "afterAddEntry";
 $cwflashVars["close"]             = "onContributionWizardClose";
 $cwflashVars["showCloseButton"]   = false;

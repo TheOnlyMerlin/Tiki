@@ -364,15 +364,6 @@ function prefs_feature_list($partial = false)
 			'type' => 'flag',
 			'default' => 'n',
 		),
-		'feature_references' => array(
-			'name' => tra('Wiki References'),
-			'description' => tra('Permits using references and the reference library.'),
-			'type' => 'flag',
-			'dependencies' => array(
-				'feature_wiki',
-				),
-			'default' => 'n',
-		),
 		'feature_shoutbox' => array(
 			'name' => tra('Shoutbox'),
 			'description' => tra('Quick comment (graffiti) box. Like a group chat, but not in real time.'),
@@ -1173,7 +1164,7 @@ function prefs_feature_list($partial = false)
 			'admin' => 'sefurl',
 		),
 		'feature_sefurl_filter' => array(
-			'name' => tra('Search engine friendly URL Postfilter'),
+			'name' => tra('Search engine friendly url Postfilter'),
 			'help' => 'Rewrite+Rules',
 			'type' => 'flag',
 			'perspective' => false,

@@ -26,16 +26,15 @@ function wikiplugin_kaltura_info()
 
 function wikiplugin_kaltura($data, $params)
 {
-	global $prefs, $user, $smarty;
+	global $prefs;
 	extract($params, EXTR_SKIP);
-	require_once 'lib/videogals/kalturalib.php';
      
-     $code ='<object name="kaltura_player" id="kaltura_player" type="application/x-shockwave-flash" allowScriptAccess="always" allowNetworking="all" allowFullScreen="true" height="365" width="400" data="'.$prefs['kaltura_kServiceUrl'].'index.php/kwidget/wid/_'.$prefs['kaltura_partnerId'].'/uiconf_id/'.$prefs['kaltura_kdpUIConf'].'/entry_id/'.urlencode($id).'">
+     $code ='<object name="kaltura_player" id="kaltura_player" type="application/x-shockwave-flash" allowScriptAccess="always" allowNetworking="all" allowFullScreen="true" height="365" width="400" data="'.$prefs['kServiceUrl'].'index.php/kwidget/wid/'.$prefs['kdpWidget'].'/uiconf_id/'.$prefs['kdpUIConf'].'/entry_id/'.urlencode($id).'">
 			 <param name="allowScriptAccess" value="always" />
 			 <param name="allowNetworking" value="all" />
 			 <param name="allowFullScreen" value="true" />
-			 <param name="movie" value="'.$prefs['kaltura_kServiceUrl'].'index.php/kwidget/wid/_'.$prefs['kaltura_partnerId'].'/uiconf_id/'.$prefs['kaltura_kdpUIConf'].'/entry_id/'.urlencode($id).'"/>
-			 <param name="flashVars" value="entry_id='.htmlspecialchars($id).'&ks='.$kalturalib->session.'"/>
+			 <param name="movie" value="'.$prefs['kServiceUrl'].'index.php/kwidget/wid/'.$prefs['kdpWidget'].'/uiconf_id/'.$prefs['kdpUIConf'].'/entry_id/'.urlencode($id).'"/>
+			 <param name="flashVars" value="entry_id='.htmlspecialchars($id).'"/>
 			 <param name="wmode" value="opaque"/>
 			 </object>';
      return '~np~'.$code.'~/np~';

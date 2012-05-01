@@ -921,9 +921,6 @@ class TikiLib extends TikiDb_Bridge
 				$extraEvents = " or `event`='article_*'";
 			} elseif ($event == 'wiki_comment_changes') {
 				$extraEvents = " or `event`='wiki_page_changed'";
-			// Blog comment mail
-			}elseif($event == 'blog_comment_changes'){ 
-				$extraEvents = " or `event`='blog_page_changed'"; 
 			}
 			$mid = "(`event`=?$extraEvents) and (`object`=? or `object`='*')";
 			$bindvars[] = $event;
@@ -974,11 +971,6 @@ class TikiLib extends TikiDb_Bridge
 					case 'blog_post':
 						$res['perm']=($this->user_has_perm_on_object($res['user'], $object, 'blog', 'tiki_p_read_blog') ||
 								$this->user_has_perm_on_object($res['user'], $object, 'blog', 'tiki_p_admin_blog'));
-									break;
-					// Blog comment mail				
-					case 'blog_comment_changes': 
-						$res['perm']=($this->user_has_perm_on_object($res['user'], $object, 'blog', 'tiki_p_read_blog') || $this->user_has_perm_on_object($res['user'], $object, 'comments', 'tiki_p_read_comments'
-								)); 
 									break;
 					case 'map_changed':
 						$res['perm']=$this->user_has_perm_on_object($res['user'], $object, 'map', 'tiki_p_map_view');
@@ -1056,9 +1048,6 @@ class TikiLib extends TikiDb_Bridge
 					case 'wiki_page_created': $objectType="wiki page";
 									break;
 					case 'blog_post': $objectType="blog";
-									break;
-					// Blog comment mail				
-					case 'blog_page_changed': $objectType="blog page"; 
 									break;
 					case 'map_changed': $objectType="map_changed";
 									break;
@@ -2563,9 +2552,6 @@ class TikiLib extends TikiDb_Bridge
 		$page_info = $this->get_page_info($page);
 		sendWikiEmailNotification('wiki_page_deleted', $page, $user, $comment, 1, $page_info['data'], $machine);
 		
-		//Remove the bibliography references for this page
-		$this->removePageReference($page);
-		
 		$wikilib = TikiLib::lib('wiki');
 		$multilinguallib = TikiLib::lib('multilingual');
 		$multilinguallib->detachTranslation('wiki page', $multilinguallib->get_page_id_from_name($page));
@@ -3379,7 +3365,11 @@ class TikiLib extends TikiDb_Bridge
 		return true;
 	}
 
-
+	function clear_cache_user_preferences()
+	{
+		global $user_preferences;
+		unset($user_preferences);
+	}
 	function get_user_preferences($my_user, $names = null)
 	{
 		global $user_preferences;
@@ -5551,32 +5541,6 @@ JS;
 		}
 		
 		return $result;
-	}
-
-	public function removePageReference($page)
-	{
-		$page_id = $this->get_page_id_from_name($page);
-		$query = "DELETE FROM `tiki_page_references` WHERE `page_id`=?";
-		$result = $this->query($query, array($page_id));
-		return $result;
-	}
-
-	public function saveEditorToolbars($new_toolbars = array(), $section='global', $action='add')
-	{
-		global $prefs;
-		$prefName = 'toolbar_' . $section . ($comments ? '_comments' : '');
-		$toolbars = explode(',', $prefs[$prefName]);
-		if ($action == 'add') {
-			foreach ($new_toolbars as $key => $value) {
-				if(!in_array($value, $toolbars)){
-					$toolbars[] = $value;
-				}
-			}
-		} else {//remove the toolbars
-			$toolbars = array_diff($toolbars, $new_toolbars);
-		}
-		$toolbars = implode(',', $toolbars);
-		$this->set_preference( $prefName, $toolbars );
 	}
 }
 // end of class ------------------------------------------------------

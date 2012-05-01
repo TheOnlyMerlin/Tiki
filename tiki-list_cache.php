@@ -15,7 +15,7 @@ if (isset($_REQUEST["refresh"])) {
 	check_ticket('list-cache');
 	$tikilib->refresh_cache($_REQUEST["refresh"]);
 }
-// This script can receive the threshold
+// This script can receive the thresold
 // for the information as the number of
 // days to get in the log 1,3,4,etc
 // it will default to 1 recovering information for today

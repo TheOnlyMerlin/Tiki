@@ -697,9 +697,6 @@ function sendCommentNotification($type, $id, $title, $content, $commentId=null)
 		$events = 'article_commented';
 	} elseif ($type == 'trackeritem') {
 		$events = 'trackeritem_commented';
-	// Blog comment mail	
-	} elseif($type == 'blog') { 
-		$events = 'blog_comment_changes'; 
 	} else {
 		throw new Exception('Unknown type');
 	}
@@ -711,9 +708,7 @@ function sendCommentNotification($type, $id, $title, $content, $commentId=null)
 		$trackerOptions = $trklib->get_tracker_options($trackerId);
 		$watches = $trklib->get_notification_emails($trackerId, $id, $trackerOptions);
 	} else {
-	// Blog comment mail
-		$watches = $tikilib->get_event_watches($events, $id);
-	
+		$watches = $tikilib->get_event_watches($event, $id);
 	}
 
 	$watches2 = $tikilib->get_event_watches('comment_post', $commentId);
@@ -749,17 +744,18 @@ function sendCommentNotification($type, $id, $title, $content, $commentId=null)
 			$smarty->assign('mail_objectname', $tracker['name']);
 			$smarty->assign('mail_item_title', $trklib->get_isMain_value($trackerId, $id)); 
 		}
-		
-		// Blog comment mail
-		$smarty->assign('mail_objectid', $id);
+
 		$smarty->assign('objecttype', $type);		
 		$smarty->assign('mail_user', $user);
 		$smarty->assign('mail_title', $title);
 		$smarty->assign('mail_comment', $content);
 
+		foreach ($watches as $key => $watch) {
+			if ($watch['user'] == $user && ($type != 'wiki' || $prefs['wiki_watch_editor'] != 'y')) {
+				unset($watches[$key]);
+			}
+		}
 
-		foreach ($watches as $key => $watch) {if ($watch['user'] == $user && ($type != 'wiki' || $prefs['wiki_watch_editor'] != 'y')) {	unset($watches[$key]);}  }
-		
 		sendEmailNotification($watches, null, 'user_watch_comment_subject.tpl', null, 'user_watch_comment.tpl');
 	}
 }

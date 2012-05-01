@@ -818,12 +818,6 @@ class ToolbarLineBased extends ToolbarInline // Will change in the future
 			$wysiwyg =  'NumberedList';
 			$syntax = '#text';
       break;
-		case 'indent':
-			$label = tra('Indent');
-			$icon = tra('img/icons/arrow_right.png');
-			$wysiwyg = null;
-			$syntax = '  text';
-	  break;
 		default:
 			return;
 		}

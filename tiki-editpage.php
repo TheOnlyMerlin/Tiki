@@ -661,78 +661,6 @@ if (isset($prefs['wiki_feature_copyrights']) && $prefs['wiki_feature_copyrights'
 	}
 }
 
-/* Local reference handling */
-if (isset($prefs['feature_references']) && $prefs['feature_references'] === 'y') {
-	if ($prefs['wikiplugin_addreference'] == 'y') {
-		include_once("lib/references/referenceslib.php");
-		$referencesLib = new referencesLib();
-		$page_id = TikiLib::lib('tiki')->get_page_id_from_name($object['object']);
-		if ($page_id) {
-
-			$smarty->assign('showBiblioSection', '1');
-
-			$references = $referencesLib->list_references($page_id);
-			$lib_references = $referencesLib->list_lib_references();
-
-			$tiki_p_use_references = $referencesLib->get_permission('tiki_p_use_references');
-			$tiki_p_edit_references = $referencesLib->get_permission('tiki_p_edit_references');
-			if (isset($tiki_p_use_references) && $tiki_p_use_references=='y') {
-				$use_references = 1;
-			} else {
-				$use_references = 0;
-			}
-
-			if (isset($tiki_p_edit_references) && $tiki_p_edit_references=='y') {
-				$edit_references = 1;
-			} else {
-				$edit_references = 0;
-			}
-
-			$assoc_references = $referencesLib->list_assoc_references($page_id);
-			
-			$page_info = TikiLib::lib('tiki')->get_page_info($object['object']);
-			$regex = "/{ADDREFERENCE\(?\ ?biblio_code=\"(.*)\"\)?}.*({ADDREFERENCE})?/siU";
-			preg_match_all($regex,$page_info['data'], $matches);
-			$matches[1] = array_unique($matches[1]);
-			
-			$key_exists = array();
-			foreach($matches[1] as $m) {
-				if (array_key_exists($m, $assoc_references['data'])) {
-					$key_exists[$m] = 1;
-				}
-			}
-			foreach ($references['data'] as $key=>$ref) {
-				if (array_key_exists($ref['biblio_code'], $key_exists)) {
-					$references['data'][$key]['is_present'] = 1;
-				} else {
-					$references['data'][$key]['is_present'] = 0;
-				}
-			}
-
-			$smarty->assign('key_exists', $key_exists);
-			$smarty->assign('referencesCant', $references['cant']);
-			$smarty->assign('references', $references['data']);
-
-			if ($references['cant']<1 && $lib_references['cant']<1) {
-				$smarty->assign('display', 'none');
-			} else {
-				$smarty->assign('display', 'block');
-			}
-			$smarty->assign('ajaxURL', $GLOBALS['base_url']);
-
-			$smarty->assign('libReferencesCant', $lib_references['cant']);
-			$smarty->assign('libReferences', $lib_references['data']);
-			$smarty->assign('use_references', $use_references);
-			$smarty->assign('edit_references', $edit_references);
-
-		} else {
-			$smarty->assign('showBiblioSection', '0');
-		}
-	}
-}
-/* Local reference handling */
-
-
 if (isset($_REQUEST["comment"])) {
 	$smarty->assign_by_ref('commentdata', $_REQUEST["comment"]);
 } elseif (isset($info['draft'])) {
@@ -1175,34 +1103,6 @@ if (
 			}
 		}
 	} 
-
-	/* Local reference handling */
-	if (isset($prefs['feature_references']) && $prefs['feature_references'] === 'y') {
-		if ($prefs['wikiplugin_addreference'] == 'y') {
-			if (isset($_REQUEST['ref_biblio_code'])) {
-				$ref_biblio_code = $_REQUEST['ref_biblio_code'];
-				$ref_author = $_REQUEST['ref_author'];
-				$ref_title = $_REQUEST['ref_title'];
-				$ref_part = $_REQUEST['ref_part'];
-				$ref_uri = $_REQUEST['ref_uri'];
-				$ref_code = $_REQUEST['ref_code'];
-				$ref_year = $_REQUEST['ref_year'];
-				$ref_style = $_REQUEST['ref_style'];
-
-				if ($ref_biblio_code!='') {
-					include_once("lib/copyrights/referenceslib.php");
-					$referencesLib = new referencesLib();
-					if (isset($info_new['page_id'])) {
-						$page_id = $info_new['page_id'];
-					} else {
-						$page_id = TikiLib::lib('tiki')->get_page_id_from_name($object['object']);
-					}
-					$referencesLib->add_reference($page_id, $_REQUEST['ref_biblio_code'], $_REQUEST['ref_author'], $_REQUEST['ref_title'], $_REQUEST['ref_part'], $_REQUEST['ref_uri'], $_REQUEST['ref_code'], $_REQUEST['ref_year'], $_REQUEST['ref_style']);
-				}
-			}
-		 }
-	 }
-	/* Local reference handling */
 
 	// If the watch state is not the same
 	if ( $requestedWatch !== $currentlyWatching ) {
