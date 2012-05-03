@@ -73,7 +73,7 @@
 			}
 			if("dom_storage" in this.storage_service && this.storage_service.dom_storage){
 				try{
-					this.storage = $.evalJSON(this.storage_service.dom_storage);
+					this.storage = $.parseJSON(this.storage_service.dom_storage);
 				}catch(E){this.storage_service.dom_storage = "{}";}
 			}else{
 				this.storage_service.dom_storage = "{}";
