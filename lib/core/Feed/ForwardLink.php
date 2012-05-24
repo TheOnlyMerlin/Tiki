@@ -12,7 +12,7 @@ Class Feed_ForwardLink extends Feed_Abstract
 	var $isFileGal = true;
 	var $debug = false;
 
-	public function name($name = "") //$name is not used, but is there for compatibility with abstract
+	public function name()
 	{
 		return $this->type . '_' . $this->name;
 	}
@@ -22,6 +22,25 @@ Class Feed_ForwardLink extends Feed_Abstract
 		$me = new self();
 		$me->name = $name;
 		return $me;
+	}
+
+
+	private static function getQuestionInputs($page, $itemId)
+	{
+		print_r(
+						json_encode(
+										Tracker_Query::tracker('Wiki Attributes')
+										->byName()
+										->itemId((int)$itemId)
+										->inputDefaults(
+														array(
+															'Page' => $page,
+															'Type' => 'Question'
+														)
+										)->queryInput()
+						)
+		);
+		exit(0);
 	}
 
 	private static function getTimeStamp()
@@ -39,10 +58,7 @@ Class Feed_ForwardLink extends Feed_Abstract
 
 	private static function goToPhraseExistence($phrase, $page, $version)
 	{
-		if (!isset($_SESSION)) {
-			session_start();
-		}
-
+		session_start();
 		if (!empty($phrase)) $_SESSION['phrase'] = $phrase; //prep for redirect if it happens;
 
 		if (!empty($phrase)) Feed_ForwardLink_Search::goToNewestWikiRevision($version, $phrase, $page);
@@ -61,22 +77,11 @@ Class Feed_ForwardLink extends Feed_Abstract
 
 		$phraseI = 0;
 		foreach ($items as $item) {
-			$thisText = "";
-			$thisDate = "";
-			$thisHref = "";
-			$linkedText = "";
 
-			if (isset($item->forwardlink->text))
-				$thisText = addslashes(htmlspecialchars($item->forwardlink->text));
-
-			if(isset($item->forwardlink->date))
-				$thisDate = addslashes(htmlspecialchars($item->forwardlink->date));
-
-			if(isset($item->textlink->href))
-				$thisHref = addslashes(htmlspecialchars($item->textlink->href));
-
-			if(isset($item->textlink->text))
-				$linkedText = addslashes(htmlspecialchars($item->textlink->text));
+			$thisText = addslashes(htmlspecialchars($item->forwardlink->text));
+			$thisDate = addslashes(htmlspecialchars($item->forwardlink->date));
+			$thisHref = addslashes(htmlspecialchars($item->textlink->href));
+			$linkedText = addslashes(htmlspecialchars($item->textlink->text));
 
 			$phrases[] = $thisText;
 
@@ -128,7 +133,7 @@ JQ
 					.click(function() {
 						me = $(this);
 						var href = me.attr('href');
-						var text = me.attr('linkedText');
+						var text = me.attr('text');
 						var linkedText = me.attr('linkedText');
 
 						var table = $('<div>' +
@@ -173,291 +178,151 @@ JQ
 		}
 	}
 
-	static function editInterfaces($page, $questions, $keywords, $scientificField, $minimumMathNeeded, $minimumStatisticsNeeded)
+	static function editQuestionsInterface($page, $questions)
 	{
+		global $headerlib;
 		$perms = Perms::get();
 
 		//check if profile is created
 		$trackerId = TikiLib::lib('trk')->get_tracker_by_name('Wiki Attributes');
 		if ($trackerId < 1 && $perms->admin == 'y') {
-			TikiLib::lib('header')->add_jq_onready(<<<JQ
+			$headerlib->add_jq_onready(<<<JQ
 				var addQuestionsButton = $('<span class="button"><a href="tiki-admin.php?profile=Simple+Wiki+Attributes&repository=&page=profiles&list=List">' + tr('Apply Profile "Simple Wiki Attributes" To Add ForwardLink Questions') + '</a></span>')
 					.appendTo('#page-bar');
 JQ
 			);
 		} else {
+			$wikiPerms = Perms::get(array( 'type' => 'wiki page', 'object' => $page ));
+			$trackerPerms = Perms::get(array( 'type' => 'tracker', 'object' => $page ));
 
-			$trackerPerms = Perms::get(array( 'type' => 'tracker', 'object' => $trackerId ));
+			$questionsCount = count($questions);
+			$questions = json_encode($questions);
 
-			if ($trackerPerms->edit == true) {
-				TikiLib::lib('header')
-					->add_jsfile('lib/jquery_tiki/tiki-trackers.js')
-					->add_jq_onready(<<<JQ
-						function trackerForm(trackerId, itemId, tracker_fn_name, type, fn) {
-							$.modal(tr("Loading..."));
-
-							$.tracker_get_item_inputs({
-								trackerId: trackerId,
-								itemId: itemId,
-								byName: true,
-								defaults: {
-									Page: '$page',
-									Type: type
-								}
-							}, function(item) {
-								$.modal();
-
-								var frm = $('<form />')
-									.submit(function() {
-										$.modal(tr('Saving...'));
-
-										frm[tracker_fn_name]({
-											trackerId: trackerId,
-											itemId: itemId,
-											byName: true
-										}, function() {
-											document.location = document.location + '';
-										});
-
-										return false;
-									});
-
-								for( field in item ) {
-									var input = $('<span />')
-										.append(item[field])
-										.addClass(field)
-										.addClass('trackerInput')
-										.appendTo(frm);
-								}
-
-								fn(frm);
-
-								$.modal();
-							});
+			if ( $wikiPerms->edit ) {
+				$headerlib->add_jq_onready(<<<JQ
+					function showField(field, obj) {
+						obj = $('<span/>').append(obj);
+						switch (field) {
+							case 'Value':break;
+							default: obj.hide();
 						}
+						return obj;
+					}
 
-						function genericSingleTrackerItemInterface(type, item) {
-							var addButton = $('<span class="button"><a href="tiki-view_tracker.php?trackerId=' + $trackerId + '">' + tr("Edit ForwardLink " + type) + '</a></span>')
-								.click(function() {
-									var box = $('<table style="width: 100%;" />');
-
-									$.each(item, function() {
-										$('<tr>')
-											.append('<td>' + this.Value + '</td>')
-											.append('<td title="' + tr("Edit") + '"><a class="edit" data-itemid="' + this.itemId + '"><img src="img/icons/pencil.png" /></a></td>')
-											.append('<td title="' + tr("Delete") + '"><a class="delete" data-itemid="' + this.itemId + '"><img src="img/icons/cross.png" /></a></td>')
-											.appendTo(box);
+					function trackerForm(trackerId, itemId, fn, remove) {
+						$.modal(tr("Loading..."));
+						$.getJSON('?itemId=' + itemId, function(item) {
+							$.modal();
+							var frm = $.trackerForm(trackerId, itemId, remove)
+								.submit(function() {
+									var serialized = frm.serialize();
+									$.modal(tr('Saving...'));
+									$.post(frm.attr('action') + '?' + serialized, function() {
+										document.location = document.location + '';
 									});
 
-									box.find('a.edit').click(function() {
-										var me = $(this);
-										var itemId = me.data('itemid');
-										trackerForm($trackerId, itemId, 'tracker_update_item', type, function(frm) {
+									return false;
+								});
 
-											frm.find('span.trackerInput:not(.Value').hide();
+							for( field in item ) {
+								showField(field, item[field]).appendTo(frm);
+							}
 
-											var dialogSettings = {
-												title: tr('Editing ForwardLink ' + type),
-												modal: true,
-												buttons: {}
-											};
+							fn(frm);
 
-											dialogSettings.buttons[tr('OK')] = function() {
-												frm.submit();
-											};
+							$.modal();
+						});
+					}
 
-											dialogSettings.buttons[tr('Cancel')] = function() {
-												questionDialog.dialog('close');
-											};
+					var addQuestionsButton = $('<span class="button"><a href="tiki-view_tracker.php?trackerId=' + $trackerId + '">' + tr("Edit ForwardLink Questions") + '</a></span>')
+						.click(function() {
+							var questionBox = $('<table style="width: 100%;" />');
+							var questions = $questions;
+							$.each(questions, function() {
+								$('<tr>')
+									.append('<td>' + this.Value + '</td>')
+									.append('<td title="' + tr("Edit") + '"><a class="edit" href="tiki-view_tracker_item.php?itemId=' + this.itemId + '" data-itemid="' + this.itemId + '"><img src="img/icons/pencil.png" /></a></td>')
+									.append('<td title="' + tr("Delete") + '"><a class="delete" href="tiki-view_tracker_item.php?itemId=' + this.itemId + '" data-itemid="' + this.itemId + '"><img src="img/icons/cross.png" /></a></td>')
+									.appendTo(questionBox);
+							});
 
-											var questionDialog = $('<div />')
-												.append(frm)
-												.dialog(dialogSettings);
-										});
-
-										return false;
-									});
-
-									box.find('a.delete').click(function() {
-										if (!confirm(tr("Are you sure?"))) return false;
-
-										var me = $(this);
-										var itemId = me.data('itemid');
-										trackerForm($trackerId, itemId, 'tracker_remove_item', type, function(frm) {
-
-											frm.find('span.trackerInput:not(.Value)').hide();
-
-											frm.submit();
-										}, true);
-
-										return false;
-									});
-
-									box.options = {
-										title: tr("Edit ForwardLink " + type),
-											modal: true,
-											buttons: {}
+							questionBox.find('a.edit').click(function() {
+								var me = $(this);
+								var itemId = me.data('itemid');
+								trackerForm($trackerId, itemId, function(frm) {
+									var dialogSettings = {
+										title: tr('Editing: ') + me.parent().parent().text(),
+										modal: true,
+										buttons: {}
 									};
 
-									if (item.length < 1) {
-										box.options.buttons[tr("New")] = function () {
-											trackerForm($trackerId, 0, 'tracker_insert_item', type, function(frm) {
+									dialogSettings.buttons[tr('OK')] = function() {
+										frm.submit();
+									};
 
-												frm.find('span.trackerInput:not(.Value)').hide();
+									dialogSettings.buttons[tr('Cancel')] = function() {
+										questionDialog.dialog('close');
+									};
 
-												var newFrmDialogSettings = {
-													buttons: {},
-													modal: true,
-													title: tr('New ' + type)
-												};
+									var questionDialog = $('<div />')
+										.append(frm)
+										.dialog(dialogSettings);
+								});
 
-												newFrmDialogSettings.buttons[tr('Save')] = function() {
-													frm.submit();
-												};
+								return false;
+							});
 
-												newFrmDialogSettings.buttons[tr('Cancel')] = function() {
-													questionDialog.dialog('close');
-												};
+							questionBox.find('a.delete').click(function() {
+								if (!confirm(tr("Are you sure?"))) return false;
 
-												var questionDialog = $('<div />')
-													.append(frm)
-													.dialog(newFrmDialogSettings);
-											});
-										};
-									}
-									box.dialog(box.options);
-									return false;
-								})
-								.appendTo('#page-bar');
-						}
+								var me = $(this);
+								var itemId = me.data('itemid');
+								trackerForm($trackerId, itemId, function(frm) {
+									frm.submit();
+								}, true);
+
+								return false;
+							});
+
+							var questionBoxOptions = {
+								title: "Edit ForwardLink Questions",
+									modal: true,
+									buttons: {}
+							};
+							questionBoxOptions.buttons[tr("New")] = function () {
+								trackerForm($trackerId, 0, function(frm) {
+									var newFrmDialogSettings = {
+										buttons: {},
+										modal: true,
+										title: tr('New')
+									};
+
+									newFrmDialogSettings.buttons[tr('Save')] = function() {
+										frm.submit();
+									};
+
+									newFrmDialogSettings.buttons[tr('Cancel')] = function() {
+										questionDialog.dialog('close');
+									};
+
+									var questionDialog = $('<div />')
+										.append(frm)
+										.dialog(newFrmDialogSettings);
+								});
+							};
+							questionBox.dialog(questionBoxOptions);
+							return false;
+						})
+						.appendTo('#page-bar');
 JQ
-					);
-
-				self::editQuestionsInterface($page, $questions, $trackerId);
-
-				$keywords = json_encode($keywords);
-				TikiLib::lib('header')->add_jq_onready("genericSingleTrackerItemInterface('Keywords', $keywords);");
-
-				$scientificField = json_encode($scientificField);
-				TikiLib::lib('header')->add_jq_onready("genericSingleTrackerItemInterface('Scientific Field', $scientificField);");
-
-				$minimumMathNeeded = json_encode($minimumMathNeeded);
-				TikiLib::lib('header')->add_jq_onready("genericSingleTrackerItemInterface('Minimum Math Needed', $minimumMathNeeded);");
-
-				$minimumStatisticsNeeded = json_encode($minimumStatisticsNeeded);
-				TikiLib::lib('header')->add_jq_onready("genericSingleTrackerItemInterface('Minimum Statistics Needed', $minimumStatisticsNeeded);");
+				);
 			}
 		}
 	}
 
-	static function editQuestionsInterface($page, $questions, $trackerId)
+	static function createForwardLinksInterface($page, $questions, $date)
 	{
-		$questions = json_encode($questions);
-
-		TikiLib::lib('header')
-			->add_jq_onready(<<<JQ
-				var addQuestionsButton = $('<span class="button"><a href="tiki-view_tracker.php?trackerId=' + $trackerId + '">' + tr("Edit ForwardLink Questions") + '</a></span>')
-					.click(function() {
-						var questionBox = $('<table style="width: 100%;" />');
-						var questions = $questions;
-						$.each(questions, function() {
-							$('<tr>')
-								.append('<td>' + this.Value + '</td>')
-								.append('<td title="' + tr("Edit") + '"><a class="edit" data-itemid="' + this.itemId + '"><img src="img/icons/pencil.png" /></a></td>')
-								.append('<td title="' + tr("Delete") + '"><a class="delete" data-itemid="' + this.itemId + '"><img src="img/icons/cross.png" /></a></td>')
-								.appendTo(questionBox);
-						});
-
-						questionBox.find('a.edit').click(function() {
-							var me = $(this);
-							var itemId = me.data('itemid');
-							trackerForm($trackerId, itemId, 'tracker_update_item', 'Question', function(frm) {
-
-								frm.find('span.trackerInput:not(.Value').hide();
-
-								var dialogSettings = {
-									title: tr('Editing ForwardLink Question: ') + me.parent().parent().text(),
-									modal: true,
-									buttons: {}
-								};
-
-								dialogSettings.buttons[tr('OK')] = function() {
-									frm.submit();
-								};
-
-								dialogSettings.buttons[tr('Cancel')] = function() {
-									questionDialog.dialog('close');
-								};
-
-								var questionDialog = $('<div />')
-									.append(frm)
-									.dialog(dialogSettings);
-							});
-
-							return false;
-						});
-
-						questionBox.find('a.delete').click(function() {
-							if (!confirm(tr("Are you sure?"))) return false;
-
-							var me = $(this);
-							var itemId = me.data('itemid');
-							trackerForm($trackerId, itemId, 'tracker_remove_item', 'Question', function(frm) {
-
-								frm.find('span.trackerInput:not(.Value)').hide();
-
-								frm.submit();
-							}, true);
-
-							return false;
-						});
-
-						var questionBoxOptions = {
-							title: "Edit ForwardLink Questions",
-								modal: true,
-								buttons: {}
-						};
-						questionBoxOptions.buttons[tr("New")] = function () {
-							trackerForm($trackerId, 0, 'tracker_insert_item', 'Question', function(frm) {
-
-								frm.find('span.trackerInput:not(.Value)').hide();
-
-								var newFrmDialogSettings = {
-									buttons: {},
-									modal: true,
-									title: tr('New')
-								};
-
-								newFrmDialogSettings.buttons[tr('Save')] = function() {
-									frm.submit();
-								};
-
-								newFrmDialogSettings.buttons[tr('Cancel')] = function() {
-									questionDialog.dialog('close');
-								};
-
-								var questionDialog = $('<div />')
-									.append(frm)
-									.dialog(newFrmDialogSettings);
-							});
-						};
-						questionBox.dialog(questionBoxOptions);
-						return false;
-					})
-					.appendTo('#page-bar');
-JQ
-		);
-	}
-
-	static function createForwardLinksInterface($page, $questions, $keywords, $dateLastUpdated, $language)
-	{
-		global $tikilib, $headerlib, $prefs, $user;
-
-		//setup clipboard data
-		$page = urlencode($page);
-		$href = TikiLib::tikiUrl() . 'tiki-index.php?page=' . $page;
-		$websiteTitle = urlencode($prefs['browsertitle']);
-		$dateOriginated = self::findDatePageOriginated($page);
+		global $headerlib, $user, $prefs;
 
 		$answers = array();
 		foreach ($questions as $question) {
@@ -466,33 +331,6 @@ JQ
 				'answer'=> '',
 			);
 		}
-
-		$userData = self::findAuthorData($page);
-		$moderatorData = self::findModeratorData();
-
-		if (isset($keywords) && is_array($keywords)) {
-			$keywords = end($keywords);
-			$keywords = $keywords['Value'];
-		}
-
-		$clipboarddata = json_encode(array(
-			'websiteTitle'=>            $websiteTitle,
-			'websiteSubtitle'=>         $page,
-			'moderator'=>               (isset($moderatorData['Name']) ? $moderatorData['Name'] : ''),
-			'moderatorInstitution'=>    (isset($moderatorData['Business Name']) ? $moderatorData['Business Name'] : ''),
-			'moderatorProfession'=>     (isset($moderatorData['Profession']) ? $moderatorData['Profession'] : ''),
-			'hash'=>                    '', //hash isn't yet known
-			'author'=>                  (isset($userData['Name']) ? $userData['Name'] : ''),
-			'authorInstitution' =>      (isset($userData['Business Name']) ? $userData['Business Name'] : ''),
-			'authorProfession'=>        (isset($userData['Profession']) ? $userData['Profession'] : ''),
-			'href'=>                    $href,
-			'answers'=>                 $answers,
-			'dateLastUpdated'=>         $dateLastUpdated,
-			'dateLastUpdated'=>         $dateOriginated,
-			'language'=>                $language,
-			'count'=>                   self::countAll(),
-			'keywords'=>                implode(JisonParser_Phraser_Handler::sanitizeToWords($keywords), ',')
-		));
 
 		$answers = json_encode($answers);
 
@@ -505,13 +343,16 @@ JQ
 			->add_jsfile('lib/core/JisonParser/Phraser.js')
 			->add_jsfile('lib/jquery/md5.js');
 
-		$authorDetails = Tracker_Query::tracker('ForwardLink Author Details')
-			->byName()
-			->excludeDetails()
-			->filterFieldByValue('User', $user)
-			->render(false)
-			->getOne();
-		$authorDetails = json_encode(end($authorDetails));
+		$authorDetails = json_encode(
+						end(
+										Tracker_Query::tracker('ForwardLink Author Details')
+										->byName()
+										->excludeDetails()
+										->filter(array('field'=> 'User','value'=> $user))
+										->render(false)
+										->query()
+						)
+		);
 
 		$page = urlencode($page);
 		$href = TikiLib::tikiUrl() . 'tiki-index.php?page=' . $page;
@@ -653,12 +494,21 @@ JQ
 								}
 
 								function makeClipboardData() {
-
-									var clipboarddata = $clipboarddata;
-
-									clipboarddata.text = encode((o.text + '').replace(/\\n/g, ''));
-
-									clipboarddata.hash = md5(rangy.superSanitize(clipboarddata.websiteTitle), rangy.superSanitize(clipboarddata.text));
+									var data = {
+										websiteTitle: '$websiteTitle',
+										websiteSubtitle: '',
+										moderator: '',
+										moderatorInfo: '',
+										subtitle: '',
+										hash: '',
+										author: '',
+										href: '$href',
+										answers: answers,
+										date: $date
+									};
+									data.text = encode((o.text + '').replace(/\\n/g, ''));
+									console.log([rangy.sanitizeToWords(data.websiteTitle).join(''), rangy.sanitizeToWords(data.text).join('')]);
+									data.hash = md5(rangy.sanitizeToWords(data.websiteTitle).join(''), rangy.sanitizeToWords(data.text).join(''));
 
 									me.data('rangyBusy', true);
 
@@ -667,7 +517,7 @@ JQ
 										.button()
 										.appendTo(forwardLinkCopy);
 									var forwardLinkCopyValue = $('<textarea style="width: 100%; height: 80%;"></textarea>')
-										.val(encodeURI(JSON.stringify(clipboarddata)))
+										.val(encodeURI(JSON.stringify(data)))
 										.appendTo(forwardLinkCopy);
 
 									forwardLinkCopy.dialog({
@@ -713,12 +563,16 @@ JQ
 
 	static function wikiView($args)
 	{
-		global $prefs, $headerlib, $smarty, $_REQUEST, $user, $tikilib;
-
+		global $prefs, $headerlib, $smarty, $_REQUEST, $user;
 		$page = $args['object'];
 		$version = $args['version'];
-		$dateLastUpdated = $args['lastModif'];
-		$lang = $args['lang'];
+		$date = $args['lastModif'];
+
+		if (isset($_REQUEST['itemId'])) {
+			self::getQuestionInputs($page, $_REQUEST['itemId']);
+		}
+
+		//self::getTimeStamp();
 
 		$phrase = (!empty($_REQUEST['phrase']) ? addslashes(htmlspecialchars($_REQUEST['phrase'])) : '');
 
@@ -728,44 +582,13 @@ JQ
 
 		$questions = Tracker_Query::tracker('Wiki Attributes')
 			->byName()
-			->filterFieldByValue('Type', 'Question')
-			->filterFieldByValue('Page', $page)
+			->filter(array('field'=> 'Type','value'=> 'Question'))
+			->filter(array('field'=> 'Page','value'=> $page))
 			->query();
 
-		$keywords = Tracker_Query::tracker('Wiki Attributes')
-			->byName()
-			->filterFieldByValue('Type', 'Keywords')
-			->filterFieldByValue('Page', $page)
-			->query();
+		self::editQuestionsInterface($page, $questions);
 
-		$scientificField = Tracker_Query::tracker('Wiki Attributes')
-			->byName()
-			->filterFieldByValue('Type', 'Scientific Field')
-			->filterFieldByValue('Page', $page)
-			->query();
-
-		$minimumMathNeeded = Tracker_Query::tracker('Wiki Attributes')
-			->byName()
-			->filterFieldByValue('Type', 'Scientific Field')
-			->filterFieldByValue('Page', $page)
-			->query();
-
-		$minimumStatisticsNeeded = Tracker_Query::tracker('Wiki Attributes')
-			->byName()
-			->filterFieldByValue('Type', 'Scientific Field')
-			->filterFieldByValue('Page', $page)
-			->query();
-
-		self::editInterfaces($page, $questions, $keywords, $scientificField, $minimumMathNeeded, $minimumStatisticsNeeded);
-
-		//Get language, which is the description of $lang
-		foreach(TikiLib::lib("tiki")->list_languages() as $listLanguage) {
-			if ($listLanguage['value'] == $lang) {
-				$language = $listLanguage['name'];
-			}
-		}
-
-		self::createForwardLinksInterface($page, $questions, $keywords, $dateLastUpdated, $language);
+		self::createForwardLinksInterface($page, $questions, $date);
 	}
 	
 	static function wikiSave($args)
@@ -775,8 +598,7 @@ JQ
 
 	function appendToContents(&$contents, $item)
 	{
-		global $prefs, $_REQUEST, $groupPluginReturnAll;
-		$groupPluginReturnAll = true;
+		global $prefs, $_REQUEST;
 		$replace = false;
 
 		//lets remove the newentry if it has already been accepted in the past
@@ -797,15 +619,18 @@ JQ
 		foreach ($item->feed->entry as $i => $newEntry) {
 			$checks[$i] = array();
 
-			$checks[$i]["hashableHere"] = JisonParser_Phraser_Handler::superSanitize($prefs['browsertitle']);
-			$checks[$i]["phraseThere"] =JisonParser_Phraser_Handler::superSanitize($newEntry->forwardlink->text);
-			$checks[$i]["parentHere"] = JisonParser_Phraser_Handler::superSanitize(TikiLib::lib("wiki")->get_parse($_REQUEST['page']));
-			$checks[$i]["hashHere"] = hash_hmac("md5", $checks[$i]["hashableHere"], $checks[$i]["phraseThere"]);
-			$checks[$i]["hashThere"] = $newEntry->forwardlink->hash;
-			$checks[$i]["reason"] = "";
+			$checks[$i]['titleHere'] = utf8_encode(implode('', JisonParser_Phraser_Handler::sanitizeToWords($prefs['browsertitle'])));
+
+			$checks[$i]['phraseThere'] = utf8_encode(
+							implode('', JisonParser_Phraser_Handler::sanitizeToWords($newEntry->forwardlink->text))
+			);
+
+			$checks[$i]['hashHere'] = hash_hmac('md5', $checks[$i]['titleHere'], $checks[$i]['phraseThere']);
+			$checks[$i]['hashThere'] = $newEntry->forwardlink->hash;
+
 			$checks[$i]['exists'] = JisonParser_Phraser_Handler::hasPhrase(
-				TikiLib::lib('wiki')->get_parse($_REQUEST['page']),
-				$newEntry->forwardlink->text
+							TikiLib::lib('wiki')->get_parse($_REQUEST['page']),
+							utf8_encode($newEntry->forwardlink->text)
 			);
 
 			$checks[$i]['reason'] = '';
@@ -837,93 +662,9 @@ JQ
 
 		if (count($item->feed->entry) > 0) {
 			$replace = true;
-
-			//these are new items, so we want to add them to the list
-			foreach($item->feed->entry as $entry) {
-				$entryText = JisonParser_Phraser_Handler::superSanitize($entry->forwardlink->text);
-				$entryHash = md5($entryText);
-
-				Tracker_Query::tracker('Wiki Attributes')
-					->byName()
-					->replaceItem(array(
-						'Page' => $this->name,
-						'Attribute' => $entryHash,
-						'Value' => $entryText,
-						'Type' => 'ForwardLink'
-					));
-			}
-
 			$contents->entry += $item->feed->entry;
 		}
 
-		$groupPluginReturnAll = false;
-
 		return $replace;
-	}
-
-	static public function findAuthorData($page, $version = -1)
-	{
-		global $tikilib;
-
-		if ($version < 0) {
-			$user = TikiLib::lib('trk')->getOne("SELECT user FROM tiki_pages WHERE pageName = ?", array($page));
-		} else {
-			$user = TikiLib::lib('trk')->getOne("SELECT user FROM tiki_history WHERE pageName = ? AND version = ?", array($page, $version));
-		}
-
-		if (empty($user))  return array();
-
-		$authorData = Tracker_Query::tracker("Users")
-			->byName()
-			->filterFieldByValue('login', $user)
-			->getOne();
-		$authorData = end($authorData);
-
-		if (empty($authorData['Name'])) {
-			$authorData['Name'] = $tikilib->get_user_preference($user, "realName");
-		}
-
-
-		return $authorData;
-	}
-
-	static public function findModeratorData()
-	{
-		global $tikilib;
-
-		$moderatorData = Tracker_Query::tracker("Users")
-			->byName()
-			->filterFieldByValue('login', 'admin') //admin is un-deletable
-			->getOne();
-		$moderatorData = end($moderatorData);
-
-		if (empty($authorData['Name'])) {
-			$moderatorData['Name'] = $tikilib->get_user_preference('admin', "realName");
-		}
-
-		return $moderatorData;
-	}
-
-	static public function findDatePageOriginated($page)
-	{
-		$date = TikiLib::lib('trk')->getOne('SELECT lastModif FROM tiki_history WHERE pageName = ? ORDER BY lastModif DESC', array($page));
-
-		if (empty($date)) {
-			//page doesn't yet have history
-			$date = TikiLib::lib('trk')->getOne('SELECT lastModif FROM tiki_pages WHERE pageName = ?', array($page));
-		}
-
-		return $date;
-	}
-
-	static public function countAll()
-	{
-		return count(
-			Tracker_Query::tracker('Wiki Attributes')
-				->byName()
-				->filterFieldByValue('Type', 'ForwardLink')
-				->render(false)
-				->query()
-		);
 	}
 }

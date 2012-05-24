@@ -118,11 +118,5 @@ function prefs_calendar_list()
 			'type' => 'flag',
 			'default' => 'y',
 		),
-		'calendar_watch_editor' => array(
-			'name' => tra('Enable watch events when I am the editor'),
-			'description' => tra('If unchecked you will not recieve email notifications for events you changed yourself.'),
-			'type' => 'flag',
-			'default' => 'y',
-		),
 	);
 }

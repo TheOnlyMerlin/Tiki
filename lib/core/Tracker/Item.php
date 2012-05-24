@@ -158,7 +158,7 @@ class Tracker_Item
 		if (!is_object($this->definition)) {
 			return; // TODO: This is a temporary fix, we should be able to getItemOwner always
 		}
-		
+                
 		$userField = $this->definition->getUserField();
 		if ($userField) {
 			return $this->getValue($userField);
@@ -299,10 +299,6 @@ class Tracker_Item
 
 	private function prepareFieldId($fieldId)
 	{
-		if (TikiLib::startsWith($fieldId, 'ins_') == true) {
-			$fieldId = str_replace('ins_', '', $fieldId);
-		}
-
 		if (! is_numeric($fieldId)) {
 			if ($field = $this->definition->getFieldFromPermName($fieldId)) {
 				$fieldId = $field['fieldId'];

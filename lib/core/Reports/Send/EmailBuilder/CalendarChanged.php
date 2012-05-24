@@ -17,7 +17,7 @@ class Reports_Send_EmailBuilder_CalendarChanged extends Reports_Send_EmailBuilde
 	
 	public function getOutput(array $change)
 	{
-		$base_url = $change['data']['base_url'];
+		global $base_url;
 		
 		$calendarlib = TikiLib::lib('calendar');
 		

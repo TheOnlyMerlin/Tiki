@@ -54,13 +54,8 @@ function wikiplugin_textlink($data, $params)
 						)
 					)
 	);
-
-	$data = htmlspecialchars($data);
-	$date = "";
-	
-	if (isset($clipboarddata->date)) {
-		$date = $tikilib->get_short_date($clipboarddata->date);
-	}
+	$data = addslashes(htmlspecialchars($data));
+	$date = $tikilib->get_short_date($clipboarddata->date);
 
 	$clipboarddata->href = addslashes(htmlspecialchars($clipboarddata->href));
 	$clipboarddata->text = addslashes(htmlspecialchars($clipboarddata->text));
@@ -69,12 +64,10 @@ function wikiplugin_textlink($data, $params)
 		$headerlib
 			->add_jsfile("lib/jquery/tablesorter/jquery.tablesorter.js")
 			->add_cssfile("lib/jquery_tiki/tablesorter/themes/tiki/style.css")
-			->add_jq_onready("
+			->add_jq_onready(<<<JQ
 				$('#page-data').bind('rangyDone', function() {
-					$('#".$id."').click(function() {
-						var text = \"".$clipboarddata->text."\";
-
-						var table = $('<div><table class=\"tablesorter\">' +
+					$('#$id').click(function() {
+						var table = $('<div><table class="tablesorter">' +
 							'<thead>' + 
 								'<tr>' +
 									'<th>' + tr('Date') + '</th>' +
@@ -83,20 +76,20 @@ function wikiplugin_textlink($data, $params)
 							'</thead>' +
 							'<tbody>' +
 								'<tr>' +
-									'<td>".$date."</td>' +
-									'<td><a href=\"".$clipboarddata->href."\" class=\"read\">Read</a></td>' +
+									'<td>$date</td>' +
+									'<td><a href="$clipboarddata->href" class="read">Read</a></td>' +
 								'</tr>' +
 							'</tbody>' +
 						'</table></div>')
 							.dialog({
-								title: tr(\"ForwardLinks To: \") + text,
+								title: tr("ForwardLinks To: ") + "$data",
 								modal: true
 							})
 							.tablesorter();
 						
 						table.find('.read').click(function() {
-							$('<form action=\"".$clipboarddata->href."\" method=\"post\">' +
-								'<input type=\"hidden\" name=\"phrase\" value=\"' + text + '\" />' +
+							$('<form action="$clipboarddata->href" method="post">' + 
+								'<input type="hidden" name="phrase" value="$clipboarddata->text" />' +
 							'</form>')
 								.appendTo('body')
 								.submit();
@@ -105,7 +98,8 @@ function wikiplugin_textlink($data, $params)
 						return false;
 					});
 				});
-			");
+JQ
+			);
 		
     	return "~np~<span class='textlink'>~/np~".$data."~np~</span><a href='" .$clipboarddata->href ."' id='" . $id . "'>*</a>~/np~";
 	} else {

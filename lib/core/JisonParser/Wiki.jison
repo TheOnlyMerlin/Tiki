@@ -682,10 +682,10 @@ content
  	}
  | PLUGIN_START PLUGIN_END
   	{
-  		$2.body = ''; //js
+  		$3.body = ''; //js
         $$ = parser.plugin($2); //js
 
-        //php $2['body'] = '';
+        //php $3['body'] = '';
         //php $$ = $this->plugin($2);
   	}
  | PLUGIN_START contents PLUGIN_END
@@ -697,23 +697,3 @@ content
  		//php $$ = $this->plugin($3);
  	}
  ;
-
-%% /* parser extensions */
-
-// additional module code //js
-parser.extend = { //js
-	parser: function(extension) { //js
-        if (extension) { //js
-            for (var attr in extension) { //js
-                parser[attr] = extension[attr]; //js
-            } //js
-        } //js
-    }, //js
-    lexer: function() { //js
-		if (extension) { //js
-			for (var attr in extension) { //js
-				parser[attr] = extension[attr]; //js
-			} //js
-       	} //js
-	} //js
-}; //js

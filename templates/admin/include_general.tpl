@@ -68,8 +68,6 @@
 
 					{preference name=zend_mail_smtp_port}
 					{preference name=zend_mail_smtp_security}
-					{preference name=zend_mail_smtp_helo}
-					{preference name=zend_mail_queue}
 				</div>
 				<div class="adminoptionbox">
 					<label for="testMail">{tr}Email to send a test mail{/tr}</label>
@@ -150,7 +148,6 @@
 				{preference name=feature_contact}
 				<div class="adminoptionboxchild" id="feature_contact_childcontainer">
 					{preference name=contact_anon}
-					{preference name=contact_priority_onoff}
 					{preference name=contact_user}
 				</div>
 			</fieldset>

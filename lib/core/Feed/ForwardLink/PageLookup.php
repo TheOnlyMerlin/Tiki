@@ -38,9 +38,9 @@ class Feed_ForwardLink_PageLookup extends Feed_Abstract
 		foreach ($wikiAttributes as $wikiAttribute) {
 			$forwardLinks[] = $forwardLink = json_decode($wikiAttribute['Value']);
 
-			if (isset($forwardLink->href)) {
-				$forwardLink->href = urldecode($forwardLink->href);
+			$forwardLink->href = urldecode($forwardLink->href);
 
+			if (isset($forwardLink->href)) {
 				$result = Feed_ForwardLink_Send::send(
 								array(
 									'page'=> $args['object'],

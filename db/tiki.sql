@@ -1455,7 +1455,7 @@ INSERT INTO `tiki_menu_options` (`menuId`, `type`, `name`, `url`, `position`, `s
 INSERT INTO `tiki_menu_options` (`menuId`, `type`, `name`, `url`, `position`, `section`, `perm`, `groupname`, `userlevel`) VALUES (42,'o','Comments','tiki-list_comments.php',1260,'feature_faq_comments','tiki_p_admin','',0);
 INSERT INTO `tiki_menu_options` (`menuId`, `type`, `name`, `url`, `position`, `section`, `perm`, `groupname`, `userlevel`) VALUES (42,'o','Contribution','tiki-admin_contribution.php',1265,'feature_contribution','tiki_p_admin_contribution','',0);
 INSERT INTO `tiki_menu_options` (`menuId`, `type`, `name`, `url`, `position`, `section`, `perm`, `groupname`, `userlevel`) VALUES (42,'s', 'Kaltura Video', 'tiki-list_kaltura_entries.php', 950, 'feature_kaltura', 'tiki_p_admin | tiki_p_admin_kaltura | tiki_p_list_videos', '', 0);
-INSERT INTO `tiki_menu_options` (`menuId`, `type`, `name`, `url`, `position`, `section`, `perm`, `groupname`, `userlevel`) VALUES (42,'o', 'List Media', 'tiki-list_kaltura_entries.php', 952, 'feature_kaltura', 'tiki_p_admin | tiki_p_admin_kaltura | tiki_p_list_videos', '', 0);
+INSERT INTO `tiki_menu_options` (`menuId`, `type`, `name`, `url`, `position`, `section`, `perm`, `groupname`, `userlevel`) VALUES (42,'o', 'List Entries', 'tiki-list_kaltura_entries.php', 952, 'feature_kaltura', 'tiki_p_admin | tiki_p_admin_kaltura | tiki_p_list_videos', '', 0);
 INSERT INTO `tiki_menu_options` (`menuId`, `type`, `name`, `url`, `position`, `section`, `perm`, `groupname`, `userlevel`) VALUES (42,'o', 'Upload Media', 'tiki-kaltura_upload.php', 954, 'feature_kaltura', 'tiki_p_admin | tiki_p_admin_kaltura | tiki_p_upload_videos', '', 0);
 INSERT INTO `tiki_menu_options` (`menuId`, `type`, `name`, `url`, `position`, `section`, `perm`, `groupname`, `userlevel`) VALUES (42,'o','Permissions','tiki-objectpermissions.php',1077,'','tiki_p_admin|tiki_p_admin_objects','',0);
 INSERT INTO `tiki_menu_options` (`menuId`, `type`, `name`, `url`, `position`, `section`, `perm`, `groupname`, `userlevel`) VALUES (42,'o','Perspectives','tiki-edit_perspective.php',1081,'feature_perspective','tiki_p_admin','',0);
@@ -2383,7 +2383,6 @@ CREATE TABLE `tiki_user_modules` (
   `title` varchar(40) default NULL,
   `data` longblob,
   `parse` char(1) default NULL,
-  `status` VARCHAR(60) default '',  
   PRIMARY KEY (`name`)
 ) ENGINE=MyISAM;
 
@@ -3681,29 +3680,6 @@ CREATE TABLE `tiki_areas` (
     KEY `categId` (`categId`)
 ) ENGINE=MyISAM;
 
-DROP TABLE IF EXISTS `tiki_page_references`;
-CREATE TABLE `tiki_page_references` (
-  `ref_id` INT(14) NOT NULL AUTO_INCREMENT,
-  `page_id` INT(14) DEFAULT NULL,
-  `biblio_code` VARCHAR(50) DEFAULT NULL,
-  `author` VARCHAR(255) DEFAULT NULL,
-  `title` VARCHAR(255) DEFAULT NULL,
-  `part` VARCHAR(255) DEFAULT NULL,
-  `uri` VARCHAR(255) DEFAULT NULL,
-  `code` VARCHAR(255) DEFAULT NULL,
-  `year` VARCHAR(255) DEFAULT NULL,
-  `publisher` VARCHAR(255) DEFAULT NULL,
-  `location` VARCHAR(255)  DEFAULT NULL,
-  `style` VARCHAR(30) DEFAULT NULL,
-  `template` varchar(255) DEFAULT NULL,
-  `last_modified` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,  
-  PRIMARY KEY (`ref_id`),
-  KEY `PageId` (`page_id`)
-) ENGINE=MyISAM;
-ALTER TABLE tiki_page_references ADD UNIQUE INDEX uk1_tiki_page_ref_biblio_code (page_id, biblio_code);
-ALTER TABLE tiki_page_references ADD INDEX idx_tiki_page_ref_title (title);
-ALTER TABLE tiki_page_references ADD INDEX idx_tiki_page_ref_author (author);
-
 DROP TABLE IF EXISTS `tiki_db_status`;
 CREATE TABLE `tiki_db_status` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -3712,12 +3688,4 @@ CREATE TABLE `tiki_db_status` (
   `status` varchar(100) NOT NULL,
   `other` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1;
-
-DROP TABLE IF EXISTS `tiki_mail_queue`;
-CREATE TABLE `tiki_mail_queue` (
-  `messageId` INT NOT NULL AUTO_INCREMENT ,
-  `message`   TEXT NULL ,
-  `attempts`  INT NOT NULL DEFAULT 0 ,
-  PRIMARY KEY (`messageId`) 
 ) ENGINE=MyISAM AUTO_INCREMENT=1;

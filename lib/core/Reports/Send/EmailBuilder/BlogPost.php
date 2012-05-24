@@ -17,7 +17,7 @@ class Reports_Send_EmailBuilder_BlogPost extends Reports_Send_EmailBuilder_Abstr
 	
 	public function getOutput(array $change)
 	{
-		$base_url = $change['data']['base_url'];
+		global $base_url;
 
 		$output = '<u>' . $change['data']['user'] . '</u> ' .
 							tra('replied to the blog') .

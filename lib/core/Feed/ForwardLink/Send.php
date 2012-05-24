@@ -23,7 +23,7 @@ Class Feed_ForwardLink_Send extends Feed_Abstract
 		$exists = false;
 		
 		foreach ($textlinkContribution as $existingItem) {
-			if (isset($existingItem->textlink['id']) && isset($item->textlink['id']) && $existingItem->textlink['id'] == $item->textlink['id']) {
+			if ($existingItem->textlink['id'] == $item->textlink['id']) {
 				$exists = true;
 				
 			}
@@ -43,7 +43,7 @@ Class Feed_ForwardLink_Send extends Feed_Abstract
 		global $textlinkContribution;
 		
 		if (!empty($textlinkContribution)) {
-			$this->setEncoding(TikiFilter_PrepareInput::delimiter('_')->toString($textlinkContribution));
+			$this->setEncoding(TikiFilter_PrepareInput::delimiter('_')->flatten($textlinkContribution));
 			
 			return $textlinkContribution;
 		}
@@ -51,14 +51,13 @@ Class Feed_ForwardLink_Send extends Feed_Abstract
 		return array();
 	}
 	
-	public static function send()
+	function send()
 	{
 		global $tikilib;
-		$me = new self();
+
 		$entry = array();
 		$lastModif = 0;
-
-		$feed = $me->feed();
+		$feed = $this->feed();
 		
 		foreach ($feed->feed->entry as $item) {
 			if (empty($item->forwardlink->href)) continue;

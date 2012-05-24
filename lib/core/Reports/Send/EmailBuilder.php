@@ -26,7 +26,7 @@ class Reports_Send_EmailBuilder
 	
 	public function emailBody($user_data, $report_preferences, $report_cache)
 	{
-		$base_url = $report_cache[0]['data']['base_url']; 
+		global $base_url;
 		
 		$smarty = TikiLib::lib('smarty');
 		
@@ -97,14 +97,15 @@ class Reports_Send_EmailBuilder
 	 */
 	public function makeEmailBody(array $report_cache, array $report_preferences)
 	{
-		global $userlib;
+		global $userlib, $base_url;
+		
+		$tikiUrl = rtrim($base_url, '/');
 		
 		$change_array = $this->makeChangeArray($report_cache);
 		$body = '';
 
 		$morechanges = 0;
 		foreach ($change_array as $eventName => $changes) {
-
 			$eventObject = $this->factory->build($changes[0]['event']);
 
 			$body .= '<b>' . $eventObject->getTitle() . "</b><br />\n";
