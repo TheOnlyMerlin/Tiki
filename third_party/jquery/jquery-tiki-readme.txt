@@ -2,6 +2,11 @@
 JQuery/Tiki readme
 -------------------------
 
+1 June 2012
+
+	jquery-ui-selectmenu to latest "dev" from github (somehow now is v 1.3.0pre)
+
+
 28 April 2012
 
 Update:
