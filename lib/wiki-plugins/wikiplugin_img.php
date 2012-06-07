@@ -315,7 +315,7 @@ function wikiplugin_img_info()
 	);
 }
 
-function wikiplugin_img( $data, $params )
+function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 {
 	 global $tikidomain, $prefs, $section, $smarty, $tikiroot, $tikilib, $userlib, $user, $tiki_p_upload_files;
 
@@ -631,7 +631,7 @@ function wikiplugin_img( $data, $params )
 		foreach ($id_list as $i => $value) {
 			$params[$id] = trim($value);
 			$params['fgalId'] = '';
-			$repl .= wikiplugin_img($data, $params);
+			$repl .= wikiplugin_img($data, $params, $offset, $parseOptions);
 		}
 		if (strpos($repl, $notice) !== false) {
 			return $repl;
@@ -646,7 +646,7 @@ function wikiplugin_img( $data, $params )
 	//////////////////////Set src for html///////////////////////////////
 	//Set variables for the base path for images in file galleries, image galleries and attachments
 	global $base_url;
-	$absolute_links = (!empty(TikiLib::lib('parser')->option['absolute_links'])) ? TikiLib::lib('parser')->option['absolute_links'] : false;
+	$absolute_links = (!empty($parseOptions['absolute_links'])) ? $parseOptions['absolute_links'] : false;
 	$imagegalpath = ($absolute_links ? $base_url : '') . 'show_image.php?id=';
 	$filegalpath = ($absolute_links ? $base_url : '') . 'tiki-download_file.php?fileId=';
 	$attachpath = ($absolute_links ? $base_url : '') . 'tiki-download_wiki_attachment.php?attId=';
@@ -772,7 +772,7 @@ function wikiplugin_img( $data, $params )
 				
 		$fwidth = '';
 		$fheight = '';
-		if (isset(TikiLib::lib('parser')->option['indexing']) && TikiLib::lib('parser')->option['indexing']) {
+		if (isset($parseOptions['indexing']) && $parseOptions['indexing']) {
 			$fwidth = 1;
 			$fheight = 1;
 		} else {

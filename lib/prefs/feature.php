@@ -366,15 +366,6 @@ function prefs_feature_list($partial = false)
 			'type' => 'flag',
 			'default' => 'n',
 		),
-		'feature_references' => array(
-			'name' => tra('Wiki References'),
-			'description' => tra('Permits using references and the reference library.'),
-			'type' => 'flag',
-			'dependencies' => array(
-				'feature_wiki',
-				),
-			'default' => 'n',
-		),
 		'feature_shoutbox' => array(
 			'name' => tra('Shoutbox'),
 			'description' => tra('Quick comment (graffiti) box. Like a group chat, but not in real time.'),
@@ -1040,18 +1031,6 @@ function prefs_feature_list($partial = false)
 			),
 			'tags' => array('experimental'),			
 		),
-		'feature_draw_hide_buttons' => array(
-			'name' => tra('Draw (SVG-edit) Hide Buttons'),
-			'description' => tra('Hide buttons found in Tiki Draw, HTML id, comma-delimited.  Example: "tool_select,tool_fhpath,tools_line_show,tools_rect_show,tools_ellipse_show,tool_path,tools_shapelib_show,tool_text,tool_image,tool_zoom,tool_eyedropper"'),
-			'help' => 'Draw',
-			'dependencies' => array(
-				'feature_draw',
-				'feature_file_galleries',
-			),
-			'tags' => array('experimental'),
-			'type' => 'textarea',
-			'default' => '',
-		),
 		'feature_docs' => array(
 			'name' => tra('Docs (WebODF)'),
 			'description' => tra('Docs gives you the ability to view/edit Open Document Format'),
@@ -1187,7 +1166,7 @@ function prefs_feature_list($partial = false)
 			'admin' => 'sefurl',
 		),
 		'feature_sefurl_filter' => array(
-			'name' => tra('Search engine friendly URL Postfilter'),
+			'name' => tra('Search engine friendly url Postfilter'),
 			'help' => 'Rewrite+Rules',
 			'type' => 'flag',
 			'perspective' => false,
@@ -2546,15 +2525,6 @@ function prefs_feature_list($partial = false)
 			'keywords' => 'forward link forwardlink share feed',
 			'description' => tra('A Dynamic Compendia'),
 			'default' => 'n',
-			'warning' => tra('Experimental'),
-			'tags' => array('experimental'),
-		),
-		'feature_jcapture' => array(
-			'name' => tra('jCapture'),
-			'type' => 'flag',
-			'description' => tra('Use jCapture applet to create screencasts.'),
-			'help' => 'jCapture',
-			'default' => 'n',				// include UI lib for more effects
 			'warning' => tra('Experimental'),
 			'tags' => array('experimental'),
 		),

@@ -118,18 +118,6 @@ function wikiplugin_vote_info()
 					array('text' => tra('None'), 'value' => 'none'),
 				)
 			),
-			'show_toggle' => array(
-				'required' => false,
-				'name' => tra('Show Toggle'),
-				'description' => tra('Show toggle or not to display the form and the results'),
-				'filter' => 'alpha',
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-                                        array('text' => tra('Yes'), 'value' => 'y'),
-                                        array('text' => tra('No'), 'value' => 'n')
-				)
-			),
 		),
 	);
 }
@@ -188,9 +176,6 @@ function wikiplugin_vote($data, $params)
 		}
 	} else {
 		$smarty->assign('p_create_tracker_items', 'n');
-	}
-	if (isset($show_toggle) && $show_toggle == 'n') {
-		$smarty->assign('show_toggle', 'n');
 	}
 	if (!isset($show_stat) || $show_stat == 'y') {
 		$show_stat = 'y';

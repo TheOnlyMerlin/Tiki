@@ -60,7 +60,7 @@ function wikiplugin_fancylist($data, $params)
 			$result .= '<div><span class='.count.'>'.$count.'</span><p>' . $part . '</p></div>';
 			$count++;
 		} else {
-			$result .= '<li><p>' . $part . '</p></li>';
+			$result .= '<li><p>' . $part . '</p></li>';				
 		}
 	}
 	if (isset($div)) {

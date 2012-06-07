@@ -250,11 +250,7 @@ class NlLib extends TikiLib
 		$query = "select * from `tiki_newsletter_subscriptions` where `nlId`=?";
 		$result = $this->query($query, array((int)$nlId));
 		while ( $res = $result->fetchRow() ) {
-			// if the user registered an email address, put it in lowercase to have consistent
-			// comparison with other sources of email addresses. Username are case sensitive. 
-			if ( ( $res['isUser'] == 'n' ) ) {
-			       $res['email'] = strtolower($res['email']);
-			};
+			$res['email'] = strtolower($res['email']);
 			if ( ( $res['included'] != 'y' || $res['valid'] == 'x' ) && ((
 					$res['valid'] != 'n' && ( $res['isUser'] != 'g' || $res['valid'] == 'x' ) )
 					|| ( $res['isUser'] == 'g' && in_array($res['email'], $group_users) )

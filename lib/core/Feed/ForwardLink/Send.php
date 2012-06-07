@@ -23,7 +23,7 @@ Class Feed_ForwardLink_Send extends Feed_Abstract
 		$exists = false;
 		
 		foreach ($textlinkContribution as $existingItem) {
-			if (isset($existingItem->textlink['id']) && isset($item->textlink['id']) && $existingItem->textlink['id'] == $item->textlink['id']) {
+			if ($existingItem->textlink['id'] == $item->textlink['id']) {
 				$exists = true;
 				
 			}
@@ -43,7 +43,7 @@ Class Feed_ForwardLink_Send extends Feed_Abstract
 		global $textlinkContribution;
 		
 		if (!empty($textlinkContribution)) {
-			$this->setEncoding(TikiFilter_PrepareInput::delimiter('_')->toString($textlinkContribution));
+			$this->setEncoding(TikiFilter_PrepareInput::delimiter('_')->flatten($textlinkContribution));
 			
 			return $textlinkContribution;
 		}
@@ -51,44 +51,40 @@ Class Feed_ForwardLink_Send extends Feed_Abstract
 		return array();
 	}
 	
-	public static function send()
+	function send()
 	{
 		global $tikilib;
-		$me = new self();
+
 		$entry = array();
 		$lastModif = 0;
+		$feed = $this->feed();
+		
+		foreach ($feed->feed->entry as $item) {
+			if (empty($item->forwardlink->href)) continue;
 
-		$feed = $me->feed();
+			$client = new Zend_Http_Client($item->forwardlink->href, array('timeout' => 60));
 
-		//we send something only if we have something to send
+			$info = $tikilib->get_page_info($item->page);
+
+			if ($info['lastModif'] > $lastModif)
+				$lastModif = $info['lastModif'];
+		}
+		
 		if (!empty($feed->feed->entry)) {
-			foreach ($feed->feed->entry as $item) {
-				if (empty($item->forwardlink->href)) continue;
+			$client->setParameterGet(
+							array(
+								'protocol'=> 'forwardlink',
+								'contribution'=> json_encode($feed)
+							)
+			);
 
-				$client = new Zend_Http_Client($item->forwardlink->href, array('timeout' => 60));
-
-				$info = $tikilib->get_page_info($item->page);
-
-				if ($info['lastModif'] > $lastModif)
-					$lastModif = $info['lastModif'];
-			}
-
-			if (!empty($feed->feed->entry)) {
-				$client->setParameterGet(
-								array(
-									'protocol'=> 'forwardlink',
-									'contribution'=> json_encode($feed)
-								)
-				);
-
-	            try {
-				    $response = $client->request(Zend_Http_Client::POST);
-				    $request = $client->getLastResponse();
-				    return $response->getBody();
-	            } catch(Exception $e) {
-	                return "";
-	            }
-			}
+            try {
+			    $response = $client->request(Zend_Http_Client::POST);
+			    $request = $client->getLastResponse();
+			    return $response->getBody();
+            } catch(Exception $e) {
+                return "";
+            }
 		}
 	}
 }
