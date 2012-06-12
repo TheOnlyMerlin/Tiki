@@ -2,10 +2,10 @@ contributor:
 $Author: xavi $
 
 revision: 
-$Revision: 0.73 $
+$Revision: 0.74 $
 
 lastmodif:
-$Date: 2012-04-27 13:00:00 $
+$Date: 2012-06-12 09:00:00 $
 
 files: 
 wiki-plugins/r/lib/wiki-plugins/wikiplugin_r.php lib/wiki-plugins/wikiplugin_r.php
@@ -15,6 +15,7 @@ wiki-plugins/r/lang/en/language_r.php lang/en/language_r.php
 wiki-plugins/r/lang/ca/language_r.php lang/ca/language_r.php
 wiki-plugins/r/lang/es/language_r.php lang/es/language_r.php
 wiki-plugins/r/pics/icons/r.png pics/icons/r.png
+wiki-plugins/r/img/icons/r.png img/icons/r.png
 
 Author:
 Xavier de Pedro (xavi)
@@ -47,3 +48,4 @@ Changelog:
 0.71 Same value pairs for onefile param as with otehr params. Added language files (they work in Tiki8+).
 0.72 Added the ability to create and display several png's when the R call wants to generate new graphs from any command and the user writes "# newgraph" before the new graph so that pluginR opens up the required new graphic device.
 0.73 Creation of folders for temp only if they are missing (therefore removing the harmless but annoying warning when they exist already)
+0.74 R icon added also in the path expected by Tiki9. 
