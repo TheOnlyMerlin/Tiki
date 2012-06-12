@@ -1,9 +1,9 @@
 <?php
 // Parses R code (r-project.org) and shows the output in a wiki page.
-// Corresponding author: Xavier de Pedro. <xavier.depedro (a) ub.edu> 
-// Contributors: Rodrigo Sampaio, Lukáš Mašek, Louis-Philippe Huberdau, Sylvie Greverend, Jean-Marc Libs
+// Corresponding author: Xavier de Pedro. <xavier.depedro (a) vhir.org> 
+// Contributors: Rodrigo Sampaio, Lukáš Mašek, Louis-Philippe Huberdau, Sylvie Greverend, Jean-Marc Libs, Robert Plummer
 // Usage:
-// {R()}R code{R}. See documentation: http://doc.tiki.org/PluginR 
+// {R()}R code{R}. See documentation: https://doc.tiki.org/PluginR 
 //	
 // $Id$
 /* 
@@ -532,6 +532,8 @@ echo $wrap;
 	if (strpos ($cont, '<html>') === false) {
 		$fd = fopen ($rst, 'w') or error ('R', 'can not open file: ' . $rst, $input . $err);
 		if ($r_exitcode == 0) {
+			// remove empty lines produced by some R packages such as googleVis that were inserting too much white space for granted before the graphs produced by the Google Visualization API 
+			$cont = str_replace(array("\n", "// jsData", "// jsDrawChart", "// jsDisplayChart", "// jsChart"), '', $cont);
 			// Write the start tag of an html comment to comment out the tag to remove echo from R console. The closing html comment tag is added inside $cont after the "option(echo=FALSE)"
 			fwrite ($fd, $prg . '<pre id="routput' . $r_count . '" name="routput' . $r_count . '" style="'.$pre_style.'"><!-- ' . $cont . '</pre>');
 			for ( $i=1; $i<=$image_number; $i++) {
