@@ -22,7 +22,7 @@ function wikiplugin_rr_info() {
 		'prefs' => array( 'wikiplugin_rr' ),
 		'validate' => 'all',
 		'body' => tra('R Code'),
-		'icon' => 'pics/icons/r.png',	
+		'icon' => 'img/icons/r.png',	
 		'format' => 'html',
 		'params' => array(
 			'attId' => array(
