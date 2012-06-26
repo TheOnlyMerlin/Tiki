@@ -8,7 +8,7 @@ PLUGIN_ID   					[A-Z]+
 INLINE_PLUGIN_ID				[a-z]+
 SMILE							[a-z]+
 
-%s plugin bold box center colortext italic header link strikethrough table titlebar underscore wikilink
+%s plugin bold box center colortext italic header ulist olist link strikethrough table titlebar underscore wikilink
 %options flex
 
 %%
@@ -52,45 +52,39 @@ SMILE							[a-z]+
 	%}
 <plugin>"{"{PLUGIN_ID}"}"
 	%{
-		var plugin = yy.pluginStack[yy.pluginStack.length - 1]; //js
-		if (('{' + plugin.name + '}') == yytext) { //js
-			lexer.popState(); //js
-			if (yy.pluginStack) { //js
-				if ( //js
-					parser.size(yy.pluginStack) > 0 && //js
-					parser.substring(yytext, 1, -1) == yy.pluginStack[parser.size(yy.pluginStack) - 1].name //js
-				) { //js
-					if (parser.size(yy.pluginStack) == 1) { //js
-						yytext = yy.pluginStack[parser.size(yy.pluginStack) - 1]; //js
-						yy.pluginStack = parser.pop(yy.pluginStack); //js
-						return 'PLUGIN_END'; //js
-					} else { //js
-						yy.pluginStack = parser.pop(yy.pluginStack); //js
-						return 'CONTENT'; //js
-					} //js
+		lexer.popState(); //js
+		if (yy.pluginStack) { //js
+			if ( //js
+				parser.size(yy.pluginStack) > 0 && //js
+				parser.substring(yytext, 1, -1) == yy.pluginStack[parser.size(yy.pluginStack) - 1].name //js
+			) { //js
+				if (parser.size(yy.pluginStack) == 1) { //js
+					yytext = yy.pluginStack[parser.size(yy.pluginStack) - 1]; //js
+					yy.pluginStack = parser.pop(yy.pluginStack); //js
+					return 'PLUGIN_END'; //js
+				} else { //js
+					yy.pluginStack = parser.pop(yy.pluginStack); //js
+					return 'CONTENT'; //js
 				} //js
 			} //js
 		} //js
 		return 'CONTENT'; //js
 
-		//php $plugin = end($this->pluginStack);
-		//php if (('{' . $plugin['name'] . '}') == $yytext) {
-		//php   $this->popState();
-		//php   if (!empty($this->pluginStack)) {
-		//php 	    if (
-		//php 		    count($this->pluginStack) > 0 &&
-		//php 		    $this->substring($yytext, 1, -1) == $this->pluginStack[count($this->pluginStack) - 1]['name']
-		//php 	    ) {
-		//php 		    if (count($this->pluginStack) == 1) {
-		//php 			    $yytext = $this->pluginStack[count($this->pluginStack) - 1];
-		//php 			    array_pop($this->pluginStack);
-		//php 			    return 'PLUGIN_END';
-		//php 		    } else {
-		//php 			    array_pop($this->pluginStack);
-		//php 			    return 'CONTENT';
-		//php 		    }
-		//php 	    }
-		//php   }
+		//php $this->popState();
+		//php if (!empty($this->pluginStack)) {
+		//php 	if (
+		//php 		count($this->pluginStack) > 0 &&
+		//php 		$this->substring($yytext, 1, -1) == $this->pluginStack[count($this->pluginStack) - 1]['name']
+		//php 	) {
+		//php 		if (count($this->pluginStack) == 1) {
+		//php 			$yytext = $this->pluginStack[count($this->pluginStack) - 1];
+		//php 			array_pop($this->pluginStack);
+		//php 			return 'PLUGIN_END';
+		//php 		} else {
+		//php 			array_pop($this->pluginStack);
+		//php 			return 'CONTENT';
+		//php 		}
+		//php 	}
 		//php }
 		//php return 'CONTENT';
 	%}
@@ -248,32 +242,95 @@ SMILE							[a-z]+
 <header><<EOF>>
 	%{
 		if (parser.isPlugin()) return 'CONTENT'; //js
-		lexer.unput("\n"); //js
+		lexer.unput("\r"); //js
 
 		//php if ($this->isPlugin()) return 'CONTENT';
-        //php $this->unput("\n");
+        //php $this->unput("\r");
 	%}
 <header>[\n\r]
 	%{
 		if (parser.isPlugin()) return 'CONTENT'; //js
 		lexer.popState(); //js
+		lexer.unput("\n"); //js
 		return 'HEADER_END'; //js
 
 		//php if ($this->isPlugin()) return 'CONTENT';
 		//php $this->popState();
+		//php $this->unput("\n");
 		//php return 'HEADER_END';
 	%}
 [\n\r][!]
 	%{
 		if (parser.isPlugin()) return 'CONTENT'; //js
-		parser.begin('header'); //js
+		parser.beginBlock('header'); //js
 		return 'HEADER_START'; //js
 
 		//php if ($this->isPlugin()) return 'CONTENT';
-		//php $this->begin('header');
+		//php $this->beginBlock('header');
 		//php return 'HEADER_START';
 	%}
 
+
+<ulist><<EOF>>
+	%{
+		if (parser.isPlugin()) return 'CONTENT'; //js
+        lexer.unput("\n"); //js
+
+		//php if ($this->isPlugin()) return 'CONTENT';
+        //php $this->unput("\n");
+    %}
+<ulist>[\n\r]
+	%{
+		if (parser.isPlugin()) return 'CONTENT'; //js
+		lexer.popState(); //js
+		lexer.unput("\n"); //js
+		return 'ULIST_END'; //js
+
+		//php if ($this->isPlugin()) return 'CONTENT';
+		//php $this->popState();
+		//php $this->unput("\n");
+		//php return 'ULIST_END';
+	%}
+[\n\r][*]
+	%{
+		if (parser.isPlugin()) return 'CONTENT'; //js
+		parser.beginBlock('ulist'); //js
+		return 'ULIST_START'; //js
+
+		//php if ($this->isPlugin()) return 'CONTENT';
+		//php $this->beginBlock('ulist');
+		//php return 'ULIST_START';
+	%}
+
+
+<olist><<EOF>>
+	%{
+		if (parser.isPlugin()) return 'CONTENT'; //js
+		lexer.unput("\n"); //js
+
+		//php if ($this->isPlugin()) return 'CONTENT';
+		//php $this->unput("\n");
+	%}
+<olist>[\n\r]
+	%{
+		if (parser.isPlugin()) return 'CONTENT'; //js
+		lexer.popState(); //js
+		return 'OLIST_END'; //js
+
+		//php if ($this->isPlugin()) return 'CONTENT';
+		//php $this->popState();
+		//php return 'OLIST_END';
+	%}
+[\n\r][#]
+	%{
+		if (parser.isPlugin()) return 'CONTENT'; //js
+		parser.beginBlock('olist'); //js
+		return 'OLIST_START'; //js
+
+		//php if ($this->isPlugin()) return 'CONTENT';
+		//php $this->beginBlock('olist');
+		//php return 'OLIST_START';
+	%}
 
 
 <italic><<EOF>>
@@ -308,13 +365,13 @@ SMILE							[a-z]+
 
 <link><<EOF>>
 	%{
-		lexer.popState(); //js
-		return 'EOF'; //js
+		if (parser.isPlugin()) return 'CONTENT'; //js
+		lexer.unput(']'); //js
 
-        //php $this->popState();
-        //php return 'EOF';
+		//php if ($this->isPlugin()) return 'CONTENT';
+        //php $this->unput(']');
 	%}
-<link>"]"
+<link>("]")
 	%{
 		if (parser.isPlugin()) return 'CONTENT'; //js
 		lexer.popState(); //js
@@ -324,7 +381,7 @@ SMILE							[a-z]+
 		//php $this->popState();
 		//php return 'LINK_END';
 	%}
-"["
+("[")
 	%{
 		if (parser.isPlugin()) return 'CONTENT'; //js
 		lexer.begin('link'); //js
@@ -336,14 +393,13 @@ SMILE							[a-z]+
 	%}
 
 
-"-- "               return 'CONTENT';
 <strikethrough><<EOF>>
 	%{
-		lexer.popState(); //js
-		return 'EOF'; //js
+		if (parser.isPlugin()) return 'CONTENT'; //js
+		lexer.unput('--'); //js
 
-		//php $this->popState();
-		//php return 'EOF';
+		//php if ($this->isPlugin()) return 'CONTENT';
+		//php $this->unput('--');
 	%}
 <strikethrough>[-][-]
 	%{
@@ -466,7 +522,7 @@ SMILE							[a-z]+
 		//php if ($this->isPlugin()) return 'CONTENT';
 		//php $this->unput('))');
 	%}
-<wikilink>"))"
+<wikilink>[)][)]
 	%{
 		if (parser.isPlugin()) return 'CONTENT'; //js
 		lexer.popState(); //js
@@ -476,7 +532,7 @@ SMILE							[a-z]+
 		//php $this->popState();
 		//php return 'WIKILINK_END';
 	%}
-"(("
+[(][(]
 	%{
 		if (parser.isPlugin()) return 'CONTENT'; //js
 		lexer.begin('wikilink'); //js
@@ -489,7 +545,7 @@ SMILE							[a-z]+
 
 
 
-"<"(.|\n)*?">"								return 'CONTENT';
+"<"(.|\n)*?">"								return 'HTML';
 [A-Za-z0-9]+                                return 'CONTENT';
 (.)											return 'CONTENT';
 (\n)										return 'CONTENT';
@@ -500,9 +556,7 @@ SMILE							[a-z]+
 %%
 
 wiki
- : contents
- 	{return $1;}
- | contents EOF
+ : contents EOF
 	{return $1;}
  | EOF
     {return " ";}
@@ -522,6 +576,16 @@ contents
 content
  : CONTENT
 	{$$ = $1;}
+ | NEW_LINE
+	{
+		$$ = parser.newLine($1); //js
+		//php $$ = $this->newLine($1);
+	}
+ | HTML
+	{
+		$$ = parser.html($1); //js
+		//php $$ = $this->html($1);
+	}
  | HORIZONTAL_BAR
 	{$$ = $1;}
  | SMILE
@@ -531,6 +595,18 @@ content
 	{
 		$$ = parser.header($2); //js
 		//php $$ = $this->header($2);
+	}
+ | ULIST_START ULIST_END
+ | ULIST_START contents ULIST_END
+	{
+		$$ = parser.ulist($2); //js
+		//php $$ = $this->ulist($2);
+	}
+ | OLIST_START OLIST_END
+ | OLIST_START contents OLIST_END
+	{
+		$$ = parser.olist($2); //js
+		//php $$ = $this->olist($2);
 	}
  | BOLD_START BOLD_END
  | BOLD_START contents BOLD_END
@@ -568,22 +644,12 @@ content
 		$$ = parser.link($2); //js
 		//php $$ = $this->link($2);
 	}
- | LINK_START contents EOF
-    {
-        $$ = $1 + $2; //js
-        //php $$ = $1 . $2;
-    }
  | STRIKETHROUGH_START STRIKETHROUGH_END
  | STRIKETHROUGH_START contents STRIKETHROUGH_END
 	{
 		$$ = parser.strikethrough($2); //js
 		//php $$ = $this->strikethrough($2);
 	}
- | STRIKETHROUGH_START contents EOF
-    {
-        $$ = $1 + $2; //js
-        //php $$ = $1 . $2;
-    }
  | TABLE_START TABLE_END
  | TABLE_START contents TABLE_END
 	{
@@ -616,10 +682,10 @@ content
  	}
  | PLUGIN_START PLUGIN_END
   	{
-  		$2.body = ''; //js
+  		$3.body = ''; //js
         $$ = parser.plugin($2); //js
 
-        //php $2['body'] = '';
+        //php $3['body'] = '';
         //php $$ = $this->plugin($2);
   	}
  | PLUGIN_START contents PLUGIN_END
@@ -631,23 +697,3 @@ content
  		//php $$ = $this->plugin($3);
  	}
  ;
-
-%% /* parser extensions */
-
-// additional module code //js
-parser.extend = { //js
-	parser: function(extension) { //js
-        if (extension) { //js
-            for (var attr in extension) { //js
-                parser[attr] = extension[attr]; //js
-            } //js
-        } //js
-    }, //js
-    lexer: function() { //js
-		if (extension) { //js
-			for (var attr in extension) { //js
-				parser[attr] = extension[attr]; //js
-			} //js
-       	} //js
-	} //js
-}; //js

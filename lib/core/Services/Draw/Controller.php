@@ -35,11 +35,5 @@ class Services_Draw_Controller
 	{
 		//just a dummy for now, filegallery handles it all
 	}
-
-	function action_removeButtons()
-	{
-		global $prefs;
-		return array('removeButtons' => $prefs['feature_draw_hide_buttons']);
-	}
 }
 

@@ -69,7 +69,7 @@ if ($tikilib->query("SHOW TABLES LIKE 'tiki_preferences'")->numRows() == 0) {
 }
 $tikilib->get_preferences($needed_prefs, true, true);
 
-if ($prefs['session_protected'] == 'y' && ! isset($_SERVER['HTTPS']) && php_sapi_name() != 'cli') {
+if ($prefs['session_protected'] == 'y' && ! isset($_SERVER['HTTPS'])) {
 	header("Location: https://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}");
 	exit;
 }
@@ -119,8 +119,8 @@ $cdn_pref = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? $prefs['ti
 if ( $cdn_pref ) {
 	$host = parse_url($cdn_pref, PHP_URL_HOST);
 	if (isset($_SERVER['HTTP_HOST']) && $host == $_SERVER['HTTP_HOST'] ) {
-		header("HTTP/1.0 410 Gone");
-		echo "This is a Content Delivery Network (CDN) to speed up delivery of images, CSS, and javascript files. However, PHP code is not executed.";
+		header("HTTP/1.0 404 Not Found");
+		echo "File not found.";
 		exit;
 	}
 }
@@ -149,64 +149,6 @@ if ($prefs['feature_fullscreen'] == 'y') {
 require_once ('lib/setup/prefs.php');
 // Smarty needs session since 2.6.25
 global $smarty; require_once ('lib/init/smarty.php');
-
-if (isset($prefs['ids_enabled']) && $prefs['ids_enabled'] == 'y') {
-	try {
-		TikiInit::prependIncludePath('lib/phpids/lib');
-		require_once 'IDS/Init.php';
-
-		$init = IDS_Init::init('db/ids_config.ini');
-
-		$init->config['General']['filter_path'] = dirname(__FILE__) . '/lib/phpids/lib/IDS/default_filter.xml';
-		$init->config['General']['base_path'] = dirname(__FILE__) . '/lib/phpids/lib/IDS/';
-		$init->config['Caching']['caching'] = 'none';
-		$init->config['General']['HTML_Purifier_Path'] = dirname(__FILE__) . '/lib/htmlpurifier/HTMLPurifier.auto.php';
-		$init->config['General']['HTML_Purifier_Cache'] = dirname(__FILE__) . '/lib/htmlpurifier/HTMLPurifier/DefinitionCache/Serializer';
-		$init->config['Logging']['path'] = 'temp/phpids_log.txt';
-
-		// 2. Initiate the PHPIDS and fetch the results
-
-		$request = array(
-			'REQUEST' => $_REQUEST,
-			'GET' => $_GET,
-			'POST' => $_POST,
-			'COOKIE' => $_COOKIE
-		);
-
-		$ids = new IDS_Monitor($request, $init);
-
-		$result = $ids->run();
-
-		if (!$result->isEmpty()) {
-			require_once 'IDS/Log/File.php';
-			require_once 'IDS/Log/Composite.php';
-
-			if (! file_exists($init->config['Logging']['path'])) {
-				touch($init->config['Logging']['path']);
-			}
-
-			$compositeLog = new IDS_Log_Composite();
-			$compositeLog->addLogger(IDS_Log_File::getInstance($init));
-
-			$compositeLog->execute($result);
-		}
-
-		$impact = $result->getImpact();
-
-		if (! isset($_SESSION['ids_impact'])) {
-			$_SESSION['ids_impact'] = 0;
-		}
-		$_SESSION['ids_impact'] += $impact;
-
-		if ($impact > $prefs['ids_single_threshold'] || $_SESSION['ids_impact'] > $prefs['ids_session_threshold']) {
-			header('503 Service Unavailable');
-			echo tra('Request prevented');
-			exit;
-		}
-	} catch (Exception $e) {
-		die($e->getMessage());
-	}
-}
 
 // Define the special maxRecords global variable
 $maxRecords = $prefs['maxRecords'];
@@ -246,7 +188,7 @@ $vartype['forumId'] = '+int';
 $vartype['offset'] = 'intSign';
 $vartype['prev_offset'] = 'intSign';
 $vartype['next_offset'] = 'intSign';
-$vartype['threshold'] = 'int';
+$vartype['thresold'] = 'int';
 $vartype['sort_mode'] = '+char';
 $vartype['file_sort_mode'] = 'char';
 $vartype['file_offset'] = 'int';
@@ -254,7 +196,7 @@ $vartype['file_find'] = 'string';
 $vartype['file_prev_offset'] = 'intSign';
 $vartype['file_next_offset'] = 'intSign';
 $vartype['comments_offset'] = 'int';
-$vartype['comments_threshold'] = 'int';
+$vartype['comments_thresold'] = 'int';
 $vartype['comments_parentId'] = '+int';
 $vartype['thread_sort_mode'] = '+char';
 $vartype['thread_style'] = '+char';

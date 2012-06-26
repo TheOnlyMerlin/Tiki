@@ -55,12 +55,11 @@ require_once ('lib/setup/sections.php');
 require_once ('lib/headerlib.php');
 
 $domain_map = array();
-if ( isset($_SERVER['HTTP_HOST']) ) { $host = $_SERVER['HTTP_HOST']; } else { $host = ""; };
-if ( isset($_SERVER['REQUEST_URI']) ) { $requestUri = $_SERVER['REQUEST_URI']; } else { $requestUri = ""; };
+$host = $_SERVER['HTTP_HOST'];
 
 if ( $prefs['tiki_domain_prefix'] == 'strip' && substr($host, 0, 4) == 'www.' ) {
 	$domain_map[$host] = substr($host, 4);
-} elseif ( $prefs['tiki_domain_prefix'] == 'force' && substr($host, 0, 4) != 'www.' ) {
+} elseif ( $prefs['tiki_domain_prefix'] == 'force' && substr($_SERVER['HTTP_HOST'], 0, 4) != 'www.' ) {
 	$domain_map[$host] = 'www.' . $host;
 }
 
@@ -74,7 +73,7 @@ if (strpos($prefs['tiki_domain_redirects'], ',') !== false) {
 if ( isset($domain_map[$host]) ) {
 	$prefix = $tikilib->httpPrefix();
 	$prefix = str_replace("://$host", "://{$domain_map[$host]}", $prefix);
-	$url = $prefix . $requestUri;
+	$url = $prefix . $_SERVER['REQUEST_URI'];
 
 	$access->redirect($url, null, 301);
 	exit;
@@ -388,10 +387,6 @@ if ($prefs['javascript_enabled'] != 'n') {
 
 	if (empty($user) && $prefs['feature_antibot'] == 'y') {
 		$headerlib->add_jsfile('lib/captcha/captchalib.js');
-	}
-
-	if ( $prefs['feature_jcapture'] === 'y' ) {
-		$headerlib->add_jsfile('lib/jcapture_tiki/tiki-jcapture.js');
 	}
 
 }	// end if $prefs['javascript_enabled'] != 'n'

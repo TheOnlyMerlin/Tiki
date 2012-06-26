@@ -240,7 +240,7 @@ $smarty->assign('preview', 0);
 // If we are in preview mode then preview it!
 if (isset($_REQUEST['preview']) or !empty($errors)) {
 	# convert from the displayed 'site' time to 'server' time
-	if (isset($_REQUEST['publish_Hour'])) {
+	if (isset($_REQUEST['_Hour'])) {
 		//Convert 12-hour clock hours to 24-hour scale to compute time
 		if (!empty($_REQUEST['publish_Meridian'])) {
 			$_REQUEST['publish_Hour'] = date('H', strtotime($_REQUEST['publish_Hour'] . ':00 ' . $_REQUEST['publish_Meridian']));
@@ -649,6 +649,7 @@ if ($prefs['feature_multilingual'] == 'y') {
 	$smarty->assign_by_ref('languages', $languages);
 	// get translations
 	if ($articleId) {
+		include_once('lib/multilingual/multilinguallib.php');
 		$translations = $multilinguallib->getTranslations('article', $articleId);	
 	} else {
 		$translations = array();

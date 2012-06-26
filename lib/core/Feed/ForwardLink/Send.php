@@ -7,85 +7,84 @@
 
 Class Feed_ForwardLink_Send extends Feed_Abstract
 {
-	var $type = "forwardlink_protocol_send";
-	var $version = 0.1;
-	var $isFileGal = false;
-	var $debug = false;
+	var $type = "textlink";
+	var $version = "0.1";
+	
+	static function add($item = array())
+	{
+		global $textlinkContribution;
+		if (empty($textlinkContribution)) {
+			$textlinkContribution = (object)array();
+			$textlinkContribution->entry = array();
+		}
+		
+		$item = (object)$item;
+		$item->forwardlink->href = str_replace(' ', '+', $item->forwardlink->href);
+		$exists = false;
+		
+		foreach ($textlinkContribution as $existingItem) {
+			if ($existingItem->textlink['id'] == $item->textlink['id']) {
+				$exists = true;
+				
+			}
+		}
+		
+		if ($exists == false) $textlinkContribution->entry[] = $item;
+	}
 
 	static function wikiView()
 	{
 		$me = new self();
-		if ($me->debug == true) {
-			print_r($me->send());
-		} else {
-			$me->send();
-		}
+		($me->send());
 	}
-
-	public function send()
+	
+	public function getContents()
 	{
-		$me = new self("global");
-		$sent = array();
-		$textlink = new Feed_TextLink();
-		$feed = $textlink->feed();
-		$alreadyRanHrefs = array();
+		global $textlinkContribution;
+		
+		if (!empty($textlinkContribution)) {
+			$this->setEncoding(TikiFilter_PrepareInput::delimiter('_')->flatten($textlinkContribution));
+			
+			return $textlinkContribution;
+		}
+	
+		return array();
+	}
+	
+	function send()
+	{
+		global $tikilib;
 
-		$items = array();
-		//we send something only if we have something to send
-		if (empty($feed->feed->entry) == false) {
-			foreach ($feed->feed->entry as &$item) {
-				if (empty($item->forwardlink->href) || isset($sent[$item->forwardlink->hash])) continue;
-				if ($me->isAlreadySent($item) == false && isset($alreadyRanHrefs[$item->forwardlink->href]) == false) {
-					$sent[$item->forwardlink->hash] = true;
-					$alreadyRanHrefs[$item->forwardlink->href] = true;
-					$client = new Zend_Http_Client($item->forwardlink->href, array('timeout' => 60));
+		$entry = array();
+		$lastModif = 0;
+		$feed = $this->feed();
+		
+		foreach ($feed->feed->entry as $item) {
+			if (empty($item->forwardlink->href)) continue;
 
-					if (!empty($feed->feed->entry)) {
-						$client->setParameterGet(
+			$client = new Zend_Http_Client($item->forwardlink->href, array('timeout' => 60));
+
+			$info = $tikilib->get_page_info($item->page);
+
+			if ($info['lastModif'] > $lastModif)
+				$lastModif = $info['lastModif'];
+		}
+		
+		if (!empty($feed->feed->entry)) {
+			$client->setParameterGet(
 							array(
 								'protocol'=> 'forwardlink',
 								'contribution'=> json_encode($feed)
 							)
-						);
+			);
 
-			            try {
-
-				            $response = $client->request(Zend_Http_Client::POST);
-						    $request = $client->getLastResponse();
-				            $result = $response->getBody();
-						    $resultJson = json_decode($response->getBody());
-
-				            //Here we add the date last updated so that we don't have to send it if not needed, saving load time.
-				            if (!empty($resultJson->feed) && $resultJson->feed == "success") {
-					            $me->addItem(array(
-						            'dateLastUpdated'=> $item->textlink->dateLastUpdated,
-						            'textlinkHash'=> $item->textlink->hash,
-						            'forwardlinkHash'=> $item->forwardlink->hash
-					            ));
-				            }
-
-				            $items[] = $resultJson;
-
-			            } catch(Exception $e) {}
-					}
-				}
-			}
-
-			return $resultJson;
+            try {
+			    $response = $client->request(Zend_Http_Client::POST);
+			    $request = $client->getLastResponse();
+			    return $response->getBody();
+            } catch(Exception $e) {
+                return "";
+            }
 		}
-	}
-
-	function isAlreadySent(&$newItem)
-	{
-
-		foreach($this->getContents()->entry as &$existingItem) {
-			if (
-				$existingItem->dateLastUpdated == $newItem->textlink->dateLastUpdated &&
-				$existingItem->textlinkHash == $newItem->textlink->hash &&
-				$existingItem->forwardlinkHash == $newItem->forwardlink->hash) {
-				return true;
-			}
-		}
-		return false;
 	}
 }

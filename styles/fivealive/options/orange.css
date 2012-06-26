@@ -1,6 +1,6 @@
 /* $Id$ 
-	Orange theme option for FiveAlive themes for
-	Tiki Wiki CMS Groupware.
+	Orange theme option for FiveAlive theme for
+	TikiWiki CMS/Groupware.
 */
 
 a,
@@ -29,7 +29,7 @@ hr {
 	color: #e7713e;
 }
 
-#main .header_outer {
+.header_outer {
 	background: url(orange/siteheadertile.png) 0 0 no-repeat;
 }
 
@@ -104,28 +104,23 @@ input[type="submit"]:hover,
 .cssmenu_horiz li ul a,
 .header .cssmenu_horiz li ul a,
 .header .cssmenu_horiz li:hover ul a,
-#main #topbar_modules .cssmenu_horiz li ul a,
-#main #topbar_modules .cssmenu_horiz li:hover ul a  {
+#topbar_modules .cssmenu_horiz li ul a,
+#topbar_modules .cssmenu_horiz li:hover ul a  {
 	background: #c44a23;
 }
 
 .cssmenu_vert li ul a:hover,
 .cssmenu_horiz li ul a:hover,
 .header .cssmenu_horiz li ul a:hover,
-#main #topbar_modules .cssmenu_horiz li ul a:hover  {
+#topbar_modules .cssmenu_horiz li ul a:hover  {
 	background: #e35c29;
 }
 
-#tiki-top .cssmenu_horiz li a {
-	background: #c94c23 url(orange/siteheader.png) no-repeat -600px -40px;
-}
-
-#tiki-top .cssmenu_horiz li a:hover,
 .header .cssmenu_horiz li.selected a,
 #topbar_modules .cssmenu_horiz li.selected a,
 .cssmenu_horiz li.selected a,
 .cssmenu_vert li.selected a {
-	background: #e88357;
+	color: #e88357;
 }
 
 .header .cssmenu_horiz li.selected li a,
@@ -170,11 +165,6 @@ textarea,
 
 .simplebox {
 	border: 2px solid #e7713e;
-}
-
-h3.box-title,
-.postbody-title {
-	background: #e85f23 url(orange/siteheader.png) no-repeat -1000px -200px;
 }
 
 .adminanchors {
@@ -248,24 +238,13 @@ form.admin fieldset,
 	border-left: 8px solid #f4d6cc;
 }
 
-.postbody-title > br {
-	display: none;
+.postbody-title {
+	background: #e75f23 url(orange/siteheader.png) -550px -90px no-repeat;
 }
 
 .post .author,
 .dirsite {
 	background: #f4d6cc;
-}
-
-.postbody-content {
-	border: 1px solid #e85f23;
-	border-top: none;
-}
-
-.post .author {
-	border: 1px solid #e85f23;
-	border-top: none;
-	border-bottom: none;
 }
 
 /* cluptip tooltips */

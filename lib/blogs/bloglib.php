@@ -600,7 +600,7 @@ class BlogLib extends TikiDb_Bridge
 		global $user, $tikilib, $userlib, $tiki_p_admin, $tiki_p_blog_admin, $tiki_p_blog_post;
 
 		// TODO: use commentslib instead of querying database directly
-		// Blog Recent Comments
+        // Blog post comments		
 		$query = "SELECT b.`title`, b.`postId`, b.`priv`, blog.`user`, blog.`public`, c.`threadId`, c.`title` as commentTitle, c.`website`, `commentDate`, `userName` FROM `tiki_comments` c, `tiki_blog_posts` b, `tiki_blogs` blog WHERE `objectType`='blog post' AND b.`postId`=c.`object` AND blog.`blogId`=b.`blogId`";
 
 		$bindvars = array();
@@ -735,14 +735,6 @@ class BlogLib extends TikiDb_Bridge
 			$nots = $tikilib->get_event_watches('blog_post', $blogId);
 			if (!isset($_SERVER["SERVER_NAME"])) {
 				$_SERVER["SERVER_NAME"] = $_SERVER["HTTP_HOST"];
-			}
-
-			if ($prefs['user_blog_watch_editor'] != "y") {
-			for ($i = count($nots) - 1; $i >=0; --$i)
-				if ($nots[$i]['user'] == $user) {
-					unset($nots[$i]);
-					break;
-				}
 			}
 
 			if ($prefs['feature_daily_report_watches'] == 'y') {

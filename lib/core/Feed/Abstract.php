@@ -18,6 +18,11 @@ abstract class Feed_Abstract
 	
 	function __construct($name = "")
 	{
+		$this->name($name);
+	}
+	
+	public function name($name = "")
+	{
 		if (empty($name)) {
 			$name = "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
 			$name = explode('/', $name);
@@ -26,11 +31,12 @@ abstract class Feed_Abstract
 		} else {
 			$name = str_replace("http://", "", $name);
 			$name = str_replace("https://", "", $name);
-			$name = explode('/', $name);
-			$name = array_shift($name);
+			$name = array_shift(explode('/', $name));
 		}
-
-		$this->name = $this->type . "_" . $name;
+		
+		$this->name = $name;
+		
+		return $this;
 	}
 	
 	public function getItems()
@@ -70,7 +76,6 @@ abstract class Feed_Abstract
 	
 	public function setEncoding($contents)
 	{
-		if (is_array($contents)) throw new Exception('die');
 		$this->encoding = mb_detect_encoding($contents, "ASCII, UTF-8, ISO-8859-1");
 	}
 	
@@ -81,7 +86,7 @@ abstract class Feed_Abstract
 		} else {
 			$contents = TikiLib::lib("cache")->getCached($this->name, get_class($this));
 		}
-
+		
 		$this->setEncoding($contents); 
 		
 		$contents = json_decode($contents);
@@ -132,12 +137,8 @@ abstract class Feed_Abstract
 	}
 	
 	function appendToContents(&$contents, $items)
-	{
-		if (isset($items->feed->entry)) {
-			$contents->entry[] = $items->feed->entry;
-		} elseif (isset($items)) {
-			$contents->entry[] = $items;
-		}
+	{	
+		$contents->entry[] = $items->feed->entry;
 	}
 	
 	public function addItem($item)
@@ -154,10 +155,10 @@ abstract class Feed_Abstract
 		}
 		
 		$item = (object)$item;
-
+		
 		//this allows us to intercept the contents and do things like check the validity of the content being appended to the contents	
 		$this->appendToContents($contents, $item);
-
+		
 		$this->save($contents);
 		
 		return $this;

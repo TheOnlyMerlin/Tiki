@@ -46,7 +46,7 @@ if (isset($_REQUEST['submit_mult']) && count($_REQUEST["checked"]) > 0) {
 		}
 	}
 }
-// This script can receive the threshold
+// This script can receive the thresold
 // for the information as the number of
 // days to get in the log 1,3,4,etc
 // it will default to 1 recovering information for today

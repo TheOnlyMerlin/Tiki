@@ -98,5 +98,4 @@ Zend_Loader_Autoloader::getInstance()
 	->registerNamespace('TikiDb')
 	->registerNamespace('Report')
 	->registerNamespace('Feed')
-	->registerNamespace('FileGallery')
-	->registerNamespace('WikiPlugin');
+	->registerNamespace('FileGallery');
