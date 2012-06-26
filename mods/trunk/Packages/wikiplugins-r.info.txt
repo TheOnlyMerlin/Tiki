@@ -27,7 +27,7 @@ licence:
 GNU/GPL
 
 Description: 
-Allows using R syntax for statistics, scientific computing & graphs (see http://www.r-project.org). In wiki syntax, type {R()}{R} or with some params, as reported at the documentation. This same version works for Tiki3 up to Tiki8.
+Allows using R syntax for statistics, scientific computing & graphs (see http://www.r-project.org). In wiki syntax, type {R()}{R} or with some params, as reported at the documentation. This same version works for Tiki3 up to Tiki9.
 
 Docurl:
 https://doc.tiki.org/PluginR
