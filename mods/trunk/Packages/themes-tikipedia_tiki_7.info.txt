@@ -82,7 +82,6 @@ Tikipedia uses the default *litecss source-ordered layout method (http://sourcef
 		{if $prefs.feature_wiki_print eq 'y'}
 					<a title="{tr}Print{/tr}" href="tiki-print.php?{if !empty($page_ref_id)}page_ref_id={$page_ref_id}&amp;{/if}page={$page|escape:"url"}">{icon _id='printer' alt="{tr}Print{/tr}"}</a>
 		{/if}
-
 		{if $prefs.feature_share eq 'y' && $tiki_p_share eq 'y'}
 					<a title="{tr}Share this page{/tr}" href="tiki-share.php?url={$smarty.server.REQUEST_URI|escape:'url'}">{icon _id='share_link' alt="{tr}Share this page{/tr}"}</a>
 		{/if}
@@ -108,13 +107,11 @@ Tikipedia uses the default *litecss source-ordered layout method (http://sourcef
 		{/if}
 		{if $prefs.feature_group_watches eq 'y' and ( $tiki_p_admin_users eq 'y' or $tiki_p_admin eq 'y' )}
 			<a href="tiki-object_watches.php?objectId={$page|escape:"url"}&amp;watch_event=wiki_page_changed&amp;objectType=wiki+page&amp;objectName={$page|escape:"url"}&amp;objectHref={'tiki-index.php?page='|cat:$page|escape:"url"}" class="icon">{icon _id='eye_group' alt="{tr}Group Monitor{/tr}"}</a>
-
 			{if $structure eq 'y'}
 				<a href="tiki-object_watches.php?objectId={$page_info.page_ref_id|escape:"url"}&amp;watch_event=structure_changed&amp;objectType=structure&amp;objectName={$page|escape:"url"}&amp;objectHref={'tiki-index.php?page_ref_id='|cat:$page_ref_id|escape:"url"}" class="icon">{icon _id=eye_group_arrow_down alt="{tr}Group Monitor on Structure{/tr}"}</a>
 			{/if}
 		{/if}
 				</div><!-- END of icons -->
-
 		{if $prefs.feature_backlinks eq 'y' and $backlinks and $tiki_p_view_backlink eq 'y'}
 				<form action="tiki-index.php" method="get" style="display: block; float: left">
 					<select name="page" onchange="this.form.submit()" title="{tr}Backlinks{/tr}">
@@ -127,7 +124,6 @@ Tikipedia uses the default *litecss source-ordered layout method (http://sourcef
 					</select>
 				</form>
 		{/if}
-
 		{if ( $structure eq 'y' and count($showstructs) gt 1 )
 				or 
 				( $structure eq 'n' and count($showstructs) neq 0 )}
@@ -146,7 +142,6 @@ Tikipedia uses the default *litecss source-ordered layout method (http://sourcef
 					</select>
 				</form>
 		{/if}
-
 		{if $prefs.feature_multilingual eq 'y' && $prefs.show_available_translations eq 'y' && $machine_translate_to_lang eq ''}
 				<div style="float: left">
 			{include file='translated-lang.tpl' td='n'}
