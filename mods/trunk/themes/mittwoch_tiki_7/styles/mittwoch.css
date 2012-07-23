@@ -1026,9 +1026,12 @@ td.wikicell {
 	border-collapse: collapse;
 }
 
-.editdate {padding-bottom: 5px}
 #page-bar ul.floatleft li {background: none}
-p.editdate {font-size: 95%}
+
+.editdate {
+	font-size: 95%;
+	padding-bottom: 5px;
+}
 
 /* Wiki plugins */
 /* Code plugin  */
