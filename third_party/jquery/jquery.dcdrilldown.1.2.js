@@ -239,7 +239,6 @@
 					$('ul',$header).append('<li><a href="#" class="first">'+options.resetText+'</a></li>');
 				} else {
 					$('ul',$header).append('<li><a href="#">'+getNewBreadcrumb+'</a></li>');
-					console.log([getNewHeaderText, getNewBreadcrumb]);
 				}
 			}
 			if(options.linkType == 'backlink'){
