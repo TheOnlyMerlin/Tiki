@@ -44,8 +44,11 @@
 		//act upon the element that is passed into the design
 		return this.each(function(){
 
-			var $dcDrilldownObj = this, $wrapper, $dcWrapper, objIndex, idHeader, $header;
+			var $dcDrilldownObj = this, $wrapper, $dcWrapper, objIndex, idHeader, $header, lists;
 			$($dcDrilldownObj).addClass(options.classMenu);
+			lists = $('li a',$dcDrilldownObj).each(function(i) {
+				$(this).data('i', i);
+			});
 
 			if (options.horizontal) {
 				$wrapper = '<table class="'+options.classWrapper+'"><tr><td></td></tr></table>';
@@ -71,31 +74,41 @@
 
 			if(options.saveState == true){
 				var cookieId = options.classWrapper+'-'+objIndex;
-				checkCookie(cookieId, $dcDrilldownObj);
+				checkCookie.apply($dcDrilldownObj, [cookieId, $dcWrapper, $dcDrilldownObj]);
 			}
 
 			resetDrilldown.apply($dcDrilldownObj, [$dcDrilldownObj, $dcWrapper]);
 
-			$('li a',$dcDrilldownObj).bind(options.eventType, function(e){
+			$($dcDrilldownObj).data('drilldownSetup', true);
 
-				$link = this;
-				$activeLi = $(this).parent('li').stop();
-				$siblingsLi = $($activeLi).siblings();
+			lists.each(function(i) {
+				$(this).bind(options.eventType, function(e){
 
-				// Drilldown action
-				if($('> ul',$activeLi).length){
-					if($($link).hasClass(options.classActive)){
-						$('ul a',$activeLi).removeClass(options.classActive);
-						resetDrilldown.apply($dcDrilldownObj, [$dcDrilldownObj, $dcWrapper]);
-					} else {
-						actionDrilldown.apply($dcDrilldownObj, [$activeLi, $dcWrapper, $dcDrilldownObj]);
+					$link = this;
+					$activeLi = $(this).parent('li').stop();
+					$siblingsLi = $($activeLi).siblings();
+
+					// Drilldown action
+					$activeLi.parent().find('a').removeClass(options.classActive);
+
+					if($('> ul',$activeLi).length){
+						if($($link).hasClass(options.classActive)){
+							resetDrilldown.apply($dcDrilldownObj, [$dcDrilldownObj, $dcWrapper]);
+						} else {
+							actionDrilldown.apply($dcDrilldownObj, [$activeLi, $dcWrapper, $dcDrilldownObj]);
+						}
+					} else if (options.linkType == 'breadcrumb' && options.saveState == true) {
+						var cookieId = $($dcWrapper).attr('id');
+						$(this).addClass(options.classActive);
+						createCookie.apply($dcDrilldownObj, [cookieId, $dcDrilldownObj]);
 					}
-				}
 
-				// Prevent browsing to link if has child links
-				if($(this).next('ul').length > 0 && options.eventPreventDefault){
-					e.preventDefault();
-				}
+					// Prevent browsing to link if has child links
+					if($(this).next('ul').length > 0 && options.eventPreventDefault){
+						e.preventDefault();
+					}
+				});
+
 			});
 
 			// Set up accordion
@@ -177,7 +190,7 @@
 				}
 				resetDrilldown.apply(parent, [$dcDrilldownObj, $dcWrapper]);
 
-				if (!options.eventPreventDefault) {
+				if (options.eventPreventDefault || $(this).attr('href') == '#') {
 					e.preventDefault();
 				}
 			});
@@ -209,14 +222,16 @@
 		}
 
 		// Retrieve cookie value and set active items
-		function checkCookie(cookieId, obj){
+		function checkCookie(cookieId, wrapper, obj){
 			var cookieVal = $.cookie(cookieId);
 			if(cookieVal != null){
 				// create array from cookie string
-				var activeArray = cookieVal.split(',');
+				var activeArray = cookieVal.split(','),
+					parent = this;
 				$.each(activeArray, function(index,value){
 					var $cookieLi = $('li:eq('+value+')',obj);
-					$('> a',$cookieLi).addClass(options.classActive);
+					$('a',$cookieLi.parent()).removeClass(options.classActive);
+					actionDrilldown.apply(parent, [$cookieLi, wrapper, obj]);
 				});
 			}
 		}
@@ -224,65 +239,67 @@
 		// Drill Down
 		function actionDrilldown(element, wrapper, obj){
 			// Declare header
-			var $header = $('.'+options.classHeader, wrapper);
+			if ($('ul', element).length > 0) {
+				var $header = $('.'+options.classHeader, wrapper);
 
-			// Get new breadcrumb and header text
-			var getNewBreadcrumb = $(options.headerTag,$header).html();
-			var getNewHeaderText = $('> a',element).html();
+				// Get new breadcrumb and header text
+				var getNewBreadcrumb = $(options.headerTag,$header).html();
+				var getNewHeaderText = $('> a',element).html();
 
-			// Add new breadcrumb
-			if(options.linkType == 'breadcrumb'){
-				if(!$('ul',$header).length){
-					$($header).prepend('<ul></ul>');
+				// Add new breadcrumb
+				if(options.linkType == 'breadcrumb'){
+					if(!$('ul',$header).length){
+						$($header).prepend('<ul></ul>');
+					}
+					if(getNewBreadcrumb == options.defaultText){
+						$('ul',$header).append('<li><a href="#" class="first">'+options.resetText+'</a></li>');
+					} else {
+						var href = $(element).find('a:first').attr('href') || '#';
+						$('ul',$header).append('<li><a href="' + href + '">'+getNewBreadcrumb+'</a></li>');
+					}
 				}
-				if(getNewBreadcrumb == options.defaultText){
-					$('ul',$header).append('<li><a href="#" class="first">'+options.resetText+'</a></li>');
-				} else {
-					$('ul',$header).append('<li><a href="#">'+getNewBreadcrumb+'</a></li>');
+				if(options.linkType == 'backlink'){
+					if(!$('a',$header).length){
+						$($header).prepend('<a href="#" class="link-back">'+getNewBreadcrumb+'</a>');
+					} else {
+						$('.link-back',$header).html(getNewBreadcrumb);
+					}
 				}
-			}
-			if(options.linkType == 'backlink'){
-				if(!$('a',$header).length){
-					$($header).prepend('<a href="#" class="link-back">'+getNewBreadcrumb+'</a>');
-				} else {
-					$('.link-back',$header).html(getNewBreadcrumb);
+				if(options.linkType == 'link'){
+					if(!$('a',$header).length){
+						$($header).prepend('<ul><li><a href="#" class="first">'+options.resetText+'</a></li></ul>');
+					}
 				}
-			}
-			if(options.linkType == 'link'){
-				if(!$('a',$header).length){
-					$($header).prepend('<ul><li><a href="#" class="first">'+options.resetText+'</a></li></ul>');
-				}
-			}
-			// Update header text
-			updateHeader.apply(this, [$header, getNewHeaderText]);
+				// Update header text
+				updateHeader.apply(this, [$header, getNewHeaderText]);
 
-			// declare child link
-			var activeLink = $('> a',element);
+				// declare child link
+				var activeLink = $('> a',element);
 
-			// add active class to link
-			$(activeLink).addClass(options.classActive);
-			$('> ul li',element).show();
-			if (options.eventPreventDefault) {
+				// add active class to link
+				$(activeLink).addClass(options.classActive);
+				$('> ul li',element).show();
 				var parent = this;
-				$(parent).find('ul').stop();
-				$('> ul',element).animate({"margin-right": 0}, options.speed, function() {
+				animate.apply(this, [$('> ul',element), {"margin-right": 0}, options.speed, function() {
 					$(parent).trigger('actionDrilldown', [element, wrapper, obj]);
-				});
+				}]);
+
+				// Find all sibling items & hide
+				var $siblingsLi = $(element).siblings();
+				$($siblingsLi).hide();
+
+				// If using breadcrumbs hide this element
+				if(options.linkType != 'link'){
+					$(activeLink).hide();
+				}
+			} else {
+				$('> a',element).addClass(options.classActive);
+				$(this).trigger('actionDrilldown', [element, wrapper, obj]);
 			}
-
-			// Find all sibling items & hide
-			var $siblingsLi = $(element).siblings();
-			$($siblingsLi).hide();
-
-			// If using breadcrumbs hide this element
-			if(options.linkType != 'link'){
-				$(activeLink).hide();
-			}
-
 			// Write cookie if save state is on
 			if(options.saveState == true){
 				var cookieId = $(wrapper).attr('id');
-				createCookie(cookieId, obj);
+				createCookie.apply(this, [cookieId, obj]);
 			}
 		}
 
@@ -352,12 +369,13 @@
 			// Write cookie if save state is on
 			if(options.saveState == true){
 				var cookieId = $(wrapper).attr('id');
-				createCookie(cookieId, obj);
+				createCookie.apply(this, [cookieId, obj]);
 			}
 
 			var parent = this;
 			$('a.'+options.classActive,obj).each(function(i){
 				var $activeLi = $(this).parent('li').stop();
+				$('ul a',$activeLi).removeClass(options.classActive);
 				actionDrilldown.apply(parent, [$activeLi, wrapper, obj]);
 			});
 
@@ -366,15 +384,34 @@
 
 		// Write cookie
 		function createCookie(cookieId, obj){
-			var activeIndex = [];
-			// Create array of active items index value
-			$('a.'+options.classActive,obj).each(function(i){
-				var $arrayItem = $(this).parent('li');
-				var itemIndex = $('li',obj).index($arrayItem);
-					activeIndex.push(itemIndex);
+			if ($(this).data('drilldownSetup')) {
+				var activeIndex = [];
+				// Create array of active items index value
+
+				$('a.'+options.classActive,obj).each(function(i){
+
+					activeIndex.push($(this).data('i'));
 				});
-			// Store in cookie
-			$.cookie(cookieId, activeIndex, { path: '/' });
+
+				// Store in cookie
+
+				$.cookie(cookieId, activeIndex.join(','), { path: '/' });
+				console.log($.cookie(cookieId));
+			}
+			return;
+		}
+
+		function animate(obj, css, speed, fn)
+		{
+			if ($(this).data('drilldownSetup')) {
+				if (options.eventPreventDefault) {
+					obj.animate(css, speed, fn);
+				} else if (fn) {
+					fn();
+				}
+			} else {
+				obj.animate(css, 0, fn);
+			}
 		}
 	};
 })(jQuery);
