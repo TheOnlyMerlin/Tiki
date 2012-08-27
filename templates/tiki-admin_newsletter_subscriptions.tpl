@@ -162,7 +162,7 @@
 {if $channels}
 	<div align="left">
 		{tr}Perform action with checked:{/tr}
-		<input type="image" name="delsel" src='img/icons/cross.png' alt="{tr}Delete{/tr}" title="{tr}Delete{/tr}" />
+		<input type="image" name="delsel" src='pics/icons/cross.png' alt="{tr}Delete{/tr}" title="{tr}Delete{/tr}" />
 	</div>
 {/if}
 
@@ -235,7 +235,7 @@
 					{tr}Don't send confirmation mail{/tr}
 				</td>
 				<td colspan="2">
-					<input type="checkbox" name="confirmEmail" checked="checked" />
+					<input type="checkbox" name="confirmEmail" />
 				</td>
 			</tr>
 		{/if}
@@ -273,7 +273,7 @@
 						{tr}Don't send confirmation mails{/tr}
 					</td>
 					<td colspan="2">
-						<input type="checkbox" name="confirmEmail" checked="checked" />
+						<input type="checkbox" name="confirmEmail" />
 					</td>
 				</tr>
 			{/if}
@@ -303,7 +303,7 @@
 						{tr}Don't send confirmation mails{/tr}
 					</td>
 					<td colspan="2">
-						<input type="checkbox" name="confirmEmail" checked="checked" />
+						<input type="checkbox" name="confirmEmail" />
 					</td>
 				</tr>
 			{/if}

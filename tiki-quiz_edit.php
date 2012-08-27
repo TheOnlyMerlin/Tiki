@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -83,22 +83,20 @@ function quiz_data_load()
 		$_REQUEST['expire_Hour'] = date('H', strtotime($_REQUEST['expire_Hour'] . ':00 ' . $_REQUEST['expire_Meridian']));
 	}
 	
-	$quiz_data["datePub"] = TikiLib::make_time(
-					$quiz_data["publish_Hour"],
-					$quiz_data["publish_Minute"],
-					0,
-					$quiz_data["publish_Month"],
-					$quiz_data["publish_Day"],
-					$quiz_data["publish_Year"]
-	);
-	$quiz_data["dateExp"] = TikiLib::make_time(
-					$quiz_data["expire_Hour"],
-					$quiz_data["expire_Minute"],
-					0,
-					$quiz_data["expire_Month"],
-					$quiz_data["expire_Day"],
-					$quiz_data["expire_Year"]
-	);
+	$quiz_data["datePub"] = TikiLib::make_time($quiz_data["publish_Hour"]
+																						, $quiz_data["publish_Minute"]
+																						, 0
+																						, $quiz_data["publish_Month"]
+																						, $quiz_data["publish_Day"]
+																						, $quiz_data["publish_Year"]
+																						);
+	$quiz_data["dateExp"] = TikiLib::make_time($quiz_data["expire_Hour"]
+																						, $quiz_data["expire_Minute"]
+																						, 0
+																						, $quiz_data["expire_Month"]
+																						, $quiz_data["expire_Day"]
+																						, $quiz_data["expire_Year"]
+																						);
 	$fields = array('nQuestion'
 								, 'shuffleAnswers'
 								, 'shuffleQuestions'

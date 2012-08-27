@@ -1,25 +1,24 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_mediaplayer_info()
-{
+function wikiplugin_mediaplayer_info() {
 	return array(
 		'name' => tra('Media Player'),
 		'documentation' => 'PluginMediaplayer',
 		'description' => tra('Add a media player to a page'),
 		'extraparams' =>true,
 		'prefs' => array( 'wikiplugin_mediaplayer' ),
-		'icon' => 'img/icons/mime/avi.png',
+		'icon' => 'pics/icons/mime/avi.png',
 		'tags' => array( 'basic' ),
 		'params' => array(
 			'fullscreen' => array(
 				'required' => false,
 				'name' => tra('Allow Fullscreen'),
-				'description' => tra('Allow fullscreen mode.').tra(' true|false'),
+				'description' => tra('Allow fullscreen mode.').' true|false',
 				'filter' => 'alpha',
 				'options' => array(
 					array(
@@ -55,25 +54,6 @@ function wikiplugin_mediaplayer_info()
 				'filter' => 'url',
 				'default' => '',
 			),
-			// The type parameter is verified for QuickTime only. arildb
-			'type' => array(
-				'required' => false,
-				'name'=> tra('File type'),
-				'description' => tra('Filetype for source URL, e.g. mp4. Specify one of the supported filetypes when the URL file is missing the file extention. This is the case for File Gallery files.'),
-				'default' => '',
-			),
-			'width' => array(
-				'required' => false,
-				'name'=> tra('Width'),
-				'description' => tra('Player width in px or %'),
-				'default' => '',
-				),
-			'height' => array(
-				'required' => false,
-				'name'=> tra('Height'),
-					'description' => tra('Player height in px or %'),
-				'default' => '',
-				),
 			'style' => array(
 				'required' => false,
 				'name' => tra('Style'),
@@ -100,7 +80,8 @@ function wikiplugin_mediaplayer_info()
 			'wmode' => array(
 				'required' => false,
 				'name' => tra('Flash Window Mode'),
-				'description' => tra('Sets the Window Mode property of the Flash movie. Transparent lets what\'s behind the movie show through and allows the movie to be covered Opaque hides what\'s behind the movie and Window plays the movie in its own window. Default value: ').'transparent',
+				'description' => tra('Sets the Window Mode property of the Flash movie. Transparent lets what\'s behind the movie show through and allows the movie to be covered 
+										 Opaque hides what\'s behind the movie and Window plays the movie in its own window. Default value: ').'transparent',
 				'filter' => 'alpha',
 				'options' => array(
 					array(
@@ -124,8 +105,7 @@ function wikiplugin_mediaplayer_info()
 		),
 	);
 }
-function wikiplugin_mediaplayer($data, $params)
-{
+function wikiplugin_mediaplayer($data, $params) {
 	global $prefs, $access;
 	static $iMEDIAPLAYER = 0;
 	$id = 'mediaplayer'.++$iMEDIAPLAYER;
@@ -153,11 +133,11 @@ function wikiplugin_mediaplayer($data, $params)
 		'height' => 240,
 	);
 	if (!empty($params['flv'])) {
-		$params = array_merge($defaults_flv, $params);
+		$params = array_merge($defaults_flv, $params );
 	} elseif (!empty($params['mp3'])) {
-		$params = array_merge($defaults_mp3, $params);
+		$params = array_merge($defaults_mp3, $params );
 	} else {
-		$params = array_merge($defaults, $params);
+		$params = array_merge($defaults, $params );
 	}
 	if (!empty($params['src'])) {
 		global $headerlib; include_once('lib/headerlib.php');
@@ -175,14 +155,7 @@ function wikiplugin_mediaplayer($data, $params)
 			
 			$js .= "$param: $value,";
 		}
-		// Force scaling (keeping the aspect ratio) of the QuickTime player
-		//	Tried with .mp4. Not sure how this will work with other formats, not using QuickTime.
-		// See: http://jquery.malsup.com/media/#players for default players for different formats. arildb
-		$js .= " params: { 
-				scale: 'aspect'
-				} 
-			} );";
-			
+		$js .= "} );";
 		$headerlib->add_jq_onready($js);
 		return "<a href=\"".$params['src']."\" id=\"$id\"></a>";
 	}

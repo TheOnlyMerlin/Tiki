@@ -13,7 +13,7 @@
 {tabset name="user_watches"}
 	{if $prefs.feature_daily_report_watches eq 'y'}
 	{tab name="{tr}Report Preferences{/tr}"}
-		{if isset($remove_user_watch_error) && $remove_user_watch_error}
+		{if $remove_user_watch_error}
 			{remarksbox type="error" title="{tr}Error{/tr}"}{tr}You are not allowed to remove this notification !{/tr}{/remarksbox}
 		{else}
 			{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use reports to summarise notifications about objects you are watching.{/tr}{/remarksbox}
@@ -26,8 +26,6 @@
 			<p>
 			{tr}Interval in which you want to get the reports{/tr}
 			<select name="interval">
-					<option value="minute" {if $report_preferences.interval eq "minute"}selected{/if}>{tr}Every minute{/tr}</option>
-					<option value="hourly" {if $report_preferences.interval eq "hourly"}selected{/if}>{tr}Hourly{/tr}</option>
 					<option value="daily" {if $report_preferences.interval eq "daily"}selected{/if}>{tr}Daily{/tr}</option>
 					<option value="weekly" {if $report_preferences.interval eq "weekly"}selected{/if}>{tr}Weekly{/tr}</option>
 					<option value="monthly" {if $report_preferences.interval eq "monthly"}selected{/if}>{tr}Monthly{/tr}</option>
@@ -36,7 +34,7 @@
 			
 			<div style="float:left; margin-right: 50px;">
 			    <input type="radio" name="view" value="short"{if $report_preferences.view eq "short"} checked="checked"{/if} /> {tr}Short report{/tr}<br />
-		    	<input type="radio" name="view" value="detailed"{if $report_preferences.view eq "detailed" OR $report_preferences eq false} checked="checked"{/if} /> {tr}Detailed report{/tr}<br />
+		    	<input type="radio" name="view" value="detailed"{if $report_preferences.view eq "detailed" OR $report_preferences eq false}checked="checked"{/if} /> {tr}Detailed report{/tr}<br />
 			</div>
 			<div style="float:left; margin-right: 50px;">
 			    <input type="radio" name="type" value="html"{if $report_preferences.type eq "html" OR $report_preferences eq false} checked="checked"{/if} /> {tr}HTML-Email{/tr}<br />
@@ -187,21 +185,5 @@
 	{tr}Perform action with checked:{/tr} <input type="submit" name="delete" value="{tr}Delete{/tr}" />
 {/if}
 </form>
-{/tab}
-{tab name="{tr}Notification Preferences{/tr}"}
-	{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use this form to control notifications about objects you are watching.{/tr}{/remarksbox}
-	
-	<form action="tiki-user_notifications.php" method="post">
-		<input type="hidden" name="notification_preferences" value="true"/>
-		<p>Send notification when I am the editor:</p>
-		<p><input type="checkbox" name="user_wiki_watch_editor" value="true" {if $user_wiki_watch_editor eq 'y'}checked{/if}/> {tr}Wiki{/tr}</p>
-		<p><input type="checkbox" name="user_article_watch_editor" value="true" {if $user_article_watch_editor eq 'y'}checked{/if}/> {tr}Article{/tr}</p>
-		<p><input type="checkbox" name="user_blog_watch_editor" value="true" {if $user_blog_watch_editor eq 'y'}checked{/if}/> {tr}Blog{/tr}</p>
-		<p><input type="checkbox" name="user_tracker_watch_editor" value="true" {if $user_tracker_watch_editor eq 'y'}checked{/if}/> {tr}Tracker{/tr}</p>
-		<p><input type="checkbox" name="user_calendar_watch_editor" value="true" {if $user_calendar_watch_editor eq 'y'}checked{/if}/> {tr}Calendar{/tr}</p>
-		<p><input type="checkbox" name="user_comment_watch_editor" value="true" {if $user_comment_watch_editor eq 'y'}checked{/if}/> {tr}Comment{/tr}</p>
-
-		<p><input type="submit" name="submit" value=" {tr}Apply{/tr} " /></p>
-	</form>
 {/tab}
 {/tabset}

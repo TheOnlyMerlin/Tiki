@@ -1,12 +1,11 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_auth_list()
-{
+function prefs_auth_list() {
 	return array(
 		'auth_method' => array(
 			'name' => tra('Authentication method'),
@@ -33,7 +32,6 @@ function prefs_auth_list()
 			'perspective' => false,
 			'type' => 'flag',
 			'default' => 'n',
-			'view' => 'tiki-admin_tokens.php',
 		),
 		'auth_token_access_maxtimeout' => array(
 			'name' => tra('Token Access Max Timeout'),
@@ -42,7 +40,7 @@ function prefs_auth_list()
 			'size' => 5,
 			'perspective' => false,
 			'filter' => 'digits',
-			'shorthint' => tra('(seconds)'),
+			'shorthint' => '(seconds)',
 			'default' => 3600*24*7,
 		),
 		'auth_token_access_maxhits' => array(

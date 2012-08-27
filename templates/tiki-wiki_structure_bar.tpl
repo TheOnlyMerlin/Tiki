@@ -8,19 +8,21 @@
 
     {if $prev_info and $prev_info.page_ref_id}{if $prev_info.page_alias}{assign var=icon_title value=$prev_info.page_alias}{else}{assign var=icon_title value=$prev_info.pageName}{/if}
     	<a href="{sefurl page=$prev_info.pageName structure=$home_info.pageName page_ref_id=$prev_info.page_ref_id}">
-    		{icon _id='resultset_previous' alt="{tr}Previous page{/tr}" title=$icon_title}</a>
+    		{icon _id='resultset_previous' alt="{tr}Previous page{/tr}" title=$icon_title}
+    	</a>
     {else}
-    	<img src="img/icons/8.gif" alt="" height="1" width="8" />
+    	<img src="img/icons2/8.gif" alt="" height="1" width="8" />
     {/if}
 
     {if $parent_info}{if $parent_info.page_alias}{assign var=icon_title value=$parent_info.page_alias}{else}{assign var=icon_title value=$parent_info.pageName}{/if}
     	<a href="{sefurl page=$parent_info.pageName structure=$home_info.pageName page_ref_id=$parent_info.page_ref_id}">
-    		{icon _id='resultset_up' alt="{tr}Parent page{/tr}" title=$icon_title}</a>
+    		{icon _id='resultset_up' alt="{tr}Parent page{/tr}" title=$icon_title}
+    	</a>
     {else}
-    	<img src="img/icons/8.gif" alt="" height="1" width="8" />
+    	<img src="img/icons2/8.gif" alt="" height="1" width="8" />
     {/if}
 
-    {if $next_info and $next_info.page_ref_id}{if $next_info.page_alias}{assign var=icon_title value=$next_info.page_alias}{else}{assign var=icon_title value=$next_info.pageName}{/if}<a href="{sefurl page=$next_info.pageName structure=$home_info.pageName page_ref_id=$next_info.page_ref_id}">{icon _id='resultset_next' alt="{tr}Next page{/tr}" title=$icon_title}</a>{else}<img src="img/icons/8.gif" alt="" height="1" width="8" />{/if}
+    {if $next_info and $next_info.page_ref_id}{if $next_info.page_alias}{assign var=icon_title value=$next_info.page_alias}{else}{assign var=icon_title value=$next_info.pageName}{/if}<a href="{sefurl page=$next_info.pageName structure=$home_info.pageName page_ref_id=$next_info.page_ref_id}">{icon _id='resultset_next' alt="{tr}Next page{/tr}" title=$icon_title}</a>{else}<img src="img/icons2/8.gif" alt="" height="1" width="8" />{/if}
 
 		</div>
   		<div style="float: left;">
@@ -46,18 +48,15 @@
 {else}
 		</div>
 {/if}
-	    {section loop=$structure_path name=ix}
-	      {if $structure_path[ix].parent_id}&nbsp;{$prefs.site_crumb_seper}&nbsp;{/if}
-		  <a href="{sefurl page=$structure_path[ix].pageName structure=$home_info.pageName page_ref_id=$structure_path[ix].page_ref_id}">
-	      {if $structure_path[ix].page_alias}
-	        {$structure_path[ix].page_alias}
-		  {else}
-	        {$structure_path[ix].pageName|pagename}
-		  {/if}
-		  </a>
-		{/section}
-	{if $prefs.feature_wiki_structure_drilldownmenu eq 'y'}
-		{menu structureId=$page_info.structure_id page_id=$page_info.page_id page_name=$page_info.pageName drilldown='y'}
-	{/if}
+    {section loop=$structure_path name=ix}
+      {if $structure_path[ix].parent_id}&nbsp;{$prefs.site_crumb_seper}&nbsp;{/if}
+	  <a href="{sefurl page=$structure_path[ix].pageName structure=$home_info.pageName page_ref_id=$structure_path[ix].page_ref_id}">
+      {if $structure_path[ix].page_alias}
+        {$structure_path[ix].page_alias}
+	  {else}
+        {$structure_path[ix].pageName|pagename}
+	  {/if}
+	  </a>
+	{/section}
 	</div>
 </div>

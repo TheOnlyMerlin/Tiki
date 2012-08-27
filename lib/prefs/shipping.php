@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,19 +7,6 @@
 
 function prefs_shipping_list()
 {
-	require_once 'lib/shipping/shippinglib.php';
-	$all = glob('lib/shipping/custom/*.php');
-	
-	$custom_providers = array( '' => tra('None'));
-
-	foreach ( $all as $file ) {
-		if ($file === "lib/shipping/custom/index.php")
-			continue;
-		$name = basename($file, '.php');
-		$provider = ShippingLib::getCustomShippingProvider($name);
-		$custom_providers[$name] = $provider->getName();
-	}
-
 	return array(
 		'shipping_service' => array(
 			'name' => tra('Shipping Service'),
@@ -90,14 +77,6 @@ function prefs_shipping_list()
 			'type' => 'text',
 			'size' => 25,
 			'default' => '',
-		),
-		'shipping_custom_provider' => array(
-			'name' => tra('Custom Shipping Provider'),
-			'type' => 'list',
-			'size' => 25,
-			'default' => '',
-			'options' => $custom_providers,
-			'dependencies' => array('shipping_service'),
 		),
 	);
 }

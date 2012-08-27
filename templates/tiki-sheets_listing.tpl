@@ -1,5 +1,7 @@
 {* $Id: tiki-sheets.tpl 35450 2011-07-17 19:03:36Z changi67 $ *}
 
+{cycle values="odd,even" print=false}
+
 <tr class="{cycle}">
 	<td class="text">
 		{if $sheet.parentSheetId}
@@ -15,7 +17,7 @@
 	<td class="action">
 		{if $chart_enabled eq 'y'}
 			<a class="gallink" href="tiki-graph_sheet.php?sheetId={$sheet.sheetId}">
-				<img src='img/icons/chart_curve.png' width='16' height='16' alt="{tr}Graph{/tr}" title="{tr}Graph{/tr}" />
+				<img src='pics/icons/chart_curve.png' width='16' height='16' alt="{tr}Graph{/tr}" title="{tr}Graph{/tr}" />
 			</a>
 		{/if}
 		{if $tiki_p_view_sheet_history eq 'y'}

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -24,17 +24,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	if (isset($_POST['remove'])) {
 		$list = array();
 		if (isset($_POST['select'])) $list = (array)$_POST['select'];
-		foreach ($list as $token) $semanticlib->removeToken($token);
+		foreach($list as $token) $semanticlib->removeToken($token);
 	}
 	if (isset($_POST['removeclean'])) {
 		$list = array();
 		if (isset($_POST['select'])) $list = (array)$_POST['select'];
-		foreach ($list as $token) $semanticlib->removeToken($token, true);
+		foreach($list as $token) $semanticlib->removeToken($token, true);
 	}
 	if (isset($_POST['clean'])) {
 		$list = array();
 		if (isset($_POST['select'])) $list = (array)$_POST['select'];
-		foreach ($list as $token) $semanticlib->cleanToken($token);
+		foreach($list as $token) $semanticlib->cleanToken($token);
 	}
 	if (isset($_POST['oldName'])) {
 		$semanticlib->renameToken($_POST['oldName'], $_POST['token']);

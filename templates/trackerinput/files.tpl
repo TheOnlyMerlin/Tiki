@@ -1,5 +1,4 @@
-<div class="files-field uninitialized">
-<ol class="tracker-item-files current-list">
+<ol class="tracker-item-files" id="{$field.ins_id|escape}-files">
 	{foreach from=$field.files item=info}
 		<li data-file-id="{$info.fileId|escape}">
 			{$info.name|escape}
@@ -7,7 +6,7 @@
 		</li>
 	{/foreach}
 </ol>
-<input class="input" type="text" name="{$field.ins_id|escape}" value="{$field.value|escape}"/>
+<input id="{$field.ins_id|escape}-input" type="text" name="{$field.ins_id|escape}" value="{$field.value|escape}"/>
 {if $field.canUpload}
 	<fieldset id="{$field.ins_id|escape}-drop" class="file-drop">
 		<legend>{tr}Upload files{/tr}</legend>
@@ -23,7 +22,7 @@
 {if $prefs.fgal_tracker_existing_search eq 'y'}
 	<fieldset>
 		<legend>{tr}Existing files{/tr}</legend>
-		<input type="text" class="search" placeholder="{tr}Search query{/tr}"/>
+		<input type="text" id="{$field.ins_id|escape}-search" placeholder="{tr}Search query{/tr}"/>
 		<ol class="results tracker-item-files">
 		</ol>
 	</fieldset>
@@ -31,17 +30,16 @@
 {if $prefs.fgal_upload_from_source eq 'y' and $field.canUpload}
 	<fieldset>
 		<legend>{tr}Upload from URL{/tr}</legend>
-		<label>{tr}URL:{/tr} <input class="url" type="url"/></label>
+		<label>{tr}URL:{/tr} <input id="{$field.ins_id|escape}-url" type="url"/></label>
 	</fieldset>
 {/if}
-</div>
 {jq}
-$('.files-field.uninitialized').removeClass('uninitialized').each(function () {
-var $drop = $('.file-drop', this);
-var $files = $('.current-list', this);
-var $field = $('.input', this);
-var $search = $('.search', this);
-var $url = $('.url', this);
+(function () {
+var $drop = $('#{{$field.ins_id|escape}}-drop');
+var $files = $('#{{$field.ins_id|escape}}-files');
+var $field = $('#{{$field.ins_id|escape}}-input');
+var $search = $('#{{$field.ins_id|escape}}-search');
+var $url = $('#{{$field.ins_id|escape}}-url');
 var $fileinput = $drop.find('input');
 
 $field.hide();
@@ -87,10 +85,6 @@ var handleFiles = function (files) {
 							$field.input_csv('delete', ',', fileId);
 							$(this).closest('li').remove();
 						});
-									
-						if ({{$field.firstfile|escape}} > 0) {
-							li.prev('li').remove();
-						}
 					},
 					error: function (jqxhr) {
 						$fileinput.showError(jqxhr);
@@ -104,7 +98,6 @@ var handleFiles = function (files) {
 						size: file.size,
 						type: file.type,
 						data: data,
-						fileId: {{$field.firstfile|escape}},
 						galleryId: {{$field.galleryId|escape}}
 					}
 				});
@@ -213,7 +206,7 @@ $search.keypress(function (e) {
 			"filter~type": "file",
 			"filter~content": $(this).val(),
 			"filter~filetype": "{{$field.filter|escape}}",
-			"filter~gallery_id": "{{$field.gallerySearch|escape}}"
+			"filter~gallery_id": "{{$field.galleryId|escape}}"
 		}, function (data) {
 			$search.removeAttr('disabled').clearError();
 			$.each(data, function () {
@@ -242,5 +235,5 @@ $search.keypress(function (e) {
 		return false;
 	}
 });
-});
+}());
 {/jq}

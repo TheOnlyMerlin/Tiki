@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -46,7 +46,7 @@ function wikiplugin_zotero($data, $params)
 	if (isset($params['key'])) {
 		$key = $params['key'];
 		$cacheKey = "key_$key";
-	} elseif (isset($params['tag'])) {
+	} elseif(isset($params['tag'])) {
 		$tag = $params['tag'];
 		$cacheKey = "tag_$tag";
 	} else {

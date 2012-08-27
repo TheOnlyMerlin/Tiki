@@ -7,18 +7,16 @@
 			{include file='unified_search_help.tpl'}
 		{/add_help}
 	</label>
-	{if $prefs.feature_search_show_object_filter eq 'y'}
-		<label>
-			{tr}Type{/tr}
-			<select name="filter~type">
-				<option value="">{tr}Any{/tr}</option>
-				{foreach from=$filter_types key=k item=t}
-					<option value="{$k|escape}"{if $t eq $filter_type} selected="selected"{/if}>{$t|escape}</option>
-				{/foreach}
-			</select>
-		</label>
-	{/if}
-	{if $prefs.feature_categories eq 'y' and $tiki_p_view_category eq 'y' and $prefs.search_show_category_filter eq 'y'}
+	<label>
+		{tr}Type{/tr}
+		<select name="filter~type">
+			<option value="">{tr}Any{/tr}</option>
+			{foreach from=$filter_types key=k item=t}
+				<option value="{$k|escape}"{if $t eq $filter_type} selected="selected"{/if}>{$t|escape}</option>
+			{/foreach}
+		</select>
+	</label>
+	{if $prefs.feature_categories eq 'y'}
 		<fieldset>
 			<legend>{tr}Categories{/tr}</legend>
 
@@ -36,7 +34,7 @@
 			{$filter_category_picker}
 		</div>
 	{/if}
-	{if $prefs.feature_freetags eq 'y' and $tiki_p_view_freetags eq 'y' and $prefs.search_show_tag_filter eq 'y'}
+	{if $prefs.feature_freetags eq 'y'}
 		<fieldset>
 			<legend>{tr}Tags{/tr}</legend>
 
@@ -50,23 +48,19 @@
 		</div>
 	{/if}
 	{if $prefs.feature_multilingual eq 'y'}
-		{if $prefs.search_default_interface_language neq 'y'}
-			<fieldset>
-				<legend>{tr}Language{/tr}</legend>
-				<select name="filter~language">
-					<option value="">{tr}Any{/tr}</option>
-					{foreach from=$filter_languages item=l}
-						<option value="{$l.value|escape}"{if $filter_language eq $l.value} selected="selected"{/if}>{$l.name|escape}</option>
-					{/foreach}
-				</select>
-				<label>
-					<input type="checkbox" name="filter~language_unspecified"{if $filter_language_unspecified} checked="checked"{/if}/>
-					{tr}Include objects without a specified language{/tr}
-				</label>
-			</fieldset>
-		{else}
-			<input type="hidden" name="filter~language" value="{$prefs.language}">
-		{/if}
+		<fieldset>
+			<legend>{tr}Language{/tr}</legend>
+			<select name="filter~language">
+				<option value="">{tr}Any{/tr}</option>
+				{foreach from=$filter_languages item=l}
+					<option value="{$l.value|escape}"{if $filter_language eq $l.value} selected="selected"{/if}>{$l.name|escape}</option>
+				{/foreach}
+			</select>
+			<label>
+				<input type="checkbox" name="filter~language_unspecified"{if $filter_language_unspecified} checked="checked"{/if}/>
+				{tr}Include objects without a specified language{/tr}
+			</label>
+		</fieldset>
 	{/if}
 	<input type="submit" value="{tr}Search{/tr}"/>
 </form>

@@ -89,36 +89,3 @@
 	{/section}
 </div>
 {/if}
-
-{if $comment.deliberations and $tiki_p_forum_vote eq 'y'}
-	<div>
-		<div class="ui-widget-header">Deliberations</div>
-		{foreach from=$comment.deliberations item=deliberation}
-			<div class="ui-widget-content">
-				{$deliberation.data}
-				<form class="forumDeliberationRatingForm" method="post" action="" style="float: right;">
-					{rating type="comment" id=$deliberation.threadId}
-					<input type="hidden" name="id" value="{$deliberation.threadId}" />
-					<input type="hidden" name="type" value="comment" />
-				</form>
-				<br /><br />
-				{*This is where we display the results of the deliberation*}
-				{if $tiki_p_admin_forum eq 'y'}
-					{rating_result id=$deliberation.threadId type='comment'}
-				{/if}
-			</div>
-		{/foreach}
-		{jq}
-			var crf = $('form.forumDeliberationRatingForm').submit(function() {
-				var vals = $(this).serialize();
-				$.modal(tr('Loading...'));
-				$.get('tiki-ajax_services.php?controller=rating&action=vote&' + vals, function() {
-					$.modal();
-					$.notify(tr('Thanks for deliberating!'));
-					if ($('div.ratingDeliberationResultTable').length) document.location = document.location + '';
-				});
-				return false;
-			});
-		{/jq}
-	</div>
-{/if}

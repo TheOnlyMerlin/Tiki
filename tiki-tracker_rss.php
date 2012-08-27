@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,8 +9,6 @@ require_once ('tiki-setup.php');
 require_once ('lib/tikilib.php');
 require_once ('lib/trackers/trackerlib.php');
 require_once ('lib/rss/rsslib.php');
-require_once ('lib/smarty_tiki/modifier.sefurl.php');
-
 if ($prefs['feed_tracker'] != 'y') {
 	$errmsg = tra("rss feed disabled");
 	require_once ('tiki-rss_error.php');
@@ -77,9 +75,6 @@ if ($output["data"] == "EMPTY") {
 		$exactvalue = null;
 		$filtervalue = null;
 	}
-	$doNotShowEmptyField = $trklib->get_trackers_options($_REQUEST[$id], 'doNotShowEmptyField');
-	$doNotShowEmptyField = !empty($doNotShowEmptyField[0]['value']) && $doNotShowEmptyField[0]['value'] === 'y';
-
 	if (isset($_REQUEST['status'])) {
 		if (!$trklib->valid_status($_REQUEST['status'])) {
 			$errmsg = tra("Incorrect parameter");
@@ -110,13 +105,13 @@ if ($output["data"] == "EMPTY") {
 		$first_text_field = null;
 		$aux_subject = null;
 		foreach ($data["field_values"] as $data2) {
-			if (isset($data2["name"]) && !empty($data2['value']) || !$doNotShowEmptyField) {
+			if (isset($data2["name"])) {
 				$data2['value'] = $trklib->field_render_value(
-								array(
-									'field' => $data2,
-									'item' => $data,
-									'process' => 'y',
-								)
+					array(
+						'field' => $data2,
+						'item' => $data,
+						'process' => 'y',
+					)
 				);
 				if ($data2['value'] == '') {
 					$data2['value'] = '(' . tra('empty') . ')';
@@ -146,7 +141,6 @@ if ($output["data"] == "EMPTY") {
 		}
 		$data["id"] = $_REQUEST["$id"];
 		$data["field_values"] = null;
-		$data['sefurl'] = smarty_modifier_sefurl($data['itemId'], 'trackeritem');
 		$changes["data"][] = $data;
 		$data = null;
 	}

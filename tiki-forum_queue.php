@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -88,20 +88,9 @@ if (isset($_REQUEST['qId'])) {
 			$_REQUEST['topic_title'] = $p_info['title'];
 		}
 
-		$commentslib->replace_queue(
-						$_REQUEST['qId'], 
-						$_REQUEST['forumId'], 
-						'forum' . $_REQUEST['forumId'], 
-						$_REQUEST['parentId'],
-						$user, 
-						$_REQUEST['title'], 
-						$_REQUEST['data'], 
-						$_REQUEST['type'], 
-						$_REQUEST['topic_smiley'], 
-						$_REQUEST['summary'],
-						$_REQUEST['topic_title'], 
-						$_REQUEST['in_reply_to']
-		);
+		$commentslib->replace_queue($_REQUEST['qId'], $_REQUEST['forumId'], 'forum' . $_REQUEST['forumId'], $_REQUEST['parentId'],
+			$user, $_REQUEST['title'], $_REQUEST['data'], $_REQUEST['type'], $_REQUEST['topic_smiley'], $_REQUEST['summary'],
+			$_REQUEST['topic_title'], $_REQUEST['in_reply_to']);
 		if ( isset($_REQUEST['saveapp']) ) 
 			$commentslib->approve_queued($_REQUEST['qId']);
 		unset ($_REQUEST['qId']);
@@ -135,20 +124,9 @@ if (isset($_REQUEST['qId'])) {
 
 		$_REQUEST['parentId'] = 0;
 		$_REQUEST['type'] = 'n';
-		$commentslib->replace_queue(
-						$_REQUEST['qId'], 
-						$_REQUEST['forumId'], 
-						'forum' . $_REQUEST['forumId'], 
-						$_REQUEST['parentId'],
-						$user, 
-						$_REQUEST['title'], 
-						$_REQUEST['data'], 
-						$_REQUEST['type'], 
-						$_REQUEST['topic_smiley'], 
-						$_REQUEST['summary'],
-						$_REQUEST['topic_title'], 
-						$_REQUEST['in_reply_to']
-		);
+		$commentslib->replace_queue($_REQUEST['qId'], $_REQUEST['forumId'], 'forum' . $_REQUEST['forumId'], $_REQUEST['parentId'],
+			$user, $_REQUEST['title'], $_REQUEST['data'], $_REQUEST['type'], $_REQUEST['topic_smiley'], $_REQUEST['summary'],
+			$_REQUEST['topic_title'], $_REQUEST['in_reply_to']);
 		unset ($_REQUEST['qId']);
 	}
 }

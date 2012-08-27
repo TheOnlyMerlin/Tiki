@@ -1,12 +1,11 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_tiki_list()
-{
+function prefs_tiki_list() {
 	return array(
 		'tiki_version_check_frequency' => array(
 			'name' => tra('Check frequency'),
@@ -22,18 +21,6 @@ function prefs_tiki_list()
 			),
 			'default' => 604800,
 			'tags' => array('basic'),
-		),
-		'tiki_release_cycle' => array(
-			'name' => tr('Upgrade cycle'),
-			'type' => 'list',
-			'default' => 'regular',
-			'dependencies' => array(
-				'feature_version_checks',
-			),
-			'options' => array(
-				'regular' => tr('Regular (6 months)'),
-				'longterm' => tr('Long Term Support'),
-			),
 		),
 		'tiki_minify_javascript' => array(
 			'name' => tra('Minify JavaScript'),
@@ -128,13 +115,6 @@ function prefs_tiki_list()
 			'description' => tra('Do not trust user input and open the files to verify their content.'),
 			'type' => 'flag',
 			'extensions' => array('fileinfo'),
-			'default' => 'y',
-		),
-		'tiki_allow_trust_input' => array(
-			'name' => tra('Allow the tiki_p_trust_input permission.'),
-			'hint' => tra('Bypasses user input filtering'),
-			'warning' => tra('Note, all permissions are granted to the Admins group including this one, so if you enable this you may expose your site to XSS (Cross Site Scripting) attacks for admin users.'),
-			'type' => 'flag',
 			'default' => 'n',
 		),
 	);

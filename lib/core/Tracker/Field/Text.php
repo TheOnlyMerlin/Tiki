@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -63,15 +63,6 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 							'y' => tr('Yes'),
 						),
 					),
-					'exact' => array(
-						'name' => tr('Index exact value'),
-						'description' => tr('In addition to indexing the content of the field, also index it as an identifier in tracker_field_{perm name}_exact. This option is not available for multilingual fields. Mostly for identifiers like product codes or ISBN numbers.'),
-						'filter' => 'alpha',
-						'options' => array(
-							'n' => tr('No'),
-							'y' => tr('Yes'),
-						),
-					),
 				),
 			),
 		);
@@ -116,8 +107,7 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 		}
 	}
 
-	protected function processMultilingual($requestData, $id_string) 
-	{
+	protected function processMultilingual($requestData, $id_string) {
 		global $prefs;
 		$language = $prefs['language'];
 		$multilingual = $this->getConfiguration('isMultilingual') == 'y';
@@ -151,7 +141,7 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 		);
 
 		if ($multilingual) {
-			foreach ($prefs['available_languages'] as $num => $lang) { // TODO add a limit on number of langs - 40+ makes this blow up
+			foreach($prefs['available_languages'] as $num => $lang) { // TODO add a limit on number of langs - 40+ makes this blow up
 				if (!isset($data['raw'][$lang])) {
 					$data['raw'][$lang] = $thisVal;
 				}
@@ -233,15 +223,9 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 
 			return $data;
 		} else {
-			$data = array(
+			return array(
 				$baseKey => $typeFactory->$fieldType($value),
 			);
-
-			if ($this->getOption('exact') == 'y') {
-				$data[$baseKey . '_exact'] = $typeFactory->identifier($value);
-			}
-
-			return $data;
 		}
 	}
 
@@ -255,8 +239,6 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 			foreach ($prefs['available_languages'] as $lang) {
 				$data[] = $baseKey . '_' . $lang;
 			}
-		} elseif ($this->getOption('exact') == 'y') {
-			$data[] = $baseKey . '_exact';
 		}
 
 		return $data;

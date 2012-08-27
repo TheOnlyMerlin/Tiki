@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -22,12 +22,10 @@ class Services_ResultLoader_WebService
 
 	function __invoke($offset, $count)
 	{
-		$this->client->setParameterPost(
-						array(
-							$this->offsetKey => $offset,
-							$this->countKey => $count,
-						)
-		);
+		$this->client->setParameterPost(array(
+			$this->offsetKey => $offset,
+			$this->countKey => $count,
+		));
 		$this->client->setHeaders('Accept', 'application/json');
 
 		$response = $this->client->request('POST');

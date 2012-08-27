@@ -3,7 +3,7 @@
 		{if !isset($hide_page_header) or !$hide_page_header}
 			<div class="wikiinfo" style="float: left">
 				{if $prefs.wiki_page_name_above eq 'y' and $print_page ne 'y'}
-				    <a href="tiki-index.php?page={$page|escape:"url"}" class="titletop" title="{tr}refresh{/tr}">{$page|escape}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{* The hard-coded spaces help selecting the page name for inclusion in a wiki link *}
+				    <a href="javascript:self.location=self.location;" class="titletop" title="{tr}refresh{/tr}">{$page|escape}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{* The hard-coded spaces help selecting the page name for inclusion in a wiki link *}
 				{/if}
 				
 				{if $prefs.feature_wiki_pageid eq 'y' and $print_page ne 'y'}
@@ -134,12 +134,13 @@
 									</ul>
 								</div>
 							{/if}
-							{if $prefs.feature_multilingual eq 'y' && $prefs.show_available_translations eq 'y' && $machine_translate_to_lang eq ''}
-								<div class="lang_select">
-									{include file='translated-lang.tpl' object_type='wiki page'}
-								</div>
-							{/if}
 						</div><!-- END of icons -->
+				
+						{if $prefs.feature_multilingual eq 'y' && $prefs.show_available_translations eq 'y' && $machine_translate_to_lang eq ''}
+							<div style="float: left">
+								{include file='translated-lang.tpl' td='n'}
+							</div>
+						{/if}
 					</div> {* END of wikiactions *}
 				{/if} {* <-- end of if $print_page ne 'y' *}
 			{/if}

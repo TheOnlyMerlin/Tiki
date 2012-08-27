@@ -1,5 +1,5 @@
 /* $Id$
- * Ohia is an original theme for Tiki Wiki CMS Groupware by
+ * Ohia is an original theme for TikiWiki CMS/Groupware by
  * Gary Cunningham-Lee (chibaguy), released under the GNU LGPL license.
  * This theme uses the *litecss source-ordered layout solution (http://sourceforge.net/projects/litecss).
  * For more information, please visit http://themes.tiki.org or http://zukakakina.com.
@@ -13,8 +13,7 @@
 /***** XHTML Elements (body tag here,
 			others follow Layout) *****/
 body {
-	font: 67% Verdana, Geneva, Arial, Helvetica, sans-serif;
-	line-height: 1.4;
+	font: 67%/1.4em Verdana, Geneva, Arial, Helvetica, sans-serif;
 	background: #242424;
 }
 
@@ -156,7 +155,7 @@ input[type="submit"],
 	padding: 1px 4px;
 	margin: 2px;
 	color: #fd0006;
-	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif !important;
+	font: Verdana, Geneva, Arial, Helvetica, sans-serif !important;
 	font-size: 11px;
 	border: 1px solid #5f5f5f;
 	border-right: 1px solid #474747;
@@ -212,7 +211,7 @@ label {margin: 0 2px}
 }
 
 #top_modules .siteloginbar_popup a.login_link {
-	display: block;
+	display; block;
 	padding: 4px 6px;
 }
 
@@ -438,7 +437,6 @@ img.flipmodimage:hover {
 	
 .rbox-title {
 	border-bottom: none;
-	margin-bottom: -.35em;
 }
 	
 .simplebox {

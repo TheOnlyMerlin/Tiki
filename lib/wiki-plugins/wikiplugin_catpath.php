@@ -1,18 +1,17 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_catpath_info()
-{
+function wikiplugin_catpath_info() {
 	return array(
 		'name' => tra('Category Path'),
 		'documentation' => 'PluginCatPath',
 		'description' => tra('Show the full category path for a wiki page'),
 		'prefs' => array( 'feature_categories', 'wikiplugin_catpath' ),
-		'icon' => 'img/icons/sitemap_color.png',
+		'icon' => 'pics/icons/sitemap_color.png',
 		'params' => array(
 			'divider' => array(
 				'required' => false,
@@ -36,8 +35,7 @@ function wikiplugin_catpath_info()
 	);
 }
 
-function wikiplugin_catpath($data, $params)
-{
+function wikiplugin_catpath($data, $params) {
 	global $dbTiki, $smarty, $tikilib, $prefs, $categlib;
 
 	if (!is_object($categlib)) {
@@ -48,7 +46,7 @@ function wikiplugin_catpath($data, $params)
 		return "<span class='warn'>" . tra("Categories are disabled"). "</span>";
 	}
 
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 
 	// default divider is '>'
 	if (!(isset($divider))) {

@@ -84,10 +84,10 @@
 			</td>
 
 			{foreach key=headerKey item=headerName from=$headers}{assign var=val value=$comments[ix].$headerKey}
-				<td {if $headerKey eq 'data'}{popup caption=$comments[ix].title|escape:"javascript"|escape:"html" text=$comments[ix].parsed|escape:"javascript"|escape:"html"}{/if}>
+				<td {if $headerKey eq 'data'}{popup caption=$comments[ix].title|escape:"javascript"|escape:"html"	text=$comments[ix].parsed|escape:"javascript"|escape:"html"}{/if}>
 					<span> {* span is used for some themes CSS opacity on some cells content *}
 						{if $headerKey eq 'title'}
-							<a href="{$comments[ix].href}" title="{$val|escape}">
+							<a href="{$comments[ix].href}" title="{$val}">
 								{if !empty($val)}
 									{$val|truncate:50:"...":true|escape}
 								{else}

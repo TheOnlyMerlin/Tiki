@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,13 +12,12 @@
 //
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
-	header('location: index.php');
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
+	header("location: index.php");
 	exit;
 }
 
-// should only be activated for debug purposes - otherwise could cause blank screen problems
-define('USE_ASSERTS', false);
+define('USE_ASSERTS', false);  // should only ba activated for debug purposes - otherwise could cause blank screen problems
 
 
 /**
@@ -54,7 +53,6 @@ class _WikiDiffEngine
 		for ($i = 0; $i < $n_from; $i++) {
 			$from_lines[$i] = rtrim($from_lines[$i]);
 		}
-
 		for ($i = 0; $i < $n_to; $i++) {
 			$to_lines[$i] = rtrim($to_lines[$i]);
 		}
@@ -67,7 +65,6 @@ class _WikiDiffEngine
 			$n_to--;
 			$endskip++;
 		}
-
 		for ($skip = 0, $min_from_to = min($n_from, $n_to); $skip < $min_from_to; $skip++)
 			if ($from_lines[$skip] != $to_lines[$skip])
 				break;
@@ -80,7 +77,6 @@ class _WikiDiffEngine
 		// Ignore lines which do not exist in both files.
 		for ($x = 0; $x < $n_from; $x++)
 			$xhash[$from_lines[$x + $skip]] = 1;
-
 		for ($y = 0; $y < $n_to; $y++) {
 			$line = $to_lines[$y + $skip];
 			$ylines[] = $line;
@@ -114,7 +110,6 @@ class _WikiDiffEngine
 
 		$x = 0;
 		$y = 0;
-
 		while ($x < $n_from || $y < $n_to) {
 			USE_ASSERTS && assert($y < $n_to || $this->xchanged[$x]);
 			USE_ASSERTS && assert($x < $n_from || $this->ychanged[$y]);
@@ -146,7 +141,7 @@ class _WikiDiffEngine
 			if (isset($this->ychanged[$y]) && $this->ychanged[$y]) {
 				$adds = array();
 				while ($y < $n_to && $this->ychanged[$y])
-					$adds[] = '' . $ylines[$y++];
+					$adds[] = "" . $ylines[$y++];
 				$this->edits[] = $adds;
 			}
 		}
@@ -175,7 +170,7 @@ class _WikiDiffEngine
 	function _diag ($xoff, $xlim, $yoff, $ylim, $nchunks)
 	{
 		$flip = false;
-
+	
 		if ($xlim - $xoff > $ylim - $yoff) {
 			// Things seems faster (I'm not sure I understand why)
 			// when the shortest sequence in X.
@@ -269,7 +264,6 @@ class _WikiDiffEngine
 		$this->in_seq[$this->seq[$end]] = false;
 		$this->seq[$end] = $ypos;
 		$this->in_seq[$ypos] = 1;
-
 		return $end;
 	}
 
@@ -321,7 +315,7 @@ class _WikiDiffEngine
 			reset($seps);
 			$pt1 = $seps[0];
 			while ($pt2 = next($seps)) {
-				$this->_compareseq($pt1[0], $pt2[0], $pt1[1], $pt2[1]);
+				$this->_compareseq ($pt1[0], $pt2[0], $pt1[1], $pt2[1]);
 				$pt1 = $pt2;
 			}
 		}
@@ -434,7 +428,9 @@ class _WikiDiffEngine
 							$j++;
 					}
 				}
-			} while ($runlength != $i - $start);
+			}
+
+			while ($runlength != $i - $start);
 
 			/*
 			 * If possible, move the fully-merged run of changes
@@ -495,7 +491,7 @@ class WikiDiff
 		for (reset($this->edits), $currentedits = current($this->edits); $edit = $currentedits; next($this->edits)) {
 			if (is_array($edit)) { // Was an add, turn it into a delete.
 				$nadd = count($edit);
-				USE_ASSERTS && assert($nadd > 0);
+				USE_ASSERTS && assert ($nadd > 0);
 				$edit = -$nadd;
 			} else if ($edit > 0) {
 				// Was a copy --- just pass it through.	}
@@ -504,9 +500,9 @@ class WikiDiff
 				$ndelete = -$edit;
 				$edit = array();
 				while ($ndelete-- > 0)
-					$edit[] = '' . $from_lines[$x++];
+					$edit[] = "" . $from_lines[$x++];
 			} else
-				die('assertion error');
+				die("assertion error");
 
 			$rev->edits[] = $edit;
 		}
@@ -535,7 +531,7 @@ class WikiDiff
 		$left = current($this->edits);
 		$right = current($that->edits);
 
-		while ($left || $right) {
+		while ($left || $right)	{
 			if (!is_array($left) && $left < 0) { // Left op is a delete.
 				$newop = $left;
 				$left = next($this->edits);
@@ -543,7 +539,7 @@ class WikiDiff
 				$newop = $right;
 				$right = next($that->edits);
 			} else if (!$left || !$right)
-				die ('assertion error');
+				die ("assertion error");
 			else if (!is_array($left) && $left > 0) { // Left op is a copy.
 				if ($left <= abs($right)) {
 					$newop = $right > 0 ? $left : -$left;
@@ -608,7 +604,7 @@ class WikiDiff
 		}
 		if ($op)
 			$comp->edits[] = $op;
-
+	
 		return $comp;
 	}
 
@@ -662,10 +658,9 @@ class WikiDiff
 		}
 
 		if ($x != $xlim)
-			ExitWiki(sprintf(tra('WikiDiff::apply: line count mismatch: %s != %s'), $x, $xlim));
-
-		return $output;
-	}
+			ExitWiki(sprintf(tra ("WikiDiff::apply: line count mismatch: %s != %s"), $x, $xlim));
+			return $output;
+		}
 
 	/**
 	 * Serialize a WikiDiff.
@@ -693,7 +688,6 @@ class WikiDiff
 		if (count($this->edits) == 0)
 			return true;
 		// Test for: only edit is a copy.
-
 		return !is_array($this->edits[0]) && $this->edits[0] > 0;
 	}
 
@@ -709,7 +703,6 @@ class WikiDiff
 			if (!is_array($edit) && $edit > 0)
 				$lcs += $edit;
 		}
-
 		return $lcs;
 	}
 
@@ -722,7 +715,7 @@ class WikiDiff
 	{
 		$test = $this->apply($from_lines);
 		if (serialize($test) != serialize($to_lines))
-			ExitWiki(tra('WikiDiff::_check: failed'));
+			ExitWiki(tra ("WikiDiff::_check: failed"));
 
 		reset($this->edits);
 		$prev = current($this->edits);
@@ -731,12 +724,11 @@ class WikiDiff
 		while ($edit = next($this->edits)) {
 			$type = is_array($edit) ? 'a' : ($edit > 0 ? 'c' : 'd');
 			if ( $prevtype == $type )
-				ExitWiki(tra('WikiDiff::_check: edit sequence is non-optimal'));
-
+				ExitWiki(tra ("WikiDiff::_check: edit sequence is non-optimal"));
 			$prevtype = $type;
 		}
 		$lcs = $this->lcs();
-		printf('<strong>' . tra('WikiDiff Okay: LCS = %s') . "</strong>\n", $lcs);
+		printf ("<strong>" . tra ("WikiDiff Okay: LCS = %s") . "</strong>\n", $lcs);
 	}
 }
 
@@ -789,17 +781,18 @@ class WikiDiffFormatter
 		$xlim = count($from_lines);
 
 		reset($edits);
-		while ($edit = current($edits)) {
-			if (!is_array($edit) && $edit >= 0) {
-				// Edit op is a copy.
+		while ($edit = current($edits))
+		{
+			if (!is_array($edit) && $edit >= 0)
+			{ // Edit op is a copy.
 				$ncopy = $edit;
-			} else {
+			}	else	{
 				$ncopy = 0;
-				if (empty($hunk)) {
+				if (empty($hunk))	{
 					// Start of an output hunk.
 					$xoff = max(0, $x - $this->context_lines);
 					$yoff = $xoff + $y - $x;
-					if ($xoff < $x) {
+					if ($xoff < $x)	{
 						// Get leading context.
 						$context = array();
 						for ($i = $xoff; $i < $x; $i++)
@@ -864,7 +857,6 @@ class WikiDiffFormatter
 			$x += $ncopy;
 			$y += $ncopy;
 		}
-
 		return $html;
 	}
 
@@ -876,7 +868,6 @@ class WikiDiffFormatter
 			$html .= "<tr style=\"background-color: $color\"><td><tt>$prefix</tt>";
 			$html .= "<tt>$line</tt></td></tr>\n";
 		}
-
 		return $html;
 	}
 
@@ -915,8 +906,8 @@ class WikiDiffFormatter
 	function _diff_header ($xbeg, $xlen, $ybeg, $ylen)
 	{
 		$what = $xlen ? ($ylen ? 'c' : 'd') : 'a';
-		$xlen = $xlen > 1 ? ',' . ($xbeg + $xlen - 1) : '';
-		$ylen = $ylen > 1 ? ',' . ($ybeg + $ylen - 1) : '';
+		$xlen = $xlen > 1 ? "," . ($xbeg + $xlen - 1) : '';
+		$ylen = $ylen > 1 ? "," . ($ybeg + $ylen - 1) : '';
 
 		return "$xbeg$xlen$what$ybeg$ylen";
 	}

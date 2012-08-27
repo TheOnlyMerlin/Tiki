@@ -1,12 +1,12 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
+if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__)) !== false) {
   header('location: index.php');
   exit;
 }
@@ -14,16 +14,14 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 class TikiInit
 {
 
-	function TikiInit()
-	{
+	function TikiInit() {
 	}
 
 
 /** Return 'windows' if windows, otherwise 'unix'
   * \static
   */
-	function os()
-	{
+	function os() {
 		static $os;
 		if (!isset($os)) {
 			if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
@@ -39,8 +37,7 @@ class TikiInit
 /** Return true if windows, otherwise false
   * \static
   */
-	static function isWindows()
-	{
+	static function isWindows() {
 		static $windows;
 		if (!isset($windows)) {
 			$windows = strtoupper(substr(PHP_OS, 0, 3)) == 'WIN';
@@ -55,8 +52,7 @@ class TikiInit
 	 *
 	 * Copes with Windows premissions
 	 */
-	static function is_writeable($path)
-	{
+	static function is_writeable($path) {
 		if (self::isWindows()) {
 			return self::is__writable($path);
 		} else {
@@ -71,8 +67,7 @@ class TikiInit
 	 * From the php is_writable manual (thanks legolas558 d0t users dot sf dot net)
 	 * Note the two underscores and no "e"
 	 */
-	static function is__writable($path)
-	{
+	static function is__writable($path) {
 		//will work in despite of Windows ACLs bug
 		//NOTE: use a trailing slash for folders!!!
 		//see http://bugs.php.net/bug.php?id=27609
@@ -98,8 +93,7 @@ class TikiInit
 /** Prepend $path to the include path
   * \static
   */
-	static function prependIncludePath($path)
-	{
+	static function prependIncludePath($path) {
 		$include_path = ini_get('include_path');
 		$paths = explode(PATH_SEPARATOR, $include_path);
 
@@ -109,15 +103,14 @@ class TikiInit
 			$include_path = $path;
 		} 
 
-		return set_include_path($include_path);
+		return set_include_path ($include_path);
 	}
 
 
 /** Append $path to the include path
   * \static
   */
-	static function appendIncludePath($path)
-	{
+	static function appendIncludePath($path) {
 		$include_path = ini_get('include_path');
 		$paths = explode(PATH_SEPARATOR, $include_path);
 
@@ -127,7 +120,7 @@ class TikiInit
 			$include_path = $path;
 		} 
 
-		return set_include_path($include_path);
+		return set_include_path ($include_path);
 	}
 
 
@@ -136,13 +129,16 @@ class TikiInit
   * In Windows, this is usually c:\windows\temp or c:\winnt\temp
   * \static
   */
-	static function tempdir()
-	{
+	static function tempdir() {
 		static $tempdir;
 		if (!$tempdir) {
-			$tempfile = @tempnam(false, '');
-			$tempdir = dirname($tempfile);
-			@unlink($tempfile);
+			if ( !function_exists('sys_get_temp_dir')) {
+			   $tempfile = tempnam(false,'');
+			   $tempdir = dirname($tempfile);
+			   @unlink($tempfile);
+			} else {
+			   $tempdir = sys_get_temp_dir();
+			}
 		}
 		return $tempdir;
 	}
@@ -153,8 +149,7 @@ class TikiInit
 	* @param string String to be converted
 	* @return UTF-8 representation of the string
 	*/
-	static function to_utf8( $string )
-	{
+	static function to_utf8( $string ) {
 			// 
 		if ( preg_match('%^(?:
       [\x09\x0A\x0D\x20-\x7E]            # ASCII
@@ -168,7 +163,7 @@ class TikiInit
 )*$%xs', $string) ) {
 			return $string;
 		} else {
-			return iconv('CP1252', 'UTF-8', $string);
+			return iconv( 'CP1252', 'UTF-8', $string);
 		}
 	} 
 	
@@ -177,8 +172,7 @@ class TikiInit
 	*	@return true if IIS server, else false
   	* \static
 	*/
-	static function isIIS()
-	{
+	static function isIIS() {
 		static $IIS;
 
 		// Sample value Microsoft-IIS/7.5
@@ -194,21 +188,13 @@ class TikiInit
 	*	@return true if IIS server, else false
   	* \static
 	*/
-	static function hasIIS_UrlRewriteModule()
-	{
+	static function hasIIS_UrlRewriteModule() {
 			return isset($_SERVER['IIS_UrlRewriteModule']) == true;
 	}	
 }
 
-function tiki_error_handling($errno, $errstr, $errfile, $errline)
-{
+function tiki_error_handling($errno, $errstr, $errfile, $errline) {
 	global $prefs, $phpErrors;
-
-	if ( 0 === error_reporting() ) {
-		// This error was triggered when evaluating an expression prepended by the at sign (@) error control operator, but since we are in a custom error handler, we have to ignore it manually.
-		// See http://ca3.php.net/manual/en/language.operators.errorcontrol.php#98895 and http://php.net/set_error_handler
-		return;
-	}
 
 	$err[E_ERROR]           = 'E_ERROR';
 	$err[E_CORE_ERROR]      = 'E_CORE_ERROR';
@@ -252,7 +238,7 @@ function tiki_error_handling($errno, $errstr, $errfile, $errline)
 		$back.= "<b style='font-family: monospace'>Type:</b> $errstr";
 		$back.= "</div>";
 		$phpErrors[] = $back;
-    	break;
+		break;
 	case E_STRICT:
 	case E_NOTICE:
 	case E_USER_NOTICE:
@@ -270,6 +256,6 @@ function tiki_error_handling($errno, $errstr, $errfile, $errline)
 			$phpErrors[] = $back;
 		}
 	default:
-    	break;
+		break;
 	}
 }

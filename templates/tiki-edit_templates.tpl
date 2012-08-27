@@ -1,4 +1,4 @@
-{if isset($template)}
+{if $template}
 	{title help="Edit+Templates" url="tiki-edit_templates.php?mode=listing&template=$template"}
 		{if $prefs.feature_edit_templates ne 'y' or $tiki_p_edit_templates ne 'y'}
 			{tr}View template:{/tr}
@@ -47,7 +47,7 @@
 		{remarksbox type="warning" title="{tr}Important!{/tr}" highlight="y"}
 		<ul>
 			<li>
-				{tr}If you edit this (or any TPL) file via the built-in editor below, any JavaScript may be sanitized or completely stripped out 
+				{tr}If you edit this (or any TPL) file via the built-in editor below, any javascript may be sanitized or completely stripped out 
 					by Tiki security filtering, which would cause certain functions to stop working (e.g. menus no longer collapse or expand){/tr}
 			</li>
 			<li>
@@ -84,7 +84,7 @@
 				<input type="submit" name="saveTheme" value="{tr}Save Only in the Theme:{/tr} {$prefs.style|replace:'.css':''}" />
 				{if $style_local eq 'y'}
 					<a href="tiki-edit_templates.php?template={$template|escape}&amp;delete=y">
-						<img src="img/icons/cross.png" alt="{tr}Delete the copy in the theme:{/tr} {$prefs.style|replace:'.css':''}" 
+						<img src="pics/icons/cross.png" alt="{tr}Delete the copy in the theme:{/tr} {$prefs.style|replace:'.css':''}" 
 							title="{tr}Delete the copy in the theme:{/tr} {$prefs.style|replace:'.css':''}" />
 					</a>
 				{/if}

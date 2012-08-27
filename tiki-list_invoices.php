@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,6 +7,7 @@
 
 require_once('tiki-setup.php');
 $trklib = TikiLib::lib('trk');
+TikiLib::lib('trkqry');
 
 $access->check_feature('feature_invoice');
 $access->check_permission('tiki_p_admin');
@@ -18,7 +19,7 @@ if ($trklib->get_tracker_by_name("Invoice Items") < 1) {
 	die;
 }
 
-$Invoices = Tracker_Query::tracker("Invoices")
+$Invoices = TrackerQueryLib::tracker("Invoices")
 	->byName(true)
 	->query();
 
@@ -57,7 +58,7 @@ foreach ($Invoices as $I => $Invoice) {
 }
 
 $smarty->assign("Invoices", $Invoices);
-$smarty->assign("Settings", Tracker_Query::tracker("Invoice Settings")->byName()->query());
+$smarty->assign("Settings", TrackerQueryLib::tracker("Invoice Settings")->byName()->query());
 $smarty->assign("Amount", $Amount);
 $smarty->assign("Paid", $Paid);
 $smarty->assign("Status", $Status);

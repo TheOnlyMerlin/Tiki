@@ -16,7 +16,6 @@
 				{preference name=feature_dynamic_content}
 				{preference name=feature_wiki_replace}
 				{preference name=feature_syntax_highlighter}
-				{preference name=feature_syntax_highlighter_theme}
 				{preference name=feature_wysiwyg}				
 				{preference name=ajax_autosave}
 			</fieldset>
@@ -39,15 +38,12 @@
 
 			<fieldset class="admin featurelist">
 				<legend>{tr}Plugins{/tr}</legend>
-				{preference name=wikiplugin_showreference}
-				{preference name=wikiplugin_addreference}
 				{preference name=wikiplugin_alink}
 				{preference name=wikiplugin_aname}
 				{preference name=wikiplugin_box}
 				{preference name=wikiplugin_button}
 				{preference name=wikiplugin_center}
 				{preference name=wikiplugin_code}
-				{preference name=wikiplugin_countdown}
 				{preference name=wikiplugin_div}
 				{preference name=wikiplugin_dl}
 				{preference name=wikiplugin_fade}
@@ -63,7 +59,6 @@
 				{preference name=wikiplugin_mono}
 				{preference name=wikiplugin_mouseover}
 				{preference name=wikiplugin_mwtable}
-				{preference name=wikiplugin_now}
 				{preference name=wikiplugin_quote}
 				{preference name=wikiplugin_remarksbox}
 				{preference name=wikiplugin_scroll}
@@ -85,7 +80,6 @@
 				{preference name=feature_hotwords}
 				<div class="adminoptionboxchild" id="feature_hotwords_childcontainer">
 					{preference name=feature_hotwords_nw}
-					{preference name=feature_hotwords_sep}
 				</div>
 				{preference name=feature_use_quoteplugin}
 				{preference name=feature_use_three_colon_centertag}

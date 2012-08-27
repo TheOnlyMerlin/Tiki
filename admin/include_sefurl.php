@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -48,19 +48,6 @@ if (isset($enabledFileName)) {
 				$configurationFile = 'current';
 			} else {
 				$configurationFile = 'outdated';
-			}
-			if ($httpd === 'Apache') {	// work out if RewriteBase is set up properly
-				global $url_path;
-				$rewritebase = '/';
-				while ($nextLine = fgets($enabledFile)) {
-					if (preg_match('/^RewriteBase\s*(.*)$/', $nextLine, $m)) {
-						$rewritebase = substr($m[1], -1) !== '/' ? $m[1] . '/' : $m[1];
-						break;
-					}
-				}
-				if ($url_path != $rewritebase) {
-					$smarty->assign('rewritebaseSetting', $rewritebase);
-				}
 			}
 			fclose($referenceFile);
 		} else {

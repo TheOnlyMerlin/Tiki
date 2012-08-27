@@ -61,7 +61,6 @@
 						</div>
 					{/if}
 					{preference name=generate_password}
-					{preference name=http_referer_registration_check}
 					<div class="adminoptionbox">
 						<div class="adminoptionlabel">
 							<label for="registration_choices">{tr}Users can select a group to join at registration:{/tr}</label>
@@ -77,7 +76,6 @@
 								{/foreach}
 							</select>
 						</div>
-						{preference name=user_must_choose_group}
 						{preference name=url_after_validation}
 					</div>
 				</div>
@@ -126,23 +124,10 @@
 				</div>
 	
 				<fieldset>
-					<legend>{tr}Cookies{/tr}</legend>
+					<legend>{tr}Cookie{/tr}</legend>
 					{preference name=cookie_name}
 					{preference name=cookie_domain}
 					{preference name=cookie_path}
-					<hr />
-					<strong>{tr}Cookie Consent{/tr}</strong>
-					{preference name=cookie_consent_feature}
-					<div class="adminoptionboxchild" id="cookie_consent_feature_childcontainer">
-						{preference name=cookie_consent_name}
-						{preference name=cookie_consent_expires}
-						{preference name=cookie_consent_description}
-						{preference name=cookie_consent_question}
-						{preference name=cookie_consent_alert}
-						{preference name=cookie_consent_button}
-						{preference name=cookie_consent_mode}
-						{preference name=cookie_consent_dom_id}
-					</div>
 				</fieldset>
 				{preference name=feature_banning}
 			</fieldset>

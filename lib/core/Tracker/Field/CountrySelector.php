@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -79,7 +79,7 @@ class Tracker_Field_CountrySelector extends Tracker_Field_Abstract implements Tr
 				$out .= '<img src="img/flags/'.$current.'.gif" title="'.$label.'" alt="'.$label.'" />';
 			}
 			if ($this->getOption(0) == 0) {
-				$out .= ' ';
+				$out .= '&nbsp;';
 			}
 		}
 		if ($this->getOption(0) != 2) {

@@ -158,9 +158,7 @@
 							{tr _0=$page_badchars_display|escape}The page name specified contains characters that may render the page hard to access. You may want to consider removing those: <strong>%0</strong>{/tr}
 						{/remarksbox}
 					{/if}
-						<p>{tr}Page name:{/tr} <input type="text" name="page" value="{$page|escape}" />
-							<input type="submit" name="rename" value="{tr}Rename{/tr}" />
-						</p>
+					<p>{tr}Page name:{/tr} <input type="text" name="page" value="{$page|escape}" /></p>
 				{else}
 					<input type="hidden" name="page" value="{$page|escape}" /> 
 					{* the above hidden field is needed for auto-save to work *}
@@ -255,20 +253,16 @@
 								</fieldset>
 							{/if}
 				
-							{if $prefs.feature_wiki_allowhtml eq 'y' and $tiki_p_use_HTML eq 'y'}
-								{if $wysiwyg neq 'y' or $prefs.wysiwyg_htmltowiki eq 'y'}
-									<fieldset>
-										<legend>{tr}Allow HTML:{/tr}</legend>
-										<input type="checkbox" id="allowhtml" name="allowhtml" {if $allowhtml eq 'y'}checked="checked"{/if}/>
-									</fieldset>
-									{if $prefs.ajax_autosave eq "y"}{jq}
+							{if $prefs.feature_wiki_allowhtml eq 'y' and $tiki_p_use_HTML eq 'y' and $wysiwyg neq 'y'}
+								<fieldset>
+									<legend>{tr}Allow HTML:{/tr}</legend>
+									<input type="checkbox" id="allowhtml" name="allowhtml" {if $allowhtml eq 'y'}checked="checked"{/if}/>
+								</fieldset>
+								{if $prefs.ajax_autosave eq "y"}{jq}
 $("#allowhtml").change(function() {
 	auto_save( "editwiki", autoSaveId );
 });
-									{/jq}{/if}
-								{elseif $wysiwyg eq 'y'}
-									<input type="hidden" id="allowhtml" name="allowhtml" value="{if $allowhtml eq 'y'}on{/if}"/>
-								{/if}
+								{/jq}{/if}
 							{/if}
 							{if $prefs.feature_wiki_import_html eq 'y'}
 								<fieldset>
@@ -326,17 +320,7 @@ $("#allowhtml").change(function() {
 												<td><label for="copyrightAuthors">{tr}Authors:{/tr}</label></td>
 												<td><input size="40" class="wikiedit" id="copyrightAuthors" name="copyrightAuthors" type="text" value="{$copyrightAuthors|escape}" /></td>
 											</tr>
-											<tr>
-												<td><label for="copyrightHolder">{tr}Copyright Holder :{/tr}</label></td>
-												<td><input size="40" class="wikiedit" id="copyrightHolder" name="copyrightHolder" type="text" value="{$copyrightHolder|escape}" /></td>
-											</tr>
 										</table>
-									</fieldset>
-								{/if}
-								{if $prefs.wikiplugin_addreference eq 'y' && $showBiblioSection}
-									<fieldset>
-										<legend>{tr}Bibliography{/tr}</legend>
-											{include file='addreference.tpl'}
 									</fieldset>
 								{/if}
 								{if $prefs.feature_freetags eq 'y' and $tiki_p_freetags_tag eq 'y'}
@@ -465,9 +449,6 @@ $("#allowhtml").change(function() {
 											<option value="{$languages[ix].value|escape}"{if $lang eq $languages[ix].value or (!($data.page_id) and $lang eq '' and $languages[ix].value eq $prefs.language)} selected="selected"{/if}>{$languages[ix].name}</option>
 										{/section}
 									</select>
-									<br />
-									{tr _0="tiki-edit_translation.php?no_bl=y&amp;page={$page|escape:url}"}To translate, do not change the language and the content.
-									Instead, <a href="%0">create a new translation</a> in the new language.{/tr}
 									{if $translationOf}
 										<input type="hidden" name="translationOf" value="{$translationOf|escape}"/>
 									{/if}
@@ -493,11 +474,7 @@ $("#allowhtml").change(function() {
 							{if $tiki_p_admin_wiki eq "y"}
 								<a href="tiki-admin.php?page=wiki">{tr}Admin wiki preferences{/tr} {icon _id='wrench'}</a>
 							{/if}
-						{/tab}{* end properties tab *}
-					{else}
-						{if $wysiwyg eq 'y'}{* include hidden allowhtml for wysiwyg if the properties tab isn't needed *}
-							<input type="hidden" id="allowhtml" name="allowhtml" value="{if $allowhtml eq 'y'}on{/if}"/>
-						{/if}
+						{/tab}
 					{/if}
 				{/tabset}
 			</td>
@@ -520,3 +497,5 @@ $("#allowhtml").change(function() {
 	</table>
 </form>
 {include file='tiki-page_bar.tpl'}
+{if $prefs.javascript_enabled eq "n"}{include file='tiki-edit_help.tpl'}{/if}
+{include file='tiki-edit_help_plugins.tpl'}

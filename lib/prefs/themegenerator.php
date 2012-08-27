@@ -1,12 +1,11 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_themegenerator_list($partial = false)
-{
+function prefs_themegenerator_list($partial = false) {
 	global $prefs, $themegenlib;
 
 	if (! $partial) {
@@ -18,7 +17,7 @@ function prefs_themegenerator_list($partial = false)
 		if (count($list) > 0) {
 			$list = array_filter($list);
 			sort($list);
-			foreach ( $list as $item ) {
+			foreach( $list as $item ) {
 				$tm = new ThemeGenTheme($item);
 				$d = $tm->getData();
 				if ((empty($d['theme']) || $d['theme'] === $prefs['style']) &&

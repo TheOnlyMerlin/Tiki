@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -25,10 +25,9 @@ define('TITLE_SEPARATOR', '-');
  */
 
 
-function filter_out_sefurl($tpl_output, $type = null, $title = '', $with_next = null, $with_title='y') 
-{
+function filter_out_sefurl($tpl_output, $type = null, $title = '', $with_next = null, $with_title='y') {
 	global $sefurl_regex_out, $tikilib, $prefs, $base_url;
-	if ($prefs['feature_sefurl'] != 'y' or ( preg_match('#^http(|s)://#', $tpl_output) and strpos($tpl_output, $base_url) !== 0 ) ) {
+	if ($prefs['feature_sefurl'] != 'y' or ( preg_match('#^http(|s)://#',$tpl_output) and strpos($tpl_output, $base_url) !== 0 ) ) {
 		return $tpl_output;
 	}
 	global $cachelib;
@@ -80,7 +79,7 @@ function filter_out_sefurl($tpl_output, $type = null, $title = '', $with_next = 
 		if ($prefs['feature_sefurl_title_blog'] == 'y') {
 			global $bloglib;
 			include_once ('lib/blogs/bloglib.php');
-			if (preg_match('/postId=([0-9]+)/', $tpl_output, $matches)|| preg_match('/blogpost([0-9]+)/', $tpl_output, $matches)) {
+			if (preg_match('/postId=([0-9]+)/', $tpl_output, $matches)) {
 				if (empty($title)) {
 					if ($post_info = $bloglib->get_post($matches[1])) $title = $post_info['title'];
 				}
@@ -95,7 +94,7 @@ function filter_out_sefurl($tpl_output, $type = null, $title = '', $with_next = 
 	if ($type == 'tracker item' || $type == 'trackeritem') {
 		if (preg_match('/itemId=([0-9]+)/', $tpl_output, $matches)) {
 			$trklib = TikiLib::lib('trk');
-			if ($prefs["feature_sefurl_tracker_prefixalias"] == 'y' && $pagealias = $trklib->get_trackeritem_pagealias($matches[1])) {
+			if ($prefs["feature_sefurl_tracker_prefixalias"] == 'y' && $pagealias = $trklib->get_trackeritem_pagealias($matches[1])){
 				$tpl_output = "./tiki-index.php?page=" . $pagealias;
 			}
 		}

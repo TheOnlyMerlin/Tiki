@@ -1,19 +1,18 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_colorbox_info()
-{
+function wikiplugin_colorbox_info() {
 	return array(
 		'name' => tra('Colorbox'),
 		'documentation' => 'PluginColorBox',
 		'description' => tra('Display a gallery of images in a popup slideshow'),
 		'prefs' => array( 'feature_file_galleries', 'feature_shadowbox', 'wikiplugin_colorbox' ),
 		'introduced' => 5,
-		'icon' => 'img/icons/pictures.png',
+		'icon' => 'pics/icons/pictures.png',
 		'tags' => array( 'basic' ),		
 		'params' => array(
 			'fgalId' => array(
@@ -126,8 +125,7 @@ function wikiplugin_colorbox_info()
 		),
 	);
 }
-function wikiplugin_colorbox($data, $params)
-{
+function wikiplugin_colorbox($data, $params) {
 	global $tikilib, $smarty, $user, $prefs;
 	static $iColorbox = 0;
 	$default = array('showfilename' => 'n', 'showtitle'=>'n', 'thumb'=>'y', 'showallthumbs'=>'n', 'parsedescriptions'=>'n');

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -19,12 +19,7 @@ class Search_Type_Factory_Lucene implements Search_Type_Factory_Interface
 
 	function timestamp($value)
 	{
-		if (is_numeric($value)) {
-			return new Search_Type_Timestamp(gmdate('YmdHis', $value));
-		} else {
-			return new Search_Type_PlainText('');
-		}
-
+		return new Search_Type_Timestamp(gmdate('YmdHis', $value));
 	}
 
 	function identifier($value)

@@ -48,7 +48,7 @@
             <br />{fileinfo _id=$channels[ix].qoptions[jx].qoption _field='description'}
           </div>
         {else}
-          {$channels[ix].qoptions[jx].qoption}
+          {$channels[ix].qoptions[jx].qoption|escape}
         {/if}
       </td>
       <td class="odd">{$channels[ix].qoptions[jx].votes}</td>

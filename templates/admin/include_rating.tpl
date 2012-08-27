@@ -14,7 +14,6 @@
 			{preference name=rating_recalculation_odd}
 			{preference name=rating_recalculation_count}
 		</div>
-		{preference name=ip_can_be_checked}
 	</fieldset>
 
 	<fieldset>
@@ -27,23 +26,10 @@
 
 	<fieldset>
 		<legend>{tr}Articles{/tr}</legend>
-		{preference name=article_user_rating}
-		<div class="adminoptionboxchild" id="article_user_rating_childcontainer">
-			{preference name=article_user_rating_options}
-		</div>
-	</fieldset>
-
-	<fieldset>
-		<legend>{tr}Comments{/tr}</legend>
-		{preference name=wiki_comments_simple_ratings}
-		<div class="adminoptionboxchild" id="wiki_simple_ratings_childcontainer">
-			{preference name=wiki_comments_simple_ratings_options}
-		</div>
-	</fieldset>
-
-	<fieldset>
-		<legend>{tr}User Interface{/tr}</legend>
-		{preference name=rating_smileys}
+			{preference name=article_user_rating}
+				<div class="adminoptionboxchild" id="article_user_rating_childcontainer">
+					{preference name=article_user_rating_options}
+				</div>
 	</fieldset>
 	
 	<div class="input_submit_container" style="margin-top: 5px; text-align: center">

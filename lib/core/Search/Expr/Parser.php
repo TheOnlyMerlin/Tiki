@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -38,12 +38,7 @@ class Search_Expr_Parser
 		if (count($tokens) === 1) {
 			return reset($tokens);
 		} else {
-			global $prefs;
-			if ($prefs['unified_lucene_default_operator'] == Zend_Search_Lucene_Search_QueryParser::B_AND) {
-				return new Search_Expr_And($tokens);
-			} else {
-				return new Search_Expr_Or($tokens);
-			}
+			return new Search_Expr_Or($tokens);
 		}
 	}
 
@@ -132,12 +127,8 @@ class Search_Expr_Parser
 
 	private function buildNot(&$tokens, $key)
 	{
-		if (isset($tokens[$key + 1])) {
-			$tokens[$key] = new Search_Expr_Not($tokens[$key + 1]);
-			$tokens[$key + 1] = null;
-		} else {
-			$tokens[$key] = null;
-		}
+		$tokens[$key] = new Search_Expr_Not($tokens[$key + 1]);
+		$tokens[$key + 1] = null;
 	}
 
 	private function filterExcessiveKeywords($tokens)

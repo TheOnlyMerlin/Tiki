@@ -1,5 +1,5 @@
 /*
- * Coelesce theme (coelesce.css) for Tiki Wiki CMS Groupware,
+ * Coelesce theme (coelesce.css) for TikiWiki CMS/Groupware,
  * original design by Patrick Allard. Distributed under the LGPL license.
  */
 
@@ -15,8 +15,8 @@
 /***** XHTML Elements ******/
 body {
 	text-align: left;
-	font: .7em Arial, Helvetica, sans-serif;
-	line-height: 1.4;
+	font: .7em/1.4em Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 }
 
 a,
@@ -79,7 +79,8 @@ select,
 body.cke_show_borders {
 	background: #ecf5ff;
 	color: #4a6a90;
-	font-family: Verdana, Helvetica, Geneva, Arial, sans-serif;
+/*	margin: 1px;*/
+	font: /*100%*/ Verdana, Helvetica, Geneva, Arial, sans-serif;
 }
 
 textarea {
@@ -214,7 +215,7 @@ label {
 }
 
 #topbar_modules {
-	margin-bottom: 20px;
+	margin-bottom: 20px;	
 }
 
 #c1c2 #wrapper .marginleft {
@@ -279,7 +280,7 @@ body.tiki_wiki_page.manage #c1c2 #wrapper #col1 #tiki-center {
 	background: url(coelesce/pagebg.jpg) repeat-x 0 100%;
 }
 
-/* Enable header and footer content to widen when middle has wide content. */
+/* Enable header and footer content to widen when middle has wide content. */ 
 body.fixed_width .fixedwidth .fixedwidth {
 	width: 100%;
 	padding: 0;
@@ -343,7 +344,7 @@ body.fixed_width .fixedwidth .fixedwidth {
 
 #top_modules .box-search {
 	bottom: 12px;
-	top: auto
+	top: auto	
 }
 
 #top_modules .box-search form,
@@ -489,8 +490,7 @@ a.flip:hover,
 
 .tellafriend,
 .share {
-	float: right;
-	padding-right: 2px;
+	padding: 0;
 }
 
 .actions .share {
@@ -557,6 +557,10 @@ small.date {
 .cssmenu_vert li.menuLevel1,
 .cssmenu_horiz li.menuLevel1 {
         z-index: 991;
+}
+
+.box-data .cssmenu_vert li {
+	background: #ccdceb !important;
 }
 
 .cssmenu_horiz ul li {
@@ -806,7 +810,7 @@ img.flipmodimage:hover {
 }
 
 .rbox-title {
-	margin-bottom: -.4em;
+	margin-bottom: -.35em;
 	border: 1px solid #4a6a90;
 	border-bottom: transparent;
 }
@@ -913,6 +917,7 @@ a.forumnameread {
 .tabmark {
 	font-size: 85%;
 	background: #5a7ea2;
+	margin-top: 8px;
 	padding: 0; /* override layout */
 	display: inline-block;
 	border: 0;
@@ -925,10 +930,6 @@ a.forumnameread {
 	padding: 3px 5px;
 }
 
-li.tabmark ul li a {
-	color: #294C83;
-
-}
 .tabmark a:active {
 	background: #fff;
 	color: red;
@@ -971,13 +972,9 @@ li.tabmark ul li a {
 	background: #fff;
 }
 
-li.tabcontent {
-	padding: 0px 0 2px 0;
-}
-
 .statuson {
 	background: #ecf5ff;
-	border: 1px inset #ecf5ff;
+	border: 1px inset #ecf5ff;	
 }
 
 /*** Feature-specific selectors ***/
@@ -1118,7 +1115,7 @@ h1.pagetitle {
 	float: none;
 }
 
-.editdate {
+p.editdate {
 	border-top: 1px solid #8CACBB;
 }
 
@@ -1243,14 +1240,14 @@ textarea.wikiedit {
 	padding-top: 10px;
 }
 
-
+	
 .articletitle h2 a:link,
 .articletitle h2 a:visited {
 	color: #000;
 	text-decoration: none;
 }
 
-
+	
 .articletitle h2 a:hover {
 	text-decoration: none;
 }
@@ -1334,7 +1331,7 @@ a.blogt:hover {
 	border-right: solid #EEFDFF;
 	border-top: solid 1px #C3D3E5;
 }
-
+	
 * html .post .postbody {font-size: 11px}
 
 .top_post .post .postbody {
@@ -1631,7 +1628,7 @@ a.freetag_7:hover {
 }
 
 /***** Trackers *****/
-
+	
 .multiselect {
 	width: 100%;
 	border: 1px solid #696969;
@@ -1740,7 +1737,7 @@ a.freetag_7:hover {
 	color: #00bd02;
 }
 
-
+	
 .calweb {
 	font-size: 90%;
 }
@@ -2026,8 +2023,7 @@ td.dirfooter {
 
 /* css/admin.css overrides */
 .admbox a,
-a.admbox,
-a.admbox:visited {
+a.admbox {
 	border: 1px solid #708090;
 	background-color: #dddfdf;
 }
@@ -2068,10 +2064,6 @@ body.fixed_width #main[id] {
 	border: 1px solid #527ca6;
 	margin-top: 18px;
 	margin-bottom: 5px;
-}
-
-#role_main {
-	margin-top: -20px;
 }
 
 /* end of file */

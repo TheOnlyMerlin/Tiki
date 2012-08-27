@@ -1,12 +1,11 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_search_list()
-{
+function prefs_search_list() {
 	global $prefs;
 	return array (
 		'search_parsed_snippet' => array(
@@ -39,7 +38,7 @@ function prefs_search_list()
 		),
 		'search_default_interface_language' => array(
 			'name' => tra('Restrict search language by default'),
-			'description' => tra('If enabled, only search content in the interface language, otherwise show language menu.'),
+			'description' => tra('If enabled, only search content in the interface language, by default.'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
@@ -47,16 +46,6 @@ function prefs_search_list()
 			'name' => tra('Autocomplete on page names'),
 			'type' => 'flag',
 			'dependencies' => array('feature_jquery_autocomplete', 'javascript_enabled'),
-			'default' => 'n',
-		),
-		'search_show_category_filter' => array(
-			'name' => tra('Category filter'),
-			'type' => 'flag',
-			'default' => 'n',
-		),
-		'search_show_tag_filter' => array(
-			'name' => tra('Tag filter'),
-			'type' => 'flag',
 			'default' => 'n',
 		),
 	);

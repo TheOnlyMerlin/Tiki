@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,7 +14,7 @@ function wikiplugin_fade_info()
 		'prefs' => array('wikiplugin_fade'),
 		'body' => tra('Wiki syntax containing the content that can be hidden or shown.'),
 		'filter' => 'wikicontent',
-		'icon' => 'img/icons/wand.png',
+		'icon' => 'pics/icons/wand.png',
 		'tags' => array( 'basic' ),		
 		'params' => array(
 			'label' => array(
@@ -93,7 +93,7 @@ function wikiplugin_fade( $body, $params )
 	}
 		
 	$body = trim($body);
-	$body = $tikilib->parse_data($body);
+	$body = $tikilib->parse_data( $body );
 	$jq = '
 				$(document).ready(function(){
 					$(\'#' . $unique_link . '\').toggle(
@@ -117,8 +117,7 @@ function wikiplugin_fade( $body, $params )
 		. $body . "\r\t" . '</div>' . "\r" . '</div>' . "\r" . '~/np~';
 }
 
-function validate_speed($speed_param)
-{
+function validate_speed($speed_param) {
 	if (!(($speed_param > 0 && $speed_param <= 1000)
 		|| $speed_param == 'fast' || $speed_param == 'slow')) {
 			$speed_param = 400;

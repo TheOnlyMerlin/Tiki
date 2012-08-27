@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -30,13 +30,10 @@ if (isset($_REQUEST["view"])) {
 	$data = $rsslib->get_rss_module($_REQUEST["view"]);
 	
 	if ( $data['sitetitle'] ) {
-		$smarty->assign(
-						'feedtitle', 
-						array(
-							'title' => $data['sitetitle'],
-							'link' => $data['siteurl']
-						)
-		);
+		$smarty->assign('feedtitle', array(
+			'title' => $data['sitetitle'],
+			'link' => $data['siteurl']
+		) );
 	}
 
 	$smarty->assign('items', $rsslib->get_feed_items($_REQUEST['view']));
@@ -72,25 +69,22 @@ if (isset($_REQUEST["remove"])) {
 
 if ( isset($_REQUEST['article']) && $prefs['feature_articles'] == 'y' ) {
 	if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
-		$rsslib->set_article_generator(
-						$_REQUEST['article'], 
-						array(
-							'active' => isset( $_POST['enable'] ),
-							'expiry' => $jitPost->expiry->int(),
-							'atype' => $jitPost->type->text(),
-							'topic' => $jitPost->topic->int(),
-							'future_publish' => $jitPost->future_publish->int(),
-							'categories' => (array) $jitPost->cat_categories->int(),
-							'rating' => $jitPost->rating->int(),
-							'submission' => isset( $_POST['submission'] ),
-						)
-		);
+		$rsslib->set_article_generator( $_REQUEST['article'], array(
+			'active' => isset( $_POST['enable'] ),
+			'expiry' => $jitPost->expiry->int(),
+			'atype' => $jitPost->type->text(),
+			'topic' => $jitPost->topic->int(),
+			'future_publish' => $jitPost->future_publish->int(),
+			'categories' => (array) $jitPost->cat_categories->int(),
+			'rating' => $jitPost->rating->int(),
+			'submission' => isset( $_POST['submission'] ),
+		) );
 		$cookietab = 1;
 	} else {
 		$cookietab = 3;		
 	}
 
-	$config = $rsslib->get_article_generator($_REQUEST['article']);
+	$config = $rsslib->get_article_generator( $_REQUEST['article'] );
 	$smarty->assign('articleConfig', $config);
 	$smarty->assign('ratingOptions', range(0, 10));
 

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -66,8 +66,8 @@ class Tracker_Field_File extends Tracker_Field_Abstract
 		return $this->renderTemplate('trackerinput/file.tpl', $context);
 	}
 	
-	function renderInnerOutput($context = array())
-	{
+	function renderInnerOutput( $context = array() ) {
+
 		$att_id = $this->getValue();
 
 		if (empty($att_id)) {
@@ -86,13 +86,13 @@ class Tracker_Field_File extends Tracker_Field_Abstract
 		$smarty->loadPlugin('smarty_function_icon');
 
 		$link = smarty_block_self_link(
-						array(
-							'_script' => 'tiki-download_item_attachment.php',
-							'attId' => $att_id,
-						),
-						smarty_function_icon(array('_id' => 'disk', 'alt' => tra('Download')), $smarty) . ' ' .
-						$attachment['filename'],
-						$smarty
+			array(
+				'_script' => 'tiki-download_item_attachment.php',
+				'attId' => $att_id,
+			),
+			smarty_function_icon(array('_id' => 'disk', 'alt' => tra('Download')), $smarty) . ' ' .
+			$attachment['filename'],
+			$smarty
 		);
 		return $link;
 	}

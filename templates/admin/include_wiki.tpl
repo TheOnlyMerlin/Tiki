@@ -108,7 +108,7 @@
 				{preference name=wiki_edit_icons_toggle}
 				{preference name=wiki_edit_minor}
 				<div class="adminoptionboxchild" id="wiki_edit_minor_childcontainer">
-					{remarksbox type=note title="{tr}Note{/tr}"}{tr}Minor edits do not flag new content for translation and do not send watch notifications (unless "Watch minor edits" is enabled).{/tr}
+					{remarksbox type=note title=Note}{tr}Minor edits do not flag new content for translation and do not send watch notifications (unless "Watch minor edits" is enabled).{/tr}
 						<br />
 						{tr}Only user groups granted the tiki_p_minor permission (and admins) will be able to save minor edits when this is enabled.{/tr}
 						<a class="link" href="tiki-objectpermissions.php?permType=wiki&amp;textFilter=minor&amp;show_disabled_features=y" title="{tr}Permission{/tr}">{icon _id="key" alt="{tr}Permission{/tr}"}</a>
@@ -122,17 +122,18 @@
 
 		{tab name="{tr}Features{/tr}"}
 			<input type="hidden" name="wikifeatures" />    	
-
 			{preference name=feature_sandbox}
-			{preference name=feature_references}
+
 			{preference name=feature_wiki_comments}
 			
 			{preference name=feature_wiki_attachments}
 			<div class="adminoptionboxchild" id="feature_wiki_attachments_childcontainer">
+				<a class="link" href="tiki-objectpermissions.php?permType=wiki&amp;textFilter=attach&amp;show_disabled_features=y" title="{tr}Permission{/tr}">{icon _id="key" alt="{tr}Permission{/tr}"}</a>
 					{preference name=w_displayed_default}
 					{preference name=w_use_db}
 					<div class="adminoptionboxchild">
 						{preference name=w_use_dir}
+						{button href="tiki-admin.php?page=wikiatt" _text="{tr}Manage attachments{/tr}"}
 					</div>
 					{if !empty($prefs.w_use_dir)}
 						{tr}If you change storage, it is better to move all the files for easy backup...{/tr}
@@ -260,7 +261,6 @@
 			{preference name=feature_wiki_make_structure}
 			{preference name=feature_wiki_categorize_structure}
 			{preference name=feature_create_webhelp}
-			{preference name=feature_wiki_structure_drilldownmenu}
 			{preference name=page_n_times_in_a_structure}
 			{preference name=feature_wiki_no_inherit_perms_structure}
 			{preference name=wiki_structure_bar_position}
@@ -305,11 +305,6 @@
 		</div>
 		{preference name=wiki_keywords}
 		{preference name=geo_locate_wiki}
-
-		{preference name=namespace_enabled}
-		<div class="adminoptionboxchild" id="namespace_enabled_childcontainer">
-		{preference name=namespace_separator}
-		</div>
 	{/tab}
 
 	{tab name="{tr}Flagged Revision{/tr}"}
@@ -412,8 +407,7 @@
 	{/if}
 	
 	{tab name="{tr}Tools{/tr}"}
-		<a href="tiki-search_replace.php">{tr}Mass search and replace{/tr}</a><br />
-		<a href="tiki-report_direct_object_perms.php">{tr}Report wiki pages with direct object permissions{/tr}</a><br />
+		<a href="tiki-search_replace.php">{tr}Mass search and replace{/tr}</a>
 	{/tab}
 {/tabset}
 

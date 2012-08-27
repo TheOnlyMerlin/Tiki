@@ -68,23 +68,12 @@
 
 					{preference name=zend_mail_smtp_port}
 					{preference name=zend_mail_smtp_security}
-					{preference name=zend_mail_smtp_helo}
-					{preference name=zend_mail_queue}
 				</div>
 				<div class="adminoptionbox">
 					<label for="testMail">{tr}Email to send a test mail{/tr}</label>
 					<input type="text" name="testMail" id="testMail" />
 				</div>
 				{preference name=email_footer}
-			</fieldset>
-			<fieldset>
-				<legend>{tr}Newsletter{/tr}</legend>
-				{preference name=newsletter_throttle}
-				<div class="adminoptionboxchild" id="newsletter_throttle_childcontainer">
-					{preference name=newsletter_pause_length}
-					{preference name=newsletter_batch_size}
-				</div>
-				{preference name=newsletter_external_client}
 			</fieldset>
 
 			<fieldset>
@@ -159,7 +148,6 @@
 				{preference name=feature_contact}
 				<div class="adminoptionboxchild" id="feature_contact_childcontainer">
 					{preference name=contact_anon}
-					{preference name=contact_priority_onoff}
 					{preference name=contact_user}
 				</div>
 			</fieldset>
@@ -242,7 +230,6 @@
 				</div>
 				{preference name='url_anonymous_page_not_found'}
 				{preference name='url_after_validation'}
-				{preference name='feature_alternate_registration_page'}
 			</fieldset>
 
 			<fieldset>
@@ -276,14 +263,6 @@
 				</div>
 			</fieldset>
 
-			<fieldset>
-				<legend class="heading">{tr}Namespace{/tr}</legend>
-
-				{preference name=namespace_enabled}
-				<div class="adminoptionboxchild" id="namespace_enabled_childcontainer">
-					{preference name=namespace_separator}
-				</div>
-			</fieldset>
 
 		{/tab}
 
@@ -305,10 +284,6 @@
 			{preference name=display_field_order}
 			{preference name=users_prefs_display_12hr_clock}
 			{preference name=tiki_same_day_time_only}
-			{preference name=wikiplugin_now}
-			{preference name=wikiplugin_countdown}
-			{preference name=wikiplugin_timesheet}
-			{preference name=wikiplugin_convene}
 
 			<div class="adminoptionbox">
 				{assign var="fcnlink" value="http://www.php.net/manual/en/function.strftime.php"}

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -49,9 +49,9 @@ class Language_GetStrings
 	public $collectFiles;
 	
 	/**
-	 * @var Language_WriteFile_Factory
+	 * @var Language_WriteFile
 	 */
-	public $writeFileFactory;
+	public $writeFile;
 	
 	/**
 	 * Whether file paths where the string was found
@@ -80,14 +80,14 @@ class Language_GetStrings
 	 *     updated. If empty, all language.php files are updated.
 	 * 
 	 * @param Language_CollectFiles $collectFiles
-	 * @param Language_WriteFile_Factory $writeFileFactory factory to create Language_WriteFile objects
+	 * @param Language_WriteFile $writeFile
 	 * @param array $options list of options to control object behavior (see above)
 	 * @return null
 	 */
-	public function __construct(Language_CollectFiles $collectFiles, Language_WriteFile_Factory $writeFileFactory, array $options = null)
+	public function __construct(Language_CollectFiles $collectFiles, Language_WriteFile $writeFile, array $options = null)
 	{
 		$this->collectFiles = $collectFiles;
-		$this->writeFileFactory = $writeFileFactory;
+		$this->writeFile = $writeFile;
 		
 		if (isset($options['outputFiles'])) {
 			$this->outputFiles = true;
@@ -284,9 +284,8 @@ class Language_GetStrings
 	public function writeToFiles($strings)
 	{
 		foreach ($this->languages as $lang) {
-			$filePath = $this->baseDir . '/lang/' . $lang . '/' . $this->fileName;
-			$writeFile = $this->writeFileFactory->factory($filePath);
-			$writeFile->writeStringsToFile($strings, $this->outputFiles);
+			$langPath = $this->baseDir . '/lang/' . $lang . '/' . $this->fileName;
+			$this->writeFile->writeStringsToFile($strings, $langPath, $this->outputFiles);
 		}
 	}
 	

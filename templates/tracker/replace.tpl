@@ -70,16 +70,6 @@
 		<h4>{tr}Display{/tr}</h4>
 		<div>
 			<label>
-				{tr}Section format{/tr}
-				<select name="sectionFormat">
-					<option value="flat"{if $info.sectionFormat eq 'flat'} selected="selected"{/if}>{tr}Title{/tr}</option>
-					<option value="tab"{if $info.sectionFormat eq 'tab'} selected="selected"{/if}>{tr}Tabs{/tr}</option>
-				</select>
-				<div class="description">
-					{tr}Determines how headers will be rendered when using header fields as form section dividers.{/tr}
-				</div>
-			</label>
-			<label>
 				<input type="checkbox" name="showStatus" value="1"
 					{if $info.showStatus eq 'y'} checked="checked"{/if}/>
 				{tr}Show status{/tr}
@@ -227,20 +217,6 @@
 					{tr}The tracker will use the text field named Subject if any as subject and will use the user email or for anonymous the email field if any as sender{/tr}
 				</div>
 			</label>
-			<label>
-				<input type="checkbox" name="publishRSS" value="1"
-					{if $prefs.feed_tracker neq 'y'}disabled="disabled"{/if}
-					{if $info.publishRSS eq 'y'}checked="checked"{/if}/>
-				{tr}Publish RSS feed for this tracker{/tr}
-				<div class="description">
-					{tr}Requires "RSS per tracker" to be set in Admin/RSS{/tr}
-					{if $prefs.feed_tracker eq 'y'}
-						{tr}(Currently set){/tr}
-					{else}
-						{tr}(Currently not set){/tr}
-					{/if}
-				</div>
-			</label>
 
 			{if $prefs.feature_groupalert eq 'y'}
 				<label>
@@ -270,14 +246,6 @@
 				</div>
 			</label>
 			<label>
-				<input type="checkbox" name="writerCanRemove" value="1"
-					{if $info.writerCanRemove eq 'y'}checked="checked"{/if}/>
-				{tr}Item creator can remove his items{/tr}
-				<div class="description">
-					{tr}The tracker needs a user field with the auto-assign activated{/tr}
-				</div>
-			</label>
-			<label>
 				<input type="checkbox" name="userCanTakeOwnership" value="1"
 					{if $info.userCanTakeOwnership eq 'y'}checked="checked"{/if}/>
 				{tr}User can take ownership of item created by anonymous{/tr}
@@ -294,14 +262,6 @@
 				<input type="checkbox" name="writerGroupCanModify" value="1"
 					{if $info.writerGroupCanModify eq 'y'}checked="checked"{/if}/>
 				{tr}Members of the creator group can modify items{/tr}
-				<div class="description">
-					{tr}The tracker needs a group field with the auto-assign activated{/tr}
-				</div>
-			</label>
-			<label>
-				<input type="checkbox" name="writerGroupCanRemove" value="1"
-					{if $info.writerGroupCanRemove eq 'y'}checked="checked"{/if}/>
-				{tr}Members of the creator group can remove items{/tr}
 				<div class="description">
 					{tr}The tracker needs a group field with the auto-assign activated{/tr}
 				</div>

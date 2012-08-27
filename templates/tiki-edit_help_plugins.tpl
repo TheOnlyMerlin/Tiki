@@ -13,14 +13,10 @@
 {/if}</p>
 
 {if $tiki_p_admin eq 'y'}
-<a href="tiki-admin.php?page=textarea&cookietab=2" target="tikihelp" class="tikihelp">{tr}Activate/deactivate plugins{/tr}</a>
+<a href="tiki-admin.php?page=textarea" target="tikihelp" class="tikihelp">{tr}Activate/deactivate plugins{/tr}</a>
 {/if}
 
-{if isset($editorId)}
-	{listfilter selectors='#plugins_help_table tr' editorId=$editorId parentTabId="plugin_help"}
-{else}
-	{listfilter selectors='#plugins_help_table tr' parentTabId="plugin_help"}
-{/if}
+{listfilter selectors='#plugins_help_table tr'} 
 <table id="plugins_help_table" width="95%" class="formcolor">
 	<tr><th>{tr}Description{/tr}</th></tr>
   {cycle values="even,odd" print=false}

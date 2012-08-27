@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -21,7 +21,7 @@ class Tracker_Field_AutoIncrement extends Tracker_Field_Abstract
 				'description' => tr('Allows an incrementing value field, or itemId field.'),
 				'readonly' => true,
 				'help' => 'Auto-Increment Field',				
-				'prefs' => array('trackerfield_autoincrement'),
+				'prefs' => array('trackerfield_autoincement'),
 				'tags' => array('advanced'),
 				'default' => 'n',
 				'params' => array(

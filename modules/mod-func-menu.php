@@ -1,21 +1,20 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
 
-function module_menu_info()
-{
+function module_menu_info() {
 	return array(
 		'name' => tra('Menu'),
-		'description' => tra('Displays a menu or a structure as a menu.'),
+		'description' => tra('Horizontal or vertical menu.'),
 		'params' => array(
 			'id' => array(
 				'name' => tra('Menu'),
@@ -24,7 +23,7 @@ function module_menu_info()
 			),
 			'structureId' => array(
 				'name' => tra('Structure'),
-				'description' => tra('Identifier of a structure of wiki pages (name or number from tiki-admin_structures.php)'),
+				'description' => tra('Identifier of a structure of wiki pages (from tiki-admin_structures.php)'),
 				'filter' => 'text',
 			),
 			'type' => array(
@@ -75,8 +74,7 @@ function module_menu_info()
 	);
 }
 
-function module_menu($mod_reference, $module_params)
-{
+function module_menu( $mod_reference, $module_params ) {
 	global $smarty;
 	$smarty->assign('module_error', '');
 	if (empty($module_params['id']) && empty($module_params['structureId'])) {
@@ -85,9 +83,10 @@ function module_menu($mod_reference, $module_params)
 	if (!empty($module_params['structureId'])) {
 		global $structlib; include_once('lib/structures/structlib.php');
 
-		if (empty($module_params['title'])) {
+		if (empty($mod_reference['title'])) {
 			$smarty->assign('tpl_module_title', $module_params['structureId']);
 		}
+		$module_params['structureId'] = $structlib->get_struct_ref_id($module_params['structureId']);
 	}
 	$smarty->assign('module_type', empty($module_params['css']) || $module_params['css'] === 'y' ? 'cssmenu' : 'menu');
 }

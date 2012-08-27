@@ -3,7 +3,7 @@
 {title help="$helpUrl"}{$admintitle}{/title}
 
 {if $prefs.sender_email eq ''}
-{tr _0="tiki-admin.php?page=general&highlight=sender_email"}Your sender email is not set. You can set it <a href="%0">here</a>{/tr}
+{tr _0="tiki-admin.php?lm_criteria=sender_email&highlight=sender_email"}Your sender email is not set. You can set it <a href="%0">here</a>{/tr}
 {/if}
 
 <form method="post" action="">
@@ -35,22 +35,18 @@
 			selector.parents('fieldset:not(.tabcontent)').show();
 			selector.closest('fieldset.tabcontent').addClass('filled');
 		};
-		var hide = function (selector) {
-			selector.hide();
-			selector.parents('fieldset:not(.tabcontent)').hide();
-		};
 
 		var filters = [];
-		var prefs = $('.adminoptionbox.preference, .admbox').hide();
+		var prefs = $('.adminoptionbox.preference').hide();
 		prefs.parents('fieldset:not(.tabcontent)').hide();
 		prefs.closest('fieldset.tabcontent').removeClass('filled');
 		$('.preffilter').each(function () {
-			var targets = $('.adminoptionbox.preference.' + $(this).val() + ',.admbox.' + $(this).val());
+			var targets = $('.adminoptionbox.preference.' + $(this).val());
 			if ($(this).is(':checked')) {
 				filters.push($(this).val());
 				show(targets);
 			} else if ($(this).is('.negative:not(:checked)')) {
-				hide(targets);
+				targets.hide();
 			}
 		});
 
@@ -123,7 +119,7 @@ Add a value in first check when you create a new admin page. *}
 "calendar", "intertiki", "video", "freetags", "gmap",
 "i18n", "wysiwyg", "copyright", "category", "module", "look", "textarea",
  "ads", "profiles", "semantic", "plugins", "webservices",
-'sefurl', 'connect', 'metrics', 'payment', 'rating', 'socialnetworks', 'share', "areas", "workspace"))}
+'sefurl', 'connect', 'metrics', 'payment', 'rating', 'socialnetworks', 'share', "areas"))}
   {assign var="include" value=$smarty.get.page}
 {else}
   {assign var="include" value="list_sections"}
@@ -132,12 +128,8 @@ Add a value in first check when you create a new admin page. *}
   <div class="simplebox adminanchors clearfix" >{include file='admin/include_anchors.tpl'}</div>
 {/if}
 
-{if $upgrade_messages|count}
-	<div class="simplebox highlight">
-		{foreach from=$upgrade_messages item=um}
-			<p>{$um|escape}</p>
-		{/foreach}
-	</div>
+{if $prefs.tiki_needs_upgrade eq 'y'}
+<div class="simplebox highlight">{tr}A new version of Tiki, <b>{$prefs.tiki_release}</b>, is available. You are currently running <b>{$tiki_version}</b>. Please visit <a href="http://tiki.org/Download">tiki.org/Download</a>.{/tr}</div>
 {/if}
 
 {if $tikifeedback}
@@ -154,8 +146,6 @@ Add a value in first check when you create a new admin page. *}
 				{icon _id=accept alt="{tr}Enabled{/tr}" style="vertical-align: middle"}
 			{elseif $tikifeedback[n].st eq 2}
 				{icon _id=accept alt="{tr}Changed{/tr}" style="vertical-align: middle"}
-			{elseif $tikifeedback[n].st eq 4}
-				{icon _id=arrow_undo alt="{tr}Reset{/tr}" style="vertical-align: middle"}
 			{else}
 				{icon _id=information alt="{tr}Information{/tr}" style="vertical-align: middle"}
 			{/if}

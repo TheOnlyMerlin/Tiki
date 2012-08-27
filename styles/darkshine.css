@@ -1,5 +1,5 @@
 /* $Id$
-	Dark Shine theme for Tiki Wiki CMS Groupware. This is an adaptation
+	Dark Shine theme for TikiWiki CMS/Groupware. This is an adaptation
 	of the original by Jack Qiao (http://www.pureweb.ca/blog/).
 	This is released under the GNU/LGPL license.
 	For more information, etc., visit http://zukakakina.com or
@@ -14,10 +14,9 @@
 /***** XHTML Elements (body tag here,
 			others follow Layout) *****/
 body {
-	background: #90140C url(darkshine/stripes.png) repeat-x 50% 0;
-	font: normal 76% arial, verdana, helvetica, sans-serif;
-	line-height: 1.5;
-}
+	background: #90140C url(darkshine/stripes.png) repeat-x;
+	background-position: 50% 0;
+	font: normal 76%/150% arial, verdana, helvetica, sans-serif}
  
 html>body {font-size: 72% !important}
 	
@@ -83,8 +82,7 @@ body.fixed_width .fixedwidth .fixedwidth {
 .footerbgtrap {
 	text-align: center;
 	background: #000;
-	font: normal 10px arial, verdana, helvetica, sans-serif;
-	line-height: 2;
+	font: normal 10px/25px arial, verdana, helvetica, sans-serif;
 	color: #999;
 	text-align: center;
 	border-left: 15px solid #600000;
@@ -233,8 +231,7 @@ tt {font-size: 110%}
 	background: url(darkshine/stripes_small.gif) repeat-x;
 	color: #fff;
 	min-height: 28px;
-	font: normal 10px arial, verdana, helvetica, sans-serif;
-	line-height: 2;
+	font: normal 10px/32px arial, verdana, helvetica, sans-serif;
 }
 
 #contenttop strong {
@@ -252,7 +249,7 @@ tt {font-size: 110%}
 	text-align: center;
 	text-decoration: none;
 	color: #fff;
-	font: bold 12px arial, verdana, helvetica, sans-serif;
+	font: bold 12px/normal arial, verdana, helvetica, sans-serif;
 	display: block;
 	padding-left: 8px;
 }
@@ -771,7 +768,7 @@ a.pagetitle {
 	margin: 4px;
 	border: 1px dashed #ADACAF;
 	overflow: auto;
-}
+   width: 500px}
 
 .codecaption {
 	font-size: 90%;

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -26,17 +26,9 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 $smarty->assign('headtitle', tra('Log In'));
 $module_params = array(
 	'mode' => 'module',
-	'show_register'		=> 'y',
-	'show_forgot'		=> 'y',
-	'error'				=> '',
-	'flip'				=> '',
-	'decorations'		=> '',
-	'nobox'				=> '',
-	'notitle'			=> '',
-	'style'				=> '',
+	'show_register' => 'y',
+	'show_forgot' => 'y',
 );
-$smarty->assign('mode', '');
-$smarty->assign('section', '');
 $smarty->assign('module_params', $module_params);
 $smarty->assign('mid', 'tiki-login.tpl');
 

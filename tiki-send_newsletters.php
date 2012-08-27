@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +10,7 @@ require_once ('tiki-setup.php');
 @ini_set('max_execution_time', 0); //will not work if safe_mode is on
 $prefs['feature_wiki_protect_email'] = 'n'; //not to alter the email
 include_once ('lib/newsletters/nllib.php');
-$auto_query_args = array('sort_mode', 'offset', 'find', 'nlId', 'cookietab', 'editionId');
+$auto_query_args = array('sort_mode', 'offset', 'find', 'nlId', 'cookietab');
 
 $access->check_feature('feature_newsletters');
 $access->check_permission('tiki_p_send_newsletters');
@@ -145,23 +145,11 @@ if (isset($_REQUEST['mode_normal']) && $_REQUEST['mode_normal']=='y') {
 	$info["data"] = $editlib->parseToWysiwyg($_REQUEST["data"]);
 }
 
-if (isset($_REQUEST['is_html'])) {
-	$info['is_html'] = !empty($_REQUEST['is_html']);
-	$_REQUEST['is_html'] = 'on';
-} else {	// guess html based on wysiwyg mode
-	$info['is_html'] =  $info['wysiwyg'] === 'y' && $prefs['wysiwyg_htmltowiki'] !== 'y';
-	$_REQUEST['is_html'] = $info['is_html'] ? 'on' : '';
-}
-
 if (isset($_REQUEST["templateId"]) && $_REQUEST["templateId"] > 0 && (!isset($_REQUEST['previousTemplateId']) || $_REQUEST['previousTemplateId'] != $_REQUEST['templateId'])) {
 	global $templateslib; require_once 'lib/templates/templateslib.php';
 	$template_data = $templateslib->get_template($_REQUEST["templateId"]);
 	$_REQUEST["data"] = $template_data["content"];
-	if ($templateslib->template_is_in_section($_REQUEST['templateId'], 'wiki_html') ) {
-		$_REQUEST['is_html'] = 'on';
-		$_REQUEST['wysiwyg'] ='y';
-	}
-	if (isset($_SESSION['wysiwyg']) && $_SESSION['wysiwyg'] == 'y' || $_REQUEST['wysiwyg'] === 'y') {
+	if (isset($_SESSION['wysiwyg']) && $_SESSION['wysiwyg'] == 'y') {
 		$_REQUEST['data'] = $tikilib->parse_data($_REQUEST['data'], array('is_html'=>true, 'absolute_links' => true, 'suppress_icons' => true));
 	}
 	$_REQUEST["preview"] = 1;
@@ -201,7 +189,7 @@ if (!empty($_FILES) && !empty($_FILES['newsletterfile'])) {
 				'savestate' => 'phptmp',
 			);
 		} else {
-			$smarty->assign('upload_err_msg', tra('A problem occurred during file uploading') . '<br />' . tra('File which was causing trouble was at rank') . '&nbsp;' . ($i + 1) . '<br />' . tra('The error was:') . '&nbsp;<strong>' . $tikilib->uploaded_file_error($_FILES['newsletterfile']['error'][$i]) . '</strong>');
+			$smarty->assign('upload_err_msg', tra('A problem occured during file uploading') . '<br />' . tra('File which was causing trouble was at rank') . '&nbsp;' . ($i + 1) . '<br />' . tra('The error was:') . '&nbsp;<strong>' . $tikilib->uploaded_file_error($_FILES['newsletterfile']['error'][$i]) . '</strong>');
 		}
 	}
 }
@@ -235,6 +223,7 @@ if (isset($_REQUEST["preview"])) {
 	}
 	if (isset($_REQUEST['wikiparse']) && $_REQUEST['wikiparse'] == 'on') $info['wikiparse'] = 'y';
 	else $info['wikiparse'] = 'n';
+	$info['is_html'] = !empty($_REQUEST['is_html']);
 	if (!empty($_REQUEST["datatxt"])) {
 		$info["datatxt"] = $_REQUEST["datatxt"];
 		//For the hidden input
@@ -251,17 +240,7 @@ if (isset($_REQUEST["preview"])) {
 		}
 		$smarty->assign("usedTpl", $_REQUEST["usedTpl"]);
 	} else {
-		$info['dataparsed'] = '<html><body>';
-		if ($info['wikiparse'] === 'y') {
-			$data = $info['data'];
-			$info['dataparsed'] .= $tikilib->parse_data($data, array('absolute_links' => true, 'suppress_icons' => true,'is_html' => $info['is_html']));
-			if (empty($info['data'])) {
-				$info['data'] = $data;		// somehow on massive pages this gets reset somewhere inside parse_data
-			}
-		} else {
-			$info['dataparsed'] .= $info['data'];
-		}
-		$info['dataparsed'] .= '</body></html>';
+		$info["dataparsed"] = "<html><body>" . (($info['wikiparse'] == 'y') ? $tikilib->parse_data($info["data"], array('absolute_links' => true, 'suppress_icons' => true,'is_html' => $info['is_html'])) : $info['data']) . "</body></html>";
 	}
 	if (!empty($_REQUEST['replyto'])) {
 		$smarty->assign('replyto', $_REQUEST['replyto']);
@@ -327,9 +306,7 @@ if (isset($_REQUEST["save"])) {
 	}
 }
 $smarty->assign('emited', 'n');
-if (!empty($_REQUEST['datatxt'])) { 
-	$txt = $_REQUEST['datatxt']; 
-}
+if (!empty($_REQUEST['datatxt'])) { $txt = $_REQUEST['datatxt']; }
 if (empty($txt) && !empty($_REQUEST["data"])) {
 	//No txt message is explicitely provided -> Create one with the html Version & remove Wiki tags
 	$txt = $_REQUEST["data"];
@@ -350,7 +327,6 @@ if (!empty($_REQUEST['resendEditionId'])) {
 		$_REQUEST['subject'] = $info['subject'];
 		$_REQUEST['datatxt'] = $info['datatxt'];
 		$_REQUEST['wysiwyg'] = $info['wysiwyg'];
-		$_REQUEST['is_html'] = $info['is_html'];
 		$_REQUEST['dataparsed'] = $info['data'];
 		$_REQUEST['editionId'] = $nllib->replace_edition($nl_info['nlId'], $info['subject'], $info['data'], 0, 0, false, $info['datatxt'], $info['files'], $info['wysiwyg']);
 		$resend = 'y';
@@ -386,15 +362,15 @@ if ( isset($_REQUEST["send"]) && ! empty($_REQUEST["sendingUniqId"]) || $resend 
 	$nb_sent = count($sent);
 	$nb_errors = count($errors);
 
-	$msg = '<h4>' . sprintf(tra('Newsletter successfully sent to %s users.'), $nb_sent) . '</h4>';
+	$msg = '<h4>' . sprintf( tra('Newsletter successfully sent to %s users.'), $nb_sent ) . '</h4>';
 	if ( $nb_errors > 0 )
-		$msg .= "\n" . '<font color="red">' . '(' . sprintf(tra('There was %s errors.'), $nb_errors) . ')' . '</font><br />';
+		$msg .= "\n" . '<font color="red">' . '(' . sprintf( tra('There was %s errors.'), $nb_errors ) . ')' . '</font><br />';
 
 	// If logfile exists and if it is reachable from the web browser, add a download link
 	if ( !empty($logFileName) && $logFileName[0] != '/' && $logFileName[0] != '.' )
 		$smarty->assign('downloadLink', $logFileName);
 
-	echo str_replace("'", "\\'", $msg);
+	echo str_replace( "'", "\\'", $msg);
 	echo $smarty->fetch('send_newsletter_footer.tpl');
 
 	$smarty->assign('sent', $nb_sent);

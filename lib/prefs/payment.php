@@ -1,12 +1,11 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_payment_list()
-{
+function prefs_payment_list() {
 	return array(
 		'payment_feature' => array(
 			'name' => tra('Payment'),
@@ -77,7 +76,7 @@ function prefs_payment_list()
 		),
 		'payment_cclite_registries' => array(
 			'name' => tra('Cclite Registries'),
-			'description' => tra('Registries in Cclite.'),
+			'description' => tra('Registries in Cclite. Use comma to separate. e.g. "dogtown, chelsea, dalston, etc"'),
 			'hint' => tra('Registry names in Cclite'),
 			'type' => 'text',
 			'dependencies' => array( 'payment_feature' ),
@@ -87,7 +86,7 @@ function prefs_payment_list()
 		),
 		'payment_cclite_currencies' => array(
 			'name' => tra('Cclite Registry Currencies'),
-			'description' => tra('Currencies in Cclite.'),
+			'description' => tra('Currencies in Cclite. Use comma to separate. e.g. "woof, ducket, ducket, etc"'),
 			'hint' => tra('Each registry in Cclite can have it\'s own currency. Must be one per registry. (case sensitive)'),
 			'type' => 'text',
 			'dependencies' => array( 'payment_feature' ),
@@ -164,7 +163,7 @@ function prefs_payment_list()
 		),
 		'payment_tikicredits_types' => array(
 			'name' => tra('Types of credit to use'),
-			'description' => tra('This is a list of the types of Tiki user credits to accept to pay with.'),
+			'description' => tra('This is a list of the types of Tiki user credits to accept to pay with, separated by ,'),
 			'type' => 'text',
 			'dependencies' => array( 'payment_feature', 'feature_credits' ),
 			'separator' => ',',
@@ -172,7 +171,7 @@ function prefs_payment_list()
 		),
 		'payment_tikicredits_xcrates' => array(
 			'name' => tra('Exchange rate for types of credit to use'),
-			'description' => tra('This is a corresponding list of amount of credits equivalent to 1 of the payment currency.'),
+			'description' => tra('This is a corresponding list of amount of credits equivalent to 1 of the payment currency, separated by ,'),
 			'type' => 'text',
 			'dependencies' => array( 'payment_feature', 'feature_credits' ),
 			'separator' => ',',
@@ -277,7 +276,7 @@ function prefs_payment_list()
 		'payment_cart_product_classid_fieldname' => array(
 			'name' => tra('Product Class ID Field Name'),
 			'description' => tra('Field Name in Products tracker of the Product Class ID, needed for the Gift Certificates cart feature.'),
-			'type' => 'text',
+			'type' => 'text',		
 			'default' => '',
 		),
 		'payment_cart_giftcerttemplate_fieldname' => array(

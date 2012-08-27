@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -19,15 +19,13 @@ if ( isset($_REQUEST['noautosave']) === true ) {
 	$smarty->assign('noautosave', $_REQUEST['noautosave'] === 'y');
 }
 
-function auto_save_name($id, $referer = '', $only_md5 = false)
-{
+function auto_save_name($id, $referer = '', $only_md5 = false) {
 	global $user;
 	$referer = preg_replace('/(\?|\&)noautosave=y/', '', ensureReferrer($referer));
 	$referer = rawurldecode($referer); // this is needed to ensure consistency whether coming from js or php
 	return ($only_md5 ? '' : 'temp/cache/auto_save-').md5("$user:$referer:$id");
 }
-function auto_save_log($id, $referer = '', $action = '')
-{
+function auto_save_log($id, $referer = '', $action = '') {
 	global $user;
 	file_put_contents('temp/cache/auto_save-log-'.(auto_save_name($id, $referer, true)), $user.' : '.ensureReferrer($referer)." : $id : $action\n", FILE_APPEND);
 }
@@ -38,8 +36,7 @@ function auto_save_log($id, $referer = '', $action = '')
  * @param string $referer	textarea specifier (user:section:item)
  * @return number			bytes that were written to the file, or false on failure
  */
-function auto_save($id, $data, $referer = '')
-{
+function auto_save($id, $data, $referer = '') {
 //	auto_save_log($id, $referer, 'auto_save');
 	$result = file_put_contents(auto_save_name($id, $referer), $data);
 	return $result;
@@ -50,8 +47,7 @@ function auto_save($id, $data, $referer = '')
  * @param string $referer	textarea specifier (user:section:item)
  * @return bool				true on success or false on failure
  */
-function remove_save($id, $referer = '')
-{
+function remove_save($id, $referer = '') {
 	$referer = ensureReferrer($referer);
 //	auto_save_log($id, $referer, 'remove_save');
 	$file_name = auto_save_name($id, $referer);
@@ -63,13 +59,11 @@ function remove_save($id, $referer = '')
 	return $result;
 }
 
-function has_autosave($id, $referer = '')
-{
+function has_autosave($id, $referer = '') {
 	return file_exists(auto_save_name($id, ensureReferrer($referer)));
 }
 
-function get_autosave($id, $referer = '')
-{
+function get_autosave($id, $referer = '') {
 	$file_name = auto_save_name($id, $referer);
 	if (file_exists($file_name)) {
 		return file_get_contents($file_name);
@@ -78,8 +72,7 @@ function get_autosave($id, $referer = '')
 	}
 }
 
-function ensureReferrer($referer = '')
-{
+function ensureReferrer($referer = '') {
 	
 	// should be page name, but use URI if not?
 	if (empty($referer)) {

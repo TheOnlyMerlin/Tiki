@@ -1,19 +1,18 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_groupmailcore_info()
-{
+function wikiplugin_groupmailcore_info() {
 	return array(
 		'name' => tra('GroupMail Core'),
 		'documentation' => 'PluginGroupMailCore',
 		'description' => tra('Displays GroupMail functions on a wiki page. Usually set up using a plugin alias created by the GroupMail profile.'),
 		'prefs' => array('wikiplugin_groupmailcore', 'feature_trackers'),
 		//'extraparams' => true,
-		'icon' => 'img/icons/email.png',
+		'icon' => 'pics/icons/email.png',
 		'tags' => array( 'experimental' ),	
 		'params' => array(
 			'fromEmail' => array(
@@ -82,8 +81,7 @@ function wikiplugin_groupmailcore_info()
 	);
 }
 
-function wikiplugin_groupmailcore($data, $params)
-{
+function wikiplugin_groupmailcore($data, $params) {
 	global $tikilib;
 	require_once('lib/wiki-plugins/wikiplugin_trackerlist.php');
 	

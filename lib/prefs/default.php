@@ -1,12 +1,11 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_default_list()
-{
+function prefs_default_list() {
 	return array(
 		'default_mail_charset' => array(
 			'name' => tra('Default charset for sending mail'),
@@ -74,6 +73,15 @@ function prefs_default_list()
 			'shorthint' => tra('rows'),
 			'filter' => 'digits',
 			'default' => '10',
+		),
+		'default_kaltura_editor' => array(
+			'name' => tra('Default Editor'),
+			'type' => 'list',
+			'options' => array(
+				'kse' => tra('Simple'),
+				'kae' => tra('Advanced'),
+			),
+			'default' => 'kse',
 		),
 	);
 }

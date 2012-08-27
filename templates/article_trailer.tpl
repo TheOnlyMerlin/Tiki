@@ -1,15 +1,12 @@
-{if !isset($preview)}
-	<div class="clearfix articletrailer">
+	<div class="articletrailer">
 		<span>
 			{if $show_size eq 'y'}
 				({$size} {tr}bytes{/tr})
 			{/if}
 		</span>
 		<div class="actions">
-		{if $prefs.feature_multilingual eq 'y' and $lang and $prefs.show_available_translations eq 'y'}	
-			<div class="lang_select">
-				{include file='translated-lang.tpl' object_type='article'}
-			</div>
+		{if $prefs.feature_multilingual eq 'y' and $show_lang eq 'y' and $lang and $prefs.show_available_translations eq 'y'}
+			{include file='translated-lang.tpl' type='article'}
 		{/if}
 		{if $tiki_p_edit_article eq 'y'}
 			<a class="icon" href="tiki-edit_article.php?articleId={$articleId}">{icon _id='page_edit'}</a>
@@ -30,7 +27,7 @@
 				},
 				{button:false});
 				//Output your customized button
-				document.write('<span class="share" id="share{/literal}{$articleId}{literal}"><a title="{/literal}{$smarty.capture.shared_link_title|replace:'\'':'\\\''}{literal}" href="javascript:void(0);"><img src="https://ws.sharethis.com/images/share-icon-16x16.png?CXNID=1000014.0NXC" /></a></span>');
+				document.write('<span class="share" id="share{/literal}{$articleId}{literal}"><a title="{/literal}{$smarty.capture.shared_link_title|replace:'\'':'\\\''}{literal}" href="javascript:void(0);"><img src="http://w.sharethis.com/images/share-icon-16x16.png?CXNID=1000014.0NXC" /></a></span>');
 				//Tie customized button to ShareThis button functionality.
 				var element{/literal}{$articleId}{literal} = document.getElementById("share{/literal}{$articleId}{literal}"); object{/literal}{$articleId}{literal}.attachButton(element{/literal}{$articleId}{literal}); </script>{/literal}
 		{/if}
@@ -42,4 +39,4 @@
 		{/if}
 		</div>
 	</div>
-{/if}
+	<br class="clear" />

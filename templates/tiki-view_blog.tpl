@@ -53,9 +53,9 @@
 {/if}
 
 {foreach from=$listpages item=post_info}
-	<article class="blogpost post{if !empty($container_class)} {$container_class}{/if}">
+	<div class="blogpost post{if !empty($container_class)} {$container_class}{/if}">
 		{include file='blog_wrapper.tpl' blog_post_context='view_blog'}
-	</article>
+	</div>
 {/foreach}
 
 {pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}

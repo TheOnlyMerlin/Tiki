@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -32,7 +32,7 @@ if (isset($_REQUEST["calendarIds"])) {
     if (!is_array($calendarIds)) {
 	$calendarIds = array($calendarIds);
     }	
-    $uniqueid = $feed.".".implode(".", $calendarIds);
+    $uniqueid = $feed.".".implode(".",$calendarIds);
 } else {
     $uniqueid = $feed;
     $calendarIds = array();
@@ -54,9 +54,11 @@ if ($output["data"]=="EMPTY") {
 
 	// build a list of viewable calendars
 	$calendars = array();
+
 	foreach ($rawcals['data'] as $cal) {
-		$calendars[] = $cal['calendarId'];
-	}
+
+			$calendars[] = $cal['calendarId'];
+	    }
 
 	$maxCalEntries = $prefs['feed_calendar_max'];
 	$cur_time = explode(',', $tikilib->date_format('%Y,%m,%d,%H,%M,%S', $publishDate));

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -82,6 +82,7 @@ $smarty->assign('show_linkto', $article_data["show_linkto"]);
 $smarty->assign('image_caption', $article_data["image_caption"]);
 $smarty->assign('show_image_caption', $article_data["show_image_caption"]);
 $smarty->assign('lang', $article_data["lang"]);
+$smarty->assign('show_lang', $article_data["show_lang"]);
 $smarty->assign('authorName', $article_data["authorName"]);
 $smarty->assign('show_author', $article_data["show_author"]);
 $smarty->assign('topicId', $article_data["topicId"]);
@@ -102,11 +103,9 @@ $smarty->assign('show_reads', $article_data["show_reads"]);
 $smarty->assign('size', $article_data["size"]);
 $smarty->assign('show_size', $article_data["show_size"]);
 $smarty->assign('use_ratings', $article_data["use_ratings"]);
-$smarty->assign('ispublished', $article_data["ispublished"]);
 if (strlen($article_data["image_data"]) > 0) {
 	$smarty->assign('hasImage', 'y');
-} else {
-	$smarty->assign('hasImage', 'n');
+	$hasImage = 'y';
 }
 if ($article_data['image_x'] > 0) {
 	$smarty->assign('width', $article_data['image_x']);
@@ -167,16 +166,12 @@ $heading = $article_data["heading"];
 $smarty->assign('parsed_body', $tikilib->parse_data($body, array('is_html' => 'y')));
 $smarty->assign('parsed_heading', $tikilib->parse_data($heading, array('is_html' => 'y')));
 
-if ($prefs['article_related_articles'] == 'y') {
-	$article_data['related_articles'] = $artlib->get_related_articles($article_data['articleId']);
-	if (isset($article_data['related_articles']) && !empty($article_data['related_articles'])) {
-		$smarty->assign('related_articles', $article_data['related_articles']);
-	}
-}
-
 $topics = $artlib->list_topics();
-if (isset($topics[$article_data['topicId']])) {
-	$smarty->assign('topicName', $topics[$article_data['topicId']]['name']);
+foreach ($topics as $topic) {
+	if ($topic['topicId'] == $article_data['topicId']) {
+		$smarty->assign('topicName', $topic['name']);
+		break;
+	}
 }
 $smarty->assign_by_ref('topics', $topics);
 
@@ -222,8 +217,6 @@ if ($prefs['feature_multilingual'] == 'y' && $article_data['lang']) {
 	$trads = $multilinguallib->getTranslations('article', $article_data['articleId'], $article_data["title"], $article_data['lang']);
 	$smarty->assign('trads', $trads);
 }
-//Keep track of month of last viewed article for article months_links module foldable display
-$_SESSION['cms_last_viewed_month'] = TikiLib::date_format("%Y-%m", $article_data["publishDate"]);
 ask_ticket('article-read');
 //add a hit
 $statslib->stats_hit($article_data["title"], "article", $article_data['articleId']);

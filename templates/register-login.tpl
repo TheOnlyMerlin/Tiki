@@ -8,13 +8,16 @@
 			{if $trackerEditFormId}&nbsp;<strong class='mandatory_star'>*</strong>&nbsp;{/if}
 		</td>
 		<td>
-			<input type="text" name="name" id="name" value="{if !empty($smarty.post.name)}{$smarty.post.name}{/if}" />
+			<input type="text" name="name" id="name" {if 0 and $prefs.feature_ajax eq 'y' && !$userTrackerData} onkeyup="return check_name()" onblur="return check_name()"{/if} />
+			{if 0 and $prefs.feature_ajax eq 'y'}{* AJAX_TODO *}
+				<span id="ajax_msg_name" style="vertical-align: middle;"></span>
+			{/if}
 			{if $prefs.login_is_email eq 'y'}
-				<br><em>{tr}Use your email as login{/tr}</em>.
+				<em>{tr}Use your email as login{/tr}</em>.
 			{else}
 				{if $prefs.min_username_length > 1}
 					<div class="highlight">
-						<em>{tr _0=$prefs.min_username_length}Minimum %0 characters long{/tr}</em>
+						<em>{tr}Minimum {$prefs.min_username_length} characters long{/tr}</em>
 					</div>
 				{/if}
 				{if $prefs.lowercase_username eq 'y'}

@@ -5,7 +5,7 @@ var baseURI = '{$smarty.server.REQUEST_URI}';
 function refreshCache( entry ) { // {{{
 	var status = document.getElementById( 'profile-status-' + entry );
 	var datespan = document.getElementById( 'profile-date-' + entry );
-	var pending = 'img/icons/status_pending.gif';
+	var pending = 'img/icons2/status_pending.gif';
 
 	if( status.src == pending )
 		return;
@@ -17,7 +17,7 @@ function refreshCache( entry ) { // {{{
 		if (req.readyState == 4) {
 			if(req.status == 200) {
 				var data = eval( "(" + req.responseText + ")" );
-				status.src = 'img/icons/status_' + data.status + '.gif';
+				status.src = 'img/icons2/status_' + data.status + '.gif';
 				datespan.innerHTML = data.lastupdate;
 			} else
 				alert("Error loading page\n");
@@ -143,14 +143,14 @@ function showDetails( id, domain, profile ) { // {{{
 				{
 					var p = document.createElement('p');
 					p.style.fontWeight = 'bold';
-					p.innerHTML = "An error occurred during the profile validation. This profile cannot be applied. Message: " + data.error;
+					p.innerHTML = "An error occured during the profile validation. This profile cannot be applied. Message: " + data.error;
 					cell.appendChild(p);
 				}
 				else
 				{
 					var p = document.createElement('p');
 					p.style.fontWeight = 'bold';
-					p.innerHTML = "An error occurred during the profile validation. This profile cannot be applied.";
+					p.innerHTML = "An error occured during the profile validation. This profile cannot be applied.";
 					cell.appendChild(p);
 				}
 
@@ -375,8 +375,8 @@ $("#repository, #categories").change(function(){
 		{foreach key=k item=entry from=$sources}
 			<tr>
 				<td>{$entry.short}</td>
-				<td><img id="profile-status-{$k}" alt="{tr}Status{/tr}" src="img/icons/status_{$entry.status}.gif"/></td>
-				<td><span id="profile-date-{$k}">{$entry.formatted}</span> <a href="javascript:refreshCache({$k})" class="icon"><img src="img/icons/arrow_refresh.png" class="icon" alt="{tr}Refresh{/tr}"/></a></td>
+				<td><img id="profile-status-{$k}" alt="{tr}Status{/tr}" src="img/icons2/status_{$entry.status}.gif"/></td>
+				<td><span id="profile-date-{$k}">{$entry.formatted}</span> <a href="javascript:refreshCache({$k})" class="icon"><img src="pics/icons/arrow_refresh.png" class="icon" alt="{tr}Refresh{/tr}"/></a></td>
 			</tr>
 		{/foreach}
 	</table>
@@ -384,7 +384,7 @@ $("#repository, #categories").change(function(){
 </fieldset>
 {else}
 	{remarksbox type="warning" title="{tr}A Friendly Warning{/tr}"}
-		{tr}JavaScript must be turned <strong>ON</strong> in order to apply Profiles. Please enable your JavaScript and try again.{/tr}
+		{tr}Javascript must be turned <b>ON</b> in order to apply Profiles. Please enable your javascript and try again.{/tr}
 	{/remarksbox}
 {/if}
 {/tab}
@@ -398,41 +398,36 @@ $("#repository, #categories").change(function(){
 			<div class="navbar">
 				<label for="export_type">{tr}Object type:{/tr}</label>
 				<select name="export_type" id="export_type">
-					<option value="prefs"{if $export_type eq "prefs"} selected="selected"{/if}>
+					<option value="prefs"{if $export_type eq "prefs"} checked="checked"{/if}>
 						{tr}Preferences{/tr}
-					</option>
-					<option value="modules"{if $export_type eq "modules"} selected="selected"{/if}>
-						{tr}Modules{/tr}
 					</option>
 				</select>
 			</div>
 			<fieldset>
 				<legend>{tr}Export modified preferences as YAML{/tr}</legend>
 				<div class="navbar">
-					{listfilter selectors=".profile_export_list > li"}
+					{listfilter selectors="#prefs_to_export_list > li"}
 					<label for="select_all_prefs_to_export">{tr}Toggle Visible{/tr}</label>
 					<input type="checkbox" id="select_all_prefs_to_export" />
 					<label for="export_show_added">{tr}Show added preferences{/tr}</label>
 					<input type="checkbox" name="export_show_added" id="export_show_added"
 							{if !empty($smarty.request.export_show_added)} checked="checked"{/if} />
 				</div>
-				<ul id="prefs_to_export_list" class="profile_export_list"{if $export_type neq "prefs"} style=display:none;"{/if}>
+				<ul id="prefs_to_export_list">
 					{cycle values="odd,even" print=false}
 					{foreach from=$modified_list  key="name" item="data"}
 						<li class="{cycle}">
-							<input type="checkbox" name="prefs_to_export[{$name}]" value="{$data.current.serial|escape}"
+							<input type="checkbox" name="prefs_to_export[{$name}]" value="{$data.cur|escape}"
 									 id="checkbox_{$name}"{if isset($prefs_to_export[$name])} checked="checked"{/if} />
 							<label for="checkbox_{$name}">
-								{if is_array($data.current.expanded)}{assign var=current value=$data.current.expanded|implode:", "}{else}{assign var=current value=$data.current.expanded}{/if} 
-								{$name} = '<strong>{$current|truncate:40:"...":true|escape}</strong>'{* FIXME: This one line per preference display format is ugly and doesn't work for multiline values *}
+								{$name} = <strong>{$data.cur|truncate:40:"...":true|escape}</strong>
 								<em>
 									&nbsp;&nbsp;
-									{if isset($data.default)}
-										{if empty($data.default)}
+									{if isset($data.def)}
+										{if empty($data.def)}
 											('')
 										{else}
-											{if is_array($data.default)}{assign var=default value=$data.default|implode:", "}{else}{assign var=default value=$data.default}{/if}
-											('{$default|truncate:20:"...":true|escape}')
+											({$data.def|truncate:20:"...":true|escape})
 										{/if}
 									{else}
 										({tr}no default{/tr})
@@ -442,33 +437,12 @@ $("#repository, #categories").change(function(){
 						</li>
 					{/foreach}
 				</ul>
-				<ul id="modules_to_export_list" class="profile_export_list"{if $export_type neq "modules"} style=display:none;"{/if}>
-					{cycle values="odd,even" print=false}
-					{foreach from=$modules_for_export  key="name" item="data"}
-						<li class="{cycle}">
-							<input type="checkbox" name="modules_to_export[{$name}]" value="{$data.name|escape}"
-								   id="modcheckbox_{$name}"{if isset($modules_to_export[$name])} checked="checked"{/if} />
-							<label for="modcheckbox_{$name}">
-								{$data.data.name|escape} :
-								<em>
-									&nbsp;&nbsp;
-									{$data.data.position}
-									{$data.data.order}
-								</em>
-							</label>
-						</li>
-					{/foreach}
-				</ul>
 				{jq}
 $("#select_all_prefs_to_export").click( function () {
-	$("input[name^=prefs_to_export]:visible,input[name^=modules_to_export]:visible").click();
+	$("input[name^=prefs_to_export]:visible").click();
 });
-$("#export_show_added").click( function () {
+$("#export_show_added, #export_type").click( function () {
 	$(this)[0].form.submit();
-});
-$("#export_type").change(function(){
-	$(".profile_export_list").hide();
-	$("#" + $(this).val() + "_to_export_list").show();
 });
 				{/jq}
 				<div class="input_submit_container">
@@ -502,7 +476,7 @@ $("#export_type").change(function(){
 					<input type="text" name="profile_tester_name" id="profile_tester_name" value="{if isset($profile_tester_name)}{$profile_tester_name}{else}Test{/if}" />
 				</div>
 				<div>
-					<textarea data-codemirror="true" data-syntx="tiki" id="profile_tester" name="profile_tester" rows="5" cols="40" style="width:95%;">{if isset($test_source)}{$test_source}{/if}</textarea>
+					<textarea id="profile_tester" name="profile_tester" rows="5" cols="40" style="width:95%;">{if isset($test_source)}{$test_source}{/if}</textarea>
 				</div>
 			</div>
 			<div align="center" style="padding:1em;"><input type="submit" name="test" value="{tr}Test{/tr}" /></div>

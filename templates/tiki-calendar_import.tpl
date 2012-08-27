@@ -5,7 +5,7 @@
 {button _text="{tr}Admin Calendars{/tr}" href="tiki-admin_calendars.php"}
 </div>
 
-{if isset($updated) and $updated eq 'y'}
+{if $updated}
   {tr}Calendar has been updated{/tr}
 {/if}
 

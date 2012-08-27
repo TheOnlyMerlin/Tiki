@@ -2,10 +2,6 @@
 {if $base_uri and ($dir_level gt 0 or $prefs.feature_html_head_base_tag eq 'y')}
 	<base href="{$base_uri|escape}" />
 {/if}
-
-<!--Latest IE Compatibility-->
-<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
-
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="Tiki Wiki CMS Groupware - http://tiki.org" />
 
@@ -22,7 +18,7 @@
 {if $prefs.metatag_author neq ''}
 	<meta name="author" content="{$prefs.metatag_author|escape}" />
 {/if}
-{if isset($section) and $section eq "blogs"}
+{if $section eq "blogs"}
 	{if $blog_data.title eq ''}
 	<meta name="description" content="Blog listing" />
 	{elseif $postId eq ''}
@@ -59,20 +55,13 @@
 
 {* --- tiki block --- *}
 <title>{strip}
-{if !empty($sswindowtitle)}
-	{if $sswindowtitle eq 'none'}
-		&nbsp;
-	{else}
-		{$sswindowtitle|escape}
-	{/if}
-{else}
 	{if $prefs.site_title_location eq 'before'}{$prefs.browsertitle|tr_if|escape} {$prefs.site_nav_seper} {/if}
-	{capture assign="page_description_title"}
+	{capture assign="page_description_title"}{strip}
 		{if ($prefs.feature_breadcrumbs eq 'y' or $prefs.site_title_breadcrumb eq "desc") && isset($trail)}
 			{breadcrumbs type=$prefs.site_title_breadcrumb loc="head" crumbs=$trail}
 		{/if}
-	{/capture}
-	{if isset($structure) and $structure eq 'y'} {* get the alias name if item is a wiki page and it is in a structure *}
+	{/strip}{/capture}
+	{if $structure eq 'y'} {* get the alias name if item is a wiki page and it is in a structure *}
 		{section loop=$structure_path name=ix}
 		{assign var="aliasname" value={$structure_path[ix].page_alias}}
 		{/section} 	
@@ -107,7 +96,6 @@
 		{/if}
 	{/if}
 	{if $prefs.site_title_location eq 'after'} {$prefs.site_nav_seper} {$prefs.browsertitle|tr_if|escape}{/if}
-{/if}
 {/strip}</title>
 
 {if $prefs.site_favicon}
@@ -149,23 +137,15 @@
 	<link rel="alternate" type="application/rss+xml" title='{$prefs.feed_calendar_title|escape|default:"{tr}RSS Calendars{/tr}"}' href="tiki-calendars_rss.php?ver={$prefs.feed_default_version|escape:'url'}" />
 {/if}
 
-{if $prefs.feature_trackers eq 'y' and $prefs.feed_tracker eq 'y'}
-	{foreach from=$rsslist_trackers item="tracker"}
-		<link rel="alternate" type="application/rss+xml"
-			  title='{$prefs.feed_tracker_title|cat:" - "|cat:$tracker.name|escape|default:"{tr}RSS Tracker{/tr}"}'
-			  href="tiki-tracker_rss.php?ver={$prefs.feed_default_version|escape:'url'}&trackerId={$tracker.trackerId}" />
-	{/foreach}
-{/if}
-
 {if ($prefs.feature_blogs eq 'y' and $prefs.feature_blog_sharethis eq 'y') or ($prefs.feature_articles eq 'y' and $prefs.feature_cms_sharethis eq 'y')}
 	{if $prefs.blog_sharethis_publisher neq "" and $prefs.article_sharethis_publisher neq ""}
-		<script type="text/javascript" src="https://ws.sharethis.com/button/sharethis.js#publisher={$prefs.blog_sharethis_publisher}&amp;type=website&amp;buttonText=&amp;onmouseover=false&amp;send_services=aim"></script>
+		<script type="text/javascript" src="http://w.sharethis.com/button/sharethis.js#publisher={$prefs.blog_sharethis_publisher}&amp;type=website&amp;buttonText=&amp;onmouseover=false&amp;send_services=aim"></script>
 	{elseif $prefs.blog_sharethis_publisher neq "" and $prefs.article_sharethis_publisher eq ""}
-		<script type="text/javascript" src="https://ws.sharethis.com/button/sharethis.js#publisher={$prefs.blog_sharethis_publisher}&amp;type=website&amp;buttonText=&amp;onmouseover=false&amp;send_services=aim"></script>
+		<script type="text/javascript" src="http://w.sharethis.com/button/sharethis.js#publisher={$prefs.blog_sharethis_publisher}&amp;type=website&amp;buttonText=&amp;onmouseover=false&amp;send_services=aim"></script>
 	{elseif $prefs.blog_sharethis_publisher eq "" and $prefs.article_sharethis_publisher neq ""}
-		<script type="text/javascript" src="https://ws.sharethis.com/button/sharethis.js#publisher={$prefs.article_sharethis_publisher}&amp;type=website&amp;buttonText=&amp;onmouseover=false&amp;send_services=aim"></script>
+		<script type="text/javascript" src="http://w.sharethis.com/button/sharethis.js#publisher={$prefs.article_sharethis_publisher}&amp;type=website&amp;buttonText=&amp;onmouseover=false&amp;send_services=aim"></script>
 	{elseif $prefs.blog_sharethis_publisher eq "" and $prefs.article_sharethis_publisher eq ""}
-		<script type="text/javascript" src="https://ws.sharethis.com/button/sharethis.js#type=website&amp;buttonText=&amp;onmouseover=false&amp;send_services=aim"></script>
+		<script type="text/javascript" src="http://w.sharethis.com/button/sharethis.js#type=website&amp;buttonText=&amp;onmouseover=false&amp;send_services=aim"></script>
 	{/if}
 {/if}
 

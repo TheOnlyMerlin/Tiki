@@ -1,16 +1,15 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_category_list()
-{
+function prefs_category_list() {
 	return array(
 		'category_jail' => array(
 			'name' => tra('Category Jail'),
-			'description' => tra('Limits the visibility of objects to those in these category IDs. Used mainly for creating workspaces from perspectives.'),
+			'description' => tra('Limits the visibility of objects to those in these categories. Used mainly for creating workspaces from perspectives.'),
 			'separator' => ',',
 			'type' => 'text',
 			'filter' => 'int',
@@ -18,10 +17,10 @@ function prefs_category_list()
 		),
 		'category_defaults' => array(
 			'name' => tra('Category Defaults'),
-			'description' => tra('Force certain categories to be present. If none of the categories in a given set are provided, assign a category by default.').' '.tra('Use *7 to specify all the categories in the subtree of 7 + category 7.').' '.tra('Can do only this for objectname matching the regex (Example: /^RND_/ = name beginning by RND_)(Optional)').' '.tra('Can do for wiki only (optional).').' '.tra('Rename will only reassign the categories for wiki pages.'),
+			'description' => tra('Force certain categories to be present. If none of the categories in a given set are provided, assign a category by default.'),
 			'type' => 'textarea',
 			'filter' => 'striptags',
-			'hint' => tra('One per line. ex:1,4,6,*7/4:/^RND_/:wiki page'),
+			'hint' => tra('One per line. ex:1,4,6,7/4'),
 			'size' => 5,
 			'serialize' => 'prefs_category_serialize_defaults',
 			'unserialize' => 'prefs_category_unserialize_defaults',
@@ -41,7 +40,7 @@ function prefs_category_list()
 		),
 		'category_i18n_synced' => array(
 			'name' => tra('Synchronized categories'),
-			'description' => tra('List of categories affected by the multilingual synchronization. Depending on the parent feature, this list will be used as a white list (only categories allows) or as a black list (all except thoses specified).'),
+			'description' => tra('List of categories affected by the multilingual synchronization. Depending on the parent feature, this list will be used as a white list (only categories allows) or as a black list (all except thoses specified)'),
 			'type' => 'text',
 			'filter' => 'digits',
 			'separator' => ',',
@@ -116,57 +115,42 @@ function prefs_category_list()
 	);
 }
 
-function prefs_category_serialize_defaults( $data )
-{
-	if ( ! is_array($data) ) {
-		$data = unserialize($data);
+function prefs_category_serialize_defaults( $data ) {
+	if ( ! is_array( $data ) ) {
+		$data = unserialize( $data );
 	}
 
 	$out = '';
-	if ( is_array($data) ) {
-		foreach ( $data as $row ) {
-			$out .= implode(',', $row['categories']) . '/' . $row['default'];
-			if (!empty($row['filter'])) {
-				$out .= ':' . $row['filter'];
-			}
-			if (!empty($row['type'])) {
-				if (empty($row['filter'])) {
-					$out .= ':';
-				}
-				$out .= ':'. $row['type'];
-			}
-			$out .= "\n";
+	if ( is_array( $data ) ) {
+		foreach( $data as $row ) {
+			$out .= implode( ',', $row['categories'] ) . '/' . $row['default'] . "\n";
 		}
 	}
 
-	return trim($out);
+	return trim( $out );
 }
 
-function prefs_category_unserialize_defaults( $string )
-{
+function prefs_category_unserialize_defaults( $string ) {
 	$data = array();
 	
-	foreach ( explode("\n", $string) as $row ) {
-		if ( preg_match('/^\s*(\*?\d+\s*(,\s*\*?\d+\s*)*)\/\s*(\d+)\s*(:(.*)(:(wiki page))?)?$/U', $row, $parts) ) {
-			$categories = explode(',', $parts[1]);
-			$categories = array_map('trim', $categories);
-			$categories = array_filter($categories);
+	foreach( explode( "\n", $string ) as $row ) {
+		if ( preg_match('/^\s*(\d+\s*(,\s*\d+\s*)*)\/\s*(\d+)\s*$/', $row, $parts ) ) {
+			$categories = explode( ',', $parts[1] );
+			$categories = array_map( 'trim', $categories );
+			$categories = array_filter( $categories );
 			$default = $parts[3];
-			$filter = empty($parts[5])? '': $parts[5];
-			$type = empty($parts[7])? '':'wiki page';
 
 			$data[] = array(
 				'categories' => $categories,
 				'default' => $default,
-				'filter' => $filter,
-				'type' => $type,
 			);
 		}
 	}
 
-	if ( count($data) ) {
+	if ( count( $data ) ) {
 		return $data;
 	} else {
 		return false;
 	}
 }
+

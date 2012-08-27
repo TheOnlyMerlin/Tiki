@@ -1,12 +1,12 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
@@ -39,9 +39,9 @@ class MenuLib extends TikiLib
 		}
 
 		$query = "select * from `tiki_menus` $mid order by ".$this->convertSortMode($sort_mode);
-		$result = $this->query($query, $bindvars, $maxRecords, $offset);
+		$result = $this->query($query,$bindvars,$maxRecords,$offset);
 		$query_cant = "select count(*) from `tiki_menus` $mid";
-		$cant = $this->getOne($query_cant, $bindvars);
+		$cant = $this->getOne($query_cant,$bindvars);
 		$ret = array();
 
 		while ( $res = $result->fetchRow() ) {
@@ -69,45 +69,43 @@ class MenuLib extends TikiLib
 			$bindvars = array($name,$description,$type,$icon,$use_items_icons);
 		}
 
-		$result = $this->query($query, $bindvars);
+		$result = $this->query($query,$bindvars);
 		return true;
 	}
 
-	function clone_menu($menuId)
-	{
+	function clone_menu($menuId) {
 		$menus = $this->table('tiki_menus');
-		$row = $menus->fetchFullRow(array(	 'menuId' => $menuId ));
+		$row = $menus->fetchFullRow( array( 'menuId' => $menuId ));
 		$row['menuId'] = null;
 		$row['name'] = $row['name'] . ' ' . tra('(copy)');
-		$newId = $menus->insert($row);
+		$newId = $menus->insert( $row );
 
 		$menuoptions = $this->table('tiki_menu_options');
-		$oldoptions = $menuoptions->fetchAll($menuoptions->all(), array( 'menuId' => $menuId ));
+		$oldoptions = $menuoptions->fetchAll( $menuoptions->all(), array( 'menuId' => $menuId ));
 		$row = null;
 
-		foreach ( $oldoptions as $row ) {
+		foreach( $oldoptions as $row ) {
 			$row['optionId'] = null;
 			$row['menuId'] = $newId;
-			$menuoptions->insert($row);
+			$menuoptions->insert( $row );
 		}
 	}
 
 	/*
 	 * Replace the current menu options for id 42 with what's in tiki.sql
 	 */
-	function reset_app_menu()
-	{
+	function reset_app_menu() {
 		$tiki_sql = file_get_contents('db/tiki.sql');
 		preg_match_all('/^INSERT (?:INTO )?`tiki_menu_options` .*$/mi', $tiki_sql, $matches);
 
 		if ($matches && count($matches[0])) {
 			$menuoptions = $this->table('tiki_menu_options');
-			$menuoptions->deleteMultiple(array( 'menuId' => 42 ));
+			$menuoptions->deleteMultiple( array( 'menuId' => 42 ));
 			
 			foreach ($matches[0] as $query) {
 				$this->query($query);
 			}
-			$this->empty_menu_cache(42);
+			$this->empty_menu_cache($menuId);
 		}
 	}
 
@@ -115,7 +113,7 @@ class MenuLib extends TikiLib
 	{
 		$query = "select max(`position`) from `tiki_menu_options` where `menuId`=?";
 
-		$max = $this->getOne($query, array((int)$menuId));
+		$max = $this->getOne($query,array((int)$menuId));
 		return $max;
 	}
 
@@ -137,10 +135,10 @@ class MenuLib extends TikiLib
 	function remove_menu($menuId)
 	{
 		$query = "delete from `tiki_menus` where `menuId`=?";
-		$result = $this->query($query, array((int)$menuId));
+		$result = $this->query($query,array((int)$menuId));
 
 		$query = "delete from `tiki_menu_options` where `menuId`=?";
-		$result = $this->query($query, array((int)$menuId));
+		$result = $this->query($query,array((int)$menuId));
 
 		$this->empty_menu_cache($menuId);
 		return true;
@@ -149,10 +147,10 @@ class MenuLib extends TikiLib
 	function remove_menu_option($optionId)
 	{
 		$query = "select `menuId` from `tiki_menu_options` where `optionId`=?";
-		$menuId = $this->getOne($query, array((int)$optionId));
+		$menuId = $this->getOne($query,array((int)$optionId));
 
 		$query = "delete from `tiki_menu_options` where `optionId`=?";
-		$result = $this->query($query, array((int)$optionId));
+		$result = $this->query($query,array((int)$optionId));
 
 		$this->empty_menu_cache($menuId);
 		return true;
@@ -162,7 +160,7 @@ class MenuLib extends TikiLib
 	{
 		$query = "select * from `tiki_menu_options` where `optionId`=?";
 
-		$result = $this->query($query, array((int)$optionId));
+		$result = $this->query($query,array((int)$optionId));
 
 		if (!$result->numRows())
 			return false;
@@ -183,9 +181,9 @@ class MenuLib extends TikiLib
 		if (!($position = $this->getOne($query, array($menuId, $position1))))
 			return;
 		$query = "update `tiki_menu_options` set `position`=? where `position`=? and `menuId`=? ";
-		$result=$this->query($query, array($position1, $position, $menuId));
+		$result=$this->query($query,array($position1, $position, $menuId));
 		$query = "update `tiki_menu_options` set `position`=? where `optionId`=?";
-		$result=$this->query($query, array($position, $optionId,));
+		$result=$this->query($query,array($position, $optionId,));
 
 		$this->empty_menu_cache($menuId);
 	}
@@ -217,7 +215,7 @@ class MenuLib extends TikiLib
 		if (isset($channels['data'])) {
 			$cant = $channels['cant'];
 			$channels = $channels['data'];
-		}
+	  }
 
 	    $types = array("o" => "option",
 			   "s" => "section level 0",
@@ -227,9 +225,9 @@ class MenuLib extends TikiLib
 				'3' => 'section level 3',
 			   "-" => "separator");
 
-		foreach ($channels as &$channel) {
+		foreach($channels as &$channel) {
 			$channel["type_description"] = tra($types[$channel["type"]]);
-		}
+	  }
 
 	  if (isset($cant)) {
 			$channels = array ('data' => $channels,
@@ -245,12 +243,6 @@ class MenuLib extends TikiLib
 	{
 		$query = "update `tiki_menu_options` set `url`=? where `url`=?";
 		$result = $this->query($query, array('(('.$newName.'))', '(('.$oldName.'))'));
-		$query = "select `menuId` from `tiki_menu_options` where `url`=?";
-		$result = $this->fetchAll($query, array('(('.$newName.'))'));
-		foreach ($result as $p) {
-			$this->empty_menu_cache($p['menuId']);
-		}
-
 		// try to change some tiki-index.php?page - very limitted: for another http://anothersite/tiki-index.php?page= must not be changed
 		$query = "select * from `tiki_menu_options` where `url` like ?";
 		$result = $this->query($query, array("%tiki-index.php?page=$oldName%"));
@@ -259,7 +251,7 @@ class MenuLib extends TikiLib
 		$menu_cache_removed = array();
 		while ( $res = $result->fetchRow() ) {
 			$p = parse_url($res['url']);
-			if ( $p['path'] == 'tiki-index.php' ) {
+	  		if ( $p['path'] == 'tiki-index.php' ) {
 				$this->parse_str($p['query'], $p);
 				if ( $p['page'] == $oldName ) {
 					$url = str_replace($oldName, $newName, $res['url']);
@@ -273,7 +265,7 @@ class MenuLib extends TikiLib
 		}
 	}
 
-	// look if the current url matches the menu option - to be improved a lot
+   	// look if the current url matches the menu option - to be improved a lot
 	function menuOptionMatchesUrl($option)
 	{
 		global $prefs;
@@ -295,12 +287,10 @@ class MenuLib extends TikiLib
 			$homePage = $wikilib->get_default_wiki_page();
 			$option['url'] .= "?page=$homePage";
 		}
-		$pos = false;
 		if ($prefs['feature_sefurl'] == 'y' && !empty($option['sefurl'])) {
 			$pos = strpos($url, '/'. str_replace('&amp;', '&', urldecode($option['sefurl']))); // position in $url
 			$lg = 1 + strlen($option['sefurl']);
-		}
-		if ($pos === false) {
+		} else {
 			$pos = strpos(strtolower($url), strtolower($option['url']));
 			$lg = strlen($option['url']);
 		}
@@ -347,10 +337,9 @@ class MenuLib extends TikiLib
 			}
 			$channels = array('data'=>$this->lower($subMenu), 'cant'=>$cant);
 		}
-		$selecteds = array();
-		$optionLevel = 0;
 		if (is_numeric($sectionLevel)) { // must extract only the submenu level sectionLevel where the current url is
 			$findUrl = false;
+			$optionLevel = 0;
 			$cant = 0;
 			foreach ($channels['data'] as $position=>$option) {
 				if (is_numeric($option['type'])) {
@@ -374,10 +363,6 @@ class MenuLib extends TikiLib
 				if ($optionLevel >= $sectionLevel) {
 					$subMenu[] = $option;
 					++$cant;
-					if (empty($selectedPosition) && $option['type'] != 'o' && $option['type'] != '-') {
-						// not pretty but works - optionLevel will get "shifted up" by $sectionLevel later in lower()
-						$selecteds[$optionLevel - $sectionLevel] = $cant - 1;
-					}
 					if (!empty($option['url']) && $this->menuOptionMatchesUrl($option)) {
 						$findUrl = true;
 						$selectedPosition = $cant - 1;
@@ -396,6 +381,8 @@ class MenuLib extends TikiLib
 				$channels['cant'] = 0;
 			}
 		} else {
+			$selecteds = array();
+			$optionLevel = 0;
 			foreach ($channels['data'] as $position=>$option) {
 				if (is_numeric($option['type'])) {
 					$optionLevel = $option['type'];
@@ -415,14 +402,14 @@ class MenuLib extends TikiLib
 					++$optionLevel;
 				}
 			}
-		}
-		if (isset($selectedPosition)) {
-			$channels['data'][$selectedPosition]['selected'] = true;
-			for ($o = 0; $o < $optionLevel; ++$o) {
-				if ($o !== $selectedPosition) {
+			if (isset($selectedPosition)) {
+				for ($o = 0; $o < $optionLevel; ++$o) {
 					$channels['data'][$selecteds[$o]]['selectedAscendant'] = true;
 				}
 			}
+		}
+		if (isset($selectedPosition)) {
+			$channels['data'][$selectedPosition]['selected'] = true;
 		}
 		if (is_numeric($toLevel)) {
 			$subMenu = array();
@@ -446,7 +433,7 @@ class MenuLib extends TikiLib
 			$channels = array('data'=>$subMenu, 'cant'=>$cant);
 		}
 		// set sections open/close according to cookie
-		global $prefs;
+			global $prefs;
 		foreach ($channels['data'] as $position => &$option) {
 			$option['open'] = false;
 			if (!empty($params['menu_cookie']) && $params['menu_cookie'] == 'n') {
@@ -472,9 +459,6 @@ class MenuLib extends TikiLib
 					$lower = $option['type'];
 				}
 				$subMenu[$i]['type'] -= $lower;
-				if ($subMenu[$i]['type'] == 0) {
-					$subMenu[$i]['type'] = 's';		// section levels go: s, 1, 2, 3 etc
-				}
 			}
 		}
 		return $subMenu;
@@ -560,14 +544,12 @@ class MenuLib extends TikiLib
 		echo $data;
 		die;
 	}
-	function get_option($menuId, $url)
-	{
+	function get_option($menuId, $url) {
 		$query = 'select `optionId` from `tiki_menu_options` where `menuId`=? and `url`=?';
 		return $this->getOne($query, array($menuId, $url));
 	}
 
-	function get_menu($menuId)
-	{
+	function get_menu($menuId) {
 		$res = $this->table('tiki_menus')->fetchFullRow(array('menuId' => (int) $menuId));
 
 		if ( empty($res['icon']) ) {
@@ -578,11 +560,9 @@ class MenuLib extends TikiLib
 		return $res;
 	}
 
-	function list_menu_options($menuId, $offset=0, $maxRecords=-1, $sort_mode='position_asc', $find='', $full=false, $level=0)
-	{
+	function list_menu_options($menuId, $offset=0, $maxRecords=-1, $sort_mode='position_asc', $find='', $full=false, $level=0) {
 		global $user, $tiki_p_admin, $prefs;
 		$wikilib = TikiLib::lib('wiki');
-		include_once('tiki-sefurl.php');
 
 		$options = $this->table('tiki_menu_options');
 		$conditions = array(
@@ -611,14 +591,14 @@ class MenuLib extends TikiLib
 					continue;
 				}
 			} else {
-				$res['sefurl'] = filter_out_sefurl($res['url']);
+				$res['sefurl'] = '';
 			}
 			if (!$full) {
 				$display = true;
 				if (isset($res['section']) and $res['section']) {
 					if (strstr($res['section'], '|')) {
 						$display = false;
-						$sections = preg_split('/\s*\|\s*/', $res['section']);
+						$sections = preg_split('/\s*\|\s*/',$res['section']);
 						foreach ($sections as $sec) {
 							if (!isset($prefs[$sec]) or $prefs[$sec] != 'y') {
 								$display = true;
@@ -627,7 +607,7 @@ class MenuLib extends TikiLib
 						}
 					} else {
 						$display = true;
-						$sections = preg_split('/\s*,\s*/', $res['section']);
+						$sections = preg_split('/\s*,\s*/',$res['section']);
 						foreach ($sections as $sec) {
 							if (!isset($prefs[$sec]) or $prefs[$sec] != 'y') {
 								$display = false;
@@ -640,7 +620,7 @@ class MenuLib extends TikiLib
 					if (isset($res['perm']) and $res['perm']) {
 						if (strstr($res['perm'], '|')) {
 							$display = false;
-							$sections = preg_split('/\s*\|\s*/', $res['perm']);
+							$sections = preg_split('/\s*\|\s*/',$res['perm']);
 							foreach ($sections as $sec) {
 								if (isset($GLOBALS[$sec]) && $GLOBALS[$sec] == 'y') {
 									$display = true;
@@ -648,7 +628,7 @@ class MenuLib extends TikiLib
 								}
 							}
 						} else {
-							$sections = preg_split('/\s*,\s*/', $res['perm']);
+							$sections = preg_split('/\s*,\s*/',$res['perm']);
 							$display = true;
 							foreach ($sections as $sec) {
 								if (!isset($GLOBALS[$sec]) or $GLOBALS[$sec] != 'y') {
@@ -660,13 +640,13 @@ class MenuLib extends TikiLib
 					}
 					$usergroups = $this->get_user_groups($user);
 					if (isset($res['groupname']) and $res['groupname']) {
-						if ( is_array($res['groupname']) ) {
+						if ( is_array($res['groupname']) ){
 							$sections = $res['groupname'];
 						} else {
 							$sections = array($res['groupname']);
 						}
 						foreach ($sections as $sec) {
-							if ($sec and !in_array($sec, $usergroups)) {
+							if ($sec and !in_array($sec,$usergroups)) {
 								$display = false;
 							}
 						}
@@ -690,8 +670,7 @@ class MenuLib extends TikiLib
 	/* 
 	 *gets result from list_menu_options and sorts "sorted section" sections.
 	 */
-	function sort_menu_options($channels)
-	{
+	function sort_menu_options($channels) {
 
 		$sorted_channels = array();
 

@@ -1,18 +1,17 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_agentinfo_info()
-{
+function wikiplugin_agentinfo_info() {
 	return array(
-		'name' => tra('User Agent Info'),
+		'name' => tra( 'User Agent Info' ),
 		'documentation' => 'PluginAgentinfo',
-		'description' => tra('Show user\'s browser and server information'),
+		'description' => tra( 'Show user\'s browser and server information' ),
 		'prefs' => array('wikiplugin_agentinfo'),
-		'icon' => 'img/icons/computer.png',
+		'icon' => 'pics/icons/computer.png',
 		'params' => array(
 			'info' => array(
 				'required' => false,
@@ -32,11 +31,10 @@ function wikiplugin_agentinfo_info()
 	);
 }
 
-function wikiplugin_agentinfo($data, $params)
-{
+function wikiplugin_agentinfo($data, $params) {
 	global $tikilib;
 	
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 
 	$asetup = '';
 

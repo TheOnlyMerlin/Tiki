@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -24,8 +24,7 @@ class Services_Connect_Client
 
 	}
 
-	function action_vote($input)
-	{
+	function action_vote($input) {
 		global $prefs;
 
 		if (! Perms::get()->admin) {
@@ -39,16 +38,16 @@ class Services_Connect_Client
 		$vote = $input->vote->text();
 		$pref = $input->pref->text();
 
-		$votes = $this->connectlib->getVotes(true);
+		$votes = $this->connectlib->getVotes( true );
 		if (!isset( $votes[$pref] )) {
 			$votes[$pref] = array();
 		}
 		$arr = $votes[$pref];
 
 		if (substr($vote, 0, 2) === 'un') {
-			$vote  = substr($vote, 2);
-			unset($arr[ array_search($vote, $arr)]);
-		} else if (!in_array($vote, $arr)) {
+			$vote  = substr( $vote, 2 );
+			unset($arr[ array_search( $vote, $arr )]);
+		} else if (!in_array( $vote, $arr )){
 			$arr[] = $vote;
 			$vote = 'un' . $vote;	// send back the opposite vote to update the icon
 		}
@@ -60,8 +59,7 @@ class Services_Connect_Client
 		return array( 'newVote' => $vote );
 	}
 
-	function action_list($input = null)
-	{
+	function action_list($input = null) {
 		if (! Perms::get()->admin) {
 			throw new Services_Exception(tr('Reserved to administrators during development'), 403);
 		}
@@ -71,8 +69,7 @@ class Services_Connect_Client
 		return $info;
 	}
 
-	function action_send($input)
-	{
+	function action_send($input) {
 		global $prefs;
 		
 		if (! Perms::get()->admin) {
@@ -99,14 +96,11 @@ class Services_Connect_Client
 				}
 
 			} else {
-				$data = $this->remote->confirm(
-								array(
-									'connect_data' => array(
-										'guid' => $pending,
-										'captcha' => $input->captcha->filter(),
-									)
-								)
-				);
+				$data = $this->remote->confirm( array(
+					'connect_data' => array(
+					'guid' => $pending,
+					'captcha' => $input->captcha->filter(),
+				)));
 
 				$this->connectlib->removeGuid($pending);
 				
@@ -128,7 +122,7 @@ class Services_Connect_Client
 			$odata['guid'] = $prefs['connect_guid'];
 
 
-			$data = $this->remote->receive(array( 'connect_data' => $odata ));
+			$data = $this->remote->receive( array( 'connect_data' => $odata ));
 
 			if ($data && $data['status'] === 'received') {
 				$status = 'sent';
@@ -141,12 +135,13 @@ class Services_Connect_Client
 		return $data;
 	}
 
-	function action_cancel($input)
-	{
+	function action_cancel($input) {
 		$guid = $input->guid->filter();
 		if ($guid) {
 			$this->connectlib->removeGuid($guid);
-			$r = $this->remote->cancel(array('connect_data' => array('guid' => $guid)));
+			$r = $this->remote->cancel(array(
+				'connect_data' => array('guid' => $guid)
+			));
 		}
 		return array('guid' => $guid);
 	}

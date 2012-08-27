@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,7 +14,7 @@
  */
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
@@ -33,8 +33,7 @@ abstract class TreeMaker
 	var $prefix;
 
 	/// Constructor
-	function __construct($prefix) 
-	{
+	function __construct($prefix) {
 		$this->prefix = $prefix;
 	}
 
@@ -43,14 +42,12 @@ abstract class TreeMaker
 	// *  parent => Identifier of the node's parent
 	// *  data   => Node content (HTML)
 	/// Returns HTML code for tree
-	function make_tree($rootid, $ar) 
-	{
+	function make_tree($rootid, $ar) {
 		return $this->make_tree_r($rootid, $ar);
 	}
 
 	/// Recursively make a tree
-	protected function make_tree_r($rootid, &$ar) 
-	{
+	protected function make_tree_r($rootid, &$ar) {
 		global $debugger;
 
 		$debugger->msg("TreeMaker::make_tree_r: Root ID=" . $rootid);
@@ -136,54 +133,45 @@ abstract class TreeMaker
 	 *       So to make smth other use inheritance and redefine
 	 *       corresponding function :)
 	 */
-	function indent($nodeinfo) 
-	{
+	function indent($nodeinfo) {
 		return '';
 	}
 	
-	function node_start_code($nodeinfo, $count=0) 
-	{
+	function node_start_code($nodeinfo, $count=0) {
 		return '';
 	}
 
-	function node_start_code_flip($nodeinfo, $count=0) 
-	{
+	function node_start_code_flip($nodeinfo, $count=0) {
 		return '';
 	}
 	
 	//
-	function node_flipper_code($nodeinfo) 
-	{
+	function node_flipper_code($nodeinfo) {
 		return '';
 	}
 
 	//
-	function node_data_start_code($nodeinfo) 
-	{
+	function node_data_start_code($nodeinfo) {
 		return '';
 	}
 
 	//
-	function node_data_end_code($nodeinfo) 
-	{
+	function node_data_end_code($nodeinfo) {
 		return '';
 	}
 
 	//
-	function node_child_start_code($nodeinfo) 
-	{
+	function node_child_start_code($nodeinfo) {
 		return '';
 	}
 
 	//
-	function node_child_end_code($nodeinfo) 
-	{
+	function node_child_end_code($nodeinfo) {
 		return '';
 	}
 
 	//
-	function node_end_code($nodeinfo) 
-	{
+	function node_end_code($nodeinfo) {
 		return '';
 	}
 }

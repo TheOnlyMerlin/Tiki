@@ -1,7 +1,7 @@
 {* $Id$ *}
 {$showBoxCheck}
 
-{title help="Newsletters"}{tr}Send Newsletters{/tr}{/title}
+{title help="Newsletters"}{tr}Send Newsletters{/tr} {if $nlId ne '0'}{$nlName}{/if}{/title}
 
 {if $tiki_p_admin_newsletters eq "y"}
 	<div class="navbar">
@@ -241,7 +241,7 @@
 					<td colspan="2">
 						{textarea name='data' id='editwiki'}{$info.data}{/textarea}
 						<label>{tr}Must be wiki parsed:{/tr} <input type="checkbox" name="wikiparse" {if empty($info.wikiparse) or $info.wikiparse eq 'y'} checked="checked"{/if} /></label>
-						<label>{tr}Is HTML.{/tr} <input type="checkbox" name="is_html" {if !empty($info.is_html) && $info.is_html eq 'y'} checked="checked"{/if} /></label>
+						<label>{tr}Is html:{/tr} <input type="checkbox" name="is_html" {if !empty($info.is_html) && $info.is_html eq 'y'} checked="checked"{/if} /></label>
 					</td>
 				</tr>
 
@@ -312,7 +312,7 @@
 		</form>
 	{/tab}
 	
-	{assign var=name value="{tr _0=$cant_drafts}Drafts (%0){/tr}"}
+	{assign var=name value="{tr _0=$cant_drafts}Drafts&nbsp;(%0){/tr}"}
 	{tab name=$name}
 	{* --- tab with drafts --- *}
 		{assign var=channels value=$drafts}
@@ -335,7 +335,7 @@
 		{include file='sent_newsletters.tpl'}
 	{/tab}
 
-	{assign var=name value="{tr _0=$cant_editions}Sent Editions (%0){/tr}"}
+	{assign var=name value="{tr _0=$cant_editions}Sent Editions&nbsp;(%0){/tr}"}
 	{tab name=$name}
 	{* --- tab with editions --- *}
 		{assign var=channels value=$editions}

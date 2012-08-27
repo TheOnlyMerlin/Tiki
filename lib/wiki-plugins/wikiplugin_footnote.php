@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,7 +13,7 @@ function wikiplugin_footnote_info()
 		'description' => tra('Create automatically numbered footnotes (together with PluginFootnoteArea)'),
 		'prefs' => array('wikiplugin_footnote'),
 		'body' => tra('The footnote'),
-		'icon' => 'img/icons/text_horizontalrule.png',
+		'icon' => 'pics/icons/text_horizontalrule.png',
 		'filter' => 'wikicontent',
 		'params' => array(
 			'sameas' => array(

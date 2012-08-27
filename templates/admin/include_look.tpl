@@ -8,24 +8,16 @@
 	{tabset name="admin_look"}
 		{tab name="{tr}Theme{/tr}"}
 
-			<div style="position:relative;">
-				<div style="position:absolute;right:.5em;top:0.5em;">
-					<img src="{$thumbfile}" alt="{tr}Theme Screenshot{/tr}" id="style_thumb" width="160" height="120" />
-				</div>
-
-				<div class="adminoptionbox">
-					{preference name=style}
-					{preference name=style_option}
-
-					{preference name=style_admin}
-					{preference name=style_admin_option}
-
-					{if $prefs.javascript_enabled eq 'n' or $prefs.feature_jquery eq 'n'}
-						<input type="submit" name="changestyle" value="{tr}Go{/tr}" />
-					{/if}
-				</div>
-			</div>
+			{preference name=style}
 			<div class="adminoptionbox">
+				{if $prefs.javascript_enabled eq 'n' or $prefs.feature_jquery eq 'n'}
+					<input type="submit" name="changestyle" value="{tr}Go{/tr}" />
+				{/if}
+			</div>
+
+			<div class="adminoptionbox">
+				{preference name=style_option}
+
 				{if $prefs.feature_jquery_ui eq 'y'}
 					{preference name=feature_jquery_ui_theme}
 				{/if}
@@ -39,16 +31,23 @@
 				{/if}	
 			</div>
 
+			{if isset($thumbfile)}
+				<div class="adminoptionboxchild">
+					<div id="style_thumb_div">
+						<img src="{$thumbfile}" alt="{tr}Theme Screenshot{/tr}" id="style_thumb" />
+					</div>
+				</div>
+			{/if}							
+
+			{preference name=feature_fixed_width}
+			<div class="adminoptionboxchild" id="feature_fixed_width_childcontainer">
+				{preference name=layout_fixed_width}
+			</div>
 
 			{preference name=change_theme}
 			<div class="adminoptionboxchild" id="change_theme_childcontainer">
 				{tr}Restrict available themes{/tr}
 				{preference name=available_styles}
-			</div>
-
-			{preference name=feature_fixed_width}
-			<div class="adminoptionboxchild" id="feature_fixed_width_childcontainer">
-				{preference name=layout_fixed_width}
 			</div>
 
 			{preference name=useGroupTheme}
@@ -97,7 +96,6 @@
 					{preference name=module_zones_pagebottom}
 					{preference name=module_zones_bottom}			
 				</fieldset>
-				{preference name=module_file}
 			</div>
 			
 			<div class="adminoptionbox">

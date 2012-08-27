@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -146,7 +146,7 @@ if ($offset > 0) {
 }
 $smarty->assign_by_ref('items', $items["data"]);
 $categs = $dirlib->dir_get_all_categories_accept_sites(0, -1, 'name asc', $find, $_REQUEST["siteId"]);
-if (isset($_REQUEST["save"]) && $msg != "" && isset($_REQUEST["siteCats"])) { // an error occurred, the chosen categs have to be set again
+if (isset($_REQUEST["save"]) && $msg != "" && isset($_REQUEST["siteCats"])) { // an error occured, the chosen categs have to be set again
 	$temp_max = count($categs);
 	foreach ($_REQUEST["siteCats"] as $acat) {
 		for ($ix = 0; $ix < $temp_max; ++$ix) {

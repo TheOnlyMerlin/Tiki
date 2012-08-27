@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -42,7 +42,7 @@ class Tracker_Field_Dropdown extends Tracker_Field_Abstract implements Tracker_F
 				'params' => array(
 					'options' => array(
 						'name' => tr('Option'),
-						'description' => tr('An option, if containing an equal sign, the prior part will be used as the value while the later as the label. It is recommended to add an "other" option.'),
+						'description' => tr('An option, if containing an equal sign, the prior part will be used as the value while the later as the label'),
 						'filter' => 'text',
 						'count' => '*',
 					),

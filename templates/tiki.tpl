@@ -8,7 +8,7 @@
 		<ul class="jumplinks" style="position:absolute;top:-9000px;left:-9000px;z-index:9;">
 			<li><a href="#tiki-center" title="{tr}Jump to Content{/tr}">{tr}Jump to Content{/tr}</a></li>
 		</ul>
-		{$cookie_consent_html}
+
 		{if $prefs.feature_fullscreen eq 'y' and $filegals_manager eq '' and $print_page ne 'y'}
 			<div id="fullscreenbutton">
 				{if $smarty.session.fullscreen eq 'n'}
@@ -72,7 +72,7 @@
 														</div>
 													{/if}
 													{if  $prefs.feature_right_column eq 'fixed' or ($prefs.feature_right_column eq 'user'&& $right_modules|@count > 0 && $show_columns.right_modules ne 'n')}
-														<div class="clearfix" style="text-align:right;float:right" id="showhide_right_column">
+														<div class="clearfix" style="text-align:right;float:right"  id="showhide_right_column">
 															<a class="flip" title="{tr}Show/Hide Right Column{/tr}" href="#" onclick="toggleCols('col3','right'); return false">{icon _name=orightcol _id="orightcol" class="colflip" alt="[{tr}Show/Hide Right Column{/tr}]"}</a>
 														</div>
 													{/if}
@@ -130,7 +130,7 @@
 								{/if}
 							</div>{* -- END of #c1c2 -- *}
 							{if $prefs.feature_fullscreen != 'y' or $smarty.session.fullscreen != 'y'}
-								{if  $prefs.feature_right_column eq 'fixed' or ($prefs.feature_right_column ne 'n' && $right_modules|@count > 0 && $show_columns.right_modules ne 'n') or (isset($module_pref_errors) and $module_pref_errors)}
+								{if  $prefs.feature_right_column eq 'fixed' or ($prefs.feature_right_column ne 'n' && $right_modules|@count > 0 && $show_columns.right_modules ne 'n') or $module_pref_errors}
 									<div class="clearfix" id="col3"{if $prefs.feature_right_column eq 'user'} style="display:{if isset($cookie.show_col3) and $cookie.show_col3 ne 'y'} none{elseif isset($ie6)} block{else} table-cell{/if};"{/if}{if $prefs.feature_bidi eq 'y'} dir="rtl"{/if}>
 										<div id="right_modules" class="content modules">
 											{if $module_pref_errors}
@@ -196,6 +196,3 @@
 		{/if}
 	</body>
 </html>
-{if !empty($smarty.request.show_smarty_debug)}
-	{debug}
-{/if}

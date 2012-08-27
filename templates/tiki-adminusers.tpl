@@ -132,9 +132,8 @@
 					<th>{self_link _sort_arg='sort_mode' _sort_field='openID'}{tr}OpenID{/tr}{/self_link}</th>
 				{/if}
 				<th>{self_link _sort_arg='sort_mode' _sort_field='currentLogin'}{tr}Last login{/tr}{/self_link}</th>
-				<th>{self_link _sort_arg='sort_mode' _sort_field='created'}{tr}Registered{/tr}{/self_link}</th>
-				<th>{tr}Groups{/tr}</th>
-				<th>{tr}Actions{/tr}</th>
+				<th colspan="2">{tr}Groups{/tr}</th>
+				<th>{tr}Action{/tr}</th>
 			</tr>
 			{cycle print=false values="even,odd"}
 			{section name=user loop=$users}
@@ -170,7 +169,7 @@
 								{capture name=when}{$users[user].age|duration_short}{/capture}
 								{tr}Never{/tr} <em>({tr _0=$smarty.capture.when}Registered %0 ago{/tr})</em>
 							{else}
-								{$users[user].currentLogin|tiki_short_datetime}
+								{$users[user].currentLogin|tiki_long_datetime}
 							{/if}
 					
 							{if $users[user].waiting eq 'u'}
@@ -178,14 +177,22 @@
 								{tr}Need to validate email{/tr}
 							{/if}
 						</td>
-						<td class="text">
-							{$users[user].registrationDate|tiki_short_datetime}
+	
+						<td class="icon">
+							<a class="link" href="tiki-assignuser.php?assign_user={$users[user].user|escape:url}" title="{tr}Assign to group{/tr}">{capture assign=alt}{tr _0=$username}Assign %0 to groups{/tr}{/capture}{*FIXME*}{icon _id='group_key' alt=$alt}</a>
 						</td>
-
+	
 						<td class="text">
 							{foreach from=$users[user].groups key=grs item=what name=gr}
 								<div style="white-space:nowrap">
 									{if $grs != "Anonymous" and ($tiki_p_admin eq 'y' || in_array($grs, $all_groups))}
+										{if $what ne 'included' and $grs != "Registered"}
+											{capture assign=grse}{$grs|escape}{/capture}
+											{capture assign=title}{tr _0=$username _1=$grse}Remove %0 from %1{/tr}{/capture}{*FIXME*}
+											{self_link _class='link' user=$users[user].user action='removegroup' group=$grs _icon='cross' _title=$title}{/self_link}
+										{else}
+											{icon _id='bullet_white'}
+										{/if}
 										{if $what eq 'included'}<i>{/if}
 										{if $tiki_p_admin eq 'y'}
 											<a class="link" {$link_style} href="tiki-admingroups.php?group={$grs|escape:"url"}" title={if $what eq 'included'}"{tr}Edit Included Group{/tr}"{else}"{tr}Edit Group:{/tr} {$grs|escape}"{/if}>
@@ -196,13 +203,6 @@
 										{/if}									
 										{if $what eq 'included'}</i>{/if}
 										{if $grs eq $users[user].default_group}<small>({tr}default{/tr})</small>{/if}
-										{if $what ne 'included' and $grs != "Registered"}
-											{capture assign=grse}{$grs|escape}{/capture}
-											{capture assign=title}{tr _0=$username _1=$grse}Remove %0 from %1{/tr}{/capture}{*FIXME*}
-											{self_link _class='link' user=$users[user].user action='removegroup' group=$grs _icon='cross' _title=$title}{/self_link}
-										{else}
-											{icon _id='bullet_white'}
-										{/if}
 										{if !$smarty.foreach.gr.last}<br />{/if}
 									{/if}
 								</div>
@@ -210,7 +210,6 @@
 						</td>
 	
 						<td class="action">
-							<a class="link" href="tiki-assignuser.php?assign_user={$users[user].user|escape:url}" title="{tr}Assign to group{/tr}">{capture assign=alt}{tr _0=$username}Assign %0 to groups{/tr}{/capture}{*FIXME*}{icon _id='group_key' alt=$alt}</a>
 							{capture assign=title}{tr _0=$username}Edit Account Settings: %0{/tr}{/capture}{*FIXME*}
 							{self_link _class="link" user=$users[user].userId _icon="page_edit" _title=$title}{/self_link}
 							{if $prefs.feature_userPreferences eq 'y' || $user eq 'admin'}
@@ -230,7 +229,7 @@
 									<a class="link" href="tiki-confirm_user_email.php?user={$users[user].user|escape:url}&amp;pass={$users[user].provpass|md5|escape:url}" title="{tr _0=$users[user].user|username}Confirm user email: %0{/tr}">{capture assign=alt}{tr _0=$username}Confirm user email: %0{/tr}{/capture}{*FIXME*}{icon _id='email_go' alt=$alt}</a>
 								{/if}
 								{if $prefs.email_due > 0 and $users[user].waiting ne 'u' and $users[user].waiting ne 'a'}
-									<a class="link" href="tiki-adminusers.php?user={$users[user].user|escape:url}&amp;action=email_due" title="{tr}Invalidate email{/tr}">{icon _id='email_cross' alt="{tr}Invalidate email{/tr}"}</a>
+									<a class="link" href="tiki-adminusers.php?user={$users[user].user|escape:url}&amp;action=email_due" title="{tr}Invalid email{/tr}">{icon _id='email_cross' alt="{tr}Invalid email{/tr}"}</a>
 								{/if}
 							{/if}
 							{if !empty($users[user].openid_url)}
@@ -424,7 +423,7 @@
 									$("#genepass").hide();
 								});
 							{/jq}
-							<span id="genPass">{button href="#" _onclick="genPass('genepass');runPassword(document.RegForm.genepass.value, 'mypassword');checkPasswordsMatch('#pass2', '#pass1', '#mypassword2_text');return false;" _text="{tr}Generate a password{/tr}"}</span>
+							<span id="genPass">{button href="#" _onclick="genPass('genepass');runPassword(document.RegForm.genepass.value, 'mypassword');checkPasswordsMatch('#pass2', '#pass1', '#mypassword2_text');return false;" _text="{tr}Generate a password{/tr}"}</div>
 						</td></tr>
 					{/if}
 					{if $userinfo.login neq 'admin' && $prefs.change_password neq 'n'}
@@ -459,44 +458,16 @@
 					</tr>
 				{/if}
 				{if $userinfo.userId != 0}
-					{if $userinfo.created neq $userinfo.registrationDate}
+					<tr>
+						<td>{tr}Created:{/tr}</td>
+						<td>{$userinfo.created|tiki_long_datetime}</td>
+					</tr>
+					{if $userinfo.login neq 'admin'}
 						<tr>
-							<td>{tr}Created:{/tr}</td>
-							<td>{$userinfo.created|tiki_long_datetime}</td>
+							<td>{tr}Registered:{/tr}</td>
+							<td>{if $userinfo.registrationDate}{$userinfo.registrationDate|tiki_long_datetime}{/if}</td>
 						</tr>
 					{/if}
-					<tr>
-						<td>{tr}Registered:{/tr}</td>
-						<td>{if $userinfo.registrationDate}{$userinfo.registrationDate|tiki_long_datetime}{/if}</td>
-					</tr>
-					<tr>
-						<td>{tr}Pass confirmed:{/tr}</td>
-						<td>
-							{if $userinfo.pass_confirm}
-								{$userinfo.pass_confirm|tiki_long_datetime|default:'Never'}
-							{/if}
-						</td>
-					</tr>
-					{if $prefs.email_due > 0}
-						<tr>
-							<td style="white-space: nowrap;">{tr}Email confirmed:{/tr}</td>
-							<td>
-								{if $userinfo.email_confirm}
-									({tr _0=$userinfo.daysSinceEmailConfirm}%0 days ago{/tr})
-								{else}
-									{tr}Never{/tr}
-								{/if}
-							</td>
-						</tr>
-					{/if}
-					<tr>
-						<td>{tr}Current Login:{/tr}</td>
-						<td>
-							{if $userinfo.currentLogin}
-								{$userinfo.currentLogin|tiki_long_datetime|default:'Never'}
-							{/if}
-						</td>
-					</tr>
 					<tr>
 						<td>{tr}Last Login:{/tr}</td>
 						<td>
@@ -553,9 +524,9 @@
 				<td>
 					<input type="file" id="csvlist" name="csvlist"/>
 					<br />
-					<label><input type="radio" name="overwrite" value="y" />&nbsp;{tr}Overwrite{/tr}</label>
+					<label><input type="radio" name="overwrite" value="y" checked="checked" />&nbsp;{tr}Overwrite{/tr}</label>
 					<br />
-					<label><input type="radio" name="overwrite" value="n" checked="checked" />&nbsp;{tr}Don't overwrite{/tr}</label>
+					<label><input type="radio" name="overwrite" value="n" />&nbsp;{tr}Don't overwrite{/tr}</label>
 					<br />
 					<label>{tr}Overwrite groups:{/tr} <input type="checkbox" name="overwriteGroup" /></label>
                     <br />

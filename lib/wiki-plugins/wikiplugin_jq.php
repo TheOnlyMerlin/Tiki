@@ -1,12 +1,11 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_jq_info()
-{
+function wikiplugin_jq_info() {
 	return array(
 		'name' => tra('jQuery'),
 		'documentation' => 'PluginJQ',
@@ -15,7 +14,7 @@ function wikiplugin_jq_info()
 		'body' => tra('JavaScript code'),
 		'validate' => 'all',
 		'filter' => 'none',
-		'icon' => 'img/icons/script_code_red.png',
+		'icon' => 'pics/icons/script_code_red.png',
 		'params' => array(
 			'notonready' => array(
 				'required' => false,
@@ -31,15 +30,12 @@ function wikiplugin_jq_info()
 	);
 }
 	
-function wikiplugin_jq($data, $params)
-{
+function wikiplugin_jq($data, $params) {
 	global $headerlib, $prefs;
 	extract($params, EXTR_SKIP);
 	
 	$nojquery = isset($nojquery) ? $nojquery : tr('<!-- jq plugin inactive: JavaScript off -->');
-	if ($prefs['javascript_enabled'] != 'y') { 
-		return $nojquery;
-	}
+	if ($prefs['javascript_enabled'] != 'y') { return $nojquery; }
 	$notonready = isset($notonready) ? $notonready : false;
 
 	// Need to manually decode greater than and less than (not sure if we want to decode all HTML entities

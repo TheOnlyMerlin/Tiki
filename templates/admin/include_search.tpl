@@ -6,12 +6,6 @@
 	{/remarksbox}
 {/if}
 
-{if $prefs.feature_file_galleries eq 'y'}
-	{remarksbox type="tip" title="{tr}Tip{/tr}"}
-		{tr}Also see the Search Indexing tab here:{/tr} <a class='rbox-link' target='tikihelp' href='tiki-admin.php?page=fgal'>{tr}File Gallery admin panel{/tr}</a>
-	{/remarksbox}
-{/if}
-
 
 <form action="tiki-admin.php?page=search" method="post">
 	<input type="hidden" name="searchprefs" />
@@ -28,22 +22,12 @@
 
 				{preference name=feature_search visible="always"}
 				<div class="adminoptionboxchild" id="feature_search_childcontainer">				
+					{preference name="unified_incremental_update"}
 					{preference name="unified_engine"}
 					<div class="adminoptionboxchild unified_engine_childcontainer lucene">
-						{preference name="unified_incremental_update"}
-						{preference name="unified_lucene_highlight"}
-						{preference name=unified_parse_results}
 						{preference name="unified_lucene_location"}
-						<fieldset>
-							<legend>{tr}Search Engine Settings{/tr}</legend>
-							{preference name="unified_lucene_max_result"}
-							{preference name="unified_lucene_max_resultset_limit"}
-							{preference name="unified_lucene_terms_limit"}
-							{preference name="unified_lucene_max_buffered_docs"}
-							{preference name="unified_lucene_max_merge_docs"}
-							{preference name="unified_lucene_merge_factor"}
-							{preference name="unified_lucene_default_operator"}
-						</fieldset>
+						{preference name="unified_lucene_highlight"}
+						{preference name="unified_lucene_max_result"}
 					</div>
 
 					{preference name=unified_forum_deepindexing}
@@ -56,25 +40,11 @@
 
 					{preference name=unified_cached_formatters}
 
-					{preference name=unified_trackerfield_keys}
-
 					<h4>{tr}Index maintenance{/tr}</h4>
 					<ul>
-						<li><a href="tiki-admin.php?page=search&amp;optimize=now">{tr}Optimize{/tr}</a> {tr}From the command line:{/tr} <kbd>php lib/search/shell.php optimize</kbd></li>
+						<li><a href="tiki-admin.php?page=search&amp;optimize=now">{tr}Optimize{/tr}</a></li>
 						<li>
-							<a href="tiki-admin.php?page=search&amp;rebuild=now" id="rebuild-link">{tr}Rebuild Index{/tr}</a> {tr}From the command line:{/tr} <kbd>php lib/search/shell.php rebuild</kbd><br />
-							<label for="log-rebuild">{tr}Log rebuild?{/tr}</label>
-							<input type="checkbox" id="log-rebuild" />
-							<span class="description">{tr}Log file is saved as temp/Search_Indexer.log{/tr}</span>
-							{jq}
-$("#log-rebuild").click(function(){
-	if ($(this).prop("checked")) {
-		$("#rebuild-link").attr("href", $("#rebuild-link").attr("href") + "&loggit");
-	} else {
-		$("#rebuild-link").attr("href", $("#rebuild-link").attr("href").replace("&loggit",""));
-	}
-});
-							{/jq}
+							<a href="tiki-admin.php?page=search&amp;rebuild=now">{tr}Rebuild Index{/tr}</a>
 							{if !empty($stat)}
 								{remarksbox type='feedback' title="{tr}Indexation{/tr}"}
 									<ul>
@@ -86,24 +56,6 @@ $("#log-rebuild").click(function(){
 							{/if}
 						</li>
 					</ul>
-					{if $queue_count > 0}
-						<h5>{tr}Queue size:{/tr} {$queue_count}</h5>
-						{tr}Process:{/tr}
-						<ul>
-							{if $queue_count > 10}
-								<li><a  href="tiki-admin.php?page=search&amp;process=10">10</a></li>
-							{/if}
-							{if $queue_count > 20}
-								<li><a  href="tiki-admin.php?page=search&amp;process=20">20</a></li>
-							{/if}
-							{if !empty($smarty.request.process) and $smarty.request.process eq 'all' and $prefs.javascript_enabled eq "y"}
-								{jq} setTimeout(function() { history.go(0); }, 1000); {/jq}
-								<li><strong><a  href="tiki-admin.php?page=search&amp;process=">{tr}Stop{/tr}</a></strong></li>
-							{else}
-								<li><em><a  href="tiki-admin.php?page=search&amp;process=all">{tr}All{/tr}</a></em> <br /><span class="description">{tr}Uses JavaScript to reload this page until queue is processed{/tr}</span></li>
-							{/if}
-						</ul>
-					{/if}
 				</div>
 			</fieldset>
 			<fieldset>
@@ -120,30 +72,18 @@ $("#log-rebuild").click(function(){
 					{preference name=feature_search_show_forbidden_cat}
 				</div>
 			</fieldset>
+				
 			<fieldset>
 				<legend>{tr}Features{/tr}</legend>
 				{preference name=search_autocomplete}
 			</fieldset>
 
-			<fieldset>
-				<legend>{tr}Forum searches{/tr}</legend>
-				{preference name=feature_forums_name_search}
-				{preference name=feature_forums_search}
-				{preference name=feature_forum_content_search}
-				<div class="adminoptionboxchild" id="feature_forum_content_search_childcontainer">
-					{preference name=feature_forum_local_tiki_search}
-					{preference name=feature_forum_local_search}
-				</div>
-			</fieldset>
-
 		{/tab}
 
 		{tab name="{tr}Search Results{/tr}"}
-			{tr}Select the items to display on the search results page:{/tr}
 			{preference name=search_default_interface_language}
 			{preference name=search_default_where}
-			{preference name=search_show_category_filter}
-			{preference name=search_show_tag_filter}
+			{tr}Select the items to display on the search results page:{/tr}
 			{preference name=feature_search_show_object_filter}
 			{preference name=feature_search_show_search_box}
 			{tr}Select the information to display for each result:{/tr}

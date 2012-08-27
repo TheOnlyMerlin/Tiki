@@ -39,7 +39,6 @@ lang = {
 //	"Filter:" : "Filter:",
 //	"Please enter a page name" : "Please enter a page name",
 //	"Change Highlighter" : "Change Highlighter",
-//	"Toggle Highlighter" : "Toggle Highlighter",
 //	"Are you sure you want to unassign this module?" : "Are you sure you want to unassign this module?"
 	// remember the IE does not support ending comma on last item
 };

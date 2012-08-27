@@ -1,12 +1,12 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
@@ -23,8 +23,8 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
  */
 function smarty_function_menu($params, $smarty)
 {
-	global $headerlib, $prefs;
-
+	global $tikilib, $user, $headerlib, $prefs;
+	global $menulib; include_once('lib/menubuilder/menulib.php');
 	$default = array('css' => 'y');
 	if (isset($params['params'])) {
 		$params = array_merge($params, $params['params']);
@@ -46,7 +46,7 @@ function smarty_function_menu($params, $smarty)
 		$menu_cookie = 'y';
 	}
 	$smarty->assignByRef('menu_cookie', $menu_cookie);
-	if ($css !== 'n' && $prefs['feature_cssmenus'] == 'y' && (!isset($drilldown) || $drilldown != 'y')) {
+	if ($css !== 'n' && $prefs['feature_cssmenus'] == 'y') {
 		static $idCssmenu = 0;
 		if (empty($type)) {
 			$type = 'vert';
@@ -55,21 +55,45 @@ function smarty_function_menu($params, $smarty)
 		$headerlib->add_jsfile('lib/menubuilder/menu.js');
 		$tpl = 'tiki-user_cssmenu.tpl';
 		$smarty->assign('menu_type', $type);
-		if (! isset($css_id)) {//adding $css_id parameter to customize menu id and prevent automatic id renaming when a menu is removed
+		if (! isset($css_id)){//adding $css_id parameter to customize menu id and prevent automatic id renaming when a menu is removed
 			$smarty->assign('idCssmenu', $idCssmenu++);	
 		} else {
 			$smarty->assign('idCssmenu', $css_id);
 		}
-	} elseif ($drilldown == 'y') {
-		$tpl = 'tiki-user_drilldownmenu.tpl';
 	} else {
 		$tpl = 'tiki-user_menu.tpl';
 	}
 
-	list($menu_info, $channels) = get_menu_with_selections($params);
+	global $cachelib; include_once('lib/cache/cachelib.php');
+	$cacheName = isset($prefs['mylevel']) ? $prefs['mylevel'] : 0;
+	$cacheName .= '_'.$prefs['language'].'_'.md5(implode("\n", $tikilib->get_user_groups($user)));
+	if (isset($structureId)) {
+		$cacheType = 'structure_'.$structureId;
+	} else {
+		$cacheType = 'menu_'.$id.'_';
+	}
 
-	$smarty->assign('menu_channels', $channels['data']);
-	$smarty->assign('menu_info', $menu_info);
+	if ( $cdata = $cachelib->getSerialized($cacheName, $cacheType) ) {
+		list($menu_info, $channels) = $cdata;
+	} elseif (!empty($structureId)) {
+		global $structlib; include_once('lib/structures/structlib.php');
+		$channels = $structlib->build_subtree_toc($structureId);
+		$structure_info =  $structlib->s_get_page_info($structureId);
+		$channels = $structlib->to_menu($channels, $structure_info['pageName']);
+		$menu_info = array('type'=>'d', 'menuId'=> "s_$structureId", 'structure' => 'y');
+		//echo '<pre>'; print_r($channels); echo '</pre>';
+	} else if (!empty($id)) {
+		$menu_info = $menulib->get_menu($id);
+		$channels = $menulib->list_menu_options($id,0,-1,'position_asc','','',isset($prefs['mylevel'])?$prefs['mylevel']:0);
+		$channels = $menulib->sort_menu_options($channels);
+		$cachelib->cacheItem($cacheName, serialize(array($menu_info, $channels)), $cacheType);
+	} else {
+		return '<span class="error">menu function: Menu or Structure ID not set</span>';
+	}
+	$channels = $menulib->setSelected($channels, isset($sectionLevel)?$sectionLevel:'', isset($toLevel)?$toLevel: '', $params);
+
+	$smarty->assign('menu_channels',$channels['data']);
+	$smarty->assign('menu_info',$menu_info);
 	$data = $smarty->fetch($tpl);
 	$data = preg_replace('/<ul>\s*<\/ul>/', '', $data);
 	$data = preg_replace('/<ol>\s*<\/ol>/', '', $data);
@@ -83,49 +107,6 @@ function smarty_function_menu($params, $smarty)
 	}
 }
 
-function compare_menu_options($a, $b)
-{
+function compare_menu_options($a, $b) {
 	return strcmp(tra($a['name']), tra($b['name']));
-}
-
-function get_menu_with_selections($params) {
-	global $tikilib, $user, $prefs;
-	global $menulib; include_once('lib/menubuilder/menulib.php');
-	global $cachelib; include_once('lib/cache/cachelib.php');
-	$cacheName = isset($prefs['mylevel']) ? $prefs['mylevel'] : 0;
-	$cacheName .= '_'.$prefs['language'].'_'.md5(implode("\n", $tikilib->get_user_groups($user)));
-
-	extract($params, EXTR_SKIP);
-
-	if (isset($structureId)) {
-		$cacheType = 'structure_'.$structureId;
-	} else {
-		$cacheType = 'menu_'. $id .'_';
-	}
-
-	if ( $cdata = $cachelib->getSerialized($cacheName, $cacheType) ) {
-		list($menu_info, $channels) = $cdata;
-	} elseif (!empty($structureId)) {
-		global $structlib; include_once('lib/structures/structlib.php');
-
-		if (!is_numeric($structureId)) {
-			$structureId = $structlib->get_struct_ref_id($structureId);
-		}
-
-		$channels = $structlib->build_subtree_toc($structureId);
-		$structure_info =  $structlib->s_get_page_info($structureId);
-		$channels = $structlib->to_menu($channels, $structure_info['pageName']);
-		$menu_info = array('type'=>'d', 'menuId'=> "s_$structureId", 'structure' => 'y');
-		//echo '<pre>'; print_r($channels); echo '</pre>';
-	} else if (!empty($id)) {
-		$menu_info = $menulib->get_menu($id);
-		$channels = $menulib->list_menu_options($id, 0, -1, 'position_asc', '', '', isset($prefs['mylevel'])?$prefs['mylevel']:0);
-		$channels = $menulib->sort_menu_options($channels);
-		$cachelib->cacheItem($cacheName, serialize(array($menu_info, $channels)), $cacheType);
-	} else {
-		return '<span class="error">menu function: Menu or Structure ID not set</span>';
-	}
-	$channels = $menulib->setSelected($channels, isset($sectionLevel)?$sectionLevel:'', isset($toLevel)?$toLevel: '', $params);
-
-	return array($menu_info, $channels);
 }

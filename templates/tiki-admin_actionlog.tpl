@@ -21,7 +21,7 @@
 				</tr>
 			</table>
 		</fieldset>
-				{if $tiki_p_list_users eq 'y'}
+				{if $tiki_p_admin eq 'y'}
 			<fieldset>
 				<legend>{tr}Users and Groups{/tr}</legend>
 				<table class="formcolor">
@@ -184,16 +184,10 @@
 			{else}
 					{self_link max=$prefs.maxRecords}{tr}Pagination{/tr}{/self_link}
 			{/if}
-			{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
+		{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
 			{tr}Records:{/tr} {$cant}
-			<form name="checkboxes_on" method="post" action="tiki-admin_actionlog.php">
-			{query _type='form_input'}
 			<table class="normal">
 				<tr>
-					<th>
-						{select_all checkbox_names='checked[]'}
-						{assign var=numbercol value=$numbercol+1}
-					</th>
 					<th>
 						<a href="tiki-admin_actionlog.php?startDate={$startDate}&amp;endDate={$endDate}&amp;sort_mode=user_{if $sort_mode eq 'user_desc'}asc{else}desc{/if}{$url}">{tr}User{/tr}</a>
 					</th>
@@ -237,7 +231,6 @@
 				{cycle values="even,odd" print=false}
 				{foreach from=$actionlogs item=actionlog}
 					<tr class="{cycle}">
-						<td class="checkbox"><input type="checkbox" name="checked[]" value="{$actionlog.actionId}" /></td>
 						<td class="username">
 							{if $actionlog.user}{$actionlog.user|escape}{else}{tr}Anonymous{/tr}{/if}
 						</td>
@@ -300,13 +293,6 @@
 				{/foreach}
 			</table>
 			{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
-			<div class="formcolor">
-				{tr}Perform action with checked:{/tr}
-				{if $prefs.feature_banning eq 'y'}
-					{icon _id='lock_red' _tag='input_image' name='ban' value='y' alt="{tr}Ban{/tr}"}
-				{/if}
-			</div>
-			</form>
 		{/if}
 
 		{if $action}
@@ -620,7 +606,7 @@
 	<a name="Setting" ></a>
 	<h2>{tr}Setting{/tr}</h2>
 		{remarksbox type="tip" title="{tr}How{/tr}"}
-		{tr}You need to check out the recorded box for each action type we may be interested to have some report later. To see a report of some action types, select the reported checkboxes of these action types, goto the Report tab and select additional filters. The report will only contains the actions that occurred since the action type has been set to recorded.{/tr} {tr}Wiki page actions except viewed will always be recorded but can be not reported.{/tr}
+		{tr}You need to check out the recorded box for each action type we may be interested to have some report later. To see a report of some action types, select the reported checkboxes of these action types, goto the Report tab and select additional filters. The report will only contains the actions that occured since the action type has been set to recorded.{/tr} {tr}Wiki page actions except viewed will always be recorded but can be not reported.{/tr}
 		{/remarksbox}
 	<form method="post" action="tiki-admin_actionlog.php">
 		{if !empty($sort_mode)}<input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />{/if}

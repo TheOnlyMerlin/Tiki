@@ -1,19 +1,18 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_vote_info()
-{
+function wikiplugin_vote_info() {
 	return array(
 		'name' => tra('Vote'),
 		'documentation' => 'PluginVote',
 		'description' => tra('Create a tracker for voting'),
 		'prefs' => array( 'feature_trackers', 'wikiplugin_vote' ),
 		'body' => tra('Title'),
-		'icon' => 'img/icons/thumb_up.png',
+		'icon' => 'pics/icons/thumb_up.png',
 		'params' => array(
 			'trackerId' => array(
 				'required' => true,
@@ -118,27 +117,14 @@ function wikiplugin_vote_info()
 					array('text' => tra('None'), 'value' => 'none'),
 				)
 			),
-			'show_toggle' => array(
-				'required' => false,
-				'name' => tra('Show Toggle'),
-				'description' => tra('Show toggle or not to display the form and the results'),
-				'filter' => 'alpha',
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-                                        array('text' => tra('Yes'), 'value' => 'y'),
-                                        array('text' => tra('No'), 'value' => 'n')
-				)
-			),
 		),
 	);
 }
 
-function wikiplugin_vote($data, $params)
-{
+function wikiplugin_vote($data, $params) {
 	global $smarty, $tikilib, $user, $prefs, $tiki_p_admin_trackers, $tiki_p_view_trackers, $trklib;
 	include_once('lib/trackers/trackerlib.php');
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 
 	if ($prefs['feature_trackers'] != 'y' || !isset($trackerId) || !($tracker = $trklib->get_tracker($trackerId))) {
 		return $smarty->fetch("wiki-plugins/error_tracker.tpl");
@@ -188,9 +174,6 @@ function wikiplugin_vote($data, $params)
 		}
 	} else {
 		$smarty->assign('p_create_tracker_items', 'n');
-	}
-	if (isset($show_toggle) && $show_toggle == 'n') {
-		$smarty->assign('show_toggle', 'n');
 	}
 	if (!isset($show_stat) || $show_stat == 'y') {
 		$show_stat = 'y';

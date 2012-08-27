@@ -5,6 +5,7 @@
 	font: 1em Arial,Helvetica,sans-serif ! important;
 	font-size: 1em ! important;
 	clear: both;
+	width: 100% ! important;
 }
 
 /*from the codemirror website*/
@@ -15,6 +16,11 @@
 .CodeMirror-fullscreen  .CodeMirror-scroll{
 	height: inherit ! important;
 	width: inherit ! important;
+}
+
+.CodeMirror-scroll{
+	overflow: auto ! important;
+	height: inherit ! important;
 }
 
 .CodeMirror-fullscreen {
@@ -39,24 +45,6 @@
 	overflow: hidden ! important;
 }
 
-.CodeMirror pre {
-	font-size: 1em !important;
-	line-height: 1.2em !important;
-}
-
 .preCodeMirror {
 	display: none;
-}
-
-.CodeMirrorHide {
-	z-index: -99999999;
-	opacity:0.01;
-	filter:alpha(opacity=1);
-}
-
-.CodeMirrorPrepSize {
-	position: absolute;
-	z-index: -99999999;
-	opacity:0.01;
-	filter:alpha(opacity=1);
 }

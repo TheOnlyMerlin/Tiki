@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,8 +7,7 @@
 
 class GeoLib
 {
-	function get_coordinates($type, $itemId) 
-	{
+	function get_coordinates($type, $itemId) {
 		$attributelib = TikiLib::lib('attribute');
 
 		$attributes = $attributelib->get_attributes($type, $itemId);
@@ -27,15 +26,13 @@ class GeoLib
 		}
 	}
 
-	function get_coordinates_string($type, $itemId) 
-	{
+	function get_coordinates_string($type, $itemId) {
 		if ($coords = $this->get_coordinates($type, $itemId)) {
 			return $this->build_location_string($coords);
 		}
 	}
 	
-	function build_location_string($coords) 
-	{
+	function build_location_string($coords) {
 		if (! empty($coords['lat']) && ! empty($coords['lon'])) {
 			$string = "{$coords['lon']},{$coords['lat']}";
 
@@ -47,8 +44,7 @@ class GeoLib
 		}
 	}
 
-	function set_coordinates($type, $itemId, $coordinates) 
-	{
+	function set_coordinates($type, $itemId, $coordinates) {
 		if (is_string($coordinates)) {
 			$coordinates = $this->parse_coordinates($coordinates);
 		}
@@ -64,8 +60,7 @@ class GeoLib
 		}
 	}
 
-	function parse_coordinates($string) 
-	{
+	function parse_coordinates($string) {
 		if (preg_match("/^(-?\d*(\.\d+)?),(-?\d*(\.\d+)?)(,(\d+))?$/", $string, $parts)) {
 			$coords = array(
 				'lat' => $parts[3],
@@ -80,16 +75,11 @@ class GeoLib
 		}
 	}
 	
-	function geocode($where) 
-	{
-		$url = 'http://maps.googleapis.com/maps/api/geocode/json?' . http_build_query(
-						array(
-							'address' => $where,
-							'sensor' => 'false',
-						),
-						'',
-						'&'
-		);
+	function geocode($where) {
+		$url = 'http://maps.googleapis.com/maps/api/geocode/json?' . http_build_query(array(
+			'address' => $where,
+			'sensor' => 'false',
+		), '', '&');
 
 		$response = TikiLib::lib('tiki')->httprequest($url);
 		$data = json_decode($response);
@@ -109,8 +99,7 @@ class GeoLib
 		);
 	}
 	
-	function geofudge($geo) 
-	{
+	function geofudge($geo) {
 		if (!$geo) {
 			return false;
 		}
@@ -122,8 +111,7 @@ class GeoLib
 		return $geo;
 	}
 	
-	function setTrackerGeo($itemId, $geo) 
-	{
+	function setTrackerGeo($itemId, $geo) {
 		global $prefs, $trklib;
 		if (!is_object($trklib)) {
 			include_once('lib/trackers/trackerlib.php');

@@ -1,19 +1,18 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_lang_info()
-{
+function wikiplugin_lang_info() {
 	return array(
 		'name' => tra('Language'),
 		'documentation' => 'PluginLang',
 		'description' => tra('Vary text based on the page language'),
 		'prefs' => array( 'feature_multilingual', 'wikiplugin_lang' ),
 		'body' => tra('text'),
-		'icon' => 'img/icons/flag_blue.png',
+		'icon' => 'pics/icons/flag_blue.png',
 		'params' => array(
 			'lang' => array(
 				'required' => false,
@@ -31,12 +30,11 @@ function wikiplugin_lang_info()
 	);
 }
 
-function wikiplugin_lang($data, $params)
-{
+function wikiplugin_lang($data, $params) {
 	global $prefs;
 
 	$reqlang = isset($_REQUEST['lang']) ? $_REQUEST['lang'] : $prefs['language'];
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 	if (isset($lang)) {
 		return in_array($reqlang, explode('+', $lang)) ? $data : '';
 	}

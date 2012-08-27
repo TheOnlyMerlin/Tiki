@@ -2,9 +2,6 @@
 {if !isset($ajax)}
 	{assign var='ajax' value='y'}
 {/if}
-{if !isset($module)}
-	{assign var='module' value='n'}
-{/if}
 {if empty($module_params.viewnavbar) || $module_params.viewnavbar eq 'y'}
 <div class="clearfix tabrow" {if $module eq 'y'}style="padding: 0pt"{/if}>
 {if $module neq 'y'}
@@ -12,7 +9,7 @@
 	<div class="tabrowLeft"></div>
 {/if}
 	<div class="viewmode">
-	{if !isset($calendar_type) or $calendar_type neq "tiki_actions"}
+	{if $calendar_type neq "tiki_actions"}
 			{if $module neq 'y'}
 				{button _auto_args="viewmode,focus" _title="{tr}Today{/tr}" _text="{tr}Today{/tr}" _class="calbuttonoff" viewmode='day' focus=$now todate=$now}
 			{else}
@@ -21,7 +18,7 @@
 				{else}
 					{button _auto_args="focus" _keepall=y _title="{tr}Today{/tr}" _text="{tr}Today{/tr}" _class="calbuttonoff" focus=$now todate=$now}
 				{/if}
-				<br class="clear">
+				<br class="clearfix" />
 			{/if}
 	{/if}
 
@@ -44,7 +41,7 @@
 		</div>
 
 {*viewmodes*}
-		{if !isset($calendar_type) or $calendar_type neq "tiki_actions"}
+		{if $calendar_type neq "tiki_actions"}
 			{if $module neq 'y'}
 				{button _ajax=$ajax href="?viewmode=day" _title="{tr}Day{/tr}" _text="{tr}Day{/tr}" _selected_class="buttonon" _selected="'$viewmode' == 'day'"}
 			{elseif empty($module_params.viewmode)}

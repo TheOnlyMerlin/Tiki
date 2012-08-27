@@ -59,12 +59,6 @@
 	{/remarksbox}
 {/if}
 
-{if !empty($error)}
-	{remarksbox type='warning' title="{tr}Error{/tr}"}
-		{$error|escape}
-	{/remarksbox}
-{/if}
-
 {tabset}
 	{tab name="{tr}Structures{/tr}"}
 		{if $channels or ($find ne '')}
@@ -116,7 +110,7 @@
 							{/if}
 
 							{if $tiki_p_admin eq 'y'}
-								<a title="{tr}XML Zip{/tr}" class="link" href="tiki-admin_structures.php?zip={$channels[ix].page_ref_id|escape:"url"}">{icon _id='img/icons/mime/zip.png' alt="{tr}XML Zip{/tr}"}</a>
+								<a title="{tr}XML Zip{/tr}" class="link" href="tiki-admin_structures.php?zip={$channels[ix].page_ref_id|escape:"url"}">{icon _id='pics/icons/mime/zip.png' alt="{tr}XML Zip{/tr}"}</a>
 							{/if}
 						</td>
 					</tr>

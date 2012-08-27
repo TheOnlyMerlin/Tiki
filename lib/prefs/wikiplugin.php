@@ -1,12 +1,11 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_wikiplugin_list($partial = false)
-{
+function prefs_wikiplugin_list($partial = false) {
 	global $tikilib;
 	
 	$parserlib = TikiLib::lib('parser');
@@ -54,7 +53,6 @@ function prefs_wikiplugin_list($partial = false)
 		'miniquiz' => 'y',
 		'module' => 'y',
 		'mouseover' => 'y',
-		'now' => 'y',
 		'payment' => 'y',
 		'poll' => 'y',
 		'quote' => 'y',
@@ -96,9 +94,10 @@ function prefs_wikiplugin_list($partial = false)
 		$out = array();
 		$list = array();
 		$alias = array();
-		foreach ( glob('lib/wiki-plugins/wikiplugin_*.php') as $file ) {
-			$base = basename($file);
-			$plugin = substr($base, 11, -4);
+		foreach( glob( 'lib/wiki-plugins/wikiplugin_*.php' ) as $file )
+		{
+			$base = basename( $file );
+			$plugin = substr( $base, 11, -4 );
 
 			$list[] = $plugin;
 		}
@@ -108,10 +107,10 @@ function prefs_wikiplugin_list($partial = false)
 			$alias = @unserialize($prefs['pluginaliaslist']);
 			$alias = array_filter($alias);
 		}
-		$list = array_filter(array_merge($list, $alias));
+		$list = array_filter(array_merge( $list, $alias ));
 		sort($list);
 
-		foreach ( $list as $plugin ) {
+		foreach( $list as $plugin ) {
 			$preference = 'wikiplugin_' . $plugin;
 			$out[$preference] = array(
 				'default' => isset($defaultPlugins[$plugin]) ? 'y' : 'n',
@@ -123,13 +122,13 @@ function prefs_wikiplugin_list($partial = false)
 
 	$prefs = array();
 
-	foreach ( $parserlib->plugin_get_list() as $plugin ) {
-		$info = $parserlib->plugin_info($plugin);
+	foreach( $parserlib->plugin_get_list() as $plugin ) {
+		$info = $parserlib->plugin_info( $plugin );
 		if (empty($info['prefs'])) $info['prefs'] = array();
-		$dependencies = array_diff($info['prefs'], array( 'wikiplugin_' . $plugin ));
+		$dependencies = array_diff( $info['prefs'], array( 'wikiplugin_' . $plugin ) );
 
 		$prefs['wikiplugin_' . $plugin] = array(
-			'name' => tr('Plugin %0', $info['name']),
+			'name' => tr( 'Plugin %0', $info['name'] ),
 			'description' => isset($info['description']) ? $info['description'] : '',
 			'type' => 'flag',
 			'help' => 'Plugin' . $plugin,

@@ -1,5 +1,5 @@
 /* $Id$
-	Arcturus theme (arcturus.css) for Tiki Wiki CMS Groupware.
+	Arcturus theme (arcturus.css) for Tikiwiki CMS/Groupware.
 	Visit http://themes.tiki.org for more information.
 */
  
@@ -11,8 +11,7 @@
 /***** XHTML Elements (body tag here,
 			others follow Layout) *****/ 
 body {
-	font: 76% Verdana, Geneva, Arial, Helvetica, sans-serif;
-	line-height: 1.4;
+	font: 76%/1.4em Verdana, Geneva, Arial, Helvetica, sans-serif;
 	color: #000;
 	background: #efefe7
 }
@@ -37,11 +36,11 @@ body.fixed_width .fixedwidth .fixedwidth {
 }
 
 #c1c2	#wrapper	#col1.marginleft  {
-	margin-left: 190px;
+	margin-left: 180px;
 }
 
 #c1c2	#wrapper	#col1.marginright {
-	margin-right: 190px;
+	margin-right: 180px;
 }
 
 #c1c2	#wrapper	#col1	.content {
@@ -65,8 +64,8 @@ body.fixed_width .fixedwidth .fixedwidth {
 #c1c2 #col2 .content {margin-left: 4px}
 
 #col3 {
-	width: 190px;
-	margin-left: -190px;
+	width: 180px;
+	margin-left: -180px;
 	background: #ded6c6;
 }
 
@@ -460,7 +459,7 @@ h3.box-title,
 
 .rbox-title {
 	border-bottom: none !important;
-	margin-bottom: -.45em;
+	margin-bottom: -.35em;
 }
 	
 .errors .rbox-title,
@@ -502,8 +501,8 @@ h3.box-title,
 th,
 td.heading,
 tr.diffheader {
-	background: #b5a58c;
-	color: #000;
+	background: #5A4A39;
+	color: #fff;
 	font-size: 11px;
 	font-weight: bold;
 	padding-left: 2px;
@@ -778,10 +777,6 @@ body.tiki_cms h1 a.pagetitle:hover {border-bottom: 0}
 	background: #f3e498;
 }
 
-.box-data .caltable {
-	margin-left: -3px;
-}
-
 /***** Admin *****/
 a.admbox:hover,
 a.admbox:focus,
@@ -804,7 +799,7 @@ a.admbox:active {
 
 /* Quote plugin */
 .quoteheader {
-	background : url('../img/icons/quoteleft.gif') no-repeat;
+	background : url('../images/quoteleft.gif') no-repeat;
 	padding-left:50px;
 	height:35px;
 }

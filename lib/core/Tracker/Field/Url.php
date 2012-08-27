@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -60,36 +60,27 @@ class Tracker_Field_Url extends Tracker_Field_Abstract implements Tracker_Field_
 			return $url;
 		} elseif ($this->getOption(0) == 2) { // Site title as link
 			$smarty->loadPlugin('smarty_function_object_link');
-			return smarty_function_object_link(
-							array(
-								'type' => 'external',
-								'id' => $url,
-							),
-							$smarty
-			);
+			return smarty_function_object_link(array(
+				'type' => 'external',
+				'id' => $url,
+			), $smarty);
 		} elseif (!$this->getOption(0)) { // URL as link
 			$parsedUrl = trim(str_replace('<br />', '', TikiLib::lib('tiki')->parse_data($url)));
 			if ($parsedUrl != $url) {
 				return $parsedUrl;
 			}
 			$smarty->loadPlugin('smarty_function_object_link');
-			return smarty_function_object_link(
-							array(
-								'type' => 'external',
-								'id' => $url,
-								'title' => $url,
-							), 
-							$smarty
-			);
+			return smarty_function_object_link(array(
+				'type' => 'external',
+				'id' => $url,
+				'title' => $url,
+			), $smarty);
 		} elseif ($this->getOption(0) == 3) { // URL + site title
 			$smarty->loadPlugin('smarty_function_object_link');
-			return smarty_function_object_link(
-							array(
-								'type' => 'external_extended',
-								'id' => $url,
-							),
-							$smarty
-			);
+			return smarty_function_object_link(array(
+				'type' => 'external_extended',
+				'id' => $url,
+			), $smarty);
 		} else {
 			return $url;
 		}

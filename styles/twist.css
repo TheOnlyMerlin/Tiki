@@ -1,5 +1,5 @@
 /* $Id$
-	Twist for Tiki Wiki CMS Groupware 1.9 was created by Gary Griffin and
+	Twist for TikiWiki CMS/Broupware 1.9 was created by Gary Griffin and
 	contributed for downloading at http://themes.tiki.org.
 	The Twist theme was updated and
 	committed to the Tiki Subversion repository by Gary Cunningham-Lee (chibaguy).
@@ -14,16 +14,19 @@
 			others follow Layout) *****/
 body {
 	background: #0f1644 url(twist/background.gif);
-	font: 76% Verdana, Geneva, Arial, Helvetica, sans-serif;
-	line-height: 1.6;
+	font: 76%/1.4em Verdana, Geneva, Arial, Helvetica, sans-serif;
 	color: black;
 }
 
-/* next two: fixed-width: 800px */
+/* Enable header and footer content to widen when middle has wide content. */ 
+body.fixed_width .fixedwidth .fixedwidth {
+	width: 100%;
+	padding: 0;
+}
+
 .fixed_width #fixedwidth {
 	margin-top: 0;
 	margin-bottom: 20px;
-	width: 800px;
 	background: #0F1644 url(twist/background.gif);
 }
 
@@ -632,18 +635,17 @@ ol.module {
 
 .rbox-data {padding: 2px}
 
-.rbox-title {
+.rbox-title,
+.warning .rbox-title {
 	font-size: 1em;
 	padding: 0 10px;
-	border-bottom: none !important;
-	margin-bottom: -.5em;
-}
+	margin: 0;
+	font-weight: bold}
 
 .rbox-data,
-.warning .rbox-data,
-.warning .rbox-title {
+.warning .rbox-data {
 	background: #eeee99;
-	border: 1px solid #ddddcc}
+	border: 1px solid #DDDDCC}
 	
 .note .rbox-title {background: #CCCCDD}
 
@@ -655,13 +657,17 @@ ol.module {
 .tip .rbox-title {
 	background: #ECECEF;
 	border: 1px solid #CCCCDD;
-}
+	border-bottom: none;}
 
 .comment .rbox-data,
 .tip .rbox-data {
 	background: #ECEFEC;
 	border: 1px solid #CCDDCC}
 	
+.rbox-title {
+	margin-bottom: -.35em !important;
+}
+
 .simplebox {
 	border: 1px solid #999;
 	padding: 2px;
@@ -813,9 +819,7 @@ tr.diffheader a,
 
 .tabmark a:hover {
 	color: black;
-	background: #f0f9ff;
-	text-decoration: none;
-}
+	background: #f0f9ff}
 
 .tabactive {border: solid 1px #225566 !important}
 .tabactive a {background: #eee}
@@ -913,7 +917,7 @@ a.forumspagetitle:hover {
 	margin: 4px;
 	border: 1px dashed #ADACAF;
 	overflow: auto;
-}
+   width: 500px}
 
 .codecaption {
 	font-size: 90%;

@@ -1,18 +1,18 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki/CMS/Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once('tiki-setup.php');
+$trkqry = TikiLib::lib("trk");
 
 if ($tiki_p_admin_trackers != 'y') {
 	$access->display_error('', tra('Permission denied').": ". 'tiki_p_admin_trackers', '403');
 }
 
-$headerlib->add_jq_onready(
-				'
+$headerlib->add_jq_onready('
 	//manipulation objects
 	var elements = $("#trackerElements").hide();
 	var designer = $("#reportDesigner");
@@ -215,18 +215,15 @@ $headerlib->add_jq_onready(
 	window.uncheckAll = function() {
 		designer.find(".fieldPicker").find("input").removeAttr("checked");
 	};
-'
-);
+');
 
 $smarty->assign('trackers', $tikilib->fetchAll('select `trackerId`, `name` from `tiki_trackers`'));
-$smarty->assign(
-				'trackerFields',
-				$tikilib->fetchAll(
-								'select `tiki_tracker_fields`.`fieldId`, `tiki_tracker_fields`.`trackerId`, `tiki_tracker_fields`.`name` as fieldName, `tiki_trackers`.`name` as trackerName from `tiki_tracker_fields`
-				left join `tiki_trackers` on `tiki_trackers`.`trackerId` = `tiki_tracker_fields`.`trackerId`
-				order by `trackerId`, `position`'
-				)
-);
+$smarty->assign('trackerFields', $tikilib->fetchAll('
+	select `tiki_tracker_fields`.`fieldId`, `tiki_tracker_fields`.`trackerId`, `tiki_tracker_fields`.`name` as fieldName, `tiki_trackers`.`name` as trackerName from `tiki_tracker_fields`
+	left join `tiki_trackers` on `tiki_trackers`.`trackerId` = `tiki_tracker_fields`.`trackerId`
+	
+	order by `trackerId`, `position`
+'));
 
 // Display the template
 $smarty->assign('mid', 'tiki-tracker_reports.tpl');

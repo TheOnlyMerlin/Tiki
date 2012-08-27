@@ -1,6 +1,6 @@
 #!/usr/bin/php4 
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -23,7 +23,7 @@ $tikilib = new TikiLib;
 
 $structId = '160';
 
-$pages = explode("\n", `grep -r '{\$helpurl}' templates | sed -e "s/^.*helpurl}\([^\"']*\)[\"'].*$/\\1/" | sort | uniq`);
+$pages = explode("\n",`grep -r '{\$helpurl}' templates | sed -e "s/^.*helpurl}\([^\"']*\)[\"'].*$/\\1/" | sort | uniq`);
 $afterid = NULL;
 foreach ($pages as $p) {
 	if ($p) {
@@ -34,7 +34,7 @@ foreach ($pages as $p) {
 		}
 		
 		if ($structlib->page_is_in_structure($p)) {
-			$alls = $structlib->get_page_structures($p, 'Help');
+			$alls = $structlib->get_page_structures($p,'Help');
 			if (count($alls)) {
 				echo ". It is in Help structure with Id ";
 				echo $alls[0]["req_page_ref_id"];
@@ -42,7 +42,7 @@ foreach ($pages as $p) {
 				echo ": erased and";
 			}
 		}
-		$afterid = $structlib->s_create_page($structId, $afterid, $p);
+		$afterid = $structlib->s_create_page($structId,$afterid,$p);
 		echo " created with id : $afterid";
 		echo "\n";
 	}

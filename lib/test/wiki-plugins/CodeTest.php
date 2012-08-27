@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -20,8 +20,8 @@ class WikiPlugin_CodeTest extends PHPUnit_Framework_TestCase
 	public function provider()
 	{
 		return array(
-			array('', '<pre class="codelisting"  data-wrap="1"  dir="ltr"  style="white-space:pre-wrap; white-space:-moz-pre-wrap !important; white-space:-pre-wrap; white-space:-o-pre-wrap; word-wrap:break-word;" id="codebox1" >~np~~/np~</pre>'),
-			array('<script>alert(document.cookie);</script>', '<pre class="codelisting"  data-wrap="1"  dir="ltr"  style="white-space:pre-wrap; white-space:-moz-pre-wrap !important; white-space:-pre-wrap; white-space:-o-pre-wrap; word-wrap:break-word;" id="codebox2" >~np~&lt;script>alert(document.cookie);&lt;/script>~/np~</pre>', array('ishtml' => 1)),
+			array('', '<pre class="codelisting"  data-wrap="y"  dir="ltr"  id="codebox1" >~np~~/np~</pre>'),
+			array('<script>alert(document.cookie);</script>', '<pre class="codelisting"  data-wrap="y"  dir="ltr"  id="codebox2" >~np~<script>alert(document.cookie);</script>~/np~</pre>', array('ishtml' => 1)),
 		);
 	}
 }

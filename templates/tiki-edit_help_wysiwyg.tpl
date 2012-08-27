@@ -31,7 +31,7 @@
 <div style="background-color: #fff; padding: 1em;">
 <div class="tiki_plugin" plugin="box" style="position:relative; background-color: #eee; border: 1px solid #666;">
 	<div contenteditable="false">
-		<img src="img/icons/wiki_plugin_edit.png" width="16" height="16" style="float:left;position:absolute;z-index:10001"/>
+		<img src="pics/icons/wiki_plugin_edit.png" width="16" height="16" style="float:left;position:absolute;z-index:10001"/>
 		<table align="center" width="80%">
 			<tr><td>
 				<div class='cbox ' style=' background:#fffff0'><div class='cbox-data' style=" background:#fffff0">
@@ -45,7 +45,7 @@
 <p style="margin-left: 2em;">
 	{icon _id="error"} {tr}<strong>Caution:</strong> This is a new feature and still work in progress.<br />
 	If you intend to use plugins extensively in a page consider editing that page in wiki mode only.<br />
-	Currently (still in Tiki 9.0) drag and drop of plugins in WYSIWYG does not work.{/tr}</p>
+	Currently (in Tiki 6.0) drag and drop of plugins in WYSIWYG does not work.{/tr}</p>
 
 	{if $tiki_p_admin eq "y"}
 		<hr style="border-width: 1px;" />

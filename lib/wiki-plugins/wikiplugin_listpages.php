@@ -1,18 +1,17 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_listpages_info()
-{
+function wikiplugin_listpages_info() {
 	return array(
 		'name' => tra('List Pages'),
 		'documentation' => 'PluginListpages',
 		'description' => tra('List pages based on various criteria'),
 		'prefs' => array('wikiplugin_listpages'),
-		'icon' => 'img/icons/page_find.png',
+		'icon' => 'pics/icons/page_find.png',
 		'params' => array(
 			'offset' => array(
 				'required' => false,
@@ -144,7 +143,7 @@ function wikiplugin_listpages_info()
 				'required' => false,
 				'name' => tra('Sort'),
 				'description' => tra('Sort ascending or descending on any field in the tiki_pages table. Syntax is field name followed by _asc or _desc. Example: ')
-									. 'lastModif_desc ' . tra('or') . ' pageName_asc',
+									. 'lastModif_desc' . tra('or') . 'pageName_asc',
 				'default' => 'pageName_asc',
 			),
 			'start' => array(
@@ -175,8 +174,7 @@ function wikiplugin_listpages_info()
 	);
 }
 
-function wikiplugin_listpages($data, $params)
-{
+function wikiplugin_listpages($data, $params) {
 	global $prefs, $tiki_p_view, $tikilib, $smarty;
 
 	if ( isset($prefs) ) {
@@ -194,7 +192,7 @@ function wikiplugin_listpages($data, $params)
 	}
 	$default = array('offset'=>0, 'max'=>-1, 'sort'=>'pageName_asc', 'find'=>'', 'start'=>'', 'end'=>'', 'length'=>-1, 'translations'=>null, 'translationOrphan'=>null, 'showCheckbox' => 'y');
 	$params = array_merge($default, $params);
-	extract($params, EXTR_SKIP);
+	extract($params,EXTR_SKIP);
 	$filter = array();
 	if (!isset($initial)) {
 		if (isset($_REQUEST['initial'])) {
@@ -225,7 +223,7 @@ function wikiplugin_listpages($data, $params)
 		if ($translations == 'user') {
 			$translations = $multilinguallib->preferredLangs();
 		} else {
-			$translations = explode('|', $translations);
+			$translations = explode( '|', $translations );
 		}
 	}
 	if (!empty($translationOrphan)) {
@@ -246,20 +244,20 @@ function wikiplugin_listpages($data, $params)
 	$only_cant = false;
 	$listpages = $tikilib->list_pages($offset, $max, $sort, $find, $initial, $exact_match, $only_name, $for_list_pages, $only_orphan_pages, $filter, $only_cant);
 
-	if ( is_array($translations) ) {
+	if ( is_array( $translations ) ) {
 		$used = array();
-		foreach ( $listpages['data'] as &$page ) {
+		foreach( $listpages['data'] as &$page ) {
 			$pages = $multilinguallib->getTranslations('wiki page', $page['page_id']);
 
 			$page['translations'] = array();
-			foreach ( $pages as $trad )
+			foreach( $pages as $trad )
 				if ( $trad['lang'] != $lang && in_array($trad['lang'], $translations) ) {
 					$page['translations'][ $trad['lang'] ] = $trad['objName'];
 					$used[$trad['lang']] = $trad['langName'];
 				}
 		}
 
-		$smarty->assign('wplp_used', $used);
+		$smarty->assign( 'wplp_used', $used );
 	}
 
 	$smarty->assign_by_ref('listpages', $listpages['data']);

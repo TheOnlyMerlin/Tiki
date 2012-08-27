@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -50,10 +50,10 @@ header('Cache-Control: no-cache');
 header('Content-type: image/gif');
 header('Content-length: 85');
 print base64_decode(
-				'R0lGODlhAQABALMAAAAAAIAAAACAA'.
-				'ICAAAAAgIAAgACAgMDAwICAgP8AAA'.
-				'D/AP//AAAA//8A/wD//wBiZCH5BAE'.
-				'AAA8ALAAAAAABAAEAAAQC8EUAOw=='
+	'R0lGODlhAQABALMAAAAAAIAAAACAA'.
+	'ICAAAAAgIAAgACAgMDAwICAgP8AAA'.
+	'D/AP//AAAA//8A/wD//wBiZCH5BAE'.
+	'AAA8ALAAAAAABAAEAAAQC8EUAOw=='
 );
 flush();
 exit;

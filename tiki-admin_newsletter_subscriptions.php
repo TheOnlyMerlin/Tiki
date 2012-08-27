@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -75,13 +75,13 @@ if (isset($_REQUEST["add"]) && isset($_REQUEST["email"]) && $_REQUEST["email"] !
 		$emails = explode(',', $_REQUEST["email"]);
 		foreach ($emails as $e) {
 			if ($userlib->user_exists(trim($e))) {
-				$nllib->newsletter_subscribe($_REQUEST["nlId"], trim($e), "y", $confirmEmail, $addEmail);
+				$nllib->newsletter_subscribe($_REQUEST["nlId"], trim($e) , "y", $confirmEmail, $addEmail);
 			} else {
-				$nllib->newsletter_subscribe($_REQUEST["nlId"], trim($e), "n", $confirmEmail, "");
+				$nllib->newsletter_subscribe($_REQUEST["nlId"], trim($e) , "n", $confirmEmail, "");
 			}
 		}
 	} else {
-		$nllib->newsletter_subscribe($_REQUEST["nlId"], trim($_REQUEST["email"]), "n", $confirmEmail, "");
+		$nllib->newsletter_subscribe($_REQUEST["nlId"], trim($_REQUEST["email"]) , "n", $confirmEmail, "");
 	}
 }
 

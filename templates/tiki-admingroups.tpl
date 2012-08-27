@@ -31,10 +31,9 @@
 		{initials_filter_links}
 	{/if}
 
-	<form name="checkform" method="post" action="{$smarty.server.PHP_SELF}">
 	<table class="normal">
 		<tr>
-			<th style="width: 20px;">{select_all checkbox_names='checked[]'}</th>
+			<th style="width: 20px;">&nbsp;</th>
 			<th>{tr}ID{/tr}</th>
 			<th>
 				<a href="tiki-admingroups.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'groupName_desc'}groupName_asc{else}groupName_desc{/if}">{tr}Name{/tr}</a>
@@ -51,10 +50,8 @@
 		{cycle values="even,odd" print=false}
 		{section name=user loop=$users}
 			<tr class="{cycle}">
-				<td class="checkbox">
-					{if $users[user].groupName ne 'Admins' and $users[user].groupName ne 'Anonymous' and $users[user].groupName ne 'Registered'}
-						<input type="checkbox" name="checked[]" value="{$users[user].groupName|escape}" />
-					{/if}
+				<td class="icon">
+					<a class="link" href="tiki-admingroups.php?group={$users[user].groupName|escape:"url"}&amp;cookietab=2{if $prefs.feature_tabs ne 'y'}#tab2{/if}" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
 				</td>
 				<td class="id">{$users[user].id|escape}</td>
 				<td class="text">
@@ -77,7 +74,6 @@
 					<a class="link" href="tiki-objectpermissions.php?group={$users[user].groupName|escape:"url"}" title="{tr}Permissions{/tr}">{icon _id='key' alt="{tr}Permissions{/tr}"} {$users[user].permcant}</a>
 				</td>
 				<td class="action">
-					<a class="link" href="tiki-admingroups.php?group={$users[user].groupName|escape:"url"}&amp;cookietab=2{if $prefs.feature_tabs ne 'y'}#tab2{/if}" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
 					{if $users[user].groupName ne 'Anonymous' and $users[user].groupName ne 'Registered' and $users[user].groupName ne 'Admins'}
 						<a class="link" href="tiki-admingroups.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;action=delete&amp;group={$users[user].groupName|escape:"url"}" title="{tr}Delete{/tr}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 					{/if}
@@ -85,16 +81,7 @@
 			</tr>
 		{/section}
 	</table>
-	<p align="left"> {*on the left to have it close to the checkboxes*}
-		<label>{tr}Perform action with checked:{/tr}
-			<select name="submit_mult">
-				<option value="" selected="selected">-</option>
-				<option value="remove_groups" >{tr}Remove{/tr}</option>
-			</select>
-		</label>
-		<input type="submit" value="{tr}OK{/tr}" />
-	</p>
-	</form>
+
 	{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
 {/tab}
 
@@ -244,7 +231,7 @@
 						{if $grouptrackerid}
 							{button href="tiki-admin_tracker_fields.php?trackerId=$grouptrackerid" _text="{tr}Admin{/tr} $ggr"}
 						{else}
-							{button href="tiki-list_trackers.php" _text="{tr}Admin{/tr} $ggr"}
+							{button href="tiki-admin_trackers.php" _text="{tr}Admin{/tr} $ggr"}
 						{/if}
 					</td>
 				</tr>
@@ -273,7 +260,7 @@
 						{if $userstrackerid}
 							{button href="tiki-admin_tracker_fields.php?trackerId=$userstrackerid" _text="{tr}Admin{/tr} $ugr"}
 						{else}
-							{button href="tiki-list_trackers.php" _text="{tr}Admin{/tr} $ugr"}
+							{button href="tiki-admin_trackers.php" _text="{tr}Admin{/tr} $ugr"}
 						{/if}
 					</td>
 				</tr>
@@ -358,11 +345,8 @@
 	{tab name="{tr}Members{/tr}"}
 	{* ----------------------- tab with memberlist --------------------------------------- *}
 		<h2>{tr}Members List:{/tr} {$groupname|escape}</h2>
-		<form name="checkform" method="post" action="{$smarty.server.PHP_SELF}">
-		<input type="hidden" name="group" value="{$group|escape}" />
 		<table class="normal">
 			<tr>
-				<th class="auto">{if $memberslist}{select_all checkbox_names='members[]'}{/if}</th>
 				<th>{self_link _sort_arg='sort_mode_member' _sort_field='login'}{tr}User{/tr}{/self_link}</th>
 				<th>{self_link _sort_arg='sort_mode_member' _sort_field='created'}{tr}Assign{/tr}{/self_link}</th>
 				<th>{self_link _sort_arg='sort_mode_member' _sort_field='expire'}{tr}Expire{/tr}{/self_link}</th>
@@ -372,7 +356,6 @@
 			<tr>
 				{foreach from=$memberslist item=member}
 					<tr class="{cycle}">
-					<td class="checkbox"><input type="checkbox" name="members[]" value="{$member.userId}" /></td>
 					<td class="username">{$member.login|userlink}</td>
 					<td class="date">{$member.created|tiki_short_datetime}</td>
 					<td class="date">{if !empty($member.expire)}{$member.expire|tiki_short_datetime}{/if}</td>
@@ -383,14 +366,6 @@
 					</tr>
 				{/foreach}
 		</table>
-		<label>{tr}Perform action with checked:{/tr}
-			<select name="submit_mult_members">
-				<option value="" />
-				<option value="unassign">{tr}Unassign{/tr}</option>
-			</select>
-		</label>
-		<input type="submit" name="unassign_members" value="{tr}OK{/tr}" />
-		</form>
 		{pagination_links cant=$membersCount step=$prefs.maxRecords offset=$membersOffset offset_arg='membersOffset'}{/pagination_links}
 
 		<div class="box">{$membersCount} {tr}users in group{/tr} {$groupname|escape}</div>

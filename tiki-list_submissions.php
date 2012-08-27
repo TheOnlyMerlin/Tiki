@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,8 +9,6 @@ $section = 'cms';
 require_once ('tiki-setup.php');
 include_once ('lib/articles/artlib.php');
 $access->check_feature('feature_submissions');
-$access->check_permission('tiki_p_submit_article');
-//get_strings tra('View submissions')
 
 $auto_query_args = array(
 	'subId',
@@ -46,7 +44,7 @@ if (isset($_REQUEST['submit_mult']) && count($_REQUEST["checked"]) > 0) {
 		}
 	}
 }
-// This script can receive the threshold
+// This script can receive the thresold
 // for the information as the number of
 // days to get in the log 1,3,4,etc
 // it will default to 1 recovering information for today

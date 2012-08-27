@@ -1,7 +1,6 @@
 /* $Id$ */
 
-a.admbox,
-a.admbox:visited {
+a.admbox {
 	height: 92px;
 	width: 92px;
 	text-align: center;
@@ -55,7 +54,8 @@ a.admbox.off img {
 	position: absolute;
 	top: 0;
 	left: 0;
-	background-image: url('../img/overlay-disabled_item.png');
+	background-image: url('../pics/overlay-disabled_item.png');
+	opacity: .5;
 }
 /* Look & feel thumbnail */
 
@@ -88,11 +88,6 @@ a.admbox.off img {
 
 .adminoptionbox label.above {
 	display: block;
-}
-
-.adminoptionbox > label {
-	min-width: 12em;
-	display: inline-block;
 }
 
 .adminoptionbox .checkbox, .adminoption {
@@ -359,7 +354,7 @@ a.admbox.off img {
 	display: none;
 }
 
-.ui-droppable.modules {
+.modules {
 	min-height: 1em;
 }
 
@@ -456,18 +451,20 @@ a.admbox.off img {
 
 /* profiles */
 
-.profile_export_list {
+#prefs_to_export_list {
 	height: 30em;
 	overflow: auto;
 	list-style: none;
 	padding: 0;
 }
 
-.profile_export_list li {
+#prefs_to_export_list li {
 	padding: 0.4em 2em;
 }
 #export_to_yaml label {
 	margin-left: 1em;
 }
 
+
 /* end profiles */
+

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -27,14 +27,8 @@ class Search_GlobalSource_CommentSource implements Search_GlobalSource_Interface
 
 	function getData($objectType, $objectId, Search_Type_Factory_Interface $typeFactory, array $data = array())
 	{
-		if ($objectType == 'forum post') { 
-			$forumId = $this->commentslib->get_comment_forum_id($objectId);
-			$comment_count = $this->commentslib->count_comments_threads("forum:$forumId", $objectId);
-		} else {
-			$comment_count = $this->commentslib->count_comments("$objectType:$objectId");
-		}
 		return array(
-			'comment_count' => $typeFactory->sortable($comment_count),
+			'comment_count' => $typeFactory->sortable($this->commentslib->count_comments("$objectType:$objectId")),
 		);
 	}
 }

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,7 +13,7 @@ function wikiplugin_versions_info()
 		'description' => tra('Create tabs for showing alternate versions of content'),
 		'prefs' => array( 'wikiplugin_versions' ),
 		'body' => tra('Block of text separated by ---(version x)--- markers. Text before the first marker is used by default.'),
-		'icon' => 'img/icons/tab_edit.png',
+		'icon' => 'pics/icons/tab_edit.png',
 		'tags' => array( 'basic' ),	
 		'params' => array(
 			'nav' => array(
@@ -55,19 +55,13 @@ function wikiplugin_versions($data, $params)
 {
 	global $use_best_language, $prefs;
 	if (isset($params) and is_array($params)) {
-		extract($params, EXTR_SKIP);
+		extract ($params, EXTR_SKIP);
 	}
 	$data = $data;
 	$navbar = '';
-	if (!isset($default)) {
-		$default = tra('Default');
-	}
-	if (!isset($title)) {
-		$title = 'y';
-	}
-	if (!isset($nav)) {
-		$nav = 'n';
-	}
+	if (!isset($default)) { $default = tra('Default'); }
+	if (!isset($title)) { $title = 'y'; }
+	if (!isset($nav)) { $nav = 'n'; }
 	
 	preg_match_all('/---\(([^\):]*)( : [^\)]*)?\)---*/', $data, $v);
 
@@ -80,7 +74,7 @@ function wikiplugin_versions($data, $params)
 	} else {
 		if (isset($_REQUEST['tikiversion'])) {
 			$vers = $_REQUEST['tikiversion'];
-		} elseif ($use_best_language == 'y' and in_array($prefs['language'], $v[1])) {
+		} elseif ($use_best_language == 'y' and in_array($prefs['language'], $v[1]))  {
 			$vers = $prefs['language'];
 		} else {
 			$vers = $default;
@@ -93,31 +87,29 @@ function wikiplugin_versions($data, $params)
 	} else {
 		$p = 0;
 	}
-	if (!isset($_REQUEST['preview'])) {
-		if ($p == 0) {
-			if (strpos($data, '---(') !== false) {
-				$data = substr($data, 0, strpos($data, '---('));
-			}
-			if ($nav == 'n' and $title == 'y') {
-				$data = "<b class='versiontitle'>". $default .'</b>'.$data;
-			}
-			$data = "\n" . ltrim(substr($data, strpos("\n", $data)));
-		} elseif (isset($v[1][$p-1]) and strpos($data, '---('.$v[1][$p-1])) {
-			if ($nav == 'n' and $title == 'y') {
-				$data = substr($data, strpos($data, '---('.$v[1][$p-1]));
-				$data = preg_replace('/\)---*[\r\n]*/', "</b>\n", "<b class='versiontitle'>". substr($data, 4));
-			} else {
-				// can't get it to work as a single preg_match_all, so...
-				preg_match_all("/(^|---\([^\(]*\)---*\s)/", $data, $t, PREG_OFFSET_CAPTURE);
-				$start = $t[0][$p][1] + strlen($t[0][$p][0]);
-				$end   = $p + 1 < count($t[0]) ? $t[0][$p+1][1] : strlen($data);
-				$data = substr($data, $start, $end);
-			}
-			if (strpos($data, '---(') !== false) {
-				$data = substr($data, 0, strpos($data, '---('));
-			}
+if (!isset($_REQUEST['preview'])){
+	if ($p == 0) {
+		if (strpos($data, '---(') !== false) {
+			$data = substr($data, 0, strpos($data, '---('));
 		}
-	}	
+		if ($nav == 'n' and $title == 'y') { $data = "<b class='versiontitle'>". $default .'</b>'.$data; }
+		$data = "\n" . ltrim(substr($data, strpos("\n", $data)));
+	} elseif (isset($v[1][$p-1]) and strpos($data, '---('.$v[1][$p-1])) {
+		if ($nav == 'n' and $title == 'y') {
+			$data = substr($data, strpos($data, '---('.$v[1][$p-1]));
+			$data = preg_replace('/\)---*[\r\n]*/', "</b>\n", "<b class='versiontitle'>". substr($data, 4));
+		} else {
+			// can't get it to work as a single preg_match_all, so...
+			preg_match_all("/(^|---\([^\(]*\)---*\s)/", $data, $t, PREG_OFFSET_CAPTURE);
+			$start = $t[0][$p][1] + strlen($t[0][$p][0]);
+			$end   = $p + 1 < count($t[0]) ? $t[0][$p+1][1] : strlen($data);
+			$data = substr($data, $start, $end);
+		}
+		if (strpos($data, '---(') !== false) {
+			$data = substr($data, 0, strpos($data, '---('));
+		}
+	}
+}	
 	if ($nav == 'y') {
 		$highed = false;
 		for ($i=0, $icount_v = count($v[1]); $i < $icount_v; $i++) {
@@ -152,11 +144,7 @@ function wikiplugin_versions($data, $params)
 			}
 		}
 		
-		if (!$highed) {
-			$high = " highlight";
-		} else {
-			$high = '';
-		}
+		if (!$highed) { $high = " highlight"; } else { $high = ''; }
 		if ($type == 'host') {
 			$navbar = '<span class="button' . $high . '"><a href="http://'
 								. preg_replace("/".$v[1][$p]."/", "", $_SERVER['SERVER_NAME']) 

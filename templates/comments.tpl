@@ -64,8 +64,8 @@
 					{capture name=comments_cant_title}{if $comments_cant == 1}{tr _0=$comments_cant}%0 comment{/tr}{else}{tr _0=$comments_cant}%0 comments{/tr}{/if}{/capture}
 					<h3>{$smarty.capture.comments_cant_title}</h3>
 				{/if}
-				{if $comments_cant > $prefs.forum_thread_user_settings_threshold}
-					<div class="forum_actions">
+				<div class="forum_actions">
+					{if $comments_cant > $prefs.forum_thread_user_settings_threshold}
 						<div class="actions">
 							<span class="action">
 								<label for="comments-maxcomm">{tr}Messages:{/tr}</label>
@@ -114,8 +114,8 @@
 								<input type="submit" name="comments_setOptions" value="{tr}Set{/tr}" />
 							</span>
 						</div>
-					</div>
-				{/if}
+					{/if}
+				</div>
 			{/if}
 
 			{section name=rep loop=$comments_coms}
@@ -249,7 +249,15 @@
 							<label for="editpost2">{tr}Reply{/tr}</label>
 						</td>
 						<td>
-							{textarea codemirror='true' syntax='tiki' id="editpost2" name="comments_data" comments="y"}{if ($prefs.feature_forum_replyempty ne 'y') || $edit_reply > 0 || $comment_preview eq 'y' || !empty($errors)}{$comment_data}{/if}{/textarea}
+							{if $prefs.feature_syntax_highlighter eq 'y'}
+								{assign var=codemirror value="true"}
+								{assign var=syntax value="tiki"}
+							{else}
+								{assign var=codemirror value=""}
+								{assign var=syntax value=""}
+							{/if}
+							
+							{textarea id="editpost2" name="comments_data" comments="y" codemirror=$codemirror syntax=$syntax}{if ($prefs.feature_forum_replyempty ne 'y') || $edit_reply > 0 || $comment_preview eq 'y' || !empty($errors)}{$comment_data}{/if}{/textarea}
 
 							{if $user and $prefs.feature_user_watches eq 'y'}
 								<div id="watch_thread_on_reply">

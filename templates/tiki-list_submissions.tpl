@@ -1,7 +1,7 @@
 {title admpage="articles" help="Articles"}{tr}Submissions{/tr}{/title}
 
 <div class="navbar">
-	{button href="tiki-edit_submission.php" _text="{tr}New Submission{/tr}"}
+	{button href="tiki-edit_submission.php" _text="{tr}Edit New Submission{/tr}"}
 	{if $tiki_p_read_article eq 'y'}
 		{button href="tiki-list_articles.php" _text="{tr}List Articles{/tr}"}
 	{/if}
@@ -35,7 +35,7 @@
 			{if $prefs.art_list_date eq 'y'}
 				{assign var=numbercol value=$numbercol+1}
 				<th>
-					<a href="tiki-list_submissions.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'publishDate_desc'}publishDate_asc{else}publishDate_desc{/if}">{tr}Publish Date{/tr}</a>
+					<a href="tiki-list_submissions.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'publishDate_desc'}publishDate_asc{else}publishDate_desc{/if}">{tr}PublishDate{/tr}</a>
 				</th>
 			{/if}
 			{if $prefs.art_list_size eq 'y'}
@@ -46,7 +46,7 @@
 			{/if}
 			{if $prefs.art_list_img eq 'y'}
 				{assign var=numbercol value=$numbercol+1}
-				<th>{tr}Image{/tr}</th>
+				<th>{tr}Img{/tr}</th>
 			{/if}
 			{if $prefs.art_list_author eq 'y'}
 				{assign var=numbercol value=$numbercol+1}
@@ -61,7 +61,7 @@
 				</th>
 			{/if}
 			{assign var=numbercol value=$numbercol+1}
-			<th>{tr}Actions{/tr}</th>
+			<th>{tr}Action{/tr}</th>
 		</tr>
 		{cycle values="odd,even" print=false}
 		{section name=changes loop=$listpages}
@@ -125,7 +125,7 @@
 									{if $tiki_p_approve_submission eq 'y'}<option value="approve_subs" >{tr}Approve{/tr}</option>{/if}
 								</select>
 							</label>
-							<input type="submit" value="{tr}Ok{/tr}" />
+							<input type="submit" value="{tr}OK{/tr}" />
 						</p>
 					{/if}
 				</td>

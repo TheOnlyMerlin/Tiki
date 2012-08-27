@@ -1,13 +1,13 @@
-<form target="_blank" method="post" action="{service controller=bigbluebutton action=join}">
-	<div style="overflow: hidden; width: 78px; float: left;">
-		<input type="hidden" name="params" value="{$bbb_params|escape}"/>
+<form target="_blank" method="post" action="">
+	<div style="overflow: hidden; width: 90px; float: left;">
+		<input type="hidden" name="bbb" value="{$bbb_meeting|escape}"/>
 		<input type="image" name="join" src="{$bbb_image|escape}" title="{tr}Join{/tr}"/>
 	</div>
 
-	{tr}Meeting ID:{/tr} {$bbb_meeting|escape}
+	<h2>{$bbb_meeting|escape}</h2>
 	
 	{permission type=bigbluebutton object=$bbb_meeting name=tiki_p_assign_perm_bigbluebutton}
-		{button href="tiki-objectpermissions.php?objectId=`$bbb_meeting|escape:'url'`&amp;objectName=`$bbb_meeting|escape:'url'`&amp;objectType=bigbluebutton&amp;permType=bigbluebutton" _text="{tr}Permissions{/tr}"}
+		{button href="tiki-objectpermissions.php?objectId=`$bbb_meeting|escape:'url'`&amp;objectName=`$bbb_meeting|escape:'url'`&amp;objectType=bigbluebutton&amp;permType=bigbluebutton"	_text="{tr}Permissions{/tr}"}
 	{/permission}
 
 	{if ! $user}
@@ -18,7 +18,7 @@
 		</div>
 	{else}
 		<div>
-			<input type="submit" class="button" value="{tr}Join{/tr}"/>
+			<input type="submit" value="{tr}Join{/tr}"/>
 		</div>
 	{/if}
 
@@ -37,6 +37,20 @@
 		<p>{tr}No attendees at this time.{/tr}</p>
 	{/if}
 
-	{include file="wiki-plugins/wikiplugin_bigbluebutton_view_recordings.tpl"}
+	{if $bbb_recordings}
+		<p>{tr}Current recordings:{/tr}</p>
+		<ol>
+			{foreach from=$bbb_recordings item=recording}
+				<li>
+					{tr _0=$recording.startTime|tiki_long_date _1=$recording.startTime|tiki_short_time _2=$recording.endTime|tiki_short_time}On %0 from %1 to %2{/tr}
+					<ul>
+						{foreach from=$recording.playback key=type item=url}
+							<a href="{$url|escape}">{$type|escape}</a>
+						{/foreach}
+					</ul>
+				</li>
+			{/foreach}
+		</ol>
+	{/if}
 
 </form>

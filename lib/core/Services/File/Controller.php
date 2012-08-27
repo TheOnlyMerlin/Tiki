@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,8 +7,6 @@
 
 class Services_File_Controller
 {
-	var $defaultGalleryId = 1;
-
 	function setUp()
 	{
 		global $prefs;
@@ -26,18 +24,15 @@ class Services_File_Controller
 		$name = $input->name->text();
 		$type = $input->type->text();
 		$data = $input->data->none();
-		$fileId = $input->fileId->int();
 
 		$data = base64_decode($data);
 
-		$mimelib = TikiLib::lib('mime');
-		$type = $mimelib->from_content($name, $data);
-
-		if ($fileId) {
-			$this->updateFile($gal_info, $name, $size, $type, $data, $fileId);
-		} else {
-			$fileId = $this->uploadFile($gal_info, $name, $size, $type, $data);
+		if (function_exists('finfo_buffer')) {
+			$finfo = new finfo(FILEINFO_MIME);
+			$type = $finfo->buffer($data);
 		}
+
+		$fileId = $this->uploadFile($gal_info, $name, $size, $type, $data);
 
 		if ($fileId === false) {
 			throw new Services_Exception(tr('File could not be uploaded. Restrictions apply.'), 406);
@@ -48,7 +43,7 @@ class Services_File_Controller
 			'name' => $name,
 			'type' => $type,
 			'fileId' => $fileId,
-			'galleryId' => $gal_info['galleryId'],
+			'galleryId' => $galleryId,
 			'md5sum' => md5($data),
 		);
 	}
@@ -81,17 +76,13 @@ class Services_File_Controller
 			throw new Services_Exception(tr('Data could not be obtained.'), 412);
 		}
 
-		if ($input->reference->int()) {
-			$info['data'] = 'REFERENCE';
-		}
-
 		$fileId = $this->uploadFile($gal_info, $info['name'], $info['size'], $info['type'], $info['data']);
 
 		if ($fileId === false) {
 			throw new Services_Exception(tr('File could not be uploaded. Restrictions apply.'), 406);
 		}
 
-		$filegallib->attach_file_source($fileId, $url, $info, $input->reference->int());
+		$filegallib->attach_file_source($fileId, $url, $info);
 
 		return array(
 			'size' => $info['size'],
@@ -122,32 +113,9 @@ class Services_File_Controller
 		);
 	}
 
-	/**
-	 * @param $input	string "name" for the filename to find
-	 * @return array	file info for most recent file by that name
-	 */
-	function action_find($input) {
-
-		$filegallib = TikiLib::lib('filegal');
-		$gal_info = $this->checkTargetGallery($input);
-
-		$name = $input->name->text();
-
-		$pos = strpos($name, '?');		// strip off get params
-		if ($pos !== false) {
-			$name = substr($name, 0, $pos);
-		}
-
-		$info = $filegallib->get_file_by_name($gal_info['galleryId'], $name);
-
-		return $info;
-	}
-
 	private function checkTargetGallery($input)
 	{
 		$galleryId = $input->galleryId->int();
-
-		if (empty($galleryId)) $galleryId = $this->defaultGalleryId;
 
 		if (! $gal_info = $this->getGallery($galleryId)) {
 			throw new Services_Exception(tr('Requested gallery does not exist.'), 404);
@@ -171,12 +139,6 @@ class Services_File_Controller
 	{
 		$filegallib = TikiLib::lib('filegal');
 		return $filegallib->upload_single_file($gal_info, $name, $size, $type, $data);
-	}
-
-	private function updateFile($gal_info, $name, $size, $type, $data, $fileId)
-	{
-		$filegallib = TikiLib::lib('filegal');
-		return $filegallib->update_single_file($gal_info, $name, $size, $type, $data, $fileId);
 	}
 }
 

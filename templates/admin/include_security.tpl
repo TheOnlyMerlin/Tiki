@@ -36,8 +36,7 @@
 			{preference name=newsletter_external_client}
 
 			{preference name=tiki_check_file_content}
-			{preference name=tiki_allow_trust_input}
-			{preference name=feature_quick_object_perms}
+			{preference name=feature_quick_object_perms}			
 		<fieldset>
 			<legend>{tr}CSRF Security{/tr}{help url="Security"}</legend>
 			<div class="adminoptionbox">
@@ -46,12 +45,6 @@
 			{preference name=feature_ticketlib}
 			{preference name=feature_ticketlib2}
 		</fieldset>
-		{/tab}
-
-		{tab name="{tr}IDS{/tr}"}
-			{preference name=ids_enabled}
-			{preference name=ids_single_threshold}
-			{preference name=ids_session_threshold}
 		{/tab}
 	
 		{tab name="{tr}Spam protection{/tr}"}
@@ -100,9 +93,6 @@
 		{/tab}
 
 		{tab name="{tr}Tokens{/tr}"}
-				{remarksbox type="tip" title="{tr}Tip{/tr}"}
-					{tr}To manage tokens go to <a href="tiki-admin_tokens.php">Admin Tokens</a> page{/tr}
-				{/remarksbox}
 				{preference name=auth_token_access}
 				{preference name=auth_token_access_maxtimeout}
 				{preference name=auth_token_access_maxhits}

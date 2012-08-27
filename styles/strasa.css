@@ -20,8 +20,7 @@ html {
 }
 
 body {
-	font: 12px Verdana, Geneva, Arial, Helvetica, sans-serif;
-	line-height: 1.4;
+	font: 12px/1.4em Verdana, Geneva, Arial, Helvetica, sans-serif;
 	background-color: #fff;
 }
 
@@ -253,6 +252,7 @@ select[name="theme"],
 select[name="theme-option"] {
 	width: 140px;
 }
+
 
 /* Needed for Opera (11) */
 input[type="reset"],
@@ -776,7 +776,7 @@ a.flip:hover {
 	padding-right: 2em;
 }
 
-.header .cssmenu_horiz a:hover {
+/header .cssmenu_horiz a:hover {
 	text-decoration: none;
 	background: url(strasa/headermenuitem-hover.png) bottom center repeat-x;
 	border-color: #336699;
@@ -2174,9 +2174,5 @@ body.fixed_width #main {
 	border: 1px solid #2E3035;
 	margin-top: 0;
 }*/
-
-.fixed_width > .fixedwidth {
-    margin-top: 0px;
-}
 
 /* end of file */

@@ -69,14 +69,8 @@ $('#fgal_template').change( function() {
 							</td>
 							<td>
 								{if $galleryId eq $treeRootId}
-									{if $gal_info.type eq 'system'}
-										{tr}System{/tr}
-									{elseif $gal_info.type eq 'user'}
-										{tr}User{/tr}
-									{else}
-										{tr _0=$gal_info.type}Other (%0){/tr}
-									{/if}
-									<input type="hidden" name="fgal_type" value="{$gal_info.type}" />
+									{tr}System{/tr}
+									<input type="hidden" name="fgal_type" value="system" />
 								{else}
 									<select name="fgal_type" id="fgal_type">
 										<option value="default" {if $gal_info.type eq 'default'}selected="selected"{/if}>{tr}Any file{/tr}</option>
@@ -250,18 +244,18 @@ $('#fgal_template').change( function() {
 					<table class="formcolor">
 						<tr>
 							<td><label for="sortorder">{tr}Default sort order:{/tr}</label></td>
-							<td colspan="3">
+							<td>
 								<select name="sortorder" id="sortorder">
 									{foreach from=$options_sortorder key=key item=item}
 										<option value="{$item|escape}" {if $sortorder == $item} selected="selected"{/if}>{$key}</option>
 									{/foreach}
 								</select>
 								<br />
-								<input type="radio" id="sortdirection2" name="sortdirection" value="asc" {if $sortdirection == 'asc'}checked="checked"{/if} />
-								<label for="sortdirection2">{tr}Ascending{/tr}</label>
-								<br />
 								<input type="radio" id="sortdirection1" name="sortdirection" value="desc" {if $sortdirection == 'desc'}checked="checked"{/if} />
 								<label for="sortdirection1">{tr}Descending{/tr}</label>
+								<br />
+								<input type="radio" id="sortdirection2" name="sortdirection" value="asc" {if $sortdirection == 'asc'}checked="checked"{/if} />
+								<label for="sortdirection2">{tr}Ascending{/tr}</label>
 							</td>
 						</tr>
 						<tr>
@@ -279,7 +273,7 @@ $('#fgal_template').change( function() {
 							</td>
 						</tr>
 						<tr>
-							<td colspan="4">{tr}Select which items to display when listing galleries:{/tr}
+							<td colspan="2">{tr}Select which items to display when listing galleries:{/tr}
 								<table>
 									{include file='fgal_listing_conf.tpl'}
 								</table>

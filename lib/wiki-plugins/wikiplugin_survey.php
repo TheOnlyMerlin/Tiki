@@ -1,19 +1,18 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_survey_info()
-{
+function wikiplugin_survey_info() {
 	return array(
 		'name' => tra('Survey'),
 		'documentation' => 'PluginSurvey',
 		'description' => tra('Display a survey'),
 		'prefs' => array( 'feature_surveys', 'wikiplugin_survey' ),
 		'body' => '',
-		'icon' => 'img/icons/green_question.png',
+		'icon' => 'pics/icons/green_question.png',
 		'params' => array(
 			'id' => array(
 				'required' => true,
@@ -39,8 +38,7 @@ function wikiplugin_survey_info()
 	);
 }
 
-function wikiplugin_survey($data, $params)
-{
+function wikiplugin_survey($data, $params) {
 	global $tiki_p_take_survey;
 	if ( $tiki_p_take_survey != 'y' ) return '';
 
@@ -53,8 +51,8 @@ function wikiplugin_survey($data, $params)
 		if ( $tikilib->user_has_voted($user, 'survey'.$params['id']) ) {
 			include_once('lib/wiki-plugins/wikiplugin_remarksbox.php');
 			return wikiplugin_remarksbox(
-							'You cannot take this survey twice',
-							array('type' => 'comment')
+				'You cannot take this survey twice',
+				array('type' => 'comment')
 			);
 		}
 	}

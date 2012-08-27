@@ -1,13 +1,11 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_mobile_list()
-{
-	global $jquerymobile_version;
+function prefs_mobile_list() {
 
 	$mobile_themes = array(
 		'' => tra('Default'),
@@ -46,7 +44,7 @@ function prefs_mobile_list()
 		'mobile_theme_header' => array(
 			'name' => tra('Header Theme'),
 			'hint' => tra('jQuery Mobile Theme'),
-			'help' => "http://jquerymobile.com/demos/$jquerymobile_version/#docs/api/themes.html",
+			'help' => 'http://jquerymobile.com/demos/1.0a3/#docs/api/themes.html',
 			'type' => 'list',
 			'options' => $mobile_themes,
 			'dependencies' => array(
@@ -57,7 +55,7 @@ function prefs_mobile_list()
 		'mobile_theme_content' => array(
 			'name' => tra('Content Theme'),
 			'hint' => tra('jQuery Mobile Theme'),
-			'help' => "http://jquerymobile.com/demos/$jquerymobile_version/#docs/api/themes.html",
+			'help' => 'http://jquerymobile.com/demos/1.0a3/#docs/api/themes.html',
 			'type' => 'list',
 			'options' => $mobile_themes,
 			'dependencies' => array(
@@ -68,7 +66,7 @@ function prefs_mobile_list()
 		'mobile_theme_footer' => array(
 			'name' => tra('Footer Theme'),
 			'hint' => tra('jQuery Mobile Theme'),
-			'help' => "http://jquerymobile.com/demos/$jquerymobile_version/#docs/api/themes.html",
+			'help' => 'http://jquerymobile.com/demos/1.0a3/#docs/api/themes.html',
 			'type' => 'list',
 			'options' => $mobile_themes,
 			'dependencies' => array(
@@ -79,7 +77,7 @@ function prefs_mobile_list()
 		'mobile_theme_modules' => array(
 			'name' => tra('Modules Theme'),
 			'hin' => tra('jQuery Mobile Theme'),
-			'help' => "http://jquerymobile.com/demos/$jquerymobile_version/#docs/api/themes.html",
+			'help' => 'http://jquerymobile.com/demos/1.0a3/#docs/api/themes.html',
 			'type' => 'list',
 			'options' => $mobile_themes,
 			'dependencies' => array(
@@ -90,7 +88,7 @@ function prefs_mobile_list()
 		'mobile_theme_menus' => array(
 			'name' => tra('Menus Theme'),
 			'description' => tra('jQuery Mobile Theme'),
-			'help' => "http://jquerymobile.com/demos/$jquerymobile_version/#docs/api/themes.html",
+			'help' => 'http://jquerymobile.com/demos/1.0a3/#docs/api/themes.html',
 			'type' => 'list',
 			'options' => $mobile_themes,
 			'dependencies' => array(

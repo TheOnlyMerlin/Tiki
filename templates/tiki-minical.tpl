@@ -38,7 +38,7 @@
 			</table>
 		</td>
 		<td width="180">
-			{include file="modules/mod-calendar.tpl.nocache"}
+			{include file="modules/mod-calendar.tpl"}
 		</td>
 	</tr>
 </table>
