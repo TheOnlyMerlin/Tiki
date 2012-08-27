@@ -28,22 +28,12 @@ class Services_Tracker_Utilities
 		foreach ($fieldMap as $key => $value) {
 			if (preg_match('/ins_/',$key)) { //make compatible with the 'ins_' keys
 				$id = (int)str_replace('ins_', '', $key);
-				if ($field = $definition->getField($id)) {
-					$field['value'] = $value;
-					$fields[$field['fieldId']] = $field;
-				}
+				$field = $definition->getField($id);
+				$field['value'] = $value;
+				$fields[$field['fieldId']] = $field;
 			} else if ($field = $definition->getFieldFromPermName($key)) {
 				$field['value'] = $value;
 				$fields[$field['fieldId']] = $field;
-			}
-		}
-
-		// Add unspecified fields for the validation to work correctly
-		foreach ($definition->getFields() as $field) {
-			$fieldId = $field['fieldId'];
-			if (! isset($fields[$fieldId])) {
-				$field['value'] = '';
-				$fields[$fieldId] = $field;
 			}
 		}
 

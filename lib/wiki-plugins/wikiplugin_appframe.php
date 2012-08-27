@@ -24,13 +24,6 @@ function wikiplugin_appframe_info()
 				'default' => 300,
 				'filter' => 'int',
 			),
-			'max' => array(
-				'required' => false,
-				'name' => tr('Maximal height'),
-				'description' => tr('Prevent the frame from becoming any higher than the specified size.'),
-				'default' => -1,
-				'filter' => 'int',
-			),
 			'hideleft' => array(
 				'requred' => false,
 				'name' => tr('Hide left column'),
@@ -78,16 +71,6 @@ function wikiplugin_appframe_info()
 				'default' => 0,
 				'filter' => 'int',
 			),
-			'fullscreen' => array(
-				'required' => false,
-				'name' => tr('Full screen'),
-				'description' => tr('Occupy the complete page.'),
-				'default' => 'n',
-				'options' => array(
-					array('value' => 'n', 'text' => tr('No')),
-					array('value' => 'y', 'text' => tr('Yes')),
-				),
-			),
 		),
 	);
 }
@@ -95,14 +78,9 @@ function wikiplugin_appframe_info()
 function wikiplugin_appframe($data, $params)
 {
 	$minHeight = isset($params['min']) ? (int) $params['min'] : 300;
-	$maxHeight = isset($params['max']) ? (int) $params['max'] : -1;
 	$fullPage = 0;
 	if (isset($params['fullpage']) && $params['fullpage'] == 'y') {
 		$fullPage = 1;
-	}
-	$fullscreen = 0;
-	if (isset($params['fullscreen']) && $params['fullscreen'] == 'y') {
-		$fullscreen = 1;
 	}
 
 	$absolute = intval(isset($params['absolute']) ? $params['absolute'] == 'y' : false);
@@ -150,11 +128,6 @@ $(window).resize(function () {
 		var min = $minHeight;
 		if (target < min) {
 			target = min;
-		}
-
-		var max = $maxHeight;
-		if ((max != -1) && (target > max)) {
-			target = max;
 		}
 
 		appframe.height(target);
@@ -206,15 +179,6 @@ $('#appframe .anchor').each(function () {
 if ($fullPage) {
 	$('#role_main').append($('#appframe'));
 	$('#role_main').children().not($('#appframe')).remove();
-}
-
-if ($fullscreen) {
-	$('.header_outer').hide();
-	$('#topbar_modules').hide();
-	$('#footer').hide();
-	$('#error_report').hide();
-	$('.share').hide();
-	$('.tellafriend').hide();
 }
 
 $(window).resize();
@@ -320,12 +284,10 @@ function wikiplugin_appframe_module($data, $params, $start)
 		$label = $info['name'];
 	}
 
-	$data = $modlib->execute_module(
-		array(
-			'name' => $moduleName,
-			'params' => array_merge($params->none(), array('nobox' => 'y', 'notitle' => 'y')),
-		)
-	);
+	$data = $modlib->execute_module(array(
+		'name' => $moduleName,
+		'params' => array_merge($params->none(), array('nobox' => 'y', 'notitle' => 'y')),
+	));
 
 	if (! $data) {
 		return null;
@@ -393,7 +355,7 @@ function wikiplugin_appframe_template($data, $params, $start)
 
 	try {
 		$params->setDefaultFilter('text');
-		$smarty->assign('input', $params->text());
+		$smarty->assign('input', $params->toArray());
 		return $smarty->fetch($file);
 	} catch (SmartyException $e) {
 		return tr('Template file not found: ' . $file);
@@ -454,17 +416,16 @@ function wikiplugin_appframe_mapcontrol($data, $params, $start)
 	}
 
 	$smarty = TikiLib::lib('smarty');
-	$smarty->assign(
-		'mapcontrol', array(
-			'id' => 'mapcontrol-' . ++$counter,
-			'control' => $control,
-			'icon' => $icon,
-			'label' => $label,
-			'mode' => $mode,
-			'function' => $function,
-			'navigation' => $params->navigation->int(),
-			'class' => $params->class->text() ? $params->class->text() : 'icon',
-		)
-	);
+	$smarty->assign('mapcontrol', array(
+		'id' => 'mapcontrol-' . ++$counter,
+		'control' => $control,
+		'icon' => $icon,
+		'label' => $label,
+		'mode' => $mode,
+		'function' => $function,
+		'navigation' => $params->navigation->int(),
+		'class' => $params->class->text() ? $params->class->text() : 'icon',
+	));
 	return $smarty->fetch('wiki-plugins/wikiplugin_appframe_mapcontrol.tpl');
 }
+

@@ -9,14 +9,14 @@
 
 class TWVersion
 {
-	public $branch;		// Development cycle
-	public $version;		// This version
+	var $branch;		// Development cycle
+	var $version;		// This version
 	private $latestMinorRelease;		// Latest release in the same major version release series
-	public $latestRelease;		// Latest release
+	var $latestRelease;		// Latest release
 	private $isLatestMajorVersion; // Whether or not the current major version is the latest
-	public $releases;		// Array of all releases from website
-	public $star;			// Star being used for this version tree
-	public $svn;			// Is this a Subversion version or a package?
+	var $releases;		// Array of all releases from website
+	var $star;			// Star being used for this version tree
+	var $svn;			// Is this a Subversion version or a package?
 
 	function TWVersion()
 	{
@@ -24,11 +24,11 @@ class TWVersion
 		//   stable   : Represents stable releases.
 		//   unstable : Represents candidate and test/development releases.
 		//   trunk     : Represents next generation development version.
-		$this->branch 	= 'trunk';
+		$this->branch 	= 'stable';
 
 		// Set everything else, including defaults.
-		$this->version 	= '10.0pre';	// needs to have no spaces for releases
-		$this->star	= '';
+		$this->version 	= '9.1';	// needs to have no spaces for releases
+		$this->star	= 'Herbig Haro';
 		$this->releases	= array();
 
 		// Check for Subversion or not
@@ -166,10 +166,13 @@ class TWVersion
 				'8.1',
 				'8.2',
 				'8.3',
+				'8.4',
+				'8.5',
 				'9.0alpha',
 				'9.0beta',
 				'9.0beta2',
 				'9.0',
+				'9.1',
 			);
 	}
 

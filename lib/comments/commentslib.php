@@ -1322,10 +1322,6 @@ class Comments extends TikiLib
 			$this->add_comments_extras($res, $forum_info);
 		}
 
-		if (!empty($res['objectType']) && $res['objectType'] == 'forum') {
-			$res['deliberations'] = $this->get_forum_deliberations($res['threadId']);
-		}
-
 		return $res;
 	}
 
@@ -2557,8 +2553,6 @@ class Comments extends TikiLib
 		}
 		global $prefs;
 
-		$this->delete_forum_deliberations($threadId);
-
 		$comments = $this->table('tiki_comments');
 		$threadOrParent = $comments->expr('`threadId` = ? OR `parentId` = ?', array((int) $threadId, (int) $threadId));
 		$result = $comments->fetchAll($comments->all(), array('threadId' => $threadOrParent));
@@ -3021,12 +3015,6 @@ class Comments extends TikiLib
 					$errors[] = $this->uploaded_file_error($_FILES['userfile1']['error']);
 				}
 			} //END ATTACHMENT PROCESSING
-
-			//PROCESS FORUM DELIBERATIONS HERE
-			if (!empty($params['forum_deliberation_description'])) {
-				$this->add_forum_deliberations($threadId, $params['forum_deliberation_description'], $params['forum_deliberation_options'], $params['rating_override']);
-			}
-			//END FORUM DELIBERATIONS HERE
 		}
 		if (!empty($errors)) {
 			return 0;
@@ -3035,44 +3023,6 @@ class Comments extends TikiLib
 		} else {
 			return $threadId;
 		}
-	}
-
-	function add_forum_deliberations($threadId, $opinions = array(), $options = array(), $rating_override = array())
-	{
-		global $user;
-
-		foreach($opinions as $i => $opinion) {
-			$message_id = (isset($message_id) ? $message_id . $i : null);
-			$deliberation_id = $this->post_new_comment(
-				"forum_deliberation:$threadId",
-				0,
-				$user,
-				json_encode(array('opinion'=> $i,'thread'=> $threadId)),
-				$opinion,
-				$message_id
-			);
-
-			if (isset($rating_override[$i])) {
-				global $ratinglib;
-				require_once('lib/rating/ratinglib.php');
-				$ratinglib->set_override('comment', $deliberation_id, $rating_override[$i]);
-			}
-		}
-
-	}
-
-	function get_forum_deliberations($threadId)
-	{
-		$deliberations = $this->fetchAll('SELECT * from tiki_comments WHERE object = ? AND objectType = "forum_deliberation"', array($threadId));
-		return $deliberations;
-	}
-
-	function delete_forum_deliberations($threadId)
-	{
-		$this->table('tiki_comments')->deleteMultiple(array(
-			'object' => (int)$threadId,
-			'objectType' => 'forum_deliberation'
-		));
 	}
 
 	function get_all_thread_attachments($threadId, $offset=0, $maxRecords=-1, $sort_mode='created_desc')

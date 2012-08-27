@@ -326,17 +326,7 @@ $("#allowhtml").change(function() {
 												<td><label for="copyrightAuthors">{tr}Authors:{/tr}</label></td>
 												<td><input size="40" class="wikiedit" id="copyrightAuthors" name="copyrightAuthors" type="text" value="{$copyrightAuthors|escape}" /></td>
 											</tr>
-											<tr>
-												<td><label for="copyrightHolder">{tr}Copyright Holder :{/tr}</label></td>
-												<td><input size="40" class="wikiedit" id="copyrightHolder" name="copyrightHolder" type="text" value="{$copyrightHolder|escape}" /></td>
-											</tr>
 										</table>
-									</fieldset>
-								{/if}
-								{if $prefs.wikiplugin_addreference eq 'y' && $showBiblioSection}
-									<fieldset>
-										<legend>{tr}Bibliography{/tr}</legend>
-											{include file='addreference.tpl'}
 									</fieldset>
 								{/if}
 								{if $prefs.feature_freetags eq 'y' and $tiki_p_freetags_tag eq 'y'}
@@ -520,3 +510,5 @@ $("#allowhtml").change(function() {
 	</table>
 </form>
 {include file='tiki-page_bar.tpl'}
+{if $prefs.javascript_enabled eq "n"}{include file='tiki-edit_help.tpl'}{/if}
+{include file='tiki-edit_help_plugins.tpl'}

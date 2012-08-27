@@ -142,9 +142,7 @@ class WikiLib extends TikiLib
 	// See http://dev.tiki.org/Bad+characters
 	function contains_badchars($name)
 	{
-		$badchars = $this->get_badchars();
-		$badchars = preg_quote($badchars, '/');
-		return preg_match("/[$badchars]/", $name);
+		return preg_match("/[\/?#\[\]@$&+;=<>]/", $name);
 	}
 
 	/**
@@ -421,7 +419,6 @@ class WikiLib extends TikiLib
 		$parse_options = array(
 			'is_html' => $info['is_html'],
 			'language' => $info['lang'],
-			'namespace' => $info['namespace'],
 		);
 
 		if ($suppress_icons || (!empty($info['lockedby']) && $info['lockedby'] != $user)) {
@@ -1212,63 +1209,6 @@ class WikiLib extends TikiLib
 		return $ret;
 	}
 
-	function get_without_namespace($pageName)
-	{
-		global $prefs;
-
-		if ((isset($prefs['namespace_enabled']) && $prefs['namespace_enabled'] == 'y') && $prefs['namespace_separator']) {
-			$pos = strrpos($pageName, $prefs['namespace_separator']);
-
-			if (false !== $pos) {
-				return substr($pageName, $pos + strlen($prefs['namespace_separator']));
-			} else {
-				return $pageName;
-			}
-		} else {
-			return $pageName;
-		}
-	}
-
-	function get_namespace($pageName)
-	{
-		global $prefs;
-
-		if ($pageName && (isset($prefs['namespace_enabled']) && $prefs['namespace_enabled'] == 'y')
-			&& $prefs['namespace_separator'])
-		{
-			$pos = strrpos($pageName, $prefs['namespace_separator']);
-
-			if (false !== $pos) {
-				return substr($pageName, 0, $pos);
-			}
-		}
-
-		return false;
-	}
-
-	function get_readable($pageName)
-	{
-		global $prefs;
-
-		if ($pageName && (isset($prefs['namespace_enabled']) && $prefs['namespace_enabled'] == 'y')
-			&& $prefs['namespace_separator'])
-		{
-			return str_replace($prefs['namespace_separator'], ' / ', $pageName);
-		}
-
-		return false;
-	}
-
-	function get_namespace_parts($pageName)
-	{
-		global $prefs;
-
-		if ($namespace = $this->get_namespace($pageName)) {
-			return explode($prefs['namespace_separator'], $namespace);
-		}
-
-		return array();
-	}
 }
 
 global $wikilib;

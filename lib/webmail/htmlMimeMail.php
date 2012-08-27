@@ -810,22 +810,14 @@ class htmlMimeMail
 				}
 
 				// Send it
-				global $prefs, $tikilib;
-				if( $prefs['zend_mail_queue'] == 'y') {
-					$query = "INSERT INTO `tiki_mail_queue` (message) VALUES (?)";
-		    		$bindvars = array(json_encode($send_params));
-					$tikilib->query($query, $bindvars, -1, 0);
-				} else {			
-	
-					if (!$smtp->send($send_params)) {
-						$this->errors = $smtp->errors;
-		
-						return false;
-					}
+				if (!$smtp->send($send_params)) {
+					$this->errors = $smtp->errors;
+
+					return false;
 				}
-	
+
 				return true;
-				break;
+							break;
 		}
 	}
 
@@ -2240,7 +2232,6 @@ class smtp
 					$this->starttls();
 					$m = $this->auth ? $this->ehlo() : $this->helo();
 				}
-				$this->status = SMTP_STATUS_CONNECTED;
 				return $m;
 			} else {
 				$this->errors[] = 'Failed to connect to server: ' . $errstr;

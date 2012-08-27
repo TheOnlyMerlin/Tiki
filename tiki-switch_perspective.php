@@ -12,14 +12,15 @@ $access->check_feature('feature_perspective');
 
 $_SESSION['current_perspective'] = 0;
 
+
 if ( isset($_REQUEST['perspective']) ) {
 	$perspectivelib->set_perspective($_REQUEST['perspective']);
 }
 
 if ( isset($_REQUEST['back']) && isset($_SERVER['HTTP_REFERER']) ) {
-	$access->redirect($_SERVER['HTTP_REFERER']);
+	header('Location: ' . $_SERVER['HTTP_REFERER']);
 } else {
-	$access->redirect('index.php');
+	header('Location: index.php');
 }
 
 // EOF

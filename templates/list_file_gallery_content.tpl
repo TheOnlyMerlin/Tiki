@@ -7,20 +7,21 @@
 			<th class="checkbox">{select_all checkbox_names='file[],subgal[]'}</th>
 		{/if}
 
-		{if ( $prefs.use_context_menu_icon eq 'y' or $prefs.use_context_menu_text eq 'y' )
-			and (!isset($gal_info.show_action) or $gal_info.show_action eq 'y') and $prefs.javascript_enabled eq 'y'}
+		{if ( $prefs.use_context_menu_icon eq 'y' or $prefs.use_context_menu_text eq 'y' ) and $gal_info.show_action neq 'n' and $prefs.javascript_enabled eq 'y'}
 			{assign var=nbCols value=$nbCols+1}
 			<th style="width:1%">&nbsp;</th>
 		{/if}
 
-		{if isset($gal_info.show_parentName) && $gal_info.show_parentName eq 'y'}
+		{if !empty($show_parentName) and $show_parentName eq 'y'}{* assigned in wikiplugin_files *}
 			<th>
 				{self_link _sort_arg=$sort_arg _sort_field='parentName'}{tr}Gallery{/tr}{/self_link}
 			</th>
+			{assign var=nbCols value=$nbCols+1}
 		{/if}
-		{if !empty($show_thumb) and $show_thumb eq 'y'}
+		{if !empty($show_thumb) and $show_thumb eq 'y'}{* assigned in wikiplugin_files *}
 			<th>
 			</th>
+			{assign var=nbCols value=$nbCols+1}
 		{/if}
 
 		{foreach from=$fgal_listing_conf item=item key=propname}
@@ -101,8 +102,7 @@
 			</th>
 		{/if}
 
-		{if ( $prefs.use_context_menu_icon neq 'y' and $prefs.use_context_menu_text neq 'y' )
-			or (isset($gal_info.show_action) && $gal_info.show_action eq 'y') or $prefs.javascript_enabled neq 'y'}
+		{if ( $prefs.use_context_menu_icon neq 'y' and $prefs.use_context_menu_text neq 'y' ) or $gal_info.show_action eq 'y' or $prefs.javascript_enabled neq 'y'}
 			{assign var=nbCols value=$nbCols+1}
 			<th>{tr}Actions{/tr}</th>
 		{/if}
@@ -125,8 +125,7 @@
 	{section name=changes loop=$files}
 
 		{if ( ( ! isset($fileId) ) || $fileId == 0 ) || ( $fileId == $files[changes].id )}
-			{if ( $prefs.use_context_menu_icon eq 'y' or $prefs.use_context_menu_text eq 'y' )
-				and (!isset($gal_info.show_action) or $gal_info.show_action eq 'y')}
+			{if ( $prefs.use_context_menu_icon eq 'y' or $prefs.use_context_menu_text eq 'y' ) and $gal_info.show_action neq 'n'}
 				{capture name=over_actions}
 					{strip}
 						<div class='opaque'>
@@ -155,16 +154,15 @@
 						<div class='box-data'>
 							<table>
 								{foreach item=prop key=propname from=$fgal_listing_conf}
-									{if isset($item.key)}
+									{if isset($prop.key)}
 										{assign var=propkey value=$item.key}
 									{else}
 										{assign var=propkey value="show_$propname"}
 									{/if}
-									{if isset($files[changes].$propname)}
-										{assign var=propval value=$files[changes].$propname}
-									{/if}
+									{assign var=propval value=$files[changes].$propname}
+
 									{* Format property values *}
-									{if isset($propname) and ($propname eq 'created' or $propname eq 'lastModif' or $propname eq 'lastDownload')}
+									{if $propname eq 'created' or $propname eq 'lastModif' or $propname eq 'lastDownload'}
 										{if empty($propval)}
 											{assign var=propval value=''}
 										{else}
@@ -174,7 +172,7 @@
 										{assign var=propval value=$propval|username}
 									{elseif $propname eq 'size'}
 										{assign var=propval value=$propval|kbsize:true}
-									{elseif $propname eq 'backlinks' and isset($files[changes].nbBacklinks)}
+									{elseif $propname eq 'backlinks'}
 										{assign var=propval value=$files[changes].nbBacklinks}
 									{elseif $propname eq 'description'}
 							    	   {assign var=propval value=$propval|nl2br}
@@ -203,12 +201,10 @@
 			      <div class='box-title'>{tr}Share with:{/tr}</div>
 			      <div class='box-data'>
 			        <div>
-						{if isset($files[changes].share.data)}
-							{foreach item=prop key=propname from=$files[changes].share.data}
-								<b>{$prop.email}</b>: {$prop.visit} / {$prop.maxhits}<br />
-								{assign var=nb_over_share value=$nb_over_share+1}
-							{/foreach}
-						{/if}
+			            {foreach item=prop key=propname from=$files[changes].share.data}
+							<b>{$prop.email}</b>: {$prop.visit} / {$prop.maxhits}<br />
+							{assign var=nb_over_share value=$nb_over_share+1}
+						{/foreach}
 			        </div>
 			      </div>
 			    </div>
@@ -230,25 +226,22 @@
 					{else}
 						{assign var='checkname' value='file'}
 					{/if}
-					<input type="checkbox" name="{$checkname}[]" value="{$files[changes].id|escape}"
-						  {if isset($smarty.request.$checkname) and $smarty.request.$checkname
-						  and in_array($files[changes].id,$smarty.request.$checkname)}checked="checked"{/if} />
+					<input type="checkbox" name="{$checkname}[]" value="{$files[changes].id|escape}" {if $smarty.request.$checkname and in_array($files[changes].id,$smarty.request.$checkname)}checked="checked"{/if} />
 				</td>
 			{/if}
 
-			{if ( $prefs.use_context_menu_icon eq 'y' or $prefs.use_context_menu_text eq 'y' )
-				and (!isset($gal_info.show_action) or $gal_info.show_action neq 'n') and $prefs.javascript_enabled eq 'y'}
+			{if ( $prefs.use_context_menu_icon eq 'y' or $prefs.use_context_menu_text eq 'y' ) and $gal_info.show_action neq 'n' and $prefs.javascript_enabled eq 'y'}
 				<td style="white-space: nowrap">
 					<a class="fgalname" title="{tr}Actions{/tr}" href="#" {popup trigger="onClick" sticky=1 mouseoff=1 fullhtml="1" center=true text=$smarty.capture.over_actions|escape:"javascript"|escape:"html"} style="padding:0; margin:0; border:0">{icon _id='wrench' alt="{tr}Actions{/tr}"}</a>
 				</td>
 			{/if}
 
-			{if isset($show_parentName) and $show_parentName eq 'y'}
+			{if !empty($show_parentName) and $show_parentName eq 'y'}{* assigned in wikiplugin_files *}
 				<td>
 					<a href="tiki-list_file_gallery.php?galleryId={$files[changes].galleryId}">{$files[changes].parentName|escape}</a>
 				</td>
 			{/if}
-			{if isset($show_thumb) and $show_thumb eq 'y'}
+			{if !empty($show_thumb) and  $show_thumb eq 'y'}{* assigned in wikiplugin_files *}
 				<td>
 					{if $files[changes].isgal == 0}
 						<a href="{if $absurl == 'y'}{$base_url}{/if}tiki-download_file.php?fileId={$files[changes].fileId}&display"><img src="{if $absurl == 'y'}{$base_url}{/if}tiki-download_file.php?fileId={$files[changes].fileId}&thumbnail" /></a>
@@ -313,13 +306,6 @@
 							{/if}
 							{assign var=propval value="$propval<br><span class=\"description\">`$desc`</span>"}
 						{/if}
-						{if $files[changes].isgal eq 1 and $files[changes].type eq 'user'}
-							{if $files[changes].user eq $user}
-								{assign var=propval value="<strong>{tr}My Files{/tr}</strong>"}
-							{else}
-								{assign var=propval value="{tr}Files of {/tr}"|cat:$files[changes].user}
-							{/if}
-						{/if}
 					{elseif $propname eq 'created' or $propname eq 'lastModif' or $propname eq 'lastDownload'}
 						{if empty($propval)}
 							{assign var=propval value=''}
@@ -349,7 +335,7 @@
 						{/if}
 					{elseif $propname eq 'backlinks'}
 						{if empty($files[changes].nbBacklinks)}
-							{assign var=propval value=''}
+							{assign var=propval value=$files[changes].nbBacklinks}
 						{else}
 							{assign var=propval value=$files[changes].nbBacklinks}
 							{assign var=fid value=$files[changes].id}
@@ -404,8 +390,7 @@
 				<td>{$other_columns_selected_val}</td>
 			{/if}
 
-			{if ( $prefs.use_context_menu_icon neq 'y' and $prefs.use_context_menu_text neq 'y' )
-				or (isset($gal_info.show_action) and $gal_info.show_action eq 'y') or $prefs.javascript_enabled neq 'y'}
+			{if ( $prefs.use_context_menu_icon neq 'y' and $prefs.use_context_menu_text neq 'y' ) or $gal_info.show_action eq 'y' or $prefs.javascript_enabled neq 'y'}
 				<td>{include file='fgal_context_menu.tpl' changes=$smarty.section.changes.index}</td>
 			{/if}
 

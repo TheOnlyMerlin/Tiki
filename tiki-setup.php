@@ -55,12 +55,11 @@ require_once ('lib/setup/sections.php');
 require_once ('lib/headerlib.php');
 
 $domain_map = array();
-if ( isset($_SERVER['HTTP_HOST']) ) { $host = $_SERVER['HTTP_HOST']; } else { $host = ""; };
-if ( isset($_SERVER['REQUEST_URI']) ) { $requestUri = $_SERVER['REQUEST_URI']; } else { $requestUri = ""; };
+$host = $_SERVER['HTTP_HOST'];
 
 if ( $prefs['tiki_domain_prefix'] == 'strip' && substr($host, 0, 4) == 'www.' ) {
 	$domain_map[$host] = substr($host, 4);
-} elseif ( $prefs['tiki_domain_prefix'] == 'force' && substr($host, 0, 4) != 'www.' ) {
+} elseif ( $prefs['tiki_domain_prefix'] == 'force' && substr($_SERVER['HTTP_HOST'], 0, 4) != 'www.' ) {
 	$domain_map[$host] = 'www.' . $host;
 }
 
@@ -74,7 +73,7 @@ if (strpos($prefs['tiki_domain_redirects'], ',') !== false) {
 if ( isset($domain_map[$host]) ) {
 	$prefix = $tikilib->httpPrefix();
 	$prefix = str_replace("://$host", "://{$domain_map[$host]}", $prefix);
-	$url = $prefix . $requestUri;
+	$url = $prefix . $_SERVER['REQUEST_URI'];
 
 	$access->redirect($url, null, 301);
 	exit;
@@ -83,50 +82,17 @@ if ( isset($domain_map[$host]) ) {
 if (isset($_REQUEST['PHPSESSID'])) $tikilib->setSessionId($_REQUEST['PHPSESSID']);
 elseif (function_exists('session_id')) $tikilib->setSessionId(session_id());
 
-if ($prefs['cookie_consent_feature'] === 'y' && empty($_COOKIE[$prefs['cookie_consent_name']])) {
-	$feature_no_cookie = true;
-} else {
-	$feature_no_cookie = false;
-}
-
-require_once ('lib/setup/cookies.php');
-
 if ($prefs['mobile_feature'] === 'y') {
-	require_once ('lib/setup/mobile.php');	// needs to be before js_detect but after cookies
+	require_once ('lib/setup/mobile.php');	// needs to be before js_detect
 } else {
 	$prefs['mobile_mode'] = '';
 }
 
+require_once ('lib/setup/cookies.php');
 require_once ('lib/setup/user_prefs.php');
 require_once ('lib/setup/language.php');
 require_once ('lib/setup/javascript.php');
 require_once ('lib/setup/wiki.php');
-
-/* Cookie consent setup, has to be after the JS decision and wiki setup */
-
-$cookie_consent_html = '';
-if ($prefs['cookie_consent_feature'] === 'y') {
-	if (!empty($_REQUEST['cookie_consent_checkbox'])) {			// js disabled
-		$feature_no_cookie = false;
-		setCookieSection($prefs['cookie_consent_name'], 'y');
-	}
-	$cookie_consent = getCookie($prefs['cookie_consent_name']);
-	if (empty($cookie_consent)) {
-		if ($prefs['javascript_enabled'] !== 'y') {
-			$prefs['cookie_consent_mode'] = '';
-		} else {
-			$headerlib->add_js('jqueryTiki.no_cookie = true; jqueryTiki.cookie_consent_alert = "' . addslashes($prefs['cookie_consent_alert']) . '";');
-		}
-		foreach($_COOKIE as $k => $v) {
-			setcookie($k, '', time() - 3600);		// unset any previously existing cookies
-		}
-		$cookie_consent_html = $smarty->fetch('cookie_consent.tpl');
-	} else {
-		$feature_no_cookie = false;
-	}
-}
-$smarty->assign('cookie_consent_html', $cookie_consent_html);
-
 if ($prefs['feature_polls'] == 'y') require_once ('lib/setup/polls.php');
 if ($prefs['feature_mailin'] == 'y') require_once ('lib/setup/mailin.php');
 require_once ('lib/setup/tikiIndex.php');
@@ -423,10 +389,6 @@ if ($prefs['javascript_enabled'] != 'n') {
 		$headerlib->add_jsfile('lib/captcha/captchalib.js');
 	}
 
-	if ( $prefs['feature_jcapture'] === 'y' ) {
-		$headerlib->add_jsfile('lib/jcapture_tiki/tiki-jcapture.js');
-	}
-
 }	// end if $prefs['javascript_enabled'] != 'n'
 
 if ( ! empty( $prefs['header_custom_css'] ) ) {
@@ -468,14 +430,8 @@ if ($prefs['feature_draw'] == 'y') {
 	$headerlib->add_cssfile("lib/svg-edit_tiki/draw.css");
 }
 
-$headerlib->add_jsfile('lib/jquery/jquery-ui-timepicker-addon.js');
-
 if ($prefs['geo_always_load_openlayers'] == 'y') {
 	$headerlib->add_map();
-}
-
-if ($prefs['workspace_ui'] == 'y') {
-	$headerlib->add_jsfile('lib/jquery_tiki/tiki-workspace-ui.js');
 }
 
 if ($prefs['feature_sefurl'] != 'y') {

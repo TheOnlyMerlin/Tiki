@@ -7,17 +7,7 @@
 		{if $edit_mode eq 'y'}
 			{tr}Edit Gallery:{/tr}
 		{/if}
-		{strip} 
-			{if $gal_info.type eq 'user'}
-				{if $gal_info.user eq $user}
-					{tr}My Files{/tr}
-				{else}
-					{tr}Files of {$gal_info.user}{/tr}
-				{/if}
-			{else}
-				{$name}
-			{/if}
-		{/strip}
+		{$name}
 	{/if}
 {/title}
 
@@ -150,7 +140,7 @@
 
 {if $user and $prefs.feature_user_watches eq 'y'}
 	<div class="categbar" align="right">
-		{if isset($category_watched) && $category_watched eq 'y'}
+		{if $category_watched eq 'y'}
 			{tr}Watched by categories:{/tr}
 			{section name=i loop=$watching_categories}
 				{button _keepall='y' _text=$watching_categories[i].name|escape href="tiki-browse_categories.php" parentId=$watching_categories[i].categId}

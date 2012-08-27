@@ -35,8 +35,7 @@ function prefs_geo_list()
 											', ',
 										 array(
 											'openstreetmap',
-											'mapquest_street',
-											'mapquest_aerial',
+											'openaerialmap',
 											'google_street',
 											'google_satellite',
 											'google_physical',

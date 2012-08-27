@@ -47,7 +47,7 @@ class WikiRenderer
 	public $canUndo = null;
 	public $trads = null;	// translated pages
 
-	function __construct( $info, $user, $content_to_render=null)
+	function __construct( $info, $user, $content_to_render='')
 	{
 		$this->info = $info;
 		$this->user = $user;
@@ -298,7 +298,7 @@ class WikiRenderer
 
 				if ($version_info = $flaggedrevisionlib->get_version_with($this->page, 'moderation', 'OK')) {
 					$this->smartyassign('revision_approved', $version_info['version']);
-					if ($this->content_to_render === null) {
+					if (empty($this->content_to_render)) {
 						$this->smartyassign('revision_displayed', $version_info['version']);
 						$this->content_to_render = $version_info['data'];
 					} else {
@@ -306,7 +306,7 @@ class WikiRenderer
 					}
 				} else {
 					$this->smartyassign('revision_approved', null);
-					if ($this->content_to_render === null) {
+					if (empty($this->content_to_render)) {
 						$this->smartyassign('revision_displayed', null);
 						$this->content_to_render = '^' . tra('There are no approved versions of this page.', $this->info['lang']) . '^';
 					} else {
@@ -316,7 +316,7 @@ class WikiRenderer
 			}
 		}
 
-		if ($this->content_to_render === null) {
+		if ($this->content_to_render == '') {
 			$pdata = $wikilib->get_parse($this->page, $canBeRefreshed);
 
 			if ($canBeRefreshed) {
@@ -325,7 +325,7 @@ class WikiRenderer
 		} else {
 			$parse_options = array(
 				'is_html' => $this->info['is_html'],
-				'language' => $this->info['lang'],
+				'language' => $this->info['lang']
 			);
 
 			if ($this->raw) {
@@ -495,9 +495,9 @@ class WikiRenderer
 		}
 		//global $description;
 		$crumbsLocal[] = new Breadcrumb(
-						isset($this->info['prettyName']) ? $this->info['prettyName'] : $crumbpage,
+						$crumbpage,
 						$this->info['description'],
-						TikiLib::lib('wiki')->sefurl($this->page),
+						'tiki-index.php?page='.urlencode($this->page),
 						'',
 						''
 		);

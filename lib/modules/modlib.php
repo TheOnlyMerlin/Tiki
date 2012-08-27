@@ -466,21 +466,58 @@ class ModLib extends TikiLib
 			return false;
 		}
 
+		global $cat_type, $cat_objid;
 		if ( $prefs['feature_categories'] == 'y' ) {
-			if ( $this->is_hidden_by_category($params)) {
-				return false;
-			}
 
-			if ( $this->is_hidden_by_no_category($params)) {
-				return false;
-			}
-		}
+			if ( !empty( $params['category'])) {				// looking for a category to enable
+				if ( empty($cat_type) || empty($cat_objid)) {
+					return false;								// not a categorised object
+				}
+				$catIds = TikiLib::lib('categ')->get_object_categories($cat_type, $cat_objid);
+				if (empty($catIds)) {
+					return false;								// no categories on this object
+				}
+				$cats = array();
+				if (is_numeric($params['category'][0])) {
+					$cats = $catIds;
+				} else {
+					$allcats = TikiLib::lib('categ')->getCategories();	// gets all categories (cached)
+					foreach ($catIds as $c) {
+						$cats[] = $allcats[$c]['name'];
+					}
+				}
 
-		if ( $prefs['cookie_consent_feature'] == 'y' ) {		// check if consent required to show
-			if (!empty($params['cookie_consent']) && $params['cookie_consent'] === 'y') {
-				global $feature_no_cookie;
-				if ($feature_no_cookie) {
+				$ok = false;
+				foreach ((array) $params['category'] as $c) {
+					if (in_array($c, $cats)) {
+						$ok = true;
+						break;
+					}
+				}
+				if (!$ok) {
 					return false;
+				}
+			}
+
+			if ( !empty( $params['nocategory'])) {				// looking for a category to disable
+				if ( !empty($cat_type) && !empty($cat_objid)) {
+					$catIds = TikiLib::lib('categ')->get_object_categories($cat_type, $cat_objid);
+					if (!empty($catIds)) {						// object has categories
+						$cats = array();
+						if (is_numeric($params['nocategory'][0])) {
+							$cats = $catIds;
+						} else {
+							$allcats = TikiLib::lib('categ')->getCategories();	// gets all categories (cached)
+							foreach ($catIds as $c) {
+								$cats[] = $allcats[$c]['name'];
+							}
+						}
+						foreach ((array) $params['nocategory'] as $c) {
+							if (in_array($c, $cats)) {
+								return false;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -495,95 +532,13 @@ class ModLib extends TikiLib
 		return true;
 	}
 
-	private function is_hidden_by_category($params)
-	{
-		global $cat_type, $cat_objid;
-		if ( empty( $params['category'])) {
-			return false;
-		}
-
-		if ( empty($cat_type) || empty($cat_objid)) {
-			return true;
-		}
-
-		$catIds = TikiLib::lib('categ')->get_object_categories($cat_type, $cat_objid);
-
-		if (empty($catIds)) {
-			return true;
-		}
-
-		$categories = (array) $params['category'];
-
-		return ! $this->matches_any_in_category_list($categories, $catIds, ! empty($params['subtree']));
-	}
-
-	private function is_hidden_by_no_category($params)
-	{
-		global $cat_type, $cat_objid;
-		if ( empty( $params['nocategory'])) {
-			return false;
-		}
-
-		if ( empty($cat_type) || empty($cat_objid)) {
-			return false;
-		}
-
-		$catIds = TikiLib::lib('categ')->get_object_categories($cat_type, $cat_objid);
-
-		if (empty($catIds)) {
-			return false;
-		}
-
-		$categories = (array) $params['nocategory'];
-
-		return $this->matches_any_in_category_list($categories, $catIds, ! empty($params['subtree']));
-	}
-
-	private function matches_any_in_category_list($desiredList, $categoryList, $deep = false)
-	{
-		if (empty($categoryList)) {
-			return false;
-		}
-
-		$allcats = TikiLib::lib('categ')->getCategories();	// gets all categories (cached)
-
-		foreach ($desiredList as $category) {
-			if (is_numeric($category)) {
-				if (in_array($category, $categoryList)) {
-					return true;
-				}
-			} else {
-				foreach ($categoryList as $id) {
-					if (isset($allcats[$id]) && $allcats[$id]['name'] == $category) {
-						return true;
-					}
-				}
-			}
-		}
-
-		if ($deep) {
-			$nextList = array();
-			foreach ($categoryList as $id) {
-				if (isset($allcats[$id]) && $allcats[$id]['parentId']) {
-					$nextList[] = $allcats[$id]['parentId'];
-				}
-			}
-
-			return $this->matches_any_in_category_list($desiredList, $nextList, $deep);
-		}
-
-		return false;
-	}
-
 	private function get_raw_module_list_for_user( $user, array $module_zones )
 	{
 		global $prefs, $tiki_p_configure_modules, $usermoduleslib;
 
 		$out = array_fill_keys(array_values($module_zones), array());
 
-		if ( ! empty($prefs['module_file']) ) {
-			$out = array_merge($out, $this->read_module_file($prefs['module_file']));
-		} elseif ( $prefs['user_assigned_modules'] == 'y' 
+		if ( $prefs['user_assigned_modules'] == 'y' 
 			&& $tiki_p_configure_modules == 'y' 
 			&& $user 
 			&& $usermoduleslib->user_has_assigned_modules($user) ) {
@@ -709,12 +664,6 @@ class ModLib extends TikiLib
 								'separator' => ';',
 								'filter' => 'alnum',
 							),
-							'subtree' => array(
-								'name' => tra('Category subtrees'),
-								'description' => tra('Consider children categories of the categories listed in category and no category to be part of those categories. (0 or 1)'),
-								'section' => 'visibility',
-								'filter' => 'int',
-							),
 							'perspective' => array(
 								'name' => tra('Perspective'),
 								'description' => tra('Only display the module if in one of the listed perspective IDs. Semi-colon separated.'),
@@ -792,16 +741,6 @@ class ModLib extends TikiLib
 							),
 						)
 		);
-
-		if ($prefs['cookie_consent_feature'] === 'y') {
-			$info['params']['cookie_consent'] = array(
-				'name' => tra('Cookie Consent'),
-				'description' => 'n|y '.tra('Show only if consent for cookies has been granted.'),
-				'filter' => 'alpha',
-				'section' => 'visibility',
-			);
-
-		}
 
 		// Parameters common to several modules, but not all
 		$common_params = array(
@@ -1225,38 +1164,7 @@ class ModLib extends TikiLib
 		return $export;
 	}
 
-	private function read_module_file($filename)
-	{
-		$cachelib = TikiLib::lib('cache');
 
-		$expiry = filemtime($filename);
-		if ($modules = $cachelib->getSerialized($filename, 'modules', $expiry)) {
-			return $modules;
-		}
-
-		$content = file_get_contents($filename);
-
-		$profile = Tiki_Profile::fromString("{CODE(caption=>YAML)}$content{CODE}");
-
-		$out = array_fill_keys(array_values($this->module_zones), array());
-		foreach ($profile->getObjects() as $object) {
-			if ($object->getType() == 'module') {
-				$handler = new Tiki_Profile_InstallHandler_Module($object, array());
-
-				$data = $handler->getData();
-				$object->replaceReferences($data);
-				$data = $handler->formatData($data);
-
-				$data['groups'] = unserialize($data['groups']);
-				$position = $data['position'];
-				$zone = $this->module_zones[$position];
-				$out[$zone][] = $data;
-			}
-		}
-
-		$cachelib->cacheItem($filename, serialize($out), 'modules');
-		return $out;
-	}
 	
 }
 global $modlib;

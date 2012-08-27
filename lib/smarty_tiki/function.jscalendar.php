@@ -16,7 +16,8 @@ function smarty_function_jscalendar($params, $smarty)
 	global $headerlib, $prefs, $tikilib;
 	
 	if ($prefs['feature_jquery_ui'] === 'y') {	// override jscalendar with jQuery UI datepicker
-		$uiCalendarInstance = uniqid();
+		static $uiCalendarInstance = 0;
+		$uiCalendarInstance++;
 		
 		if (!isset($params['id'])) {
 			$params['id'] = 'uiCal_' . $uiCalendarInstance;
@@ -131,6 +132,8 @@ function smarty_function_jscalendar($params, $smarty)
 .ui-timepicker-div dl dd{ margin: -25px 0 10px 65px; }
 .ui-timepicker-div td { font-size: 90%; }'
 			);
+
+			$headerlib->add_jsfile('lib/jquery/jquery-ui-timepicker-addon.js');
 
 			$js_val1 = empty($params['date']) ? '' : '
 var dt = new Date('.$params['date'].'* 1000);

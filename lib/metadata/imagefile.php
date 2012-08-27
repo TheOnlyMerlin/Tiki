@@ -11,10 +11,9 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * Reads metadata common to image files
+/*
+ * Reads JPEG-specific metadata from a JPEG file
  * Called by the FileMetadata class at metadata/metadata.php, which handles generic file metadata
- * Image-specific classes (like Jpeg) extend this class
  */
 class ImageFile
 {
@@ -22,12 +21,7 @@ class ImageFile
 	var $width = null;
 	var $height = null;
 	var $otherinfo = null;
-
-	/**
-	 * Assign common image metadata information to properties
-	 *
-	 * @param 		FileMetadata object			$metaObj
-	 */
+	
 	function __construct($metaObj)
 	{
 			$this->header = getimagesize($metaObj->currname, $otherinfo);
@@ -35,5 +29,5 @@ class ImageFile
 			$this->height = $this->header[1];
 			$this->otherinfo = $otherinfo;
 	}
+	
 }
-

@@ -32,9 +32,9 @@
 				{/foreach}
 			</div>
 		{/if} 
-		<article class="article{if !empty($container_class)} {$container_class}{/if} article{$smarty.section.ix.index}">
+		<div class="article{if !empty($container_class)} {$container_class}{/if} article{$smarty.section.ix.index}">
 			{if $listpages[ix].show_topline eq 'y' and $listpages[ix].topline}<div class="articletopline">{$listpages[ix].topline|escape}</div>{/if}
-			<header class="articletitle">
+			<div class="articletitle">
 				<h2>{object_link type=article id=$listpages[ix].articleId url=$smarty.capture.href title=$listpages[ix].title}</h2>
 				{if $listpages[ix].show_subtitle eq 'y' and $listpages[ix].subtitle}<div class="articlesubtitle">{$listpages[ix].subtitle|escape}</div>{/if}
 				{if ($listpages[ix].show_author eq 'y')
@@ -56,7 +56,7 @@
 						{/if}
 					</span><br />
 				{/if}
-			</header>
+			</div>
 			{if $listpages[ix].use_ratings eq 'y'}
 				<div class="articleheading">
 					{tr}Rating:{/tr} 
@@ -173,7 +173,7 @@
 					</div>
 				{/if}
 			</div>
-		</article>
+		</div>
 	{/if}
 {sectionelse}
 	{if $quiet ne 'y'}{tr}No articles yet.{/tr}

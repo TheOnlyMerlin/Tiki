@@ -783,7 +783,7 @@ function wikiplugin_trackerlist($data, $params)
 
 			//We must include the $calendarfielddate, even if they are not in the listfields
 			if (!empty($calendarfielddate)) {
-				foreach ($calendarfielddate as $f) {
+				foreach($calendarfielddate as $f) {
 					if (!in_array($f, $listfields)) {
 						$listfields[] = $f;
 					}
@@ -1479,15 +1479,6 @@ function wikiplugin_trackerlist($data, $params)
 
 			$calendarlib->focusStartEnd($focus, $calendarviewmode, $calendarbeginmonth, $startPeriod, $startNextPeriod);
 			$cell = $calendarlib->getTableViewCells($startPeriod, $startNextPeriod, $calendarviewmode, $calendarlib->firstDayofWeek($user));
-
-			if (is_array($filterfield) == false) {
-				$filterfield = array($filterfield);
-			}
-
-			if (is_array($$filtervalue) == false) {
-				$filtervalue = array($filtervalue);
-			}
-
 			$filterfield[] = $calendarfielddate[0];
 			$filtervalue[] = '';
 			$exactvalue[] = array('>=' => $startPeriod['date']);
@@ -1542,19 +1533,19 @@ function wikiplugin_trackerlist($data, $params)
 			}
 			// End Optimization
 			$items = $trklib->list_items(
-							$trackerId,
-							$tr_offset,
-							$max,
-							$tr_sort_mode,
-							$passfields,
-							(!empty($calendarfielddate) ? null : $filterfield),
-							$filtervalue,
-							$tr_status,
-							$tr_initial,
-							$exactvalue,
-							$filter,
-							$allfields,
-							$skip_status_perm_check
+				$trackerId,
+				$tr_offset,
+				$max,
+				$tr_sort_mode,
+				$passfields,
+				(!empty($calendarfielddate) ? null : $filterfield),
+				$filtervalue,
+				$tr_status,
+				$tr_initial,
+				$exactvalue,
+				$filter,
+				$allfields,
+				$skip_status_perm_check
 			);
 			if (isset($silent) && $silent == 'y' && empty($items['cant'])) {
 				return;

@@ -157,8 +157,6 @@ class Services_Comment_Controller
 					} else if ($type == 'article') {
 						require_once('lib/notifications/notificationemaillib.php');
 						sendCommentNotification('article', $objectId, $title, $data);
-					} // Blog comment mail
-					elseif ($prefs['feature_blogs'] == 'y' && $type == 'blog post') { require_once('lib/notifications/notificationemaillib.php'); sendCommentNotification('blog', $objectId, $title, $data); 
 					} elseif ($type == 'trackeritem') {
 						require_once('lib/notifications/notificationemaillib.php');
 						sendCommentNotification('trackeritem', $objectId, $title, $data, $threadId);
@@ -344,11 +342,6 @@ class Services_Comment_Controller
 			'status' => $status,
 			'do' => $do,
 		);
-	}
-
-	function action_deliberation_opinion($input)
-	{
-		return array();
 	}
 
 	private function canView($type, $objectId)

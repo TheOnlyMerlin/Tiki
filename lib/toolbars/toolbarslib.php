@@ -56,8 +56,6 @@ abstract class Toolbar
 			return new ToolbarHelptool;
 		elseif ( $tagName == 'switcheditor' )
 			return new ToolbarSwitchEditor;
-		elseif ( $tagName == 'screencapture' )
-			return new ToolbarCapture();
 		elseif ( $tagName == '-' )
 			return new ToolbarSeparator;
 		
@@ -143,7 +141,6 @@ abstract class Toolbar
 											'nonparsed',
 											'bidiltr',
 											'bidirtl',
-											'screencapture',
 										
 											'sheetsave',	// spreadsheet ones
 											'addrow',
@@ -819,12 +816,6 @@ class ToolbarLineBased extends ToolbarInline // Will change in the future
 			$wysiwyg =  'NumberedList';
 			$syntax = '#text';
       break;
-		case 'indent':
-			$label = tra('Indent');
-			$icon = tra('img/icons/arrow_right.png');
-			$wysiwyg = null;
-			$syntax = '  text';
-	  break;
 		default:
 			return;
 		}
@@ -1359,7 +1350,7 @@ if (typeof window.CKEDITOR !== "undefined" && !window.CKEDITOR.plugins.get("{$na
 			var command = editor.addCommand( '{$name}', new window.CKEDITOR.command( editor , {
 				modes: { wysiwyg:1 },
 				exec: function(elem, editor, data) {
-					$.openEditHelp();
+					openEditHelp();
 					return false;
 				},
 				canUndo: false
@@ -1536,45 +1527,6 @@ JS
 	} // }}}
 */
 	
-}
-
-class ToolbarCapture extends Toolbar
-{
-	function __construct() // {{{
-	{
-		$this->setLabel(tra('Screen capture'))
-			->setIcon('img/icons/camera.png')
-			->setWysiwygToken('screencapture')
-			->setType('Capture');
-	} // }}}
-
-	function getWikiHtml( $areaId ) // {{{
-	{
-		global $page;
-		return $this->getSelfLink(
-						'openJCaptureDialog(\''.$areaId.'\', \'' . $page . '\', event);return false;',
-						htmlentities($this->label, ENT_QUOTES, 'UTF-8'),
-						'qt-capture'
-		);
-
-	} // }}}
-
-	function getWysiwygToken( $areaId ) // {{{
-	{
-		if (!empty($this->wysiwyg)) {
-			$this->name = $this->wysiwyg;	// temp
-			$exec_js = str_replace('&amp;', '&', $this->getSyntax($areaId));	// odd?
-
-			$this->setupCKEditorTool($exec_js, $this->name, $this->label, $this->icon);
-		}
-		return $this->wysiwyg;
-	} // }}}
-
-	function getWysiwygWikiToken( $areaId ) // {{{ // wysiwyg_htmltowiki
-	{
-		return $this->getWysiwygToken($areaId);
-	} // }}}
-
 }
 
 class ToolbarWikiplugin extends Toolbar

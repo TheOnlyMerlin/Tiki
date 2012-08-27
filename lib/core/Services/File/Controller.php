@@ -48,7 +48,7 @@ class Services_File_Controller
 			'name' => $name,
 			'type' => $type,
 			'fileId' => $fileId,
-			'galleryId' => $gal_info['galleryId'],
+			'galleryId' => $galleryId,
 			'md5sum' => md5($data),
 		);
 	}
@@ -120,27 +120,6 @@ class Services_File_Controller
 		return array(
 			'success' => $ret,
 		);
-	}
-
-	/**
-	 * @param $input	string "name" for the filename to find
-	 * @return array	file info for most recent file by that name
-	 */
-	function action_find($input) {
-
-		$filegallib = TikiLib::lib('filegal');
-		$gal_info = $this->checkTargetGallery($input);
-
-		$name = $input->name->text();
-
-		$pos = strpos($name, '?');		// strip off get params
-		if ($pos !== false) {
-			$name = substr($name, 0, $pos);
-		}
-
-		$info = $filegallib->get_file_by_name($gal_info['galleryId'], $name);
-
-		return $info;
 	}
 
 	private function checkTargetGallery($input)

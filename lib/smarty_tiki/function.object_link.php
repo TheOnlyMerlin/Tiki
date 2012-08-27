@@ -53,9 +53,6 @@ function smarty_function_object_link( $params, $smarty )
 	case 'freetag':
 		$function = 'smarty_function_object_link_freetag';
 					break;
-	case 'trackeritem':
-		$function = 'smarty_function_object_link_trackeritem';
-					break;
 	default:
 		$function = 'smarty_function_object_link_default';
 					break;
@@ -80,14 +77,7 @@ function smarty_function_object_link_default( $smarty, $object, $title = null, $
 		return '';
 	}
 
-	$text = $title;
-	$titleAttribute = null;
-	if ($type == 'wiki page') {
-		$titleAttribute = ' title="' . smarty_modifier_escape($title) . '"';
-		$text = TikiLib::lib('wiki')->get_without_namespace($title);
-	}
-
-	$escapedText = smarty_modifier_escape($text ? $text : tra('No title specified'));
+	$escapedPage = smarty_modifier_escape($title ? $title : tra('No title specified'));
 
 	if ($url) {
 		$escapedHref = smarty_modifier_escape($url);
@@ -106,7 +96,7 @@ function smarty_function_object_link_default( $smarty, $object, $title = null, $
 	$metadata = TikiLib::lib('object')->get_metadata($type, $object, $classList);
 	$class = ' class="' . implode(' ', $classList) . '"';
 
-	$html = '<a href="' . $base_url . $escapedHref . '"' . $class . $titleAttribute . $metadata . '>' . $escapedText . '</a>';
+	$html = '<a href="' . $base_url . $escapedHref . '"' . $class . $metadata . '>' . $escapedPage . '</a>';
 
 	$attributelib = TikiLib::lib('attribute');
 	$attributes = $attributelib->get_attributes($type, $object);
@@ -140,20 +130,6 @@ function smarty_function_object_link_default( $smarty, $object, $title = null, $
 	}
 
 	return $html;
-}
-
-function smarty_function_object_link_trackeritem( $smarty, $object, $title = null, $type = 'wiki page', $url = null )
-{
-	$pre = null;
-
-	$item = Tracker_Item::fromId($object);
-	
-	if ($status = $item->getDisplayedStatus()) {
-		$alt = tr($status);
-		$pre = "<img src=\"img/icons/status_$status.gif\" alt=\"$status\"/>&nbsp;";
-	}
-
-	return $pre . smarty_function_object_link_default($smarty, $object, $title, $type, $url);
 }
 
 function smarty_function_object_link_user( $smarty, $user, $title = null )

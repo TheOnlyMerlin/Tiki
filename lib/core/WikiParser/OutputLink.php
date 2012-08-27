@@ -13,9 +13,6 @@ class WikiParser_OutputLink
 	private $qualifier;
 	private $anchor;
 
-	private $namespace;
-	private $namespaceSeparator;
-
 	private $externals = array();
 	private $handlePlurals = false;
 
@@ -25,12 +22,6 @@ class WikiParser_OutputLink
 	function setIdentifier( $identifier )
 	{
 		$this->identifier = $identifier;
-	}
-
-	function setNamespace( $namespace, $separator )
-	{
-		$this->namespace = $namespace;
-		$this->namespaceSeparator = $separator;
 	}
 
 	function setDescription( $description )
@@ -89,39 +80,24 @@ class WikiParser_OutputLink
 									'class' => $class,
 							)
 			);
-		} elseif ( $this->namespace && (($info = $this->findWikiPage("{$this->namespace}{$this->namespaceSeparator}$page")) || $ck_editor) ) {
-			// When currently displayed page is in a namespace, interpret links as within namespace as a priority
-			if (!empty($info['pageName'])) {
-				$page = $info['pageName'];
-			}
-
-			return $this->outputLink(
-							$description, 
-							array(
-									'href' => call_user_func($this->wikiBuilder, $page) . $this->anchor,
-									'title' => $this->getTitle($info),
-									'class' => 'wiki wiki_page',
-							) 
-			);
 		} elseif ( ($info = $this->findWikiPage($page)) || $ck_editor ) {
 			if (!empty($info['pageName'])) {
 				$page = $info['pageName'];
 			}
-
-			if ($description == $info['pageName']) {
-				$description = $this->renderPageName($info);
+			$title = $page;
+			if (!empty($info['description'])) {
+				$title = $info['description'];
 			}
 
 			return $this->outputLink(
 							$description, 
 							array(
 									'href' => call_user_func($this->wikiBuilder, $page) . $this->anchor,
-									'title' => $this->getTitle($info),
+									'title' => $title,
 									'class' => 'wiki wiki_page',
 							) 
 			);
 		} else {
-			$page = $this->getTargetPage($page);
 			return $description . $this->outputLink(
 							'?', 
 							array(
@@ -182,29 +158,6 @@ class WikiParser_OutputLink
 		}
 	}
 
-	private function renderPageName($info)
-	{
-		if (! isset($info['namespace_parts'])) {
-			return $info['pageName'];
-		}
-
-		$out = '';
-
-		$last = count($info['namespace_parts']) - 1;
-		foreach ($info['namespace_parts'] as $key => $part) {
-			$class = 'namespace';
-			if ($key === 0) {
-				$class .= ' first';
-			}
-			if ($key === $last) {
-				$class .= ' last';
-			}
-			$out .= "<span class=\"$class\">$part</span>";
-		}
-
-		return $out . $info['baseName'];
-	}
-
 	private function findWikiPage( $page )
 	{
 		if (! $this->wikiLookup) {
@@ -236,26 +189,6 @@ class WikiParser_OutputLink
 
 		if ( $alternate != $page ) {
 			return $alternate;
-		}
-	}
-
-	private function getTargetPage($page)
-	{
-		if ($this->namespace) {
-			return "{$this->namespace}{$this->namespaceSeparator}$page";
-		} else {
-			return $page;
-		}
-	}
-
-	private function getTitle($info)
-	{
-		if (!empty($info['description'])) {
-			return $info['description'];
-		} elseif (! empty($info['prettyName'])) {
-			return $info['prettyName'];
-		} else {
-			return $info['pageName'];
 		}
 	}
 }

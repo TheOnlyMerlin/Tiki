@@ -18,7 +18,7 @@ function wikiplugin_memberlist_info()
 			'groups' => array(
 				'required' => true,
 				'name' => tra('Groups'),
-				'description' => tra('List of groups to handle through the interface (use "*" for all). Semi-colon separated.'),
+				'description' => tra('List of groups to handle through the interface (use "*" for all). Colon separated.'),
 				'separator' => ':',
 				'filter' => 'groupname',
 				'default' => '',

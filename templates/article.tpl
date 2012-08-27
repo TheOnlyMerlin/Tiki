@@ -1,8 +1,8 @@
-<article class="article">
+<div class="article">
 	{if $show_topline eq 'y' and $topline}
 		<div class="articletopline">{$topline|escape}</div>
 	{/if}
-	<header class="articletitle">
+	<div class="articletitle">
 		<h2>
 			{object_link type=article id=$articleId title=$arttitle}
 		</h2>
@@ -16,7 +16,8 @@
 			{if $show_expdate eq 'y' && $expireDate}{tr}Expires At:{/tr} {$expireDate|tiki_short_datetime} {/if}
 			{if $show_reads eq 'y'}({$reads} {tr}Reads{/tr}){/if}
 		</span>
-	</header>
+		<br />
+	</div>
 
 	{if $use_ratings eq 'y'}
 		<div class="articleheading">
@@ -151,8 +152,8 @@
 
 	{* When copyright section is not empty show it *}
 	{if $smarty.capture.copyright_section neq ''}
-		<footer class="editdate">
+		<p class="editdate">
 			{$smarty.capture.copyright_section}
-		</footer>
+		</p>
 	{/if}
-</article>
+</div>

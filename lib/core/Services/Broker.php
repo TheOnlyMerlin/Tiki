@@ -75,8 +75,8 @@ class Services_Broker
 
 		$template = "$controller/$action.tpl";
 
-		//if template doesn't exists, simply return the array given from the action
-		if ($smarty->templateExists($template) == false) return json_encode($output);
+		if ($smarty->templateExists($template) == false) return "";
+
 
 		$access = TikiLib::lib('access');
 		foreach ($output as $key => $value) {

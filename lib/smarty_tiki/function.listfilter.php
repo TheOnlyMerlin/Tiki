@@ -74,31 +74,6 @@ function smarty_function_listfilter($params, $smarty)
 		}
 		if (!empty($query) && !empty($_REQUEST[$query])) {
 			$input .= ' value="' . $_REQUEST[$query] . '"';
-		}elseif (!empty($editorId)) {
-			$parentTabId = (empty($parentTabId) ? "" : $parentTabId);
-
-			$headerlib->add_jq_onready("
-				$(document).bind('editHelpOpened', function() {
-					var text = getTASelection('#".$editorId."'),
-					possiblePlugin = text.split(/[ \(}]/)[0];
-					if (possiblePlugin.charAt(0) == '{') { //we have a plugin here
-						possiblePlugin = possiblePlugin.substring(1);
-						$('#$id')
-							.val(possiblePlugin)
-							.trigger('keyup');
-
-						var parentTabId = '".$parentTabId."';
-						if (parentTabId) {
-							$('#help_sections a[href=#$parentTabId]').trigger('click');
-							var pluginTr = $('#plugins_help_table tr').not(':hidden');
-
-							if (pluginTr.length == 1) {
-								pluginTr.find('a:first').click();
-							}
-						}
-					}
-				});
-			");
 		}
 
 		$input .= " class='listfilter' />";
@@ -151,7 +126,7 @@ setTimeout(function () {
 }, 1000);
 ";
 		}
-
+	
 		$headerlib->add_jq_onready($content);
 		return $input;
 	}

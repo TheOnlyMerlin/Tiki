@@ -35,19 +35,13 @@ function wikiplugin_avatar_info()
 					array('text' => tra('Left'), 'value' => 'left')
 				),
 			),
-			'fullsize' => array(
-				'required' => false,
-				'name' => tra('Show fullsize File Gallery image'),
-				'description' => tra('If fullsize images are stored in the File Gallery, show the full size one.'),
-				'default' => 'n'
-			),
 		),
 	);
 }
 
 function wikiplugin_avatar($data, $params)
 {
-	global $tikilib, $userlib, $prefs, $user;
+	global $tikilib, $userlib, $user;
 
 	extract($params, EXTR_SKIP);
 
@@ -60,11 +54,6 @@ function wikiplugin_avatar($data, $params)
 	else
 		$avatar = $tikilib->get_user_avatar($data);
 
-		
-	if (isset($fullsize) && $fullsize == 'y' && $prefs["user_store_file_gallery_picture"] == 'y') {
-		$avatar = '<img src="tiki-show_user_avatar.php?fullsize=y&user='. urlencode($data) . '"></img>';
-	}
-        
 	if (isset($page)) {
 		$avatar = "<a href='tiki-index.php?page=$page'>" . $avatar . '</a>';
 	} else if ($userlib->user_exists($data) && $tikilib->get_user_preference($data, 'user_information', 'public') == 'public') {

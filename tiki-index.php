@@ -36,7 +36,6 @@ $inputConfiguration = array(
 $section = 'wiki page';
 $isHomePage = (!isset($_REQUEST['page']));
 require_once('tiki-setup.php');
-
 require_once('lib/multilingual/multilinguallib.php');
 
 if ( $prefs['feature_wiki_structure'] == 'y' ) {

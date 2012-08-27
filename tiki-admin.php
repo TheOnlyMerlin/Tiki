@@ -179,18 +179,6 @@ if ( isset( $_REQUEST['lm_preference'] ) ) {
 				add_feedback($pref, tr('%0 set', $pref), 1, 1);
 				$logslib->add_action('feature', $pref, 'system', (is_array($val['old'])?implode($val['old'], ','):$val['old']).'=>'.(is_array($value)?implode($value, ','):$value));
 			}
-			/*
-				Enable/disable addreference/showreference plugins alognwith references feature.
-			*/
-			if ($pref == 'feature_references') {
-				$tikilib->set_preference('wikiplugin_addreference', $value);
-				$tikilib->set_preference('wikiplugin_showreference', $value);
-
-				/* Add/Remove the plugin toolbars from the editor */
-				$toolbars = array('wikiplugin_addreference', 'wikiplugin_showreference');
-				$t_action = ($value=='y') ? 'add' : 'remove';
-				$tikilib->saveEditorToolbars($toolbars, 'global', 'add', $t_action);
-			}			
 		}
 	}
 }
@@ -436,14 +424,6 @@ $icons = array(
 		'description' => tr('Configure areas feature'),
 		'help' => 'areas',
 	),
-	"workspace" => array(
-		'icon' => 'img/icons/large/areas.png',
-		'position' => '-500px -715px;',
-		'title' => tr('Workspaces'),
-		'disabled' => $prefs['workspace_ui'] != 'y',
-		'description' => tr('Configure workspace feature'),
-		'help' => 'workspace',
-	),
 	"score" => array(
 		'icon' => 'img/icons/large/stock_about.png',
 		'position' => '-200px -415px;',
@@ -629,33 +609,62 @@ if (isset($admintitle) && isset($description)) {
 }
 
 // VERSION TRACKING
-$forcecheck = ! empty($_GET['forcecheck']);
+// If the user elected to force a check.
+if (!empty($_GET['forcecheck'])) {
+	$smarty->assign('tiki_release', $TWV->getLatestMinorRelease());
+	if (!$TWV->isLatestMinorRelease()) {
+		$prefs['tiki_needs_upgrade'] = 'y';
+	} else {
+		$prefs['tiki_needs_upgrade'] = 'n';
+		add_feedback(null, tr('Current version is up to date : <b>%0</b>', $TWV->version), 3);
+	}
+	$smarty->assign('tiki_needs_upgrade', $prefs['tiki_needs_upgrade']);
+	// See if a major release is available.
+	if (!$TWV->isLatestMajorVersion()) {
+		add_feedback(null, tr('A new %0 major release branch is available.', $TWV->branch.'('.$TWV->latestRelease.')'), 3);
+	}
+	$tikilib->set_preference('tiki_needs_upgrade', $prefs['tiki_needs_upgrade']);
+	$tikilib->set_preference('tiki_release', $TWV->getLatestMinorRelease());
+}
 
 // Versioning feature has been enabled, so if the time is right, do a live
 // check, otherwise display the stored data.
-if ($prefs['feature_version_checks'] == 'y' || $forcecheck) {
-	$checker = new Tiki_Version_Checker;
-	$checker->setVersion($TWV->version);
-	$checker->setCycle($prefs['tiki_release_cycle']);
-
-	$expiry = $tikilib->now - $prefs['tiki_version_check_frequency'];
-	$upgrades = $checker->check(function ($url) use ($expiry) {
-		$cachelib = TikiLib::lib('cache');
-		$tikilib = TikiLib::lib('tiki');
-
-		$content = $cachelib->getCached($url, 'http', $expiry);
-
-		if ($content === false) {
-			$content = $tikilib->httprequest($url);
-			$cachelib->cacheItem($url, $content, 'http');
+if ($prefs['feature_version_checks'] == 'y') {
+	// Pull version check database settings
+	$tiki_version_last_check = $tikilib->get_preference('tiki_version_last_check', 0);
+	$tiki_version_check_frequency = $tikilib->get_preference('tiki_version_check_frequency', 0);
+	// Time for a version check!
+	if ($tikilib->now > ($prefs['tiki_version_last_check'] + $prefs['tiki_version_check_frequency'])) {
+		$tikilib->set_preference('tiki_version_last_check', $tikilib->now);
+		$smarty->assign('tiki_version', $TWV->version);
+		if (!$TWV->isLatestMinorRelease()) {
+			$prefs['tiki_needs_upgrade'] = 'y';
+			$tikilib->set_preference('tiki_release', $TWV->getLatestMinorRelease());
+			$smarty->assign('tiki_release', $TWV->getLatestMinorRelease());
+			if (!$TWV->isLatestMajorVersion()) {
+				add_feedback(null, tr('A new %0 major release branch is available.', $TWV->branch.'('.$TWV->latestRelease.')'), 3, 1);
+			}
+		} else {
+			$prefs['tiki_needs_upgrade'] = 'n';
+			$tikilib->set_preference('tiki_release', $TWV->version);
+			$smarty->assign('tiki_release', $TWV->version);
 		}
-
-		return $content;
-	});
-
-	$smarty->assign('upgrade_messages', array_map(function ($upgrade) {
-		return $upgrade->getMessage();
-	}, $upgrades));
+		$tikilib->set_preference('tiki_needs_upgrade', $prefs['tiki_needs_upgrade']);
+		$smarty->assign('tiki_needs_upgrade', $prefs['tiki_needs_upgrade']);
+	} else {
+		$tiki_needs_upgrade = $tikilib->get_preference('tiki_needs_upgrade', 'n');
+		$smarty->assign('tiki_needs_upgrade', $tiki_needs_upgrade);
+		$tiki_release = $tikilib->get_preference('tiki_release', $TWV->version);
+		$smarty->assign('tiki_release', $tiki_release);
+		// Normalize database if necessary.  Usually when an upgrade has
+		// actually been done, but for whatever reason the database has
+		// not had its version tracking info updated.
+		if ($tiki_needs_upgrade == 'y' && version_compare($TWV->version, $tiki_release, '>=')) {
+			$tiki_needs_upgrade = 'n';
+			$tikilib->set_preference('tiki_needs_upgrade', $tiki_needs_upgrade);
+			$smarty->assign('tiki_needs_upgrade', $tiki_needs_upgrade);
+		}
+	}
 }
 
 foreach ($icons as &$icon) {

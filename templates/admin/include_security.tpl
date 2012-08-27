@@ -47,12 +47,6 @@
 			{preference name=feature_ticketlib2}
 		</fieldset>
 		{/tab}
-
-		{tab name="{tr}IDS{/tr}"}
-			{preference name=ids_enabled}
-			{preference name=ids_single_threshold}
-			{preference name=ids_session_threshold}
-		{/tab}
 	
 		{tab name="{tr}Spam protection{/tr}"}
 			<fieldset>
@@ -78,7 +72,7 @@
 					{preference name=comments_akismet_apikey}
 					{preference name=comments_akismet_check_users}
 				</div>
-			
+			{preference name=http_referer_registration_check}			
 		{/tab}
 	
 		{tab name="{tr}Search results{/tr}"}

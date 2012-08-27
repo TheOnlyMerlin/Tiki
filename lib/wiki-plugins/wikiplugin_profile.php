@@ -35,6 +35,9 @@ function wikiplugin_profile_info()
 
 function wikiplugin_profile( $data, $params )
 {
+	require_once 'lib/profilelib/profilelib.php';
+	require_once 'lib/profilelib/installlib.php';
+
 	global $tiki_p_admin;
 
 	if ( $tiki_p_admin != 'y' ) {

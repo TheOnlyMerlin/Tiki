@@ -103,20 +103,24 @@ class FileGalLib extends TikiLib
 		return $return;
 	}
 
-	function get_user_file_gallery()
+	function get_user_file_gallery($auser = '')
 	{
 		global $user, $prefs;
 		$tikilib = TikiLib::lib('tiki');
+
+		if (empty($auser)) {
+			$auser = $user;
+		}
 		
 		// Feature check + Anonymous don't have their own Users File Gallery
-		if ( $user == '' || $prefs['feature_use_fgal_for_user_files'] == 'n' || $prefs['feature_userfiles'] == 'n' || ( $userId = $tikilib->get_user_id($user) ) <= 0  ) {
+		if ( empty($auser) || $prefs['feature_use_fgal_for_user_files'] == 'n' || $prefs['feature_userfiles'] == 'n' || ( $userId = $tikilib->get_user_id($auser) ) <= 0  ) {
 			return false;
 		}
 
 		$conditions = array(
 			'type' => 'user',
 			'name' => $userId,
-			'user' => $user,
+			'user' => $auser,
 			'parentId' => $prefs['fgal_root_user_id']
 		);
 
@@ -617,7 +621,7 @@ class FileGalLib extends TikiLib
 			'wiki_syntax' => '',
 			'default_view' => $prefs['fgal_default_view'],
 			'template' => null,
-			'icon_fileId' => isset($prefs['fgal_icon_fileId']) ? $prefs['fgal_icon_fileId'] : '',
+			'icon_fileId' => $prefs['fgal_icon_fileId'],
 		);
 	}
 	function replace_file_gallery($fgal_info)
@@ -1050,18 +1054,14 @@ class FileGalLib extends TikiLib
 
 	function reindex_all_files_for_search_text()
 	{
-		@ini_set('memory_limit', -1);
 		$files = $this->table('tiki_files');
 
-		for ($offset = 0, $maxRecords = 10; ; $offset += $maxRecords) {
-			$rows = $files->fetchAll(array('fileId', 'filename', 'filesize', 'filetype', 'data', 'path', 'galleryId'), array('archiveId' => 0), $maxRecords, $offset);
-			if (empty($rows))
-				break;
-			foreach ($rows as $row) {
-				$search_text = $this->get_search_text_for_data($row['data'], $row['path'], $row['filetype'], $row['galleryId']);
-				if ($search_text!==false) {
-					$files->update(array('search_data' => $search_text), array('fileId' => $row['fileId']));
-				}
+		$rows = $files->fetchAll(array('fileId', 'filename', 'filesize', 'filetype', 'data', 'path', 'galleryId'), array('archiveId' => 0));
+
+		foreach ($rows as $row) {
+			$search_text = $this->get_search_text_for_data($row['data'], $row['path'], $row['filetype'], $row['galleryId']);
+			if ($search_text!==false) {
+				$files->update(array('search_data' => $search_text), array('fileId' => $row['fileId']));
 			}
 		}
 		include_once("lib/search/refresh-functions.php");
@@ -1388,12 +1388,7 @@ class FileGalLib extends TikiLib
 				if ( $result = $this->getGallerySpecialRoot($galleryId, $subGalleryId, $childs) ) {
 					if ( is_integer($result) ) {
 						return $result;
-					} elseif ( $treeParentId == $prefs['fgal_root_user_id'] || $treeParentId == -1 ) {
-						//
-						// If the parent is :
-						//   - either the User File Gallery, stop here to keep only the user gallery instead of all users galleries
-						//   - or already the top root of all galleries, it means that the gallery is a special gallery root
-						//
+					} elseif ( $treeParentId == -1 ) {
 						return (int)$subGalleryId;
 					} else {
 						return true;
@@ -1453,7 +1448,7 @@ class FileGalLib extends TikiLib
 			$nodes[] = array(
 				'id' => $subGallery['id'],
 				'parent' => $subGallery['parentId'],
-				'data' => smarty_block_self_link($linkParameters, $icon . htmlspecialchars($subGallery['name']), $smarty), 
+				'data' => smarty_block_self_link($linkParameters, $icon . htmlspecialchars($subGallery['name']), $smarty),
 			);
 		}
 		$browseTreeMaker = new BrowseTreeMaker('Galleries');
@@ -1467,20 +1462,19 @@ class FileGalLib extends TikiLib
 	// HTML is a string of HTML code to display the path.
 	function getPath($galleryIdentifier)
 	{
-		global $prefs, $user;
+		global $prefs;
 		$rootIdentifier = $this->getGallerySpecialRoot($galleryIdentifier);
 		$root = $this->get_file_gallery_info($galleryIdentifier);
-		if ( $user != '' && $prefs['feature_use_fgal_for_user_files'] == 'y' ) {
-			$userGallery = $this->get_user_file_gallery();
-			if ($userGallery == $prefs['fgal_root_user_id']) {
-				$rootIdentifier = $userGallery;
+		if ( !empty($user) && $prefs['feature_use_fgal_for_user_files'] == 'y' ) {
+			if ($root['type'] === 'user') {
+				$rootIdentifier = $prefs['fgal_root_user_id'];
 			}
 		}
 		$path = array();
 		for ($node = $this->get_file_gallery_info($galleryIdentifier); $node && $node['galleryId'] != $rootIdentifier; $node = $this->get_file_gallery_info($node['parentId'])) {
-			$path[$node['galleryId']] = $node['name'];
+			$path[$node['galleryId']] = $this->getGalleryName($node);
 		}
-		if (isset($userGallery) && $rootIdentifier == $userGallery) {
+		if ($rootIdentifier == $prefs['fgal_root_user_id']) {
 			$path[$rootIdentifier] = tra('User File Galleries');
 		} elseif ($rootIdentifier == $prefs['fgal_root_wiki_attachments_id']) {
 			$path[$rootIdentifier] = tra('Wiki Attachment File Galleries');
@@ -1499,6 +1493,31 @@ class FileGalLib extends TikiLib
 			'HTML' => $pathHtml,
 			'Array' => $path
 		);
+	}
+
+	/**
+	 * Return the name of a gallery, handling individual names for user galleries
+	 *
+	 * @param array $gal_info	gallery definition
+	 * @param string $auser			username
+	 * @return string				gallery name
+	 */
+	function getGalleryName($gal_info, $auser = '') {
+
+		if ($gal_info['type'] === 'user') {
+			global $user;
+			if (empty($auser)) {
+				$auser = $user;
+			}
+			if (!empty($auser) && $gal_info['user'] == $auser) {
+				$name = tra('My Files');
+			} else {
+				$name = tra('Files of ') . ' ' . $gal_info['user'];
+			}
+		} else {
+			$name = $gal_info['name'];
+		}
+		return $name;
 	}
 
 	// get the size in k used in a fgal and its children
@@ -2205,7 +2224,7 @@ class FileGalLib extends TikiLib
 
 	function get_file_by_name($galleryId, $name, $column='name')
 	{
-		$query = "select `fileId`,`path`,`galleryId`,`filename`,`filetype`,`data`,`filesize`,`name`,`description`, `created` from `tiki_files` where `galleryId`=? AND `$column`=? ORDER BY created DESC LIMIT 1";
+		$query = "select `path`,`galleryId`,`filename`,`filetype`,`data`,`filesize`,`name`,`description`, `created` from `tiki_files` where `galleryId`=? AND `$column`=? ORDER BY created DESC LIMIT 1";
 		$result = $this->query($query, array((int) $galleryId, $name));
 		$res = $result->fetchRow();
 		return $res;
@@ -2579,7 +2598,10 @@ class FileGalLib extends TikiLib
 					$res['share']['nb'] = count($share_result);
 				}
 			}
-				
+			if ($res['isgal']) {
+				$res['name'] = $this->getGalleryName($res);
+			}
+
 			$n++;
 			if ( ! $need_everything && $offset != -1 && $n < $offset ) continue;
 
@@ -2685,6 +2707,8 @@ class FileGalLib extends TikiLib
 				}
 			}
 		}
+
+		$res['name'] = $this->getGalleryName($res);
 
 		return $res;
 	}

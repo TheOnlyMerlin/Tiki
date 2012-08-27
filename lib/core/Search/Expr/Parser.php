@@ -132,12 +132,8 @@ class Search_Expr_Parser
 
 	private function buildNot(&$tokens, $key)
 	{
-		if (isset($tokens[$key + 1])) {
-			$tokens[$key] = new Search_Expr_Not($tokens[$key + 1]);
-			$tokens[$key + 1] = null;
-		} else {
-			$tokens[$key] = null;
-		}
+		$tokens[$key] = new Search_Expr_Not($tokens[$key + 1]);
+		$tokens[$key + 1] = null;
 	}
 
 	private function filterExcessiveKeywords($tokens)

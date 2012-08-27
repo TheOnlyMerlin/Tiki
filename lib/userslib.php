@@ -3080,7 +3080,7 @@ class UsersLib extends TikiLib
 			),
 			array(
 				'name' => 'tiki_p_assign_perm_category',
-				'description' => tra('Can assign perms to category'),
+				'description' => tra('Can assign perms to category)'),
 				'level' => 'admin',
 				'type' => 'category',
 				'admin' => false,
@@ -3799,7 +3799,7 @@ class UsersLib extends TikiLib
 				'name' => 'tiki_p_admin_kaltura',
 				'description' => tra('Can admin Kaltura video feature'),
 				'level' => 'admin',
-				'type' => 'media',
+				'type' => 'kaltura',
 				'admin' => true,
 				'prefs' => array('feature_kaltura'),
 				'scope' => 'global',
@@ -3808,7 +3808,7 @@ class UsersLib extends TikiLib
 				'name' => 'tiki_p_upload_videos',
 				'description' => tra('Can upload video or record from webcam'),
 				'level' => 'editors',
-				'type' => 'media',
+				'type' => 'kaltura',
 				'admin' => false,
 				'prefs' => array('feature_kaltura'),
 				'scope' => 'global',
@@ -3817,7 +3817,16 @@ class UsersLib extends TikiLib
 				'name' => 'tiki_p_edit_videos',
 				'description' => tra('Can edit media information'),
 				'level' => 'editors',
-				'type' => 'media',
+				'type' => 'kaltura',
+				'admin' => false,
+				'prefs' => array('feature_kaltura'),
+				'scope' => 'global',
+			),
+			array(
+				'name' => 'tiki_p_remix_videos',
+				'description' => tra('Can create kaltura remix video'),
+				'level' => 'editors',
+				'type' => 'kaltura',
 				'admin' => false,
 				'prefs' => array('feature_kaltura'),
 				'scope' => 'global',
@@ -3826,7 +3835,7 @@ class UsersLib extends TikiLib
 				'name' => 'tiki_p_delete_videos',
 				'description' => tra('Can delete media'),
 				'level' => 'editors',
-				'type' => 'media',
+				'type' => 'kaltura',
 				'admin' => false,
 				'prefs' => array('feature_kaltura'),
 				'scope' => 'global',
@@ -3835,7 +3844,7 @@ class UsersLib extends TikiLib
 				'name' => 'tiki_p_download_videos',
 				'description' => tra('Can download media'),
 				'level' => 'registered',
-				'type' => 'media',
+				'type' => 'kaltura',
 				'admin' => false,
 				'prefs' => array('feature_kaltura'),
 				'scope' => 'global',
@@ -3844,7 +3853,7 @@ class UsersLib extends TikiLib
 				'name' => 'tiki_p_list_videos',
 				'description' => tra('Can list media'),
 				'level' => 'basic',
-				'type' => 'media',
+				'type' => 'kaltura',
 				'admin' => false,
 				'prefs' => array('feature_kaltura'),
 				'scope' => 'global',
@@ -3853,7 +3862,7 @@ class UsersLib extends TikiLib
 				'name' => 'tiki_p_view_videos',
 				'description' => tra('Can view media'),
 				'level' => 'basic',
-				'type' => 'media',
+				'type' => 'kaltura',
 				'admin' => false,
 				'prefs' => array('feature_kaltura'),
 				'scope' => 'global',
@@ -5300,33 +5309,6 @@ class UsersLib extends TikiLib
 				'prefs' => array('feature_wysiwyg'),
 				'scope' => 'global',
 			),
-			array(
-				'name' => 'tiki_p_use_references',
-				'description' => tra('Can use reference library items'),
-				'level' => 'editors',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_references'),
-				'scope' => 'object',
-			),
-			array(
-				'name' => 'tiki_p_edit_references',
-				'description' => tra('Can add to, edit and remove reference library items'),
-				'level' => 'editors',
-				'type' => 'wiki',
-				'admin' => false,
-				'prefs' => array('feature_references'),
-				'scope' => 'object',
-			),
-			array(
-				'name' => 'tiki_p_workspace_instantiate',
-				'description' => tra('Can create a new workspace for the given template'),
-				'level' => 'admin',
-				'type' => 'workspace',
-				'admin' => false,
-				'prefs' => array('workspace_ui'),
-				'scope' => 'object',
-			),
 		);
 
 		$cachelib->cacheItem('rawpermissions' . $prefs['language'], serialize($permissions));
@@ -5389,7 +5371,6 @@ class UsersLib extends TikiLib
 
 	private function permission_compatibility($newFormat)
 	{
-		$newFormat['shortName'] = substr($newFormat['name'], strlen('tiki_p_'));
 		$newFormat['permName'] = $newFormat['name'];
 		$newFormat['permDesc'] = $newFormat['description'];
 		$newFormat['feature_checks'] = implode(',', $newFormat['prefs']);

@@ -182,7 +182,7 @@ $('#calendar').fullCalendar({
 				element.cluetip({arrows: true, splitTitle: '|', clickThrough: true});
 			},
 			eventClick: function(event) {
-        if (event.url && event.editable) {
+        if (event.url && event.modifiable) {
 			$.ajax({
 					dataType: 'html',
 					url: event.url,
@@ -210,15 +210,15 @@ $('#calendar').fullCalendar({
         return false;
     	},
 			eventResize: function(event,dayDelta,minuteDelta,revertFunc) {
-				$.post($.service('calendar', 'resize'), {
-					calitemId: event.id,
-					delta: (dayDelta*86400+minuteDelta*60)
+				$.ajax({
+						dataType: 'html',
+						url: 'tiki-calendar_action.php?action=resize&calitemId=' + event.id + '&delta=' + (dayDelta*86400+minuteDelta*60)
 				});
 			},
 			eventDrop: function(event,dayDelta,minuteDelta,allDay,revertFunc) {
-				$.post($.service('calendar', 'move'), {
-					calitemId: event.id,
-					delta: (dayDelta*86400+minuteDelta*60)
+				$.ajax({
+						dataType: 'html',
+						url: 'tiki-calendar_action.php?action=move&calitemId=' + event.id + '&delta=' + (dayDelta*86400+minuteDelta*60)
 				});
 			}
 });

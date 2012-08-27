@@ -122,9 +122,8 @@
 
 		{tab name="{tr}Features{/tr}"}
 			<input type="hidden" name="wikifeatures" />    	
-
 			{preference name=feature_sandbox}
-			{preference name=feature_references}
+
 			{preference name=feature_wiki_comments}
 			
 			{preference name=feature_wiki_attachments}
@@ -305,11 +304,6 @@
 		</div>
 		{preference name=wiki_keywords}
 		{preference name=geo_locate_wiki}
-
-		{preference name=namespace_enabled}
-		<div class="adminoptionboxchild" id="namespace_enabled_childcontainer">
-		{preference name=namespace_separator}
-		</div>
 	{/tab}
 
 	{tab name="{tr}Flagged Revision{/tr}"}
@@ -412,8 +406,7 @@
 	{/if}
 	
 	{tab name="{tr}Tools{/tr}"}
-		<a href="tiki-search_replace.php">{tr}Mass search and replace{/tr}</a><br />
-		<a href="tiki-report_direct_object_perms.php">{tr}Report wiki pages with direct object permissions{/tr}</a><br />
+		<a href="tiki-search_replace.php">{tr}Mass search and replace{/tr}</a>
 	{/tab}
 {/tabset}
 

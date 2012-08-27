@@ -315,7 +315,7 @@ function wikiplugin_img_info()
 	);
 }
 
-function wikiplugin_img( $data, $params )
+function wikiplugin_img( $data, $params, $offset, $parseOptions='' )
 {
 	 global $tikidomain, $prefs, $section, $smarty, $tikiroot, $tikilib, $userlib, $user, $tiki_p_upload_files;
 
@@ -325,7 +325,6 @@ function wikiplugin_img( $data, $params )
 	$imgdata['id'] = '';
 	$imgdata['fileId'] = '';
 	$imgdata['randomGalleryId'] = '';
-	$imgdata['galleryId'] = '';
 	$imgdata['fgalId'] = '';
 	$imgdata['sort_mode'] = '';
 	$imgdata['attId'] = '';
@@ -601,6 +600,7 @@ function wikiplugin_img( $data, $params )
 	$srcmash = $imgdata['fileId'] . $imgdata['id'] . $imgdata['attId'] . $imgdata['src'];
 	if (( strpos($srcmash, '|') !== false ) || (strpos($srcmash, ',') !== false ) || !empty($imgdata['fgalId'])) {
 		$separator = '';
+		$id = '';
 		if (!empty($imgdata['id'])) {
 			$id = 'id';
 		} elseif (!empty($imgdata['fileId'])) {
@@ -631,7 +631,7 @@ function wikiplugin_img( $data, $params )
 		foreach ($id_list as $i => $value) {
 			$params[$id] = trim($value);
 			$params['fgalId'] = '';
-			$repl .= wikiplugin_img($data, $params);
+			$repl .= wikiplugin_img($data, $params, $offset, $parseOptions);
 		}
 		if (strpos($repl, $notice) !== false) {
 			return $repl;
@@ -646,7 +646,7 @@ function wikiplugin_img( $data, $params )
 	//////////////////////Set src for html///////////////////////////////
 	//Set variables for the base path for images in file galleries, image galleries and attachments
 	global $base_url;
-	$absolute_links = (!empty(TikiLib::lib('parser')->option['absolute_links'])) ? TikiLib::lib('parser')->option['absolute_links'] : false;
+	$absolute_links = (!empty($parseOptions['absolute_links'])) ? $parseOptions['absolute_links'] : false;
 	$imagegalpath = ($absolute_links ? $base_url : '') . 'show_image.php?id=';
 	$filegalpath = ($absolute_links ? $base_url : '') . 'tiki-download_file.php?fileId=';
 	$attachpath = ($absolute_links ? $base_url : '') . 'tiki-download_wiki_attachment.php?attId=';
@@ -770,14 +770,14 @@ function wikiplugin_img( $data, $params )
 		if ($imgdata['desc'] == 'idesc' || $imgdata['desc'] == 'ititle' || $xmpview) {
 			$metadata = $imageObj->getMetadata(null, null, $xmpview)->typemeta;
 			//description from image iptc
-			$idesc = isset($metadata['iptcraw']['iptc']['2#120'][0]) ? $metadata['iptcraw']['iptc']['2#120'][0] : '';
+			$idesc = isset($metadata['iptc_raw']['2#120'][0]) ? $metadata['iptc_raw']['2#120'][0] : '';	
 			//title from image iptc	
-			$ititle = isset($metadata['iptcraw']['iptc']['2#005'][0]) ? $metadata['iptcraw']['iptc']['2#005'][0] : '';
+			$ititle = isset($metadata['iptc_raw']['2#005'][0]) ? $metadata['iptc_raw']['2#005'][0] : '';
 		}
 				
 		$fwidth = '';
 		$fheight = '';
-		if (isset(TikiLib::lib('parser')->option['indexing']) && TikiLib::lib('parser')->option['indexing']) {
+		if (isset($parseOptions['indexing']) && $parseOptions['indexing']) {
 			$fwidth = 1;
 			$fheight = 1;
 		} else {
@@ -1198,8 +1198,25 @@ function wikiplugin_img( $data, $params )
 		static $lastval = 0;
 		$id = 'imgdialog-' . ++$lastval;
 		$id_link = $id . '-link';
-		$dialog = $imageObj->metadata->dialogTabs($imageObj->metadata, $id, $id_link, $filename);
+		$dialog = $imageObj->metadata->dialogMetadata($imageObj->metadata, $id, $filename);
 		$repl .= $dialog;
+		$jq = '$(document).ready(function() {
+					$("#' . $id . '").css(\'z-index\', \'1005\').dialog({
+							autoOpen: false,
+							width: 700,
+							zIndex: 1005
+					});				
+						
+					$("#' . $id_link . '").click(function() {
+							$("#' . $id . '").accordion({
+								autoHeight: false,
+								collapsible: true
+							}).dialog(\'open\');
+							return false;
+					});
+				});';
+		global $headerlib;
+		$headerlib->add_jq_onready($jq);
 	}
 	//////////////////////  Create enlarge button, metadata icon, description and their divs////////////////////
 	//Start div that goes around button and description if these are set
@@ -1261,9 +1278,7 @@ function wikiplugin_img( $data, $params )
 		}
 		//Add metadata icon
 		if ($imgdata['metadata'] == 'view') {
-			$repl .= '<div style="float:right; margin-right:2px"><a href="#" id="' . $id_link
-				. '"><img src="./img/icons/tag_orange.png" alt="' . tra('Metadata') . '" title="'
-				. tra('Metadata') . '"/></a></div>';
+			$repl .= '<div style="float:right; margin-right:2px"><a href="#" id="' . $id_link . '"><img src="./img/icons/tag_blue.png" alt="' . tra('Metadata') . '" title="' . tra('Metadata') . '"/></a></div>';
 		}
 		//Add description based on user setting (use $desconly from above) and close divs
 		isset($desconly) ? $repl .= $desconly : '';

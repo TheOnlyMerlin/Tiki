@@ -39,7 +39,6 @@ function prefs_feature_list($partial = false)
 		),
 		'feature_areas' => array(
 			'name' => tra('Areas'),
-			'warning' => tra('this feature mostlikely will be replaced - please contact the developer mailing list if you have any question'),
 			'description' => tra('Binding categories and perspectives to each other'),
 			'type' => 'flag',
 			'help' => 'Areas',
@@ -365,15 +364,6 @@ function prefs_feature_list($partial = false)
 			'description' => tra('The Copyright Management System (or ©MS) is a way of licensing your content'),
 			'help' => 'Copyright',
 			'type' => 'flag',
-			'default' => 'n',
-		),
-		'feature_references' => array(
-			'name' => tra('Wiki References'),
-			'description' => tra('Permits using references and the reference library.'),
-			'type' => 'flag',
-			'dependencies' => array(
-				'feature_wiki',
-				),
 			'default' => 'n',
 		),
 		'feature_shoutbox' => array(
@@ -1194,7 +1184,7 @@ function prefs_feature_list($partial = false)
 			'admin' => 'sefurl',
 		),
 		'feature_sefurl_filter' => array(
-			'name' => tra('Search engine friendly URL Postfilter'),
+			'name' => tra('Search engine friendly url Postfilter'),
 			'help' => 'Rewrite+Rules',
 			'type' => 'flag',
 			'perspective' => false,
@@ -2276,10 +2266,9 @@ function prefs_feature_list($partial = false)
 			'default' => 'n',
 		),
 		'feature_use_three_colon_centertag' => array(
-			'name' => tra('Center text using ::: instead of ::'),
-			'description' => tr('Useful to avoid conflicts with C++ scope operators or default namespace separator.'),
+			'name' => tra('Use three colons instead of two to center text. Avoids conflict with C++ resolution scope operator.'),
 			'type' => 'flag',
-			'default' => 'y',
+			'default' => 'n',
 		),
 		'feature_simplebox_delim' => array(
 			'name' => tra('String to use to delimit simplebox'),
@@ -2584,22 +2573,6 @@ function prefs_feature_list($partial = false)
 			'default' => 'n',
 			'warning' => tra('Experimental'),
 			'tags' => array('experimental'),
-			'dependencies' => array(
-				'profiles' => array('Simple Wiki Attribute')
-			)
-		),
-		'feature_jcapture' => array(
-			'name' => tra('jCapture Screencast'),
-			'type' => 'flag',
-			'description' => tra('Use jCapture applet to create screencasts and capture screenshots.'),
-			'help' => 'jCapture',
-			'default' => 'n',				// include UI lib for more effects
-			'warning' => tra('Experimental'),
-			'tags' => array('experimental'),
-			'dependencies' => array(
-				'auth_token_access',
-				'feature_file_galleries',
-			),
 		),
 	);
 }
