@@ -2,6 +2,10 @@
 JQuery/Tiki readme
 -------------------------
 
+13 September 2012
+	jquery.mobile 1.1.0 to 1.1.1
+
+
 7 june 2012
 
 	jquery-ui 1.8.18 to 1.8.21 (last 1.8 apparently)
