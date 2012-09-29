@@ -2,6 +2,9 @@
 JQuery/Tiki readme
 -------------------------
 
+29 September 2012
+	jquery-ui-timepicker-addon.js 0.9.9 to 1.0.3
+
 13 September 2012
 	jquery.mobile 1.1.0 to 1.1.1
 
