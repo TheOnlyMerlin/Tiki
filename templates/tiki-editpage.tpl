@@ -326,17 +326,7 @@ $("#allowhtml").change(function() {
 												<td><label for="copyrightAuthors">{tr}Authors:{/tr}</label></td>
 												<td><input size="40" class="wikiedit" id="copyrightAuthors" name="copyrightAuthors" type="text" value="{$copyrightAuthors|escape}" /></td>
 											</tr>
-											<tr>
-												<td><label for="copyrightHolder">{tr}Copyright Holder :{/tr}</label></td>
-												<td><input size="40" class="wikiedit" id="copyrightHolder" name="copyrightHolder" type="text" value="{$copyrightHolder|escape}" /></td>
-											</tr>
 										</table>
-									</fieldset>
-								{/if}
-								{if $prefs.wikiplugin_addreference eq 'y' && $showBiblioSection}
-									<fieldset>
-										<legend>{tr}Bibliography{/tr}</legend>
-											{include file='addreference.tpl'}
 									</fieldset>
 								{/if}
 								{if $prefs.feature_freetags eq 'y' and $tiki_p_freetags_tag eq 'y'}
@@ -490,18 +480,6 @@ $("#allowhtml").change(function() {
 								<div class="map-container" data-target-field="geolocation" style="height: 250px; width: 250px;"></div>
 								<input type="hidden" name="geolocation" value="{$geolocation_string}" />
 							{/if}
-							{if $prefs.namespace_enabled eq 'y'}
-								<fieldset>
-									<legend>{tr}Namespace{/tr}</legend>
-									{remarksbox title="{tr}Advanced usage{/tr}"}
-										<p>{tr}The namespace for a page is guessed automatically from the page name. However, some exceptions may arise. This option allows to override the namespace.{/tr}</p>
-									{/remarksbox}
-									<label>
-										{tr}Explicit Namespace{/tr}
-										<input type="text" name="explicit_namespace" value="{$explicit_namespace|escape}" />
-									</label>
-								</fieldset>
-							{/if}
 							{if $tiki_p_admin_wiki eq "y"}
 								<a href="tiki-admin.php?page=wiki">{tr}Admin wiki preferences{/tr} {icon _id='wrench'}</a>
 							{/if}
@@ -532,3 +510,5 @@ $("#allowhtml").change(function() {
 	</table>
 </form>
 {include file='tiki-page_bar.tpl'}
+{if $prefs.javascript_enabled eq "n"}{include file='tiki-edit_help.tpl'}{/if}
+{include file='tiki-edit_help_plugins.tpl'}

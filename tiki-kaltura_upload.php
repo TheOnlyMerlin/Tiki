@@ -6,22 +6,15 @@
 // $Id$
 
 require_once 'tiki-setup.php';
-require_once 'lib/videogals/kalturalib.php';
+require_once 'lib/videogals/videogallib.php';
 
-$auto_query_args = array();
-
-$access->check_feature('feature_kaltura');
 $access->check_permission(array('tiki_p_upload_videos'));
 //get_strings tra('Upload Media')
 
 $cwflashVars = array();
-if ($user) {
-	$cwflashVars["uid"]               = $user;
-} else {
-	$cwflashVars["uid"]               = 'Anonymous';
-}
-$cwflashVars["partnerId"]         = $prefs['kaltura_partnerId'];
-$cwflashVars["ks"]                = $kalturalib->session;
+$cwflashVars["uid"]               = $kuser;
+$cwflashVars["partnerId"]         = $prefs['partnerId'];
+$cwflashVars["ks"]                = $ksession;
 $cwflashVars["afterAddEntry"]     = "afterAddEntry";
 $cwflashVars["close"]             = "onContributionWizardClose";
 $cwflashVars["showCloseButton"]   = false;
@@ -35,12 +28,5 @@ if ($_REQUEST['kcw']) {
 	$smarty->assign_by_ref('count', $count);
 }
 // Display the template
-if (isset($_REQUEST['full']) && $_REQUEST['full'] === 'n') {
-
-	$smarty->assign('mid', 'tiki-kaltura_upload.tpl');
-	$smarty->display("tiki_full.tpl");
-
-} else {
-	$smarty->assign('mid', 'tiki-kaltura_upload.tpl');
-	$smarty->display("tiki.tpl");
-}
+$smarty->assign('mid', 'tiki-kaltura_upload.tpl');
+$smarty->display("tiki.tpl");

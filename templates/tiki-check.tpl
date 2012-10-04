@@ -1,4 +1,4 @@
-{* $Id$ *}
+{* $Id: tiki-check.tpl 43202 2012-09-29 19:18:29Z amette $ *}
 {title help="Server+Check"}{tr}Server Check{/tr}{/title}
 
 <h2>{tr}MySQL Database Properties{/tr}</h2>

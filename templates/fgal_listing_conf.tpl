@@ -9,7 +9,6 @@
 		<select id="fgal_{$key}" name="fgal_{$key}">
 			<option value="list"{if $item.value eq 'list'} selected="selected"{/if}>{tr}List{/tr}</option>
 			<option value="browse"{if $item.value eq 'browse'} selected="selected"{/if}>{tr}Browse{/tr}</option>
-			<option value="page"{if $item.value eq 'page'} selected="selected"{/if}>{tr}Page{/tr}</option>
 		</select>
 	</td>
 </tr>
@@ -23,7 +22,7 @@
 			</tr>
 		{else}
 <tr>
-	<td><label for="fgal_{$key}{if isset($fgal_ext)}{$fgal_ext}{/if}">{$item.name}:</label></td>
+	<td><label for="fgal_{$key}{$fgal_ext}">{$item.name}:</label></td>
 	{assign var='pref_name' value="fgal_$key"}
 	<td><input type="checkbox" id="fgal_{$key}" name="fgal_{$key}" {if $item.value eq 'y'}checked="checked"{/if}{if $edit_mode eq 'y' and $prefs.$pref_name neq 'y'} disabled="disabled"{/if} />
 		{if $edit_mode eq 'y' and $prefs.$pref_name neq 'y'}

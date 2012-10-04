@@ -2194,7 +2194,7 @@ class TikiSheetHTMLTableHandler extends TikiSheetDataHandler
 	}
 
 	// _load {{{2
-	function _load( &$sheet )
+	function _load( TikiSheet &$sheet )
 	{
 
 		$d = $this->data;

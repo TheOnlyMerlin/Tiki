@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -89,7 +89,7 @@ if (isset($_REQUEST['max'])) {
 	$maxRecords = $prefs['maxRecords'];
 }
 
-if ($tiki_p_view_actionlog == 'y') {
+if ($tiki_p_admin == 'y') {
 	if (isset($_REQUEST['save'])) {
 		foreach ($action_log_conf_selected as $index => $conf) {
 			if (isset($_REQUEST['v_' . $conf['code']]) && $_REQUEST['v_' . $conf['code']] == 'on') { //viewed and reported
@@ -229,7 +229,7 @@ if (!empty($_REQUEST['actionId']) && $tiki_p_admin == 'y') {
 		}
 	}
 }
-if ($tiki_p_list_users == 'y') {
+if ($tiki_p_admin == 'y') {
 	$users = $userlib->list_all_users();
 	$groups = $userlib->list_all_groups();
 } else {
@@ -238,10 +238,10 @@ if ($tiki_p_list_users == 'y') {
 	);
 	$groups = $tikilib->get_user_groups($user);
 	$groups = array_diff(
-		$groups,
-		array(
-			'Anonymous'
-		)
+					$groups,
+					array(
+						'Anonymous'
+					)
 	);
 	$_REQUEST['selectedUsers'] = array($user);
 }
@@ -713,16 +713,16 @@ if (isset($_REQUEST['graph'])) {
 			die;
 } elseif ($prefs['feature_jpgraph'] == 'y') {
 	$smarty->assign(
-		'bgcolors',
-		array(
-				'white',
-				'gray',
-				'silver',
-				'ivory',
-				'whitesmoke',
-				'beige',
-				'darkgrey'
-		)
+					'bgcolors',
+					array(
+							'white',
+							'gray',
+							'silver',
+							'ivory',
+							'whitesmoke',
+							'beige',
+							'darkgrey'
+			)
 	);
 	//get_strings tra('white'), tra('gray'), tra('silver'), tra('ivory'), tra('whitesmoke'), tra('beige'),tra('darkgrey')
 	$smarty->assign('defaultBgcolor', 'whitesmoke');

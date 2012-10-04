@@ -498,6 +498,8 @@ ul.jumplinks,
 	top: 9010px;
 	left: 9010px;
 	padding: 5px;
+	font-weight: bold;
+	border: 2px solid #191970;
 	width: 6em;
 	z-index: 9;
 }
@@ -2040,6 +2042,10 @@ ul.freetagged li {
 	vertical-align: middle;
 }
 
+.webmail_list .button {
+	display: inline-block;
+}
+
 .webmail_message_headers {
 	width: 100%;
 }
@@ -2506,33 +2512,5 @@ li.archivedate {
     list-style: none outside none;
     text-indent: -15px;
 }
-
-/* cookie consent styles */
-
-#cookie_consent_div {
-	padding: 1em;
-	margin: 1em;
-	border: 1px solid #999;
-	color: #666;
-	background-color: #fff;
-}
-
-#cookie_consent_div.banner {
-	position: fixed;
-	padding: 1em;
-	margin: 0;
-	border: 1px solid #999;
-	width: 100%;
-	top: 0;
-	left: 0;
-	z-index: 100;
-}
-
-#cookie_consent_div .description {
-	font-style: normal;
-	font-size: 1.1em;
-	font-weight: bold;
-}
-
 
 /* End of File */

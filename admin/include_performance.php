@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -45,10 +45,10 @@ if ( function_exists('apc_sma_info') && ini_get('apc.enabled') ) {
 		'hit_miss' => $cache['num_misses'] / $hit_total,
 		'hit_total' => $hit_total,
 	);
-} elseif ( function_exists('xcache_info') && ( ini_get('xcache.cacher') == '1' || ini_get('xcache.cacher') == 'On' ) ) {
+} elseif ( function_exists('xcache_info') ) {
 	$opcode_cache = 'XCache';
 
-	if ( ini_get('xcache.admin.enable_auth') == '1' || ini_get('xcache.admin.enable_auth') == 'On' ) {
+	if ( ini_get('xcache.admin.enable_auth') ) {
 		$opcode_stats['warning_xcache_blocked'] = true;
 	} else {
 		$stat_flag = 'xcache.stat';
@@ -61,7 +61,7 @@ if ( function_exists('apc_sma_info') && ini_get('apc.enabled') ) {
 			'hit_total' => 0,
 		);
 
-		foreach (range(0, xcache_count(XC_TYPE_PHP) - 1) as $index) {
+		foreach ( range(0, xcache_count(XC_TYPE_PHP) - 1) as $index ) {
 			$info = xcache_info(XC_TYPE_PHP, $index);
 
 			$opcode_stats['hit_hit'] += $info['hits'];
@@ -87,21 +87,21 @@ if ( $stat_flag ) {
 
 if ( isset($opcode_stats['hit_total']) ) {
 	$opcode_stats = array_merge(
-		$opcode_stats,
-		array(
-			'warning_fresh' => $opcode_stats['hit_total'] < 10000,
-			'warning_ratio' => $opcode_stats['hit_hit'] < 0.8,
-		)
+					$opcode_stats, 
+					array(
+						'warning_fresh' => $opcode_stats['hit_total'] < 10000,
+						'warning_ratio' => $opcode_stats['hit_hit'] < 0.8,
+					) 
 	);
 }
 
 if ( isset($opcode_stats['memory_total']) ) {
 	$opcode_stats = array_merge(
-		$opcode_stats,
-		array(
-			'warning_starve' => $opcode_stats['memory_avail'] < 0.2,
-			'warning_low' => $opcode_stats['memory_total'] < 60*1024*1024,
-		)
+					$opcode_stats, 
+					array(
+						'warning_starve' => $opcode_stats['memory_avail'] < 0.2,
+						'warning_low' => $opcode_stats['memory_total'] < 60*1024*1024,
+					) 
 	);
 }
 

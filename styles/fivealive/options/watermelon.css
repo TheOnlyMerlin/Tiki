@@ -1,5 +1,5 @@
 /* $Id$ 
-	Watermelon theme option for FiveAlive themes for
+	Watermelon theme option for FiveAlive theme for
 	Tiki Wiki CMS Groupware.
 */
 
@@ -209,16 +209,18 @@ th.header {
 	color: #f9dfe2;
 }
 
-.caltable .odd,
-.caltable .even {
+.calodd,
+.caleven {
 	border: 1px solid #8b1932;
 }
 
-.odd {
+.odd,
+.calodd {
 	background: #f6cdd2;
 }
 
-.even {
+.even,
+.caleven {
 	background: #f9f0f0;
 }
 

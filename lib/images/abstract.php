@@ -240,9 +240,9 @@ class ImageAbstract
 		return $this->width;
 	}
 	
-	function getMetadata($filename = null, $ispath = true, $extended = true, $bestarray = true)
+	function getMetadata($filename = null, $ispath = true, $extended = true, $mwg_compliant = true)
 	{
-		include_once('lib/metadata/metadatalib.php');
+		include_once('lib/metadata/metadata.php');
 		if ($filename === null) {
 			if (!empty($this->filename)) {
 				$filename = $this->filename;
@@ -253,8 +253,7 @@ class ImageAbstract
 			}
 		}
 		if (!is_object($this->metadata) || get_class($this->metadata) != 'FileMetadata') {
-			$metadata = new FileMetadata;
-			$this->metadata = $metadata->getMetadata($filename, $ispath, $extended);
+			$this->metadata = new FileMetadata($filename, $ispath, $extended, $mwg_compliant);
 		}
 		return $this->metadata;
 	}

@@ -37,7 +37,6 @@
 
 				<div class="adminoptionbox">
 					{preference name=feature_version_checks}
-					{preference name=tiki_release_cycle}
 					<div id="feature_version_checks_childcontainer">
 						{preference name=tiki_version_check_frequency}
 					</div>
@@ -74,8 +73,6 @@
 
 					{preference name=zend_mail_smtp_port}
 					{preference name=zend_mail_smtp_security}
-					{preference name=zend_mail_smtp_helo}
-					{preference name=zend_mail_queue}
 				</div>
 				<div class="adminoptionbox">
 					<label for="testMail">{tr}Email to send a test mail{/tr}</label>
@@ -165,7 +162,6 @@
 				{preference name=feature_contact}
 				<div class="adminoptionboxchild" id="feature_contact_childcontainer">
 					{preference name=contact_anon}
-					{preference name=contact_priority_onoff}
 					{preference name=contact_user}
 				</div>
 			</fieldset>
@@ -282,14 +278,6 @@
 				</div>
 			</fieldset>
 
-			<fieldset>
-				<legend class="heading">{tr}Namespace{/tr}</legend>
-
-				{preference name=namespace_enabled}
-				<div class="adminoptionboxchild" id="namespace_enabled_childcontainer">
-					{preference name=namespace_separator}
-				</div>
-			</fieldset>
 
 		{/tab}
 

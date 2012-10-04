@@ -48,8 +48,6 @@ function wikiplugin_mediaplayer_info()
 				'description' => tra('Complete URL to the flv to include.'),
 				'filter' => 'url'
 			),
-
-			// The following param needs an URL with an extension (ex.: example.wmv works but not tiki-download_file.php?fileId=4) --marclaporte
 			'src' => array(
 				'required' => false,
 				'name'=> tra('URL'),
@@ -57,26 +55,6 @@ function wikiplugin_mediaplayer_info()
 				'filter' => 'url',
 				'default' => '',
 			),
-
-			// The type parameter is verified for QuickTime only. arildb
-			'type' => array(
-				'required' => false,
-				'name'=> tra('File type'),
-				'description' => tra('Filetype for source URL, e.g. mp4. Specify one of the supported filetypes when the URL file is missing the file extention. This is the case for File Gallery files.'),
-				'default' => '',
-			),
-			'width' => array(
-				'required' => false,
-				'name'=> tra('Width'),
-				'description' => tra('Player width in px or %'),
-				'default' => '',
-				),
-			'height' => array(
-				'required' => false,
-				'name'=> tra('Height'),
-					'description' => tra('Player height in px or %'),
-				'default' => '',
-				),
 			'style' => array(
 				'required' => false,
 				'name' => tra('Style'),
@@ -178,14 +156,7 @@ function wikiplugin_mediaplayer($data, $params)
 			
 			$js .= "$param: $value,";
 		}
-		// Force scaling (keeping the aspect ratio) of the QuickTime player
-		//	Tried with .mp4. Not sure how this will work with other formats, not using QuickTime.
-		// See: http://jquery.malsup.com/media/#players for default players for different formats. arildb
-		$js .= " params: { 
-				scale: 'aspect'
-				} 
-			} );";
-			
+		$js .= "} );";
 		$headerlib->add_jq_onready($js);
 		return "<a href=\"".$params['src']."\" id=\"$id\"></a>";
 	}

@@ -1,9 +1,4 @@
 <div class="files-field uninitialized">
-{if $field.limit}
-	{remarksbox _type=info title="{tr}Attached files limitation{/tr}"}
-		{tr _0=$field.limit}The amount of files that can be attached is limited to <strong>%0</strong>. The latest files will be preserved.{/tr}
-	{/remarksbox}
-{/if}
 <ol class="tracker-item-files current-list">
 	{foreach from=$field.files item=info}
 		<li data-file-id="{$info.fileId|escape}">
@@ -16,6 +11,11 @@
 {if $field.canUpload}
 	<fieldset id="{$field.ins_id|escape}-drop" class="file-drop">
 		<legend>{tr}Upload files{/tr}</legend>
+		{if $field.limit}
+			{remarksbox _type=info title="{tr}Attached files limitation{/tr}"}
+				{tr _0=$field.limit}The amount of files that can be attached is limited to <strong>%0</strong>. Additional files uploaded will still be uploaded to the server and searchable, but they will not be attached to this item. Make sure you remove the files no longer required before you save your changes.{/tr}
+			{/remarksbox}
+		{/if}
 		<p style="display:none;">{tr}Drop files from your desktop here or browse for them{/tr}</p>
 		<input class="ignore" type="file" name="{$field.ins_id|escape}[]" accept="{$field.filter|escape}" multiple="multiple"/>
 	</fieldset>
@@ -31,8 +31,7 @@
 {if $prefs.fgal_upload_from_source eq 'y' and $field.canUpload}
 	<fieldset>
 		<legend>{tr}Upload from URL{/tr}</legend>
-		<label>{tr}URL:{/tr} <input class="url" name="url" placeholder="http://"/></label>
-		{tr}Type or paste the URL and press ENTER{/tr}
+		<label>{tr}URL:{/tr} <input class="url" type="url"/></label>
 	</fieldset>
 {/if}
 </div>

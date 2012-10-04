@@ -543,8 +543,7 @@ if ($calendarViewMode['casedefault'] == 'day') {
 	foreach (array_keys($hrows) as $anHour) {
 		for ($i=0, $tmp_count = count($hrows[$anHour]); $i < $tmp_count; $i++) {
 			// setting number of simulaneous events foreach event, so that we can figure out its width without overwriting
-			$hrows[$anHour][$i]['concurrences'] = isset($concurrencies[$hrows[$anHour][$i]['calitemId']]['value']) ?
-				$concurrencies[$hrows[$anHour][$i]['calitemId']]['value'] : null;
+			$hrows[$anHour][$i]['concurrences'] = $concurrencies[$hrows[$anHour][$i]['calitemId']]['value'];
 			// setting duration of the event within the day
 			$hrows[$anHour][$i]['duree'] = $eventHoraires[$eventIndexes[$hrows[$anHour][$i]['calitemId']]]['duree'] * 24;
 			$hrows[$anHour][$i]['left'] = .9 * $tmpVals[$hrows[$anHour][$i]['calitemId']]['offset'] + 10;
@@ -625,7 +624,7 @@ if ($calendarViewMode['casedefault'] == 'day') {
 		foreach ($tmpRes as $val) {
 			foreach ($val as $index=>$evtId) {
 				$concurrencies[$wd][$evtId]['value'] = $maxConcurrency;
-				$startNew = isset($eventHoraires[$wd])? $eventHoraires[$wd][$evtId]['start'] : null;
+				$startNew = $eventHoraires[$wd][$evtId]['start'];
 				foreach ($slots as $index=>$oldEvtId) {
 					if ($oldEvtId != $evtId) {
 						if ($oldEvtId > 0) {
@@ -653,7 +652,7 @@ if ($calendarViewMode['casedefault'] == 'day') {
 	foreach (array_keys($hrows) as $aDay) {
 		foreach (array_keys($hrows[$aDay]) as $anHour) {
 			for ($i=0, $tmp_count = count($hrows[$aDay][$anHour]); $i < $tmp_count; $i++) {
-				if (empty($manyEvents[$aDay]['tooMany']) && $concurrencies[$aDay][$hrows[$aDay][$anHour][$i]['calitemId']]['value'] <= $maxSimultaneousWeekViewEvents) {
+				if (!$manyEvents[$aDay]['tooMany'] && $concurrencies[$aDay][$hrows[$aDay][$anHour][$i]['calitemId']]['value'] <= $maxSimultaneousWeekViewEvents) {
 					$hrows[$aDay][$anHour][$i]['concurrences'] = $concurrencies[$aDay][$hrows[$aDay][$anHour][$i]['calitemId']]['value'];
 					$hrows[$aDay][$anHour][$i]['duree'] = $eventHoraires[$aDay][$hrows[$aDay][$anHour][$i]['calitemId']]['duree'] * 24;
 					$hrows[$aDay][$anHour][$i]['left'] = $hrows[$aDay][$anHour][$i]['left'] + $concurrencies[$aDay][$hrows[$aDay][$anHour][$i]['calitemId']]['offset'];

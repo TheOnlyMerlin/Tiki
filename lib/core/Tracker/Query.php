@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -33,7 +33,7 @@ class Tracker_Query
 	private $fields = array();
 	private $status = "opc";
 	private $sort = null;
-	private $limit = 100; //added limit so default wouldn't crash system
+	private $limit = 0;
 	private $offset = 0;
 	private $byName = false;
 	private $includeTrackerDetails = true;
@@ -46,7 +46,6 @@ class Tracker_Query
 	private $concat = true;
 	private $filterType = array();
 	private $inputDefaults = array();
-	public $itemsRaw = array();
 
 	public static function tracker($tracker)
 	{
@@ -67,47 +66,18 @@ class Tracker_Query
 
 	public function itemId($itemId)
 	{
-		$this->itemId = (int)$itemId;
+		$this->itemId = $itemId;
 		return $this;
 	}
-
+	
 	public function filter($filter = array())
 	{
-		$filter = array_merge(
-			array(
-				'field'=>'',
-				'type'=> 'and',
-				'value'=> ''
-			), $filter
-		);
-
 		$this->fields[] = $filter['field'];
-		$this->filterType[] = $filter['type']; //really only things that should be accepted are "and" and "or", woops, and "like"
-
-		if ($filter['type'] == 'like') {
-			$this->search[] = $filter['value'];
-		} else {
-			$this->equals[] = $filter['value'];
-		}
-
+		$this->filterType[] = (isset($filter['type']) ? $filter['type'] : 'and'); //really only things that should be accepted are "and" and "or"
+		$this->equals[] = $filter['value'];
 		return $this;
 	}
-
-	public function filterFieldByValue($field, $value)
-	{
-		return $this->filter(array('field'=> $field, 'value'=>$value));
-	}
-
-	public function filterFieldByValueLike($field, $value)
-	{
-		return $this->filter(array('field'=> $field, 'value'=>$value, 'type'=> 'like'));
-	}
-
-	public function filterFieldByValueOr($field, $value)
-	{
-		return $this->filter(array('field'=> $field, 'value'=>$value, 'type'=> 'or'));
-	}
-
+	
 	public function equals($equals = array())
 	{
 		$this->equals = $equals;
@@ -193,22 +163,6 @@ class Tracker_Query
 			->query();
 	}
 
-	public function getLast()
-	{
-		return $this
-			->desc(true)
-			->limit(1)
-			->query();
-	}
-
-	public function getItemId()
-	{
-		$query = $this->getOne();
-		$key = (int)end(array_keys($query));
-		$key = ($key > 0 ? $key : 0);
-		return $key;
-	}
-
 	public function debug($debug = true, $concat = true)
 	{
 		$this->debug = $debug;
@@ -216,74 +170,65 @@ class Tracker_Query
 		return $this;
 	}
 
-	private function canView()
-	{
-		return Perms::get(array( 'type' => 'tracker', 'object' => $this->trackerId() ))->view;
-	}
-
-	private function canEdit()
-	{
-		return Perms::get(array( 'type' => 'tracker', 'object' => $this->trackerId() ))->edit;
-	}
-
-	/* In the construct we putself(); the field options for "items list" (type 'l') into a table to be joined upon,
+	/* In the construct we putself(); the field options for "items list" (type 'l') into a table to be joined upon, 
 	 * so instead of running a query for every row, we use simple joins to get the job done. We use a temporary
 	 * table so that it is removed once the connection is closed or after the page loads.
 	 */
 	function __construct($tracker = '')
 	{
-		global $tikilib;
+		global $tikilib, $trklib;
 		$this->tracker = $tracker;
+		$trklib = TikiLib::lib('trk');
 
 		$tikilib->query(
-			"DROP TABLE IF EXISTS temp_tracker_field_options;
-			CREATE TEMPORARY TABLE temp_tracker_field_options (
-				trackerIdHere INT,
-				trackerIdThere INT,
-				fieldIdThere INT,
-				fieldIdHere INT,
-				displayFieldIdThere INT,
-				displayFieldIdHere INT,
-				linkToItems INT,
-				type VARCHAR(1),
-				options VARCHAR(50)
-				);
-
-			INSERT INTO temp_tracker_field_options
-			SELECT
-			tiki_tracker_fields.trackerId,
-			REPLACE(SUBSTRING(
-					SUBSTRING_INDEX(tiki_tracker_fields.options, ',', 1),
-					LENGTH(SUBSTRING_INDEX(tiki_tracker_fields.options, ',', 1 -1)) + 1
-					),
-				',', ''),
-			REPLACE(SUBSTRING(
-						SUBSTRING_INDEX(tiki_tracker_fields.options, ',', 2),
-						LENGTH(SUBSTRING_INDEX(tiki_tracker_fields.options, ',', 2 -1)) + 1
-						),
-					',', ''),
-			REPLACE(SUBSTRING(
-						SUBSTRING_INDEX(tiki_tracker_fields.options, ',', 3),
-						LENGTH(SUBSTRING_INDEX(tiki_tracker_fields.options, ',', 3 -1)) + 1
-						),
-					',', ''),
-			REPLACE(SUBSTRING(
-						SUBSTRING_INDEX(tiki_tracker_fields.options, ',', 4),
-						LENGTH(SUBSTRING_INDEX(tiki_tracker_fields.options, ',', 4 -1)) + 1
-						),
-					',', ''),
-			tiki_tracker_fields.fieldId,
-			REPLACE(SUBSTRING(
-						SUBSTRING_INDEX(tiki_tracker_fields.options, ',', 5),
-						LENGTH(SUBSTRING_INDEX(tiki_tracker_fields.options, ',', 5 -1)) + 1
-						),
-					',', ''),
-			tiki_tracker_fields.type,
-			tiki_tracker_fields.options
-				FROM tiki_tracker_fields
-				WHERE tiki_tracker_fields.type = 'l';
-
-			SET group_concat_max_len = 4294967295;"
+						"DROP TABLE IF EXISTS temp_tracker_field_options;
+						CREATE TEMPORARY TABLE temp_tracker_field_options (
+							trackerIdHere INT,
+							trackerIdThere INT,
+							fieldIdThere INT,
+							fieldIdHere INT,
+							displayFieldIdThere INT,
+							displayFieldIdHere INT,
+							linkToItems INT,
+							type VARCHAR(1),
+							options VARCHAR(50)
+							);
+		
+						INSERT INTO temp_tracker_field_options
+						SELECT
+						tiki_tracker_fields.trackerId,
+						REPLACE(SUBSTRING(
+								SUBSTRING_INDEX(tiki_tracker_fields.options, ',', 1),
+								LENGTH(SUBSTRING_INDEX(tiki_tracker_fields.options, ',', 1 -1)) + 1
+								),
+							',', ''),
+						REPLACE(SUBSTRING(
+									SUBSTRING_INDEX(tiki_tracker_fields.options, ',', 2),
+									LENGTH(SUBSTRING_INDEX(tiki_tracker_fields.options, ',', 2 -1)) + 1
+									),
+								',', ''),
+						REPLACE(SUBSTRING(
+									SUBSTRING_INDEX(tiki_tracker_fields.options, ',', 3),
+									LENGTH(SUBSTRING_INDEX(tiki_tracker_fields.options, ',', 3 -1)) + 1
+									),
+								',', ''),
+						REPLACE(SUBSTRING(
+									SUBSTRING_INDEX(tiki_tracker_fields.options, ',', 4),
+									LENGTH(SUBSTRING_INDEX(tiki_tracker_fields.options, ',', 4 -1)) + 1
+									),
+								',', ''),
+						tiki_tracker_fields.fieldId,
+						REPLACE(SUBSTRING(
+									SUBSTRING_INDEX(tiki_tracker_fields.options, ',', 5),
+									LENGTH(SUBSTRING_INDEX(tiki_tracker_fields.options, ',', 5 -1)) + 1
+									),
+								',', ''),
+						tiki_tracker_fields.type,
+						tiki_tracker_fields.options
+							FROM tiki_tracker_fields
+							WHERE tiki_tracker_fields.type = 'l';
+		
+				SET group_concat_max_len = 4294967295;"
 		);
 
 		/*For any fields that have multi items, we use php to parse those out, there shouldn't be too many
@@ -295,18 +240,18 @@ class Tracker_Query
 			foreach ($displayFieldIdsThere as $key => $displayFieldIdThere) {
 				if ($key > 0) {
 					$tikilib->query(
-						"INSERT INTO temp_tracker_field_options	VALUES (?,?,?,?,?,?,?,?,?)",
-						array(
-							$row["trackerIdHere"],
-							$row["trackerIdThere"],
-							$row["fieldIdThere"],
-							$row["fieldIdHere"],
-							$displayFieldIdThere,
-							$row["displayFieldIdHere"],
-							$row["linkToItems"],
-							$row["type"],
-							$row["options"]
-						)
+									"INSERT INTO temp_tracker_field_options	VALUES (?,?,?,?,?,?,?,?,?)",
+									array(
+										$row["trackerIdHere"],
+										$row["trackerIdThere"],
+										$row["fieldIdThere"],
+										$row["fieldIdHere"],
+										$displayFieldIdThere,
+										$row["displayFieldIdHere"],
+										$row["linkToItems"],
+										$row["type"],
+										$row["options"]
+									)
 					);
 				}
 			}
@@ -365,23 +310,23 @@ class Tracker_Query
 		switch ( $dir ) {
 			case "asc":
 				$dir = SORT_ASC;
-				break;
+							break;
 
 			case "desc":
 				$dir = SORT_DESC;
-				break;
+							break;
 
 			case "regular":
 				$dir = SORT_REGULAR;
-				break;
+							break;
 
 			case "numeric":
 				$dir = SORT_NUMERIC;
-				break;
+							break;
 
 			case "string":
 				$dir = SORT_STRING;
-				break;
+							break;
 
 			default:
 				$dir = SORT_ASC;
@@ -425,7 +370,7 @@ class Tracker_Query
 		}
 		return 0;
 	}
-
+	
 	private function concat_str($field)
 	{
 		if ($this->concat == false) {
@@ -434,19 +379,21 @@ class Tracker_Query
 			return "GROUP_CONCAT(".$field." SEPARATOR '" . $this->delimiter . "')";
 		}
 	}
-
-	public function trackerId()
+	
+	private function trackerId()
 	{
+		global $trklib;
+		
 		if ($this->byName == true) {
-			$trackerId = TikiLib::lib('trk')->get_tracker_by_name($this->tracker);
+			$trackerId = $trklib->get_tracker_by_name($this->tracker);
 		} else {
 			$trackerId = $this->tracker;
 		}
-
-		if (!empty($trackerId) && !is_numeric($trackerId)) {
+		
+		if (!empty($trackerId) && !is_numeric($trackerId)) { 
 			throw new Exception("Opps, looks like you need to call ->byName();");
 		}
-
+		
 		return $trackerId;
 	}
 	/*Queries & filters trackers from mysql, orders results in a way that is human understandable and can be manipulated easily
@@ -474,7 +421,7 @@ class Tracker_Query
 
 		$trackerId = $this->trackerId();
 
-		if (empty($trackerId) || $this->canView() == false) {//if we can't find a tracker, then return
+		if (empty($trackerId)) {//if we can't find a tracker, then return
 			return array();
 		}
 
@@ -484,29 +431,27 @@ class Tracker_Query
 
 		$params[] = $trackerId;
 
-		if (!empty($this->start) && empty($this->search)) {
+		if (!empty($this->start) && !$this->search) {
 			$params[] = $this->start;
 		}
 
-		if (!empty($this->end) && empty($this->search)) {
+		if (!empty($this->end) && !$this->search) {
 			$params[] = $this->end;
 		}
 
-		if (!empty($this->itemId) && empty($this->search)) {
+		if (!empty($this->itemId) && !$this->search) {
 			$params[] = $this->itemId;
 		}
 
-
-		/*Get field ids from names*/
 		if ($this->byName == true && !empty($this->fields)) {
 			$fieldIds = array();
 			foreach ($this->fields as $field) {
 				$fieldIds[] = $tikilib->getOne(
-					"SELECT fieldId FROM tiki_tracker_fields" .
-					" LEFT JOIN tiki_trackers ON (tiki_trackers.trackerId = tiki_tracker_fields.trackerId)" .
-					" WHERE" .
-					" tiki_trackers.name = ? AND tiki_tracker_fields.name = ?",
-					array($this->tracker, $field)
+								"SELECT fieldId FROM tiki_tracker_fields" .
+								" LEFT JOIN tiki_trackers ON (tiki_trackers.trackerId = tiki_tracker_fields.trackerId)" .
+								" WHERE" .
+								" tiki_trackers.name = ? AND tiki_tracker_fields.name = ?",
+								array($this->tracker, $field)
 				);
 			}
 			$this->fields = $fieldIds;
@@ -515,41 +460,27 @@ class Tracker_Query
 		if (count($this->fields) > 0 && (count($this->equals) > 0 || count($this->search) > 0)) {
 			for ($i = 0, $count_fields = count($this->fields); $i < $count_fields; $i++) {
 				if (strlen($this->fields[$i]) > 0) {
-
-					if ($i > 0) {
-						switch ($this->filterType[$i]) {
-							case "or":
-								$fields_safe .= " OR ";
-								break;
-							case "and":
-								$fields_safe .= " AND ";
-								break;
-							case "like":
-								$fields_safe .= " AND ";
-								break;
-						}
-					}
-
 					$fields_safe .= " ( search_item_fields.fieldId = ? ";
 					$params[] = $this->fields[$i];
 
-					if (isset($this->equals[$i])) {
+					if (strlen($this->equals[$i]) > 0) {
 						$fields_safe .= " AND search_item_fields.value = ? ";
 						$params[] = $this->equals[$i];
-					}
-
-					if (isset($this->search[$i]) && strlen($this->search[$i]) > 0 && $this->filterType[$i] == "like") {
+					} elseif (strlen($this->search[$i]) > 0) {
 						$fields_safe .= " AND search_item_fields.value LIKE ? ";
 						$params[] = '%' . $this->search[$i] . '%';
 					}
 
 					$fields_safe .= " ) ";
+
+
+					if ($i + 1 < count($this->fields) && count($this->fields) > 1) $fields_safe .= " OR ";
 				}
 			}
 
 			if (strlen($fields_safe) > 0) {
 				$fields_safe = " AND ( $fields_safe ) ";
-				$isSearch = true;
+				$isSearch = true; 
 			}
 		}
 
@@ -577,7 +508,7 @@ class Tracker_Query
 
 		$dateUnit = ($this->lastModif ? 'lastModif' : 'created');
 
-		$query =
+		$query = 
 			"SELECT
 			tiki_tracker_items.status,
 			tiki_tracker_item_fields.itemId,
@@ -589,12 +520,12 @@ class Tracker_Query
 				FROM tiki_tracker_item_fields " . ($isSearch == true ? " AS search_item_fields " : "") . "
 
 				" . ($isSearch == true ? "
-				LEFT JOIN tiki_tracker_item_fields ON
+				LEFT JOIN tiki_tracker_item_fields ON 
 				search_item_fields.itemId = tiki_tracker_item_fields.itemId
 				" : "" ) . "
-				LEFT JOIN tiki_tracker_fields ON
+				LEFT JOIN tiki_tracker_fields ON 
 				tiki_tracker_fields.fieldId = tiki_tracker_item_fields.fieldId
-				LEFT JOIN tiki_trackers ON
+				LEFT JOIN tiki_trackers ON 
 				tiki_trackers.trackerId = tiki_tracker_fields.trackerId
 				LEFT JOIN tiki_tracker_items ON tiki_tracker_items.itemId = tiki_tracker_item_fields.itemId
 
@@ -622,19 +553,21 @@ class Tracker_Query
 				WHERE
 				tiki_trackers.trackerId = ?
 
-				". (!empty($this->start) ? " AND tiki_tracker_items.".$dateUnit." > ? " : "") . "
-				". (!empty($this->end) ? 	" AND tiki_tracker_items.".$dateUnit." < ? " : "") . "
-				". (!empty($this->itemId) ? " AND tiki_tracker_item_fields.itemId = ? " : "") . "
+				". (!empty($this->start) && !$this->search ? " AND tiki_tracker_items.$dateUnit > ? " : "") . "
+				". (!empty($this->end) && !$this->search ? 	" AND tiki_tracker_items.$dateUnit < ? " : "") . "
+				". (!empty($this->itemId) && !$this->search ? " AND tiki_tracker_item_fields.itemId = ? " : "") . "
 				". (!empty($fields_safe) ? $fields_safe : "") . "
 				". (!empty($status_safe) ? $status_safe : "") . "
 
 				GROUP BY
-				tiki_tracker_item_fields.itemId
+				tiki_tracker_item_fields.itemId " . ($this->desc == true ? 'DESC' : 'ASC') . "
 				" . ($isSearch == true ? ", search_item_fields.fieldId, search_item_fields.itemId " : "" ) . "
-				ORDER BY
-				tiki_tracker_items.".$dateUnit." " . ($this->desc == true ? 'DESC' : 'ASC') . "
-				" . (!empty($this->limit) ? " LIMIT " . $this->limit : "") . "
-				" . (!empty($this->offset) ? " OFFSET " . $this->offset : "");
+				ORDER BY 
+				tiki_tracker_items.$dateUnit
+				" . (!empty($this->limit) ? 
+				" LIMIT " . (!empty($this->offset) ? $this->offset . ", " : "") . " " . $this->limit
+				: ""
+				);
 
 		if ($this->debug == true) {
 			$result = array($query, $params);
@@ -650,21 +583,21 @@ class Tracker_Query
 		foreach ($this->fields as $i=>$field) {
 			if ($this->filterType[$i] != 'and') $neededMatches--;
 		}
-
+		
 		foreach ($result as $key => $row) {
 			if (isset($newResult[$row['itemId']])) continue;
-
+			
 			$newRow = array();
 			$fieldNames = explode($this->delimiter, $row['fieldNames']);
-			$fieldIds = explode($this->delimiter, $row['fieldIds']);
+			$fieldIds = explode($this->delimiter, $row['fieldIds']); 
 			$itemValues = explode($this->delimiter, $row['item_values']);
-
+			
 			$matchCount = 0;
 			foreach ($fieldIds as $key => $fieldId) {
 				$field = ($this->byName == true ? $fieldNames[$key] : $fieldId);
 				$value = '';
-
-				//This script attempts to narrow the results further by using an "AND" style checking of the returned result since it cannot be made at this time in mysql
+				
+				//This script attempts to narrow the results further by using an "AND" style checking of the returned result since it cannot be made at this time in mysql 
 				if ($neededMatches > 0) {
 					$i = array_search($fieldId, $this->fields, true);
 					if ($i !== FALSE) {
@@ -674,33 +607,26 @@ class Tracker_Query
 					}
 				}
 				//End "AND" style checking of results
-
+				
 				if ($this->render == true) {
 					$value = $this->render_field_value($trackerFieldDefinition[$fieldId], $itemValues[$key]);
 				} else {
 					$value = $itemValues[$key];
 				}
-
-				if (!isset($this->itemsRaw[$row['itemId']])) {
-					$this->itemsRaw[$row['itemId']] = array();
-				}
-
+				
 				if (isset($newRow[$field])) {
 					if (is_array($newRow[$field]) == false) {
 						$newRow[$field] = array($newRow[$field]);
-						$this->itemsRaw[$row['itemId']][$field] = array($itemValues[$key]); //raw values
 					}
 
 					$newRow[$field][] = $value;
-					$this->itemsRaw[$row['itemId']][$field][] = $itemValues[$key]; //raw values
 				} else {
 					$newRow[$field] = $value;
-					$this->itemsRaw[$row['itemId']][$field] = $itemValues[$key]; //raw values
 				}
 
 			}
 			if ($this->excludeDetails == false) {
-				$newRow['status'.$trackerId] = $row['status'];
+				$newRow['status'.$trackerId] = $row['status']; 
 				$newRow['trackerId'] = $row['trackerId'];
 				$newRow['itemId'] = $row['itemId'];
 			}
@@ -721,17 +647,16 @@ class Tracker_Query
 
 		//if type is text, no need to render value
 		switch ($fieldDefinition['type']) {
-			case 't'://text
-			case 'S'://static text
+			case 't': 
 				return $value;
 		}
 
 		return $trklib->field_render_value(
-			array(
-				'field'=> $fieldDefinition,
-				'process'=> 'y',
-				'list_mode'=> 'y'
-			)
+						array(
+							'field'=> $fieldDefinition,
+							'process'=> 'y',
+							'list_mode'=> 'y'
+						)
 		);
 	}
 
@@ -789,7 +714,7 @@ class Tracker_Query
 						$joinedTracker[$key] = $itemRight;
 					}
 				}
-				break;
+							break;
 
 			default:
 				foreach ($trackerLeft as $key => $itemLeft) {
@@ -813,7 +738,7 @@ class Tracker_Query
 		header("Pragma: no-cache");
 		header("Expires: 0");
 
-		if (!is_array($array))
+		if (!is_array($array)) 
 			return false;
 		$output = '';
 
@@ -853,28 +778,10 @@ class Tracker_Query
 
 		return $output;
 	}
-
-	/**
-	 * Programmatic and simplified way of replacing or updating a tracker item, meant for api ease and accessibility
-	 * Does not check permissions
-	 *
-	 * @param array $data example array(fieldId=>'value', fieldId=>'value') or array('fieldName'=>'value', 'fieldName'=>'value')
-	 */
+	
 	public function replaceItem($data = array())
 	{
-		$itemData = array();
-
-		$fields = TikiLib::lib("trk")->list_tracker_fields($this->trackerId());
-		for ($i = 0, $fieldCount = count($fields['data']); $i < $fieldCount; $i++) {
-			if ($this->byName == true) {
-				$fields['data'][$i]['value'] = $data[$fields['data'][$i]['name']];
-			} else {
-				$fields['data'][$i]['value'] = $data[$fields['data'][$i]['fieldId']];
-			}
-		}
-
-		$itemId = TikiLib::lib("trk")->replace_item($this->trackerId(), $this->itemId, $fields);
-
+		$itemId = TikiLib::lib("trk")->replace_item($this->trackerId(), $this->itemId, array("data"=>$data));
 		return $itemId;
 	}
 
@@ -932,10 +839,6 @@ class Tracker_Query
 
 	public function queryInputs($includeJs = false)
 	{
-		if ($this->canEdit() == false) {
-			return array();
-		}
-
 		$query = $this->query();
 
 		$items = array();

@@ -51,8 +51,8 @@ class UnifiedSearchLib
 				}
 
 				$errlib->report(
-					tr('Search index could not be updated. The site is misconfigured. Contact an administrator.') .
-					'<br />' . $e->getMessage()
+								tr('Search index could not be updated. The site is misconfigured. Contact an administrator.') .
+								'<br />' . $e->getMessage()
 				);
 			}
 		}
@@ -71,7 +71,7 @@ class UnifiedSearchLib
 
 		if (!isset($_SERVER['REQUEST_METHOD']) && !TikiInit::isWindows()) {		// called from shell.php and unix?
 			$output = null;
-			exec('ps ax | grep \'search/shell.php\'|grep -v grep', $output);	// check for another running process
+			exec('ps ax | grep \'search/shell.php\'|grep -v grep|grep -v sudo', $output);	// check for another running process
 			if (is_array($output) && count($output) > 1) {
 				return true;
 			} else if ($file_exists) {
@@ -145,11 +145,11 @@ class UnifiedSearchLib
 	function invalidateObject($type, $objectId)
 	{
 		TikiLib::lib('queue')->push(
-			self::INCREMENT_QUEUE,
-			array(
-				'object_type' => $type,
-				'object_id' => $objectId
-			)
+						self::INCREMENT_QUEUE,
+						array(
+							'object_type' => $type,
+							'object_id' => $objectId
+						)
 		);
 	}
 
@@ -279,7 +279,7 @@ class UnifiedSearchLib
 		}
 
 		if ($prefs['rating_advanced'] == 'y' && $mode == 'indexing') {
-			$aggregator->addGlobalSource(new Search_GlobalSource_AdvancedRatingSource($prefs['rating_recalculation'] == 'indexing'));
+			$aggregator->addGlobalSource(new Search_GlobalSource_AdvancedRatingSource);
 		}
 
 		$aggregator->addGlobalSource(new Search_GlobalSource_Geolocation);

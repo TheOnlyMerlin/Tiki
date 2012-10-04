@@ -17,11 +17,6 @@
 		{preference name=feature_reports}
 		{preference name="tracker_remote_sync"}
 		{preference name="tracker_refresh_itemlink_detail"}
-		{preference name="tracker_clone_item"}
-		{preference name="wikiplugin_insert"}
-		<div id="wikiplugin_insert_childcontainer">
-			{preference name=tracker_insert_allowed}
-		</div>
 	</fieldset>
 
 	<fieldset class="admin">
@@ -68,7 +63,6 @@
 		{preference name=wikiplugin_prettytrackerviews}
 		{preference name=wikiplugin_trackerpasscode}
 		{preference name=wikiplugin_trackeritemcopy}
-		{preference name=wikiplugin_trackerquerytemplate}
 	</fieldset>
 	{/tab}
 	{tab name="{tr}Field Types{/tr}"}

@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -14,7 +14,9 @@ class Services_Tracker_Controller
 		global $prefs;
 		$this->utilities = new Services_Tracker_Utilities;
 
-		Services_Exception_Disabled::check('feature_trackers');
+		if ($prefs['feature_trackers'] != 'y') {
+			throw new Services_Exception_Disabled('feature_trackers');
+		}
 	}
 
 	function action_add_field($input)
@@ -23,7 +25,7 @@ class Services_Tracker_Controller
 
 		$perms = Perms::get('tracker', $trackerId);
 		if (! $perms->admin_trackers) {
-			throw new Services_Exception_Denied(tr('Reserved to tracker administrators'));
+			throw new Services_Exception(tr('Reserved to tracker administrators'), 403);
 		}
 
 		$trklib = TikiLib::lib('trk');
@@ -65,15 +67,15 @@ class Services_Tracker_Controller
 			}
 
 			$fieldId = $this->utilities->createField(
-				array(
-					'trackerId' => $trackerId,
-					'name' => $name,
-					'permName' => $permName,
-					'type' => $type,
-					'description' => $description,
-					'descriptionIsParsed' => $wikiparse,
-					'isHidden' => $adminOnly ? 'y' : 'n',
-				)
+							array(
+								'trackerId' => $trackerId,
+								'name' => $name,
+								'permName' => $permName,
+								'type' => $type,
+								'description' => $description,
+								'descriptionIsParsed' => $wikiparse,
+								'isHidden' => $adminOnly ? 'y' : 'n',
+							)
 			);
 
 			if ($input->submit_and_edit->none() || $input->next->word() === 'edit') {
@@ -105,7 +107,7 @@ class Services_Tracker_Controller
 		$perms = Perms::get('tracker', $trackerId);
 
 		if (! $perms->view_trackers) {
-			throw new Services_Exception_Denied(tr('Not allowed to view the tracker'));
+			throw new Services_Exception(tr('Not allowed to view the tracker'), 403);
 		}
 
 		$definition = Tracker_Definition::get($trackerId);
@@ -140,7 +142,7 @@ class Services_Tracker_Controller
 
 		$perms = Perms::get('tracker', $trackerId);
 		if (! $perms->admin_trackers) {
-			throw new Services_Exception_Denied(tr('Reserved to tracker administrators'));
+			throw new Services_Exception(tr('Reserved to tracker administrators'), 403);
 		}
 
 		$definition = Tracker_Definition::get($trackerId);
@@ -192,10 +194,10 @@ class Services_Tracker_Controller
 	function action_edit_field($input)
 	{
 		$trackerId = $input->trackerId->int();
-
+		
 		$perms = Perms::get('tracker', $trackerId);
 		if (! $perms->admin_trackers) {
-			throw new Services_Exception_Denied(tr('Reserved to tracker administrators'));
+			throw new Services_Exception(tr('Reserved to tracker administrators'), 403);
 		}
 
 		$fieldId = $input->fieldId->int();
@@ -222,31 +224,31 @@ class Services_Tracker_Controller
 
 		if ($input->name->text()) {
 			$input->replaceFilters(
-				array(
-					'visible_by' => 'groupname',
-					'editable_by' => 'groupname',
-				)
+							array(
+								'visible_by' => 'groupname',
+								'editable_by' => 'groupname',
+							)
 			);
 			$visibleBy = $input->asArray('visible_by', ',');
 			$editableBy = $input->asArray('editable_by', ',');
 			$this->utilities->updateField(
-				$trackerId,
-				$fieldId,
-				array(
-					'name' => $input->name->text(),
-					'description' => $input->description->text(),
-					'descriptionIsParsed' => $input->description_parse->int() ? 'y' : 'n',
-					'options' => $this->utilities->buildOptions($input->option, $typeInfo),
-					'validation' => $input->validation_type->word(),
-					'validationParam' => $input->validation_parameter->none(),
-					'validationMessage' => $input->validation_message->text(),
-					'isMultilingual' => $input->multilingual->int() ? 'y' : 'n',
-					'visibleBy' => array_filter(array_map('trim', $visibleBy)),
-					'editableBy' => array_filter(array_map('trim', $editableBy)),
-					'isHidden' => $input->visibility->alpha(),
-					'errorMsg' => $input->error_message->text(),
-					'permName' => $permName,
-				)
+							$trackerId, 
+							$fieldId, 
+							array(
+								'name' => $input->name->text(),
+								'description' => $input->description->text(),
+								'descriptionIsParsed' => $input->description_parse->int() ? 'y' : 'n',
+								'options' => $this->utilities->buildOptions($input->option, $typeInfo),
+								'validation' => $input->validation_type->word(),
+								'validationParam' => $input->validation_parameter->none(),
+								'validationMessage' => $input->validation_message->text(),
+								'isMultilingual' => $input->multilingual->int() ? 'y' : 'n',
+								'visibleBy' => array_filter(array_map('trim', $visibleBy)),
+								'editableBy' => array_filter(array_map('trim', $editableBy)),
+								'isHidden' => $input->visibility->alpha(),
+								'errorMsg' => $input->error_message->text(),
+								'permName' => $permName,
+							)
 			);
 		}
 
@@ -269,12 +271,12 @@ class Services_Tracker_Controller
 	function action_remove_fields($input)
 	{
 		$trackerId = $input->trackerId->int();
-
+		
 		$perms = Perms::get('tracker', $trackerId);
 		if (! $perms->admin_trackers) {
-			throw new Services_Exception_Denied(tr('Reserved to tracker administrators'));
+			throw new Services_Exception(tr('Reserved to tracker administrators'), 403);
 		}
-
+		
 		$fields = $input->fields->int();
 
 		$definition = Tracker_Definition::get($trackerId);
@@ -311,12 +313,12 @@ class Services_Tracker_Controller
 	function action_export_fields($input)
 	{
 		$trackerId = $input->trackerId->int();
-
+				
 		$perms = Perms::get('tracker', $trackerId);
 		if (! $perms->admin_trackers) {
-			throw new Services_Exception_Denied(tr('Reserved to tracker administrators'));
+			throw new Services_Exception(tr('Reserved to tracker administrators'), 403);
 		}
-
+		
 		$fields = $input->fields->int();
 
 		$definition = Tracker_Definition::get($trackerId);
@@ -346,7 +348,7 @@ class Services_Tracker_Controller
 	function action_import_fields($input)
 	{
 		if (! Perms::get()->admin_trackers) {
-			throw new Services_Exception_Denied(tr('Reserved to tracker administrators'));
+			throw new Services_Exception(tr('Reserved to tracker administrators'), 403);
 		}
 
 		$trackerId = $input->trackerId->int();
@@ -355,7 +357,7 @@ class Services_Tracker_Controller
 		if (! $definition) {
 			throw new Services_Exception_NotFound;
 		}
-
+		
 		$raw = $input->raw->none();
 		$preserve = $input->preserve_ids->int();
 
@@ -377,7 +379,7 @@ class Services_Tracker_Controller
 	function action_list_trackers($input)
 	{
 		if (! Perms::get()->admin_trackers) {
-			throw new Services_Exception_Denied(tr('Reserved to tracker administrators'));
+			throw new Services_Exception(tr('Reserved to tracker administrators'), 403);
 		}
 
 		$trklib = TikiLib::lib('trk');
@@ -390,7 +392,7 @@ class Services_Tracker_Controller
 		//        it is only to be used for tracker sync at this time, admin privileges are just fine.
 
 		if (! Perms::get()->admin_trackers) {
-			throw new Services_Exception_Denied(tr('Reserved to tracker administrators'));
+			throw new Services_Exception(tr('Reserved to tracker administrators'), 403);
 		}
 
 		$trackerId = $input->trackerId->int();
@@ -399,7 +401,7 @@ class Services_Tracker_Controller
 		$status = $input->status->word();
 		$format = $input->format->word();
 		$modifiedSince = $input->modifiedSince->int();
-
+		
 		$definition = Tracker_Definition::get($trackerId);
 
 		if (! $definition) {
@@ -407,13 +409,13 @@ class Services_Tracker_Controller
 		}
 
 		$items = $this->utilities->getItems(
-			array(
-				'trackerId' => $trackerId,
-				'status' => $status,
-				'modifiedSince' => $modifiedSince,
-			),
-			$maxRecords,
-			$offset
+						array(
+							'trackerId' => $trackerId,
+							'status' => $status,
+							'modifiedSince' => $modifiedSince,
+						), 
+						$maxRecords, 
+						$offset
 		);
 
 		if ($format !== 'raw') {
@@ -427,104 +429,6 @@ class Services_Tracker_Controller
 			'offset' => $offset,
 			'maxRecords' => $maxRecords,
 			'result' => $items,
-		);
-	}
-
-	function action_get_item_inputs($input)
-	{
-		$trackerId = $input->trackerId->int();
-		$trackerName = $input->trackerName->string();
-		$itemId = $input->itemId->int();
-		$byName = $input->byName->bool();
-		$defaults = $input->defaults->array();
-
-		$this->trackerNameAndId($trackerId, $trackerName);
-
-		$definition = Tracker_Definition::get($trackerId);
-
-		if (! $definition) {
-			throw new Services_Exception_NotFound;
-		}
-
-		$itemObject = Tracker_Item::newItem($trackerId);
-
-		if (! $itemObject->canModify()) {
-			throw new Services_Exception_Denied;
-		}
-
-		$query = Tracker_Query::tracker($byName ? $trackerName : $trackerId)
-			->itemId($itemId);
-
-		if ($input > 0) $query->byName();
-		if (!empty($defaults)) $query->inputDefaults($defaults);
-
-		$inputs = $query
-			->queryInput();
-
-		return $inputs;
-	}
-
-	function action_clone_item($input)
-	{
-		global $prefs;
-
-		Services_Exception_Disabled::check('tracker_clone_item');
-
-		$trackerId = $input->trackerId->int();
-		$definition = Tracker_Definition::get($trackerId);
-
-		if (! $definition) {
-			throw new Services_Exception_NotFound;
-		}
-
-		$itemId = $input->itemId->int();
-		$item = $this->utilities->getItem($trackerId, $itemId);
-
-		$itemObject = Tracker_Item::fromId($itemId);
-
-		if (! $itemObject->canView()) {
-			throw new Services_Exception_Denied(tr('Item to clone not visible'));
-		}
-
-		$newItem = Tracker_Item::newItem($trackerId);
-
-		if (! $newItem->canModify()) {
-			throw new Services_Exception_Denied(tr('Not allowed to create new items'));
-		}
-
-		$itemObject->asNew();
-		$itemData = $itemObject->getData($input);
-
-		$id = 0;
-		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-			$transaction = TikiLib::lib('tiki')->begin();
-
-			$id = $this->utilities->insertItem($definition, $itemData);
-
-			$itemObject = Tracker_Item::fromId($id);
-
-			$trklib = TikiLib::lib('trk');
-			foreach ($trklib->get_child_items($itemId) as $info) {
-				$childItem = Tracker_Item::fromId($info['itemId']);
-
-				if ($childItem->canView()) {
-					$childItem->asNew();
-					$data = $childItem->getData();
-					$data['fields'][$info['field']] = $id;
-
-					$new = $this->utilities->insertItem($childItem->getDefinition(), $data);
-				}
-			}
-
-			$transaction->commit();
-		}
-
-		return array(
-			'trackerId' => $trackerId,
-			'itemId' => $itemId,
-			'created' => $id,
-			'data' => $itemData['fields'],
-			'fields' => $itemObject->prepareInput(new JitFilter(array())),
 		);
 	}
 
@@ -542,7 +446,7 @@ class Services_Tracker_Controller
 		$itemObject = Tracker_Item::newItem($trackerId);
 
 		if (! $itemObject->canModify()) {
-			throw new Services_Exception_Denied;
+			throw new Services_Exception(tr('Permission denied.'), 403);
 		}
 
 		$fields = $input->fields->none();
@@ -585,11 +489,11 @@ class Services_Tracker_Controller
 			}
 
 			$itemId = $this->utilities->insertItem(
-				$definition,
-				array(
-					'status' => $input->status->word(),
-					'fields' => $fields,
-				)
+							$definition, 
+							array(
+								'status' => $input->status->word(),
+								'fields' => $fields,
+							)
 			);
 
 			if ($itemId) {
@@ -631,34 +535,36 @@ class Services_Tracker_Controller
 
 		$itemObject = Tracker_Item::fromInfo($itemInfo);
 		if (! $itemObject->canModify()) {
-			throw new Services_Exception_Denied;
+			throw new Services_Exception(tr('Permission denied.'), 403);
 		}
 
-		$processedFields = $itemObject->prepareInput($input);
+		$fields = $input->fields->none();
+		if (empty($fields)) {
+			$processedFields = $itemObject->prepareInput($input);
 
-		$fields = array();
-		foreach ($processedFields as $k => $f) {
-			$permName = $f['permName'];
-			$fields[$permName] = $f['value'];
-		}
-
-		$userInput = $input->fields->none();
-		if (! empty($userInput)) {
-			foreach ($userInput as $key => $value) {
+			$fields = array();
+			foreach ($processedFields as $k => $f) {
+				$permName = $f['permName'];
+				$fields[$permName] = $f['value'];
+			}
+		} else {
+			$out = array();
+			foreach ($fields as $key => $value) {
 				if ($itemObject->canModifyField($key)) {
-					$fields[$key] = $value;
+					$out[$key] = $value;
 				}
 			}
+			$fields = $out;
 		}
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$this->utilities->updateItem(
-				$definition,
-				array(
-					'itemId' => $itemId,
-					'status' => $input->status->word(),
-					'fields' => $fields,
-				)
+							$definition, 
+							array(
+								'itemId' => $itemId,
+								'status' => $input->status->word(),
+								'fields' => $fields,
+							)
 			);
 			TikiLib::lib('unifiedsearch')->processUpdateQueue();
 		}
@@ -691,7 +597,7 @@ class Services_Tracker_Controller
 
 		$itemObject = Tracker_Item::fromInfo($itemInfo);
 		if (! $itemObject->canModify()) {
-			throw new Services_Exception_Denied;
+			throw new Services_Exception(tr('Permission denied.'), 403);
 		}
 
 		$field = $definition->getGeolocationField();
@@ -703,14 +609,14 @@ class Services_Tracker_Controller
 			$field = $definition->getField($field);
 
 			$this->utilities->updateItem(
-				$definition,
-				array(
-					'itemId' => $itemId,
-					'status' => $itemInfo['status'],
-					'fields' => array(
-						$field['permName'] => $location,
-					),
-				)
+							$definition, 
+							array(
+								'itemId' => $itemId,
+								'status' => $itemInfo['status'],
+								'fields' => array(
+									$field['permName'] => $location,
+								),
+							)
 			);
 			TikiLib::lib('unifiedsearch')->processUpdateQueue();
 		}
@@ -744,7 +650,7 @@ class Services_Tracker_Controller
 
 		$itemObject = Tracker_Item::fromInfo($itemInfo);
 		if (! $itemObject->canRemove()) {
-			throw new Services_Exception_Denied;
+			throw new Services_Exception(tr('Permission denied.'), 403);
 		}
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -765,7 +671,7 @@ class Services_Tracker_Controller
 
 		$perms = Perms::get('tracker', $trackerId);
 		if (! $perms->admin_trackers) {
-			throw new Services_Exception_Denied(tr('Reserved to tracker administrators'));
+			throw new Services_Exception(tr('Reserved to tracker administrators'), 403);
 		}
 
 		$definition = Tracker_Definition::get($trackerId);
@@ -773,7 +679,7 @@ class Services_Tracker_Controller
 		if (! $definition) {
 			throw new Services_Exception_NotFound;
 		}
-
+		
 		if ($confirm) {
 			$this->utilities->removeTracker($trackerId);
 
@@ -795,7 +701,7 @@ class Services_Tracker_Controller
 
 		$perms = Perms::get('tracker', $trackerId);
 		if (! $perms->admin_trackers) {
-			throw new Services_Exception_Denied(tr('Reserved to tracker administrators'));
+			throw new Services_Exception(tr('Reserved to tracker administrators'), 403);
 		}
 
 		$definition = Tracker_Definition::get($trackerId);
@@ -825,7 +731,7 @@ class Services_Tracker_Controller
 
 		$perms = Perms::get('tracker', $trackerId);
 		if (! $perms->admin_trackers) {
-			throw new Services_Exception_Denied(tr('Reserved to tracker administrators'));
+			throw new Services_Exception(tr('Reserved to tracker administrators'), 403);
 		}
 
 		if ($trackerId) {
@@ -898,7 +804,6 @@ class Services_Tracker_Controller
 				'editItemPretty' => $input->editItemPretty->text(),
 				'autoCreateCategories' => $input->autoCreateCategories->int() ? 'y' : 'n',
 				'publishRSS' => $input->publishRSS->int() ? 'y' : 'n',
-				'sectionFormat' => $input->sectionFormat->word(),
 			);
 
 			$trackerId = $this->utilities->updateTracker($trackerId, $data);
@@ -945,14 +850,14 @@ class Services_Tracker_Controller
 		$trackerId = $input->trackerId->int();
 		$perms = Perms::get('tracker', $trackerId);
 		if (! $perms->admin_trackers || ! Perms::get()->admin_trackers) {
-			throw new Services_Exception_Denied(tr('Reserved to tracker administrators'));
+			throw new Services_Exception(tr('Reserved to tracker administrators'), 403);
 		}
 
 		$definition = Tracker_Definition::get($trackerId);
 		if (! $definition) {
 			throw new Services_Exception_NotFound;
 		}
-
+		
 		$name = $input->name->text();
 
 		if (! $name) {
@@ -973,7 +878,7 @@ class Services_Tracker_Controller
 
 		$perms = Perms::get('tracker', $trackerId);
 		if (! $perms->export_tracker) {
-			throw new Services_Exception_Denied(tr('Reserved to tracker administrators'));
+			throw new Services_Exception(tr('Reserved to tracker administrators'), 403);
 		}
 
 		$definition = Tracker_Definition::get($trackerId);
@@ -984,9 +889,9 @@ class Services_Tracker_Controller
 
 		if ($perms->admin_trackers) {
 			$info = $definition->getInformation();
-
+			
 			$out = "[TRACKER]\n";
-
+	
 			foreach ($info as $key => $value) {
 				if ($key && $value) {
 					$out .= "$key = $value\n";
@@ -1014,10 +919,10 @@ class Services_Tracker_Controller
 		if (! $definition) {
 			throw new Services_Exception_NotFound;
 		}
-
+		
 		$perms = Perms::get('tracker', $trackerId);
 		if (! $perms->export_tracker) {
-			throw new Services_Exception_Denied(tr('Not allowed to export'));
+			throw new Services_Exception(tr('Not allowed to export'), 403);
 		}
 
 		$fields = array();
@@ -1128,10 +1033,10 @@ class Services_Tracker_Controller
 		if (! $definition) {
 			throw new Services_Exception_NotFound;
 		}
-
+		
 		$perms = Perms::get('tracker', $trackerId);
 		if (! $perms->export_tracker) {
-			throw new Services_Exception_Denied(tr('Not allowed to export'));
+			throw new Services_Exception(tr('Not allowed to export'), 403);
 		}
 
 		$trklib = TikiLib::lib('trk');
@@ -1142,10 +1047,13 @@ class Services_Tracker_Controller
 	function action_export_profile($input)
 	{
 		if (! Perms::get()->admin_trackers) {
-			throw new Services_Exception_Denied(tr('Reserved to tracker administrators'));
+			throw new Services_Exception(tr('Reserved to tracker administrators'), 403);
 		}
 
 		$trackerId = $input->trackerId->int();
+
+		include_once('lib/profilelib/installlib.php');
+		include_once('lib/profilelib/profilelib.php');
 
 		$profile = Tiki_Profile::fromString('dummy', '');
 		$data = array();
@@ -1162,25 +1070,6 @@ class Services_Tracker_Controller
 			'trackerId' => $trackerId,
 			'yaml' => $export_yaml,
 		);
-	}
-
-	private function trackerName($trackerId)
-	{
-		return TikiLib::lib('tiki')->table('tiki_trackers')->fetchOne('name', array('trackerId' => $trackerId));
-	}
-
-	private function trackerId($trackerName)
-	{
-		return TikiLib::lib('tiki')->table('tiki_trackers')->fetchOne('trackerId', array('name' => $trackerName));
-	}
-
-	private function trackerNameAndId(&$trackerId, &$trackerName)
-	{
-		if ($trackerId > 0 && empty($trackerName)) {
-			$trackerName = $this->trackerName($trackerId);
-		} elseif ($trackerId < 1 && !empty($trackerName)) {
-			$trackerId = $this->trackerId($trackerName);
-		}
 	}
 
 	private function writeCsv($fields, $separator, $delimitorL, $delimitorR, $encoding, $cr = '%%%')
@@ -1203,7 +1092,7 @@ class Services_Tracker_Controller
 	function action_import($input)
 	{
 		if (! Perms::get()->admin_trackers) {
-			throw new Services_Exception_Denied(tr('Reserved to tracker administrators'));
+			throw new Services_Exception(tr('Reserved to tracker administrators'), 403);
 		}
 
 		$raw = $input->raw->none();
@@ -1234,10 +1123,10 @@ class Services_Tracker_Controller
 	function action_import_items($input)
 	{
 		$trackerId = $input->trackerId->int();
-
+		
 		$perms = Perms::get('tracker', $trackerId);
 		if (! $perms->admin_trackers) {
-			throw new Services_Exception_Denied(tr('Reserved to tracker administrators'));
+			throw new Services_Exception(tr('Reserved to tracker administrators'), 403);
 		}
 
 		$definition = Tracker_Definition::get($trackerId);
@@ -1257,25 +1146,25 @@ class Services_Tracker_Controller
 
 			$trklib = TikiLib::lib('trk');
 			$count = $trklib->import_csv(
-				$trackerId,
-				$fp,
-				($input->add_items->int() !== 1), // checkbox is "Create as new items" - param is replace_rows
-				$input->dateFormat->text(),
-				$input->encoding->text(),
-				$input->separator->text(),
-				$input->updateLastModif->int(),
-				$input->convertItemLinkValues->int()
+							$trackerId,
+							$fp,
+							($input->add_items->int() !== 1),	// checkbox is "Create as new items" - param is replace_rows
+							$input->dateFormat->text(),
+							$input->encoding->text(),
+							$input->separator->text(),
+							$input->updateLastModif->int(),
+							$input->convertItemLinkValues->int()
 			);
 
 			fclose($fp);
-
+			
 			return array(
 				'trackerId' => $trackerId,
 				'return' => $count,
 				'importfile' => $_FILES['importfile']['name'],
 			);
 		}
-
+		
 		return array(
 			'trackerId' => $trackerId,
 			'return' => '',
@@ -1384,7 +1273,7 @@ class Services_Tracker_Controller
 		foreach ($groups as $g) {
 			$out[] = $g['groupName'];
 		}
-
+		
 		return $out;
 	}
 }

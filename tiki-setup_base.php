@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -70,7 +70,7 @@ if ($tikilib->query("SHOW TABLES LIKE 'tiki_preferences'")->numRows() == 0) {
 }
 $tikilib->get_preferences($needed_prefs, true, true);
 
-if ($prefs['session_protected'] == 'y' && ! isset($_SERVER['HTTPS']) && php_sapi_name() != 'cli') {
+if ($prefs['session_protected'] == 'y' && ! isset($_SERVER['HTTPS'])) {
 	header("Location: https://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}");
 	exit;
 }
@@ -120,8 +120,8 @@ $cdn_pref = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? $prefs['ti
 if ( $cdn_pref ) {
 	$host = parse_url($cdn_pref, PHP_URL_HOST);
 	if (isset($_SERVER['HTTP_HOST']) && $host == $_SERVER['HTTP_HOST'] ) {
-		header("HTTP/1.0 410 Gone");
-		echo "This is a Content Delivery Network (CDN) to speed up delivery of images, CSS, and javascript files. However, PHP code is not executed.";
+		header("HTTP/1.0 404 Not Found");
+		echo "File not found.";
 		exit;
 	}
 }
@@ -132,7 +132,7 @@ if (isset($_SERVER["REQUEST_URI"])) {
 		$session_params = session_get_cookie_params();
 		session_set_cookie_params($session_params['lifetime'], $tikiroot);
 		unset($session_params);
-
+	
 		try {
 			require_once "Zend/Session.php";
 			Zend_Session::start();
@@ -150,64 +150,6 @@ if ($prefs['feature_fullscreen'] == 'y') {
 require_once ('lib/setup/prefs.php');
 // Smarty needs session since 2.6.25
 global $smarty; require_once ('lib/init/smarty.php');
-
-if (isset($prefs['ids_enabled']) && $prefs['ids_enabled'] == 'y') {
-	try {
-		TikiInit::prependIncludePath('lib/phpids/lib');
-		require_once 'IDS/Init.php';
-
-		$init = IDS_Init::init('db/ids_config.ini');
-
-		$init->config['General']['filter_path'] = dirname(__FILE__) . '/lib/phpids/lib/IDS/default_filter.xml';
-		$init->config['General']['base_path'] = dirname(__FILE__) . '/lib/phpids/lib/IDS/';
-		$init->config['Caching']['caching'] = 'none';
-		$init->config['General']['HTML_Purifier_Path'] = dirname(__FILE__) . '/lib/htmlpurifier/HTMLPurifier.auto.php';
-		$init->config['General']['HTML_Purifier_Cache'] = dirname(__FILE__) . '/lib/htmlpurifier/HTMLPurifier/DefinitionCache/Serializer';
-		$init->config['Logging']['path'] = 'temp/phpids_log.txt';
-
-		// 2. Initiate the PHPIDS and fetch the results
-
-		$request = array(
-			'REQUEST' => $_REQUEST,
-			'GET' => $_GET,
-			'POST' => $_POST,
-			'COOKIE' => $_COOKIE
-		);
-
-		$ids = new IDS_Monitor($request, $init);
-
-		$result = $ids->run();
-
-		if (!$result->isEmpty()) {
-			require_once 'IDS/Log/File.php';
-			require_once 'IDS/Log/Composite.php';
-
-			if (! file_exists($init->config['Logging']['path'])) {
-				touch($init->config['Logging']['path']);
-			}
-
-			$compositeLog = new IDS_Log_Composite();
-			$compositeLog->addLogger(IDS_Log_File::getInstance($init));
-
-			$compositeLog->execute($result);
-		}
-
-		$impact = $result->getImpact();
-
-		if (! isset($_SESSION['ids_impact'])) {
-			$_SESSION['ids_impact'] = 0;
-		}
-		$_SESSION['ids_impact'] += $impact;
-
-		if ($impact > $prefs['ids_single_threshold'] || $_SESSION['ids_impact'] > $prefs['ids_session_threshold']) {
-			header('503 Service Unavailable');
-			echo tra('Request prevented');
-			exit;
-		}
-	} catch (Exception $e) {
-		die($e->getMessage());
-	}
-}
 
 // Define the special maxRecords global variable
 $maxRecords = $prefs['maxRecords'];
@@ -241,9 +183,9 @@ $patterns['dotvars'] = "/^[-_a-zA-Z0-9\.]*$/"; // same pattern as a variable key
 $patterns['hash'] = "/^[a-z0-9]*$/"; // for hash reqId in live support
 // allow quotes in url for additional tag attributes if html allowed in menu options links
 if ($prefs['menus_item_names_raw'] == 'y' and strpos($_SERVER["SCRIPT_NAME"], 'tiki-admin_menu_options.php') !== false) {
-$patterns['url'] = "/^(https?:\/\/)?[^<>]*$/";
+$patterns['url'] = "/^(https?:\/\/)?[^<>]*$/"; 
 } else {
-$patterns['url'] = "/^(https?:\/\/)?[^<>\"]*$/";
+$patterns['url'] = "/^(https?:\/\/)?[^<>\"]*$/"; 
 }
 // parameter type definitions. prepend a + if variable may not be empty, e.g. '+int'
 $vartype['id'] = '+int';
@@ -251,7 +193,7 @@ $vartype['forumId'] = '+int';
 $vartype['offset'] = 'intSign';
 $vartype['prev_offset'] = 'intSign';
 $vartype['next_offset'] = 'intSign';
-$vartype['threshold'] = 'int';
+$vartype['thresold'] = 'int';
 $vartype['sort_mode'] = '+char';
 $vartype['file_sort_mode'] = 'char';
 $vartype['file_offset'] = 'int';
@@ -259,7 +201,7 @@ $vartype['file_find'] = 'string';
 $vartype['file_prev_offset'] = 'intSign';
 $vartype['file_next_offset'] = 'intSign';
 $vartype['comments_offset'] = 'int';
-$vartype['comments_threshold'] = 'int';
+$vartype['comments_thresold'] = 'int';
 $vartype['comments_parentId'] = '+int';
 $vartype['thread_sort_mode'] = '+char';
 $vartype['thread_style'] = '+char';
@@ -340,7 +282,7 @@ function varcheck(&$array, $category)
 			// check if the variable name is allowed
 			if (!preg_match($patterns['vars'], $rq)) {
 				//die(tra("Invalid variable name : "). htmlspecialchars($rq));
-
+				
 			} elseif (isset($vartype["$rq"])) {
 				$has_sign = false;
 				// Variable allowed to be empty?
@@ -362,7 +304,7 @@ function varcheck(&$array, $category)
 					if (!preg_match($patterns[$pattern_key], $rv)) {
 						$return[] = tra("Notice: invalid variable value:") . ' $' . $category . '["' . $rq . '"] = <font color="red">' . htmlspecialchars($rv) . '</font>';
 						$array[$rq] = ''; // Clear content
-
+						
 					}
 				}
 			}
@@ -476,7 +418,7 @@ if (isset($_SESSION["$user_cookie_site"])) {
 		}
 	}
 	unset($user_details);
-
+	
 	// Generate anti-CSRF ticket
 	if ($prefs['feature_ticketlib2'] == 'y' && !isset($_SESSION['ticket'])) {
 		$_SESSION['ticket'] = md5(uniqid(rand()));
@@ -550,22 +492,19 @@ $jitCookie->setDefaultFilter('xss');
 if (!isset($inputConfiguration)) $inputConfiguration = array();
 
 array_unshift(
-	$inputConfiguration, array(
-		'staticKeyFilters' => array(
-			'menu' => 'striptags',
-			'cat_categorize' => 'alpha',
-			'tabs' => 'striptags',
-			'javascript_enabled' => 'alpha',
-			$prefs['cookie_consent_name'] => 'alpha',
-			'mobile_mode' => 'alpha',
-			'categ' => 'striptags',
-			'local_tz' => 'text',
-		),
-		'staticKeyFiltersForArrays' => array(
-			'cat_managed' => 'digits',
-			'cat_categories' => 'digits',
-		),
-	)
+			 $inputConfiguration, array(
+				'staticKeyFilters' => array(
+					'menu' => 'striptags',
+					'cat_categorize' => 'alpha',
+					'tab' => 'digits',
+					'javascript_enabled' => 'alpha',
+					'XDEBUG_PROFILE' => 'int',
+				),	
+				'staticKeyFiltersForArrays' => array(
+					'cat_managed' => 'digits',
+					'cat_categories' => 'digits',
+				),
+			)
 );
 
 $inputFilter = DeclFilter::fromConfiguration($inputConfiguration, array('catchAllFilter'));

@@ -90,8 +90,7 @@
 		<tr class="{cycle}">
 			<td class="text">
 				<span style="float:left">
-					{if (isset($channels[user].individual) and $channels[user].individual eq 'n')
-						or ($tiki_p_admin eq 'y') or ($channels[user].individual_tiki_p_forum_read eq 'y')}
+					{if ($channels[user].individual eq 'n') or ($tiki_p_admin eq 'y') or ($channels[user].individual_tiki_p_forum_read eq 'y')}
 						<a class="forumname" href="tiki-view_forum.php?forumId={$channels[user].forumId}">{$channels[user].name|escape}</a>
 					{else}
 						{$channels[user].name|escape}

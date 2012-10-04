@@ -24,14 +24,14 @@ function wikiplugin_rcontent_info()
 	);
 }
 
-function wikiplugin_rcontent( $data, $params )
+function wikiplugin_rcontent( $data, $params, $offset, $parseOptions)
 {
 
 	global $dcslib; include_once('lib/dcs/dcslib.php');
 
 	$lang = null;
-	if ( isset( TikiLib::lib('parser')->option['language'] ) ) {
-		$lang = TikiLib::lib('parser')->option['language'];
+	if ( isset( $parseOptions['language'] ) ) {
+		$lang = $parseOptions['language'];
 	}
 
 	if ( $params['id'] )

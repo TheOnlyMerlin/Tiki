@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -11,7 +11,7 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	header('location: index.php');
 	exit;
 }
-if (version_compare(PHP_VERSION, '5.3.0', '<')) {
+if (version_compare(PHP_VERSION, '5.2.0', '<')) {
 	header('location: tiki-install.php');
 	exit;
 }
@@ -36,9 +36,9 @@ require_once ('tiki-setup_base.php');
 
 // Attempt setting locales. This code is just a start, locales should be set per-user.
 // Also, different operating systems use different locale strings. en_US.utf8 is valid on POSIX systems, maybe not on Windows, feel free to add alternative locale strings.
-setlocale(LC_ALL, ''); // Attempt changing the locale to the system default.
+setlocale(LC_ALL, ''); // Attempt changing the locale to the system default. 
 // Since the system default may not be UTF-8 but we may be dealing with multilingual content, attempt ensuring the collations are intelligent by forcing a general UTF-8 collation.
-// This will have no effect if the locale string is not valid or if the designated locale is not generated.
+// This will have no effect if the locale string is not valid or if the designated locale is not generated. 
 
 foreach (array('en_US.utf8') as $UnicodeLocale) {
 	if (setlocale(LC_COLLATE, $UnicodeLocale)) {
@@ -55,20 +55,11 @@ require_once ('lib/setup/sections.php');
 require_once ('lib/headerlib.php');
 
 $domain_map = array();
-if ( isset($_SERVER['HTTP_HOST']) ) {
-	$host = $_SERVER['HTTP_HOST'];
-} else {
-	$host = "";
-}
-if ( isset($_SERVER['REQUEST_URI']) ) {
-	$requestUri = $_SERVER['REQUEST_URI'];
-} else {
-	$requestUri = "";
-}
+$host = $_SERVER['HTTP_HOST'];
 
 if ( $prefs['tiki_domain_prefix'] == 'strip' && substr($host, 0, 4) == 'www.' ) {
 	$domain_map[$host] = substr($host, 4);
-} elseif ( $prefs['tiki_domain_prefix'] == 'force' && substr($host, 0, 4) != 'www.' ) {
+} elseif ( $prefs['tiki_domain_prefix'] == 'force' && substr($_SERVER['HTTP_HOST'], 0, 4) != 'www.' ) {
 	$domain_map[$host] = 'www.' . $host;
 }
 
@@ -82,7 +73,7 @@ if (strpos($prefs['tiki_domain_redirects'], ',') !== false) {
 if ( isset($domain_map[$host]) ) {
 	$prefix = $tikilib->httpPrefix();
 	$prefix = str_replace("://$host", "://{$domain_map[$host]}", $prefix);
-	$url = $prefix . $requestUri;
+	$url = $prefix . $_SERVER['REQUEST_URI'];
 
 	$access->redirect($url, null, 301);
 	exit;
@@ -91,50 +82,17 @@ if ( isset($domain_map[$host]) ) {
 if (isset($_REQUEST['PHPSESSID'])) $tikilib->setSessionId($_REQUEST['PHPSESSID']);
 elseif (function_exists('session_id')) $tikilib->setSessionId(session_id());
 
-if ($prefs['cookie_consent_feature'] === 'y' && empty($_COOKIE[$prefs['cookie_consent_name']])) {
-	$feature_no_cookie = true;
-} else {
-	$feature_no_cookie = false;
-}
-
-require_once ('lib/setup/cookies.php');
-
 if ($prefs['mobile_feature'] === 'y') {
-	require_once ('lib/setup/mobile.php');	// needs to be before js_detect but after cookies
+	require_once ('lib/setup/mobile.php');	// needs to be before js_detect
 } else {
 	$prefs['mobile_mode'] = '';
 }
 
+require_once ('lib/setup/cookies.php');
 require_once ('lib/setup/user_prefs.php');
 require_once ('lib/setup/language.php');
 require_once ('lib/setup/javascript.php');
 require_once ('lib/setup/wiki.php');
-
-/* Cookie consent setup, has to be after the JS decision and wiki setup */
-
-$cookie_consent_html = '';
-if ($prefs['cookie_consent_feature'] === 'y') {
-	if (!empty($_REQUEST['cookie_consent_checkbox'])) {			// js disabled
-		$feature_no_cookie = false;
-		setCookieSection($prefs['cookie_consent_name'], 'y');
-	}
-	$cookie_consent = getCookie($prefs['cookie_consent_name']);
-	if (empty($cookie_consent)) {
-		if ($prefs['javascript_enabled'] !== 'y') {
-			$prefs['cookie_consent_mode'] = '';
-		} else {
-			$headerlib->add_js('jqueryTiki.no_cookie = true; jqueryTiki.cookie_consent_alert = "' . addslashes($prefs['cookie_consent_alert']) . '";');
-		}
-		foreach ($_COOKIE as $k => $v) {
-			setcookie($k, '', time() - 3600);		// unset any previously existing cookies
-		}
-		$cookie_consent_html = $smarty->fetch('cookie_consent.tpl');
-	} else {
-		$feature_no_cookie = false;
-	}
-}
-$smarty->assign('cookie_consent_html', $cookie_consent_html);
-
 if ($prefs['feature_polls'] == 'y') require_once ('lib/setup/polls.php');
 if ($prefs['feature_mailin'] == 'y') require_once ('lib/setup/mailin.php');
 require_once ('lib/setup/tikiIndex.php');
@@ -180,10 +138,12 @@ if (!empty($_SESSION['interactive_translation_mode']) && ($_SESSION['interactive
 	$cachelib->empty_cache('templates_c');
 }
 if ($prefs['feature_freetags'] == 'y') require_once ('lib/setup/freetags.php');
-if ($prefs['feature_areas'] == 'y' && $prefs['feature_categories'] == 'y') {
-	global $areaslib; require_once('lib/perspective/binderlib.php');
-	require_once ('lib/setup/categories.php');
-	$areaslib->HandleObjectCategories($objectCategoryIdsNoJail);
+require_once('lib/perspective/binderlib.php');
+if ($prefs['feature_categories'] == 'y') { 
+		require_once ('lib/setup/categories.php');
+		if ($prefs['feature_areas'] == 'y' && $prefs['categories_used_in_tpl'] == 'y') {
+			$areaslib->HandleObjectCategories($objectCategoryIdsNoJail);
+		}
 }
 if ($prefs['feature_userlevels'] == 'y') require_once ('lib/setup/userlevels.php');
 if ($prefs['auth_method'] == 'openid') require_once ('lib/setup/openid.php');
@@ -285,7 +245,7 @@ if ($prefs['javascript_enabled'] != 'n') {
 		require_once("lib/codemirror_tiki/tiki_codemirror.php");
 		codemirrorModes($prefs['tiki_minify_javascript'] === 'y');
 	}
-
+	
 
 	if ($prefs['mobile_feature'] === 'y' && $prefs['mobile_mode'] === 'y') {
 
@@ -301,11 +261,11 @@ if ($prefs['javascript_enabled'] != 'n') {
 			$headerlib->add_jsfile("lib/jquery/jquery.mobile/jquery.mobile-$headerlib->jquerymobile_version$jsmin.js");
 			$headerlib->add_cssfile("lib/jquery/jquery.mobile/jquery.mobile-$headerlib->jquerymobile_version$cssmin.css");
 		}
-
+		
 		$headerlib->drop_cssfile('css/cssmenus.css');
 
 	} else {
-
+		
 		$headerlib->add_jsfile('lib/swfobject/swfobject.js');
 
 		if ( $prefs['feature_ajax'] === 'y' ) {
@@ -336,8 +296,8 @@ if ($prefs['javascript_enabled'] != 'n') {
 
 			if ( $prefs['feature_jquery_autocomplete'] == 'y' ) {
 				$headerlib->add_css(
-					'.ui-autocomplete-loading { background: white url("lib/jquery/jquery-ui/themes/' .
-					'base/images/ui-anim_basic_16x16.gif") right center no-repeat; }'
+								'.ui-autocomplete-loading { background: white url("lib/jquery/jquery-ui/themes/' .
+								'base/images/ui-anim_basic_16x16.gif") right center no-repeat; }'
 				);
 			}
 			if ( $prefs['jquery_ui_selectmenu'] == 'y' ) {
@@ -345,11 +305,11 @@ if ($prefs['javascript_enabled'] != 'n') {
 				$headerlib->add_cssfile('lib/jquery/jquery-ui-selectmenu/themes/base/jquery.ui.selectmenu.css');
 				// standard css for selectmenu seems way too big for tiki - to be added to layout.css when not so experimental
 				$headerlib->add_css(
-					'.ui-selectmenu-menu ul li a, .ui-selectmenu-status { white-space: nowrap; }
-					.ui-selectmenu { height: 1.8em; padding-right: 16px; }
-					.ui-selectmenu-menu ul { padding-right: 16px; }
-					.ui-selectmenu-menu li a,.ui-selectmenu-status { line-height: 1.0em; padding: .4em 1em; }
-					.ui-selectmenu-status { line-height: .8em; margin-right: 16px; }'
+								'.ui-selectmenu-menu ul li a, .ui-selectmenu-status { white-space: nowrap; }
+.ui-selectmenu { height: 1.8em; padding-right: 16px; }
+.ui-selectmenu-menu ul { padding-right: 16px; }
+.ui-selectmenu-menu li a,.ui-selectmenu-status { line-height: 1.0em; padding: .4em 1em; }
+.ui-selectmenu-status { line-height: .8em; margin-right: 16px; }'
 				);
 			}
 		}
@@ -429,10 +389,6 @@ if ($prefs['javascript_enabled'] != 'n') {
 		$headerlib->add_jsfile('lib/captcha/captchalib.js');
 	}
 
-	if ( $prefs['feature_jcapture'] === 'y' ) {
-		$headerlib->add_jsfile('lib/jcapture_tiki/tiki-jcapture.js');
-	}
-
 }	// end if $prefs['javascript_enabled'] != 'n'
 
 if ( ! empty( $prefs['header_custom_css'] ) ) {
@@ -474,19 +430,13 @@ if ($prefs['feature_draw'] == 'y') {
 	$headerlib->add_cssfile("lib/svg-edit_tiki/draw.css");
 }
 
-$headerlib->add_jsfile('lib/jquery/jquery-ui-timepicker-addon.js');
-
 if ($prefs['geo_always_load_openlayers'] == 'y') {
 	$headerlib->add_map();
 }
 
-if ($prefs['workspace_ui'] == 'y') {
-	$headerlib->add_jsfile('lib/jquery_tiki/tiki-workspace-ui.js');
-}
-
 if ($prefs['feature_sefurl'] != 'y') {
 	$headerlib->add_js(
-		'$.service = function (controller, action, query) {
+					'$.service = function (controller, action, query) {
 		if (! query) {
 			query = {};
 		}
@@ -501,15 +451,6 @@ if ($prefs['feature_sefurl'] != 'y') {
 		}).join("&");
 	};'
 	);
-}
-
-if (true) {
-	// Before being clever and moving this close to where you think it's needed (again),
-	// consider there are more places that you think.
-	$headerlib->add_jsfile('tiki-jsplugin.php?language='.$prefs['language'], 'dynamic');
-	if ($prefs['wikiplugin_module'] === 'y' && $prefs['wikiplugininline_module'] === 'n') {
-		$headerlib->add_jsfile('tiki-jsmodule.php?language='.$prefs['language'], 'dynamic');
-	}
 }
 
 if ( session_id() ) {

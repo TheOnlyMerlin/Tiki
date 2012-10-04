@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -16,9 +16,7 @@
 // Related script:  doc/devtools/prefreport.php
 //
 
-if (isset($_SERVER['REQUEST_METHOD'])) {
-	die;
-}
+if (isset($_SERVER['REQUEST_METHOD'])) die;
 
 // Add the imported libraries located in lib/
 $thirdpartyLibs = array(
@@ -33,7 +31,7 @@ FIX LATER (FIXED < 7.1?)
  ./tiki-login_openid.php
 
 
-The following do actually have features, but the fix check checker
+The following do actually have features, but the fix check checker 
 needs to be changed to accept access->check_permissions() so that also that it loads tikisetup.php
  ./tiki-orphan_pages.php
  ./tiki-plugins.php
@@ -66,16 +64,14 @@ $safePaths = array(
 	'\./tiki-testGD.php',
 );
 
-if (!file_exists('tiki-setup.php')) {
+if (!file_exists('tiki-setup.php'))
 	die("Please run this script from tiki root.\n");
-}
 
 include_once ('lib/setup/twversion.class.php');
 $TWV = new TWVersion();
 
-if (!$TWV->version) {
+if (!$TWV->version)
 	die("Could not find version information.\n");
-}
 
 $ver = explode('.', $TWV->version);
 $major = (count($ver) >= 1) ? $ver[0]:'?';
@@ -86,10 +82,9 @@ function get_content($filename)
 {
 	static $last, $content;
 
-	if ($filename == $last) {
+	if ($filename == $last)
 		return $content;
-	}
-
+	
 	$content = file_get_contents($last = $filename);
 
 	return $content;
@@ -145,7 +140,7 @@ function tikisetup_pattern() // {{{
 
 function scanfiles($folder, &$files) // {{{
 {
-	global $filesHash;
+  global $filesHash;
 	$handle = opendir($folder);
 	if (!$handle) {
 		printf("Could not open folder: %s\n", $folder);
@@ -154,18 +149,17 @@ function scanfiles($folder, &$files) // {{{
 
 	while (false !== $file = readdir($handle)) {
 		// Skip self and parent
-		if ($file{0} == '.' || $file{0} == '..') {
+		if ($file{0} == '.' || $file{0} == '..')
 			continue;
-		}
 
 		$path = "$folder/$file";
 
-		if (is_dir($path)) {
+		if (is_dir($path))
 			scanfiles($path, $files);
-		} else {
-			$analysis = analyse_file_path($path);
-			$files[] = $analysis;
-			$filesHash[$path] = $analysis;
+		else {
+		  $analysis = analyse_file_path($path);
+		  $files[] = $analysis;
+		  $filesHash[$path] = $analysis;
 		}
 	}
 } // }}}
@@ -187,41 +181,39 @@ function regex_match ($path, $regex_possibles)
 function analyse_file_path($path) // {{{
 {
 	global $thirdpartyLibs, $safePaths;
-
+	
 	$type = 'unknown';
 	$name = basename($path);
-	if (strpos($name, '.') !== false) {
+	if (strpos($name, '.') !== false)
 		$extension = substr($name, strrpos($name, '.') + 1);
-	} else {
+	else
 		$extension = false;
-	}
 
-	if (strpos($path, '/CVS/') !== false) {
+	if (strpos($path, '/CVS/') !== false)
 		$type = 'cvs';
-	} elseif (strpos($path, './templates_c/') === 0) {
+	elseif (strpos($path, './templates_c/') === 0)
 		$type = 'cache';
-	} elseif (regex_match($path, $safePaths)) {
+	elseif (regex_match($path, $safePaths))
 		$type = 'safe';
-	} elseif ($extension == 'php' || $extension == 'inc') {
-		if ($name == 'index.php') {
+	elseif ($extension == 'php' || $extension == 'inc') {
+		if ($name == 'index.php')
 			$type = 'blocker';
-		} elseif ($name == 'language.php') {
+		elseif ($name == 'language.php')
 			$type = 'lang';
-		} elseif (strpos($path, './lib/wiki-plugins') === 0) {
+		elseif (strpos($path, './lib/wiki-plugins') === 0)
 			$type = 'wikiplugin';
-		} elseif (strpos($path, './lib/') === 0) {
-			if (regex_match($path, $thirdpartyLibs)) {
+		elseif (strpos($path, './lib/') === 0) {
+			if (regex_match($path, $thirdpartyLibs))
 				$type = '3dparty';
-			} else {
+			else
 				$type = 'lib';
-			}
-		} elseif (strpos($path, './tiki-') === 0) {
-			$type = 'public';
-		} elseif (strpos($path, './modules/') === 0) {
-			$type = 'module';
-		} else {
-			$type = "include";
 		}
+		elseif (strpos($path, './tiki-') === 0)
+			$type = 'public';
+		elseif (strpos($path, './modules/') === 0)
+			$type = 'module';
+		else
+			$type = "include";
 	}
 	elseif (in_array($extension, array('txt', 'png', 'jpg', 'html', 'css', 'sql', 'gif', 'afm', 'js')))
 		$type = 'static';
@@ -263,9 +255,8 @@ function perform_feature_check(&$file) // {{{
 	preg_match_all($feature_pattern, get_content($path), $parts);
 
 	$featuresInFile = array();
-	foreach ($index as $i) {
+	foreach ($index as $i)
 		$featuresInFile = array_merge($features, $parts[$i]);
-	}
 
 	$featuresInFile = array_merge($featuresInFile, access_check_call($path, 'check_feature'));
 	$featuresInFile = array_unique($featuresInFile);
@@ -276,16 +267,16 @@ function perform_feature_check(&$file) // {{{
 	 An array of 3, with the zeroth element being a named element whose value is an array of one element.
 	 other elements being named, not numbered
 
-	 1array(3) {
-	 2  ["feature_directory"]=>
-	 3  array(1) {
-	 4    [0]=>
-	 5    string(28) "./tiki-directory_ranking.php"
-	 6  }
-	 7  [0]=>
-	 8  string(18) "feature_html_pages"
-	 9  [1]=>
-	 10  string(21) "feature_theme_control"
+	 1array(3) { 
+	 2  ["feature_directory"]=> 
+	 3  array(1) { 
+	 4    [0]=> 
+	 5    string(28) "./tiki-directory_ranking.php" 
+	 6  } 
+	 7  [0]=> 
+	 8  string(18) "feature_html_pages" 
+	 9  [1]=> 
+	 10  string(21) "feature_theme_control" 
 	 11}
 	*/
 	/*
@@ -310,17 +301,17 @@ function perform_feature_check(&$file) // {{{
 function perform_permission_check(&$file) // {{{
 {
 	$index = 0;
-
+	
 	$permission_pattern = permission_pattern($index);
 
 	preg_match_all($permission_pattern, get_content($file['path']), $parts);
 
 	$permissions = array_unique(
-		array_merge(
-			access_check_call($file['path'], 'check_permission'),
-			permission_check_accessors($file['path']),
-			$parts[$index]
-		)
+					array_merge(
+									access_check_call($file['path'], 'check_permission'),
+									permission_check_accessors($file['path']),
+									$parts[$index]
+					)
 	);
 
 	$file['permissions'] = $permissions;
@@ -369,11 +360,9 @@ function perform_extract_skip_check(&$file) // {{{
 
 	preg_match_all($pattern, get_content($file['path']), $parts);
 
-	foreach ($parts[0] as $extract) {
-		if (strpos($extract, 'EXTR_SKIP') === false) {
+	foreach ($parts[0] as $extract)
+		if (strpos($extract, 'EXTR_SKIP') === false)
 			$file['unsafeextract'] = true;
-		}
-	}
 
 } // }}}
 
@@ -431,7 +420,7 @@ function permission_check_accessors($file) // {{{
 			$perms = array_merge($perms, permission_check_condition($subset));
 		}
 	}
-
+	
 	return $perms;
 } // }}}
 
@@ -486,7 +475,7 @@ function permission_check_condition($tokens) // {{{
 
 /* Build Files structures */
 // a hash of filenames, each element is a hash of attributes of that file
-$filesHash = array();
+$filesHash = array(); 
 
 // a hash of features, each element is a hash of filenames that use that feature
 $features = array();
@@ -500,35 +489,33 @@ error_reporting(E_ALL);
 
 /* Iterate each file, and perform checks */
 $unsafe = array();
-foreach ($files as $key => $dummy) {
+foreach ($files as $key=>$dummy) {
 	$file = &$files[$key];
 
 	switch ($file['type']) {
 		case 'wikiplugin':
-			perform_extract_skip_check($file);
+				perform_extract_skip_check($file);
 
-			if ($file['unsafeextract']) {
-				$unsafe[] = $file;
-			}
+				if ($file['unsafeextract']) 
+					$unsafe[] = $file;
 
-			break;
+						break;
 		case 'public':
 		case 'include':
 		case 'script':
 		case 'module':
 		case 'lib':
 		case '3rdparty':
-			perform_feature_check($file);
-			perform_permission_check($file);
-			perform_includeonly_check($file);
-			perform_noweb_check($file);
-			perform_tikisetup_check($file);
+				perform_feature_check($file);
+				perform_permission_check($file);
+				perform_includeonly_check($file);
+				perform_noweb_check($file);
+				perform_tikisetup_check($file);
 
-			if (! $file['noweb'] && ! $file['includeonly'] && ! count($file['features']) && ! count($file['permissions'])) {
-				$unsafe[] = $file;
-			}
+				if (! $file['noweb'] && ! $file['includeonly'] && ! count($file['features']) && ! count($file['permissions'])) 
+					$unsafe[] = $file;
 
-			break;
+						break;
 	}
 }
 
@@ -551,7 +538,7 @@ usort($unsafe, 'sort_cb');
 To be safe, files must have either an include only check, block web access, have a feature check or have a permission check.
 </p>
 <ol>
-	<?php foreach ($unsafe as $unsafeUrlAndFile):
+	<?php foreach ($unsafe as $unsafeUrlAndFile): 
 	  $pathname = $unsafeUrlAndFile['path'];
 		$url = substr($unsafeUrlAndFile['path'], 2);
 		$fileRecord = $filesHash[$pathname];
@@ -574,7 +561,7 @@ To be safe, files must have either an include only check, block web access, have
 		</tr>
 	</thead>
 	<tbody>
-		<?php foreach ($files as $file)
+		<?php foreach ($files as $file) 
 			if (in_array($file['type'], array('script', 'module', 'include', 'public', 'lib', '3rdparty', 'wikiplugin'))): ?>
 		<tr>
 			<td><a href="<?php echo htmlentities(substr($file['path'], 2)) ?>"><?php echo htmlentities($file['path']) ?></a></td>
@@ -597,7 +584,7 @@ To be safe, files must have either an include only check, block web access, have
 	</tbody>
 </table>
 
-	<?php
+	<?php 
 		foreach ($features as $featureKey => $featureValue) {
 			print "$featureKey :\n";
 			foreach ($featureValue as $file) {

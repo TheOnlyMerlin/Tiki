@@ -3,7 +3,7 @@
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Id: tiki-check.php 43236 2012-10-01 21:29:50Z amette $
 
 if (file_exists('./db/local.php') && file_exists('./templates/tiki-check.tpl')) {
 	$standalone = false;
@@ -1141,8 +1141,8 @@ if ($s) {
 $fcts = array(
 		array (
 			'function' => 'exec',
-			'risky' => tra('Exec can potentially be used to execute arbitrary code on your server.').' '.tra('Tiki does not need it, you may want to disable it.'),
-			'safe' => tra('Exec can be potentially be used to execute arbitrary code on your server.').' '.tra('Tiki does not need it, you are wise to have it disabled.')
+			'risky' => tra('Exec can potentially be used to execute arbitrary code on your server.').' '.tra('Tiki needs it for map uploads and LaTeX rendering. If you need these and trust the other PHP software on your server, you should enable it.'),
+			'safe' => tra('Exec can potentially be used to execute arbitrary code on your server.').' '.tra('Tiki needs it for map uploads and LaTeX rendering. If you need these and trust the other PHP software on your server, you should enable it.')
 		),
 		array (
 			'function' => 'passthru',
@@ -1151,8 +1151,8 @@ $fcts = array(
 		),
 		array (
 			'function' => 'shell_exec',
-			'risky' => tra('Shell_exec is similar to exec.').' '.tra('Tiki does not need it, you may want to disable it.'),
-			'safe' =>  tra('Shell_exec is similar to exec.').' '.tra('Tiki does not need it, you are wise to have it disabled.')
+			'risky' => tra('Shell_exec is similar to exec.').' '.tra('Tiki needs it for map uploads and LaTeX rendering. If you need these and trust the other PHP software on your server, you should enable it.'),
+			'safe' =>  tra('Shell_exec is similar to exec.').' '.tra('Tiki needs it for map uploads and LaTeX rendering. If you need these and trust the other PHP software on your server, you should enable it.')
 		),
 		array (
 			'function' => 'system',
