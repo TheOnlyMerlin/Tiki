@@ -2,6 +2,10 @@
 JQuery/Tiki readme
 -------------------------
 
+5 October 2012
+	jquery-ui-selectmenu to latest "dev" from github (still v 1.3.0pre)
+
+
 29 September 2012
 	jquery-ui-timepicker-addon.js 0.9.9 to 1.0.3
 
