@@ -3,6 +3,7 @@ JQuery/Tiki readme
 -------------------------
 
 5 October 2012
+	jquery.mobile 1.1.1 to 1.2.0
 	jquery-ui-selectmenu to latest "dev" from github (still v 1.3.0pre)
 
 
