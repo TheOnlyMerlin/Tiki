@@ -1,65 +1,80 @@
 <parameters>
-
   <!-- Prompts where to copy the content files and takes a web site path (such as "contoso.com/app"). -->
-  <parameter name="ApplicationPath" description="Full site path you would like to install your application to (i.e. Default Web Site/tiki)." defaultValue="Default Web Site/tiki" tags="iisapp" >  
+  <parameter name="ApplicationPath" description="Full file path you would like to install your application to (i.e. Default Web Site/tiki)." defaultValue="Default Web Site/tiki" tags="iisapp" >
         <parameterEntry type="ProviderPath" scope="iisapp"  match="tiki$" />
   </parameter>
-
   <!--Set ACL parameters -->
-  
   <parameter name="SetAclParameter1" description="Sets the ACL on db" defaultValue="{ApplicationPath}/db" tags="Hidden">
     <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/db$" />
+  </parameter>
    
   <parameter name="SetAclParameter2" description="Sets the ACL on dump" defaultValue="{ApplicationPath}/dump" tags="Hidden">
     <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/dump$" />
+  </parameter>
    
   <parameter name="SetAclParameter3" description="Sets the ACL on files" defaultValue="{ApplicationPath}/files" tags="Hidden">
     <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/files$" />
+  </parameter>
 
   <parameter name="SetAclParameter4" description="Sets the ACL on img/wiki" defaultValue="{ApplicationPath}/img/wiki" tags="Hidden">
     <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/img/wiki$" />
+  </parameter>
 
   <parameter name="SetAclParameter5" description="Sets the ACL on img/wiki_up" defaultValue="{ApplicationPath}/img/wiki_up" tags="Hidden">
     <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/img/wiki_up$" />
+  </parameter>
 
   <parameter name="SetAclParameter6" description="Sets the ACL on img/trackers" defaultValue="{ApplicationPath}/img/trackers" tags="Hidden">
     <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/img/trackers$" />
+  </parameter>
 
   <parameter name="SetAclParameter7" description="Sets the ACL on maps" defaultValue="{ApplicationPath}/maps" tags="Hidden">
     <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/maps$" />
+  </parameter>
 
   <parameter name="SetAclParameter8" description="Sets the ACL on mods" defaultValue="{ApplicationPath}/mods" tags="Hidden">
     <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/mods$" />
+  </parameter>
 
   <parameter name="SetAclParameter9" description="Sets the ACL on modules/cache" defaultValue="{ApplicationPath}/modules/cache" tags="Hidden">
     <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/modules/cache$" />
+  </parameter>
 
   <parameter name="SetAclParameter10" description="Sets the ACL on styles" defaultValue="{ApplicationPath}/styles" tags="Hidden">
     <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/styles$" />
+  </parameter>
 
   <parameter name="SetAclParameter11" description="Sets the ACL on temp" defaultValue="{ApplicationPath}/temp" tags="Hidden">
     <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/temp$" />
+  </parameter>
 
   <parameter name="SetAclParameter12" description="Sets the ACL on temp/cache" defaultValue="{ApplicationPath}/temp/cache" tags="Hidden">
     <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/temp/cache$" />
+  </parameter>
 
   <parameter name="SetAclParameter13" description="Sets the ACL on temp/public" defaultValue="{ApplicationPath}/temp/public" tags="Hidden">
     <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/temp/public$" />
+  </parameter>
 
   <parameter name="SetAclParameter14" description="Sets the ACL on temp/unified-index" defaultValue="{ApplicationPath}/temp/unified-index" tags="Hidden">
     <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/temp/unified-index$" />
+  </parameter>
 
   <parameter name="SetAclParameter15" description="Sets the ACL on templates_c" defaultValue="{ApplicationPath}/templates_c" tags="Hidden">
     <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/templates_c$" />
+  </parameter>
 
   <parameter name="SetAclParameter16" description="Sets the ACL on templates" defaultValue="{ApplicationPath}/templates" tags="Hidden">
     <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/templates$" />
+  </parameter>
 
   <parameter name="SetAclParameter17" description="Sets the ACL on tiki_tests/tests" defaultValue="{ApplicationPath}/tiki_tests/tests" tags="Hidden">
     <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/tiki_tests/tests$" />
+  </parameter>
 
   <parameter name="SetAclParameter18" description="Sets the ACL on whelp" defaultValue="{ApplicationPath}/whelp" tags="Hidden">
     <parameterEntry type="ProviderPath" scope="setAcl" match="tiki/whelp$" />
+  </parameter>
 
 
   <!-- Database Parameters -->
@@ -134,6 +149,7 @@
 		    scope="install.sql" 
 		    match="PlaceHolderForPassword" />
   </parameter>
+  
   <parameter name="Automatic database password"     
 	     defaultValue="$pass_tiki='{Database Password}';" 
 	     tags="Hidden,MySQL">
@@ -150,4 +166,5 @@
 		    scope="dbmysql" 
 		    match="install.sql" />
   </parameter>
+
 </parameters>
