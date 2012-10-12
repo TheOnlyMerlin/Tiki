@@ -1,4 +1,4 @@
- /*
+/*
  * jQuery Media Plugin for converting elements into rich media content.
  *
  * Examples and documentation at: http://malsup.com/jquery/media/
@@ -8,7 +8,7 @@
  * http://www.gnu.org/licenses/gpl.html
  *
  * @author: M. Alsup
- * @version: 0.96 (23-MAR-2011)
+ * @version: 0.97 (20-MAY-2011)
  * @requires jQuery v1.1.2 or later
  * $Id: jquery.media.js 2460 2007-07-23 02:53:15Z malsup $
  *
@@ -51,7 +51,7 @@ $.fn.media = function(options, f1, f2) {
 				$this.replaceWith(html);
 		});
 	}
-	
+
 	return this.each(function() {
 		if (typeof options == 'function') {
 			f2 = f1;
@@ -81,12 +81,12 @@ $.fn.media = function(options, f1, f2) {
 			var $div = $.fn.media[fn](this, o);
 
 			$div.css('backgroundColor', o.bgColor).width(o.width);
-			
+
 			if (o.canUndo) {
 				var $temp = $('<div></div>').append(this);
 				$div.data('media.origHTML', $temp.html()); // store original markup
 			}
-			
+
 			// post-conversion callback, passes original element, new div element and fully populated options
 			if (typeof f2 == 'function') f2(this, $div[0], o, player.name);
 			break;
@@ -266,7 +266,7 @@ function getSettings(el, options) {
 	if (w) meta.width	= w;
 	if (h) meta.height = h;
 	if (cls) meta.cls = cls;
-	
+
 	// crank html5 style data attributes
 	var dataName = 'data-';
     for (var i=0; i < el.attributes.length; i++) {
@@ -476,7 +476,7 @@ function generate(el, opts, player) {
 	            a.push(key + '="'+opts.params[key]+'" ');
 	        }
 	        a.push('></em'+'bed'+'>');
-	    }	
+	    }
 	// convert element to div
 	var id = el.id ? (' id="'+el.id+'"') : '';
 	var cls = opts.cls ? (' class="' + opts.cls + '"') : '';

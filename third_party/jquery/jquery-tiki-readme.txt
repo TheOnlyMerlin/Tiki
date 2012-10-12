@@ -2,6 +2,9 @@
 JQuery/Tiki readme
 -------------------------
 
+12 October 2012
+	jquery.media.js latest from gihub (v0.97)
+
 10 October 2012
 	jquery-ui-selectmenu to latest "dev" from github
 
