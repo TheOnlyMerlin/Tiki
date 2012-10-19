@@ -2,6 +2,9 @@
 JQuery/Tiki readme
 -------------------------
 
+19 October 2012
+	jquery-ui-selectmenu to 1.3.0 release (version string change only)
+
 12 October 2012
 	jquery.media.js latest from gihub (v0.97)
 
