@@ -2,6 +2,9 @@
 JQuery/Tiki readme
 -------------------------
 
+22 October 2012
+	New elfinder 2.0 rc1
+
 19 October 2012
 	jquery-ui-selectmenu to 1.3.0 release (version string change only)
 
