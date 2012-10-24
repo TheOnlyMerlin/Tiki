@@ -47,14 +47,14 @@
 
 
 {if $prefs.javascript_enabled eq 'y'}
-	<div id='progress'>
-		<div id='progress_0'></div>
-	</div>
-	{if $prefs.fgal_upload_progressbar eq 'ajax_flash'}
-		<div id="upload_progress">
-			<div id="upload_progress_ajax_0" name="upload_progress_0" height="1" width="1"></div>
-		</div>
-	{/if}
+<div id='progress'>
+	<div id='progress_0'></div>
+</div>
+{if $prefs.fgal_upload_progressbar eq 'ajax_flash'}
+<div id="upload_progress">
+	<div id="upload_progress_ajax_0" name="upload_progress_0" height="1" width="1"></div>
+</div>
+{/if}
 {/if}
 
 {if isset($uploads) and count($uploads) > 0}
@@ -126,26 +126,14 @@
 					<tr>
 						<td><label for="name">{tr}File title:{/tr}</label></td>
 						<td width="80%">
-							<input style="width:100%" type="text" id="name" name="name[]"
-								{if isset($fileInfo) and $fileInfo.name}
-								   value="{$fileInfo.name|escape}"
-								{/if}
-								size="40"
-							/>
-							{if isset($gal_info.type) and ($gal_info.type eq "podcast" or $gal_info.type eq "vidcast")}
-								({tr}required field for podcasts{/tr})
-							{/if}
+							<input style="width:100%" type="text" id="name" name="name[]" {if isset($fileInfo) and $fileInfo.name}value="{$fileInfo.name|escape}"{/if} size="40" /> {if $gal_info.type eq "podcast" or $gal_info.type eq "vidcast"} ({tr}required field for podcasts{/tr}){/if}
 						</td>
 					</tr>
 					<tr>
 						<td><label for="description">{tr}File description:{/tr}</label></td>
 						<td>
-							<textarea style="width:100%" rows="2" cols="40" id="description" name="description[]">
-								{if isset($fileInfo) and $fileInfo.description}{$fileInfo.description|escape}{/if}
-							</textarea>
-							{if isset($gal_info.type) and ($gal_info.type eq "podcast" or $gal_info.type eq "vidcast")}
-								<br /><em>{tr}Required for podcasts{/tr}.</em>
-							{/if}
+							<textarea style="width:100%" rows="2" cols="40" id="description" name="description[]">{if isset($fileInfo) and $fileInfo.description}{$fileInfo.description|escape}{/if}</textarea>
+							{if $gal_info.type eq "podcast" or $gal_info.type eq "vidcast"}<br /><em>{tr}Required for podcasts{/tr}.</em>{/if}
 						</td>
 					</tr>
 				{/if}
@@ -238,7 +226,9 @@
 								<label for="galleryId">{tr}File gallery:{/tr}</label>
 							</td><td width="80%">
 								<select id="galleryId" name="galleryId[]">
-									<option value="{$treeRootId}" {if $treeRootId eq $galleryId}selected="selected"{/if} style="font-style:italic; border-bottom:1px dashed #666;">{tr}Root{/tr}</option>
+									{if $gal_info.type neq 'user'}
+										<option value="{$treeRootId}" {if $treeRootId eq $galleryId}selected="selected"{/if} style="font-style:italic; border-bottom:1px dashed #666;">{tr}Root{/tr}</option>
+									{/if}
 									{section name=idx loop=$galleries}
 										{if $galleries[idx].id neq $treeRootId and $galleries[idx].perms.tiki_p_upload_files eq 'y'}
 											<option value="{$galleries[idx].id|escape}" {if $galleries[idx].id eq $galleryId}selected="selected"{/if}>{$galleries[idx].name|escape}</option>
@@ -393,19 +383,14 @@
 	<span class="attention">{tr}The file is locked by {$fileInfo.lockedby}{/tr}</span>
 {/if}
 <br />
-{if !$editFileId}
-	{remarksbox type="note"}
-		{tr}Maximum file size is around:{/tr}
-		{if $tiki_p_admin eq 'y'}<a title="{$max_upload_size_comment}">{/if}
-			{$max_upload_size|kbsize:true:0}
-		{if $tiki_p_admin eq 'y'}</a>{/if}
-	{/remarksbox}
-{/if}
-</div>
+{remarksbox type="note"}
+	{tr}Maximum file size is around:{/tr}
+	{if $tiki_p_admin eq 'y'}<a title="{$max_upload_size_comment}">{/if}
+		{$max_upload_size|kbsize:true:0}
+	{if $tiki_p_admin eq 'y'}</a>{/if}
+{/remarksbox}
 
-{if isset($metarray) and $metarray|count gt 0}
-	{include file='metadata/meta_view_tabs.tpl'}
-{/if}
+</div>
 
 {if ! $editFileId}
 	{if $prefs.feature_jquery_ui eq 'y'}

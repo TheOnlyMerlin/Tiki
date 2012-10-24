@@ -1,15 +1,15 @@
 <?php
 // (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 /* Common shared mail functions */
-/*
+/* 
  * function encode_headers()
  *
- * Encode non-ASCII email headers for mail() function to display
+ * Encode non-ASCII email headers for mail() function to display 
  * them properly in email clients.
  * Original code by <gordon at kanazawa-gu dot ac dot jp>.
  * See 'User Contributed Notes' at
@@ -23,11 +23,6 @@
 $charset = 'utf-8'; // What charset we do use in Tiki
 $in_str = '';
 
-/**
- * @param $in_str
- * @param $charset
- * @return string
- */
 function encode_headers($in_str, $charset)
 {
    $out_str = $in_str;
@@ -89,18 +84,12 @@ function tiki_mail_setup()
 	$done = true;
 }
 
-/**
- * @return Zend_Mail
- */
 function tiki_get_basic_mail()
 {
 	tiki_mail_setup();
 	return new Zend_Mail('UTF-8');
 }
 
-/**
- * @return Zend_Mail
- */
 function tiki_get_admin_mail()
 {
 	global $prefs;
@@ -111,12 +100,6 @@ function tiki_get_admin_mail()
 	return $mail;
 }
 
-/**
- * @param $email
- * @param $recipientName
- * @param $subject
- * @param $textBody
- */
 function tiki_send_admin_mail( $email, $recipientName, $subject, $textBody )
 {
 	$mail = tiki_get_admin_mail();

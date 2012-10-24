@@ -32,7 +32,6 @@
 					<div class="adminoptionboxchild unified_engine_childcontainer lucene">
 						{preference name="unified_incremental_update"}
 						{preference name="unified_lucene_highlight"}
-						{preference name=unified_parse_results}
 						{preference name="unified_lucene_location"}
 						<fieldset>
 							<legend>{tr}Search Engine Settings{/tr}</legend>
@@ -146,7 +145,6 @@ $("#log-rebuild").click(function(){
 			{preference name=search_show_category_filter}
 			{preference name=search_show_tag_filter}
 			{preference name=feature_search_show_object_filter}
-			{preference name=search_show_sort_order}
 			{preference name=feature_search_show_search_box}
 			{tr}Select the information to display for each result:{/tr}
 			{preference name=feature_search_show_visit_count}

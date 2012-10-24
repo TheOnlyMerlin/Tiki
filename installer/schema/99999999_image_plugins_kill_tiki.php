@@ -18,9 +18,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 // tiki-setup_base.php does.
 
 
-/**
- * @param $installer
- */
 function upgrade_99999999_image_plugins_kill_tiki($installer)
 {
 	global $tikilib, $prefs, $tikiroot, $user_overrider_prefs, $tiki_p_trust_input, $smarty, $access, $local_php;	// globals are required here for tiki-setup_base.php
@@ -29,6 +26,9 @@ function upgrade_99999999_image_plugins_kill_tiki($installer)
 	require_once ('lib/tikilib.php');
 
 	$tikilib = new TikiLib;
+
+	include_once ('lib/profilelib/profilelib.php');
+	include_once ('lib/profilelib/installlib.php');
 
 	// ******************************** THUMB plugin
 	$plugstring = <<<PLUGINTEXT

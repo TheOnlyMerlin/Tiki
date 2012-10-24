@@ -18,12 +18,15 @@ class Event_Lib
 
 	public static function defer($library, $method)
 	{
-		return new self($library, $method);
+		return array(
+			new self($library, $method),
+			'trigger',
+		);
 	}
 
-	function __invoke($arguments, $priority)
+	function trigger($arguments)
 	{
-		TikiLib::lib($this->library)->{$this->method}($arguments, $priority);
+		TikiLib::lib($this->library)->{$this->method}($arguments);
 	}
 }
 

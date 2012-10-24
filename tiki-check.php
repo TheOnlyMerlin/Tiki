@@ -3,7 +3,7 @@
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Id: tiki-check.php 43236 2012-10-01 21:29:50Z amette $
 
 if (file_exists('./db/local.php') && file_exists('./templates/tiki-check.tpl')) {
 	$standalone = false;
@@ -12,19 +12,12 @@ if (file_exists('./db/local.php') && file_exists('./templates/tiki-check.tpl')) 
 } else {
 	$standalone = true;
 
-    /**
-     * @param $string
-     * @return mixed
-     */
-    function tra($string)
+	function tra($string)
 	{
 		return $string;
 	}
 
-    /**
-     * @param $var
-     */
-    function renderTable($var)
+	function renderTable($var)
 	{
 		if (is_array($var)) {
 			echo '<table style="border:2px solid grey;">';
@@ -182,12 +175,7 @@ DBC;
 			case 'PDO':
 				// We don't do exception handling here to be PHP 4 compatible
 				$connection = new PDO('mysql:host='.$_POST['dbhost'], $_POST['dbuser'], $_POST['dbpass']);
-                /**
-                 * @param $query
-                 * @param $connection
-                 * @return mixed
-                 */
-                function query($query, $connection)
+				function query($query, $connection)
 				{
 					$result = $connection->query($query);
 					$return = $result->fetchAll();
@@ -202,12 +190,7 @@ DBC;
 					$connection = false;
 					echo 'Couldn\'t connect to database: '.$error;
 				}
-                /**
-                 * @param $query
-                 * @param $connection
-                 * @return array
-                 */
-                function query($query, $connection)
+				function query($query, $connection)
 				{
 					$result = $connection->query($query);
 					$return = array();
@@ -222,12 +205,7 @@ DBC;
 				if ( $connection === false ) {
 					echo 'Cannot connect to MySQL. Wrong credentials?';
 				}
-                /**
-                 * @param $query
-                 * @param string $connection
-                 * @return array
-                 */
-                function query($query, $connection = '')
+				function query($query, $connection = '')
 				{
 					$result = mysql_query($query);
 					$return = array();
@@ -240,11 +218,7 @@ DBC;
 		}
 	}
 } else {
-    /**
-     * @param $query
-     * @return array
-     */
-    function query($query)
+	function query($query)
 	{
 		global $tikilib;
 		$result = $tikilib->query($query);
@@ -1167,8 +1141,8 @@ if ($s) {
 $fcts = array(
 		array (
 			'function' => 'exec',
-			'risky' => tra('Exec can potentially be used to execute arbitrary code on your server.').' '.tra('Tiki does not need it, you may want to disable it.'),
-			'safe' => tra('Exec can be potentially be used to execute arbitrary code on your server.').' '.tra('Tiki does not need it, you are wise to have it disabled.')
+			'risky' => tra('Exec can potentially be used to execute arbitrary code on your server.').' '.tra('Tiki needs it for map uploads and LaTeX rendering. If you need these and trust the other PHP software on your server, you should enable it.'),
+			'safe' => tra('Exec can potentially be used to execute arbitrary code on your server.').' '.tra('Tiki needs it for map uploads and LaTeX rendering. If you need these and trust the other PHP software on your server, you should enable it.')
 		),
 		array (
 			'function' => 'passthru',
@@ -1177,8 +1151,8 @@ $fcts = array(
 		),
 		array (
 			'function' => 'shell_exec',
-			'risky' => tra('Shell_exec is similar to exec.').' '.tra('Tiki does not need it, you may want to disable it.'),
-			'safe' =>  tra('Shell_exec is similar to exec.').' '.tra('Tiki does not need it, you are wise to have it disabled.')
+			'risky' => tra('Shell_exec is similar to exec.').' '.tra('Tiki needs it for map uploads and LaTeX rendering. If you need these and trust the other PHP software on your server, you should enable it.'),
+			'safe' =>  tra('Shell_exec is similar to exec.').' '.tra('Tiki needs it for map uploads and LaTeX rendering. If you need these and trust the other PHP software on your server, you should enable it.')
 		),
 		array (
 			'function' => 'system',

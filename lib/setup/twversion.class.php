@@ -9,14 +9,14 @@
 
 class TWVersion
 {
-	public $branch;		// Development cycle
-	public $version;		// This version
+	var $branch;		// Development cycle
+	var $version;		// This version
 	private $latestMinorRelease;		// Latest release in the same major version release series
-	public $latestRelease;		// Latest release
+	var $latestRelease;		// Latest release
 	private $isLatestMajorVersion; // Whether or not the current major version is the latest
-	public $releases;		// Array of all releases from website
-	public $star;			// Star being used for this version tree
-	public $svn;			// Is this a Subversion version or a package?
+	var $releases;		// Array of all releases from website
+	var $star;			// Star being used for this version tree
+	var $svn;			// Is this a Subversion version or a package?
 
 	function TWVersion()
 	{
@@ -24,11 +24,11 @@ class TWVersion
 		//   stable   : Represents stable releases.
 		//   unstable : Represents candidate and test/development releases.
 		//   trunk     : Represents next generation development version.
-		$this->branch 	= 'trunk';
+		$this->branch 	= 'stable';
 
 		// Set everything else, including defaults.
-		$this->version 	= '11.0svn';	// needs to have no spaces for releases
-		$this->star	= 'TBA';
+		$this->version 	= '9.2';	// needs to have no spaces for releases
+		$this->star	= 'Herbig Haro';
 		$this->releases	= array();
 
 		// Check for Subversion or not
@@ -42,13 +42,13 @@ class TWVersion
 		return $this->latestMinorRelease;
 	}
 
-	function getBaseVersion()
+ 	function getBaseVersion()
 	{
 		return preg_replace("/^(\d+\.\d+).*$/", '$1', $this->version);
 	}
 
 	// Returns an array of all used Tiki stars.
-	function tikiStars()
+ 	function tikiStars()
 	{
 		return array(
 				1=>'Spica',			// 0.9
@@ -70,13 +70,12 @@ class TWVersion
 				17=>'Rigel',		// 6.x
 				18=>'Electra',		// 7.x
 				19=>'Acubens',		// 8.x
-				20=>'Herbig Haro',	// 9.x
-				21=>'Sun'			// 10.x
+				20=>'Herbig Haro'	// 9.x
 		);
 	}
 
 	// Returns an array of all valid versions of Tiki.
-	function tikiVersions()
+ 	function tikiVersions()
 	{
 		// These are all the valid release versions of Tiki.
 		// Newest version goes at the end.
@@ -175,6 +174,7 @@ class TWVersion
 				'9.0',
 				'9.1',
 				'9.2beta1',
+				'9.2',
 			);
 	}
 

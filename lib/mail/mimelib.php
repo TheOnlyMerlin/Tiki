@@ -11,9 +11,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- *
- */
 class mime
 {
 	function mime()
@@ -21,13 +18,7 @@ class mime
 
 	}
 
-    /**
-     * @param $input
-     * @param string $default_ctype
-     * @param string $crlf
-     * @return array|bool
-     */
-    function decode($input,$default_ctype = 'text/plain', $crlf = "\r\n")
+	function decode($input,$default_ctype = 'text/plain', $crlf = "\r\n")
 	{
 		$back = array();
 
@@ -66,7 +57,7 @@ class mime
 					case 'B':
 					case 'b':
 						$text = base64_decode($text);
-						break;
+									break;
 
 					case 'Q':
 					case 'q':
@@ -75,7 +66,7 @@ class mime
 						foreach ($matches[1] as $value) {
 							$text = str_replace('=' . $value, chr(hexdec($value)), $text);
 						}
-						break;
+									break;
 				}
 
 				if ($charset == 'iso-8859-1') {
@@ -126,7 +117,7 @@ class mime
 							$back['ctype_parameters'][$p_name] = $p_value;
 						}
 					}
-					break;
+								break;
 
 				case 'content-disposition':
 					$content_disposition = $it;
@@ -137,11 +128,11 @@ class mime
 							$back['d_parameters'][$p_name] = $p_value;
 						}
 					}
-					break;
+								break;
 
 				case 'content-transfer-encoding':
 					$content_transfer_encoding = $it;
-					break;
+								break;
 			}
 		}
 
@@ -174,7 +165,7 @@ class mime
 					} else {
 						$back[$type][] = $back['body'];
 					}
-					break;
+								break;
 
 				case 'multipart/signed':
 				case 'multipart/digest':
@@ -190,18 +181,18 @@ class mime
 					for ($i = 0, $icount_parts = count($parts); $i < $icount_parts; $i++) {
 						$back['parts'][] = mime::decode($parts[$i], $default_ctype);
 					}
-					break;
+								break;
 
 				case 'message/rfc822':
 					$back['parts'][] = mime::decode($body);
-					break;
+								break;
 
 				default:
 					if (!isset($content_transfer_encoding['value'])) {
 						$content_transfer_encoding['value'] = '7bit';
 					}
 					$back['body'] = mime::decodeBody($body, $content_transfer_encoding['value']);
-					break;
+								break;
 			}
 		} else {
 			$back['body'] = mime::decodeBody($body);
@@ -213,12 +204,7 @@ class mime
 		return $back;
 	}
 
-    /**
-     * @param $input
-     * @param string $encoding
-     * @return mixed|string
-     */
-    function decodeBody($input, $encoding = '7bit')
+	function decodeBody($input, $encoding = '7bit')
 	{
 		switch ($encoding) {
 			case '7bit':
@@ -246,11 +232,7 @@ class mime
 		}
 	}
 
-    /**
-     * @param $output
-     * @return array
-     */
-    function get_bodies($output)
+	function get_bodies($output)
 	{
 			$bodies = array();	/* BUG: only one body for the moment */
 			if (isset($output['text'][0]))
@@ -265,11 +247,7 @@ class mime
 			return $bodies;
 	}
 
-    /**
-     * @param $output
-     * @return array
-     */
-    function get_attachments($output)
+	function get_attachments($output)
 	{
 		$cnt = 0;
 		$attachments = array();

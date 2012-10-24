@@ -93,7 +93,7 @@ if ($prefs['feature_contribution'] == 'y') {
 //Save
 if (isset($_REQUEST['s']) && !empty($_REQUEST['s']) ) { //save
 	if ( $_REQUEST['sheetId'] ) {
-		$result = $sheetlib->save_sheet($_REQUEST['s'], $_REQUEST['sheetId'], $_REQUEST);
+		$result = $sheetlib->save_sheet($_REQUEST['s'], $_REQUEST['sheetId']);
 	}
 	die($result);
 
@@ -176,7 +176,7 @@ if ( isset($_REQUEST['relate']) && isset($_REQUEST['trackerId']) ) {
 	$grid->import($handler);
 
 	//ensure that sheet isn't being edited, then parse values if needed
-	if ( $_REQUEST['parse'] != 'edit' ) {
+	if ( $grid->parseValues && $_REQUEST['parse'] != 'edit' ) {
 		$grid->parseValues = true;
 	} else {
 		$grid->parseValues = false;
@@ -209,19 +209,19 @@ if (!empty($_REQUEST['parse']) && $_REQUEST['parse'] == 'edit') {
 }
 
 $headerlib->add_jq_onready(
-	'$.sheet.tikiOptions = $.extend($.sheet.tikiOptions, {
+				'$.sheet.tikiOptions = $.extend($.sheet.tikiOptions, {
 					menu: $("#sheetMenu").clone().html()
 				});
-
+			
 				jST = $("div.tiki_sheet")
 					.sheet($.sheet.tikiOptions);
-
+			
 				jST.id = "'.$_REQUEST['sheetId'].'";
 				jST.file = "'.$_REQUEST['file'].'";
-
+			
 				$.sheet.link.setupUI();
 				$.sheet.readyState();
-
+			
 				$(window).bind("beforeunload", function() {
 					$($.sheet.instance).each(function() {
 						if (this.isDirty) {
@@ -229,22 +229,22 @@ $headerlib->add_jq_onready(
 						}
 					});
 				});
-
+			
 				$("#edit_button a")
 					.click(function() {
 						$.sheet.manageState(true, "edit");
 						return false;
 					});
-
+			
 				$("#save_button a")
 					.click( function () {
 						$.sheet.saveSheet(function() {
 							$.sheet.manageState(true);
 						});
-
+			
 						return false;
 					});
-
+			
 				$("#cancel_button")
 					.click(function() {
 						$.sheet.manageState(true);

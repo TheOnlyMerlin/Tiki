@@ -1,15 +1,13 @@
 {* $Id$ *}
 {if $tiki_p_create_file_galleries eq 'y'}
-	{if isset($individual) and $individual eq 'y'}
+	{if $individual eq 'y'}
 		<br />
-		<a class="fgallink" href="tiki-objectpermissions.php?objectName={$name|escape:"url"}&amp;objectType=file+gallery&amp;permType=file+galleries&amp;objectId={$galleryId}">
-			{tr}There are individual permissions set for this file gallery{/tr}
-		</a>
+		<a class="fgallink" href="tiki-objectpermissions.php?objectName={$name|escape:"url"}&amp;objectType=file+gallery&amp;permType=file+galleries&amp;objectId={$galleryId}">{tr}There are individual permissions set for this file gallery{/tr}</a>
 	{/if}
 	<div>
 		<form class="admin" action="{$smarty.server.PHP_SELF}?{query}" method="post">
 			<input type="hidden" name="galleryId" value="{$galleryId|escape}" />
-			<input type="hidden" name="filegals_manager" {if isset($filegals_manager)}value="{$filegals_manager}"{/if} />
+			<input type="hidden" name="filegals_manager" value="{$filegals_manager}" />
 
 			<div class="input_submit_container" style="text-align: right">
 				<input type="submit" value="{tr}Save{/tr}" name="edit" />
@@ -41,7 +39,7 @@
 							</td>
 							<td>
 								<select name="fgal_template" id="fgal_template">
-									<option value=""{if !isset($templateId) or $templateId eq ""} selected="selected"{/if}>{tr}None{/tr}</option>
+									<option value=""{if $templateId eq ""} selected="selected"{/if}>{tr}None{/tr}</option>
 									{foreach from=$all_templates key=key item=item}
 										<option value="{$item.id}"{if $gal_info.template eq $item.id} selected="selected"{/if}>{$item.label|escape}</option>
 									{/foreach}
@@ -112,8 +110,7 @@ $('#fgal_template').change( function() {
 								<label for="public">{tr}Gallery is public{/tr}.</label>
 							</td>
 							<td>
-								<input type="checkbox" id="public" name="public" {if isset($gal_info.public)
-									and $gal_info.public eq 'y'}checked="checked"{/if}/>
+								<input type="checkbox" id="public" name="public" {if $gal_info.public eq 'y'}checked="checked"{/if}/>
 								<br />
 								<em>{tr}Any user with permission (not only the gallery owner) can upload files{/tr}.</em>
 							</td>

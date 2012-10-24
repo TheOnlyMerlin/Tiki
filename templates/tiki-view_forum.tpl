@@ -13,9 +13,9 @@
 				{assign var=thisforum_info value=$forum_info.forumId}
 				{if ($tiki_p_forum_post_topic eq 'y' and ($prefs.feature_wiki_discuss ne 'y' or $prefs.$forumId ne $prefs.wiki_forum_id)) or $tiki_p_admin_forum eq 'y'}
 					{if !isset($comments_threadId) or $comments_threadId eq 0}
-						{button href="tiki-view_forum.php?openpost=1&amp;forumId=$thisforum_info&amp;comments_threadId=0&amp;comments_threshold=$comments_threshold&amp;comments_offset=$comments_offset&amp;thread_sort_mode=$thread_sort_mode&amp;comments_per_page=$comments_per_page" _onclick="$('#forumpost').show();return false;" _text="{tr}New Topic{/tr}"}
+						{button href="tiki-view_forum.php?openpost=1&amp;forumId=$thisforum_info&amp;comments_threadId=0&amp;comments_threshold=$comments_threshold&amp;comments_offset=$comments_offset&amp;thread_sort_mode=$thread_sort_mode&amp;comments_per_page=$comments_per_page" _onclick="javascript:show('forumpost');return false;" _text="{tr}New Topic{/tr}"}
 					{else}
-						{button href="tiki-view_forum.php?openpost=1&amp;forumId=$thisforum_info&amp;comments_threadId=0&amp;comments_threshold=$comments_threshold&amp;comments_offset=$comments_offset&amp;thread_sort_mode=$thread_sort_mode&amp;comments_per_page=$comments_per_page" _onclick="$('#forumpost').show();return false;" _text="{tr}New Topic{/tr}"}
+						{button href="tiki-view_forum.php?openpost=1&amp;forumId=$thisforum_info&amp;comments_threadId=0&amp;comments_threshold=$comments_threshold&amp;comments_offset=$comments_offset&amp;thread_sort_mode=$thread_sort_mode&amp;comments_per_page=$comments_per_page" _onclick="javascript:show('forumpost');return false;" _text="{tr}New Topic{/tr}"}
 					{/if}
 				{/if}
 				{if $tiki_p_admin_forum eq 'y' or !isset($all_forums) or $all_forums|@count > 1}
@@ -40,7 +40,7 @@
 					<a href="tiki-forum_rss.php?forumId={$forumId}" title="{tr}RSS feed{/tr}">{icon _id="feed" alt="{tr}RSS feed{/tr}"}</a>
 				{/if}
 
-				{if !empty($tiki_p_forum_lock) and $tiki_p_forum_lock eq 'y'}
+				{if $tiki_p_forum_lock eq 'y'}
 					{if $forum_info.is_locked eq 'y'}
 						{self_link lock='n' _icon='lock_break' _alt="{tr}Unlock{/tr}"}{/self_link}
 					{else}
@@ -72,7 +72,7 @@
 
 				<div class="categbar" align="right" >
 					{if $user and $prefs.feature_user_watches eq 'y'}
-						{if isset($category_watched) and $category_watched eq 'y'}
+						{if $category_watched eq 'y'}
 							{tr}Watched by categories:{/tr}
 							{section name=i loop=$watching_categories}
 								<a href="tiki-browse_categories.php?parentId={$watching_categories[i].categId}">{$watching_categories[i].name|escape}</a>
@@ -138,7 +138,7 @@
 	{/if}
 
 
-	<div id="forumpost" style="display:{if $comments_threadId > 0 or $openpost eq 'y' or $warning eq 'y' or !empty($comment_title) or !empty($smarty.request.comments_previewComment)}block{else}none{/if};">
+	<div id="forumpost" style="display:{if $comments_threadId > 0 or $openpost eq 'y' or $warning eq 'y' or $comment_title neq '' or $smarty.request.comments_previewComment neq ''}block{else}none{/if};">
 		{if $comments_threadId > 0}
 			{tr}Editing:{/tr} {$comment_title|escape} (<a class="forumbutlink" href="tiki-view_forum.php?openpost=1&amp;forumId={$forum_info.forumId}&amp;comments_threadId=0&amp;comments_threshold={$comments_threshold}&amp;comments_offset={$comments_offset}&amp;thread_sort_mode={$thread_sort_mode}&amp;comments_per_page={$comments_per_page}">{tr}Post New{/tr}</a>)
 		{/if}
@@ -164,16 +164,15 @@
 						<td>{tr}Type{/tr}</td>
 						<td>
 							{if $tiki_p_admin_forum eq 'y'}
-								<select name="comment_topictype" class="comment_topictype">
+								<select name="comment_topictype">
 									<option value="n" {if $comment_topictype eq 'n'}selected="selected"{/if}>{tr}Normal{/tr}</option>
 									<option value="a" {if $comment_topictype eq 'a'}selected="selected"{/if}>{tr}Announce{/tr}</option>
 									<option value="h" {if $comment_topictype eq 'h'}selected="selected"{/if}>{tr}Hot{/tr}</option>
 									<option value="s" {if $comment_topictype eq 's'}selected="selected"{/if}>{tr}Sticky{/tr}</option>
-									<option value="d" {if $comment_topictype eq 'd'}selected="selected"{/if}>{tr}Deliberation{/tr}</option>
 								</select>
 							{/if}
 							{if $forum_info.topic_smileys eq 'y'}
-								<select name="comment_topicsmiley" class="comment_topicsmiley">
+								<select name="comment_topicsmiley">
 									<option value="" {if $comment_topicsmiley eq ''}selected="selected"{/if}>{tr}no feeling{/tr}</option>
 									<option value="icon_frown.gif" {if $comment_topicsmiley eq 'icon_frown.gif'}selected="selected"{/if}>{tr}frown{/tr}</option>
 									<option value="icon_exclaim.gif" {if $comment_topicsmiley eq 'icon_exclaim.gif'}selected="selected"{/if}>{tr}exclaim{/tr}</option>
@@ -218,96 +217,6 @@
 				{if $prefs.feature_contribution eq 'y'}
 					{include file='contribution.tpl'}
 				{/if}
-				<script>
-					function showDeliberationItemRating(me, btn, input, ratings) {
-						btn.find('.deliberationConfigureItemRating').remove();
-						btn.append(me.find('div.deliberationConfigureItemRating[data-val="' + input.val() + '"]').clone());
-					}
-
-					function configureDeliberationItemRatings(me) {
-						me = $(me);
-						var btn = me.find('.deliberationConfigureItemRatings'),
-							input = btn.next('input.deliberatioRatingOverrideSelector'),
-							dialog = btn.prev('div.deliberationItemRatings').clone(),
-							ratings = dialog.find('.deliberationConfigureItemRating');
-
-						showDeliberationItemRating(me, btn, input, ratings);
-
-						btn.click(function() {
-
-
-							ratings
-								.hover(function() {
-									$(this).addClass('ui-statue-hover');
-								},function() {
-									$(this).removeClass('ui-statue-hover');
-								})
-								.click(function() {
-									ratings.removeClass('ui-state-highlight');
-										$(this).addClass('ui-state-highlight');
-								});
-
-							ratings.filter('[data-val="'  + input.val() + '"]').addClass('ui-state-highlight');
-
-							var btns = {};
-							btns[tr('Ok')] = function() {
-								input.val(dialog.find('div.deliberationConfigureItemRating.ui-state-highlight').data('val'));
-								showDeliberationItemRating(me, btn, input, ratings);
-								dialog.dialog('close');
-							};
-
-							btns[tr('Cancel')] = function() {
-								dialog.dialog('close');
-							};
-
-							dialog.dialog({
-								modal: true,
-								title: tr('Configure Deliberation Item Ratings'),
-								buttons: btns
-							});
-
-							return false;
-						});
-					}
-				</script>
-				{jq}
-					$('select.comment_topictype')
-						.change(function() {
-							if ($('select.comment_topictype').val() == 'd') {
-								$('tr.forum_deliberation').show();
-							} else {
-								$('tr.forum_deliberation').hide();
-							}
-						})
-						.change();
-
-					var itemMaster;
-					$('.forum_deliberation_add_item').click(function() {
-						var thisItem;
-						if (!itemMaster) {
-							$.modal(tr('Loading...'));
-							$.get('tiki-ajax_services', {controller: 'comment', action: "deliberation_item"}, function(itemInput) {
-								itemMaster = itemInput;
-								thisItem = $(itemMaster).insertBefore('div.forum_deliberation_items_toolbar');
-								configureDeliberationItemRatings(thisItem);
-								$.modal();
-							});
-						} else {
-							thisItem = $(itemMaster).insertBefore('div.forum_deliberation_items_toolbar');
-							configureDeliberationItemRatings(thisItem);
-						}
-
-						return false;
-					});
-				{/jq}
-				<tr class="forum_deliberation" style="display: none;">
-					<td>{tr}Deliberation{/tr}</td>
-					<td class="forum_deliberation_items">
-						<div class="forum_deliberation_items_toolbar">
-							{button href="#" _class="forum_deliberation_add_item" _text="{tr}Add Deliberation Item{/tr}"}
-						</div>
-					</td>
-				</tr>
 
 				{if $prefs.feature_antibot eq 'y'}
 					{include file='antibot.tpl' tr_style="formcolor"}
@@ -407,7 +316,7 @@
 					<a class="link" href="tiki-forum_queue.php?forumId={$forumId}">{tr}Queued Messages:{/tr} {$queued}</a>
 				</td>
 			</tr>
-			{if isset($smarty.request.movesel_x) and $smarty.request.movesel_x}
+			{if $smarty.request.movesel_x} 
 				<tr class="odd">
 					<td colspan="18">
 						{tr}Move to:{/tr}
@@ -422,7 +331,7 @@
 					</td>
 				</tr>
 			{/if}
-			{if isset($smarty.request.splitsel_x) and $smarty.request.splitsel_x}
+			{if $smarty.request.splitsel_x} 
 				<tr class="odd">
 					<td colspan="18">
 						{tr}Merge into topic:{/tr}
@@ -487,7 +396,7 @@
 			<tr class="{cycle}">
 				{if $tiki_p_admin_forum eq 'y'}
 					<td class="checkbox">
-						<input type="checkbox" name="forumtopic[]" value="{$comments_coms[ix].threadId|escape}" {if isset($smarty.request.forumtopic) and in_array($comments_coms[ix].threadId,$smarty.request.forumtopic)}checked="checked"{/if} />
+						<input type="checkbox" name="forumtopic[]" value="{$comments_coms[ix].threadId|escape}" {if $smarty.request.forumtopic and in_array($comments_coms[ix].threadId,$smarty.request.forumtopic)}checked="checked"{/if} />
 					</td>
 				{/if}	
 				<td class="icon">
@@ -505,8 +414,6 @@
 						{icon _id="sticky$nticon" alt="{tr}Sticky{/tr}$ntalt"}
 					{elseif $comments_coms[ix].type eq 'l'}
 						{icon _id="locked$nticon" alt="{tr}Locked{/tr}$ntalt"}
-					{elseif $comments_coms[ix].type eq 'd'}
-						{icon _id="user_comment" alt="{tr}Deliberation{/tr}$ntalt"}
 					{/if}
 
 					{if $comments_coms[ix].locked eq 'y'}
@@ -526,9 +433,7 @@
 				{/if}
 
 				<td class="text">
-					<a {if $comments_coms[ix].is_marked}class="forumnameread"{else}class="forumname"{/if} href="tiki-view_forum_thread.php?comments_parentId={$comments_coms[ix].threadId}{if $comments_threshold}&amp;topics_threshold={$comments_threshold}{/if}{if $comments_offset or $smarty.section.ix.index}&amp;topics_offset={math equation="x + y" x=$comments_offset y=$smarty.section.ix.index}{/if}{if $thread_sort_mode ne $forum_info.topicOrdering}&amp;topics_sort_mode={$thread_sort_mode}{/if}{if isset($topics_find) and $topics_find}&amp;topics_find={$comments_find}{/if}">
-						{$comments_coms[ix].title|escape}
-					</a>
+					<a {if $comments_coms[ix].is_marked}class="forumnameread"{else}class="forumname"{/if} href="tiki-view_forum_thread.php?comments_parentId={$comments_coms[ix].threadId}{if $comments_threshold}&amp;topics_threshold={$comments_threshold}{/if}{if $comments_offset or $smarty.section.ix.index}&amp;topics_offset={math equation="x + y" x=$comments_offset y=$smarty.section.ix.index}{/if}{if $thread_sort_mode ne $forum_info.topicOrdering}&amp;topics_sort_mode={$thread_sort_mode}{/if}{if $topics_find}&amp;topics_find={$comments_find}{/if}">{$comments_coms[ix].title|escape}</a>
 					{if $forum_info.topic_summary eq 'y'}
 						<div class="subcomment">
 							{$comments_coms[ix].summary|truncate:240:"...":true|escape}
@@ -593,9 +498,8 @@
 				{/if}
 				
 				<td class="text" nowrap="nowrap">
-					{if (isset($comments_coms[ix].attachments) and count($comments_coms[ix].attachments))
-						or $tiki_p_admin_forum eq 'y'}
-						{if isset($comments_coms[ix].attachments) and count($comments_coms[ix].attachments)}
+					{if count($comments_coms[ix].attachments) or $tiki_p_admin_forum eq 'y'}
+						{if count($comments_coms[ix].attachments)}
 							<img src='img/icons/attachment.gif' alt='attachments' />
 						{/if}
 					{else}
@@ -713,12 +617,8 @@
 						</th>
 						<td>
 							<select id="filter_poster" name="poster">
-							<option value=""{if empty($smarty.request.poster)} selected="selected"{/if}>
-								{tr}All posts{/tr}
-							</option>
-							<option value="_me" {if isset($smarty.request.poster) and $smarty.request.poster eq '_me'} selected="selected"{/if}>
-								{tr}Me{/tr}
-							</option>
+							<option value="" {if $smarty.request.poster eq ''}selected="selected"{/if}>{tr}All posts{/tr}</option>
+							<option value="_me" {if $smarty.request.poster eq '_me'}selected="selected"{/if}>{tr}Me{/tr}</option>
 							</select>
 						</td>
 					</tr>
@@ -729,21 +629,11 @@
 					</th>
 					<td>
 						<select id="filter_type" name="filter_type">
-							<option value=""{if empty($smarty.request.filter_type)}selected="selected"{/if}>
-								{tr}All posts{/tr}
-							</option>
-							<option value="n" {if isset($smarty.request.filter_type) and $smarty.request.filter_type eq 'n'} selected="selected"{/if}>
-								{tr}normal{/tr}
-							</option>
-							<option value="a" {if isset($smarty.request.filter_type) and $smarty.request.filter_type eq 'a'} selected="selected"{/if}>
-								{tr}announce{/tr}
-							</option>
-							<option value="h"{if isset($smarty.request.filter_type) and $smarty.request.filter_type eq 'h'} selected="selected"{/if}>
-								{tr}hot{/tr}
-							</option>
-							<option value="s"{if isset($smarty.request.filter_type) and $smarty.request.filter_type eq 's'} selected="selected"{/if}>
-								{tr}sticky{/tr}
-							</option>
+						<option value="" {if empty($smarty.request.filter_type)}selected="selected"{/if}>{tr}All posts{/tr}</option>
+						<option value="n" {if $smarty.request.filter_type eq 'n'}selected="selected"{/if}>{tr}normal{/tr}</option>
+						<option value="a" {if $smarty.request.filter_type eq 'a'}selected="selected"{/if}>{tr}announce{/tr}</option>
+						<option value="h" {if $smarty.request.filter_type eq 'h'}selected="selected"{/if}>{tr}hot{/tr}</option>
+						<option value="s" {if $smarty.request.filter_type eq 's'}selected="selected"{/if}>{tr}sticky{/tr}</option>
 						</select>
 					</td>
 				</tr>
@@ -753,12 +643,8 @@
 					</th>
 					<td>
 						<select id="filter_replies" name="reply_state">
-							<option value=""{if empty($smarty.request.reply_state)} selected="selected"{/if}>
-								{tr}All posts{/tr}
-							</option>
-							<option value="none"{if isset($smarty.request.reply_state) and $smarty.request.reply_state eq 'none'} selected="selected"{/if}>
-								{tr}Posts with no replies{/tr}
-							</option>
+						<option value="" {if $smarty.request.reply_state eq ''}selected="selected"{/if}>{tr}All posts{/tr}</option>
+						<option value="none" {if $smarty.request.reply_state eq 'none'}selected="selected"{/if}>{tr}Posts with no replies{/tr}</option>
 						</select>
 					</td>
 				</tr>
@@ -773,7 +659,7 @@
 </div>
 {if empty($user) and $prefs.javascript_enabled eq "y"}
 	{jq}
-		var js_anonymous_name = getCookie('anonymous_name');
-		if (js_anonymous_name) document.getElementById('anonymous_name').value = js_anonymous_name;
+			var js_anonymous_name = getCookie('anonymous_name');
+			if (js_anonymous_name) document.getElementById('anonymous_name').value = js_anonymous_name;
 	{/jq}
 {/if}

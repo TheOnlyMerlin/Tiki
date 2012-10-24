@@ -8,7 +8,7 @@
 // To contain data services for ajax calls
 //
 // If controller and action are specified in the request, the controller class matching the
-// controller key in the $contollerMap registry will be instantiated. The method matching the
+// controller key in the $contollerMap registry will be instanciated. The method matching the
 // action name will be called. The input to the method is a JitFilter. The output of the method
 // will be serialized and sent to the browser.
 //
@@ -19,26 +19,19 @@ $controllerMap = array(
 	'draw' => 'Services_Draw_Controller',
 	'file' => 'Services_File_Controller',
 	'auth_source' => 'Services_AuthSource_Controller',
-	'bigbluebutton' => 'Services_BigBlueButton_Controller',
 	'report' => 'Services_Report_Controller',
 	'tracker' => 'Services_Tracker_Controller',
-	'tracker_calendar' => 'Services_Tracker_CalendarController',
 	'tracker_sync' => 'Services_Tracker_SyncController',
 	'tracker_todo' => 'Services_Tracker_TodoController',
 	'tracker_search' => 'Services_Tracker_SearchController',
 	'favorite' => 'Services_Favorite_Controller',
 	'translation' => 'Services_Language_TranslationController',
 	'user' => 'Services_User_Controller',
-	'calendar' => 'Services_Calendar_Controller',
 	'category' => 'Services_Category_Controller',
 	'connect' => 'Services_Connect_Client',
 	'connect_server' => 'Services_Connect_Server',
 	'object' => 'Services_Object_Controller',
 	'wiki' => 'Services_Wiki_Controller',
-	'jcapture' => 'Services_JCapture_Controller',
-	'jison'=> 'Services_JisonParser_WikiPlugin',
-	'rating'=>  'Services_Rating_Controller',
-	'workspace'=>  'Services_Workspace_Controller',
 );
 
 $inputConfiguration = array(array(
@@ -223,11 +216,6 @@ if ($access->is_serializable_request() && isset($_REQUEST['listonly'])) {
 	$access->display_error(NULL, 'No AJAX service matches request parameters', 404);
 }
 
-/**
- * @param $dir
- * @param $icons
- * @param $max
- */
 function read_icon_dir($dir, &$icons, $max)
 {
 	$fp = opendir($dir);

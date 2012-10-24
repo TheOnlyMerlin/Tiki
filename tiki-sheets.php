@@ -105,8 +105,7 @@ if (isset($_REQUEST["edit"])) {
 		$_REQUEST["title"],
 		$_REQUEST["description"],
 		isset($_REQUEST['creator']) ? $_REQUEST['creator'] : $user,
-		$_REQUEST['parentSheetId'],
-		$_REQUEST
+		$_REQUEST['parentSheetId']
 	);
 	$cat_objid = $gid;
 	$cat_desc = substr($_REQUEST["description"], 0, 200);

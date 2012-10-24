@@ -15,7 +15,6 @@ function prefs_rating_list()
 			'help' => 'Advanced+Rating',
 			'default' => 'n',
 			'admin' => 'rating',
-			'tags' => array('advanced'),
 		),
 		'rating_recalculation' => array(
 			'name' => tra('Rating recalculation mode'),
@@ -26,7 +25,6 @@ function prefs_rating_list()
 				'randomload' => tra('Randomly recalculate oldest ratings (on load)'),
 				'randomvote' => tra('Randomly recalculate oldest ratings (on vote)'),
 				'period' => tra('Cron job (must be set manually)'),
-				'indexing' => tr('Before any attempt to re-index the object'),
 			),
 			'default' => 'vote',
 		),
@@ -45,16 +43,6 @@ function prefs_rating_list()
 			'size' => 5,
 			'filter' => 'digits',
 			'default' => '100',
-		),
-		'rating_smileys' => array(
-			'name' => tr('Smiley Ratings'),
-			'description' => tr('Displays a smiley face for simple ratings system. Only works with 0-11, depending on what you have set. An easier user-interface to use, like emoticons.'),
-			'type' => 'flag',
-			'options' => array(
-				'' => tr('Disabled'),
-				'y' => tr('Enabled'),
-			),
-			'default' => ''
 		),
 	);
 }

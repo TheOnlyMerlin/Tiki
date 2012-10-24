@@ -317,11 +317,6 @@ input[type="submit"]:hover {
 .cssmenu_vert li ul li:first-child {
 	border-top: 1px solid #000;
 }
-
-.iconmenutext {
-	color: #222;
-}
-
 /*
 #tiki-top .cssmenu_horiz {
 	position: absolute;
@@ -757,16 +752,16 @@ body.tiki_cms h1 a.pagetitle:hover {border-bottom: 0}
 
 .caldark .calfocus {background: none;}
 
-.caltable .odd,
-.caltable .even {
+.calodd,
+.caleven {
 	border-color: #aaa;
 }
 
-.caltable .odd {
+.calodd {
 	background: #e2e2e2;
 }
 
-.caltable .even {
+.caleven {
 	background: #d4d4d4;
 }
 

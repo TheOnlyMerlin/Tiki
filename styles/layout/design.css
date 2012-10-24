@@ -130,6 +130,11 @@ highlight on "button" links, e.g. if there are some comments it highlights the "
 	background: inherit;
 }
 
+ul.jumplinks a:active {
+	background: #ffe4e1;
+	color: #0000cd;
+}
+
 /* Highlight effect is just visual distinction, so no need for block element. */
 span.highlight {
 	padding: 0 .3em;
@@ -453,10 +458,6 @@ img.icon {
 	background: transparent;
 }
 
-div #metadata fieldset.tabcontent, div #metadata div.tabs {
-	background-color: transparent;
-}
-
 .admin #content1 .tabcontent .cbox {
 	background: transparent;
 }
@@ -624,7 +625,7 @@ body.tiki_wiki #comments {
 	padding: 1em;
 }
 
-.editdate {
+p.editdate {
 	padding-bottom: 5px;
 	padding-top: 10px;
 	font-size: 0.9em;
@@ -749,6 +750,23 @@ body.tiki_wiki #comments {
 .thumbcaption {
 	font-size: 90%;
 	padding: 2px;
+}
+
+.wpimg-meta-col1 {
+	text-align: right;
+	font-weight: bold;
+	width: 225px;
+	margin-right: 5px;
+}
+
+.wpimg-meta-col2 {
+	width: 375px;
+}
+
+.wpimg-meta-section {
+	border-bottom: solid 1px #d3d3d3;
+	width: 600px;
+	margin-right: 5px;
 }
 
 /* wikiplugin_carousel v3 */
@@ -1707,93 +1725,4 @@ form.simple textarea.export {
 	padding-left: 21px;
 }
 
-/* Twitter module styling */
-
-.TwitName {
-	font-weight: bold;
-}
-
-.TwitDate a {
-	font-size: 0.8em;
-	font-style: italic;
-	text-align: right;
-	display: block;
-	padding-bottom: 8px;
-}
-
-/* Facebook module styling */
-.fb-story {
-	font-style: italic;
-}
-.fb-message {
-}
-.fb-date a {
-	font-size: 0.8em;
-	font-style: italic;
-	text-align: right;
-	display: block;
-	padding-bottom: 8px;
-}
-.fb-name {
-	font-weight: bold;
-	display: block;
-}
-
-/* Namespace styling */
-
-.wiki .namespace {
-	margin: 1px;
-	padding: 1px;
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	background: #eee;
-	max-width: 30px;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	display: inline-block;
-	vertical-align: bottom;
-}
-
-.wiki .namespace.first {
-	max-width: 130px;
-}
-
-.wiki .namespace.last {
-	max-width: 130px;
-}
-
-/* Metadata dialog box */
-.meta-col1 {
-	text-align: right;
-	font-weight: bold;
-	font-size: 14px;
-	width: 225px;
-	margin-right: 5px;
-}
-
-.meta-col2 {
-	font-size: 14px;
-	width: 375px;
-}
-
-.meta-section {
-	border-bottom: solid 1px #d3d3d3;
-	width: 600px;
-	font-style: italic;
-}
-
-/* Metadata page tabs */
-.meta-tabs-col1 {
-	text-align: right;
-	font-weight : bold;
-	font-size: inherit;
-	width: 225px;
-	margin-right: 5px;
-}
-
-.meta-tabs-col2 {
-	font-size: inherit;
-	width: 375px;
-}
 /* End of file */

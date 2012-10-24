@@ -17,7 +17,7 @@ require_once (defined('SMARTY_DIR') ? SMARTY_DIR : 'lib/smarty/libs/') . 'Smarty
 class Tiki_Security_Policy extends Smarty_Security
 {
 		public $php_modifiers = array( 'nl2br','escape', 'count', 'addslashes', 'ucfirst', 'ucwords', 'urlencode', 'md5', 'implode', 'explode', 'is_array', 'htmlentities', 'var_dump', 'strip_tags', 'json_encode', 'stristr' );
-		public $php_functions = array('isset', 'empty', 'count', 'sizeof', 'in_array', 'is_array', 'time', 'nl2br', 'tra', 'strlen', 'strstr', 'strtolower', 'basename', 'ereg', 'array_key_exists', 'preg_match', 'json_encode', 'stristr', 'is_numeric', 'array' );
+		public $php_functions = array('isset', 'empty', 'count', 'sizeof', 'in_array', 'is_array', 'time', 'nl2br', 'tra', 'strlen', 'strstr', 'strtolower', 'basename', 'ereg', 'array_key_exists', 'preg_match', 'json_encode', 'stristr', 'is_numeric', 'array', 'is_numeric' );
 		public $secure_dir = array(
 			'',
 			'img/',
@@ -64,27 +64,24 @@ class Smarty_Tiki extends Smarty
 		$this->setTemplateDir(null);
 		if ( !empty($tikidomain) && $tikidomain !== '/' ) {
 			$this->addTemplateDir($this->main_template_dir.'/'.$tikidomain.'/styles/'.$style_base.'/');
-			$this->addTemplatedir($this->main_template_dir.'/'.$tikidomain.'/');
+			$this->addTemplatedir($this->main_template_dir.'/'.$tikidomain.'/'); 
 		}
-		$this->addTemplateDir($this->main_template_dir.'/styles/'.$style_base.'/');
-		$this->addTemplateDir($this->main_template_dir);
-
+		$this->addTemplateDir($this->main_template_dir.'/styles/'.$style_base.'/'); 
+		$this->addTemplateDir($this->main_template_dir); 
+		
 		$this->setCompileDir(realpath("templates_c/$tikidomain"));
 		$this->setConfigDir(null);
-		if (! isset($prefs['smarty_compilation'])) {
-			$prefs['smarty_compilation'] = '';
-		}
 		$this->compile_check = ( $prefs['smarty_compilation'] != 'never' );
 		$this->force_compile = ( $prefs['smarty_compilation'] == 'always' );
 		$this->assign('app_name', 'Tiki');
 		$this->setPluginsDir(
-			array(	// the directory order must be like this to overload a plugin
-				TIKI_SMARTY_DIR,
-				SMARTY_DIR.'plugins'
-			)
+						array(	// the directory order must be like this to overload a plugin
+							TIKI_SMARTY_DIR,
+							SMARTY_DIR.'plugins'
+						)
 		);
 
-		if ( ! isset($prefs['smarty_security']) || $prefs['smarty_security'] == 'y' ) {
+		if ( $prefs['smarty_security'] == 'y' ) {
 			$this->enableSecurity('Tiki_Security_Policy');
 		} else {
 			$this->disableSecurity();

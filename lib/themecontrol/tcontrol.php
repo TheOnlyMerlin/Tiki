@@ -19,12 +19,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 class ThemeControlLib extends TikiLib
 {
 
-    /**
-     * @param $categId
-     * @param $theme
-     * @param $option
-     */
-    function tc_assign_category($categId, $theme, $option)
+	function tc_assign_category($categId, $theme, $option)
 	{
 		$this->tc_remove_cat($categId);
 
@@ -36,12 +31,7 @@ class ThemeControlLib extends TikiLib
 		$this->query($query, array($categId, $themeoption));
 	}
 
-    /**
-     * @param $section
-     * @param $theme
-     * @param string $option
-     */
-    function tc_assign_section($section, $theme, $option = '')
+	function tc_assign_section($section, $theme, $option = '')
 	{
 		$this->tc_remove_section($section);
 
@@ -53,14 +43,7 @@ class ThemeControlLib extends TikiLib
 		$this->query($query, array($section, $themeoption));
 	}
 
-    /**
-     * @param $objId
-     * @param $theme
-     * @param $type
-     * @param $name
-     * @param string $option
-     */
-    function tc_assign_object($objId, $theme, $type, $name, $option = '')
+	function tc_assign_object($objId, $theme, $type, $name, $option = '')
 	{
 
 		$themeoption = $this->get_theme_option_string($theme, $option);
@@ -73,11 +56,7 @@ class ThemeControlLib extends TikiLib
 		$this->query($query, array($objId, $themeoption, $type, $name));
 	}
 
-    /**
-     * @param $categId
-     * @return string
-     */
-    function tc_get_theme_by_categ($categId)
+	function tc_get_theme_by_categ($categId)
 	{
 		if ($this->getOne("select count(*) from `tiki_theme_control_categs` where `categId`=?", array($categId))) {
 			return $this->getOne("select `theme` from `tiki_theme_control_categs` where `categId`=?", array($categId));
@@ -86,11 +65,7 @@ class ThemeControlLib extends TikiLib
 		}
 	}
 
-    /**
-     * @param $section
-     * @return string
-     */
-    function tc_get_theme_by_section($section)
+	function tc_get_theme_by_section($section)
 	{
 		if ($this->getOne("select count(*) from `tiki_theme_control_sections` where `section`=?", array($section))) {
 			return $this->getOne("select `theme` from `tiki_theme_control_sections` where `section`=?", array($section));
@@ -99,12 +74,7 @@ class ThemeControlLib extends TikiLib
 		}
 	}
 
-    /**
-     * @param $type
-     * @param $objId
-     * @return string
-     */
-    function tc_get_theme_by_object($type, $objId)
+	function tc_get_theme_by_object($type, $objId)
 	{
 		$objId = md5($type . $objId);
 
@@ -115,14 +85,7 @@ class ThemeControlLib extends TikiLib
 		}
 	}
 
-    /**
-     * @param $offset
-     * @param $maxRecords
-     * @param $sort_mode
-     * @param $find
-     * @return array
-     */
-    function tc_list_categories($offset, $maxRecords, $sort_mode, $find)
+	function tc_list_categories($offset, $maxRecords, $sort_mode, $find)
 	{
 		if ($find) {
 			$findesc = '%' . $find . '%';
@@ -153,14 +116,7 @@ class ThemeControlLib extends TikiLib
 		return $retval;
 	}
 
-    /**
-     * @param $offset
-     * @param $maxRecords
-     * @param $sort_mode
-     * @param $find
-     * @return array
-     */
-    function tc_list_sections($offset, $maxRecords, $sort_mode, $find)
+	function tc_list_sections($offset, $maxRecords, $sort_mode, $find)
 	{
 		if ($find) {
 			$findesc = '%' . $find . '%';
@@ -188,15 +144,7 @@ class ThemeControlLib extends TikiLib
 		return $retval;
 	}
 
-    /**
-     * @param $type
-     * @param $offset
-     * @param $maxRecords
-     * @param $sort_mode
-     * @param $find
-     * @return array
-     */
-    function tc_list_objects($type, $offset, $maxRecords, $sort_mode, $find)
+	function tc_list_objects($type, $offset, $maxRecords, $sort_mode, $find)
 	{
 		if ($find) {
 			$findesc = '%' . $find . '%';
@@ -223,30 +171,21 @@ class ThemeControlLib extends TikiLib
 		return $retval;
 	}
 
-    /**
-     * @param $cat
-     */
-    function tc_remove_cat($cat)
+	function tc_remove_cat($cat)
 	{
 		$query = "delete from `tiki_theme_control_categs` where `categId`=?";
 
 		$this->query($query, array($cat));
 	}
 
-    /**
-     * @param $section
-     */
-    function tc_remove_section($section)
+	function tc_remove_section($section)
 	{
 		$query = "delete from `tiki_theme_control_sections` where `section`=?";
 
 		$this->query($query, array($section));
 	}
 
-    /**
-     * @param $objId
-     */
-    function tc_remove_object($objId)
+	function tc_remove_object($objId)
 	{
 		$query = "delete from `tiki_theme_control_objects` where `objId`=?";
 
@@ -274,13 +213,8 @@ class ThemeControlLib extends TikiLib
 		$smarty->assign_by_ref("style_options", $loplist);
 	
 	}
-
-    /**
-     * @param $theme
-     * @param $option
-     * @return string
-     */
-    function get_theme_option_string ($theme, $option)
+	
+	function get_theme_option_string ($theme, $option)
 	{
 		$themeoption = $theme;
 		if ($option) {
@@ -291,12 +225,8 @@ class ThemeControlLib extends TikiLib
 		}
 		return $themeoption;
 	}
-
-    /**
-     * @param $themeoption
-     * @return array
-     */
-    function parse_theme_option_string($themeoption)
+	
+	function parse_theme_option_string($themeoption)
 	{
 		$p = strpos($themeoption, '/'); // theme option starts after a / char
 		$retval = array();

@@ -292,16 +292,5 @@ class Tracker_Definition
 			'modified' => $this->getConfiguration('lastModif') > $attributes['tiki.sync.last'],
 		);
 	}
-
-	function canInsert(array $keyList)
-	{
-		foreach ($keyList as $key) {
-			if (! $this->getFieldFromPermName($key)) {
-				return false;
-			}
-		}
-
-		return true;
-	}
 }
 

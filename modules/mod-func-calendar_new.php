@@ -11,9 +11,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_calendar_new_info()
 {
 	return array(
@@ -40,13 +37,13 @@ function module_calendar_new_info()
 			'viewmode' => array(
 				'name' => tra('Calendar view type time span'),
 				'description' => tr(
-					'If in calendar (or "table") view type, determines the time span displayed by the calendar. Possible values: %0, %1, %2, %3 ,%4, %5. A user changing this time span in the calendar can change the time span the module displays for him.',
-					'year',
-					'semester',
-					'quarter',
-					'month',
-					'week',
-					'day'
+								'If in calendar (or "table") view type, determines the time span displayed by the calendar. Possible values: %0, %1, %2, %3 ,%4, %5. A user changing this time span in the calendar can change the time span the module displays for him.',
+								'year', 
+								'semester', 
+								'quarter', 
+								'month', 
+								'week', 
+								'day'
 				),
 				'filter' => 'word',
 				'default' => 'month',
@@ -79,10 +76,6 @@ function module_calendar_new_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_calendar_new($mod_reference, $module_params)
 {
 	global $prefs, $user, $tiki_p_admin_calendars, $tikilib, $smarty;

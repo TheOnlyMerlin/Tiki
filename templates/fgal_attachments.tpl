@@ -4,7 +4,7 @@
 {if $tiki_p_wiki_view_attachments == 'y' || $tiki_p_wiki_admin_attachments == 'y' || $tiki_p_wiki_attach_files == 'y'}
 
 	<div
-		{if isset($pagemd5) and $pagemd5}
+		{if $pagemd5}
 			{assign var=cookie_key value="show_attzone$pagemd5"}
 			id="attzone{$pagemd5}"
 		{else}
@@ -27,8 +27,7 @@
 		</fieldset>
 	{/if}
 
-	{if ($tiki_p_wiki_attach_files eq 'y' or $tiki_p_wiki_admin_attachments eq 'y')
-		and (empty($attach_box) or $attach_box ne 'n')}
+	{if ($tiki_p_wiki_attach_files eq 'y' or $tiki_p_wiki_admin_attachments eq 'y') and $attach_box ne 'n'}
 		<form enctype="multipart/form-data" action="tiki-index.php?page={$page|escape:"url"}" method="post">
 			{if $page_ref_id}
 				<input type="hidden" name="page_ref_id" value="{$page_ref_id}" />

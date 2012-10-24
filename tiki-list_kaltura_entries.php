@@ -6,10 +6,9 @@
 // $Id$
 
 require_once 'tiki-setup.php';
-require_once 'lib/videogals/kalturalib.php';
-$access->check_feature('feature_kaltura');
+require_once 'lib/videogals/videogallib.php';
 $access->check_permission(array('tiki_p_list_videos'));
-//get_strings tra('List Media')
+//get_strings tra('List Entries')
 
 $mediaTypeAsString['2'] = 'Image';
 $mediaTypeAsString['1'] = 'Video';
@@ -28,19 +27,8 @@ $statusAsString  = array(
 );
 
 
-
-if (!isset($_REQUEST['list'])) {
-	$_REQUEST['list'] = 'media'; // default media since mix is relegated	
-}
-
 try {
 
-if (!$kalturalib->testSetup()) {
-	$smarty->assign('msg', tra("You need to set your Kaltura account details: ") . '<a href="tiki-admin.php?page=video">' . tra('here') . '</a>');
-	$smarty->display('error.tpl');
-	die;
-}
-	
 if (isset($_REQUEST['action'])) {
 	$videoId = array();
 
@@ -65,12 +53,28 @@ if (isset($_REQUEST['action'])) {
 
 	switch ($_REQUEST['action']) {
 
+		case tra('Create Remix'):
+			$access->check_permission(array('tiki_p_remix_videos'));	
+			if ($kentryType == 'media') {
+				$kentry = $kclient->media->get($videoId[0]);
+				$kmixEntry = new KalturaMixEntry();
+				$kmixEntry->name = 'Remix of ' . $kentry->name;
+				$kmixEntry->editorType = 1;
+				$kmixEntry = $kclient->mixing->add($kmixEntry);		
+				for ($i=0, $cvideoId = count($videoId); $i < $cvideoId ; $i++) {
+					$kmixEntry = $kclient->mixing->appendMediaEntry($kmixEntry->id, $videoId[$i]);
+				}
+			}
+			header('Location: tiki-kaltura_video.php?action=remix&mixId=' . $kmixEntry->id);
+			die;
+    		break;
+
 		case tra('Delete'):
 			$access->check_permission(array('tiki_p_delete_videos'));
 			$access->check_authenticity();
 			if ($kentryType == 'media') {
 				foreach ( $videoId as $vi ) {
-					$kalturalib->client->media->delete($vi);
+					$kclient->media->delete($vi);
 				}
 				header('Location: tiki-list_kaltura_entries.php?list=media');
 				die;
@@ -78,7 +82,7 @@ if (isset($_REQUEST['action'])) {
 				
 			if ($kentryType == 'mix') {
 				foreach ( $videoId as $vi ) {
-					$kalturalib->client->mixing->delete($vi);
+					$kclient->mixing->delete($vi);
 				}					
 				header('Location: tiki-list_kaltura_entries.php?list=mix');
 				die;
@@ -133,12 +137,13 @@ if ( $_REQUEST['list'] == 'mix' or !isset($_REQUEST['list']) ) {
 	$kpager->pageSize = $page_size;
 
 	$kfilter = new KalturaMixEntryFilter();
+	$kfilter->userIdEqual = $kuser;
 	$kfilter->orderBy = $sort_mode;
 	$kfilter->nameMultiLikeOr = $find;
 	
 	if ($_REQUEST['view'] != 'browse') {
 		// Get user's kaltura mix entries	
-		$kmixlist = $kalturaadminlib->client->mixing->listAction($kfilter, $kpager);
+		$kmixlist = $kclient->mixing->listAction($kfilter, $kpager);
 
 		for ($i =0 ; $i < $kmixlist->totalCount; $i++) {
 			$kmixlist->objects[$i]->createdAt = date('d M Y h:i A', $kmixlist->objects[$i]->createdAt);
@@ -167,7 +172,7 @@ if ( $_REQUEST['list'] == 'mix' or !isset($_REQUEST['list']) ) {
 		$kpager = new KalturaFilterPager();
 		$kpager->pageIndex = ($offset/$page_size) + 1;
 		$kpager->pageSize = $page_size;
-		$kmixlist = $kalturaadminlib->client->mixing->listAction($kfilter, $kpager);
+		$kmixlist = $kclient->mixing->listAction($kfilter, $kpager);
 	}
 
 	$smarty->assign_by_ref('klist', $kmixlist->objects);
@@ -181,6 +186,7 @@ if ( $_REQUEST['list'] == 'mix' or !isset($_REQUEST['list']) ) {
 if ($_REQUEST['list'] == 'media') {
 
 	$kfilter = new KalturaMediaEntryFilter();
+	$kfilter->userIdEqual = $kuser;
 	$kfilter->orderBy = $sort_mode;
 	$kfilter->nameMultiLikeOr = $find;
 	$kfilter->statusIn = '-1,-2,0,1,2';
@@ -189,8 +195,9 @@ if ($_REQUEST['list'] == 'media') {
 	$kpager->pageIndex = $page;
 	$kpager->pageSize = $page_size;
 
+	// Get user's kaltura media entries
 	if ($_REQUEST['view'] != 'browse') {
-		$kmedialist = $kalturaadminlib->client->media->listAction($kfilter, $kpager);
+		$kmedialist = $kclient->media->listAction($kfilter, $kpager);
 
 		for ($i =0 ; $i < $kmedialist->totalCount; $i++) {
 			$kmedialist->objects[$i]->mediaType = $mediaTypeAsString[$kmedialist->objects[$i]->mediaType];
@@ -202,7 +209,7 @@ if ($_REQUEST['list'] == 'media') {
 		$kpager = new KalturaFilterPager();
 		$kpager->pageIndex = ($offset/$page_size) + 1;
 		$kpager->pageSize = $page_size;
-		$kmedialist = $kalturaadminlib->client->media->listAction($kfilter, $kpager);
+		$kmedialist = $kclient->media->listAction($kfilter, $kpager);
 	}
 	$smarty->assign_by_ref('klist', $kmedialist->objects);
 	$smarty->assign_by_ref('cant', $kmedialist->totalCount);

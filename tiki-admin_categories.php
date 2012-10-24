@@ -341,12 +341,7 @@ if (isset($_REQUEST["find_objects"])) {
 	$find_objects = '';
 }
 
-/**
- * @param $max
- * @param $data_key
- * @param null $data
- */
-function admin_categ_assign( &$max, $data_key, $data = null )
+function admin_categ_assign( &$max, $data_key, $data = null ) 
 {
 	global $smarty;
 

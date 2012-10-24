@@ -16,9 +16,9 @@ class Event_Chain
 		$this->manager = $manager;
 	}
 
-	function __invoke($arguments, $priority)
+	function trigger($arguments)
 	{
-		$this->manager->internalTrigger($this->event, $arguments, $priority);
+		$this->manager->trigger($this->event, $arguments);
 	}
 
 	function getEventName()

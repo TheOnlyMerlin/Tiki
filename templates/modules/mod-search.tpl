@@ -41,13 +41,7 @@
 					  </select>
 				{/if}
 			{elseif !empty($prefs.search_default_where)}
-				 {if is_array($prefs.search_default_where)}
-					{foreach from=$prefs.search_default_where item=t}
-						<input type="hidden" name="{if $smod_params.search_action eq 'tiki-searchindex.php'}filter~type[]{else}where[]{/if}" value="{$t|escape}" />
-					{/foreach}
-				{else}
-					<input type="hidden" name="{if $smod_params.search_action eq 'tiki-searchindex.php'}filter~type{else}where{/if}" value="{$prefs.search_default_where|escape}" />
-				{/if}
+				<input type="hidden" name="{if $smod_params.search_action eq 'tiki-searchindex.php'}filter~type{else}where{/if}" value="{$prefs.search_default_where|escape}" />
 		    {/if}
 		    
 			{if $smod_params.tiki_search neq 'y'}

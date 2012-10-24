@@ -9,8 +9,8 @@ class Feed_ForwardLink_PageLookup extends Feed_Abstract
 {
 	var $type = 'forwardlink';
 	var $forwardLink = array();
-	var $version = 0.1;
-
+	var $version = "0.1";
+	
 	static function forwardLink($forwardLink = array())
 	{
 		$me = new self($forwardLink->href);
@@ -20,7 +20,6 @@ class Feed_ForwardLink_PageLookup extends Feed_Abstract
 
 	static function wikiView($args)
 	{
-		return;
 		global $tikilib, $headerlib;
 
 		 static $Feed_ForwardLink_PageLookup = 0;
@@ -39,19 +38,35 @@ class Feed_ForwardLink_PageLookup extends Feed_Abstract
 		foreach ($wikiAttributes as $wikiAttribute) {
 			$forwardLinks[] = $forwardLink = json_decode($wikiAttribute['Value']);
 
-			if (isset($forwardLink->href)) {
-				$forwardLink->href = urldecode($forwardLink->href);
+			$forwardLink->href = urldecode($forwardLink->href);
 
+			if (isset($forwardLink->href)) {
 				$result = Feed_ForwardLink_Send::send(
-					array(
-						'forwardLink'=> $forwardLink,
-						'textlink'=> array(
-							'body'=> $args['data'],
-							'href'=> $tikilib->tikiUrl() . 'tiki-index.php?page=' . $args['object']
-						)
-					)
+								array(
+									'page'=> $args['object'],
+									'forwardLink'=> $forwardLink,
+									'textlink'=> array(
+										'body'=> $args['data'],
+										'href'=> $tikilib->tikiUrl() . 'tiki-index.php?page=' . $args['object']
+									)
+								)
 				);
 			}
 		}
+
+		$forwardLinks = json_encode($forwardLinks);
+
+		if (!empty($forwardLinks))
+		$headerlib->add_jq_onready(<<<JQ
+			var forwardLinks = $forwardLinks;
+			$.each(forwardLinks, function() {
+				if (this.href) {
+					$('<a>*</a>')
+						.attr('href', unescape(this.href))
+						.appendTo('#page-data');
+				}
+			});
+JQ
+);
 	}
 }

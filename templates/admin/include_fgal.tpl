@@ -75,16 +75,6 @@
 				{preference name='feature_webdav'}
 				
 				{preference name=feature_draw}
-				<div class="adminoptionboxchild" id="feature_draw_childcontainer">
-					{preference name=feature_draw_hide_buttons}
-				</div>
-
-				{preference name=feature_jcapture}
-				<div class="adminoptionboxchild" id="feature_jcapture_childcontainer">
-					{preference name=fgal_for_jcapture}
-				</div>
-
-
 				{preference name=feature_docs}				
 
 				{preference name='fgal_limit_hits_per_file'}
@@ -93,10 +83,6 @@
 				{preference name='fgal_allow_duplicates'}
 				{preference name='feature_file_galleries_batch'}
 				<div class="adminoptionboxchild" id="feature_file_galleries_batch_childcontainer">
-					{remarksbox title="Note"}
-					{tr}You are highly recommended to use a file directory as the File Gallery storage, when using this feature{/tr}
-					{/remarksbox}
-					<br/>
 					{preference name='fgal_batch_dir'}
 				</div>
 
@@ -127,7 +113,6 @@
 					{preference name='fgal_source_show_refresh'}
 				</div>
 				{preference name='tiki_check_file_content'}
-				{preference name='fgal_elfinder_feature'}
 			</fieldset>
 
 			<fieldset>

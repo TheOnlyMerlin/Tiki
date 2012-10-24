@@ -9,10 +9,6 @@ require_once ('tiki-setup.php');
 $access->check_feature('feature_wiki');
 $access->check_permission('tiki_p_admin');
 
-/**
- * @param $dump
- * @return array
- */
 function parse_st($dump)
 {
 	$bodysep  = '>>>>>>>>>>>>>>>>>>>>>>>>';

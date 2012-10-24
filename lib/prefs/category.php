@@ -15,15 +15,6 @@ function prefs_category_list()
 			'type' => 'text',
 			'filter' => 'int',
 			'default' => array(''), //empty string needed to keep preference from setting unexpectedly
-			'detail' => tra('This should only be set for perspectives, and not globally.'),
-		),
-		'category_jail_root' => array(
-			'name' => tra('Category Jail Root'),
-			'description' => tra('Always display categories outside of the jail root, which would be for normal categorization.'),
-			'separator' => ',',
-			'type' => 'text',
-			'filter' => 'int',
-			'default' => array(0), //empty string needed to keep preference from setting unexpectedly
 		),
 		'category_defaults' => array(
 			'name' => tra('Category Defaults'),

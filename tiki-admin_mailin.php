@@ -11,12 +11,6 @@ include_once ('lib/mailin/mailinlib.php');
 $access->check_feature('feature_mailin');
 $access->check_permission(array('tiki_p_admin_mailin'));
 
-/**
- * @param $pop
- * @param $user
- * @param $pass
- * @return bool
- */
 function account_ok($pop, $user, $pass)
 {
 	include_once ('lib/webmail/net_pop3.php');
@@ -43,22 +37,22 @@ if (isset($_REQUEST['new_acc'])) {
 	);
 	else {
 		$mailinlib->replace_mailin_account(
-			$_REQUEST['accountId'],
-			$_REQUEST['account'],
-			$_REQUEST['pop'],
-			$_REQUEST['port'],
-			$_REQUEST['username'],
-			$_REQUEST['pass'],
-			$_REQUEST['smtp'],
-			$_REQUEST['useAuth'],
-			$_REQUEST['smtpPort'],
-			$_REQUEST['type'],
-			$_REQUEST['active'],
-			$_REQUEST['anonymous'],
-			$_REQUEST['attachments'],
-			$_REQUEST['article_topicId'],
-			$_REQUEST['article_type'],
-			$_REQUEST['discard_after']
+						$_REQUEST['accountId'],
+						$_REQUEST['account'],
+						$_REQUEST['pop'],
+						$_REQUEST['port'],
+						$_REQUEST['username'],
+						$_REQUEST['pass'],
+						$_REQUEST['smtp'],
+						$_REQUEST['useAuth'],
+						$_REQUEST['smtpPort'],
+						$_REQUEST['type'],
+						$_REQUEST['active'],
+						$_REQUEST['anonymous'],
+						$_REQUEST['attachments'],
+						$_REQUEST['article_topicId'],
+						$_REQUEST['article_type'],
+						$_REQUEST['discard_after']
 		);
 
 		$tikifeedback[] = array(
