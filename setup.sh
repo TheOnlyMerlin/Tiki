@@ -1,13 +1,13 @@
-# (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
-# 
+# $Header: /cvsroot/tikiwiki/tiki/fixperms.sh,v 1.9.2.2 2008-02-07 21:59:14 lphuberdeau Exp $
+
+# Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 # All Rights Reserved. See copyright.txt for details and a complete list of authors.
 # Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-# $Id$
 
-# This file sets permissions and creates relevant folders for Tiki.
-#
+# This file is a replacement for setup.sh
+# in test in 1.9 version
 
-DIRS="db dump img/wiki img/wiki_up img/trackers modules/cache temp temp/cache temp/public templates_c templates styles maps whelp mods files tiki_tests/tests temp/unified-index"
+DIRS="backups db dump img/wiki img/wiki_up img/trackers modules/cache temp temp/cache temp/public templates_c templates styles maps whelp mods files tiki_tests/tests"
 
 AUSER=nobody
 AGROUP=nobody
@@ -73,7 +73,8 @@ if [ "$COMMAND" = 'fix' ]; then
 		if [ -n "$OPT_AUSER" ]; then
 			AUSER=$OPT_AUSER
 		elif [ -z "$OPT_NOTINTERACTIVE" ]; then
-			read -p "User [$AUSER]: " REPLY
+			echo -n "User [$AUSER]: "
+			read REPLY 
 			if [ -n "$REPLY" ]; then
 				AUSER=$REPLY
 			fi
@@ -90,8 +91,8 @@ or
 but it (the script) will still fix what it can according to the permissions
 of your user. This script will now ask you some questions. If you don't know
 what to answer, just press enter to each question (to use default value)"
-
-			read -p "> Press enter to continue: " WAIT
+			
+			read WAIT
 			AUSER=$USER
 		fi
 	fi
@@ -99,7 +100,8 @@ what to answer, just press enter to each question (to use default value)"
 	if [ -n "$OPT_AGROUP" ]; then
 		AGROUP=$OPT_AGROUP
 	elif [ -z "$OPT_NOTINTERACTIVE" ]; then
-		read -p "> Group [$AGROUP]: " REPLY
+		echo -n "Group [$AGROUP]: "
+		read REPLY
 		if [ -n "$REPLY" ]; then
 			AGROUP=$REPLY
 		fi
@@ -111,7 +113,8 @@ what to answer, just press enter to each question (to use default value)"
 	elif [ -n "$OPT_NOTINTERACTIVE" ]; then
 		VIRTUALS=$(cat db/virtuals.inc)
 	else
-		read -p "> Multi [$(cat -s db/virtuals.inc | tr '\n' ' ')]: " VIRTUALS
+		echo -n "Multi ["$(cat db/virtuals.inc)"]: "
+		read VIRTUALS
 		[ -z "$VIRTUALS" ] && VIRTUALS=$(cat db/virtuals.inc)
 	fi
 
@@ -131,7 +134,7 @@ what to answer, just press enter to each question (to use default value)"
 			mkdir -p $dir
 		fi
 		echo " ok."
-		if [ -n "$VIRTUALS" ] && [ $dir != "temp/unified-index" ]; then
+		if [ -n "$VIRTUALS" ]; then
 			for vdir in $VIRTUALS; do
 				echo -n "  $dir/$vdir ... "
 				if [ ! -d "$dir/$vdir" ]; then
@@ -143,52 +146,27 @@ what to answer, just press enter to each question (to use default value)"
 		fi
 	done
 
-	# Check that the USER is in AGROUP
-	USERINAGROUP="no"
-	for grp in `id -Gn $USER`; do
-		if [ "$grp" = "$AGROUP" ]; then
-			USERINAGROUP="yes"
-		fi
-	done
-
-	echo "Fix global perms ..."
-	if [ "$USER" = 'root' ]; then
-		#chown -fR $AUSER:$AGROUP . || echo "Could not change ownership to $AUSER"
-		echo -n "Change user to $AUSER and group to $AGROUP..."
-		chown -fR $AUSER:$AGROUP .
-		echo " done."
-	else
-		if [ -n "$OPT_AUSER" ]; then
-			echo "You are not root. We will not try to change the file owners."
-		fi
-		if [ "$USERINAGROUP" = "yes" ]; then
-			echo -n "Change group to $AGROUP ..."
-			chgrp -Rf $AGROUP .
-			echo " done."
-		else
-			echo "You are not root and you are not in the group $AGROUP. We can't change the group ownership to $AGROUP."
-			echo "Special dirs permissions will be set accordingly."
-		fi
-	fi
+	echo -n "Fix global perms ..."
+	chown -fR $AUSER:$AGROUP .
+	echo -n " chowned ..."
 
 #	find . ! -regex '.*^\(devtools\).*' -type f -exec chmod 644 {} \;	
 #	echo -n " files perms fixed ..."
 #	find . -type d -exec chmod 755 {} \;
 #	echo " dirs perms fixed ... done"
 
-	echo -n "Fix normal dirs ..."
 	chmod -fR u=rwX,go=rX .
+
 	echo " done."
 
 	echo -n "Fix special dirs ..."
-	if [ "$USER" = 'root' -o "$USERINAGROUP" = "yes" ]; then
+	if [ "$USER" = 'root' ]; then
 		chmod -R g+w $DIRS
 	else
 		chmod -fR go+w $DIRS
 	fi
 
 #	chmod 664 robots.txt tiki-install.php
-
 	echo " done."
 
 elif [ "$COMMAND" = 'open' ]; then
@@ -196,7 +174,8 @@ elif [ "$COMMAND" = 'open' ]; then
 		if [ -n "$OPT_AUSER" ]; then
 			AUSER=$OPT_AUSER
 		elif [ -z "$OPT_NOTINTERACTIVE" ]; then
-			read -p "User [$AUSER]: " REPLY
+			echo -n "User [$AUSER]: "
+			read REPLY 
 			if [ -n "$REPLY" ]; then
 				AUSER=$REPLY
 			fi
@@ -207,7 +186,6 @@ elif [ "$COMMAND" = 'open' ]; then
 	fi
 
 	chmod -R a=rwX .
-
 	echo " done"
 else
 	echo "Type 'fix' or 'open' as command argument."
