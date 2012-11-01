@@ -32,10 +32,6 @@ include_once ('lib/structures/structlib.php');
 include_once ('lib/notifications/notificationlib.php');
 require_once ("lib/wiki/editlib.php");
 
-/**
- * @param $page
- * @param $page_info
- */
 function guess_new_page_attributes_from_parent_pages($page, $page_info)
 {
 	global $editlib, $smarty, $_REQUEST, $tikilib, $prefs, $need_lang;
@@ -68,10 +64,6 @@ function guess_new_page_attributes_from_parent_pages($page, $page_info)
 	}
 }
 
-/**
- * @param $page_id
- * @return bool
- */
 function translationsToThisPageAreInProgress($page_id)
 {
 	global $multilinguallib;
@@ -225,11 +217,6 @@ if (isset($_REQUEST["current_page_id"])) {
 	$smarty->assign('add_child', false);
 }
 
-/**
- * @param $a1
- * @param $a2
- * @return mixed
- */
 function compare_import_versions($a1, $a2)
 {
 	return $a1["version"] - $a2["version"];
@@ -934,11 +921,6 @@ if (isset($_REQUEST["preview"])) {
 
 $smarty->assign_by_ref('parsed', $parsed);
 
-/**
- * @param $obj
- * @param $parts
- * @param $i
- */
 function parse_output(&$obj, &$parts, $i)
 {
 	if (!empty($obj['parts'])) {
@@ -1484,10 +1466,6 @@ $smarty->assign('qtnum', '1');
 $smarty->assign('qtcycle', '');
 $smarty->display("tiki.tpl");
 
-/**
- * @param $chkURL
- * @return bool
- */
 function isURL($chkURL)
 {
 	$rc = (false !== parse_url($chkURL));

@@ -110,10 +110,7 @@ if (isset($_SESSION['accessible'])) {
 }
 
 
-/**
- * @param $title
- * @param $content
- */
+
 function createPage($title, $content)
 {
 	echo <<<END

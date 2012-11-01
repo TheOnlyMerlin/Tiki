@@ -52,9 +52,6 @@ $disallowed_types = array(
 	'php~'
 ); // list of filetypes you DO NOT want to show
 // recursively get all files from all subdirectories
-/**
- * @param $sub
- */
 function getDirContent($sub)
 {
 	global $disallowed_types;

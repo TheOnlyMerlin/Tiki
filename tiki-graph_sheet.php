@@ -16,11 +16,6 @@ require_once ('lib/graph-engine/graph.pie.php');
 require_once ('lib/graph-engine/graph.bar.php');
 require_once ('lib/graph-engine/graph.multiline.php');
 
-/**
- * @param $serie
- * @param $sheet
- * @return array
- */
 function handle_series( $serie, &$sheet )
 {
 	if ( !$range = $sheet->getRange($serie) )

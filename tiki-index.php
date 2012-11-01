@@ -658,11 +658,6 @@ $smarty->display('tiki.tpl');
 // debug: print all objects
 
 
-/**
- * @param $pageInfo
- * @param $targetLang
- * @return string
- */
 function generate_machine_translated_markup($pageInfo, $targetLang)
 {
 	make_sure_machine_translation_is_enabled();
@@ -671,12 +666,6 @@ function generate_machine_translated_markup($pageInfo, $targetLang)
 	return translate_text($pageContent, $sourceLang, $targetLang);
 }
 
-/**
- * @param $pageContent
- * @param $pageInfo
- * @param $targetLang
- * @return string
- */
 function generate_machine_translated_content($pageContent, $pageInfo, $targetLang)
 {
 	make_sure_machine_translation_is_enabled();
@@ -685,13 +674,6 @@ function generate_machine_translated_content($pageContent, $pageInfo, $targetLan
 }
 
 
-/**
- * @param $text
- * @param $sourceLang
- * @param $targetLang
- * @param bool $html
- * @return string
- */
 function translate_text($text, $sourceLang, $targetLang, $html = true)
 {
 	require_once('lib/core/Multilingual/MachineTranslation/GoogleTranslateWrapper.php');

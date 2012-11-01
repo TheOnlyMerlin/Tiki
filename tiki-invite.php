@@ -14,10 +14,6 @@ require_once ('lib/webmail/tikimaillib.php');
 $prefs['feature_wiki_protect_email'] = 'n'; //not to alter the email
 
 /* csv format: lastname,firstname,mail */
-/**
- * @param $bloc
- * @return array
- */
 function parsemails_csv($bloc)
 {
 	$results=array();
@@ -35,10 +31,6 @@ function parsemails_csv($bloc)
 }
 
 /* everything format */
-/**
- * @param $bloc
- * @return array
- */
 function parsemails_all($bloc)
 {
 	$bloc=str_replace("\r\n", "\n", $bloc);

@@ -54,7 +54,7 @@ Version History:
 				  installed before running GZIP
 				  compression on TAR
 	2.2	05/07/2002	- Added automatic detection of Gzipped
-				  tar files (Thanks go to Jï¿½rgen Falch
+				  tar files (Thanks go to Jürgen Falch
 				  for the idea)
 				- Changed "private" functions to have
 				  special function names beginning with
@@ -70,9 +70,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- *
- */
 class tar
 {
 	// Unprocessed Archive Information
@@ -88,10 +85,7 @@ class tar
 
 
 	// Class Constructor -- Does nothing...
-    /**
-     * @return bool
-     */
-    function tar() {
+	function tar() {
 		return true;
 	}
 
@@ -99,11 +93,7 @@ class tar
 	// Computes the unsigned Checksum of a file's header
 	// to try to ensure valid file
 	// PRIVATE ACCESS FUNCTION
-    /**
-     * @param $bytestring
-     * @return int
-     */
-    function __computeUnsignedChecksum($bytestring) {
+	function __computeUnsignedChecksum($bytestring) {
 	       $unsigned_chksum=0;
 		for($i=0; $i<512; $i++)
 			$unsigned_chksum += ord($bytestring[$i]);
@@ -117,11 +107,7 @@ class tar
 
 	// Converts a NULL padded string to a non-NULL padded string
 	// PRIVATE ACCESS FUNCTION
-    /**
-     * @param $string
-     * @return string
-     */
-    function __parseNullPaddedString($string) {
+	function __parseNullPaddedString($string) {
 		$position = strpos($string,chr(0));
 		return substr($string,0,$position);
 	}
@@ -129,10 +115,7 @@ class tar
 
 	// This function parses the current TAR file
 	// PRIVATE ACCESS FUNCTION
-    /**
-     * @return bool
-     */
-    function __parseTar() {
+	function __parseTar() {
 		// Read Files from archive
 		$tar_length = strlen($this->tar_file);
 		$main_offset = 0;
@@ -233,11 +216,7 @@ class tar
 
 	// Read a non gzipped tar file in for processing
 	// PRIVATE ACCESS FUNCTION
-    /**
-     * @param string $filename
-     * @return bool
-     */
-    function __readTar($filename='') {
+	function __readTar($filename='') {
 		// Set the filename to load
 		if(!$filename)
 			$filename = $this->filename;
@@ -263,10 +242,7 @@ class tar
 
 	// Generates a TAR file from the processed data
 	// PRIVATE ACCESS FUNCTION
-    /**
-     * @return bool
-     */
-    function __generateTAR() {
+	function __generateTAR() {
 		// Clear any data currently in $this->tar_file	
 		unset($this->tar_file);
                 $this->tar_file='';
@@ -359,11 +335,7 @@ class tar
 
 
 	// Open a TAR file
-    /**
-     * @param $filename
-     * @return bool
-     */
-    function openTAR($filename) {
+	function openTAR($filename) {
 		// Clear any values from previous tar archives
 		//unset($this->filename);
 		$this->filename='';
@@ -392,11 +364,7 @@ class tar
 
 
 	// Appends a tar file to the end of the currently opened tar file
-    /**
-     * @param $filename
-     * @return bool
-     */
-    function appendTar($filename) {
+	function appendTar($filename) {
 		// If the tar file doesn't exist...
 		if(!file_exists($filename))
 			return false;
@@ -406,11 +374,7 @@ class tar
 
 
 	// Retrieves information about a file in the current tar archive
-    /**
-     * @param $filename
-     * @return bool
-     */
-    function getFile($filename) {
+	function getFile($filename) {
 		if($this->numFiles > 0) {
 			foreach($this->files as $key => $information) {
 				if($information["name"] == $filename)
@@ -423,11 +387,7 @@ class tar
 
 
 	// Retrieves information about a directory in the current tar archive
-    /**
-     * @param $dirname
-     * @return bool
-     */
-    function getDirectory($dirname) {
+	function getDirectory($dirname) {
 		if($this->numDirectories > 0) {
 			foreach($this->directories as $key => $information) {
 				if($information["name"] == $dirname)
@@ -440,11 +400,7 @@ class tar
 
 
 	// Check if this tar archive contains a specific file
-    /**
-     * @param $filename
-     * @return bool
-     */
-    function containsFile($filename) {
+	function containsFile($filename) {
 		if($this->numFiles > 0) {
 			foreach($this->files as $key => $information) {
 				if($information["name"] == $filename)
@@ -457,11 +413,7 @@ class tar
 
 
 	// Check if this tar archive contains a specific directory
-    /**
-     * @param $dirname
-     * @return bool
-     */
-    function containsDirectory($dirname) {
+	function containsDirectory($dirname) {
 		if($this->numDirectories > 0) {
 			foreach($this->directories as $key => $information) {
 				if($information["name"] == $dirname)
@@ -474,11 +426,7 @@ class tar
 
 
 	// Add a directory to this tar archive
-    /**
-     * @param $dirname
-     * @return bool
-     */
-    function addDirectory($dirname) {
+	function addDirectory($dirname) {
 		if(!file_exists($dirname))
 			return false;
 
@@ -501,11 +449,7 @@ class tar
 
 
 	// Add a file to the tar archive
-    /**
-     * @param $filename
-     * @return bool
-     */
-    function addFile($filename) {
+	function addFile($filename) {
 		// Make sure the file we are adding exists!
 		if(!file_exists($filename))
 			return false;
@@ -542,13 +486,7 @@ class tar
 
 
 	// Add a file to the tar archive
-    /**
-     * @param $filename
-     * @param $data
-     * @param int $time
-     * @return bool
-     */
-    function addData($filename,$data,$time=0) {
+	function addData($filename,$data,$time=0) {
 		
 		// Make sure there are no other files in the archive that have this same filename
 		if($this->containsFile($filename))
@@ -578,11 +516,7 @@ class tar
 
 
 	// Remove a file from the tar archive
-    /**
-     * @param $filename
-     * @return bool
-     */
-    function removeFile($filename) {
+	function removeFile($filename) {
 		if($this->numFiles > 0) {
 			foreach($this->files as $key => $information) {
 				if($information["name"] == $filename) {
@@ -598,11 +532,7 @@ class tar
 
 
 	// Remove a directory from the tar archive
-    /**
-     * @param $dirname
-     * @return bool
-     */
-    function removeDirectory($dirname) {
+	function removeDirectory($dirname) {
 		if($this->numDirectories > 0) {
 			foreach($this->directories as $key => $information) {
 				if($information["name"] == $dirname) {
@@ -618,10 +548,7 @@ class tar
 
 
 	// Write the currently loaded tar archive to disk
-    /**
-     * @return bool
-     */
-    function saveTar() {
+	function saveTar() {
 		if(!$this->filename)
 			return false;
 
@@ -633,12 +560,7 @@ class tar
 
 
 	// Saves tar archive to a different file than the current file
-    /**
-     * @param $filename
-     * @param $useGzip
-     * @return bool
-     */
-    function toTar($filename,$useGzip) {
+	function toTar($filename,$useGzip) {
 		if(!$filename)
 			return false;
 

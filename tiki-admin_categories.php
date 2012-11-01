@@ -22,9 +22,7 @@ if (!isset($_REQUEST['parentId'])) {
 $smarty->assign('parentId', $_REQUEST['parentId']);
 
 
-if (!empty($_REQUEST['parentId'])) {
-	$access->check_permission('tiki_p_admin_categories', '', 'category', $_REQUEST['parentId']);
-}
+$access->check_permission('tiki_p_admin_categories', '', 'category', $_REQUEST['parentId']);
 
 if (!empty($_REQUEST['unassign'])) {
 	$access->check_authenticity(tra('Are you sure you want to unassign the objects of this category: ') . $info['name']);
@@ -341,12 +339,7 @@ if (isset($_REQUEST["find_objects"])) {
 	$find_objects = '';
 }
 
-/**
- * @param $max
- * @param $data_key
- * @param null $data
- */
-function admin_categ_assign( &$max, $data_key, $data = null )
+function admin_categ_assign( &$max, $data_key, $data = null ) 
 {
 	global $smarty;
 

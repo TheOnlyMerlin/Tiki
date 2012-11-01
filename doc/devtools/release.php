@@ -73,7 +73,8 @@ if ($isPre) {
 } else {
 	$pre = '';
 }
-$mainversion = $version{0};
+$splitedversion = explode('.', $version);
+$mainversion = $splitedversion[0];
 
 include_once('lib/setup/twversion.class.php');
 $check_version = $version.$subrelease;
@@ -219,11 +220,6 @@ if ($isPre) {
 
 // Helper functions
 
-/**
- * @param $file
- * @param $root
- * @param $version
- */
 function write_secdb($file, $root, $version)
 {
 	$file_exists = @file_exists($file);
@@ -250,12 +246,6 @@ function write_secdb($file, $root, $version)
 	}
 }
 
-/**
- * @param $root
- * @param $dir
- * @param $version
- * @param $queries
- */
 function md5_check_dir($root, $dir, $version, &$queries)
 {
 	$d = dir($dir);
@@ -291,10 +281,6 @@ function md5_check_dir($root, $dir, $version, &$queries)
 	$d->close();
 }
 
-/**
- * @param $releaseVersion
- * @param $svnRelativePath
- */
 function build_packages($releaseVersion, $svnRelativePath)
 {
 	global $options;
@@ -312,12 +298,6 @@ function build_packages($releaseVersion, $svnRelativePath)
 	passthru("ls ~/tikipack/$releaseVersion");
 }
 
-/**
- * @param $dir
- * @param $entries
- * @param $regexp_pattern
- * @return bool
- */
 function get_files_list($dir, &$entries, $regexp_pattern)
 {
 	$d = dir($dir);
@@ -338,11 +318,6 @@ function get_files_list($dir, &$entries, $regexp_pattern)
 	return true;
 }
 
-/**
- * @param $alreadyDone
- * @param $toDo
- * @param $message
- */
 function display_progress_percentage($alreadyDone, $toDo, $message)
 {
 	$onePercent = ceil($toDo / 100);
@@ -352,9 +327,6 @@ function display_progress_percentage($alreadyDone, $toDo, $message)
 	}
 }
 
-/**
- * @param $error_msg
- */
 function check_smarty_syntax(&$error_msg)
 {
 	global $tikidomain, $prefs, $smarty;
@@ -380,10 +352,6 @@ function check_smarty_syntax(&$error_msg)
 	$smarty->compileAllTemplates('.tpl', true);
 }
 
-/**
- * @param $error_msg
- * @return bool
- */
 function check_smarty_syntax2(&$error_msg)
 {
 	global $tikidomain, $prefs, $smarty;
@@ -458,26 +426,12 @@ function check_smarty_syntax2(&$error_msg)
 	return true;
 }
 
-/**
- * @param $errno
- * @param $errstr
- * @param string $errfile
- * @param int $errline
- * @param array $errcontext
- */
 function check_smarty_syntax_error_handler($errno, $errstr, $errfile = '', $errline = 0, $errcontext = array())
 {
 	//	throw new Exception($errstr);
 	error($errstr);
 }
 
-/**
- * @param $dir
- * @param $error_msg
- * @param $hide_php_warnings
- * @param int $retry
- * @return bool
- */
 function check_php_syntax(&$dir, &$error_msg, $hide_php_warnings, $retry = 10)
 {
 	global $phpCommand;
@@ -524,9 +478,6 @@ function check_php_syntax(&$dir, &$error_msg, $hide_php_warnings, $retry = 10)
 	return true;
 }
 
-/**
- * @return array|bool
- */
 function get_options()
 {
 	if ($_SERVER['argc'] <= 1) {
@@ -609,12 +560,6 @@ function get_options()
 	return $options;
 }
 
-/**
- * @param $msg
- * @param bool $increment_step
- * @param bool $commit_msg
- * @return bool
- */
 function important_step($msg, $increment_step = true, $commit_msg = false)
 {
 	global $options;
@@ -678,10 +623,6 @@ function important_step($msg, $increment_step = true, $commit_msg = false)
 	return $do_step;
 }
 
-/**
- * @param $newVersion
- * @return array|bool
- */
 function update_changelog_file($newVersion)
 {
 	if (! is_readable(CHANGELOG) || ! is_writable(CHANGELOG) || ! ($handle = @fopen(CHANGELOG, "r"))) {
@@ -779,10 +720,6 @@ EOS;
 	return file_put_contents(CHANGELOG, $newChangelog . $newChangelogEnd) ? $return : false;
 }
 
-/**
- * @param $newVersion
- * @return array|bool
- */
 function update_copyright_file($newVersion)
 {
 	if (! is_readable(COPYRIGHTS) || ! is_writable(COPYRIGHTS)) {
@@ -868,9 +805,6 @@ EOS;
 	return file_put_contents(COPYRIGHTS, $copyrights) ? $return : false;
 }
 
-/**
- * @return array|bool
- */
 function parse_copyrights()
 {
 	if (! $copyrights = @file(COPYRIGHTS)) {
@@ -895,14 +829,6 @@ function parse_copyrights()
 	return $return;
 }
 
-/**
- * @param $path
- * @param $contributors
- * @param $minRevision
- * @param $maxRevision
- * @param int $step
- * @return mixed
- */
 function get_contributors_data($path, &$contributors, $minRevision, $maxRevision, $step = 15000)
 {
 	global $nbCommiters;
@@ -960,9 +886,6 @@ function get_contributors_data($path, &$contributors, $minRevision, $maxRevision
 	return $contributors;
 }
 
-/**
- * @param $contributors
- */
 function get_contributors_sf_data(&$contributors)
 {
 	global $options;
@@ -997,11 +920,6 @@ function get_contributors_sf_data(&$contributors)
 	}
 }
 
-/**
- * @param $releaseVersion
- * @param $mainVersion
- * @return bool
- */
 function update_readme_file($releaseVersion, $mainVersion)
 {
 	if (! is_readable(README) || ! is_writable(README)) {

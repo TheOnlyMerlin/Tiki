@@ -105,11 +105,6 @@ if ($prefs['cookie_consent_feature'] === 'y' && empty($_COOKIE[$prefs['cookie_co
 	$feature_no_cookie = false;
 }
 
-// Session info needs to be kept up to date if pref login_multiple_forbidden is set
-if ( $prefs['login_multiple_forbidden'] == 'y' ) {
-	$tikilib->update_session();
-}
-
 require_once ('lib/setup/cookies.php');
 
 if ($prefs['mobile_feature'] === 'y') {
@@ -326,6 +321,7 @@ if ($prefs['javascript_enabled'] != 'n') {
 		$headerlib
 			->add_cssfile('lib/codemirror/lib/codemirror.css')
 			->add_jsfile_dependancy('lib/codemirror/lib/codemirror.js')
+			->add_jsfile_dependancy('lib/codemirror/lib/util/searchcursor.js')
 		//add tiki stuff
 			->add_cssfile('lib/codemirror_tiki/codemirror_tiki.css')
 			->add_jsfile_dependancy('lib/codemirror_tiki/codemirror_tiki.js');

@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_top_quizzes_info()
 {
 	return array(
@@ -25,15 +22,9 @@ function module_top_quizzes_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_top_quizzes($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
-	$quizlib = TikiLib::lib('quiz');
-
-	$ranking = $quizlib->list_quiz_sum_stats(0, $mod_reference["rows"], 'timesTaken_desc', '');
+	global $tikilib, $smarty;
+	$ranking = $tikilib->list_quiz_sum_stats(0, $mod_reference["rows"], 'timesTaken_desc', '');
 	$smarty->assign('modTopQuizzes', $ranking["data"]);
 }
