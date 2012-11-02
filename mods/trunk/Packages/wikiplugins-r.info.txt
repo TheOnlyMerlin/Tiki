@@ -2,10 +2,10 @@ contributor:
 $Author: xavi $
 
 revision: 
-$Revision: 0.74 $
+$Revision: 0.75 $
 
 lastmodif:
-$Date: 2012-06-12 17:35:00 $
+$Date: 2012-11-02 19:18:00 $
 
 files: 
 wiki-plugins/r/lib/wiki-plugins/wikiplugin_r.php lib/wiki-plugins/wikiplugin_r.php
@@ -49,3 +49,4 @@ Changelog:
 0.72 Added the ability to create and display several png's when the R call wants to generate new graphs from any command and the user writes "# newgraph" before the new graph so that pluginR opens up the required new graphic device.
 0.73 Creation of folders for temp only if they are missing (therefore removing the harmless but annoying warning when they exist already)
 0.74 R icon shown also in Tiki9. Empty lines above figures from googleVis package removed (thanks RobertPlummer)
+0.75 svg generation works again with this small change and r43765 to clean svn code (thanks changi and jyhem)

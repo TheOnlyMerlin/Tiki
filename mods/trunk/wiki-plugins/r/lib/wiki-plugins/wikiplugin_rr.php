@@ -532,9 +532,14 @@ echo $wrap;
 	if (strpos ($cont, '<html>') === false) {
 		$fd = fopen ($rst, 'w') or error ('R', 'can not open file: ' . $rst, $input . $err);
 		if ($r_exitcode == 0) {
-			// remove empty lines produced by some R packages such as googleVis that were inserting too much white space for granted before the graphs produced by the Google Visualization API 
+			// Start of Preprocessing HTML before sending it to the user's browser: cleanup, etc.
+			// ----------------------------------
+			//remove empty lines produced by some R packages such as googleVis that were inserting too much white space for granted before the graphs produced by the Google Visualization API 
 			$cont = str_replace(array("\n", "// jsData", "// jsDrawChart", "// jsDisplayChart", "// jsChart"), '', $cont);
 			// Write the start tag of an html comment to comment out the tag to remove echo from R console. The closing html comment tag is added inside $cont after the "option(echo=FALSE)"
+
+			// End of HTML preprocessing
+
 			fwrite ($fd, $prg . '<pre id="routput' . $r_count . '" name="routput' . $r_count . '" style="'.$pre_style.'"><!-- ' . $cont . '</pre>');
 			for ( $i=1; $i<=$image_number; $i++) {
 				if (file_exists($rgo . "_$i" . '.png')) {
@@ -545,10 +550,12 @@ echo $wrap;
 				fwrite ($fd, $prg . '</br>');
 		 	}
 			if ( !empty($user) && isset($params["svg"]) && $params["svg"]=="1") {
-				fwrite ($fd, $prg . ' <span class="button"><a href="' . curPageURL() . '&gtype=svg' . '" alt="' . $rgo_rel . '.svg' . '" target="_blank">' . tr("Save Image as SVG") . '</a></span>');
+				$PageURLRaw = preg_replace('/tiki-index.php/', 'tiki-index_raw.php', curPageURL() );
+				fwrite ($fd, $prg . ' <span class="button"><a href="' . $PageURLRaw . '&gtype=svg&clean=y' . '" alt="' . $rgo_rel . '.svg' . '" target="_blank">' . tr("Save Image as SVG") . '</a></span>');
 		 	}
 			if ( !empty($user) && isset($params["pdf"]) && $params["pdf"]=="1") {
-				fwrite ($fd, $prg . ' <span class="button"><a href="' . curPageURL() . '&gtype=pdf' . '" alt="' . $rgo_rel . '.pdf' . '" target="_blank">' . tr("Save Image as PDF") . '</a></span>');
+				$PageURLRaw = preg_replace('/tiki-index.php/', 'tiki-index_raw.php', curPageURL() );
+				fwrite ($fd, $prg . ' <span class="button"><a href="' . $PageURLRaw . '&gtype=pdf&clean=y' . '" alt="' . $rgo_rel . '.pdf' . '" target="_blank">' . tr("Save Image as PDF") . '</a></span>');
 		 	}
 	 	} else {
 			fwrite ($fd, $prg . '<pre><!-- ' . $cont . '<span style="color:red">' . $err . '</span>' . '</pre>');
@@ -565,7 +572,7 @@ echo $wrap;
 			$filename = $_REQUEST['filename'];
 		} else {
 			// Get wikipage name for the name of the svg or pdf files to be downloaded eventually
-			//Convert spaces into some character to avoid R complaining becuase it can't create such folder in the server
+			//Convert spaces into some character to avoid R complaining because it can't create such folder in the server
 			$wikipage = str_replace(array(" ", "+"), "_", $_REQUEST['page']);
 			// Create the filename
 			$filename = $wikipage . "_" . tr("plot") . $r_count . ".svg";
