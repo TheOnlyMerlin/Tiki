@@ -2,10 +2,10 @@ contributor:
 $Author: xavi $
 
 revision: 
-$Revision: 0.75 $
+$Revision: 0.76 $
 
 lastmodif:
-$Date: 2012-11-02 19:18:00 $
+$Date: 2012-11-16 22:20:00 $
 
 files: 
 wiki-plugins/r/lib/wiki-plugins/wikiplugin_r.php lib/wiki-plugins/wikiplugin_r.php
@@ -50,3 +50,4 @@ Changelog:
 0.73 Creation of folders for temp only if they are missing (therefore removing the harmless but annoying warning when they exist already)
 0.74 R icon shown also in Tiki9. Empty lines above figures from googleVis package removed (thanks RobertPlummer)
 0.75 svg generation works again with this small change and r43765 to clean svn code (thanks changi and jyhem)
+0.76 Fixing bug introduced in r41927 removing new lines with \n for way too many cases. New param added as removen, to allow the user to choose when to have them removed (like in charts created through googleVis R package)
