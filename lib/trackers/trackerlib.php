@@ -4395,27 +4395,6 @@ class TrackerLib extends TikiLib
 				$context['list_mode'] = 'n';
 			}
 			$r = $handler->renderOutput($context);
-
-			if (! empty($params['editable'])) {
-				$servicelib = TikiLib::lib('service');
-				$r = new Tiki_Render_Editable($r, array(
-					'layout' => $params['editable'],
-					'object_store_url' => $servicelib->getUrl(array(
-						'controller' => 'tracker',
-						'action' => 'update_item',
-						'trackerId' => $field['trackerId'],
-						'itemId' => $item['itemId'],
-					)),
-					'field_fetch_url' => $servicelib->getUrl(array(
-						'controller' => 'tracker',
-						'action' => 'fetch_item_field',
-						'trackerId' => $field['trackerId'],
-						'itemId' => $item['itemId'],
-						'fieldId' => $field['fieldId'],
-					)),
-				));
-			}
-
 			TikiLib::lib('smarty')->assign("f_$fieldId", $r);
 			return $r;
 		}

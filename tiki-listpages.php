@@ -469,10 +469,6 @@ if (!empty($multiprint_pages)) {
 	}
 }
 
-/**
- * @param $filter
- * @return mixed
- */
 function setLangFilter($filter)
 {
 	global $smarty, $prefs, $multilinguallib;
@@ -490,9 +486,6 @@ function setLangFilter($filter)
 	return $filter;
 }
 
-/**
- * @param $query
- */
 function possibly_look_for_page_aliases($query)
 {
 	global $prefs, $smarty, $semanticlib, $_REQUEST;

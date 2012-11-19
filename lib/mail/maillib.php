@@ -23,11 +23,6 @@
 $charset = 'utf-8'; // What charset we do use in Tiki
 $in_str = '';
 
-/**
- * @param $in_str
- * @param $charset
- * @return string
- */
 function encode_headers($in_str, $charset)
 {
    $out_str = $in_str;
@@ -82,92 +77,29 @@ function tiki_mail_setup()
 			$options['ssl'] = $prefs['zend_mail_smtp_security'];
 		}
 
-		////////////////////////////////////////////////////////////////////////
-		//                                                                    //
-		// hollmeer 2012-11-03: ADDED PGP/MIME ENCRYPTION PREPARATION         //
-		// USING lib/openpgp/opepgplib.php                                    //
-		//                                                                    //
-	    	// get from globals (set in tiki-setup.php)
-		global $use_pgpmime_mail;
-		if ($use_pgpmime_mail) {
-			// USE PGP/MIME MAIL VERSION
-			require_once('lib/openpgp/OpenPGP_Zend_Mail_Transport_Smtp.php');
-			require_once('lib/openpgp/OpenPGP_Zend_Mail.php');
-			$transport = new OpenPGP_Zend_Mail_Transport_Smtp($prefs['zend_mail_smtp_server'], $options);
-			OpenPGP_Zend_Mail::setDefaultTransport($transport);
-		} else {
-			// USE ORIGINAL TIKI MAIL VERSION
-			$transport = new Zend_Mail_Transport_Smtp($prefs['zend_mail_smtp_server'], $options);
-			Zend_Mail::setDefaultTransport($transport);
-		}
-		//                                                                    //
-		////////////////////////////////////////////////////////////////////////
-
+		$transport = new Zend_Mail_Transport_Smtp($prefs['zend_mail_smtp_server'], $options);
+		Zend_Mail::setDefaultTransport($transport);
 	}
 
 	$done = true;
 }
 
-/**
- * @return Zend_Mail
- */
 function tiki_get_basic_mail()
 {
 	tiki_mail_setup();
-	/////////////////////////////////////////////////////////////////////
-	//                                                                 //
-	// hollmeer 2012-11-03: ADDED PGP/MIME ENCRYPTION PREPARATION      //
-	// USING lib/openpgp/opepgplib.php                                 //
-	//                                                                 //
-    	// get from globals (set in tiki-setup.php)
-	global $use_pgpmime_mail;
-	if ($use_pgpmime_mail) {
-		// USE PGP/MIME MAIL VERSION
-		return new OpenPGP_Zend_Mail('UTF-8');
-	} else {
-		// USE ORIGINAL TIKI MAIL VERSION
-		return new Zend_Mail('UTF-8');
-	}
-	//                                                                 //
-	/////////////////////////////////////////////////////////////////////
+	return new Zend_Mail('UTF-8');
 }
 
-/**
- * @return Zend_Mail
- */
 function tiki_get_admin_mail()
 {
 	global $prefs;
 
 	$mail = tiki_get_basic_mail();
-
-	/////////////////////////////////////////////////////////////////////
-	//                                                                 //
-	// [BUG FIX] hollmeer 2012-11-04: 
-	// the $prefs['browsertitle']); needs to be commented (..?)
-	// from orig:
-	// $mail->setFrom($prefs['sender_email'], $prefs['browsertitle']);
-	$mail->setFrom( $prefs['sender_email'] );
-	// [BUG FIX] hollmeer 2012-11-04: 
-	// Added returnpath for Sendmail; does not send without; 
-	// catch/ignore error, if already set
-	try {
-		$mail->setReturnPath( $prefs['sender_email'] );
-	} catch (Exception $e) {
-		// was already set, then do nothing
-	}
-	//                                                                 //
-	/////////////////////////////////////////////////////////////////////
+	$mail->setFrom($prefs['sender_email'], $prefs['browsertitle']);
 
 	return $mail;
 }
 
-/**
- * @param $email
- * @param $recipientName
- * @param $subject
- * @param $textBody
- */
 function tiki_send_admin_mail( $email, $recipientName, $subject, $textBody )
 {
 	$mail = tiki_get_admin_mail();

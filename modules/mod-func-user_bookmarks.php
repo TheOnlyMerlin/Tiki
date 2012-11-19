@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_user_bookmarks_info()
 {
 	return array(
@@ -24,10 +21,6 @@ function module_user_bookmarks_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_user_bookmarks($mod_reference, $module_params)
 {
 	global $tikilib, $smarty;
@@ -130,8 +123,7 @@ function module_user_bookmarks($mod_reference, $module_params)
 	
 				// Check if we are bookmarking a faq
 				if (strstr($_SERVER["REQUEST_URI"], 'tiki-view_faq')) {
-					require_once ('lib/faqs/faqlib.php');
-					$info = $faqlib->get_faq($setup_query_data["faqId"]);
+					$info = $tikilib->get_faq($setup_query_data["faqId"]);
 	
 					$name = $info["title"];
 				}

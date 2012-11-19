@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_last_podcasts_info()
 {
 	return array(
@@ -67,10 +64,6 @@ function module_last_podcasts_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_last_podcasts($mod_reference, $module_params)
 {
 	global $smarty;

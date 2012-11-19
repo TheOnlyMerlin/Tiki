@@ -35,19 +35,14 @@ foreach ( $modules as $zone => & $moduleList ) {
 		foreach ( $moduleList as & $mod_reference ) {
 			$show_columns[$zone] = 'y';
 
-			$ref = (array) $mod_reference;
-			$mod_reference['data'] = new Tiki_Render_Lazy(function () use ($ref) {
-				$modlib = TikiLib::lib('mod');
-				return $modlib->execute_module($ref);
-			});
+			$mod_reference['data'] = $modlib->execute_module($mod_reference);
 		}
 
-		$smarty->assign($zone, $moduleList);
+		$smarty->assign_by_ref($zone, $moduleList);
 	}
 }
 
-$smarty->assign('show_columns', $show_columns);
-$smarty->assign('module_zones', $modules);
+$smarty->assign_by_ref('show_columns', $show_columns);
 
 $module_nodecorations = array('decorations' => 'n');
 $module_isflippable = array('flip' => 'y');

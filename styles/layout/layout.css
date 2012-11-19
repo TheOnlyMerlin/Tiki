@@ -283,9 +283,8 @@ li#logout_link a {
 	width: 47%;
 }
 
-.siteloginbar_popup div.pass a {
+.siteloginbar_popup .pass a {
 	text-align: left;
-	display:block;
 }
 
 .siteloginbar_popup .register {

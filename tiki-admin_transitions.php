@@ -172,10 +172,6 @@ if ( count($available_states) > 0 ) {
 $smarty->assign('mid', 'tiki-admin_transitions.tpl');
 $smarty->display('tiki.tpl');
 
-/**
- * @param $state
- * @return mixed|string
- */
 function transition_label_finder( $state )
 {
 	global $available_states, $transition_mode, $categlib;

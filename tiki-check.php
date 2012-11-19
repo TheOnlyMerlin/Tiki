@@ -12,19 +12,12 @@ if (file_exists('./db/local.php') && file_exists('./templates/tiki-check.tpl')) 
 } else {
 	$standalone = true;
 
-    /**
-     * @param $string
-     * @return mixed
-     */
-    function tra($string)
+	function tra($string)
 	{
 		return $string;
 	}
 
-    /**
-     * @param $var
-     */
-    function renderTable($var)
+	function renderTable($var)
 	{
 		if (is_array($var)) {
 			echo '<table style="border:2px solid grey;">';
@@ -182,12 +175,7 @@ DBC;
 			case 'PDO':
 				// We don't do exception handling here to be PHP 4 compatible
 				$connection = new PDO('mysql:host='.$_POST['dbhost'], $_POST['dbuser'], $_POST['dbpass']);
-                /**
-                 * @param $query
-                 * @param $connection
-                 * @return mixed
-                 */
-                function query($query, $connection)
+				function query($query, $connection)
 				{
 					$result = $connection->query($query);
 					$return = $result->fetchAll();
@@ -202,12 +190,7 @@ DBC;
 					$connection = false;
 					echo 'Couldn\'t connect to database: '.$error;
 				}
-                /**
-                 * @param $query
-                 * @param $connection
-                 * @return array
-                 */
-                function query($query, $connection)
+				function query($query, $connection)
 				{
 					$result = $connection->query($query);
 					$return = array();
@@ -222,12 +205,7 @@ DBC;
 				if ( $connection === false ) {
 					echo 'Cannot connect to MySQL. Wrong credentials?';
 				}
-                /**
-                 * @param $query
-                 * @param string $connection
-                 * @return array
-                 */
-                function query($query, $connection = '')
+				function query($query, $connection = '')
 				{
 					$result = mysql_query($query);
 					$return = array();
@@ -240,11 +218,7 @@ DBC;
 		}
 	}
 } else {
-    /**
-     * @param $query
-     * @return array
-     */
-    function query($query)
+	function query($query)
 	{
 		global $tikilib;
 		$result = $tikilib->query($query);
@@ -1148,30 +1122,6 @@ if ( function_exists('apache_get_version')) {
 	}
 }
 
-
-// IIS Properties
-$iis_properties = false;
-
-if (TikiInit::isIIS()) {
-
-	// IIS Rewrite module
-	if (TikiInit::hasIIS_UrlRewriteModule()) {
-		$iis_properties['IIS Url Rewrite Module'] = array(
-			'fitness' => tra('good'),
-			'setting' => 'Available',
-			'message' => tra('The URL Rewrite Module is required to use SEFURL on IIS.')
-			);
-	} else {
-		$iis_properties['IIS Url Rewrite Module'] = array(
-			'fitness' => tra('bad'),
-			'setting' => 'Not Available',
-			'message' => tra('The URL Rewrite Module is required to use SEFURL on IIS.')
-			);
-	}
-}
-
-
-
 // Security Checks
 // get all dangerous php settings and check them
 $security = false;
@@ -1456,11 +1406,6 @@ if ($standalone) {
 		$smarty->assign_by_ref('apache_properties', $apache_properties);
 	} else {
 		$smarty->assign('no_apache_properties', 'You are either not running the preferred Apache web server or you are running PHP with a SAPI that does not allow checking Apache properties (e.g. CGI or FPM).');
-	}
-	if ($iis_properties) {
-		$smarty->assign_by_ref('iis_properties', $iis_properties);
-	} else {
-		$smarty->assign('no_iis_properties', 'You are not running IIS web server.');
 	}
 	$smarty->assign_by_ref('security', $security);
 	$smarty->assign_by_ref('mysql_variables', $mysql_variables);

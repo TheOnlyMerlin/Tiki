@@ -109,7 +109,6 @@
 				{preference name=desactive_login_autocomplete}
 				{preference name=feature_challenge}
 
-				{preference name=login_multiple_forbidden}
 				{preference name=session_protected}
 				{preference name=https_login}
 				{preference name=login_http_basic}

@@ -11,9 +11,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_webmail_inbox_info()
 {
 	return array(
@@ -89,10 +86,6 @@ function module_webmail_inbox_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_webmail_inbox($mod_reference, $module_params)
 {
 	global $prefs, $webmaillib, $headerlib, $user, $webmail_reload, $webmail_start, $webmail_list_page, $smarty;

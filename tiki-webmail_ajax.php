@@ -141,11 +141,6 @@ if (!empty($_REQUEST['action'])) {
 }
 
 
-/**
- * @param string $destDiv
- * @param int $inStart
- * @param bool $inReload
- */
 function refreshWebmail($destDiv = 'mod-webmail_inbox', $inStart = 0, $inReload = false)
 {
 	global $user, $smarty, $prefs, $module_params;
@@ -176,11 +171,6 @@ function refreshWebmail($destDiv = 'mod-webmail_inbox', $inStart = 0, $inReload 
 //	return $objResponse;
 }
 
-/**
- * @param string $destDiv
- * @param int $msgId
- * @return xajaxResponse
- */
 function takeGroupMail($destDiv = 'mod-webmail_inbox', $msgId = 1)
 {
 	global $prefs, $trklib, $user, $webmaillib, $contactlib, $dbTiki, $tikilib, $categlib, $module_params;
@@ -292,11 +282,6 @@ function takeGroupMail($destDiv = 'mod-webmail_inbox', $msgId = 1)
 	return $objResponse;
 }
 
-/**
- * @param string $destDiv
- * @param int $msgId
- * @return xajaxResponse
- */
 function putBackGroupMail($destDiv = 'mod-webmail_inbox', $msgId = 1)
 {
 	global $prefs, $trklib, $user, $webmaillib, $dbTiki, $module_params;

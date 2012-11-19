@@ -413,10 +413,6 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 $smarty->assign('mid', 'tiki-admingroups.tpl');
 $smarty->display("tiki.tpl");
 
-/**
- * @param $direct_groups
- * @return array
- */
 function indirectly_inherited_groups($direct_groups)
 {
 	global $userlib;

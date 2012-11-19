@@ -32,10 +32,6 @@ if (!is_dir($prefs['mods_dir'] . "/Cache")) {
 	mkdir($prefs['mods_dir'] . "/Cache", 02777);
 }
 $feedback = array();
-/**
- * @param $num
- * @param $err
- */
 function tikimods_feedback_listener($num, $err)
 {
 	global $feedback;

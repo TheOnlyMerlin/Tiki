@@ -136,9 +136,6 @@ if ( isset($_REQUEST['cancel']) ) {
 }
 
 // Obtain information
-/**
- * @param $type
- */
 function fetch_payment_list($type)
 {
 	global $paymentlib, $globalperms, $user, $prefs, $smarty;

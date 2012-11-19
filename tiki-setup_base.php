@@ -32,7 +32,21 @@ ini_set('magic_quotes_sybase', 'Off');
 ini_set('magic_quotes_runtime', 0);
 ini_set('allow_call_time_pass_reference', 'On');
 
-$memory_limiter = new Tiki_MemoryLimit('128M'); // Keep in variable to hold scope
+
+// Set memory_limit to at least 128M
+$memory_limit = ini_get('memory_limit');
+$s = trim($memory_limit);
+$last = strtolower($s{strlen($s)-1});
+switch ( $last ) {
+	case 'g': $s *= 1024;
+	case 'm': $s *= 1024;
+	case 'k': $s *= 1024;
+}
+
+if ( $s < 128 * 1024 * 1024 ) {
+	ini_set('memory_limit', '128M');
+};
+
 
 // ---------------------------------------------------------------------
 // inclusions of mandatory stuff and setup
@@ -54,6 +68,7 @@ $needed_prefs = array(
 	'lang_use_db' => 'n',
 	'feature_fullscreen' => 'n',
 	'error_reporting_level' => 0,
+	'smarty_notice_reporting' => 'n',
 	'memcache_enabled' => 'n',
 	'memcache_expiration' => 3600,
 	'memcache_prefix' => 'tiki_',
@@ -61,6 +76,7 @@ $needed_prefs = array(
 	'memcache_servers' => false,
 	'min_pass_length' => 5,
 	'pass_chr_special' => 'n',
+	'smarty_compilation' => 'modified',
 	'menus_item_names_raw' => 'n',
 );
 // check that tiki_preferences is there
@@ -228,9 +244,6 @@ $access = new TikiAccessLib;
 require_once ('lib/breadcrumblib.php');
 // ------------------------------------------------------
 // DEAL WITH XSS-TYPE ATTACKS AND OTHER REQUEST ISSUES
-/**
- * @param $var
- */
 function remove_gpc(&$var)
 {
 	if (is_array($var)) {
@@ -342,11 +355,6 @@ $vartype['parentId'] = 'intSign';
 $vartype['bannerId'] = 'int';
 $vartype['rssId'] = 'int';
 $vartype['page_ref_id'] = 'int';
-/**
- * @param $array
- * @param $category
- * @return string
- */
 function varcheck(&$array, $category)
 {
 	global $patterns, $vartype, $prefs;
@@ -530,8 +538,9 @@ if (isset($_SESSION["$user_cookie_site"])) {
 	}
 }
 
-$smarty->assign('CSRFTicket', isset( $_SESSION['ticket'] ) ? $_SESSION['ticket'] : null);
-
+if (is_object($smarty)) {
+	$smarty->assign('CSRFTicket', isset( $_SESSION['ticket'] ) ? $_SESSION['ticket'] : null);
+}
 require_once ('lib/setup/perms.php');
 // --------------------------------------------------------------
 // deal with register_globals
@@ -650,7 +659,9 @@ unset($GLOBALS['HTTP_SESSION_VARS']);
 unset($GLOBALS['HTTP_POST_FILES']);
 // --------------------------------------------------------------
 if (isset($_REQUEST['highlight']) || (isset($prefs['feature_referer_highlight']) && $prefs['feature_referer_highlight'] == 'y')) {
-	$smarty->loadFilter('output', 'highlight');
+	if (method_exists($smarty, 'loadFilter')) {
+		$smarty->loadFilter('output', 'highlight');
+	}
 }
 if (function_exists('mb_internal_encoding')) {
 	mb_internal_encoding("UTF-8");
@@ -663,5 +674,6 @@ if (!isset($_SERVER['QUERY_STRING'])) {
 if (!isset($_SERVER['REQUEST_URI']) || empty($_SERVER['REQUEST_URI'])) {
 	$_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'];
 }
-
-$smarty->assign("tikidomain", $tikidomain);
+if (is_object($smarty)) {
+	$smarty->assign("tikidomain", $tikidomain);
+}

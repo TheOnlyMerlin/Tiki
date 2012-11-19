@@ -5,18 +5,12 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-/**
- *
- */
 class UnifiedSearchLib
 {
 	const INCREMENT_QUEUE = 'search-increment';
 	private $batchToken;
 
-    /**
-     * @return string
-     */
-    function startBatch()
+	function startBatch()
 	{
 		if (! $this->batchToken) {
 			$this->batchToken = uniqid();
@@ -24,11 +18,7 @@ class UnifiedSearchLib
 		}
 	}
 
-    /**
-     * @param $token
-     * @param int $count
-     */
-    function endBatch($token, $count = 100)
+	function endBatch($token, $count = 100)
 	{
 		if ($token && $this->batchToken === $token) {
 			$this->batchToken = null;
@@ -36,10 +26,7 @@ class UnifiedSearchLib
 		}
 	}
 
-    /**
-     * @param int $count
-     */
-    function processUpdateQueue($count = 10)
+	function processUpdateQueue($count = 10)
 	{
 		if ($this->batchToken) {
 			return;
@@ -71,19 +58,13 @@ class UnifiedSearchLib
 		}
 	}
 
-    /**
-     * @return array
-     */
-    function getQueueCount()
+	function getQueueCount()
 	{
 		$queuelib = TikiLib::lib('queue');
 		return $queuelib->count(self::INCREMENT_QUEUE);
 	}
 
-    /**
-     * @return bool
-     */
-    function rebuildInProgress()
+	function rebuildInProgress()
 	{
 		$tempName = $this->getIndexLocation() . '-new';
 		$file_exists = file_exists($tempName);
@@ -101,11 +82,7 @@ class UnifiedSearchLib
 		return $file_exists;
 	}
 
-    /**
-     * @param bool $loggit
-     * @return array
-     */
-    function rebuild($loggit = false)
+	function rebuild($loggit = false)
 	{
 		global $prefs;
 		$index_location = $this->getIndexLocation();
@@ -118,13 +95,13 @@ class UnifiedSearchLib
 			die('Unsupported');
 		}
 
+		@ini_set('max_execution_time', 0);
+		@ini_set('memory_limit', -1);
+
 		// Build in -new
 		TikiLib::lib('queue')->clear(self::INCREMENT_QUEUE);
-		$tikilib = TikiLib::lib('tiki');
 		$indexer = $this->buildIndexer($index, $loggit);
-		$stat = $tikilib->allocate_extra('unified_rebuild', function () use ($indexer) {
-			return $indexer->rebuild();
-		});
+		$stat = $indexer->rebuild();
 
 		// Force destruction to clear locks
 		unset($indexer);
@@ -165,11 +142,7 @@ class UnifiedSearchLib
 		return $loc;
 	}
 
-    /**
-     * @param $type
-     * @param $objectId
-     */
-    function invalidateObject($type, $objectId)
+	function invalidateObject($type, $objectId)
 	{
 		TikiLib::lib('queue')->push(
 			self::INCREMENT_QUEUE,
@@ -180,10 +153,7 @@ class UnifiedSearchLib
 		);
 	}
 
-    /**
-     * @return array
-     */
-    public function getSupportedTypes()
+	public function getSupportedTypes()
 	{
 		global $prefs;
 		$types = array();
@@ -232,12 +202,7 @@ class UnifiedSearchLib
 		return $types;
 	}
 
-    /**
-     * @param $index
-     * @param bool $loggit
-     * @return Search_Indexer
-     */
-    private function buildIndexer($index, $loggit = false)
+	private function buildIndexer($index, $loggit = false)
 	{
 		global $prefs;
 		$indexer = new Search_Indexer($index, $loggit);
@@ -250,11 +215,7 @@ class UnifiedSearchLib
 		return $indexer;
 	}
 
-    /**
-     * @param $aggregator
-     * @param string $mode
-     */
-    private function addSources($aggregator, $mode = 'indexing')
+	private function addSources($aggregator, $mode = 'indexing')
 	{
 		global $prefs;
 
@@ -341,10 +302,7 @@ class UnifiedSearchLib
 		}
 	}
 
-    /**
-     * @return Search_Index_Lucene
-     */
-    function getIndex()
+	function getIndex()
 	{
 		global $prefs;
 
@@ -359,11 +317,7 @@ class UnifiedSearchLib
 		}
 	}
 
-    /**
-     * @param string $mode
-     * @return Search_Formatter_DataSource_Declarative
-     */
-    function getDataSource($mode = 'indexing')
+	function getDataSource($mode = 'indexing')
 	{
 		$dataSource = new Search_Formatter_DataSource_Declarative;
 		$this->addSources($dataSource, $mode);
@@ -371,10 +325,7 @@ class UnifiedSearchLib
 		return $dataSource;
 	}
 
-    /**
-     * @return Search_Query_WeightCalculator_Field
-     */
-    function getWeightCalculator()
+	function getWeightCalculator()
 	{
 		global $prefs;
 
@@ -393,11 +344,7 @@ class UnifiedSearchLib
 		return new Search_Query_WeightCalculator_Field($weights);
 	}
 
-    /**
-     * @param array $filter
-     * @return Search_Query
-     */
-    function buildQuery(array $filter)
+	function buildQuery(array $filter)
 	{
 		$categlib = TikiLib::lib('categ');
 
@@ -472,11 +419,7 @@ class UnifiedSearchLib
 		return $query;
 	}
 
-    /**
-     * @param $path
-     * @return int
-     */
-    private function destroyDirectory($path)
+	private function destroyDirectory($path)
 	{
 		if (!$path or !is_dir($path)) return 0;
 

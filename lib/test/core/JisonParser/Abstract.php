@@ -7,7 +7,7 @@
 
 class JisonParser_Abstract extends TikiTestCase
 {
-	static $verbose = false;
+	public $verbose = false;
 	public $called;
 	public $parser;
 	public $syntaxSets = array();
@@ -38,14 +38,11 @@ class JisonParser_Abstract extends TikiTestCase
 
 	public function createFakePage()
 	{
-		global $tikilib, $wikilib;
+		global $wikilib;
 		$_SERVER["SERVER_NAME"] = 'localhost';
 		$_SERVER["REQUEST_URI"] = 'localhost';
-		$tikilib->query(
-			'INSERT INTO tiki_pages (pageName, hits, comment, version, version_minor, user, ip, creator, created, wysiwyg)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-			array('FakePage', 0, 'Fake Tiki Page', 1, 0, 'admin', '0.0.0.0', 'admin', time(), 'n')
-		);
+		$wikilib->create_page("FakePage",0,"",0,"Fake Tiki Page");
+		$wikilib->create_page("[FakePage]",0,"",0,"Fake Tiki Page");
 	}
 
 	public function testOutput()
@@ -59,23 +56,23 @@ class JisonParser_Abstract extends TikiTestCase
 				$syntax = $customHandled['syntax'];
 			}
 
-			if (self::$verbose == true) {
+			if ($this->verbose == true) {
 				echo $syntaxName . ":\n";
 				echo '"' . $parsed . '"' . "\n\n\n\n";
 			}
 
 			$this->called++;
 
-			$this->assertEquals($syntax[1], $parsed, $syntaxName, $syntax[0]);
+			$this->assertEquals($syntax[1], $parsed, $syntaxName, $syntax[0], $this->parser->list);
 		}
 	}
 
 	static function assertEquals($expected, $actual, $syntaxName, $syntax)
 	{
 		if ($expected != $actual) {
-			echo "\n\n\n\nFailure on: $syntaxName\n";
-			echo "Syntax: '$syntax'\n";
-			echo "Output: '$actual'\n";
+			echo "Failure on: " . $syntaxName . "\n";
+			echo 'Syntax: "' . $syntax . '"' . "\n";
+			echo 'Output: ' . $actual . "\n";
 		}
 
 		parent::assertEquals($expected, $actual);
@@ -84,7 +81,6 @@ class JisonParser_Abstract extends TikiTestCase
 	public function tryRemoveIdsFromHtmlList(&$parsed)
 	{
 		$parsed = preg_replace('/id="id[0-9]+"/', 'id=""', $parsed);
-		$parsed = preg_replace("/id='id[0-9]+'/", "id=''", $parsed);
 	}
 
 	public function tryRemoveFingerprintId($type, &$parsed)
