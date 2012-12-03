@@ -1,28 +1,34 @@
+#$Id$
+# Provides a listing of the current external libraries
+# versions listed here MAY be newer than those used in your Tiki Release
+#
 # More info on https://dev.tiki.org/External+Libraries
+#
+# when editing this page, please use SPACES instead of TABS to preserve formatting
 
-Package          | @version     | uploaded       | @revision
------------------+--------------+----------------+-------------
-adodb            | 5.12         | 09/08/2011     | 35914
-ckeditor         | 3.6.1        | 2 July 2011    | 35160
-codemirror       | 2.11         | 22/07/2011     | 35569
-ezcomponents     | 1.8          | 09/05/2010     | 27007
-fckeditor        | 2.6.6        | 27/06/2010     | 27778
-fullcalendar     | 1.5.1        | 17 August 2011 | 36237
-html5shim        | 1.6.2        | 10/05/2011     | 34346
-htmlpurifier     | 4.3.0        | 10/05/2011     | 34345
-jquery           | 1.6.1        | 12 August 2011 | 36068
-jscalendar       | 1.4          | 03/03/2011     | 33205
-mobileESP        |              | 7 June 2011    | 34807
-pclzip           | 2.8          | 11/08/2009     | 20759
-phpcas           | 1.1.1        | 26/05/2010     | 27326
-phplayers        | 1.5.2.1      | 24/09/2010     | 29564
-phpseclib	 |              | 06/03/2012  	 | 40049
-rangy	         | 1.2.2        | 06/03/2012	 | 40052
-simile_timeline  |              | 16/09/2011     | 37297
-slideshow        |              | 22/01/2010     | 24598
-smarty           | 2.6.27       | 25/09/2012     | 43136
-(smarty3)        | 3.0.9        | 19/09/2011     | 37405
-smarty31         | 3.1.12       | 25/09/2012     | 43135
-textwiki         |              | 24/06/2011     | 35033
-vfsStream        | 0.10.0       | 10/08/2011     | 35942
-xajax            | 0.5          | 07/02/2009     | 16597
+Package          | @version     | Released     | uploaded       | @revision
+-----------------+--------------+--------------+----------------+-------------
+adodb            | 5.17         | 17/05/2012   | 21/06/2012     | 42014
+ckeditor         | 3.6.1        |              | 30/11/2011     | 35160
+codemirror       | 2.11         |              | 22/07/2011     | 35569
+ezcomponents     | 1.8          |              | 09/05/2010     | 27007
+fckeditor        | 2.6.6        |              | 27/06/2010     | 27778
+fullcalendar     | 1.5.1        |              | 17 August 2011 | 36237
+html5shim        | 1.6.2        |              | 10/05/2011     | 34346
+htmlpurifier     | 4.3.0        |              | 10/05/2011     | 34345
+jquery           | 1.6.1        |              | 12 August 2011 | 36068
+jscalendar       | 1.4          |              | 03/03/2011     | 33205
+mobileESP        |              |              | 7 June 2011    | 34807
+pclzip           | 2.8          |              | 11/08/2009     | 20759
+phpcas           | 1.1.1        |              | 26/05/2010     | 27326
+phplayers        | 1.5.2.1      |              | 24/09/2010     | 29564
+phpseclib        |              |              | 06/03/2012     | 40049
+rangy            | 1.2.2        |              | 06/03/2012     | 40052
+simile_timeline  |              |              | 16/09/2011     | 37297
+slideshow        |              |              | 22/01/2010     | 24598
+smarty           | 2.6.27       | 2012-09-24   | 26/09/2012     | 43136
+(smarty3)        | 3.0.9        | 2011-07-26   | 19/09/2011     | 37405
+smarty31         | 3.1-DEV      | 2012-09-11   | 26/09/2012     | 43135
+textwiki         |              |              | 24/06/2011     | 35033
+vfsStream        | 0.10.0       |              | 10/08/2011     | 35942
+xajax            | 0.5          |              | 07/02/2009     | 16597
