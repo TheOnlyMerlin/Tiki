@@ -13,12 +13,6 @@ class JisonParser_Wiki_List
 	public $levelLast = 0;
 	public $id;
 	public $key;
-	public $parser;
-
-	function __construct(&$parser)
-	{
-		$this->parser = &$parser;
-	}
 
 	private function id()
 	{
@@ -111,63 +105,39 @@ class JisonParser_Wiki_List
 		$html = '';
 
 		for ($i = 0; $i < $length; $i++) {
-			$html .= $this->writeParentStartTag(isset($stack[$i]['type']) ? $stack[$i]['type'] : '*', $lastType, $lastParentTagType, $id);
-
 			if (isset($stack[$i]) && empty($stack[$i]['content']) == false) {
 
-				switch($stack[$i]['type']) {
-					case '*-':
-						$listType = "ToggleUnordered";
-						break;
-					case '#-':
-						$listType = "ToggleOrdered";
-						break;
-					case '+':
-						$listType = "Break";
-						break;
-					case '*':
-						$listType = "Unordered";
-						break;
-					case '#':
-						$listType = "Ordered";
-						break;
-					case ';':
-						$listType = "Definition";
-						break;
-				}
+				$html .= $this->writeParentStartTag($stack[$i]['type'], $lastType, $lastParentTagType, $id);
 
 				switch($stack[$i]['type']) {
-					case '*-':
-					case '#-':
+					case '-':
 						$headerlib->add_css("#" . $id . "{display: none;}");
 					case '+':
 					case '*':
-					case '#':
-						$html .= $this->parser->createWikiTag(
-							"list" . $listType,
-							"li",
-							$stack[$i]['content'] . $this->toHtmlChildren($stack[$i]['children']),
-							array("class" => "tikiListItem")
-						);
+					$html .= '<li class="tikiListItem">' . $stack[$i]['content'];
+						if (!empty($stack[$i]['children'])) {
+							$html .= $this->toHtmlChildren($stack[$i]['children']);
+						}
 						$html .= $this->advanceUntilNotType($i, $stack);
+						$html .= '</li>' . "\n";
+						break;
+					case '#':
+						$html .= '<li class="tikiListItem">' . $stack[$i]['content'];
+						if (!empty($stack[$i]['children'])) {
+							$html .= $this->toHtmlChildren($stack[$i]['children']);
+						}
+						$html .= $this->advanceUntilNotType($i, $stack);
+						$html .= '</li>' . "\n";
 						break;
 					case ';':
 						$parts = explode(':', $stack[$i]['content']);
-						$html .= $this->parser->createWikiTag("list" . $listType, "dt", $parts[0]);
+						$html .= '<dt>'  . $parts[0] . '</dt>';
 						if (isset($parts[1])) {
-							$html .= $this->parser->createWikiTag("list" . $listType . "Description", "dd", $parts[1]);
+							$html .= '<dd>'  . $parts[1] . '</dd>';
 						}
+						$html .= "\n";
 						break;
 				}
-			} else if (!empty($stack[$i]['children'])) { //In this scenario, we have a jump in list types
-				$html .= $this->parser->createWikiTag(
-					"listEmpty",
-					"li",
-					$this->toHtmlChildren($stack[$i]['children']),
-					array(
-						'style' => 'list-style-type:none;'
-					)
-				);
 			}
 		}
 
@@ -191,38 +161,12 @@ class JisonParser_Wiki_List
 
 			$id = $this->id();
 
-			if ($listType == "*-" || $listType == "#-") {
-				$preTag .= $this->parser->createWikiHelper("listBreak", "br", "", array(), "inline");
-				$preTag .= $this->parser->createWikiHelper(
-					"listButton",
-					"a",
-					"[+]",
-					array(
-						"id" => "flipper" . $id,
-						"href" => "javascript:flipWithSign(\"" . $id . "\");",
-						"class" => "link"
-					)
-				);
+			if ($listType == "-") {
+				$preTag = '<br />' . "\n" . '<a id="flipper' . $id . '" href="javascript:flipWithSign(\'' . $id . '\');" class="link">[+]</a>';
 			}
 
 			$lastListType = $listType;
-
-			if ($listType == ";") {
-				$tagListType = "listDefinitionParent";
-			} else {
-				$tagListType = "listParent";
-			}
-
-			$result .= $preTag . $this->parser->createWikiTag(
-				$tagListType,
-				$parentTagType,
-				"",
-				array(
-					"class" => "tikiList",
-					"id" => $id
-				),
-				"open"
-			);
+			$result .= $preTag . '<' . $parentTagType . ' class="tikiList" id="' . $id . '">';
 		}
 
 		return $result;
@@ -246,22 +190,17 @@ class JisonParser_Wiki_List
 
 	private function writeParentEndTag($parentTagType)
 	{
-		if (!empty($parentTagType)) {
-			return $this->parser->createWikiTag("list", $parentTagType, "", array(), "close");
-		} else {
-			return "";
-		}
+		return '</' . $parentTagType . '>';
 	}
 
 	private function parentTagType($listType = '')
 	{
 		switch ($listType) {
-			case '*-':
+			case '-':
 			case '+':
 			case '*':
 				return 'ul';
 				break;
-			case '#-':
 			case '#':
 				return 'ol';
 				break;
@@ -271,21 +210,14 @@ class JisonParser_Wiki_List
 		}
 	}
 
-	private function advanceUntilNotType(&$i, &$stack, $type = "+")
+	private function advanceUntilNotType(&$i, &$stack, $type = "+", $wrapping = array("<br />", "\n"))
 	{
 		$result = '';
 		$i++;
 		for ($length = count($stack); $i <= $length; $i++) {
 			if (!isset($stack[$i]['type'])) break;
 			if ($stack[$i]['type'] == $type) {
-				$result .= $this->parser->createWikiTag(
-					"listBreak",
-					"li",
-					$stack[$i]['content'],
-					array(
-						'style' => 'list-style-type:none;'
-					)
-				);
+				$result .= $wrapping[0] . $stack[$i]['content'] . $wrapping[1];
 			} else {
 				$i--;
 				break;

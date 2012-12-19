@@ -9,9 +9,6 @@
 		http://www.spiration.co.uk/post/1333/PHP 5 sessions in mysql database with PDO db objects
 */
 
-/**
- *
- */
 class Session
 {
 	public $db;
@@ -21,29 +18,17 @@ class Session
 		session_write_close();
 	}
 
-    /**
-     * @param $path
-     * @param $name
-     * @return bool
-     */
-    public function open( $path, $name )
+	public function open( $path, $name )
 	{
 		return true;
 	}
 
-    /**
-     * @return bool
-     */
-    public function close()
+	public function close()
 	{
 		return true;
 	}
 
-    /**
-     * @param $sesskey
-     * @return mixed
-     */
-    public function read($sesskey)
+	public function read($sesskey)
 	{
 		global $prefs;
 
@@ -59,11 +44,7 @@ class Session
 		return TikiDb::get()->getOne($qry, $bindvars);
 	}
 
-    /**
-     * @param $sesskey
-     * @param $data
-     */
-    public function write($sesskey, $data)
+	public function write($sesskey, $data)
 	{
 		global $prefs;
 
@@ -73,22 +54,14 @@ class Session
 		TikiDb::get()->query('insert into sessions (sesskey, data, expiry) values( ?, ?, ? )', array( $sesskey, $data, $expiry ));
 	}
 
-    /**
-     * @param $sesskey
-     * @return int
-     */
-    public function destroy($sesskey)
+	public function destroy($sesskey)
 	{
 		$qry = 'delete from sessions where sesskey = ?';
 		TikiDb::get()->query($qry, array( $sesskey ));
 		return 1;
 	}
 
-    /**
-     * @param $maxlifetime
-     * @return int
-     */
-    public function gc($maxlifetime)
+	public function gc($maxlifetime)
 	{
 		global $prefs;
 

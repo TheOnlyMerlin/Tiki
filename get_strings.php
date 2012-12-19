@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -113,10 +110,6 @@ $getStrings->run();
 
 echo formatOutput("\nTotal time spent: " . $timer->stop() . " seconds\n");
 
-/**
- * @param $string
- * @return string
- */
 function formatOutput($string)
 {
 	if (php_sapi_name() == 'cli') {

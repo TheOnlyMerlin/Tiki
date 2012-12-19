@@ -658,11 +658,6 @@ $smarty->display('tiki.tpl');
 // debug: print all objects
 
 
-/**
- * @param $pageInfo
- * @param $targetLang
- * @return string
- */
 function generate_machine_translated_markup($pageInfo, $targetLang)
 {
 	make_sure_machine_translation_is_enabled();
@@ -671,12 +666,6 @@ function generate_machine_translated_markup($pageInfo, $targetLang)
 	return translate_text($pageContent, $sourceLang, $targetLang);
 }
 
-/**
- * @param $pageContent
- * @param $pageInfo
- * @param $targetLang
- * @return string
- */
 function generate_machine_translated_content($pageContent, $pageInfo, $targetLang)
 {
 	make_sure_machine_translation_is_enabled();
@@ -685,25 +674,20 @@ function generate_machine_translated_content($pageContent, $pageInfo, $targetLan
 }
 
 
-/**
- * @param $text
- * @param $sourceLang
- * @param $targetLang
- * @internal param bool $html
- * @return string
- */
-function translate_text($text, $sourceLang, $targetLang)
+function translate_text($text, $sourceLang, $targetLang, $html = true)
 {
-	$provider = new Multilingual_MachineTranslation;
-	$translator = $provider->getHtmlImplementation($sourceLang, $targetLang);
-	$translated = $translator->translateText($text);
-	return $translated;
+	require_once('lib/core/Multilingual/MachineTranslation/GoogleTranslateWrapper.php');
+	$translator = new Multilingual_MachineTranslation_GoogleTranslateWrapper($sourceLang, $targetLang, $html);
+	$translatedText = $translator->translateText($text);
+	return $translatedText;
+
 }
 
 function make_sure_machine_translation_is_enabled()
 {
 	global $access, $_REQUEST, $prefs;
-	if ($prefs['feature_machine_translation'] != 'y' || $prefs['lang_machine_translate_wiki' != 'y']) {
+	if ($prefs['feature_machine_translation'] != 'y') {
+		require_once('lib/tikiaccesslib.php');
 		$error_msg = tra('You have requested that this page be machine translated:') .
 						' <b>' .
 						$_REQUEST['page'] .

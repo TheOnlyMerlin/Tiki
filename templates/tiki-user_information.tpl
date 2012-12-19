@@ -2,9 +2,7 @@
 {capture assign="viewuser"}{$userwatch|escape:"url"}{/capture}
 {title url="tiki-user_information.php?view_user=$viewuser"}{tr}User Information{/tr}{/title}
 
-{if "$userwatch" eq "$user" }
-	{include file='tiki-mytiki_bar.tpl'}
-{/if}
+{include file='tiki-mytiki_bar.tpl'}
 
 {if $prefs.feature_tabs neq 'y' and $user and $prefs.feature_messages eq 'y' and $tiki_p_messages eq 'y' and $allowMsgs eq 'y'}
 <div class="navbar">
@@ -170,16 +168,7 @@
 	
 	{if $prefs.user_tracker_infos and $infoPublic eq "y"}{tab name="{tr}Additional Information{/tr}"}
 	<div class="simplebox">
-		<div class="clearfix">
-			<div class="floatleft">
-				<h2 class="center">{tr}Additional Information{/tr} &ndash; {$userinfo.login|userlink}</h2>
-			</div>
-			<div class="floatright">
-				{if $userinfo.login eq $user}
-					<a class="link" href="tiki-view_tracker_item.php?view=+user&cookietab=2" title="{tr}Change user information{/tr}">{icon _id='wrench' align="right" alt="{tr}Change user information{/tr}"}</a>
-				{/if}
-			</div>
-		</div>
+		<h2 class="center">{tr}Additional Information{/tr} &ndash; {$userinfo.login|userlink}</h2>
 			{cycle values="even,odd" print=false}
 			{foreach item=itemField from=$userItem.field_values}
 				{if $itemField.value ne '' or !empty($itemField.categs) or !empty($itemField.links)}
@@ -195,7 +184,7 @@
 	{if $prefs.feature_display_my_to_others eq 'y' and $infoPublic eq "y"}{tab name="{tr}User Contribution{/tr}"}
 	<div>
 		<div class="simplebox">
-		{if ($user_pages|@count > 0) or ($user_galleries|@count > 0) or ($user_blogs|@count > 0) or ($user_blog_posts|@count > 0) or ($user_articles|@count > 0) or ($user_forum_comments|@count > 0) or ($user_forum_topics|@count > 0) or ($user_items|@count > 0)}
+		{if ($user_pages|@count > 0) or ($user_galleries|@count > 0) or ($user_blogs|@count > 0) or ($user_articles|@count > 0) or ($user_forum_comments|@count > 0) or ($user_forum_topics|@count > 0) or ($user_items|@count > 0)}
 			<h2 class="center">{tr}User{/tr} {$userinfo.login|userlink}</h2>
 			<p><em>{tr}has contributed to the following content{/tr}&hellip;</em></p>
 		{else}
@@ -240,17 +229,6 @@
 				</div>
 				{/section}
 			</div>
-			{/if}
-			{if $user_blog_posts|@count > 0}
-			<h3>{tr}Blogs Posts{/tr}</h3>
-			<div class="normal">
-			{section name=ix loop=$user_blog_posts}
-			<div>
-				<div class="{cycle}">		
-				<a class="link" title="{tr}View{/tr}" href="{$user_blog_posts[ix].postId|sefurl:blogpost}">{$user_blog_posts[ix].title|escape}</a>
-				</div>
-			</div>
-			{/section}
 			{/if}
 			{if $user_articles|@count > 0}
 			<h3>{tr}Articles{/tr}</h3>

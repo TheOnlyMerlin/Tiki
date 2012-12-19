@@ -13,11 +13,6 @@
  */
 class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
 {
-	const CASCADE_NONE = 0;
-	const CASCADE_CATEG = 1;
-	const CASCADE_STATUS = 2;
-	const CASCADE_DELETE = 4;
-
 	public static function getTypes()
 	{
 		return array(
@@ -125,21 +120,6 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 						'description' => tr('Index one or multiple fields from the master tracker along with the child, separated by |'),
 						'separator' => '|',
 						'filter' => 'int',
-					),
-					'cascade' => array(
-						'name' => tr('Cascade actions'),
-						'description' => tr("Elements to cascade when the master is updated or deleted. Categories may conflict if multiple item links are used to different items attempting to manage the same categories. Same for status."),
-						'filter' => 'int',
-						'options' => array(
-							self::CASCADE_NONE => tr('No'),
-							self::CASCADE_CATEG => tr('Categories'),
-							self::CASCADE_STATUS => tr('Status'),
-							self::CASCADE_DELETE => tr('Delete'),
-							(self::CASCADE_CATEG | self::CASCADE_STATUS) => tr('Categories and status'),
-							(self::CASCADE_CATEG | self::CASCADE_DELETE) => tr('Categories and delete'),
-							(self::CASCADE_DELETE | self::CASCADE_STATUS) => tr('Delete and status'),
-							(self::CASCADE_CATEG | self::CASCADE_STATUS | self::CASCADE_DELETE) => tr('All'),
-						),
 					),
 				),
 			),
@@ -254,16 +234,7 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 			$context['preselection'] = '';
 		}
 
-		$context['filter'] = $this->buildFilter();
-
 		return $this->renderTemplate('trackerinput/itemlink.tpl', $context);
-	}
-
-	private function buildFilter()
-	{
-		return array(
-			'tracker_id' => $this->getOption('trackerId'),
-		);
 	}
 
 	function renderOutput($context = array())
@@ -312,8 +283,6 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 			} else {
 				return smarty_function_object_link(array('type' => 'trackeritem',	'id' => $item,	'title' => $label), $smarty);
 			}
-		} elseif ($context['list_mode'] == 'csv' && $item) {
-			return $item;
 		} elseif ($label) {
 			return $label;
 		}
@@ -321,8 +290,16 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 
 	function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
 	{
-		$item = $this->getValue();
-		$label = TikiLib::lib('object')->get_title('trackeritem', $item);
+		$data = $this->getLinkData(array(), 0);
+		$item = $data['value'];
+		$dlist = $data['listdisplay'];
+		$list = $data['list'];
+
+		if (!empty($dlist)) {
+			$label = isset($dlist[$item]) ? $dlist[$item] : '';
+		} else {
+			$label = isset($list[$item]) ? $list[$item] : '';
+		}
 
 		$out = array(
 			$baseKey => $typeFactory->sortable($item),
@@ -560,30 +537,6 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 		$intersect = array_intersect($usedFields, $modifiedFields);
 
 		return count($intersect) > 0;
-	}
-
-	function cascadeCategories($trackerId)
-	{
-		return $this->cascade($trackerId, self::CASCADE_CATEG);
-	}
-
-	function cascadeStatus($trackerId)
-	{
-		return $this->cascade($trackerId, self::CASCADE_STATUS);
-	}
-
-	function cascadeDelete($trackerId)
-	{
-		return $this->cascade($trackerId, self::CASCADE_DELETE);
-	}
-
-	private function cascade($trackerId, $flag)
-	{
-		if ($this->getOption('trackerId') != $trackerId) {
-			return false;
-		}
-
-		return ($this->getOption('cascade') & $flag) > 0;
 	}
 
 	function watchCompare($old, $new)

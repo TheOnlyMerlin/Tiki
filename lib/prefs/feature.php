@@ -92,8 +92,8 @@ function prefs_feature_list($partial = false)
 			'tags' => array('experimental'),
 		),
 		'feature_machine_translation' => array(
-			'name' => tra('Machine Translation'),
-			'description' => tra('Uses machine translation to translate the content of the site to other languages. Note that this feature relies on external services thay may not be free. Google Translate is a paid service.'),
+			'name' => tra('Machine Translation (by Google Translate)'),
+			'description' => tra('Uses Google Translate to translate the content of wiki pages to other languages.'),
 			'help' => 'Machine+Translation',
 			'warning' => tra('Experimental'),
 			'tags' => array('experimental'),
@@ -1204,15 +1204,13 @@ function prefs_feature_list($partial = false)
 			'name' => tra('Display article title in the sefurl'),
 			'type' => 'flag',
 			'perspective' => false,
-			'dependencies' => array('feature_sefurl'),				
-			'default' =>'y',
+			'default' =>'n',
 		),	
 		'feature_sefurl_title_blog' => array(
 			'name' => tra('Display blog title in the SEFURL'),
 			'type' => 'flag',
 			'perspective' => false,
-			'dependencies' => array('feature_sefurl'),			
-			'default' =>'y',
+			'default' =>'n',
 		),
 		'feature_sefurl_tracker_prefixalias' => array(
 			'name' => tra('Rewrite tiki-view_tracker.php?itemId=yyy to Prefixyyy page'),
