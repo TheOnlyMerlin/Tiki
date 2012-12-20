@@ -1,4 +1,4 @@
-{title help='Inter-User Messages' url='messu-broadcast.php' admpage="messages"}{tr}Broadcast message{/tr}{/title}
+{title help='Inter-User Messages' url='messu-broadcast.php'}{tr}Broadcast message{/tr}{/title}
 
 {include file='tiki-mytiki_bar.tpl'}
 {include file='messu-nav.tpl'}
@@ -35,7 +35,7 @@
 		<table class="formcolor" >
 			<tr>
 				<td>
-					<label for="broadcast-group">{tr}Group:{/tr}</label>
+					<label for="broadcast-group">{tr}Group{/tr}:</label>
 				</td>
 				<td>
 					<select name="groupbr" id="broadcast-group">
@@ -43,15 +43,17 @@
 						{if $tiki_p_broadcast_all eq 'y'}
 							<option value="all"{if $groupbr eq 'All'} selected="selected"{/if}>{tr}All users{/tr}</option>
 						{/if}
-						{foreach item=groupName from=$groups}
-							<option value="{$groupName|escape}"{if $groupbr eq $groupName} selected="selected"{/if}>{$groupName|escape}</option>
-						{/foreach}
+						{section name=ix loop=$groups}
+							{if $groups[ix] ne "Anonymous"}
+								<option value="{$groups[ix]|escape}"{if $groupbr eq $groups[ix]} selected="selected"{/if}>{$groups[ix]}</option>
+							{/if}
+						{/section}
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<label for="broadcast-priority">{tr}Priority:{/tr}</label>
+					<label for="broadcast-priority">{tr}Priority{/tr}:</label>
 				</td>
 				<td>
 					<select name="priority" id="broadcast-priority">
@@ -66,7 +68,7 @@
 			</tr>
 			<tr>
 				<td>
-					<label for="broadcast-subject">{tr}Subject:{/tr}</label>
+					<label for="broadcast-subject">{tr}Subject{/tr}:</label>
 				</td>
 				<td>
 					<input type="text" name="subject" id="broadcast-subject" value="{$subject|escape}" size="80" maxlength="255"/>

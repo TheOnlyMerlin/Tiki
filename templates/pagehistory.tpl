@@ -1,16 +1,16 @@
-{if  isset($smarty.request.diff_style) and $smarty.request.diff_style}
-	{if !isset($translation_mode) or $translation_mode ne 'y'}
+{if $smarty.request.diff_style}
+	{if $translation_mode ne 'y'}
 		<h2>{tr}Comparing version {$old.version} with version {$new.version}{/tr}</h2>		
 	{/if}
 	<table class="normal diff">
-	{if isset($translation_mode) and $translation_mode eq 'n'}
+	{if $translation_mode eq 'n'}
 		<tr>
 			<th colspan="2"><b>{tr}Version:{/tr} <a href="tiki-pagehistory.php?page={$page|escape:"url"}&amp;preview={$old.version}" title="{tr}View{/tr}">{$old.version}</a>{if $old.version == $info.version} ({tr}Current{/tr}){/if}</b></th>
 			<th colspan="2"><b>{tr}Version:{/tr} <a href="tiki-pagehistory.php?page={$page|escape:"url"}&amp;preview={$new.version}" title="{tr}View{/tr}">{$new.version}</a>{if $new.version == $info.version} ({tr}Current{/tr}){/if}</b></th>
 		</tr>
 		<tr>
-			<td colspan="2">{$old.user|userlink} - {$old.lastModif|tiki_short_datetime}</td>
-			<td colspan="2">{$new.user|userlink} - {$new.lastModif|tiki_short_datetime}</td>
+			<td colspan="2">{if $tiki_p_wiki_view_author ne 'n'}{$old.user|userlink} - {/if}{$old.lastModif|tiki_short_datetime}</td>
+			<td colspan="2">{if $tiki_p_wiki_view_author ne 'n'}{$new.user|userlink} - {/if}{$new.lastModif|tiki_short_datetime}</td>
 		</tr>
 		{if $old.comment || $new.comment}
 			<tr>

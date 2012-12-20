@@ -1,19 +1,30 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_survey_info()
-{
+/*
+ *
+ * SURVEY plugin. Display a survey.
+ *
+ * Syntax:
+ *
+ * {SURVEY(id=xxx, lang=xxx)}{SURVEY}
+ *
+ */
+function wikiplugin_survey_help() {
+	return tra("survey").":~np~{SURVEY(id=xxx, lang=xxx)}{SURVEY}~/np~";
+}
+
+function wikiplugin_survey_info() {
 	return array(
 		'name' => tra('Survey'),
-		'documentation' => 'PluginSurvey',
-		'description' => tra('Display a survey'),
+		'documentation' => tra('PluginSurvey'),		
+		'description' => tra('Displays a survey'),
 		'prefs' => array( 'feature_surveys', 'wikiplugin_survey' ),
 		'body' => '',
-		'icon' => 'img/icons/green_question.png',
 		'params' => array(
 			'id' => array(
 				'required' => true,
@@ -39,8 +50,7 @@ function wikiplugin_survey_info()
 	);
 }
 
-function wikiplugin_survey($data, $params)
-{
+function wikiplugin_survey($data, $params) {
 	global $tiki_p_take_survey;
 	if ( $tiki_p_take_survey != 'y' ) return '';
 

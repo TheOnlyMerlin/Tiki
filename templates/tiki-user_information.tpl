@@ -1,10 +1,8 @@
 {* $Id$ *}
-{capture assign="viewuser"}{$userwatch|escape:"url"}{/capture}
-{title url="tiki-user_information.php?view_user=$viewuser"}{tr}User Information{/tr}{/title}
 
-{if "$userwatch" eq "$user" }
-	{include file='tiki-mytiki_bar.tpl'}
-{/if}
+{title url="tiki-user_information.php?view_user=$userwatch"}{tr}User Information{/tr}{/title}
+
+{include file='tiki-mytiki_bar.tpl'}
 
 {if $prefs.feature_tabs neq 'y' and $user and $prefs.feature_messages eq 'y' and $tiki_p_messages eq 'y' and $allowMsgs eq 'y'}
 <div class="navbar">
@@ -31,13 +29,12 @@
 							</div>
 						</div>
 			
-						{if isset($user_picture_id)}
+						{if $user_picture_id}
 						<div class="userpicture">
 							{wikiplugin _name="img" fileId="$user_picture_id"}{/wikiplugin}
 						</div>
 						{/if}
 						
-			{cycle values="even,odd" print=false}
 						<div class="simplebox">
 							<div>
 			{if $avatar}
@@ -47,62 +44,63 @@
 								</div>
 			{/if}
 								
-			{if $realName}
+			{cycle values="even,odd" print=false}
+			{if $realName }
 								<div class="clearfix {cycle}">
-									<div class="floatleft">{tr}Real Name:{/tr}</div>
-									<div class="floatright">{$realName|escape}</div>
+									<div class="floatleft">{tr}Real Name{/tr}:</div>
+									<div class="floatright">{$realName}</div>
 								</div>
 			{/if}
 			{if $prefs.feature_community_gender eq 'y' and $gender neq 'Hidden' and $gender}
 								<div class="clearfix {cycle}">
-									<div class="floatleft">{tr}Gender:{/tr}</div>
+									<div class="floatleft">{tr}Gender{/tr}:</div>
 									<div class="floatright">{tr}{$gender}{/tr}</div>
 								</div>
 			{/if}
 			{if $email_isPublic neq 'n' and $userinfo.email neq ''}
 								<div class="clearfix {cycle}">
-									<div class="floatleft">{tr}Email:{/tr}</div>
-									<div class="floatright">{mailto address=$userinfo.email text=$scrambledEmail encode="javascript"}</div>
+									<div class="floatleft">{tr}Email{/tr}:</div>
+									<div class="floatright">{mailto address=$userinfo.email encode="javascript"}</div>
 								</div>
 			{elseif $email_isPublic eq 'n' and $userinfo.email neq '' and $tiki_p_admin eq 'y'}
 								<div class="clearfix {cycle}">
-									<div class="floatleft">{tr}Email:{/tr}</div>
+									<div class="floatleft">{tr}Email{/tr}:</div>
 									<div class="floatright">{mailto address=$userinfo.email encode="javascript"} <i>{tr}(non public){/tr}</i></div>
 								</div>
 			{/if}
 			{if !empty($country) and $country != 'Other'}
 								<div class="clearfix {cycle}">
-									<div class="floatleft">{tr}Country:{/tr}</div>
+									<div class="floatleft">{tr}Country{/tr}:</div>
 									<div class="floatright">{$userinfo.login|countryflag} {tr}{$country|stringfix}{/tr}</div>
 								</div>
 			{/if}
 			{if $prefs.change_theme ne 'n'}
 								<div class="clearfix {cycle}">
-									<div class="floatleft">{tr}Theme:{/tr}</div>
+									<div class="floatleft">{tr}Theme{/tr}:</div>
 									<div class="floatright">{$user_style}</div>
 								</div>
 			{/if}
 			{if $prefs.change_language eq 'y'}
 								<div class="clearfix {cycle}">
-									<div class="floatleft">{tr}Language:{/tr}</div>
+									<div class="floatleft">{tr}Language{/tr}:</div>
 									<div class="floatright">{$user_language}</div>
 								</div>
 			{/if}
 			{if $homePage}
 								<div class="clearfix {cycle}">
-									<div class="floatleft">{tr}Homepage:{/tr}</div>
-									<div class="floatright"><a href="{$homePage|escape}" class="link" title="{tr}User's homepage{/tr}">{$homePage|escape}</a></div>
+									<div class="floatleft">{tr}Homepage{/tr}:</div>
+									<div class="floatright">{if $homePage ne ""}<a href="{$homePage}" class="link" title="{tr}Users HomePage{/tr}">{$homePage}</a>{/if}</div>
 								</div>
 			{/if}
 			{if $prefs.feature_score eq 'y'}
 								<div class="clearfix {cycle}">
-									<div class="floatleft">{tr}Score:{/tr}</div>
+									<div class="floatleft">{tr}Score{/tr}:</div>
 									<div class="floatright">{$userinfo.score|star}{$userinfo.score}</div>
 								</div>
 			{/if}
 			{if $prefs.feature_wiki eq 'y' && $prefs.feature_wiki_userpage eq 'y' && ($userPage_exists or $user == $userinfo.login)}
 								<div class="clearfix {cycle}">
-									<div class="floatleft">{tr}Personal Wiki Page:{/tr}</div>
+									<div class="floatleft">{tr}Personal Wiki Page{/tr}:</div>
 									<div class="floatright">
 				{if $userPage_exists}
 										<a class="link" href="tiki-index.php?page={$prefs.feature_wiki_userpage_prefix|escape:'url'}{$userinfo.login|escape:'url'}">{$prefs.feature_wiki_userpage_prefix}{$userinfo.login}</a>
@@ -114,7 +112,7 @@
 			{/if}
 			
 								<div class="clearfix {cycle}">
-									<div class="floatleft">{tr}Last login:{/tr}</div>
+									<div class="floatleft">{tr}Last login{/tr}:</div>
 									<div class="floatright">{$userinfo.lastLogin|tiki_short_datetime}</div>
 								</div>
 			
@@ -123,7 +121,7 @@
 				{cycle values="even,odd" print=false}
 				{if $customfields[ir].show}
 								<div class="clearfix {cycle}">
-									<div class="floatleft">{$customfields[ir].label}:</div>
+									<div class="floatleft">{tr}{$customfields[ir].label}{/tr}:</div>
 									<div class="floatright">{$customfields[ir].value}</div>
 								</div>
 				{/if}
@@ -170,22 +168,13 @@
 	
 	{if $prefs.user_tracker_infos and $infoPublic eq "y"}{tab name="{tr}Additional Information{/tr}"}
 	<div class="simplebox">
-		<div class="clearfix">
-			<div class="floatleft">
-				<h2 class="center">{tr}Additional Information{/tr} &ndash; {$userinfo.login|userlink}</h2>
-			</div>
-			<div class="floatright">
-				{if $userinfo.login eq $user}
-					<a class="link" href="tiki-view_tracker_item.php?view=+user&cookietab=2" title="{tr}Change user information{/tr}">{icon _id='wrench' align="right" alt="{tr}Change user information{/tr}"}</a>
-				{/if}
-			</div>
-		</div>
+		<h2 class="center">{tr}Additional Information{/tr} &ndash; {$userinfo.login|userlink}</h2>
 			{cycle values="even,odd" print=false}
 			{foreach item=itemField from=$userItem.field_values}
 				{if $itemField.value ne '' or !empty($itemField.categs) or !empty($itemField.links)}
 		<div class="clearfix {cycle}">
-			<div class="floatleft" style="width: 25%">{$itemField.name}:</div>
-			<div class="floatright" style="width: 75%">{trackeroutput field=$itemField item=$itemField}</div>
+			<div class="floatleft" style="width: 25%">{tr}{$itemField.name}{/tr}:</div>
+			<div class="floatright" style="width: 75%">{include file="tracker_item_field_value.tpl" field_value=$itemField item=$itemField}</div>
 		</div>
 				{/if}
 			{/foreach}
@@ -195,7 +184,7 @@
 	{if $prefs.feature_display_my_to_others eq 'y' and $infoPublic eq "y"}{tab name="{tr}User Contribution{/tr}"}
 	<div>
 		<div class="simplebox">
-		{if ($user_pages|@count > 0) or ($user_galleries|@count > 0) or ($user_blogs|@count > 0) or ($user_blog_posts|@count > 0) or ($user_articles|@count > 0) or ($user_forum_comments|@count > 0) or ($user_forum_topics|@count > 0) or ($user_items|@count > 0)}
+		{if ($user_pages|@count > 0) or ($user_galleries|@count > 0) or ($user_blogs|@count > 0) or ($user_articles|@count > 0) or ($user_forum_comments|@count > 0) or ($user_forum_topics|@count > 0) or ($user_items|@count > 0)}
 			<h2 class="center">{tr}User{/tr} {$userinfo.login|userlink}</h2>
 			<p><em>{tr}has contributed to the following content{/tr}&hellip;</em></p>
 		{else}
@@ -210,7 +199,7 @@
 				{section name=ix loop=$user_pages}
 				<div>
 					<div class="{cycle}">
-						<a class="link" title="{tr}View:{/tr} {$user_pages[ix].pageName|escape}" href="tiki-index.php?page={$user_pages[ix].pageName|escape:"url"}">{$user_pages[ix].pageName|truncate:40:"(...)"|escape}</a>
+						<a class="link" title="{tr}View{/tr}: {$user_pages[ix].pageName}" href="tiki-index.php?page={$user_pages[ix].pageName|escape:"url"}">{$user_pages[ix].pageName|truncate:40:"(...)"}</a>
 					</div>
 				</div>
 				{/section}
@@ -240,17 +229,6 @@
 				</div>
 				{/section}
 			</div>
-			{/if}
-			{if $user_blog_posts|@count > 0}
-			<h3>{tr}Blogs Posts{/tr}</h3>
-			<div class="normal">
-			{section name=ix loop=$user_blog_posts}
-			<div>
-				<div class="{cycle}">		
-				<a class="link" title="{tr}View{/tr}" href="{$user_blog_posts[ix].postId|sefurl:blogpost}">{$user_blog_posts[ix].title|escape}</a>
-				</div>
-			</div>
-			{/section}
 			{/if}
 			{if $user_articles|@count > 0}
 			<h3>{tr}Articles{/tr}</h3>
@@ -363,12 +341,12 @@
 						<input type="checkbox" name="replytome" id="replytome" />
 						<label for="replytome">
 							{tr}Reply-to my email{/tr}
-							{help url="User+Information" desc="{tr}Reply-to my email:{/tr}{tr}The user will be able to reply to you directly via email.{/tr}"}
+							{help url="User+Information" desc="{tr}Reply-to my email{/tr}:{tr}The user will be able to reply to you directly via email.{/tr}"}
 						</label>
 						<input type="checkbox" name="bccme" id="bccme" />
 						<label for="bccme">
 							{tr}Send me a copy{/tr}
-							{help url="User+Information" desc="{tr}Send me a copy:{/tr}{tr}You will be sent a copy of this email.{/tr}"}
+							{help url="User+Information" desc="{tr}Send me a copy{/tr}:{tr}You will be sent a copy of this email.{/tr}"}
 						</label>
 						
 					</div>

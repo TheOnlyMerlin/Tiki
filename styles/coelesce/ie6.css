@@ -14,12 +14,12 @@ h1 {
 	font-size: .9em;
 }
 
-.button a {
+span.button a {
 	background: #f5f5f5;
 }
 
-.button a:link,
-.button a:visited {
+span.button a:link,
+span.button a:visited {
 	text-decoration: none;
 	border: 0;
 	padding: 0 4px;
@@ -60,11 +60,11 @@ h1 {
 	height: 1%;
 }
 
-#tikihelp {
+div#tikihelp {
 	position: absolute;
 }
 
-.box {
+div.box {
 	width: 205px !important;
 }
 
@@ -73,16 +73,19 @@ h3.box-title {
 }
 
 .moduleflip {
-	display: block;
 	position: static;
 	float: right;
+}
+
+.moduleflip {
+	display: block;
 }
 
 img.flipmodimage {
 	border: none;
 }
 
-#col2 .cssmenubox .box-data {
+#col2 div.cssmenubox .box-data {
 	padding-right: 0 !important;
 }
 
@@ -93,8 +96,8 @@ img.flipmodimage {
 }
 
 
-.normal, 
-.admin {
+table.normal, 
+table.admin {
 	width: 97%;
 }
 
@@ -103,7 +106,7 @@ td {
 }
 
 th,
-.normal td.heading {
+table.normal td.heading {
 	height: 32px;
 }
 
@@ -120,7 +123,7 @@ th,
 	display: inline;
 }
 
-.articletitle h2 {
+div.articletitle h2 {
 	height: 26px;
 }
 
@@ -132,7 +135,7 @@ th,
 	font-size: 11px;
 }
 
-.galtable {
+table.galtable {
 	width: 97%;
 }
 
@@ -140,8 +143,11 @@ th,
 	padding: 0;
 }
 
-.caltable .odd,
-.caltable .even {
+.calodd {
+	padding: 0;
+}
+
+.caleven {
 	padding: 0;
 }
 

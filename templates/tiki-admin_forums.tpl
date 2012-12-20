@@ -3,10 +3,10 @@
 {title help="Forums" admpage="forums"}{tr}Admin Forums{/tr}{/title}
 
 <div class="navbar">
-	{if $tiki_p_admin_forum eq 'y' && $forumId > 0 or (isset($dup_mode) and $dup_mode eq 'y')}
+	{if $tiki_p_admin_forum eq 'y' && $forumId > 0 or $dup_mode eq 'y'}
 		{button href="?" _text="{tr}Create New Forum{/tr}"}
 	{/if}
-	{if $tiki_p_admin_forum eq 'y' && (!isset($dup_mode) or $dup_mode ne 'y')}
+	{if $tiki_p_admin_forum eq 'y' && $dup_mode ne 'y'}
 		{button href="tiki-admin_forums.php?dup_mode=y" _text="{tr}Duplicate Forum{/tr}"}
 	{/if}
 	{if $forumId > 0}
@@ -33,7 +33,7 @@
 		{assign var=numbercol value=8}
 		<tr>
 			{if $channels}
-				{assign var=numbercol value=$numbercol+1}
+				{assign var=numbercol value=`$numbercol+1`}
 				<th style="text-align:center">
 					{select_all checkbox_names='checked[]'}
 				</th>
@@ -59,21 +59,21 @@
 		{section name=user loop=$channels}
 			<tr class="{cycle}">
 				<td style="text-align:center">
-					<input type="checkbox" name="checked[]" value="{$channels[user].forumId|escape}" {if isset($smarty.request.checked) and $smarty.request.checked and in_array($channels[user].forumId,$smarty.request.checked)}checked="checked"{/if} />
+					<input type="checkbox" name="checked[]" value="{$channels[user].forumId|escape}" {if $smarty.request.checked and in_array($channels[user].forumId,$smarty.request.checked)}checked="checked"{/if} />
 				</td>
 				<td>
 					<a class="link" href="tiki-view_forum.php?forumId={$channels[user].forumId}" title="{tr}View{/tr}">{$channels[user].name|escape}</a>
 				</td>
-				<td class="integer">{$channels[user].threads}</td>
-				<td class="integer">{$channels[user].comments}</td>
-				<td class="integer">{$channels[user].users}</td>
-				<td class="integer">{$channels[user].age}</td>
-				<td class="integer">{$channels[user].posts_per_day|string_format:"%.2f"}</td>
-				<td class="integer">{$channels[user].hits}</td>
-				<td class="action">
+				<td style="text-align:right;">{$channels[user].threads}</td>
+				<td style="text-align:right;">{$channels[user].comments}</td>
+				<td style="text-align:right;">{$channels[user].users}</td>
+				<td style="text-align:right;">{$channels[user].age}</td>
+				<td style="text-align:right;">{$channels[user].posts_per_day|string_format:"%.2f"}</td>
+				<td style="text-align:right;">{$channels[user].hits}</td>
+				<td style="text-align:right;">
 					<a class="link" href="tiki-view_forum.php?forumId={$channels[user].forumId}" title="{tr}View{/tr}">{icon _id='table' alt="{tr}View{/tr}"}</a>
 
-{if isset($tiki_p_forum_lock) and $tiki_p_forum_lock eq 'y'}
+{if $tiki_p_forum_lock eq 'y'}
 	{if $channels[user].is_locked eq 'y'}
 		{self_link _icon='lock_break' _alt="{tr}Unlock{/tr}" lock='n' forumId=$channels[user].forumId}{/self_link}
 	{else}
@@ -81,14 +81,10 @@
 	{/if}
 {/if}
 
-{if ($tiki_p_admin eq 'y')
-	or ((isset($channels[user].individual) and $channels[user].individual eq 'n')
-	and ($tiki_p_admin_forum eq 'y'))
-	or ($channels[user].individual_tiki_p_admin_forum eq 'y')
-}
+{if ($tiki_p_admin eq 'y') or (($channels[user].individual eq 'n') and ($tiki_p_admin_forum eq 'y')) or ($channels[user].individual_tiki_p_admin_forum eq 'y')}
 			{self_link _icon='page_edit' cookietab='2' _anchor='anchor2' forumId=$channels[user].forumId}{tr}Edit{/tr}{/self_link}
 
-						{if isset($channels[user].individual) and $channels[user].individual eq 'y'}
+						{if $channels[user].individual eq 'y'}
 							<a class="link" href="tiki-objectpermissions.php?objectName=Forum+{$channels[user].name|escape}&amp;objectType=forum&amp;permType=forums&amp;objectId={$channels[user].forumId}" title="{tr}Active Perms{/tr}">{icon _id='key_active' alt="{tr}Active Perms{/tr}"}</a>
 						{else}
 							<a class="link" href="tiki-objectpermissions.php?objectName=Forum+{$channels[user].name|escape}&amp;objectType=forum&amp;permType=forums&amp;objectId={$channels[user].forumId}" title="{tr}Perms{/tr}">{icon _id='key' alt="{tr}Perms{/tr}"}</a>
@@ -98,7 +94,9 @@
 				</td>
 			</tr>
 		{sectionelse}
-			{norecords _colspan=$numbercol}
+			<tr>
+				<td class="odd" colspan="{$numbercol}">{tr}No records found.{/tr}</td>
+			</tr>
 		{/section}
 	</table>
 	
@@ -122,7 +120,7 @@
 
 {tab name="{tr}Create/Edit Forums{/tr}"}
 
-{if !isset($dup_mode) or $dup_mode != 'y'}
+{if $dup_mode != 'y'}
 	{if $forumId > 0}
 		<h2>{tr}Edit this Forum:{/tr} {$name|escape}</h2>
 		{include file='object_perms_summary.tpl' objectName=$name objectType='forum' objectId=$forumId permType=$permsType}
@@ -176,14 +174,14 @@
 				<td>{tr}Moderator user:{/tr}</td>
 				<td>
 					<input id="moderator_user" type="text" name="moderator" value="{$moderator|escape}"/>
-					{autocomplete element='#moderator_user' type='username'}
+					{jq}$('#moderator_user').tiki('autocomplete', 'username');{/jq}
 				</td>
 			</tr>
 			<tr>
 				<td>{tr}Moderator group:{/tr}</td>
 				<td>
 					<input id="moderator_group" type="text" name="moderator_group" value="{$moderator_group|escape}"/>
-					{autocomplete element='#moderator_group' type='groupname'}
+					{jq}$('#moderator_group').tiki('autocomplete', 'groupname');{/jq}
 				</td>
 			</tr>
 			<tr>
@@ -325,13 +323,13 @@
 						<tr>
 							<td>{tr}User:{/tr}</td>
 							<td>
-								<input type="text" name="inbound_pop_user" value="{$inbound_pop_user|escape}" autocomplete="off" />
+								<input type="text" name="inbound_pop_user" value="{$inbound_pop_user|escape}" />
 							</td>
 						</tr>
 						<tr>
 							<td>{tr}Password:{/tr}</td>
 							<td>
-								<input type="password" name="inbound_pop_password" value="{$inbound_pop_password|escape}" autocomplete="off" />
+								<input type="password" name="inbound_pop_password" value="{$inbound_pop_password|escape}" />
 							</td>
 						</tr>
 					</table>
@@ -431,21 +429,6 @@
 					</a>
 				</td>
 			</tr>
-			
-			{if $prefs.feature_multilingual eq 'y'}
-				<tr>
-					<td>{tr}Language{/tr}</td>
-					<td>
-						<select name="forumLanguage" id="forumLanguage">
-							<option value="">{tr}Unknown{/tr}</option>
-							{section name=ix loop=$languages}
-								<option value="{$languages[ix].value|escape}"{if $forumLanguage eq $languages[ix].value or (!($data.page_id) and $forumLanguage eq '' and $languages[ix].value eq $prefs.language)} selected="selected"{/if}>{$languages[ix].name}</option>
-							{/section}
-						</select>
-					</td>
-				</tr>
-			{/if}
-			
 			<tr>
 				<td colspan="2">
 

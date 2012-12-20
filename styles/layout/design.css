@@ -1,5 +1,5 @@
 /* $Id$
-	This Tiki Wiki CMS Groupware file contains common design
+	This TikiWiki CMS/Groupware file contains common design
 	properties and, similar to lite.css and layout.css for
 	layout properties, is to be imported by theme stylesheets.
 */
@@ -42,26 +42,6 @@ body.wikitext {
 	background: transparent url(../../img/loading-light.gif) no-repeat 50% 50%;
 }
 
-.editable-inline {
-	background: transparent url(../../img/icons/database_lightning.png) no-repeat top right;
-}
-
-.editable-inline.loaded {
-	background: transparent;
-}
-
-.editable-inline.failure {
-	background: transparent url(../../img/icons/lock_gray.png) no-repeat top right;
-}
-
-.editable-inline.modified {
-	border: solid 2px #ff6600;
-}
-
-.editable-inline.unsaved {
-	border: solid 2px red;
-}
-
 /* ColorBox */
 #cboxTitle {
 	background-color: #fff;
@@ -70,7 +50,7 @@ body.wikitext {
 /* Autosave Preview handle */
 #autosave_preview_grippy {
 	background-color: #ccc;
-	background-image: url("../../img/icons/shading.png");
+	background-image: url("../../pics/icons/shading.png");
 }
 
 /* allow disabled elements to show up - FIXME
@@ -83,7 +63,6 @@ textarea:disabled {
 }
 
 fieldset {
-	border: solid 1px #999;
 	margin-bottom: 2px;
 	padding: 0.3em;
 }
@@ -94,7 +73,7 @@ fieldset {
 .button.highlight {
 	margin: 1px 2px;
 	padding: 2px;
-}
+}*/
 
 .button a,
 .button a:visited,
@@ -102,7 +81,7 @@ fieldset {
 .button input,
 .calbuttonBox a {
 	padding: 1px 4px;
-}*/
+}
 
 #genPass .button a,
 #genPass .button a:visited,
@@ -111,38 +90,27 @@ fieldset {
 }
 
 .button,
-.button:hover,
 button,
-button:hover,
 input[type=reset],
 input[type=submit],
 input[type=reset]:hover,
 input[type=submit]:hover {
-	margin: 0 0 4px 2px;
+	margin: 0 2px 2px 0;
 	font-size: inherit;
 	font-family: inherit;
+	padding: 0;
 }
 
 input {
 	padding: 0;
 }
 
-.button a {
-	padding: .1em 1em;
-	display: block;
-}
-
 /* highlight on interface text to draw attention; also
 highlight on "button" links, e.g. if there are some comments it highlights the "button" link in #page-bar under the content of the wiki pages */
 .highlight,
-.button.highlight a,
-.button a.highlight {
+.button.highlight a {
 	background: #FC0;
 	color: #000;
-}
-
-.button a.highlight:hover {
-	background: #dfb300;
 }
 
 /* Since button background is actually applied to the link within the button, apply button highlight to same bg area as normal button state . */
@@ -150,23 +118,14 @@ highlight on "button" links, e.g. if there are some comments it highlights the "
 	background: inherit;
 }
 
+ul.jumplinks a:active {
+	background: #ffe4e1;
+	color: #0000cd;
+}
+
 /* Highlight effect is just visual distinction, so no need for block element. */
-span.highlight {
+.highlight {
 	padding: 0 .3em;
-}
-
-/* Border and background should "shrinkwrap" to text size. */
-div.highlight {
-	display: inline-block;
-}
-
-.rating .highlight {
-	padding: inherit;
-}
-
-.rbox > div.highlight {
-	display: block;
-	font-weight: bold;
 }
 
 input[type=checkbox],
@@ -174,9 +133,52 @@ input[type=radio] {
 	border: 0;
 }
 
+/***** Site Header & Identity *****/
+
+#header-top {
+	position: relative;
+}
+
+#siteheader {
+	background: transparent;
+}
+
+#customcodewith_ad {
+	width: 400px;
+}
+
+#sitead.floatright {
+	padding-right: 40px;
+}
+
+#sitead.floatleft {
+	padding-left: 40px;
+}
+
+#sioptionscentered #sitead.floatleft {
+	padding-left: 10px;
+}
 
 #sitelogo img {
 	margin-top: 10px;
+}
+
+#bannertopright {
+	padding-right: 4px;
+}
+
+#sitelocbar {
+	float: left;
+	padding: 2px 2px 3px 10px;
+	font-size: small;
+}
+
+#siteloginbar {
+	text-align: right;
+	position: absolute;
+	bottom: 3px;
+	right: 10px;
+	font-size: 90%;
 }
 
 .pass a,
@@ -385,12 +387,12 @@ a.flip:hover,
 	background: #eee;
 	color: #000;
 }
-
-.box-share > div {
+	
+#site_report {
 	text-align: center;
 }
 
-.site_report a {
+#site_report a {
 	border-left: 1px solid #696969;
 	border-right: 1px solid #696969;
 	padding: 0 5px;
@@ -398,6 +400,9 @@ a.flip:hover,
 }
 
 /* default look for editplugin icon links */
+.editplugin {
+	/*background: #fff; color: #000;*/
+}
 .plugin-desc {
 	padding: 5px;
 }
@@ -416,11 +421,6 @@ a.flip:hover,
 	color: black;
 	padding: 10px;
 	border: solid 2px black;
-}
-
-.wikitext .plugin_gauge,
-.wikitext .plugin_gauge-bar {
-	border: none;
 }
 
 /***** Boxes *****/
@@ -457,9 +457,7 @@ a.flip:hover,
 	margin: 0.2em;
 }
 
-.box-forums_most_read_topics .hits {
-	font-style: italic;
-}
+
 
 /* Icons */
 a.icon,
@@ -471,10 +469,6 @@ img.icon {
 /* Tabs */
 .tabcontent table {
 	background: transparent;
-}
-
-div #metadata fieldset.tabcontent, div #metadata div.tabs {
-	background-color: transparent;
 }
 
 .admin #content1 .tabcontent .cbox {
@@ -515,10 +509,19 @@ div #metadata fieldset.tabcontent, div #metadata div.tabs {
 }
 
 .rbox-title {
+	border-bottom-color: #eee;
 	padding: 0.35em 0.9em 0.1em;
 	font-weight: bold;
-	border-bottom: none;
 }
+	
+.comment .rbox-title,
+.comment .rbox-data {}
+
+.note .rbox-title,
+.note .rbox-data {}
+
+.tip .rbox-title,
+.tip .rbox-data {}
 
 .error .rbox-title,
 .errors .rbox-title,
@@ -526,7 +529,7 @@ div #metadata fieldset.tabcontent, div #metadata div.tabs {
 	background: #ffc;
 	color: #000;
 	border-color: #f00;
-	border-bottom: none;
+	border-bottom-color: #ffc;
 }
 
 .error .rbox-data,
@@ -553,36 +556,22 @@ div #metadata fieldset.tabcontent, div #metadata div.tabs {
 }
 
 .simplebox {
-	border: 1px solid #999;
 	padding: 3px;
 }
 
 /* odd and even classes for tr, td, and li */
 .odd {
-        background: #f0f0f0;
-        color: #000;
-}
-table.normal tr:nth-child(2n+1) {
 	background: #f0f0f0;
 	color: #000;
 }
 
 .even {
-        background: #fff;
-        color: #000;
-}
-table.normal tr:nth-child(2n) {
 	background: #fff;
 	color: #000;
 }
 
+/***** Tables, Tabs ****/
 /** Tables **/
-
-td.italiclabel {
-	text-align: right;
-	padding-right: 5px;
-	font-style: italic;
-}
 
 .normal, 
 .admin {
@@ -611,33 +600,17 @@ td.form {
 	padding: 0.2em;
 }
 
-td.integer {
-	text-align: right;
-}
-td.date {
-	text-align: center;
-}
-td.checkbox {
-	text-align: center;
-	width: 20px;	
-}
-td.action {
-	white-space: nowrap;
-}
-td.norecords {
-	text-align: left;
-	font-weight: bold;
-}
-td.id, td.icon {
-	text-align: center;
-}
-
 caption {
 	font-weight: bold;
 }
 
 .numeric, td.numeric {
 	text-align: right;
+}
+/** Tabs **/
+
+.tabactive {
+	border: solid 1px;
 }
 
 /***** Wiki *****/
@@ -650,7 +623,7 @@ body.tiki_wiki #comments {
 	padding: 1em;
 }
 
-.editdate {
+p.editdate {
 	padding-bottom: 5px;
 	padding-top: 10px;
 	font-size: 0.9em;
@@ -660,40 +633,6 @@ body.tiki_wiki #comments {
 /* wikiplugin_code */
 .codelisting {
 	overflow: auto;
-	max-width: 990px;
-}
-
-/* wikiplugin_fade */
-.wpfade-hidden {
-	background-repeat: no-repeat;
-	background-image: url(../../img/toggle-expand-dark.png);
-	margin-left: -19px; 
-	padding-left: 19px;
-}
-
-.wpfade-shown {
-	background-repeat: no-repeat;
-	background-image: url(../../img/toggle-collapse-dark.png);
-	margin-left: -19px; 
-	padding-left: 19px;
-}
-
-.wpfade-span-plain {
-	cursor:pointer;
-}
-
-.wpfade-span-icon {
-	cursor:pointer;
-	margin-left:19px;	
-}
-
-.wpfade-div-plain {
-	display: none;
-}
-
-.wpfade-div-icon {
-	display: none;
-	margin-left:19px;
 }
 
 /* wikiplugin_fancylist */
@@ -723,7 +662,7 @@ body.tiki_wiki #comments {
 
 /* wikiplugin quote */
 .quoteheader {
-	background : url('../../img/icons/quoteleft.gif') no-repeat;
+	background : url('../../images/quoteleft.gif') no-repeat;
 	padding-left:50px;
 	height:35px;
 }
@@ -749,13 +688,11 @@ body.tiki_wiki #comments {
 }
 
 .trackerplugindesc {
-	color: #BEBCBC;
-	font-style: italic;
+	color: #BEBCBC; font-style: italic
 }
 
 .charCount {
-	color: #BEBCBC;
-	font-style: italic;
+	color: #BEBCBC; font-style: italic
 }
 
 /* mouseover plugin */
@@ -767,35 +704,12 @@ body.tiki_wiki #comments {
 
 /* img plugin */
 .imgbox {
-	border: 1px solid #a9a9a9;
-  background-color: #f9f9f9;
-	padding: 5px;
+	    border: 1px solid #a9a9a9;
+        background-color: #f9f9f9;
 }
 
 .thumbcaption {
-	font-size: 90%;
-	padding: 2px;
-}
-
-/* wikiplugin_carousel v3 */
-
-.ic_button {
-    float: left;
-    margin: 0 2px 0  0;
-    border: 2px solid #eee;
-	width: 20px;
-	height: 20px;
-}
-
-.ic_active {
-    border: 2px solid #800;
-}
-
-/* end plugins */
-
-.magnify {
-	float: right;
-	padding-top: 2px;
+		font-size: 90%;
 }
 
 /* TOC */
@@ -819,11 +733,15 @@ body.tiki_wiki #comments {
 	border-top: 1px solid #696969;
 }
 
+.diffbody {
+	color: #000;
+}
+
 .diffadded {
 	background: #ccffcc;
 	color: #000;
 	/*word-wrap:break-word;*/
-	max-width: 553px;
+	max-width: 400px;
 }
 
 .diffdeleted {
@@ -831,7 +749,7 @@ body.tiki_wiki #comments {
 	color: #000;
 	text-decoration: line-through;
 	/*word-wrap:break-word;*/
-	max-width: 553px;
+	max-width: 400px;
 }
 
 .diffinldel {
@@ -849,6 +767,10 @@ body.tiki_wiki #comments {
 
 .diffadded .diffchar {
 	color: blue;
+}
+
+.plugin-desc {
+	padding: 5px;
 }
 
 /***** Articles ****/
@@ -887,12 +809,6 @@ small.description {
 	display: block;
 }
 
-.description {
-	font-size: .95em;
-	font-style: italic;
-}
-
-
 /*body.tiki_blogs*/ .post .title {
 	margin-top: 0;
 }
@@ -905,14 +821,6 @@ small.description {
 	padding: 5px 0px 15px 0px;
 }
 
-/* Comments (article, blogs) */
-
-#comment-container ol {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-}
-
 /* Comment Annotations */
 
 dl.note-list {
@@ -922,7 +830,7 @@ dl.note-list {
 }
 
 #note-editor-comment {
-	background: yellow;
+	background: #fff;
 	color: #000;
 	border: #999 1px solid;
 }
@@ -951,7 +859,7 @@ dl.note-list {
 }
 
 .post-approved-r .content * {
-	background: url(../../img/icons/dots.gif);
+	background: url(../../img/icons2/dots.gif);
 }
 
 
@@ -987,15 +895,6 @@ p.norecords {
 	padding: 0 3px 3px 3px;
 }
 
-.thumbinfosothers {
-	color: #888;
-	font-size: 95%;
-}
-
-.thumbdescription {
-	text-align: left;
-}
-
 /***** Trackers (etc.) *****/
 
 .multiselect .odd {
@@ -1003,7 +902,7 @@ p.norecords {
 	background: #f4f6f7;
 }
 
-.multiselect .odd:hover {
+.multiselect odd:hover {
 	background: #fff7e6;
 }
 
@@ -1042,6 +941,10 @@ p.norecords {
 .catfeatures {
 	font-weight: bold;
 	list-style: none
+}
+
+.catfeatures li {
+	text-transform: capitalize;
 }
 
 .catitems {
@@ -1190,19 +1093,11 @@ textarea.tshoutbox{
 
 .dirsitetrail {
 	font-size: 95%;
-	color: lightgray;
 }
 
 .dirsitecats {
 	font-size: 95%;
-	color: lightgray;
 }
-
-/***** User Tasks *****/
-.taskcount {
-	font-style: italic;
-}
-
 
 /***** Messages *****/
 
@@ -1288,9 +1183,6 @@ textarea.tshoutbox{
 	list-style: none;
 }
 
-/* Button from 'Show php error messages' hidden box */
-.button[id="show-errors-button"]{font-size:5%;}
-
 /* admin boxes etc (.admbox) now defined in css/admin.css */
 
 .mods_revision {
@@ -1338,6 +1230,9 @@ textarea.tshoutbox{
 	margin: 0;
 	padding: 0;
 }
+
+/* Button from 'Show php error messages' hidden box */
+.button[id="show-errors-button"]{font-size:5%;}
 
 /* webmail & groupmail */
 .webmail_item {
@@ -1412,34 +1307,13 @@ textarea.tshoutbox{
 
 /* jq tablesorter */
 .fancysort th.headerSortUp {
-	background-repeat: no-repeat;
-	background-position: right;
-	background-image: url(../../img/icons/resultset_up.png) !important;
+	background-repeat: no-repeat; background-position: right; background-image: url(../../pics/icons/resultset_up.png) !important;
 }
-
 .fancysort th.headerSortDown {
-	background-repeat: no-repeat;
-	background-position: right;
-	background-image: url(../../img/icons/resultset_down.png) !important;
+	background-repeat: no-repeat; background-position: right; background-image: url(../../pics/icons/resultset_down.png) !important;
 }
-
 .fancysort th.header {
-	background-repeat: no-repeat;
-	background-position: right;
-	background-image: url(../../img/icons/resultset.png);
-}
-
-/* jq tracker header */
-.trackerHeaderOpen {
-	background-repeat: no-repeat;
-	background-position: right;
-	background-image: url(../../img/icons/resultset_down.png);
-}
-
-.trackerHeaderClose {
-	background-repeat: no-repeat;
-	background-position: right;
-	background-image: url(../../img/icons/resultset_next.png);
+	background-repeat: no-repeat; background-position: right; background-image: url(../../pics/icons/resultset.png);
 }
 
 /* Perspectives (edit) */
@@ -1540,13 +1414,10 @@ textarea.tshoutbox{
 }
  /* wikiplugin_tracker */
 .trackerCategoryName {white-space:nowrap;}
+/* End of file */
 
 #captchaImg {
 	border: 1px solid black;
-}
-
-.ui-tabs .ui-tabs-nav li a {
-	padding: 0.3em 0.8em 0.1em;
 }
 /* interactive translations */
 
@@ -1561,265 +1432,11 @@ textarea.tshoutbox{
 	color: #000;
 }
 
-.tree.root .object-count {
-	float: right;
-	font-weight: bold;
-	margin-left: 10px;
-	margin-right: 10px;
-	color: #999;
-}
 
 /* jquery validation */
 
 label.error {
-	background : url('../../img/icons/error.png') no-repeat;
+	background : url('../../pics/icons/error.png') no-repeat;
 	color:red;
 	padding-left:20px;
-	margin-left: 0.5em;
 }
-
-/* FileGals Upload Progress Bar */
-
-.progressName {
-	text-align: left;
-	white-space: nowrap;
-	overflow: hidden;
-	font-weight: bold;
-}
-
-.progressBarInProgress,
-.progressBarComplete,
-.progressBarError {
-	width: 0%;
-	height: 20px;
-	background-color: blue;
-	margin-top: 2px;
-	color: white;
-	text-align: center;
-	font-weight: bold;
-}
-
-.progressBarComplete {
-	width: 100%;
-	background-color: green;
-	visibility: hidden;
-}
-
-.progressBarError {
-	width: 100%;
-	background-color: red;
-	visibility: hidden;
-}
-
-.progressBarStatus {
-	margin-top: 2px;
-	width: 337px;
-	text-align: left;
-	white-space: nowrap;
-}
-
-.progressWrapper {
-	width: 357px;
-	overflow: hidden;
-}
-
-.progressContainer {
-	margin: 5px;
-	padding: 4px;
-	border: solid 1px #E8E8E8;
-	background-color: #F7F7F7;
-	overflow: hidden;
-}
-
-#fgalexplorer > div > ul {
-	padding: 0;
-	margin: 0;
-}
-#fgalexplorer > div > ul ul {
-	padding-left: 16px;
-}
-
-
-.comment.archived {
-	display: none;
-}
-
-.all .comment.archived {
-	display: block;
-}
-
-.tracker-item-files li {
-	clear: right;
-}
-
-.tracker-item-files label {
-	clear: right;
-	float: right;
-}
-
-.tracker-item-files {
-	-moz-column-count: 2;
-	-moz-column-gap: 30px;
-	-webkit-column-count: 2;
-	-webkit-column-gap: 30px;
-}
-
-.file-drop {
-	min-height: 100px;
-}
-
-form.simple label {
-	clear: both;
-	padding-top: 1em;
-}
-
-form.simple label.depends {
-	padding-left: 20px;
-}
-
-form.simple label .description {
-	padding-left: 20px;
-}
-
-form.simple textarea,
-form.simple input[type="text"],
-form.simple input[type="file"],
-form.simple input[type="url"],
-form.simple input[type="email"],
-form.simple input[type="number"],
-form.simple select
-{
-	display: block;
-	clear: left;
-	width: 100%;
-}
-
-form.simple textarea.export {
-	height: 320px;
-}
-
-/* $.fn.modal */
-.mask {
-	position:absolute; 
-	z-index:999;
-	background-color:#FFFFFF;
-	display:none;
-}
-
-.boxes, .boxes * {
-	z-index: 2147483646;
-}
-
-.boxes .dialog {
-	position:absolute;
-	width: auto;
-	height: auto;
-	font-weight: bold;
-	z-index: 2147483647;
-	text-align: center;
-}
-
-.boxes img {
-	z-index: 2147483647;
-}
-
-.structuremenu .menuSection {
-	margin-left: 6px;
-	border-left: 1px dotted gray;
-}
-
-.structuremenu .menuSection .option, .structuremenu .menuSection .optionline {
-	background: transparent url(../../img/icons/h_trenner.gif) center left no-repeat;
-	padding-left: 21px;
-}
-
-/* Twitter module styling */
-
-.TwitName {
-	font-weight: bold;
-}
-
-.TwitDate a {
-	font-size: 0.8em;
-	font-style: italic;
-	text-align: right;
-	display: block;
-	padding-bottom: 8px;
-}
-
-/* Facebook module styling */
-.fb-story {
-	font-style: italic;
-}
-.fb-message {
-}
-.fb-date a {
-	font-size: 0.8em;
-	font-style: italic;
-	text-align: right;
-	display: block;
-	padding-bottom: 8px;
-}
-.fb-name {
-	font-weight: bold;
-	display: block;
-}
-
-/* Namespace styling */
-
-.wiki .namespace {
-	margin: 1px;
-	padding: 1px;
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	background: #eee;
-	max-width: 30px;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	display: inline-block;
-	vertical-align: bottom;
-}
-
-.wiki .namespace.first {
-	max-width: 130px;
-}
-
-.wiki .namespace.last {
-	max-width: 130px;
-}
-
-/* Metadata dialog box */
-.meta-col1 {
-	text-align: right;
-	font-weight: bold;
-	font-size: 14px;
-	width: 225px;
-	margin-right: 5px;
-}
-
-.meta-col2 {
-	font-size: 14px;
-	width: 375px;
-}
-
-.meta-section {
-	border-bottom: solid 1px #d3d3d3;
-	width: 600px;
-	font-style: italic;
-}
-
-/* Metadata page tabs */
-.meta-tabs-col1 {
-	text-align: right;
-	font-weight : bold;
-	font-size: inherit;
-	width: 225px;
-	margin-right: 5px;
-}
-
-.meta-tabs-col2 {
-	font-size: inherit;
-	width: 375px;
-}
-/* End of file */

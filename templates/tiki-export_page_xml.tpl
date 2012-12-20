@@ -1,4 +1,4 @@
-<page zip="{$info.zip|escape}">
+<page zip="{$info.zip}">
 <name><![CDATA[{$info.pageName|escape:'html'}]]></name>
 {if $info.description}<description><![CDATA[{$info.description|escape:'html'}]]></description>{/if}
 {if $info.comment}<comment><![CDATA[{$info.comment|escape:'html'}]]></comment>{/if}
@@ -9,7 +9,6 @@
 <wysiwyg>{$info.wysiwyg}</wysiwyg>
 <created>{$info.created}</created>
 <lastModif>{$info.lastModif}</lastModif>
-<hits>{$info.hits}</hits>
 {*<data><![CDATA[{$info.data|escape:'html'}]]></data>*}
 {if $config.comments and !empty($comments)}
 <comments>
@@ -21,7 +20,7 @@
 {if $config.images and !empty($images)}
 <images>
 {foreach from=$images item=img}
-	<image zip="{$img.zip|escape}"
+	<image zip="{$img.zip}"
 	{if $img.filename} filename="{$img.filename}"{/if}
 	{if $img.name} name="{$img.name|escape:'html'}"{/if}
 	{if $img.galleryId} galleryId="{$img.galleryId}"{/if}
@@ -47,7 +46,7 @@
 {if $config.history and !empty($history)}
 <history>
 {foreach from=$history item=hist}
-	<version version="{$hist.version}" zip="{$hist.zip|escape}">
+	<version version="{$hist.version}" zip="{$hist.zip}">
 		  <user><![CDATA[{$hist.user|escape:'html'}]]></user>
 		  {if $hist.description}<description><![CDATA[{$hist.description|escape:'html'}]]></description>{/if}
 		  {if $hist.comment}<comment><![CDATA[{$hist.comment|escape:'html'}]]></comment>{/if}

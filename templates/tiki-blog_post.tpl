@@ -1,22 +1,22 @@
-{title url="tiki-blog_post.php?blogId=$blogId&amp;postId=$postId"}{if $postId gt 0}{tr}Edit Post{/tr}{else}{tr}New Post{/tr}{/if}{if !empty($blog_data.title)} - {$blog_data.title}{/if}{/title}
+{title url="tiki-blog_post.php?blogId=$blogId&amp;postId=$postId"}{if $postId gt 0}{tr}Edit Post{/tr}{else}{tr}New Post{/tr}{/if}{if !empty($blog_data.title)} - {$blog_data.title|escape}{/if}{/title}
 
 <div class="navbar">
 	{if $postId > 0}
 		{button href=$postId|sefurl:blogpost _text="{tr}View post{/tr}"}
 	{/if}
 
-	{if $blogId gt 0}
+	{if $blogId gt 0 }
 		{assign var=thisblog value=$blogId|sefurl:blog}
 		{button href=$thisblog _text="{tr}View Blog{/tr}"}
 	{/if}
 
-	{if $blogs|@count gt 1}
+	{if $blogs|@count gt 1 }
 		{* No need for users to go to blog list if they are already looking at the only blog *}
 		{button href="tiki-list_blogs.php" _text="{tr}List Blogs{/tr}"}
 	{/if}
 </div>
 
-{if isset($contribution_needed) and $contribution_needed eq 'y'}
+{if $contribution_needed eq 'y'}
 	{remarksbox type='Warning' title="{tr}Warning{/tr}"}
 		<div class="highlight"><em class='mandatory_note'>{tr}A contribution is mandatory{/tr}</em></div>
 	{/remarksbox}
@@ -24,9 +24,9 @@
 
 {if $preview eq 'y'}
 	<div align="center" class="attention" style="font-weight:bold">{tr}Note: Remember that this is only a preview, and has not yet been saved!{/tr}</div>
-	<article class="blogpost post post_single">
+	<div class="blogpost post post_single">
 		{include file='blog_wrapper.tpl' blog_post_context='preview'}
-	</article>
+	</div>
 {/if}
 
 {capture name=actionUrlParam}{strip}
@@ -44,7 +44,7 @@
 	<input type="hidden" name="postId" value="{$postId|escape}" />
 
 	<fieldset class="tabcontent">
-		<table class="formcolor">
+		<table class="normal">
 			{if $blogs|@count gt 1 and ( !isset($blogId) or $blogId eq 0 )}
 				<tr>
 					<td class="editblogform">{tr}Blog{/tr}</td>
@@ -62,18 +62,16 @@
 
 			<tr>
 				<td class="editblogform">{tr}Title:{/tr}</td><td class="editblogform">
-					<input type="text" size="80" maxlength="255" name="title" {if isset($post_info.title)}value="{$post_info.title|escape}"{/if} />
+					<input type="text" size="80" name="title" value="{$post_info.title|escape}" />
 				</td>
 			</tr>
 
 			<tr>
-				<td colspan="2" class="editblogform">
+				<td class="editblogform">
 					{tr}Body:{/tr}
 				</td>
-            </tr>
-            <tr>
-				<td colspan="2" class="editblogform">
-					{textarea id='blogedit' class="wikiedit" name="data"}{if isset($data)}{$data}{/if}{/textarea}
+				<td class="editblogform">
+					{textarea id='blogedit' class="wikiedit" name="data"}{$data}{/textarea}
 				</td>
 			</tr>
 
@@ -83,7 +81,7 @@
 						{tr}Excerpt:{/tr}
 					</td>
 					<td class="editblogform">
-							{textarea id='post_excerpt' class="wikiedit" name="excerpt"}{if isset($post_info.excerpt)}{$post_info.excerpt}{/if}{/textarea}
+						{textarea id='post_excerpt' class="wikiedit" name="excerpt"}{$post_info.excerpt}{/textarea}
 					</td>
 				</tr>
 			{/if}
@@ -114,17 +112,6 @@
 				{/if}
 			{/if}
 
-			{if $prefs.geo_locate_blogpost eq 'y'}
-				<tr>
-					<td>{tr}Location{/tr}</td>
-					<td>
-						{$headerlib->add_map()}
-						<div class="map-container" data-target-field="geolocation" style="height: 250px; width: 250px;"></div>
-						<input type="hidden" name="geolocation" value="{$geolocation_string}" />
-					</td>
-				</tr>
-			{/if}
-
 			<tr>
 				<td class="editblogform">{tr}Mark entry as private:{/tr}</td>
 				<td class="editblogform"><input type="checkbox" name="blogpriv" {if $blogpriv eq 'y'}checked="checked"{/if} /></td>
@@ -133,13 +120,8 @@
 				<tr id='show_pubdate' class="editblogform">
 					<td>{tr}Publish Date{/tr}</td>
 					<td>
-						{if isset($post_info.created)}
-							{$created = $post_info.created}
-						{else}
-							{$created = ''}
-						{/if}
-						{html_select_date prefix="publish_" time=$created start_year="-5" end_year="+10" field_order=$prefs.display_field_order} {tr}at{/tr}
-						{html_select_time prefix="publish_" time=$created display_seconds=false use_24_hours=$use_24hr_clock}
+						{html_select_date prefix="publish_" time=$post_info.created start_year="-5" end_year="+10" field_order=$prefs.display_field_order} {tr}at{/tr} 
+						{html_select_time prefix="publish_" time=$post_info.created display_seconds=false}
 					</td>
 				</tr>
 			{/if}
@@ -149,9 +131,6 @@
 			{if $prefs.feature_contribution eq 'y'}
 				{include file='contribution.tpl'}
 			{/if}
-
-			{include file='categorize.tpl'}
-
 		</table>
 	</fieldset>
 	<input type="submit" class="wikiaction" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false" />
@@ -159,3 +138,4 @@
 	<input type="hidden" name="referer" value="{$referer|escape}" />
 	<input type="submit" name="cancel" onclick='document.location="{$referer|escape:'html'}";needToConfirm=false;return false;' value="{tr}Cancel{/tr}"/>
 </form>
+<br />

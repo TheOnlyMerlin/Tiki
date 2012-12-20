@@ -1,21 +1,24 @@
 <?php
-// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_rss_info()
-{
+// Includes rss feed output in a wiki page
+// Usage:
+// {RSS(id=>feedId,max=>3,date=>1,author=>1,desc=>1,icon=>http://jbotcan.org/favicon.ico)}{RSS}
+//
+
+function wikiplugin_rss_info() {
 	return array(
 		'name' => tra('RSS Feed'),
-		'documentation' => 'PluginRSS',
-		'description' => tra('Display items from an RSS feed'),
+		'documentation' => tra('PluginRSS'),
+		'description' => tra('Inserts an RSS feed output.'),
 		'prefs' => array( 'wikiplugin_rss' ),
-		'icon' => 'img/icons/rss.png',
+		'icon' => 'pics/icons/rss.png',
 		'format' => 'html',
 		'filter' => 'striptags',
-		'tags' => array( 'basic' ),
 		'params' => array(
 			'id' => array(
 				'required' => true,
@@ -39,8 +42,8 @@ function wikiplugin_rss_info()
 				'description' => tra('Show date of each item (not shown by default)'),
 				'default' => 0,
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 1),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 1), 
 					array('text' => tra('No'), 'value' => 0)
 				)
 			),
@@ -51,8 +54,8 @@ function wikiplugin_rss_info()
 				'description' => tra('Show feed descriptions (not shown by default)'),
 				'default' => 0,
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 1),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 1), 
 					array('text' => tra('No'), 'value' => 0)
 				)
 			),
@@ -63,8 +66,8 @@ function wikiplugin_rss_info()
 				'description' => tra('Show authors (not shown by default)'),
 				'default' => 0,
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 1),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 1), 
 					array('text' => tra('No'), 'value' => 0)
 				)
 			),
@@ -82,8 +85,8 @@ function wikiplugin_rss_info()
 				'description' => tra('Show the title of the feed (shown by default)'),
 				'default' => 1,
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 1),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 1), 
 					array('text' => tra('No'), 'value' => 0)
 				)
 			),
@@ -91,36 +94,32 @@ function wikiplugin_rss_info()
 	);
 }
 
-function wikiplugin_rss($data,$params)
-{
+function wikiplugin_rss($data,$params) {
 	global $smarty;
 	global $rsslib; require_once 'lib/rss/rsslib.php';
 
-	$params = array_merge(
-		array(
-			'max' => 10,
-			'date' => 0,
-			'desc' => 0,
-			'author' => 0,
-			'icon' => '',
-			'showtitle' => 1,
-		),
-		$params
-	);
+	$params = array_merge( array(
+		'max' => 10,
+		'date' => 0,
+		'desc' => 0,
+		'author' => 0,
+		'icon' => '',
+                'showtitle' => 1,
+	), $params );
 
 	if ( ! isset( $params['id'] ) ) {
-		return WikiParser_PluginOutput::argumentError(array( 'id' ));
+		return WikiParser_PluginOutput::argumentError( array( 'id' ) );
 	}
 
 	$params['id'] = (array) $params['id'];
 
-	$items = $rsslib->get_feed_items($params['id'], $params['max']);
+	$items = $rsslib->get_feed_items( $params['id'], $params['max'] );
 
 	$title = null;
-	if ( count($params['id']) == 1 ) {
-		$module = $rsslib->get_rss_module(reset($params['id']));
+	if( count( $params['id'] ) == 1 ) {
+		$module = $rsslib->get_rss_module( reset( $params['id'] ) );
 
-		if ( $module['sitetitle'] ) {
+		if( $module['sitetitle'] ) {
 			$title = array(
 				'title' => $module['sitetitle'],
 				'link' => $module['siteurl'],
@@ -129,12 +128,13 @@ function wikiplugin_rss($data,$params)
 	}
 
 	global $smarty;
-	$smarty->assign('rsstitle', $title);
-	$smarty->assign('items', $items);
-	$smarty->assign('showdate', $params['date'] > 0);
-	$smarty->assign('showtitle', $params['showtitle'] > 0);
-	$smarty->assign('showdesc', $params['desc'] > 0);
-	$smarty->assign('showauthor', $params['author'] > 0);
-	$smarty->assign('icon', $params['icon']);
-	return $smarty->fetch('wiki-plugins/wikiplugin_rss.tpl');
+	$smarty->assign( 'title', $title );
+	$smarty->assign( 'items', $items );
+	$smarty->assign( 'showdate', $params['date'] > 0 );
+	$smarty->assign( 'showtitle', $params['showtitle'] > 0 );
+	$smarty->assign( 'showdesc', $params['desc'] > 0 );
+	$smarty->assign( 'showauthor', $params['author'] > 0 );
+	$smarty->assign( 'icon', $params['icon'] );
+	return $smarty->fetch( 'wiki-plugins/wikiplugin_rss.tpl' );
 }
+
