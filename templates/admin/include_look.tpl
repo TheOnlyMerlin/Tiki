@@ -17,9 +17,6 @@
 					{preference name=style}
 					{preference name=style_option}
 
-					{preference name=style_admin}
-					{preference name=style_admin_option}
-
 					{if $prefs.javascript_enabled eq 'n' or $prefs.feature_jquery eq 'n'}
 						<input type="submit" name="changestyle" value="{tr}Go{/tr}" />
 					{/if}
@@ -97,8 +94,6 @@
 					{preference name=module_zones_pagebottom}
 					{preference name=module_zones_bottom}			
 				</fieldset>
-				{preference name=module_file}
-				{preference name=module_zone_available_extra}
 			</div>
 			
 			<div class="adminoptionbox">
@@ -232,7 +227,7 @@
 				{$headerlib->add_jsfile('lib/jquery/brosho/jquery.brosho.js')}
 				{$headerlib->add_jsfile('lib/jquery_tiki/brosho/tiki_brosho.js')}
 
-				{preference name=feature_custom_html_head_content syntax="htmlmixed"}
+				{preference name=feature_custom_html_head_content syntax="html"}
 				{preference name=feature_endbody_code syntax="tiki"}
 				
 				{preference name="header_custom_js" syntax="javascript"}

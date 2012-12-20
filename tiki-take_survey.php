@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -49,12 +46,6 @@ if (isset($_REQUEST["ans"])) {
 	$srvlib->register_answers($_REQUEST['surveyId'], $questions['data'], $_REQUEST, $error_msg);
 	if ($error_msg == '') header('Location: tiki-list_surveys.php');
 }
-
-$showToolBars = false;
-if($prefs['poll_surveys_textarea_hidetoolbar'] != 'y')
-	$showToolBars = true;
-$smarty->assign('showToolBars', $showToolBars);
-
 include_once ('tiki-section_options.php');
 ask_ticket('take-survey');
 // Display the template

@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -64,7 +61,7 @@ if (empty($_REQUEST['report']) || $_REQUEST['report'] != 'y') {
 				$send_msg = false;
 			}
 		}
-		$smarty->assign('send_msg', $send_msg);
+		$smarty->assign('send_msg', $send_msg);	
 	} else {
 		$smarty->assign('send_msg', false);
 	}
@@ -160,7 +157,7 @@ $smarty->assign('subject', $subject);
 if (isset($_REQUEST['send'])) {
 
 	if (!empty($_REQUEST['comment'])) {
-		$smarty->assign('comment', $_REQUEST['comment']);
+		$smarty->assign('comment', $_REQUEST['comment']);	
 	}
 
 	if (!empty($_REQUEST['share_token_notification'])) {
@@ -215,7 +212,7 @@ if (isset($_REQUEST['send'])) {
 				if (is_array($adresses)) {
 					$contactlib = TikiLib::lib('contact');
 					foreach ($adresses as $adresse) {
-						$tokenlist[] = $tokenlib->includeTokenReturn($url_for_friend, $globalperms->getGroups(), $adresse);
+						$tokenlist[] = $tokenlib->includeTokenReturn($url_for_friend, $globalperms->getGroups(), $adresse);	
 						// if preference share_contact_add_non_existant_contact the add auomaticly to contact
 						if ($prefs['share_contact_add_non_existant_contact'] == 'y' && $prefs['feature_contacts'] == 'y') {
 							// check if email exist for at least one contact in
@@ -225,7 +222,7 @@ if (isset($_REQUEST['send'])) {
 							}
 						}
 					}
-				}
+				}	
 
 				$smarty->assign('share_access', true);
 
@@ -244,7 +241,7 @@ if (isset($_REQUEST['send'])) {
 					$smarty->assign('share_access', true);
 				}
 				$tokenlist[0] = $url_for_friend;
-			}
+			}		
 
 			$smarty->assign_by_ref('email', $_REQUEST['email']);
 
@@ -328,8 +325,7 @@ $smarty->display('tiki.tpl');
 /**
  *
  * Validates the given recipients and returns false on error or an array containing the recipients on success
- * @param array|string	$recipients		list of recipients as an array or a comma/semicolon separated list
- * @return array|bool
+ * @param array|string	$recipients		list of recipients as an array or a comma/semicolon separated list	
  */
 function checkAddresses($recipients)
 {
@@ -369,12 +365,12 @@ function checkAddresses($recipients)
 /**
  *
  * Sends a promotional email to the given recipients
- * @param string        $sender        Sender e-Mail address
- * @param string|array    $recipients    List of recipients either as array or comma/semi colon separated string
- * @param string        $subject    E-Mail subject
- * @param array            $tokenlist
- * @internal param string $url_for_friend URL to share
- * @return bool                        true on success / false if the supplied parameters were incorrect/missing or an error occurred sending the mail
+ * @param string		$sender		Sender e-Mail address
+ * @param string|array	$recipients	List of recipients either as array or comma/semi colon separated string
+ * @param string		$subject	E-Mail subject
+ * @param string		$url_for_friend		URL to share
+ * @param array			$tokenlist
+ * @return bool						true on success / false if the supplied parameters were incorrect/missing or an error occurred sending the mail
  */
 function sendMail($sender, $recipients, $subject, $tokenlist = array())
 {
@@ -477,22 +473,22 @@ function sendMessage($recipients, $subject)
 				$errors[] = tra('Invalid user: %s');
 				$ok = false;
 			}
-		}
-	}
+		}	
+	}			
 
 	$users = array_unique($users);
 	$txt = $smarty->fetch('mail/share.tpl');
 
 	foreach ($users as $a_user) {
 		$messulib->post_message(
-			$a_user,
-			$user,
-			$a_user,
-			'',
-			$subject,
-			$txt,
-			$_REQUEST['priority'],
-			isset($_REQUEST['replyto_hash']) ? $_REQUEST['replyto_hash'] : ''
+						$a_user,
+						$user,
+						$a_user,
+						'',
+						$subject,
+						$txt,
+						$_REQUEST['priority'],
+						isset($_REQUEST['replyto_hash']) ? $_REQUEST['replyto_hash'] : ''
 		);
 
 		if ($prefs['feature_score'] == 'y') {
@@ -503,14 +499,14 @@ function sendMessage($recipients, $subject)
 
 	// Insert a copy of the message in the sent box of the sender
 	$messulib->save_sent_message(
-		$user,
-		$user,
-		$recipients,
-		'',
-		$subject,
-		$txt,
-		$_REQUEST['priority'],
-		isset($_REQUEST['replyto_hash']) ? $_REQUEST['replyto_hash'] : ''
+					$user,
+					$user,
+					$recipients,
+					'',
+					$subject,
+					$txt,
+					$_REQUEST['priority'],
+					isset($_REQUEST['replyto_hash']) ? $_REQUEST['replyto_hash'] : ''
 	);
 
 	if ($prefs['feature_actionlog'] == 'y') {
@@ -520,11 +516,6 @@ function sendMessage($recipients, $subject)
 	return $ok;
 }
 
-/**
- * @param $forumId
- * @param $subject
- * @return bool|int
- */
 function postForum($forumId, $subject)
 {
 	global $errors, $prefs, $smarty, $user, $userlib, $tikilib, $_REQUEST;

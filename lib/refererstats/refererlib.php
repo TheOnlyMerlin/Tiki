@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- *
- */
 class RefererLib extends TikiLib
 {
 
@@ -24,14 +21,7 @@ class RefererLib extends TikiLib
 		$result = $this->query($query);
 	}
 
-    /**
-     * @param $offset
-     * @param $maxRecords
-     * @param $sort_mode
-     * @param $find
-     * @return array
-     */
-    function list_referer_stats($offset, $maxRecords, $sort_mode, $find)
+	function list_referer_stats($offset, $maxRecords, $sort_mode, $find) 
 	{
 		$bindvars = array();
 		if ($find) {

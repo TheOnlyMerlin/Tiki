@@ -26,18 +26,9 @@ set_error_handler("tiki_error_handling", error_reporting());
 require_once ( 'lib/init/smarty.php');
 require_once ('installer/installlib.php');
 
-/**
- *
- */
 class InstallerDatabaseErrorHandler implements TikiDb_ErrorHandler
 {
-    /**
-     * @param TikiDb $db
-     * @param $query
-     * @param $values
-     * @param $result
-     */
-    function handle(TikiDb $db, $query, $values, $result)
+	function handle(TikiDb $db, $query, $values, $result)
 	{
 	}
 }
@@ -62,7 +53,7 @@ $prefs = array(
 // Which step of the installer
 if (empty($_REQUEST['install_step'])) {
 	$install_step = '0';
-
+	
 	if (isset($_REQUEST['setdbversion'])) {
 		// Sets dbversion_tiki when installing the WebDeploy package
 		$db = fopen('db/'.$tikidomainslash.'local.php', 'a');
@@ -83,34 +74,18 @@ if (!empty($_REQUEST['lang'])) {
 }
 include_once('lib/init/tra.php');
 
-/**
- * @return bool
- */
 function has_tiki_db()
 {
 	global $installer;
 	return $installer->tableExists('users_users');
 }
 
-/**
- * @return bool
- */
 function has_tiki_db_20()
 {
 	global $installer;
 	return $installer->tableExists('tiki_pages_translation_bits');
 }
 
-/**
- * @param $dbb_tiki
- * @param $host_tiki
- * @param $user_tiki
- * @param $pass_tiki
- * @param $dbs_tiki
- * @param string $client_charset
- * @param string $api_tiki
- * @param string $dbversion_tiki
- */
 function write_local_php($dbb_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $client_charset = '', $api_tiki = '', $dbversion_tiki = 'current')
 {
 	global $local;
@@ -154,10 +129,6 @@ function write_local_php($dbb_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tik
 	}
 }
 
-/**
- * @param string $domain
- * @return string
- */
 function create_dirs($domain='')
 {
 	global $tikipath;
@@ -180,7 +151,7 @@ function create_dirs($domain='')
 		$dir = $dir.'/'.$domain;
 
 		if (!is_dir($dir)) {
-			$created = @mkdir($dir, 02775); // Try creating the directory
+			$created = @mkdir($dir, 02775); // Try creating the directory			
 			if (!$created) {
 				$ret .= "The directory '$tikipath$dir' could not be created.\n";
 			}
@@ -194,9 +165,6 @@ function create_dirs($domain='')
 	return $ret;
 }
 
-/**
- * @return bool
- */
 function isWindows()
 {
 	static $windows;
@@ -326,11 +294,6 @@ $PHP_CONFIG_FILE_PATH/php.ini or $httpd_conf.
 
 
 // Try to see if we have an admin account
-/**
- * @param $dbTiki
- * @param $api_tiki
- * @return string
- */
 function has_admin( $dbTiki, $api_tiki )
 {
 	$query = "select hash from users_users where login='admin'";
@@ -352,10 +315,6 @@ function has_admin( $dbTiki, $api_tiki )
 	return $admin_acc;
 }
 
-/**
- * @param $dbTiki
- * @return bool
- */
 function get_admin_email( $dbTiki )
 {
 	global $installer;
@@ -368,12 +327,6 @@ function get_admin_email( $dbTiki )
 
 	return false;
 }
-
-/**
- * @param $dbTiki
- * @param $prefs
- * @return bool
- */
 function update_preferences( $dbTiki, &$prefs )
 {
 	global $installer;
@@ -392,9 +345,6 @@ function update_preferences( $dbTiki, &$prefs )
 	return false;
 }
 
-/**
- * @param $account
- */
 function fix_admin_account( $account )
 {
 	global $installer;
@@ -403,7 +353,7 @@ function fix_admin_account( $account )
 	if ( ! $row = $result->fetchRow() ) {
 		$installer->query('INSERT INTO `users_groups` (`groupName`) VALUES("Admins")');
 	}
-
+	
 	$installer->query('INSERT IGNORE INTO `users_grouppermissions` (`groupName`, `permName`) VALUES("Admins", "tiki_p_admin")');
 
 	$result = $installer->query('SELECT `userId` FROM `users_users` WHERE `login` = ?', array( $account ));
@@ -419,10 +369,6 @@ function fix_disable_accounts()
 	global $installer;
 	$installer->query('update `users_users` set `waiting`=NULL where `waiting` = ? and `valid` is NULL', array('a'));
 }
-
-/**
- * @return array
- */
 function list_disable_accounts()
 {
 	global $installer;
@@ -434,17 +380,6 @@ function list_disable_accounts()
 	return $ret;
 }
 
-/**
- * @param $api
- * @param $driver
- * @param $host
- * @param $user
- * @param $pass
- * @param $dbname
- * @param $client_charset
- * @param $dbTiki
- * @return bool|int
- */
 function initTikiDB( &$api, &$driver, $host, $user, $pass, $dbname, $client_charset, &$dbTiki )
 {
 	global $tikifeedback;
@@ -562,9 +497,6 @@ function initTikiDB( &$api, &$driver, $host, $user, $pass, $dbname, $client_char
 	return $dbcon;
 }
 
-/**
- * @param $dbname
- */
 function convert_database_to_utf8( $dbname )
 {
 	$db = TikiDb::get();
@@ -580,10 +512,6 @@ function convert_database_to_utf8( $dbname )
 	}
 }
 
-/**
- * @param $dbname
- * @param $previous
- */
 function fix_double_encoding( $dbname, $previous )
 {
 	$db = TikiDb::get();
@@ -809,7 +737,7 @@ if (
 		}
 
 		$dbcon = initTikiDB($api_tiki, $_REQUEST['db'], $_REQUEST['host'], $_REQUEST['user'], $_REQUEST['pass'], $_REQUEST['name'], $client_charset, $dbTiki);
-
+	
 		if ($dbcon) {
 			write_local_php($_REQUEST['db'], $_REQUEST['host'], $_REQUEST['user'], $_REQUEST['pass'], $_REQUEST['name'], $client_charset);
 			include $local;
@@ -827,7 +755,7 @@ if (
 if (isset($_REQUEST['useInnoDB'])) {
 	if (intval($_REQUEST['useInnoDB']) > 0) {
 		if ($installer != null) {
-			$installer->useInnoDB = true;
+			$installer->useInnoDB = true;	
 		}
 	}
 }
@@ -848,7 +776,7 @@ if ($dbcon) {
 	$smarty->assign('tikidb_created', $has_tiki_db);
 	$oldPerms = $installer->getOne('SELECT COUNT(*) FROM `users_permissions` WHERE `permDesc` = \'Can view categorized items\'');
 	$smarty->assign('tikidb_oldPerms', $oldPerms);
-
+	
 	if ($install_step == '6' && $has_tiki_db) {
 		update_preferences($dbTiki, $prefs);
 		$smarty->assign('admin_email', get_admin_email($dbTiki));
@@ -899,8 +827,8 @@ if (
 		$smarty->assign('dbdone', 'y');
 		$install_type = 'update';
 	}
-
-	// Try to activate Apache htaccess file by making a symlink or copying _htaccess into .htaccess
+	
+	// Try to activate Apache htaccess file by copying _htaccess into .htaccess
 	// Do nothing (but warn the user to do it manually) if:
 	//   - there is no  _htaccess file,
 	//   - there is already an existing .htaccess (that is not necessarily the one that comes from Tiki),
@@ -925,7 +853,7 @@ if ( isset( $_GET['lockenter'] ) || isset( $_GET['nolockenter'] ) ) {
 	if (isset( $_GET['lockenter'])) {
 		touch('db/'.$tikidomainslash.'lock');
 	}
-
+	
 	global $userlib, $cachelib;
 	if (session_id()) {
 		session_destroy();
@@ -959,7 +887,7 @@ if ($install_step == '2') {
 
 		if (!empty($_REQUEST['email_test_to'])) {
 			$email_test_to =  $_REQUEST['email_test_to'];
-
+			
 			if (isset($_REQUEST['email_test_cc']) && $_REQUEST['email_test_cc'] == '1') {
 				$email_test_headers .= "Cc: $email_test_tw\n";
 			}
@@ -978,7 +906,7 @@ if ($install_step == '2') {
 			}
 		}
 		$smarty->assign('email_test_to', $email_test_to);
-
+		
 		if ($email_test_ready) {	// so send the mail
 			$email_test_headers .= 'From: noreply@tiki.org' . "\n";	// needs a valid sender
 			$email_test_headers .= 'Reply-to: '. $email_test_to . "\n";
@@ -990,7 +918,7 @@ if ($install_step == '2') {
 			$email_test_body .= "\t".tra('PHP version:').' '.phpversion() . "\n";
 			$email_test_body .= "\t".tra('Server:').' '.(empty($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_ADDR'] : $_SERVER['SERVER_NAME']) . "\n";
 			$email_test_body .= "\t".tra('Sent:').' '.date(DATE_RFC822) . "\n";
-
+			
 			$sentmail = mail($email_test_to, $email_test_subject, $email_test_body, $email_test_headers);
 			if ($sentmail) {
 				$mail_test = 'y';
@@ -999,7 +927,7 @@ if ($install_step == '2') {
 			}
 			$smarty->assign('mail_test', $mail_test);
 			$smarty->assign('mail_test_performed', 'y');
-
+			
 		}
 	}
 
@@ -1013,12 +941,12 @@ if ($install_step == '2') {
 		case 'k': $memory_limit *= 1024;
 	}
 	$smarty->assign('php_memory_limit', intval($memory_limit));
-
+		
 	if ((extension_loaded('gd') && function_exists('gd_info'))) {
 		$gd_test = 'y';
 		$gd_info = gd_info();
 		$smarty->assign('gd_info', $gd_info['GD Version']);
-
+		
 		$im = @imagecreate(110, 20);
 		if ($im) {
 				$smarty->assign('sample_image', 'y');
@@ -1047,26 +975,26 @@ if ( isset($_REQUEST['general_settings']) && $_REQUEST['general_settings'] == 'y
 	$show_stay_in_ssl_mode = ( isset($_REQUEST['feature_show_stay_in_ssl_mode']) && $_REQUEST['feature_show_stay_in_ssl_mode'] == 'on' ) ? 'y' : 'n';
 
 	$installer->query(
-		"DELETE FROM `tiki_preferences` WHERE `name` IN " .
-		"('browsertitle', 'sender_email', 'https_login', 'https_port', ".
-		"'feature_switch_ssl_mode', 'feature_show_stay_in_ssl_mode', 'language',".
-		"'error_reporting_level', 'error_reporting_adminonly', 'smarty_notice_reporting', 'log_tpl')"
+					"DELETE FROM `tiki_preferences` WHERE `name` IN " .
+					"('browsertitle', 'sender_email', 'https_login', 'https_port', ".
+					"'feature_switch_ssl_mode', 'feature_show_stay_in_ssl_mode', 'language',".
+					"'error_reporting_level', 'error_reporting_adminonly', 'smarty_notice_reporting', 'log_tpl')"
 	);
 
 	$query = "INSERT INTO `tiki_preferences` (`name`, `value`) VALUES"
-		. " ('browsertitle', ?),"
-		. " ('sender_email', ?),"
-		. " ('https_login', ?),"
-		. " ('https_port', ?),"
-		. " ('error_reporting_level', ?),"
+		. " ('browsertitle', '" . $_REQUEST['browsertitle'] . "'),"
+		. " ('sender_email', '" . $_REQUEST['sender_email'] . "'),"
+		. " ('https_login', '" . $_REQUEST['https_login'] . "'),"
+		. " ('https_port', '" . $_REQUEST['https_port'] . "'),"
+		. " ('error_reporting_level', '" . $_REQUEST['error_reporting_level'] . "'),"
 		. " ('error_reporting_adminonly', '" . (isset($_REQUEST['error_reporting_adminonly']) && $_REQUEST['error_reporting_adminonly'] == 'on' ? 'y' : 'n') . "'),"
 		. " ('smarty_notice_reporting', '" . (isset($_REQUEST['smarty_notice_reporting']) && $_REQUEST['smarty_notice_reporting'] == 'on' ? 'y' : 'n') . "'),"
 		. " ('log_tpl', '" . (isset( $_REQUEST['log_tpl']) && $_REQUEST['log_tpl'] == 'on' ? 'y' : 'n') . "'),"
 		. " ('feature_switch_ssl_mode', '$switch_ssl_mode'),"
 		. " ('feature_show_stay_in_ssl_mode', '$show_stay_in_ssl_mode'),"
-		. " ('language', ?)";
+		. " ('language', '$language')";
 
-	$installer->query($query, array($_REQUEST['browsertitle'], $_REQUEST['sender_email'], $_REQUEST['https_login'], $_REQUEST['https_port'], $_REQUEST['error_reporting_level'], $language));
+	$installer->query($query);
 	$installer->query("UPDATE `users_users` SET `email` = '".$_REQUEST['admin_email']."' WHERE `users_users`.`userId`=1");
 
 	if ( isset( $_REQUEST['admin_account'] ) && ! empty( $_REQUEST['admin_account'] ) ) {
@@ -1075,7 +1003,7 @@ if ( isset($_REQUEST['general_settings']) && $_REQUEST['general_settings'] == 'y
 	if (isset($_REQUEST['fix_disable_accounts']) && $_REQUEST['fix_disable_accounts'] == 'on') {
 		$ret = fix_disable_accounts();
 	}
-
+	
 }
 
 
@@ -1145,7 +1073,7 @@ if ( $install_step == '4' ) {
 	} else {
 		$smarty->assign('hasInnoDB', false);
 	}
-
+	
 	$value = '';
 	if ( ($db = TikiDB::get()) && ($result = $db->fetchAll('show variables like "character_set_database"'))) {
 		$res = reset($result);
@@ -1153,7 +1081,7 @@ if ( $install_step == '4' ) {
 		$value = array_shift($res);
 	}
 	$smarty->assign('database_charset', $value);
-
+	
 }
 
 if (((isset($value) && $value == 'utf8') || $install_step == '7') && $db = TikiDB::get()) {

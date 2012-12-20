@@ -719,7 +719,6 @@ li.login_link ul li a {
 	padding: 8px 1em;
 }
 
-#tiki-top .cssmenu_horiz li a:hover,
 .cssmenu_vert li ul a:hover,
 .cssmenu_horiz li ul a:hover,
 .box-menu .cssmenu_horiz li ul a:hover,
@@ -741,24 +740,6 @@ li.login_link ul li a {
 	text-decoration: none;
 	text-transform: uppercase;
 	color: #fff;
-}
-
-.box-quickadmin .cssmenu_horiz a {
-	color: #128bc9;
-	padding: .75em 1em;
-}
-
-.box-quickadmin .cssmenu_horiz  .sf-sub-indicator {
-	background: url(fivealive/options/blueberry/arrows-1174a5.png) no-repeat 10px 0;
-}
-
-.box-quickadmin .cssmenu_horiz li a  .sf-sub-indicator {
-	top: 10px;
-	background-position: -10px -100px;
-}
-
-.box-quickadmin .cssmenu_horiz li ul a {
-	background-color: #fff;
 }
 
 .header #secondary_site_menu .cssmenu_horiz li a {
@@ -963,17 +944,19 @@ form .normal,
 	border: none;
 }
 
-.caltable .odd,
-.caltable .even,
+.calodd,
+.caleven,
 .wikicell {
 	border: 2px solid #c2eef8;
 }
 
-.odd {
+.odd,
+.calodd {
 	background: #e3f7fb;
 }
 
-.even {
+.even,
+.caleven {
 	background: #d6f3fa;
 }
 

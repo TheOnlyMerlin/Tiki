@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -15,11 +15,11 @@ class PreferencesLib
 	private $system_modified = array( 'tiki_release', 'tiki_version_last_check');
 	// prefs with system info etc
 	private $system_info = array( 'fgal_use_dir', 'sender_email' );
-
+	
 	function PreferencesLib()
 	{
 		global $prefs;
-
+		
 		$this->file = 'temp/preference-index-' . $prefs['language'];
 	}
 
@@ -61,7 +61,7 @@ class PreferencesLib
 			if ( $source == null ) {
 				$source = $prefs;
 			}
-
+		
 			$value = $source[$name];
 			if ( !empty($value) && is_string($value) && ($value{0} == ':' || (strlen($value) > 1 && $value{1} == ':')) && false !== $unserialized = unserialize($value) ) {
 				$value = $unserialized;
@@ -124,7 +124,7 @@ class PreferencesLib
 			} else {
 				$info['modified'] = str_replace("\r\n", "\n", $info['value']) != $info['default'];
 			}
-
+			
 			if ($get_pages) {
 				$info['pages'] = $this->getPreferenceLocations($name);
 			}
@@ -162,7 +162,7 @@ class PreferencesLib
 
 			if (!empty($info['module'])) {
 				$info['module'] = 'tiki-admin_modules.php?cookietab=3&textFilter=' . urlencode($info['module']);
-			}
+			}			
 
 			if (!empty($info['plugin'])) {
 				$info['plugin'] = 'tiki-admin.php?page=textarea&cookietab=2&textFilter=' . urlencode($info['plugin']);
@@ -201,7 +201,7 @@ class PreferencesLib
 			if ($prefs['connect_feature'] === 'y') {
 				$connectlib = TikiLib::lib('connect');
 				$currentVote = $connectlib->getVote($info['preference']);
-
+				
 				$info['voting_html'] = '';
 
 				if (!in_array('like', $currentVote)) {
@@ -288,7 +288,7 @@ class PreferencesLib
 		if (in_array('mysql_fulltext', $features)) {
 			return TikiDb::get()->isMySQLFulltextSearchSupported();
 		}
-
+		
 		return true;
 	}
 
@@ -328,7 +328,7 @@ class PreferencesLib
 			} else {
 				$value = $this->formatPreference($pref, $data);
 				$realPref = in_array($pref, $user_overrider_prefs)? "site_$pref": $pref;
-
+	
 				if ( ($old = $tikilib->get_preference($realPref) ) != $value ) {
 					if ($tikilib->set_preference($pref, $value)) {
 						$changes[$pref] = array('type'=> 'changed', 'new'=> $value, 'old' => $old);
@@ -350,7 +350,7 @@ class PreferencesLib
 			return $data[$pref];
 		}
 	}
-
+	
 	function getInput( JitFilter $filter, $preferences = array(), $environment = '' )
 	{
 		$out = array();
@@ -361,7 +361,7 @@ class PreferencesLib
 			if ( $environment == 'perspective' && isset( $info['perspective'] ) && $info['perspective'] === false ) {
 				continue;
 			}
-
+			
 			if ( isset( $info['filter'] ) ) {
 				$filter->replaceFilter($name, $info['filter']);
 			}
@@ -426,7 +426,7 @@ class PreferencesLib
 	{
 		$out = array();
 
-		foreach ( (array) $dependencies as $key => $dep ) {
+		foreach ( (array) $dependencies as $dep ) {
 			$info = $this->getPreference($dep, false);
 			if ( $info ) {
 				$out[] = array(
@@ -438,40 +438,10 @@ class PreferencesLib
 						( $info['type'] == 'flag' && $info['value'] == 'y' )
 						|| ( $info['type'] != 'flag' && ! empty( $info['value'] ) )
 				);
-			} elseif ($key == 'profiles') {
-				foreach ($dep as $profile) {
-					$out[] = array(
-						'name' => $profile,
-						'label' => $profile,
-						'type' => 'profile',
-						'link' => 'tiki-admin.php?page=profiles&list=List&profile=' . urlencode($profile),
-						'met' =>
-						( $info['type'] == 'flag' && $info['value'] == 'y' )
-							|| ( $info['type'] != 'flag' && ! empty( $info['value'] ) )
-					);
-				}
 			}
 		}
 
 		return $out;
-	}
-
-	public function rebuildIndex()
-	{
-		$index = Zend_Search_Lucene::create($this->file);
-
-		foreach ($this->getAvailableFiles() as $file) {
-			$data = $this->getFileData($file);
-
-			foreach ( $data as $pref => $info ) {
-				$info = $this->getPreference($pref);
-				$doc = $this->indexPreference($pref, $info);
-				$index->addDocument($doc);
-			}
-		}
-
-		$index->optimize();
-		return $index;
 	}
 
 	private function getIndex()
@@ -481,13 +451,26 @@ class PreferencesLib
 			Zend_Search_Lucene_Analysis_Analyzer::setDefault(new StandardAnalyzer_Analyzer_Standard_English());
 		}
 
-		if ( $this->indexNeedsRebuilding()) {
-			return $this->rebuildIndex();
+		if ( $this->indexNeedsRebuilding() ) {
+			$index = Zend_Search_Lucene::create($this->file);
+
+			foreach ($this->getAvailableFiles() as $file) {
+				$data = $this->getFileData($file);
+
+				foreach ( $data as $pref => $info ) {
+					$info = $this->getPreference($pref);
+					$doc = $this->indexPreference($pref, $info);
+					$index->addDocument($doc);
+				}
+			}
+
+			$index->optimize();
+			return $index;
 		}
 
 		return Zend_Search_Lucene::open($this->file);
 	}
-
+	
 	public function indexNeedsRebuilding()
 	{
 		return !file_exists($this->file);
@@ -518,14 +501,14 @@ class PreferencesLib
 		return $pages;
 	}
 
-	private function loadPreferenceLocations()
+	private function loadPreferenceLocations() 
 	{
 		// check for or create array of where each pref is used
 		$file = 'temp/cache/preference-usage-index';
 		if ( !file_exists($file) ) {
 			$prefs_usage_array = array();
 			$fp = opendir('templates/admin/');
-
+			
 			while (false !== ($f = readdir($fp))) {
 				preg_match('/^include_(.*)\.tpl$/', $f, $m);
 				if (count($m) > 0) {
@@ -548,7 +531,7 @@ class PreferencesLib
 				}
 			}
 			file_put_contents($file, serialize($prefs_usage_array));
-
+			
 		} else {
 			$prefs_usage_array = unserialize(file_get_contents($file));
 		}
@@ -712,7 +695,7 @@ class PreferencesLib
 			}
 		}
 		ksort($modified);
-
+		
 		return $modified;
 	}
 
@@ -786,7 +769,7 @@ class PreferencesLib
 				'type' => 'negative',
 			),
 		);
-
+		
 		foreach ($out as $key => & $info) {
 			$info['selected'] = in_array($key, $filters);
 		}
@@ -810,55 +793,6 @@ class PreferencesLib
 
 		$filters = '+(' . implode(' ', $positive) .') ' . implode(' ', $negative);
 		return "+($criteria) +($filters)";
-	}
-
-	/***
-	 * Store 10 most recently changed prefs for quickadmin module menu
-	 *
-	 * @param $name			preference name
-	 * @param null $auser	optional user
-	 */
-
-	public function addRecent($name, $auser = null)
-	{
-		global $user;
-
-		if (!$auser) {
-			$auser = $user;
-		}
-
-		$list = (array) $this->getRecent($auser);
-		array_unshift($list, $name);
-		$list = array_unique($list);
-		$list = array_slice($list, 0, 10);
-
-		TikiLib::lib('tiki')->set_user_preference($auser, 'admin_recent_prefs', serialize($list));
-	}
-
-	/***
-	 * Get recent prefs list
-	 *
-	 * @param null $auser	option user
-	 * @return array		array of pref names
-	 */
-
-	public function getRecent($auser = null)
-	{
-		global $user;
-		$tikilib = TikiLib::lib('tiki');
-
-		if (!$auser) {
-			$auser = $user;
-		}
-
-		$recent = $tikilib->get_user_preference($auser, 'admin_recent_prefs');
-
-		if (empty($recent)) {
-			return array();
-		} else {
-			return unserialize($recent);
-		}
-
 	}
 }
 

@@ -6,7 +6,6 @@
  */
 
 lang = {
-	"Default" : "Défaut",
 	"Very Secure" : "Très sécurisé",
 	"Secure" : "Sécurisé",
 	"Very Strong" : "Très fort",
@@ -29,6 +28,7 @@ lang = {
 	"Add Field" : "Ajouter un champ",
 	"Edit Field" : "Modifier le champ",
 	"Removing the field will result in data loss. Are you sure?" : "La suppression du champ entrainera la perte des données. Êtes-vous sûr(e) ?",
+	"This field is required" : "Ce champ est requis",
 	"Save" : "Enregistrer",
 	"Cancel" : "Annuler",
 	"Delete" : "Supprimer",	

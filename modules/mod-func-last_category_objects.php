@@ -11,9 +11,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_last_category_objects_info()
 {
 	return array(
@@ -23,7 +20,7 @@ function module_last_category_objects_info()
 		'params' => array(
 			'id' => array(
 				'name' => tra('Category identifier'),
-				'description' => tra('Identifier of the category from which objects are listed. Objects merely in child categories will not be displayed.') .
+				'description' => tra('Identifier of the category from which objects are listed. Objects merely in child categories will not be displayed.') . 
 								" " . tra('Example value: 13.'),
 				'filter' => 'int',
 				'required' => true
@@ -43,10 +40,6 @@ function module_last_category_objects_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_last_category_objects($mod_reference, $module_params)
 {
 	global $smarty;
@@ -67,8 +60,8 @@ function module_last_category_objects($mod_reference, $module_params)
 	$categperms = Perms::get(array('type' => 'category', 'object' => $module_params['id']));
 	$jail = $categlib->get_jail();
 	$smarty->assign(
-		'mod_can_view',
-		$categperms->view_category && (empty($jail) || in_array($module_params['id'], $jail))
+					'mod_can_view', 
+					$categperms->view_category && (empty($jail) || in_array($module_params['id'], $jail))
 	);
 
 	if (!is_array($last) or !is_array($last['data'])) {

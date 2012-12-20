@@ -1,14 +1,14 @@
 <?php
 // (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
-	header('location: index.php');
-	exit;
+  header('location: index.php');
+  exit;
 }
 
 require_once('lib/init/initlib.php');
@@ -38,8 +38,8 @@ $tikidomain		= '';
 /*
 SVN Developers: Do not change any of the above.
 Instead, create a file, called db/local.php, containing any of
-the variables listed above that are different for your
-development environment.  This will protect you from
+the variables listed above that are different for your 
+development environment.  This will protect you from 
 accidentally committing your username/password to SVN!
 
 example of db/local.php
@@ -64,7 +64,7 @@ or TIKI_VIRTUAL
 or SERVER_NAME
     From apache directive ServerName set for that virtualhost block
 or HTTP_HOST
-    From the real domain name called in the browser
+    From the real domain name called in the browser 
     (can be ServerAlias from apache conf)
 
 */
@@ -104,11 +104,11 @@ if ( file_exists($local_php) ) {
 
 global $systemConfiguration;
 $systemConfiguration = new Zend_Config(
-	array(
-		'preference' => array(),
-		'rules' => array(),
-	),
-	array('readOnly' => false)
+				array(
+					'preference' => array(),
+					'rules' => array(),
+				),
+				array('readOnly' => false)
 );
 if (isset ($system_configuration_file)) {
 	if (! is_readable($system_configuration_file)) {
@@ -137,45 +137,26 @@ if ( $re === false ) {
 	}
 }
 
-if ( $dbversion_tiki == '1.10' ) {
-	$dbversion_tiki = '2.0';
-}
+if ( $dbversion_tiki == '1.10' ) $dbversion_tiki = '2.0';
 
-/**
- *
- */
 class TikiDb_LegacyErrorHandler implements TikiDb_ErrorHandler
 {
-    /**
-     * @param TikiDb $db
-     * @param $query
-     * @param $values
-     * @param $result
-     */
-    function handle( TikiDb $db, $query, $values, $result ) // {{{
+	function handle( TikiDb $db, $query, $values, $result ) // {{{
 	{
 		global $smarty, $prefs;
 
 		$msg = $db->getErrorMessage();
 		$q=$query;
 		foreach ($values as $v) {
-			if (is_null($v)) {
-				$v='NULL';
-			} else {
-				$v="'".addslashes($v)."'";
-			}
+			if (is_null($v)) $v='NULL';
+			else $v="'".addslashes($v)."'";
 			$pos=strpos($q, '?');
-			if ($pos !== false) {
+			if ($pos !== FALSE)
 				$q=substr($q, 0, $pos)."$v".substr($q, $pos+1);
-			}
 		}
 
 		if (function_exists('xdebug_get_function_stack')) {
-            /**
-             * @param $stack
-             * @return string
-             */
-            function mydumpstack($stack)
+			function mydumpstack($stack)
 			{
 				$o='';
 				foreach ($stack as $line) {
@@ -206,10 +187,7 @@ class TikiDb_LegacyErrorHandler implements TikiDb_ErrorHandler
 		$this->log($msg.' - '.$q);
 		die;
 	} // }}}
-    /**
-     * @param $msg
-     */
-    function log($msg)
+	function log($msg)
 	{
 		global $user, $tikilib;
 		$query = 'insert into `tiki_actionlog` (`objectType`,`action`,`object`,`user`,`ip`,`lastModif`, `comment`, `client`) values (?,?,?,?,?,?,?,?)';
@@ -245,9 +223,6 @@ if ( isset( $shadow_host, $shadow_user, $shadow_pass, $shadow_dbs ) ) {
 
 unset($host_map, $db_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $shadow_user, $shadow_pass, $shadow_host, $shadow_dbs);
 
-/**
- * @param $db
- */
 function init_connection( $db )
 {
 	global $db_table_prefix, $common_users_table_prefix, $db_tiki;
@@ -255,11 +230,9 @@ function init_connection( $db )
 	$db->setServerType($db_tiki);
 	$db->setErrorHandler(new TikiDb_LegacyErrorHandler);
 
-	if ( isset( $db_table_prefix ) ) {
+	if ( isset( $db_table_prefix ) )
 		$db->setTablePrefix($db_table_prefix);
-	}
 
-	if ( isset( $common_users_table_prefix ) ) {
+	if ( isset( $common_users_table_prefix ) )
 		$db->setUsersTablePrefix($common_users_table_prefix);
-	}
 }

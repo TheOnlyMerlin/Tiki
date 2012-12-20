@@ -5,18 +5,12 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-/**
- *
- */
 class UnifiedSearchLib
 {
 	const INCREMENT_QUEUE = 'search-increment';
 	private $batchToken;
 
-    /**
-     * @return string
-     */
-    function startBatch()
+	function startBatch()
 	{
 		if (! $this->batchToken) {
 			$this->batchToken = uniqid();
@@ -24,11 +18,7 @@ class UnifiedSearchLib
 		}
 	}
 
-    /**
-     * @param $token
-     * @param int $count
-     */
-    function endBatch($token, $count = 100)
+	function endBatch($token, $count = 100)
 	{
 		if ($token && $this->batchToken === $token) {
 			$this->batchToken = null;
@@ -36,10 +26,7 @@ class UnifiedSearchLib
 		}
 	}
 
-    /**
-     * @param int $count
-     */
-    function processUpdateQueue($count = 10)
+	function processUpdateQueue($count = 10)
 	{
 		if ($this->batchToken) {
 			return;
@@ -64,35 +51,27 @@ class UnifiedSearchLib
 				}
 
 				$errlib->report(
-					tr('Search index could not be updated. The site is misconfigured. Contact an administrator.') .
-					'<br />' . $e->getMessage()
+								tr('Search index could not be updated. The site is misconfigured. Contact an administrator.') .
+								'<br />' . $e->getMessage()
 				);
 			}
 		}
 	}
 
-    /**
-     * @return array
-     */
-    function getQueueCount()
+	function getQueueCount()
 	{
 		$queuelib = TikiLib::lib('queue');
 		return $queuelib->count(self::INCREMENT_QUEUE);
 	}
 
-    /**
-     * @return bool
-     */
-    function rebuildInProgress()
+	function rebuildInProgress()
 	{
 		$tempName = $this->getIndexLocation() . '-new';
 		$file_exists = file_exists($tempName);
 
 		if (!isset($_SERVER['REQUEST_METHOD']) && !TikiInit::isWindows()) {		// called from shell.php and unix?
 			$output = null;
-			if (function_exists('exec')) {
-				exec('ps ax | grep \'search/shell.php\'|grep -v grep', $output);	// check for another running process
-			}
+			exec('ps ax | grep \'search/shell.php\'|grep -v grep|grep -v sudo', $output);	// check for another running process
 			if (is_array($output) && count($output) > 1) {
 				return true;
 			} else if ($file_exists) {
@@ -103,11 +82,7 @@ class UnifiedSearchLib
 		return $file_exists;
 	}
 
-    /**
-     * @param bool $loggit
-     * @return array
-     */
-    function rebuild($loggit = false)
+	function rebuild($loggit = false)
 	{
 		global $prefs;
 		$index_location = $this->getIndexLocation();
@@ -120,16 +95,13 @@ class UnifiedSearchLib
 			die('Unsupported');
 		}
 
+		@ini_set('max_execution_time', 0);
+		@ini_set('memory_limit', -1);
+
 		// Build in -new
 		TikiLib::lib('queue')->clear(self::INCREMENT_QUEUE);
-		$tikilib = TikiLib::lib('tiki');
 		$indexer = $this->buildIndexer($index, $loggit);
-		$stat = $tikilib->allocate_extra(
-			'unified_rebuild',
-			function () use ($indexer) {
-				return $indexer->rebuild();
-			}
-		);
+		$stat = $indexer->rebuild();
 
 		// Force destruction to clear locks
 		unset($indexer);
@@ -170,25 +142,18 @@ class UnifiedSearchLib
 		return $loc;
 	}
 
-    /**
-     * @param $type
-     * @param $objectId
-     */
-    function invalidateObject($type, $objectId)
+	function invalidateObject($type, $objectId)
 	{
 		TikiLib::lib('queue')->push(
-			self::INCREMENT_QUEUE,
-			array(
-				'object_type' => $type,
-				'object_id' => $objectId
-			)
+						self::INCREMENT_QUEUE,
+						array(
+							'object_type' => $type,
+							'object_id' => $objectId
+						)
 		);
 	}
 
-    /**
-     * @return array
-     */
-    public function getSupportedTypes()
+	public function getSupportedTypes()
 	{
 		global $prefs;
 		$types = array();
@@ -230,19 +195,10 @@ class UnifiedSearchLib
 			$types['comment'] = tra('comment');
 		}
 
-		if (in_array($prefs['user_in_search_result'], array('all', 'public'))) {
-			$types['user'] = tra('user');
-		}
-
 		return $types;
 	}
 
-    /**
-     * @param $index
-     * @param bool $loggit
-     * @return Search_Indexer
-     */
-    private function buildIndexer($index, $loggit = false)
+	private function buildIndexer($index, $loggit = false)
 	{
 		global $prefs;
 		$indexer = new Search_Indexer($index, $loggit);
@@ -255,11 +211,7 @@ class UnifiedSearchLib
 		return $indexer;
 	}
 
-    /**
-     * @param $aggregator
-     * @param string $mode
-     */
-    private function addSources($aggregator, $mode = 'indexing')
+	private function addSources($aggregator, $mode = 'indexing')
 	{
 		global $prefs;
 
@@ -317,10 +269,6 @@ class UnifiedSearchLib
 			$aggregator->addGlobalSource(new Search_GlobalSource_CommentSource);
 		}
 
-		if (isset($types['user'])) {
-			$aggregator->addContentSource('user', new Search_ContentSource_UserSource($prefs['user_in_search_result']));
-		}
-
 		// Global Sources
 		if ($prefs['feature_categories'] == 'y') {
 			$aggregator->addGlobalSource(new Search_GlobalSource_CategorySource);
@@ -331,12 +279,12 @@ class UnifiedSearchLib
 		}
 
 		if ($prefs['rating_advanced'] == 'y' && $mode == 'indexing') {
-			$aggregator->addGlobalSource(new Search_GlobalSource_AdvancedRatingSource($prefs['rating_recalculation'] == 'indexing'));
+			$aggregator->addGlobalSource(new Search_GlobalSource_AdvancedRatingSource);
 		}
 
 		$aggregator->addGlobalSource(new Search_GlobalSource_Geolocation);
 
-		if ($prefs['feature_search_show_visit_count'] === 'y') {
+		if ($prefs['feature_search_show_visit_count'] === 'y' && $mode != 'indexing') {
 			$aggregator->addGlobalSource(new Search_GlobalSource_VisitsSource);
 		}
 
@@ -346,10 +294,7 @@ class UnifiedSearchLib
 		}
 	}
 
-    /**
-     * @return Search_Index_Lucene
-     */
-    function getIndex()
+	function getIndex()
 	{
 		global $prefs;
 
@@ -364,11 +309,7 @@ class UnifiedSearchLib
 		}
 	}
 
-    /**
-     * @param string $mode
-     * @return Search_Formatter_DataSource_Declarative
-     */
-    function getDataSource($mode = 'indexing')
+	function getDataSource($mode = 'indexing')
 	{
 		$dataSource = new Search_Formatter_DataSource_Declarative;
 		$this->addSources($dataSource, $mode);
@@ -376,10 +317,7 @@ class UnifiedSearchLib
 		return $dataSource;
 	}
 
-    /**
-     * @return Search_Query_WeightCalculator_Field
-     */
-    function getWeightCalculator()
+	function getWeightCalculator()
 	{
 		global $prefs;
 
@@ -398,11 +336,7 @@ class UnifiedSearchLib
 		return new Search_Query_WeightCalculator_Field($weights);
 	}
 
-    /**
-     * @param array $filter
-     * @return Search_Query
-     */
-    function buildQuery(array $filter)
+	function buildQuery(array $filter)
 	{
 		$categlib = TikiLib::lib('categ');
 
@@ -465,7 +399,6 @@ class UnifiedSearchLib
 		unset($filter['tags']);
 		unset($filter['content']);
 		unset($filter['language']);
-		unset($filter['language_unspecified']);
 		unset($filter['autocomplete']);
 
 		foreach ($filter as $key => $value) {
@@ -477,11 +410,7 @@ class UnifiedSearchLib
 		return $query;
 	}
 
-    /**
-     * @param $path
-     * @return int
-     */
-    private function destroyDirectory($path)
+	private function destroyDirectory($path)
 	{
 		if (!$path or !is_dir($path)) return 0;
 

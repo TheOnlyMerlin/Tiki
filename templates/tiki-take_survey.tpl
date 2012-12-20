@@ -17,12 +17,7 @@
         </div>  
       {elseif $questions[ix].type eq 't'}
         <div class="quizoptions">
-			{if $questions[ix].cols > 0}
-				{assign var='textcols' value=$questions[ix].cols}
-			{else}
-				{assign var='textcols' value=80}
-			{/if}
-			<input type="text" size="{$textcols}" name="question_{$questions[ix].questionId}" />
+          <input type="text" name="question_{$questions[ix].questionId}" />
         </div>  
       {elseif $questions[ix].type eq 'x'}
         {assign var='area' value=$questions[ix].questionId}
@@ -46,7 +41,7 @@
               	&nbsp;
               </td>
               <td valign="top">
-                {if $showToolBars}{toolbars area_id="question_$area" qtnum='2'}{/if}
+                {toolbars area_id="question_$area" qtnum='2'}
                 <textarea id="question_{$questions[ix].questionId}" name="question_{$questions[ix].questionId}" rows="{$textrows}" cols="{$textcols}"></textarea>
               </td>
             </tr>

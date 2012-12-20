@@ -27,9 +27,8 @@ class Tracker_Field_Numeric extends Tracker_Field_Abstract implements Tracker_Fi
 					'samerow' => array(
 						'name' => tr('Same Row'),
 						'description' => tr('Displays the next field on the same line.'),
-						'deprecated' => false,
+						'deprecated' => true,
 						'filter' => 'int',
-						'default' => 1,
 						'options' => array(
 							0 => tr('No'),
 							1 => tr('Yes'),

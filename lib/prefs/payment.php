@@ -16,7 +16,6 @@ function prefs_payment_list()
 			'default' => 'n',
 			'admin' => 'payment',
 			'view' => 'tiki-payment.php',
-			'keywords' => 'shopping',
 		),
 		'payment_system' => array(
 			'name' => tra('Payment System'),

@@ -1,13 +1,13 @@
 <?php
 // (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 /**
  * Handler class for TextArea
- *
+ * 
  * Letter key: ~a~
  *
  */
@@ -19,7 +19,7 @@ class Tracker_Field_TextArea extends Tracker_Field_Text
 			'a' => array(
 				'name' => tr('Text Area'),
 				'description' => tr('Multi-line text input.'),
-				'help' => 'Textarea Tracker Field',
+				'help' => 'Textarea Tracker Field',				
 				'prefs' => array('trackerfield_textarea'),
 				'tags' => array('basic'),
 				'default' => 'y',
@@ -78,17 +78,6 @@ class Tracker_Field_TextArea extends Tracker_Field_Text
 							'y' => tr('Yes'),
 						),
 					),
-					'samerow' => array(
-						'name' => tr('Same Row'),
-						'description' => tr('Display the field name and input on the same row.'),
-						'deprecated' => false,
-						'filter' => 'int',
-						'default' => 1,
-						'options' => array(
-							0 => tr('No'),
-							1 => tr('Yes'),
-						),
-					),
 				),
 			),
 		);
@@ -120,7 +109,6 @@ class Tracker_Field_TextArea extends Tracker_Field_Text
 		} elseif ($this->getOption(3)) {
 			$data['keyup'] = "charCount({$this->getOption(3)}, this, 'cpt_{$this->getConfiguration('fieldId')}', '" . tr('Character Limit Exceeded') . "')";
 		}
-		$data['element_id'] = 'area_' . uniqid();
 		if ($firstTime && $this->getOption(7) === 'y') {	// wysiwyg
 			$is_html = '<input type="hidden" id="allowhtml" value="1" />';
 			$firstTime = false;
@@ -134,7 +122,7 @@ class Tracker_Field_TextArea extends Tracker_Field_Text
 	{
 		$output = parent::renderInnerOutput($context);
 
-		if (!empty($context['list_mode']) && $this->getOption('listmax')) {
+		if (!empty($context['list_mode']) && $context['list_mode'] === 'y' && $this->getOption('listmax')) {
 			TikiLib::lib('smarty')->loadPlugin('smarty_modifier_truncate');
 			return smarty_modifier_truncate(strip_tags($output), $this->getOption('listmax'));
 		} else {

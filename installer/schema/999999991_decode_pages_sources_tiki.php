@@ -23,9 +23,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
  */
 
 
-/**
- * @param $installer
- */
+
 function upgrade_999999991_decode_pages_sources_tiki($installer)
 {
 	global $user_overrider_prefs;

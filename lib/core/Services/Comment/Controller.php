@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -29,16 +29,14 @@ class Services_Comment_Controller
 		// TODO : Add pagination, sorting, thread style, moderation, ...
 		$offset = 0;
 		$per_page = 100;
-		$comments = $commentslib->get_comments("$type:$objectId", null, $offset, $per_page);
-
-		$this->markEditable($comments['data']);
+		$comments_coms = $commentslib->get_comments("$type:$objectId", null, $offset, $per_page);
 
 		return array(
-			'comments' => $comments['data'],
+			'comments' => $comments_coms['data'],
 			'type' => $type,
 			'objectId' => $objectId,
 			'parentId' => 0,
-			'cant' => $comments['cant'],
+			'cant' => $comments_coms['cant'],
 			'offset' => $offset,
 			'per_page' => $per_page,
 			'allow_post' => $this->canPost($type, $objectId),
@@ -93,7 +91,7 @@ class Services_Comment_Controller
 		}
 
 		if ($input->post->int()) {
-			// Validate
+			// Validate 
 
 			if (empty($user)) {
 				if (empty($anonymous_name)) {
@@ -117,11 +115,11 @@ class Services_Comment_Controller
 				$captchalib = TikiLib::lib('captcha');
 
 				if (! $captchalib->validate(
-					array(
-						'recaptcha_challenge_field' => $input->recaptcha_challenge_field->none(),
-						'recaptcha_response_field' => $input->recaptcha_response_field->none(),
-						'captcha' => $input->captcha->none(),
-					)
+								array(
+									'recaptcha_challenge_field' => $input->recaptcha_challenge_field->none(),
+									'recaptcha_response_field' => $input->recaptcha_response_field->none(),
+									'captcha' => $input->captcha->none(),
+								)
 				)
 				) {
 					$errors[] = $captchalib->getErrors();
@@ -129,41 +127,36 @@ class Services_Comment_Controller
 			}
 
 			if ($prefs['comments_notitle'] == 'y') {
-				$title = 'Untitled ' . TikiLib::lib('tiki')->get_long_datetime(TikiLib::lib('tikidate')->getTime());
+				$title = 'Untitled ' . TikiLib::lib('tiki')->get_long_datetime(TikiLib::lib('tikidate')->getTime()); 
 			}
 
 			if (count($errors) === 0) {
 				$message_id = ''; // By ref
 				$threadId = $commentslib->post_new_comment(
-					"$type:$objectId",
-					$parentId,
-					$user,
-					$title,
-					$data,
-					$message_id,
-					$parent ? $parent['message_id'] : '',
-					'n',
-					'',
-					'',
-					$contributions,
-					$anonymous_name,
-					'',
-					$anonymous_email,
-					$anonymous_website
+								"$type:$objectId", 
+								$parentId, 
+								$user, 
+								$title, 
+								$data, 
+								$message_id, 
+								$parent ? $parent['message_id'] : '', 
+								'n', 
+								'', 
+								'', 
+								$contributions, 
+								$anonymous_name, 
+								'', 
+								$anonymous_email, 
+								$anonymous_website
 				);
 
 				if ($threadId) {
-					$this->rememberCreatedComment($threadId);
-
 					if ($prefs['wiki_watch_comments'] == 'y' && $type == 'wiki page') {
 						require_once('lib/notifications/notificationemaillib.php');
 						sendCommentNotification('wiki', $objectId, $title, $data);
 					} else if ($type == 'article') {
 						require_once('lib/notifications/notificationemaillib.php');
 						sendCommentNotification('article', $objectId, $title, $data);
-					} elseif ($prefs['feature_blogs'] == 'y' && $type == 'blog post') { // Blog comment mail
-						require_once('lib/notifications/notificationemaillib.php');
-						 sendCommentNotification('blog', $objectId, $title, $data);
 					} elseif ($type == 'trackeritem') {
 						require_once('lib/notifications/notificationemaillib.php');
 						sendCommentNotification('trackeritem', $objectId, $title, $data, $threadId);
@@ -190,36 +183,6 @@ class Services_Comment_Controller
 			'anonymous_email' => $anonymous_email,
 			'anonymous_website' => $anonymous_website,
 			'errors' => $errors,
-		);
-	}
-
-	function action_edit($input)
-	{
-		$threadId = $input->threadId->int();
-
-		if (! $comment = $this->getCommentInfo($threadId)) {
-			throw new Services_Exception_NotFound;
-		}
-
-		if (! $this->canEdit($comment)) {
-			throw new Services_Exception_Denied;
-		}
-
-		if ($input->edit->int()) {
-			$title = trim($input->title->text());
-			$data = trim($input->data->wikicontent());
-			
-			$commentslib = TikiLib::lib('comments');
-			$commentslib->update_comment($threadId, $title, $comment['comment_rating'], $data);
-
-			return array(
-				'threadId' => $threadId,
-				'comment' => $comment,
-			);
-		}
-
-		return array(
-			'comment' => $comment,
 		);
 	}
 
@@ -381,11 +344,6 @@ class Services_Comment_Controller
 		);
 	}
 
-	function action_deliberation_item($input)
-	{
-		return array();
-	}
-
 	private function canView($type, $objectId)
 	{
 		$perms = $this->getApplicablePermissions($type, $objectId);
@@ -544,44 +502,6 @@ class Services_Comment_Controller
 		return $perms->admin_comments;
 	}
 
-	private function markEditable(& $comments)
-	{
-		foreach ($comments as & $comment) {
-			$comment['can_edit'] = $this->canEdit($comment);
-
-			if ($comment['replies_info']['numReplies'] > 0) {
-				$this->markEditable($comment['replies_info']['replies']);
-			}
-		}
-	}
-
-	private function canEdit(array $comment)
-	{
-		global $prefs, $user;
-
-		if ($prefs['comments_allow_correction'] != 'y') {
-			return false;
-		}
-
-		$tikilib = TikiLib::lib('tiki');
-		$thirtyMinutes = 30*60;
-
-		if ($comment['commentDate'] < $tikilib->now - $thirtyMinutes) {
-			return false;
-		}
-
-		if ($comment['userName'] == $user) {
-			return true;
-		}
-
-		// Handles comments created by anonymous users
-		if (isset($_SESSION['created_comments']) && in_array($comment['threadId'], $_SESSION['created_comments'])) {
-			return true;
-		}
-
-		return false;
-	}
-
 	private function getApplicablePermissions($type, $objectId)
 	{
 		switch ($type) {
@@ -591,15 +511,6 @@ class Services_Comment_Controller
 		default:
 			return Perms::get($type, $objectId);
 		}
-	}
-
-	private function rememberCreatedComment($threadId)
-	{
-		if (! isset($_SESSION['created_comments'])) {
-			$_SESSION['created_comments'] = array();
-		}
-
-		$_SESSION['created_comments'][] = $threadId;
 	}
 }
 

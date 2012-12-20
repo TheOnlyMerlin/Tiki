@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -24,7 +24,7 @@ if (getcwd()) {
 	// fallback to PATH_TRANSLATED. This one may be wrong on some systems, this
 	// is why SCRIPT_FILENAME is tried first.
 	if ( substr($_SERVER['SCRIPT_FILENAME'], 0, strlen($tiki_setup_dir)) != $tikipath ) {
-		// PATH_TRANSLATED is not always set on PHP5, so try to get first value of get_included_files() in this case
+		// PATH_TRANSLATED is not always set on PHP5, so try to get first value of get_included_files() in this case	
 		$scriptDirectory = empty($_SERVER['PATH_TRANSLATED']) ? current(get_included_files()) : $_SERVER['PATH_TRANSLATED'];
 	} else {
 		$scriptDirectory = $_SERVER['SCRIPT_FILENAME'];
@@ -65,14 +65,14 @@ if ( empty($inputConfiguration) ) {
 	$inputConfiguration = array();
 }
 array_unshift(
-	$inputConfiguration, array(
-	  'staticKeyFilters' => array(
-			'cookietab'	=>	'int',
-			'callback'  => 'word',
-		),
-		'staticKeyFiltersForArrays' => array(
-		)
-	)
+				$inputConfiguration, array(
+				  'staticKeyFilters' => array(
+						'cookietab'	=>	'int',
+						'callback'  => 'word',
+					),
+					'staticKeyFiltersForArrays' => array(
+					)
+				)
 );
 
 require_once('lib/init/initlib.php');
@@ -91,14 +91,11 @@ Zend_Loader_Autoloader::getInstance()
 	->registerNamespace('Math')
 	->registerNamespace('Category')
 	->registerNamespace('WikiParser')
-	->registerNamespace('Multilingual')
 	->registerNamespace('StandardAnalyzer')
 	->registerNamespace('Tracker')
 	->registerNamespace('Event_')
 	->registerNamespace('Services_')
-	->registerNamespace('Tiki_')
 	->registerNamespace('TikiDb')
 	->registerNamespace('Report')
 	->registerNamespace('Feed')
-	->registerNamespace('FileGallery')
-	->registerNamespace('WikiPlugin');
+	->registerNamespace('FileGallery');

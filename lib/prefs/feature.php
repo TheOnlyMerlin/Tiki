@@ -39,12 +39,11 @@ function prefs_feature_list($partial = false)
 		),
 		'feature_areas' => array(
 			'name' => tra('Areas'),
-			'warning' => tra('this feature mostlikely will be replaced - please contact the developer mailing list if you have any question'),
 			'description' => tra('Binding categories and perspectives to each other'),
 			'type' => 'flag',
 			'help' => 'Areas',
 			'default' => 'n',
-			'admin' => 'workspace',
+			'admin' => 'areas',
 			'tags' => array('experimental'),
 			'dependencies' => array(
 				'feature_categories',
@@ -92,8 +91,8 @@ function prefs_feature_list($partial = false)
 			'tags' => array('experimental'),
 		),
 		'feature_machine_translation' => array(
-			'name' => tra('Machine Translation'),
-			'description' => tra('Uses machine translation to translate the content of the site to other languages. Note that this feature relies on external services thay may not be free. Google Translate is a paid service.'),
+			'name' => tra('Machine Translation (by Google Translate)'),
+			'description' => tra('Uses Google Translate to translate the content of wiki pages to other languages.'),
 			'help' => 'Machine+Translation',
 			'warning' => tra('Experimental'),
 			'tags' => array('experimental'),
@@ -365,15 +364,6 @@ function prefs_feature_list($partial = false)
 			'description' => tra('The Copyright Management System (or ©MS) is a way of licensing your content'),
 			'help' => 'Copyright',
 			'type' => 'flag',
-			'default' => 'n',
-		),
-		'feature_references' => array(
-			'name' => tra('Wiki References'),
-			'description' => tra('Permits using references and the reference library.'),
-			'type' => 'flag',
-			'dependencies' => array(
-				'feature_wiki',
-				),
 			'default' => 'n',
 		),
 		'feature_shoutbox' => array(
@@ -1194,7 +1184,7 @@ function prefs_feature_list($partial = false)
 			'admin' => 'sefurl',
 		),
 		'feature_sefurl_filter' => array(
-			'name' => tra('Search engine friendly URL Postfilter'),
+			'name' => tra('Search engine friendly url Postfilter'),
 			'help' => 'Rewrite+Rules',
 			'type' => 'flag',
 			'perspective' => false,
@@ -1204,15 +1194,13 @@ function prefs_feature_list($partial = false)
 			'name' => tra('Display article title in the sefurl'),
 			'type' => 'flag',
 			'perspective' => false,
-			'dependencies' => array('feature_sefurl'),				
-			'default' =>'y',
+			'default' =>'n',
 		),	
 		'feature_sefurl_title_blog' => array(
 			'name' => tra('Display blog title in the SEFURL'),
 			'type' => 'flag',
 			'perspective' => false,
-			'dependencies' => array('feature_sefurl'),			
-			'default' =>'y',
+			'default' =>'n',
 		),
 		'feature_sefurl_tracker_prefixalias' => array(
 			'name' => tra('Rewrite tiki-view_tracker.php?itemId=yyy to Prefixyyy page'),
@@ -1408,7 +1396,7 @@ function prefs_feature_list($partial = false)
 			'default' => 'n',
 		),
 		'feature_search_show_pertinence' => array(
-			'name' => tra('Relevance'),
+			'name' => tra('Pertinence'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
@@ -1722,7 +1710,7 @@ function prefs_feature_list($partial = false)
 			'default' => 'n',
 		),
 		'feature_endbody_code' => array(
-			'name' => tra('Custom code just before the closing </body> tag'),
+			'name' => tra('Custom End of <body> Code'),
 			'hint' => tra('Example:') . ' ' . "{wiki}{literal}{GOOGLEANALYTICS(account=xxxx) /}{/literal}{/wiki}",
 			'type' => 'textarea',
 			'size' => '6',
@@ -2280,8 +2268,7 @@ function prefs_feature_list($partial = false)
 			'default' => 'n',
 		),
 		'feature_use_three_colon_centertag' => array(
-			'name' => tra('Center text using ::: instead of ::'),
-			'description' => tr('Useful to avoid conflicts with C++ scope operators or default namespace separator.'),
+			'name' => tra('Use three colons instead of two to center text. Avoids conflict with C++ resolution scope operator.'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
@@ -2588,19 +2575,6 @@ function prefs_feature_list($partial = false)
 			'default' => 'n',
 			'warning' => tra('Experimental'),
 			'tags' => array('experimental'),
-		),
-		'feature_jcapture' => array(
-			'name' => tra('jCapture Screencast'),
-			'type' => 'flag',
-			'description' => tra('Use jCapture applet to create screencasts and capture screenshots.'),
-			'help' => 'jCapture',
-			'default' => 'n',				// include UI lib for more effects
-			'warning' => tra('Experimental'),
-			'tags' => array('experimental'),
-			'dependencies' => array(
-				'auth_token_access',
-				'feature_file_galleries',
-			),
 		),
 	);
 }

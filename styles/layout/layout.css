@@ -24,7 +24,7 @@ html[dir=ltr]>body {
 }
 
 /* Make HTML 5 elements display block-level */  
-header, nav, article, section, footer, address {  
+header, nav, article, footer, address {  
     display: block;  
 } 
 
@@ -326,19 +326,6 @@ li#logout_link a {
 	padding: 0 .5em .2em 0;
 }
 
-.box-quickadmin li {
-	font-size: 0.9em;
-}
-
-.box-quickadmin .cssmenu_horiz a {
-	padding: 0 2.25em 0 0;
-}
-
-.box-quickadmin .cssmenu_horiz ul li {
-	padding-left: 1em;
-	background-color: #fff;
-}
-
 #bottom_modules .box-rsslist br {
 	display: none;
 }
@@ -512,6 +499,8 @@ ul.jumplinks,
 	top: 9010px;
 	left: 9010px;
 	padding: 5px;
+	font-weight: bold;
+	border: 2px solid #191970;
 	width: 6em;
 	z-index: 9;
 }
@@ -1520,13 +1509,6 @@ body.tiki_forums .normal {
 	padding: 3px
 }
 
-.post .forumDeliberationRatingForm
-{
-	width: 100%;
-	float: none ! important;
-	text-align: right;
-}
-
 .postfooter-nav {
 	width: 100%;
 	display: block;
@@ -2061,6 +2043,10 @@ ul.freetagged li {
 	vertical-align: middle;
 }
 
+.webmail_list .button {
+	display: inline-block;
+}
+
 .webmail_message_headers {
 	width: 100%;
 }
@@ -2272,10 +2258,6 @@ div.aclabel, span.aclabel, label.aclabel {
 	padding: 0;
 	margin: 0;
 	list-style: none;
-}
-
-.filter label {
-	display:inline-block;
 }
 
 /* Locator module */
@@ -2531,33 +2513,5 @@ li.archivedate {
     list-style: none outside none;
     text-indent: -15px;
 }
-
-/* cookie consent styles */
-
-#cookie_consent_div {
-	padding: 1em;
-	margin: 1em;
-	border: 1px solid #999;
-	color: #666;
-	background-color: #fff;
-}
-
-#cookie_consent_div.banner {
-	position: fixed;
-	padding: 1em;
-	margin: 0;
-	border: 1px solid #999;
-	width: 100%;
-	top: 0;
-	left: 0;
-	z-index: 100;
-}
-
-#cookie_consent_div .description {
-	font-style: normal;
-	font-size: 1.1em;
-	font-weight: bold;
-}
-
 
 /* End of File */

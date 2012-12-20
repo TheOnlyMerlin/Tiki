@@ -26,10 +26,9 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 				'params' => array(
 					'samerow' => array(
 						'name' => tr('Same Row'),
-						'description' => tr('Display the field name and input on the same row.'),
-						'deprecated' => false,
+						'description' => tr('Display the next field on the same row.'),
+						'deprecated' => true,
 						'filter' => 'int',
-						'default' => 1,
 						'options' => array(
 							0 => tr('No'),
 							1 => tr('Yes'),
@@ -47,7 +46,7 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 					),
 					'append' => array(
 						'name' => tr('Append'),
-						'description' => tr('Text to append when displaying the value.'),
+						'description' => tr('Text to prepend when displaying the value.'),
 						'filter' => 'text',
 					),
 					'max' => array(

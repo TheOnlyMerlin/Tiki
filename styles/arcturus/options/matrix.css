@@ -453,7 +453,7 @@ tr.even td,
 td.even,
 li.even,
 .forum_actions,
-.caltable .even {
+.caleven {
 	color: #90ee90;
 	background: #507050;
 }
@@ -591,13 +591,13 @@ h1.pagetitle a:hover,
     background: url(matrix/ltgreen.png) repeat;
 }
 
-.caltable .odd,
-.caltable .even {
+.calodd,
+.caleven {
 	border: 1px outset #00a000 !important;
 }
 
-.caltable .odd:hover,
-.caltable .even:hover {
+.calodd:hover,
+.caleven:hover {
 	border: 1px outset #00ff00 !important;
 }
 

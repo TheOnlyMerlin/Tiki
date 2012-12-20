@@ -30,7 +30,7 @@ function prefs_feed_list()
 			'default' => '',
 		),
 		'feed_atom_author_email' => array(
-			'name' => tra('Feed author email'),
+			'name' => tra('Feeed author email'),
 			'type' => 'text',
 			'size' => '40',
 			'default' => '',

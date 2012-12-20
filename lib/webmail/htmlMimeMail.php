@@ -321,25 +321,7 @@ class htmlMimeMail
 	*/
 	function setText($text = '')
 	{
-
-		////////////////////////////////////////////////////////////////////////
-		//                                                                    //
-		// hollmeer 2012-11-03: ADDED PGP/MIME ENCRYPTION PREPARATION         //
-		// USING lib/openpgp/opepgplib.php                                    //
-		//                                                                    //
-		global $prefs;
-		if ($prefs['openpgp_gpg_pgpmimemail'] == 'y') {
-			// USE PGP/MIME MAIL VERSION
-			global $openpgplib;
-			// prepend original subject from headers into text body
-			$this->text = $openpgplib->prependSubjectToText($this->headers,$text);
-		} else {
-			// USE ORIGINAL TIKI MAIL VERSION
-			$this->text = $text;
-		}
-		//                                                                    //
-		////////////////////////////////////////////////////////////////////////
-
+		$this->text = $text;
 	}
 
 	/**
@@ -349,27 +331,9 @@ class htmlMimeMail
 	*/
 	function setHtml($html, $text = null, $images_dir = null)
 	{
+		$this->html = $html;
 
-		////////////////////////////////////////////////////////////////////////
-		//                                                                    //
-		// hollmeer 2012-11-03: ADDED PGP/MIME ENCRYPTION PREPARATION         //
-		// USING lib/openpgp/opepgplib.php                                    //
-		//                                                                    //
-		global $prefs;
-		if ($prefs['openpgp_gpg_pgpmimemail'] == 'y') {
-			// USE PGP/MIME MAIL VERSION
-			global $openpgplib;
-			// prepend original subject from headers into text body
-			$ret = $openpgplib->prependSubjectToHtml($this->headers,$html,$text);
-			$this->html = $ret[0];	
-			$this->html_text = $ret[1];
-		} else {
-			// USE ORIGINAL TIKI MAIL VERSION
-			$this->html = $html;
-			$this->html_text = $text;
-		}
-		//                                                                    //
-		////////////////////////////////////////////////////////////////////////
+		$this->html_text = $text;
 
 		if (isset($images_dir)) {
 			$this->_findHtmlImages($images_dir);
@@ -764,62 +728,12 @@ class htmlMimeMail
 
 				$to = $this->_encodeHeader(implode(', ', $recipients), $this->build_params['head_charset']);
 
-				////////////////////////////////////////////////////////////////////////////
-				//                                                                        //
-				// hollmeer 2012-11-03: ADDED PGP/MIME ENCRYPTION                         //
-				// USING lib/openpgp/opepgplib.php                                        //
-				//                                                                        //
-				global $prefs;
-				if ($prefs['openpgp_gpg_pgpmimemail'] == 'y') {
-					// USE PGP/MIME MAIL VERSION
-					global $openpgplib;
-					$pgpmime_msg = $openpgplib->prepareEncryptWithMailSender($headers,
-												 $this->output,
-												 $this->build_params['head_charset'],
-												 $smtp_recipients);
-					// use returned headers-string for pgp/mime instead of originals
-					$headers = $pgpmime_msg[0]; 		// set pgp/mime headers from result array (this is a string)
-					// use md5-hash as PGP/MIME subject instead of original subject
-					$subject = $pgpmime_msg[1]; 		// set pgp/mime subject from result array (this is a string)
-					// use encrypted message body
-					$this->output = $pgpmime_msg[2];	// set pgp/mime encrypted message body from result array (this is a string)
-				}
-				//                                                                        //
-				////////////////////////////////////////////////////////////////////////////
-
-
 				if (!empty($this->return_path)) {
 					// Set the sender for sendmail and use only the email address when the syntax of return_path is like 'Name <email>'
 					$additional_parameters = '-f' . preg_replace('/^.*<(.*?)>.*$/', '$1', $this->return_path);
-					////////////////////////////////////////////////////////////////////////////
-					//                                                                        //
-					// hollmeer 2012-11-03: ADDED PGP/MIME ENCRYPTION                         //
-					// USING lib/openpgp/opepgplib.php                                        //
-					//                                                                        //
-					if ($prefs['openpgp_gpg_pgpmimemail'] == 'y') {
-						// USE PGP/MIME MAIL VERSION
-						$result = mail($to, $subject, $this->output, $pgp_mime_headers, $additional_parameters);
-					} else {
-						// USE ORIGINAL TIKI MAIL VERSION
-						$result = mail($to, $subject, $this->output, implode(CRLF, $headers), $additional_parameters);
-					}
-					//                                                                        //
-					////////////////////////////////////////////////////////////////////////////
+					$result = mail($to, $subject, $this->output, implode(CRLF, $headers), $additional_parameters);
 				} else {
-					////////////////////////////////////////////////////////////////////////////
-					//                                                                        //
-					// hollmeer 2012-11-03: ADDED PGP/MIME ENCRYPTION                         //
-					// USING lib/openpgp/opepgplib.php                                        //
-					//                                                                        //
-					if ($prefs['openpgp_gpg_pgpmimemail'] == 'y') {
-						// USE PGP/MIME MAIL VERSION
-						$result = mail($to, $subject, $this->output, $pgp_mime_headers);
-					} else {
-						// USE ORIGINAL TIKI MAIL VERSION
-						$result = mail($to, $subject, $this->output, implode(CRLF, $headers));
-					}
-					//                                                                        //
-					////////////////////////////////////////////////////////////////////////////
+					$result = mail($to, $subject, $this->output, implode(CRLF, $headers));
 				}
 
 				// Reset the subject in case mail is resent
@@ -879,29 +793,6 @@ class htmlMimeMail
 				// Add To header based on $recipients argument
 				$headers[] = 'To: ' . $this->_encodeHeader(implode(', ', $recipients), $this->build_params['head_charset']);
 
-				////////////////////////////////////////////////////////////////////////////
-				//                                                                        //
-				// hollmeer 2012-11-03: ADDED PGP/MIME ENCRYPTION                         //
-				// USING lib/openpgp/opepgplib.php                                        //
-				//                                                                        //
-				global $prefs;
-				if ($prefs['openpgp_gpg_pgpmimemail'] == 'y') {
-					// USE PGP/MIME MAIL VERSION
-					global $openpgplib;
-					$pgpmime_msg = $openpgplib->prepareEncryptWithSmtpSender($headers,
-												 $this->output,
-												 $this->build_params['head_charset'],
-												 $smtp_recipients);
-					// use returned headers-array for pgp/mime instead of originals
-					$headers = $pgpmime_msg[0]; 		// set pgp/mime headers from result array
-					// use encrypted message body
-					$this->output = $pgpmime_msg[1];	// set pgp/mime encrypted message body from result array
-				} else {
-					// NOTE: NO CHANGE NEEDED, IF USE ORIGINAL TIKI MAIL VERSION
-				}
-				//                                                                        //
-				////////////////////////////////////////////////////////////////////////////
-
 				// Add headers to send_params
 				$send_params['headers'] = $headers;
 				$send_params['recipients'] = array_values(array_unique($smtp_recipients));
@@ -919,22 +810,14 @@ class htmlMimeMail
 				}
 
 				// Send it
-				global $prefs, $tikilib;
-				if( $prefs['zend_mail_queue'] == 'y') {
-					$query = "INSERT INTO `tiki_mail_queue` (message) VALUES (?)";
-		    		$bindvars = array(json_encode($send_params));
-					$tikilib->query($query, $bindvars, -1, 0);
-				} else {			
-	
-					if (!$smtp->send($send_params)) {
-						$this->errors = $smtp->errors;
-		
-						return false;
-					}
+				if (!$smtp->send($send_params)) {
+					$this->errors = $smtp->errors;
+
+					return false;
 				}
-	
+
 				return true;
-				break;
+							break;
 		}
 	}
 
@@ -2349,7 +2232,6 @@ class smtp
 					$this->starttls();
 					$m = $this->auth ? $this->ehlo() : $this->helo();
 				}
-				$this->status = SMTP_STATUS_CONNECTED;
 				return $m;
 			} else {
 				$this->errors[] = 'Failed to connect to server: ' . $errstr;

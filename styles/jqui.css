@@ -651,7 +651,6 @@ body.tiki_cms h1 a.pagetitle:hover {border-bottom: none}
 
 .post .author_info .icons {
 	text-align: left;
-	display: inline;
 }
 
 .post .author_info,
@@ -732,12 +731,12 @@ body.tiki_cms h1 a.pagetitle:hover {border-bottom: none}
 }
 
 .caldark .calfocus {background: none;}
-.caltable .odd, .caltable .even {border-color: #aaa}
+.calodd, .caleven {border-color: #aaa}
 /*.calodd .calfocus {background: }*/
-.caltable .odd {
+.calodd {
 	background: #e2e2e2;
 }
-.caltable .even {
+.caleven {
 	background: #cccccc;
 }
 

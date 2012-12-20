@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -100,22 +97,6 @@ if (!$skip) {
 			}
 		}
 	}
-}
-
-//if the file is remote, display, and don't cache
-$attributelib = TikiLib::lib('attribute');
-$attributes = $attributelib->get_attributes('file', $info['fileId']);
-
-if (isset($attributes['tiki.content.url'])) {
-	$smarty->loadPlugin('smarty_modifier_sefurl');
-	$src = smarty_modifier_sefurl($info['fileId'], 'file');
-	session_write_close();
-
-	$client = $tikilib->get_http_client($src);
-	$response = $client->request();
-	header('Content-Type: ' . $response->getHeader('Content-Type'));
-	echo $response->getBody();
-	exit();
 }
 
 // Add hits ( if download or display only ) + lock if set

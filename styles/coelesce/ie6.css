@@ -140,8 +140,11 @@ th,
 	padding: 0;
 }
 
-.caltable .odd,
-.caltable .even {
+.calodd {
+	padding: 0;
+}
+
+.caleven {
 	padding: 0;
 }
 

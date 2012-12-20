@@ -71,16 +71,6 @@
 	border-style: solid;
 }
 
-/* Table that contains the week view */
-.calendarweek {
-	border: none;
-	padding: 0;
-	margin: 0;
-	width: 100%;
-	border-collapse: collapse;
-	border-bottom: 1px solid #ccc;
-}
-
 .Cal {
 	font-weight: normal;
 	border-color: transparent;
@@ -103,6 +93,7 @@
 	font-weight: normal;
 	text-decoration: none;
 }
+
 .caltitle {
 	font-weight: bold;
 	color: #425262;
@@ -474,6 +465,12 @@ a.viewmodeoff img {
 	vertical-align: middle;
 }
 
+.caltable .odd,
+.caltable .even {
+	margin: 1px !important;
+	border: 0 !important;
+}
+
 .addevent {
 	padding: 0 5px;
 	float: right;
@@ -485,12 +482,37 @@ a.viewmodeoff img {
 	height: 20px;
 }
 
+.calodd {
+	background: #CDE;
+}
+
+.caleven {
+	background: #DEF;
+}
+
+.calodd,
+.caleven {
+	border: 1px solid #8CACBB;
+}
+
+.calodd .calfocus,
+.calodd .calfocuson,
+.caleven .calfocus,
+.caleven .calfocuson {
+	background: none;
+	border-width: 0;
+	padding-top: 2px;
+	padding-left: 2px;
+}
+
 #configlinks {
 	width: 100%;
 	padding: 5px;
 }
 
 * html .addevent,
+* html .calodd,
+* html .caleven,
 * html .caldark {
 	padding: 0;
 }

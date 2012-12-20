@@ -6,10 +6,11 @@
 // $Id$
 
 require_once ('tiki-setup.php');
-
+include_once ('lib/banners/bannerlib.php');
+if (!isset($bannerlib)) {
+	$bannerlib = new BannerLib;
+}
 $access->check_feature('feature_banners');
-
-$bannerlib = TikiLib::lib('banner');
 
 if (isset($_REQUEST["remove"])) {
 	if ($tiki_p_admin_banners != 'y') {
@@ -21,7 +22,7 @@ if (isset($_REQUEST["remove"])) {
 	$access->check_authenticity();
 	$bannerlib->remove_banner($_REQUEST["remove"]);
 }
-// This script can receive the threshold
+// This script can receive the thresold
 // for the information as the number of
 // days to get in the log 1,3,4,etc
 // it will default to 1 recovering information for today

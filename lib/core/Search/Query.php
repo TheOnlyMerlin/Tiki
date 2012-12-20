@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -116,17 +116,17 @@ class Search_Query
 			}
 		}
 
-		$this->addPart(new Search_Expr_Range($from, $to), 'timestamp', $field);
+		$this->expr->addPart(new Search_Expr_Range($from, $to, 'timestamp', $field));
 	}
 
 	function filterTextRange($from, $to, $field = 'title')
 	{
-		$this->addPart(new Search_Expr_Range($from, $to), 'plaintext', $field);
+		$this->expr->addPart(new Search_Expr_Range($from, $to, 'plaintext', $field));
 	}
 
 	function filterInitial($initial, $field = 'title')
 	{
-		$this->addPart(new Search_Expr_Range($initial, substr($initial, 0, -1) . chr(ord(substr($initial, -1)) + 1)), 'plaintext', $field);
+		$this->expr->addPart(new Search_Expr_Range($initial, substr($initial, 0, -1) . chr(ord(substr($initial, -1)) + 1), 'plaintext', $field));
 	}
 
 	function filterRelation($query, array $invertable = array())
@@ -146,7 +146,7 @@ class Search_Query
 			$part->setField($f);
 			$parts[] = $part;
 		}
-
+		
 		if (count($parts) === 1) {
 			$this->expr->addPart($parts[0]);
 		} else {
@@ -196,33 +196,14 @@ class Search_Query
 	{
 		return $index->invalidateMultiple($this->expr);
 	}
-
+	
 	private function parse($query)
 	{
 		if (is_string($query)) {
 			$parser = new Search_Expr_Parser;
 			$query = $parser->parse($query);
-		} elseif ($query instanceof Search_Expr_Interface) {
-			$query = clone $query;
 		}
 
 		return $query;
-	}
-
-	function getTerms()
-	{
-		$terms = array();
-
-		$extractor = new Search_Type_Factory_Direct;
-
-		$this->expr->walk(
-			function ($expr) use (& $terms, $extractor) {
-				if ($expr instanceof Search_Expr_Token && $expr->getField() == 'contents') {
-					$terms[] = $expr->getValue($extractor)->getValue();
-				}
-			}
-		);
-
-		return $terms;
 	}
 }

@@ -25,14 +25,14 @@
 
 <a class="link" href="tiki-forums.php">{tr}Forums{/tr}</a> 
 {$prefs.site_crumb_seper} 
-<a class="link" href="tiki-view_forum.php?forumId={$forumId}">{$forum_info.name|escape}</a>{if isset($thread_info.topic.threadId) and $thread_info.topic.threadId}
+<a class="link" href="tiki-view_forum.php?forumId={$forumId}">{$forum_info.name|escape}</a>{if $thread_info.topic.threadId} 
 {$prefs.site_crumb_seper} 
-<a class="link" href="tiki-view_forum_thread.php?comments_parentId={$thread_info.topic.threadId}{if $smarty.request.topics_offset}&amp;topics_offset={$smarty.request.topics_offset}{/if}{$topics_sort_mode_param}{$topics_threshold_param}{$topics_find_param}">{$thread_info.topic.title}</a>{/if}
+<a class="link" href="tiki-view_forum_thread.php?comments_parentId={$thread_info.topic.threadId}{if $smarty.request.topics_offset}&amp;topics_offset={$smarty.request.topics_offset}{/if}{$topics_sort_mode_param}{$topics_threshold_param}{$topics_find_param}">{$thread_info.topic.title}</a>{/if} 
 {$prefs.site_crumb_seper} 
 {$thread_info.title|escape}
 
 <div style="text-align: right; margin-bottom: 15px;">
-{if empty($thread_info.topic.threadId)}
+{if !$thread_info.topic.threadId}
 	<span>
 	{if ($prev_topic and $prev_topic ne $comments_parentId) or $next_topic}[ {if $prev_topic and $prev_topic ne $comments_parentId}<a href="tiki-view_forum_thread.php?comments_parentId={$prev_topic}&amp;topics_offset={$topics_prev_offset}{$topics_sort_mode_param}{$topics_threshold_param}{$topics_find_param}{$comments_per_page_param}{$thread_style_param}{$thread_sort_mode_param}{$comments_threshold_param}" class="link">{tr}prev topic{/tr}</a>{if $next_topic} | {/if}{/if}
 	{if $next_topic}<a href="tiki-view_forum_thread.php?comments_parentId={$next_topic}&amp;topics_offset={$topics_next_offset}{$topics_sort_mode_param}{$topics_threshold_param}{$topics_find_param}{$comments_per_page_param}{$thread_style_param}{$thread_sort_mode_param}{$comments_threshold_param}" class="link">{tr}next topic{/tr}</a>{/if} ]{/if}
@@ -54,7 +54,7 @@
 			{/if}
 		{/if}
 
-		{if isset($tiki_p_forum_lock) and $tiki_p_forum_lock eq 'y'}
+		{if $tiki_p_forum_lock eq 'y'}
 			{if $thread_info.locked eq 'y'}
 				{self_link lock='n' _icon='lock_break' _alt="{tr}Unlock{/tr}"}{/self_link}
 			{else}
@@ -72,14 +72,14 @@
 	{assign var="postclass" value="forumpost"}
 {/if}
 
-<article class="top_post">
+<div class="top_post">
   {if $prefs.feature_freetags eq 'y' and $tiki_p_view_freetags eq 'y' and $prefs.freetags_show_middle eq 'y' and !$thread_info.topic.threadId}
 	{include file='freetag_list.tpl'}
 	<div style="text-align:right">{wikiplugin _name="addfreetag" object="forum post:$comments_parentId"}{/wikiplugin}</div>
   {/if}
 
   {include file='comment.tpl' first='y' comment=$thread_info thread_style='commentStyle_plain'}
-</article>
+</div>
 
 {include file='comments.tpl'}
 
@@ -101,10 +101,10 @@
 
 			<small>{tr}Show posts:{/tr}</small>
 			<select name="time_control" onchange="javascript:document.getElementById('time_control').submit();">
-				<option value="" {if empty($smarty.request.time_control)}selected="selected"{/if}>{tr}All posts{/tr}</option>
-				<option value="3600" {if isset($smarty.request.time_control) and $smarty.request.time_control eq 3600}selected="selected"{/if}>{tr}Last hour{/tr}</option>
-				<option value="86400" {if isset($smarty.request.time_control) and $smarty.request.time_control eq 86400}selected="selected"{/if}>{tr}Last 24 hours{/tr}</option>
-				<option value="172800" {if isset($smarty.request.time_control) and $smarty.request.time_control eq 172800}selected="selected"{/if}>{tr}Last 48 hours{/tr}</option>
+				<option value="" {if $smarty.request.time_control eq ''}selected="selected"{/if}>{tr}All posts{/tr}</option>
+				<option value="3600" {if $smarty.request.time_control eq 3600}selected="selected"{/if}>{tr}Last hour{/tr}</option>
+				<option value="86400" {if $smarty.request.time_control eq 86400}selected="selected"{/if}>{tr}Last 24 hours{/tr}</option>
+				<option value="172800" {if $smarty.request.time_control eq 172800}selected="selected"{/if}>{tr}Last 48 hours{/tr}</option>
 			</select>
 		</form>
 	</td>
@@ -125,7 +125,7 @@
 		</td>
 </tr></table>
 
-{if isset($view_atts) and $view_atts eq 'y'}
+{if $view_atts eq 'y'}
 <h2 id="attachments">{tr}Attachments{/tr}</h2>
 <table class="normal">
 	<tr>
