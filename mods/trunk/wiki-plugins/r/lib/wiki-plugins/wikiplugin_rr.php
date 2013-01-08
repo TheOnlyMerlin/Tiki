@@ -188,7 +188,7 @@ function wikiplugin_rr_info() {
 
 
 function wikiplugin_rr($data, $params) {
-	global $smarty, $trklib, $tikilib, $prefs, $dbversion_tiki, $user ;
+	global $smarty, $trklib, $tikilib, $prefs, $dbversion_tiki, $tikidomainslash, $user ;
 
 	include_once('db/tiki-db.php');	// to set up multitiki etc if there ($tikidomain)
 
@@ -241,7 +241,11 @@ function wikiplugin_rr($data, $params) {
 
 		if ( empty($info['filetype']) || $info['filetype'] == 'application/x-octetstream' || $info['filetype'] == 'application/octet-stream' ) {
 			include_once('lib/mime/mimelib.php');
-			$info['filetype'] = tiki_get_mime($filepath, 'application/octet-stream');
+			if ($dbversion_tiki<9.0) {
+					$info['filetype'] = tiki_get_mime($filepath, 'application/octet-stream'); # Old code not working after Tiki9 r42542: http://code.tiki.org/Commit+42542.
+			} else {
+					$info['filetype'] = TikiLib::lib('mime')->from_path($filepath, 'application/octet-stream'); # New code after Tiki9 r42542: http://code.tiki.org/Commit+42542
+			}			
 		}
 
 		$type = $info["filetype"];			
@@ -300,8 +304,8 @@ function wikiplugin_rr($data, $params) {
 		// --slave : Make R run as quietly as possible. It implies --quiet and --no-save
 		defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' --vanilla --slave'));
 		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
-		defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp/cache' .$tikidomainslash);
-		defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache' .$tikidomainslash);
+		defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash);
+		defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash);
 	}
 
 #	defined('graph_file_name')  || define('graph_file_name', $sha1 . '.png');
