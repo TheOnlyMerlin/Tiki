@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -44,7 +44,7 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 					),
 					'imageParams' => array(
 						'name' => tr('Image parameters'),
-						'description' => tr('URL encoded params used as in the {img} plugin. e.g.') . ' "max=400&desc=namedesc&stylebox=block"',
+						'description' => tr('URL encoded params used as in the {img} plugin. e.g.') . ' max=400&desc=namedesc&stylebox=block"',
 						'filter' => 'text',
 					),
 					'imageParamsForLists' => array(
@@ -71,11 +71,6 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 							'y' => tr('Yes'),
 						),
 					),
-					'browseGalleryId' => array(
-						'name' => tr('Browse Gallery ID'),
-						'description' => tr('File gallery browse files. Use 0 for root file gallery. (requires elFinder feature - experimental)'),
-						'filter' => 'int',
-					),
 				),
 			),
 		);
@@ -83,9 +78,9 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 
 	function getFieldData(array $requestData = array())
 	{
-		$galleryId = (int) $this->getOption('galleryId');
-		$count = (int) $this->getOption('count');
-		$deepGallerySearch = (boolean) $this->getOption('deepGallerySearch');
+		$galleryId = (int) $this->getOption(0);
+		$count = (int) $this->getOption(2);
+		$deepGallerySearch = (boolean) $this->getOption(6);
 
 		$value = '';
 		$ins_id = $this->getInsertId();
@@ -99,22 +94,22 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 			// Add manually uploaded files (non-HTML5 browsers only)
 			foreach (array_keys($_FILES[$ins_id]['name']) as $index) {
 				$fileIds[] = $this->handleUpload(
-					$galleryId,
-					array(
-						'name' => $_FILES[$ins_id]['name'][$index],
-						'type' => $_FILES[$ins_id]['type'][$index],
-						'size' => $_FILES[$ins_id]['size'][$index],
-						'tmp_name' => $_FILES[$ins_id]['tmp_name'][$index],
-					)
+								$galleryId, 
+								array(
+									'name' => $_FILES[$ins_id]['name'][$index],
+									'type' => $_FILES[$ins_id]['type'][$index],
+									'size' => $_FILES[$ins_id]['size'][$index],
+									'tmp_name' => $_FILES[$ins_id]['tmp_name'][$index],
+								)
 				);
 			}
 
 			// Remove missed uploads
 			$fileIds = array_filter($fileIds);
 
-			// Keep only the last files if a limit is applied
+			// Keep only the first files if a limit is applied
 			if ($count) {
-				$fileIds = array_slice($fileIds, -$count);
+				$fileIds = array_slice($fileIds, 0, $count);
 			}
 
 			// Obtain the info for display and filter by type if specified
@@ -129,7 +124,7 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 			// Obtain the information from the database for display
 			$fileIds = array_filter(explode(',', $value));
 			$fileInfo = $this->getFileInfo($fileIds);
-
+			
 		}
 
 		if ($deepGallerySearch) {
@@ -140,7 +135,7 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 			$gallery_list = $galleryId;
 		}
 
-		if ($this->getOption('displayImages') == 'y' && $fileIds) {
+		if ($this->getOption(3) == 'y' && $fileIds) {
 			$firstfile = $fileIds[0];
 		} else {
 			$firstfile = 0;
@@ -155,7 +150,7 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 			'files' => $fileInfo,
 			'firstfile' => $firstfile,
 			'value' => $value,
-			'filter' => $this->getOption('filter'),
+			'filter' => $this->getOption(1),
 			'gallerySearch' => $gallery_list,
 		);
 	}
@@ -179,10 +174,10 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 		if ($context['list_mode'] === 'csv') {
 			return $value;
 		}
-
+		
 		$ret = '';
 		if (!empty($value)) {
-			if ($this->getOption('displayImages')) { // images
+			if ($this->getOption(3)) { // images
 				$params = array(
 					'fileId' => $value,
 				);
@@ -207,7 +202,7 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 				$smarty = TikiLib::lib('smarty');
 				$smarty->loadPlugin('smarty_function_object_link');
 				$ret = '<ol>';
-
+				
 				foreach ($this->getConfiguration('files') as $fileId => $file) {
 					$ret .= '<li>';
 					$ret .= smarty_function_object_link(array('type' => 'file', 'id' => $fileId, 'title' => $file['name']), $smarty);
@@ -227,7 +222,7 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 							<img width='16' height='16' class='icon' alt='Edit' src='img/icons/page_edit.png' />
 						</a>";
 					}
-
+					
 					$ret .= '</li>';
 				}
 				$ret .= '</ol>';
@@ -270,7 +265,7 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 
 	function filterFile($info)
 	{
-		$filter = $this->getOption('filter');
+		$filter = $this->getOption(1);
 
 		if (! $filter) {
 			return true;
@@ -291,15 +286,15 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 		$table = $db->table('tiki_files');
 
 		$data = $table->fetchAll(
-			array(
-				'fileId',
-				'name',
-				'filetype',
-				'archiveId'
-			),
-			array(
-				'fileId' => $table->in($ids),
-			)
+						array(
+							'fileId', 
+							'name', 
+							'filetype', 
+							'archiveId'
+						), 
+						array(
+							'fileId' => $table->in($ids),
+						)
 		);
 
 		$out = array();
@@ -338,7 +333,7 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 
 		$fileIds = $this->getConfiguration('files');
 
-		if ($this->getOption('displayImages') == 'y' && is_array($fileIds) && count($fileIds) > 0) {
+		if ($this->getOption(3) == 'y' && is_array($fileIds) && count($fileIds) > 0) {
 			return $filegallib->update_single_file($gal_info, $file['name'], $file['size'], $file['type'], file_get_contents($file['tmp_name']), $fileIds[0]);
 		} else {
 			return $filegallib->upload_single_file($gal_info, $file['name'], $file['size'], $file['type'], file_get_contents($file['tmp_name']));

@@ -1,13 +1,8 @@
 <?php
-/**
- * Tiki's Installation script.
- * 
- * Used to install a fresh Tiki instance, to upgrade an existing Tiki to a newer version and to test sendmail.
- *
- * @package TikiWiki 
- * @copyright (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project. All Rights Reserved. See copyright.txt for details and a complete list of authors.
- * @licence Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
- */
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
+// All Rights Reserved. See copyright.txt for details and a complete list of authors.
+// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 $in_installer = 1;
@@ -21,9 +16,9 @@ ini_set('display_errors', 1);
 
 // Check that PHP version is sufficient
 
-if (version_compare(PHP_VERSION, '5.3.0', '<')) {
-	$title = 'PHP 5.3 is required';
-	$content = '<p>Please contact your system administrator ( if you are not the one ;) ). Your version: '.PHP_VERSION.' <br /> <br /> '.'Please also visit <a href="tiki-check.php">Server Check</a>'.'</p>';
+if (version_compare(PHP_VERSION, '5.2.0', '<')) {
+	$title = 'PHP 5.2 is required';
+	$content = '<p>Please contact your system administrator ( if you are not the one ;) ). Your version: '.PHP_VERSION.'.</p>';
 	createPage($title, $content);
 }
 
@@ -115,14 +110,7 @@ if (isset($_SESSION['accessible'])) {
 }
 
 
-/**
- * creates the HTML page to be displayed.
- * 
- * Tiki may not have been installed when we reach here, so we can't use our templating system yet. 
- * 
- * @param string $title   page Title
- * @param mixed  $content page Content
- */
+
 function createPage($title, $content)
 {
 	echo <<<END

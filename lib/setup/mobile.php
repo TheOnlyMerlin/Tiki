@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -21,7 +21,7 @@ if ( !isset($_REQUEST['mobile_mode']) || $_REQUEST['mobile_mode'] === 'y' ) {
 						$uagent_info->DetectOperaMobile() ||
 						$uagent_info->DetectPalmWebOS();
 
-	if ((!getCookie('mobile_mode') && $supported_device) || getCookie('mobile_mode') === 'y') {		// supported by jquery.mobile
+	if ((!isset($_COOKIE['mobile_mode']) && $supported_device) || $_COOKIE['mobile_mode'] === 'y') {		// supported by jquery.mobile
 
 		//die(var_dump($prefs['mobile_mode'], $_REQUEST['mobile_mode'], $_COOKIE['mobile_mode']));
 		$prefs['mobile_mode'] = 'y';
@@ -82,4 +82,4 @@ if ( !isset($_REQUEST['mobile_mode']) || $_REQUEST['mobile_mode'] === 'y' ) {
 	$prefs['mobile_mode'] = 'n';
 }
 
-setCookieSection('mobile_mode', $prefs['mobile_mode']);
+setcookie('mobile_mode', $prefs['mobile_mode']);

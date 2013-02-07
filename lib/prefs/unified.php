@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -155,12 +155,6 @@ function prefs_unified_list()
 				'permName' =>tr('Permanent Name'),
 				'fieldId' => tr('Field ID (Backward compatibility mode with Tiki 7 and 8)'),
 			),
-		),
-		'unified_parse_results' => array(
-			'name' => tra('Parse the results'),
-			'description' => tra('Parse the results. May impact the performance'),
-			'type' => 'flag',
-			'default' => 'n',
 		),
 		'unified_excluded_categories' => array(
 			'name' => tra('Excluded categories'),

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -65,8 +65,8 @@ function smarty_block_tabset($params, $content, $smarty, &$repeat)
 			setCookieSection($smarty_tabset_name, $cookietab, 'tabs');	// too late to set it here as output has started
 		}
 
-		// If the tabset specifies the tab, override any kind of memory but only if not doing "no tabs" mode
-		if (isset($params['cookietab']) && $cookietab !== 'n') {
+		// If the tabset specifies the tab, override any kind of memory
+		if (isset($params['cookietab'])) {
 			$cookietab = $params['cookietab'];
 		}
 
@@ -118,7 +118,7 @@ function smarty_block_tabset($params, $content, $smarty, &$repeat)
 			$ret .= '</ul></div>';
 
 		} else {	// notmal non-mobile rendering
-
+			
 			$ret .= '<div class="container' . $content_class . '">';
 			foreach ($smarty_tabset[$tabset_index]['tabs'] as $value) {
 				$ret .= '<span class="tabmark tab'.$count.' '.($count == $cookietab ? 'tabactive' : '').'">'.
@@ -133,7 +133,7 @@ function smarty_block_tabset($params, $content, $smarty, &$repeat)
 		// add some jq to initialize the tab, needed when page is cached
 		if ($tabset_index === 1) {		// override cookie with query cookietab
 			$headerlib->add_jq_onready(
-				'
+							'
 var ctab = location.search.match(/cookietab=(\d+)/);
 if (ctab) {
 	setCookie("'.$smarty_tabset_name.'", ctab[1],"tabs");

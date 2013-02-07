@@ -1,13 +1,13 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 /**
  * Handler class for ItemsList
- *
+ * 
  * Letter key: ~l~
  *
  */
@@ -82,35 +82,34 @@ class Tracker_Field_ItemsList extends Tracker_Field_Abstract
 			'items' => $list,
 		);
 	}
-
+	
 	function renderInput($context = array())
 	{
 		return tr('Read Only');
 	}
 
-	function renderOutput( $context = array() )
+	function renderOutput( $context = array() ) 
 	{
-		if (isset($context['search_render']) && $context['search_render'] == 'y') {
-			$items = $this->getData($this->getConfiguration('fieldId'));
-		} else {
-			$items = $this->getItemIds();
-		}
-
-		$list = $this->getItemLabels($items);
-
 		if ($context['list_mode'] === 'csv') {
-			return implode('%%%', $list);
+			return $this->getConfiguration('value');
 		} else {
+			if (isset($context['search_render']) && $context['search_render'] == 'y') {
+				$items = $this->getData($this->getConfiguration('fieldId'));
+			} else {
+				$items = $this->getItemIds();
+			}
+
+			$list = $this->getItemLabels($items);
 			return $this->renderTemplate(
-				'trackeroutput/itemslist.tpl',
-				$context,
-				array(
-					'links' => (bool) $this->getOption(4),
-					'raw' => (bool) $this->getOption(3),
-					'itemIds' => implode(',', $items),
-					'items' => $list,
-					'num' => count($list),
-				)
+							'trackeroutput/itemslist.tpl', 
+							$context, 
+							array(
+								'links' => (bool) $this->getOption(4),
+								'raw' => (bool) $this->getOption(3),
+								'itemIds' => implode(',', $items),
+								'items' => $list,
+								'num' => count($list),
+							)
 			);
 		}
 	}
@@ -119,7 +118,7 @@ class Tracker_Field_ItemsList extends Tracker_Field_Abstract
 	{
 		$items = $this->getItemIds();
 
-		$list = $this->getItemLabels($items, true);
+		$list = $this->getItemLabels($items);
 		$listtext = implode(' ', $list);
 
 		return array(
@@ -182,7 +181,7 @@ class Tracker_Field_ItemsList extends Tracker_Field_Abstract
 		return $items;
 	}
 
-	private function getItemLabels($items, $quick = false)
+	private function getItemLabels($items)
 	{
 		$displayFields = $this->getOption(3);
 		$trackerId = (int) $this->getOption(0);
@@ -196,7 +195,7 @@ class Tracker_Field_ItemsList extends Tracker_Field_Abstract
 		$list = array();
 		$trklib = TikiLib::lib('trk');
 		foreach ($items as $itemId) {
-			if ($displayFields && ! $quick) {
+			if ($displayFields) {
 				$list[$itemId] = $trklib->concat_item_from_fieldslist($trackerId, $itemId, $displayFields, $status, ' ');
 			} else {
 				$list[$itemId] = $trklib->get_isMain_value($trackerId, $itemId);

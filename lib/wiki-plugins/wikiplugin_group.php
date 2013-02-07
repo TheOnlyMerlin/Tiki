@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -44,15 +44,11 @@ function wikiplugin_group_info()
 
 function wikiplugin_group($data, $params)
 {
-	global $user, $prefs, $tikilib, $smarty, $groupPluginReturnAll;
+	global $user, $prefs, $tikilib, $smarty;
 	$dataelse = '';
 	if (strrpos($data, '{ELSE}')) {
 		$dataelse = substr($data, strrpos($data, '{ELSE}')+6);
 		$data = substr($data, 0, strrpos($data, '{ELSE}'));
-	}
-
-	if (isset($groupPluginReturnAll) && $groupPluginReturnAll == true) {
-		return $data.$dataelse;
 	}
 
 	if (!empty($params['friends']) && $prefs['feature_friends'] == 'y') {

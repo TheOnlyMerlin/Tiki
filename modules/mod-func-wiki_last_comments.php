@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_wiki_last_comments_info()
 {
 	return array(
@@ -35,19 +32,10 @@ function module_wiki_last_comments_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_wiki_last_comments($mod_reference, $module_params)
 {
 	if (!function_exists('module_last_comments')) {
-        /**
-         * @param $limit
-         * @param string $type
-         * @return array|null
-         */
-        function module_last_comments($limit, $type='wiki page')
+		function module_last_comments($limit, $type='wiki page')
 		{
 			global $tikilib, $user;
 			$bindvars = array($type);
@@ -61,7 +49,7 @@ function module_wiki_last_comments($mod_reference, $module_params)
 						$where = 'and `approved`!=?';
 						$bindvars[] = 'n';
 					}
-					break;
+								break;
 
 				case 'wiki page':
 					$join = '';
@@ -71,7 +59,7 @@ function module_wiki_last_comments($mod_reference, $module_params)
 						$where = 'and `approved`!=?';
 						$bindvars[] = 'n';
 					}
-					break;
+								break;
 			}
 
 			$query = "select tc.* $get from `tiki_comments` as tc $join where `objectType`=? $where order by `commentDate` desc";
@@ -82,11 +70,11 @@ function module_wiki_last_comments($mod_reference, $module_params)
 				switch ($type) {
 					case 'wiki page':
 						$perm = 'tiki_p_view';
-						break;
+									break;
 
 					case 'article':
 						$perm = 'tiki_p_read_article';
-						break;
+									break;
 
 					default:
 						return null;
@@ -102,20 +90,18 @@ function module_wiki_last_comments($mod_reference, $module_params)
 	if (!isset($module_params['type'])) $module_params['type'] = "wiki page";
 	switch ($module_params['type']) {
 		case 'cms': case 'article': case 'articles':
-			if (!$prefs['feature_articles']) {
+			if (!$prefs['feature_articles']) 
 				return;
-			}
 			$module_params['type'] = 'article';
 			$smarty->assign('tpl_module_title', tra('Last article comments'));
-			break;
+						break;
 
 		default:
-			if (!$prefs['feature_wiki']) {
+			if (!$prefs['feature_wiki'])
 				return;
-			}
 			$module_params['type'] = 'wiki page';
 			$smarty->assign('tpl_module_title', tra('Last wiki comments'));
-			break;
+						break;
 	}
 
 	$comments = module_last_comments($mod_reference['rows'], $module_params['type']);

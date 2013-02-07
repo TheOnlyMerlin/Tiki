@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 }
 
 
-/**
- * @return array
- */
 function module_map_edit_features_info()
 {
 	return array(
@@ -42,10 +39,6 @@ function module_map_edit_features_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_map_edit_features($mod_reference, $module_params)
 {
 	$targetField = null;
@@ -70,14 +63,14 @@ function module_map_edit_features($mod_reference, $module_params)
 	}
 
 	$smarty->assign(
-		'edit_features',
-		array(
-			'trackerId' => $module_params['trackerId'],
-			'definition' => $definition,
-			'field' => $targetField,
-			'hiddenInput' => $hidden,
-			'standardControls' => isset($module_params['standard']) ? intval($module_params['standard']) : 1,
-		)
+					'edit_features', 
+					array(
+						'trackerId' => $module_params['trackerId'],
+						'definition' => $definition,
+						'field' => $targetField,
+						'hiddenInput' => $hidden,
+						'standardControls' => isset($module_params['standard']) ? intval($module_params['standard']) : 1,
+					)
 	);
 }
 

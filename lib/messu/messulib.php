@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -27,8 +27,8 @@ class Messu extends TikiLib
 		$hash = md5($subject . $body);
 
 		if ($this->getOne(
-			'select count(*) from `messu_sent` where `user`=? and `user_from`=? and `hash`=?',
-			array($user, $from, $hash)
+						'select count(*) from `messu_sent` where `user`=? and `user_from`=? and `hash`=?',
+						array($user, $from, $hash)
 		)
 		) {
 			return false;
@@ -39,22 +39,22 @@ class Messu extends TikiLib
 						' `isRead`, `isReplied`, `isFlagged`, `priority`, `hash`, `replyto_hash`)' .
 						' values(?,?,?,?,?,?,?,?,?,?,?,?,?)';
 		$this->query(
-			$query,
-			array(
-				$user,
-				$from,
-				$to,
-				$cc,
-				$subject,
-				$body,
-				(int) $this->now,
-				'n',
-				'n',
-				'n',
-				(int) $priority,
-				$hash,
-				$replyto_hash
-			)
+						$query,
+						array(
+							$user, 
+							$from, 
+							$to, 
+							$cc, 
+							$subject, 
+							$body, 
+							(int) $this->now, 
+							'n', 
+							'n', 
+							'n', 
+							(int) $priority, 
+							$hash, 
+							$replyto_hash
+						)
 		);
 
 		return true;
@@ -73,8 +73,8 @@ class Messu extends TikiLib
 		$hash = md5($subject . $body);
 
 		if ($this->getOne(
-			'select count(*) from `messu_messages` where `user`=? and `user_from`=? and `hash`=?',
-			array($user, $from, $hash)
+						'select count(*) from `messu_messages` where `user`=? and `user_from`=? and `hash`=?', 
+						array($user, $from, $hash)
 		)
 		) {
 			return false;
@@ -86,22 +86,22 @@ class Messu extends TikiLib
 					' values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
 		$this->query(
-			$query,
-			array(
-				$user,
-				$from,
-				$to,
-				$cc,
-				$subject,
-				$body,
-				(int) $this->now,
-				'n',
-				'n',
-				'n',
-				(int) $priority,
-				$hash,
-				$replyto_hash
-			)
+						$query, 
+						array(
+							$user, 
+							$from, 
+							$to, 
+							$cc, 
+							$subject, 
+							$body, 
+							(int) $this->now, 
+							'n', 
+							'n', 
+							'n', 
+							(int) $priority, 
+							$hash, 
+							$replyto_hash
+						)
 		);
 
 		// Now check if the user should be notified by email
@@ -141,7 +141,7 @@ class Messu extends TikiLib
 					$from_email = $userlib->get_user_email($from);
 
 					if ($bcc_sender === 'y' && !empty($from_email)) {
-						$mail->setBcc($from_email);
+						$mail->setHeader('Bcc', $from_email);
 					}
 
 					if ($replyto_email !== 'y' && $userlib->get_user_preference($from, 'email is public', 'n') == 'n') {
@@ -149,12 +149,14 @@ class Messu extends TikiLib
 					}
 
 					if (!empty($from_email)) {
-						$mail->setReplyTo($from_email);
+						$mail->setHeader('Reply-To', $from_email);
 					}
 				}
 
-				if (!empty($from_email)) {
-					$mail->setFrom($from_email);
+				if (!empty($prefs['sender_email'])) {
+					$mail->setHeader('From', $prefs['sender_email']);
+				} else if (!empty($from_email)) {
+					$mail->setHeader('From', $from_email);
 				}
 
 				if (!$mail->send(array($email), 'mail')) {

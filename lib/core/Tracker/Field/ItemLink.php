@@ -1,23 +1,18 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 /**
  * Handler class for ItemLink
- *
+ * 
  * Letter key: ~r~
  *
  */
 class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
 {
-	const CASCADE_NONE = 0;
-	const CASCADE_CATEG = 1;
-	const CASCADE_STATUS = 2;
-	const CASCADE_DELETE = 4;
-
 	public static function getTypes()
 	{
 		return array(
@@ -99,7 +94,7 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 						'options' => array(
 							'exact' => tr('Exact Match'),
 							'partial' => tr('Field here is part of field there'),
-							'domain' => tr('Match domain, used for URL fields'),
+							'domain' => tr('Match domain, used for URL fields'),	
 						),
 					),
 					'displayOneItem' => array(
@@ -126,21 +121,6 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 						'separator' => '|',
 						'filter' => 'int',
 					),
-					'cascade' => array(
-						'name' => tr('Cascade actions'),
-						'description' => tr("Elements to cascade when the master is updated or deleted. Categories may conflict if multiple item links are used to different items attempting to manage the same categories. Same for status."),
-						'filter' => 'int',
-						'options' => array(
-							self::CASCADE_NONE => tr('No'),
-							self::CASCADE_CATEG => tr('Categories'),
-							self::CASCADE_STATUS => tr('Status'),
-							self::CASCADE_DELETE => tr('Delete'),
-							(self::CASCADE_CATEG | self::CASCADE_STATUS) => tr('Categories and status'),
-							(self::CASCADE_CATEG | self::CASCADE_DELETE) => tr('Categories and delete'),
-							(self::CASCADE_DELETE | self::CASCADE_STATUS) => tr('Delete and status'),
-							(self::CASCADE_CATEG | self::CASCADE_STATUS | self::CASCADE_DELETE) => tr('All'),
-						),
-					),
 				),
 			),
 		);
@@ -158,7 +138,7 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 		if ($this->getOption(6) && !$context['in_ajax_form']) {
 
 			$context['in_ajax_form'] = true;
-
+			
 			require_once 'lib/wiki-plugins/wikiplugin_tracker.php';
 
 			$params = array(
@@ -183,12 +163,12 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 				$displayFieldId = $this->getOption(1);
 			}
 
-			TikiLib::lib('header')->add_jq_onready(
-				'$("select[name=' . $this->getInsertId() . ']").change(function(e, val) {
+			TikiLib::lib('header')->add_jq_onready('
+$("select[name=' . $this->getInsertId() . ']").change(function(e, val) {
 	if ($(this).val() == -1) {
 		var $d = $("<div id=\'add_dialog_' . $this->getInsertId() . '\' style=\'display:none\'>' . addslashes($form) . '</div>")
 			.appendTo(document.body);
-
+		
 		var w = $d.width() * 1.4;
 		var h = $d.height() * 2.0;
 		if ($(document.body).width() < w) {
@@ -237,8 +217,7 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 			}).find(".input_submit_container").remove();
 	}
 });
-'
-);
+');
 
 		}
 
@@ -247,23 +226,14 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 		} else {
 			$context['selectMultipleValues'] = false;
 		}
-
+		
 		if ($preselection = $this->getPreselection()) {
 			$context['preselection'] = $preselection;
 		} else {
 			$context['preselection'] = '';
 		}
 
-		$context['filter'] = $this->buildFilter();
-
 		return $this->renderTemplate('trackerinput/itemlink.tpl', $context);
-	}
-
-	private function buildFilter()
-	{
-		return array(
-			'tracker_id' => $this->getOption('trackerId'),
-		);
 	}
 
 	function renderOutput($context = array())
@@ -274,7 +244,7 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 
 		$dlist = $this->getConfiguration('listdisplay');
 		$list = $this->getConfiguration('list');
-
+		
 		if (!is_array($item)) {
 			// single value item field
 			$items = array($item);
@@ -282,9 +252,9 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 			// item field has multiple values
 			$items = $item;
 		}
-
+		
 		$labels = array();
-
+		
 		foreach ($items as $key => $value) {
 			if (!empty($dlist) && isset($dlist[$value])) {
 				$labels[] = $dlist[$value];
@@ -292,28 +262,26 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 				$labels[] = $list[$value];
 			}
 		}
-
+		
 		$label = implode(', ', $labels);
-
+		
 		if ($item && !is_array($item) && $context['list_mode'] !== 'csv' && $this->getOption(2)) {
 			$smarty->loadPlugin('smarty_function_object_link');
 
 			if ( $this->getOption(5) ) {
 				$link = smarty_function_object_link(
-					array(
-						'type' => 'wiki page',
-						'id' => $this->getOption(5) . '&itemId=' . $item,	// add itemId param TODO properly
-						'title' => $label,
-					),
-					$smarty
+								array(
+									'type' => 'wiki page',
+									'id' => $this->getOption(5) . '&itemId=' . $item,	// add itemId param TODO properly
+									'title' => $label,
+								),
+								$smarty
 				);
 				// decode & and = chars
 				return str_replace(array('%26','%3D'), array('&','='), $link);
 			} else {
 				return smarty_function_object_link(array('type' => 'trackeritem',	'id' => $item,	'title' => $label), $smarty);
 			}
-		} elseif ($context['list_mode'] == 'csv' && $item) {
-			return $item;
 		} elseif ($label) {
 			return $label;
 		}
@@ -321,8 +289,16 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 
 	function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
 	{
-		$item = $this->getValue();
-		$label = TikiLib::lib('object')->get_title('trackeritem', $item);
+		$data = $this->getLinkData(array(), 0);
+		$item = $data['value']; 
+		$dlist = $data['listdisplay'];
+		$list = $data['list'];
+
+		if (!empty($dlist)) {
+			$label = isset($dlist[$item]) ? $dlist[$item] : '';
+		} else {
+			$label = isset($list[$item]) ? $list[$item] : '';
+		}
 
 		$out = array(
 			$baseKey => $typeFactory->sortable($item),
@@ -377,8 +353,8 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 	 * Return both the current values and the list of available values
 	 * for this field. When creating or updating a tracker item this
 	 * function is called twice. First before the data is saved and then
-	 * before displaying the changed tracker item to the user.
-	 *
+	 * before displaying the changed tracker item to the user. 
+	 * 
 	 * @param array $requestData
 	 * @param $string_id
 	 * @return array
@@ -391,15 +367,13 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 
 		if (!$this->getOption(3)) {	//no displayedFieldsList
 			$data['list'] = TikiLib::lib('trk')->get_all_items(
-				$this->getOption(0),
-				$this->getOption(1),
-				$this->getOption(4, 'opc'),
-				false
+							$this->getOption(0),
+							$this->getOption(1),
+							$this->getOption(4, 'opc'),
+							false
 			);
 			if (!$this->getOption(11) || $this->getOption(11) != 'multi') {
-				// This silently modifies tracker items when an item name is used multiple times, which really isn't impossible.
-				// If you want it, make it optional.
-				//$data['list'] = array_unique($data['list']);
+				$data['list'] = array_unique($data['list']);
 			} elseif (array_unique($data['list']) != $data['list']) {
 				$newlist = array();
 				foreach ($data['list'] as $k => $dl) {
@@ -412,17 +386,17 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 			}
 		} else {
 			$data['list'] = TikiLib::lib('trk')->get_all_items(
-				$this->getOption(0),
-				$this->getOption(1),
-				$this->getOption(4, 'opc'),
-				false
+							$this->getOption(0),
+							$this->getOption(1),
+							$this->getOption(4, 'opc'),
+							false
 			);
 			$data['listdisplay'] = array_unique(
-				TikiLib::lib('trk')->concat_all_items_from_fieldslist(
-					$this->getOption(0),
-					$this->getOption(3),
-					$this->getOption(4, 'opc')
-				)
+							TikiLib::lib('trk')->concat_all_items_from_fieldslist(
+											$this->getOption(0),
+											$this->getOption(3),
+											$this->getOption(4, 'opc')
+							)
 			);
 			if (!$this->getOption(11) || $this->getOption(11) != 'multi') {
 				$data['list'] = array_unique($data['list']);
@@ -450,7 +424,7 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 		if ($this->getOption(12) && !is_array($data['value'])) {
 			$data['value'] = explode(',', $data['value']);
 		}
-
+		
 		return $data;
 	}
 
@@ -514,14 +488,14 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 			}
 			$host = $matches[1];
 			preg_match('/[^.]+\.[^.]+$/', $host, $matches);
-			$domain = $matches[0];
+			$domain = $matches[0];	
 			if (strlen($domain) > 6) {
 				// avoid com.sg or similar country subdomains
 				$localValue = $domain;
 			} else {
 				$localValue = $host;
 			}
-		}
+		} 
 
 		if ($method == 'domain' || $method == 'partial') {
 			$partial = true;
@@ -531,7 +505,7 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 
 		return $trklib->get_item_id($remoteTrackerId, $remoteField, $localValue, $partial);
 	}
-
+	
 	function handleSave($value, $oldValue)
 	{
 		// if selectMultipleValues is enabled, convert the array
@@ -560,30 +534,6 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 		$intersect = array_intersect($usedFields, $modifiedFields);
 
 		return count($intersect) > 0;
-	}
-
-	function cascadeCategories($trackerId)
-	{
-		return $this->cascade($trackerId, self::CASCADE_CATEG);
-	}
-
-	function cascadeStatus($trackerId)
-	{
-		return $this->cascade($trackerId, self::CASCADE_STATUS);
-	}
-
-	function cascadeDelete($trackerId)
-	{
-		return $this->cascade($trackerId, self::CASCADE_DELETE);
-	}
-
-	private function cascade($trackerId, $flag)
-	{
-		if ($this->getOption('trackerId') != $trackerId) {
-			return false;
-		}
-
-		return ($this->getOption('cascade') & $flag) > 0;
 	}
 
 	function watchCompare($old, $new)

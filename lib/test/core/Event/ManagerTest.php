@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -52,15 +52,15 @@ class Event_ManagerTest extends PHPUnit_Framework_TestCase
 	{
 		$manager = new Event_Manager;
 		$manager->bind(
-			'tiki.wiki.update',
-			array($this, 'callbackAdd'),
-			array('amount' => 4,)
+						'tiki.wiki.update', 
+						array($this, 'callbackAdd'), 
+						array('amount' => 4,)
 		);
 
 		$manager->bind(
-			'tiki.wiki.update',
-			array($this, 'callbackAdd'),
-			array('amount' => 5,)
+						'tiki.wiki.update', 
+						array($this, 'callbackAdd'), 
+						array('amount' => 5,)
 		);
 
 		$manager->trigger('tiki.wiki.update');
@@ -96,62 +96,22 @@ class Event_ManagerTest extends PHPUnit_Framework_TestCase
 		$manager->bind('tiki.pageload', array($this, 'callbackMultiply'));
 
 		$this->assertEquals(
-			array(
-				'nodes' => array(
-					'tiki.wiki.update',
-					'tiki.wiki.save',
-					'tiki.file.save',
-					'tiki.pageload',
-					'tiki.save',
-				),
-				'edges' => array(
-					array('from' => 'tiki.wiki.update', 'to' => 'tiki.wiki.save'),
-					array('from' => 'tiki.wiki.save', 'to' => 'tiki.save'),
-					array('from' => 'tiki.file.save', 'to' => 'tiki.save'),
-				),
-			),
-			$manager->getEventGraph()
+						array(
+							'nodes' => array(
+								'tiki.wiki.update',
+								'tiki.wiki.save',
+								'tiki.file.save',
+								'tiki.pageload',
+								'tiki.save',
+							),
+							'edges' => array(
+								array('from' => 'tiki.wiki.update', 'to' => 'tiki.wiki.save'),
+								array('from' => 'tiki.wiki.save', 'to' => 'tiki.save'),
+								array('from' => 'tiki.file.save', 'to' => 'tiki.save'),
+							),
+						), 
+						$manager->getEventGraph()
 		);
-	}
-
-	function testBindWithPriority()
-	{
-		$manager = new Event_Manager;
-
-		$manager->bind('tiki.wiki.update', 'tiki.wiki.save');
-		$manager->bind('tiki.wiki.save', 'tiki.save');
-
-		$manager->bindPriority(10, 'tiki.save', array($this, 'callbackAdd'));
-		$manager->bind('tiki.wiki.save', array($this, 'callbackMultiply'));
-		$manager->bind('tiki.wiki.update', array($this, 'callbackMultiply'));
-
-		$manager->trigger('tiki.wiki.update');
-
-		$this->assertEquals(1, $this->called);
-	}
-
-	function testIndependentTriggers()
-	{
-		$manager = new Event_Manager;
-
-		$manager->bind('tiki.wiki.update', 'tiki.wiki.save');
-		$manager->bind('tiki.wiki.save', 'tiki.save');
-
-		$manager->bindPriority(10, 'tiki.save', array($this, 'callbackAdd'));
-		$manager->bind('tiki.wiki.save', array($this, 'callbackMultiply'));
-		$manager->bind('tiki.wiki.update', array($this, 'callbackMultiply'));
-
-		$manager->bindPriority(
-			5,
-			'tiki.test.foo',
-			function () use ($manager) {
-				$manager->trigger('tiki.wiki.update');
-			}
-		);
-
-		$manager->trigger('tiki.test.foo');
-
-		$this->assertEquals(1, $this->called);
 	}
 
 	function callbackAdd($arguments)

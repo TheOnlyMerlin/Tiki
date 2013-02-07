@@ -253,66 +253,21 @@
 		</form>
 	{/if}
 
-	<div class="importFromExport">
-		<h2>{tr}Import{/tr}</h2>
-		<h4>{tr}Import Structure{/tr}</h4>
-		<form class="simple" method="post" action="{service controller=tracker action=import}">
-			<label>
-				{tr}Raw data{/tr}
-				<textarea name="raw" rows="20"></textarea>
-			</label>
-			<label>
-				<input type="checkbox" name="preserve" value="1"/>
-				{tr}Preserve tracker ID{/tr}
-			</label>
-			{remarksbox close='n' title='{tr}Note{/tr}'}{tr}Use "Tracker -> Export -> Structure" to produce this data.{/tr}{/remarksbox}
-			<div class="submit">
-				<input type="submit" value="{tr}Import{/tr}"/>
-			</div>
-		</form>
-
-        <h4>{tr}Import From Profile/YAML{/tr}</h4>
-        <div>
-	        <form id="forumImportFromProfile" action="{service controller=tracker action=import_profile trackerId=$trackerId}" method="post" enctype="multipart/form-data">
-				{remarksbox type="info" title="{tr}New Feature{/tr}" icon="bricks"}
-	                <p><em>{tr}Please note: Experimental - work in progress{/tr}</em></p>
-				{/remarksbox}
-	            <label style="display: block">
-					{tr}YAML{/tr}
-	            </label>
-	            <textarea name="yaml" id="importFromProfileYaml" data-codemirror="true" data-syntax="yaml" data-line-numbers="true" style="height: 400px;"></textarea>
-                <div class="submit">
-                    <input type="submit" value="{tr}Import{/tr}"/>
-                </div>
-            </form>
-        </div>
-	</div>
+	<h2>{tr}Import From Export{/tr}</h2>
+	<form class="simple" method="post" action="{service controller=tracker action=import}">
+		<label>
+			{tr}Raw data{/tr}
+			<textarea name="raw" rows="20"></textarea>
+		</label>
+		<label>
+			<input type="checkbox" name="preserve" value="1"/>
+			{tr}Preserve tracker ID{/tr}
+		</label>
+		<div class="submit">
+			<input type="submit" value="{tr}Import{/tr}"/>
+		</div>
+	</form>
 {/tab}
 {/if}
 
 {/tabset}
-
-{jq}
-	$('.importFromExport').visible(function() {
-		$(this).accordion({
-			header: 'h4'
-		});
-	});
-	$('#forumImportFromProfile').submit(function() {
-		$.modal(tr('Loading...'));
-		$.post($(this).attr('action'), {yaml: $('#importFromProfileYaml').val()}, function(feedback) {
-			feedback = $.parseJSON(feedback);
-
-			$.modal();
-			if (feedback.length) {
-				for(i in feedback) {
-					$.notify(feedback[i]);
-				}
-				document.location = document.location + '';
-			} else {
-				$.notify(tr("Error, profile not applied"));
-			}
-		});
-		return false;
-	});
-{/jq}

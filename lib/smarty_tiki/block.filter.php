@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -26,7 +26,7 @@ function smarty_block_filter($params, $content, $smarty, &$repeat)
 
 	$tikilib = TikiLib::lib('tiki');
 	$unifiedsearchlib = TikiLib::lib('unifiedsearch');
-
+	
 	if (! isset($params['action'])) {
 		$params['action'] = '';
 	}
@@ -44,17 +44,6 @@ function smarty_block_filter($params, $content, $smarty, &$repeat)
 	$smarty->assign('filter_content', isset($filter['content']) ? $filter['content'] : '');
 	$smarty->assign('filter_type', isset($filter['type']) ? $filter['type'] : $prefs['search_default_where']);
 	$smarty->assign('filter_types', $types);
-
-	$sort_mode = isset($_REQUEST['sort_mode']) ? $_REQUEST['sort_mode'] : 'score_ndesc';
-	$sort_modes = array(
-		'score_ndesc' => tra('Relevance'),
-		'object_type_asc' => tra('Type'),
-		'title_asc' => tra('Title'),
-		'modification_date_ndesc' => tra('Modified date'),
-		'visits_ndesc' => tra('Visits'),
-	);
-	$smarty->assign('sort_mode', $sort_mode);
-	$smarty->assign('sort_modes', $sort_modes);
 
 	// Categories
 	if ($prefs['feature_categories'] == 'y') {
@@ -97,7 +86,7 @@ BODY;
 
 	if ($prefs['feature_freetags'] == 'y') {
 		global $freetaglib; require_once 'lib/freetag/freetaglib.php';
-
+		
 		$smarty->assign('filter_tags', isset($filter['tags']) ? $filter['tags'] : '');
 		$smarty->assign('filter_tagmap', json_encode(TikiDb::get()->fetchMap('SELECT tagId, tag FROM tiki_freetags')));
 		$smarty->assign('filter_tags_picker', (string) $freetaglib->get_cloud());

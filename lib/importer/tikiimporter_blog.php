@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -128,13 +128,13 @@ class TikiImporter_Blog extends TikiImporter
 		$countCategories = count($this->parsedData['categories']);
 
 		$this->saveAndDisplayLog(
-			"\n" . tr(
-				'Found %0 posts, %1 pages, %2 tags and %3 categories. Inserting them into Tiki:',
-				$countPosts,
-				$countPages,
-				$countTags,
-				$countCategories
-			) . "\n"
+						"\n" . tr(
+										'Found %0 posts, %1 pages, %2 tags and %3 categories. Inserting them into Tiki:',
+										$countPosts,
+										$countPages,
+										$countTags,
+										$countCategories
+						) . "\n"
 		);
 
 		if (!empty($this->parsedData['posts'])) {
@@ -238,29 +238,29 @@ class TikiImporter_Blog extends TikiImporter
 		}
 
 		$this->blogId = $bloglib->replace_blog(
-			$this->blogInfo['title'],
-			$this->blogInfo['desc'],
-			$user,
-			'y',
-			10,
-			false,
-			'',
-			'y',
-			'n',
-			'y',
-			'n',
-			'y',
-			'y',
-			'y',
-			'y',
-			'y',
-			'n',
-			'',
-			'y',
-			5,
-			'n',
-			$created,
-			$this->blogInfo['lastModif']
+						$this->blogInfo['title'],
+						$this->blogInfo['desc'],
+						$user,
+						'y',
+						10,
+						false,
+						'',
+						'y',
+						'n',
+						'y',
+						'n',
+						'y',
+						'y',
+						'y',
+						'y',
+						'y',
+						'n',
+						'',
+						'y',
+						5,
+						'n',
+						$created,
+						$this->blogInfo['lastModif']
 		);
 
 		if (isset($_REQUEST['setAsHomePage']) && $_REQUEST['setAsHomePage'] == 'on') {
@@ -381,23 +381,23 @@ class TikiImporter_Blog extends TikiImporter
 		$post = array_merge(array('content' => '', 'excerpt' => '', 'author' => '', 'name' => '', 'created' => 0), $post);	// set defaults
 
 		$postId = $bloglib->blog_post(
-			$this->blogId,
-			$post['content'],
-			$post['excerpt'],
-			$post['author'],
-			$post['name'],
-			'',
-			'n',
-			$post['created']
+						$this->blogId,
+						$post['content'],
+						$post['excerpt'],
+						$post['author'],
+						$post['name'],
+						'',
+						'n',
+						$post['created']
 		);
 
 		if ($postId) {
 			$objectlib->insert_object(
-				'blog post',
-				$postId,
-				'',
-				$post['name'],
-				'tiki-view_blog_post.php?postId=' . urlencode($postId)
+							'blog post',
+							$postId,
+							'',
+							$post['name'],
+							'tiki-view_blog_post.php?postId=' . urlencode($postId)
 			);
 		}
 
@@ -438,21 +438,21 @@ class TikiImporter_Blog extends TikiImporter
 			}
 
 			$commentId = $commentslib->post_new_comment(
-				$objRef,
-				0,
-				null,
-				'',
-				$comment['data'],
-				$message_id,
-				'',
-				'n',
-				'',
-				'',
-				'',
-				$comment['author'],
-				$comment['created'],
-				$comment['author_email'],
-				$comment['author_url']
+							$objRef,
+							0,
+							null,
+							'',
+							$comment['data'],
+							$message_id,
+							'',
+							'n',
+							'',
+							'',
+							'',
+							$comment['author'],
+							$comment['created'],
+							$comment['author_email'],
+							$comment['author_url']
 			);
 
 			if ($comment['approved'] == 0) {

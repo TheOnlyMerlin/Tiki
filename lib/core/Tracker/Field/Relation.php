@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -50,16 +50,6 @@ class Tracker_Field_Relation extends Tracker_Field_Abstract
 							1 => tr('Yes'),
 						),
 					),
-					'display' => array(
-						'name' => tr('Display'),
-						'description' => tr('Control how the relations are displayed in view mode'),
-						'filter' => 'word',
-						'options' => array(
-							'list' => tr('List'),
-							'count' => tr('Count'),
-							'toggle' => tr('Count with toggle for list'),
-						),
-					),
 				),
 			),
 		);
@@ -84,8 +74,8 @@ class Tracker_Field_Relation extends Tracker_Field_Abstract
 
 		if ($this->getOption(self::OPT_INVERT)) {
 			$inverts = array_diff(
-				$this->getRelations($this->getOption(self::OPT_RELATION) . '.invert'),
-				$data
+							$this->getRelations($this->getOption(self::OPT_RELATION) . '.invert'),
+							$data
 			);
 		} else {
 			$inverts = array();
@@ -117,12 +107,12 @@ class Tracker_Field_Relation extends Tracker_Field_Abstract
 		$filter = $this->buildFilter();
 
 		return $this->renderTemplate(
-			'trackerinput/relation.tpl',
-			$context,
-			array(
-				'labels' => $labels,
-				'filter' => $filter,
-			)
+						'trackerinput/relation.tpl', 
+						$context, 
+						array(
+							'labels' => $labels,
+							'filter' => $filter,
+						)
 		);
 	}
 
@@ -131,14 +121,7 @@ class Tracker_Field_Relation extends Tracker_Field_Abstract
 		if ($context['list_mode'] === 'csv') {
 			return $this->getConfiguration('value');
 		} else {
-			$display = $this->getOption('display');
-			if (! in_array($display, array('list', 'count', 'toggle'))) {
-				$display = 'list';
-			}
-
-			return $this->renderTemplate('trackeroutput/relation.tpl', $context, array(
-				'display' => $display,
-			));
+			return $this->renderTemplate('trackeroutput/relation.tpl', $context);
 		}
 	}
 

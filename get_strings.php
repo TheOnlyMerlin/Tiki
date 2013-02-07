@@ -1,15 +1,12 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 /**
- * Update lang/xx/language.php files
+ * Update language.php files
  * 
  * Examples:
  * 		- http://localhost/pathToTiki/get_strings.php -> update all language.php files
@@ -27,7 +24,6 @@
  *
  *
  * If you want to know the translation progression for your language, just visit : http://i18n.tiki.org/status
- * which is made with http://tikiwiki.svn.sourceforge.net/viewvc/tikiwiki/trunk/doc/devtools/get_translation_percentage.php?view=markup
  *
  */
 
@@ -113,10 +109,6 @@ $getStrings->run();
 
 echo formatOutput("\nTotal time spent: " . $timer->stop() . " seconds\n");
 
-/**
- * @param $string
- * @return string
- */
 function formatOutput($string)
 {
 	if (php_sapi_name() == 'cli') {

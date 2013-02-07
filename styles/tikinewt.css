@@ -910,7 +910,7 @@ table.normal tr:nth-child(2n+1) td {
 }
 
 td.even,
-table.normal tr:nth-child(2n) td{
+table.normal tr:nth-child(2n) td {
 	border: 1px solid #8cacbb;
 	background: #e7e9ea;
 	color: black;

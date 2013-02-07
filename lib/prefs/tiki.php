@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -22,19 +22,6 @@ function prefs_tiki_list()
 			),
 			'default' => 604800,
 			'tags' => array('basic'),
-		),
-		'tiki_release_cycle' => array(
-			'name' => tr('Upgrade cycle'),
-			'type' => 'list',
-			'default' => 'regular',
-			'dependencies' => array(
-				'feature_version_checks',
-			),
-			'options' => array(
-				'regular' => tr('Regular (6 months)'),
-				'longterm' => tr('Long Term Support'),
-			),
-			'help' => 'Version+Lifecycle',
 		),
 		'tiki_minify_javascript' => array(
 			'name' => tra('Minify JavaScript'),

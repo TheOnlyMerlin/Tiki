@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -42,7 +42,6 @@ function prefs_wysiwyg_list()
 			'type' => 'flag',
 			'default' => 'n',
 			'warning' => tra('Neglected. This feature can have unpredicable results and may be removed in future versions.'),
-			'tags' => array('experimental'),
 		),
 		'wysiwyg_toolbar_skin' => array(
 			'name' => tra('Wysiwyg editor skin'),
@@ -56,13 +55,12 @@ function prefs_wysiwyg_list()
 		),
 		'wysiwyg_htmltowiki' => array(
 			'name' => tra('Use Wiki syntax in WYSIWYG'),
-			'description' => tra('Allow to keep the wiki syntax with the WYSIWYG editor. Sometimes also known as "Visual Wiki".'),
+			'description' => tra('Experimental, new : Allow to keep the wiki syntax with the WYSIWYG editor. WARNING: plugin edit is not working in that case in WYSIWYG mode, use the Source mode instead '),
 			'type' => 'flag',
 			'warning' => tra('Experimental. This feature is still under development.'),
 			'dependencies' => array(
 				'ajax_autosave',
 			),
-			'tags' => array('experimental'),
 			'default' => 'n',
 		),
 		'wysiwyg_fonts' => array(

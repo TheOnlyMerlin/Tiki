@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -18,9 +18,9 @@ if ( isset($_SESSION['try_style']) ) {
 
 if ($prefs['feature_fixed_width'] === 'y') {
 	$headerlib->add_css(
-		'.fixed_width .fixedwidth, .fixed_width .fixedwidth .fixedwidth { width:' .
-		(!empty($prefs['layout_fixed_width']) ? $prefs['layout_fixed_width'] : '990px') .
-		'; }'
+					'.fixed_width .fixedwidth, .fixed_width .fixedwidth .fixedwidth { width:' . 
+					(!empty($prefs['layout_fixed_width']) ? $prefs['layout_fixed_width'] : '990px') . 
+					'; }'
 	);
 }
 
@@ -31,13 +31,7 @@ if ( $prefs['useGroupTheme'] == 'y' && $group_style = $userlib->get_user_group_t
 if (empty($prefs['style']) || $tikilib->get_style_path('', '', $prefs['style']) == '') {
 	$prefs['style'] = 'fivealive.css';
 }
-
-if (!empty($prefs['style_admin']) && ($section === 'admin' || empty($section))) {		// use admin theme if set
-	$prefs['style'] = $prefs['style_admin'];
-	$prefs['style_option'] = $prefs['style_admin_option'];								// and it's option
-	$prefs['themegenerator_theme'] = '';												// and disable theme generator
-}
-
+		
 $headerlib->add_cssfile($tikilib->get_style_path('', '', $prefs['style']), 51);
 $style_base = $tikilib->get_style_base($prefs['style']);
 

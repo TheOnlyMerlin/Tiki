@@ -517,7 +517,7 @@ a.admbox:active {
 	color: #262626;
 }
 
-.caltable .even, .caltable .odd {
+.caleven, .calodd {
 	color: black;
 }
 

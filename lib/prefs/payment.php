@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -16,7 +16,6 @@ function prefs_payment_list()
 			'default' => 'n',
 			'admin' => 'payment',
 			'view' => 'tiki-payment.php',
-			'keywords' => 'shopping',
 		),
 		'payment_system' => array(
 			'name' => tra('Payment System'),
@@ -69,8 +68,8 @@ function prefs_payment_list()
 		),
 		'payment_default_delay' => array(
 			'name' => tra('Default acceptable payment delay'),
+			'shorthint' => tra('days'),
 			'description' => tra('Amount of days before the payment requests becomes overdue. This can be changed per payment request.'),
-            'shorthint' => tra('days'),
 			'type' => 'text',
 			'filter' => 'digits',
 			'size' => 3,
@@ -218,7 +217,7 @@ function prefs_payment_list()
 			'type' => 'text',
 			'filter' => 'digits',
 			'size' => 3,
-			'default' => 0,
+			'default' => 'none',
 		),
 		'payment_cart_inventory_total_field' => array(
 			'name' => tra('Inventory Total Field ID'),

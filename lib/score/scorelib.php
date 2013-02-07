@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -17,49 +17,32 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- *
- */
 class ScoreLib extends TikiLib
 {
 
 	// User's general classification on site
-    /**
-     * @param $user
-     * @return mixed
-     */
-    public function user_position($user)
+	function user_position($user)
 	{
 		$score = $this->getOne("select `score` from `users_users` where `login`=?", array($user));
-		return $this->getOne("select count(*)+1 from `users_users` where `score` > ? and `login` <> ?", array((int) $score,'admin'));
+		return $this->getOne("select count(*)+1 from `users_users` where `score` > ? and `login` <> ?", array((int)$score,'admin'));
 	}
 
 	// User's score on site
 	// allows getting score of a single user
-    /**
-     * @param $user
-     * @return mixed
-     */
-    public function get_user_score($user)
+	function get_user_score($user)
 	{
 		$score = $this->getOne("select `score` from `users_users` where `login`=?", array($user));
 		return $score;
 	}
 
 	// Number of users that go on ranking
-    /**
-     * @return mixed
-     */
-    public function count_users()
+	function count_users()
 	{
 		return $this->getOne("select count(*) from `users_users` where `score`>0 and `login`<>'admin'", array());
 	}
 
 	// All event types, for administration
-    /**
-     * @return array
-     */
-    public function get_all_events()
+	function get_all_events()
 	{
 		global $prefs;
 
@@ -107,10 +90,7 @@ class ScoreLib extends TikiLib
 	}
 
 	// Read information from admin and updates event's punctuation
-    /**
-     * @param $events
-     */
-    public function update_events($events)
+	function update_events($events)
 	{
 		foreach ($events as $event_name => $event) {
 			$query = "delete from `tiki_score` where `event`=?";

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -96,7 +96,7 @@ function smarty_function_button($params, $smarty)
 	} else {
 		$id = '';
 	}
-
+	
 	unset($params['_class']);
 
 
@@ -156,16 +156,16 @@ function smarty_function_button($params, $smarty)
 		}
 
 		$html = smarty_block_self_link(
-			$params,
-			$params['_text'],
-			$smarty
+						$params,
+						$params['_text'],
+						$smarty
 		);
 	} else {
 		$params['_disabled'] = 'y';
 		$html = smarty_block_self_link(
-			$params,
-			$params['_text'],
-			$smarty
+						$params,
+						$params['_text'],
+						$smarty
 		);
 	}
 

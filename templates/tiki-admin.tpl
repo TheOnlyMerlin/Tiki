@@ -123,7 +123,7 @@ Add a value in first check when you create a new admin page. *}
 "calendar", "intertiki", "video", "freetags", "gmap",
 "i18n", "wysiwyg", "copyright", "category", "module", "look", "textarea",
  "ads", "profiles", "semantic", "plugins", "webservices",
-'sefurl', 'connect', 'metrics', 'payment', 'rating', 'socialnetworks', 'share', "workspace"))}
+'sefurl', 'connect', 'metrics', 'payment', 'rating', 'socialnetworks', 'share', "areas"))}
   {assign var="include" value=$smarty.get.page}
 {else}
   {assign var="include" value="list_sections"}
@@ -132,12 +132,8 @@ Add a value in first check when you create a new admin page. *}
   <div class="simplebox adminanchors clearfix" >{include file='admin/include_anchors.tpl'}</div>
 {/if}
 
-{if $upgrade_messages|count}
-	<div class="simplebox highlight">
-		{foreach from=$upgrade_messages item=um}
-			<p>{$um|escape}</p>
-		{/foreach}
-	</div>
+{if $prefs.tiki_needs_upgrade eq 'y'}
+<div class="simplebox highlight">{tr}A new version of Tiki, <b>{$prefs.tiki_release}</b>, is available. You are currently running <b>{$tiki_version}</b>. Please visit <a href="http://tiki.org/Download">tiki.org/Download</a>.{/tr}</div>
 {/if}
 
 {if $tikifeedback}
@@ -186,6 +182,7 @@ if $pagetop_msg}
 	<a href="tiki-admin_security.php">{tr}Security{/tr}</a> 
 	<a href="tiki-admin_system.php">{tr}TikiCache/System{/tr}</a> 
 	<a href="tiki-syslog.php">{tr}SysLogs{/tr}</a> 
+	<a href="tiki-phpinfo.php">{tr}phpinfo{/tr}</a> 
 	<a href="tiki-mods.php">{tr}Mods{/tr}</a>
 	<hr />
 

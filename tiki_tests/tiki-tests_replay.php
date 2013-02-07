@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -30,10 +30,6 @@ $smarty->assign('tidy', extension_loaded('tidy'));
 $smarty->assign('http', extension_loaded('http'));
 $smarty->assign('curl', extension_loaded('curl'));
 
-/**
- * @param $element
- * @return array|null
- */
 function get_from_dom($element)
 {
 	if ($element === NULL) return NULL;
@@ -45,11 +41,6 @@ function get_from_dom($element)
 	return $a;
 }
 
-/**
- * @param $url
- * @param bool $use_tidy
- * @return array
- */
 function verif_url($url, $use_tidy = TRUE)
 {
 	global $smarty, $cookies;
@@ -77,7 +68,7 @@ function verif_url($url, $use_tidy = TRUE)
 		switch (strtolower($url->getAttribute('method'))) {
 			case 'get':
 				$buffer = http_get($urlstr, $options, $info);
-				break;
+							break;
 			case 'post':
 				$buffer = http_post_fields($urlstr, $post, NULL, $options, $info);
 		}
@@ -112,7 +103,7 @@ function verif_url($url, $use_tidy = TRUE)
 		switch (strtolower($url->getAttribute('method'))) {
 			case 'get':
 				curl_setopt($curl, CURLOPT_HTTPGET, true);
-				break;
+							break;
 			case 'post':
 				curl_setopt($curl, CURLOPT_POST, true);
 				$post_string = '';
@@ -208,15 +199,15 @@ function verif_url($url, $use_tidy = TRUE)
 	$tmp = diff2($data, $buffer, "htmldiff");
 	if (trim($xpath) != '') {
 		$result['html'] = preg_replace(
-			array("/<html>/", "/<\/html>/"),
-			array("<div style='overflow: auto; width:500px; text-align: center'> ", "</div>"),
-			$tmp
+						array("/<html>/", "/<\/html>/"),
+						array("<div style='overflow: auto; width:500px; text-align: center'> ", "</div>"),
+						$tmp
 		);
 	} else {
 		$result['html'] = preg_replace(
-			array("/<html.*<body/U", "/<\/body><\/html>/U"),
-			array("<div style='overflow: auto; width:500px; text-align: center' ", "</div>"),
-			$tmp
+						array("/<html.*<body/U", "/<\/body><\/html>/U"),
+						array("<div style='overflow: auto; width:500px; text-align: center' ", "</div>"),
+						$tmp
 		);
 	}
 	$result['url'] = $urlstr;

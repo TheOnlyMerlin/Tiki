@@ -10,20 +10,20 @@
 				</tr>
 			{/if}
 			<tr>
-				<td><strong>{tr}Status{/tr}</strong>:</td>
-				<td>{$item->statusString}</td>
+				<td><strong>{tr}Created by{/tr}</strong>:</td>
+				<td>{$item->userId}</td>
 			</tr>
 			<tr>
 				<td><strong>{tr}Media Id{/tr}</strong>:</td>
 				<td><pre style="margin:0">{$item->id}</pre></td>
 			</tr>
 			<tr>
-				<td><strong>{tr}Media Type{/tr}</strong>:</td>
-				<td>{$item->mediaType}</td>
-			</tr>
-			<tr>
 				<td><strong>{tr}Duration{/tr}</strong>:</td>
 				<td>{$item->duration}s</td>
+			</tr>
+			<tr>
+				<td><strong>{tr}Version{/tr}</strong>:</td>
+				<td>{$item->version}</td>
 			</tr>
 			<tr>
 				<td><strong>{tr}Views{/tr}</strong>:</td>

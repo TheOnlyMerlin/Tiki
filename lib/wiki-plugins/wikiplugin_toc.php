@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -13,7 +13,6 @@ function wikiplugin_toc_info()
 		'description' => tra('Display a table of contents of pages or sub-pages'),
 		'prefs' => array( 'wikiplugin_toc', 'feature_wiki_structure' ),
 		'icon' => 'img/icons/text_list_numbers.png',
-		'lateParse' => true,
 		'params' => array(
 			'maxdepth' => array(
 				'name' => tra('Maximum Depth'),
@@ -36,8 +35,8 @@ function wikiplugin_toc_info()
 				'filter' => 'alpha',
 				'default' => 'asc',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Ascending'), 'value' => 'asc'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Ascending'), 'value' => 'asc'), 
 					array('text' => tra('Descending'), 'value' => 'desc')
 				)
 			),
@@ -47,8 +46,8 @@ function wikiplugin_toc_info()
 				'required' => false,
 				'default' => 0,
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 1),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 1), 
 					array('text' => tra('No'), 'value' => 0)
 				)
 			),
@@ -58,8 +57,8 @@ function wikiplugin_toc_info()
 				'required' => false,
 				'default' => 0,
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 1),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 1), 
 					array('text' => tra('No'), 'value' => 0)
 				)
 			),
@@ -70,8 +69,8 @@ function wikiplugin_toc_info()
 				'filter' => 'alpha',
 				'default' => 'plain',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Plain'), 'value' => 'plain'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Plain'), 'value' => 'plain'), 
 					array('text' => tra('Fancy'), 'value' => 'fancy'),
 					array('text' => tra('Admin'), 'value' => 'admin'),
  				)
@@ -113,16 +112,13 @@ function wikiplugin_toc( $data, $params )
 
 		$smarty = TikiLib::lib('smarty');
 		$smarty->loadPlugin('smarty_function_button');
-		$button = smarty_function_button(
-			array(
-				'_text'		=> tra('Save'),
-				'_style'	=> 'display:none;',
-				'_class'	=> 'save_structure',
-				'_ajax'		=> 'n',
-				'_auto_args'=> 'save_structure,page_ref_id',
-			),
-			$smarty
-		);
+		$button = smarty_function_button(array(
+			'_text'		=> tra('Save'),
+			'_style'	=> 'display:none;',
+			'_class'	=> 'save_structure',
+			'_ajax'		=> 'n',
+			'_auto_args'=> 'save_structure,page_ref_id',
+		), $smarty);
 	} else {
 		$button = '';
 	}

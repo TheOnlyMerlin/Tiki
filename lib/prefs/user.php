@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -273,18 +273,6 @@ function prefs_user_list($partial = false)
 			'description' => tra('Users cannot register without choosing one of the groups defined above.'),
 			'type' => 'flag',
 			'default' => 'n',
-		),
-		'user_in_search_result' => array(
-			'name' => tr('Users available in search results'),
-			'description' => tr('Users available within search results. Content related to the user will be included in the index.'),
-			'type' => 'list',
-			'dependencies' => array('feature_search'),
-			'options' => array(
-				'none' => tr('None'),
-				'all' => tr('All'),
-				'public' => tr('Public'),
-			),
-			'default' => 'none',
 		),
 	);
 }

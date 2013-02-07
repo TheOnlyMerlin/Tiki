@@ -1,9 +1,4 @@
 <div class="files-field uninitialized" data-galleryid="{$field.galleryId|escape}" data-firstfile="{$field.firstfile|escape}">
-{if $field.limit}
-	{remarksbox _type=info title="{tr}Attached files limitation{/tr}"}
-		{tr _0=$field.limit}The amount of files that can be attached is limited to <strong>%0</strong>. The latest files will be preserved.{/tr}
-	{/remarksbox}
-{/if}
 <ol class="tracker-item-files current-list">
 	{foreach from=$field.files item=info}
 		<li data-file-id="{$info.fileId|escape}">
@@ -16,6 +11,11 @@
 {if $field.canUpload}
 	<fieldset id="{$field.ins_id|escape}-drop" class="file-drop">
 		<legend>{tr}Upload files{/tr}</legend>
+		{if $field.limit}
+			{remarksbox _type=info title="{tr}Attached files limitation{/tr}"}
+				{tr _0=$field.limit}The amount of files that can be attached is limited to <strong>%0</strong>. Additional files uploaded will still be uploaded to the server and searchable, but they will not be attached to this item. Make sure you remove the files no longer required before you save your changes.{/tr}
+			{/remarksbox}
+		{/if}
 		<p style="display:none;">{tr}Drop files from your desktop here or browse for them{/tr}</p>
 		<input class="ignore" type="file" name="{$field.ins_id|escape}[]" accept="{$field.filter|escape}" multiple="multiple"/>
 	</fieldset>
@@ -24,11 +24,6 @@
 	<fieldset>
 		<legend>{tr}Existing files{/tr}</legend>
 		<input type="text" class="search" placeholder="{tr}Search query{/tr}"/>
-		{if $prefs.fgal_elfinder_feature eq 'y'}
-			{button href='tiki-list_file_gallery.php' _text="{tr}Browse files{/tr}"
-				_onclick="return openElFinderDialog(this, {ldelim}defaultGalleryId:{if !isset($field.options_array[8]) or $field.options_array[8] eq ''}{if empty($field.options_array[0])}0{else}{$field.options_array[0]|escape}{/if}{else}{$field.options_array[8]|escape}{/if},deepGallerySearch:{if empty($field.options_array[6])}0{else}{$field.options_array[6]|escape}{/if},getFileCallback:function(file,elfinder){ldelim}window.handleFinderFile(file,elfinder){rdelim}{rdelim});"
-				title="{tr}Browse files{/tr}"}
-		{/if}
 		<ol class="results tracker-item-files">
 		</ol>
 	</fieldset>
@@ -36,8 +31,7 @@
 {if $prefs.fgal_upload_from_source eq 'y' and $field.canUpload}
 	<fieldset>
 		<legend>{tr}Upload from URL{/tr}</legend>
-		<label>{tr}URL:{/tr} <input class="url" name="url" placeholder="http://"/></label>
-		{tr}Type or paste the URL and press ENTER{/tr}
+		<label>{tr}URL:{/tr} <input class="url" type="url"/></label>
 	</fieldset>
 {/if}
 </div>
@@ -94,7 +88,7 @@ var handleFiles = function (files) {
 							$(this).closest('li').remove();
 						});
 									
-						if (li.closest('.files-field').data('firstfile') > 0) {	
+						if (li.closest('.files-field').data('firstfile') > 0) {
 							li.prev('li').remove();
 						}
 					},
@@ -180,7 +174,7 @@ $url.keypress(function (e) {
 			url: $.service('file', 'remote'),
 			dataType: 'json',
 			data: {
-				galleryId: $(this).closest('.files-field').data('galleryid'),
+				galleryId: $(this).closest('.files-field').data('galleryid'), 
 				url: url
 			},
 			success: function (data) {
@@ -248,40 +242,5 @@ $search.keypress(function (e) {
 		return false;
 	}
 });
-window.handleFinderFile = function (file, elfinder) {
-	var m = file.match(/target=([^&]*)/);
-	if (!m || m.length < 2) {
-		return false;	// error?
-	}
-	$.ajax({
-		type: 'GET',
-		url: $.service('file_finder', 'finder'),
-		dataType: 'json',
-		data: {
-			cmd: "tikiFileFromHash",
-			hash: m[1]
-		},
-		success: function (data) {
-			var fileId = data.fileId, li = $('<li/>');
-			li.text(data.name);
-
-			$field.input_csv('add', ',', fileId);
-
-			li.append($('<label>{{icon _id=cross}}</label>'));
-			li.find('img').click(function () {
-				$field.input_csv('delete', ',', fileId);
-				$(this).closest('li').remove();
-			});
-			$files.append(li);
-		},
-		error: function (jqxhr) {
-		},
-		complete: function () {
-			$(window).data("elFinderDialog").dialog("close");
-			$(window).data("elFinderDialog", null);
-			return false;
-		}
-	});
-};
 });
 {/jq}

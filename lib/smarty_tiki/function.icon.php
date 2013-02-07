@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -19,7 +19,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
  *  - _type: type of URL to use (e.g. 'absolute_uri', 'absolute_path'). Defaults to a relative URL.
  *  - _tag: type of HTML tag to use (e.g. 'img', 'input_image'). Defaults to 'img' tag.
  *  - _notag: if set to 'y', will only return the URL (which also handles theme icons).
- *  - _menu_text: if set to 'y', will use the 'title' argument as text after the icon and place the whole
+ *  - _menu_text: if set to 'y', will use the 'title' argument as text after the icon and place the whole 
  *						content between div tags with a 'icon_menu' class (not compatible with '_notag' param set to 'y').
  *  - _menu_icon: if set to 'n', will not show icon image when _menu_text is 'y'.
  *  - _confirm: text to use in a popup requesting the user to confirm its action (yet only available with javascript)
@@ -35,12 +35,12 @@ function smarty_function_icon($params, $smarty)
 
 	if (empty($tc_theme)) {
 		$current_style = $prefs['style'];
-		$current_style_option = isset($prefs['style_option']) ? $prefs['style_option'] : '';
+		$current_style_option = $prefs['style_option'];
 	} else {
 		$current_style = $tc_theme;
 		$current_style_option = !empty($tc_theme_option) ? $tc_theme_option : '';
 	}
-
+	
 	if (isset($params['_type'])) {
 		if ($params['_type'] === 'absolute_uri') {
 			$params['path_prefix'] = $base_url;
@@ -63,7 +63,7 @@ function smarty_function_icon($params, $smarty)
 	$default_width = 16;
 	$default_height = 16;
 	$menu_text = false;
-	$menu_icon = false;
+	$menu_icon = true;
 	$confirm = '';
 	$html = '';
 
@@ -92,9 +92,9 @@ function smarty_function_icon($params, $smarty)
 			$icons_extension = substr($params['_id'], $pos);
 
 		$params['_id'] = preg_replace(
-			'/^' . str_replace('/', '\/', $icons_basedir) . '|' . $icons_extension . '$/',
-			'',
-			$params['_id']
+						'/^' . str_replace('/', '\/', $icons_basedir) . '|' . $icons_extension . '$/', 
+						'', 
+						$params['_id']
 		);
 	} else {
 		$icons_basedir = $basedirs[0].'/';
@@ -127,26 +127,26 @@ function smarty_function_icon($params, $smarty)
 					} else {
 						$params['file'] = $v;
 					}
-					break;
+								break;
 
 				case '_notag':
 					$notag = ($v == 'y');
-					break;
+								break;
 
 				case '_menu_text':
 					$menu_text = ($v == 'y');
-					$menu_icon = ( isset($params['_menu_icon']) && $params['_menu_icon'] == 'y' );
-					break;
+					$menu_icon = ( ! isset($params['_menu_icon']) || $params['_menu_icon'] == 'y' );
+								break;
 
 				case '_tag':
 					$tag = $v;
-					break;
+								break;
 
 				case '_confirm':
 					if ( $prefs['javascript_enabled'] == 'y' ) {
 						$params['onclick'] = "return confirm('".str_replace("'", "\'", $v)."');";
 					}
-					break;
+								break;
 			}
 
 			unset($params[$k]);
@@ -184,41 +184,40 @@ function smarty_function_icon($params, $smarty)
 			unset($params['title']);
 		}
 
-		if ( $tag != 'img' ) {
-			$params['src'] = $params['file'];
-			unset($params['file']);
-			foreach ( $params as $k => $v ) {
-				$html .= ' ' . htmlspecialchars($k, ENT_QUOTES, 'UTF-8') . '="' . htmlspecialchars($v, ENT_QUOTES, 'UTF-8') . '"';
+		if ( $menu_icon ) {
+			if ( $tag != 'img' ) {
+				$params['src'] = $params['file'];
+				unset($params['file']);
+				foreach ( $params as $k => $v ) {
+					$html .= ' ' . htmlspecialchars($k, ENT_QUOTES, 'UTF-8') . '="' . htmlspecialchars($v, ENT_QUOTES, 'UTF-8') . '"';
+				}
+			}
+
+			global $headerlib;
+			if (!empty($params['file'])) {
+				$params['file'] = $headerlib->convert_cdn($params['file']);
+			}
+
+			switch ( $tag ) {
+				case 'input_image':
+					$html = '<input type="image"'.$html.' />';
+					break;
+				case 'img':
+				default:
+					try {
+						$html = smarty_function_html_image($params, $smarty);
+					} catch (Exception $e) {
+						$html = '<span class="icon error" title="' . tra('Error:') . ' ' . $e->getMessage() . '">?</span>';
+					}
+			}
+
+			if ( $tag != 'img' ) {
+				// Add a span tag to be able to apply a CSS style on hover for the icon
+				$html = "<span>$html</span>";
 			}
 		}
-
-		global $headerlib;
-		if (!empty($params['file'])) {
-			$params['file'] = $headerlib->convert_cdn($params['file']);
-		}
-
-		switch ( $tag ) {
-			case 'input_image':
-				$html = '<input type="image"'.$html.' />';
-				break;
-			case 'img':
-			default:
-				try {
-					$html = smarty_function_html_image($params, $smarty);
-				} catch (Exception $e) {
-					$html = '<span class="icon error" title="' . tra('Error:') . ' ' . $e->getMessage() . '">?</span>';
-				}
-		}
-
-		if ( $tag != 'img' ) {
-			// Add a span tag to be able to apply a CSS style on hover for the icon
-			$html = "<span>$html</span>";
-		}
-
-		if ( $menu_text ) {
-			if ( ! $menu_icon ) $html = '';
+		if ( $menu_text ) 
 			$html = '<div class="iconmenu">' . $html . '<span class="iconmenutext"> ' . $menu_text_val . '</span></div>';
-		}
 
 	}
 

@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -205,13 +202,6 @@ if ( $prefs['fgal_limit_hits_per_file'] == 'y' ) {
 	$smarty->assign('hit_limit', $filegallib->get_download_limit($fileId));
 }
 
-if (!empty($fileInfo['fileId'])) {
-	$smarty->assign('metarray', $filegallib->metadataAction($fileInfo['fileId']), 'get_array');
-}
-
-$is_iis = TikiInit::isIIS();
-$smarty->assign('is_iis', $is_iis);
-	
 $cat_type = 'file';
 $cat_objid = (int) $fileId;
 include_once ('categorize_list.php');

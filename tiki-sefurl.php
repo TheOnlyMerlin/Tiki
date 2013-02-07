@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -128,17 +125,5 @@ function filter_out_sefurl($tpl_output, $type = null, $title = '', $with_next = 
 			}
 		}
 	}
-
-	if (strpos($tpl_output, '?') === false) {	// historically tiki has coped with malformed short urls with no ?
-		$amppos = strpos($tpl_output, '&');		// route.php rquires that we no longer do that
-		if ( $amppos !== false) {
-			if (substr($tpl_output, $amppos, 5) !== '&amp;') {
-				$tpl_output{$amppos} = '?';
-			} else {
-				$tpl_output = substr($tpl_output, 0, $amppos) . '?' . substr($tpl_output, $amppos + 5);
-			}
-		}
-	}
-
 	return $tpl_output;
 }

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -59,7 +59,7 @@ function smarty_function_menu($params, $smarty)
 		$tpl = 'tiki-user_cssmenu.tpl';
 		$smarty->assign('menu_type', $type);
 		if (! isset($css_id)) {//adding $css_id parameter to customize menu id and prevent automatic id renaming when a menu is removed
-			$smarty->assign('idCssmenu', $idCssmenu++);
+			$smarty->assign('idCssmenu', $idCssmenu++);	
 		} else {
 			$smarty->assign('idCssmenu', $css_id);
 		}
@@ -75,8 +75,16 @@ function smarty_function_menu($params, $smarty)
 	$smarty->assign('menu_info', $menu_info);
 	$smarty->assign('escape_menu_labels', ($prefs['menus_item_names_raw'] === 'n' && isset($menu_info['parse']) && $menu_info['parse'] === 'n'));
 	$data = $smarty->fetch($tpl);
-	$menulib = TikiLib::lib('menu');
-	return $menulib->clean_menu_html($data);
+	$data = preg_replace('/<ul>\s*<\/ul>/', '', $data);
+	$data = preg_replace('/<ol>\s*<\/ol>/', '', $data);
+	if ($prefs['mobile_feature'] !== 'y' || $prefs['mobile_mode'] !== 'y') {
+		return '<nav class="role_navigation">' . $data . '</nav>';
+	} else {
+		$data = preg_replace('/<ul ([^>]*)>/Umi', '<ul $1 data-role="listview" data-theme="'.$prefs['mobile_theme_menus'].'">', $data, 1);
+		// crude but effective hack for loading menu items via ajax - hopefully to be replaced by something more elegant soon
+		$data = preg_replace('/<a ([^>]*)>/Umi', '<a $1 rel="external">', $data);
+		return $data;
+	}
 }
 
 function compare_menu_options($a, $b)
@@ -84,8 +92,7 @@ function compare_menu_options($a, $b)
 	return strcmp(tra($a['name']), tra($b['name']));
 }
 
-function get_menu_with_selections($params)
-{
+function get_menu_with_selections($params) {
 	global $tikilib, $user, $prefs;
 	global $menulib; include_once('lib/menubuilder/menulib.php');
 	global $cachelib; include_once('lib/cache/cachelib.php');
@@ -111,7 +118,7 @@ function get_menu_with_selections($params)
 
 		$channels = $structlib->build_subtree_toc($structureId);
 		$structure_info =  $structlib->s_get_page_info($structureId);
-		$channels = $structlib->to_menu($channels, $structure_info['pageName'], 0, 0, $params);
+		$channels = $structlib->to_menu($channels, $structure_info['pageName']);
 		$menu_info = array('type'=>'d', 'menuId'=> "s_$structureId", 'structure' => 'y');
 		//echo '<pre>'; print_r($channels); echo '</pre>';
 	} else if (!empty($id)) {

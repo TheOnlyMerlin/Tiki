@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -52,13 +49,9 @@ if ($output["data"] == "EMPTY") {
 	$desc = $prefs['feed_tracker_desc'] . $tmp["description"];
 	$tmp = null;
 	$tmp = $prefs['feed_' . $feed . '_title'];
-	if ($tmp <> '') {
-		$title = $tmp;
-	}
+	if ($tmp <> '') $title = $tmp;
 	$tmp = $prefs['feed_' . $feed . '_desc'];
-	if ($desc <> '') {
-		$desc = $tmp;
-	}
+	if ($desc <> '') $desc = $tmp;
 	$titleId = "rss_subject";
 	$descId = "rss_description";
 	$authorId = ""; // "user";
@@ -68,9 +61,7 @@ if ($output["data"] == "EMPTY") {
 	$listfields = $trklib->list_tracker_fields($_REQUEST[$id]);
 	$fields = array();
 	foreach ($listfields['data'] as $f) {
-		if ($f['isHidden'] == 'y' || $f['isHidden'] == 'c') {
-			continue;
-		}
+		if ($f['isHidden'] == 'y' || $f['isHidden'] == 'c') continue;
 		$fields[$f['fieldId']] = $f;
 	}
 	if (isset($_REQUEST['filterfield'])) {
@@ -121,11 +112,11 @@ if ($output["data"] == "EMPTY") {
 		foreach ($data["field_values"] as $data2) {
 			if (isset($data2["name"]) && !empty($data2['value']) || !$doNotShowEmptyField) {
 				$data2['value'] = $trklib->field_render_value(
-					array(
-						'field' => $data2,
-						'item' => $data,
-						'process' => 'y',
-					)
+								array(
+									'field' => $data2,
+									'item' => $data,
+									'process' => 'y',
+								)
 				);
 				if ($data2['value'] == '') {
 					$data2['value'] = '(' . tra('empty') . ')';

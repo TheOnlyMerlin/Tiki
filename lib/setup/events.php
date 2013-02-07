@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -18,20 +18,6 @@ function tiki_setup_events()
 		if ( $prefs['quantify_changes'] == 'y' && $prefs['feature_multilingual'] == 'y' ) {
 			$events->bind('tiki.wiki.save', Event_Lib::defer('quantify', 'wiki_update'));
 		}
-
-		$prefix = $prefs['feature_wiki_userpage_prefix'];
-		if ($prefs['feature_wiki_userpage'] && ! empty($prefix)) {
-			$events->bind(
-				'tiki.wiki.save',
-				function ($args) use ($events, $prefix) {
-					global $prefs;
-					if ($prefix == substr($args['object'], 0, strlen($prefix))) {
-						$user = substr($args['object'], strlen($prefix));
-						$events->trigger('tiki.user.update', array('type' => 'user', 'object' => $user));
-					}
-				}
-			);
-		}
 	}
 
 	if ($prefs['feature_trackers'] == 'y') {
@@ -42,7 +28,7 @@ function tiki_setup_events()
 			$events->bind('tiki.trackeritem.save', Event_Lib::defer('trk', 'sync_categories'));
 			$events->bind('tiki.trackeritem.save', Event_Lib::defer('trk', 'sync_item_auto_categories'));
 		}
-
+		
 		if (! empty($prefs['user_trackersync_realname'])) {
 			$events->bind('tiki.trackeritem.save', Event_Lib::defer('trk', 'sync_user_realname'));
 		}
@@ -57,10 +43,6 @@ function tiki_setup_events()
 
 		if ($prefs['groupTracker'] == 'y') {
 			$events->bind('tiki.trackeritem.create', Event_Lib::defer('trk', 'group_tracker_create'));
-		}
-
-		if ($prefs['userTracker'] == 'y') {
-			$events->bind('tiki.trackeritem.save', Event_Lib::defer('trk', 'update_user_account'));
 		}
 
 		if ($prefs['feature_freetags'] == 'y') {
@@ -90,8 +72,7 @@ function tiki_setup_events()
 	}
 
 	if ($prefs['feature_search'] == 'y' && $prefs['unified_incremental_update'] == 'y') {
-		$events->bindPriority(100, 'tiki.save', 'tiki_save_refresh_index');
-		$events->bindPriority(100, 'tiki.user.save', 'tiki_save_refresh_index');
+		$events->bind('tiki.save', 'tiki_save_refresh_index');
 	}
 
 	if ($prefs['feature_file_galleries'] == 'y') {
@@ -145,11 +126,10 @@ function tiki_wiki_view_forwardlink($args)
 	Feed_ForwardLink_Receive::wikiView($args);
 	Feed_ForwardLink_PageLookup::wikiView($args);
 	Feed_ForwardLink::wikiView($args);
-	Feed_TextLink::wikiView($args);
+	Feed_ForwardLink_Send::wikiView($args);
 }
 
 function tiki_wiki_save_forwardlink($args)
 {
 	Feed_ForwardLink::wikiSave($args);
-	Feed_TextLink::wikiSave($args);
 }

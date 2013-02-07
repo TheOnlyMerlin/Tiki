@@ -6,7 +6,7 @@
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Id: tiki-check.php 44705 2013-01-31 20:07:33Z marclaporte $
 /*
 About the design:
 tiki-check.php is designed to run in 2 modes

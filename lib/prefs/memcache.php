@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -55,21 +55,18 @@ function prefs_memcache_list()
 		),
 		'memcache_wiki_data' => array(
 			'name' => tra('Cache wiki data in memcache'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' => 'y',
 			'extensions' => array( 'memcache' ),
 		),
 		'memcache_wiki_output' => array(
 			'name' => tra('Cache wiki output in memcache'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' => 'y',
 			'extensions' => array( 'memcache' ),
 		),
 		'memcache_forum_output' => array(
 			'name' => tra('Cache forum output in memcache'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' => 'y',
 			'extensions' => array( 'memcache' ),

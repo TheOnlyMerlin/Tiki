@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -164,6 +164,10 @@ function wikiplugin_datachannel( $data, $params )
 		}
 	}
 	
+	require_once 'lib/profilelib/profilelib.php';
+	require_once 'lib/profilelib/channellib.php';
+	require_once 'lib/profilelib/installlib.php';
+
 	$groups = Perms::get()->getGroups();
 
 	$config = Tiki_Profile_ChannelList::fromConfiguration($prefs['profile_channels']);

@@ -1,12 +1,8 @@
 <?php
-/**
- * Tiki initialization functions and classes
- *
- * @package TikiWiki
- * @subpackage lib\init
- * @copyright (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project. All Rights Reserved. See copyright.txt for details and a complete list of authors.
- * @licence Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
- */
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
+// All Rights Reserved. See copyright.txt for details and a complete list of authors.
+// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
@@ -15,22 +11,17 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * performs some checks on the underlying system, before initializing Tiki.
- * @package TikiWiki\lib\init
- */
 class TikiInit
 {
-	/**
-	 * dummy constructor
-	 */
+
 	function TikiInit()
 	{
 	}
 
+
 /** Return 'windows' if windows, otherwise 'unix'
- * \static
- */
+  * \static
+  */
 	function os()
 	{
 		static $os;
@@ -46,7 +37,7 @@ class TikiInit
 
 
 /** Return true if windows, otherwise false
-  * @static
+  * \static
   */
 	static function isWindows()
 	{
@@ -56,13 +47,13 @@ class TikiInit
 		}
 		return $windows;
 	}
-
-	/**
-	 * Copes with Windows permissions
-	 *
-	 * @param string $path directory to test
-	 *
+	
+	/*
+	 * @param string $path	directory to test
+	 * @param bool $is_file	default false for a dir
 	 * @return bool
+	 *
+	 * Copes with Windows premissions
 	 */
 	static function is_writeable($path)
 	{
@@ -73,20 +64,20 @@ class TikiInit
 		}
 	}
 
-	/**
-	 * From the php is_writable manual (thanks legolas558 d0t users dot sf dot net)
-	 * Note the two underscores and no "e".
-	 * 
-	 * will work in despite of Windows ACLs bug
-	 * NOTE: use a trailing slash for folders!!!
-	 * {@see http://bugs.php.net/bug.php?id=27609}
-	 * {@see http://bugs.php.net/bug.php?id=30931}
-	 * 
+	/*
 	 * @param string $path	directory to test	NOTE: use a trailing slash for folders!!!
 	 * @return bool
+	 * 
+	 * From the php is_writable manual (thanks legolas558 d0t users dot sf dot net)
+	 * Note the two underscores and no "e"
 	 */
 	static function is__writable($path)
 	{
+		//will work in despite of Windows ACLs bug
+		//NOTE: use a trailing slash for folders!!!
+		//see http://bugs.php.net/bug.php?id=27609
+		//see http://bugs.php.net/bug.php?id=30931
+
 		if ($path{strlen($path)-1}=='/') { // recursively return a temporary file path
 			return self::is__writable($path.uniqid(mt_rand()).'.tmp');
 		} else if (is_dir($path)) {
@@ -104,11 +95,9 @@ class TikiInit
 	}
 
 
-    /** Prepend $path to the include path
-     * @static          
-     * @param string $path the path to prepend
-     * @return string
-     */
+/** Prepend $path to the include path
+  * \static
+  */
 	static function prependIncludePath($path)
 	{
 		$include_path = ini_get('include_path');
@@ -118,16 +107,15 @@ class TikiInit
 			$include_path = $path . PATH_SEPARATOR . $include_path;
 		} else if (!$include_path) {
 			$include_path = $path;
-		}
+		} 
 
 		return set_include_path($include_path);
 	}
 
 
-    /** Append $path to the include path
-     * @static 
-     * @param mixed $path
-     */
+/** Append $path to the include path
+  * \static
+  */
 	static function appendIncludePath($path)
 	{
 		$include_path = ini_get('include_path');
@@ -137,17 +125,17 @@ class TikiInit
 			$include_path .= PATH_SEPARATOR . $path;
 		} else if (!$include_path) {
 			$include_path = $path;
-		}
+		} 
 
 		return set_include_path($include_path);
 	}
 
 
-    /** Return system defined temporary directory.
-     * In Unix, this is usually /tmp
-     * In Windows, this is usually c:\windows\temp or c:\winnt\temp
-     * @static
-     */
+/** Return system defined temporary directory.
+  * In Unix, this is usually /tmp
+  * In Windows, this is usually c:\windows\temp or c:\winnt\temp
+  * \static
+  */
 	static function tempdir()
 	{
 		static $tempdir;
@@ -160,39 +148,35 @@ class TikiInit
 	}
 
 	/**
-	 * Convert a string to UTF-8. Fixes a bug in PHP decode
-	 * From http://w3.org/International/questions/qa-forms-utf-8.html
-	 * @static
-	 * @param string String to be converted
-	 * @return UTF-8 representation of the string
-	 */
+	* Convert a string to UTF-8. Fixes a bug in PHP decode
+	* From http://w3.org/International/questions/qa-forms-utf-8.html
+	* @param string String to be converted
+	* @return UTF-8 representation of the string
+	*/
 	static function to_utf8( $string )
 	{
-		if ( preg_match(
-			'%^(?:
-	  		   [\x09\x0A\x0D\x20-\x7E]            # ASCII
-   		 | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
-		    | \xE0[\xA0-\xBF][\x80-\xBF]         # excluding overlongs
-   		 | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
-		    | \xED[\x80-\x9F][\x80-\xBF]         # excluding surrogates
-			 | \xF0[\x90-\xBF][\x80-\xBF]{2}      # planes 1-3
-			 | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
-		    | \xF4[\x80-\x8F][\x80-\xBF]{2}      # plane 16
-			)*$%xs',
-			$string
-		)
-		) {
+			// 
+		if ( preg_match('%^(?:
+      [\x09\x0A\x0D\x20-\x7E]            # ASCII
+    | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
+    | \xE0[\xA0-\xBF][\x80-\xBF]         # excluding overlongs
+    | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
+    | \xED[\x80-\x9F][\x80-\xBF]         # excluding surrogates
+    | \xF0[\x90-\xBF][\x80-\xBF]{2}      # planes 1-3
+    | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
+    | \xF4[\x80-\x8F][\x80-\xBF]{2}      # plane 16
+)*$%xs', $string) ) {
 			return $string;
 		} else {
 			return iconv('CP1252', 'UTF-8', $string);
 		}
-	}
-
+	} 
+	
 	/**
-	 * Determine if the web server is an IIS server
-	 * @return true if IIS server, else false
-  	 * @static
-	 */
+	*	Determine if the web server is an IIS server
+	*	@return true if IIS server, else false
+  	* \static
+	*/
 	static function isIIS()
 	{
 		static $IIS;
@@ -203,26 +187,19 @@ class TikiInit
 		}
 
 		return $IIS;
-	}
+	}	
 
 	/**
-	 * Determine if the web server is an IIS server
-	 * @return true if IIS server, else false
-  	 * \static
-	 */
+	*	Determine if the web server is an IIS server
+	*	@return true if IIS server, else false
+  	* \static
+	*/
 	static function hasIIS_UrlRewriteModule()
 	{
-		return isset($_SERVER['IIS_UrlRewriteModule']) == true;
-	}
+			return isset($_SERVER['IIS_UrlRewriteModule']) == true;
+	}	
 }
 
-/**
- * set how Tiki will report Errors
- * @param $errno
- * @param $errstr
- * @param $errfile
- * @param $errline
- */
 function tiki_error_handling($errno, $errstr, $errfile, $errline)
 {
 	global $prefs, $phpErrors;

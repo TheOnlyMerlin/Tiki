@@ -61,7 +61,6 @@
 				{preference name=article_custom_attributes}
 
 				{preference name=geo_locate_article}
-				{preference name=feature_sefurl_title_article}
 				
 				{preference name=article_related_articles}
 

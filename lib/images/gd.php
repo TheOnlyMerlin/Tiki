@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,21 +7,13 @@
 
 require_once('lib/images/abstract.php');
 
-/**
- *
- */
 class Image extends ImageAbstract
 {
 	var $gdinfo;
 	var $gdversion;
 	var $havegd = false;
 
-    /**
-     * @param $image
-     * @param bool $isfile
-     * @param string $format
-     */
-    function __construct($image, $isfile = false, $format = 'jpeg')
+	function __construct($image, $isfile = false, $format = 'jpeg') 
 	{
 
 		// Which GD Version do we have?
@@ -61,24 +53,14 @@ class Image extends ImageAbstract
 					$this->data = call_user_func('imagecreatefrom'.$this->format, $this->filename);
 					$this->loaded = true;
 				}
-			} elseif (
-				!empty($this->data) &&
-				$this->data != 'REFERENCE' &&
-				preg_match('/^[<]svg/', $this->data) == false //In some cases, an svg will be recognized as an alternate picture type, here we simply check the beginning for "<svg" and if it is found, it is an svg
-			) {
+			} elseif (!empty($this->data)) {
 				$this->data = imagecreatefromstring($this->data);
 				$this->loaded = true;
-			} else {
-				$this->data = null;
 			}
 		}
 	}
 
-    /**
-     * @param $x
-     * @param $y
-     */
-    function _resize($x, $y)
+	function _resize($x, $y) 
 	{
 		if ($this->data) {
 			$t = imagecreatetruecolor($x, $y);
@@ -104,10 +86,7 @@ class Image extends ImageAbstract
 		return parent::resizethumb();
 	}
 
-    /**
-     * @return null|string
-     */
-    function display()
+	function display() 
 	{
 
 		$this->_load_data();
@@ -141,11 +120,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-    /**
-     * @param $angle
-     * @return bool
-     */
-    function rotate($angle)
+	function rotate($angle) 
 	{
 		$this->_load_data();
 		if ($this->data) {
@@ -156,10 +131,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-    /**
-     * @return array
-     */
-    function get_gdinfo()
+	function get_gdinfo() 
 	{
 		$gdinfo = array();
 		$gdversion = '';
@@ -189,11 +161,7 @@ class Image extends ImageAbstract
 	}
 
 	// This method do not need to be called on an instance
-    /**
-     * @param $format
-     * @return bool|int
-     */
-    function is_supported($format)
+	function is_supported($format) 
 	{
 
 		if ( ! function_exists('imagetypes') ) {
@@ -237,10 +205,7 @@ class Image extends ImageAbstract
 		return false;
 	}
 
-    /**
-     * @return int|null
-     */
-    function _get_height()
+	function _get_height() 
 	{
 		if ($this->loaded && $this->data) {
 			return imagesy($this->data);
@@ -260,10 +225,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-    /**
-     * @return int|null
-     */
-    function _get_width()
+	function _get_width() 
 	{
 		if ($this->loaded && $this->data) {
 			return imagesx($this->data);

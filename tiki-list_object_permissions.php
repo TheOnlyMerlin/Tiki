@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -9,11 +9,6 @@ include_once ('tiki-setup.php');
 $access->check_permission('tiki_p_admin');
 $all_perms = $userlib->get_permissions();
 
-/**
- * @param $permName
- * @param $objectType
- * @return bool
- */
 function is_perm($permName, $objectType)
 {
 	global $all_perms, $tikilib;
@@ -25,14 +20,6 @@ function is_perm($permName, $objectType)
 	}
 	return false;
 }
-
-/**
- * @param $objectId
- * @param $objectType
- * @param $objectName
- * @param string $filterGroup
- * @return array
- */
 function list_perms($objectId, $objectType, $objectName, $filterGroup='')
 {
 	global $userlib, $prefs;
@@ -159,7 +146,7 @@ foreach ($types as $type) {
 				if (count($r['special']) > 0) {
 					$res[$type]['objects'][] = array('objectId' => $r['objectId'], 'special' => $r['special'], 'objectName' => $object['name'], 'objectType' => $type);
 				}
-				if (count($r['category']) > 0) {
+				if (count($r['category']) > 0) { 
 					$res[$type]['category'][] = array('objectId' => $r['objectId'], 'category' => $r['category'], 'objectName' => $object['name']);
 				}
 			}
@@ -170,7 +157,7 @@ foreach ($types as $type) {
 			$objects = $commentslib->list_forums();
 			foreach ($objects['data'] as $object) {
 				$r = list_perms($object['forumId'], $type, $object['name'], $filterGroup);
-				if (count($r['special']) > 0) {
+				if (count($r['special']) > 0) { 
 					$res[$type]['objects'][] = array('objectId' => $r['objectId'], 'special' => $r['special'], 'objectName' => $object['name']);
 				}
 				if (count($r['category']) > 0) {
@@ -183,7 +170,7 @@ foreach ($types as $type) {
 		case 'groups':
 			foreach ($all_groups as $object) {
 				$r = list_perms($object, $type, '', $filterGroup);
-				if (count($r['special']) > 0) {
+				if (count($r['special']) > 0) { 
 					$res[$type]['objects'][] = array('objectId' => $r['objectId'], 'special' => $r['special']);
 				}
 				if (count($r['category']) > 0) {
@@ -192,7 +179,7 @@ foreach ($types as $type) {
 			}
     		break;
 
-		default:
+			default:
      		break;
 	}
 }

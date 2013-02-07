@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -21,30 +21,6 @@ function prefs_smarty_list()
 			'type' => 'flag',
 			'perspective' => false,
 			'default' => 'y',
-		),
-		'smarty_security_modifiers' => array(
-			'name' => tr('Extra smarty modifiers'),
-			'description' => tr('Make additional PHP functions available as smarty modifiers. May be needed for custom templates.'),
-			'warning' => tr('There may be security implications. Make sure you know what you are doing.'),
-			'type' => 'text',
-			'separator' => ',',
-			'perspective' => false,
-			'default' => '',
-			'dependencies' => array(
-				'smarty_security',
-			),
-		),
-		'smarty_security_functions' => array(
-			'name' => tr('Extra smarty functions'),
-			'description' => tr('Make additional PHP functions available as smarty functions. May be needed for custom templates.'),
-			'warning' => tr('There may be security implications. Make sure you know what you are doing.'),
-			'type' => 'text',
-			'separator' => ',',
-			'perspective' => false,
-			'default' => '',
-			'dependencies' => array(
-				'smarty_security',
-			),
 		),
 		'smarty_compilation' => array(
 			'name' => tra('Smarty Compilation'),

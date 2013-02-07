@@ -34,7 +34,7 @@
 	{remarksbox type="note" title="{tr}Note{/tr}"}{$saved_msg}{/remarksbox}
 {/if}
 
-{if $user and $prefs.feature_user_watches eq 'y' and (isset($category_watched) and $category_watched eq 'y')}
+{if $user and $prefs.feature_user_watches eq 'y' and $category_watched eq 'y'}
 	<div class="categbar" style="clear: both; text-align: right">
 		{tr}Watched by categories:{/tr}
 		{section name=i loop=$watching_categories}
@@ -104,6 +104,12 @@
 		{if $prefs.feature_wiki_ratings eq 'y'}
 			{include file='poll.tpl'}
 		{/if}
+
+		{if $prefs.wiki_simple_ratings eq 'y' && $tiki_p_assign_perm_wiki_page eq 'y'}
+			<form method="post" action="">
+				{rating type="wiki page" id=$page_id}
+			</form>
+		{/if}
 	{/if} {*hide_page_header*}
 
 	{if $machine_translate_to_lang != ''}
@@ -149,14 +155,7 @@
 	<div class="wikitext" id="wikifootnote">{$footnote}</div>
 {/if}
 
-<footer class="editdate">
-	{if $prefs.wiki_simple_ratings eq 'y' && $tiki_p_assign_perm_wiki_page eq 'y'}
-		{tr}Rate this page:{/tr}
-	    <form method="post" action="">
-			{rating type="wiki page" id=$page_id}
-	    </form>
-	{/if}
-
+<p class="editdate">
 	{if isset($wiki_authors_style) && $wiki_authors_style neq 'none'}
 		{include file='wiki_authors.tpl'}
 	{/if}
@@ -168,7 +167,7 @@
 		{capture name=url}{$base_url}{$page|sefurl}{if !empty($smarty.request.itemId)}&amp;itemId={$smarty.request.itemId}{/if}{/capture}
 		{tr}The original document is available at{/tr} <a href="{$smarty.capture.url}">{$smarty.capture.url}</a>
 	{/if}
-</footer>
+</p>
 
 {if $is_categorized eq 'y' and $prefs.feature_categories eq 'y' and $prefs.feature_categoryobjects eq 'y'}
 	{$display_catobjects}

@@ -1,26 +1,14 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-/**
- *
- */
 class TodoLib
 {
 	// create a new todo
-    /**
-     * @param $after
-     * @param $event
-     * @param $objectType
-     * @param null $objectId
-     * @param null $from
-     * @param null $to
-     * @return mixed
-     */
-    function addTodo($after, $event, $objectType, $objectId = null, $from = null, $to = null)
+	function addTodo($after, $event, $objectType, $objectId = null, $from = null, $to = null)
 	{
 		$db = TikiDb::get();
 		$query = 'INSERT INTO `tiki_todo` (`after`, `event`, `objectType`, `objectId`, `from`, `to`) VALUES (?, ?, ?, ?, ?, ?)';
@@ -33,13 +21,7 @@ class TodoLib
 	}
 
 	// list of the todos of an object
-    /**
-     * @param null $objectType
-     * @param null $objectId
-     * @param null $todoId
-     * @return mixed
-     */
-    function listTodoObject($objectType = null, $objectId = null, $todoId = null)
+	function listTodoObject($objectType = null, $objectId = null, $todoId = null)
 	{
 		$db = TikiDb::get();
 		$query = 'SELECT * FROM `tiki_todo` tt ';
@@ -76,10 +58,7 @@ class TodoLib
 	}
 
 	// delete a todo
-    /**
-     * @param $id
-     */
-    function delTodo($id)
+	function delTodo($id)
 	{
 		$db = TikiDb::get();
 		$query = 'DELETE FROM `tiki_todo` WHERE `todoId`=? OR (`objectId`=? AND `objectType`=?)';
@@ -87,11 +66,7 @@ class TodoLib
 		TodoLib::cleanNotif();
 	}
 
-    /**
-     * @param $objectType
-     * @param $objectId
-     */
-    function delObjectTodo($objectType, $objectId)
+	function delObjectTodo($objectType, $objectId)
 	{
 		$db = TikiDb::get();
 		$query = 'DELETE FROM `tiki_todo_notif` WHERE `objectType`=? AND `objectId` = ?';
@@ -102,11 +77,7 @@ class TodoLib
 	}
 
 	// apply a todo
-    /**
-     * @param $todo
-     * @return bool
-     */
-    function applyTodo($todo)
+	function applyTodo($todo)
 	{
 		switch ($todo['objectType']) {
 			case 'todo':
@@ -122,7 +93,7 @@ class TodoLib
 					$this->$func($todo, $objects);
 				}
 				// echo '<pre>MAIL';print_r($objects); echo '</pre>';
-				break;
+							break;
 
 			default:
 				$objects = $this->listObjectsTodo($todo);
@@ -139,12 +110,7 @@ class TodoLib
 	}
 
 	// list the objects selected by a todo
-    /**
-     * @param $todo
-     * @param null $except
-     * @return bool
-     */
-    function listObjectsTodo($todo, $except=null)
+	function listObjectsTodo($todo, $except=null)
 	{
 		$func = 'listObjectsTodo_'.$todo['objectType'];
 		if (!method_exists($this, $func)) {
@@ -153,11 +119,7 @@ class TodoLib
 		return $this->$func($todo, $except);
 	}
 
-    /**
-     * @param $todoId
-     * @return mixed
-     */
-    function alreadyNotif ($todoId)
+	function alreadyNotif ($todoId)
 	{
 		$db = TikiDb::get();
 		$query = 'SELECT `objectId` FROM `tiki_todo_notif` WHERE `todoId`=?';
@@ -168,22 +130,14 @@ class TodoLib
 		return $objects;
 	}
 
-    /**
-     * @param $todoId
-     * @param $objectType
-     * @param $objectId
-     */
-    function addNotif ($todoId, $objectType, $objectId)
+	function addNotif ($todoId, $objectType, $objectId)
 	{
 		$db = TikiDb::get();
 		$query = 'INSERT INTO `tiki_todo_notif` (`todoId`, `objectType`, `objectId`) VALUES(?,?,?)';
 		$db->query($query, array($todoId, $objectType, $objectId));
 	}
 
-    /**
-     * @param $todoId
-     */
-    function delNotif ($todoId)
+	function delNotif ($todoId)
 	{
 		$db = TikiDb::get();
 		$query = 'DELETE FROM `tiki_todo_notif` WHERE `todoId`=?';
@@ -196,13 +150,7 @@ class TodoLib
 		$query = 'DELETE FROM `tiki_todo_notif` WHERE `todoId` NOT IN (SELECT `todoId` FROM `tiki_todo`)';
 	}
 
-    /**
-     * @param $todo
-     * @param $to
-     * @param string $default_subject
-     * @param string $default_body
-     */
-    function mailTodo($todo, $to, $default_subject='Change notification', $default_body='')
+	function mailTodo($todo, $to, $default_subject='Change notification', $default_body='')
 	{
 		global $userlib, $tikilib, $prefs, $smarty;
 		if (empty($to['email']) && !empty($to['user'])) {
@@ -228,12 +176,7 @@ class TodoLib
 	}
 
 	/////////////////////////////////////////////////
-    /**
-     * @param $todo
-     * @param null $except
-     * @return array
-     */
-    function listObjectsTodo_tracker($todo, $except=null)
+	function listObjectsTodo_tracker($todo, $except=null)
 	{
 		global $tikilib;
 		global $trklib; include_once('lib/trackers/trackerlib.php');
@@ -241,27 +184,27 @@ class TodoLib
 		switch ($todo['event']) {
 			case 'creation':
 				$filter = array('createdBefore' => $tikilib->now - $todo['after']);
-				break;
+							break;
 
 			case 'modification':
 				$filter = array('lastModifBefore' => $tikilib->now - $todo['after']);
-				break;
+							break;
 		}
 
 		$fieldId = $trklib->get_field_id_from_type($todo['objectId'], 'u', '1%');
 
 		$objects = $trklib->list_items(
-			$todo['objectId'],
-			0,
-			-1,
-			'created_asc',
-			array($fieldId=>$trklib->get_tracker_field($fieldId)),
-			'',
-			'',
-			$todo['from']['status'],
-			'',
-			'',
-			$filter
+						$todo['objectId'],
+						0,
+						-1,
+						'created_asc',
+						array($fieldId=>$trklib->get_tracker_field($fieldId)),
+						'',
+						'',
+						$todo['from']['status'],
+						'',
+						'',
+						$filter
 		);
 
 		// todo in list_items:
@@ -277,21 +220,13 @@ class TodoLib
 		return $res;
 	}
 
-    /**
-     * @param $todo
-     * @param $objects
-     */
-    function applyTodo_tracker($todo, $objects)
+	function applyTodo_tracker($todo, $objects)
 	{
 		global $trklib; include_once('lib/trackers/trackerlib.php');
 		$trklib->change_status($objects, $todo['to']['status']);
 	}
 
-    /**
-     * @param $todo
-     * @param $objects
-     */
-    function notifyTodo_tracker($todo, $objects)
+	function notifyTodo_tracker($todo, $objects)
 	{
 		global $smarty, $tikilib, $prefs;
 		global $trklib; include_once('lib/trackers/trackerlib.php');

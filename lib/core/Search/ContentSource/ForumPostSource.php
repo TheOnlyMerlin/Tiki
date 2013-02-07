@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -30,7 +30,6 @@ class Search_ContentSource_ForumPostSource implements Search_ContentSource_Inter
 		global $prefs;
 
 		$commentslib = TikiLib::lib('comments');
-		$commentslib->extras_enabled(false);
 		$comment = $commentslib->get_comment($objectId);
 
 		$lastModification = $comment['commentDate'];
@@ -48,8 +47,6 @@ class Search_ContentSource_ForumPostSource implements Search_ContentSource_Inter
 				$author[] = $comment['userName'];
 			}
 		}
-
-		$commentslib->extras_enabled(true);
 
 		$data = array(
 			'title' => $typeFactory->sortable($comment['title']),

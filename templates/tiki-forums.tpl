@@ -25,10 +25,9 @@
 
 				{if $prefs.feature_forums_search eq 'y' and $prefs.feature_search eq 'y'}
 					<td>
-						<form class="forms" method="get" action="{if $prefs.feature_search_fulltext neq 'y'}tiki-searchindex.php{else}tiki-searchresults.php{/if}">
+						<form class="forms" method="get" action="{if $prefs.feature_forum_local_tiki_search eq 'y'}tiki-searchindex.php{else}tiki-searchresults.php{/if}">
 							<input name="highlight" size="30" type="text" />
 							<input type="hidden" name="where" value="forums" />
-							<input type="hidden" name="filter~type" value="forum post"/>
 							<input type="submit" class="wikiaction" name="search" value="{tr}Search in content{/tr}"/>
 						</form>
 					</td>
@@ -91,8 +90,7 @@
 		<tr class="{cycle}">
 			<td class="text">
 				<span style="float:left">
-					{if (isset($channels[user].individual) and $channels[user].individual eq 'n')
-						or ($tiki_p_admin eq 'y') or ($channels[user].individual_tiki_p_forum_read eq 'y')}
+					{if ($channels[user].individual eq 'n') or ($tiki_p_admin eq 'y') or ($channels[user].individual_tiki_p_forum_read eq 'y')}
 						<a class="forumname" href="tiki-view_forum.php?forumId={$channels[user].forumId}">{$channels[user].name|escape}</a>
 					{else}
 						{$channels[user].name|escape}

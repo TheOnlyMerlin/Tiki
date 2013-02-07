@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -48,35 +48,13 @@ function wikiplugin_mediaplayer_info()
 				'description' => tra('Complete URL to the flv to include.'),
 				'filter' => 'url'
 			),
-
-			// The following param needs an URL with an extension (ex.: example.wmv works but not tiki-download_file.php?fileId=4&display)
 			'src' => array(
 				'required' => false,
 				'name'=> tra('URL'),
-				'description' => tra("Complete URL to the media to include, which has the appropriate extension. If your URL doesn't have an extension, use the File type parameter below."). ' ' .'File extensions: asx, asf, avi, mov, mpg, mpeg, mp4, qt, ra, smil, swf, wmv, 3g2, 3gp, aif, aac, au, gsm, mid, midi, mov, m4a, snd, ra, ram, rm, wav, wma, bmp, html, pdf, psd, qif, qtif, qti, tif, tiff, xaml',
+				'description' => tra('Complete URL to the media to include.'). ' asx, asf, avi, mov, mpg, mpeg, mp4, qt, ra, smil, swf, wmv, 3g2, 3gp, aif, aac, au, gsm, mid, midi, mov, m4a, snd, ra, ram, rm, wav, wma, bmp, html, pdf, psd, qif, qtif, qti, tif, tiff, xaml',
 				'filter' => 'url',
 				'default' => '',
 			),
-
-			// The type parameter is verified for Quicktime, Windows Media Player, Real Player, iframe (PDF), but doesn't work for flv param of the plugin
-			'type' => array(
-				'required' => false,
-				'name'=> tra('File type'),
-				'description' => tra('File type for source URL, e.g. mp4. Specify one of the supported file types when the URL of the file is missing the file extension. This is the case for File Gallery files which have a URL such as tiki-download_file.php?fileId=4&display or display4 if you have Clean URLs enabled.'),
-				'default' => '',
-			),
-			'width' => array(
-				'required' => false,
-				'name'=> tra('Width'),
-				'description' => tra('Player width in px or %'),
-				'default' => '',
-				),
-			'height' => array(
-				'required' => false,
-				'name'=> tra('Height'),
-					'description' => tra('Player height in px or %'),
-				'default' => '',
-				),
 			'style' => array(
 				'required' => false,
 				'name' => tra('Style'),
@@ -178,14 +156,7 @@ function wikiplugin_mediaplayer($data, $params)
 			
 			$js .= "$param: $value,";
 		}
-		// Force scaling (keeping the aspect ratio) of the QuickTime player
-		//	Tried with .mp4. Not sure how this will work with other formats, not using QuickTime.
-		// See: http://jquery.malsup.com/media/#players for default players for different formats. arildb
-		$js .= " params: { 
-				scale: 'aspect'
-				} 
-			} );";
-			
+		$js .= "} );";
 		$headerlib->add_jq_onready($js);
 		return "<a href=\"".$params['src']."\" id=\"$id\"></a>";
 	}

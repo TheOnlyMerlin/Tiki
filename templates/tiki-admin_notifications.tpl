@@ -3,7 +3,7 @@
 
 {if empty($prefs.sender_email)}
 	<br />
-	<div class="highlight simplebox">{icon _id=information style="vertical-align:middle"} {tr}You need to set <a href="tiki-admin.php?page=general">Sender Email</a> before creating email notifications{/tr}.</div>
+	<div class="highlight simplebox">{icon _id=information style="vertical-align:middle"} {tr}You need to set <a href="tiki-admin.php?page=general">Sender Email</a> before creating email notifications.{/tr}</div>
 	<br />
 {/if}
 
@@ -62,12 +62,12 @@
 			<td>
 				<input type="text" id='femail' name="email" />
 			</td>
-		</tr>
+		</tr> 
 		<tr>
 			<td>
 				<span class="simple_inlinehelp">{tr}Note that a user is not notified for his own action{/tr}.</span>
 			</td>
-		</tr> 
+		</tr>
 		<tr>
 			<td>&nbsp;</td>
 			<td><input type="submit" name="add" value="{tr}Add{/tr}" /></td>

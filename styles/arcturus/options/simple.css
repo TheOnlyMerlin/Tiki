@@ -140,7 +140,7 @@ input[type="number"] {
 }
 
 textarea {
-	border: solid 1px #abcdef;
+	border: solid 1px #abcdef
 }
 
 input[type="submit"],
@@ -357,7 +357,7 @@ tr.odd td,
 td.odd,
 li.odd,
 .oddthumb,
-table.normal tr:nth-child(2n+1) {
+table.normal tr:nth-child(2n+1)  {
 	background: #def;
 }
 

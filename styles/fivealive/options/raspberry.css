@@ -1,5 +1,5 @@
 /* $Id$ 
-	Raspberry theme option for FiveAlive themes for
+	Raspberry theme option for FiveAlive theme for
 	Tiki Wiki CMS Groupware.
 */
 
@@ -206,18 +206,20 @@ th.header {
 	border: 2px solid #f6cae2;
 }
 
-.caltable .odd,
-.caltable .even,
+.calodd,
+.caleven,
 .wikicell {
 	border: 1px solid #fcebbc;
 }
 
 .odd,
+.calodd,
 table.normal tr:nth-child(2n+1) {
 	background: #fdf1d0;
 }
 
 .even,
+.caleven,
 table.normal tr:nth-child(2n) {
 	background: #fcebbc;
 }

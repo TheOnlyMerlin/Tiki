@@ -28,28 +28,20 @@
 
 				{preference name=feature_search visible="always"}
 				<div class="adminoptionboxchild" id="feature_search_childcontainer">				
-					{preference name=feature_search_stats}
-					{preference name=user_in_search_result}
-					{preference name="unified_incremental_update"}
-
-					{preference name="allocate_memory_unified_rebuild"}
-					{preference name="allocate_time_unified_rebuild"}
-
 					{preference name="unified_engine"}
 					<div class="adminoptionboxchild unified_engine_childcontainer lucene">
+						{preference name="unified_incremental_update"}
 						{preference name="unified_lucene_highlight"}
-						{preference name=unified_parse_results}
-						{preference name="unified_lucene_default_operator"}
-
+						{preference name="unified_lucene_location"}
 						<fieldset>
 							<legend>{tr}Search Engine Settings{/tr}</legend>
-							{preference name="unified_lucene_location"}
 							{preference name="unified_lucene_max_result"}
 							{preference name="unified_lucene_max_resultset_limit"}
 							{preference name="unified_lucene_terms_limit"}
 							{preference name="unified_lucene_max_buffered_docs"}
 							{preference name="unified_lucene_max_merge_docs"}
 							{preference name="unified_lucene_merge_factor"}
+							{preference name="unified_lucene_default_operator"}
 						</fieldset>
 					</div>
 
@@ -73,7 +65,7 @@
 							<a href="tiki-admin.php?page=search&amp;rebuild=now" id="rebuild-link">{tr}Rebuild Index{/tr}</a> {tr}From the command line:{/tr} <kbd>php lib/search/shell.php rebuild</kbd><br />
 							<label for="log-rebuild">{tr}Log rebuild?{/tr}</label>
 							<input type="checkbox" id="log-rebuild" />
-							<span class="description">{tr}Log file is saved as temp/Search_Indexer.log{/tr}</span> <br /> {tr}From the command line:{/tr} <kbd>php lib/search/shell.php rebuild log</kbd><br />
+							<span class="description">{tr}Log file is saved as temp/Search_Indexer.log{/tr}</span>
 							{jq}
 $("#log-rebuild").click(function(){
 	if ($(this).prop("checked")) {
@@ -121,6 +113,7 @@ $("#log-rebuild").click(function(){
 				{preference name=feature_search_fulltext}
 				<div class="adminoptionboxchild" id="feature_search_fulltext_childcontainer">				
 					{preference name=feature_referer_highlight}
+					{preference name=feature_search_stats}
 
 					{preference name=feature_search_show_forbidden_obj}
 					{preference name=feature_search_show_forbidden_cat}
@@ -151,7 +144,6 @@ $("#log-rebuild").click(function(){
 			{preference name=search_show_category_filter}
 			{preference name=search_show_tag_filter}
 			{preference name=feature_search_show_object_filter}
-			{preference name=search_show_sort_order}
 			{preference name=feature_search_show_search_box}
 			{tr}Select the information to display for each result:{/tr}
 			{preference name=feature_search_show_visit_count}

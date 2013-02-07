@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -181,7 +181,7 @@ class Connect_Server extends Connect_Abstract
 
 	/**
 	 * Gets a summary of connections
-	 *
+	 * 
 	 * @return array
 	 */
 
@@ -192,17 +192,17 @@ class Connect_Server extends Connect_Abstract
 		$ret = array();
 
 		$ret['received'] = $this->connectTable->fetchCount(
-			array(
-				'type' => 'received',
-				'server' => 1,
-			)
+						array(
+							'type' => 'received',
+							'server' => 1,
+						)
 		);
 
 		// select distinct guid from tiki_connect where server=1;
 		$res = TikiLib::lib('tiki')->getOne('SELECT COUNT(DISTINCT `guid`) FROM `tiki_connect` WHERE `server` = 1 AND `type` = \'received\';');
 
 		$ret['guids'] = $res;
-
+		
 		return $ret;
 	}
 
@@ -226,12 +226,12 @@ class Connect_Server extends Connect_Abstract
 	function isPendingGuid( $guid )
 	{
 		$res = $this->connectTable->fetchOne(
-			'data',
-			array(
-				'type' => 'pending',
-				'server' => 1,
-				'guid' => $guid,
-			)
+						'data',
+						array(
+							'type' => 'pending',
+							'server' => 1,
+							'guid' => $guid,
+						)
 		);
 		return $res;
 	}
@@ -247,11 +247,11 @@ class Connect_Server extends Connect_Abstract
 	function isConfirmedGuid( $guid )
 	{
 		$res = $this->connectTable->fetchCount(
-			array(
-				'type' => 'confirmed',
-				'server' => 1,
-				'guid' => $guid,
-			)
+						array(
+							'type' => 'confirmed',
+							'server' => 1,
+							'guid' => $guid,
+						)
 		);
 		return $res > 0;
 	}

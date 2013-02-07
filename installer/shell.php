@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -35,18 +35,9 @@ include $local_php;
 // In case of replication, ignore it during installer.
 unset( $shadow_dbs, $shadow_user, $shadow_pass, $shadow_host );
 
-/**
- *
- */
 class IgnoreErrorHandler implements TikiDb_ErrorHandler
 {
-    /**
-     * @param TikiDb $db
-     * @param $query
-     * @param $values
-     * @param $result
-     */
-    function handle( TikiDb $db, $query, $values, $result )
+	function handle( TikiDb $db, $query, $values, $result )
 	{
 
 	}
@@ -88,11 +79,6 @@ else {
 			}
 		}
 	}
-	
-	# Clear caches, since patches often manipulate the database directly without using the functions normally available outside the installer.
-	# All caches, even though scripts and patches surely don't affect them all.
-	require_once 'lib/cache/cachelib.php';
-	$cachelib->empty_cache();
 }
 	
 # Clear caches, since patches often manipulate the database directly without using the functions normally available outside the installer.

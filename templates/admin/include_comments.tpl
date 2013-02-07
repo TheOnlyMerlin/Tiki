@@ -19,10 +19,9 @@
 				<div class="admin featurelist">
 					{preference name=feature_comments_moderation}
 					{preference name=feature_comments_locking}
-					{preference name=feature_comments_post_as_anonymous}
-					{preference name=comments_vote}
-					{preference name=comments_archive}
-					{preference name=comments_allow_correction}
+					{preference name=feature_comments_post_as_anonymous}				
+					{preference name=comments_vote}				
+					{preference name=comments_archive}				
 
 					{preference name=comments_akismet_filter}
 
@@ -65,7 +64,6 @@
 					{preference name=feature_wiki_comments}
 					<div class="adminoptionboxchild" id="feature_wiki_comments_childcontainer">
 						{preference name=wiki_comments_displayed_default}
-						{preference name=wiki_comments_form_displayed_default}
 						{preference name=wiki_comments_per_page}
 						{preference name=wiki_comments_default_ordering}
 						{preference name=wiki_comments_allow_per_page}

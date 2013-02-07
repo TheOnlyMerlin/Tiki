@@ -14,13 +14,13 @@
 	<input type="hidden" name="find" value="{$find|escape}" />
 	<input type="hidden" name="maxRecords" value="{$maxRecords|escape}" />
 </form>
-		{if isset($error) and $error}
+		{if $error}
 <div class="simplebox highlight">
 			{$error}
 </div>
 		{/if}
 
-{if isset($mapview) and $mapview}
+{if $mapview}
 {wikiplugin _name="googlemap" type="objectlist" width="400" height="400"}{/wikiplugin}
 {/if}
 
@@ -44,14 +44,6 @@
 	<strong>{tr}Insert name of the page you wish to create{/tr}</strong>
 	<form method="get" action="tiki-editpage.php">
 		<input id="pagename" type="text" size="30" name="page" /><br />
-		{if $prefs.namespace_enabled == 'y' && $prefs.namespace_default}
-			<div>
-				<label>
-					<input type="checkbox" name="namespace" value="{$prefs.namespace_default|escape}" checked="checked" />
-					{tr _0=$prefs.namespace_default}Create page within %0{/tr}
-				</label>
-			</div>
-		{/if}
 		<input class="submit button" type="submit" name="quickedit" value="{tr}Create Page{/tr}" />
 	</form>
 </div>

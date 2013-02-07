@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -119,8 +119,8 @@ class OAuthLib extends TikiDb_Bridge
 		case 'zotero':
 			return array(
 				'callbackUrl' => $tikilib->tikiUrl(
-					'tiki-ajax_services.php',
-					array('oauth_callback' => $provider_key,)
+								'tiki-ajax_services.php',
+								array('oauth_callback' => $provider_key,)
 				),
 				'siteUrl' => 'https://www.zotero.org/oauth',
 				'requestTokenUrl' => 'https://www.zotero.org/oauth/request',

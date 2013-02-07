@@ -39,15 +39,13 @@
 
 			<fieldset class="admin featurelist">
 				<legend>{tr}Plugins{/tr}</legend>
-				{preference name=wikiplugin_showreference}
-				{preference name=wikiplugin_addreference}
 				{preference name=wikiplugin_alink}
 				{preference name=wikiplugin_aname}
 				{preference name=wikiplugin_box}
 				{preference name=wikiplugin_button}
 				{preference name=wikiplugin_center}
 				{preference name=wikiplugin_code}
-				{preference name=wikiplugin_countdown}
+                                {preference name=wikiplugin_countdown}
 				{preference name=wikiplugin_div}
 				{preference name=wikiplugin_dl}
 				{preference name=wikiplugin_fade}
@@ -313,16 +311,7 @@ if (window.location.href.indexOf('plugin_alias_new=true') > -1) {
 		<fieldset id="pluginalias_simple_args">
 			<legend>{tr}Simple Plugin Arguments{/tr}{icon _id="omodule"} {icon _id="add" id="pluginalias_simple_add"}</legend>
 			{jq}
-$('#pluginalias_simple_add').click(function() {
-		var me = $('#pluginalias_simple_new'),
-			lastChild = me.children().last(),
-			clone = lastChild.clone();
-
-		clone.find(':input').val('');
-		clone.insertAfter(lastChild);
-
-	return false;
-});
+$('#pluginalias_simple_add').click(function() { $('#pluginalias_simple_new').toggle("fast"); return false; });
 {{if $plugin_admin.params}}
 $('#pluginalias_doc legend').trigger('click'{{if isset($plugin_admin.description.params)}, true{/if}});
 $('#pluginalias_simple_new').hide();
