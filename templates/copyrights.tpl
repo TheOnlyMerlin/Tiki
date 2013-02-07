@@ -1,4 +1,4 @@
-<h2>{tr}Copyrights:{/tr} <a href="tiki-index.php?page={$page|escape:"url"}">{$page}</a></h2>
+<h2>{tr}Copyrights{/tr}: <a href="tiki-index.php?page={$page|escape:"url"}">{$page}</a></h2>
 
 <table class="formcolor">
 	{section name=i loop=$copyrights}
@@ -10,7 +10,7 @@
 					<table class="formcolor">
 						<tr>
 							<td>
-								<label for="copyleft-title">{tr}Title:{/tr}</label>
+								<label for="copyleft-title">{tr}Title{/tr}:</label>
 							</td>
 							<td>
 								<input size="40" class="wikitext" type="text" name="copyrightTitle" id="copyleft-title" value="{$copyrights[i].title|escape}" />
@@ -18,7 +18,7 @@
 						</tr>
 						<tr>
 							<td>
-								<label for="copyleft-year">{tr}Year:{/tr}</label>
+								<label for="copyleft-year">{tr}Year{/tr}:</label>
 							</td>
 							<td>
 								<input size="4" class="wikitext" type="text" name="copyrightYear" id="copyleft-year" value="{$copyrights[i].year|escape}" />
@@ -26,18 +26,10 @@
 						</tr>
 						<tr>
 							<td>
-								<label for="copyleft-authors">{tr}Authors:{/tr}</label>
+								<label for="copyleft-authors">{tr}Authors{/tr}:</label>
 							</td>
 							<td>
 								<input size="40" class="wikitext" type="text" name="copyrightAuthors" id="copyleft-authors" value="{$copyrights[i].authors|escape}" />
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<label for="copyleft-holder">{tr}Copyright Holder:{/tr}</label>
-							</td>
-							<td>
-								<input size="40" class="wikitext" type="text" name="copyrightHolder" id="copyleft-holder" value="{$copyrights[i].holder|escape}" />
 							</td>
 						</tr>
 					</table>
@@ -58,7 +50,7 @@
 					<table class="formcolor">
 						<tr>
 							<td>
-								<label for="copyleft-tit">{tr}Title:{/tr}</label>
+								<label for="copyleft-tit">{tr}Title{/tr}:</label>
 							</td>
 							<td>
 								<input size="40" class="wikitext" type="text" name="copyrightTitle" id="copyleft-tit" value="{$copyrights[i].title|escape}" />
@@ -66,7 +58,7 @@
 						</tr>
 						<tr>
 							<td>
-								<label for="copyleft-yyyy">{tr}Year:{/tr}</label>
+								<label for="copyleft-yyyy">{tr}Year{/tr}:</label>
 							</td>
 							<td>
 								<input size="4" class="wikitext" type="text" name="copyrightYear" id="copyleft-yyyy" value="{$copyrights[i].year|escape}" />
@@ -74,18 +66,10 @@
 						</tr>
 						<tr>
 							<td>
-								<label for="copyleft-auth">{tr}Authors:{/tr}</label>
+								<label for="copyleft-auth">{tr}Authors{/tr}:</label>
 							</td>
 							<td>
 								<input size="40" class="wikitext" type="text" name="copyrightAuthors" id="copyleft-auth" value="{$copyrights[i].authors|escape}" />
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<label for="copyleft-hold">{tr}Copyright Holder:{/tr}</label>
-							</td>
-							<td>
-								<input size="40" class="wikitext" type="text" name="copyrightHolder" id="copyleft-hold" value="{$copyrights[i].holder|escape}" />
 							</td>
 						</tr>
 						<tr>

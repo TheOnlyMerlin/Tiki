@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,11 +7,18 @@
 
 $section = 'wiki page';
 require_once('tiki-setup.php');
+if ($prefs['feature_ajax'] === 'y') {
+	if ($prefs['ajax_xajax'] === 'y') {
+		require_once ("lib/ajax/ajaxlib.php");
+		if ($prefs['feature_wiki_save_draft'] === 'y') {
+			require_once ("lib/wiki/wiki-ajax.php");
+		}
+	}
+}
+
 include_once('lib/structures/structlib.php');
 
 include_once('lib/wiki/wikilib.php');
-
-$parserlib = TikiLib::lib('parser');
 
 if ($prefs['feature_categories'] == 'y') {
 	global $categlib;
@@ -53,14 +57,7 @@ if (!($info = $tikilib->get_page_info($page))) {
 	die;
 }
 
-require_once 'lib/wiki/renderlib.php';
-$pageRenderer = new WikiRenderer($info, $user);
-$objectperms = $pageRenderer->applyPermissions();
-
-if ($prefs['flaggedrev_approval'] == 'y' && isset($_REQUEST['latest']) && $objectperms->wiki_view_latest) {
-	$pageRenderer->forceLatest();
-}
-
+$tikilib->get_perm_object( $page, 'wiki page', $info);
 $access->check_permission('tiki_p_view');
 
 // BreadCrumbNavigation here
@@ -88,6 +85,9 @@ if (!in_array($page, $_SESSION["breadCrumb"])) {
 if ($prefs['count_admin_pvs'] == 'y' || $user != 'admin') {
 	$tikilib->add_hit($page);
 }
+
+// Get page data
+$info = $tikilib->get_page_info($page);
 
 $smarty->assign('page_user', $info['user']);
 
@@ -145,7 +145,7 @@ $smarty->assign('cached_page', 'n');
 // Get ~pp~, ~np~ and <pre> out of the way. --rlpowell, 24 May 2004
 $preparsed = array();
 $noparsed = array();
-$parserlib->parse_first($info["data"], $preparsed, $noparsed);
+$tikilib->parse_first( $info["data"], $preparsed, $noparsed );
 
 $pdata = $wikilib->get_parse($page, $canBeRefreshed);
 
@@ -154,16 +154,77 @@ $pdata = str_replace('tiki-index.php', 'tiki-index_p.php', $pdata);
 if (!isset($_REQUEST['pagenum']))
 	$_REQUEST['pagenum'] = 1;
 
-if ( isset( $_REQUEST['pagenum'] ) && $_REQUEST['pagenum'] > 0 ) {
-	$pageRenderer->setPageNumber((int) $_REQUEST['pagenum']);
+$pages = $wikilib->get_number_of_pages($pdata);
+$pdata = $wikilib->get_page($pdata, $_REQUEST['pagenum']);
+$smarty->assign('pages', $pages);
+
+if ($pages > $_REQUEST['pagenum']) {
+	$smarty->assign('next_page', $_REQUEST['pagenum'] + 1);
+} else {
+	$smarty->assign('next_page', $_REQUEST['pagenum']);
 }
 
+if ($_REQUEST['pagenum'] > 1) {
+	$smarty->assign('prev_page', $_REQUEST['pagenum'] - 1);
+} else {
+	$smarty->assign('prev_page', 1);
+}
+
+$smarty->assign('first_page', 1);
+$smarty->assign('last_page', $pages);
+$smarty->assign('pagenum', $_REQUEST['pagenum']);
+
+// Put ~pp~, ~np~ and <pre> back. --rlpowell, 24 May 2004
+$tikilib->replace_preparse( $info["data"], $preparsed, $noparsed );
+$tikilib->replace_preparse( $pdata, $preparsed, $noparsed );
+
+$smarty->assign_by_ref('parsed', $pdata);
+
+$smarty->assign_by_ref('lastModif', $info["lastModif"]);
+
+if (empty($info["user"])) {
+	$info["user"] = 'anonymous';
+}
+
+$smarty->assign_by_ref('lastUser', $info["user"]);
+$smarty->assign_by_ref('description', $info["description"]);
 
 include_once('tiki-section_options.php');
 
-$pageRenderer->runSetups();
+$smarty->assign('wiki_extras', 'y');
+$smarty->assign('structure', 'n');
 
+/* broken since nov 18 2003
+if ($structlib->page_is_in_structure($page)) {
+	$smarty->assign('structure', 'y');
+	if (isset($_REQUEST["structID"]))	{
+		$prev_next_pages = $structlib->get_prev_next_pages($page, $_REQUEST["structID"]);
+	}
+	else {
+		$prev_next_pages = $structlib->get_prev_next_pages($page);
+	} 	
+	$smarty->assign('struct_prev_next', $prev_next_pages);
+}
+*/
+
+if ($prefs['feature_theme_control'] == 'y') {
+	$cat_type = 'wiki page';
+
+	$cat_objid = $_REQUEST["page"];
+	include('tiki-tc.php');
+}
 ask_ticket('index-p');
+if ($prefs['ajax_xajax'] == "y") {
 
+function wiki_ajax() {
+    global $ajaxlib, $xajax;
+    $ajaxlib->registerTemplate("tiki-show_page.tpl");
+    $ajaxlib->registerTemplate("tiki-editpage.tpl");
+    $ajaxlib->registerFunction("loadComponent");
+    $ajaxlib->processRequests();
+}
+wiki_ajax();
+}
 // Display the Index Template
+$smarty->assign('dblclickedit', 'y');
 $smarty->display("tiki-index_p.tpl");

@@ -1,18 +1,31 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
+/*
+ * Tikiwiki CATPATH plugin.
+ * 
+ * Syntax:
+ * 
+ * {CATPATH(
+ *          divider=>string	#string that separates the categories, defaults to '>'
+ *          top=>yes|no		#to display the TOP category or not, defaults to 'no'
+ *         )}
+ * {CATPATH}
+ * 
+ */
+function wikiplugin_catpath_help() {
+	return tra("Insert the full category path for each category that this wiki page belongs to").":<br />~np~{CATPATH(divider=>,top=>yes|no)}{CATPATH}~/np~";
+}
 
-function wikiplugin_catpath_info()
-{
+function wikiplugin_catpath_info() {
 	return array(
 		'name' => tra('Category Path'),
-		'documentation' => 'PluginCatPath',
-		'description' => tra('Show the full category path for a wiki page'),
+		'documentation' => tra('PluginCatPath'),
+		'description' => tra('Insert the full category path for each category that this wiki page belongs to'),
 		'prefs' => array( 'feature_categories', 'wikiplugin_catpath' ),
-		'icon' => 'img/icons/sitemap_color.png',
 		'params' => array(
 			'divider' => array(
 				'required' => false,
@@ -36,8 +49,7 @@ function wikiplugin_catpath_info()
 	);
 }
 
-function wikiplugin_catpath($data, $params)
-{
+function wikiplugin_catpath($data, $params) {
 	global $dbTiki, $smarty, $tikilib, $prefs, $categlib;
 
 	if (!is_object($categlib)) {
@@ -48,7 +60,7 @@ function wikiplugin_catpath($data, $params)
 		return "<span class='warn'>" . tra("Categories are disabled"). "</span>";
 	}
 
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 
 	// default divider is '>'
 	if (!(isset($divider))) {
@@ -79,12 +91,12 @@ function wikiplugin_catpath($data, $params)
 		$path = '';
 		$info = $categlib->get_category($categId);
 		$path
-			= '<a class="categpath" href="tiki-browse_categories.php?parentId=' . $info["categId"] . '">' . htmlspecialchars($info["name"]) . '</a>';
+			= '<a class="categpath" href="tiki-browse_categories.php?parentId=' . $info["categId"] . '">' . $info["name"] . '</a>';
 
 		while ($info["parentId"] != 0) {
 			$info = $categlib->get_category($info["parentId"]);
 
-			$path = '<a class="categpath" href="tiki-browse_categories.php?parentId=' . $info["categId"] . '">' . htmlspecialchars($info["name"]) . '</a> ' . htmlspecialchars($divider) . ' ' . $path;
+			$path = '<a class="categpath" href="tiki-browse_categories.php?parentId=' . $info["categId"] . '">' . $info["name"] . '</a> ' . $divider . ' ' . $path;
 		}
 
 		$catpath .= $path . '</span><br />';

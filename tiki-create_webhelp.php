@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,11 +8,6 @@
 require_once ('tiki-setup.php');
 include_once ('lib/structures/structlib.php');
 
-/**
- * @param $source
- * @param $dest
- * @return int
- */
 function copys($source,$dest)
 {
 	if (!is_dir($source))
@@ -29,9 +21,9 @@ function copys($source,$dest)
 	while (@($entry=$h->read()) !== false) {
 		if (($entry != '.') && ($entry != '..')) {
 			if (is_dir("$source/$entry")&&$dest!=="$source/$entry") {
-				copys("$source/$entry", "$dest/$entry");
+				copys("$source/$entry","$dest/$entry");
 			} else {
-				@copy("$source/$entry", "$dest/$entry");
+				@copy("$source/$entry","$dest/$entry");
 			}
 		}
 	}
@@ -39,9 +31,6 @@ function copys($source,$dest)
 	return 1;
 }
 
-/**
- * @param $dir
- */
 function deldirfiles($dir)
 {
 	$current_dir = opendir($dir);
@@ -59,7 +48,7 @@ $access->check_feature('feature_create_webhelp');
 $access->check_permission('tiki_p_edit_structures');
 
 $struct_info = $structlib->s_get_structure_info($_REQUEST['struct']);
-$smarty->assign_by_ref('struct_info', $struct_info);
+$smarty->assign_by_ref('struct_info',$struct_info);
 
 if (!$tikilib->user_has_perm_on_object($user, $struct_info['pageName'], 'wiki page', 'tiki_p_view')) {
 	$smarty->assign('errortype', 401);
@@ -77,8 +66,8 @@ if (isset($_REQUEST['create'])) {
 	$top = $_REQUEST['top'];
 	$output = '';
 	$output .= tra('TikiHelp WebHelp generation engine. Generating WebHelp using:');
-	$output .= '<ul><li>' . tr("Index: <strong>%0</strong>", $name) . '</li>';
-	$output .= '<li>' . tr("Directory: <strong>%0</strong>", $dir) . '</li></ul>';
+	$output .= '<ul><li>' . tra("Index: <strong>$name</strong>") . '</li>';
+	$output .= '<li>' . tra("Directory: <strong>$dir</strong>") . '</li></ul>';
 	$base = "whelp/$dir";
 
 	if (!is_writeable('whelp')) {
@@ -87,8 +76,8 @@ if (isset($_REQUEST['create'])) {
 		die;
 	}
 
-	if (!is_dir("whelp/$dir")) {
-		$output .= '<p>' . tr("Creating directory structure in <strong>%0</strong>.", $base) . '</p>';
+	if(!is_dir("whelp/$dir")) {
+		$output .= '<p>' . tra("Creating directory structure in <strong>$base</strong>.") . '</p>';
 		mkdir("whelp/$dir");
 		mkdir("$base/js");
 		mkdir("$base/css");
@@ -106,10 +95,10 @@ if (isset($_REQUEST['create'])) {
 	deldirfiles("$base/pages");
 	deldirfiles("$base/pages/img/wiki_up");
 	// Copy base files to the webhelp directory
-	copys('lib/tikihelp', "$base/");
+	copys('lib/tikihelp',"$base/");
 
-	$structlib->structure_to_webhelp($struct, $dir, $top);
-	$smarty->assign('generated', 'y');
+	$structlib->structure_to_webhelp($struct,$dir,$top);
+	$smarty->assign('generated','y');
 }
 
 $smarty->assign('output', $output);

@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -25,8 +25,7 @@
  * @param length: length of substring (default=to end of string; negative=left N from end)
  * @return string
  */
-function smarty_modifier_substring($string, $position = 0, $length = null)
-{
+function smarty_modifier_substring($string, $position = 0, $length = null) {
 
 	if ($length == null) {
 		return substr($string, $position);

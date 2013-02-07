@@ -1,23 +1,14 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 $section = 'mytiki';
-
 require_once ('tiki-setup.php');
-
-if ( $user != '' && $prefs['feature_use_fgal_for_user_files'] == 'y' ) {
-	$filegallib = TikiLib::lib('filegal');
-	$idGallery = $filegallib->get_user_file_gallery();
-
-	// redirect user in correct gallery
-	header('location: tiki-list_file_gallery.php?galleryId='.$idGallery);
+if ($prefs['ajax_xajax'] == "y") {
+	require_once ('lib/ajax/ajaxlib.php');
 }
 include_once ('lib/userfiles/userfileslib.php');
 
@@ -78,7 +69,7 @@ for ($i = 0; $i < 5; $i++) {
 // Process removal here
 if (isset($_REQUEST["delete"]) && isset($_REQUEST["userfile"])) {
 	check_ticket('user-files');
-	foreach (array_keys($_REQUEST["userfile"]) as $file) {
+	foreach(array_keys($_REQUEST["userfile"]) as $file) {
 		$userfileslib->remove_userfile($user, $file);
 	}
 }
@@ -119,5 +110,15 @@ $smarty->assign_by_ref('cant_pages', $channels["cant"]);
 $smarty->assign_by_ref('channels', $channels["data"]);
 include_once ('tiki-mytiki_shared.php');
 ask_ticket('user-files');
+if ($prefs['ajax_xajax'] == "y") {
+	function user_files_ajax() {
+		global $ajaxlib, $xajax;
+		$ajaxlib->registerTemplate("tiki-userfiles.tpl");
+		$ajaxlib->registerTemplate("tiki-my_tiki.tpl");
+		$ajaxlib->registerFunction("loadComponent");
+		$ajaxlib->processRequests();
+	}
+	user_files_ajax();
+}
 $smarty->assign('mid', 'tiki-userfiles.tpl');
 $smarty->display("tiki.tpl");

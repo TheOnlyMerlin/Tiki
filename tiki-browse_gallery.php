@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -35,7 +32,7 @@ if (!isset($_REQUEST["galleryId"])) {
 }
 $smarty->assign('individual', 'n');
 
-$tikilib->get_perm_object($_REQUEST['galleryId'], 'image gallery');
+$tikilib->get_perm_object( $_REQUEST['galleryId'], 'image gallery' );
 
 $access->check_permission('tiki_p_view_image_gallery');
 
@@ -154,7 +151,7 @@ if ($prefs['feature_user_watches'] == 'y') {
 		if (count($watching_categories_temp) > 0) {
 			$smarty->assign('category_watched', 'y');
 			$watching_categories = array();
-			foreach ($watching_categories_temp as $wct) {
+			foreach($watching_categories_temp as $wct) {
 				$watching_categories[] = array(
 					"categId" => $wct,
 					"name" => $categlib->get_category_name($wct)
@@ -241,11 +238,11 @@ global $objectlib;
 if ($prefs['feature_categories'] == 'y') {
 	$type = 'image';
 	$arr = array();
-	foreach ( $images['data'] as $index => $imgd ) {
+	foreach( $images['data'] as $index => $imgd ) {
 		$img_id = $imgd['imageId'];
 		$arr = $categlib->get_object_categories($type, $img_id);
 		//adding categories to the object
-		foreach ( $arr as $cat_name ) {
+		foreach( $arr as $cat_name ) {
 			$images['data'][$index]['categories'][] = $categlib->get_category_name($cat_name);
 		}
 	}
@@ -258,11 +255,23 @@ $smarty->assign('cant', $subgals['cant'] + $images['cant']);
 $smarty->assign_by_ref('subgals', $subgals['data']);
 // Mouseover data
 if ($prefs['gal_image_mouseover'] != 'n') {
-	foreach ($images['data'] as $k => $v) {
+	foreach($images['data'] as $k => $v) {
 		$smarty->assign_by_ref('file_info', $v);
 		$over_info[$k] = $smarty->fetch("tiki-file_info_box.tpl");
 	}
 	$smarty->assign_by_ref('over_info', $over_info);
+}
+if ($prefs['feature_image_galleries_comments'] == 'y') {
+	$comments_per_page = $prefs['image_galleries_comments_per_page'];
+	$thread_sort_mode = $prefs['image_galleries_comments_default_order'];
+	$comments_vars = array(
+		'galleryId',
+		'offset',
+		'sort_mode'
+	);
+	$comments_prefix_var = 'image gallery:';
+	$comments_object_var = 'galleryId';
+	include_once ("comments.php");
 }
 include_once ('tiki-section_options.php');
 if ($prefs['feature_theme_control'] == 'y') {

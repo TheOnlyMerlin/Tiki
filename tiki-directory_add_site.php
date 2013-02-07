@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,7 +10,7 @@ require_once ('tiki-setup.php');
 include_once ('lib/directory/dirlib.php');
 $access->check_feature('feature_directory');
 $access->check_permission('tiki_p_submit_link');
-//get_strings tra('Submit a new link')
+
 // If no parent category then the parent category is 0
 if (!isset($_REQUEST["parent"])) $_REQUEST["parent"] = 0;
 // If no site category then the site category is -1
@@ -92,7 +89,7 @@ if (isset($_REQUEST["save"])) {
 	if ($msg == "") { // no error
 		$siteId = $dirlib->dir_replace_site($_REQUEST["siteId"], $_REQUEST["name"], $_REQUEST["description"], $_REQUEST["url"], $_REQUEST["country"], $_REQUEST["isValid"]);
 		$dirlib->remove_site_from_categories($siteId);
-		foreach ($_REQUEST["siteCats"] as $acat) {
+		foreach($_REQUEST["siteCats"] as $acat) {
 			$dirlib->dir_add_site_to_category($siteId, $acat);
 		}
 		$info["isValid"] = 'y';
@@ -149,9 +146,9 @@ if ($offset > 0) {
 }
 $smarty->assign_by_ref('items', $items["data"]);
 $categs = $dirlib->dir_get_all_categories_accept_sites(0, -1, 'name asc', $find, $_REQUEST["siteId"]);
-if (isset($_REQUEST["save"]) && $msg != "" && isset($_REQUEST["siteCats"])) { // an error occurred, the chosen categs have to be set again
+if (isset($_REQUEST["save"]) && $msg != "" && isset($_REQUEST["siteCats"])) { // an error occured, the chosen categs have to be set again
 	$temp_max = count($categs);
-	foreach ($_REQUEST["siteCats"] as $acat) {
+	foreach($_REQUEST["siteCats"] as $acat) {
 		for ($ix = 0; $ix < $temp_max; ++$ix) {
 			if ($categs[$ix]["categId"] == $acat) $categs[$ix]["belongs"] = 'y';
 		}
@@ -167,13 +164,7 @@ ask_ticket('dir-add-site');
 // Display the template
 $smarty->assign('mid', 'tiki-directory_add_site.tpl');
 $smarty->display("tiki.tpl");
-/**
- * @param $a
- * @param $b
- * @return int
- */
-function country_sort($a, $b)
-{
+function country_sort($a, $b) {
 	if ($a == 'None' || $b == 'Other') {
 		return -1;
 	} elseif ($b == 'None' || $a == 'Other') {

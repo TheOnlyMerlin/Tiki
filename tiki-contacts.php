@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -30,7 +27,7 @@ $smarty->assign('contactId', $_REQUEST["contactId"]);
 
 $exts=$contactlib->get_ext_list($user);
 $traducted_exts=array();
-foreach ($exts as $ext) {
+foreach($exts as $ext) {
 	$traducted_exts[$ext['fieldId']] = array(
     	'tra' => tra($ext['fieldname']),
 		'art' => $ext['fieldname'],
@@ -42,7 +39,7 @@ foreach ($exts as $ext) {
 
 if ($_REQUEST["contactId"]) {
 	$info = $contactlib->get_contact($_REQUEST["contactId"], $user);
-	foreach ($info['ext'] as $k => $v) {
+	foreach($info['ext'] as $k => $v) {
 	    if (!in_array($k, array_keys($exts))) {
 			// okay, we need to grab the name from exts[], where fieldId = $k
  			$ext = $contactlib->get_ext($k);
@@ -73,7 +70,7 @@ if (isset($_REQUEST["save"])) {
 	$access->check_user($user);
 	check_ticket('webmail-contact');
 	$ext_result=array();
-	foreach ($exts as $ext)
+	foreach($exts as $ext)
 		$ext_result[$ext['fieldId']] = isset($_REQUEST['ext_'.$ext['fieldId']]) ? $_REQUEST['ext_'.$ext['fieldId']] : '';
 	$contactlib->replace_contact($_REQUEST["contactId"], $_REQUEST["firstName"], $_REQUEST["lastName"], $_REQUEST["email"], $_REQUEST["nickname"], $user, $_REQUEST['groups'], $ext_result);
 	$info["firstName"] = '';
@@ -163,7 +160,7 @@ if ($cant > ($offset + $maxRecords)) {
 	$smarty->assign('next_offset', -1);
 }
 
-$smarty->assign('initial', range('a', 'z'));
+$smarty->assign('initial', range('a','z'));
 if ($offset > 0) {
 	$smarty->assign('prev_offset', $offset - $maxRecords);
 } else {
@@ -174,5 +171,6 @@ include_once ('tiki-section_options.php');
 
 ask_ticket('contacts');
 $smarty->assign('myurl', 'tiki-contacts.php');
-$smarty->assign('mid', 'tiki-contacts.tpl');
+
+$smarty->assign('mid','tiki-contacts.tpl');
 $smarty->display('tiki.tpl');

@@ -1,23 +1,19 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
-	header("location: index.php");
-	exit;
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
+  header("location: index.php");
+  exit;
 }
 
-/**
- * @param $installer
- */
-function upgrade_20100207_repair_file_galleries_tiki($installer)
-{
+function upgrade_20100207_repair_file_galleries_tiki( $installer ) {
 
 	$cant = $installer->getOne('SELECT COUNT(*) FROM `tiki_file_galleries` WHERE `parentId` = -1 and `type` <> \'system\'');
-
+	
 	if ($cant > 0) {
 		$sysId = $installer->getOne('SELECT `galleryId` FROM `tiki_file_galleries` WHERE `type` = \'system\'');
 		$pref = $installer->getOne('SELECT COUNT(*) FROM `tiki_preferences` WHERE `name` = \'fgal_root_id\'');

@@ -9,8 +9,7 @@ html {
 }
 body   {
 	background: #9fda58;
-	font-family: Segoe UI, Helvetica, Arial, sans-serif;
-	font-size: 1.2em;
+	font-family: Segoe UI, Helvetica, Arial, sans-serif; font-size: 1.2em;
 	color: #454545;
 }
 
@@ -51,10 +50,6 @@ input[type="submit"]:hover,
 
 input[type="text"],
 input[type="password"],
-input[type="file"],
-input[type="email"],
-input[type="file"],
-input[type="number"],
 select,
 textarea,
 body.cke_show_borders {
@@ -62,7 +57,7 @@ body.cke_show_borders {
 	color: #000;
 }
 
-.header {
+#siteheader {
 	background: #c6e99c;
 }
 #tiki-top {
@@ -168,8 +163,7 @@ th,
 td.heading,
 tr.diffheader {
 	border: 1px solid #000;
-	background: #9fda58 url(../../../lib/jquery/jquery-ui/themes/trontastic/images/ui-bg_gloss-wave_85_9fda58_500x100.png) 50% 50% repeat-x;
-	color: #222222;
+	background: #9fda58 url(../../../lib/jquery/jquery-ui/themes/trontastic/images/ui-bg_gloss-wave_85_9fda58_500x100.png) 50% 50% repeat-x; color: #222222;
 	font-weight: bold;
 	color: #222;
 }
@@ -224,15 +218,13 @@ tr.diffheader {
 
 tr.odd td,
 td.odd,
-li.odd,
-table.normal tr:nth-child(2n+1) {
+li.odd {
 	background: #c6e99c;
 }
 
 tr.even td,
 td.even,
-li.even,
-table.normal tr:nth-child(2n) {
+li.even {
 	background: #b0e077;
 }
 
@@ -241,8 +233,7 @@ table.normal tr:nth-child(2n) {
 	background:#9fda58 url(../../../lib/jquery/jquery-ui/themes/trontastic/images/ui-bg_gloss-wave_85_9fda58_500x100.png) 50% 50% repeat-x;
 }
 
-.tabmark,
-.statuson {
+.tabmark {
 	border: 1px solid #1b1613;
 	background: #0a0a0a url(../../../lib/jquery/jquery-ui/themes/trontastic/images/ui-bg_glass_40_0a0a0a_1x400.png) 50% 50% repeat-x;
 	font-weight: bold;
@@ -283,17 +274,17 @@ table.normal tr:nth-child(2n) {
 	color: #222;
 }
 	
-.caltable .even,
-.caltable .odd {
+.caleven,
+.calodd {
 	background: #0A0A0A url(../../../lib/jquery/jquery-ui/themes/trontastic/images/ui-bg_gloss-wave_55_000000_500x100.png) repeat-x scroll 50% 50%;
 	border:1px solid #1B1613;
 	color:#B8EC79;
 }
 
-.caltable .even a:link,
-.caltable .even a:visited,
-.caltable .odd a:link,
-.caltable .odd a:visited  {
+.caleven a:link,
+.caleven a:visited,
+.calodd a:link,
+.calodd a:visited  {
 	color: #B8EC79;
 }
 

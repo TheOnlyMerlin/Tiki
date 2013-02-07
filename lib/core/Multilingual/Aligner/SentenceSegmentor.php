@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,8 +7,9 @@
 
 class Multilingual_Aligner_SentenceSegmentor
 {
-	public function segment($text)
-	{
+
+   public function segment($text) {
+   
       $sentences_and_separators = preg_split('/([\.\!\?]+|\n\s*\n|\n(?=\*))/', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
       $sentences = array();
       $ii = 0;
@@ -32,5 +33,6 @@ class Multilingual_Aligner_SentenceSegmentor
       }      
       return $sentences;
 
-	}
+   }
+
 }

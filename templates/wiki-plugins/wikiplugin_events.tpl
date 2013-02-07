@@ -1,6 +1,6 @@
 {* $Id$ *}
 <table class="normal">
-<tr><th colspan="2">{tr}Upcoming Events{/tr}</th></tr>
+<tr><th colspan="2">{tr}Upcoming events{/tr}</th></tr>
 {cycle values="odd,even" print=false}
 {foreach from=$events item=event}
 	<tr class="{cycle advance=false}">
@@ -17,13 +17,8 @@
 		</td>
 		<td width="100%">
 			<a class="linkmodule" href="tiki-calendar_edit_item.php?viewcalitemId={$event.calitemId}">{$event.name|escape}</a>
-			{if $desc}<br />{$event.parsed}{/if}
+			{if $desc}<br />{$event.description|escape}{/if}
 		</td>
 	</tr><!-- {cycle} -->
 {/foreach}
 </table>
-{*Pagination *}
-{if !empty($events) && $usePagination ne 'n'}
-	{pagination_links cant=$cant step=$maxEvents offset=$offset}{/pagination_links}
-{/if}
-

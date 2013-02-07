@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -38,14 +35,29 @@ if (empty($info)) {
 }
 
 $smarty->assign('nlId', $_REQUEST["nlId"]);
+$smarty->assign('individual', 'n');
 
-$tikilib->get_perm_object($_REQUEST['nlId'], 'newsletter');
-
+if ($userlib->object_has_one_permission($_REQUEST["nlId"], 'newsletter')) {
+	$smarty->assign('individual', 'y');
+	if ($tiki_p_admin != 'y') {
+		$perms = $userlib->get_permissions(0, -1, 'permName_desc', '', 'newsletters');
+		foreach($perms["data"] as $perm) {
+			$permName = $perm["permName"];
+			if ($userlib->object_has_permission($user, $_REQUEST["nlId"], 'newsletter', $permName)) {
+				$$permName = 'y';
+				$smarty->assign("$permName", 'y');
+			} else {
+				$$permName = 'n';
+				$smarty->assign("$permName", 'n');
+			}
+		}
+	}
+}
 $access->check_permission('tiki_p_admin_newsletters');
 
 if (isset($_REQUEST['delsel_x']) && isset($_REQUEST['checked'])) {
 	$access->check_authenticity();
-	foreach ($_REQUEST['checked'] as $check) {
+	foreach($_REQUEST['checked'] as $check) {
 		$nllib->remove_newsletter_subscription_code($check);
 	}
 }
@@ -76,15 +88,15 @@ if (isset($_REQUEST["add"]) && isset($_REQUEST["email"]) && $_REQUEST["email"] !
 	check_ticket('admin-nl-subsriptions');
 	if (strpos($_REQUEST["email"], ',')) {
 		$emails = explode(',', $_REQUEST["email"]);
-		foreach ($emails as $e) {
+		foreach($emails as $e) {
 			if ($userlib->user_exists(trim($e))) {
-				$nllib->newsletter_subscribe($_REQUEST["nlId"], trim($e), "y", $confirmEmail, $addEmail);
+				$nllib->newsletter_subscribe($_REQUEST["nlId"], trim($e) , "y", $confirmEmail, $addEmail);
 			} else {
-				$nllib->newsletter_subscribe($_REQUEST["nlId"], trim($e), "n", $confirmEmail, "");
+				$nllib->newsletter_subscribe($_REQUEST["nlId"], trim($e) , "n", $confirmEmail, "");
 			}
 		}
 	} else {
-		$nllib->newsletter_subscribe($_REQUEST["nlId"], trim($_REQUEST["email"]), "n", $confirmEmail, "");
+		$nllib->newsletter_subscribe($_REQUEST["nlId"], trim($_REQUEST["email"]) , "n", $confirmEmail, "");
 	}
 }
 
@@ -125,7 +137,7 @@ if (((isset($_REQUEST["addbatch"]) && isset($_FILES['batch_subscription'])) || (
 		}
 	}
 	
-	foreach ($emails as $email) {
+	foreach($emails as $email) {
 		$email = trim($email);
 		if (empty($email)) continue;
 		if ($nllib->newsletter_subscribe($_REQUEST["nlId"], $email, 'n', $confirmEmail, 'y')) {
@@ -138,7 +150,7 @@ if (((isset($_REQUEST["addbatch"]) && isset($_FILES['batch_subscription'])) || (
 
 if (isset($_REQUEST["addgroup"]) && isset($_REQUEST['group']) && $_REQUEST['group'] != "") {
 	check_ticket('admin-nl-subsriptions');
-	$nllib->add_group($_REQUEST["nlId"], $_REQUEST['group'], isset($_REQUEST['include_groups']) ? 'y' : 'n');
+	$nllib->add_group($_REQUEST["nlId"], $_REQUEST['group']);
 }
 
 if (isset($_REQUEST["addincluded"]) && isset($_REQUEST['included']) && $_REQUEST['included'] != "") {
@@ -151,16 +163,11 @@ if (isset($_REQUEST["addPage"]) && !empty($_REQUEST['wikiPageName'])) {
 	$nllib->add_page($_REQUEST["nlId"], $_REQUEST['wikiPageName'], empty($_REQUEST['noConfirmEmail']) ? 'y' : 'n', empty($_REQUEST['noSubscribeEmail']) ? 'y' : 'n');
 }
 
-if (isset($_REQUEST["addPage"]) || isset($_REQUEST["addPage"]) || isset($_REQUEST["addincluded"]) ||
-		isset($_REQUEST["addgroup"]) || isset($_REQUEST["addbatch"]) || isset($_REQUEST["add"])) {
-	$cookietab = 1;
-}
-
 if (isset($_REQUEST['export'])) {
 	check_ticket('admin-nl-subsriptions');
 	$users = $nllib->get_all_subscribers($_REQUEST['nlId'], 'y');
 	$data = "email\n";
-	foreach ($users as $u) {
+	foreach($users as $u) {
 		if (!empty($u['email'])) $data.= $u['email'] . "\n";
 	}
 	header('Content-type: text/plain');

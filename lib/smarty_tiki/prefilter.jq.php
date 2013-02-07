@@ -1,12 +1,12 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
@@ -15,12 +15,11 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
  * Prefilter {jq} contents - replace {{ with {literal} etc
  * @param $source from smarty (raw)
  * @return unknown_type
- *
- * Doesn't check $prefs['feature_jquery'] here as prefilter only loaded if enabled (in lib/setup/javascript.php)
+ * 
+ * Doesn't check $prefs['feature_jquery'] here as prefilter only loaded if enabled (in js_detect.php)
  */
 
-function smarty_prefilter_jq($source)
-{
+function smarty_prefilter_jq($source) {
 	if (strpos($source, '{jq') === false) {
 		return $source;			// quick escape if no jq tags
 	}
@@ -29,8 +28,7 @@ function smarty_prefilter_jq($source)
 	return $return;
 }
 
-function _escape_smarty_jq($key)
-{
+function _escape_smarty_jq($key) {
 	$s = $key[2];
 	if (preg_match('/\{literal\}/Ums', $s)) {
 		return $key[1].$s.'{/jq}';	// don't parse {{s if already escaped

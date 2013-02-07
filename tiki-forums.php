@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,8 +7,10 @@
 
 $section = 'forums';
 require_once ('tiki-setup.php');
-//get_strings tra('List Forums')
+
 $auto_query_args = array('sort_mode', 'offset', 'find', 'mode');
+
+$smarty->assign('headtitle',tra('Forums'));
 
 $access->check_feature('feature_forums');
 $access->check_permission('tiki_p_forum_read');
@@ -44,11 +43,11 @@ $smarty->assign('find', $find);
 
 $smarty->assign_by_ref('sort_mode', $sort_mode);
 $channels = $commentslib->list_forums($offset, $maxRecords, $sort_mode, $find);
-Perms::bulk(array( 'type' => 'forum' ), 'object', $channels['data'], 'forumId');
+Perms::bulk( array( 'type' => 'forum' ), 'object', $channels['data'], 'forumId' );
 
 $temp_max = count($channels["data"]);
 for ($i = 0; $i < $temp_max; $i++) {
-	$forumperms = Perms::get(array( 'type' => 'forum', 'object' => $channels['data'][$i]['forumId'] ));
+	$forumperms = Perms::get( array( 'type' => 'forum', 'object' => $channels['data'][$i]['forumId'] ) );
 	$channels["data"][$i]["individual_tiki_p_forum_read"] = $forumperms->forum_read ? 'y' : 'n';
 	$channels["data"][$i]["individual_tiki_p_forum_post"] = $forumperms->forum_post ? 'y' : 'n';
 	$channels["data"][$i]["individual_tiki_p_forum_post_topic"] = $forumperms->forum_post_topic ? 'y' : 'n';
@@ -57,8 +56,14 @@ for ($i = 0; $i < $temp_max; $i++) {
 }
 
 $smarty->assign_by_ref('channels', $channels["data"]);
-$smarty->assign('cant', $channels["cant"]);
+$smarty->assign('cant',$channels["cant"]);
 include_once ('tiki-section_options.php');
+
+if ($prefs['feature_mobile'] =='y' && isset($_REQUEST['mode']) && $_REQUEST['mode'] == 'mobile') {
+	include_once ("lib/hawhaw/hawtikilib.php");
+
+	HAWTIKI_forums($channels["data"], $tiki_p_forum_read, $offset, $maxRecords, $channels["cant"]);
+}
 
 ask_ticket('forums');
 

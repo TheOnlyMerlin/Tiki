@@ -1,12 +1,12 @@
-{if $mail_action eq 'new'}{tr}The page {$mail_page} was created by {$mail_user|username} at {$mail_date|tiki_short_datetime:"":"n"}{/tr}
-{elseif $mail_action eq 'delete'}{tr}The page {$mail_page} was deleted by {$mail_user|username} at {$mail_date|tiki_short_datetime:"":"n"}{/tr}
+{if $mail_action eq 'new'}{tr}The page {$mail_page} was created by {$mail_user|username} at {$mail_date|tiki_short_datetime}{/tr}
+{elseif $mail_action eq 'delete'}{tr}The page {$mail_page} was deleted by {$mail_user|username} at {$mail_date|tiki_short_datetime}{/tr}
 {elseif $mail_action eq 'attach'}{tr}A file was attached to {$mail_page}{/tr}
-{else}{tr}The page {$mail_page} was changed by {$mail_user|username} at {$mail_date|tiki_short_datetime:"":"n"}{/tr}
+{else}{tr}The page {$mail_page} was changed by {$mail_user|username} at {$mail_date|tiki_short_datetime}{/tr}
 {/if}
 
 {if $mail_comment}{tr}Comment:{/tr} {$mail_comment}
 {/if}
-{if $mail_contributions}{tr}Contribution:{/tr} {$mail_contributions}{/if}
+{if $mail_contributions}{tr}Contribution{/tr}: {$mail_contributions}{/if}
 
 {if $mail_action eq 'delete'}{tr}The page {$mail_page} was deleted but used to be here:{/tr}
 {else}{tr}You can view the page by following this link:{/tr}

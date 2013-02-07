@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -16,17 +13,6 @@ $access->check_permission('tiki_p_blog_admin');
 if (isset($_REQUEST["remove"])) {
 	$access->check_authenticity();
 	$bloglib->remove_post($_REQUEST["remove"]);
-}
-if (isset($_REQUEST['checked'])) {
-	check_ticket('list_posts');
-	$checked = is_array($_REQUEST['checked']) ? $_REQUEST['checked'] : array($_REQUEST['checked']);
-	// Delete post(s)
-	if (isset($_REQUEST['remove']) || isset($_REQUEST['remove_x'])) {
-		$access->check_authenticity(tra('Delete posts'));
-		foreach ($checked as $id) {
-			$bloglib->remove_post($id);
-		}
-	}
 }
 
 if (!isset($_REQUEST["sort_mode"])) {

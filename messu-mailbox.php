@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,6 +7,9 @@
 
 $section = 'user_messages';
 require_once ('tiki-setup.php');
+if ($prefs['ajax_xajax'] == "y") {
+	require_once ('lib/ajax/ajaxlib.php');
+}
 include_once ('lib/messu/messulib.php');
 $access->check_user($user);
 $access->check_feature('feature_messages');
@@ -29,7 +29,7 @@ if ($mess_archiveAfter > 0) {
 }
 // Mark messages if the mark button was pressed
 if (isset($_REQUEST["mark"]) && isset($_REQUEST["msg"])) {
-	foreach (array_keys($_REQUEST["msg"]) as $msg) {
+	foreach(array_keys($_REQUEST["msg"]) as $msg) {
 		$parts = explode('_', $_REQUEST['action']);
 		$messulib->flag_message($user, $msg, $parts[0], $parts[1]);
 	}
@@ -37,7 +37,7 @@ if (isset($_REQUEST["mark"]) && isset($_REQUEST["msg"])) {
 // Delete messages if the delete button was pressed
 if (isset($_REQUEST["delete"]) && isset($_REQUEST["msg"])) {
 	check_ticket('messu-mailbox');
-	foreach (array_keys($_REQUEST["msg"]) as $msg) {
+	foreach(array_keys($_REQUEST["msg"]) as $msg) {
 		$messulib->delete_message($user, $msg);
 	}
 }
@@ -45,7 +45,7 @@ if (isset($_REQUEST["delete"]) && isset($_REQUEST["msg"])) {
 if (isset($_REQUEST["archive"]) && isset($_REQUEST["msg"])) {
 	check_ticket('messu-mailbox');
 	$tmp = $messulib->count_messages($user, 'archive');
-	foreach (array_keys($_REQUEST["msg"]) as $msg) {
+	foreach(array_keys($_REQUEST["msg"]) as $msg) {
 		if (($prefs['messu_archive_size'] > 0) && ($tmp >= $prefs['messu_archive_size'])) {
 			$smarty->assign('msg', tra("Archive is full. Delete some messages from archive first."));
 			$smarty->display("error.tpl");
@@ -60,7 +60,7 @@ if (isset($_REQUEST["download"])) {
 	check_ticket('messu-mailbox');
 	// if message ids are handed over, use them:
 	if (isset($_REQUEST["msg"])) {
-		foreach (array_keys($_REQUEST["msg"]) as $msg) {
+		foreach(array_keys($_REQUEST["msg"]) as $msg) {
 			$tmp = $messulib->get_message($user, $msg, 'messages');
 			$items[] = $tmp;
 		}
@@ -69,7 +69,7 @@ if (isset($_REQUEST["download"])) {
 	}
 	$smarty->assign_by_ref('items', $items);
 	header("Content-Disposition: attachment; filename=tiki-msg-mailbox-" . time("U") . ".txt ");
-	$smarty->display('messu-download.tpl', null, null, null, 'application/download');
+	$smarty->display('messu-download.tpl', null, null, 'application/download');
 	die;
 }
 if (isset($_REQUEST['filter'])) {
@@ -131,5 +131,14 @@ $smarty->assign('percentage', $percentage);
 include_once ('tiki-section_options.php');
 include_once ('tiki-mytiki_shared.php');
 ask_ticket('messu-mailbox');
+if ($prefs['ajax_xajax'] == "y") {
+	function user_messages_ajax() {
+		global $ajaxlib, $xajax;
+		$ajaxlib->registerTemplate("messu-mailbox.tpl");
+		$ajaxlib->registerFunction("loadComponent");
+		$ajaxlib->processRequests();
+	}
+	user_messages_ajax();
+}
 $smarty->assign('mid', 'messu-mailbox.tpl');
 $smarty->display("tiki.tpl");

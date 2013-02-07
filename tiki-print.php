@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -12,7 +9,7 @@ $section_class="tiki_wiki_page print";
 require_once ('tiki-setup.php');
 include_once ('lib/wiki/wikilib.php');
 
-$access->check_feature(array('feature_wiki', 'feature_wiki_print'));
+$access->check_feature( array('feature_wiki', 'feature_wiki_print') );
 
 // Create the HomePage if it doesn't exist
 if (!$tikilib->page_exists($prefs['wikiHomePage'])) {
@@ -32,8 +29,6 @@ if (!($info = $tikilib->get_page_info($page))) {
 	$smarty->display('error.tpl');
 	die;
 }
-$smarty->assign('page_id', $info['page_id']);
-
 // Now check permissions to access this page
 $tikilib->get_perm_object($page, 'wiki page', $info);
 $access->check_permission('tiki_p_view');
@@ -84,20 +79,17 @@ $smarty->assign('display', isset($_REQUEST['display']) ? $_REQUEST['display'] : 
 if (isset($_REQUEST['display']) && $_REQUEST['display'] == 'pdf') {
 	require_once 'lib/pdflib.php';
 	$generator = new PdfGenerator();
-	$pdf = $generator->getPdf('tiki-print.php', array('page' => $page));
-	if (empty($pdf)) {
-		echo "Unable to generate PDF";
-	} else {
-		$length = strlen($pdf);
-		header('Cache-Control: private, must-revalidate');
-		header('Pragma: private');
-		header("Content-Description: File Transfer");
-		header('Content-disposition: attachment; filename="'. $page. '.pdf"');
-		header("Content-Type: application/pdf");
-		header("Content-Transfer-Encoding: binary");
-		header('Content-Length: '. $length);
-		echo $pdf;
-	}
+	$pdf = $generator->getPdf( 'tiki-print.php', array('page' => $page) );
+
+	header('Cache-Control: private, must-revalidate');
+	header('Pragma: private');
+	header("Content-Description: File Transfer");
+	header('Content-disposition: attachment; filename="'. $page. '.pdf"');
+	header("Content-Type: application/pdf");
+	header("Content-Transfer-Encoding: binary");
+	header('Content-Length: '. strlen($pdf));
+	echo $pdf;
+
 } else {
 	$smarty->display('tiki-print.tpl');
 }

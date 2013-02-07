@@ -1,19 +1,17 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_youtube_info()
-{
+function wikiplugin_youtube_info() {
 	return array(
-		'name' => tra('YouTube'),
+		'name' => tra('Youtube'),
 		'documentation' => 'PluginYouTube',
-		'description' => tra('Display a YouTube video'),
+		'description' => tra('Display youtube video'),
 		'prefs' => array( 'wikiplugin_youtube' ),
-		'icon' => 'img/icons/youtube.png',
-		'tags' => array( 'basic' ),		
+		'icon' => 'pics/icons/youtube.png',	
 		'params' => array(
 			'movie' => array(
 				'required' => true,
@@ -53,7 +51,7 @@ function wikiplugin_youtube_info()
 			'allowFullScreen' => array(
 				'required' => false,
 				'name' => tra('Allow Fullscreen'),
-				'description' => tra('Enlarge video to full screen size'),
+				'description' => 'Enlarge video to full screen size',
 				'default' => '',
 				'filter' => 'alpha',
      			'options' => array(
@@ -101,8 +99,7 @@ function wikiplugin_youtube_info()
 	);
 }
 
-function wikiplugin_youtube($data, $params)
-{
+function wikiplugin_youtube($data, $params) {
 	global $tikilib;
 	
  	$plugininfo = wikiplugin_youtube_info();
@@ -115,9 +112,7 @@ function wikiplugin_youtube($data, $params)
 		return '^' . tra('Plugin YouTube error: the movie parameter is empty.');
 	}
 
-	$scheme = $tikilib->httpScheme();
-
-	$params['movie'] = $scheme . '://www.youtube.com/v/' . preg_replace('/http(s)?:\/\/(\w+\.)?youtube\.com\/watch\?v=/', '', $params['movie']);
+	$params['movie'] = 'http://www.youtube.com/v/' . preg_replace('/http(s)?:\/\/(\w+\.)?youtube\.com\/watch\?v=/', '', $params['movie']);
 
 	// backward compatibility
 	if ($params['allowFullScreen'] == 'y') {
@@ -129,7 +124,7 @@ function wikiplugin_youtube($data, $params)
 	if (!empty($params['allowFullScreen']) && $params['allowFullScreen'] == 'true') {
 		$params['movie'] .= '?fs=1';
 	}
-	if (isset($related) && $related == 'n') {
+	if ($related == 'n') {
 		$params['movie'] .= '&rel=0';
 	}
 	if (!empty($params['border'])) {

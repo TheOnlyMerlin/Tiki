@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -17,12 +14,12 @@ if ($prefs['feed_forum'] != 'y') {
         require_once ('tiki-rss_error.php');
 }
 
-if (!isset($_REQUEST["forumId"])) {
+if(!isset($_REQUEST["forumId"])) {
         $errmsg=tra("No forumId specified");
         require_once ('tiki-rss_error.php');
 }
 
-$tikilib->get_perm_object($_REQUEST['forumId'], 'forum');
+$tikilib->get_perm_object( $_REQUEST['forumId'], 'forum' );
 
 if ($tiki_p_forum_read != 'y') {
 	$smarty->assign('errortype', 401);
@@ -51,7 +48,7 @@ if ($output["data"]=="EMPTY") {
 	$titleId = "title";
 	$readrepl = "tiki-view_forum_thread.php?$id=%s&comments_parentId=%s";
 
-	$changes = $tikilib->list_forum_topics($_REQUEST["$id"], 0, $prefs['feed_forum_max'], $dateId.'_desc', '');
+	$changes = $tikilib->list_forum_topics($_REQUEST["$id"],0, $prefs['feed_forum_max'], $dateId.'_desc', '');
 	$output = $rsslib->generate_feed($feed, $uniqueid, '', $changes, $readrepl, $param, $id, $title, $titleId, $desc, $descId, $dateId, $authorId);
 }
 header("Content-type: ".$output["content-type"]);

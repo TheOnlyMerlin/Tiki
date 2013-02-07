@@ -1,12 +1,12 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
@@ -18,17 +18,17 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 /**
  * \brief Smarty plugin to add variable dump to debug console log
  * Usage format {var_dump var="var_name_2_dump"}
- *
+ * 
  * Adapted to do more than string for tiki 5
  */
-function smarty_function_var_dump($params, $smarty)
+function smarty_function_var_dump($params, &$smarty)
 {
 	global $debugger, $smarty;
 	require_once('lib/debug/debugger.php');
 	//
 	$v = $params['var'];
 	if (!empty($v)) {
-		$tmp = $smarty->getTemplateVars();
+		$tmp = $smarty->get_template_vars();
 		if (is_array($tmp) && isset($tmp["$v"])) {
 			if (is_string($tmp[$v])) {
 				$debugger->msg("Smarty var_dump(".$v.') = '.print_r($tmp[$v], true));

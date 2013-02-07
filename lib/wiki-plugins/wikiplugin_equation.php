@@ -1,19 +1,37 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_equation_info()
-{
+/*
+ * Tiki-Wiki plugin equation
+ *  
+ * This plugin will try to render a formula written with LaTeX syntax
+ * into a png and will include a reference to that png in your wiki page.
+ *
+ * Uses Benjamin Zeiss's Latex Rendering Class in order to minimize the 
+ * chances of someone inserting malicious LaTeX syntax into your page 
+ * (e.g., \input{/etc/passwd} )
+ *
+ * The plugin requires that latex and the amsfonts package be installed
+ * on your server
+ */
+
+function wikiplugin_equation_help() {
+    $help  = tra("Renders an equation written in LaTeX syntax as a png.  Optional parameter size defaults to 100 and is the percentage of the normal size, i.e., size=200 indicates an equation 2x the normal size").":\n";
+    $help .= tra("Example").":<br />~np~{EQUATION(size=&lt;size&gt;)}".tra("equation")."{EQUATION}~/np~";
+    return $help;
+}
+
+function wikiplugin_equation_info() {
 	return array(
 		'name' => tra('Equation'),
-		'documentation' => 'PluginEquation',
-		'description' => tra('Render an equation written in LaTeX syntax as an image.'),
+		'documentation' => tra('PluginEquation'),
+		'description' => tra('Renders an equation written in LaTeX syntax as an image.'),
 		'prefs' => array('wikiplugin_equation'),
 		'body' => tra('equation'),
-		'icon' => 'img/icons/sum.png',
 		'params' => array(
 			'size' => array(
 				'required' => false,
@@ -26,19 +44,18 @@ function wikiplugin_equation_info()
 	);
 }
 
-function wikiplugin_equation($data, $params)
-{
+function wikiplugin_equation($data, $params) {
 	if (empty($data)) return '';
-    extract($params, EXTR_SKIP);
+    extract ($params, EXTR_SKIP);
     if (empty($size)) $size = 100;
 
     $latexrender_path = getcwd() . "/lib/equation"; 
     include_once($latexrender_path . "/class.latexrender.php");
     $latexrender_path_http = "lib/equation";
-    $latex = new LatexRender($latexrender_path."/pictures", $latexrender_path_http."/pictures", $latexrender_path."/tmp");
+    $latex = new LatexRender($latexrender_path."/pictures",$latexrender_path_http."/pictures",$latexrender_path."/tmp");
     $latex->_formula_density = 120 * $size / 100;
 
-	extract($params, EXTR_SKIP);
+	extract ($params, EXTR_SKIP);
 
 	$data=html_entity_decode(trim($data), ENT_QUOTES);
 

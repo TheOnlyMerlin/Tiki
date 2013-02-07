@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -26,10 +26,10 @@ if ($topic_info == DB_ERROR) {
 }
 $smarty->assign_by_ref('topic_info', $topic_info);
 
-if (isset($_REQUEST["edittopic"])) {
-  if (isset($_FILES['userfile1'])&&is_uploaded_file($_FILES['userfile1']['tmp_name'])) {
-    $fp = fopen($_FILES['userfile1']['tmp_name'], "rb");
-    $data = fread($fp, filesize($_FILES['userfile1']['tmp_name']));
+if(isset($_REQUEST["edittopic"])) {
+  if(isset($_FILES['userfile1'])&&is_uploaded_file($_FILES['userfile1']['tmp_name'])) {
+    $fp = fopen($_FILES['userfile1']['tmp_name'],"rb");
+    $data = fread($fp,filesize($_FILES['userfile1']['tmp_name']));
     fclose($fp);
     $imgtype = $_FILES['userfile1']['type'];
     $imgsize = $_FILES['userfile1']['size'];
@@ -38,7 +38,7 @@ if (isset($_REQUEST["edittopic"])) {
     $artlib->replace_topic_image($_REQUEST["topicid"], $imgname, $imgtype, $imgsize, $data);
   }
 
-  if (isset($_REQUEST["name"])) {
+  if(isset($_REQUEST["name"])) {
     $artlib->replace_topic_name($_REQUEST["topicid"], $_REQUEST["name"]);
 	$topic_info['name'] = $_REQUEST['name'];
   }
@@ -47,9 +47,9 @@ if (isset($_REQUEST["edittopic"])) {
 			$errors[] = tra('Invalid email');
 			$smarty->assign('email', $_REQUEST['email']);
 		} else {
-			$tikilib->add_user_watch('admin', 'topic_article_created', $_REQUEST['topicid'], 'cms', $topic_info['name'], 'tiki-edit_topic.php?topicId='.$_REQUEST['topicid'], $_REQUEST['email']);
-			$tikilib->add_user_watch('admin', 'topic_article_edited', $_REQUEST['topicid'], 'cms', $topic_info['name'], 'tiki-edit_topic.php?topicId='.$_REQUEST['topicid'], $_REQUEST['email']);
-			$tikilib->add_user_watch('admin', 'topic_article_deleted', $_REQUEST['topicid'], 'cms', $topic_info['name'], 'tiki-edit_topic.php?topicId='.$_REQUEST['topicid'], $_REQUEST['email']);
+			$tikilib->add_user_watch('admin', 'topic_article_created', $_REQUEST['topicid'], 'cms', $topic_info['name'],'tiki-edit_topic.php?topicId='.$_REQUEST['topicid'], $_REQUEST['email']);
+			$tikilib->add_user_watch('admin', 'topic_article_edited', $_REQUEST['topicid'], 'cms', $topic_info['name'],'tiki-edit_topic.php?topicId='.$_REQUEST['topicid'], $_REQUEST['email']);
+			$tikilib->add_user_watch('admin', 'topic_article_deleted', $_REQUEST['topicid'], 'cms', $topic_info['name'],'tiki-edit_topic.php?topicId='.$_REQUEST['topicid'], $_REQUEST['email']);
 		}
 	}
 	if (empty($errors)) {
@@ -64,5 +64,5 @@ include_once ('tiki-section_options.php');
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 
-$smarty->assign('mid', 'tiki-edit_topic.tpl');
+$smarty->assign('mid','tiki-edit_topic.tpl');
 $smarty->display("tiki.tpl");

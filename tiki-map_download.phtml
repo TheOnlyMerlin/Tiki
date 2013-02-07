@@ -1,15 +1,13 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-// 
+
+// $Header: /cvsroot/tikiwiki/tiki/tiki-map_download.phtml,v 1.14 2007-03-06 19:29:49 sylvieg Exp $
+
+// Copyright (c) 2002-2007, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 require_once ('tiki-setup.php');
 
-if (@$feature_maps != 'y') {
+if(@$feature_maps != 'y') {
 	$smarty->assign('msg',tra("Feature disabled"));
 	$smarty->display("error.tpl");
 	die;
@@ -63,7 +61,7 @@ for ($j=0;$j<$map->numlayers;$j++){
 	//Metadata handling
 	$download=FALSE;
 	if ($my_layers->name==$_GET['layer']){
-		if ($my_layers->getMetadata("DOWNLOAD")=='T'){
+		if($my_layers->getMetadata("DOWNLOAD")=='T'){
 			$download=TRUE;
 			if ($my_layers->connection!=""){
 				$download_path=$map_path.$my_layers->connection;

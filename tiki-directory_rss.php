@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -17,7 +14,7 @@ if ($prefs['feed_directories'] != 'y') {
 	require_once ('tiki-rss_error.php');
 }
 if ($prefs['feature_directory'] != 'y') {
-	$errmsg = tr("This feature is disabled: %0", 'feature_directory');
+	$errmsg = tra("This feature is disabled") . ": feature_directory";
 	require_once ('tiki-rss_error.php');
 }
 if ($tiki_p_view_directory != 'y') {
@@ -35,20 +32,16 @@ $output = $rsslib->get_from_cache($uniqueid);
 if ($output["data"] == "EMPTY") {
 	$title = tra("Tiki RSS feed for directory sites");
 	$rc = $dirlib->dir_get_category($_REQUEST["parent"]);
-	$desc = tr("Last sites of directory %0.", $rc["name"]);
+	$desc = tra("Last sites of directory " . $rc["name"] . " .");
 	$id = "siteId";
 	$titleId = "name";
 	$descId = "description";
 	$dateId = "created";
 	$readrepl = "tiki-directory_redirect.php?$id=%s";
 	$tmp = $prefs['feed_' . $feed . '_title'];
-	if ($tmp <> '') {
-		$title = $tmp;
-	}
+	if ($tmp <> '') $title = $tmp;
 	$tmp = $prefs['feed_' . $feed . '_desc'];
-	if ($desc <> '') {
-		$desc = $tmp;
-	}
+	if ($desc <> '') $desc = $tmp;
 	$changes = $dirlib->dir_list_sites($_REQUEST["parent"], 0, $prefs['feed_directories_max'], $dateId . '_desc', '', 'y');
 	$output = $rsslib->generate_feed($feed, $uniqueid, '', $changes, $readrepl, '', $id, $title, $titleId, $desc, $descId, $dateId, '');
 }

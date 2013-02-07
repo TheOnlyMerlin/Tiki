@@ -1,17 +1,15 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_grouplist_info()
-{
+function wikiplugin_grouplist_info() {
 	return array(
 		'name' => tra('Group List'),
-		'documentation' => 'PluginGroupList',
+		'documentation' => tra('PluginGroupList'),
 		'description' => tra('List all groups or just groups that include a certain group'),
-		'icon' => 'img/icons/group.png',
 		'params' => array(
 			'group' => array(
 				'required' => false,
@@ -47,8 +45,7 @@ function wikiplugin_grouplist_info()
 	);
 }
 
-function wikiplugin_grouplist( $data, $params )
-{
+function wikiplugin_grouplist( $data, $params ) {
 	global $smarty, $userlib, $access;
 	$default = array('recur' => 'n', 'linkhome' => 'n');
 	$params = array_merge($default, $params);
@@ -63,5 +60,5 @@ function wikiplugin_grouplist( $data, $params )
 	$groups = $userlib->get_group_info($groups);
 	$smarty->assign_by_ref('groups', $groups);
 	$smarty->assign_by_ref('params', $params);
-	return '~np~' . $smarty->fetch('wiki-plugins/wikiplugin_grouplist.tpl') . '~/np~';
+	return '~np~' . $smarty->fetch( 'wiki-plugins/wikiplugin_grouplist.tpl' ) . '~/np~';
 }

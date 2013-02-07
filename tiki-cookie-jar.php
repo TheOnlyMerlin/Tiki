@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -22,11 +19,11 @@ $_SESSION['tiki_cookie_jar'][ $parameter_name ]
 */
 $tikiroot = dirname($_SERVER['PHP_SELF']);
 $session_params = session_get_cookie_params();
-session_set_cookie_params($session_params['lifetime'], $tikiroot);
+session_set_cookie_params($session_params['lifetime'],$tikiroot);
 unset($session_params);
 
 session_start();
 
-if ( isset( $_GET ) )
-	foreach ( $_GET as $key=>$value )
+if( isset( $_GET ) )
+	foreach( $_GET as $key=>$value )
 		$_SESSION['tiki_cookie_jar'][$key] = $value;

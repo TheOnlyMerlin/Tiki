@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -70,11 +67,11 @@ if (isset($_REQUEST['del']) && isset($_REQUEST['msg'])) {
 // Quickjumpt to other forums
 if ($tiki_p_admin_forum == 'y' || $prefs['feature_forum_quickjump'] == 'y') {
 	$all_forums = $commentslib->list_forums(0, -1, 'name_asc', '');
-	Perms::bulk(array( 'type' => 'forum' ), 'object', $all_forums['data'], 'forumId');
+	Perms::bulk( array( 'type' => 'forum' ), 'object', $all_forums['data'], 'forumId' );
 
 	$temp_max = count($all_forums["data"]);
 	for ($i = 0; $i < $temp_max; $i++) {
-		$forumperms = Perms::get(array( 'type' => 'forum', 'object' => $channels['data'][$i]['forumId'] ));
+		$forumperms = Perms::get( array( 'type' => 'forum', 'object' => $channels['data'][$i]['forumId'] ) );
 		$all_forums["data"][$i]["can_read"] = $forumperms->forum_read ? 'y' : 'n';
 	}
 

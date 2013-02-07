@@ -1,5 +1,5 @@
 {if $blog_data.use_title eq 'y'}
-	{title}{$title}{/title}
+	{title}{$title|escape}{/title}
 {/if}
 {if $blog_data.use_breadcrumbs eq 'y'}
 	<div class="breadcrumbs"><a class="link" href="tiki-list_blogs.php">{tr}Blogs{/tr}</a> {$prefs.site_crumb_seper} {$title|escape}</div>

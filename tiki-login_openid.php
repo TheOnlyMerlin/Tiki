@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -45,10 +42,6 @@ function setupFromAddress() // {{{
 	}
 	if (strpos($_SESSION['loginfrom'], 'openid') !== false) $_SESSION['loginfrom'] = $base_url;
 } // }}}
-/**
- * @param $identifier
- * @return array
- */
 function getAccountsMatchingIdentifier($identifier) // {{{
 {
 	global $tikilib;
@@ -57,9 +50,6 @@ function getAccountsMatchingIdentifier($identifier) // {{{
 	while ($row = $result->fetchRow()) $userlist[] = $row['login'];
 	return $userlist;
 } // }}}
-/**
- * @param $identifier
- */
 function loginUser($identifier) // {{{
 {
 	global $user_cookie_site, $userlib;
@@ -70,10 +60,6 @@ function loginUser($identifier) // {{{
 	unset($_SESSION['loginfrom']);
 	exit;
 } // }}}
-/**
- * @param $data
- * @param $messages
- */
 function filterExistingInformation(&$data, &$messages) // {{{
 {
 	global $tikilib;
@@ -84,10 +70,6 @@ function filterExistingInformation(&$data, &$messages) // {{{
 		$messages[] = tra('Your default nickname is already in use. A new one has to be selected.');
 	}
 } // }}}
-/**
- * @param $data
- * @param $messages
- */
 function displayRegisatrationForms($data, $messages) // {{{
 {
 	global $smarty, $userlib, $prefs;
@@ -97,8 +79,8 @@ function displayRegisatrationForms($data, $messages) // {{{
 		register_error($registrationlib->merged_prefs->msg);
 	}
 	$smarty->assign_by_ref('merged_prefs', $registrationlib->merged_prefs);
-
-
+	
+	
 	// Default values for the registration form
 	$smarty->assign('username', $data['nickname']);
 	$smarty->assign('email', $data['email']);
@@ -113,7 +95,7 @@ function displayRegisatrationForms($data, $messages) // {{{
 	$listgroups = $userlib->get_groups(0, -1, 'groupName_asc', '', '', 'n');
 	$nbChoiceGroups = 0;
 	$mandatoryChoiceGroups = true;
-	foreach ($listgroups['data'] as $gr) {
+	foreach($listgroups['data'] as $gr) {
 		if ($gr['registrationChoice'] == 'y') {
 			++$nbChoiceGroups;
 			$theChoiceGroup = $gr['groupName'];
@@ -134,10 +116,6 @@ function displayRegisatrationForms($data, $messages) // {{{
 	$smarty->display('tiki.tpl');
 	exit;
 } // }}}
-/**
- * @param $data
- * @param $messages
- */
 function displaySelectionList($data, $messages) // {{{
 {
 	global $smarty;
@@ -146,22 +124,14 @@ function displaySelectionList($data, $messages) // {{{
 	$smarty->display('tiki.tpl');
 	exit;
 } // }}}
-/**
- * @param $message
- */
-function displayError($message)
-{ // {{{
+function displayError($message) { // {{{
 	global $smarty;
 	$smarty->assign('msg', tra("Failure:") . " " . $message);
 	$smarty->assign('errortype', 'login');
 	$smarty->display("error.tpl");
 	die;
 } // }}}
-/**
- * @return Auth_OpenID_FileStore
- */
-function getStore()
-{ // {{{
+function getStore() { // {{{
 	$store_path = "temp/openid_consumer";
 	if (!file_exists($store_path) && !mkdir($store_path)) {
 		print "Could not create the FileStore directory '$store_path'. " . " Please check the effective permissions.";
@@ -169,12 +139,8 @@ function getStore()
 	}
 	return new Auth_OpenID_FileStore($store_path);
 } // }}}
-/**
- * @return Auth_OpenID_Consumer
- */
-function getConsumer()
-{ // {{{
-
+function getConsumer() { // {{{
+	
 	/**
 	 * Create a consumer object using the store object created
 	 * earlier.
@@ -182,8 +148,7 @@ function getConsumer()
 	$store = getStore();
 	return new Auth_OpenID_Consumer($store);
 } // }}}
-function getOpenIDURL()
-{ // {{{
+function getOpenIDURL() { // {{{
 	// Render a default page if we got a submission without an openid
 	// value.
 	if (empty($_GET['openid_url'])) {
@@ -191,36 +156,23 @@ function getOpenIDURL()
 	}
 	return $_GET['openid_url'];
 } // }}}
-/**
- * @return string
- */
-function getScheme()
-{ // {{{
+function getScheme() { // {{{
 	$scheme = 'http';
 	if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
 		$scheme.= 's';
 	}
 	return $scheme;
 } // }}}
-/**
- * @return string
- */
-function getReturnTo()
-{ // {{{
-	$path = str_replace('\\', '/', dirname($_SERVER['PHP_SELF']));
+function getReturnTo() { // {{{
+	$path = str_replace('\\','/',dirname($_SERVER['PHP_SELF']));
 	$string = sprintf("%s://%s:%s%s/tiki-login_openid.php?action=return", getScheme(), $_SERVER['SERVER_NAME'], $_SERVER['SERVER_PORT'], $path == '/' ? '' : $path);
 	if (isset($_GET['action']) && $_GET['action'] == 'force') $string.= '&force=true';
 	return $string;
 } // }}}
-/**
- * @return string
- */
-function getTrustRoot()
-{ // {{{
-	return sprintf("%s://%s:%s%s", getScheme(), $_SERVER['SERVER_NAME'], $_SERVER['SERVER_PORT'], str_replace('\\', '/', dirname($_SERVER['PHP_SELF'])));
+function getTrustRoot() { // {{{
+	return sprintf("%s://%s:%s%s", getScheme(), $_SERVER['SERVER_NAME'], $_SERVER['SERVER_PORT'], str_replace('\\','/',dirname($_SERVER['PHP_SELF'])));
 } // }}}
-function runAuth()
-{ // {{{
+function runAuth() { // {{{
 	setupFromAddress();
 	$openid = getOpenIDURL();
 	$consumer = getConsumer();
@@ -231,11 +183,10 @@ function runAuth()
 		displayError(tra("Authentication error; probably not a valid OpenID."));
 	}
 	$sreg_request = Auth_OpenID_SRegRequest::build(
-		// Required
-		array(),
-		// Optional
-		array('nickname', 'email')
-	);
+	// Required
+	array(),
+	// Optional
+	array('nickname', 'email'));
 	if ($sreg_request) {
 		$auth_request->addExtension($sreg_request);
 	}
@@ -267,8 +218,7 @@ function runAuth()
 		}
 	}
 } // }}}
-function runFinish()
-{ // {{{
+function runFinish() { // {{{
 	global $smarty;
 	$consumer = getConsumer();
 	// Complete the authentication process using the server's
@@ -302,8 +252,9 @@ function runFinish()
 			if (count($list) == 1) {
 				// Login the user
 				loginUser($list[0]);
-			} else {
+			} else
 			// Else Multiple account
+			{
 				// Display user selection list
 				displaySelectionList($list);
 			}

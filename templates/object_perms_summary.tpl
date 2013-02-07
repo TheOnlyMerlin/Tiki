@@ -1,4 +1,3 @@
-{* $Id$ *}
 <div class="simplebox">
 	{capture name=permType}{$objectType}s{/capture}
 	<a title="{tr}Permissions{/tr}" class="link" href="tiki-objectpermissions.php?objectName={$name|escape:"url"}&amp;objectType={$objectType}&amp;permType={$smarty.capture.permType}&amp;objectId={$objectId}">
@@ -9,7 +8,7 @@
 		{elseif $permsType eq 'object'}
 			{icon _id='key' alt="{tr}Permissions{/tr}"}
 			</a>
-			{tr}There are individual permissions set for this object{/tr}
+			{tr}There are individual permissions set for this tracker{/tr}
 		{else}
 			{icon _id='key_active' alt="{tr}Active Perms{/tr}"}
 			</a>

@@ -26,94 +26,64 @@
 			</td>
 		</tr>
 		<tr>
-			<td>{tr}Use in:{/tr}</td>
+			<td>{tr}Use in{/tr}:</td>
 			<td>
-				{$toolbar_section='admin'}
 				{if $prefs.feature_cms_templates eq 'y'}
 					<input type="checkbox" name="section_cms" {if $info.section_cms eq 'y'}checked="checked"{/if} /> 
 					{tr}CMS{/tr} ({tr}Articles{/tr})
-					{if $info.section_cms eq 'y'}{$toolbar_section='cms'}{/if}
 					<br />
 				{/if}
 				{if $prefs.feature_wiki_templates eq 'y'}
 					<label><input type="checkbox" name="section_wiki" {if $info.section_wiki eq 'y'}checked="checked"{/if} />
 					{tr}Wiki{/tr}</label>
-					{if $info.section_wiki eq 'y'}{$toolbar_section='wiki page'}{/if}
-					<br />
-				{/if}
-				{if $prefs.feature_file_galleries_templates eq 'y'}
-					<label><input type="checkbox" name="section_file_galleries" {if $info.section_file_galleries eq 'y'}checked="checked"{/if} />
-					{if $info.section_file_galleries eq 'y'}{$toolbar_section='admin'}{/if}
-					{tr}File Galleries{/tr}</label>
 					<br />
 				{/if}
 				{if $prefs.feature_newsletters eq 'y'}
 					<label><input type="checkbox" name="section_newsletters" {if $info.section_newsletters eq 'y'}checked="checked"{/if} />
-					{if $info.section_newsletters eq 'y'}{$toolbar_section='newsletters'}{/if}
 					{tr}Newsletters{/tr}</label>
 					<br />
 				{/if}
 				{if $prefs.feature_events eq 'y'}
 					<label><input type="checkbox" name="section_events" {if $info.section_events eq 'y'}checked="checked"{/if} />
-					{if $info.section_events eq 'y'}{$toolbar_section='calendar'}{/if}
 					{tr}Events{/tr}</label>
 					<br />
 				{/if}
 				{if $prefs.feature_html_pages eq 'y'}
 					<label><input type="checkbox" name="section_html" {if $info.section_html eq 'y'}checked="checked"{/if} />
-					{if $info.section_html eq 'y'}{$toolbar_section='wiki page'}{/if}
 					{tr}HTML Pages{/tr}</label>
 					<br />
 				{/if}
-				{if ($prefs.feature_cms_templates ne 'y') and ($prefs.feature_wiki_templates ne 'y') and ($prefs.feature_file_galleries_templates ne 'y') and ($prefs.feature_newsletters ne 'y') and ($prefs.feature_events ne 'y') and ($prefs.feature_html_pages ne 'y')}
+				{if ($prefs.feature_cms_templates ne 'y') and ($prefs.feature_wiki_templates ne 'y') and ($prefs.feature_newsletters ne 'y') and ($prefs.feature_events ne 'y') and ($prefs.feature_html_pages ne 'y')}
 					{tr}No features are configured to use templates.{/tr}
 				{/if}
 			</td>
 		</tr>
 
 		<tr>
-			<td>{tr}Template Type:{/tr}</td>
+			<td>{tr}Template Type{/tr}:</td>
 			<td>
-				<select name="template_type" id="type-selector">
+				<select name="template_type" class="type-selector">
 					<option value="static"{if $info.template_type eq 'static'} selected="selected"{/if}>{tr}Text area{/tr}</option>
 					<option value="page"{if $info.template_type eq 'page'} selected="selected"{/if}>{tr}Wiki Page{/tr}</option>
 				</select>
 			</td>
 		</tr>
-
-		<tr class="type-cond for-static">
-			<td>
-				{tr}Is HTML{/tr}
-			</td>
-			<td>
-				<input type="checkbox" name="section_wiki_html" {if $info.section_wiki_html eq 'y'}checked="checked"{/if} />
-			</td>
-		</tr>
 		
 		<tr class="type-cond for-page">
-			<td>{tr}Page Name:{/tr}</td>
+			<td>{tr}Page Name{/tr}:</td>
 			<td>
 				<input type="text" name="page_name" value="{$info.page_name}"/>
-				{autocomplete element='input[name=page_name]' type='pagename'}
 			</td>
 		</tr>
 
 		<tr class="type-cond for-static">
 			<td colspan="2">
-				<label for="editwiki">{tr}Template:{/tr}</label>
+				<label for="editwiki">{tr}Template{/tr}:</label>
 			</td>
 		</tr>
 		<tr class="type-cond for-static">
 			<td colspan="2">
-				{if $prefs.feature_wysiwyg eq 'y' and $info.section_wiki_html eq 'y'}
-					{$use_wysiwyg='y'}
-					<input type="hidden" id="allowhtml" value="y"/>
-					{if $prefs.wysiwyg_htmltowiki eq 'y'}{$is_html = 'y'}{else}{$is_html = 'n'}{/if}
-				{else}
-					{$use_wysiwyg='n'}
-					{$is_html = 'n'}
-				{/if}
-				{textarea id="editwiki" name="content" switcheditor="y" _wysiwyg=$use_wysiwyg _is_html=$is_html section=$toolbar_section}{$info.content}{/textarea}
+				{textarea id="editwiki" name="content" switcheditor="y"}{$info.content}{/textarea}
 			</td>
 		</tr>
 
@@ -126,9 +96,9 @@
 		</tr>
 	</table>
 	{jq}
-		$('#type-selector').change( function( e ) {
+		$('.type-selector').change( function( e ) {
 			$('.type-cond').hide();
-			var val = $('#type-selector').val();
+			var val = $('.type-selector').val();
 			$('.for-' + val).show();
 		} ).trigger('change');
 		window.editorDirty = false;
@@ -156,9 +126,9 @@
 	{cycle values="odd,even" print=false advance=false}
 	{section name=user loop=$channels}
 		<tr class="{cycle}">
-			<td class="text">{$channels[user].name|escape}</td>
-			<td class="date">{$channels[user].created|tiki_short_datetime}</td>
-			<td class="text">
+			<td>{$channels[user].name|escape}</td>
+			<td>{$channels[user].created|tiki_short_datetime}</td>
+			<td>
 				{if count($channels[user].sections) == 0}{tr}Visible in no sections{/tr}{/if}
 				{section name=ix loop=$channels[user].sections}
 					{$channels[user].sections[ix]} 
@@ -167,7 +137,7 @@
 					</a>
 				{/section}
 			</td>
-			<td class="action">
+			<td>
 				<a title="{tr}Edit{/tr}" class="link" href="tiki-admin_content_templates.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;templateId={$channels[user].templateId}">
 					{icon _id='page_edit'}
 				</a> 
@@ -177,7 +147,11 @@
 			</td>
 		</tr>
 	{sectionelse}
-		{norecords _colspan=4}
+		<tr>
+			<td colspan="4" class="odd">
+				{tr}No records found{/tr}
+			</td>
+		</tr>
 	{/section}
 </table>
 

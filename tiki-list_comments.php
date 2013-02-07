@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -51,17 +48,9 @@ $smarty->assign_by_ref('title', $title);
 
 $show_types = array();
 $selected_types = array();
-foreach ($sections_enabled as $k => $info) {
+foreach($sections_enabled as $k => $info) {
 	if (isset($_REQUEST['types_section']) && $k != $_REQUEST['types_section']) continue;
-	// The logic below obviously does not work for tracker comments, so let's handle them in a way that is simpler to understand
-	if ($k == 'trackers' && $prefs['feature_trackers'] == 'y') {
-		$show_types['trackeritem'] = 'Tracker Item';
-		if ($default_list_value == 'y' || in_array('trackeritem', $requested_types)) {
-			$selected_types[] = 'trackeritem';
-		}
-		continue;
-	}
-	foreach ($sections_keys as $stype => $sfeature) {
+	foreach($sections_keys as $stype => $sfeature) {
 		if (isset($info[$sfeature]) && $prefs[$info[$sfeature]] == 'y' && isset($info[$stype])) {
 			$comment_type = $info[$stype];
 			$show_types[$comment_type] = ucwords($comment_type);
@@ -95,7 +84,7 @@ if (isset($_REQUEST['checked'])) {
 	// Delete comment(s)
 	if (isset($_REQUEST['remove']) || isset($_REQUEST['remove_x'])) {
 		$access->check_authenticity(tra('Delete comments'));
-		foreach ($checked as $id) {
+		foreach($checked as $id) {
 			$commentslib->remove_comment($id);
 		}
 	}
@@ -103,46 +92,32 @@ if (isset($_REQUEST['checked'])) {
 	// Ban IP adresses of multiple spammers
 	if ( isset($_REQUEST['ban_x']) ) {
 		ask_ticket('admin-banning');
-		$mass_ban_ip = implode('|', $checked);
+		$mass_ban_ip = implode('|',$checked);
 		header('Location: tiki-admin_banning.php?mass_ban_ip=' . $mass_ban_ip);
 		exit;
 	}
 	// Ban IP adresses of multiple spammers and remove comments
 	if ( isset($_REQUEST['ban_remove_x'])) {
 		ask_ticket('admin-banning');
-		$mass_ban_ip = implode('|', $checked);
+		$mass_ban_ip = implode('|',$checked);
 		header('Location: tiki-admin_banning.php?mass_remove=y&mass_ban_ip=' . $mass_ban_ip);
 		exit;
 	}
 
 	// Approve comment(s)
 	if ($prefs['feature_comments_moderation'] == 'y' && isset($_REQUEST['approve_x']) ) {
-		foreach ($checked as $id) {
+		foreach($checked as $id) {
 			$commentslib->approve_comment($id, 'y');
 		}
 	}
 
 	// Reject comment(s)
 	if ($prefs['feature_comments_moderation'] == 'y' && isset($_REQUEST['reject_x'])) {
-		foreach ($checked as $id) {
+		foreach($checked as $id) {
 			$commentslib->approve_comment($id, 'r');
 			$rejected[$id] = true;
 		}
 		$smarty->assign_by_ref('rejected', $rejected);
-	}
-
-	// Archive comment(s)
-	if ($prefs['comments_archive'] == 'y' && isset($_REQUEST['archive_x']) ) {
-		foreach ($checked as $id) {
-			$commentslib->archive_thread($id);
-		}
-	}
-
-	// Unarchive comment(s)
-	if ($prefs['comments_archive'] == 'y' && isset($_REQUEST['unarchive_x']) ) {
-		foreach ($checked as $id) {
-			$commentslib->unarchive_thread($id);
-		}
 	}
 
 }
@@ -189,7 +164,9 @@ if (isset($blogId)) {
 }
 
 $comments = $commentslib->get_all_comments($selected_types, $offset, $maxRecords, $sort_mode, $find, 'y', $_REQUEST['findfilter_approved'], false, $objectsIds);
-
+foreach($comments['data'] as $k => $v) {
+	if ($v['objectType'] == 'post') $comments['data'][$k]['objectType'] = 'blog post';
+}
 $smarty->assign_by_ref('comments', $comments['data']);
 $smarty->assign_by_ref('filters', $filters);
 $smarty->assign_by_ref('filter_names', $filter_names);

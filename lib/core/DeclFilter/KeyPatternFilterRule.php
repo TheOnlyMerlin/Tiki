@@ -1,9 +1,12 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
+
+require_once 'lib/core/DeclFilter/FilterRule.php';
+require_once 'lib/core/TikiFilter.php';
 
 class DeclFilter_KeyPatternFilterRule extends DeclFilter_FilterRule
 {
@@ -16,8 +19,8 @@ class DeclFilter_KeyPatternFilterRule extends DeclFilter_FilterRule
 
 	private function getMatchingPattern( $key )
 	{
-		foreach ( $this->rules as $pattern => $filter ) {
-			if ( preg_match($pattern, $key) ) {
+		foreach( $this->rules as $pattern => $filter ) {
+			if( preg_match( $pattern, $key ) ) {
 				return $pattern;
 			}
 		}
@@ -27,12 +30,12 @@ class DeclFilter_KeyPatternFilterRule extends DeclFilter_FilterRule
 
 	function match( $key )
 	{
-		return false !== $this->getMatchingPattern($key);
+		return false !== $this->getMatchingPattern( $key );
 	}
 
 	function getFilter( $key )
 	{
-		$pattern = $this->getMatchingPattern($key);
-		return TikiFilter::get($this->rules[$pattern]);
+		$pattern = $this->getMatchingPattern( $key );
+		return TikiFilter::get( $this->rules[$pattern] );
 	}
 }

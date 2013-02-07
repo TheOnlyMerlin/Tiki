@@ -1,36 +1,27 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
 
-/**
- * @return array
- */
-function module_freetag_info()
-{
+function module_freetag_info() {
 	return array(
-		'name' => tra('Tags Editor'),
+		'name' => tra('Freetags editor'),
 		'description' => tra('Shows current freetags and enables to add and remove some if permissions allow.'),
-		'prefs' => array('feature_freetags'),
+		'prefs' => array( 'feature_freetags' ),
 		'params' => array()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
-function module_freetag($mod_reference, $module_params)
-{
-	global $sections, $section, $modlib;
+function module_freetag( $mod_reference, $module_params ) {
+	global $sections, $section;
 	global $smarty;
 	
 	$globalperms = Perms::get();
@@ -42,10 +33,7 @@ function module_freetag($mod_reference, $module_params)
 		} elseif (isset($par['key']) && !empty($_REQUEST["{$par['key']}"])) {
 			$tagid = $_REQUEST["{$par['key']}"];
 		}
-		if ($tagid) {
+		if ($tagid)
 			$smarty->assign('viewTags', 'y');
-		}
-	} else if ($modlib->is_admin_mode(true)) {
-		$smarty->assign('viewTags', 'y');
 	}
 }

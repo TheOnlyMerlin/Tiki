@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -66,5 +63,5 @@ $smarty->assign('metrics_range_prefix', $converted_range['metrics_range_prefix']
 $smarty->assign('range', $range);
 $smarty->assign('tabs', $tabs);
 $smarty->assign('metrics_range', $metrics_range);
-$smarty->assign('mid', 'tiki-metrics.tpl');
+$smarty->assign('mid','tiki-metrics.tpl');
 $smarty->display("tiki.tpl");

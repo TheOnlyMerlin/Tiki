@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,21 +9,19 @@ class Perms_Reflection_PermissionSet
 {
 	private $set = array();
 
-	function add( $group, $permission )
-	{
-		if ( is_array($permission) ) {
-			foreach ( $permission as $p ) {
-				$this->addOne($group, $p);
+	function add( $group, $permission ) {
+		if( is_array( $permission ) ) {
+			foreach( $permission as $p ) {
+				$this->addOne( $group, $p );
 			}
 		} else {
-			$this->addOne($group, $permission);
+			$this->addOne( $group, $permission );
 		}
 	}
 
-	private function addOne( $group, $permission )
-	{
-		if ( ! $this->has($group, $permission) ) {
-			if ( ! isset($this->set[ $group ]) ) {
+	private function addOne( $group, $permission ) {
+		if( ! $this->has( $group, $permission ) ) {
+			if( ! isset( $this->set[ $group ] ) ) {
 				$this->set[ $group ] = array();
 			}
 
@@ -31,33 +29,29 @@ class Perms_Reflection_PermissionSet
 		}
 	}
 
-	function has( $group, $permission )
-	{
-		return isset($this->set[ $group ])
-			&& in_array($permission, $this->set[ $group ]);
+	function has( $group, $permission ) {
+		return isset( $this->set[ $group ] )
+			&& in_array( $permission, $this->set[ $group ] );
 	}
 	
-	function remove( $group, $permission)
-	{
-		if ( is_array($permission) ) {
-			foreach ( $permission as $p ) {
-				$this->removeOne($group, $p);
+	function remove( $group, $permission) {
+		if( is_array( $permission ) ) {
+			foreach( $permission as $p ) {
+				$this->removeOne( $group, $p );
 			}
 		} else {
-			$this->removeOne($group, $permission);
+			$this->removeOne( $group, $permission );
 		}
 	}
 
-	private function removeOne( $group, $permission )
-	{
-		if ( $this->has($group, $permission) ) {
+	private function removeOne( $group, $permission ) {
+		if( $this->has( $group, $permission ) ) {
 			$k = array_search($permission, $this->set[$group]);
 			unset($this->set[$group][$k]);
 		}
 	}
 
-	function getPermissionArray()
-	{
+	function getPermissionArray() {
 		return $this->set;
 	}
 }
