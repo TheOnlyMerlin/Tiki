@@ -22,12 +22,10 @@ class JisonParser_PluginTest extends JisonParser_Abstract
 
 	public function html_plugin()
 	{
-		$this->parser->setOption(
-			array(
-				'is_html' => true,
-				'skipvalidation' => true
-			)
-		);
+		$this->parser->setOption(array(
+			'is_html' => true,
+			'skipvalidation' => true
+		));
 
 		$syntax = array(
 			"{HTML()}<table><tr><td></td></tr></table>{HTML}"
@@ -44,12 +42,10 @@ class JisonParser_PluginTest extends JisonParser_Abstract
 
 	public function injected_plugin()
 	{
-		$this->parser->setOption(
-			array(
-				'is_html' => true,
-				'skipvalidation' => true
-			)
-		);
+		$this->parser->setOption(array(
+			'is_html' => true,
+			'skipvalidation' => true
+		));
 
 		$this->parser->pluginNegotiator->inject(new WikiPlugin_injected());
 
@@ -137,7 +133,8 @@ class JisonParser_PluginTest extends JisonParser_Abstract
 		$prefs['wikiplugin_expandingoutline'] = 'y';
 
 		$syntax = array(
-"{EXPANDINGOUTLINE()}*test
+"{EXPANDINGOUTLINE()}
+*test
 *test
 **test
 **test
@@ -312,10 +309,10 @@ class JisonParser_PluginTest extends JisonParser_Abstract
 					'<li><a class="link" href="#test1">test</a></li>' .
 				'</ul>' .
 			'</div>' .
-			"<br/>\n" .
-			"<h1 id='test'>test</h1>".
-			"<h3 id='nested_test'>nested test</h3>".
-			"<h1 id='test1'>test</h1>"
+			"<br />\n" .
+			'<h1 class="showhide_heading" id="test">test</h1>'.
+			'<h3 class="showhide_heading" id="nested_test">nested test</h3>'.
+			'<h1 class="showhide_heading" id="test1">test</h1>'
 		);
 
 		$parsed = $this->parser->parse($syntax[0]);
@@ -333,28 +330,26 @@ class JisonParser_PluginTest extends JisonParser_Abstract
 	function alias_plugin()
 	{
 		global $prefs;
-		$prefs['pluginalias_fakeplugin'] = serialize(
-			array(
-				"implementation" => "code",
-   	         "description" => array(
-						"name" => "Code Test",
-   	    	       "description" => "A twist on the code plugin",
-            	    "prefs" => array("wikiplugin_fakeplugin"),
-	                "filter" => "xss",
-   	             "inline" => "",
-      	          "params" => array(),
-         	   ),
-		        "body" => array(
-		            "input" => "use",
-		            "default" => "$" . "test = 'test';",
-	   	         "params" => array()
-					),
-		        "params" => array(
-						"colors" => "php"
-					),
-      	      "plugin_name" => "fakeplugin"
-			)
-		);
+		$prefs['pluginalias_fakeplugin'] = serialize(array(
+			"implementation" => "code",
+            "description" => array(
+				"name" => "Code Test",
+                "description" => "A twist on the code plugin",
+                "prefs" => array("wikiplugin_fakeplugin"),
+                "filter" => "xss",
+                "inline" => "",
+                "params" => array(),
+            ),
+	        "body" => array(
+	            "input" => "use",
+	            "default" => "$" . "test = 'test';",
+	            "params" => array()
+	        ),
+	        "params" => array(
+				"colors" => "php"
+			),
+            "plugin_name" => "fakeplugin"
+		));
 
 		$syntax = array(
 			"{fakeplugin}"
@@ -390,8 +385,7 @@ class WikiPlugin_injected extends WikiPlugin_HtmlBase
 	}
 
 	//This gives us the ability to add method on the fly to test different results
-	public function __call($method, $args)
-	{
+	public function __call($method, $args) {
 		if (isset($this->$method) === true) {
 			$func = $this->$method;
 			return $func($args[0],$args[1],$args[2], $args[3]);

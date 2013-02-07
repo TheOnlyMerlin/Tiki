@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -253,12 +250,11 @@ if ( isset($_GET['preview']) || isset($_GET['thumbnail']) || isset($_GET['displa
 			$format = substr($info['filename'], strrpos($info['filename'], '.') + 1);
 	
 			// Fallback to an icon if the format is not supported
-			$tmp = new Image('img/icons/pixel_trans.gif', true, 'gif');	// needed to call non-static Image functions non-statically
-			if ( ! $tmp->is_supported($format) ) {
+			if ( ! Image::is_supported($format) ) {
 				// Is the filename correct? Maybe it doesn't have an extenstion?
 				// Try to determine the format from the filetype too
 				$format = substr($info['filetype'], strrpos($info['filetype'], '/') + 1);
-				if ( ! $tmp->is_supported($format) ) {
+				if ( ! Image::is_supported($format) ) {
 					$_GET['icon'] = 'y';
 					$_GET['max'] = 32;
 				}
@@ -279,8 +275,8 @@ if ( isset($_GET['preview']) || isset($_GET['thumbnail']) || isset($_GET['displa
 						$icon_y = isset($_GET['y']) ? $_GET['y'] : 0;	
 					}
 		
-					$content = $tmp->icon($format, $icon_x, $icon_y);
-					$format = $tmp->get_icon_default_format();
+					$content = Image::icon($format, $icon_x, $icon_y);
+					$format = Image::get_icon_default_format();
 					$info['filetype'] = 'image/'.$format;
 					$info['lastModif'] = 0;
 				}
@@ -329,7 +325,7 @@ if ( isset($_GET['preview']) || isset($_GET['thumbnail']) || isset($_GET['displa
 					}
 		
 					// We change the image format if needed
-					if ( isset($_GET['format']) && $image->is_supported($_GET['format']) ) {
+					if ( isset($_GET['format']) && Image::is_supported($_GET['format']) ) {
 						$image->convert($_GET['format']);
 					} elseif ( isset($_GET['thumbnail']) ) {
 						// Or, if no format is explicitely specified and a thumbnail has to be created, we convert the image to the $thumbnail_format
@@ -339,7 +335,7 @@ if ( isset($_GET['preview']) || isset($_GET['thumbnail']) || isset($_GET['displa
 						$image->convert($thumbnail_format);
 					}
 		
-					$content = $image->display();
+					$content =& $image->display();
 	
 					// If the new image creating has failed, fallback to an icon
 					if ( ! isset($_GET['icon']) && ( $content === null || $content === false ) ) {

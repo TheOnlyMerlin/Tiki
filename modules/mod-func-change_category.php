@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_change_category_info()
 {
 	return array(
@@ -76,20 +73,20 @@ function module_change_category_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_change_category($mod_reference, $module_params)
 {
 	global $prefs, $tikilib, $smarty, $modlib;
 
 	$smarty->assign('showmodule', false);
+	// temporary limitation to wiki pages
+	if (($GLOBALS['section'] == 'wiki page' && (!empty($_REQUEST['page']) || !empty($_REQUEST['page_ref_if']))) || $modlib->is_admin_mode(true)) {
+		global $categlib; require_once('lib/categories/categlib.php');
 
-	$object = current_object();
-	if ($object || $modlib->is_admin_mode(true)) {
-		$categlib = TikiLib::lib('categ');
-
+		if (empty($_REQUEST['page'])) {
+			global $structlib; include_once('lib/structures/structlib.php');
+			$page_info = $structlib->s_get_page_info($_REQUEST['page_ref_id']);
+			$_REQUEST['page'] = $page_info['page'];
+		}
 		if (!empty($module_params['id'])) {
 			$id = $module_params['id'];
 			$cat_parent = $categlib->get_category_name($id);
@@ -114,8 +111,8 @@ function module_change_category($mod_reference, $module_params)
 		$smarty->assign('multiple', $multiple);
 
 
-		$cat_type = $object['type'];
-		$cat_objid = $object['object'];
+		$cat_type = 'wiki page';
+		$cat_objid = $_REQUEST['page'];
 
 		$categories = $categlib->getCategories($id ? array('identifier'=>$id, 'type'=>'descendants') : null);
 
@@ -194,12 +191,10 @@ function module_change_category($mod_reference, $module_params)
 
 		$smarty->assign('isInAllManagedCategories', $isInAllManagedCategories);
 		$smarty->assign('showmodule', !$shy);
-		$objectlib = TikiLib::lib('object');
-		$title = $objectlib->get_title($cat_type, $cat_objid);
 		if (empty($cat_parent)) {
-			$smarty->assign('tpl_module_title', sprintf(tra('Categorize %s'), htmlspecialchars($title)));
+			$smarty->assign('tpl_module_title', sprintf(tra('Categorize %s'), htmlspecialchars($_REQUEST['page'])));
 		} else {
-			$smarty->assign('tpl_module_title', sprintf(tra('Categorize %s in %s'), htmlspecialchars($title), htmlspecialchars($cat_parent)));
+			$smarty->assign('tpl_module_title', sprintf(tra('Categorize %s in %s'), htmlspecialchars($_REQUEST['page']), htmlspecialchars($cat_parent)));
 		}
 		$smarty->assign('modcatlist', $categories);
 		$smarty->assign('modcatid', $id);

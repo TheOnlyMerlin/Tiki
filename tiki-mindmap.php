@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -22,13 +19,7 @@ if (isset($_REQUEST['export'])) { // {{{
 	$dom = new DOMDocument;
 	$dom->appendChild($root = $dom->createElement('map'));
 	$root->setAttribute('version', '0.8.0');
-    /**
-     * @param $dom
-     * @param $text
-     * @param bool $link
-     * @return mixed
-     */
-    function create_node($dom, $text, $link = true)
+	function create_node($dom, $text, $link = true)
 	{
 		global $wikilib;
 		$node = $dom->createElement('node');
@@ -40,14 +31,7 @@ if (isset($_REQUEST['export'])) { // {{{
 		}
 		return $node;
 	}
-
-    /**
-     * @param $node
-     * @param $pageName
-     * @param int $remainingLevels
-     * @param array $pages
-     */
-    function populate_node($node, $pageName, $remainingLevels = 3, $pages = array())
+	function populate_node($node, $pageName, $remainingLevels = 3, $pages = array())
 	{
 		global $wikilib, $tikilib, $user;
 		$child = $wikilib->wiki_get_neighbours($pageName);

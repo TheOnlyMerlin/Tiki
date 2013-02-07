@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -342,11 +339,8 @@ if ($forum_check[0] == 'forum' ) {
 	$smarty->assign('forumId', $forum_check[1]);
 }
 
-$smarty->assign(
-	'comments_grandParentId',
-	isset($_REQUEST['comments_grandParentId'])
-	? $_REQUEST['comments_grandParentId'] : ''
-);
+$smarty->assign('comments_grandParentId', isset($_REQUEST['comments_grandParentId'])
+	? $_REQUEST['comments_grandParentId'] : '');
 
 if (isset($_REQUEST["post_reply"]) && isset($_REQUEST["comments_reply_threadId"])) {
 	$threadId_if_reply = $_REQUEST["comments_reply_threadId"];

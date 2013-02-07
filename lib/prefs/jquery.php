@@ -30,7 +30,6 @@ function prefs_jquery_list($partial = false)
 	return array(
 		'jquery_effect' => array(
 			'name' => tra('Effect for modules'),
-            'description' => tra(''),
 			'type' => 'list',
 			'options' => $jquery_effect_options,
 			'help' => 'JQuery#Effects',
@@ -39,7 +38,6 @@ function prefs_jquery_list($partial = false)
 		),
 		'jquery_effect_tabs' => array(
 			'name' => tra('Effect for tabs'),
-            'description' => tra(''),
 			'type' => 'list',
 			'options' => $jquery_effect_options,
 			'help' => 'JQuery#Effects',
@@ -47,7 +45,6 @@ function prefs_jquery_list($partial = false)
 		),
 		'jquery_effect_speed' => array(
 			'name' => tra('Speed'),
-            'description' => tra(''),
 			'type' => 'list',
 			'options' => array(
 				'fast' => tra('Fast'),
@@ -58,7 +55,6 @@ function prefs_jquery_list($partial = false)
 		),
 		'jquery_effect_direction' => array(
 			'name' => tra('Direction'),
-            'description' => tra(''),
 			'type' => 'list',
 			'options' => array(
 				'vertical' => tra('Vertical'),
@@ -72,7 +68,6 @@ function prefs_jquery_list($partial = false)
 		),
 		'jquery_effect_tabs_speed' => array(
 			'name' => tra('Speed'),
-            'description' => tra(''),
 			'type' => 'list',
 			'options' => array(
 				'fast' => tra('Fast'),
@@ -83,7 +78,6 @@ function prefs_jquery_list($partial = false)
 		),
 		'jquery_effect_tabs_direction' => array(
 			'name' => tra('Direction'),
-            'description' => tra(''),
 			'type' => 'list',
 			'options' => array(
 				'vertical' => tra('Vertical'),

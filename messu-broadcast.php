@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -32,13 +29,10 @@ $smarty->assign('mid', 'messu-broadcast.tpl');
 $smarty->assign('sent', 0);
 $groups = $userlib->list_all_groups();
 $groups = array_diff($groups, array('Anonymous'));
-$groups = array_filter(
-	$groups,
-	function ($groupName) {
-		$perms = Perms::get('group', $groupName);
-		return $perms->broadcast;
-	}
-);
+$groups = array_filter($groups, function ($groupName) {
+	$perms = Perms::get('group', $groupName);
+	return $perms->broadcast;
+});
 
 if (empty($groups)) {
 	$access->display_error('', tra("You do not have permission to use this feature").": ". $permission, '403', false);

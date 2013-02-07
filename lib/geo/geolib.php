@@ -5,17 +5,9 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-/**
- *
- */
 class GeoLib
 {
-    /**
-     * @param $type
-     * @param $itemId
-     * @return array
-     */
-    function get_coordinates($type, $itemId)
+	function get_coordinates($type, $itemId)
 	{
 		$attributelib = TikiLib::lib('attribute');
 
@@ -39,23 +31,14 @@ class GeoLib
 		}
 	}
 
-    /**
-     * @param $type
-     * @param $itemId
-     * @return string
-     */
-    function get_coordinates_string($type, $itemId)
+	function get_coordinates_string($type, $itemId)
 	{
 		if ($coords = $this->get_coordinates($type, $itemId)) {
 			return $this->build_location_string($coords);
 		}
 	}
 
-    /**
-     * @param $coords
-     * @return string
-     */
-    function build_location_string($coords)
+	function build_location_string($coords)
 	{
 		if (! empty($coords['lat']) && ! empty($coords['lon'])) {
 			if ($coords['lat'] == 0 && $coords['lon'] == 0) {
@@ -72,12 +55,7 @@ class GeoLib
 		}
 	}
 
-    /**
-     * @param $type
-     * @param $itemId
-     * @param $coordinates
-     */
-    function set_coordinates($type, $itemId, $coordinates)
+	function set_coordinates($type, $itemId, $coordinates)
 	{
 		if (is_string($coordinates)) {
 			$coordinates = $this->parse_coordinates($coordinates);
@@ -94,11 +72,7 @@ class GeoLib
 		}
 	}
 
-    /**
-     * @param $string
-     * @return array
-     */
-    function parse_coordinates($string)
+	function parse_coordinates($string)
 	{
 		if (preg_match("/^(-?\d*(\.\d+)?),(-?\d*(\.\d+)?)(,(\d+))?$/", $string, $parts)) {
 			$coords = array(
@@ -114,11 +88,7 @@ class GeoLib
 		}
 	}
 
-    /**
-     * @param $where
-     * @return array|bool
-     */
-    function geocode($where)
+	function geocode($where)
 	{
 		$url = 'http://maps.googleapis.com/maps/api/geocode/json?' . http_build_query(
 			array(
@@ -147,11 +117,7 @@ class GeoLib
 		);
 	}
 
-    /**
-     * @param $geo
-     * @return array|bool
-     */
-    function geofudge($geo)
+	function geofudge($geo)
 	{
 		if (!$geo) {
 			return false;
@@ -164,11 +130,7 @@ class GeoLib
 		return $geo;
 	}
 
-    /**
-     * @param $itemId
-     * @param $geo
-     */
-    function setTrackerGeo($itemId, $geo)
+	function setTrackerGeo($itemId, $geo)
 	{
 		global $prefs, $trklib;
 		if (!is_object($trklib)) {

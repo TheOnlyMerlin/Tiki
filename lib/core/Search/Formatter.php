@@ -28,12 +28,6 @@ class Search_Formatter
 
 	function format($list)
 	{
-		$list = $this->getPopulatedList($list);
-		return $this->render($this->plugin, $list, Search_Formatter_Plugin_Interface::FORMAT_WIKI);
-	}
-
-	function getPopulatedList($list)
-	{
 		$list = Search_ResultSet::create($list);
 		$defaultValues = $this->plugin->getFields();
 
@@ -72,7 +66,9 @@ class Search_Formatter
 			$data[] = $this->plugin->prepareEntry(new Search_Formatter_ValueFormatter($row));
 		}
 
-		return $list->replaceEntries($data);
+		$list = $list->replaceEntries($data);
+
+		return $this->render($this->plugin, $list, Search_Formatter_Plugin_Interface::FORMAT_WIKI);
 	}
 
 	private function is_empty_string($v)

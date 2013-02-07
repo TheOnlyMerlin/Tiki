@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -91,11 +88,6 @@ if (isset($_REQUEST['view']) && $_REQUEST['view'] == 'admin') {
 	$fgal_options['icon_fileId'] = '';
 } else {
 	foreach ( $fgal_options as $k_gal => $v ) {
-		// Validate that option exists. 
-		if (!isset($fgal_options[$k_gal])) {
-			continue;
-		}
-
 		$k_prefs = 'fgal_'.$k_gal;
 
 		if ( isset($_REQUEST['page']) && $_REQUEST['page'] === 'fgal' ) {

@@ -11,9 +11,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_since_last_visit_new_info()
 {
 	return array(
@@ -54,11 +51,6 @@ function module_since_last_visit_new_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param null $params
- * @return bool
- */
 function module_since_last_visit_new($mod_reference, $params = null)
 {
 	global $smarty, $user;

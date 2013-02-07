@@ -10,9 +10,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_menupage_info()
 {
 	return array(
@@ -55,10 +52,6 @@ function module_menupage_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_menupage($mod_reference, $module_params)
 {
 	if (!empty($module_params['pagemenu'])) {
@@ -71,21 +64,17 @@ function module_menupage($mod_reference, $module_params)
 		if (! empty($module_params['use_namespace'])) {
 			$pagemenu = $wikilib->include_default_namespace($pagemenu);
 		}
-
+	
 		$content = $wikilib->get_parse($pagemenu, $dummy, true);
 
 		if (! empty($content) && ! empty($module_params['menu_type']) && in_array($module_params['menu_type'], array('horiz', 'vert'))) {
 			$class = 'cssmenu_' . $module_params['menu_type'];
-			$content = preg_replace_callback(
-				'/<(ul|ol|li)([^>]*)>/Umi',
-				function ($matches) use ($class) {
-					if ($matches[1] == 'li') {
-						$class = 'menuSection';
-					}
-					return "<{$matches[1]} class=\"$class\" {$matches[2]}>";
-				},
-				$content
-			);
+			$content = preg_replace_callback('/<(ul|ol|li)([^>]*)>/Umi', function ($matches) use ($class) {
+				if ($matches[1] == 'li') {
+					$class = 'menuSection';
+				}
+				return "<{$matches[1]} class=\"$class\" {$matches[2]}>";
+			}, $content);
 			$content = $menulib->clean_menu_html($content);
 		}
 

@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -16,6 +13,34 @@
 // will be serialized and sent to the browser.
 //
 // Otherwise, the procedural script remains
+
+$controllerMap = array(
+	'comment' => 'Services_Comment_Controller',
+	'draw' => 'Services_Draw_Controller',
+	'file' => 'Services_File_Controller',
+	'file_finder' => 'Services_File_FinderController',
+	'auth_source' => 'Services_AuthSource_Controller',
+	'bigbluebutton' => 'Services_BigBlueButton_Controller',
+	'report' => 'Services_Report_Controller',
+	'tracker' => 'Services_Tracker_Controller',
+	'tracker_calendar' => 'Services_Tracker_CalendarController',
+	'tracker_sync' => 'Services_Tracker_SyncController',
+	'tracker_todo' => 'Services_Tracker_TodoController',
+	'tracker_search' => 'Services_Tracker_SearchController',
+	'favorite' => 'Services_Favorite_Controller',
+	'translation' => 'Services_Language_TranslationController',
+	'user' => 'Services_User_Controller',
+	'calendar' => 'Services_Calendar_Controller',
+	'category' => 'Services_Category_Controller',
+	'connect' => 'Services_Connect_Client',
+	'connect_server' => 'Services_Connect_Server',
+	'object' => 'Services_Object_Controller',
+	'wiki' => 'Services_Wiki_Controller',
+	'jcapture' => 'Services_JCapture_Controller',
+	'jison'=> 'Services_JisonParser_WikiPlugin',
+	'rating'=>  'Services_Rating_Controller',
+	'workspace'=>  'Services_Workspace_Controller',
+);
 
 $inputConfiguration = array(array(
 	'staticKeyFilters' => array(
@@ -41,7 +66,7 @@ if (isset($_REQUEST['controller'], $_REQUEST['action'])) {
 	$controller = $_REQUEST['controller'];
 	$action = $_REQUEST['action'];
 
-	$broker = TikiLib::lib('service')->getBroker();
+	$broker = new Services_Broker($controllerMap);
 	$broker->process($controller, $action, $jitRequest);
 	exit;
 }
@@ -199,11 +224,6 @@ if ($access->is_serializable_request() && isset($_REQUEST['listonly'])) {
 	$access->display_error(NULL, 'No AJAX service matches request parameters', 404);
 }
 
-/**
- * @param $dir
- * @param $icons
- * @param $max
- */
 function read_icon_dir($dir, &$icons, $max)
 {
 	$fp = opendir($dir);

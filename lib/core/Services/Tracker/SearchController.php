@@ -47,7 +47,7 @@ class Services_Tracker_SearchController
 			$id = '0';
 		}
 		// setup AJAX pagination
-		$offset_jsvar = "customsearch_$id.offset";
+		$offset_jsvar = "customsearch_offset_$id";
 		$onclick = "$('#customsearch_$id').submit();return false;";
 		$dataappend['pagination'] = "{pagination offset_jsvar=\"$offset_jsvar\" onclick=\"$onclick\"}";
 
@@ -340,7 +340,7 @@ class Services_Tracker_SearchController
 			return false;
 		}
 		if ($value) {
-			if (isset($config['_showdeep']) && $config['_showdeep'] != 'n') {
+			if (isset($config['_deep']) && $config['_deep'] != 'n') {
 				return '{filter deepcategories="' . $value . '"}';
 			} else {
 				return '{filter categories="' . $value . '"}';

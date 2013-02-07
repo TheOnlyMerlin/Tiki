@@ -7,21 +7,13 @@
 
 require_once('lib/images/abstract.php');
 
-/**
- *
- */
 class Image extends ImageAbstract
 {
 	var $gdinfo;
 	var $gdversion;
 	var $havegd = false;
 
-    /**
-     * @param $image
-     * @param bool $isfile
-     * @param string $format
-     */
-    function __construct($image, $isfile = false, $format = 'jpeg')
+	function __construct($image, $isfile = false, $format = 'jpeg') 
 	{
 
 		// Which GD Version do we have?
@@ -74,11 +66,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-    /**
-     * @param $x
-     * @param $y
-     */
-    function _resize($x, $y)
+	function _resize($x, $y) 
 	{
 		if ($this->data) {
 			$t = imagecreatetruecolor($x, $y);
@@ -104,10 +92,7 @@ class Image extends ImageAbstract
 		return parent::resizethumb();
 	}
 
-    /**
-     * @return null|string
-     */
-    function display()
+	function display() 
 	{
 
 		$this->_load_data();
@@ -141,11 +126,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-    /**
-     * @param $angle
-     * @return bool
-     */
-    function rotate($angle)
+	function rotate($angle) 
 	{
 		$this->_load_data();
 		if ($this->data) {
@@ -156,10 +137,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-    /**
-     * @return array
-     */
-    function get_gdinfo()
+	function get_gdinfo() 
 	{
 		$gdinfo = array();
 		$gdversion = '';
@@ -189,11 +167,7 @@ class Image extends ImageAbstract
 	}
 
 	// This method do not need to be called on an instance
-    /**
-     * @param $format
-     * @return bool|int
-     */
-    function is_supported($format)
+	function is_supported($format) 
 	{
 
 		if ( ! function_exists('imagetypes') ) {
@@ -237,10 +211,7 @@ class Image extends ImageAbstract
 		return false;
 	}
 
-    /**
-     * @return int|null
-     */
-    function _get_height()
+	function _get_height() 
 	{
 		if ($this->loaded && $this->data) {
 			return imagesy($this->data);
@@ -260,10 +231,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-    /**
-     * @return int|null
-     */
-    function _get_width()
+	function _get_width() 
 	{
 		if ($this->loaded && $this->data) {
 			return imagesx($this->data);

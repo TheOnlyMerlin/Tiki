@@ -21,6 +21,7 @@ function payment_behavior_cart_send_confirm_email( $u, $email_template_ids = arr
 	} else {
 		$mail->setHtml($mail_data);
 	}
+	$mail->setHeader("From", $prefs['sender_email']);
 	$mail->send($email);
 	return true;
 }

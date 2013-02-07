@@ -10,21 +10,18 @@ function prefs_map_list()
 	return array(
 		'map_path' => array(
 			'name' => tra('full path to mapfiles'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '50',
 			'default' => '',
 		),
 		'map_help' => array(
 			'name' => tra('Wiki Page for Help'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '50',
 			'default' => 'MapsHelp',
 		),
 		'map_comments' => array(
 			'name' => tra('Wiki Page for Comments'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '25',
 			'default' => 'MapsComments',

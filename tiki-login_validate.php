@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -88,16 +85,13 @@ if ($isvalid) {
 			TikiLib::lib('menu')->empty_menu_cache();
 		}
 	}
-
-	if ($language = $tikilib->get_user_preference($user, 'language')) {
-		setLanguage($language);
-	}
-
 	if (!empty($prefs['url_after_validation']) && !$wasAdminValidation) {
-		$target = $prefs['url_after_validation'];
-		$access->redirect($target);
+		header('Location: '.$prefs['url_after_validation']);
 	} else {
-		$access->redirect($prefs['tikiIndex'], tra("Account validated successfully."));
+		$smarty->assign('msg', tra("Account validated successfully."));
+		$smarty->assign('mid', 'tiki-information.tpl');
+		$smarty->display("tiki.tpl");
+		die;
 	}
 } else {
 	if ($error == PASSWORD_INCORRECT) $error = tra("Invalid username or password");

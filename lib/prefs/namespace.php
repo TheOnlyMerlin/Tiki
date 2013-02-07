@@ -20,7 +20,6 @@ function prefs_namespace_list()
 		),
 		'namespace_separator' => array(
 			'name' => tr('Namespace separator'),
-			'description' => tra(''),
 			'size' => 5,
 			'type' => 'text',
 			'default' => ':_:',
@@ -33,12 +32,6 @@ function prefs_namespace_list()
 			'type' => 'text',
 			'default' => '',
 			'detail' => tra('This should only be set for perspectives, and not globally.'),
-		),
-		'namespace_indicator_in_structure' => array(
-			'name' => tra('Hide namespace indicator in structure path'),
-			'description' => tra('Hide namespace indicator in structure path.'),
-			'type' => 'flag',
-			'default' => 'n',
 		),
 	);	
 }

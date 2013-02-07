@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -29,10 +26,6 @@ if ($prefs['feature_ajax'] != 'y' || ($prefs['ajax_autosave'] != 'y')) {
 
 require_once('lib/ajax/autosave.php');
 
-/**
- * @param $command
- * @param $data
- */
 function send_ajax_response($command, $data )
 {
 	header('Content-Type:text/xml; charset=UTF-8');

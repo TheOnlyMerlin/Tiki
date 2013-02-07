@@ -27,24 +27,55 @@ function wikiplugin_list($data, $params)
 
 	$alternate = null;
 	$output = null;
+	$subPlugins = array();
 
 	$query = new Search_Query;
 	$query->setWeightCalculator($unifiedsearchlib->getWeightCalculator());
 
+	if (isset($_REQUEST['maxRecords'])) {
+		if (isset($_REQUEST['offset'])) {
+			$query->setRange($_REQUEST['offset'], $_REQUEST['maxRecords']);
+		} else {
+			$query->setRange(0, $_REQUEST['maxRecords']);
+		}
+	} elseif (isset($_REQUEST['offset'])) {
+		$query->setRange($_REQUEST['offset']);
+	}
+
 	$matches = WikiParser_PluginMatcher::match($data);
 	$argumentParser = new WikiParser_PluginArgumentParser;
+
+	$onclick = '';
+	$offset_jsvar = '';
 
 	$builder = new Search_Query_WikiBuilder($query);
 	$builder->apply($matches);
 
 	foreach ($matches as $match) {
 		$name = $match->getName();
+		$arguments = $argumentParser->parse($match->getArguments());
+
+		foreach ($arguments as $key => $value) {
+			$function = "wpformat_{$name}_{$key}";
+
+			if (function_exists($function)) {
+				$function($subPlugins, $value, $match->getBody());
+			}
+		}
+
 		if ($name == 'output') {
 			$output = $match;
 		}
 
 		if ($name == 'alternate') {
 			$alternate = $match->getBody();
+		}
+
+		if ($name == 'pagination' && isset($arguments['onclick'])) {
+			$onclick = $arguments['onclick'];
+		}
+		if ($name == 'pagination' && isset($arguments['offset_jsvar'])) {
+			$offset_jsvar = $arguments['offset_jsvar'];
 		}
 	}
 
@@ -71,8 +102,8 @@ function wikiplugin_list($data, $params)
 					TikiLib::lib('errorreport')->report(tr('Missing template "%0"', $arguments['template']));
 					return '';
 				}
-				$abuilder = new Search_Formatter_ArrayBuilder;
-				$templateData = $abuilder->getData($output->getBody());
+				$builder = new Search_Formatter_ArrayBuilder;
+				$templateData = $builder->getData($output->getBody());
 
 				$plugin = new Search_Formatter_Plugin_SmartyTemplate($arguments['template']);
 				$plugin->setData($templateData);
@@ -86,8 +117,7 @@ function wikiplugin_list($data, $params)
 			}
 
 			if (isset($arguments['pagination'])) {
-				$paginationArguments = $builder->getPaginationArguments();
-				$plugin = new WikiPlugin_List_AppendPagination($plugin, $paginationArguments);
+				$plugin = new WikiPlugin_List_AppendPagination($plugin, $onclick, $offset_jsvar);
 			}
 		} else {
 			$plugin = new Search_Formatter_Plugin_WikiTemplate("* {display name=title format=objectlink}\n");
@@ -95,8 +125,10 @@ function wikiplugin_list($data, $params)
 
 		$formatter = new Search_Formatter($plugin);
 		$formatter->setDataSource($unifiedsearchlib->getDataSource());
-		$builder = new Search_Formatter_Builder($formatter);
-		$builder->apply($matches);
+
+		foreach ($subPlugins as $key => $plugin) {
+			$formatter->addSubFormatter($key, $plugin);
+		}
 
 		$out = $formatter->format($result);
 	} elseif (!empty($alternate)) {
@@ -108,15 +140,20 @@ function wikiplugin_list($data, $params)
 	return $out;
 }
 
+function wpformat_format_name(&$subPlugins, $value, $body)
+{
+	$subPlugins[$value] = new Search_Formatter_Plugin_WikiTemplate($body);
+}
+
 class WikiPlugin_List_AppendPagination implements Search_Formatter_Plugin_Interface
 {
 	private $parent;
-	private $arguments;
 
-	function __construct(Search_Formatter_Plugin_Interface $parent, array $arguments = array())
+	function __construct(Search_Formatter_Plugin_Interface $parent, $onclick, $offset_jsvar)
 	{ 
 		$this->parent = $parent;
-		$this->arguments = $arguments;
+		$this->offset_jsvar = $offset_jsvar;
+		$this->onclick = $onclick;
 	}
 
 	function getFields()
@@ -138,9 +175,7 @@ class WikiPlugin_List_AppendPagination implements Search_Formatter_Plugin_Interf
 	{
 		global $smarty;
 		$smarty->loadPlugin('smarty_block_pagination_links');
-		$arguments = $this->arguments;
-		$arguments['resultset'] = $entries;
-		$pagination = smarty_block_pagination_links($arguments, '', $smarty, $tmp = false);
+		$pagination = smarty_block_pagination_links(array('_onclick' => $this->onclick, 'offset_jsvar' => $this->offset_jsvar, 'resultset' => $entries), '', $smarty, $tmp = false);
 
 		if ($this->getFormat() == Search_Formatter_Plugin_Interface::FORMAT_WIKI) {
 			$pagination = "~np~$pagination~/np~";

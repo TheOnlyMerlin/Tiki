@@ -11,9 +11,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_search_info()
 {
 	return array(
@@ -121,10 +118,6 @@ function module_search_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $smod_params
- */
 function module_search($mod_reference, $smod_params) 	// modifies $smod_params so uses & reference
 {
 	global $smarty, $prefs;

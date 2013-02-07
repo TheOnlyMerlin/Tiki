@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -19,11 +16,6 @@ require_once ('lib/graph-engine/graph.pie.php');
 require_once ('lib/graph-engine/graph.bar.php');
 require_once ('lib/graph-engine/graph.multiline.php');
 
-/**
- * @param $serie
- * @param $sheet
- * @return array
- */
 function handle_series( $serie, &$sheet )
 {
 	if ( !$range = $sheet->getRange($serie) )

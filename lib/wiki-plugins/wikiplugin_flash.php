@@ -91,14 +91,7 @@ function wikiplugin_flash_info()
 					array('text' => tra('Medium'), 'value' => 'medium'), 
 					array('text' => tra('Low'), 'value' => 'low'), 
 				)
-			),
-			'altimg' => array(
-				'required' => false,
-				'name' => tra('Alternative image URL'),
-				'description' => tra('Image to display if Flash is not available.'),
-				'advanced' => true,
-				'default' => '',
-			),
+			)
 		)
 	);
 }

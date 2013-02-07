@@ -17,18 +17,11 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- *
- */
 class ScoreLib extends TikiLib
 {
 
 	// User's general classification on site
-    /**
-     * @param $user
-     * @return mixed
-     */
-    public function user_position($user)
+	public function user_position($user)
 	{
 		$score = $this->getOne("select `score` from `users_users` where `login`=?", array($user));
 		return $this->getOne("select count(*)+1 from `users_users` where `score` > ? and `login` <> ?", array((int) $score,'admin'));
@@ -36,30 +29,20 @@ class ScoreLib extends TikiLib
 
 	// User's score on site
 	// allows getting score of a single user
-    /**
-     * @param $user
-     * @return mixed
-     */
-    public function get_user_score($user)
+	public function get_user_score($user)
 	{
 		$score = $this->getOne("select `score` from `users_users` where `login`=?", array($user));
 		return $score;
 	}
 
 	// Number of users that go on ranking
-    /**
-     * @return mixed
-     */
-    public function count_users()
+	public function count_users()
 	{
 		return $this->getOne("select count(*) from `users_users` where `score`>0 and `login`<>'admin'", array());
 	}
 
 	// All event types, for administration
-    /**
-     * @return array
-     */
-    public function get_all_events()
+	public function get_all_events()
 	{
 		global $prefs;
 
@@ -107,10 +90,7 @@ class ScoreLib extends TikiLib
 	}
 
 	// Read information from admin and updates event's punctuation
-    /**
-     * @param $events
-     */
-    public function update_events($events)
+	public function update_events($events)
 	{
 		foreach ($events as $event_name => $event) {
 			$query = "delete from `tiki_score` where `event`=?";

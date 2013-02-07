@@ -11,18 +11,12 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- *
- */
 class ThemeGenLib
 {
 	private $currentTheme;	// ThemeGenTheme
 	private $tg_data;
 
-    /**
-     *
-     */
-    public function __construct()
+	public function __construct()
 	{
 		global $prefs;
 
@@ -260,12 +254,7 @@ class ThemeGenLib
 		$this->currentTheme->initDone = true;
 	}
 
-    /**
-     * @param $items
-     * @param $haystack
-     * @param $regexp
-     */
-    private function findContexts( &$items, $haystack, $regexp)
+	private function findContexts( &$items, $haystack, $regexp)
 	{
 		$m = null;
 		foreach ($items as &$item) {
@@ -278,10 +267,7 @@ class ThemeGenLib
 		}
 	}
 
-    /**
-     * @return array
-     */
-    public function setupCSSFiles ()
+	public function setupCSSFiles ()
 	{
 		global $tikilib, $prefs, $style_base;
 
@@ -304,12 +290,7 @@ class ThemeGenLib
 
 	}
 
-    /**
-     * @param $file
-     * @param $swaps
-     * @return mixed|string
-     */
-    public function processCSSFile($file, $swaps)
+	public function processCSSFile($file, $swaps)
 	{
 		global $headerlib;
 
@@ -343,20 +324,13 @@ class ThemeGenLib
 		return $css;
 	}
 
-    /**
-     * @param $matches
-     * @return mixed
-     */
-    private function processCSSMultiVars($matches)
+	private function processCSSMultiVars($matches)
 	{
 		$out = str_replace($GLOBALS['tg_old'], $GLOBALS['tg_new'], $matches[0]);
 		return $out;
 	}
 
-    /**
-     * @param $name
-     */
-    public function saveNewTheme($name)
+	public function saveNewTheme($name)
 	{
 		global $headerlib;
 
@@ -369,11 +343,7 @@ class ThemeGenLib
 		}
 	}
 
-    /**
-     * @param $css_file
-     * @param $swaps
-     */
-    public function updateCurrentTheme($css_file, $swaps)
+	public function updateCurrentTheme($css_file, $swaps)
 	{
 		global $headerlib;
 
@@ -386,11 +356,7 @@ class ThemeGenLib
 		}
 	}
 
-    /**
-     * @param $css_file
-     * @param $swaps
-     */
-    public function previewCurrentTheme($css_file, $swaps)
+	public function previewCurrentTheme($css_file, $swaps)
 	{
 		$this->currentTheme->setData(array($swaps, $css_file));
 		$_SESSION['tg_preview'] = serialize($this->currentTheme->getData());
@@ -408,10 +374,7 @@ class ThemeGenLib
 		}
 	}
 
-    /**
-     * @return ThemeGenTheme
-     */
-    public function getCurrentTheme()
+	public function getCurrentTheme()
 	{
 		return $this->currentTheme;
 	}
@@ -419,17 +382,11 @@ class ThemeGenLib
 
 require_once 'lib/serializedlist.php';
 
-/**
- *
- */
 class ThemeGenTheme extends SerializedList
 {
 	public $initDone;
 
-    /**
-     * @param string $name
-     */
-    public function __construct($name)
+	public function __construct($name)
 	{
 		parent::__construct($name);
 	}
@@ -452,10 +409,7 @@ class ThemeGenTheme extends SerializedList
 		$this->prefPrefix = 'themegenerator_theme_';
 	}
 
-    /**
-     * @param $params
-     */
-    public function setData($params)
+	public function setData($params)
 	{
 		global $prefs;
 
@@ -488,16 +442,7 @@ class ThemeGenTheme extends SerializedList
 		}
 	}
 
-    /**
-     * @param $regexp
-     * @param $haystack
-     * @param $filename
-     * @param $type
-     * @param bool $lower
-     * @param int $matchNumber
-     * @return array|null
-     */
-    public function findMatches( $regexp, $haystack, $filename, $type, $lower = true, $matchNumber = 1)
+	public function findMatches( $regexp, $haystack, $filename, $type, $lower = true, $matchNumber = 1)
 	{
 		$items = null;
 		preg_match_all($regexp, $haystack, $matches);
@@ -508,14 +453,7 @@ class ThemeGenTheme extends SerializedList
 	}
 
 
-    /**
-     * @param $matches
-     * @param $css_file
-     * @param $type
-     * @param $lower
-     * @return array
-     */
-    private function processMatches($matches, $css_file, $type, $lower)
+	private function processMatches($matches, $css_file, $type, $lower)
 	{
 		$processed = array();
 		if (is_array($matches)) {

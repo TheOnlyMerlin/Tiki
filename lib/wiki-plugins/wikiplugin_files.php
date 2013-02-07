@@ -43,7 +43,7 @@ function wikiplugin_files_info()
 			'sort' => array(
 				'required' => false,
 				'name' => tra('Sort Order'),
-				'description' => tra('Order ascending, descending or random based on any field in the file gallery table. Default is name_asc').'. '.tra('Attributes: name, created, lastModif, filename, filesize, filetype, lastDownload'),
+				'description' => tra('Order ascending, descending or random based on any field in the file gallery table. Default is name_asc'),
 				'default' => 'name_asc',
 				'filter' => 'text'
 			),

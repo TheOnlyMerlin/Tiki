@@ -13,7 +13,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 
 function smarty_function_banner($params, $smarty)
 {
-    $bannerlib = TikiLib::lib('banner');
+    global $bannerlib;include_once('lib/banners/bannerlib.php');
 	$default = array('zone'=>'', 'target'=>'', 'id'=>'');
 	$params = array_merge($default, $params);
 

@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -33,9 +30,6 @@ require_once 'tiki-setup.php';
 $debug = false;
 $debug_file= '/tmp/tiki4log';
 
-/**
- * @param $string
- */
 function print_debug($string)
 {
 	global $debug, $debug_file;
@@ -48,13 +42,6 @@ function print_debug($string)
 	}
 }
 
-/**
- * @param $errno
- * @param $errmsg
- * @param $filename
- * @param $linenum
- * @param $vars
- */
 function error_handler($errno, $errmsg, $filename, $linenum, $vars)
 {
 	print_debug("\n=== ERROR ===\n");

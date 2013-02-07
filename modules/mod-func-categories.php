@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_categories_info()
 {
 	return array(
@@ -51,10 +48,6 @@ function module_categories_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_categories($mod_reference, &$module_params)
 {
 	global $smarty, $prefs;
@@ -71,7 +64,7 @@ function module_categories($mod_reference, &$module_params)
 		$deep = $module_params['deep'];
 	else
 		$deep= 'on';
-	$urlEnd .= "?deep=$deep";
+	$urlEnd .= "&amp;deep=$deep";
 	$name = "";
 
 	$categories = $categlib->getCategories();

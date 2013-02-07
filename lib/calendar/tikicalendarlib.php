@@ -8,53 +8,20 @@
 global $calendarlib;
 require_once('calendarlib.php');
 
-/**
- *
- */
 class TikiCalendarLib extends CalendarLib
 {
 
-    /**
-     * @param $tikiobj
-     * @param $user
-     * @param $tstart
-     * @param $tstop
-     * @param $offset
-     * @param $maxRecords
-     * @param string $sort_mode
-     * @param string $find
-     * @return array
-     */
-    function list_items_by_day($tikiobj, $user, $tstart, $tstop, $offset, $maxRecords, $sort_mode = 'name_desc', $find = '')
+	function list_items_by_day($tikiobj, $user, $tstart, $tstop, $offset, $maxRecords, $sort_mode = 'name_desc', $find = '')
 	{
 		return $this->list_tiki_items($tikiobj, $user, $tstart, $tstop, $offset, $maxRecords, $sort_mode, $find);
 	}
 
-    /**
-     * @param $calIds
-     * @param $viewstart
-     * @param $viewend
-     * @param string $group_by
-     * @param string $item_name
-     * @return array
-     */
 	function getCalendar($calIds, &$viewstart, &$viewend, $group_by = '', $item_name = 'actions')
 	{
 		return parent::getCalendar($calIds, $viewstart, $viewend, $group_by, $item_name);
 	}
 
-    /**
-     * @param $tikiobj
-     * @param $user
-     * @param $tstart
-     * @param $tstop
-     * @param $offset
-     * @param $maxRecords
-     * @param string $sort_mode
-     * @param string $find
-     * @return array
-     */
-    function list_tiki_items($tikiobj, $user, $tstart, $tstop, $offset, $maxRecords, $sort_mode = 'name_desc', $find = '')
+	function list_tiki_items($tikiobj, $user, $tstart, $tstop, $offset, $maxRecords, $sort_mode = 'name_desc', $find = '')
 	{
 		global $user;
 		$ret = array();
@@ -168,12 +135,7 @@ class TikiCalendarLib extends CalendarLib
 		return $ret;
 	}
 
-    /**
-     * @param $type
-     * @param null $bindvars
-     * @return mixed
-     */
-    function get_object_cal_infos($type, $bindvars = null)
+	function get_object_cal_infos($type, $bindvars = null)
 	{
 		switch ( $type ) {
 			case 'art':
@@ -261,12 +223,7 @@ class TikiCalendarLib extends CalendarLib
 		}
 	}
 
-    /**
-     * @param $type
-     * @param null $bindvars
-     * @return string
-     */
-    function get_object_url($type, $bindvars = null)
+	function get_object_url($type, $bindvars = null)
 	{
 		switch ( $type ) {
 
@@ -333,11 +290,7 @@ class TikiCalendarLib extends CalendarLib
 		}
 	}
 
-    /**
-     * @param bool $with_infos
-     * @return array
-     */
-    function getTikiItems($with_infos = true)
+	function getTikiItems($with_infos = true)
 	{
 		global $prefs;
 		global $tiki_p_view, $tiki_p_view_image_gallery, $tiki_p_read_article;

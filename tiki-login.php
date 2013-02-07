@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -406,10 +403,6 @@ if ($isvalid) {
 
 		case USER_NOT_VALIDATED:
 			$error = tra('You are not yet validated');
-    		break;
-
-		case USER_ALREADY_LOGGED:
-			$error = tra('You are already logged in');
     		break;
 
 		default:

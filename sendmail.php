@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -15,6 +12,7 @@ error_reporting(E_ALL);
 ini_set("display_errors", 'stdout');
 
 require_once ("tiki-setup.php");
+require_once ("lib/webmail/htmlMimeMail.php");
 
 echo ("Mail queue processor starting...\n");
 
