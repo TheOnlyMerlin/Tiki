@@ -1,0 +1,37 @@
+﻿# a map of the current external Libraries and Composer paths
+# 
+# [p] denotes a specifically mapped package
+# [?] denotes a possible match, where I found no direct match
+
+ Package         | our version   | Released     |  curr vers   | Composer Location
+                 |               | (dd/mm/yyyy) |              |  
+-----------------+---------------+--------------+--------------------------------------------------------------
+zend             | 1.12.1        | 18/12/2012   | 1.12.1       |     "zendframework/zendframework1": "1.12.1"  
+adodb            | 5.18          | 03/09/2013   | 5.18         | [p] "adodb/adodb": "5.18"
+ckeditor         |               |              |              |     "krynlabs/ckeditor": "4.0"
+codemirror       | 2.25          | 23/05/2012   | 3.02         |     
+ezcomponents     | 1.8           |              |              | [?] "robo47/robo47-components": "dev-master"
+fckeditor        | 2.6.6         |              |              |     
+fullcalendar     |               |              |              |     
+html5shim        | 1.6.2         |              |              |     
+htmlpurifier     |               |              |              |     
+jquery           |               |              | 1.9.1        |     
+jquery-ui        |               |              | 1.10.0       |     
+jQuery.sheet     |               |              | 3.0          |     
+jscalendar       |               |              |              |     
+mobileESP        |               |              |              |     
+pclzip           | 2.8           |              |              | [?] "vipsoft/unzip": "v1.0"
+phpcas           |               |              |              | [p] "phpcas/phpcas": "1.3.1"
+phplayers        | 1.5.2.1       |              |              |     
+phpseclib        |               |              |              |     "phpseclib/phpseclib": "0.3.1"
+rangy            | 1.2.2         |              |              |     
+simile_timeline  |               |              |              |     
+slideshow        |               |              |              | [?] "silverstripe/slideshow": "dev-master"
+smarty           | 2.6.27        | 24/09/2012   |              |     
+smarty3          | 3.0.9         | 26/07/2011   |              |     
+smarty31         | 3.1.13        | 16/01/2013   |              | [p] "smarty/smarty": "3.1.13"
+textwiki         |               |              |              |     
+vfsStream        |               |              |              |     "mikey179/vfsStream": "v1.1.0"
+xajax            | 0.5           | 26/01/2009   |              | [?] "phery/phery": "2.3.2"
+                 |               |              |              | 
+                 |               |              |              | 
