@@ -8,7 +8,7 @@ The 'Zend tag' value is the latest tag release of Zend on our release date.
 
 I've used the value of 'Zend tag' to discover the revision to peg to.
 
-Peg revisions are the last change to the /library/Zend folder
+Pegged revision suggestion is the last change to the /library/Zend folder.
 
 +-------------+-------------+-------+----------+-------------------+
 | Tiki Branch | Zend Branch | Zend  | Zend rev | Tiki release date |
@@ -64,13 +64,5 @@ Peg revisions are the last change to the /library/Zend folder
 | 10.1        | 1.12        | 1     | 25165    | 07/02/2013        |
 | 10.x        | 1.12        | 1     | 25165    |                   |
 +-------------+-------------+-------+----------+-------------------+
-| 11.x        | 2.0.? | ? |
-|             |  |  |
-|             |  |  |
-|  |  |  |
-|  |  |  |
-|  |  |  |
-|  |  |  |
-|  |  |  |
-|  |  |  |
-|  |  |  |
+| 11.x        | 2.0         | ?     |          |                   |
++-------------+-------------+-------+----------+-------------------+
