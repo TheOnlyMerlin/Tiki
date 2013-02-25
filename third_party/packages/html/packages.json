@@ -14,7 +14,14 @@
                 "type": "library",
                 "license": [
                     "BSD and LGPL"
-                ]
+                ],
+                "authors": [
+                    {
+                        "name": "John Lim",
+                        "email": "jlim@natsoft.com"
+                    }
+                ],
+                "homepage": "http://adodb.sourceforge.net"
             }
         },
         "phpcas/phpcas": {
@@ -31,7 +38,15 @@
                 "type": "library",
                 "license": [
                     "apache2"
-                ]
+                ],
+                "authors": [
+                    {
+                        "name": "Andrew Petro",
+                        "email": "apetro@unicon.net",
+                        "role": "Senior Software Engineer"
+                    }
+                ],
+                "homepage": "https://wiki.jasig.org/display/CASC/phpCAS"
             }
         },
         "phpseclib/phpseclib": {
@@ -141,8 +156,8 @@
                 "version": "1.12.1",
                 "version_normalized": "1.12.1.0",
                 "dist": {
-                    "type": "tar",
-                    "url": "http://packages.tiki.org/downloads/ZendFramework-1.12.1.tar.gz",
+                    "type": "zip",
+                    "url": "http://packages.tiki.org/downloads/tikiZF-1.12.1.zip",
                     "reference": null,
                     "shasum": null
                 },
