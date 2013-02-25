@@ -4,6 +4,9 @@
 	"homepage":"http://packages.tiki.org",
 	"repositories":[
 		{
+			"packagist": false
+		},
+		{
 			"type":"package",
 			"package":{
 				"name":"smarty/smarty",
