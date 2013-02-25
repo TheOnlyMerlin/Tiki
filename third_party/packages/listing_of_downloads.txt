@@ -1,12 +1,13 @@
 Index of http://packages.kstingel.com/downloads
 
+    adodb518a.tgz
     CAS-1.3.1.tgz
     CAS-1.3.2.tgz
-    Smarty-3.1.13.tar.gz
-    ZendFramework-1.12.1.tar.gz
-    adodb518a.tgz
     phpseclib0.3.1.zip
+    Smarty-3.1.13.tar.gz
     zend_manifest.txt
+    ZendFramework-1.12.1.tar.gz
+    tikiZF-1.12.1.zip
+    zf-1.12.1.zip
     zetacomponents-Base-1.8.zip
     zetacomponents-Webdav-1.1.3.zip
-    zf-1.12.1.zip
