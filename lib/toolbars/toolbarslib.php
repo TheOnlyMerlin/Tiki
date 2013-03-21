@@ -440,7 +440,6 @@ if (typeof window.CKEDITOR !== "undefined" && !window.CKEDITOR.plugins.get("{$na
 			var command = editor.addCommand( '{$name}', new window.CKEDITOR.command( editor , {
 				modes: { wysiwyg:1 },
 				exec: function (elem, editor, data) {
-				    CurrentEditorName=editor.name;
 					{$js}
 				},
 				canUndo: false
@@ -607,7 +606,7 @@ class ToolbarCkOnly extends Toolbar
 			return parent::getIconHtml();
 		}
 
-		$headerlib->add_cssfile('lib/ckeditor4/skins/kama/editor.css');
+		$headerlib->add_cssfile('lib/ckeditor/skins/kama/editor.css');
 		$cls = strtolower($this->wysiwyg);
 		$cls = str_replace(array('selectall', 'removeformat', 'spellchecker'), array('selectAll', 'removeFormat', 'checkspell'), $cls);	// work around some "features" in ckeditor icons.css
 		$headerlib->add_css(
@@ -1239,7 +1238,6 @@ if (typeof window.CKEDITOR !== "undefined" && !window.CKEDITOR.plugins.get("{$th
 			var command = editor.addCommand( '{$this->name}', new window.CKEDITOR.command( editor , {
 				modes: { wysiwyg:1 },
 				exec: function(elem, editor, data) {
-				    CurrentEditorName=editor.name;
 					{$this->getSyntax( $areaId )};
 				},
 				canUndo: false
@@ -1369,7 +1367,6 @@ if (typeof window.CKEDITOR !== "undefined" && !window.CKEDITOR.plugins.get("{$na
 			var command = editor.addCommand( '{$name}', new window.CKEDITOR.command( editor , {
 				modes: { wysiwyg:1 },
 				exec: function(elem, editor, data) {
-				    CurrentEditorName=editor.name;
 					$.openEditHelp();
 					return false;
 				},
@@ -1505,7 +1502,6 @@ if (typeof window.CKEDITOR !== "undefined" && !window.CKEDITOR.plugins.get("{$th
 			var command = editor.addCommand( '{$this->name}', new window.CKEDITOR.command( editor , {
 				modes: { wysiwyg:1 },
 				exec: function(elem, editor, data) {
-				    CurrentEditorName=editor.name;
 					switchEditor('wiki', $('#$areaId').parents('form')[0]);
 				},
 				canUndo: false
@@ -1670,6 +1666,9 @@ class ToolbarWikiplugin extends Toolbar
 			if ($this->wysiwyg === 'Image') {	// cke's own image tool overrides this so set it up to use our filegal
 				global $headerlib,  $smarty, $prefs;
 				// can't do upload the cke way yet
+				//$smarty->loadPlugin('smarty_function_filegal_manager_url');
+				//$url =  smarty_function_filegal_manager_url(array('area_id'=> 'fgal_picker'), $smarty);
+				//$headerlib->add_js('CKEDITOR.config.filebrowserUploadUrl = "'.$url.'"', 5);
 				$url = 'tiki-list_file_gallery.php?galleryId='.$prefs['home_file_gallery'].'&filegals_manager=fgal_picker';
 				$headerlib->add_js('if (typeof window.CKEDITOR !== "undefined") {window.CKEDITOR.config.filebrowserBrowseUrl = "'.$url.'"}', 5);
 			} else {
@@ -1684,7 +1683,7 @@ class ToolbarWikiplugin extends Toolbar
 	{
 		switch ($this->pluginName) {
 			case 'img':
-				$this->wysiwyg = 'wikiplugin_img';	// don't use ckeditor's html image dialog
+				$this->wysiwyg = '';	// don't use ckeditor's html image dialog
 				break;
 			default:
 		}
@@ -1949,14 +1948,12 @@ class ToolbarsList
 			foreach ( $line as $bit ) {
 				foreach ( $bit as $group) {
 					$group_count = 0;
-                    if ($isHtml) {
-					        foreach ( $group as $tag ) {
-								if ( $token = $tag->getWysiwygToken($areaId) ) {
-								    $lineOut[] = $token; $group_count++;
-							    }
-                            }
-					} else {
-                        foreach ( $group as $tag ) {
+					foreach ( $group as $tag ) {
+						if ($isHtml) {
+							if ( $token = $tag->getWysiwygToken($areaId) ) {
+								$lineOut[] = $token; $group_count++;
+							}
+						} else {
 							if ( $token = $tag->getWysiwygWikiToken($areaId) ) {
 								$lineOut[] = $token; $group_count++;
 							}

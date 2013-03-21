@@ -12,7 +12,7 @@
 					<td id="top_{$smarty.section.dn.index}" class="calHeading heading{if $today eq $viewWeekDays[dn]}On{/if}" width="13%">
 						<a href="{$myurl}?viewmode=day&amp;todate={$viewWeekDays[dn]}" title="{tr}View this Day{/tr}">
 							{$daysnames[dn]}
-						</a><br>
+						</a><br />
 						{* test display_field_order and use %d/%m or %m/%d on each day 'cell' *}
 						{if ($prefs.display_field_order eq 'DMY') || ($prefs.display_field_order eq 'DYM')
 							|| ($prefs.display_field_order eq 'YDM')}
@@ -78,7 +78,7 @@
 											{/if}
 										{/if}
 									>
-										<img src="img/icons/more_info.gif" alt="{tr}Details{/tr}">
+										<img src="img/icons/more_info.gif" alt="{tr}Details{/tr}" />
 									</a>
 								</span>
 								<abbr class="dtstart" title="{if $event.result.allday eq '1'}{tr}All day{/tr}{else}{$event.startTimeStamp|isodate}{/if}" {if $event.status eq '2'}style="text-decoration:line-through"{/if}>
@@ -99,7 +99,7 @@
 						>
 							<div style="position:absolute;top:50%;left:50%;margin-left:-40px;margin-top:-30px">
 								<a style="padding:0 3px;" href="{$myurl}?viewmode=day&todate={$viewWeekDays[weekday]}">
-									<img src="img/icons/multiple_cal.png" alt="{tr}Details{/tr}">
+									<img src="img/icons/multiple_cal.png" alt="{tr}Details{/tr}" />
 								</a>
 							</div>
 						</div>

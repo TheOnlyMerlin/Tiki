@@ -16,7 +16,7 @@ jQuery(document).ready(function(){
 
 	jQuery('#e_submit').click(function(e){
 		e.preventDefault();
-
+		
 		var dataString = dataMain+'&action=e_ref';
 		dataString += '&editreference=editreference';
 		dataString += '&ref_id='+encodeURIComponent(jQuery('#e_ref_id').val());
@@ -76,7 +76,7 @@ jQuery(document).ready(function(){
 
 	jQuery('#a_submit').click(function(e){
 		e.preventDefault();
-
+		
 		var ref_biblio_code = jQuery('#e_ref_biblio_code').val();
 		var ref_author = jQuery('#e_ref_author').val();
 		var ref_title = jQuery('#e_ref_title').val();
@@ -126,9 +126,9 @@ jQuery(document).ready(function(){
 				jQuery('#e_ref_publisher').val('');
 				jQuery('#e_ref_location').val('');
 				jQuery('#a_status').html('{tr}Bibliography saved.{/tr}');
-
+				
 				jQuery('#ref_list').show();
-
+				
 				var ref_id = data["id"];
 				var htm = '<li id="'+ref_id+'" style="border-bottom: 1px dotted #161C17;">';
 				htm += ref_biblio_code + '&nbsp;&nbsp;';
@@ -148,20 +148,20 @@ jQuery(document).ready(function(){
 		  }
 		});
 	});
-
+	
 	jQuery('#e_cancel, #a_cancel').click(function(){
 		jQuery('#ref_edit_block').hide();
 		jQuery('#ref_list').find('li').css('font-weight','normal');
 	});
-
-	jQuery('a.edit_ref').on('click', function(){
+	
+	jQuery('a.edit_ref').live('click', function(){
 		jQuery('#ref_list').find('li').css('font-weight','normal');
 		jQuery(this).parent().css('font-weight','bold');
 	});
-
+	
 	jQuery('#u_lib').click(function(e){
 		e.preventDefault();
-
+		
 		var ref_id = jQuery('#lib_ref').val();
 		var dataString = dataMain+'&action=u_lib';
 		dataString += '&ref_id='+encodeURIComponent(ref_id);
@@ -190,7 +190,7 @@ jQuery(document).ready(function(){
 				var ref_template = escape(data['ref_template']);
 				var ref_publisher = escape(data['ref_publisher']);
 				var ref_location = escape(data['ref_location']);
-
+				
 				var htm = '<li id="'+ref_id+'" style="border-bottom: 1px dotted #161C17;">';
 				htm += ref_biblio_code + '&nbsp;&nbsp;';
 				htm += '<a class="edit_ref" onclick="edit_ref('+ref_id+',\''+ref_biblio_code+'\', \''+ref_author+'\', \''+ref_title+'\', \''+ref_year+'\', \''+ref_part+'\', \''+ref_uri+'\', \''+ref_code+'\', \''+ref_style+'\', \''+ref_template+'\', \''+ref_publisher+'\', \''+ref_location+'\')" href="javascript:;" title="Edit" alt="Edit">' + '<img width="16" height="16" class="icon" title="Edit" alt="Edit" src="img/icons/pencil.png"></a>';
@@ -229,10 +229,10 @@ function add_ref(){
 	jQuery('#e_ref_publisher').val('');
 	jQuery('#e_ref_location').val('');
 }
-
+	
 function add_lib(ref_id, biblio_code, ref_author, ref_title, ref_year, ref_part, ref_uri, ref_code, ref_style, ref_template, ref_publisher, ref_location){
 	jQuery('#ref_list').find('li').css('font-weight','normal');
-
+	
 	var c = confirm('Are you sure you want to add this reference to library?');
 	if(!c){
 		return false;
@@ -274,12 +274,12 @@ function add_lib(ref_id, biblio_code, ref_author, ref_title, ref_year, ref_part,
 	  }
 	});
 }
-
+	
 function edit_ref(ref_id, biblio_code, ref_author, ref_title, ref_year, ref_part, ref_uri, ref_code, ref_style, ref_template, ref_publisher, ref_location){
 	jQuery('#ref_list').find('li').css('font-weight','normal');
 	jQuery('#ref_edit_block').show();
 	jQuery('#e_btns').show();
-	jQuery('#a_btns').hide();
+	jQuery('#a_btns').hide();	
 	jQuery('#e_status').html('');
 
 	jQuery('#e_ref_id').val(ref_id);
@@ -294,13 +294,13 @@ function edit_ref(ref_id, biblio_code, ref_author, ref_title, ref_year, ref_part
 	jQuery('#e_ref_template').val(unescape(ref_template));
 	jQuery('#e_ref_publisher').val(unescape(ref_publisher));
 	jQuery('#e_ref_location').val(unescape(ref_location));
-
+	
 	return false;
 }
 function delete_ref(ref_id){
 
 	var c = confirm('Are you sure you want to delete this bibliography?');
-
+	
 	if(c){
 		var dataString = dataMain+'&action=e_del';
 		dataString += '&ref_id='+encodeURIComponent(ref_id);
@@ -345,83 +345,83 @@ function delete_ref(ref_id){
 				</li>
 			{/section}
 			</ul>
-
+			
 			{if $use_references eq 1}
 				{if $libReferencesCant gt 0}
-					{tr}Library References{/tr}:<br>
+					{tr}Library References{/tr}:<br />
 					<select name="lib_ref" id="lib_ref">
 						{section name=i loop=$libReferences}
 							<option value="{$libReferences[i].ref_id|escape}">{$libReferences[i].biblio_code|escape}</option>
 						{/section}
 					</select>
-					<br>
-					<input class="wikiaction" type="submit" value="{tr}Use{/tr}" id="u_lib" name="u_lib">
-					<br><span id="u_lib_status"></span>
+					<br />
+					<input class="wikiaction" type="submit" value="{tr}Use{/tr}" id="u_lib" name="u_lib" />
+					<br /><span id="u_lib_status"></span>
 				{/if}
 			{/if}
 			{if $edit_references eq 1 && $libReferencesCant gt 0}
-				<br><a href="tiki-references.php" target="_blank">{tr}Edit Library References{/tr}</a>
+				<br /><a href="tiki-references.php" target="_blank">{tr}Edit Library References{/tr}</a>
 			{/if}
 
 		</td>
-
+		
 		<td id="ref_edit_block" style="display:none;">
 			<div>
-				<input type="hidden" name="e_ref_id" id="e_ref_id" value="">
-				<input type="hidden" name="page" value="{$page|escape}">
+				<input type="hidden" name="e_ref_id" id="e_ref_id" value="" />
+				<input type="hidden" name="page" value="{$page|escape}" />
 				<table class="formcolor">
 					<tr>
 						<td>{tr}Biblio Code{/tr}:</td>
-						<td><input type="text" size="30"  class="wikiedit" name="e_ref_biblio_code" id="e_ref_biblio_code" maxlength="50" value=""></td>
+						<td><input type="text" size="30"  class="wikiedit" name="e_ref_biblio_code" id="e_ref_biblio_code" maxlength="50" value="" /></td>
 					</tr>
 					<tr>
 						<td>{tr}Author{/tr}:</td>
-						<td><input type="text" size="30"  class="wikiedit" name="e_ref_author" id="e_ref_author" value=""></td>
+						<td><input type="text" size="30"  class="wikiedit" name="e_ref_author" id="e_ref_author" value="" /></td>
 					</tr>
 					<tr>
 						<td>{tr}Title{/tr}:</td>
-						<td><input type="text" size="30"  class="wikiedit" name="e_ref_title" id="e_ref_title" value=""></td>
+						<td><input type="text" size="30"  class="wikiedit" name="e_ref_title" id="e_ref_title" value="" /></td>
 					</tr>
 					<tr>
 						<td>{tr}Year{/tr}:</td>
-						<td><input type="text" size="30"  class="wikiedit" name="e_ref_year" id="e_ref_year" value=""></td>
+						<td><input type="text" size="30"  class="wikiedit" name="e_ref_year" id="e_ref_year" value="" /></td>
 					</tr>
 					<tr>
 						<td>{tr}Part{/tr}:</td>
-						<td><input type="text" size="30"  class="wikiedit" name="e_ref_part" id="e_ref_part" value=""></td>
+						<td><input type="text" size="30"  class="wikiedit" name="e_ref_part" id="e_ref_part" value="" /></td>
 					</tr>
 					<tr>
 						<td>{tr}URI{/tr}:</td>
-						<td><input type="text" size="30"  class="wikiedit" name="e_ref_uri" id="e_ref_uri" value=""></td>
+						<td><input type="text" size="30"  class="wikiedit" name="e_ref_uri" id="e_ref_uri" value="" /></td>
 					</tr>
 					<tr>
 						<td>{tr}Code{/tr}:</td>
-						<td><input type="text" size="30"  class="wikiedit" name="e_ref_code" id="e_ref_code" value=""></td>
+						<td><input type="text" size="30"  class="wikiedit" name="e_ref_code" id="e_ref_code" value="" /></td>
 					</tr>
 					<tr>
 						<td>{tr}Publisher{/tr}:</td>
-						<td><input type="text" size="30"  class="wikiedit" name="e_ref_publisher" id="e_ref_publisher" value=""></td>
+						<td><input type="text" size="30"  class="wikiedit" name="e_ref_publisher" id="e_ref_publisher" value="" /></td>
 					</tr>
 					<tr>
 						<td>{tr}Location{/tr}:</td>
-						<td><input type="text" size="30"  class="wikiedit" name="e_ref_location" id="e_ref_location" value=""></td>
+						<td><input type="text" size="30"  class="wikiedit" name="e_ref_location" id="e_ref_location" value="" /></td>
 					</tr>
 					<tr>
 						<td>{tr}Style{/tr}:</td>
 						<td>
-							<input type="text" size="30"  class="wikiedit" name="e_ref_style" id="e_ref_style" value="">
-							<br>
+							<input type="text" size="30"  class="wikiedit" name="e_ref_style" id="e_ref_style" value="" />
+							<br />
 							<small>{tr}Enter the CSS class name to be added in the 'li' tag for listing this reference.{/tr}</small>
 						</td>
 					</tr>
 					<tr>
 						<td>{tr}Template{/tr}:</td>
 						<td>
-							<input type="text" size="30"  class="wikiedit" name="e_ref_template" id="e_ref_template" value="">
-							<br>
+							<input type="text" size="30"  class="wikiedit" name="e_ref_template" id="e_ref_template" value="" />
+							<br />
 							<small>
 								{tr}Enter template format in which you want to display the reference details in the bibliography listing. For example{/tr}: ~title~ (~year~) ~author~
-								<br>
+								<br />
 								{tr}All the codes must be in lower case letters separated with spaces.{/tr}
 							</small>
 						</td>
@@ -429,13 +429,13 @@ function delete_ref(ref_id){
 					<tr>
 						<td colspan="2">
 							<div id="e_btns">
-								<input class="wikiaction" type="submit" value="Save" id="e_submit" name="e_submit">
-								<input class="wikiaction" type="reset" value="Cancel" id="e_cancel" name="e_cancel">
+								<input class="wikiaction" type="submit" value="Save" id="e_submit" name="e_submit" />
+								<input class="wikiaction" type="reset" value="Cancel" id="e_cancel" name="e_cancel" />
 								<span id="e_status" style="margin: 0 0 0 10px;"></span>
 							</div>
 							<div id="a_btns">
-								<input class="wikiaction" type="submit" value="{tr}Add{/tr}" id="a_submit" name="a_submit">
-								<input class="wikiaction" type="reset" value="{tr}Cancel{/tr}" id="a_cancel" name="a_cancel">
+								<input class="wikiaction" type="submit" value="{tr}Add{/tr}" id="a_submit" name="a_submit" />
+								<input class="wikiaction" type="reset" value="{tr}Cancel{/tr}" id="a_cancel" name="a_cancel" />
 								<span id="a_status" style="margin: 0 0 0 10px;"></span>
 							</div>
 						</td>

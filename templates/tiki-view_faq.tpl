@@ -70,12 +70,12 @@
 {if $faq_info.canSuggest eq 'y' and $tiki_p_suggest_faq eq 'y'}
 	<div class="faq_suggestions" id="faqsugg" style="display:{if !empty($error)}block{else}none{/if};">
 		{if !empty($error)}
-			<br>
+			<br />
 			<div class="simplebox highlight">{icon _id=exclamation alt="{tr}Error{/tr}" style="vertical-align:middle"} {$error}</div>
 		{/if}
-		<br>
+		<br />
 		<form action="tiki-view_faq.php" method="post">
-			<input type="hidden" name="faqId" value="{$faqId|escape}">
+			<input type="hidden" name="faqId" value="{$faqId|escape}" />
 			<table class="formcolor">
 				<tr>
 					<td>{tr}Question:{/tr}</td>
@@ -97,13 +97,13 @@
 				<tr>
 					<td>&nbsp;</td>
 					<td>
-						<input type="submit" name="sugg" value="{tr}Add{/tr}">
+						<input type="submit" name="sugg" value="{tr}Add{/tr}" />
 					</td>
 				</tr>
 			</table>
 		</form>
 		{if count($suggested) != 0}
-			<br>
+			<br />
 			<table class="normal">
 				<tr>
 					<th>{tr}Suggested questions{/tr}</th>

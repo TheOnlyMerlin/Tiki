@@ -11,20 +11,10 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- *
- */
 class AdminLib extends TikiLib
 {
 
-    /**
-     * @param $offset
-     * @param $maxRecords
-     * @param $sort_mode
-     * @param $find
-     * @return array
-     */
-    function list_dsn($offset, $maxRecords, $sort_mode, $find)
+	function list_dsn($offset, $maxRecords, $sort_mode, $find)
 	{
 
 		$bindvars=array();
@@ -53,13 +43,7 @@ class AdminLib extends TikiLib
 		return $retval;
 	}
 
-    /**
-     * @param $dsnId
-     * @param $dsn
-     * @param $name
-     * @return bool
-     */
-    function replace_dsn($dsnId, $dsn, $name)
+	function replace_dsn($dsnId, $dsn, $name)
 	{
 		// Check the name
 		if ($dsnId) {
@@ -78,11 +62,7 @@ class AdminLib extends TikiLib
 		return true;
 	}
 
-    /**
-     * @param $dsnId
-     * @return bool
-     */
-    function remove_dsn($dsnId)
+	function remove_dsn($dsnId)
 	{
 		$info = $this->get_dsn($dsnId);
 
@@ -91,11 +71,7 @@ class AdminLib extends TikiLib
 		return true;
 	}
 
-    /**
-     * @param $dsnId
-     * @return bool
-     */
-    function get_dsn($dsnId)
+	function get_dsn($dsnId)
 	{
 		$query = "select * from `tiki_dsn` where `dsnId`=?";
 
@@ -108,11 +84,7 @@ class AdminLib extends TikiLib
 		return $res;
 	}
 
-    /**
-     * @param $dsnName
-     * @return bool
-     */
-    function get_dsn_from_name($dsnName)
+	function get_dsn_from_name($dsnName)
 	{
 		$query = "select * from `tiki_dsn` where `name`=?";
 
@@ -125,14 +97,7 @@ class AdminLib extends TikiLib
 		return $res;
 	}
 
-    /**
-     * @param $offset
-     * @param $maxRecords
-     * @param $sort_mode
-     * @param $find
-     * @return array
-     */
-    function list_extwiki($offset, $maxRecords, $sort_mode, $find)
+	function list_extwiki($offset, $maxRecords, $sort_mode, $find)
 	{
 		$bindvars=array();
 		if ($find) {
@@ -160,13 +125,7 @@ class AdminLib extends TikiLib
 		return $retval;
 	}
 
-    /**
-     * @param $extwikiId
-     * @param $extwiki
-     * @param $name
-     * @return bool
-     */
-    function replace_extwiki($extwikiId, $extwiki, $name)
+	function replace_extwiki($extwikiId, $extwiki, $name)
 	{
 		// Check the name
 		if ($extwikiId) {
@@ -183,11 +142,7 @@ class AdminLib extends TikiLib
 		return true;
 	}
 
-    /**
-     * @param $extwikiId
-     * @return bool
-     */
-    function remove_extwiki($extwikiId)
+	function remove_extwiki($extwikiId)
 	{
 		$info = $this->get_extwiki($extwikiId);
 
@@ -196,11 +151,7 @@ class AdminLib extends TikiLib
 		return true;
 	}
 
-    /**
-     * @param $extwikiId
-     * @return bool
-     */
-    function get_extwiki($extwikiId)
+	function get_extwiki($extwikiId)
 	{
 		$query = "select * from `tiki_extwiki` where `extwikiId`=?";
 
@@ -333,11 +284,7 @@ class AdminLib extends TikiLib
 		}
 	}
 
-    /**
-     * @param $tag
-     * @return mixed
-     */
-    function tag_exists($tag)
+	function tag_exists($tag)
 	{
 		$query = "select distinct `tagName` from `tiki_tags` where `tagName` = ?";
 
@@ -345,11 +292,7 @@ class AdminLib extends TikiLib
 		return $result->numRows($result);
 	}
 
-    /**
-     * @param $tagname
-     * @return bool
-     */
-    function remove_tag($tagname)
+	function remove_tag($tagname)
 	{
 		global $prefs;
 
@@ -360,10 +303,7 @@ class AdminLib extends TikiLib
 		return true;
 	}
 
-    /**
-     * @return array
-     */
-    function get_tags()
+	function get_tags()
 	{
 		$query = "select distinct `tagName` from `tiki_tags`";
 
@@ -379,12 +319,7 @@ class AdminLib extends TikiLib
 
 	// This function can be used to store the set of actual pages in the "tags"
 	// table preserving the state of the wiki under a tag name.
-    /**
-     * @param $tagname
-     * @param string $comment
-     * @return bool
-     */
-    function create_tag($tagname, $comment = '')
+	function create_tag($tagname, $comment = '')
 	{
 		global $prefs;
 
@@ -424,11 +359,7 @@ class AdminLib extends TikiLib
 
 	// This funcion recovers the state of the wiki using a tagName from the
 	// tags table
-    /**
-     * @param $tagname
-     * @return bool
-     */
-    function restore_tag($tagname)
+	function restore_tag($tagname)
 	{
 		global $prefs;
 

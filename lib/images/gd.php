@@ -7,21 +7,13 @@
 
 require_once('lib/images/abstract.php');
 
-/**
- *
- */
 class Image extends ImageAbstract
 {
 	var $gdinfo;
 	var $gdversion;
 	var $havegd = false;
 
-    /**
-     * @param $image
-     * @param bool $isfile
-     * @param string $format
-     */
-    function __construct($image, $isfile = false, $format = 'jpeg')
+	function __construct($image, $isfile = false, $format = 'jpeg') 
 	{
 
 		// Which GD Version do we have?
@@ -69,32 +61,23 @@ class Image extends ImageAbstract
 				$this->data = imagecreatefromstring($this->data);
 				$this->loaded = true;
 			} else {
-				parent::_load_data();
+				$this->data = null;
 			}
 		}
 	}
 
-    /**
-     * @param $x
-     * @param $y
-     */
-    function _resize($x, $y)
+	function _resize($x, $y) 
 	{
 		if ($this->data) {
-			if ($this->format == 'svg') {
-				$svgAttributes = ' width="' . $x . '" height="' . $y . '" viewBox="0 0 ' . $this->width . ' ' . $this->height . '" preserveAspectRatio="xMinYMin meet"';
-				$this->data = preg_replace('/width="'.$this->width.'" height="'.$this->height.'"/', $svgAttributes, $this->data);
-			} else {
-				$t = imagecreatetruecolor($x, $y);
-				// trick to have a transparent background for png instead of black
-				imagesavealpha($t, true);
-				$trans_colour = imagecolorallocatealpha($t, 0, 0, 0, 127);
-				imagefill($t, 0, 0, $trans_colour);
+			$t = imagecreatetruecolor($x, $y);
+			// trick to have a transparent background for png instead of black
+			imagesavealpha($t, true);			
+			$trans_colour = imagecolorallocatealpha($t, 0, 0, 0, 127);
+			imagefill($t, 0, 0, $trans_colour);
 
-				imagecopyresampled($t, $this->data, 0, 0, 0, 0, $x, $y, $this->get_width(), $this->get_height());
-				$this->data = $t;
-				unset($t);
-			}
+			imagecopyresampled($t, $this->data, 0, 0, 0, 0, $x, $y, $this->get_width(), $this->get_height());
+			$this->data = $t;
+			unset($t);
 		}
 	}
 
@@ -109,10 +92,7 @@ class Image extends ImageAbstract
 		return parent::resizethumb();
 	}
 
-    /**
-     * @return null|string
-     */
-    function display()
+	function display() 
 	{
 
 		$this->_load_data();
@@ -133,9 +113,6 @@ class Image extends ImageAbstract
 				case 'wbmp':
 					imagewbmp($this->data);
     				break;
-				case 'svg':
-					echo $this->data;
-    				break;
 				default:
 					ob_end_clean();
 					return NULL;
@@ -149,11 +126,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-    /**
-     * @param $angle
-     * @return bool
-     */
-    function rotate($angle)
+	function rotate($angle) 
 	{
 		$this->_load_data();
 		if ($this->data) {
@@ -164,10 +137,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-    /**
-     * @return array
-     */
-    function get_gdinfo()
+	function get_gdinfo() 
 	{
 		$gdinfo = array();
 		$gdversion = '';
@@ -197,11 +167,7 @@ class Image extends ImageAbstract
 	}
 
 	// This method do not need to be called on an instance
-    /**
-     * @param $format
-     * @return bool|int
-     */
-    function is_supported($format)
+	function is_supported($format) 
 	{
 
 		if ( ! function_exists('imagetypes') ) {
@@ -240,26 +206,15 @@ class Image extends ImageAbstract
 				} else {
 					return ( imagetypes() & IMG_XPM );
 				}
-			case 'svg':
-				return true;
 		}
 
 		return false;
 	}
 
-    /**
-     * @return int|null
-     */
-    function _get_height()
+	function _get_height() 
 	{
 		if ($this->loaded && $this->data) {
-			if ($this->format == 'svg') {
-				if (preg_match('/height="(\d+)"/', $this->data, $match)) {
-					return $match[1];
-				}
-			} else {
-				return imagesy($this->data);
-			}
+			return imagesy($this->data);
 		} else if ($this->height) {
 			return $this->height;
 		} else if ($this->filename) {
@@ -276,19 +231,10 @@ class Image extends ImageAbstract
 		}
 	}
 
-    /**
-     * @return int|null
-     */
-    function _get_width()
+	function _get_width() 
 	{
 		if ($this->loaded && $this->data) {
-			if ($this->format == 'svg') {
-				if (preg_match('/width="(\d+)"/', $this->data, $match)) {
-					return $match[1];
-				}
-			} else {
-				return imagesx($this->data);
-			}
+			return imagesx($this->data);
 		} else if ($this->width) {
 			return $this->width;
 		} else if ($this->filename) {

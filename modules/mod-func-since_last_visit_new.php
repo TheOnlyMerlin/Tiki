@@ -11,9 +11,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_since_last_visit_new_info()
 {
 	return array(
@@ -49,22 +46,11 @@ function module_since_last_visit_new_info()
 				'description' => tra('Instead of the last login time, go back this minimum time, specified in days, in case the last login time is more recent.') . ' ' . tra('Default value:') . ' "0"',
 				'filter' => 'int'
 			),
-			'commentlength' => array(
-				'name' => tra('Maximum comment length'),
-				'description' => tra("If comments don't use titles this sets the maximum length for the comment snippet."),
-				'filter' => 'digits',
-				'default' => 40,
-			),
 		),
 		'common_params' => array('nonums', 'rows'),
 	);
 }
 
-/**
- * @param $mod_reference
- * @param null $params
- * @return bool
- */
 function module_since_last_visit_new($mod_reference, $params = null)
 {
 	global $smarty, $user;
@@ -95,9 +81,6 @@ function module_since_last_visit_new($mod_reference, $params = null)
 		$smarty->assign('opposite_folding', 'block');
 	}
 
-	if (empty($params['commentlength'])) {
-		$params['commentlength'] = 40;
-	}
 
 	$resultCount = $mod_reference['rows'];
 
@@ -137,7 +120,7 @@ function module_since_last_visit_new($mod_reference, $params = null)
 	$ret['items']['comments']['cname'] = 'slvn_comments_menu';
 
 	//TODO: should be a function on commentslib.php or use one of the existent functions
-	$query = 'select `object`,`objectType`,`title`,`commentDate`,`userName`,`threadId`, `parentId`, `approved`, `archived`, `data`' .
+	$query = 'select `object`,`objectType`,`title`,`commentDate`,`userName`,`threadId`, `parentId`, `approved`, `archived`' .
 					" from `tiki_comments` where `commentDate`>? and `objectType` != 'forum' order by `commentDate` desc";
 	$result = $tikilib->query($query, array((int) $last), $resultCount);
 
@@ -197,7 +180,7 @@ function module_since_last_visit_new($mod_reference, $params = null)
 		if ($visible) {
 			require_once('lib/smarty_tiki/modifier.username.php');
 			$ret['items']['comments']['list'][$count]['title'] = $tikilib->get_short_datetime($res['commentDate']) .' '. tra('by') .' '. smarty_modifier_username($res['userName']);
-			$ret['items']['comments']['list'][$count]['label'] = TikiLib::lib('comments')->process_comment_title($res, $params['commentlength']);;
+			$ret['items']['comments']['list'][$count]['label'] = $res['title'];
 
 			if ($res['archived'] == 'y') {
 				$ret['items']['comments']['list'][$count]['label'] .= tra(' (archived)');

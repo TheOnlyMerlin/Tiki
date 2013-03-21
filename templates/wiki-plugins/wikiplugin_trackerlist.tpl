@@ -29,7 +29,7 @@
 	<div class="trackerlistsort">
 		<form method="post">
 			{include file='tracker_sort_input.tpl'}
-			<input type="submit" name="sort" value="{tr}Sort{/tr}">
+			<input type="submit" name="sort" value="{tr}Sort{/tr}" />
 		</form>
 	</div>
 {/if}
@@ -147,8 +147,8 @@ the section loop so that the vars are not replaced by nested pretty tracker exec
 		{elseif $checkbox}
 			{if $checkbox.tpl}{include file="$checkbox.tpl"}{/if}
 			{if !empty($checkbox.submit) and !empty($checkbox.title)}
-				<br>
-				<input type="submit" name="{$checkbox.submit}" value="{tr}{$checkbox.title}{/tr}">
+				<br />
+				<input type="submit" name="{$checkbox.submit}" value="{tr}{$checkbox.title}{/tr}" />
 			{/if}
 			</form>
 		{/if}
@@ -203,7 +203,7 @@ the section loop so that the vars are not replaced by nested pretty tracker exec
 
 	<tr class="{cycle}">
 			{if $checkbox}
-		<td><input type="{$checkbox.type}" name="{$checkbox.name}[]" value="{if $checkbox.ix > -1}{$items[user].field_values[$checkbox.ix].value|escape}{else}{$items[user].itemId}{/if}"></td>
+		<td><input type="{$checkbox.type}" name="{$checkbox.name}[]" value="{if $checkbox.ix > -1}{$items[user].field_values[$checkbox.ix].value|escape}{else}{$items[user].itemId}{/if}" /></td>
 			{/if}
 			{if ($showstatus ne 'n') and ($tracker_info.showStatus eq 'y' or ($tracker_info.showStatusAdminOnly eq 'y' and $tiki_p_admin_trackers eq 'y'))}
 		<td class="auto" style="width:20px;">
@@ -248,7 +248,8 @@ the section loop so that the vars are not replaced by nested pretty tracker exec
 			{/if}
 			{if $tracker_info.useAttachments eq 'y' and $tracker_info.showAttachments eq 'y'}
 		<td style="text-align:center;"><a href="tiki-view_tracker_item.php?trackerId={$listTrackerId}&amp;itemId={$items[user].itemId}&amp;show=att" 
-link="{tr}List Attachments{/tr}"><img src="img/icons/folderin.gif" alt="{tr}List Attachments{/tr}"></a>{$items[user].attachments}</td>
+link="{tr}List Attachments{/tr}"><img src="img/icons/folderin.gif" alt="{tr}List Attachments{/tr}" 
+/></a>{$items[user].attachments}</td>
 			{/if}
 			{if ($showdelete eq 'y' || $showpenditem eq 'y' || $showopenitem eq 'y' || $showcloseitem eq 'y') && ($tiki_p_admin_trackers eq 'y' or $perms.tiki_p_remove_tracker_items eq 'y' or $perms.tiki_p_remove_tracker_items_pending eq 'y' or $perms.tiki_p_remove_tracker_items_closed eq 'y')}
 		<td>

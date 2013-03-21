@@ -386,7 +386,6 @@ input[type="password"],
 input[type="file"],
 input[type="email"],
 input[type="file"],
-input[type="search"],
 input[type="number"],
 input#login-pass,
 textarea,
@@ -613,19 +612,16 @@ select {
 	-moz-border-radius-topleft: 5px;
 	-moz-border-radius-topright: 5px;
 }
-.siteloginbar_poppedup .tabcontent {
-	box-shadow: 0 5px 5px -3px rgba(0, 0, 0, .5);
-}
 
-.siteloginbar_popup ul.clearfix #register_link {
+.siteloginbar_popup .cssmenu_horiz #register_link {
 	background-color: #969696;
 }
 
-.siteloginbar_popup ul.clearfix .tabmark {
+.siteloginbar_popup .cssmenu_horiz .tabmark {
 	background-color: #070707;
 }
 
-.siteloginbar_poppedup li.tabcontent {
+.siteloginbar_poppedup li {
 	border-radius: 5px;
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
@@ -676,7 +672,7 @@ a.login_link {
 	text-transform: uppercase;
 /*	margin-bottom: -1px !important;*/
 }
-.siteloginbar_popup ul.clearfix ul {
+.siteloginbar_popup .cssmenu_horiz ul {
 	margin-top: -2px;
 }
 
@@ -977,14 +973,12 @@ form .normal,
 }
 
 .odd,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+table.normal tr:nth-child(2n+1) {
 	background: #e3f7fb;
 }
 
 .even,
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+table.normal tr:nth-child(2n) {
 	background: #d6f3fa;
 }
 
@@ -1277,11 +1271,6 @@ a.dirsublink {
 .cluetip-default #cluetip-title a {
 	color: #CBF4FA;
 }
-
-/* fake 'transparent' theme (for ClueTip login box popup) */
-/*.cluetip-transparent {
-	top: 168px !important;
-}*/
   
 
 /***** End New (unsorted) *****/

@@ -388,21 +388,12 @@ class StructLib extends TikiLib
 	*/
 	public function get_structure_path($page_ref_id)
 	{
-		global $prefs;
 		$structure_path = array();
 		$page_info = $this->s_get_page_info($page_ref_id);
 		if ($page_info['parent_id']) {
 			$structure_path = $this->get_structure_path($page_info['parent_id']);
 		}
 		$structure_path[] = $page_info;
-		foreach ($structure_path as $key => $value) {
-			if ($prefs['namespace_indicator_in_structure'] === 'y' && !empty($prefs['namespace_separator'])
-				&& strpos($value['pageName'], $prefs['namespace_separator']) !== false) {
-				$structure_path[$key]['stripped_pageName'] = end(explode($prefs['namespace_separator'], $value['pageName']));
-			} else {
-				$structure_path[$key]['stripped_pageName'] = $value['pageName'];
-			}
-		}
 		return $structure_path;
 	}
 	/* get all the users that watches a page or a page above */
@@ -557,7 +548,7 @@ class StructLib extends TikiLib
 	// the $tocPrefix can be used to Prefix a subtree as it would start from a given number (e.g. 2.1.3)
 	public function build_subtree_toc($id,$slide=false,$order='asc',$tocPrefix='')
 	{
-		global $user, $tikilib, $prefs;
+		global $user, $tikilib;
 		$ret = array();
 		$cant = $this->getOne('select count(*) from `tiki_structures` where `parent_id`=?', array((int) $id));
 		if ($cant) {
@@ -599,15 +590,6 @@ class StructLib extends TikiLib
 			while ($res = $result->fetchRow()) {
 				if (!$tikilib->user_has_perm_on_object($user, $res['pageName'], 'wiki page', 'tiki_p_view') ) {
 					continue;
-				}
-
-				if ($prefs['namespace_indicator_in_structure'] === 'y'
-					&& !empty($prefs['namespace_separator'])
-					&& !empty($res['pageName'])
-					&& strpos($res['pageName'], $prefs['namespace_separator']) !== false) {
-					$res['short_pageName'] = end(explode($prefs['namespace_separator'], $res['pageName']));
-				} else {
-					$res['short_pageName'] =  $res['pageName'];
 				}
 				$res['prefix']=($tocPrefix=='')?'':"$tocPrefix.";
 				$res['prefix'].=$prefix;
@@ -1076,10 +1058,10 @@ class StructLib extends TikiLib
 					if (!in_array($word, $words)) {
 						$words[] = $word;
 						$index[$word]=Array();
-					}
+	      		}
 					if (!in_array($res['pageName'].'|'.$res['description'], $index[$word])) {
 						$index[$word][] = $res['pageName'].'|'.$res['description'];
-					}
+	      		}
 	    		}
 	  		}
 		}
@@ -1166,7 +1148,7 @@ class StructLib extends TikiLib
 				if (isset($name) && isset($link)) {
 					$pageName = $link;
 					$pages[] = $pageName;
-				}
+			   }
 				$pages2 = $this->traverse2($node);
 				foreach ($pages2 as $elem) {
 					$pages[] = $elem;
@@ -1196,7 +1178,7 @@ class StructLib extends TikiLib
 		}
 	}
 	/* transform a structure into a menu */
-	public function to_menu($channels, $structure, $sectionLevel=0, $cumul=0, $params=array())
+	public function to_menu($channels, $structure, $sectionLevel=0, $cumul=0)
 	{
 		global $smarty;
 		include_once('lib/smarty_tiki/function.sefurl.php');
@@ -1215,11 +1197,7 @@ class StructLib extends TikiLib
 					}
 				}
 			}
-			$pageName = $channel['pageName'];
-			if (isset($params['show_namespace']) && $params['show_namespace'] === 'n') {
-				$pageName = !empty($channel['short_pageName']) ? $channel['short_pageName'] : $channel['pageName'];
-			}
-			$option['name'] = empty($channel['page_alias'])? $pageName: $channel['page_alias'];	
+			$option['name'] = empty($channel['page_alias'])? $channel['pageName']: $channel['page_alias'];
 			$option['type'] = empty($channel['sub'])? 'o': ($sectionLevel?$sectionLevel:'s');
 			$option['url'] = smarty_function_sefurl(array('page'=>$channel['pageName'], 'structure'=>$structure, 'page_ref_id'=>$channel['page_ref_id'], 'sefurl'=>'n'), $smarty);
 			$option['canonic'] = '(('.$channel['pageName'].'))';
@@ -1242,4 +1220,4 @@ class StructLib extends TikiLib
 		return array('data'=>$options, 'cant'=>$cant);
 	}
 }
-global $structlib; $structlib = new StructLib;
+$structlib = new StructLib;

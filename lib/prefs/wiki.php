@@ -251,12 +251,8 @@ function prefs_wiki_list($partial = false)
 			'default' => 'n',
 		),
 		'wiki_edit_minor' => array(
-			'name' => tra('Allow minor edits of wiki pages'),
+			'name' => tra('Allow minor edits'),
 			'type' => 'flag',
-			'description' => tra('Minor edits do not flag new content for translation and do not send watch notifications (unless "Watch minor edits" is enabled).'),			
-			'permission' => array(
-				'textFilter' => 'tiki_p_minor',
-			),		
 			'default' => 'n',
 		),
 		'wiki_comments_displayed_default' => array(
@@ -679,18 +675,6 @@ function prefs_wiki_list($partial = false)
 				'feature_semantic', // this is needed at point of creation of semantic link otherwise link will not register
 			),
 			'default' => '',
-		),
-		'wiki_pagination' => array(
-			'name' => tr('Wiki Pagination'),
-			'description' => tr('Allows to separate a wiki page into a paginated page using a separator.'),
-			'type' => 'flag',
-			'default' => 'n',
-		),
-		'wiki_page_separator' => array(
-			'name' => tr('Wiki page separator'),
-			'description' => tr('Separator used within the content of a wiki page to split the content.'),
-			'type' => 'text',
-			'default' => '...page...',
 		),
 	);
 }

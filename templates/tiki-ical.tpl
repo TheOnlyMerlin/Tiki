@@ -1,15 +1,15 @@
 <h2>{tr}Ical import / Export{/tr}</h2>
-<hr>
+<hr />
 <h3>{tr}Select The calendar to export{/tr}</h3>
 <form class="forms" method="get" action="tiki-ical.php">
-    <input  name="export" type="hidden"  value="y">
+    <input  name="export" type="hidden"  value="y" />
     <select name="calendarId">
     	{foreach item=lc from=$calendars}
 		<option value="{$lc.calendarId}">{$lc.name}</option>
 	{/foreach}
     </select>
-   <br>{tr}From:{/tr}  
-   <input type="hidden" name="tstart" id="tstart" value="{$tstart|escape}">
+   <br />{tr}From:{/tr}  
+   <input type="hidden" name="tstart" id="tstart" value="{$tstart|escape}" />
    <span id="tstartl" class="daterow" style="padding:0; margin:0">Click</span>
 {jq}
    {literal}
@@ -23,8 +23,8 @@
 	});
     {/literal}
 {/jq}
-    <br> {tr}To{/tr} :
-    <input type="hidden" name="tstop" id="tstop" value="{$tstop|escape}">
+    <br /> {tr}To{/tr} :
+    <input type="hidden" name="tstop" id="tstop" value="{$tstop|escape}" />
     <span id="tstopl" class="daterow" style="padding:0; margin:0">Click</span>
 {jq}
     {literal}
@@ -38,13 +38,13 @@
 	});
     {/literal}
 {/jq}
-    <br>
-   <input  class="wikiaction"  value="export" type="submit">
+    <br />
+   <input  class="wikiaction"  value="export" type="submit" />
 </form>
-    <br><br>
+    <br /><br />
 
 
-<hr>
+<hr />
 <h3>{tr}Calendar Import{/tr}</h3>
 {if $updated}
 {tr}Calendar has been updated{/tr}
@@ -60,12 +60,12 @@
 </td></tr>
 <tr><td>{tr}ICal File{/tr}
 </td><td>
-<input type="file" name="fileICS" size="50">
-<input type="submit" name="import" value="{tr}import{/tr}">
+<input type="file" name="fileICS" size="50" />
+<input type="submit" name="import" value="{tr}import{/tr}" />
 </td></tr></table>
 </form>
 <p>{$filedata}</p>
-<hr>
+<hr />
 <p>{$iCal}</p>
-<hr>
+<hr />
 

@@ -5,9 +5,6 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-/**
- *
- */
 class ImageAbstract
 {
 	var $data = NULL;
@@ -19,12 +16,8 @@ class ImageAbstract
 	var $thumb = null;
 	var $loaded = false;
 	var $metadata = null;			//to hold metadata from the FileMetadata class
-
-    /**
-     * @param $image
-     * @param bool $isfile
-     */
-    function __construct($image, $isfile = false)
+	
+	function __construct($image, $isfile = false)
 	{
 		if ( ! empty($image) || $this->filename !== null ) {
 			if ( is_readable($this->filename) && function_exists('exif_thumbnail') && in_array(image_type_to_mime_type(exif_imagetype($this->filename)), array('image/jpeg', 'image/tiff'))) {
@@ -52,19 +45,12 @@ class ImageAbstract
 		}
 	}
 
-    /**
-     * @return bool
-     */
-    function is_empty()
+	function is_empty()
 	{
 		return empty($this->data) && empty($this->filename);
 	}
 
-    /**
-     * @param $filename
-     * @return null|string
-     */
-    function get_from_file($filename)
+	function get_from_file($filename)
 	{
 		$content = NULL;
 		if ( is_readable($filename) ) {
@@ -76,19 +62,11 @@ class ImageAbstract
 		return $content;
 	}
 
-    /**
-     * @param $x
-     * @param $y
-     */
-    function _resize($x, $y)
+	function _resize($x, $y)
 	{
 	}
 
-    /**
-     * @param int $x
-     * @param int $y
-     */
-    function resize($x = 0, $y = 0)
+	function resize($x = 0, $y = 0)
 	{
 		$this->_load_data();
 		if ($this->data) {
@@ -107,10 +85,7 @@ class ImageAbstract
 		}
 	}
 
-    /**
-     * @param $max
-     */
-    function resizemax($max)
+	function resizemax($max)
 	{
 		$this->_load_data();
 		if ($this->data) {
@@ -130,10 +105,7 @@ class ImageAbstract
 		$this->resizemax($prefs['fgal_thumb_max_size']);
 	}
 
-    /**
-     * @param $r
-     */
-    function scale($r)
+	function scale($r)
 	{
 		$this->_load_data();
 		$x0 = $this->get_width();
@@ -142,26 +114,17 @@ class ImageAbstract
 		$this->_resize($x0 * $r, $y0 * $r);
 	}
 
-    /**
-     * @return string
-     */
-    function get_mimetype()
+	function get_mimetype()
 	{
 		return 'image/'.strtolower($this->get_format());
 	}
 
-    /**
-     * @param $format
-     */
-    function set_format($format)
+	function set_format($format)
 	{
 		$this->format = $format;
 	}
 
-    /**
-     * @return string
-     */
-    function get_format()
+	function get_format()
 	{
 		if ( $this->format == '' ) {
 			$this->set_format('jpeg');
@@ -171,20 +134,13 @@ class ImageAbstract
 		}
 	}
 
-    /**
-     * @return null
-     */
-    function display()
+	function display()
 	{
 		$this->_load_data();
 		return $this->data;
 	}
 
-    /**
-     * @param $format
-     * @return bool
-     */
-    function convert($format)
+	function convert($format)
 	{
 		if ( $this->is_supported($format) ) {
 			$this->set_format($format);
@@ -194,53 +150,31 @@ class ImageAbstract
 		}
 	}
 
-    /**
-     * @param $angle
-     */
-    function rotate($angle)
+	function rotate($angle)
 	{
 	}
 
-    /**
-     * @param $format
-     * @return bool
-     */
-    function is_supported($format)
+	function is_supported($format)
 	{
 		return false;
 	}
 
-    /**
-     * @return string
-     */
-    function get_icon_default_format()
+	function get_icon_default_format()
 	{
 		return 'png';
 	}
 
-    /**
-     * @return int
-     */
-    function get_icon_default_x()
+	function get_icon_default_x()
 	{
 		return 16;
 	}
 
-    /**
-     * @return int
-     */
-    function get_icon_default_y()
+	function get_icon_default_y()
 	{
 		return 16;
 	}
 
-    /**
-     * @param $extension
-     * @param int $x
-     * @param int $y
-     * @return bool|null|string
-     */
-    function icon($extension, $x = 0, $y = 0)
+	function icon($extension, $x = 0, $y = 0)
 	{
 		$keep_original = ( $x == 0 && $y == 0 );
 
@@ -266,7 +200,7 @@ class ImageAbstract
 			$name = "lib/images/icons/unknown.$format";
 		}
 
-		if ( ! $keep_original && $format != 'svg' ) {
+		if ( ! $keep_original ) {
 			$icon = new $class($name, true);
 			if ( $format != $icon_format ) {
 				$icon->convert($icon_format);
@@ -278,28 +212,19 @@ class ImageAbstract
 			return ImageAbstract::get_from_file($name);
 		}
 
-	}
+	} 
 
-    /**
-     * @return null
-     */
-    function _get_height()
+	function _get_height() 
 	{
 		return NULL;
 	}
 
-    /**
-     * @return null
-     */
-    function _get_width()
+	function _get_width()
 	{
 		return NULL;
 	}
 
-    /**
-     * @return null
-     */
-    function get_height()
+	function get_height()
 	{
 		if ( $this->height === NULL ) {
 			$this->height = $this->_get_height();
@@ -307,25 +232,15 @@ class ImageAbstract
 		return $this->height;
 	}
 
-    /**
-     * @return null
-     */
-    function get_width()
+	function get_width()
 	{
 		if ( $this->width === NULL ) {
 			$this->width = $this->_get_width();
 		}
 		return $this->width;
 	}
-
-    /**
-     * @param null $filename
-     * @param bool $ispath
-     * @param bool $extended
-     * @param bool $bestarray
-     * @return FileMetadata|null
-     */
-    function getMetadata($filename = null, $ispath = true, $extended = true, $bestarray = true)
+	
+	function getMetadata($filename = null, $ispath = true, $extended = true, $bestarray = true)
 	{
 		include_once('lib/metadata/metadatalib.php');
 		if ($filename === null) {

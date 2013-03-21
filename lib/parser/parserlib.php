@@ -15,7 +15,7 @@
  * @package		Tiki
  * @subpackage		Parser
  * @author		Robert Plummer
- * @copyright		Copyright (c) 2002-2013, All Rights Reserved.
+ * @copyright		Copyright (c) 2002-2012, All Rights Reserved.
  * 			See copyright.txt for details and a complete list of authors.
  * @license		LGPL - See license.txt for details.
  * @version		SVN $Rev$
@@ -86,7 +86,6 @@ class ParserLib extends TikiDb_Bridge
 				'skipvalidation'=>  false,
 				'ck_editor'=>   false,
 				'namespace' => false,
-				'protect_email' => true,
 			), empty($option) ? array() : (array) $this->option, (array)$option
 		);
 	}
@@ -427,7 +426,7 @@ class ParserLib extends TikiDb_Bridge
 			$start = $match->getStart();
 
 			$pluginOutput = null;
-			if ( $this->plugin_enabled($plugin_name, $pluginOutput) || $this->option['ck_editor'] ) {
+			if ( $this->plugin_enabled($plugin_name, $pluginOutput) ) {
 
 				static $plugin_indexes = array();
 
@@ -578,7 +577,7 @@ if ( \$('#$id') ) {
 	//*
 	function plugin_get_list( $includeReal = true, $includeAlias = true )
 	{
-		return WikiPlugin_Negotiator_Wiki::getList($includeReal, $includeAlias);
+		return WikiPlugin_Negotiator_Wiki::getList( $includeReal, $includeAlias );
 	}
 
 	function zend_plugin_exists($className)
@@ -587,7 +586,7 @@ if ( \$('#$id') ) {
 			return true;
 		}
 
-		return class_exists($className) == true;
+		return file_exists(str_replace("_", "/", "lib/core/" . $className . '.php')) == true && class_exists($className) == true;
 	}
 	//*
 	function plugin_exists( $name, $include = false )
@@ -648,19 +647,19 @@ if ( \$('#$id') ) {
 	//*
 	function plugin_alias_info( $name )
 	{
-		return WikiPlugin_Negotiator_Wiki_Alias::info($name);
+		return WikiPlugin_Negotiator_Wiki_Alias::info( $name );
 	}
 
 	//*
 	function plugin_alias_store( $name, $data )
 	{
-		return WikiPlugin_Negotiator_Wiki_Alias::store($name, $data);
+		return WikiPlugin_Negotiator_Wiki_Alias::store( $name, $data );
 	}
 
 	//*
 	function plugin_alias_delete( $name )
 	{
-		return WikiPlugin_Negotiator_Wiki_Alias::delete($name);
+		return WikiPlugin_Negotiator_Wiki_Alias::delete( $name );
 	}
 
 	//*
@@ -1043,11 +1042,7 @@ if ( \$('#$id') ) {
 		$icon = isset($info['icon']) ? $info['icon'] : 'img/icons/wiki_plugin_edit.png';
 
 		// some plugins are just too flakey to do wysiwyg, so show the "source" for them ;(
-		$excluded = array('tracker', 'trackerlist', 'trackerfilter', 'kaltura', 'toc', 'freetagged', 'draw', 'googlemap', 'include', 'module');
-
-		$ignore = null;
-		$enabled = $this->plugin_enabled($name, $ignore);
-		if (in_array($name, $excluded) || !$enabled) {
+		if (in_array($name, array('tracker', 'trackerlist', 'trackerfilter', 'kaltura', 'toc', 'freetagged', 'draw', 'googlemap', 'include', 'module'))) {
 			$plugin_result = '&nbsp;&nbsp;&nbsp;&nbsp;' . $ck_editor_plugin;
 		} else {
 			// Tiki 7+ adds ~np~ to plugin output so remove them
@@ -1074,9 +1069,6 @@ if ( \$('#$id') ) {
 			$elem = 'span';
 		}
 		$elem_style = 'position:relative;';
-		if (!$enabled) {
-			$elem_style .= 'opacity:0.3;';
-		}
 		if (in_array($name, array('img', 'div')) && preg_match('/<'.$name.'[^>]*style="(.*?)"/i', $plugin_result, $m)) {
 			if (count($m)) {
 				$elem_style .= $m[1];
@@ -1329,11 +1321,10 @@ if ( \$('#$id') ) {
 		$patterns[] = "#([\n ])www\.([a-z0-9\-]+)\.([a-z0-9\-.\~]+)((?:/[^,< \n\r]*)?)#i";
 		$replacements[] = "\\1<a $attrib href=\"http://www.\\2.\\3\\4\">www.\\2.\\3\\4$ext_icon</a>";
 		$patterns[] = "#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i";
-		if ($this->option['protect_email'] && $prefs['feature_wiki_protect_email'] == 'y') {
+		if ($prefs['feature_wiki_protect_email'] == 'y')
 			$replacements[] = "\\1" . $tikilib->protect_email("\\2", "\\3");
-		} else {
+		else
 			$replacements[] = "\\1<a class='wiki' href=\"mailto:\\2@\\3\">\\2@\\3</a>";
-		}
 		$patterns[] = "#([\n ])magnet\:\?([^,< \n\r]+)#i";
 		$replacements[] = "\\1<a class='wiki' href=\"magnet:?\\2\">magnet:?\\2</a>";
 		$text = preg_replace($patterns, $replacements, $text);
@@ -1476,13 +1467,8 @@ if ( \$('#$id') ) {
 
 		if ($prefs['feature_jison_wiki_parser'] == 'y') {//The following will stop and return based off new parser
 			//Testing new parser ;)
-			$BOF = '';
 			if ($this->option['ck_editor']) {
 				$parser = new JisonParser_WikiCKEditor_Handler();
-				//ckeditor inserts an element at the beginning, which confuses the conversion back to wiki from html, this is to prevent that from happening
-				if ($this->Parser->parseDepth == 0) {
-					$BOF = $parser->createWikiHelper('BOF', 'span', '&shy;', array('contenteditable'=>'false'));
-				}
 			} else {
 				$parser = new JisonParser_Wiki_Handler();
 			}
@@ -1494,7 +1480,7 @@ if ( \$('#$id') ) {
 			}
 
 			unset($parser);
-			return $BOF . $data;
+			return $data;
 		}
 
 		// if simple_wiki is true, disable some wiki syntax
@@ -3032,7 +3018,7 @@ if ( \$('#$id') ) {
 					count($htmlLinks[1]) ? array_fill(0, count($htmlLinks[1]), null) : array(),
 					count($htmlLinksSefurl[1]) ? array_fill(0, count($htmlLinksSefurl[1]), null) : array(),
 					count($htmlWantedLinks[1]) ? array_fill(0, count($htmlWantedLinks[1]), null) : array()
-				);
+					);
 			}
 		} else {
 			$pageList = array_merge($normal[2], $withDesc[2], $htmlLinks[1], $htmlLinksSefurl[1], $htmlWantedLinks[1]);
@@ -3043,7 +3029,7 @@ if ( \$('#$id') ) {
 					count($htmlLinks[1]) ? array_fill(0, count($htmlLinks[1]), null) : array(),
 					count($htmlLinksSefurl[1]) ? array_fill(0, count($htmlLinksSefurl[1]), null) : array(),
 					count($htmlWantedLinks[1]) ? array_fill(0, count($htmlWantedLinks[1]), null) : array()
-				);
+					);
 			}
 		}
 

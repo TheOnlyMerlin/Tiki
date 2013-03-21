@@ -274,7 +274,6 @@ input[type="password"],
 input[type="file"],
 input[type="email"],
 input[type="file"],
-input[type="search"],
 input[type="number"],
 select {
 	margin: 1px 0;
@@ -293,7 +292,6 @@ input[type="text"],
 input[type="file"],
 input[type="email"],
 input[type="file"],
-input[type="search"],
 input[type="number"],
 div.fancyfilter,
 textarea {
@@ -505,7 +503,6 @@ a .sf-sub-indicator,
 
 #tiki-top .cssmenu_horiz li ul li a .sf-sub-indicator {
 	background: url(didiem/arrows-6d9f26.png) no-repeat;
-	top: 9px;
 }
 
 .cssmenu_vert li a .sf-sub-indicator {
@@ -514,6 +511,10 @@ a .sf-sub-indicator,
 
 #tiki-top .cssmenu_horiz li a .sf-sub-indicator {
 	top: 16px;
+}
+
+#tiki-top .cssmenu_horiz li ul li  a .sf-sub-indicator {
+	top: 9px;
 }
 
 .secondary_site_menu a .sf-sub-indicator {

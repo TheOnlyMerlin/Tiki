@@ -10,7 +10,7 @@
 
 			<div style="position:relative;">
 				<div style="position:absolute;right:.5em;top:0.5em;">
-					<img src="{$thumbfile}" alt="{tr}Theme Screenshot{/tr}" id="style_thumb" width="160px" height="120px">
+					<img src="{$thumbfile}" alt="{tr}Theme Screenshot{/tr}" id="style_thumb" width="160" height="120" />
 				</div>
 
 				<div class="adminoptionbox">
@@ -98,7 +98,6 @@
 					{preference name=module_zones_bottom}			
 				</fieldset>
 				{preference name=module_file}
-				{preference name=module_zone_available_extra}
 			</div>
 			
 			<div class="adminoptionbox">
@@ -234,7 +233,6 @@
 
 				{preference name=feature_custom_html_head_content syntax="htmlmixed"}
 				{preference name=feature_endbody_code syntax="tiki"}
-				{preference name=site_google_analytics_account}
 				
 				{preference name="header_custom_js" syntax="javascript"}
 				

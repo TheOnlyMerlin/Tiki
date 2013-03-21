@@ -23,7 +23,7 @@
 				{if $gzip_handler ne 'none'}
 					<div class="highlight" style="margin-left:30px;">
 						{tr}Output compression is active.{/tr}
-						<br>
+						<br />
 						{tr}Compression is handled by:{/tr} {$gzip_handler}.
 					</div>
 				{/if}
@@ -44,8 +44,8 @@
 				<p>
 					<table style="width=520px;border: 0px;text-align:center">
 					<tr>
-					<td><img src="{$memory_graph|escape}" width="250" height="100"></td>
-					<td><img src="{$hits_graph|escape}" width="250" height="100"></td>
+					<td><img src="{$memory_graph|escape}" width="250" height="100"/></td>
+					<td><img src="{$hits_graph|escape}" width="250" height="100"/></td>
 					</tr>
 					<tr>
 					<td style="width=260px">
@@ -56,7 +56,7 @@
 					</td>
 					</tr>
 					</table>
-					<hr>
+					<hr />
 				</p>
 
 				{if $opcode_stats.warning_fresh}

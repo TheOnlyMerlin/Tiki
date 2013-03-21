@@ -21,7 +21,12 @@ $paths = array(
 
 ini_set('include_path', implode(PATH_SEPARATOR, $paths));
 
-require_once __DIR__ . '/../../vendor/autoload.php';
+function __autoload_tikitest($name)
+{
+	$path = str_replace('_', '/', $name) . '.php';
+	@ include_once($path);
+}
+spl_autoload_register('__autoload_tikitest');
 
 if (!is_file(dirname(__FILE__) . '/local.php')) {
 	die("\nYou need to setup a new database and create a local.php file for the test suite inside " . dirname(__FILE__) . "\n\n");
@@ -32,10 +37,8 @@ $api_tiki = 'adodb';
 $local_php = dirname(__FILE__) . '/local.php';
 require_once($local_php);
 
-// Force autoloading
-if (! class_exists('ADOConnection')) {
-	die('AdoDb not found.');
-}
+require_once ('lib/adodb/adodb.inc.php');
+include_once ('lib/adodb/adodb-pear.inc.php');
 
 $ADODB_FETCH_MODE = ADODB_FETCH_ASSOC;
 
@@ -73,7 +76,6 @@ require_once 'lib/wiki/wikilib.php';
 require_once 'lib/userslib.php';
 require_once 'lib/headerlib.php';
 require_once 'lib/init/tra.php';
-require_once 'lib/init/initlib.php';
 require_once 'lib/tikiaccesslib.php';
 
 global $tikilib;

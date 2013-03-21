@@ -5,18 +5,12 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-/**
- *
- */
 class PdfGenerator
 {
 	private $mode;
 	private $location;
 
-    /**
-     *
-     */
-    function __construct()
+	function __construct()
 	{
 		global $prefs;
 		$this->mode = 'none';
@@ -35,12 +29,7 @@ class PdfGenerator
 		}
 	}
 
-    /**
-     * @param $file
-     * @param array $params
-     * @return mixed
-     */
-    function getPdf( $file, array $params )
+	function getPdf( $file, array $params )
 	{
 		global $prefs, $base_url, $tikiroot;
 
@@ -60,55 +49,40 @@ class PdfGenerator
 		return $this->{$this->mode}( $url );
 	}
 
-    /**
-     * @param $url
-     * @return null
-     */
-    private function none( $url )
+	private function none( $url )
 	{
 		return null;
 	}
 
-    /**
-     * @param $url
-     * @return mixed
-     */
-    private function webkit( $url )
+	private function webkit( $url )
 	{
 		// Make sure shell_exec is available
-		if (!function_exists('shell_exec')) {
+		if(!function_exists('shell_exec')) {
 			die(tra('Required function shell_exec is not enabled.'));
 		}
-
-		// escapeshellarg will replace all % characters with spaces on Windows
-		// So, decode the URL before sending it to the commandline
-		$urlDecoded = urldecode($url);
-		$arg = escapeshellarg($urlDecoded);
+		
+		$arg = escapeshellarg($url);
 
 		// Write a temporary file, instead of using stdout
 		// There seemed to be encoding issues when using stdout (on Windows 7 64 bit).
 
 		// Use temp/public. It is cleaned up during a cache clean, in case some files are left
 		$filename = 'temp/public/out'.rand().'.pdf';
-
+		
 		// Run shell_exec command to generate out file
 		// NOTE: this requires write permissions
 		`{$this->location} $arg $filename`;
-
+		
 		// Read the out file
 		$pdf = file_get_contents($filename);
-
+		
 		// Delete the outfile
 		unlink($filename);
-
+		
 		return $pdf;
 	}
 
-    /**
-     * @param $url
-     * @return bool
-     */
-    private function webservice( $url )
+	private function webservice( $url )
 	{
 		global $tikilib;
 

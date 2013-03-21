@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -35,10 +32,6 @@ include_once ('lib/structures/structlib.php');
 include_once ('lib/notifications/notificationlib.php');
 require_once ("lib/wiki/editlib.php");
 
-/**
- * @param $page
- * @param $page_info
- */
 function guess_new_page_attributes_from_parent_pages($page, $page_info)
 {
 	global $editlib, $smarty, $_REQUEST, $tikilib, $prefs, $need_lang;
@@ -71,10 +64,6 @@ function guess_new_page_attributes_from_parent_pages($page, $page_info)
 	}
 }
 
-/**
- * @param $page_id
- * @return bool
- */
 function translationsToThisPageAreInProgress($page_id)
 {
 	global $multilinguallib;
@@ -234,11 +223,6 @@ if (isset($_REQUEST["current_page_id"])) {
 	$smarty->assign('add_child', false);
 }
 
-/**
- * @param $a1
- * @param $a2
- * @return mixed
- */
 function compare_import_versions($a1, $a2)
 {
 	return $a1["version"] - $a2["version"];
@@ -256,12 +240,12 @@ if (isset($_REQUEST['cancel_edit'])) {
 	} else {
 		$url = "location:".$wikilib->sefurl($page);
 		if (!empty($_REQUEST['page_ref_id'])) {
-			$url .= (strpos($url, '?') === false ? '?' : '&') . 'page_ref_id='.$_REQUEST['page_ref_id'];
+			$url .= '&page_ref_id='.$_REQUEST['page_ref_id'];
 		}
 	}
 
 	if ($prefs['feature_multilingual'] === 'y' && $prefs['feature_best_language'] === 'y' && isset($info['lang']) && $info['lang'] !== $prefs['language']) {
-		$url .= (strpos($url, '?') === false ? '?' : '&') . 'no_bl=y';
+		$url .= '&no_bl=y';
 	}
 
 	if ($dieInsteadOfForwardingWithHeader) die ("-- tiki-editpage: Dying before first call to header(), so we can see traces. Forwarding to: \$url='$url'");
@@ -488,7 +472,7 @@ if (isset($_FILES['userfile1']) && is_uploaded_file($_FILES['userfile1']['tmp_na
 			$url = $wikilib->sefurl($page);
 		}
 		if ($prefs['feature_best_language'] === 'y') {
-			$url .= (strpos($url, '?') === false ? '?' : '&') . 'no_bl=y';
+			$url .= '&no_bl=y';
 		}
 
 
@@ -496,7 +480,7 @@ if (isset($_FILES['userfile1']) && is_uploaded_file($_FILES['userfile1']['tmp_na
 			global $flaggedrevisionlib; require_once 'lib/wiki/flaggedrevisionlib.php';
 
 			if ($flaggedrevisionlib->page_requires_approval($page)) {
-				$url .= (strpos($url, '?') === false ? '?' : '&') . 'latest=1';
+				$url .= '&latest=1';
 			}
 		}
 		if ($dieInsteadOfForwardingWithHeader) die ("-- tiki-editpage: Dying before second call to header(), so we can see traces. Forwarding to: '$url'");
@@ -943,11 +927,6 @@ if (isset($_REQUEST["preview"])) {
 
 $smarty->assign_by_ref('parsed', $parsed);
 
-/**
- * @param $obj
- * @param $parts
- * @param $i
- */
 function parse_output(&$obj, &$parts, $i)
 {
 	if (!empty($obj['parts'])) {
@@ -1147,22 +1126,9 @@ if (
 				$edit .= "\r\n";
 			$edit = substr($info['data'], 0, $real_start).$edit.substr($info['data'], $real_start + $real_len);
 		}
-		if (
-			isset($_REQUEST['jisonWyisywg']) &&
-			$_REQUEST['jisonWyisywg'] == 'true' &&
-			$prefs['feature_jison_wiki_parser'] == 'y' &&
-			$prefs['feature_wysiwyg'] === 'y'
-		) {
-			$parser = new JisonParser_Html_Handler();
-			print_r($edit);
-			$edit = $parser->parse($edit);
-			print_r($edit);
-			print_r(Tikilib::getOne('select data from tiki_pages where pageName = ?', array($page)));
-			die;
-		} else if ($_SESSION['wysiwyg'] === 'y' && $prefs['wysiwyg_wiki_parsed'] === 'y' && $prefs['wysiwyg_ckeditor'] === 'y') {
+		if ($_SESSION['wysiwyg'] === 'y' && $prefs['wysiwyg_wiki_parsed'] === 'y' && $prefs['wysiwyg_ckeditor'] === 'y') {
 			$edit = $editlib->partialParseWysiwygToWiki($edit);
 		}
-
 		$tikilib->update_page(
 			$_REQUEST["page"],
 			$edit,
@@ -1298,14 +1264,14 @@ if (
 		$url = $wikilib->sefurl($page);
 	}
 	if ($prefs['feature_multilingual'] === 'y' && $prefs['feature_best_language'] === 'y' && isset($info['lang']) && $info['lang'] !== $prefs['language']) {
-		$url .= (strpos($url, '?') === false ? '?' : '&') . 'no_bl=y';
+		$url .= '&no_bl=y';
 	}
 
 	if ($prefs['flaggedrev_approval'] == 'y' && $tiki_p_wiki_approve == 'y') {
 		global $flaggedrevisionlib; require_once 'lib/wiki/flaggedrevisionlib.php';
 
 		if ($flaggedrevisionlib->page_requires_approval($page)) {
-			$url .= (strpos($url, '?') === false ? '?' : '&') . 'latest=1';
+			$url .= '&latest=1';
 		}
 	}
 
@@ -1506,10 +1472,6 @@ $smarty->assign('qtnum', '1');
 $smarty->assign('qtcycle', '');
 $smarty->display("tiki.tpl");
 
-/**
- * @param $chkURL
- * @return bool
- */
 function isURL($chkURL)
 {
 	$rc = (false !== parse_url($chkURL));

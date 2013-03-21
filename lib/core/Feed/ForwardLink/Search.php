@@ -128,7 +128,7 @@ JQ
 					"var phrase = $('span.forwardlinkMiddle".$i."')
 						.addClass('ui-state-highlight');
 
-					var phraseLink = $('<a><sup>&</sup></a>')
+					var phraseLink = $('<a>*</a>')
 						.data('metadataHere', " . json_encode($item->forwardlink) . ")
 						.data('metadataThere', " . json_encode($item->textlink) . ")
 						.addClass('forwardlinkA')
@@ -194,7 +194,7 @@ JQ
 					"var phrase = $('span.textlinkMiddle".$i."')
 						.addClass('ui-state-highlight');
 
-					var phraseLink = $('<a><sup>&</sup></a>')
+					var phraseLink = $('<a>*</a>')
 						.data('metadataHere', " . json_encode($item->textlink) . ")
 						.data('metadataThere', " . json_encode($item->forwardlink) . ")
 						.addClass('textlinkA')
@@ -229,10 +229,10 @@ JQ
 	static function restorePhrasesInWikiPage(JisonParser_Phraser_Handler $phraser, $phrases)
 	{
 		global $headerlib, $smarty;
-		//TODO - not sure the tablesorter js and css files need to be loaded since they are loaded in tiki-setup
+
 		$headerlib
-			->add_jsfile('lib/jquery/tablesorter/js/jquery.tablesorter.js')
-			->add_cssfile('lib/jquery_tiki/tablesorter/style.css')
+			->add_jsfile('lib/jquery/tablesorter/jquery.tablesorter.js')
+			->add_cssfile('lib/jquery_tiki/tablesorter/themes/tiki/style.css')
 			->add_jq_onready(
 <<<JQ
 				$('a.forwardlinkA,a.textlinkA')

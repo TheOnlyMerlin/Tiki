@@ -466,13 +466,6 @@ function wikiplugin_trackerlist_info()
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
-			'urlafterdelete' => array(
-				'required' => false,
-				'name' => tra('Url to redirect to after delete'),
-				'description' => tra('Url to redirect to after delete'),
-				'filter' => 'url',
-				'default' => '',
-			),
 			'showopenitem' => array(
 					'required' => false,
 					'name' => tra('Show Open Item'),
@@ -1433,33 +1426,43 @@ function wikiplugin_trackerlist($data, $params)
 		}
 
 		if (!empty($_REQUEST['delete'])) {
-			$itemToDelete = Tracker_Item::fromId($_REQUEST['delete']);
-			if ($itemToDelete->canRemove()) {
-				$trklib->remove_tracker_item($_REQUEST['delete']);
+			if (($item_info = $trklib->get_item_info($_REQUEST['delete'])) && $trackerId == $item_info['trackerId']) {
+				if ($tiki_p_admin_trackers == 'y'
+					|| ($perms['tiki_p_remove_tracker_items'] == 'y' && $item_info['status'] != 'p' && $item_info['status'] != 'c')
+					|| ($perms['tiki_p_remove_tracker_items_pending'] == 'y' && $item_info['status'] == 'p')
+					|| ($perms['tiki_p_remove_tracker_items_closed'] == 'y' && $item_info['status'] == 'c')	) {
+					$trklib->remove_tracker_item($_REQUEST['delete']);
+				}
 			}
-
-			if (!empty($urlafterdelete)) {
-				header("Location: $urlafterdelete");
-				exit;
-			}
-
 		}
 		if (!empty($_REQUEST['closeitem'])) {
-			$itemToModify = Tracker_Item::fromId($_REQUEST['closeitem']);
-			if ($itemToModify->canModify()) {
-				$trklib->change_status(array(array('itemId' => $_REQUEST['closeitem'])), 'c');
+			if (($item_info = $trklib->get_item_info($_REQUEST['closeitem'])) && $trackerId == $item_info['trackerId']) {
+				if ($tiki_p_admin_trackers == 'y'
+					|| ($perms['tiki_p_modify_tracker_items'] == 'y' && $item_info['status'] != 'p' && $item_info['status'] != 'c')
+					|| ($perms['tiki_p_modify_tracker_items_pending'] == 'y' && $item_info['status'] == 'p')
+					|| ($perms['tiki_p_modify_tracker_items_closed'] == 'y' && $item_info['status'] == 'c') ) {
+					$trklib->change_status(array(array('itemId' => $_REQUEST['closeitem'])), 'c');
+				}
 			}
 		}
 		if (!empty($_REQUEST['penditem'])) {
-			$itemToModify = Tracker_Item::fromId($_REQUEST['penditem']);
-			if ($itemToModify->canModify()) {
-				$trklib->change_status(array(array('itemId' => $_REQUEST['penditem'])), 'p');
+			if (($item_info = $trklib->get_item_info($_REQUEST['penditem'])) && $trackerId == $item_info['trackerId']) {
+				if ($tiki_p_admin_trackers == 'y'
+					|| ($perms['tiki_p_modify_tracker_items'] == 'y' && $item_info['status'] != 'p' && $item_info['status'] != 'c')
+					|| ($perms['tiki_p_modify_tracker_items_pending'] == 'y' && $item_info['status'] == 'p')
+					|| ($perms['tiki_p_modify_tracker_items_closed'] == 'y' && $item_info['status'] == 'c') ) {
+					$trklib->change_status(array(array('itemId' => $_REQUEST['penditem'])), 'p');
+				}
 			}
 		}
 		if (!empty($_REQUEST['openitem'])) {
-			$itemToModify = Tracker_Item::fromId($_REQUEST['openitem']);
-			if ($itemToModify->canModify()) {
-				$trklib->change_status(array(array('itemId' => $_REQUEST['openitem'])), 'o');
+			if (($item_info = $trklib->get_item_info($_REQUEST['openitem'])) && $trackerId == $item_info['trackerId']) {
+				if ($tiki_p_admin_trackers == 'y'
+					|| ($perms['tiki_p_modify_tracker_items'] == 'y' && $item_info['status'] != 'p' && $item_info['status'] != 'c')
+					|| ($perms['tiki_p_modify_tracker_items_pending'] == 'y' && $item_info['status'] == 'p')
+					|| ($perms['tiki_p_modify_tracker_items_closed'] == 'y' && $item_info['status'] == 'c') ) {
+					$trklib->change_status(array(array('itemId' => $_REQUEST['openitem'])), 'o');
+				}
 			}
 		}
 		if (!empty($calendarfielddate)) {

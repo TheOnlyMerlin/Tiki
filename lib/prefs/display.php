@@ -10,7 +10,6 @@ function prefs_display_list()
 	return array(
 		'display_field_order' => array(
 			'name' => tra('Fields display order'),
-            'description' => tra(''),
 			'type' => 'list',
 			'options' => array(
 				'DMY' => tra('Day') . ' ' . tra('Month') . ' ' . tra('Year'),

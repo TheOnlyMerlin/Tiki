@@ -173,7 +173,7 @@ class PreferencesLib
 
 			if (!empty($info['admin']) || !empty($info['permission']) || !empty($info['view']) || !empty($info['module']) || !empty($info['plugin'])) {
 
-				$info['popup_html'] = '<div class="opaque"><div class="box-title">'.tra('Actions').'</div><div class="box-data adminoptionpopup">';
+				$info['popup_html'] = '<div class="opaque"><div class="box-title">'.tra('Actions').'</div><div class="box-data">';
 
 				if (!empty($info['admin'])) {
 					$icon = smarty_function_icon(array( '_id' => 'wrench', 'title' => tra('Admin')), $smarty);
@@ -439,7 +439,7 @@ class PreferencesLib
 						|| ( $info['type'] != 'flag' && ! empty( $info['value'] ) )
 				);
 			} elseif ($key == 'profiles') {
-				foreach ( (array) $dep as $profile) {
+				foreach ($dep as $profile) {
 					$out[] = array(
 						'name' => $profile,
 						'label' => $profile,
@@ -827,10 +827,10 @@ class PreferencesLib
 			$auser = $user;
 		}
 
-		$list = (array) $this->getRecent($auser);
-		array_unshift($list, $name);
-		$list = array_unique($list);
-		$list = array_slice($list, 0, 10);
+		$list = (array) $this->getRecent( $auser );
+		array_unshift( $list, $name );
+		$list = array_unique( $list );
+		$list = array_slice( $list, 0, 10 );
 
 		TikiLib::lib('tiki')->set_user_preference($auser, 'admin_recent_prefs', serialize($list));
 	}

@@ -3,7 +3,7 @@
 {title help="MyTiki"}{tr}My Tiki{/tr}{/title}
 
   {include file='tiki-mytiki_bar.tpl'}
-  <br>
+  <br />
 
   {capture name=my}
   {if $prefs.feature_wiki eq 'y' and $mytiki_pages eq 'y'}
@@ -148,7 +148,7 @@
           </table>
 		  <div style="text-align:right;">
 		  	   {tr}Records:{/tr} {$user_items|@count}
-			   {if !empty($nb_item_comments)}<br>{tr}Comments:{/tr} {$nb_item_comments}{/if}
+			   {if !empty($nb_item_comments)}<br />{tr}Comments:{/tr} {$nb_item_comments}{/if}
 		  </div>
         </div>
       </div>
@@ -300,33 +300,6 @@
             {/section}
           </table>
 		  <div style="text-align:right;">{tr}Records:{/tr} {$user_blogs|@count}</div>
-        </div>
-      </div>
- <div class="cbox">
-        <div class="cbox-title">
-          {if $userwatch eq $user}{tr}My blog Posts{/tr}{else}{tr}User Blog Posts{/tr}{/if}
-        </div>
-        <div class="cbox-data">
-          <table class="normal">
-            <tr>
-              <th>{tr}Blog Posts{/tr}</th>
-              <th style="width:50px">{tr}Actions{/tr}</th>
-            </tr>
-            {cycle values="even,odd" print=false}
-            {section name=ix loop=$user_blog_posts}
-              <tr class="{cycle}">
-                <td class="text">
-                  <a class="link" title="{tr}View{/tr}" href="{$user_blog_posts[ix].postId|sefurl:blogpost}">{$user_blog_posts[ix].title|escape}</a>
-                </td>
-                <td class="action">
-                  <a class="link" href="tiki-blog_post.php?postId={$user_blog_posts[ix].postId}">
-                    {icon _id='page_edit'}
-                  </a>
-                </td>
-              </tr>
-            {/section}
-          </table>
-		  <div style="text-align:right;">{tr}Records:{/tr} {$user_blog_posts|@count}</div>
         </div>
       </div>
     </div>

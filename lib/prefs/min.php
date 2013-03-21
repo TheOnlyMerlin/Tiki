@@ -10,7 +10,6 @@ function prefs_min_list()
 	return array(
 		'min_username_length' => array(
 			'name' => tra('Minimum length'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 5,
 			'filter' => 'digits',
@@ -18,7 +17,6 @@ function prefs_min_list()
 		),
 		'min_pass_length' => array(
 			'name' => tra('Minimum length'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 5,
 			'filter' => 'digits',

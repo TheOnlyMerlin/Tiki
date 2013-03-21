@@ -655,12 +655,10 @@ class EditLib
 		};
 
 		// get the entry points on the stacks
-		$keys = array_keys($p['wikistack']);
-		$key = end($keys);
+		$key = end(array_keys($p['wikistack']));
 		$wiki = &$p['wikistack'][$key];
 
-		$keys = array_keys($p['stack']);
-		$key = end($keys);
+		$key = end(array_keys($p['stack']));
 		$stack = &$p['stack'][$key];
 		$string = &$stack['string'];
 

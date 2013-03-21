@@ -9,12 +9,12 @@
  * Started life as copy of elFinderVolumeMySQL.class.php
  * Initial convertion to work with Tiki filegals for Tiki 10
  *
+ * $Id$
+ *
  **/
 
 class elFinderVolumeTikiFiles extends elFinderVolumeDriver
 {
-	private $filesTable;
-	private $fileGalleriesTable;
 
 	/**
 	 * Driver id
@@ -52,9 +52,6 @@ class elFinderVolumeTikiFiles extends elFinderVolumeDriver
 	public function __construct()
 	{
 		global $tikidomainslash, $prefs;
-
-		$this->fileGalleriesTable = TikiDb::get()->table('tiki_file_galleries');
-		$this->filesTable = TikiDb::get()->table('tiki_files');
 
 		$opts = array(
 			'tmbPath'       => 'temp/public/'.$tikidomainslash,
@@ -196,7 +193,7 @@ class elFinderVolumeTikiFiles extends elFinderVolumeDriver
 	{
 		$this->dirsCache[$path] = array();
 
-		$res = $this->filegallib->get_files(0, -1, 'name_desc', '', $this->pathToId($path), false, true);
+		$res = $this->filegallib->get_files(0, -1, 'name_desc', '', str_replace('d_', '', $path), false, true);
 
 		if ($res['cant']) {
 			foreach ($res['data'] as $row) {
@@ -213,11 +210,7 @@ class elFinderVolumeTikiFiles extends elFinderVolumeDriver
 		return $this->dirsCache[$path];
 	}
 
-    /**
-     * @param $row
-     * @return array
-     */
-    protected function processTikiFile($row)
+	protected function processTikiFile($row)
 	{
 		$r = array();
 		if ($row['isgal']) {
@@ -296,7 +289,7 @@ class elFinderVolumeTikiFiles extends elFinderVolumeDriver
 	/*********************** paths/urls *************************/
 
 	/**
-	 * Return parent directory path - for tiki this is the galleryId
+	 * Return parent directory path
 	 *
 	 * @param  string  $path  file path
 	 * @return string
@@ -329,18 +322,8 @@ class elFinderVolumeTikiFiles extends elFinderVolumeDriver
 	 **/
 	protected function _joinPath($dir, $name)
 	{
-		if ($fileId = $this->filesTable->fetchOne('fileId',
-				array ('name' => $name, 'galleryId' => $this->pathToId($dir))
-		)) {
-			return 'f_' . $fileId;
-		} else {
-			if ($galleryId = $this->fileGalleriesTable->fetchOne('galleryId',
-					array ('name' => $name, 'parentId' => $this->pathToId($dir))
-			)) {
-				return 'd_' . $galleryId;
-			}
-		}
-		return '';
+
+		return -1;
 	}
 
 	/**
@@ -438,18 +421,6 @@ class elFinderVolumeTikiFiles extends elFinderVolumeDriver
 	 **/
 	protected function _stat($path)
 	{
-		if (empty($path)) {
-			return false;
-		}
-		// convert from galleryId/name file convention
-		$ar = explode('/', $path);
-		if (count($ar) === 2) {
-			if ($fileId = $this->filesTable->fetchOne('fileId', array ('name' => $ar[1]))) {
-				$path = 'f_' . $fileId;
-			} else {
-				return false;
-			}
-		}
 
 		$ar = explode('_', $path);
 		if (count($ar) === 2) {
@@ -464,9 +435,6 @@ class elFinderVolumeTikiFiles extends elFinderVolumeDriver
 			$res = $this->filegallib->get_file($path);
 		}
 
-		if (empty($res['galleryId'])) {
-			return array();
-		}
 
 		if ($res) {
 			$res['isgal'] = $isgal;
@@ -538,7 +506,7 @@ class elFinderVolumeTikiFiles extends elFinderVolumeDriver
 
 
 		if ($fp) {
-			$fileId = $this->pathToId($path);
+			$fileId = str_replace('f_', '', $path);
 			$res = $this->filegallib->get_file($fileId);
 			if ( ! empty($res['path']) ) {
 				$filepath = $prefs['fgal_use_dir'].$res['path'];
@@ -584,28 +552,6 @@ class elFinderVolumeTikiFiles extends elFinderVolumeDriver
 	 **/
 	protected function _mkdir($path, $name)
 	{
-		global $user;
-
-		$parentDirId = $this->pathToId($path);
-		$parentPerms = TikiLib::lib('tiki')->get_perm_object($parentDirId, 'file gallery', TikiLib::lib('filegal')->get_file_gallery_info($parentDirId));
-		if ($parentPerms['tiki_p_admin_file_galleries'] === 'y' || $parentPerms['tiki_p_create_file_galleries'] === 'y') {
-
-			$parent_info = $this->filegallib->get_file_gallery($parentDirId);
-
-			$gal_info = array();		// replace_file_gallery merges with default
-
-			$gal_info['name'] = $name;
-			$gal_info['type'] = $parent_info['type'] === 'user' ? 'user' : 'default';
-			$gal_info['user'] = $user;
-			$gal_info['parentId'] = $parentDirId;
-
-			$result = $this->filegallib->replace_file_gallery($gal_info);
-
-			if ($result) {
-				return 'd_' . $result;
-			}
-		}
-		return false;
 	}
 
 	/**
@@ -647,7 +593,7 @@ class elFinderVolumeTikiFiles extends elFinderVolumeDriver
 	}
 
 	/**
-	 * Move file into another parent dir and/or rename.
+	 * Move file into another parent dir.
 	 * Return new file path or false.
 	 *
 	 * @param  string  $source  source file path
@@ -657,63 +603,6 @@ class elFinderVolumeTikiFiles extends elFinderVolumeDriver
 	 **/
 	protected function _move($source, $targetDir, $name)
 	{
-		$ar = explode('_', $source);
-		if (count($ar) === 2) {
-			$isgal = $ar[0] === 'd';
-			$source = $ar[1];
-		} else {
-			$isgal = true;
-		}
-		$name = trim(strip_tags($name));
-		if (!$isgal) {
-			$srcDirId = $this->options['accessControlData']['parentIds']['files'][$this->pathToId($source)];
-		} else {
-			$srcDirId = $this->pathToId($source);
-		}
-		$srcPerms = TikiLib::lib('tiki')->get_perm_object($srcDirId, 'file gallery', TikiLib::lib('filegal')->get_file_gallery_info($srcDirId));
-		$targetDirId = $this->pathToId($targetDir);
-		if ($srcDirId == $targetDirId) {
-			$targetPerms = $srcPerms;
-		} else {
-			$targetPerms = TikiLib::lib('tiki')->get_perm_object($targetDirId, 'file gallery', TikiLib::lib('filegal')->get_file_gallery_info($targetDirId));
-		}
-		$canMove = ($srcPerms['tiki_p_admin_file_galleries'] === 'y' && $targetPerms['tiki_p_admin_file_galleries'] === 'y') ||
-				($srcPerms['tiki_p_remove_files'] === 'y' && $targetPerms['tiki_p_upload_files'] === 'y');
-
-		if ($isgal) {
-			if ($canMove) {
-
-				$result = $this->fileGalleriesTable->update(
-					array(
-						'name' => $name,
-						'parentId' => $targetDirId,
-					),
-					array('galleryId' => $srcDirId)
-				);
-				if ($result) {
-					return 'd_' . $srcDirId;
-				}
-			}
-		} else {
-			if ($srcPerms['tiki_p_edit_gallery_file'] === 'y' && ($srcDirId !== $targetDirId || $canMove)) {
-				$result = $this->filesTable->update(
-					array(
-						'name' => $name,
-						'galleryId' => $targetDirId,
-					),
-					array('fileId' => $this->pathToId($source))
-				);
-				if ($result) {
-					return 'f_' . $this->pathToId($source);
-				}
-			}
-		}
-		return '';
-	}
-
-	private function pathToId($path)
-	{
-		return preg_replace('/[df]_/', '', $path);
 	}
 
 	/**
@@ -724,13 +613,6 @@ class elFinderVolumeTikiFiles extends elFinderVolumeDriver
 	 **/
 	protected function _unlink($path)
 	{
-		$galleryId = $this->options['accessControlData']['parentIds']['files'][$this->pathToId($path)];
-		$perms = TikiLib::lib('tiki')->get_perm_object($galleryId, 'file gallery', TikiLib::lib('filegal')->get_file_gallery_info($galleryId));
-		if ($perms['tiki_p_remove_files'] === 'y') {
-			return $this->filegallib->remove_file(array('fileId' => $this->pathToId($path)));
-		} else {
-			return false;
-		}
 	}
 
 	/**
@@ -741,16 +623,6 @@ class elFinderVolumeTikiFiles extends elFinderVolumeDriver
 	 **/
 	protected function _rmdir($path)
 	{
-		$galleryId = $this->pathToId($path);
-		$gal_info = TikiLib::lib('filegal')->get_file_gallery_info($galleryId);
-		$perms = TikiLib::lib('tiki')->get_perm_object($galleryId, 'file gallery', $gal_info);
-		if ($perms['tiki_p_admin_file_galleries'] === 'y' ||
-				($gal_info['type'] === 'user' && $perms['tiki_p_create_file_galleries'])) {		// users can create and remove their own gals only
-
-			return $this->filegallib->remove_file_gallery($this->pathToId($path), $this->pathToId($path));
-		} else {
-			return false;
-		}
 	}
 
 	/**
@@ -785,36 +657,21 @@ class elFinderVolumeTikiFiles extends elFinderVolumeDriver
 		$stat = fstat($fp);
 		$size = $stat['size'];
 
-		$data = '';
-		while (!feof($fp)) {
-			$data .= fread($fp, 8192);
-		}
-		//fclose($fp);
+		if (($tmpfile = tempnam($this->tmpPath, $this->id))) {
+			if (($trgfp = fopen($tmpfile, 'wb')) == false) {
+				unlink($tmpfile);
+			} else {
+				while (!feof($fp)) {
+					//fwrite($trgfp, fread($fp, 8192));
+					// TODO save file here
+				}
+				fclose($trgfp);
 
-		$galleryId = $this->pathToId($dir);
-		$fileId = 0;
-
-		$perms = TikiLib::lib('tiki')->get_perm_object($galleryId, 'file gallery', TikiLib::lib('filegal')->get_file_gallery_info($galleryId));
-		if ($perms['tiki_p_upload_files'] === 'y') {
-
-			$fileId = $this->filegallib->upload_single_file(
-				array(
-					'galleryId' => $galleryId,
-					'name' => $this->fileGalleriesTable->fetchOne('name', array('galleryId' => $galleryId))
-				),
-				$name,
-				$size,
-				$mime,
-				$data
-			);
+				unlink($tmpfile);
+			}
 		}
 
-		if ($fileId) {
-			$this->options['accessControlData']['parentIds']['files'][$fileId] = $galleryId;
-			return 'f_' . $fileId;
-		} else {
-			return false;
-		}
+		return false;
 	}
 
 	/**

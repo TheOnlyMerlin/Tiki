@@ -13,21 +13,18 @@ class WYSIWYGLib
 {
 	function setUpEditor($is_html, $dom_id, $params = array(), $auto_save_referrer = '', $full_page = true)
 	{
-        static $notallreadyloaded =true;
-		$ckEditor = 'ckeditor4';
-		// $ckEditor = 'ckeditor'; ... to revert also fix CKEDITOR.addCss in the plugin.js files
 
 		global $tikiroot, $prefs;
 		$headerlib = TikiLib::lib('header');
-        if ($notallreadyloaded) $headerlib->add_js_config('window.CKEDITOR_BASEPATH = "'. $tikiroot . 'lib/'.$ckEditor.'/";')
+		$headerlib->add_js_config('window.CKEDITOR_BASEPATH = "'. $tikiroot . 'lib/ckeditor/";')
 				//// for js debugging - copy _source from ckeditor distribution to libs/ckeditor to use
 				//// note, this breaks ajax page load via wikitopline edit icon
 				//->add_jsfile('lib/ckeditor/ckeditor_source.js');
-				->add_jsfile('lib/'.$ckEditor.'/ckeditor.js', 0, true)
-				->add_jsfile('lib/'.$ckEditor.'/adapters/jquery.js', 0, true)
+				->add_jsfile('lib/ckeditor/ckeditor.js', 0, true)
+				->add_jsfile('lib/ckeditor/adapters/jquery.js', 0, true)
 				->add_js('window.CKEDITOR.config._TikiRoot = "'.$tikiroot.'";', 1);
 
-		if ($notallreadyloaded && $full_page) {
+		if ($full_page) {
 			$headerlib->add_jsfile('lib/ckeditor_tiki/tikilink_dialog.js');
 			$headerlib->add_js(
 				'window.CKEDITOR.config.extraPlugins += (window.CKEDITOR.config.extraPlugins ? ",tikiplugin" : "tikiplugin" );
@@ -35,7 +32,7 @@ class WYSIWYGLib
 				5
 			);
 		}
-		if ($notallreadyloaded && !$is_html && $full_page) {
+		if (!$is_html && $full_page) {
 			$headerlib->add_js(
 				'window.CKEDITOR.config.extraPlugins += (window.CKEDITOR.config.extraPlugins ? ",tikiwiki" : "tikiwiki" );
 				window.CKEDITOR.plugins.addExternal( "tikiwiki", "'.$tikiroot.'lib/ckeditor_tiki/plugins/tikiwiki/");',
@@ -52,8 +49,8 @@ window.CKEDITOR.config.ajaxAutoSaveTargetUrl = "'.$tikiroot.'tiki-auto_save.php"
 window.CKEDITOR.config.extraPlugins += (window.CKEDITOR.config.extraPlugins ? ",autosave" : "autosave" );
 window.CKEDITOR.plugins.addExternal( "autosave", "'.$tikiroot.'lib/ckeditor_tiki/plugins/autosave/");
 window.CKEDITOR.config.ajaxAutoSaveRefreshTime = 30 ;			// RefreshTime
-window.CKEDITOR.config.contentsLangDirection = ' . ($prefs['feature_bidi'] === 'y' ? '"rtl"' : '"ui"') . ';
 window.CKEDITOR.config.ajaxAutoSaveSensitivity = 2 ;			// Sensitivity to key strokes
+window.CKEDITOR.config.contentsLangDirection = ' . ($prefs['feature_bidi'] === 'y' ? '"rtl"' : '"ui"') . '
 register_id("'.$dom_id.'","'.addcslashes($auto_save_referrer, '"').'");	// Register auto_save so it gets removed on submit
 ajaxLoadingShow("'.$dom_id.'");
 ', 5
@@ -99,53 +96,16 @@ ajaxLoadingShow("'.$dom_id.'");
 	stylesSet: "tikistyles:' . $tikiroot . 'lib/ckeditor_tiki/tikistyles.js",
 	templates_files: "' . $tikiroot . 'lib/ckeditor_tiki/tikitemplates.js",
 	contentsCss: ["' . $ckstyle . '"],
-	skin: "' . ($prefs['wysiwyg_toolbar_skin'] != 'default' ? $prefs['wysiwyg_toolbar_skin'] : 'moono') . '",
+	skin: "' . ($prefs['wysiwyg_toolbar_skin'] != 'default' ? $prefs['wysiwyg_toolbar_skin'] : 'kama') . '",
 	defaultLanguage: "' . $prefs['language'] . '",
- 	contentsLangDirection: "' . ($prefs['feature_bidi'] === 'y' ? 'rtl' : 'ltr') . '",
 	language: "' . ($prefs['feature_detect_language'] === 'y' ? '' : $prefs['language']) . '",
 	'. (empty($params['cols']) ? 'height: 400,' : '') .'
+	contentsLangDirection: "' . ($prefs['feature_bidi'] === 'y' ? 'rtl' : 'ltr') . '"
 }';
 
-        $notallreadyloaded=false;
 		return $ckoptions;
 	}
 
-	function setUpJisonEditor($is_html, $dom_id, $params = array(), $auto_save_referrer = '', $full_page = true)
-	{
-		global $tikiroot, $headerlib;
-		$headerlib
-			->add_cssfile('lib/aloha-editor/css/aloha.css')
-			->add_jsfile('lib/aloha-editor/lib/require.js')
-			->add_jsfile_with_attr(
-				'lib/aloha-editor/lib/aloha.js',
-				array(
-					'data-aloha-plugins' => 'common/ui,
-									common/table,
-									common/list,
-									common/link,
-									common/highlighteditables,
-									common/block,
-									common/undo,
-									common/image,
-									common/paste,
-									common/commands,
-									common/abbr,
-									common/format'
-				)
-			)
-			->add_jq_onready(
-				"Aloha.ready(function() {
-					Aloha.settings.jQuery = jQuery;
-					Aloha.bind( 'aloha-add-markup', function( jEvent, markup ) {
-						markup.attr('data-t', 'b');
-			        });
-					$('#$dom_id').aloha();
-				});",
-				10
-			);
-
-		return "<script>Aloha ={};Aloha.settings = {};Aloha.settings.bundles = {};Aloha.settings.bundles['tiki'] = '../../aloha-editor_tiki/plugins';</script>";
-	}
 }
 
 global $wysiwyglib;

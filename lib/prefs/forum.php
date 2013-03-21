@@ -10,55 +10,47 @@ function prefs_forum_list()
 	return array(
 		'forum_comments_no_title_prefix' => array(
 			'name' => tra("Do not prefix messages titles by 'Re: '"),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'forum_match_regex' => array(
 			'name' => tra('Uploaded filenames must match regex'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '20',
 			'default' => '',
 		),
 		'forum_thread_defaults_by_forum' => array(
 			'name' => tra('Manage thread defaults per-forum'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'forum_thread_user_settings' => array(
 			'name' => tra('Display thread configuration bar'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'hint' => tra('Allows users to override the defaults'),
 			'default' => 'y',
 		),
 		'forum_thread_user_settings_threshold' => array(
-			'name' => tra('Display thread configuration bar only when number of posts exceed'),
-            'description' => tra(''),
-			'type' => 'text',
+                        'name' => tra('Display thread configuration bar only when number of posts exceed'),
+                        'type' => 'text',
 			'size' => '5',
-			'filter' => 'digits',
+			'filter' => 'digit',
 			'default' => 10,
                 ),
 		'forum_thread_user_settings_keep' => array(
 			'name' => tra('Keep settings for all forums during the user session'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'forum_comments_per_page' => array(
 			'name' => tra('Default number per page'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '5',
-			'filter' => 'digits',
+			'filter' => 'digit',
 			'default' => 20,
 		),
 		'forum_thread_style' => array(
 			'name' => tra('Default style'),
-            'description' => tra(''),
 			'type' => 'list',
 			'options' => array(
 				'commentStyle_plain' => tra('Plain'),
@@ -69,7 +61,6 @@ function prefs_forum_list()
 		),
 		'forum_thread_sort_mode' => array(
 			'name' => tra('Default sort mode'),
-            'description' => tra(''),
 			'type' => 'list',
 			'options' => array(
 				'commentDate_desc' => tra('Newest first'),
@@ -82,43 +73,36 @@ function prefs_forum_list()
 		),
 		'forum_list_topics' => array(
 			'name' => tra('Topics'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' =>  'n',
 		),
 		'forum_list_posts' => array(
 			'name' => tra('Posts'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' =>  'y',
 		),
 		'forum_list_ppd' => array(
 			'name' => tra('Posts per day') . ' (PPD)',
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' =>  'n',
 		),
 		'forum_list_lastpost' => array(
 			'name' => tra('Last post'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' =>  'y',
 		),
 		'forum_list_visits' => array(
 			'name' => tra('Visits'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' =>  'y',
 		),
 		'forum_list_desc' => array(
 			'name' => tra('Description'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' =>  'y',
 		),
 		'forum_list_description_len' => array(
 			'name' => tra('Description length'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '5',
 			'filter' => 'digits',
@@ -135,22 +119,6 @@ function prefs_forum_list()
 			'description' => tra('Shows a blank title box and requires it to be filled before submission of forum post.'),
 			'type' => 'flag',
 			'default' => 'n',
-		),
-		'forum_available_categories' => array(
-			'name' => tr('Forum post categories'),
-			'description' => tr('Categories available in the category picker for forum posts.'),
-			'type' => 'text',
-			'separator' => ',',
-			'filter' => 'digits',
-			'default' => array(),
-			'dependencies' => array('feature_categories'),
-		),
-		'forum_category_selector_in_list' => array(
-			'name' => tr('Include category selector in forum list'),
-			'description' => tr("Include a drop list in the forum list to select the post's category."),
-			'type' => 'flag',
-			'default' => 'n',
-			'dependencies' => array('feature_categories'),
 		),
 	);
 }

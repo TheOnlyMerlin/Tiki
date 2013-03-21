@@ -93,9 +93,9 @@ function smarty_function_object_link_default( $smarty, $object, $title = null, $
 	}
 
 	$text = $title;
-	$titleAttribute = '';
+	$titleAttribute = null;
 	if ($type == 'wiki page') {
-		$titleAttribute .= ' title="' . smarty_modifier_escape($title) . '"';
+		$titleAttribute = ' title="' . smarty_modifier_escape($title) . '"';
 		$text = TikiLib::lib('wiki')->get_without_namespace($title);
 	}
 

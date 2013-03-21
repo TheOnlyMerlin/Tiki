@@ -20,7 +20,8 @@ if ($prefs['disableJavascript'] == 'y' ) {
 	// Update the pref with the cookie value
 	$prefs['javascript_enabled'] = $js_cookie;
 } else {
-	$prefs['javascript_enabled'] = 'y';
+	// Set the cookie to 'n', through PHP / HTTP headers
+	$prefs['javascript_enabled'] = 'n';
 }
 
 if ( $prefs['javascript_enabled'] != 'y' && $prefs['disableJavascript'] != 'y' ) {
@@ -69,16 +70,6 @@ if ($prefs['javascript_enabled'] == 'y') {	// we have JavaScript
 		if (!empty($custom_js)) {
 			$headerlib->add_jsfile($custom_js, 50);
 		}
-	}
-
-	/** Use custom.js in lang dir if there **/
-	$language = $prefs['language'];
-	if (is_file("lang/$language/custom.js")) {
-		TikiLib::lib('header')->add_jsfile("lang/$language/custom.js", 60);	// after styles custom.js
-	}
-
-	if (!empty($tikidomain) && is_file("lang/$language/$tikidomain/custom.js")) {		// Note: lang tikidomain dirs not created automatically
-		TikiLib::lib('header')->add_jsfile("lang/$language/$tikidomain/custom.js", 60);
 	}
 
 	// setup timezone array

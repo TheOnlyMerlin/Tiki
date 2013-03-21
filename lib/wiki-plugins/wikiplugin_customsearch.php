@@ -103,6 +103,11 @@ function wikiplugin_customsearch($data, $params)
 	} else {
 		$recalllastsearch = 0;
 	}
+	if (isset($params['autosearchdelay'])) {
+		$autosearchdelay = $params['autosearchdelay'];
+	} else {
+		$autosearchdelay = 0;
+	}
 	if (isset($params['searchfadediv'])) {
 		$searchfadediv = $params['searchfadediv'];
 	} else {
@@ -131,30 +136,14 @@ function wikiplugin_customsearch($data, $params)
 		$params['searchonload'] = 1;
 	}
 
-	$definitionKey = md5($data);
-	$matches = WikiParser_PluginMatcher::match($data);
-	$query = new Search_Query;
-	$builder = new Search_Query_WikiBuilder($query);
-	$builder->apply($matches);
-
-	$builder = new Search_Formatter_Builder;
-	$builder->apply($matches);
-	$formatter = $builder->getFormatter();
-
-	$cachelib = TikiLib::lib('cache');
-	$cachelib->cacheItem($definitionKey, serialize(array(
-		'query' => $query,
-		'formatter' => $formatter,
-	)), 'customsearch');
-
 	$wikitpl = "tplwiki:" . $params['wiki'];
 	$wikicontent = TikiLib::lib('smarty')->fetch($wikitpl);
 	TikiLib::lib('parser')->parse_wiki_argvariable($wikicontent);
 
 	$matches = WikiParser_PluginMatcher::match($wikicontent);
 
-	$fingerprint = md5($wikicontent);
-
+	$parser = new WikiParser_PluginArgumentParser;
+	$fingerprint = md5(print_r($matches, true));
 	$sessionprint = "customsearch_{$id}_$fingerprint";
 	if (isset($_SESSION[$sessionprint]) && $_SESSION[$sessionprint] != $fingerprint) {
 		unset($_SESSION["customsearch_$id"]);
@@ -170,75 +159,25 @@ function wikiplugin_customsearch($data, $params)
 	$textrangegroups = array();
 	$daterangegroups = array();
 
-	$options = array(
-		'searchfadetext' => tr('Loading...'),
-		'searchfadediv' => $searchfadediv,
-		'results' => empty($params['destdiv']) ? "#customsearch_{$id}_results" : "#{$params['destdiv']}",
-		'autosearchdelay' => isset($params['autosearchdelay']) ? (int) $params['autosearchdelay'] : 0,
-	);
-
 	$script = "
-var customsearch = {
-	options: " . json_encode($options) . ",
-	id: " . json_encode($id) . ",
-	offset: 0,
-	quiet: false,
-	searchdata: {},
-	definition: " . json_encode((string) $definitionKey) . ",
-	autoTimeout: null,
-	add: function (fieldId, filter) {
-		this.stop();
-		this.searchdata[fieldId] = filter;
-		this.start();
-	},
-	remove: function (fieldId) {
-		this.stop();
-		delete this.searchdata[fieldId];
-		this.start();
-	},
-	load: function () {
-		var selector = '#' + this.options.searchfadediv;
-		var that = this;
-		if (this.options.searchfadediv.length <= 1 && $(selector).length === 0) {
-			selector = '#customsearch_$id';
-		}
-
-		$(selector).modal(this.options.searchfadetext);
-
-		this._load(function (data) {
-			$(selector).modal();
-			$(that.options.results).html(data);
-			customsearch.quiet = false;
-			$(document).trigger('pageSearchReady');
-		});
-	},
-	stop: function () {
-		if (this.autoTimeout) {
-			clearTimeout(this.autoTimeout);
-			this.autoTimeout = null;
-		}
-	},
-	start: function () {
-		var that = this;
-		if (this.options.autosearchdelay && ! this.quiet) {
-			this.autoTimeout = setTimeout(function () {
-				that.load();
-			}, this.options.autosearchdelay);
-		}
-	}
-};
+function add_customsearch_$id(fieldid, filter) {
+	customsearch_{$id}_searchdata[fieldid] = filter;
+}
+function remove_customsearch_$id(fieldid) {
+	delete customsearch_{$id}_searchdata[fieldid];
+}
+customsearch_{$id}_searchdata = new Object();
+customsearch_{$id}_basedata = " . json_encode((string) $data) . ";
 $('#customsearch_$id').click(function() {
-	customsearch.offset = 0;
+	// reset offset on reclick of form since new search should always start from 0 offset
+	customsearch_offset_$id = 0;
 });
 $('#customsearch_$id').submit(function() {
-	customsearch.load();
+	load_customsearch_$id($.toJSON(customsearch_{$id}_searchdata));
 	return false;
 });
-
-customsearch_$id = customsearch;
 ";
 
-	$parser = new WikiParser_PluginArgumentParser;
 	foreach ($matches as $match) {
 		$name = $match->getName();
 		$arguments = $parser->parse($match->getArguments());
@@ -249,9 +188,9 @@ customsearch_$id = customsearch;
 			$match->replaceWith('');
 			continue;
 		}
-		if (!empty($arguments['_field']) && $arguments['_filter'] == 'content') {
+		if ($arguments['_filter'] == 'content' && !empty($arguments['_field'])) {
 			$filter = $arguments['_field'];
-		} elseif (!empty($arguments['_field']) && $arguments['_filter'] == 'content') {
+		} elseif ($arguments['_filter'] == 'content' && empty($arguments['_field'])) {
 			$filter = 'content';
 		} else {
 			$filter = '';
@@ -289,61 +228,83 @@ customsearch_$id = customsearch;
 			} else {
 				$fieldname = $fieldid;
 			}
-			$match->replaceWith($function($id, $fieldname, $fieldid, $arguments, $default, $script, $groups));
+			$match->replaceWith($function($id, $fieldname, $fieldid, $arguments, $default, $script, $groups, $autosearchdelay));
 		}
 	}
 
-	$callbackScript = null;
 	if (!empty($params['callbackscript']) && TikiLib::lib('tiki')->page_exists($params['callbackscript'])) {
 		$callbackscript_tpl = "wiki:" . $params['callbackscript'];
 		$callbackScript = TikiLib::lib('smarty')->fetch($callbackscript_tpl);
 	}
 
-	global $page;
+	$script .= "function load_customsearch_$id(searchdata) {\n";
+	$searchfadetext = tr('Searching...');
+	if ($searchfadediv) {
+		$script .= "	if ($('#$searchfadediv').length) $('#$searchfadediv').modal('$searchfadetext');\n";
+		$script .= "	else $('#customsearch_$id').modal('$searchfadetext');\n";
+	} else {
+		$script .= "	$('#customsearch_$id').modal('$searchfadetext');\n";
+	}
 	$script .= "
-customsearch._load = function (receive) {
 	var datamap = {
-		definition: this.definition,
-		adddata: $.toJSON(this.searchdata),
-		searchid: this.id,
+		basedata: customsearch_{$id}_basedata,
+		adddata: searchdata,
+		searchid: '$id',
 		groups: '" . json_encode($groups) . "',
 		textrangegroups: '" . json_encode($textrangegroups) . "',
 		daterangegroups: '" . json_encode($daterangegroups) . "',
-		offset: customsearch.offset,
-		maxRecords: this.maxRecords,
-		page: '$page'
+		offset: customsearch_offset_$id,
+		maxRecords: customsearch_maxRecords_$id
 	};
-	if (customsearch.sort_mode) {
+	if (customsearch_sort_mode_$id) {
 		// blank sort_mode is not allowed by Tiki input filter
-		datamap.sort_mode = customsearch.sort_mode;
+		datamap['sort_mode'] = customsearch_sort_mode_$id;
 	}
 	$.ajax({
 		type: 'POST',
-		url: $.service('search_customsearch', 'customsearch'),
+		url: $.service('tracker_search', 'customsearch'),
 		data: datamap,
 		dataType: 'html',
-		success: function(data) {
-			receive(data);
-			$callbackScript;
+		success: function(data){
+";
+
+	if ($searchfadediv) {
+		$script .= "			if ($('#$searchfadediv').length) $('#$searchfadediv').modal();\n";
+		$script .= "			else $('#customsearch_$id').modal();\n";
+	} else {
+		$script .= "			$('#customsearch_$id').modal();\n";
+	}
+	if (!empty($params['destdiv'])) {
+		$script .= "			$('#{$params['destdiv']}').html(data); customsearch_quiet_$id = false;\n";
+	} else {
+		$script .= "			$('#customsearch_{$id}_results').html(data); customsearch_quiet_$id = false;\n";
+	}
+
+	$script .= "			$(document).trigger('pageSearchReady');\n";
+	if (!empty($callbackScript)) $script .= $callbackScript;
+	$script .= "
 		}
 	});
 };
-customsearch.sort_mode = '$sort_mode';
-customsearch.offset = $offset;
-customsearch.maxRecords = $maxRecords;
+customsearch_sort_mode_$id = '$sort_mode';
+customsearch_offset_$id = $offset;
+customsearch_maxRecords_$id = $maxRecords;
 ";
 
 	if ($params['searchonload']) {
-		$script .= "customsearch.load();";
+		$script .= "$('#customsearch_$id').submit();
+";
 	}
-
 	TikiLib::lib('header')->add_jq_onready($script);
 
-	$out = '<div id="customsearch_' . $id . '_form"><form id="customsearch_' . $id . '">' . $matches->getText() . '</form></div>';
+	$form = '<div id="' . "customsearch_$id" . '_form' . '"><form id="' . "customsearch_$id" . '">' . $matches->getText() . '</form></div>';
 
 	if (empty($params['destdiv'])) {
-		$out .= '<div id="customsearch_' . $id . '_results"></div>';
+		$results = '<div id="' . "customsearch_$id" . '_results"></div>';
 	}
+
+	$out = $form . $results;
+
 
 	return $out;
 }
@@ -359,7 +320,7 @@ function cs_design_setbasic(&$element, $fieldid, $fieldname, $arguments)
 	}
 }
 
-function cs_design_input($id, $fieldname, $fieldid, $arguments, $default, &$script, &$groups)
+function cs_design_input($id, $fieldname, $fieldid, $arguments, $default, &$script, &$groups, $autosearchdelay = 0)
 {
 	$document = new DOMDocument;
 	$element = $document->createElement('input');
@@ -373,34 +334,39 @@ function cs_design_input($id, $fieldname, $fieldid, $arguments, $default, &$scri
 	}
 	if ($type == 'radio') {
 		$radioreset = "$('input[type=radio][name=$fieldname]').each(function() {
-				customsearch.remove($(this).attr('id'));
+				remove_customsearch_$id($(this).attr('id'));
 			});";
 	} else {
 		$radioreset = '';
 	}
 
-	$script .= "
-$('#$fieldid').change(function() {
-	var filter = {
-		config: " . json_encode($arguments) . ",
-		name: 'input',
-		value: $val_selector
-	};
+	$script .= "$('#$fieldid').change(function() {\n";
+	if ($autosearchdelay) {
+		$script .= "	if (typeof(customsearch_timeout_$id)!='undefined') clearTimeout(customsearch_timeout_$id);\n";
+	}
+	$script .= "	var filter = new Object();
+	filter.config = " . json_encode($arguments) . ";
+	filter.name = 'input';
+	filter.value = $val_selector;
 	$radioreset
-	customsearch.add('$fieldid', filter);
-});
-
-if (customsearch.options.autosearchdelay) {
-	// prevent enter from submitting form since the change itself will do so
-	$('#$fieldid').keydown(function(event) {
-		if (event.keyCode == '13') {
-			event.preventDefault();
-			$('#$fieldid').trigger('change');
-			return false;
-		}
-	});
-}
+	add_customsearch_$id('$fieldid', filter);
 ";
+	if ($autosearchdelay) {
+		$script .= "	if (!customsearch_quiet_$id)\n		customsearch_timeout_$id = setTimeout('$(\'#customsearch_$id\').submit()', $autosearchdelay);\n";
+	}
+	$script .= "});\n";
+
+	if ($autosearchdelay) {
+		// prevent enter from submitting form since the change itself will do so
+		$script .= "$('#$fieldid').keydown(function(event) {
+	if (event.keyCode == '13') {
+		event.preventDefault();
+		$('#$fieldid').trigger('change');
+		return false;
+	}
+});
+";
+	}
 
 	if ($default && $type != "hidden") {
 		if ((string) $default != 'n' && ($type == 'checkbox' || $type == 'radio')) {
@@ -408,16 +374,16 @@ if (customsearch.options.autosearchdelay) {
 		} else {
 			$element->setAttribute('value', $default);
 		}
-		$script .= 	"customsearch.quiet = true; $('#$fieldid').trigger('change');\ncustomsearch.quiet = false;\n";
+		$script .= 	"customsearch_quiet_$id = true; $('#$fieldid').trigger('change');\ncustomsearch_quiet_$id = false;\n";
 	} elseif ($type == "hidden") {
-		$script .= 	"customsearch.quiet = true; $('#$fieldid').trigger('change');\ncustomsearch.quiet = false;\n";
+		$script .= 	"customsearch_quiet_$id = true; $('#$fieldid').trigger('change');\ncustomsearch_quiet_$id = false;\n";
 	}
 
 	$document->appendChild($element);
 	return $document->saveHTML();
 }
 
-function cs_design_categories($id, $fieldname, $fieldid, $arguments, $default, &$script, &$groups)
+function cs_design_categories($id, $fieldname, $fieldid, $arguments, $default, &$script, &$groups, $autosearchdelay = 0)
 {
 	$document = new DOMDocument;
 	extract($arguments, EXTR_SKIP);
@@ -435,8 +401,6 @@ function cs_design_categories($id, $fieldname, $fieldid, $arguments, $default, &
 	}
 	if (!isset($_categpath)) {
 		$_categpath = false;
-	} else {
-		$_categpath = ($_categpath === 'y');
 	}
 
 	$cats = TikiLib::lib('categ')->getCategories($filter);
@@ -476,35 +440,38 @@ function cs_design_categories($id, $fieldname, $fieldid, $arguments, $default, &
 
 			if ($_style == 'radio') {
 				$radioreset = "$('input[type=radio][name=$fieldname]').each(function() {
-	customsearch.remove($(this).attr('id'));
+	remove_customsearch_$id($(this).attr('id'));
 });"
 ;
 			} else {
 				$radioreset = '';
 			}
 
-			$script .= "
-$('#$fieldid').change(function() {
-	if ($(this).is(':checked')) {
-		var filter = {
-			config = " . json_encode($arguments) . ",
-			name = 'categories',
-			value = $(this).val()
-		}
-		$radioreset
-		customsearch.add('$fieldid', filter);
-	} else {
-		customsearch.remove('$fieldid', filter);
-	}
-});
+			$script .= "$('#$fieldid').change(function() {";
+			if ($autosearchdelay) {
+				$script .= "	if (typeof(customsearch_timeout_$id)!='undefined') clearTimeout(customsearch_timeout_$id);\n";
+			}
+			$script .= "if ($(this).is(':checked')) {
+	var filter = new Object();
+	filter.config = " . json_encode($arguments) . ";
+	filter.name = 'categories';
+	filter.value = $(this).val();
+	$radioreset
+	add_customsearch_$id('$fieldid', filter);
+} else {
+	remove_customsearch_$id('$fieldid', filter);
+}
 ";
+			if ($autosearchdelay) {
+				$script .= "	if (!customsearch_quiet_$id) customsearch_timeout_$id = setTimeout('$(\'#customsearch_$id\').submit()', $autosearchdelay);\n";
+			}
+			$script .= "});\n";
 
 			if ($default && in_array($c['categId'], (array) $default)) {
 				$element->setAttribute('checked', 'checked');
-				$script .= "
-customsearch.quiet = true;
+                		$script .= "customsearch_quiet_$id = true;
 $('#$fieldid').trigger('change');
-customsearch.quiet = false;
+customsearch_quiet_$id = false;
 ";
 			}
 		}
@@ -520,15 +487,20 @@ customsearch.quiet = false;
 			$option->setAttribute('value', '');
 			$element->appendChild($option);
 		}
-		$script .= "
-$('#$fieldid').change(function() {
-	customsearch.add('$fieldid', {
-		config: " . json_encode($arguments) . ",
-		name: 'categories',
-		value: $(this).val()
-	});
-});
+		$script .= "$('#$fieldid').change(function() {";
+		if ($autosearchdelay) {
+			$script .= "	if (typeof(customsearch_timeout_$id)!='undefined') clearTimeout(customsearch_timeout_$id);\n";
+		}
+		$script .= "	var filter = new Object();
+	filter.config = " . json_encode($arguments) . ";
+	filter.name = 'categories';
+	filter.value = $(this).val();
+	add_customsearch_$id('$fieldid', filter);
 ";
+		if ($autosearchdelay) {
+			$script .= "	if (!customsearch_quiet_$id) customsearch_timeout_$id = setTimeout('$(\'#customsearch_$id\').submit()', $autosearchdelay);\n";
+		}
+		$script .= "});";
 
 		foreach ($cats as $c) {
 			$option = $document->createElement('option', $_categpath ? $c['relativePathString'] : $c['name']);
@@ -536,10 +508,9 @@ $('#$fieldid').change(function() {
 			$element->appendChild($option);
 			if ($default && in_array($c['categId'], (array) $default)) {
 				$option->setAttribute('selected', 'selected');
-				$script .= "
-customsearch.quiet = true;
+				$script .= "customsearch_quiet_$id = true;
 $('#$fieldid').trigger('change');
-customsearch_quiet = false;
+customsearch_quiet_$id = false;
 ";
 			}
 		}
@@ -547,10 +518,10 @@ customsearch_quiet = false;
 
 	}
 
-	return '~np~' . $document->saveHTML() . '~/np~';
+	return $document->saveHTML();
 }
 
-function cs_design_select($id, $fieldname, $fieldid, $arguments, $default, &$script, &$groups)
+function cs_design_select($id, $fieldname, $fieldid, $arguments, $default, &$script, &$groups, $autosearchdelay = 0)
 {
 	$document = new DOMDocument;
 	$element = $document->createElement('select');
@@ -582,15 +553,20 @@ function cs_design_select($id, $fieldname, $fieldid, $arguments, $default, &$scr
 		$element->appendChild($option);
 	}
 
-	$script .= "
-$('#$fieldid').change(function() {
-	customsearch.add('$fieldid', {
-		config: " . json_encode($arguments) . ",
-		name: 'select',
-		value: $(this).val()
-	});
-});
+	$script .= "$('#$fieldid').change(function() {";
+	if ($autosearchdelay) {
+		$script .= "	if (typeof(customsearch_timeout_$id)!='undefined') clearTimeout(customsearch_timeout_$id);\n";
+	}
+	$script .= "	var filter = new Object();
+	filter.config = " . json_encode($arguments) . ";
+	filter.name = 'select';
+	filter.value = $(this).val();
+	add_customsearch_$id('$fieldid', filter);
 ";
+	if ($autosearchdelay) {
+		$script .= "	if (!customsearch_quiet_$id) customsearch_timeout_$id = setTimeout('$(\'#customsearch_$id\').submit()', $autosearchdelay);\n";
+	}
+	$script .= "});\n";
 
 	foreach ($options as $k => $opt) {
 		if (!empty($labels[$k])) {
@@ -602,10 +578,9 @@ $('#$fieldid').change(function() {
 		$option->setAttribute('value', $opt);
 		if ($default && in_array($opt, (array) $default)) {
 			$option->setAttribute('selected', 'selected');
-			$script .= "
-customsearch.quiet = true;
+			$script .= "	customsearch_quiet_$id = true;
 $('#$fieldid').trigger('change');
-customsearch.quiet = false;
+customsearch_quiet_$id = false;
 ";
 		}
 		$element->appendChild($option);
@@ -613,7 +588,7 @@ customsearch.quiet = false;
 	return $document->saveHTML();
 }
 
-function cs_design_daterange($id, $fieldname, $fieldid, $arguments, $default, &$script, &$groups)
+function cs_design_daterange($id, $fieldname, $fieldid, $arguments, $default, &$script, &$groups, $autosearchdelay = 0)
 {
 	extract($arguments, EXTR_SKIP);
 
@@ -669,18 +644,22 @@ function cs_design_daterange($id, $fieldname, $fieldid, $arguments, $default, &$
 	$picker .= smarty_function_jscalendar($params_from, $smarty);
 	$picker .= smarty_function_jscalendar($params_to, $smarty);
 
-	$script .= "
-$('#{$fieldid_from}_dptxt,#{$fieldid_to}_dptxt').change(function() {
-	var from = $('#$fieldid_from').val();
-	var to = $('#$fieldid_to').val();
-	from = from.substr(0,10);to = to.substr(0,10); // prevent trailing 000 from date picker
-	customsearch.add('$fieldid', {
-		config: " . json_encode($arguments) . ",
-		name: 'daterange',
-		value: from + ',' + to
-	});
-});
-";
+	$script .= "$('#{$fieldid_from}_dptxt,#{$fieldid_to}_dptxt').change(function() {";
+	if ($autosearchdelay) {
+		$script .= "if (typeof(customsearch_timeout_$id)!='undefined') clearTimeout(customsearch_timeout_$id);";
+	}
+	$script .= "var from = $('#$fieldid_from').val();";
+	$script .= "var to = $('#$fieldid_to').val();";
+	$script .= "from = from.substr(0,10);to = to.substr(0,10);"; // prevent trailing 000 from date picker
+	$script .= "var filter = new Object();
+		filter.config = " . json_encode($arguments) . ";
+		filter.name = 'daterange';
+		filter.value = from + ',' + to;
+		add_customsearch_$id('$fieldid', filter);";
+	if ($autosearchdelay) {
+		$script .= "if (!customsearch_quiet_$id) customsearch_timeout_$id = setTimeout('$(\'#customsearch_$id\').submit()', $autosearchdelay);";
+	}
+	$script .= "});";
 
 	return $picker;
 }

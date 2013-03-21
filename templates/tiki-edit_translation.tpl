@@ -23,7 +23,7 @@
 		{tr}The object is already in the set of translations{/tr}
 	{/if}
 	</div>
-	<br>
+	<br />
 {/if}
 
 {if $langpage}
@@ -37,7 +37,7 @@
 	<li><a href="#change_language">{tr}Change language for this page{/tr}</a></li>
 </ul>
 
-<hr>
+<hr />
 
 <a name="translate_updates"></a>
 <h3>{tr}Translate updates made on this page or one of its translations{/tr}</h3>
@@ -46,9 +46,9 @@
 	{$content_of_update_translation_section}
 </div>
 
-<br>
-<hr>
-<br>
+<br />
+<hr />
+<br />
 
 <a name="new_translation"></a>
 <h3>{tr}Translate this page to a new language{/tr}</h3>
@@ -65,17 +65,17 @@
 			</select>
 		</p>
 		<p>{tr}Enter the page title:{/tr}
-			<input type="text" size="40" name="page" id="translation_name">
-			<input type="hidden" name="source_page" value="{$name|escape}">
-			<input type="hidden" name="oldver" value="-1">
-			<input type="hidden" name="is_new_translation" value="y">
+			<input type="text" size="40" name="page" id="translation_name"/>
+			<input type="hidden" name="source_page" value="{$name|escape}"/>
+			<input type="hidden" name="oldver" value="-1"/>
+			<input type="hidden" name="is_new_translation" value="y"/>
 		</p>
 		{if $prefs.feature_categories eq 'y'}
 			{tr}Below, assign categories to this new translation (Note: they should probably be the same as the categories of the page being translate){/tr}
-			<br>
+			<br />
 			{include file="categorize.tpl" notable=y}
 		{/if}
-		<p align="center"><input type="submit" value="{tr}Create translation{/tr}"></p>
+		<p align="center"><input type="submit" value="{tr}Create translation{/tr}"/></p>
 		<textarea name="edit" style="display:none">{$translate_message}{$pagedata|escape:'htmlall':'UTF-8'}</textarea>
 	</fieldset>
 </form>
@@ -117,7 +117,7 @@ function validate_translation_request() {
 {/jq}
 {/if}
 
-<hr>
+<hr />
 
 <a name="change_language"></a>
 <h3>{tr}Change language for this page{/tr}</h3>
@@ -129,9 +129,9 @@ function validate_translation_request() {
 		<option value="{$lang.value|escape}">{$lang.name}</option>
 		{/foreach}
 	</select>
-	<input type="hidden" name="id" value="{$id}">
-	<input type="hidden" name="type" value="{$type}">
-	<input type="submit" name="switch" value="{tr}Change Language{/tr}">
+	<input type="hidden" name="id" value="{$id}"/>
+	<input type="hidden" name="type" value="{$type}" />
+	<input type="submit" name="switch" value="{tr}Change Language{/tr}"/>
 </div>
 </form>
 
@@ -148,9 +148,9 @@ function validate_translation_request() {
 				<option value="{$lang.value|escape}">{$lang.name}</option>
 				{/foreach}
 			</select>
-			<input type="hidden" name="id" value="{$id}">
-			<input type="hidden" name="type" value="{$type|escape}">
-			<input type="submit" value="{tr}Set Current Page's Language{/tr}">
+			<input type="hidden" name="id" value="{$id}" />
+			<input type="hidden" name="type" value="{$type|escape}" />
+			<input type="submit" value="{tr}Set Current Page's Language{/tr}"/>
 		</p>
 	</form>
 {/if}

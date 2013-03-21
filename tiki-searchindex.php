@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -133,17 +130,9 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 $smarty->assign('mid', 'tiki-searchindex.tpl');
 $smarty->display("tiki.tpl");
 
-/**
- * @param $filter
- * @param $offset
- * @param $maxRecords
- * @return mixed
- */
 function tiki_searchindex_get_results($filter, $offset, $maxRecords)
 {
-	global $prefs;
-	
-	$unifiedsearchlib = TikiLib::lib('unifiedsearch');
+	global $unifiedsearchlib;
 	$query = $unifiedsearchlib->buildQuery($filter);
 	$query->setRange($offset, $maxRecords);
 
@@ -151,13 +140,5 @@ function tiki_searchindex_get_results($filter, $offset, $maxRecords)
 		$query->setOrder($order);
 	}
 
-	if ($prefs['feature_search_stats'] == 'y') {
-		$stats = TikiLib::lib('searchstats');
-		foreach ($query->getTerms() as $term) {
-			$stats->register_term_hit($term);
-		}
-	}
-
 	return $query->search($unifiedsearchlib->getIndex());
 }
-

@@ -46,11 +46,6 @@
 	{preference name=feature_translation_incomplete_notice}
 	{preference name=feature_multilingual_one_page}
 	{preference name=quantify_changes}
-	
-	{preference name=wiki_edit_minor}
-	
-	{preference name=feature_user_watches_translations}
-	
 	{preference name=feature_multilingual_structures}
 	{preference name=freetags_multilingual}
 	{preference name=category_i18n_sync}
@@ -68,18 +63,6 @@
 {preference name=record_untranslated}
 	
 {preference name=feature_machine_translation}
-<div class="adminoptionboxchild" id="feature_machine_translation_childcontainer">
-	{preference name=lang_machine_translate_implementation}
-	<div class="adminoptionboxchild lang_machine_translate_implementation_childcontainer google">
-		{preference name=lang_google_api_key}
-	</div>
-	<div class="adminoptionboxchild lang_machine_translate_implementation_childcontainer bing">
-		{preference name=lang_bing_api_client_id}
-		{preference name=lang_bing_api_client_secret}
-	</div>
-	{preference name=lang_machine_translate_wiki}
-</div>
-
 </div>
 {/tab}
 

@@ -42,7 +42,6 @@ html[dir=ltr] {	/* for ck editor */
 }
 
 input[type=text],
-input[type=search],
 input[type=password] {
 	background: #fafafa;
 	border-color: #878787;

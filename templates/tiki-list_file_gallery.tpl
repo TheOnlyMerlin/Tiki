@@ -7,7 +7,17 @@
 		{if $edit_mode eq 'y'}
 			{tr}Edit Gallery:{/tr}
 		{/if}
-		{$name}
+		{strip} 
+			{if $gal_info.type eq 'user'}
+				{if $gal_info.user eq $user}
+					{tr}My Files{/tr}
+				{else}
+					{tr}Files of {$gal_info.user}{/tr}
+				{/if}
+			{else}
+				{$name}
+			{/if}
+		{/strip}
 	{/if}
 {/title}
 
@@ -39,7 +49,7 @@
 		{if $prefs.feed_file_gallery eq 'y'}
 			{if $gal_info.type eq "podcast" or $gal_info.type eq "vidcast"}
 				<a href="tiki-file_gallery_rss.php?galleryId={$galleryId}&amp;ver=PODCAST">
-					<img src='img/rss_podcast_80_15.png' alt="{tr}RSS feed{/tr}" title="{tr}RSS feed{/tr}" align='right'>
+					<img src='img/rss_podcast_80_15.png' alt="{tr}RSS feed{/tr}" title="{tr}RSS feed{/tr}" align='right' />
 				</a>
 			{else}
 				<a href="tiki-file_gallery_rss.php?galleryId={$galleryId}">
@@ -66,10 +76,10 @@
 		{if $tiki_p_create_file_galleries eq 'y' and $edit_mode ne 'y'}
 			{button _keepall='y' _text="{tr}Create a Gallery{/tr}" edit_mode=1 parentId=$galleryId cookietab=1}
 		{/if}
-		{if $tiki_p_create_file_galleries eq 'y' and $dup_mode ne 'y' and $gal_info.type neq 'user'}
+		{if $tiki_p_create_file_galleries eq 'y' and $dup_mode ne 'y'}
 			{button _text="{tr}Duplicate Gallery{/tr}" dup_mode=1 galleryId=$galleryId}
 		{/if}
-		{if $tiki_p_admin_file_galleries eq 'y' or ($user eq $gal_info.user and $gal_info.type eq 'user' and $tiki_p_userfiles)}
+		{if $tiki_p_admin_file_galleries eq 'y' or $user eq $gal_info.user}
 			{if $edit_mode eq 'y' or $dup_mode eq 'y'}
 				{button _keepall='y' _text="{tr}Browse Gallery{/tr}" galleryId=$galleryId}
 			{else}
@@ -77,55 +87,17 @@
 			{/if}
 		{/if}
 		{if $edit_mode neq 'y' and $dup_mode neq 'y'}
-			{if $prefs.javascript_enabled eq 'y'}
-				<select style="float:right;margin-top:0;" id="viewSwitcher">
-					<option value="list"{if $view eq 'list'} selected="selected"{/if}>
-						{tr}List Gallery{/tr}
-					</option>
-					<option value="browse"{if $view eq 'browse'} selected="selected"{/if}>
-						{tr}Browse Images{/tr}
-					</option>
-					{if $filescount gt 0}
-						<option value="page"{if $view eq 'page'} selected="selected"{/if}>
-							{tr}Page View{/tr}
-						</option>
-					{/if}
-					{if $tiki_p_admin_file_galleries eq 'y'}
-						<option value="admin"{if $view eq 'admin'} selected="selected"{/if}>
-							{tr}Admin View{/tr}
-						</option>
-					{/if}
-					{if $prefs.fgal_elfinder_feature eq 'y'}
-						<option value="finder"{if $view eq 'finder'} selected="selected"{/if}>
-							{tr}Finder View{/tr}
-						</option>
-					{/if}
-				</select>
-				{jq}
-$("#viewSwitcher").change(function() {
-				var loc = location.href;
-				if (loc.indexOf("view=") > -1) {
-					loc = loc.replace(/view=([^&])+/, "view=" + $(this).find(':selected').val());
-				} else {
-					loc += loc.indexOf("?") > -1 ? "&" : "?";
-					loc += "view=" + $(this).find(':selected').val();
-				}
-	location.replace(loc);
-});
-				{/jq}
-			{else}
-				{if $view neq 'list'}
-					{button _keepall='y' _text="{tr}List Gallery{/tr}" view="list" galleryId=$galleryId}
-				{/if}
-				{if $view neq 'browse'}
-					{button _text="{tr}Browse Images{/tr}" view="browse" galleryId=$galleryId}
-				{/if}
-				{if $view neq 'page' and $filescount gt 0}
-					{button _text="{tr}Page View{/tr}" view="page" galleryId=$galleryId maxRecords=1}
-				{/if}
-				{if $view neq 'admin' and $tiki_p_admin_file_galleries eq 'y'}
-					{button _keepall='y' _text="{tr}Admin View{/tr}" view="admin" galleryId=$galleryId}
-				{/if}
+			{if $view neq 'list'}
+				{button _keepall='y' _text="{tr}List Gallery{/tr}" view="list" galleryId=$galleryId}
+			{/if}
+			{if $view neq 'browse'}
+				{button _text="{tr}Browse Images{/tr}" view="browse" galleryId=$galleryId}
+			{/if}
+			{if $view neq 'page' and $filescount gt 0}
+				{button _text="{tr}Page View{/tr}" view="page" galleryId=$galleryId maxRecords=1}
+			{/if}
+			{if $view neq 'admin' and $tiki_p_admin_file_galleries eq 'y'}
+				{button _keepall='y' _text="{tr}Admin View{/tr}" view="admin" galleryId=$galleryId}
 			{/if}
 		{/if}
 		{if $tiki_p_assign_perm_file_gallery eq 'y'}
@@ -154,7 +126,7 @@ $("#viewSwitcher").change(function() {
 		{/if}
 	{/if}
 
-	{if $edit_mode neq 'y' and $prefs.fgal_show_slideshow eq 'y' and $gal_info.show_slideshow eq 'y'}
+	{if $edit_mode neq 'y' and $prefs.fgal_show_slideshow eq 'y' and $gal_info.show_slideshow.value eq 'y'}
 		{button _text="{tr}SlideShow{/tr}" href="#" _onclick="javascript:window.open('tiki-list_file_gallery.php?galleryId=$galleryId&amp;slideshow','','menubar=no,width=600,height=500,resizable=yes');return false;"}
 	{/if}
 </div>
@@ -169,9 +141,9 @@ $("#viewSwitcher").change(function() {
 	{remarksbox type="note" title="{tr}Note{/tr}"}
 		{$fileChangedMessage}
 		<form method="post" action="{$smarty.server.PHP_SELF}{if !empty($filegals_manager) and $filegals_manager neq ''}?filegals_manager={$filegals_manager|escape}{/if}">
-			<input type="hidden" name="galleryId" value="{$galleryId|escape}">
-			<input type="hidden" name="fileId" value="{$fileId|escape}">
-			{tr}Your comment{/tr} ({tr}optional{/tr}): <input type="text" name="comment" size="40">
+			<input type="hidden" name="galleryId" value="{$galleryId|escape}" />
+			<input type="hidden" name="fileId" value="{$fileId|escape}" />
+			{tr}Your comment{/tr} ({tr}optional{/tr}): <input type="text" name="comment" size="40" />
 			{icon _id='accept' _tag='input_image'}
 		</form>
 	{/remarksbox}
@@ -201,44 +173,42 @@ $("#viewSwitcher").change(function() {
 {elseif $dup_mode eq 'y'}
 	{include file='duplicate_file_gallery.tpl'}
 {else}
-	{if $prefs.fgal_elfinder_feature neq 'y' or $view neq 'finder'}
-		{if $prefs.fgal_search eq 'y' and $view neq 'page'}
-			{include file='find.tpl' find_show_num_rows = 'y' find_show_categories_multi='y' find_durations=$find_durations find_show_sub='y' find_other="{tr}Gallery of this fileId{/tr}" find_in="<ul><li>{tr}Name{/tr}</li><li>{tr}Filename{/tr}</li><li>{tr}Description{/tr}</li></ul>"}
-		{/if}
-		{if $prefs.fgal_search_in_content eq 'y' and $galleryId > 0}
-			{if $view neq 'page'}
-				<div class="findtable">
-					<form id="search-form" class="forms" method="get" action="tiki-search{if $prefs.feature_forum_local_tiki_search eq 'y'}index{else}results{/if}.php">
-						<input type="hidden" name="where" value="files">
-						<input type="hidden" name="galleryId" value="{$galleryId}">
-						<label class="find_content">{tr}Search in content{/tr}
-							<input name="highlight" size="30" type="text">
-						</label>
-						<input type="submit" class="wikiaction" name="search" value="{tr}Go{/tr}">
-					</form>
-				</div>
-			{/if}
+	{if $prefs.fgal_search eq 'y' and $view neq 'page'}
+		{include file='find.tpl' find_show_num_rows = 'y' find_show_categories_multi='y' find_durations=$find_durations find_show_sub='y' find_other="{tr}Gallery of this fileId{/tr}" find_in="<ul><li>{tr}Name{/tr}</li><li>{tr}Filename{/tr}</li><li>{tr}Description{/tr}</li></ul>"}
+	{/if}
+	{if $prefs.fgal_search_in_content eq 'y' and $galleryId > 0}
+		{if $view neq 'page'}
+			<div class="findtable">
+				<form id="search-form" class="forms" method="get" action="tiki-search{if $prefs.feature_forum_local_tiki_search eq 'y'}index{else}results{/if}.php">
+					<input type="hidden" name="where" value="files" />
+					<input type="hidden" name="galleryId" value="{$galleryId}" />
+					<label class="find_content">{tr}Search in content{/tr}
+						<input name="highlight" size="30" type="text" />
+					</label>
+					<input type="submit" class="wikiaction" name="search" value="{tr}Go{/tr}"/>
+				</form>
+			</div>
 		{/if}
 	{/if}
 
-	{if $view eq 'page'}
-		<div class="pageview">
-			<form id="size-form" class="forms" action="tiki-list_file_gallery.php">
-				<input type="hidden" name="view" value="page">
-				<input type="hidden" name="galleryId" value="{$galleryId}">
-				<input type="hidden" name="maxRecords" value=1>
-				<input type="hidden" name="offset" value="{$offset}">
-				<label for="maxWidth">
-					{tr}Max width{/tr}&nbsp;<input id="maxWidth" type="text" name="maxWidth" value="{$maxWidth}">
-				</label>
-				<input type="submit" class="wikiaction" name="setSize" value="{tr}Go{/tr}">
-			</form>
-		</div><br>
-		{pagination_links cant=$cant step=$maxRecords offset=$offset}
-			tiki-list_file_gallery.php?galleryId={$galleryId}&maxWidth={$maxWidth}&maxRecords={$maxRecords}&view={$view}
-		{/pagination_links}
-		<br>
-	{/if}
+{if $view eq 'page'}
+	<div class="pageview">
+		<form id="size-form" class="forms" action="tiki-list_file_gallery.php">
+			<input type="hidden" name="view" value="page" />
+			<input type="hidden" name="galleryId" value="{$galleryId}" />
+			<input type="hidden" name="maxRecords" value=1 />
+			<input type="hidden" name="offset" value="{$offset}" />
+			<label for="maxWidth">
+				{tr}Max width{/tr}&nbsp;<input id="maxWidth" type="text" name="maxWidth" value="{$maxWidth}" />
+			</label>
+			<input type="submit" class="wikiaction" name="setSize" value="{tr}Go{/tr}"/>
+		</form>
+	</div><br>
+	{pagination_links cant=$cant step=$maxRecords offset=$offset}
+		tiki-list_file_gallery.php?galleryId={$galleryId}&maxWidth={$maxWidth}&maxRecords={$maxRecords}&view={$view}
+	{/pagination_links}
+	<br>
+{/if}
 	{if $prefs.fgal_quota_show neq 'n' and $gal_info.quota}
 		<div style="float:right">
 			{capture name='use'}
@@ -246,7 +216,7 @@ $("#viewSwitcher").change(function() {
 			{/capture}
 			{if $prefs.fgal_quota_show neq 'y'}
 				<b>{$smarty.capture.use} %</b> {tr}space use on{/tr} <b>{$gal_info.quota} Mo</b>
-				<br>
+				<br />
 			{/if}
 			
 			{if $prefs.fgal_quota_show neq 'text_only'}
@@ -254,47 +224,8 @@ $("#viewSwitcher").change(function() {
 			{/if}			
 		</div>
 	{/if}
-	{if $prefs.fgal_elfinder_feature eq 'y' and $view eq 'finder'}
-		<div class="elFinderDialog" style="height: 100%"></div>
-		{jq}
 
-var elfoptions = initElFinder({
-		defaultGalleryId: {{$galleryId}},
-		deepGallerySearch:1,
-		getFileCallback: function(file,elfinder) { window.handleFinderFile(file,elfinder); },
-		height: 600
-	});
-
-$(".elFinderDialog").elfinder(elfoptions).elfinder('instance');
-
-window.handleFinderFile = function (file, elfinder) {
-	var m = file.match(/target=([^&]*)/);
-	if (!m || m.length < 2) {
-		return false;	// error?
-	}
-	$.ajax({
-		type: 'GET',
-		url: $.service('file_finder', 'finder'),
-		dataType: 'json',
-		data: {
-			cmd: "tikiFileFromHash",
-			{{if !empty($filegals_manager)}}
-				filegals_manager: "{{$filegals_manager}}",
-			{{/if}}
-			hash: m[1]
-		},
-		success: function (data) {
-			{{if !empty($filegals_manager)}}
-				window.opener.insertAt('{{$filegals_manager}}', data.wiki_syntax);
-				checkClose();
-			{{/if}}
-		}
-	});
-};
-		{/jq}
-	{else}
-		{include file='list_file_gallery.tpl'}
-	{/if}
+	{include file='list_file_gallery.tpl'}
 
 	{if $galleryId gt 0
 		&& $prefs.feature_file_galleries_comments == 'y'

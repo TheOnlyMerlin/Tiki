@@ -4,16 +4,12 @@
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
-// $Id$
 
 if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	header('location: index.php');
 	exit;
 }
 
-/**
- * @return array
- */
 function module_tracker_input_info()
 {
 	return array(
@@ -66,10 +62,6 @@ function module_tracker_input_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_tracker_input($mod_reference, $module_params)
 {
 	global $prefs;

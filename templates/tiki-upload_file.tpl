@@ -39,7 +39,7 @@
 	<div class="simplebox highlight">
 	<h2>{tr}Errors detected{/tr}</h2>
 	{section name=ix loop=$errors}
-		{$errors[ix]}<br>
+		{$errors[ix]}<br />
 	{/section}
 	{button href="#upload" _text="{tr}Retry{/tr}"}
 	</div>
@@ -70,7 +70,7 @@
 	{section name=ix loop=$uploads}
 		<tr class="{cycle values="odd,even"}">
 			<td style="text-align: center">
-				<img src="{$uploads[ix].fileId|sefurl:thumbnail}">
+				<img src="{$uploads[ix].fileId|sefurl:thumbnail}" />
 			</td>
 			<td>
 				{if !empty($filegals_manager)}
@@ -92,7 +92,7 @@
 		</tr>
 	{/section}
 	</table>
-	<br>
+	<br />
 
 	<h2>{tr}Upload File{/tr}</h2>
 {elseif isset($fileChangedMessage)}
@@ -131,7 +131,7 @@
 								   value="{$fileInfo.name|escape}"
 								{/if}
 								size="40"
-							>
+							/>
 							{if isset($gal_info.type) and ($gal_info.type eq "podcast" or $gal_info.type eq "vidcast")}
 								({tr}required field for podcasts{/tr})
 							{/if}
@@ -142,7 +142,7 @@
 						<td>
 							<textarea style="width:100%" rows="2" cols="40" id="description" name="description[]">{if isset($fileInfo.description)}{$fileInfo.description|escape}{/if}</textarea>
 							{if isset($gal_info.type) and ($gal_info.type eq "podcast" or $gal_info.type eq "vidcast")}
-								<br><em>{tr}Required for podcasts{/tr}.</em>
+								<br /><em>{tr}Required for podcasts{/tr}.</em>
 							{/if}
 						</td>
 					</tr>
@@ -164,7 +164,7 @@
 								</div>
 								<noscript>
 									<div style="background-color: #FFFF66; border-top: solid 4px #FF9966; border-bottom: solid 4px #FF9966; padding: 10px 15px;">
-										{tr}We're sorry.{/tr}<br>
+										{tr}We're sorry.{/tr}<br />
 										{tr}Upload interface could not load.  You must have JavaScript enabled to enjoy Upload interface.{/tr}
 									</div>
 								</noscript>
@@ -175,21 +175,21 @@
 								</div>
 								<div id="divLongLoading" style="display: none;">
 									{remarksbox type="warning"}
-										{tr}Upload interface is taking a long time to load or the load has failed.{/tr}<br>
+										{tr}Upload interface is taking a long time to load or the load has failed.{/tr}<br />
 										{tr}Please make sure that the Flash Plugin is enabled and that a working version of the Adobe Flash Player is installed.{/tr}
 									{/remarksbox}
 								</div>
 								<div id="divAlternateContent" style="display: none;">
 									{remarksbox type="errors"}
-										{tr}We are sorry: Upload interface could not load.  You may need to install or upgrade Flash Player.{/tr}<br>
+										{tr}We are sorry: Upload interface could not load.  You may need to install or upgrade Flash Player.{/tr}<br />
 										<a href="http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash">{tr}Visit the Adobe Website to get the Flash Player.{/tr}</a>
 									{/remarksbox}
 								</div>
 								{* Table and BR are there to avoid the Browse button to overlap next cell when a file has been selected by the user *}
 								</td></tr></table>
-								<br>
+								<br />
 							{else}
-								<input id="userfile" name="userfile[]" type="file" size="40">
+								<input id="userfile" name="userfile[]" type="file" size="40"/>
 							{/if}
 						</td>
 					{/if}
@@ -204,7 +204,7 @@
 						<tr><td>
 							<label for="isbatch">{tr}Unzip zip files:{/tr}</label>
 						</td><td width="80%">
-							<input type="checkbox" id="isbatch" name="isbatch[]">
+							<input type="checkbox" id="isbatch" name="isbatch[]" />
 						</td></tr>
 					{/if}
 	
@@ -216,21 +216,21 @@
 								{html_select_duration prefix='deleteAfter' default_value=$fileInfo.deleteAfter}
 							{else}
 								{if $prefs.feature_jscalendar eq 'y'}
-									<input type="text" value="" name="deleteAfter[]" class="datePicker">
+									<input type="text" value="" name="deleteAfter[]" class="datePicker"/>
 								{else}
 									{html_select_duration prefix='deleteAfter[]' default_unit=week}
 								{/if}
 							{/if}
 						</td></tr>
 					{/if}
-
+				
 					{if $editFileId}
-						<input type="hidden" name="galleryId" value="{$galleryId}">
-						<input type="hidden" name="fileId" value="{$editFileId}">
-						<input type="hidden" name="lockedby" value="{$fileInfo.lockedby|escape}">
+						<input type="hidden" name="galleryId" value="{$galleryId}"/>
+						<input type="hidden" name="fileId" value="{$editFileId}"/>
+						<input type="hidden" name="lockedby" value="{$fileInfo.lockedby|escape}" \>
 					{else}
 						{if count($galleries) eq 0}
-							<input type="hidden" name="galleryId" value="{$treeRootId}">
+							<input type="hidden" name="galleryId" value="{$treeRootId}"/>
 						{elseif empty($groupforalert)}
 							<tr><td>
 								<label for="galleryId">{tr}File gallery:{/tr}</label>
@@ -238,14 +238,14 @@
 								<select id="galleryId" name="galleryId[]">
 									<option value="{$treeRootId}" {if $treeRootId eq $galleryId}selected="selected"{/if} style="font-style:italic; border-bottom:1px dashed #666;">{tr}Root{/tr}</option>
 									{section name=idx loop=$galleries}
-										{if $galleries[idx].id neq $treeRootId and ($galleries[idx].perms.tiki_p_upload_files eq 'y' or $tiki_p_userfiles eq 'y')}
+										{if $galleries[idx].id neq $treeRootId and $galleries[idx].perms.tiki_p_upload_files eq 'y'}
 											<option value="{$galleries[idx].id|escape}" {if $galleries[idx].id eq $galleryId}selected="selected"{/if}>{$galleries[idx].name|escape}</option>
 										{/if}
 									{/section}
 								</select>
 							</td></tr>
 						{else}
-							<input type="hidden" name="galleryId" value="{$galleryId}">
+							<input type="hidden" name="galleryId" value="{$galleryId}"/>
 						{/if}
 					{/if}
 	
@@ -258,7 +258,7 @@
 						<tr><td>
 							<label for="author">{tr}Creator{/tr}</label>
 						</td><td width="80%">
-							<input type="text" id="author"name="author[]" value="{$fileInfo.author|escape}"><br>
+							<input type="text" id="author"name="author[]" value="{$fileInfo.author|escape}" /><br>
 							<span class="description">{tr}Creator of file, if different from the 'Uploaded by' user{/tr}</span>
 						</td></tr>
 					{/if}
@@ -296,19 +296,19 @@
 				{if $prefs.fgal_limit_hits_per_file eq 'y'}
 					<label>
 						<label for="hit_limit">{tr}Maximum number of downloads:{/tr}</label>
-						<input type="text" id="hit_limit" name="hit_limit[]" value="{$hit_limit|default:0}">
-						<br><em>{tr}Use{/tr} {tr}-1 for no limit{/tr}.</em>
+						<input type="text" id="hit_limit" name="hit_limit[]" value="{$hit_limit|default:0}"/>
+						<br /><em>{tr}Use{/tr} {tr}-1 for no limit{/tr}.</em>
 					</label>
 					<br/>
 				{else}
-					<input type="hidden" id="hit_limit" name="hit_limit[]" value="{$hit_limit|default:-1}">
+					<input type="hidden" id="hit_limit" name="hit_limit[]" value="{$hit_limit|default:-1}"/>
 				{/if}
 	
 				{* We want comments only on updated files *}
 				{if $prefs.javascript_enabled neq 'y' && $editFileId}
 					<label>
 						<label for="comment">{tr}Comment:{/tr}</label>
-						<input type="text" id="comment" name="comment[]" value="" size="40">
+						<input type="text" id="comment" name="comment[]" value="" size="40" />
 					</label>
 					<br/>
 				{/if}
@@ -317,10 +317,10 @@
 				{include file='categorize.tpl' notable='y'}<br/>
 			{/if}
 		{else}
-			<input type="hidden" name="galleryId" value="{$galleryId}">
+			<input type="hidden" name="galleryId" value="{$galleryId}"/>
 		{/if}
 		{if $prefs.javascript_enabled eq 'y' and !$editFileId}
-			<input type="hidden" name="upload">
+			<input type="hidden" name="upload" />
 		{/if}
 	</div>
 {/capture}
@@ -334,32 +334,32 @@
 		onsubmit="return verifUploadFlash()"
 	{/if}
 	>
-	<input type="hidden" name="simpleMode" value="{$simpleMode}">
+	<input type="hidden" name="simpleMode" value="{$simpleMode}"/>
 	{if !empty($filegals_manager)}
-		<input type="hidden" name="filegals_manager" value="{$filegals_manager}">
+		<input type="hidden" name="filegals_manager" value="{$filegals_manager}"/>
 	{/if}
 	{if !empty($insertion_syntax)}
-		<input type="hidden" name="insertion_syntax" value="{$insertion_syntax}">
+		<input type="hidden" name="insertion_syntax" value="{$insertion_syntax}"/>
 	{/if}
 	{if isset($token_id) and $token_id neq ''}
-		<input type="hidden" value="{$token_id}" name="TOKEN">
+		<input type="hidden" value="{$token_id}" name="TOKEN" />
 	{/if}
 
 	{$upload_str}
 
 	{if $editFileId}
-		{include file='categorize.tpl' notable='y'}<br>
-		<hr class="clear">
+		{include file='categorize.tpl' notable='y'}<br/>
+		<hr class="clear" />
 		<div id="page_bar">
-			<input name="upload" type="submit" value="{tr}Save{/tr}">
+			<input name="upload" type="submit" value="{tr}Save{/tr}"/>
 		</div>
 	{elseif $prefs.javascript_enabled neq 'y'}
 		{$upload_str}
 		{$upload_str}
-		{include file='categorize.tpl' notable='y'}<br>
-		<hr class="clear">
+		{include file='categorize.tpl' notable='y'}<br/>
+		<hr class="clear" />
 		<div id="page_bar">
-			<input type="submit" name="upload" value="{tr}Upload{/tr}">
+			<input type="submit" name="upload" value="{tr}Upload{/tr}"/>
 		</div>
 	{/if}
 </form>
@@ -376,12 +376,12 @@
 			id="btnUpload"
 			name="upload"
 			value="{tr}Upload File(s){/tr}"
-		>
-		<hr class="clear">
+		/>
+		<hr class="clear" />
 		{if $prefs.fgal_upload_progressbar eq 'ajax_flash'}
-			<input type="submit" id="btnCancel" style="display:none" value="{tr}Cancel Upload{/tr}" onclick="return false">
+			<input type="submit" id="btnCancel" style="display:none" value="{tr}Cancel Upload{/tr}" onclick="return false" />
 		{elseif $simpleMode neq 'y'}
-			<input type="submit" onclick="javascript:add_upload_file('multiple_upload'); return false" value="{tr}Add Another File{/tr}">
+			<input type="submit" onclick="javascript:add_upload_file('multiple_upload'); return false" value="{tr}Add Another File{/tr}"/>
 		{/if}
 	</div>
 {/if}
@@ -390,15 +390,13 @@
 	{icon _id="lock" class="" alt=""}
 	<span class="attention">{tr}The file is locked by {$fileInfo.lockedby}{/tr}</span>
 {/if}
-<br>
+<br />
 {if !$editFileId}
 	{remarksbox type="note"}
 		{tr}Maximum file size is around:{/tr}
 		{if $tiki_p_admin eq 'y'}<a title="{$max_upload_size_comment}">{/if}
 			{$max_upload_size|kbsize:true:0}
-		{if $tiki_p_admin eq 'y'}</a>
-			{if $is_iis}<br>{tr}Note: You are running IIS{/tr}. {tr}maxAllowedContentLength also limits upload size{/tr}. {tr}Please check web.config in the Tiki root folder{/tr}{/if}
-		{/if}
+		{if $tiki_p_admin eq 'y'}</a>{/if}
 	{/remarksbox}
 {/if}
 </div>
@@ -556,9 +554,9 @@
 		<form class="remote-upload" method="post" action="{service controller=file action=remote}">
 			<h3>{tr}Upload from URL{/tr}</h3>
 			<p>
-				<input type="hidden" name="galleryId" value="{$galleryId|escape}">
-				<label>{tr}URL:{/tr} <input type="url" name="url" placeholder="http://"></label>
-				<input type="submit" value="{tr}Add{/tr}">
+				<input type="hidden" name="galleryId" value="{$galleryId|escape}"/>
+				<label>{tr}URL:{/tr} <input type="url" name="url" placeholder="http://"/></label>
+				<input type="submit" value="{tr}Add{/tr}"/>
 			</p>
 			<div class="result"></div>
 		</form>

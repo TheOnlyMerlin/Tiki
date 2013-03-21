@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -472,10 +469,6 @@ if (!empty($multiprint_pages)) {
 	}
 }
 
-/**
- * @param $filter
- * @return mixed
- */
 function setLangFilter($filter)
 {
 	global $smarty, $prefs, $multilinguallib;
@@ -493,9 +486,6 @@ function setLangFilter($filter)
 	return $filter;
 }
 
-/**
- * @param $query
- */
 function possibly_look_for_page_aliases($query)
 {
 	global $prefs, $smarty, $semanticlib, $_REQUEST;

@@ -499,7 +499,7 @@ class BlogLib extends TikiDb_Bridge
 							$date_min = '', $date_max = '', $approved = 'y'
 	)
 	{
-		global $tikilib, $tiki_p_admin, $tiki_p_blog_admin, $tiki_p_blog_post, $user, $prefs;
+		global $tikilib, $tiki_p_admin, $tiki_p_blog_admin, $tiki_p_blog_post, $user;
 		global $commentslib; require_once('lib/comments/commentslib.php');
 
 		$parserlib = TikiLib::lib('parser');
@@ -570,23 +570,20 @@ class BlogLib extends TikiDb_Bridge
 			$res['pages'] = $this->get_number_of_pages($res['data']);
 			$res['avatar'] = $tikilib->get_user_avatar($res['user']);
 
-			$is_html = $res['wysiwyg'] === 'y' && $prefs['wysiwyg_htmltowiki'] !== 'y';
+			if (isset($res['excerpt']) && $res['excerpt'] != NULL) {
+				$res['excerpt'] = $parserlib->parse_data($res['excerpt'], array('is_html' => true));
+			}
 
-			$res['parsed_excerpt'] = $parserlib->parse_data($res['excerpt'], array('is_html' => $is_html));
-			$res['parsed_data'] =  $parserlib->parse_data($res['data'], array('is_html' => $is_html));
-
-			if ($prefs['feature_freetags'] == 'y') { // And get the Tags for the posts
-				$res['freetags'] = TikiLib::lib('freetag')->get_tags_on_object($res['postId'], 'blog post');
-			} else {
-				$res['freetags'] = array();
+			if (isset($res['wysiwyg']) && $res['wysiwyg'] == 'n') {
+				$res['data'] =  $parserlib->parse_data($res['data']);
 			}
 
 			$ret[] = $res;
 		}
 
 		$retval = array();
-		$retval['data'] = $ret;
-		$retval['cant'] = $cant;
+		$retval["data"] = $ret;
+		$retval["cant"] = $cant;
 
 		return $retval;
 	}
@@ -1139,24 +1136,6 @@ class BlogLib extends TikiDb_Bridge
 		$result = $this->fetchMap($query, array($blogId));
 
 		return array_keys($result);
-	}
-	function top_bloggers($limit, $blogId=null)
-	{
-		$mid = '';
-		$bindvars = array();
-		if ($blogId) {
-			$mid = 'where `blogId`=?';
-			$bindvars = array($blogId);
-		}
-		$query = 'select distinct(`user`), count(`user`) as posts from `tiki_blog_posts` ' . $mid . ' group by `user` order by `posts` desc';
-		$result = $this->query($query, $bindvars, $limit, 0);
-		$ret = array();
-		while ($res =$result->fetchRow()) {
-			$ret[] = $res;
-		}
-		$query = 'select count(distinct(`user`))  from `tiki_blog_posts`';
-		$nb = $this->getOne($query);
-		return array('data' => $ret, 'count' => $nb);
 	}
 }
 

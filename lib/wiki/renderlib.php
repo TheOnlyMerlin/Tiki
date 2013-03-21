@@ -198,9 +198,10 @@ class WikiRenderer
 			$this->smartyassign('pageLang', $pageLang);
 		}
 
-		if ($prefs['feature_machine_translation'] == 'y' && $prefs['lang_machine_translate_wiki'] == 'y' && !empty($this->info['lang'])) {
-			$provider = new Multilingual_MachineTranslation;
-			$langsCandidatesForMachineTranslation = $provider->getAvailableLanguages($this->trads);
+		if ($prefs['feature_machine_translation'] == 'y' && !empty($this->info['lang'])) {
+			require_once('lib/core/Multilingual/MachineTranslation/GoogleTranslateWrapper.php');
+			$translator = new Multilingual_MachineTranslation_GoogleTranslateWrapper($this->info['lang'], $this->info['lang']);
+			$langsCandidatesForMachineTranslation = $translator->getLangsCandidatesForMachineTranslation($this->trads);
 			$this->smartyassign('langsCandidatesForMachineTranslation', $langsCandidatesForMachineTranslation);
 		}
 
@@ -245,7 +246,7 @@ class WikiRenderer
 		if (!isset($this->info['is_html'])) {
 			$this->info['is_html'] = false;
 		}
-
+		
 		$this->setupComments();
 	} // }}}
 
@@ -288,30 +289,22 @@ class WikiRenderer
 		// Get the authors style for this page
 		$wiki_authors_style = ( $prefs['wiki_authors_style_by_page'] == 'y' && $this->info['wiki_authors_style'] != '' ) ? $this->info['wiki_authors_style'] : $prefs['wiki_authors_style'];
 		$this->smartyassign('wiki_authors_style', $wiki_authors_style);
-		$this->smartyassign('revision_approval_info', null);
 
 		$this->smartyassign('cached_page', 'n');
 
 		if ($prefs['flaggedrev_approval'] == 'y') {
-			$flaggedrevisionlib = TikiLib::lib('flaggedrevision');
+			global $flaggedrevisionlib; require_once 'lib/wiki/flaggedrevisionlib.php';
 
 			if ($flaggedrevisionlib->page_requires_approval($this->page)) {
 				$this->smartyassign('revision_approval', true);
 
 				if ($version_info = $flaggedrevisionlib->get_version_with($this->page, 'moderation', 'OK')) {
 					$this->smartyassign('revision_approved', $version_info['version']);
-					$revision_displayed = $this->info['version'];
-
 					if ($this->content_to_render === null) {
+						$this->smartyassign('revision_displayed', $version_info['version']);
 						$this->content_to_render = $version_info['data'];
-						$revision_displayed = $version_info['version'];
-					}
-
-					$this->smartyassign('revision_displayed', $revision_displayed);
-
-					if ($revision_displayed == $version_info['version']) {
-						$approval = $flaggedrevisionlib->find_approval_information($this->page, $revision_displayed);
-						$this->smartyassign('revision_approval_info', $approval);
+					} else {
+						$this->smartyassign('revision_displayed', $this->info['version']);
 					}
 				} else {
 					$this->smartyassign('revision_approved', null);
@@ -326,71 +319,43 @@ class WikiRenderer
 		}
 
 		if ($this->content_to_render === null) {
-			$page = $this->page;
-			$pdata = new Tiki_Render_Lazy(
-				function () use ($page) {
-					$wikilib = TikiLib::lib('wiki');
-					$smarty = TikiLib::lib('smarty');
-					$parsed = $wikilib->get_parse($page, $canBeRefreshed);
+			$pdata = $wikilib->get_parse($this->page, $canBeRefreshed);
 
-					if ($canBeRefreshed) {
-						$smarty->assign('cached_page', 'y');
-					}
-
-					return $parsed;
-				}
-			);
+			if ($canBeRefreshed) {
+				$this->smartyassign('cached_page', 'y');
+			}
 		} else {
 			$parse_options = array(
 				'is_html' => $this->info['is_html'],
 				'language' => $this->info['lang'],
 			);
 
-			$content = $this->content_to_render;
 			if ($this->raw) {
-				$pdata = new Tiki_Render_Lazy(
-					function () use ($content) {
-						$parserlib = TikiLib::lib('parser');
-						return $parserlib->parse_data_raw($content);
-					}
-				);
+				$parserlib = TikiLib::lib('parser');
+				$pdata = $parserlib->parse_data_raw($this->content_to_render);
 			} else {
-				$pdata = new Tiki_Render_Lazy(
-					function () use ($content, $parse_options) {
-						$wikilib = TikiLib::lib('wiki');
-						return $wikilib->parse_data($content, $parse_options);
-					}
-				);
+				$pdata = $wikilib->parse_data($this->content_to_render, $parse_options);
 			}
 		}
 
-		if ($prefs['wiki_pagination'] == 'y') {
-			$pages = $wikilib->get_number_of_pages($pdata);
-			$pdata = $wikilib->get_page($pdata, $this->pageNumber);
-			$this->smartyassign('pages', $pages);
+		$pages = $wikilib->get_number_of_pages($pdata);
+		$pdata = $wikilib->get_page($pdata, $this->pageNumber);
+		$this->smartyassign('pages', $pages);
 
-			if ($pages>$this->pageNumber) {
-				$this->smartyassign('next_page', $this->pageNumber+1);
-			} else {
-				$this->smartyassign('next_page', $this->pageNumber);
-			}
-			if ($this->pageNumber>1) {
-				$this->smartyassign('prev_page', $this->pageNumber-1);
-			} else {
-				$this->smartyassign('prev_page', 1);
-			}
-
-			$this->smartyassign('first_page', 1);
-			$this->smartyassign('last_page', $pages);
-			$this->smartyassign('pagenum', $this->pageNumber);
+		if ($pages>$this->pageNumber) {
+			$this->smartyassign('next_page', $this->pageNumber+1);
 		} else {
-			$this->smartyassign('pages', 1);
-			$this->smartyassign('next_page', 1);
-			$this->smartyassign('prev_page', 1);
-			$this->smartyassign('first_page', 1);
-			$this->smartyassign('last_page', 1);
-			$this->smartyassign('pagenum', 1);
+			$this->smartyassign('next_page', $this->pageNumber);
 		}
+		if ($this->pageNumber>1) {
+			$this->smartyassign('prev_page', $this->pageNumber-1);
+		} else {
+			$this->smartyassign('prev_page', 1);
+		}
+
+		$this->smartyassign('first_page', 1);
+		$this->smartyassign('last_page', $pages);
+		$this->smartyassign('pagenum', $this->pageNumber);
 
 		$this->smartyassign('lastVersion', $this->info["version"]);
 		if (isset($this->info['last_version'])) {

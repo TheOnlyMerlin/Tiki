@@ -1,36 +1,24 @@
 <?php
-/**
- * Tiki translation functions
- *
- * @package TikiWiki
- * @subpackage lib\init
- * @copyright (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project. All Rights Reserved. See copyright.txt for details and a complete list of authors.
- * @licence Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
- */
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+//
+// All Rights Reserved. See copyright.txt for details and a complete list of authors.
+// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
+
+/** translate a English string
+ * @param $content - English string
+ * @param $lg - language - if not specify = global current language
+ */
 
 global $interactive_collected_strings;
 $interactive_collected_strings = array();
 
-/**
- * needs a description
- * @param $content
- * @return mixed|string
- */function tr($content)
+function tr($content)
 {
 	$args = func_get_args();
 	return tra($content, '', false, array_slice($args, 1));
 }
 
-/**
- * translate an English string
- * @param        $content English string
- * @param string $lg      language - if not specify = global current language
- * @param bool   $unused
- * @param array  $args
- *
- * @return mixed|string
- */
 function tra($content, $lg = '', $unused = false, $args = array())
 {
 	global $prefs;
@@ -58,10 +46,6 @@ function tra($content, $lg = '', $unused = false, $args = array())
 	return $out;
 }
 
-/**
- * initialize language $lg
- * @param string $lg
- */
 function init_language( $lg )
 {
 	global $tikidomain, $prefs;
@@ -105,14 +89,6 @@ function init_language( $lg )
 	}
 }
 
-/**
- * needs description
- * @param        $content
- * @param string $lg
- * @param array  $args
- *
- * @return mixed|string
- */
 function tra_impl($content, $lg = '', $args = array())
 {
 	global $prefs, $tikilib;
@@ -156,13 +132,6 @@ function tra_impl($content, $lg = '', $args = array())
 	return tr_replace($content, $args);
 }
 
-/**
- * needs description
- * @param $content
- * @param $args
- *
- * @return mixed
- */
 function tr_replace( $content, $args )
 {
 	if ( ! count($args) ) {
@@ -180,11 +149,6 @@ function tr_replace( $content, $args )
 	return $out;
 }
 
-/**
- * needs a proper description
- * @param $original
- * @param $printed
- */
 function record_string( $original, $printed )
 {
 	global $interactive_collected_strings;
@@ -193,19 +157,11 @@ function record_string( $original, $printed )
 	}
 }
 
-/**
- * needs a proper description
- * @return bool
- */
 function interactive_enabled()
 {
 	return isset( $_SESSION['interactive_translation_mode'] ) && $_SESSION['interactive_translation_mode'] != 'off';
 }
 
-/**
- * needs a proper description
- * @return array
- */
 function get_collected_strings()
 {
 	global $interactive_collected_strings;

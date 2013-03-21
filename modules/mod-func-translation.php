@@ -11,9 +11,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_translation_info()
 {
 	return array(
@@ -34,10 +31,6 @@ function module_translation_info()
 }
 
 // Filter localized pages according to the reference language
-/**
- * @param $langInfo
- * @return bool
- */
 function filter_languages_from_pivot($langInfo)
 {
 	global $pivotLanguage;
@@ -48,10 +41,6 @@ function filter_languages_from_pivot($langInfo)
 		|| $langInfo['lang'] == $pivotLanguage;
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_translation($mod_reference, $module_params)
 {
 	global $pivotLanguage, $tikilib, $smarty, $prefs, $page, $_REQUEST;

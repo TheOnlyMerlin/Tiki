@@ -10,6 +10,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	header("location: index.php");
 	exit;
 }
+include_once ("lib/webmail/htmlMimeMail.php");
 if (isset($_REQUEST["webmail"])) {
 	check_ticket('admin-inc-webmail');
 }

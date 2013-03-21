@@ -56,10 +56,6 @@ function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_lan
 			$href = $sefurl ? "article$source" : "tiki-read_article.php?articleId=$source";
 			break;
 
-		case 'topic':
-			$href = "tiki-view_articles.php?topic=$source";
-			break;
-
 		case 'file':
 		case 'thumbnail':
 		case 'display':
@@ -104,11 +100,7 @@ function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_lan
 			break;
 
 		case 'tracker':
-			if ($source) {
-				$href = 'tiki-view_tracker.php?trackerId=' . $source;
-			} else {
-				$href = 'tiki-list_trackers.php';
-			}
+			$href = 'tiki-view_tracker.php?trackerId='.$source;
 			break;
 
 		case 'filegallery':

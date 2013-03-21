@@ -5,17 +5,11 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-/**
- *
- */
 class BigBlueButtonLib
 {
 	private $version = false;
 
-    /**
-     * @return bool|string
-     */
-    private function getVersion()
+	private function getVersion()
 	{
 		if ( $this->version !== false ) {
 			return $this->version;
@@ -37,10 +31,7 @@ class BigBlueButtonLib
 		return $this->version;
 	}
 
-    /**
-     * @return array|mixed
-     */
-    public function getMeetings()
+	public function getMeetings()
 	{
 		global $cachelib;
 
@@ -59,11 +50,7 @@ class BigBlueButtonLib
 		return $meetings;
 	}
 
-    /**
-     * @param $room
-     * @return array
-     */
-    public function getAttendees( $room )
+	public function getAttendees( $room )
 	{
 		if ( $meeting = $this->getMeeting($room) ) {
 			if ( $dom = $this->performRequest('getMeetingInfo', array('meetingID' => $room, 'password' => $meeting['moderatorPW'])) ) {
@@ -79,11 +66,7 @@ class BigBlueButtonLib
 		}
 	}
 
-    /**
-     * @param $node
-     * @return array
-     */
-    private function grabValues( $node )
+	private function grabValues( $node )
 	{
 		$values = array();
 
@@ -96,11 +79,7 @@ class BigBlueButtonLib
 		return $values;
 	}
 
-    /**
-     * @param $room
-     * @return bool
-     */
-    public function roomExists( $room )
+	public function roomExists( $room )
 	{
 		foreach ( $this->getMeetings() as $meeting ) {
 			if ( $meeting['meetingID'] == $room ) {
@@ -111,11 +90,7 @@ class BigBlueButtonLib
 		return false;
 	}
 
-    /**
-     * @param $room
-     * @param array $params
-     */
-    public function createRoom( $room, array $params = array() )
+	public function createRoom( $room, array $params = array() )
 	{
 		global $tikilib, $cachelib, $prefs;
 
@@ -157,10 +132,7 @@ class BigBlueButtonLib
 		$cachelib->invalidate('bbb_meetinglist');
 	}
 
-    /**
-     * @param $room
-     */
-    public function joinMeeting( $room )
+	public function joinMeeting( $room )
 	{
 		$version = $this->getVersion();
 
@@ -172,10 +144,7 @@ class BigBlueButtonLib
 		}
 	}
 
-    /**
-     * @param $recordingID
-     */
-    public function removeRecording($recordingID)
+	public function removeRecording($recordingID)
 	{
 		if ($this->isRecordingSupported()) {
 			$this->performRequest(
@@ -185,10 +154,7 @@ class BigBlueButtonLib
 		}
 	}
 
-    /**
-     * @return bool|mixed|null|string
-     */
-    private function getAttendeeName()
+	private function getAttendeeName()
 	{
 		global $user, $tikilib;
 
@@ -203,11 +169,7 @@ class BigBlueButtonLib
 		}
 	}
 
-    /**
-     * @param $room
-     * @return mixed
-     */
-    private function getAttendeePassword( $room )
+	private function getAttendeePassword( $room )
 	{
 		if ( $meeting = $this->getMeeting($room) ) {
 			$perms = Perms::get('bigbluebutton', $room);
@@ -220,11 +182,7 @@ class BigBlueButtonLib
 		}
 	}
 
-    /**
-     * @param $room
-     * @return mixed
-     */
-    private function getMeeting( $room )
+	private function getMeeting( $room )
 	{
 		$meetings = $this->getMeetings();
 
@@ -235,12 +193,7 @@ class BigBlueButtonLib
 		}
 	}
 
-    /**
-     * @param $room
-     * @param $name
-     * @param $password
-     */
-    public function joinRawMeeting( $room, $name, $password )
+	public function joinRawMeeting( $room, $name, $password )
 	{
 		$url = $this->buildUrl(
 			'join',
@@ -255,12 +208,7 @@ class BigBlueButtonLib
 		exit;
 	}
 
-    /**
-     * @param $action
-     * @param array $parameters
-     * @return DOMDocument
-     */
-    private function performRequest( $action, array $parameters )
+	private function performRequest( $action, array $parameters )
 	{
 		global $tikilib;
 
@@ -278,12 +226,7 @@ class BigBlueButtonLib
 		}
 	}
 
-    /**
-     * @param $action
-     * @param array $parameters
-     * @return string
-     */
-    private function buildUrl( $action, array $parameters )
+	private function buildUrl( $action, array $parameters )
 	{
 		global $prefs;
 
@@ -303,12 +246,7 @@ class BigBlueButtonLib
 		return $url;
 	}
 
-    /**
-     * @param $action
-     * @param array $parameters
-     * @return string
-     */
-    private function generateChecksum( $action, array $parameters )
+	private function generateChecksum( $action, array $parameters )
 	{
 		global $prefs;
 
@@ -325,20 +263,13 @@ class BigBlueButtonLib
 		}
 	}
 
-    /**
-     * @return bool
-     */
-    private function isRecordingSupported()
+	private function isRecordingSupported()
 	{
 		$version = $this->getVersion();
 		return version_compare($version, '0.8') >= 0;
 	}
 
-    /**
-     * @param $room
-     * @return array
-     */
-    public function getRecordings( $room )
+	public function getRecordings( $room )
 	{
 		if (! $this->isRecordingSupported()) {
 			return array();
@@ -378,12 +309,7 @@ class BigBlueButtonLib
 		return $data;
 	}
 
-    /**
-     * @param $a
-     * @param $b
-     * @return int
-     */
-    private static function cmpStartTime( $a, $b )
+	private static function cmpStartTime( $a, $b )
 	{
 		if ($a['startTime'] == $b['startTime']) {
 			return 0;

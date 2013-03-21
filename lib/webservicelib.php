@@ -27,11 +27,7 @@ class Tiki_Webservice
 	private $templates = array();
 	private $all = false;
 
-    /**
-     * @param $name
-     * @return Tiki_Webservice
-     */
-    public static function create( $name )
+	public static function create( $name )
 	{
 		if ( ! ctype_alpha($name) ) {
 			return;
@@ -43,11 +39,7 @@ class Tiki_Webservice
 		return $ws;
 	}
 
-    /**
-     * @param $name
-     * @return Tiki_Webservice
-     */
-    public static function getService( $name )
+	public static function getService( $name )
 	{
 		$name = strtolower($name);
 
@@ -72,18 +64,12 @@ class Tiki_Webservice
 		}
 	}
 
-    /**
-     * @return array
-     */
-    public static function getTypes()
+	public static function getTypes()
 	{
 		return array('REST', 'SOAP');
 	}
 
-    /**
-     * @return array
-     */
-    public static function getList()
+	public static function getList()
 	{
 		global $tikilib;
 
@@ -122,10 +108,7 @@ class Tiki_Webservice
 		$tikilib->query("DELETE FROM tiki_webservice_template WHERE service = ?", array( $this->name ));
 	}
 
-    /**
-     * @return array
-     */
-    function getParameters()
+	function getParameters()
 	{
 		global $wsdllib;
 
@@ -143,11 +126,7 @@ class Tiki_Webservice
 		}
 	}
 
-    /**
-     * @param $params
-     * @return array
-     */
-    function getParameterMap( $params )
+	function getParameterMap( $params )
 	{
 		$parameters = array();
 
@@ -167,12 +146,7 @@ class Tiki_Webservice
 	*	If false, only the <request>Response part of the reply is included.
 	*	fullResponse has no effect for REST calls
 	*/
-    /**
-     * @param $params
-     * @param bool $fullReponse
-     * @return bool|OIntegrate_Response
-     */
-    function performRequest( $params, $fullReponse = false )
+	function performRequest( $params, $fullReponse = false )
 	{
 		global $soaplib, $prefs;
 
@@ -224,11 +198,7 @@ class Tiki_Webservice
 		}
 	}
 
-    /**
-     * @param $name
-     * @return Tiki_Webservice_Template
-     */
-    function addTemplate( $name )
+	function addTemplate( $name )
 	{
 		if ( ! ctype_alpha($name) || empty($name) ) {
 			return;
@@ -243,20 +213,14 @@ class Tiki_Webservice
 		return $template;
 	}
 
-    /**
-     * @param $name
-     */
-    function removeTemplate( $name )
+	function removeTemplate( $name )
 	{
 		global $tikilib;
 
 		$tikilib->query("DELETE FROM tiki_webservice_template WHERE service = ? AND template = ?", array( $this->name, $name ));
 	}
 
-    /**
-     * @return array
-     */
-    function getTemplates()
+	function getTemplates()
 	{
 		if ( $this->all )
 			return $this->templates;
@@ -283,11 +247,7 @@ class Tiki_Webservice
 		return $this->templates;
 	}
 
-    /**
-     * @param $name
-     * @return Tiki_Webservice_Template
-     */
-    function getTemplate( $name )
+	function getTemplate( $name )
 	{
 		if ( isset($this->templates[$name]) )
 			return $this->templates[$name];
@@ -355,10 +315,7 @@ class Tiki_Webservice_Template
 		);
 	}
 
-    /**
-     * @return string
-     */
-    function getTemplateFile()
+	function getTemplateFile()
 	{
 		$token = sprintf("%s_%s", $this->webservice->getName(), $this->name);
 		$file = "temp/cache/" . md5($token) . '.tpl';
@@ -370,12 +327,7 @@ class Tiki_Webservice_Template
 		return realpath($file);
 	}
 
-    /**
-     * @param OIntegrate_Response $response
-     * @param $outputContext
-     * @return mixed|string
-     */
-    function render( OIntegrate_Response $response, $outputContext )
+	function render( OIntegrate_Response $response, $outputContext )
 	{
 		return $response->render($this->engine, $this->output, $outputContext, $this->getTemplateFile());
 	}

@@ -22,6 +22,7 @@ class Search_Indexer
 	{
 		if ($loggit) {
 			// unused externally, set this to true here to enable logging
+			include_once 'lib/core/Zend/Log/Writer/Syslog.php';
 			global $prefs;
 			$writer = new Zend_Log_Writer_Stream($prefs['tmpDir'] . '/Search_Indexer.log', 'w');
 		} else {
@@ -95,7 +96,7 @@ class Search_Indexer
 	{
 		global $prefs;
 		if (!empty( $prefs['unified_excluded_categories'] )) {
-			$categs = TikiLib::lib('categ')->get_object_categories($objectType, $objectId);
+			$categs = TikiLib::lib('categ')->get_object_categories( $objectType, $objectId );
 			if (array_intersect($prefs['unified_excluded_categories'], $categs)) {
 				$this->log("addDocument skipped $objectType $objectId");
 				return 0;

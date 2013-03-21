@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -35,10 +32,6 @@ if (!is_dir($prefs['mods_dir'] . "/Cache")) {
 	mkdir($prefs['mods_dir'] . "/Cache", 02777);
 }
 $feedback = array();
-/**
- * @param $num
- * @param $err
- */
 function tikimods_feedback_listener($num, $err)
 {
 	global $feedback;

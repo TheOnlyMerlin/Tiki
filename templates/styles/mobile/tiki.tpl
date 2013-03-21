@@ -1,5 +1,6 @@
 {* $Id$ *}<!DOCTYPE html>
-{* override for mobile *}<html lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}"{if !empty($page_id)} id="page_{$page_id}"{/if}>
+{* override for mobile *}
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}" lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}"{if !empty($page_id)} id="page_{$page_id}"{/if}>
 	<head>
 		{include file='header.tpl'}
 		<meta name="viewport" content="width=device-width, initial-scale=1">{* mobile *}
@@ -45,7 +46,7 @@
 				color: #333;
 				cursor: wait;
 				background: transparent url('img/loading-light.gif') no-repeat 50% 50%;">
-		{tr}Loading...{/tr}<br><br><br>
+		{tr}Loading...{/tr}<br /><br /><br />
 		</div></div>{* inline loading div for page load for mobile *}
 		<div id="fixedwidth" class="fixedwidth" style="display: none;"> {* enables fixed-width layouts *}
 			{if $prefs.feature_layoutshadows eq 'y'}<div id="main-shadow">{eval var=$prefs.main_shadow_start}{/if}
@@ -166,7 +167,7 @@
 																	{preference name=$pref_error.pref_name}
 																{/foreach}
 																<div class="submit">
-																	<input type="submit" value="{tr}Change{/tr}">
+																	<input type="submit" value="{tr}Change{/tr}"/>
 																</div>
 															</form>
 														{/remarksbox}

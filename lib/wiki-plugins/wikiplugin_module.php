@@ -30,7 +30,6 @@ function wikiplugin_module_info()
 		'description' => tra('Display a module'),
 		'prefs' => array( 'wikiplugin_module' ),
 		'validate' => 'all',
-		'format' => 'html',
 		'icon' => 'img/icons/module.png',
 		'extraparams' =>true,
 		'tags' => array( 'basic' ),
@@ -312,12 +311,17 @@ function wikiplugin_module($data, $params)
 
 	if ($out) {
 		if ($float != 'nofloat') {
-			$data = "<div style='float: $float;'>$out</div>";
+			$data = "<div style='float: $float;'>";
 		} else {
-			$data = "<div>$out</div>";
+			$data = "<div>";
+		}	
+		if ($np) {
+  		$data.= "~np~$out~/np~</div>";
+		} else {
+			$data.= "$out</div>";
 		}
 	} else {
-		// Display error message
+        // Display error message
 		$data = "<div class=\"highlight\">" . tra("Sorry, no such module"). "<br /><b>$module</b></div>" . $data;
 	}
 

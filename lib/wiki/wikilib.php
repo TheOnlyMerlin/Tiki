@@ -82,7 +82,7 @@ class WikiLib extends TikiLib
 			}
 			$ret = array();
 			foreach ($cache_page_contributors['contributors'] as $res) {
-				if (isset($res['user']) && $res['user'] != $last) {
+				if ($res['user'] != $last) {
 					$ret[] = $res;
 				}
 			}

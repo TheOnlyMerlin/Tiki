@@ -13,11 +13,6 @@
  */
 class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
 {
-	const CASCADE_NONE = 0;
-	const CASCADE_CATEG = 1;
-	const CASCADE_STATUS = 2;
-	const CASCADE_DELETE = 4;
-
 	public static function getTypes()
 	{
 		return array(
@@ -104,11 +99,11 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 					),
 					'displayOneItem' => array(
 						'name' => tr('One item per value'),
-						'description' => tr('Display only one random item per label'),
+						'description' => tr('Display only one random item per value'),
 						'filter' => 'alpha',
 						'options' => array(
-							'multi' => tr('Displays all the items for a same label with a notation value (itemId)'),
-							'one' => tr('Only one random item for each label'),
+							'multi' => tr('Displays all the items for a same value with a notation value (itemId)'),
+							'one' => tr('Only one random item for each value'),
 						),
 					),
 					'selectMultipleValues' => array(
@@ -126,21 +121,6 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 						'separator' => '|',
 						'filter' => 'int',
 					),
-					'cascade' => array(
-						'name' => tr('Cascade actions'),
-						'description' => tr("Elements to cascade when the master is updated or deleted. Categories may conflict if multiple item links are used to different items attempting to manage the same categories. Same for status."),
-						'filter' => 'int',
-						'options' => array(
-							self::CASCADE_NONE => tr('No'),
-							self::CASCADE_CATEG => tr('Categories'),
-							self::CASCADE_STATUS => tr('Status'),
-							self::CASCADE_DELETE => tr('Delete'),
-							(self::CASCADE_CATEG | self::CASCADE_STATUS) => tr('Categories and status'),
-							(self::CASCADE_CATEG | self::CASCADE_DELETE) => tr('Categories and delete'),
-							(self::CASCADE_DELETE | self::CASCADE_STATUS) => tr('Delete and status'),
-							(self::CASCADE_CATEG | self::CASCADE_STATUS | self::CASCADE_DELETE) => tr('All'),
-						),
-					),
 				),
 			),
 		);
@@ -148,50 +128,39 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 
 	function getFieldData(array $requestData = array())
 	{
-		$string_id = $this->getInsertId();
-		$data = array(
-			'value' => isset($requestData[$string_id]) ? $requestData[$string_id] : $this->getValue(),
-		);
-
-		if ($this->getOption('selectMultipleValues') && ! is_array($data['value'])) {
-			$data['value'] = explode(',', $data['value']);
-		}
+		$data = $this->getLinkData($requestData, $this->getInsertId());
 
 		return $data;
 	}
 
 	function renderInput($context = array())
 	{
-		$data = array(
-			'list' => $this->getItemList(),
-		);
-
-		if ($this->getOption('addItems') && ! $context['in_ajax_form']) {
+		if ($this->getOption(6) && !$context['in_ajax_form']) {
 
 			$context['in_ajax_form'] = true;
 
 			require_once 'lib/wiki-plugins/wikiplugin_tracker.php';
 
 			$params = array(
-				'trackerId' => $this->getOption('trackerId'),
+				'trackerId' => $this->getOption(0),
 				'ignoreRequestItemId' => 'y',
 				'_ajax_form_ins_id' => $this->getInsertId(),
 			);
 
-			if ($this->getOption('addItemsWikiTpl')) {
-				$params['wiki'] = $this->getOption('addItemsWikiTpl');
+			if ($this->getOption(7)) {
+				$params['wiki'] = $this->getOption(7);
 			}
 			$form = wikiplugin_tracker('', $params);
 
 			$form = preg_replace(array('/<!--.*?-->/', '/\s+/', '/^~np~/', '/~\/np~/'), array('', ' ', '', ''), $form);	// remove comments etc
 
-			if ($this->getOption('displayFieldsList')) {
-				$displayFieldId = $this->getOption('displayFieldsList');
+			if ($this->getOption(3)) {
+				$displayFieldId = $this->getOption(3);
 				if (strpos($displayFieldId, '|') !== false) {
 					$displayFieldId = substr($displayFieldId, 0, strpos($displayFieldId, '|'));
 				}
 			} else {
-				$displayFieldId = $this->getOption('fieldId');
+				$displayFieldId = $this->getOption(1);
 			}
 
 			TikiLib::lib('header')->add_jq_onready(
@@ -212,7 +181,7 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 		$d.dialog({
 				width: w,
 				height: h,
-				title: "'.$this->getOption('addItems').'",
+				title: "'.$this->getOption(6).'",
 				modal: true,
 				buttons: {
 					"Add": function() {
@@ -253,24 +222,19 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 
 		}
 
-		$data['selectMultipleValues'] = (bool) $this->getOption('selectMultipleValues');
-
-		if ($preselection = $this->getPreselection()) {
-			$data['preselection'] = $preselection;
+		if ($this->getOption(12)) {
+			$context['selectMultipleValues'] = true;
 		} else {
-			$data['preselection'] = '';
+			$context['selectMultipleValues'] = false;
 		}
 
-		$data['filter'] = $this->buildFilter();
+		if ($preselection = $this->getPreselection()) {
+			$context['preselection'] = $preselection;
+		} else {
+			$context['preselection'] = '';
+		}
 
-		return $this->renderTemplate('trackerinput/itemlink.tpl', $context, $data);
-	}
-
-	private function buildFilter()
-	{
-		return array(
-			'tracker_id' => $this->getOption('trackerId'),
-		);
+		return $this->renderTemplate('trackerinput/itemlink.tpl', $context);
 	}
 
 	function renderOutput($context = array())
@@ -279,7 +243,10 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 
 		$item = $this->getValue();
 
-		if (! is_array($item)) {
+		$dlist = $this->getConfiguration('listdisplay');
+		$list = $this->getConfiguration('list');
+
+		if (!is_array($item)) {
 			// single value item field
 			$items = array($item);
 		} else {
@@ -287,17 +254,26 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 			$items = $item;
 		}
 
-		$labels = array_map(array($this, 'getItemLabel'), $items);
+		$labels = array();
+
+		foreach ($items as $key => $value) {
+			if (!empty($dlist) && isset($dlist[$value])) {
+				$labels[] = $dlist[$value];
+			} else if (isset($list[$value])) {
+				$labels[] = $list[$value];
+			}
+		}
+
 		$label = implode(', ', $labels);
 
-		if ($item && !is_array($item) && $context['list_mode'] !== 'csv' && $this->getOption('fieldId')) {
+		if ($item && !is_array($item) && $context['list_mode'] !== 'csv' && $this->getOption(2)) {
 			$smarty->loadPlugin('smarty_function_object_link');
 
-			if ( $this->getOption('linkPage') ) {
+			if ( $this->getOption(5) ) {
 				$link = smarty_function_object_link(
 					array(
 						'type' => 'wiki page',
-						'id' => $this->getOption('linkPage') . '&itemId=' . $item,	// add itemId param TODO properly
+						'id' => $this->getOption(5) . '&itemId=' . $item,	// add itemId param TODO properly
 						'title' => $label,
 					),
 					$smarty
@@ -307,8 +283,6 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 			} else {
 				return smarty_function_object_link(array('type' => 'trackeritem',	'id' => $item,	'title' => $label), $smarty);
 			}
-		} elseif ($context['list_mode'] == 'csv' && $item) {
-			return $item;
 		} elseif ($label) {
 			return $label;
 		}
@@ -316,11 +290,19 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 
 	function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
 	{
-		$item = $this->getValue();
-		$label = $this->getItemLabel($item);
+		$data = $this->getLinkData(array(), 0);
+		$item = $data['value'];
+		$dlist = $data['listdisplay'];
+		$list = $data['list'];
+
+		if (!empty($dlist)) {
+			$label = isset($dlist[$item]) ? $dlist[$item] : '';
+		} else {
+			$label = isset($list[$item]) ? $list[$item] : '';
+		}
 
 		$out = array(
-			$baseKey => $typeFactory->identifier($item),
+			$baseKey => $typeFactory->sortable($item),
 			"{$baseKey}_text" => $typeFactory->plaintext($label),
 		);
 
@@ -368,82 +350,83 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 		return array();
 	}
 
-	function getItemLabel($itemId)
+	/**
+	 * Return both the current values and the list of available values
+	 * for this field. When creating or updating a tracker item this
+	 * function is called twice. First before the data is saved and then
+	 * before displaying the changed tracker item to the user.
+	 *
+	 * @param array $requestData
+	 * @param $string_id
+	 * @return array
+	 */
+	private function getLinkData($requestData, $string_id)
 	{
-		$trklib = TikiLib::lib('trk');
-		$item = $trklib->get_tracker_item($itemId);
+		$data = array(
+			'value' => isset($requestData[$string_id]) ? $requestData[$string_id] : $this->getValue(),
+		);
 
-		if (! $item) {
-			return '';
-		}
-
-		$parts = array();
-
-		if ($fields = $this->getOption('displayFieldsList')) {
-			foreach(explode('|', $fields) as $fieldId) {
-				if (isset($item[$fieldId])) {
-					$parts[] = $item[$fieldId];
-				}
-			}
-		} else {
-			$fieldId = $this->getOption('fieldId');
-
-			if (isset($item[$fieldId])) {
-				$parts[] = $item[$fieldId];
-			}
-		}
-
-
-		if (count($parts)) {
-			return implode(' ', $parts);
-		} else {
-			return TikiLib::lib('object')->get_title('trackeritem', $itemId);
-		}
-	}
-
-	private function getItemList()
-	{
-		if ($this->getOption('displayFieldsList')) {
-			$list = TikiLib::lib('trk')->concat_all_items_from_fieldslist(
-				$this->getOption('trackerId'),
-				$this->getOption('displayFieldsList'),
-				$this->getOption('status', 'opc')
-			);
-		} else {
-			$list = TikiLib::lib('trk')->get_all_items(
-				$this->getOption('trackerId'),
-				$this->getOption('fieldId'),
-				$this->getOption('status', 'opc'),
+		if (!$this->getOption(3)) {	//no displayedFieldsList
+			$data['list'] = TikiLib::lib('trk')->get_all_items(
+				$this->getOption(0),
+				$this->getOption(1),
+				$this->getOption(4, 'opc'),
 				false
 			);
-		}
-
-		$list = $this->handleDuplicates($list);
-
-		if ($this->getOption('addItems')) {
-			$list['-1'] = $this->getOption('addItems');
-		}
-
-		return $list;
-	}
-
-	private function handleDuplicates($list)
-	{
-		if ($this->getOption('displayOneItem') != 'multi') {
-			return array_unique($list);
-		} elseif (array_unique($list) != $list) {
-			$newlist = array();
-			foreach ($list as $itemId => $label) {
-				if (in_array($label, $newlist)) {
-					$label = $label . " ($itemId)";
+			if ($this->getOption(11) && $this->getOption(11) != 'multi') {
+				$data['list'] = array_unique($data['list']);
+			} elseif (array_unique($data['list']) != $data['list']) {
+				$newlist = array();
+				foreach ($data['list'] as $k => $dl) {
+					if (in_array($dl, $newlist)) {
+						$dl = $dl . " ($k)";
+					}
+					$newlist[$k] = $dl;
 				}
-				$newlist[$itemId] = $label;
+				$data['list'] = $newlist;
 			}
-
-			return $newlist;
 		} else {
-			return $list;
+			$data['list'] = TikiLib::lib('trk')->get_all_items(
+				$this->getOption(0),
+				$this->getOption(1),
+				$this->getOption(4, 'opc'),
+				false
+			);
+			$data['listdisplay'] = array_unique(
+				TikiLib::lib('trk')->concat_all_items_from_fieldslist(
+					$this->getOption(0),
+					$this->getOption(3),
+					$this->getOption(4, 'opc')
+				)
+			);
+			if (!$this->getOption(11) || $this->getOption(11) != 'multi') {
+				$data['list'] = array_unique($data['list']);
+				$data['listdisplay'] = array_unique($data['listdisplay']);
+			} elseif (array_unique($data['listdisplay']) != $data['listdisplay']) {
+				$newlist = array();
+				foreach ($data['listdisplay'] as $k => $dl) {
+					if (in_array($dl, $newlist)) {
+						$dl = $dl . " ($k)";
+					}
+					$newlist[$k] = $dl;
+				}
+				$data['listdisplay'] = $newlist;
+			}
 		}
+
+		if ($this->getOption(6)) {	// addItems
+			$data['list']['-1'] = $this->getOption(6);
+			if (isset($data['listdisplay'])) {
+				$data['listdisplay']['-1'] = $this->getOption(6);
+			}
+		}
+
+		// selectMultipleValues
+		if ($this->getOption(12) && !is_array($data['value'])) {
+			$data['value'] = explode(',', $data['value']);
+		}
+
+		return $data;
 	}
 
 	function importRemote($value)
@@ -492,11 +475,11 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 	{
 		$trklib = TikiLib::lib('trk');
 
-		$localField = $this->getOption('preSelectFieldHere');
-		$remoteField = $this->getOption('preSelectFieldThere');
-		$method = $this->getOption('preSelectFieldMethod');
+		$localField = $this->getOption(8);
+		$remoteField = $this->getOption(9);
+		$method = $this->getOption(10);
 		$localTrackerId = $this->getConfiguration('trackerId');
-		$remoteTrackerId = $this->getOption('trackerId');
+		$remoteTrackerId = $this->getOption(0);
 
 		$localValue = $trklib->get_item_value($localTrackerId, $this->getItemId(), $localField);
 
@@ -528,7 +511,7 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 	{
 		// if selectMultipleValues is enabled, convert the array
 		// of options to string before saving the field value in the db
-		if ($this->getOption('selectMultipleValues')) {
+		if ($this->getOption(12)) {
 			$value = implode(',', $value);
 		}
 
@@ -554,34 +537,20 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 		return count($intersect) > 0;
 	}
 
-	function cascadeCategories($trackerId)
-	{
-		return $this->cascade($trackerId, self::CASCADE_CATEG);
-	}
-
-	function cascadeStatus($trackerId)
-	{
-		return $this->cascade($trackerId, self::CASCADE_STATUS);
-	}
-
-	function cascadeDelete($trackerId)
-	{
-		return $this->cascade($trackerId, self::CASCADE_DELETE);
-	}
-
-	private function cascade($trackerId, $flag)
-	{
-		if ($this->getOption('trackerId') != $trackerId) {
-			return false;
-		}
-
-		return ($this->getOption('cascade') & $flag) > 0;
-	}
-
 	function watchCompare($old, $new)
 	{
-		$o = $this->getItemLabel($old);
-		$n = $this->getItemLabel($new);
+
+		$data = $this->getLinkData(array(), 0);		// get old and new values directly from the list(s)
+		$dlist = $data['listdisplay'];
+		$list = $data['list'];
+
+		if (!empty($dlist)) {
+			$o = isset($dlist[$old]) ? $dlist[$old] : '';
+			$n = isset($dlist[$new]) ? $dlist[$new] : '';
+		} else {
+			$o = isset($list[$old]) ? $list[$old] : '';
+			$n = isset($list[$new]) ? $list[$new] : '';
+		}
 
 		return parent::watchCompare($o, $n);	// then compare as text
 	}

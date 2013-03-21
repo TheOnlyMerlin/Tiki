@@ -9,8 +9,6 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 {
 	public static function getTypes()
 	{
-		global $prefs;
-
 		return array(
 			'FG' => array(
 				'name' => tr('Files'),
@@ -85,17 +83,9 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 
 	function getFieldData(array $requestData = array())
 	{
-		global $prefs;
-		$filegallib = TikiLib::lib('filegal');
-
 		$galleryId = (int) $this->getOption('galleryId');
 		$count = (int) $this->getOption('count');
 		$deepGallerySearch = (boolean) $this->getOption('deepGallerySearch');
-
-		// to use the user's userfiles gallery enter the fgal_root_user_id which is often (but not always) 2
-		if ($prefs['feature_use_fgal_for_user_files'] === 'y' && $galleryId == $prefs['fgal_root_user_id']) {
-			$galleryId = (int) $filegallib->get_user_file_gallery();
-		}
 
 		$value = '';
 		$ins_id = $this->getInsertId();
@@ -144,7 +134,7 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 
 		if ($deepGallerySearch) {
 			$gallery_list = null;
-			$filegallib->getGalleryIds($gallery_list, $galleryId, 'list');
+			TikiLib::lib('filegal')->getGalleryIds($gallery_list, $galleryId, 'list');
 			$gallery_list = implode(' or ', $gallery_list);
 		} else {
 			$gallery_list = $galleryId;
@@ -156,20 +146,11 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 			$firstfile = 0;
 		}
 
-		$galinfo = $filegallib->get_file_gallery($galleryId);
-		if ($prefs['feature_use_fgal_for_user_files'] !== 'y' || $galinfo['type'] !== 'user') {
-			$perms = Perms::get('file gallery', $galleryId);
-			$canUpload = $perms->upload_files;
-		} else {
-			global $user;
-			$perms = TikiLib::lib('tiki')->get_local_perms($user, $galleryId, 'file gallery', $galinfo, false);		//get_perm_object($galleryId, 'file gallery', $galinfo);
-			$canUpload = $perms['tiki_p_upload_files'] === 'y';
-		}
-
+		$perms = Perms::get('file gallery', $galleryId);
 
 		return array(
 			'galleryId' => $galleryId,
-			'canUpload' => $canUpload,
+			'canUpload' => $perms->upload_files,
 			'limit' => $count,
 			'files' => $fileInfo,
 			'firstfile' => $firstfile,
@@ -208,9 +189,9 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 				if ($context['list_mode'] === 'y') {
 					$params['thumb'] = $context['list_mode'];
 					$params['rel'] = 'box[' . $this->getInsertId() . ']';
-					$otherParams = $this->getOption('imageParamsForLists');
+					$otherParams = $this->getOption(5);
 				} else {
-					$otherParams = $this->getOption('imageParams');
+					$otherParams = $this->getOption(4);
 				}
 				if ($otherParams) {
 					parse_str($otherParams, $otherParams);
@@ -218,8 +199,8 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 				}
 
 				include_once('lib/wiki-plugins/wikiplugin_img.php');
-				$params['fromFieldId'] = $this->getConfiguration('fieldId');
-				$params['fromItemId'] = $this->getItemId();
+				global $fromTracker;
+				$fromTracker = true;
 				$ret = wikiplugin_img('', $params, 0);
 				$ret = preg_replace('/~\/?np~/', '', $ret);
 			} else {

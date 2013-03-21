@@ -11,20 +11,10 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- *
- */
 class MailinLib extends TikiLib
 {
 
-    /**
-     * @param $offset
-     * @param $maxRecords
-     * @param $sort_mode
-     * @param $find
-     * @return array
-     */
-    function list_mailin_accounts($offset, $maxRecords, $sort_mode, $find)
+	function list_mailin_accounts($offset, $maxRecords, $sort_mode, $find)
 	{
 
 		if ($find) {
@@ -52,14 +42,7 @@ class MailinLib extends TikiLib
 		return $retval;
 	}
 
-    /**
-     * @param $offset
-     * @param $maxRecords
-     * @param $sort_mode
-     * @param $find
-     * @return array
-     */
-    function list_active_mailin_accounts($offset, $maxRecords, $sort_mode, $find)
+	function list_active_mailin_accounts($offset, $maxRecords, $sort_mode, $find)
 	{
 
 		if ($find) {
@@ -87,26 +70,7 @@ class MailinLib extends TikiLib
 		return $retval;
 	}
 
-    /**
-     * @param $accountId
-     * @param $account
-     * @param $pop
-     * @param $port
-     * @param $username
-     * @param $pass
-     * @param $smtp
-     * @param $useAuth
-     * @param $smtpPort
-     * @param $type
-     * @param $active
-     * @param $anonymous
-     * @param $attachments
-     * @param null $article_topicId
-     * @param null $article_type
-     * @param null $discard_after
-     * @return bool
-     */
-    function replace_mailin_account($accountId, $account, $pop, $port, $username, $pass, $smtp, $useAuth, $smtpPort, $type, $active, $anonymous, $attachments, $article_topicId = NULL, $article_type = NULL, $discard_after=NULL)
+	function replace_mailin_account($accountId, $account, $pop, $port, $username, $pass, $smtp, $useAuth, $smtpPort, $type, $active, $anonymous, $attachments, $article_topicId = NULL, $article_type = NULL, $discard_after=NULL)
 	{
 		if ($accountId) {
 			$bindvars = array($account,$pop,(int)$port,(int)$smtpPort,$username,$pass,$smtp,$useAuth,$type,$active,$anonymous,$attachments,(int)$article_topicId,$article_type,$discard_after,(int)$accountId);
@@ -122,22 +86,14 @@ class MailinLib extends TikiLib
 		return true;
 	}
 
-    /**
-     * @param $accountId
-     * @return bool
-     */
-    function remove_mailin_account($accountId)
+	function remove_mailin_account($accountId)
 	{
 		$query = "delete from `tiki_mailin_accounts` where `accountId`=?";
 		$result = $this->query($query, array((int)$accountId));
 		return true;
 	}
 
-    /**
-     * @param $accountId
-     * @return bool
-     */
-    function get_mailin_account($accountId)
+	function get_mailin_account($accountId)
 	{
 		$query = "select * from `tiki_mailin_accounts` where `accountId`=?";
 		$result = $this->query($query, array((int)$accountId));

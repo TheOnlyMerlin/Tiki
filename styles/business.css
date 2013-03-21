@@ -630,7 +630,7 @@ th a.sortheader:visited {
 tr.odd td,
 td.odd,
 table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+table.normal tr:nth-child(2n+1) td {
 	background: #f0f0f0;
 	color: #000;
 	border-right: 1px solid #3273c4;
@@ -639,7 +639,7 @@ table.normal tr:nth-child(2n+1),
 tr.even td,
 td.even,
 table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+table.normal tr:nth-child(2n) td {
 	background: #dcdcdc;
 	color: #000;
 	border-right: 1px solid #3273c4;

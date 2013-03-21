@@ -54,7 +54,6 @@ input[type="password"],
 input[type="file"],
 input[type="email"],
 input[type="file"],
-input[type="search"],
 input[type="number"],
 select,
 textarea,
@@ -226,16 +225,14 @@ tr.diffheader {
 tr.odd td,
 td.odd,
 li.odd,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+table.normal tr:nth-child(2n+1) {
 	background: #c6e99c;
 }
 
 tr.even td,
 td.even,
 li.even,
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+table.normal tr:nth-child(2n) {
 	background: #b0e077;
 }
 

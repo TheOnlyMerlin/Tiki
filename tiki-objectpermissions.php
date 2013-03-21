@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -86,6 +83,9 @@ $smarty->assign_by_ref('permType', $_REQUEST['permType']);
 if ( $_REQUEST['objectType'] == 'wiki' ) {
 	$_REQUEST['objectType'] = 'wiki page';
 }
+
+require_once 'lib/core/Perms/Applier.php';
+require_once 'lib/core/Perms/Reflection/Factory.php';
 
 $objectFactory = Perms_Reflection_Factory::getDefaultFactory();
 $currentObject = $objectFactory->get($_REQUEST['objectType'], $_REQUEST['objectId']);
@@ -252,6 +252,8 @@ if (!empty($_SESSION['perms_clipboard'])) {
 //Quickperms apply {{{
 //Test to map permissions of ile galleries into read write admin admin levels.
 if ( $prefs['feature_quick_object_perms'] == 'y' ) {
+	require_once 'lib/core/Perms/Reflection/Quick.php';
+
 	$qperms = quickperms_get_data();
 	$smarty->assign('quickperms', $qperms);
 	$quickperms = new Perms_Reflection_Quick;
@@ -516,9 +518,6 @@ if (isset($_REQUEST['filegals_manager']) && $_REQUEST['filegals_manager'] != '')
 }
 
 
-/**
- * @return mixed
- */
 function get_assign_permissions()
 {
 	global $objectFactory;
@@ -554,9 +553,6 @@ function get_assign_permissions()
 	return $currentPermissions;
 }
 
-/**
- * @return array
- */
 function quickperms_get_data()
 {
 	if ($_REQUEST['permType']=='file galleries') {
@@ -566,9 +562,6 @@ function quickperms_get_data()
 	}
 }
 
-/**
- * @return array
- */
 function quickperms_get_filegal()
 {
 	return array(
@@ -624,9 +617,6 @@ function quickperms_get_filegal()
 	);
 }
 
-/**
- * @return array
- */
 function quickperms_get_generic()
 {
 	global $userlib;
@@ -679,9 +669,6 @@ function quickperms_get_generic()
 	return $perms;
 }
 
-/**
- * @return array|bool
- */
 function perms_get_restrictions()
 {
 	global $userlib;
@@ -707,9 +694,6 @@ function perms_get_restrictions()
 	return $allowed;
 }
 
-/**
- * @return mixed
- */
 function get_displayed_permissions()
 {
 	global $objectFactory, $smarty;

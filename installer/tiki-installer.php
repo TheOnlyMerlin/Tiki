@@ -26,27 +26,14 @@ set_error_handler("tiki_error_handling", error_reporting());
 require_once ( 'lib/init/smarty.php');
 require_once ('installer/installlib.php');
 
-/**
- *
- */
 class InstallerDatabaseErrorHandler implements TikiDb_ErrorHandler
 {
-    /**
-     * @param TikiDb $db
-     * @param $query
-     * @param $values
-     * @param $result
-     */
-    function handle(TikiDb $db, $query, $values, $result)
+	function handle(TikiDb $db, $query, $values, $result)
 	{
 	}
 }
 
-// Force autoloading
-if (! class_exists('ADOConnection')) {
-	die('AdoDb not found');
-}
-
+include_once 'lib/adodb/adodb.inc.php';
 $dbTiki = ADONewConnection($db_tiki);
 $db = new TikiDb_Adodb($dbTiki);
 $db->setServerType($db_tiki);
@@ -87,34 +74,18 @@ if (!empty($_REQUEST['lang'])) {
 }
 include_once('lib/init/tra.php');
 
-/**
- * @return bool
- */
 function has_tiki_db()
 {
 	global $installer;
 	return $installer->tableExists('users_users');
 }
 
-/**
- * @return bool
- */
 function has_tiki_db_20()
 {
 	global $installer;
 	return $installer->tableExists('tiki_pages_translation_bits');
 }
 
-/**
- * @param $dbb_tiki
- * @param $host_tiki
- * @param $user_tiki
- * @param $pass_tiki
- * @param $dbs_tiki
- * @param string $client_charset
- * @param string $api_tiki
- * @param string $dbversion_tiki
- */
 function write_local_php($dbb_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $client_charset = '', $api_tiki = '', $dbversion_tiki = 'current')
 {
 	global $local;
@@ -158,10 +129,6 @@ function write_local_php($dbb_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tik
 	}
 }
 
-/**
- * @param string $domain
- * @return string
- */
 function create_dirs($domain='')
 {
 	global $tikipath;
@@ -198,9 +165,6 @@ function create_dirs($domain='')
 	return $ret;
 }
 
-/**
- * @return bool
- */
 function isWindows()
 {
 	static $windows;
@@ -330,11 +294,6 @@ $PHP_CONFIG_FILE_PATH/php.ini or $httpd_conf.
 
 
 // Try to see if we have an admin account
-/**
- * @param $dbTiki
- * @param $api_tiki
- * @return string
- */
 function has_admin( $dbTiki, $api_tiki )
 {
 	$query = "select hash from users_users where login='admin'";
@@ -356,10 +315,6 @@ function has_admin( $dbTiki, $api_tiki )
 	return $admin_acc;
 }
 
-/**
- * @param $dbTiki
- * @return bool
- */
 function get_admin_email( $dbTiki )
 {
 	global $installer;
@@ -372,12 +327,6 @@ function get_admin_email( $dbTiki )
 
 	return false;
 }
-
-/**
- * @param $dbTiki
- * @param $prefs
- * @return bool
- */
 function update_preferences( $dbTiki, &$prefs )
 {
 	global $installer;
@@ -396,9 +345,6 @@ function update_preferences( $dbTiki, &$prefs )
 	return false;
 }
 
-/**
- * @param $account
- */
 function fix_admin_account( $account )
 {
 	global $installer;
@@ -423,10 +369,6 @@ function fix_disable_accounts()
 	global $installer;
 	$installer->query('update `users_users` set `waiting`=NULL where `waiting` = ? and `valid` is NULL', array('a'));
 }
-
-/**
- * @return array
- */
 function list_disable_accounts()
 {
 	global $installer;
@@ -438,17 +380,6 @@ function list_disable_accounts()
 	return $ret;
 }
 
-/**
- * @param $api
- * @param $driver
- * @param $host
- * @param $user
- * @param $pass
- * @param $dbname
- * @param $client_charset
- * @param $dbTiki
- * @return bool|int
- */
 function initTikiDB( &$api, &$driver, $host, $user, $pass, $dbname, $client_charset, &$dbTiki )
 {
 	global $tikifeedback;
@@ -566,9 +497,6 @@ function initTikiDB( &$api, &$driver, $host, $user, $pass, $dbname, $client_char
 	return $dbcon;
 }
 
-/**
- * @param $dbname
- */
 function convert_database_to_utf8( $dbname )
 {
 	$db = TikiDb::get();
@@ -584,10 +512,6 @@ function convert_database_to_utf8( $dbname )
 	}
 }
 
-/**
- * @param $dbname
- * @param $previous
- */
 function fix_double_encoding( $dbname, $previous )
 {
 	$db = TikiDb::get();
@@ -710,6 +634,8 @@ if (!defined('ADODB_ASSOC_CASE')) {
 if (!defined('ADODB_CASE_ASSOC')) { // typo in adodb's driver for sybase? // so do we even need this without sybase? What's this?
 	define('ADODB_CASE_ASSOC', 2);
 }
+
+include_once ('lib/adodb/adodb.inc.php');
 
 include('lib/tikilib.php');
 
@@ -902,7 +828,7 @@ if (
 		$install_type = 'update';
 	}
 
-	// Try to activate Apache htaccess file by making a symlink or copying _htaccess into .htaccess
+	// Try to activate Apache htaccess file by copying _htaccess into .htaccess
 	// Do nothing (but warn the user to do it manually) if:
 	//   - there is no  _htaccess file,
 	//   - there is already an existing .htaccess (that is not necessarily the one that comes from Tiki),
@@ -967,6 +893,7 @@ if ($install_step == '2') {
 			}
 
 			// check email address format
+			include_once('lib/core/Zend/Validate/EmailAddress.php');
 			$validator = new Zend_Validate_EmailAddress();
 			if (!$validator->isValid($email_test_to)) {
 				$smarty->assign('email_test_err', tra('Email address not valid, test mail not sent'));

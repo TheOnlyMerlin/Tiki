@@ -65,7 +65,7 @@
 					<div class="adminoptionbox">
 						<div class="adminoptionlabel">
 							<label for="registration_choices">{tr}Users can select a group to join at registration:{/tr}</label>
-							<br>
+							<br />
 							<em>{tr}By default, new users automatically join the Registered group{/tr}.</em>
 						</div>
 						<div class="adminoptionlabel">
@@ -107,7 +107,6 @@
 				{preference name=desactive_login_autocomplete}
 				{preference name=feature_challenge}
 
-				{preference name=login_multiple_forbidden}
 				{preference name=session_protected}
 				{preference name=https_login}
 				{preference name=login_http_basic}
@@ -130,7 +129,7 @@
 					{preference name=cookie_name}
 					{preference name=cookie_domain}
 					{preference name=cookie_path}
-					<hr>
+					<hr />
 					<strong>{tr}Cookie Consent{/tr}</strong>
 					{preference name=cookie_consent_feature}
 					<div class="adminoptionboxchild" id="cookie_consent_feature_childcontainer">

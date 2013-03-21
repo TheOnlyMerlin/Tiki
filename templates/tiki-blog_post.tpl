@@ -40,8 +40,8 @@
 {/strip}{/capture}
 
 <form enctype="multipart/form-data" name='blogpost' method="post" action="tiki-blog_post.php{$smarty.capture.actionUrlParam}" id ='editpageform'>
-	<input type="hidden" name="wysiwyg" value="{$wysiwyg|escape}">
-	<input type="hidden" name="postId" value="{$postId|escape}">
+	<input type="hidden" name="wysiwyg" value="{$wysiwyg|escape}" />
+	<input type="hidden" name="postId" value="{$postId|escape}" />
 
 	<fieldset class="tabcontent">
 		<table class="formcolor">
@@ -57,12 +57,12 @@
 					</td>
 				</tr>
 			{else}
-				<input type="hidden" name="blogId" value="{$blogId|escape}">
+				<input type="hidden" name="blogId" value="{$blogId|escape}" />
 			{/if}
 
 			<tr>
 				<td class="editblogform">{tr}Title:{/tr}</td><td class="editblogform">
-					<input type="text" size="80" maxlength="255" name="title" {if isset($post_info.title)}value="{$post_info.title|escape}"{/if}>
+					<input type="text" size="80" maxlength="255" name="title" {if isset($post_info.title)}value="{$post_info.title|escape}"{/if} />
 				</td>
 			</tr>
 
@@ -79,12 +79,10 @@
 
 			{if $blog_data.use_excerpt eq 'y'}
 				<tr>
-					<td colspan="2" class="editblogform">
+					<td class="editblogform">
 						{tr}Excerpt:{/tr}
 					</td>
-				</tr>
-				<tr>
-					<td colspan="2" class="editblogform">
+					<td class="editblogform">
 							{textarea id='post_excerpt' class="wikiedit" name="excerpt"}{if isset($post_info.excerpt)}{$post_info.excerpt}{/if}{/textarea}
 					</td>
 				</tr>
@@ -102,11 +100,11 @@
 											<a class="link" href="tiki-view_blog_post_image.php?imgId={$post_images[ix].imgId}">{$post_images[ix].filename}</a> 
 										</td>
 										<td>
-											<textarea rows="2" cols="40">{$post_images[ix].link|escape}</textarea><br>
+											<textarea rows="2" cols="40">{$post_images[ix].link|escape}</textarea><br />
 											<textarea rows="1" cols="40">{$post_images[ix].absolute|escape}</textarea>
 										</td>
 										<td>
-											<a href="tiki-blog_post.php?postId={$postId}&amp;remove_image={$post_images[ix].imgId}"><img src='img/icons/trash.gif' alt="{tr}Trash{/tr}"></a>
+											<a href="tiki-blog_post.php?postId={$postId}&amp;remove_image={$post_images[ix].imgId}"><img src='img/icons/trash.gif' alt="{tr}Trash{/tr}"/></a>
 										</td>
 									</tr>
 								{/section}
@@ -122,14 +120,14 @@
 					<td>
 						{$headerlib->add_map()}
 						<div class="map-container" data-target-field="geolocation" style="height: 250px; width: 250px;"></div>
-						<input type="hidden" name="geolocation" value="{$geolocation_string}">
+						<input type="hidden" name="geolocation" value="{$geolocation_string}" />
 					</td>
 				</tr>
 			{/if}
 
 			<tr>
 				<td class="editblogform">{tr}Mark entry as private:{/tr}</td>
-				<td class="editblogform"><input type="checkbox" name="blogpriv" {if $blogpriv eq 'y'}checked="checked"{/if}></td>
+				<td class="editblogform"><input type="checkbox" name="blogpriv" {if $blogpriv eq 'y'}checked="checked"{/if} /></td>
 			</tr>
 			{if $prefs.feature_blog_edit_publish_date eq 'y'}
 				<tr id='show_pubdate' class="editblogform">
@@ -156,8 +154,8 @@
 
 		</table>
 	</fieldset>
-	<input type="submit" class="wikiaction" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false">
-	<input type="submit" class="wikiaction" name="save" value="{tr}Save{/tr}" onclick="needToConfirm=false">
-	<input type="hidden" name="referer" value="{$referer|escape}">
-	<input type="submit" name="cancel" onclick='document.location="{$referer|escape:'html'}";needToConfirm=false;return false;' value="{tr}Cancel{/tr}">
+	<input type="submit" class="wikiaction" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false" />
+	<input type="submit" class="wikiaction" name="save" value="{tr}Save{/tr}" onclick="needToConfirm=false" />
+	<input type="hidden" name="referer" value="{$referer|escape}" />
+	<input type="submit" name="cancel" onclick='document.location="{$referer|escape:'html'}";needToConfirm=false;return false;' value="{tr}Cancel{/tr}"/>
 </form>

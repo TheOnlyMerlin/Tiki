@@ -52,25 +52,25 @@
 						{icon _id=google title="{tr}Google translate{/tr}"} {tr}Machine translations{/tr}
 					</h1>
 				{* List machine translation candidates for available language of the site *}
-					{foreach from=$langsCandidatesForMachineTranslation item=mtl}
-						<a href="tiki-index.php?machine_translate_to_lang={$mtl.lang|escape}&page={$page|escape:"quotes"}&no_bl=y" title="{$mtl.langName|escape} ({$mtl.lang|escape})">
-							{$mtl.langName|escape} *
+					{section name=i loop=$langsCandidatesForMachineTranslation}
+						<a href="tiki-index.php?machine_translate_to_lang={$langsCandidatesForMachineTranslation[i].lang|escape}&page={$page|escape:"quotes"}&no_bl=y" title="{$langsCandidatesForMachineTranslation[i].langName|escape} ({$langsCandidatesForMachineTranslation[i].lang|escape})">
+							{$langsCandidatesForMachineTranslation[i].langName|escape} *
 						</a>
-					{/foreach}
+					{/section}
 				{/if}
 			{* For all object types: Translation maintenance *}
 				{capture}{if $object_type eq 'wiki page' and $tiki_p_edit eq 'y'}
 					<a href="tiki-edit_translation.php?page={$trads[0].objName|escape:url}&no_bl=y" title="{tr}Translate page{/tr}">
 						{tr}Translate{/tr}
 					</a>
-					<a href="#" onclick="attach_detach_translation('wiki page', '{$page|escape:"quotes"}'); return false;" title="{tr}Manage page translations{/tr}">
+					<a href="#" onclick="attach_detach_translation('wiki page', '{$page|escape:"quotes"}')" title="{tr}Manage page translations{/tr}">
 						{tr}Manage translations{/tr}
 					</a>
 				{elseif $object_type eq 'article' and $tiki_p_edit_article eq 'y'}
 					<a href="tiki-edit_article.php?translationOf={$articleId}" title="{tr}Translate article{/tr}">
 						{tr}Translate{/tr}
 					</a>
-					<a href="#" onclick="attach_detach_translation('article', '{$articleId|escape:"quotes"}'); return false;" title="{tr}Manage article translations{/tr}">
+					<a href="#" onclick="attach_detach_translation('article', '{$articleId|escape:"quotes"}')" title="{tr}Manage article translations{/tr}">
 						{tr}Manage translations{/tr}
 					</a>
 				{/if}{/capture}

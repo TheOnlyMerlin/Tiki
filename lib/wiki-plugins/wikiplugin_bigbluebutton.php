@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -14,7 +14,7 @@ function wikiplugin_bigbluebutton_info()
 		'format' => 'html',
 		'prefs' => array( 'wikiplugin_bigbluebutton', 'bigbluebutton_feature' ),
 		'icon' => 'img/icons/webcam.png',
-		'tags' => array( 'basic' ),
+		'tags' => array( 'basic' ),		
 		'params' => array(
 			'name' => array(
 				'required' => true,
@@ -97,7 +97,7 @@ function wikiplugin_bigbluebutton( $data, $params )
 
 		if ( $perms->bigbluebutton_join ) {
 			$smarty->assign('bbb_attendees', $bigbluebuttonlib->getAttendees($meeting));
-			if ($perms->bigbluebutton_view_rec) {
+			if($perms->bigbluebutton_view_rec) {
 				$smarty->assign('bbb_recordings', $bigbluebuttonlib->getRecordings($meeting));
 			}
 

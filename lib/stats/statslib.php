@@ -11,30 +11,16 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- *
- */
 class StatsLib extends TikiLib
 {
 	// obsolete, but keeped for compatibility purposes
 	// use Tikilib::list_pages() instead
-    /**
-     * @param int $offset
-     * @param $maxRecords
-     * @param string $sort_mode
-     * @param string $find
-     * @param bool $onlyCant
-     * @return array
-     */
-    public function list_orphan_pages($offset = 0, $maxRecords = -1, $sort_mode = 'pageName_desc', $find = '', $onlyCant=false)
+	public function list_orphan_pages($offset = 0, $maxRecords = -1, $sort_mode = 'pageName_desc', $find = '', $onlyCant=false)
 	{
 		return $this->list_pages($offset, $maxRecords, $sort_mode, $find, '', true, true, true, true, false, '', $onlyCant);
 	}
 
-    /**
-     * @return array
-     */
-    public function wiki_stats()
+	public function wiki_stats()
 	{
 		$stats = array();
 
@@ -67,10 +53,7 @@ class StatsLib extends TikiLib
 		return $stats;
 	}
 
-    /**
-     * @return array
-     */
-    public function quiz_stats()
+	public function quiz_stats()
 	{
 		TikiLib::lib('quiz')->compute_quiz_stats();
 
@@ -88,10 +71,7 @@ class StatsLib extends TikiLib
 		return $stats;
 	}
 
-    /**
-     * @return array
-     */
-    public function image_gal_stats()
+	public function image_gal_stats()
 	{
 		$stats = array();
 		$stats["galleries"] = $this->getOne("select count(*) from `tiki_galleries`", array());
@@ -104,10 +84,7 @@ class StatsLib extends TikiLib
 		return $stats;
 	}
 
-    /**
-     * @return array
-     */
-    public function file_gal_stats()
+	public function file_gal_stats()
 	{
 		$stats = array();
 		$stats["galleries"] = $this->getOne("select count(*) from `tiki_file_galleries`", array());
@@ -121,10 +98,7 @@ class StatsLib extends TikiLib
 		return $stats;
 	}
 
-    /**
-     * @return array
-     */
-    public function cms_stats()
+	public function cms_stats()
 	{
 		$stats = array();
 
@@ -137,10 +111,7 @@ class StatsLib extends TikiLib
 		return $stats;
 	}
 
-    /**
-     * @return array
-     */
-    public function forum_stats()
+	public function forum_stats()
 	{
 		$stats = array();
 		$stats["forums"] = $this->getOne("select count(*) from `tiki_forums`", array());
@@ -160,10 +131,7 @@ class StatsLib extends TikiLib
 		return $stats;
 	}
 
-    /**
-     * @return array
-     */
-    public function blog_stats()
+	public function blog_stats()
 	{
 		$stats = array();
 		$stats["blogs"] = $this->getOne("select count(*) from `tiki_blogs`", array());
@@ -175,10 +143,7 @@ class StatsLib extends TikiLib
 		return $stats;
 	}
 
-    /**
-     * @return array
-     */
-    public function poll_stats()
+	public function poll_stats()
 	{
 		$stats = array();
 		$stats["polls"] = $this->getOne("select count(*) from `tiki_polls`", array());
@@ -187,10 +152,7 @@ class StatsLib extends TikiLib
 		return $stats;
 	}
 
-    /**
-     * @return array
-     */
-    public function faq_stats()
+	public function faq_stats()
 	{
 		$stats = array();
 		$stats["faqs"] = $this->getOne("select count(*) from `tiki_faqs`", array());
@@ -199,10 +161,7 @@ class StatsLib extends TikiLib
 		return $stats;
 	}
 
-    /**
-     * @return array
-     */
-    public function user_stats()
+	public function user_stats()
 	{
 		$stats = array();
 		$stats["users"] = $this->getOne("select count(*) from `users_users`", array());
@@ -211,10 +170,7 @@ class StatsLib extends TikiLib
 		return $stats;
 	}
 
-    /**
-     * @return array
-     */
-    public function site_stats()
+	public function site_stats()
 	{
 		global $tikilib;
 		$stats = array();
@@ -284,13 +240,7 @@ class StatsLib extends TikiLib
 		return $stats;
 	}
 
-    /**
-     * @param $object
-     * @param $type
-     * @param null $id
-     * @return bool
-     */
-    public function stats_hit($object, $type, $id = null)
+	public function stats_hit($object, $type, $id = null)
 	{
 		if ( is_null($object) || is_null($type) ) {
 			$result = false;
@@ -318,14 +268,7 @@ class StatsLib extends TikiLib
 		return $this->query($query, array($object, $type, (int) $dayzero), -1, -1, false);
 	}
 
-    /**
-     * @param int $max
-     * @param int $days
-     * @param int $startDate
-     * @param int $endDate
-     * @return array
-     */
-    public function best_overall_object_stats($max=20, $days=0, $startDate=0, $endDate=0 )
+	public function best_overall_object_stats($max=20, $days=0, $startDate=0, $endDate=0 )
 	{
 		$stats = array();
 		$bindvars = array();
@@ -370,15 +313,7 @@ class StatsLib extends TikiLib
 		return $stats;
 	}
 
-    /**
-     * @param $object
-     * @param $type
-     * @param int $days
-     * @param int $startDate
-     * @param int $endDate
-     * @return mixed
-     */
-    public function object_hits($object, $type, $days=0, $startDate=0, $endDate=0 )
+	public function object_hits($object, $type, $days=0, $startDate=0, $endDate=0 )
 	{
 		$bindvars = array($object, $type);
 		if ($days != 0) {
@@ -409,11 +344,7 @@ class StatsLib extends TikiLib
 		return $cant;
 	}
 
-    /**
-     * @param int $days
-     * @return array
-     */
-    public function get_daily_usage_chart_data($days = 30)
+	public function get_daily_usage_chart_data($days = 30)
 	{
 		$bindvars = array();
 
@@ -564,11 +495,7 @@ class StatsLib extends TikiLib
 		}
 	}
 
-    /**
-     * @param $days
-     * @return array
-     */
-    public function get_pv_chart_data($days)
+	public function get_pv_chart_data($days)
 	{
 		$now = $this->make_time(0, 0, 0, $this->date_format("%m"), $this->date_format("%d"), $this->date_format("%Y"));
 		$dfrom = 0;

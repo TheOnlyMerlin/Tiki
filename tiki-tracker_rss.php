@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -68,7 +65,7 @@ if ($output["data"] == "EMPTY") {
 	$listfields = $trklib->list_tracker_fields($_REQUEST[$id]);
 	$fields = array();
 	foreach ($listfields['data'] as $f) {
-		if ($f['isHidden'] == 'y' || $f['isHidden'] == 'c' || $f['isHidden'] == 'r') {
+		if ($f['isHidden'] == 'y' || $f['isHidden'] == 'c') {
 			continue;
 		}
 		$fields[$f['fieldId']] = $f;
@@ -119,11 +116,7 @@ if ($output["data"] == "EMPTY") {
 		$first_text_field = null;
 		$aux_subject = null;
 		foreach ($data["field_values"] as $data2) {
-			$showEvenIfEmpty = array('s', 'STARS', 'h', 'l', 'W');	// this duplicates the logic in tiki-view_tracker_item.tpl
-			if (isset($data2["name"]) && !empty($data2['value']) || !$doNotShowEmptyField || in_array($data2['type'], $showEvenIfEmpty)) {
-				if (!isset($data[$data2['fieldId']])) {
-					$data[$data2['fieldId']] = $data2['value'];
-				}
+			if (isset($data2["name"]) && !empty($data2['value']) || !$doNotShowEmptyField) {
 				$data2['value'] = $trklib->field_render_value(
 					array(
 						'field' => $data2,

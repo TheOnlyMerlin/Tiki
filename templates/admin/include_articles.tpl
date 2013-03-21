@@ -61,7 +61,6 @@
 				{preference name=article_custom_attributes}
 
 				{preference name=geo_locate_article}
-				{preference name=feature_sefurl_title_article}
 				
 				{preference name=article_related_articles}
 
@@ -103,7 +102,7 @@
 					<div class="adminoptionlabel">
 						<label for="csvlist">{tr}Batch upload (CSV file):{/tr}</label>
 						<input type="file" name="csvlist" id="csvlist" /> 
-						<br>
+						<br />
 						<em>{tr}File format: title,authorName,heading,body,lang,user{/tr}....</em>
 						<div align="center">
 							<input type="submit" name="import" value="{tr}Import{/tr}" />

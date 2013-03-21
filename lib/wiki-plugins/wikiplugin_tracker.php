@@ -32,7 +32,7 @@ function wikiplugin_tracker_info()
 			'action' => array(
 				'required' => false,
 				'name' => tra('Action'),
-				'description' => tra('Label on the submit button. Default is "Save". When set to "NONE", the save button will not appear and values will be saved dynamically.'),
+				'description' => tra('Label on the submit button. Default is "Save".'),
 				'separator' => ':',
 				'default' => 'Save'
 			),
@@ -42,7 +42,7 @@ function wikiplugin_tracker_info()
 				'description' => tra('Display the title of the tracker (not shown by default)'),
 				'filter' => 'alpha',
 				'default' => 'n',
-				'options' => array(
+			'options' => array(
 					array('text' => '', 'value' => ''),
 					array('text' => tra('Yes'), 'value' => 'y'),
 					array('text' => tra('No'), 'value' => 'n')
@@ -54,7 +54,7 @@ function wikiplugin_tracker_info()
 				'description' => tra('Show the tracker\'s description (not shown by default)'),
 				'filter' => 'alpha',
 				'default' => 'n',
-				'options' => array(
+			'options' => array(
 					array('text' => '', 'value' => ''),
 					array('text' => tra('Yes'), 'value' => 'y'),
 					array('text' => tra('No'), 'value' => 'n')
@@ -78,7 +78,7 @@ function wikiplugin_tracker_info()
 				'description' => tra('Show the status of the items (not shown by default)'),
 				'filter' => 'alpha',
 				'default' => 'n',
-				'options' => array(
+			'options' => array(
 					array('text' => '', 'value' => ''),
 					array('text' => tra('Yes'), 'value' => 'y'),
 					array('text' => tra('No'), 'value' => 'n')
@@ -290,7 +290,7 @@ function wikiplugin_tracker_info()
 				'description' => tra('Used when results are output to a wiki page to discard the tracker item itself once the wiki page is created'),
 				'filter' => 'alpha',
 				'default' => '',
-				'options' => array(
+			'options' => array(
 					array('text' => '', 'value' => ''),
 					array('text' => tra('Yes'), 'value' => 'y'),
 					array('text' => tra('No'), 'value' => 'n')
@@ -411,13 +411,6 @@ function wikiplugin_tracker($data, $params)
 	if (!is_array($action)) {
 		$action = array( $action );
 	}
-
-	$dynamicSave = false;
-	if (count($action) == 1 && reset($action) == 'NONE') {
-		$action = array();
-		$dynamicSave = true;
-	}
-
 	if (isset($preview)) {
 		if (empty($preview)) {
 			$preview = 'Preview';
@@ -850,14 +843,13 @@ function wikiplugin_tracker($data, $params)
 						}
 						include_once('lib/webmail/tikimaillib.php');
 						$mail = new TikiMail();
-						$mail->setFrom($emailOptions[0]);
+						$mail->setHeader('From', $emailOptions[0]);
 
 						if (!empty($emailOptions[2])) { //tpl
 							$emailOptions[2] = preg_split('/ *, */', $emailOptions[2]);
 							foreach ($emailOptions[2] as $ieo=>$eo) {
-								if (!preg_match('/\.tpl$/', $eo)) {
+								if (!preg_match('/\.tpl$/', $eo))
 									$emailOptions[2][$ieo] = $eo.'.tpl';
-								}
 								$tplSubject[$ieo] = str_replace('.tpl', '_subject.tpl', $emailOptions[2][$ieo]);
 							}
 						} else {
@@ -880,10 +872,10 @@ function wikiplugin_tracker($data, $params)
 							} else {
 							$mail->setText($mail_data);
 							}
+							$mail->buildMessage(array('text_encoding' => '8bit'));
 							$mail->send($ueo);
-							if (isset($tplSubject[$itpl+1])) {
+							if (isset($tplSubject[$itpl+1]))
 								++$itpl;
-							}
 						}
 					}
 					if (empty($url)) {
@@ -1279,7 +1271,7 @@ function wikiplugin_tracker($data, $params)
 
 				if (!in_array($f['fieldId'], $auto_fieldId) && in_array($f['fieldId'], $hidden_fieldId)) {
 					// Show in hidden form
-					$back.= '<span style="display:none;">' . wikiplugin_tracker_render_input($f, $item, $dynamicSave)  . '</span>';
+					$back.= '<span style="display:none;">' . wikiplugin_tracker_render_input($f, $item)  . '</span>';
 				} elseif (!in_array($f['fieldId'], $auto_fieldId) && in_array($f['fieldId'], $outf)) {
 					if ($showmandatory == 'y' and $f['isMandatory'] == 'y') {
 						$onemandatory = true;
@@ -1292,11 +1284,11 @@ function wikiplugin_tracker($data, $params)
 							$smarty->assign('f_'.$f['fieldId'], '<span class="outputPretty" id="track_'.$f['fieldId'].'" name="track_'.$f['fieldId'].'">'. wikiplugin_tracker_render_value($f, $item) . '</span>');
 						} else {
 							$mand =  ($showmandatory == 'y' and $f['isMandatory'] == 'y')? "&nbsp;<strong class='mandatory_star'>*</strong>&nbsp;":'';
-							$smarty->assign('f_'.$f['fieldId'], wikiplugin_tracker_render_input($f, $item, $dynamicSave).$mand);
+							$smarty->assign('f_'.$f['fieldId'], wikiplugin_tracker_render_input($f, $item).$mand);
 						}
 					} else {
 						$back.= '<tr><td class="tracker_input_label"';
-
+						
 						// If type is has a samerow param and samerow is "No", show text on one line and the input field on the next
 						$isTextOnSameRow = true;
 						switch($f['type']) {
@@ -1313,10 +1305,10 @@ function wikiplugin_tracker($data, $params)
 							}
 							break;
 						}
-						if (!$isTextOnSameRow) {
+						if(!$isTextOnSameRow) {
 							 $back.= " colspan='2'";
 						}
-
+						
 						if (!empty($colwidth)) {
 							$back .= " width='".$colwidth."'";
 						}
@@ -1325,15 +1317,15 @@ function wikiplugin_tracker($data, $params)
 						if ($showmandatory == 'y' and $f['isMandatory'] == 'y') {
 							$back.= "&nbsp;<strong class='mandatory_star'>*</strong>&nbsp;";
 						}
-						// If use different lines, add a line break.
+						// If use different lines, add a line break. 
 						// Otherwise a new column
-						if (!$isTextOnSameRow) {
+						if(!$isTextOnSameRow) {
 							$back.= "<br/>";
 						} else {
 							$back.= '</td><td class="tracker_input_value">';
 						}
 
-						$back .= wikiplugin_tracker_render_input($f, $item, $dynamicSave);
+						$back .= wikiplugin_tracker_render_input($f, $item);
 						$back .= "</td></tr>";
 					}
 
@@ -1453,7 +1445,7 @@ FILL;
 	}
 }
 
-function wikiplugin_tracker_render_input($f, $item, $dynamicSave)
+function wikiplugin_tracker_render_input($f, $item)
 {
 	$definition = Tracker_Definition::get($f['trackerId']);
 
@@ -1469,27 +1461,7 @@ function wikiplugin_tracker_render_input($f, $item, $dynamicSave)
 		$handler = TikiLib::lib("trk")->get_field_handler($f, $item);
 	}
 
-	$input = $handler->renderInput(array('inTable' => 'y'));
-
-	if ($dynamicSave && $item['itemId']) {
-		$servicelib = TikiLib::lib('service');
-		$input = new Tiki_Render_Editable(
-			$input,
-			array(
-				'layout' => 'block',
-				'object_store_url' => $servicelib->getUrl(
-					array(
-						'controller' => 'tracker',
-						'action' => 'update_item',
-						'trackerId' => $f['trackerId'],
-						'itemId' => $item['itemId'],
-					)
-				),
-			)
-		);
-	}
-
-	return $input;
+	return $handler->renderInput(array('inTable' => 'y'));
 }
 
 function wikiplugin_tracker_render_value($f, $item)

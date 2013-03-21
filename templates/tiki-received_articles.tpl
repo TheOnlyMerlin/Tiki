@@ -13,9 +13,9 @@
 			<tr>
 				<td valign="top">
 					{if $useImage eq 'y'}
-						<img alt="{tr}Article image{/tr}" src="received_article_image.php?id={$receivedArticleId}">
+						<img alt="{tr}Article image{/tr}" src="received_article_image.php?id={$receivedArticleId}" />
 					{else}
-						<img alt="{tr}Topic image{/tr}" src="article_image.php?image_type=topic&amp;id={$topic}">
+						<img alt="{tr}Topic image{/tr}" src="article_image.php?image_type=topic&amp;id={$topic}" />
 					{/if}
 				</td>
 				<td valign="top">
@@ -37,14 +37,14 @@
 {if $receivedArticleId > 0}
 	<h2>{tr}Edit received article{/tr}</h2>
 	<form action="tiki-received_articles.php" method="post">
-		<input type="hidden" name="receivedArticleId" value="{$receivedArticleId|escape}">
-		<input type="hidden" name="created" value="{$created|escape}">
-		<input type="hidden" name="image_name" value="{$image_name|escape}">
-		<input type="hidden" name="image_size" value="{$image_size|escape}">
+		<input type="hidden" name="receivedArticleId" value="{$receivedArticleId|escape}" />
+		<input type="hidden" name="created" value="{$created|escape}" />
+		<input type="hidden" name="image_name" value="{$image_name|escape}" />
+		<input type="hidden" name="image_size" value="{$image_size|escape}" />
 		<table class="formcolor">
 			<tr>
 				<td>{tr}Title:{/tr}</td>
-				<td><input type="text" name="title" value="{$title|escape}"></td>
+				<td><input type="text" name="title" value="{$title|escape}" /></td>
 			</tr>
 			<tr>
 				<td>{tr}Author Name:{/tr}</td>
@@ -101,11 +101,11 @@
 			</tr>
 			<tr>
 				<td>{tr}Image x size:{/tr}</td>
-				<td><input type="text" name="image_x" value="{$image_x|escape}"></td>
+				<td><input type="text" name="image_x" value="{$image_x|escape}" /></td>
 			</tr>
 			<tr>
 				<td>{tr}Image y size:{/tr}</td>
-				<td><input type="text" name="image_y" value="{$image_y|escape}"></td>
+				<td><input type="text" name="image_y" value="{$image_y|escape}" /></td>
 			</tr>
 			<tr>
 				<td>{tr}Image name:{/tr}</td>
@@ -119,7 +119,7 @@
 				<tr>
 					<td>{tr}Image:{/tr}</td>
 					<td>
-						<img alt="article image" width="{$image_x}" height="{$image_y}" src="received_article_image.php?id={$receivedArticleId}">
+						<img alt="article image" width="{$image_x}" height="{$image_y}" src="received_article_image.php?id={$receivedArticleId}" />
 					</td>
 				</tr>
 			{/if}
@@ -149,9 +149,9 @@
 			<tr>
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" name="preview" value="{tr}Preview{/tr}">
+					<input type="submit" name="preview" value="{tr}Preview{/tr}" />
 					&nbsp;
-					<input type="submit" name="save" value="{tr}Save{/tr}">
+					<input type="submit" name="save" value="{tr}Save{/tr}" />
 				</td>
 			</tr>
 			<tr>
@@ -163,7 +163,7 @@
 							<option value="{$topics[t].topicId|escape}" {if $topic eq $topics[t].topicId}selected="selected"{/if}>{$topics[t].name}</option>
 						{/section}
 					</select>
-					<input type="submit" name="accept" value="{tr}Accept{/tr}">
+					<input type="submit" name="accept" value="{tr}Accept{/tr}" />
 				</td>
 			</tr>
 		</table>

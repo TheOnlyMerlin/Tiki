@@ -3,8 +3,8 @@
 
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<link rel="StyleSheet" href="styles/{$prefs.style}" type="text/css">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link rel="StyleSheet" href="styles/{$prefs.style}" type="text/css" />
 	<title>{tr}Address book{/tr}</title>
 </head>
 <body>
@@ -43,7 +43,7 @@
 					<td class="text">{$channels[user].firstName}</td>
 					<td class="text">{$channels[user].lastName}</td>
 					<td class="email">
-						<a class="link" href="#" onClick="javascript:window.opener.document.getElementById('{$element}').value=window.opener.document.getElementById('{$element}').value + '{$channels[user].email}' + ' ';">
+						<a class="link" href="#" onclick="javascript:window.opener.document.getElementById('{$element}').value=window.opener.document.getElementById('{$element}').value + '{$channels[user].email}' + ' ';">
 							{$channels[user].email}
 						</a>
 						[&nbsp;&nbsp;
@@ -71,7 +71,7 @@
 				</a>]
 			{/if}
 			{if $prefs.direct_pagination eq 'y'}
-				<br>
+				<br />
 				{section loop=$cant_pages name=foo}
 					{assign var=selector_offset value=$smarty.section.foo.index|times:$prefs.maxRecords}
 					<a class="prevnext" href="tiki-webmail_contacts.php?element={$element}&amp;section=contacts&amp;find={$find}&amp;offset={$selector_offset}&amp;sort_mode={$sort_mode}">

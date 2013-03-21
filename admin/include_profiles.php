@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$profile = Tiki_Profile::fromNames($_POST['pd'], $_POST['pp']);
 		$installer->install($profile);
 
-		if (($profile != null) && ($target = $profile->getInstructionPage())) {
+		if ($target = $profile->getInstructionPage()) {
 			global $wikilib;
 			require_once 'lib/wiki/wikilib.php';
 			$target = $wikilib->sefurl($target);
@@ -95,10 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$profile = Tiki_Profile::fromString($test_source, $_POST['profile_tester_name']);
 		$profile->removeSymbols();
 		$installer = new Tiki_Profile_Installer;
-		$empty_cache = $_REQUEST['empty_cache'];
-		$smarty->assign('empty_cache', $empty_cache);
-
-		$installer->install($profile, $empty_cache);
+		$installer->install($profile);
 
 		if ($target = $profile->getInstructionPage()) {
 			global $wikilib;
@@ -132,17 +129,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$installer = new Tiki_Profile_Installer;
 		$profile = Tiki_Profile::fromNames($_GET['pd'], $_GET['pp']);
 		$error = '';
-
-		// Check if profile is available.
-		// This will not be the case for a misconfigured profile server
-		if ($profile === false) {
-			$error = "Profile is not available: ".$_GET['pd'].", ". $_GET['pp'];
-		}
-
 		try {
-			if (!empty($error)) {
-				$sequencable = false;
-			} else if (!$deps = $installer->getInstallOrder($profile)) {
+			if (!$deps = $installer->getInstallOrder($profile)) {
 				$deps = $profile->getRequiredProfiles(true);
 				$deps[] = $profile;
 				$sequencable = false;
@@ -156,22 +144,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 		$dependencies = array();
 		$userInput = array();
-		$installed = false;
-		$url = '';
-		$feedback = '';
 
-		if ($profile !== false) {
-			foreach ($deps as $d) {
-				$dependencies[] = $d->pageUrl;
-				$userInput = array_merge($userInput, $d->getRequiredInput());
-			}
-
-			$parsed = $parserlib->parse_data($profile->pageContent);
-			$installed = $installer->isInstalled($profile);
-
-			$url =  $profile->url;
-			$feedback = $profile->getFeedback();
+		foreach ($deps as $d) {
+			$dependencies[] = $d->pageUrl;
+			$userInput = array_merge($userInput, $d->getRequiredInput());
 		}
+
+		$parsed = $parserlib->parse_data($profile->pageContent);
+		$installed = $installer->isInstalled($profile);
+
 		echo json_encode(
 			array(
 				'dependencies' => $dependencies,
@@ -180,8 +161,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 				'error' => $error,
 				'content' => $parsed,
 				'already' => $installed,
-				'url' => $url,
-				'feedback' => $feedback,
+				'url' => $profile->url,
+				'feedback' => $profile->getFeedback(),
 			)
 		);
 		exit;
@@ -283,7 +264,7 @@ if (isset($_REQUEST['export'])) {
 	$export_yaml = "{CODE(caption=>YAML,wrap=>0)}\n" . $export_yaml . "{CODE}\n";
 
 	include_once 'lib/wiki-plugins/wikiplugin_code.php';
-	$export_yaml = wikiplugin_code($export_yaml, array('caption' => 'Wiki markup', 'colors' => 'tiki' ), null, array());
+	$export_yaml = wikiplugin_code($export_yaml, array('caption' => 'Wiki markup', 'colors' => 'tikiwiki' ), null, array());
 	$export_yaml = preg_replace('/~[\/]?np~/', '', $export_yaml);
 
 	$smarty->assign('export_yaml', $export_yaml);

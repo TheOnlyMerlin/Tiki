@@ -36,16 +36,16 @@
 <form class="freetagsearch" action="tiki-browse_freetags.php" method="get">
 	<div class="freetagskeywords">
 		<b>{tr}Tags{/tr}</b> 
-		<input type="text" id="tagBox" name="tag" size="25" value="{$tagString|escape}">
+		<input type="text" id="tagBox" name="tag" size="25" value="{$tagString|escape}" />
 		{button _onclick="clearTags(); return false;" _text="{tr}Clear{/tr}"}
-		<input type="submit" value="{tr}Go{/tr}">
-		<br>
-		<input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
-		<input type="radio" name="broaden" id="stopb1" value="n"{if $broaden eq 'n'} checked="checked"{/if}>
+		<input type="submit" value="{tr}Go{/tr}" />
+		<br />
+		<input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
+		<input type="radio" name="broaden" id="stopb1" value="n"{if $broaden eq 'n'} checked="checked"{/if} />
 		<label for="stopb1">{tr}With all selected tags{/tr}</label>
-		<input type="radio" name="broaden" id="stopb2" value="y"{if $broaden eq 'y'} checked="checked"{/if}>
+		<input type="radio" name="broaden" id="stopb2" value="y"{if $broaden eq 'y'} checked="checked"{/if}/>
 		<label for="stopb2">{tr}With one selected tag{/tr}</label>
-		<input type="radio" name="broaden" id="stopb3" value="last"{if $broaden eq 'last'} checked="checked"{/if}>
+		<input type="radio" name="broaden" id="stopb3" value="last"{if $broaden eq 'last'} checked="checked"{/if} />
 		<label for="stopb3">{tr}With last selected tag{/tr}</label>
 	</div>
 
@@ -101,7 +101,7 @@
 			{assign var=thisbroaden value=''}
 		{/if}
 	
-		{button _text="{tr}All{/tr}" _class=$thisclass href="tiki-browse_freetags.php?tag=$tagString$thisbroaden&amp;type="}
+		{button _text="{tr}All{/tr}" _class=$thisclass href="tiki-browse_freetags.php?tag=$tagString$thisbroaden"}
 
 		{foreach item=objectType from=$objects_with_freetags}
 			{foreach item=sect key=key from=$sections_enabled}
@@ -152,26 +152,14 @@
 				{/if}
 			{/foreach}
 		{/foreach}
-		{if !empty($blogs)}
-			<div id="blogs"{if $type ne 'blog post'} style="visibility:hidden"{/if}>
-			<select name="objectId" onchange="this.form.submit();">
-				<option value="">--{tr}All blogs{/tr}--</option>
-				{foreach item=blog from=$blogs}
-					<option value="{$blog.blogId|escape}"{if $blog.blogId eq $objectId} selected="selected"{/if}>{$blog.title|escape}</option>
-				{/foreach}
-			</select>
-			</div>
-		{/if}
 
-		<input type="hidden" name="old_type" value="{$type|escape}">
-		<input type="text" name="find" value="{$find|escape}">
-		<input type="submit" value="{tr}Filter{/tr}">
+		<input type="text" name="find" value="{$find}" />
+		<input type="submit" value="{tr}Filter{/tr}" />
 	{/capture}
+</form>
 
 {if $cpt > 1}
 	<div class="freetagsbrowse">{$smarty.capture.browse}</div>{/if}
-
-</form>
 
 <div class="freetagresult">
 	{if $tagString}

@@ -21,11 +21,7 @@ $dirtoscan = 'templates';
 
 /* defines functions scandir and file_out_contents if running PHP<5 */
 if (!function_exists('scandir')) {
-    /**
-     * @param $dir
-     * @return array
-     */
-    function scandir($dir)
+	function scandir($dir)
 	{
 		$dh = opendir($dir);
 		while (false !== ($filename = readdir($dh))) {
@@ -38,12 +34,7 @@ if (!function_exists('scandir')) {
 }
 
 if (!function_exists('file_put_contents')) {
-    /**
-     * @param $filename
-     * @param $data
-     * @return bool|int
-     */
-    function file_put_contents($filename, $data)
+	function file_put_contents($filename, $data)
 	{
 		$f = @fopen($filename, 'w');
 		if (!$f) {

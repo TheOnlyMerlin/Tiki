@@ -109,6 +109,7 @@
 				</div>
 			</fieldset>
 
+			<input type="hidden" name="users_defaults" />
 			{* ************ Users Default Preferences *}
 			<fieldset>
 				<legend>

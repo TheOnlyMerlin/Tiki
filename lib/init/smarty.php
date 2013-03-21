@@ -1,112 +1,51 @@
 <?php
-/**
- * brings Smarty functionality into Tiki
- * 
- * this script may only be included, it will die if called directly.
- *
- * @package TikiWiki
- * @subpackage lib\init
- * @copyright (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project. All Rights Reserved. See copyright.txt for details and a complete list of authors.
- * @licence Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
- */
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+//
+// All Rights Reserved. See copyright.txt for details and a complete list of authors.
+// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-// die if called directly.
+//this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== FALSE) {
   header('location: index.php');
   exit;
 }
 
 require_once 'lib/setup/third_party.php';
+require_once (defined('SMARTY_DIR') ? SMARTY_DIR : 'lib/smarty/libs/') . 'Smarty.class.php';
 
-/**
- * extends Smarty_Security
- * @package TikiWiki\lib\init
- */
 class Tiki_Security_Policy extends Smarty_Security
 {
-	/**
-	 * needs a proper description
-	 * @var array $secure_dir
-	 */
-	public $secure_dir = array(
-		'',
-		'img/',
-		'img/icons',
-		'styles/strasa/img/icons/',
-		'styles/strasa/pics/icons/',
-		'styles/coelesce/pics/icons/',
-		'styles/darkroom/pics/icons/',
-		'styles/thenews/pics/icons/',
-		'styles/tikinewt/pics/icons/',
-		'styles/twist/pics/icons/',
-		'img/flags',
-		'img/mytiki',
-		'img/smiles',
-		'img/trackers',
-		'images/',
-		'img/icons/mime',
-		'img/icons/large',
-		'lib/ckeditor_tiki/ckeditor-icons',
-	);
-
-	/**
-	 * needs a proper description
-	 * @param Smarty $smarty
-	 */
-	function __construct($smarty)
-	{
-		if (class_exists("TikiLib")) {
-			$tikilib = TikiLib::lib('tiki');
-		}
-
-		parent::__construct($smarty);
-
-		$functions = array();
-		$modifiers = array();
-		
-		//With phpunit and command line these don't exist yet for some reason
-		if (isset($tikilib) && method_exists($tikilib, "get_preference")) {
-			$functions = array_filter($tikilib->get_preference('smarty_security_functions', array(), true));
-			$modifiers = array_filter($tikilib->get_preference('smarty_security_functions', array(), true));
-		}
-
-		$functions = (isset($functions) ? $functions : array());
-		$modifiers = (isset($modifiers) ? $modifiers : array());
-
-		$this->php_modifiers = array_merge(array( 'nl2br','escape', 'count', 'addslashes', 'ucfirst', 'ucwords', 'urlencode', 'md5', 'implode', 'explode', 'is_array', 'htmlentities', 'var_dump', 'strip_tags', 'json_encode', 'stristr'), $modifiers);
-		$this->php_functions = array_merge(array('isset', 'empty', 'count', 'sizeof', 'in_array', 'is_array', 'time', 'nl2br', 'tra', 'strlen', 'strstr', 'strtolower', 'basename', 'ereg', 'array_key_exists', 'preg_match', 'json_encode', 'stristr', 'is_numeric', 'array' ), $functions);
-	}
+		public $php_modifiers = array( 'nl2br','escape', 'count', 'addslashes', 'ucfirst', 'ucwords', 'urlencode', 'md5', 'implode', 'explode', 'is_array', 'htmlentities', 'var_dump', 'strip_tags', 'json_encode', 'stristr' );
+		public $php_functions = array('isset', 'empty', 'count', 'sizeof', 'in_array', 'is_array', 'time', 'nl2br', 'tra', 'strlen', 'strstr', 'strtolower', 'basename', 'ereg', 'array_key_exists', 'preg_match', 'json_encode', 'stristr', 'is_numeric', 'array' );
+		public $secure_dir = array(
+			'',
+			'img/',
+			'img/icons',
+			'styles/strasa/img/icons/',
+			'styles/strasa/pics/icons/',
+			'styles/coelesce/pics/icons/',
+			'styles/darkroom/pics/icons/',
+			'styles/thenews/pics/icons/',
+			'styles/tikinewt/pics/icons/',
+			'styles/twist/pics/icons/',
+			'img/flags',
+			'img/mytiki',
+			'img/smiles',
+			'img/trackers',
+			'images/',
+			'img/icons/mime',
+			'img/icons/large',
+			'lib/ckeditor_tiki/ckeditor-icons',
+		);
 }
 
-/**
- * extends Smarty.
- * 
- * Centralizing overrides here will avoid problems when upgrading to newer versions of the Smarty library.
- * @package TikiWiki\lib\init
- */
 class Smarty_Tiki extends Smarty
 {
-	/**
-	 * needs a proper description
-	 * @var array|null
-	 */
 	var $url_overriding_prefix_stack = null;
-	/**
-	 * needs a proper description
-	 * @var null
-	 */
 	var $url_overriding_prefix = null;
-	/**
-	 * needs a proper description
-	 * @var null|string
-	 */
 	var $main_template_dir = null;
 
-	/**
-	 * needs a proper description
-	 * @param string $tikidomain
-	 */
 	function Smarty_Tiki($tikidomain = '')
 	{
 		parent::__construct();
@@ -130,8 +69,7 @@ class Smarty_Tiki extends Smarty
 		$this->addTemplateDir($this->main_template_dir.'/styles/'.$style_base.'/');
 		$this->addTemplateDir($this->main_template_dir);
 
-		
-		$this->refreshLanguage();
+		$this->setCompileDir(realpath("templates_c/$tikidomain"));
 		$this->setConfigDir(null);
 		if (! isset($prefs['smarty_compilation'])) {
 			$prefs['smarty_compilation'] = '';
@@ -160,16 +98,10 @@ class Smarty_Tiki extends Smarty
 		}
 	}
 
-	/**
-	 * Fetch templates from plugins (smarty plugins, wiki plugins, modules, ...) that may need to :
-	 * - temporarily override some smarty vars,
-	 * - prefix their self_link / button / query URL arguments
-	 * 
-	 * @param      $_smarty_tpl_file
-	 * @param null $override_vars
-	 *
-	 * @return string
-	 */
+	// Fetch templates from plugins (smarty plugins, wiki plugins, modules, ...) that may need to :
+	//   - temporarily override some smarty vars,
+	//   - prefix their self_link / button / query URL arguments
+	//
 	function plugin_fetch($_smarty_tpl_file, &$override_vars = null)
 	{
 		$smarty_orig_values = array();
@@ -193,17 +125,6 @@ class Smarty_Tiki extends Smarty
 		return $return;
 	}
 
-	/**
-	 * needs a proper description
-	 * @param null $_smarty_tpl_file
-	 * @param null $_smarty_cache_id
-	 * @param null $_smarty_compile_id
-	 * @param null $parent
-	 * @param bool $_smarty_display
-	 * @param bool $merge_tpl_vars
-	 * @param bool $no_output_filter
-	 * @return string
-	 */
 	public function fetch($_smarty_tpl_file = null, $_smarty_cache_id = null, $_smarty_compile_id = null, $parent = null, $_smarty_display = false, $merge_tpl_vars = true, $no_output_filter = false)
 	{
 		global $prefs, $style_base, $tikidomain;
@@ -276,36 +197,17 @@ class Smarty_Tiki extends Smarty
 		return parent::fetch($_smarty_tpl_file, $_smarty_cache_id, $_smarty_compile_id, $parent, $_smarty_display);
 	}
 
-	/**
-	 * needs a proper description
-	 * @param $var
-	 * @return Smarty_Internal_Data
-	 */
 	function clear_assign($var)
 	{
 		return parent::clearAssign($var);
 	}
 
-	/**
-	 * needs a proper description
-	 * @param $var
-	 * @param $value
-	 * @return Smarty_Internal_Data
-	 */
 	function assign_by_ref($var,&$value)
 	{
 		return parent::assignByRef($var, $value);
 	}
 
-	/**
-	 * fetch in a specific language  without theme consideration
-	 * @param      $lg
-	 * @param      $_smarty_tpl_file
-	 * @param null $_smarty_cache_id
-	 * @param null $_smarty_compile_id
-	 * @param bool $_smarty_display
-	 * @return mixed
-	 */
+	/* fetch in a specific language  without theme consideration */
 	function fetchLang($lg, $_smarty_tpl_file, $_smarty_cache_id = null, $_smarty_compile_id = null, $_smarty_display = false)
 	{
 		global $prefs, $lang, $style_base, $tikidomain;
@@ -325,23 +227,12 @@ class Smarty_Tiki extends Smarty
 
 		$lgSave = $prefs['language'];
 		$prefs['language'] = $lg;
-		$this->refreshLanguage();
 		$res = parent::fetch($_smarty_tpl_file, $_smarty_cache_id, $_smarty_compile_id, null, $_smarty_display);
 		$prefs['language'] = $lgSave; // Restore the language of the user triggering the notification
-		$this->refreshLanguage();
 
 		return preg_replace("/^[ \t]*/", '', $res);
 	}
 
-	/**
-	 * needs a proper description
-	 * @param null   $resource_name
-	 * @param null   $cache_id
-	 * @param null   $compile_id
-	 * @param null   $parent
-	 * @param string $content_type
-	 * @return Purified|void
-	 */
 	function display($resource_name = null, $cache_id=null, $compile_id = null, $parent = null, $content_type = 'text/html; charset=utf-8')
 	{
 
@@ -358,12 +249,12 @@ class Smarty_Tiki extends Smarty
 			}
 		}
 
-		/**
-		 * By default, display is used with text/html content in UTF-8 encoding
-		 * If you want to output other data from smarty,
-		 * - either use fetch() / fetchLang()
-		 * - or set $content_type to '' (empty string) or another content type.
-		 */
+		//
+		// By default, display is used with text/html content in UTF-8 encoding
+		// If you want to output other data from smarty,
+		//   - either use fetch() / fetchLang()
+		//   - or set $content_type to '' (empty string) or another content type.
+		//
 		if ( $content_type != '' && ! headers_sent() ) {
 			header('Content-Type: '.$content_type);
 		}
@@ -374,11 +265,7 @@ class Smarty_Tiki extends Smarty
 
 		}
 	}
-	/**
-	 * Returns the file name associated to the template name
-	 * @param $template
-	 * @return string
-	 */
+	// Returns the file name associated to the template name
 	function get_filename($template)
 	{
 		global $tikidomain, $style_base;
@@ -394,22 +281,12 @@ class Smarty_Tiki extends Smarty
 		return $this->main_template_dir.$file.$template;
 	}
 
-	/**
-	 * needs a proper description
-	 * @param $url_arguments_prefix
-	 * @param $arguments_list
-	 */
 	function set_request_overriders( $url_arguments_prefix, $arguments_list )
 	{
 		$this->url_overriding_prefix_stack[] = array( $url_arguments_prefix . '-', $arguments_list );
 		$this->url_overriding_prefix =& $this->url_overriding_prefix_stack[ count($this->url_overriding_prefix_stack) - 1 ];
 	}
 
-	/**
-	 * needs a proper description
-	 * @param $url_arguments_prefix
-	 * @param $arguments_list
-	 */
 	function remove_request_overriders( $url_arguments_prefix, $arguments_list )
 	{
 		$last_override_prefix = empty( $this->url_overriding_prefix_stack ) ? false : array_pop($this->url_overriding_prefix_stack);
@@ -417,18 +294,6 @@ class Smarty_Tiki extends Smarty
 			trigger_error('URL Overriding prefix stack is in a bad state', E_USER_ERROR);
 		}
 		$this->url_overriding_prefix =& $this->url_overriding_prefix_stack[ count($this->url_overriding_prefix_stack) - 1 ];;
-	}
-
-	function refreshLanguage()
-	{
-		global $tikidomain, $prefs;
-
-		$lang = $prefs['language'];
-		if (empty($lang)) {
-			$lang = 'default';
-		}
-
-		$this->setCompileDir(realpath("templates_c") . "/$lang/$tikidomain");
 	}
 }
 

@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -15,13 +12,7 @@ require_once ("lib/webmail/net_pop3.php");
 include_once ("lib/mail/mimelib.php");
 include_once ("lib/webmail/tikimaillib.php");
 include_once ('lib/wiki/wikilib.php');
-/**
- * @param $output
- * @param $out
- * @param $page
- * @param $user
- */
-function mailin_check_attachments(&$output, &$out, $page, $user)
+function mailin_check_attachments(&$output, &$out, $page, $user) 
 {
 	global $wikilib;
 	$cnt = 0;
@@ -42,12 +33,7 @@ function mailin_check_attachments(&$output, &$out, $page, $user)
 	$out.= $cnt;
 	$out.= " attachment(s) added<br />";
 }
-
-/**
- * @param $output
- * @return string
- */
-function mailin_get_body($output)
+function mailin_get_body($output) 
 {
 	if (isset($output['text'][0])) $body = $output["text"][0];
 	elseif (isset($output['parts'][0]) && isset($output['parts'][0]["text"][0])) $body = $output['parts'][0]["text"][0];
@@ -124,8 +110,12 @@ foreach ($accs['data'] as $acc) {
 						$content.= "Anonymous user acces denied, sending auto-reply to email address:&nbsp;" . $aux["From"] . "<br />";
 						$mail = new TikiMail();
 						$mail->setFrom($acc["account"]);
+						$c = $prefs['default_mail_charset'];
+						$mail->setHeadCharset($c);
+						$mail->setTextCharset($c);
 						$l = $prefs['language'];
 						$mail->setSubject(tra('Tiki mail-in auto-reply', $l));
+						$mail->setSMTPParams($acc["smtp"], $acc["smtpPort"], '', $acc["useAuth"], $acc["username"], $acc["pass"]);
 						$mail->setText(tra("Sorry, you can't use this feature.", $l));
 						$res = $mail->send(array($email_from), 'mail');
 						$content.= "Response sent<br />";
@@ -193,6 +183,11 @@ foreach ($accs['data'] as $acc) {
 								// and also sends the source of the page
 								$mail = new TikiMail();
 								$mail->setFrom($acc["account"]);
+								$c = $prefs['default_mail_charset'];
+								$mail->setHeadCharset($c);
+								$mail->setHtmlCharset($c);
+								$mail->setTextCharset($c);
+								$mail->setSMTPParams($acc["smtp"], $acc["smtpPort"], '', $acc["useAuth"], $acc["username"], $acc["pass"]);
 								if ($tikilib->page_exists($page)) {
 									$mail->setSubject($page);
 									$info = $tikilib->get_page_info($page);
@@ -245,9 +240,13 @@ foreach ($accs['data'] as $acc) {
 							} else {
 								$mail = new TikiMail();
 								$mail->setFrom($acc["account"]);
+								$c = $prefs['default_mail_charset'];
+								$mail->setHeadCharset($c);
+								$mail->setTextCharset($c);
 								$l = $prefs['language'];
 								$mail_data = $smarty->fetchLang($l, "mail/mailin_help_subject.tpl");
 								$mail->setSubject($mail_data);
+								$mail->setSMTPParams($acc["smtp"], $acc["smtpPort"], '', $acc["useAuth"], $acc["username"], $acc["pass"]);
 								$smarty->assign('subject', $output['header']['subject']);
 								$mail_data = $smarty->fetchLang($l, "mail/mailin_help.tpl");
 								$mail->setText($mail_data);

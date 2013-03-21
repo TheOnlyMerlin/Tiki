@@ -977,7 +977,14 @@ class TikiSheetCSVHandler extends TikiSheetDataHandler
 
 		if ( $this->file == "php://stdout" )
 		{
+			header("Content-type: text/comma-separated-values");
+			header("Content-Disposition: attachment; filename=export.csv");
+			header("Expires: 0");
+			header("Cache-Control: must-revalidate, post-check=0,pre-check=0");
+			header("Pragma: public");
+
 			$this->output = $total;
+
 			return true;
 		}
 		else
@@ -1241,7 +1248,14 @@ class TikiSheetCSVExcelHandler extends TikiSheetDataHandler
 
         if ( $this->file == "php://stdout" )
         {
+            header("Content-type: text/comma-separated-values");
+            header("Content-Disposition: attachment; filename=export.csv");
+            header("Expires: 0");
+            header("Cache-Control: must-revalidate, post-check=0,pre-check=0");
+            header("Pragma: public");
+
             $this->output = $total;
+
             return true;
         }
         else

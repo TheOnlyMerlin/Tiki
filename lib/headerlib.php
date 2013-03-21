@@ -15,7 +15,6 @@ class HeaderLib
 	public $title;
 	public $jsfiles;
 	public $js;
-	public $jsfile_attr = array();
 	public $js_config;
 	public $jq_onready;
 	public $cssfiles;
@@ -89,13 +88,6 @@ class HeaderLib
 				$this->minified[$file] = $minified;
 			}
 		}
-		return $this;
-	}
-
-	function add_jsfile_with_attr($script, $attributes, $rank=0)
-	{
-		$this->add_jsfile($script, $rank);
-		$this->jsfile_attr[$script] = $attributes;
 		return $this;
 	}
 
@@ -238,9 +230,6 @@ class HeaderLib
 			$back .= '<link rel="stylesheet" href="'.smarty_modifier_escape($this->convert_cdn($style_ie8_css)).'" type="text/css" />'."\n";
 		}
 		$back .= "<![endif]-->\n";
-		$back .= "<!--[if IE 9]>\n"
-				.'<link rel="stylesheet" href="css/ie9.css" type="text/css" />'."\n";
-		$back .= "<![endif]-->\n";
 
 		if (count($this->rssfeeds)) {
 			foreach ($this->rssfeeds as $x=>$rssf) {
@@ -257,10 +246,6 @@ class HeaderLib
 	function output_js_files()
 	{
 		global $prefs, $smarty;
-
-		if ($prefs['javascript_enabled'] == 'n') {
-			return;
-		}
 
 		$smarty->loadPlugin('smarty_modifier_escape');
 		ksort($this->jsfiles);
@@ -280,14 +265,8 @@ class HeaderLib
 			foreach ($jsfiles as $x=>$jsf) {
 				$back.= "<!-- jsfile $x -->\n";
 				foreach ($jsf as $jf) {
-					$attrs = '';
-					if (isset($this->jsfile_attr[$jf])) {
-						foreach ($this->jsfile_attr[$jf] as $attr => $value) {
-							$attrs .= ' ' . $attr . '="' . addslashes($value) . '"';
-						}
-					}
 					$jf = $this->convert_cdn($jf, $x);
-					$back.= "<script$attrs type=\"text/javascript\" src=\"".smarty_modifier_escape($jf)."\"></script>\n";
+					$back.= "<script type=\"text/javascript\" src=\"".smarty_modifier_escape($jf)."\"></script>\n";
 				}
 			}
 			$back.= "\n";
@@ -375,12 +354,6 @@ class HeaderLib
 
 	function output_js_config($wrap = true)
 	{
-		global $prefs;
-
-		if ($prefs['javascript_enabled'] == 'n') {
-			return;
-		}
-
 		$back = null;
 		if (count($this->js_config)) {
 			ksort($this->js_config);
@@ -413,10 +386,6 @@ class HeaderLib
 	function output_js($wrap = true)
 	{	// called in tiki.tpl - JS output at end of file now (pre 5.0)
 		global $prefs;
-
-		if ($prefs['javascript_enabled'] == 'n') {
-			return;
-		}
 
 		ksort($this->js);
 		ksort($this->jq_onready);
@@ -510,14 +479,7 @@ class HeaderLib
 		if (count($this->jsfiles)) {
 			foreach ($this->jsfiles as $x=>$jsf) {
 				foreach ($jsf as $jf) {
-					$attrs = '';
-					if (isset($this->jsfile_attr[$jf])) {
-						foreach ($this->jsfile_attr[$jf] as $attr => $value) {
-							$attrs .= ' ' . $attr . '="' . addslashes($value) . '"';
-						}
-					}
-
-					$out[] = "<script$attrs type=\"text/javascript\" src=\"".smarty_modifier_escape($jf)."\"></script>\n";
+					$out[] = "<script type=\"text/javascript\" src=\"".smarty_modifier_escape($jf)."\"></script>\n";
 				}
 			}
 		}
@@ -811,7 +773,7 @@ class HeaderLib
 		}
 		*/
 
-		$this->add_jsfile('lib/openlayers/OpenLayers.js', 'external');
+		$this->add_jsfile('http://openlayers.org/api/2.12/OpenLayers.js', 'external');
 		$this->add_js(
 		    '$(".map-container:not(.done)")
 		        .addClass("done")

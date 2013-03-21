@@ -10,7 +10,7 @@
 				<tr>
 					<td>
 						{tr}InterTiki Slave mode{/tr}
-						<br>
+						<br />
 						<small>{tr}Warning: overrides manually registered local users{/tr}</small>
 					</td>
 					<td>
@@ -36,13 +36,13 @@
 						</select>
 						<div id="admin-slavemode-options" style="display: {if $prefs.feature_intertiki_mymaster eq ''}none{else}block{/if}">
 							<input type="checkbox" name="feature_intertiki_import_preferences" {if $prefs.feature_intertiki_import_preferences eq 'y'}checked="checked"{/if}/>
-							{tr}Import user preferences{/tr}<br>
+							{tr}Import user preferences{/tr}<br />
 	
 							<input type="checkbox" name="feature_intertiki_import_groups" {if $prefs.feature_intertiki_import_groups eq 'y'}checked="checked"{/if}/>
 							{tr}Import user groups{/tr}
-							<br>
+							<br />
 							{tr}Limit group import (comma-separated list of imported groups, leave empty to avoid limitation){/tr}
-							<br>
+							<br />
 							<input type="text" name="feature_intertiki_imported_groups" value="{$prefs.feature_intertiki_imported_groups}" />
 						</div>
 					</td>
@@ -166,7 +166,6 @@
 									<td>{tr}Key{/tr}</td>
 									<td>{tr}IP{/tr}</td>
 									<td>{tr}Contact{/tr}</td>
-									<td>{tr}Can register{/tr}</td>
 								</tr>
 								{if $prefs.known_hosts}
 									{foreach key=k item=i from=$prefs.known_hosts}
@@ -186,9 +185,6 @@
 											<td>
 												<input type="text" name="known_hosts[{$k}][contact]" value="{$i.contact}" size="22" />
 											</td>
-											<td>
-												<input type="checkbox" name="known_hosts[{$k}][allowusersregister]" {if $i.allowusersregister eq 'y'}checked="checked"{/if} />
-											</td>
 										</tr>
 									{/foreach}
 								{/if}
@@ -198,7 +194,6 @@
 									<td><input type="text" name="newhost[key]" value="" size="32" /></td>
 									<td><input type="text" name="newhost[ip]" value="" size="12" /></td>
 									<td><input type="text" name="newhost[contact]" value="" size="22" /></td>
-									<td><input type="checkbox" name="newhost[allowusersregister]" /></td>
 								</tr>
 							</table>
 						</td>

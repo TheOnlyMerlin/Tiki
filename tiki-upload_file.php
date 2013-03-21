@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -187,11 +184,7 @@ $smarty->assign('editFileId', (int) $fileId);
 $smarty->assign('galleryId', empty( $_REQUEST['galleryId'][0] ) ? '' : $_REQUEST['galleryId'][0]);
 
 if ( empty( $fileId ) ) {
-	if ($gal_info['type'] == 'user') {
-		$galleries = $filegallib->getSubGalleries($requestGalleryId, true, 'userfiles');
-	} else {
-		$galleries = $filegallib->getSubGalleries($requestGalleryId, true, 'upload_files');
-	}
+	$galleries = $filegallib->getSubGalleries($requestGalleryId, true, 'upload_files');
 	$smarty->assign_by_ref('galleries', $galleries["data"]);
 	$smarty->assign('treeRootId', $galleries['parentId']);
 
@@ -213,9 +206,6 @@ if (!empty($fileInfo['fileId'])) {
 	$smarty->assign('metarray', $filegallib->metadataAction($fileInfo['fileId']), 'get_array');
 }
 
-$is_iis = TikiInit::isIIS();
-$smarty->assign('is_iis', $is_iis);
-	
 $cat_type = 'file';
 $cat_objid = (int) $fileId;
 include_once ('categorize_list.php');

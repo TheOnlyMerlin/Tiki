@@ -31,26 +31,12 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 
 function smarty_block_textarea($params, $content, $smarty, $repeat)
 {
-    static $included=false;
 	global $prefs, $headerlib, $smarty, $is_html;
 
 	if ( $repeat ) {
 		return;
 	}
-    if (!$included){
-        $headerlib->add_js(
-            <<<JS
-                function GetCurrentEditorAreaId(ob){
-        var p;
-        p=ob.parentNode;
-        while(p.className != "edit-zone"){p=p.parentNode;}
-        areaid=p.id.substring(10);
-        //alert ("areaid="+areaid);
-        return areaid;
-    }
-JS
-        );
-    }
+
 	// some defaults
 	$params['_toolbars'] = isset($params['_toolbars']) ? $params['_toolbars'] : 'y';
 	if ($prefs['mobile_feature'] === 'y' && $prefs['mobile_mode'] === 'y') {
@@ -107,7 +93,7 @@ JS
 		$params['style'] = 'width:99%';
 	}
 	$html = '';
-    if (!$included) $html .= '<input type="hidden" name="mode_wysiwyg" value="" /><input type="hidden" name="mode_normal" value="" />';
+	$html .= '<input type="hidden" name="mode_wysiwyg" value="" /><input type="hidden" name="mode_normal" value="" />';
 
 	$auto_save_referrer = '';
 	$auto_save_warning = '';
@@ -167,71 +153,62 @@ JS
 	if ( $params['_wysiwyg'] == 'y' && $params['_simple'] == 'n') {
 		// TODO cope with wysiwyg and simple
 
-		if ($prefs['feature_jison_wiki_parser'] == 'y') {
-			global $wysiwyglib; include_once('lib/ckeditor_tiki/wysiwyglib.php');
-			$html .= $wysiwyglib->setUpJisonEditor($params['_is_html'], $as_id, $params, $auto_save_referrer);
-            if (!$included) $html .= '<input name="jisonWyisywg" type="hidden" value="true" />';
-			$html .= '<div class="wikiedit ui-widget-content" name="'.$params['name'].'" id="'.$as_id.'">' . ($content) . '</div>';
-		} else {
-			// new ckeditor implementation 2010
-			if ($prefs['feature_ajax'] !== 'y' || $prefs['ajax_autosave'] !== 'y' ||
-					$prefs['feature_wiki_paragraph_formatting'] !== 'y' || $prefs['feature_wiki_paragraph_formatting_add_br'] === 'y' ||
-					$prefs['wysiwyg_wiki_parsed'] !== 'y') {
+		// new ckeditor implementation 2010
+		if ($prefs['feature_ajax'] !== 'y' || $prefs['ajax_autosave'] !== 'y' ||
+				$prefs['feature_wiki_paragraph_formatting'] !== 'y' || $prefs['feature_wiki_paragraph_formatting_add_br'] !== 'y' ||
+				$prefs['wysiwyg_wiki_parsed'] !== 'y') {
 
-				// show dev notice
-				$smarty->loadPlugin('smarty_block_remarksbox');
-				$msg = '';
+			// show dev notice
+			$smarty->loadPlugin('smarty_block_remarksbox');
+			$msg = tra('<strong>Thank you for trying the new ckeditor implementation for Tiki 6</strong><br /><br />');
 
-				global $tiki_p_admin;
-				if ($tiki_p_admin) {
-					// TODO: Create the up-to-date profile for it (WYSIWYG_CKEditor4)
-					$profile_link = 'tiki-admin.php?profile=WYSIWYG_CKEditor4&repository=http%3A%2F%2Fprofiles.tiki.org%2Fprofiles&page=profiles&list=List';
-					// TODO: Put check of what prefs are actually set up wrongly and list them in the msg
-					$msg .= tra("Some of your preferences should be set differently for this to work at it's best. Please click this to apply the recommended profile:") .
-					   ' <a href="'.$profile_link.'">WYSIWYG CKEditor4 Profile</a>';
-				} else {
-					$msg .= tra('Some of the settings at this site should be set differently for this to work best. Please ask the administrator to try this.');
-				}
-
-				$remrepeat = false;
-				$html .= smarty_block_remarksbox(array( 'type'=>'info', 'icon'=>'bricks', 'title'=>tra('CKEditor Development Notice')), $msg, $smarty, $remrepeat)."\n";
-			}
-
-			// set up ckeditor
-			if (!isset($params['name'])) {
-				$params['name'] = 'edit';
-			}
-
-			global $wysiwyglib; include_once('lib/ckeditor_tiki/wysiwyglib.php');
-			$ckoptions = $wysiwyglib->setUpEditor($params['_is_html'], $as_id, $params, $auto_save_referrer);
-
-            if (!$included) {
-                $html .= '<input type="hidden" name="wysiwyg" value="y" />';
-                }
-			$html .= '<textarea class="wikiedit ckeditor" name="'.$params['name'].'" id="'.$as_id.'" style="visibility:hidden;';	// missing closing quotes, closed in condition
-
-			if (empty($params['cols'])) {
-				$html .= 'width:100%;'. (empty($params['rows']) ? 'height:500px;' : '') .'"';
+			global $tiki_p_admin;
+			if ($tiki_p_admin) {
+				$profile_link = 'tiki-admin.php?profile=WYSIWYG_6x&repository=http%3A%2F%2Fprofiles.tiki.org%2Fprofiles&page=profiles&list=List';
+				$msg .= tra("Some of your preferences should be set differently for this to work at it's best. Please click this to apply the recommended profile:") .
+				   ' <a href="'.$profile_link.'">WYSIWYG_6x</a>';
 			} else {
-				$html .= '" cols="'.$params['cols'].'em"';
+				$msg .= tra('Some of the settings at this site should be set differently for this to work best. Please ask the administrator to try this.');
 			}
-			if (!empty($params['rows'])) {
-				$html .= ' rows="'.$params['rows'].'em"';
-			}
-			$html .= '>'.htmlspecialchars($content).'</textarea>';
 
-			$headerlib->add_jq_onready(
-				'var ckEditorInstances = new Array();
-
-				$("#' . $as_id . '").ckeditor(function() {
-					if (typeof ajaxLoadingHide == "function") { ajaxLoadingHide(); }
-					ckEditorInstances[ckEditorInstances.length] = this;
-					this.resetDirty();
-					$(this.element.$).hide();
-				}, ' . $ckoptions . ');',
-				20
-			);	// after dialog tools init (10)
+			$remrepeat = false;
+			$html .= smarty_block_remarksbox(array( 'type'=>'info', 'icon'=>'bricks', 'title'=>tra('Ckeditor Development Notice')), $msg, $smarty, $remrepeat)."\n";
 		}
+
+		// set up ckeditor
+		if (!isset($params['name'])) {
+			$params['name'] = 'edit';
+		}
+
+		global $wysiwyglib; include_once('lib/ckeditor_tiki/wysiwyglib.php');
+		$ckoptions = $wysiwyglib->setUpEditor($params['_is_html'], $as_id, $params, $auto_save_referrer);
+
+
+		$html .= '<input type="hidden" name="wysiwyg" value="y" />';
+
+		$html .= '<textarea class="wikiedit" name="'.$params['name'].'" id="'.$as_id.'" style="visibility:hidden;';	// missing closing quotes, closed in condition
+
+		if (empty($params['cols'])) {
+			$html .= 'width:100%;'. (empty($params['rows']) ? 'height:500px;' : '') .'"';
+		} else {
+			$html .= '" cols="'.$params['cols'].'em"';
+		}
+		if (!empty($params['rows'])) {
+			$html .= ' rows="'.$params['rows'].'em"';
+		}
+		$html .= '>'.htmlspecialchars($content).'</textarea>';
+
+		$headerlib->add_jq_onready(
+			'var ckEditorInstances = new Array();
+
+			$("#' . $as_id . '").ckeditor(function() {
+				if (typeof ajaxLoadingHide == "function") { ajaxLoadingHide(); }
+				ckEditorInstances[ckEditorInstances.length] = this;
+				this.resetDirty();
+				$(this.element.$).hide();
+			}, ' . $ckoptions . ');',
+			20
+		);	// after dialog tools init (10)
 
 	} else {
 		// end of if ( $params['_wysiwyg'] == 'y' && $params['_simple'] == 'n')
@@ -257,8 +234,7 @@ JS
 		$smarty->assignByRef('textareadata', $content);
 		$html .= $smarty->fetch('wiki_edit.tpl');
 
-        if (!$included)
-            $html .= "\n".'<input type="hidden" name="wysiwyg" value="n" />';
+		$html .= "\n".'<input type="hidden" name="wysiwyg" value="n" />';
 
 	}	// wiki or wysiwyg
 
@@ -392,7 +368,6 @@ function switchEditor(mode, form) {
 		}
 		$headerlib->add_js($js_editconfirm);
 	}	// end if ($params['_simple'] == 'n')
-    $included=true;
 
 	return $auto_save_warning.$html;
 }

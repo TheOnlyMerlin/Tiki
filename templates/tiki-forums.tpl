@@ -16,9 +16,9 @@
 				{if $prefs.feature_forums_name_search eq 'y'}
 					<td class="findtable">
 						<form method="get" action="tiki-forums.php">
-							<input type="text" name="find" value="{$find|escape}">
-							<input type="submit" value="{tr}Search by name{/tr}" name="search">
-							<input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
+							<input type="text" name="find" value="{$find|escape}" />
+							<input type="submit" value="{tr}Search by name{/tr}" name="search" />
+							<input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
 						</form>
 					</td>
 				{/if}
@@ -26,10 +26,10 @@
 				{if $prefs.feature_forums_search eq 'y' and $prefs.feature_search eq 'y'}
 					<td>
 						<form class="forms" method="get" action="{if $prefs.feature_search_fulltext neq 'y'}tiki-searchindex.php{else}tiki-searchresults.php{/if}">
-							<input name="highlight" size="30" type="text">
-							<input type="hidden" name="where" value="forums">
-							<input type="hidden" name="filter~type" value="forum post">
-							<input type="submit" class="wikiaction" name="search" value="{tr}Search in content{/tr}">
+							<input name="highlight" size="30" type="text" />
+							<input type="hidden" name="where" value="forums" />
+							<input type="hidden" name="filter~type" value="forum post"/>
+							<input type="submit" class="wikiaction" name="search" value="{tr}Search in content{/tr}"/>
 						</form>
 					</td>
 				{/if}
@@ -99,7 +99,7 @@
 					{/if}
 				</span>
 				{if $prefs.forum_list_desc eq 'y'}
-					<br>
+					<br />
 					<div class="subcomment">
 						{capture name="parsedDesc"}{wiki}{$channels[user].description}{/wiki}{/capture}
 						{if strlen($smarty.capture.parsedDesc) < $prefs.forum_list_description_len}
@@ -122,7 +122,7 @@
 			{if $prefs.forum_list_lastpost eq 'y'}	
 				<td class="text">
 					{if isset($channels[user].lastPost)}
-						{$channels[user].lastPost|tiki_short_datetime}<br>
+						{$channels[user].lastPost|tiki_short_datetime}<br />
 						{if $prefs.forum_reply_notitle neq 'y'}<small><i>{$channels[user].lastPostData.title|escape}</i>{/if}
 						{tr}by{/tr} {$channels[user].lastPostData.userName|username}</small>
 					{/if}

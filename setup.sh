@@ -1,7 +1,7 @@
 #! /bin/sh
 
 # (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-#
+# 
 # All Rights Reserved. See copyright.txt for details and a complete list of authors.
 # Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 # $Id$
@@ -204,7 +204,7 @@ if [ ${DEBUG} = '1' ] ; then
 	echo ${DEBUG_PREFIX} usage output: begin
 	usage
 	echo ${DEBUG_PREFIX} usage output: end
-	#echo ${DEBUG_PREFIX}
+	#echo ${DEBUG_PREFIX} 
 fi
 
 # part 2 - distribution check
@@ -499,7 +499,7 @@ what to answer, just press enter to each question (to use default value)"
 		fi
 	fi
 
-#	find . ! -regex '.*^\(devtools\).*' -type f -exec chmod 644 {} \;
+#	find . ! -regex '.*^\(devtools\).*' -type f -exec chmod 644 {} \;	
 #	echo -n " files perms fixed ..."
 #	find . -type d -exec chmod 755 {} \;
 #	echo " dirs perms fixed ... done"
@@ -762,7 +762,7 @@ tiki_setup_default_menu() {
 
 There are some other commands recommended for advanced users only.
 More documentation about this: http://doc.tiki.org/Permission+Check
-
+ 
 EOF
 }
 
@@ -802,43 +802,6 @@ tiki_setup_default() {
 		esac
 	done
 }
-
-# Set-up and execute composer to obtain dependencies
-exists()
-{
-	if type $1 &>/dev/null
-	then
-		return 0
-	else
-		return 1
-	fi
-}
-
-if [ ! -f temp/composer.phar ];
-then
-    if exists curl;
-	then
-		curl -s https://getcomposer.org/installer | php -- --install-dir=temp
-	else
-		php -r "eval('?>'.file_get_contents('https://getcomposer.org/installer'));" -- --install-dir=temp
-	fi
-else
-	php temp/composer.phar self-update
-fi
-
-if [ ! -f temp/composer.phar ];
-then
-	echo "We have failed to obtain the composer executable."
-	echo "NB: Maybe you are behing a proxy, just export https_proxy variable and relaunch setup.sh"
-	echo "1) Download it from http://getcomposer.org"
-	echo "2) Store it in temp/"
-	exit
-fi
-
-if exists php;
-then
-	php temp/composer.phar install
-fi
 
 # part 5 - main program
 # ---------------------

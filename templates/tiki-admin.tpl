@@ -11,16 +11,16 @@
 		<legend>{tr}Preference Filters{/tr}</legend>
 		{foreach from=$pref_filters key=name item=info}
 			<label>
-				<input type="checkbox" class="preffilter {$info.type|escape}" name="pref_filters[]" value="{$name|escape}" {if $info.selected}checked="checked"{/if}>
+				<input type="checkbox" class="preffilter {$info.type|escape}" name="pref_filters[]" value="{$name|escape}" {if $info.selected}checked="checked"{/if}/>
 				{$info.label|escape}
 			</label>
 		{/foreach}
 
-		<input type="submit" value="{tr}Set as my default{/tr}">
+		<input type="submit" value="{tr}Set as my default{/tr}"/>
 
 		{if $prefs.connect_feature eq "y"}
 			<label>
-				<input type="checkbox" id="connect_feedback_cbx" {if !empty($connect_feedback_showing)}checked="checked"{/if}>
+				<input type="checkbox" id="connect_feedback_cbx" {if !empty($connect_feedback_showing)}checked="checked"{/if}/>
 				{tr}Feedback{/tr}
 			</label>
 			{$headerlib->add_jsfile("lib/jquery_tiki/tiki-connect.js")}
@@ -75,9 +75,9 @@
 		{tr}This search feature and the <a href="tiki-edit_perspective.php">perspectives GUI</a> need <a href="http://dev.tiki.org/Dynamic+Preferences">dev.tiki.org/Dynamic+Preferences</a>. If you search for something and it's not appearing, please help improve keywords/descriptions.{/tr}
 	{/remarksbox*}
 	<p>
-		<label>{tr}Configuration search:{/tr} <input type="text" name="lm_criteria" value="{$lm_criteria|escape}"></label>
+		<label>{tr}Configuration search:{/tr} <input type="text" name="lm_criteria" value="{$lm_criteria|escape}"/></label>
 		<input type="submit" value="{tr}Search{/tr}" {if $indexNeedsRebuilding} class="tips" title="{tr}Configuration search{/tr}|{tr}Note: The search index needs rebuilding, this will take a few minutes.{/tr}"{/if} />
-		<input type="hidden" name="filters">
+		<input type="hidden" name="filters"/>
 	</p>
 </form>
 {if $lm_error}
@@ -89,8 +89,8 @@
 		{foreach from=$lm_searchresults item=prefName}
 			{preference name=$prefName get_pages="y"}
 		{/foreach}
-		<input type="submit" value="{tr}Change{/tr}" class="clear">
-		<input type="hidden" name="lm_criteria" value="{$lm_criteria|escape}">
+		<input type="submit" value="{tr}Change{/tr}" class="clear"/>
+		<input type="hidden" name="lm_criteria" value="{$lm_criteria|escape}"/>
 	</form>
 </fieldset>
 {elseif $lm_criteria}
@@ -159,7 +159,7 @@ Add a value in first check when you create a new admin page. *}
 			{else}
 				{icon _id=information alt="{tr}Information{/tr}" style="vertical-align: middle"}
 			{/if}
-					{if $tikifeedback[n].st ne 3}{tr}Preference{/tr} {/if}<strong>{tr}{$tikifeedback[n].mes|stringfix}{/tr}</strong><br>
+					{if $tikifeedback[n].st ne 3}{tr}Preference{/tr} {/if}<strong>{tr}{$tikifeedback[n].mes|stringfix}{/tr}</strong><br />
 					{if $tikifeedback[n].st ne 3}(<em>{tr}Preference name:{/tr}</em> {$tikifeedback[n].name}){/if}
 				</p>
 			</li>
@@ -179,7 +179,7 @@ if $pagetop_msg}
 <br style="clear:both" />
 {remarksbox type="tip" title="{tr}Crosslinks to other features and settings{/tr}"}
 
-	{tr}Administration features:{/tr}<br>
+	{tr}Administration features:{/tr}<br />
 	{* TODO: to be fixed {if $prefs.feature_debug_console eq 'y'} <a href="javascript:toggle("debugconsole")">{tr}(debug){/tr}</a> {/if} *}
 	<a href="tiki-adminusers.php">{tr}Users{/tr}</a> 
 	<a href="tiki-admingroups.php">{tr}Groups{/tr}</a> 
@@ -187,23 +187,23 @@ if $pagetop_msg}
 	<a href="tiki-admin_system.php">{tr}TikiCache/System{/tr}</a> 
 	<a href="tiki-syslog.php">{tr}SysLogs{/tr}</a> 
 	<a href="tiki-mods.php">{tr}Mods{/tr}</a>
-	<hr>
+	<hr />
 
-	{tr}Transversal features{/tr} ({tr}which apply to more than one section{/tr}):<br>
+	{tr}Transversal features{/tr} ({tr}which apply to more than one section{/tr}):<br />
 	<a href="tiki-admin_notifications.php">{tr}Mail Notifications{/tr}</a> 
-	<hr>
+	<hr />
 
-	{tr}Navigation features:{/tr}<br>
+	{tr}Navigation features:{/tr}<br />
 	<a href="tiki-admin_menus.php">{tr}Menus{/tr}</a> 
 	<a href="tiki-admin_modules.php">{tr}Modules{/tr}</a>
-	<hr>
+	<hr />
 
-	{tr}Text area features{/tr} ({tr}features you can use in all text areas, like wiki pages, blogs, articles, forums, etc{/tr}):<br>
+	{tr}Text area features{/tr} ({tr}features you can use in all text areas, like wiki pages, blogs, articles, forums, etc{/tr}):<br />
 	<a href="tiki-admin_cookies.php">{tr}Cookies{/tr}</a> 
 	<a href="tiki-list_cache.php">{tr}External Pages Cache{/tr}</a> 
 	<a href="tiki-admin_toolbars.php">{tr}Toolbars{/tr}</a> 
 	<a href="tiki-admin_dsn.php">{tr}DSN{/tr}</a> 
 	<a href="tiki-admin_external_wikis.php">{tr}External Wikis{/tr}</a> 
-	<hr>
+	<hr />
 
 {/remarksbox}
