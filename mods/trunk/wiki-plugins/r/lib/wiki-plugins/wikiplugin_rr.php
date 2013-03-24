@@ -566,11 +566,20 @@ echo $wrap;
 				fwrite ($fd, $prg . '</br>');
 		 	}
 			if ( !empty($user) && isset($params["svg"]) && $params["svg"]=="1") {
-				$PageURLRaw = preg_replace('/tiki-index.php/', 'tiki-index_raw.php', curPageURL() );
+				if ( preg_match('/tiki-index.php/', curPageURL() ) == 1) {
+					$PageURLRaw = preg_replace('/tiki-index.php/', 'tiki-index_raw.php', curPageURL() );
+				} else {
+					$PageURLRaw = preg_replace('#/([^/]+)$#', '/tiki-index_raw.php?page=\1', curPageURL() );
+				}
 				fwrite ($fd, $prg . ' <span class="button"><a href="' . $PageURLRaw . '&gtype=svg&clean=y' . '" alt="' . $rgo_rel . '.svg' . '" target="_blank">' . tr("Save Image as SVG") . '</a></span>');
+
 		 	}
 			if ( !empty($user) && isset($params["pdf"]) && $params["pdf"]=="1") {
-				$PageURLRaw = preg_replace('/tiki-index.php/', 'tiki-index_raw.php', curPageURL() );
+				if ( preg_match('/tiki-index.php/', curPageURL() ) == 1) {
+					$PageURLRaw = preg_replace('/tiki-index.php/', 'tiki-index_raw.php', curPageURL() );
+				} else {
+					$PageURLRaw = preg_replace('#/([^/]+)$#', '/tiki-index_raw.php?page=\1', curPageURL() );
+				}
 				fwrite ($fd, $prg . ' <span class="button"><a href="' . $PageURLRaw . '&gtype=pdf&clean=y' . '" alt="' . $rgo_rel . '.pdf' . '" target="_blank">' . tr("Save Image as PDF") . '</a></span>');
 		 	}
 	 	} else {
