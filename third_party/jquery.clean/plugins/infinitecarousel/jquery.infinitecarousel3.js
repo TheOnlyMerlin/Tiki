@@ -1,8 +1,8 @@
 /*
  * jQuery Infinite Carousel
  * @author admin@catchmyfame.com - http://www.catchmyfame.com
- * @version 3.0.2
- * @date February 2, 2012
+ * @version 3.0.3
+ * @date January 24, 2011
  * @category jQuery plugin
  * @copyright (c) admin@catchmyfame.com (www.catchmyfame.com)
  * @license CC Attribution-Share Alike 3.0 - http://creativecommons.org/licenses/by-sa/3.0/
@@ -98,7 +98,7 @@
 				// Once the tray is built and populate, clone all items and double the list. This allows us to easily handle any combination of advance and inview options with no lag
 				$('.infiniteCarousel_item',obj).clone().appendTo($('div.ic_tray',obj)); // Double the set of item containers
 				$('.infiniteCarousel_item',obj).each(function(index){ $(this).attr('id','ic_'+randID+'_'+index) }); // Assign IDs to each item container
-				$('.ic_tray',obj).prepend( $('.infiniteCarousel_item:last').remove() ); // Move the last div to the beginning
+				$('.ic_tray',obj).prepend( $('.infiniteCarousel_item:last',obj).remove() ); // Move the last div to the beginning
 
 				// Compensate for margins applied to items.
 				if(o.margin != 0)
