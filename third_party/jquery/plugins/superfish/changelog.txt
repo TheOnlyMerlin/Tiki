@@ -72,3 +72,53 @@ v1.4.7		added back in the visibility toggle that was removed in 1.4.5 as the bug
 			
 v1.4.8		fix over-sight: using 32bit png meant that the shadow image did show in IE6. Rather than go back to 8bit, add code to exclude IE6 from getting shadow class.
 			use new folder structure recommended by Matt from TopicTrack, for easier updates.
+
+v1.4.9 		2009ish. add new onIdle callback for when 'current' path is restored
+
+v1.5.0 		Jan 2013. Compatibility fixes for jQuery 1.9. Still backward compatibile. Removed code related to using an image for submenu shadows - just use CSS box-shadow instead (old IE will survive without shadows...unfortunately). Other minor aesthetic code alts.
+
+v1.5.1		31 Jan 2013. Use event delegation for events. Update to patched version of hoverIntent which supports event delegation ( forked for prosperity here: https://github.com/joeldbirch/onHoverIntent - original patch author: Kevin Fernandes https://github.com/KevinFernandes/onHoverIntent ).
+
+v1.5.2 		4 Feb 2013. New feature: option to require click to open/close submenus. New feature: Animations on closing submenus. New feature: Add partial support for Android (certain browsers). Full support will be in upcoming version. Minor code clean up.
+
+v1.5.3 		14 Feb 2013. Bug fix. IE was throwing errors.
+
+v1.5.4 		17 Feb 2013. New feature: Links with submenus only followable when their submenu is open, allows support to be extended to ALL browsers on ALL touch devices. Fixes IE bug with 'useClick' feature.
+
+v1.5.5 		20 Feb 2013. Moved flag that temporarily prevents link-follows to touchstart so link clicks via mouse are not delayed. This restores usual submenu behaviour with mouse interaction while retaining full touch device support.
+
+v1.5.6		20 Feb 2013. Bug fix for removing link-clickable delay with mouse interaction.
+
+v1.5.7		20 Feb 2013. Bug fix for previous bug fix.
+
+v1.5.8 		20 Feb 2013. IE animation bug (https://github.com/joeldbirch/superfish/issues/7) fixed by removing the visibility toggle once again (see v1.4.7 change). jQuery now handles this well. Fix 'useClick' IE bug introduced in last release.
+
+v1.5.9 		27 Feb 2013. Bug fix for keyboard behaviour. Focussed menu items that do not have their own associated submenus now close siblings' submenus, as they should.
+
+v1.5.10 	2 Mar 2013. Support IE10 on touch devices. Behaves differently to other touch devices as MS Pointer Events want touch events to be similar to mouse events. Touch, hold and swipe around to navigate, then lift off a link to follow it.
+
+v1.5.11 	4 Mar 2013. Recode IE10 touch support to behave like other touch browsers rather than holding finger down and moving around. Now tap to open submenus which will stay open until menu is unfocussed. A subsequent tap on a link with an open submenu will follow the link. Only other webkit browsers need touchstart – Apple has its own unique hover fix and touchstart caused it weird highlight bugs. Other very minor code changes.
+
+v1.5.12 	13 Mar 2013. Bug fix: Alter initialisation code to avoid requiring menus use the "off-left" (or "off-top") method of hiding submenus. Now allows display:none method and resolves this issue: https://github.com/joeldbirch/superfish/issues/17 . Slight refactor of iOS-sniff. Update to official hoverIntent.js file which added event delegation in r7.
+
+v1.5.13 	15 March 2013. Bug fix: height animations were getting stuck - fixed. Minor code optimisations.
+
+v1.6.0 		10 Mar 20113. Refactor CSS to allow unlimited menu-tiers without needing to add extra CSS. Semi-gracefully degrade IE6 (I recommend you polyfill with selectivizr.js if you need to support it) to allow reduced and simplified CSS. Prefer display:none submenu hiding rather than off-canvas - only closing animations will break if you do use off-canvas; everything else will still work. Refactor various bits of JS. Remove sfHover class prior to closing animation to avoid "trail of highlighted items" when hovering across items without hoverIntent active. Support IE9 on Windows Phone 7. Include Supersubs-like CSS, making that plugin largely redundant (except its max-width capability). Updated Supersubs to work with Superfish 1.6.0 just in case. Fix iOS: can now close submenus by tapping elsewhere. Fix iOS: back button will reload page (only way of resetting iOS hover state!). Added onBeforeHide callback. Fix Firefox bug with useClick initialisation. Use data() to store menu options.
+
+v1.6.1 		Fix issue #30 regarding submenus flashing open and closed under certain conditions in Firefox. Remove bgiframe JS file as part of degraded IE6 support.
+
+v1.6.2 		v1.6.1 was mislabelled as v1.6.0 in the superfish.js file.
+
+v1.6.3 		Merge pull request from @Spuds. Makes whitespace and other coding styles consistent, finally!
+
+v1.6.4 		v1.6.1 caused links with subs to be unfollowable. Quickfix is to (more or less) revert that change. Issue #31 will be reopened until I have a real solution.
+
+v1.6.4.1 	Didn't get the previous fix right.
+
+v1.6.5 		jQuery Plugin Registry doesn't like such granular version numbers.
+
+v1.6.6 		Fix issue #36. https://github.com/joeldbirch/superfish/issues/36
+
+v1.6.7 		Fix second part of issue #36, where there is only one submenu.
+
+v1.6.8 		Remove bfcache busting code after issue #37 discussion: https://github.com/joeldbirch/superfish/issues/37 . Bfcache busting deemed an unsuitable solution for Apple's buggy hover state after back button is used, but the code can be found at https://gist.github.com/joeldbirch/5268562 if needed.
