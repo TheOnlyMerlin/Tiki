@@ -6,7 +6,6 @@ jquery.sparkline.min.js: http://omnipotent.net/jquery.sparkline/#s-download
 jquery-validate: https://github.com/jzaefferer/jquery-validation
 tablesorter: https://github.com/Mottie/tablesorter
 treeTable: https://github.com/ludo/jquery-treetable
-superfish: https://github.com/joeldbirch/superfish/ => 1.6.2
 code.photoswipe: https://github.com/codecomputerlove/PhotoSwipe
 mobile: http://jquerymobile.com/download/ => 1.3.0
 
@@ -24,6 +23,7 @@ cluetip: https://github.com/kswedberg/jquery-cluetip => 1.2.8
 infinitecarousel: http://www.catchmyfame.com/catchmyfame-jquery-plugins/jquery-infinite-carousel-plugin/ => 3.0.3
 jquery.form.js: https://github.com/malsup/form/ => 3.25
 jquery.json-2.4.js: https://code.google.com/p/jquery-json/downloads/list => 2.4.0
+superfish: https://github.com/joeldbirch/superfish/ => 1.6.8
 
 #To Check
 jquery.async.js - not found
