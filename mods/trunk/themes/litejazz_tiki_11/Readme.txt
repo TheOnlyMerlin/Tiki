@@ -43,9 +43,10 @@ http://zukakakina.com/LiteJazz
 See http://themes.tiki.org/Upgrading for overview of changes in this Tiki version related to themes.
  
 -=Version=-
-Tiki 7
+Tiki 11
  
 -=Changelog=-
+7 updated for Tiki 11
 6 updated for Tiki 7
 5 updated for Tiki 6
 4 updated for Tiki 5
