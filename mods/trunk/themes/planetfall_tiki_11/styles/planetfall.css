@@ -1,7 +1,7 @@
 /* $Id$ 
 	Planetfall theme for TikiWiki CMS/Groupware.
 	This is an adaptation of the original GPL-licensed theme by Rhuk.
-	See http://zukakakina.com or http://themes.tikiwiki.org for further
+	See http://zukakakina.com or http://themes.tiki.org for further
 	information about and upgrades for this theme.
 */
 
@@ -317,8 +317,8 @@ span p {
 #top_modules #sitetitles {
 	margin-left: 20px;
 	line-height: normal;
-	margin-top: 8%;
-	margin-bottom: 1%;
+	margin-top: 5%;
+	margin-bottom: 5%;
 }
 
 #top_modules #sitetitle,
@@ -550,11 +550,11 @@ li#logout_link a {
 
 /* special arrows and arrow top padding */
 .cssmenu_vert li a .sf-sub-indicator {
-	background: url(andreas08/arrows-467aa7.png) no-repeat 0 0;
+	background: url(planetfall/arrows-467aa7.png) no-repeat 0 0;
 }
 
 .cssmenu_vert li ul li a .sf-sub-indicator {
-	background: url(../lib/jquery/superfish/images/arrows-ffffff.png) no-repeat 0 0;
+	background: url(planetfall/arrows-ffffff.png) no-repeat 0 0;
 }
 
 .cssmenu_vert li a .sf-sub-indicator {
@@ -708,6 +708,8 @@ ol.module {
 	background: #ff6600;
 	color: #000;
 	font-weight: bold;
+	border-bottom-color: transparent;
+	margin-bottom: -.5em;
 }
 
 .simplebox  { 
