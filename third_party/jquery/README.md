@@ -1,13 +1,6 @@
 #Not compatible with 1.9.1
-anythingslider : https://github.com/CSS-Tricks/AnythingSlider 1.8.3@22/03/2013
 
 #Need update
-jquery.sparkline.min.js: http://omnipotent.net/jquery.sparkline/#s-download
-jquery-validate: https://github.com/jzaefferer/jquery-validation
-tablesorter: https://github.com/Mottie/tablesorter
-treeTable: https://github.com/ludo/jquery-treetable
-code.photoswipe: https://github.com/codecomputerlove/PhotoSwipe
-mobile: http://jquerymobile.com/download/ => 1.3.0
 
 #Up2Date
 colorpicker: http://www.eyecon.ro/colorpicker/#download
@@ -24,6 +17,13 @@ infinitecarousel: http://www.catchmyfame.com/catchmyfame-jquery-plugins/jquery-i
 jquery.form.js: https://github.com/malsup/form/ => 3.25
 jquery.json-2.4.js: https://code.google.com/p/jquery-json/downloads/list => 2.4.0
 superfish: https://github.com/joeldbirch/superfish/ => 1.6.8
+jquery.sparkline.min.js: http://omnipotent.net/jquery.sparkline/#s-download
+jquery-validate: https://github.com/jzaefferer/jquery-validation
+tablesorter: https://github.com/Mottie/tablesorter
+treeTable: https://github.com/ludo/jquery-treetable
+code.photoswipe: https://github.com/codecomputerlove/PhotoSwipe
+mobile: http://jquerymobile.com/download/ => 1.3.0
+jquery.async.js - 1.0
+anythingslider : https://github.com/CSS-Tricks/AnythingSlider 1.8.18
 
 #To Check
-jquery.async.js - not found
