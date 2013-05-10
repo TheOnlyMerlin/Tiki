@@ -693,7 +693,7 @@ function checkCommands ($input) {
         	'vi', 'write', 'write.dta', 'write.ftable', 'write.socket',
         	'write.table', 'writeBin', 'writeLines', 'x11', 
         	'xedit', 'xemacs', 'xfig', 'zip.file.extract',
-        	'readdataSK',
+        	'readdataSK', 'biocLite',
         	'runApp', 'runExample', 'runGist', 'runGitHub', 'runUrl', # from Shiny
         	'png', 'jpeg', 'pdf',
         	'get', 'rgl.init', # Suggested by Carlos J. Gil Bellosta , and Miguel Angel Rodriguez Muinos from list r-help-es

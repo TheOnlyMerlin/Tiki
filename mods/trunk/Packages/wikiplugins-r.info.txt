@@ -51,4 +51,4 @@ Changelog:
 0.74 R icon shown also in Tiki9. Empty lines above figures from googleVis package removed (thanks RobertPlummer)
 0.75 svg generation works again with this small change and r43765 to clean svn code (thanks changi and jyhem)
 0.76 Fixing bug introduced in r41927 removing new lines with \n for way too many cases. New param added as removen, to allow the user to choose when to have them removed (like in charts created through googleVis R package)
-0.77 Adding shiny commands to Run apps in different ways in the list of monitored commands
+0.77 Adding biocLite and shiny commands to Run apps in different ways in the list of monitored commands
