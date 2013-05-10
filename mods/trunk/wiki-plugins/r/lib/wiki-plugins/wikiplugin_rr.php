@@ -694,6 +694,7 @@ function checkCommands ($input) {
         	'write.table', 'writeBin', 'writeLines', 'x11', 
         	'xedit', 'xemacs', 'xfig', 'zip.file.extract',
         	'readdataSK',
+        	'runApp', 'runExample', 'runGist', 'runGitHub', 'runUrl', # from Shiny
         	'png', 'jpeg', 'pdf',
         	'get', 'rgl.init', # Suggested by Carlos J. Gil Bellosta , and Miguel Angel Rodriguez Muinos from list r-help-es
         	'call', 'eval',     # added by suggestion of M. Cassin 
