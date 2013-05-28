@@ -299,40 +299,51 @@ function wikiplugin_rr($data, $params) {
 	defined('convert')   || define('convert',   getCmd('', 'convert', ''));
 	defined('sudo')      || define('sudo',      getCmd('', 'sudo', ' -u ' . sudouser . ' '));
 	defined('chmod')     || define('chmod',     getCmd('', 'chmod', ' 664 '));
-	if (isset($params["loadandsave"]) && $params["loadandsave"]==1 && isset($_REQUEST['itemId'])  && $_REQUEST['itemId'] > 0) {
+	
+	if (isset($params["loadandsave"])) {
+		$loadandsave = $params["loadandsave"];
+		if ($loadandsave="TRUE" OR $loadandsave=="1") { $loadandsave = 1; }
+		if ($loadandsave="FALSE"  OR $loadandsave=="0") { $loadandsave = 0; }
+	}else{
+		$loadandsave = 1;
+	}
+	
+	if ($loadandsave==1 && isset($_REQUEST['itemId'])  && $_REQUEST['itemId'] > 0) {
 		// --save : data sets are saved at the end of the R session
 		// --quiet : Do not print out the initial copyright and welcome messages from R
-		defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' --save --quiet'));
+		$r_cmd =  getCmd('', 'R', ' --save --quiet');
+		
 		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
-		defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash. '_itemid_' . sprintf ("%06u", $_REQUEST['itemId']));
-                if (!file_exists ( r_dir )) {
-                        mkdir(r_dir, 0700);
+		$r_dir = getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash. '_itemid_' . sprintf ("%06u", $_REQUEST['itemId']);
+                if (!file_exists ( $r_dir )) {
+                        mkdir($r_dir, 0700);
                 }
 		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
-		defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash. '_itemid_' . sprintf ("%06u", $_REQUEST['itemId']));
-	}elseif (isset($params["loadandsave"]) && $params["loadandsave"]==1) {
+		$graph_dir = '.' . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash. '_itemid_' . sprintf ("%06u", $_REQUEST['itemId']);
+	}elseif ($loadandsave==1) {
 		// --save : data sets are saved at the end of the R session
 		// --quiet : Do not print out the initial copyright and welcome messages from R
-		defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' --save --quiet'));
+		$r_cmd = getCmd('', 'R', ' --save --quiet');
 
 		//Convert spaces into some character to avoid R complaining becuase it can't create such folder in the server
 		$wikipage = str_replace(array(" ", "+"), "_", $_REQUEST['page']);
 
 		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
-		defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash. $wikipage);
-                if (!file_exists ( r_dir )) {
-                        mkdir(r_dir, 0700);
+		$r_dir = getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash. $wikipage;
+                if (!file_exists ( $r_dir )) {
+                        mkdir($r_dir, 0777);
                 }
+
 		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
-		defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash. $wikipage);
-		defined('wikipage')  || define('wikipage', $wikipage );
+		$graph_dir = '.' . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash. $wikipage;
+
 	}else{
 		// --vanilla : Combine --no-save, --no-environ, --no-site-file, --no-init-file and --no-restore. Under Windows, this also includes --no-Rconsole.
 		// --slave : Make R run as quietly as possible. It implies --quiet and --no-save
-		defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' --vanilla --slave'));
+		$r_cmd = getCmd('', 'R', ' --vanilla --slave');
 		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
-		defined('r_dir') || define('r_dir', getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash);
-		defined('graph_dir') || define('graph_dir', '.' . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash);
+		$r_dir = getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash;
+		$graph_dir = '.' . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash;
 	}
 
 #	defined('graph_file_name')  || define('graph_file_name', $sha1 . '.png');
@@ -361,7 +372,7 @@ function wikiplugin_rr($data, $params) {
 	}
 
 	// execute R program
-	$fn   = runR ($output, convert, $sha1, $data, '', $ws, $params, $user);
+	$fn   = runR ($output, convert, $sha1, $data, '', $ws, $params, $user, $r_cmd, $r_dir, $graph_dir, $loadandsave);
 
 	$ret = file_get_contents ($fn);
 	// Check for Tiki version, to apply parsing of content or not (behavior changed in Tiki7, it seems)
@@ -385,18 +396,18 @@ function wikiplugin_rr($data, $params) {
 }
 
 
-function runR ($output, $convert, $sha1, $input, $echo, $ws, $params, $user) {
+function runR ($output, $convert, $sha1, $input, $echo, $ws, $params, $user, $r_cmd, $r_dir, $graph_dir, $loadandsave) {
 	static $r_count = 0;
 	
 	// Generate a graphics
 	$prg = '';
 	$err = "\n";
-	$rws = r_dir . DIRECTORY_SEPARATOR;
-	$rst  = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.html';
+	$rws = $r_dir . DIRECTORY_SEPARATOR;
+	$rst  = $r_dir . DIRECTORY_SEPARATOR . $sha1 . '.html';
 	// Since pluginR 0.7, graphic file type is not hardcoded here into png; 
 	//  file extensions will be set later for png and svg and/or pdf
-	$rgo  = r_dir . DIRECTORY_SEPARATOR . $sha1 ;
-	$rgo_rel  = graph_dir . DIRECTORY_SEPARATOR . $sha1 ;
+	$rgo  = $r_dir . DIRECTORY_SEPARATOR . $sha1 ;
+	$rgo_rel  = $graph_dir . DIRECTORY_SEPARATOR . $sha1 ;
 
 	if (isset($params["wikisyntax"])) {
 		$wikisyntax = $params["wikisyntax"];
@@ -463,12 +474,12 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params, $user) {
 	} else{
 		// If there is no wrapping, display a scrollbar (only if needed) to avoid truncating the text
 		$pre_style = 'overflow:auto;';
-echo $wrap;
+		echo $wrap;
 	} 
 	
 	if (!file_exists($rst) or onsave) {
 		$content = '';
-		$content .= 'rfiles<-"' . r_dir . '"' . "\n";
+		$content .= 'rfiles<-"' . $r_dir . '"' . "\n";
 		// TODO: check R capabilities on this server and save result on "r_cap" file on disk
 		// if file r_cap doesn't exist, check capabilities and save on disk
 		// if capabilities()[[2]] == FALSE //use dev2bitmap
@@ -482,10 +493,10 @@ echo $wrap;
 			$content .= $input . "\n";
 		}else{	// png can be used because R was compiled with support for X11
 			//	$content = 'png(filename = "' . $rgo . '.png' . '", width = 600, height = 600, bg = "transparent", res = 72)' . "\n";
-			if (isset($params["loadandsave"]) && $params["loadandsave"]==1) {
+			if ($loadandsave==1) {
 				// Set R echo to false and Change the working directory to the current subfolder in the temp/cache folder
-				$content = 'options(echo=FALSE)'."\n". 'cat(" -->")'."\n". 'setwd("'. r_dir .'/")'."\n";
-				if (file_exists(r_dir . '/.RData')) {
+				$content = 'options(echo=FALSE)'."\n". 'cat(" -->")'."\n". 'setwd("'. $r_dir .'/")'."\n";
+				if (file_exists($r_dir . '/.RData')) {
 					$content .= 'load(".RData")' . "\n";
 				}
 
@@ -558,16 +569,17 @@ echo $wrap;
 			}
 		}
 		$content .= 'q()';
-		$fn = r_dir . '/' . $sha1 . '.R';
+		$fn = $r_dir . '/' . $sha1 . '.R';
 		$fd = fopen ($fn, 'w') or error('R', 'Can not open file: ' . $fn, $input . $err);
 		fwrite ($fd, $content);
 		fclose ($fd);
-		$cmd = renderFilename(r_cmd . ' 2>&1 < ' . $fn . ' > ' . $rst);
+		$cmd = renderFilename($r_cmd . ' 2>&1 < ' . $fn . ' > ' . $rst);
 		$r_exitcode = 0;
 		$err = $err . runRinShell ($cmd, $rst, $r_exitcode);
 	}
 	file_exists($rst) or error ('R', 'Text file does not exist: ' . $rst, $input . $err);
 	$cont = file_get_contents ($rst);
+	
 	if (strpos ($cont, '<html>') === false) {
 		$fd = fopen ($rst, 'w') or error ('R', 'can not open file: ' . $rst, $input . $err);
 		if ($r_exitcode == 0) {
