@@ -314,12 +314,12 @@ function wikiplugin_rr($data, $params) {
 		$r_cmd =  getCmd('', 'R', ' --save --quiet');
 		
 		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
-		$r_dir = getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash. '_itemid_' . sprintf ("%06u", $_REQUEST['itemId']);
+		$r_dir = getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash. 'R__itemid_' . sprintf ("%06u", $_REQUEST['itemId']);
                 if (!file_exists ( $r_dir )) {
                         mkdir($r_dir, 0700);
                 }
 		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
-		$graph_dir = '.' . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash. '_itemid_' . sprintf ("%06u", $_REQUEST['itemId']);
+		$graph_dir = '.' . DIRECTORY_SEPARATOR . 'temp/cache/' . $tikidomainslash . 'R__itemid_' . sprintf ("%06u", $_REQUEST['itemId']);
 	}elseif ($loadandsave==1) {
 		// --save : data sets are saved at the end of the R session
 		// --quiet : Do not print out the initial copyright and welcome messages from R
@@ -329,21 +329,21 @@ function wikiplugin_rr($data, $params) {
 		$wikipage = str_replace(array(" ", "+"), "_", $_REQUEST['page']);
 
 		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
-		$r_dir = getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash. $wikipage;
+		$r_dir = getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' . $tikidomainslash . 'R_' . $wikipage;
                 if (!file_exists ( $r_dir )) {
                         mkdir($r_dir, 0777);
                 }
 
 		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
-		$graph_dir = '.' . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash. $wikipage;
+		$graph_dir = '.' . DIRECTORY_SEPARATOR . 'temp/cache/' . $tikidomainslash . 'R_' . $wikipage;
 
 	}else{
 		// --vanilla : Combine --no-save, --no-environ, --no-site-file, --no-init-file and --no-restore. Under Windows, this also includes --no-Rconsole.
 		// --slave : Make R run as quietly as possible. It implies --quiet and --no-save
 		$r_cmd = getCmd('', 'R', ' --vanilla --slave');
 		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
-		$r_dir = getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash;
-		$graph_dir = '.' . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash;
+		$r_dir = getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' . $tikidomainslash;
+		$graph_dir = '.' . DIRECTORY_SEPARATOR . 'temp/cache/' . $tikidomainslash;
 	}
 
 #	defined('graph_file_name')  || define('graph_file_name', $sha1 . '.png');
