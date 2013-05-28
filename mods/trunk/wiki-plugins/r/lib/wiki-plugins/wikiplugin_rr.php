@@ -31,6 +31,8 @@ function wikiplugin_rr_info() {
 				'name' => tra('attId'),
 				'description' => tra('AttId from a tracker Item attachment. ex: 1. (Optional)'),
 				'filter' => 'int',
+				'default' => '',
+				'since' => 'PluginR 0.1',
 				'advanced' => true,
 			),
 			'type' => array(
@@ -39,7 +41,8 @@ function wikiplugin_rr_info() {
 				'name' => tra('type'),
 				'description' => tra('Choose the source file type in the appropriate mimetype syntax (Optional). Options: csv|xml. ex: csv. (default). For xml, see documentation for more details on the additional R packages required'),
 				'filter' => 'alpha',
-				'default' => '',
+				'default' => 'csv (text/csv)',
+				'since' => 'PluginR 0.1',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('csv'), 'value' => 'text/csv'),
@@ -53,7 +56,8 @@ function wikiplugin_rr_info() {
 				'name' => tra('wikisyntax'),
 				'description' => tra('Choose whether the output should be parsed as wiki syntax (Optional). Options: 0 (no parsing, default), 1 (parsing)'),
 				'filter' => 'int',
-				'default' => '',
+				'default' => '0',
+				'since' => 'PluginR 0.1',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('0'), 'value' => '0'),
@@ -67,6 +71,8 @@ function wikiplugin_rr_info() {
 				'name' => tra('width'),
 				'description' => tra('Width of the graph (Optional). Options: an integer number in pixels (default) or in units specified. If ommitted but height is set, width will be proportional to keep aspect ratio'),
 				'filter' => 'int',
+				'default' => '480',
+				'since' => 'PluginR 0.1',
 				'advanced' => true,
 			),
 			'height' => array(
@@ -74,6 +80,8 @@ function wikiplugin_rr_info() {
 				'safe' => true,
 				'name' => tra('height'),
 				'description' => tra('Height of the graph (Optional). Options: an integer number in pixels (default) or in units specified. If ommitted but width is set, height will be proportional to keep aspect ratio'),
+				'default' => '480',
+				'since' => 'PluginR 0.1',
 				'filter' => 'int',
 				'advanced' => true,
 			),
@@ -83,6 +91,8 @@ function wikiplugin_rr_info() {
 				'name' => tra('units'),
 				'description' => tra('Choose units for the width and/or height parameters (Optional). Options: px (default) for pixels, in (inches), cm or mm'),
 				'filter' => 'alpha',
+				'default' => 'px',
+				'since' => 'PluginR 0.1',
 				'advanced' => true,
 			),
 			'pointsize' => array(
@@ -91,6 +101,8 @@ function wikiplugin_rr_info() {
 				'name' => tra('pointsize'),
 				'description' => tra('The default pointsize of plotted text, interpreted as big points (1/72 inch) at res dpi (optional). Options: interger number such as 12 or bigger'),
 				'filter' => 'int',
+				'default' => '',
+				'since' => 'PluginR 0.1',
 				'advanced' => true,
 			),
 			'bg' => array(
@@ -99,6 +111,8 @@ function wikiplugin_rr_info() {
 				'name' => tra('bg'),
 				'description' => tra('The initial background colour (optional). Options: white, yellow, grey, ... and transparent'),
 				'filter' => 'striptags',
+				'default' => 'transparent',
+				'since' => 'PluginR 0.2',
 				'advanced' => true,
 			),
 			'res' => array(
@@ -107,6 +121,8 @@ function wikiplugin_rr_info() {
 				'name' => tra('res'),
 				'description' => tra('The nominal resolution in dpi which will be recorded in the bitmap file (if any). Also used for units other than the default, and to convert points to pixels (Optional). Options: a positive integer (default: 72 dpi). Values higher than 150 usually seem to be too much'),
 				'filter' => 'int',
+				'default' => '72',
+				'since' => 'PluginR 0.1',
 				'advanced' => true,
 			),
 			'svg' => array(
@@ -115,6 +131,8 @@ function wikiplugin_rr_info() {
 				'name' => tra('svg'),
 				'description' => tra('Show link for the creation of the SVG version of the plot. Options: 0 (do not create it, default), 1 (create it). Requires R Cairo pakage, which can be checked with the following command in the R console: capabilities()'),
 				'filter' => 'int',
+				'default' => '0',
+				'since' => 'PluginR 0.70',
 				'advanced' => true,
 			),
 			'pdf' => array(
@@ -123,15 +141,18 @@ function wikiplugin_rr_info() {
 				'name' => tra('pdf'),
 				'description' => tra('Show link for the creation of the PDF version of the plot. Options: 0 (do not create it, default), 1 (create it). Requires R Cairo pakage, which can be checked with the following command in the R console: capabilities()'),
 				'filter' => 'int',
+				'default' => '0',
+				'since' => 'PluginR 0.70',
 				'advanced' => true,
 			),
 			'onefile' => array(
 				'required' => false,
 				'safe' => true,
 				'name' => tra('onefile'),
-				'description' => tra('should all plots appear in one file? This would be the default value; but if you answer no, they will attempt to appear in separate files in the server, even if you currently will not be able to fetch them easily through the internet browser. This param can be used with figure types svg and pdf; however, not many svg viewers support several plots in one svg file'),
+				'description' => tra('should all plots appear in one file? This is the default value (1); but if you answer no, they will attempt to appear in separate files in the server, even if you currently will not be able to fetch them easily through the internet browser. This param can be used with figure types svg and pdf; however, not many svg viewers support several plots in one svg file'),
 				'filter' => 'int',
-				'default' => '',
+				'default' => '1',
+				'since' => 'PluginR 0.71',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('No'), 'value' => '0'),
@@ -145,6 +166,8 @@ function wikiplugin_rr_info() {
 				'name' => tra('x11'),
 				'description' => tra('Choose whether the server can use X11 to produce graphs in R, or alternatively use dev2bitmap instead (Optional). Options: 1 (R has support for X11, default), 0 (no support for X11 thus using dev2bitmap). These capabilities can be checked in the server with the command in the R console: capabilities()'),
 				'filter' => 'int',
+				'default' => '1',
+				'since' => 'PluginR 0.62',
 				'advanced' => true,
 			),
 			'loadandsave' => array(
@@ -152,7 +175,8 @@ function wikiplugin_rr_info() {
 				'name' => tra('LoadAndSave'),
 				'description' => tra('Load a previous R session (.RData, if any) for the same wiki page so that R object will be used while you work within the same page. For pretty trackers are used (wiki pages with itemId), the R session data (.RData) will be shared for the same itemId across wiki pages'),
 				'filter' => 'int',
-				'default' => '',
+				'default' => '0',
+				'since' => 'PluginR 0.61',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('No'), 'value' => '0'),
@@ -164,8 +188,10 @@ function wikiplugin_rr_info() {
 				'required' => false,
 				'safe' => true,
 				'name' => tra('removen'),
-				'description' => tra('Remove the extra \n tags generated by some R packages out of the user control (such as with charts generated through GoogleVis R package). Options: 0 (do not remove \n tags, default), 1 (remoev them all).'),
+				'description' => tra('Remove the extra \n tags generated by some R packages out of the user control (such as with charts generated through GoogleVis R package). Options: 0 (do not remove \n tags, default), 1 (remove them all).'),
 				'filter' => 'int',
+				'default' => '0',
+				'since' => 'PluginR 0.76',
 				'advanced' => true,
 			),
 			'security' => array(
@@ -174,7 +200,8 @@ function wikiplugin_rr_info() {
 				'name' => tra('security'),
 				'description' => tra('Set the security level for the R commands allowed by the plugin. ex: 1. (default in R), 0 for no security checking (default in RR).'),
 				'filter' => 'int',
-				'default' => '',
+				'default' => '1',
+				'since' => 'PluginR 0.4',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('No'), 'value' => '0'),
