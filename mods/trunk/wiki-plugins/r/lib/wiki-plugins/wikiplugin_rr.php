@@ -194,6 +194,16 @@ function wikiplugin_rr_info() {
 				'since' => 'PluginR 0.76',
 				'advanced' => true,
 			),
+			'echo' => array(
+				'required' => false,
+				'safe' => true,
+				'name' => tra('echo'),
+				'description' => tra('Show a code block with the R commands to be run before running them (similarly to the echo command). Options: 0 (do not produce echo), 1 (produce echo, default).'),
+				'filter' => 'int',
+				'default' => '1',
+				'since' => 'PluginR 0.78',
+				'advanced' => true,
+			),
 			'security' => array(
 				'required' => false,
 				'safe' => false,
@@ -492,13 +502,14 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params, $user, $r_
 			// Add the user input code at the end
 			$content .= $input . "\n";
 		}else{	// png can be used because R was compiled with support for X11
-			//	$content = 'png(filename = "' . $rgo . '.png' . '", width = 600, height = 600, bg = "transparent", res = 72)' . "\n";
-			if ($loadandsave==1) {
+
 				// Set R echo to false and Change the working directory to the current subfolder in the temp/cache folder
 				$content = 'options(echo=FALSE)'."\n". 'cat(" -->")'."\n". 'setwd("'. $r_dir .'/")'."\n";
-				if (file_exists($r_dir . '/.RData')) {
+				
+				// Load .Rdata if requested and only if it exists in that folder
+				if ($loadandsave==1 && file_exists($r_dir . '/.RData')) {
 					$content .= 'load(".RData")' . "\n";
-				}
+				} // Else, case with no caching of r objects (loadandsave=0, therefore no .RData will be loaded at the beginning)
 
 				// Check if the user requested an svg file or pdf file to be generated instead of the standard png in the wiki page
 				if (isset($_REQUEST['gtype']) && $_REQUEST['gtype']=="svg") {
@@ -531,43 +542,12 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params, $user, $r_
 					$content .= $input . "\n";
 				} # enf of choice between svg and png
 
-				// Save the image after the user input
-				$content .= 'save.image(".RData")' . "\n";
-			}else{
-				$content = 'options(echo=FALSE)'."\n". 'cat(" -->")'."\n";
-				// Check if the user requested an svg file or pdf file to be generated instead of the standard png in the wiki page
-				if (isset($_REQUEST['gtype']) && $_REQUEST['gtype']=="svg") {
-					// Prepare the graphic device to create the svg file 
-					$content .= onefile . "<-" . $onefile . "\n";
-					$content .= 'svg(filename = if(onefile) "' . $rgo . '.svg' . '" else "' . $rgo . '%03d.svg' . '", onefile = ' . $onefile . ', width = ' . $width . ', height = ' . $height . ', pointsize = ' . $pointsize . ', bg = "' . $bg . '" , antialias = c("default", "none", "gray", "subpixel"))' . "\n";
-					// Add the user input code at the end
-					$content .= $input . "\n";
-				} elseif (isset($_REQUEST['gtype']) && $_REQUEST['gtype']=="pdf") {  # case for pdf
-					// Prepare the graphic device to create the pdf
-					$content .= onefile . "<-" . $onefile . "\n";
-					$content .= 'cairo_pdf(filename = if(onefile) "' . $rgo . '.pdf' . '" else "' . $rgo . '%03d.pdf' . '", onefile = ' . $onefile . ', width = ' . $width . ', height = ' . $height . ', pointsize = ' . $pointsize . ', bg = "' . $bg . '" , antialias = c("default", "none", "gray", "subpixel"))' . "\n";
-					// Add the user input code at the end
-					$content .= $input . "\n";
-				} else { # else of choice between svg, pdf and png
-					// Produce the standard png file
-					$image_number = 1;
-					$content .= 'png(filename = "' . $rgo . "_$image_number.png" . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' . "\n";
-					// Parse the user input for more graphs
-					$input_array = explode( "\n", $input);
-					reset($input_array);
-					while( list($key,$line) = each($input_array) ) {
-						if ( preg_match('/^#\s*newgraph$/', trim($line)) ) {
-							$image_number++;
-							$input_array[$key] = 'png(filename = "' . $rgo . "_$image_number.png" . '", width = ' . $width . ', height = ' . $height . ', units = "' . $units . '", pointsize = ' . $pointsize . ', bg = "' . $bg . '" , res = ' . $res . ')' ;
-						}
-					}
-					$input = implode("\n",$input_array);
-					// Add the user input code at the end
-					$content .= $input . "\n";
-				} # enf of choice between svg and png
+				// Save the image after the user input if requested with the param loadandsave
+				if ($loadandsave==1) {
+					$content .= 'save.image(".RData")' . "\n";
+				} // Else, case with no caching of r objects (loadandsave=0, therefore no .RData will be saved at the end)
 
-			}
-		}
+		} // end of section where png can be used because R was compiled with support for X11
 		$content .= 'q()';
 		$fn = $r_dir . '/' . $sha1 . '.R';
 		$fd = fopen ($fn, 'w') or error('R', 'Can not open file: ' . $fn, $input . $err);
