@@ -204,6 +204,39 @@ function wikiplugin_rr_info() {
 				'since' => 'PluginR 0.78',
 				'advanced' => true,
 			),
+			'caption' => array(
+				'required' => false,
+				'name' => tra('Caption'),
+				'description' => tra('Code snippet label.'),
+			),
+			'wrap' => array(
+				'required' => false,
+				'name' => tra('Word Wrap'),
+				'description' => tra('Enable word wrapping on the code to avoid breaking the layout.'),
+				'options' => array(
+					array('text' => '', 'value' => ''),
+					array('text' => tra('Yes'), 'value' => '1'),
+					array('text' => tra('No'), 'value' => '0'),
+				),
+				'default' => 'y'
+			),
+			'colors' => array(
+				'required' => false,
+				'name' => tra('Colors'),
+				'description' => tra('Available: php, html, sql, javascript, css, java, c, doxygen, delphi, rsplus...'),
+				'advanced' => false,
+			),
+			'ln' => array(
+				'required' => false,
+				'name' => tra('Line Numbers'),
+				'description' => tra('Show line numbers for each line of code. May not be used with colors unless GeSHI is installed.'),
+				'options' => array(
+					array('text' => '', 'value' => ''),
+					array('text' => tra('Yes'), 'value' => '1'),
+					array('text' => tra('No'), 'value' => '0'),
+				),
+				'advanced' => true,
+			),
 			'security' => array(
 				'required' => false,
 				'safe' => false,
@@ -302,6 +335,16 @@ function wikiplugin_rr($data, $params) {
 		$type = $params["type"];
 	}
 
+	if (isset($params["echo"])) {
+		$r_echo = $params["echo"];
+		if ($r_echo=="1") { $r_echo = 1; }
+		if ($r_echo=="0") { $r_echo = 0; }
+	}else{
+		$r_echo = 1;
+		// We set echo by default as 1 to make it easy for the end user to review
+		// which syntax was the one that produced that output seen on the page
+	}
+	
 	defined('r_ext') || define('r_ext', getcwd() . DIRECTORY_SEPARATOR . 'lib/r' );
 	defined('security')  || define('security',  0);
 	defined('sudouser')  || define('sudouser', 'rd');
@@ -312,8 +355,8 @@ function wikiplugin_rr($data, $params) {
 	
 	if (isset($params["loadandsave"])) {
 		$loadandsave = $params["loadandsave"];
-		if ($loadandsave="TRUE" OR $loadandsave=="1") { $loadandsave = 1; }
-		if ($loadandsave="FALSE"  OR $loadandsave=="0") { $loadandsave = 0; }
+		if ($loadandsave=="TRUE" OR $loadandsave=="1") { $loadandsave = 1; }
+		if ($loadandsave=="FALSE"  OR $loadandsave=="0") { $loadandsave = 0; }
 	}else{
 		$loadandsave = 1;
 	}
@@ -382,7 +425,7 @@ function wikiplugin_rr($data, $params) {
 	}
 
 	// execute R program
-	$fn   = runR ($output, convert, $sha1, $data, '', $ws, $params, $user, $r_cmd, $r_dir, $graph_dir, $loadandsave);
+	$fn   = runR ($output, convert, $sha1, $data, $r_echo, $ws, $params, $user, $r_cmd, $r_dir, $graph_dir, $loadandsave);
 
 	$ret = file_get_contents ($fn);
 	// Check for Tiki version, to apply parsing of content or not (behavior changed in Tiki7, it seems)
@@ -406,11 +449,11 @@ function wikiplugin_rr($data, $params) {
 }
 
 
-function runR ($output, $convert, $sha1, $input, $echo, $ws, $params, $user, $r_cmd, $r_dir, $graph_dir, $loadandsave) {
+function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $r_cmd, $r_dir, $graph_dir, $loadandsave) {
 	static $r_count = 0;
 	
 	// Generate a graphics
-	$prg = '';
+	$prg = ''; # This variable is not being used. ToDo: Remove or reuse for something.
 	$err = "\n";
 	$rws = $r_dir . DIRECTORY_SEPARATOR;
 	$rst  = $r_dir . DIRECTORY_SEPARATOR . $sha1 . '.html';
@@ -562,18 +605,81 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params, $user, $r_
 	
 	if (strpos ($cont, '<html>') === false) {
 		$fd = fopen ($rst, 'w') or error ('R', 'can not open file: ' . $rst, $input . $err);
-		if ($r_exitcode == 0) {
+		
+		if ($r_exitcode == 0) { // case when no error occurred
+		
 			// Start of Preprocessing HTML before sending it to the user's browser: cleanup, etc.
 			// ----------------------------------
-			//remove empty lines produced by some R packages such as googleVis that were inserting too much white space for granted before the graphs produced by the Google Visualization API 
+				//remove empty lines produced by some R packages such as googleVis that were inserting too much white space for granted before the graphs produced by the Google Visualization API 
 				$cont = str_replace(array("// jsData", "// jsDrawChart", "// jsDisplayChart", "// jsChart"), '', $cont);
-			// Optionally, remove extra \n if requested explicitly, to keep the output cleaner with fewer non wanted \n, as in the case with graphs created through calls to googleVis R package
-			if ( isset($params["removen"]) && $params["removen"]=="1") {
-				$cont = str_replace("\n", '', $cont);
-			}
-			// Write the start tag of an html comment to comment out the tag to remove echo from R console. The closing html comment tag is added inside $cont after the "option(echo=FALSE)"
+				
+				// Optionally, remove extra \n if requested explicitly, to keep the output cleaner with fewer non wanted \n, as in the case with graphs created through calls to googleVis R package
+				if ( isset($params["removen"]) && $params["removen"]=="1") {
+					$cont = str_replace("\n", '', $cont);
+				}
+				// Write the start tag of an html comment to comment out the tag to remove echo from R console. The closing html comment tag is added inside $cont after the "option(echo=FALSE)"
 
 			// End of HTML preprocessing
+
+			// Echo requested?
+			if ( $r_echo==1 ){
+				// $ content still keeps the data of the R file to be executed, so it can be reused to get the rwo content to clean before the echo is shown
+				//Remove the first 5 lines which come from pluginr headers
+				$echo_content = implode("\n", array_slice(explode("\n", $content), 5));
+				//Remove the last 2 lines of R code which come from other pluginr params
+				$echo_content = implode("\n", array_slice(explode("\n", $echo_content), 0, -2));
+				
+				
+				// -------- Start of code borrowed from PluginCode
+					global $prefs;
+					static $code_count;
+	
+					$code_defaults = array(
+						'wrap' => '1',
+						'mediawiki' => '0'
+					);
+	
+					$code_params = array_merge($code_defaults, $params);
+	
+					extract($code_params, EXTR_SKIP);
+					$code = trim($echo_content);
+
+					$code = str_replace('&lt;x&gt;', '', $code);
+					$code = str_replace('<x>', '', $code);
+
+					$id = 'codebox'.++$code_count;
+					$boxid = " id=\"$id\" ";
+	
+					$out = $code;
+	
+					if (isset($colors) && $colors == '1') {	// remove old geshi setting as it upsets codemirror
+						unset( $colors );
+					}
+	
+					//respect wrap setting when Codemirror is off and set to wrap when Codemirror is on to avoid broken view while
+					//javascript loads
+					if ((isset($prefs['feature_syntax_highlighter']) && $prefs['feature_syntax_highlighter'] == 'y') || $wrap == 1) {
+						$pre_style = 'white-space:pre-wrap;'
+						.' white-space:-moz-pre-wrap !important;'
+						.' white-space:-pre-wrap;'
+						.' white-space:-o-pre-wrap;'
+						.' word-wrap:break-word;';
+					}
+
+					$out = (isset($caption) ? '<div class="codecaption">'.$caption.'</div>' : "" )
+						. '<pre class="codelisting" '
+						. (isset($colors) ? ' data-syntax="' . $colors . '" ' : '')
+						. (isset($ln) ? ' data-line-numbers="' . $ln . '" ' : '')
+						. (isset($wrap) ? ' data-wrap="' . $wrap . '" ' : '')
+						. ' dir="'.( (isset($rtl) && $rtl == 1) ? 'rtl' : 'ltr') . '" '
+						. (isset($pre_style) ? ' style="'.$pre_style.'"' : '')
+						. $boxid.'>'
+						. (($options['ck_editor'] || $ishtml) ? $out : htmlentities($out, ENT_QUOTES, 'UTF-8'))
+						. '</pre>';
+				 // -------- End of code borrowed from PluginCode
+				
+				fwrite ($fd, $prg . '<pre>' . $out . '</pre>');
+			}// Else: no echo requested
 
 			fwrite ($fd, $prg . '<pre id="routput' . $r_count . '" name="routput' . $r_count . '" style="'.$pre_style.'"><!-- ' . $cont . '</pre>');
 			for ( $i=1; $i<=$image_number; $i++) {
@@ -601,7 +707,8 @@ function runR ($output, $convert, $sha1, $input, $echo, $ws, $params, $user, $r_
 				}
 				fwrite ($fd, $prg . ' <span class="button"><a href="' . $PageURLRaw . '&gtype=pdf&clean=y' . '" alt="' . $rgo_rel . '.pdf' . '" target="_blank">' . tr("Save Image as PDF") . '</a></span>');
 		 	}
-	 	} else {
+		 	
+	 	} else { // Case when some error occurred
 			fwrite ($fd, $prg . '<pre><!-- ' . $cont . '<span style="color:red">' . $err . '</span>' . '</pre>');
 	 	}
 		fclose ($fd);
