@@ -52,4 +52,4 @@ Changelog:
 0.75 svg generation works again with this small change and r43765 to clean svn code (thanks changi and jyhem)
 0.76 Fixing bug introduced in r41927 removing new lines with \n for way too many cases. New param added as removen, to allow the user to choose when to have them removed (like in charts created through googleVis R package)
 0.77 Adding biocLite and shiny commands to Run apps in different ways in the list of monitored commands
-0.78 File .RData created in the right folder in all cases. Clearing Tiki caches finally cleans also folders from PluginR under temp/cache. Param echo added to show an echo of the commands introduced. Enabled by default to make life easier for new users. New params (and code) added also borrowed from PluginCode to let the user customize the echo output (caption, wrap, colors, ln).
+0.78 File .RData created in the right folder in all cases. Clearing Tiki caches finally cleans also folders from PluginR under temp/cache. Param echo added to show an echo of the commands introduced. New params (and code) added also borrowed from PluginCode to let the user customize the echo output (caption, wrap, colors, ln).

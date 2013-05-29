@@ -200,7 +200,7 @@ function wikiplugin_rr_info() {
 				'name' => tra('echo'),
 				'description' => tra('Show a code block with the R commands to be run before running them (similarly to the echo command). Options: 0 (do not produce echo), 1 (produce echo, default).'),
 				'filter' => 'int',
-				'default' => '1',
+				'default' => '0',
 				'since' => 'PluginR 0.78',
 				'advanced' => true,
 			),
@@ -340,8 +340,9 @@ function wikiplugin_rr($data, $params) {
 		if ($r_echo=="1") { $r_echo = 1; }
 		if ($r_echo=="0") { $r_echo = 0; }
 	}else{
-		$r_echo = 1;
-		// We set echo by default as 1 to make it easy for the end user to review
+		$r_echo = 0;
+		// We set echo by default as 0 to respect the environment for earlier users, 
+		// even if setting it to 1 would make it easier for the new end user to review
 		// which syntax was the one that produced that output seen on the page
 	}
 	
