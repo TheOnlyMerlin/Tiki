@@ -2,10 +2,10 @@ contributor:
 $Author: xavi $
 
 revision: 
-$Revision: 0.78 $
+$Revision: 0.79 $
 
 lastmodif:
-$Date: 2013-05-29 13:28:00 $
+$Date: 2013-05-31 12:57:00 $
 
 files: 
 wiki-plugins/r/lib/wiki-plugins/wikiplugin_r.php lib/wiki-plugins/wikiplugin_r.php
@@ -27,7 +27,7 @@ licence:
 GNU/GPL
 
 Description: 
-Allows using R syntax for statistics, scientific computing & graphs (see http://www.r-project.org). In wiki syntax, type {R()}{R} or with some params, as reported at the documentation. This same version works for Tiki3 up to Tiki9.
+Allows using R syntax for statistics, scientific computing & graphs (see http://www.r-project.org). In wiki syntax, type {R()}{R} or with some params, as reported at the documentation. This same version works for Tiki3 up to Tiki11.
 
 Docurl:
 https://doc.tiki.org/PluginR
@@ -53,3 +53,4 @@ Changelog:
 0.76 Fixing bug introduced in r41927 removing new lines with \n for way too many cases. New param added as removen, to allow the user to choose when to have them removed (like in charts created through googleVis R package)
 0.77 Adding biocLite and shiny commands to Run apps in different ways in the list of monitored commands
 0.78 File .RData created in the right folder in all cases. Clearing Tiki caches finally cleans also folders from PluginR under temp/cache. Param echo added to show an echo of the commands introduced. New params (and code) added also borrowed from PluginCode to let the user customize the echo output (caption, wrap, colors, ln).
+0.79 Some minor refactoring, and better defaults when just param echo is set to 1 (defaults then: ln enabled, colors set to r, and caption as R code or RR code, depending on the type of plugin call). Reset the list of basic and advanced params for easier use.

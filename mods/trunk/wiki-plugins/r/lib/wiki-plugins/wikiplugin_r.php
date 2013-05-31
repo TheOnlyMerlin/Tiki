@@ -49,5 +49,6 @@ function wikiplugin_r_info() {
 
 function wikiplugin_r($data, $params) {
 	$params['security'] = 1;
+	$params['caption'] = "R Code";
 	return wikiplugin_rr($data, $params);
 }

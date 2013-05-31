@@ -198,16 +198,24 @@ function wikiplugin_rr_info() {
 				'required' => false,
 				'safe' => true,
 				'name' => tra('echo'),
-				'description' => tra('Show a code block with the R commands to be run before running them (similarly to the echo command). Options: 0 (do not produce echo), 1 (produce echo, default).'),
+				'description' => tra('Show a code block with the R commands to be run before running them (similarly to the echo command)'),
 				'filter' => 'int',
 				'default' => '0',
 				'since' => 'PluginR 0.78',
-				'advanced' => true,
+				'options' => array(
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('No'), 'value' => '0'),
+					array('text' => tra('Yes'), 'value' => '1'),
+				),
+				'advanced' => false,
 			),
 			'caption' => array(
 				'required' => false,
 				'name' => tra('Caption'),
 				'description' => tra('Code snippet label.'),
+				'default' => 'R Code',
+				'since' => 'PluginR 0.78',
+				'advanced' => true,
 			),
 			'wrap' => array(
 				'required' => false,
@@ -218,13 +226,17 @@ function wikiplugin_rr_info() {
 					array('text' => tra('Yes'), 'value' => '1'),
 					array('text' => tra('No'), 'value' => '0'),
 				),
-				'default' => 'y'
+				'default' => 'y',
+				'since' => 'PluginR 0.78',
+				'advanced' => true,
 			),
 			'colors' => array(
 				'required' => false,
 				'name' => tra('Colors'),
 				'description' => tra('Available: php, html, sql, javascript, css, java, c, doxygen, delphi, rsplus...'),
-				'advanced' => false,
+				'default' => 'r',
+				'since' => 'PluginR 0.78',
+				'advanced' => true,
 			),
 			'ln' => array(
 				'required' => false,
@@ -235,6 +247,8 @@ function wikiplugin_rr_info() {
 					array('text' => tra('Yes'), 'value' => '1'),
 					array('text' => tra('No'), 'value' => '0'),
 				),
+				'default' => '1',
+				'since' => 'PluginR 0.78',
 				'advanced' => true,
 			),
 			'security' => array(
@@ -345,7 +359,7 @@ function wikiplugin_rr($data, $params) {
 		// even if setting it to 1 would make it easier for the new end user to review
 		// which syntax was the one that produced that output seen on the page
 	}
-	
+
 	defined('r_ext') || define('r_ext', getcwd() . DIRECTORY_SEPARATOR . 'lib/r' );
 	defined('security')  || define('security',  0);
 	defined('sudouser')  || define('sudouser', 'rd');
@@ -515,6 +529,8 @@ function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $
 
 	if (isset($params["wrap"])) {
 		$wrap = $params["wrap"];
+		if ($wrap==1 OR $wrap=="y" OR $wrap=="yes") { $wrap = "1"; }
+		if ($wrap==0 OR $wrap=="n" OR $wrap=="no") { $wrap = "0"; }
 	}else{ 		// if not specified, use wrapping to avoid breaking layout
 		$wrap = "1";
 	}
@@ -531,6 +547,26 @@ function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $
 		echo $wrap;
 	} 
 	
+		if (isset($params["caption"])) {
+		$caption = $params["caption"];
+	}else{
+		$caption = "RR Code"; // Default value
+	}
+
+	if (isset($params["colors"])) {
+		$colors = $params["colors"];
+	}else{
+		$colors = "r"; // Default value
+	}
+
+	if (isset($params["ln"])) {
+		$ln = $params["ln"];
+		if ($ln=="1" OR $ln=="y" OR $ln=="yes") { $ln = 1; }
+		if ($ln=="0" OR $ln=="n" OR $ln=="no") { $ln = 0; }
+	}else{
+		$ln = 1; // Default value
+	}
+
 	if (!file_exists($rst) or onsave) {
 		$content = '';
 		$content .= 'rfiles<-"' . $r_dir . '"' . "\n";
