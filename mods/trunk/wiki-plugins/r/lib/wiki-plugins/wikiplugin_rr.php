@@ -25,29 +25,61 @@ function wikiplugin_rr_info() {
 		'icon' => 'img/icons/r.png',	
 		'format' => 'html',
 		'params' => array(
-			'attId' => array(
+			'echo' => array(
 				'required' => false,
 				'safe' => true,
-				'name' => tra('attId'),
-				'description' => tra('AttId from a tracker Item attachment. ex: 1. (Optional)'),
+				'name' => tra('echo'),
+				'description' => tra('Show a code block with the R commands to be run before running them (similarly to the echo command)'),
 				'filter' => 'int',
-				'default' => '',
-				'since' => 'PluginR 0.1',
-				'advanced' => true,
-			),
-			'type' => array(
-				'required' => false,
-				'safe' => true,
-				'name' => tra('type'),
-				'description' => tra('Choose the source file type in the appropriate mimetype syntax (Optional). Options: csv|xml. ex: csv. (default). For xml, see documentation for more details on the additional R packages required'),
-				'filter' => 'alpha',
-				'default' => 'csv (text/csv)',
-				'since' => 'PluginR 0.1',
+				'default' => '0',
+				'since' => 'PluginR 0.78',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
-					array('text' => tra('csv'), 'value' => 'text/csv'),
-					array('text' => tra('xml'), 'value' => 'text/xml'),
+					array('text' => tra('No'), 'value' => '0'),
+					array('text' => tra('Yes'), 'value' => '1'),
 				),
+				'advanced' => false,
+			),
+			'caption' => array(
+				'required' => false,
+				'name' => tra('Caption'),
+				'description' => tra('Code snippet label.'),
+				'default' => 'R Code',
+				'since' => 'PluginR 0.78',
+				'advanced' => true,
+			),
+			'wrap' => array(
+				'required' => false,
+				'name' => tra('Word Wrap'),
+				'description' => tra('Enable word wrapping on the code to avoid breaking the layout.'),
+				'options' => array(
+					array('text' => '', 'value' => ''),
+					array('text' => tra('Yes'), 'value' => '1'),
+					array('text' => tra('No'), 'value' => '0'),
+				),
+				'default' => 'y',
+				'since' => 'PluginR 0.78',
+				'advanced' => true,
+			),
+			'colors' => array(
+				'required' => false,
+				'name' => tra('Colors'),
+				'description' => tra('Available: php, html, sql, javascript, css, java, c, doxygen, delphi, rsplus...'),
+				'default' => 'r',
+				'since' => 'PluginR 0.78',
+				'advanced' => true,
+			),
+			'ln' => array(
+				'required' => false,
+				'name' => tra('Line Numbers'),
+				'description' => tra('Show line numbers for each line of code. May not be used with colors unless GeSHI is installed.'),
+				'options' => array(
+					array('text' => '', 'value' => ''),
+					array('text' => tra('Yes'), 'value' => '1'),
+					array('text' => tra('No'), 'value' => '0'),
+				),
+				'default' => '1',
+				'since' => 'PluginR 0.78',
 				'advanced' => true,
 			),
 			'wikisyntax' => array(
@@ -160,16 +192,6 @@ function wikiplugin_rr_info() {
 				),
 				'advanced' => true,
 			),
-			'x11' => array(
-				'required' => false,
-				'safe' => true,
-				'name' => tra('x11'),
-				'description' => tra('Choose whether the server can use X11 to produce graphs in R, or alternatively use dev2bitmap instead (Optional). Options: 1 (R has support for X11, default), 0 (no support for X11 thus using dev2bitmap). These capabilities can be checked in the server with the command in the R console: capabilities()'),
-				'filter' => 'int',
-				'default' => '1',
-				'since' => 'PluginR 0.62',
-				'advanced' => true,
-			),
 			'loadandsave' => array(
 				'required' => false,
 				'name' => tra('LoadAndSave'),
@@ -184,6 +206,41 @@ function wikiplugin_rr_info() {
 				),
 				'advanced' => true,
 			),
+			'attId' => array(
+				'required' => false,
+				'safe' => true,
+				'name' => tra('attId'),
+				'description' => tra('AttId from a tracker Item attachment. ex: 1. (Optional)'),
+				'filter' => 'int',
+				'default' => '',
+				'since' => 'PluginR 0.1',
+				'advanced' => true,
+			),
+			'type' => array(
+				'required' => false,
+				'safe' => true,
+				'name' => tra('type'),
+				'description' => tra('Choose the source file type in the appropriate mimetype syntax (Optional). Options: csv|xml. ex: csv. (default). For xml, see documentation for more details on the additional R packages required'),
+				'filter' => 'alpha',
+				'default' => 'csv (text/csv)',
+				'since' => 'PluginR 0.1',
+				'options' => array(
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('csv'), 'value' => 'text/csv'),
+					array('text' => tra('xml'), 'value' => 'text/xml'),
+				),
+				'advanced' => true,
+			),
+			'x11' => array(
+				'required' => false,
+				'safe' => true,
+				'name' => tra('x11'),
+				'description' => tra('Choose whether the server can use X11 to produce graphs in R, or alternatively use dev2bitmap instead (Optional). Options: 1 (R has support for X11, default), 0 (no support for X11 thus using dev2bitmap). These capabilities can be checked in the server with the command in the R console: capabilities()'),
+				'filter' => 'int',
+				'default' => '1',
+				'since' => 'PluginR 0.62',
+				'advanced' => true,
+			),
 			'removen' => array(
 				'required' => false,
 				'safe' => true,
@@ -192,63 +249,6 @@ function wikiplugin_rr_info() {
 				'filter' => 'int',
 				'default' => '0',
 				'since' => 'PluginR 0.76',
-				'advanced' => true,
-			),
-			'echo' => array(
-				'required' => false,
-				'safe' => true,
-				'name' => tra('echo'),
-				'description' => tra('Show a code block with the R commands to be run before running them (similarly to the echo command)'),
-				'filter' => 'int',
-				'default' => '0',
-				'since' => 'PluginR 0.78',
-				'options' => array(
-					array('text' => '', 'value' => ''), 
-					array('text' => tra('No'), 'value' => '0'),
-					array('text' => tra('Yes'), 'value' => '1'),
-				),
-				'advanced' => false,
-			),
-			'caption' => array(
-				'required' => false,
-				'name' => tra('Caption'),
-				'description' => tra('Code snippet label.'),
-				'default' => 'R Code',
-				'since' => 'PluginR 0.78',
-				'advanced' => true,
-			),
-			'wrap' => array(
-				'required' => false,
-				'name' => tra('Word Wrap'),
-				'description' => tra('Enable word wrapping on the code to avoid breaking the layout.'),
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => '1'),
-					array('text' => tra('No'), 'value' => '0'),
-				),
-				'default' => 'y',
-				'since' => 'PluginR 0.78',
-				'advanced' => true,
-			),
-			'colors' => array(
-				'required' => false,
-				'name' => tra('Colors'),
-				'description' => tra('Available: php, html, sql, javascript, css, java, c, doxygen, delphi, rsplus...'),
-				'default' => 'r',
-				'since' => 'PluginR 0.78',
-				'advanced' => true,
-			),
-			'ln' => array(
-				'required' => false,
-				'name' => tra('Line Numbers'),
-				'description' => tra('Show line numbers for each line of code. May not be used with colors unless GeSHI is installed.'),
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => '1'),
-					array('text' => tra('No'), 'value' => '0'),
-				),
-				'default' => '1',
-				'since' => 'PluginR 0.78',
 				'advanced' => true,
 			),
 			'security' => array(
@@ -309,46 +309,19 @@ function wikiplugin_rr($data, $params) {
 		if (!empty($atts['data'][0]['attId'])) {
 			$params['attId'] = $atts['data'][0]['attId'];
 		}
-	}
-
-	if(isset($params["attId"])) {
-		global $trklib; require_once('lib/trackers/trackerlib.php');
-
 		$info = $trklib->get_item_attachment($params["attId"]);
-
-		if( $info['data'] ) {
-			$filepath = tempnam( '/tmp', 'r' );
-			file_put_contents( $filepath, $info['data'] );
-		} else {
-			$filepath = $prefs['t_use_dir'].$info['path'];
-		}
-
-		if ( empty($info['filetype']) || $info['filetype'] == 'application/x-octetstream' || $info['filetype'] == 'application/octet-stream' ) {
-			include_once('lib/mime/mimelib.php');
-			if ($dbversion_tiki<9.0) {
-					$info['filetype'] = tiki_get_mime($filepath, 'application/octet-stream'); # Old code not working after Tiki9 r42542: http://code.tiki.org/Commit+42542.
-			} else {
-					$info['filetype'] = TikiLib::lib('mime')->from_path($filepath, 'application/octet-stream'); # New code after Tiki9 r42542: http://code.tiki.org/Commit+42542
-			}			
-		}
-
-		$type = $info["filetype"];			
-		$file = $info["filename"];
+		$md5data = md5($info['data']);
 	}
 
-	if( isset($params["attId"]) ) {
+	if(isset($params["attId"]) ) {
 		// Moved the hashing after the attId recognition attempt, in order to include the filename (if any) in the hash process
 		// so that if a new filename is passed through attId (and/or itemId), a new R script is generated and processed accordingly
 		// to avoid the former caching issues when dynamically passing a different attId to the same cached R custom script
-		$sha1 = md5($data . $filepath . $params . $output . $style);
+		$sha1 = md5($data . $md5data . $params . $output . $style);
 	} else {
 		$sha1 = md5($data . $params . $output . $style);
 	}
-
-	if (isset($params["type"])) {
-		$type = $params["type"];
-	}
-
+		
 	if (isset($params["echo"])) {
 		$r_echo = $params["echo"];
 		if ($r_echo=="1") { $r_echo = 1; }
@@ -414,7 +387,40 @@ function wikiplugin_rr($data, $params) {
 		$graph_dir = '.' . DIRECTORY_SEPARATOR . 'temp/cache/' . $tikidomainslash;
 	}
 
-#	defined('graph_file_name')  || define('graph_file_name', $sha1 . '.png');
+	$r_html = $r_dir . "/" . $sha1 . ".html";
+	
+	if(isset($params["attId"]) ) {
+		global $trklib; require_once('lib/trackers/trackerlib.php');
+
+		$info = $trklib->get_item_attachment($params["attId"]);
+		
+		if( $info['data'] ) {
+			#$filepath = tempnam( '/tmp', 'r' );
+			$filepath = "/tmp/" . $sha1;
+			file_put_contents( $filepath, $info['data'] );
+		} else {
+			$filepath = $prefs['t_use_dir'].$info['path'];
+		}
+
+		if ( empty($info['filetype']) || $info['filetype'] == 'application/x-octetstream' || $info['filetype'] == 'application/octet-stream' ) {
+			include_once('lib/mime/mimelib.php');
+			if ($dbversion_tiki<9.0) {
+					$info['filetype'] = tiki_get_mime($filepath, 'application/octet-stream'); # Old code not working after Tiki9 r42542: http://code.tiki.org/Commit+42542.
+			} else {
+					$info['filetype'] = TikiLib::lib('mime')->from_path($filepath, 'application/octet-stream'); # New code after Tiki9 r42542: http://code.tiki.org/Commit+42542
+			}			
+		}
+
+		$type = $info["filetype"];			
+		$file = $info["filename"];
+	} else {
+		
+	}
+
+	if (isset($params["type"])) {
+		$type = $params["type"];
+	}
+
 
 	if ( isset($params["attId"]) && ($type == "text/csv" || $type == "text/comma-separated-values")) {
 		$path = $_SERVER["SCRIPT_NAME"];
@@ -439,10 +445,17 @@ function wikiplugin_rr($data, $params) {
 	  $data = str_replace(array("<br />", "<p>", "</p>"), "", $data);
 	}
 
-	// execute R program
-	$fn   = runR ($output, convert, $sha1, $data, $r_echo, $ws, $params, $user, $r_cmd, $r_dir, $graph_dir, $loadandsave);
+	// Check if new run is needed or cached results (from the same plugin r calls) can be shown
+	if ( file_exists($r_html) ) {
+		// do not execute R program to generate html but reuse the html previously generated 
+		$fn   = $r_html;
+	} else {
+		// execute R program
+		$fn   = runR ($output, convert, $sha1, $data, $r_echo, $ws, $params, $user, $r_cmd, $r_dir, $graph_dir, $loadandsave);
+	}
 
 	$ret = file_get_contents ($fn);
+	
 	// Check for Tiki version, to apply parsing of content or not (behavior changed in Tiki7, it seems)
 	// Right now, the behavior seems the almost the same one on 7+ and <7, but just in case, I leave this version check in place, 
 	// since some changes are expected sooner or later..., so I leave this as an easy place holder (and proof-of-concept of working version check 

@@ -2,10 +2,10 @@ contributor:
 $Author: xavi $
 
 revision: 
-$Revision: 0.79 $
+$Revision: 0.80 $
 
 lastmodif:
-$Date: 2013-05-31 12:57:00 $
+$Date: 2013-06-03 18:27:00 $
 
 files: 
 wiki-plugins/r/lib/wiki-plugins/wikiplugin_r.php lib/wiki-plugins/wikiplugin_r.php
@@ -54,3 +54,4 @@ Changelog:
 0.77 Adding biocLite and shiny commands to Run apps in different ways in the list of monitored commands
 0.78 File .RData created in the right folder in all cases. Clearing Tiki caches finally cleans also folders from PluginR under temp/cache. Param echo added to show an echo of the commands introduced. New params (and code) added also borrowed from PluginCode to let the user customize the echo output (caption, wrap, colors, ln).
 0.79 Some minor refactoring, and better defaults when just param echo is set to 1 (defaults then: ln enabled, colors set to r, and caption as R code or RR code, depending on the type of plugin call). Reset the list of basic and advanced params for easier use.
+0.80 Caching implemented for html results when no change in plugin call, parameters from tracker item data, nor files attached to the tracker item to be processed. Complex runs that took 2 minutes to be generated did load subsequent times in just 2 seconds to display results when no change in input values (!)
