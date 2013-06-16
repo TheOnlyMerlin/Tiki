@@ -37,7 +37,6 @@ foreach (array('find', 'highlight', 'where') as $possibleKey) {
 	}
 }
 $filter = isset($_REQUEST['filter']) ? $_REQUEST['filter'] : array();
-$facets = array();
 
 if (count($filter)) {
 	if (isset($_REQUEST['save_query'])) {
@@ -90,9 +89,6 @@ if (count($filter)) {
 		}
 		if (!$isCached) {
 			$results = tiki_searchindex_get_results($filter, $offset, $maxRecords);
-			$facets = array_map(function ($facet) {
-				return $facet->getName();
-			}, $results->getFacets());
 			$dataSource = $unifiedsearchlib->getDataSource('formatting');
 
 			$plugin = new Search_Formatter_Plugin_SmartyTemplate(realpath('templates/searchresults-plain.tpl'));
@@ -131,16 +127,11 @@ if (count($filter)) {
 }
 
 $smarty->assign('filter', $filter);
-$smarty->assign('facets', $facets);
 
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
-
-if ($prefs['search_use_facets'] == 'y') {
-	$smarty->display("tiki-searchfacets.tpl");
-} else {
-	$smarty->display("tiki-searchindex.tpl");
-}
+$smarty->assign('mid', 'tiki-searchindex.tpl');
+$smarty->display("tiki.tpl");
 
 /**
  * @param $filter
@@ -164,14 +155,6 @@ function tiki_searchindex_get_results($filter, $offset, $maxRecords)
 		$stats = TikiLib::lib('searchstats');
 		foreach ($query->getTerms() as $term) {
 			$stats->register_term_hit($term);
-		}
-	}
-
-	if ($prefs['search_use_facets'] == 'y') {
-		$provider = $unifiedsearchlib->getFacetProvider();
-
-		foreach ($provider->getFacets() as $facet) {
-			$query->requestFacet($facet);
 		}
 	}
 

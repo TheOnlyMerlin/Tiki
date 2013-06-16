@@ -28,20 +28,6 @@ class WikiParser_PluginMatcher implements Iterator, Countable
 		return $matcher;
 	}
 
-	public function __clone()
-	{
-		$new = $this;
-		$this->starts = array_map(function ($match) use ($new) {
-			$match->changeMatcher($new);
-			return clone $match;
-		}, $this->starts);
-
-		$this->ends = array_map(function ($match) use ($new) {
-			$match->changeMatcher($new);
-			return clone $match;
-		}, $this->ends);
-	}
-
 	private function getSubMatcher($start, $end)
 	{
 		$sub = new self;
@@ -472,33 +458,6 @@ class WikiParser_PluginMatcher_Match
 	function replaceWith($string)
 	{
 		$this->matcher->performReplace($this, $string);
-	}
-
-	function replaceWithPlugin($name, $params, $content)
-	{
-		$hasBody = !empty($content) && !ctype_space($content);
-
-		if (is_array($params)) {
-			$parts = array();
-			foreach ( $params as $key => $value ) {
-				if ($value || $value === '0') {
-					$parts[] = "$key=\"" . str_replace('"', "\\\"", $value) . '"';
-				}
-			}
-
-			$params = implode(' ', $parts);
-		}
-
-		// Replace the content
-		if ($hasBody) {
-			$type = strtoupper($name);
-			$replacement = "{{$type}($params)}$content{{$type}}";
-		} else {
-			$plugin = strtolower($name);
-			$replacement = "{{$plugin} $params}";
-		}
-
-		$this->replaceWith($replacement);
 	}
 
 	function getName()

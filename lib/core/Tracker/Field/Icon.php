@@ -22,21 +22,17 @@ class Tracker_Field_Icon extends Tracker_Field_Abstract
 						'name' => tr('Gallery ID'),
 						'description' => tr('File gallery to upload new files into.'),
 						'filter' => 'int',
-						'legacy_index' => 0,
-						'profile_reference' => 'file_gallery',
 					),
 					'default' => array(
 						'name' => tr('Default image'),
 						'description' => tr('Path to the default icon used.'),
 						'filter' => 'url',
-						'legacy_index' => 1,
 					),
 					'maxIcons' => array(
 						'name' => tr('Max Icons'),
 						'description' => tr('Number of icons to display in each gallery (default 120).'),
 						'filter' => 'int',
 						'default' => 120,
-						'legacy_index' => 2,
 					),
 				),
 			),
@@ -80,7 +76,7 @@ class Tracker_Field_Icon extends Tracker_Field_Abstract
 	{
 		$filegallib = TikiLib::lib('filegal');
 
-		$galleryId = (int) $this->getOption('galleryId');
+		$galleryId = (int) $this->getOption(0);
 		$info = $filegallib->get_file_gallery_info($galleryId);
 
 		$galleries = array(

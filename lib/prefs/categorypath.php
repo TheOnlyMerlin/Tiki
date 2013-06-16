@@ -14,7 +14,6 @@ function prefs_categorypath_list()
 			'separator' => ',',
 			'type' => 'text',
 			'size' => '15',
-			'profile_reference' => 'category',
 			'default' => array(''), //empty string needed to keep preference from setting unexpectedly
 		),
 		'categorypath_format' => array(

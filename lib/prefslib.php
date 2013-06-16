@@ -16,7 +16,7 @@ class PreferencesLib
 	// prefs with system info etc
 	private $system_info = array( 'fgal_use_dir', 'sender_email' );
 
-	function __construct()
+	function PreferencesLib()
 	{
 		global $prefs;
 
@@ -859,24 +859,7 @@ class PreferencesLib
 		} else {
 			return unserialize($recent);
 		}
-	}
 
-	public function exportPreference(Tiki_Profile_Writer $writer, $preferenceName)
-	{
-		global $prefs;
-
-		if ($info = $this->getPreference($preferenceName)) {
-			if (isset($info['profile_reference'])) {
-				$writer->setPreference($preferenceName, $writer->getReference($info['profile_reference'], $info['value']));
-
-				return true;
-			} else {
-				$writer->setPreference($preferenceName, $info['value']);
-				return true;
-			}
-		}
-
-		return false;
 	}
 }
 

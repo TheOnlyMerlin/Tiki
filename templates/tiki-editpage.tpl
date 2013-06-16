@@ -1,15 +1,4 @@
 {* $Id$ *}
-{extends 'layout_edit.tpl'}
-
-{block name=title}
-{if $translation_mode eq 'n'}
-	{title}{if isset($hdr) && $prefs.wiki_edit_section eq 'y'}{tr}Edit Section:{/tr}{else}{tr}Edit:{/tr}{/if} {$page}{if $pageAlias ne ''} ({$pageAlias}){/if}{/title}
-{else}
-   {title}{tr}Update '{$page}'{/tr}{/title}
-{/if}
-{/block}
-
-{block name=content}
 {if $page|lower neq 'sandbox' and $prefs.feature_contribution eq 'y' and $prefs.feature_contribution_mandatory eq 'y'}
 	{remarksbox type='tip' title="{tr}Tip{/tr}"}
 		<strong class='mandatory_note'>{tr}Fields marked with a * are mandatory.{/tr}</strong>
@@ -40,6 +29,11 @@
 	}
 	return false;
 });{/jq}
+{/if}
+{if $translation_mode eq 'n'}
+	{title}{if isset($hdr) && $prefs.wiki_edit_section eq 'y'}{tr}Edit Section:{/tr}{else}{tr}Edit:{/tr}{/if} {$page}{if $pageAlias ne ''} ({$pageAlias}){/if}{/title}
+{else}
+   {title}{tr}Update '{$page}'{/tr}{/title}
 {/if}
    
 {if isset($data.draft)}
@@ -560,4 +554,3 @@ $("input[name=allowhtml]").change(function() {
 	</table>
 </form>
 {include file='tiki-page_bar.tpl'}
-{/block}

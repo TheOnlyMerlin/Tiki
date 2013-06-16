@@ -23,7 +23,6 @@ function wikiplugin_trackeritemcopy_info()
 				'filter' => 'text',
 				'default' => '',
 				'separator' => array(':'),
-				'profile_reference' => 'tracker',
 			),
 			'linkFieldIds' => array(
 				'required' => true,
@@ -32,7 +31,6 @@ function wikiplugin_trackeritemcopy_info()
 				'filter' => 'text',
 				'default' => '',
 				'separator' => array(':'),
-				'profile_reference' => 'tracker_field',
 			),
 			'copyFieldIds' => array(
 				'required' => true,
@@ -41,7 +39,6 @@ function wikiplugin_trackeritemcopy_info()
 				'filter' => 'text',
 				'default' => '',
 				'separator' => array('|', ':'),
-				'profile_reference' => 'tracker_field',
 			),
 			'updateFieldIds' => array(
 				'required' => false,
@@ -50,7 +47,6 @@ function wikiplugin_trackeritemcopy_info()
 				'filter' => 'text',
 				'default' => '',
 				'separator' => array('|', ':'),
-				'profile_reference' => 'tracker_field',
 			),
 			'updateFieldValues' => array(
 				'required' => false,
@@ -59,7 +55,6 @@ function wikiplugin_trackeritemcopy_info()
 				'filter' => 'text',
 				'default' => '',
 				'separator' => array('|', ':'),
-				'profile_reference' => 'tracker_field',
 			),
 			'itemId' => array(
 				'required' => false,
@@ -67,7 +62,6 @@ function wikiplugin_trackeritemcopy_info()
 				'description' => tra('ID of item to make copy of, otherwise input is asked for'),
 				'filter' => 'text',
 				'default' => '',
-				'profile_reference' => 'tracker_item',
 			),
 			'copies_on_load' => array(
 				'required' => false,

@@ -178,8 +178,7 @@ class FileGalLib extends TikiLib
 	 * @return int			user's gallery id if applicable
 	 */
 
-	function check_user_file_gallery($galleryId)
-	{
+	function check_user_file_gallery($galleryId) {
 		global $prefs;
 
 		if ($prefs['feature_use_fgal_for_user_files'] === 'y' && $galleryId == $prefs['fgal_root_user_id']) {
@@ -979,8 +978,7 @@ class FileGalLib extends TikiLib
 		return $result;
 	}
 
-	function duplicate_file($id, $galleryId = null, $newName = false)
-	{
+	function duplicate_file($id, $galleryId = null, $newName = false) {
 		global $user;
 
 		$file = $this->get_file($id);
@@ -1015,10 +1013,10 @@ class FileGalLib extends TikiLib
 			$path,
 			$file['comment'],
 			$file['author'],
-			'', // created now
+			'',						// created now
 			$file['lockedby'],
 			$file['deleteAfter'],
-			0, // id
+			0,						// id
 			$file['metadata']
 		);
 

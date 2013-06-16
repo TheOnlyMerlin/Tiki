@@ -18,7 +18,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 
 class Cachelib
 {
-	private $implementation;
+	public $implementation;
 
 	function __construct()
 	{
@@ -29,14 +29,6 @@ class Cachelib
 		} else {
 			$this->implementation = new CacheLibFileSystem;
 		}
-	}
-
-	function replaceImplementation($implementation)
-	{
-		$old = $this->implementation;
-		$this->implementation = $implementation;
-
-		return $old;
 	}
 
 	function cacheItem($key, $data, $type='')
@@ -79,7 +71,7 @@ class Cachelib
 	function empty_cache( $dir_names = array('all'), $log_section = 'system' )
 	{
 		global $tikidomain, $logslib, $tikilib, $prefs;
-
+		
 		if (!is_array($dir_names)) {
 			$dir_names = array($dir_names);
 		}
@@ -105,7 +97,7 @@ class Cachelib
 		if (in_array('temp_cache', $dir_names)) {
 			$this->erase_dir_content("temp/cache/$tikidomain");
 			// Next case is needed to clean also cached data created through mod PluginR
-			if ($prefs['wikiplugin_rr'] == 'y' OR $prefs['wikiplugin_r'] == 'y') {
+			if ($prefs['wikiplugin_rr'] == 'y' OR $prefs['wikiplugin_r'] == 'y') { 
 				$this->erase_dir_content("temp/cache/$tikidomain/R_*/");
 			}
 			if (is_object($logslib)) {
@@ -241,13 +233,13 @@ class Cachelib
 			while (false !== ($file = readdir($dir))) {
 				if (
 							// .RData case needed to clean also cached data created through mod PluginR
-							( substr($file, 0, 1) == "." &&	$file != $extracheck ) or
-							$file == 'CVS' or
-							$file == '.svn' or
-							$file == "index.php" or
-							$file == "README" or
-							$file == "web.config" or
-							($virtuals && in_array($file, $virtuals))
+							( substr($file, 0, 1) == "." &&	$file != $extracheck ) or 
+							$file == 'CVS' or 
+							$file == '.svn' or 
+							$file == "index.php" or 
+							$file == "README" or 
+							$file == "web.config" or 
+							($virtuals && in_array($file, $virtuals)) 
 				)
 					continue;
 
@@ -399,34 +391,6 @@ class CacheLibMemcache
 	function empty_type_cache( $type )
 	{
 		return TikiLib::lib("memcache")->flush();
-	}
-}
-
-class CacheLibNoCache
-{
-	function cacheItem($key, $data, $type='')
-	{
-		return false;
-	}
-
-	function isCached($key, $type='')
-	{
-		return false;
-	}
-
-	function getCached($key, $type='', $lastModif = false)
-	{
-		return false;
-	}
-
-	function invalidate($key, $type='')
-	{
-		return false;
-	}
-
-	function empty_type_cache( $type )
-	{
-		return false;
 	}
 }
 

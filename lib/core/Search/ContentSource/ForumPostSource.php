@@ -5,20 +5,13 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-class Search_ContentSource_ForumPostSource implements Search_ContentSource_Interface, Tiki_Profile_Writer_ReferenceProvider
+class Search_ContentSource_ForumPostSource implements Search_ContentSource_Interface
 {
 	private $db;
 
 	function __construct()
 	{
 		$this->db = TikiDb::get();
-	}
-
-	function getReferenceMap()
-	{
-		return array(
-			'forum_id' => 'forum',
-		);
 	}
 
 	function getDocuments()
@@ -64,7 +57,6 @@ class Search_ContentSource_ForumPostSource implements Search_ContentSource_Inter
 			'modification_date' => $typeFactory->timestamp($lastModification),
 			'contributors' => $typeFactory->multivalue(array_unique($author)),
 
-			'forum_id' => $typeFactory->identifier($comment['object']),
 			'post_content' => $typeFactory->wikitext($content),
 			'parent_thread_id' => $typeFactory->identifier($comment['parentId']),
 
@@ -85,7 +77,6 @@ class Search_ContentSource_ForumPostSource implements Search_ContentSource_Inter
 			'contributors',
 
 			'post_content',
-			'forum_id',
 			'parent_thread_id',
 
 			'parent_view_permission',

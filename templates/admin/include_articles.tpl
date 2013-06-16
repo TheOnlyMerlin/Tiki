@@ -41,7 +41,6 @@
 				</legend>
 
 				{preference name=feature_submissions}
-				{preference name=article_remembers_creator}
 				{preference name=feature_cms_rankings}
 				{preference name=article_user_rating}
 				<div class="adminoptionboxchild" id="article_user_rating_childcontainer">

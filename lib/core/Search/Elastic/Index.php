@@ -9,9 +9,6 @@ class Search_Elastic_Index implements Search_Index_Interface
 {
 	private $connection;
 	private $index;
-	private $invalidateList = array();
-
-	private $providedMappings = array();
 
 	function __construct(Search_Elastic_Connection $connection, $index)
 	{
@@ -30,37 +27,10 @@ class Search_Elastic_Index implements Search_Index_Interface
 		$objectType = $data['object_type']->getValue($factory);
 		$objectId = $data['object_id']->getValue($factory);
 
-		$this->generateMapping($objectType, $data);
-
-		$factory = $this->getTypeFactory();
-		$data = array_map(
-			function ($entry) use ($factory) {
-				return $entry->getValue($factory);
-			}, $data
-		);
-		$objectType = $data['object_type'];
-		$objectId = $data['object_id'];
-
-		if (! empty($data['hash'])) {
-			$objectId .= "~~{$data['hash']}";
-		}
-
-		unset($this->invalidateList[$objectType . ':' . $objectId]);
-
-		$this->connection->index($this->index, $objectType, $objectId, $data);
-	}
-
-	private function generateMapping($type, $data)
-	{
-		if (isset($this->providedMappings[$type])) {
-			return;
-		}
-
-		$this->providedMappings[$type] = true;
-
+		// Note: Sending the mapping on every request is not terribly efficient. Profiling required before the feature is production-ready
 		$mapping = array_map(
 			function ($entry) {
-				if ($entry instanceof Search_Type_Whole || $entry instanceof Search_Type_MultivaluePlain) {
+				if ($entry instanceof Search_Type_Whole) {
 					return array(
 						"type" => "string",
 						"index" => "not_analyzed",
@@ -70,85 +40,42 @@ class Search_Elastic_Index implements Search_Index_Interface
 		);
 		$mapping = array_filter($mapping);
 
-		$this->connection->mapping($this->index, $type, $mapping);
-	}
+		$this->connection->mapping($this->index, $objectType, $mapping);
 
-	function endUpdate()
-	{
-		foreach ($this->invalidateList as $object) {
-			$this->connection->unindex($this->index, $object['object_type'], $object['object_id']);
-		}
-
-		$this->connection->flush();
-
-		$this->invalidateList = array();
+		$factory = $this->getTypeFactory();
+		$data = array_map(
+			function ($entry) use ($factory) {
+				return $entry->getValue($factory);
+			}, $data
+		);
+		$objectType = $data['object_type'];
+		$objectId = $data['object_id'];
+		$this->connection->index($this->index, $objectType, $objectId, $data);
 	}
 
 	function optimize()
 	{
 	}
 
-	function invalidateMultiple(array $objectList)
+	function invalidateMultiple(Search_Expr_Interface $expr)
 	{
-		foreach ($objectList as $object) {
-			$key = $object['object_type'] . ':' . $object['object_id'];
-			$this->invalidateList[$key] = $object;
-		}
 	}
 
-	function find(Search_Query_Interface $query, $resultStart, $resultCount)
+	function find(Search_Expr_Interface $expr, Search_Query_Order $sortOrder, $resultStart, $resultCount)
 	{
 		$builder = new Search_Elastic_QueryBuilder;
-		$queryPart = $builder->build($query->getExpr());
+		$query = $builder->build($expr);
 
-		$builder = new Search_Elastic_OrderBuilder;
-		$orderPart = $builder->build($query->getSortOrder());
-
-		$builder = new Search_Elastic_FacetBuilder;
-		$facetPart = $builder->build($query->getFacets());
-
-		$fullQuery = array_merge(
-			$queryPart,
-			$orderPart,
-			$facetPart,
-			array(
-				"from" => $resultStart,
-				"size" => $resultCount,
-				"highlight" => array(
-					"fields" => array(
-						'contents' => array(
-							"number_of_fragments" => 5,
-						),
-					),
-				),
-			)
-		);
-
-		$result = $this->connection->search($this->index, $fullQuery, $resultStart, $resultCount);
+		$result = $this->connection->search($this->index, $query, $resultStart, $resultCount);
 		$hits = $result->hits;
 
 		$entries = array_map(
 			function ($entry) {
-				$data = (array) $entry->_source;
-
-				if (isset($entry->highlight->contents)) {
-					$data['_highlight'] = implode('...', $entry->highlight->contents);
-				} else {
-					$data['_highlight'] = '';
-				}
-
-				return $data;
+				return (array) $entry->_source;
 			}, $hits->hits
 		);
 
-		$resultSet = new Search_Elastic_ResultSet($entries, $hits->total, $resultStart, $resultCount);
-
-		$reader = new Search_Elastic_FacetReader($result);
-		foreach ($query->getFacets() as $facet) {
-			if ($filter = $reader->getFacetFilter($facet)) {
-				$resultSet->addFacetFilter($filter);
-			}
-		}
+		$resultSet = new Search_ResultSet($entries, $hits->total, $resultStart, $resultCount);
 
 		return $resultSet;
 	}

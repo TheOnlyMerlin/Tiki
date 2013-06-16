@@ -5,7 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-class Search_Query implements Search_Query_Interface
+class Search_Query
 {
 	private $objectList;
 	private $expr;
@@ -13,10 +13,8 @@ class Search_Query implements Search_Query_Interface
 	private $start = 0;
 	private $count = 50;
 	private $weightCalculator = null;
-	private $identifierFields = null;
 
 	private $subQueries = array();
-	private $facets = array();
 
 	function __construct($query = null)
 	{
@@ -25,11 +23,6 @@ class Search_Query implements Search_Query_Interface
 		if ($query) {
 			$this->filterContent($query);
 		}
-	}
-
-	function setIdentifierFields(array $fields)
-	{
-		$this->identifierFields = $fields;
 	}
 
 	function addObject($type, $objectId)
@@ -186,36 +179,24 @@ class Search_Query implements Search_Query_Interface
 		$this->weightCalculator = $calculator;
 	}
 
-	function getSortOrder()
-	{
-		if ($this->sortOrder) {
-			return $this->sortOrder;
-		} else {
-			return Search_Query_Order::getDefault();
-		}
-	}
-
 	function search(Search_Index_Interface $index)
 	{
+		if ($this->sortOrder) {
+			$sortOrder = $this->sortOrder;
+		} else {
+			$sortOrder = Search_Query_Order::getDefault();
+		}
+
 		if ($this->weightCalculator) {
 			$this->expr->walk(array($this->weightCalculator, 'calculate'));
 		}
 
-		if ($this->identifierFields) {
-			$fields = $this->identifierFields;
-			$this->expr->walk(function (Search_Expr_Interface $expr) use ($fields) {
-				if (method_exists($expr, 'getField') && in_array($expr->getField(), $fields)) {
-					$expr->setType('identifier');
-				}
-			});
-		}
-
-		return $index->find($this, $this->start, $this->count);
+		return $index->find($this->expr, $sortOrder, $this->start, $this->count);
 	}
 
-	function getExpr()
+	function invalidate(Search_Index_Interface $index)
 	{
-		return $this->expr;
+		return $index->invalidateMultiple($this->expr);
 	}
 
 	private function parse($query)
@@ -262,15 +243,5 @@ class Search_Query implements Search_Query_Interface
 		}
 
 		return $this->subQueries[$name];
-	}
-
-	function requestFacet(Search_Query_Facet_Interface $facet)
-	{
-		$this->facets[] = $facet;
-	}
-
-	function getFacets()
-	{
-		return $this->facets;
 	}
 }

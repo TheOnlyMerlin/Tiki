@@ -27,7 +27,6 @@ class Tracker_Field_Language extends Tracker_Field_Abstract implements Tracker_F
 							0 => tr('No'),
 							1 => tr('Yes'),
 						),
-						'legacy_index' => 0,
 					),
 				),
 			),

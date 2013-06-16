@@ -5,7 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-class Search_ContentSource_TrackerItemSource implements Search_ContentSource_Interface, Tiki_Profile_Writer_ReferenceProvider
+class Search_ContentSource_TrackerItemSource implements Search_ContentSource_Interface
 {
 	private $db;
 	private $trklib;
@@ -14,13 +14,6 @@ class Search_ContentSource_TrackerItemSource implements Search_ContentSource_Int
 	{
 		$this->db = TikiDb::get();
 		$this->trklib = TikiLib::lib('trk');
-	}
-
-	function getReferenceMap()
-	{
-		return array(
-			'tracker_id' => 'tracker',
-		);
 	}
 
 	function getDocuments()

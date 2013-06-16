@@ -22,15 +22,12 @@ function wikiplugin_tracker_info()
 				'description' => tra('Numeric value representing the tracker ID'),
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'tracker',
 			),
 			'fields' => array(
 				'required' => false,
 				'name' => tra('Fields'),
 				'description' => tra('Colon-separated list of field IDs to be displayed. Example: 2:4:5  If empty, all fields will be shown'),
 				'default' => '',
-				'separator' => ':',
-				'profile_reference' => 'tracker_field',
 			),
 			'action' => array(
 				'required' => false,
@@ -69,7 +66,7 @@ function wikiplugin_tracker_info()
 				'description' => tra('Indicate mandatory fields with an asterisk (shown by default).'),
 				'filter' => 'alpha',
 				'default' => 'y',
-				'options' => array(
+						'options' => array(
 					array('text' => '', 'value' => ''),
 					array('text' => tra('Yes'), 'value' => 'y'),
 					array('text' => tra('No'), 'value' => 'n')
@@ -93,7 +90,7 @@ function wikiplugin_tracker_info()
 				'description' => tra('Embedded'),
 				'filter' => 'alpha',
 				'default' => 'n',
-				'options' => array(
+			'options' => array(
 					array('text' => '', 'value' => ''),
 					array('text' => tra('Yes'), 'value' => 'y'),
 					array('text' => tra('No'), 'value' => 'n')
@@ -198,7 +195,6 @@ function wikiplugin_tracker_info()
 				'description' => tra('ItemId allowing for editing an item'),
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'tracker_item',
 			),
 			'ignoreRequestItemId' => array(
 				'required' => false,
@@ -224,7 +220,6 @@ function wikiplugin_tracker_info()
 				'description' => tra('Name of the wiki page containing the template to display the tracker items.'),
 				'filter' => 'pagename',
 				'default' => '',
-				'profile_reference' => 'wiki_page',
 			),
 			'newstatus' => array(
 				'required' => false,
@@ -253,7 +248,6 @@ function wikiplugin_tracker_info()
 				'filter' => 'digits',
 				'separator' => ':',
 				'default' => '',
-				'profile_reference' => 'tracker_field',
 			),
 			'autosavevalues' => array(
 				'required' => false,
@@ -270,7 +264,6 @@ function wikiplugin_tracker_info()
 				'filter' => 'digits',
 				'separator' => ':',
 				'default' => '',
-				'profile_reference' => 'tracker_field',
 			),
 			'registration' => array(
 				'required' => false,
@@ -290,7 +283,6 @@ function wikiplugin_tracker_info()
 				'description' => tra('Output result to a new wiki page with the name taken from the input for the specified fieldId'),
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'tracker_field',
 			),
 			'discarditem' => array(
 				'required' => false,
@@ -310,15 +302,12 @@ function wikiplugin_tracker_info()
 				'description' => tra('Name of the wiki page containing the template to format the output to wiki page'),
 				'filter' => 'pagename',
 				'default' => '',
-				'profile_reference' => 'wiki_page',
 			),
 			'fieldsfill' => array(
 				'required' => false,
 				'name' => tra('Multiple Fill Fields'),
 				'description' => tra('Colon-separated list of field IDs to be filled with multiple values, to create multiple items in one save. Example: 2:4:5  If empty, only one item will be created. Only for item creation'),
 				'default' => '',
-				'separator' => ':',
-				'profile_reference' => 'tracker_field',
 			),
 			'fieldsfillseparator' => array(
 				'required' => false,
@@ -555,7 +544,7 @@ function wikiplugin_tracker($data, $params)
 				} elseif (!empty($tpl)) {
 					$outf = $trklib->get_pretty_fieldIds($tpl, 'tpl', $outputPretty);
 				} elseif (!empty($fields)) {
-					$outf = $fields;
+					$outf = preg_split('/ *: */', $fields);
 				}
 				if (!empty($_REQUEST['autosavefields'])) {
 					$autosavefields = explode(':', $_REQUEST['autosavefields']);
@@ -621,7 +610,7 @@ function wikiplugin_tracker($data, $params)
 
 			// If we create multiple items, get field Ids, default values and separator
 			if (!empty($fieldsfill)) {
-				$fill_fields = $fieldsfill;	// Allow for superfluous spaces and ignore them
+				$fill_fields = preg_split('/ *: */', $fieldsfill);	// Allow for superfluous spaces and ignore them
 				$fill_flds = array('data' => array());
 				$fill_defaults = array();
 				$fill_flds_defaults = array();	// May be different from fill_defaults if some fields are not editable
@@ -1335,13 +1324,12 @@ function wikiplugin_tracker($data, $params)
 							$smarty->assign('f_'.$f['fieldId'], '<span class="outputPretty" id="track_'.$f['fieldId'].'" name="track_'.$f['fieldId'].'">'. wikiplugin_tracker_render_value($f, $item) . '</span>');
 						} else {
 							$mand =  ($showmandatory == 'y' and $f['isMandatory'] == 'y')? "&nbsp;<strong class='mandatory_star'>*</strong>&nbsp;":'';
-							$smarty->assign(
-								'f_'.$f['fieldId'],
-								wikiplugin_tracker_render_input($f, $item, $dynamicSave) .
-								$mand .
-								'<div class="trackerplugindesc">' .
-								($f['descriptionIsParsed'] == 'y' ? $tikilib->parse_data($f['description']) : tra($f['description'])) .
-								'</div>'
+							$smarty->assign('f_'.$f['fieldId'],
+									wikiplugin_tracker_render_input($f, $item, $dynamicSave) .
+									$mand .
+									'<div class="trackerplugindesc">' .
+									($f['descriptionIsParsed'] == 'y' ? $tikilib->parse_data($f['description']) : tra($f['description'])) .
+									'</div>'
 							);
 						}
 					} else {

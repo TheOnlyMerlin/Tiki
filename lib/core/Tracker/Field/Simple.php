@@ -10,7 +10,7 @@
  * 
  * - email key ~m~
  */
-class Tracker_Field_Email extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
+class Tracker_Field_Simple extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
 {
 	private $type;
 
@@ -34,7 +34,6 @@ class Tracker_Field_Email extends Tracker_Field_Abstract implements Tracker_Fiel
 							1 => tr('Encoded mailto link'),
 							2 => tr('Simple mailto link'),
 						),
-						'legacy_index' => 0,
 					),
 					'watchopen' => array(
 						'name' => tr('Watch Open'),
@@ -44,7 +43,6 @@ class Tracker_Field_Email extends Tracker_Field_Abstract implements Tracker_Fiel
 							'' => tr('No'),
 							'o' => tr('Yes'),
 						),
-						'legacy_index' => 1,
 					),
 					'watchpending' => array(
 						'name' => tr('Watch Pending'),
@@ -54,7 +52,6 @@ class Tracker_Field_Email extends Tracker_Field_Abstract implements Tracker_Fiel
 							'' => tr('No'),
 							'p' => tr('Yes'),
 						),
-						'legacy_index' => 2,
 					),
 					'watchopen' => array(
 						'name' => tr('Watch Closed'),
@@ -64,7 +61,6 @@ class Tracker_Field_Email extends Tracker_Field_Abstract implements Tracker_Fiel
 							'' => tr('No'),
 							'c' => tr('Yes'),
 						),
-						'legacy_index' => 3,
 					),
 				),
 			),
@@ -75,7 +71,7 @@ class Tracker_Field_Email extends Tracker_Field_Abstract implements Tracker_Fiel
 	{
 		switch ($type) {
 			case 'm':
-				return new self($fieldInfo, $itemData, $trackerDefinition, 'email');
+				return new Tracker_Field_Simple($fieldInfo, $itemData, $trackerDefinition, 'email');
 		}
 	}
 	

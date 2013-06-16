@@ -9,11 +9,9 @@ interface Search_Index_Interface
 {
 	function addDocument(array $document);
 
-	function invalidateMultiple(array $query);
+	function invalidateMultiple(Search_Expr_Interface $query);
 
-	function endUpdate();
-
-	function find(Search_Query_Interface $query, $resultStart, $resultCount);
+	function find(Search_Expr_Interface $query, Search_Query_Order $sortOrder, $resultStart, $resultCount);
 
 	function getTypeFactory();
 

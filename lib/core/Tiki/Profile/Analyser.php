@@ -5,7 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-class Services_Workspace_ProfileAnalyser
+class Tiki_Profile_Analyser
 {
 	private $profile;
 	private $builder;
@@ -13,7 +13,7 @@ class Services_Workspace_ProfileAnalyser
 	function __construct(Tiki_Profile $profile)
 	{
 		$this->profile = $profile;
-		$this->builder = new Services_Workspace_ProfileBuilder;
+		$this->builder = new Tiki_Profile_Builder;
 	}
 
 	function ref($name)

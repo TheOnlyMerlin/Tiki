@@ -388,6 +388,8 @@ if ($prefs['flaggedrev_approval'] == 'y' && isset($_REQUEST['latest']) && $objec
 	$pageRenderer->forceLatest();
 }
 
+require_once 'lib/cache/pagecache.php';
+
 $pageCache = Tiki_PageCache::create()
 	->disableForRegistered()
 	->onlyForGet()
@@ -649,8 +651,9 @@ TikiLib::events()->trigger(
 );
 
 $smarty->assign('info', $info);
+$smarty->assign('mid', 'tiki-show_page.tpl');
 
-$smarty->display('tiki-show_page.tpl');
+$smarty->display('tiki.tpl');
 
 // xdebug_dump_function_profile(XDEBUG_PROFILER_CPU);
 // debug: print all objects

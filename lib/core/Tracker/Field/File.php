@@ -35,7 +35,6 @@ class Tracker_Field_File extends Tracker_Field_Abstract
 							'u' => tr('uploader'),
 							'm' => tr('mediaplayer'),
 						),
-						'legacy_index' => 0,
 					),
 				),
 			),

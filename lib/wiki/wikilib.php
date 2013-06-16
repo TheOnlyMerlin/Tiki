@@ -190,7 +190,7 @@ class WikiLib extends TikiLib
 
 	// This method renames a wiki page
 	// If you think this is easy you are very very wrong
-	public function wiki_rename_page($oldName, $newName, $renameHomes = true, $user = '')
+	public function wiki_rename_page($oldName, $newName, $renameHomes = true)
 	{
 		global $prefs, $tikilib;
 		// if page already exists, stop here
@@ -320,7 +320,7 @@ class WikiLib extends TikiLib
 		$query = 'update `tiki_objects` set `itemId`=?,`name`=?,`href`=? where `itemId`=? and `type`=?';
 		$this->query($query, array( $newName, $newName, $newcathref, $oldName, 'wiki page'));
 
-		$this->rename_object('wiki page', $oldName, $newName, $user);
+		$this->rename_object('wiki page', $oldName, $newName);
 
 		// update categories if new name has a category default
 		$categlib = TikiLib::lib('categ');
@@ -528,7 +528,6 @@ class WikiLib extends TikiLib
 		if ($prefs['feature_score'] == 'y') {
 			$this->score_event($user, 'wiki_attach_file');
 		}
-		$attId = 0;
 		if ($prefs['feature_user_watches'] = 'y') {
 			include_once('lib/notifications/notificationemaillib.php');
 			$query = 'select `attId` from `tiki_wiki_attachments` where `page`=? and `filename`=? and `created`=? and `user`=?';
@@ -541,9 +540,8 @@ class WikiLib extends TikiLib
 				$query = 'select `attId` from `tiki_wiki_attachments` where `page`=? and `filename`=? and `created`=? and `user`=?';
 				$attId = $this->getOne($query, array($page, $name, $now, $user));
 			}
-			$logslib->add_action('Created', $attId, 'wiki page attachment', '', $user);
+			$logslib->add_action('Created', $attId, 'wiki page attachment');
 		}
-		return $attId;
 	}
 
 	public function get_wiki_attach_file($page, $name, $type, $size)
@@ -1028,12 +1026,9 @@ class WikiLib extends TikiLib
 				});
 				$cachelib->cacheItem($cachetag, serialize($plugins));
 			}
-			array_walk_recursive(
-				$plugins,
-				function (& $item) use ($commonKey, $area_id) {
-					$item = str_replace($commonKey, $area_id, $item);
-				}
-			);
+			array_walk_recursive($plugins, function (& $item) use ($commonKey, $area_id) {
+				$item = str_replace($commonKey, $area_id, $item);
+			});
 			return $plugins;
 		} else {
 			// Only used by PluginManager ... what is that anyway?

@@ -23,7 +23,6 @@ function wikiplugin_files_info()
 				'description' => tra('To list only files contained in these file galleries (multiple IDs separated by colon)'),
 				'default' => '',
 				'separator' => ':',
-				'profile_reference' => 'file_gallery',
 			),
 			'categId' => array(
 				'required' => false,
@@ -31,7 +30,6 @@ function wikiplugin_files_info()
 				'description' => tra('To restrict files listed to those belonging to one or more categories. Enter a single category or ID or list of them separated by colon'),
 				'default' => '',
 				'advanced' => true,
-				'profile_reference' => 'category',
 			),
 			'fileId' => array(
 				'required' => false,
@@ -41,7 +39,6 @@ function wikiplugin_files_info()
 				'area' => 'fgal_picker_id',
 				'default' => '',
 				'separator' => ':',
-				'profile_reference' => 'file',
 			),
 			'sort' => array(
 				'required' => false,

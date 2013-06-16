@@ -8,16 +8,13 @@
 abstract class Tracker_Field_Abstract implements Tracker_Field_Interface, Tracker_Field_Indexable
 {
 	private $definition;
-	private $options;
 	private $itemData;
 	private $trackerDefinition;
 
 	function __construct($fieldInfo, $itemData, $trackerDefinition)
 	{
-		$this->options = Tracker_Options::fromSerialized($fieldInfo['options'], $fieldInfo);
-
 		if (! isset($fieldInfo['options_array'])) {
-			$fieldInfo['options_array'] = $this->options->buildOptionsArray();
+			$fieldInfo['options_array'] = preg_split('/\s*,\s*/', trim($fieldInfo['options']));
 		}
 
 		$this->definition = $fieldInfo;
@@ -266,13 +263,27 @@ abstract class Tracker_Field_Abstract implements Tracker_Field_Interface, Tracke
 	 * @param bool $default
 	 * @return mixed
 	 */
-	protected function getOption($key, $default = false)
+	protected function getOption($number, $default = false)
 	{
-		if (is_numeric($key)) {
-			return $this->options->getParamFromIndex($key, $default);
-		} else {
-			return $this->options->getParam($key, $default);
+		if (! is_numeric($number)) {
+			$factory = new Tracker_Field_Factory($this->definition);
+			$types = $factory->getFieldTypes();
+
+			$type = $this->getConfiguration('type');
+
+			$info = $types[$type];
+			$params = array_keys($info['params']);
+
+			$number = array_search($number, $params);
+
+			if ($number === false) {
+				return $default;
+			}
 		}
+
+		return isset($this->definition['options_array'][(int) $number]) ?
+			$this->definition['options_array'][(int) $number] :
+			$default;
 	}
 
 	protected function getTrackerDefinition()

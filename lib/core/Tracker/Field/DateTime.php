@@ -32,21 +32,18 @@ class Tracker_Field_DateTime extends Tracker_Field_Abstract implements Tracker_F
 							'dt' => tr('Date and Time'),
 							'd' => tr('Date only'),
 						),
-						'legacy_index' => 0,
 					),
 					'startyear' => array(
 						'name' => tr('Start Year'),
 						'description' => tr('Year to allow selecting from'),
 						'example' => '1987',
 						'filter' => 'digits',
-						'legacy_index' => 1,
 					),
 					'endyear' => array(
 						'name' => tr('End Year'),
 						'description' => tr('Year to allow selecting to'),
 						'example' => '2020',
 						'filter' => 'digits',
-						'legacy_index' => 2,
 					),
 					'blankdate' => array(
 						'name' => tr('Default selection'),
@@ -56,7 +53,6 @@ class Tracker_Field_DateTime extends Tracker_Field_Abstract implements Tracker_F
 							'' => tr('Current Date'),
 							'blank' => tr('Blank'),
 						),
-						'legacy_index' => 3,
 					),
 				),
 			),
@@ -68,11 +64,11 @@ class Tracker_Field_DateTime extends Tracker_Field_Abstract implements Tracker_F
 		$ins_id = $this->getInsertId();
 
 		$data = array(
-			'value' => $this->getValue($this->getOption('blankdate') == 'blank' ? '' : TikiLib::lib('tiki')->now),
+			'value' => $this->getValue($this->getOption(3) == 'blank' ? '' : TikiLib::lib('tiki')->now),
 		);
 
 		if (isset($requestData[$ins_id.'Month']) || isset($requestData[$ins_id.'Day']) || isset($requestData[$ins_id.'Year']) || isset($requestData[$ins_id.'Hour']) || isset($requestData[$ins_id.'Minute'])) {
-			$data['value'] = TikiLib::lib('trk')->build_date($requestData, $this->getOption('datetime'), $ins_id);
+			$data['value'] = TikiLib::lib('trk')->build_date($requestData, $this->getOption(0), $ins_id);
 			if (empty($data['value']) && (!empty($requestData[$ins_id.'Month']) || !empty($requestData[$ins_id.'Day']) || !empty($requestData[$ins_id.'Year']) || !empty($requestData[$ins_id.'Hour']) || !empty($requestData[$ins_id.'Minute']))) {
 				$data['error'] = 'y';
 			}
@@ -93,11 +89,11 @@ class Tracker_Field_DateTime extends Tracker_Field_Abstract implements Tracker_F
 
 		if ($value) {
 			$date = $tikilib->get_short_date($value);
-			if ($this->getOption('datetime') == 'd') {
+			if ($this->getOption(0) == 'd') {
 				return $date;
 			}
 			
-			if ($this->getOption('datetime') == 't') {
+			if ($this->getOption(0) == 't') {
 				return $tikilib->get_short_time($value);
 			}
 

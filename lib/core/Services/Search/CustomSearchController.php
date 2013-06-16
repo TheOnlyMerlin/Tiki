@@ -98,17 +98,16 @@ class Services_Search_CustomSearchController
 					$config['type'] = $name;
 				}
 
-				$filter = 'content'; //default
-				if (isset($config['filter'])) {
-					if ($config['_filter'] == 'language') {
-						$filter = 'language';
-					} elseif ($config['_filter'] == 'type') {
-						$filter = 'type';
-					} elseif ($config['_filter'] == 'categories' || $name == 'categories') {
-						$filter = 'categories';
-					} elseif ($name == 'daterange') {
-						$filter = 'daterange';
-					}
+				if ($config['_filter'] == 'language') {
+					$filter = 'language';
+				} elseif ($config['_filter'] == 'type') {
+					$filter = 'type';
+				} elseif ($config['_filter'] == 'categories' || $name == 'categories') {
+					$filter = 'categories';
+				} elseif ($name == 'daterange') {
+					$filter = 'daterange';
+				} else {
+					$filter = 'content'; //default
 				}
 
 				if (is_array($value) && count($value) > 1) {
@@ -141,7 +140,7 @@ class Services_Search_CustomSearchController
 		}
 
 		$unifiedsearchlib = TikiLib::lib('unifiedsearch');
-		$unifiedsearchlib->initQuery($query); // Done after cache because permissions vary
+		$query->setWeightCalculator($unifiedsearchlib->getWeightCalculator());
 		$index = $unifiedsearchlib->getIndex();
 		$resultSet = $query->search($index);
 

@@ -53,12 +53,7 @@ if (!@$dbTiki->Connect($host_tiki, $user_tiki, $pass_tiki, $dbs_tiki)) {
 
 TikiDb::set(new TikiDb_Adodb($dbTiki));
 
-global $tikilib;
-require_once 'lib/tikilib.php';
-$tikilib = new TikiLib;
-
 // update db if needed
-require_once 'lib/init/initlib.php';
 include_once ('installer/installlib.php');
 $installer = new Installer;
 
@@ -76,12 +71,16 @@ global $smarty;
 require_once 'lib/init/smarty.php';
 $smarty->addPluginsDir('../smarty_tiki/');
 require_once 'lib/cache/cachelib.php';
+require_once 'lib/tikilib.php';
 require_once 'lib/wiki/wikilib.php';
 require_once 'lib/userslib.php';
 require_once 'lib/headerlib.php';
 require_once 'lib/init/tra.php';
+require_once 'lib/init/initlib.php';
 require_once 'lib/tikiaccesslib.php';
 
+global $tikilib;
+$tikilib = new TikiLib;
 $userlib = new UsersLib;
 $_SESSION = array(
 		'u_info' => array(

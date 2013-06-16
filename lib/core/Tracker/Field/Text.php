@@ -34,31 +34,26 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 							0 => tr('No'),
 							1 => tr('Yes'),
 						),
-						'legacy_index' => 0,
 					),
 					'size' => array(
 						'name' => tr('Display Size'),
 						'description' => tr('Visible size of the field in characters.'),
 						'filter' => 'int',
-						'legacy_index' => 1,
 					),
 					'prepend' => array(
 						'name' => tr('Prepend'),
 						'description' => tr('Text to prepend when displaying the value.'),
 						'filter' => 'text',
-						'legacy_index' => 2,
 					),
 					'append' => array(
 						'name' => tr('Append'),
 						'description' => tr('Text to append when displaying the value.'),
 						'filter' => 'text',
-						'legacy_index' => 3,
 					),
 					'max' => array(
 						'name' => tra('Maximum Length'),
 						'description' => tra('Maximum amount of characters to store.'),
 						'filter' => 'int',
-						'legacy_index' => 4,
 					),
 					'autocomplete' => array(
 						'name' => tra('Autocomplete'),
@@ -68,7 +63,6 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 							'n' => tr('No'),
 							'y' => tr('Yes'),
 						),
-						'legacy_index' => 5,
 					),
 					'exact' => array(
 						'name' => tr('Index exact value'),
@@ -78,7 +72,6 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 							'n' => tr('No'),
 							'y' => tr('Yes'),
 						),
-						'legacy_index' => 6,
 					),
 				),
 			),
@@ -103,12 +96,12 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 		$post = '';
 
 		if ($this->getConfiguration('type') == 't') {
-			if ($this->getOption('prepend')) {
-				$pre = '<span class="formunit">' . $this->getOption('prepend') . '</span>';
+			if ($this->getOption(2)) {
+				$pre = '<span class="formunit">' . $this->getOption(2) . '</span>';
 			}
 
-			if ($this->getOption('append')) {
-				$post = '<span class="formunit">' . $this->getOption('append') . '</span>';
+			if ($this->getOption(3)) {
+				$post = '<span class="formunit">' . $this->getOption(3) . '</span>';
 			}
 		}
 
