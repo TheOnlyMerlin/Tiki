@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -85,19 +82,16 @@ if (isset($_REQUEST['display']) && $_REQUEST['display'] == 'pdf') {
 	require_once 'lib/pdflib.php';
 	$generator = new PdfGenerator();
 	$pdf = $generator->getPdf('tiki-print.php', array('page' => $page));
-	if (empty($pdf)) {
-		echo "Unable to generate PDF";
-	} else {
-		$length = strlen($pdf);
-		header('Cache-Control: private, must-revalidate');
-		header('Pragma: private');
-		header("Content-Description: File Transfer");
-		header('Content-disposition: attachment; filename="'. $page. '.pdf"');
-		header("Content-Type: application/pdf");
-		header("Content-Transfer-Encoding: binary");
-		header('Content-Length: '. $length);
-		echo $pdf;
-	}
+
+	header('Cache-Control: private, must-revalidate');
+	header('Pragma: private');
+	header("Content-Description: File Transfer");
+	header('Content-disposition: attachment; filename="'. $page. '.pdf"');
+	header("Content-Type: application/pdf");
+	header("Content-Transfer-Encoding: binary");
+	header('Content-Length: '. strlen($pdf));
+	echo $pdf;
+
 } else {
 	$smarty->display('tiki-print.tpl');
 }

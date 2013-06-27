@@ -1,5 +1,5 @@
 /* $Id$ 
-	Plum theme option for FiveAlive themes for Tiki Wiki CMS Groupware.
+	Plum theme option for FiveAlive theme of Tiki Wiki CMS Groupware.
 */
 
 a,
@@ -87,7 +87,8 @@ input[type="submit"]:hover,
 }
 
 .highlight,
-.button.highlight a {
+.button.highlight a,
+.calfocuson {
 	border-color: #fac5b1;
 	color: #8e01d4;
 	background: #f1f8de;
@@ -146,7 +147,6 @@ input[type="password"],
 input[type="file"],
 input[type="email"],
 input[type="file"],
-input[type="search"],
 input[type="number"],
 input#login-pass,
 textarea,
@@ -201,27 +201,21 @@ th.header {
 	color: #eeddf9;
 }
 
-.caltable .odd,
-.caltable .even,
-.caltable .calborder,
+.calodd,
+.caleven,
 .wikicell {
 	border: 1px solid #ce57df;
 }
 
-.caltable td.calhighlight,
-td.calheadhighlight {
-	background: #f1f8de;
-}
-
 .odd,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+.calodd,
+table.normal tr:nth-child(2n+1) {
 	background: #efcaf5;
 }
 
 .even,
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+.caleven,
+table.normal tr:nth-child(2n) {
 	background: #f3e1fb;
 }
 

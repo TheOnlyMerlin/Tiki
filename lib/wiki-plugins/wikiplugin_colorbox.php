@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -23,8 +23,7 @@ function wikiplugin_colorbox_info()
 				'filter' => 'digits',
 				'accepted' => 'ID',
 				'default' => '',
-				'since' => '5.0',
-				'profile_reference' => 'file_gallery',
+				'since' => '5.0'
 				),
 			'galId' => array(
 				'required' => false,

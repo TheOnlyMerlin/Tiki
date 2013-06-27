@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -27,12 +27,7 @@ class Services_Draw_Controller
 		
 		$_REQUEST['fileId'] = $input->fileId->int();
 		$_REQUEST['galleryId'] = $input->galleryId->int();
-		$imgParams = $input->imgParams;
-		if ($imgParams->fromFieldId) {
-			$_REQUEST['fromFieldId'] = $input->imgParams->fromFieldId->int();
-			$_REQUEST['fromItemId'] = $input->imgParams->fromItemId->int();
-		}
-
+		
 		include_once 'tiki-edit_draw.php';
 	}
 	

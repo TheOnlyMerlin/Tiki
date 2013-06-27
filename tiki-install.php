@@ -1,17 +1,11 @@
 <?php
-/**
- * Tiki's Installation script.
- * 
- * Used to install a fresh Tiki instance, to upgrade an existing Tiki to a newer version and to test sendmail.
- *
- * @package TikiWiki 
- * @copyright (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project. All Rights Reserved. See copyright.txt for details and a complete list of authors.
- * @licence Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
- */
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
+// All Rights Reserved. See copyright.txt for details and a complete list of authors.
+// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 $in_installer = 1;
-define('TIKI_IN_INSTALLER', 1);
 if (!isset($title)) $title = 'Tiki Installer';
 if (!isset($content)) $content = 'No content specified. Something went wrong.<br/>Please tell your administrator.<br/>If you are the administrator, you may want to check for / file a bug report.';
 if (!isset($dberror)) $dberror = false;
@@ -22,15 +16,23 @@ ini_set('display_errors', 1);
 
 // Check that PHP version is sufficient
 
-if (version_compare(PHP_VERSION, '5.3.0', '<')) {
-	$title = 'PHP 5.3 is required';
-	$content = '<p>Please contact your system administrator ( if you are not the one ;) ). Your version: '.PHP_VERSION.' <br /> <br /> '.'Please also visit <a href="tiki-check.php">Server Check</a>'.'</p>';
+if (version_compare(PHP_VERSION, '5.2.0', '<')) {
+	$title = 'PHP 5.2 is required';
+	$content = '<p>Please contact your system administrator ( if you are not the one ;) ). Your version: '.PHP_VERSION.'.</p>';
 	createPage($title, $content);
 }
 
 require_once('lib/init/initlib.php');
 $tikipath = dirname(__FILE__) . '/';
+TikiInit::prependIncludePath($tikipath.'lib/pear');
+TikiInit::appendIncludePath($tikipath.'lib/core');
 TikiInit::appendIncludePath($tikipath);
+require_once 'Zend/Loader/Autoloader.php';
+Zend_Loader_Autoloader::getInstance()
+	->registerNamespace('TikiFilter')
+	->registerNamespace('DeclFilter')
+	->registerNamespace('JitFilter')
+	->registerNamespace('TikiDb');
 
 include_once('db/tiki-db.php');	// to set up multitiki etc if there
 
@@ -56,6 +58,9 @@ $session_params = session_get_cookie_params();
 session_set_cookie_params($session_params['lifetime'], $tikiroot);
 unset($session_params);
 session_start();
+
+require_once 'lib/core/TikiDb/Adodb.php';
+require_once 'lib/core/TikiDb/Pdo.php';
 
 // Were database details defined before? If so, load them
 if (file_exists('db/'.$tikidomainslash.'local.php')) {
@@ -105,14 +110,7 @@ if (isset($_SESSION['accessible'])) {
 }
 
 
-/**
- * creates the HTML page to be displayed.
- * 
- * Tiki may not have been installed when we reach here, so we can't use our templating system yet. 
- * 
- * @param string $title   page Title
- * @param mixed  $content page Content
- */
+
 function createPage($title, $content)
 {
 	echo <<<END

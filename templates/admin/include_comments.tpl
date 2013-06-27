@@ -1,4 +1,4 @@
-{* $Id: include_comments.tpl 44059 2012-11-22 16:13:24Z lphuberdeau $ *}
+{* $Id$ *}
 
 <div class="navbar">
 	{button href="tiki-list_comments.php" _text="{tr}List comments{/tr}"}
@@ -52,7 +52,6 @@
 			<fieldset>
 				<legend>{tr}Inline comments{/tr}</legend>
 					<a class="link" href="{$prefs.helpurl}Inline+comments">{tr}Inline comments{/tr}</a>
-				{preference name=feature_inline_comments}
 
 				{tr}The feature below must be activated for this feature to work.{/tr}
 				{preference name=feature_wiki_paragraph_formatting}
@@ -66,7 +65,6 @@
 					{preference name=feature_wiki_comments}
 					<div class="adminoptionboxchild" id="feature_wiki_comments_childcontainer">
 						{preference name=wiki_comments_displayed_default}
-						{preference name=wiki_comments_form_displayed_default}
 						{preference name=wiki_comments_per_page}
 						{preference name=wiki_comments_default_ordering}
 						{preference name=wiki_comments_allow_per_page}

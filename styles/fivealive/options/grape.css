@@ -1,5 +1,5 @@
 /* $Id$ 
-	Grape theme option for FiveAlive themes for
+	Grape theme option for FiveAlive theme for
 	Tiki Wiki CMS Groupware.
 */
 
@@ -90,7 +90,8 @@ input[type="submit"]:hover,
 }
 
 .highlight,
-.button.highlight a {
+.button.highlight a,
+.calfocuson {
 	border-color: #e4afd3;
 	color: #8e286a;
 	background: #ddf4ef;
@@ -148,7 +149,6 @@ input[type="password"],
 input[type="file"],
 input[type="email"],
 input[type="file"],
-input[type="search"],
 input[type="number"],
 input#login-pass,
 textarea,
@@ -212,27 +212,21 @@ th.header {
 	color: #f4dded;
 }
 
-.caltable .odd,
-.caltable .even,
-.caltable .calborder,
+.calodd,
+.caleven,
 .wikicell {
 	border: 2px solid #efcde5;
 }
 
-.caltable td.calhighlight,
-td.calheadhighlight {
-	background: #ddf4ef;
-}
-
 .odd,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+.calodd,
+table.normal tr:nth-child(2n+1) {
 	background: #faf1f8;
 }
 
 .even,
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+.caleven,
+table.normal tr:nth-child(2n) {
 	background: #f4dded;
 }
 

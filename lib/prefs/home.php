@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,35 +11,27 @@ function prefs_home_list($partial = false)
 	return array(
 		'home_blog' => array(
 			'name' => tra('Home Blog (main blog)'),
-            'description' => tra(''),
 			'type' => 'list',
 			'options' => $partial ? array() : listblog_pref(),
 			'default' => 0,
-			'profile_reference' => 'blog',
 		),
 		'home_forum' => array(
 			'name' => tra('Home Forum (main forum)'),
-            'description' => tra(''),
 			'type' => 'list',
 			'options' => $partial ? array() : listforum_pref(),
 			'default' => 0,
-			'profile_reference' => 'forum',
 		),
 		'home_file_gallery' => array(
 			'name' => tra('Home File Gallery (main file gallery)'),
-            'description' => tra(''),
 			'type' => 'list',
 			'options' => $partial ? array() : listfgal_pref(),
 			'default' => 1,
-			'profile_reference' => 'file_gallery',
 		),
 		'home_gallery' => array(
 			'name' => tra('Home Gallery (main gallery)'),
-            'description' => tra(''),
 			'type' => 'list',
 			'options' => $partial ? array() : listimgal_pref(),
 			'default' => 0,
-			'profile_reference' => 'image_gallery',
 		),
 	);
 }

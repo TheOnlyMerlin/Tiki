@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -170,7 +170,7 @@ abstract class TikiDb
 		}
 	} // }}}
 
-	function convertSortMode( $sort_mode, $fields = null ) // {{{
+	function convertSortMode( $sort_mode ) // {{{
 	{
 		if ( !$sort_mode ) {
 			return '1';
@@ -188,8 +188,8 @@ abstract class TikiDb
 			return "RAND()";
 		}
 
-		$sorts = array();
-		foreach (explode(',', $sort_mode) as $sort) {
+		$sorts=explode(',', $sort_mode);
+		foreach ($sorts as $k => $sort) {
 
 			// force ending to either _asc or _desc unless it's "random"
 			$sep = strrpos($sort, '_');
@@ -201,22 +201,11 @@ abstract class TikiDb
 				$sort .= 'asc';
 			}
 
-			// When valid fields are specified, skip those not available
-			if (is_array($fields) && preg_match('/^(.*)_(asc|desc)$/', $sort, $parts)) {
-				if (! in_array($parts[1], $fields)) {
-					continue;
-				}
-			}
-
 			$sort = preg_replace('/_asc$/', '` asc', $sort);
 			$sort = preg_replace('/_desc$/', '` desc', $sort);
 			$sort = '`' . $sort;
 			$sort = str_replace('.', '`.`', $sort);
-			$sorts[] = $sort;
-		}
-
-		if (empty($sorts)) {
-			return '1';
+			$sorts[$k]=$sort;
 		}
 
 		$sort_mode=implode(',', $sorts);

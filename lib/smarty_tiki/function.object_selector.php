@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -47,14 +47,14 @@ function smarty_function_object_selector( $params, $smarty )
 	}
 
 	$smarty->assign(
-		'object_selector',
-		array(
-			'filter' => json_encode($params),
-			'id' => $id,
-			'name' => $name,
-			'class' => $class,
-			'value' => $value,
-		)
+					'object_selector', 
+					array(
+						'filter' => json_encode($params),
+						'id' => $id,
+						'name' => $name,
+						'class' => $class,
+						'value' => $value,
+					)
 	);
 
 	return $smarty->fetch('object_selector.tpl');

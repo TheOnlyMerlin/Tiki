@@ -8,22 +8,17 @@
 			{if $datetime eq 1}
 				{capture name="start"}{$event.start|tiki_short_datetime}{/capture}
 				{capture name="end"}{$event.end|tiki_short_datetime}{/capture}
-				{$smarty.capture.start}{if $smarty.capture.start ne $smarty.capture.end}<br>{$smarty.capture.end}{/if}
+				{$smarty.capture.start}{if $smarty.capture.start ne $smarty.capture.end}<br />{$smarty.capture.end}{/if}
 			{else}
 				{capture name="start"}{$event.start|tiki_short_date}{/capture}
 				{capture name="end"}{$event.end|tiki_short_date}{/capture}
-				{$smarty.capture.start}{if $smarty.capture.start ne $smarty.capture.end}<br>{$smarty.capture.end}{/if}
+				{$smarty.capture.start}{if $smarty.capture.start ne $smarty.capture.end}<br />{$smarty.capture.end}{/if}
 			{/if}
 		</td>
 		<td width="100%">
 			<a class="linkmodule" href="tiki-calendar_edit_item.php?viewcalitemId={$event.calitemId}">{$event.name|escape}</a>
-			{if $desc}<br>{$event.parsed}{/if}
+			{if $desc}<br />{$event.parsed}{/if}
 		</td>
 	</tr><!-- {cycle} -->
 {/foreach}
 </table>
-{*Pagination *}
-{if !empty($events) && $usePagination ne 'n'}
-	{pagination_links cant=$cant step=$maxEvents offset=$offset}{/pagination_links}
-{/if}
-

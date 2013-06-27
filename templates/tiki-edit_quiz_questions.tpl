@@ -7,18 +7,18 @@
 {title help="Quiz" url="tiki-edit_quiz_questions.php?quizId=$quizId"}{tr}Edit quiz questions{/tr}{/title}
 
 <div class="navbar">
-	{button href="tiki-list_quizzes.php" _text="{tr}List Quizzes{/tr}"}
+	{button href="tiki-list_quizzes.php" _text="{tr}List Quizzes{/tr}"} 
 	{button href="tiki-quiz_stats.php" _text="{tr}Quiz Stats{/tr}"}
 	{button href="tiki-quiz_stats_quiz.php?quizId=$quizId" _text="{tr}This Quiz Stats{/tr}"}
-	{button href="tiki-edit_quiz.php?quizId=$quizId" _text="{tr}Edit this Quiz{/tr}"}
+	{button href="tiki-edit_quiz.php?quizId=$quizId" _text="{tr}Edit this Quiz{/tr}"} 
 	{button href="tiki-edit_quiz.php" _text="{tr}Admin Quizzes{/tr}"}
 </div>
 
 <h2>{tr}Create/edit questions for quiz:{/tr} <a href="tiki-edit_quiz.php?quizId={$quiz_info.quizId}" >{$quiz_info.name|escape}</a></h2>
 
 <form action="tiki-edit_quiz_questions.php" method="post">
-	<input type="hidden" name="quizId" value="{$quizId|escape}">
-	<input type="hidden" name="questionId" value="{$questionId|escape}">
+	<input type="hidden" name="quizId" value="{$quizId|escape}" />
+	<input type="hidden" name="questionId" value="{$questionId|escape}" />
 
 	<table class="formcolor">
 		<tr>
@@ -42,7 +42,7 @@
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
-			<td><input type="submit" name="save" value="{tr}Save{/tr}"></td>
+			<td><input type="submit" name="save" value="{tr}Save{/tr}" /></td>
 		</tr>
 	</table>
 </form>
@@ -50,7 +50,7 @@
 <h2>{tr}Import questions from text{/tr}
 	{if $prefs.feature_help eq 'y'}
 		<a href="{$prefs.helpurl}Quiz+Question+Import" target="tikihelp" class="tikihelp">
-			<img src="img/icons/help.gif" alt="{tr}Help{/tr}">
+			<img src="img/icons/help.gif" alt="{tr}Help{/tr}" />
 		</a>
 	{/if}
 </h2>
@@ -73,7 +73,7 @@
 		</tr>
 	</table>
 	<div align="center">
-		<input type="submit" class="wikiaction" name="import" value="Import">
+		<input type="submit" class="wikiaction" name="import" value="Import" />
 	</div>
 </form>
 
@@ -112,7 +112,7 @@
 			</td>
 		</tr>
 	{sectionelse}
-		{norecords _colspan=6}
+		{norecords _colpan=6}
 	{/section}
 </table>
 

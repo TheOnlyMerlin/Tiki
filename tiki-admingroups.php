@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -157,13 +154,6 @@ if (isset($_REQUEST["action"])) {
 		$userlib->remove_group($_REQUEST["group"]);
 		$logslib->add_log('admingroups', 'removed group ' . $_REQUEST["group"]);
 		unset($_REQUEST['group']);
-	}
-}
-// Unassign a list of members
-if (isset($_REQUEST['unassign_members']) && isset($_REQUEST['submit_mult_members']) && $_REQUEST['submit_mult_members'] == 'unassign' && isset($_REQUEST['group']) && !in_array($_REQUEST['group'], array('Registered', 'Anonymous'))) {
-	$access->check_authenticity(tra('Are you sure you want to unassign these users?'));
-	foreach ($_REQUEST['members'] as $m) {
-		$userlib->remove_user_from_group($userlib->get_user_login($m), $_REQUEST['group']);
 	}
 }
 if (!empty($_REQUEST['submit_mult']) && !empty($_REQUEST['checked'])) {
@@ -381,7 +371,6 @@ $smarty->assign('bannedlist', $bannedlist);
 
 $userslist=$userlib->list_all_users();
 if (!empty($memberslist)) {
-    $cookietab = '3';
 	foreach ($memberslist as $key => $values) {
 		if ( in_array($values["login"], $userslist) ) {
 			unset($userslist[array_search($values["login"], $userslist, true)]);
@@ -417,10 +406,6 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 $smarty->assign('mid', 'tiki-admingroups.tpl');
 $smarty->display("tiki.tpl");
 
-/**
- * @param $direct_groups
- * @return array
- */
 function indirectly_inherited_groups($direct_groups)
 {
 	global $userlib;

@@ -3,7 +3,7 @@
 	Visit http://themes.tiki.org for more information.
 	*
 */
-
+ 
 /* Import foundation CSS files. */
 @import url("lite/lite.css");
 @import url("layout/layout.css");
@@ -15,7 +15,7 @@ html {
 }
 
 /***** XHTML Elements (body tag here,
-			others follow Layout) *****/
+			others follow Layout) *****/ 
 body {
 	background-color: #fff;
 	font: 76% Arial, Helvetica, sans-serif;
@@ -99,7 +99,7 @@ body.fixed_width .fixedwidth {
 #middle[id] {
 	height: auto;
 }
-
+ 
 #main {
 	text-align: left;
 	background: #fff;
@@ -203,7 +203,7 @@ body.fixed_width .fixedwidth {
 	font-size: 1.2em;
 	margin: 0;
 	margin-bottom: 6px;
-	padding-bottom: 6px;
+	padding-bottom: 6px; 
 }
 
 #footer h3#keepintouch {
@@ -291,8 +291,10 @@ body.fixed_width .fixedwidth {
 }
 
 .highlight,
-.button.highlight a {
+.button.highlight a,
+.calfocuson {
 	background: #fad5e0;
+	
 }
 
 /***** XHTML Elements (other than body tag) ******/
@@ -301,7 +303,7 @@ a:visited {
 	color: #1174a5;
 	text-decoration: none;
 }
-
+ 
 a:active, a:hover {
 	color: #26a6dd;
 	text-decoration: none;
@@ -366,7 +368,7 @@ input[type="submit"]:hover,
 #genPass .button:hover {
 	border-width: 1px !important;
 }
-
+	
 .highlight,
 .highlight a {
 	border: 1px solid #9ae8fa;
@@ -375,15 +377,7 @@ input[type="submit"]:hover,
 
 .button.highlight a {
 	background: #d6f3fa;
-	color: #0c0c0c;
-}
-
-.button.highlight {
-	border: none;
-}
-
-.button.highlight a:hover {
-	border: 1px solid #000;
+	color: #000;
 }
 
 select,
@@ -392,7 +386,6 @@ input[type="password"],
 input[type="file"],
 input[type="email"],
 input[type="file"],
-input[type="search"],
 input[type="number"],
 input#login-pass,
 textarea,
@@ -598,7 +591,9 @@ select {
 	right: 10px;
 	bottom: -1px;
 	width: 10em;
+/*	height: 26px;*/
 	line-height: 1;
+	z-index: 1;
 }
 
 .siteloginbar_popup fieldset {
@@ -618,22 +613,15 @@ select {
 	-moz-border-radius-topright: 5px;
 }
 
-.siteloginbar_poppedup.cbox {
-	background: transparent;
-}
-.siteloginbar_poppedup .tabcontent {
-	box-shadow: 0 5px 5px -3px rgba(0, 0, 0, .5);
-}
-
-.siteloginbar_popup ul.clearfix #register_link {
+.siteloginbar_popup .cssmenu_horiz #register_link {
 	background-color: #969696;
 }
 
-.siteloginbar_popup ul.clearfix .tabmark {
+.siteloginbar_popup .cssmenu_horiz .tabmark {
 	background-color: #070707;
 }
 
-.siteloginbar_poppedup li.tabcontent {
+.siteloginbar_poppedup li {
 	border-radius: 5px;
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
@@ -668,16 +656,6 @@ select {
 	background: #fff;
 }
 
-.siteloginbar_poppedup + .cluetip-close {
-	background: #a9d6eb;
-	border-radius: 5px;
-	box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.506);
-}
-
-.siteloginbar_poppedup + .cluetip-close a {
-	color: #2098CD
-}
-
 /*** CSS menus shadows for all but IE6 ***/
 ul.sf-shadow ul {
 	-moz-border-radius-bottomleft: 16px;
@@ -694,7 +672,7 @@ a.login_link {
 	text-transform: uppercase;
 /*	margin-bottom: -1px !important;*/
 }
-.siteloginbar_popup ul.clearfix ul {
+.siteloginbar_popup .cssmenu_horiz ul {
 	margin-top: -2px;
 }
 
@@ -744,7 +722,6 @@ li.login_link ul li a {
 	padding: 8px 1em;
 }
 
-#tiki-top .cssmenu_horiz li a:hover,
 .cssmenu_vert li ul a:hover,
 .cssmenu_horiz li ul a:hover,
 .box-menu .cssmenu_horiz li ul a:hover,
@@ -766,24 +743,6 @@ li.login_link ul li a {
 	text-decoration: none;
 	text-transform: uppercase;
 	color: #fff;
-}
-
-.box-quickadmin .cssmenu_horiz a {
-	color: #128bc9;
-	padding: .75em 1em;
-}
-
-.box-quickadmin .cssmenu_horiz  .sf-sub-indicator {
-	background: url(fivealive/options/blueberry/arrows-1174a5.png) no-repeat 10px 0;
-}
-
-.box-quickadmin .cssmenu_horiz li a  .sf-sub-indicator {
-	top: 10px;
-	background-position: -10px -100px;
-}
-
-.box-quickadmin .cssmenu_horiz li ul a {
-	background-color: #fff;
 }
 
 .header #secondary_site_menu .cssmenu_horiz li a {
@@ -872,10 +831,6 @@ li.login_link ul li a {
 	text-decoration: none;
 }
 
-#col2 .box-data .cssmenu_vert ul {
-	padding-left: 0;
-}
-
 /* left column width */
 #col2 .cssmenu_vert,
 #col2 .cssmenu_vert li {
@@ -912,7 +867,7 @@ li.login_link ul li a {
 }
 
 .cssmenu_vert li ul li a .sf-sub-indicator {
-	background: url(../img/superfish/arrows-ffffff.png);
+	background: url(../lib/jquery/superfish/images/arrows-ffffff.png);
 }
 
 /***** Icons *****/
@@ -936,7 +891,7 @@ img.icon {
 	border-bottom: 3px solid #74c0e2;
 	font-weight: bold;
 }
-.rbox-title,
+.rbox-title, 
 .rbox-data {
 	border-color: #2098cd;
 	background: #c2eef8;
@@ -992,26 +947,29 @@ form .normal,
 	border: none;
 }
 
+.calodd,
+.caleven,
 .wikicell {
 	border: 2px solid #c2eef8;
 }
 
 .odd,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+.calodd,
+table.normal tr:nth-child(2n+1) {
 	background: #e3f7fb;
 }
 
 .even,
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+.caleven,
+table.normal tr:nth-child(2n) {
 	background: #d6f3fa;
 }
 
-
+	  
 th,
 td.heading,
 tr.diffheader,
+.calHeading,
 .weeks,
 th.header {
 	background-color: #1d90c5;
@@ -1022,7 +980,7 @@ th a,
 th a:visited,
 td.heading a,
 td.heading a:visited,
-.normal th a.link,
+.normal th a.link, 
 .normal th a,
 th.header {
 	color: #fff
@@ -1121,7 +1079,7 @@ a.register_link {
 .statuson {
 	background: white;
 }
-
+	
 legend.heading {
 	background: transparent;
 }
@@ -1139,7 +1097,7 @@ fieldset.admin .adminoptionlabel {
 	font-weight: bold;
 	padding: 1px 8px;
 }
-
+	
 .code {
 	padding: 3px;
 	border: 1px dashed #a9a9a9;
@@ -1258,16 +1216,17 @@ a.dirsublink {
 	color: #fff;
 }
 
-.caltable .odd,
-.caltable .even,
-.calborder {
-	border: 2px solid #c2eef8;
+.calfocuson {
+	font-size: 100%; 
+	background: #f3e498;
 }
 
-.caltable td.calhighlight,
-td.calheadhighlight {
-	background: #f9f0f0;
-	text-align: center;
+.calfocuson a {
+	font-size: 90%; 
+}
+
+.calHeadingOn, .calHeadingOn a {
+	background: #f3e498;
 }
 
 /***** Admin *****/
@@ -1295,12 +1254,7 @@ td.calheadhighlight {
 .cluetip-default #cluetip-title a {
 	color: #CBF4FA;
 }
-
-/* fake 'transparent' theme (for ClueTip login box popup) */
-/*.cluetip-transparent {
-	top: 168px !important;
-}*/
-
+  
 
 /***** End New (unsorted) *****/
 

@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -50,17 +50,6 @@ function wikiplugin_map_info()
 				'name' => tra('Center'),
 				'description' => tr('Format: x,y,zoom where x is the longitude, and y is the latitude. Zoom is between 0(view Earth) and 19.'),
 				'filter' => 'text',
-			),
-			'popupstyle' => array(
-				'required' => false,
-				'name' => tr('Popup style'),
-				'description' => tr('Alter the way the information is displayed when objects are loaded on the map.'),
-				'filter' => 'alpha',
-				'default' => 'bubble',
-				'options' => array(
-					array('text' => tr('Bubble'), 'value' => 'bubble'),
-					array('text' => tr('Dialog'), 'value' => 'dialog'),
-				),
 			),
 			'mapfile' => array(
 				'required' => false,
@@ -116,13 +105,6 @@ function wikiplugin_map($data, $params)
 		$params['controls'] = explode(',', $params['controls']);
 	}
 
-	if (! isset($params['popupstyle'])) {
-		$params['popupstyle'] = 'bubble';
-	}
-
-	$popupStyle = smarty_modifier_escape($params['popupstyle']);
-
-	$controls = array_intersect($params['controls'], wp_map_available_controls());
 	$controls = array_intersect($params['controls'], wp_map_available_controls());
 	$controls = implode(',', $controls);
 
@@ -137,7 +119,7 @@ function wikiplugin_map($data, $params)
 	TikiLib::lib('header')->add_map();
 	$scope = smarty_modifier_escape(wp_map_getscope($params));
 
-	$output = "<div class=\"map-container\" data-marker-filter=\"$scope\" data-map-controls=\"{$controls}\" data-popup-style=\"$popupStyle\" style=\"width: {$width}; height: {$height};\" $center>";
+	$output = "<div class=\"map-container\" data-marker-filter=\"$scope\" data-map-controls=\"{$controls}\" style=\"width: {$width}; height: {$height};\" $center>";
 
 	$argumentParser = new WikiParser_PluginArgumentParser;
 	$matches = WikiParser_PluginMatcher::match($data);
@@ -198,7 +180,7 @@ function wp_map_mapserver($params)
 			$extdata="minx=".$minx."&maxx=".$maxx."&miny=".$miny."&maxy=".$maxy."&zoom=1&";
 		}
 	}
-
+	
 	$sizedata="";
 	if (isset($size)) {
 		$sizedata="size=".intval($size)."&";
@@ -210,7 +192,7 @@ function wp_map_mapserver($params)
 	$heightdata="";
 	if (isset($height)) {
 		$heightdata='height="'.intval($height).'"';
-	}
+	}	
 	if (@$prefs['feature_maps'] != 'y') {
 		$map=tra("Feature disabled");
 	} else {
@@ -247,7 +229,6 @@ function wp_map_plugin_searchlayer($body, $args)
 	$refresh = $args->refresh->int();
 	$suffix = $args->suffix->word();
 	$maxRecords = $args->maxRecords->digits();
-	$sort_mode = $args->sort_mode->word();
 
 	$args->replaceFilter('fields', 'word');
 	$fields = $args->asArray('fields', ',');
@@ -257,7 +238,6 @@ function wp_map_plugin_searchlayer($body, $args)
 	unset($args['suffix']);
 	unset($args['maxRecords']);
 	unset($args['fields']);
-	unset($args['sort_mode']);
 
 	$args->setDefaultFilter('text');
 
@@ -272,10 +252,6 @@ function wp_map_plugin_searchlayer($body, $args)
 		$maxRecords = '<input type="hidden" name="maxRecords" value="' . intval($maxRecords) . '"/>';
 	}
 
-	if ($sort_mode) {
-		$sort_mode = '<input type="hidden" name="sort_mode" value="' . $sort_mode . '"/>';
-	}
-
 	$fieldList = '';
 	if (! empty($fields)) {
 		$fieldList = '<input type="hidden" name="fields" value="' . smarty_modifier_escape(implode(',', $fields)) . '"/>';
@@ -285,7 +261,7 @@ function wp_map_plugin_searchlayer($body, $args)
 	$escapedSuffix = smarty_modifier_escape($suffix);
 	return <<<OUT
 <form method="post" action="tiki-searchindex.php" class="search-box onload" style="display: none" data-result-refresh="$refresh" data-result-layer="$escapedLayer" data-result-suffix="$escapedSuffix">
-	<p>$maxRecords$sort_mode$fieldList$filters<input type="submit"/></p>
+	<p>$maxRecords$fieldList$filters<input type="submit"/></p>
 
 </form>
 OUT;
@@ -316,7 +292,7 @@ function init() {
 			title: $(dialog).data('title')
 		})
 		.append($('<div class="current" style="height: $size;"/>'));
-
+	
 	$.each($json, function (k, color) {
 		$(dialog).append(
 			$('<div style="float: left; width: $size; height: $size;"/>')
@@ -333,8 +309,8 @@ function init() {
 }
 METHOD;
 	} else {
-		$headerlib->add_jsfile('vendor/jquery/plugins/colorpicker/js/colorpicker.js');
-		$headerlib->add_cssfile('vendor/jquery/plugins/colorpicker/css/colorpicker.css');
+		$headerlib->add_jsfile('lib/jquery/colorpicker/js/colorpicker.js');
+		$headerlib->add_cssfile('lib/jquery/colorpicker/css/colorpicker.css');
 		$methods = <<<METHOD
 function setColor(color) {
 	$(dialog).ColorPickerSetColor(color);
@@ -409,8 +385,7 @@ FULL;
 	return "<div id=\"$target\" data-title=\"$title\"></div>";
 }
 
-function wp_map_color_filter ($color)
-{
+function wp_map_color_filter ($color) {
 	$color = strtolower($color);
 	if (preg_match('/^[0-9a-f]{3}([0-9a-f]{3})?$/', $color)) {
 		return "#$color";

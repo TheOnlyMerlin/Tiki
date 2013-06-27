@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -12,32 +12,29 @@ $access->check_script($_SERVER['SCRIPT_NAME'], basename(__FILE__));
 //   (to be able to generate non-javascript code if there is no javascript, when noscript tag is not useful enough)
 //   It uses cookies instead of session vars to keep the correct value after a session timeout
 
-$js_cookie = getCookie('javascript_enabled');
-
 if ($prefs['disableJavascript'] == 'y' ) {
 	$prefs['javascript_enabled'] = 'n';
-} elseif ($js_cookie) {
+} elseif ( isset($_COOKIE['javascript_enabled']) ) {
 	// Update the pref with the cookie value
-	$prefs['javascript_enabled'] = $js_cookie;
+	$prefs['javascript_enabled'] = $_COOKIE['javascript_enabled'];
 } else {
-	$prefs['javascript_enabled'] = 'y';
+	// Set the cookie to 'n', through PHP / HTTP headers
+	$prefs['javascript_enabled'] = 'n';
 }
 
 if ( $prefs['javascript_enabled'] != 'y' && $prefs['disableJavascript'] != 'y' ) {
 	// Set the cookie to 'y', through javascript (will override the above cookie set to 'n' and sent by PHP / HTTP headers) - duration: approx. 1 year
-	$headerlib->add_js("setCookie('javascript_enabled', 'y');", 0);
+	$headerlib->add_js("var jsedate = new Date();\njsedate.setTime(" . ( 1000 * ( $tikilib->now + 365 * 24 * 3600 ) ) . ");\nsetCookieBrowser('javascript_enabled', 'y', null, jsedate);");
 
 	// the first and second time, we should not trust the absence of javascript_enabled cookie yet, as it could be a redirection and the js will not get a chance to run yet, so we wait until the third run, assuming that js is on before then
-	$runs_before_js_detect = getCookie('runs_before_js_detect');
-	if ( $runs_before_js_detect === null ) {
+	if ( !isset($_COOKIE['runs_before_js_detect']) ) {
 		$prefs['javascript_enabled'] = 'y';
-		setCookieSection('runs_before_js_detect', '1', null, $tikilib->now + 365 * 24 * 3600);
-	} elseif ( $runs_before_js_detect > 0 ) {
+		setcookie('runs_before_js_detect', '2', $tikilib->now + 365 * 24 * 3600);
+	} elseif ( $_COOKIE['runs_before_js_detect'] > 0 ) {
 		$prefs['javascript_enabled'] = 'y';
-		setCookieSection('runs_before_js_detect', $runs_before_js_detect - 1, null, $tikilib->now + 365 * 24 * 3600);
+		setcookie('runs_before_js_detect', $_COOKIE['runs_before_js_detect'] - 1, $tikilib->now + 365 * 24 * 3600);
 	}
 }
-
 if ($prefs['javascript_enabled'] == 'n') {
 	// disable js dependant features
 	$prefs['feature_tabs'] = 'n';
@@ -45,7 +42,6 @@ if ($prefs['javascript_enabled'] == 'n') {
 	$prefs['feature_shadowbox'] = 'n';
 	$prefs['feature_wysiwyg'] = 'n';
 	$prefs['feature_ajax'] = 'n';
-	$prefs['calendar_fullcalendar'] = 'n';
 }
 
 if ($prefs['javascript_enabled'] == 'y') {	// we have JavaScript
@@ -55,9 +51,7 @@ if ($prefs['javascript_enabled'] == 'y') {	// we have JavaScript
 	// load translations lang object from /lang/xx/language.js if there
 	if (file_exists('lang/' . $prefs['language'] . '/language.js')) {
 		// after the usual lib includes (up to 10) but before custom.js (50)
-		$headerlib
-			->add_jsfile('lang/' . $prefs['language'] . '/language.js', 25)
-			->add_js("$.lang = '" . $prefs['language'] . "';");
+		$headerlib->add_jsfile('lang/' . $prefs['language'] . '/language.js', 25);
 	}
 
 	/** Use custom.js in styles or options dir if there **/
@@ -71,20 +65,9 @@ if ($prefs['javascript_enabled'] == 'y') {	// we have JavaScript
 		}
 	}
 
-	/** Use custom.js in lang dir if there **/
-	$language = $prefs['language'];
-	if (is_file("lang/$language/custom.js")) {
-		TikiLib::lib('header')->add_jsfile("lang/$language/custom.js", 40);	// before styles custom.js
-	}
-
-	if (!empty($tikidomain) && is_file("lang/$language/$tikidomain/custom.js")) {		// Note: lang tikidomain dirs not created automatically
-		TikiLib::lib('header')->add_jsfile("lang/$language/$tikidomain/custom.js", 40);
-	}
-
 	// setup timezone array
 	$tz = array_keys(DateTimeZone::listAbbreviations());
-	$headerlib->add_js(
-		'
+	$headerlib->add_js('
 function inArray(item, array) {
     for (var i in array) {
         if (array[i] === item) {
@@ -107,17 +90,17 @@ if (m) {
 	var hours = - now.getTimezoneOffset() / 60;
 	m = "GMT" + (hours > 0 ? "+" : "") + hours;
 }
-// Etc/GMT+ is equivalent to GMT-
+// Etc/GMT+ is equivalent to GMT- 
 if (m.substring(0,4) == "GMT+") {
 	m = "Etc/GMT-" + m.substring(4);
 }
 if (m.substring(0,4) == "GMT-") {
 	m = "Etc/GMT+" + m.substring(4);
-}
+} 
 if (inArray(m, allTimeZoneCodes)) {
 	setCookie("local_tz", m);
 }
-', 2
+'
 );
 
 	$js = '
@@ -148,7 +131,6 @@ jqueryTiki.autosave = '.($prefs['ajax_autosave'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.sefurl = '.($prefs['feature_sefurl'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.ajax = '.($prefs['feature_ajax'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.syntaxHighlighter = '.($prefs['feature_syntax_highlighter'] == 'y' ? 'true' : 'false') . ';
-jqueryTiki.chosen = '.($prefs['jquery_ui_chosen'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.selectmenu = '.($prefs['jquery_ui_selectmenu'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.selectmenuAll = '.($prefs['jquery_ui_selectmenu_all'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.mapTileSets = ' . json_encode($tikilib->get_preference('geo_tilesets', array('openstreetmap'), true)) . ';
@@ -157,19 +139,8 @@ jqueryTiki.googleStreetView = '.($prefs['geo_google_streetview'] == 'y' ? 'true'
 jqueryTiki.googleStreetViewOverlay = '.($prefs['geo_google_streetview_overlay'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.structurePageRepeat = '.($prefs['page_n_times_in_a_structure'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.mobile = '.($prefs['mobile_mode'] == 'y' ? 'true' : 'false') . ';
-jqueryTiki.jcapture = '.($prefs['feature_jcapture'] == 'y' ? 'true' : 'false') . ';
-//do not fix following line for notices -  appropriately throws off a notice when user has not
-//flushed prefs cache after upgrading - i.e. not running the updater
-jqueryTiki.jcaptureFgal = ' . ((int)$prefs['fgal_for_jcapture']) . ';
-jqueryTiki.no_cookie = false;
-jqueryTiki.language = "' . $prefs['language'] . '";
 ';	// NB replace "normal" speeds with int to workaround issue with jQuery 1.4.2
 
-	//Set inline comments on/off
-	if ($prefs['feature_inline_comments'] === 'y') {
-		$js .= 'jqueryTiki.useInlineComment = true;';
-	}
-	
 	if ($prefs['mobile_feature'] === 'y' && $prefs['mobile_mode'] === 'y') {
 		$js .= '
 // overrides for prefs for jq in mobile mode
@@ -180,7 +151,6 @@ jqueryTiki.autocomplete = false;
 jqueryTiki.superfish = false;
 jqueryTiki.colorbox = false;
 jqueryTiki.tablesorter = false;
-jqueryTiki.useInlineComment = false;	// Inline comments do not seem to work, and an option is missing. Disable for now.
 ';
 		if ($prefs['feature_ajax'] !== 'y') {
 			$headerlib->add_js_config('var mobile_ajaxEnabled = false;');
@@ -220,9 +190,9 @@ var syntaxHighlighter = {
 		if ($prefs['feature_iepngfix'] == 'y') {
 			/**
 			 * \brief another attempt for PNG alpha transparency fix which seems to work best for IE6 and can be applied even on background positioned images
-			 *
+			 * 
 			 * is applied explicitly on defined CSS selectors or HTMLDomElement
-			 *
+			 * 
 			 */
 			if (($fixoncss = $prefs['iepngfix_selectors']) == '') {
 				$fixoncss = '#sitelogo a img';
@@ -232,8 +202,7 @@ var syntaxHighlighter = {
 			}
 			$scriptpath = 'lib/iepngfix/DD_belatedPNG-min.js';
 			$headerlib->add_jsfile($scriptpath, 200);
-			$headerlib->add_js(
-<<<JS
+			$headerlib->add_js(<<<JS
 DD_belatedPNG.fix('$fixoncss'); // list of CSS selectors to fix separated by commas (default is set to fix sitelogo)
 $fixondom
 JS

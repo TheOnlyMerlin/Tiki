@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -20,15 +20,14 @@ function wikiplugin_alink_info()
 				'required' => true,
 				'name' => tra('Anchor Name'),
 				'description' => tra('The anchor name as defined in the ANAME plugin.'),
-				'default' => '',
+				'default' => ''
 			),
 			'pagename' => array(
 				'required' => false,
 				'name' => tra('Page Name'),
 				'description' => tra('The name of the wiki page containing the anchor. If empty, the anchor name will be searched for on the wiki page where the plugin is used.'),
 				'filter' => 'pagename',
-				'default' => '',
-				'profile_reference' => 'wiki_page',
+				'default' => ''
 			),
 		),
 	);

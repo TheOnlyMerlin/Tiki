@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -18,12 +18,15 @@ class Event_Lib
 
 	public static function defer($library, $method)
 	{
-		return new self($library, $method);
+		return array(
+			new self($library, $method),
+			'trigger',
+		);
 	}
 
-	function __invoke($arguments, $priority)
+	function trigger($arguments)
 	{
-		TikiLib::lib($this->library)->{$this->method}($arguments, $priority);
+		TikiLib::lib($this->library)->{$this->method}($arguments);
 	}
 }
 

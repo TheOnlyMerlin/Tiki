@@ -4,64 +4,55 @@
 {tab name="{tr}Kaltura{/tr}"}
 {remarksbox type="info" title="{tr}Kaltura Registration{/tr}"}{tr}To get a Kaltura Partner ID:{/tr} {tr}Setup your own instance of Kaltura Community Edition (CE){/tr} or <a href="http://corp.kaltura.com/about/signup">{tr}get an account via Kaltura.com{/tr}</a> {/remarksbox}
 
-{button _text="{tr}List Media{/tr}" href="tiki-list_kaltura_entries.php"}
-{if $kaltura_legacyremix eq 'y'}{button _text="{tr}List Remix Entries{/tr}" href="tiki-list_kaltura_entries.php?list=mix"}{/if}
-{button _text="{tr}Add New Media{/tr}" href="tiki-kaltura_upload.php"}
+	{button _text="{tr}List Media Entries{/tr}" href="tiki-list_kaltura_entries.php?list=media"}
+	{button _text="{tr}List Remix Entries{/tr}" href="tiki-list_kaltura_entries.php"}
+	{button _text="{tr}Add New Media{/tr}" href="tiki-kaltura_upload.php"}
 
-<div class="heading input_submit_container" style="text-align: right">
-	<input type="submit" name="video" value="{tr}Change preferences{/tr}" />
-</div>
 <fieldset class="admin">
-
 <legend>{tr}Activate the feature{/tr}</legend>
 	{preference name=feature_kaltura visible="always"}
 </fieldset>
 
 <fieldset class="admin">
-<legend>{tr}Plugin to embed in pages{/tr}</legend>
-	{preference name=wikiplugin_kaltura}
-</fieldset>
-
-<fieldset class="admin">
 <legend>{tr}Kaltura / Tiki config{/tr}</legend>
-	{preference name=kaltura_kServiceUrl}
+	{preference name=kuser}
+	{preference name=kServiceUrl}
+	{preference name=default_kaltura_editor}
 </fieldset>
 
 <fieldset class="admin">
 <legend>{tr}Kaltura Partner Settings{/tr}</legend>
-	{preference name=kaltura_partnerId}
-	{preference name=kaltura_adminSecret}
-	{preference name=kaltura_secret}
+	{preference name=partnerId}
+	{preference name=adminSecret}
+	{preference name=secret}
 </fieldset>
 
-<br>
+<br/>
 
 <fieldset class="admin">
 <legend>{tr}Kaltura Dynamic Player{/tr}</legend>
-	{preference name=kaltura_kdpUIConf}
-	{preference name=kaltura_kdpEditUIConf}
-	{$kplayerlist}
+	{preference name=kdpUIConf}
+	{preference name=kdpWidget}
 </fieldset>
 
-<br>
+<br/>
 
 <fieldset class="admin">
-	<legend>{tr}Kaltura Contribution Wizard{/tr}</legend>
-	{$kcwText}
-	<div class="adminoptionbox">{tr}You can manually edit these values in lib/videogals/standardTikiKcw.xml{/tr}<br>
-	{tr}Recreate KCW "uiConf"{/tr} {button _text='{tr}Update{/tr}' kcw_rebuild=1 _keepall='y' _auto_args='*'}</div>
+<legend>{tr}Kaltura Contribution Wizard{/tr}</legend>
+	{preference name=kcwUIConf}
 </fieldset>
 
-<br>
+<br/>
 
 <fieldset class="admin">
-<legend>{tr}Legacy support{/tr}</legend>
-	{preference name=kaltura_legacyremix}
+<legend>{tr}Kaltura Remix Editors{/tr}</legend>
+	{preference name=kseUIConf}
+	{preference name=kaeUIConf}
 </fieldset>
 
-<br>
+<br/>
 
-<div align="center" style="padding:1em;"><input type="submit" name="video" value="{tr}Change preferences{/tr}" /></div>
+<div align="center" style="padding:1em;"><input type="submit" name="kaltura" value="{tr}Save{/tr}" /></div>
 </form>
 {/tab}
 {tab name="{tr}Ustream Watershed{/tr}"}
@@ -112,6 +103,6 @@
 	{preference name=watershed_fme_key}
 </fieldset>
 
-<div align="center" style="padding:1em;"><input type="submit" name="video" value="{tr}Change preferences{/tr}" /></div>
+<div align="center" style="padding:1em;"><input type="submit" name="video" value="{tr}Save{/tr}" /></div>
 {/tab}
 {/tabset}

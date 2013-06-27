@@ -41,7 +41,7 @@
 			<th>{tr}Inherits Permissions from{/tr}</th>
 
 			{if $prefs.useGroupHome eq 'y'}
-			<th>{self_link _sort_arg='sort_mode' _sort_field='groupHome'}{tr}Homepage{/tr}{/self_link}</th>
+				<th>{self_link _sort_arg='sort_mode' _sort_field='groupHome'}{tr}Homepage{/tr}{/self_link}</th>
 			{/if}			
 
 			<th>{self_link _sort_arg='sort_mode' _sort_field='userChoice'}{tr}User Choice{/tr}{/self_link}</th>
@@ -53,7 +53,7 @@
 			<tr class="{cycle}">
 				<td class="checkbox">
 					{if $users[user].groupName ne 'Admins' and $users[user].groupName ne 'Anonymous' and $users[user].groupName ne 'Registered'}
-						<input type="checkbox" name="checked[]" value="{$users[user].groupName|escape}">
+						<input type="checkbox" name="checked[]" value="{$users[user].groupName|escape}" />
 					{/if}
 				</td>
 				<td class="id">{$users[user].id|escape}</td>
@@ -66,16 +66,12 @@
 						{if !in_array($users[user].included[ix], $users[user].included_direct)}<i>{/if}
 						{$users[user].included[ix]|escape}
 						{if !in_array($users[user].included[ix], $users[user].included_direct)}</i>{/if}
-						<br>
+						<br />
 					{/section}
 				</td>
-
-				{if $prefs.useGroupHome eq 'y'}
 				<td class="text">
 					<a class="link" href="tiki-index.php?page={$users[user].groupHome|escape:"url"}" title="{tr}Group Homepage{/tr}">{tr}{$users[user].groupHome}{/tr}</a>
 				</td>
-				{/if}
-
 				<td class="text">{tr}{$users[user].userChoice}{/tr}</td>
 				<td class="text">
 					<a class="link" href="tiki-objectpermissions.php?group={$users[user].groupName|escape:"url"}" title="{tr}Permissions{/tr}">{icon _id='key' alt="{tr}Permissions{/tr}"} {$users[user].permcant}</a>
@@ -96,7 +92,7 @@
 				<option value="remove_groups" >{tr}Remove{/tr}</option>
 			</select>
 		</label>
-		<input type="submit" value="{tr}OK{/tr}">
+		<input type="submit" value="{tr}OK{/tr}" />
 	</p>
 	</form>
 	{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
@@ -132,9 +128,9 @@
 				<td><label for="groups_group">{tr}Group:{/tr}</label></td>
 				<td>
 					{if $groupname neq 'Anonymous' and $groupname neq 'Registered' and $groupname neq 'Admins'}
-						<input type="text" name="name" id="groups_group" value="{$groupname|escape}" style="width:95%">
+						<input type="text" name="name" id="groups_group" value="{$groupname|escape}" style="width:95%" />
 					{else}
-						<input type="hidden" name="name" id="groups_group" value="{$groupname|escape}">{$groupname}
+						<input type="hidden" name="name" id="groups_group" value="{$groupname|escape}" />{$groupname}
 					{/if}
 				</td>
 			</tr>
@@ -153,7 +149,7 @@
 						{foreach key=gr item=yn from=$inc}
 							{if $yn eq 'y'}{$gr|escape} {/if}
 						{/foreach}
-						<br>
+						<br />
 					{/if}
 					<select name="include_groups[]" id="groups_inc" multiple="multiple" size="8">
 						{if !empty($groupname)}<option value="">{tr}None{/tr}</option>{/if}
@@ -161,8 +157,8 @@
 							<option value="{$gr|escape}" {if $yn eq 'y'} selected="selected"{/if}>{$gr|truncate:"52"|escape}</option>
 						{/foreach}
 					</select>
-					<br>
-					{if $prefs.jquery_ui_chosen neq 'y'}{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use Ctrl+Click to select multiple options{/tr}{/remarksbox}{/if}
+					<br />
+					{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use Ctrl+Click to select multiple options{/tr}{/remarksbox}
 				</td>
 			</tr>
 
@@ -188,7 +184,7 @@
 						<label for="groups_home">{tr}Group Homepage or Url:{/tr}</label>
 					</td>
 					<td>
-						<input type="text" style="width:95%" name="home" id="groups_home" value="{$grouphome|escape}" {if $prefs.useGroupHome ne 'y'}disabled="disabled" {/if}>
+						<input type="text" style="width:95%" name="home" id="groups_home" value="{$grouphome|escape}" {if $prefs.useGroupHome ne 'y'}disabled="disabled" {/if}/>
 						{remarksbox type="tip" title="{tr}Tip{/tr}"}
 							{tr}Use wiki page name or full URL{/tr}. {tr}For other Tiki features, use links relative to the Tiki root (such as <em>/tiki-forums.php</em>).{/tr}
 						{/remarksbox}
@@ -236,7 +232,7 @@
 							{/foreach}
 						</select>
 						{if $grouptrackerid}
-							<br>
+							<br />
 							<select name="groupfield">
 								<option value="0">{tr}choose a field ...{/tr}</option>
 								{section name=ix loop=$groupFields}
@@ -264,34 +260,14 @@
 								<option value="{$tid}"{if $tid eq $userstrackerid} {assign var="ugr" value="$tit"}selected="selected"{/if}>{$tit|escape}</option>
 							{/foreach}
 						</select>
-						{if $userstrackerid or $prefs.javascript_enabled eq 'y'}
-							<br>
-							<select name="usersfield"{if empty($userstrackerid) and $prefs.javascript_enabled eq 'y'} style="display: none;"{/if}>
+						{if $userstrackerid}
+							<br />
+							<select name="usersfield">
 								<option value="0">{tr}choose a field ...{/tr}</option>
 								{section name=ix loop=$usersFields}
 									<option value="{$usersFields[ix].fieldId}"{if $usersFields[ix].fieldId eq $usersfieldid} selected="selected"{/if}>{$usersFields[ix].fieldId} - {$usersFields[ix].name|escape}</option>
 								{/section}
 							</select>
-								{jq}
-$("#userstracker").change(function () {
-	$.getJSON($.service('tracker', 'list_fields'), {trackerId: $(this).val()}, function (data) {
-		if (data && data.fields) {
-			var $usersfield = $('select[name=usersfield]');
-			$usersfield.empty().append('<option value="0">{tr}choose a field ...{/tr}</option>');
-			var sel = '';
-			$(data.fields).each(function () {
-				if (this.type === 'u' && this.options_array[0] == 1) {
-					sel = ' selected="selected"';
-				} else {
-					sel = '';
-				}
-				$usersfield.append('<option value="' + this.fieldId + '"' + sel + '>' + this.fieldId + ' - ' + this.name + '</option>');
-			});
-			$usersfield.show();
-		}
-	});
-});
-{/jq}
 						{/if}
 
 						{if $userstrackerid}
@@ -302,24 +278,23 @@ $("#userstracker").change(function () {
 					</td>
 				</tr>
 				<tr>
-					<td>{tr}Users Information Tracker Fields Asked at Registration Time<br>(fieldIds separated with :){/tr}</td>
-					<td><input type="text" style="width:95%" name="registrationUsersFieldIds" value="{$registrationUsersFieldIds|escape}"></td>
+					<td>{tr}Users Information Tracker Fields Asked at Registration Time<br />(fieldIds separated with :){/tr}</td>
+					<td><input type="text" style="width:95%" name="registrationUsersFieldIds" value="{$registrationUsersFieldIds|escape}" /></td>
 				</tr>
 			{/if}
 
-		{if $groupname neq 'Anonymous' and $groupname neq 'Registered' and $groupname neq 'Admins'}
 			<tr>
 				<td>{tr}User can assign to the group himself{/tr}</td>
-				<td><input type="checkbox" name="userChoice"{if $userChoice eq 'y'} checked="checked"{/if}></td>
+				<td><input type="checkbox" name="userChoice"{if $userChoice eq 'y'} checked="checked"{/if}/></td>
 			</tr>
 
 			<tr>
 				<td>{tr}Users are automatically unassigned from the group after{/tr}</td>
-				<td><input type="text" name="expireAfter" value="{$group_info.expireAfter|escape}">{tr}Days{/tr}<br><i>{tr}0 or empty for never{/tr}</i></td>
+				<td><input type="text" name="expireAfter" value="{$group_info.expireAfter|escape}" />{tr}Days{/tr}<br /><i>{tr}0 or empty for never{/tr}</i></td>
 			</tr>
 			<tr>
 				<td>{tr}Or, users are automatically unassigned from the group at an anniversary date{/tr}</td>
-				<td><input type="text" name="anniversary" value="{$group_info.anniversary|escape}"><br><i>{tr}MMDD for annual or DD for monthly{/tr}</i></td>
+				<td><input type="text" name="anniversary" value="{$group_info.anniversary|escape}" /><br /><i>{tr}MMDD for annual or DD for monthly{/tr}</i></td>
 			</tr>
 			<tr>
 				<td>{tr}Payment for membership extension is prorated at a minimum interval of a{/tr}</td>
@@ -331,12 +306,10 @@ $("#userstracker").change(function () {
 			</tr>
 			<tr>
 				<td>{tr}Users are automatically assigned at registration in the group if their emails match the pattern{/tr}</td>
-				<td><input type="text" size="40" name="emailPattern" value="{$group_info.emailPattern|escape}"><br>{tr}Example: {/tr}/@tw\.org$/ <br>{tr}Example:{/tr} /@(tw.org$)|(tw\.com$)/</td>
+				<td><input type="text" size="40" name="emailPattern" value="{$group_info.emailPattern|escape}" /><br />{tr}Example: {/tr}/@tw\.org$/ <br />{tr}Example:{/tr} /@(tw.org$)|(tw\.com$)/</td>
 			</tr>
-		{/if}
 
 			{if $group ne ''}
-				{if $groupname neq 'Anonymous'}
 				<tr>
 					<td>
 						{tr}Assign group <em>management</em> permissions:{/tr}
@@ -347,24 +320,22 @@ $("#userstracker").change(function () {
 						{/self_link}
 					</td>
 				</tr>
-				{/if}
-
 				<tr>
 					<td>
 						&nbsp;
-						<input type="hidden" name="olgroup" value="{$group|escape}">
+						<input type="hidden" name="olgroup" value="{$group|escape}" />
 					</td>
-					<td><input type="submit" name="save" value="{tr}Save{/tr}"></td>
+					<td><input type="submit" name="save" value="{tr}Save{/tr}" /></td>
 				</tr>
 			{else}
 				<tr>
 					<td >&nbsp;</td>
-					<td><input type="submit" name="newgroup" value="{tr}Add{/tr}"></td>
+					<td><input type="submit" name="newgroup" value="{tr}Add{/tr}" /></td>
 				</tr>
 			{/if}
 		</table>
 	</form>
-	<br><br>
+	<br /><br />
 
 	{if $prefs.groupTracker eq 'y'}
 		{if $grouptrackerid and $groupitemid}
@@ -378,7 +349,7 @@ $("#userstracker").change(function () {
 				{tr}Choose a field ...{/tr}
 			{/if}
 		{/if}
-		<br><br>
+		<br /><br />
 	{/if}
 {/tab}
 
@@ -387,11 +358,8 @@ $("#userstracker").change(function () {
 	{tab name="{tr}Members{/tr}"}
 	{* ----------------------- tab with memberlist --------------------------------------- *}
 		<h2>{tr}Members List:{/tr} {$groupname|escape}</h2>
-		<form name="checkform" method="post" action="{$smarty.server.PHP_SELF}">
-		<input type="hidden" name="group" value="{$group|escape}">
 		<table class="normal">
 			<tr>
-				<th class="auto">{if $memberslist}{select_all checkbox_names='members[]'}{/if}</th>
 				<th>{self_link _sort_arg='sort_mode_member' _sort_field='login'}{tr}User{/tr}{/self_link}</th>
 				<th>{self_link _sort_arg='sort_mode_member' _sort_field='created'}{tr}Assign{/tr}{/self_link}</th>
 				<th>{self_link _sort_arg='sort_mode_member' _sort_field='expire'}{tr}Expire{/tr}{/self_link}</th>
@@ -401,31 +369,16 @@ $("#userstracker").change(function () {
 			<tr>
 				{foreach from=$memberslist item=member}
 					<tr class="{cycle}">
-					<td class="checkbox"><input type="checkbox" name="members[]" value="{$member.userId}"></td>
 					<td class="username">{$member.login|userlink}</td>
 					<td class="date">{$member.created|tiki_short_datetime}</td>
 					<td class="date">{if !empty($member.expire)}{$member.expire|tiki_short_datetime}{/if}</td>
 					<td class="action">
-						{if $groupname neq 'Registered'}
 						<a href="tiki-adminusers.php?user={$member.login|escape:"url"}&amp;action=removegroup&amp;group={$groupname|escape:url}" class="link" title="{tr}Remove from Group{/tr}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
-						{/if}
 						<a href="tiki-adminusers.php?user={$member.userId|escape:"url"}&amp;cookietab=2{if $prefs.feature_tabs ne 'y'}#tab2{/if}" class="link" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
 					</td>
 					</tr>
 				{/foreach}
 		</table>
-
-		{if $groupname neq 'Registered'}
-		<label>{tr}Perform action with checked:{/tr}
-			<select name="submit_mult_members">
-				<option value="" />
-				<option value="unassign">{tr}Unassign{/tr}</option>
-			</select>
-		</label>
-		<input type="submit" name="unassign_members" value="{tr}OK{/tr}">
-		</form>
-		{/if}
-
 		{pagination_links cant=$membersCount step=$prefs.maxRecords offset=$membersOffset offset_arg='membersOffset'}{/pagination_links}
 
 		<div class="box">{$membersCount} {tr}users in group{/tr} {$groupname|escape}</div>
@@ -453,14 +406,14 @@ $("#userstracker").change(function () {
 			<h2>{tr}Add or Ban members to:{/tr} {$groupname|escape}</h2>
 			<form method="post" action="tiki-admingroups.php">
 				<p>
-					<input type="hidden" name="group" value="{$groupname|escape}">
+					<input type="hidden" name="group" value="{$groupname|escape}"/>
 					<select name="user">
 						{foreach from=$userslist item=iuser}
 							<option>{$iuser|escape}</option>
 						{/foreach}
 					</select>
-					<input type="submit" name="adduser" value="{tr}Add to group{/tr}">
-					<input type="submit" name="banuser" value="{tr}Ban user from group{/tr}">
+					<input type="submit" name="adduser" value="{tr}Add to group{/tr}"/>
+					<input type="submit" name="banuser" value="{tr}Ban user from group{/tr}"/>
 				</p>
 			</form>
 		{/if}
@@ -471,11 +424,11 @@ $("#userstracker").change(function () {
 	{tab name="{tr}Import/Export{/tr}"}
 		{* ----------------------- tab with import/export --------------------------------------- *}
 		<form method="post" action="tiki-admingroups.php" enctype="multipart/form-data">
-			<input type="hidden" name="group" value="{$groupname|escape}">
+			<input type="hidden" name="group" value="{$groupname|escape}" />
 			{if $errors}
 				<div class="simple highlight">
 					{foreach from=$errors item=e}
-						{$e}<br>
+						{$e}<br />
 					{/foreach}
 				</div>
 			{/if}
@@ -494,35 +447,35 @@ $("#userstracker").change(function () {
 				<tr>
 					<td class="auto">{tr}Fields:{/tr}</td>
 					<td class="auto">
-						<input type="checkbox" name="username" checked="checked">
+						<input type="checkbox" name="username" checked="checked" />
 						{tr}Username{/tr}
-						<br>
-						<input type="checkbox" name="email">{tr}Email{/tr}
-						<br>
-						<input type="checkbox" name="lastLogin">{tr}Last login{/tr}
+						<br />
+						<input type="checkbox" name="email"/>{tr}Email{/tr}
+						<br />
+						<input type="checkbox" name="lastLogin" />{tr}Last login{/tr}
 					</td>
 				</tr>
 				<tr>
 					<td class="auto"></td>
-					<td class="auto"><input type="submit" name="export" value="{tr}Export{/tr}"></td>
+					<td class="auto"><input type="submit" name="export" value="{tr}Export{/tr}" /></td>
 				</tr>
 			</table>
 
 			<h2>{tr}Batch upload (CSV file){/tr}</h2>
 			<h3>{tr}Assign users to group:{/tr} {$groupname|escape} </h3>
 			{remarksbox type="tip" title="{tr}Tip{/tr}"}
-				{tr}Each user in the file must already exist.{/tr}<br>{tr}To create users or/and assign them to groups, got to <a href="tiki-adminusers.php">admin->users</a>{/tr}
+				{tr}Each user in the file must already exist.{/tr}<br />{tr}To create users or/and assign them to groups, got to <a href="tiki-adminusers.php">admin->users</a>{/tr}
 			{/remarksbox}
 			<table class="formcolor">
 				<tr>
 					<td class="auto">
-						{tr}CSV File{/tr}<a {popup text='user<br>user1<br>user2'}>{icon _id='help'}</a>
+						{tr}CSV File{/tr}<a {popup text='user<br />user1<br />user2'}>{icon _id='help'}</a>
 					</td>
-					<td class="auto"><input name="csvlist" type="file"></td>
+					<td class="auto"><input name="csvlist" type="file" /></td>
 				</tr>
 				<tr>
 					<td class="auto"></td>
-					<td class="auto"><input type="submit" name="import" value="{tr}Import{/tr}"></td>
+					<td class="auto"><input type="submit" name="import" value="{tr}Import{/tr}" /></td>
 				</tr>
 			</table>
 		</form>

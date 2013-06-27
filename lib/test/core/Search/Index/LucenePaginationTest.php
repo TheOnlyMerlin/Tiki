@@ -1,13 +1,13 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 class Search_Index_LucenePaginationTest extends PHPUnit_Framework_TestCase
 {
-	protected $index;
+	private $index;
 	private $dir;
 
 	function setUp()
@@ -22,7 +22,8 @@ class Search_Index_LucenePaginationTest extends PHPUnit_Framework_TestCase
 
 	function tearDown()
 	{
-		$this->index->destroy();
+		$dir = escapeshellarg($this->dir);
+		`rm -Rf $dir`;
 	}
 
 	function testNoPagingRequired()
@@ -40,7 +41,6 @@ class Search_Index_LucenePaginationTest extends PHPUnit_Framework_TestCase
 		$this->addDocuments($count);
 
 		$query = new Search_Query;
-		$query->setOrder('object_id_nasc');
 		$query->filterType('article');
 		$query->setRange($from, $perPage);
 
@@ -65,10 +65,10 @@ class Search_Index_LucenePaginationTest extends PHPUnit_Framework_TestCase
 
 		for ($i = 0; $count > $i; ++$i) {
 			$index->addDocument(
-				array(
-					'object_type' => $typeFactory->identifier('article'),
-					'object_id' => $typeFactory->identifier($i + 1),
-				)
+							array(
+								'object_type' => $typeFactory->identifier('article'),
+								'object_id' => $typeFactory->identifier($i + 1),
+							)
 			);
 		}
 	}

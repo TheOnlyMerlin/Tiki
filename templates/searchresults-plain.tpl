@@ -1,27 +1,4 @@
 {* $Id$ *}
-{if $facets|@count}
-	<div class="facets" style="width: 25%; float: right;">
-		{foreach from=$facets item=facet}
-			<h6>{$facet.label|escape}</h6>
-			<select multiple data-for="#search-form input[name='filter~{$facet.name|escape}']" data-join="{$facet.operator|escape}">
-				{foreach from=$facet.options key=value item=label}
-					<option value="{$value|escape}">{$label|escape}</option>
-				{/foreach}
-			</select>
-		{/foreach}
-		<p>
-			<button>{tr}Filter{/tr}</button>
-		</p>
-	</div>
-	{jq}
-		$('.facets select').registerFacet();
-		$('.facets button').click(function () {
-			$('#search-form').submit();
-		});
-
-	{/jq}
-{/if}
-<div>
 <ul class="searchresults">
 	{foreach item=result from=$results}
 	<li>
@@ -37,7 +14,7 @@
 		{/if}
 
 		{if $prefs.feature_search_show_visit_count eq 'y' and $result.visits neq null}
-			<span class="itemhits">({tr}Visits:{/tr} {$result.visits|escape})</span>
+			<span class="itemhits">({tr}Hits:{/tr} {$result.visits|escape})</span>
 		{/if}
 
 		{if !empty($result.parent_object_id)} {tr}in{/tr} {object_link type=$result.parent_object_type id=$result.parent_object_id}{/if}
@@ -56,4 +33,3 @@
 	{/foreach}
 </ul>
 {pagination_links resultset=$results}{/pagination_links}
-</div>

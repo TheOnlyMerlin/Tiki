@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -70,7 +70,7 @@ class Reports_CacheTest extends TikiDatabaseTestCase
 		
 		$cacheData = array('event' => 'wiki_page_changed');
 		
-		$this->obj->add($watches, $cacheData, $users);
+		$this->obj->add(&$watches, $cacheData, $users);
 		
 		$queryTable = $this->getConnection()->createQueryTable('tiki_user_reports_cache', 'SELECT * FROM tiki_user_reports_cache');
 		

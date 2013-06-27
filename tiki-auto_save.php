@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -29,11 +26,7 @@ if ($prefs['feature_ajax'] != 'y' || ($prefs['ajax_autosave'] != 'y')) {
 
 require_once('lib/ajax/autosave.php');
 
-/**
- * @param $command
- * @param $data
- */
-function send_ajax_response($command, $data )
+function send_ajax_response($command, $data ) 
 {
 	header('Content-Type:text/xml; charset=UTF-8');
 	echo '<?xml version="1.0" encoding="UTF-8"?>';
@@ -137,7 +130,7 @@ if (isset($_REQUEST['editor_id'])) {
 						}
 						$data = diff2($diffold, $diffnew, $_REQUEST["diff_style"]);
 						$smarty->assign_by_ref('diffdata', $data);
-
+						
 						$smarty->assign('translation_mode', 'y');
 						$data = $smarty->fetch('pagehistory.tpl');
 					}
@@ -145,7 +138,7 @@ if (isset($_REQUEST['editor_id'])) {
 					$data = $tikilib->parse_data($data, $options);
 				}
 				echo $data;
-
+				
 			} else {					// popup window
 				TikiLib::lib('header')->add_js(
 					'function get_new_preview() {

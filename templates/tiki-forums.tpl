@@ -16,20 +16,19 @@
 				{if $prefs.feature_forums_name_search eq 'y'}
 					<td class="findtable">
 						<form method="get" action="tiki-forums.php">
-							<input type="text" name="find" value="{$find|escape}">
-							<input type="submit" value="{tr}Search by name{/tr}" name="search">
-							<input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
+							<input type="text" name="find" value="{$find|escape}" />
+							<input type="submit" value="{tr}Search by name{/tr}" name="search" />
+							<input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
 						</form>
 					</td>
 				{/if}
 
 				{if $prefs.feature_forums_search eq 'y' and $prefs.feature_search eq 'y'}
 					<td>
-						<form class="forms" method="get" action="{if $prefs.feature_search_fulltext neq 'y'}tiki-searchindex.php{else}tiki-searchresults.php{/if}">
-							<input name="highlight" size="30" type="text">
-							<input type="hidden" name="where" value="forums">
-							<input type="hidden" name="filter~type" value="forum post">
-							<input type="submit" class="wikiaction" name="search" value="{tr}Search in content{/tr}">
+						<form class="forms" method="get" action="{if $prefs.feature_forum_local_tiki_search eq 'y'}tiki-searchindex.php{else}tiki-searchresults.php{/if}">
+							<input name="highlight" size="30" type="text" />
+							<input type="hidden" name="where" value="forums" />
+							<input type="submit" class="wikiaction" name="search" value="{tr}Search in content{/tr}"/>
 						</form>
 					</td>
 				{/if}
@@ -91,15 +90,14 @@
 		<tr class="{cycle}">
 			<td class="text">
 				<span style="float:left">
-					{if (isset($channels[user].individual) and $channels[user].individual eq 'n')
-						or ($tiki_p_admin eq 'y') or ($channels[user].individual_tiki_p_forum_read eq 'y')}
+					{if ($channels[user].individual eq 'n') or ($tiki_p_admin eq 'y') or ($channels[user].individual_tiki_p_forum_read eq 'y')}
 						<a class="forumname" href="tiki-view_forum.php?forumId={$channels[user].forumId}">{$channels[user].name|escape}</a>
 					{else}
 						{$channels[user].name|escape}
 					{/if}
 				</span>
 				{if $prefs.forum_list_desc eq 'y'}
-					<br>
+					<br />
 					<div class="subcomment">
 						{capture name="parsedDesc"}{wiki}{$channels[user].description}{/wiki}{/capture}
 						{if strlen($smarty.capture.parsedDesc) < $prefs.forum_list_description_len}
@@ -122,7 +120,7 @@
 			{if $prefs.forum_list_lastpost eq 'y'}	
 				<td class="text">
 					{if isset($channels[user].lastPost)}
-						{$channels[user].lastPost|tiki_short_datetime}<br>
+						{$channels[user].lastPost|tiki_short_datetime}<br />
 						{if $prefs.forum_reply_notitle neq 'y'}<small><i>{$channels[user].lastPostData.title|escape}</i>{/if}
 						{tr}by{/tr} {$channels[user].lastPostData.userName|username}</small>
 					{/if}

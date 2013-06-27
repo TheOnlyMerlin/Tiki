@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_webmail_inbox_info()
 {
 	return array(
@@ -89,10 +86,6 @@ function module_webmail_inbox_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_webmail_inbox($mod_reference, $module_params)
 {
 	global $prefs, $webmaillib, $headerlib, $user, $webmail_reload, $webmail_start, $webmail_list_page, $smarty;
@@ -168,10 +161,10 @@ function webmail_refresh() 	// called in ajax mode
 		$smarty->loadPlugin('smarty_function_icon');
 		$smarty->assign('tpl_module_title', tra('Webmail error'));
 		$smarty->assign(
-			'error',
-			tra('No accounts set up (or no current account set)') . '&nbsp;' .
-			'<a href="tiki-webmail.php?locSection=settings">' .
-			smarty_function_icon(array('_id'=>'arrow_right'), $smarty)
+						'error',
+						tra('No accounts set up (or no current account set)') . '&nbsp;' .
+						'<a href="tiki-webmail.php?locSection=settings">' .
+						smarty_function_icon(array('_id'=>'arrow_right'), $smarty)
 		) . '</a>';
 		return;
 	}

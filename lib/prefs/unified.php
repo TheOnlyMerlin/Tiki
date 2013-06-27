@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,7 +14,6 @@ function prefs_unified_list()
 			'type' => 'list',
 			'options' => array(
 				'lucene' => tra('Lucene (PHP Implementation)'),
-				'elastic' => tra('ElasticSearch'),
 			),
 			'default' => 'lucene',
 		),
@@ -157,61 +156,12 @@ function prefs_unified_list()
 				'fieldId' => tr('Field ID (Backward compatibility mode with Tiki 7 and 8)'),
 			),
 		),
-		'unified_parse_results' => array(
-			'name' => tra('Parse the results'),
-			'description' => tra('Parse the results. May impact the performance'),
-			'type' => 'flag',
-			'default' => 'n',
-		),
 		'unified_excluded_categories' => array(
 			'name' => tra('Excluded categories'),
 			'description' => tra('List of category ids to exclude from the search index.'),
 			'type' => 'text',
 			'separator' => ',',
 			'default' => array(),
-			'profile_reference' => 'category',
-		),
-		'unified_excluded_plugins' => array(
-			'name' => tra('Excluded plugins'),
-			'description' => tra('List of plugin names to exclude while indexing.'),
-			'type' => 'text',
-			'filter' => 'word',
-			'separator' => ',',
-			'default' => array(),
-		),
-		'unified_elastic_url' => array(
-			'name' => tra('ElasticSearch URL'),
-			'description' => tra('URL of any node in the cluster.'),
-			'type' => 'text',
-			'filter' => 'url',
-			'default' => 'http://localhost:9200',
-			'size' => 40,
-		),
-		'unified_elastic_index_prefix' => array(
-			'name' => tra('ElasticSearch Index Prefix'),
-			'description' => tra('Prefix used for all indexes for this installation in ElasticSearch.'),
-			'type' => 'text',
-			'filter' => 'word',
-			'default' => 'tiki_',
-			'size' => 10,
-		),
-		'unified_elastic_index_current' => array(
-			'name' => tra('ElasticSearch Current Index'),
-			'description' => tra('A new index is created upon rebuild and the old one is then destroyed. This setting allows you to see the currently active one.'),
-			'hint' => tra('Do not change this value unless you know what you are doing.'),
-			'type' => 'text',
-			'filter' => 'word',
-			'size' => '20',
-			'default' => '',
-		),
-		'unified_identifier_fields' => array(
-			'name' => tr('Unified index identifier fields (Internal)'),
-			'description' => tr('Used to store the fields to be considered as identifiers. Overwritten after each index rebuild.'),
-			'type' => 'text',
-			'hint' => tra('Do not change this value unless you know what you are doing.'),
-			'separator' => ',',
-			'default' => array(),
-			'filter' => 'word',
 		),
 	);
 }

@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -190,10 +187,12 @@ if ($prefs['feature_categories'] == 'y') {
 // Display category path or not (like {catpath()})
 if (isset($is_categorized) && $is_categorized) {
 	$smarty->assign('is_categorized', 'y');
-	if ($prefs['feature_categories'] == 'y' && $prefs['feature_categorypath'] == 'y') {
-		$cats = $categlib->get_object_categories('article', $objId);
-		$display_catpath = $categlib->get_categorypath($cats);
-		$smarty->assign('display_catpath', $display_catpath);
+	if (isset($prefs['feature_categorypath']) and $prefs['feature_categories'] == 'y') {
+		if ($prefs['feature_categorypath'] == 'y') {
+			$cats = $categlib->get_object_categories('article', $objId);
+			$display_catpath = $categlib->get_categorypath($cats);
+			$smarty->assign('display_catpath', $display_catpath);
+		}
 	}
 	// Display current category objects or not (like {category()})
 	if (isset($prefs['feature_categoryobjects']) and $prefs['feature_categories'] == 'y') {

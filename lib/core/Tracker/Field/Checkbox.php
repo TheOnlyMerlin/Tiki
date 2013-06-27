@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -33,9 +33,9 @@ class Tracker_Field_Checkbox extends Tracker_Field_Abstract implements Tracker_F
 	{
 		$ins_id = $this->getInsertId();
 
-		if (!empty($requestData[$ins_id])) {
+		if (isset($requestData[$ins_id]) && $requestData[$ins_id] == 'on') {
 			$val = 'y';
-		} elseif (!empty($requestData[$ins_id . '_old'])) {
+		} elseif (!empty($requestData)) {
 			$val = 'n';
 		} else {
 			$val = $this->getValue();
@@ -91,9 +91,8 @@ class Tracker_Field_Checkbox extends Tracker_Field_Abstract implements Tracker_F
 		}
 	}
 
-	function getDocumentPart(Search_Type_Factory_Interface $typeFactory)
+	function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
 	{
-		$baseKey = $this->getBaseKey();
 		$checked = $this->getValue() === 'y';
 
 		return array(

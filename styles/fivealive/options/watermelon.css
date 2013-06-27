@@ -1,5 +1,5 @@
 /* $Id$ 
-	Watermelon theme option for FiveAlive themes for
+	Watermelon theme option for FiveAlive theme for
 	Tiki Wiki CMS Groupware.
 */
 
@@ -89,7 +89,8 @@ span#genPass .button a:hover,
 }
 
 .highlight,
-.button.highlight a {
+.button.highlight a,
+.calfocuson {
 	border-color: #fb999e;
 	color: #b51360;
 	background: #f9f6df;
@@ -147,7 +148,6 @@ input[type="password"],
 input[type="file"],
 input[type="email"],
 input[type="file"],
-input[type="search"],
 input[type="number"],
 input#login-pass,
 textarea,
@@ -212,26 +212,20 @@ th.header {
 	color: #f9dfe2;
 }
 
-.caltable .odd,
-.caltable .even,
-.caltable .calborder {
+.calodd,
+.caleven {
 	border: 1px solid #8b1932;
 }
 
-.caltable td.calhighlight,
-td.calheadhighlight {
-	background: #f9f6df;
-}
-
 .odd,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+.calodd,
+table.normal tr:nth-child(2n+1) {
 	background: #f6cdd2;
 }
 
 .even,
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+.caleven,
+table.normal tr:nth-child(2n) {
 	background: #f9f0f0;
 }
 

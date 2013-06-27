@@ -258,31 +258,31 @@ function showDetails( id, domain, profile ) { // {{{
 								<td class="quickmode_notes">
 									<br/>
 									{assign var=profilesFilterUrlStart value='tiki-admin.php?profile=&categories%5B%5D='}
-									{assign var=profilesFilterUrlMid value='.x&categories%5B%5D='}
+									{assign var=profilesFilterUrlMid value='x&categories%5B%5D='}
 									{assign var=profilesFilterUrlEnd value='&repository=http%3a%2f%2fprofiles.tiki.org%2fprofiles&page=profiles&preloadlist=y&list=List#step2'}
 									
 									<p>
 										{assign var=profilesFilterUrlFeaturedProfiles value='Featured+profiles'}
 										<a href="{$profilesFilterUrlStart}{$tikiMajorVersion}{$profilesFilterUrlMid}{$profilesFilterUrlFeaturedProfiles}{$profilesFilterUrlEnd}">{tr}Featured Profiles{/tr}</a>
-										<br>{tr}Featured Profiles is a list of applications that are maintained by the Tiki community and are a great way to get started.{/tr}
+										<br />{tr}Featured Profiles is a list of applications that are maintained by the Tiki community and are a great way to get started.{/tr}
 									</p>
 									
 									<p>
 										{assign var=profilesFilterUrlFullProfiles value='Full+profile+(out+of+the+box+%26+ready+to+go)'}
 										<a href="{$profilesFilterUrlStart}{$tikiMajorVersion}{$profilesFilterUrlMid}{$profilesFilterUrlFullProfiles}{$profilesFilterUrlEnd}">{tr}Full Profiles{/tr}</a>
-										<br>{tr}Full Profiles are full featured out of the box solutions.{/tr} 
+										<br />{tr}Full Profiles are full featured out of the box solutions.{/tr} 
 									</p>
 		
 									<p>
 										{assign var=profilesFilterUrlMiniProfiles value='Mini-profile+(can+be+included+in+other)'}
 										<a href="{$profilesFilterUrlStart}{$tikiMajorVersion}{$profilesFilterUrlMid}{$profilesFilterUrlMiniProfiles}{$profilesFilterUrlEnd}">{tr}Mini Profiles{/tr}</a>
-										<br>{tr}Mini Profiles will configure specific features and are a great way to add more functionality to an existing configuration.{/tr} 
+										<br />{tr}Mini Profiles will configure specific features and are a great way to add more functionality to an existing configuration.{/tr} 
 									</p>
 		
 									<p>
 										{assign var=profilesFilterUrlLearningProfiles value='Learning+profile+(just+to+show+off+feature)'}
 										<a href="{$profilesFilterUrlStart}{$tikiMajorVersion}{$profilesFilterUrlMid}{$profilesFilterUrlLearningProfiles}{$profilesFilterUrlEnd}">{tr}Learning Profiles{/tr}</a>
-										<br>{tr}Learning Profiles will allow you to quickly evaluate specific features in Tiki.{/tr}
+										<br />{tr}Learning Profiles will allow you to quickly evaluate specific features in Tiki.{/tr}
 									</p>
 		
 								</td>
@@ -334,7 +334,7 @@ $("#repository, #categories").change(function(){
 				</div>
 		</form>
 	        <a name="step2"></a>
-	<br>	
+	<br />	
 		
 	       {if isset($result) && $result|@count != '0'}
 	
@@ -375,8 +375,8 @@ $("#repository, #categories").change(function(){
 		{foreach key=k item=entry from=$sources}
 			<tr>
 				<td>{$entry.short}</td>
-				<td><img id="profile-status-{$k}" alt="{tr}Status{/tr}" src="img/icons/status_{$entry.status}.gif"></td>
-				<td><span id="profile-date-{$k}">{$entry.formatted}</span> <a href="javascript:refreshCache({$k})" class="icon"><img src="img/icons/arrow_refresh.png" class="icon" alt="{tr}Refresh{/tr}"></a></td>
+				<td><img id="profile-status-{$k}" alt="{tr}Status{/tr}" src="img/icons/status_{$entry.status}.gif"/></td>
+				<td><span id="profile-date-{$k}">{$entry.formatted}</span> <a href="javascript:refreshCache({$k})" class="icon"><img src="img/icons/arrow_refresh.png" class="icon" alt="{tr}Refresh{/tr}"/></a></td>
 			</tr>
 		{/foreach}
 	</table>
@@ -393,7 +393,7 @@ $("#repository, #categories").change(function(){
 		<fieldset id="export_to_yaml">
 			<legend>{tr}Export YAML{/tr}</legend>
 			{if !empty($export_yaml)}
-				<div class="wikitext">{$export_yaml}</div>
+				{$export_yaml}
 			{/if}
 			<div class="navbar">
 				<label for="export_type">{tr}Object type:{/tr}</label>
@@ -420,15 +420,10 @@ $("#repository, #categories").change(function(){
 					{cycle values="odd,even" print=false}
 					{foreach from=$modified_list  key="name" item="data"}
 						<li class="{cycle}">
-							{if is_array($data.current.expanded)}
-								{assign var=current value=$data.current.expanded|implode:", "}
-								{assign var=current value="[$current]"}
-							{else}
-								{assign var=current value=$data.current.expanded}
-							{/if}
-							<input type="checkbox" name="prefs_to_export[{$name}]" value="{$current|escape}"
+							<input type="checkbox" name="prefs_to_export[{$name}]" value="{$data.current.serial|escape}"
 									 id="checkbox_{$name}"{if isset($prefs_to_export[$name])} checked="checked"{/if} />
 							<label for="checkbox_{$name}">
+								{if is_array($data.current.expanded)}{assign var=current value=$data.current.expanded|implode:", "}{else}{assign var=current value=$data.current.expanded}{/if} 
 								{$name} = '<strong>{$current|truncate:40:"...":true|escape}</strong>'{* FIXME: This one line per preference display format is ugly and doesn't work for multiline values *}
 								<em>
 									&nbsp;&nbsp;
@@ -499,24 +494,15 @@ $("#export_type").change(function(){
 	<fieldset><legend>{tr}Profile tester{/tr}</legend>
 		<form action="tiki-admin.php?page=profiles" method="post">
 		{remarksbox type="warning" title="{tr}Warning{/tr}"}
-			{tr}Paste or type wiki markup and YAML (with or without the {literal}{CODE}{/literal} tags) into the text area below{/tr}<br>
+			{tr}Paste or type wiki markup and YAML (with or without the {literal}{CODE}{/literal} tags) into the text area below{/tr}<br />
 			<em><strong>{tr}This will run the profile and make potentially unrecoverable changes in your database!{/tr}</strong></em>
 			<div class="adminoptionbox">
 				<div class="adminoptionlabel">
 					<label for="profile_tester_name">{tr}Test Profile Name:{/tr} </label>
 					<input type="text" name="profile_tester_name" id="profile_tester_name" value="{if isset($profile_tester_name)}{$profile_tester_name}{else}Test{/if}" />
-					<select name="empty_cache">
-						<option value=""{if isset($empty_cache) and $empty_cache eq ''} checked="checked"{/if}>{tr}None{/tr}</option>
-						<option value="all"{if isset($empty_cache) and $empty_cache eq 'all'} checked="checked"{/if}>{tr}All{/tr}</option>
-						<option value="templates_c"{if isset($empty_cache) and $empty_cache eq 'templates_c'} checked="checked"{/if}>templates_c</option>
-						<option value="temp_cache"{if isset($empty_cache) and $empty_cache eq 'temp_cache'} checked="checked"{/if}>temp_cache</option>
-						<option value="temp_public"{if isset($empty_cache) and $empty_cache eq 'temp_public'} checked="checked"{/if}>temp_public</option>
-						<option value="modules_cache"{if isset($empty_cache) and $empty_cache eq 'modules_cache'} checked="checked"{/if}>modules_cache</option>
-						<option value="prefs"{if isset($empty_cache) and $empty_cache eq 'prefs'} checked="checked"{/if}>prefs</option>
-					</select>{$empty_cache}
 				</div>
 				<div>
-					<textarea data-codemirror="true" data-syntax="yaml" id="profile_tester" name="profile_tester" rows="5" cols="40" style="width:95%;">{if isset($test_source)}{$test_source}{/if}</textarea>
+					<textarea data-codemirror="true" data-syntx="tiki" id="profile_tester" name="profile_tester" rows="5" cols="40" style="width:95%;">{if isset($test_source)}{$test_source}{/if}</textarea>
 				</div>
 			</div>
 			<div align="center" style="padding:1em;"><input type="submit" name="test" value="{tr}Test{/tr}" /></div>

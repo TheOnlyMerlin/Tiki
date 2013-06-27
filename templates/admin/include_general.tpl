@@ -37,7 +37,6 @@
 
 				<div class="adminoptionbox">
 					{preference name=feature_version_checks}
-					{preference name=tiki_release_cycle}
 					<div id="feature_version_checks_childcontainer">
 						{preference name=tiki_version_check_frequency}
 					</div>
@@ -74,8 +73,6 @@
 
 					{preference name=zend_mail_smtp_port}
 					{preference name=zend_mail_smtp_security}
-					{preference name=zend_mail_smtp_helo}
-					{preference name=zend_mail_queue}
 				</div>
 				<div class="adminoptionbox">
 					<label for="testMail">{tr}Email to send a test mail{/tr}</label>
@@ -165,7 +162,6 @@
 				{preference name=feature_contact}
 				<div class="adminoptionboxchild" id="feature_contact_childcontainer">
 					{preference name=contact_anon}
-					{preference name=contact_priority_onoff}
 					{preference name=contact_user}
 				</div>
 			</fieldset>
@@ -204,7 +200,7 @@
 				<div class="adminoptionbox">
 					{preference name=feature_cssmenus}
 					{preference name=menus_item_names_raw_teaser}
-					<div class="adminoptionboxchild" id="menus_item_names_raw_teaser_childcontainer">
+					<div class="adminoptionboxchild" id="menus_item_names_raw_teaser_childcontainer">	
 						{preference name=menus_item_names_raw}
 					</div>
 					{preference name=feature_userlevels}
@@ -232,14 +228,6 @@
 				<div class="adminoptionboxchild" id="useUrlIndex_childcontainer">
 					{preference name=urlIndex}
 				</div>
-
-				{preference name=wikiHomePage}
-				{preference name=home_blog}
-				{preference name=home_forum}
-				{preference name=home_file_gallery}
-				{preference name=home_gallery}
-				{preference name=feature_custom_home}
-
 			</fieldset>
 
 			<fieldset>
@@ -251,7 +239,7 @@
 				{preference name='permission_denied_login_box' mode='invert'}
 				<div class="adminoptionboxchild" id="permission_denied_login_box_childcontainer">
 					{tr}or{/tr}
-					<br>
+					<br />
 					{preference name=permission_denied_url}
 				</div>
 				{preference name='url_anonymous_page_not_found'}
@@ -290,30 +278,6 @@
 				</div>
 			</fieldset>
 
-			<fieldset>
-				<legend class="heading">{tr}Namespace{/tr}</legend>
-
-				{preference name=namespace_enabled}
-				<div class="adminoptionboxchild" id="namespace_enabled_childcontainer">
-					{tr}The namespace separator should not{/tr}
-					<ul>
-					<li>{tr}contain any of the characters not allowed in wiki page names, typically{/tr} /?#[]@$&+;=&lt;&gt;</li>
-					<li>{tr}conflict with wiki syntax tagging{/tr}</li>
-					</ul>
-					{preference name=namespace_separator}
-					{preference name=namespace_indicator_in_structure}
-					<fieldset>
-						<legend>{tr}Settings that may be affected by the namespace separator{/tr}{help url="Watch"}</legend>
-
-						{tr}To use :: as a separator, you should also use ::: as the wiki center tag syntax{/tr}.<br/>
-						{tr}Note: a conversion of :: to ::: for existing pages must be done manually{/tr}
-						{preference name=feature_use_three_colon_centertag}
-
-						{tr}If the page name display stripper conflicts with the namespace separator, the namespace is used and the page name display is not stripped.{/tr}
-						{preference name=wiki_pagename_strip}
-					</fieldset>
-				</div>
-			</fieldset>
 
 		{/tab}
 

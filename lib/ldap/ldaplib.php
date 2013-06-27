@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,6 +10,8 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
+
+require_once ('lib/adodb/adodb.inc.php');
 
 class LdapLib extends TikiLib
 {
@@ -23,11 +25,6 @@ class LdapLib extends TikiLib
          */
         function get_field($dsn, $filter, $field)
         {
-				// Force autoloading
-				if (! class_exists('ADOConnection')) {
-					return null;
-				}
-
                 // Try to connect
                 $ldaplink = ADONewConnection($dsn);
                 $return = null;

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_categories_info()
 {
 	return array(
@@ -51,10 +48,6 @@ function module_categories_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_categories($mod_reference, &$module_params)
 {
 	global $smarty, $prefs;
@@ -62,7 +55,7 @@ function module_categories($mod_reference, &$module_params)
 	global $categlib; include_once ('lib/categories/categlib.php');
 	if (isset($module_params['type'])) {
 		$type = $module_params['type'];
-		$urlEnd = 'type='.urlencode($type);
+		$urlEnd = '&amp;type='.urlencode($type);
 	} else {
 		$type = '';
 		$urlEnd = '';
@@ -71,28 +64,23 @@ function module_categories($mod_reference, &$module_params)
 		$deep = $module_params['deep'];
 	else
 		$deep= 'on';
-	if (empty($urlEnd)) {
-		$urlEnd .= '&amp;';
-	}
-	$urlEnd .= "deep=$deep";
+	$urlEnd .= "&amp;deep=$deep";
 	$name = "";
 
+	$categories = $categlib->getCategories();
 
+	if (empty($categories)) {
+		return;
+	}
 	if (isset($module_params['categId'])) {
 		$categId = $module_params['categId'];
-		$categories = $categlib->getCategories(array('identifier' => $categId, 'type' => 'descendants'));
 		foreach ($categories as $cat) {
 			if ($cat['categId'] == $categId)
 				$name = $cat['name'];
 		}
-	} else {
-		$categories = $categlib->getCategories();
+	} else
 		$categId = 0;
-	}
-	if (empty($categories)) {
-		return;
-	}
-
+		
 	if (isset($module_params['categParentIds'])) {
 		$categParentIds = explode(',', $module_params['categParentIds']);
 		$filtered_categories = array();
@@ -114,21 +102,16 @@ function module_categories($mod_reference, &$module_params)
 		if (isset($module_params['selflink']) && $module_params['selflink'] == 'y') {
 			$url = filter_out_sefurl('tiki-index.php?page=' . urlencode($cat['name']));
 		} else {
-			$url = filter_out_sefurl('tiki-browse_categories.php?parentId=' . $cat['categId'], 'category', $cat['name'], true) .$urlEnd;
+			$url = filter_out_sefurl('tiki-browse_categories.php?parentId=' . $cat['categId'], 'category', $cat['name']) .$urlEnd;
 		}
 		$tree_nodes[] = array(
 			"id" => $cat["categId"],
 			"parent" => $cat["parentId"],
-			'parentId' => $cat['parentId'],
-			'categId' => $cat['categId'],
-			"data" => '<span style="float: left; cursor: pointer; visibility: hidden;" class="ui-icon ui-icon-triangle-1-e"></span><a class="catname" href="'.$url.'">' . htmlspecialchars($cat['name']) . '</a><br />'
+			"data" => '<a class="catname" href="'.$url.'">' . htmlspecialchars($cat['name']) . '</a><br />'
 		);
 	}
-	$res = '';
 	$tm = new BrowseTreeMaker('mod_categ' . $module_params['module_position'] . $module_params['module_ord']);
-	foreach ($categlib->findRoots($tree_nodes) as $node) {
-		$res .= $tm->make_tree($node, $tree_nodes);
-	}
+	$res = $tm->make_tree($categId, $tree_nodes);
 	$smarty->assign('tree', $res);
 
 }

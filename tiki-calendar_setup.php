@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -132,7 +129,7 @@ if (!function_exists('cal_days_in_month')) {
 	$smarty->assign('msg', tra('Your PHP installation does not have calendar enabled.'));
 	$smarty->display('error.tpl');
 	die;
-}
+}	
 $focus_prev = $calendarlib->focusPrevious($focus, $calendarViewMode['casedefault']);
 $focus_next = $calendarlib->focusNext($focus, $calendarViewMode['casedefault']);
 
@@ -173,8 +170,8 @@ $smarty->assign('viewyear', $focus_year);
 // calculate timespan for sql query
 if ($viewlist == 'list' && $prefs['calendar_list_begins_focus'] == 'y') {
 	$daystart = $focusdate;
-} elseif ($calendarViewMode['casedefault'] == 'month'
-		|| $calendarViewMode['casedefault'] == 'quarter'
+} elseif ($calendarViewMode['casedefault'] == 'month' 
+		|| $calendarViewMode['casedefault'] == 'quarter' 
 		|| $calendarViewMode['casedefault'] == 'semester'
 ) {
 	$daystart = $tikilib->make_time(0, 0, 0, $focus_month, 1, $focus_year);
@@ -249,10 +246,10 @@ if ( $calendarViewMode['casedefault'] == 'month' ||
 	if ( $viewlist != 'list' ) {
 		//$viewend += (6 - $TmpWeekday) * $d;
 		$viewend = $tikilib->make_time(
-			23, 59, 59,
-			TikiLib::date_format("%m", $viewend),
-			TikiLib::date_format("%d", $viewend) + ( 6 - $TmpWeekday ),
-			TikiLib::date_format("%Y", $viewend)
+						23, 59, 59,
+						TikiLib::date_format("%m", $viewend),
+						TikiLib::date_format("%d", $viewend) + ( 6 - $TmpWeekday ),
+						TikiLib::date_format("%Y", $viewend)
 		);
 	}
 
@@ -271,22 +268,7 @@ if ( $calendarViewMode['casedefault'] == 'month' ||
 		$lastweek += $weeksinyear;
 	}
 
-	// [BUG FIX] hollmeer 2012-11-01: correct the bug if 1 Jan of the FOCUS YEAR is Sunday,
-	// and $prefs['calendar_firstDayofWeek'] is set to start from Monday.
-	// Original seems to output only two weeks in such case, e.g for 2012:
-	// weeks 52/2011 and 01/2012, as the 1 Jan 2012 is Sunday (i.e., start of focus year).
-	// For 2013 and 2014 all weeks generated as ok, as 1 Jan 2013 is Tuesday, and 1 Jan 2014 is Wednesday etc
-	// The bug is that only one week was added in such case, and actually the focus year was omitted, so add 52 weeks
-	$auxneedtoaddweeks=0;
-	if ($calendarViewMode['casedefault'] == 'year') {
-		$auxTmpWeekday = TikiLib::date_format("%w", $tikilib->make_time(0, 0, 0, 1, 1, $focus_year));
-		if ( $firstDayofWeek == 1 and $auxTmpWeekday == 0 ) {
-			$auxneedtoaddweeks=52;
-		}
-	}
-	// ...end add + add below, of course */
-
-	$numberofweeks = $lastweek - $firstweek + $auxneedtoaddweeks; // [BUG FIX] hollmeer 2012-11-01: add the potentially required 52 weeks here
+	$numberofweeks = $lastweek - $firstweek;
 
 } elseif ( $calendarViewMode['casedefault'] == 'week' ) {
 	$firstweek = $currentweek;
@@ -325,12 +307,12 @@ if ( $calendarViewMode['casedefault'] == 'month' ||
 	// then go to the end of the week for $viewend
 	// $viewend = $viewstart + (7 * $d) - 1;
 	$viewend = $tikilib->make_time(
-		0,
-		0,
-		0,
-		TikiLib::date_format("%m", $daystart),
-		TikiLib::date_format("%d", $daystart) + 7,
-		TikiLib::date_format("%Y", $daystart)
+					0,
+					0,
+					0,
+					TikiLib::date_format("%m", $daystart),
+					TikiLib::date_format("%d", $daystart) + 7,
+					TikiLib::date_format("%Y", $daystart)
 	) - 1;
 
 	$dayend = $viewend;
@@ -343,12 +325,12 @@ if ( $calendarViewMode['casedefault'] == 'month' ||
 
 	//	$viewend = $viewstart + ($d - 1);
 	$viewend = $tikilib->make_time(
-		0,
-		0,
-		0,
-		TikiLib::date_format("%m", $viewstart),
-		TikiLib::date_format("%d", $viewstart) + 1,
-		TikiLib::date_format("%Y", $viewstart)
+					0,
+					0,
+					0,
+					TikiLib::date_format("%m", $viewstart),
+					TikiLib::date_format("%d", $viewstart) + 1,
+					TikiLib::date_format("%Y", $viewstart)
 	) - 1;
 
 	$dayend = $daystart;
@@ -369,11 +351,7 @@ $weeks = array();
 $cell = array();
 
 if (!function_exists('correct_start_day')) {
-    /**
-     * @param $d
-     * @return int
-     */
-    function correct_start_day($d)
+	function correct_start_day($d)
 	{
 		global $prefs;
 

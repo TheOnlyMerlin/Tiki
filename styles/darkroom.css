@@ -1,11 +1,11 @@
 /*
  * The Darkroom theme for Tiki Wiki CMS Groupware.
- * Released under the LGPL license.
+ * Released under the LGPL license. 
  * For more information on Darkroom, please visit http://themes.tiki.org.
  */
-
+ 
  /* import *lite as the base: */
-@import url("lite/lite.css");
+@import url("lite/lite.css"); 
 
 /* Then import the default layout properties file: */
 @import url("layout/layout.css");
@@ -13,7 +13,7 @@
 /* And design defaults: */
 @import url("layout/design.css");
 
-/***** XHTML Elements ******/
+/***** XHTML Elements ******/ 
 
 html {
 	background: #474747 url(darkroom/474747_5e5e5e_40.png);
@@ -116,11 +116,10 @@ textarea {
 	cursor: text;
 }
 
-input[type="text"],
-input[type="password"],
+input[type=text],
+input[type=password],
 input[type="email"],
 input[type="file"],
-input[type="search"],
 input[type="number"] {
 	border: solid 1px #aaa;
 	background-color: #292929; /* use background-color here; background only shorthand property overrides the background image of .openid_url login field specified in styles/layout/design.css */
@@ -236,7 +235,7 @@ small {
 	font-size: 1em;
 }
 
-/* Enable header and footer content to widen when middle has wide content. */
+/* Enable header and footer content to widen when middle has wide content. */ 
 body.fixed_width .fixedwidth .fixedwidth {
 	width: 100%;
 	padding: 0;
@@ -252,7 +251,7 @@ body.fixed_width .fixedwidth .fixedwidth {
 	text-align: left;
 	font-size: 1em;
 }
-
+					
 #c1c2 #wrapper .marginleft {
 	margin-left: 200px;
 }
@@ -344,7 +343,7 @@ body.fixed_width .fixedwidth .fixedwidth {
 .floatright img {
 	margin-right: 40px;
 }
-
+	
 #sitetitle,
 #sitesubtitle {
 	color: #a7a7a7;
@@ -490,7 +489,7 @@ a.flip:hover,
 }
 
 /** Border boxes (if any) **/
-
+	
 /****** Menus ******/
 /** CSS (suckerfish) menus **/
 
@@ -519,7 +518,7 @@ a.flip:hover,
 	color: #d8d8d8;
 }
 
-.cssmenu_vert a:hover,
+.cssmenu_vert a:hover,	
 .cssmenu_horiz a:hover,
 #tiki-top .cssmenu_horiz li ul li a:hover {
 	color: #3f3f3f;
@@ -582,7 +581,7 @@ a.flip:hover,
 }
 
 /* left column width */
-#col2 .box-data .cssmenu_vert ul {
+#col2 ul.cssmenu_vert {
 	padding-left: 0;
 }
 
@@ -661,7 +660,7 @@ a.separator:hover {
 a.linkmodule {
 	font-weight: bold;
 }
-
+ 
 .option,
 .optionline {
 	color: #5F5F5F;
@@ -781,14 +780,14 @@ a.tikihelp:hover {
 }
 
 /*
-a.tikihelp,
+a.tikihelp, 
 a.tikihelp:hover {
 	color: #292929;
 }*/
 
 /**tree**/
 .ui-icon {
-background-image: url('../vendor/jquery/jquery-ui-themes/themes/ui-darkness/images/ui-icons_cccccc_256x240.png');
+background-image: url('../lib/jquery/jquery-ui/themes/ui-darkness/images/ui-icons_cccccc_256x240.png');
 }
 
 /** input widget **/
@@ -952,7 +951,7 @@ table {
 	border-collapse: collapse;
 }
 
-.normal,
+.normal, 
 .admin {
 	border: solid 1px #696969;
 	margin-top: 1em;
@@ -999,8 +998,7 @@ tr.even {
 
 tr.odd td,
 td.odd,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+table.normal tr:nth-child(2n+1) {
 	color: #fff;
 	background: #292929;
 	border-right: 1px solid #696969;
@@ -1008,8 +1006,7 @@ table.normal tr:nth-child(2n+1),
 
 tr.even td,
 td.even,
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+table.normal tr:nth-child(2n) {
 	color: #fff;
 	background: #232323;
 	border-right: 1px solid #696969;
@@ -1026,29 +1023,6 @@ td.form {
 
 .xdebug-error tr td {
 	color: #292929;
-}
-
-/** Tablesorter **/
-
-.tablesorter .header,
-.tablesorter .tablesorter-header {
-	padding: 4px 20px 4px 4px;
-	cursor: pointer;
-	background-image: url(data:image/gif;base64,R0lGODlhFQAJAIAAAP///////yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw==);
-	background-position: center right;
-	background-repeat: no-repeat;
-}
-.tablesorter thead .headerSortUp,
-.tablesorter thead .tablesorter-headerSortUp,
-.tablesorter thead .tablesorter-headerAsc {
-	background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAAP///////yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7);
-	border-bottom: #888 1px solid;
-}
-.tablesorter thead .headerSortDown,
-.tablesorter thead .tablesorter-headerSortDown,
-.tablesorter thead .tablesorter-headerDesc {
-	background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAAP///////yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7);
-	border-bottom: #888 1px solid;
 }
 
 /***** Admin *****/
@@ -1149,8 +1123,8 @@ a.admbox.off:active {
 /*.ui-icon-closethick,*/
 .ui-dialog .ui-dialog-titlebar-close span/*,
 .ui-widget-content .ui-icon*/ {
-background-image: url(../vendor/jquery/jquery-ui-themes/themes/dark-hive/images/ui-icons_222222_256x240.png);
-background-image: url(../vendor/jquery/jquery-ui-themes/themes/dark-hive/images/ui-icons_cccccc_256x240.png);
+background-image: url(../lib/jquery/jquery-ui/themes/dark-hive/images/ui-icons_222222_256x240.png);
+background-image: url(../lib/jquery/jquery-ui/themes/dark-hive/images/ui-icons_cccccc_256x240.png);
 }
 
 .ui-dialog .ui-dialog-titlebar-close span:hover {
@@ -1441,7 +1415,7 @@ form.wikiplugin_edit table#plugin_params_advanced.normal div {
 .titleb {
 	font-size: 1.0em;
 }
-
+ 
 .articlesubtitle {
 	font-size: 90%;
 	font-style: italic;
@@ -1571,7 +1545,7 @@ body.tiki_blogs .postbody-title {
 body.tiki_blogs .postfooter {
 	width: 100%;
 }
-
+	
 body.tiki_blogs .postfooter .actions {
 	float: left;
 }
@@ -1595,7 +1569,7 @@ body.tiki_blogs .postfooter .actions {
 	min-width: 100% !important;
 	height: 100%;*/
 }
-
+	
 .post .postbody .content p {
 	margin: 5px 10px;
 }
@@ -1790,6 +1764,173 @@ ul.catitems li {
 }
 
 /***** Calendar *****/
+.cal,
+.cal0, 
+.cal1, 
+.cal2 {
+	color: #fff;
+	font-size: 1em;
+}
+
+.cal0:before {
+	content: "? ";
+	background: #ff6347;
+}
+ 
+.cal1:before {
+	content: "+ ";
+	background: #FFCC77;
+}
+
+.cal2:before {
+	content: "X ";
+	background: #3f3f3f;
+}
+
+.calart,
+.calblog,
+.calchart,
+.caldir,
+.caleph,
+.calfaq,
+.calfgal,
+.calforum,
+.calgal,
+.calnl,
+.calquiz,
+.calsurv,
+.caltrack,
+.calwiki {
+	font-size: 1em;
+	border-top: none;
+}
+
+.calart,
+.calart a,
+.calart a:visited {
+	color: #fa8072;
+}
+
+.calblog,
+.calblog a,
+.calblog a:visited {
+	color: #edbfe7;
+}
+
+.calchart,
+.calchart a,
+.calchart a:visited {
+	color: #304f30;
+}
+
+.caldir,
+.caldir a,
+.caldir a:visited {
+	color: #800080;
+}
+
+.caleph,
+.caleph a,
+.caleph a:visited {
+	color: #008000;
+}
+
+.calfaq,
+.calfaq a,
+.calfaq a:visited {
+	color: #822222;
+}
+
+.calfgal,
+.calfgal a,
+.calfgal a:visited {
+	color: #8b4513;
+}
+
+.calforum,
+.calforum a,
+.calforum a:visited {
+	color: #808000;
+}
+
+.calgal,
+.calgal a,
+.calgal a:visited {
+	color: #8b4513;
+}
+
+.calnl,
+.calnl a,
+.calnl a:visited {
+	color: #708090;
+}
+
+.calquiz,
+.calquiz a,
+.calquiz a:visited {
+	color: #5f9ea0;
+}
+
+.calsurv,
+.calsurv a,
+.calsurv a:visited {
+	color: #daa520;
+}
+
+caltrack,
+caltrack a,
+caltrack a:visited {
+	color: #00bd02;
+}
+
+.calweb {
+	color: #336699;
+}
+
+.calweb:hover {
+	color: #996633;
+}
+
+.calwiki,
+.calwiki a,
+.calwiki a:visited {
+	color: #bdcec3;
+}
+
+.calart a:hover,
+.calblog a:hover,
+.calchart a:hover,
+.caldir a:hover,
+.caleph a:hover,
+.calfaq a:hover,
+.calfgal a:hover,
+.calforum a:hover,
+.calgal a:hover,
+.calnl a:hover,
+.calquiz a:hover,
+.calsurv a:hover,
+.caltrack a:hover,
+.calwiki a:hover {
+	color: #f5f5f5;
+}
+
+.calart:before,
+.calblog:before,
+.calchart:before,
+.caldir:before,
+.caleph:before,
+.calfaq:before,
+.calfgal:before,
+.calforum:before,
+.calgal:before,
+.calnl:before,
+.calquiz:before,
+.calsurv:before,
+.caltrack:before,
+.calwiki:before {
+	background: #292929;
+}
+
 .calcheckbox {
 	background: #3f3f3f;
 }
@@ -1805,21 +1946,20 @@ ul.catitems li {
 	padding: 0;
 }
 
-.calmodfocus {
-	text-decoration: underline;
+.calfocus {
+	font-size: 1em;
+	background: inherit;
+	border-bottom: none;
 }
 
-.caltable .odd,
-.caltable .even {
+#calscreen .calfocus a {
+	color: #f5f5f5;
+}
+
+.calodd .calfocuson,
+.caleven .calfocuson,
+.calfocuson {
 	font-size: 90%;
-	background: #292929;
-}
-
-.caltable td.calhighlight {
-	background: #292929;
-}
-
-#month_title.calheadhighlight {
 	background: #292929;
 }
 
@@ -1851,6 +1991,11 @@ ul.catitems li {
 	text-decoration: underline;
 }
 
+.calheadingon a {
+	text-decoration: underline !important;
+	color: #d8d8d8 !important;
+}
+
 .opaque {
 	font-size: .9em;
 	background: #3f3f3f;
@@ -1860,8 +2005,8 @@ ul.catitems li {
 	border-bottom: 1px solid #696969;
 }
 
-.opaque span.box-title {
-	color: #d8d8d8;
+.opaque .box-title {
+	border-bottom: 1px solid #d8d8d8;
 }
 
 .opaque .box-data {
@@ -1919,15 +2064,15 @@ ul.catitems li {
 	float: right;
 }
 
-.caltable .odd, .caltable .even {
+.calodd, .caleven {
 	border: none;
 }
 
-.caltable .odd {
+.calodd {
 	background: #474747;
 }
 
-.caltable .even {
+.caleven {
 	background: #3f3f3f;
 }
 

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -26,20 +26,6 @@ class WikiParser_PluginMatcher implements Iterator, Countable
 		$matcher->findMatches(0, strlen($text));
 
 		return $matcher;
-	}
-
-	public function __clone()
-	{
-		$new = $this;
-		$this->starts = array_map(function ($match) use ($new) {
-			$match->changeMatcher($new);
-			return clone $match;
-		}, $this->starts);
-
-		$this->ends = array_map(function ($match) use ($new) {
-			$match->changeMatcher($new);
-			return clone $match;
-		}, $this->ends);
 	}
 
 	private function getSubMatcher($start, $end)
@@ -420,10 +406,7 @@ class WikiParser_PluginMatcher_Match
 			return false;
 		}
 
-		// $arguments =    trim($this->matcher->getChunkFrom($this->nameEnd, $pos - $this->nameEnd), '() ');
-		$rawarguments = trim($this->matcher->getChunkFrom($this->nameEnd, $pos - $this->nameEnd), '() ');
-		// arguments can be html encoded. So, decode first
-		$arguments = html_entity_decode($rawarguments);
+		$arguments = trim($this->matcher->getChunkFrom($this->nameEnd, $pos - $this->nameEnd), '() ');
 		$this->arguments = trim($arguments);
 
 		if ($this->matchType == self::LEGACY) {
@@ -472,33 +455,6 @@ class WikiParser_PluginMatcher_Match
 	function replaceWith($string)
 	{
 		$this->matcher->performReplace($this, $string);
-	}
-
-	function replaceWithPlugin($name, $params, $content)
-	{
-		$hasBody = !empty($content) && !ctype_space($content);
-
-		if (is_array($params)) {
-			$parts = array();
-			foreach ( $params as $key => $value ) {
-				if ($value || $value === '0') {
-					$parts[] = "$key=\"" . str_replace('"', "\\\"", $value) . '"';
-				}
-			}
-
-			$params = implode(' ', $parts);
-		}
-
-		// Replace the content
-		if ($hasBody) {
-			$type = strtoupper($name);
-			$replacement = "{{$type}($params)}$content{{$type}}";
-		} else {
-			$plugin = strtolower($name);
-			$replacement = "{{$plugin} $params}";
-		}
-
-		$this->replaceWith($replacement);
 	}
 
 	function getName()

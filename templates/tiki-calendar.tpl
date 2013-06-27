@@ -84,7 +84,7 @@
 
 	<div class="categbar" align="right">
 		{if $user and $prefs.feature_user_watches eq 'y'}
-			{if isset($category_watched) and $category_watched eq 'y'}
+			{if $category_watched eq 'y'}
 				{tr}Watched by categories:{/tr}
 				{section name=i loop=$watching_categories}
 					{assign var=thiswatchingcateg value=$watching_categories[i].categId}
@@ -103,27 +103,27 @@
 			</div>
 			{foreach item=k from=$listcals}
 				<div class="calcheckbox">
-					<input type="checkbox" name="calIds[]" value="{$k|escape}" id="groupcal_{$k}" {if $thiscal.$k}checked="checked"{/if}>
+					<input type="checkbox" name="calIds[]" value="{$k|escape}" id="groupcal_{$k}" {if $thiscal.$k}checked="checked"{/if} />
 					<label for="groupcal_{$k}" class="calId{$k}">{$infocals.$k.name|escape} (id #{$k})</label>
 				</div>
 			{/foreach}
 			<div class="calinput">
-				<input type="hidden" name="todate" value="{$focusdate}">
-				<input type="submit" name="refresh" value="{tr}Refresh{/tr}">
+				<input type="hidden" name="todate" value="{$focusdate}"/>
+				<input type="submit" name="refresh" value="{tr}Refresh{/tr}"/>
 			</div>
 		</form>
 	{/if}
 
 	{if $tiki_p_view_events eq 'y'}
 		<form id="exportcal" method="post" action="{$exportUrl}" name="f" style="display:none;">
-			<input type="hidden" name="export" value="y">
+			<input type="hidden" name="export" value="y"/>
 			<div class="caltitle">{tr}Export calendars{/tr}</div>
 			<div class="caltoggle">
 				{select_all checkbox_names='calendarIds[]' label="{tr}Check / Uncheck All{/tr}"}
 			</div>
 			{foreach item=k from=$listcals}
 				<div class="calcheckbox">
-					<input type="checkbox" name="calendarIds[]" value="{$k|escape}" id="groupcal_{$k}" {if $thiscal.$k}checked="checked"{/if}>
+					<input type="checkbox" name="calendarIds[]" value="{$k|escape}" id="groupcal_{$k}" {if $thiscal.$k}checked="checked"{/if} />
 					<label for="groupcal_{$k}" class="calId{$k}">{$infocals.$k.name|escape}</label>
 				</div>
 			{/foreach}
@@ -131,8 +131,8 @@
 				<a href="{$iCalAdvParamsUrl}">{tr}advanced parameters{/tr}</a>
 			</div>
 			<div class="calinput">
-				<input type="submit" name="ical" value="{tr}Export as iCal{/tr}">
-				<input type="submit" name="csv" value="{tr}Export as CSV{/tr}">
+				<input type="submit" name="ical" value="{tr}Export as iCal{/tr}"/>
+				<input type="submit" name="csv" value="{tr}Export as CSV{/tr}"/>
 			</div>
 		</form>
 	{/if}
@@ -182,7 +182,7 @@ $('#calendar').fullCalendar({
 				element.cluetip({arrows: true, splitTitle: '|', clickThrough: true});
 			},
 			eventClick: function(event) {
-        if (event.url && event.editable) {
+        if (event.url && event.modifiable) {
 			$.ajax({
 					dataType: 'html',
 					url: event.url,
@@ -210,15 +210,15 @@ $('#calendar').fullCalendar({
         return false;
     	},
 			eventResize: function(event,dayDelta,minuteDelta,revertFunc) {
-				$.post($.service('calendar', 'resize'), {
-					calitemId: event.id,
-					delta: (dayDelta*86400+minuteDelta*60)
+				$.ajax({
+						dataType: 'html',
+						url: 'tiki-calendar_action.php?action=resize&calitemId=' + event.id + '&delta=' + (dayDelta*86400+minuteDelta*60)
 				});
 			},
 			eventDrop: function(event,dayDelta,minuteDelta,allDay,revertFunc) {
-				$.post($.service('calendar', 'move'), {
-					calitemId: event.id,
-					delta: (dayDelta*86400+minuteDelta*60)
+				$.ajax({
+						dataType: 'html',
+						url: 'tiki-calendar_action.php?action=move&calitemId=' + event.id + '&delta=' + (dayDelta*86400+minuteDelta*60)
 				});
 			}
 });

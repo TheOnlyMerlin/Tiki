@@ -3,7 +3,7 @@
 	{remarksbox type="errors" title="{tr}Errors{/tr}"}
 		{foreach from=$errors item=error}
 			{$error|escape}
-			<br>
+			<br />
 		{/foreach}
 	{/remarksbox}
 {/if}
@@ -11,16 +11,16 @@
 	{remarksbox type="note" title="{tr}Feedback{/tr}"}
 		{foreach from=$feedbacks item=feedback}
 			{$feedback|escape}
-			<br>
+			<br />
 		{/foreach}
 	{/remarksbox}
 {/if}
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}
 	{tr}To create or remove file galleries, select{/tr} <a class="rbox-link" href="tiki-list_file_gallery.php">{tr}File Galleries{/tr}</a> {tr}from the application menu{/tr}.
-	<hr>
+	<hr />
 	{tr}If you decide to store files in a directory you must ensure that the user cannot access directly to the directory.{/tr}
-	{tr}You have two options to accomplish this:<br><ul><li>Use a directory outside your document root, make sure your php script can read and write to that directory</li><li>Use a directory inside the document root and use .htaccess to prevent the user from listing the directory contents</li></ul>{/tr}
+	{tr}You have two options to accomplish this:<br /><ul><li>Use a directory outside your document root, make sure your php script can read and write to that directory</li><li>Use a directory inside the document root and use .htaccess to prevent the user from listing the directory contents</li></ul>{/tr}
 	{tr}To configure the directory path use UNIX like paths for example files/ or c:/foo/files or /www/files/{/tr}
 {/remarksbox}
 
@@ -75,20 +75,6 @@
 				{preference name='feature_webdav'}
 				
 				{preference name=feature_draw}
-				<div class="adminoptionboxchild" id="feature_draw_childcontainer">
-					{preference name=feature_draw_hide_buttons}
-					{preference name=feature_draw_separate_base_image}
-					<div class="adminoptionboxchild" id="feature_draw_separate_base_image_childcontainer">
-						{preference name=feature_draw_in_userfiles}
-					</div>
-				</div>
-
-				{preference name=feature_jcapture}
-				<div class="adminoptionboxchild" id="feature_jcapture_childcontainer">
-					{preference name=fgal_for_jcapture}
-				</div>
-
-
 				{preference name=feature_docs}				
 
 				{preference name='fgal_limit_hits_per_file'}
@@ -100,7 +86,7 @@
 					{remarksbox title="Note"}
 					{tr}You are highly recommended to use a file directory as the File Gallery storage, when using this feature{/tr}
 					{/remarksbox}
-					<br/>
+					<br/>				
 					{preference name='fgal_batch_dir'}
 				</div>
 
@@ -131,7 +117,6 @@
 					{preference name='fgal_source_show_refresh'}
 				</div>
 				{preference name='tiki_check_file_content'}
-				{preference name='fgal_elfinder_feature'}
 			</fieldset>
 
 			<fieldset>
@@ -188,8 +173,6 @@
 			{preference name='fgal_show_thumbactions'}
 			{preference name='fgal_thumb_max_size'}
 			{preference name='fgal_browse_name_max_length'}
-			{preference name='fgal_image_max_size_x'}
-			{preference name='fgal_image_max_size_y'}
 			{preference name='fgal_list_ratio_hits'}
 			{preference name='fgal_display_properties'}
 			{preference name='fgal_display_replace'}
@@ -240,7 +223,7 @@
 						{remarksbox type=warning title="{tr}Missing Handlers{/tr}"}
 							{foreach from=$missingHandlers item=mime}
 								{$mime|escape}
-								<br>
+								<br />
 							{/foreach}
 						{/remarksbox}
 					{/if}

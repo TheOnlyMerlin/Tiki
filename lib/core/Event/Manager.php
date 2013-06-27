@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,45 +8,19 @@
 class Event_Manager
 {
 	private $eventRegistry = array();
-	private $priorities = array();
-	private $currentPriority = false;
 
 	function reset()
 	{
 		$this->eventRegistry = array();
-		$this->priorities = array();
 	}
 
-	/**
-	 * Binds an event at normal priority and handles event chaining.
-	 */
 	function bind($eventName, $callback, array $arguments = array())
 	{
-		$priority = 0;
-
 		if (! is_callable($callback)) {
-			$callback = new Event_Chain($this, $callback);
-			$priority = false;
-		}
-
-		$this->bindPriority($priority, $eventName, $callback, $arguments);
-	}
-
-	/**
-	 * Bind the event at a specific priority. Allows some event to be forced to execute after others. For example,
-	 * normal priorities may alter data, but indexing should not happen until all data has been modified.
-	 *
-	 * Priorities are numeric, false indicates that the event executes at all levels. This is used for chaining
-	 * and happens transparently when using bind() with an event as the callback.
-	 */
-	function bindPriority($priority, $eventName, $callback, array $arguments = array())
-	{
-		if ($priority !== false) {
-			$this->priorities[] = $priority;
+			$callback = array(new Event_Chain($this, $callback), 'trigger');
 		}
 
 		$this->eventRegistry[$eventName][] = array(
-			'priority' => $priority,
 			'callback' => $callback,
 			'arguments' => $arguments,
 		);
@@ -54,29 +28,15 @@ class Event_Manager
 
 	function trigger($eventName, array $arguments = array())
 	{
-		$priorities = array_unique($this->priorities);
-		sort($priorities);
-		$this->priorities = $priorities;
-
-		foreach ($priorities as $p) {
-			$this->internalTrigger($eventName, $arguments, $p);
-		}
-	}
-
-	function internalTrigger($eventName, array $arguments, $priority)
-	{
 		if (isset ($this->eventRegistry[$eventName])) {
 			foreach ($this->eventRegistry[$eventName] as $callback) {
-				if ($callback['priority'] === false || $callback['priority'] === $priority) {
-					call_user_func(
-						$callback['callback'], 
-						array_merge(
-							$callback['arguments'],
-							$arguments
-						),
-						$priority
-					);
-				}
+				call_user_func(
+								$callback['callback'], 
+								array_merge(
+												$callback['arguments'],
+												$arguments
+								)
+				);
 			}
 		}
 	}
@@ -88,8 +48,8 @@ class Event_Manager
 
 		foreach ($this->eventRegistry as $from => $callbackList) {
 			foreach ($callbackList as $callback) {
-				if ($callback['callback'] instanceof Event_Chain) {
-					$eventName = $callback['callback']->getEventName();
+				if (is_array($callback['callback']) && $callback['callback'][0] instanceof Event_Chain) {
+					$eventName = $callback['callback'][0]->getEventName();
 					$edges[] = array(
 						'from' => $from,
 						'to' => $eventName,

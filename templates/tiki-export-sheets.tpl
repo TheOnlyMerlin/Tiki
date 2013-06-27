@@ -43,15 +43,15 @@
 				<option value="{$history[key].stamp}">{$history[key].prettystamp}</option>
 			{/section}
 		</select>
-		<br>
+		<br />
 		{tr}Format:{/tr}
-		<input type="hidden" value="{$sheetId}" name="sheetId">
+		<input type="hidden" value="{$sheetId}" name="sheetId" />
 		<select name="handler">
 			{section name=key loop=$handlers}
 				<option value="{$handlers[key].class}">{$handlers[key].name} V. {$handlers[key].version}</option>
 			{/section}
 		</select>
-		<br>
+		<br />
 		{tr}Charset encoding:{/tr}
 		<select name="encoding">
 			<!--<option value="">{tr}Autodetect{/tr}</option>-->
@@ -59,7 +59,7 @@
 			<option value="{$charsets[key]}">{$charsets[key]}</option>
 		{/section}
 		</select>
-		<br>
-		<input type="submit" value="{tr}Export{/tr}">
+		<br />
+		<input type="submit" value="{tr}Export{/tr}" />
 	</form>
 {/if}

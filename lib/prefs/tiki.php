@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -23,19 +23,6 @@ function prefs_tiki_list()
 			'default' => 604800,
 			'tags' => array('basic'),
 		),
-		'tiki_release_cycle' => array(
-			'name' => tr('Upgrade cycle'),
-			'type' => 'list',
-			'default' => 'regular',
-			'dependencies' => array(
-				'feature_version_checks',
-			),
-			'options' => array(
-				'regular' => tr('Regular (6 months)'),
-				'longterm' => tr('Long Term Support'),
-			),
-			'help' => 'Version+Lifecycle',
-		),
 		'tiki_minify_javascript' => array(
 			'name' => tra('Minify JavaScript'),
 			'description' => tra('Compress JavaScript files used in the page into a single file to be distributed statically. Changes to JavaScript files will require cache to be cleared. Uses http://code.google.com/p/minify/'),
@@ -43,13 +30,6 @@ function prefs_tiki_list()
 			'perspective' => false,
 			'default' => 'n',
 			'tags' => array('basic'),
-		),
-		'tiki_minify_late_js_files' => array(
-			'name' => tra('Minify Late JavaScript'),
-			'description' => tra('Compress extra JavaScript files used in the page after tiki-setup into a seperate file which may vary from page to page.'),
-			'type' => 'flag',
-			'perspective' => false,
-			'default' => 'n',
 		),
 		'tiki_minify_css' => array(
 			'name' => tra('Minify CSS'),

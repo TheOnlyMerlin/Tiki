@@ -78,11 +78,9 @@
 
 		{tab name="{tr}General Settings{/tr}"}
 			{preference name=user_show_realnames}
-			{preference name=user_in_search_result}
 			{preference name=highlight_group}
 			{preference name=feature_display_my_to_others}
 			{preference name=user_tracker_infos}
-			{preference name=user_use_gravatar}
 
 			{preference name=user_who_viewed_my_stuff}
 			{preference name=user_who_viewed_my_stuff_days}
@@ -109,15 +107,8 @@
 					{preference name=feature_community_mouseover_distance}
 				</div>
 			</fieldset>
-			
-			<fieldset>
-				<legend>{tr}Email notifications to group leaders when users join/leave a group{/tr}{help url="Community"}</legend>
-				{preference name=feature_community_Strings_to_ignore}
-				{preference name=feature_community_String_to_append}
-				{preference name=feature_community_send_mail_join}
-				{preference name=feature_community_send_mail_leave}
-			</fieldset>
 
+			<input type="hidden" name="users_defaults" />
 			{* ************ Users Default Preferences *}
 			<fieldset>
 				<legend>

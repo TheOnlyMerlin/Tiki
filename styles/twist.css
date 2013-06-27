@@ -170,7 +170,7 @@ input[type="submit"],
 	font-size: 10px;
 	font-weight: normal;
 	color: #fff;
-	background: #1b5880 url(twist/header_bg.jpg) -30px -40px no-repeat;
+	background: #1b5880 url(twist/header.jpg) -30px -40px no-repeat;
 	padding: 2px 4px;
 }
 
@@ -182,7 +182,7 @@ input[type="submit"]:hover,
 .submitbutton:hover,
 .calbuttonoff:hover,
 .calbuttonon:hover {
-	background: #619cc4 url(twist/header_bg.jpg) -400px -40px no-repeat;
+	background: #619cc4 url(twist/header.jpg) -400px -40px no-repeat;
 	color: #fff;
 	text-decoration: none;
 	padding: 2px 4px;
@@ -398,10 +398,6 @@ button[type="submit"]:hover {
 }
 	
 /* left column width */
-#col2 .box-data .cssmenu_vert ul {
-	padding-left: 0;
-}
-
 #col2 .cssmenu_vert,
 #col2 .cssmenu_vert li {
 	width: 146px;
@@ -692,25 +688,23 @@ ol.module {
 td.odd,
 td.even,
 table.normal tr:nth-child(2n+1) td,
-table.normal tr:nth-child(2n) td,
-.tablesorter tr.odd td,
-.tablesorter tr.even td {
+table.normal tr:nth-child(2n) td {
 	margin: 0;
 	padding: 0.2em;
 	vertical-align: top;
 	border: solid 1px #909090;
-	border-collapse: collapse}
+	border-collapse: collapse
+}
 
 tr.odd,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+table.normal tr:nth-child(2n+1) {
 	color: black;
 	background: #efefef;
-	text-align: left}
+	text-align: left
+}
 
 tr.odd:hover,
-table.normal tr:nth-child(2n+1):hover,
-.tablesorter tr.odd td:hover {
+table.normal tr:nth-child(2n+1):hover {
 	background: #fff7e6;
 }
 
@@ -719,29 +713,25 @@ tr.odddark {
 	border: 1px solid #fff}
 
 tr.even,
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+table.normal tr:nth-child(2n) {
 	color: black;
 	background: #fff;
 	text-align: left}
 
 tr.even:hover,
-table.normal tr:nth-child(2n):hover,
-.tablesorter tr.even td:hover {
+table.normal tr:nth-child(2n):hover {
 	background: #fff7e6
 }
 
 td.odd,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+table.normal tr:nth-child(2n+1) {
 	vertical-align: middle;
 	color: black;
 	background: #efefef;
 	text-align: left}
 
 td.even,
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+table.normal tr:nth-child(2n) {
 	vertical-align: middle;
 	color: black;
 	background: #fff;
@@ -1204,6 +1194,83 @@ td.dirfooter {font-size: .95em}
 /***** TikiSheets *****/
 
 /***** Calendar *****/
+.Cal0,
+.Cal1,
+.Cal2 {font-size: 90%}
+
+	
+.Calart,
+.Calblog,
+.Calchart,
+.Caldir,
+.Caleph,
+.Calfaq,
+.Calfgal,
+.Calforum,
+.Calgal,
+.Calnl,
+.Calquiz,
+.Calsurv,
+.Caltrack,
+.Calwiki {font-size: 90%}
+
+.Calart,
+.Calart a,
+.Calart a:visited {color: #FA8072}
+
+.Calblog,
+.Calblog a,
+.Calblog a:visited {color: #DA70D6}
+
+.Calchart,
+.Calchart a,
+.Calchart a:visited {color: #304F30}
+	
+.Caldir,
+.Caldir a,
+.Caldir a:visited {color: #800080}
+
+.Calfaq,
+.Calfaq a,
+.Calfaq a:visited {color: #822222}
+
+.Calforum,
+.Calforum a,
+.Calforum a:visited {color: #808000}
+
+.Calgal,
+.Calgal a,
+.Calgal a:visited {color: #8B4513}
+
+.Calnl,
+.Calnl a,
+.Calnl a:visited {color: #708090}
+
+.Calquiz,
+.Calquiz a,
+.Calquiz a:visited {color: #5F9EA0}
+
+.Calsurv,
+.Calsurv a,
+.Calsurv a:visited {color: #DAA520}
+
+Caltrack,
+Caltrack a,
+Caltrack a:visited {color: #00BD02}
+
+.Calweb {font-size: .9em}
+
+.Calwiki,
+.Calwiki a,
+.Calwiki a:visited {color: #2C4B80}
+
+.calcontent a.linkmenu,
+.calcontent a.linkmenu:hover {
+	background: 0;
+	padding: 0}
+
+.calfocus {font-size: 90%}
+
 .calprio1 a,
 .calprio2 a,
 .calprio3 a,
@@ -1218,28 +1285,22 @@ td.dirfooter {font-size: .95em}
 .opaque .box-title {border-bottom: 1px solid black}
 .searchresults {display: inline}
 
+#caltable .calfocuson,
 .box-data .fc a.today,
 .box-data td a.today {
 	background: #D4D0C8;
 	border: solid 1px #696969}
-
-.caltable td.calhighlight,
-td.calheadhighlight {
+	
+.caltable .calfocuson {
 	background: #D4D0C8;
 }
 
-.caltable .calborder,
-.calendarweek td.calHeading {
-	border: 1px solid #999;
-}
-
-.calendarweek td.calheadhighlight a:link,
-.calendarweek td.calheadhighlight a:visited {
-	color: #000;
-}
-
+#caltable .calfocuson a {color: #000}
 #caltable, #calscreen .normal {font-size: 1em}
+#caltable .calfocus a,
+#caltable .calfocuson a {text-decoration:none}
 .calinput {background: #002C5E}
+.calfocuson + .calcontent {background: #F5F5F5}
 
 #caltable .days,
 #caltable .weeks {
@@ -1253,11 +1314,27 @@ td.calheadhighlight {
 	padding: 0 5px;
 	float: right}
 
-.caltable .odd,
-.caltable .even {border: 1px solid #999}
-.caltable .odd {background: #efefef}
-.caltable .even {background: white}
+.calodd,
+.caleven {border: 1px solid #999}
+.calodd {background: #efefef}
+.caleven {background: white}
+.caldark {background: #002C5E}
+.caldark .calfocus {background: #002C5E}
 .calnavigation a:hover {background: #85c4ed}
+
+.calfocuson {
+	background: #D4D0C8;
+	font-size: 100%;
+}
+
+.calfocuson a {
+	font-size: 90%;
+}
+
+.calHeadingOn, .calHeadingOn a {
+	background: #D4D0C8;
+}
+
 
 /***** Admin *****/
 a.admbox span {color: white}

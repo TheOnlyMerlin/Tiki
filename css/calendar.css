@@ -44,7 +44,8 @@
 	border: 1px #ddd;
 }
 
-.calHeading {
+.calHeading,
+.calHeadingOn {
 	height: 36px;
 	text-align: center;
 	vertical-align: middle;
@@ -70,16 +71,6 @@
 	border-style: solid;
 }
 
-/* Table that contains the week view */
-.calendarweek {
-	border: none;
-	padding: 0;
-	margin: 0;
-	width: 100%;
-	border-collapse: collapse;
-	border-bottom: 1px solid #ccc;
-}
-
 .Cal {
 	font-weight: normal;
 	border-color: transparent;
@@ -102,6 +93,7 @@
 	font-weight: normal;
 	text-decoration: none;
 }
+
 .caltitle {
 	font-weight: bold;
 	color: #425262;
@@ -114,6 +106,24 @@
 .caltoggle {
 	font-size: 9px;
 	margin-bottom: 7px;
+}
+
+.calfocus a,
+.calfocus a:visited {
+	text-decoration: none;
+	font-weight: normal;
+	color: #000000;
+}
+
+.calfocuson {
+	font-size: 9px;
+	background: #f3e498;
+}
+
+.calfocuson a {
+	text-decoration: none;
+	font-weight: normal;
+	color: #000000;
 }
 
 .Calwiki,
@@ -383,6 +393,13 @@
 	color: #666666;
 }
 
+.opaque {
+	background: #FFFFFF;
+	width: auto;
+	border: 1px solid #666666;
+	padding: 5px;
+}
+
 .opaque .box-title,
 .opaque .box-data {
 	width: auto;
@@ -448,9 +465,44 @@ a.viewmodeoff img {
 	vertical-align: middle;
 }
 
+.caltable .odd,
+.caltable .even {
+	margin: 1px !important;
+	border: 0 !important;
+}
+
 .addevent {
 	padding: 0 5px;
 	float: right;
+}
+
+.caldark,
+.calfocus,
+.calfocuson {
+	height: 20px;
+}
+
+.calodd {
+	background: #CDE;
+}
+
+.caleven {
+	background: #DEF;
+}
+
+.calodd,
+.caleven {
+	border: 1px solid #8CACBB;
+}
+
+.calodd .calfocus,
+.calodd .calfocuson,
+.caleven .calfocus,
+.caleven .calfocuson {
+	background: none;
+	border-width: 0;
+	padding-top: 2px;
+	padding-left: 2px;
 }
 
 #configlinks {
@@ -458,7 +510,10 @@ a.viewmodeoff img {
 	padding: 5px;
 }
 
-* html .addevent {
+* html .addevent,
+* html .calodd,
+* html .caleven,
+* html .caldark {
 	padding: 0;
 }
 
@@ -558,6 +613,43 @@ select[name=end_Minute] {
 	font-size: 11px;
 	font-weight: bold;
 	color: #555555;
+}
+
+.calfocus a:hover {
+	background: transparent;
+}
+
+.calfocuson a:hover {
+	background: transparent;
+}
+
+.calfocus,
+.calfocuson {
+	padding-bottom: 4px;
+}
+
+.calfocus {
+	border-bottom: 1px dotted #8CACBB;
+	background: #b4d0ec;
+	font-size: 9px;
+}
+
+.caldark a {
+	display: none;
+}
+
+.caldark {
+	border: 1px dotted #8CACBB;
+	background: transparent;
+}
+
+.caldark .calfocus {
+	background: #DEF;
+	border-width: 0;
+}
+
+.calfocuson + .calcontent {
+	background: none;
 }
 
 .html_select_time {

@@ -38,15 +38,13 @@
 
 			<fieldset class="admin featurelist">
 				<legend>{tr}Plugins{/tr}</legend>
-				{preference name=wikiplugin_showreference}
-				{preference name=wikiplugin_addreference}
 				{preference name=wikiplugin_alink}
 				{preference name=wikiplugin_aname}
 				{preference name=wikiplugin_box}
 				{preference name=wikiplugin_button}
 				{preference name=wikiplugin_center}
 				{preference name=wikiplugin_code}
-				{preference name=wikiplugin_countdown}
+                                {preference name=wikiplugin_countdown}
 				{preference name=wikiplugin_div}
 				{preference name=wikiplugin_dl}
 				{preference name=wikiplugin_fade}
@@ -107,7 +105,7 @@
 				{preference name=feature_wiki_ext_rel_nofollow}
 				{preference name=popupLinks}
 				{remarksbox type='tip' title="{tr}Tip{/tr}"}
-					<em>{tr}External links will be identified with:{/tr} </em><img class="externallink" src="img/icons/external_link.gif" alt=" (external link)">.
+					<em>{tr}External links will be identified with:{/tr} </em><img class="externallink" src="img/icons/external_link.gif" alt=" (external link)" />.
 				{/remarksbox}
 			</fieldset>
 		{/tab}
@@ -119,7 +117,7 @@
 			{/remarksbox}
 			{if !isset($disabled)}
 				{button href="?page=textarea&disabled=y" _text="{tr}Check disabled plugins used in wiki pages{/tr}"}
-				<br><br>
+				<br /><br />
 			{else}
 				{remarksbox type=errors title="{tr}Disabled used plugins{/tr}"}
 					{if empty($disabled)}
@@ -169,7 +167,7 @@
 
 		{tab name="{tr}Plugin Aliases{/tr}"}
 			{remarksbox type="note" title="{tr}About plugin aliases{/tr}"}
-				{tr}Tiki plugin aliases allow you to define your own custom configurations of existing plugins.<br>Find out more here: {help url="Plugin+Alias"}{/tr}
+				{tr}Tiki plugin aliases allow you to define your own custom configurations of existing plugins.<br />Find out more here: {help url="Plugin+Alias"}{/tr}
 			{/remarksbox}
 			{if $prefs.feature_jquery neq 'y'}
 				{remarksbox type="tip" title="{tr}Tip{/tr}"}
@@ -312,22 +310,7 @@ if (window.location.href.indexOf('plugin_alias_new=true') > -1) {
 		<fieldset id="pluginalias_simple_args">
 			<legend>{tr}Simple Plugin Arguments{/tr}{icon _id="omodule"} {icon _id="add" id="pluginalias_simple_add"}</legend>
 			{jq}
-$('#pluginalias_simple_add').click(function() {
-		var me = $('#pluginalias_simple_new'), clone = me.clone(), index = me.parent().children().size();
-		clone.removeAttr('id');
-
-		clone.find(':input').each(function () {
-			$(this).attr('name', $(this).attr('name').replace('__NEW__', index));
-			$(this).attr('id', $(this).attr('id').replace('__NEW__', index));
-		}).val('');
-		clone.find('label').each(function () {
-			$(this).attr('for', $(this).attr('for').replace('__NEW__', index));
-		});
-		clone.show();
-		me.parent().append(clone);
-
-	return false;
-});
+$('#pluginalias_simple_add').click(function() { $('#pluginalias_simple_new').toggle("fast"); return false; });
 {{if $plugin_admin.params}}
 $('#pluginalias_doc legend').trigger('click'{{if isset($plugin_admin.description.params)}, true{/if}});
 $('#pluginalias_simple_new').hide();
@@ -354,7 +337,7 @@ $('#pluginalias_simple_new').hide();
 		</fieldset>
 		<fieldset id="pluginalias_doc">
 			<legend>{tr}Plugin Parameter Documentation{/tr}{icon _id="omodule"} {icon _id="add" id="pluginalias_doc_add"}</legend>
-			{jq}$('#pluginalias_doc_add').click(function() { $('#pluginalias_doc_new').toggle(); return false; });{/jq}
+			{jq}$('#pluginalias_doc_add').click(function() { $('#pluginalias_doc_new').toggle("fast"); return false; });{/jq}
 			
 			{foreach from=$plugin_admin.description.params key=token item=detail}
 				<div class="clearfix admingroup adminoptionbox{if $token eq '__NEW__'} hidefirst" id="pluginalias_doc_new{/if}">

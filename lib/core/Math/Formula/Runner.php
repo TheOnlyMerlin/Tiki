@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -97,11 +97,15 @@ class Math_Formula_Runner
 		$filter = new Zend_Filter_Word_DashToCamelCase;
 		$ucname = $filter->filter(ucfirst($name));
 
-		foreach ( $this->sources as $prefix => $null ) {
+		foreach ( $this->sources as $prefix => $path ) {
 			$class = $prefix . $ucname;
+			$file = "$path/$ucname.php";
 
-			if ( class_exists($class) ) {
-				return $this->known[$name] = new $class;
+			if ( file_exists($file) ) {
+				require_once $file;
+				if ( class_exists($class) ) {
+					return $this->known[$name] = new $class;
+				}
 			}
 		}
 

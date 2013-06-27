@@ -126,7 +126,7 @@ input[type="submit"]:hover,
 .button input:hover,
 .calbuttonBox:hover
 #highlight,
-.button a.highlight {
+.highlight {
 	font: bold 1em Arial, sans-serif;
 	background: url(feb12/header.jpg) repeat-x 0 100%;
 	border: 1px solid #5aa5cf;
@@ -500,10 +500,6 @@ cssmenu_horiz a,
 	top: -1px !important;
 }
 
-#col2 .box-data .cssmenu_vert ul {
-	padding-left: 0;
-}
-
 /* Special to match #col2 width */
 #col2 .cssmenu_vert,
 #col2 .cssmenu_vert li {
@@ -686,8 +682,7 @@ td {
 .even,
 .form,
 .formcolor td,
-.editblogform td
-{
+.editblogform td {
 	padding: 0.2em;
 	border-right: solid 1px #909090;
 	border-collapse: collapse;
@@ -695,16 +690,14 @@ td {
 
 tr.odd td,
 .odd,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+table.normal tr:nth-child(2n+1) {
 	border-right: 1px solid #909090;
 	background: #F5F5F5;
 }
 
 tr.even td,
 .even,
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+table.normal tr:nth-child(2n) {
 	background: #ECECEC;
 	border-right: 1px solid #909090;
 }
@@ -1223,20 +1216,146 @@ html>body .galtable {
 
 /***** Calendar *****/
 /* Overrides calendar.css, etc. */
+.cal0,
+.cal1,
+.cal2 {
+	color: #000;
+	font-size: 90%;
+}
+
+.calart,
+.calblog,
+.calchart,
+.caldir,
+.caleph,
+.calfaq,
+.calfgal,
+.calforum,
+.calgal,
+.calnl,
+.calquiz,
+.calsurv,
+.caltrack,
+.calwiki {
+	font-size: 90%;
+}
+
+.calart,
+.calart a,
+.calart a:visited {
+	color: #FA8072;
+}
+
+.calblog,
+.calblog a,
+.calblog a:visited {
+	color: #DA70D6;
+}
+
+.calchart,
+.calchart a,
+.calchart a:visited {
+	color: #304F30;
+}
+
+.caldir,
+.caldir a,
+.caldir a:visited {
+	color: #800080;
+}
+
+.caleph,
+.caleph a,
+.caleph a:visited {
+	color: #008000;
+}
+
+.calfaq,
+.calfaq a,
+.calfaq a:visited {
+	color: #822222;
+}
+
+.calfgal,
+.calfgal a,
+.calfgal a:visited {
+	font-weight: normal;
+}
+
+.calforum,
+.calforum a,
+.calforum a:visited {
+	color: #808000;
+}
+
+.calgal,
+.calgal a,
+.calgal a:visited {
+	color: #8B4513;
+}
+
+.calnl,
+.calnl a,
+.calnl a:visited {
+	color: #708090;
+}
+
+.calquiz,
+.calquiz a,
+.calquiz a:visited {
+	color: #5F9EA0;
+}
+
+.calsurv,
+.calsurv a,
+.calsurv a:visited {
+	color: #DAA520;
+}
+
+.caltrack,
+.caltrack a,
+.caltrack a:visited {
+	color: #00BD02;
+}
+
+.calwiki,
+.calwiki a,
+.calwiki a:visited {
+	color: #2C4B80;
+}
+
 .calcheckbox {
 	background: #FFFFFF;
 }
 
-/*today focus*/
-.caltable td.calhighlight,
-td.calheadhighlight {
-	background: #f3e498;
+.calcontent a.linkmenu,
+.calcontent a.linkmenu:hover {
+	background: none;
+	padding: 0;
 }
 
-.caltable .calborder {
-	border-right: 1px solid #909090;
+.calfocus {
+	font-size: 90%;
+	background: transparent;
 }
-/*end today focus*/
+
+.calfocus a {
+	text-decoration: none;
+	font-weight: normal;
+	color: #000000;
+}
+
+.calfocuson {
+	font-size: 100%;
+	background: #F3E498;
+}
+
+.calfocuson a {
+	font-size: 90%;
+	text-decoration: none;
+	font-weight: normal;
+	color: #000000;
+}
 
 .calprio1 {
 	background: #DAE0E0;
@@ -1316,9 +1435,23 @@ td.calheadhighlight {
 	font-size: .95em;
 }
 
+.caltable .calfocuson,
 .box-data .fc a.today,
 .box-data td a.today {
 	background: #F3E498;
+}
+
+.caltable .calfocuson a {
+	color: #000;
+}
+
+.caltable .calfocus a,
+.caltable .calfocuson a {
+	text-decoration: none;
+}
+
+.calfocuson + .calcontent {
+	background: #a8cce2;
 }
 
 .calbuttonbox a {

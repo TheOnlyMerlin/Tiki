@@ -37,48 +37,7 @@ $("#loginbox-{{$module_logo_instance}}").submit( function () {
 		return false;
 	}
 });
-if (jqueryTiki.no_cookie) {
-	$('.box-login_box input').each(function(){
-		$(this).change(function() {
-			if (jqueryTiki.no_cookie && $(this).val()) {
-				alert(jqueryTiki.cookie_consent_alert);
-			}
-		});
-	});
-}
 {/jq}
-{if $prefs.feature_jquery_tooltips eq 'y'}
-	{assign var="closeText" value="{tr}Close{/tr}"}
-	{jq}
-if (jqueryTiki.tooltips) {
-	$('.login_link').cluetip({
-		activation: 'click',
-		arrows: false,
-		showTitle: false,
-		closePosition: 'bottom',
-		closeText: '{{$closeText}}',
-		cluetipClass: 'transparent',
-		dropShadow: false,
-		hideLocal: true,
-		local: true,
-		leftOffset: -100,
-		positionBy: 'topBottom',
-		sticky: true,
-		topOffset: 10,
-		fx: {
-			open: 'fadeIn', // can be 'show' or 'slideDown' or 'fadeIn'
-			openSpeed: '200'
-		},
-		width: 'auto',
-		onShow: function() {
-			$('#main').one('mousedown',function() {
-				$(document).trigger('hideCluetip');
-			})
-		}
-	});
-}
-	{/jq}
-{/if}
 {if !isset($tpl_module_title)}{assign var=tpl_module_title value="{tr}Log in{/tr}"}{/if}{* Left for performance, since tiki-login_scr.php includes this template directly. *}
 {if !isset($module_params)}{assign var=module_params value=' '}{/if}
 {if isset($nobox)}{$module_params.nobox = $nobox}{/if}
@@ -91,23 +50,14 @@ if (jqueryTiki.tooltips) {
 			<div style="text-align: center;">
 				{button href="tiki-logout.php" _text="{tr}Log out{/tr}"}
 			</div>
-			{if $login_module.can_revert}
-				<form action="{$login_module.login_url|escape}" method="post">
-					<fieldset>
-						<legend>{tr}Return to Main User{/tr}</legend>
-						<input type="hidden" name="su" value="revert" />
-						<input type="hidden" name="username" value="auto" />
-						<div style="text-align: center"><button type="submit" name="actsu">{tr}Switch{/tr}</button></div>
-					</fieldset>
-				</form>
-			{elseif $tiki_p_admin eq 'y'}
-				<form action="{$login_module.login_url|escape}" method="post"{if $prefs.desactive_login_autocomplete eq 'y'} autocomplete="off"{/if}>
+			{if $tiki_p_admin eq 'y'}
+				<form action="{if $prefs.https_login eq 'encouraged' || $prefs.https_login eq 'required' || $prefs.https_login eq 'force_nocheck'}{$base_url_https}{/if}{$prefs.login_url}" method="post"{if $prefs.desactive_login_autocomplete eq 'y'} autocomplete="off"{/if}>
 					<fieldset>
 						<legend>{tr}Switch User{/tr}</legend>
 						<label for="login-switchuser_{$module_logo_instance}">{tr}Username:{/tr}</label>
 						<input type="hidden" name="su" value="1" />
 						{if $prefs.feature_help eq 'y'}
-							{help url="Switch+User" desc="{tr}Help{/tr}" desc="{tr}Switch User:{/tr}{tr}Enter user name and click 'Switch'.<br>Useful for testing permissions.{/tr}"}
+							{help url="Switch+User" desc="{tr}Help{/tr}" desc="{tr}Switch User:{/tr}{tr}Enter user name and click 'Switch'.<br />Useful for testing permissions.{/tr}"}
 						{/if}
 						<input type="text" name="username" id="login-switchuser_{$module_logo_instance}" size="{if empty($module_params.input_size)}15{else}{$module_params.input_size}{/if}" />
 						<div style="text-align: center"><button type="submit" name="actsu">{tr}Switch{/tr}</button></div>
@@ -120,7 +70,7 @@ if (jqueryTiki.tooltips) {
 		{elseif $mode eq "popup"}
 			<div class="siteloginbar_popup">
 				<ul class="clearfix cssmenu_horiz">
-					<li id="logout_link_{$module_logo_instance}"><div class="tabmark"><a href="tiki-logout.php" class="login_link">{tr}Log out{/tr}</a></div>
+					<li {*class="tabmark" *}id="logout_link_{$module_logo_instance}"><div class="tabmark"><a href="tiki-logout.php" class="login_link">{tr}Log out{/tr}<span class="sf-sub-indicator"> »</span></a></div>
 						<ul class="siteloginbar_poppedup">
 							<li class="tabcontent">
 								{*<div class="cbox">*}{$user|userlink} <a href="tiki-logout.php" title="{tr}Log out{/tr}">{tr}Log out{/tr}</a>{*</div>*}
@@ -147,24 +97,16 @@ if (jqueryTiki.tooltips) {
 	{elseif $prefs.auth_method eq 'cas' && $showloginboxes neq 'y'}
 		<b><a class="linkmodule" href="tiki-login.php?cas=y">{tr}Log in through CAS{/tr}</a></b>
 		{if $prefs.cas_skip_admin eq 'y'}
-			<br><a class="linkmodule" href="tiki-login_scr.php?user=admin">{tr}Log in as admin{/tr}</a>
+			<br /><a class="linkmodule" href="tiki-login_scr.php?user=admin">{tr}Log in as admin{/tr}</a>
 		{/if}
 	{elseif $prefs.auth_method eq 'shib' && $showloginboxes neq 'y'}
 		<b><a class="linkmodule" href="tiki-login.php">{tr}Log in through Shibboleth{/tr}</a></b>
 		{if $prefs.shib_skip_admin eq 'y'}
-			<br><a class="linkmodule" href="tiki-login_scr.php?user=admin">{tr}Log in as admin{/tr}</a>
+			<br /><a class="linkmodule" href="tiki-login_scr.php?user=admin">{tr}Log in as admin{/tr}</a>
 		{/if}
 	{else}
 		{assign var='close_tags' value=''}
-		{if $mode eq "popup"}
-			<div class="siteloginbar_popup">
-				<ul class="clearfix{if $prefs.feature_jquery_tooltips ne 'y'} cssmenu_horiz{/if}">
-					<li id="logout_link_{$module_logo_instance}"><div class="tabmark"><a href="tiki-login.php" class="login_link" onclick="return false;" rel=".siteloginbar_poppedup">{tr}Log in{/tr}</a></div>
-						<ul class="siteloginbar_poppedup cbox">
-							<li class="tabcontent">
-								{capture assign="close_tags"}</li></ul></li></ul></div>{$close_tags}{/capture}
-		{/if}
-		<form name="loginbox" id="loginbox-{$module_logo_instance}" action="{$login_module.login_url|escape}"
+		<form name="loginbox" id="loginbox-{$module_logo_instance}" action="{if $prefs.https_login eq 'encouraged' || $prefs.https_login eq 'required' || $prefs.https_login eq 'force_nocheck'}{$base_url_https}{/if}{$prefs.login_url}"
 				method="post" {if $prefs.feature_challenge eq 'y'}onsubmit="doChallengeResponse()"{/if}
 				{if $prefs.desactive_login_autocomplete eq 'y'} autocomplete="off"{/if}> 
 		{if $prefs.feature_challenge eq 'y'}
@@ -186,6 +128,14 @@ function doChallengeResponse() {
 			<input type="hidden" name="response" value="" />
 		{/if}
 		{if !empty($urllogin)}<input type="hidden" name="url" value="{$urllogin|escape}" />{/if}
+		{if $mode eq "popup"}
+			<div class="siteloginbar_popup">
+				<ul class="clearfix cssmenu_horiz">
+					<li {*class="tabmark" *}id="logout_link_{$module_logo_instance}"><div class="tabmark"><a href="tiki-login.php" class="login_link">{tr}Log in{/tr}<span class="sf-sub-indicator"> »</span></a></div>
+						<ul class="siteloginbar_poppedup">
+							<li class="tabcontent">
+								{capture assign="close_tags"}</li></ul></li></ul></div>{$close_tags}{/capture}
+		{/if}
 		{if $module_params.nobox neq 'y'}
 			<fieldset>
 				{capture assign="close_tags"}</fieldset>{$close_tags}{/capture}
@@ -197,7 +147,7 @@ function doChallengeResponse() {
 				{else}{$error_login|escape}{/if}
 			{/remarksbox}
 		{/if}
-		<div class="user">
+		<div>
 			{if !isset($module_logo_instance)}{assign var=module_logo_instance value=' '}{/if}
 			<label for="login-user_{$module_logo_instance}">{if $prefs.login_is_email eq 'y'}{tr}Email:{/tr}{else}{tr}Username:{/tr}{/if}</label>
 			{if !isset($loginuser) or $loginuser eq ''}
@@ -208,12 +158,12 @@ function doChallengeResponse() {
 			{/if}
 		</div>
 		{if $prefs.feature_challenge eq 'y'} <!-- quick hack to make challenge/response work until 1.8 tiki auth overhaul -->
-			<div class="email">
+			<div>
 				<label for="login-email_{$module_logo_instance}">{tr}eMail:{/tr}</label>
 				<input type="text" name="email" id="login-email_{$module_logo_instance}" size="{if empty($module_params.input_size)}15{else}{$module_params.input_size}{/if}" />
 			</div>
 		{/if}
-		<div class="pass">
+		<div>
 			<label for="login-pass_{$module_logo_instance}">{tr}Password:{/tr}</label>
 			<input onkeypress="capLock(event, this)" type="password" name="pass" id="login-pass_{$module_logo_instance}" size="{if empty($module_params.input_size)}15{else}{$module_params.input_size}{/if}" />
 			<div class="divCapson" style="display:none;">
@@ -277,8 +227,8 @@ function doChallengeResponse() {
 		{/if}
 		{if $prefs.feature_switch_ssl_mode eq 'y' && ($prefs.https_login eq 'allowed' || $prefs.https_login eq 'encouraged')}
 			<div>
-				<a class="linkmodule" href="{$base_url_http|escape}{$prefs.login_url|escape}" title="{tr}Click here to login using the default security protocol{/tr}">{tr}Standard{/tr}</a>
-				<a class="linkmodule" href="{$base_url_https|escape}{$prefs.login_url|escape}" title="{tr}Click here to login using a secure protocol{/tr}">{tr}Secure{/tr}</a>
+				<a class="linkmodule" href="{$base_url_http}{$prefs.login_url}" title="{tr}Click here to login using the default security protocol{/tr}">{tr}Standard{/tr}</a>
+				<a class="linkmodule" href="{$base_url_https}{$prefs.login_url}" title="{tr}Click here to login using a secure protocol{/tr}">{tr}Secure{/tr}</a>
 			</div>
 		{/if}
 		{if $prefs.feature_show_stay_in_ssl_mode eq 'y' && $show_stay_in_ssl_mode eq 'y'}
@@ -316,8 +266,8 @@ function doChallengeResponse() {
 		</fieldset>
 	</form>
 {/if}
-{if $prefs.socialnetworks_facebook_login eq 'y' and $mode neq "header" and $mode neq "popup"}
-	<div style="text-align: center"><a href="tiki-socialnetworks.php?request_facebook=true"><img src="http://developers.facebook.com/images/devsite/login-button.png"></a></div>
+{if $prefs.socialnetworks_facebook_login eq 'y'}
+	<div style="text-align: center"><a href="tiki-socialnetworks.php?request_facebook=true"><img src="http://developers.facebook.com/images/devsite/login-button.png" /></a></div>
 {/if}
 {if $mode eq "header"}</div>{/if}
 {/tikimodule}

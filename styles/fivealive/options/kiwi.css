@@ -1,5 +1,5 @@
 /* $Id$ 
-	Kiwi theme option for FiveAlive themes for
+	Kiwi theme option for FiveAlive theme for
 	Tiki Wiki CMS Groupware.
 */
 
@@ -90,7 +90,8 @@ input[type="submit"]:hover,
 }
 
 .highlight,
-.button.highlight a {
+.button.highlight a,
+.calfocuson {
 	border-color: #f5fb86;
 	color: #638637;
 	background: #d4f9d5;
@@ -148,7 +149,6 @@ input[type="password"],
 input[type="file"],
 input[type="email"],
 input[type="file"],
-input[type="search"],
 input[type="number"],
 input#login-pass,
 textarea,
@@ -203,27 +203,21 @@ th.header {
 	color: #f8f9d4;
 }
 
-.caltable .odd,
-.caltable .even,
-.caltable .calborder,
+.calodd,
+.caleven,
 .wikicell {
 	border: 2px solid #f5f6c1;
 }
 
-.caltable td.calhighlight,
-td.calheadhighlight {
-	background: #d4f9d5;
-}
-
 .odd,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+.calodd,
+table.normal tr:nth-child(2n+1) {
 	background: #f0e884;
 }
 
 .even,
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+.caleven,
+table.normal tr:nth-child(2n) {
 	background: #f8f9d4;
 }
 

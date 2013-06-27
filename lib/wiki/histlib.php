@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -43,7 +43,7 @@ class HistLib extends TikiLib
 		
 		// Store the current page in tiki_history before rolling back
 		if (strtolower($page) != 'sandbox') {
-			$info = $this->get_hist_page_info($page);
+			$info = $this->get_page_info($page);
 			$old_version = $this->get_page_latest_version($page) + 1;
 		    $lastModif = $info["lastModif"];
 		    $user = $info["user"];
@@ -80,7 +80,7 @@ class HistLib extends TikiLib
 		if ($prefs['feature_wysiwyg'] == 'y' && $prefs['wysiwyg_optional'] == 'y' && $prefs['wysiwyg_memo'] == 'y') {
 			if ($res['is_html'] == 1) {
 				// big hack: when you move to wysiwyg you do not come back usually -> wysiwyg should be a column in tiki_history
-				$info = $this->get_hist_page_info($page);
+				$info = $this->get_page_info($page);
 				$bindvars[] = $info['wysiwyg'];
 			} else {
 				$bindvars[] = 'n';
@@ -166,11 +166,11 @@ class HistLib extends TikiLib
 	}
 
 	// Get page info for a specified version
-	function get_hist_page_info($pageName, $version = null)
+	function get_page_info($pageName, $version)
 	{
 		$info = parent::get_page_info($pageName);
 
-		if (empty($version)) {
+		if (!isset($version)) {
 			// No version = last version
 			return $info;
 		}
@@ -508,7 +508,7 @@ class Document
 		$this->startmarker=$startmarker;
 		$this->endmarker=$endmarker;
 
-		$this->_info=$histlib->get_hist_page_info($page, true);
+		$this->_info=$histlib->get_page_info($page, true);
 		if ($lastversion==0) {
 			$lastversion=$this->_info['version'];		
 		}
@@ -1209,15 +1209,16 @@ function histlib_helper_setup_diff( $page, $oldver, $newver )
 
 			$old['data'] = histlib_strip_irrelevant($old['data']);
 			$new['data'] = histlib_strip_irrelevant($new['data']);
-		} else {
-			# If the user doesn't have permission to view 
-			# source, strip out all tiki-source-based comments
-			global $tiki_p_wiki_view_source;
-			if ($tiki_p_wiki_view_source != 'y') {
-				$old["data"] = preg_replace(';~tc~(.*?)~/tc~;s', '', $old["data"]);
-				$new["data"] = preg_replace(';~tc~(.*?)~/tc~;s', '', $new["data"]);
-			}
 		}
+
+                # If the user doesn't have permission to view 
+                # source, strip out all tiki-source-based comments
+                global $tiki_p_wiki_view_source;
+                if ($tiki_p_wiki_view_source != 'y' && $_REQUEST["diff_style"] != "htmldiff") {
+                  $old["data"] = preg_replace(';~tc~(.*?)~/tc~;s', '', $old["data"]);
+                  $new["data"] = preg_replace(';~tc~(.*?)~/tc~;s', '', $new["data"]);
+                }
+
 		$html = diff2($old["data"], $new["data"], $_REQUEST["diff_style"]);
 		$smarty->assign_by_ref('diffdata', $html);
 	}

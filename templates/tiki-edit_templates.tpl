@@ -47,6 +47,10 @@
 		{remarksbox type="warning" title="{tr}Important!{/tr}" highlight="y"}
 		<ul>
 			<li>
+				{tr}If you edit this (or any TPL) file via the built-in editor below, any JavaScript may be sanitized or completely stripped out 
+					by Tiki security filtering, which would cause certain functions to stop working (e.g. menus no longer collapse or expand){/tr}
+			</li>
+			<li>
 				{tr}You should only modify default header.tpl and other important files via a text code editor, through console, 
 					or SSH, or FTP edit commands--and only if you know what you are doing! ;-){/tr}
 			</li>
@@ -64,7 +68,7 @@
 	{/if}
 
 	<form action="tiki-edit_templates.php" method="post">
-		<textarea data-syntax="smarty" data-codemirror="true" data-line-numbers="true" name="data" rows="20" cols="80"
+		<textarea name="data" rows="20" cols="80"
 			{if $prefs.feature_edit_templates ne 'y' or $tiki_p_edit_templates ne 'y'}
 				class="readonly" readonly="readonly"
 			{/if}
@@ -72,16 +76,16 @@
 			{$data|escape}
 		</textarea>
 		<div align="center">
-			<input type="hidden" name="template" value="{$template|escape}">
+			<input type="hidden" name="template" value="{$template|escape}" />
 			{if $prefs.feature_edit_templates eq 'y' and $tiki_p_edit_templates eq 'y'}
 				{if $style_local eq 'n'}
-					<input type="submit" name="save" value="{tr}Save{/tr}">
+					<input type="submit" name="save" value="{tr}Save{/tr}" />
 				{/if}
-				<input type="submit" name="saveTheme" value="{tr}Save Only in the Theme:{/tr} {$prefs.style|replace:'.css':''}">
+				<input type="submit" name="saveTheme" value="{tr}Save Only in the Theme:{/tr} {$prefs.style|replace:'.css':''}" />
 				{if $style_local eq 'y'}
 					<a href="tiki-edit_templates.php?template={$template|escape}&amp;delete=y">
 						<img src="img/icons/cross.png" alt="{tr}Delete the copy in the theme:{/tr} {$prefs.style|replace:'.css':''}" 
-							title="{tr}Delete the copy in the theme:{/tr} {$prefs.style|replace:'.css':''}">
+							title="{tr}Delete the copy in the theme:{/tr} {$prefs.style|replace:'.css':''}" />
 					</a>
 				{/if}
 			{/if}

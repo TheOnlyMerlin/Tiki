@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -47,7 +47,7 @@ function smarty_function_listfilter($params, $smarty)
 		$exclude = isset($exclude) ? $exclude : '';
 
 		$input = "<label>";
-
+		
 		if (!isset($prefix)) {
 			$input .= tra("Filter:");
 		} else {
@@ -74,33 +74,6 @@ function smarty_function_listfilter($params, $smarty)
 		}
 		if (!empty($query) && !empty($_REQUEST[$query])) {
 			$input .= ' value="' . $_REQUEST[$query] . '"';
-		} elseif (!empty($editorId)) {
-			$parentTabId = (empty($parentTabId) ? "" : $parentTabId);
-
-			$headerlib->add_jq_onready(
-				"
-				$(document).bind('editHelpOpened', function() {
-					var text = getTASelection('#".$editorId."'),
-					possiblePlugin = text.split(/[ \(}]/)[0];
-					if (possiblePlugin.charAt(0) == '{') { //we have a plugin here
-						possiblePlugin = possiblePlugin.substring(1);
-						$('#$id')
-							.val(possiblePlugin)
-							.trigger('keyup');
-
-						var parentTabId = '".$parentTabId."';
-						if (parentTabId) {
-							$('#help_sections a[href=#$parentTabId]').trigger('click');
-							var pluginTr = $('#plugins_help_table tr').not(':hidden');
-
-							if (pluginTr.length == 1) {
-								pluginTr.find('a:first').click();
-							}
-						}
-					}
-				});
-			"
-			);
 		}
 
 		$input .= " class='listfilter' />";
@@ -108,7 +81,7 @@ function smarty_function_listfilter($params, $smarty)
 		$input .= "</label>";
 
 		if (!isset($selectors)) $selectors = ".$id table tr";
-
+			
 		$content = "
 \$('#$id').keyup( function() {
 	var criterias = this.value.toLowerCase().split( /\s+/ );
@@ -153,7 +126,7 @@ setTimeout(function () {
 }, 1000);
 ";
 		}
-
+	
 		$headerlib->add_jq_onready($content);
 		return $input;
 	}

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -53,7 +53,7 @@ class Search_Formatter_Plugin_SmartyTemplate implements Search_Formatter_Plugin_
 		$smarty->setPluginsDir(
 			array(
 				$tikipath . TIKI_SMARTY_DIR,	// the directory order must be like this to overload a plugin
-				SMARTY_DIR . 'plugins',
+				SMARTY_DIR . 'plugins'
 			)
 		);
 
@@ -71,14 +71,6 @@ class Search_Formatter_Plugin_SmartyTemplate implements Search_Formatter_Plugin_
 		}
 
 		$smarty->assign('results', $entries);
-		$smarty->assign('facets', array_map(function ($facet) {
-			return array(
-				'name' => $facet->getName(),
-				'label' => $facet->getLabel(),
-				'options' => $facet->getOptions(),
-				'operator' => $facet->getOperator(),
-			);
-		}, $entries->getFacets()));
 		$smarty->assign('count', count($entries));
 		$smarty->assign('offset', $entries->getOffset());
 		$smarty->assign('offsetplusone', $entries->getOffset() + 1);

@@ -1,5 +1,5 @@
 /* $Id$ 
-	Raspberry theme option for FiveAlive themes for
+	Raspberry theme option for FiveAlive theme for
 	Tiki Wiki CMS Groupware.
 */
 
@@ -90,7 +90,8 @@ span#genPass span.button a:hover,
 }
 
 .highlight,
-.button.highlight a {
+.button.highlight a,
+.calfocuson {
 	border-color: #fa9ccd;
 	color: #b51360;
 }
@@ -147,7 +148,6 @@ input[type="password"],
 input[type="file"],
 input[type="email"],
 input[type="file"],
-input[type="search"],
 input[type="number"],
 input#login-pass,
 textarea,
@@ -206,27 +206,21 @@ th.header {
 	border: 2px solid #f6cae2;
 }
 
-.caltable .odd,
-.caltable .even,
-.caltable .calborder,
+.calodd,
+.caleven,
 .wikicell {
 	border: 1px solid #fcebbc;
 }
 
-.caltable td.calhighlight,
-td.calheadhighlight {
-	background: #f9dcec;
-}
-
 .odd,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+.calodd,
+table.normal tr:nth-child(2n+1) {
 	background: #fdf1d0;
 }
 
 .even,
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+.caleven,
+table.normal tr:nth-child(2n) {
 	background: #fcebbc;
 }
 

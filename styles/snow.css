@@ -144,7 +144,6 @@ input[type="text"],
 input[type="password"],
 input[type="email"],
 input[type="file"],
-input[type="search"],
 input[type="number"] {
 	font-size: 0.9em;
 	border: solid 1px #aaa;
@@ -323,8 +322,7 @@ body.fixed_width .fixedwidth .fixedwidth {
 }
 	
 /* left column width */
-#col2 .box-data .cssmenu_vert,
-#col2 .box-data .cssmenu_vert ul {
+#col2 ul.cssmenu_vert {
 	padding-left: 0;
 }
 
@@ -515,16 +513,14 @@ h3.box-title {
 
 td.odd,
 tr.odd,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+table.normal tr:nth-child(2n+1) {
 	background: #F7F9FA;
 	border-collapse: collapse;
 	color: #393e51}
 
 td.even,
 tr.even,
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+table.normal tr:nth-child(2n) {
 	background: #E7E9EA;
 	border-collapse: collapse;
 	color: #393e51}
@@ -533,9 +529,7 @@ table.normal tr:nth-child(2n),
 td.odd,
 td.even,
 table.normal tr:nth-child(2n+1),
-table.normal tr:nth-child(2n),
-.tablesorter tr.odd td,
-.tablesorter tr.even td {
+table.normal tr:nth-child(2n) {
 	margin: 0;
 	padding: 0.2em;
 	vertical-align: top}
@@ -1069,6 +1063,92 @@ textarea.tshoutbox{
 /***** Messages *****/
 /***** TikiSheets *****/
 /***** Calendar *****/
+
+.Cal0, 
+.Cal1, 
+.Cal2 {font-size: 90%}
+	
+.Calart,
+.Calblog,
+.Calchart,
+.Caldir,
+.Caleph,
+.Calfaq,
+.Calfgal,
+.Calforum,
+.Calgal,
+.Calnl,
+.Calquiz,
+.Calsurv,
+.Caltrack,
+.Calwiki {font-size: 90%}
+
+.Calart,
+.Calart a,
+.Calart a:visited {color: #FA8072}
+
+.Calblog,
+.Calblog a,
+.Calblog a:visited {color: #DA70D6}
+
+.Calchart,
+.Calchart a,
+.Calchart a:visited {color: #304F30}
+
+.Caldir,
+.Caldir a,
+.Caldir a:visited {color: #800080}
+
+.Calfaq,
+.Calfaq a,
+.Calfaq a:visited {color: #822222}
+
+.Calfgal,
+.Calfgal a,
+.Calfgal a:visited {font-weight: normal}
+
+.Calforum,
+.Calforum a,
+.Calforum a:visited {color: #808000}
+
+.Calgal,
+.Calgal a,
+.Calgal a:visited {color: #8B4513}
+
+.Calnl,
+.Calnl a,
+.Calnl a:visited {color: #708090}
+
+.Calquiz,
+.Calquiz a,
+.Calquiz a:visited {color: #5F9EA0}
+
+.Calsurv,
+.Calsurv a,
+.Calsurv a:visited {color: #DAA520}
+
+Caltrack,
+Caltrack a,
+Caltrack a:visited {color: #00BD02}
+	
+.Calweb {
+	font-size: 1em}
+
+.Calwiki,
+.Calwiki a,
+.Calwiki a:visited {color: #2C4B80}
+
+.calcontent a.linkmenu,
+.calcontent a.linkmenu:hover {
+	background: none;
+	padding: 0}
+
+.calfocus {font-size: 90%}
+
+.calfocuson {
+	font-size: 100%;
+}
+
 .calprio1 a,
 .calprio2 a,
 .calprio3 a,
@@ -1093,24 +1173,23 @@ textarea.tshoutbox{
 
 #caltable td {padding: 0}
 
+#caltable .calfocuson,
 .box-data .fc a.today,
 .box-data td a.today {
 	background: #cde4f3;
 	border: 1px solid #d3e6f4;
-	border-collapse: collapse
-}
-
-td.calheadhighlight {
-	background: transparent;
-}
-
-#month_title.calheadhighlight,
-.caltable td.calhighlight {
+	border-collapse: collapse}
+	
+.caltable .calfocuson {
 	background: #cde4f3;
 }
-	
-.caltable .calborder {
-	border: 1px solid #999;
+
+#caltable .calfocuson a {
+  color:#000}
+
+#caltable .calfocus a,
+#caltable .calfocuson a {
+  text-decoration:none;
 }
 
 .calinput {background: #3f3f3f}
@@ -1122,14 +1201,29 @@ td.calheadhighlight {
 	float: right;
 }
 * html .addevent {padding: 0}
-.caltable .odd, .caltable .even {border: 1px solid #999}
-.caltable .odd {background: #f7f9fa}
-* html .caltable .odd {padding: 0}
-.caltable .even {background: #e7e9ea}
-* html .caltable .even {padding: 0}
+.calodd, .caleven {border: 1px solid #999}
+.calodd {background: #f7f9fa}
+* html .calodd {padding: 0}
+.caleven {background: #e7e9ea}
+* html .caleven {padding: 0}
+.caldark {background: url(snow/flakesptn.jpg)}
+* html .caldark {padding: 0}
+.caldark .calfocus {background: url(snow/flakesptn.jpg)}
 .calnavigation a:hover {background: url(snow/boxbtm.jpg) }
 .box-data .viewmode {
 	line-height: 1.3;
+}
+
+#calscreen .calfocuson {
+	background: #cde4f3;
+}
+
+.calfocuson a {
+	font-size: 90%;
+}
+
+.calHeadingOn, .calHeadingOn a {
+	background: #cde4f3;
 }
 
 /***** Admin *****/

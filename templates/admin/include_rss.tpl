@@ -29,6 +29,7 @@
 		{/tab}
 
 		{tab name="{tr}Feeds{/tr}"}
+
 			{preference name=feed_articles}
 			<div class="adminoptionboxchild" id="feed_articles_childcontainer">
 				<a href="tiki-articles_rss.php" title="{tr}Feed for articles{/tr}"> {icon _id=feed}</a>
@@ -138,7 +139,6 @@
 				{preference name=feed_tracker_max}
 				{preference name=feed_tracker_showAuthor}
 				{preference name=feed_tracker_homepage}
-				{preference name=feed_tracker_labels}
 			</div>
 
 			{preference name=feed_calendar}

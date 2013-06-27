@@ -78,7 +78,7 @@
 {if $prefs.blog_list_user eq 'link'}
 	<td class="username">&nbsp;{$listpages[changes].user|userlink}&nbsp;</td>
 {elseif $prefs.blog_list_user eq 'avatar'}
-	<td>&nbsp;{$listpages[changes].user|avatarize}&nbsp;<br>
+	<td>&nbsp;{$listpages[changes].user|avatarize}&nbsp;<br />
 	&nbsp;{$listpages[changes].user|userlink}&nbsp;</td>
 {else}
 	<td class="username">&nbsp;{$listpages[changes].user|escape}&nbsp;</td>
@@ -110,7 +110,7 @@
 		<a class='icon' href='tiki-list_comments.php?types_section=blogs&blogId={$listpages[changes].blogId}'>{icon _id='comments' alt="{tr}List all comments{/tr}" title="{tr}List all comments{/tr}"}</a>
 	{/if}
 	{if $tiki_p_admin eq 'y' || $tiki_p_assign_perm_blog eq 'y'}
-	    {if isset($listpages[changes].individual) and $listpages[changes].individual eq 'y'}
+	    {if $listpages[changes].individual eq 'y'}
 		<a class="icon" href="tiki-objectpermissions.php?objectName={$listpages[changes].title|escape:"url"}&amp;objectType=blog&amp;permType=blogs&amp;objectId={$listpages[changes].blogId}">{icon _id='key_active' alt="{tr}Active Perms{/tr}"}</a>
 	    {else}
 		<a class="icon" href="tiki-objectpermissions.php?objectName={$listpages[changes].title|escape:"url"}&amp;objectType=blog&amp;permType=blogs&amp;objectId={$listpages[changes].blogId}">{icon _id='key' alt="{tr}Perms{/tr}"}</a>

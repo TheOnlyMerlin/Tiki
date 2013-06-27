@@ -21,66 +21,31 @@
 
 	{tabset name=admin_search}
 		{tab name="{tr}General Settings{/tr}"}
-		
 			<fieldset>
 				<legend>
-					{tr}Full Text Search (Classic search){/tr}{help url="Search"}
+					{tr}Unified Search{/tr}
 				</legend>
-				{preference name=feature_search_fulltext}
-				<div class="adminoptionboxchild" id="feature_search_fulltext_childcontainer">				
-					{preference name=feature_referer_highlight}
-
-					{preference name=feature_search_show_forbidden_obj}
-					{preference name=feature_search_show_forbidden_cat}
-				</div>
-			</fieldset>
-		
-			<fieldset>
-				<legend>
-					{tr}Unified Search{/tr} {tr}(Advanced){/tr}
-				</legend>
-
-				{if $prefs.unified_last_rebuild}
-					{remarksbox _icon=info title="{tr}Last rebuild{/tr}"}
-						<p>{tr _0=$prefs.unified_last_rebuild|tiki_long_datetime}Your index was last fully rebuilt on %0.{/tr}</p>
-					{/remarksbox}
-				{/if}
 
 				{preference name=feature_search visible="always"}
 				<div class="adminoptionboxchild" id="feature_search_childcontainer">				
-					{preference name=feature_search_stats}
-					{preference name=user_in_search_result}
-					{preference name="unified_incremental_update"}
-
-					{preference name="allocate_memory_unified_rebuild"}
-					{preference name="allocate_time_unified_rebuild"}
-
 					{preference name="unified_engine"}
 					<div class="adminoptionboxchild unified_engine_childcontainer lucene">
+						{preference name="unified_incremental_update"}
 						{preference name="unified_lucene_highlight"}
-						{preference name=unified_parse_results}
-						{preference name="unified_lucene_default_operator"}
-
+						{preference name="unified_lucene_location"}
 						<fieldset>
 							<legend>{tr}Search Engine Settings{/tr}</legend>
-							{preference name="unified_lucene_location"}
 							{preference name="unified_lucene_max_result"}
 							{preference name="unified_lucene_max_resultset_limit"}
 							{preference name="unified_lucene_terms_limit"}
 							{preference name="unified_lucene_max_buffered_docs"}
 							{preference name="unified_lucene_max_merge_docs"}
 							{preference name="unified_lucene_merge_factor"}
+							{preference name="unified_lucene_default_operator"}
 						</fieldset>
 					</div>
 
-					<div class="adminoptionboxchild unified_engine_childcontainer elastic">
-						{preference name="unified_elastic_url"}
-						{preference name="unified_elastic_index_prefix"}
-						{preference name="unified_elastic_index_current"}
-					</div>
-
 					{preference name=unified_excluded_categories}
-					{preference name=unified_excluded_plugins}
 					{preference name=unified_forum_deepindexing}
 
 					{preference name=unified_tokenize_version_numbers}
@@ -95,12 +60,12 @@
 
 					<h4>{tr}Index maintenance{/tr}</h4>
 					<ul>
-						<li><a href="tiki-admin.php?page=search&amp;optimize=now">{tr}Optimize{/tr}</a> {tr}From the command line:{/tr} <kbd>php console.php index:optimize</kbd></li>
+						<li><a href="tiki-admin.php?page=search&amp;optimize=now">{tr}Optimize{/tr}</a> {tr}From the command line:{/tr} <kbd>php lib/search/shell.php optimize</kbd></li>
 						<li>
-							<a href="tiki-admin.php?page=search&amp;rebuild=now" id="rebuild-link">{tr}Rebuild Index{/tr}</a> {tr}From the command line:{/tr} <kbd> php console.php index:rebuild</kbd><br>
+							<a href="tiki-admin.php?page=search&amp;rebuild=now" id="rebuild-link">{tr}Rebuild Index{/tr}</a> {tr}From the command line:{/tr} <kbd>php lib/search/shell.php rebuild</kbd><br />
 							<label for="log-rebuild">{tr}Log rebuild?{/tr}</label>
 							<input type="checkbox" id="log-rebuild" />
-							<span class="description">{tr}Log file is saved as temp/Search_Indexer.log{/tr}</span> <br> {tr}From the command line:{/tr} <kbd>php console.php index:rebuild --log</kbd><br>
+							<span class="description">{tr}Log file is saved as temp/Search_Indexer.log{/tr}</span>
 							{jq}
 $("#log-rebuild").click(function(){
 	if ($(this).prop("checked")) {
@@ -131,17 +96,29 @@ $("#log-rebuild").click(function(){
 							{if $queue_count > 20}
 								<li><a  href="tiki-admin.php?page=search&amp;process=20">20</a></li>
 							{/if}
-							{if $queue_count > 0 and !empty($smarty.request.process) and $smarty.request.process eq 'all' and $prefs.javascript_enabled eq "y"}
+							{if !empty($smarty.request.process) and $smarty.request.process eq 'all' and $prefs.javascript_enabled eq "y"}
 								{jq} setTimeout(function() { history.go(0); }, 1000); {/jq}
 								<li><strong><a  href="tiki-admin.php?page=search&amp;process=">{tr}Stop{/tr}</a></strong></li>
 							{else}
-								<li><em><a  href="tiki-admin.php?page=search&amp;process=all">{tr}All{/tr}</a></em> <br><span class="description">{tr}Uses JavaScript to reload this page until queue is processed{/tr}</span></li>
+								<li><em><a  href="tiki-admin.php?page=search&amp;process=all">{tr}All{/tr}</a></em> <br /><span class="description">{tr}Uses JavaScript to reload this page until queue is processed{/tr}</span></li>
 							{/if}
 						</ul>
 					{/if}
 				</div>
 			</fieldset>
+			<fieldset>
+				<legend>
+					{tr}MySQL Search (legacy){/tr}{help url="Search"}
+				</legend>
+				{preference name=feature_search_fulltext}
+				<div class="adminoptionboxchild" id="feature_search_fulltext_childcontainer">				
+					{preference name=feature_referer_highlight}
+					{preference name=feature_search_stats}
 
+					{preference name=feature_search_show_forbidden_obj}
+					{preference name=feature_search_show_forbidden_cat}
+				</div>
+			</fieldset>
 			<fieldset>
 				<legend>{tr}Features{/tr}</legend>
 				{preference name=search_autocomplete}
@@ -161,32 +138,20 @@ $("#log-rebuild").click(function(){
 		{/tab}
 
 		{tab name="{tr}Search Results{/tr}"}
-			{preference name=search_use_facets}
-			
-			<fieldset>
-				<legend>{tr}Select the items to display on the search results page:{/tr}</legend>
-				{preference name=search_default_interface_language}
-				{preference name=search_default_where}
-				{preference name=search_show_category_filter}
-				{preference name=search_show_tag_filter}
-				{preference name=feature_search_show_object_filter}
-				{preference name=search_show_sort_order}
-				{preference name=feature_search_show_search_box}
-			</fieldset>
-			<fieldset>
-				<legend>{tr}Select the information to display for each result:{/tr}</legend>
-				{preference name=feature_search_show_visit_count}
-				{preference name=feature_search_show_pertinence}
-				{preference name=feature_search_show_object_type}
-				{preference name=feature_search_show_last_modification}
-				{preference name=search_parsed_snippet}
-			</fieldset>
+			{tr}Select the items to display on the search results page:{/tr}
+			{preference name=search_default_interface_language}
+			{preference name=search_default_where}
+			{preference name=search_show_category_filter}
+			{preference name=search_show_tag_filter}
+			{preference name=feature_search_show_object_filter}
+			{preference name=feature_search_show_search_box}
+			{tr}Select the information to display for each result:{/tr}
+			{preference name=feature_search_show_visit_count}
+			{preference name=feature_search_show_pertinence}
+			{preference name=feature_search_show_object_type}
+			{preference name=feature_search_show_last_modification}
+			{preference name=search_parsed_snippet}
 		{/tab}
-
-	{tab name="{tr}Tools{/tr}"}
-		<a href="tiki-report_string_in_db.php">{tr}Report all occurences of a string in any table{/tr}</a><br>
-	{/tab}
-
 	{/tabset}
 	<div class="heading input_submit_container" style="text-align: right">
 		<input type="submit" value="{tr}Change preferences{/tr}" />

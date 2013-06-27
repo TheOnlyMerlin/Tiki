@@ -5,7 +5,7 @@
 {/if}
 
 {if $tiki_p_remove eq 'y' or $prefs.feature_wiki_multiprint eq 'y'}
-	{if isset($checkboxes_on) and $checkboxes_on eq 'n'}
+	{if $checkboxes_on eq 'n'}
 		{assign var='checkboxes_on' value='n'}
 	{else}
 		{assign var='checkboxes_on' value='y'}
@@ -19,7 +19,7 @@
 {/if}
 
 
-{if isset($checkboxes_on) and $checkboxes_on eq 'y'}
+{if $checkboxes_on eq 'y'}
 	<form name="checkboxes_on" method="post" action="{$smarty.server.PHP_SELF}">
 {/if}
 
@@ -27,7 +27,7 @@
 
 <table class="normal">
 	<tr>
-		{if isset($checkboxes_on) and $checkboxes_on eq 'y' && count($listpages) > 0}
+		{if $checkboxes_on eq 'y' && count($listpages) > 0}
 			<th>
 				{select_all checkbox_names='checked[]'}
 			</th>
@@ -50,11 +50,10 @@
 			</th>
 		{/if}
 
-		{if isset($wplp_used)}
-			{foreach from=$wplp_used key=lc item=ln}
-				<th>{$ln|escape}</th>
-			{/foreach}
-		{/if}
+		{foreach from=$wplp_used key=lc item=ln}
+			<th>{$ln|escape}</th>
+		{/foreach}
+
 		{if $prefs.wiki_list_hits eq 'y'}
 			{assign var='cntcol' value=$cntcol+1}
 			<th>{self_link _sort_arg='sort_mode' _sort_field='hits'}{tr}Hits{/tr}{/self_link}</th>
@@ -173,7 +172,7 @@
 	<tr class="{cycle}">
 		{if $checkboxes_on eq 'y'}
 			<td class="checkbox">
-				<input type="checkbox" name="checked[]" value="{$listpages[changes].pageName|escape}">
+				<input type="checkbox" name="checked[]" value="{$listpages[changes].pageName|escape}"/>
 			</td>
 		{/if}
 
@@ -197,17 +196,15 @@
 			</td>
 		{/if}
 
-		{if isset($wplp_used)}
-			{foreach from=$wplp_used key=lc item=ln}
-				<td class="text">
-					{if $listpages[changes].translations[$lc]}
-						<a href="{$listpages[changes].translations[$lc]|sefurl}" class="link" title="{tr}View page{/tr}&nbsp;{$listpages[changes].translations[$lc]|escape}">
-							{$listpages[changes].translations[$lc]|escape}
-						</a>
-					{/if}
-				</td>
-			{/foreach}
-		{/if}
+		{foreach from=$wplp_used key=lc item=ln}
+			<td class="text">
+				{if $listpages[changes].translations[$lc]}
+					<a href="{$listpages[changes].translations[$lc]|sefurl}" class="link" title="{tr}View page{/tr}&nbsp;{$listpages[changes].translations[$lc]|escape}">
+						{$listpages[changes].translations[$lc]|escape}
+					</a>
+				{/if}
+			</td>
+		{/foreach}
 
 		{if $prefs.wiki_list_hits eq 'y'}	
 			<td class="integer">
@@ -301,7 +298,7 @@
 		{if $prefs.wiki_list_categories eq 'y'}
 			<td class="text">
 				{foreach $listpages[changes].categname as $categ}
-					{if !$categ@first}<br>{/if}
+					{if !$categ@first}<br />{/if}
 					{$categ|escape}
 				{/foreach}
 			</td>
@@ -310,7 +307,7 @@
 		{if $prefs.wiki_list_categories_path eq 'y'}
 			<td class="text">
 				{foreach $listpages[changes].categpath as $categpath}
-					{if !$categpath@first}<br>{/if}
+					{if !$categpath@first}<br />{/if}
 					{$categpath|escape}
 				{/foreach}
 			</td>
@@ -400,7 +397,7 @@
 		//-->
 	</script>
 	<noscript>
-		<input type="submit" value="{tr}OK{/tr}">
+		<input type="submit" value="{tr}OK{/tr}" />
 	</noscript>
 {/if}
 

@@ -1,8 +1,8 @@
 {* $Id$ *}{if $popup}<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link rel="StyleSheet"  href="styles/{$prefs.style}" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="StyleSheet"  href="styles/{$prefs.style}" type="text/css" />
 <script type="text/javascript" src="lib/imagegals/imagegallib.js"></script>
 </head>
 <body class="tiki_browse_image_popup">
@@ -84,7 +84,7 @@
 {if $scaleinfo.clickscale >= 0}
   <a href="{$url_base}{$imageId}&amp;scalesize={$scaleinfo.clickscale}" title="{tr}Click to zoom{/tr}">
 {/if}
-<img src="show_image.php?id={$imageId}&amp;scalesize={$resultscale}&amp;nocount=y" alt="{tr}Image{/tr}" id="thepix">
+<img src="show_image.php?id={$imageId}&amp;scalesize={$resultscale}&amp;nocount=y" alt="{tr}Image{/tr}" id="thepix" />
 {if $scaleinfo.clickscale >= 0}
 </a>
 {/if}
@@ -95,7 +95,7 @@
 {/if}
   
 {if $popup eq ""}
-	<br><br>
+	<br /><br />
 	<table class="normal noslideshow">
 		<tr><td class="odd">{tr}Image Name:{/tr}</td><td class="odd">{$name}</td></tr>
 		<tr><td class="even">{tr}Created:{/tr}</td><td class="even">{$created|tiki_long_datetime}</td></tr>
@@ -115,23 +115,23 @@
 			</td>
 			<td class="odd">
 				<form action="tiki-browse_image.php" method="post">
-					<input type="hidden" name="scalesize" value="{$scalesize|escape}">
-					<input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
-					<input type="hidden" name="imageId" value="{$imageId|escape}">
-					<input type="hidden" name="galleryId" value="{$galleryId|escape}">
-					<input type="text" name="newname" value="{$name}">
+					<input type="hidden" name="scalesize" value="{$scalesize|escape}" />
+					<input type="hidden" name="sort_mode" value="{$sort_mode|escape}"/>
+					<input type="hidden" name="imageId" value="{$imageId|escape}"/>
+					<input type="hidden" name="galleryId" value="{$galleryId|escape}"/>
+					<input type="text" name="newname" value="{$name}" />
 					<select name="newgalleryId">
 				    {section name=idx loop=$galleries}
 				      <option value="{$galleries[idx].id|escape}" {if $galleries[idx].id eq $galleryId}selected="selected"{/if}>{$galleries[idx].name}</option>
 				    {/section}
 					</select>
-					<input type="submit" name="move_image" value="{tr}Move{/tr}">
+					<input type="submit" name="move_image" value="{tr}Move{/tr}" />
 			  </form>
 			</td>
 		</tr>
 		{/if}
 	</table>
-	<br><br>    
+	<br /><br />    
 	<table class="normal noslideshow" style="font-size:small">
 		<tr>
 			<td class="even" style="border-bottom:0px" colspan="2">
