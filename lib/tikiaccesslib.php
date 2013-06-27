@@ -47,10 +47,7 @@ class TikiAccessLib extends TikiLib
 		}
 	}
 
-    /**
-     * @param $user
-     */
-    function check_user($user)
+	function check_user($user)
 	{
 		global $prefs;
 		require_once ('tiki-setup.php');
@@ -61,13 +58,7 @@ class TikiAccessLib extends TikiLib
 		}
 	}
 
-    /**
-     * @param string $user
-     * @param array $features
-     * @param array $permissions
-     * @param string $permission_name
-     */
-    function check_page($user = 'y', $features = array(), $permissions = array(), $permission_name = '')
+	function check_page($user = 'y', $features = array(), $permissions = array(), $permission_name = '')
 	{
 		require_once ('tiki-setup.php');
 
@@ -117,7 +108,7 @@ class TikiAccessLib extends TikiLib
 		}
 
 		foreach ($features as $feature) {
-			if (!$either && $prefs[$feature] != 'y') {
+			if ($prefs[$feature] != 'y') {
 				if ($feature_name != '') {
 					$feature = $feature_name;
 				}
@@ -146,13 +137,7 @@ class TikiAccessLib extends TikiLib
 		}
 	}
 
-    /**
-     * @param $permissions
-     * @param string $permission_name
-     * @param bool $objectType
-     * @param bool $objectId
-     */
-    function check_permission($permissions, $permission_name = '', $objectType = false, $objectId = false)
+	function check_permission($permissions, $permission_name = '', $objectType = false, $objectId = false)
 	{
 		require_once ('tiki-setup.php');
 
@@ -289,10 +274,7 @@ class TikiAccessLib extends TikiLib
 		}
 	}
 
-    /**
-     * @return bool
-     */
-    function check_ticket()
+	function check_ticket()
 	{
 		global $smarty, $prefs, $user;
 
@@ -307,14 +289,7 @@ class TikiAccessLib extends TikiLib
 		}
 	}
 
-    /**
-     * @param $page
-     * @param string $errortitle
-     * @param string $errortype
-     * @param bool $enableRedirect
-     * @param string $message
-     */
-    function display_error($page, $errortitle = "", $errortype = "", $enableRedirect = true, $message = '')
+	function display_error($page, $errortitle = "", $errortype = "", $enableRedirect = true, $message = '')
 	{
 		global $smarty, $prefs, $tikiroot, $userlib, $user;
 		require_once ('tiki-setup.php');
@@ -394,11 +369,7 @@ class TikiAccessLib extends TikiLib
 		die;
 	}
 
-    /**
-     * @param string $page
-     * @return string
-     */
-    function get_home_page($page = '')
+	function get_home_page($page = '')
 	{
 		global $prefs, $tikilib, $use_best_language, $userlib, $user;
 
@@ -467,10 +438,7 @@ class TikiAccessLib extends TikiLib
 		exit();
 	}
 
-    /**
-     * @param $message
-     */
-    function flash( $message )
+	function flash( $message )
 	{
 		$this->redirect($_SERVER['REQUEST_URI'], $message);
 	}
@@ -527,10 +495,7 @@ class TikiAccessLib extends TikiLib
 		return $result;
 	}
 
-    /**
-     * @return bool
-     */
-    function http_auth()
+	function http_auth()
 	{
 		global $tikidomain, $userlib, $user, $smarty;
 
@@ -566,11 +531,7 @@ class TikiAccessLib extends TikiLib
 		}
 	}
 
-    /**
-     * @param bool $acceptFeed
-     * @return array
-     */
-    function get_accept_types($acceptFeed = false)
+	function get_accept_types($acceptFeed = false)
 	{
 		$accept = explode(',', $_SERVER['HTTP_ACCEPT']);
 
@@ -604,10 +565,7 @@ class TikiAccessLib extends TikiLib
 		return $types;
 	}
 
-    /**
-     * @return bool
-     */
-    function is_machine_request()
+	function is_machine_request()
 	{
 		foreach ( $this->get_accept_types() as $name => $full ) {
 			switch ( $name ) {
@@ -622,11 +580,7 @@ class TikiAccessLib extends TikiLib
 		return false;
 	}
 
-    /**
-     * @param bool $acceptFeed
-     * @return bool
-     */
-    function is_serializable_request($acceptFeed = false)
+	function is_serializable_request($acceptFeed = false)
 	{
 		foreach ( $this->get_accept_types($acceptFeed) as $name => $full ) {
 			switch ( $name ) {
@@ -644,10 +598,7 @@ class TikiAccessLib extends TikiLib
 		return false;
 	}
 
-    /**
-     * @return bool
-     */
-    function is_xml_http_request()
+	function is_xml_http_request()
 	{
 		return ! empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
 	}

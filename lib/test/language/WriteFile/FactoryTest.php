@@ -7,6 +7,7 @@
 
 require_once('lib/language/Exception.php');
 require_once('lib/language/WriteFile/Factory.php');
+require_once('vfsStream/vfsStream.php');
 
 class Language_WriteFile_FactoryTest extends TikiTestCase
 {

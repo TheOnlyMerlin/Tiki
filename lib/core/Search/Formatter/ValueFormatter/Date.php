@@ -5,12 +5,16 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-class Search_Formatter_ValueFormatter_Date extends Search_Formatter_ValueFormatter_Datetime
+class Search_Formatter_ValueFormatter_Date extends Search_Formatter_ValueFormatter_Abstract
 {
-	function __construct()
+	function render($name, $value, array $entry)
 	{
-		$tikilib = TikiLib::lib('tiki');
-		$this->format = $tikilib->get_short_date_format();
+		global $prefs, $tikilib;
+		if (is_numeric($value)) {	// expects a unix timestamp but might be getting the default value
+			return $tikilib->date_format($prefs['short_date_format'], $value);
+		} else {
+			return $value;
+		}
 	}
 }
 

@@ -655,12 +655,10 @@ class EditLib
 		};
 
 		// get the entry points on the stacks
-		$keys = array_keys($p['wikistack']);
-		$key = end($keys);
+		$key = end(array_keys($p['wikistack']));
 		$wiki = &$p['wikistack'][$key];
 
-		$keys = array_keys($p['stack']);
-		$key = end($keys);
+		$key = end(array_keys($p['stack']));
 		$stack = &$p['stack'][$key];
 		$string = &$stack['string'];
 
@@ -711,8 +709,8 @@ class EditLib
 	 * Used by "switch editor" and when saving in wysiwyg_htmltowiki mode
 	 * When saving in mixed "html" mode the "unparsing" is done in JavaScript client-side
 	 *
-	 * @param $inData string	editor content
-	 * @return string			wiki markup
+	 * @param $inData		editor content
+	 * @return string		wiki markup
 	 */
 
 	function parseToWiki( $inData )
@@ -760,9 +758,9 @@ class EditLib
 	 * Render html to send to ckeditor, including parsing plugins for wysiwyg editing
 	 * From both wiki page source (for wysiwyg_htmltowiki) and "html" modes
 	 *
-	 * @param $inData string	page data, can be wiki or mixed html/wiki
+	 * @param $inData			page data, can be wiki or mixed html/wiki
 	 * @param bool $fromWiki	set if converting from wiki page using "switch editor"
-	 * @param bool $isHtml 		set if are doing WYSIWYG Wiki
+	 * @param bool $isHtml set if are doing WYSIWYG Wiki
 	 * @return string			html to send to ckeditor
 	 */
 

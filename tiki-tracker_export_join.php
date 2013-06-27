@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -23,11 +20,6 @@ if ($tiki_p_admin_trackers != 'y') {
 $trklib = TikiLib::lib("trk");
 
 //TODO: This needs rewritten to match tiki
-/**
- * @param $fieldIds
- * @param $tracker
- * @return mixed
- */
 function dateFormat($fieldIds, $tracker)
 {
 	foreach ($tracker as $key => $item) {
@@ -41,10 +33,6 @@ function dateFormat($fieldIds, $tracker)
 }
 
 //TODO: Find alternative for obtaining querystring/form data
-/**
- * @param $name
- * @param null $default
- */
 function defVal($name, $default = null)
 {
 	if (isset($_GET[$name]) == true) {
@@ -78,9 +66,6 @@ defVal('start');
 defVal('end');
 
 //TODO: integrate into tracker query lib
-/**
- * @param $param
- */
 function splitToTracker($param)
 {
 	if (isset($_REQUEST[$param])) {

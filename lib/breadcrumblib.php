@@ -13,9 +13,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 
 include_once("tikihelplib.php");
 
-/**
- *
- */
 class Breadcrumb
 {
 	public $title;
@@ -25,14 +22,7 @@ class Breadcrumb
 	public $helpDescription;
 	public $hidden;
 
-    /**
-     * @param $title
-     * @param string $desc
-     * @param string $url
-     * @param string $helpurl
-     * @param string $helpdesc
-     */
-    function Breadcrumb($title, $desc='', $url='', $helpurl='', $helpdesc='')
+	function Breadcrumb($title, $desc='', $url='', $helpurl='', $helpdesc='')
 	{
 		if ($title == '') {
 			$this->title = 'Home';
@@ -49,10 +39,6 @@ class Breadcrumb
 }
 
 /* static */
-/**
- * @param $crumbs
- * @return bool|string
- */
 function breadcrumb_buildHeadTitle($crumbs)
 {
 	global $prefs;
@@ -240,13 +226,6 @@ function breadcrumb_buildStructureTrail($structure_path, $cnt, $loclass, $showLi
 	return $res;
 }
 
-/**
- * @param $crumbs
- * @param $menuId
- * @param null $startLevel
- * @param null $stopLevel
- * @return array
- */
 function breadcrumb_buildMenuCrumbs($crumbs, $menuId, $startLevel = null, $stopLevel = null)
 {
 
@@ -394,10 +373,6 @@ function breadcrumb_getDescription($crumbs, $loc)
 }
 
 /* private */
-/**
- * @param $var
- * @return bool
- */
 function _is_assoc($var)
 {
 	return is_array($var) && array_keys($var) !== range(0, count($var) - 1);

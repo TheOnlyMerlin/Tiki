@@ -24,7 +24,6 @@ function wikiplugin_trackerlist_info()
 				'description' => tra('Numeric value representing the tracker ID'),
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'tracker',
 			),
 			'fields' => array(
 				'required' => false,
@@ -33,7 +32,6 @@ function wikiplugin_trackerlist_info()
 				'filter' => 'digits',
 				'separator' => ':',
 				'default' => '',
-				'profile_reference' => 'tracker_field',
 			),
 			'sort' => array(
 				'required' => false,
@@ -265,7 +263,6 @@ function wikiplugin_trackerlist_info()
 				'filter' => 'digits',
 				'separator' => ':',
 				'default' => '',
-				'profile_reference' => 'tracker_field',
 			),
 			'filtervalue' => array(
 				'required' => false,
@@ -351,7 +348,6 @@ function wikiplugin_trackerlist_info()
 				'filter' => 'pagename',
 				'advanced' => true,
 				'default' => '',
-				'profile_reference' => 'wiki_page',
 			),
 			'tplwiki' => array(
 				'required' => false,
@@ -360,7 +356,6 @@ function wikiplugin_trackerlist_info()
 				'filter' => 'pagename',
 				'advanced' => true,
 				'default' => '',
-				'profile_reference' => 'wiki_page',
 			),
 			'view_user' => array(
 				'required' => false,
@@ -375,7 +370,6 @@ function wikiplugin_trackerlist_info()
 				'filter' => 'digits',
 				'separator' => ':',
 				'default' => '',
-				'profile_reference' => 'tracker_item',
 			),
 			'ignoreRequestItemId' => array(
 				'required' => false,
@@ -447,7 +441,6 @@ function wikiplugin_trackerlist_info()
 				'filter' => 'text',
 				'advanced' => true,
 				'default' => '',
-				'profile_reference' => 'tracker_field_string',
 			),
 			'silent' => array(
 				'required' => false,
@@ -472,13 +465,6 @@ function wikiplugin_trackerlist_info()
 					array('text' => tra('Yes'), 'value' => 'y'),
 					array('text' => tra('No'), 'value' => 'n')
 				)
-			),
-			'urlafterdelete' => array(
-				'required' => false,
-				'name' => tra('Url to redirect to after delete'),
-				'description' => tra('Url to redirect to after delete'),
-				'filter' => 'url',
-				'default' => '',
 			),
 			'showopenitem' => array(
 					'required' => false,
@@ -567,7 +553,6 @@ function wikiplugin_trackerlist_info()
 				'separator' => ':',
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'tracker_field',
 			),
 			'calendarviewmode' => array(
 				'required' => false,
@@ -713,38 +698,13 @@ function wikiplugin_trackerlist_info()
 				),
 				'default' => '',
 			),
-			'editable' => array(
-				'required' => false,
-				'name' => tr('Inline edit'),
-				'description' => tr('List of fields for which inline editing will be enabled.'),
-				'filter' => 'digits',
-				'separator' => ':',
-				'profile_reference' => 'tracker_field',
-				'default' => array(),
-			),
-			'editableall' => array(
-				'required' => false,
-				'name' => tr('Inline edit All'),
-				'description' => tr('Allow all displayed fields to be editable'),
-				'default' => 'y',
-				'advanced' => true,
-				'filter' => 'alpha',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				)
-			),
 		)
 	);
 }
 
 function wikiplugin_trackerlist($data, $params)
 {
-	global $smarty, $tikilib, $dbTiki, $userlib, $tiki_p_admin_trackers, $prefs, $_REQUEST, $tiki_p_view_trackers, $user,
-		   $page, $tiki_p_tracker_vote_ratings, $tiki_p_tracker_view_ratings, $trklib,
-		   $tiki_p_export_tracker, $tiki_p_watch_trackers, $tiki_p_edit;
-
+	global $smarty, $tikilib, $dbTiki, $userlib, $tiki_p_admin_trackers, $prefs, $_REQUEST, $tiki_p_view_trackers, $user, $page, $tiki_p_tracker_vote_ratings, $tiki_p_tracker_view_ratings, $trklib, $tiki_p_traker_vote_rating, $tiki_p_export_tracker, $tiki_p_watch_trackers;
 	require_once("lib/trackers/trackerlib.php");
 	global $notificationlib;  include_once('lib/notifications/notificationlib.php');//needed if plugin tracker after plugin trackerlist
 	static $iTRACKERLIST = 0;
@@ -760,9 +720,7 @@ function wikiplugin_trackerlist($data, $params)
 		'calendarviewnavbar' => 'y',
 		'calendartitle'=>'',
 		'calendardelta' => '',
-		'force_compile' => 'n',
-		'editable' => array(),
-		'editableall' => 'n',
+		'force_compile' => 'n'
 	);
 
 	$params = array_merge($default, $params);
@@ -788,25 +746,24 @@ function wikiplugin_trackerlist($data, $params)
 			$sort = 'n';
 		}
 
-		$perms = $tikilib->get_perm_object($trackerId, 'tracker', $tracker_info, false);
-		if ($perms['tiki_p_view_trackers'] != 'y' && !$user) {
-			return;
+		if ($tiki_p_admin_trackers != 'y') {
+			$perms = $tikilib->get_perm_object($trackerId, 'tracker', $tracker_info, false);
+			if ($perms['tiki_p_view_trackers'] != 'y' && !$user) {
+				return;
+			}
+			$userCreatorFieldId = $trklib->get_field_id_from_type($trackerId, 'u', '1%');
+			$groupCreatorFieldId = $trklib->get_field_id_from_type($trackerId, 'g', '1%');
+			if ($perms['tiki_p_view_trackers'] != 'y' && $tracker_info['writerCanModify'] != 'y' && empty($userCreatorFieldId) && empty($groupCreatorFieldId)) {
+				return;
+			}
+			$smarty->assign_by_ref('perms', $perms);
 		}
-		$userCreatorFieldId = $trklib->get_field_id_from_type($trackerId, 'u', '1%');
-		$groupCreatorFieldId = $trklib->get_field_id_from_type($trackerId, 'g', '1%');
-		if ($perms['tiki_p_view_trackers'] != 'y' && $tracker_info['writerCanModify'] != 'y' && empty($userCreatorFieldId) && empty($groupCreatorFieldId)) {
-			return;
-		}
-		$smarty->assign_by_ref('perms', $perms);
 
 		global $trklib; require_once("lib/trackers/trackerlib.php");
 		if (!empty($fields)) {
 			$limit = $fields;
 		} else {
 			$limit = '';
-		}
-		if ($editableall=='y') {
-			$editable = $fields;
 		}
 		if (!empty($filterfield) && !empty($limit)) {
 			$limit = array_unique(array_merge($limit, $filterfield));
@@ -1426,22 +1383,12 @@ function wikiplugin_trackerlist($data, $params)
 				$newItemRateField = $allfields["data"][$i]['fieldId'];
 			}
 		}
-		$nonPublicFieldsWarning = '';
-		if ($tiki_p_edit === 'y') {
-			foreach ($allfields['data'] as $field) {
-				if ($field['isPublic'] !== 'y' && in_array($field['fieldId'], array_merge($listfields, $popupfields))) {
-					$nonPublicFieldsWarning = tra('You have attempted to view data of a tracker field which is not public. You need to ask the admin to change the setting to public for this field.');
-				}
-			}
-		}
-		$smarty->assign('nonPublicFieldsWarning', $nonPublicFieldsWarning);
 		$smarty->assign_by_ref('filterfield', $filterfield);
 		$smarty->assign_by_ref('filtervalue', $filtervalue);
 		$smarty->assign_by_ref('fields', $passfields);
 		$smarty->assign_by_ref('exactvalue', $exactvalue);
 		$smarty->assign_by_ref('listfields', $listfields);
 		$smarty->assign_by_ref('popupfields', $popupfields);
-		$smarty->assign('editableFields', $editable);
 		if (!empty($filterfield)) {
 			$urlquery['filterfield'] =  is_array($filtervalue) ? implode(':', $filterfield) : $filterfield;
 			if (!is_array($filtervalue)) {
@@ -1454,7 +1401,7 @@ function wikiplugin_trackerlist($data, $params)
 		} else {
 			$smarty->assign('urlquery', '');
 		}
-		if (!empty($export) && $export != 'n' && $perms['tiki_p_export_tracker'] == 'y') {
+		if (!empty($export) && $export != 'n' && $tiki_p_export_tracker == 'y') {
 			$smarty->loadPlugin('smarty_function_service');
 			$exportParams = array(
 				'controller' => 'tracker',
@@ -1476,33 +1423,43 @@ function wikiplugin_trackerlist($data, $params)
 		}
 
 		if (!empty($_REQUEST['delete'])) {
-			$itemToDelete = Tracker_Item::fromId($_REQUEST['delete']);
-			if ($itemToDelete->canRemove()) {
-				$trklib->remove_tracker_item($_REQUEST['delete']);
+			if (($item_info = $trklib->get_item_info($_REQUEST['delete'])) && $trackerId == $item_info['trackerId']) {
+				if ($tiki_p_admin_trackers == 'y'
+					|| ($perms['tiki_p_remove_tracker_items'] == 'y' && $item_info['status'] != 'p' && $item_info['status'] != 'c')
+					|| ($perms['tiki_p_remove_tracker_items_pending'] == 'y' && $item_info['status'] == 'p')
+					|| ($perms['tiki_p_remove_tracker_items_closed'] == 'y' && $item_info['status'] == 'c')	) {
+					$trklib->remove_tracker_item($_REQUEST['delete']);
+				}
 			}
-
-			if (!empty($urlafterdelete)) {
-				header("Location: $urlafterdelete");
-				exit;
-			}
-
 		}
 		if (!empty($_REQUEST['closeitem'])) {
-			$itemToModify = Tracker_Item::fromId($_REQUEST['closeitem']);
-			if ($itemToModify->canModify()) {
-				$trklib->change_status(array(array('itemId' => $_REQUEST['closeitem'])), 'c');
+			if (($item_info = $trklib->get_item_info($_REQUEST['closeitem'])) && $trackerId == $item_info['trackerId']) {
+				if ($tiki_p_admin_trackers == 'y'
+					|| ($perms['tiki_p_modify_tracker_items'] == 'y' && $item_info['status'] != 'p' && $item_info['status'] != 'c')
+					|| ($perms['tiki_p_modify_tracker_items_pending'] == 'y' && $item_info['status'] == 'p')
+					|| ($perms['tiki_p_modify_tracker_items_closed'] == 'y' && $item_info['status'] == 'c') ) {
+					$trklib->change_status(array(array('itemId' => $_REQUEST['closeitem'])), 'c');
+				}
 			}
 		}
 		if (!empty($_REQUEST['penditem'])) {
-			$itemToModify = Tracker_Item::fromId($_REQUEST['penditem']);
-			if ($itemToModify->canModify()) {
-				$trklib->change_status(array(array('itemId' => $_REQUEST['penditem'])), 'p');
+			if (($item_info = $trklib->get_item_info($_REQUEST['penditem'])) && $trackerId == $item_info['trackerId']) {
+				if ($tiki_p_admin_trackers == 'y'
+					|| ($perms['tiki_p_modify_tracker_items'] == 'y' && $item_info['status'] != 'p' && $item_info['status'] != 'c')
+					|| ($perms['tiki_p_modify_tracker_items_pending'] == 'y' && $item_info['status'] == 'p')
+					|| ($perms['tiki_p_modify_tracker_items_closed'] == 'y' && $item_info['status'] == 'c') ) {
+					$trklib->change_status(array(array('itemId' => $_REQUEST['penditem'])), 'p');
+				}
 			}
 		}
 		if (!empty($_REQUEST['openitem'])) {
-			$itemToModify = Tracker_Item::fromId($_REQUEST['openitem']);
-			if ($itemToModify->canModify()) {
-				$trklib->change_status(array(array('itemId' => $_REQUEST['openitem'])), 'o');
+			if (($item_info = $trklib->get_item_info($_REQUEST['openitem'])) && $trackerId == $item_info['trackerId']) {
+				if ($tiki_p_admin_trackers == 'y'
+					|| ($perms['tiki_p_modify_tracker_items'] == 'y' && $item_info['status'] != 'p' && $item_info['status'] != 'c')
+					|| ($perms['tiki_p_modify_tracker_items_pending'] == 'y' && $item_info['status'] == 'p')
+					|| ($perms['tiki_p_modify_tracker_items_closed'] == 'y' && $item_info['status'] == 'c') ) {
+					$trklib->change_status(array(array('itemId' => $_REQUEST['openitem'])), 'o');
+				}
 			}
 		}
 		if (!empty($calendarfielddate)) {
@@ -1783,16 +1740,7 @@ function wikiplugin_trackerlist($data, $params)
 			} else {
 				$smarty->assign('trackerlistmapview', false);
 			}
-      
-			if ($prefs['feature_score'] == 'y' && isset($items['data'])) {
-				foreach($items['data'] as $score_item) {
-				  $item_info = $trklib->get_tracker_item($score_item['itemId']);
-				  $currentItemId = $score_item['itemId'];
-				  $tikilib->score_event($user, 'trackeritem_read', $currentItemId);
-				  $tikilib->score_event($item_info['createdBy'], 'trackeritem_is_read', "$user:$currentItemId");
-				}
-			}
-			
+
 			$tracker = $trklib->get_tracker($trackerId, 0, -1);
 			/*foreach ($query_array as $k=>$v) {
 				if (!is_array($v)) { //only to avoid an error: eliminate the params that are not simple (ex: if you have in the same page a tracker list plugin and a tracker plugin, filling the tracker plugin interfers with the tracker list. In any case this is buggy if two tracker list plugins in the same page and if one needs the query value....

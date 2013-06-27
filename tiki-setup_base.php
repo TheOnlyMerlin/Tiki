@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -35,7 +32,21 @@ ini_set('magic_quotes_sybase', 'Off');
 ini_set('magic_quotes_runtime', 0);
 ini_set('allow_call_time_pass_reference', 'On');
 
-$memory_limiter = new Tiki_MemoryLimit('128M'); // Keep in variable to hold scope
+
+// Set memory_limit to at least 128M
+$memory_limit = ini_get('memory_limit');
+$s = trim($memory_limit);
+$last = strtolower($s{strlen($s)-1});
+switch ( $last ) {
+	case 'g': $s *= 1024;
+	case 'm': $s *= 1024;
+	case 'k': $s *= 1024;
+}
+
+if ( $s < 128 * 1024 * 1024 ) {
+	ini_set('memory_limit', '128M');
+};
+
 
 // ---------------------------------------------------------------------
 // inclusions of mandatory stuff and setup
@@ -57,6 +68,7 @@ $needed_prefs = array(
 	'lang_use_db' => 'n',
 	'feature_fullscreen' => 'n',
 	'error_reporting_level' => 0,
+	'smarty_notice_reporting' => 'n',
 	'memcache_enabled' => 'n',
 	'memcache_expiration' => 3600,
 	'memcache_prefix' => 'tiki_',
@@ -64,6 +76,7 @@ $needed_prefs = array(
 	'memcache_servers' => false,
 	'min_pass_length' => 5,
 	'pass_chr_special' => 'n',
+	'smarty_compilation' => 'modified',
 	'menus_item_names_raw' => 'n',
 );
 // check that tiki_preferences is there
@@ -73,7 +86,6 @@ if ($tikilib->query("SHOW TABLES LIKE 'tiki_preferences'")->numRows() == 0) {
 	exit;
 }
 $tikilib->get_preferences($needed_prefs, true, true);
-$prefs = $systemConfiguration->preference->toArray() + $prefs;
 
 if (isset($prefs['session_protected']) && $prefs['session_protected'] == 'y' && ! isset($_SERVER['HTTPS']) && php_sapi_name() != 'cli') {
 	header("Location: https://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}");
@@ -139,31 +151,8 @@ if (isset($_SERVER["REQUEST_URI"])) {
 		unset($session_params);
 
 		try {
+			require_once "Zend/Session.php";
 			Zend_Session::start();
-
-			/* This portion may seem strange, but it is an extra validation against session
-			 * collisions. An extra cookie is set with an additional random value. When loading
-			 * the session, it makes sure the extra cookie matches the one in the session. Otherwise
-			 * it destroys the session and reloads the page for the user.
-			 *
-			 * Effectively, in the occurence of a collision, both users are kicked out.
-			 * This is an extremely rare occurence that is hard to reproduce by nature.
-			 */ 
-			$extra_cookie_name = session_name() . 'CV';
-			if (isset($_SESSION['extra_validation'])) {
-				$cookie = isset($_COOKIE[$extra_cookie_name]) ? $_COOKIE[$extra_cookie_name] : null;
-
-				if ($cookie !== $_SESSION['extra_validation']) {
-					Zend_Session::destroy();
-					header('Location: ' . $_SERVER['REQUEST_URI']);
-					exit;
-				}
-			} else {
-				$sequence = $tikilib->generate_unique_sequence(16);
-				$_SESSION['extra_validation'] = $sequence;
-				setcookie($extra_cookie_name, $sequence, time() + 365*24*3600, ini_get('session.cookie_path'));
-				unset($sequence);
-			}
 		} catch( Zend_Session_Exception $e ) {
 			// Ignore
 		}
@@ -179,6 +168,71 @@ require_once ('lib/setup/prefs.php');
 // Smarty needs session since 2.6.25
 global $smarty; require_once ('lib/init/smarty.php');
 
+if (isset($prefs['ids_enabled']) && $prefs['ids_enabled'] == 'y') {
+	try {
+		TikiInit::prependIncludePath('lib/phpids/lib');
+		require_once 'IDS/Init.php';
+
+		$init = IDS_Init::init('db/ids_config.ini');
+
+		$init->config['General']['filter_path'] = dirname(__FILE__) . '/lib/phpids/lib/IDS/default_filter.xml';
+		$init->config['General']['base_path'] = dirname(__FILE__) . '/lib/phpids/lib/IDS/';
+		$init->config['Caching']['caching'] = 'none';
+		$init->config['General']['HTML_Purifier_Path'] = dirname(__FILE__) . '/lib/htmlpurifier/HTMLPurifier.auto.php';
+		$init->config['General']['HTML_Purifier_Cache'] = dirname(__FILE__) . '/lib/htmlpurifier/HTMLPurifier/DefinitionCache/Serializer';
+		$init->config['Logging']['path'] = 'temp/phpids_log.txt';
+
+		// 2. Initiate the PHPIDS and fetch the results
+
+		$request = array(
+			'REQUEST' => $_REQUEST,
+			'GET' => $_GET,
+			'POST' => $_POST,
+			'COOKIE' => $_COOKIE
+		);
+
+		$ids = new IDS_Monitor($request, $init);
+
+		$result = $ids->run();
+
+		if (!$result->isEmpty()) {
+			require_once 'IDS/Log/File.php';
+			require_once 'IDS/Log/Composite.php';
+
+			if (! file_exists($init->config['Logging']['path'])) {
+				touch($init->config['Logging']['path']);
+			}
+
+			$compositeLog = new IDS_Log_Composite();
+			$compositeLog->addLogger(IDS_Log_File::getInstance($init));
+
+			$compositeLog->execute($result);
+		}
+
+		$impact = $result->getImpact();
+
+		if (! isset($_SESSION['ids_impact'])) {
+			$_SESSION['ids_impact'] = 0;
+		}
+		$_SESSION['ids_impact'] += $impact;
+
+		if ($impact > $prefs['ids_single_threshold']) {
+			global $base_url;
+			$url = $base_url . 'tiki-ids_blocked.php?type=request';
+			header('Location: ' . $url);
+			exit;
+
+		} elseif ($_SESSION['ids_impact'] > $prefs['ids_session_threshold']) {
+			global $base_url;
+			$url = $base_url . 'tiki-ids_blocked.php?type=session';
+			header('Location: ' . $url);
+			exit;
+		}
+	} catch (Exception $e) {
+		die($e->getMessage());
+	}
+}
+
 // Define the special maxRecords global variable
 $maxRecords = $prefs['maxRecords'];
 $smarty->assignByRef('maxRecords', $maxRecords);
@@ -190,9 +244,6 @@ $access = new TikiAccessLib;
 require_once ('lib/breadcrumblib.php');
 // ------------------------------------------------------
 // DEAL WITH XSS-TYPE ATTACKS AND OTHER REQUEST ISSUES
-/**
- * @param $var
- */
 function remove_gpc(&$var)
 {
 	if (is_array($var)) {
@@ -304,11 +355,6 @@ $vartype['parentId'] = 'intSign';
 $vartype['bannerId'] = 'int';
 $vartype['rssId'] = 'int';
 $vartype['page_ref_id'] = 'int';
-/**
- * @param $array
- * @param $category
- * @return string
- */
 function varcheck(&$array, $category)
 {
 	global $patterns, $vartype, $prefs;
@@ -492,8 +538,9 @@ if (isset($_SESSION["$user_cookie_site"])) {
 	}
 }
 
-$smarty->assign('CSRFTicket', isset( $_SESSION['ticket'] ) ? $_SESSION['ticket'] : null);
-
+if (is_object($smarty)) {
+	$smarty->assign('CSRFTicket', isset( $_SESSION['ticket'] ) ? $_SESSION['ticket'] : null);
+}
 require_once ('lib/setup/perms.php');
 // --------------------------------------------------------------
 // deal with register_globals
@@ -510,7 +557,7 @@ if (ini_get('register_globals')) {
 }
 $serverFilter = new DeclFilter;
 if ( ( isset($prefs['tiki_allow_trust_input']) && $prefs['tiki_allow_trust_input'] ) !== 'y' || $tiki_p_trust_input != 'y') {
-	$serverFilter->addStaticKeyFilters(array('QUERY_STRING' => 'xss', 'REQUEST_URI' => 'url', 'PHP_SELF' => 'url',));
+	$serverFilter->addStaticKeyFilters(array('QUERY_STRING' => 'xss', 'REQUEST_URI' => 'xss', 'PHP_SELF' => 'xss',));
 }
 $jitServer = new JitFilter($_SERVER);
 $_SERVER = $serverFilter->filter($_SERVER);
@@ -612,7 +659,9 @@ unset($GLOBALS['HTTP_SESSION_VARS']);
 unset($GLOBALS['HTTP_POST_FILES']);
 // --------------------------------------------------------------
 if (isset($_REQUEST['highlight']) || (isset($prefs['feature_referer_highlight']) && $prefs['feature_referer_highlight'] == 'y')) {
-	$smarty->loadFilter('output', 'highlight');
+	if (method_exists($smarty, 'loadFilter')) {
+		$smarty->loadFilter('output', 'highlight');
+	}
 }
 if (function_exists('mb_internal_encoding')) {
 	mb_internal_encoding("UTF-8");
@@ -622,5 +671,9 @@ if (function_exists('mb_internal_encoding')) {
 if (!isset($_SERVER['QUERY_STRING'])) {
 	$_SERVER['QUERY_STRING'] = '';
 }
-
-$smarty->assign("tikidomain", $tikidomain);
+if (!isset($_SERVER['REQUEST_URI']) || empty($_SERVER['REQUEST_URI'])) {
+	$_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'];
+}
+if (is_object($smarty)) {
+	$smarty->assign("tikidomain", $tikidomain);
+}

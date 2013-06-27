@@ -40,7 +40,7 @@
 					{if $element->repository eq 'unavailable'}
 						<li>{$element->name|escape} ({$element->type|escape}) but is not in any repository</li>
 					{else}
-						<li><input type='checkbox' onchange='update_button_install();' name='install-wants[]' value='{$element->modname|escape}' checked >{$element->name|escape} {$element->revision} ({$element->type|escape})</li>
+						<li><input type='checkbox' onchange='update_button_install();' name='install-wants[]' value='{$element->modname|escape}' checked />{$element->name|escape} {$element->revision} ({$element->type|escape})</li>
 					{/if}
 				{/foreach}</ul>
 			</li>
@@ -49,7 +49,7 @@
 			<li>You asked to <strong>remove</strong> these mods:
 				<ul>{foreach from=$installask.wantedtoremove item=element}
 					{if $element->repository eq 'installed'}
-						<li><input type='checkbox' onchange='update_button_install();' name='install-wants[]' value='{$element->modname|escape}' checked >{$element->name|escape} {$element->revision} ({$element->type|escape})</li>
+						<li><input type='checkbox' onchange='update_button_install();' name='install-wants[]' value='{$element->modname|escape}' checked />{$element->name|escape} {$element->revision} ({$element->type|escape})</li>
 					{else}
 						<li>{$element->name|escape} ({$element->type|escape}) but is not installed</li>
 					{/if}
@@ -117,18 +117,18 @@
 				{if $element->repository eq 'unavailable'}
 					<li>{$element[0]->name|escape} ({$element[0]->type|escape}) but is not in any repository</li>
 				{else}
-					<li><input type='checkbox' onchange='update_button_install();' name='install-wants[]' value='{$element[0]->modname|escape}'>{$element[0]->name|escape} ({$element[0]->type|escape})</li>
+					<li><input type='checkbox' onchange='update_button_install();' name='install-wants[]' value='{$element[0]->modname|escape}' />{$element[0]->name|escape} ({$element[0]->type|escape})</li>
 				{/if}
 			{/foreach}</ul>
 			</li>
 		{/if}
 		</ul>
 
-		<br>
+		<br />
 		{if $installask.wanted}
-			<input type='submit' id='button_install' name='button-install' value="{tr}Install{/tr}"{if $installask.unavailable} style='display: none;'{/if}>
+			<input type='submit' id='button_install' name='button-install' value="{tr}Install{/tr}"{if $installask.unavailable} style='display: none;'{/if} />
 		{elseif $installask.wantedtoremove}
-			<input type='submit' id='button_install' name='button-remove' value="{tr}Remove{/tr}"{if $installask.unavailable} style='display: none;'{/if}>
+			<input type='submit' id='button_install' name='button-remove' value="{tr}Remove{/tr}"{if $installask.unavailable} style='display: none;'{/if} />
 		{/if}
 {jq}
 function update_button_install() {
@@ -141,21 +141,21 @@ function update_button_install() {
 	</div>
 </form>
 {/if}
-<br>
+<br />
 {if $tikifeedback}
-	<br>
+	<br />
 	{section name=n loop=$tikifeedback}
 		<div class="simplebox {if $tikifeedback[n].num > 0} highlight{/if}">
 			{if $tikifeedback[n].num > 0}{icon _id=delete alt="Alert" style="vertical-align:middle;"}{/if}{$tikifeedback[n].mes}
-		</div><br>
+		</div><br />
 	{/section}
 {/if}
 
 {if not $installask}
 	<form method="get" action="tiki-mods.php">
 		{tr}Find{/tr}
-		<input type="text" name="find" value="{$find|escape}">
-		<input type="submit" name="f" value="{tr}Find{/tr}">
+		<input type="text" name="find" value="{$find|escape}" />
+		<input type="submit" name="f" value="{tr}Find{/tr}" />
 		{tr}in{/tr} <select name="type" onchange="this.form.submit();">
 			<option value="">{tr}all types{/tr}</option>
 			{foreach key=it item=i from=$types}
@@ -272,19 +272,19 @@ function update_button_install() {
 								<tr>
 									<td>
 										<div class="simplebox">
-											{if $more->docurl}Documentation :<br>{foreach key=ku item=iu from=$more->docurl}<a href="{$iu}">{$iu}</a><br>{/foreach}{/if}
-											{if $more->devurl}Development : <br>{foreach key=ku item=iu from=$more->devurl}<a href="{$iu}">{$iu}</a><br>{/foreach}{/if}
-											{if $more->help}{$more.help}<br>{/if}
-											{if $more->help}{$more.help}<br>{/if}
-											{if $more->author}{tr}Author:{/tr} {$more->author[0]}<br>{/if}
-											{if $more->licence}{tr}licence:{/tr} {$more->licence}<br>{/if}
+											{if $more->docurl}Documentation :<br />{foreach key=ku item=iu from=$more->docurl}<a href="{$iu}">{$iu}</a><br />{/foreach}{/if}
+											{if $more->devurl}Development : <br />{foreach key=ku item=iu from=$more->devurl}<a href="{$iu}">{$iu}</a><br />{/foreach}{/if}
+											{if $more->help}{$more.help}<br />{/if}
+											{if $more->help}{$more.help}<br />{/if}
+											{if $more->author}{tr}Author:{/tr} {$more->author[0]}<br />{/if}
+											{if $more->licence}{tr}licence:{/tr} {$more->licence}<br />{/if}
 											
-											{tr}Last Modification:{/tr} {$more->lastmodif}<br>
-											{tr}by:{/tr} {$more->contributor[0]}<br>
+											{tr}Last Modification:{/tr} {$more->lastmodif}<br />
+											{tr}by:{/tr} {$more->contributor[0]}<br />
 										</div>
 									</td><td>
 										{foreach key=kk item=ii from=$more->files}
-											{$ii[0]} -&gt; <b>{$ii[1]}</b><br>
+											{$ii[0]} -&gt; <b>{$ii[1]}</b><br />
 										{/foreach}
 									</td>
 								</tr>

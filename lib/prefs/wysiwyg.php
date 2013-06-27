@@ -21,34 +21,25 @@ function prefs_wysiwyg_list()
 			'name' => tra('Wysiwyg Editor is displayed by default'),
 			'type' => 'flag',
 			'dependencies' => array(
-				'wysiwyg_optional',
+				'feature_optional',
 			),
-			'default' => 'y',
+			'default' => 'n',
 		),
 		'wysiwyg_memo' => array(
 			'name' => tra('Reopen with the same editor'),
 			'type' => 'flag',
-			'dependencies' => array(
-				'feature_wysiwyg',
-			),
 			'default' => 'y',
 		),
 		'wysiwyg_wiki_parsed' => array(
 			'name' => tra('Content is parsed like wiki page'),
 			'description' => tra('This allows a mixture of wiki and HTML. All wiki syntax is parsed.'),
 			'type' => 'flag',
-			'dependencies' => array(
-				'feature_wysiwyg',
-			),
 			'default' => 'y',
 		),
 		'wysiwyg_wiki_semi_parsed' => array(
 			'name' => tra('Content is partially wiki parsed'),
 			'description' => tra('This also allows a mixture of wiki and HTML. Only some wiki syntax is parsed, such as plugins (not inline character styles etc).'),
 			'type' => 'flag',
-			'dependencies' => array(
-				'feature_wysiwyg',
-			),
 			'default' => 'n',
 			'warning' => tra('Neglected. This feature can have unpredicable results and may be removed in future versions.'),
 			'tags' => array('experimental'),
@@ -57,19 +48,22 @@ function prefs_wysiwyg_list()
 			'name' => tra('Wysiwyg editor skin'),
 			'type' => 'list',
 			'options' => array(
-				'moono' => tra('Moono (Default)'),
-				'kama' => tra('Kama'),
+				'kama' => tra('Kama (Default)'),
+				'office2003' => tra('Office 2003'),
+				'v2' => tra('V2 (FCKEditor appearance)'),
 			),
-			'default' => 'moono',
+			'default' => 'kama',
 		),
 		'wysiwyg_htmltowiki' => array(
 			'name' => tra('Use Wiki syntax in WYSIWYG'),
 			'description' => tra('Allow to keep the wiki syntax with the WYSIWYG editor. Sometimes also known as "Visual Wiki".'),
 			'type' => 'flag',
+			'warning' => tra('Experimental. This feature is still under development.'),
 			'dependencies' => array(
-				'feature_wysiwyg',
+				'ajax_autosave',
 			),
-			'default' => 'y',
+			'tags' => array('experimental'),
+			'default' => 'n',
 		),
 		'wysiwyg_fonts' => array(
 			'name' => tra('Font names'),

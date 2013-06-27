@@ -5,7 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-class Search_GlobalSource_CategorySource implements Search_GlobalSource_Interface, Tiki_Profile_Writer_ReferenceProvider, Search_FacetProvider_Interface
+class Search_GlobalSource_CategorySource implements Search_GlobalSource_Interface
 {
 	private $categlib;
 	private $parentCategories = array();
@@ -13,26 +13,6 @@ class Search_GlobalSource_CategorySource implements Search_GlobalSource_Interfac
 	function __construct()
 	{
 		$this->categlib = TikiLib::lib('categ');
-	}
-
-	function getFacets()
-	{
-		return array(
-			Search_Query_Facet_Term::fromField('deep_categories')
-				->setLabel(tr('Category Tree'))
-				->setRenderCallback(array($this->categlib, 'get_category_name')),
-			Search_Query_Facet_Term::fromField('categories')
-				->setLabel(tr('Categories'))
-				->setRenderCallback(array($this->categlib, 'get_category_name')),
-		);
-	}
-
-	function getReferenceMap()
-	{
-		return array(
-			'categories' => 'category',
-			'deep_categories' => 'category',
-		);
 	}
 
 	function getProvidedFields()

@@ -28,7 +28,7 @@ function wikiplugin_dialog_info()
 				'description' => tra('Button labels separated by commas.'),
 				'filter' => 'text',
 				'separator' => ',',
-				'default' => array(tra('Ok')),
+				'default' => tra('Ok') . ',' . tra('Cancel'),
 			),
 			'actions' => array(
 				'required' => false,
@@ -86,7 +86,6 @@ function wikiplugin_dialog_info()
 				'description' => tra('Wiki page to use as dialog body.'),
 				'filter' => 'pagename',
 				'default' => '',
-				'profile_reference' => 'wiki_page',
 			),
 			'openAction' => array(
 				'required' => false,

@@ -7,25 +7,11 @@
 
 class Search_Formatter_ValueFormatter_Datetime extends Search_Formatter_ValueFormatter_Abstract
 {
-	protected $format;
-
-	function __construct()
-	{
-		$tikilib = TikiLib::lib('tiki');
-		$this->format = $tikilib->get_short_datetime_format();
-	}
-
 	function render($name, $value, array $entry)
 	{
-		if (preg_match('/^\d{14}$/', $value)) {
-			// Facing a date formated as YYYYMMDDHHIISS as indexed in lucene
-			// Always stored as UTC
-			$value = date_create_from_format('YmdHise', $value . 'UTC')->getTimestamp();
-		}
-
+		global $prefs, $tikilib;
 		if (is_numeric($value)) {	// expects a unix timestamp but might be getting the default value
-			$tikilib = TikiLib::lib('tiki');
-			return $tikilib->date_format($this->format, $value);
+			return $tikilib->date_format($tikilib->get_short_datetime_format(), $value);
 		} else {
 			return $value;
 		}

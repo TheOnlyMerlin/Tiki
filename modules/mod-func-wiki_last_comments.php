@@ -11,9 +11,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_wiki_last_comments_info()
 {
 	return array(
@@ -23,82 +20,43 @@ function module_wiki_last_comments_info()
 		'params' => array(
 			'moretooltips' => array(
 				'name' => tra('More in tooltips'),
-				'description' => tra('If set to "y", the name of the object on which a comment is made is not displayed in the module box, but instead moved in the item\'s tooltip.'),
-				'default' => 'n',
+				'description' => tra('If set to "y", the name of the object on which a comment is made is not displayed in the module box, but instead moved in the item\'s tooltip.') . " " . tr('Default: "n".')
 			),
 			'type' => array(
 				'name' => tra('Object type'),
-				'description' => tra('Type of the objects from which comments will be listed. Possible values:') . '  wiki page, article. ',
-				'filter' => 'word',
-				'default' => 'wiki page',
-			),
-			'commentlength' => array(
-				'name' => tra('Maximum comment length'),
-				'description' => tra("If comments don't use titles this sets the maximum length for the comment snippet."),
-				'filter' => 'digits',
-				'default' => 40,
-			),
-			'avatars' => array(
-				'name' => tra('Show user avatars'),
-				'description' => tra("Display user avatars instead of numbers."),
-				'filter' => 'alpha',
-				'default' => 'n',
-			),
-			'language' => array(
-				'name' => tra('Language'),
-				'description' => tra('Comments about objects in this language only.'),
-				'filter' => 'word',
-				'default' => '',
-			),
+				'description' => tra('Type of the objects from which comments will be listed. Possible values:') . '  wiki page, article. ' . tra('Default value:') . ' wiki page',
+				'filter' => 'word'
+			)
 		),
 		'common_params' => array('rows', 'nonums')
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_wiki_last_comments($mod_reference, $module_params)
 {
 	if (!function_exists('module_last_comments')) {
-        /**
-         * @param $limit
-         * @param string $type
-         * @return array|null
-         */
-        function module_last_comments($limit, array $params)
+		function module_last_comments($limit, $type='wiki page')
 		{
 			global $tikilib, $user;
-			$bindvars = array($params['type']);
+			$bindvars = array($type);
 			$where = '';
-			switch ($params['type']) {
+			switch ($type) {
 				case 'article':
 					$join = 'left join `tiki_articles` ta on (tc.`object` = ta.`articleId`)';
 					$get = ', ta.`title` as name';
-					if (!empty($params['language'])) {
-						$where .= ' and ta.`lang`=?';
-						$bindvars[] = $params['language'];
-					}
 					global $tiki_p_admin_cms;
 					if ($tiki_p_admin_cms != 'y') {
-						$where .= ' and tc.`approved`!=?';
+						$where = 'and `approved`!=?';
 						$bindvars[] = 'n';
 					}
 					break;
 
 				case 'wiki page':
-					if (empty($params['language'])) {
-						$join = '';
-					} else {
-						$join = 'left join `tiki_pages` tp on (tc.`object` = tp.`pageName`)';
-						$where .= ' and tp.`lang`=?';
-						$bindvars[] = $params['language'];
-					}
+					$join = '';
 					$get = ', tc.`object` as name';
 					global $tiki_p_admin_wiki;
 					if ($tiki_p_admin_wiki != 'y') {
-						$where .= ' and tc.`approved`!=?';
+						$where = 'and `approved`!=?';
 						$bindvars[] = 'n';
 					}
 					break;
@@ -109,7 +67,7 @@ function module_wiki_last_comments($mod_reference, $module_params)
 			$ret = array();
 
 			while ($res = $result->fetchRow()) {
-				switch ($params['type']) {
+				switch ($type) {
 					case 'wiki page':
 						$perm = 'tiki_p_view';
 						break;
@@ -122,22 +80,6 @@ function module_wiki_last_comments($mod_reference, $module_params)
 						return null;
 				}
 				if ($tikilib->user_has_perm_on_object($user, $res['object'], $res['type'], $perm)) {
-					$res['title'] = TikiLib::lib('comments')->process_comment_title($res, $params['commentlength']);
-					if ($params['avatars'] === 'y') {
-						$res['avatar'] = $tikilib->get_user_avatar($res['userName'], 'right');
-						$res['avatar'] = preg_replace('/(:?width|height)=[\'"]?\d+[\'"]?/', '', $res['avatar']);
-						$m = null;
-						preg_match('/style=[\'"]?([^\'^"]*)[\'"]?/', $res['avatar'], $m);
-						if ($m) {
-							$m = $m[1];
-							$res['avatar'] = preg_replace('/style=[\'"]?[^\'^"]*[\'"]?/', '', $res['avatar']);
-						} else {
-							$m = '';
-						}
-						$res['avatar'] = str_replace('<img ', '<img style="max-height: 3ex;vertical-align: top;' . $m . '" ', $res['avatar']);
-					} else {
-						$res['avatar'] = '';
-					}
 					$ret[] = $res;
 				}
 			}
@@ -146,9 +88,6 @@ function module_wiki_last_comments($mod_reference, $module_params)
 	}
 	global $smarty, $prefs;
 	if (!isset($module_params['type'])) $module_params['type'] = "wiki page";
-	if (!isset($module_params['commentlength'])) $module_params['commentlength'] = 40;
-	if (!isset($module_params['avatars'])) $module_params['avatars'] = 'n';
-
 	switch ($module_params['type']) {
 		case 'cms': case 'article': case 'articles':
 			if (!$prefs['feature_articles']) {
@@ -167,7 +106,7 @@ function module_wiki_last_comments($mod_reference, $module_params)
 			break;
 	}
 
-	$comments = module_last_comments($mod_reference['rows'], $module_params);
+	$comments = module_last_comments($mod_reference['rows'], $module_params['type']);
 	$smarty->assign_by_ref('comments', $comments);
 	$smarty->assign('moretooltips', isset($module_params['moretooltips']) ? $module_params['moretooltips'] : 'n');
 	$smarty->assign('type', $module_params['type']);

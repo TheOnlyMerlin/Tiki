@@ -29,7 +29,7 @@
 	{remarksbox type="feedback" title="{tr}Feedback{/tr}"}
 	{section name=n loop=$tikifeedback}
 	{tr}{$tikifeedback[n].mes|escape}{/tr}
-	<br>
+	<br />
 	{/section}{/remarksbox}
 {/if}
 
@@ -37,8 +37,8 @@
 	{remarksbox type="feedback" title="{tr}Batch Upload Results{/tr}"}
 		{tr}Updated users:{/tr} {$added}
 		{if $discarded != ""}- {tr}Rejected users:{/tr} {$discarded}{/if}
-		<br>
-		<br>
+		<br />
+		<br />
 		{if $discardlist != ''}
 			<table class="normal">
 				<tr>
@@ -55,9 +55,9 @@
 		{/if}
 
 		{if $errors}
-			<br>
+			<br />
 			{section name=ix loop=$errors}
-				{$errors[ix]}<br>
+				{$errors[ix]}<br />
 			{/section}
 		{/if}
 	{/remarksbox}
@@ -73,10 +73,10 @@
 		<table class="findtable">
 			<tr>
 				<td><label for="find">{tr}Find{/tr}</label></td>
-				<td><input type="text" id="find" name="find" value="{$find|escape}"></td>
-				<td><input type="submit" value="{tr}Find{/tr}" name="search"></td>
+				<td><input type="text" id="find" name="find" value="{$find|escape}" /></td>
+				<td><input type="submit" value="{tr}Find{/tr}" name="search" /></td>
 				<td><label for="numrows">{tr}Number of displayed rows{/tr}</label></td>
-				<td><input type="text" size="4" id="numrows" name="numrows" value="{$numrows|escape}"></td>
+				<td><input type="text" size="4" id="numrows" name="numrows" value="{$numrows|escape}" /></td>
 			</tr>
 			<tr>
 				<td colspan="2"></td>
@@ -102,21 +102,21 @@
 						</select>
 					</td>
 					<td><label for="filterEmailNotConfirmed">{tr}Email not confirmed{/tr}</label></td>
-					<td><input id="filterEmailNotConfirmed" name="filterEmailNotConfirmed" type="checkbox"{if !empty($smarty.request.filterEmailNotConfirmed)} checked="checked"{/if}></td>
+					<td><input id="filterEmailNotConfirmed" name="filterEmailNotConfirmed" type="checkbox"{if !empty($smarty.request.filterEmailNotConfirmed)} checked="checked"{/if} /></td>
 					<td><label for="filterNeverLoggedIn">{tr}Never logged in{/tr}</label></td>
-					<td><input id="filterNeverLoggedIn" name="filterNeverLoggedIn" type="checkbox"{if !empty($smarty.request.filterNeverLoggedIn)} checked="checked"{/if}></td>
+					<td><input id="filterNeverLoggedIn" name="filterNeverLoggedIn" type="checkbox"{if !empty($smarty.request.filterNeverLoggedIn)} checked="checked"{/if}  /></td>
 				</tr>
 				<tr>
 					<td><label for="filterEmail">{tr}Email{/tr}</label></td>
-					<td><input type="text" id="filterEmail" name="filterEmail" value="{$filterEmail}"></td>
+					<td><input type="text" id="filterEmail" name="filterEmail" value="{$filterEmail}" /></td>
 					<td><label for="filterNotValidated">{tr}User not validated{/tr}</label></td>
-					<td><input id="filterNotValidated" name="filterNotValidated" type="checkbox"{if !empty($smarty.request.filterNotValidated)} checked="checked"{/if}></td>
+					<td><input id="filterNotValidated" name="filterNotValidated" type="checkbox"{if !empty($smarty.request.filterNotValidated)} checked="checked"{/if}  /></td>
 					<td></td>
 					<td></td>
 				</tr>
 			</table>
 
-			<input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
+			<input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
 		</div>
 	</form>
 
@@ -151,7 +151,7 @@
 					<tr class="{cycle}">
 						<td class="checkbox">
 							{if $users[user].user ne 'admin'}
-								<input type="checkbox" name="checked[]" value="{$users[user].user|escape}" {if $users[user].checked eq 'y'}checked="checked" {/if}>
+								<input type="checkbox" name="checked[]" value="{$users[user].user|escape}" {if $users[user].checked eq 'y'}checked="checked" {/if}/>
 							{/if}
 						</td>
 	
@@ -182,7 +182,7 @@
 							{/if}
 					
 							{if $users[user].waiting eq 'u'}
-								<br>
+								<br />
 								{tr}Need to validate email{/tr}
 							{/if}
 						</td>
@@ -211,7 +211,7 @@
 										{else}
 											{icon _id='bullet_white'}
 										{/if}
-										{if !$smarty.foreach.gr.last}<br>{/if}
+										{if !$smarty.foreach.gr.last}<br />{/if}
 									{/if}
 								</div>
 							{/foreach}
@@ -271,14 +271,14 @@
 									{/if}
 								</select>
 								</label>
-								<input type="submit" value="{tr}OK{/tr}">
+								<input type="submit" value="{tr}OK{/tr}" />
 							{elseif $group_management_mode eq 'y'}
 								<select name="group_management">
 									<option value="add">{tr}Assign selected to{/tr}</option>
 									<option value="remove">{tr}Remove selected from{/tr}</option>
 								</select></label>
 								<label>{tr}the following groups:{/tr}
-								<br>
+								<br />
 								<select name="checked_groups[]" multiple="multiple" size="20">
 									{section name=ix loop=$all_groups}
 										{if $all_groups[ix] != 'Anonymous' && $all_groups[ix] != 'Registered'}
@@ -286,30 +286,30 @@
 										{/if}
 									{/section}
 								</select></label>
-								<br>
-								<input type="submit" value="{tr}OK{/tr}">
-								{if $prefs.jquery_ui_chosen neq 'y'}{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use Ctrl+Click to select multiple options{/tr}{/remarksbox}{/if}
+								<br />
+								<input type="submit" value="{tr}OK{/tr}" />
+								{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use Ctrl+Click to select multiple options{/tr}{/remarksbox}
 							{elseif $set_default_groups_mode eq 'y'}
 								<label>{tr}Set the default group of the selected users to:{/tr}
-								<br>
+								<br />
 								<select name="checked_group" size="20">
 									{section name=ix loop=$all_groups}
 										{if $all_groups[ix] != 'Anonymous'}
-										<option value="{$all_groups[ix]|escape}">{$all_groups[ix]|escape}</option>
+										<option value="{$all_groups[ix]|escape}" />{$all_groups[ix]|escape}</option>
 										{/if}
 									{/section}
 								</select></label>
-								<br>
-								<input type="submit" value="{tr}OK{/tr}">
-								<input type="hidden" name="set_default_groups" value="{$set_default_groups_mode}">
+								<br />
+								<input type="submit" value="{tr}OK{/tr}" />
+								<input type="hidden" name="set_default_groups" value="{$set_default_groups_mode}" />
 							{elseif $email_mode eq 'y'}
 								<label>{tr}Template wiki page{/tr} 
-								<input type="text" name="wikiTpl"></label>
-								<br>
+								<input type="text" name="wikiTpl" /></label>
+								<br />
 								<label>{tr}bcc{/tr} 
-								<input type="text" name="bcc"></label>
-								<input type="submit" value="{tr}OK{/tr}">
-								<input type="hidden" name="emailChecked" value="{$email_mode}">
+								<input type="text" name="bcc" /></label>
+								<input type="submit" value="{tr}OK{/tr}" />
+								<input type="hidden" name="emailChecked" value="{$email_mode}" />
 							{/if}
 						</p>
 					{/if}
@@ -317,10 +317,10 @@
 			</tr>
 		</table>
 
-		<input type="hidden" name="find" value="{$find|escape}">
-		<input type="hidden" name="numrows" value="{$numrows|escape}">
-		<input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
-		<input type="hidden" name="offset" value="{$offset|escape}">
+		<input type="hidden" name="find" value="{$find|escape}" />
+		<input type="hidden" name="numrows" value="{$numrows|escape}" />
+		<input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
+		<input type="hidden" name="offset" value="{$offset|escape}" />
 	</form>
 
 	{pagination_links cant=$cant step=$numrows offset=$offset}{/pagination_links}
@@ -359,14 +359,14 @@
 					</td>
 					<td>
 						{if $userinfo.login neq 'admin'}
-							<input type="text" id='login' name='login' value="{$userinfo.login|escape}">
-							<br> 
+							<input type="text" id='login' name='login' value="{$userinfo.login|escape}" />
+							<br /> 
 							{if $prefs.login_is_email eq 'y'}
 								<em>{tr}Use the email as username{/tr}.</em>
 							{elseif $prefs.lowercase_username eq 'y'} 
 								<em>{tr}Lowercase only{/tr}</em>.
 							{/if}
-							<br>
+							<br />
 							{if $userinfo.userId}
 								<p>
 									{icon _id='exclamation' alt="{tr}Warning{/tr}" style="vertical-align:middle"} 
@@ -377,7 +377,7 @@
 								{/if}
 							{/if}
 						{else}
-							<input type="hidden" name='login' value="{$userinfo.login|escape}">{$userinfo.login}
+							<input type="hidden" name='login' value="{$userinfo.login|escape}" />{$userinfo.login}
 						{/if}
 					</td>
 				</tr>
@@ -391,27 +391,27 @@
 					<tr>
 						<td colspan="2">
 							<b>{tr}No password is required{/tr}</b>
-							<br>
+							<br />
 							<i>{tr}Tiki is configured to delegate the password managment to LDAP.{/tr}</i>
 						</td>
 					</tr>
 				{else}
 					<tr>
-						<td><label for="pass1">{tr}Password:{/tr}</label>{if !$userinfo.userId}<br>({tr}required{/tr}){/if}</td>
+						<td><label for="pass1">{tr}Password:{/tr}</label>{if !$userinfo.userId}<br />({tr}required{/tr}){/if}</td>
 						<td>
-							<input type="password" name="pass" id="pass1" onkeyup="runPassword(this.value, 'mypassword');checkPasswordsMatch('#pass2', '#pass1', '#mypassword2_text')">
+							<input type="password" name="pass" id="pass1" onkeyup="runPassword(this.value, 'mypassword');checkPasswordsMatch('#pass2', '#pass1', '#mypassword2_text')" />
 							<div style="float:right;margin-left:5px;">
 								<div id="mypassword_text"></div>
 								<div id="mypassword_bar" style="font-size: 5px; height: 2px; width: 0px;"></div> 
 							</div>
-							<br>
+							<br />
 							{include file='password_help.tpl'}
 						</td>
 					</tr>
 					<tr>
-						<td><label for="pass2">{tr}Repeat Password:{/tr}</label>{if !$userinfo.userId}<br>({tr}required{/tr}){/if}</td>
+						<td><label for="pass2">{tr}Repeat Password:{/tr}</label>{if !$userinfo.userId}<br />({tr}required{/tr}){/if}</td>
 						<td>
-							<input type="password" name="pass2" id="pass2" onkeyup="checkPasswordsMatch('#pass2', '#pass1', '#mypassword2_text')">
+							<input type="password" name="pass2" id="pass2" onkeyup="checkPasswordsMatch('#pass2', '#pass1', '#mypassword2_text')" />
 							<div style="float:right;margin-left:5px;">
 								<div id="mypassword2_text"></div>
 							</div>
@@ -419,7 +419,7 @@
 					</tr>
 					{if ! ( $prefs.auth_method eq 'ldap' and ( $prefs.ldap_create_user_tiki eq 'n' or $prefs.ldap_skip_admin eq 'y' ) and $prefs.ldap_create_user_ldap eq 'n' )}
 						<tr><td>&nbsp;</td><td>
-							<input id='genepass' name="genepass" type="text" tabindex="0" style="display: none">
+							<input id='genepass' name="genepass" type="text" tabindex="0" style="display: none" />
 							{jq}
 								$("#genPass span").click(function () {
 									$('#pass1, #pass2').val('');
@@ -439,7 +439,7 @@
 						<tr>
 							<td>&nbsp;</td>
 							<td>
-								<label><input type="checkbox" name="pass_first_login"{if $userinfo.pass_confirm eq '0'} checked="checked"{/if}> 
+								<label><input type="checkbox" name="pass_first_login"{if $userinfo.pass_confirm eq '0'} checked="checked"{/if} /> 
 								{tr}User must change password at next login{/tr}.</label>
 							</td>
 						</tr>
@@ -450,7 +450,7 @@
 					<tr>
 						<td><label for="email">{tr}Email:{/tr}</label></td>
 						<td>
-							<input type="text" id="email" name="email" size="30" value="{$userinfo.email|escape}">
+							<input type="text" id="email" name="email" size="30" value="{$userinfo.email|escape}" />
 						</td>
 					</tr>
 				{/if}
@@ -458,10 +458,10 @@
 					<tr>
 						<td>&nbsp;</td>
 						<td>
-							<label><input type="checkbox" name="need_email_validation" {if ($userinfo.login eq '' and ($prefs.validateUsers eq 'y' or $prefs.validateRegistration eq 'y')) or $userinfo.provpass neq ''}checked="checked" {/if}> 
+							<label><input type="checkbox" name="need_email_validation" {if ($userinfo.login eq '' and ($prefs.validateUsers eq 'y' or $prefs.validateRegistration eq 'y')) or $userinfo.provpass neq ''}checked="checked" {/if}/> 
 							{tr}Send an email to the user in order to allow him to validate his account.{/tr}</label> 
 							
-							{if empty($prefs.sender_email)}<br><span class="highlight">{tr}You need to set <a href="tiki-admin.php?page=general">Sender Email</a>{/tr}</span>{/if}						
+							{if empty($prefs.sender_email)}<br /><span class="highlight">{tr}You need to set <a href="tiki-admin.php?page=general">Sender Email</a>{/tr}</span>{/if}						
 	
 						</td>
 					</tr>
@@ -518,25 +518,25 @@
 					<td>&nbsp;</td>
 					<td>
 						{if $userinfo.userId}
-							<input type="hidden" name="user" value="{$userinfo.userId|escape}">
-							<input type="hidden" name="edituser" value="1">
-							<input type="submit" name="save" value="{tr}Save{/tr}">
+							<input type="hidden" name="user" value="{$userinfo.userId|escape}" />
+							<input type="hidden" name="edituser" value="1" />
+							<input type="submit" name="save" value="{tr}Save{/tr}" />
 						{else}
-							<input type="submit" name="newuser" value="{tr}Add{/tr}">
+							<input type="submit" name="newuser" value="{tr}Add{/tr}" />
 						{/if}
 					</td>
 				</tr>
 			</table>
-			<br>
-			<br>
+			<br />
+			<br />
 	
 			{if $prefs.userTracker eq 'y'}
 				{if $userstrackerid and $usersitemid}
 					{tr}User tracker item : {$usersitemid}{/tr} 
 					{button href="tiki-view_tracker_item.php?trackerId=$userstrackerid&amp;itemId=$usersitemid&amp;show=mod" _text="{tr}Edit Item{/tr}"}
 				{/if}
-				<br>
-				<br>
+				<br />
+				<br />
 			{/if}
 		</form>
 	{else}
@@ -555,31 +555,31 @@
 				<td>
 					<label for="csvlist">
 						{tr}CSV File:{/tr}
-						{help url="Users+Management#Adding_new_users_in_bulk" desc="{tr}CSV file layout:{/tr} {tr}login,password,email,groups,default_group,realName<br>user1,pass1,email1,group1,group1<br>user2,pass2,email2,\"group1,group2\",group1{/tr}<br><br>{tr}Only login, password, email are mandatory.Use an empty password for automatic password generation. Use same login and email if the login use email. Groups are separated by comma. With group name with comma, double the comma.{/tr}"}
+						{help url="Users+Management#Adding_new_users_in_bulk" desc="{tr}CSV file layout:{/tr} {tr}login,password,email,groups,default_group,realName<br />user1,pass1,email1,group1,group1<br />user2,pass2,email2,\"group1,group2\",group1{/tr}<br /><br />{tr}Only login, password, email are mandatory.Use an empty password for automatic password generation. Use same login and email if the login use email. Groups are separated by comma. With group name with comma, double the comma.{/tr}"}
 					</label>
 				</td>
 				<td>
-					<input type="file" id="csvlist" name="csvlist">
-					<br>
-					<label><input type="radio" name="overwrite" value="y">&nbsp;{tr}Overwrite{/tr}</label>
-					<br>
-					<label><input type="radio" name="overwrite" value="n" checked="checked">&nbsp;{tr}Don't overwrite{/tr}</label>
-					<br>
-					<label>{tr}Overwrite groups:{/tr} <input type="checkbox" name="overwriteGroup"></label>
-                    <br>
-					<label>{tr}Create groups:{/tr} <input type="checkbox" name="createGroup"></label>
-                    <br>
+					<input type="file" id="csvlist" name="csvlist"/>
+					<br />
+					<label><input type="radio" name="overwrite" value="y" />&nbsp;{tr}Overwrite{/tr}</label>
+					<br />
+					<label><input type="radio" name="overwrite" value="n" checked="checked" />&nbsp;{tr}Don't overwrite{/tr}</label>
+					<br />
+					<label>{tr}Overwrite groups:{/tr} <input type="checkbox" name="overwriteGroup" /></label>
+                    <br />
+					<label>{tr}Create groups:{/tr} <input type="checkbox" name="createGroup" /></label>
+                    <br />
 					{if $prefs.change_password neq 'n'}
-                     <label>{tr}User must change password at first login:{/tr} <input type="checkbox" name="forcePasswordChange"></label>
-					<br>
+                     <label>{tr}User must change password at first login:{/tr} <input type="checkbox" name="forcePasswordChange" /></label>
+					<br />
 					{/if}
-                    <label>{tr}Send an email to the user in order to allow him to validate his account.{/tr} <input type="checkbox" name="notification"></label>
+                    <label>{tr}Send an email to the user in order to allow him to validate his account.{/tr} <input type="checkbox" name="notification" /></label>
 				</td>
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" name="batch" value="{tr}Add{/tr}">
+					<input type="submit" name="batch" value="{tr}Add{/tr}" />
 				</td>
 			</tr>
 		</table>

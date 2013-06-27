@@ -27,9 +27,13 @@
 			<div class="admin2cols adminoptionbox clearfix">
 				<label for="assign_position">{tr}Position{/tr}</label>
 				<select id="assign_position" name="assign_position">
-					{foreach from=$module_zone_list key=code item=zone}
-						<option value="{$code|escape}"{if $code eq $assign_position} selected="selected"{/if}>{$zone.name|escape}</option>
-					{/foreach}
+					<option value="t" {if $assign_position eq 't'}selected="selected"{/if}>{tr}Top{/tr}</option>
+					<option value="o" {if $assign_position eq 'o'}selected="selected"{/if}>{tr}Topbar{/tr}</option>
+					<option value="p" {if $assign_position eq 'p'}selected="selected"{/if}>{tr}Page Top{/tr}</option>
+					<option value="l" {if $assign_position eq 'l'}selected="selected"{/if}>{tr}Left{/tr}</option>
+					<option value="r" {if $assign_position eq 'r'}selected="selected"{/if}>{tr}Right{/tr}</option>
+					<option value="q" {if $assign_position eq 'q'}selected="selected"{/if}>{tr}Page Bottom{/tr}</option>
+					<option value="b" {if $assign_position eq 'b'}selected="selected"{/if}>{tr}Bottom{/tr}</option>
 				</select>
 			</div>
 
@@ -44,12 +48,12 @@
 
 			<div class="admin2cols adminoptionbox clearfix">
 				<label for="assign_cache">{tr}Cache Time{/tr} ({tr}secs{/tr})</label>
-				<input type="text" id="assign_cache" name="assign_cache" value="{$assign_cache|escape}">
+				<input type="text" id="assign_cache" name="assign_cache" value="{$assign_cache|escape}" />
 			</div>
 			{if !isset($assign_info.type) or $assign_info.type neq 'function'}
 				<div class="admin2cols adminoptionbox clearfix">
 					<label for="assign_rows">{tr}Rows{/tr}</label>
-					<input type="text" id="assign_rows" name="assign_rows" value="{$assign_rows|escape}">
+					<input type="text" id="assign_rows" name="assign_rows" value="{$assign_rows|escape}" />
 				</div>
 			{/if}
 			<div class="admin2cols adminoptionbox clearfix">
@@ -67,7 +71,7 @@
 						<div class="simplebox">
 							{icon _id=information style="vertical-align:middle;float:left"} {tr}The{/tr} <a class="rbox-link" href="tiki-admin.php?page=module">{tr}Display Modules to All Groups{/tr}</a> {tr}setting will override your selection of specific groups.{/tr}
 						</div>
-						<br>
+						<br />
 					{/if}
 				</div>
 			</div>
@@ -103,8 +107,8 @@
 									<label for="assign_params[{$name|escape}]">{$param.name|escape}{if $param.required} <span class="attention">({tr}required{/tr})</span>{/if}</label>
 								</div>
 								<div class="description q234">
-									<input type="text" id="assign_params[{$name|escape}]" name="assign_params[{$name|escape}]" value="{$param.value|escape}"{if !empty($param.filter)} class="{$param.filter}" {/if}>
-									<br>
+									<input type="text" id="assign_params[{$name|escape}]" name="assign_params[{$name|escape}]" value="{$param.value|escape}"{if !empty($param.filter)} class="{$param.filter}" {/if}/>
+									<br />
 									{$param.description|escape}
 									{if !empty($param.default)} - {tr}Default:{/tr} {$param.default|escape}{/if}
 								</div>
@@ -129,8 +133,8 @@
 				</div>
 			{/if}
 		<div class="input_submit_container">
-			<input type="submit" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;">
-			<input type="submit" name="assign" value="{tr}Assign{/tr}" onclick="needToConfirm=false;">
+			<input type="submit" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;" />
+			<input type="submit" name="assign" value="{tr}Assign{/tr}" onclick="needToConfirm=false;" />
 		</div>
 	{/if}
 </div>

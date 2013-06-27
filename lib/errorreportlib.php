@@ -5,15 +5,9 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-/**
- *
- */
 class ErrorReportLib
 {
-    /**
-     * @param $message
-     */
-    function report($message)
+	function report($message)
 	{
 		if (! isset($_SESSION['errorreport'])) {
 			$_SESSION['errorreport'] = array();
@@ -22,10 +16,7 @@ class ErrorReportLib
 		$_SESSION['errorreport'][] = $message;
 	}
 
-    /**
-     * @return array
-     */
-    function get_errors()
+	function get_errors()
 	{
 		if (! isset($_SESSION['errorreport'])) {
 			return array();

@@ -227,8 +227,7 @@ tr.odd td,
 td.odd,
 li.odd,
 .oddthumb,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+table.normal tr:nth-child(2n+1) {
 	background: #d9d9b0;
 }
 
@@ -236,8 +235,7 @@ tr.even td,
 td.even,
 li.even,
 .eventhumb,
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+table.normal tr:nth-child(2n) {
 	background: #d1d2a9;
 }
 
@@ -333,19 +331,4 @@ a.pagetitle {
 	padding: 1px;
 	margin: 1px;
 	font-weight: bold;
-}
-
-/*** Calendar ***/
-
-.caltable .even {
-	background: #d1d2a9;
-}
-
-.caltable .odd {
-	background: #f1f1c9;
-}
-
-.caltable td.calhighlight,
-td.calheadhighlight {
-	background: #f1f8de;
 }

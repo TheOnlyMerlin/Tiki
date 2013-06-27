@@ -19,12 +19,10 @@ class Search_Index_Lucene implements Search_Index_Interface
 	{
 		switch($lang) {
 		case 'en':
-			default:
-				Zend_Search_Lucene_Analysis_Analyzer::setDefault(new StandardAnalyzer_Analyzer_Standard_English());
-				Zend_Search_Lucene_Search_QueryParser::setDefaultEncoding('UTF-8');
+		default:
+			Zend_Search_Lucene_Analysis_Analyzer::setDefault(new StandardAnalyzer_Analyzer_Standard_English());
 		}
 
-		Zend_Search_Lucene_Storage_Directory_Filesystem::setDefaultFilePermissions(0660);
 		$this->directory = $directory;
 		$this->lastModif = file_exists($directory) ? filemtime($directory) : 0;
 
@@ -64,86 +62,32 @@ class Search_Index_Lucene implements Search_Index_Interface
 		$this->getLucene()->addDocument($document);
 	}
 
-	function endUpdate()
-	{
-	}
-
 	function optimize()
 	{
 		$this->getLucene()->optimize();
 	}
 
-	function destroy()
+	function invalidateMultiple(Search_Expr_Interface $expr)
 	{
-		unset($this->lucene);
-
-		return (bool) $this->destroyDirectory($this->directory);
-	}
-
-	function exists()
-	{
-		return file_exists($this->directory);
-	}
-
-    /**
-	 * Private. Used by a callback, so made public until PHP 5.4.
-	 *
-     * @param $path
-     * @return int
-	 * @private
-     */
-	private function destroyDirectory($path)
-	{
-		if (!$path or !is_dir($path)) return false;
-
-		if ($dir = opendir($path)) {
-			while (false !== ($file = readdir($dir))) {
-				if ($file == '.' || $file == '..') {
-					continue;
-				}
-
-				if (is_dir($path . '/' . $file)) {
-					$this->destroyDirectory($path . '/' . $file);
-				} else {
-					unlink($path . '/' . $file);
-				}
-			}
-			closedir($dir);
-		}
-
-		rmdir($path);
-
-		return ! file_exists($path);
-	}
-
-
-	function invalidateMultiple(array $objectList)
-	{
-		$expr = $this->buildExpr($objectList);
+		$documents = array();
 
 		$lucene = $this->getLucene();
 		$query = $this->buildQuery($expr);
 		foreach ($lucene->find($query) as $hit) {
 			$document = $hit->getDocument();
+			$documents[] = array(
+				'object_type' => $document->object_type,
+				'object_id' => $document->object_id,
+			);
 			$lucene->delete($hit->id);
 		}
+
+		return $documents;
 	}
 
-	private function buildExpr(array $objectList)
+	function find(Search_Expr_Interface $query, Search_Query_Order $sortOrder, $resultStart, $resultCount)
 	{
-		$query = new Search_Query;
-		foreach ($objectList as $object) {
-			$object = (array) $object;
-			$query->addObject($object['object_type'], $object['object_id']);
-		}
-
-		return $query->getExpr();
-	}
-
-	function find(Search_Query_Interface $query, $resultStart, $resultCount)
-	{
-		$expr = $query->getExpr();
-		$data = $this->internalFind($expr, $query->getSortOrder());
+		$data = $this->internalFind($query, $sortOrder);
 
 		$result = array_slice($data['result'], $resultStart, $resultCount);
 
@@ -151,7 +95,7 @@ class Search_Index_Lucene implements Search_Index_Interface
 		$resultSet->setEstimate($data['count']);
 
 		if ($this->highlight) {
-			$resultSet->setHighlightHelper(new Search_Index_Lucene_HighlightHelper($expr));
+			$resultSet->setHighlightHelper(new Search_Index_Lucene_HighlightHelper($query));
 		} else {
 			$resultSet->setHighlightHelper(new Search_ResultSet_SnippetHelper);
 		}
@@ -316,11 +260,6 @@ class Search_Index_Lucene implements Search_Index_Interface
 	{
 		$term = null;
 
-		if ($node instanceof Search_Expr_Initial) {
-			$initial = $node->getContent();
-			$node = new Search_Expr_Range($initial, substr($initial, 0, -1) . chr(ord(substr($initial, -1)) + 1), $node->getType(), $node->getField());
-		}
-
 		if ($node instanceof Search_Expr_And) {
 			$term = $this->buildCondition($childNodes, true);
 		} elseif ($node instanceof Search_Expr_Or) {
@@ -351,11 +290,9 @@ class Search_Index_Lucene implements Search_Index_Interface
 			}
 		} elseif ($node instanceof Search_Expr_Token) {
 			$term = $this->buildTerm($node);
-		} else {
-			throw new Exception(tr('Feature not supported.'));
 		}
 
-		if ($term && method_exists($term, 'getBoost')) {
+		if ($term && method_exists($term, 'getTerm') && (string) $term->getTerm()->text) {
 			$term->setBoost($node->getWeight());
 		}
 
@@ -395,7 +332,7 @@ class Search_Index_Lucene implements Search_Index_Interface
 			$whole = str_replace(array('*', '?', '~', '+'), '', $whole);
 			$whole = str_replace(array('[', ']', '{', '}', '(', ')', ':', '-'), ' ', $whole);
 
-			$parts = explode(' ', $this->leftToRight($whole));
+			$parts = explode(' ', $whole);
 			if (count($parts) === 1) {
 				return new Zend_Search_Lucene_Search_Query_Term(new Zend_Search_Lucene_Index_Term($parts[0], $field), true);
 			} else {
@@ -409,11 +346,6 @@ class Search_Index_Lucene implements Search_Index_Interface
 			return new Zend_Search_Lucene_Search_Query_Phrase($parts, array_keys($parts), $field);
 		}
 	}
-
-	private function leftToRight($string)
-	{
-		return $string . "\xE2\x80\x8E";
-	}
 }
 
 class Search_Index_Lucene_HighlightHelper implements Zend_Filter_Interface
@@ -425,7 +357,7 @@ class Search_Index_Lucene_HighlightHelper implements Zend_Filter_Interface
 	{
 		$qstr = $query->__toString();									// query needs the object_type field removing for highlighting
 		$qstr = preg_replace('/\+?\(\(object_type.*?\)\)/', '', $qstr);	// this is the only way i can find to remove a term form a query
-		$query = Zend_Search_Lucene_Search_QueryParser::parse($qstr, 'UTF-8');	// rebuild
+		$query = Zend_Search_Lucene_Search_QueryParser::parse($qstr);	// rebuild
 		$this->query = $query;
 		$this->snippetHelper = new Search_ResultSet_SnippetHelper;
 	}

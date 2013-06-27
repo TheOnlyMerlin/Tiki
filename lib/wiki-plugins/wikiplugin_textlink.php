@@ -5,13 +5,6 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-// File name: wikiplugin_textlink.php
-// Required path: /lib/wiki-plugins
-//
-// Programmer: Robert Plummer
-//
-// Purpose: Plugin that instantiates a textlink within a page
-
 function wikiplugin_textlink_info()
 {
 	return array(

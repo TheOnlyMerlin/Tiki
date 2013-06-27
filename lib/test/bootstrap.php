@@ -5,7 +5,6 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-define('TIKI_IN_TEST', 1);
 define('CUSTOM_ERROR_LEVEL', defined('E_DEPRECATED') ? E_ALL ^ E_DEPRECATED : E_ALL);
 
 ini_set('display_errors', 'on');
@@ -22,48 +21,39 @@ $paths = array(
 
 ini_set('include_path', implode(PATH_SEPARATOR, $paths));
 
-require_once __DIR__ . '/../../vendor/autoload.php';
+function __autoload_tikitest($name)
+{
+	$path = str_replace('_', '/', $name) . '.php';
+	@ include_once($path);
+}
+spl_autoload_register('__autoload_tikitest');
 
 if (!is_file(dirname(__FILE__) . '/local.php')) {
 	die("\nYou need to setup a new database and create a local.php file for the test suite inside " . dirname(__FILE__) . "\n\n");
 }
 
-global $local_php, $api_tiki, $style_base;
+global $local_php, $api_tiki;
 $api_tiki = 'adodb';
-$local_php = __DIR__ . '/local.php';
+$local_php = dirname(__FILE__) . '/local.php';
 require_once($local_php);
 
-$style_base = 'skeleton';
-
-// Force autoloading
-if (! class_exists('ADOConnection')) {
-	die('AdoDb not found.');
-}
+require_once ('lib/adodb/adodb.inc.php');
+include_once ('lib/adodb/adodb-pear.inc.php');
 
 $ADODB_FETCH_MODE = ADODB_FETCH_ASSOC;
 
-$initializer = new TikiDb_Initializer;
-$initializer->setPreferredConnector($api_tiki);
-$db = $initializer->getConnection(array(
-	'host' => $host_tiki,
-	'user' => $user_tiki,
-	'pass' => $pass_tiki,
-	'dbs' => $dbs_tiki,
-	'charset' => $client_charset,
-));
+// for now the unit test suite only works with adodb
+// using pdo generate an error when phpunit tries to serialize the globals variables
+// since it is not possible to serialize a PDO object
+$dbTiki = ADONewConnection($db_tiki);
 
-if (! $db) {
+if (!@$dbTiki->Connect($host_tiki, $user_tiki, $pass_tiki, $dbs_tiki)) {
 	die("\nUnable to connect to the database\n\n");
 }
 
-TikiDb::set($db);
-
-global $tikilib;
-require_once 'lib/tikilib.php';
-$tikilib = new TikiLib;
+TikiDb::set(new TikiDb_Adodb($dbTiki));
 
 // update db if needed
-require_once 'lib/init/initlib.php';
 include_once ('installer/installlib.php');
 $installer = new Installer;
 
@@ -81,12 +71,15 @@ global $smarty;
 require_once 'lib/init/smarty.php';
 $smarty->addPluginsDir('../smarty_tiki/');
 require_once 'lib/cache/cachelib.php';
+require_once 'lib/tikilib.php';
 require_once 'lib/wiki/wikilib.php';
 require_once 'lib/userslib.php';
 require_once 'lib/headerlib.php';
 require_once 'lib/init/tra.php';
 require_once 'lib/tikiaccesslib.php';
 
+global $tikilib;
+$tikilib = new TikiLib;
 $userlib = new UsersLib;
 $_SESSION = array(
 		'u_info' => array(
@@ -109,9 +102,8 @@ $systemConfiguration = new Zend_Config(
 
 global $user_overrider_prefs;
 $user_overrider_prefs = array();
-$prefs['language'] = 'en';
-$prefs['site_language'] = 'en';
 require_once 'lib/setup/prefs.php';
+$prefs['language'] = 'en';
 
 ini_set('display_errors', 'on');
 error_reporting(CUSTOM_ERROR_LEVEL);

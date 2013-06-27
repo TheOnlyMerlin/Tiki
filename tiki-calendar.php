@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -798,9 +795,11 @@ $smarty->assign('cookietab', $cookietab);
 
 ask_ticket('calendar');
 
+include_once('tiki-jscalendar.php');
+
 if (!empty($prefs['calendar_fullcalendar']) && $prefs['calendar_fullcalendar'] === 'y') {
-	$headerlib->add_cssfile('vendor_extra/fullcalendar-resourceviews/fullcalendar/fullcalendar.css');
-	$headerlib->add_jsfile('vendor_extra/fullcalendar-resourceviews/fullcalendar/fullcalendar.min.js');
+	$headerlib->add_cssfile('lib/fullcalendar/fullcalendar.css');
+	$headerlib->add_jsfile('lib/fullcalendar/fullcalendar.min.js');
 	$smarty->assign('minHourOfDay', $minHourOfDay);
 	$smarty->assign('maxHourOfDay', $maxHourOfDay);
 	if ($prefs['feature_wysiwyg'] == 'y' && $prefs['wysiwyg_default'] == 'y') {

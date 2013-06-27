@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -24,11 +21,6 @@ if ($tiki_p_admin != 'y') {
 	$userGroups = array();
 }
 
-/**
- * @param $u
- * @param $reason
- * @return mixed
- */
 function discardUser($u, $reason)
 {
 	$u['reason'] = $reason;
@@ -734,19 +726,8 @@ if (isset($_REQUEST['user']) and $_REQUEST['user']) {
 	$_REQUEST['user'] = 0;
 }
 
-$users = $userlib->get_users(
-	$offset,
-	$numrows,
-	$sort_mode,
-	$find,
-	$initial,
-	true,
-	$filterGroup,
-	$filterEmail,
-	!empty($_REQUEST['filterEmailNotConfirmed']),
-	!empty($_REQUEST['filterNotValidated']),
-	!empty($_REQUEST['filterNeverLoggedIn'])
-);
+$users = $userlib->get_users($offset, $numrows, $sort_mode, $find, $initial, true, $filterGroup, $filterEmail,
+		!empty($_REQUEST['filterEmailNotConfirmed']), !empty($_REQUEST['filterNotValidated']), !empty($_REQUEST['filterNeverLoggedIn']));
 
 if (!empty($group_management_mode) || !empty($set_default_groups_mode) || !empty($email_mode)) {
 	$arraylen = count($users['data']);
@@ -793,9 +774,6 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 $smarty->assign('mid', 'tiki-adminusers.tpl');
 $smarty->display('tiki.tpl');
 
-/**
- * @param $errors
- */
 function exit_with_error_messages($errors)
 {
 	global $access;

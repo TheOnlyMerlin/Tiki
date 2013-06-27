@@ -45,8 +45,10 @@ class Search_ContentSource_SheetSource implements Search_ContentSource_Interface
 		$grid = new TikiSheet;
 		$grid->import($loader);
 
+		ob_start();
 		$grid->export($writer);
-		$text = $writer->output;
+		$text = ob_get_contents();
+		ob_end_clean();
 
 		$data = array(
 			'title' => $typeFactory->sortable($info['title']),

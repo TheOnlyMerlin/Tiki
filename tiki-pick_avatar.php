@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -85,13 +82,6 @@ if (isset($_FILES['userfile1']) && is_uploaded_file($_FILES['userfile1']['tmp_na
 			$userprefslib->set_user_avatar($userwatch, 'u', '', $name, $size, $type, $data);
 		}
 	}
-	
-	if ($prefs['feature_score'] == 'y') {
-		global $tikilib ,$user;
-		$userid = $tikilib->get_user_id($user);
-		$tikilib->score_event($user, 'avatar_added', "avatar:$userid");
-	}
-	
 	/* redirect to prevent re-submit on page reload */
 	header('Location: tiki-pick_avatar.php');
 	exit;

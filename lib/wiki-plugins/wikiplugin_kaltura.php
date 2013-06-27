@@ -9,16 +9,15 @@ function wikiplugin_kaltura_info()
 {
 	global $prefs;
 	if ($prefs['feature_kaltura'] === 'y') {
-		$kalturaadminlib = TikiLib::lib('kalturaadmin');
+		global $kalturaadminlib; require_once 'lib/videogals/kalturalib.php';
 
-		$playerList = $kalturaadminlib->getPlayersUiConfs();
-		$players = array();
-		foreach ($playerList as $pl) {
-			$players[] = array('value' => $pl['id'], 'text' => tra($pl['name']));
-		}
-
-		if (count($players)) {
-			array_unshift($players, array('value' => '', 'text' => tra('Default')));
+		$players = array(array('value' => '', 'text' => tra('Default')));
+		if (is_object($kalturaadminlib) && !empty($kalturaadminlib->session)) {
+			$players1 = $kalturaadminlib->getPlayersUiConfs();
+			foreach ($players1 as & $pl) {
+				$players[] = array('value' => $pl['id'], 'text' => tra($pl['name']));
+			}
+			unset($players1);
 		}
 	}
 
@@ -27,7 +26,7 @@ function wikiplugin_kaltura_info()
 		'documentation' => 'PluginKaltura',
 		'description' => tra('Display a video created through the Kaltura feature'),
 		'prefs' => array('wikiplugin_kaltura', 'feature_kaltura'),
-		'format' => 'html',
+		'extraparams' => true,
 		'icon' => 'img/icons/film_edit.png',
 		'params' => array(
 			'id' => array(
@@ -93,24 +92,13 @@ function wikiplugin_kaltura_info()
 				'description' => tra('Text to display on button for adding new media.'),
 				'default' => tra('Add media'),
 			),
-			'type' => array(
-				'required' => false,
-				'name' => tra('Player type'),
-				'description' => tra('"kdp" or "html5"'),
-				'default' => 'kdp',
-				'filter' => 'word',
-				'options' => array(
-					array('text' => tra('KDP'), 'value' => 'kdp'),
-					array('text' => tra('HTML5'), 'value' => 'html5'),
-				),
-			),
 		),
 	);
 }
 
 function wikiplugin_kaltura($data, $params)
 {
-	global $prefs, $tiki_p_upload_videos, $user, $page;
+	global $prefs, $kalturalib, $tiki_p_upload_videos, $user, $page;
 
 	static $instance = 0;
 
@@ -119,9 +107,7 @@ function wikiplugin_kaltura($data, $params)
 	$defaults = array();
 	$plugininfo = wikiplugin_kaltura_info();
 	foreach ($plugininfo['params'] as $key => $param) {
-		if (isset($param['default'])) {
-			$defaults[$key] = $param['default'];
-		}
+		$defaults["$key"] = $param['default'];
 	}
 
 	if (empty($params['id'])) {
@@ -130,48 +116,24 @@ function wikiplugin_kaltura($data, $params)
 			$smarty = TikiLib::lib('smarty');
 			$smarty->loadPlugin('smarty_function_button');
 
-			$json_page = json_encode($page);
-			$json_instance = json_encode($instance);
-			$json_title = json_encode(tr('Upload Media'));
 			TikiLib::lib('header')->add_jq_onready(
-<<<REG
-$("#kaltura_upload_btn$instance a").on("click", function() {
-	$(this).serviceDialog({
-		title: $json_title,
-		width: 710,
-		height: 450,
-		hideButtons: true,
-		success: function (data) {
-			if (data.entries) {
-				$.post('tiki-wikiplugin_edit.php', {
-					content: '',
-					type: 'kaltura',
-					page: {$json_page},
-					index: {$json_instance},
-					params: {
-						id: data.entries[0]
-					}
-				}, function () {
-					document.location.reload();
-				});
-			}
-		}
-	});
+				'
+$("#kaltura_upload_btn' . $instance . ' a").live("click", function() {
+	openMediaUploader("<input type=\"hidden\" name=\"from\" value=\"plugin\" />" +
+					"<input type=\"hidden\" name=\"content\" value=\"\" />" +
+					"<input type=\"hidden\" name=\"type\" value=\"kaltura\" />" +
+					"<input type=\"hidden\" name=\"page\" value=\"'.$page.'\" />" +
+					"<input type=\"hidden\" name=\"index\" value=\"'.$instance.'\" />",
+				"tiki-wikiplugin_edit.php");
 	return false;
 });
-REG
+			'
 			);
 
 			$html = smarty_function_button(
 				array(	// default for add_button_label already tra but not merged yet
 					'_text' => !empty($params['add_button_label']) ? tra($params['add_button_label']) : $defaults['add_button_label'],
 					'_id' => 'kaltura_upload_btn' . $instance,
-					'href' => TikiLib::lib('service')->getUrl(
-						array(
-							'controller' => 'kaltura',
-							'action' => 'upload'
-						)
-					),
 				),
 				$smarty
 			);
@@ -188,13 +150,16 @@ REG
 	}
 
 	if (empty($params['player_id'])) {
-		$params['player_id'] = $prefs['kaltura_kdpUIConf'];
+		$playerId = $prefs['kaltura_kdpUIConf'];
+	} else {
+		$playerId = $params['player_id'];
 	}
 
-	if (empty($params['width']) || empty($params['height'])) {
-		$kalturaadminlib = TikiLib::lib('kalturaadmin');
-		$player = $kalturaadminlib->getPlayersUiConf($params['player_id']);
-		if (! empty($player)) {
+	global $kalturaadminlib; require_once 'lib/videogals/kalturalib.php';
+
+	if ($kalturaadminlib && $kalturaadminlib->session && (empty($params['width']) || empty($params['height']))) {
+		$player = $kalturaadminlib->getPlayersUiConf($playerId);
+		if (!empty($player)) {
 			if (empty($params['width'])) {
 				$params['width'] = $player['width'];
 			}
@@ -205,14 +170,21 @@ REG
 			return '<span class="error">' . tra('Player not found') . '</span>';
 		}
 	}
-
-	$kalturalib = TikiLib::lib('kalturauser');
 	$params = array_merge($defaults, $params);
-	$params['session'] = $kalturalib->getSessionKey();
-	$params['media_url'] = $kalturalib->getMediaUrl($params['id'], $params['player_id']);
 
-	$smarty = TikiLib::lib('smarty');
-	$smarty->assign('kaltura', $params);
+
+	$code ='<object name="kaltura_player" id="kaltura_player" type="application/x-shockwave-flash" allowScriptAccess="always" ' .
+			'allowNetworking="all" allowFullScreen="true" height="'.$params['height'].'" width="'.$params['width'].'" data="'.$prefs['kaltura_kServiceUrl'] .
+			'index.php/kwidget/wid/_'.$prefs['kaltura_partnerId'].'/uiconf_id/'. $playerId .'/entry_id/'.urlencode($id).'">' .
+					'<param name="allowScriptAccess" value="always" />' .
+					'<param name="allowNetworking" value="all" />' .
+					'<param name="allowFullScreen" value="true" />' .
+					'<param name="movie" value="'.$prefs['kaltura_kServiceUrl'].'index.php/kwidget/wid/_' .
+						$prefs['kaltura_partnerId'].'/uiconf_id/'. $playerId .'/entry_id/'.urlencode($id).'"/>' .
+					' <param name="flashVars" value="entry_id='.htmlspecialchars($id).'&ks='.$kalturalib->session.'"/>' .
+					'<param name="wmode" value="opaque"/>' .
+				'</object>';
+
 	$style = '';
 	if (!empty($params['align'])) {
 		$style .= "text-align:{$params['align']};";
@@ -220,46 +192,9 @@ REG
 	if (!empty($params['float'])) {
 		$style .= "float:{$params['float']};";
 	}
-	if ($params['type'] === 'html5') {
-		$embedIframeJs = '/embedIframeJs';	// TODO add as params?
-		$leadWithHTML5 = 'true';
-		$autoPlay = 'false';
-
-		TikiLib::lib('header')
-			->add_jsfile("{$prefs['kaltura_kServiceUrl']}/p/{$prefs['kaltura_partnerId']}/sp/{$prefs['kaltura_partnerId']}00{$embedIframeJs}/uiconf_id/{$params['player_id']}/partner_id/{$prefs['kaltura_partnerId']}")
-			->add_jq_onready(
-				"
-mw.setConfig('Kaltura.LeadWithHTML5', $leadWithHTML5);
-
-kWidget.embed({
-	targetId: 'kaltura_player$instance',
-	wid: '_{$prefs['kaltura_partnerId']}',
-	uiconf_id: '{$params['player_id']}',
-	entry_id: '{$params['id']}',
-	flashvars: { // flashvars allows you to set runtime uiVar configuration overrides.
-		//autoPlay: $autoPlay
-	},
-	params: { // params allows you to set flash embed params such as wmode, allowFullScreen etc
-		wmode: 'transparent'
-	},
-	readyCallback: function (playerId) {
-		\$ = \$jq;	// restore our jQuery after Kaltura has finished with it
-		console.log('Player:' + playerId + ' is ready ');
-	}
-});"
-			);
-		return "<div id='kaltura_player$instance' style='width:{$params['width']}px;height:{$params['height']}px;$style'></div>";
-
-	} elseif ($params['type'] === 'kdp') {
-		$code = $smarty->fetch('wiki-plugins/wikiplugin_kaltura.tpl');
-		if (!empty($style)) {
-			$code = "<div style='$style'>$code</div>";
-		}
-		return $code;
-
-	} else {
-		TikiLib::lib('erroreport')->report(tra('Kaltura player: unsupported type.'));
-		return '';
+	if (!empty($style)) {
+		$code = "<div style=\"$style\">$code</div>";
 	}
 
+    return '~np~'.$code.'~/np~';
 }

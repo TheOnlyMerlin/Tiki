@@ -19,17 +19,9 @@
 		{preference name="tracker_refresh_itemlink_detail"}
 		{preference name="tracker_clone_item"}
 		{preference name="wikiplugin_insert"}
-		<div class="adminoptionboxchild" id="wikiplugin_insert_childcontainer">
+		<div id="wikiplugin_insert_childcontainer">
 			{preference name=tracker_insert_allowed}
 		</div>
-		{preference name=allocate_memory_tracker_export_items}
-		{preference name=allocate_time_tracker_export_items}
-
-		{preference name=ajax_inline_edit}
-		<div class="adminoptionboxchild" id="ajax_inline_edit_childcontainer">
-			{preference name=ajax_inline_edit_trackerlist}
-		</div>
-		{preference name=tracker_change_field_type}
 	</fieldset>
 
 	<fieldset class="admin">
@@ -49,7 +41,7 @@
 				{tr}Use a directory to store files:{/tr}</td>
 			  <td>
 				<input type="radio" name="t_use_db" value="n" {if $prefs.t_use_db eq 'n'}checked="checked"{/if}/> {tr}Path:{/tr}
-				<br>
+				<br />
 				<input type="text" name="t_use_dir" value="{$prefs.t_use_dir|escape}" size="50" />
 			  </td>
 			</tr>

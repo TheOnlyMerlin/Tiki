@@ -12,7 +12,7 @@ class Search_Index_LuceneTest extends PHPUnit_Framework_TestCase
 {
 	const DOCUMENT_DATE = 1234567890;
 	private $dir;
-	protected $index;
+	private $index;
 
 	function setUp()
 	{
@@ -20,12 +20,6 @@ class Search_Index_LuceneTest extends PHPUnit_Framework_TestCase
 		$this->tearDown();
 
 		$index = new Search_Index_Lucene($this->dir);
-		$this->populate($index);
-		$this->index = $index;
-	}
-
-	protected function populate($index)
-	{
 		$typeFactory = $index->getTypeFactory();
 		$index->addDocument(
 			array(
@@ -49,11 +43,13 @@ class Search_Index_LuceneTest extends PHPUnit_Framework_TestCase
 			)
 		);
 
+		$this->index = $index;
 	}
 
 	function tearDown()
 	{
-		$this->index->destroy();
+		$dir = escapeshellarg($this->dir);
+		`rm -Rf $dir`;
 	}
 
 	function testBasicSearch()
@@ -89,27 +85,24 @@ class Search_Index_LuceneTest extends PHPUnit_Framework_TestCase
 
 	function testWithOrCondition()
 	{
-		$positive = new Search_Query('foobar or hello');
-		$negative = new Search_Query('foobar or baz');
+		$query = new Search_Query('foobar or hello');
 
-		$this->assertGreaterThan(0, count($positive->search($this->index)));
-		$this->assertEquals(0, count($negative->search($this->index)));
+		$this->assertGreaterThan(0, count($query->search($this->index)));
 	}
 
 	function testWithNotCondition()
 	{
-		$negative = new Search_Query('not world and hello');
-		$positive = new Search_Query('not foobar and hello');
+		$query = new Search_Query('not world and hello');
+		$result = $query->search($this->index);
 
-		$this->assertEquals(0, count($negative->search($this->index)));
-		$this->assertGreaterThan(0, count($positive->search($this->index)));
+		$this->assertEquals(0, count($result));
 	}
 
 	function testFilterType()
 	{
-		$this->assertResultCount(1, 'filterType', 'wiki page');
 		$this->assertResultCount(0, 'filterType', 'wiki');
 		$this->assertResultCount(0, 'filterType', 'blog post');
+		$this->assertResultCount(1, 'filterType', 'wiki page');
 	}
 
 	function testFilterCategories()
@@ -172,7 +165,7 @@ class Search_Index_LuceneTest extends PHPUnit_Framework_TestCase
 
 	function testMatchInitial()
 	{
-		$this->assertResultCount(1, 'filterInitial', 'HomePag');
+		$this->assertResultCount(1, 'filterInitial', 'HomePage');
 		$this->assertResultCount(1, 'filterInitial', 'Home');
 		$this->assertResultCount(0, 'filterInitial', 'Fuzzy');
 		$this->assertResultCount(0, 'filterInitial', 'Ham');

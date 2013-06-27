@@ -15,7 +15,7 @@
  * @package		Tiki
  * @subpackage		Parser
  * @author		Robert Plummer
- * @copyright		Copyright (c) 2002-2013, All Rights Reserved.
+ * @copyright		Copyright (c) 2002-2012, All Rights Reserved.
  * 			See copyright.txt for details and a complete list of authors.
  * @license		LGPL - See license.txt for details.
  * @version		SVN $Rev$
@@ -26,7 +26,6 @@
 
 class ParserLib extends TikiDb_Bridge
 {
-	private $makeTocCount = 0;
 	private $pre_handlers = array();
 	private $pos_handlers = array();
 	private $postedit_handlers = array();
@@ -87,8 +86,6 @@ class ParserLib extends TikiDb_Bridge
 				'skipvalidation'=>  false,
 				'ck_editor'=>   false,
 				'namespace' => false,
-				'protect_email' => true,
-				'exclude_plugins' => array(),
 			), empty($option) ? array() : (array) $this->option, (array)$option
 		);
 	}
@@ -420,12 +417,6 @@ class ParserLib extends TikiDb_Bridge
 			//note parent plugin in case of plugins nested in an include - to suppress plugin edit icons below
 			$plugin_parent = isset($plugin_name) ? $plugin_name : false;
 			$plugin_name = $match->getName();
-
-			if (isset($this->option['exclude_plugins']) && in_array($plugin_name, $this->option['exclude_plugins'])) {
-				$match->replaceWith('');
-				continue;
-			}
-
 			//suppress plugin edit icons for plugins within includes since edit doesn't work for these yet
 			$this->option['suppress_icons'] = $plugin_name != 'include' && $plugin_parent && $plugin_parent == 'include' ?
 				true : $this->option['suppress_icons'];
@@ -435,7 +426,7 @@ class ParserLib extends TikiDb_Bridge
 			$start = $match->getStart();
 
 			$pluginOutput = null;
-			if ( $this->plugin_enabled($plugin_name, $pluginOutput) || $this->option['ck_editor'] ) {
+			if ( $this->plugin_enabled($plugin_name, $pluginOutput) ) {
 
 				static $plugin_indexes = array();
 
@@ -586,7 +577,7 @@ if ( \$('#$id') ) {
 	//*
 	function plugin_get_list( $includeReal = true, $includeAlias = true )
 	{
-		return WikiPlugin_Negotiator_Wiki::getList($includeReal, $includeAlias);
+		return WikiPlugin_Negotiator_Wiki::getList( $includeReal, $includeAlias );
 	}
 
 	function zend_plugin_exists($className)
@@ -595,7 +586,7 @@ if ( \$('#$id') ) {
 			return true;
 		}
 
-		return class_exists($className) == true;
+		return file_exists(str_replace("_", "/", "lib/core/" . $className . '.php')) == true && class_exists($className) == true;
 	}
 	//*
 	function plugin_exists( $name, $include = false )
@@ -638,18 +629,16 @@ if ( \$('#$id') ) {
 			return $known[$name] = $class->info();
 		}
 
-		if (! $this->plugin_exists($name, true)) {
+		if ( ! $this->plugin_exists($name, true) )
 			return $known[$name] = false;
-		}
 
 		$func_name_info = "wikiplugin_{$name}_info";
 
 		if ( ! function_exists($func_name_info) ) {
-			if ($info = WikiPlugin_Negotiator_Wiki_Alias::info($name)) {
+			if ( $info = WikiPlugin_Negotiator_Wiki_Alias::info($name) )
 				return $known[$name] = $info['description'];
-			} else {
+			else
 				return $known[$name] = false;
-			}
 		}
 
 		return $known[$name] = $func_name_info();
@@ -658,19 +647,19 @@ if ( \$('#$id') ) {
 	//*
 	function plugin_alias_info( $name )
 	{
-		return WikiPlugin_Negotiator_Wiki_Alias::info($name);
+		return WikiPlugin_Negotiator_Wiki_Alias::info( $name );
 	}
 
 	//*
 	function plugin_alias_store( $name, $data )
 	{
-		return WikiPlugin_Negotiator_Wiki_Alias::store($name, $data);
+		return WikiPlugin_Negotiator_Wiki_Alias::store( $name, $data );
 	}
 
 	//*
 	function plugin_alias_delete( $name )
 	{
-		return WikiPlugin_Negotiator_Wiki_Alias::delete($name);
+		return WikiPlugin_Negotiator_Wiki_Alias::delete( $name );
 	}
 
 	//*
@@ -1022,11 +1011,9 @@ if ( \$('#$id') ) {
 					$ck_editor_plugin .= $argKey.'="'.implode($sep, $argValue).'" ';	// process array
 					$arg_str .= $argKey.'='.implode($sep, $argValue).'&';
 				} else {
-					/* Should not be needed now that the plugin arguments are decoded
 					if ($name === 'module') {	// failsafe double-quote prevention for module plugin
 						$argValue =  preg_replace('/^&quot;(.*)&quot;$/', '$1', $argValue);
 					}
-					*/
 					$ck_editor_plugin .= $argKey.'="'.$argValue.'" ';
 					$arg_str .= $argKey.'='.$argValue.'&';
 				}
@@ -1054,21 +1041,15 @@ if ( \$('#$id') ) {
 		$arg_str = rtrim($arg_str, '&');
 		$icon = isset($info['icon']) ? $info['icon'] : 'img/icons/wiki_plugin_edit.png';
 
-		// some plugins are just too fragile to do wysiwyg, so show the "source" for them ;(
-		$excluded = array('tracker', 'trackerlist', 'trackerfilter', 'kaltura', 'toc', 'freetagged', 'draw', 'googlemap',
-			'include', 'module', 'list', 'custom_search', 'iframe', 'map', 'calendar', 'file', 'files', 'mouseover', 'sort');
-
-		$ignore = null;
-		$enabled = $this->plugin_enabled($name, $ignore);
-		if (in_array($name, $excluded) || !$enabled) {
+		// some plugins are just too flakey to do wysiwyg, so show the "source" for them ;(
+		if (in_array($name, array('tracker', 'trackerlist', 'trackerfilter', 'kaltura', 'toc', 'freetagged', 'draw', 'googlemap', 'include', 'module'))) {
 			$plugin_result = '&nbsp;&nbsp;&nbsp;&nbsp;' . $ck_editor_plugin;
 		} else {
 			// Tiki 7+ adds ~np~ to plugin output so remove them
 			$plugin_result = preg_replace('/~[\/]?np~/ms', '', $plugin_result);
 
-			$oldOptions = $this->option;
 			$plugin_result = $this->parse_data($plugin_result, array('is_html' => false, 'suppress_icons' => true, 'ck_editor' => true, 'noparseplugins' => true));
-			$this->setOptions($oldOptions);
+
 			// reset the noparseplugins option, to allow for proper display in CkEditor
 			$this->option['noparseplugins'] = false;
 
@@ -1076,8 +1057,6 @@ if ( \$('#$id') ) {
 			$plugin_result = preg_replace('/\shref\=/i', ' tiki_href=', $plugin_result);
 			$plugin_result = preg_replace('/\sonclick\=/i', ' tiki_onclick=', $plugin_result);
 			$plugin_result = preg_replace('/<script.*?<\/script>/mi', '', $plugin_result);
-			// remove hidden inputs
-			$plugin_result = preg_replace('/<input.*?type=[\'"]?hidden[\'"]?.*>/mi', '', $plugin_result);
 		}
 		if (!in_array($name, array('html'))) {		// remove <p> and <br>s from non-html
 			$data = str_replace(array('<p>', '</p>', "\t"), '', $data);
@@ -1090,19 +1069,16 @@ if ( \$('#$id') ) {
 			$elem = 'span';
 		}
 		$elem_style = 'position:relative;';
-		if (!$enabled) {
-			$elem_style .= 'opacity:0.3;';
-		}
 		if (in_array($name, array('img', 'div')) && preg_match('/<'.$name.'[^>]*style="(.*?)"/i', $plugin_result, $m)) {
 			if (count($m)) {
 				$elem_style .= $m[1];
 			}
 		}
 
-		$ret = '~np~<'.$elem.' contenteditable="false" unselectable="on" class="tiki_plugin" data-plugin="' . $name . '" style="' . $elem_style . '"' .
-				' data-syntax="' . htmlentities($ck_editor_plugin, ENT_QUOTES, 'UTF-8') . '"' .
-				' data-args="' . htmlentities($arg_str, ENT_QUOTES, 'UTF-8') . '"' .
-				' data-body="' . htmlentities($data, ENT_QUOTES, 'UTF-8') . '">'.	// not <!--{cke_protected}
+		$ret = '~np~<'.$elem.' class="tiki_plugin" plugin="' . $name . '" style="' . $elem_style . '"' .
+				' syntax="' . htmlentities($ck_editor_plugin, ENT_QUOTES, 'UTF-8') . '"' .
+				' args="' . htmlentities($arg_str, ENT_QUOTES, 'UTF-8') . '"' .
+				' body="' . htmlentities($data, ENT_QUOTES, 'UTF-8') . '">'.	// not <!--{cke_protected}
 				'<img src="'.$icon.'" width="16" height="16" style="float:left;position:relative;z-index:10001" />' .
 				$plugin_result.'<!-- end tiki_plugin --></'.$elem.'>~/np~';
 
@@ -1345,11 +1321,10 @@ if ( \$('#$id') ) {
 		$patterns[] = "#([\n ])www\.([a-z0-9\-]+)\.([a-z0-9\-.\~]+)((?:/[^,< \n\r]*)?)#i";
 		$replacements[] = "\\1<a $attrib href=\"http://www.\\2.\\3\\4\">www.\\2.\\3\\4$ext_icon</a>";
 		$patterns[] = "#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i";
-		if ($this->option['protect_email'] && $prefs['feature_wiki_protect_email'] == 'y') {
+		if ($prefs['feature_wiki_protect_email'] == 'y')
 			$replacements[] = "\\1" . $tikilib->protect_email("\\2", "\\3");
-		} else {
+		else
 			$replacements[] = "\\1<a class='wiki' href=\"mailto:\\2@\\3\">\\2@\\3</a>";
-		}
 		$patterns[] = "#([\n ])magnet\:\?([^,< \n\r]+)#i";
 		$replacements[] = "\\1<a class='wiki' href=\"magnet:?\\2\">magnet:?\\2</a>";
 		$text = preg_replace($patterns, $replacements, $text);
@@ -1492,13 +1467,8 @@ if ( \$('#$id') ) {
 
 		if ($prefs['feature_jison_wiki_parser'] == 'y') {//The following will stop and return based off new parser
 			//Testing new parser ;)
-			$BOF = '';
 			if ($this->option['ck_editor']) {
 				$parser = new JisonParser_WikiCKEditor_Handler();
-				//ckeditor inserts an element at the beginning, which confuses the conversion back to wiki from html, this is to prevent that from happening
-				if ($this->Parser->parseDepth == 0) {
-					$BOF = $parser->createWikiHelper('BOF', 'span', '&shy;', array('contenteditable'=>'false'));
-				}
 			} else {
 				$parser = new JisonParser_Wiki_Handler();
 			}
@@ -1510,7 +1480,7 @@ if ( \$('#$id') ) {
 			}
 
 			unset($parser);
-			return $BOF . $data;
+			return $data;
 		}
 
 		// if simple_wiki is true, disable some wiki syntax
@@ -2235,9 +2205,6 @@ if ( \$('#$id') ) {
 
 			$inComment += substr_count($lineInLowerCase, "<!--");
 			$inComment -= substr_count($lineInLowerCase, "-->");
-			if ($inComment < 0) {	// stop lines containing just --> being detected as comments
-				$inComment = 0;
-			}
 
 			// check if we are inside a ~pre~ block and, if so, ignore
 			// monospaced and do not insert <br />
@@ -2574,16 +2541,15 @@ if ( \$('#$id') ) {
 										}
 									}
 
-									$add_brs = $prefs['feature_wiki_paragraph_formatting_add_br'] === 'y' && !$this->option['is_html'];
 									if ($in_paragraph && ((empty($tline) && !$in_empty_paragraph) || $contains_block)) {
 										// If still in paragraph, on meeting first blank line or end of div or start of div created by plugins; close a paragraph
 										$this->close_blocks($data, $in_paragraph, $listbeg, $divdepth, 1, 0, 0);
-									} elseif (!$in_paragraph && !$contains_block && !$contains_br && (!empty($tline) || $add_brs)) {
+									} elseif (!$in_paragraph && !$contains_block && !$contains_br && (!empty($tline) || $prefs['feature_wiki_paragraph_formatting_add_br'] === 'y')) {
 										// If not in paragraph, first non-blank line; start a paragraph; if not start of div created by plugins
 										$data .= "<p>";
 										$in_paragraph = 1;
-										$in_empty_paragraph = empty($tline) && $add_brs;
-									} elseif ($in_paragraph && $add_brs && !$contains_block) {
+										$in_empty_paragraph = empty($tline) && $prefs['feature_wiki_paragraph_formatting_add_br'] === 'y';
+									} elseif ($in_paragraph && $prefs['feature_wiki_paragraph_formatting_add_br'] == 'y' && !$contains_block) {
 										// A normal in-paragraph line if not close of div created by plugins
 										if (!empty($tline)) {
 											$in_empty_paragraph = false;
@@ -3052,7 +3018,7 @@ if ( \$('#$id') ) {
 					count($htmlLinks[1]) ? array_fill(0, count($htmlLinks[1]), null) : array(),
 					count($htmlLinksSefurl[1]) ? array_fill(0, count($htmlLinksSefurl[1]), null) : array(),
 					count($htmlWantedLinks[1]) ? array_fill(0, count($htmlWantedLinks[1]), null) : array()
-				);
+					);
 			}
 		} else {
 			$pageList = array_merge($normal[2], $withDesc[2], $htmlLinks[1], $htmlLinksSefurl[1], $htmlWantedLinks[1]);
@@ -3063,7 +3029,7 @@ if ( \$('#$id') ) {
 					count($htmlLinks[1]) ? array_fill(0, count($htmlLinks[1]), null) : array(),
 					count($htmlLinksSefurl[1]) ? array_fill(0, count($htmlLinksSefurl[1]), null) : array(),
 					count($htmlWantedLinks[1]) ? array_fill(0, count($htmlWantedLinks[1]), null) : array()
-				);
+					);
 			}
 		}
 

@@ -29,7 +29,6 @@ function wikiplugin_invite_info()
 				'required' => false,
 				'name' => tra('Item ID'),
 				'description' => tra('Dropdown list will show the group related to this item ID (in group selector or creator field) by default'),
-				'profile_reference' => 'tracker_item',
 			),
 		)
 	);

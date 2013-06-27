@@ -338,7 +338,7 @@
 	<form method="post" action="tiki-stats.php">
 		{html_select_date time=$startDate prefix="startDate_" start_year=$start_year end_year=$end_year day_value_format="%02d" field_order=$prefs.display_field_order}
 	 	&rarr; {html_select_date time=$endDate prefix="endDate_" start_year=$start_year end_year=$end_year day_value_format="%02d" field_order=$prefs.display_field_order}
-		<input type="submit" name="modify" value="{tr}Filter{/tr}">
+		<input type="submit" name="modify" value="{tr}Filter{/tr}"/>
 	</form>
 	<table class="normal">
 		<tr>
@@ -380,11 +380,11 @@
 
 {if $usage_chart eq 'y'}
 	<div align="center">
-		<img src="tiki-usage_chart.php" alt="{tr}Usage chart image{/tr}">
+		<img src="tiki-usage_chart.php" alt="{tr}Usage chart image{/tr}"/>
 	</div>
-	<br>
+	<br />
 	<div align="center">
-		<img src="tiki-usage_chart.php?type=daily" alt="{tr}Daily Usage{/tr}">
+		<img src="tiki-usage_chart.php?type=daily" alt="{tr}Daily Usage{/tr}"/>
 	</div>
 {/if}
 

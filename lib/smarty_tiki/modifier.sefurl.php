@@ -48,12 +48,12 @@ function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_lan
 			$href = 'tiki-browse_gallery.php?galleryId='. $source;
 			break;
 
-		case 'article':
-			$href = $sefurl ? "article$source" : "tiki-read_article.php?articleId=$source";
+		case 'videogallery':
+			$href = 'tiki-browse_video_gallery.php?galleryId='. $source;
 			break;
 
-		case 'topic':
-			$href = "tiki-view_articles.php?topic=$source";
+		case 'article':
+			$href = $sefurl ? "article$source" : "tiki-read_article.php?articleId=$source";
 			break;
 
 		case 'file':
@@ -100,11 +100,7 @@ function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_lan
 			break;
 
 		case 'tracker':
-			if ($source) {
-				$href = 'tiki-view_tracker.php?trackerId=' . $source;
-			} else {
-				$href = 'tiki-list_trackers.php';
-			}
+			$href = 'tiki-view_tracker.php?trackerId='.$source;
 			break;
 
 		case 'filegallery':

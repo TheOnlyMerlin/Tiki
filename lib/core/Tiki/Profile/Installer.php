@@ -52,14 +52,6 @@ class Tiki_Profile_Installer
 		'tracker_item' => 'trackeritem',
 	);
 
-	private static $typeMapInvert = array(
-		'wiki page' => 'wiki_page',
-		'wiki' => 'wiki_page',
-		'fgal' => 'file_gallery',
-		'trackeritem' => 'tracker_item',
-		'tracker item' => 'tracker_item',
-	);
-
 	private $userData = false;
 	private $debug = false;
 	
@@ -96,25 +88,10 @@ class Tiki_Profile_Installer
 	
 	public static function convertType( $type ) // {{{
 	{
-		if (isset(self::$typeMap[$type])) {
+		if ( array_key_exists($type, self::$typeMap) )
 			return self::$typeMap[$type];
-		} else {
+		else
 			return $type;
-		}
-	} // }}}
-
-	/**
-	 * Converts a Tiki object type to a profile object type.
-	 */
-	public static function convertTypeInvert( $type ) // {{{
-	{
-		$typeMap = self::$typeMapInvert;
-
-		if (isset($typeMap[$type])) {
-			return $typeMap[$type];
-		} else {
-			return $type;
-		}
 	} // }}}
 
 	public static function convertObject( $type, $id, $contextualizedInfo = array() ) // {{{
@@ -138,10 +115,9 @@ class Tiki_Profile_Installer
 	{
 		global $tikilib;
 
-		$result = $tikilib->fetchAll("SELECT DISTINCT `domain`, `profile` FROM `tiki_profile_symbols`");
-		foreach ($result as $row) {
+		$result = $tikilib->query("SELECT DISTINCT `domain`, `profile` FROM `tiki_profile_symbols`");
+		if ( $result ) while ( $row = $result->fetchRow() )
 			$this->installed[Tiki_Profile::getProfileKeyFor($row['domain'], $row['profile'])] = true;
-		}
 	} // }}}
 
 	function setUserData( $userData ) // {{{
@@ -156,10 +132,6 @@ class Tiki_Profile_Installer
 
 	function getInstallOrder( Tiki_Profile $profile ) // {{{
 	{
-		if ($profile == null) {
-			return false;
-		}
-		
 		// Obtain the list of all required profiles
 		$dependencies = $profile->getRequiredProfiles(true);
 		$dependencies[$profile->getProfileKey()] = $profile;

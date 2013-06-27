@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -55,25 +52,20 @@ if (!$blog_data) {
 
 $tikilib->get_perm_object($blogId, 'blog');
 
-$access->check_permission('tiki_p_read_blog', '', 'blog post', $postId);
+$access->check_permission('tiki_p_read_blog');
 
 $ownsblog = 'n';
 if ($user && $user == $blog_data["user"]) {
 	$ownsblog = 'y';
 }
 
-$ownspost = 'n';
-if ($user && $user == $post_info["user"]) {
-	$ownspost = 'y';
-}
-
-if ($ownspost == 'n' && $ownsblog == 'n' && $tiki_p_blog_admin != 'y' && $post_info["priv"] == 'y') {
+if ($ownsblog == 'n' && $tiki_p_blog_admin != 'y' && $post_info["priv"] == 'y') {
 	$smarty->assign('errortype', 401);
 	$smarty->assign('msg', tra("You do not have permission to view this blog post while it is marked as private"));
 	$smarty->display("error.tpl");
 	die;
 }
-if ($ownspost == 'n' && $ownsblog == 'n' && $tiki_p_blog_admin != 'y' && $post_info['created'] > $tikilib->now) {
+if ($ownsblog == 'n' && $tiki_p_blog_admin != 'y' && $post_info['created'] > $tikilib->now) {
 	$smarty->assign('errortype', 401);
 	$smarty->assign('msg', tra('Permission denied'));
 	$smarty->display("error.tpl");

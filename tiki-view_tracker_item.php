@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -33,7 +30,6 @@ $auto_query_args = array(
 	'initial',
 	'filterfield',
 	'filtervalue',
-	'view',
 	'exactvalue'
 );
 $special = false;
@@ -146,13 +142,6 @@ if (!isset($_REQUEST["trackerId"]) || !$_REQUEST["trackerId"]) {
 	$smarty->assign('msg', tra("No tracker indicated"));
 	$smarty->display("error.tpl");
 	die;
-}
-
-if ($prefs['feature_score'] == 'y' && isset($_REQUEST["itemId"])) {
-    $item_info = $trklib->get_tracker_item($_REQUEST["itemId"]);
-    $currentItemId = $_REQUEST["itemId"];
-    $tikilib->score_event($user, 'trackeritem_read', $currentItemId);
-    $tikilib->score_event($item_info['createdBy'], 'trackeritem_is_read', "$user:$currentItemId");
 }
 
 $definition = Tracker_Definition::get($_REQUEST['trackerId']);
@@ -301,7 +290,6 @@ if ($tracker_info['adminOnlyViewEditItem'] === 'y') {
 	$access->check_permission('tiki_p_admin_trackers', tra('Admin this tracker'), 'tracker', $tracker_info['trackerId']);
 }
 
-include_once('tiki-sefurl.php');
 
 if (!empty($_REQUEST['moveto']) && $tiki_p_admin_trackers == 'y') { // mo to another tracker fields with same name
 	$perms = Perms::get('tracker', $_REQUEST['moveto']);
@@ -453,9 +441,8 @@ if ($itemObject->canModify()) {
 				unset($_REQUEST['save_return']);
 			}
 		}
-		if (isset($_REQUEST['save_return']) && isset($_REQUEST['from'])) {
-			$fromUrl = filter_out_sefurl('tiki-index.php?page=' . urlencode($_REQUEST['from']));
-			header("Location: {$fromUrl}");
+		if (isset($_REQUEST['from'])) {
+			header('Location: tiki-index.php?page=' . urlencode($_REQUEST['from']));
 			exit;
 		}
 	}

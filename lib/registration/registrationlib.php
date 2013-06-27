@@ -205,7 +205,7 @@ class RegistrationLib extends TikiLib
 	public function create_user()
 	{
 		global $_REQUEST, $_SERVER, $email_valid, $prefs;
-		global $customfields, $userlib, $tikilib, $Debug;
+		global $registrationlib_apass, $customfields, $userlib, $tikilib, $Debug;
 
 		if ($Debug) {
 			print '::create_user';
@@ -214,6 +214,7 @@ class RegistrationLib extends TikiLib
 		if ($email_valid != 'no') {
 			if ($prefs['validateUsers'] == 'y') {
 				$apass = md5($tikilib->genPass());
+				$registrationlib_apass = $apass;
 				$userlib->add_user($_REQUEST['name'], $apass, $_REQUEST['email'], $_REQUEST['pass']);
 			} else {
 				$userlib->add_user($_REQUEST['name'], $_REQUEST['pass'], $_REQUEST['email'], '');
@@ -244,7 +245,6 @@ class RegistrationLib extends TikiLib
 
 		//do not recheck if already validated
 		if (!isset($registration['valerror']) || $registration['valerror'] !== false) {
-
 			if (empty($registration['name'])) {
 				$errors[] = new RegistrationError('name', tra('Username is required'));
 			}

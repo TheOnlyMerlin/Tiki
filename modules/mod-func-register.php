@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_register_info()
 {
 	return array(
@@ -24,11 +21,6 @@ function module_register_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- * @return array|mixed|RegistrationError|string
- */
 function module_register($mod_reference, $module_params)
 {
 	global $smarty;

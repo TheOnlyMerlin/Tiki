@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -58,9 +55,9 @@ if (isset($projectList)) {
 TikiLib::lib("sheet")->setup_jquery_sheet();
 
 $headerlib = TikiLib::lib("header")
-	->add_cssfile("vendor/jquery/jtrack/css/jtrack.css")
-	->add_jsfile("vendor/jquery/jtrack/js/domcached-0.1-jquery.js")
-	->add_jsfile("vendor/jquery/jtrack/js/jtrack.js")
+	->add_cssfile("lib/jquery/jtrack/css/jtrack.css")
+	->add_jsfile("lib/jquery/jtrack/js/domcached-0.1-jquery.js")
+	->add_jsfile("lib/jquery/jtrack/js/jtrack.js")
 	->add_jq_onready(
 		"jTask.init();
 
@@ -103,7 +100,7 @@ $headerlib = TikiLib::lib("header")
 		}
 	};
 
-	$('.jtrack-create,.jtrack-update,.jtrack-remove,.jtrack-remove-all,.jtrack-cancel,.jtrack-power,#jtrack-button-remove,#jtrack-button-remove-all,#jtrack-button-create,#jtrack-button-update').on('click', function() {
+	$('.jtrack-create,.jtrack-update,.jtrack-remove,.jtrack-remove-all,.jtrack-cancel,.jtrack-power,#jtrack-button-remove,#jtrack-button-remove-all,#jtrack-button-create,#jtrack-button-update').live('click', function() {
 		$.timesheetSpreadsheet();
 	});
 

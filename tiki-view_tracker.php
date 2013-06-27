@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -218,6 +215,11 @@ foreach ($xfields['data'] as $i => $current_field) {
 	$fieldIsVisible = $itemObject->canViewField($fid);
 	$fieldIsEditable = $itemObject->canModifyField($fid);
 
+	//exclude fields that should not be listed
+	if ($fieldIsVisible && ($current_field['isTblVisible'] == 'y' or in_array($fid, $popupFields))) {
+		$listfields[$fid] = $current_field;
+	}
+
 	if ($fieldIsVisible || $fieldIsEditable) {
 		$handler = $fieldFactory->getHandler($current_field);
 
@@ -227,11 +229,6 @@ foreach ($xfields['data'] as $i => $current_field) {
 		}
 	}
 
-	//exclude fields that should not be listed
-	if ($fieldIsVisible && ($current_field_ins['isTblVisible'] == 'y' or in_array($fid, $popupFields))) {
-		$listfields[$fid] = $current_field_ins;
-	}
-
 	if (! empty($current_field_ins)) {
 		if ($fieldIsEditable) {
 			$ins_fields['data'][$i] = $current_field_ins;
@@ -239,11 +236,6 @@ foreach ($xfields['data'] as $i => $current_field) {
 		if ($fieldIsVisible) {
 			$fields['data'][$i] = $current_field_ins;
 		}
-	}
-	if ($fieldIsEditable) {
-		$listfields[$fid]['editable'] = true;
-	} else {
-		$listfields[$fid]['editable'] = false;
 	}
 }
 
@@ -487,10 +479,21 @@ if ($tracker_info['useAttachments'] == 'y' && $tracker_info['showAttachments'] =
 		$items["data"][$itkey]['hits'] = $res['hits'];
 	}
 }
-foreach ($fields['data'] as $fd) {	// add field info for searchable fields not shown in the list
-	$fid = $fd["fieldId"];
-	if ($fd['isSearchable'] == 'y' and !isset($listfields[$fid]) and $itemObject->canViewField($fid)) {
-		$listfields[$fid] = $fd;
+foreach ($xfields['data'] as $xfd) {
+	$fid = $xfd["fieldId"];
+	if ($xfd['isSearchable'] == 'y' and !isset($listfields[$fid]) and $itemObject->canViewField($fid)) {
+		$listfields[$fid]['type'] = $xfd["type"];
+		$listfields[$fid]['name'] = $xfd["name"];
+		$listfields[$fid]['options'] = $xfd["options"];
+		$listfields[$fid]['options_array'] = $xfd['options_array'];
+		$listfields[$fid]['isMain'] = $xfd["isMain"];
+		$listfields[$fid]['isTblVisible'] = $xfd["isTblVisible"];
+		$listfields[$fid]['isHidden'] = $xfd["isHidden"];
+		$listfields[$fid]['isSearchable'] = $xfd["isSearchable"];
+		$listfields[$fid]['isMandatory'] = $xfd["isMandatory"];
+		$listfields[$fid]['description'] = $xfd["description"];
+		$listfields[$fid]['visibleBy'] = $xfd['visibleBy'];
+		$listfields[$fid]['editableBy'] = $xfd['editableBy'];
 	}
 }
 

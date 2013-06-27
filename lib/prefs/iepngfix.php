@@ -10,7 +10,6 @@ function prefs_iepngfix_list()
 	return array(
 		'iepngfix_selectors' => array(
 			'name' => tra('CSS selectors to be fixed'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '30',
 			'hint' => tra('Separate multiple elements with a comma (,)'),
@@ -18,7 +17,6 @@ function prefs_iepngfix_list()
 		),
 		'iepngfix_elements' => array(
 			'name' => tra('HTMLDomElements to be fixed'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '30',
 			'hint' => tra('Separate multiple elements with a comma (,)'),

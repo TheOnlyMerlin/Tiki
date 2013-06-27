@@ -22,13 +22,13 @@
 </div>
 
 {if $lastchanges or ($find ne '')}
-	{include autocomplete='pagename' file='find.tpl'}
+	{include file='find.tpl'}
 	{if $findwhat != ""}
 		{button href="tiki-lastchanges.php" _text="{tr}Search by Date{/tr}"}
 	{/if}
 {/if}
 
-<br>
+<br />
 
 {if $findwhat!=""}
 	{tr}Found{/tr} "<b>{$findwhat|escape}</b>" {tr}in{/tr} {$cant_records|escape} {tr}LastChanges{/tr} 

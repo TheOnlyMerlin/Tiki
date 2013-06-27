@@ -22,6 +22,7 @@ class Search_Indexer
 	{
 		if ($loggit) {
 			// unused externally, set this to true here to enable logging
+			include_once 'lib/core/Zend/Log/Writer/Syslog.php';
 			global $prefs;
 			$writer = new Zend_Log_Writer_Stream($prefs['tmpDir'] . '/Search_Indexer.log', 'w');
 		} else {
@@ -70,22 +71,32 @@ class Search_Indexer
 		return $stat;
 	}
 
-	public function update(array $objectList)
+	public function update($searchArgument)
 	{
-		$this->searchIndex->invalidateMultiple($objectList);
+		if (is_array($searchArgument)) {
+			$query = new Search_Query;
+			foreach ($searchArgument as $object) {
+				$obj2array=(array) $object;
+				$query->addObject($obj2array['object_type'], $obj2array['object_id']);
+			}
 
-		foreach ($objectList as $object) {
-			$this->addDocument($object['object_type'], $object['object_id']);
+			$result = $query->invalidate($this->searchIndex);
+			$objectList = $searchArgument;
+		} elseif ($searchArgument instanceof Search_Query) {
+			$objectList = $searchArgument->invalidate($this->searchIndex);
 		}
 
-		$this->searchIndex->endUpdate();
+		foreach ($objectList as $object) {
+			$obj2array=(array) $object;
+			$this->addDocument($obj2array['object_type'], $obj2array['object_id']);
+		}
 	}
 
 	private function addDocument($objectType, $objectId)
 	{
 		global $prefs;
 		if (!empty( $prefs['unified_excluded_categories'] )) {
-			$categs = TikiLib::lib('categ')->get_object_categories($objectType, $objectId);
+			$categs = TikiLib::lib('categ')->get_object_categories( $objectType, $objectId );
 			if (array_intersect($prefs['unified_excluded_categories'], $categs)) {
 				$this->log("addDocument skipped $objectType $objectId");
 				return 0;
@@ -167,12 +178,9 @@ class Search_Indexer
 	private function removeTemporaryKeys($data)
 	{
 		$keys = array_keys($data);
-		$toRemove = array_filter(
-			$keys,
-			function ($key) {
-				return $key{0} === '_';
-			}
-		);
+		$toRemove = array_filter($keys, function ($key) {
+			return $key{0} === '_';
+		});
 
 		foreach ($keys as $key) {
 			if ($key{0} === '_') {

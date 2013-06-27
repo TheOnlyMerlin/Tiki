@@ -316,7 +316,7 @@ abstract class Toolbar
 						->setType($data['type']);
 
 		return $tag;
-	}	// }}}
+	}	// {{{
 
 	abstract function getWikiHtml( $areaId );
 
@@ -440,7 +440,6 @@ if (typeof window.CKEDITOR !== "undefined" && !window.CKEDITOR.plugins.get("{$na
 			var command = editor.addCommand( '{$name}', new window.CKEDITOR.command( editor , {
 				modes: { wysiwyg:1 },
 				exec: function (elem, editor, data) {
-				    CurrentEditorName=editor.name;
 					{$js}
 				},
 				canUndo: false
@@ -607,16 +606,17 @@ class ToolbarCkOnly extends Toolbar
 			return parent::getIconHtml();
 		}
 
-		$headerlib->add_cssfile('vendor/ckeditor/ckeditor/skins/kama/editor.css');
+		$headerlib->add_cssfile('lib/ckeditor/skins/kama/editor.css');
 		$cls = strtolower($this->wysiwyg);
+		$cls = str_replace(array('selectall', 'removeformat', 'spellchecker'), array('selectAll', 'removeFormat', 'checkspell'), $cls);	// work around some "features" in ckeditor icons.css
 		$headerlib->add_css(
 			'span.cke_skin_kama {border: none;background: none;padding:0;margin:0;}'.
 			'.toolbars-admin .row li.toolbar > span.cke_skin_kama {display: inline-block;}'
 		);
-		return '<span class="cke_skin_kama"><a class="cke_button cke_ltr"><span class="cke_button__' . htmlentities($cls, ENT_QUOTES, 'UTF-8') . '_icon"' .
+		return '<span class="cke_skin_kama"><span class="cke_button"><span class="cke_button_' . htmlentities($cls, ENT_QUOTES, 'UTF-8') . '"' .
 			' title="' . htmlentities($this->getLabel(), ENT_QUOTES, 'UTF-8') . '">'.
 			'<span class="cke_icon"> </span>'.
-			'</span></a></span>';
+			'</span></span></span>';
 	} // }}}
 }
 
@@ -1035,6 +1035,10 @@ class ToolbarPicker extends Toolbar
 	{
 		global $headerlib, $prefs;
 		$headerlib->add_js("window.pickerData['$this->name'] = " . str_replace('\/', '/', json_encode($this->list)) . ";");
+		if ($prefs['feature_jquery_ui'] != 'y') {
+			$headerlib->add_jsfile("lib/jquery/jquery-ui/ui/jquery-ui-$headerlib->jqueryui_version.js");
+			$headerlib->add_cssfile('lib/jquery/jquery-ui/themes/' . $prefs['feature_jquery_ui_theme'] . '/jquery-ui.css');
+		}
 
 		return $this->getSelfLink(
 			$this->getSyntax($areaId),
@@ -1234,7 +1238,6 @@ if (typeof window.CKEDITOR !== "undefined" && !window.CKEDITOR.plugins.get("{$th
 			var command = editor.addCommand( '{$this->name}', new window.CKEDITOR.command( editor , {
 				modes: { wysiwyg:1 },
 				exec: function(elem, editor, data) {
-				    CurrentEditorName=editor.name;
 					{$this->getSyntax( $areaId )};
 				},
 				canUndo: false
@@ -1364,7 +1367,6 @@ if (typeof window.CKEDITOR !== "undefined" && !window.CKEDITOR.plugins.get("{$na
 			var command = editor.addCommand( '{$name}', new window.CKEDITOR.command( editor , {
 				modes: { wysiwyg:1 },
 				exec: function(elem, editor, data) {
-				    CurrentEditorName=editor.name;
 					$.openEditHelp();
 					return false;
 				},
@@ -1500,7 +1502,6 @@ if (typeof window.CKEDITOR !== "undefined" && !window.CKEDITOR.plugins.get("{$th
 			var command = editor.addCommand( '{$this->name}', new window.CKEDITOR.command( editor , {
 				modes: { wysiwyg:1 },
 				exec: function(elem, editor, data) {
-				    CurrentEditorName=editor.name;
 					switchEditor('wiki', $('#$areaId').parents('form')[0]);
 				},
 				canUndo: false
@@ -1665,6 +1666,9 @@ class ToolbarWikiplugin extends Toolbar
 			if ($this->wysiwyg === 'Image') {	// cke's own image tool overrides this so set it up to use our filegal
 				global $headerlib,  $smarty, $prefs;
 				// can't do upload the cke way yet
+				//$smarty->loadPlugin('smarty_function_filegal_manager_url');
+				//$url =  smarty_function_filegal_manager_url(array('area_id'=> 'fgal_picker'), $smarty);
+				//$headerlib->add_js('CKEDITOR.config.filebrowserUploadUrl = "'.$url.'"', 5);
 				$url = 'tiki-list_file_gallery.php?galleryId='.$prefs['home_file_gallery'].'&filegals_manager=fgal_picker';
 				$headerlib->add_js('if (typeof window.CKEDITOR !== "undefined") {window.CKEDITOR.config.filebrowserBrowseUrl = "'.$url.'"}', 5);
 			} else {
@@ -1679,7 +1683,7 @@ class ToolbarWikiplugin extends Toolbar
 	{
 		switch ($this->pluginName) {
 			case 'img':
-				$this->wysiwyg = 'wikiplugin_img';	// don't use ckeditor's html image dialog
+				$this->wysiwyg = '';	// don't use ckeditor's html image dialog
 				break;
 			default:
 		}
@@ -1944,14 +1948,12 @@ class ToolbarsList
 			foreach ( $line as $bit ) {
 				foreach ( $bit as $group) {
 					$group_count = 0;
-                    if ($isHtml) {
-					        foreach ( $group as $tag ) {
-								if ( $token = $tag->getWysiwygToken($areaId) ) {
-								    $lineOut[] = $token; $group_count++;
-							    }
-                            }
-					} else {
-                        foreach ( $group as $tag ) {
+					foreach ( $group as $tag ) {
+						if ($isHtml) {
+							if ( $token = $tag->getWysiwygToken($areaId) ) {
+								$lineOut[] = $token; $group_count++;
+							}
+						} else {
 							if ( $token = $tag->getWysiwygWikiToken($areaId) ) {
 								$lineOut[] = $token; $group_count++;
 							}
@@ -1976,6 +1978,12 @@ class ToolbarsList
 	{
 		global $tiki_p_admin, $tiki_p_admin_toolbars, $smarty, $section, $prefs, $headerlib;
 		$html = '';
+
+		// $.selection() is in jquery.autocomplete.min.js
+
+		if ($prefs['feature_jquery_autocomplete'] != 'y') {
+			$headerlib->add_jsfile('lib/jquery/jquery-autocomplete/jquery.autocomplete.min.js');
+		}
 
 		$c = 0;
 		foreach ( $this->lines as $line ) {

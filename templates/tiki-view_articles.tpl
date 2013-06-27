@@ -54,7 +54,7 @@
 						{if $listpages[ix].show_reads eq 'y'}
 							<span class="reads">({$listpages[ix].nbreads} {tr}Reads{/tr})</span>
 						{/if}
-					</span><br>
+					</span><br />
 				{/if}
 			</header>
 			{if $listpages[ix].use_ratings eq 'y'}
@@ -94,7 +94,7 @@
 														{$style=$style|cat:"max-height:"|cat:$listpages[ix].image_y|cat:"px;"}
 													{/if}
 													style="{$style}"
-											>{/strip}
+											/>{/strip}
 										</a>
 									{else}
 										{* Intentionally left blank to allow user add an image from somewhere else through the img tag and no other extra image *}
@@ -105,7 +105,7 @@
 												title="{if $listpages[ix].show_image_caption and $listpages[ix].image_caption}{$listpages[ix].image_caption|escape}{else}{tr}{$listpages[ix].topicName}{/tr}{/if}">
 											<img {if $listpages[ix].isfloat eq 'y'}style="margin-right:4px;float:left;"{else}class="articleimage"{/if} 
 													alt="{if $listpages[ix].show_image_caption and $listpages[ix].image_caption}{$listpages[ix].image_caption|escape}{else}{tr}{$listpages[ix].topicName}{/tr}{/if}"
-													src="article_image.php?image_type=topic&amp;id={$listpages[ix].topicId}">
+													src="article_image.php?image_type=topic&amp;id={$listpages[ix].topicId}" />
 										</a>
 									{/if}
 								{/if}
@@ -141,16 +141,14 @@
 					{if ($prefs.feature_article_comments eq 'y') and ($tiki_p_read_comments eq 'y') and ($listpages[ix].allow_comments eq 'y')}
 						<span>
 							<a href="{$listpages[ix].articleId|sefurl:article:with_next}show_comzone=y{if !empty($urlparam)}&amp;{$urlparam}{/if}#comments"{if $listpages[ix].comments_cant > 0} class="highlight"{/if}>
-								{if $listpages[ix].comments_cant == 0 and $tiki_p_post_comments == 'y'}
+								{if $listpages[ix].comments_cant == 0 or ($tiki_p_read_comments == 'n' and $tiki_p_post_comments == 'y')}
 									{if !isset($actions) or $actions eq "y"}
 										{tr}Add Comment{/tr}
 									{/if}
-								{elseif $tiki_p_read_comments eq 'y'}
-									{if $listpages[ix].comments_cant == 1}
-										{tr}1 comment{/tr}
-									{else}
-										{$listpages[ix].comments_cant}&nbsp;{tr}comments{/tr}
-									{/if}
+								{elseif $listpages[ix].comments_cant == 1}
+									{tr}1 comment{/tr}
+								{else}
+									{$listpages[ix].comments_cant}&nbsp;{tr}comments{/tr}
 								{/if}
 							</a>
 						</span>

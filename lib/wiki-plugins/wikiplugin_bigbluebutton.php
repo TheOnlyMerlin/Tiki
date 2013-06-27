@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -14,49 +14,49 @@ function wikiplugin_bigbluebutton_info()
 		'format' => 'html',
 		'prefs' => array( 'wikiplugin_bigbluebutton', 'bigbluebutton_feature' ),
 		'icon' => 'img/icons/webcam.png',
-		'tags' => array( 'basic' ),
+		'tags' => array( 'basic' ),		
 		'params' => array(
 			'name' => array(
 				'required' => true,
 				'name' => tra('Meeting'),
 				'description' => tra('MeetingID for BigBlueButton. This is a 5 digit number, starting with a 7. Ex.: 77777 or 71111.'),
 				'filter' => 'text',
-				'default' => '',
+				'default' => ''
 			),
 			'prefix' => array(
 				'required' => false,
 				'name' => tra('Anonymous prefix'),
 				'description' => tra('Unregistered users will get this token prepended to their name.'),
 				'filter' => 'text',
-				'default' => '',
+				'default' => ''
 			),
 			'welcome' => array(
 				'required' => false,
 				'name' => tra('Welcome Message'),
 				'description' => tra('A message to be provided when someone enters the room.'),
 				'filter' => 'text',
-				'default' => '',
+				'default' => ''
 			),
 			'number' => array(
 				'required' => false,
 				'name' => tra('Dial Number'),
 				'description' => tra('The phone-in support number to join from traditional phones.'),
 				'filter' => 'text',
-				'default' => '',
+				'default' => ''
 			),
 			'voicebridge' => array(
 				'required' => false,
 				'name' => tra('Voice Bridge'),
 				'description' => tra('Code to enter for phone attendees to join the room. Typically, the same 5 digits of the MeetingID.'),
 				'filter' => 'digits',
-				'default' => '',
+				'default' => ''
 			),
 			'logout' => array(
 				'required' => false,
 				'name' => tra('Log-out URL'),
 				'description' => tra('URL to which the user will be redirected when logging out from BigBlueButton.'),
 				'filter' => 'url',
-				'default' => '',
+				'default' => ''
 			),
 			'recording' => array(
 				'required' => false,
@@ -86,12 +86,6 @@ function wikiplugin_bigbluebutton( $data, $params )
 		$perms = Perms::get('bigbluebutton', $meeting);
 
 		$params = array_merge(array('prefix' => ''), $params);
-		// This is incomplete, will only apply if the dynamic feature is enabled. To be completed.
-		$params['configuration'] = array(
-			'presentation' => array(
-				'active' => false,
-			),
-		);
 		$smarty->assign('bbb_params', Tiki_Security::get()->encode($params));
 
 		if ( ! $bigbluebuttonlib->roomExists($meeting) ) {
@@ -103,7 +97,7 @@ function wikiplugin_bigbluebutton( $data, $params )
 
 		if ( $perms->bigbluebutton_join ) {
 			$smarty->assign('bbb_attendees', $bigbluebuttonlib->getAttendees($meeting));
-			if ($perms->bigbluebutton_view_rec) {
+			if($perms->bigbluebutton_view_rec) {
 				$smarty->assign('bbb_recordings', $bigbluebuttonlib->getRecordings($meeting));
 			}
 

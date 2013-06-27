@@ -6,7 +6,7 @@
 		<div class='box-title'><strong>{tr}Other Sorts{/tr}</strong></div>
 		<div class='box-data'>
  			<a href="tiki-list_kaltura_entries.php?list={$entryType}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq '-views'}asc_views{else}desc_views{/if}">{tr}Loads{/tr}</a>
-			<br>
+			<br />
  			<a href="tiki-list_kaltura_entries.php?list={$entryType}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq '-plays'}asc_plays{else}desc_plays{/if}">{tr}Plays{/tr}</a>
 		</div>
 	</div>
@@ -15,11 +15,11 @@
 <form method="post" action="{$smarty.server.PHP_SELF}" class="findtable">
 	<label class="findtitle">
 	{tr}Find{/tr}
-		<input type="text" name="find" value="{$find|escape}">
+		<input type="text" name="find" value="{$find|escape}" />
 	</label>
-	<input type="hidden" name="list" value="{$entryType}">
+	<input type="hidden" name="list" value="{$entryType}" />
 	<label class="findsubmit">
-		<input type="submit" name="search" value="{tr}Go{/tr}">
+		<input type="submit" name="search" value="{tr}Go{/tr}" />
 	</label>
 </form>
 

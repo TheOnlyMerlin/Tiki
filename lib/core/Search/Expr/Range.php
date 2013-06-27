@@ -11,15 +11,14 @@ class Search_Expr_Range implements Search_Expr_Interface
 	private $to;
 	private $type;
 	private $field;
-	private $weight;
+	private $weight = 1.0;
 
-	function __construct($from, $to, $type = null, $field = null, $weight = 1.0)
+	function __construct($from, $to, $type = null, $field = null)
 	{
 		$this->from = $from;
 		$this->to = $to;
 		$this->type = $type;
 		$this->field = $field;
-		$this->weight = (float) $weight;
 	}
 
 	function getToken($which)
@@ -65,11 +64,6 @@ class Search_Expr_Range implements Search_Expr_Interface
 	function getField()
 	{
 		return $this->field;
-	}
-
-	function traverse($callback)
-	{
-		return call_user_func($callback, $callback, $this, array());
 	}
 }
 

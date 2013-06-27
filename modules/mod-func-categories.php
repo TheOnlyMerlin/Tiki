@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_categories_info()
 {
 	return array(
@@ -51,10 +48,6 @@ function module_categories_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_categories($mod_reference, &$module_params)
 {
 	global $smarty, $prefs;
@@ -62,7 +55,7 @@ function module_categories($mod_reference, &$module_params)
 	global $categlib; include_once ('lib/categories/categlib.php');
 	if (isset($module_params['type'])) {
 		$type = $module_params['type'];
-		$urlEnd = 'type='.urlencode($type);
+		$urlEnd = '&amp;type='.urlencode($type);
 	} else {
 		$type = '';
 		$urlEnd = '';
@@ -71,10 +64,7 @@ function module_categories($mod_reference, &$module_params)
 		$deep = $module_params['deep'];
 	else
 		$deep= 'on';
-	if (empty($urlEnd)) {
-		$urlEnd .= '&amp;';
-	}
-	$urlEnd .= "deep=$deep";
+	$urlEnd .= "&amp;deep=$deep";
 	$name = "";
 
 
@@ -114,14 +104,14 @@ function module_categories($mod_reference, &$module_params)
 		if (isset($module_params['selflink']) && $module_params['selflink'] == 'y') {
 			$url = filter_out_sefurl('tiki-index.php?page=' . urlencode($cat['name']));
 		} else {
-			$url = filter_out_sefurl('tiki-browse_categories.php?parentId=' . $cat['categId'], 'category', $cat['name'], true) .$urlEnd;
+			$url = filter_out_sefurl('tiki-browse_categories.php?parentId=' . $cat['categId'], 'category', $cat['name']) .$urlEnd;
 		}
 		$tree_nodes[] = array(
 			"id" => $cat["categId"],
 			"parent" => $cat["parentId"],
 			'parentId' => $cat['parentId'],
 			'categId' => $cat['categId'],
-			"data" => '<span style="float: left; cursor: pointer; visibility: hidden;" class="ui-icon ui-icon-triangle-1-e"></span><a class="catname" href="'.$url.'">' . htmlspecialchars($cat['name']) . '</a><br />'
+			"data" => '<a class="catname" href="'.$url.'">' . htmlspecialchars($cat['name']) . '</a><br />'
 		);
 	}
 	$res = '';

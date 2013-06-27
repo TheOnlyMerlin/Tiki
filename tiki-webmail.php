@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -21,9 +18,6 @@ require_once ('lib/mail/mimelib.php');
 include_once ('lib/webmail/tikimaillib.php');
 
 // AJAX_TODO
-/**
- * @param $inUrl
- */
 function handleWebmailRedirect($inUrl)
 {
 	header('location: tiki-webmail.php?'.$inUrl);
@@ -561,18 +555,18 @@ if ($_REQUEST['locSection'] == 'settings') {
 // set port for imap
 \$('[name=imap]').change(function() {
 	if (\$('[name=imap]').val()) {
-		\$('[name=port]').val(\$('[name=useSSL]').prop('checked')? '993' : '143');
+		\$('[name=port]').val(\$('[name=useSSL]').attr('checked')? '993' : '143');
 	}
 });
 // set port for pop
 \$('[name=pop]').change(function() {
 	if (\$('[name=pop]').val() && !\$('[name=imap]').val()) {
-		\$('[name=port]').val(\$('[name=useSSL]').prop('checked')? '995' : '110');
+		\$('[name=port]').val(\$('[name=useSSL]').attr('checked')? '995' : '110');
 	}
 });
 // set ports for ssl
 \$('[name=useSSL]').change(function(v,a) {
-	if (\$('[name=useSSL]').prop('checked')) {
+	if (\$('[name=useSSL]').attr('checked')) {
 		\$('[name=port]').val(\$('[name=imap]').val() ? '993' : '995');
 		\$('[name=smtpPort]').val('465');
 	} else {

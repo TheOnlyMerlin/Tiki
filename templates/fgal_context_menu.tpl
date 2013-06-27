@@ -70,7 +70,7 @@
 					$files[$changes].type eq 'image/png' 		or
 					$files[$changes].type eq 'image/tiff'
 				}
-					<a class="draw dialog" data-name="{$files[$changes].filename}" title="{tr}Edit: {/tr}{$files[$changes].filename}" href="tiki-edit_draw.php?fileId={$files[$changes].id}&galleryId={$files[$changes].galleryId}" data-fileid='{$files[$changes].id}' data-galleryid='{$files[$changes].galleryId}' onclick='$(document).trigger("hideCluetip"); return $(this).ajaxEditDraw();'>
+					<a class="draw dialog" data-name="{$files[$changes].filename}" title="{tr}Edit: {/tr}{$files[$changes].filename}" href="tiki-edit_draw.php?fileId={$files[$changes].id}&galleryId={$files[$changes].galleryId}" data-fileid='{$files[$changes].id}' data-galleryid='{$files[$changes].galleryId}' onclick='return $(this).ajaxEditDraw();'>
 						{icon _id='page_edit' _menu_text=$menu_text _menu_icon=$menu_icon alt="{tr}Edit{/tr}"}
 					</a>
 				{/if}
@@ -153,8 +153,8 @@
 
 						{if $prefs.fgal_display_replace eq 'y'}
 							<div class="upspan {if $menu_text eq 'y'}upspantext{/if}" style="display: inline; position:relative{if $menu_text eq 'y'}; position:absolute{else}; float:left{/if}; overflow:hidden" title="{$replace_action_title}">
-								<input type="file" style="position:absolute; z-index:1001; right:0; top:0; font-size:600px; opacity:0; -moz-opacity:0; filter:alpha(opacity=0); cursor:pointer" name="upfile{$files[$changes].id}" onchange="this.form.submit(); return false;">
-								<input type="hidden" name="fileId" value="{$files[$changes].fileId}">
+								<input type="file" style="position:absolute; z-index:1001; right:0; top:0; font-size:600px; opacity:0; -moz-opacity:0; filter:alpha(opacity=0); cursor:pointer" name="upfile{$files[$changes].id}" onchange="this.form.submit(); return false;"/>
+								<input type="hidden" name="fileId" value="{$files[$changes].fileId}" />
 								<a href="#">
 									{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='database_refresh' alt=$replace_action_title}
 								</a>
@@ -199,12 +199,12 @@
 							or (!isset($files[$changes].p_download_files) and $files[$changes].perms.tiki_p_download_files eq 'y')}
 							{if $prefs.javascript_enabled eq 'y'}
 								{* with javascript, the main page will be reloaded to lock the file and change it's lockedby informations *}
-								<a href="#" onclick="window.open('{$files[$changes].fileId|sefurl:file:with_next}lock=y'); document.location.href = '{self_link _type='absolute_uri' _tag='n' fileId=$files[$changes].fileId lock=y galleryId=$files[$changes].galleryId}{/self_link}'; return false;">
+								<a href="#" onclick="window.open('{$files[$changes].fileId|sefurl:file}&lock=y'); document.location.href = '{self_link _type='absolute_uri' _tag='n' fileId=$files[$changes].fileId lock=y galleryId=$files[$changes].galleryId}{/self_link}'; return false;">
 									{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='disk_lock' alt="{tr}Download and lock{/tr}"}
 								</a>
 							{else}
 								{* without javascript, the lockedby information won't be refreshed until the user do it itself *}
-								<a href="{$files[$changes].fileId|sefurl:file:with_next}lock=y">
+								<a href="{$files[$changes].fileId|sefurl:file}&amp;lock=y">
 									{icon _menu_text=$menu_text _menu_icon=$menu_icon _id='disk_lock' alt="{tr}Download and lock{/tr}"}
 								</a>
 							{/if}

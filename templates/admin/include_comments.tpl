@@ -1,4 +1,4 @@
-{* $Id: include_comments.tpl 44059 2012-11-22 16:13:24Z lphuberdeau $ *}
+{* $Id$ *}
 
 <div class="navbar">
 	{button href="tiki-list_comments.php" _text="{tr}List comments{/tr}"}
@@ -19,10 +19,9 @@
 				<div class="admin featurelist">
 					{preference name=feature_comments_moderation}
 					{preference name=feature_comments_locking}
-					{preference name=feature_comments_post_as_anonymous}
-					{preference name=comments_vote}
-					{preference name=comments_archive}
-					{preference name=comments_allow_correction}
+					{preference name=feature_comments_post_as_anonymous}				
+					{preference name=comments_vote}				
+					{preference name=comments_archive}				
 
 					{preference name=comments_akismet_filter}
 
@@ -52,7 +51,6 @@
 			<fieldset>
 				<legend>{tr}Inline comments{/tr}</legend>
 					<a class="link" href="{$prefs.helpurl}Inline+comments">{tr}Inline comments{/tr}</a>
-				{preference name=feature_inline_comments}
 
 				{tr}The feature below must be activated for this feature to work.{/tr}
 				{preference name=feature_wiki_paragraph_formatting}

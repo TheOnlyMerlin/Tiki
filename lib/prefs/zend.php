@@ -59,7 +59,6 @@ function prefs_zend_list()
 			'options' => array(
 				'sendmail' => tra('Sendmail'),
 				'smtp' => tra('SMTP'),
-				'file' => tra('File (debug)'),
 			),
 			'default' => 'sendmail',
 		),
@@ -92,6 +91,6 @@ function prefs_zend_list()
 				'y' => tra('Queue'),
 			),
 			'default' => '',
-		),
+		),		
 	);
 }

@@ -5,9 +5,6 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-/**
- * @return array
- */
 function module_quick_search_info()
 {
 	return array(
@@ -31,10 +28,6 @@ function module_quick_search_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_quick_search($mod_reference, $module_params)
 {
 	global $prefs;

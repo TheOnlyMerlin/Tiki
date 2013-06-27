@@ -5,21 +5,13 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-class Search_ContentSource_ArticleSource implements Search_ContentSource_Interface, Tiki_Profile_Writer_ReferenceProvider
+class Search_ContentSource_ArticleSource implements Search_ContentSource_Interface
 {
 	private $db;
 
 	function __construct()
 	{
 		$this->db = TikiDb::get();
-	}
-
-	function getReferenceMap()
-	{
-		return array(
-			'topic_id' => 'article_topic',
-			'article_type' => 'article_type',
-		);
 	}
 
 	function getDocuments()

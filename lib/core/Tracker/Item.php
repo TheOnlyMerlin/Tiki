@@ -119,10 +119,6 @@ class Tracker_Item
 	private function canFromSpecialPermissions($operation)
 	{
 		global $user;
-		if (! $this->definition) {
-			return false;
-		}
-
 		if ($this->definition->getConfiguration('writerCan' . $operation, 'n') == 'y' && $user && $this->owner && $user === $this->owner) {
 			return true;
 		}
@@ -316,24 +312,19 @@ class Tracker_Item
 		$fields = $this->definition->getFields();
 		$output = array();
 
+		$factory = $this->definition->getFieldFactory();
 		foreach ($fields as $field) {
-			$output[] = $this->prepareFieldInput($field, $input);
+			$fid = $field['fieldId'];
+
+			if ($this->canModifyField($fid)) {
+				$field['ins_id'] = "ins_$fid";
+
+				$handler = $factory->getHandler($field, $this->info);
+				$output[] = array_merge($field, $handler->getFieldData($input));
+			}
 		}
 
-		return array_filter($output);
-	}
-
-	public function prepareFieldInput($field, $input)
-	{
-		$fid = $field['fieldId'];
-
-		if ($this->canModifyField($fid)) {
-			$field['ins_id'] = "ins_$fid";
-
-			$factory = $this->definition->getFieldFactory();
-			$handler = $factory->getHandler($field, $this->info);
-			return array_merge($field, $handler->getFieldData($input));
-		}
+		return $output;
 	}
 
 	private function prepareFieldId($fieldId)
@@ -414,7 +405,7 @@ class Tracker_Item
 		}
 
 		return array(
-			'itemId' => $this->isNew() ? null : $this->info['itemId'],
+			'itemId' => $this->isNew() ? null : $this->getItemId(),
 			'status' => $this->isNew() ? 'o' : $this->data['status'],
 			'fields' => $out,
 		);
