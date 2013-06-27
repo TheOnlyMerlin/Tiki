@@ -1,9 +1,30 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
+
+/**
+ *  Tikiwiki MCALENDAR plugin.
+ *  Convert date from Gregorian to Mayan Calendars: Tzolkin, Haab, Long Count.
+ *  
+ *  More information about Maya Calendar: 
+ *   english: http://library.thinkquest.org/C004577/calendar.php3
+ *   russian: http://yamaya.ru/maya1320/ 
+ *  
+ *  Syntax:
+ *  
+ *   {MCALENDAR([template=>template_string,][grdate=>convert_date])}
+ *   {MCALENDAR}
+ *  
+ *  @package Tikiwiki
+ *  @subpackage TikiPlugins
+ *  @version $Revision: 0.1 $
+ *  @author Serg Kravchenko aka HERMiT, zchermit@gmail.com
+ *
+ */
+
 
 class MCalendar
 {
@@ -50,19 +71,17 @@ class MCalendar
    var $Julian = 0;
 
 
-	function setLongKin()
-	{
+   function setLongKin() {
      $this->LongKin = $this->LongCount["Baktun"] * 144000
                     + $this->LongCount["Katun"] * 7200
                     + $this->LongCount["Tun"] * 360
                     + $this->LongCount["Winal"] * 20
                     + $this->LongCount["Kin"];
      return $this->LongKin;
-	}
+   }
 
 
-	function setJulian()
-	{
+   function setJulian() {
 
     $Year = $this->Gregorian["Year"];
     $Month = $this->Gregorian["Month"];
@@ -80,11 +99,10 @@ class MCalendar
     $this->Julian = $j;
     return $this->Julian;
 
-	}
+   }
 
 
-	function Maya()
-	{
+   function Maya() {
 
     $this->setJulian();
 
@@ -130,18 +148,20 @@ class MCalendar
     $this->Haab["Winal"] = $haabwinal;
 
     $this->setLongKin();
-	}
+   }
 
-};
+ };
 
-function wikiplugin_mcalendar_info()
-{
+function wikiplugin_mcalendar_help() {
+        return tra("Mayan Calendars").":<br />~np~{MCALENDAR(template=>Output format; grdate=>Gregorian date)/}~/np~";
+}
+
+function wikiplugin_mcalendar_info() {
 	return array(
-		'name' => tra('Mayan Calendars'),
-		'documentation' => 'PluginMCalendarInfo',
-		'description' => tra('Convert a Gregorian date to a Mayan calendar date'),
+		'name' => tra( 'Mayan Calendars Info' ),
+		'documentation' => tra('PluginMCalendarInfo'),
+		'description' => tra( 'Convert date from Gregorian to Mayan Calendars: Tzolkin, Haab, Long Count.' ),
 		'prefs' => array('wikiplugin_mcalendar'),
-		'icon' => 'img/icons/calendar.png',
 		'params' => array(
 			'template' => array(
 				'required' => false,
@@ -176,11 +196,10 @@ function wikiplugin_mcalendar_info()
 	);
 }
 
-function wikiplugin_mcalendar($data, $params)
-{
+function wikiplugin_mcalendar($data, $params) {
 	global $tikilib;
 	
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 
 	$out = '';
 
@@ -197,13 +216,13 @@ function wikiplugin_mcalendar($data, $params)
     }
 
     // If date is not in DD.MM.YYYY format display error message
-    if (!preg_match('/\d{1,2}\.\d{1,2}\.\d{4}/', $today)) {
+    if (!preg_match('/\d{1,2}\.\d{1,2}\.\d{4}/',$today)) {
   		$error = "<span class='attention'>".$today.tra(" is not a valid date format. should be dd.mm.yyyy") ."</span>";
 		return $error;
     }
   
     $MCal = new MCalendar();
-    list($MCal->Gregorian["Day"], $MCal->Gregorian["Month"], $MCal->Gregorian["Year"]) = explode(".", $today);
+    list($MCal->Gregorian["Day"], $MCal->Gregorian["Month"], $MCal->Gregorian["Year"]) = explode(".",$today);
 
     $MCal->Maya();
 

@@ -1,11 +1,3 @@
 <div align="center">
-{module module=login_box
-	mode="module"
-	show_register="y"
-	show_forgot="y"
-	error=""
-	flip=""
-	decorations=""
-	nobox=""
-	notitle=""}
+{include file='modules/mod-login_box.tpl'}
 </div>

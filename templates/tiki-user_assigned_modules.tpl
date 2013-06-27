@@ -12,13 +12,13 @@
 		{if $prefs.feature_left_column ne 'n' || count($modules_l) > 0}
 			<td >
 				<b>{tr}Left column{/tr}</b>
-				{if $prefs.feature_left_column eq 'n' and count($modules_l) > 0}<br><span class="highlight">{tr}The column is disabled{/tr}</span>{/if}
+				{if $prefs.feature_left_column eq 'n' and count($modules_l) > 0}<br /><span class="highlight">{tr}The column is disabled{/tr}</span>{/if}
 			</td>
 		{/if}
 		{if $prefs.feature_right_column ne 'n' || count($modules_r) > 0}
 			<td >
 				<b>{tr}Right column{/tr}</b>
-				{if $prefs.feature_right_column eq 'n' and count($modules_r) > 0}<br><span class="highlight">{tr}The column is disabled{/tr}</span>{/if}
+				{if $prefs.feature_right_column eq 'n' and count($modules_r) > 0}<br /><span class="highlight">{tr}The column is disabled{/tr}</span>{/if}
 			</td>
 		{/if}
 	</tr>
@@ -89,12 +89,12 @@
 </table>
 
 {if $canassign eq 'y'}
-<br>
+<br />
 	<form action="tiki-user_assigned_modules.php" method="post">
 		<h2>{tr}Assign module{/tr}</h2>
 		<table class="formcolor">
 			<tr>
-				<td>{tr}Module:{/tr}</td>
+				<td>{tr}Module{/tr}:</td>
 				<td>
 					<select name="module">
 						{section name=ix loop=$assignables}
@@ -104,7 +104,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td>{tr}Column:{/tr}</td>
+				<td>{tr}Column{/tr}:</td>
 				<td>
 					<select name="position">
 						{if $prefs.feature_left_column ne 'n'}<option value="l">{tr}Left{/tr}</option>{/if}
@@ -113,7 +113,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td>{tr}Order:{/tr}</td>
+				<td>{tr}Order{/tr}:</td>
 				<td>
 					<select name="order">
 						{section name=ix loop=$orders}
@@ -124,7 +124,7 @@
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
-				<td><input type="submit" name="assign" value="{tr}Assign{/tr}"></td>
+				<td><input type="submit" name="assign" value="{tr}Assign{/tr}" /></td>
 			</tr>
 		</table>
 	</form>

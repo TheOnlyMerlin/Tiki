@@ -1,10 +1,13 @@
-<!DOCTYPE html>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 {* Index we display a wiki page here *}
 
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<link rel="StyleSheet" href="styles/{$prefs.style}" type="text/css">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link rel="StyleSheet" href="styles/{$prefs.style}" type="text/css" />
+	{include file='bidi.tpl'}
 	<title>{tr}Address book{/tr}</title>
 </head>
 <body>
@@ -40,10 +43,10 @@
 			{cycle values="odd,even" print=false}
 			{section name=user loop=$channels}
 				<tr class="{cycle}">
-					<td class="text">{$channels[user].firstName}</td>
-					<td class="text">{$channels[user].lastName}</td>
-					<td class="email">
-						<a class="link" href="#" onClick="javascript:window.opener.document.getElementById('{$element}').value=window.opener.document.getElementById('{$element}').value + '{$channels[user].email}' + ' ';">
+					<td>{$channels[user].firstName}</td>
+					<td>{$channels[user].lastName}</td>
+					<td>
+						<a class="link" href="#" onclick="javascript:window.opener.document.getElementById('{$element}').value=window.opener.document.getElementById('{$element}').value + '{$channels[user].email}' + ' ';">
 							{$channels[user].email}
 						</a>
 						[&nbsp;&nbsp;
@@ -52,7 +55,7 @@
 						</a>
 						&nbsp;&nbsp;]
 					</td>
-					<td class="text">{$channels[user].nickname}</td>
+					<td>{$channels[user].nickname}</td>
 				</tr>
 			{/section}
 		</table>
@@ -63,7 +66,7 @@
 				</a>
 				]&nbsp;
 			{/if}
-			{tr}Page:{/tr} {$actual_page}/{$cant_pages}
+			{tr}Page{/tr}: {$actual_page}/{$cant_pages}
 			{if $next_offset >= 0}
 				&nbsp;[
 				<a class="prevnext" href="tiki-webmail_contacts.php?element={$element}&amp;section=contacts&amp;find={$find}&amp;offset={$next_offset}&amp;sort_mode={$sort_mode}">
@@ -71,7 +74,7 @@
 				</a>]
 			{/if}
 			{if $prefs.direct_pagination eq 'y'}
-				<br>
+				<br />
 				{section loop=$cant_pages name=foo}
 					{assign var=selector_offset value=$smarty.section.foo.index|times:$prefs.maxRecords}
 					<a class="prevnext" href="tiki-webmail_contacts.php?element={$element}&amp;section=contacts&amp;find={$find}&amp;offset={$selector_offset}&amp;sort_mode={$sort_mode}">

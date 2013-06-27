@@ -1,18 +1,35 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_category_info()
-{
+/*
+ * Tiki-Wiki CATEGORY plugin.
+ * 
+ * Syntax:
+ * 
+ * {CATEGORY(
+ *	id=>1+2+3,	 # defaults to current
+ *	types=>article+blog+directory+faq+fgal+forum+igal+newsletter+event+poll+quiz+survey+tracker+wiki # list of types of objects, default * (all),
+ *	sort=>[type|created|name|hits]_[asc|desc]	# default name_asc,
+ *	sub=>y|n		# display items of subcategories # default is 'true';
+ *	split=>y|n		# when displaying multiple categories, whether they should be split or not; defaults to yes
+ *	one=>y|n		# when y displays one categoy per line
+ * )}
+ * {CATEGORY}
+ */
+function wikiplugin_category_help() {
+	return tra("Insert list of items with the current/given category in the wiki page").":<br />~np~{CATEGORY(id=1+2+3, types=article+blog+faq+fgal+forum+igal+newsletter+event+poll+quiz+survey+tracker+wiki+img, sort=[type|created|name|hits|shuffle]_[asc|desc], sub=y|n, split=|n, and=y|n)}{CATEGORY}~/np~";
+}
+
+function wikiplugin_category_info() {
 	return array(
 		'name' => tra('Category'),
-		'documentation' => 'PluginCategory',
-		'description' => tra('List categories and objects assigned to them'),
+		'documentation' => tra('PluginCategory'),
+		'description' => tra('Insert list of items with the current/given category in the wiki page'),
 		'prefs' => array( 'feature_categories', 'wikiplugin_category' ),
-		'icon' => 'img/icons/sitemap_color.png',
 		'params' => array(
 			'id' => array(
 				'required' => false,
@@ -21,7 +38,6 @@ function wikiplugin_category_info()
 				'filter' => 'digits',
 				'separator' => '+',
 				'default' => '',
-				'profile_reference' => 'category',
 			),
 			'types' => array(
 				'required' => false,
@@ -177,51 +193,38 @@ function wikiplugin_category_info()
 					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				),
-			),
-			'lang' => array(
-				'required' => false,
-				'name' => tra('Language'),
-				'description' => tra('List only objects in this language.').' '.tra('Only apply if type=wiki.'),
-				'filter' => 'lang',
-				'default' => '',
 			),		
 		),
 	);
 }
 
-function wikiplugin_category($data, $params)
-{
-	global $prefs, $categlib;
+function wikiplugin_category($data, $params) {
+	global $smarty, $prefs, $categlib;
+
+	if (!is_object($categlib)) {
+		require_once ("lib/categories/categlib.php");
+	}
 
 	if ($prefs['feature_categories'] != 'y') {
 		return "<span class='warn'>" . tra("Categories are disabled"). "</span>";
 	}
-	
-	require_once ("lib/categories/categlib.php");
 
-	$default = array('maxRecords' => 50);
+	$default = array('one' => 'n', 'showlinks' => 'y', 'categoryshowlink'=>'y', 'maxRecords' => 50, 'showTitle' => 'y');
 	$params = array_merge($default, $params);
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 
 	// TODO: use categ name instead of id (alternative)
-	if (isset($split) and substr(strtolower($split), 0, 1) == 'n') {
+	if (isset($split) and substr(strtolower($split),0,1) == 'n') {
 		$split = false;
 	} else {
 		$split = true;
 	}
-	if (isset($sub) and substr(strtolower($sub), 0, 1) == 'n') {
+	if (isset($sub) and substr(strtolower($sub),0,1) == 'n') {
 		$sub = false;
 	} else {
 		$sub = true;
 	}
-	if (!empty($lang)) {
-		$filter['language'] = $lang;
-	} elseif (isset($params['lang'])) {
-		$filter['language'] = $prefs['language'];
-	} else {
-		$filter = null;
-	}
-	if (isset($and) and substr(strtolower($and), 0, 1) == 'y') {
+	if (isset($and) and substr(strtolower($and),0,1) == 'y') {
 		$and = true;
 	} else {
 		$and = false;
@@ -240,16 +243,14 @@ function wikiplugin_category($data, $params)
 	$types = (isset($types)) ? strtolower($types) : "*";
 	
 	$id = (!empty($id)) ? $id : 'current'; // use current category if none is given
+	if (isset($one) && $one == 'y')
+		$smarty->assign('one', $one);
 
 	if ($id == 'current') {
-		if (isset($_REQUEST['page'])) {
-			$objId = urldecode($_REQUEST['page']);
-			$id = $categlib->get_object_categories('wiki page', $objId);
-		} else {
-			$id = array();
-		}
+		$objId = urldecode($_REQUEST['page']);
+		$id = $categlib->get_object_categories('wiki page', $objId);
 	}
-	
-	$displayParameters = array_intersect_key($params, array_flip(array('showTitle', 'categoryshowlink', 'showtype', 'one', 'showlinks', 'showname', 'showdescription')));
-	return "~np~". $categlib->get_categoryobjects($id, $types, $sort, $split, $sub, $and, $maxRecords, $filter, $displayParameters)."~/np~";
+	$smarty->assign('params', $params);
+
+	return "~np~". $categlib->get_categoryobjects($id,$types,$sort,$split,$sub,$and, $maxRecords)."~/np~";
 }

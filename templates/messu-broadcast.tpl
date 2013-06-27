@@ -1,8 +1,8 @@
-{title help='Inter-User Messages' url='messu-broadcast.php' admpage="messages"}{tr}Broadcast message{/tr}{/title}
+{title help='Inter-User Messages' url='messu-broadcast.php'}{tr}Broadcast message{/tr}{/title}
 
 {include file='tiki-mytiki_bar.tpl'}
 {include file='messu-nav.tpl'}
-<br><br>
+<br /><br />
 
 {if $message}
 	<div class="simplebox highlight">
@@ -15,19 +15,19 @@
 		{/if}
 		{$message}
 		{if $preview eq '1'}
-			<br>
+			<br />
 			<form method="post">
-				<input type="hidden" name="groupbr" value="{$groupbr|escape}">
-				<input type="hidden" name="priority" value="{$priority|escape}">
-				<input type="hidden" name="replyto_hash" value="{$replyto_hash|escape}">
-				<input type="hidden" name="subject" value="{$subject|escape}">
-				<input type="hidden" name="body" value="{$body|escape}">
-				<input type="submit" name="send" value="{tr}Please Confirm{/tr}">
+				<input type="hidden" name="groupbr" value="{$groupbr|escape}" />
+				<input type="hidden" name="priority" value="{$priority|escape}" />
+				<input type="hidden" name="replyto_hash" value="{$replyto_hash|escape}" />
+				<input type="hidden" name="subject" value="{$subject|escape}" />
+				<input type="hidden" name="body" value="{$body|escape}" />
+				<input type="submit" name="send" value="{tr}Please Confirm{/tr}" />
 			</form>
 		{/if}
 	</div>
-	<br>
-	<br>
+	<br />
+	<br />
 {/if}
 
 {if $sent ne '1' and $preview ne '1'}
@@ -35,7 +35,7 @@
 		<table class="formcolor" >
 			<tr>
 				<td>
-					<label for="broadcast-group">{tr}Group:{/tr}</label>
+					<label for="broadcast-group">{tr}Group{/tr}:</label>
 				</td>
 				<td>
 					<select name="groupbr" id="broadcast-group">
@@ -43,15 +43,17 @@
 						{if $tiki_p_broadcast_all eq 'y'}
 							<option value="all"{if $groupbr eq 'All'} selected="selected"{/if}>{tr}All users{/tr}</option>
 						{/if}
-						{foreach item=groupName from=$groups}
-							<option value="{$groupName|escape}"{if $groupbr eq $groupName} selected="selected"{/if}>{$groupName|escape}</option>
-						{/foreach}
+						{section name=ix loop=$groups}
+							{if $groups[ix] ne "Anonymous"}
+								<option value="{$groups[ix]|escape}"{if $groupbr eq $groups[ix]} selected="selected"{/if}>{$groups[ix]}</option>
+							{/if}
+						{/section}
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<label for="broadcast-priority">{tr}Priority:{/tr}</label>
+					<label for="broadcast-priority">{tr}Priority{/tr}:</label>
 				</td>
 				<td>
 					<select name="priority" id="broadcast-priority">
@@ -61,23 +63,23 @@
 						<option value="4" {if $priority eq 4}selected="selected"{/if}>4 -{tr}High{/tr}-</option>
 						<option value="5" {if $priority eq 5}selected="selected"{/if}>5 -{tr}Very High{/tr}-</option>
 					</select>
-					<input type="hidden" name="replyto_hash" value="{$replyto_hash}">
+					<input type="hidden" name="replyto_hash" value="{$replyto_hash}" />
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<label for="broadcast-subject">{tr}Subject:{/tr}</label>
+					<label for="broadcast-subject">{tr}Subject{/tr}:</label>
 				</td>
 				<td>
-					<input type="text" name="subject" id="broadcast-subject" value="{$subject|escape}" size="80" maxlength="255">
+					<input type="text" name="subject" id="broadcast-subject" value="{$subject|escape}" size="80" maxlength="255"/>
 				</td>
 			</tr>
 		</table>
-		<br>
+		<br />
 		<table class="normal" >
 			<tr>
 				<td style="text-align: center;">
-					<textarea rows="20" cols="80" name="body">{$body|escape}</textarea><br><input type="submit" name="preview" value="{tr}Send{/tr}">
+					<textarea rows="20" cols="80" name="body">{$body|escape}</textarea><br /><input type="submit" name="preview" value="{tr}Send{/tr}" />
 				</td>
 			</tr>
 		</table>

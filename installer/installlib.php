@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,27 +13,20 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 
 
 require_once 'lib/setup/twversion.class.php';
+require_once('lib/core/TikiDb/Bridge.php');
 
-/**
- *
- */
 class Installer extends TikiDb_Bridge
 {
-	public $patches = array();
-	public $scripts = array();
+	var $patches = array();
+	var $scripts = array();
 
-	public $installed = array();
-	public $executed = array();
+	var $installed = array();
+	var $executed = array();
 
-	public $success = array();
-	public $failures = array();
-	
-	public $useInnoDB = false;
+	var $success = array();
+	var $failures = array();
 
-    /**
-     *
-     */
-    function __construct() // {{{
+	function Installer() // {{{
 	{
 		$this->buildPatchList();
 		$this->buildScriptList();
@@ -41,27 +34,15 @@ class Installer extends TikiDb_Bridge
 
 	function cleanInstall() // {{{
 	{
-		if ($image = $this->getBaseImage()) {
-			$this->runFile($image);
-			$this->buildPatchList();
-			$this->buildScriptList();
-		} else {
-			// No image specified, standard install
-			$this->runFile(dirname(__FILE__) . '/../db/tiki.sql');
-			if ($this->useInnoDB) {
-				$this->runFile(dirname(__FILE__) . '/../db/tiki_innodb.sql');
-			} else {
-				$this->runFile(dirname(__FILE__) . '/../db/tiki_myisam.sql');
-			}
-			$this->buildPatchList();
-			$this->buildScriptList();
+		$this->runFile( dirname(__FILE__) . '/../db/tiki.sql' );
+		$this->buildPatchList();
+		$this->buildScriptList();
 
-			// Base SQL file contains the distribution tiki patches up to this point
-			$patches = $this->patches;
-			foreach ( $patches as $patch ) {
-				if ( preg_match('/_tiki$/', $patch) ) {
-					$this->recordPatch($patch);
-				}
+		// Base SQL file contains the distribution tiki patches up to this point
+		$patches = $this->patches;
+		foreach( $patches as $patch ) {
+			if( preg_match( '/_tiki$/', $patch ) ) {
+				$this->recordPatch( $patch );
 			}
 		}
 
@@ -70,23 +51,18 @@ class Installer extends TikiDb_Bridge
 
 	function update() // {{{
 	{
-		// Mark InnoDB usage for updates
-		if (strcasecmp($this->getCurrentEngine(), "InnoDB") == 0) {
-			$this->useInnoDB = true;
-		}
-
-		if ( ! $this->tableExists('tiki_schema') ) {
+		if( ! $this->tableExists( 'tiki_schema' ) ) {
 			// DB too old to handle auto update
 
-			if ( file_exists(dirname(__FILE__) . '/../db/custom_upgrade.sql') ) {
-				$this->runFile(dirname(__FILE__) . '/../db/custom_upgrade.sql');
+			if( file_exists( dirname(__FILE__) . '/../db/custom_upgrade.sql' ) ) {
+				$this->runFile( dirname(__FILE__) . '/../db/custom_upgrade.sql' );
 			} else {
 				// If 1.9
-				if ( ! $this->tableExists('tiki_minichat') ) {
-					$this->runFile(dirname(__FILE__) . '/../db/tiki_1.9to2.0.sql');
+				if( ! $this->tableExists( 'tiki_minichat' ) ) {
+					$this->runFile( dirname(__FILE__) . '/../db/tiki_1.9to2.0.sql' );
 				}
 
-				$this->runFile(dirname(__FILE__) . '/../db/tiki_2.0to3.0.sql');
+				$this->runFile( dirname(__FILE__) . '/../db/tiki_2.0to3.0.sql' );
 			}
 		}
 
@@ -94,119 +70,73 @@ class Installer extends TikiDb_Bridge
 		$dbversion_tiki = $TWV->getBaseVersion();
 
 		$secdb = dirname(__FILE__) . '/../db/tiki-secdb_' . $dbversion_tiki . '_mysql.sql';
-		if ( file_exists($secdb) ) {
-			$this->runFile($secdb);
-		}
+		if( file_exists( $secdb ) )
+			$this->runFile( $secdb );
 		
 		$patches = $this->patches;
-		foreach ($patches as $patch) {
-			$this->installPatch($patch);
+		foreach( $patches as $patch ) {
+			$this->installPatch( $patch );
 		}
 
-		foreach ( $this->scripts as $script ) {
-			$this->runScript($script);
-		}
+		foreach( $this->scripts as $script )
+			$this->runScript( $script );
 	} // }}}
 
-    /**
-     * @param $patch
-     */
-    function installPatch( $patch ) // {{{
+	function installPatch( $patch ) // {{{
 	{
-		if ( ! in_array($patch, $this->patches) ) {
+		if( ! in_array( $patch, $this->patches ) )
 			return;
-		}
 
 		$schema = dirname(__FILE__) . "/schema/$patch.sql";
 		$script = dirname(__FILE__) . "/schema/$patch.php";
-		$profile = dirname(__FILE__) . "/schema/$patch.yml";
 
 		$pre = "pre_$patch";
 		$post = "post_$patch";
 		$standalone = "upgrade_$patch";
 
-		if ( file_exists($script) ) {
+		if( file_exists( $script ) ) {
 			require $script;
 		}
 
-		global $dbs_tiki;
-		if (empty($dbs_tiki)) {
-			require(TikiInit::getCredentialsFile());
-			unset($db_tiki, $host_tiki, $user_tiki, $pass_tiki);
-		}
-
-		if ( function_exists($standalone) ) {
-			$standalone($this);
-		} else {
-			if ( function_exists($pre) ) {
+		if( function_exists( $standalone ) )
+			$standalone( $this );
+		else {
+			if( function_exists( $pre ) )
 				$pre( $this );
-			}
 	
-			if (file_exists($profile)) {
-				$status = $this->applyProfile($profile);
-			} else {
-				$status = $this->runFile($schema);
-			}
+			$status = $this->runFile( $schema );
 	
-			if ( function_exists($post) ) {
+			if( function_exists( $post ) )
 				$post( $this );
-			}
 		}
 
 		if (!isset($status) || $status ) {
 			$this->installed[] = $patch;
-			$this->recordPatch($patch);
+			$this->recordPatch( $patch );
 		}
 	} // }}}
 
-    /**
-     * @param $script
-     */
-    function runScript( $script ) // {{{
+	function runScript( $script ) // {{{
 	{
 		$file = dirname(__FILE__) . "/script/$script.php";
 
-		if ( file_exists($file) ) {
+		if( file_exists( $file ) ) {
 			require $file;
 		}
 
-		if ( function_exists($script) )
-			$script($this);
+		if( function_exists( $script ) )
+			$script( $this );
 
 		$this->executed[] = $script;
 	} // }}}
 
-    /**
-     * @param $patch
-     */
-    function recordPatch( $patch ) // {{{
+	function recordPatch( $patch ) // {{{
 	{
-		$this->query("INSERT INTO tiki_schema (patch_name, install_date) VALUES(?, NOW())", array($patch));
-		$this->patches = array_diff($this->patches, array($patch));
+		$this->query( "INSERT INTO tiki_schema (patch_name, install_date) VALUES(?, NOW())", array($patch) );
+		$this->patches = array_diff( $this->patches, array( $patch ) );
 	} // }}}
 
-	private function applyProfile($profileFile)
-	{
-		// By the time a profile install is requested, the installation should be functional enough to work
-		require_once 'tiki-setup.php';
-		$directory = dirname($profileFile);
-		$profile = substr(basename($profileFile), 0, -4);
-
-		$profile = Tiki_Profile::fromFile($directory, $profile);
-
-		$tx = $this->begin();
-
-		$installer = new Tiki_Profile_Installer;
-		$installer->install($profile);
-
-		$tx->commit();
-	}
-
-    /**
-     * @param $file
-     * @return bool
-     */
-    function runFile( $file ) // {{{
+	function runFile( $file ) // {{{
 	{
 		if ( !is_file($file) || !$command = file_get_contents($file) ) {
 			print('Fatal: Cannot open '.$file);
@@ -216,44 +146,37 @@ class Installer extends TikiDb_Bridge
 		// split the file into several queries?
 		$statements = preg_split("#(;\s*\n)|(;\s*\r\n)#", $command);
 
+		$prestmt="";
+		$do_exec=true;
 		$status = true;
 		foreach ($statements as $statement) {
 			if (trim($statement)) {
 				if (preg_match('/^\s*(?!-- )/m', $statement)) {// If statement is not commented
-					if ($this->useInnoDB) {
-						// Convert all MyISAM statments to InnoDB
-						$statement = str_ireplace("MyISAM", "InnoDB", $statement);
-					}
+					$display_errors = ini_get('display_errors');
+					ini_set('display_errors', 'Off');
 
 					if ($this->query($statement, array(), -1, -1, true, $file) === false) {
 						$status = false;
 					}
+					ini_set('display_errors', $display_errors);
 				}
 			}
 		}
 
+		$this->query("update `tiki_preferences` set `value`= `value`+1 where `name`='lastUpdatePrefs'");
 		return $status;
 	} // }}}
 
-    /**
-     * @param null $query
-     * @param array $values
-     * @param $numrows
-     * @param $offset
-     * @param bool $reporterrors
-     * @param string $patch
-     * @return bool
-     */
-    function query( $query = null, $values = array(), $numrows = -1, $offset = -1, $reporterrors = true, $patch ='' ) // {{{
+	function query( $query = null, $values = array(), $numrows = -1, $offset = -1, $reporterrors = true, $patch ='' ) // {{{
 	{
 		$error = '';
-		$result = $this->queryError($query, $error, $values);
+		$result = $this->queryError( $query, $error, $values );
 
-		if ( $result && empty($error) ) {
+		if( $result && empty($error) ) {
 			$this->success[] = $query;
 			return $result;
 		} else {
-			$this->failures[] = array($query, $error, substr(basename($patch), 0, -4));
+			$this->failures[] = array( $query, $error, substr( basename( $patch ), 0, -4 ) );
 			return false;
 		}
 	} // }}}
@@ -262,37 +185,24 @@ class Installer extends TikiDb_Bridge
 	{
 		$this->patches = array();
 
-		$files = glob(dirname(__FILE__) . '/schema/*_*.sql');
-		foreach ( $files as $file ) {
-			$filename = basename($file);
-			$this->patches[] = substr($filename, 0, -4);
-		}
-
-		$files = glob(dirname(__FILE__) . '/schema/*_*.yml');
-		foreach ( $files as $file ) {
-			$filename = basename($file);
-			$this->patches[] = substr($filename, 0, -4);
+		$files = glob( dirname(__FILE__) . '/schema/*_*.sql' );
+		foreach( $files as $file ) {
+			$filename = basename( $file );
+			$this->patches[] = substr( $filename, 0, -4 );
 		}
 
 		// Add standalone PHP scripts
-		$files = glob(dirname(__FILE__) . '/schema/*_*.php');
-		foreach ( $files as $file ) {
-			$filename = basename($file);
-			$patch = substr($filename, 0, -4);
-			if (!in_array($patch, $this->patches)) {
-				$this->patches[] = $patch;
-			}
+		$files = glob( dirname(__FILE__) . '/schema/*_*.php' );
+		foreach( $files as $file ) {
+			$filename = basename( $file );
+			$patch = substr( $filename, 0, -4 );
+			if (!in_array($patch, $this->patches)) $this->patches[] = $patch;
 		}
 
 		$installed = array();
-		$results = false;
-		
-		if ($this->tableExists('tiki_schema')) {
-			$results = $this->query("SELECT patch_name FROM tiki_schema");
-		}
-		
-		if ( $results ) {
-			while ( $row = $results->fetchRow() ) {
+		$results = $this->query( "SELECT patch_name FROM tiki_schema" );
+		if( $results ) {
+			while( $row = $results->fetchRow() ) {
 				$installed[] = reset($row);
 			}
 		} else {
@@ -300,103 +210,34 @@ class Installer extends TikiDb_Bridge
 			$this->failures = array();
 		}
 
-		$this->patches = array_diff($this->patches, $installed);
+		$this->patches = array_diff( $this->patches, $installed );
 
-		sort($this->patches);
+		sort( $this->patches );
 	} // }}}
 
 	function buildScriptList() // {{{
 	{
-		$files = glob(dirname(__FILE__) . '/script/*.php');
+		$files = glob( dirname(__FILE__) . '/script/*.php' );
 		if (empty($files))
 			return;
-		foreach ( $files as $file ) {
-			if (basename($file) === "index.php")
-				continue;
-			$filename = basename($file);
-			$this->scripts[] = substr($filename, 0, -4);
+		foreach( $files as $file ) {
+			$filename = basename( $file );
+			$this->scripts[] = substr( $filename, 0, -4 );
 		}
 	} // }}}
 
-    /**
-     * @param $tableName
-     * @return bool
-     */
-    function tableExists( $tableName ) // {{{
+	function tableExists( $tableName ) // {{{
 	{
-		$result = $this->query("show tables");
-		if ($result) {
-			$list = array();
-			while ( $row = $result->fetchRow() )
-				$list[] = reset($row);
+		$result = $this->query( "show tables" );
+		$list = array();
+		while( $row = $result->fetchRow() )
+			$list[] = reset( $row );
 
-			return in_array($tableName, $list);
-		} else {
-			return false;
-		}
+		return in_array( $tableName, $list );
 	} // }}}
 
-    /**
-     * @return bool
-     */
-    function requiresUpdate() // {{{
+	function requiresUpdate() // {{{
 	{
-		return count($this->patches) > 0 ;
+		return count( $this->patches ) > 0 ;
 	} // }}}
-
-	private function getBaseImage() // {{{
-	{
-		$iniFile = __DIR__ . '/../db/install.ini';
-
-		$ini = array();
-		if (is_readable($iniFile)) {
-			$ini = parse_ini_file($iniFile);
-		}
-
-		$direct = __DIR__ . '/../db/custom_tiki.sql';
-		$check = null;
-
-		if (isset($ini['source.type'])) {
-			switch ($ini['source.type']) {
-			case 'local':
-				$direct = $ini['source.file'];
-				break;
-			case 'http':
-				$fetch = $ini['source.file'];
-				if (isset($ini['source.md5'])) {
-					$check = $ini['source.md5'];
-				}
-				break;
-			}
-		}
-
-		if (is_readable($direct)) {
-			return $direct;
-		}
-
-		$cacheFile = __DIR__ . '/../temp/cache/sql' . md5($fetch);
-
-		if (is_readable($cacheFile)) {
-			return $cacheFile;
-		}
-
-		$read = fopen($fetch, 'r');
-		$write = fopen($cacheFile, 'w+');
-
-		if ($read && $write) {
-			while (! feof($read)) {
-				fwrite($write, fread($read, 1024 * 100));
-			}
-
-			fclose($read);
-			fclose($write);
-
-			if (! $check || $check == md5_file($cacheFile)) {
-				return $cacheFile;
-			} else {
-				unlink($cacheFile);
-			}
-		}
-	} // }}}
-	
 }

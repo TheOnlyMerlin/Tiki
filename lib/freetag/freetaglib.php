@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -48,9 +48,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 
 require_once('lib/objectlib.php');
 
-/**
- *
- */
 class FreetagLib extends ObjectLib
 {
 	// The fields below should be tiki preferences
@@ -58,30 +55,30 @@ class FreetagLib extends ObjectLib
 	/* @access private
 	 * @param string The regex-style set of characters that are valid for normalized tags.
 	 */
-	public $_normalized_valid_chars = 'a-zA-Z0-9';
+	var $_normalized_valid_chars = 'a-zA-Z0-9';
 	/**
 	 * @access private
 	 * @param string The regex-style set of characters that are valid for normalized tags.
 	 */
-	public $_normalize_in_lowercase = 1;
+	var $_normalize_in_lowercase = 1;
 	/**
 	 * @access private
 	 * @param string Whether to prevent multiple users from tagging the same object. By default, set to block (ala Upcoming.org)
 	 */
-	public $_block_multiuser_tag_on_object = 1;
+	var $_block_multiuser_tag_on_object = 1;
 
 	/**
 	 * @access private
 	 * @param int The maximum length of a tag.
 	 */
-	public $_MAX_TAG_LENGTH = 128;
+	var $_MAX_TAG_LENGTH = 128;
 	/**
 	 * @access public
 	 * @param int The number of size degrees for tags in cloud. There should be correspondent classes in css.
 	 */
-	public $max_cloud_text_size = 7;
+	var $max_cloud_text_size = 7;
 
-	public $multilingual = false;
+	var $multilingual = false;
 
 
 	/**
@@ -151,8 +148,9 @@ class FreetagLib extends ObjectLib
 		$query_cant = 'SELECT COUNT(*)';
 
 		$query_end =  ' FROM `tiki_objects` o, `tiki_freetagged_objects` fto, `tiki_freetags` t'
-								. ' WHERE fto.`tagId` = t.`tagId` AND o.`objectId` = fto.`objectId` AND `tag` = ? ' . $mid
-								. ' ORDER BY o.' . $this->convertSortMode($sort_mode);
+								. ' WHERE fto.`tagId` = t.`tagId` AND o.`objectId` = fto.`objectId` AND `tag` = ? ' . $mid 
+								. ' ORDER BY o.' . $this->convertSortMode($sort_mode)
+								;
 
 		$query      .= $query_end;
 		$query_cant .= $query_end;
@@ -174,15 +172,15 @@ class FreetagLib extends ObjectLib
 	 *
 	 * Returns an array of object ID's that have all the tags passed in the
 	 * tagArray parameter. Use this to provide tag combo services to your users.
-	 *
+	 * 
 	 * @param mixed $tagArray: array of normalized form tags along to the function.
-	 * @param string $type
+	 * @param string $type 
 	 * @param string $thisUser: Restrict the result to objects tagged by a particular user
 	 * @param int $offset: The numerical offset to begin display at. Defaults to 0
 	 * @param int $maxRecords:  The number of results per page to show. Defaults to 100
-	 * @param string $sort_mode
-	 * @param string $find
-	 * @param string $broaden
+	 * @param string $sort_mode 
+	 * @param string $find 
+	 * @param string $broaden 
 	 * @access public
 	 * @return An array of Object ID numbers that reference your original objects
 	 *
@@ -200,12 +198,12 @@ class FreetagLib extends ObjectLib
 																		, $sort_mode = 'name_asc'
 																		, $find = ''
 																		, $broaden = 'n'
-																		, $objectId = null
-
-																		)
+																		) 
 	{
+		global $categlib;
+		include_once('lib/categories/categlib.php');
 
-		global $tiki_p_admin, $user, $smarty, $prefs;
+		global $tiki_p_admin, $user, $smarty;
 		if (!isset($tagArray) || !is_array($tagArray)) {
 			return false;
 		}
@@ -243,7 +241,7 @@ class FreetagLib extends ObjectLib
 			if (isset($type) && !empty($type)) {
 				$mid_t .= ' AND `type` = ?';
 				$bindvals_t[] = $type;
-			}
+ 			}
 
 			if (isset($find) && !empty($find)) {
 				$findesc = '%' . $find . '%';
@@ -297,6 +295,11 @@ class FreetagLib extends ObjectLib
 			$bindvals = array_merge($bindvals, array($findesc, $findesc));
 		}
 
+		global $prefs;
+		if ($prefs['feature_wikiapproval'] == 'y') {
+			$mid .= ' AND o.`itemId` not like ?';
+			$bindvals[] = $prefs['wikiapproval_prefix'] . '%';
+		}
 		// We must adjust for duplicate normalized tags appearing multiple times in the join by
 		// counting only the distinct tags. It should also work for an individual user.
 
@@ -305,9 +308,10 @@ class FreetagLib extends ObjectLib
 
 		$query_end = ' FROM `tiki_objects` o, `tiki_freetagged_objects` fto, `tiki_freetags` t'
 								.	' WHERE fto.`tagId` = t.`tagId` AND o.`objectId` = fto.`objectId`'
-								.	' AND ' . $tag_sql
-								. $mid
-								.	' ORDER BY ' . $this->convertSortMode($sort_mode);
+								.	' AND ' . $tag_sql 
+								. $mid 
+								.	' ORDER BY ' . $this->convertSortMode($sort_mode)
+								;
 		// note the original line was originally here to fix ambiguous 'created' column for default sort.
 		// Not a neat fix the o. prefix is ugly.	So changed default order instead.
 
@@ -318,33 +322,32 @@ class FreetagLib extends ObjectLib
 		$cant = $this->getOne($query_cant, $bindvals);
 
 		$ret = array();
-		$permMap = TikiLib::lib('object')->map_object_type_to_permission();
+		$permMap = $categlib->map_object_type_to_permission();
 		while ($row = $result->fetchRow()) {
 			$ok = false;
-			if ($row['type'] == 'blog post') {
-				$bloglib = TikiLib::lib('blog');
+			if ($tiki_p_admin == 'y') {
+				$ok = true;
+			} elseif ($row['type'] == 'blog post') {
+				global $bloglib; include_once('lib/blogs/bloglib.php');
 				$post_info = $bloglib->get_post($row['itemId']);
-				if (!empty($objectId) && $objectId != $post_info['blogId']) {
-				} elseif ($tiki_p_admin == 'y' || $this->user_has_perm_on_object($user, $post_info['blogId'], 'blog', 'tiki_p_read_blog')) {
+				if ($this->user_has_perm_on_object($user, $post_info['blogId'], 'blog', 'tiki_p_read_blog')) {
 					$ok = true;
 				}
-			} elseif ($tiki_p_admin == 'y') {
-                                $ok = true;
 			} elseif ($this->user_has_perm_on_object($user, $row['itemId'], $row['type'], $permMap[$row['type']])) {
 				$ok = true;
 			}
 			if ($ok) {
 				global $tikilib;
 				if ( ! empty( $row['description'] ) ) {
-					$row['description'] = $tikilib->parse_data($row['description'], array('absolute_links' => true));
+					$row['description'] = $tikilib->parse_data( $row['description'], array( 'absolute_links' => true ) );
 				}
 				if ($prefs['feature_sefurl'] == 'y') {
 					include_once('tiki-sefurl.php');
 					if ($row['type'] == 'blog post' && !empty($post_info)) {
-						$row['href'] = filter_out_sefurl($row['href'], 'blogpost', $post_info['title']);
+						$row['href'] = filter_out_sefurl($row['href'], $smarty, 'blogpost', $post_info['title']);
 					} else {
 						$type = ($row['type'] == 'wiki page') ? 'wiki' : ($row['type'] == 'blog post'? 'blogpost': $row['type']);
-						$row['href'] = filter_out_sefurl($row['href'], $type);
+						$row['href'] = filter_out_sefurl($row['href'], $smarty, $type);
 					}
 				}
 				$ret[] = $row;
@@ -411,15 +414,15 @@ class FreetagLib extends ObjectLib
 	}
 
 	/**
-	 * get_tags_on_object
-	 *
+	 * get_tags_on_object 
+	 * 
 	 * You can use this function to show the tags on an object. Since it supports both user-specific
 	 * and general modes with the $user parameter, you can use it twice on a page to make it work
 	 * similar to upcoming.org and flickr, where the page displays your own tags differently than
 	 * other users' tags.
 	 *
 	 * @param int $itemId The unique ID of the object in question
-	 * @param int $type
+	 * @param int $type 
 	 * @param int $offset The offset of tags to return
 	 * @param int $maxRecords The size of the tagset to return
 	 * @param int $user The unique ID of the person who tagged the object, if user-level tags only are preferred
@@ -472,17 +475,17 @@ class FreetagLib extends ObjectLib
 	 *
 	 */
 	/**
-	 * get_all_tags_on_object_for_language
-	 *
+	 * get_all_tags_on_object_for_language 
+	 * 
 	 * Derived from get_tags_on_object. The method extracts all tags for an object
 	 * and attempts to find a translation in a given language. If no translation
 	 * exists at this time, the original tag will be used.
 	 * This method is to be used when translating a page to create the initial set
 	 * of tags.
 	 *
-	 * @param mixed $itemId
-	 * @param mixed $type
-	 * @param mixed $lang
+	 * @param mixed $itemId 
+	 * @param mixed $type 
+	 * @param mixed $lang 
 	 * @access public
 	 * @return
 	 */
@@ -515,15 +518,15 @@ class FreetagLib extends ObjectLib
 				$tra[$row['srctag']] = $row['tratag'];
 		}
 
-		return array_merge(array_values($tra), array_diff($orig, array_keys($tra)));
+		return array_merge(array_values( $tra ), array_diff( $orig, array_keys( $tra ) ));
 	}
 
 	/**
-	 * find_or_create_tag
-	 *
-	 * @param mixed $tag
-	 * @param mixed $lang
-	 * @param mixed $anyLanguage
+	 * find_or_create_tag 
+	 * 
+	 * @param mixed $tag 
+	 * @param mixed $lang 
+	 * @param mixed $anyLanguage 
 	 * @access public
 	 * @return tagId
 	 */
@@ -538,11 +541,6 @@ class FreetagLib extends ObjectLib
 		$mid .= ' (`raw_tag` = ? OR `tag` = ?)';
 		$bindvars[] = $tag;
 		$bindvars[] = $normalized_tag;
-
-		// force tag to be universal if no lang set
-		if (!$lang) {
-			$lang = null;
-		}
 
 		if ($this->multilingual && $lang && ! $anyLanguage) {
 			$mid .= ' AND `lang` = ?'; // null lang means universal
@@ -574,7 +572,7 @@ class FreetagLib extends ObjectLib
 			}
 
 			$query = 'SELECT MAX(`tagId`) FROM `tiki_freetags` WHERE `tag`=? AND `raw_tag`=?';
-			$tagId = $this->getOne($query, array_slice($bindvals, 0, 2));
+			$tagId = $this->getOne($query, array_slice( $bindvals, 0, 2 ) );
 		}
 
 		if (!($tagId > 0)) {
@@ -649,15 +647,15 @@ class FreetagLib extends ObjectLib
 			return true;
 		}
 
-		$tagId = $this->find_or_create_tag($tag, $lang, false);
+		$tagId = $this->find_or_create_tag( $tag, $lang, false );
 
-		$objectId = $this->add_object($type, $itemId, FALSE);
+		$objectId = $this->add_object($type, $itemId);
 
 		$query = 'INSERT INTO `tiki_freetagged_objects`'
 						. ' (`tagId`, `objectId`, `user`, `created`)'
 						. ' VALUES (?, ?, ?, ?)'
 						;
-		$bindvals = array($tagId, $objectId, $user ? $user : '', time());
+		$bindvals = array($tagId, $objectId, $user, time());
 
 		$this->query($query, $bindvals);
 
@@ -690,8 +688,12 @@ class FreetagLib extends ObjectLib
 			$normalized_valid_chars = $this->_normalized_valid_chars;
 			$tag = preg_replace("/[^$normalized_valid_chars]/", '', $tag);
 		}
-
-		return $this->_normalize_in_lowercase ? TikiLib::strtolower($tag, 'UTF-8') : $tag;
+		
+		if (function_exists('mb_strtolower')) {
+			return $this->_normalize_in_lowercase ? mb_strtolower($tag, 'UTF-8') : $tag;
+		} else {
+			return $this->_normalize_in_lowercase ? strtolower($tag) : $tag;
+		}
 	}
 
 	/**
@@ -803,15 +805,6 @@ class FreetagLib extends ObjectLib
 		return $this->getOne($query, array($tag));
 	}
 
-    /**
-     * @param $tagId
-     * @return mixed
-     */
-    function get_tag_from_id($tagId)
-	{
-		return $this->table('tiki_freetags')->fetchOne('tag', array('tagId' => $tagId));
-	}
-
 	/**
 	 * get_raw_tag_id
 	 *
@@ -866,14 +859,14 @@ class FreetagLib extends ObjectLib
 	}
 
 	/**
-	 * update_tags
-	 *
-	 * @param mixed $user
-	 * @param mixed $itemId
-	 * @param mixed $type
-	 * @param mixed $tag_string
-	 * @param mixed $old_user
-	 * @param mixed $lang
+	 * update_tags 
+	 * 
+	 * @param mixed $user 
+	 * @param mixed $itemId 
+	 * @param mixed $type 
+	 * @param mixed $tag_string 
+	 * @param mixed $old_user 
+	 * @param mixed $lang 
 	 * @access public
 	 * @return void
 	 */
@@ -897,9 +890,9 @@ class FreetagLib extends ObjectLib
 	}
 
 	/**
-	 * _parse_tag
-	 *
-	 * @param mixed $tag_string
+	 * _parse_tag 
+	 * 
+	 * @param mixed $tag_string 
 	 * @access protected
 	 * @return
 	 */
@@ -914,7 +907,8 @@ class FreetagLib extends ObjectLib
 		$words = preg_split('/(")/', $query, -1, PREG_SPLIT_NO_EMPTY|PREG_SPLIT_DELIM_CAPTURE);
 		$delim = 0;
 		$newwords = array();
-		foreach ($words as $key => $word) {
+		foreach ($words as $key => $word)
+		{
 			if ($word == '"') {
 				$delim++;
 				continue;
@@ -930,29 +924,20 @@ class FreetagLib extends ObjectLib
 	}
 
 	/**
-	 * _tag_object_array
-	 *
-	 * @param mixed $user
-	 * @param mixed $itemId
-	 * @param mixed $type
-	 * @param mixed $tagArray
-	 * @param mixed $lang
+	 * _tag_object_array 
+	 * 
+	 * @param mixed $user 
+	 * @param mixed $itemId 
+	 * @param mixed $type 
+	 * @param mixed $tagArray 
+	 * @param mixed $lang 
 	 * @access protected
 	 * @return void
 	 */
 	function _tag_object_array($user, $itemId, $type, $tagArray, $lang = null)
 	{
-		// first check for lang of object
-		if (!$lang) {
-			$langutil = new Services_Language_Utilities;
-			try {
-				$lang = $langutil->getLanguage($type, $itemId);
-			} catch (Services_Exception $e) {
-				$lang = null;
-			}
-		}
 
-		foreach ($tagArray as $tag) {
+		foreach($tagArray as $tag) {
 			$tag = trim($tag);
 			if ($tag != '') {
 				if (!get_magic_quotes_gpc()) {
@@ -981,42 +966,30 @@ class FreetagLib extends ObjectLib
 	 *	 - 'count' => The number of objects tagged with this tag.
 	 */
 
-	function get_most_popular_tags($user = '', $offset = 0, $maxRecords = 25, $type=null, $objectId=null, $tsort_mode='tag_asc')
+	function get_most_popular_tags($user = '', $offset = 0, $maxRecords = 25)
 	{
 
-		$join = '';
-		$mid = ''; $mid2 = '';
-		$bindvals = array();
-		if (!empty($type) || !empty($objectId)) {
-			$join .= ' LEFT JOIN `tiki_objects` tob on (tob.`objectId`= tfo.`objectId`)';
-			$mid .= ' AND `type` = ?';
-			$mid2 = 'WHERE `type`=?';
-			$bindvals[] = $type;
-			if (!empty($objectId)) {
-				$join .= ' LEFT JOIN `tiki_blog_posts` tbp on (tob.`itemId` = tbp.`postId`)';
-				$mid .= ' AND tbp.`blogId` = ?';
-				$mid2 .= ' AND tbp.`blogId` = ?';
-				$bindvals[] = $objectId;
-			}
-		}
+		// get top tag popularity
 		$query = 'SELECT COUNT(*) as count'
-						. ' FROM `tiki_freetagged_objects` tfo'
-						. $join . $mid2
+						. ' FROM `tiki_freetagged_objects` o'
 						. ' GROUP BY `tagId`'
 						. ' ORDER BY count DESC'
 						;
 
-		$top = $this->getOne($query, $bindvals);
+		$top = $this->getOne($query);
+
+		$bindvals = array();
 
 		if (isset($user) && (!empty($user))) {
-			$mid .= ' AND `user` = ?';
+			$mid = 'AND `user` = ?';
 			$bindvals[] = $user;
+		} else {
+			$mid = '';
 		}
 
 		$query = 'SELECT `tag`, COUNT(*) as count'
-			. ' FROM `tiki_freetags` tf, `tiki_freetagged_objects` tfo'
-			. $join
-		   				. ' WHERE tf.`tagId`= tfo.`tagId` ' . $mid
+						. ' FROM `tiki_freetags` tf, `tiki_freetagged_objects` tfo'
+						. ' WHERE tf.`tagId`= tfo.`tagId` ' . $mid
 						. ' GROUP BY `tag`'
 						. ' ORDER BY count DESC, tag ASC'
 						;
@@ -1038,15 +1011,9 @@ class FreetagLib extends ObjectLib
 
 			$ret[] = $row;
 		}
-		switch ($tsort_mode) {
-			case 'count_desc':
-				array_multisort($count, SORT_DESC, $tag, SORT_ASC, $ret);
-				break;
-			case 'tag_asc':
-			default:
-				array_multisort($tag, SORT_ASC, $count, SORT_DESC, $ret);
-				break;
-		}
+
+		array_multisort($tag, SORT_ASC, $count, SORT_DESC, $ret);
+
 		return $ret;
 	}
 
@@ -1065,11 +1032,6 @@ class FreetagLib extends ObjectLib
 
 	function get_tag_suggestion($exclude = '', $max = 10, $lang = null)
 	{
-		global $prefs;
-		if (!$lang && !empty($prefs['language'])) {
-			$lang = $prefs['language'];
-		}
-
 		$query = 'SELECT t.* FROM `tiki_freetags` t, `tiki_freetagged_objects` o'
 						. ' WHERE t.`tagId` = o.`tagId`'
 						. ' AND (`lang` = ? or `lang` IS null)'
@@ -1216,34 +1178,11 @@ class FreetagLib extends ObjectLib
 	 * Once you have enough tags, the results are quite good. It is very organic
 	 * as tagging is human-technology.
 	 */
-    /**
-     * @param $type
-     * @param $objectId
-     * @param int $maxResults
-     * @param null $targetType
-     * @param string $with
-     * @param null $minCommon
-     * @return array
-     */
-    function get_similar( $type, $objectId, $maxResults = 10, $targetType = null, $with = 'freetag', $minCommon=null )
+	function get_similar( $type, $objectId, $maxResults = 10, $targetType = null )
 	{
-		global $prefs;
-		if ($with == 'category') {
-			$algorithm = $this->get_preference('category_morelikethis_algorithm', 'basic');
-			if (empty($minCommon))
-				$minCommon = (int) $this->get_preference('category_morelikethis_mincommon', 2);
-			$table = 'tiki_category_objects';
-			$column = 'categId';
-			$objectColumn = 'catObjectId';
-		} else {
-			$algorithm = $this->get_preference('morelikethis_algorithm', 'basic');
-			$minCommon = (int) $this->get_preference('morelikethis_basic_mincommon', 2);
-			$table = 'tiki_freetagged_objects';
-			$column = 'tagId';
-			$objectColumn = 'objectId';
-		}
+		$algorithm = $this->get_preference('morelikethis_algorithm', 'basic');
 
-		if ( is_null($targetType) ) {
+		if ( is_null( $targetType ) ) {
 			$targetType = $type;
 		}
 
@@ -1254,32 +1193,34 @@ class FreetagLib extends ObjectLib
 		$mid = ' oa.objectId <> ob.objectId	AND ob.type = ? AND oa.type = ? AND oa.itemId = ?';
 		$bindvals = array($targetType, $type, $objectId);
 
-		if ($prefs['feature_multilingual'] == 'y' && $type == 'wiki page' && $targetType == 'wiki page') {
+		global $prefs;
+		if ($prefs['feature_wikiapproval'] == 'y') {
+			$mid .= ' AND ob.`itemId` not like ?';
+			$bindvals[] = $prefs['wikiapproval_prefix'] . '%';
+		}
+
+		if ($this->multilingual && $type == 'wiki page' && $targetType == 'wiki page') {
 			// make sure only same lang pages are selected
-			$mid .= ' AND (pb.`lang` = pa.`lang` OR pa.`lang` IS NULL OR pb.`lang` IS NULL) ';
-			$join_tiki_pages = 'INNER JOIN `tiki_pages` pa ON pa.`pageName` = oa.itemId'
-							. ' INNER JOIN `tiki_pages` pb ON pb.`pageName` = ob.`itemId`'
-							;
-		} elseif ($prefs['feature_multilingual'] == 'y' && $type == 'article' && $targetType == 'article') {
-			// make sure only sane lang articles are selected
-			$mid .= ' AND (ab.`lang` = aa.`lang` OR aa.`lang` IS NULL OR ab.`lang` IS NULL) ';
-			$join_tiki_pages = 'INNER JOIN `tiki_articles` aa ON aa.`articleId` = oa.itemId'
-							. ' INNER JOIN `tiki_articles` ab ON ab.`articleId` = ob.`itemId`'
-							;
+			$mid .= ' AND pb.`lang` = pa.`lang`';
+			$join_tiki_pages = 'INNER JOIN tiki_pages pa ON pa.pageName = oa.itemId'
+												. ' INNER JOIN tiki_pages pb ON pb.pageName = ob.itemId'
+												;
 		} else {
 			$join_tiki_pages = '';
 		}
 
-		switch ( $algorithm ) {
+		switch( $algorithm )
+		{
 		case 'basic': // {{{
-			$query = "SELECT ob.`name`, ob.`href`, COUNT(DISTINCT fb.`$column`) cnt"
-							. ' FROM `tiki_objects` oa'
-							. " INNER JOIN `$table` fa ON oa.`objectId` = fa.`$objectColumn`"
-							. " INNER JOIN $table fb USING(`$column`)"
-							. " INNER JOIN `tiki_objects` ob ON ob.`objectId` = fb.`$objectColumn` "
-							. $join_tiki_pages
+			$minCommon = (int) $this->get_preference( 'morelikethis_basic_mincommon', 2 );
+
+			$query = 'SELECT ob.name, ob.href, COUNT(DISTINCT fb.tagId) cnt'
+							. ' FROM tiki_objects oa'
+							. ' INNER JOIN tiki_freetagged_objects fa ON oa.objectId = fa.objectId'
+							. ' INNER JOIN tiki_freetagged_objects fb USING(tagId)'
+							. ' INNER JOIN tiki_objects ob ON ob.objectId = fb.objectId ' . $join_tiki_pages
 							. ' WHERE ' . $mid
-							. ' GROUP BY ob.`itemId`'
+							. ' GROUP BY ob.itemId'
 							. ' HAVING cnt >= ?'
 							. ' ORDER BY cnt DESC, RAND()'
 							;
@@ -1287,71 +1228,64 @@ class FreetagLib extends ObjectLib
 		// }}}
 
 		case 'weighted': // {{{
-			$query = "SELECT ob.`name`, ob.`href`, COUNT(DISTINCT fc.`$objectColumn`) sort_cnt, COUNT(DISTINCT fb.`$column`) having_cnt"
-							. ' FROM `tiki_objects` oa'
-							. " INNER JOIN $table fa ON oa.`objectId` = fa.`$objectColumn`"
-							. " INNER JOIN $table fb USING(`$column`)"
-							. " INNER JOIN `tiki_objects` ob ON ob.`objectId` = fb.`$objectColumn`"
-							. " INNER JOIN $table fc ON fb.`$column` = fc.`$column` "
+			$minCommon = (int) $this->get_preference( 'morelikethis_basic_mincommon', 2 );
+
+			$query = 'SELECT'
+							. ' ob.name, ob.href, COUNT(DISTINCT fc.objectId) sort_cnt, COUNT(DISTINCT fb.tagId) having_cnt'
+							. ' FROM tiki_objects oa'
+								. ' INNER JOIN tiki_freetagged_objects fa ON oa.objectId = fa.objectId'
+								. ' INNER JOIN tiki_freetagged_objects fb USING(tagId)'
+								. ' INNER JOIN tiki_objects ob ON ob.objectId = fb.objectId'
+								. ' INNER JOIN tiki_freetagged_objects fc ON fb.tagId = fc.tagId '
 							. $join_tiki_pages
 							. ' WHERE ' . $mid
-							. ' GROUP BY ob.`itemId`'
+							. ' GROUP BY ob.itemId'
 							. ' HAVING having_cnt >= ?'
 							. ' ORDER BY sort_cnt DESC, RAND()'
 							;
 			// Sort based on the global popularity of all tags in common
-			break;
 		// }}}
 		}
 
 		$bindvals[] = $minCommon;
 
-		$result = $this->query($query, $bindvals, $maxResults);
+		$result = $this->query( $query, $bindvals, $maxResults );
 		$tags = array();
-		while ( $row = $result->fetchRow() )
+		while( $row = $result->fetchRow() )
 			$tags[] = $row;
 
-		if (empty($tags) && $prefs['category_morelikethis_mincommon_orless'] == 'y' && $with == 'category' && $minCommon > 1) {
-			return $this-> get_similar($type, $objectId, $maxResults, $targetType, $with, $minCommon-1);
-		} else {
-			return $tags;
-		}
+		return $tags;
 	}
 
 	/**
 	 * cleanup_tags Remove all tags that are orphaned (i.e. not used)
-	 *
+	 * 
 	 * @access public
 	 * @return true
 	 */
 	function cleanup_tags()
 	{
-		$this->query('DELETE FROM `tiki_freetagged_objects` WHERE `tagId` NOT IN(SELECT `tagId` FROM `tiki_freetags`)');
-		$this->query(
-			'DELETE tfo FROM `tiki_freetagged_objects` tfo'
-			.	' LEFT JOIN `tiki_objects` tob ON (tob.`objectId` = tfo.`objectId`) WHERE tob.`objectId` IS null'
-		);
-
-		$this->query(
-			'DELETE FROM `tiki_freetags`'
-			. ' WHERE `tagId` NOT IN(SELECT `tagId` FROM `tiki_freetagged_objects`)'
-			. ' AND `tagId` NOT IN(SELECT `objId` FROM `tiki_translated_objects` WHERE type = \'freetag\')'
-		);
+		$this->query('DELETE FROM `tiki_freetagged_objects` WHERE `tagId` NOT IN(SELECT `tagId` FROM `tiki_freetags`)' );
+		$this->query('DELETE tfo FROM `tiki_freetagged_objects` tfo LEFT JOIN `tiki_objects` tob ON (tob.`objectId` = tfo.`objectId`) WHERE tob.`objectId` IS null');
+		$this->query('DELETE FROM `tiki_freetags`'
+								. ' WHERE `tagId` NOT IN(SELECT `tagId` FROM `tiki_freetagged_objects`)'
+								. ' AND `tagId` NOT IN(SELECT `objId` FROM `tiki_translated_objects` WHERE type = \'freetag\')' 
+								);
 		return true;
 	}
 
 	/**
-	 * get_object_tags_multilingual
-	 *
-	 * @param mixed $type
-	 * @param mixed $objectId
-	 * @param mixed $accept_languages
-	 * @param mixed $offset
-	 * @param mixed $maxRecords
+	 * get_object_tags_multilingual 
+	 * 
+	 * @param mixed $type 
+	 * @param mixed $objectId 
+	 * @param mixed $accept_languages 
+	 * @param mixed $offset 
+	 * @param mixed $maxRecords 
 	 * @access public
 	 * @return
 	 */
-	function get_object_tags_multilingual( $type, $objectId, $accept_languages, $offset, $maxRecords )
+	function get_object_tags_multilingual( $type, $objectId, $accept_languages, $offset, $maxRecords ) 
 	{
 		$mid = '';
 		$bindvars = array();
@@ -1371,34 +1305,34 @@ class FreetagLib extends ObjectLib
 						. ' INNER JOIN tiki_freetags tag ON fo.tagId = tag.tagId'
 						. ' LEFT JOIN tiki_translated_objects `to` ON to.type = \'freetag\' AND to.objId = fo.tagId'
 						. ' WHERE ' . $mid
-						. ' AND (tag.lang IS NULL OR tag.lang IN('
-							. implode(',', array_fill(0, count($accept_languages), '?'))
+						. ' AND (tag.lang IS NULL OR tag.lang IN(' 
+							. implode(',', array_fill(0, count($accept_languages), '?')) 
 						. ') )'
 						;
 
-		$result = $this->fetchAll($query, array_merge($bindvars, $accept_languages), $maxRecords, $offset);
-		$translationSets = array_map('end', $result);
-		$translationSets = array_filter($translationSets);
+		$result = $this->fetchAll( $query, array_merge( $bindvars, $accept_languages ), $maxRecords, $offset );
+		$translationSets = array_map( 'end', $result );
+		$translationSets = array_filter( $translationSets );
 
-		$tags = $this->get_tag_translations($translationSets, $accept_languages);
+		$tags = $this->get_tag_translations( $translationSets, $accept_languages );
 
 		$ret = array();
 		$encountered = array();
-		foreach ( $result as $row ) {
+		foreach( $result as $row ) {
 			$group = $row['tagset'];
 			$lang = $row['lang'];
 
-			if ( array_key_exists($row['tagId'], $encountered) )
+			if ( array_key_exists( $row['tagId'], $encountered ) )
 				continue;
 
-			if ( !array_key_exists($group, $ret) )
+			if ( !array_key_exists( $group, $ret ) )
 				$ret[$group] = array();
 
 			$ret[$group][$lang] = $row;
 			$encountered[ $row['tagId'] ] = true;
 
 			if ( $row['traId'] ) {
-				foreach ( $tags[ $row['traId'] ] as $tag ) {
+				foreach( $tags[ $row['traId'] ] as $tag ) {
 					$ret[$group][$tag['lang']] = $tag;
 					$encountered[ $tag['tagId'] ] = true;
 				}
@@ -1409,32 +1343,31 @@ class FreetagLib extends ObjectLib
 	}
 
 	/**
-	 * get_tag_translations
-	 *
-	 * @param mixed $sets
-	 * @param mixed $languages
+	 * get_tag_translations 
+	 * 
+	 * @param mixed $sets 
+	 * @param mixed $languages 
 	 * @access private
 	 * @return
 	 */
 	private function get_tag_translations( $sets, $languages )
 	{
-		if ( count($sets) == 0 ) {
+		if ( count( $sets ) == 0 ) {
 			return array();
 		}
 
-		$result = $this->fetchAll(
-			'SELECT tag.tagId, tag.lang, tag.tag, traId'
-			. ' FROM tiki_freetags tag'
-			. ' INNER JOIN tiki_translated_objects `to` ON to.type = \'freetag\''
-			. ' AND tag.tagId = to.objId'
-			. ' WHERE'
-			. ' to.traId IN(' . implode(', ', $sets) . ' ) '
-			. ' AND tag.lang IN(' . implode(',', array_fill(0, count($languages), '?')) . ')',
-			$languages
-		);
+		$result = $this->fetchAll( 'SELECT tag.tagId, tag.lang, tag.tag, traId'
+															. ' FROM tiki_freetags tag'
+															. ' INNER JOIN tiki_translated_objects `to` ON to.type = \'freetag\''
+															. ' AND tag.tagId = to.objId'
+															. ' WHERE'
+																. ' to.traId IN(' . implode( ', ', $sets ) . ' ) '
+																. ' AND tag.lang IN(' . implode(',', array_fill(0, count($languages), '?')) . ')'
+															, $languages 
+															);
 
-		$ret = array_fill_keys($sets, array());
-		foreach ( $result as $row ) {
+		$ret = array_fill_keys( $sets, array() );
+		foreach( $result as $row ) {
 			$ret[ $row['traId'] ][] = $row;
 		}
 
@@ -1442,80 +1375,75 @@ class FreetagLib extends ObjectLib
 	}
 
 	/**
-	 * set_tag_language
-	 *
-	 * @param mixed $tagId
-	 * @param mixed $lang
+	 * set_tag_language 
+	 * 
+	 * @param mixed $tagId 
+	 * @param mixed $lang 
 	 * @access public
 	 * @return
 	 */
 	function set_tag_language( $tagId, $lang )
 	{
-		if ( ! $this->is_valid_language($lang) )
+		if ( ! $this->is_valid_language( $lang ) )
 			return;
 
-		$result = $this->query(
-			'SELECT tagId'
-			. ' FROM tiki_freetags'
-			. ' WHERE'
-			. ' tag = (SELECT tag FROM tiki_freetags WHERE tagId = ?)'
-			. ' AND tagId <> ?'
-			. ' AND lang = ?',
-			array( $tagId, $tagId, $lang )
-		);
+		$result = $this->query('SELECT tagId'
+										. ' FROM tiki_freetags'
+										. ' WHERE'
+										. ' tag = (SELECT tag FROM tiki_freetags WHERE tagId = ?)'
+										. ' AND tagId <> ?'
+										. ' AND lang = ?'
+										, array( $tagId, $tagId, $lang )
+										);
 
 		$equiv = array();
-		while ( $row = $result->fetchRow() )
+		while( $row = $result->fetchRow() )
 			$equiv[] = $row['tagId'];
 
-		if ( count($equiv) > 0 ) {
+		if ( count( $equiv ) > 0 ) {
 			// Target already exists, merge em
 
-			$master = array_pop($equiv);
+			$master = array_pop( $equiv );
 			$equiv[] = $tagId;
 
 			// Clear potential duplicates.
-			$equivStr = implode(',', $equiv);
-			$result = $this->query(
-				'SELECT objectId'
-				. ' FROM tiki_freetagged_objects'
-				. ' WHERE tagId IN($equivStr) AND objectId IN(SELECT objectId'
-				. ' FROM tiki_freetagged_objects WHERE tagId = ?)',
-				array($master)
-			);
+			$equivStr = implode( ',', $equiv );
+			$result = $this->query( 'SELECT objectId'
+														. ' FROM tiki_freetagged_objects'
+														. ' WHERE tagId IN($equivStr) AND objectId IN(SELECT objectId'
+														. ' FROM tiki_freetagged_objects WHERE tagId = ?)'
+														, array( $master )
+														);
 
-			while ( $row = $result->fetchRow() )
-				$this->query(
-					'DELETE FROM tiki_freetagged_objects'
-					. ' WHERE objectId = ? AND tagId IN(' . $equivStr . ')',
-					array( $row['objectId'] )
-				);
+			while( $row = $result->fetchRow() )
+				$this->query( 'DELETE FROM tiki_freetagged_objects'
+										. ' WHERE objectId = ? AND tagId IN(' . $equivStr . ')'
+										, array( $row['objectId'] ) 
+										);
 
-			foreach ( $equiv as $clone ) {
-				$this->query(
-					'UPDATE tiki_freetagged_objects SET tagId = ? WHERE tagId = ?',
-					array($master, $clone)
-				);
-				$this->query(
-					'DELETE FROM tiki_freetags WHERE tagId = ?',
-					array($clone)
-				);
+			foreach( $equiv as $clone )
+			{
+				$this->query( 'UPDATE tiki_freetagged_objects SET tagId = ? WHERE tagId = ?'
+										, array( $master, $clone )
+										);
+				$this->query( 'DELETE FROM tiki_freetags WHERE tagId = ?'
+										, array( $clone )
+										);
 			}
 		} else {
-			$this->query(
-				'UPDATE tiki_freetags SET lang = ? WHERE tagId = ?',
-				array($lang, $tagId)
-			);
+			$this->query( 'UPDATE tiki_freetags SET lang = ? WHERE tagId = ?'
+									, array( $lang, $tagId ) 
+									);
 		}
 	}
 
 	/**
-	 * translate_tag
-	 *
-	 * @param mixed $srcLang
-	 * @param mixed $srcTagId
-	 * @param mixed $dstLang
-	 * @param mixed $content
+	 * translate_tag 
+	 * 
+	 * @param mixed $srcLang 
+	 * @param mixed $srcTagId 
+	 * @param mixed $dstLang 
+	 * @param mixed $content 
 	 * @access public
 	 * @return void
 	 */
@@ -1527,50 +1455,48 @@ class FreetagLib extends ObjectLib
 
 		if ( empty( $content ) )
 			return;
-		if ( !$this->is_valid_language($srcLang)
-			|| !$this->is_valid_language($dstLang) )
+		if ( !$this->is_valid_language( $srcLang )
+			|| !$this->is_valid_language( $dstLang ) )
 			return;
 
-		$tagId = $this->find_or_create_tag($content, $dstLang, false);
+		$tagId = $this->find_or_create_tag( $content, $dstLang, false );
 
-		$multilinguallib->insertTranslation('freetag', $srcTagId, $srcLang, $tagId, $dstLang);
-		$this->query(
-			'UPDATE tiki_freetagged_objects'
-			. ' SET tagId = ?'
-			. ' WHERE tagId = ?'
-			. ' AND objectId IN ('
-			. ' SELECT objectId'
-			. ' FROM tiki_objects'
-			. ' INNER JOIN tiki_pages ON tiki_pages.pageName = tiki_objects.itemId'
-			. ' WHERE'
-			. ' tiki_objects.type = \'wiki page\''
-			. ' AND tiki_pages.lang = ?'
-			. ')',
-			array($tagId, $srcTagId, $dstLang)
-		);
+		$multilinguallib->insertTranslation( 'freetag', $srcTagId, $srcLang, $tagId, $dstLang );
+		$this->query( 'UPDATE tiki_freetagged_objects'
+									. ' SET tagId = ?'
+									. ' WHERE tagId = ?'
+									. ' AND objectId IN ('
+										. ' SELECT objectId'
+										. ' FROM tiki_objects'
+										. ' INNER JOIN tiki_pages ON tiki_pages.pageName = tiki_objects.itemId'
+										. ' WHERE'
+										. ' tiki_objects.type = \'wiki page\''
+										. ' AND tiki_pages.lang = ?'
+										. ')'
+										, array( $tagId, $srcTagId, $dstLang ) 
+										);
 	}
 
 	/**
-	 * clear_tag_language_from_id
-	 *
-	 * @param mixed $tagId
+	 * clear_tag_language_from_id 
+	 * 
+	 * @param mixed $tagId 
 	 * @access public
 	 * @return void
 	 */
 	function clear_tag_language_from_id( $tagId )
 	{
-		$this->query('UPDATE tiki_freetags SET lang = NULL WHERE tagId = ?', array($tagId));
-		$this->query(
-			'DELETE FROM tiki_translated_objects WHERE type = \'freetag\' AND objId = ?',
-			array($tagId)
-		);
+		$this->query( 'UPDATE tiki_freetags SET lang = NULL WHERE tagId = ?', array($tagId) );
+		$this->query( 'DELETE FROM tiki_translated_objects WHERE type = \'freetag\' AND objId = ?'
+								, array( $tagId ) 
+								);
 		$this->cleanup_tags();
 	}
 
 	/**
-	 * get_tags_containing
-	 *
-	 * @param mixed $tag
+	 * get_tags_containing 
+	 * 
+	 * @param mixed $tag 
 	 * @access public
 	 * @return
 	 */
@@ -1578,18 +1504,16 @@ class FreetagLib extends ObjectLib
 	{
 		$tag = $this->normalize_tag($tag);
 
-		if (empty($tag)) {
+		if ( empty( $tag ) ) {
 			return array();
 		}
 
-		$result = $this->fetchAll(
-			'SELECT `tag` FROM `tiki_freetags` WHERE `tag` LIKE ?',
-			array($tag . '%'),
-			10
-		);
+		$result = $this->fetchAll( 'SELECT `tag` FROM `tiki_freetags` WHERE `tag` LIKE ?'
+														, array( $tag . '%' ), 10 
+														);
 
 		$tags = array();
-		foreach ( $result as $row ) {
+		foreach( $result as $row ) {
 			$tags[] = $row['tag'];
 		}
 
@@ -1604,8 +1528,7 @@ class FreetagLib extends ObjectLib
 	 * @access public
 	 * @return array tags
 	 */
-	function dumb_parse_tags($tagString)
-	{
+	function dumb_parse_tags($tagString) {
 		if (!is_string($tagString) || empty($tagString)) {
 			return array();
 		}
@@ -1621,21 +1544,6 @@ class FreetagLib extends ObjectLib
 		$tags['cant'] = count($tags['data']);
 
 		return $tags;
-	}
-
-    /**
-     * @return Zend_Tag_Cloud
-     */
-    function get_cloud()
-	{
-		$query = "SELECT tag title, COUNT(*) weight, f.tagId FROM tiki_freetags f INNER JOIN tiki_freetagged_objects fo ON f.tagId = fo.tagId GROUP BY f.tagId";
-		$result = $this->fetchAll($query);
-
-		foreach ($result as &$row) {
-			$row['params'] = array('url' => $row['tagId']);
-		}
-
-		return new Zend_Tag_Cloud(array('tags' => $result));
 	}
 }
 

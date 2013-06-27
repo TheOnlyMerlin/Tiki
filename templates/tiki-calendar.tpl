@@ -2,7 +2,7 @@
 
 {title admpage="calendar"}
 	{if $displayedcals|@count eq 1}
-		{tr}Calendar:{/tr} {assign var=x value=$displayedcals[0]}{$infocals[$x].name}
+		{tr}Calendar{/tr}: {assign var=x value=$displayedcals[0]}{$infocals[$x].name|escape}
 	{else}
 		{tr}Calendar{/tr}
 	{/if}
@@ -24,25 +24,25 @@
 
 		{if $tiki_p_admin_calendar eq 'y' or $tiki_p_admin eq 'y'}
 			{if $displayedcals|@count eq 1}
-				{button href="tiki-admin_calendars.php?calendarId={$displayedcals[0]}" _text="{tr}Edit Calendar{/tr}"}
+				{button href="tiki-admin_calendars.php?calendarId=$displayedcals[0]" _text="{tr}Edit Calendar{/tr}"}
 			{/if}
-			{button href="tiki-admin_calendars.php?cookietab=1" _text="{tr}Admin Calendars{/tr}"}
+			{button href="tiki-admin_calendars.php" _text="{tr}Admin Calendars{/tr}"}
 		{/if}
 {* avoid Add Event being shown if no calendar is displayed *}
 		{if $tiki_p_add_events eq 'y'}
 			{button href="tiki-calendar_edit_item.php" _text="{tr}Add Event{/tr}"}
 		{/if}
 
-		{if $tiki_p_view_events eq 'y' and $prefs.calendar_export eq 'y'}
+		{if $tiki_p_admin_calendar eq 'y'}
 			{button href="#" _onclick="toggle('exportcal');return false;" _text="{tr}Export Calendars{/tr}" _title="{tr}Click to export calendars{/tr}"}
 		{/if}
 
 		{if $viewlist eq 'list'}
 			{capture name=href}?viewlist=table{if $smarty.request.todate}&amp;todate={$smarty.request.todate}{/if}{/capture}
-			{button href=$smarty.capture.href _text="{tr}Calendar View{/tr}"}
+			{button href="`$smarty.capture.href`" _text="{tr}Calendar View{/tr}"}
 		{else}
 			{capture name=href}?viewlist=list{if $smarty.request.todate}&amp;todate={$smarty.request.todate}{/if}{/capture}
-			{button href=$smarty.capture.href _text="{tr}List View{/tr}"}
+			{button href="`$smarty.capture.href`" _text="{tr}List View{/tr}"}
 		{/if}
 
 		{if count($listcals) >= 1}
@@ -84,11 +84,11 @@
 
 	<div class="categbar" align="right">
 		{if $user and $prefs.feature_user_watches eq 'y'}
-			{if isset($category_watched) and $category_watched eq 'y'}
-				{tr}Watched by categories:{/tr}
+			{if $category_watched eq 'y'}
+				{tr}Watched by categories{/tr}:
 				{section name=i loop=$watching_categories}
 					{assign var=thiswatchingcateg value=$watching_categories[i].categId}
-					{button href="tiki-browse_categories.php?parentId=$thiswatchingcateg" _text=$watching_categories[i].name|escape}
+					{button href="tiki-browse_categories.php?parentId=$thiswatchingcateg" _text=$watching_categories[i].name}
 					&nbsp;
 				{/section}
 			{/if}	
@@ -103,27 +103,27 @@
 			</div>
 			{foreach item=k from=$listcals}
 				<div class="calcheckbox">
-					<input type="checkbox" name="calIds[]" value="{$k|escape}" id="groupcal_{$k}" {if $thiscal.$k}checked="checked"{/if}>
+					<input type="checkbox" name="calIds[]" value="{$k|escape}" id="groupcal_{$k}" {if $thiscal.$k}checked="checked"{/if} />
 					<label for="groupcal_{$k}" class="calId{$k}">{$infocals.$k.name|escape} (id #{$k})</label>
 				</div>
 			{/foreach}
 			<div class="calinput">
-				<input type="hidden" name="todate" value="{$focusdate}">
-				<input type="submit" name="refresh" value="{tr}Refresh{/tr}">
+				<input type="hidden" name="todate" value="{$focusdate}"/>
+				<input type="submit" name="refresh" value="{tr}Refresh{/tr}"/>
 			</div>
 		</form>
 	{/if}
 
-	{if $tiki_p_view_events eq 'y'}
+	{if $tiki_p_admin_calendar eq 'y'}
 		<form id="exportcal" method="post" action="{$exportUrl}" name="f" style="display:none;">
-			<input type="hidden" name="export" value="y">
+			<input type="hidden" name="export" value="y"/>
 			<div class="caltitle">{tr}Export calendars{/tr}</div>
 			<div class="caltoggle">
 				{select_all checkbox_names='calendarIds[]' label="{tr}Check / Uncheck All{/tr}"}
 			</div>
 			{foreach item=k from=$listcals}
 				<div class="calcheckbox">
-					<input type="checkbox" name="calendarIds[]" value="{$k|escape}" id="groupcal_{$k}" {if $thiscal.$k}checked="checked"{/if}>
+					<input type="checkbox" name="calendarIds[]" value="{$k|escape}" id="groupcal_{$k}" {if $thiscal.$k}checked="checked"{/if} />
 					<label for="groupcal_{$k}" class="calId{$k}">{$infocals.$k.name|escape}</label>
 				</div>
 			{/foreach}
@@ -131,111 +131,21 @@
 				<a href="{$iCalAdvParamsUrl}">{tr}advanced parameters{/tr}</a>
 			</div>
 			<div class="calinput">
-				<input type="submit" name="ical" value="{tr}Export as iCal{/tr}">
-				<input type="submit" name="csv" value="{tr}Export as CSV{/tr}">
+				<input type="submit" name="ical" value="{tr}Export as iCal{/tr}"/>
+				<input type="submit" name="csv" value="{tr}Export as CSV{/tr}"/>
 			</div>
 		</form>
 	{/if}
 
-{if $prefs.calendar_fullcalendar neq 'y' or $viewlist eq 'list'}
-  {include file='tiki-calendar_nav.tpl'}
-  {if $viewlist eq 'list'}
-    {include file='tiki-calendar_listmode.tpl'}
-  {elseif $viewmode eq 'day'}
-    {include file='tiki-calendar_daymode.tpl'}
-  {elseif $viewmode eq 'week'}
-    {include file='tiki-calendar_weekmode.tpl'}
-  {else}
-    {include file='tiki-calendar_calmode.tpl'}
-  {/if}
-{else}
-{jq}
-$('#calendar').fullCalendar({
-      header: {
-        left: 'prev,next today',
-        center: 'title',
-        right: 'month,agendaWeek,agendaDay'
-      },
-			editable: true,
-			events: 'tiki-calendar_json.php',
-			year: {{$viewyear}},
-			month: {{$viewmonth}}-1,
-			day: {{$viewday}},
-			minTime: {{$minHourOfDay}},
-			maxTime: {{$maxHourOfDay}},
-			monthNames: [ "{tr}January{/tr}", "{tr}February{/tr}", "{tr}March{/tr}", "{tr}April{/tr}", "{tr}May{/tr}", "{tr}June{/tr}", "{tr}July{/tr}", "{tr}August{/tr}", "{tr}September{/tr}", "{tr}October{/tr}", "{tr}November{/tr}", "{tr}December{/tr}"], 
-			monthNamesShort: [ "{tr}Jan{/tr}", "{tr}Feb{/tr}", "{tr}Mar{/tr}", "{tr}Apr{/tr}", "{tr}May{/tr}", "{tr}Jun{/tr}", "{tr}Jul{/tr}", "{tr}Aug{/tr}", "{tr}Sep{/tr}", "{tr}Oct{/tr}", "{tr}Nov{/tr}", "{tr}Dec{/tr}"], 
-			dayNames: ["{tr}Sunday{/tr}", "{tr}Monday{/tr}", "{tr}Tuesday{/tr}", "{tr}Wednesday{/tr}", "{tr}Thursday{/tr}", "{tr}Friday{/tr}", "{tr}Saturday{/tr}"],
-			dayNamesShort: ["{tr}Sun{/tr}", "{tr}Mon{/tr}", "{tr}Tue{/tr}", "{tr}Wed{/tr}", "{tr}Thu{/tr}", "{tr}Fri{/tr}", "{tr}Sat{/tr}"],
-			buttonText: {
-										today:    "{tr}today{/tr}",
-										month:    "{tr}month{/tr}",
-										week:     "{tr}week{/tr}",
-										day:      "{tr}day{/tr}"
-			},
-			allDayText: "{tr}all-day{/tr}",
-			firstDay: {{$firstDayofWeek}},
-			slotMinutes: {{$prefs.calendar_timespan}},
-			defaultView: {{if $prefs.calendar_view_mode === 'week'}}'agendaWeek'{{else if $prefs.calendar_view_mode === 'day'}}'agendaDay'{{else}}'month'{{/if}},
-			eventAfterRender : function( event, element, view ) {
-				element.attr('title',event.title +'|'+event.description);
-				element.cluetip({arrows: true, splitTitle: '|', clickThrough: true});
-			},
-			eventClick: function(event) {
-        if (event.url && event.editable) {
-			$.ajax({
-					dataType: 'html',
-					url: event.url,
-					success: function(data){
-						$( "#calendar_dialog" ).html(data);
-						$( "#calendar_dialog h1, #calendar_dialog .navbar" ).remove();
-						$( "#calendar_dialog" ).dialog({ modal: true, title: event.title, width: 'auto', height: 'auto', position: 'center' });
-					}
-				});
-//						$('#calendar_dialog').load(event.url + ' .wikitext');
-//						$( "#calendar_dialog" ).dialog({ modal: true, title: event.title, width: 'auto', height: 'auto', position: 'center' });
-        return false;
-				}
-			},
-			dayClick: function(date, allDay, jsEvent, view) {
-			$.ajax({
-					dataType: 'html',
-					url: 'tiki-calendar_edit_item.php?fullcalendar=y&todate=' + date.getTime()/1000,
-					success: function(data){
-						$( "#calendar_dialog" ).html(data);
-						$( "#calendar_dialog h1, #calendar_dialog .navbar" ).remove();
-						$( "#calendar_dialog" ).dialog({ modal: true, title: '{tr}Add Event{/tr}', width: 'auto', height: 'auto', position: 'center' });
-					}
-				});
-        return false;
-    	},
-			eventResize: function(event,dayDelta,minuteDelta,revertFunc) {
-				$.post($.service('calendar', 'resize'), {
-					calitemId: event.id,
-					delta: (dayDelta*86400+minuteDelta*60)
-				});
-			},
-			eventDrop: function(event,dayDelta,minuteDelta,allDay,revertFunc) {
-				$.post($.service('calendar', 'move'), {
-					calitemId: event.id,
-					delta: (dayDelta*86400+minuteDelta*60)
-				});
-			}
-});
-{/jq}
-
-<style type='text/css'>
-  #calendar {
-		width: 90%;
-		margin: 0 auto;
-	}
-	/* Fix pb with DatePicker */
-	.ui-datepicker {
-		z-index:9999 !important;
-	}
-</style>
-<div id='calendar'></div>
-<div id='calendar_dialog'></div>
-{/if}
+	{include file='tiki-calendar_nav.tpl'}
+	{if $viewlist eq 'list'}
+		{include file='tiki-calendar_listmode.tpl''}
+	{elseif $viewmode eq 'day'}
+		{include file='tiki-calendar_daymode.tpl'}
+	{elseif $viewmode eq 'week'}
+		{include file='tiki-calendar_weekmode.tpl'}
+	{else}
+		{include file='tiki-calendar_calmode.tpl'}
+	{/if}
 <p>&nbsp;</p>
 </div>

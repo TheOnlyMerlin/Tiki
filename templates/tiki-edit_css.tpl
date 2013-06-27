@@ -9,20 +9,15 @@
 <form method="post" action="tiki-edit_css.php">
 	{tr}Style Sheet{/tr} : 
 {if $action eq "edit"}
-	<input type="text" name="editstyle" value="{$editstyle}">
-	<input type="submit" name="save" value="{tr}Save{/tr}">
-	<input type="submit" name="save2" value="{tr}Save{/tr} &amp; {tr}Display{/tr}">
+	<input type="text" name="editstyle" value="{$editstyle}" />
+	<input type="submit" name="save" value="{tr}Save{/tr}" />
+	<input type="submit" name="save2" value="{tr}Save{/tr} &amp; {tr}Display{/tr}" />
 	{button  href="tiki-edit_css.php?editstyle=$editstyle" _text="{tr}Cancel{/tr}"}
 	{if $tikidomain}
 		{tr}The file will be saved in:{/tr} styles/{$tikidomain}
 	{/if}
-	{if !empty($editstyle) && !$writable}
-		{remarksbox type="warning" title="{tr}Warning{/tr}"}
-				{tr}Cannot write the file{/tr}
-		{/remarksbox}
-	{/if}
 	<div style="padding:4px;border-bottom:1px solid #c3b3a3;">
-		<textarea data-syntax="css" data-codemirror="true" data-line-numbers="true" name="data" rows="42" cols="80" wrap="virtual" style="padding: 7px 0 7px 7px;">{$data|escape}</textarea>
+		<textarea name="data" rows="42" cols="80" wrap="virtual" style="padding:7px;padding-right:0;">{$data|escape}</textarea>
 	</div>
 {else}
 	{assign var=shortStyle value=$prefs.style|replace:'.css':''}
@@ -32,12 +27,12 @@
 		<option value="{$list[t]|escape}"{if $list[t] eq $editstyle or (empty($editstyle) and $list[t] eq $shortStyle)} selected="selected"{/if}>{$list[t]|escape}</option>
 	{/section}
 	</select>
-	<input type="submit" name="try" value="{tr}Try{/tr}">
-	<input type="submit" name="display" value="{tr}Display{/tr}">
-	<input type="submit" name="edit" value="{tr}Edit{/tr}">
+	<input type="submit" name="try" value="{tr}Try{/tr}" />
+	<input type="submit" name="display" value="{tr}Display{/tr}" />
+	<input type="submit" name="edit" value="{tr}Edit{/tr}" />
 
 	{section name=l loop=$css}
-	<div style="padding:4px;text-align:left">
+	<div style="padding:4px;">
 		<div style="float:right;">{$css[l].id|escape}</div>
 		<div class="comment"><pre><em>{$css[l].comment|escape}</em></pre></div>
 		{section name=i loop=$css[l].items}
@@ -53,7 +48,7 @@
 		</div>
 		{/foreach}
 	</div>
-	<hr>
+	<hr />
 	{/section}
 {/if}
 

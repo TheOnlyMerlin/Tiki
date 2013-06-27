@@ -8,7 +8,7 @@
 					<table class="admin">
 						<tr class="odd">
 							<td width="50">
-								<img src="img/icons/gradient.gif" width="48" height="48" alt="{tr}No avatar{/tr}">
+								<img src="img/icons/gradient.gif" width="48" height="48" alt="{tr}No avatar{/tr}" />
 							</td>
 							<td>
 				{/if}
@@ -24,14 +24,13 @@
 			</li>
 		{/if}
 		{cycle values="even,odd" print=false}
-		{capture assign='noAvatar'}<img src="img/icons/gradient.gif" width="48" height="48" alt="{tr}No avatar{/tr}">{/capture}
 		{foreach from=$modLastVisitors key=key item=item}
 			<li>
 				{if $showavatars eq 'y'}
 					<table class="admin">
 						<tr class="{cycle advance=true}">
 							<td width="50">
-								{$item.user|avatarize|default:$noAvatar}
+								{$item.user|avatarize|default:'<img src="img/icons/gradient.gif" width="48" height="48" alt="{tr}No avatar{/tr}" />'}
 							</td>
 						<td>
 				{/if}

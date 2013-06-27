@@ -1,26 +1,21 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
 
-/**
- * @return array
- */
-function module_articles_info()
-{
+function module_articles_info() {
 	return array(
 		'name' => tra('Articles'),
 		'description' => tra('Lists the specified number of published articles in the specified order.'),
-		'prefs' => array('feature_articles'),
-		'documentation' => 'Module articles',
+		'prefs' => array( 'feature_articles' ),
 		'params' => array(
 			'showpubl' => array(
 				'name' => tra('Show publication time'),
@@ -53,7 +48,7 @@ function module_articles_info()
 			),
 			'topicId' => array(
 				'name' => tra('Topic filter (by identifiers)'),
-				'description' => tra('If set to a list of article topic identifiers separated by plus signs, only lists the articles in the specified article topics. If the string is preceded by an exclamation mark ("!"), the effect is reversed, i.e. articles in the specified article topics are not listed.') . " " . tra('Example values: 13, !13, 1+3, !1+5+7.') . " " . tra("If set to 0, will take the topicId of the article if in an article."). " " . tr('Not set by default.')
+				'description' => tra('If set to a list of article topic identifiers separated by plus signs, only lists the articles in the specified article topics. If the string is preceded by an exclamation mark ("!"), the effect is reversed, i.e. articles in the specified article topics are not listed.') . " " . tra('Example values: 13, !13, 1+3, !1+5+7.') . " " . tr('Not set by default.')
 			),
 			'type' => array(
 				'name' => tra('Types filter'),
@@ -87,12 +82,7 @@ function module_articles_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
-function module_articles($mod_reference, $module_params)
-{
+function module_articles( $mod_reference, $module_params ) {
 	global $smarty, $tikilib, $user;
 	global $artlib; require_once 'lib/articles/artlib.php';
 	
@@ -105,16 +95,13 @@ function module_articles($mod_reference, $module_params)
 		'start' => null,
 		'sort' => null
 	);
-	if (isset($module_params['topicId']) && $module_params['topicId'] == 0 && ($object = current_object()) && $object['type'] == 'article') {
-		$topicId = $smarty->getTemplateVars('topicId');
-	}
 	
-	foreach ($urlParams as $p => $v) {
-		if (isset($$p)) continue;
+	foreach ( $urlParams as $p => $v ) {
+		if ( isset($$p) ) continue;
 		$$p = isset($module_params[$p]) ? $module_params[$p] : '';
 	}
-	if ($start == '') $start = 0;
-	if ($sort == '') $sort = 'publishDate_desc';
+	if ( $start == '' ) $start = 0;
+	if ( $sort == '' ) $sort = 'publishDate_desc';
 
 	$min_rating = isset($_REQUEST['min_rating']) ? $_REQUEST['min_rating'] : 0;
 	$max_rating = isset($_REQUEST['max_rating']) ? $_REQUEST['max_rating'] : 10;

@@ -2,7 +2,7 @@
 {title admpage="general"}{tr}Log SQL{/tr}{/title}
 
 {if $prefs.log_sql ne 'y'}
-	{remarksbox type="warning" title="{tr}Notice{/tr}"}{tr}This feature is disabled{/tr}<br>{tr}You will not see the latest queries.{/tr}{/remarksbox}
+	{remarksbox type="warning" title="{tr}Notice{/tr}"}{tr}This feature is disabled{/tr}<br />{tr}You will not see the latest queries.{/tr}{/remarksbox}
 {/if}
 
 <div class="navbar">
@@ -21,11 +21,11 @@
 	<tr>
 	{foreach from=$logs item=log}
 		<tr>
-			<td class="text">{$log.created|escape}</td>
-			<td class="text">{$log.sql1|escape}</td>
-			<td class="text">{$log.params|escape}</td>
-			<td class="text">{$log.tracer|escape}</td>
-			<td class="date">{$log.timer|escape}</td>
+			<td>{$log.created|escape}</td>
+			<td>{$log.sql1|escape}</td>
+			<td>{$log.params|escape}</td>
+			<td>{$log.tracer|escape}</td>
+			<td>{$log.timer|escape}</td>
 		</tr>
 	{/foreach}
 </table>

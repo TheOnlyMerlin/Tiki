@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -22,73 +22,60 @@ class Category_Manipulator
 	private $overrides = array();
 	private $overrideAll = false;
 
-	function __construct($objectType, $objectId)
-	{
+	function __construct( $objectType, $objectId ) {
 		$this->objectType = $objectType;
 		$this->objectId = $objectId;
 	}
 
-	function addRequiredSet(array $categories, $default, $filter=null, $type=null)
-	{
-		$categories = array_unique($categories);
+	function addRequiredSet( array $categories, $default ) {
 		$this->constraints['required'][] = array(
 			'set' => $categories,
 			'default' => $default,
-			'filter' => $filter,
-			'type' => $type
 		);
 	}
 
-	function overrideChecks()
-	{
+	function overrideChecks() {
 		$this->overrideAll = true;
 	}
 
-	function setCurrentCategories(array $categories)
-	{
+	function setCurrentCategories( array $categories ) {
 		$this->current = $categories;
 	}
 
-	function setManagedCategories(array $categories)
-	{
+	function setManagedCategories( array $categories ) {
 		$this->managed = $categories;
 	}
 
-	function setUnmanagedCategories(array $categories)
-	{
+	function setUnmanagedCategories( array $categories ) {
 		$this->unmanaged = $categories;
 	}
 
-	function setNewCategories(array $categories)
-	{
+	function setNewCategories( array $categories ) {
 		$this->new = $categories;
 	}
 
-	function getAddedCategories()
-	{
+	function getAddedCategories() {
 		$this->prepare();
 
-		$attempt = array_diff($this->new, $this->current);
-		return $this->filter($attempt, 'add_object');
+		$attempt = array_diff( $this->new, $this->current );
+		return $this->filter( $attempt, 'add_object' );
 	}
 
-	function getRemovedCategories()
-	{
+	function getRemovedCategories() {
 		$this->prepare();
 
-		$attempt = array_diff($this->current, $this->new);
-		return $this->filter($attempt, 'remove_object');
+		$attempt = array_diff( $this->current, $this->new );
+		return $this->filter( $attempt, 'remove_object' );
 	}
 
-	private function filter( $categories, $permission )
-	{
+	private function filter( $categories, $permission ) {
 		$canModify = $this->canModifyObject();
 
 		$out = array();
-		foreach ($categories as $categ) {
-			$perms = Perms::get(array('type' => 'category', 'object' => $categ));
+		foreach( $categories as $categ ) {
+			$perms = Perms::get( array( 'type' => 'category', 'object' => $categ ) );
 
-			if ($this->overrideAll || ($canModify && $perms->$permission) || in_array($categ, $this->overrides)) {
+			if( $this->overrideAll || ( $canModify && $perms->$permission ) || in_array( $categ, $this->overrides ) ) {
 				$out[] = $categ;
 			}
 		}
@@ -96,32 +83,30 @@ class Category_Manipulator
 		return $out;
 	}
 
-	private function canModifyObject()
-	{
-		$objectperms = Perms::get(array('type' => $this->objectType, 'object' => $this->objectId));
+	private function canModifyObject() {
+		$objectperms = Perms::get( array( 'type' => $this->objectType, 'object' => $this->objectId ) );
 
 		return $objectperms->modify_object_categories;
 	}
 
-	private function prepare()
-	{
-		if ($this->prepared) {
+	private function prepare() {
+		if( $this->prepared ) {
 			return;
 		}
 
 		$categories = $this->managed;
-		Perms::bulk(array('type' => 'category'), 'object', $categories);
+		Perms::bulk( array( 'type' => 'category' ), 'object', $categories );
 
-		if (count($this->managed)) {
-			$base = array_diff($this->current, $this->managed);
-			$managed = array_intersect($this->new, $this->managed);
-			$this->new = array_merge($base, $managed);
+		if( count( $this->managed ) ) {
+			$base = array_diff( $this->current, $this->managed );
+			$managed = array_intersect( $this->new, $this->managed );
+			$this->new = array_merge( $base, $managed );
 		}
 		
-		if (count($this->unmanaged)) {
-			$base = array_intersect($this->current, $this->unmanaged);
-			$managed = array_diff($this->new, $this->unmanaged);
-			$this->new = array_merge($base, $managed);
+		if( count( $this->unmanaged ) ) {
+			$base = array_intersect( $this->current, $this->unmanaged );
+			$managed = array_diff( $this->new, $this->unmanaged );
+			$this->new = array_merge( $base, $managed );
 		}
 
 		$this->applyConstraints();
@@ -129,29 +114,14 @@ class Category_Manipulator
 		$this->prepared = true;
 	}
 
-	private function applyConstraints()
-	{
-		foreach ($this->constraints['required'] as $constraint) {
+	private function applyConstraints() {
+		foreach( $this->constraints['required'] as $constraint ) {
 			$set = $constraint['set'];
 			$default = $constraint['default'];
-			$filter = $constraint['filter'];
-			$type = $constraint['type'];
 
-			$interim = array_intersect($this->new, $set);
+			$interim = array_intersect( $this->new, $set );
 
-			if (!empty($type) && $type != $this->objectType) {
-				return;
-			}
-				
-			if (!empty($filter)) {
-				$objectlib = TikiLib::lib('object');
-				$info = $objectlib->get_info($this->objectType, $this->objectId);
-				if (!preg_match($filter, $info['title'])) {
-					return;
-				}
-			}
-
-			if (count($interim) == 0 && ! in_array($default, $this->new)) {
+			if( count( $interim ) == 0 && ! in_array( $default, $this->new ) ) {
 				$this->new[] = $default;
 				$this->overrides[] = $default;
 			}

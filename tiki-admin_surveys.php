@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -24,7 +21,24 @@ if (!isset($_REQUEST["surveyId"])) {
 	$_REQUEST["surveyId"] = 0;
 }
 $smarty->assign('surveyId', $_REQUEST["surveyId"]);
-$tikilib->get_perm_object($_REQUEST['surveyId'], 'survey');
+$smarty->assign('individual', 'n');
+//begin checking for perms
+if ($userlib->object_has_one_permission($_REQUEST["surveyId"], 'survey')) {
+	$smarty->assign('individual', 'y');
+	if ($tiki_p_admin != 'y') {
+		$perms = $userlib->get_permissions(0, -1, 'permName_desc', '', 'surveys');
+		foreach($perms["data"] as $perm) {
+			$permName = $perm["permName"];
+			if ($userlib->object_has_permission($user, $_REQUEST["surveyId"], 'survey', $permName)) {
+				$$permName = 'y';
+				$smarty->assign("$permName", 'y');
+			} else {
+				$$permName = 'n';
+				$smarty->assign("$permName", 'n');
+			}
+		}
+	}
+}
 $access->check_permission('tiki_p_admin_surveys');
 if (isset($_REQUEST["save"])) {
 	check_ticket('admin-surveys');

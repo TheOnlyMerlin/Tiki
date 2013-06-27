@@ -1,7 +1,7 @@
 /* $Id$
-	Twist for Tiki Wiki CMS Groupware 1.9 was created by Gary Griffin and
+	Twist for TikiWiki CMS/Broupware 1.9 was created by Gary Griffin and
 	contributed for downloading at http://themes.tiki.org.
-	The Twist theme was updated and
+	The Twist theme has been updated and
 	committed to the Tiki Subversion repository by Gary Cunningham-Lee (chibaguy).
 */
 
@@ -13,18 +13,14 @@
 /***** XHTML Elements (body tag here,
 			others follow Layout) *****/
 body {
-	background: #0f1644 url(twist/background.gif);
-	font: 76% Verdana, Geneva, Arial, Helvetica, sans-serif;
-	line-height: 1.6;
-	color: black;
-}
+	background: #0F1644 url(twist/background.gif);
+	font: 76%/1.4em black Verdana, Geneva, Arial, Helvetica, sans-serif}
 
 /* next two: fixed-width: 800px */
-.fixed_width #fixedwidth {
-	margin-top: 0;
+body.fixed_width #fixedwidth {
 	margin-bottom: 20px;
-	width: 800px;
-	background: #0F1644 url(twist/background.gif);
+	width: 800px !important;
+	background: #fff;
 }
 
 body.cke_show_borders {
@@ -36,14 +32,14 @@ body.cke_show_borders {
 	margin-top: 0;
 }
 
-.middle_outer {
-	background: #fff;
-}
-
 *:first-child+html #c1c2 {
 	margin-left: 0;
 	padding-left: 0}
 
+#middle {
+	
+}
+	
 #c1c2 {
 	text-align: left;
 	background: #fff;
@@ -77,6 +73,10 @@ body.cke_show_borders {
 	width: 190px;
 }
 
+#c1c2 #col2 .content {
+	/*margin: 0;
+	padding: 0 4px 4px*/}
+
 #col3 {
 	background: #efefef;
 	padding-top: 20px;
@@ -93,7 +93,7 @@ body.cke_show_borders {
 	margin-top: 0;
 	padding-bottom: 8px;
 	padding-top: 7px}
-	
+
 /***** XHTML Elements (other than body tag) ******/
 a,
 a:visited {text-decoration: none}
@@ -170,24 +170,17 @@ input[type="submit"],
 	font-size: 10px;
 	font-weight: normal;
 	color: #fff;
-	background: #1b5880 url(twist/header_bg.jpg) -30px -40px no-repeat;
-	padding: 2px 4px;
-}
+	background: #1b5880 url(twist/header.jpg) -30px -40px no-repeat}
 
 .button a:hover,
 button:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover,
 .button input:hover,
-.submitbutton:hover,
-.calbuttonoff:hover,
-.calbuttonon:hover {
-	background: #619cc4 url(twist/header_bg.jpg) -400px -40px no-repeat;
+.submitbutton:hover {
+	background: #619cc4 url(twist/header.jpg) -400px -40px no-repeat;
 	color: #fff;
-	text-decoration: none;
-	padding: 2px 4px;
-	font-size: 10px;
-}
+	text-decoration: none}
 
 .button a:active,
 button:active,
@@ -197,101 +190,90 @@ input[type="submit"]:active,
 .submitbutton:active {border-color: #223845 #41cbe7 #41cbe7 #223845}
 
 input[type=checkbox] {border: 0}
-
-/* Needed for Opera (11) 
-input[type="reset"],
-input[type="submit"],
-input[type="reset"]:hover,
-input[type="submit"]:hover,
-button[type="submit"],
-button[type="submit"]:hover {
-	padding: 0 3px;
-}
-
-.button {
-    margin: 2px;
-}*/
+form.admin input[name="features"] {margin-bottom: 3px !important}
+select[name="theme"] {width: 125px}
 
 /***** Site Header & Identity *****/
-.fixed_width .header_fixedwidth {
-	width: auto !important;
-}
-
-.header_fixedwidth {
-	background: url(twist/header_bg.jpg) no-repeat 100% 100%;
+#header {
+	background: url(twist/header.jpg) no-repeat 100% 0;
 	color: #fff;
-	padding-right: 30px;
+	margin: 0;
+	padding: 0}
+	
+#header a,
+#header a:visited {color: #fff}
+
+#header-top {
+	height: 82px;
+	margin: 0;
+	padding: 0;
 }
 	
-#header {
-	background: url(twist/header_bg.jpg) no-repeat 0 100%;
-	text-align: left;
-	padding-left: 22px;
-}
-
-.header a,
-.header a:visited {color: #fff}
-
-#top_modules {
-	min-height: 82px;
+#siteheader  {
+	background: url(twist/header.jpg) no-repeat 0 0;
 	margin: 0;
-	height: 100%;
+	padding-left: 30px;
+	margin-right: 22px;
 }
 
-#top_modules .box-logo {
-	height: 100%;
-}
+#sioptionscentered {margin: 1em}
+#sitelogo {padding: 0}
 
-#top_modules #sitelogo img {
-	margin: 10px;
-}
+#sitead {
+	margin: 5px;
+	clear: 0;
+	padding: 1em}
 
-#top_modules #sitetitles {
-	margin: 4% 0 2% 10px;
-}
+#sitead.floatright {padding-right: 100px}
+#sitead.floatleft {padding-left: 100px}
 
-#top_modules .module.secondary_site_menu {
-	position: absolute;
-	bottom: 4px;
-	right: 10px;
-}
-
-#top_modules .box-login_box {
+#siteloginbar {
 	color: #fff;
-	position: absolute;
-	top: 0;
-	right: 10px;
+	bottom: auto;
+	position: static;
+	margin-right: 10px;
 }
 
-.siteloginbar_popup .tabmark {
-	float: left;
-	background: none;
-	border: 1px solid #3a759d;
-}
-
-.siteloginbar_popup .tabmark a,
-.siteloginbar_popup .tabmark a:hover,
-.siteloginbar_popup label {
-	color: white;
-}
-
-.siteloginbar_popup .tabmark a:hover {
-	background: none;
-}
-
-.siteloginbar a,
-.siteloginbar a:visited {
+#siteloginbar a,
+#siteloginbar a:visited {
 	text-decoration: none;
 	color: #fff;
 }
 
-.siteloginbar_popup .cssmenu_horiz ul li {
-	background: url(twist/background.gif) !important;
+#siteloginbar input,
+#sitesearchbar input,
+#sitesearchbar select {
+	background: #185981;
+	color: #fff;
+	border: 1px solid #083c6e;
 }
 
-.siteloginbar_poppedup {
-	margin-top: -10px;
+#siteloginbar_popup li {
+	background: #eee;
 }
+
+#siteloginbar_popup .cssmenu_horiz li ul {
+	margin-top: -6px;
+}
+
+#siteloginbar_popup ul ul li a,
+#siteloginbar_popup ul ul li a:visited {
+	color: #990066;
+}
+
+#siteloginbar_popup li.login_link,
+#siteloginbar_popup li.login_link a:hover {
+	background: none;
+}
+
+#sitesearchbar select option {
+	color: #fff;
+}
+
+#sitetitles {
+	position: absolute;
+	left: 0;
+	bottom: 0}
 
 #sitetitle {
 	font-size: 2.4em;
@@ -305,24 +287,18 @@ button[type="submit"]:hover {
 	color: #fff}
 
 #tiki-top {
-	position: absolute;
-	bottom: 0;
-	left: 300px;
+	padding-right: 0;
+	padding-left: 0;
+	padding-top: 0;
 	font-weight: bold;
 	font-size: 11px;
 	color: #fff;
 	height: 26px}
 
 #tiki-top a,
-#tiki-top a:visited,
-.secondary_site_menu .cssmenu_horiz ul li a,
-.secondary_site_menu .cssmenu_horiz ul li a:visited {
+#tiki-top a:visited {
 	color: black !important;
 	text-decoration: none !important}
-	
-#secondary_site_menu .cssmenu_horiz > li:hover {
-	background: none;
-}
 	
 #tiki-top .findtable {
 	margin-bottom: 0;
@@ -333,20 +309,6 @@ button[type="submit"]:hover {
 	max-width: 360px;
 	color: #fff;
 	margin-right: 10px;
-}
-
-.middle {
-	background: url(twist/topbar_bg.jpg) no-repeat 100% 0;	
-}
-
-#topbar_modules {
-	background: url(twist/topbar_bg.jpg) no-repeat;
-	min-height: 26px;
-	padding-left: 22px;
-}
-
-#topbar_modules .box-menu {
-	float: right;
 }
 
 #topbar_custom_code {
@@ -387,8 +349,8 @@ button[type="submit"]:hover {
 #tiki-top .cssmenu_horiz {
 	text-align: left;
 	color: black;
-	margin-top: 0;
-/*	margin-left: 305px;*/
+	margin-top: 10px;
+	margin-left: 305px;
 	background: #efefef;
 	white-space: nowrap}
 	
@@ -398,10 +360,6 @@ button[type="submit"]:hover {
 }
 	
 /* left column width */
-#col2 .box-data .cssmenu_vert ul {
-	padding-left: 0;
-}
-
 #col2 .cssmenu_vert,
 #col2 .cssmenu_vert li {
 	width: 146px;
@@ -432,6 +390,78 @@ button[type="submit"]:hover {
 #col2 a .sf-sub-indicator {
 	top: .3em;
 }
+
+/** PHP Layers Menus **/
+.horbar table {
+	color: black;
+	margin-top: 10px;
+	margin-left: 305px;
+	background: #efefef}
+
+.horbaritem a {
+	border-right: #ccc 1px solid;
+	padding-right: 2px;
+	padding-left: 2px;
+	font-weight: normal;
+	font-size: .9em;
+	color: #fff;
+	background: #efefef;
+	text-decoration: none}
+
+.horbaritem a:visited {color: #fff}
+
+.horbaritem a:hover {
+	color: #fff;
+	background: #ddd}
+
+.mdkverbar {margin: 0}
+
+.mdksubframe {
+	border: #fdfefd 2px outset;
+	background: #efefef}
+
+.mdkitem {
+	font-size: .9em;
+	color: #800000}
+
+.mdkitem a {
+	text-decoration: none;
+	font-weight: bold}
+
+.mdkitem a:link,
+.mdkitem a:visited {color: #000}
+
+.mdkitem a:hover {
+	color: #000;
+	background: #fefefe}
+
+.mdkitem a:active {color: #990000}
+
+.phplmnormal,
+a.phplmnormal:hover,
+a.phplm:link,
+a.phplm:visited,
+a.phplm:hover,
+a.phplm:active {
+	font: 100% Verdana, Tahoma, Arial, sans-serif;
+	color: #303030;
+	text-decoration: none;
+	font-weight: bold}
+
+a.phplm:visited {color: #726461}
+a.phplm:hover {color: #808080}
+a.phplm:active {color: #ff0000}
+
+a.phplmselected:link,
+a.phplmselected:visited,
+a.phplmselected:hover,
+a.phplmselected:active {
+	font: 100% Verdana, Tahoma, Arial, sans-serif;
+	color: black;
+	text-decoration: underline;
+	font-weight: bold}
+
+a.phplmselected:hover {color: #808080}
 
 /** Links in other menus **/
 .separator {
@@ -575,11 +605,7 @@ ol.module {
 	margin-left: 0}
 	
 *:first-child+html .box-data ul {margin-left: 2em}
-*:first-child+html .box-data ol {
-	margin-left: 2.5em;
-	padding-right: 0;
-	margin-right: -2em;
-}
+*:first-child+html .box-data ol {margin-left: 2.5em; padding-right: 0; margin-right: -2em}
 
 .halffloat .box,
 .wikitext .halffloat .box {
@@ -636,18 +662,17 @@ ol.module {
 
 .rbox-data {padding: 2px}
 
-.rbox-title {
+.rbox-title,
+.warning .rbox-title {
 	font-size: 1em;
 	padding: 0 10px;
-	border-bottom: none !important;
-	margin-bottom: -.5em;
-}
+	margin: 0;
+	font-weight: bold}
 
 .rbox-data,
-.warning .rbox-data,
-.warning .rbox-title {
+.warning .rbox-data {
 	background: #eeee99;
-	border: 1px solid #ddddcc}
+	border: 1px solid #DDDDCC}
 	
 .note .rbox-title {background: #CCCCDD}
 
@@ -658,14 +683,13 @@ ol.module {
 .comment .rbox-title,
 .tip .rbox-title {
 	background: #ECECEF;
-	border: 1px solid #CCCCDD;
-}
+	border: 1px solid #CCCCDD}
 
 .comment .rbox-data,
 .tip .rbox-data {
 	background: #ECEFEC;
 	border: 1px solid #CCDDCC}
-	
+
 .simplebox {
 	border: 1px solid #999;
 	padding: 2px;
@@ -690,58 +714,38 @@ ol.module {
 .wikitable td,
 .normal td,
 td.odd,
-td.even,
-table.normal tr:nth-child(2n+1) td,
-table.normal tr:nth-child(2n) td,
-.tablesorter tr.odd td,
-.tablesorter tr.even td {
+td.even {
 	margin: 0;
 	padding: 0.2em;
 	vertical-align: top;
 	border: solid 1px #909090;
 	border-collapse: collapse}
 
-tr.odd,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+tr.odd {
 	color: black;
 	background: #efefef;
 	text-align: left}
 
-tr.odd:hover,
-table.normal tr:nth-child(2n+1):hover,
-.tablesorter tr.odd td:hover {
-	background: #fff7e6;
-}
+tr.odd:hover {background: #fff7e6}
 
 tr.odddark {
 	padding: 2px;
 	border: 1px solid #fff}
 
-tr.even,
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+tr.even {
 	color: black;
 	background: #fff;
 	text-align: left}
 
-tr.even:hover,
-table.normal tr:nth-child(2n):hover,
-.tablesorter tr.even td:hover {
-	background: #fff7e6
-}
+tr.even:hover {background: #fff7e6}
 
-td.odd,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+td.odd {
 	vertical-align: middle;
 	color: black;
 	background: #efefef;
 	text-align: left}
 
-td.even,
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+td.even {
 	vertical-align: middle;
 	color: black;
 	background: #fff;
@@ -806,13 +810,13 @@ a.sortheader:visited {
 	text-decoration: underline;
 	font-weight: bold}
 	
-th a,
-td.heading a,
-tr.diffheader a,
+
 .heading a.link,
 .heading a.link:visited {
 	color: #fff;
 	text-decoration: underline}
+
+.form {padding: 0.2em}
 
 .findtable {
 	margin-bottom: 20px;
@@ -837,9 +841,7 @@ tr.diffheader a,
 
 .tabmark a:hover {
 	color: black;
-	background: #f0f9ff;
-	text-decoration: none;
-}
+	background: #f0f9ff}
 
 .tabactive {border: solid 1px #225566 !important}
 .tabactive a {background: #eee}
@@ -851,8 +853,8 @@ tr.diffheader a,
 }
 
 .statuson {
-	background: #abcdef;
-	border: 1px inset #abcdef;
+	background: #abcdef;,
+	border: 1px inset #abcdef
 }
 
 /***** Wiki *****/
@@ -937,7 +939,7 @@ a.forumspagetitle:hover {
 	margin: 4px;
 	border: 1px dashed #ADACAF;
 	overflow: auto;
-}
+   width: 500px}
 
 .codecaption {
 	font-size: 90%;
@@ -998,8 +1000,7 @@ a.forumspagetitle:hover {
 	text-align: center;
 	padding: 3px;
 	line-height: 150%;
-	text-transform: none;
-}
+	text-transform: 0}
 
 .postinfo a {
 	color: #9CF;
@@ -1137,6 +1138,8 @@ body.tiki_blogs .postbody {
 	margin: 0px;
 	border-spacing: 0px}
 
+.categpath {}
+
 .subcats {
 	padding: 20px 0;
 	width: 100%;
@@ -1204,6 +1207,88 @@ td.dirfooter {font-size: .95em}
 /***** TikiSheets *****/
 
 /***** Calendar *****/
+.Cal0,
+.Cal1,
+.Cal2 {font-size: 90%}
+
+	
+.Calart,
+.Calblog,
+.Calchart,
+.Caldir,
+.Caleph,
+.Calfaq,
+.Calfgal,
+.Calforum,
+.Calgal,
+.Calnl,
+.Calquiz,
+.Calsurv,
+.Caltrack,
+.Calwiki {font-size: 90%}
+
+.Calart,
+.Calart a,
+.Calart a:visited {color: #FA8072}
+
+.Calblog,
+.Calblog a,
+.Calblog a:visited {color: #DA70D6}
+
+.Calchart,
+.Calchart a,
+.Calchart a:visited {color: #304F30}
+	
+.Caldir,
+.Caldir a,
+.Caldir a:visited {color: #800080}
+
+.Calfaq,
+.Calfaq a,
+.Calfaq a:visited {color: #822222}
+
+.Calfgal,
+.Calfgal a,
+.Calfgal a:visited {}
+
+.Calforum,
+.Calforum a,
+.Calforum a:visited {color: #808000}
+
+.Calgal,
+.Calgal a,
+.Calgal a:visited {color: #8B4513}
+
+.Calnl,
+.Calnl a,
+.Calnl a:visited {color: #708090}
+
+.Calquiz,
+.Calquiz a,
+.Calquiz a:visited {color: #5F9EA0}
+
+.Calsurv,
+.Calsurv a,
+.Calsurv a:visited {color: #DAA520}
+
+Caltrack,
+Caltrack a,
+Caltrack a:visited {color: #00BD02}
+
+.Calweb {font-size: .9em}
+
+.Calwiki,
+.Calwiki a,
+.Calwiki a:visited {color: #2C4B80}
+
+.calcontent a.linkmenu,
+.calcontent a.linkmenu:hover {
+	background: 0;
+	padding: 0}
+
+.calfocus {font-size: 90%}
+.calfocuson {font-size: 100%}
+
 .calprio1 a,
 .calprio2 a,
 .calprio3 a,
@@ -1218,28 +1303,23 @@ td.dirfooter {font-size: .95em}
 .opaque .box-title {border-bottom: 1px solid black}
 .searchresults {display: inline}
 
+.calnavigation a:hover {background: red}
+#caltable .calfocuson,
 .box-data .fc a.today,
 .box-data td a.today {
 	background: #D4D0C8;
 	border: solid 1px #696969}
-
-.caltable td.calhighlight,
-td.calheadhighlight {
+	
+.caltable .calfocuson {
 	background: #D4D0C8;
 }
 
-.caltable .calborder,
-.calendarweek td.calHeading {
-	border: 1px solid #999;
-}
-
-.calendarweek td.calheadhighlight a:link,
-.calendarweek td.calheadhighlight a:visited {
-	color: #000;
-}
-
+#caltable .calfocuson a {color: #000}
 #caltable, #calscreen .normal {font-size: 1em}
+#caltable .calfocus a,
+#caltable .calfocuson a {text-decoration:none}
 .calinput {background: #002C5E}
+.calfocuson + .calcontent {background: #F5F5F5}
 
 #caltable .days,
 #caltable .weeks {
@@ -1253,11 +1333,27 @@ td.calheadhighlight {
 	padding: 0 5px;
 	float: right}
 
-.caltable .odd,
-.caltable .even {border: 1px solid #999}
-.caltable .odd {background: #efefef}
-.caltable .even {background: white}
+.calodd,
+.caleven {border: 1px solid #999}
+.
+calodd {background: #efefef}
+.caleven {background: white}
+.caldark {background: #002C5E}
+.caldark .calfocus {background: #002C5E}
 .calnavigation a:hover {background: #85c4ed}
+
+.calfocuson {
+	background: #D4D0C8;
+}
+
+.calfocuson a {
+	font-size: 90%;
+}
+
+.calHeadingOn, .calHeadingOn a {
+	background: #D4D0C8;
+}
+
 
 /***** Admin *****/
 a.admbox span {color: white}

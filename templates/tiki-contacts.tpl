@@ -14,19 +14,19 @@
 	</div>
 </div>
 
-<form action="tiki-contacts.php" method="post" id="editform" name='editform_contact' style="clear:both;margin:5px;display:{if $contactId}block{else}none{/if};">
-	<input type="hidden" name="locSection" value="contacts">
-	<input type="hidden" name="contactId" value="{$contactId|escape}">
+<form action="tiki-contacts.php" method="post" id="editform" name='editform_contact' style="clear:both;margin:5px;display:{ if $contactId}block{else}none{/if};">
+	<input type="hidden" name="locSection" value="contacts" />
+	<input type="hidden" name="contactId" value="{$contactId|escape}" />
 	
 	<table class="formcolor">
 		<tbody id='tbody_editcontact'>
 			<tr>
-				<td>{tr}First Name:{/tr}</td>
+				<td>{tr}First Name{/tr}:</td>
 				<td>
-					<input type="text" maxlength="80" size="20" name="firstName" value="{$info.firstName|escape}">
+					<input type="text" maxlength="80" size="20" name="firstName" value="{$info.firstName|escape}" />
 				</td>
 				<td rowspan="5">
-					{tr}Publish this contact to groups:{/tr}<br>
+					{tr}Publish this contact to groups{/tr}:<br />
 					<select multiple="multiple" name="groups[]" size="6">
 						<option value=""></option>
 						{foreach item=group from=$groups}
@@ -36,21 +36,21 @@
 				</td>
 			</tr>
 			<tr>
-				<td>{tr}Last Name:{/tr}</td>
+				<td>{tr}Last Name{/tr}:</td>
 				<td>
-					<input type="text" maxlength="80" size="20" name="lastName" value="{$info.lastName|escape}">
+					<input type="text" maxlength="80" size="20" name="lastName" value="{$info.lastName|escape}" />
 				</td>
 			</tr>
 			<tr>
-				<td>{tr}Email:{/tr}</td>
+				<td>{tr}Email{/tr}:</td>
 				<td>
-					<input type="text" maxlength="80" size="20" name="email" value="{$info.email|escape}">
+					<input type="text" maxlength="80" size="20" name="email" value="{$info.email|escape}" />
 				</td>
 			</tr>
 			<tr>
-				<td>{tr}Nickname:{/tr}</td>
+				<td>{tr}Nickname{/tr}:</td>
 				<td>
-					<input type="text" maxlength="80" size="20" name="nickname" value="{$info.nickname|escape}">
+					<input type="text" maxlength="80" size="20" name="nickname" value="{$info.nickname|escape}" />
 				</td>
 			</tr>
 			<tr id='tr_exts'>
@@ -66,7 +66,7 @@
 				<td>
 				</td>
 				<td>
-					<input type="submit" name="save" value="{tr}Save{/tr}">
+					<input type="submit" name="save" value="{tr}Save{/tr}" />
 				</td>
 			</tr>
 		</tbody>
@@ -95,18 +95,18 @@
 		{foreach from=$exts item=ext key=k}
 			{if $ext.show eq 'y'}
 				<th>
-					{assign var=numbercol value=$numbercol+1}
+					{assign var=numbercol value=`$numbercol+1`}
 					<a>{$ext.tra}</a>
 				</th>
 			{/if}
 		{/foreach}
 		
 		{if $view eq 'list'}
-			{assign var=numbercol value=$numbercol+1}
+			{assign var=numbercol value=`$numbercol+1`}
 			<th>{tr}Groups{/tr}</th>
 		{/if}
 		
-		{assign var=numbercol value=$numbercol+1}
+		{assign var=numbercol value=`$numbercol+1`}
 		<th>{tr}Action{/tr}</th>
 	</tr>
 	
@@ -115,31 +115,31 @@
 		{if count($channels)}
 			{if $view neq 'list'}
 				<tr>
-					<td colspan="5" style="font-size:80%;color:#999;">
+					<td colspan="6" style="font-size:80%;color:#999;">
 						{tr}from{/tr} <b>{$k}</b>
 					</td>
 				</tr>
 			{/if}
 			{section name=user loop=$channels}
 				<tr class="{cycle}">
-					<td class="text">
+					<td>
 						<a class="link" href="tiki-contacts.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;find={$find}&amp;contactId={$channels[user].contactId}">
 							{$channels[user].firstName}
 						</a>
 					</td>
-					<td class="text">
+					<td>
 						<a class="link" href="tiki-contacts.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;find={$find}&amp;contactId={$channels[user].contactId}">
 							{$channels[user].lastName}
 						</a>
 					</td>
-					<td class="email">
+					<td>
 						{if $prefs.feature_webmail eq 'y'}
 							{self_link _script='tiki-webmail.php' locSection='compose' to=$channels[user].email}{$channels[user].email}{/self_link}
 						{else}
 							<a class="link" href="mailto:{$channels[user].email}">{$channels[user].email}</a>
 						{/if}
 					</td>
-					<td class="text">
+					<td>
 						{$channels[user].nickname}
 					</td>
 					{foreach from=$exts item=ext key=e}
@@ -160,7 +160,7 @@
 						</td>
 					{/if}
 					
-					<td class="action">
+					<td>&nbsp;
 						{if $channels[user].user eq $user}
 							<a href="tiki-contacts.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;find={$find}&amp;contactId={$channels[user].contactId}" title="{tr}Edit{/tr}">
 								{icon _id='page_edit'}
@@ -173,7 +173,9 @@
 				</tr>
 			{/section}
 		{else}
-			{norecords _colspan=$numbercol}
+			<tr class="odd">
+				<td colspan="{$numbercol}"><strong>{tr}No records found.{/tr}</strong></td>
+			</tr>
 		{/if}
 	{/foreach}
 </table>
@@ -183,13 +185,13 @@
 		[<a class="prevnext" href="tiki-contacts.php?find={$find}&amp;offset={$prev_offset}&amp;sort_mode={$sort_mode}">{tr}Prev{/tr}</a>]
 		&nbsp;
 	{/if}
-	{tr}Page:{/tr} {$actual_page}/{$cant_pages}
+	{tr}Page{/tr}: {$actual_page}/{$cant_pages}
 	{if $next_offset >= 0}
 		&nbsp;
 		[<a class="prevnext" href="tiki-contacts.php?find={$find}&amp;offset={$next_offset}&amp;sort_mode={$sort_mode}">{tr}Next{/tr}</a>]
 	{/if}
 	{if $prefs.direct_pagination eq 'y'}
-		<br>
+		<br />
 		{section loop=$cant_pages name=foo}
 			{assign var=selector_offset value=$smarty.section.foo.index|times:$prefs.maxRecords}
 			<a class="prevnext" href="tiki-contacts.php?find={$find}&amp;offset={$selector_offset}&amp;sort_mode={$sort_mode}">{$smarty.section.foo.index_next}</a>

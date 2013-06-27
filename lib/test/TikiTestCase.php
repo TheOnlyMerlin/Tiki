@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 /*
  * Created on Jan 30, 2009
  *
@@ -13,7 +8,7 @@
  * 
  */
  
-require_once (version_compare(PHPUnit_Runner_Version::id(), '3.5.0', '>=')) ? 'PHPUnit/Autoload.php' : 'PHPUnit/Framework.php';
+require_once('PHPUnit/Framework/TestCase.php'); 
  
 abstract class TikiTestCase extends PHPUnit_Framework_TestCase
 {

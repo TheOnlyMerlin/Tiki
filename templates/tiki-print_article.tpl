@@ -1,25 +1,27 @@
-{* $Id$ *}<!DOCTYPE html>
-<html id="print" lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}">
+{* $Id$ *}{if $prefs.feature_custom_doctype eq 'y' and !empty($prefs.feature_custom_doctype_content)}{$prefs.feature_custom_doctype_content}{else}<!DOCTYPE html 
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">{/if}
+<html id="print" xmlns="http://www.w3.org/1999/xhtml" xml:lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}" lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}">
 	<head>
 {include file='header.tpl'}
 	</head>
 	<body{html_body_attributes}>
 
 		<div id="tiki-clean">
-			<header class="articletitle">
+			<div class="articletitle">
 				<h2>{$title|escape}</h2>
-				<span class="titleb">{tr}Author:{/tr} {$authorName|escape} {$publishDate|tiki_short_datetime:'Published At:'} ({$reads} {tr}Reads{/tr})</span>
-			</header>
+				<span class="titleb">{tr}By:{/tr} {$authorName|escape} {$publishDate|tiki_short_datetime:'On:'} ({$reads} {tr}Reads{/tr})</span>
+			</div>
 	
 			<div class="articleheading">
 {if $useImage eq 'y'}
 	{if $hasImage eq 'y'}
-				<img alt="{tr}Article image{/tr}" src="article_image.php?image_type=article&amp;id={$articleId}"{if $image_x lt 0} width="{$image_x}"{/if}{if $image_y gt 0} height="{$image_y}"{/if}>
+				<img alt="{tr}Article image{/tr}" src="article_image.php?image_type=article&amp;id={$articleId}"{if $image_x lt 0} width="{$image_x}"{/if}{if $image_y gt 0} height="{$image_y}"{/if} />
 	{elseif $topicId ne 0}
-				<img alt="{tr}Topic image{/tr}" src="article_image.php?image_type=topic&amp;id={$topicId}">
+				<img alt="{tr}Topic image{/tr}" src="article_image.php?image_type=topic&amp;id={$topicId}" />
 	{/if}
 {elseif $topicId ne 0}
-				<img alt="{tr}Topic image{/tr}" src="article_image.php?image_type=topic&amp;id={$topicId}">
+				<img alt="{tr}Topic image{/tr}" src="article_image.php?image_type=topic&amp;id={$topicId}" />
 {/if}
 				<div class="articleheadingtext">{$parsed_heading}</div>
 			</div>

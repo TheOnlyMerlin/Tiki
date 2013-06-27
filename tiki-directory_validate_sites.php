@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,7 +11,7 @@ $access->check_feature('feature_directory');
 $access->check_permission('tiki_p_validate_links');
 if (isset($_REQUEST["validate"]) && isset($_REQUEST['sites'])) {
 	check_ticket('dir-validate');
-	foreach (array_keys($_REQUEST["sites"]) as $siteId) {
+	foreach(array_keys($_REQUEST["sites"]) as $siteId) {
 		$dirlib->dir_validate_site($siteId);
 	}
 }
@@ -24,7 +21,7 @@ if (isset($_REQUEST["remove"])) {
 }
 if (isset($_REQUEST["del"]) && isset($_REQUEST['sites'])) {
 	check_ticket('dir-validate');
-	foreach (array_keys($_REQUEST["sites"]) as $siteId) {
+	foreach(array_keys($_REQUEST["sites"]) as $siteId) {
 		$dirlib->dir_remove_site($siteId);
 	}
 }

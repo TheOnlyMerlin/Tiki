@@ -1,14 +1,12 @@
 {* $Id$ *}
 
 {if $user and $tiki_p_create_bookmarks eq 'y'}
-{tikimodule error=$module_params.error title=$tpl_module_title name="user_bookmark" flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox notitle=$module_params.notitle}
-
 {if !isset($tpl_module_title)}{assign var=tpl_module_title value="<a href=\"tiki-user_bookmarks.php\">{tr}Bookmarks{/tr}</a>"}{/if}
-
+{tikimodule error=$module_params.error title=$tpl_module_title name="user_bookmarks" flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox notitle=$module_params.notitle}
 <ul>
     {section name=ix loop=$modb_folders}
 	<li>
-        <a href="{$ownurl}{$modb_sep}bookmarks_directory={$modb_folders[ix].folderId}"><img src="img/icons/folderin.gif"></a>&nbsp;{$modb_folders[ix].name|escape}
+        <a href="{$ownurl}{$modb_sep}bookmarks_directory={$modb_folders[ix].folderId}"><img src="img/icons/folderin.gif" /></a>&nbsp;{$modb_folders[ix].name|escape}
 	</li>
     {/section}
 </ul>
@@ -24,9 +22,9 @@
     {/section}
 </ul>
     <form name="bookmarks" action="{$ownurl}" method="post">
+    <input style="font-size: 9px;" type="submit" name="bookmark_mark" value="{tr}Mark{/tr}" />
     <input style="font-size: 9px;" type="text" size="8" name="modb_name" />
-    <input style="font-size: 9px;" type="submit" name="bookmark_mark" value="{tr}Create Bookmark{/tr}" />
-    <input style="font-size: 9px;" type="submit" name="bookmark_create_folder" value="{tr}New Folder{/tr}" />
+    <input style="font-size: 9px;" type="submit" name="bookmark_create_folder" value="{tr}New{/tr}" />
     </form>
     {/tikimodule}
 {/if}

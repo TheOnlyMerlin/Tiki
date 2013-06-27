@@ -10,9 +10,9 @@
 	universal (i.e. is the same tag in all languages) until a language has been set for the tag.{/tr}
 	{tr}Until then, they cannot be translated.{/tr}</p>
 <form method="post" action="tiki-freetag_translate.php">
-	<input type="hidden" name="type" value="{$type|escape}">
-	<input type="hidden" name="objId" value="{$objId|escape}">
-	<input type="hidden" name="offset" value="{$freetags_offset|escape}">
+	<input type="hidden" name="type" value="{$type|escape}"/>
+	<input type="hidden" name="objId" value="{$objId|escape}"/>
+	<input type="hidden" name="offset" value="{$freetags_offset|escape}"/>
 {jq}
 	function show_cleartra_checkboxes()
 	{
@@ -48,7 +48,7 @@
 	<tbody>
 	{if !$tagList}
 		<tr>
-	<td colspan="{if in_array('',$languageList)}{($languageList|@count) - 1}{else}{$languageList|@count}{/if}">
+	<td colspan="{$languageList|@count - (in_array('',$languageList)?1:0)}">
 			{tr}There are no tags on this page in your preferred languages{/tr}
 			</td>
 		</tr>
@@ -61,18 +61,18 @@
 			<td>
 			{if !$tag[$lang]}
 				<div>
-					<input type="text" name="newtag[{$group}][{$lang}]" value="{$newtags[$group][$lang]}">
-					<input type="hidden" name="rootlang[{$group}][{$lang}]" value="{$rootlang[$group]}">
+					<input type="text" name="newtag[{$group}][{$lang}]" value="{$newtags[$group][$lang]}"/>
+					<input type="hidden" name="rootlang[{$group}][{$lang}]" value="{$rootlang[$group]}"/>
 				</div>
 			{else}
-				<div>{$tag[$lang].tag} <input style="display: none" type="checkbox" name="clear[]" value="{$tag[$lang].tagId}"></div>
+				<div>{$tag[$lang].tag} <input style="display: none" type="checkbox" name="clear[]" value="{$tag[$lang].tagId}"/></div>
 			{/if}
 			</td>
 		{/if}
 		{/foreach}
 		{else}
 			{assign var=btag value=$tag[$blank]}
-			<td colspan="{if in_array('',$languageList)}{($languageList|@count) - 1}{else}{$languageList|@count}{/if}">
+			<td colspan="{$languageList|@count - (in_array('',$languageList)?1:0)}">
 				{$btag.tag}
 				- {tr}Set language{/tr}
 				<select name="setlang[{$btag.tagId}]">
@@ -86,20 +86,20 @@
 		</tr>
 	{/foreach}
 		<tr>
-			<td colspan="{if in_array('',$languageList)}{($languageList|@count) - 1}{else}{$languageList|@count}{/if}">
-				<input type="submit" name="save" value="{tr}Save{/tr}">
+			<td colspan="{$languageList|@count - (in_array('',$languageList)?1:0)}">
+				<input type="submit" name="save" value="{tr}Save{/tr}"/>
 			</td>
 		</tr>
 	</tbody>
 </table>
 <div>
-{tr}Show the following languages:{/tr}
+{tr}Show the following languages{/tr}:
 <select multiple="multiple" name="additional_languages[]">
 {foreach item=lang from=$fullLanguageList}
 	<option value="{$lang.value}"{if in_array($lang.value, $languageList)} selected="selected"{/if}>{$lang.name}</option>
 {/foreach}
 </select>
-<input type="submit" value="{tr}Select{/tr}">
+<input type="submit" value="{tr}Select{/tr}"/>
 </div>
 </form>
 

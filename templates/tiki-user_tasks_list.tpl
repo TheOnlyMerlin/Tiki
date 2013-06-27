@@ -40,56 +40,56 @@
 		{section name=task_i loop=$tasklist}
 			<tr>
 				<td class="prio{$tasklist[task_i].priority}">
-					<input {if $tasklist[task_i].disabled} disabled = "disabled" {/if}  type="checkbox" name="task[{$tasklist[task_i].taskId}]">
+					<input {if $tasklist[task_i].disabled} disabled = "disabled" {/if}  type="checkbox" name="task[{$tasklist[task_i].taskId}]" />
 					{if $tasklist[task_i].deleted} 
 						{if $tasklist[task_i].creator ne $user}
-							{icon _id='cross'}
+							<img src='img/icons2/delete_all.gif' width='16' height='16' alt="{tr}Delete{/tr}" />
 						{else}
-							{icon _id='basket' title="{tr}In the trash{/tr}" alt="{tr}In the trash{/tr}"}
+							<img src='img/icons/trash.gif' width='16' height='16' alt="{tr}Trash{/tr}" />
 						{/if}
 					{/if}
-					{if (($tasklist[task_i].creator eq $tasklist[task_i].user) and ($tasklist[task_i].user eq $user))}
+					{if (($tasklist[task_i].creator eq $tasklist[task_i].user) and ($tasklist[task_i].user eq $user)) }
 						{*private task*}
 					{else}
-						{if ($tasklist[task_i].user eq $user)}
-							{*received task*}
-							{icon _id='task_received' title="{tr}Task received{/tr}" alt="{tr}Task received{/tr}"} 
-							{if (($tasklist[task_i].accepted_creator eq 'n') or ($tasklist[task_i].accepted_user eq 'n'))}
-								{icon _id='delete' title="{tr}Rejected by a user{/tr}" alt="{tr}Rejected by a user{/tr}"}
+						{if ($tasklist[task_i].user eq $user) }
+							{*recived task*}
+							{icon _id='task_received' align="middle"}
+							{if (($tasklist[task_i].accepted_creator eq 'n') or ($tasklist[task_i].accepted_user eq 'n')) }
+								<img src="{$img_not_accepted}" height="{$img_not_accepted_height}" width="{$img_not_accepted_width}" title="{tr}Not Accepted by One User{/tr}" alt="{tr}Not Accepted User{/tr}" />
 							{else}
 								{if ($tasklist[task_i].accepted_user eq '')}
-									{icon _id='hourglass' title="{tr}Waiting for me{/tr}" alt="{tr}Waiting for me{/tr}"}
+									<img src="{$img_me_waiting}" height="{$img_me_waiting_height}" width="{$img_me_waiting_width}" title="{tr}Waiting for Me{/tr}" alt="{tr}Waiting for Me{/tr}" />
 								{else}
 									{if ($tasklist[task_i].accepted_creator eq 'y')} 
-										{icon _id='accept' title="{tr}Accepted by task user and creator{/tr}" alt="{tr}Accepted by task user and creator{/tr}"}
+										<img src="{$img_accepted}" height="{$img_accepted_height}" width="{$img_accepted_width}" title="{tr}Accepted by Task User and Creator{/tr}" alt="{tr}Accepted User and Creator{/tr}" />
 									{else}
-										{icon _id='user_comment' title="{tr}Waiting for other user{/tr}" alt="{tr}Waiting for other user{/tr}"}
+										<img src="{$img_he_waiting}"  height="{$img_he_waiting_height}" width="{$img_he_waiting_width}"alt="{tr}Waiting for Other User{/tr}" title="{tr}Waiting for Other User{/tr}" />
 									{/if}
 								{/if}
 							{/if}
-						{elseif ($tasklist[task_i].creator eq $user)}
+						{elseif ($tasklist[task_i].creator eq $user) }
 							{*submitted task*}
-							{icon _id='task_submitted' title="{tr}Task sent{/tr}" alt="{tr}Task sent{/tr}"} 
-							{if (($tasklist[task_i].accepted_creator eq 'n') or ($tasklist[task_i].accepted_user eq 'n'))}
-								<img src="{$img_not_accepted}" height="{$img_not_accepted_height}" width="{$img_not_accepted_width}" title="{tr}Not Accepted by One User{/tr}" alt="{tr}Not Accepted User{/tr}">
+							{icon _id='task_submitted' align="middle"}
+							{if (($tasklist[task_i].accepted_creator eq 'n') or ($tasklist[task_i].accepted_user eq 'n')) }
+								<img src="{$img_not_accepted}" height="{$img_not_accepted_height}" width="{$img_not_accepted_width}" title="{tr}Not Accepted by One User{/tr}" alt="{tr}Not Accepted User{/tr}" />
 							{else}
 								{if ($tasklist[task_i].accepted_user eq '')}
 									{if ($tasklist[task_i].accepted_creator eq 'y')}
-										{icon _id='user_comment' title="{tr}Waiting for other user{/tr}" alt="{tr}Waiting for other user{/tr}"}
+										<img src="{$img_he_waiting}"  height="{$img_he_waiting_height}" width="{$img_he_waiting_width}" alt="{tr}Waiting for Other User{/tr}" title="{tr}Waiting for Other User{/tr}" />
 									{else}
-										{icon _id='hourglass' title="{tr}Waiting for me{/tr}" alt="{tr}Waiting for me{/tr}"}
+										<img src="{$img_me_waiting}" height="{$img_me_waiting_height}" width="{$img_me_waiting_width}" title="{tr}Waiting for Me{/tr}" alt="{tr}Waiting for Me{/tr}" />
 									{/if}
 								{else}
 									{if ($tasklist[task_i].accepted_creator eq 'y')}
-										{icon _id='accept' title="{tr}Accepted by task user and creator{/tr}" alt="{tr}Accepted by task user and creator{/tr}"}
+										<img src="{$img_accepted}" height="{$img_accepted_height}" width="{$img_accepted_width}" title="{tr}Accepted by Task User and Creator{/tr}" alt="{tr}Accepted User and Creator{/tr}" />
 									{else}
-										{icon _id='hourglass' title="{tr}Waiting for me{/tr}" alt="{tr}Waiting for me{/tr}"}
+										<img src="{$img_me_waiting}" height="{$img_me_waiting_height}" width="{$img_me_waiting_width}" title="{tr}Waiting for Me{/tr}" alt="{tr}Waiting for Me{/tr}" />
 									{/if}
 								{/if}
 							{/if}
 						{else}
 							{*shared task*}
-							{icon _id='group' title="{tr}Task shared by a group{/tr}" alt="{tr}Task shared by a group{/tr}"} 
+							{icon _id='task_shared' align="middle"}
 						{/if}
 					{/if}
 				</td>
@@ -98,20 +98,18 @@
 				</td>
 				<td {if $tasklist[task_i].status eq 'c'}style="text-decoration:line-through;"{/if} class="prio{$tasklist[task_i].priority}">
 					<div class="mini">
-						{$tasklist[task_i].start|tiki_short_date}&nbsp;[{$tasklist[task_i].start|tiki_short_time}]
+						{$tasklist[task_i].start|date_format:"{tr}%m/%d/%Y [%H:%M]{/tr}"}
 					</div>
 				</td>
 				<td {if $tasklist[task_i].status eq 'c'}style="text-decoration:line-through;"{/if} class="prio{$tasklist[task_i].priority}">
-					<div class="mini">
-						{$tasklist[task_i].end|tiki_short_date}&nbsp;[{$tasklist[task_i].end|tiki_short_time}]
-					</div>
+					<div class="mini">{$tasklist[task_i].end|date_format:"{tr}%m/%d/%Y [%H:%M]{/tr}"}</div>
 				</td>
 				<td style="text-align:right;{if $tasklist[task_i].status eq 'c'}text-decoration:line-through;{/if}" class="prio{$tasklist[task_i].priority}">
 					{$tasklist[task_i].priority}
 				</td>
 				<td style="text-align:right;{if $tasklist[task_i].status eq 'c'}text-decoration:line-through;{/if}" class="prio{$tasklist[task_i].priority}">
 					<select {if $tasklist[task_i].disabled} disabled = "disabled" {/if}  name="task_perc[{$tasklist[task_i].taskId}]">
-						<option value="w" {if $tasklist[task_i].percentage_null} selected = "selected"  {/if}>{tr}Waiting{/tr}</option>	
+						<option value="w" {if $tasklist[task_i].percentage_null } selected = "selected"  {/if}>{tr}Waiting{/tr}</option>	
 						{section name=zz loop=$percs}
 							<option value="{$percs[zz]|escape}" {if $tasklist[task_i].percentage eq $percs[zz] and !$tasklist[task_i].percentage_null} selected = "selected" {/if} >
 								{$percs[zz]}%
@@ -127,7 +125,7 @@
 		{/section}
 		<tr>
 			<td colspan="3" style="text-align:left; vertical-align:bottom;">
-				{icon _id='arrow_turn_down_right' title="{tr}Select{/tr}" alt="{tr}Select{/tr}" style="margin-bottom:8px; margin-left:5px"}
+				<img src="img/icons2/arrow.gif" width="16" height="24" style="border:0" alt="arrow" />
 				<select name="action" style="vertical-align:bottom;">
 					<option value="" >{tr}Select One{/tr}</option>
 					<option value="waiting_marked" >{tr}Waiting{/tr}</option>
@@ -136,23 +134,23 @@
 					<option value="move_marked_to_trash">{tr}Trash{/tr}</option>
 					<option value="remove_marked_from_trash">{tr}Undo Trash{/tr}</option>
 				</select>
-				<input type="submit" name="update_tasks" value="{tr}Go{/tr}" style="vertical-align:bottom;">
+				<input type="submit" name="update_tasks" value="{tr}Go{/tr}" style="vertical-align:bottom;" />
 			</td>
 			<td colspan="3" style="text-align:right;">
-				<input type="submit" name="update_percentage" value="{tr}Go{/tr}" style="vertical-align:bottom;">
-				{icon _id='arrow_turn_down_left' title="{tr}Go{/tr}" alt="{tr}Go{/tr}" style="margin-bottom:8px; margin-right:8px"}
+				<input type="submit" name="update_percentage" value="{tr}Go{/tr}" style="vertical-align:bottom;" />
+				<img src="img/icons2/arrow_fliped.gif" width="16" height="24" style="border:0" alt="arrow" />
 			</td>
 		</tr>
 		<tr>
 			<td colspan="6" style="text-align:center;">
 				&nbsp;&nbsp;{tr}Show:{/tr}
-				&nbsp;<input  name="show_private" {if $show_private} checked="checked" {/if} type="checkbox">{tr}Private{/tr}
-			{if $tiki_p_tasks_receive eq 'y'}&nbsp;<input  name="show_received" {if $show_received} checked="checked" {/if} type="checkbox">{tr}Received{/tr}{/if}
-			{if $tiki_p_tasks_send eq 'y'}&nbsp;<input  name="show_submitted" {if $show_submitted} checked="checked" {/if} type="checkbox">{tr}Submitted{/tr}{/if}
-			{if $tiki_p_tasks_receive eq 'y' or $tiki_p_tasks_send eq 'y'}&nbsp;<input  name="show_shared" {if $show_shared} checked="checked" {/if} type="checkbox">{tr}Shared{/tr}{/if}
+				&nbsp;<input  name="show_private" {if $show_private} checked="checked" {/if} type="checkbox" />{tr}Private{/tr}
+			{if $tiki_p_tasks_receive eq 'y'}&nbsp;<input  name="show_received" {if $show_received} checked="checked" {/if} type="checkbox" />{tr}Received{/tr}{/if}
+			{if $tiki_p_tasks_send eq 'y'}&nbsp;<input  name="show_submitted" {if $show_submitted} checked="checked" {/if} type="checkbox" />{tr}Submitted{/tr}{/if}
+			{if $tiki_p_tasks_receive eq 'y' or $tiki_p_tasks_send eq 'y'}&nbsp;<input  name="show_shared" {if $show_shared} checked="checked" {/if} type="checkbox" />{tr}Shared{/tr}{/if}
 			&nbsp;&nbsp;&nbsp;&nbsp;
-			&nbsp;<input  name="show_trash" {if $show_trash} checked="checked" {/if} type="checkbox">{tr}Trash{/tr}
-			&nbsp;<input  name="show_completed" {if $show_completed} checked="checked" {/if} type="checkbox">{tr}Completed{/tr}
+			&nbsp;<input  name="show_trash" {if $show_trash} checked="checked" {/if} type="checkbox" />{tr}Trash{/tr}
+			&nbsp;<input  name="show_completed" {if $show_completed} checked="checked" {/if} type="checkbox" />{tr}Completed{/tr}
 			{if ($admin_mode)}
 			&nbsp;&nbsp;
 			<a class="highlight" >
@@ -162,7 +160,7 @@
 		</tr>
 		<tr>
 			<td colspan="6" style="text-align:center;">
-				<input type="submit" name="reload" value="{tr}Reload{/tr}">
+				<input type="submit" name="reload" value="{tr}Reload{/tr}" />
 			</td>
 		</tr>
 	</table>

@@ -1,9 +1,12 @@
-<!DOCTYPE html>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"> 
-    <link rel="StyleSheet"  href="styles/{$prefs.style}" type="text/css">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+    <link rel="StyleSheet"  href="styles/{$prefs.style}" type="text/css" />
+    {include file='bidi.tpl'}
     <title>{tr}Live support:Console{/tr}</title>
     {literal}
 	<script type="text/javascript" src="lib/live_support/live-support.js">
@@ -13,13 +16,14 @@
 	{$trl}
   </head>
   {literal}
-  <body style="background-color: white">
+  <body>
   {/literal}
-  	{if $isOperator}
+   	<input type="hidden" id="user" value="{$user|escape}" />
+  	<input type="hidden" id="status" value="online" />
 	<table class="normal" >
 		<tr>
-			<th>{tr}Operator:{/tr} {$user}</th>
-			<th>{tr}Status:{/tr} <b>{tr}{$status}{/tr}</b></th>
+			<th>{tr}Operator{/tr}: {$user}</th>
+			<th>{tr}Status{/tr}: <b>{tr}{$status}{/tr}</b></th>
 			<th style="text-align:right;">    
 				{if $status eq 'offline'}
     				<a href="tiki-live_support_console.php?status=online">{tr}be online{/tr}</a>
@@ -29,9 +33,6 @@
 		</th>
 		</tr>
 	</table>
-	{else}
-		{tr}You are not an operator.{/tr} <a href="tiki-live_support_admin.php">{tr}Live support system{/tr}</a>
-	{/if}
 
     {if count($requests) > 0}
     <h3>{tr}Support requests{/tr}</h3>
@@ -65,8 +66,6 @@
 		</tr>
 		{/section}
 	</table>
-	{else}
-	<h3>{tr}No support requests{/tr}</h3>
 	{/if}
     <script type='text/javascript'>
         var last_req={$last};

@@ -4,18 +4,18 @@
 
 {if $preview eq 'y'}
 	<h2>{tr}Preview{/tr}</h2>
-	<header class="articletitle">
+	<div class="articletitle">
 		<h2>{$title}</h2>
 		<span class="titleb">{tr}By:{/tr} {$authorName} {$publishDate|tiki_short_datetime:'On:'} (0 {tr}Reads{/tr})</span>
-	</header>
+	</div>
 	<div class="articleheading">
 		<table cellpadding="0" cellspacing="0">
 			<tr>
 				<td valign="top">
 					{if $useImage eq 'y'}
-						<img alt="{tr}Article image{/tr}" src="received_article_image.php?id={$receivedArticleId}">
+						<img alt="{tr}Article image{/tr}" src="received_article_image.php?id={$receivedArticleId}" />
 					{else}
-						<img alt="{tr}Topic image{/tr}" src="article_image.php?image_type=topic&amp;id={$topic}">
+						<img alt="{tr}Topic image{/tr}" src="article_image.php?image_type=topic&amp;id={$topic}" />
 					{/if}
 				</td>
 				<td valign="top">
@@ -37,17 +37,17 @@
 {if $receivedArticleId > 0}
 	<h2>{tr}Edit received article{/tr}</h2>
 	<form action="tiki-received_articles.php" method="post">
-		<input type="hidden" name="receivedArticleId" value="{$receivedArticleId|escape}">
-		<input type="hidden" name="created" value="{$created|escape}">
-		<input type="hidden" name="image_name" value="{$image_name|escape}">
-		<input type="hidden" name="image_size" value="{$image_size|escape}">
+		<input type="hidden" name="receivedArticleId" value="{$receivedArticleId|escape}" />
+		<input type="hidden" name="created" value="{$created|escape}" />
+		<input type="hidden" name="image_name" value="{$image_name|escape}" />
+		<input type="hidden" name="image_size" value="{$image_size|escape}" />
 		<table class="formcolor">
 			<tr>
-				<td>{tr}Title:{/tr}</td>
-				<td><input type="text" name="title" value="{$title|escape}"></td>
+				<td>{tr}Title{/tr}:</td>
+				<td><input type="text" name="title" value="{$title|escape}" /></td>
 			</tr>
 			<tr>
-				<td>{tr}Author Name:{/tr}</td>
+				<td>{tr}Author Name{/tr}:</td>
 				<td><input type="text" name="authorName" value="{$authorName|escape}" /></td>
 			</tr>
 			<tr>
@@ -91,7 +91,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td>{tr}Use Image:{/tr}</td>
+				<td>{tr}Use Image{/tr}:</td>
 				<td>
 					<select name="useImage">
 						<option value="y" {if $useImage eq 'y'}selected="selected"{/if}>{tr}Yes{/tr}</option>
@@ -100,48 +100,47 @@
 				</td>
 			</tr>
 			<tr>
-				<td>{tr}Image x size:{/tr}</td>
-				<td><input type="text" name="image_x" value="{$image_x|escape}"></td>
+				<td>{tr}Image x size{/tr}:</td>
+				<td><input type="text" name="image_x" value="{$image_x|escape}" /></td>
 			</tr>
 			<tr>
-				<td>{tr}Image y size:{/tr}</td>
-				<td><input type="text" name="image_y" value="{$image_y|escape}"></td>
+				<td>{tr}Image y size{/tr}:</td>
+				<td><input type="text" name="image_y" value="{$image_y|escape}" /></td>
 			</tr>
 			<tr>
-				<td>{tr}Image name:{/tr}</td>
+				<td>{tr}Image name{/tr}:</td>
 				<td>{$image_name}</td>
 			</tr>
 			<tr>
-				<td>{tr}Image size:{/tr}</td>
+				<td>{tr}Image size{/tr}:</td>
 				<td>{$image_size}</td>
 			</tr>
 			{if $useImage eq 'y'}
 				<tr>
-					<td>{tr}Image:{/tr}</td>
+					<td>{tr}Image{/tr}:</td>
 					<td>
-						<img alt="article image" width="{$image_x}" height="{$image_y}" src="received_article_image.php?id={$receivedArticleId}">
+						<img alt="article image" width="{$image_x}" height="{$image_y}" src="received_article_image.php?id={$receivedArticleId}" />
 					</td>
 				</tr>
 			{/if}
 			<tr>
-				<td>{tr}Created:{/tr}</td>
+				<td>{tr}Created{/tr}:</td>
 				<td>{$created|tiki_short_datetime}</td>
 			</tr>
 			<tr>
-				<td>{tr}Publishing date:{/tr}</td>
+				<td>{tr}Publishing date{/tr}:</td>
 				<td>
-					{html_select_date time=$publishDate end_year="+1" field_order=$prefs.display_field_order} at 
-					{html_select_time time=$publishDate display_seconds=false use_24_hours=$use_24hr_clock}
+					{html_select_date time=$publishDate end_year="+1" field_order=$prefs.display_field_order} at {html_select_time time=$publishDate display_seconds=false}
 				</td>
 			</tr>
 			<tr>
-				<td>{tr}Heading:{/tr}</td>
+				<td>{tr}Heading{/tr}:</td>
 				<td>
 					<textarea rows="5" cols="40" name="heading">{$heading|escape}</textarea>
 				</td>
 			</tr>
 			<tr>
-				<td>{tr}Heading:{/tr}</td>
+				<td>{tr}Heading{/tr}:</td>
 				<td>
 					<textarea rows="25" cols="40" name="body">{$body|escape}</textarea>
 				</td>
@@ -149,21 +148,21 @@
 			<tr>
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" name="preview" value="{tr}Preview{/tr}">
+					<input type="submit" name="preview" value="{tr}Preview{/tr}" />
 					&nbsp;
-					<input type="submit" name="save" value="{tr}Save{/tr}">
+					<input type="submit" name="save" value="{tr}Save{/tr}" />
 				</td>
 			</tr>
 			<tr>
 				<td>{tr}Accept Article{/tr}</td>
 				<td>
-					{tr}Topic:{/tr}
+					{tr}Topic{/tr}:
 					<select name="topic">
 						{section name=t loop=$topics}
 							<option value="{$topics[t].topicId|escape}" {if $topic eq $topics[t].topicId}selected="selected"{/if}>{$topics[t].name}</option>
 						{/section}
 					</select>
-					<input type="submit" name="accept" value="{tr}Accept{/tr}">
+					<input type="submit" name="accept" value="{tr}Accept{/tr}" />
 				</td>
 			</tr>
 		</table>
@@ -197,22 +196,27 @@
 		{cycle values="even,odd" print=false}
 		{section name=user loop=$channels}
 			<tr class="{cycle}">
-				<td class="id">{$channels[user].receivedArticleId}</td>
-				<td class="text">{$channels[user].title|escape}
+				<td>{$channels[user].receivedArticleId}</td>
+				<td>{$channels[user].title}
 					{if $channels[user].type eq 'Review'}(r){/if}
 				</td>
-				<td class="date">{$channels[user].receivedDate|tiki_short_datetime}</td>
-				<td class="text">{$channels[user].receivedFromSite}</td>
-				<td class="text">{$channels[user].receivedFromUser|escape}</td>
-				<td class="action">
+				<td>{$channels[user].receivedDate|tiki_short_datetime}</td>
+				<td>{$channels[user].receivedFromSite}</td>
+				<td>{$channels[user].receivedFromUser}</td>
+				<td>
 					<a class="link" href="tiki-received_articles.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;receivedArticleId={$channels[user].receivedArticleId}">{icon _id='page_edit'}</a> 
 					&nbsp;
 					<a class="link" href="tiki-received_articles.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].receivedArticleId}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 				</td>
 			</tr>
 		{sectionelse}
-			{norecords _colspan=6}
+			<tr>
+				<td class="odd" colspan="6">{tr}No records.{/tr}</td>
+			</tr>
 		{/section}
 	</table>
+
 	{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
+
 </div>
+

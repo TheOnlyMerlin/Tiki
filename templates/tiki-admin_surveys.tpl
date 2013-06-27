@@ -34,22 +34,22 @@
 	{cycle values="odd,even" print=false}
 	{section name=user loop=$channels}
 		<tr class="{cycle}">
-			<td class="id">{$channels[user].surveyId}</td>
-			<td class="text">
+			<td>{$channels[user].surveyId}</td>
+			<td>
 				<b>{$channels[user].name|escape}</b>
 				<div class="subcomment">
-					{wiki}{$channels[user].description}{/wiki}
+					{wiki}{$channels[user].description|escape}{/wiki}
 				</div>
 			</td>
-			<td class="icon">
+			<td style="text-align:center;">
 				{if $channels[user].status eq 'o'}
 					{icon _id=ofolder alt="Open"}
 				{else}
 					{icon _id=folder alt="closed"}
 				{/if}
 			</td>
-			<td class="integer">{$channels[user].questions}</td>
-			<td class="action">
+			<td style="text-align:center;">{$channels[user].questions}</td>
+			<td style="text-align:right;">
 				{self_link _icon='page_edit' cookietab='2' _anchor='anchor2' surveyId=$channels[user].surveyId}{tr}Edit{/tr}{/self_link}
 				<a class="link" href="tiki-admin_survey_questions.php?surveyId={$channels[user].surveyId}">{icon _id='help' alt="{tr}Questions{/tr}" title="{tr}Questions{/tr}"}</a>
 				<a class="link" href="tiki-admin_surveys.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].surveyId}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
@@ -64,7 +64,7 @@
 			</td>
 		</tr>
 	{sectionelse}
-		{norecords _colspan=5}
+		<tr><td class="odd" colspan="5"><strong>{tr}No records found.{/tr}</strong></td></tr>
 	{/section}
 </table>
 
@@ -79,19 +79,19 @@
 {/if}
 
 {if $individual eq 'y'}
-	<a class="link" href="tiki-objectpermissions.php?objectName={$info.name|escape:"url"}&amp;objectType=survey&amp;permType=surveys&amp;objectId={$info.surveyId}">{tr}There are individual permissions set for this survey{/tr}</a><br><br>
+	<a class="link" href="tiki-objectpermissions.php?objectName={$info.name|escape:"url"}&amp;objectType=survey&amp;permType=surveys&amp;objectId={$info.surveyId}">{tr}There are individual permissions set for this survey{/tr}</a><br /><br />
 {/if}
 
 <form action="tiki-admin_surveys.php" method="post">
-	<input type="hidden" name="surveyId" value="{$info.surveyId|escape}">
+	<input type="hidden" name="surveyId" value="{$info.surveyId|escape}" />
 	<table class="formcolor">
 		<tr>
-			<td>{tr}Name:{/tr}</td>
-			<td><input type="text" name="name" size="80" value="{$info.name|escape}"></td>
+			<td>{tr}Name{/tr}:</td>
+			<td><input type="text" name="name" size="80" value="{$info.name|escape}" /></td>
 		</tr>
 		<tr>
-			<td>{tr}Description:{/tr}</td>
-			<td>{textarea name="description" rows="6" cols="80" _toolbars='y' _simple='y' comments='y'}{$info.description}{/textarea}</td>
+			<td>{tr}Description{/tr}:</td>
+			<td>{textarea name="description" rows="6" cols="80" _toolbars='y' _zoom='n' _simple='y' comments='y'}{$info.description}{/textarea}</td>
 		</tr>
 		{include file='categorize.tpl'}
 		<tr>
@@ -106,7 +106,7 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" name="save" value="{tr}Save{/tr}">
+				<input type="submit" name="save" value="{tr}Save{/tr}" />
 			</td>
 		</tr>
 	</table>

@@ -1,7 +1,11 @@
 /* $Id$ 
-	Lemon theme option for FiveAlive themes for
-	Tiki Wiki CMS Groupware.
+	Lemon theme option for FiveAlive theme for
+	TikiWiki CMS/Groupware.
 */
+
+#header-top {
+	background: url(lemon/siteheader.png) no-repeat -250px 0
+}
 
 a,
 a:visited,
@@ -29,12 +33,8 @@ hr {
 	background: #ffc506;
 }
 
-#main .header_outer {
-	background: url(lemon/siteheadertile.png) 0 0 no-repeat;
-}
-
 #header {
-	background: url(lemon/siteheader.png) -250px 0 no-repeat;
+	background: url(lemon/siteheadertile.png) 900px 0 no-repeat;
 }
 
 #sitetitle,
@@ -42,7 +42,7 @@ hr {
 	text-shadow: #c85a28 3px 2px 0;
 }
 
-.footer_liner {
+#footer .container {
 	border-top: 1px solid #ffc506;
 	border-bottom: 1px solid #ffc506;
 }
@@ -59,6 +59,7 @@ hr {
 #power a {
 	color: #ffc506;
 }
+
 
 .button a,
 .button a:visited,
@@ -89,8 +90,9 @@ span#genPass .button a:hover,
 }
 
 .highlight,
-.button.highlight a {
-	border-color: #fee194;
+.button.highlight a,
+.calfocuson {
+	border: #fee194;
 	color: #c74b23;
 	background: #f3fdd0;
 }
@@ -102,35 +104,24 @@ span#genPass .button a:hover,
 
 .cssmenu_vert li ul a,
 .cssmenu_horiz li ul a,
-.header .cssmenu_horiz li ul a,
-.header .cssmenu_horiz li:hover ul a,
-#main #topbar_modules .cssmenu_horiz li ul a,
-#main #topbar_modules .cssmenu_horiz li:hover ul a  {
+#header .cssmenu_horiz li ul a,
+#header .cssmenu_horiz li:hover ul a  {
 	background: #c75a29;
-	color: #fff;
 }
 
-#tiki-top .cssmenu_horiz li a {
-	background: url(lemon/siteheader.png) no-repeat -600px -40px;
-}
-
-#tiki-top .cssmenu_horiz li a:hover,
 .cssmenu_vert li ul a:hover,
 .cssmenu_horiz li ul a:hover,
-.header .cssmenu_horiz li ul a:hover,
-#main #topbar_modules .cssmenu_horiz li ul a:hover  {
+#header .cssmenu_horiz li ul a:hover  {
 	background: #f68c1a;
 }
 
-.header .cssmenu_horiz li.selected a,
-#topbar_modules .cssmenu_horiz li.selected a,
+#header .cssmenu_horiz li.selected a,
 .cssmenu_horiz li.selected a,
 .cssmenu_vert li.selected a {
 	color: #fcebbc;
 }
 
-.header .cssmenu_horiz li.selected li a,
-#topbar_modules .cssmenu_horiz li.selected li a,
+#header .cssmenu_horiz li.selected li a,
 .cssmenu_horiz li.selected li a,
 .cssmenu_vert li.selected li a {
 	font-style: normal;
@@ -146,10 +137,6 @@ select,
 input[type="text"],
 input[type="password"],
 input[type="file"],
-input[type="email"],
-input[type="file"],
-input[type="search"],
-input[type="number"],
 input#login-pass,
 textarea,
 .adminoptionbox option {
@@ -160,7 +147,7 @@ textarea,
 .titlebar,
 .rbox-title, 
 .rbox-data {
-	border-color: #ffc506;
+	border: #ffc506;
 	background: #fcebbc;
 	color: #c85a28;
 }
@@ -178,13 +165,6 @@ textarea,
 	border: 2px solid #ffc506; 
 }
 
-h3.box-title,
-.postbody-title,
-#top_modules .module.secondary_site_menu {
-	background: #fec107 url(lemon/siteheader.png) no-repeat -1000px -200px;
-	color: #c75a28;
-}
-
 .adminanchors {
 	background: #ffc506;
 }
@@ -198,33 +178,24 @@ th,
 td.heading,
 tr.diffheader,
 .calHeading,
-.weeks,
-th.header {
+.weeks {
 	background: #ffc506;
 	color: #fdf1d0;
 }
 
-.caltable .odd,
-.caltable .even,
-.caltable .calborder,
+.calodd,
+.caleven,
 .wikicell {
 	border: 1px solid #fcebbc;
 }
 
-.caltable td.calhighlight,
-td.calheadhighlight {
-	background: #f3fdd0;
-}
-
 .odd,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+.calodd {
 	background: #fdf1d0;
 }
 
 .even,
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+.caleven {
 	background: #fcebbc;
 }
 
@@ -265,20 +236,13 @@ form.admin fieldset,
 	border-left: 8px solid #fcebbc;
 }
 
+.postbody-title {
+	background: #ffc506 url(lemon/siteheader.png) -550px -90px no-repeat;
+}
+
 .post .author,
 .dirsite {
 	background: #fcebbc;
-}
-
-.postbody-content {
-	border: 1px solid #d4cc1c;
-	border-top: none;
-}
-
-.post .author {
-	border: 1px solid #d4cc1c;
-	border-top: none;
-	border-bottom: none;
 }
 
 /* cluptip tooltips */

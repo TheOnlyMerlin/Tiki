@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -30,7 +27,7 @@ if ($prefs['feature_categories'] == 'y') {
 $access->check_feature('feature_blogs');
 
 if (isset($_REQUEST["blogTitle"])) {
-	$blog_data = $bloglib->get_blog_by_title(trim(trim($_REQUEST["blogTitle"]), "\x22\x27"));
+	$blog_data = $bloglib->get_blog_by_title(trim(trim($_REQUEST["blogTitle"]) , "\x22\x27"));
 	if ((!empty($blog_data)) && (!empty($blog_data["blogId"]))) {
 		$_REQUEST["blogId"] = $blog_data["blogId"];
 	}
@@ -40,10 +37,10 @@ if (!isset($_REQUEST["blogId"])) {
 	$smarty->display("error.tpl");
 	die;
 }
-$tikilib->get_perm_object($_REQUEST["blogId"], 'blog');
+$tikilib->get_perm_object( $_REQUEST["blogId"], 'blog' ); 
 
 
-$access->check_permission('tiki_p_read_blog','','blog',$_REQUEST["blogId"]);
+$access->check_permission('tiki_p_read_blog');
 
 $blog_data = $bloglib->get_blog($_REQUEST["blogId"]);
 $ownsblog = 'n';
@@ -91,7 +88,7 @@ if (isset($_REQUEST["remove"])) {
 	$access->check_authenticity();
 	$bloglib->remove_post($_REQUEST["remove"]);
 }
-// This script can receive the threshold
+// This script can receive the thresold
 // for the information as the number of
 // days to get in the log 1,3,4,etc
 // it will default to 1 recovering information for today
@@ -120,9 +117,16 @@ $smarty->assign('find', $find);
 $date_min = isset($_REQUEST['date_min']) ? $_REQUEST['date_min'] : '';
 $date_max = isset($_REQUEST['date_max']) ? $_REQUEST['date_max'] : $tikilib->now;
 $listpages = $bloglib->list_blog_posts($_REQUEST["blogId"], true, $offset, $blog_data["maxPosts"], $sort_mode, $find, $date_min, $date_max);
-//Keep track of month of last viewed posts for months_links module foldable display
-$_SESSION['blogs_last_viewed_month'] = TikiLib::date_format("%Y-%m", $date_max);
-
+$temp_max = count($listpages["data"]);
+for ($i = 0; $i < $temp_max; $i++) {
+	$listpages["data"][$i]["parsed_data"] = $tikilib->parse_data($bloglib->get_page($listpages["data"][$i]["data"], 1), array('is_html' => ($listpages["data"][$i]["wysiwyg"]=='y'?TRUE:FALSE)));
+	if ($prefs['feature_freetags'] == 'y') { // And get the Tags for the posts
+		$listpages["data"][$i]["freetags"] = $freetaglib->get_tags_on_object($listpages["data"][$i]["postId"], "blog post");
+	}
+	if ($listpages["data"][$i]['priv'] == 'y') {
+		$listpages["data"][$i]['title'] .= ' (' . tra("private") . ')';
+	}
+}
 $maxRecords = $blog_data["maxPosts"];
 $smarty->assign('maxRecords', $maxRecords);
 // If there're more records then assign next_offset
@@ -137,7 +141,7 @@ if ($prefs['feature_theme_control'] == 'y') {
 if ($user && $prefs['feature_notepad'] == 'y' && $tiki_p_notepad == 'y' && isset($_REQUEST['savenotepad'])) {
 	check_ticket('blog');
 	$post_info = $bloglib->get_post($_REQUEST['savenotepad']);
-	$tikilib->replace_note($user, 0, $post_info['title'] ? $post_info['title'] : $tikilib->date_format("%d/%m/%Y [%H:%M]", $post_info['created']), $post_info['data']);
+	$tikilib->replace_note($user, 0, $post_info['title'] ? $post_info['title'] : $tikilib->date_format("%d/%m/%Y [%H:%M]", $post_info['created']) , $post_info['data']);
 }
 if ($prefs['feature_user_watches'] == 'y') {
 	if ($user && isset($_REQUEST['watch_event'])) {
@@ -159,7 +163,7 @@ if ($prefs['feature_user_watches'] == 'y') {
 		if (count($watching_categories_temp) > 0) {
 			$smarty->assign('category_watched', 'y');
 			$watching_categories = array();
-			foreach ($watching_categories_temp as $wct) {
+			foreach($watching_categories_temp as $wct) {
 				$watching_categories[] = array(
 					"categId" => $wct,
 					"name" => $categlib->get_category_name($wct)
@@ -169,7 +173,10 @@ if ($prefs['feature_user_watches'] == 'y') {
 		}
 	}
 }
-
+if ($prefs['feature_mobile'] == 'y' && isset($_REQUEST['mode']) && $_REQUEST['mode'] == 'mobile') {
+	include_once ("lib/hawhaw/hawtikilib.php");
+	HAWTIKI_view_blog($listpages, $blog_data);
+}
 if ($prefs['feature_actionlog'] == 'y') {
 	$logslib->add_action('Viewed', $_REQUEST['blogId'], 'blog', '');
 }

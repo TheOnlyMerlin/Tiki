@@ -1,6 +1,6 @@
 {* $Id$ *}
 
-{assign var="default_diff_style" value="inlinediff-full"}
+{assign var="default_diff_style" value="inlinediff-full" }
 
 {if $show_translation_module}
 
@@ -15,21 +15,21 @@
 			{if $mod_translation_better_known or $mod_translation_better_other}
 				<div>			
 					{if $from_edit_page ne 'y'}
-						<b>{tr}Incoming:{/tr}</b>
+						<b>{tr}Incoming{/tr}:</b>
 					{else}
-						{tr}To <strong>continue translating</strong>, select the language to translate from:{/tr}
+						{tr}To <strong>continue translating</strong>, select the language to translate from{/tr}:
 					{/if}			
 					{if $mod_translation_better_known}
 						<ul>
 							{foreach item=better from=$mod_translation_better_known}
 								<li>
 									{if $from_edit_page eq 'y'}
-										<a title="{tr}update from it{/tr}" href="tiki-editpage.php?page={$page|escape:'url'}&amp;source_page={$better.page|escape:'url'}&amp;oldver={$better.last_update|escape:'url'}&amp;newver={$better.current_version|escape:'url'}&amp;diff_style={$default_diff_style}">{icon _id=page_translate_from alt="{tr}update from it{/tr}" style="vertical-align:middle"} {$better.lang|langname}</a> ({$better.page|escape})
+										<a title="{tr}update from it{/tr}" href="tiki-editpage.php?page={if isset($stagingPageName) && $hasStaging == 'y'}{$stagingPageName|escape:'url'}{else}{$page|escape:'url'}{/if}&amp;source_page={$better.page|escape:'url'}&amp;oldver={$better.last_update|escape:'url'}&amp;newver={$better.current_version|escape:'url'}&amp;diff_style={$default_diff_style}">{icon _id=page_translate_from alt="{tr}update from it{/tr}" style="vertical-align:middle"} {$better.lang|langname}</a> ({$better.page|escape})
 									{else}
 										{if $tiki_p_edit eq 'y'}
-											<a href="tiki-editpage.php?page={$page|escape:'url'}&amp;source_page={$better.page|escape:'url'}&amp;oldver={$better.last_update|escape:'url'}&amp;newver={$better.current_version|escape:'url'}&amp;diff_style={$default_diff_style}">{icon _id=page_translate_from alt="{tr}update from it{/tr}" style="vertical-align:middle"}</a>
+											<a href="tiki-editpage.php?page={if isset($stagingPageName) && $hasStaging == 'y'}{$stagingPageName|escape:'url'}{else}{$page|escape:'url'}{/if}&amp;source_page={$better.page|escape:'url'}&amp;oldver={$better.last_update|escape:'url'}&amp;newver={$better.current_version|escape:'url'}&amp;diff_style={$default_diff_style}">{icon _id=page_translate_from alt="{tr}update from it{/tr}" style="vertical-align:middle"}</a>
 									{/if}
-									<a href="tiki-editpage.php?page={$page|escape:'url'}&amp;source_page={$better.page|escape:'url'}&amp;oldver={$better.last_update|escape:'url'}&amp;newver={$better.current_version|escape:'url'}&amp;diff_style={$default_diff_style}" title="{$better.page|escape}">					
+									<a href="tiki-editpage.php?page={if isset($stagingPageName) && $hasStaging == 'y'}{$stagingPageName|escape:'url'}{else}{$page|escape:'url'}{/if}&amp;source_page={$better.page|escape:'url'}&amp;oldver={$better.last_update|escape:'url'}&amp;newver={$better.current_version|escape:'url'}&amp;diff_style={$default_diff_style}" title="{$better.page|escape}">					
 									{if $show_language eq 'y'} 
 										{$better.lang|langname}</a> 
 									{else}
@@ -51,13 +51,13 @@
 							{foreach item=better from=$mod_translation_better_other}
 								<li>
 									{if $from_edit_page eq 'y'}
-										<a title="{tr}update from it{/tr}" href="tiki-editpage.php?page={$page|escape:'url'}&amp;source_page={$better.page|escape:'url'}&amp;oldver={$better.last_update|escape:'url'}&amp;newver={$better.current_version|escape:'url'}&amp;diff_style={$default_diff_style}">{icon _id=page_translate_from alt="{tr}update from it{/tr}" style="vertical-align:middle"} {$better.lang|langname}</a> ({$better.page|escape})
+										<a title="{tr}update from it{/tr}" href="tiki-editpage.php?page={if isset($stagingPageName) && $hasStaging == 'y'}{$stagingPageName|escape:'url'}{else}{$page|escape:'url'}{/if}&amp;source_page={$better.page|escape:'url'}&amp;oldver={$better.last_update|escape:'url'}&amp;newver={$better.current_version|escape:'url'}&amp;diff_style={$default_diff_style}">{icon _id=page_translate_from alt="{tr}update from it{/tr}" style="vertical-align:middle"} {$better.lang|langname}</a> ({$better.page|escape})
 									{else}
 										{if $tiki_p_edit eq 'y'}
-											<a href="tiki-editpage.php?page={$page|escape:'url'}&amp;source_page={$better.page|escape:'url'}&amp;oldver={$better.last_update|escape:'url'}&amp;newver={$better.current_version|escape:'url'}&amp;diff_style={$default_diff_style}">{icon _id=page_translate_from alt="{tr}update from it{/tr}" style="vertical-align:middle"}</a>
+											<a href="tiki-editpage.php?page={if isset($stagingPageName) && $hasStaging == 'y'}{$stagingPageName|escape:'url'}{else}{$page|escape:'url'}{/if}&amp;source_page={$better.page|escape:'url'}&amp;oldver={$better.last_update|escape:'url'}&amp;newver={$better.current_version|escape:'url'}&amp;diff_style={$default_diff_style}">{icon _id=page_translate_from alt="{tr}update from it{/tr}" style="vertical-align:middle"}</a>
 										{/if}
-										<a href="tiki-index.php?page={$better.page|escape:'url'}&amp;no_bl=y">{icon _id=page alt="{tr}view{/tr}" style="vertical-align:middle"}</a>
-										<a href="tiki-index.php?page={$better.page|escape:'url'}&amp;no_bl=y" title="{$better.page|escape}">
+										<a href="tiki-index.php?page={$better.page|escape:'url'}&no_bl=y">{icon _id=page alt="{tr}view{/tr}" style="vertical-align:middle"}</a>
+										<a href="tiki-index.php?page={$better.page|escape:'url'}&no_bl=y" title="{$better.page|escape}">
 										{if $show_language eq 'y'}
 											{$better.lang|langname}</a> 
 										{else}
@@ -68,12 +68,12 @@
 							{/foreach}
 						</ul>
 					{/if}
-				</div><br>
+				</div><br />
 			{/if}
 			
 			{if $mod_translation_worst_known or $mod_translation_worst_other}
 				<div>			
-					<b>{tr}Outgoing:{/tr}</b>
+					<b>{tr}Outgoing{/tr}:</b>
 					{if $mod_translation_worst_known}
 					<ul>
 						{foreach item=worst from=$mod_translation_worst_known}
@@ -103,8 +103,8 @@
 							{if $tiki_p_edit eq 'y'}
 								<a href="tiki-editpage.php?page={$worst.page|escape:'url'}&amp;source_page={$page|escape:'url'}&amp;oldver={$worst.last_update|escape:'url'}&amp;newver={$pageVersion|escape:'url'}&amp;diff_style={$default_diff_style}">{icon _id=page_translate_to alt="{tr}update it{/tr}" style="vertical-align:middle"}</a>
 							{/if}
-							<a href="tiki-index.php?page={$worst.page|escape:'url'}&amp;no_bl=y">{icon _id=page alt="{tr}view{/tr}" style="vertical-align:middle"}</a>
-							<a href="tiki-index.php?page={$worst.page|escape:'url'}&amp;no_bl=y" title="{$worst.page|escape}">
+							<a href="tiki-index.php?page={$worst.page|escape:'url'}&no_bl=y">{icon _id=page alt="{tr}view{/tr}" style="vertical-align:middle"}</a>
+							<a href="tiki-index.php?page={$worst.page|escape:'url'}&no_bl=y" title="{$worst.page|escape}">
 							{if $show_language eq 'y'}
 							{$worst.lang|langname}</a> 
 							{else}
@@ -114,7 +114,7 @@
 						{/foreach}
 					</ul>
 					{/if}
-				</div><br>
+				</div><br />
 			{/if}
 		
 	{/tikimodule}

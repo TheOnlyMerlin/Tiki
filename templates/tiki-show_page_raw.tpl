@@ -2,7 +2,7 @@
 <div class="wikitext">{$parsed}</div>
 {if !isset($smarty.request.clean)}
   {if isset($prefs.wiki_authors_style) && $prefs.wiki_authors_style eq 'business'}
-  <footer class="editdate">
+  <p class="editdate">
     {tr}Last edited by{/tr} {$lastUser}
     {section name=author loop=$contributors}
     {if $smarty.section.author.first}, {tr}based on work by{/tr}
@@ -12,26 +12,26 @@
       {/if}
     {/if}
     {$contributors[author]}
-    {/section}.<br>                                         
+    {/section}.<br />                                         
     {tr}Page last modified on{/tr} {$lastModif|tiki_long_datetime}.
-  </footer>
+  </p>
   {elseif isset($prefs.wiki_authors_style) &&  $prefs.wiki_authors_style eq 'collaborative'}
-  <footer class="editdate">
-    {tr}Contributors to this page:{/tr} {$lastUser}
+  <p class="editdate">
+    {tr}Contributors to this page{/tr}: {$lastUser}
     {section name=author loop=$contributors}
     {if !$smarty.section.author.last},
     {else} {tr}and{/tr}
     {/if}
     {$contributors[author]}
-    {/section}.<br>
+    {/section}.<br />
     {tr}Page last modified on{/tr} {$lastModif|tiki_long_datetime}.
-  </footer>
+  </p>
   {elseif isset($prefs.wiki_authors_style) &&  $prefs.wiki_authors_style eq 'none'}
   {else}
-  <footer class="editdate">
-    {tr}Created by:{/tr} {$creator}
-    {tr}Last Modification:{/tr} {$lastModif|tiki_long_datetime} {tr}by{/tr} {$lastUser|userlink}
-  </footer>
+  <p class="editdate">
+    {tr}Created by{/tr}: {$creator}
+    {tr}Last Modification{/tr}: {$lastModif|tiki_long_datetime} {tr}by{/tr} {$lastUser|userlink}
+  </p>
   {/if}
 
   {if (!$prefs.page_bar_position or $prefs.page_bar_position eq 'bottom' or $prefs.page_bar_position eq 'both') and $machine_translate_to_lang == ''}
@@ -41,35 +41,31 @@
   {if $is_slideshow eq 'y'}
   	<div id="tiki_slideshow_buttons" style="display: none;">
 		<a href="#" onclick="$.s5.first(); return false;" title="{tr}First Slide{/tr}">
-			<img src="vendor/jquery/jquery-s5/images/resultset_first.png" alt="{tr}First Slide{/tr}"></a> 
+			<img src="lib/jquery.s5/images/resultset_first.png" alt="{tr}First Slide{/tr}" /></a> 
 		<a href="#" onclick="$.s5.prev(); return false;" title="{tr}Previous Slide{/tr}">
-			<img src="vendor/jquery/jquery-s5/images/resultset_previous.png" alt="{tr}Previous Slide{/tr}"></a>
+			<img src="lib/jquery.s5/images/resultset_previous.png" alt="{tr}Previous Slide{/tr}" /></a>
 		<a href="#" onclick="$.s5.goLI('prev'); return false;" title="{tr}Previous Point{/tr}">
-			<img src="img/icons/resultset_up.png" alt="{tr}Previous Point{/tr}"></a>
+			<img src="pics/icons/resultset_up.png" alt="{tr}Previous Point{/tr}" /></a>
 		<a href="#" onclick="$.s5.goLI('next'); return false;" title="{tr}Next Point{/tr}">
-			<img src="img/icons/resultset_down.png" alt="{tr}Next Point{/tr}"></a> 
+			<img src="pics/icons/resultset_down.png" alt="{tr}Next Point{/tr}" /></a> 
 		<a href="#" onclick="$.s5.next(); return false;" title="{tr}Next Slide{/tr}">
-			<img src="vendor/jquery/jquery-s5/images/resultset_next.png" alt="{tr}Next Slide{/tr}"></a> 
+			<img src="lib/jquery.s5/images/resultset_next.png" alt="{tr}Next Slide{/tr}" /></a> 
 		<a href="#" onclick="$.s5.last(); return false;" title="{tr}Last Slide{/tr}">
-			<img src="vendor/jquery/jquery-s5/images/resultset_last.png" alt="{tr}Last Slide{/tr}"></a>
+			<img src="lib/jquery.s5/images/resultset_last.png" alt="{tr}Last Slide{/tr}" /></a>
 		<a href="#" onclick="$.s5.listSlideTitles(this); return false;" title="{tr}Jump To Slide{/tr}">
-			<img src="vendor/jquery/jquery-s5/images/layers.png" alt="{tr}Jump To Slide{/tr}"></a>
+			<img src="lib/jquery.s5/images/layers.png" alt="{tr}Jump To Slide{/tr}" /></a>
 		<a href="#" onclick="$.s5.play(); return false;" title="{tr}Play{/tr}">
-			<img src="vendor/jquery/jquery-s5/images/control_play_blue.png" alt="{tr}Play{/tr}"></a>
+			<img src="lib/jquery.s5/images/control_play_blue.png" alt="{tr}Play{/tr}" /></a>
 		<a href="#" onclick="$.s5.pause(); return false;" title="{tr}Pause{/tr}">
-			<img src="vendor/jquery/jquery-s5/images/control_pause_blue.png" alt="{tr}Pause{/tr}"></a>
+			<img src="lib/jquery.s5/images/control_pause_blue.png" alt="{tr}Pause{/tr}" /></a>
 		<a href="#" onclick="$.s5.stop(); return false;" title="{tr}Stop{/tr}">
-			<img src="vendor/jquery/jquery-s5/images/control_stop_blue.png" alt="{tr}Stop{/tr}"></a>
+			<img src="lib/jquery.s5/images/control_stop_blue.png" alt="{tr}Stop{/tr}" /></a>
 		<a href="#" onclick="$.s5.getNote(); return false;" title="{tr}Notes{/tr}">
-			<img src="vendor/jquery/jquery-s5/images/note.png" alt="{tr}Notes{/tr}"></a>
+			<img src="lib/jquery.s5/images/note.png" alt="{tr}Notes{/tr}" /></a>
 		<a href="#" onclick="$.s5.toggleLoop(); return false;" title="{tr}Toggle Loop{/tr}">
-			<img src="vendor/jquery/jquery-s5/images/arrow_rotate_clockwise.png" alt="{tr}Toggle Loop{/tr}"></a>
-		{if $prefs.feature_slideshow_pdfexport eq 'y'}
-			<a href="#" onclick="window.exportPdf(this);"  title="{tr}Export to PDF{/tr}">
-				<img alt="{tr}Export to PDF{/tr}" src="vendor/jquery/jquery-s5/images/page_go.png"></a>
-		{/if}
+			<img src="lib/jquery.s5/images/arrow_rotate_clockwise.png" alt="{tr}Toggle Loop{/tr}" /></a>
 		<a href="tiki-index.php?page={$page}" title="{tr}Exit{/tr}">
-			<img src="img/icons/cross.png" alt="{tr}Exit{/tr}"></a>
+			<img src="pics/icons/cross.png" alt="{tr}Exit{/tr}" /></a>
 		<select class="tiki-slideshow-theme">
 			<option value="">{tr}Change Theme{/tr}</option>
 			<option value="default">default</option>
@@ -101,35 +97,31 @@
 	</div>
 	<div id="tiki_slideshowNote_buttons" style="display: none;">
 		<a href="#" onclick="window.opener.$.s5.first(); return false;" title="{tr}First Slide{/tr}">
-			<img src="vendor/jquery/jquery-s5/images/resultset_first.png" alt="{tr}First Slide{/tr}"></a> 
+			<img src="lib/jquery.s5/images/resultset_first.png" alt="{tr}First Slide{/tr}" /></a> 
 		<a href="#" onclick="window.opener.$.s5.prev(); return false;" title="{tr}Previous Slide{/tr}">
-			<img src="vendor/jquery/jquery-s5/images/resultset_previous.png" alt="{tr}Previous Slide{/tr}"></a>
+			<img src="lib/jquery.s5/images/resultset_previous.png" alt="{tr}Previous Slide{/tr}" /></a>
 		<a href="#" onclick="window.opener.$.s5.goLI('prev'); return false;" title="{tr}Previous Point{/tr}">
-			<img src="img/icons/resultset_up.png" alt="{tr}Previous Point{/tr}"></a>
+			<img src="pics/icons/resultset_up.png" alt="{tr}Previous Point{/tr}" /></a>
 		<a href="#" onclick="window.opener.$.s5.goLI('next'); return false;" title="{tr}Next Point{/tr}">
-			<img src="img/icons/resultset_down.png" alt="{tr}Next Point{/tr}"></a> 
+			<img src="pics/icons/resultset_down.png" alt="{tr}Next Point{/tr}" /></a> 
 		<a href="#" onclick="window.opener.$.s5.next(); return false;" title="{tr}Next Slide{/tr}">
-			<img src="vendor/jquery/jquery-s5/images/resultset_next.png" alt="{tr}Next Slide{/tr}"></a> 
+			<img src="lib/jquery.s5/images/resultset_next.png" alt="{tr}Next Slide{/tr}" /></a> 
 		<a href="#" onclick="window.opener.$.s5.last(); return false;" title="{tr}Last Slide{/tr}">
-			<img src="vendor/jquery/jquery-s5/images/resultset_last.png" alt="{tr}Last Slide{/tr}"></a>
+			<img src="lib/jquery.s5/images/resultset_last.png" alt="{tr}Last Slide{/tr}" /></a>
 		<a href="#" onclick="window.opener.$.s5.listSlideTitles(this); return false;" title="{tr}Jump To Slide{/tr}">
-			<img src="vendor/jquery/jquery-s5/images/layers.png" alt="{tr}Jump To Slide{/tr}"></a>
+			<img src="lib/jquery.s5/images/layers.png" alt="{tr}Jump To Slide{/tr}" /></a>
 		<a href="#" onclick="window.opener.$.s5.play(); return false;" title="{tr}Play{/tr}">
-			<img src="vendor/jquery/jquery-s5/images/control_play_blue.png" alt="{tr}Play{/tr}"></a>
+			<img src="lib/jquery.s5/images/control_play_blue.png" alt="{tr}Play{/tr}" /></a>
 		<a href="#" onclick="window.opener.$.s5.pause(); return false;" title="{tr}Pause{/tr}">
-			<img src="vendor/jquery/jquery-s5/images/control_pause_blue.png" alt="{tr}Pause{/tr}"></a>
+			<img src="lib/jquery.s5/images/control_pause_blue.png" alt="{tr}Pause{/tr}" /></a>
 		<a href="#" onclick="window.opener.$.s5.stop(); return false;" title="{tr}Stop{/tr}">
-			<img src="vendor/jquery/jquery-s5/images/control_stop_blue.png" alt="{tr}Stop{/tr}"></a>
+			<img src="lib/jquery.s5/images/control_stop_blue.png" alt="{tr}Stop{/tr}" /></a>
 		<a href="#" onclick="window.opener.$.s5.getNote(); return false;" title="{tr}Notes{/tr}">
-			<img src="vendor/jquery/jquery-s5/images/note.png" alt="{tr}Notes{/tr}"></a>
+			<img src="lib/jquery.s5/images/note.png" alt="{tr}Notes{/tr}" /></a>
 		<a href="#" onclick="window.opener.$.s5.toggleLoop(); return false;" title="{tr}Toggle Loop{/tr}">
-			<img src="vendor/jquery/jquery-s5/images/arrow_rotate_clockwise.png" alt="{tr}Toggle Loop{/tr}"></a>
-		{if $prefs.feature_slideshow_pdfexport eq 'y'}
-			<a href="#" onclick="window.exportPdf(this);" title="{tr}Export to PDF{/tr}">
-				<img alt="{tr}Export to PDF{/tr}" src="vendor/jquery/jquery-s5/images/page_go.png"></a>
-		{/if}
+			<img src="lib/jquery.s5/images/arrow_rotate_clockwise.png" alt="{tr}Toggle Loop{/tr}" /></a>
 		<a href="tiki-index.php?page={$page}" title="{tr}Exit{/tr}">
-			<img src="img/icons/cross.png" alt="{tr}Exit{/tr}"></a>
+			<img src="pics/icons/cross.png" alt="{tr}Exit{/tr}" /></a>
 		<select class="tiki-slideshow-theme">
 			<option value="">{tr}Change Theme{/tr}</option>
 			<option value="default">default</option>
@@ -159,61 +151,5 @@
 			<option value="swanky-purse">swanky-purse</option>
 		</select>
 	</div>
-	  {if $prefs.feature_slideshow_pdfexport eq 'y'}
-		  {jq}
-
-	        window.exportPdf = function() {
-	            var inputs = $('<div />');
-	            var buttons = {};
-
-	            inputs.append(
-		            tr('Layout: ') +
-		            '<select id="layout">' +
-		                '<option value="landscape">' + tr('Landscape') + '</option>' +
-		                '<option value="portrait">' + tr('Portrait') + '</option>' +
-		            '</select>'
-		        );
-
-		        inputs.append('<br>');
-
-		        inputs.append(
-                    tr('Font Size: ') +
-		            '<select id="fontsize">' +
-                        '<option value="small">' + tr('Small') + '</option>' +
-                        '<option value="medium">' + tr('Medium') + '</option>' +
-		                '<option value="large">' + tr('Large') + '</option>' +
-		                '<option value="x-large">' + tr('X-Large') + '</option>' +
-                    '</select>'
-                );
-
-	            buttons[tr("Ok")] = function() {
-		            var s5;
-
-		            if (window.opener) {
-		                s5 = window.opener.$.s5;
-		            } else {
-		                s5 = $.s5;
-		            }
-
-		            $body.prepend('<style id="tempStyle">' +
-		            'body *{' +
-		                'font-size:' + escape($('#fontsize').val()) + ' ! important;' +
-		                '}' +
-		            '</style>');
-
-		            s5.exportPDF('tiki-slideshow.php?page={$page}&pdf&' + $('#layout').val() + '&fontsize=' + $('#fontsize').val(), tr("PDF Loading... This can take a minute or two."));
-		            inputs.dialog('close');
-		            $body.find('#tempStyle').remove();
-	            };
-
-
-	            inputs.dialog({
-	                title: tr("Configure"),
-	                buttons: buttons,
-	                modal: true
-	            });
-	        };
-	      {/jq}
-	{/if}
   {/if}
 {/if}

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,6 +11,7 @@
 // Mediawiki authentication plugin for phpBB3 with mysql4
 // By Steve Streeting 26 Dec 2008
 
+require_once('lib/adodb/adodb.inc.php');
 require_once ('lib/auth/PasswordHash.php');
 
 // some definitions for helping with authentication
@@ -33,12 +34,12 @@ class TikiPhpBBLib
 	{
 
 	// no need to progress further if the user doesn't even exist
-		if (!$this->userExists($user)) {
+		if(!$this->userExists($user)) {
 			return PHPBB_NO_SUCH_USER;
 		}
 
 		// if the user does exist, authenticate
-		if ($this->authenticate($user, $pass)) {
+		if($this->authenticate($user, $pass)) {
 			return PHPBB_SUCCESS;
 		} else {
 			return PHPBB_INVALID_CREDENTIALS;
@@ -57,16 +58,10 @@ class TikiPhpBBLib
 		$dbname = $prefs['auth_phpbb_dbname'];
 		$dbtype = 'mysql';//$prefs['auth_phpbb_dbtype'];
 
-		// Force autoloading
-		if (! class_exists('ADOConnection')) {
-			return false;
-		}
-
-
 		$dbconnection = NewADOConnection($dbtype);
 		$dbconnection->Connect($dbhost, $dbuser, $dbpasswd, $dbname);
 
-		if ($dbconnection) {
+		if($dbconnection) {
 			return $dbconnection;
 		}
 		return false;

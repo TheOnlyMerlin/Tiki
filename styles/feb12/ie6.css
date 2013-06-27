@@ -16,12 +16,12 @@ input[type=submit]:hover {
 	cursor: pointer;
 }
 
-.button a,
-.button a:visited {
+span.button a,
+span.button a:visited {
 	background: url(feb12/header.jpg) repeat-x 0 -2px;
 }
 
-.button a:hover {
+span.button a:hover {
 	color: #F5F5F5;
 	background: url(feb12/header.jpg) repeat-x 0 100%;
 }
@@ -46,6 +46,16 @@ input[type=submit]:hover {
 	font-size: 1em;
 }
 
+.horbaritem a,
+.horbaritem a:link,
+.horbaritem a:visited {
+	font-size: 1.3em;
+}
+
+.mdksubmenu {
+	margin-top: 0;
+}
+
 .box-data table {
 	width: 95%;
 }
@@ -60,11 +70,11 @@ input[type=submit]:hover {
 	height: 1%;
 }
 
-#tikihelp {
+div#tikihelp {
 	position: absolute;
 }
 
-.box {
+div.box {
 	width: 200px;
 }
 
@@ -73,9 +83,12 @@ h3.box-title {
 }
 
 .moduleflip {
-	display: block;
 	position: static;
 	float: right;
+}
+
+.moduleflip {
+	display: block;
 }
 
 img.flipmodimage {
@@ -103,6 +116,6 @@ td {
 	font-size: 1em;
 }
 
-.galtable {
+table.galtable {
 	width: 97%;
 }

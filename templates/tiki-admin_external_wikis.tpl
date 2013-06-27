@@ -2,26 +2,26 @@
 
 <h2>{tr}Create/Edit External Wiki{/tr}</h2>
 <form action="tiki-admin_external_wikis.php" method="post">
-	<input type="hidden" name="extwikiId" value="{$extwikiId|escape}">
+	<input type="hidden" name="extwikiId" value="{$extwikiId|escape}" />
 	<table class="formcolor">
 		<tr>
-			<td>{tr}Name:{/tr}</td>
+			<td>{tr}Name{/tr}:</td>
 			<td>
-				<input type="text" maxlength="255" size="10" name="name" value="{$info.name|escape}">
+				<input type="text" maxlength="255" size="10" name="name" value="{$info.name|escape}" />
 			</td>
 		</tr>
 		<tr>
 			<td>
-				{tr}URL (use $page to be replaced by the page name in the URL example: http://www.example.com/tiki-index.php?page=$page):{/tr}
+				{tr}URL (use $page to be replaced by the page name in the URL example: http://www.example.com/tiki-index.php?page=$page){/tr}:
 			</td>
 			<td>
-				<input type="text" maxlength="255" size="40" name="extwiki" value="{$info.extwiki|escape}">
+				<input type="text" maxlength="255" size="40" name="extwiki" value="{$info.extwiki|escape}" />
 			</td>
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" name="save" value="{tr}Save{/tr}">
+				<input type="submit" name="save" value="{tr}Save{/tr}" />
 			</td>
 		</tr>
 	</table>
@@ -42,9 +42,9 @@
 	{cycle values="odd,even" print=false}
 	{section name=user loop=$channels}
 		<tr class="{cycle}">
-			<td class="text">{$channels[user].name}</td>
-			<td class="text">{$channels[user].extwiki}</td>
-			<td class="action">
+			<td>{$channels[user].name}</td>
+			<td>{$channels[user].extwiki}</td>
+			<td>
 				&nbsp;&nbsp;
 				<a title="{tr}Edit{/tr}" class="link" href="tiki-admin_external_wikis.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;extwikiId={$channels[user].extwikiId}">{icon _id='page_edit'}</a>
 				&nbsp;
@@ -52,7 +52,9 @@
 			</td>
 		</tr>
 	{sectionelse}
-		{norecords _colspan=3}
+		<tr>
+			<td class="odd" colspan="3">{tr}No records found{/tr}</td>
+		</tr>
 	{/section}
 </table>
 

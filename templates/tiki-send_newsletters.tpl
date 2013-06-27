@@ -1,7 +1,7 @@
 {* $Id$ *}
 {$showBoxCheck}
 
-{title help="Newsletters"}{tr}Send Newsletters{/tr}{/title}
+{title help="Newsletters"}{tr}Send Newsletters{/tr} {if $nlId ne '0'}{$nlName}{/if}{/title}
 
 {if $tiki_p_admin_newsletters eq "y"}
 	<div class="navbar">
@@ -17,13 +17,6 @@
 {if $upload_err_msg neq ''}
 	{remarksbox type='warning' title="{tr}Warning{/tr}" icon='error'}
 		{$upload_err_msg}
-	{/remarksbox}
-{/if}
-
-{if $mailto_link}
-	{remarksbox type=info title="External Client"}
-		{tr}You can also send newsletters using an external client:{/tr}
-		<a href="{$mailto_link|escape}">{tr}Compose{/tr}</a>
 	{/remarksbox}
 {/if}
 
@@ -57,25 +50,25 @@
 	<div id="confirmArea">
 	{remarksbox type='note' title="{tr}Please Confirm{/tr}"}
 		<b>{tr}This newsletter will be sent to {$subscribers} email addresses.{/tr}</b>
-		<br>
+		<br />
 		{tr}Reply to:{/tr} {if empty($replyto)}{$prefs.sender_email|escape} ({tr}default{/tr}){else}{$replyto|escape}{/if}
 	{/remarksbox}
 	<p>
 		<form method="post" action="tiki-send_newsletters.php" target="resultIframe" id='confirmForm'>
-			<input type="hidden" name="nlId" value="{$nlId|escape}">
-			<input type="hidden" name="sendingUniqId" value="{$sendingUniqId|escape}">
-			<input type="hidden" name="editionId" value="{$info.editionId}">
-			<input type="hidden" name="subject" value="{$subject|escape}">
-			<input type="hidden" name="data" value="{$data|escape}">
-			<input type="hidden" name="dataparsed" value="{$dataparsed|escape}">
-			<input type="hidden" name="cookietab" value="3">
-			<input type="hidden" name="datatxt" value="{$info.datatxt|escape}">
-			<input type="hidden" name="replyto" value="{$replyto|escape}">
-			<input type="hidden" name="wysiwyg" value="{$info.wysiwyg|escape}">
-			<input type="submit" name="send" value="{tr}Send{/tr}" onclick="document.getElementById('confirmArea').style.display = 'none'; document.getElementById('sendingArea').style.display = 'block';">
-			<input type="submit" name="cancel" value="{tr}Cancel{/tr}">
+			<input type="hidden" name="nlId" value="{$nlId|escape}" />
+			<input type="hidden" name="sendingUniqId" value="{$sendingUniqId|escape}" />
+			<input type="hidden" name="editionId" value="{$info.editionId}"/>
+			<input type="hidden" name="subject" value="{$subject|escape}" />
+			<input type="hidden" name="data" value="{$data|escape}" />
+			<input type="hidden" name="dataparsed" value="{$dataparsed|escape}" />
+			<input type="hidden" name="cookietab" value="3" />
+			<input type="hidden" name="datatxt" value="{$info.datatxt|escape}" />
+			<input type="hidden" name="replyto" value="{$replyto|escape}" />
+			<input type="hidden" name="wysiwyg" value="{$wysiwyg|escape}" />
+			<input type="submit" name="send" value="{tr}Send{/tr}" onclick="document.getElementById('confirmArea').style.display = 'none'; document.getElementById('sendingArea').style.display = 'block';" />
+			<input type="submit" name="cancel" value="{tr}Cancel{/tr}" />
 			{foreach from=$info.files item=newsletterfile key=fileid}
-				<input type='hidden' name='newsletterfile[{$fileid}]' value='{$newsletterfile.id}'>
+				<input type='hidden' name='newsletterfile[{$fileid}]' value='{$newsletterfile.id}'/>
 			{/foreach}
 		</form>
 	</p>
@@ -106,7 +99,7 @@
 	<h3>{tr}HTML version{/tr}</h3>
 	<div class="simplebox wikitext">{$previewdata}</div>
 
-	{if $allowTxt eq 'y'}
+	{if $allowTxt eq 'y' }
 		<h3>{tr}Text version{/tr}</h3>
 		{if $info.datatxt}<div class="simplebox wikitext" >{$info.datatxt|escape|nl2br}</div>{/if}
 		{if $txt}<div class="simplebox wikitext">{$txt|escape|nl2br}</div>{/if}
@@ -133,20 +126,7 @@
 
 	<div id="sendingArea" style="display:none">
 		<h3>{tr}Sending Newsletter{/tr} ...</h3>
-		<div id="confirmed"></div>
 		<iframe id="resultIframe" name="resultIframe" frameborder="0" style="width: 600px; height: 400px"></iframe>
-		{jq}
-			$('#resultIframe').bind('load', function () {
-				var root = this.contentDocument.documentElement, iframe = this;
-				$('#confirmed').append($('.confirmation', root));
-				$('.throttle', root).each(function () {
-					var url = 'tiki-send_newsletters.php?resume=' + $(this).data('edition');
-					setTimeout(function () {
-						$(iframe).attr('src', url);
-					}, parseInt($(this).data('rate'), 10) * 1000);
-				});
-			});
-		{/jq}
 	</div>
 
 {else}
@@ -158,7 +138,7 @@
 		<h3>{tr}HTML version{/tr}</h3>
 		<div class="simplebox wikitext">{$previewdata}</div>
 
-		{if $allowTxt eq 'y'}
+		{if $allowTxt eq 'y' }
 			<h3>{tr}Text version{/tr}</h3>
 			{if $info.datatxt}<div class="simplebox wikitext" >{$info.datatxt|escape|nl2br}</div>{/if}
 			{if $txt}<div class="simplebox wikitext">{$txt|escape|nl2br}</div>{/if}
@@ -180,12 +160,12 @@
 	{* --- tab with editor --- *}
 		<h2>{tr}Prepare a newsletter to be sent{/tr}</h2>
 		<form action="tiki-send_newsletters.php" method="post" id='editpageform' enctype='multipart/form-data'>
-			<input type="hidden" name="editionId" value="{$info.editionId}">
+			<input type="hidden" name="editionId" value="{$info.editionId}"/>
 			<table class="formcolor" id="newstable">
 				<tr>
 					<td><label for="subject">{tr}Subject:{/tr}</label></td>
 					<td>
-						<input type="text" maxlength="250" size="80" id="subject" name="subject" value="{$info.subject|escape}">
+						<input type="text" maxlength="250" size="80" id="subject" name="subject" value="{$info.subject|escape}" />
 					</td>
 				</tr>
 				<tr>
@@ -205,7 +185,7 @@
 					<tr>
 						<td>{tr}Apply content template{/tr}</td>
 						<td>
-							<input type="hidden" name="previousTemplateId" value="{$templateId}">
+							<input type="hidden" name="previousTemplateId" value="{$templateId}" />
 							<select name="templateId" onchange="javascript:document.getElementById('editpageform').submit();">
 								<option value="0">{tr}none{/tr}</option>
 								{section name=ix loop=$templates}
@@ -214,7 +194,6 @@
 									</option>
 								{/section}
 							</select>
-							{button _text='{tr}Admin templates{/tr}' href='tiki-admin_content_templates.php' _target='blank'}
 						</td>
 					</tr>
 				{/if}
@@ -241,8 +220,7 @@
 				<tr>
 					<td colspan="2">
 						{textarea name='data' id='editwiki'}{$info.data}{/textarea}
-						<label>{tr}Must be wiki parsed:{/tr} <input type="checkbox" name="wikiparse" {if empty($info.wikiparse) or $info.wikiparse eq 'y'} checked="checked"{/if}></label>
-						<label>{tr}Is HTML.{/tr} <input type="checkbox" name="is_html" {if $info.is_html} checked="checked"{/if}></label>
+						<label>{tr}Must be wiki parsed:{/tr} <input type="checkbox" name="wikiparse" {if empty($info.wikiparse) or $info.wikiparse eq 'y'} checked="checked"{/if} /></label>
 					</td>
 				</tr>
 
@@ -251,39 +229,34 @@
 						<label for="editwikitxt">{tr}Data Txt:{/tr}</label>
 					</td>
 					<td id="txtcol2" >
-						<textarea id='editwikitxt' name="datatxt" rows="20" cols="80">{$info.datatxt|escape}</textarea>
+						<textarea id='editwikitxt' name="datatxt" rows="{$rows}" cols="{$cols}">{$info.datatxt|escape}</textarea>
 					</td>
 				</tr>
 
 				<tr>
 					<td id="clipcol1">
 						{tr}Article Clip (read only):{/tr}
-						<input type="submit" name="clipArticles" value="{tr}Clip Now{/tr}" class="wikiaction tips" title="{tr}Clip Articles{/tr}" onclick="needToConfirm=false">
+						<input type="submit" name="clipArticles" value="{tr}Clip Now{/tr}" class="wikiaction tips" title="{tr}Clip Articles{/tr}" onclick="needToConfirm=false" />
 					</td>
 					<td id="clipcol2" >
 						{tr}To include the article clipping into your newsletter, cut and paste it into the contents.{/tr}
-						<br>{tr}If autoclipping is enabled, you can also enter "~~~articleclip~~~" which will be replaced with the latest	clip when sending.{/tr}
-						{if !empty($articleClip)}
-						{remarksbox type="warning" title="{tr}Notice{/tr}"}
-							{tr}Be careful not to paste articles that must not be seen by the recipients{/tr} 
-						{/remarksbox}
-						{/if}
-						<textarea id='articlecliptxt' name="articleClip" rows="20" cols="80" readonly="readonly">{$articleClip}</textarea>
+						<br />{tr}If autoclipping is enabled, you can also enter "~~~articleclip~~~" which will be replaced with the latest	clip when sending.{/tr}
+						<textarea id='articlecliptxt' name="articleClip" rows="{$rows}" cols="{$cols}" readonly="readonly">{$articleClip}</textarea>		
 					</td>
 				</tr>				
 				
 				<tr>
-					<td>
+					<td id="txtcol1">
 						{tr}Attached Files{/tr} :
 					</td>
-					<td>
+					<td id="txtcol2" >
 						<div style='display: none' id='newsletterfileshack'></div>
 						<div id='newsletterfiles'>
 							{foreach from=$info.files item=newsletterfile key=fileid}
 								<div id='newsletterfileid_{$fileid}'>
 									<a href="javascript:remove_newsletter_file('{$fileid}');">[{tr}remove{/tr}]</a>
 									{$newsletterfile.name|escape} ({$newsletterfile.type|escape}, {$newsletterfile.size|escape} {tr}octets{/tr})
-									<input type='hidden' name='newsletterfile[{$fileid}]' value='{$newsletterfile.id}'>
+									<input type='hidden' name='newsletterfile[{$fileid}]' value='{$newsletterfile.id}'/>
 								</div>
 							{/foreach}
 						</div>
@@ -292,29 +265,28 @@
 				</tr>
 
 				<tr>
-					<td><label for="replyto">{tr}Reply To Email{/tr}</label></td>
-					<td><input type="text" name="replyto" id="replyto" value="{$replyto|escape}"> {tr}if not:{/tr} {$prefs.sender_email|escape|default:"<em>{tr}Sender email not set{/tr}</em>"}</td>
+					<td id="txtcol1"><label for="replyto">{tr}Reply To Email{/tr}</label></td>
+					<td id="txtcol2" ><input type="text" name="replyto" id="replyto" value="{$replyto|escape}" /> {tr}if not:{/tr} {$prefs.sender_email|escape|default:"<em>{tr}Sender email not set{/tr}</em>"}</td>
 				</tr>
 
 				<tr>
 					<td>&nbsp;</td>
 					<td>
-						<input type="submit" name="preview" value="{tr}Preview{/tr}" class="wikiaction tips" title="{tr}Send Newsletters{/tr}|{tr}Preview your changes.{/tr}" onclick="needToConfirm=false">
+						<input type="submit" name="preview" value="{tr}Preview{/tr}" class="wikiaction tips" title="{tr}Send Newsletters{/tr}|{tr}Preview your changes.{/tr}" onclick="needToConfirm=false" />
 						&nbsp;
-						<input type="submit" name="save_only" value="{tr}Save as Draft{/tr}" class="wikiaction tips" title="{tr}Send Newsletters{/tr}|{tr}Save your changes.{/tr}" onclick="needToConfirm=false">
+						<input type="submit" name="save_only" value="{tr}Save as Draft{/tr}" class="wikiaction tips" title="{tr}Send Newsletters{/tr}|{tr}Save your changes.{/tr}" onclick="needToConfirm=false" />
 					</td>
 				</tr>
 
 				<tr>
 					<td>&nbsp;</td>
-					<td>&nbsp;<input type="submit" name="save" value="{tr}Send Newsletter{/tr}" class="wikiaction tips" title="{tr}Send Newsletters{/tr}|{tr}Save any changes and send to all subscribers.{/tr}" onclick="needToConfirm=false"></td>
+					<td>&nbsp;<input type="submit" name="save" value="{tr}Send Newsletter{/tr}" class="wikiaction tips" title="{tr}Send Newsletters{/tr}|{tr}Save any changes and send to all subscribers.{/tr}" onclick="needToConfirm=false" /></td>
 				</tr>
 			</table>
 		</form>
 	{/tab}
-	
-	{assign var=name value="{tr _0=$cant_drafts}Drafts (%0){/tr}"}
-	{tab name=$name}
+
+	{tab name="{tr}Drafts{/tr}&nbsp;(`$cant_drafts`)"}
 	{* --- tab with drafts --- *}
 		{assign var=channels value=$drafts}
 		{assign var=view_editions value='n'}
@@ -332,12 +304,11 @@
 		{assign var=find value=$dr_find}
 		{assign var=find_bak value=$ed_find}
 		{assign var=tab value=2}
-		<h2>{$name}</h2>
-		{include file='sent_newsletters.tpl'}
+		<h2>{tr}Drafts{/tr}&nbsp;({$cant_drafts})</h2>
+		{include file='sent_newsletters.tpl' }
 	{/tab}
 
-	{assign var=name value="{tr _0=$cant_editions}Sent Editions (%0){/tr}"}
-	{tab name=$name}
+	{tab name="{tr}Sent editions{/tr}&nbsp;($cant_editions)"}
 	{* --- tab with editions --- *}
 		{assign var=channels value=$editions}
 		{assign var=view_editions value='y'}
@@ -355,8 +326,8 @@
 		{assign var=find value=$ed_find}
 		{assign var=find_bak value=$dr_find}
 		{assign var=tab value=3}
-		<h2>{$name}</h2>
-		{include file='sent_newsletters.tpl'}
+		<h2>{tr}Sent editions{/tr}&nbsp;({$cant_editions})</h2>
+		{include file='sent_newsletters.tpl' }
 		{/tab}
 	{/tabset}
 {/if}
@@ -373,7 +344,7 @@ document.getElementById('clipcol2').style.display='none';
 
 var newsletterfileid={{$info.files|@count}};
 function add_newsletter_file() {
-	document.getElementById('newsletterfileshack').innerHTML='<div id="newsletterfileid_'+newsletterfileid+'"><a href="javascript:remove_newsletter_file('+newsletterfileid+');">[{{tr}remove{/tr}}]</a> <input type="file" name="newsletterfile['+newsletterfileid+']"></div>';
+	document.getElementById('newsletterfileshack').innerHTML='<div id="newsletterfileid_'+newsletterfileid+'"><a href="javascript:remove_newsletter_file('+newsletterfileid+');">[{{tr}remove{/tr}}]</a> <input type="file" name="newsletterfile['+newsletterfileid+']"/></div>';
 	document.getElementById('newsletterfiles').appendChild(document.getElementById('newsletterfileid_'+newsletterfileid));
 	newsletterfileid++;
 }

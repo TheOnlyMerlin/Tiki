@@ -19,7 +19,7 @@
 		<table class="normal">
 			<tr>
 				<th style="text-align:center;">
-					<input type="submit" name="delete" value="{tr}x{/tr} ">
+					<input type="submit" name="delete" value="{tr}x{/tr} " />
 				</th>
 				<th>
 					<a href="tiki-notepad_list.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a>
@@ -41,17 +41,17 @@
 			{cycle values="odd,even" print=false}
 			{section name=user loop=$channels}
 				<tr class="{cycle}">
-					<td class="id">
-						<input type="checkbox" name="note[{$channels[user].noteId}]">
+					<td style="text-align:center;">
+						<input type="checkbox" name="note[{$channels[user].noteId}]" />
 					</td>
-					<td class="text">
+					<td>
 						<a class="link" href="tiki-notepad_read.php?noteId={$channels[user].noteId}">{$channels[user].name|escape}</a>
 					</td>
-					<td class="text">{$channels[user].parse_mode}</td>
-					<td class="date">{$channels[user].created|tiki_short_datetime}</td>
-					<td class="date">{$channels[user].lastModif|tiki_short_datetime}</td>
-					<td class="integer">{$channels[user].size|kbsize}</td>
-					<td class="action">
+					<td>{$channels[user].parse_mode}</td>
+					<td>{$channels[user].created|tiki_short_datetime}</td>
+					<td>{$channels[user].lastModif|tiki_short_datetime}</td>
+					<td style="text-align:right;">{$channels[user].size|kbsize}</td>
+					<td style="text-align:center;">
 						<a href="tiki-notepad_get.php?noteId={$channels[user].noteId}" class="link">{icon _id='magnifier' alt="{tr}View{/tr}"}</a>
 						<a href="tiki-notepad_write.php?noteId={$channels[user].noteId}" class="link">{icon _id='page_edit'}</a>
 						<a href="tiki-notepad_get.php?noteId={$channels[user].noteId}&amp;save=1" class="link">{icon _id='disk' alt="{tr}Save{/tr}"}</a>
@@ -65,8 +65,8 @@
 			{/section}
 			<tr>
 				<td colspan="4">
-					<input type="submit" name="merge" value="{tr}Merge selected notes into{/tr}">
-					<input type="text" name="merge_name" size="20">
+					<input type="submit" name="merge" value="{tr}Merge selected notes into{/tr}" />
+					<input type="text" name="merge_name" size="20" />
 				</td>
 			</tr>
 		</table>
@@ -79,11 +79,11 @@
 <form enctype="multipart/form-data" action="tiki-notepad_list.php" method="post">
 	<table class="formcolor">
 		<tr>
-			<td>{tr}Upload file:{/tr}</td>
+			<td>{tr}Upload file{/tr}:</td>
 			<td>
-				<input type="hidden" name="MAX_FILE_SIZE" value="10000000000000">
-				<input size="16" name="userfile1" type="file">
-				<input style="font-size:9px;" type="submit" name="upload" value="{tr}Upload{/tr}">
+				<input type="hidden" name="MAX_FILE_SIZE" value="10000000000000" />
+				<input size="16" name="userfile1" type="file" />
+				<input style="font-size:9px;" type="submit" name="upload" value="{tr}Upload{/tr}" />
 			</td>
 		</tr>
 	</table>

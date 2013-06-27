@@ -1,48 +1,44 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
 
-/**
- * @return array
- */
-function module_trackerhelp_info()
-{
+function module_trackerhelp_info() {
 	return array(
-		'name' => tra('Tracker Help'),
-		'description' => tra('Display the fields of a tracker (name and identifier)'),
+		'name' => tra('Trackerhelp'),
+		'description' => tra('Display the fieldId of a tracker'),
 		'prefs' => array("feature_trackers"),
 		'params' => array(
-			'height' => array(
-				'name' => tra('Text field height'),
-				'description' => tra('Number of lines'),
+			'rows' => array(
+				'name' => tra('Textarea rows'),
+				'description' => tra('Textarea rows'),
 				'filter' => 'int'
 			),
 			'cols' => array(
-				'name' => tra('Text field width'),
-				'description' => tra('Number of characters'),
+				'name' => tra('Textarea cols'),
+				'description' => tra('Textarea cols'),
+				'filter' => 'int'
+			),
+			'max' => array(
+				'name' => tra('Max fields'),
+				'description' => tra('Max fields'),
 				'filter' => 'int'
 			),
 		)
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
-function module_trackerhelp($mod_reference, &$module_params)
-{
+function module_trackerhelp( $mod_reference, &$module_params ) {
 	global $smarty;
-	$default = array('height' => 4, 'cols' => 23);
+	$default = array('rows' => 4, 'cols' => 23, 'max'=> 100);
 	$module_params = array_merge($default, $module_params);
 	if (!empty($_REQUEST['trackerhelp'])) {
 		global $trklib; include_once('lib/trackers/trackerlib.php');
@@ -61,21 +57,18 @@ function module_trackerhelp($mod_reference, &$module_params)
 			$_SESSION['trackerhelp_name'] = '';
 			$_SESSION['trackerhelp_id'] = 0;
 			$_SESSION['trackerhelp_text'] = array();
-			$_SESSION['trackerhelp_pretty'] = array();
 		} else {
 			$_SESSION['trackerhelp_id'] = $trackerId;
 			$_SESSION['trackerhelp_name'] = $_REQUEST['trackerhelp_name'];
 			$fields = $trklib->list_tracker_fields($trackerId, 0, -1);
 			$_SESSION['trackerhelp_text'] = array();
-			$_SESSION['trackerhelp_pretty'] = array();
-			foreach ($fields['data'] as $field) {
+			foreach($fields['data'] as $field) {
 				$_SESSION['trackerhelp_text'][] = $field['fieldId'].':'.$field['name'];
-				$_SESSION['trackerhelp_pretty'][] = $field['name'].' {$f_'.$field['fieldId'].'}';
 			}
 		}
 	}	
-	if (!empty($_SESSION['trackerhelp_text']) && count($_SESSION['trackerhelp_text']) < $module_params['height']) {
-		$module_params['height'] = count($_SESSION['trackerhelp_text']);
+	if (!empty($_SESSION['trackerhelp_text']) && count($_SESSION['trackerhelp_text']) < $module_params['rows']) {
+		$module_params['rows'] = count($_SESSION['trackerhelp_text']);
 	}
 
 	$smarty->assign('tpl_module_title', tra('Tracker Help'));

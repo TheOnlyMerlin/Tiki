@@ -1,9 +1,8 @@
 /* $Id$ */
 
-a.admbox,
-a.admbox:visited {
-	height: 92px;
-	width: 92px;
+a.admbox {
+	height: 100px;
+	width: 100px;
 	text-align: center;
 	vertical-align: middle;
 	overflow: hidden;
@@ -27,7 +26,7 @@ a.admbox:active {
 	color: #fff;
 }
 
-a.admbox span {
+a.admbox span { 
 	position: absolute;
 	bottom: 0;
 	left: 0;
@@ -49,13 +48,14 @@ a.admbox.off:active {
 
 a.admbox.off img {
 	border: none;
-	margin-top: 0px;
+	margin-top : 0px;
 	width: 100px;
 	height: 100px;
 	position: absolute;
 	top: 0;
 	left: 0;
-	background-image: url('../img/overlay-disabled_item.png');
+	background-image: url('../pics/overlay-disabled_item.png');
+	opacity: .5;
 }
 /* Look & feel thumbnail */
 
@@ -72,60 +72,30 @@ a.admbox.off img {
 .adminoptionbox {
 /*overall box */
 	padding: 0.5em;
-	text-align: left;
-}
+	text-align:left;
+	}
 	
 .adminoptionbox label, .adminoptionlabel {
 /* text label and text field */
 	text-align: left;
-}
-
-.adminoptionpopup a {
-	display: block;
-}
-
-.labelColumns label {
-	display: block;
-	float: left;
-	width: 25%;
-}
+	}
 
 .adminoptionbox label.above {
 	display: block;
 }
 
-.adminoptionbox > label {
-	min-width: 12em;
-	display: inline-block;
-}
-
 .adminoptionbox .checkbox, .adminoption {
 /*check box */
 	display: block;
-	float: left;
-	margin-right: 1em;
-}
+	float:left;
+	margin-right:1em;
+	}
 
 .adminoptionboxchild {
 /*sub options */
 	margin-left:3em;
 	clear:both;
-}
-
-.multicheckbox label,
-.multicheckbox ul,
-.multicheckbox > div {
-	float: left;
-}
-
-.multicheckbox ul {
-	margin: 0;
-	padding: 0 1em;
-}
-
-.multicheckbox li {
-	list-style-type: none;
-}
+	}
 
 .admin input.fullwidth {
 	width: 100%;
@@ -161,27 +131,22 @@ a.admbox.off img {
 	margin-bottom: .5em;
 }
 
-.q234 {
-	min-width: 75%;
-	max-width: 79%;
-	float: left;
-	clear: none;
-}
-
 .q1 {
-	width: 33%;
+	min-width: 20%;
 	display: block;
 	float: left;
 	clear: none;
 	vertical-align: middle;
 }
-.q23 {
-	width: 66%;
+.q234 {
+	min-width: 75%;
 	float: left;
 	clear: none;
 }
 
 .adminanchors a {float: left;}
+
+/* from ui-revamp branch, via coe branch - jb july 2009 */
 
 .toolbars-admin .full {
 	border: solid thin gray;
@@ -189,7 +154,8 @@ a.admbox.off img {
 	height: auto;
 	max-height: 400px;
 	min-height: 16px;
-	overflow: auto;
+	overflow-y: auto;
+	overflow-x: hidden;
 	margin: 0;
 }
 
@@ -214,7 +180,7 @@ a.admbox.off img {
 
 .toolbars-admin .li {
 	display: block;
-	white-space: nowrap;
+	white-space:nowrap;
 }
 .toolbars-admin .full li {
 	white-space: nowrap;
@@ -239,7 +205,8 @@ a.admbox.off img {
 	width: 95%;
 	min-height: 20px;
 	min-width: 500px;
-	overflow: hidden;
+	overflow-y: hidden;
+	overflow-x: hidden;
 	border: solid thin gray;
 	margin: 0;
 	padding: 2px 4px 0;
@@ -305,203 +272,30 @@ a.admbox.off img {
 	opacity: .4;
 }
 
-#toolbar_edit_div label,
-#toolbar_edit_div input,
-#toolbar_edit_div select {
-		display:block;
+#toolbar_edit_div {
+/*
+	z-index: 2;
+	float: left;
+	position: absolute;
+	top: 10px;
+	left: 0;
+	background-color: #fff;
+	padding: 0 .5em .5em;
+*/
 }
-
-#toolbar_edit_div input,
-#toolbar_edit_div select {
-		clear: right;
-}
-
-#toolbar_edit_div input.text {
-	margin-bottom:12px;
-	width:95%;
-	padding: .4em;
-}
-
-#toolbar_edit_div fieldset {
-	padding:0;
-	border:0;
-	margin-top:25px;
-}
+#toolbar_edit_div label, #toolbar_edit_div input, #toolbar_edit_div select { display:block; }
+#toolbar_edit_div input, #toolbar_edit_div select { clear: right; }
+#toolbar_edit_div input.text { margin-bottom:12px; width:95%; padding: .4em; }
+#toolbar_edit_div fieldset { padding:0; border:0; margin-top:25px; }
 
 #toolbar_edit_div .adminoptionbox {
 	text-align: right;
 }
 
+.assigned_modules {
+	padding: 1em 2em 1em 0;
+	width: 40%;
+	min-height: 10em;
+}
+
 /* end from ui-revamp branch */
-
-/* tiki 7 modules revamp */
-
-#assigned_modules tr {
-	cursor: pointer;
-	border: 1px solid transparent;
-}
-
-#assigned_modules tr.odd:hover {
-	border-color: #ccc;
-}
-
-#assigned_modules tr.even:hover {
-	border-color: #bbb;
-}
-
-.module-placeholder {
-	width: 160px;
-	min-height: 40px;
-	list-style-type: none;
-	background-color: #ff8;
-	border: #884 2px solid;
-	margin: 10px;
-	padding: 10px;
-}
-
-#module_list {
-	padding: 0;
-}
-#module_list li {
-	list-style: none;
-	user-select: none;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-}
-
-#module_list li.disabled {
-	opacity: 0.7;
-	display: none;
-}
-
-#save_modules a {
-	background-color: #faa;
-	background-image: none;
-}
-
-/* make empty module zones more "droppable" */
-
-.ui-droppable.modules, .ui-sortable.modules {
-	min-height: 10ex;
-	-webkit-box-shadow: inset 0px 0px 5px 5px rgba(0, 0, 0, .1);
-	box-shadow: inset 0px 0px 5px 5px rgba(0, 0, 0, .1);
-}
-
-#right_left.ui-sortable, #right_modules.ui-sortable {
-	min-height: 100ex;
-}
-
-/* end modules revamp */
-
-/* tiki 7 theme generator *
- * deliberately pixel based sizes */
-
-.tgItems {
-	list-style: none;
-	line-height: 40px;
-	background-color: #aaa;
-	color: #666;
-	padding: 10px;
-	margin: 0 1em 1.5em 0;
-}
-
-.admin .themegenerator > div > label,
-.themegenerator > div > label {
-	background-color: #aaa;
-	color: #ddd;
-	line-height: 24px;
-	padding: 4px 10px 6px;
-	font-weight: bold;
-	text-decoration: underline;
-	white-space: nowrap;
-}
-
-.tgItems > li {
-	position: relative;
-	float: left;
-	background-color: #aaa;
-	border: 2px solid #aaa;
-	margin: 1px;
-}
-
-.tgItems > li > div > * {
-	float:left;
-	margin: 3px 6px 0px 0px;
-}
-
-.tgItems > li > * {
-	float:left;
-}
-
-.tgItems .tgValue {
-	margin-top: 10px;
-	width: 60px;
-	color: #666;
-	background-color: #ddd;
-	border-color: #999 #ccc #ccc #999;
-}
-
-.tgItems .tgLabel {
-	text-align: right;
-	width: 48px;
-}
-
-.tgItems .changed input {
-	font-style: italic;
-	color: #333;
-}
-
-.tgItems .selected {
-	border: 2px solid #bbb;
-}
-
-.tgItems input[type=checkbox] {
-	margin-top: 14px;
-}
-
-.tgTools * {
-	float: left;
-	vertical-align: middle;
-	font-size: 0.9em;
-}
-
-.tgItems div.tgWide {
-	width: 10em;
-	overflow: hidden;
-	white-space: nowrap;
-}
-
-.tgItems input.tgWide {
-	width: 20em;
-}
-
-.tgContexts li {
-	font-family: monospace;
-	font-size: 1.2em;
-}
-
-/* end theme generator */
-
-/* profiles */
-
-.profile_export_list {
-	height: 30em;
-	overflow: auto;
-	list-style: none;
-	padding: 0;
-}
-
-.profile_export_list li {
-	padding: 0.4em 2em;
-}
-#export_to_yaml label {
-	margin-left: 1em;
-}
-
-#export_to_yaml .wikitext {
-	height: 30em;
-	overflow: auto;
-	padding: .5em;
-}
-
-/* end profiles */

@@ -1,9 +1,9 @@
-{title help="Inter-User Messages" admpage="messages"}{tr}Sent Messages{/tr}{/title}
+{title help="Inter-User Messages"}{tr}Sent Messages{/tr}{/title}
 
 {include file='tiki-mytiki_bar.tpl'}
 {include file='messu-nav.tpl'}
 {if $prefs.messu_sent_size gt '0'}
-<br>
+<br />
 <table border='0' cellpadding='0' cellspacing='0'>
 	<tr>
 		<td>
@@ -19,15 +19,15 @@
 </table>
 [{$messu_sent_number} / {$prefs.messu_sent_size}] {tr}messages{/tr}. {if $messu_sent_number ge $prefs.messu_sent_size}{tr}Sent box is full. Archive or delete some sent messages first if you want to send more messages.{/tr}{/if}
 {/if}
-<br><br>
+<br /><br />
 <form action="messu-sent.php" method="get">
-	<label for="mess-mailmessages">{tr}Messages:{/tr}</label>
+	<label for="mess-mailmessages">{tr}Messages{/tr}:</label>
 	<select name="flags" id="mess-mailmessages">
 		<option value="isReplied_y" {if $flag eq 'isRead' and $flagval eq 'y'}selected="selected"{/if}>{tr}Replied{/tr}</option>
 		<option value="isReplied_n" {if $flag eq 'isRead' and $flagval eq 'n'}selected="selected"{/if}>{tr}Not replied{/tr}</option>
 		<option value="" {if $flag eq ''}selected="selected"{/if}>{tr}All{/tr}</option>
 	</select>
-	<label for="mess-mailprio">{tr}Priority:{/tr}</label>
+	<label for="mess-mailprio">{tr}Priority{/tr}:</label>
 	<select name="priority" id="mess-mailprio">
 		<option value="" {if $priority eq ''}selected="selected"{/if}>{tr}All{/tr}</option>
 		<option value="1" {if $priority eq 1}selected="selected"{/if}>{tr}1{/tr}</option>
@@ -36,28 +36,28 @@
 		<option value="4" {if $priority eq 4}selected="selected"{/if}>{tr}4{/tr}</option>
 		<option value="5" {if $priority eq 5}selected="selected"{/if}>{tr}5{/tr}</option>
 	</select>
-	<label for="mess-mailcont">{tr}Containing:{/tr}</label>
-	<input type="text" name="find" id="mess-mailcont" value="{$find|escape}">
-	<input type="submit" name="filter" value="{tr}Filter{/tr}">
+	<label for="mess-mailcont">{tr}Containing{/tr}:</label>
+	<input type="text" name="find" id="mess-mailcont" value="{$find|escape}" />
+	<input type="submit" name="filter" value="{tr}Filter{/tr}" />
 </form>
-<br>
+<br />
 
 <form action="messu-sent.php" method="post" name="form_messu_sent">
-	<input type="hidden" name="offset" value="{$offset|escape}">
-	<input type="hidden" name="find" value="{$find|escape}">
-	<input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
-	<input type="hidden" name="flag" value="{$flag|escape}">
-	<input type="hidden" name="flagval" value="{$flagval|escape}">
-	<input type="hidden" name="priority" value="{$priority|escape}">
-	<input type="submit" name="delete" value="{tr}Delete{/tr}">
-	<input type="submit" name="archive" value="{tr}move to archive{/tr}">
-	<input type="submit" name="download" value="{tr}Download{/tr}">
+	<input type="hidden" name="offset" value="{$offset|escape}" />
+	<input type="hidden" name="find" value="{$find|escape}" />
+	<input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
+	<input type="hidden" name="flag" value="{$flag|escape}" />
+	<input type="hidden" name="flagval" value="{$flagval|escape}" />
+	<input type="hidden" name="priority" value="{$priority|escape}" />
+	<input type="submit" name="delete" value="{tr}Delete{/tr}" />
+	<input type="submit" name="archive" value="{tr}move to archive{/tr}" />
+	<input type="submit" name="download" value="{tr}Download{/tr}" />
 {jq notonready=true}
 var CHECKBOX_LIST = [{{section name=user loop=$items}'msg[{$items[user].msgId}]'{if not $smarty.section.user.last},{/if}{/section}}];
 {/jq}
 	<table class="normal" >
 		<tr>
-			<th><input type="checkbox" name="checkall" onclick="checkbox_list_check_all('form_messu_sent',CHECKBOX_LIST,this.checked);"></th>
+			<th><input type="checkbox" name="checkall" onclick="checkbox_list_check_all('form_messu_sent',CHECKBOX_LIST,this.checked);" /></th>
 			<th style="width:18px">&nbsp;</th>
 			<th><a href="messu-sent.php?flag={$flag}&amp;priority={$priority}&amp;flagval={$flagval}&amp;find={$find}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'user_to_desc'}user_to_asc{else}user_to_desc{/if}">{tr}receiver{/tr}</a></th>
 			<th><a href="messu-sent.php?flag={$flag}&amp;priority={$priority}&amp;flagval={$flagval}&amp;find={$find}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'subject_desc'}subject_asc{else}subject_desc{/if}">{tr}Subject{/tr}</a></th>
@@ -68,7 +68,7 @@ var CHECKBOX_LIST = [{{section name=user loop=$items}'msg[{$items[user].msgId}]'
 		{cycle values="odd,even" print=false}
 		{section name=user loop=$items}
 			<tr>
-				<td class="prio{$items[user].priority}"><input type="checkbox" name="msg[{$items[user].msgId}]"></td>
+				<td class="prio{$items[user].priority}"><input type="checkbox" name="msg[{$items[user].msgId}]" /></td>
 				<td class="prio{$items[user].priority}">{if $items[user].isFlagged eq 'y'}{icon _id='flag_blue' alt="{tr}Flagged{/tr}"}{/if}</td>
 				<td {if $items[user].isRead eq 'n'}style="font-weight:bold"{/if} class="prio{$items[user].priority}">{$items[user].user_to|username}</td>
 				<td {if $items[user].isRead eq 'n'}style="font-weight:bold"{/if} class="prio{$items[user].priority}"><a class="readlink" href="messu-read_sent.php?offset={$offset}&amp;flag={$flag}&amp;priority={$items[user].priority}&amp;flagval={$flagval}&amp;sort_mode={$sort_mode}&amp;find={$find}&amp;msgId={$items[user].msgId}">{$items[user].subject|escape}</a></td>

@@ -14,8 +14,8 @@
 		<option value="100" {if $limit eq 100}selected="selected"{/if}>{tr}Top 100{/tr}</option>
 	</select>
 
-	{if $categIdstr}<input type="hidden" name="categId" value="{$categIdstr}">{/if}
-	<input type="submit" name="selrank" value="{tr}View{/tr}">
+	{if $categIdstr}<input type="hidden" name="categId" value="{$categIdstr}" />{/if}
+	<input type="submit" name="selrank" value="{tr}View{/tr}" />
 </form>
 
 {cycle values="odd,even" print=false}
@@ -28,16 +28,18 @@
 		</tr>
 		{section name=xi loop=$rankings[ix].data}
 			<tr class="{cycle}">
-				<td class="id">{$smarty.section.xi.index_next}</td>
-				<td class="text">
+				<td>{$smarty.section.xi.index_next}</td>
+				<td>
 					<a class="link" href="{$rankings[ix].data[xi].href}">{if $rankings[ix].data[xi].name eq ""}-{else}{$rankings[ix].data[xi].name|escape}{/if}</a>
 				</td>
-				<td class="date">
+				<td>
 					{if $rankings[ix].type eq 'nb'}{$rankings[ix].data[xi].hits}{else}{$rankings[ix].data[xi].hits|tiki_long_datetime}{/if}
 				</td>
 			</tr>
 		{sectionelse}
-			{norecords _colspan=3}
+			<tr>
+				<td colspan="3">{tr}No records{/tr}</td>
+			</tr>
 		{/section}
 	</table>
 {/section}

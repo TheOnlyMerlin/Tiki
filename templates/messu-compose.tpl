@@ -1,14 +1,14 @@
-{title help="Inter-User Messages" admpage="messages"}{tr}Compose message{/tr}{/title}
+{title help="Inter-User Messages"}{tr}Compose message{/tr}{/title}
 
 {include file='tiki-mytiki_bar.tpl'}
 {include file='messu-nav.tpl'}
 
-{if $allowMsgs ne 'y'}<br>
+{if $allowMsgs ne 'y'}<br />
 	<div class="simplebox">
 		{icon _id=information style="vertical-align:middle" align="left"} {tr}If you want people to be able to reply to you, enable <a href='tiki-user_preferences.php'>Allow messages from other users</a> in your preferences.{/tr}
 	</div>
-	<br>
-	<br>
+	<br />
+	<br />
 {/if}
 
 
@@ -34,30 +34,30 @@
 			<tr>
 				<td>
 					<label for="mess-composeto">{tr}To:{/tr}</label>
-					{help url="Inter-User+Messages#Composing_messages" desc='{tr}To: Multiple addresses can be separated with semicolons (";") or commas (","){/tr}'}
+					{help url="Inter-User+Messages#Composing_messages" desc="{tr}To{/tr}:{tr}Multiple addresses can be separated with semicolons (\";\"){/tr} {tr}or commas (\",\"){/tr}"}
 				</td>
 				<td>
-					<input type="text" name="to" id="mess-composeto" value="{$to|escape}" class="username" size="80">
-					<input type="hidden" name="replyto_hash" value="{$replyto_hash}">
-					<input type="hidden" name="reply" value="{$reply}">
+					<input type="text" name="to" id="mess-composeto" value="{$to|escape}" class="username" size="80" />
+					<input type="hidden" name="replyto_hash" value="{$replyto_hash}" />
+					<input type="hidden" name="reply" value="{$reply}" />
 				</td>
 			</tr>
 			<tr>
 				<td>
 					<label for="mess-composecc">{tr}CC:{/tr}</label>
-					{help url="Inter-User+Messages#Composing_messages" desc='{tr}CC: Multiple addresses can be separated with semicolons (";") or commas (","){/tr}'}
+					{help url="Inter-User+Messages#Composing_messages" desc="{tr}CC{/tr}:{tr}Multiple addresses can be separated with semicolons (\";\"){/tr} {tr}or commas (\",\"){/tr}"}
 				</td>
 				<td>
-					<input type="text" name="cc" id="mess-composecc" value="{$cc|escape}" class="username" size="80">
+					<input type="text" name="cc" id="mess-composecc" value="{$cc|escape}" class="username" size="80" />
 				</td>
 			</tr>
 			<tr>
 				<td>
 					<label for="mess-composebcc">{tr}BCC:{/tr}</label>
-					{help url="Inter-User+Messages#Composing_messages" desc='{tr}BCC: Multiple addresses can be separated with semicolons (";") or commas (","){/tr}'}
+					{help url="Inter-User+Messages#Composing_messages" desc="{tr}BCC{/tr}:{tr}Multiple addresses can be separated with semicolons (\";\"){/tr} {tr}or commas (\",\"){/tr}"}
 				</td>
 				<td>
-					<input type="text" name="bcc" id="mess-composebcc" value="{$bcc|escape}" class="username" size="80">
+					<input type="text" name="bcc" id="mess-composebcc" value="{$bcc|escape}" class="username" size="80" />
 				</td>
 			</tr>
 			<tr>
@@ -79,7 +79,7 @@
 					<label for="mess-subj">{tr}Subject:{/tr}</label>
 				</td>
 				<td>
-					<input type="text" name="subject" id="mess-subj" value="{$subject|escape}" size="80" maxlength="255">
+					<input type="text" name="subject" id="mess-subj" value="{$subject|escape}" size="80" maxlength="255" />
 				</td>
 			</tr>
 			<tr>
@@ -91,20 +91,20 @@
 			<tr>
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" name="send" value="{tr}Send{/tr}">
-					<input type="checkbox" name="replytome" id="replytome">
+					<input type="submit" name="send" value="{tr}Send{/tr}" />
+					<input type="checkbox" name="replytome" id="replytome" />
 					<label for="replytome">
 						{tr}Reply-to my email{/tr}
-						{help url="User+Information" desc="{tr}Reply-to my email:{/tr}{tr}The user will be able to reply to you directly via email.{/tr}"}
+						{help url="User+Information" desc="{tr}Reply-to my email{/tr}:{tr}The user will be able to reply to you directly via email.{/tr}"}
 					</label>
-					<input type="checkbox" name="bccme" id="bccme">
+					<input type="checkbox" name="bccme" id="bccme" />
 					<label for="bccme">
 						{tr}Send me a copy{/tr}
-						{help url="User+Information" desc="{tr}Send me a copy:{/tr}{tr}You will be sent a copy of this email.{/tr}"}
+						{help url="User+Information" desc="{tr}Send me a copy{/tr}:{tr}You will be sent a copy of this email.{/tr}"}
 					</label>
 				</td>
 			</tr>
 		</table>
 	</form>
 {/if}
-<br>
+<br />

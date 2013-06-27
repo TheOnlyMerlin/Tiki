@@ -1,18 +1,15 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_trackercomments_info()
-{
+function wikiplugin_trackercomments_info() {
 	return array(
 		'name' => tra('Tracker Comments'),
 		'documentation' => 'PluginTrackerComments',
-		'description' => tra('Display the number of tracker comments'),
-		'prefs' => array( 'feature_trackers', 'wikiplugin_trackercomments' ),	
-		'icon' => 'img/icons/comments.png',
+		'description' => tra('Displays the number of tracker comments'),
 		'params' => array(
 			'trackerId' => array(
 				'required' => true,
@@ -20,7 +17,6 @@ function wikiplugin_trackercomments_info()
 				'description' => tra('Numeric value representing the tracker ID'),
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'tracker',
 			),
 			'shownbitems' => array(
 				'required' => false,
@@ -28,7 +24,7 @@ function wikiplugin_trackercomments_info()
 				'description' => tra('Determines whether the number of items will be shown (not shown by default)'),
 				'filter' => 'alpha',
 				'default' => '',
-				'options' => array(
+			'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
@@ -45,11 +41,10 @@ function wikiplugin_trackercomments_info()
 		)
 	);
 }
-function wikiplugin_trackercomments($data, $params)
-{
+function wikiplugin_trackercomments($data, $params) {
 	global $trklib; include_once('lib/trackers/trackerlib.php');
 	global $user;
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 	$ret = '';
 	if ($shownbitems == 'y') {
 		$ret .= tra('Comments found:').' '.$trklib->nbComments($user);

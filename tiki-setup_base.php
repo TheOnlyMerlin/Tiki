@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -34,11 +31,9 @@ ini_set('session.use_only_cookies', 1);
 ini_set('magic_quotes_sybase', 'Off');
 ini_set('magic_quotes_runtime', 0);
 ini_set('allow_call_time_pass_reference', 'On');
-
-$memory_limiter = new Tiki_MemoryLimit('128M'); // Keep in variable to hold scope
-
 // ---------------------------------------------------------------------
 // inclusions of mandatory stuff and setup
+require_once ('lib/setup/compat.php');
 require_once ('lib/tikiticketlib.php');
 require_once ('db/tiki-db.php');
 require_once ('lib/tikilib.php');
@@ -46,7 +41,7 @@ $tikilib = new TikiLib;
 // Get tiki-setup_base needed preferences in one query
 $prefs = array();
 $needed_prefs = array(
-	'session_lifetime' => '0',
+	'session_lifetime' => '10080',
 	'session_storage' => 'default',
 	'session_silent' => 'n',
 	'session_cookie_name' => session_name(),
@@ -55,8 +50,11 @@ $needed_prefs = array(
 	'tiki_cdn_ssl' => '',
 	'language' => 'en',
 	'lang_use_db' => 'n',
+	'feature_pear_date' => 'y',
+	'lastUpdatePrefs' => - 1,
 	'feature_fullscreen' => 'n',
 	'error_reporting_level' => 0,
+	'smarty_notice_reporting' => 'n',
 	'memcache_enabled' => 'n',
 	'memcache_expiration' => 3600,
 	'memcache_prefix' => 'tiki_',
@@ -64,18 +62,14 @@ $needed_prefs = array(
 	'memcache_servers' => false,
 	'min_pass_length' => 5,
 	'pass_chr_special' => 'n',
-	'menus_item_names_raw' => 'n',
 );
-// check that tiki_preferences is there
-if ($tikilib->query("SHOW TABLES LIKE 'tiki_preferences'")->numRows() == 0) {
-	// smarty not initialised at this point to do a polite message, sadly
-	header('location: tiki-install.php');
-	exit;
-}
 $tikilib->get_preferences($needed_prefs, true, true);
-$prefs = $systemConfiguration->preference->toArray() + $prefs;
+if (!isset($prefs['lastUpdatePrefs']) || $prefs['lastUpdatePrefs'] == - 1) {
+	$tikilib->query('delete from `tiki_preferences` where `name`=?', array('lastUpdatePrefs'));
+	$tikilib->query('insert into `tiki_preferences`(`name`,`value`) values(?,?)', array('lastUpdatePrefs', 1));
+}
 
-if (isset($prefs['session_protected']) && $prefs['session_protected'] == 'y' && ! isset($_SERVER['HTTPS']) && php_sapi_name() != 'cli') {
+if ($prefs['session_protected'] == 'y' && ! isset($_SERVER['HTTPS'])) {
 	header("Location: https://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}");
 	exit;
 }
@@ -85,28 +79,46 @@ require_once ('lib/cache/cachelib.php');
 global $logslib;
 require_once ('lib/logs/logslib.php');
 include_once ('lib/init/tra.php');
+
+if( $prefs['memcache_enabled'] == 'y' ) {
+	require_once('lib/cache/memcachelib.php');
+	if( is_array( $prefs['memcache_servers'] ) ) {
+		$servers = $prefs['memcache_servers'];
+	} else {
+		$servers = unserialize( $prefs['memcache_servers'] );
+	}
+
+	global $memcachelib;
+	$memcachelib = new MemcacheLib( $servers, array(
+		'enabled' => true,
+		'expiration' => (int) $prefs['memcache_expiration'],
+		'key_prefix' => $prefs['memcache_prefix'],
+		'compress' => $prefs['memcache_compress'],
+	) );
+}
+
 require_once ('lib/tikidate.php');
 $tikidate = new TikiDate();
 // set session lifetime
-if (isset($prefs['session_lifetime']) && $prefs['session_lifetime'] > 0) {
+if ($prefs['session_lifetime'] > 0) {
 	ini_set('session.gc_maxlifetime', $prefs['session_lifetime'] * 60);
 }
 // is session data  stored in DB or in filesystem?
-if (isset($prefs['session_storage']) && $prefs['session_storage'] == 'db') {
+if ($prefs['session_storage'] == 'db') {
 	if ($api_tiki == 'adodb') {
 		require_once ('lib/tikisession-adodb.php');
 	} elseif ($api_tiki == 'pdo') {
 		require_once ('lib/tikisession-pdo.php');
 	}
-} elseif ( isset($prefs['session_storage']) && $prefs['session_storage'] == 'memcache' && TikiLib::lib("memcache")->isEnabled() ) {
+} elseif( $prefs['session_storage'] == 'memcache' && isset( $memcachelib ) && $memcachelib->isEnabled() ) {
 	require_once ('lib/tikisession-memcache.php');
 }
 
-if ( ! isset( $prefs['session_cookie_name'] ) || empty( $prefs['session_cookie_name'] ) ) {
+if( ! isset( $prefs['session_cookie_name'] ) || empty( $prefs['session_cookie_name'] ) ) {
 	$prefs['session_cookie_name'] = session_name();
 }
 
-session_name($prefs['session_cookie_name']);
+session_name( $prefs['session_cookie_name'] );
 
 // Only accept PHP's session ID in URL when the request comes from the tiki server itself
 // This is used by features that need to query the server to retrieve tiki's generated html and images (e.g. pdf export)
@@ -116,54 +128,35 @@ if (isset($_GET[session_name()]) && $tikilib->get_ip_address() == '127.0.0.1') {
 }
 
 $start_session = true;
-if ( isset($prefs['session_silent']) && $prefs['session_silent'] == 'y' && empty($_COOKIE[session_name()]) ) {
+if ( $prefs['session_silent'] == 'y' && empty($_COOKIE[session_name()]) ) {
 	$start_session = false;
 }
 
 // If called from the CDN, refuse to execute anything
-$cdn_pref = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? $prefs['tiki_cdn_ssl'] : isset($prefs['tiki_cdn']) ? $prefs['tiki_cdn'] : '' ;
-if ( $cdn_pref ) {
-	$host = parse_url($cdn_pref, PHP_URL_HOST);
-	if (isset($_SERVER['HTTP_HOST']) && $host == $_SERVER['HTTP_HOST'] ) {
-		header("HTTP/1.0 410 Gone");
-		echo "This is a Content Delivery Network (CDN) to speed up delivery of images, CSS, and javascript files. However, PHP code is not executed.";
+$cdn_pref = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? $prefs['tiki_cdn_ssl'] : $prefs['tiki_cdn'];
+if( $cdn_pref ) {
+	$host = parse_url( $cdn_pref, PHP_URL_HOST );
+	if( $host == $_SERVER['HTTP_HOST'] ) {
+		header("HTTP/1.0 404 Not Found");
+		echo "File not found.";
 		exit;
 	}
 }
 if (isset($_SERVER["REQUEST_URI"])) {
-	ini_set('session.cookie_path', str_replace("\\", "/", $tikiroot));
+	$cookie_path = str_replace("\\", "/", dirname($_SERVER["REQUEST_URI"]));
+	if ($cookie_path != '/') {
+		$cookie_path .= '/';
+	}
+	ini_set('session.cookie_path', str_replace("\\", "/", $cookie_path));
 	if ( $start_session ) {
 		// enabing silent sessions mean a session is only started when a cookie is presented
 		$session_params = session_get_cookie_params();
-		session_set_cookie_params($session_params['lifetime'], $tikiroot);
+		session_set_cookie_params($session_params['lifetime'], $cookie_path);
 		unset($session_params);
-
+	
 		try {
+			require_once "Zend/Session.php";
 			Zend_Session::start();
-
-			/* This portion may seem strange, but it is an extra validation against session
-			 * collisions. An extra cookie is set with an additional random value. When loading
-			 * the session, it makes sure the extra cookie matches the one in the session. Otherwise
-			 * it destroys the session and reloads the page for the user.
-			 *
-			 * Effectively, in the occurence of a collision, both users are kicked out.
-			 * This is an extremely rare occurence that is hard to reproduce by nature.
-			 */ 
-			$extra_cookie_name = session_name() . 'CV';
-			if (isset($_SESSION['extra_validation'])) {
-				$cookie = isset($_COOKIE[$extra_cookie_name]) ? $_COOKIE[$extra_cookie_name] : null;
-
-				if ($cookie !== $_SESSION['extra_validation']) {
-					Zend_Session::destroy();
-					header('Location: ' . $_SERVER['REQUEST_URI']);
-					exit;
-				}
-			} else {
-				$sequence = $tikilib->generate_unique_sequence(16);
-				$_SESSION['extra_validation'] = $sequence;
-				setcookie($extra_cookie_name, $sequence, time() + 365*24*3600, ini_get('session.cookie_path'));
-				unset($sequence);
-			}
 		} catch( Zend_Session_Exception $e ) {
 			// Ignore
 		}
@@ -171,18 +164,13 @@ if (isset($_SERVER["REQUEST_URI"])) {
 }
 
 // Moved here from tiki-setup.php because smarty use a copy of session
-if (isset($prefs['feature_fullscreen']) && $prefs['feature_fullscreen'] == 'y') {
+if ($prefs['feature_fullscreen'] == 'y') {
 	require_once ('lib/setup/fullscreen.php');
 }
 // Retrieve all preferences
 require_once ('lib/setup/prefs.php');
 // Smarty needs session since 2.6.25
-global $smarty; require_once ('lib/init/smarty.php');
-
-// Define the special maxRecords global variable
-$maxRecords = $prefs['maxRecords'];
-$smarty->assignByRef('maxRecords', $maxRecords);
-
+require_once ('lib/init/smarty.php');
 require_once ('lib/userslib.php'); global $userlib;
 $userlib = new UsersLib;
 require_once ('lib/tikiaccesslib.php');
@@ -190,13 +178,9 @@ $access = new TikiAccessLib;
 require_once ('lib/breadcrumblib.php');
 // ------------------------------------------------------
 // DEAL WITH XSS-TYPE ATTACKS AND OTHER REQUEST ISSUES
-/**
- * @param $var
- */
-function remove_gpc(&$var)
-{
+function remove_gpc(&$var) {
 	if (is_array($var)) {
-		foreach ($var as $key => $val) {
+		foreach($var as $key => $val) {
 			remove_gpc($var[$key]);
 		}
 	} else {
@@ -212,19 +196,15 @@ $patterns['stringlist'] = "/^[^<>\"#]*$/"; // to, cc, bcc (for string lists like
 $patterns['vars'] = "/^[-_a-zA-Z0-9]*$/"; // for variable keys
 $patterns['dotvars'] = "/^[-_a-zA-Z0-9\.]*$/"; // same pattern as a variable key, but that may contain a dot
 $patterns['hash'] = "/^[a-z0-9]*$/"; // for hash reqId in live support
-// allow quotes in url for additional tag attributes if html allowed in menu options links
-if ($prefs['menus_item_names_raw'] == 'y' and strpos($_SERVER["SCRIPT_NAME"], 'tiki-admin_menu_options.php') !== false) {
-	$patterns['url'] = "/^(https?:\/\/)?[^<>]*$/";
-} else {
-	$patterns['url'] = "/^(https?:\/\/)?[^<>\"]*$/";
-}
+// needed for the htmlpage inclusion in tiki-editpage
+$patterns['url'] = "/^(https?:\/\/)?[^<>\"']*$/"; // needed for the htmlpage inclusion in tiki-editpage
 // parameter type definitions. prepend a + if variable may not be empty, e.g. '+int'
 $vartype['id'] = '+int';
 $vartype['forumId'] = '+int';
 $vartype['offset'] = 'intSign';
 $vartype['prev_offset'] = 'intSign';
 $vartype['next_offset'] = 'intSign';
-$vartype['threshold'] = 'int';
+$vartype['thresold'] = 'int';
 $vartype['sort_mode'] = '+char';
 $vartype['file_sort_mode'] = 'char';
 $vartype['file_offset'] = 'int';
@@ -232,7 +212,7 @@ $vartype['file_find'] = 'string';
 $vartype['file_prev_offset'] = 'intSign';
 $vartype['file_next_offset'] = 'intSign';
 $vartype['comments_offset'] = 'int';
-$vartype['comments_threshold'] = 'int';
+$vartype['comments_thresold'] = 'int';
 $vartype['comments_parentId'] = '+int';
 $vartype['thread_sort_mode'] = '+char';
 $vartype['thread_style'] = '+char';
@@ -285,7 +265,6 @@ $vartype['type'] = 'string';
 $vartype['userole'] = 'int';
 $vartype['focus'] = 'string';
 $vartype['filegals_manager'] = 'vars';
-$vartype['filesyntax'] = 'string';
 $vartype['ver'] = 'dotvars'; // filename hash for drawlib + rss type for rsslib
 $vartype['trackerId'] = 'int';
 $vartype['articleId'] = 'int';
@@ -300,25 +279,19 @@ $vartype['surveyId'] = 'int';
 $vartype['nlId'] = 'int';
 $vartype['chartId'] = 'int';
 $vartype['categoryId'] = 'int';
-$vartype['parentId'] = 'intSign';
+$vartype['parentId'] = 'int';
 $vartype['bannerId'] = 'int';
 $vartype['rssId'] = 'int';
 $vartype['page_ref_id'] = 'int';
-/**
- * @param $array
- * @param $category
- * @return string
- */
-function varcheck(&$array, $category)
-{
+function varcheck(&$array, $category) {
 	global $patterns, $vartype, $prefs;
 	$return = array();
 	if (is_array($array)) {
-		foreach ($array as $rq => $rv) {
+		foreach($array as $rq => $rv) {
 			// check if the variable name is allowed
 			if (!preg_match($patterns['vars'], $rq)) {
 				//die(tra("Invalid variable name : "). htmlspecialchars($rq));
-
+				
 			} elseif (isset($vartype["$rq"])) {
 				$has_sign = false;
 				// Variable allowed to be empty?
@@ -340,7 +313,7 @@ function varcheck(&$array, $category)
 					if (!preg_match($patterns[$pattern_key], $rv)) {
 						$return[] = tra("Notice: invalid variable value:") . ' $' . $category . '["' . $rq . '"] = <font color="red">' . htmlspecialchars($rv) . '</font>';
 						$array[$rq] = ''; // Clear content
-
+						
 					}
 				}
 			}
@@ -350,9 +323,7 @@ function varcheck(&$array, $category)
 }
 unset($_COOKIE['offset']);
 if (!empty($_REQUEST['highlight'])) {
-	if (is_array($_REQUEST['highlight'])) {
-		$_REQUEST['highlight'] = '';
-	}
+	if (is_array($_REQUEST['highlight'])) $_REQUEST['highlight'] = '';
 	$_REQUEST['highlight'] = htmlspecialchars($_REQUEST['highlight']);
 	// Convert back sanitization tags into real tags to avoid them to be displayed
 	$_REQUEST['highlight'] = str_replace('&lt;x&gt;', '<x>', $_REQUEST['highlight']);
@@ -420,7 +391,7 @@ if (($prefs['auth_method'] == 'ws') and (isset($_SERVER['REMOTE_USER']))) {
 		$_SESSION["$user_cookie_site"] = $user;
 	} elseif ($prefs['auth_ws_create_tiki'] == 'y') {
 		$user = $_SERVER['REMOTE_USER'];
-		if ($userlib->add_user($_SERVER['REMOTE_USER'], '', '')) {
+		if ($userlib->add_user($_SERVER['REMOTE_USER'],'', '')) {
 			$user = $_SERVER['REMOTE_USER'];
 			$_SESSION["$user_cookie_site"] = $user;
 		}
@@ -446,62 +417,54 @@ if (isset($_SESSION["$user_cookie_site"])) {
 	// or that has never used the login step in this tiki.
 	// Example : If using the same PHP SESSION cookies for more than one tiki.
 	$user_details = $userlib->get_user_details($user);
-	if (!is_array($user_details) || !is_array($user_details['info']) || (int) $user_details['info']['lastLogin'] <= 0) {
+	if (!is_array($user_details) || !is_array($user_details['info']) || (int)$user_details['info']['lastLogin'] <= 0) {
 		global $cachelib;
 		require_once ('lib/cache/cachelib.php');
 		$cachelib->invalidate('user_details_' . $user);
 		$user_details = $userlib->get_user_details($user);
 		if (!is_array($user_details) || !is_array($user_details['info'])) {
-			$user = null;
+			$user = NULL;
 		}
 	}
 	unset($user_details);
-
+	
 	// Generate anti-CSRF ticket
 	if ($prefs['feature_ticketlib2'] == 'y' && !isset($_SESSION['ticket'])) {
 		$_SESSION['ticket'] = md5(uniqid(rand()));
 	}
 } else {
-	$user = null;
-
-	if ( isset($prefs['login_http_basic']) && $prefs['login_http_basic'] === 'always' ||
-		(isset($prefs['login_http_basic']) && $prefs['login_http_basic'] === 'ssl' && isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')) {
-		// Authenticate if the credentials are present, do nothing otherwise
-		if (! empty($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
-			$_SERVER['HTTP_AUTHORIZATION'] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
-		}
-		if (! empty($_SERVER['HTTP_AUTHORIZATION'])) {
-			$ha = base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6));
-			$ha = explode(':', $ha, 2);
-			
-			if (count($ha) == 2) {
-				list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = $ha;
-			}
-		}
-		if (isset($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'])) {
-			$validate = $userlib->validate_user($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']);
-			if ($validate[0]) {
-				$user = $validate[1];
-				$userlib->confirm_user($user);
-			} else {
-				header('WWW-Authenticate: Basic realm="'.$tikidomain.'"');
-				header('HTTP/1.0 401 Unauthorized');
-				exit;
-			}
-		}
-	}
+	$user = NULL;
+	// if everything failed, check for user+pass params in the URL
+	// this is needed for access to things like RSS feeds that are configured to be
+	// be visible to registered users and/or certain groups
+	// #####################################################################################
+	// Note: if you uncomment the following section, people are allowed to log in using
+	// GET (username and password in URL). That is some kind of insecure, because
+	// password and username are not encrypted and visible and browser caches etc, besides
+	// that someone could try to break in with brute force attacks. So uncomment this only
+	// if you are in a trusted environment (maybe intranet) and want to ignore the risks.
+	// #####################################################################################
+	// 	$isvalid = false;
+	// 	if (isset($_REQUEST["user"]) && isset($_REQUEST["pass"])) {
+	// 		$isvalid = $userlib->validate_user($_REQUEST["user"], $_REQUEST["pass"], '', '');
+	// 		if ($isvalid) {
+	// 			$_SESSION["$user_cookie_site"] = $_REQUEST["user"];
+	// 			$user = $_REQUEST["user"];
+	// 			$smarty->assign_by_ref('user', $user);
+	// 			// Now since the user is valid we put the user provpassword as the password
+	// 			$userlib->confirm_user($user);
+	// 		}
+	// }
+	
 }
-
-$smarty->assign('CSRFTicket', isset( $_SESSION['ticket'] ) ? $_SESSION['ticket'] : null);
-
+$smarty->assign( 'CSRFTicket', isset( $_SESSION['ticket'] ) ? $_SESSION['ticket'] : null);
 require_once ('lib/setup/perms.php');
 // --------------------------------------------------------------
 // deal with register_globals
 if (ini_get('register_globals')) {
-	foreach (array($_ENV, $_GET, $_POST, $_COOKIE, $_SERVER) as $superglob) {
-		foreach ($superglob as $key => $val) {
-			if (isset($GLOBALS[$key]) && $GLOBALS[$key] == $val) {
-				// if global has been set some other way
+	foreach(array($_ENV, $_GET, $_POST, $_COOKIE, $_SERVER) as $superglob) {
+		foreach($superglob as $key => $val) {
+			if (isset($GLOBALS[$key]) && $GLOBALS[$key] == $val) { // if global has been set some other way
 				// that is OK (prevents munging of $_SERVER with ?_SERVER=rubbish etc.)
 				unset($GLOBALS[$key]);
 			}
@@ -509,18 +472,13 @@ if (ini_get('register_globals')) {
 	}
 }
 $serverFilter = new DeclFilter;
-if ( ( isset($prefs['tiki_allow_trust_input']) && $prefs['tiki_allow_trust_input'] ) !== 'y' || $tiki_p_trust_input != 'y') {
-	$serverFilter->addStaticKeyFilters(array('QUERY_STRING' => 'xss', 'REQUEST_URI' => 'url', 'PHP_SELF' => 'url',));
+if ( $tiki_p_trust_input != 'y' ) {
+	$serverFilter->addStaticKeyFilters(array('QUERY_STRING' => 'url', 'REQUEST_URI' => 'url', 'PHP_SELF' => 'url',));
 }
 $jitServer = new JitFilter($_SERVER);
 $_SERVER = $serverFilter->filter($_SERVER);
 // Rebuild request after gpc fix
 // _REQUEST should only contain GET and POST in the app
-
-$prepareInput = new TikiFilter_PrepareInput('~');
-$_GET = $prepareInput->prepare($_GET);
-$_POST = $prepareInput->prepare($_POST);
-
 $_REQUEST = array_merge($_GET, $_POST);
 // Preserve unfiltered values accessible through JIT filtering
 $jitPost = new JitFilter($_POST);
@@ -532,31 +490,25 @@ $jitGet->setDefaultFilter('xss');
 $jitRequest->setDefaultFilter('xss');
 $jitCookie->setDefaultFilter('xss');
 // Apply configured filters to all other input
-if (!isset($inputConfiguration)) {
-	$inputConfiguration = array();
-}
+if (!isset($inputConfiguration)) $inputConfiguration = array();
 
-array_unshift(
-	$inputConfiguration, array(
-		'staticKeyFilters' => array(
-			'menu' => 'striptags',
-			'cat_categorize' => 'alpha',
-			'tabs' => 'striptags',
-			'javascript_enabled' => 'alpha',
-			$prefs['cookie_consent_name'] => 'alpha',
-			'mobile_mode' => 'alpha',
-			'categ' => 'striptags',
-			'local_tz' => 'text',
-		),
-		'staticKeyFiltersForArrays' => array(
-			'cat_managed' => 'digits',
-			'cat_categories' => 'digits',
-		),
-	)
-);
+array_unshift( $inputConfiguration, array(
+	'staticKeyFilters' => array(
+		'menu' => 'striptags',
+		'cat_categorize' => 'alpha',
+		'cat_clearall' => 'alpha',
+		'tab' => 'digits',
+		'javascript_enabled' => 'alpha',
+		'XDEBUG_PROFILE' => 'int',
+	),
+	'staticKeyFiltersForArrays' => array(
+		'cat_managed' => 'digits',
+		'cat_categories' => 'digits',
+	),
+) );
 
 $inputFilter = DeclFilter::fromConfiguration($inputConfiguration, array('catchAllFilter'));
-if ( ( isset($prefs['tiki_allow_trust_input']) && $prefs['tiki_allow_trust_input'] !== 'y' ) || $tiki_p_trust_input != 'y') {
+if ( $tiki_p_trust_input != 'y' ) {
 	$inputFilter->addCatchAllFilter('xss');
 }
 $cookieFilter = DeclFilter::fromConfiguration($inputConfiguration, array('catchAllFilter'));
@@ -567,41 +519,18 @@ $_POST = $inputFilter->filter($_POST);
 $_COOKIE = $cookieFilter->filter($_COOKIE);
 // Rebuild request with filtered values
 $_REQUEST = array_merge($_GET, $_POST);
-if ( ( isset($prefs['tiki_allow_trust_input']) && $prefs['tiki_allow_trust_input'] !== 'y' ) || $tiki_p_trust_input != 'y') {
+if ($tiki_p_trust_input != 'y') {
 	$varcheck_vars = array('_COOKIE', '_GET', '_POST', '_ENV', '_SERVER');
 	$varcheck_errors = '';
-	foreach ($varcheck_vars as $var) {
-		if (!isset($$var)) {
-			continue;
-		}
+	foreach($varcheck_vars as $var) {
+		if (!isset($$var)) continue;
 		if (($tmp = varcheck($$var, $var)) != '') {
-			if ($varcheck_errors != '') {
-				$varcheck_errors.= '<br />';
-			}
+			if ($varcheck_errors != '') $varcheck_errors.= '<br />';
 			$varcheck_errors.= $tmp;
 		}
 	}
 	unset($tmp);
 }
-
-if (count($_FILES)) {
-	$mimelib = TikiLib::lib('mime');
-
-	foreach ($_FILES as $key => & $upload_file_info) {
-		if (is_array($upload_file_info['tmp_name'])) {
-			foreach ($upload_file_info['tmp_name'] as $k => $tmp_name) {
-				if ($tmp_name) {
-					$type = $mimelib->from_path($upload_file_info['name'][$k], $tmp_name);
-					$upload_file_info['type'][$k] = $type;
-				}
-			}
-		} elseif ($upload_file_info['tmp_name']) {
-			$type = $mimelib->from_path($upload_file_info['name'], $upload_file_info['tmp_name']);
-			$upload_file_info['type'] = $type;
-		}
-	}
-}
-
 // deal with old request globals (e.g. used by Smarty)
 $GLOBALS['HTTP_GET_VARS'] = & $_GET;
 $GLOBALS['HTTP_POST_VARS'] = & $_POST;
@@ -612,15 +541,15 @@ unset($GLOBALS['HTTP_SESSION_VARS']);
 unset($GLOBALS['HTTP_POST_FILES']);
 // --------------------------------------------------------------
 if (isset($_REQUEST['highlight']) || (isset($prefs['feature_referer_highlight']) && $prefs['feature_referer_highlight'] == 'y')) {
-	$smarty->loadFilter('output', 'highlight');
+	$smarty->load_filter('output', 'highlight');
 }
 if (function_exists('mb_internal_encoding')) {
 	mb_internal_encoding("UTF-8");
 }
 // --------------------------------------------------------------
 // Fix IIS servers not setting what they should set (ay ay IIS, ay ay)
-if (!isset($_SERVER['QUERY_STRING'])) {
-	$_SERVER['QUERY_STRING'] = '';
+if (!isset($_SERVER['QUERY_STRING'])) $_SERVER['QUERY_STRING'] = '';
+if (!isset($_SERVER['REQUEST_URI']) || empty($_SERVER['REQUEST_URI'])) {
+	$_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'];
 }
-
 $smarty->assign("tikidomain", $tikidomain);

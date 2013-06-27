@@ -1,20 +1,17 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_subscribenewsletter_info()
-{
+function wikiplugin_subscribenewsletter_info() {
 	return array(
 		'name' => tra('Subscribe newsletter'),
-		'documentation' => 'PluginSubscribeNewsletter',
-		'description' => tra('Allow users to subscribe to a newsletter'),
+		'documentation' => tra('PluginSubscribeNewsletter'),
+		'description' => tra('A button to subscribe to a newsletter available for a user if not already in'),
 		'prefs' => array('feature_newsletters', 'wikiplugin_subscribenewsletter'),
 		'body' => tra('Invitation message'),
-		'icon' => 'img/icons/newspaper_add.png',
-		'tags' => array( 'basic' ),
 		'params' => array(
 			'nlId' => array(
 				'required' => true,
@@ -22,7 +19,6 @@ function wikiplugin_subscribenewsletter_info()
 				'description' => tra('Identification number (nlId) of the Newsletter that you want to allow the users to subscribe to'),
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'newsletter',
 			),
 			'thanks' => array(
 				'required' => false,
@@ -53,8 +49,7 @@ function wikiplugin_subscribenewsletter_info()
 		),
 	);
 }
-function wikiplugin_subscribenewsletter($data, $params)
-{
+function wikiplugin_subscribenewsletter($data, $params) {
 	global $prefs, $user, $userlib, $smarty, $tikilib;
 	global $nllib; include_once('lib/newsletters/nllib.php');
 	extract($params, EXTR_SKIP);
@@ -106,7 +101,7 @@ function wikiplugin_subscribenewsletter($data, $params)
 	$res = $smarty->fetch('wiki-plugins/wikiplugin_subscribenewsletter.tpl');
 	if (isset($params["wikisyntax"]) && $params["wikisyntax"]==1) {
 		return $res;
-	} else { 		// if wikisyntax != 1 : no parsing of any wiki syntax
+	}else{ 		// if wikisyntax != 1 : no parsing of any wiki syntax
 		return '~np~'.$res.'~/np~';
 	}
 }

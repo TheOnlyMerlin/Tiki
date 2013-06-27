@@ -1,5 +1,5 @@
 /* $Id$
-	Jqui (jqui.css) for Tiki Wiki CMS Groupware.
+	Jqui (jqui.css) for Tikiwiki CMS/Groupware.
 	Visit http://themes.tiki.org for more information.
 */
 
@@ -11,23 +11,15 @@
 /***** XHTML Elements (body tag here,
 			others follow Layout) *****/
 body {
-	font: 76% Verdana,Arial,sans-serif;
-	line-height: 1.5;
+	font: 76%/1.5em Verdana,Arial,sans-serif;
 	color: #000;
 	background: #fff}
 
-html > body,
-*:first-child+html body {font-size: 74%}
+*:first-child+html body {font-size: 74% !important}
 
  /***** Layout (overrides layout.css;
 		also styling of page layout divs)  *****/
-
-/* Enable header and footer content to widen when middle has wide content. */
-body.fixed_width .fixedwidth .fixedwidth {
-	width: 100%;
-	padding: 0;
-}
-
+	 	 	 	
 #main {
 	text-align: left
 }
@@ -49,7 +41,7 @@ body.fixed_width .fixedwidth .fixedwidth {
 }
 
 * html #tiki-center {font-size: 1em}
-
+	
 #c1c2 #col2 {
 	width: 200px;
 	overflow: visible;
@@ -66,8 +58,8 @@ body.fixed_width .fixedwidth .fixedwidth {
 
 .footerbgtrap {
 	color: #363636;
-	background: #fdfdfd;
-	border: 1px solid #cccccc;
+	background: #fff url(../lib/jquery/jquery-ui/themes/smoothness/images/ui-bg_flat_75_ffffff_40x100.png);
+	border: 1px solid #d3d3d3;
 	border-bottom: none;
 	margin: 10px;
 	margin-bottom: 0;
@@ -93,7 +85,7 @@ h1, h2, h3, h4, h5 {
 h1 {
 	font-size: 180%;
 }
-
+	
 h2 {
 	font-size: 160%;
 }
@@ -101,7 +93,7 @@ h2 {
 h3 {
 	font-size: 140%;
 }
-
+	
 h4 {
 	font-size: 120%;
 }
@@ -111,14 +103,13 @@ h5 {
 }
 
 fieldset {
-	border: 1px solid #cccccc}
-
+	border: 1px solid #d4d4d4}
+	
 legend {
 	color: #000;
 }
 
 .navbar {
-	margin: 5px 0;
 	line-height: 220%;
 }
 
@@ -134,10 +125,10 @@ input[type="submit"],
 	line-height: 1.4em;
 	width: auto;
 	overflow: visible;
-	border: 1px solid #cccccc;
-	background: #e2e2e2 url(../vendor/jquery/jquery-ui-themes/themes/smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
+	border: 1px solid #d3d3d3;
+	background: #e6e6e6 url(../lib/jquery/jquery-ui/themes/base/images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
 	font-weight: normal;
-	color: #666666;
+	color: #555555;
 	outline: none;
 }
 
@@ -148,25 +139,17 @@ input[type="submit"]:hover,
 .button input:hover,
 .calbuttonBox:hover {
 	margin: .5em .4em .5em 0;
-	border: 1px solid #aaa;
-	background: #cccccc url(../vendor/jquery/jquery-ui-themes/themes/smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
+	border: 1px solid #999999;
+	background: #dadada url(../lib/jquery/jquery-ui/themes/base/images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
 	font-weight: normal;
-	color: #363636;
+	color: #212121;
 	outline: none;
 }
-
-/* Needed for Opera (11) */
-input[type="reset"],
-input[type="submit"],
-input[type="reset"]:hover,
-input[type="submit"]:hover {
-	padding: .1em .8em;
-}
-
+	
 .highlight,
 .highlight a {
 	border: 1px solid #fcefa1;
-	background: #f3f3f3 url(../vendor/jquery/jquery-ui-themes/themes/smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
+	background: #fbf9ee url(../lib/jquery/jquery-ui/themes/base/images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
 	color: #363636;
 }
 
@@ -176,7 +159,7 @@ input[type="submit"]:hover {
 
 .button.highlight a {
 	border: 1px solid #fcefa1;
-	background: #aaaaaa;
+	background: #fbf9ee url(../lib/jquery/jquery-ui/themes/base/images/ui-bg_flat_0_aaaaaa_40x100.png) 50% 50% repeat-x;
 	color: #363636;
 }
 
@@ -186,81 +169,41 @@ input[type="submit"]:hover {
 
 
 /***** Site Header & Identity *****/
-.header {
-	min-height: 100%;
-	height: 100% !important;
+#header-top {
+	min-height: 40px;
 }
 
-.header_fixedwidth {
-	height: auto;
+#sioptions {
+	padding: 0 10px;
 }
 
-#top_modules {
-	height: 100%;
-}
-
-#top_modules .module.secondary_site_menu {
-	position: absolute;
-	top: 0;
-	right: 30px;
-}
-
-#top_modules .box-logo {
-	height: 100%;
-}
-
-#top_modules #sitetitles {
+#sitetitles {
 	font-weight: bold;
-	margin-left: 20px;
-	margin-top: 3%;
-	margin-bottom: 2%;
 }
 
-#top_modules #sitetitle {
+#sitetitle {
+	margin-top: 20px;
 	font-size: 2.4em;
 }
 
-#top_modules #sitesubtitle {
+#sitesubtitle {
 	font-size: 1.2em;
-	padding-top: 5px;
+	margin-top: 10px;
 }
 
-#top_modules .siteloginbar_popup {
-	position: absolute;
-	bottom: 0;
-	right: 20px;
+#siteloginbar_popup {
+	bottom: 1px;
 }
 
 #tiki-top {
-	padding: 0 .3em 0 1em;
-	border: 1px solid #aaa;
-	background: #cccccc url(../vendor/jquery/jquery-ui-themes/themes/smoothness/images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x;
-	color: #363636;
+	padding: .5em .3em .3em 1em;
+	border: 1px solid #aaaaaa;
+	background: #cccccc url(../lib/jquery/jquery-ui/themes/base/images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x;
+	color: #222222;
 	margin: 0 10px 10px;
 	font-size: 1.1em;
 }
-
-#topbar_modules {
-	min-height: 34px;
-}
-
-#topbar_modules .box-search {
-	position: absolute;
-	top: 0px;
-	right: 20px;
-	height: 34px;
-	line-height: 34px;
-}
-
-#top_modules .box-quickadmin {
-	border: 1px solid #999;
-	border-radius: 5px;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-}
-
-
-
+	
 /****** Menus, Links ******/
 /** CSS (suckerfish) menus **/
 
@@ -275,8 +218,8 @@ input[type="submit"]:hover {
 	padding: .5em 1em;
 }
 
-.cssmenu_horiz ul li,
-.cssmenu_vert ul li {
+.cssmenu_horiz li ul li,
+.cssmenu_vert li ul li {
 	background: #e2e2e2;
 	border: 1px solid #aaa;
 	border-top: 0;
@@ -290,7 +233,7 @@ input[type="submit"]:hover {
 
 #tiki-top .cssmenu_horiz li a {
 	padding: 14px 1em;
-	font-size: 1em;
+	font-size: 12px;
 	font-weight: bold;
 	text-decoration: none;
 	background: none;
@@ -307,15 +250,15 @@ input[type="submit"]:hover {
 	top: 44px;
 }
 
-.secondary_site_menu .cssmenu_horiz li:hover ul,
-.secondary_site_menu .cssmenu_horiz li.sfHover ul {
+#secondary_site_menu .cssmenu_horiz li:hover ul,
+#secondary_site_menu .cssmenu_horiz li.sfHover ul {
 	top: 22px;
 }
 
 #tiki-top .cssmenu_horiz li:hover ul ul,
 #tiki-top .cssmenu_horiz li.sfHover ul ul,
-.secondary_site_menu .cssmenu_horiz li:hover ul ul,
-.secondary_site_menu .cssmenu_horiz li.sfHover ul ul {
+#secondary_site_menu .cssmenu_horiz li:hover ul ul,
+#secondary_site_menu .cssmenu_horiz li.sfHover ul ul {
 	top: -1px;
 }
 
@@ -324,8 +267,7 @@ input[type="submit"]:hover {
 }
 
 /* left column width */
-#col2 .box-data .cssmenu_vert,
-#col2 .box-data .cssmenu_vert ul {
+#col2 ul.cssmenu_vert {
 	padding-left: 0;
 }
 
@@ -369,7 +311,7 @@ a .sf-sub-indicator {
 	top: 7px;
 }
 
-.secondary_site_menu a .sf-sub-indicator {
+#secondary_site_menu a .sf-sub-indicator {
 	top: 8px;
 }
 
@@ -379,9 +321,9 @@ a .sf-sub-indicator {
 .cbox {
 	padding: .2em;
 	margin: 0 .5em 10px;
-	background-color: #fefefe;
-	color: #363636;
-	border: 1px solid #aaa;
+	background: #ffffff url(../lib/jquery/jquery-ui/themes/base/images/ui-bg_flat_75_ffffff_40x100.png) 50% 50% repeat-x;
+	color: #222222;
+	border: 1px solid #aaaaaa;
 }
 
 #col2 .box,
@@ -392,11 +334,10 @@ a .sf-sub-indicator {
 
 h3.box-title,
 .cbox-title {
-	padding: .5em .3em .3em 1em;
-	position: relative;
-	border: 1px solid #aaa;
-	background: #cccccc url(../vendor/jquery/jquery-ui-themes/themes/smoothness/images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x;
-	color: #363636;
+	padding: .5em .3em .3em 1em; position: relative;
+	border: 1px solid #aaaaaa;
+	background: #cccccc url(../lib/jquery/jquery-ui/themes/base/images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x;
+	color: #222222;
 	font-weight: bold;
 	margin: 0;
 	font-size: 1.1em;
@@ -405,14 +346,9 @@ h3.box-title,
 .cbox-data,
 .box-data {
 	padding: .5em 1em;
-	background-image: none;
+	background: none;
+	zoom: 1;
 }
-
-/* menu in a module, use module bg colour */
-.box-menu .cssmenu_vert a {
-	background-color: inherit;
-}
-
 
 /** Other boxes **/
 
@@ -421,42 +357,43 @@ h3.box-title,
 /* -moz-background-clip: border;
 	-moz-background-inline-policy: continuous;
 	-moz-background-origin :padding;*/
-	background: #f3f3f3 url(../vendor/jquery/jquery-ui-themes/themes/smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png) repeat-x scroll 50% 50%;
+	background: #fbf9ee url(../lib/jquery/jquery-ui/themes/base/images/ui-bg_glass_75_e6e6e6_1x400.png) repeat-x scroll 50% 50%;
 	border: 1px solid #ccc;
 	color: #363636;
 }
 
+.rbox-title {
+	border-bottom: none !important;
+}
+	
+
+
 .errors {
 	background: none;
-	color: #cd0a0a;
 }
 
 .errors .rbox-title,
 .errors .rbox-data {
 	color: #cd0a0a;
-	background:#fef1ec url(../vendor/jquery/jquery-ui-themes/themes/smoothness/images/ui-bg_glass_55_fbf9ee_1x400.png) repeat-x scroll 50% 100%;
-	border: 1px solid #cd0a0a;
+	background:#fef1ec url(../lib/jquery/jquery-ui/themes/base/images/ui-bg_glass_55_fbf9ee_1x400.png) repeat-x scroll 50% bottom;
+	border:1px solid #cd0a0a;
 }
 
 .warning .rbox-title,
 .warning .rbox-data {
 	color: #cd0a0a;
-	background: #fef1ec url(../vendor/jquery/jquery-ui-themes/themes/smoothness/images/ui-bg_glass_55_fbf9ee_1x400.png) repeat-x scroll 50% 100%;
-	border: 1px solid #cd0a0a;
-}
-
-.rbox-title,
-.error .rbox-title,
-.errors .rbox-title,
-.warning .rbox-title {
-	border-bottom: none;
-	margin-bottom: -.5em;
+	background: #fef1ec url(../lib/jquery/jquery-ui/themes/base/images/ui-bg_glass_55_fbf9ee_1x400.png) repeat-x scroll 50% bottom;
+	border:1px solid #cd0a0a;
 }
 
 .simplebox {
-	border: 1px solid #aaa;
-	background-color: #f3f3f3;
-	color: #363636;
+	border: 1px solid #666;
+	background-color: #eee;
+	color: #333;
+}
+
+.errors {
+	color: #cd0a0a;
 }
 
 /***** Tables, Tabs *****/
@@ -486,17 +423,13 @@ fieldset.admin label,
 
 tr.odd td,
 td.odd,
-li.odd,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+li.odd {
 	background: #f9f9f9;
 }
 
 tr.even td,
 td.even,
-li.even,
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+li.even {
 	background: #f3f3f3;
 }
 
@@ -516,7 +449,7 @@ table.normal tr:nth-child(2n),
 	padding: .2em .2em 0;
 	margin:0 0.2em 1px 0;
 	border: 1px solid #aaa;
-	background: #ccc url(../vendor/jquery/jquery-ui-themes/themes/smoothness/images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x;
+	background: #ccc url(../lib/jquery/jquery-ui/themes/base/images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x;
 }
 
 .tabs br {
@@ -531,8 +464,8 @@ table.normal tr:nth-child(2n),
 .tabmark {
 	list-style-image: none;
 	float: left;
-	border: 1px solid #cccccc;
-	background: #e2e2e2 url(../vendor/jquery/jquery-ui-themes/themes/smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
+	border: 1px solid #d3d3d3;
+	background: #e6e6e6 url(../lib/jquery/jquery-ui/themes/smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
 	outline: none;
 	border-bottom-width: 0 !important;
 	margin: 0 .2em -1px 0;
@@ -540,7 +473,7 @@ table.normal tr:nth-child(2n),
 
 .tabmark a {
 	padding: 0.5em 1em;
-	color: #666666;
+	color: #555555;
 	font-weight: normal;
 }
 
@@ -548,9 +481,9 @@ table.normal tr:nth-child(2n),
 	border-bottom-width: 0;
 	padding-bottom: 1px;
 	border: 1px solid #aaa;
-	background: #fff url(../vendor/jquery/jquery-ui-themes/themes/smoothness/images/ui-bg_glass_65_ffffff_1x400.png) 50% 50% repeat-x;
+	background: #fff url(../lib/jquery/jquery-ui/themes/smoothness/images/ui-bg_glass_65_ffffff_1x400.png) 50% 50% repeat-x;
 	font-weight: normal;
-	color: #363636;
+	color: #212121;
 	outline: none;
 }
 
@@ -567,11 +500,11 @@ table.normal tr:nth-child(2n),
 	line-height: 1.4em;
 	padding: .2em 1em;
 	display: inline;
-	border: 1px solid #666666;
+	border: 1px solid #696969;
 	border-bottom: none;
 	margin: 0;
-	color: #666666;
-	background: #f9f9f9;
+	color: #696969;
+	background: #f5f5f5;
 	font-weight: bold;
 	border-top-left-radius: 3px;
 	border-top-right-radius: 3px;
@@ -585,9 +518,9 @@ table.normal tr:nth-child(2n),
 	font-family: "Courier New", Courier, monospace;
 	line-height: 1.2em;
 	padding: 1em;
-	background: #f9f9f9;
+	background: #f5f5f5;
 	margin: 0;
-	border: 1px solid #666666;
+	border: 1px solid #696969;
 	overflow: auto;
 	border-top-right-radius: 3px;
 	border-bottom-left-radius: 3px;
@@ -605,7 +538,7 @@ body.tiki_cms h1 a.pagetitle,
 body.tiki_cms h1 a.pagetitle:visited,
 body.tiki_cms h1 a.pagetitle:hover {border-bottom: none}
 
-
+	
 .articletrailer span {
 	margin-left: 5px;
 	padding-left: 20px;
@@ -625,26 +558,31 @@ body.tiki_cms h1 a.pagetitle:hover {border-bottom: none}
 	border: 1px solid #aaa;
 	padding: 6px;
 }
+/*
+.post .author {}
+	
+.post .author_post_info:first-child {}
+.post .postbody-title .title a.link {}
+*/
 
+.navbar {
+	margin: 5px 0;
+}
 .postbody-title {
 	padding: .5em .3em .3em 1em;
 	position: relative;
 	border: 1px solid #aaa;
-	background: #ccc url(../vendor/jquery/jquery-ui-themes/themes/smoothness/images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x;
-	color: #363636;
+	background: #ccc url(../lib/jquery/jquery-ui/themes/base/images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x;
+	color: #222;
 	font-weight: bold;
 	font-size: 1.1em;
 }
-
-.postbody-title h2 {
-	margin: .2em 0 .3em;
-}
-
+	
 .postbody .actions {
 	text-align: right;
 	margin-bottom: 4px;
 }
-
+	
 .post .postbody .content {
 	float: none}
 
@@ -656,16 +594,12 @@ body.tiki_cms h1 a.pagetitle:hover {border-bottom: none}
 
 .post .author_info .icons {
 	text-align: left;
-	display: inline;
 }
 
-.post .author_info,
 .forum_actions {
-	background: #ddd url(../vendor/jquery/jquery-ui-themes/themes/smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png) 0% 0% repeat-x;
-	border: 1px solid #aaa;
-	color: #333;
+	background: #333;
+	color: #fff;
 	padding: 3px;
-	margin: 10px 0 0;
 }
 .forum_actions .title {
 	font-weight: bold;
@@ -699,10 +633,6 @@ body.tiki_cms h1 a.pagetitle:hover {border-bottom: none}
 	padding: 0 0 10px;
 }
 
-.freetaglist a {
-	font-size: 0.9em;
-}
-
 /*****  Polls  *****/
 
 /***** FAQs *****/
@@ -722,6 +652,7 @@ body.tiki_cms h1 a.pagetitle:hover {border-bottom: none}
 
 
 /***** Calendar *****/
+
 .caltable {
 	border-bottom: none;
 }
@@ -730,27 +661,42 @@ body.tiki_cms h1 a.pagetitle:hover {border-bottom: none}
 	border: none;
 }
 
-.caltable .odd,
-.caltable .even,
-.caltable .calborder {
-	border-color: #aaa
+.caldark {
+/* background: ;*/
+	border: 0;
 }
 
-.caltable .odd {
+.caldark .calfocus {background: none;}
+.calodd, .caleven {border-color: #aaa}
+/*.calodd .calfocus {background: }*/
+.calodd {
 	background: #e2e2e2;
 }
-.caltable .even {
-	background: #cccccc;
+.caleven {
+	background: #d4d4d4;
 }
 
-.caltable td.calhighlight,
-td.calheadhighlight {
-	background: #fcefa1;
+.calfocuson {
+	font-size: 100%;
+	background: #f3e498;
 }
 
-/*** Cluetip ***/
+.calfocuson a {
+	font-size: 90%;
+}
+
+.calHeadingOn, .calHeadingOn a {
+	background: #f3e498;
+}
+
+/*.calodd .calfocus, .calodd .calfocuson*/
+/*.caleven .calfocus, .caleven .calfocuson {background: ;}*/
+
+/* Cluetip - JQuery tooltips
+   =cluetipClass: 'default' */
+
 .cluetip-default {
-	background: #aaa;
+	background: #999;
 	color: #000;
 }
 
@@ -765,30 +711,25 @@ td.calheadhighlight {
 .cluetip-default #cluetip-title a {
 	color: #fff;
 }
+  
 
-
-#cluetip-close {
+#cluetip-close { 
 	background: #aaa;
-	color: #cd0a0a;
+	color: #900;
 }
+
+/***** Ajax, jquery. etc. *****/
+/***** Ajax *****/
+/*
+.ui-widget-content {
+	background: ;
+	color: ;
+}
+*/
 
 /***** New (unsorted) *****/
 
-/* Quote plugin */
-.quoteheader {
-	background : url('../img/icons/quoteleft.gif') no-repeat;
-	padding-left:50px;
-	height:35px;
-}
-
-.quotebody {
-	padding-left:46px;
-}
-
 /***** End New (unsorted) *****/
-
-/***** border radius definitions                   *****
- ***** remove if you require strict css validation *****/
 
 .footerbgtrap,
 .rbox-title,
@@ -803,9 +744,6 @@ td.calheadhighlight {
 	-webkit-border-top-right-radius: 4px;
 }
 
-fieldset,
-input,
-textarea,
 .button a,
 .button a:visited,
 button,
@@ -822,11 +760,7 @@ h3.box-title,
 .post .postbody,
 body.tiki_admin .simplebox,
 a.admbox,
-a.admbox.off,
-.forum_actions,
-.admintoclevel,
-.post .postbody-title,
-.post .author_info {
+a.admbox.off {
 	border-radius: 4px;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
@@ -835,7 +769,6 @@ a.admbox.off,
 .rbox-title {
 	border-top-left-radius: 4px;
 	border-top-right-radius: 4px;
-	border-bottom: none !important;
 	-moz-border-radius-topleft: 4px;
 	-moz-border-radius-topright: 4px;
 	-webkit-border-top-left-radius: 4px;
@@ -854,10 +787,15 @@ a.admbox.off,
 	-webkit-border-bottom-right-radius: 4px;
 }
 
-.admintoclevel .admintoclevel {
-	border-top-right-radius: 0;
-	border-bottom-right-radius: 0;
+/* Quote plugin */
+.quoteheader {
+	background : url('../images/quoteleft.gif') no-repeat;
+	padding-left:50px;
+	height:35px;
 }
-/***** end border radius definitions  *****/
+
+.quotebody {
+	padding-left:46px;
+}
 
 /* End of File */

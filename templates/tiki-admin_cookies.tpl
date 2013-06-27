@@ -6,18 +6,18 @@
 
 <h2>{tr}Create/edit cookies{/tr}</h2>
 <form action="tiki-admin_cookies.php" method="post">
-	<input type="hidden" name="cookieId" value="{$cookieId|escape}">
+	<input type="hidden" name="cookieId" value="{$cookieId|escape}" />
 	<table class="formcolor">
 		<tr>
-			<td>{tr}Cookie:{/tr}</td>
+			<td>{tr}Cookie{/tr}:</td>
 			<td>
-				<input type="text" maxlength="255" size="40" name="cookie" value="{$cookie|escape}">
+				<input type="text" maxlength="255" size="40" name="cookie" value="{$cookie|escape}" />
 			</td>
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" name="save" value="{tr}Save{/tr}">
+				<input type="submit" name="save" value="{tr}Save{/tr}" />
 			</td>
 		</tr>
 	</table>
@@ -29,20 +29,20 @@
 		<tr>
 			<td>{tr}Upload from disk:{/tr}</td>
 			<td>
-				<input type="hidden" name="MAX_FILE_SIZE" value="1000000000">
-				<input name="userfile1" type="file">
+				<input type="hidden" name="MAX_FILE_SIZE" value="1000000000" />
+				<input name="userfile1" type="file" />
 			</td>
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" name="upload" value="{tr}Upload{/tr}">
+				<input type="submit" name="upload" value="{tr}Upload{/tr}" />
 			</td>
 		</tr>
 	</table>
 </form>
 
-<br>
+<br />
 
 <h2>{tr}Cookies{/tr}</h2>
 {if $channels}
@@ -68,9 +68,9 @@
 	{cycle values="odd,even" print=false advance=false}
 	{section name=user loop=$channels}
 		<tr class="{cycle}">
-			<td class="id">{$channels[user].cookieId}</td>
-			<td class="text">{$channels[user].cookie|escape}</td>
-			<td class="action">
+			<td>{$channels[user].cookieId}</td>
+			<td>{$channels[user].cookie|escape}</td>
+			<td>
 				&nbsp;&nbsp;
 				<a title="{tr}Edit{/tr}" class="link" href="tiki-admin_cookies.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;cookieId={$channels[user].cookieId}">{icon _id='page_edit'}</a>
 				&nbsp;
@@ -78,7 +78,9 @@
 			</td>
 		</tr>
 	{sectionelse}
-		{norecords _colspan=3}
+		<tr>
+			<td colspan="3" class="odd">{tr}No records found{/tr}</td>
+		</tr>
 	{/section}
 </table>
 

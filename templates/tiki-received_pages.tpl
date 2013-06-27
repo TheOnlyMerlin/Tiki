@@ -6,7 +6,7 @@
 	<div class="simplebox highlight">
 		{foreach item=error from=$errors}
 			{tr}{$error.error}{/tr} {$error.param}
-			<br>
+			<br />
 		{/foreach}
 	</div>
 {/if}
@@ -19,32 +19,32 @@
 {if $receivedPageId > 0}
 	<h2>{tr}Edit Received Page{/tr}</h2>
 	<form action="tiki-received_pages.php" method="post">
-		<input type="hidden" name="receivedPageId" value="{$receivedPageId|escape}">
+		<input type="hidden" name="receivedPageId" value="{$receivedPageId|escape}" />
 		<table class="formcolor">
 			<tr>
-				<td>{tr}Name:{/tr}</td>
+				<td>{tr}Name{/tr}:</td>
 				<td>
-					<input type="text" name="pageName" value="{$pageName|escape}">
+					<input type="text" name="pageName" value="{$pageName|escape}" />
 				</td>
 			</tr>
 			<tr>
-				<td>{tr}Data:{/tr}</td>
+				<td>{tr}Data{/tr}:</td>
 				<td>
 					<textarea name="data" rows="10" cols="60">{$data|escape}</textarea>
 				</td>
 			</tr>
 			<tr>
-				<td>{tr}Comment:{/tr}</td>
+				<td>{tr}Comment{/tr}:</td>
 				<td>
-					<input type="text" name="comment" value="{$comment|escape}">
+					<input type="text" name="comment" value="{$comment|escape}" />
 				</td>
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" name="preview" value="{tr}Preview{/tr}">
+					<input type="submit" name="preview" value="{tr}Preview{/tr}" />
 					&nbsp;
-					<input type="submit" name="save" value="{tr}Save{/tr}">
+					<input type="submit" name="save" value="{tr}Save{/tr}" />
 				</td>
 			</tr>
 		</table>
@@ -81,26 +81,24 @@
 		{cycle values="even,odd" print=false}
 		{section name=user loop=$channels}
 			<tr class="{cycle}">
-				<td class="id">{$channels[user].receivedPageId}</td>
+				<td>{$channels[user].receivedPageId}</td>
 				{if $channels[user].pageExists ne ''}
-					<td class="text">
+					<td>
 						<span class="highlight">{$channels[user].pageName}</span>
 					</td>
 				{else}
-					<td class="text">{$channels[user].pageName}</td>
+					<td>{$channels[user].pageName}</td>
 				{/if}
-				<td class="date">{$channels[user].receivedDate|tiki_short_date}</td>
-				<td class="text">{$channels[user].receivedFromSite}</td>
-				<td class="text">{$channels[user].receivedFromUser}</td>
-				<td class="action">
+				<td>{$channels[user].receivedDate|tiki_short_date}</td>
+				<td>{$channels[user].receivedFromSite}</td>
+				<td>{$channels[user].receivedFromUser}</td>
+				<td>
 					<a class="link" href="tiki-received_pages.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;receivedPageId={$channels[user].receivedPageId}">{icon _id='page_edit'}</a>
 					<a class="link" href="tiki-received_pages.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;view={$channels[user].receivedPageId}">{icon _id='magnifier' alt="{tr}View{/tr}"}</a>
 					<a class="link" href="tiki-received_pages.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;accept={$channels[user].receivedPageId}">{icon _id='accept'}</a> &nbsp;
 					<a class="link" href="tiki-received_pages.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].receivedPageId}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 				</td>
 			</tr>
-		{sectionelse}
-			{norecords _colspan=6}
 		{/section}
 	</table>
 	{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
@@ -138,15 +136,15 @@
 		{section name=user loop=$structures}
 			{if $structures[user].structureName eq $structures[user].pageName}
 				<tr class="{cycle}">
-					<td class="text">&nbsp;</td>
-					<td class="id">{$structures[user].receivedPageId}</td>
-					<td class="text">{$structures[user].pageName}</td>
-					<td class="text">&nbsp;</td>
-					<td class="date">{$structures[user].receivedDate|tiki_short_date}</td>
-					<td class="text">{$structures[user].receivedFromSite}</td>
-					<td class="text">{$structures[user].receivedFromUser}</td>
-					<td class="action">
-						<a class="link" href="tiki-received_pages.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;accept={$structures[user].receivedPageId}">{icon _id='accept'}</a>
+					<td>&nbsp;</td>
+					<td>{$structures[user].receivedPageId}</td>
+					<td>{$structures[user].pageName}</td>
+					<td>&nbsp;</td>
+					<td>{$structures[user].receivedDate|tiki_short_date}</td>
+					<td>{$structures[user].receivedFromSite}</td>
+					<td>{$structures[user].receivedFromUser}</td>
+					<td>
+						<a class="link" href="tiki-received_pages.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;accept={$structures[user].receivedPageId}">{icon _id='accept'}</a> 
 						&nbsp;
 						<a class="link" href="tiki-received_pages.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$structures[user].receivedPageId}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 					</td>
@@ -154,22 +152,22 @@
 				{section name=ix loop=$structures}
 					{if $structures[ix].structureName eq $structures[user].structureName}
 						<tr class="{cycle}">
-							<td class="checkbox">
-								<input type="checkbox" name="checked[]" value="{$structures[ix].pageName|escape}" >
+							<td>
+								<input type="checkbox" name="checked[]" value="{$structures[ix].pageName|escape}" />
 							</td>
-							<td class="id">{$structures[ix].receivedPageId}</td>
-							<td class="text">&nbsp;</td>
+							<td>{$structures[ix].receivedPageId}</td>
+							<td>&nbsp;</td>
 							{if $structures[ix].pageExists ne ''}
-								<td class="text">
+								<td>
 									<span class="highlight">{$structures[ix].pageName}</span>
 								</td>
 							{else}
-								<td class="text">{$structures[ix].pageName}</td>
+								<td>{$structures[ix].pageName}</td>
 							{/if}
-							<td class="date">{$structures[ix].receivedDate|tiki_short_date}</td>
-							<td class="text">{$structures[ix].receivedFromSite}</td>
-							<td class="text">{$structures[ix].receivedFromUser}</td>
-							<td class="action">
+							<td>{$structures[ix].receivedDate|tiki_short_date}</td>
+							<td>{$structures[ix].receivedFromSite}</td>
+							<td>{$structures[ix].receivedFromUser}</td>
+							<td>
 								<a class="link" href="tiki-received_pages.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;receivedPageId={$structures[ix].receivedPageId}">{icon _id='page_edit'}</a>
 								<a class="link" href="tiki-received_pages.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;view={$structures[ix].receivedPageId}">{icon _id='magnifier' alt="{tr}View{/tr}"}</a>
 							</td>
@@ -177,11 +175,9 @@
 					{/if}
 				{/section}
 			{/if}
-		{sectionelse}
-			{norecords _colspan=8}
 		{/section}
 		{select_all checkbox_names='checked[]' label="{tr}Select All{/tr}"}
 	</table>
-	{tr}Prefix the checked:{/tr}<input type="text" name="prefix">
-	{tr}Postfix the checked:{/tr}<input type="text" name="postfix">&nbsp;<input type="submit" value="{tr}OK{/tr}">
+	{tr}Prefix the checked:{/tr}<input type="text" name="prefix" />
+	{tr}Postfix the checked:{/tr}<input type="text" name="postfix" />&nbsp;<input type="submit" value="{tr}OK{/tr}" />
 </form>

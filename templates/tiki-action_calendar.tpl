@@ -27,17 +27,17 @@
 	</div>
 {foreach from=$tikiItems key=ki item=vi}
 {if $vi.feature eq 'y' and $vi.right eq 'y'}
-<div class="calcheckbox"><input type="checkbox" name="tikicals[]" value="{$ki|escape}" id="tikical_{$ki}" {if in_array($ki,$tikicals)}checked="checked"{/if}>
+<div class="calcheckbox"><input type="checkbox" name="tikicals[]" value="{$ki|escape}" id="tikical_{$ki}" {if in_array($ki,$tikicals)}checked="checked"{/if} />
 <label for="tikical_{$ki}" class="Cal{$ki}"> = {$vi.label}</label></div>
 {/if}
 {/foreach}
-<div class="calinput"><input type="submit" name="refresh" value="{tr}Refresh{/tr}"></div>
+<div class="calinput"><input type="submit" name="refresh" value="{tr}Refresh{/tr}"/></div>
 </form>
 
 {include file='tiki-calendar_nav.tpl'}
 
 {if $viewlist eq 'list'}
-{include file='tiki-calendar_listmode.tpl'}
+{include file='tiki-calendar_listmode.tpl''}
 {else}
 {include file='tiki-calendar_calmode.tpl'}
 {/if}

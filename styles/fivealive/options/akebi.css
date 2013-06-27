@@ -1,7 +1,11 @@
 /* $Id$ 
-	Akebi theme option for Fivealive themes for
-	Tiki Wiki CMS Groupware.
+	Akebi theme option for Fivealive theme for
+	TikiWiki CMS/Groupware.
 */
+
+#header-top {
+	background: url(akebi/siteheader.png) no-repeat -250px 0
+}
 
 a,
 a:visited,
@@ -27,23 +31,22 @@ fieldset {
 
 hr {
 	color: #18a3bb;
-	background: #18a3bb;
-}
-
-#main .header_outer {
-	background: url(akebi/siteheadertile.jpg) 0 0 no-repeat;
+	background: #18a3bb;s
 }
 
 #header {
-	background: url(akebi/siteheader.png) -250px 0 no-repeat;
+	background: url(akebi/siteheadertile.jpg) 900px 0 no-repeat;
 }
 
 #sitetitle,
 #sitesubtitle {
 	text-shadow: #005064 3px 2px 0;
 }
-
-#footer_liner {
+/*
+#footer {
+	background: #004758;
+}*/
+#footer .container {
 	border-top: 1px solid #19a5be;
 	border-bottom: 1px solid #19a5be;
 }
@@ -91,7 +94,7 @@ input[type="submit"]:hover,
 
 .highlight,
 .highlight a {
-	border: 1px solid #b9f2fb;
+	border: #b9f2fb;
 	color: #0b8a98;
 }
 
@@ -102,35 +105,18 @@ input[type="submit"]:hover,
 
 .cssmenu_vert li ul a,
 .cssmenu_horiz li ul a,
-.header .cssmenu_horiz li ul a,
-.header .cssmenu_horiz li:hover ul a,
-#main #topbar_modules .cssmenu_horiz li ul a,
-#main #topbar_modules .cssmenu_horiz li:hover ul a {
+#header .cssmenu_horiz li ul a,
+#header .cssmenu_horiz li:hover ul a {
 	background: #005064;
-	color: #fff;
 }
 
-#tiki-top .cssmenu_horiz li a {
-	background: url(akebi/siteheader.png) no-repeat -600px -40px;
-}
-
-#tiki-top .cssmenu_horiz li a:hover,
 .cssmenu_vert li ul a:hover,
 .cssmenu_horiz li ul a:hover,
-.header .cssmenu_horiz li ul a:hover,
-#main #topbar_modules .cssmenu_horiz li ul a:hover {
+#header .cssmenu_horiz li ul a:hover {
 	background: #14a1bb;
 }
 
-.header .cssmenu_horiz li.selected a,
-#topbar_modules .cssmenu_horiz li.selected a,
-.cssmenu_horiz li.selected a,
-.cssmenu_vert li.selected a {
-	color: #b4f3fb;
-}
-
-.header .cssmenu_horiz li.selected li a,
-#topbar_modules .cssmenu_horiz li.selected li a,
+#header .cssmenu_horiz li.selected li a,
 .cssmenu_horiz li.selected li a,
 .cssmenu_vert li.selected li a {
 	font-style: normal;
@@ -144,7 +130,6 @@ input[type="submit"]:hover,
 select,
 input[type="text"],
 input[type="password"],
-input[type="search"],
 input[type="file"],
 input#login-pass,
 textarea,
@@ -157,7 +142,7 @@ textarea,
 .titlebar,
 .rbox-title, 
 .rbox-data {
-	border-color: #18a3bb;
+	border: #18a3bb;
 	background: #cbf4f6;
 	color: #005064;
 }
@@ -171,14 +156,9 @@ textarea,
 	border-bottom: 3px solid #18a3bb;
 }
 
+
 .simplebox {
 	border: 2px solid #18a3bb;
-}
-
-h3.box-title,
-.postbody-title,
-#top_modules .module.secondary_site_menu {
-	background: #0f91a2 url(akebi/siteheader.png) no-repeat -700px -200px;
 }
 
 .adminanchors {
@@ -194,28 +174,24 @@ th,
 td.heading,
 tr.diffheader,
 .calHeading,
-.weeks,
-th.header {
+.weeks {
 	background: #1296a9;
 	color: #ddf8f9;
 }
 
-.caltable .odd,
-.caltable .even,
+.calodd,
+.caleven,
 .wikicell {
 	border: 2px solid #cbf4f6;
 }
 
 .odd,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+.calodd {
 	background: #cbf4f6;
 }
 
 .even,
-table.normal tr:nth-child(2n),
-table.normal tr:nth-child(2n) td,
-.tablesorter tr.even td {
+.caleven {
 	background: #d3f9f9;
 }
 
@@ -255,24 +231,13 @@ form.admin fieldset,
 	border-left: 8px solid #cbf4f6;
 }
 
-.postbody-title > br {
-	display: none;
+.postbody-title {
+	background: #169fb5 url(akebi/siteheader.png) -550px -90px no-repeat;
 }
 
 .post .author,
 .dirsite {
 	background: #77d6e5;
-}
-
-.postbody-content {
-	border: 1px solid #0f91a2;
-	border-top: none;
-}
-
-.post .author {
-	border: 1px solid #0f91a2;
-	border-top: none;
-	border-bottom: none;
 }
 
 /* cluptip tooltips */

@@ -1,15 +1,11 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 /**
- * Smarty plugin
- * @package Smarty
- * @subpackage plugins
- *
  * \brief Smarty {remarksbox}{/remarksbox} block handler (tip (default), comment, note or warning)
  *
  * To make a module it is enough to place smth like following
@@ -30,17 +26,15 @@
  */
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
-  header("location: index.php");
+if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__)) !== false) {
+  header('location: index.php');
   exit;
 }
 
-function smarty_block_remarksbox($params, $content, $smarty, &$repeat)
-{
+
+function smarty_block_remarksbox($params, $content, &$smarty) {
 	global $prefs;
 	
-	if ( $repeat ) return;
-
 	extract($params);
 	if (!isset($type))  $type = 'tip';
 	if (!isset($title)) $title = '';
@@ -78,6 +72,6 @@ function smarty_block_remarksbox($params, $content, $smarty, &$repeat)
 	$smarty->assign('remarksbox_icon', $icon);
 	$smarty->assign('remarksbox_close', $close);
 	$smarty->assign('remarksbox_width', $width);
-	$smarty->assignByRef('remarksbox_content', $content);
+	$smarty->assign_by_ref('remarksbox_content', $content);
 	return $smarty->fetch('remarksbox.tpl');
 }
