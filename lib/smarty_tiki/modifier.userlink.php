@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -34,8 +34,8 @@ function smarty_modifier_userlink($other_user, $class='link', $idletime='not_set
 {
 	global $tikilib, $userlib, $cachelib, $user, $prefs, $userprefslib, $smarty;
 
-	$show_mouseover = $popup != 'n' &&
-										$prefs['feature_community_mouseover'] == 'y' &&
+	$show_mouseover = $popup != 'n' && 
+										$prefs['feature_community_mouseover'] == 'y' && 
 										$userlib->get_user_preference($user, 'show_mouseover_user_info', 'y') == 'y';
 
 	$show_friends = $prefs['feature_friends'] == 'y' && $tikilib->verify_friendship($user, $other_user);
@@ -85,7 +85,7 @@ function smarty_modifier_userlink($other_user, $class='link', $idletime='not_set
 	}
 	$ou = htmlspecialchars($ou);
 
-	if ($userlib->user_exists($other_user)&&(!empty($friend) || $tikilib->get_user_preference($other_user, 'user_information', 'public')=='public' || $user == $other_user)) {
+	if ($userlib->user_exists($other_user)&&(!empty($friend) || $tikilib->get_user_preference($other_user, 'user_information', 'public')=='public')) {
 		if (isset($info) and is_array($info) and $prefs['highlight_group'] and in_array($prefs['highlight_group'], $info['groups'])) {
 			$ou = '<i class="highlightgroup"><b>' . $ou . '</b></i>';
 		}
@@ -172,9 +172,9 @@ function smarty_modifier_userlink($other_user, $class='link', $idletime='not_set
 			}
 		} else {
 			$url = preg_replace(
-				array('/%userId%/', '/%user%/'),
-				array($info['userId'], $info['login']),
-				$prefs['urlOnUsername']
+							array('/%userId%/', '/%user%/'), 
+							array($info['userId'], $info['login']), 
+							$prefs['urlOnUsername']
 			);
 		}
 
@@ -182,10 +182,10 @@ function smarty_modifier_userlink($other_user, $class='link', $idletime='not_set
 		$lon = $userlib->get_user_preference($other_user, 'lon');
 		$zoom = $userlib->get_user_preference($other_user, 'zoom');
 
-		if (! ($lat == 0 && $lon == 0)) {
+		if ($lat || $lon) {
 			$class .= " geolocated";
 			$metadata .= " data-geo-lat='$lat' data-geo-lon='$lon'";
-
+			
 			if ($zoom) {
 				$metadata .= " data-geo-zoom='$zoom'";
 			}

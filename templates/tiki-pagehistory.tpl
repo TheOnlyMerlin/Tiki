@@ -32,20 +32,20 @@
 			{/if}
 		{/if}
 	</div>
-	{if (isset($flaggedrev_approval) and $flaggedrev_approval) and $tiki_p_wiki_approve eq 'y'}
+	{if $flaggedrev_approval and $tiki_p_wiki_approve eq 'y'}
 		{remarksbox type=comment title="{tr}Content Approval{/tr}"}
 			<form method="post" action="tiki-pagehistory.php?page={$page|escape:'url'}&amp;preview={$preview|escape:'url'}">
 				{if $flaggedrev_preview_approved}
 					<p>{tr}This revision is currently marked as approved.{/tr}<p>
 					<div class="submit">
-						<input type="hidden" name="unapprove" value="{$preview|escape}">
-						<input type="submit" name="flaggedrev" value="{tr}Remove Approval{/tr}">
+						<input type="hidden" name="unapprove" value="{$preview|escape}"/>
+						<input type="submit" name="flaggedrev" value="{tr}Remove Approval{/tr}"/>
 					</div>
 				{else}
 					<p>{tr}This revision has not been approved.{/tr}<p>
 					<div class="submit">
-						<input type="hidden" name="approve" value="{$preview|escape}">
-						<input type="submit" name="flaggedrev" value="{tr}Approve Revision{/tr}">
+						<input type="hidden" name="approve" value="{$preview|escape}"/>
+						<input type="submit" name="flaggedrev" value="{tr}Approve Revision{/tr}"/>
 					</div>
 				{/if}
 			</form>
@@ -77,13 +77,13 @@
 	{if $prefs.feature_jquery_ui eq "y" && $prefs.feature_syntax_highlighter neq "y"}{jq}$("#page_source").resizable();{/jq}{/if}
 {/if}
 
-{if (isset($flaggedrev_approval) and $flaggedrev_approval) and $tiki_p_wiki_approve eq 'y' and $flaggedrev_compare_approve}
+{if $flaggedrev_approval and $tiki_p_wiki_approve eq 'y' and $flaggedrev_compare_approve}
 	{remarksbox type=comment title="{tr}Content Approval{/tr}"}
 		<form method="post" action="tiki-pagehistory.php?page={$page|escape:'url'}&amp;preview={$new.version|escape:'url'}">
 			<p>{tr}This revision has not been approved.{/tr}<p>
 			<div class="submit">
-				<input type="hidden" name="approve" value="{$new.version|escape}">
-				<input type="submit" name="flaggedrev" value="{tr}Approve Revision{/tr}">
+				<input type="hidden" name="approve" value="{$new.version|escape}"/>
+				<input type="submit" name="flaggedrev" value="{tr}Approve Revision{/tr}"/>
 			</div>
 		</form>
 	{/remarksbox}
@@ -96,8 +96,8 @@
 {if !isset($noHistory)}
 	{if $preview || $source || $diff_style}<h2>{tr}History{/tr}</h2>{/if}
 	<form action="tiki-pagehistory.php" method="get">
-		<input type="hidden" name="page" value="{$page|escape}">
-		<input type="hidden" name="history_offset" value="{$history_offset}">
+		<input type="hidden" name="page" value="{$page|escape}" />
+		<input type="hidden" name="history_offset" value="{$history_offset}" />
 		<div style="text-align:center;">
 			{if ($prefs.default_wiki_diff_style ne "old") and $history}
 				<div style=" text-align:right;">
@@ -106,36 +106,15 @@
 $("#toggle_diffs a").click(function(){
 	if ($(this).text() == "{tr}Advanced{/tr}") {
 		$(this).text("{tr}Simple{/tr}");
-		if (jqueryTiki.chosen) {
-			$("#diff_style_all").next(".chzn-container").show();
-			$("#diff_style_simple").next(".chzn-container").hide();
-			$("#diff_style_all").attr("name", "diff_style");
-			$("#diff_style_simple").attr("name", "");
-		} else {
-			$("#diff_style_all").show().attr("name", "diff_style");
-			$("#diff_style_simple").hide().attr("name", "");
-		}
+		$("#diff_style_all").show().attr("name", "diff_style");
+		$("#diff_style_simple").hide().attr("name", "");
 	} else {
 		$(this).text("{tr}Advanced{/tr}");
-		if (jqueryTiki.chosen) {
-			$("#diff_style_all").next(".chzn-container").hide();
-			$("#diff_style_simple").next(".chzn-container").show();
-			$("#diff_style_all").attr("name", "");
-			$("#diff_style_simple").attr("name", "diff_style");
-		} else {
-			$("#diff_style_all").hide().attr("name", "");
-			$("#diff_style_simple").show().attr("name", "diff_style");
-		}
+		$("#diff_style_all").hide().attr("name", "");
+		$("#diff_style_simple").show().attr("name", "diff_style");
 	}
 	return false;
 });
-if (jqueryTiki.chosen) {
-	if ($("#diff_style_simple").html().indexOf("{{$diff_style}}") > -1) {
-		$("#diff_style_all").next(".chzn-container").hide().attr("name", "");
-	} else {
-		$("#diff_style_simple").next(".chzn-container").hide();
-	}
-}
 {{if $diff_style neq "htmldiff" and $diff_style neq "sidediff"}$("#toggle_diffs a").click();{/if}}
 					{/jq}{/if}
 					<select name="diff_style" id="diff_style_all"{if $prefs.javascript_enabled eq "y"} style="display: none"{/if}>
@@ -155,8 +134,8 @@ if (jqueryTiki.chosen) {
 						<option value="htmldiff" {if $diff_style == "htmldiff"}selected="selected"{/if}>{tr}HTML diff{/tr}</option>
 						<option value="sidediff" {if $diff_style == "sidediff"}selected="selected"{/if}>{tr}Side-by-side diff{/tr}</option>
 					</select>{/if}
-					<input type="hidden" name="show_all_versions" value="{$show_all_versions}">
-					<input type="submit" name="compare" value="{tr}Compare{/tr}">
+					<input type="hidden" name="show_all_versions" value="{$show_all_versions}"/>
+					<input type="submit" name="compare" value="{tr}Compare{/tr}" />
 				</div>
 			{/if}
 			<div class="simplebox">
@@ -167,7 +146,7 @@ if (jqueryTiki.chosen) {
 			</div>
 			<table class="formcolor" width="100%">
 				<tr>
-					{if $tiki_p_remove eq 'y'}<th><input type="submit" name="delete" value="{tr}Del{/tr}"></th>{/if}
+					{if $tiki_p_remove eq 'y'}<th><input type="submit" name="delete" value="{tr}Del{/tr}" /></th>{/if}
 					<th>{tr}Information{/tr}</th>
 					{if $prefs.feature_contribution eq 'y'}<th>{tr}Contribution{/tr}</th>{/if}
 					{if $prefs.feature_contribution eq 'y' and $prefs.feature_contributor_wiki eq 'y'}<th>{tr}Contributors{/tr}</th>{/if}
@@ -176,7 +155,7 @@ if (jqueryTiki.chosen) {
 					<th>{tr}Action{/tr}</th>
 					{if $prefs.default_wiki_diff_style != "old" and $history}
 						<th colspan="2">
-							<input type="submit" name="compare" value="{tr}Compare{/tr}">
+							<input type="submit" name="compare" value="{tr}Compare{/tr}" />
 						</th>
 					{/if}
 				</tr>
@@ -190,19 +169,18 @@ if (jqueryTiki.chosen) {
 							{tr _0=$info.user|userlink}by %0{/tr}
 							{if $prefs.feature_wiki_history_ip ne 'n'}{tr _0=$info.ip}from %0{/tr}{/if}
 
-							{if (isset($flaggedrev_approval) and $flaggedrev_approval) and $tiki_p_wiki_view_latest eq 'y'
-								and $info.approved}<strong>({tr}approved{/tr})</strong>{/if}
+							{if $flaggedrev_approval and $tiki_p_wiki_view_latest eq 'y' and $info.approved}<strong>({tr}approved{/tr})</strong>{/if}
 
 							{if $info.comment}<div>{$info.comment|escape}</div>{/if}
 
-							{if isset($translation_sources[$info.version]) and $translation_sources[$info.version]}
+							{if $translation_sources[$info.version]}
 								{foreach item=source from=$translation_sources[$info.version]}
 									<div>
 										{tr}Updated from:{/tr} {self_link  _script="tiki-index.php" page=$source.page|escape}{$source.page}{/self_link} at version {$source.version}
 									</div>
 								{/foreach}
 							{/if}
-							{if isset($translation_targets[$info.version]) and $translation_targets[$info.version]}
+							{if $translation_targets[$info.version]}
 								{foreach item=target from=$translation_targets[$info.version]}
 								<div>
 									{tr}Used to update:{/tr} {self_link  _script="tiki-index.php" page=$target.page|escape}{$target.page}{/self_link} to version {$target.version}
@@ -218,7 +196,7 @@ if (jqueryTiki.chosen) {
 								{section name=ix loop=$contributors}{if !$smarty.section.ix.first},{/if}{$contributors[ix].login|username}{/section}
 							</td>
 						{/if}
-						<td class="button_container">{if $current eq $info.version}<strong>{/if}{$info.version}<br>{tr}Current{/tr}{if $current eq $info.version}</strong>{/if}</td>
+						<td class="button_container">{if $current eq $info.version}<strong>{/if}{$info.version}<br />{tr}Current{/tr}{if $current eq $info.version}</strong>{/if}</td>
 						<td class="button_container">{if $info.is_html}{icon _id='html'}{elseif $info.wysiwyg eq "y"}{icon _id='text_dropcaps' title='{tr}Wiki Wysiwyg{/tr}'}{/if}</td>
 						<td class="button_container">{self_link page=$page preview=$info.version _title="{tr}View{/tr}"}v{/self_link}
 						{if $tiki_p_wiki_view_source eq "y" and $prefs.feature_source eq "y"}
@@ -227,13 +205,10 @@ if (jqueryTiki.chosen) {
 						</td>
 						{if $prefs.default_wiki_diff_style ne "old" and $history}
 							<td class="button_container">
-								<input type="radio" name="oldver" value="0" title="{tr}Compare{/tr}" {if isset($old.version)
-									and $old.version == $info.version}checked="checked"{/if}>
+								<input type="radio" name="oldver" value="0" title="{tr}Compare{/tr}" {if $old.version == $info.version}checked="checked"{/if} />
 							</td>
 							<td class="button_container">
-								<input type="radio" name="newver" value="0" title="{tr}Compare{/tr}" {if (isset($new.version)
-									and $new.version == $info.version) or (!isset($smarty.request.diff_style)
-									or !$smarty.request.diff_style)}checked="checked"{/if}>
+								<input type="radio" name="newver" value="0" title="{tr}Compare{/tr}" {if $new.version == $info.version or !$smarty.request.diff_style}checked="checked"{/if} />
 							</td>
 						{/if}
 					{/if}
@@ -242,7 +217,7 @@ if (jqueryTiki.chosen) {
 				{foreach name=hist item=element from=$history}
 					<tr class="{cycle}">
 						{if $tiki_p_remove eq 'y'}
-							<td class="button_container"><input type="checkbox" name="hist[{$element.version}]"></td>
+							<td class="button_container"><input type="checkbox" name="hist[{$element.version}]" /></td>
 						{/if}
 						<td class="left">
 							{$element.lastModif|tiki_short_datetime}
@@ -251,16 +226,16 @@ if (jqueryTiki.chosen) {
 
 							{if $element.comment}<div>{$element.comment|escape}</div>{/if}
 
-							{if (isset($flaggedrev_approval) and $flaggedrev_approval) and $tiki_p_wiki_view_latest eq 'y' and $element.approved}<strong>({tr}approved{/tr})</strong>{/if}
+							{if $flaggedrev_approval and $tiki_p_wiki_view_latest eq 'y' and $element.approved}<strong>({tr}approved{/tr})</strong>{/if}
 
-							{if isset($translation_sources[$element.version]) and $translation_sources[$element.version]}
+							{if $translation_sources[$element.version]}
 								{foreach item=source from=$translation_sources[$element.version]}
 								<div>
 									{tr}Updated from:{/tr} {self_link  _script="tiki-index.php" page=$source.page|escape}{$source.page}{/self_link} at version {$source.version}
 								</div>
 								{/foreach}
 							{/if}
-							{if isset($translation_targets[$element.version]) and $translation_targets[$element.version]}
+							{if $translation_targets[$element.version]}
 								{foreach item=target from=$translation_targets[$element.version]}
 								<div>
 									{tr}Used to update:{/tr} {self_link  _script="tiki-index.php" page=$target.page|escape}{$target.page}{/self_link} to version {$target.version}
@@ -305,20 +280,15 @@ if (jqueryTiki.chosen) {
 						<td class="button_container">
 							{if $show_all_versions eq 'n' and not empty($element.session)}
 								<input type="radio" name="oldver" value="{$element.session}"
-									title="{tr}Older Version{/tr}" {if (isset($old.version) and isset($element.session) and $old.version == $element.session)
-									or ((!isset($smarty.request.diff_style) or !$smarty.request.diff_style)
-									and $smarty.foreach.hist.first)}checked="checked"{/if}>
+									title="{tr}Older Version{/tr}" {if $old.version == $element.session or (!$smarty.request.diff_style and $smarty.foreach.hist.first)}checked="checked"{/if}/>
 							{else}
 								<input type="radio" name="oldver" value="{$element.version}"
-									title="{tr}Older Version{/tr}" {if (isset($old.version) and isset($element.version) and $old.version == $element.version)
-									or ((!isset($smarty.request.diff_style) or !$smarty.request.diff_style)
-									and $smarty.foreach.hist.first)}checked="checked"{/if}>
+									title="{tr}Older Version{/tr}" {if $old.version == $element.version or (!$smarty.request.diff_style and $smarty.foreach.hist.first)}checked="checked"{/if}/>
 							{/if}
 						</td>
 						<td class="button_container">
 							{* if $smarty.foreach.hist.last &nbsp; *}
-							<input type="radio" name="newver" value="{$element.version}" title="Select a newer version for comparison"
-								{if isset($new.version) and $new.version == $element.version}checked="checked"{/if} >
+							<input type="radio" name="newver" value="{$element.version}" title="Select a newer version for comparison" {if $new.version == $element.version}checked="checked"{/if} />
 						</td>
 						{/if}
 					</tr>
@@ -333,7 +303,7 @@ if (jqueryTiki.chosen) {
 						</select>
 						<input type="submit" name="update_translation" value="{tr}Update Translation{/tr}"/>
 						{if $show_translation_history}
-							<input type="hidden" name="show_translation_history" value="1">
+							<input type="hidden" name="show_translation_history" value="1"/>
 							{button show_translation_history=0 _text="{tr}Hide translation history{/tr}" _auto_args="*"}
 						{else}
 							{button show_translation_history=1 _text="{tr}Show translation history{/tr}" _auto_args="*"}
@@ -343,16 +313,12 @@ if (jqueryTiki.chosen) {
 				{/if}
 			</table>
 			{if $paginate}
-				{if isset($smarty.request.history_offset)}
-					{pagination_links cant=$history_cant offset=$smarty.request.history_offset offset_arg="history_offset" step=$maxRecords}{/pagination_links}
-				{else}
-					{pagination_links cant=$history_cant offset_arg="history_offset" step=$maxRecords}{/pagination_links}
-				{/if}
+				{pagination_links cant=$history_cant offset=$smarty.request.history_offset offset_arg="history_offset" step=$maxRecords}{/pagination_links}
 			{/if}
-			<input type="checkbox" name="paginate" id="paginate"{if $paginate} checked="checked"{/if} onchange="this.form.submit();">
+			<input type="checkbox" name="paginate" id="paginate"{if $paginate} checked="checked"{/if} onchange="this.form.submit();" />
 			<label for="paginate">{tr}Enable pagination{/tr}</label>
 			{if $paginate}
-				<input type="text" name="history_pagesize" id="history_pagesize" value="{$history_pagesize}" size="5">
+				<input type="text" name="history_pagesize" id="history_pagesize" value="{$history_pagesize}" size="5" />
 				<label for="history_pagesize">{tr}per page{/tr}</label>
 			{/if}
 		</div>

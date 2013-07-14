@@ -1,12 +1,11 @@
 #!/bin/bash
-# (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+# (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 # 
 # All Rights Reserved. See copyright.txt for details and a complete list of authors.
 # Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-# $Id: update.dogfoodserver.sh 41172 2012-04-29 15:25:16Z changi67 $
+# $Id$
 
 # TODO: Handle local file gal and wiki_up
-# TODO: update to using new Console commands
 
 #Production 
 DOCROOTOLDVERSION="public_html/8x"
@@ -14,7 +13,7 @@ DOCROOTDOGFOODVERSION="publib_html/9x"
 
 OLDMYSQLDB="changi_8x"
 DOGFOODMYSQLDB="changi_9x"
-#Be careful, this user need to have the right to drop the database.
+#Be carefull, this user need to have the right to drop the database.
 MYSQLUSER="changi"
 MYSQLPASS="changi"
 MYSQLCOMMAND="mysql -u $MYSQLUSER -p $MYSQLPASS"

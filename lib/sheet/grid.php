@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,6 +14,7 @@ if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
 ini_set( 'include_path', ini_get( 'include_path' ) . ":lib/sheet" );
 
 // Nice dependencies, mostly for excel support. Don't try changing the order.
+require_once( "lib/pear/PEAR.php" );
 require_once( "lib/sheet/excel/reader_ole.php" );
 require_once( "lib/sheet/excel/reader.php" );
 require_once( "lib/sheet/excel/writer/format.php" );
@@ -109,53 +110,53 @@ class TikiSheet
 	/**
 	 * Two dimensional array, grid containing the end values ([y][x])
 	 */
-	public $dataGrid;
+	var $dataGrid;
 
 	/**
 	 * Two dimensional array, grid containing the raw values ([y][x])
 	 */
-	public $calcGrid;
+	var $calcGrid;
 
 	/**
 	 * Two dimensional array, grid containing an associative arrays
 	 * with 'height' and 'width' values.
 	 */
-	public $cellInfo;
+	var $cellInfo;
 
 	/**
 	 * Row and column count once finalized.
 	 */
-	public $rowCount;
-	public $columnCount;
+	var $rowCount;
+	var $columnCount;
 
 	/**
 	 * Layout parameters.
 	 */
-	public $headerRow;
-	public $footerRow;
-	public $parseValues;
-	public $cssName;
+	var $headerRow;
+	var $footerRow;
+	var $parseValues;
+	var $cssName;
 
 	/**
 	 * Internal values.
 	 */
-	public $COLCHAR;
-	public $indexes;
-	public $lastIndex;
-	public $lastID;
+	var $COLCHAR;
+	var $indexes;
+	var $lastIndex;
+	var $lastID;
 
-	public $usedRow;
-	public $usedCol;
+	var $usedRow;
+	var $usedCol;
 
-	public $errorFlag;
+	var $errorFlag;
 
-	public $contributions;
-	public $id;
+	var $contributions;
+	var $id;
 
-	public $rangeBeginRow = -1;
-	public $rangeEndRow   = -1;
-	public $rangeBeginCol = -1;
-	public $rangeEndCol = -1;
+	var $rangeBeginRow = -1;
+	var $rangeEndRow   = -1;
+	var $rangeBeginCol = -1;
+	var $rangeEndCol = -1;
 
 	function getRangeBeginRow()
 	{
@@ -754,11 +755,6 @@ class TikiSheet
  */
 class TikiSheetDataHandler
 {
-	public $maxrows = 300;
-    public $maxcols = 26;
-    public $output = "";
-	public $cssName;
-
 	/** _load {{{2
 	 * Function called by import. The function must grab
 	 * the information from the data source and store it
@@ -767,6 +763,10 @@ class TikiSheetDataHandler
 	 * @return true on success.
 	 * @abstract
 	 */
+	var $maxrows = 300;
+    var $maxcols = 26;
+    var $output = "";
+
 	function _load( &$sheet )
 	{
 		trigger_error( "Abstract method call. _load() not defined in " . get_class( $this ), E_USER_ERROR );
@@ -821,13 +821,13 @@ class TikiSheetDataHandler
  */
 class TikiSheetSerializeHandler extends TikiSheetDataHandler
 {
-	public $file;
+	var $file;
 
 	/** Constructor {{{2
 	 * Initializes the the serializer on a file.
 	 * @param $file The file path to save or load from.
 	 */
-	function __construct( $file = "php://stdout", $inputEncoding = '', $outputEncoding = '' )
+	function TikiSheetSerializeHandler( $file = "php://stdout", $inputEncoding = '', $outputEncoding = '' )
 	{
 		$this->file = $file;
         $this->encoding = new Encoding ($inputEncoding, $outputEncoding);
@@ -911,14 +911,14 @@ class TikiSheetSerializeHandler extends TikiSheetDataHandler
  */
 class TikiSheetCSVHandler extends TikiSheetDataHandler
 {
-	public $file = 'php://stdout';
-	public $lineLen;
+	var $file = 'php://stdout';
+	var $lineLen;
 
 	/** Constructor {{{2
 	 * Initializes the the serializer on a file.
 	 * @param $file The file path to save or load from.
 	 */
-	function __construct( $fileInfo, $inputEncoding = '', $outputEncoding = '', $lineLen = 1024 )
+	function TikiSheetCSVHandler( $fileInfo, $inputEncoding = '', $outputEncoding = '', $lineLen = 1024 )
 	{
 		$this->lineLen = $lineLen;
 		$this->data = strip_tags( $fileInfo['data'] );
@@ -977,7 +977,14 @@ class TikiSheetCSVHandler extends TikiSheetDataHandler
 
 		if ( $this->file == "php://stdout" )
 		{
+			header("Content-type: text/comma-separated-values");
+			header("Content-Disposition: attachment; filename=export.csv");
+			header("Expires: 0");
+			header("Cache-Control: must-revalidate, post-check=0,pre-check=0");
+			header("Pragma: public");
+
 			$this->output = $total;
+
 			return true;
 		}
 		else
@@ -1021,14 +1028,14 @@ class TikiSheetCSVHandler extends TikiSheetDataHandler
  */
 class TikiSheetTrackerHandler extends TikiSheetDataHandler
 {
-	public $file;
-	public $lineLen;
+	var $file;
+	var $lineLen;
 
 	/** Constructor {{{2
 	 * Initializes the the serializer on a file.
 	 * @param $file The file path to save or load from.
 	 */
-	function __construct( $trackerId )
+	function TikiSheetTrackerHandler( $trackerId )
 	{
 		global $tikilib;
 		$trklib = TikiLib::lib("trk");
@@ -1104,7 +1111,7 @@ class TikiSheetTrackerHandler extends TikiSheetDataHandler
  */
 class TikiSheetSimpleArrayHandler extends TikiSheetDataHandler
 {
-	public $values = array();
+	var $values = array();
 
 	function TikiSheetSimpleArrayHandler( $simpleArray = array() )
 	{
@@ -1181,14 +1188,14 @@ class TikiSheetSimpleArrayHandler extends TikiSheetDataHandler
  */
 class TikiSheetCSVExcelHandler extends TikiSheetDataHandler
 {
-    public $file;
-    public $lineLen;
+    var $file;
+    var $lineLen;
 
     /** Constructor {{{2
      * Initializes the the serializer on a file.
      * @param $file The file path to save or load from.
      */
-    function __construct( $file = "php://stdout", $inputEncoding = '', $outputEncoding = '', $lineLen = 1024 )
+    function TikiSheetCSVExcelHandler( $file = "php://stdout", $inputEncoding = '', $outputEncoding = '', $lineLen = 1024 )
     {
         $this->file = $file;
         $this->lineLen = $lineLen;
@@ -1241,7 +1248,14 @@ class TikiSheetCSVExcelHandler extends TikiSheetDataHandler
 
         if ( $this->file == "php://stdout" )
         {
+            header("Content-type: text/comma-separated-values");
+            header("Content-Disposition: attachment; filename=export.csv");
+            header("Expires: 0");
+            header("Cache-Control: must-revalidate, post-check=0,pre-check=0");
+            header("Pragma: public");
+
             $this->output = $total;
+
             return true;
         }
         else
@@ -1319,17 +1333,17 @@ class TikiSheetCSVExcelHandler extends TikiSheetDataHandler
  */
 class TikiSheetDatabaseHandler extends TikiSheetDataHandler
 {
-	public $id;
-	public $readDate;
-	public $rowCount;
-	public $columnCount;
+	var $id;
+	var $readDate;
+	var $rowCount;
+	var $columnCount;
 
 	/** Constructor {{{2
 	 * Assigns a sheet ID to the handler.
 	 * @param $id The ID of the sheet in the database.
 	 * @param $db The database link to use.
 	 */
-	function __construct( $id , $date = null )
+	function TikiSheetDatabaseHandler( $id , $date = null )
 	{
 		global $tikilib, $sheetlib;
 
@@ -1522,13 +1536,13 @@ class TikiSheetDatabaseHandler extends TikiSheetDataHandler
  */
 class TikiSheetExcelHandler extends TikiSheetDataHandler
 {
-	public $file;
-	public $disabled = true;
+	var $file;
+	var $disabled = true;
 	/** Constructor {{{2
 	 * Initializes the the serializer on a file.
 	 * @param $file The file path to save or load from.
 	 */
-	function __construct( $file = "php://stdout" , $inputEncoding = '', $outputEncoding = '' )
+	function TikiSheetExcelHandler( $file = "php://stdout" , $inputEncoding = '', $outputEncoding = '' )
 	{
 		$this->file = $file;
         $this->encoding = new Encoding ($inputEncoding, $outputEncoding);
@@ -1648,7 +1662,7 @@ class TikiSheetOpenOfficeHandler extends TikiSheetDataHandler
 	/** Constructor {{{2
 	 * Does nothing special.
 	 */
-	function __construct( $file = "php://stdout" )
+	function TikiSheetOpenOfficeHandler( $file = "php://stdout" )
 	{
 	}
 
@@ -1707,13 +1721,13 @@ class TikiSheetOpenOfficeHandler extends TikiSheetDataHandler
  */
 class TikiSheetWikiTableHandler extends TikiSheetDataHandler
 {
-	public $pageName;
+	var $pageName;
 
 	/** Constructor {{{2
 	 * Initializes the the serializer on a wiki page
 	 * @param $file The name of the wiki page to perform actions on.
 	 */
-	function __construct( $pageName )
+	function TikiSheetWikiTableHandler( $pageName )
 	{
 		$this->pageName = $pageName;
 	}
@@ -1825,15 +1839,15 @@ class TikiSheetWikiTableHandler extends TikiSheetDataHandler
  */
 class TikiSheetOutputHandler extends TikiSheetDataHandler
 {
-	public $heading;
-	public $parseOutput;
+	var $heading;
+	var $parseOutput;
 
 	/** Constructor {{{2
 	 * Identifies the caption of the table if it applies.
 	 * @param $heading 			The heading
 	 * @param $parseOutput		Parse wiki markup in cells if parseValues=y in sheet layout
 	 */
-	function __construct( $heading = null, $parseOutput = true )
+	function TikiSheetOutputHandler( $heading = null, $parseOutput = true )
 	{
 		$this->heading = $heading;
 		$this->parseOutput = $parseOutput;
@@ -2051,7 +2065,7 @@ class TikiSheetLabeledOutputHandler extends TikiSheetDataHandler
 {
 	/** Constructor {{{2
 	 */
-	function __construct()
+	function TikiSheetLabeledOutputHandler()
 	{
 	}
 
@@ -2168,13 +2182,13 @@ class TikiSheetLabeledOutputHandler extends TikiSheetDataHandler
 class TikiSheetHTMLTableHandler extends TikiSheetDataHandler
 {
 
-	public $data;
+	var $data;
 
 	/** Constructor {{{2
 	 * Initializes the the serializer on a wiki page
 	 * @param $file The name of the wiki page to perform actions on.
 	 */
-	function __construct( $inHtml )
+	function TikiSheetHTMLTableHandler( $inHtml )
 	{
 		$this->data = $inHtml;
 	}

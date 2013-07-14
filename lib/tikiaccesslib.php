@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -20,12 +20,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
  */
 class TikiAccessLib extends TikiLib
 {
-	private $noRedirect = false;
-
-	function preventRedirect($prevent)
-	{
-		$this->noRedirect = (bool) $prevent;
-	}
 
 	/**
 	 * check that the user is admin or has admin permissions
@@ -47,10 +41,7 @@ class TikiAccessLib extends TikiLib
 		}
 	}
 
-    /**
-     * @param $user
-     */
-    function check_user($user)
+	function check_user($user)
 	{
 		global $prefs;
 		require_once ('tiki-setup.php');
@@ -61,13 +52,7 @@ class TikiAccessLib extends TikiLib
 		}
 	}
 
-    /**
-     * @param string $user
-     * @param array $features
-     * @param array $permissions
-     * @param string $permission_name
-     */
-    function check_page($user = 'y', $features = array(), $permissions = array(), $permission_name = '')
+	function check_page($user = 'y', $features = array(), $permissions = array(), $permission_name = '')
 	{
 		require_once ('tiki-setup.php');
 
@@ -117,7 +102,7 @@ class TikiAccessLib extends TikiLib
 		}
 
 		foreach ($features as $feature) {
-			if (!$either && $prefs[$feature] != 'y') {
+			if ($prefs[$feature] != 'y') {
 				if ($feature_name != '') {
 					$feature = $feature_name;
 				}
@@ -138,21 +123,15 @@ class TikiAccessLib extends TikiLib
 			}
 
 			$msg = tr(
-				'Required features: <b>%0</b>. If you do not have the privileges to activate these features, ask the site administrator.',
-				implode(', ', $features)
+							'Required features: <b>%0</b>. If you do not have the privileges to activate these features, ask the site administrator.',
+							implode(', ', $features)
 			);
 
 			$this->display_error('', $msg, 'no_redirect_login');
 		}
 	}
 
-    /**
-     * @param $permissions
-     * @param string $permission_name
-     * @param bool $objectType
-     * @param bool $objectId
-     */
-    function check_permission($permissions, $permission_name = '', $objectType = false, $objectId = false)
+	function check_permission($permissions, $permission_name = '', $objectType = false, $objectId = false)
 	{
 		require_once ('tiki-setup.php');
 
@@ -175,7 +154,7 @@ class TikiAccessLib extends TikiLib
 				$permission = $permission_name;
 			}
 			$this->display_error('', tra("You do not have permission to use this feature:")." ". $permission, '403', false);
-			if (empty($GLOBALS['user'])) {
+			if (!$user) {
 				$_SESSION['loginfrom'] = $_SERVER['REQUEST_URI'];
 			}
 		}
@@ -289,10 +268,7 @@ class TikiAccessLib extends TikiLib
 		}
 	}
 
-    /**
-     * @return bool
-     */
-    function check_ticket()
+	function check_ticket()
 	{
 		global $smarty, $prefs, $user;
 
@@ -307,14 +283,7 @@ class TikiAccessLib extends TikiLib
 		}
 	}
 
-    /**
-     * @param $page
-     * @param string $errortitle
-     * @param string $errortype
-     * @param bool $enableRedirect
-     * @param string $message
-     */
-    function display_error($page, $errortitle = "", $errortype = "", $enableRedirect = true, $message = '')
+	function display_error($page, $errortitle = "", $errortype = "", $enableRedirect = true, $message = '')
 	{
 		global $smarty, $prefs, $tikiroot, $userlib, $user;
 		require_once ('tiki-setup.php');
@@ -339,21 +308,21 @@ class TikiAccessLib extends TikiLib
 			$detail['message'] = $detail['errortitle'];
 		}
 
-		// Display the template
+		// Display the template	
 		switch ( $errortype ) {
 			case '404':
 				header("HTTP/1.0 404 Not Found");
 				$detail['page'] = $page;
 				$detail['message'] .= ' (404)';
-				break;
+							break;
 
 			case '403':
 				header("HTTP/1.0 403 Forbidden");
-				break;
+							break;
 
 			case '503':
 				header("HTTP/1.0 503 Service Unavailable");
-				break;
+							break;
 
 			default:
 				$errortype = (int) $errortype;
@@ -364,7 +333,7 @@ class TikiAccessLib extends TikiLib
 					$title = 'Forbidden';
 				}
 				header("HTTP/1.0 $errortype $title");
-				break;
+							break;
 		}
 
 		if ( $this->is_serializable_request() ) {
@@ -373,9 +342,6 @@ class TikiAccessLib extends TikiLib
 			$errorreport->send_headers();
 
 			$this->output_serialized($detail);
-		} elseif ($this->is_xml_http_request()) {
-			$smarty->assign('detail', $detail);
-			$smarty->display('error-ajax.tpl');
 		} else {
 			if (($errortype == 401 || $errortype == 403) &&
 						empty($user) &&
@@ -394,11 +360,7 @@ class TikiAccessLib extends TikiLib
 		die;
 	}
 
-    /**
-     * @param string $page
-     * @return string
-     */
-    function get_home_page($page = '')
+	function get_home_page($page = '')
 	{
 		global $prefs, $tikilib, $use_best_language, $userlib, $user;
 
@@ -433,10 +395,6 @@ class TikiAccessLib extends TikiLib
 	{
 		global $prefs;
 
-		if ($this->noRedirect) {
-			return;
-		}
-
 		if ( $url == '' )
 			$url = $prefs['tikiIndex'];
 
@@ -453,7 +411,6 @@ class TikiAccessLib extends TikiLib
 			}
 		}
 
-		session_write_close();
 		if (headers_sent()) {
 			echo "<script>document.location.href='$url';</script>\n";
 		} else {
@@ -467,10 +424,7 @@ class TikiAccessLib extends TikiLib
 		exit();
 	}
 
-    /**
-     * @param $message
-     */
-    function flash( $message )
+	function flash( $message )
 	{
 		$this->redirect($_SERVER['REQUEST_URI'], $message);
 	}
@@ -527,10 +481,7 @@ class TikiAccessLib extends TikiLib
 		return $result;
 	}
 
-    /**
-     * @return bool
-     */
-    function http_auth()
+	function http_auth()
 	{
 		global $tikidomain, $userlib, $user, $smarty;
 
@@ -566,11 +517,7 @@ class TikiAccessLib extends TikiLib
 		}
 	}
 
-    /**
-     * @param bool $acceptFeed
-     * @return array
-     */
-    function get_accept_types($acceptFeed = false)
+	function get_accept_types($acceptFeed = false)
 	{
 		$accept = explode(',', $_SERVER['HTTP_ACCEPT']);
 
@@ -604,10 +551,7 @@ class TikiAccessLib extends TikiLib
 		return $types;
 	}
 
-    /**
-     * @return bool
-     */
-    function is_machine_request()
+	function is_machine_request()
 	{
 		foreach ( $this->get_accept_types() as $name => $full ) {
 			switch ( $name ) {
@@ -622,11 +566,7 @@ class TikiAccessLib extends TikiLib
 		return false;
 	}
 
-    /**
-     * @param bool $acceptFeed
-     * @return bool
-     */
-    function is_serializable_request($acceptFeed = false)
+	function is_serializable_request($acceptFeed = false)
 	{
 		foreach ( $this->get_accept_types($acceptFeed) as $name => $full ) {
 			switch ( $name ) {
@@ -644,10 +584,7 @@ class TikiAccessLib extends TikiLib
 		return false;
 	}
 
-    /**
-     * @return bool
-     */
-    function is_xml_http_request()
+	function is_xml_http_request()
 	{
 		return ! empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
 	}

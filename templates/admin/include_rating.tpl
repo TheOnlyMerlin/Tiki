@@ -27,23 +27,10 @@
 
 	<fieldset>
 		<legend>{tr}Articles{/tr}</legend>
-		{preference name=article_user_rating}
-		<div class="adminoptionboxchild" id="article_user_rating_childcontainer">
-			{preference name=article_user_rating_options}
-		</div>
-	</fieldset>
-
-	<fieldset>
-		<legend>{tr}Comments{/tr}</legend>
-		{preference name=wiki_comments_simple_ratings}
-		<div class="adminoptionboxchild" id="wiki_simple_ratings_childcontainer">
-			{preference name=wiki_comments_simple_ratings_options}
-		</div>
-	</fieldset>
-
-	<fieldset>
-		<legend>{tr}User Interface{/tr}</legend>
-		{preference name=rating_smileys}
+			{preference name=article_user_rating}
+				<div class="adminoptionboxchild" id="article_user_rating_childcontainer">
+					{preference name=article_user_rating_options}
+				</div>
 	</fieldset>
 	
 	<div class="input_submit_container" style="margin-top: 5px; text-align: center">
@@ -54,7 +41,7 @@
 	{foreach from=$configurations item=config}
 		<form class="config" method="post" action="">
 			<fieldset>
-				<legend>{$config.name|escape} (ID: {$config.ratingConfigId|escape}, Search Field: <em>adv_rating_{$config.ratingConfigId|escape}</em>)</legend>
+				<legend>{$config.name|escape}</legend>
 				<input type="hidden" name="config" value="{$config.ratingConfigId|escape}"/>
 				<div>
 					<label for="rating_name_{$config.ratingConfigId|escape}">{tr}Name{/tr}</label>

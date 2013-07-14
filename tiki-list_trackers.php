@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -54,18 +51,9 @@ foreach ($trackers["data"] as &$tracker) {
 	$tracker['watched'] = $user && $tikilib->user_watches($user, 'tracker_modified', $tracker["trackerId"], 'tracker');
 	
 	// Could be used with object_perms_summary.tpl instead of the above but may be less performant
-	//	$objectperms = Perms::get('tracker', trackerId);
-	//	$smarty->assign('permsType', $objectperms->from());
-
-	if ($tiki_p_admin_trackers !== 'y') {
-		$tracker_info = $trklib->get_tracker_options($tracker['trackerId']);
-		if ($tracker_info['adminOnlyViewEditItem'] === 'y') {
-			$tracker = null;
-		}
-	}
-
+//	$objectperms = Perms::get('tracker', trackerId);
+//	$smarty->assign('permsType', $objectperms->from());
 }
-$trackers['data'] = array_filter($trackers['data']);
 
 $smarty->assign_by_ref('cant', $trackers['cant']);
 $smarty->assign_by_ref('trackers', $trackers["data"]);

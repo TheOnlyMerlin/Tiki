@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -52,11 +49,11 @@ if ($output['data'] == 'EMPTY') {
 	include_once ('tiki-sefurl.php');
 	foreach ($changes['data'] as $data) {
 		$data['data'] = $tikilib->parse_data(
-			$data['data'],
-			array(
-				'print' => true,
-				'is_html' => $data['wysiwyg'] === 'y' && $prefs['wysiwyg_htmltowiki'] !== 'y',
-			)
+						$data['data'],
+						array(
+							'print' => true,
+							'is_html' => true,
+						)
 		);
 		$data['sefurl'] = filter_out_sefurl(sprintf($readrepl, $data['postId']), 'blogpost', urlencode($data['title']));
 		$tmp[] = $data;
@@ -64,20 +61,20 @@ if ($output['data'] == 'EMPTY') {
 	$changes['data'] = $tmp;
 	$tmp = null;
 	$output = $rsslib->generate_feed(
-		$feed,
-		$uniqueid,
-		'',
-		$changes,
-		$readrepl,
-		'blogId',
-		'',
-		$title,
-		$titleId,
-		$desc,
-		'data',
-		$dateId,
-		$authorId,
-		false
+					$feed,
+					$uniqueid,
+					'',
+					$changes,
+					$readrepl,
+					'blogId',
+					'',
+					$title,
+					$titleId,
+					$desc,
+					'data',
+					$dateId,
+					$authorId,
+					false
 	);
 }
 header('Content-type: ' . $output['content-type']);

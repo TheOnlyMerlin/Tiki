@@ -66,7 +66,7 @@
 					<div class="adminoptionbox">
 						<div class="adminoptionlabel">
 							<label for="registration_choices">{tr}Users can select a group to join at registration:{/tr}</label>
-							<br>
+							<br />
 							<em>{tr}By default, new users automatically join the Registered group{/tr}.</em>
 						</div>
 						<div class="adminoptionlabel">
@@ -99,17 +99,17 @@
 				{preference name=user_trackersync_groups}
 				{preference name=user_trackersync_parentgroup}
 				{preference name=user_trackersync_lang}
-				{preference name=user_tracker_auto_assign_item_field}
 				</div>
 				{preference name=groupTracker}
 				{preference name=email_due}
 				{preference name=unsuccessful_logins}
 				{preference name=unsuccessful_logins_invalid}
 				{preference name=eponymousGroups}
+				{preference name=syncGroupsWithDirectory}
+				{preference name=syncUsersWithDirectory}
 				{preference name=desactive_login_autocomplete}
 				{preference name=feature_challenge}
 
-				{preference name=login_multiple_forbidden}
 				{preference name=session_protected}
 				{preference name=https_login}
 				{preference name=login_http_basic}
@@ -128,23 +128,10 @@
 				</div>
 	
 				<fieldset>
-					<legend>{tr}Cookies{/tr}</legend>
+					<legend>{tr}Cookie{/tr}</legend>
 					{preference name=cookie_name}
 					{preference name=cookie_domain}
 					{preference name=cookie_path}
-					<hr>
-					<strong>{tr}Cookie Consent{/tr}</strong>
-					{preference name=cookie_consent_feature}
-					<div class="adminoptionboxchild" id="cookie_consent_feature_childcontainer">
-						{preference name=cookie_consent_name}
-						{preference name=cookie_consent_expires}
-						{preference name=cookie_consent_description}
-						{preference name=cookie_consent_question}
-						{preference name=cookie_consent_alert}
-						{preference name=cookie_consent_button}
-						{preference name=cookie_consent_mode}
-						{preference name=cookie_consent_dom_id}
-					</div>
 				</fieldset>
 				{preference name=feature_banning}
 			</fieldset>
@@ -256,7 +243,6 @@
 				{preference name=auth_ldap_group_userattr}
 				{preference name=auth_ldap_group_corr_userattr}
 				{preference name=auth_ldap_group_useroc}
-				{preference name=syncGroupsWithDirectory}
 			</fieldset>
 
 			<fieldset>
@@ -265,7 +251,6 @@
 				{preference name=auth_ldap_groupattr}
 				{preference name=auth_ldap_groupdescattr}
 				{preference name=auth_ldap_groupoc}
-				{preference name=syncUsersWithDirectory}
 			</fieldset>
 
 			<fieldset>

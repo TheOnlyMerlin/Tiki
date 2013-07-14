@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -18,10 +15,6 @@ global $cachelib;
 include_once ('lib/cache/cachelib.php');
 if (isset($_GET['do'])) {
 	$cachelib->empty_cache($_GET['do']);
-	if ($_GET['do'] === 'all') {
-		// seems combination of clearing prefs and public now messes up the page, so reload (tiki 11)
-		header('Location: ' . $base_url . 'tiki-admin_system.php');
-	}
 }
 if (isset($_GET['compiletemplates'])) {
 	$ctempl = 'templates';
@@ -90,7 +83,7 @@ $smarty->assign_by_ref('dirs', $dirs);
 $smarty->assign_by_ref('dirsWritable', $dirsWritable);
 $smarty->assign('zipPath', '');
 if (isset($_REQUEST['zip']) && isset($_REQUEST['zipPath']) && $tiki_p_admin == 'y') {
-	include_once ('vendor_extra/pclzip/pclzip.lib.php');
+	include_once ('lib/pclzip/pclzip.lib.php');
 	if (!$archive = new PclZip($_REQUEST['zipPath'])) {
 		$smarty->assign('msg', tra('Error:') . $archive->errorInfo(true));
 		$smarty->display('error.tpl');

@@ -1,14 +1,12 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 class RatingLib extends TikiDb_Bridge
 {
-	private $configurations;
-
 	/**
 	 * Record a vote for the current user or anonymous visitor.
 	 */
@@ -35,17 +33,14 @@ class RatingLib extends TikiDb_Bridge
 		}
 	}
 
-	function obtain_ratings($type, $itemId, $recalculate = false)
+	function obtain_ratings($type, $itemId)
 	{
 		if ($type == 'wiki page') {
-			$itemId = TikiLib::lib('tiki')->get_page_id_from_name($itemId);
+			$query = "SELECT ratingConfigId, value FROM tiki_rating_obtained INNER JOIN tiki_pages ON tiki_rating_obtained.object = tiki_pages.page_id WHERE tiki_rating_obtained.type = ? AND tiki_pages.pageName = ?";
+		} else {
+			$query = "SELECT ratingConfigId, value FROM tiki_rating_obtained WHERE type = ? AND object = ?";
 		}
 
-		if ($recalculate) {
-			$this->refresh_rating($type, $itemId);
-		}
-
-		$query = "SELECT ratingConfigId, value FROM tiki_rating_obtained WHERE type = ? AND object = ?";
 		return $this->fetchMap($query, array($type, $itemId));
 	}
 
@@ -60,7 +55,7 @@ class RatingLib extends TikiDb_Bridge
 	 *                      aggregate will be performed on the entire history, for all visitors
 	 *                      without limitations on voting frequency. Valid parameters are:
 	 *                      - range : Number of seconds to look back for
-	 *                      - ignore : 'anonymous' is the only valid value.
+	 *                      - ignore : 'anonymous' is the only valid value. 
 	 *                                 Will make sure only registered users are considered.
 	 *                      - keep : Only consider one vote per user. 'oldest' or 'latest'.
 	 *                      - revote : If the user is allowed to vote multiple times, contains the
@@ -137,7 +132,7 @@ class RatingLib extends TikiDb_Bridge
 	{
 		global $tikilib, $prefs;
 
-		if ( ! $this->is_valid($type, $score, $objectId) ) {
+		if ( ! $this->is_valid($type, $score) ) {
 			return false;
 		}
 
@@ -153,8 +148,8 @@ class RatingLib extends TikiDb_Bridge
 		}
 
 		$this->query(
-			'INSERT INTO `tiki_user_votings` ( `user`, `ip`, `id`, `optionId`, `time` ) VALUES( ?, ?, ?, ?, ? )',
-			array($user, $ip, $token, $score, $time)
+						'INSERT INTO `tiki_user_votings` ( `user`, `ip`, `id`, `optionId`, `time` ) VALUES( ?, ?, ?, ?, ? )',
+						array( $user, $ip, $token, $score, $time )
 		);
 
 		if ( $prefs['rating_advanced'] == 'y' ) {
@@ -173,177 +168,35 @@ class RatingLib extends TikiDb_Bridge
 		return $this->record_user_vote($this->session_to_user($sessionId), $type, $objectId, $score, $time);
 	}
 
-	function is_valid( $type, $value, $objectId )
+	function is_valid( $type, $value )
 	{
-		$options = $this->get_options($type, $objectId);
+		$options = $this->get_options($type);
 
 		return in_array($value, $options);
 	}
 
-	function get_options( $type, $objectId, $skipOverride = false )
+	function get_options( $type )
 	{
 		$pref = 'rating_default_options';
 
 		switch( $type ) {
-			case 'wiki page':
-				$pref = 'wiki_simple_ratings_options';
-	            break;
-			case 'article':
-				$pref = 'article_user_rating_options';
-	            break;
-			case 'comment':
-				$pref = 'wiki_comments_simple_ratings_options';
-				break;
-			case 'forum':
-				$pref = 'wiki_comments_simple_ratings_options';
-				break;
+		case 'wiki page':
+			$pref = 'wiki_simple_ratings_options';
+    		break;
+		case 'article':
+			$pref = 'article_user_rating_options';
+    		break;
 		}
 
 		global $tikilib;
-
-		$override = $this->get_override($type, $objectId);
-
-		if (!empty($override) && $skipOverride == false) {
-			return $override;
-		}
-
 		return $tikilib->get_preference($pref, range(1, 5), true);
-	}
-
-	function set_override($type, $objectId, $value)
-	{
-		global $attributelib;
-		$options = $this->override_array($type);
-
-		$attributelib->set_attribute($type, $objectId, $type.".rating.override", $options[$value - 1]);
-	}
-
-	function get_override($type, $objectId)
-	{
-		global $attributelib;
-		require_once('lib/attributes/attributelib.php');
-		$attrs = $attributelib->get_attributes($type, $objectId);
-		end($attrs);
-		$key = key($attrs);
-		if (empty($attrs) || empty($attrs[$key])) return;
-
-		$attr = explode(',', $attrs[$type . '.rating.override']);
-		return $attr;
-	}
-
-
-	function override_array($type, $maintainArray = false, $sort = false)
-	{
-		global $prefs;
-
-		$array = array();
-		$options = array();
-
-		switch( $type ) {
-			case 'wiki page':
-				$pref = 'wiki_simple_ratings_options';
-				break;
-			case 'article':
-				$pref = 'article_user_rating_options';
-				break;
-			case 'comment':
-				$pref = 'wiki_comments_simple_ratings_options';
-				break;
-			case 'forum':
-				$pref = 'wiki_comments_simple_ratings_options';
-				break;
-		}
-
-
-		$sortedPref = $prefs[$pref];
-		asort($sortedPref);
-
-		foreach ($sortedPref as $i => $option) {
-			$options[$i] = $option;
-			//Ensure there are at least 2 to choose from
-			if (count($options) > 1) {
-				$value = $options;
-
-				if ($sort == false) ksort($value);
-
-				if ($maintainArray == false) {
-					$value = implode($value, ',');
-				}
-
-				$array[] = $value;
-			}
-		}
-
-		return $array;
-	}
-
-	function votings($threadId, $type = 'comment', $normalize = false)
-	{
-		global $prefs;
-
-		switch($type) {
-			case 'wiki page': $type = 'wiki';
-		}
-
-		$user_votings = $this->fetchAll(
-			"SELECT *
-			FROM tiki_user_votings tuv1
-			WHERE id=? AND time = (
-				SELECT max(time)
-				FROM tiki_user_votings tuv2
-				WHERE tuv2.user = tuv1.user AND tuv1.id = tuv2.id
-			)
-			GROUP BY user
-			ORDER BY time DESC", array($type.$threadId)
-		);
-
-		$votings = array();
-		$voteCount = count($user_votings);
-		$percent = ( $voteCount > 0 ? 100 / $voteCount : 0 );
-
-		foreach ($user_votings as $user_voting) {
-			if (!isset($votings[$user_voting['optionId']])) $votings[$user_voting['optionId']] = 0;
-
-			$votings[$user_voting['optionId']]++;
-		}
-
-		$voteOptionsOverride = $this->get_options($type, $threadId);
-		ksort($voteOptionsOverride);
-		$voteOptionsGeneral = $this->get_options($type, $threadId, true);
-		ksort($voteOptionsGeneral);
-
-
-		$overrideMin = (int)$voteOptionsOverride[0];
-		$overrideMax = (int)$voteOptionsOverride[count($voteOptionsOverride) - 1];
-
-		//$generalMin = (int)$voteOptionsGeneral[0];
-		//$generalMax = (int)$voteOptionsGeneral[count($voteOptionsGeneral) - 1];
-
-		$normalized = 0;
-		foreach ($votings as $value => &$votes) {
-			$normalized += ($overrideMin /  $overrideMax) * $value;
-
-			$votes = array(
-				"votes" => $votes,
-				"percent" => round($percent * $votes),
-			);
-		}
-
-		ksort($votings);
-
-		if ($normalize == true) {
-			return $normalized;
-		}
-
-		return $votings;
 	}
 
 	function get_user_vote( $user, $type, $objectId )
 	{
 		$result = $this->fetchAll(
-			'SELECT `optionId` FROM `tiki_user_votings` WHERE `user` = ? AND `id` = ? ORDER BY `time` DESC',
-			array($user, $this->get_token($type, $objectId)),
-			1
+						'SELECT `optionId` FROM `tiki_user_votings` WHERE `user` = ? AND `id` = ? ORDER BY `time` DESC',
+						array( $user, $this->get_token($type, $objectId) ), 1
 		);
 
 		if ( count($result) == 1 ) {
@@ -392,7 +245,9 @@ class RatingLib extends TikiDb_Bridge
 
 	function refresh_rating( $type, $object )
 	{
-		$configurations = $this->get_initialized_configurations();
+		global $ratingconfiglib; require_once 'lib/rating/configlib.php';
+		$configurations = $ratingconfiglib->get_configurations();
+
 		$runner = $this->get_runner();
 
 		$this->internal_refresh_rating($type, $object, $runner, $configurations);
@@ -411,99 +266,21 @@ class RatingLib extends TikiDb_Bridge
 		$this->internal_refresh_list(-1);
 	}
 
-	function get_options_smiles_backgrounds($type)
-	{
-		$sets = $this->get_options_smiles_id_sets();
-
-		$backgroundsSets = array();
-
-		foreach ($sets as $set) {
-			$backgrounds = array();
-			foreach ($set as $imageId) {
-				$backgrounds[] = 'img/rating_smiles/' . $imageId . '.png';
-			}
-			$backgroundsSets[] = $backgrounds;
-		}
-
-		return $backgroundsSets;
-	}
-
-	function get_options_smiles_colors()
-	{
-		return array(
-			1 => '#d2d2d2',
-			2 => '#ce4744',
-			3 => '#e84642',
-			4 => '#f26842',
-			5 => '#f58642',
-			6 => '#f6a141',
-			7 => '#fcc441',
-			8 => '#e5cd42',
-			9 => '#cbd244',
-			10 => '#b3db47',
-			11 => '#9be549',
-			12 => '#90d047',
-		);
-	}
-
-	function get_options_smiles_id_sets()
-	{
-		return array(
-			2 => array( 1=>2, 2=>12),
-			3 => array( 1=>1, 2=>2, 3=>12),
-			4 => array( 1=>1, 2=>2, 3=>6, 4=>12),
-			5 => array( 1=>1, 2=>2, 3=>6, 4=>11, 5=>12),
-			6 => array( 1=>1, 2=>2, 3=>3, 4=>6,  5=>11, 6=>12),
-			7 => array( 1=>1, 2=>2, 3=>3, 4=>6,  5=>10, 6=>11, 7=>12),
-			8 => array( 1=>1, 2=>2, 3=>3, 4=>4,  5=>6,  6=>10, 7=>11, 8=>12),
-			9 => array( 1=>1, 2=>2, 3=>3, 4=>4,  5=>6,  6=>9,  7=>10, 8=>11, 9=>12),
-			10 => array(1=>1, 2=>2, 3=>3, 4=>4,  5=>5,  6=>6,  7=>9,  8=>10, 9=>11, 10=>12),
-			11 => array(1=>1, 2=>2, 3=>3, 4=>4,  5=>5,  6=>6,  7=>8,  8=>9,  9=>10, 10=>11, 11=>12),
-			12 => array(1=>1, 2=>2, 3=>3, 4=>4,  5=>5,  6=>6,  7=>7,  8=>8,  9=>9,  10=>10, 11=>11, 12=>12),
-		);
-	}
-
-	function get_options_smiles($type, $objectId = 0, $sort = false)
-	{
-		$options = $this->get_options($type, $objectId);
-		$colors = $this->get_options_smiles_colors();
-
-		$optionsAsKeysSorted = array();
-
-
-		foreach ($options as $option) {
-			$optionsAsKeysSorted[$option] = array();
-		}
-
-		ksort($optionsAsKeysSorted);
-
-		$sets = $this->get_options_smiles_id_sets();
-		$set = $sets[count($options)];
-
-		foreach ($optionsAsKeysSorted as $key => &$option) {
-			$option = array(
-				'img' => 'img/rating_smiles/' . $set[$key] . '.png',
-				'color' => $colors[$set[$key]]
-			);
-		}
-
-		if ($sort == false) {
-			$result = array();
-			foreach ($options as $key => &$option) {
-				$result[$key] = $optionsAsKeysSorted[$option];
-			}
-		} else {
-			$result = $optionsAsKeysSorted;
-		}
-
-		return $result;
-	}
-
 	private function internal_refresh_list( $max )
 	{
-		$configurations = $this->get_initialized_configurations();
-		$runner = $this->get_runner();
+		global $ratingconfiglib; require_once 'lib/rating/configlib.php';
 
+		// Pre-parse formulas to avoid doing it multiple times
+		require_once 'Math/Formula/Parser.php';
+		$parser = new Math_Formula_Parser;
+		$configurations = array();
+		foreach ( $ratingconfiglib->get_configurations() as $config ) {
+			$config['formula'] = $parser->parse($config['formula']);
+			$configurations[] = $config;
+		}
+
+		$runner = $this->get_runner();
+		
 		$list = $ratingconfiglib->get_expired_object_list($max);
 
 		foreach ( $list as $object ) {
@@ -532,30 +309,13 @@ class RatingLib extends TikiDb_Bridge
 
 	private function get_runner()
 	{
+		require_once 'Math/Formula/Runner.php';
 		return new Math_Formula_Runner(
-			array(
-				'Math_Formula_Function_' => '',
-				'Tiki_Formula_Function_' => '',
-			)
+						array(
+							'Math_Formula_Function_' => 'lib/core/Math/Formula/Function',
+							'Tiki_Formula_Function_' => dirname(__FILE__) . '/formula',
+						)
 		);
-	}
-
-	private function get_initialized_configurations()
-	{
-		if ($this->configurations) {
-			return $this->configurations;
-		}
-
-		$ratingconfiglib = TikiLib::lib('ratingconfig');
-
-		$parser = new Math_Formula_Parser;
-		$configurations = array();
-		foreach ( $ratingconfiglib->get_configurations() as $config ) {
-			$config['formula'] = $parser->parse($config['formula']);
-			$configurations[] = $config;
-		}
-
-		return $this->configurations = $configurations;
 	}
 }
 

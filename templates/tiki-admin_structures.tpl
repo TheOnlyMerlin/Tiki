@@ -15,7 +15,7 @@
 
 {if $askremove eq 'y'}
 	{remarksbox type='confirm' title="{tr}Please Confirm{/tr}"}
-		{tr}You will remove structure:{/tr} {$removename|escape}<br>
+		{tr}You will remove structure:{/tr} {$removename|escape}<br />
 		{button href="?rremove=$remove&amp;page=$removename" _text="{tr}Destroy the structure leaving the wiki pages{/tr}"}
 		{if $tiki_p_remove == 'y'}
 			{button href="?rremovex=$remove&amp;page=$removename" _text="{tr}Destroy the structure and remove the pages{/tr}"}
@@ -70,7 +70,7 @@
 		{if $channels or ($find ne '')}
 			{include file='find.tpl' find_show_languages='y' find_show_categories='y' find_show_num_rows='y'}
 		{/if}
-		<br>
+		<br />
 		<form>
 			<table class="normal">
 				<tr>
@@ -83,7 +83,7 @@
 					<tr class="{cycle}">
 						{if $tiki_p_admin eq 'y'}
 							<td class="checkbox">
-								<input type="checkbox" name="action[]" value='{$channels[ix].page_ref_id}' style="border:1px;font-size:80%;">
+								<input type="checkbox" name="action[]" value='{$channels[ix].page_ref_id}' style="border:1px;font-size:80%;" />
 							</td>
 						{/if}
 						<td class="text">
@@ -133,7 +133,7 @@
 						<option value="delete">{tr}Delete{/tr}</option>
 						<option value="delete_with_page">{tr}Delete with the pages{/tr}</option>
 					</select>
-					<input type="submit" name="act" value="{tr}OK{/tr}">
+					<input type="submit" name="act" value="{tr}OK{/tr}" />
 				</form>
 			</div>
 		{/if}
@@ -147,14 +147,14 @@
 				<table class="formcolor">
 					<tr>
 						<td><label for="name">{tr}Structure ID:{/tr}</label></td>
-						<td><input type="text" name="name" id="name"></td>
+						<td><input type="text" name="name" id="name" /></td>
 					</tr>
 					<tr>
 						<td><label for="alias">{tr}Alias:{/tr}</label></td>
-						<td><input type="text" name="alias" id="alias"></td>
+						<td><input type="text" name="alias" id="alias" /></td>
 					</tr>
 					<tr>
-						<td><label for="tree">{tr}Tree:{/tr}</label><br>(optional)</td>
+						<td><label for="tree">{tr}Tree:{/tr}</label><br />(optional)</td>
 						<td colspan="2">
 							<textarea rows="5" cols="60" id="tree" name="tree" style="width:95%"></textarea>
 							{remarksbox type="tip" title="{tr}Note{/tr}"}{tr}Use single spaces to indent structure levels{/tr}{/remarksbox}
@@ -164,7 +164,7 @@
 					<tr>
 						<td>&nbsp;</td>
 						<td colspan="2">
-							<input type="submit" value="{tr}Create New Structure{/tr}" name="create">
+							<input type="submit" value="{tr}Create New Structure{/tr}" name="create" />
 						</td>
 					</tr>
 				</table>

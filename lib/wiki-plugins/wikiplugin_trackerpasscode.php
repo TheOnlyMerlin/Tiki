@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +10,7 @@ function wikiplugin_trackerpasscode_info()
 	return array(
 		'name' => tra('Check Tracker Passcodes'),
 		'documentation' => tra('PluginTrackerpasscode'),
-		'description' => tra('Check Tracker Passcodes'),
+		'description' => tra('Set'),
 		'prefs' => array('wikiplugin_trackerpasscode', 'feature_trackers'),
 		'filter' => 'wikicontent',
 		'params' => array(
@@ -34,7 +34,6 @@ function wikiplugin_trackerpasscode_info()
 				'description' => tra('Tracker from which to get passcode to check against'),
 				'filter' => 'text',
 				'default' => '',
-				'profile_reference' => 'tracker',
 			),
 			'fieldId' => array(
 				'required' => true,
@@ -42,7 +41,6 @@ function wikiplugin_trackerpasscode_info()
 				'description' => tra('Field ID from which to get passcode to check against'),
 				'filter' => 'text',
 				'default' => '',
-				'profile_reference' => 'tracker_field',
 			),
 			'itemId' => array(
 				'required' => true,
@@ -50,7 +48,6 @@ function wikiplugin_trackerpasscode_info()
 				'description' => tra('Item ID from which to get passcode to check against'),
 				'filter' => 'text',
 				'default' => '',
-				'profile_reference' => 'tracker_item',
 			),
 		),
 	);

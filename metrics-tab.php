@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -56,6 +53,7 @@ $date_from = $_REQUEST['date_from'];
 $date_to = $_REQUEST['date_to'];
 $date_field = $_REQUEST['date_field'];
 
+require_once 'lib/cache/pagecache.php';
 $pageCache = Tiki_PageCache::create()
 	->requiresPreference('metrics_cache_output')
 	->addKeys($_REQUEST, array( 'tab_id', 'range', 'date_from', 'date_to', 'date_field' ))

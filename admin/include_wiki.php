@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -78,7 +78,7 @@ if (isset($_REQUEST['wikidiscussprefs'])) {
 
 if (isset($_REQUEST['wikifeatures'])) {
 	check_ticket('admin-inc-wiki');
-	if ((isset($_REQUEST['feature_backlinks']) && $_REQUEST['feature_backlinks'] == 'on' && $prefs['feature_backlinks'] == 'y')
+	if ((isset($_REQUEST['feature_backlinks']) && $_REQUEST['feature_backlinks'] == 'on' && $prefs['feature_backlinks'] != 'y')
 			|| (empty($_REQUEST['feature_backlinks']) && $prefs['feature_backlinks'] == 'y')
 	) {
 		$backlinksChange = true;

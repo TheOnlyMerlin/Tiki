@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -25,7 +22,9 @@ if (!isset($_REQUEST['parentId'])) {
 $smarty->assign('parentId', $_REQUEST['parentId']);
 
 
-$access->check_permission('tiki_p_admin_categories', '', 'category', $_REQUEST['parentId']);
+if (!empty($_REQUEST['parentId'])) {
+	$access->check_permission('tiki_p_admin_categories', '', 'category', $_REQUEST['parentId']);
+}
 
 if (!empty($_REQUEST['unassign'])) {
 	$access->check_authenticity(tra('Are you sure you want to unassign the objects of this category: ') . $info['name']);
@@ -342,12 +341,7 @@ if (isset($_REQUEST["find_objects"])) {
 	$find_objects = '';
 }
 
-/**
- * @param $max
- * @param $data_key
- * @param null $data
- */
-function admin_categ_assign( &$max, $data_key, $data = null )
+function admin_categ_assign( &$max, $data_key, $data = null ) 
 {
 	global $smarty;
 

@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -24,11 +21,6 @@ if ($tiki_p_admin != 'y') {
 	$userGroups = array();
 }
 
-/**
- * @param $u
- * @param $reason
- * @return mixed
- */
 function discardUser($u, $reason)
 {
 	$u['reason'] = $reason;
@@ -71,7 +63,7 @@ function batchImportUsers()
 		$userrecs[] = $ar;
 	}
 	fclose($fhandle);
-
+	
 	if (empty($userrecs) or !is_array($userrecs)) {
 		$smarty->assign('msg', tra('No records were found. Check the file please!'));
 		$smarty->display('error.tpl');
@@ -94,9 +86,9 @@ function batchImportUsers()
 			} else { // pick up the info on the master
 
 				$info = $userlib->interGetUserInfo(
-					$prefs['interlist'][$prefs['feature_intertiki_mymaster']],
-					empty($u['login']) ? '' : $u['login'],
-					empty($u['email']) ? '' : $u['email']
+								$prefs['interlist'][$prefs['feature_intertiki_mymaster']],
+								empty($u['login']) ? '' : $u['login'],
+								empty($u['email']) ? '' : $u['email']
 				);
 
 				if (empty($info)) {
@@ -145,14 +137,14 @@ function batchImportUsers()
 			}
 
 			$userlib->add_user(
-				$u['login'],
-				$u['password'],
-				$u['email'],
-				$pass_first_login ? $u['password'] : '',
-				$pass_first_login,
-				$apass,
-				NULL,
-				(!empty($_REQUEST['notification']) ? 'u' : NULL)
+							$u['login'],
+							$u['password'],
+							$u['email'],
+							$pass_first_login ? $u['password'] : '',
+							$pass_first_login,
+							$apass,
+							NULL,
+							(!empty($_REQUEST['notification']) ? 'u' : NULL)
 			);
 
 			$logslib->add_log('users', sprintf(tra('Created account %s <%s>'), $u['login'], $u['email']));
@@ -232,7 +224,7 @@ if (isset($_REQUEST['batch']) && is_uploaded_file($_FILES['csvlist']['tmp_name']
 	$access->check_ticket();
 	batchImportUsers();
 	// Process the form to add a user here
-
+	
 } elseif (isset($_REQUEST['newuser'])) {
 	$AddUser= true;;
 	$access->check_authenticity(tra('Are you sure you want to add this new user?'));
@@ -306,14 +298,14 @@ if (isset($_REQUEST['batch']) && is_uploaded_file($_FILES['csvlist']['tmp_name']
 			}
 
 			if ($userlib->add_user(
-				$_REQUEST['login'],
-				$newPass,
-				$_REQUEST['email'],
-				$pass_first_login ? $newPass : '',
-				$pass_first_login,
-				$apass,
-				NULL,
-				($send_validation_email ? 'u' : NULL)
+							$_REQUEST['login'],
+							$newPass,
+							$_REQUEST['email'],
+							$pass_first_login ? $newPass : '',
+							$pass_first_login,
+							$apass,
+							NULL,
+							($send_validation_email ? 'u' : NULL)
 			)) {
 				$tikifeedback[] = array(
 					'num' => 0,
@@ -324,14 +316,14 @@ if (isset($_REQUEST['batch']) && is_uploaded_file($_FILES['csvlist']['tmp_name']
 					// No need to send credentials in mail if the user is forced to choose a new password after validation
 					$realpass = $pass_first_login ? '' : $newPass;
 					$userlib->send_validation_email(
-						$_REQUEST['login'],
-						$apass,
-						$_REQUEST['email'],
-						'',
-						'',
-						'',
-						'user_creation_validation_mail',
-						$realpass
+									$_REQUEST['login'],
+									$apass,
+									$_REQUEST['email'],
+									'',
+									'',
+									'',
+									'user_creation_validation_mail',
+									$realpass
 					);
 				}
 
@@ -632,8 +624,8 @@ if (isset($_REQUEST['user']) and $_REQUEST['user']) {
 					);
 
 					$logslib->add_log(
-						'adminusers',
-						'changed login for ' . $_POST['login'] . ' from ' . $userinfo['login'] . ' to ' . $_POST['login']
+									'adminusers',
+									'changed login for ' . $_POST['login'] . ' from ' . $userinfo['login'] . ' to ' . $_POST['login']
 					);
 
 					$userinfo['login'] = $_POST['login'];
@@ -734,60 +726,7 @@ if (isset($_REQUEST['user']) and $_REQUEST['user']) {
 	$_REQUEST['user'] = 0;
 }
 
-if ($tiki_p_admin == 'y') {
-	$alls = $userlib->get_groups();
-	foreach ($alls['data'] as $g) {
-		$all_groups[] = $g['groupName'];
-	}
-} else {
-	foreach ($userGroups as $g => $t) {
-		$all_groups[] = $g;
-	}
-}
-
-//add tablesorter sorting and filtering
-$tsOn	= $prefs['disableJavascript'] == 'n' && $prefs['feature_jquery_tablesorter'] == 'y'
-		&& $prefs['feature_ajax'] == 'y' ? true : false;
-$smarty->assign('ts', $tsOn);
-$tsAjax = isset($_REQUEST['tsAjax']) && $_REQUEST['tsAjax'] ? true : false;
-
-if ($tsAjax || !$tsOn) {
-	$users = $userlib->get_users(
-		$offset,
-		$numrows,
-		$sort_mode,
-		$find,
-		$initial,
-		true,
-		$filterGroup,
-		$filterEmail,
-		!empty($_REQUEST['filterEmailNotConfirmed']),
-		!empty($_REQUEST['filterNotValidated']),
-		!empty($_REQUEST['filterNeverLoggedIn'])
-	);
-} elseif($tsOn) {
-	$users['cant'] = $userlib->count_users('');
-	$users['data'] = $users['cant'] > 0 ? true : false;
-	//delete anonymous out of group list used for dropdown
-	$ts_groups = array_flip($all_groups);
-	unset($ts_groups['Anonymous']);
-	$ts_groups = array_flip($ts_groups);
-	//set tablesorter code
-	Table_Factory::build(
-		'adminusers',
-		array(
-			 'total' => $users['cant'],
-			 'filters' => array(
-				 'columns' => array(
-					 5 => array(
-						 'options' => $ts_groups
-				 	)
-				)
-			 )
-		)
-	);
-}
-
+$users = $userlib->get_users($offset, $numrows, $sort_mode, $find, $initial, true, $filterGroup, $filterEmail);
 if (!empty($group_management_mode) || !empty($set_default_groups_mode) || !empty($email_mode)) {
 	$arraylen = count($users['data']);
 	for ($i = 0; $i < $arraylen; $i++) {
@@ -802,6 +741,17 @@ $smarty->assign_by_ref('cant', $users['cant']);
 
 if (isset($_REQUEST['add'])) {
 	$cookietab = '2';
+}
+
+if ($tiki_p_admin == 'y') {
+	$alls = $userlib->get_groups();
+	foreach ($alls['data'] as $g) {
+		$all_groups[] = $g['groupName'];
+	}
+} else {
+	foreach ($userGroups as $g => $t) {
+		$all_groups[] = $g;
+	}
 }
 
 if (count($errors) > 0) {
@@ -822,9 +772,6 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 $smarty->assign('mid', 'tiki-adminusers.tpl');
 $smarty->display('tiki.tpl');
 
-/**
- * @param $errors
- */
 function exit_with_error_messages($errors)
 {
 	global $access;

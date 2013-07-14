@@ -1,5 +1,5 @@
 /* $Id$ 
-	Akebi theme option for Fivealive themes for
+	Akebi theme option for Fivealive theme for
 	Tiki Wiki CMS Groupware.
 */
 
@@ -144,7 +144,6 @@ input[type="submit"]:hover,
 select,
 input[type="text"],
 input[type="password"],
-input[type="search"],
 input[type="file"],
 input#login-pass,
 textarea,
@@ -200,22 +199,21 @@ th.header {
 	color: #ddf8f9;
 }
 
-.caltable .odd,
-.caltable .even,
+.calodd,
+.caleven,
 .wikicell {
 	border: 2px solid #cbf4f6;
 }
 
 .odd,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+.calodd,
+table.normal tr:nth-child(2n+1) {
 	background: #cbf4f6;
 }
 
 .even,
-table.normal tr:nth-child(2n),
-table.normal tr:nth-child(2n) td,
-.tablesorter tr.even td {
+.caleven,
+table.normal tr:nth-child(2n) {
 	background: #d3f9f9;
 }
 

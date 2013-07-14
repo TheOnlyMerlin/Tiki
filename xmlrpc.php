@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -26,12 +26,6 @@ $map = array (
 
 $s = new XML_RPC_Server($map);
 
-/**
- * @param $user
- * @param $blogid
- * @param $permName
- * @return bool
- */
 function check_individual($user,$blogid,$permName)
 {
 	global $userlib;
@@ -51,10 +45,6 @@ function check_individual($user,$blogid,$permName)
 }
 
 /* Validates the user and returns user information */
-/**
- * @param $params
- * @return XML_RPC_Response
- */
 function getUserInfo($params)
 {
 	global $tikilib, $userlib;
@@ -72,15 +62,15 @@ function getUserInfo($params)
 
 	if ($ok) {
 		$myStruct = new XML_RPC_Value(
-			array(
-				'nickname' => new XML_RPC_Value($username),
-				'firstname' => new XML_RPC_Value('none'),
-				'lastname' => new XML_RPC_Value('none'),
-				'email' => new XML_RPC_Value('none'),
-				'userid' => new XML_RPC_Value('$username'),
-				'url' => new XML_RPC_Value('none')
-			),
-			'struct'
+						array(
+							'nickname' => new XML_RPC_Value($username),
+							'firstname' => new XML_RPC_Value('none'),
+							'lastname' => new XML_RPC_Value('none'),
+							'email' => new XML_RPC_Value('none'),
+							'userid' => new XML_RPC_Value('$username'),
+							'url' => new XML_RPC_Value('none')
+						),
+						'struct'
 		);
 		return new XML_RPC_Response($myStruct);
 	} else {
@@ -89,10 +79,6 @@ function getUserInfo($params)
 }
 
 /* Posts a new submission to the CMS */
-/**
- * @param $params
- * @return XML_RPC_Response
- */
 function newPost($params)
 {
 	global $tikilib, $userlib, $bloglib;
@@ -155,10 +141,6 @@ function newPost($params)
 }
 
 // :TODO: editPost
-/**
- * @param $params
- * @return XML_RPC_Response
- */
 function editPost($params)
 {
 	global $tikilib, $userlib, $bloglib;
@@ -218,10 +200,6 @@ function editPost($params)
 }
 
 // :TODO: deletePost
-/**
- * @param $params
- * @return XML_RPC_Response
- */
 function deletePost($params)
 {
 	global $tikilib, $userlib, $bloglib;
@@ -267,10 +245,6 @@ function deletePost($params)
 // :TODO: getTemplate
 // :TODO: setTemplate
 // :TODO: getPost
-/**
- * @param $params
- * @return XML_RPC_Response
- */
 function getPost($params)
 {
 	global $tikilib, $userlib, $bloglib;
@@ -316,14 +290,14 @@ function getPost($params)
 
 	// added dateTime type for blogger compliant xml tag Joerg Knobloch <joerg@happypenguins.net>
 	$myStruct=new XML_RPC_Value(
-		array(
-			'userid' => new XML_RPC_Value($username),
-			'dateCreated' => new XML_RPC_Value($dateCreated, 'dateTime.iso8601'),
-			// Fix for w.Bloggar
-			'content' => new XML_RPC_Value('<title>' . $post_data['title'] . '</title>' . $post_data['data']),
-			'postid' => new XML_RPC_Value($post_data['postId'])
-		),
-		'struct'
+					array(
+						'userid' => new XML_RPC_Value($username),
+						'dateCreated' => new XML_RPC_Value($dateCreated, 'dateTime.iso8601'),
+						// Fix for w.Bloggar
+						'content' => new XML_RPC_Value('<title>' . $post_data['title'] . '</title>' . $post_data['data']),
+						'postid' => new XML_RPC_Value($post_data['postId'])
+					),
+					'struct'
 	);
 
 	// User ok and can submit then submit an article
@@ -332,10 +306,6 @@ function getPost($params)
 }
 
 // :TODO: getRecentPosts
-/**
- * @param $params
- * @return XML_RPC_Response
- */
 function getRecentPosts($params)
 {
 	global $tikilib, $userlib, $bloglib;
@@ -383,14 +353,14 @@ function getRecentPosts($params)
 		$dateCreated = $tikilib->get_iso8601_datetime($post['created']);
 
 		$myStruct = new XML_RPC_Value(
-			array(
-				'userid' => new XML_RPC_Value($username),
-				'dateCreated' => new XML_RPC_Value($dateCreated, 'dateTime.iso8601'),
-				// Fix for w.Bloggar
-				'content' => new XML_RPC_Value('<title>' . $post['title'] . '</title>' . $post['data']),
-				'postid' => new XML_RPC_Value($post['postId'])
-			),
-			'struct'
+						array(
+							'userid' => new XML_RPC_Value($username),
+							'dateCreated' => new XML_RPC_Value($dateCreated, 'dateTime.iso8601'),
+							// Fix for w.Bloggar
+							'content' => new XML_RPC_Value('<title>' . $post['title'] . '</title>' . $post['data']),
+							'postid' => new XML_RPC_Value($post['postId'])
+						),
+						'struct'
 		);
 
 		$arrayval[] = $myStruct;
@@ -404,10 +374,6 @@ function getRecentPosts($params)
 
 // :TODO: tiki.tikiPost
 /* Get the topics where the user can post a new */
-/**
- * @param $params
- * @return XML_RPC_Response
- */
 function getUserBlogs($params)
 {
 	global $tikilib, $userlib, $bloglib;
@@ -430,12 +396,12 @@ function getUserBlogs($params)
 
 	foreach ($blogs as $blog) {
 		$myStruct = new XML_RPC_Value(
-			array(
-				'blogName' => new XML_RPC_Value($blog['title']),
-				'url' => new XML_RPC_Value($foo1 . '?blogId=' . $blog['blogId']),
-				'blogid' => new XML_RPC_Value($blog['blogId'])
-			),
-			'struct'
+						array(
+							'blogName' => new XML_RPC_Value($blog['title']),
+							'url' => new XML_RPC_Value($foo1 . '?blogId=' . $blog['blogId']),
+							'blogid' => new XML_RPC_Value($blog['blogId'])
+						),
+						'struct'
 		);
 		$arrayVal[] = $myStruct;
 	}

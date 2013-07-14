@@ -10,9 +10,6 @@
 		 {/if}
 </div>
 	{/if}
-	{if $nonPublicFieldsWarning}
-		{remarksbox type='errors' title='{tr}Field error{/tr}'}{$nonPublicFieldsWarning}{/remarksbox}
-	{/if}
 	{if isset($user_watching_tracker)}
 		{if $user_watching_tracker eq 'n'}
 			<a href="{$smarty.server.REQUEST_URI}{if strstr($smarty.server.REQUEST_URI, '?')}&amp;{else}?{/if}trackerId={$listTrackerId}&amp;watch=add" title="{tr}Monitor{/tr}" class="trackerlistwatch">
@@ -32,7 +29,7 @@
 	<div class="trackerlistsort">
 		<form method="post">
 			{include file='tracker_sort_input.tpl'}
-			<input type="submit" name="sort" value="{tr}Sort{/tr}">
+			<input type="submit" name="sort" value="{tr}Sort{/tr}" />
 		</form>
 	</div>
 {/if}
@@ -150,8 +147,8 @@ the section loop so that the vars are not replaced by nested pretty tracker exec
 		{elseif $checkbox}
 			{if $checkbox.tpl}{include file="$checkbox.tpl"}{/if}
 			{if !empty($checkbox.submit) and !empty($checkbox.title)}
-				<br>
-				<input type="submit" name="{$checkbox.submit}" value="{tr}{$checkbox.title}{/tr}">
+				<br />
+				<input type="submit" name="{$checkbox.submit}" value="{tr}{$checkbox.title}{/tr}" />
 			{/if}
 			</form>
 		{/if}
@@ -195,7 +192,7 @@ $('.exportButton a').click(function() {
 				{cycle values="odd,even" print=false}
 				{foreach from=$items[user].field_values item=f}
 					{if in_array($f.fieldId, $popupfields)}
-						{capture name=popupl}{trackeroutput field=$f item=$items[user] url=$url editable=in_array($f.fieldId, $editableFields)}{/capture}
+						{capture name=popupl}{trackeroutput field=$f item=$items[user] url=$url}{/capture}
 						{if !empty($smarty.capture.popupl)}
 							<tr>{if count($popupfields) > 1}<th class="{cycle advance=false}">{$f.name}</th>{/if}<td class="{cycle}">{$smarty.capture.popupl}</td></tr>
 						{/if}
@@ -214,7 +211,7 @@ $('.exportButton a').click(function() {
 
 	<tr class="{cycle}">
 			{if $checkbox}
-		<td><input type="{$checkbox.type}" name="{$checkbox.name}[]" value="{if $checkbox.ix > -1}{$items[user].field_values[$checkbox.ix].value|escape}{else}{$items[user].itemId}{/if}"></td>
+		<td><input type="{$checkbox.type}" name="{$checkbox.name}[]" value="{if $checkbox.ix > -1}{$items[user].field_values[$checkbox.ix].value|escape}{else}{$items[user].itemId}{/if}" /></td>
 			{/if}
 			{if ($showstatus ne 'n') and ($tracker_info.showStatus eq 'y' or ($tracker_info.showStatusAdminOnly eq 'y' and $tiki_p_admin_trackers eq 'y'))}
 		<td class="auto" style="width:20px;">
@@ -237,11 +234,11 @@ $('.exportButton a').click(function() {
 					{if $field.type eq 'b'} style="padding-right:5px"{/if}>
 					{if $field.isHidden eq 'c' and $fieldr and $tiki_p_admin_trackers ne 'y'}
 					{elseif isset($perms)}
-						{trackeroutput item=$items[user] field=$field list_mode=$list_mode showlinks=$showlinks showpopup=$showpopup url=$url editable=in_array($field.fieldId, $editableFields)
+						{trackeroutput item=$items[user] field=$field list_mode=$list_mode showlinks=$showlinks showpopup=$showpopup url=$url
 								tiki_p_view_trackers=$perms.tiki_p_view_trackers tiki_p_modify_tracker_items=$perms.tiki_p_modify_tracker_items tiki_p_modify_tracker_items_pending=$perms.tiki_p_modify_tracker_items_pending 
 								tiki_p_modify_tracker_items_closed=$perms.tiki_p_modify_tracker_items_closed tiki_p_comment_tracker_items=$perms.tiki_p_comment_tracker_items reloff=$itemoff}
 					{else}
-						{trackeroutput item=$items[user] field=$field list_mode=$list_mode reloff=$itemoff showlinks=$showlinks showpopup=$showpopup url=$url editable=in_array($field.fieldId, $editableFields)}
+						{trackeroutput item=$items[user] field=$field list_mode=$list_mode reloff=$itemoff showlinks=$showlinks showpopup=$showpopup url=$url}
 					{/if}
 		</td>
 				{/if}
@@ -259,7 +256,8 @@ $('.exportButton a').click(function() {
 			{/if}
 			{if $tracker_info.useAttachments eq 'y' and $tracker_info.showAttachments eq 'y'}
 		<td style="text-align:center;"><a href="tiki-view_tracker_item.php?trackerId={$listTrackerId}&amp;itemId={$items[user].itemId}&amp;show=att" 
-link="{tr}List Attachments{/tr}"><img src="img/icons/folderin.gif" alt="{tr}List Attachments{/tr}"></a>{$items[user].attachments}</td>
+link="{tr}List Attachments{/tr}"><img src="img/icons/folderin.gif" alt="{tr}List Attachments{/tr}" 
+/></a>{$items[user].attachments}</td>
 			{/if}
 			{if ($showdelete eq 'y' || $showpenditem eq 'y' || $showopenitem eq 'y' || $showcloseitem eq 'y') && ($tiki_p_admin_trackers eq 'y' or $perms.tiki_p_remove_tracker_items eq 'y' or $perms.tiki_p_remove_tracker_items_pending eq 'y' or $perms.tiki_p_remove_tracker_items_closed eq 'y')}
 		<td>

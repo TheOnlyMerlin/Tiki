@@ -1,5 +1,5 @@
 <?php // -*- coding:utf-8 -*-
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -41,8 +41,6 @@ $langmapping = array(
 	'is' => array('Íslenska', tra("Icelandic")),
 	'it' => array('Italiano', tra("Italian")),
 	'iu' => array('ᐃᓄᒃᑎᑐᑦ', tra("Inuktitut")),
-	'iu-ro' => array('Inuktitut', tra("Inuktitut (Roman)")),
-	'iu-iq' => array('Inuinnaqtun', tra("Iniunnaqtun")),
 	'ja' => array('日本語', tra("Japanese")),
 	'ko' => array('한국어', tra("Korean")),
 	'hu' => array('Magyar', tra("Hungarian")),

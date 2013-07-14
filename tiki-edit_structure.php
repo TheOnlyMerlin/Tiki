@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -342,7 +339,7 @@ include_once ('tiki-section_options.php');
 
 if ($prefs['feature_jquery_ui'] === 'y') {
 	$headerlib->add_jsfile('lib/structures/tiki-edit_structure.js');
-	$headerlib->add_jsfile('vendor/jquery/plugins/nestedsortable/jquery.ui.nestedSortable.js');
+	$headerlib->add_jsfile('lib/jquery/jquery.mjs.nestedSortable.js');
 	global $structlib; include_once('lib/structures/structlib.php');
 
 	$structure_id = $structure_info['structure_id'];

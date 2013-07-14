@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -233,11 +233,7 @@ function wikiplugin_mouseover( $data, $params )
 	}
 
 	if ( $parse ) {
-		$options = array('is_html' => 0);
-		if (containsStringHTML($text)) {
-			$options = array('is_html' => 1);
-		} 
-		$text = $tikilib->parse_data($text, $options);
+		$text = $tikilib->parse_data($text);
 	}
 	if ( $params['parselabel'] == 'y' ) {
 		$label = "~/np~$label~np~";
@@ -257,10 +253,7 @@ function wikiplugin_mouseover( $data, $params )
 	}
 
 	$js = "\$('#$id-link').mouseover(function(event) {
-	var pos = $('#tiki-center').position();
-	var top = event.pageY;
-	var left = event.pageX;
-	\$('#$id').css('position', 'absolute').css('left', left + $offsetx).css('top', top + $offsety); showJQ('#$id', '$effect', '$speed'); $closeDelayStr });";
+	\$('#$id').css('left', event.pageX + $offsetx).css('top', event.pageY + $offsety); showJQ('#$id', '$effect', '$speed'); $closeDelayStr });";
 	if ($sticky) {
 		$js .= "\$('#$id').click(function(event) { hideJQ('#$id', '$effect', '$speed'); }).css('cursor','pointer');\n";
 	} else {
@@ -276,9 +269,4 @@ function wikiplugin_mouseover( $data, $params )
 		"<span id=\"$id\" $class style=\"width: {$width}px; " . (isset($params['height']) ? "height: {$height}px; " : "") ."{$bgcolor} {$textcolor} {$padding} \">$text</span>~/np~";
 
 	return $html;
-}
-
-function containsStringHTML($str) 
-{
-	return preg_match ('/<[^>]*>/', $str) == 1;	
 }

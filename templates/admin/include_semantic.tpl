@@ -8,8 +8,8 @@
 	</fieldset>
 </form>
 <table width="100%">
-	<col width="50%">
-	<col width="50%">
+	<col width="50%"/>
+	<col width="50%"/>
 	<tr>
 		<td>
 			<h2>{tr}Known Types{/tr}</h2>
@@ -51,7 +51,7 @@
 				</div>
 				<div>
 					<label for="invert">{tr}Invert Relation{/tr} :</label>
-					<select id="invert" name="invert">
+					<select id="invert" name="invert"/>
 						<option value="">--{tr}Self{/tr}--</option>
 						{foreach from=$tokens item=element}
 						<option value="{$element.token|escape}"{if $selected_detail.invert_token eq $element.token} selected="selected"{/if}>{$element.label|escape}</option>

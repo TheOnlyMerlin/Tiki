@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -124,8 +121,6 @@ if ($prefs['feature_display_my_to_others'] == 'y') {
 		require_once('lib/blogs/bloglib.php');
 		$user_blogs = $bloglib->list_user_blogs($userwatch, false);
 		$smarty->assign_by_ref('user_blogs', $user_blogs);
-		$user_blog_posts = $bloglib->list_posts(0, -1, 'created_desc', '', -1, $userwatch);
-		$smarty->assign_by_ref('user_blog_posts', $user_blog_posts['data']);
 	}
 	if ($prefs['feature_galleries'] == 'y') {
 		$user_galleries = $tikilib->get_user_galleries($userwatch, -1);
@@ -193,8 +188,7 @@ if ($prefs['user_tracker_infos']) {
 	foreach ($fields['data'] as $field) {
 		$lll[$field['fieldId']] = $field;
 	}
-	$definition = Tracker_Definition::get($userTrackerId);
-	$items = $trklib->list_items($userTrackerId, 0, 1, '', $lll, $definition->getUserField(), '', '', '', $userwatch);
+	$items = $trklib->list_items($userTrackerId, 0, 1, '', $lll, $trklib->get_field_id_from_type($userTrackerId, 'u', '1%'), '', '', '', $userwatch);
 	$smarty->assign_by_ref('userItem', $items['data'][0]);
 }
 ask_ticket('user-information');

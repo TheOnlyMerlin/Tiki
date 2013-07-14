@@ -25,49 +25,49 @@
 {if !empty($errors)}
 	<div class="simplebox highlight">
 		{tr}One of the email addresses you typed is invalid{/tr}
-		<br>
+		<br />
 		{foreach from=$errors item=m name=errors}
 			{$m}
-			{if !$smarty.foreach.errors.last}<br>{/if}
+			{if !$smarty.foreach.errors.last}<br />{/if}
 		{/foreach}
 	</div>
 {/if}
 
 <form enctype="multipart/form-data" method="post" action="tiki-edit_article.php" id='editpageform'>
-	<input type="hidden" name="articleId" value="{$articleId|escape}">
-	<input type="hidden" name="previewId" value="{$previewId|escape}">
-	<input type="hidden" name="imageIsChanged" value="{$imageIsChanged|escape}">
-	<input type="hidden" name="image_data" value="{$image_data|escape}">
-	<input type="hidden" name="useImage" value="{$useImage|escape}">
-	<input type="hidden" name="image_type" value="{$image_type|escape}">
-	<input type="hidden" name="image_name" value="{$image_name|escape}">
-	<input type="hidden" name="image_size" value="{$image_size|escape}">
+	<input type="hidden" name="articleId" value="{$articleId|escape}" />
+	<input type="hidden" name="previewId" value="{$previewId|escape}" />
+	<input type="hidden" name="imageIsChanged" value="{$imageIsChanged|escape}" />
+	<input type="hidden" name="image_data" value="{$image_data|escape}" />
+	<input type="hidden" name="useImage" value="{$useImage|escape}" />
+	<input type="hidden" name="image_type" value="{$image_type|escape}" />
+	<input type="hidden" name="image_name" value="{$image_name|escape}" />
+	<input type="hidden" name="image_size" value="{$image_size|escape}" />
 	{if !empty($translationOf)}
-		<input type="hidden" name="translationOf" value="{$translationOf|escape}">
+		<input type="hidden" name="translationOf" value="{$translationOf|escape}" />
 	{/if}
 	<table class="formcolor">
 		<tr id='show_topline' {if $types.$type.show_topline eq 'y'}style="display:;"{else}style="display:none;"{/if}>
 			<td>{tr}Topline{/tr} *</td>
 			<td>
-				<input type="text" name="topline" value="{$topline|escape}" size="60">
+				<input type="text" name="topline" value="{$topline|escape}" size="60" />
 			</td>
 		</tr>
 		<tr>
 			<td>{tr}Title{/tr}</td>
 			<td>
-				<input type="text" name="title" value="{$arttitle|escape}" maxlength="255" size="60">
+				<input type="text" name="title" value="{$arttitle|escape}" maxlength="255" size="60" />
 			</td>
 		</tr>
 		<tr id='show_subtitle' {if $types.$type.show_subtitle eq 'y'}style="display:;"{else}style="display:none;"{/if}>
 			<td>{tr}Subtitle{/tr} *</td>
 			<td>
-				<input type="text" name="subtitle" value="{$subtitle|escape}" size="60">
+				<input type="text" name="subtitle" value="{$subtitle|escape}" size="60" />
 			</td>
 		</tr>
 		<tr id='show_linkto' {if $types.$type.show_linkto eq 'y'}style="display:;"{else}style="display:none;"{/if}>
 			<td>{tr}Source{/tr} ({tr}URL{/tr}) *</td>
 			<td>
-				<input type="text" name="linkto" value="{$linkto|escape}" size="60">{if $linkto neq ''}<a href="{$linkto|escape}" target="_blank">{tr}View{/tr}</a>{/if}
+				<input type="text" name="linkto" value="{$linkto|escape}" size="60" />{if $linkto neq ''}<a href="{$linkto|escape}" target="_blank">{tr}View{/tr}</a>{/if}
 			</td>
 		</tr>
 		{if $prefs.feature_multilingual eq 'y'}
@@ -80,7 +80,7 @@
 							<option value="{$languages[ix].value|escape}"{if $lang eq $languages[ix].value} selected="selected"{/if}>{$languages[ix].name}</option>
 						{/section}
 					</select>
-					<br>
+					<br />
 					{if $articleId != 0}
 						{tr _0="tiki-edit_article.php?translationOf=$articleId"}To translate, do not change the language and the content.
 						Instead, <a href="%0">create a new translation</a> in the new language.{/tr}
@@ -89,27 +89,20 @@
 						<p>{tr}Edit Translations{/tr}:</p>
 						{section loop=$translations name=t}
 						{if $articleId != $translations[t].objId}
-								{$translations[t].lang|escape}: <a href="tiki-edit_article.php?articleId={$translations[t].objId|escape}">{$translations[t].objName|escape}</a><br>
+								{$translations[t].lang|escape}: <a href="tiki-edit_article.php?articleId={$translations[t].objId|escape}">{$translations[t].objName|escape}</a><br />
 							{/if}
 						{/section}
 					{/if}
 					{if empty($translationOf)}
-						<p>{tr}Attach existing article ID as translation{/tr}: <input name="translationOf" type="text" size="4"></p>
+						<p>{tr}Attach existing article ID as translation{/tr}: <input name="translationOf" type="text" size="4" /></p>
 					{/if}	
 				</td>
 			</tr>
 		{/if}
 		<tr id='show_author' {if $types.$type.show_author eq 'y'}style="display:;"{else}style="display:none;"{/if}>
-			<td>{tr}Author Name (as displayed){/tr}</td>
+			<td>{tr}Author Name{/tr}</td>
 			<td>
-				<input type="text" name="authorName" value="{$authorName|escape}">
-			</td>
-		</tr>
-		<tr id='show_user' {if $tiki_p_edit_article_user eq 'y'}style="display:;"{else}style="display: none;"{/if}>
-			<td>{tr}User (article owner){/tr}</td>
-			<td>
-				<input id="author" type="text" name="author" value="{$author|escape}" >
-				{autocomplete element='#author' type='username'}
+				<input type="text" name="authorName" value="{$authorName|escape}" />
 			</td>
 		</tr>
 		<tr>
@@ -172,15 +165,15 @@
 				<td>
 					{$headerlib->add_map()}
 					<div class="map-container" data-target-field="geolocation" style="height: 250px; width: 250px;"></div>
-					<input type="hidden" name="geolocation" value="{$geolocation_string}">
+					<input type="hidden" name="geolocation" value="{$geolocation_string}" />
 				</td>
 			</tr>
 		{/if}
 		<tr id='show_image_1' {if $types.$type.show_image eq 'y'}style="display:;"{else}style="display:none;"{/if}>
 			<td>{tr}Own Image{/tr}</td>
 			<td>
-				<input type="hidden" name="MAX_FILE_SIZE" value="1000000">
-				<input name="userfile1" type="file" onchange="document.getElementById('useImage').checked = true;">
+				<input type="hidden" name="MAX_FILE_SIZE" value="1000000" />
+				<input name="userfile1" type="file" onchange="document.getElementById('useImage').checked = true;"/>
 				{icon _id='help' alt="{tr}If not the topic image{/tr}"}
 			</td>
 		</tr>
@@ -193,11 +186,11 @@
 				<td>{tr}Own Image{/tr}</td>
 				{if $imageIsChanged eq 'y'}
 					<td>
-						<img alt="{tr}Article image{/tr}" src="article_image.php?image_type=preview&amp;id={$previewId}">
+						<img alt="{tr}Article image{/tr}" src="article_image.php?image_type=preview&amp;id={$previewId}" />
 					</td>
 				{else}
 					<td>
-						<img alt="{tr}Article image{/tr}" src="article_image.php?image_type=article&amp;id={$articleId}">
+						<img alt="{tr}Article image{/tr}" src="article_image.php?image_type=article&amp;id={$articleId}" />
 					</td>
 				{/if}
 			</tr>
@@ -205,36 +198,36 @@
 		<tr id='show_image_2' {if $types.$type.show_image eq 'y'}style="display:;"{else}style="display:none;"{/if}>
 			<td>{tr}Use own image{/tr}</td>
 			<td>
-				<input type="checkbox" name="useImage" id="useImage" {if $useImage eq 'y'}checked='checked'{/if}>
+				<input type="checkbox" name="useImage" id="useImage" {if $useImage eq 'y'}checked='checked'{/if}/>
 			</td>
 		</tr>
 		<tr id='show_image_3' {if $types.$type.show_image eq 'y'}style="display:;"{else}style="display:none;"{/if}>
 			<td>{tr}Float text around image{/tr}</td>
 			<td>
-				<input type="checkbox" name="isfloat" {if $isfloat eq 'y'}checked='checked'{/if}>
+				<input type="checkbox" name="isfloat" {if $isfloat eq 'y'}checked='checked'{/if}/>
 			</td>
 		</tr>
 		<tr id='show_image_4' {if $types.$type.show_image eq 'y'}style="display:;"{else}style="display:none;"{/if}>
 			<td>{tr}Maximum dimensions of custom image in view mode (Read Article){/tr}</td>
 			<td>
-				<label>{tr}Width{/tr}</label> <input type="text" name="image_x"{if $image_x > 0} value="{$image_x|escape}"{/if}> {tr}pixels{/tr}
-				{icon _id='help' alt="{tr}If different than the uploaded image{/tr}"}<br>
-				<label>{tr}Height{/tr} <input type="text" name="image_y"{if $image_y > 0} value="{$image_y|escape}"{/if}></label> {tr}pixels{/tr}
+				<label>{tr}Width{/tr}</label> <input type="text" name="image_x"{if $image_x > 0} value="{$image_x|escape}"{/if} /> {tr}pixels{/tr}
+				{icon _id='help' alt="{tr}If different than the uploaded image{/tr}"}<br />
+				<label>{tr}Height{/tr} <input type="text" name="image_y"{if $image_y > 0} value="{$image_y|escape}"{/if} /></label> {tr}pixels{/tr}
 			</td>
 		</tr>
 		<tr id='show_image_5' {if $types.$type.show_image eq 'y'}style="display:;"{else}style="display:none;"{/if}>
 			<td>{tr}Maximum dimensions of custom image in list mode (View Articles){/tr}</td>
 			<td>
-				<label>{tr}Width{/tr}</label> <input type="text" name="list_image_x" value="{$list_image_x|escape}"> {tr}pixels{/tr}
-				{icon _id='help' alt="{tr}If different than in view mode{/tr}"}<br>
-				<label>{tr}Height{/tr}</label> <input type="text" name="list_image_y" value="{$list_image_y|escape}"> {tr}pixels{/tr}
+				<label>{tr}Width{/tr}</label> <input type="text" name="list_image_x" value="{$list_image_x|escape}" /> {tr}pixels{/tr}
+				{icon _id='help' alt="{tr}If different than in view mode{/tr}"}<br />
+				<label>{tr}Height{/tr}</label> <input type="text" name="list_image_y" value="{$list_image_y|escape}" /> {tr}pixels{/tr}
 				
 			</td>
 		</tr>
 		<tr id='show_image_caption' {if $types.$type.show_image_caption eq 'y'}style="display:;"{else}style="display:none;"{/if}>
 			<td>{tr}Image caption{/tr} *</td>
 			<td>
-				<input type="text" name="image_caption" value="{$image_caption|escape}" size="60">
+				<input type="text" name="image_caption" value="{$image_caption|escape}" size="60" />
 				{icon _id='help' alt="{tr}If not the topic name{/tr}"}
 			</td>
 		</tr>
@@ -265,7 +258,7 @@
 				{if $types.$type.heading_only eq 'y'}
 					{textarea name="heading" rows="5" cols="80" Height="200px" id="subheading"}{$heading}{/textarea}
 				{else}
-					{textarea _simple="y" name="heading" rows="5" cols="95" Height="200px" id="subheading" comments="y"}{$heading}{/textarea}
+					{textarea _simple="y" name="heading" rows="5" cols="80" Height="200px" id="subheading" comments="y"}{$heading}{/textarea}
 				{/if}
 			</td>
 		</tr>
@@ -314,11 +307,16 @@
 					<td>{tr}Allow full HTML{/tr} <em>({tr}Keep any HTML tag.{/tr})</em>
 					<br><em>{tr}If not enabled, Tiki will retain some HTML tags (a, p, pre, img, hr, b, i){/tr}.</em></td>
 					<td>
-						<input type="checkbox" name="allowhtml" {if $allowhtml eq 'y'}checked="checked"{/if}>
+						<input type="checkbox" name="allowhtml" {if $allowhtml eq 'y'}checked="checked"{/if}/>
 					</td>
 				</tr>
 			{else}
-				<input type="hidden" name="allowhtml" value="{if $allowhtml eq 'y'}on{/if}">
+				<tr>
+					<td></td>
+					<td>
+						<input type="checkbox" name="allowhtml" checked="checked" style="display:none;"/>
+					</td>
+				</tr>
 			{/if}
 		{/if}
 		
@@ -328,13 +326,13 @@
 					{tr}Emails to be notified (separated with commas){/tr}
 				</td>
 				<td>
-					<input type="text" name="emails" value="{$emails|escape}" size="60">
-					<br>
+					<input type="text" name="emails" value="{$emails|escape}" size="60" />
+					<br />
 					{if !empty($userEmail) and $userEmail ne $prefs.sender_email}
 						{tr}From:{/tr} {$userEmail|escape}
-						<input type="radio" name="from" value="{$userEmail|escape}"{if empty($from) or $from eq $userEmail} checked="checked"{/if}> 
+						<input type="radio" name="from" value="{$userEmail|escape}"{if empty($from) or $from eq $userEmail} checked="checked"{/if} /> 
 						{$prefs.sender_email|escape}
-						<input type="radio" name="from" value="{$prefs.sender_email|escape}"{if $from eq $prefs.sender_email} checked="checked"{/if}>
+						<input type="radio" name="from" value="{$prefs.sender_email|escape}"{if $from eq $prefs.sender_email} checked="checked"{/if} />
 					{/if}
 				</td>
 			</tr>
@@ -346,22 +344,22 @@
 			{assign var='attfullname' value=$att.itemId}
 			<tr id={$attid} {if $types.$type.$attid eq 'y'}style="display:;"{else}style="display:none;"{/if}>
 				<td>{$attname|escape}</td>
-				<td><input type="text" name="{$attfullname}" value="{$article_attributes.$attfullname|escape}" size="60" maxlength="255"></td>
+				<td><input type="text" name="{$attfullname}" value="{$article_attributes.$attfullname|escape}" size="60" maxlength="255" /></td>
 			</tr>
 			{/foreach}
 		{/if}
 		<tr>
 				<td>{tr}Published{/tr}</td>
 				<td>
-					<input type="checkbox" name="ispublished" {if $ispublished eq 'y'}checked="checked"{/if}>
+					<input type="checkbox" name="ispublished" {if $ispublished eq 'y'}checked="checked"{/if}/>
 				</td>
 		</tr>
 	</table>
 	
 	<div align="center">
-		<input type="submit" class="wikiaction" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;">
-		<input type="submit" class="wikiaction" name="save" value="{tr}Save{/tr}"  onclick="this.form.saving=true;needToConfirm=false;">
-		{if $articleId}<input type="submit" class="wikiaction tips" title="{tr}Cancel{/tr}|{tr}Cancel the edit, you will lose your changes.{/tr}" name="cancel_edit" value="{tr}Cancel Edit{/tr}"  onclick="needToConfirm=false;">{/if}
+		<input type="submit" class="wikiaction" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;"/>
+		<input type="submit" class="wikiaction" name="save" value="{tr}Save{/tr}"  onclick="this.form.saving=true;needToConfirm=false;" />
+		{if $articleId}<input type="submit" class="wikiaction tips" title="{tr}Cancel{/tr}|{tr}Cancel the edit, you will lose your changes.{/tr}" name="cancel_edit" value="{tr}Cancel Edit{/tr}"  onclick="needToConfirm=false;" />{/if}
 	</div>
 {if $smarty.session.wysiwyg neq 'y'}
 	{jq}
@@ -384,4 +382,4 @@ $("#editpageform").submit(function(evt) {
 {/if}
 </form>
 
-<br>
+<br />

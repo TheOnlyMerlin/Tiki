@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -22,21 +22,11 @@ class Tracker_Field_Icon extends Tracker_Field_Abstract
 						'name' => tr('Gallery ID'),
 						'description' => tr('File gallery to upload new files into.'),
 						'filter' => 'int',
-						'legacy_index' => 0,
-						'profile_reference' => 'file_gallery',
 					),
 					'default' => array(
 						'name' => tr('Default image'),
 						'description' => tr('Path to the default icon used.'),
 						'filter' => 'url',
-						'legacy_index' => 1,
-					),
-					'maxIcons' => array(
-						'name' => tr('Max Icons'),
-						'description' => tr('Number of icons to display in each gallery (default 120).'),
-						'filter' => 'int',
-						'default' => 120,
-						'legacy_index' => 2,
 					),
 				),
 			),
@@ -61,18 +51,17 @@ class Tracker_Field_Icon extends Tracker_Field_Abstract
 			'value' => $value,
 		);
 	}
-
+	
 	private function getSearchLink($galleryId)
 	{
 		return 'tiki-searchindex.php?' . http_build_query(
-			array(
-				'filter~type' => 'file',
-				'filter~gallery_id' => $galleryId,
-				'filter~filetype' => 'image',
-				'maxRecords' => $this->getOption('maxIcons', 120),
-			),
-			'',
-			'&'
+						array(
+							'filter~type' => 'file',
+							'filter~gallery_id' => $galleryId,
+							'filter~filetype' => 'image',
+						),
+						'',
+						'&'
 		);
 	}
 
@@ -80,7 +69,7 @@ class Tracker_Field_Icon extends Tracker_Field_Abstract
 	{
 		$filegallib = TikiLib::lib('filegal');
 
-		$galleryId = (int) $this->getOption('galleryId');
+		$galleryId = (int) $this->getOption(0);
 		$info = $filegallib->get_file_gallery_info($galleryId);
 
 		$galleries = array(
@@ -97,11 +86,11 @@ class Tracker_Field_Icon extends Tracker_Field_Abstract
 		}
 
 		return $this->renderTemplate(
-			'trackerinput/icon.tpl',
-			$context,
-			array(
-				'galleries' => $galleries,
-			)
+						'trackerinput/icon.tpl', 
+						$context, 
+						array(
+							'galleries' => $galleries,
+						)
 		);
 	}
 
@@ -138,9 +127,8 @@ class Tracker_Field_Icon extends Tracker_Field_Abstract
 		}
 	}
 
-	function getDocumentPart(Search_Type_Factory_Interface $typeFactory)
+	function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
 	{
-		$baseKey = $this->getBaseKey();
 		return array(
 			$baseKey => $typeFactory->identifier($this->getValue()),
 		);

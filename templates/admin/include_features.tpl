@@ -59,10 +59,6 @@
 				{preference name=feature_draw}
 				<div class="adminoptionboxchild" id="feature_draw_childcontainer">
 					{preference name=feature_draw_hide_buttons}
-					{preference name=feature_draw_separate_base_image}
-					<div class="adminoptionboxchild" id="feature_draw_separate_base_image_childcontainer">
-						{preference name=feature_draw_in_userfiles}
-					</div>
 				</div>
 
 				{preference name=feature_docs}
@@ -87,10 +83,6 @@
 				{preference name=feature_htmlfeed}
 				{preference name=feature_forwardlinkprotocol}
 
-				{preference name=feature_jcapture}
-				<div class="adminoptionboxchild" id="feature_jcapture_childcontainer">
-					{preference name=fgal_for_jcapture}
-				</div>
 				{preference name=feature_reports}
 			</div>
 		</fieldset>
@@ -162,7 +154,6 @@
 					<legend> {tr}Experimental:{/tr} {icon _id=bug_error}</legend>
 					{preference name=feature_jquery_carousel}
 					{preference name=feature_jquery_tablesorter}
-					{preference name=jquery_ui_chosen}
 					{preference name=jquery_ui_selectmenu}
 					<div class="adminoptionboxchild" id="jquery_ui_selectmenu_childcontainer">
 						{preference name=jquery_ui_selectmenu_all}
@@ -242,17 +233,8 @@
 				<a href="#" id="graph-draw" class="button">{tr}Draw Event Diagram{/tr}</a>
 				{jq}
 				$('#graph-draw').click( function( e ) {
-					$('#graph-canvas')
-						.empty()
-						.css('width', $window.width() - 50)
-						.css('height', $window.height() - 130)
-						.dialog({
-							title: "Events",
-							width: $window.width() - 20,
-							height: $window.height() - 100
-						})
-						.drawGraph();
-					$
+					$(this).hide();
+					$('#graph-canvas').drawGraph();
 					return false;
 				} );
 				{/jq}

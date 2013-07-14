@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -25,16 +25,16 @@ function prefs_wiki_list($partial = false)
 	$advanced_columns = $prefslib->getExtraSortColumns();
 
 	$wiki_sort_columns = array_merge(
-		array(
-			'pageName' => tra('Name'),
-			'lastModif' => tra('LastModif'),
-			'created' => tra('Created'),
-			'creator' => tra('Creator'),
-			'hits' => tra('Hits'),
-			'user' => tra('Last editor'),
-			'page_size' => tra('Size'),
-		),
-		$advanced_columns
+					array(
+						'pageName' => tra('Name'),
+						'lastModif' => tra('LastModif'),
+						'created' => tra('Created'),
+						'creator' => tra('Creator'),
+						'hits' => tra('Hits'),
+						'user' => tra('Last editor'),
+						'page_size' => tra('Size'),
+					),
+					$advanced_columns
 	);
 
 	$comment_sort_orders = array(
@@ -251,21 +251,12 @@ function prefs_wiki_list($partial = false)
 			'default' => 'n',
 		),
 		'wiki_edit_minor' => array(
-			'name' => tra('Allow minor edits of wiki pages'),
+			'name' => tra('Allow minor edits'),
 			'type' => 'flag',
-			'description' => tra('Minor edits do not flag new content for translation and do not send watch notifications (unless "Watch minor edits" is enabled).'),			
-			'permission' => array(
-				'textFilter' => 'tiki_p_minor',
-			),		
 			'default' => 'n',
 		),
 		'wiki_comments_displayed_default' => array(
 			'name' => tra('Display by default'),
-			'type' => 'flag',
-			'default' => 'n',
-		),
-		'wiki_comments_form_displayed_default' => array(
-			'name' => tra('Display comments form by default'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
@@ -280,20 +271,6 @@ function prefs_wiki_list($partial = false)
 			'type' => 'list',
 			'options' => $comment_sort_orders,
 			'default' => 'points_desc',
-		),
-		'wiki_comments_simple_ratings' => array(
-			'name' => tra('Simple wiki comment ratings'),
-			'description' => tra('Enable users to rate comments based on a simple numeric scale.'),
-			'type' => 'flag',
-			'default' => 'n',
-		),
-		'wiki_comments_simple_ratings_options' => array(
-			'name' => tra('Wiki rating options'),
-			'description' => tra('List of options available for the rating of wiki comments.'),
-			'type' => 'text',
-			'separator' => ',',
-			'filter' => 'int',
-			'default' => range(1, 5),
 		),
 		'wiki_uses_slides' => array(
 			'name' => tra('Add a slideshow button on wiki pages'),
@@ -690,18 +667,6 @@ function prefs_wiki_list($partial = false)
 				'feature_semantic', // this is needed at point of creation of semantic link otherwise link will not register
 			),
 			'default' => '',
-		),
-		'wiki_pagination' => array(
-			'name' => tr('Wiki Pagination'),
-			'description' => tr('Allows to separate a wiki page into a paginated page using a separator.'),
-			'type' => 'flag',
-			'default' => 'n',
-		),
-		'wiki_page_separator' => array(
-			'name' => tr('Wiki page separator'),
-			'description' => tr('Separator used within the content of a wiki page to split the content.'),
-			'type' => 'text',
-			'default' => '...page...',
-		),
+		),		
 	);
 }

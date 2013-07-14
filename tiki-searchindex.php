@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -37,7 +34,6 @@ foreach (array('find', 'highlight', 'where') as $possibleKey) {
 	}
 }
 $filter = isset($_REQUEST['filter']) ? $_REQUEST['filter'] : array();
-$facets = array();
 
 if (count($filter)) {
 	if (isset($_REQUEST['save_query'])) {
@@ -57,24 +53,24 @@ if (count($filter)) {
 		require_once 'lib/smarty_tiki/function.object_link.php';
 		foreach ($results as &$res) {
 			$res['link'] = smarty_function_object_link(
-				array(
-					'type' => $res['object_type'],
-					'id' => $res['object_id'],
-					'title' => $res['title'],
-				),
-				$smarty
+							array(
+								'type' => $res['object_type'],
+								'id' => $res['object_id'],
+								'title' => $res['title'],
+							),
+							$smarty
 			);
 		}
 		$access->output_serialized(
-			$results,
-			array(
-				'feedTitle' => tr('%0: Results for "%1"', $prefs['sitetitle'], $request['filter']['content']),
-				'feedDescription' => tr('Search Results'),
-				'entryTitleKey' => 'title',
-				'entryUrlKey' => 'url',
-				'entryModificationKey' => 'modification_date',
-				'entryObjectDescriptors' => array('object_type', 'object_id'),
-			)
+						$results,
+						array(
+							'feedTitle' => tr('%0: Results for "%1"', $prefs['sitetitle'], $request['filter']['content']),
+							'feedDescription' => tr('Search Results'),
+							'entryTitleKey' => 'title',
+							'entryUrlKey' => 'url',
+							'entryModificationKey' => 'modification_date',
+							'entryObjectDescriptors' => array('object_type', 'object_id'),
+						)
 		);
 		exit;
 	} else {
@@ -90,16 +86,13 @@ if (count($filter)) {
 		}
 		if (!$isCached) {
 			$results = tiki_searchindex_get_results($filter, $offset, $maxRecords);
-			$facets = array_map(function ($facet) {
-				return $facet->getName();
-			}, $results->getFacets());
 			$dataSource = $unifiedsearchlib->getDataSource('formatting');
 
 			$plugin = new Search_Formatter_Plugin_SmartyTemplate(realpath('templates/searchresults-plain.tpl'));
 			$plugin->setData(
-				array(
-					'prefs' => $prefs,
-				)
+							array(
+								'prefs' => $prefs,
+							)
 			);
 			$fields = array(
 				'title' => null,
@@ -117,10 +110,10 @@ if (count($filter)) {
 
 			$wiki = $formatter->format($results);
 			$html = $tikilib->parse_data(
-				$wiki,
-				array(
-					'is_html' => true,
-				)
+							$wiki,
+							array(
+								'is_html' => true,
+							)
 			);
 			if (!empty($prefs['unified_user_cache'])) {
 				$cachelib->cacheItem($cacheName, serialize(array($tikilib->now, $html)), $cacheType);
@@ -131,28 +124,15 @@ if (count($filter)) {
 }
 
 $smarty->assign('filter', $filter);
-$smarty->assign('facets', $facets);
 
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
+$smarty->assign('mid', 'tiki-searchindex.tpl');
+$smarty->display("tiki.tpl");
 
-if ($prefs['search_use_facets'] == 'y') {
-	$smarty->display("tiki-searchfacets.tpl");
-} else {
-	$smarty->display("tiki-searchindex.tpl");
-}
-
-/**
- * @param $filter
- * @param $offset
- * @param $maxRecords
- * @return mixed
- */
 function tiki_searchindex_get_results($filter, $offset, $maxRecords)
 {
-	global $prefs;
-	
-	$unifiedsearchlib = TikiLib::lib('unifiedsearch');
+	global $unifiedsearchlib;
 	$query = $unifiedsearchlib->buildQuery($filter);
 	$query->setRange($offset, $maxRecords);
 
@@ -160,29 +140,5 @@ function tiki_searchindex_get_results($filter, $offset, $maxRecords)
 		$query->setOrder($order);
 	}
 
-	if ($prefs['feature_search_stats'] == 'y') {
-		$stats = TikiLib::lib('searchstats');
-		foreach ($query->getTerms() as $term) {
-			$stats->register_term_hit($term);
-		}
-	}
-
-	if ($prefs['search_use_facets'] == 'y') {
-		$provider = $unifiedsearchlib->getFacetProvider();
-
-		foreach ($provider->getFacets() as $facet) {
-			$query->requestFacet($facet);
-		}
-	}
-
-	try {
-		return $query->search($unifiedsearchlib->getIndex());
-	} catch (Search_Elastic_TransportException $e) {
-		TikiLib::lib('errorreport')->report('Search functionality currently unavailable.');
-	} catch (Exception $e) {
-		TikiLib::lib('errorreport')->report($e->getMessage());
-	}
-
-	return new Search_ResultSet(array());
+	return $query->search($unifiedsearchlib->getIndex());
 }
-

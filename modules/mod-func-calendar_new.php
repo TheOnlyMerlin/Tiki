@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_calendar_new_info()
 {
 	return array(
@@ -40,13 +37,13 @@ function module_calendar_new_info()
 			'viewmode' => array(
 				'name' => tra('Calendar view type time span'),
 				'description' => tr(
-					'If in calendar (or "table") view type, determines the time span displayed by the calendar. Possible values: %0, %1, %2, %3 ,%4, %5. A user changing this time span in the calendar can change the time span the module displays for him.',
-					'year',
-					'semester',
-					'quarter',
-					'month',
-					'week',
-					'day'
+								'If in calendar (or "table") view type, determines the time span displayed by the calendar. Possible values: %0, %1, %2, %3 ,%4, %5. A user changing this time span in the calendar can change the time span the module displays for him.',
+								'year', 
+								'semester', 
+								'quarter', 
+								'month', 
+								'week', 
+								'day'
 				),
 				'filter' => 'word',
 				'default' => 'month',
@@ -79,17 +76,12 @@ function module_calendar_new_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_calendar_new($mod_reference, $module_params)
 {
 	global $prefs, $user, $tiki_p_admin_calendars, $tikilib, $smarty;
 	global $calendarlib; include_once('lib/calendar/calendarlib.php');
 	global $userlib; include_once('lib/userslib.php');
-//	Note: calendar css file now loaded in tiki-modules.php
-//	global $headerlib; $headerlib->add_cssfile('css/calendar.css', 20);
+	global $headerlib; $headerlib->add_cssfile('css/calendar.css', 20);
 	global $calendarViewMode, $focusdate;
 	$default = array('viewnavbar' => 'y', 'viewmodelink' => 'week', 'showaction' => 'y', 'linkall' => 'n');
 	$module_params = array_merge($default, $module_params);

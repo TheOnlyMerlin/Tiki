@@ -1,35 +1,27 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 class FlaggedRevisionLib extends TikiDb_Bridge
 {
-	const ACTION = 'Flagged';
-
 	function flag_revision($pageName, $version, $flag, $value)
 	{
-		global $prefs;
-		$attributelib = TikiLib::lib('attribute');
-		$histlib = TikiLib::lib('hist');
+		global $user;
+		global $histlib; require_once 'lib/wiki/histlib.php';
 
 		if ($version_info = $histlib->get_version($pageName, $version)) {
-			$tx = TikiDb::get()->begin();
+			global $attributelib; require_once 'lib/attributes/attributelib.php';
 
 			if ($prefs['feature_actionlog'] == 'y') {
-				$logslib = TikiLib::lib('logs');
-				$logslib->add_action(self::ACTION, $pageName, 'wiki page', "flag=$flag&version=$version&value=$value");
+				global $logslib; include_once('lib/logs/logslib.php');
+				$logslib->add_action('Flagged', $pageName, 'wiki page', "flag=$flag&version=$version&value=$value");
 			}
 
 			$attribute = $this->get_attribute_for_flag($flag);
 			$attributelib->set_attribute('wiki history', $version_info['historyId'], $attribute, $value);
-
-			require_once('lib/search/refresh-functions.php');
-			refresh_index('pages', $pageName);
-			refresh_index('pages', "$pageName~~latest");
-			$tx->commit();
 
 			return true;
 		} else {
@@ -91,24 +83,6 @@ class FlaggedRevisionLib extends TikiDb_Bridge
 		}
 
 		return false;
-	}
-
-	function find_approval_information($page, $version)
-	{
-		global $prefs;
-
-		if ($prefs['feature_actionlog'] == 'y') {
-			$logs = $this->table('tiki_actionlog');
-			return $logs->fetchRow(
-				array('user', 'lastModif', 'ip'),
-				array(
-					'action' => self::ACTION,
-					'object' => $page,
-					'objectType' => 'wiki page',
-					'comment' => "flag=moderation&version=$version&value=OK",
-				)
-			);
-		}
 	}
 
 	private function get_attribute_for_flag($flag)

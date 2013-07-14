@@ -52,16 +52,10 @@
 	{/if}
 {/if}
 
-{if $excerpt eq 'y'}
-	{assign "request_context" "excerpt"}
-{else}
-	{assign "request_context" "view_blog"}
-{/if}
-
 {foreach from=$listpages item=post_info}
-	<article class="blogpost post{if !empty($container_class)} {$container_class}{/if}">
-		{include file='blog_wrapper.tpl' blog_post_context=$request_context}
-	</article>
+	<div class="blogpost post{if !empty($container_class)} {$container_class}{/if}">
+		{include file='blog_wrapper.tpl' blog_post_context='view_blog'}
+	</div>
 {/foreach}
 
 {pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}

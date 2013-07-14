@@ -27,7 +27,7 @@
 						{else}
 							{$channels[user].name|escape}
 						{/if}
-						<br>
+						<br />
 						{$channels[user].description|escape|nl2br}
 					</td>
 					<td class="text">{$channels[user].type}</td>
@@ -70,14 +70,14 @@
 
 		<form action="tiki-admin_menus.php?cookietab=1" method="post">
 			{ticket}
-			<input type="hidden" name="menuId" value="{$menuId|escape}">
+			<input type="hidden" name="menuId" value="{$menuId|escape}" />
 			<table class="formcolor">
 				<tr>
 					<td>
 						<label for="menus_name">{tr}Name:{/tr}</label>
 					</td>
 					<td>
-						<input type="text" name="name" id="menus_name" value="{$info.name|escape}" style="width:95%">
+						<input type="text" name="name" id="menus_name" value="{$info.name|escape}" style="width:95%" />
 					</td>
 				</tr>
 				<tr>
@@ -101,7 +101,7 @@
 				<tr>
 					<td><label for="menus_parse">{tr}Wiki Parse:{/tr}</label></td>
 					<td>
-						<input type="checkbox" name="parse" id="menus_parse"{if $info.parse eq 'y'} checked="checked"{/if}>
+						<input type="checkbox" name="parse" id="menus_parse"{if $info.parse eq 'y'} checked="checked"{/if}/>
 						<em>{tr}Labels of all options will be wiki parsed.{/tr}</em>
 					</td>
 				</tr>
@@ -110,15 +110,15 @@
 						<td rowspan="2"><label for="icon">{tr}Icons:{/tr}</label></td>
 						<td>
 							<div>{tr}Folder Icon{/tr}</div>
-							<input type="text" id="icon" name="icon" value="{$info.icon|escape}" style="width:95%">
-							<br>
+							<input type="text" id="icon" name="icon" value="{$info.icon|escape}" style="width:95%" />
+							<br />
 							<em>{tr}Path and filename of closed folder icon{/tr}</em>.
 
 							{remarksbox type="tip" title="{tr}Note{/tr}"}
 								{tr}To use custom folder icons in menus, enter the path to the icon for the <strong>closed</strong> folder.{/tr} {tr}In the same directory, include an icon for the opened folder.{/tr} {tr}The "opened folder" icon name must be identical to the "closed folder" icon name, prefixed with the letter <strong>o</strong>.{/tr}
-								<hr>
+								<hr />
 								{tr}For example, the default icon is: img/icons/folder.png{/tr} {icon _id="folder"}
-								<br>
+								<br />
 								{tr}The name of the "open folder" icon is: img/icons/ofolder.png{/tr} {icon _id="ofolder"}
 							{/remarksbox}
 						</td>
@@ -128,7 +128,7 @@
 					<tr>
 						<td>
 							<label for="use_items_icons">
-								<input type="checkbox" id="use_items_icons" name="use_items_icons"{if $info.use_items_icons eq 'y'} checked="checked"{/if}>
+								<input type="checkbox" id="use_items_icons" name="use_items_icons"{if $info.use_items_icons eq 'y'} checked="checked"{/if}/>
 								{tr}Configure icons for menu entries{/tr}
 							</label>
 						</td>
@@ -137,9 +137,9 @@
 			<tr>
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" name="save" value="{tr}Save{/tr}">
+					<input type="submit" name="save" value="{tr}Save{/tr}" />
 					{if $prefs.menus_items_icons neq 'y'}
-						<input type="hidden" name="use_items_icons" value="{$info.use_items_icons}">
+						<input type="hidden" name="use_items_icons" value="{$info.use_items_icons}" />
 					{/if}
 				</td>
 			</tr>
@@ -148,9 +148,9 @@
 		{remarksbox type="tip" title="{tr}Tip{/tr}"}
 			
 			{tr}You can use menus by assigning the menu <a href="tiki-admin_modules.php">module</a> (to the top, left, right, etc.), or you can customize a template, using {literal}{menu id=x}{/literal}, where x is the ID of the menu.{/tr}
-			<hr>
+			<hr />
 			{tr}To use a menu in a tiki format:{/tr} {literal}{menu id=X}{/literal}
-			<br>
+			<br />
 			{if $prefs.feature_cssmenus eq 'y'}
 				{tr}To use menu in a css/suckerfish format:{/tr}
 				<ul>

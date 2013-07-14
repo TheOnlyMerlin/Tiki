@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -32,11 +32,7 @@ class Search_Formatter_DataSource_Declarative implements Search_Formatter_DataSo
 
 			$initial = $entry;
 			foreach ($this->globalSources as $globalSource) {
-				$local = $this->obtainFromGlobalSource($globalSource, $type, $object, $missingFields, $initial);
-
-				if (false !== $local) {
-					$entry = array_merge($entry, $local);
-				}
+				$entry = array_merge($entry, $this->obtainFromGlobalSource($globalSource, $type, $object, $missingFields, $initial));
 			}
 		}
 

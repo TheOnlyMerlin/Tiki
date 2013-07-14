@@ -109,14 +109,14 @@
 </div>
 
 <form method="post" action="tiki-browse_categories.php">
-	<label>{tr}Find:{/tr} {if $parentId ne 0}{$p_info.name|escape} {/if}<input type="text" name="find" value="{$find|escape}" size="35"></label>
+	<label>{tr}Find:{/tr} {if $parentId ne 0}{$p_info.name|escape} {/if}<input type="text" name="find" value="{$find|escape}" size="35" /></label>
 	{help url="#" desc="{tr}Find in:{/tr} <ul><li>{tr}Name{/tr}</li><li>{tr}Description{/tr}</li></ul>"}
-	<input type="submit" value="{tr}Find{/tr}" name="search">
-	<label>{tr}in the current category - and its subcategories: {/tr}<input type="checkbox" name="deep" {if $deep eq 'on'}checked="checked"{/if}></label>
-	<input type="hidden" name="parentId" value="{$parentId|escape}">
-	<input type="hidden" name="type" value="{$type|escape}">
+	<input type="submit" value="{tr}Find{/tr}" name="search" />
+	<label>{tr}in the current category - and its subcategories: {/tr}<input type="checkbox" name="deep" {if $deep eq 'on'}checked="checked"{/if}/></label>
+	<input type="hidden" name="parentId" value="{$parentId|escape}" />
+	<input type="hidden" name="type" value="{$type|escape}" />
 	
-	<input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
+	<input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
 </form>
 
 {if $deep eq 'on'}
@@ -125,7 +125,7 @@
 	<a class="link" href="tiki-browse_categories.php?find={$find|escape:"url"}&amp;type={$type|escape:"url"}&amp;deep=on&amp;parentId={$parentId|escape:"url"}&amp;sort_mode={$sort_mode|escape:"url"}">{tr}Show subcategories objects{/tr}</a>
 {/if}
 
-<br><br>
+<br /><br />
 
 {if isset($p_info)}
 	<div class="treetitle">{tr}Current category:{/tr}
@@ -143,50 +143,55 @@
 		</div>
 	{/if}
 {/if}
-<div class="cattree">{$tree}</div>
-<div class="catobj">
-	{if $cant_pages > 0}
-		<table class="normal">
-			<tr>
-				<th>
-					{tr}Name{/tr}
-				</th>
-				<th>
-					{tr}Type{/tr}
-				</th>
-				{if $deep eq 'on'}
-					<th>
-						{tr}Category{/tr}
-					</th>
-				{/if}
-			</tr>
+<table class="formcolor">
+	<tr>
+		<td>{$tree}</td>
+		<td width="20">&nbsp;</td>
+		<td>
+			{if $cant_pages > 0}
+				<table class="normal">
+					<tr>
+						<th>
+							{tr}Name{/tr}
+						</th>
+						<th>
+							{tr}Type{/tr}
+						</th>
+						{if $deep eq 'on'}
+							<th>
+								{tr}Category{/tr}
+							</th>
+						{/if}
+					</tr>
 
-			{cycle values="odd,even" print=false}
-			{section name=ix loop=$objects}
-				<tr class="{cycle}">
-					<td class="text">
-						<a href={if empty($objects[ix].sefurl)}"{$objects[ix].href}"{else}"{$objects[ix].sefurl}"{/if} class="catname">{$objects[ix].name|escape|default:'&nbsp;'}</a>
-						<div class="subcomment">{$objects[ix].description|escape|nl2br}</div>
-					</td>
-					<td class="text">
-						{tr}{$objects[ix].type|replace:"wiki page":"wiki"|replace:"trackeritem":"tracker item"}{/tr}
-					</td>
-					{if $deep eq 'on'}
-						<td class="text">
-							{$objects[ix].categName|tr_if|escape}
-						</td>
-					{/if}
-				</tr>
-			{sectionelse}
-				{if $deep eq 'on'}
-					{norecords _colspan=3}
-				{else}
-					{norecords _colspan=2}
-				{/if}
-			{/section}
-		</table>
-		<br>
-	{/if}
-</div>
+					{cycle values="odd,even" print=false}
+					{section name=ix loop=$objects}
+						<tr class="{cycle}">
+							<td class="text">
+								<a href={if empty($objects[ix].sefurl)}"{$objects[ix].href}"{else}"{$objects[ix].sefurl}"{/if} class="catname">{$objects[ix].name|escape|default:'&nbsp;'}</a>
+								<div class="subcomment">{$objects[ix].description|escape|nl2br}</div>
+							</td>
+							<td class="text">
+								{tr}{$objects[ix].type|replace:"wiki page":"wiki"|replace:"trackeritem":"tracker item"}{/tr}
+							</td>
+							{if $deep eq 'on'}
+								<td class="text">
+									{$objects[ix].categName|tr_if|escape}
+								</td>
+							{/if}
+						</tr>
+					{sectionelse}
+						{if $deep eq 'on'}
+							{norecords _colspan=3}
+						{else}
+							{norecords _colspan=2}
+						{/if}
+					{/section}
+				</table>
+				<br />
+			{/if}
+		</td>
+	</tr>
+</table>
 
 {pagination_links cant=$cant_pages step=$maxRecords offset=$offset}{/pagination_links}

@@ -79,15 +79,15 @@
 {/if}
 
 {if $individual eq 'y'}
-	<a class="link" href="tiki-objectpermissions.php?objectName={$info.name|escape:"url"}&amp;objectType=survey&amp;permType=surveys&amp;objectId={$info.surveyId}">{tr}There are individual permissions set for this survey{/tr}</a><br><br>
+	<a class="link" href="tiki-objectpermissions.php?objectName={$info.name|escape:"url"}&amp;objectType=survey&amp;permType=surveys&amp;objectId={$info.surveyId}">{tr}There are individual permissions set for this survey{/tr}</a><br /><br />
 {/if}
 
 <form action="tiki-admin_surveys.php" method="post">
-	<input type="hidden" name="surveyId" value="{$info.surveyId|escape}">
+	<input type="hidden" name="surveyId" value="{$info.surveyId|escape}" />
 	<table class="formcolor">
 		<tr>
 			<td>{tr}Name:{/tr}</td>
-			<td><input type="text" name="name" size="80" value="{$info.name|escape}"></td>
+			<td><input type="text" name="name" size="80" value="{$info.name|escape}" /></td>
 		</tr>
 		<tr>
 			<td>{tr}Description:{/tr}</td>
@@ -106,7 +106,7 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" name="save" value="{tr}Save{/tr}">
+				<input type="submit" name="save" value="{tr}Save{/tr}" />
 			</td>
 		</tr>
 	</table>

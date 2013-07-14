@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,14 +9,14 @@
 
 class TWVersion
 {
-	public $branch;		// Development cycle
-	public $version;		// This version
+	var $branch;		// Development cycle
+	var $version;		// This version
 	private $latestMinorRelease;		// Latest release in the same major version release series
-	public $latestRelease;		// Latest release
+	var $latestRelease;		// Latest release
 	private $isLatestMajorVersion; // Whether or not the current major version is the latest
-	public $releases;		// Array of all releases from website
-	public $star;			// Star being used for this version tree
-	public $svn;			// Is this a Subversion version or a package?
+	var $releases;		// Array of all releases from website
+	var $star;			// Star being used for this version tree
+	var $svn;			// Is this a Subversion version or a package?
 
 	function TWVersion()
 	{
@@ -24,11 +24,11 @@ class TWVersion
 		//   stable   : Represents stable releases.
 		//   unstable : Represents candidate and test/development releases.
 		//   trunk     : Represents next generation development version.
-		$this->branch 	= 'trunk';
+		$this->branch 	= 'stable';
 
 		// Set everything else, including defaults.
-		$this->version 	= '12.0svn';	// needs to have no spaces for releases
-		$this->star	= 'TBA';
+		$this->version 	= '9.6';	// Never ever put any spaces in this value.  This will appear in tiki-admin.php?page=general
+		$this->star	= 'Herbig Haro';
 		$this->releases	= array();
 
 		// Check for Subversion or not
@@ -42,13 +42,13 @@ class TWVersion
 		return $this->latestMinorRelease;
 	}
 
-	function getBaseVersion()
+ 	function getBaseVersion()
 	{
 		return preg_replace("/^(\d+\.\d+).*$/", '$1', $this->version);
 	}
 
 	// Returns an array of all used Tiki stars.
-	function tikiStars()
+ 	function tikiStars()
 	{
 		return array(
 				1=>'Spica',			// 0.9
@@ -70,13 +70,11 @@ class TWVersion
 				17=>'Rigel',		// 6.x
 				18=>'Electra',		// 7.x
 				19=>'Acubens',		// 8.x
-				20=>'Herbig Haro',	// 9.x
-				21=>'Sun',			// 10.x
-				22=>'Vega'			// 11.x
+				20=>'Herbig Haro'	// 9.x
 		);
 	}
 
- 	// Returns an array of all valid versions of Tiki.
+	// Returns an array of all valid versions of Tiki.
  	function tikiVersions()
 	{
 		// These are all the valid release versions of Tiki.
@@ -157,6 +155,7 @@ class TWVersion
 				'6.9',
 				'6.10',
 				'6.11',
+				'6.12',
 				'7.0beta1',
 				'7.0beta2',
 				'7.0RC1',
@@ -184,12 +183,11 @@ class TWVersion
 				'9.3',
 				'9.4',
 				'9.5',
+				'9.6',
 				'10.0alpha',
 				'10.0beta',
 				'10.0',
 				'10.1',
-				'10.2',
-				'10.3',
 				'11.0beta',
 			);
 	}

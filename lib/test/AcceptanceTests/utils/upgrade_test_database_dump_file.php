@@ -24,11 +24,8 @@ $test_TikiAcceptanceTestDBRestorer->restoreDB($argv[1]);
 $local_php = 'db/local.php';
 
 require_once('installer/installlib.php');
-
-// Force autoloading
-if (! class_exists('ADOConnection')) {
-	die('AdoDb not found.');
-}
+require_once('lib/core/TikiDb.php');
+include_once ('lib/adodb/adodb.inc.php');
 
 include $local_php;
 $dbTiki = ADONewConnection($db_tiki);

@@ -17,7 +17,7 @@
 		{if $report eq 'y'}
 			{tr}Your email was sent{/tr}.
 		{else}
-			{tr}The link was sent to the following addresses:{/tr}<br>
+			{tr}The link was sent to the following addresses:{/tr}<br />
 			{$sent|escape}
 		{/if}
 	</div>
@@ -28,13 +28,13 @@
 		{icon _id=exclamation alt="{tr}Error{/tr}" style="vertical-align:middle" align="left"} 
 		{foreach from=$errors item=m name=errors}
 			{$m}
-			{if !$smarty.foreach.errors.last}<br>{/if}
+			{if !$smarty.foreach.errors.last}<br />{/if}
 		{/foreach}
 	</div>
 {/if}
 
 <form method="post" action="tiki-tell_a_friend.php" id="tellafriend">
-	<input type="hidden" name="url" value="{$url|escape:url}">
+	<input type="hidden" name="url" value="{$url|escape:url}" />
 	<table class="formcolor">
 		<tr>
 			<td>{tr}Link{/tr}</td>
@@ -44,20 +44,20 @@
 			<tr>
 				<td>{tr}Friend's email{/tr}</td>
 				<td>
-					<input style="width:95%;" type="text" size="60" name="addresses" value="{$addresses|escape}">
-					<br><em>{tr}Separate multiple email addresses with a comma.{/tr}</em>
+					<input style="width:95%;" type="text" size="60" name="addresses" value="{$addresses|escape}"/>
+					<br /><em>{tr}Separate multiple email addresses with a comma.{/tr}</em>
 				</td>
 			</tr>
 		{else}
-			<input type="hidden" name="report" value="y">
+			<input type="hidden" name="report" value="y" />
 		{/if}
 		<tr>
 			<td>{tr}Your name{/tr}</td>
-			<td><input style="width:95%;" type="text" name="name" value="{$name}"></td>
+			<td><input style="width:95%;" type="text" name="name" value="{$name}" /></td>
 		</tr>
 		<tr>
 			<td>{tr}Your email{/tr}{if empty($email)} <strong class="mandatory_star">*</strong>{/if}</td>
-			<td><div class="mandatory_field"><input style="width:95%;" type="text" name="email" value="{$email}"></div></td>
+			<td><div class="mandatory_field"><input style="width:95%;" type="text" name="email" value="{$email}" /></div></td>
 		</tr>
 		<tr>
 			<td>{tr}Your comment{/tr}</td>
@@ -71,9 +71,9 @@
 		<tr>
 			<td></td>
 			<td>
-				<input type="submit" name="send" value="{tr}Send{/tr}">
+				<input type="submit" name="send" value="{tr}Send{/tr}" />
 				{if $prefs.auth_token_tellafriend eq 'y'}
-					<input type="checkbox" name="share_access" value="1" id="share_access">
+					<input type="checkbox" name="share_access" value="1" id="share_access"/>
 					<label for="share_access">{tr}Share access rights{/tr}</label>
 				{/if}
 			</td>

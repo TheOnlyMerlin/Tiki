@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -58,11 +55,11 @@ if (isset($_REQUEST["remove"])) {
 if (isset($_REQUEST["save"])) {
 	check_ticket('edit-quiz-result');
 	$quizlib->replace_quiz_result(
-		$_REQUEST["resultId"],
-		$_REQUEST["quizId"],
-		$_REQUEST["fromPoints"],
-		$_REQUEST["toPoints"],
-		$_REQUEST["answer"]
+					$_REQUEST["resultId"], 
+					$_REQUEST["quizId"], 
+					$_REQUEST["fromPoints"], 
+					$_REQUEST["toPoints"],
+					$_REQUEST["answer"]
 	);
 
 	$smarty->assign('answer', '');

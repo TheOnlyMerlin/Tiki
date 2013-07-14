@@ -1,39 +1,29 @@
 <div class="files-field uninitialized" data-galleryid="{$field.galleryId|escape}" data-firstfile="{$field.firstfile|escape}">
-{if $field.limit}
-	{remarksbox _type=info title="{tr}Attached files limitation{/tr}"}
-		{tr _0=$field.limit}The amount of files that can be attached is limited to <strong>%0</strong>. The latest files will be preserved.{/tr}
-	{/remarksbox}
-{/if}
 <ol class="tracker-item-files current-list">
 	{foreach from=$field.files item=info}
 		<li data-file-id="{$info.fileId|escape}">
-			{if $field.options_array[3]}
-				<img src="tiki-download_file.php?fileId={$info.fileId|escape}&display&height=24" height="24">
-			{/if}
 			{$info.name|escape}
-			<label>
-				{icon _id=cross}
-			</label>
+			<label>{icon _id=cross}</label>
 		</li>
 	{/foreach}
 </ol>
-<input class="input" type="text" name="{$field.ins_id|escape}" value="{$field.value|escape}">
+<input class="input" type="text" name="{$field.ins_id|escape}" value="{$field.value|escape}"/>
 {if $field.canUpload}
 	<fieldset id="{$field.ins_id|escape}-drop" class="file-drop">
 		<legend>{tr}Upload files{/tr}</legend>
+		{if $field.limit}
+			{remarksbox _type=info title="{tr}Attached files limitation{/tr}"}
+				{tr _0=$field.limit}The amount of files that can be attached is limited to <strong>%0</strong>. Additional files uploaded will still be uploaded to the server and searchable, but they will not be attached to this item. Make sure you remove the files no longer required before you save your changes.{/tr}
+			{/remarksbox}
+		{/if}
 		<p style="display:none;">{tr}Drop files from your desktop here or browse for them{/tr}</p>
-		<input class="ignore" type="file" name="{$field.ins_id|escape}[]" accept="{$field.filter|escape}" multiple="multiple">
+		<input class="ignore" type="file" name="{$field.ins_id|escape}[]" accept="{$field.filter|escape}" multiple="multiple"/>
 	</fieldset>
 {/if}
 {if $prefs.fgal_tracker_existing_search eq 'y'}
 	<fieldset>
 		<legend>{tr}Existing files{/tr}</legend>
-		<input type="text" class="search" placeholder="{tr}Search query{/tr}">
-		{if $prefs.fgal_elfinder_feature eq 'y'}
-			{button href='tiki-list_file_gallery.php' _text="{tr}Browse files{/tr}"
-				_onclick="return openElFinderDialog(this, {ldelim}defaultGalleryId:{if !isset($field.options_array[8]) or $field.options_array[8] eq ''}{if empty($field.options_array[0])}0{else}{$field.options_array[0]|escape}{/if}{else}{$field.options_array[8]|escape}{/if},deepGallerySearch:{if empty($field.options_array[6])}0{else}{$field.options_array[6]|escape}{/if},getFileCallback:function(file,elfinder){ldelim}window.handleFinderFile(file,elfinder){rdelim},eventOrigin:this{rdelim});"
-				title="{tr}Browse files{/tr}"}
-		{/if}
+		<input type="text" class="search" placeholder="{tr}Search query{/tr}"/>
 		<ol class="results tracker-item-files">
 		</ol>
 	</fieldset>
@@ -41,8 +31,7 @@
 {if $prefs.fgal_upload_from_source eq 'y' and $field.canUpload}
 	<fieldset>
 		<legend>{tr}Upload from URL{/tr}</legend>
-		<label>{tr}URL:{/tr} <input class="url" name="url" placeholder="http://"></label>
-		{tr}Type or paste the URL and press ENTER{/tr}
+		<label>{tr}URL:{/tr} <input class="url" type="url"/></label>
 	</fieldset>
 {/if}
 </div>
@@ -59,7 +48,6 @@ $field.hide();
 
 var handleFiles = function (files) {
 	$fileinput.clearError();
-	var uploadUrl = $.service('file', 'upload');
 	$.each(files, function (k, file) {
 		var reader = new FileReader();
 		var li = $('<li/>').appendTo($files);
@@ -85,7 +73,7 @@ var handleFiles = function (files) {
 
 				$.ajax({
 					type: 'POST',
-					url: uploadUrl,
+					url: $.service('file', 'upload'),
 					xhr: provider,
 					dataType: 'json',
 					success: function (data) {
@@ -94,14 +82,13 @@ var handleFiles = function (files) {
 
 						$field.input_csv('add', ',', fileId);
 
-						li.prepend($('<img src="tiki-download_file.php?fileId=' + fileId + '&display&height=24" height="24">'));
 						li.append($('<label>{{icon _id=cross}}</label>'));
-						li.find('img.icon').click(function () {
+						li.find('img').click(function () {
 							$field.input_csv('delete', ',', fileId);
 							$(this).closest('li').remove();
 						});
 									
-						if (li.closest('.files-field').data('firstfile') > 0) {	
+						if (li.closest('.files-field').data('firstfile') > 0) {
 							li.prev('li').remove();
 						}
 					},
@@ -187,7 +174,7 @@ $url.keypress(function (e) {
 			url: $.service('file', 'remote'),
 			dataType: 'json',
 			data: {
-				galleryId: $(this).closest('.files-field').data('galleryid'),
+				galleryId: $(this).closest('.files-field').data('galleryid'), 
 				url: url
 			},
 			success: function (data) {
@@ -196,9 +183,8 @@ $url.keypress(function (e) {
 
 				$field.input_csv('add', ',', fileId);
 
-				li.prepend($('<img src="tiki-download_file.php?fileId=' + fileId + '&display&height=24" height="24">'));
 				li.append($('<label>{{icon _id=cross}}</label>'));
-				li.find('img.icon').click(function () {
+				li.find('img').click(function () {
 					$field.input_csv('delete', ',', fileId);
 					$(this).closest('li').remove();
 				});
@@ -236,9 +222,8 @@ $search.keypress(function (e) {
 				icon.click(function () {
 					var li = $('<li/>');
 					li.text(item.text());
-					li.prepend($('<img src="tiki-download_file.php?fileId=' + data.object_id + '&display&height=24" height="24">'));
 					li.append($('<label>{{icon _id=cross}}</label>'));
-					li.find('img.icon').click(function () {
+					li.find('img').click(function () {
 						$field.input_csv('delete', ',', data.object_id);
 						$(this).closest('li').remove();
 					});
@@ -257,57 +242,5 @@ $search.keypress(function (e) {
 		return false;
 	}
 });
-window.handleFinderFile = function (file, elfinder) {
-	var hash = "";
-	if (typeof file === "string") {
-		var m = file.match(/target=([^&]*)/);
-		if (!m || m.length < 2) {
-			return false;	// error?
-		}
-		hash = m[1];
-	} else {
-		hash = file.hash;
-	}
-	$.ajax({
-		type: 'GET',
-		url: $.service('file_finder', 'finder'),
-		dataType: 'json',
-		data: {
-			cmd: "tikiFileFromHash",
-			hash: hash
-		},
-		success: function (data) {
-			var fileId = data.fileId, li = $('<li/>');
-
-			var eventOrigin = $("body").data("eventOrigin");
-			if (eventOrigin) {
-				var $ff = $(eventOrigin).parents(".files-field");
-				$field = $(".input", $ff);
-				$files = $(".current-list", $ff);
-			}
-
-			li.text(data.name);
-
-			$field.input_csv('add', ',', fileId);
-
-			li.prepend($('<img src="tiki-download_file.php?fileId=' + fileId + '&display&height=24" height="24">'));
-			li.append($('<label>{{icon _id=cross}}</label>'));
-			li.find('img.icon').click(function () {
-				$field.input_csv('delete', ',', fileId);
-				$(this).closest('li').remove();
-			});
-
-			$files.append(li);
-		},
-		error: function (jqxhr) {
-		},
-		complete: function () {
-			$(window).data("elFinderDialog").dialog("close");
-			$($(window).data("elFinderDialog")).remove();
-			$(window).data("elFinderDialog", null);
-			return false;
-		}
-	});
-};
 });
 {/jq}

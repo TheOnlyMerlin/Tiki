@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -12,23 +12,22 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 
 class HeaderLib
 {
-	public $title;
-	public $jsfiles;
-	public $js;
-	public $jsfile_attr = array();
-	public $js_config;
-	public $jq_onready;
-	public $cssfiles;
-	public $css;
-	public $rssfeeds;
-	public $metatags;
-	public $minified;
-	public $wysiwyg_parsing;
-	public $lockMinifiedJs;
+	var $title;
+	var $jsfiles;
+	var $js;
+	var $js_config;
+	var $jq_onready;
+	var $cssfiles;
+	var $css;
+	var $rssfeeds;
+	var $metatags;
+	var $minified;
+	var $wysiwyg_parsing;
+	var $lockMinifiedJs;
 
-	public $jquery_version = '1.9.1';
-	public $jqueryui_version = '1.10.2';
-	public $jquerymobile_version = '1.3.1';
+	var $jquery_version = '1.7.2';
+	var $jqueryui_version = '1.8.21';
+	var $jquerymobile_version = '1.1.0';
 
 
 	function __construct()
@@ -53,12 +52,8 @@ class HeaderLib
 
 		$https_mode = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on';
 
-		if ($https_mode) {
-			$cdn_pref = $prefs['tiki_cdn_ssl'];
-		} elseif (isset($prefs['tiki_cdn'])) {
-			$cdn_pref = $prefs['tiki_cdn'];
-		}
-
+		$cdn_pref = $https_mode ? $prefs['tiki_cdn_ssl'] : $prefs['tiki_cdn'];
+	
 		if ( !empty($cdn_pref) && 'http' != substr($file, 0, 4) && $type !== 'dynamic' ) {
 			$file = $cdn_pref . $tikiroot . $file;
 		}
@@ -76,26 +71,19 @@ class HeaderLib
 		$this->add_jsfile($file, -1);
 		return $this;
 	}
-
+	
 	function add_jsfile($file,$rank=0,$minified=false)
 	{
-		if ($this->lockMinifiedJs == true && $rank !== 'external') {
-			$rank = 'late';
+		if ($this->lockMinifiedJs == true) {
+			$rank = 'external';
 		}
-
+		
 		if (!$this->wysiwyg_parsing && (empty($this->jsfiles[$rank]) or !in_array($file, $this->jsfiles[$rank]))) {
 			$this->jsfiles[$rank][] = $file;
 			if ($minified) {
 				$this->minified[$file] = $minified;
 			}
 		}
-		return $this;
-	}
-
-	function add_jsfile_with_attr($script, $attributes, $rank=0)
-	{
-		$this->add_jsfile($script, $rank);
-		$this->jsfile_attr[$script] = $attributes;
 		return $this;
 	}
 
@@ -186,7 +174,7 @@ class HeaderLib
 
 	function output_headers()
 	{
-		global $style_ie6_css, $style_ie7_css, $style_ie8_css, $style_ie9_css, $smarty;
+		global $style_ie6_css, $style_ie7_css, $style_ie8_css, $smarty;
 
     $smarty->loadPlugin('smarty_modifier_escape');
 
@@ -238,12 +226,6 @@ class HeaderLib
 			$back .= '<link rel="stylesheet" href="'.smarty_modifier_escape($this->convert_cdn($style_ie8_css)).'" type="text/css" />'."\n";
 		}
 		$back .= "<![endif]-->\n";
-		$back .= "<!--[if IE 9]>\n"
-				.'<link rel="stylesheet" href="css/ie9.css" type="text/css" />'."\n";
-		if ( $style_ie9_css != '' ) {
-			$back .= '<link rel="stylesheet" href="'.smarty_modifier_escape($this->convert_cdn($style_ie9_css)).'" type="text/css" />'."\n";
-		}
-		$back .= "<![endif]-->\n";
 
 		if (count($this->rssfeeds)) {
 			foreach ($this->rssfeeds as $x=>$rssf) {
@@ -260,10 +242,6 @@ class HeaderLib
 	function output_js_files()
 	{
 		global $prefs, $smarty;
-
-		if ($prefs['javascript_enabled'] == 'n') {
-			return;
-		}
 
 		$smarty->loadPlugin('smarty_modifier_escape');
 		ksort($this->jsfiles);
@@ -283,37 +261,31 @@ class HeaderLib
 			foreach ($jsfiles as $x=>$jsf) {
 				$back.= "<!-- jsfile $x -->\n";
 				foreach ($jsf as $jf) {
-					$attrs = '';
-					if (isset($this->jsfile_attr[$jf])) {
-						foreach ($this->jsfile_attr[$jf] as $attr => $value) {
-							$attrs .= ' ' . $attr . '="' . addslashes($value) . '"';
-						}
-					}
 					$jf = $this->convert_cdn($jf, $x);
-					$back.= "<script$attrs type=\"text/javascript\" src=\"".smarty_modifier_escape($jf)."\"></script>\n";
+					$back.= "<script type=\"text/javascript\" src=\"".smarty_modifier_escape($jf)."\"></script>\n";
 				}
 			}
 			$back.= "\n";
 		}
 		return $back;
 	}
-
+	
 	public function lockMinifiedJs()
 	{
 		$this->lockMinifiedJs = true;
 		return $this;
 	}
-
+	
 	public function getMinifiedJs()
 	{
-		global $prefs;
-
+		global $tikidomainslash;
+		
 		$dependancy = array();
 		if ( isset( $this->jsfiles[-1] ) ) {
 			$dependancy = $this->jsfiles[-1];
 			unset( $this->jsfiles[-1] );
 		}
-
+		
 		$dynamic = array();
 		if ( isset( $this->jsfiles['dynamic'] ) ) {
 			$dynamic = $this->jsfiles['dynamic'];
@@ -325,49 +297,18 @@ class HeaderLib
 			$external = $this->jsfiles['external'];
 			unset( $this->jsfiles['external'] );
 		}
-
-		$late = array();
-		if ( isset( $this->jsfiles['late'] ) ) {
-			$late = $this->jsfiles['late'];
-			unset( $this->jsfiles['late'] );
-		}
-
+		
+		$hash = md5(serialize($this->jsfiles));
+		$file = 'temp/public/'.$tikidomainslash."minified_$hash.js";
 		$minified_files = array();
 
-		$minified_files[] = $this->minifyJSFiles($this->jsfiles, $external);
-
-		if ($prefs['tiki_minify_late_js_files'] === 'y') {
-			$minified_files[] = $this->minifyJSFiles(array($late), $external);
-		} else {
-			$external = array_merge($external, $late);
-		}
-		return array(
-			'dependancy'=> $dependancy,
-			'external' => $external,
-			'dynamic' => $dynamic,
-			$minified_files,
-		);
-	}
-
-	/**
-	 * @param $files	array of file paths
-	 * @param $external	array to put uniminifyable files into
-	 * @return string	path of minified js file
-	 */
-
-	private function minifyJSFiles($fileArrays, & $external)
-	{
-		global $tikidomainslash;
-		$hash = md5(serialize($fileArrays));
-		$file = 'temp/public/' . $tikidomainslash . "minified_$hash.js";
-
-		if (!file_exists($file)) {
+		if ( ! file_exists($file) ) {
 			require_once 'lib/minify/JSMin.php';
-			$minified = '/* ' . print_r($fileArrays, true) . ' */';
-			foreach ($fileArrays as $x => $files) {
-				foreach ($files as $f) {
+			$minified = '/* ' . print_r($this->jsfiles, true) . ' */';
+			foreach ( $this->jsfiles as $x => $files ) {
+				foreach ( $files as $f ) {
 					$content = file_get_contents($f);
-					if (!preg_match('/min\.js$/', $f) and $this->minified[$f] !== true) {
+					if ( ! preg_match('/min\.js$/', $f) and $this->minified[$f] !== true) {
 						set_time_limit(600);
 						try {
 							$minified .= JSMin::minify($content);
@@ -384,7 +325,14 @@ class HeaderLib
 			file_put_contents($file, $minified);
 			chmod($file, 0644);
 		}
-		return $file;
+
+		$minified_files[] = $file;
+		return array(
+			'dependancy'=> $dependancy,
+			'external' => $external,
+			'dynamic' => $dynamic,
+			$minified_files,
+		);
 	}
 
 	private function getJavascript()
@@ -402,12 +350,6 @@ class HeaderLib
 
 	function output_js_config($wrap = true)
 	{
-		global $prefs;
-
-		if ($prefs['javascript_enabled'] == 'n') {
-			return;
-		}
-
 		$back = null;
 		if (count($this->js_config)) {
 			ksort($this->js_config);
@@ -440,10 +382,6 @@ class HeaderLib
 	function output_js($wrap = true)
 	{	// called in tiki.tpl - JS output at end of file now (pre 5.0)
 		global $prefs;
-
-		if ($prefs['javascript_enabled'] == 'n') {
-			return;
-		}
 
 		ksort($this->js);
 		ksort($this->jq_onready);
@@ -530,21 +468,14 @@ class HeaderLib
 	{
 		global $smarty;
 		$smarty->loadPlugin('smarty_modifier_escape');
-
+		
 		ksort($this->jsfiles);
 		$out = array();
 
 		if (count($this->jsfiles)) {
 			foreach ($this->jsfiles as $x=>$jsf) {
 				foreach ($jsf as $jf) {
-					$attrs = '';
-					if (isset($this->jsfile_attr[$jf])) {
-						foreach ($this->jsfile_attr[$jf] as $attr => $value) {
-							$attrs .= ' ' . $attr . '="' . addslashes($value) . '"';
-						}
-					}
-
-					$out[] = "<script$attrs type=\"text/javascript\" src=\"".smarty_modifier_escape($jf)."\"></script>\n";
+					$out[] = "<script type=\"text/javascript\" src=\"".smarty_modifier_escape($jf)."\"></script>\n";
 				}
 			}
 		}
@@ -558,7 +489,7 @@ class HeaderLib
 
 	/**
 	 * Get JavaScript tags from html source - used for AJAX responses and cached pages
-	 *
+	 * 
 	 * @param string $html - source to search for JavaScript
 	 * @param bool $switch_fn_definition - if set converts 'function fName ()' to 'fName = function()' for AJAX
 	 * @param bool $isFiles - if set true, get external scripts. If set to false, get inline scripts. If true, the external script tags's src attributes are returned as an array.
@@ -569,7 +500,7 @@ class HeaderLib
 	{
 		$jsarr = array();
 		$js_script = array();
-
+		
 		preg_match_all('/(?:<script.*type=[\'"]?text\/javascript[\'"]?.*>\s*?)(.*)(?:\s*<\/script>)/Umis', $html, $jsarr);
 		if ($isFiles == false) {
 			if (count($jsarr) > 1 && is_array($jsarr[1]) && count($jsarr[1]) > 0) {
@@ -596,16 +527,16 @@ class HeaderLib
 		// but it was stopping the CDATA group being returned (and life's too short ;)
 		// the one below should work afaics but just doesn't! :(
 		// preg_match_all('/<script.*type=[\'"]?text\/javascript[\'"]?.*>(\s*<\!--\/\/--><\!\[CDATA\[\/\/><\!--)?\s*?(.*)(\s*\/\/--><\!\]\]>\s*)?<\/script>/imsU', $html, $js);
-
+		
 		return $js_script;
 	}
-
+	
 	function removeJsFromHTML( $html )
 	{
 		$html = preg_replace('/(?:<script.*type=[\'"]?text\/javascript[\'"]?.*>\s*?)(.*)(?:\s*<\/script>)/Umis', "", $html);
 		return $html;
 	}
-
+	
 	public function get_all_css_content()
 	{
 		$files = $this->collect_css_files();
@@ -627,7 +558,7 @@ class HeaderLib
 		$back .= $this->output_css_files_list($files['print'], 'print');
 		return $back;
 	}
-
+	
 	private function output_css_files_list( $files, $media = '' )
 	{
 		global $prefs, $smarty;
@@ -720,6 +651,7 @@ class HeaderLib
 	public function minify_css( $file )
 	{
 		global $tikipath, $tikiroot;
+		require_once 'lib/pear/Minify/CSS.php';
 		if (strpos($file, $tikiroot) === 0) {
 			$file = substr($file, strlen($tikiroot));
 		}
@@ -765,14 +697,14 @@ class HeaderLib
 
 		return $files;
 	}
-
+	
 	private function process_themegen_files($files)
 	{
 		global $prefs, $tikidomainslash, $in_installer;
-
+		
 		if (empty($in_installer) && isset($prefs['themegenerator_feature']) && $prefs['themegenerator_feature'] === 'y' && !empty($prefs['themegenerator_theme'])) {
 			global $themegenlib; include_once 'lib/themegenlib.php';
-
+			
 			$data = $themegenlib->getCurrentTheme()->getData();
 			$themename = $themegenlib->getCurrentTheme()->getName();
 			if (count($data['files'])) {
@@ -810,7 +742,7 @@ class HeaderLib
 	function add_map()
 	{
 		global $prefs;
-
+		
 		$tikilib = TikiLib::lib('tiki');
 		$enabled = $tikilib->get_preference('geo_tilesets', array('openstreetmap'), true);
 
@@ -827,7 +759,7 @@ class HeaderLib
 				$args['key'] = $prefs['gmap_key'];
 			}
 
-			$this->add_jsfile($tikilib->httpScheme() . '://maps.google.com/maps/api/js?' . http_build_query($args, '', '&'), 'external');
+			$this->add_jsfile('http://maps.google.com/maps/api/js?' . http_build_query($args, '', '&'), 'external');
 		}
 
 		/* Needs additional testing
@@ -837,7 +769,7 @@ class HeaderLib
 		}
 		*/
 
-		$this->add_jsfile('lib/openlayers/OpenLayers.js', 'external');
+		$this->add_jsfile('http://openlayers.org/api/2.11/OpenLayers.js', 'external');
 		$this->add_js(
 		    '$(".map-container:not(.done)")
 		        .addClass("done")
@@ -845,10 +777,10 @@ class HeaderLib
 		            $(this).createMap();
 		    });'
         );
-
+		
 		return $this;
 	}
-
+	
 	function add_dracula()
 	{
 		// Because they are only used in this file, they are marked as external so they
@@ -856,7 +788,7 @@ class HeaderLib
 		$this->add_jsfile('lib/dracula/raphael-min.js', 'external');
 		$this->add_jsfile('lib/dracula/graffle.js', 'external');
 		$this->add_jsfile('lib/dracula/graph.js', 'external');
-
+		
 		return $this;
 	}
 

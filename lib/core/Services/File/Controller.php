@@ -1,13 +1,13 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 class Services_File_Controller
 {
-	public $defaultGalleryId = 1;
+	var $defaultGalleryId = 1;
 
 	function setUp()
 	{
@@ -16,7 +16,6 @@ class Services_File_Controller
 		if ($prefs['feature_file_galleries'] != 'y') {
 			throw new Services_Exception_Disabled('feature_file_galleries');
 		}
-		$this->defaultGalleryId = $prefs['fgal_root_id'];
 	}
 
 	function action_upload($input)
@@ -28,7 +27,6 @@ class Services_File_Controller
 		$type = $input->type->text();
 		$data = $input->data->none();
 		$fileId = $input->fileId->int();
-		$asuser = $input->user->text();
 
 		$data = base64_decode($data);
 
@@ -36,9 +34,9 @@ class Services_File_Controller
 		$type = $mimelib->from_content($name, $data);
 
 		if ($fileId) {
-			$this->updateFile($gal_info, $name, $size, $type, $data, $fileId, $asuser);
+			$this->updateFile($gal_info, $name, $size, $type, $data, $fileId);
 		} else {
-			$fileId = $this->uploadFile($gal_info, $name, $size, $type, $data, $asuser);
+			$fileId = $this->uploadFile($gal_info, $name, $size, $type, $data);
 		}
 
 		if ($fileId === false) {
@@ -50,7 +48,7 @@ class Services_File_Controller
 			'name' => $name,
 			'type' => $type,
 			'fileId' => $fileId,
-			'galleryId' => $gal_info['galleryId'],
+			'galleryId' => $galleryId,
 			'md5sum' => md5($data),
 		);
 	}
@@ -76,7 +74,7 @@ class Services_File_Controller
 		if ($file = $filegallib->lookup_source($url)) {
 			return $file;
 		}
-
+		
 		$info = $filegallib->get_info_from_url($url);
 
 		if (! $info) {
@@ -124,36 +122,8 @@ class Services_File_Controller
 		);
 	}
 
-	/**
-	 * @param $input	string "name" for the filename to find
-	 * @return array	file info for most recent file by that name
-	 */
-	function action_find($input)
-	{
-
-		$filegallib = TikiLib::lib('filegal');
-		$gal_info = $this->checkTargetGallery($input);
-
-		$name = $input->name->text();
-
-		$pos = strpos($name, '?');		// strip off get params
-		if ($pos !== false) {
-			$name = substr($name, 0, $pos);
-		}
-
-		$info = $filegallib->get_file_by_name($gal_info['galleryId'], $name);
-
-		if (empty($info)) {
-			$info = $filegallib->get_file_by_name($gal_info['galleryId'], $name, 'filename');
-		}
-
-		return $info;
-	}
-
 	private function checkTargetGallery($input)
 	{
-		global $prefs;
-
 		$galleryId = $input->galleryId->int();
 
 		if (empty($galleryId)) $galleryId = $this->defaultGalleryId;
@@ -162,15 +132,8 @@ class Services_File_Controller
 			throw new Services_Exception(tr('Requested gallery does not exist.'), 404);
 		}
 
-		if ($prefs['feature_use_fgal_for_user_files'] !== 'y' || $gal_info['type'] !== 'user') {
-			$perms = Perms::get('file gallery', $galleryId);
-			$canUpload = $perms->upload_files;
-		} else {
-			global $user;
-			$perms = TikiLib::lib('tiki')->get_local_perms($user, $galleryId, 'file gallery', $gal_info, false);		//get_perm_object($galleryId, 'file gallery', $galinfo);
-			$canUpload = $perms['tiki_p_upload_files'] === 'y';
-		}
-		if (!$canUpload) {
+		$perms = Perms::get('file gallery', $galleryId);
+		if (! $perms->upload_files) {
 			throw new Services_Exception(tr('Permission denied.'), 403);
 		}
 
@@ -183,16 +146,16 @@ class Services_File_Controller
 		return $filegallib->get_file_gallery_info($galleryId);
 	}
 
-	private function uploadFile($gal_info, $name, $size, $type, $data, $asuser = null)
+	private function uploadFile($gal_info, $name, $size, $type, $data)
 	{
 		$filegallib = TikiLib::lib('filegal');
-		return $filegallib->upload_single_file($gal_info, $name, $size, $type, $data, $asuser);
+		return $filegallib->upload_single_file($gal_info, $name, $size, $type, $data);
 	}
 
-	private function updateFile($gal_info, $name, $size, $type, $data, $fileId, $asuser = null)
+	private function updateFile($gal_info, $name, $size, $type, $data, $fileId)
 	{
 		$filegallib = TikiLib::lib('filegal');
-		return $filegallib->update_single_file($gal_info, $name, $size, $type, $data, $fileId, $asuser);
+		return $filegallib->update_single_file($gal_info, $name, $size, $type, $data, $fileId);
 	}
 }
 

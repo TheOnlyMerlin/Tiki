@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -125,44 +125,6 @@ if ($prefs['feature_clear_passwords'] == 'y') {
 		'message' => tra('Store passwords in plain text is activated. You should never set this unless you know what you are doing.')
 	);
 }
-
-// Check if any of the mail-in accounts uses "Allow anonynous access"
-if ($prefs['feature_mailin'] == 'y') {
-	require_once('lib/mailin/mailinlib.php');
-	$accs = $mailinlib->list_active_mailin_accounts(0, -1, 'account_desc', '');
-	
-	// Check anonymous access
-	$errorCnt = 0;
-	foreach ($accs['data'] as $acc) {
-		if ($acc['anonymous'] === 'y') {
-			$errorCnt++;
-		}
-	}
-	if ($errorCnt > 0) {
-		$tikisettings['feature_mailin-anonymous'] = array(
-			'risk' => tra('unsafe') ,
-			'setting' => tra('Enabled') ,
-			'message' => tra('One or more mail-in accounts have enabled "Allow anonymous access", which disables all permission checking for incoming email. Check tiki-admin_mailin.php')
-		);
-	}
-	
-	// Check admin access
-	$errorCnt = 0;
-	foreach ($accs['data'] as $acc) {
-		if ($acc['admin'] === 'y') {
-			$errorCnt++;
-		}
-	}
-	if ($errorCnt > 0) {
-		$tikisettings['feature_mailin-admin'] = array(
-			'risk' => tra('unsafe') ,
-			'setting' => tra('Enabled') ,
-			'message' => tra('One or more mail-in accounts have enabled "Allow admin access", which allows for incoming email from admins. Admins have all rights, and web pages can easily be overwitten / tampered with. Check tiki-admin_mailin.php')
-		);
-	}
-
-}
-
 ksort($tikisettings);
 $smarty->assign_by_ref('tikisettings', $tikisettings);
 // array for severity in tiki_secdb table. This can go into a extra table if
@@ -185,10 +147,6 @@ $secdb_severity = array(
 	4000 => tra('File upload')
 );
 // dir walk & check functions
-/**
- * @param $dir
- * @param $result
- */
 function md5_check_dir($dir, &$result)
 { // save all suspicious files in $result
 	global $tikilib;
@@ -281,10 +239,6 @@ define('S_IROTH', '4');
 define('S_IWOTH', '2');
 define('S_IXOTH', '1');
 // Function to check Filesystem permissions
-/**
- * @param $dir
- * @param $result
- */
 function check_dir_perms($dir, &$result)
 {
 	static $depth = 0;

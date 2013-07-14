@@ -9,10 +9,6 @@
 		<select id="fgal_{$key}" name="fgal_{$key}">
 			<option value="list"{if $item.value eq 'list'} selected="selected"{/if}>{tr}List{/tr}</option>
 			<option value="browse"{if $item.value eq 'browse'} selected="selected"{/if}>{tr}Browse{/tr}</option>
-			<option value="page"{if $item.value eq 'page'} selected="selected"{/if}>{tr}Page{/tr}</option>
-			{if $prefs.fgal_elfinder_feature eq 'y'}
-				<option value="finder"{if $item.value eq 'finder'} selected="selected"{/if}>{tr}Finder View{/tr}</option>
-			{/if}
 		</select>
 	</td>
 </tr>
@@ -20,15 +16,15 @@
 			<tr>
 				<td><label for="fgal_{$key}">{$item.name}:<label></td>
 				<td>
-					<input type="text" id="fgal_{$key}" name="fgal_{$key}" value="{$item.value}"><br>
+					<input type="text" id="fgal_{$key}" name="fgal_{$key}" value="{$item.value}" /><br />
 					<em>{tr}Enter the ID of any file in any gallery to be used as the icon for this gallery in browse view{/tr}</em>
 				</td>
 			</tr>
 		{else}
 <tr>
-	<td><label for="fgal_{$key}{if isset($fgal_ext)}{$fgal_ext}{/if}">{$item.name}:</label></td>
+	<td><label for="fgal_{$key}{$fgal_ext}">{$item.name}:</label></td>
 	{assign var='pref_name' value="fgal_$key"}
-	<td><input type="checkbox" id="fgal_{$key}" name="fgal_{$key}" {if $item.value eq 'y'}checked="checked"{/if}{if $edit_mode eq 'y' and $prefs.$pref_name neq 'y'} disabled="disabled"{/if}>
+	<td><input type="checkbox" id="fgal_{$key}" name="fgal_{$key}" {if $item.value eq 'y'}checked="checked"{/if}{if $edit_mode eq 'y' and $prefs.$pref_name neq 'y'} disabled="disabled"{/if} />
 		{if $edit_mode eq 'y' and $prefs.$pref_name neq 'y'}
 			<em>{tr}The checkbox is disabled because this preference is disabled globally.{/tr}</em>
 			{if $tiki_p_admin eq 'y' or $tiki_p_admin_file_galleries eq 'y'}

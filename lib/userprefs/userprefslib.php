@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,22 +11,10 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- *
- */
 class UserPrefsLib extends TikiLib
 {
 
-    /**
-     * @param $user
-     * @param $type
-     * @param $avatarLibName
-     * @param $avatarName
-     * @param $avatarSize
-     * @param $avatarType
-     * @param $avatarData
-     */
-    function set_user_avatar($user, $type, $avatarLibName, $avatarName, $avatarSize, $avatarType, $avatarData)
+	function set_user_avatar($user, $type, $avatarLibName, $avatarName, $avatarSize, $avatarType, $avatarData)
 	{
 		global $prefs, $userlib, $tikidomainslash;
 		$query = "update `users_users` set `avatarType` = ?, `avatarLibName` = ?, `avatarName` = ?, `avatarSize` = ?, `avatarFileType` = ?, `avatarData` = ?  where `login`=?";
@@ -35,17 +23,13 @@ class UserPrefsLib extends TikiLib
 			$userlib->interSendUserInfo($prefs['interlist'][$prefs['feature_intertiki_mymaster']], $user);
 		}
 
-		$image = 'temp/public/' . $tikidomainslash . 'avatar_' . md5($user) . '.*';
+		$image = 'temp/public/' . $tikidomainslash . 'avatar_' . $user . '.*';
 		foreach ( glob($image) as $file ) {
 			unlink($file);
 		}
 	}
 
-    /**
-     * @param $user
-     * @return bool
-     */
-    function get_user_avatar_img($user)
+	function get_user_avatar_img($user)
 	{
 		$query = "select * from `users_users` where `login`=?";
 		$result = $this->query($query, array($user));
@@ -56,12 +40,14 @@ class UserPrefsLib extends TikiLib
 
 	function get_public_avatar_path($user)
 	{
-		global $prefs, $tikidomainslash;
+		global $prefs, $tikidomain;
 
 		if ( $prefs['users_serve_avatar_static'] == 'y' ) {
 			$domain = '';
-			$hash = md5($user);
-			$files = glob("temp/public/{$tikidomainslash}avatar_$hash.{jpg,gif,png}", GLOB_BRACE);
+			if (! empty($tikidomain)) {
+				$domain = "/$tikidomain";
+			}
+			$files = glob("temp/public$domain/avatar_$user.{jpg,gif,png}", GLOB_BRACE);
 
 			if (! empty($files[0])) {
 				return $files[0];
@@ -81,7 +67,7 @@ class UserPrefsLib extends TikiLib
 
 	private function generate_avatar_file($user)
 	{
-		global $tikidomainslash;
+		global $tikidomain;
 
 		$info = $this->get_user_avatar_img($user);
 		$type = $info["avatarFileType"];
@@ -91,16 +77,9 @@ class UserPrefsLib extends TikiLib
 			return 'img/noavatar.png';
 		}
 
-		global $mimeextensions;
-		require_once('lib/mime/mimeextensions.php');
-
-		if (! isset($mimeextensions[$type])) {
-			return 'img/noavatar.png';
-		}
-
+		require 'lib/mime/mimeextensions.php';
 		$ext = $mimeextensions[$type];
-		$hash = md5($user);
-		$image = "temp/public/{$tikidomainslash}avatar_{$hash}.$ext";
+		$image = "temp/public/$tikidomain/avatar_{$user}.$ext";
 
 		file_put_contents($image, $info['avatarData']);
 		chmod($image, 0644);
@@ -108,14 +87,6 @@ class UserPrefsLib extends TikiLib
 		return $image;
 	}
 
-    /**
-     * @param $u
-     * @param $filename
-     * @param $size
-     * @param $type
-     * @param $data
-     * @return bool|int|null
-     */
 	function set_file_gallery_image($u, $filename, $size, $type, $data)
 	{
 		global $prefs, $tikilib;
@@ -133,12 +104,8 @@ class UserPrefsLib extends TikiLib
 		}
 		return $user_image_id;
 	}
-
-    /**
-     * @param $u
-     * @return bool
-     */
-    function remove_file_gallery_image($u)
+	
+	function remove_file_gallery_image($u)
 	{
 		global $prefs, $tikilib;
 		$filegallib = TikiLib::lib('filegal');
@@ -151,22 +118,14 @@ class UserPrefsLib extends TikiLib
 			return false;
 		}
 	}
-
-    /**
-     * @param $u
-     * @return null
-     */
-    function get_user_picture_id($u)
+	
+	function get_user_picture_id($u)
 	{
 		global $tikilib;
 		return $tikilib->get_user_preference($u, 'user_fg_image_id');		
 	}
-
-    /**
-     * @param $user
-     * @return array
-     */
-    function get_userprefs($user)
+	
+	function get_userprefs($user)
 	{
 		$query = "select * from `tiki_user_preferences` where `user`=?";
 		$result = $this->query($query, array($user));
@@ -178,13 +137,8 @@ class UserPrefsLib extends TikiLib
 
 		return $ret;
 	}
-
-    /**
-     * @param $usersrc
-     * @param $userdst
-     * @return float|null
-     */
-    function get_userdistance($usersrc, $userdst)
+	
+	function get_userdistance($usersrc, $userdst)
 	{
 		if ($usersrc == $userdst)
 			return null;
@@ -206,12 +160,8 @@ class UserPrefsLib extends TikiLib
 			return(NULL);
 		}
 	}
-
-    /**
-     * @param $user
-     * @return bool
-     */
-    function get_user_clock_pref($user)
+	
+	function get_user_clock_pref($user)
 	{
 		global $prefs; global $tikilib;
 		$userclock = $tikilib->get_user_preference($user, 'display_12hr_clock');

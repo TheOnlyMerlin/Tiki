@@ -1,9 +1,9 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Id: shell.php 41306 2012-05-03 18:13:07Z jonnybradley $
 
 if ( isset($_SERVER['REQUEST_METHOD']) ) die;
 
@@ -18,12 +18,16 @@ if ( ! file_exists('db/local.php') )
 
 require_once('tiki-setup.php');
 
+include_once 'lib/core/Zend/Log/Writer/Syslog.php';
 $log_level = Zend_Log::INFO;
 $writer = new Zend_Log_Writer_Stream('php://output');
 $writer->addFilter((int) $log_level);
 $logger = new Zend_Log($writer);
 
 $logger->debug('Running search shell utility');
+
+require_once 'lib/profilelib/profilelib.php';
+require_once 'lib/profilelib/installlib.php';
 
 if ( $_SERVER['argv'][1] === 'install' ) {
 	$args = $_SERVER['argv'];

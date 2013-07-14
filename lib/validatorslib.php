@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -63,19 +63,6 @@ class Validators
 						$validationjs .= 'required_in_group: [1, ".group_'.$prefix.$field_value['fieldId'].'"], ';
 					} else if ($field_value['type'] == 'A') {
 						$validationjs .= 'required_tracker_file: [1, ".file_'.$prefix.$field_value['fieldId'].'"], ';
-					} else if ($field_value['type'] == 'f') {	// old style date picker - jq validator rules have to apply to an element name or id
-																// so we have to add a required_in_group for each of the date selects in turn
-						$validationjs .= 'required: false },';	// dummy for the "group"
-						$date_ins_num = $field_value['options_array'][0] === 'dt' ? 5 : 3;
-						$validationjs .= $prefix . $field_value['fieldId'] . 'Month: {required_in_group: [' . $date_ins_num . ', "select[name^='.$prefix.$field_value['fieldId'].']"]}, ' .
-							$prefix . $field_value['fieldId'] . 'Day: {required_in_group: [' . $date_ins_num . ', "select[name^='.$prefix.$field_value['fieldId'].']"]}, ' .
-							$prefix . $field_value['fieldId'] . 'Year: {required_in_group: [' . $date_ins_num . ', "select[name^='.$prefix.$field_value['fieldId'].']"], ';
-						if ($field_value['options_array'][0] === 'dt') {
-							$validationjs = rtrim($validationjs, ', ');
-							$validationjs .= '},';
-							$validationjs .= $prefix . $field_value['fieldId'] . 'Hour: {required_in_group: [' . $date_ins_num . ', "select[name^='.$prefix.$field_value['fieldId'].']"]}, ' .
-								$prefix . $field_value['fieldId'] . 'Minute: {required_in_group: [' . $date_ins_num . ', "select[name^='.$prefix.$field_value['fieldId'].']"], ';
-						}
 					} else {
 						$validationjs .= 'required: true, ';
 					}
@@ -103,12 +90,7 @@ class Validators
 					} elseif ( $prefix == 'ins_' && $field_value['type'] == 'k') {
 						$validationjs .= 'return $("#page_selector_'.$field_value['fieldId'].'").val(); ';
 					} else {
-						if ( $field_value['type'] == 'g' or $field_value['type'] == 'e' or $field_value['type'] == 'y' or $field_value['type'] == 'd' or $field_value['type'] == 'D' ) {
-							// Let's handle drop-down style fields
-							$validationjs .= 'return $(\'select[name="'.$prefix.$field_value['fieldId'].'"] option:selected\').text(); ';
-						} else {	// Let's handle text style fields
-							$validationjs .= 'return $("#'.$prefix.$field_value['fieldId'].'").val(); ';
-						}
+						$validationjs .= 'return $("#'.$prefix.$field_value['fieldId'].'").val(); ';
 					}
 					$validationjs .= '} } } ';
 				} else {

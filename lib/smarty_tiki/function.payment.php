@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -21,7 +21,7 @@ function smarty_function_payment( $params, $smarty )
 		$theguy = false;
 	}
 	$smarty->assign('ccresult_ok', false);
-
+	
 	// Unpaid payments can be seen by anyone as long as they know the number
 	// Just like your bank account, anyone can drop money in it.
 	if (
@@ -42,12 +42,12 @@ function smarty_function_payment( $params, $smarty )
 			global $access, $cclitelib, $cartlib;
 			require_once 'lib/payment/cclitelib.php';
 			require_once 'lib/payment/cartlib.php';
-
+			
 			//$access->check_authenticity( tr('Transfer currency? %0 %1?', $info['amount'], $info['currency'] ));
-
+			
 			// check currency matches
-			if (empty($params['registry'])) {
-				$params['registry'] = $cclitelib->get_registry();
+			if (empty($params['registry'])) { 
+				$params['registry'] = $cclitelib->get_registry(); 
 			}
 
 			if (empty($info['currency'])) {
@@ -55,13 +55,13 @@ function smarty_function_payment( $params, $smarty )
 			} else {
 				if ($info['currency'] != substr($cclitelib->get_currency($params['registry']), 0, 3)) {
 					return tr(
-						'Currency in payment (%0) does not match the currency for that registry (%1).',
-						$info['currency'],
-						$cclitelib->get_currency($params['registry'])
+									'Currency in payment (%0) does not match the currency for that registry (%1).', 
+									$info['currency'], 
+									$cclitelib->get_currency($params['registry'])
 					);
 				}
 			}
-
+			
 			// no notification callback in cclite yet, so have to assume true for now (pending checking in perform_trade)
 			$result = $cclitelib->pay_invoice($invoice, $info['amount'], $info['currency'], $params['registry']);
 			if ($result) {
@@ -78,14 +78,8 @@ function smarty_function_payment( $params, $smarty )
 			$smarty->assign('userpaycredits', $userpaycredits->credits);
 		}
 
-
+		
 		$info['fullview'] = $objectperms->payment_view || $theguy;
-
-		if (!empty($smarty->tpl_vars['returnurl']->value)) {
-			$returl = $smarty->tpl_vars['returnurl'];
-			$info['returnurl'] = preg_match('|^https?://|', $returl) ? $returl : $tikilib->tikiUrl($returl);
-		}
-
 		if (!empty($params['returnurl']) && empty($result)) {
 			$info['url'] = preg_match('|^https?://|', $params['returnurl']) ? $params['returnurl'] : $tikilib->tikiUrl($params['returnurl']);
 			$info['url'] .= (strstr($params['returnurl'], '.php?') || !strstr($params['returnurl'], '.php')? '&':'?') . "invoice=$invoice";

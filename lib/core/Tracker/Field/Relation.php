@@ -1,16 +1,16 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 class Tracker_Field_Relation extends Tracker_Field_Abstract
 {
-	const OPT_RELATION = 'relation';
-	const OPT_FILTER = 'filter';
-	const OPT_READONLY = 'readonly';
-	const OPT_INVERT = 'invert';
+	const OPT_RELATION = 0;
+	const OPT_FILTER = 1;
+	const OPT_READONLY = 2;
+	const OPT_INVERT = 3;
 
 	public static function getTypes()
 	{
@@ -26,14 +26,11 @@ class Tracker_Field_Relation extends Tracker_Field_Abstract
 						'name' => tr('Relation'),
 						'description' => tr('Relation qualifier. Must be a three-part qualifier containing letters and separated by dots.'),
 						'filter' => 'attribute_type',
-						'legacy_index' => 0,
 					),
 					'filter' => array(
 						'name' => tr('Filter'),
 						'description' => tr('URL-encoded list of filters to be applied on object selection.'),
 						'filter' => 'url',
-						'legacy_index' => 1,
-						'profile_reference' => 'search_urlencoded',
 					),
 					'readonly' => array(
 						'name' => tr('Read-only'),
@@ -43,7 +40,6 @@ class Tracker_Field_Relation extends Tracker_Field_Abstract
 							0 => tr('No'),
 							1 => tr('Yes'),
 						),
-						'legacy_index' => 2,
 					),
 					'invert' => array(
 						'name' => tr('Include Invert'),
@@ -53,18 +49,6 @@ class Tracker_Field_Relation extends Tracker_Field_Abstract
 							0 => tr('No'),
 							1 => tr('Yes'),
 						),
-						'legacy_index' => 3,
-					),
-					'display' => array(
-						'name' => tr('Display'),
-						'description' => tr('Control how the relations are displayed in view mode'),
-						'filter' => 'word',
-						'options' => array(
-							'list' => tr('List'),
-							'count' => tr('Count'),
-							'toggle' => tr('Count with toggle for list'),
-						),
-						'legacy_index' => 4,
 					),
 				),
 			),
@@ -90,8 +74,8 @@ class Tracker_Field_Relation extends Tracker_Field_Abstract
 
 		if ($this->getOption(self::OPT_INVERT)) {
 			$inverts = array_diff(
-				$this->getRelations($this->getOption(self::OPT_RELATION) . '.invert'),
-				$data
+							$this->getRelations($this->getOption(self::OPT_RELATION) . '.invert'),
+							$data
 			);
 		} else {
 			$inverts = array();
@@ -123,12 +107,12 @@ class Tracker_Field_Relation extends Tracker_Field_Abstract
 		$filter = $this->buildFilter();
 
 		return $this->renderTemplate(
-			'trackerinput/relation.tpl',
-			$context,
-			array(
-				'labels' => $labels,
-				'filter' => $filter,
-			)
+						'trackerinput/relation.tpl', 
+						$context, 
+						array(
+							'labels' => $labels,
+							'filter' => $filter,
+						)
 		);
 	}
 
@@ -137,18 +121,7 @@ class Tracker_Field_Relation extends Tracker_Field_Abstract
 		if ($context['list_mode'] === 'csv') {
 			return $this->getConfiguration('value');
 		} else {
-			$display = $this->getOption('display');
-			if (! in_array($display, array('list', 'count', 'toggle'))) {
-				$display = 'list';
-			}
-
-			return $this->renderTemplate(
-				'trackeroutput/relation.tpl',
-				$context,
-				array(
-					'display' => $display,
-				)
-			);
+			return $this->renderTemplate('trackeroutput/relation.tpl', $context);
 		}
 	}
 

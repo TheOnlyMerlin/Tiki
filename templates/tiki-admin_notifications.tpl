@@ -2,21 +2,21 @@
 {title help="Mail+Notifications"}{tr}Mail notifications{/tr}{/title}
 
 {if empty($prefs.sender_email)}
-	<br>
-	<div class="highlight simplebox">{icon _id=information style="vertical-align:middle"} {tr}You need to set <a href="tiki-admin.php?page=general">Sender Email</a> before creating email notifications{/tr}.</div>
-	<br>
+	<br />
+	<div class="highlight simplebox">{icon _id=information style="vertical-align:middle"} {tr}You need to set <a href="tiki-admin.php?page=general">Sender Email</a> before creating email notifications.{/tr}</div>
+	<br />
 {/if}
 
 <h2>{tr}Add notification{/tr}</h2>
 {if !empty($tikifeedback)}
 	<div class="highlight simplebox">{section name=ix loop=$tikifeedback}{icon _id=delete alt="{tr}Alert{/tr}" style="vertical-align:middle"} {$tikifeedback[ix].mes}.{/section}</div>
-	<br>
+	<br />
 {/if}
 <form action="tiki-admin_notifications.php" method="post">
-     <input type="hidden" name="find" value="{$find|escape}">
-     <input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
-     {if $offset}<input type="hidden" name="offset" value="{$offset|escape}">{/if}
-	 {if $numrows ne $prefs.maxRecords and $numrows}<input type="hidden" name="numrows" value="{$numrows|escape}">{/if}
+     <input type="hidden" name="find" value="{$find|escape}" />
+     <input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
+     {if $offset}<input type="hidden" name="offset" value="{$offset|escape}" />{/if}
+	 {if $numrows ne $prefs.maxRecords and $numrows}<input type="hidden" name="numrows" value="{$numrows|escape}" />{/if}
 	<table class="formcolor">
 		<tr>
 			<td><label for="event">{tr}Event:{/tr}</label></td>
@@ -52,7 +52,7 @@
 		<tr id="loginrow">
 			<td><label for="flogin">{tr}User:{/tr}</label></td>
 			<td>
-				<input type="text" id="flogin" name="login">
+				<input type="text" id="flogin" name="login" />
 				{autocomplete element='#flogin' type='username'}
 				<a href="#" onclick="javascript:document.getElementById('flogin').value='{$user}'" class="link">{tr}Myself{/tr}</a>
 			</td>
@@ -60,21 +60,21 @@
 		<tr id="emailrow" style="display:none">
 			<td><label for="femail">{tr}Email:{/tr}</label></td>        
 			<td>
-				<input type="text" id='femail' name="email">
+				<input type="text" id='femail' name="email" />
 			</td>
-		</tr>
+		</tr> 
 		<tr>
 			<td>
 				<span class="simple_inlinehelp">{tr}Note that a user is not notified for his own action{/tr}.</span>
 			</td>
-		</tr> 
+		</tr>
 		<tr>
 			<td>&nbsp;</td>
-			<td><input type="submit" name="add" value="{tr}Add{/tr}"></td>
+			<td><input type="submit" name="add" value="{tr}Add{/tr}" /></td>
 		</tr>
 	</table>
 </form>
-<br>
+<br />
 <h2>{tr}Mail notifications{/tr}</h2>
 {if $channels or ($find ne '')}
   {include file='find.tpl' find_show_num_rows='y'}
@@ -97,7 +97,7 @@
 		{section name=user loop=$channels}
 			<tr class="{cycle}">
 				<td class="checkbox">
-					<input type="checkbox" name="checked[]" value="{$channels[user].watchtype}{$channels[user].watchId|escape}" {if $smarty.request.checked and in_array($channels[user].watchId,$smarty.request.checked)}checked="checked"{/if}>
+					<input type="checkbox" name="checked[]" value="{$channels[user].watchtype}{$channels[user].watchId|escape}" {if $smarty.request.checked and in_array($channels[user].watchId,$smarty.request.checked)}checked="checked"{/if} />
 				</td>
 				<td class="text">{$channels[user].event}</td>
 				<td class="text">
@@ -131,9 +131,9 @@
 		{/section}
 	</table>
 	{if $channels}
-		<br>
+		<br />
 		{tr}Perform action with checked:{/tr}
-		<input type="image" name="delsel" src='img/icons/cross.png' alt="{tr}Delete{/tr}" title="{tr}Delete{/tr}">
+		<input type="image" name="delsel" src='img/icons/cross.png' alt="{tr}Delete{/tr}" title="{tr}Delete{/tr}" />
 	{/if}
 </form>
 
