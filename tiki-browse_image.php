@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -37,7 +34,7 @@ if (!$galleryId) {
 	die;
 }
 
-$tikilib->get_perm_object($galleryId, 'image gallery');
+$tikilib->get_perm_object( $galleryId, 'image gallery' );
 $access->check_permission('tiki_p_view_image_gallery');
 
 $gal_info = $imagegallib->get_gallery($galleryId);
@@ -53,7 +50,7 @@ $arrscales = $imagegallib->get_gallery_scale_info($galleryId);
 // adjust scale size to existing ones
 if ($scalesize && !$prefs['preset_galleries_info'] == 'y') {
 	$testscale = 0;
-	foreach ( $arrscales as $arrscale ) {
+	foreach( $arrscales as $arrscale ) {
 		if ($scalesize <= $arrscale['scale']) {
 			$testscale = $arrscale['scale'];
 			break;
@@ -162,7 +159,7 @@ $resultscale = $scalesize < $maxsize ? $scalesize : 0;
 $scaleinfo['nextscale'] = 0;
 $scaleinfo['prevscale'] = 0;
 $testscale = $resultscale ? $resultscale : $maxsize;
-foreach ($arrscales as $arrscale) {
+foreach($arrscales as $arrscale) {
 	if ($testscale == $arrscale['scale']) {
 		continue;
 	}
@@ -191,8 +188,10 @@ if ($prefs['feature_theme_control'] == 'y') {
 }
 // now set it if needed
 if ($popup) {
+	$prefs['feature_top_bar'] = 'n';
 	$prefs['feature_left_column'] = 'n';
 	$prefs['feature_right_column'] = 'n';
+	$prefs['feature_bot_bar'] = 'n';
 }
 ask_ticket('browse-image');
 //add a hit

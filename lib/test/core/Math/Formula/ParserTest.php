@@ -1,76 +1,61 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 class Math_Formula_ParserTest extends TikiTestCase
 {
-	function testEmptyElement()
-	{
+	function testEmptyElement() {
 		$parser = new Math_Formula_Parser;
 
-		$element = new Math_Formula_Element('score');
+		$element = new Math_Formula_Element( 'score' );
 
-		$this->assertEquals($element, $parser->parse('(score)'));
+		$this->assertEquals( $element, $parser->parse( '(score)' ) );
 	}
 
-	function testWithArguments()
-	{
+	function testWithArguments() {
 		$parser = new Math_Formula_Parser;
 
-		$element = new Math_Formula_Element('object', array('input-type', 'input-object-id'));
-		$this->assertEquals($element, $parser->parse('(object input-type input-object-id)'));
+		$element = new Math_Formula_Element( 'object', array( 'input-type', 'input-object-id' ) );
+		$this->assertEquals( $element, $parser->parse( '(object input-type input-object-id)' ) );
 	}
 
-	function testNesting()
-	{
+	function testNesting() {
 		$parser = new Math_Formula_Parser;
 
-		$element = new Math_Formula_Element(
-			'score',
-			array(new Math_Formula_Element('object', array('type', 'object')))
-		);
+		$element = new Math_Formula_Element( 'score', array( 
+			new Math_Formula_Element( 'object', array( 'type', 'object' ) ) ) );
 
-		$this->assertEquals($element, $parser->parse('(score (object type object))'));
+		$this->assertEquals( $element, $parser->parse( '(score (object type object))' ) );
 	}
 
-	function testMultipleElements()
-	{
+	function testMultipleElements() {
 		$parser = new Math_Formula_Parser;
 
-		$element = new Math_Formula_Element(
-			'score',
-			array(
-				new Math_Formula_Element('object', array('type', 'object')),
-				new Math_Formula_Element('range', array(3600)),
-			)
-		);
+		$element = new Math_Formula_Element( 'score', array( 
+			new Math_Formula_Element( 'object', array( 'type', 'object' ) ),
+			new Math_Formula_Element( 'range', array( 3600 ) ),
+		) );
 
-		$this->assertEquals($element, $parser->parse('(score (object type object) (range 3600))'));
+		$this->assertEquals( $element, $parser->parse( '(score (object type object) (range 3600))' ) );
 	}
 
-	function testMultipleNesting()
-	{
+	function testMultipleNesting() {
 		$parser = new Math_Formula_Parser;
 
-		$element = new Math_Formula_Element(
-			'score',
-			array(
-				new Math_Formula_Element('object', array('type', 'object')),
-				new Math_Formula_Element(
-					'range',
-					array(new Math_Formula_Element('mul', array(3600, 60)),)
-				),
-			)
-		);
+		$element = new Math_Formula_Element( 'score', array( 
+			new Math_Formula_Element( 'object', array( 'type', 'object' ) ),
+			new Math_Formula_Element( 'range', array(
+				new Math_Formula_Element( 'mul', array( 3600, 60 ) ),
+			) ),
+		) );
 
-		$this->assertEquals($element, $parser->parse('(score (object type object) (range (mul 3600 60)))'));
+		$this->assertEquals( $element, $parser->parse( '(score (object type object) (range (mul 3600 60)))' ) );
 	}
 
-	function testSkipComments()
-	{
+	function testSkipComments() {
 		$equivalent = '(score (object type object) (range (mul 3600 60)))';
 		$documented = <<<DOC
 (score
@@ -83,39 +68,30 @@ class Math_Formula_ParserTest extends TikiTestCase
 DOC;
 
 		$parser = new Math_Formula_Parser;
-		$this->assertEquals($parser->parse($equivalent), $parser->parse($documented));
+		$this->assertEquals( $parser->parse( $equivalent ), $parser->parse( $documented ) );
 	}
 
-	function testWithZero()
-	{
+	function testWithZero() {
 		$parser = new Math_Formula_Parser;
-		$element = new Math_Formula_Element(
-			'add',
-			array(
-				new Math_Formula_Element('default', array(0)),
-				new Math_Formula_Element('attribute'),
-			)
-		);
+		$element = new Math_Formula_Element( 'add', array( 
+			new Math_Formula_Element( 'default', array( 0 ) ),
+			new Math_Formula_Element( 'attribute' ),
+		) );
 
-		$this->assertEquals(
-			$element,
-			$parser->parse(
-				'(add
-				(default 0)
-				(attribute)
-				)'
-			)
-		);
+		$this->assertEquals( $element, $parser->parse( '
+		(add
+			(default 0)
+			(attribute)
+		)' ) );
 	}
 
-	function badStrings()
-	{
+	function badStrings() {
 		return array(
-			'noOpening' => array('test'),
-			'noToken' => array('()'),
-			'doubles' => array('((test))'),
-			'trail' => array('(test) foo'),
-			'unfinished' => array('(score (object type object) (range 3600)'),
+			'noOpening' => array( 'test' ),
+			'noToken' => array( '()' ),
+			'doubles' => array( '((test))' ),
+			'trail' => array( '(test) foo' ),
+			'unfinished' => array( '(score (object type object) (range 3600)' ),
 		);
 	}
 
@@ -123,11 +99,10 @@ DOC;
 	 * @dataProvider badStrings
 	 * @expectedException Math_Formula_Parser_Exception
 	 */
-	function testBadParse($string)
-	{
+	function testBadParse( $string ) {
 		$parser = new Math_Formula_Parser;
 
-		$parser->parse($string);
+		$parser->parse( $string );
 	}
 }
 

@@ -2,19 +2,15 @@
 
 <h2>{tr}Add Banned Word{/tr}</h2>
 
-<div class="navbar">
-	{button href="tiki-shoutbox.php" _text="{tr}Shoutbox{/tr}"}
-</div>
-
 <form method="post" action="tiki-admin_shoutbox_words.php">
 	<table class="formcolor">
 		<tr>
 			<td>{tr}Word{/tr}</td>
-			<td><input type="text" name="word"></td>
+			<td><input type="text" name="word" /></td>
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
-			<td><input type="submit" name="add" value="{tr}Add{/tr}"></td>
+			<td><input type="submit" name="add" value="{tr}Add{/tr}" /></td>
 		</tr>
 	</table>
 </form>
@@ -31,15 +27,17 @@
 	{cycle values="odd,even" print=false}
 	{section name=user loop=$words}
 		<tr class="{cycle}">
-			<td class="text">{$words[user].word|escape}</td>
-			<td class="action">
+			<td>{$words[user].word|escape}</td>
+			<td>
 				&nbsp;&nbsp;
 				<a class="link" href="tiki-admin_shoutbox_words.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$words[user].word|escape:"url"}" onclick="return confirmTheLink(this,"{tr}Are you sure you want to delete this word?{/tr}")" title="{tr}Delete{/tr}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>
 				&nbsp;&nbsp;
 			</td>
 		</tr>
 	{sectionelse}
-		{norecords _colspan=2}
+		<tr>
+			<td colspan="2" class="odd">{tr}No records found{/tr}</td>
+		</tr>
 	{/section}
 </table>
 

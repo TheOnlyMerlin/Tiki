@@ -2,7 +2,7 @@
 
 {if $msg}
   <center>{$msg}</center>
-  <br><br>
+  <br /><br />
 {/if}
 
 {if $pending_requests|@count}
@@ -44,7 +44,8 @@
 {/if}
 <p style="font-weight: bold;">{tr}Your friends{/tr}</p>
 
-{include file='find.tpl' autocomplete="username"}
+{include file='find.tpl'}
+{jq}$("#find").tiki("autocomplete", "username"){/jq}
 
 <table class="userlist">
 {if $listpages}
@@ -64,8 +65,10 @@
   <td class="userlist{cycle advance=true}"><a class="userlistlogin{cycle advance=false}" href="?break={$listpages[changes].login}">{icon _id='cross' alt="{tr}break friendship{/tr}"}</a></td>
 </tr>
 {sectionelse}
-	{norecords _colspan=6}
+<tr><td colspan="6" class="odd">
+{tr}No records found{/tr}
+</td></tr>
 {/section}
 </table>
 
-{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
+{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset }{/pagination_links}

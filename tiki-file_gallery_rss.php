@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -40,10 +37,8 @@ $uniqueid = "$feed.id=".md5(implode('_', $galleryIds));
 $output = $rsslib->get_from_cache($uniqueid);
 
 if ($output["data"]=="EMPTY") {
-	$filegallib = TikiLib::lib('filegal');
-
 	if (count($galleryIds) == 1) {
-		$tmp = $filegallib->get_file_gallery($galleryIds[0]);
+		$tmp = $tikilib->get_file_gallery($galleryIds[0]);
 		$title = $prefs['feed_file_gallery_title'];
 		$title .= $tmp['name'];
 		$desc = $prefs['feed_file_gallery_desc'];
@@ -68,7 +63,7 @@ if ($output["data"]=="EMPTY") {
 		$readrepl = "tiki-download_file.php?$id=%s";
 	}
 
-	$changes = $filegallib->get_files(0, $prefs['feed_file_gallery_max'], $dateId.'_desc', '', $galleryIds);
+	$changes = $tikilib->get_files( 0, $prefs['feed_file_gallery_max'], $dateId.'_desc', '', $galleryIds);
 	$output = $rsslib->generate_feed($feed, $uniqueid, '', $changes, $readrepl, '', $id, $title, $titleId, $desc, $descId, $dateId, $authorId);
 }
 header("Content-type: ".$output["content-type"]);

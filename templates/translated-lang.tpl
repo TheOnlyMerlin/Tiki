@@ -1,116 +1,78 @@
-{* Display the list of available translations for an object and manage its translations *}
-{** Currently works for the following object types: 'article' and 'wiki page' **}
-<ul class="clearfix cssmenu_horiz">
-	<li class="tabmark">
-	{* For all object types: First show the world icon and on hover the language of the current object *}
-		{icon _id=world class="icon" title="{tr}Current language:{/tr} {$trads[0].langName|escape} ({$trads[0].lang|escape})"}
-	{* ..than on hover first show the list of translations including the current language highlighted *}
-        {if empty($trads[0].lang)}
-        <ul>
-            <li class="tabcontent">
-                <h1>{tr}No language is assigned to this page.{/tr}</h1>
-                {if $object_type eq 'wiki page' and ($tiki_p_edit eq 'y' or (!$user and $prefs.wiki_encourage_contribution eq 'y')) and !$lock}
-                    <a href="tiki-edit_translation.php?page={$page|escape}">{tr}Please select a language before performing translation.{/tr}</a>
-                {elseif $object_type eq 'article' and $tiki_p_edit_article eq 'y'}
-                    <a href="tiki-edit_article.php?articleId={$articleId|escape}">{tr}Please select a language before performing translation.{/tr}</a>
-                {/if}
-            </li>
-        </ul>
-        {else}
-		<ul>
-			<li class="tabcontent">
-			{* First the language of the object *}
-			{if $object_type eq 'wiki page'}
-				<a href="tiki-index.php?page={$trads[0].objName|escape}&no_bl=y" title="{$trads[0].langName|escape} ({$trads[0].lang|escape}): {$trads[0].objName}" class="selected">
-					{$trads[0].langName|escape} ({$trads[0].lang|escape})
-				</a>
-			{elseif $object_type eq 'article'}
-				<a href="tiki-read_article.php?articleId={$trads[0].objId}" title="{$trads[0].langName|escape} ({$trads[0].lang|escape}): {$trads[0].objName}" class="selected">
-					{$trads[0].langName|escape} ({$trads[0].lang|escape})
-				</a>
+{* displays a cell with the languages of the translation set *}
+	{if isset($trads) && (count($trads) > 1 || $trads[0].langName)}
+		{if $td eq 'y'}<td style="vertical-align:top;text-align: left; width:42px;">{/if}
+		{if isset($verbose) && $verbose eq 'y'}{tr}The main text of this page is available in the following languages{/tr}:{/if}
+			{if isset($type) && $type == 'article'}
+				<form action="tiki-read_article.php" method="get">
+					<div>
+						<select name="articleId" onchange="this.form.submit()">
+							{section name=i loop=$trads}
+							<option value="{$trads[i].objId|escape}">{$trads[i].langName|escape}</option>
+							{/section}
+						</select>
+					</div>
+				</form>
+			{else} {* get method to have the param in the url *}
+				{jq notonready=true}
+				{{if $beingStaged == 'y'}
+					var page_to_translate = '{$approvedPageName|escape:"quotes"}';
+				{else}
+					var page_to_translate = '{$page|escape:"quotes"}';
+				{/if}}
+				function quick_switch_language( element )
+				{
+					var index = element.selectedIndex;
+					var option = element.options[index];
+
+					if( option.value == "-" )
+						return;
+					else if( option.value == "_translate_" ) {
+						element.form.action = "tiki-edit_translation.php";
+						element.value = page_to_translate;					
+						element.form.submit();
+					} else if( option.value == "_all_" ) {
+						element.form.action = "tiki-all_languages.php";
+						element.value = page_to_translate;
+						element.form.submit();
+				 	} else if (option.text.charAt(option.text.length - 1) == "*") {
+				 		element.form.machine_translate_to_lang.value = element.form.page.options[element.form.page.selectedIndex].value;
+						element.value = page_to_translate;
+						element.form.submit();				 		
+					} else
+						element.form.submit();
+				}
+				{/jq}
+				<form action="tiki-index.php" method="get">
+					<div>
+						{if $prefs.feature_machine_translation eq 'y'}
+						<input type="hidden" name="machine_translate_to_lang" value="" />
+						{/if}
+						<select name="page" onchange="quick_switch_language( this )"> 
+							{if $prefs.feature_machine_translation eq 'y'}
+							<option value="Human Translations" disabled="disabled" style="color:black;font-weight:bold">{tr}Human Translations{/tr}</option>
+							{/if}
+							{section name=i loop=$trads}
+							<option value="{$trads[i].objName|escape}">{tr}{$trads[i].langName|escape}{/tr}</option>
+							{/section}
+							{if $prefs.feature_machine_translation eq 'y'}
+							<option value="Machine Translations" disabled="disabled" style="color:black;font-weight:bold">{tr}Machine Translations{/tr}</option>
+							{section name=i loop=$langsCandidatesForMachineTranslation}
+							<option value="{$langsCandidatesForMachineTranslation[i].lang|escape}">{tr}{$langsCandidatesForMachineTranslation[i].langName|escape}{/tr} *</option>
+							{/section}
+							{/if}
+							{if $prefs.feature_multilingual_one_page eq 'y'}
+							<option value="-">---</option>
+							<option value="_all_"{if basename($smarty.server.PHP_SELF) eq 'tiki-all_languages.php'} selected="selected"{/if}>{tr}All{/tr}</option>
+							{/if}
+							{if $tiki_p_edit eq 'y'}
+							<option value="-">---</option>
+							<option value="_translate_">{tr}Translate{/tr}</option>
+							{/if}
+						</select>
+						<input type="hidden" name="no_bl" value="y" /> 
+					</div>
+				</form>
 			{/if}
-			{* Than the header for human translations - shown only if there is a translation availble *}
-				{if isset($trads) and count($trads) > 1}
-					<h1>
-						{icon _id=group title="{tr}Translations{/tr}"} {tr}Translations{/tr}
-					</h1>
-				{/if}
-			{* Show the list of available translations *}
-				{section name=i loop=$trads}
-				{* For wiki pages *}		
-					{if $object_type eq 'wiki page' and $trads[i] neq $trads[0]}
-						<a href="tiki-index.php?page={$trads[i].objName|escape}&no_bl=y" title="{$trads[i].langName|escape} ({$trads[i].lang|escape}): {$trads[i].objName}" class="linkmodule {$trads[i].class}">
-							{$trads[i].langName|escape} ({$trads[i].lang|escape})
-						</a>
-					{/if}
-				{* For articles *}
-					{if $object_type eq 'article' and $trads[i] neq $trads[0]}
-						<a href="tiki-read_article.php?articleId={$trads[i].objId}" title="{$trads[i].langName|escape} ({$trads[i].lang|escape}): {$trads[i].objName}" class="linkmodule {$trads[i].class}">
-							{$trads[i].langName|escape} ({$trads[i].lang|escape})
-						</a>
-					{/if}
-				{/section}
-			{* For wiki pages only: Show a link to view all translations on a single page *}
-				{if $object_type eq 'wiki page' and $prefs.feature_multilingual_one_page eq 'y' and $translationsCount gt 1}
-					<h1>
-						<a href="tiki-all_languages.php?page={$trads[0].objName|escape:url}&no_bl=y" title="{tr}Show all translations of this page on a single page{/tr}">{icon _id=application_view_columns title=""}
-							{tr}All languages{/tr}
-						</a>
-					</h1>
-				{/if}
-			{* For wiki pages only: List of machine translation candidates if feature is switched on *}
-				{if $object_type eq 'wiki page' and $prefs.feature_machine_translation eq 'y'}
-					<h1>
-						{icon _id=google title="{tr}Google translate{/tr}"} {tr}Machine translations{/tr}
-					</h1>
-				{* List machine translation candidates for available language of the site *}
-					{foreach from=$langsCandidatesForMachineTranslation item=mtl}
-						<a href="tiki-index.php?machine_translate_to_lang={$mtl.lang|escape}&page={$page|escape:"quotes"}&no_bl=y" title="{$mtl.langName|escape} ({$mtl.lang|escape})">
-							{$mtl.langName|escape} *
-						</a>
-					{/foreach}
-				{/if}
-			{* For all object types: Translation maintenance *}
-				{capture}{if $object_type eq 'wiki page' and $tiki_p_edit eq 'y'}
-					<a href="tiki-edit_translation.php?page={$trads[0].objName|escape:url}&no_bl=y" title="{tr}Translate page{/tr}">
-						{tr}Translate{/tr}
-					</a>
-					<a href="{service controller=translation action=manage type='wiki page' source=$page}" class="attach_detach_translation" data-object_type="wiki page" data-object_id="{$page|escape:'quotes'}" title="{tr}Manage page translations{/tr}">
-						{tr}Manage translations{/tr}
-					</a>
-				{elseif $object_type eq 'article' and $tiki_p_edit_article eq 'y'}
-					<a href="tiki-edit_article.php?translationOf={$articleId}" title="{tr}Translate article{/tr}">
-						{tr}Translate{/tr}
-					</a>
-					<a href="{service controller=translation action=manage type=article source=$articleId}" class="attach_detach_translation" data-object_id="{$articleId|escape:'quotes'}" data-object_type="article" title="{tr}Manage article translations{/tr}">
-						{tr}Manage translations{/tr}
-					</a>
-				{/if}{/capture}
-				{if !empty($smarty.capture.default)}{* Only display the header if there's content *}
-					<h1>
-						{icon _id=world_edit title="{tr}Maintenance{/tr}"} {tr}Maintenance{/tr}
-					</h1>
-					{$smarty.capture.default}
-				{/if}				
-			</li>
-		</ul>
-        {/if}
-	</li>
-</ul>
-{* this section is for the related javascripts *}
-{jq}
-$('a.attach_detach_translation').click(function() {
-    var object_type = $(this).data('object_type');
-    var object_to_translate = $(this).data('object_id');
-	$(this).serviceDialog({
-		title: '{tr}Manage translations{/tr}',
-		data: {
-			controller: 'translation',
-			action: 'manage',
-			type: object_type,
-			source: object_to_translate
-		}
-    });
-    return false;
-});
-{/jq}
+
+		{if $td eq 'y'}</td>{/if}
+	{/if}

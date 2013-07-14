@@ -1,118 +1,117 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_trackerfilter_info()
-{
-	require_once 'lib/wiki-plugins/wikiplugin_trackerlist.php';
-	$list = wikiplugin_trackerlist_info();
-	$params = array_merge(
-		array(
-			'filters' => array(
-				'required' => true,
-				'name' => tra('Filters'),
-				'description' => tra('The list of fields that can be used as filters along with their formats. The field number and format are separated by a / and multile fields are separated by ":". Format choices are: d - dropdown; r - radio buttons; m - multiple choice dropdown; c - checkbox; t - text with wild characters; T - exact text match; i - initials; sqlsearch - advanced search; >, <, >=, <= - greater than, less than, greater than or equal, less than or equal. Example:') . '2/d:4/r:5:(6:7)/sqlsearch',
-				'default' => '',
-				'profile_reference' => 'tracker_field_string',
-			),
-			'action' => array(
-				'required' => false,
-				'name' => tra('Action'),
-				'description' => tra('Label on the submit button. Default: "Filter". Use a space character to omit the button (for use in datachannels etc)'),
-				'default' => 'Filter'
-			),
-			'displayList' => array(
-				'required' => false,
-				'name' => tra('Display List'),
-				'description' => tra('Show the full list (before filtering) initially (filtered list shown by default)'),
-				'filter' => 'alpha',
-				'default' => 'n',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				)
-			),
-			'line' => array(
-				'required' => false,
-				'name' => tra('Line'),
-				'description' => tra('Displays all the filters on the same line (not shown on same line by default)'),
-				'filter' => 'alpha',
-				'default' => 'n',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('Yes with field label in dropdown'), 'value' => 'in'),
-					array('text' => tra('No'), 'value' => 'n')
-				)
-			),
-			'noflipflop' => array(
-				'required' => false,
-				'name' => tra('No Toggle'),
-				'description' => tra('The toggle button to show/hide filters will not be shown if set to y (Yes). Default is to show the toggle.'),
-				'filter' => 'alpha',
-				'default' => 'n',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				)
-			),
-			'export_action' => array(
-				'required' => false,
-				'name' => tra('Export CSV.'),
-				'description' => tra('Label for an export button. Leave blank to show the usual "Filter" button instead.'),
-				'default' => '',
-				'advanced' => true,
-			),
-			'googlemapButtons' => array(
-				'required' => false,
-				'name' => tra('Google Map Buttons'),
-				'description' => tra('Display Mapview and Listview buttons'),
-				'filter' => 'alpha',
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				)
-			),
-		),
-		$list['params']
-	);
-
-	return array(
-		'name' => tra('Tracker Filter'),
-		'documentation' => 'PluginTrackerFilter',
-		'description' => tra('Create a form to filter tracker fields'),
-		'prefs' => array( 'feature_trackers', 'wikiplugin_trackerfilter' ),
-		'body' => tra('notice'),
-		'icon' => 'img/icons/application_form_magnify.png',
-		'params' => $params,
-		'format' => 'html',
-		'extraparams' => true,
-	);
+function wikiplugin_trackerfilter_help() {
+  $help = tra("Filters the items of a tracker, fields are indicated with numeric ids.").":\n";
+  $help .= "~np~{TRACKERFILTER(filters=>2/d:4/r:5,action=>Name of submit button,displayList=y|n,line=y|n,TRACKERLIST_params )}Notice{TRACKERFILTER}~/np~";
+  return $help;
 }
 
-function wikiplugin_trackerfilter($data, $params)
-{
+function wikiplugin_trackerfilter_info() {
+	require_once 'lib/wiki-plugins/wikiplugin_trackerlist.php';
+	$list = wikiplugin_trackerlist_info();
+	$params = array_merge( array(
+		'filters' => array(
+			'required' => true,
+			'name' => tra('Filters'),
+			'description' => tra('The list of fields that can be used as filters along with their formats. The field number and format are separated by a / 
+								 and multile fields are separated by ":". Format choices are: d - dropdown; r - radio buttons; m - multiple choice dropdown;
+								 c - checkbox; t - text with wild characters; T - exact text match; i - initials; sqlsearch - advanced search; >, <, >=, <= -
+								 greater than, less than, greater than or equal, less than or equal. Example:') . '2/d:4/r:5:(6:7)/sqlsearch',
+			'default' => ''
+		),
+		'action' => array(
+			'required' => false,
+			'name' => tra('Action'),
+			'description' => tra('Label on the submit button. Default: "Filter". Use a space character to omit the button (for use in datachannels etc)'),
+			'default' => 'Filter'
+		),
+		'displayList' => array(
+			'required' => false,
+			'name' => tra('Display List'),
+			'description' => tra('Show the full list (before filtering) initially (filtered list shown by default)'),
+			'filter' => 'alpha',
+			'default' => 'n',
+			'options' => array(
+				array('text' => '', 'value' => ''), 
+				array('text' => tra('Yes'), 'value' => 'y'), 
+				array('text' => tra('No'), 'value' => 'n')
+			)
+		),
+		'line' => array(
+			'required' => false,
+			'name' => tra('Line'),
+			'description' => tra('Displays all the filters on the same line (not shown on same line by default)'),
+			'filter' => 'alpha',
+			'default' => 'n',
+			'options' => array(
+				array('text' => '', 'value' => ''), 
+				array('text' => tra('Yes'), 'value' => 'y'), 
+				array('text' => tra('No'), 'value' => 'n')
+			)
+		),
+		'noflipflop' => array(
+			'required' => false,
+			'name' => tra('No Toggle'),
+			'description' => tra('The toggle button to show/hide filters will not be shown if set to y (Yes). Default is to show the toggle.'),
+			'filter' => 'alpha',
+			'default' => 'n',
+			'options' => array(
+				array('text' => '', 'value' => ''), 
+				array('text' => tra('Yes'), 'value' => 'y'), 
+				array('text' => tra('No'), 'value' => 'n')
+			)
+		),
+		'export_action' => array(
+			'required' => false,
+			'name' => tra('Export CSV.'),
+			'description' => tra('Label for an export button. Leave blank to show the usual "Filter" button instead.'),
+			'default' => '',
+			'advanced' => true,
+		),
+		'googlemapButtons' => array(
+			'required' => false,
+			'name' => tra('Google Map Buttons'),
+			'description' => tra('Display Mapview and Listview buttons'),
+			'filter' => 'alpha',
+			'default' => '',
+			'options' => array(
+				array('text' => '', 'value' => ''), 
+				array('text' => tra('Yes'), 'value' => 'y'), 
+				array('text' => tra('No'), 'value' => 'n')
+			)
+		)
+	), $list['params'] );
+
+return array(
+		'name' => tra('Tracker Filter'),
+		'documentation' => tra('PluginTrackerFilter'),
+		'description' => tra('Filters the items of a tracker, fields are indicated with numeric ids.'),
+		'prefs' => array( 'feature_trackers', 'wikiplugin_trackerfilter' ),
+		'body' => tra('notice'),
+		'params' => $params,
+		'extraparams' => true,
+);
+}
+
+function wikiplugin_trackerfilter($data, $params) {
 	global $smarty, $prefs;
 	global $trklib;	include_once('lib/trackers/trackerlib.php');
 	static $iTrackerFilter = 0;
 	if ($prefs['feature_trackers'] != 'y') {
 		return $smarty->fetch("wiki-plugins/error_tracker.tpl");
 	}
-	$iTrackerFilter++;
 	$default = array('noflipflop'=>'n', 'action'=>'Filter', 'line' => 'n', 'displayList' => 'n', 'export_action' => '',
 					 'export_itemid' => 'y', 'export_status' => 'n', 'export_created' => 'n', 'export_modif' => 'n', 'export_charset' => 'UTF-8', 'status' => 'opc');
 
 	if (isset($_REQUEST['reset_filter'])) {
-		wikiplugin_trackerFilter_reset_filters($iTrackerFilter);
+		wikiplugin_trackerFilter_reset_filters();
 	} else if (!isset($_REQUEST['filter']) && isset($_REQUEST['session_filters']) && $_REQUEST['session_filters'] == 'y') {
-		$params = array_merge($params, wikiplugin_trackerFilter_get_session_filters($iTrackerFilter));
+		$params = array_merge($params, wikiplugin_trackerFilter_get_session_filters());
 	}
 	if (isset($_REQUEST["mapview"]) && $_REQUEST["mapview"] == 'y' && !isset($_REQUEST["searchmap"]) && !isset($_REQUEST["searchlist"]) || isset($_REQUEST["searchmap"]) && !isset($_REQUEST["searchlist"])) {
 		$params["googlemap"] = 'y';
@@ -123,36 +122,36 @@ function wikiplugin_trackerfilter($data, $params)
 	$params = array_merge($default, $params);
 	extract($params, EXTR_SKIP);
 	$dataRes = '';
+	$iTrackerFilter++;
 
 	if (isset($_REQUEST['msgTrackerFilter'])) {
 		$smarty->assign('msgTrackerFilter', $_REQUEST['msgTrackerFilter']);
 	}
-
+	
 	global $headerlib; include_once 'lib/headerlib.php';
-	$headerlib->add_jq_onready(
-		'/* Maintain state of other trackerfilter plugin forms */
-					$(".trackerfilter form").submit( function () {
-						var current_tracker = this;
-						$(current_tracker).append("<input type=\"hidden\" name=\"tracker_filters[]\" value=\"" + $(current_tracker).serialize() + "\" />")
-						$(".trackerfilter form").each( function() {
-							if (current_tracker !== this && $("input[name=count_item]", this).val() > 0) {
-								$(current_tracker).append("<input type=\"hidden\" name=\"tracker_filters[]\" value=\"" + $(this).serialize() + "\" />")
-							}
-						});
-						return true;
-					});'
-	);
+	$headerlib->add_jq_onready('
+/* Maintain state of other trackerfilter plugin forms */
+$(".trackerfilter form").submit( function () {
+	var current_tracker = this;
+	$(current_tracker).append("<input type=\"hidden\" name=\"tracker_filters[]\" value=\"" + $(current_tracker).serialize() + "\" />")
+	$(".trackerfilter form").each( function() {
+		if (current_tracker !== this && $("input[name=count_item]", this).val() > 0) {
+			$(current_tracker).append("<input type=\"hidden\" name=\"tracker_filters[]\" value=\"" + $(this).serialize() + "\" />")
+		}
+	});
+	return true;
+});');
 
 	if (!empty($_REQUEST['tracker_filters']) && count($_REQUEST['tracker_filters']) > 0) {
 		foreach ($_REQUEST['tracker_filters'] as $tf_vals) {
 			parse_str(urldecode($tf_vals), $vals);
-			foreach ( $vals as $k => $v) {
+			foreach( $vals as $k => $v) {
 				// if it's me and i had some items
 				if ($k == 'iTrackerFilter' && $v == $iTrackerFilter && isset($vals['count_item']) && $vals['count_item'] > 0) {
 					// unset request params for all the plugins (my one will be array_merged below)
-					foreach ($_REQUEST['tracker_filters'] as $tf_vals2) {
+					foreach($_REQUEST['tracker_filters'] as $tf_vals2) {
 						parse_str(urldecode($tf_vals2), $vals2);
-						foreach ( $vals2 as $k2 => $v2) {
+						foreach( $vals2 as $k2 => $v2) {
 							unset($GLOBALS['_REQUEST'][$k2]);
 						}
 					}
@@ -161,7 +160,7 @@ function wikiplugin_trackerfilter($data, $params)
 			}
 		}
 	}
-
+	
 	if (!isset($filters)) {
 		if (empty($export_action)) {
 			return tra('missing parameters').' filters';
@@ -171,11 +170,11 @@ function wikiplugin_trackerfilter($data, $params)
 			$formats = array();
 		}
 	} else {
-
+	
 		$listfields = wikiplugin_trackerFilter_split_filters($filters);
 		foreach ($listfields as $i=>$f) {
 			if (strchr($f, '/')) {
-				list($fieldId, $format) = explode('/', $f);
+				list($fieldId, $format) = explode('/',$f);
 				$listfields[$i] = $fieldId;
 				$formats[$fieldId] = $format;
 			} else {
@@ -186,9 +185,6 @@ function wikiplugin_trackerfilter($data, $params)
 	if (empty($trackerId) && !empty($_REQUEST['trackerId'])) {
 		 $trackerId = $_REQUEST['trackerId'];
 	}
-
-	$tracker_definition = Tracker_Definition::get($trackerId);
-
 	if (empty($_REQUEST['filter']) && empty($export_action)) { // look if not coming from an initial and not exporting
 		foreach ($_REQUEST as $key =>$val) {
 			if (substr($key, 0, 2) == 'f_') {
@@ -212,22 +208,22 @@ function wikiplugin_trackerfilter($data, $params)
 	if (empty($trackerId) || !($tracker = $trklib->get_tracker($trackerId))) {
 		return $smarty->fetch("wiki-plugins/error_tracker.tpl");
 	}
-	$filters = wikiplugin_trackerFilter_get_filters($trackerId, $listfields, $formats, $status);
 	if (empty($export_action)) {
+		$filters = wikiplugin_trackerFilter_get_filters($trackerId, $listfields, $formats, $status);
 		if (!is_array($filters)) {
 			return $filters;
 		}
 	}
 	if (($displayList == 'y' || isset($_REQUEST['filter']) || isset($_REQUEST['tr_offset']) || isset($_REQUEST['tr_sort_mode'])) &&
 				(!isset($_REQUEST['iTrackerFilter']) || $_REQUEST['iTrackerFilter'] == $iTrackerFilter)) {
-
+	  
 		$ffs = array();
 		$values = array();
 		$exactValues = array();
-		wikiplugin_trackerfilter_build_trackerlist_filter($_REQUEST, $formats, $ffs, $values, $exactValues, $tracker_definition);
+		wikiplugin_trackerfilter_build_trackerlist_filter($_REQUEST, $formats, $ffs, $values, $exactValues);
 		// echo '<pre>BUILD_FILTER'; print_r($ffs); print_r($exactValues); echo '</pre>';
 
-		$params['fields'] = isset($fields) ? $fields : array();
+		$params['fields'] = $fields;
 		if (empty($params['trackerId'] )) {
 			$params['trackerId'] = $trackerId;
 		}
@@ -249,9 +245,7 @@ function wikiplugin_trackerfilter($data, $params)
 		}
 		if (empty($params['max']))
 			$params['max'] = $prefs['maxRecords'];
-		if (!empty($_REQUEST['f_status']))
-			$params['status'] = $_REQUEST['f_status'];
-		wikiplugin_trackerFilter_save_session_filters($params, $iTrackerFilter);
+		wikiplugin_trackerFilter_save_session_filters($params);
 		$smarty->assign('urlquery', wikiplugin_trackerFilter_build_urlquery($params));
 		include_once('lib/wiki-plugins/wikiplugin_trackerlist.php');
 		$dataRes .= wikiplugin_trackerlist($data, $params);
@@ -263,8 +257,7 @@ function wikiplugin_trackerfilter($data, $params)
 	$smarty->assign_by_ref('filters', $filters);
 	//echo '<pre>';print_r($filters); echo '</pre>';
 	$smarty->assign_by_ref('trackerId', $trackerId);
-	$smarty->assign('line', ($line == 'y' || $line == 'in')? 'y': 'n');
-	$smarty->assign('indrop', $line == 'in'? 'y': 'n');
+	$smarty->assign_by_ref('line', $line);
 	$smarty->assign('iTrackerFilter', $iTrackerFilter);
 	if (!empty($export_action)) {
 		$smarty->assign('export_action', $export_action);
@@ -274,21 +267,18 @@ function wikiplugin_trackerfilter($data, $params)
 		$smarty->assign('export_created', $export_created == 'y' ? 'on' : '');
 		$smarty->assign('export_modif', $export_modif == 'y' ? 'on' : '');
 		$smarty->assign('export_charset', $export_charset);
-
-		if (empty($params['filters'])) {
-			if (!empty($filterfield)) { 	// convert param filters to export params
-				$f_fields = array();
-				for ($i = 0, $cfilterfield = count($filterfield); $i < $cfilterfield ; $i++) {
-					if (!empty($exactvalue[$i])) {
-						$f_fields['f_' . $filterfield[$i]] = $exactvalue[$i];
-					} else if (!empty($filtervalue[$i])) {
-						$f_fields['f_' . $filterfield[$i]] = $filtervalue[$i];
-						$f_fields['x_' . $filterfield[$i]] = 't';	// x_ is for not exact?
-					}
+		
+		if (empty($filters) && !empty($filterfield)) {	// convert param filters to export params
+			$f_fields = array();
+			for($i = 0, $cfilterfield = count($filterfield); $i < $cfilterfield ; $i++) {
+				if (!empty($exactvalue[$i])) {
+					$f_fields['f_' . $filterfield[$i]] = $exactvalue[$i];
+				} else if (!empty($filtervalue[$i])) {
+					$f_fields['f_' . $filterfield[$i]] = $filtervalue[$i];
+					$f_fields['x_' . $filterfield[$i]] = 't';	// x_ is for not exact?
 				}
-				$smarty->assign_by_ref('f_fields', $f_fields);
 			}
-			$filters = array();	// clear out filters set up earlier which default to all fields if not exporting
+			$smarty->assign_by_ref('f_fields', $f_fields);
 		}
 	}
 	if ($displayList == 'n' || !empty($_REQUEST['filter']) || $noflipflop == 'y' || $prefs['javascript_enabled'] != 'y' || (isset($_SESSION['tiki_cookie_jar']["show_trackerFilter$iTrackerFilter"]) && $_SESSION['tiki_cookie_jar']["show_trackerFilter$iTrackerFilter"] == 'y')) {
@@ -301,66 +291,47 @@ function wikiplugin_trackerfilter($data, $params)
 	$smarty->assign_by_ref('action', $action);
 	$smarty->assign_by_ref('noflipflop', $noflipflop);
 	$smarty->assign_by_ref('dataRes', $dataRes);
-
+	
 	if (isset($googlemapButtons)) {
 		$smarty->assign('googlemapButtons', $googlemapButtons);
 	}
-
+	
 	$dataF = $smarty->fetch('wiki-plugins/wikiplugin_trackerfilter.tpl');
 
 	static $first = true;
 
-	if ( $first ) {
+	if( $first ) {
 		$first = false;
 		global $headerlib;
-		$headerlib->add_jq_onready(
-			'$("a.prevnext", "#trackerFilter' . $iTrackerFilter . ' + .trackerfilter-result").click( function( e ) {
-				e.preventDefault();
-				$("#trackerFilter' . $iTrackerFilter . ' form")
+		$headerlib->add_jq_onready('$("a.prevnext", "#trackerFilter' . $iTrackerFilter . ' + .trackerfilter-result").click( function( e ) {
+			e.preventDefault();
+			$("#trackerFilter' . $iTrackerFilter . ' form")
 				.attr("action", $(this).attr("href"))
 				.submit();
-			} );'
-		);
+		} );' );
 	}
 
 	return $data . $dataF;
 }
 
-function wikiplugin_trackerfilter_build_trackerlist_filter($input, $formats, &$ffs, &$values, &$exactValues, Tracker_Definition $tracker_definition)
-{
+function wikiplugin_trackerfilter_build_trackerlist_filter($input, $formats, &$ffs, &$values, &$exactValues) {
 	global $trklib;
-
 	foreach ($input as $key =>$val) {
 		if (substr($key, 0, 2) == 'f_' && !empty($val) && (!is_array($val) || !empty($val[0]))) {
-			if (!is_array($val)) {
-				$val = urldecode($val);
-			}
+			if (!is_array($val)) { $val = urldecode($val); }
 			$fieldId = substr($key, 2);
-			$field = $tracker_definition->getField($fieldId);
-
-			if ($fieldId == 'status')
-				continue;
 			if (preg_match('/([0-9]+)(Month|Day|Year|Hour|Minute|Second)/', $fieldId, $matches)) { // a date
 				if (!in_array($matches[1], $ffs)) {
 					$fieldId = $matches[1];
 					$ffs[] = $matches[1];
 					// TO do optimize get options of the field
-					$date = $trklib->build_date($_REQUEST, $trklib->get_tracker_field($fieldId), 'f_'.$fieldId);
+					$date = $trklib->build_date($_REQUEST, $trklib->get_tracker_field($fieldId) , 'f_'.$fieldId);	
 					if (empty($formats[$fieldId])) { // = date
 						$exactValues[] = $date;
 					} else { // > or < data
 						$exactValues[] = array($formats[$fieldId]=>$date);
 					}
 				}
-			} else if ($field['type'] == 'F') {
-				// if field type is freetag force the use of $values instead of $exactValues
-				$ffs[] = $fieldId;
-
-				if (is_array($val)) {
-					$val = implode('%', $val);
-				}
-
-				$values[] = "%$val%";
 			} else {
 				if (!is_numeric($fieldId)) { // composite filter
 					$ffs[] = array('sqlsearch'=>explode(':', str_replace(array('(', ')'), '', $fieldId)));
@@ -383,9 +354,8 @@ function wikiplugin_trackerfilter_build_trackerlist_filter($input, $formats, &$f
 	}
 }
 
-function wikiplugin_trackerFilter_reset_filters($iTrackerFilter=0)
-{
-	unset($_SESSION[wikiplugin_trackerFilter_get_session_filters_key($iTrackerFilter)]);
+function wikiplugin_trackerFilter_reset_filters() {
+	unset($_SESSION[wikiplugin_trackerFilter_get_session_filters_key()]);
 	unset($_REQUEST['tracker_filters']);
 
 	foreach ($_REQUEST as $key => $val) {
@@ -395,20 +365,17 @@ function wikiplugin_trackerFilter_reset_filters($iTrackerFilter=0)
 	}
 }
 
-function wikiplugin_trackerFilter_get_session_filters_key($iTrackerFilter=0)
-{
+function wikiplugin_trackerFilter_get_session_filters_key() {
 	$trackerId = isset($_REQUEST['trackerId']) ? $_REQUEST['trackerId'] : 0;
-	return 'f_' . $_REQUEST['page'] . '_' . $iTrackerFilter;
+	return 'f_' . $_REQUEST['page'] . '_' . $trackerId;
 }
 
-function wikiplugin_trackerFilter_save_session_filters($filters, $iTrackerFilter=0)
-{
-	$_SESSION[wikiplugin_trackerFilter_get_session_filters_key($iTrackerFilter)] = $filters;
+function wikiplugin_trackerFilter_save_session_filters($filters) {
+	$_SESSION[wikiplugin_trackerFilter_get_session_filters_key()] = $filters;
 }
 
-function wikiplugin_trackerFilter_get_session_filters($iTrackerFilter=0)
-{
-	$key = wikiplugin_trackerFilter_get_session_filters_key($iTrackerFilter);
+function wikiplugin_trackerFilter_get_session_filters() {
+	$key = wikiplugin_trackerFilter_get_session_filters_key();
 
 	if (!isset($_SESSION[$key])) {
 		return array();
@@ -423,8 +390,7 @@ function wikiplugin_trackerFilter_get_session_filters($iTrackerFilter=0)
 	return $_SESSION[$key];
 }
 
-function wikiplugin_trackerFilter_split_filters($filters)
-{
+function wikiplugin_trackerFilter_split_filters($filters) {
 	if (empty($filters)) {
 		return array();
 	}
@@ -445,8 +411,7 @@ function wikiplugin_trackerFilter_split_filters($filters)
 	return $list;
 }
 
-function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', &$formats, $status='opc')
-{
+function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', &$formats, $status='opc') {
 	global $tiki_p_admin_trackers, $smarty, $tikilib;
 	global $trklib;	include_once('lib/trackers/trackerlib.php');
 	$filters = array();
@@ -464,11 +429,6 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', &$fo
 
 	$iField = 0;
 	foreach ($listfields as $fieldId) {
-		if ($fieldId == 'status' || $fieldId == 'Status') {
-			$filter = array('name' => $fieldId, 'fieldId' => 'status', 'format' => 'd', 'opts'=> array(array('id'=>'o', 'name'=>'open', 'selected'=>(!empty($_REQUEST['f_status'])&& $_REQUEST['f_status']=='o')?'y':'n'), array('id'=>'p', 'name'=>'pending', 'selected'=>(!empty($_REQUEST['f_status'])&& $_REQUEST['f_status']=='p')?'y':'n'), array('id'=>'c', 'name'=>'closed', 'selected'=>(!empty($_REQUEST['f_status'])&& $_REQUEST['f_status']=='c')?'y':'n')));
-			$filters[] = $filter;
-			continue;
-		}
 		if (!is_numeric($fieldId)) { // composite field
 			$filter = array('name'=> 'Text', 'fieldId'=> $fieldId, 'format'=>'sqlsearch');
 			if (!empty($_REQUEST['f_'.$fieldId])) {
@@ -493,48 +453,37 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', &$fo
 			switch ($field['type']){
 			case 'e':// category
 				global $categlib; include_once('lib/categories/categlib.php');
-				if (ctype_digit($field['options_array'][0]) && $field['options_array'][0] > 0) {
-					if (isset($field['options_array'][3]) && $field['options_array'][3] == 1) {
-						$type = 'descendants';
-					} else {
-						$type = 'children';
-					}
-					$filter = array('identifier'=>$field['options_array'][0], 'type'=>$type);
-					$res = $categlib->getCategories($filter, true, false);
+				if (isset($fopt['options_array'][3]) && $fopt['options_array'][3] == 1) {
+					$all_descends = true;
 				} else {
-					$res = array();
+					$all_descends = false;
 				}
+				$res = $categlib->get_child_categories($field['options_array'][0], $all_descends);
 				$formats[$fieldId] = (count($res) >= 6)? 'd': 'r';
-    			break;
+				break;
 			case 'd': // drop down list
 			case 'y': // country
-			case 'g': // group selector
 				$formats[$fieldId] = 'd';
-    			break;
+				break;
 			case 'R': // radio
 				$formats[$fieldId] = 'r';
-    			break;
+				break;
 			case '*': //rating
 				$formats[$fieldId] = '*';
-    			break;
+				break;
 			case 'f':
 			case 'j':
 				$formats[$fieldId] = $field['type'];
-    			break;
+				break;
 			default:
 				$formats[$fieldId] = 't';
-    			break;
+				break;
 			}
 		}
 		if ($field['type'] == 'e' && ($formats[$fieldId] == 't' || $formats[$fieldId] == 'T' || $formats[$fieldId] == 'i')) { // do not accept a format text for a categ for the moment
 			if (empty($res)) {
 				global $categlib; include_once('lib/categories/categlib.php');
-				if (ctype_digit($field['options_array'][0]) && $field['options_array'][0] > 0) {
-					$filter = array('identifier'=>$field['options_array'][0], 'type'=>'children');
-					$res = $categlib->getCategories($filter, true, false);
-				} else {
-					$res = array();
-				}
+				$res = $categlib->get_child_categories($field['options_array'][0]);
 			}
 			$formats[$fieldId] = (count($res) >= 6)? 'd': 'r';
 		}
@@ -547,12 +496,7 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', &$fo
 			case 'e': // category
 				if (empty($res)) {
 					global $categlib; include_once('lib/categories/categlib.php');
-					if (ctype_digit($field['options_array'][0]) && $field['options_array'][0] > 0) {
-						$filter = array('identifier'=>$field['options_array'][0], 'type'=>'children');
-						$res = $categlib->getCategories($filter, true, false);
-					} else {
-						$res = array();
-					}
+					$res = $categlib->get_child_categories($field['options_array'][0]);
 				}
 				foreach ($res as $opt) {
 					$opt['id'] = $opt['categId'];
@@ -564,13 +508,13 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', &$fo
 					}
 					$opts[] = $opt;
 				}
-    			break;
+				break;
 			case 'd': // drop down list
 			case 'R': // radio buttons
 			case '*': // stars
 				$cumul = '';
 				foreach ($field['options_array'] as $val) {
-					$sval = strip_tags($tikilib->parse_data($val, array('parsetoc' => false)));
+					$sval = strip_tags($tikilib->parse_data($val));
 					$opt['id'] = $val;
 					if ($field['type'] == '*') {
 						$cumul = $opt['name'] = "$cumul*";
@@ -585,7 +529,7 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', &$fo
 					}
 					$opts[] = $opt;
 				}
-    			break;
+				break;
 			case 'c': // checkbox
 				$opt['id'] = 'y';
 				$opt['name'] = 'Yes';
@@ -606,7 +550,7 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', &$fo
 				}
 				$opts[] = $opt;
 				$formats[$fieldId] = 'r';
-    			break;
+				break;
 			case 'n': // numeric
 			case 'D': // drop down + other
 			case 't': // text
@@ -615,10 +559,10 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', &$fo
 			case 'm': // email
 			case 'y': // country
 			case 'w': //dynamic item lists
+			case 'r': //item link
 			case 'k': //page selector
 			case 'u': // user
 			case 'g': // group
-			case 'q': // auto increment
 				if (isset($status)) {
 					$res = $trklib->list_tracker_field_values($trackerId, $fieldId, $status);
 				} else {
@@ -639,69 +583,23 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', &$fo
 					}
 					$opts[] = $opt;
 				}
-    			break;
-			case 'r':
-				$opts = array();
-				$handler = $trklib->get_field_handler($field);
-				$add = $handler->getFieldData();
-				$selected = empty($_REQUEST['f_'.$fieldId])? '': $_REQUEST['f_'.$fieldId];
-				$list = !empty($add['listdisplay']) ? 'listdisplay' : 'list';	// use listdisplay for labels if there
-				foreach ($add[$list] as $id => $option) {
-					$opts[] = array(
-						'id' => $id,
-						'name' => $option,
-						'selected' => $selected == $id,
-					);
-				}
-    			break;
-
+				break;
+		
 			case 'f':
 			case 'j':
 				$field['ins_id'] = 'f_'.$field['fieldId'];
-    			break;
-			case 'F': // freetags
-				$freetaglib = TikiLib::lib('freetag');
-				$opts = array();
-				$tags = array();
-				$items = $trklib->list_items($field['trackerId'], 0, -1, '', array($field));
-
-				foreach ($items['data'] as $item) {
-					$tags = array_merge($tags, $item['field_values'][0]['freetags']);
-				}
-
-				$tags = array_unique($tags);
-				sort($tags);
-
-				foreach ($tags as $tag) {
-					$selected = false;
-
-					if (isset($_REQUEST['f_'.$fieldId])) {
-						$selection = $_REQUEST['f_'.$fieldId];
-
-						if ((is_array($selection) && in_array($tag, $selection)) || $selection == $tag) {
-							$selected = true;
-						}
-					}
-
-					$opts[] = array(
-						'id' => $tag,
-						'name' => $tag,
-						'selected' => $selected,
-					);
-				}
-
-    			break;
+				break;
 			default:
 				return tra('tracker field type not processed yet').' '.$field['type'];
 			}
 		}
 		$filters[] = array('name' => $field['name'], 'fieldId' => $fieldId, 'format'=>$formats[$fieldId], 'opts' => $opts, 'selected'=>$selected, 'field' => $field);
 	}
+	//echo '<pre>FILTERS'; print_r($filters); echo '</pre>';
 	return $filters;
 }
-function wikiplugin_trackerFilter_build_urlquery($params)
-{
-	if (empty($params['filterfield']))
+function wikiplugin_trackerFilter_build_urlquery($params) {
+	if (empty($params['filterfield'])) 
 		return '';
 	$urlquery = '';
 	foreach ($params['filterfield'] as $key=>$filter) {

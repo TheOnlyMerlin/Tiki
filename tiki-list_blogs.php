@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -11,7 +8,7 @@
 $section = 'blogs';
 require_once ('tiki-setup.php');
 include_once ('lib/blogs/bloglib.php');
-//get_strings tra('List Blog Posts')
+$smarty->assign('headtitle', tra('Blogs'));
 if ($prefs['feature_categories'] == 'y') {
 	include_once ('lib/categories/categlib.php');
 }
@@ -31,7 +28,7 @@ if (isset($_REQUEST["remove"])) {
 	$access->check_authenticity();
 	$bloglib->remove_blog($_REQUEST["remove"]);
 }
-// This script can receive the threshold
+// This script can receive the thresold
 // for the information as the number of
 // days to get in the log 1,3,4,etc
 // it will default to 1 recovering information for today
@@ -58,10 +55,10 @@ if (isset($_REQUEST["find"])) {
 $smarty->assign('find', $find);
 // Get a list of last changes to the Wiki database
 $listpages = $bloglib->list_blogs($offset, $maxRecords, $sort_mode, $find);
-Perms::bulk(array( 'type' => 'blog' ), 'object', $listpages['data'], 'blogId');
+Perms::bulk( array( 'type' => 'blog' ), 'object', $listpages['data'], 'blogId' );
 $temp_max = count($listpages["data"]);
 for ($i = 0; $i < $temp_max; $i++) {
-	$blogperms = Perms::get(array( 'type' => 'blog', 'object' => $listpages['data'][$i]['blogId'] ));
+	$blogperms = Perms::get( array( 'type' => 'blog', 'object' => $listpages['data'][$i]['blogId'] ) );
 	$listpages["data"][$i]["individual_tiki_p_read_blog"] = $blogperms->read_blog ? 'y' : 'n';
 	$listpages["data"][$i]["individual_tiki_p_blog_post"] = $blogperms->blog_post ? 'y' : 'n';
 	$listpages["data"][$i]["individual_tiki_p_create_blogs"] = $blogperms->create_blogs ? 'y' : 'n';
@@ -69,6 +66,10 @@ for ($i = 0; $i < $temp_max; $i++) {
 $smarty->assign_by_ref('listpages', $listpages["data"]);
 $smarty->assign_by_ref('cant', $listpages["cant"]);
 include_once ('tiki-section_options.php');
+if ($prefs['feature_mobile'] == 'y' && isset($_REQUEST['mode']) && $_REQUEST['mode'] == 'mobile') {
+	include_once ("lib/hawhaw/hawtikilib.php");
+	HAWTIKI_list_blogs($listpages, $tiki_p_read_blog);
+}
 ask_ticket('list-blogs');
 // Display the template
 $smarty->assign('mid', 'tiki-list_blogs.tpl');

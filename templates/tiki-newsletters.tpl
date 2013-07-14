@@ -20,23 +20,23 @@
 {/if}
 
 {if $confirm eq 'y'}
-	<table class="formcolor">
+	<table class="normal">
 		<tr>
 			<th colspan="2" class="highlight">{tr}Subscription confirmed!{/tr}</th>
 		</tr>
 		<tr>
-			<td>{tr}Name:{/tr}</td>
-			<td>{$nl_info.name|escape}</td>
+			<td class="even">{tr}Name{/tr}:</td>
+			<td class="even">{$nl_info.name|escape}</td>
 		</tr>
 		<tr>
-			<td>{tr}Description:{/tr}</td>
-			<td>{$nl_info.description|escape|nl2br}</td>
+			<td class="even">{tr}Description{/tr}:</td>
+			<td class="even">{$nl_info.description|escape|nl2br}</td>
 		</tr>
 	</table>
-	<br>
+	<br />
 {elseif $confirm eq 'f'}
 	<div class="simplebox error">{tr}Subscription failed.{/tr}</div>
-	<br>
+	<br />
 {/if}
 
 {if $subscribe eq 'y'}
@@ -44,24 +44,24 @@
 		{tr}Subscribe to Newsletter{/tr}
 	</h2>
 	<form method="post" action="tiki-newsletters.php">
-		<input type="hidden" name="nlId" value="{$nlId|escape}">
-		<table class="formcolor">
+		<input type="hidden" name="nlId" value="{$nlId|escape}" />
+		<table class="normal">
 			<tr>
-				<td class="even">{tr}Name:{/tr}</td>
+				<td class="even">{tr}Name{/tr}:</td>
 				<td class="even"><strong>{$nl_info.name|escape}</strong></td>
 			</tr>
 			<tr>
-				<td class="even">{tr}Description:{/tr}</td>
+				<td class="even">{tr}Description{/tr}:</td>
 				<td class="even">{$nl_info.description|escape|nl2br}</td>
 			</tr>
 			{if ($nl_info.allowUserSub eq 'y') or ($tiki_p_admin_newsletters eq 'y')}
 				{if $tiki_p_subscribe_email eq 'y' and (($nl_info.allowAnySub eq 'y' and $user) || !$user)}
 					<tr>
 						<td class="even">{tr}Email:{/tr}</td>
-						<td class="even"><input type="text" name="email" size="40" value="{$email|escape}"></td>
+						<td class="even"><input type="text" name="email" size="40" value="{$email|escape}" /></td>
 					</tr>
 				{else}
-					<input type="hidden" name="email" value="{$email|escape}">
+					<input type="hidden" name="email" value="{$email|escape}" />
 				{/if}
 				{if !$user and $prefs.feature_antibot eq 'y'}
 					{include file='antibot.tpl' tr_style="formcolor"}
@@ -69,7 +69,7 @@
 				<tr>
 					<td class="even">&nbsp;</td>
 					<td class="even">
-						<input type="submit" name="subscribe" value="{tr}Subscribe to this Newsletter{/tr}">
+						<input type="submit" name="subscribe" value="{tr}Subscribe to this Newsletter{/tr}" />
 					</td>
 				</tr>
 			{/if}
@@ -80,7 +80,7 @@
 {if $showlist eq 'y'}
 	<h2>{tr}Available Newsletters{/tr}</h2>
 
-	{if $channels or $find ne ''}
+	{if $channels or $find ne''}
 		{include file='find.tpl'}
 	{/if}
 
@@ -91,13 +91,13 @@
 		</tr>
 		{cycle values="odd,even" print=false}
 		{section name=user loop=$channels}
-			{if $channels[user].tiki_p_subscribe_newsletters eq 'y' or $channels[user].tiki_p_list_newsletters eq 'y'}
+			{if $channels[user].tiki_p_subscribe_newsletters eq 'y'}
 				<tr class="{cycle}">
-					<td class="text">
+					<td>
 						<a class="tablename" href="tiki-newsletters.php?nlId={$channels[user].nlId}&amp;info=1" title="{tr}Subscribe to Newsletter{/tr}">{$channels[user].name|escape}</a>
 						<div class="subcomment">{$channels[user].description|escape|nl2br}</div>
 					</td>
-					<td class="action">
+					<td>
 						{if $channels[user].tiki_p_subscribe_newsletters eq 'y'}
 							<a class="link" href="tiki-newsletters.php?nlId={$channels[user].nlId}&amp;info=1" title="{tr}Subscribe to Newsletter{/tr}">{icon _id='newspaper_add' alt="{tr}Subscribe to Newsletter{/tr}"}</a>
 						{/if}
@@ -115,7 +115,7 @@
 				</tr>
 			{/if}
 		{sectionelse}
-			{norecords _colspan=2}
+			<tr><td class="odd" colspan="2"><strong>{tr}No records found.{/tr}</strong></td></tr>
 		{/section}
 	</table>
 

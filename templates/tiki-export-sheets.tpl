@@ -2,7 +2,7 @@
 {title}{tr}{$title}{/tr}{/title}
 
 <div>
-	{$description|escape}
+	{$description}
 </div>
 
 <div class="navbar">
@@ -37,29 +37,19 @@
 {else}
 	<form method="post" action="tiki-export_sheet.php?mode=export&sheetId={$sheetId}" enctype="multipart/form-data">
 		<h2>{tr}Export to file{/tr}</h2>
-		{tr}Version:{/tr}
-		<select name="readdate">
-			{section name=key loop=$history}
-				<option value="{$history[key].stamp}">{$history[key].prettystamp}</option>
-			{/section}
-		</select>
-		<br>
-		{tr}Format:{/tr}
-		<input type="hidden" value="{$sheetId}" name="sheetId">
+		{tr}Format{/tr}:
 		<select name="handler">
 			{section name=key loop=$handlers}
 				<option value="{$handlers[key].class}">{$handlers[key].name} V. {$handlers[key].version}</option>
 			{/section}
 		</select>
-		<br>
-		{tr}Charset encoding:{/tr}
+		{tr}Charset encoding{/tr}:
 		<select name="encoding">
 			<!--<option value="">{tr}Autodetect{/tr}</option>-->
 		{section name=key loop=$charsets}
 			<option value="{$charsets[key]}">{$charsets[key]}</option>
 		{/section}
 		</select>
-		<br>
-		<input type="submit" value="{tr}Export{/tr}">
+		<input type="submit" value="{tr}Export{/tr}" />
 	</form>
 {/if}

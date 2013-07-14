@@ -1,7 +1,6 @@
-/*	Strasa theme for Tiki, original design by Patrick Allard, released under LGPL license.
-	For more information, visit http://themes.tiki.org
-	Adapted for Tiki 7.x
-	$Id$ */
+/* Strasa theme for Tiki 5.x, original design by Patrick Allard, released under LGPL license.
+   For more information, visit http://themes.tiki.org
+   $Id$ */
 
 /* Import *lite as the base: */
 @import url("lite/lite.css");
@@ -20,8 +19,7 @@ html {
 }
 
 body {
-	font: 12px Verdana, Geneva, Arial, Helvetica, sans-serif;
-	line-height: 1.4;
+	font: 12px/1.4em Verdana, Geneva, Arial, Helvetica, sans-serif;
 	background-color: #fff;
 }
 
@@ -66,73 +64,18 @@ h6 {
 	font-size: 1.05em;
 }
 
-.wikitext h1 {
-	color: #000;
-	line-height: .9em;
-}
+.wikitext h1 {color: #000; line-height: .9em;}
+.wikitext h2 {color: #309FC0; line-height: .9em; border-bottom: solid 1px #3090C0; text-transform: uppercase}
+.wikitext h3 {color: #303030; line-height: .8em; font-style: italic}
+.wikitext h4 {border-bottom: dashed 1px #CCF0FF; color: #3F3F3F}
+.wikitext h5 {color: #6F6F6F; font-style: italic}
+.wikitext h6 {color: #909090}
 
-.wikitext h2 {
-	color: #309FC0;
-	line-height: .9em;
-	border-bottom: solid 1px #3090C0;
-	text-transform: uppercase;
-}
-
-.wikitext h3 {
-	color: #303030;
-	line-height: .8em; 
-	font-style: italic;
-}
-
-.wikitext h4 {
-	border-bottom: dashed 1px #CCF0FF;
-	color: #3F3F3F;
-}
-
-.wikitext h5 {
-	color: #6F6F6F;
-	font-style: italic;
-}
-
-.wikitext h6 {
-	color: #909090;
-}
-
-.wikitext.nopagetitle h1 {
-	font-size: 1.8em;
-	color: #309FC0;
-	line-height: .9em;
-	border-bottom: solid 1px #3090C0;
-	text-transform: uppercase;
-}
-
-.wikitext.nopagetitle h2 {
-	font-size: 1.6em;
-	color: #303030; 
-	line-height: .8em;
-	font-style: italic;
-	border-bottom: none;
-	text-transform: none;
-}
-
-.wikitext.nopagetitle h3 {
-	font-size: 1.4em;
-	border-bottom: dashed 1px #CCF0FF;
-	color: #3F3F3F;
-	font-style: normal;
-}
-
-.wikitext.nopagetitle h4 {
-	font-size: 1.2em;
-	color: #6F6F6F;
-	font-style: italic;
-	border-bottom: none;
-}
-
-.wikitext.nopagetitle h5 {
-	font-size: 1.05em;
-	color: #909090;
-}
+.wikitext.nopagetitle h1 {font-size: 1.8em; color: #309FC0; line-height: .9em; border-bottom: solid 1px #3090C0; text-transform: uppercase}
+.wikitext.nopagetitle h2 {font-size: 1.6em; color: #303030; line-height: .8em; font-style: italic; border-bottom: none; text-transform: none}
+.wikitext.nopagetitle h3 {font-size: 1.4em; border-bottom: dashed 1px #CCF0FF; color: #3F3F3F; font-style: normal}
+.wikitext.nopagetitle h4 {font-size: 1.2em; color: #6F6F6F; font-style: italic; border-bottom: none;}
+.wikitext.nopagetitle h5 {font-size: 1.05em; color: #909090}
 
 hr {
 	background: #aaa;
@@ -170,11 +113,7 @@ select {
 }
 
 input[type=text],
-input[type=password],
-input[type="email"],
-input[type="file"],
-input[type="search"],
-input[type="number"] {
+input[type=password] {
 	background-color: #f3fcfe;
 	border: 1px solid;
 	border-color: #223845 #4d7b9b #4d7b9b #223845;
@@ -190,18 +129,14 @@ input[type="number"] {
 	width: 110px;
 }
 
-.header .box-search {
-	position: absolute;
-	top: 45px;
-	right: 20px;
-}
-.header .box-search input.ac_input {
+	
+input#search {
 	background: #E7F8FD;
 	border: 1px solid #3CF;
 	color: #517298;
-/*	height: 16px;
+	height: 16px;
 	margin-right: 10px;
-	width: 160px;*/
+	width: 160px;
 }
 
 input#comments-title {
@@ -220,6 +155,9 @@ input[type=submit],
 	background: #1d9ccf;
 	border: 1px solid;
 	border-color: #41cbe7 #223845 #223845 #41cbe7;
+	padding: 1px 4px;
+	margin-right: 1px;
+	text-decoration: none;
 	white-space: nowrap;
 	cursor: pointer;
 	font: normal 11px Verdana, Helvetica, Geneva, Arial, sans-serif;
@@ -234,7 +172,6 @@ input[type=submit]:hover,
 	color: #fff;
 	text-decoration: none;
 	background: #1e7ea6;
-	font-size: 11px;
 }
 
 .button a:active,	
@@ -258,18 +195,6 @@ select[name="theme-option"] {
 	width: 140px;
 }
 
-/* Needed for Opera (11) */
-input[type="reset"],
-input[type="submit"],
-input[type="reset"]:hover,
-input[type="submit"]:hover {
-	padding: .1em .8em;
-}
-
-/*.button {
-    margin: 2px;
-}*/
-
 small {
 	font-size: .9em;
 }
@@ -285,7 +210,8 @@ label {
 	color: #000;
 }
 
-/*** override lite.css ***/
+/*** Type 1 (*litecss-based) layout 
+	(overrides lite.css) ***/
 #main {
 	text-align: left;
 }
@@ -297,7 +223,7 @@ label {
 
 #middle {
 	background: #fff;
-	padding: 0;
+	padding: 40px 0;
 }
 
 #c1c2 {
@@ -342,27 +268,29 @@ label {
 
 #col3 .content {
 	margin-right: 58px;
+	border-top: 1px solid #cfcfcf;
 }
 
 #footer {
 	text-align: center;
-}
-
-.footerbgtrap {
-	height: 20%;
 	font-size: .9em;
 	color: #999;
 	background: #2e3035;
 }
 
+.footerbgtrap {
+	height: 20%;
+}
+
 /* Theme-specific custom footer code */
-#bottom_modules {
+#custom_site_footer {
+	width: 100%;
 	margin-right: auto;
 	margin-left: auto;
 	text-align: center;
 	color: #999;
 }
-/*
+
 .fcol1,
 .fcol2,
 .fcol3 {
@@ -374,15 +302,17 @@ label {
 	padding-top: 30px;
 	padding-bottom: 30px;
 }
-*/
-#bottom_modules li {
+
+.fcol1 ul li,
+.fcol2 ul li,
+.fcol3 ul li {
 	border-bottom: 1px solid #666;
 	padding: 4px 0;
 	list-style: none;
 	margin: 0;
 }
 
-#bottom_modules .box-title {
+.titlefooter{
 	color: #fff;
 	float: left;
 	margin-top: 15px;
@@ -390,6 +320,14 @@ label {
 	letter-spacing: 0.5px;
 	text-transform: uppercase;
 	font: normal 1.2em Arial, Helvetica, sans-serif;
+}
+
+.fcol1 img,
+.fcol2 img,
+.fcol3 img{
+	margin-left: 34px;
+	margin-bottom: 6px;
+	float: left;
 }
 
 #footer a,
@@ -414,31 +352,31 @@ label {
 }
 
 /* Site Header & Identity */
-
-/* Enable header and footer content to widen when middle has wide content. */ 
-body.fixed_width .fixedwidth .fixedwidth {
-	width: 100%;
-	padding: 0;
-}
-
-.header_container {
+#header-top {
 	color: #fff;
 	background: #214d68 url(strasa/headerbg.jpg) repeat-x 0 100%;
 }
 
-#top_modules {
-	min-height: 121px;
+#siteheader {
+	background: #fff;
 }
 
-#top_modules .module.secondary_site_menu {
-	position: absolute;
-	top: 0;
-	left: 25%
+#customcode,
+#customcodewith_ad {
+	width: auto;
 }
 
-#top_modules .box-logo {
-	float: left;
-	margin: 10px;
+#topbar_custom_code {
+	margin: 0 58px;
+}
+
+#sioptions {
+	padding: 0 58px;
+	position: relative;
+}
+
+#sioptionscentered {
+	text-align: center;
 }
 
 #sitelogo {
@@ -446,54 +384,57 @@ body.fixed_width .fixedwidth .fixedwidth {
 	overflow: hidden;
 }
 
-#topbar_modules .box-login_box {
+#sitead.floatright {
+	padding-right: 100px;
+}
+
+#sitead.floatleft {
+	padding-left: 100px;
+}
+
+#customcode.floatright {
+	margin-top: 30px;
+	margin-right: 120px;
+}
+
+#siteloginbar {
+	position: static;
 	float: right;
-	margin-top: 0;
-	margin-right: 0;
 	height: 24px;
-	/*width: 600px;*/
 	line-height: 24px;
 	padding-left: 60px;
-	padding-right: 10px;
 	color: #fff;
 	background: #fff url(strasa/login.jpg) 0 0 no-repeat;
 }
 
-#topbar_modules .logged-in {
-	width: 120px;
-	padding-right: 20px;
-}
-
-#topbar_modules .box-login_box label,
-#topbar_modules .box-login_box a,
-#topbar_modules .box-login_box a.link,
-#topbar_modules .box-login_box a:visited,
-#topbar_modules .box-login_box a:hover {
+#siteloginbar a,
+#siteloginbar a:visited,
+#siteloginbar a:hover {
 	color: #fff;
 	text-decoration: none;
 }
 
-#topbar_modules .box-login_box input[type="text"],
-#topbar_modules .box-login_box input[type="password"] {
+#sl-login-user,
+#sl-login-pass {
 	background: transparent; /*#1b98c6*/
 	color: #fff;
 	border: solid 1px #fff;
 	width: 8em !important;
 }
 
-.box-login_box #pass {
+#siteloginbar #pass {
 	float: right;
 	padding-left: 5px;
 }
 
-.box-login_box .rme,
-.box-login_box .pass {
+#siteloginbar .rme,
+#siteloginbar .pass {
 	display: inline;
 	margin-left: 1em;
 	padding-right: 10px;
 }
 
-#topbar_modules .box-login_box .register {
+#siteloginbar .register {
 	float: right;
 	height: 24px !important;
 	line-height: 22px;
@@ -504,13 +445,17 @@ body.fixed_width .fixedwidth .fixedwidth {
 	background: url(strasa/register.jpg) no-repeat;
 }
 
-.box-login_box input.wikiaction {
+#siteloginbar input.wikiaction {
 	border: 0;
 	margin-left: .7em;
 	color: #5ae0ff;
 	font-size: 90%;
 	background: #204c65;
 	font-weight: normal;
+}
+
+.logged-in {
+	padding-right: 20px;
 }
 
 #sitelocbar {
@@ -528,12 +473,11 @@ body.fixed_width .fixedwidth .fixedwidth {
 	color: #000 !important;
 }
 
-#top_modules #sitetitles {
+#sitetitles {
 	color: #fff;
 	display: inline;
 	height: 97px;
 	line-height: 97px;
-	margin-top: 3%;
 	overflow: hidden;
 	vertical-align: bottom;
 }
@@ -544,20 +488,20 @@ body.fixed_width .fixedwidth .fixedwidth {
 	font-weight: bold;
 }
 
-#top_modules #sitetitle {
+#sitetitle {
 	font-size: 220%;
 	display: inline;
 	letter-spacing: -0.05em;
 }
 
-#top_modules #sitetitle a,
-#top_modules #sitetitle a:link,
-#top_modules #sitetitle a:hover {
+#sitetitle a,
+#sitetitle a:link,
+#sitetitle a:hover {
 	color: #fff;
 	text-decoration: none;
 }
 
-#top_modules #sitesubtitle {
+#sitesubtitle {
 	font-size: 110%;
 	display: inline;
 	margin-left: 0.2em;
@@ -568,17 +512,17 @@ body.fixed_width .fixedwidth .fixedwidth {
 	text-align: left;
 }
 
-#top_modules #tiki-top a,
-#top_modules #tiki-top a:visited {
+#tiki-top a,
+#tiki-top a:visited {
 	color: #5AE0FF;
 	text-decoration: none;
 }
 
-#top_modules #tiki-top a:hover {
+#tiki-top a:hover {
 	color: #fff;
 }
 
-#top_modules #sitesearchbar {
+#sitesearchbar {
 	float: none;
 	position: absolute;
 	right: 10px;
@@ -586,6 +530,10 @@ body.fixed_width .fixedwidth .fixedwidth {
 	color: #fff;
 	font-size: 93%;
 	z-index: 10;
+}
+
+#topbar_custom_code {
+	background: inherit;
 }
 
 /* centercolumn */
@@ -660,6 +608,114 @@ a.flip:hover {
 }
 
 /****** Menus ******/
+/** PHP Layers Menus **/
+.horbar {
+	position: absolute;
+	z-index: 0;
+	top: 10px;
+	left: 100%;
+	margin: 0 0 0 -50%;
+	white-space: nowrap;
+}
+
+.horbaritem a,
+.horbaritem a:visited {
+	padding: 3px 3px 6px 3px;
+	text-decoration: none;
+	font: normal 1em Verdana, Helvetica, Arial, Sans-Serif;
+	margin: 0;
+	border-color: transparent;
+	border-style: solid;
+	border-width: 0 1px;
+	color: #5ae0ff;
+	text-align: center;
+}
+
+.horbaritem a:hover {
+	text-decoration: none;
+	background: url(strasa/headermenuitem-hover.png) bottom center repeat-x;
+	border-color: #336699;
+	border-style: solid;
+	border-width: 0 1px;
+	color: #fff;
+}
+
+.mdksubmenu {
+	margin-top: 3px;
+}
+	
+.mdksubframe {
+	border: 1px solid #08698f;
+	background: #1b3a50;
+}
+
+.mdkitem a,
+.mdkitem a:link,
+.mdkitem a:visited {
+	color: #5ae0ff;
+	padding: 2px 3px;
+	font-weight: normal;
+	text-decoration: none;
+}
+ 
+.mdkitem a:hover {
+	background: transparent url(strasa/headerbg.jpg) repeat-x;
+	color: #fff;
+	text-decoration: none;
+}
+ 
+#col2 .mdkitem a {
+	color: #006699;
+}
+
+#col2 .mdkitem a:hover {
+	color: #000;
+}
+
+#col2 .treemenudiv {
+	background: #cce5ff;
+}
+
+.phplmnormal,
+a.phplmnormal:hover,
+a.phplm:link,
+a.phplm:visited,
+a.phplm:hover,
+a.phplm:active {
+	font: 100% Verdana, Tahoma, Arial, sans-serif;
+	color: #006699;
+	text-decoration: none;
+	font-weight: normal;
+}
+
+a.phplm:visited {
+	color: #006699;
+}
+
+a.phplm:hover {
+	color: #000;
+	background: none;
+	text-decoration: underline;
+}
+
+a.phplm:active {
+	color: #006699;
+}
+
+a.phplmselected:link,
+a.phplmselected:visited,
+a.phplmselected:hover,
+a.phplmselected:active {
+	font: 100% Verdana, Tahoma, Arial, sans-serif;
+	color: black;
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+a.phplmselected:hover {
+	color: #808080;
+}
+
 /** CSS (suckerfish) menus **/
 
 /* default link padding */
@@ -683,7 +739,7 @@ a.flip:hover {
 	border-top: 1px solid #233039;
 }
 
-.header .cssmenu_horiz li:hover {
+#header .cssmenu_horiz li:hover {
 	background: #1b3a50;
 }
 
@@ -716,8 +772,7 @@ a.flip:hover {
 	color: #000000;
 }
 
-#col2 .box-data .cssmenu_vert,
-#col2 .box-data .cssmenu_vert ul {
+#col2 .cssmenu_vert {
 	padding-left: 0;
 }
 
@@ -764,8 +819,8 @@ a.flip:hover {
 	text-align: left;
 }
 
-.header .cssmenu_horiz a,
-.header .cssmenu_horiz a:visited {
+#header .cssmenu_horiz a,
+#header .cssmenu_horiz a:visited {
 	padding: 3px 3px 6px 3px;
 	text-decoration: none;
 	font: normal 1em Verdana, Helvetica, Arial, Sans-Serif;
@@ -777,11 +832,11 @@ a.flip:hover {
 	text-align: center;
 }
 
-.header .cssmenu_horiz li.menuSection a {
+#header .cssmenu_horiz li.menuSection a {
 	padding-right: 2em;
 }
 
-.header .cssmenu_horiz a:hover {
+#header .cssmenu_horiz a:hover {
 	text-decoration: none;
 	background: url(strasa/headermenuitem-hover.png) bottom center repeat-x;
 	border-color: #336699;
@@ -790,26 +845,26 @@ a.flip:hover {
 	color: #fff;
 }
 
-.header .cssmenu_horiz li ul li a,
-.header .cssmenu_horiz li ul li a:link,
-.header .cssmenu_horiz li ul li a:visited,
-.header .cssmenu_horiz li ul li a:hover {
+#header .cssmenu_horiz li ul li a,
+#header .cssmenu_horiz li ul li a:link,
+#header .cssmenu_horiz li ul li a:visited,
+#header .cssmenu_horiz li ul li a:hover {
 	text-align: left;
 	border: 0;
 }
 
-.header .cssmenu_horiz li ul li a:hover {
+#header .cssmenu_horiz li ul li a:hover {
 	background: none;	
 }
 
-.header .cssmenu_horiz li ul li {
+#header .cssmenu_horiz li ul li {
 	border: 1px solid #08698f;
 	background: #1b3a50;
 	border-top: 0;
 	margin-bottom: -1px
 }
 
-.header .cssmenu_horiz li ul li:first-child,
+#header .cssmenu_horiz li ul li:first-child,
 .cssmenu_vert li ul li:first-child {
 	border-top: 1px solid #08698f;
 }
@@ -975,10 +1030,13 @@ img.flipmodimage:hover {
 	font-size: 1em;
 	padding: 0 0.4em 0 0.2em;
 	line-height: 1.4em;
+	top: 1px;
+	z-index: 2;
 	background-color: #fff;
-	border: 1px #077AA7 solid;
+	border-top: 1px #077AA7 solid;
+	border-right: 1px #077AA7 solid;
+	border-left: 1px #077AA7 solid;
 	border-bottom: none;
-	margin-bottom: -.1em;
 }
 
 .rbox-data {
@@ -1014,16 +1072,12 @@ table {
 	padding: 3px;
 }
 
-.odd,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+.odd {
 	background: #f0f0f0;
 	color: #000;
 }
 
-.even,
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+.even {
 	background: #dcdcdc;
 	color: #000;
 }
@@ -1031,26 +1085,20 @@ table.normal tr:nth-child(2n),
 .normal td,
 .wikitable td,
 td.odd,
-td.even,
-table.normal tr:nth-child(2n+1),
-table.normal tr:nth-child(2n),
-.tablesorter tr.odd td,
-.tablesorter tr.even td {
+td.even {
 	padding: 0.2em;
 	vertical-align: top;
 }
 
  /* headings */
 th,
-.normal td.heading,
-.caltable td.heading,
-.calendarweek td.heading {
+.normal td.heading {
 	font-size: 1em;
 	font-weight: normal;
 	color: #5ae0ff;
 	background: #1b3a50;
 	min-height: 32px;
-	text-align: center;
+	#text-align: center;
 }
 
 th a:link,
@@ -1162,7 +1210,7 @@ a.forumnameread {
 }
 
 .tabcontent {
-	z-index: 2;
+	z-index: 200;
 	padding: 32px 6px;
 	margin: 5px;
 	margin-top: 0;
@@ -1443,7 +1491,6 @@ body.tiki_blogs .postbody-title {
 	min-width: 100%; /* IE7 */
 	min-height: 46px;
 	border: 0;
-	color: #fff;
 }
 
 body.tiki_blogs .postbody-title img {
@@ -1485,6 +1532,11 @@ body.tiki_blogs .author_info img {
 	vertical-align: top;
 }
 
+body.tiki_blogs .postbody-title {
+	border: 0;
+	color: #fff;
+}
+	
 body.tiki_blogs .postbody .postfooter {
 	width: 100%;
 }
@@ -1691,6 +1743,160 @@ body.tiki_blogs .post .author_actions {
 
 /***** Calendar *****/
 /* Overrides calendar.css, etc. */
+.cal0, 
+.cal1, 
+.cal2 {
+	font-size: 90%;
+}
+
+.calart,
+.calblog,
+.calchart,
+.caldir,
+.caleph,
+.calfaq,
+.calfgal,
+.calforum,
+.calgal,
+.calnl,
+.calquiz,
+.calsurv,
+.caltrack,
+.calwiki {
+	font-size: 90%;
+}
+
+.calart,
+.calart a,
+.calart a:visited {
+	color: #FA8072;
+}
+
+.calblog,
+.calblog a,
+.calblog a:visited {
+	color: #DA70D6;
+}
+
+.calchart,
+.calchart a,
+.calchart a:visited {
+	color: #304F30;
+}
+
+.caldir,
+.caldir a,
+.caldir a:visited {
+	color: #800080;
+}
+
+.caleph,
+.caleph a,
+.caleph a:visited {
+	color: #008000;
+}
+
+.calfaq,
+.calfaq a,
+.calfaq a:visited {
+	color: #822222;
+}
+
+.calfgal,
+.calfgal a,
+.calfgal a:visited {
+	font-weight: normal;
+}
+
+.calforum,
+.calforum a,
+.calforum a:visited {
+	color: #808000;
+}
+
+.calgal,
+.calgal a,
+.calgal a:visited {
+	color: #8B4513;
+}
+
+.calnl,
+.calnl a,
+.calnl a:visited {
+	color: #708090;
+}
+
+.calquiz,
+.calquiz a,
+.calquiz a:visited {
+	color: #5F9EA0;
+}
+
+.calsurv,
+.calsurv a,
+.calsurv a:visited {
+	color: #DAA520;
+}
+
+.caltrack,
+.caltrack a,
+.caltrack a:visited {
+	color: #00BD02;
+}
+
+.calweb {
+	font-size: 90%;
+}
+
+.calwiki,
+.calwiki a,
+.calwiki a:visited {
+	color: #2C4B80;
+}
+
+.calart a:hover,
+.calblog a:hover,
+.calchart a:hover,
+.caldir a:hover,
+.caleph a:hover,
+.calfaq a:hover,
+.calfgal a:hover,
+.calforum a:hover,
+.calgal a:hover,
+.calnl a:hover,
+.calquiz a:hover,
+.calsurv a:hover,
+.caltrack a:hover,
+.calwiki a:hover {
+	color: #000000;
+}
+
+.calart:before,
+.calblog:before,
+.calchart:before,
+.caldir:before,
+.caleph:before,
+.calfaq:before,
+.calfgal:before,
+.calforum:before,
+.calgal:before,
+.calnl:before,
+.calquiz:before,
+.calsurv:before,
+.caltrack:before,
+.calwiki:before {
+	background: #f8f8ff;
+}
+
+.calfocus {
+	font-size: 90%;
+	background: #cce5ff;
+}
+
+.calfocuson {
+	font-size: 100%;
+}
+
 .calprio1 a,
 .calprio2 a,
 .calprio3 a,
@@ -1744,6 +1950,34 @@ body.tiki_blogs .post .author_actions {
 	border-color: transparent;
 }
 
+.calheadingleft {
+	height: 36px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.calheading,
+.calheadingon {
+	height: 36px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.calheading a,
+.calheading a:visited {
+	text-decoration: none;
+}
+
+.calheadingon a {
+	color: #06f;
+	text-decoration: none;
+}
+
+.calheading a:hover,
+.calheadingon a:hover {
+	text-decoration: underline;
+}
+
 .calhours {
 	vertical-align: middle;
 	text-align: center;
@@ -1782,20 +2016,44 @@ body.tiki_blogs .post .author_actions {
 	border: solid 1px #696969;
 }
 
-.caltable td.calhighlight,
-td.calheadhighlight {
-	background: #ffc;
+.caltable .calfocuson {
+	background: #D4D0C8;
 }
 
-.caltable .calborder {
-	border: 1px solid #a9a9a9;
+.caltable .calfocuson a {
+	color: #000;
+}
+
+.caltable .calfocus a,
+.caltable .calfocuson a {
+	text-decoration: none;
 }
 
 .calinput {
 	background: #223845;
 }
 
-th.days {
+.calfocuson + .calcontent {
+	background: #F5F5F5;
+}
+
+#calscreen .calfocuson {
+	background: #D4D0C8;
+}
+
+.calfocuson {
+	font-size: 100%;
+}
+
+.calfocuson a {
+	font-size: 90%;
+}
+
+.calHeadingOn, .calHeadingOn a {
+	background: #D4D0C8;
+}
+
+.days {
 	color: #cce5ff;
 }
 
@@ -1809,16 +2067,24 @@ th.days {
 	float: right;
 }
 
-.caltable .odd, .caltable .even {
+.calodd, .caleven {
 	border: 1px solid #a9a9a9;
 }
 
-.caltable .odd {
+.calodd {
 	background: #f0f0f0;
 }
 
-.caltable .even {
+.caleven {
 	background: #dcdcdc;
+}
+
+.caldark {
+	background: #cce5ff;
+}
+
+.caldark .calfocus {
+	background: #cce5ff;
 }
 
 /*****  Polls  *****/
@@ -1841,7 +2107,7 @@ th.days {
 
 /***** Shoutbox *****/
 textarea.tshoutbox{
-	width: 90%;
+	width: 135px;
 }
 .box-shoutbox table td {
 	font-size: .65em;
@@ -1968,20 +2234,8 @@ body.fixed_width #col3 .content {
 	margin-right: 0;
 }
 
-body.fixed_width #outer_wrapper {
-	border: 1px solid #2E3035;
-	/*margin-top: 18px;
-	margin-bottom: 5px;*/
-}
+body.fixed_width #main[id] {border:1px solid #2E3035; margin-top: 18px; margin-bottom: 5px;}
 
-/* can't seem to get the border working - jb
-body.fixed_width #main {
-	border: 1px solid #2E3035;
-	margin-top: 0;
-}*/
 
-.fixed_width > .fixedwidth {
-    margin-top: 0px;
-}
 
 /* end of file */

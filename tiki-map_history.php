@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -34,7 +31,7 @@ if (!isset($prefs['map_path']) or !$prefs['map_path']) {
 	die;
 }
 if (!is_dir($prefs['map_path'])) {
-	$smarty->assign('msg', tr('Please create a directory named %0 to hold your map files.', $prefs['map_path']));
+	$smarty->assign('msg', tra('Please create a directory named ' . $prefs['map_path'] . ' to hold your map files.'));
 	$smarty->display('error.tpl');
 	die;
 }
@@ -49,7 +46,7 @@ $smarty->assign('mapfile', $mapfile);
 $files = $maplib->listMapsWithRev($prefs['map_path']);
 $history = array();
 $j = 0;
-foreach ($files as $file) {
+foreach($files as $file) {
 	if (substr($file, 0, strlen($mapfile)) == $mapfile) {
 		$suffix = substr($file, strlen($mapfile));
 		$revision = intval(substr($suffix, 1));
@@ -62,7 +59,7 @@ foreach ($files as $file) {
 }
 $history[$j]["version"] = $j + 1;
 $history[$j]["data"] = nl2br(file_get_contents($prefs['map_path'] . $mapfile));
-foreach ($history as $index =>$h ) {
+foreach($history as $index =>$h ) {
 	if (strpos($h["data"], "##TIKIMAPS HEADER: END##") != FALSE) {
 		$searchdata = substr($h["data"], 0, strpos($h["data"], "##TIKIMAPS HEADER: END##"));
 		if (strpos($searchdata, "#IP: ") != FALSE) {
@@ -95,11 +92,11 @@ if (!isset($_REQUEST["newver"])) {
 	$_REQUEST["newver"] = count($history);
 }
 if (isset($_REQUEST["compare"])) {
-	foreach ($history as $old) {
+	foreach($history as $old) {
 		if ($old["version"] == $_REQUEST["oldver"]) break;
 	}
 	$smarty->assign_by_ref('old', $old);
-	foreach ($history as $new) {
+	foreach($history as $new) {
 		if ($new["version"] == $_REQUEST["newver"]) break;
 	}
 	$smarty->assign_by_ref('new', $new);

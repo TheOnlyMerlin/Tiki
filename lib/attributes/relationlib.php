@@ -1,168 +1,78 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-/**
- * RelationLib
- *
- * @uses TikiDb_Bridge
- */
 class RelationLib extends TikiDb_Bridge
 {
 	/**
 	 * Obtains the list of relations with a given object as the source.
-	 * Optionally, the relation searched for can be specified. If the
+	 * Optionally, the relation searched for can be specified. If the 
 	 * relation ends with a dot, it will be used as a wildcard.
 	 */
-	function get_relations_from( $type, $object, $relation = null, $orderby = '' )
-	{
-		if ( substr($relation, -7) === '.invert' ) {
-			return $this->get_relations_to($type, $object, substr($relation, 0, -7));
-		}
+	function get_relations_from( $type, $object, $relation = null ) {
+		$cond = array( 'source_type = ?', 'source_itemId = ?' );
+		$vars = array( $type, $object );
 
-		$cond = array('source_type = ?', 'source_itemId = ?');
-		$vars = array($type, $object);
+		$this->apply_relation_condition( $relation, $cond, $vars );
 
-		if ( $orderby != '' ) {
-			// Note that you can pass any valid string such as 'relationId ASC'
-			$orderby = " ORDER BY $orderby ";
-		}
-
-		$this->apply_relation_condition($relation, $cond, $vars);
-
-		return $this->fetchAll(
-			'SELECT `relationId`, `relation`, `target_type` `type`, `target_itemId` `itemId` FROM `tiki_object_relations` WHERE ' .
-			implode(' AND ', $cond) . $orderby, 
-			$vars
-		);
+		return $this->fetchAll( 'SELECT `relationId`, `relation`, `target_type` `type`, `target_itemId` `itemId` FROM `tiki_object_relations` WHERE ' . implode( ' AND ', $cond ), $vars );
 	}
 
-    /**
-     * @param $type
-     * @param $object
-     * @param null $relation
-     * @return mixed
-     */
-    function get_relations_to( $type, $object, $relation = null )
-	{
-		if ( substr($relation, -7) === '.invert' ) {
-			return $this->get_relations_from($type, $object, substr($relation, 0, -7));
-		}
+	function get_relations_to( $type, $object, $relation = null ) {
+		$cond = array( 'target_type = ?', 'target_itemId = ?' );
+		$vars = array( $type, $object );
 
-		$cond = array('target_type = ?', 'target_itemId = ?');
-		$vars = array($type, $object);
+		$this->apply_relation_condition( $relation, $cond, $vars );
 
-		$this->apply_relation_condition($relation, $cond, $vars);
-
-		return $this->fetchAll(
-			'SELECT `relationId`, `relation`, `source_type` `type`, `source_itemId` `itemId` FROM `tiki_object_relations` WHERE ' .
-			implode(' AND ', $cond),
-			$vars
-		);
+		return $this->fetchAll( 'SELECT `relationId`, `relation`, `source_type` `type`, `source_itemId` `itemId` FROM `tiki_object_relations` WHERE ' . implode( ' AND ', $cond ), $vars );
 	}
 
 	/**
 	 * The relation must contain at least two dots and only lowercase letters.
 	 */
-
+	
 	/**
 	 * NAMESPACE management and relation naming.
-	 * Please see http://dev.tiki.org/Object+Attributes+and+Relations for guidelines on
+	 * Please see http://dev.tiki.org/Object+Attributes+and+Relations for guidelines on 
 	 * relation naming, and document new tiki.*.* names that you add.
 	 * (also grep "add_relation" just in case there are undocumented names already used)
 	 */
+	
+	function add_relation( $relation, $src_type, $src_object, $target_type, $target_object ) {
+		$relation = TikiFilter::get( 'attribute_type' )
+			->filter( $relation );
 
-	function add_relation( $relation, $src_type, $src_object, $target_type, $target_object )
-	{
-		$relation = TikiFilter::get('attribute_type')->filter($relation);
+		if( $relation ) {
+			$data = array( $relation, $src_type, $src_object, $target_type, $target_object );
 
-		if ( substr($relation, -7) === '.invert' ) {
-			return $this->add_relation(substr($relation, 0, -7), $target_type, $target_object, $src_type, $src_object);
-		}
-
-		if ( $relation ) {
-			$data = array($relation, $src_type, $src_object, $target_type, $target_object);
-
-			$this->query(
-				'DELETE FROM `tiki_object_relations`' .
-				' WHERE `relation` = ? AND `source_type` = ? AND `source_itemId` = ? AND `target_type` = ? AND `target_itemId` = ?',
-				$data
-			);
-
-			$this->query(
-				'INSERT INTO `tiki_object_relations` (`relation`, `source_type`, `source_itemId`, `target_type`, `target_itemId`)' .
-				' VALUES(?,?,?,?,?)',
-				$data
-			);
+			$this->query( 'DELETE FROM `tiki_object_relations` WHERE `relation` = ? AND `source_type` = ? AND `source_itemId` = ? AND `target_type` = ? AND `target_itemId` = ?', $data );
+			$this->query( 'INSERT INTO `tiki_object_relations` (`relation`, `source_type`, `source_itemId`, `target_type`, `target_itemId`) VALUES(?,?,?,?,?)', $data );
 
 			return $this->lastInsertId();
 		} else {
-			return 0;
+			return 0;	
 		}
 	}
 
-    /**
-     * @param $relation
-     * @param $src_type
-     * @param $src_object
-     * @param $target_type
-     * @param $target_object
-     * @return int
-     */
-    function get_relation_id( $relation, $src_type, $src_object, $target_type, $target_object )
-	{
-		$relation = TikiFilter::get('attribute_type')->filter($relation);
-
-		if ( substr($relation, -7) === '.invert' ) {
-			return $this->get_relation_id(substr($relation, 0, -7), $target_type, $target_object, $src_type, $src_object);
-		}
-
-		$id = 0;
-		if ( $relation ) {
-			$data = array($relation, $src_type, $src_object, $target_type, $target_object);
-
-			$id = $this->getOne(
-				'SELECT `relationId` FROM `tiki_object_relations`' .
-				' WHERE `relation` = ? AND `source_type` = ? AND `source_itemId` = ? AND `target_type` = ? AND `target_itemId` = ?',
-				$data
-			);
-		}
-		return $id;
+	function get_relation( $id ) {
+		$result = $this->fetchAll( 'SELECT * FROM `tiki_object_relations` WHERE `relationId` = ?', array( $id ) );
+		return reset( $result );
 	}
 
-    /**
-     * @param $id
-     * @return mixed
-     */
-    function get_relation( $id )
-	{
-		$result = $this->fetchAll('SELECT * FROM `tiki_object_relations` WHERE `relationId` = ?', array( $id ));
-		return reset($result);
+	function remove_relation( $id ) {
+		$this->fetchAll( 'DELETE FROM `tiki_object_relations` WHERE `relationId` = ?', array( $id ) );
+		$this->fetchAll( 'DELETE FROM `tiki_object_attributes` WHERE type = "relation" and `itemId` = ?', array( $id ) );
 	}
 
-    /**
-     * @param $id
-     */
-    function remove_relation( $id )
-	{
-		$this->fetchAll('DELETE FROM `tiki_object_relations` WHERE `relationId` = ?', array( $id ));
-		$this->fetchAll('DELETE FROM `tiki_object_attributes` WHERE type = "relation" and `itemId` = ?', array( $id ));
-	}
+	private function apply_relation_condition( $relation, & $cond, & $vars ) {
+		$relation = TikiFilter::get( 'attribute_type' )
+			->filter( $relation );
 
-    /**
-     * @param $relation
-     * @param $cond
-     * @param $vars
-     */
-    private function apply_relation_condition( $relation, & $cond, & $vars )
-	{
-		$relation = TikiFilter::get('attribute_type')->filter($relation);
-
-		if ( $relation ) {
-			if ( substr($relation, -1) == '.' ) {
+		if( $relation ) {
+			if( substr( $relation, -1 ) == '.' ) {
 				$relation .= '%';
 			}
 

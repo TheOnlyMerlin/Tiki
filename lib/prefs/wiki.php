@@ -1,20 +1,19 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_wiki_list($partial = false)
-{
+function prefs_wiki_list() {
 
 	global $prefs;
 	$wiki_forums = array();
 
-	if (! $partial && $prefs['feature_forums'] == 'y') {
-		$all_forums = TikiDb::get()->fetchMap('SELECT `forumId`, `name` FROM `tiki_forums` ORDER BY `name` ASC');
+	if ($prefs['feature_forums'] == 'y') {
+		$all_forums = TikiDb::get()->fetchMap( 'SELECT `forumId`, `name` FROM `tiki_forums` ORDER BY `name` ASC' );
 
-		if ( count($all_forums) ) {
+		if ( count( $all_forums ) ) {
 			$wiki_forums = $all_forums;
 		} else {
 			$wiki_forums[''] = tra('None');
@@ -24,18 +23,15 @@ function prefs_wiki_list($partial = false)
 	global $prefslib;
 	$advanced_columns = $prefslib->getExtraSortColumns();
 
-	$wiki_sort_columns = array_merge(
-		array(
-			'pageName' => tra('Name'),
-			'lastModif' => tra('LastModif'),
-			'created' => tra('Created'),
-			'creator' => tra('Creator'),
-			'hits' => tra('Hits'),
-			'user' => tra('Last editor'),
-			'page_size' => tra('Size'),
-		),
-		$advanced_columns
-	);
+	$wiki_sort_columns = array_merge( array(
+		'pageName' => tra('Name'),
+		'lastModif' => tra('LastModif'),
+		'created' => tra('Created'),
+		'creator' => tra('Creator'),
+		'hits' => tra('Hits'),
+		'user' => tra('Last editor'),
+		'page_size' => tra('Size'),
+	), $advanced_columns );
 
 	$comment_sort_orders = array(
 		'commentDate_desc' => tra('Newest first'),
@@ -43,7 +39,7 @@ function prefs_wiki_list($partial = false)
 		'points_desc' => tra('Points'),
 	);
 
-	foreach ( $advanced_columns as $key => $label ) {
+	foreach( $advanced_columns as $key => $label ) {
 		$comment_sort_orders[ $key . '_asc' ] = $label . ' ' . tr('ascending');
 		$comment_sort_orders[ $key . '_desc' ] = $label . ' ' . tr('descending');
 	}
@@ -59,26 +55,23 @@ function prefs_wiki_list($partial = false)
 				'full' => tra('Relaxed'),
 				'strict' => tra('Strict'),
 			),
-			'default' => 'complete',
 		),
 		'wiki_show_version' => array(
 			'name' => tra('Display page version'),
 			'description' => tra('Display the page version information when viewing the page.'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'wiki_page_name_above' => array(
 			'name' => tra('Display page name above page'),
 			'description' => tra('Display page name above page instead of inside page.'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'wiki_pagename_strip' => array(
 			'name' => tra('Page name display stripper'),
 			'description' => tra('Character to use as a delimiter in the page name. The portion of the name after this character will not be displayed.'),
 			'type' => 'text',
 			'size' => 5,
-			'default' => '',
+			'help' => '#',
 		),
 		'wiki_authors_style' => array(
 			'name' => tra('Wiki author list style'),
@@ -91,14 +84,11 @@ function prefs_wiki_list($partial = false)
 				'lastmodif' => tra('Page last modified on'),
 				'none' => tra('none (disabled)'),
 			),
-			'default' => 'none',
-			'tags' => array('basic'),
 		),
 		'wiki_authors_style_by_page' => array(
 			'name' => tra('Specify wiki author list style per page'),
 			'description' => tra('Allows to modify the style in which the author list is displayed on a per-page basis.'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'wiki_actions_bar' => array(
 			'name' => tra('Wiki action bar location'),
@@ -109,7 +99,6 @@ function prefs_wiki_list($partial = false)
 				'bottom' => tra('Bottom'),
 				'both' => tra('Both'),
 			),
-			'default' => 'bottom',
 		),
 		'wiki_page_navigation_bar' => array(
 			'name' => tra('Wiki navigation bar location'),
@@ -120,7 +109,6 @@ function prefs_wiki_list($partial = false)
 				'bottom' => tra('Bottom'),
 				'both' => tra('Both'),
 			),
-			'default' => 'bottom',
 		),
 		'wiki_topline_position' => array(
 			'name' => tra('Wiki top line location'),
@@ -132,7 +120,6 @@ function prefs_wiki_list($partial = false)
 				'both' => tra('Both'),
 				'none' => tra('Neither'),
 			),
-			'default' => 'top',
 		),
 		'wiki_cache' => array(
 			'name' => tra('Cache wiki pages (global)'),
@@ -148,7 +135,6 @@ function prefs_wiki_list($partial = false)
 				3600 => '1 ' . tra('hour'),
 				7200 => '2 ' . tra('hours'),
 			),
-			'default' => 0,
 		),
 		'wiki_comments_allow_per_page' => array(
 			'name' => tra('Allow comments per wiki page'),
@@ -159,7 +145,6 @@ function prefs_wiki_list($partial = false)
 				'y' => tra('Enable (default On)'),
 				'o' => tra('Enable (default Off)'),
 			),
-			'default' => 'n',
 		),
 		'wiki_feature_copyrights' => array(
 			'name' => tra('Wiki'),
@@ -167,21 +152,17 @@ function prefs_wiki_list($partial = false)
 			'dependencies' => array(
 				'feature_wiki',
 			),
-			'default' => 'n',
 		),
 		'wiki_edit_plugin' => array(
 			'name' => tra('Enable edit plugin icons'),
 			'description' => tra('Permits editing of a plugin, via a popup form, without needing to edit the whole page.'),
 			'type' => 'flag',
 			'hint' => tra('Requires JavaScript'),
-			'default' => 'y',
 		),
 		'wiki_badchar_prevent' => array(
 			'name' => tra('Prevent special characters in page names'),
 			'description' => tra('Some characters may prevent the pages from being easily accessible from the URL or through wiki links. This option prevents from creating pages with such characters.'),
 			'type' => 'flag',
-			'default' => 'y',
-			'tags' => array('basic'),
 		),
 		'wiki_ranking_reload_probability' => array(
 			'name' => tra('Page ranking reload probability'),
@@ -189,20 +170,16 @@ function prefs_wiki_list($partial = false)
 			'type' => 'text',
 			'size' => 7,
 			'filter' => 'digits',
-			'default' => 1000,
 		),
 		'wiki_encourage_contribution' => array(
 			'name' => tra('Encourage contribution to wiki pages by anonymous'),
 			'description' => tra('When a page is not editable and the user is anonymous, display the edit links anyway. The visitor will be prompted with a login screen and be encouraged to register.'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'wiki_timeout_warning' => array(
 			'name' => tra('Warn before page lock timeout'),
 			'description' => tra('Provide a JavaScript alert before the user\'s lock on a page times out.'),
 			'type' => 'flag',
-			'default' => 'y',
-			'tags' => array('basic'),
 		),
 		'wiki_dynvar_style' => array(
 			'name' => tra('Dynamic variables'),
@@ -214,7 +191,6 @@ function prefs_wiki_list($partial = false)
 				'single' => tra('Single (%varname%)'),
 				'double' => tra('Double (%%varname%%)'),
 			),
-			'default' => 'single',
 		),
 		'wiki_dynvar_multilingual' => array(
 			'name' => tra('Multilingual dynamic variables'),
@@ -223,13 +199,10 @@ function prefs_wiki_list($partial = false)
 			'dependencies' => array(
 				'feature_multilingual',
 			),
-			'default' => 'n',
 		),
 		'wiki_edit_section' => array(
 			'name' => tra('Edit section'),
 			'type' => 'flag',
-			'default' => 'y',
-			'tags' => array('basic'),
 		),
 		'wiki_edit_section_level' => array(
 			'name' => tra('Edit section level'),
@@ -243,191 +216,126 @@ function prefs_wiki_list($partial = false)
 				'5' => tra('5'),
 				'6' => tra('6'),
 			),
-			'default' => '0',
 		),
 		'wiki_edit_icons_toggle' => array(
 			'name' => tra('Toggle display of section and plugin edit icons'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'wiki_edit_minor' => array(
-			'name' => tra('Allow minor edits of wiki pages'),
+			'name' => tra('Allow minor edits'),
 			'type' => 'flag',
-			'description' => tra('Minor edits do not flag new content for translation and do not send watch notifications (unless "Watch minor edits" is enabled).'),			
-			'permission' => array(
-				'textFilter' => 'tiki_p_minor',
-			),		
-			'default' => 'n',
 		),
 		'wiki_comments_displayed_default' => array(
 			'name' => tra('Display by default'),
 			'type' => 'flag',
-			'default' => 'n',
-		),
-		'wiki_comments_form_displayed_default' => array(
-			'name' => tra('Display comments form by default'),
-			'type' => 'flag',
-			'default' => 'n',
 		),
 		'wiki_comments_per_page' => array(
 			'name' => tra('Default number per page'),
 			'type' => 'text',
 			'size' => '5',
-			'default' => 10,
 		),
 		'wiki_comments_default_ordering' => array(
 			'name' => tra('Default Ordering'),
 			'type' => 'list',
 			'options' => $comment_sort_orders,
-			'default' => 'points_desc',
-		),
-		'wiki_comments_simple_ratings' => array(
-			'name' => tra('Simple wiki comment ratings'),
-			'description' => tra('Enable users to rate comments based on a simple numeric scale.'),
-			'type' => 'flag',
-			'default' => 'n',
-		),
-		'wiki_comments_simple_ratings_options' => array(
-			'name' => tra('Wiki rating options'),
-			'description' => tra('List of options available for the rating of wiki comments.'),
-			'type' => 'text',
-			'separator' => ',',
-			'filter' => 'int',
-			'default' => range(1, 5),
 		),
 		'wiki_uses_slides' => array(
-			'name' => tra('Add a slideshow button on wiki pages'),
+			'name' => tra('Slideshows'),
 			'type' => 'flag',
 			'help' => 'Slideshow',
-			'default' => 'n',
-			'tags' => array('basic'),
 		),
 		'wiki_creator_admin' => array(
 			'name' => tra('Page creators are admin of their pages'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'wiki_watch_author' => array(
 			'name' => tra('Create watch for author on page creation'),
 			'type' => 'flag',
-			'default' => 'n',
-			'dependencies' => array(
-				'feature_user_watches',
-			),
 		),
 		'wiki_watch_comments' => array(
 			'name' => tra('Enable watches on comments'),
 			'type' => 'flag',
-			'default' => 'y',
-			'dependencies' => array(
-				'feature_user_watches',
-			),
 		),
 		'wiki_watch_editor' => array(
 			'name' => tra('Enable watch events when I am the editor'),
 			'type' => 'flag',
-			'default' => 'n',
-			'dependencies' => array(
-				'feature_user_watches',
-			),
 		),
 		'wiki_watch_minor' => array(
 			'name' => tra('Watch minor edits'),
 			'type' => 'flag',
-			'default' => 'n',
-			'dependencies' => array(
-				'feature_user_watches',
-			),
 		),
 		'wiki_list_id' => array(
 			'name' => tra('Page ID'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'wiki_list_name' => array(
 			'name' => tra('Name'),
 			'type' => 'flag',
-			'default' => 'y',
 		),
 		'wiki_list_name_len' => array(
 			'name' => tra('Name length'),
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => '40',
 		),
 		'wiki_list_hits' => array(
 			'name' => tra('Hits'),
 			'type' => 'flag',
-			'default' => 'y',
 		),
 		'wiki_list_lastmodif' => array(
 			'name' => tra('Last modification date'),
 			'type' => 'flag',
-			'default' => 'y',
 		),
 		'wiki_list_creator' => array(
 			'name' => tra('Creator'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'wiki_list_user' => array(
 			'name' => tra('Last modified by'),
 			'type' => 'flag',
-			'default' => 'y',
 		),
 		'wiki_list_lastver' => array(
 			'name' => tra('Version'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'wiki_list_comment' => array(
 			'name' => tra('Edit comments'),
 			'type' => 'flag',
-			'default' => 'y',
 		),
 		'wiki_list_comment_len' => array(
 			'name' => tra('Edit Comment length'),
 			'type' => 'text',
 			'size' => '3',
-			'default' => '200',
 		),
 		'wiki_list_description' => array(
 			'name' => tra('Description'),
 			'type' => 'flag',
-			'default' => 'y',
 		),
 		'wiki_list_description_len' => array(
 			'name' => tra('Description length'),
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => '200',
 		),
 		'wiki_list_status' => array(
 			'name' => tra('Status'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'wiki_list_versions' => array(
 			'name' => tra('Versions'),
 			'type' => 'flag',
-			'default' => 'y',
 		),
 		'wiki_list_links' => array(
 			'name' => tra('Links'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'wiki_list_backlinks' => array(
 			'name' => tra('Backlinks'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'wiki_list_size' => array(
 			'name' => tra('Size'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'wiki_list_language' => array(
 			'name' => tra('Language'),
@@ -435,7 +343,6 @@ function prefs_wiki_list($partial = false)
 			'dependencies' => array(
 				'feature_multilingual',
 			),
-			'default' => 'n',
 		),
 		'wiki_list_categories' => array(
 			'name' => tra('Categories'),
@@ -443,7 +350,6 @@ function prefs_wiki_list($partial = false)
 			'dependencies' => array(
 				'feature_categories',
 			),
-			'default' => 'n',
 		),
 		'wiki_list_categories_path' => array(
 			'name' => tra('Categories path'),
@@ -451,13 +357,11 @@ function prefs_wiki_list($partial = false)
 			'dependencies' => array(
 				'feature_categories',
 			),
-			'default' => 'n',
 		),
 		'wiki_list_sortorder' => array(
 			'name' => tra('Default sort order'),
 			'type' => 'list',
 			'options' => $wiki_sort_columns,
-			'default' => 'pageName',
 		),
 		'wiki_list_sortdirection' => array(
 			'name' => tra('Sort Direction'),
@@ -466,125 +370,98 @@ function prefs_wiki_list($partial = false)
 				'desc' => tra('Descending'),
 				'asc' => tra('Ascending'),
 			),
-			'default' => 'asc',
-		),
-		'wiki_list_rating' => array(
-			'name' => tra('Rating'),
-			'type' => 'flag',
-			'dependencies' => array(
-				'feature_polls',
-				'feature_wiki_ratings',
-			),
-			'default' => 'n',
 		),
 		'wiki_feature_3d' => array(
 			'name' => tra('Enable wiki 3D browser'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'wiki_3d_autoload' => array(
 			'name' => tra('Load page on navigation'),
 			'type' => 'flag',
-			'default' => '',
 		),
 		'wiki_3d_width' => array(
 			'name' => tra('Browser width'),
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => 500,
 		),
 		'wiki_3d_height' => array(
 			'name' => tra('Browser height'),
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => 500,
 		),
 		'wiki_3d_navigation_depth' => array(
 			'name' => tra('Navigation depth'),
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => 1,
 		),
 		'wiki_3d_node_size' => array(
 			'name' => tra('Node size'),
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => '15',
 		),
 		'wiki_3d_text_size' => array(
 			'name' => tra('Text size'),
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => '20',
 		),
 		'wiki_3d_spring_size' => array(
 			'name' => tra('Spring (connection) size'),
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => '100',
 		),
 		'wiki_3d_existing_page_color' => array(
 			'name' => tra('Existing page node color'),
 			'type' => 'text',
 			'size' => '8',
-			'default' => '#00CC55',
 			),
 		'wiki_3d_missing_page_color' => array(
 			'name' => tra('Missing page node color'),
 			'type' => 'text',
 			'size' => '8',
-			'default' => '#FF5555',
 		),
 		'wiki_3d_adjust_camera' => array(
 			'name' => tra('Camera distance adjusted relative to nearest node'),
 			'type' => 'flag',
-			'default' => 'true',
 		),
 		'wiki_3d_camera_distance' => array(
 			'name' => tra('Camera distance'),
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => '200',
 		),
 		'wiki_3d_fov' => array(
 			'name' => tra('Field of view'),
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => '250',
 		),
 		'wiki_3d_feed_animation_interval' => array(
 			'name' => tra('Feed animation interval (milisecs)'),
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => 500,
 		),
 		'wiki_3d_friction_constant' => array(
 			'name' => tra('Friction constant'),
 			'type' => 'text',
 			'size' => '4',
-			'default' => '0.8f',
 		),
 		'wiki_3d_elastic_constant' => array(
 			'name' => tra('Elastic constant'),
 			'type' => 'text',
 			'size' => '4',
-			'default' => '0.3f',
 		),
 		'wiki_3d_eletrostatic_constant' => array(
-			'name' => tra('Electrostatic constant'),
+			'name' => tra('Eletrostatic constant'),
 			'type' => 'text',
 			'type' => 'text',
 			'size' => '5',
-			'default' => '1000f',
 		),
 		'wiki_3d_node_mass' => array(
 			'name' => tra('Node mass'),
@@ -592,7 +469,6 @@ function prefs_wiki_list($partial = false)
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => '5',
 		),
 		'wiki_3d_node_charge' => array(
 			'name' => tra('Node charge'),
@@ -600,43 +476,27 @@ function prefs_wiki_list($partial = false)
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
-			'default' => '1',
 		),
 		'wiki_forum_id' => array(
 			'name' => tra('Forum for discussion'),
 			'type' => 'list',
 			'options' => $wiki_forums,
-			'default' => '',
 		),
 		'wiki_keywords' => array(
 			'name' => tra('Keywords'),
 			'description' => tra('Allow to manage keywords on a per-page basis.'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'wiki_likepages_samelang_only' => array(
 			'name' => tra('Similar pages only listed in same language'),
 			'description' => tra('When listing similar pages, such as in missing page 404, only display pages in the same language as the request.'),
 			'type' => 'flag',
 			'dependencies' => array( 'feature_multilingual' ),
-			'default' => 'n',
 		),
 		'wiki_mandatory_edit_summary' => array(
 			'name' => tra('Mandatory edit summary on wiki pages'),
 			'description' => tra('Reject save attempts not providing an edit summary to describe the changes made.'),
 			'type' => 'flag',
-			'default' => 'n',
-		),
-		'wiki_freetags_edit_position' => array(
-			'name' => tra('Choose position of freetags selection'),
-			'description' => tra('If you wish to place freetags selection more prominently than in the properties tab.'),
-			'type' => 'list',
-			'options' => array(
-				'properties' => tra('Properties tab'),
-				'edit' => tra('Edit tab'),
-				'freetagstab' => tra('Freetags tab'),
-			),
-			'default' => 'properties',
 		),
 		'wiki_structure_bar_position' => array(
 			'name' => tra('Structure navigation bar location'),
@@ -647,7 +507,6 @@ function prefs_wiki_list($partial = false)
 				'bottom' => tra('Bottom'),
 				'both' => tra('Both'),
 			),
-			'default' => 'top',
 		),
 		'wiki_backlinks_name_len' => array(
 			'name' => tra('Name length'),
@@ -656,13 +515,11 @@ function prefs_wiki_list($partial = false)
 			'size' => '3',
 			'filter' => 'digits',
 			'dependencies' => array( 'feature_backlinks' ),
-			'default' => 0,
 		),
 		'wiki_simple_ratings' => array(
 			'name' => tra('Simple wiki ratings'),
 			'description' => tra('Enable users to rate articles based on a simple numeric scale.'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'wiki_simple_ratings_options' => array(
 			'name' => tra('Wiki rating options'),
@@ -670,14 +527,6 @@ function prefs_wiki_list($partial = false)
 			'type' => 'text',
 			'separator' => ',',
 			'filter' => 'int',
-			'default' => range(1, 5),
-		),
-		'wiki_pagealias_tokens' => array(
-			'name' => tra('Semantic link types to use as page alias markers'),
-			'description' => tra('Comma separated list of semantic links to use to identify a page as an alias to another'),
-			'type' => 'text',
-			'dependencies' => array('feature_wiki_pagealias'),
-			'default' => 'alias',
 		),
 		'wiki_prefixalias_tokens' => array(
 			'name' => tra('Redirect pages using these prefix alias semantic links'),
@@ -687,21 +536,7 @@ function prefs_wiki_list($partial = false)
 			'size' => '30',
 			'dependencies' => array(
 				'feature_wiki_1like_redirection',
-				'feature_semantic', // this is needed at point of creation of semantic link otherwise link will not register
 			),
-			'default' => '',
-		),
-		'wiki_pagination' => array(
-			'name' => tr('Wiki Pagination'),
-			'description' => tr('Allows to separate a wiki page into a paginated page using a separator.'),
-			'type' => 'flag',
-			'default' => 'n',
-		),
-		'wiki_page_separator' => array(
-			'name' => tr('Wiki page separator'),
-			'description' => tr('Separator used within the content of a wiki page to split the content.'),
-			'type' => 'text',
-			'default' => '...page...',
-		),
+		),		
 	);
 }

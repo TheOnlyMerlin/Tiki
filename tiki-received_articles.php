@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,9 +10,6 @@ include_once ('lib/commcenter/commlib.php');
 include_once ('lib/articles/artlib.php');
 $access->check_feature('feature_comm');
 $access->check_permission('tiki_p_admin_received_articles');
-//Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-include_once ('lib/userprefs/userprefslib.php');
-$smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
 
 if (!isset($_REQUEST["receivedArticleId"])) {
 	$_REQUEST["receivedArticleId"] = 0;
@@ -57,13 +51,6 @@ if (isset($_REQUEST["view"])) {
 if (isset($_REQUEST["accept"])) {
 	check_ticket('received-articles');
 	// CODE TO ACCEPT A PAGE HERE
-	//Convert 12-hour clock hours to 24-hour scale to compute time
-	if (!empty($_REQUEST['Time_Meridian'])) {
-		$_REQUEST['Time_Hour'] = date('H', strtotime($_REQUEST['Time_Hour'] . ':00 ' . $_REQUEST['Time_Meridian']));
-	}
-	if (!empty($_REQUEST['expire_Meridian'])) {
-		$_REQUEST['expire_Hour'] = date('H', strtotime($_REQUEST['expire_Hour'] . ':00 ' . $_REQUEST['expire_Meridian']));
-	}
 	$publishDate = $tikilib->make_time($_REQUEST["Time_Hour"], $_REQUEST["Time_Minute"], 0, $_REQUEST["Date_Month"], $_REQUEST["Date_Day"], $_REQUEST["Date_Year"]);
 	$expireDate = $tikilib->make_time($_REQUEST["expire_Hour"], $_REQUEST["expire_Minute"], 0, $_REQUEST["expire_Month"], $_REQUEST["expire_Day"], $_REQUEST["expire_Year"]);
 	$commlib->update_received_article($_REQUEST["receivedArticleId"], $_REQUEST["title"], $_REQUEST["authorName"], $_REQUEST["useImage"], $_REQUEST["image_x"], $_REQUEST["image_y"], $publishDate, $expireDate, $_REQUEST["heading"], $_REQUEST["body"], $_REQUEST["type"], $_REQUEST["rating"]);
@@ -75,12 +62,6 @@ $smarty->assign('preview', 'n');
 $smarty->assign('topic', $info["topic"]);
 if (isset($_REQUEST["preview"])) {
 	$smarty->assign('preview', 'y');
-	if (!empty($_REQUEST['Time_Meridian'])) {
-		$_REQUEST['Time_Hour'] = date('H', strtotime($_REQUEST['Time_Hour'] . ':00 ' . $_REQUEST['Time_Meridian']));
-	}
-	if (!empty($_REQUEST['expire_Meridian'])) {
-		$_REQUEST['expire_Hour'] = date('H', strtotime($_REQUEST['expire_Hour'] . ':00 ' . $_REQUEST['expire_Meridian']));
-	}
 	$info["publishDate"] = $tikilib->make_time($_REQUEST["Time_Hour"], $_REQUEST["Time_Minute"], 0, $_REQUEST["Date_Month"], $_REQUEST["Date_Day"], $_REQUEST["Date_Year"]);
 	$info["expireDate"] = $tikilib->make_time($_REQUEST["expire_Hour"], $_REQUEST["expire_Minute"], 0, $_REQUEST["expire_Month"], $_REQUEST["expire_Day"], $_REQUEST["expire_Year"]);
 	$info["title"] = $_REQUEST["title"];
@@ -115,20 +96,13 @@ $smarty->assign('type', $info["type"]);
 $smarty->assign('rating', $info["rating"]);
 // Assign parsed
 $smarty->assign('parsed_heading', $tikilib->parse_data($info["heading"]));
-$smarty->assign('parsed_body', $tikilib->parse_data($info["body"], array('is_html' => $artlib->is_html($info))));
+$smarty->assign('parsed_body', $tikilib->parse_data($info["body"]));
 if (isset($_REQUEST["remove"])) {
 	$access->check_authenticity();
 	$commlib->remove_received_article($_REQUEST["remove"]);
 }
 if (isset($_REQUEST["save"])) {
 	check_ticket('received-articles');
-	//Convert 12-hour clock hours to 24-hour scale to compute time
-	if (!empty($_REQUEST['Time_Meridian'])) {
-		$_REQUEST['Time_Hour'] = date('H', strtotime($_REQUEST['Time_Hour'] . ':00 ' . $_REQUEST['Time_Meridian']));
-	}
-	if (!empty($_REQUEST['expire_Meridian'])) {
-		$_REQUEST['expire_Hour'] = date('H', strtotime($_REQUEST['expire_Hour'] . ':00 ' . $_REQUEST['expire_Meridian']));
-	}
 	$publishDate = $tikilib->make_time($_REQUEST["Time_Hour"], $_REQUEST["Time_Minute"], 0, $_REQUEST["Date_Month"], $_REQUEST["Date_Day"], $_REQUEST["Date_Year"]);
 	$expireDate = $tikilib->make_time($_REQUEST["expire_Hour"], $_REQUEST["expire_Minute"], 0, $_REQUEST["Date_Month"], $_REQUEST["Date_Day"], $_REQUEST["Date_Year"]);
 	$commlib->update_received_article($_REQUEST["receivedArticleId"], $_REQUEST["title"], $_REQUEST["authorName"], $_REQUEST["useImage"], $_REQUEST["image_x"], $_REQUEST["image_y"], $publishDate, $expireDate, $_REQUEST["heading"], $_REQUEST["body"]);

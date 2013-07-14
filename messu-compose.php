@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -38,13 +35,13 @@ if (!empty($_REQUEST['reply']) || !empty($_REQUEST['replyall'])) {
 	$_REQUEST['subject'] = tra("Re:") . preg_replace('/^(' . tra('Re:') . ')+/', '', $_REQUEST['subject']);
 	$smarty->assign('reply', 'y');
 }
-foreach (array(
+foreach(array(
 	'to',
 	'cc',
 	'bcc'
 			  ) as $dest) {
 	if (is_array($_REQUEST[$dest])) {
-		$sep = strstr(implode('', $_REQUEST[$dest]), ',') === false?', ': '; ';
+		$sep = strstr(implode('',$_REQUEST[$dest]), ',') === false?', ': '; ';
 		$_REQUEST[$dest] = implode($sep, $_REQUEST[$dest]);
 	}
 }
@@ -80,7 +77,7 @@ if (isset($_REQUEST['send'])) {
 	}
 	// Remove invalid users from the to, cc and bcc fields
 	$users = array();
-	foreach ($arr_to as $a_user) {
+	foreach($arr_to as $a_user) {
 		if (!empty($a_user)) {
 			$a_user = str_replace('\\;', ';', $a_user);
 			if ($userlib->user_exists($a_user)) {
@@ -90,17 +87,17 @@ if (isset($_REQUEST['send'])) {
 					if (($messulib->count_messages($a_user) < $prefs['messu_mailbox_size']) || ($prefs['messu_mailbox_size'] == 0)) {
 						$users[] = $a_user;
 					} else {
-						$message.= sprintf(tra("User %s can not receive messages, mailbox is full"), htmlspecialchars($a_user)) . "<br />";
+						$message.= sprintf(tra("User %s can not receive messages, mailbox is full") ,htmlspecialchars($a_user)) . "<br />";
 					}
 				} else {
-					$message.= sprintf(tra("User %s can not receive messages"), htmlspecialchars($a_user)) . "<br />";
+					$message.= sprintf(tra("User %s can not receive messages") , htmlspecialchars($a_user)) . "<br />";
 				}
 			} else {
-				$message.= sprintf(tra("Invalid user: %s"), htmlspecialchars($a_user)) . "<br />";
+				$message.= sprintf(tra("Invalid user: %s") , htmlspecialchars($a_user)) . "<br />";
 			}
 		}
 	}
-	foreach ($arr_cc as $a_user) {
+	foreach($arr_cc as $a_user) {
 		if (!empty($a_user)) {
 			$a_user = str_replace('\\;', ';', $a_user);
 			if ($userlib->user_exists($a_user)) {
@@ -110,17 +107,17 @@ if (isset($_REQUEST['send'])) {
 					if (($messulib->count_messages($a_user) < $prefs['messu_mailbox_size']) || ($prefs['messu_mailbox_size'] == 0)) {
 						$users[] = $a_user;
 					} else {
-						$message.= sprintf(tra("User %s can not receive messages, mailbox is full"), htmlspecialchars($a_user)) . "<br />";
+						$message.= sprintf(tra("User %s can not receive messages, mailbox is full") , htmlspecialchars($a_user)) . "<br />";
 					}
 				} else {
-					$message.= sprintf(tra("User %s can not receive messages"), htmlspecialchars($a_user)) . "<br />";
+					$message.= sprintf(tra("User %s can not receive messages") , htmlspecialchars($a_user)) . "<br />";
 				}
 			} else {
-				$message.= sprintf(tra("Invalid user: %s"), htmlspecialchars($a_user)) . "<br />";
+				$message.= sprintf(tra("Invalid user: %s") , htmlspecialchars($a_user)) . "<br />";
 			}
 		}
 	}
-	foreach ($arr_bcc as $a_user) {
+	foreach($arr_bcc as $a_user) {
 		if (!empty($a_user)) {
 			$a_user = str_replace('\\;', ';', $a_user);
 			if ($userlib->user_exists($a_user)) {
@@ -130,13 +127,13 @@ if (isset($_REQUEST['send'])) {
 					if (($messulib->count_messages($a_user) < $prefs['messu_mailbox_size']) || ($prefs['messu_mailbox_size'] == 0)) {
 						$users[] = $a_user;
 					} else {
-						$message.= sprintf(tra("User %s can not receive messages, mailbox is full"), htmlspecialchars($a_user)) . "<br />";
+						$message.= sprintf(tra("User %s can not receive messages, mailbox is full") , htmlspecialchars($a_user)) . "<br />";
 					}
 				} else {
-					$message.= sprintf(tra("User %s can not receive messages"), htmlspecialchars($a_user)) . "<br />";
+					$message.= sprintf(tra("User %s can not receive messages") , htmlspecialchars($a_user)) . "<br />";
 				}
 			} else {
-				$message.= sprintf(tra("Invalid user: %s"), htmlspecialchars($a_user)) . "<br />";
+				$message.= sprintf(tra("Invalid user: %s") , htmlspecialchars($a_user)) . "<br />";
 			}
 		}
 	}
@@ -153,61 +150,10 @@ if (isset($_REQUEST['send'])) {
 		$smarty->display("tiki.tpl");
 		die;
 	}
-
-	////////////////////////////////////////////////////////////////////////
-	//                                                                    //
-	// hollmeer 2012-11-03: ADDED PGP/MIME ENCRYPTION PREPARATION      //
-	// USING lib/openpgp/opepgplib.php                                    //
-	//                                                                    //
-	// get publickey armor block for email                                //
-	//                                                                    //
-	if ($prefs['openpgp_gpg_pgpmimemail'] == 'y') {
-		global $openpgplib;
-		$aux_pgpmime_content = $openpgplib->getPublickeyArmorBlock($_REQUEST['priority'], $_REQUEST['to'], $_REQUEST['cc']);
-		$prepend_email_body = $aux_pgpmime_content[0];
-		$user_armor = $aux_pgpmime_content[1];
-	}
-	//                                                                    //
-	////////////////////////////////////////////////////////////////////////
-
 	// Insert the message in the inboxes of each user
-	foreach ($users as $a_user) {
-		//////////////////////////////////////////////////////////////////////////////////
-		// hollmeer: send with gpg-armor block etc included				//
-		// A changed encryption-related version was copied from lib/messu/messulib.pgp  //
-		// into lib/openpgp/openpgplib.php for prepending/appending content into	//
-		// message body									//
-		if ($prefs['openpgp_gpg_pgpmimemail'] == 'y') {
-			// USE PGP/MIME MAIL VERSION
-			$result = $openpgplib->post_message_with_pgparmor_attachment(
-				$a_user,
-				$user,
-				$_REQUEST['to'],
-				$_REQUEST['cc'],
-				$_REQUEST['subject'],
-				$_REQUEST['body'],
-				$prepend_email_body, // NOTE THIS!
-				$user_armor, // NOTE THIS!
-				$_REQUEST['priority'],
-				$_REQUEST['replyto_hash'],
-				isset($_REQUEST['replytome']) ? 'y' : '', isset($_REQUEST['bccme']) ? 'y' : ''
-			);
-		} else {
-			// USE ORIGINAL TIKI MAIL VERSION
-			$result = $messulib->post_message(
-				$a_user,
-				$user,
-				$_REQUEST['to'],
-				$_REQUEST['cc'],
-				$_REQUEST['subject'],
-				$_REQUEST['body'],
-				$_REQUEST['priority'],
-				$_REQUEST['replyto_hash'],
-				isset($_REQUEST['replytome']) ? 'y' : '', isset($_REQUEST['bccme']) ? 'y' : ''
-			);
-		}
-		// 										//
-		//////////////////////////////////////////////////////////////////////////////////
+	foreach($users as $a_user) {
+		$result = $messulib->post_message($a_user, $user, $_REQUEST['to'], $_REQUEST['cc'], $_REQUEST['subject'], $_REQUEST['body'], $_REQUEST['priority'], $_REQUEST['replyto_hash'],
+								isset($_REQUEST['replytome']) ? 'y' : '', isset($_REQUEST['bccme']) ? 'y' : '');
 		if ($result) {
 			if ($prefs['feature_score'] == 'y') {
 				$tikilib->score_event($user, 'message_send');

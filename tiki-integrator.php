@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -16,8 +13,9 @@ $access->check_permission(array('tiki_p_view_integrator'));
 
 $repID = (isset($_REQUEST["repID"]) && strlen($_REQUEST["repID"]) > 0) ? $_REQUEST["repID"] : 0;
 
-if (!isset($_REQUEST["repID"]) && ($repID <= 0)) {
-    $smarty->assign('msg', tra("No repository given"));
+if (!isset($_REQUEST["repID"]) && ($repID <= 0))
+{
+    $smarty->assign('msg',tra("No repository given"));
     $smarty->display("error.tpl");
     die;
 }
@@ -30,11 +28,12 @@ $rep = $integrator->get_repository($repID);
 $file = $integrator->get_rep_file($rep, isset($_REQUEST["file"]) ? $_REQUEST["file"] : '');
 if ((substr($file, 0, 7) != 'http://') 
  && (substr($file, 0, 8) != 'https://')
- && !file_exists($file)) {
+ && !file_exists($file))
+{
     if ($tiki_p_admin == 'y')
-      $smarty->assign('msg', tra("File not found ").$file);
+      $smarty->assign('msg',tra("File not found ").$file);
     else
-      $smarty->assign('msg', tra("File not found ").$_REQUEST["file"]);
+      $smarty->assign('msg',tra("File not found ").$_REQUEST["file"]);
     $smarty->display("error.tpl");
     die;
 }
@@ -50,5 +49,5 @@ $smarty->assign('cached', $rep["cacheable"]);
 if (isset($_REQUEST["file"])) $smarty->assign('file', $_REQUEST["file"]);
 
 // Display the template
-$smarty->assign('mid', 'tiki-integrator.tpl');
+$smarty->assign('mid','tiki-integrator.tpl');
 $smarty->display("tiki.tpl");

@@ -1,59 +1,36 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
-  exit;
-}
+  exit;         
+}  
 
-function smarty_function_object_link( $params, $smarty )
-{
-	if ( ! isset( $params['type'], $params['id'] ) && ! isset( $params['identifier'] ) ) {
+function smarty_function_object_link( $params, $smarty ) {
+
+	if( ! isset( $params['type'], $params['id'] ) ) {
 		return tra('No object information provided.');
 	}
 
-	if ( isset( $params['type'], $params['id'] ) ) {
-		$type = $params['type'];
-		$object = $params['id'];
-	} else {
-		list($type, $object) = explode(':', $params['identifier'], 2);
-	}
-
+	$type = $params['type'];
+	$object = $params['id'];
 	$title = isset( $params['title'] ) ? $params['title'] : null;
-	$url = isset( $params['url'] ) ? $params['url'] : null;
 
-	switch ( $type ) {
+	switch( $type ) {
 	case 'wiki page':
 	case 'wikipage':
 	case 'wiki':
-		$type = 'wiki page';
-		$function = 'smarty_function_object_link_default';
-		if (! $title) {
-			$title = $object;
-		}
-		global $prefs;
-		if ($prefs['feature_wiki_structure'] === 'y') {
-			global $structlib;
-			include_once ('lib/structures/structlib.php');
-			$page_id = $structlib->get_struct_ref_id($title);
-			if ($page_id) {
-				$alias = $structlib->get_page_alias($page_id);
-				if ($alias) {
-					$title = $alias;
-				}
-			}
-		}
+		$function = 'smarty_function_object_link_wiki';
 		break;
 	case 'user':
 		$function = 'smarty_function_object_link_user';
 		break;
 	case 'external':
-	case 'external_extended':
 		$function = 'smarty_function_object_link_external';
 		break;
 	case 'relation_source':
@@ -62,221 +39,98 @@ function smarty_function_object_link( $params, $smarty )
 	case 'relation_target':
 		$function = 'smarty_function_object_link_relation_target';
 		break;
-	case 'freetag':
-		$function = 'smarty_function_object_link_freetag';
-		break;
-	case 'trackeritem':
-		$function = 'smarty_function_object_link_trackeritem';
-		break;
 	default:
-		$function = 'smarty_function_object_link_default';
-		break;
+		return tr('No rules to display object %1 of type %0.', $type, $object );
 	}
 
-	return $function($smarty, $object, $title, $type, $url);
+	return $function( $object, $title );
 }
 
-function smarty_function_object_link_default( $smarty, $object, $title = null, $type = 'wiki page', $url = null )
-{
-	global $base_url;
+function smarty_function_object_link_wiki( $page, $title = null ) {
+	require_once 'lib/smarty_tiki/modifier.sefurl.php';
+	require_once 'lib/smarty_tiki/modifier.escape.php';
 
-	$smarty->loadPlugin('smarty_modifier_sefurl');
-	$smarty->loadPlugin('smarty_modifier_escape');
+	$escapedPage = smarty_modifier_escape( $title ? $title : $page );
+	$escapedHref = smarty_modifier_escape( smarty_modifier_sefurl( $page, 'wiki' ) );
 
-	if (empty($title)) {
-		$title = TikiLib::lib('object')->get_title($type, $object);
-	}
-
-	if (empty($title) && $type == 'freetag') {
-		// Blank freetag should not be returned with "No title specified"
-		return '';
-	}
-
-	$text = $title;
-	$titleAttribute = '';
-	if ($type == 'wiki page') {
-		$titleAttribute .= ' title="' . smarty_modifier_escape($title) . '"';
-		$text = TikiLib::lib('wiki')->get_without_namespace($title);
-	}
-
-	$escapedText = smarty_modifier_escape($text ? $text : tra('No title specified'));
-
-	if ($url) {
-		$escapedHref = smarty_modifier_escape($url);
-	} else {
-		$escapedHref = smarty_modifier_escape(smarty_modifier_sefurl($object, $type));
-	}
-
-	$classList = array();
-
-	if ( $type == "blog post" ) {
-		$classList[] = "link";
-	} elseif ( $type == "freetag" ) {
-		$classList[] = 'freetag';
-	}
-
-	$metadata = TikiLib::lib('object')->get_metadata($type, $object, $classList);
-	$class = ' class="' . implode(' ', $classList) . '"';
-
-	$html = '<a href="' . $base_url . $escapedHref . '"' . $class . $titleAttribute . $metadata . '>' . $escapedText . '</a>';
-
-	$attributelib = TikiLib::lib('attribute');
-	$attributes = $attributelib->get_attributes($type, $object);
-
-	global $prefs;
-	if (isset($attributes['tiki.content.source']) && $prefs['fgal_source_show_refresh'] == 'y') {
-		$smarty->loadPlugin('smarty_function_icon');
-		$smarty->loadPlugin('smarty_function_service');
-		$html .= '<a class="file-refresh" href="' .
-			smarty_function_service(
-				array(
-					'controller' => 'file',
-					'action' => 'refresh',
-					'fileId' => intval($object),
-				),
-				$smarty
-			) . '">' .
-			smarty_function_icon(
-				array('_id' => 'arrow_refresh',),
-				$smarty
-			) . '</a>';
-
-		TikiLib::lib('header')->add_js(
-			'
-			$(".file-refresh").removeClass("file-refresh").click(function () {
-			$.getJSON($(this).attr("href"));
-			$(this).remove();
-			return false;
-		});'
-		);
-	}
-
-	return $html;
+	return '<a href="' . $escapedHref . '">' . $escapedPage . '</a>';
 }
 
-function smarty_function_object_link_trackeritem( $smarty, $object, $title = null, $type = 'wiki page', $url = null )
-{
-	$pre = null;
+function smarty_function_object_link_user( $user, $title = null ) {
+	require_once 'lib/smarty_tiki/modifier.userlink.php';
 
-	$item = Tracker_Item::fromId($object);
-
-	if ($item && $status = $item->getDisplayedStatus()) {
-		$alt = tr($status);
-		$pre = "<img src=\"img/icons/status_$status.gif\" alt=\"$status\"/>&nbsp;";
-	}
-
-	return $pre . smarty_function_object_link_default($smarty, $object, $title, $type, $url);
+	return smarty_modifier_userlink( $user, 'link', 'not_set', $title ? $title : '' );
 }
 
-function smarty_function_object_link_user( $smarty, $user, $title = null )
-{
-	$smarty->loadPlugin('smarty_modifier_userlink');
-
-	return smarty_modifier_userlink($user, 'link', 'not_set', $title ? $title : '');
-}
-
-function smarty_function_object_link_external( $smarty, $link_orig, $title = null, $type = null )
-{
+function smarty_function_object_link_external( $link, $title = null ) {
 	global $cachelib; require_once 'lib/cache/cachelib.php';
 	global $tikilib;
 
-	if (substr($link_orig, 0, 4) === 'www.') {
-		$link = 'http://' . $link_orig;
-	} else {
-		$link = $link_orig;
-	}
-
-	if ( ! $title ) {
-		if ( ! $title = $cachelib->getCached($link, 'object_link_ext_title') ) {
-			$body = $tikilib->httprequest($link);
-			if ( preg_match('|<title>(.+)</title>|', $body, $parts) ) {
+	if( ! $title ) {
+		if( ! $title = $cachelib->getCached( $link, 'object_link_ext_title' ) ) {
+			$body = $tikilib->httprequest( $link );
+			if( preg_match( '|<title>(.+)</title>|', $body, $parts ) ) {
 				$title = TikiFilter::get('text')->filter($parts[1]);
 			} else {
-				$title = $link_orig;
+				$title = $link;
 			}
 
-			$cachelib->cacheItem($link, $title, 'object_link_ext_title');
+			$cachelib->cacheItem( $link, $title, 'object_link_ext_title' );
 		}
 	}
 
-	$smarty->loadPlugin('smarty_modifier_escape');
-	$escapedHref = smarty_modifier_escape($link);
-	$escapedLink = smarty_modifier_escape($link_orig);
-	$escapedTitle = smarty_modifier_escape($title);
-
-	if ( $type == 'external_extended' && "$link_orig" != "$title") {
-		$data = '<a href="' . $escapedHref . '">' . $escapedLink . '</a>'
-					. "<div class='link_extend_title'><em>" . $escapedTitle . "</em></div>";
-	} else {
-		$data = '<a href="' . $escapedHref . '">' . $escapedTitle . '</a>';
-	}
+	require_once 'lib/smarty_tiki/modifier.escape.php';
+	$escapedHref = smarty_modifier_escape( $link );
+	$escapedTitle = smarty_modifier_escape( $title );
+	$data = '<a href="' . $escapedHref . '">' . $escapedTitle . '</a>';
 
 	return $data;
 }
 
-function smarty_function_object_link_relation_source($smarty, $relationId, $title = null)
-{
-	return smarty_function_object_link_relation_end($smarty, 'source', $relationId, $title);
+function smarty_function_object_link_relation_source( $relationId, $title = null ) {
+	return smarty_function_object_link_relation_end( 'source', $relationId, $title );
 }
 
-function smarty_function_object_link_relation_target($smarty, $relationId, $title = null)
-{
-	return smarty_function_object_link_relation_end($smarty, 'target', $relationId, $title);
+function smarty_function_object_link_relation_target( $relationId, $title = null ) {
+	return smarty_function_object_link_relation_end( 'target', $relationId, $title );
 }
 
-function smarty_function_object_link_relation_end( $smarty, $end, $relationId, $title = null )
-{
+function smarty_function_object_link_relation_end( $end, $relationId, $title = null ) {
 	global $relationlib; require_once 'lib/attributes/relationlib.php';
 	global $attributelib; require_once 'lib/attributes/attributelib.php';
 	global $cachelib; require_once 'lib/cache/cachelib.php';
 
 	$cacheKey = "$relationId:$end:$title";
 
-	if ( ! $out = $cachelib->getCached($cacheKey, 'relation_link') ) {
-		$relation = $relationlib->get_relation($relationId);
+	if( ! $out = $cachelib->getCached( $cacheKey, 'relation_link' ) ) {
+		$relation = $relationlib->get_relation( $relationId );
 
-		if ( $relation ) {
-			if ( ! $title ) {
-				$attributes = $attributelib->get_attributes('relation', $relationId);
+		if( $relation ) {
+			if( ! $title ) {
+				$attributes = $attributelib->get_attributes( 'relation', $relationId );
 				$key = 'tiki.relation.' . $end;
 
-				if ( isset( $attributes[$key] ) && ! empty( $attributes[$key] ) ) {
+				if( isset( $attributes[$key] ) && ! empty( $attributes[$key] ) ) {
 					$title = $attributes[$key];
 				}
 			}
 
-			$type = $relation[$end . '_type'];
-			$object = $relation[$end . '_itemId'];
+			$type = $relation[ $end . '_type' ];
+			$object = $relation[ $end . '_itemId' ];
 
-			$out = smarty_function_object_link(
-				array(
-					'type' => $type,
-					'id' => $object,
-					'title' => $title,
-				),
-				$smarty
-			);
+			global $smarty;
+			$out = smarty_function_object_link( array(
+				'type' => $type,
+				'id' => $object,
+				'title' => $title,
+			), $smarty );
 
-			$cachelib->cacheItem($cacheKey, $out, 'relation_link');
+			$cachelib->cacheItem( $cacheKey, $out, 'relation_link' );
 		} else {
 			$out = tra('Relation not found.');
 		}
 	}
 
 	return $out;
-}
-
-function smarty_function_object_link_freetag( $smarty, $tag, $title = null )
-{
-	global $prefs;
-	if ($prefs['feature_freetags'] != 'y') {
-		return tr('freetags disabled');
-	}
-
-	if (is_numeric($tag)) {
-		$tag = TikiLib::lib('freetag')->get_tag_from_id($tag);
-	}
-
-	return smarty_function_object_link_default($smarty, $tag, $tag, 'freetag');
 }
 

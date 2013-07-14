@@ -1,41 +1,25 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
-
+if ($prefs['ajax_xajax'] == "y") {
+	require_once ('lib/ajax/ajaxlib.php');
+}
 if (empty($prefs['feature_jpgraph'])) {
 	$prefs['feature_jpgraph'] = 'n'; //optional package does not go througp prefs
-}
 
+}
 include_once ('lib/comments/commentslib.php');
 include_once ('lib/categories/categlib.php');
 include_once ('lib/contribution/contributionlib.php');
-
 $commentslib = new Comments($dbTiki);
 $access->check_user($user);
 $access->check_feature('feature_actionlog');
 $access->check_permission_either(array('tiki_p_view_actionlog', 'tiki_p_view_actionlog_owngroups'));
-
-// Handle case when users have checked a number of action logs for global actions
-if (isset($_REQUEST['checked'])) {
-	#check_ticket('list_comments');
-	$checked = is_array($_REQUEST['checked']) ? $_REQUEST['checked'] : array($_REQUEST['checked']);
-	// Ban IP adresses of multiple spammers
-	if ( isset($_REQUEST['ban_x']) ) {
-		ask_ticket('admin-banning');
-		$mass_ban_ip = implode('|', $checked);
-		header('Location: tiki-admin_banning.php?mass_ban_ip_actionlog=' . $mass_ban_ip);
-		exit;
-	}
-}
-
 $auto_query_args = array(
 		'actionId',
 		'startDate_Day',
@@ -51,7 +35,7 @@ $auto_query_args = array(
 		'categId',
 		'find'
 		);
-$categories = $categlib->getCategories();
+$categories = $categlib->list_categs();
 
 if (!empty($_REQUEST["action_log_type"])) {
   $action_log_type = $_REQUEST["action_log_type"];
@@ -86,15 +70,17 @@ if ( !isset($_REQUEST['offset']) || !empty($_REQUEST['export']) ) {
 } else {
   $offset = $_REQUEST["offset"];
 }
-if (isset($_REQUEST['max'])) {
+if ( !empty($_REQUEST['export']) ) {
+	$maxRecords = -1;
+} elseif (isset($_REQUEST['max'])) {
 	$maxRecords = $_REQUEST['max'];
 } else {
 	$maxRecords = $prefs['maxRecords'];
 }
 
-if ($tiki_p_view_actionlog == 'y') {
+if ($tiki_p_admin == 'y') {
 	if (isset($_REQUEST['save'])) {
-		foreach ($action_log_conf_selected as $index => $conf) {
+		foreach($action_log_conf_selected as $index => $conf) {
 			if (isset($_REQUEST['v_' . $conf['code']]) && $_REQUEST['v_' . $conf['code']] == 'on') { //viewed and reported
 				$logslib->set_actionlog_conf($conf['action'], $conf['objectType'], 'v');
 			} elseif (isset($_REQUEST[$conf['code']]) && $_REQUEST[$conf['code']] == 'on') {
@@ -111,12 +97,12 @@ if ($tiki_p_view_actionlog == 'y') {
 } else {
 	if (isset($_REQUEST['save'])) {
 		$_prefs = 'v';
-		foreach ($action_log_conf_selected as $index => $conf) {
+		foreach($action_log_conf_selected as $index => $conf) {
 			if ($conf['status'] == 'v' || $conf['status'] == 'y') { // can only change what is recorded
 				if (isset($_REQUEST['v_' . $conf['code']]) && $_REQUEST['v_' . $conf['code']] == 'on') { //viewed
-					$_prefs .= $conf['id'] . 'v';
+					$_prefs.= $conf['id'] . 'v';
 				} else {
-					$_prefs .= $conf['id'] . 'y';
+					$_prefs.= $conf['id'] . 'y';
 				}
 			}
 		}
@@ -128,7 +114,7 @@ if ($tiki_p_view_actionlog == 'y') {
 	} else {
 		$_prefs = $tikilib->get_user_preference($user, 'actionlog_conf', '');
 		if (!empty($_prefs)) {
-			foreach ($confs as $i => $conf) {
+			foreach($confs as $i => $conf) {
 				if ($confs[$i]['status'] == 'v' || $confs[$i]['status'] == 'y') {
 					if (preg_match('/[vy]' . $confs[$i]['id'] . '([vy])/', $_prefs, $matches)) $confs[$i]['status'] = $matches[1];
 				}
@@ -138,7 +124,7 @@ if ($tiki_p_view_actionlog == 'y') {
 	global $actionlogConf;
 	$actionlogConf = $confs;
 }
-foreach ($confs as $conf) {
+foreach($confs as $conf) {
 	if ($conf['status'] == 'v') {
 		++$nbViewedConfs;
 	}
@@ -184,7 +170,7 @@ if (!empty($_REQUEST['actionId']) && $tiki_p_admin == 'y') {
 			if (count($_REQUEST['cat_categories']) > 1) {
 				$action['params'] = $logslib->get_action_params($_REQUEST['actionId']);
 				$action['contributions'] = $logslib->get_action_contributions($_REQUEST['actionId']);
-				foreach ($_REQUEST['cat_categories'] as $cat) {
+				foreach($_REQUEST['cat_categories'] as $cat) {
 					if ($cat != $old_categ) {
 						$logslib->add_action($action['action'], $action['object'], $action['objectType'], $action['comment'], $action['user'], $action['ip'], '', $action['lastModif'], '', '');
 					}
@@ -201,7 +187,7 @@ if (!empty($_REQUEST['actionId']) && $tiki_p_admin == 'y') {
 			$info = $tikilib->get_page_info($action['object']);
 			$contributors = $logslib->get_wiki_contributors($info);
 			$tcontributors = array();
-			foreach ($contributors as $c) {
+			foreach($contributors as $c) {
 				$tcontributors[] = $c['userId'];
 			}
 			$smarty->assign_by_ref('contributors', $tcontributors);
@@ -212,7 +198,7 @@ if (!empty($_REQUEST['actionId']) && $tiki_p_admin == 'y') {
 
 		}
 		$cont = array();
-		foreach ($contributions as $contribution) {
+		foreach($contributions as $contribution) {
 			$cont[] = $contribution['contributionId'];
 		}
 		$_REQUEST['contributions'] = $cont;
@@ -224,7 +210,7 @@ if (!empty($_REQUEST['actionId']) && $tiki_p_admin == 'y') {
 		if (!empty($_REQUEST['startDate'])) $smarty->assign('startDate', $_REQUEST['startDate']);
 		if (!empty($_REQUEST['endDate'])) $smarty->assign('endDate', $_REQUEST['endDate']);
 		if (!empty($action['categId'])) {
-			foreach ($categories as $i => $cat) {
+			foreach($categories as $i => $cat) {
 				if ($action['categId'] == $cat['categId']) {
 					$categories[$i]['incat'] = 'y';
 				}
@@ -232,30 +218,29 @@ if (!empty($_REQUEST['actionId']) && $tiki_p_admin == 'y') {
 		}
 	}
 }
-if ($tiki_p_list_users == 'y') {
+if ($tiki_p_admin == 'y') {
 	$users = $userlib->list_all_users();
 	$groups = $userlib->list_all_groups();
 } else {
 	$users = array(
-					$userlib->get_user_id($user) => $user
-	);
+			$userlib->get_user_id($user) => $user
+			);
 	$groups = $tikilib->get_user_groups($user);
-	$groups = array_diff(
-		$groups,
-		array(
-			'Anonymous'
-		)
-	);
-	$_REQUEST['selectedUsers'] = array($user);
+	$groups = array_diff($groups, array(
+				'Anonymous'
+				));
+	$_REQUEST['selectedUsers'] = array(
+			$user
+			);
 }
 $selectedGroups = array();
-foreach ($groups as $g) {
+foreach($groups as $g) {
 	$selectedGroups[$g] = 'y';
 }
 $smarty->assign_by_ref('users', $users);
 $smarty->assign_by_ref('groups', $groups);
 $smarty->assign_by_ref('categories', $categories);
-foreach ($categories as $categ) {
+foreach($categories as $categ) {
 	$categNames[$categ['categId']] = $categ['name'];
 }
 $smarty->assign_by_ref('categNames', $categNames);
@@ -264,7 +249,7 @@ if (isset($_REQUEST['list']) || isset($_REQUEST['export']) || isset($_REQUEST['g
 	$url = '';
 	$selectedUsers = array();
 	if (isset($_REQUEST['selectedUsers'])) {
-		foreach ($users as $key => $u) {
+		foreach($users as $key => $u) {
 			if (in_array($u, $_REQUEST['selectedUsers'])) {
 				$url.= "&amp;selectedUsers[]=$u";
 				$selectedUsers[$key] = 'y';
@@ -274,13 +259,13 @@ if (isset($_REQUEST['list']) || isset($_REQUEST['export']) || isset($_REQUEST['g
 	$smarty->assign('selectedUsers', $selectedUsers);
 	if (isset($_REQUEST['selectedGroups']) && !(count($_REQUEST['selectedGroups']) == 1 && $_REQUEST['selectedGroups'][0] == '')) {
 		$selectedGroups = array();
-		foreach ($groups as $key => $g) {
+		foreach($groups as $key => $g) {
 			if (in_array($g, $_REQUEST['selectedGroups'])) {
 				$url.= "&amp;selectedGroups[]=$g";
 				$selectedGroups[$g] = 'y';
 				if ($tiki_p_admin == 'y' || $tiki_p_view_actionlog_owngroups == 'y') {
 					$members = $userlib->get_group_users($g);
-					foreach ($members as $m) {
+					foreach($members as $m) {
 						$_REQUEST['selectedUsers'][] = $m;
 						$selectedUsers[$m] = 'y';
 					}
@@ -301,60 +286,30 @@ if (isset($_REQUEST['list']) || isset($_REQUEST['export']) || isset($_REQUEST['g
 	$smarty->assign('showCateg', $showCateg ? 'y' : 'n');
 	$showLogin = $logslib->action_is_viewed('login', 'system');
 	$smarty->assign('showLogin', $showLogin ? 'y' : 'n');
-	$showbigbluebutton = $logslib->action_is_viewed('Joined Room', 'bigbluebutton');
-	$smarty->assign('showbigbluebutton', $showbigbluebutton ? 'y' : 'n');
 	if (isset($_REQUEST['startDate_Month'])) {
-		$startDate = $tikilib->make_time($_REQUEST['Time_Hour'], $_REQUEST['Time_Minute'], $_REQUEST['Time_Second'], $_REQUEST['startDate_Month'], $_REQUEST['startDate_Day'], $_REQUEST['startDate_Year']);
+		$startDate = $tikilib->make_time(0, 0, 0, $_REQUEST['startDate_Month'], $_REQUEST['startDate_Day'], $_REQUEST['startDate_Year']);
 		$url.= "&amp;start=$startDate";
 	} elseif (isset($_REQUEST['startDate'])) {
 		$startDate = $_REQUEST['startDate'];
 	} else {
-		$startDate = $tikilib->make_time(0, 0, 0, $tikilib->date_format('%m'), $tikilib->date_format('%d'), $tikilib->date_format('%Y'));
+		$startDate = $tikilib->make_time(0, 0, 0, $tikilib->date_format('%m') , $tikilib->date_format('%d') , $tikilib->date_format('%Y'));
 	}
 	$smarty->assign('startDate', $startDate);
 	if (isset($_REQUEST['endDate_Month'])) {
-		$endDate = $tikilib->make_time($_REQUEST['end_Hour'], $_REQUEST['end_Minute'], $_REQUEST['end_Second'], $_REQUEST['endDate_Month'], $_REQUEST['endDate_Day'], $_REQUEST['endDate_Year']);
+		$endDate = $tikilib->make_time(23, 59, 59, $_REQUEST['endDate_Month'], $_REQUEST['endDate_Day'], $_REQUEST['endDate_Year']);
 		$url.= "&amp;end=$endDate";
 	} elseif (isset($_REQUEST['endDate'])) {
 		$endDate = $_REQUEST['endDate'];
-	} else $endDate = $tikilib->make_time(23, 59, 59, $tikilib->date_format('%m'), $tikilib->date_format('%d'), $tikilib->date_format('%Y'));
+	} else $endDate = $tikilib->make_time(23, 59, 59, $tikilib->date_format('%m') , $tikilib->date_format('%d') , $tikilib->date_format('%Y'));
 	$smarty->assign('endDate', $endDate);
-
-	if (isset($_REQUEST['export'])) {
-		header('Content-type: application/octet-stream');
-		header('Content-Disposition: attachment; filename="tiki-actionlogs_stats.csv"');
-		echo "user,date,time,action,type,object,category,categId,ip, unit,+,-,contribution\r\n";
-		for (;;) {
-			$results = $logslib->list_actions('', '', $_REQUEST['selectedUsers'], $offset, $maxRecords, 'lastModif_desc', $find, $startDate, $endDate, $_REQUEST['categId']);
-			if (empty($results['data']))
-				break;
-			$csv = $logslib->export($results['data']);
-			echo $csv;
-			$offset += $maxRecords;
-		}
-		die();
-	}
-	if (isset($_REQUEST['export_bbb'])) {
-	    header('Content-type: application/octet-stream');
-	    header('Content-Disposition: attachment; filename="tiki-actionlogs_bbb_stats.csv"');
-	    echo "user,object,Time in bigbluebutton (in minutes)\r\n";
-	    $logins = $logslib->list_actions('', 'bigbluebutton', $_REQUEST['selectedUsers'], 0, -1, 'lastModif_asc', $find, $startDate, $endDate, false);
-	    $stay_in_big_Times = $logslib->get_bigblue_login_time($logins['data'], $startDate, $endDate, $actions);
-	    if (empty($logins['data']))
-	      break;
-	    $csv = $logslib->export_bbb($stay_in_big_Times);
-	    echo $csv;
-	    $offset += $maxRecords;
-	    die();
-  	}
 	$results = $logslib->list_actions('', '', $_REQUEST['selectedUsers'], $offset, $maxRecords, 'lastModif_desc', $find, $startDate, $endDate, $_REQUEST['categId']);
-	$actions = &$results['data'];
+	$actions = $results['data'];
 	$actions_cant = $results['cant'];
 	$actions = $logslib->get_more_info($actions, $categNames);
 	$contributorActions = $logslib->split_actions_per_contributors($actions, $_REQUEST['selectedUsers']);
 	if (!empty($_REQUEST['selectedUsers'])) {
 		$results = $logslib->list_actions('', '', '', $offset, $maxRecords, 'lastModif_desc', $find, $startDate, $endDate, $_REQUEST['categId']);
-		$allActions = &$results['data'];
+		$allActions = $results['data'];
 		$allContributorsActions = $logslib->split_actions_per_contributors($actions, '');
 	} else {
 		$allActions = $actions;
@@ -387,11 +342,6 @@ if (isset($_REQUEST['list']) || isset($_REQUEST['export']) || isset($_REQUEST['g
 		$logTimes = $logslib->get_login_time($logins['data'], $startDate, $endDate, $actions);
 		$smarty->assign_by_ref('logTimes', $logTimes);
 	}
-	if ($showbigbluebutton) {
-		$logins = $logslib->list_actions('', 'bigbluebutton', $_REQUEST['selectedUsers'], 0, -1, 'lastModif_asc', $find, $startDate, $endDate, false);
-		$stay_in_big_Times = $logslib->get_bigblue_login_time($logins['data'], $startDate, $endDate, $actions);
-		$smarty->assign_by_ref('stay_in_big_Times', $stay_in_big_Times);
-	}
 	if (isset($_REQUEST['unit']) && $_REQUEST['unit'] == 'kb') {
 		for ($i = count($actions) - 1; $i >= 0; --$i) {
 			if (isset($actions[$i]['add'])) $actions[$i]['add'] = round($actions[$i]['add'] / 1024);
@@ -401,7 +351,7 @@ if (isset($_REQUEST['list']) || isset($_REQUEST['export']) || isset($_REQUEST['g
 	if (isset($_REQUEST['sort_mode'])) {
 		list($col, $order) = explode('_', $_REQUEST['sort_mode']);
 		$sort = array();
-		foreach ($actions as $a) {
+		foreach($actions as $a) {
 			$sort[] = isset($a[$col]) ? $a[$col] : '';
 		}
 		array_multisort($sort, ($order == 'desc') ? SORT_DESC : SORT_ASC, $actions);
@@ -410,6 +360,18 @@ if (isset($_REQUEST['list']) || isset($_REQUEST['export']) || isset($_REQUEST['g
 	$smarty->assign_by_ref('actionlogs', $actions);
 	if (isset($_REQUEST['unit'])) $url.= '&amp;unit=' . $_REQUEST['unit'];
 	$smarty->assign('url', "&amp;list=y$url#Report");
+	if (isset($_REQUEST['export'])) {
+		$csv = $logslib->export($actions);
+		header('Content-type: application/octet-stream');
+		header('Content-Disposition: attachment; filename="tiki-actionlogs_stats.csv"');
+		if ( function_exists('mb_strlen') ) {
+  	  header('Content-Length: '.mb_strlen($csv, '8bit'));
+	  } else {
+    	header('Content-Length: '.strlen($csv));
+ 	 }
+		echo $csv;
+		die();
+	}
 	if ($prefs['feature_contribution'] == 'y') {
 		if (empty($_REQUEST['contribTime'])) $_REQUEST['contribTime'] = 'w';
 		$contributionStat = $logslib->get_stat_contribution($actions, $startDate, $endDate, $_REQUEST['contribTime']);
@@ -421,22 +383,22 @@ if (isset($_REQUEST['list']) || isset($_REQUEST['export']) || isset($_REQUEST['g
 if (isset($_REQUEST['graph'])) {
 	$contributions = $contributionlib->list_contributions(0, -1);
 	$legendWidth = 0;
-	foreach ($contributions['data'] as $contribution) {
+	foreach($contributions['data'] as $contribution) {
 		$legendWidth = max($legendWidth, strlen($contribution['name']));
 	}
 	$legendWidth = $legendWidth * 7 + 20;
 	$xUserTickWidth = 0;
-	foreach ($userContributions['data'] as $u => $val) {
+	foreach($userContributions['data'] as $u => $val) {
 		$xUserTickWidth = max($xUserTickWidth, strlen($u));
 	}
 	$xUserTickWidth = $xUserTickWidth * 7;
 	$xGroupTickWidth = 0;
-	foreach ($groupContributions as $g => $val) {
+	foreach($groupContributions as $g => $val) {
 		$xGroupTickWidth = max($xGroupTickWidth, strlen($g));
 	}
 	$xGroupTickWidth = $xGroupTickWidth * 7;
 	$yTickWidth = 0;
-	foreach ($contributionStat['data'] as $contribution) {
+	foreach($contributionStat['data'] as $contribution) {
 		$yTickWidth = max($yTickWidth, $contribution['add'], $contribution['del']);
 	}
 	$yTickWidth = "($yTickWidth).0";
@@ -468,7 +430,7 @@ if (isset($_REQUEST['graph'])) {
 		require_once ('lib/graph-engine/graph.multiline.php');
 		$graphType = 'BarStackGraphic';
 		$ext = 'jpg';
-		$background = new GD_GRenderer(max($widthUser, $widthWeek), 8 * $height, $ext);
+		$background = new GD_GRenderer(max($widthUser, $widthWeek) , 8 * $height, $ext);
 		$legendWidth = 300;
 	}
 	include_once ('lib/smarty_tiki/modifier.tiki_short_date.php');
@@ -482,7 +444,7 @@ if (isset($_REQUEST['graph'])) {
 				if ($tiki_p_admin == 'y') {
 					$title = tra('Users Contributions: Addition');
 				} else {
-					$title = sprintf(tra('%s Contributions: Addition'), $user);
+					$title = sprintf(tra('%s Contributions: Addition') , $user);
 				}
 				if ($prefs['feature_jpgraph'] == 'y') {
 					$graph = new Graph($widthUser, $height + $xUserTickWidth);
@@ -492,7 +454,7 @@ if (isset($_REQUEST['graph'])) {
 					$graph->title->Set($title);
 					$graph->subtitle->Set($period);
 					if ($tiki_p_admin == 'y') {
-						$graph->xaxis->SetTitle(tra('Users'), 'center');
+						$graph->xaxis->SetTitle(tra('Users') , 'center');
 						$graph->xaxis->SetTitleMargin($xUserTickWidth);
 					}
 					$graph->xaxis->SetLabelAngle(90);
@@ -517,7 +479,7 @@ if (isset($_REQUEST['graph'])) {
 				if ($tiki_p_admin == 'y') {
 					$title = tra('Users Contributions: Suppression');
 				} else {
-					$title = sprintf(tra('%s Contributions: Suppression'), $user);
+					$title = sprintf(tra('%s Contributions: Suppression') , $user);
 				}
 				if ($prefs['feature_jpgraph'] == 'y') {
 					$graph = new Graph($widthUser, $height + $xUserTickWidth);
@@ -527,7 +489,7 @@ if (isset($_REQUEST['graph'])) {
 					$graph->title->Set($title);
 					$graph->subtitle->Set($period);
 					if ($tiki_p_admin == 'y') {
-						$graph->xaxis->SetTitle(tra('Users'), 'center');
+						$graph->xaxis->SetTitle(tra('Users') , 'center');
 						$graph->xaxis->SetTitleMargin($xUserTickWidth);
 					}
 					$graph->xaxis->SetLabelAngle(90);
@@ -544,7 +506,7 @@ if (isset($_REQUEST['graph'])) {
 					$graph->setData($series);
 					$graph->setTitle($title);
 					$graph->draw($renderer);
-					imagecopy($background->gd, $renderer->gd, 0, ($height + $space), 0, 0, $renderer->width, $renderer->height);
+					imagecopy($background->gd, $renderer->gd, 0, ($height + $space) , 0, 0, $renderer->width, $renderer->height);
 				}
 			}
 			$series = $logslib->draw_week_contribution_vol($contributionStat, 'add', $contributions);
@@ -578,7 +540,7 @@ if (isset($_REQUEST['graph'])) {
 					$graph->setData($series);
 					$graph->setTitle($title);
 					$graph->draw($renderer);
-					imagecopy($background->gd, $renderer->gd, 0, 2 * ($height + $space), 0, 0, $renderer->width, $renderer->height);
+					imagecopy($background->gd, $renderer->gd, 0, 2 * ($height + $space) , 0, 0, $renderer->width, $renderer->height);
 				}
 			}
 			$series = $logslib->draw_week_contribution_vol($contributionStat, 'del', $contributions);
@@ -612,7 +574,7 @@ if (isset($_REQUEST['graph'])) {
 					$graph->setData($series);
 					$graph->setTitle($title);
 					$graph->draw($renderer);
-					imagecopy($background->gd, $renderer->gd, 0, 3 * ($height + $space), 0, 0, $renderer->width, $renderer->height);
+					imagecopy($background->gd, $renderer->gd, 0, 3 * ($height + $space) , 0, 0, $renderer->width, $renderer->height);
 				}
 			}
 			$series = $logslib->draw_contribution_vol($contributionStat, 'add', $contributions);
@@ -638,7 +600,7 @@ if (isset($_REQUEST['graph'])) {
 					$graph->setData($series);
 					$graph->setTitle($title);
 					$graph->draw($renderer);
-					imagecopy($background->gd, $renderer->gd, 0, 4 * ($height + $space), 0, 0, $renderer->width, $renderer->height);
+					imagecopy($background->gd, $renderer->gd, 0, 4 * ($height + $space) , 0, 0, $renderer->width, $renderer->height);
 				}
 			}
 			$series = $logslib->draw_contribution_vol($contributionStat, 'del', $contributions);
@@ -664,7 +626,7 @@ if (isset($_REQUEST['graph'])) {
 					$graph->setData($series);
 					$graph->setTitle($title);
 					$graph->draw($renderer);
-					imagecopy($background->gd, $renderer->gd, 0, 5 * ($height + $space), 0, 0, $renderer->width, $renderer->height);
+					imagecopy($background->gd, $renderer->gd, 0, 5 * ($height + $space) , 0, 0, $renderer->width, $renderer->height);
 				}
 			}
 			$series = $logslib->draw_contribution_group($groupContributions, 'add', $contributions);
@@ -677,7 +639,7 @@ if (isset($_REQUEST['graph'])) {
 					$graph->img->SetMargin(40 + $yTickWidth, 40 + $legendWidth, 50, 40 + $xGroupTickWidth);
 					$graph->title->Set($title);
 					$graph->subtitle->Set($period);
-					$graph->xaxis->SetTitle(tra('Groups'), 'center');
+					$graph->xaxis->SetTitle(tra('Groups') , 'center');
 					$graph->xaxis->SetLabelAngle(90);
 					$graph->xaxis->SetTitleMargin($xGroupTickWidth);
 					$graph->yaxis->title->Set(tra($_REQUEST['unit']));
@@ -693,7 +655,7 @@ if (isset($_REQUEST['graph'])) {
 					$graph->setData($series);
 					$graph->setTitle($title);
 					$graph->draw($renderer);
-					imagecopy($background->gd, $renderer->gd, 0, 6 * ($height + $space), 0, 0, $renderer->width, $renderer->height);
+					imagecopy($background->gd, $renderer->gd, 0, 6 * ($height + $space) , 0, 0, $renderer->width, $renderer->height);
 				}
 			}
 			$series = $logslib->draw_contribution_group($groupContributions, 'del', $contributions);
@@ -707,7 +669,7 @@ if (isset($_REQUEST['graph'])) {
 					$graph->title->Set($title);
 					$graph->subtitle->Set($period);
 					$graph->xaxis->SetLabelAngle(90);
-					$graph->xaxis->SetTitle(tra('Groups'), 'center');
+					$graph->xaxis->SetTitle(tra('Groups') , 'center');
 					$graph->xaxis->SetTitleMargin($xGroupTickWidth);
 					$graph->yaxis->title->Set(tra($_REQUEST['unit']));
 					$graph->yaxis->SetTitleMargin($yTickWidth);
@@ -722,7 +684,7 @@ if (isset($_REQUEST['graph'])) {
 					$graph->setData($series);
 					$graph->setTitle($title);
 					$graph->draw($renderer);
-					imagecopy($background->gd, $renderer->gd, 0, 7 * ($height + $space), 0, 0, $renderer->width, $renderer->height);
+					imagecopy($background->gd, $renderer->gd, 0, 7 * ($height + $space) , 0, 0, $renderer->width, $renderer->height);
 				}
 			}
 			if ($prefs['feature_jpgraph'] == 'y') {
@@ -735,9 +697,7 @@ if (isset($_REQUEST['graph'])) {
 			}
 			die;
 } elseif ($prefs['feature_jpgraph'] == 'y') {
-	$smarty->assign(
-		'bgcolors',
-		array(
+	$smarty->assign('bgcolors', array(
 				'white',
 				'gray',
 				'silver',
@@ -745,8 +705,7 @@ if (isset($_REQUEST['graph'])) {
 				'whitesmoke',
 				'beige',
 				'darkgrey'
-		)
-	);
+				));
 	//get_strings tra('white'), tra('gray'), tra('silver'), tra('ivory'), tra('whitesmoke'), tra('beige'),tra('darkgrey')
 	$smarty->assign('defaultBgcolor', 'whitesmoke');
 	$smarty->assign('defaultLegendBgcolor', 'white');
@@ -755,22 +714,16 @@ if (isset($_REQUEST['graph'])) {
 	$smarty->assign('galleries', $galleries['data']);
 }
 
-if (empty($_REQUEST)) {
-  $startDate = $tikilib->make_time(0, 0, 0, $tikilib->date_format('%m'), $tikilib->date_format('%d'), $tikilib->date_format('%Y'));
-  $endDate = $tikilib->make_time(23, 59, 59, $tikilib->date_format('%m'), $tikilib->date_format('%d'), $tikilib->date_format('%Y'));
-  $smarty->assign('startDate', $startDate);
-  $smarty->assign('endDate', $endDate);
-}
 $smarty->assign_by_ref('offset', $offset);
 $smarty->assign_by_ref('cant', $actions_cant);
 $smarty->assign_by_ref('maxRecords', $maxRecords);
 $action_log_types = $logslib->get_actionlog_types();
-if (!empty($_REQUEST['action_log_type'])) $smarty->assign('action_log_type', $_REQUEST['action_log_type']);
-if (!empty($_REQUEST['action_log_ip'])) $smarty->assign('action_log_ip', $_REQUEST['action_log_ip']);
-if (!empty($_REQUEST['action_log_action'])) $smarty->assign('action_log_action', $_REQUEST['action_log_action']);
-$smarty->assign('action_log_conf_selected', $action_log_conf_selected);
-$smarty->assign('action_log_types', $action_log_types);
-$smarty->assign('action_log_actions', $logslib->get_actionlog_actions());
+if (!empty($_REQUEST['action_log_type'])) $smarty->assign('action_log_type',$_REQUEST['action_log_type']);
+if (!empty($_REQUEST['action_log_ip'])) $smarty->assign('action_log_ip',$_REQUEST['action_log_ip']);
+if (!empty($_REQUEST['action_log_action'])) $smarty->assign('action_log_action',$_REQUEST['action_log_action']);
+$smarty->assign('action_log_conf_selected',$action_log_conf_selected);
+$smarty->assign('action_log_types',$action_log_types);
+$smarty->assign('action_log_actions',$logslib->get_actionlog_actions());
 
 if (isset($_REQUEST['time'])) $smarty->assign('time', $_REQUEST['time']);
 if (isset($_REQUEST['unit'])) $smarty->assign('unit', $_REQUEST['unit']);

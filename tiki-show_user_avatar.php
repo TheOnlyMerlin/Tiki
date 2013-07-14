@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -20,18 +17,20 @@ include_once ('lib/userprefs/userprefslib.php');
 if (!isset($_REQUEST["user"])) {
 	die;
 }
-
-if (isset($_REQUEST['fullsize']) && $_REQUEST['fullsize'] == 'y' && $prefs["user_store_file_gallery_picture"] == 'y' && $user_picture_id = $userprefslib->get_user_picture_id($_REQUEST["user"]) ) {
-	header('Location: tiki-download_file.php?fileId=' . $user_picture_id . '&amp;display=y');
-	die;
-}
-
 $info = $userprefslib->get_user_avatar_img($_REQUEST["user"]);
 $type = $info["avatarFileType"];
 $content = $info["avatarData"];
-if (empty($content)) {
-	$content = file_get_contents('img/noavatar.png');
+if (empty($content) && isset($_REQUEST['always'])) {
+	$content = file_get_contents('pics/noavatar.png');
 }
 header("Content-type: $type");
 echo $content;
 
+if( $prefs['users_serve_avatar_static'] == 'y' ) {
+	require 'lib/mime/mimeextensions.php';
+	$ext = $mimeextensions[$type];
+	$image = "temp/public/$tikidomain/avatar_{$_REQUEST['user']}.$ext";
+
+	file_put_contents( $image, $info['avatarData'] );
+	chmod($image, 0644);
+}

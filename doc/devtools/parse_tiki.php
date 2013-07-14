@@ -1,5 +1,5 @@
 <?php 
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,34 +10,29 @@
 // mose@tikiwiki.org
 
 require_once('tiki-setup.php');
-
-if ($tiki_p_admin != 'y') {
-	if ($prefs['feature_redirect_on_error'] == 'y') {
-		header('location: ' . $prefs['tikiIndex']);
+if($tiki_p_admin != 'y') {
+		if ($prefs['feature_redirect_on_error'] == 'y') {
+		header('location: '.$prefs['tikiIndex']);
 		die;
 	} else {
-		die('You need to be admin to run this script');
-	}
+	  die("You need to be admin to run this script");
+		}
 }
 $logfile = 'temp/tiki_parsed.txt';
 $logfilehtml = 'temp/tiki_parsed.html';
 
-/**
- * @param $dir
- */
-function collect($dir)
-{
-	global $dirs;
-	if (is_dir($dir) and is_dir("$dir/CVS")) {
+function collect($dir) {
+  global $dirs;
+  if (is_dir($dir) and is_dir("$dir/CVS")) {
 		$list = file("$dir/CVS/Entries");
 		foreach ($list as $l) {
 			// if (count($dirs) > 20) return true;
-			if (strstr($l, '/')) {
-				$s = explode('/', rtrim($l));
-				$filepath = $dir . '/' . $s[1];
+			if (strstr($l,'/')) {
+				$s = explode('/',rtrim($l));
+				$filepath = $dir.'/'.$s[1];
 				if ($s[0] == 'D') {
 					collect($filepath);
-
+					
 					$dirs["$dir"][] = $s[1];
 					$dirs["$dir"]['FILES'] = array();
 				} else {
@@ -60,39 +55,30 @@ function collect($dir)
 	}
 }
 
-/**
- * @param $fd
- * @param $fx
- * @param $outstring
- * @param string $style
- * @param string $mod
- * @param bool $br
- */
-function echoline($fd, $fx, $outstring, $style = '', $mod = '', $br = true)
-{
+function echoline($fd, $fx, $outstring, $style='', $mod='', $br=true) {
 	if ($br) {
 		$br = "\n";
 	} else {
 		$br = '';
 	}
-	fwrite($fd, $outstring . $br);
+  fwrite ($fd, $outstring.$br);
 	if ($mod == 'd') {
-		$outstring = date('D M d H:m:s Y', trim($outstring));
+		$outstring = date('D M d H:m:s Y',trim($outstring));
 	}
 	if ($style == 'eob') {
 		$htmlstring = "</div>";
 	} elseif ($style) {
 		if ($style == 'dir') {
-			$htmlstring = "<span class='$style' onclick=\"javascript:toggle('" . $outstring . "');\">" . sprintf("    %-16s : ", $style) . htmlspecialchars($outstring) . "</span>";
-			$htmlstring.= "<div class='box' id='" . $outstring . "'>";
+			$htmlstring = "<span class='$style' onclick=\"javascript:toggle('".$outstring."');\">". sprintf("    %-16s : ",$style). htmlspecialchars($outstring)."</span>";
+			$htmlstring.= "<div class='box' id='".$outstring."'>";
 			$br = '';
 		} else { 
-			$htmlstring = "<span class='$style'>" . sprintf("    %-16s : ", $style) . htmlspecialchars($outstring) . "</span>";
+			$htmlstring = "<span class='$style'>". sprintf("    %-16s : ",$style). htmlspecialchars($outstring)."</span>";
 		}
 	} else {
 		$htmlstring = htmlspecialchars($outstring);
 	}
-	fwrite($fx, $htmlstring.$br);
+  fwrite ($fx, $htmlstring.$br);
 }
 $display = 'none';
 if (isset($_REQUEST['all'])) $display = 'block';
@@ -121,78 +107,68 @@ pre { padding : 10px; border: 1px solid #666666; background-color: #efefef; }
 if (isset($_POST['action'])) {
 	$files = $dirs = array();
 	collect('.');
-	@unlink($logfile);
-	$fw = fopen($logfile, 'w');
-	$fx = fopen($logfilehtml, 'w');
-
+  @unlink ($logfile);
+  $fw = fopen($logfile,'w');
+  $fx = fopen($logfilehtml,'w');
 	foreach ($dirs as $dir=>$params) {
 		$dirname = basename($dir);
 		$path = dirname($dir);
-		echoline($fw, $fx, $dir, 'dir');
-		echoline($fw, $fx, '');
-
+		echoline($fw,$fx,$dir,'dir');
+		echoline($fw,$fx,'');
 		if (isset($dirs["$dir"]['FILES'])) {
 			foreach ($dirs["$dir"]['FILES'] as $file=>$params) {
-				$fp = fopen($file, "r");
-				$data = fread($fp, filesize($file));
-				fclose($fp);
+				$fp = fopen ($file, "r");
+				$data = fread ($fp, filesize ($file));
+				fclose ($fp);
 				$requests = array();
 				$urls = array();
-
 				if (preg_match("/\.(tpl|ph(p|tml))$/", $file)) {
 					if (preg_match("/\.ph(p|tml)$/", $file)) {	
-						echoline($fw, $fx, $file, "file php");
-						$data = preg_replace("/(?s)\/\*.*?\*\//", '', $data); // C comments
-						$data = preg_replace("/(?m)^\s*\/\/.*\$/", '', $data); // C++ comments
-						$data = preg_replace("/(?m)^\s*\#.*\$/", '', $data); // shell comments
+						echoline($fw,$fx, $file,"file php");
+						$data = preg_replace ("/(?s)\/\*.*?\*\//", "", $data);  // C comments
+						$data = preg_replace ("/(?m)^\s*\/\/.*\$/", "", $data); // C++ comments
+						$data = preg_replace ("/(?m)^\s*\#.*\$/",   "", $data); // shell comments
 						$data = preg_replace('/(\r|\n)/', '', $data); // all one line
 						preg_match_all('/\$_(REQUEST|POST|GET|COOKIE|SESSION)\[([^\]]*)\]/', $data, $requests); // requests uses
 						$max = count($requests[0]);
-						for ($i=0; $i<$max; $i++) {
-							echoline($fw, $fx, $requests[1][$i] . " = " . $requests[2][$i], 'sub var'); 
+						for ($i=0;$i<$max;$i++) {
+							echoline($fw,$fx,$requests[1][$i]." = ".$requests[2][$i],'sub var'); 
 						}
-					} elseif (preg_match("/\.tpl$/", $file)) {
-						echoline($fw, $fx, $file, 'file smarty');
+					} elseif (preg_match ("/\.tpl$/", $file)) {
+						echoline($fw,$fx,$file,'file smarty');
 						$data = preg_replace('/(?s)\{\*.*?\*\}/', '', $data); // Smarty comment 
 						$data = preg_replace('/(\r|\n)/', '', $data); // all one line 
 					}
-
 					preg_match_all('/<(a[^>]*)>[^<]*<\/a>/im', $data, $urls); // href links
-
 					foreach ($urls[1] as $u) {
-						echoline($fw, $fx, $u, 'sub url'); 
+						echoline($fw,$fx,$u,'sub url'); 
 					}
-
 					preg_match_all('/<(form[^>]*)>/', $data, $forms); // form uses
-
 					foreach ($forms[1] as $f) {
-						echoline($fw, $fx, $f, 'sub action'); 
+						echoline($fw,$fx,$f,'sub action'); 
 					}
-
 					preg_match_all('/<((input|textarea|select)[^>]*)>/', $data, $elements); // form elements uses
 					$max = count($elements[0]);
-
-					for ($i = 0; $i < $max; $i++) {
-						echoline($fw, $fx, $elements[1][$i], 'sub form'); 
+					for ($i=0;$i<$max;$i++) {
+						echoline($fw,$fx,$elements[1][$i],'sub form'); 
 					}
-
-					echoline($fw, $fx, trim($params['atime']), 'sub atime', 'd');
-					echoline($fw, $fx, trim($params['mtime']), 'sub mtime', 'd');
-					echoline($fw, $fx, trim($params['ctime']), 'sub ctime', 'd');
-					echoline($fw, $fx, trim($params['date']), 'sub date');
-					echoline($fw, $fx, trim($params['size']), 'sub size');
-					echoline($fw, $fx, trim($params['rev']), 'sub rev');
-					echoline($fw, $fx, substr(trim($params['tag']), 1), 'sub tag');
-				} elseif (preg_match('/\.(gif|jpg|png)$/i', $file)) {
-					echoline($fw, $fx, $file, 'file image');
+					echoline($fw,$fx,trim($params['atime']),'sub atime','d');
+					echoline($fw,$fx,trim($params['mtime']),'sub mtime','d');
+					echoline($fw,$fx,trim($params['ctime']),'sub ctime','d');
+					echoline($fw,$fx,trim($params['date']),'sub date');
+					echoline($fw,$fx,trim($params['size']),'sub size');
+					echoline($fw,$fx,trim($params['rev']),'sub rev');
+					echoline($fw,$fx,substr(trim($params['tag']),1),'sub tag');
+				} elseif (preg_match ("/\.(gif|jpg|png)$/i", $file)) {
+					echoline($fw,$fx,$file,'file image');
 				} else {
-					echoline($fw, $fx, $file, 'file other');
+					echoline($fw,$fx,$file,'file other');
 				}
-				echoline($fw, $fx, '');
+				echoline($fw,$fx,'');
 				flush();
 			}
 		}
-		echoline($fw, $fx, 'end of box', 'eob');
+		echoline($fw,$fx,'end of box','eob');
 	}
 	fclose($fw);
 	fclose($fx);

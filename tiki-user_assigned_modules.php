@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,12 +7,14 @@
 
 $section = 'mytiki';
 require_once ('tiki-setup.php');
+if ($prefs['ajax_xajax'] == "y") {
+	require_once ('lib/ajax/ajaxlib.php');
+}
+include_once ('lib/usermodules/usermoduleslib.php');
 
-$access->check_feature(array('feature_modulecontrols', 'user_assigned_modules'));
+$access->check_feature( array('feature_modulecontrols', 'user_assigned_modules') );
 $access->check_user($user);
 $access->check_permission('tiki_p_configure_modules');
-
-$usermoduleslib = TikiLib::lib('usermodules');
 
 if (isset($_REQUEST["recreate"])) {
 	check_ticket('user-modules');
@@ -67,5 +66,14 @@ $smarty->assign_by_ref('assignables', $assignables);
 $smarty->assign_by_ref('modules', $modules);
 include_once ('tiki-mytiki_shared.php');
 ask_ticket('user-modules');
+if ($prefs['ajax_xajax'] == "y") {
+	function user_modules_ajax() {
+		global $ajaxlib, $xajax;
+		$ajaxlib->registerTemplate("tiki-user_assigned_modules.tpl");
+		$ajaxlib->registerFunction("loadComponent");
+		$ajaxlib->processRequests();
+	}
+	user_modules_ajax();
+}
 $smarty->assign('mid', 'tiki-user_assigned_modules.tpl');
 $smarty->display("tiki.tpl");

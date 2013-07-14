@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -36,8 +33,7 @@ if (isset($info['user']) && $info['user'] == $user) {
 } elseif (!empty($itemUser) && $user == $itemUser) {
 } elseif ((isset($itemInfo['status']) and $itemInfo['status'] == 'p' && !$tikilib->user_has_perm_on_object($user, $itemInfo['trackerId'], 'tracker', 'tiki_p_view_trackers_pending')) 
 	||  (isset($itemInfo['status']) and $itemInfo['status'] == 'c' && !$tikilib->user_has_perm_on_object($user, $itemInfo['trackerId'], 'tracker', 'tiki_p_view_trackers_closed'))
-	||  ($tiki_p_admin_trackers != 'y' && !$tikilib->user_has_perm_on_object($user, $itemInfo['trackerId'], 'tracker', 'tiki_p_view_trackers'))
-	||  ($tiki_p_admin_trackers != 'y' && !$tikilib->user_has_perm_on_object($user, $itemInfo['trackerId'], 'tracker', 'tiki_p_tracker_view_attachments'))
+	||  ($tiki_p_admin_trackers != 'y' && !$tikilib->user_has_perm_on_object($user, $itemInfo['trackerId'], 'tracker', 'tiki_p_view_trackers') )
     ) {
 	$smarty->assign('errortype', 401);
 		$smarty->assign('msg', tra('Permission denied'));
@@ -48,22 +44,22 @@ if (isset($info['user']) && $info['user'] == $user) {
 $trklib->add_item_attachment_hit($_REQUEST["attId"]);
 
 if ( empty($info['filetype']) || $info['filetype'] == 'application/x-octetstream' || $info['filetype'] == 'application/octet-stream' ) {
-	$mimelib = TikiLib::lib('mime');
-	$info['filetype'] = $mimelib->from_filename($info['filename']);
+	include_once('lib/mime/mimelib.php');
+	$info['filetype'] = tiki_get_mime($info['filename'], 'application/octet-stream');
 }
-$type = $info["filetype"];
-$file = $info["filename"];
-$content = $info["data"];
+$type = &$info["filetype"];
+$file = &$info["filename"];
+$content = &$info["data"];
 
 session_write_close();
 //print("File:$file<br />");
 //die;
-header("Content-type: $type");
+header ("Content-type: $type");
 if (isset($_REQUEST["display"])) {
 //die;
-	header("Content-Disposition: inline; filename=\"".urlencode($file)."\"");
+	header ("Content-Disposition: inline; filename=\"".urlencode($file)."\"");
 } else {
-	header("Content-Disposition: attachment; filename=\"$file\"");
+	header( "Content-Disposition: attachment; filename=\"$file\"" );
 }
 header("Expires: 0");
 header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
@@ -75,10 +71,10 @@ if ($info["path"]) {
 		 header("Content-Length: ". strlen($str));
 		echo $str;
 	} else {
-		header("Content-Length: ". filesize($prefs['t_use_dir'].$info["path"]));
-		readfile($prefs['t_use_dir'] . $info["path"]);
+		header("Content-Length: ". filesize( $prefs['t_use_dir'].$info["path"] ) );
+		readfile ($prefs['t_use_dir'] . $info["path"]);
 	}
 } else {
-	header("Content-Length: ". $info[ "filesize" ]);
+	header("Content-Length: ". $info[ "filesize" ] );
 	echo "$content";
 }

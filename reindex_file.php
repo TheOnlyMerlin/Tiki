@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -31,11 +28,11 @@ if ( ($id = (int)$_GET['id']) > 0 ) {
 		$info = $filegallib->get_file_info($id);
 
 		if ( $info['galleryId'] > 0 ) {
-			$gal_info = $filegallib->get_file_gallery($info['galleryId']);
-
+			$gal_info = $tikilib->get_file_gallery($info['galleryId']);
+		
 			// Check perms
 			$tikilib->get_perm_object($info['galleryId'], 'file gallery', $gal_info, true);
-
+	
 			if ( $tiki_p_admin_file_galleries == 'y'
 				|| ( ( empty($fileInfo['lockedby']) || $fileInfo['lockedby'] == $user ) && $tiki_p_edit_gallery_file == 'y' )
 			) { // must be the owner or the locker or have the perms

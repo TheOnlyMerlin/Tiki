@@ -1,19 +1,54 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_include_info() 
-{
+/**
+ * INCLUDE plugin
+ * Includes a wiki page in another.
+ *
+ * Usage:
+ * {INCLUDE(page=>name [,start=>start-marker] [,stop=>stop-marker])}{INCLUDE}
+ *
+ * Params:
+ * @param	page	Gives the name of the page to include
+ * @param	start	Gives a string to search for to begin the include. Text
+ *			before that marker (and the marker itself) will not be included.
+ *			Default is the beginning of the included page.
+ *			The marker must appear on a line by itself; white space
+ *			before or after the marker is ignored.
+ * @param	stop		Gives a string to search for to end the include. Text
+ *			after that marker (and the marker itself) will not be included.
+ *			Default is the beginning of the included page.
+ *			The marker must appear on a line by itself; white space
+ *			before or after the marker is ignored.
+ *
+ * If both start and stop are specified and the pair of strings occurs
+ * multiple times in the included page, each section so delimited will
+ * be included in the calling page.
+ *
+ * NOTE: The design and implementation of the start/stop feature is experimental
+ *	 and needs some feedback (and, no doubt, improvement) from the community. 
+ *       In order to prevent infinite loops, any page can only be included
+ *   directly or indirectly 5 times (set in $max_times).
+ *
+ * @package Tikiwiki
+ * @subpackage TikiPlugins
+ * @version $Revision: 1.11 $
+ */
+
+function wikiplugin_include_help() {
+	return tra("Include a page").":<br />~np~{INCLUDE(page=> [,start=>] [,stop=>])}{INCLUDE}~/np~";
+}
+
+function wikiplugin_include_info() {
 	return array(
 		'name' => tra('Include'),
-		'documentation' => 'PluginInclude',
-		'description' => tra('Include content from a wiki page'),
+		'documentation' => tra('PluginInclude'),
+		'description' => tra('Include a page\'s content.'),
 		'prefs' => array('wikiplugin_include'),
-		'icon' => 'img/icons/page_copy.png',
-		'tags' => array( 'basic' ),
 		'params' => array(
 			'page' => array(
 				'required' => true,
@@ -21,7 +56,6 @@ function wikiplugin_include_info()
 				'description' => tra('Wiki page name to include.'),
 				'filter' => 'pagename',
 				'default' => '',
-				'profile_reference' => 'wiki_page',
 			),
 			'start' => array(
 				'required' => false,
@@ -51,15 +85,13 @@ function wikiplugin_include_info()
 	);
 }
 
-function wikiplugin_include($dataIn, $params)
-{
-	global $tikilib,$userlib,$user, $killtoc;
+function wikiplugin_include($data, $params, $offset) {
+	global $tikilib,$userlib,$user;
     static $included_pages, $data;
 
-	$killtoc = true;
 	$max_times = 5;
-	$params = array_merge(array( 'nopage_text' => '', 'pagedenied_text' => '' ), $params);
-	extract($params, EXTR_SKIP);
+	$params = array_merge( array( 'nopage_text' => '', 'pagedenied_text' => '' ), $params );
+	extract ($params,EXTR_SKIP);
 	if (!isset($page)) {
 		return ("<b>missing page for plugin INCLUDE</b><br />");
 	}
@@ -75,11 +107,11 @@ function wikiplugin_include($dataIn, $params)
         $included_pages[$memo] = 1;
         // only evaluate permission the first time round
         // evaluate if object or system permissions enables user to see the included page
-    	$data[$memo] = $tikilib->get_page_info($page);
-    	if (!$data[$memo]) {
+    	$data = $tikilib->get_page_info($page);
+    	if (!$data) {
     		$text = $nopage_text;
     	}
-		$perms = $tikilib->get_perm_object($page, 'wiki page', $data[$memo], false);
+		$perms = $tikilib->get_perm_object($page, 'wiki page', $data, false);
         if ($perms['tiki_p_view'] != 'y') {
             $included_pages[$memo] = $max_times;
             $text = $pagedenied_text;
@@ -87,8 +119,8 @@ function wikiplugin_include($dataIn, $params)
         }
     }
 
-	if ($data[$memo]) {
-		$text = $data[$memo]['data'];
+	if ($data) {
+		$text = $data['data'];
 		if (isset($start) || isset($stop)) {
 			$explText = explode("\n", $text);
 			if (isset($start) && isset($stop)) {
@@ -137,23 +169,10 @@ function wikiplugin_include($dataIn, $params)
 			$text = implode("\n", $explText);
 		}
 	}
-	
-	$parserlib = TikiLib::lib('parser');
 	$options = null;
 	if (!empty($_REQUEST['page'])) {
 		$options['page'] = $_REQUEST['page'];
 	}
-	$parserlib->setOptions($options);
-	$parserlib->parse_wiki_argvariable($text);
-	// append an edit button
-	if (isset($perms) && $perms['tiki_p_edit'] === 'y' && strpos($_SERVER['PHP_SELF'], 'tiki-send_newsletters.php') === false) {
-		global $smarty;
-		$smarty->loadPlugin('smarty_block_ajax_href');
-		$smarty->loadPlugin('smarty_function_icon');
-		$tip = tra('Include Plugin'). ' | ' . tra('Edit the included page:').' &quot;' . $page . '&quot;';
-		$text .= '<a class="editplugin tips" '.	// ironically smarty_block_self_link doesn't work for this! ;)
-				smarty_block_ajax_href(array('template' => 'tiki-editpage.tpl'), 'tiki-editpage.php?page='.urlencode($page).'&returnto='.urlencode($GLOBALS['page']), $smarty, $tmp = false) . '>' .
-				smarty_function_icon(array( '_id' => 'page_edit', 'title' => $tip, 'class' => 'icon tips'), $smarty) . '</a>';
-	}
+	$tikilib->parse_wiki_argvariable($text, $options);
 	return $text;
 }

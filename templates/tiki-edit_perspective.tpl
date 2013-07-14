@@ -7,11 +7,10 @@
 				<th>{tr}Perspective{/tr}</th>
 				<th>{tr}Actions{/tr}</th>
 			</tr>
-			{cycle values="odd,even" print=false}
 			{foreach from=$perspectives item=persp}
-				<tr class="{cycle}">
-					<td class="text">{$persp.name|escape}</td>
-					<td class="action">
+				<tr>
+					<td>{$persp.name|escape}</td>
+					<td>
 						<a href="tiki-switch_perspective.php?perspective={$persp.perspectiveId|escape:url}">{icon _id=arrow_right alt="{tr}Switch to{/tr}"}</a>
 						{if $persp.can_edit}
 							{self_link _icon=page_edit action=edit _ajax='y' id=$persp.perspectiveId cookietab=3}{tr}Edit{/tr}{/self_link}
@@ -31,7 +30,7 @@
 	{if $tiki_p_perspective_create eq 'y'}
 		{tab name="{tr}Create{/tr}"}
 			<form method="post" action="tiki-edit_perspective.php">
-				<p>{tr}Name:{/tr} <input type="text" name="name"/> <input type="submit" name="create" value="{tr}Create{/tr}"></p>
+				<p>{tr}Name{/tr}: <input type="text" name="name"/> <input type="submit" name="create" value="{tr}Create{/tr}"/></p>
 			</form>
 		{/tab}
 	{/if}
@@ -39,26 +38,26 @@
 		{tab name="{tr}Edit{/tr}"}
 			<form method="post" action="tiki-edit_perspective.php">
 				<p>
-					{tr}Name:{/tr}
-					<input type="text" name="name" value="{$perspective_info.name|escape}">
-					<input type="hidden" name="id" value="{$perspective_info.perspectiveId|escape}">
+					{tr}Name{/tr}:
+					<input type="text" name="name" value="{$perspective_info.name|escape}"/>
+					<input type="hidden" name="id" value="{$perspective_info.perspectiveId|escape}"/>
 				</p>
 				<fieldset id="preferences" class="dropzone" style="text-align: left;">
-					<p>{tr}Configurations:{/tr}</p>
+					<p>{tr}Configurations{/tr}:</p>
 					{foreach from=$perspective_info.preferences key=name item=val}
 						{preference name=$name source=$perspective_info.preferences}
 					{/foreach}
 				</fieldset>
 				<p>
-					<input type="submit" name="save" value="{tr}Save{/tr}">
+					<input type="submit" name="save" value="{tr}Save{/tr}"/>
 				</p>
 			</form>
 			<form method="post" id="searchform" action="tiki-edit_perspective.php">
 				{remarksbox type="info" title="{tr}Hint{/tr}"}{tr}Search for configurations below and drag them in to the configuration section above.{/tr}{/remarksbox}
 				<p>
-					<input type="hidden" name="id" value="{$perspective_info.perspectiveId|escape}">
-					<input id="criteria" type="text" name="criteria">
-					<input type="submit" value="{tr}Search{/tr}">
+					<input type="hidden" name="id" value="{$perspective_info.perspectiveId|escape}"/>
+					<input id="criteria" type="text" name="criteria"/>
+					<input type="submit" value="{tr}Search{/tr}"/>
 				</p>
 				<fieldset id="resultzone" class="dropzone" style="text-align: left;"></fieldset>
 			</form>

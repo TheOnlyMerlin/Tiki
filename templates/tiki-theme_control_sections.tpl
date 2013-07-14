@@ -1,11 +1,11 @@
 {title help="Theme+Control"}{tr}Theme Control Center: Sections{/tr}{/title}
 
 {remarksbox type="notice" title="{tr}Notice{/tr}"}
-<b>{tr}Theme is selected as follows:{/tr}</b><br>
-1. {tr}If a theme is assigned to the individual object that theme is used.{/tr}<br>
-2. {tr}If not then if a theme is assigned to the object's category that theme is used{/tr}<br>
-3. {tr}If not then a theme for the section is used{/tr}<br>
-4. {tr}If none of the above was selected the user theme is used{/tr}<br>
+<b>{tr}Theme is selected as follows{/tr}:</b><br />
+1. {tr}If a theme is assigned to the individual object that theme is used.{/tr}<br />
+2. {tr}If not then if a theme is assigned to the object's category that theme is used{/tr}<br />
+3. {tr}If not then a theme for the section is used{/tr}<br />
+4. {tr}If none of the above was selected the user theme is used{/tr}<br />
 5. {tr}Finally if the user didn't select a theme the default theme is used{/tr}
 {/remarksbox}
 
@@ -47,7 +47,7 @@
 				</select>
 			</td>
 			<td>
-				<input type="submit" name="assign" value="{tr}Assign{/tr}">
+				<input type="submit" name="assign" value="{tr}Assign{/tr}" />
 			</td>
 		</tr>
 	</table>
@@ -57,7 +57,7 @@
 <form action="tiki-theme_control_sections.php" method="post">
 	<table class="normal">
 		<tr>
-			<th><input type="submit" name="delete" value="{tr}Del{/tr}"></th>
+			<th><input type="submit" name="delete" value="{tr}Del{/tr}" /></th>
 			<th>
 				<a href="tiki-theme_control_sections.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'section_desc'}section_asc{else}section_desc{/if}">
 					{tr}Section{/tr}
@@ -72,13 +72,13 @@
 		{cycle values="odd,even" print=false}
 		{section name=user loop=$channels}
 			<tr class="{cycle}">
-				<td class="checkbox">
-					<input type="checkbox" name="sec[{$channels[user].section}]">
+				<td>
+					<input type="checkbox" name="sec[{$channels[user].section}]" />
 				</td>
-				<td class="text">{$channels[user].section}</td>
-				<td class="text">{$channels[user].theme}</td>
+				<td>{$channels[user].section}</td>
+				<td>{$channels[user].theme}</td>
 			</tr>
 		{/section}
 	</table>
 </form>
-<br> <br> <br> 
+<br /> <br /> <br /> 

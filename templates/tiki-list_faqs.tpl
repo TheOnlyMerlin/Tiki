@@ -25,20 +25,20 @@
 	{cycle values="odd,even" print=false}
 	{section name=user loop=$channels}
 		<tr class="{cycle}">
-			<td class="text">
+			<td>
 				<a class="tablename" href="tiki-view_faq.php?faqId={$channels[user].faqId}">{$channels[user].title|escape}</a>
 				<div class="subcomment">
 					{$channels[user].description|escape|nl2br}
 				</div>
 			</td>
-			<td class="integer">
+			<td style="text-align:right;">
 				{$channels[user].hits}
 			</td>
-			<td class="integer">
+			<td style="text-align:right;">
 				{$channels[user].questions} ({$channels[user].suggested})
 			</td>
 			{if $tiki_p_admin_faqs eq 'y'}
-				<td class="action">
+				<td style="text-align:right">
 					<a class="link" href="tiki-list_faqs.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;faqId={$channels[user].faqId}">{icon _id='page_edit'}</a>
 					<a class="link" href="tiki-faq_questions.php?faqId={$channels[user].faqId}">{icon _id='help' alt="{tr}Questions{/tr}"}</a>
 					<a class="link" href="tiki-list_faqs.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].faqId}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
@@ -46,7 +46,11 @@
 			{/if}
 		</tr>
 	{sectionelse}
-		{if $tiki_p_admin_faqs eq 'y'}{norecords _colspan=5}{else}{norecords _colspan=4}{/if}
+		<tr>
+			<td class="odd" colspan="{if $tiki_p_admin_faqs eq 'y'}5{else}4{/if}">
+				<strong>{tr}No records found.{/tr}</strong>
+			<td>
+		</tr>
 	{/section}
 </table>
 
@@ -65,19 +69,19 @@
 	{/if}
 
 	<form action="tiki-list_faqs.php" method="post">
-		<input type="hidden" name="faqId" value="{$faqId|escape}">
+		<input type="hidden" name="faqId" value="{$faqId|escape}" />
 		<table class="formcolor">
 			<tr>
 				<td>
-					{tr}Title:{/tr}
+					{tr}Title{/tr}:
 				</td>
 				<td>
-					<input type="text" name="title" value="{$title|escape}">
+					<input type="text" name="title" value="{$title|escape}" />
 				</td>
 			</tr>
 			<tr>
 				<td>
-					{tr}Description:{/tr}
+					{tr}Description{/tr}:
 				</td>
 				<td>
 					<textarea name="description" rows="4" cols="40">{$description|escape}</textarea>
@@ -86,18 +90,18 @@
 			{include file='categorize.tpl'}
 			<tr>
 				<td>
-					{tr}Users can suggest questions:{/tr}
+					{tr}Users can suggest questions{/tr}:
 				</td>
 				<td>
-					<input type="checkbox" name="canSuggest" {if $canSuggest eq 'y'}checked="checked"{/if}>
+					<input type="checkbox" name="canSuggest" {if $canSuggest eq 'y'}checked="checked"{/if} />
 				</td>
 			</tr>
 			<tr>
-				<td>&nbsp;
-					
+				<td>
+					&nbsp;
 				</td>
 				<td>
-					<input type="submit" name="save" value="{tr}Save{/tr}">
+					<input type="submit" name="save" value="{tr}Save{/tr}" />
 				</td>
 			</tr>
 		</table>

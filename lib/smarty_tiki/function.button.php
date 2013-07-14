@@ -1,18 +1,18 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
 
 /*
- * smarty_function_button: Display a Tiki button
+ * smarty_function_button: Display a Tikiwiki button
  *
  * params will be used as params for as smarty self_link params, except those special params specific to smarty button :
  *	- _text: Text that will be shown in the button
@@ -23,17 +23,16 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
  *	- _flip_default_open: if set to 'y', the flip is open by default (if no cookie jar)
  *	- _escape: if set to 'y', will escape the apostrophes in onclick
  */
-function smarty_function_button($params, $smarty)
-{
+function smarty_function_button($params, &$smarty) {
 	if ( ! is_array($params) || ! isset($params['_text']) ) return;
 	global $tikilib, $prefs, $auto_query_args;
 
-	$smarty->loadPlugin('smarty_block_self_link');
+	require_once $smarty->_get_plugin_filepath('block', 'self_link');
 
 	$selected = false ;
 	if ( ! empty($params['_selected']) ) {
 		// Filter the condition
-		if (preg_match('/[a-zA-Z0-9 =<>!]+/', $params['_selected'])) {
+		if (preg_match('/[a-zA-Z0-9 =<>!]+/',$params['_selected'])) {
 			$error_report = error_reporting(~E_ALL);
 			$return = eval ( '$selected =' . $params['_selected'].";" );
 			error_reporting($error_report);
@@ -61,7 +60,7 @@ function smarty_function_button($params, $smarty)
 	$disabled = false ;
 	if ( ! empty($params['_disabled']) ) {
 		// Filter the condition
-		if (preg_match('/[a-zA-Z0-9 =<>!]+/', $params['_disabled'])) {
+		if (preg_match('/[a-zA-Z0-9 =<>!]+/',$params['_disabled'])) {
 			$error_report = error_reporting(~E_ALL);
 			$return = eval ( '$disabled =' . $params['_disabled'].";" );
 			error_reporting($error_report);
@@ -96,9 +95,8 @@ function smarty_function_button($params, $smarty)
 	} else {
 		$id = '';
 	}
-
+	
 	unset($params['_class']);
-
 
 	if (!$disabled) {
 		$flip_id = '';
@@ -132,7 +130,7 @@ function smarty_function_button($params, $smarty)
 		// Remove params that does not start with a '_', since we don't want them to modify the URL except when in auto_query_args
 		if ( ! isset($params['_keepall']) || $params['_keepall'] != 'y') {
 			foreach ( $params as $k => $v ) {
-				if ( $k[0] != '_' && $k != 'href' && (empty($auto_query_args) || !in_array($k, $auto_query_args)) ) unset($params[$k]);
+				if ( $k[0] != '_' && $k != 'href' && (empty($auto_query_args) || !in_array($k,$auto_query_args)) ) unset($params[$k]);
 			}
 		}
 
@@ -156,24 +154,21 @@ function smarty_function_button($params, $smarty)
 		}
 
 		$html = smarty_block_self_link(
-			$params,
-			$params['_text'],
-			$smarty
-		);
+				$params,
+				$params['_text'],
+				$smarty,
+				false
+				);
 	} else {
 		$params['_disabled'] = 'y';
 		$html = smarty_block_self_link(
-			$params,
-			$params['_text'],
-			$smarty
-		);
+				$params,
+				$params['_text'],
+				$smarty,
+				false
+				);
 	}
 
 	$auto_query_args = $auto_query_args_orig;
-	if ($prefs['mobile_feature'] !== 'y' || $prefs['mobile_mode'] !== 'y') {
-		$html = '<span class="'.(!empty($params['_noborder']) ? '' : 'btn button').(!empty($class)?" $class":'').'"'.$id.'>'.$html.'</span>';
-	} else {
-		$html = preg_replace('/<a /', '<a class="btn" data-role="button" ', $html);
-	}
-	return $html;
+	return '<span class="'.(!empty($params['_noborder']) ? '' : 'button').(!empty($class)?" $class":'').'"'.$id.'>'.$html.'</span>';
 }

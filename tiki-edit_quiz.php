@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -30,23 +30,19 @@ $auto_query_args = array(
 );
 
 $_REQUEST["questionsPerPage"] = 999;
-//Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-include_once ('lib/userprefs/userprefslib.php');
-$smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
-
 
 $info = array();
 $info["name"] = '';
 $info["description"] = '';
 $info["publishDate"] = $tikilib->now;
-$cur_time = explode(',', $tikilib->date_format('%Y,%m,%d,%H,%M,%S', $info["publishDate"]));
+$cur_time = explode(',', $tikilib->date_format('%Y,%m,%d,%H,%M,%S', $publishDate));
 $info["expireDate"] = $tikilib->make_time($cur_time[3], $cur_time[4], $cur_time[5], $cur_time[1], $cur_time[2], $cur_time[0]+1);
 $info["canRepeat"] = 'n';
 $info["storeResults"] = 'n';
-/*$info["immediateFeedback"] = 'n';
+$info["immediateFeedback"] = 'n';
 $info["showAnswers"] = 'n';
 $info["shuffleQuestions"] = 'n';
-$info["shuffleAnswers"] = 'n';*/
+$info["shuffleAnswers"] = 'n';
 $info["questionsPerPage"] = 10;
 $info["timeLimited"] = 'n';
 $info["passingperct"] = '';
@@ -55,14 +51,7 @@ $info["timeLimit"] = 60 * 60;
 if (isset($_REQUEST["save"])) {
 	check_ticket('edit-quiz');
 
-	//Convert 12-hour clock hours to 24-hour scale to compute time
-	if (!empty($_REQUEST['publish_Meridian'])) {
-		$_REQUEST['publish_Hour'] = date('H', strtotime($_REQUEST['publish_Hour'] . ':00 ' . $_REQUEST['publish_Meridian']));
-	}
-	if (!empty($_REQUEST['expire_Meridian'])) {
-		$_REQUEST['expire_Hour'] = date('H', strtotime($_REQUEST['expire_Hour'] . ':00 ' . $_REQUEST['expire_Meridian']));
-	}
-	# convert from the displayed 'site' time to 'server' time
+ 	# convert from the displayed 'site' time to 'server' time
  	$publishDate = $tikilib->make_time($_REQUEST["publish_Hour"], $_REQUEST["publish_Minute"], 0, $_REQUEST["publish_Month"], $_REQUEST["publish_Day"], $_REQUEST["publish_Year"]);
  	$expireDate = $tikilib->make_time($_REQUEST["expire_Hour"], $_REQUEST["expire_Minute"], 0, $_REQUEST["expire_Month"], $_REQUEST["expire_Day"], $_REQUEST["expire_Year"]);
 
@@ -78,7 +67,7 @@ if (isset($_REQUEST["save"])) {
 		$_REQUEST["storeResults"] = 'n';
 	}
 
-/*	if (isset($_REQUEST["immediateFeedback"]) && $_REQUEST["immediateFeedback"] == 'on') {
+	if (isset($_REQUEST["immediateFeedback"]) && $_REQUEST["immediateFeedback"] == 'on') {
 		$_REQUEST["immediateFeedback"] = 'y';
 	} else {
 		$_REQUEST["immediateFeedback"] = 'n';
@@ -100,7 +89,7 @@ if (isset($_REQUEST["save"])) {
 		$_REQUEST["shuffleAnswers"] = 'y';
 	} else {
 		$_REQUEST["shuffleAnswers"] = 'n';
-	}*/
+	}
 
 	if (isset($_REQUEST["timeLimited"]) && $_REQUEST["timeLimited"] == 'on') {
 		$_REQUEST["timeLimited"] = 'y';
@@ -108,24 +97,13 @@ if (isset($_REQUEST["save"])) {
 		$_REQUEST["timeLimited"] = 'n';
 	}
 
-	// Pass dummy "n" for immediateFeedback, showAnswers, shuffleQuestions and shuffleAnswers, which are not implemented.
-	$qid = $quizlib->replace_quiz(
-		$_REQUEST["quizId"],
-		$_REQUEST["name"],
-		$_REQUEST["description"],
-		$_REQUEST["canRepeat"],
-		$_REQUEST["storeResults"],
-		'n',
-		'n',
-		'n',
-		'n',
-		$_REQUEST["questionsPerPage"],
-		$_REQUEST["timeLimited"],
-		$_REQUEST["timeLimit"],
-		$publishDate,
-		$expireDate,
-		$_REQUEST["passingperct"]
-	);
+	$qid = $quizlib->replace_quiz($_REQUEST["quizId"], $_REQUEST["name"],
+																$_REQUEST["description"],	$_REQUEST["canRepeat"],
+																$_REQUEST["storeResults"], $_REQUEST["immediateFeedback"],
+																$_REQUEST["showAnswers"],	$_REQUEST["shuffleQuestions"],
+																$_REQUEST["shuffleAnswers"], $_REQUEST["questionsPerPage"],
+																$_REQUEST["timeLimited"], $_REQUEST["timeLimit"],
+																$publishDate, $expireDate, $_REQUEST["passingperct"]);
 	$cat_type = 'quiz';
 	$cat_objid = $qid;
 	$cat_desc = substr($_REQUEST["description"], 0, 200);
@@ -139,10 +117,10 @@ if (isset($_REQUEST["save"])) {
 } elseif ($_REQUEST["quizId"]) {
 	$info = $quizlib->get_quiz($_REQUEST["quizId"]);
 
-	if (!isset($info["publishDate"])) {
+	if (!isset($info["publishDate"])){
 		$info["publishDate"] = $tikilib->now;
 	}
-	if (!isset($info["expireDate"])) {
+	if (!isset($info["expireDate"])){
 		$cur_time = explode(',', $tikilib->date_format('%Y,%m,%d,%H,%M,%S', $tikilib->now));
 		$info["expireDate"] = $tikilib->make_time($cur_time[3], $cur_time[4], $cur_time[5], $cur_time[1], $cur_time[2], $cur_time[0]+1);
 	}
@@ -152,10 +130,10 @@ $smarty->assign('name', $info["name"]);
 $smarty->assign('description', $info["description"]);
 $smarty->assign('canRepeat', $info["canRepeat"]);
 $smarty->assign('storeResults', $info["storeResults"]);
-$smarty->assign('immediateFeedback', $info["immediateFeedback"]);
-$smarty->assign('showAnswers', $info["showAnswers"]);
-$smarty->assign('shuffleQuestions', $info["shuffleQuestions"]);
-$smarty->assign('shuffleAnswers', $info["shuffleAnswers"]);
+$smarty->assign('immediateFeedback',$info["immediateFeedback"]);
+$smarty->assign('showAnswers',$info["showAnswers"]);
+$smarty->assign('shuffleQuestions',$info["shuffleQuestions"]);
+$smarty->assign('shuffleAnswers',$info["shuffleAnswers"]);
 $smarty->assign('questionsPerPage', $info["questionsPerPage"]);
 $smarty->assign('timeLimited', $info["timeLimited"]);
 $smarty->assign('timeLimit', $info["timeLimit"]);

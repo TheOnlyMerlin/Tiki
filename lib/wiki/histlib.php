@@ -1,12 +1,12 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
@@ -18,8 +18,7 @@ class HistLib extends TikiLib
 		*	Removes a specific version of a page
 		*
 		*/
-	function remove_version($page, $version, $historyId = '')
-	{
+	function remove_version($page, $version, $historyId = '') {
 		global $prefs;
 		if ($prefs['feature_contribution'] == 'y') {
 			global $contributionlib; include_once('lib/contribution/contributionlib.php');
@@ -30,20 +29,19 @@ class HistLib extends TikiLib
 			$contributionlib->remove_history($historyId);
 		}
 		$query = "delete from `tiki_history` where `pageName`=? and `version`=?";
-		$result = $this->query($query, array($page,$version));
+		$result = $this->query($query,array($page,$version));
 		global $logslib; include_once('lib/logs/logslib.php');
 		$logslib->add_action("Removed version", $page, 'wiki page', "version=$version");
 		//get_strings tra("Removed version $version")
 		return true;
 	}
 
-	function use_version($page, $version, $comment = '')
-	{
+	function use_version($page, $version, $comment = '') {
 		$this->invalidate_cache($page);
 		
 		// Store the current page in tiki_history before rolling back
 		if (strtolower($page) != 'sandbox') {
-			$info = $this->get_hist_page_info($page);
+			$info = $this->get_page_info($page);
 			$old_version = $this->get_page_latest_version($page) + 1;
 		    $lastModif = $info["lastModif"];
 		    $user = $info["user"];
@@ -52,11 +50,11 @@ class HistLib extends TikiLib
 		    $data = $info["data"];
 		    $description = $info["description"];
 			$query = "insert into `tiki_history`(`pageName`, `version`, `version_minor`, `lastModif`, `user`, `ip`, `comment`, `data`, `description`,`is_html`) values(?,?,?,?,?,?,?,?,?,?)";
-		    $this->query($query, array($page,(int) $old_version, (int) $info["version_minor"],(int) $lastModif,$user,$ip,$comment,$data,$description, $info["is_html"]));
+		    $this->query($query,array($page,(int) $old_version, (int) $info["version_minor"],(int) $lastModif,$user,$ip,$comment,$data,$description, $info["is_html"]));
 		}
 		
 		$query = "select * from `tiki_history` where `pageName`=? and `version`=?";
-		$result = $this->query($query, array($page,$version));
+		$result = $this->query($query,array($page,$version));
 
 		if (!$result->numRows())
 			return false;
@@ -64,6 +62,11 @@ class HistLib extends TikiLib
 		$res = $result->fetchRow();
 		
 		global $prefs;
+		if ($prefs['feature_wikiapproval'] == 'y') {
+			// for approval and staging feature to work properly, one has to use real commit time of rollbacks
+			//TODO: make this feature to set rollback time as current time as more general optional feature
+			$res["lastModif"] = time();
+		}
 		// add rollback comment to existing one (after truncating if needed)
 		$ver_comment = " [" . tra("rollback version ") . $version . "]";
 		$too_long = 200 - strlen($res["comment"] . $ver_comment);
@@ -75,13 +78,11 @@ class HistLib extends TikiLib
 		
 		$query = "update `tiki_pages` set `data`=?,`lastModif`=?,`user`=?,`comment`=?,`version`=`version`+1,`ip`=?, `description`=?, `is_html`=?";
 		$bindvars = array($res['data'], $res['lastModif'], $res['user'], $res['comment'], $res['ip'], $res['description'], $res['is_html']);
-
+		
 		// handle rolling back once page has been edited in a different editor (wiki or wysiwyg) based on is_html in history
 		if ($prefs['feature_wysiwyg'] == 'y' && $prefs['wysiwyg_optional'] == 'y' && $prefs['wysiwyg_memo'] == 'y') {
 			if ($res['is_html'] == 1) {
-				// big hack: when you move to wysiwyg you do not come back usually -> wysiwyg should be a column in tiki_history
-				$info = $this->get_hist_page_info($page);
-				$bindvars[] = $info['wysiwyg'];
+				$bindvars[] = 'y';
 			} else {
 				$bindvars[] = 'n';
 			}
@@ -91,7 +92,7 @@ class HistLib extends TikiLib
 		$bindvars[] = $page;
 		$result = $this->query($query, $bindvars);
 		$query = "delete from `tiki_links` where `fromPage` = ?";
-		$result = $this->query($query, array($page));
+		$result = $this->query($query,array($page));
 		$this->clear_links($page);
 		$pages = $this->get_pages($res["data"]);
 
@@ -108,33 +109,11 @@ class HistLib extends TikiLib
 		return true;
 	}
 
-	// Used to see a specific version of the page
-	function get_view_date($date_str)
-	{
-		global $tikilib;
-
-		if (!$date_str) {
-			// Date is undefined
-			throw new Exception();
-		}
-
-		$view_date = $date_str;
-		$tsp = explode('-', $date_str);
-
-		if (count($tsp) == 3) {
-			// Date in YYYY-MM-DD format
-			$view_date = $tikilib->make_time(23, 59, 59, $tsp[1] + 1, $tsp[2], $tsp[0] + 1900);
-		}
-
-		return $view_date;
-	}
-
-	function get_user_versions($user)
-	{
+	function get_user_versions($user) {
 		$query
 			= "select `pageName`,`version`, `lastModif`, `user`, `ip`, `comment` from `tiki_history` where `user`=? order by `lastModif` desc";
 
-		$result = $this->query($query, array($user));
+		$result = $this->query($query,array($user));
 		$ret = array();
 
 		while ($res = $result->fetchRow()) {
@@ -152,69 +131,21 @@ class HistLib extends TikiLib
 	}
 
 	// Returns information about a specific version of a page
-	function get_version($page, $version)
-	{
-		//fix for encoded slowly without doing it all at once in the installer upgrade script
-		require_once("lib/wiki/wikilib.php");
-		$converter = new convertToTiki9();
-		$converter->convertPageHistoryFromPageAndVersion($page, $version);
+	function get_version($page, $version) {
 
 		$query = "select * from `tiki_history` where `pageName`=? and `version`=?";
-		$result = $this->query($query, array($page,$version));
+		$result = $this->query($query,array($page,$version));
 		$res = $result->fetchRow();
 		return $res;
 	}
 
-	// Get page info for a specified version
-	function get_hist_page_info($pageName, $version = null)
-	{
-		$info = parent::get_page_info($pageName);
-
-		if (empty($version)) {
-			// No version = last version
-			return $info;
-		}
-
-		if (!$info) {
-			// Page does not exist
-			return false;
-		}
-
-		$old_info = $this->get_version($pageName, $version);
-
-		if ($old_info == null) {
-			// History does not exist
-			if ($version == $this->get_page_latest_version($pageName) + 1) {
-				// Last version
-				return $info;
-			}
-
-			throw new Exception();
-		}
-
-		// Override parameters with versioned data
-		$info['data'] = $old_info['data'];
-		$info['version'] = $old_info['version'];
-		$info['last_version'] = $info['version'];
-		$info["user"] = $old_info["user"];
-		$info["ip"] = $old_info["ip"];
-		$info["description"] = $old_info["description"];
-		$info["comment"] = $old_info["comment"];
-		$info["is_html"] = $old_info["is_html"];
-		$info['lastModif'] = $old_info["lastModif"];
-		$info['page_size'] = strlen($old_info['data']);
-
-		return $info;
-	}
-
 	// Returns all the versions for this page
 	// without the data itself
-	function get_page_history($page, $fetchdata=true, $offset = 0, $limit = -1)
-	{
+	function get_page_history($page, $fetchdata=true, $offset = 0, $limit = -1) {
 		global $prefs;
 
 		$query = "select * from `tiki_history` where `pageName`=? order by `version` desc";
-		$result = $this->query($query, array($page), $limit, $offset);
+		$result = $this->query($query,array($page), $limit, $offset);
 		$ret = array();
 
 		while ($res = $result->fetchRow()) {
@@ -244,11 +175,7 @@ class HistLib extends TikiLib
 	
 	// Returns one version of the page from the history
 	// without the data itself (version = 0 now returns data from current version)
-	function get_page_from_history($page,$version,$fetchdata=false)
-	{
-		require_once("lib/wiki/wikilib.php");
-		$converter = new convertToTiki9();
-		$converter->convertPageHistoryFromPageAndVersion($page, $version);
+	function get_page_from_history($page,$version,$fetchdata=false) {
 
 		if ($fetchdata==true) {
 			if ($version > 0)
@@ -262,9 +189,9 @@ class HistLib extends TikiLib
 				$query = "select `pageName`, `description`, `version`, `lastModif`, `user`, `ip`, `comment`, `is_html` from `tiki_pages` where `pageName`=?";
 		}
 		if ($version > 0)
-			$result = $this->query($query, array($page,$version));
+			$result = $this->query($query,array($page,$version));
 		else
-			$result = $this->query($query, array($page));
+			$result = $this->query($query,array($page));
 			
 		$ret = array();
 
@@ -289,11 +216,10 @@ class HistLib extends TikiLib
 	
 	// note that this function returns the latest version in the
 	// history db table, which is one less than the current version 
-	function get_page_latest_version($page, $sort_mode='version_desc')
-	{
+	function get_page_latest_version($page, $sort_mode='version_desc') {
 
 		$query = "select `version` from `tiki_history` where `pageName`=? order by ".$this->convertSortMode($sort_mode);
-		$result = $this->query($query, array($page), 1);
+		$result = $this->query($query,array($page),1);
 		$ret = array();
 		
 		if ($res = $result->fetchRow()) {
@@ -305,18 +231,17 @@ class HistLib extends TikiLib
 		return $ret;
 	}
 
-	function version_exists($pageName, $version)
-	{
+	function version_exists($pageName, $version) {
 
 		$query = "select `pageName` from `tiki_history` where `pageName` = ? and `version`=?";
-		$result = $this->query($query, array($pageName,$version));
+		$result = $this->query($query,array($pageName,$version));
 		return $result->numRows();
 	}
 
 	// This function get the last changes from pages from the last $days days
 	// if days is 0 this gets all the registers
-	function get_last_changes($days, $offset = 0, $limit = -1, $sort_mode = 'lastModif_desc', $findwhat = '')
-	{
+	// function parameters modified by ramiro_v on 11/03/2002
+	function get_last_changes($days, $offset = 0, $limit = -1, $sort_mode = 'lastModif_desc', $findwhat = '') {
 	        global $user;
 
 		$bindvars = array();
@@ -342,30 +267,26 @@ class HistLib extends TikiLib
 			$bindvars[] = $toTime;
 		}
 
-		// WARNING: This assumes the current version of each page will be found in tiki_history
-		$query = "select distinct ta.`action`, ta.`lastModif`, ta.`user`, ta.`ip`, ta.`object`, thf.`comment`, thf.`version`, thf.`page_id` from `tiki_actionlog` ta 
-			inner join (select th.`version`, th.`comment`, th.`pageName`, th.`lastModif`, tp.`page_id` from `tiki_history` as th LEFT OUTER JOIN `tiki_pages` tp ON tp.`pageName` = th.`pageName` AND tp.`version` = th.`version`) as thf on ta.`object`=thf.`pageName` and ta.`lastModif`=thf.`lastModif` and ta.`objectType`='wiki page' " . $categjoin . $where . " order by ta.".$this->convertSortMode($sort_mode);
+		$query = "select distinct ta.`action`, ta.`lastModif`, ta.`user`, ta.`ip`, ta.`object`, thf.`comment`, thf.`version`, thf.`versionlast` from `tiki_actionlog` ta 
+			inner join (select NULL as version, `comment`, `pageName`, `lastModif`, '1' as versionlast from tiki_pages union select `version`, `comment`, `pageName`, `lastModif`, '0' as versionlast from `tiki_history`) as thf on ta.`object`=thf.`pageName` and ta.`lastModif`=thf.`lastModif` and ta.`objectType`='wiki page' " . $categjoin . $where . " order by ta.".$this->convertSortMode($sort_mode);
 
-		// TODO: Optimize. This fetches all records just to be able to give a count.
-		$result = Perms::filter(array( 'type' => 'wiki page' ), 'object', $this->fetchAll($query, $bindvars), array( 'object' => 'object' ), 'view');
-		$cant = count($result);
+		$query_cant = "select count(distinct ta.`action`, ta.`lastModif`, ta.`user`, ta.`object`, thf.`versionlast`) from `tiki_actionlog` ta 
+			inner join (select `pageName`, `lastModif`, '1' as versionlast from tiki_pages union select `pageName`, `lastModif`, '0' as versionlast from `tiki_history`) as thf on ta.`object`=thf.`pageName` and ta.`lastModif`=thf.`lastModif` and ta.`objectType`='wiki page' " . $categjoin . $where;
+
+		$result = $this->fetchAll($query,$bindvars,$limit,$offset);
+		$result = Perms::filter( array( 'type' => 'wiki page' ), 'object', $result, array( 'object' => 'object' ), 'view' );
+		$cant = $this->getOne($query_cant,$bindvars);
 		$ret = array();
-		
-		if ($limit == -1) {
-			$result = array_slice($result, $offset);
-		} else {
-			$result = array_slice($result, $offset, $limit);
-		}
-		foreach ($result as $res ) {
-			$res['current'] = isset($res['page_id']);
+		$retval = array();
+		foreach( $result as $res ) {
 			$res['pageName'] = $res['object'];
 			$ret[] = $res;
 		}
-
-		return array('data' => $ret, 'cant' => $cant);
+		$retval["data"] = $ret;
+		$retval["cant"] = $cant;
+		return $retval;
 	}
-	function get_nb_history($page)
-	{
+	function get_nb_history($page) {
 		$query_cant = "select count(*) from `tiki_history` where `pageName` = ?";
 		$cant = $this->getOne($query_cant, array($page));
 		return $cant;
@@ -373,10 +294,9 @@ class HistLib extends TikiLib
 	
 	// This function gets the version number of the version before or after the time specified
 	// (note that current version is not included in search)
-	function get_version_by_time($page, $unixtimestamp, $before_or_after = 'before', $include_minor = true)
-	{
+	function get_version_by_time($page, $unixtimestamp, $before_or_after = 'before', $include_minor = true) {
 		$query = "select `version`, `version_minor`, `lastModif` from `tiki_history` where `pageName`=? order by `version` desc";
-		$result = $this->query($query, array($page));
+		$result = $this->query($query,array($page));
 		$ret = array();
 		$version = 0;
 		while ($res = $result->fetchRow()) {
@@ -487,8 +407,7 @@ class Document
 	 * @param string	$start		start marker (all text will be skipped, including this marker which must be at the beginning of a line)
 	 * @param string	$end		end marker (all text will be skipped from this marker on, including this marker which must be at the beginning of a line)
 	 */
-	function __construct($page, $lastversion=0, $process=1, $showpopups=true, $startmarker='', $endmarker='')
-	{
+	function __construct($page, $lastversion=0, $process=1, $showpopups=true, $startmarker='', $endmarker='') {
 		global $histlib;		
 
 		$this->_document=array();
@@ -500,16 +419,16 @@ class Document
 		switch($process) {
 			case 0: $this->_parsed=false;
 					$this->_process=0;
-   				break;
+					break;
 			case 2: $this->_nohtml=true;
 					$this->_process=2;
-   				break;
+					break;
 		}
 		$this->startmarker=$startmarker;
 		$this->endmarker=$endmarker;
 
-		$this->_info=$histlib->get_hist_page_info($page, true);
-		if ($lastversion==0) {
+		$this->_info=$histlib->get_page_info($page,true);
+		if($lastversion==0) {
 			$lastversion=$this->_info['version'];		
 		}
 		$this->_data=array();
@@ -523,7 +442,7 @@ class Document
 				'comment' 		=> $this->_info['comment'],
 				'data'			=> $this->_info['data'],
 			));
-		$this->_data=array_merge($this->_data, $histlib->get_page_history($page, true, 0, -1));
+		$this->_data=array_merge($this->_data,$histlib->get_page_history($page, true, 0, -1));
 		$next=count($this->_data)-1;
 		$author=$this->_data[$next]['user'];
 		$next=$this->getLastAuthorText($author, $next, $lastversion);
@@ -540,9 +459,9 @@ class Document
 		if ($this->_nohtml) {
 			$source=strip_tags($source);
 		}
-		preg_match_all($this->_search, $source, $out, PREG_PATTERN_ORDER);
+		preg_match_all($this->_search,$source,$out,PREG_PATTERN_ORDER);
 		$words=$out[0];
-		$this->_document=$this->addWords($this->_document, $words, $author);
+		$this->_document=$this->addWords($this->_document,$words, $author);
 		if ($next==-1) {
 			return;
 		}
@@ -556,7 +475,7 @@ class Document
 			}
 			$newpage=$this->removeText($this->_data[$index]['data']);
 			$this->mergeDiff($newpage, $author);
-		} while ($next>0);
+		} while($next>0);
 		$this->parseAuthorAndInclude();
 		
 	}
@@ -568,8 +487,7 @@ class Document
 	 * @param	string $text	contains the whole text
 	 * @return	string			returns the text inside the markers
 	 */
-	private function removeText($text)
-	{
+	private function removeText($text) {
 		$start=($this->startmarker!='');
 		$stop=($this->endmarker!='');
 		if ($start || $stop) {
@@ -629,12 +547,11 @@ class Document
 	 * @return	int					id of the first text of a different author or -1 if there is none
 	 * @see get_page_history_all
 	 */
-	private function getLastAuthorText($author, $start=-1, $lastversion=-1)
-	{
-		if ($start==-1) {
+	private function getLastAuthorText($author, $start=-1, $lastversion=-1) {
+		if($start==-1) {
 			return $start;
 		}
-		if ($start<0) {
+		if($start<0) {
 			$start=count($this->_data)-1;	
 		}
 		if ($lastversion==-1) {
@@ -656,9 +573,8 @@ class Document
 	 * gets the index position of the requested version in the data array  
 	 * @param int	$version
 	 */
-	private function getIndex($version)
-	{
-		for ($i=count($this->_data)-1;$i>=0;$i--) {
+	private function getIndex($version) {
+		for($i=count($this->_data)-1;$i>=0;$i--) {
 			if ($this->_data[$i]['version']==$version) {
 				return $i;
 			}
@@ -670,17 +586,15 @@ class Document
 	 * 
 	 * returns the history (identical to $histlib->get_page_history, but saves another fetch from database as we already have the info
 	 */
-	function getHistory()
-	{
-		return array_slice($this->_data, 1);
+	function getHistory() {
+		return array_slice($this->_data,1);
 	}
 
 	/**
 	 * 
 	 * returns the page info history (identical to $tikilib->get_page_info, but saves another fetch from database as we already have the info
 	 */
-	function getInfo()
-	{
+	function getInfo() {
 		return $this->_info;
 	}
 	
@@ -692,10 +606,9 @@ class Document
 	 * @see mergeDiff
 	 * @return	array	list of words in the document (no author etc.)
 	 */
-	function getDiffArray()
-	{
+	function getDiffArray() {
 		$diffarray=array();
-		foreach ($this->_document as &$word) {
+		foreach($this->_document as &$word) {
 			if (!$word['deleted']) {
 				$word['diffid']=count($diffarray);
 				$diffarray[]=$word['word'];
@@ -713,8 +626,7 @@ class Document
 	 * @param	string	$filter		regex to filter out non printable characters (difference between characters and printables)
 	 * @return	array				array indexed by author containing arrays with statistics (words, deleted_words, whitespaces, deleted_whitespaces, characters, deleted_characters, printables, deleted_printables)
 	 */
-	function getStatistics($filter='/([[:blank:]]|[[:cntrl:]]|[[:punct:]]|[[:space:]])/')
-	{
+	function getStatistics($filter='/([[:blank:]]|[[:cntrl:]]|[[:punct:]]|[[:space:]])/') {
 		$style=0;
 		if ($this->_filter!=$filter) { //a new filter invalidates the statistics
 			$this->_statistics=false;
@@ -735,7 +647,7 @@ class Document
 		
 		foreach ($this->_document as $word) {
 			$author=$word['author'];
-			if (!isset($this->_statistics[$author])) {
+			if(!isset($this->_statistics[$author])) {
 				$this->_statistics[$author]=array(
 					'words' => 0,
 					'words_percent' => 0,
@@ -764,7 +676,7 @@ class Document
 				$prefix='';
 			}
 			$w=$word['word'];
-			if ($this->_nohtml) {
+			if($this->_nohtml) {
 				$w=strip_tags($w);
 			}
 			if (trim($w)=='') {
@@ -777,12 +689,12 @@ class Document
 			$l=mb_strlen($w);
 			$this->_statistics[$author][$prefix.'characters']+=$l;
 			$this->_total[$prefix.'characters']+=$l;
-			$l=mb_strlen(preg_replace($this->_filter, '', $w));
+			$l=mb_strlen(preg_replace($this->_filter,'',$w));
 			$this->_statistics[$author][$prefix.'printables']+=$l;
 			$this->_total[$prefix.'printables']+=$l;
 		} //foreach
 		//calculate percentages
-		foreach ($this->_statistics as &$author) {
+		foreach($this->_statistics as &$author) {
 			$author['words_percent']=$author['words']/$this->_total['words'];
 			$author['deleted_words_percent']=($this->_total['deleted_words']!=0?$author['deleted_words']/$this->_total['deleted_words']:0);
 			$author['whitespaces_percent']=$author['whitespaces']/$this->_total['whitespaces'];
@@ -801,8 +713,7 @@ class Document
 	 * @see		getStatistics
 	 * @return	array with statistics (words, deleted_words, whitespaces, deleted_whitespaces, characters, deleted_characters, printables, deleted_printables)
 	 */
-	function getTotal()
-	{
+	function getTotal() {
 		return $this->_total;
 	}
 	
@@ -818,8 +729,7 @@ class Document
 	 * </table> 
 	 * @return	array|string	depending on the parameter $type, a string or array containing the documents words
 	 */
-	function get($type='',$options=array())
-	{
+	function get($type='',$options=array()) {
 		switch($type) {
 			case 'words':
 				$words=array();
@@ -827,7 +737,7 @@ class Document
 					$words[]=$word['word'];
 				}
 				return $words;
-    			break;
+				break;
 			case 'text':
 				$text='';
 				foreach ($this->_document as $word) {
@@ -842,7 +752,7 @@ class Document
 					}
 					$text=preg_replace(array('/</','/>/'), array('&lt;','&gt;'), $text);					
 				}
-    			break;
+				break;
 			case 'wiki':
 				$text='';
 				$author='';
@@ -857,7 +767,7 @@ class Document
 					$skip=false;
 					$d=isset($word['deleted_by'])?$word['deleted_by']:'';
 					$w=$word['word'];
-					if ($author!=$word['author'] or $deleted!=$word['deleted'] or $deleted_by!=$d) {
+					if($author!=$word['author'] or $deleted!=$word['deleted'] or $deleted_by!=$d) {
 						if ($text!='') {
 							if ($options['escape']) {
 								$text.='~/np~';
@@ -878,10 +788,10 @@ class Document
 					}
 					if (!$options['escape']) {
 						if ($this->_parsed and !$this->_nohtml) { // skipping popups for links
-							if (substr($w, 0, 3)=='<a ') {
+							if (substr($w,0,3)=='<a ') {
 								$text.='{AUTHOR}';
 							}
-							if (substr($w, -4)=='</a>') {
+							if (substr($w,-4)=='</a>') {
 								$text.=$w . "{AUTHOR(author=\"$author\"" . 
 									   ($deleted?",deleted_by=\"$deleted_by\"":'') . 
 									   ',visible="1", ' .
@@ -909,7 +819,7 @@ class Document
 				}
 				$text.="{AUTHOR}";
 				return $text;
-    			break;
+				break;
 			default:			
 				return $this->_document;			
 		}
@@ -923,17 +833,16 @@ class Document
 	 * @param string	$author		name of the author to credit
 	 * @return						provided document structure $doc with the words from $list appended
 	 */
-	private function addWords($doc, $list, $author, $deleted=false, $deleted_by='')
-	{
+	private function addWords($doc, $list, $author, $deleted=false, $deleted_by='') {
 		$newdoc=$doc;
-		foreach ($list as $word) {
+		foreach($list as $word) {
 			$newword=array(
 							'word'		=> $word,
 							'author'	=> $author,
 							'deleted'	=> $deleted,
 							'diffid'	=> -1,
 							);
-			if ($deleted) {
+			if($deleted) {
 				$newword['deleted_by']=$deleted_by;	
 			}
 			$newdoc[]=$newword;
@@ -950,15 +859,14 @@ class Document
 	 * @param bool		$setDeleted	mark the moved words as deleted, if not already deleted
 	 * @param string	$deletedBy	name of the author who deleted the words
 	 */
-	private function moveWords(&$doc, &$pos, $list, $deleted=false, $deleted_by='')
-	{		
+	private function moveWords(&$doc, &$pos, $list, $deleted=false, $deleted_by='') {		
 		$pos+=count($list);
 		// get the words from the old document
 		$i=0;
 		while ($i<count($this->_document) and $this->_document[$i]['diffid']<$pos) {
 			$word=$this->_document[$i];
-			if ($deleted) {
-				if (!$word['deleted']) {
+			if($deleted) {
+				if(!$word['deleted']) {
 					$word['deleted']=true;
 					$word['deleted_by']=$deleted_by;
 				}
@@ -981,17 +889,16 @@ class Document
 	 * @param string	$pluginstr		Complete Plugin tag including brackets () containing the parameters
 	 * @return	array|bool				Array containing the parameters or false if none are given
 	 */
-	function retrieveParams($pluginstr)
-	{
+	function retrieveParams($pluginstr) {
 		$params=array();
-		$start=strpos($pluginstr, '(');
+		$start=strpos($pluginstr,'(');
 		if ($start===false) return false;
 		$end=strrpos($pluginstr, ')');
 		if ($end===false) return false;
-		$pstr=substr($pluginstr, $start+1, $end-$start-1);
-		$plist=explode(',', $pstr);
-		foreach ($plist as $paramstr) {
-			$p=explode('=', trim($paramstr));
+		$pstr=substr($pluginstr,$start+1,$end-$start-1);
+		$plist=explode(',',$pstr);
+		foreach($plist as $paramstr) {
+			$p=explode('=',trim($paramstr));
 			$params[strtolower(trim($p[0]))]=preg_replace('/^"|^\&quot;|"$|\&quot;$/', '', trim($p[1]));
 		}
 		return $params;
@@ -1003,8 +910,7 @@ class Document
 	 * @param string	$newpage	a string with a later version of the page
 	 * @param string	$newauthor	name of the author of the new version
 	 */
-	function mergeDiff($newpage, $newauthor)
-	{
+	function mergeDiff($newpage, $newauthor) {
 		global $tikilib;
 		$this->_history=false;
 		$author=$newauthor;
@@ -1019,19 +925,19 @@ class Document
 		if ($this->_nohtml) {
 			$page=strip_tags($page);
 		}
-		preg_match_all($this->_search, $page, $out, PREG_PATTERN_ORDER);
+		preg_match_all($this->_search,$page,$out,PREG_PATTERN_ORDER);
 		$new=$out[0];
-		$z = new Text_Diff($this->getDiffArray(), $new);
+		$z = new Text_Diff($this->getDiffArray(),$new);
 		$pos=0;
 		foreach ($z->getDiff() as $element) {
 			if (is_a($element, 'Text_Diff_Op_copy')) {
-				$this->moveWords($newdoc, $pos, $element->orig, $deleted, $deleted_by);
+				$this->moveWords($newdoc,$pos,$element->orig, $deleted, $deleted_by);
 			} else {
-				if (is_a($element, 'Text_Diff_Op_add')) {
+				if (is_a($element, 'Text_Diff_Op_add')){
 					$newdoc=$this->addWords($newdoc, $element->final, $author, $deleted, $deleted_by);
 				} else {
 					if (is_a($element, 'Text_Diff_Op_delete')) {
-						$this->moveWords($newdoc, $pos, $element->orig, $deleted, $author);
+						$this->moveWords($newdoc,$pos,$element->orig, $deleted, $author);
 					} else { //change
 						$newdoc=$this->addWords($newdoc, $element->final, $author, $deleted, $deleted_by);
 						$this->moveWords($newdoc, $pos, $element->orig, true, $author);
@@ -1048,27 +954,26 @@ class Document
 	 * @param array	$newdoc	array containing the new document
 	 * @param int	$index	position in the old document
 	 */
-	private function killDoubleWhitespaces(&$newdoc, &$index)
-	{
-		if (count($newdoc)>2) {
+	private function killDoubleWhitespaces(&$newdoc, &$index) {
+		if(count($newdoc)>2) {
 			$w1=$newdoc[count($newdoc)-1]['word'];
 			$w2=$newdoc[count($newdoc)-2]['word'];
-			if ($this->_nohtml) {
+			if($this->_nohtml) {
 				$w1=strip_tags($w1);
 				$w2=strip_tags($w2);
 			}
-			if (trim($w1)=='' and trim($w2)=='') {
+			if(trim($w1)=='' and trim($w2)=='') {
 				array_pop($newdoc); // kill one of the whitespaces
 			}
 		}
-		if ($index<count($this->_document)-2) {
+		if($index<count($this->_document)-2) {
 			$w1=$this->_document[$index+1]['word'];
 			$w2=$this->_document[$index+2]['word'];
-			if ($this->_nohtml) {
+			if($this->_nohtml) {
 				$w1=strip_tags($w1);
 				$w2=strip_tags($w2);
 			}
-			if (trim($w1)=='' and trim($w2)=='') {
+			if(trim($w1)=='' and trim($w2)=='') {
 				$index++; // jump over one of the whitespaces
 			}			
 		}
@@ -1078,26 +983,25 @@ class Document
 	 * 
 	 * parses the left over author/include tags and sets the author accordingly
 	 */
-	function parseAuthorAndInclude()
-	{
+	function parseAuthorAndInclude() {
 		$newdoc=array();
 		$author='';
 		$deleted_by='';
-		for ($index=0, $cdoc = count($this->_document); $index < $cdoc; $index++) {
+		for($index=0, $cdoc = count($this->_document); $index < $cdoc; $index++) {
 			$word=$this->_document[$index];
-			if (preg_match('/\{AUTHOR\(.+?\)\}/', $word['word'])) {
+			if (preg_match('/\{AUTHOR\(.+?\)\}/',$word['word'])) {
 				$params=$this->retrieveParams($word['word']);
 				$author=$params['author'];
-				if (isset($params['deleted_by'])) {
+				if(isset($params['deleted_by'])) {
 					$deleted_by=$params['deleted_by'];
 				}
 				// manage double whitespace before and after
 				$this->killDoubleWhitespaces($newdoc, $index);
-			} elseif (preg_match('/\{AUTHOR\}/', $word['word'])) {
+			} elseif (preg_match('/\{AUTHOR\}/',$word['word'])) {
 				$author='';
 				$deleted_by='';
 				$this->killDoubleWhitespaces($newdoc, $index);
-			} elseif (preg_match('/\{INCLUDE\(.+?\)\}\{INCLUDE\}/', $word['word'])) {
+			} elseif (preg_match('/\{INCLUDE\(.+?\)\}\{INCLUDE\}/',$word['word'])) {
 				$params=$this->retrieveParams($word['word']);
 				$start='';
 				$stop='';
@@ -1108,7 +1012,7 @@ class Document
 					$stop=$params['stop'];	
 				}
 				$subdoc=new Document($params['page'], 0, $this->_process, $this->_showpopups, $start, $stop);
-				$newdoc=array_merge($newdoc, $subdoc->get());				
+				$newdoc=array_merge($newdoc,$subdoc->get());				
 			} else { //normal word
 				if ($author!='') {
 					$word['author']=$author;
@@ -1131,7 +1035,7 @@ function histlib_helper_setup_diff( $page, $oldver, $newver )
 	global $smarty, $histlib, $tikilib, $prefs;
 	$prefs['wiki_edit_section'] = 'n';
 	
-	$info = $tikilib->get_page_info($page);
+	$info = $tikilib->get_page_info( $page );
 
 	if ($oldver == 0 || $oldver == $info["version"]) {
 		$old = & $info;
@@ -1142,7 +1046,7 @@ function histlib_helper_setup_diff( $page, $oldver, $newver )
 			--$oldver;
 
 		if ( $exists ) {
-			$old = $histlib->get_page_from_history($page, $oldver, true);
+			$old = $histlib->get_page_from_history($page,$oldver,true);
 			$smarty->assign_by_ref('old', $old);
 		}
 	}
@@ -1155,7 +1059,7 @@ function histlib_helper_setup_diff( $page, $oldver, $newver )
 			--$newver;
 
 		if ( $exists ) {
-			$new = $histlib->get_page_from_history($page, $newver, true);
+			$new = $histlib->get_page_from_history($page,$newver,true);
 			$smarty->assign_by_ref('new', $new);
 		}
 	}
@@ -1166,7 +1070,7 @@ function histlib_helper_setup_diff( $page, $oldver, $newver )
 	}
 
 	$query = "SELECT `comment`, `version` from `tiki_history` WHERE `pageName`=? and `version` BETWEEN ? AND ? ORDER BY `version` DESC";
-	$result = $histlib->query($query, array($page,$oldver_mod,$newver));
+	$result = $histlib->query($query,array($page,$oldver_mod,$newver));
 	$diff_summaries = array();
 
 	if ($oldver == 0) {
@@ -1198,8 +1102,8 @@ function histlib_helper_setup_diff( $page, $oldver, $newver )
 			$replace[] = "\n";
 			$search[] = "~<(hr|br) />~";
 			$replace[] = "\n";
-			$old['data'] = strip_tags(preg_replace($search, $replace, $old['data']), '<h1><h2><h3><h4><b><i><u><span>');
-			$new['data'] = strip_tags(preg_replace($search, $replace, $new['data']), '<h1><h2><h3><h4><b><i><u><span>');
+			$old['data'] = strip_tags(preg_replace($search,$replace,$old['data']),'<h1><h2><h3><h4><b><i><u><span>');
+			$new['data'] = strip_tags(preg_replace($search,$replace,$new['data']),'<h1><h2><h3><h4><b><i><u><span>');
 		}
 		if ($_REQUEST["diff_style"] == "htmldiff") {
 
@@ -1207,17 +1111,18 @@ function histlib_helper_setup_diff( $page, $oldver, $newver )
 			$old["data"] = $tikilib->parse_data($old["data"], $parse_options);
 			$new["data"] = $tikilib->parse_data($new["data"], $parse_options);
 
-			$old['data'] = histlib_strip_irrelevant($old['data']);
-			$new['data'] = histlib_strip_irrelevant($new['data']);
-		} else {
-			# If the user doesn't have permission to view 
-			# source, strip out all tiki-source-based comments
-			global $tiki_p_wiki_view_source;
-			if ($tiki_p_wiki_view_source != 'y') {
-				$old["data"] = preg_replace(';~tc~(.*?)~/tc~;s', '', $old["data"]);
-				$new["data"] = preg_replace(';~tc~(.*?)~/tc~;s', '', $new["data"]);
-			}
+			$old['data'] = histlib_strip_irrelevant( $old['data'] );
+			$new['data'] = histlib_strip_irrelevant( $new['data'] );
 		}
+
+                # If the user doesn't have permission to view 
+                # source, strip out all tiki-source-based comments
+                global $tiki_p_wiki_view_source;
+                if ($tiki_p_wiki_view_source != 'y' && $_REQUEST["diff_style"] != "htmldiff") {
+                  $old["data"] = preg_replace(';~tc~(.*?)~/tc~;s', '', $old["data"]);
+                  $new["data"] = preg_replace(';~tc~(.*?)~/tc~;s', '', $new["data"]);
+                }
+
 		$html = diff2($old["data"], $new["data"], $_REQUEST["diff_style"]);
 		$smarty->assign_by_ref('diffdata', $html);
 	}
@@ -1225,17 +1130,42 @@ function histlib_helper_setup_diff( $page, $oldver, $newver )
 
 function histlib_strip_irrelevant( $data )
 {
-	$data = preg_replace("/<(h1|h2|h3|h4|h5|h6|h7)\s+([^\\\\>]+)>/i", '<$1>', $data);
+	$data = preg_replace( "/<(h1|h2|h3|h4|h5|h6|h7)\s+([^\\\\>]+)>/i", '<$1>', $data );
 	return $data;
 }
 
-function rollback_page_to_version($page, $version, $check_key = true, $keep_lastModif = false)
-{
+function rollback_page_to_version($page, $version, $check_key = true, $keep_lastModif = false) {
 	global $prefs, $histlib, $tikilib, $categlib, $access;
 	if ($check_key) {
 		$access->check_authenticity();
 	}		
 	$histlib->use_version($page, $version, '', $keep_lastModif);
 	
-	$tikilib->invalidate_cache($page);
+	if ( ($approved = $tikilib->get_approved_page($page)) && $prefs['wikiapproval_outofsync_category'] > 0) {
+		
+		$approved_page = $histlib->get_page_from_history($approved, 0, true);
+		$staging_page = $histlib->get_page_from_history($page, $version, true);
+		$cat_type='wiki page';	
+		$staging_cats = $categlib->get_object_categories($cat_type, $page);
+		$s_cat_desc = ($prefs['feature_wiki_description'] == 'y') ? substr($staging_info["description"],0,200) : '';
+		$s_cat_objid = $page;
+		$s_cat_name = $page;
+		$s_cat_href="tiki-index.php?page=".urlencode($s_cat_objid);
+		
+		//Instead of firing up diff, just check if the pages share the same exact data, drop the staging
+		//copy out of the review category if so
+		if ( $approved_page["data"] != $staging_page["data"] ) //compare these only once
+		$pages_diff = true;
+		if ( in_array($prefs['wikiapproval_outofsync_category'], $staging_cats) )
+		$in_staging_cat = true;
+
+		if ( !$pages_diff && $in_staging_cat ) {
+			$staging_cats = array_diff($staging_cats,Array($prefs['wikiapproval_outofsync_category']));
+			$categlib->update_object_categories($staging_cats, $s_cat_objid, $cat_type, $s_cat_desc, $s_cat_name, $s_cat_href);	
+		} elseif ( $pages_diff && !$in_staging_cat ) {
+			$staging_cats[] = $prefs['wikiapproval_outofsync_category'];
+			$categlib->update_object_categories($staging_cats, $s_cat_objid, $cat_type, $s_cat_desc, $s_cat_name, $s_cat_href);	
+		}
+	}	
+	$tikilib->invalidate_cache( $page );
 }

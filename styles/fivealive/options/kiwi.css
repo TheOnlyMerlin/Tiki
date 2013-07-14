@@ -1,7 +1,11 @@
 /* $Id$ 
-	Kiwi theme option for FiveAlive themes for
-	Tiki Wiki CMS Groupware.
+	Kiwi theme option for FiveAlive theme for
+	TikiWiki CMS/Groupware.
 */
+
+#header-top {
+	background: url(kiwi/siteheader.png) no-repeat -250px 0
+}
 
 a,
 a:visited,
@@ -30,12 +34,8 @@ hr {
 	background: #bcb923;
 }
 
-.header_outer {
-	background: url(kiwi/siteheadertile.png) 0 0 no-repeat;
-}
-
 #header {
-	background: url(kiwi/siteheader.png) -250px 0 no-repeat;
+	background: url(kiwi/siteheadertile.png) 900px 0 no-repeat;
 }
 
 #sitetitle,
@@ -43,7 +43,7 @@ hr {
 	text-shadow: #648637 3px 2px 0;
 }
 
-.footer_liner {
+#footer .container {
 	border-top: 1px solid #ebdc14;
 	border-bottom: 1px solid #ebdc14;
 }
@@ -90,8 +90,9 @@ input[type="submit"]:hover,
 }
 
 .highlight,
-.button.highlight a {
-	border-color: #f5fb86;
+.button.highlight a,
+.calfocuson {
+	border: #f5fb86;
 	color: #638637;
 	background: #d4f9d5;
 }
@@ -103,35 +104,24 @@ input[type="submit"]:hover,
 
 .cssmenu_vert li ul a,
 .cssmenu_horiz li ul a,
-.header .cssmenu_horiz li ul a,
-.header .cssmenu_horiz li:hover ul a,
-#main #topbar_modules .cssmenu_horiz li ul a,
-#main #topbar_modules .cssmenu_horiz li:hover ul a  {
+#header .cssmenu_horiz li ul a,
+#header .cssmenu_horiz li:hover ul a  {
 	background: #658838;
-	color: #fff;
 }
 
-#tiki-top .cssmenu_horiz li a {
-	background: url(kiwi/siteheader.png) no-repeat -600px -40px;
-}
-
-#tiki-top .cssmenu_horiz li a:hover,
 .cssmenu_vert li ul a:hover,
 .cssmenu_horiz li ul a:hover,
-.header .cssmenu_horiz li ul a:hover,
-#main #topbar_modules .cssmenu_horiz li ul a:hover  {
+#header .cssmenu_horiz li ul a:hover  {
 	background: #e1d518;
 }
 
-.header .cssmenu_horiz li.selected a,
-#topbar_modules .cssmenu_horiz li.selected a,
+#header .cssmenu_horiz li.selected a,
 .cssmenu_horiz li.selected a,
 .cssmenu_vert li.selected a {
 	color: #f0e884;
 }
 
-.header .cssmenu_horiz li.selected li a,
-#topbar_modules .cssmenu_horiz li.selected li a,
+#header .cssmenu_horiz li.selected li a,
 .cssmenu_horiz li.selected li a,
 .cssmenu_vert li.selected li a {
 	font-style: normal;
@@ -146,10 +136,6 @@ select,
 input[type="text"],
 input[type="password"],
 input[type="file"],
-input[type="email"],
-input[type="file"],
-input[type="search"],
-input[type="number"],
 input#login-pass,
 textarea,
 .adminoptionbox option  {
@@ -160,7 +146,7 @@ textarea,
 .titlebar,
 .rbox-title, 
 .rbox-data {
-	border-color: #bcb923;
+	border: #bcb923;
 	background: #f5f6c1;
 	color: #648637;
 }
@@ -178,12 +164,6 @@ textarea,
 	border: 2px solid #bcb923;
 }
 
-h3.box-title,
-.postbody-title,
-#top_modules .module.secondary_site_menu {
-	background: #e1d518 url(kiwi/siteheader.png) no-repeat -1000px -200px;
-}
-
 .adminanchors {
 	background: #bcb923;
 }
@@ -197,35 +177,27 @@ th,
 td.heading,
 tr.diffheader,
 .calHeading,
-.weeks,
-th.header {
+.weeks {
 	background: #dbd11a;
 	color: #f8f9d4;
 }
 
-.caltable .odd,
-.caltable .even,
-.caltable .calborder,
+.calodd,
+.caleven,
 .wikicell {
 	border: 2px solid #f5f6c1;
 }
 
-.caltable td.calhighlight,
-td.calheadhighlight {
-	background: #d4f9d5;
-}
-
 .odd,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+.calodd {
 	background: #f0e884;
 }
 
 .even,
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+.caleven {
 	background: #f8f9d4;
 }
+
 
 .tabmark {
 	border: 1px solid #f0e884;
@@ -263,24 +235,13 @@ form.admin fieldset,
 	border-left: 8px solid #f5f6c1;
 }
 
-.postbody-title > br {
-	display: none;
+.postbody-title {
+	background: #e1d518 url(kiwi/siteheader.png) -550px -90px no-repeat;
 }
 
 .post .author,
 .dirsite {
 	background: #f5f6c1;
-}
-
-.postbody-content {
-	border: 1px solid #d4cc1c;
-	border-top: none;
-}
-
-.post .author {
-	border: 1px solid #d4cc1c;
-	border-top: none;
-	border-bottom: none;
 }
 
 /* cluptip tooltips */

@@ -111,6 +111,10 @@ ul.jumplinks a:active {
 	background: url(cool/box_bottom.gif) no-repeat 0 100%;
 }
 
+#col3 .content {
+	border-top: 1px solid #cfcfcf;
+}
+
 #footer {
 	color: #999;
 	background: #2e3035;
@@ -156,24 +160,24 @@ ul.jumplinks a:active {
 /*** Error page ***/
 
 /* Site Header & Identity */
-.header_fixedwidth {
+#header-top {
 	background: #f5f5f5 url(cool/headerbg.jpg) repeat-x 0 100%;
 }
-/*
-.siteloginbar {
-	background: url(cool/login.jpg) 0 0 no-repeat;
-}*/
 
-* html .siteloginbar {
+#siteloginbar {
+	background: url(cool/login.jpg) 0 0 no-repeat;
+}
+
+* html #siteloginbar {
 	text-align: right;
 	width: 100%;
 	background: #fff url(cool/loginlong.jpg) 0 0 no-repeat}
 
-#topbar_modules .siteloginbar .register {
+#siteloginbar .register {
 	background: url(cool/register.jpg) no-repeat;
 }
 
-.siteloginbar input.wikiaction {
+#siteloginbar input.wikiaction {
 	background: #204c65;
 }
 
@@ -236,24 +240,102 @@ a.flip:hover {color: #006699}
 /* end layout divs, etc. */
 /** Border boxes (if any) **/
 /****** Menus ******/
+/** PHP Layers Menus **/
+
+#header .horbaritem a {
+	border-color: transparent;
+	color: #5ae0ff;
+}
+
+.horbaritem a:hover {
+	background: #fff;
+	color: #eee !important;
+}
+
+#header .horbaritem a:hover {
+	background: url(cool/headermenuitem-hover.png) bottom center repeat-x;
+	border-color: #336699;
+	color: #fff;
+}
+
+.mdksubframe {
+	border: 1px solid #08698f;
+	background: #1b3a50;
+}
+
+.mdkitem a {
+	color: #5ae0ff;
+}
+
+.mdkitem a:hover {
+	background: transparent url(cool/headerbg.jpg) repeat-x;
+	color: #fff;
+}
+
+#col2 .mdkitem a {
+	color: #006699;
+}
+
+#col2 .mdkitem a:hover {
+	color: #000;
+}
+
+/* Tree menu (also on Browse Categories */
+
+#col2 .treemenudiv {
+	background: #cce5ff;
+}
+
+.phplmnormal,
+a.phplmnormal:hover,
+a.phplm:link,
+a.phplm:visited,
+a.phplm:hover,
+a.phplm:active {
+	color: #006699;
+}
+
+a.phplm:visited {
+	color: #006699;
+}
+
+a.phplm:hover {
+	color: #000;
+}
+
+a.phplm:active {
+	color: #006699;
+}
+
+a.phplmselected:link,
+a.phplmselected:visited,
+a.phplmselected:hover,
+a.phplmselected:active {
+	color: black;
+}
+
+a.phplmselected:hover {
+	color: #808080;
+}
+
 /** CSS (suckerfish) menus **/
 
 .cssmenu_vert li ul li,
 .cssmenu_horiz li ul li,
-.header .cssmenu_horiz li ul li {
+#header .cssmenu_horiz li ul li {
 	border: 1px solid #aaa;
 	background: #f5f5f5;
 	border-top: 0;
 	margin-bottom: -1px;
 }
 
-.header .cssmenu_horiz li:hover {
+#header .cssmenu_horiz li:hover {
 	background: #cce5ff;
 }
 
 .cssmenu_horiz li ul li:first-child,
 .cssmenu_vert li ul li:first-child,
-.header .cssmenu_horiz li ul li:first-child {
+#header .cssmenu_horiz li ul li:first-child {
 	border-top: 1px solid #aaa;
 }
 
@@ -286,24 +368,24 @@ a.flip:hover {color: #006699}
 	color: #000000;
 }
 
-.header .cssmenu_horiz a,
-.header .cssmenu_horiz  a:visited {
+#header .cssmenu_horiz a,
+#header .cssmenu_horiz  a:visited {
 	color: #1E7EA6;
 	border: none;
 }
 
-.header .cssmenu_horiz a:hover {
+#header .cssmenu_horiz a:hover {
 	color: #1E7EA6;
 	background: #cce5ff;
 	border: none;
 }
 
 /* special arrows and arrow top padding */
-.header .cssmenu_horiz li a .sf-sub-indicator {
+#header .cssmenu_horiz li a .sf-sub-indicator {
 	background: url(../arrows-467aa7.png) no-repeat 0 -100px;
 }
 
-.header .cssmenu_horiz li ul li a .sf-sub-indicator {
+#header .cssmenu_horiz li ul li a .sf-sub-indicator {
 	background-position: -10px 0;
 }
 
@@ -319,9 +401,16 @@ a.flip:hover {color: #006699}
 	color: #000000;
 }
 
+.option a:link,
+.option a:visited,
+a.linkmenu, .rsslink, .linkmenu:visited, .rsslink:visited {}
+
 .linkmenu:hover {
 	color: #000000;
 }
+
+.option a:hover,
+.option a:active {}
 
 a.linkmodule:hover {
 	color: #000000;
@@ -367,6 +456,8 @@ a.linkmodule:hover {
 	border-bottom: 1px solid #cfcfcf;
 }
 
+.box a.flipmodtitle img {}
+
 a.flipmodtitle:hover img {
 	border: 1px solid #58A7D2 !important;
 }
@@ -408,6 +499,9 @@ a.flipmodtitle:hover img {
 	background: #fff;
 }
 
+.highlight {
+}
+
 /***** Tables, Tabs and Lists ****/
 /** Tables **/
 .normal, 
@@ -417,8 +511,14 @@ tr.odd {
 	background: #f0f0f0;
 }
 
+tr.odd:hover {
+}
+
 tr.even {
 	background: #dcdcdc;
+}
+
+tr.even:hover {
 }
 
 td.odd {
@@ -430,6 +530,11 @@ td.even {
 	background: #dcdcdc;
 	color: #000;
 }
+
+tr.even td.even,
+tr.odd td.odd {}
+
+td.third {}
 
 /* headings */
 
@@ -591,6 +696,8 @@ a.pagetitle:hover {
 }
 
 /* Needed esp. for light-on-dark theme */
+.toolbar {
+}
 
 /* Wiki plugins */
 /* Code plugin  */
@@ -757,7 +864,7 @@ body.tiki_blogs .postbody-title,
 }
 
 .post-approved-r .content * {
-	background: url(../../../img/icons/dots.gif);
+	background: url(../../../img/icons2/dots.gif);
 }
 
 /* Help box*/
@@ -795,6 +902,133 @@ body.tiki_blogs .postbody-title,
 
 /***** Calendar *****/
 /* Overrides calendar.css, etc. */
+
+.Calart,
+.Calart a,
+.Calart a:visited {
+	color: #FA8072;
+}
+
+.Calblog,
+.Calblog a,
+.Calblog a:visited {
+	color: #DA70D6;
+}
+
+.Calchart,
+.Calchart a,
+.Calchart a:visited {
+	color: #304F30;
+}
+
+.Caldir,
+.Caldir a,
+.Caldir a:visited {
+	color: #800080;
+}
+
+.Caleph,
+.Caleph a,
+.Caleph a:visited {
+	color: #008000;
+}
+
+.Calfaq,
+.Calfaq a,
+.Calfaq a:visited {
+	color: #822222;
+}
+
+.Calfgal,
+.Calfgal a,
+.Calfgal a:visited {}
+
+.Calforum,
+.Calforum a,
+.Calforum a:visited {
+	color: #808000;
+}
+
+.Calgal,
+.Calgal a,
+.Calgal a:visited {
+	color: #8B4513;
+}
+
+.Calnl,
+.Calnl a,
+.Calnl a:visited {
+	color: #708090;
+}
+
+.Calquiz,
+.Calquiz a,
+.Calquiz a:visited {
+	color: #5F9EA0;
+}
+
+.Calsurv,
+.Calsurv a,
+.Calsurv a:visited {
+	color: #DAA520;
+}
+
+.Caltrack,
+.Caltrack a,
+.Caltrack a:visited {
+	color: #00BD02;
+}
+
+.Calweb {}
+
+.Calwiki,
+.Calwiki a,
+.Calwiki a:visited {
+	color: #2C4B80;
+}
+
+.Calart a:hover,
+.Calblog a:hover,
+.Calchart a:hover,
+.Caldir a:hover,
+.Caleph a:hover,
+.Calfaq a:hover,
+.Calfgal a:hover,
+.Calforum a:hover,
+.Calgal a:hover,
+.Calnl a:hover,
+.Calquiz a:hover,
+.Calsurv a:hover,
+.Caltrack a:hover,
+.Calwiki a:hover {
+	color: #000000;
+}
+
+.Calart:before,
+.Calblog:before,
+.Calchart:before,
+.Caldir:before,
+.Caleph:before,
+.Calfaq:before,
+.Calfgal:before,
+.Calforum:before,
+.Calgal:before,
+.Calnl:before,
+.Calquiz:before,
+.Calsurv:before,
+.Caltrack:before,
+.Calwiki:before {
+	background: #f8f8ff;
+}
+
+.calfocus {
+	background: #cce5ff;
+}
+
+.calfocuson {
+	font-size: 90%;
+}
+
 .calprio1 a,
 .calprio2 a,
 .calprio3 a,
@@ -807,6 +1041,8 @@ body.tiki_blogs .postbody-title,
 	color: #006699;
 }
 
+.caltoggle {}
+
 .opaque {
 	border: 1px solid #1b3a50;
 	background: #dcdcdc;
@@ -815,6 +1051,10 @@ body.tiki_blogs .postbody-title,
 .opaque .box-title {
 	color: #5ae0ff;
 	background: #1b3a50;
+}
+
+.calHeadingOn a {
+	color: #06f;
 }
 
 .calbuttonBox {
@@ -826,18 +1066,18 @@ body.tiki_blogs .postbody-title,
 .buttonon a,
 .calbuttonon a,
 .calbuttonoff a {
-	color: #006699;
+	color: #fff;
 }
 
+.caltable .calfocuson,
 .box-data .fc a.today,
 .box-data td a.today {
 	background: #D4D0C8;
 	border: solid 1px #696969;
 }
 
-.calendarweek td.heading.calHeading a:link,
-.calendarweek td.heading.calHeading a:visited {
-	color: #5ae0ff;
+.caltable .calfocuson a {
+	color: #000;
 }
 
 .calinput {
@@ -848,8 +1088,8 @@ body.tiki_blogs .postbody-title,
 	background: #F5F5F5;
 }
 
-th.days {
-	color: #006699;
+.days {
+	color: #cce5ff;
 }
 
 .caltable .weeks {
@@ -857,17 +1097,24 @@ th.days {
 	color: #cce5ff;
 }
 
-.caltable .odd,
-.caltable .even {
+.calodd, .caleven {
 	border: 1px solid #a9a9a9;
 }
 
-.caltable .odd {
+.calodd {
 	background: #f0f0f0;
 }
 
-.caltable .even {
+.caleven {
 	background: #dcdcdc;
+}
+
+.caldark {
+	background: #223845;
+}
+
+.caldark .calfocus {
+	background: #223845;
 }
 
 /*****  Polls  *****/
@@ -941,6 +1188,7 @@ th.days {
 }
 
 /***** Ajax *****/
+#ajaxLoading {}
 
 /***** TikiSheet Default Style *****/
 .default thead td,

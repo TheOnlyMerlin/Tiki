@@ -1,34 +1,30 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Id: wikiplugin_button.php 26196 2010-03-18 14:08:55Z sylvieg $
 
-function wikiplugin_button_info()
-{
+// this script may only be included - so it's better to die if called directly.
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
+  header("location: index.php");
+  die;
+}
+
+function wikiplugin_button_info() {
 	return array(
 		'name' => tra('Button'),
-		'documentation' => 'PluginButton',
-		'description' => tra('Add a link formatted as a button'),
+		'documentation' => tra('PluginButton'),			
+		'description' => tra('Produces a link with the shape of a button, reusing the button smarty function and requiring no validation of that plugin'),
 		'prefs' => array('wikiplugin_button'),
 		'validate' => 'none',
 		'extraparams' => false,
-		'icon' => 'img/icons/control_play_blue.png',
-		'tags' => array( 'basic' ),		
 		'params' => array(
 			'href' => array(
 				'required' => true,
 				'name' => tra('Url'),
 				'description' => tra('URL to be produced by the button. You can use wiki argument variables like {{itemId}} in it'),
 				'filter' => 'url',
-				'default' => '',
-			),
-			'_class' => array(
-				'required' => false,
-				'name' => tra('CSS Class'),
-				'description' => tra('CSS class for the button'),
-				'filter' => 'text',
 				'default' => '',
 			),
 			'_text' => array(
@@ -42,11 +38,8 @@ function wikiplugin_button_info()
 	);
 }
 
-function wikiplugin_button($data, $params)
-{
+function wikiplugin_button($data, $params) {
 	global $tikilib,$smarty;
-	$parserlib = TikiLib::lib('parser');
-	
 	if (empty($params['href'])) {
 		return tra('Incorrect param');
 	}
@@ -63,7 +56,7 @@ function wikiplugin_button($data, $params)
 	}
 	
 	// Parse wiki argument variables in the url, if any (i.e.: {{itemId}} for it's numeric value).
-	$parserlib->parse_wiki_argvariable($params['href']);
+	$tikilib->parse_wiki_argvariable($params['href']);
 
 	include_once($path);
 	$func = 'smarty_function_button';

@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -34,7 +31,7 @@ $assign_user = $_REQUEST["assign_user"];
 
 if (isset($_REQUEST["action"])) {
 	check_ticket('admin-assign-user');
-
+	
 	if (!isset($_REQUEST["group"])) {
 		$smarty->assign('msg', tra("You have to indicate a group"));
 		$smarty->display("error.tpl");
@@ -43,7 +40,7 @@ if (isset($_REQUEST["action"])) {
 	if ($userChoice == 'y') {
 		$gps = $userlib->get_groups(0, -1, 'groupName_asc', '', '', '', '', $userChoice);
 		$groups = array();
-		foreach ($gps['data'] as $g) {
+		foreach($gps['data'] as $g) {
 			$groups[$g['groupName']] = $g;
 		}
 	} elseif ($tiki_p_admin != 'y') {
@@ -57,38 +54,21 @@ if (isset($_REQUEST["action"])) {
 		}
 		if ($tiki_p_admin_users == 'y' ||($tiki_p_admin_users == 'y' && array_key_exists($_REQUEST["group"], $groups))) {
 			$userlib->assign_user_to_group($_REQUEST["assign_user"], $_REQUEST["group"]);
-			$logslib->add_log('perms', sprintf("Assigned %s in group %s", $_REQUEST["assign_user"], $_REQUEST["group"]));
-		}
+			$logslib->add_log('perms',sprintf("Assigned %s in group %s",$_REQUEST["assign_user"], $_REQUEST["group"]));
+		}			
 	} elseif ($_REQUEST["action"] == 'removegroup' && ($tiki_p_admin == 'y' || ($tiki_p_admin_users == 'y' && array_key_exists($_REQUEST["group"], $groups)))) {
 		$access->check_authenticity();
 		$userlib->remove_user_from_group($_REQUEST["assign_user"], $_REQUEST["group"]);
-		$logslib->add_log('perms', sprintf("Removed %s from group %s", $_REQUEST["assign_user"], $_REQUEST["group"]));
+		$logslib->add_log('perms',sprintf("Removed %s from group %s",$_REQUEST["assign_user"], $_REQUEST["group"]));
 	}
 }
 
-if (isset($_REQUEST['set_default'])) {
-	$userlib->set_default_group($_REQUEST['login'], $_REQUEST['defaultgroup']);
+if(isset($_REQUEST['set_default'])) {
+	$userlib->set_default_group($_REQUEST['login'],$_REQUEST['defaultgroup']);
 }
 
-$user_info = $userlib->get_user_info($assign_user, true);
+$user_info = $userlib->get_user_info($assign_user,true);
 $smarty->assign_by_ref('user_info', $user_info);
-if (!empty($_REQUEST['save'])) {
-	foreach ($_REQUEST as $r => $v) {
-		if (strpos($r, 'new_') === 0) {
-			$g = substr($r, 4);
-			if ($_REQUEST['new_'.$g] != $_REQUEST['old_'.$g]) {
-				$t = strtotime($_REQUEST['new_'.$g]);
-				$t = $tikilib->make_time(date('H', $t), date('i', $t), 0, date('m', $t), date('d', $t), date('Y', $t));
-				if ($t !== false) {
-					$g_info = $userlib->get_groupId_info($g);
-					$userlib->extend_membership($assign_user, $g_info['groupName'], 0, $t);
-				}
-			}
-		}
-	}
-}
-$dates = $userlib->get_user_groups_date($user_info['userId']);
-$smarty->assign_by_ref('dates', $dates);
 
 if (!isset($_REQUEST["sort_mode"])) {
 	$sort_mode = 'groupName_asc';
@@ -129,14 +109,14 @@ if ($tiki_p_admin != 'y' && $userChoice != 'y') {
 	}
 } else
 	$ingroups = '';
-$users = $userlib->get_groups($offset, $maxRecords, $sort_mode, $find, '', 'y', $ingroups, $userChoice);
+$users = $userlib->get_groups($offset, $maxRecords, $sort_mode, $find,'','y', $ingroups, $userChoice);
 
 foreach ($users['data'] as $key=>$gr) {
 	if (isset($user_info['groups'][$gr['groupName']])) {
 		$users['data'][$key]['what'] = $user_info['groups'][$gr['groupName']];
 	}
 }
-
+			
 $smarty->assign_by_ref('cant_pages', $users["cant"]);
 
 // Get users (list of users)

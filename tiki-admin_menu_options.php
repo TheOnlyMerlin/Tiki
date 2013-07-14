@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -21,9 +18,7 @@ $auto_query_args = array(
 	'find',
 	'sort_mode',
 	'menuId',
-	'maxRecords',
-	'preview_css',
-	'preview_type',
+	'maxRecords'
 );
 if (!empty($_REQUEST['import']) && !empty($_FILES['csvfile']['tmp_name'])) {
 	$menulib->import_menu_options();
@@ -33,7 +28,7 @@ if (!empty($_REQUEST['export'])) {
 }
 $maxPos = $menulib->get_max_option($_REQUEST["menuId"]);
 $smarty->assign('menuId', $_REQUEST["menuId"]);
-$editable_menu_info = $menulib->get_menu($_REQUEST["menuId"]);
+$editable_menu_info = $tikilib->get_menu($_REQUEST["menuId"]);
 $smarty->assign('editable_menu_info', $editable_menu_info);
 if (!isset($_REQUEST["optionId"])) {
 	$_REQUEST["optionId"] = 0;
@@ -41,7 +36,6 @@ if (!isset($_REQUEST["optionId"])) {
 $smarty->assign('optionId', $_REQUEST["optionId"]);
 if ($_REQUEST["optionId"]) {
 	$info = $menulib->get_menu_option($_REQUEST["optionId"]);
-	$cookietab = 2;
 } else {
 	$info = array();
 	$info["name"] = '';
@@ -68,6 +62,7 @@ if (isset($_REQUEST["remove"])) {
 	$menulib->remove_menu_option($_REQUEST["remove"]);
 	$maxPos = $menulib->get_max_option($_REQUEST["menuId"]);
 	$smarty->assign('position', $maxPos + 10);
+	$smarty->clear_cache(null, "menu" . $_REQUEST["menuId"]);
 }
 if (isset($_REQUEST["up"])) {
 	check_ticket('admin-menu-options');
@@ -80,11 +75,12 @@ if (isset($_REQUEST["down"])) {
 }
 if (isset($_REQUEST['delsel_x']) && isset($_REQUEST['checked'])) {
 	check_ticket('admin-menu-options');
-	foreach ($_REQUEST['checked'] as $id) {
+	foreach($_REQUEST['checked'] as $id) {
 		$menulib->remove_menu_option($id);
 	}
 	$maxPos = $menulib->get_max_option($_REQUEST['menuId']);
 	$smarty->assign('position', $maxPos + 10);
+	$smarty->clear_cache(null, 'menu' . $_REQUEST['menuId']);
 }
 if (isset($_REQUEST["save"])) {
 	if (!isset($_REQUEST['groupname'])) $_REQUEST['groupname'] = '';
@@ -94,6 +90,7 @@ if (isset($_REQUEST["save"])) {
 	check_ticket('admin-menu-options');
 	$menulib->replace_menu_option($_REQUEST["menuId"], $_REQUEST["optionId"], $_REQUEST["name"], $_REQUEST["url"], $_REQUEST["type"], $_REQUEST["position"], $_REQUEST["section"], $_REQUEST["perm"], $_REQUEST["groupname"], $_REQUEST['level'], $_REQUEST['icon']);
 	$modlib->clear_cache();
+	$smarty->clear_cache(null, "menu" . $_REQUEST["menuId"]);
 	$smarty->assign('position', $_REQUEST["position"] + 10);
 	$smarty->assign('name', '');
 	$smarty->assign('optionId', 0);
@@ -104,7 +101,6 @@ if (isset($_REQUEST["save"])) {
 	$smarty->assign('userlevel', 0);
 	$smarty->assign('type', 'o');
 	$smarty->assign('icon', '');
-	$cookietab = 1;
 }
 if (!isset($_REQUEST["sort_mode"])) {
 	$sort_mode = 'position_asc';
@@ -128,19 +124,6 @@ if (isset($_REQUEST['maxRecords'])) {
 } else {
 	$maxRecords = $prefs['maxRecords'];
 }
-
-$smarty->assign('preview_type', isset($_REQUEST['preview_type']) && $_REQUEST['preview_type'] === 'horiz' ? 'horiz' : 'vert');
-$smarty->assign('preview_css', isset($_REQUEST['preview_css']) && $_REQUEST['preview_css'] === 'On' ? 'y' : 'n');
-
-$headerlib->add_js('var permNames = ' . json_encode(TikiLib::lib('user')->get_permission_names_for('all')) . ';');
-$feature_prefs = array();
-foreach ($prefs as $k => $v) {	// attempt to filter out non-feature prefs (still finds 133!)
-	if (strpos($k, 'feature') !== false && preg_match_all('/_/m', $k, $m) === 1) {
-		$feature_prefs[] = $k;
-	}
-}
-$headerlib->add_js('var prefNames = ' . json_encode($feature_prefs) . ';');
-
 $smarty->assign_by_ref('maxRecords', $maxRecords);
 $smarty->assign_by_ref('sort_mode', $sort_mode);
 $allchannels = $menulib->list_menu_options($_REQUEST["menuId"], 0, -1, $sort_mode, $find);
@@ -152,10 +135,8 @@ $smarty->assign_by_ref('channels', $channels["data"]);
 $smarty->assign_by_ref('allchannels', $allchannels["data"]);
 if (isset($info['groupname']) && !is_array($info['groupname'])) $info['groupname'] = explode(',', $info['groupname']);
 $all_groups = $userlib->list_all_groups();
-if (is_array($all_groups)) foreach ($all_groups as $g) $option_groups[$g] = (is_array($info['groupname']) && in_array($g, $info['groupname'])) ? 'selected="selected"' : '';
+if (is_array($all_groups)) foreach($all_groups as $g) $option_groups[$g] = (is_array($info['groupname']) && in_array($g, $info['groupname'])) ? 'selected="selected"' : '';
 $smarty->assign_by_ref('option_groups', $option_groups);
-$smarty->assign('escape_menu_labels', ($prefs['menus_item_names_raw'] === 'n' && $editable_menu_info['parse'] === 'n'));
-
 ask_ticket('admin-menu-options');
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');

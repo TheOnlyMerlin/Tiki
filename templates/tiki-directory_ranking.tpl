@@ -1,8 +1,8 @@
 {title url="tiki-directory_ranking.php?sort_mode=$sort_mode"}{tr}Directory ranking{/tr}{/title}
 
 {* Display the title using parent *}
-{include file='tiki-directory_bar.tpl'}<br>
-<br>
+{include file='tiki-directory_bar.tpl'}<br />
+<br />
 {* Navigation bar to admin, admin related, etc *}
 
 {* Display the list of categories (items) using pagination *}
@@ -17,23 +17,25 @@
   {cycle values="odd,even" print=false}
   {section name=user loop=$items}
   <tr class="{cycle advance=false}">
-    <td class="text"><a class="link" href="tiki-directory_redirect.php?siteId={$items[user].siteId}" {if $prefs.directory_open_links eq 'n'}target='_blank'{/if}>{$items[user].name}</a></td>
-    <td class="text">{$items[user].url}</td>
+    <td><a class="link" href="tiki-directory_redirect.php?siteId={$items[user].siteId}" {if $prefs.directory_open_links eq 'n'}target='_blank'{/if}>{$items[user].name}</a></td>
+    <td>{$items[user].url}</td>
     {if $prefs.directory_country_flag eq 'y'}
-    <td class="icon"><img src='img/flags/{$items[user].country}.gif' alt='{$items[user].country}'></td>
+    <td><img src='img/flags/{$items[user].country}.gif' alt='{$items[user].country}'/></td>
     {/if}
-    <td class="integer">{$items[user].hits}</td>
+    <td>{$items[user].hits}</td>
   </tr>
   <tr class="{cycle}">
     <td>&nbsp;</td>
-    <td class="text" colspan="4"><i>{tr}Directory Categories:{/tr}{assign var=fsfs value=1}
+    <td colspan="5"><i>{tr}Directory Categories{/tr}:{assign var=fsfs value=1}
       {section name=ii loop=$items[user].cats}
       {if $fsfs}{assign var=fsfs value=0}{else}, {/if}
       {$items[user].cats[ii].path}
       {/section}</i> </td>
   </tr>
   {sectionelse}
-	{norecords _colspan=4}
+  <tr>
+    <td class="odd" colspan="4">{tr}No records{/tr}</td>
+  </tr>
   {/section}
 </table>
 {pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links} 

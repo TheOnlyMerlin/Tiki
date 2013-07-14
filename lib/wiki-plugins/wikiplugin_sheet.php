@@ -1,20 +1,18 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2011 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_sheet_info()
-{
+function wikiplugin_sheet_info() {
 	return array(
 		'name' => tra('Sheet'),
 		'documentation' => 'PluginSheet',
 		'description' => tra('Display data from a TikiSheet'),
 		'prefs' => array( 'wikiplugin_sheet', 'feature_sheet' ),
 		'body' => tra('Sheet Heading'),
-		'icon' => 'img/icons/sheet_get_range.png',
-		'tags' => array( 'basic' ),
+		'icon' => 'pics/icons/sheet_get_range.png',
 		'params' => array(
 			'id' => array(
 				'required' => false,
@@ -23,8 +21,7 @@ function wikiplugin_sheet_info()
 				'filter' => 'digits',
 				'accepted' => 'Sheet ID number',
 				'default' => '',
-				'since' => '',
-				'profile_reference' => 'sheet',
+				'since' => ''
 			),
 			'url' => array(
 				'required' => false,
@@ -44,8 +41,8 @@ function wikiplugin_sheet_info()
 				'default' => 'n',
 				'since' => '5.0',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
@@ -76,8 +73,8 @@ function wikiplugin_sheet_info()
 				'default' => 'y',
 				'since' => '6.0',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
@@ -90,8 +87,8 @@ function wikiplugin_sheet_info()
 				'default' => 'y',
 				'since' => '6.0',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
@@ -117,32 +114,30 @@ function wikiplugin_sheet_info()
 	);
 }
 
-function wikiplugin_sheet($data, $params)
-{
+function wikiplugin_sheet($data, $params) {
 	global $dbTiki, $tiki_p_edit_sheet, $tiki_p_edit, $tiki_p_admin_sheet, $tiki_p_admin, $prefs, $user, $sheetlib, $page, $tikilib, $smarty;
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 	$style = (isset($height)) ? "height: $height !important;" : '';
 	$style .= (isset($width)) ? "width: $width;" : '';
-//	$urlHeight = (isset($height)) ? "&height=$height" : '';
-//	$urlHeight .= (isset($width)) ? "&width=$width" : '';
-	$urlHeight = (isset($height)) ? "&height=100" : ''; // not setting any height or width in the sheet params created for me the literal '...&height=100%&...' or '...&width=100%&...' in the url with a 400 error (bad request). Hardcoding to 100 (instead of 100%) to avoid this error until a better fix is found
-	$urlHeight .= (isset($width)) ? "&width=100" : ''; // not setting any height or width in the sheet params created for me the literal '...&height=100%&...' or '...&width=100%&...' in the url with a 400 error (bad request). Hardcoding to 100 (instead of 100%) to avoid this error until a better fix is found
+	$urlHeight = (isset($height)) ? "&height=$height" : '';
+	$urlHeight .= (isset($width)) ? "&width=$width" : '';
 	$editable = isset($editable) && $editable == 'n' ? false : true;
 	$subsheets = isset($subsheets) && $subsheets == 'n' ? false : true;
 	$class = (isset($class)) ? " $class"  : '';
-
-	$sheetlib = TikiLib::lib("sheet");
+	
+	if( !class_exists( 'TikiSheet' ) )
+		require "lib/sheet/grid.php";
 
 	static $index = 0;
 	++$index;
 
-	if (empty($id) && empty($url)) {
-		if ( $tiki_p_edit_sheet != 'y' || $tiki_p_edit != 'y' ) {
+	if (!isset($id) && !isset($url)) {
+		if( $tiki_p_edit_sheet != 'y' || $tiki_p_edit != 'y' ) {
 			return ("<b>missing id parameter for plugin</b><br />");
 		} else {
-			if ( isset( $_POST['create_sheet'], $_POST['index'] ) && $index == $_POST['index'] ) {
+			if( isset( $_POST['create_sheet'], $_POST['index'] ) && $index == $_POST['index'] ) {
 				// Create a new sheet and rewrite page
-				$sheetId = $sheetlib->replace_sheet(null, tra('New sheet in page: ') . $page, '', $user);
+				$sheetId = $sheetlib->replace_sheet( null, tra('New sheet in page: ') . $page, '', $user );
 				$page = htmlentities($page);
 				$content = htmlentities($data);
 				$formId = "form$index";
@@ -161,12 +156,14 @@ function wikiplugin_sheet($data, $params)
 				document.getElementById('$formId').submit();
 				</script>
 				~/np~
-EOF;
+				EOF;
 			} else {
+				$intro = tra('Incomplete call to plugin: No target sheet.');
 				$label = tra('Create New Sheet');
 				return <<<EOF
 ~np~
 <form method="post" action="">
+	<p>$intro</p>
 	<p>
 		<input type="submit" name="create_sheet" value="$label"/>
 		<input type="hidden" name="index" value="$index"/>
@@ -178,88 +175,77 @@ EOF;
 		}
 	}
 
-	$sheet = new TikiSheet();
-
-	if (empty($url)) {
-		$info;
-		if (!empty($id)) {
-			$info = $sheetlib->get_sheet_info($id);
-		}
-
+	if (!empty($id)) {
+		$info = $sheetlib->get_sheet_info($id);
 		if (empty($info)) {
-			return tra("Error loading spreadsheet");
+			return ("<b>missing id parameter for plugin</b><br />");
 		}
-
 		$objectperms = Perms::get('sheet', $id);
 		if (!$objectperms->view_sheet  && !($user && $info['author'] == $user)) {
 			return (tra('Permission denied'));
 		}
+	}
 
-		// Build required objects
-		$db = new TikiSheetDatabaseHandler($id);
-		//$out = new TikiSheetOutputHandler($data);
+	// Build required objects
+	$sheet = new TikiSheet($id);
+	$db = new TikiSheetDatabaseHandler( $id );
+	$out = new TikiSheetOutputHandler( $data );
 
-		// Fetch sheet from database
-		$sheet->import($db);
-
-	} else {
+	// Fetch sheet from database
+	$sheet->import( $db );
+	
+	if (!empty($range)) {
+		$r = $sheet->setRange($range);
 		if (!isset($simple)) {
 			$simple = 'y';
 		}
 	}
-
-	$calcOff = '';
-	if (!empty($range)) {
-		$sheet->setRange($range);
-		$calcOff = ',calcOff: true';
-	}
-
+	
 	// Grab sheet output
 	if (isset($url)) {
 		$file = file_get_contents($url);
 		$pathInfo = pathinfo($url);
 		if ($pathInfo['extension'] == 'csv') {
-			$handler = new TikiSheetCSVHandler($url);
+			$handler = new TikiSheetCSVHandler( $url );
 			$grid = new TikiSheet();
-			$grid->import($handler);
-			$ret = $grid->getTableHtml(true, null, false);
+			$grid->import( $handler );
+			$ret = $grid->getTableHtml( true , null, false );
 
 		} else {
-			$ret = file_get_contents($url);
+			$ret = file_get_contents( $url );
 		}
 	} else {
-		$ret = ($sheet->getTableHtml($subsheets));
+		$ret = ($sheet->getTableHtml( $subsheets ));
 	}
-
-	if (strpos($ret, '<table ') === false) {
-		return '~np~' . $ret . '~/np~';	// return a single cell raw
-	}
-
+	
+	
+	
 	if (!isset($simple) || $simple != 'y') {
 		global $headerlib;
 		$sheetlib->setup_jquery_sheet();
-		$headerlib->add_jq_onready(
-			'$("div.tiki_sheet").each(function() {
+		$headerlib->add_jq_onready('
+			$("div.tiki_sheet").each(function() {
 				$(this).sheet($.extend($.sheet.tikiOptions,{
-				editable:false'
-			. $calcOff .
-			'}));
-			});'
-		);
+					editable:false
+				}));
+			});
+		');
 
+	} else if (preg_match('/^([A-Z]+[0-9]+):\1$/', strtoupper($range))) {
+		return $ret;	// return a single cell raw
 	}
 
 	$ret = '<div id="tiki_sheet' . $sheet->instance . '" class="tiki_sheet' . $class . '" style="overflow:hidden;' . $style . '">' . $ret . '</div>';
-
-	if ( $editable && ($objectperms->edit_sheet  || $objectperms->admin_sheet || $tiki_p_admin == 'y')) {
-		$smarty->loadPlugin('smarty_function_button');
-
+	
+	if( $editable && ($objectperms->edit_sheet  || $objectperms->admin_sheet || $tiki_p_admin == 'y')) {
+		require_once $smarty->_get_plugin_filepath('function','button');
+		
 		//If you've given the sheet a url, you can't edit it, disable if not possible
 		if (!isset($url)) {
-			$button_params = array('_text' => tra("Edit Sheet"), '_script' => "tiki-view_sheets.php?sheetId=$id&parse=edit$urlHeight&page=$page");
+			$button_params = array('_text' => tra("Edit Sheet"), '_script' => "tiki-view_sheets.php?sheetId=$id&parse=edit$urlHeight");
 		}
-
-		$ret .= smarty_function_button($button_params, $smarty);
+		
+		$ret .= smarty_function_button( $button_params, $smarty);
 	}
 	return '~np~' . $ret . '~/np~';
 }

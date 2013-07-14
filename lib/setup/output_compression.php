@@ -1,12 +1,12 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-$access->check_script($_SERVER['SCRIPT_NAME'], basename(__FILE__));
+$access->check_script($_SERVER["SCRIPT_NAME"],basename(__FILE__));
 
 // no compression at all
 $smarty->assign('gzip', 'Disabled');
@@ -22,7 +22,6 @@ if ( ! empty($force_no_compression) && $force_no_compression ) {
 	// if not, check if tiki compression is enabled
 	} elseif ( $prefs['feature_obzip'] == 'y' ) {
 		// tiki compression is enabled, then let activate the handler
-		@ob_clean();					// but make sure it's empty first
 		ob_start('ob_gzhandler');
 		$smarty->assign('gzip_handler', 'tiki');
 		$smarty->assign('gzip', 'Enabled');

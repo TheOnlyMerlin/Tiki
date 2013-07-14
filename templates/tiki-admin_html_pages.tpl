@@ -20,18 +20,18 @@
 {/if}
 
 <form action="tiki-admin_html_pages.php" method="post" id='editpageform'>
-	<input type="hidden" name="pageName" value="{$pageName|escape}">
+	<input type="hidden" name="pageName" value="{$pageName|escape}" />
 	<table class="formcolor">
 		<tr>
-			<td style="width:150px;">{tr}Page name:{/tr}</td>
+			<td style="width:150px;">{tr}Page name{/tr}:</td>
 			<td>
-				<input type="text" maxlength="255" size="40" name="pageName" value="{$info.pageName|escape}">
+				<input type="text" maxlength="255" size="40" name="pageName" value="{$info.pageName|escape}" />
 			</td>
 		</tr>
 
 		{if $tiki_p_use_content_templates eq 'y'}
 			<tr>
-				<td>{tr}Apply template:{/tr}</td>
+				<td>{tr}Apply template{/tr}:</td>
 				<td>
 					<select name="templateId"{if !$templates} disabled="disabled"{/if} onchange="javascript:document.getElementById('editpageform').submit();">
 						<option value="0">{tr}none{/tr}</option>
@@ -44,7 +44,7 @@
 		{/if}
 
 		<tr>
-			<td>{tr}Type:{/tr}</td>
+			<td>{tr}Type{/tr}:</td>
 			<td>
 				<select name="type">
 					<option value='d'{if $info.type eq 'd'} selected="selected"{/if}>{tr}Dynamic{/tr}</option>
@@ -53,15 +53,15 @@
 			</td>
 		</tr>
 		<tr>
-			<td>{tr}Refresh rate (if dynamic):{/tr}</td>
+			<td>{tr}Refresh rate (if dynamic){/tr}:</td>
 			<td>
-				<input type="text" size="5" name="refresh" value="{$info.refresh|escape}"> {tr}seconds{/tr}
+				<input type="text" size="5" name="refresh" value="{$info.refresh|escape}" /> {tr}seconds{/tr}
 			</td>
 		</tr>
 
 		<tr>
 			<td>
-				{tr}Content:{/tr}
+				{tr}Content{/tr}:
 			</td>
 			<td>
 				<textarea name="content" id="htmlcode" rows="25" style="width:95%;">{$info.content|escape}</textarea>
@@ -70,14 +70,14 @@
 		<tr>
 			<td></td>
 			<td>
-				<input type="submit" name="preview" value="{tr}Preview{/tr}"> 
-				<input type="submit" name="save" value="{tr}Save{/tr}">
+				<input type="submit" name="preview" value="{tr}Preview{/tr}" /> 
+				<input type="submit" name="save" value="{tr}Save{/tr}" />
 			</td>
 		</tr>
 	</table>
 </form>
 
-<br>
+<br />
 <h2>{tr}HTML pages{/tr}</h2>
 {if $channels}
 	{include file='find.tpl'}
@@ -99,10 +99,10 @@
 	{cycle values="odd,even" print=false}
 	{section name=user loop=$channels}
 		<tr class="{cycle}">
-			<td class="text">{$channels[user].pageName}</td>
-			<td class="text">{$channels[user].type} {if $channels[user].type eq 'd'}({$channels[user].refresh} secs){/if}</td>
-			<td class="date">{$channels[user].created|tiki_short_datetime}</td>
-			<td class="action">
+			<td>{$channels[user].pageName}</td>
+			<td>{$channels[user].type} {if $channels[user].type eq 'd'}({$channels[user].refresh} secs){/if}</td>
+			<td>{$channels[user].created|tiki_short_datetime}</td>
+			<td>
 				<a class="link" href="tiki-admin_html_pages.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;pageName={$channels[user].pageName|escape:"url"}" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
 
 				<a class="link" href="tiki-page.php?pageName={$channels[user].pageName|escape:"url"}" title="View">{icon _id='monitor' alt="{tr}View{/tr}"}</a>
@@ -113,7 +113,9 @@
 			</td>
 		</tr>
 	{sectionelse}
-		{norecords _colspan=4}
+	<tr>
+		<td colspan="4" class="odd">{tr}No records found{/tr}</td>
+	</tr>
 	{/section}
 </table>
 

@@ -4,7 +4,7 @@
 
 {if $prefs.feature_morcego eq 'y' and $prefs.freetags_feature_3d eq 'y'}
 	<div class="morcego_embedded">
-		<h2>{tr}Network of Tags related to:{/tr} <span id="currentTag1">{$tag}</span></h2>
+		<h2>{tr}Network of Tags related to{/tr}: <span id="currentTag1">{$tag}</span></h2>
 		<applet codebase="./lib/wiki3d" archive="morcego-0.6.0.jar" code="br.arca.morcego.Morcego" width="{$prefs.freetags_3d_width}" height="{$prefs.freetags_3d_height}">
 			<param name="serverUrl" value="{$base_url}tiki-freetag3d_xmlrpc.php">
 			<param name="startNode" value="{$tag}">
@@ -28,26 +28,24 @@
 			<param name="eletrostaticConstant" value="{$prefs.freetags_3d_eletrostatic_constant|default:"1000f"}">
 			<param name="springSize" value="{$prefs.freetags_3d_spring_size|default:"100"}">
 			<param name="nodeMass" value="{$prefs.freetags_3d_node_mass|default:"5"}">
-			<param name="nodeCharge" value="{$prefs.freetags_3d_node_charge|default:"1"}">
+			<param name="nodeCharge" value="{$freetags_3d_node_charde|default:"1"}">
 		</applet>
 	</div>
 {/if}
-{jq}
-	$('#tagBox').tiki('autocomplete', 'tag', {multiple: true, multipleSeparator: " "} );
-{/jq}
+
 <form class="freetagsearch" action="tiki-browse_freetags.php" method="get">
 	<div class="freetagskeywords">
 		<b>{tr}Tags{/tr}</b> 
-		<input type="text" id="tagBox" name="tag" size="25" value="{$tagString|escape}">
+		<input type="text" id="tagBox" name="tag" size="25" value="{$tagString|escape}" />
 		{button _onclick="clearTags(); return false;" _text="{tr}Clear{/tr}"}
-		<input type="submit" value="{tr}Go{/tr}">
-		<br>
-		<input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
-		<input type="radio" name="broaden" id="stopb1" value="n"{if $broaden eq 'n'} checked="checked"{/if}>
+		<input type="submit" value="{tr}Go{/tr}" />
+		<br />
+		<input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
+		<input type="radio" name="broaden" id="stopb1" value="n"{if $broaden eq 'n'} checked="checked"{/if} />
 		<label for="stopb1">{tr}With all selected tags{/tr}</label>
-		<input type="radio" name="broaden" id="stopb2" value="y"{if $broaden eq 'y'} checked="checked"{/if}>
+		<input type="radio" name="broaden" id="stopb2" value="y"{if $broaden eq 'y'} checked="checked"{/if}/>
 		<label for="stopb2">{tr}With one selected tag{/tr}</label>
-		<input type="radio" name="broaden" id="stopb3" value="last"{if $broaden eq 'last'} checked="checked"{/if}>
+		<input type="radio" name="broaden" id="stopb3" value="last"{if $broaden eq 'last'} checked="checked"{/if} />
 		<label for="stopb3">{tr}With last selected tag{/tr}</label>
 	</div>
 
@@ -89,7 +87,7 @@
 
 	{assign var=cpt value=0} 
 	{capture name="browse"}
-		{tr}Browse in:{/tr}
+		{tr}Browse in{/tr}:
 
 		{if $type eq $objectType}
 			{assign var=thisclass value='highlight'}
@@ -103,7 +101,7 @@
 			{assign var=thisbroaden value=''}
 		{/if}
 	
-		{button _text="{tr}All{/tr}" _class=$thisclass href="tiki-browse_freetags.php?tag=$tagString$thisbroaden&amp;type="}
+		{button _text="{tr}All{/tr}" _class=$thisclass href="tiki-browse_freetags.php?tag=$tagString$thisbroaden"}
 
 		{foreach item=objectType from=$objects_with_freetags}
 			{foreach item=sect key=key from=$sections_enabled}
@@ -123,7 +121,7 @@
 				
 					{assign var=thistype value=$objectType|escape:'url'}
 					{capture name="fl"}{tr}{$feature_label}{/tr}{/capture}
-					{button _text=$smarty.capture.fl _class=$thisclass href="tiki-browse_freetags.php?tag=$tagString$thisbroaden&amp;type=$thistype"}
+					{button _text="`$smarty.capture.fl`" _class=$thisclass href="tiki-browse_freetags.php?tag=$tagString$thisbroaden&amp;type=$thistype"}
 					{assign var=cpt value=$cpt+1}
 				{/if}
 
@@ -149,31 +147,19 @@
 
 					{assign var=thistype value=$objectType|escape:'url'}
 					{capture name="fl"}{tr}{$feature_label}{/tr}{/capture}
-					{button _text=$smarty.capture.fl _class=$thisclass href="tiki-browse_freetags.php?tag=$tagString$thisbroaden&amp;type=$thistype"}
+					{button _text="`$smarty.capture.fl`" _class=$thisclass href="tiki-browse_freetags.php?tag=$tagString$thisbroaden&amp;type=$thistype"}
 					{assign var=cpt value=$cpt+1}
 				{/if}
 			{/foreach}
 		{/foreach}
-		{if !empty($blogs)}
-			<div id="blogs"{if $type ne 'blog post'} style="visibility:hidden"{/if}>
-			<select name="objectId" onchange="this.form.submit();">
-				<option value="">--{tr}All blogs{/tr}--</option>
-				{foreach item=blog from=$blogs}
-					<option value="{$blog.blogId|escape}"{if $blog.blogId eq $objectId} selected="selected"{/if}>{$blog.title|escape}</option>
-				{/foreach}
-			</select>
-			</div>
-		{/if}
 
-		<input type="hidden" name="old_type" value="{$type|escape}">
-		<input type="text" name="find" value="{$find|escape}">
-		<input type="submit" value="{tr}Filter{/tr}">
+		<input type="text" name="find" value="{$find}" />
+		<input type="submit" value="{tr}Filter{/tr}" />
 	{/capture}
+</form>
 
 {if $cpt > 1}
 	<div class="freetagsbrowse">{$smarty.capture.browse}</div>{/if}
-
-</form>
 
 <div class="freetagresult">
 	{if $tagString}

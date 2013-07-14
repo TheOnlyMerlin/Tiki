@@ -39,18 +39,8 @@
 		{cycle values="odd,even" print=false}
 		{section name=ix loop=$groups_g}
 			<tr class="{cycle}">
-				<td class="text">
-					{$groups_g[ix].groupName|escape}
-					{if count($groups_g[ix].additional_groups)}
-						<div>
-							{tr}Groups included through inheritence:{/tr}
-							{foreach from=$groups_g[ix].additional_groups item=groupName}
-								{$groupName|escape}
-							{/foreach}
-						</div>
-					{/if}
-				</td>
-				<td class="action">
+				<td>{$groups_g[ix].groupName|escape}</td>
+				<td>
 					<a class="link" href="tiki-admin_newsletter_subscriptions.php?nlId={$nlId|urlencode}&amp;offset={$offset|urlencode}&amp;sort_mode={$sort_mode|urlencode}&amp;remove={$groups_g[ix].nlId|urlencode}&amp;group={$groups_g[ix].groupName|urlencode}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 				</td>
 			</tr>
@@ -71,10 +61,10 @@
 		{cycle values="odd,even" print=false}
 		{foreach key=incId item=incName from=$included_n}
 			<tr class="{cycle}">
-				<td class="text">
+				<td>
 					<a href="tiki-admin_newsletter_subscriptions.php?nlId={$incId|urlencode}">{$incName|escape}</a>
 				</td>
-				<td class="action">
+				<td>
 					<a class="link" href="tiki-admin_newsletter_subscriptions.php?nlId={$nlId|urlencode}&amp;offset={$offset|urlencode}&amp;sort_mode={$sort_mode|urlencode}&amp;remove={$nlId|urlencode}&amp;included={$incId|urlencode}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 				</td>
 			</tr>
@@ -95,10 +85,10 @@
 		{cycle values="odd,even" print=false}
 		{section name=ix loop=$pages}
 			<tr class="{cycle}">
-				<td class="text"><a href="{$pages[ix].wikiPageName|sefurl}">{$pages[ix].wikiPageName|escape}</a></td>
-				<td class="text">{$pages[ix].validateAddrs|escape}</td>
-				<td class="text">{$pages[ix].addToList|escape}</td>
-				<td class="action">
+				<td><a href="{$pages[ix].wikiPageName|sefurl}">{$pages[ix].wikiPageName|escape}</a></td>
+				<td>{$pages[ix].validateAddrs|escape}</td>
+				<td>{$pages[ix].addToList|escape}</td>
+				<td>
 					<a class="link" href="tiki-admin_newsletter_subscriptions.php?nlId={$nlId|urlencode}&amp;remove={$pages[ix].nlId|urlencode}&amp;page={$pages[ix].wikiPageName|urlencode}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 				</td>
 			</tr>
@@ -110,7 +100,7 @@
 {include file='find.tpl'}
 
 <form method="post" action="tiki-admin_newsletter_subscriptions.php">
-	<input type="hidden" name="nlId" value="{$nlId|escape}">
+	<input type="hidden" name="nlId" value="{$nlId|escape}" />
 <table class="normal">
 	<tr>
 		<th>
@@ -130,17 +120,17 @@
 	{cycle values="odd,even" print=false}
 	{section name=user loop=$channels}
 		<tr class="{cycle}">
-			<td class="checkbox">
-				<input type="checkbox" name="checked[]" value="{$channels[user].code}" {if $smarty.request.checked and in_array($channels[user].code, $smarty.request.checked)}checked="checked"{/if}>
+			<td style="text-align:center">
+				<input type="checkbox" name="checked[]" value="{$channels[user].code}" {if $smarty.request.checked and in_array($channels[user].code, $smarty.request.checked) }checked="checked"{/if} />
 			</td>
-			<td class="username">
+			<td>
 				{if $channels[user].isUser == "y"}
 					{$channels[user].email|userlink}
 				{else}
 					{$channels[user].email|escape}
 				{/if}
 			</td>
-			<td class="text">
+			<td>
 				{if $channels[user].valid == "n"}
 					<a class="link" href="tiki-admin_newsletter_subscriptions.php?nlId={$nlId|urlencode}&amp;offset={$offset|urlencode}&amp;sort_mode={$sort_mode|urlencode}&amp;valid={$channels[user].nlId|urlencode}&amp;{if $channels[user].isUser eq "y"}user{else}email{/if}={$channels[user].email|escape:"url"}" title="{tr}Valid{/tr}">{tr}No{/tr}</a>
 				{elseif $channels[user].valid == "x"}
@@ -149,20 +139,18 @@
 					{tr}Yes{/tr}
 				{/if}
 			</td>
-			<td class="date">{$channels[user].subscribed|tiki_short_datetime}</td>
-			<td class="action">
+			<td>{$channels[user].subscribed|tiki_short_datetime}</td>
+			<td>
 				<a class="link" href="tiki-admin_newsletter_subscriptions.php?nlId={$nlId|urlencode}&amp;offset={$offset|urlencode}&amp;sort_mode={$sort_mode|urlencode}&amp;remove={$channels[user].nlId|urlencode}&amp;{if $channels[user].isUser eq "y"}subuser{else}email{/if}={$channels[user].email|escape:"url"}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 			</td>
 		</tr>
-	{sectionelse}
-         {norecords _colspan=5}
 	{/section}
 </table>
 
 {if $channels}
 	<div align="left">
 		{tr}Perform action with checked:{/tr}
-		<input type="image" name="delsel" src='img/icons/cross.png' alt="{tr}Delete{/tr}" title="{tr}Delete{/tr}">
+		<input type="image" name="delsel" src='pics/icons/cross.png' alt="{tr}Delete{/tr}" title="{tr}Delete{/tr}" />
 	</div>
 {/if}
 
@@ -175,13 +163,13 @@
 
 <h2>{tr}Add subscribers{/tr}</h2>
 <form action="tiki-admin_newsletter_subscriptions.php" method="post">
-	<input type="hidden" name="nlId" value="{$nlId|escape}">
+	<input type="hidden" name="nlId" value="{$nlId|escape}" />
 	<table class="formcolor">
 		<tr>
 			<td width="30%">{tr}Email:{/tr}</td>
 			<td colspan="2">
 				<textarea cols="70" rows="6" wrap="soft" name="email"></textarea>
-				<br>
+				<br />
 				<i>{tr}You can add several email addresses by separating them with commas.{/tr}</i>
 			</td>
 		</tr>
@@ -200,13 +188,13 @@
 					<tr>
 						<td>{tr}Add email:{/tr}</td>
 						<td>
-							<input type="radio" name="addemail" value="y">
+							<input type="radio" name="addemail" value="y" />
 						</td>
 					</tr>
 					<tr>
 						<td>{tr}Add user:{/tr}</td>
 						<td>
-							<input type="radio" name="addemail" value="n" checked="checked">
+							<input type="radio" name="addemail" value="n" checked="checked" />
 						</td>
 					</tr>
 				</table>
@@ -214,7 +202,7 @@
 		</tr>
 		<tr>
 			<td>{tr}All users:{/tr}</td>
-			<td><input type="checkbox" name="addall"></td>
+			<td><input type="checkbox" name="addall" /></td>
 		</tr>
 		<tr>
 			<td>{tr}Users from group:{/tr}</td>
@@ -225,7 +213,7 @@
 						<option value="{$groups[x]|escape}">{$groups[x]|escape}</option>
 					{/section}
 				</select>
-				<br>
+				<br />
 				<i>{tr}Group subscription also subscribes included groups{/tr}</i>
 			</td>
 		</tr>
@@ -235,7 +223,7 @@
 					{tr}Don't send confirmation mail{/tr}
 				</td>
 				<td colspan="2">
-					<input type="checkbox" name="confirmEmail" checked="checked">
+					<input type="checkbox" name="confirmEmail" />
 				</td>
 			</tr>
 		{/if}
@@ -248,7 +236,7 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td colspan="2">
-				<input type="submit" name="add" value="{tr}Add{/tr}">
+				<input type="submit" name="add" value="{tr}Add{/tr}" />
 			</td>
 		</tr>
 	</table>
@@ -257,13 +245,13 @@
 {if $tiki_p_batch_subscribe_email eq "y" && $tiki_p_subscribe_email eq "y"} 	 
 	<h2>{tr}Import emails from file{/tr}</h2> 	 
 	<form action="tiki-admin_newsletter_subscriptions.php" method="post" enctype="multipart/form-data"> 	 
-		<input type="hidden" name="nlId" value="{$nlId|escape}"> 	 
+		<input type="hidden" name="nlId" value="{$nlId|escape}" /> 	 
 		<table class="formcolor"> 	 
 			<tr>
 				<td width="30%">{tr}File:{/tr}</td>
 				<td colspan="2">
-					<input type="file" name="batch_subscription">
-					<br>
+					<input type="file" name="batch_subscription" />
+					<br />
 					<i>{tr}txt file, one e-mail per line{/tr}</i>
 				</td>
 			</tr> 	 
@@ -273,27 +261,27 @@
 						{tr}Don't send confirmation mails{/tr}
 					</td>
 					<td colspan="2">
-						<input type="checkbox" name="confirmEmail" checked="checked">
+						<input type="checkbox" name="confirmEmail" />
 					</td>
 				</tr>
 			{/if}
 			<tr>
 				<td>&nbsp;</td>
 				<td colspan="2">
-					<input type="submit" name="addbatch" value="{tr}Add{/tr}">
+					<input type="submit" name="addbatch" value="{tr}Add{/tr}" />
 				</td>
 			</tr> 	 
 		</table> 	 
 	</form>
 	<h2>{tr}Import emails from wiki page{/tr}</h2>
 	<form action="tiki-admin_newsletter_subscriptions.php" method="post">
-		<input type="hidden" name="nlId" value="{$nlId|escape}"> 
+		<input type="hidden" name="nlId" value="{$nlId|escape}" /> 
 		<table class="formcolor">
 			<tr>
 				<td width="30%">Wiki page</td>
 				<td colspan="2">
-					<input type="text" name="wikiPageName" value="" size="60">
-					<br>
+					<input type="text" name="wikiPageName" value="" size="60"  />
+					<br />
 					<i>{tr}Wiki page, one e-mail per line{/tr}</i>
 				</td>
 			</tr>
@@ -303,14 +291,14 @@
 						{tr}Don't send confirmation mails{/tr}
 					</td>
 					<td colspan="2">
-						<input type="checkbox" name="confirmEmail" checked="checked">
+						<input type="checkbox" name="confirmEmail" />
 					</td>
 				</tr>
 			{/if}
 			<tr>
 				<td width="30%">&nbsp;</td>
 				<td colspan="2">
-					<input type="submit" name="importPage" value="{tr}Add{/tr}" width="30">
+					<input type="submit" name="importPage" value="Add" width="30" />
 				</td>
 			</tr>
 		</table>
@@ -320,7 +308,7 @@
 
 <h2>{tr}Subscribe group{/tr}</h2>
 <form action="tiki-admin_newsletter_subscriptions.php" method="post">
-	<input type="hidden" name="nlId" value="{$nlId|escape}">
+	<input type="hidden" name="nlId" value="{$nlId|escape}" />
 	<table class="formcolor">
 		<tr>
 			<td width="30%">{tr}Group:{/tr}</td>
@@ -331,25 +319,20 @@
 						<option value="{$groups[x]|escape}">{$groups[x]|escape}</option>
 					{/section}
 				</select>
-				<label>
-					<input type="checkbox" name="include_groups" value="y"/>
-					{tr}Including group inheritence{/tr}
-				</label>
-				<div>
-					<i>{tr}Including group, group users and emails will be refreshed at each newsletter sending{/tr}</i>
-				</div>
+				<br />
+				<i>{tr}Including group, group users and emails will be refreshed at each newsletter sending{/tr}</i>
 			</td>
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
-			<td colspan="2"><input type="submit" name="addgroup" value="{tr}Add{/tr}"></td>
+			<td colspan="2"><input type="submit" name="addgroup" value="{tr}Add{/tr}" /></td>
 		</tr>
 	</table>
 </form>
 
 <h2>{tr}Use subscribers of another newsletter{/tr}</h2>
 <form action="tiki-admin_newsletter_subscriptions.php" method="post">
-	<input type="hidden" name="nlId" value="{$nlId|escape}">
+	<input type="hidden" name="nlId" value="{$nlId|escape}" />
 	<table class="formcolor">
 		<tr>
 			<td width="30%">{tr}Newsletter:{/tr}</td>
@@ -362,13 +345,13 @@
 						{/if}
 					{/section}
 				</select>
-				<br>
+				<br />
 			</td>
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
 			<td colspan="2">
-				<input type="submit" name="addincluded" value="{tr}Add{/tr}">
+				<input type="submit" name="addincluded" value="{tr}Add{/tr}" />
 			</td>
 		</tr>
 	</table>
@@ -376,15 +359,15 @@
 
 <h2>{tr}Use emails from wiki page{/tr}</h2>
 <form action="tiki-admin_newsletter_subscriptions.php" method="post">
-	<input type="hidden" name="nlId" value="{$nlId|escape}"> 
+	<input type="hidden" name="nlId" value="{$nlId|escape}" /> 
 	<table class="formcolor">
 		<tr>
 			<td width="30%">Wiki page</td>
 			<td colspan="2">
-				<input type="text" name="wikiPageName" value="" size="60">
-				<br>
+				<input type="text" name="wikiPageName" value="" size="60" />
+				<br />
 				<i>{tr}Emails on a wiki page which will be added at each newsletter sending, one e-mail per line{/tr}</i>
-				{autocomplete element='input[name=wikiPageName]' type='pagename'}
+				{jq}$("input[name=wikiPageName]").tiki("autocomplete", "pagename");{/jq}
 			</td>
 		</tr>
 		<tr>
@@ -392,7 +375,7 @@
 				{tr}Don't send confirmation mails{/tr}
 			</td>
 			<td colspan="2">
-				<input type="checkbox" name="noConfirmEmail" checked="checked">
+				<input type="checkbox" name="noConfirmEmail" checked="checked" />
 			</td>
 		</tr>
 		<tr>
@@ -400,13 +383,13 @@
 				{tr}Don't subscribe emails{/tr}
 			</td>
 			<td colspan="2">
-				<input type="checkbox" name="noSubscribeEmail" checked="checked">
+				<input type="checkbox" name="noSubscribeEmail" checked="checked" />
 			</td>
 		</tr>
 		<tr>
 			<td width="30%">&nbsp;</td>
 			<td colspan="2">
-				<input type="submit" name="addPage" value="{tr}Add{/tr}" width="30">
+				<input type="submit" name="addPage" value="Add" width="30" />
 			</td>
 		</tr>
 	</table>
@@ -417,12 +400,12 @@
 {tab name="{tr}Export Subscriber Emails{/tr}"}
 
 <form action="tiki-admin_newsletter_subscriptions.php" method="post">
-	<input type="hidden" name="nlId" value="{$nlId|escape}"> 
+	<input type="hidden" name="nlId" value="{$nlId|escape}" /> 
 	<table class="formcolor">
 		<tr>
 			<td width="30%">&nbsp;</td>
 			<td colspan="2">
-				<input type="submit" name="export" value="{tr}Export{/tr}">
+				<input type="submit" name="export" value="{tr}Export{/tr}" />
 			</td>
 		</tr>
 	</table>

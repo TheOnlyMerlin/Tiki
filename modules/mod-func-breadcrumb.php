@@ -1,48 +1,33 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
 
-/**
- * @return array
- */
-function module_breadcrumb_info()
-{
+function module_breadcrumb_info() {
 	return array(
-		'name' => tra('Last-Visited Pages'),
+		'name' => tra('Last visited pages'),
 		'description' => tra('Displays the last Wiki pages visited by the user.'),
-		'prefs' => array('feature_wiki'),
-		'documentation' => 'Module breadcrumb',
+		'prefs' => array( 'feature_wiki' ),
 		'params' => array(
 			'maxlen' => array(
 				'name' => tra('Maximum length'),
 				'description' => tra('Maximum number of characters in page names allowed before truncating.'),
 				'filter' => 'int'
 			),
-			'show_namespace' => array(
-				'name' => tra('Show Namespace'),
-				'description' => tra('Show namespace prefix in page names.').' ( y / n )',	// Do not translate y/n					
-				'default' => 'y'
-			)
 		),
 		'common_params' => array('nonums', 'rows')
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
-function module_breadcrumb($mod_reference, $module_params)
-{
+function module_breadcrumb( $mod_reference, $module_params ) {
 	global $smarty, $prefs;
 	global $categlib; include_once ('lib/categories/categlib.php');
 	if (!isset($_SESSION["breadCrumb"])) {
@@ -54,7 +39,7 @@ function module_breadcrumb($mod_reference, $module_params)
 		$objectIds=$objectlib->get_object_ids("wiki page", $_SESSION["breadCrumb"]);
 	
 		$breadIds=array();
-		foreach ($_SESSION["breadCrumb"] as $step) {
+		foreach($_SESSION["breadCrumb"] as $step) {
 			if (isset($objectIds[$step])) $breadIds[$objectIds[$step]]=$step;
 		}
 		if ($breadIds) { // If we have visited pages and we're in a perspective
@@ -74,5 +59,4 @@ function module_breadcrumb($mod_reference, $module_params)
 	$bbreadCrumb = array_slice(array_reverse($fullBreadCrumb), 0, $mod_reference['rows']);
 	$smarty->assign('breadCrumb', $bbreadCrumb);
 	$smarty->assign('maxlen', isset($module_params["maxlen"]) ? $module_params["maxlen"] : 0);
-	$smarty->assign('namespaceoption',isset($module_params['show_namespace']) ? $module_params['show_namespace'] : 'y');
 }

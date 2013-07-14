@@ -1,17 +1,15 @@
-{extends 'layout_edit.tpl'}
-
-{block name=title}
 <h1>{tr}Please choose the language for this page:{/tr}</h1>
-{/block}
-
-{block name=content}
 <div class="cbox-data">
 	<p>
-		<strong>{tr _0=$page|escape}Page: "%0"{/tr}</strong>
+		<strong>Page: &quot;{$page|escape}&quot;</strong>
 	</p>
 	<form method="post" action="tiki-editpage.php?page={$page|escape:'url'}" id='editpageform' name='editpageform'>
 		{* Repeat all arguments from the page creation request *}
-		{query _type='form_input' _keepall='y' need_lang='n'}
+		{foreach from=$_REQUEST key=request_key item=request_val}
+			<input type="hidden" name="{$request_key}" value="{$request_val|escape}"/>
+		{/foreach}
+	
+		<input type="hidden" name="need_lang" value="n"/>
 	
 		<select name="lang">
 			{section name=ix loop=$languages}
@@ -19,7 +17,6 @@
 			{/section}
 	
 		</select>
-		<input type="submit" name="select_language" value="{tr}Choose language{/tr}" onclick="needToConfirm=false;">
+		<input type="submit" name="select_language" value="{tr}Choose language{/tr}" onclick="needToConfirm=false;" />
 	</form>
 </div>
-{/block}

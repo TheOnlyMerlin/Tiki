@@ -10,29 +10,26 @@
 		 {/if}
 </div>
 	{/if}
-	{if $nonPublicFieldsWarning}
-		{remarksbox type='errors' title='{tr}Field error{/tr}'}{$nonPublicFieldsWarning}{/remarksbox}
-	{/if}
 	{if isset($user_watching_tracker)}
 		{if $user_watching_tracker eq 'n'}
-			<a href="{$smarty.server.REQUEST_URI}{if strstr($smarty.server.REQUEST_URI, '?')}&amp;{else}?{/if}trackerId={$listTrackerId}&amp;watch=add" title="{tr}Monitor{/tr}" class="trackerlistwatch">
+			<a href="{$smarty.server.REQUEST_URI}{if strstr($smarty.server.REQUEST_URI, '?')}&amp;{else}?{/if}trackerId={$trackerId}&amp;watch=add" title="{tr}Monitor{/tr}" class="trackerlistwatch">
 				{icon _id='eye' align="right" hspace="1" alt="{tr}Monitor{/tr}"}
 			</a>
 		{elseif $user_watching_tracker eq 'y'}
-			<a href="{$smarty.server.REQUEST_URI}{if strstr($smarty.server.REQUEST_URI, '?')}&amp;{else}?{/if}trackerId={$listTrackerId}&amp;watch=stop" title="{tr}Stop Monitor{/tr}" class="trackerlistwatch">
+			<a href="{$smarty.server.REQUEST_URI}{if strstr($smarty.server.REQUEST_URI, '?')}&amp;{else}?{/if}trackerId={$trackerId}&amp;watch=stop" title="{tr}Stop Monitor{/tr}" class="trackerlistwatch">
 			   {icon _id='no_eye' align="right" hspace="1" alt="{tr}Stop Monitor{/tr}"}
 			</a>
 		{/if}
 	{/if}
 	{if $showrss eq 'y'}
-			<a href="tiki-tracker_rss.php?trackerId={$listTrackerId}">{icon _id='feed' align="right" hspace="1" alt="{tr}RSS feed{/tr}"}</a>
+			<a href="tiki-tracker_rss.php?trackerId={$trackerId}">{icon _id='feed' align="right" hspace="1" alt="{tr}RSS feed{/tr}"}</a>
 	{/if}
 
 {if !empty($sortchoice)}
 	<div class="trackerlistsort">
 		<form method="post">
 			{include file='tracker_sort_input.tpl'}
-			<input type="submit" name="sort" value="{tr}Sort{/tr}">
+			<input type="submit" name="sort" value="{tr}Sort{/tr}" />
 		</form>
 	</div>
 {/if}
@@ -56,14 +53,13 @@
 {/if}
 
 <table class="normal wikiplugin_trackerlist"
-	{if $displaysheet eq 'true'}title="{$tracker_info.name}" readonly="true"{/if}
-	{if $tableassheet eq 'true'}title="{tr}Tracker - {/tr}{$tracker_info.name}" readonly="true"{/if}
+	{if $displaysheet eq 'true'}title="{$tracker_info.name}"{/if}
 	>
 
 		{if $showfieldname ne 'n' and empty($tpl)}
 	<tr>
 
-			{if $checkbox}<th>{$checkbox.title}</th>{/if}
+			{if $checkbox}<th>{$checkbox.title}</td>{/if}
 			{if ($showstatus ne 'n') and ($tracker_info.showStatus eq 'y' or ($tracker_info.showStatusAdminOnly eq 'y' and $tiki_p_admin_trackers eq 'y'))}
 		<th class="auto" style="width:20px;">&nbsp;</th>
 			{/if}
@@ -98,7 +94,7 @@
 			{if $tracker_info.useAttachments eq 'y' and  $tracker_info.showAttachments eq 'y'}
 		<th style="width:5%">{tr}atts{/tr}</th>
 			{/if}
-			{if ($showdelete eq 'y' || $showpenditem eq 'y' || $showopenitem eq 'y' || $showcloseitem eq 'y') && ($tiki_p_admin_trackers eq 'y' or $perms.tiki_p_remove_tracker_items eq 'y' or $perms.tiki_p_remove_tracker_items_pending eq 'y' or $perms.tiki_p_remove_tracker_items_closed eq 'y')}
+			{if $showdelete eq 'y' && ($tiki_p_admin_trackers eq 'y' or $perms.tiki_p_modify_tracker_items eq 'y')}
 		<th>{tr}Action{/tr}</th>
 			{/if}
 
@@ -106,10 +102,100 @@
 		{/if}
 	{/if}
 
+	{cycle values="odd,even" print=false}
+	{assign var=itemoff value=0}
+	{section name=user loop=$items}
 
-{* All this that is supposed to be at the end needs to be processed before
-the section loop so that the vars are not replaced by nested pretty tracker execution *}
-{capture name="trackerlist_bottomstuff"}
+{* ------- popup ---- *}
+		{if !empty($popupfields)}
+			{capture name=popup}
+<div class="cbox">
+	<table style="width:100%">
+				{cycle values="odd,even" print=false}
+				{foreach from=$items[user].field_values item=f}
+					{if in_array($f.fieldId, $popupfields)}
+						{capture name=popupl}{include file='tracker_item_field_value.tpl' field_value=$f item=$items[user]}{/capture}
+						{if !empty($smarty.capture.popupl) }
+							<tr>{if count($popupfields) > 1}<th class="{cycle advance=false}">{$f.name}</th>{/if}<td class="{cycle}">{$smarty.capture.popupl}</td></tr>
+						{/if}
+					{/if}
+				{/foreach}
+	</table>
+</div>
+			{/capture}
+			{assign var=showpopup value='y'}
+		{else}
+			{assign var=showpopup value='n'}
+		{/if}
+
+
+		{if empty($tpl)}
+
+	<tr class="{cycle}">
+			{if $checkbox}
+		<td><input type="{$checkbox.type}" name="{$checkbox.name}[]" value="{if $checkbox.ix > -1}{$items[user].field_values[$checkbox.ix].value|escape}{else}{$items[user].itemId}{/if}" /></td>
+			{/if}
+			{if ($showstatus ne 'n') and ($tracker_info.showStatus eq 'y' or ($tracker_info.showStatusAdminOnly eq 'y' and $tiki_p_admin_trackers eq 'y'))}
+		<td class="auto" style="width:20px;">
+				{assign var=ustatus value=$items[user].status|default:"c"}
+				{html_image file=$status_types.$ustatus.image title=$status_types.$ustatus.label alt=$status_types.$ustatus.label}
+		</td>
+			{/if}
+			{if $showitemrank eq 'y'}
+		<td>{math equation="x+y" x=$smarty.section.user.rownum y=$tr_offset}</td>
+			{/if}
+
+{* ------------------------------------ *}
+			{if !isset($list_mode)}{assign var=list_mode value="y"}{/if}
+			{section name=ix loop=$items[user].field_values}
+				{if $items[user].field_values[ix].isPublic eq 'y' and ($items[user].field_values[ix].isHidden eq 'n' or $items[user].field_values[ix].isHidden eq 'c' 
+					or $items[user].field_values[ix].isHidden eq 'p' or $tiki_p_admin_trackers eq 'y') and $items[user].field_values[ix].type ne 'x' and $items[user].field_values[ix].type ne 'h' 
+					and in_array($items[user].field_values[ix].fieldId, $listfields) and ($items[user].field_values[ix].type ne 'p' or $items[user].field_values[ix].options_array[0] ne 'password') 
+					and (empty($items[user].field_values[ix].visibleBy) or in_array($default_group, $items[user].field_values[ix].visibleBy) or $tiki_p_admin_trackers eq 'y')}
+		<td class={if $items[user].field_values[ix].type eq 'n' or $items[user].field_values[ix].type eq 'q' or $items[user].field_values[ix].type eq 'b'}"numeric"{else}"auto"{/if}
+					{if $items[user].field_values[ix].type eq 'b'} style="padding-right:5px"{/if}>
+					{if $items[user].field_values[ix].isHidden eq 'c' and $items[user].itemUser ne $user and $tiki_p_admin_trackers ne 'y'}
+					{elseif isset($perms)}
+						{include file='tracker_item_field_value.tpl' item=$items[user] field_value=$items[user].field_values[ix] list_mode=$list_mode
+						tiki_p_view_trackers=$perms.tiki_p_view_trackers tiki_p_modify_tracker_items=$perms.tiki_p_modify_tracker_items tiki_p_modify_tracker_items_pending=$perms.tiki_p_modify_tracker_items_pending 
+						tiki_p_modify_tracker_items_closed=$perms.tiki_p_modify_tracker_items_closed tiki_p_comment_tracker_items=$perms.tiki_p_comment_tracker_items reloff=$itemoff}
+					{else}
+						{include file='tracker_item_field_value.tpl' item=$items[user] field_value=$items[user].field_values[ix] list_mode=$list_mode reloff=$itemoff}
+					{/if}
+		</td>
+				{/if}
+			{/section}
+{* ------------------------------------ *}
+
+			{if $showcreated eq 'y'}
+		<td>{if $tracker_info.showCreatedFormat}{$items[user].created|tiki_date_format:$tracker_info.showCreatedFormat}{else}{$items[user].created|tiki_short_datetime}{/if}</td>
+			{/if}
+			{if $showlastmodif eq 'y'}
+		<td>{if $tracker_info.showLastModifFormat}{$items[user].lastModif|tiki_date_format:$tracker_info.showLastModifFormat}{else}{$items[user].lastModif|tiki_short_datetime}{/if}</td>
+			{/if}
+			{if $tracker_info.useComments eq 'y' and $tracker_info.showComments eq 'y' and $tiki_p_tracker_view_comments ne 'n'}
+		<td style="text-align:center;">{$items[user].comments}</td>
+			{/if}
+			{if $tracker_info.useAttachments eq 'y' and $tracker_info.showAttachments eq 'y'}
+		<td style="text-align:center;"><a href="tiki-view_tracker_item.php?trackerId={$trackerId}&amp;itemId={$items[user].itemId}&amp;show=att" 
+link="{tr}List Attachments{/tr}"><img src="img/icons/folderin.gif" alt="{tr}List Attachments{/tr}" 
+/></a>{$items[user].attachments}</td>
+			{/if}
+			{if $showdelete eq 'y' && ($tiki_p_admin_trackers eq 'y' or $perms.tiki_p_modify_tracker_items eq 'y')}
+		<td>
+				{if $tiki_p_admin_trackers eq 'y' or ($perms.tiki_p_modify_tracker_items eq 'y' and $items[user].status ne 'p' and $items[user].status ne 'c') or ($perms.tiki_p_modify_tracker_items_pending eq 'y' and $items[user].status eq 'p') or ($perms.tiki_p_modify_tracker_items_closed eq 'y' and $items[user].status eq 'c')}
+					{self_link delete=`$items[user].itemId`}{icon _id=cross alt="{tr}Remove{/tr}"}{/self_link}
+				{/if}
+		</td>
+			{/if}
+	</tr>
+		{assign var=itemoff value=$itemoff+1}
+		{else}{* a pretty tpl *}
+{* ------------------------------------ *}
+   			{include file='tracker_pretty_item.tpl' fields=$items[user].field_values item=$items[user] wiki=$tpl}
+		{/if}
+	{/section}
+
 	{if empty($tpl)}
 		{if !empty($computedFields) and $items|@count gt 0}
 		{assign var=itemoff value=0}
@@ -125,7 +211,8 @@ the section loop so that the vars are not replaced by nested pretty tracker exec
 						<td class="numeric" style="padding-right:2px">
 						{foreach from=$computedFields[$ix.fieldId] item=computedField name=computedField}
 							{if $computedField.operator eq 'avg'}{tr}Average{/tr}{else}{tr}Total{/tr}{/if}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							{trackeroutput field=$computedField item=$items[user] list_mode=$list_mode url=$url}<br/>
+							{include file='tracker_item_field_value.tpl' item=$items[user] field_value=$computedField list_mode=$list_mode}<br />
+							{if !$smarty.foreach.computedField.last}{/if}
 						{/foreach}
 						</td>
 					{else}
@@ -146,12 +233,12 @@ the section loop so that the vars are not replaced by nested pretty tracker exec
 {/if}
 
 		{if $items|@count eq 0}
-			<div class="tracker_error">{tr}No records found{/tr}</div>
+			{tr}No records found{/tr}
 		{elseif $checkbox}
 			{if $checkbox.tpl}{include file="$checkbox.tpl"}{/if}
 			{if !empty($checkbox.submit) and !empty($checkbox.title)}
-				<br>
-				<input type="submit" name="{$checkbox.submit}" value="{tr}{$checkbox.title}{/tr}">
+				<br />
+				<input type="submit" name="{$checkbox.submit}" value="{tr}{$checkbox.title}{/tr}" />
 			{/if}
 			</form>
 		{/if}
@@ -162,7 +249,7 @@ the section loop so that the vars are not replaced by nested pretty tracker exec
 	{if $more eq 'y'}
 	<div class="more">
 		{capture assign=moreUrl}
-			{if $moreurl}{$moreurl}{else}tiki-view_tracker.php{/if}?trackerId={$listTrackerId}{if isset($tr_sort_mode)}&amp;sort_mode={$tr_sort_mode}{/if}
+			{if $moreurl}{$moreurl}{else}tiki-view_tracker.php{/if}?trackerId={$trackerId}{if isset($tr_sort_mode)}&amp;sort_mode={$tr_sort_mode}{/if}
 		{/capture}
 		{button class='more' href="$moreUrl" _text="{tr}More...{/tr}"}
 	</div>
@@ -171,121 +258,6 @@ the section loop so that the vars are not replaced by nested pretty tracker exec
 		{/pagination_links}
 	{/if}
 	{if $export eq 'y' && ($tiki_p_admin_trackers eq 'y' || $perms.tiki_p_export_tracker eq 'y')}
-		{button href=$exportUrl _text="{tr}Export{/tr}" _class='exportButton'}
-		{jq}
-$('.exportButton a').click(function() {
-	$(this).serviceDialog({
-		title: '{tr}Export Tracker{/tr}'
-	});
-	return false;
-});
-{/jq}
+		{button href="$exportUrl" _text="{tr}Export{/tr}"}
 	{/if}
-{/capture}
-
-	{cycle values="odd,even" print=false}
-	{assign var=itemoff value=0}
-	{section name=user loop=$items}
-
-{* ------- popup ---- *}
-		{if !empty($popupfields)}
-			{capture name=popup}
-<div class="cbox">
-	<table style="width:100%">
-				{cycle values="odd,even" print=false}
-				{foreach from=$items[user].field_values item=f}
-					{if in_array($f.fieldId, $popupfields)}
-						{capture name=popupl}{trackeroutput field=$f item=$items[user] url=$url editable=in_array($f.fieldId, $editableFields)}{/capture}
-						{if !empty($smarty.capture.popupl)}
-							<tr>{if count($popupfields) > 1}<th class="{cycle advance=false}">{$f.name}</th>{/if}<td class="{cycle}">{$smarty.capture.popupl}</td></tr>
-						{/if}
-					{/if}
-				{/foreach}
-	</table>
-</div>
-			{/capture}
-			{assign var=showpopup value='y'}
-		{else}
-			{assign var=showpopup value='n'}
-		{/if}
-
-
-		{if empty($tpl)}
-
-	<tr class="{cycle}">
-			{if $checkbox}
-		<td><input type="{$checkbox.type}" name="{$checkbox.name}[]" value="{if $checkbox.ix > -1}{$items[user].field_values[$checkbox.ix].value|escape}{else}{$items[user].itemId}{/if}"></td>
-			{/if}
-			{if ($showstatus ne 'n') and ($tracker_info.showStatus eq 'y' or ($tracker_info.showStatusAdminOnly eq 'y' and $tiki_p_admin_trackers eq 'y'))}
-		<td class="auto" style="width:20px;">
-				{assign var=ustatus value=$items[user].status|default:"c"}
-				{html_image file=$status_types.$ustatus.image title=$status_types.$ustatus.label alt=$status_types.$ustatus.label}
-		</td>
-			{/if}
-			{if $showitemrank eq 'y'}
-		<td>{math equation="x+y" x=$smarty.section.user.rownum y=$tr_offset}</td>
-			{/if}
-
-{* ------------------------------------ *}
-			{if !isset($list_mode)}{assign var=list_mode value="y"}{/if}
-			{foreach from=$items[user].field_values item=field}
-				{if $field.isPublic eq 'y' and ($field.isHidden eq 'n' or $field.isHidden eq 'c' 
-					or $field.isHidden eq 'p' or $tiki_p_admin_trackers eq 'y') and $field.type ne 'x' and $field.type ne 'h'
-					and in_array($field.fieldId, $listfields) and ($field.type ne 'p' or $field.options_array[0] ne 'password') 
-					and (empty($field.visibleBy) or in_array($default_group, $field.visibleBy) or $tiki_p_admin_trackers eq 'y')}
-		<td class={if $field.type eq 'n' or $field.type eq 'q' or $field.type eq 'b'}"numeric"{else}"auto"{/if}
-					{if $field.type eq 'b'} style="padding-right:5px"{/if}>
-					{if $field.isHidden eq 'c' and $fieldr and $tiki_p_admin_trackers ne 'y'}
-					{elseif isset($perms)}
-						{trackeroutput item=$items[user] field=$field list_mode=$list_mode showlinks=$showlinks showpopup=$showpopup url=$url editable=in_array($field.fieldId, $editableFields)
-								tiki_p_view_trackers=$perms.tiki_p_view_trackers tiki_p_modify_tracker_items=$perms.tiki_p_modify_tracker_items tiki_p_modify_tracker_items_pending=$perms.tiki_p_modify_tracker_items_pending 
-								tiki_p_modify_tracker_items_closed=$perms.tiki_p_modify_tracker_items_closed tiki_p_comment_tracker_items=$perms.tiki_p_comment_tracker_items reloff=$itemoff}
-					{else}
-						{trackeroutput item=$items[user] field=$field list_mode=$list_mode reloff=$itemoff showlinks=$showlinks showpopup=$showpopup url=$url editable=in_array($field.fieldId, $editableFields)}
-					{/if}
-		</td>
-				{/if}
-			{/foreach}
-{* ------------------------------------ *}
-
-			{if $showcreated eq 'y'}
-		<td>{if $tracker_info.showCreatedFormat}{$items[user].created|tiki_date_format:$tracker_info.showCreatedFormat}{else}{$items[user].created|tiki_short_datetime}{/if}</td>
-			{/if}
-			{if $showlastmodif eq 'y'}
-		<td>{if $tracker_info.showLastModifFormat}{$items[user].lastModif|tiki_date_format:$tracker_info.showLastModifFormat}{else}{$items[user].lastModif|tiki_short_datetime}{/if}</td>
-			{/if}
-			{if $tracker_info.useComments eq 'y' and $tracker_info.showComments eq 'y' and $tiki_p_tracker_view_comments ne 'n'}
-		<td style="text-align:center;">{$items[user].comments}</td>
-			{/if}
-			{if $tracker_info.useAttachments eq 'y' and $tracker_info.showAttachments eq 'y'}
-		<td style="text-align:center;"><a href="tiki-view_tracker_item.php?trackerId={$listTrackerId}&amp;itemId={$items[user].itemId}&amp;show=att" 
-link="{tr}List Attachments{/tr}"><img src="img/icons/folderin.gif" alt="{tr}List Attachments{/tr}"></a>{$items[user].attachments}</td>
-			{/if}
-			{if ($showdelete eq 'y' || $showpenditem eq 'y' || $showopenitem eq 'y' || $showcloseitem eq 'y') && ($tiki_p_admin_trackers eq 'y' or $perms.tiki_p_remove_tracker_items eq 'y' or $perms.tiki_p_remove_tracker_items_pending eq 'y' or $perms.tiki_p_remove_tracker_items_closed eq 'y')}
-		<td>
-				{if $showdelete eq 'y' && ($tiki_p_admin_trackers eq 'y' or ($perms.tiki_p_remove_tracker_items eq 'y' and $items[user].status ne 'p' and $items[user].status ne 'c') or ($perms.tiki_p_remove_tracker_items_pending eq 'y' and $items[user].status eq 'p') or ($perms.tiki_p_remove_tracker_items_closed eq 'y' and $items[user].status eq 'c'))}
-					{self_link delete=$items[user].itemId}{icon _id=cross alt="{tr}Remove{/tr}"}{/self_link}
-				{/if}
-				{if $showcloseitem eq 'y' && $items[user].status neq 'c' && ($tiki_p_admin_trackers eq 'y' or ($perms.tiki_p_modify_tracker_items eq 'y' and $items[user].status ne 'p' and $items[user].status ne 'c') or ($perms.tiki_p_modify_tracker_items_pending eq 'y' and $items[user].status eq 'p') or ($perms.tiki_p_modify_tracker_items_closed eq 'y' and $items[user].status eq 'c'))}
-					{self_link closeitem=$items[user].itemId}{tr}Close item{/tr}{/self_link}
-				{/if}
-				{if $showopenitem eq 'y' && $items[user].status neq 'o' && ($tiki_p_admin_trackers eq 'y' or ($perms.tiki_p_modify_tracker_items eq 'y' and $items[user].status ne 'p' and $items[user].status ne 'c') or ($perms.tiki_p_modify_tracker_items_pending eq 'y' and $items[user].status eq 'p') or ($perms.tiki_p_modify_tracker_items_closed eq 'y' and $items[user].status eq 'c'))}
-					{self_link openitem=$items[user].itemId}{tr}Open item{/tr}{/self_link}
-				{/if}
-				{if $showpenditem eq 'y' && $items[user].status neq 'p' && ($tiki_p_admin_trackers eq 'y' or ($perms.tiki_p_modify_tracker_items eq 'y' and $items[user].status ne 'p' and $items[user].status ne 'c') or ($perms.tiki_p_modify_tracker_items_pending eq 'y' and $items[user].status eq 'p') or ($perms.tiki_p_modify_tracker_items_closed eq 'y' and $items[user].status eq 'c'))}
-					{self_link penditem=$items[user].itemId}{tr}Pend item{/tr}{/self_link}
-				{/if}
-		</td>
-			{/if}
-	</tr>
-		{assign var=itemoff value=$itemoff+1}
-		{else}{* a pretty tpl *}
-{* ------------------------------------ *}
-   			{assign var=itemoff value=$itemoff+1}
-			{include file='tracker_pretty_item.tpl' fields=$items[user].field_values item=$items[user] wiki=$tpl}
-			{trackerheader level=-1 title='' inTable=''}
-		{/if}
-	{/section}
-
-	{$smarty.capture.trackerlist_bottomstuff}
 {/strip}

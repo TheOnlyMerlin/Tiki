@@ -1,21 +1,32 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_tabs_info()
-{
+// @author luciash
+// \brief Wiki plugin to display a tabset
+// Known Issues: current Tiki implementation of tabs limits to only one tabset per page will work properly
+// 
+
+// this script may only be included - so it's better to die if called directly.
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
+  header("location: index.php");
+  die;
+}
+
+function wikiplugin_tabs_help() {
+        return tra("Displays a set of tabs").":<br />~np~{TABS(name='foo' tabs='bar|another bar|last bar')}Foo 1/////Foo 2/////Foo 3~/np~";
+}
+
+function wikiplugin_tabs_info() {
 	return array(
 		'name' => tra('Tabs'),
-		'documentation' => 'PluginTabs',
-		'description' => tra('Arrange content in tabs'),
+		'documentation' => tra('PluginTabs'),			
+		'description' => tra('Display page content in a set of tabs'),
 		'prefs' => array( 'wikiplugin_tabs' ),
 		'body' => tra('Tabs content separated by /////'),
-		'icon' => 'img/icons/tab_edit.png',
-		'filter' => 'wikicontent',
-		'tags' => array( 'basic' ),
 		'params' => array(
 			'name' => array(
 				'required' => false,
@@ -29,49 +40,16 @@ function wikiplugin_tabs_info()
 				'description' => tra('Pipe separated list of tab titles. Ex: tab 1|tab 2|tab 3'),
 				'default' => '',
 			),
-			'toggle' => array(
-				'required' => false,
-				'name' => tra('Toggle Tabs'),
-				'description' => tra('Allows to toggle from tabs to no tabs view'),
-				'default' => 'y',
-				'options' => array (
-					array('value' => 'y' , 'text' => tra('Yes')),
-					array('value' => 'n', 'text' => tra('No')),
-				),
-			),
-			'inside_pretty' => array(
-				'required' => false,
-				'name' => tra('Inside Pretty Tracker'),
-				'description' => tra('Parse pretty tracker variables within tabs'),
-				'default' => 'n',
-				'options' => array (
-					array('value' => 'n', 'text' => tra('No')),
-					array('value' => 'y' , 'text' => tra('Yes')),
-				),
-			),		
 		),
 	);
 }
 
-function wikiplugin_tabs($data, $params)
-{
+function wikiplugin_tabs($data, $params) {
 	global $tikilib, $smarty;
 	if (!empty($params['name'])) {
 		$tabsetname = $params['name'];
 	} else {
 		$tabsetname = '';
-	}
-	
-	if (!empty($params['toggle'])) {
-		$toggle = $params['toggle'];
-	} else {
-		$toggle = 'y';
-	}
-
-	if (!empty($params['inside_pretty']) && $params['inside_pretty'] == 'y') {
-		$inside_pretty = true;
-	} else {
-		$inside_pretty = false;
 	}
 	
 	$tabs = array();
@@ -81,16 +59,20 @@ function wikiplugin_tabs($data, $params)
 		return "''".tra("No tab title specified. At least one has to be set to make the tabs appear.")."''";
 	}
 	if (!empty($data)) {
-		$data = $tikilib->parse_data($data, array('suppress_icons' => true, 'inside_pretty' => $inside_pretty));
 		$tabData = explode('/////', $data);
+		foreach ($tabData as &$d) {
+			if (strpos( $d, '</p>') === 0) {
+				$d = substr( 4, $d);
+			}
+			$d = '~np~' . $tikilib->parse_data($d) . '~/np~';
+		}
 	}
 	
-	$smarty->assign('tabsetname', $tabsetname);
-	$smarty->assign_by_ref('tabs', $tabs);
-	$smarty->assign('toggle', $toggle);
-	$smarty->assign_by_ref('tabcontent', $tabData);
+	$smarty->assign( 'tabsetname', $tabsetname );
+	$smarty->assign_by_ref( 'tabs', $tabs );
+	$smarty->assign_by_ref( 'tabcontent', $tabData );
 
-	$content = $smarty->fetch('wiki-plugins/wikiplugin_tabs.tpl');
+	$content = $smarty->fetch( 'wiki-plugins/wikiplugin_tabs.tpl' );
 
 	return $content;
 }

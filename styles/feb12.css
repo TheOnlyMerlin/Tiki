@@ -1,4 +1,4 @@
-/* Feb12 theme for Tiki Wiki CMS Groupware, released under LGPL license.
+/* Feb12 theme for TikiWiki CMS/Groupware, released under LGPL license.
  * See http://themes.tikwiki.org for more information. -- */
 
 /* import default layout and styles: */
@@ -8,8 +8,7 @@
 
 /* XHTML Elements */
 body {
-	font: normal 75% 'Trebuchet MS', sans-serif;
-	line-height: 1.5;
+	font: normal 75%/1.5em 'Trebuchet MS', sans-serif;
 	color: #333;
 	background: #fff;
 }
@@ -19,6 +18,7 @@ body#fullscreen {
 }
 
 a,
+a:link,
 a:visited {
 	color: #4A6493;
 	text-decoration: none;
@@ -89,7 +89,7 @@ body.cke_show_borders {
 	background: #fff;
 	font-size: 1em;
 }
-/*
+
 input[type=text],
 input[type=password] {
 	font-size: 0.9em;
@@ -102,39 +102,34 @@ select {
 	font-size: 1.0em;
 	vertical-align: middle;
 }
-*/
+
 .button a,
 .button a:visited,
 button,
-input[type="reset"],
-input[type="submit"],
+input[type=reset],
+input[type=submit],
 .button input,
-.calbuttonBox a {
+.calbuttonbox {
+	vertical-align: middle;
 	font: bold 1em Arial, sans-serif;
 	background: url(feb12/header.jpg) repeat-x 0 -2px;
 	border: 1px solid #5aa5cf;
 	color: #F5F5F5;
 	font-size: 80%;
 	line-height: 200%;
-	padding: 2px 4px;
 }
 
 .button a:hover,
 button:hover,
-input[type="reset"]:hover,
-input[type="submit"]:hover,
+input[type=reset]:hover,
+input[type=submit]:hover,
 .button input:hover,
-.calbuttonBox:hover
+.calbuttonbox:hover,
 #highlight,
-.button a.highlight {
-	font: bold 1em Arial, sans-serif;
+.highlight {
 	background: url(feb12/header.jpg) repeat-x 0 100%;
-	border: 1px solid #5aa5cf;
 	color: #F5F5F5;
-	font-size: 80%;
 	text-decoration: none;
-	line-height: 200%;
-	padding: 2px 4px;		
 }
 
 .button a:active,
@@ -147,25 +142,6 @@ input[type=submit]:active,
 	background: url(feb12/columnbg.jpg) 0 100%;
 	color: #000;
 }
-
-a.highlight {
-	color: #F5F5F5;
-	border-color: #fa8072;	
-}
-
-/* Needed for Opera (11) 
-input[type="reset"],
-input[type="submit"],
-input[type="reset"]:hover,
-input[type="submit"]:hover,
-button[type="submit"],
-button[type="submit"]:hover {
-	padding: 0 3px;
-}
-
-.button {
-    margin: 2px;
-}*/
 
 form.admin input[name="features"] {
 	margin-bottom: 3px !important;
@@ -200,6 +176,10 @@ ul span, ol span {
 	font-size: 12pt !important;
 }
 
+.fullscreenbutton:hover,
+#fullscreenbutton:hover {
+	cursor: pointer;
+}
 
 /*** *litecss-based layout
 	(overrides lite.css) ***/
@@ -207,7 +187,7 @@ ul span, ol span {
 	font-size: 1.24em;
 }
 
-.header {
+#header {
 	text-align: left;
 }
 
@@ -263,106 +243,95 @@ ul span, ol span {
 	font-size: .9em;
 }
 
+/*** Error page ***/
+#tiki-main #tiki-top {
+	margin-top: 100px;
+}
+
+/* To center cbox */
+#tiki-main #tikimidtbl {
+	margin: auto;
+	width: auto;
+}
+
 /* Site Header & Identity */
-/*.header_fixedwidth {
-	margin: 0;
-}*/
-
-/* Enable header and footer content to widen when middle has wide content. */ 
-body.fixed_width .fixedwidth .fixedwidth {
-	width: 100%;
-	padding: 0;
-}
-
-.header_container {
+#header-top {
 	background: url(feb12/header.jpg) repeat-x bottom;
+	height: auto;
+	min-height: 98px;
 }
 
-#top_modules {
-	min-height: 98px;	
+#siteheader {
+	vertical-align: top;
 }
 
-#top_modules .module.secondary_site_menu {
-	position: absolute;
-	top: 0;
-	right: 30px;
+#sioptions, #sioptionscentered {
+	margin: 0;
+	padding: 10px;
 }
-
-#top_modules .secondary_site_menu .cssmenu_horiz li ul {
-	margin-top: -20px;
-}
-
-#top_modules .secondary_site_menu .cssmenu_horiz li ul ul {
-	margin-top: 0;
-}
-
 
 #sitelogo {
 	margin-top: 0;
 }
 #sitelogo img {
-	padding: 0 10px;
+	padding: 0 10px !important;/* important put here because #sitelogo img is too forcible in design.css */
 }
 
+#sitead {
+	margin-top: 10px;
+}
 
 .floatright img {
 	margin-right: 40px;
 }
 
-/*
-.box-login_box {
-	float: right;
-	margin-right: 20px;
-	margin-top: 40px;
+#bannertopright {
+	padding-right: 1em;
+}
+
+#siteloginbar {
+	position: absolute;
+	bottom: 7px;
+	right: 3px;
 	color: #f5f5f5;
 }
-*/
 
-#top_modules .box-login_box {
-	position: absolute;
-	right: 20px;
-	bottom: 0;
+/* give every sub-element of #siteloginbar some padding */
+#siteloginbar * {
+	padding: 2px;
 }
 
-.siteloginbar_popup .tabmark {
-	padding: 0;
-	background-position: 0 -2px;
-}
-
-.siteloginbar_popup .login_link {
-    padding: 4px 8px;
-}
-
-.siteloginbar a:link,
-.siteloginbar a:visited {
+#siteloginbar a:link,
+#siteloginbar a:visited {
 	color: #fff;
 	text-decoration: none;
 }
 
-.siteloginbar div {
+#siteloginbar div {
 	text-align: right;
 }
 
-.siteloginbar_poppedup {
-	margin-top: -18px;
+#siteloginbar_popup ul li ul {
+	margin-top: -14px;
+}
+
+#siteloginbar_popup .tabcontent {
+	background: none;
 }
 
 /* Site title and subtitle */
-#top_modules .box-logo {
-	margin-left: 20px;
-	height: 100%;
-}
-
-#top_modules #sitetitles {
-	margin: 3% 20px 2% 20px;
+#sitetitles {
+	text-shadow: 0 0 10px #fff;/* text-shadow; CSS3 valid property, values are <offset x> <offset y> <blur> and <color>; ex: 0 0 10px #fff */
+	font-weight: bold;
+	height: 4em;
+	margin: 0;
+	position: relative;
 }
 
 #sitetitle {
 	font-size: 2.2em;
-	text-shadow: 0 0 10px #fff;/* text-shadow; CSS3 valid property, values are <offset x> <offset y> <blur> and <color>; ex: 0 0 10px #fff */
-	font-weight: bold;
-	padding: 0;
-	margin: 0;
+	position: relative;
+	top: 0.5em;
 }
 
 #sitetitle a,
@@ -380,7 +349,9 @@ body.fixed_width .fixedwidth .fixedwidth {
 #sitesubtitle {
 	color: #fff;
 	font-size: 1.3em;
-	line-height: 1.5;
+	padding-top: 4em;
+	position: relative;
+	margin-top: -3em;
 }
 
 /* tiki-top_bar.tpl - menu and search */
@@ -396,12 +367,14 @@ body.fixed_width .fixedwidth .fixedwidth {
 	color: #F5F5F5;
 }
 
-#topbar_modules .box-search {
-	position: absolute;
-	top: 4px;
-	right: 20px;
+#sitesearchbar {
 	height: 34px;
 	line-height: 34px;
+}
+
+#topbar_custom_code {
+	background: #205684;
+	color: #fff;
 }
 
 /* centercolumn */
@@ -422,6 +395,122 @@ a.flip:hover,
 }
 	
 /****** Menus ******/
+/** PHP Layers Menus **/
+.horbaritem a,
+.horbaritem a:link,
+.horbaritem a:visited {
+	padding: 8px 8px;
+	text-decoration: none;
+	font: 14px Verdana, Helvetica, Arial, Sans-Serif;
+	color: white;
+	margin: 0;
+}
+
+.horbaritem a:hover {
+	background: url(feb12/header.jpg) 0 -40px repeat-x;
+	color: #eee !important;
+	text-decoration: none;
+}
+
+.mdksubmenu {
+	background: #FFFFFF;
+	margin-top: 0;
+}
+
+.mdksubframe {
+	border: 1px solid #8CACBB;
+	background: #A8CCE2 url(feb12/columnbg.jpg) repeat-x;
+}
+
+.mdkitem {
+	border-top: 1px solid #57A5D0;
+}
+
+.mdkverbar .mdkitem {
+	border-top: none;
+}
+
+.mdkverbar .mdkitem:hover {
+	background: #97c0da;
+}
+
+.mdkverbar .mdksubmenu .mdkitem {
+	border-top: 1px solid #57A5D0;
+}
+
+.mdkitem a {
+	padding: 3px 6px;
+	position: relative;
+	display: block;
+	font-weight: normal;
+	color: #487384;
+}
+
+.mdksubmenu .mdkitem a {
+	font-size: 1.2em;
+}
+
+.mdkitem a:link {
+	font-weight: normal;
+	text-decoration: none;
+}
+
+.mdkitem a:visited {
+	text-decoration: none;
+}
+
+.mdkitem a:hover {
+	color: #993300;
+	text-decoration: none;
+}
+
+.treemenudiv {
+	background: #a8cce2;
+}
+
+.phplmnormal,
+a.phplmnormal:hover,
+a.phplm:link,
+a.phplm:visited,
+a.phplm:hover,
+a.phplm:active {
+	font: 1em 'Trebuchet MS', sans-serif;
+	color: #794a93;
+	text-decoration: none;
+	font-weight: normal;
+}
+
+a.phplm:visited {
+	color: #794a93;
+}
+
+a.phplm:hover,
+a.phplm:active {
+	color: #006699;
+	text-decoration: underline;
+	background: none;
+}
+
+a.phplmselected:link,
+a.phplmselected:visited,
+a.phplmselected:hover,
+a.phplmselected:active {
+	font-family: 'Trebuchet MS', sans-serif;
+	color: #794a93;
+	text-decoration: underline;
+	font-weight: normal;
+}
+
+a.phplmselected:hover {
+	color: #006699;
+}
+
+.imgs {
+	border: 0;
+	width: 16px;
+	height: 18px;
+}
+
 /** CSS (suckerfish) menus **/
 .cssmenu_horiz li,
 .cssmenu_vert li {
@@ -498,10 +587,6 @@ cssmenu_horiz a,
 .cssmenu_horiz li ul li ul,
 .cssmenu_vert li ul li ul {
 	top: -1px !important;
-}
-
-#col2 .box-data .cssmenu_vert ul {
-	padding-left: 0;
 }
 
 /* Special to match #col2 width */
@@ -611,6 +696,10 @@ a.linkmodule {
 	margin-bottom: 1.5em;
 }
 
+.wikitext .box {
+	width: 95%;
+}
+
 h3.box-title {
 	border-bottom: 1px solid #57A5D0;
 }
@@ -630,15 +719,18 @@ h3.box-title {
 }
 
 .rbox-title {
+	display: inline;
+	width: auto;
 	background: #794a93;
+	border-bottom-color: #794a93;
 	color: #f5f5f5;
-	padding: 3px;
-	margin-bottom: -.45em;
+	padding: 3px 3px 0 3px;
 }
 
 .rbox-data {
 	background: #794a93;
 	color: #f5f5f5;
+	overflow: hidden;
 }
 
 .rbox a,
@@ -686,25 +778,20 @@ td {
 .even,
 .form,
 .formcolor td,
-.editblogform td
-{
+.editblogform td {
 	padding: 0.2em;
 	border-right: solid 1px #909090;
 	border-collapse: collapse;
 }
 
 tr.odd td,
-.odd,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+.odd {
 	border-right: 1px solid #909090;
 	background: #F5F5F5;
 }
 
 tr.even td,
-.even,
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+.even {
 	background: #ECECEC;
 	border-right: 1px solid #909090;
 }
@@ -752,6 +839,19 @@ tr.diffheader {
 	float: left;
 }
 
+/*.tabactive {
+	border: solid 1px #225566 !important;
+	border-bottom-color: #f0f9ff !important;
+}
+
+.tabactive a {
+	background: #f0f9ff;
+}
+
+.tabinactive {
+	border: solid 1px #666 !important;
+}*/
+
 .tabmark,
 #siteloginbar_popup .tabmark {
 	list-style-image: none;
@@ -764,12 +864,12 @@ tr.diffheader {
 	border-bottom-width: 0 !important;
 }
 
-.tabmark > a {
+.tabmark a {
 	color: #a8cce2;
 	border: none;
 }
 
-.tabmark > a:hover {
+.tabmark a:hover {
 	background: url(feb12/header.jpg) repeat-x 0 100%;
 	color: #eee !important;
 	text-decoration: none;
@@ -779,12 +879,9 @@ tr.diffheader {
 	border-bottom-width: 0;
 	padding-bottom: 1px;
 	background: #f0f9ff;
-	outline: none;
-}
-
-.tabactive a {
 	font-weight: normal;
-	color: #212121;	
+	color: #212121;
+	outline: none;
 }
 
 .tabcontent {
@@ -1223,20 +1320,146 @@ html>body .galtable {
 
 /***** Calendar *****/
 /* Overrides calendar.css, etc. */
+.cal0,
+.cal1,
+.cal2 {
+	color: #000;
+	font-size: 90%;
+}
+
+.calart,
+.calblog,
+.calchart,
+.caldir,
+.caleph,
+.calfaq,
+.calfgal,
+.calforum,
+.calgal,
+.calnl,
+.calquiz,
+.calsurv,
+.caltrack,
+.calwiki {
+	font-size: 90%;
+}
+
+.calart,
+.calart a,
+.calart a:visited {
+	color: #FA8072;
+}
+
+.calblog,
+.calblog a,
+.calblog a:visited {
+	color: #DA70D6;
+}
+
+.calchart,
+.calchart a,
+.calchart a:visited {
+	color: #304F30;
+}
+
+.caldir,
+.caldir a,
+.caldir a:visited {
+	color: #800080;
+}
+
+.caleph,
+.caleph a,
+.caleph a:visited {
+	color: #008000;
+}
+
+.calfaq,
+.calfaq a,
+.calfaq a:visited {
+	color: #822222;
+}
+
+.calfgal,
+.calfgal a,
+.calfgal a:visited {
+	font-weight: normal;
+}
+
+.calforum,
+.calforum a,
+.calforum a:visited {
+	color: #808000;
+}
+
+.calgal,
+.calgal a,
+.calgal a:visited {
+	color: #8B4513;
+}
+
+.calnl,
+.calnl a,
+.calnl a:visited {
+	color: #708090;
+}
+
+.calquiz,
+.calquiz a,
+.calquiz a:visited {
+	color: #5F9EA0;
+}
+
+.calsurv,
+.calsurv a,
+.calsurv a:visited {
+	color: #DAA520;
+}
+
+.caltrack,
+.caltrack a,
+.caltrack a:visited {
+	color: #00BD02;
+}
+
+.calwiki,
+.calwiki a,
+.calwiki a:visited {
+	color: #2C4B80;
+}
+
 .calcheckbox {
 	background: #FFFFFF;
 }
 
-/*today focus*/
-.caltable td.calhighlight,
-td.calheadhighlight {
-	background: #f3e498;
+.calcontent a.linkmenu,
+.calcontent a.linkmenu:hover {
+	background: none;
+	padding: 0;
 }
 
-.caltable .calborder {
-	border-right: 1px solid #909090;
+.calfocus {
+	font-size: 90%;
+	background: transparent;
 }
-/*end today focus*/
+
+.calfocus a {
+	text-decoration: none;
+	font-weight: normal;
+	color: #000000;
+}
+
+.calfocuson {
+	font-size: 100%;
+	background: #F3E498;
+}
+
+.calfocuson a {
+	font-size: 90%;
+	text-decoration: none;
+	font-weight: normal;
+	color: #000000;
+}
 
 .calprio1 {
 	background: #DAE0E0;
@@ -1316,9 +1539,23 @@ td.calheadhighlight {
 	font-size: .95em;
 }
 
+.caltable .calfocuson,
 .box-data .fc a.today,
 .box-data td a.today {
 	background: #F3E498;
+}
+
+.caltable .calfocuson a {
+	color: #000;
+}
+
+.caltable .calfocus a,
+.caltable .calfocuson a {
+	text-decoration: none;
+}
+
+.calfocuson + .calcontent {
+	background: #a8cce2;
 }
 
 .calbuttonbox a {

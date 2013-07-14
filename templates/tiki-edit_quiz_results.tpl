@@ -13,13 +13,13 @@
 </h2>
 
 <form action="tiki-edit_quiz_results.php" method="post">
-	<input type="hidden" name="quizId" value="{$quizId|escape}">
-	<input type="hidden" name="resultId" value="{$resultId|escape}">
+	<input type="hidden" name="quizId" value="{$quizId|escape}" />
+	<input type="hidden" name="resultId" value="{$resultId|escape}" />
 	<table class="formcolor">
 		<tr>
 			<td>{tr}From Points:{/tr}</td>
 			<td>
-				<input type="text" name="fromPoints" value="{$fromPoints|escape}">
+				<input type="text" name="fromPoints" value="{$fromPoints|escape}" />
 			</td>
 		</tr>
 		<tr>
@@ -27,7 +27,7 @@
 				{tr}To Points:{/tr}
 			</td>
 			<td>
-				<input type="text" name="toPoints" value="{$toPoints|escape}">
+				<input type="text" name="toPoints" value="{$toPoints|escape}" />
 			</td>
 		</tr>
 		<tr>
@@ -39,11 +39,11 @@
 			</td>
 		</tr>
 		<tr>
-			<td>&nbsp;
-				
+			<td>
+				&nbsp;
 			</td>
 			<td>
-				<input type="submit" name="save" value="{tr}Save{/tr}">
+				<input type="submit" name="save" value="{tr}Save{/tr}" />
 			</td>
 		</tr>
 	</table>
@@ -69,16 +69,14 @@
 	{cycle values="odd,even" print=false}
 	{section name=user loop=$channels}
 		<tr class="{cycle}">
-			<td class="integer">{$channels[user].fromPoints}</td>
-			<td class="integer">{$channels[user].toPoints}</td>
-			<td class="text">{$channels[user].answer|truncate:230:"(...)":true|escape|nl2br}</td>
-			<td class="action">
+			<td>{$channels[user].fromPoints}</td>
+			<td>{$channels[user].toPoints}</td>
+			<td>{$channels[user].answer|truncate:230:"(...)":true|escape|nl2br}</td>
+			<td>
 				<a class="link" href="tiki-edit_quiz_results.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;resultId={$channels[user].resultId}">{icon _id='page_edit' alt="{tr}Edit{/tr}"}</a>
 				<a class="link" href="tiki-edit_quiz_results.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].resultId}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 			</td>
 		</tr>
-	{sectionelse}
-		{norecords _colspan=4}
 	{/section}
 </table>
 

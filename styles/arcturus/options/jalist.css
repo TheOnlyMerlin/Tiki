@@ -20,12 +20,19 @@ h3.box-title,
 	background: none;
 }
 
+.box {
+	border: none;
+}
+
 /* may need to change these 
 #tiki-top {
 color:#FFFFFF;
 font-size:1.1em;
 }
 */
+h1, h2, h3, h4, h5 {
+	font-family: Arial, Helvetica, sans-serif;
+}
 
 #secondary_site_menu li,
 #secondary_site_menu li a,
@@ -114,7 +121,6 @@ input[type="reset"]:hover,
 input[type="submit"]:hover,
 .button input:hover,
 .calbuttonBox:hover {
-	font-size: 11px;
 	color: #636363;
 }
 
@@ -148,6 +154,9 @@ input[type="submit"]:hover,
 #c1c2 #col2 {
 	width: 180px;
 	overflow: visible
+}
+
+#c1c2 #col2 .content {
 }
 
 #col3 {
@@ -189,6 +198,13 @@ h3.box-title {
 	color: #fff;
 }
 
+
+.cbox-title {
+	color: #fff;
+	border-bottom: 1px solid #676767;
+	overflow: hidden;
+}
+
 .simplebox {
 	margin-left: 5px;
 	margin-right: 5px;
@@ -213,8 +229,6 @@ h3.box-title {
 	padding-left: 0;
 	padding-right: 0;
 	margin-bottom: 0;
-	color: #fff;
-	overflow: hidden;
 }
 
 .cssmenu_horiz a,
@@ -234,44 +248,32 @@ h3.box-title {
 th,
 td.heading,
 tr.diffheader {
-  color: #000;
+  color: black;
   font-size: 10px;
-  background: #e0e0e0; 
+  background: #f0ead8; 
   border: 1px solid #676767;
   padding-left: 2px;
   padding-right: 5px;
 }
 
-th a,
-th a.link,
-td.heading a,
-tr.diffheader a {
-    color: #000;
-}
-
 tr.odd td,
 td.odd,
-li.odd,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+li.odd {
 	font-size: 10px;
 	background-color:#F0F0F0;
 	border:1px solid #676767;}
 
 tr.odd td:hover,
 td.odd:hover,
-li.odd:hover,
-table.normal tr:nth-child(2n+1):hover,
-.tablesorter tr.odd td:hover {
+li.odd:hover {
 	background: #FFF7E6;
+	border-right: /*tdodd_border-right*/;
 }
 
 tr.even td,
 td.even,
 li.even,
-.forum_actions,
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+.forum_actions {
 	border: 1px solid #676767;  
 	font-size: 10px;
 	background-color: #E0E0E0;
@@ -280,10 +282,9 @@ table.normal tr:nth-child(2n),
 
 tr.even td:hover,
 td.even:hover,
-li.even:hover,
-table.normal tr:nth-child(2n):hover,
-.tablesorter tr.even td:hover {
+li.even:hover {
 	background: #FFF7E6;
+	border-right: /*tdeven_border-right*/;
 }
 
 
@@ -364,17 +365,31 @@ body.cke_show_borders,
 	color: #636363;
 }
 
+.titleb {
+
+}
+
+.articleheading {
+
+}
+
+.articletrailer {
+
+}
+
+.articlebody {
+
+}
+
+.oddthumb {
+
+}
+
+.eventhumb,
+.thumbnailcontener {
+
+}
+
 .post .postbody {
 	font-size: 11px;
-}
-
-/*** Calendar ***/
-
-.calmodfocus {
-	text-decoration: underline;
-}
-
-.calendarweek td.calheadhighlight {
-	background: #fff;
-	border: 1px solid #676767;
 }

@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,23 +12,9 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 define('PATTERN_TO_CLEAN_TEXT', '/[^0-9a-zA-Z_]/');
 define('CLEAN_CHAR', '-');
 define('TITLE_SEPARATOR', '-');
-
-/**
- * Turns a traditional URL into a Search Engine Friendly one, if requested
- *
- * @param string $tpl_output	original "unfriendly" url
- * @param string $type			type of object (article|blog|blogpost etc)
- * @param string $title			title of object
- * @param null $with_next		Appends '?' or a '&amp;' to the end of the returned URL so you can join further parameters
- * @param string $with_title	Add the object title to the end of the URL
- * @return string				sefurl
- */
-
-
-function filter_out_sefurl($tpl_output, $type = null, $title = '', $with_next = null, $with_title='y') 
-{
-	global $sefurl_regex_out, $tikilib, $prefs, $base_url, $in_installer;
-	if ($prefs['feature_sefurl'] != 'y' || !empty($in_installer) || ( preg_match('#^http(|s)://#', $tpl_output) and strpos($tpl_output, $base_url) !== 0 ) ) {
+function filter_out_sefurl($tpl_output, &$smarty, $type = null, $title = null, $with_next = null) {
+	global $sefurl_regex_out, $tikilib, $prefs, $base_url;
+	if ($prefs['feature_sefurl'] != 'y' or ( preg_match('#^http(|s)://#',$tpl_output) and strpos($tpl_output, $base_url) !== 0 ) ) {
 		return $tpl_output;
 	}
 	global $cachelib;
@@ -51,103 +34,65 @@ function filter_out_sefurl($tpl_output, $type = null, $title = '', $with_next = 
 			$cachelib->cacheItem('sefurl_regex_out', serialize($sefurl_regex_out));
 		}
 	}
-	if ($type == 'article' && empty($with_next) && $with_title == 'y') {
-		if ($prefs['feature_sefurl_title_article'] == 'y') {
-			global $artlib;
-			include_once ('lib/articles/artlib.php');
-			if (preg_match('/articleId=([0-9]+)/', $tpl_output, $matches) || preg_match('/article([0-9]+)/', $tpl_output, $matches)) {
-				if (empty($title)) $title = $artlib->get_title($matches[1]);
-				$title = preg_replace(PATTERN_TO_CLEAN_TEXT, CLEAN_CHAR, $tikilib->take_away_accent($title));
-				$title = preg_replace('/' . CLEAN_CHAR . CLEAN_CHAR . '+/', '-', $title);
-				$title = preg_replace('/' . CLEAN_CHAR . '+$/', '', $title);
-			}
-		} else {
-			$title = '';
+	$title = '';
+	if ($type == 'article' && $prefs['feature_sefurl_title_article'] == 'y' && empty($with_next)) {
+		global $artlib;
+		include_once ('lib/articles/artlib.php');
+		if (preg_match('/articleId=([0-9]+)/', $tpl_output, $matches)) {
+			if (empty($title)) $title = $artlib->get_title($matches[1]);
+			$title = preg_replace(PATTERN_TO_CLEAN_TEXT, CLEAN_CHAR, $tikilib->take_away_accent($title));
+			$title = preg_replace('/' . CLEAN_CHAR . CLEAN_CHAR . '+/', '-', $title);
+			$title = preg_replace('/' . CLEAN_CHAR . '+$/', '', $title);
 		}
 	}
-	if ($type == 'blog' && empty($with_next) && $with_title == 'y') {
-		if ($prefs['feature_sefurl_title_blog'] == 'y') {
-			global $bloglib;
-			include_once ('lib/blogs/bloglib.php');
-			if (preg_match('/blogId=([0-9]+)/', $tpl_output, $matches) || preg_match('/blog([0-9]+)/', $tpl_output, $matches)) {
-				if (empty($title)) $title = $bloglib->get_title($matches[1]);
-				$title = preg_replace(PATTERN_TO_CLEAN_TEXT, CLEAN_CHAR, $tikilib->take_away_accent($title));
-				$title = preg_replace('/' . CLEAN_CHAR . CLEAN_CHAR . '+/', '-', $title);
-				$title = preg_replace('/' . CLEAN_CHAR . '+$/', '', $title);
-			}
-		} else {
-			$title = '';
+	if ($type == 'blog' && $prefs['feature_sefurl_title_blog'] == 'y' && empty($with_next)) {
+		global $bloglib;
+		include_once ('lib/blogs/bloglib.php');
+		if (preg_match('/blogId=([0-9]+)/', $tpl_output, $matches)) {
+			if (empty($title)) $title = $bloglib->get_title($matches[1]);
+			$title = preg_replace(PATTERN_TO_CLEAN_TEXT, CLEAN_CHAR, $tikilib->take_away_accent($title));
+			$title = preg_replace('/' . CLEAN_CHAR . CLEAN_CHAR . '+/', '-', $title);
+			$title = preg_replace('/' . CLEAN_CHAR . '+$/', '', $title);
 		}
 	}
-	if ($type == 'blogpost' && empty($with_next) && $with_title == 'y') {
-		if ($prefs['feature_sefurl_title_blog'] == 'y') {
-			global $bloglib;
-			include_once ('lib/blogs/bloglib.php');
-			if (preg_match('/postId=([0-9]+)/', $tpl_output, $matches)|| preg_match('/blogpost([0-9]+)/', $tpl_output, $matches)) {
-				if (empty($title)) {
-					if ($post_info = $bloglib->get_post($matches[1])) $title = $post_info['title'];
-				}
-				$title = preg_replace(PATTERN_TO_CLEAN_TEXT, CLEAN_CHAR, $tikilib->take_away_accent($title));
-				$title = preg_replace('/' . CLEAN_CHAR . CLEAN_CHAR . '+/', '-', $title);
-				$title = preg_replace('/' . CLEAN_CHAR . '+$/', '', $title);
+	if ($type == 'blogpost' && $prefs['feature_sefurl_title_blog'] == 'y' && empty($with_next)) {
+		global $bloglib;
+		include_once ('lib/blogs/bloglib.php');
+		if (preg_match('/postId=([0-9]+)/', $tpl_output, $matches)) {
+			if (empty($title)) {
+				if ($post_info = $bloglib->get_post($matches[1])) $title = $post_info['title'];
 			}
-		} else {
-			$title = '';
+			$title = preg_replace(PATTERN_TO_CLEAN_TEXT, CLEAN_CHAR, $tikilib->take_away_accent($title));
+			$title = preg_replace('/' . CLEAN_CHAR . CLEAN_CHAR . '+/', '-', $title);
+			$title = preg_replace('/' . CLEAN_CHAR . '+$/', '', $title);
 		}
 	}
 	if ($type == 'tracker item' || $type == 'trackeritem') {
 		if (preg_match('/itemId=([0-9]+)/', $tpl_output, $matches)) {
-			$trklib = TikiLib::lib('trk');
-			if ($prefs["feature_sefurl_tracker_prefixalias"] == 'y' && $pagealias = $trklib->get_trackeritem_pagealias($matches[1])) {
+			if ($prefs["feature_sefurl_tracker_prefixalias"] == 'y' && $pagealias = $tikilib->get_trackeritem_pagealias($matches[1])){
 				$tpl_output = "./tiki-index.php?page=" . $pagealias;
 			}
 		}
 	}
-	if ($type == 'category' && !empty($title) && $with_title == 'y') {
-		$title = preg_replace(PATTERN_TO_CLEAN_TEXT, CLEAN_CHAR, $tikilib->take_away_accent($title));
-		$title = preg_replace('/' . CLEAN_CHAR . CLEAN_CHAR . '+/', '-', $title);
-		$title = preg_replace('/' . CLEAN_CHAR . '+$/', '', $title);	
-	}
-	foreach ($sefurl_regex_out as $regex) {
+	foreach($sefurl_regex_out as $regex) {
 		if (empty($type) || $type == $regex['type']) {
 			// if a question mark in pattern, deal with possible additional terms
 			// The '?&' isn't pretty but seems to work.
-			//if ( strpos($regex['left'],'?') !== FALSE ) {
+			//if( strpos($regex['left'],'?') !== FALSE ) {
 			//	$tpl_output = preg_replace( '/'.$regex['left'].'&/', $regex['right'].'?&', $tpl_output );
 			//}
 			$tpl_output = preg_replace('/' . $regex['left'] . '/', $regex['right'], $tpl_output);
 		}
 	}
-	if (!empty($title) && $with_title == 'y') {
+	if (!empty($title)) {
 		$tpl_output.= TITLE_SEPARATOR . $title;
 	}
 	if (is_array($prefs['feature_sefurl_paths'])) {
-		foreach ($prefs['feature_sefurl_paths'] as $path) {
+		foreach($prefs['feature_sefurl_paths'] as $path) {
 			if (isset($_REQUEST[$path])) {
 				$tpl_output = urlencode($_REQUEST[$path]) . "/$tpl_output";
 			}
 		}
 	}
-
-	if (strpos($tpl_output, '?') === false) {	// historically tiki has coped with malformed short urls with no ?
-		$amppos = strpos($tpl_output, '&');		// route.php requires that we no longer do that
-		$eqpos = strpos($tpl_output, '=');
-		if ( $amppos !== false && ($eqpos === false || $eqpos > $amppos)) {
-			if (substr($tpl_output, $amppos, 5) !== '&amp;') {
-				$tpl_output{$amppos} = '?';
-			} else {
-				$tpl_output = substr($tpl_output, 0, $amppos) . '?' . substr($tpl_output, $amppos + 5);
-			}
-		}
-	}
-
-	if ($with_next) {
-		if (strpos($tpl_output, '?') === false) {
-			$tpl_output .= '?';
-		} else {
-			$tpl_output .= '&amp;';
-		}
-	}
-
 	return $tpl_output;
 }

@@ -1,13 +1,13 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 // This script may only be included! Die if called directly...
-if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
-	header('location: index.php');
+if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+	header("location: index.php");
 	exit;
 }
 
@@ -18,7 +18,7 @@ require_once ('lib/comments/commentslib.php');
  * A library to handle importing of forum posts from Tiki or from other forum
  *  software. This library will re-use functions contained in the CommentsLib
  * library, as those functions already directly access the forums.
- *
+ * 
  * @uses Comments
  * @license LGPL. Please, see licence.txt for mode details
  */
@@ -26,10 +26,10 @@ class Importer extends Comments
 {
 	// The types of forums are hard-coded into the library and displayed
 	// in the template. As support for more imports grows, add the type to
-	// the below two arrays, in addition to writing the functions to
+	// the below two arrays, in addition to writing the functions to 
 	// support them.
-	public $fi_types    = array('TikiWiki');
-	public $fi_prefixes = array('tiki_');
+	var $fi_types    = array('TikiWiki');
+	var $fi_prefixes = array('tiki_');
 
 
 	/*
@@ -44,17 +44,16 @@ class Importer extends Comments
 	 * importSQLForum importSQLForum will import the forum data from the specified SQL file and
 	 *  the specified forum ID, and append it to the end of the data in the
 	 *  destination forum. Datestamps will be retained.
-	 *
-	 * @param string $dbType
-	 * @param string $dbPrefix
-	 * @param string $sqlFile
+	 * 
+	 * @param string $dbType 
+	 * @param string $dbPrefix 
+	 * @param string $sqlFile 
 	 * @param string $fF SQL file
-	 * @param mixed $tF
+	 * @param mixed $tF 
 	 * @access public
 	 * @return int number of posts
 	 */
-	function importSQLForum($dbType, $dbPrefix, $sqlFile, $fF, $tF)
-	{
+	function importSQLForum($dbType, $dbPrefix, $sqlFile, $fF, $tF) {
 		$fHash = array();
 		$row = array();
 		$hash = array();	// If part of a thread, this is the new parent threadId.
@@ -81,12 +80,12 @@ class Importer extends Comments
 			$row = array_shift($fHash);
 
 			$pid = 0;
-			if ($row['parentId'] != 0 && !$hash[$row['parentId']]) {
+			if ($row["parentId"] != 0 && !$hash[$row["parentId"]]) {
 				array_push($fHash, $row);
 				$fPosts2++;
 				continue;
-			} else if ($row['parentId'] != 0) {
-				$pid = $hash[$row['parentId']];
+			} else if ($row["parentId"] != 0) {
+				$pid = $hash[$row["parentId"]];
 			}
 
 			if ($dbType == 'TikiWiki') {
@@ -95,23 +94,20 @@ class Importer extends Comments
 								`userName`, `title`, `data`, `votes`, `points`, `hash`,
 								`parentId`, `average`, `hits`, `type`, `summary`, `user_ip`,
 								`message_id`, `in_reply_to`)
-								values ( 'forum', '$tF', " . $row["commentDate"] .
-								", \"" . $row["userName"] . "\", \"" . $row["title"] .
+								values ( 'forum', '$tF', " . $row["commentDate"] . 
+								", \"" . $row["userName"] . "\", \"" . $row["title"] . 
 								"\", \"" . $row["data"] . "\", " . (int) $row["votes"] .
-								", '" . $row["points"] . "', '" . $row["hash"] .
+								", '" . $row["points"] . "', '" . $row["hash"] . 
 								"', $pid, \"" . $row["average"] . "\", " .
 								(int) $row["hits"] . ", '" . $row["type"] . "', \"" .
 								$row["summary"] . "\", '" . $row["user_ip"] . "', \"" .
 								$row["message_id"] . "\", \"" . $row["in_reply_to"] . "\")";
-
 				$result = $this->query($query);
-
 				$abbb = $this->getOne("SELECT LAST_INSERT_ID() from $ftable");
-
 				if (!$abbb) {
 					$abbb = $this->getOne("SELECT max(tableId) from $ftable");
 				}
-				$hash[$row['threadId']] = $abbb;
+				$hash[$row["threadId"]] = $abbb;
 			} else {
 				die ("Only TikiWiki is supported at this time.\n");
 			}
@@ -119,18 +115,15 @@ class Importer extends Comments
 		// Update forum counters.
 		$query = "select count(*) from `tiki_comments` where `objectType` = 'forum' and `object` = ?";
 		$tComments = $this->getOne($query, array( (int) $tF ));
-
 		$query = "select count(*) from `tiki_comments` where `objectType` = 'forum' and `object` = ? and `parentId` = 0";
 		$tThreads = $this->getOne($query, array( (int) $tF ));
-
-		$query = 'update `tiki_forums` set `comments` = ?, `threads` = ? where `forumId` = ?';
+		$query = "update `tiki_forums` set `comments` = ?, `threads` = ? where `forumId` = ?";
 		$result = $this->query($query, array( (int) $tComments, (int) $tThreads, (int) $tF ));
 
 		// Force an index refresh on comments table.
-		include_once('lib/search/refresh-functions.php');
+		include_once("lib/search/refresh-functions.php");
 		refresh_index_forums();
 		refresh_index('comments');
-
 		return $fPosts;
 	}
 
@@ -139,17 +132,16 @@ class Importer extends Comments
 	 * parseFields will take an entire record, as parsed out from an SQL file,
 	 * and pull out full fields (either text-based with '' or numeric).  What is
 	 * returned is an indexed array of the field data.
-	 *
-	 * @param string $record
+	 * 
+	 * @param string $record 
 	 * @access public
 	 * @return array: indexed array of the field data
 	 */
-	function parseFields($record)
-	{
+	function parseFields($record) {
 		$fields = array();
-		$moo = '\'';
+		$moo = "\'";
 
-		while ($a = strpos($record, ',')) {
+		while ($a = strpos($record, ",")) {
 			// If field is a string...
 			if (preg_match("/^'/", substr($record, 0, $a))) {
 				$offset = 1;
@@ -167,29 +159,29 @@ class Importer extends Comments
 			} else {
 				array_push($fields, substr($record, 0, $a));
 				$record = substr($record, $a + 1);
-			}
+			}	
 		}
 		array_push($fields, $record);
 
 		return $fields;
 	}
 
+
 	/**
 	 * parseSQL parses the SQL source file, analysing the block of text
 	 * for the specified table, pulling out field names, and all of the
 	 * values from the associated insert actions. Returns an array of
 	 * associative arrays for each record and the fields within the record.
-	 *
-	 * @param string $dbType
+	 * 
+	 * @param string $dbType 
 	 * @param string $dbPrefix prefix of database tables
 	 * @param string $table table name to parse
 	 * @param string $sqlFile output file name
-	 * @param mixed $fId
+	 * @param mixed $fId 
 	 * @access public
 	 * @return array of associative arrays for each record and the fields within the records
 	 */
-	function parseSQL($dbType, $dbPrefix, $table, $sqlFile, $fId)
-	{
+	function parseSQL($dbType, $dbPrefix, $table, $sqlFile, $fId) {
 
 		$headings = array();
 		$rec = array();
@@ -207,7 +199,7 @@ class Importer extends Comments
 				$fL = fgets($fH);
 				while (preg_match('/^  `/', $fL)) {
 					$a = substr($fL, 3);
-					$b = strpos($a, '`');
+					$b = strpos($a, "`");
 					$c = substr($a, 0, $b);
 					array_push($headings, $c);
 					$fL = fgets($fH);
@@ -218,7 +210,7 @@ class Importer extends Comments
 			// look for the insert block.
 			if (preg_match('/'.$lookFor2.'/', $fL)) {
 				while (preg_match('/'.$lookFor2.'/', $fL)) {
-					$a = strpos($fL, '(');
+					$a = strpos($fL, "(");
 					$b = strpos($fL, ");\n");
 					$c = substr($fL, $a + 1, $b - $a - 1);
 
@@ -226,11 +218,7 @@ class Importer extends Comments
 					// record boundaries, such that each element in $records
 					// represents an SQL record or row.
 					$records = preg_split('/\),\(/', $c);
-
-					if (count($records) < 1) {
-						$records[0] = $c;
-					}
-
+					if (count($records) < 1) { $records[0] = $c; }
 					for ($count = 0, $count_records = count($records); $count < $count_records; $count++) {
 						// Each proper record should begin with a numeric value
 						// (at least as far as the tables we will be using).
@@ -250,9 +238,9 @@ class Importer extends Comments
 						// value that manages to get through will simply parse
 						// all records without filter.
 						if ($dbType == 'TikiWiki') {
-							// Ignore records that come back that are not
+							// Ignore records that come back that are not 
 							// forum-related.
-							if ($fields[2] != 'forum' && $table == 'comments') {
+							if ($fields[2] != "forum" && $table == 'comments') {
 								// Do nothing... NEXT!
 								continue;
 								// If a source forum has been specified, ignore
@@ -277,16 +265,15 @@ class Importer extends Comments
 
 	/**
 	 * parseForumList Parses an SQL file and returns an array consisting of all
-	 *  the forum ID number and name pairs that exist in the SQL file.
-	 *
-	 * @param string $dbType
-	 * @param string $dbPrefix
-	 * @param string $sqlFile
+	 *   the forum ID number and name pairs that exist in the SQL file.
+	 * 
+	 * @param string $dbType 
+	 * @param string $dbPrefix 
+	 * @param string $sqlFile 
 	 * @access public
 	 * @return -1 if error. Else an array with all the forum Id numbers and name pairs that exist in the SQL file.
 	 */
-	function parseForumList($dbType, $dbPrefix, $sqlFile)
-	{
+	function parseForumList($dbType, $dbPrefix, $sqlFile) {
 		$tHash  = array();
 		$fields = array();
 		$forum  = array();
@@ -304,9 +291,9 @@ class Importer extends Comments
 		// We only need to key on the forum ID number and the forum name.
 		while ($fields = array_shift($tHash)) {
 			if ($dbType == 'TikiWiki') {
-				$forum['id'] = $fields['forumId'];
-				$forum['name'] = $fields['name'];
-				$forum['comments'] = $fields['comments'];
+				$forum["id"] = $fields["forumId"];
+				$forum["name"] = $fields["name"];
+				$forum["comments"] = $fields["comments"];
 				array_push($forums, $forum);
 			} else {
 				return -1;

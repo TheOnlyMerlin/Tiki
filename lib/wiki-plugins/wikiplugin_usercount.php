@@ -1,31 +1,41 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_usercount_info()
-{
+// Displays the number of total users or the number of users in a group
+// Use:
+// {USERCOUNT()}groupname{USERCOUNT}
+//
+// If no groupname is given returns all users
+
+function wikiplugin_usercount_help() {
+        return tra("Displays the number of registered users").":<br />~np~{USERCOUNT()}groupname{USERCOUNT}~/np~";
+}
+
+function wikiplugin_usercount_info() {
 	return array(
 		'name' => tra('User Count'),
-		'documentation' => 'PluginUserCount',
-		'description' => tra('Display number of users for a site or group'),
+		'documentation' => tra('PluginUserCount'),		
+		'description' => tra('Displays the number of users that are registered or within a group'),
 		'prefs' => array( 'wikiplugin_usercount' ),
 		'body' => tra('Group name'),
-		'icon' => 'img/icons/group_gear.png',
+		'icon' => 'pics/icons/group_gear.png',
 		'params' => array(
 		),
 	);
 }
 
-function wikiplugin_usercount($data, $params)
-{
-	global $tikilib, $userlib;
+function wikiplugin_usercount($data, $params) {
+        global $tikilib;
 
-	extract($params, EXTR_SKIP);
+        global $userlib;
 
-	$numusers = $userlib->count_users($data);
+        extract ($params,EXTR_SKIP);
 
-	return $numusers;
+        $numusers = $userlib->count_users($data);
+
+        return $numusers;
 }

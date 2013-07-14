@@ -1,5 +1,8 @@
-{* $Id$ *}<!DOCTYPE html>
-<html lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}">
+{* $Id$ *}<!DOCTYPE html 
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}" lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}">
 	<head>
 		{include file='header.tpl'}
 	</head>
@@ -9,10 +12,10 @@
 		{/if}
 		<div id="tiki-mid">
 			<div class="cbox">
-				<div class="cbox-title">{icon _id=exclamation alt="{tr}Error{/tr}" style="vertical-align:middle"}{tr}Error{/tr}</div>
+				<div class="cbox-title">{icon _id=exclamation alt="{tr}Error{/tr}" style=vertical-align:middle"}{tr}Error{/tr}</div>
 				<div class="cbox-data">
-					{$msg}<br><br>
-					<a href="javascript:window.close()" class="linkmenu">{tr}Close Window{/tr}</a><br><br>
+					{$msg}<br /><br />
+					<a href="javascript:window.close()" class="linkmenu">{tr}Close Window{/tr}</a><br /><br />
 				</div>
 			</div>
 		</div>

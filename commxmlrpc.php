@@ -1,14 +1,12 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 include_once("tiki-setup.php");
+include_once ("lib/pear/XML/Server.php");
 include_once ('lib/commcenter/commlib.php');
 
 if ($tikilib->get_preference("feature_comm", 'n') != 'y') {
@@ -23,12 +21,7 @@ $map = array(
 
 $s = new XML_RPC_Server($map);
 
-/**
- * @param $params
- * @return XML_RPC_Response
- */
-function sendStructurePage($params)
-{
+function sendStructurePage($params) {
 	global $tikilib, $userlib, $commlib, $prefs;
 	include_once ('lib/structures/structlib.php');
 	$site = $params->getParam(0); $site = $site->scalarval();
@@ -65,12 +58,7 @@ function sendStructurePage($params)
 }
 
 /* Validates the user and returns user information */
-/**
- * @param $params
- * @return XML_RPC_Response
- */
-function sendPage($params)
-{
+function sendPage($params) {
 	// Get the page and store it in received_pages
 	global $tikilib, $userlib, $commlib, $prefs;
 
@@ -109,12 +97,7 @@ function sendPage($params)
 	return new XML_RPC_Response(new XML_RPC_Value(1, "boolean"));
 }
 
-/**
- * @param $params
- * @return XML_RPC_Response
- */
-function sendArticle($params)
-{
+function sendArticle($params) {
 	// Get the page and store it in received_pages
 	global $tikilib, $userlib, $commlib, $prefs;
 
@@ -184,29 +167,8 @@ function sendArticle($params)
 	$heading = base64_decode($heading);
 	$body = base64_decode($body);
 
-	$commlib->receive_article(
-		$site,
-		$username,
-		$title,
-		$authorName,
-		$size,
-		$use_image,
-		$image_name,
-		$image_type,
-		$image_size,
-		$image_x,
-		$image_y,
-		$image_data,
-		$publishDate,
-		$expireDate,
-		$created,
-		$heading,
-		$body,
-		$hash,
-		$author,
-		$type,
-		$rating
-	);
+	$commlib->receive_article($site, $username, $title, $authorName, $size, $use_image, $image_name, $image_type, $image_size,
+		$image_x, $image_y, $image_data, $publishDate, $expireDate, $created, $heading, $body, $hash, $author, $type, $rating);
 
 	return new XML_RPC_Response(new XML_RPC_Value(1, "boolean"));
 }

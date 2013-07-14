@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +7,7 @@
 
 require_once ('tiki-setup.php');
 $access->check_permission(array('tiki_p_clean_cache'));
-//get_strings tra('Tiki Cache/Sys Admin')
+
 $done = '';
 $output = '';
 $buf = '';
@@ -18,10 +15,6 @@ global $cachelib;
 include_once ('lib/cache/cachelib.php');
 if (isset($_GET['do'])) {
 	$cachelib->empty_cache($_GET['do']);
-	if ($_GET['do'] === 'all') {
-		// seems combination of clearing prefs and public now messes up the page, so reload (tiki 11)
-		header('Location: ' . $base_url . 'tiki-admin_system.php');
-	}
 }
 if (isset($_GET['compiletemplates'])) {
 	$ctempl = 'templates';
@@ -32,10 +25,6 @@ if (isset($_GET['compiletemplates'])) {
 	$cachelib->cache_templates($ctempl, $_GET['compiletemplates']);
 	$logslib->add_log('system', 'compiled templates');
 }
-if (!empty($_REQUEST['clean'])) {
-	$userlib->remove_lost_groups();
-}
-$smarty->assign('lostGroups', $userlib->get_lost_groups());
 $languages = array();
 $languages = $tikilib->list_languages();
 $templates_c = $cachelib->count_cache_files("templates_c/$tikidomain");
@@ -47,8 +36,8 @@ $smarty->assign('temppublic', $temppublic);
 $modules = $cachelib->count_cache_files("modules/cache/$tikidomain");
 $smarty->assign('modules', $modules);
 $templates = array();
-foreach ($languages as $clang) {
-	if ($smarty->use_sub_dirs) { // was if (is_dir("templates_c/$tikidomain/")) ppl with tikidomains should test. redflo
+foreach($languages as $clang) {
+	if ($smarty->use_sub_dirs) { // was if(is_dir("templates_c/$tikidomain/")) ppl with tikidomains should test. redflo
 		$templates[$clang["value"]] = $cachelib->count_cache_files("templates_c/$tikidomain/" . $clang["value"] . "/");
 	} else {
 		$templates[$clang["value"]] = $cachelib->count_cache_files("templates_c/", $tikidomain . $clang["value"]);
@@ -83,20 +72,19 @@ if ($prefs['feature_maps'] && !empty($prefs['map_path'])) {
 }
 $dirs = array_unique($dirs);
 $dirsExist = array();
-foreach ($dirs as $i => $d) {
+foreach($dirs as $i => $d) {
 	$dirsWritable[$i] = is_writable($d);
 }
 $smarty->assign_by_ref('dirs', $dirs);
 $smarty->assign_by_ref('dirsWritable', $dirsWritable);
-$smarty->assign('zipPath', '');
 if (isset($_REQUEST['zip']) && isset($_REQUEST['zipPath']) && $tiki_p_admin == 'y') {
-	include_once ('vendor_extra/pclzip/pclzip.lib.php');
+	include_once ('lib/pclzip/pclzip.lib.php');
 	if (!$archive = new PclZip($_REQUEST['zipPath'])) {
 		$smarty->assign('msg', tra('Error:') . $archive->errorInfo(true));
 		$smarty->display('error.tpl');
 		die;
 	}
-	foreach ($dirs as $d) {
+	foreach($dirs as $d) {
 		if (file_exists($d)) $dirs2[] = $d;
 	}
 	if (!$archive->add($dirs2)) {
@@ -104,7 +92,7 @@ if (isset($_REQUEST['zip']) && isset($_REQUEST['zipPath']) && $tiki_p_admin == '
 		$smarty->display('error.tpl');
 		die;
 	}
-	$smarty->assign('zipPath', $_REQUEST['zipPath']);
+	$smarty->assign_by_ref('zipPath', $_REQUEST['zipPath']);
 }
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
