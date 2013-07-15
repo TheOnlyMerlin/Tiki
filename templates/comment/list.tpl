@@ -99,4 +99,3 @@
 var ajax_url = '{$base_url}';
 var objectId = '{$objectId}';
 </script>
-

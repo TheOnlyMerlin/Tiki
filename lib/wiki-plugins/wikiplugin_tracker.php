@@ -22,15 +22,12 @@ function wikiplugin_tracker_info()
 				'description' => tra('Numeric value representing the tracker ID'),
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'tracker',
 			),
 			'fields' => array(
 				'required' => false,
 				'name' => tra('Fields'),
 				'description' => tra('Colon-separated list of field IDs to be displayed. Example: 2:4:5  If empty, all fields will be shown'),
 				'default' => '',
-				'separator' => ':',
-				'profile_reference' => 'tracker_field',
 			),
 			'action' => array(
 				'required' => false,
@@ -69,7 +66,7 @@ function wikiplugin_tracker_info()
 				'description' => tra('Indicate mandatory fields with an asterisk (shown by default).'),
 				'filter' => 'alpha',
 				'default' => 'y',
-				'options' => array(
+						'options' => array(
 					array('text' => '', 'value' => ''),
 					array('text' => tra('Yes'), 'value' => 'y'),
 					array('text' => tra('No'), 'value' => 'n')
@@ -93,7 +90,7 @@ function wikiplugin_tracker_info()
 				'description' => tra('Embedded'),
 				'filter' => 'alpha',
 				'default' => 'n',
-				'options' => array(
+			'options' => array(
 					array('text' => '', 'value' => ''),
 					array('text' => tra('Yes'), 'value' => 'y'),
 					array('text' => tra('No'), 'value' => 'n')
@@ -198,7 +195,6 @@ function wikiplugin_tracker_info()
 				'description' => tra('ItemId allowing for editing an item'),
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'tracker_item',
 			),
 			'ignoreRequestItemId' => array(
 				'required' => false,
@@ -224,7 +220,6 @@ function wikiplugin_tracker_info()
 				'description' => tra('Name of the wiki page containing the template to display the tracker items.'),
 				'filter' => 'pagename',
 				'default' => '',
-				'profile_reference' => 'wiki_page',
 			),
 			'newstatus' => array(
 				'required' => false,
@@ -253,7 +248,6 @@ function wikiplugin_tracker_info()
 				'filter' => 'digits',
 				'separator' => ':',
 				'default' => '',
-				'profile_reference' => 'tracker_field',
 			),
 			'autosavevalues' => array(
 				'required' => false,
@@ -270,7 +264,6 @@ function wikiplugin_tracker_info()
 				'filter' => 'digits',
 				'separator' => ':',
 				'default' => '',
-				'profile_reference' => 'tracker_field',
 			),
 			'registration' => array(
 				'required' => false,
@@ -290,7 +283,6 @@ function wikiplugin_tracker_info()
 				'description' => tra('Output result to a new wiki page with the name taken from the input for the specified fieldId'),
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'tracker_field',
 			),
 			'discarditem' => array(
 				'required' => false,
@@ -310,15 +302,12 @@ function wikiplugin_tracker_info()
 				'description' => tra('Name of the wiki page containing the template to format the output to wiki page'),
 				'filter' => 'pagename',
 				'default' => '',
-				'profile_reference' => 'wiki_page',
 			),
 			'fieldsfill' => array(
 				'required' => false,
 				'name' => tra('Multiple Fill Fields'),
 				'description' => tra('Colon-separated list of field IDs to be filled with multiple values, to create multiple items in one save. Example: 2:4:5  If empty, only one item will be created. Only for item creation'),
 				'default' => '',
-				'separator' => ':',
-				'profile_reference' => 'tracker_field',
 			),
 			'fieldsfillseparator' => array(
 				'required' => false,
@@ -380,10 +369,12 @@ function wikiplugin_tracker($data, $params)
 	if ($prefs['feature_trackers'] != 'y') {
 		return $smarty->fetch("wiki-plugins/error_tracker.tpl");
 	}
-	if (empty($trackerId) || !($definition = Tracker_Definition::get($trackerId))) {
+	if (empty($trackerId) || !($tracker = $trklib->get_tracker($trackerId))) {
 		return $smarty->fetch("wiki-plugins/error_tracker.tpl");
 	}
-	$tracker = $definition->getInformation();
+	if ($t = $trklib->get_tracker_options($trackerId)) {
+		$tracker = array_merge($tracker, $t);
+	}
 	if (empty($trackerId) && !empty($view) && $view == 'user' && $prefs['userTracker'] == 'y') { // the user tracker item
 		$utid = $userlib->get_tracker_usergroup($user);
 		if (!empty($utid) && !empty($utid['usersTrackerId'])) {
@@ -394,8 +385,8 @@ function wikiplugin_tracker($data, $params)
 	} elseif (!empty($trackerId) && !empty($view) && $view == 'user') {// the user item of a tracker
 		$itemId = $trklib->get_user_item($trackerId, $tracker, null, null, strlen($status) == 1 ? $status : '');
 		$usertracker = true;
-	} elseif (!empty($trackerId) && !empty($view) && $view == 'page' && !empty($_REQUEST['page']) && $f = $trackerlib->get_page_field($trackerId)) {// the page item
-		$itemId = $trklib->get_item_id($trackerId, $f['fieldId'], $_REQUEST['page']);
+	} elseif (!empty($trackerId) && !empty($view) && $view == 'page' && !empty($_REQUEST['page']) && (($f = $trklib->get_field_id_from_type($trackerId, 'k', '1%')) || ($f = $trklib->get_field_id_from_type($trackerId, 'k', '%,1%')) || ($f =  $trklib->get_field_id_from_type($trackerId, 'k')))) {// the page item
+		$itemId = $trklib->get_item_id($trackerId, $f, $_REQUEST['page']);
 	} elseif (!empty($trackerId) && !empty($_REQUEST['view_user'])) {
 		$itemId = $trklib->get_user_item($trackerId, $tracker, $_REQUEST['view_user']);
 	} elseif (!empty($_REQUEST['itemId']) && (empty($ignoreRequestItemId) || $ignoreRequestItemId != 'y')) {
@@ -553,7 +544,7 @@ function wikiplugin_tracker($data, $params)
 				} elseif (!empty($tpl)) {
 					$outf = $trklib->get_pretty_fieldIds($tpl, 'tpl', $outputPretty);
 				} elseif (!empty($fields)) {
-					$outf = $fields;
+					$outf = preg_split('/ *: */', $fields);
 				}
 				if (!empty($_REQUEST['autosavefields'])) {
 					$autosavefields = explode(':', $_REQUEST['autosavefields']);
@@ -566,28 +557,15 @@ function wikiplugin_tracker($data, $params)
 				if (!empty($autosavefields)) {
 					$auto_fieldId = array_merge($auto_fieldId, $autosavefields);
 				}
-				foreach ($definition->getFields() as $field) {
-					// User and group on autoassign create/modify
-					if ($user && ($field['type'] == 'u' || $field['type'] == 'g')) {
-						$autoassign = $field['options_map']['autoassign'];
-						if ($autoassign == 1 || $autoassign == 2) {
-							$hidden_fieldId[] = $field['fieldId'];
-						}
-					}
-
-					// IP and page on autoassign
-					if ($field['type'] == 'I' || $field['type'] == 'k') {
-						$autoassign = $field['options_map']['autoassign'];
-						if ($autoassign == 1) {
-							$hidden_fieldId[] = $field['fieldId'];
-						}
-					}
-
-					// Auto-increment
-					if ($field['type'] == 'q') {
-						$auto_fieldId[] = $field['fieldId'];
-					}
+				if ($user) {
+					$hidden_fieldId[] = $trklib->get_field_id_from_type($trackerId, 'u', '1%');	// user owner
+					$hidden_fieldId[] = $trklib->get_field_id_from_type($trackerId, 'u', '2%');	// user modifier
+					$hidden_fieldId[] = $trklib->get_field_id_from_type($trackerId, 'g', '1%');	// owner group
+					$hidden_fieldId[] = $trklib->get_field_id_from_type($trackerId, 'g', '2%');	// owner modifier
 				}
+				$hidden_fieldId[] = $trklib->get_field_id_from_type($trackerId, 'I', '1%');	// IP auto-assign
+				$hidden_fieldId[] = $trklib->get_field_id_from_type($trackerId, 'k', '1%');	// page creator
+				$auto_fieldId[] = $trklib->get_field_id_from_type($trackerId, 'q');	// auto-increment
 				foreach ($auto_fieldId as $k => $v) {
 					if (empty($v) || in_array($v, $outf)) {
 						unset($auto_fieldId[$k]);
@@ -632,7 +610,7 @@ function wikiplugin_tracker($data, $params)
 
 			// If we create multiple items, get field Ids, default values and separator
 			if (!empty($fieldsfill)) {
-				$fill_fields = $fieldsfill;	// Allow for superfluous spaces and ignore them
+				$fill_fields = preg_split('/ *: */', $fieldsfill);	// Allow for superfluous spaces and ignore them
 				$fill_flds = array('data' => array());
 				$fill_defaults = array();
 				$fill_flds_defaults = array();	// May be different from fill_defaults if some fields are not editable
@@ -1346,13 +1324,12 @@ function wikiplugin_tracker($data, $params)
 							$smarty->assign('f_'.$f['fieldId'], '<span class="outputPretty" id="track_'.$f['fieldId'].'" name="track_'.$f['fieldId'].'">'. wikiplugin_tracker_render_value($f, $item) . '</span>');
 						} else {
 							$mand =  ($showmandatory == 'y' and $f['isMandatory'] == 'y')? "&nbsp;<strong class='mandatory_star'>*</strong>&nbsp;":'';
-							$smarty->assign(
-								'f_'.$f['fieldId'],
-								wikiplugin_tracker_render_input($f, $item, $dynamicSave) .
-								$mand .
-								'<div class="trackerplugindesc">' .
-								($f['descriptionIsParsed'] == 'y' ? $tikilib->parse_data($f['description']) : tra($f['description'])) .
-								'</div>'
+							$smarty->assign('f_'.$f['fieldId'],
+									wikiplugin_tracker_render_input($f, $item, $dynamicSave) .
+									$mand .
+									'<div class="trackerplugindesc">' .
+									($f['descriptionIsParsed'] == 'y' ? $tikilib->parse_data($f['description']) : tra($f['description'])) .
+									'</div>'
 							);
 						}
 					} else {

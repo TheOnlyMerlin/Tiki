@@ -235,21 +235,6 @@ class Services_Tracker_Controller
 			);
 			$visibleBy = $input->asArray('visible_by', ',');
 			$editableBy = $input->asArray('editable_by', ',');
-
-			global $prefs;
-			if ($prefs['tracker_change_field_type'] === 'y') {
-				$type = $input->type->text();
-				if ($field['type'] !== $type) {
-					if (!isset($types[$type])) {
-						throw new Services_Exception(tr('Type does not exist'), 400);
-					}
-					$typeInfo = $types[$type]; // update typeInfo and clear out old options if changed type
-					$input->offsetSet('option', new JitFilter(array()));
-				}
-			} else {
-				$type = $field['type'];
-			}
-
 			$this->utilities->updateField(
 				$trackerId,
 				$fieldId,
@@ -267,7 +252,6 @@ class Services_Tracker_Controller
 					'isHidden' => $input->visibility->alpha(),
 					'errorMsg' => $input->error_message->text(),
 					'permName' => $permName,
-					'type' => $type,
 				)
 			);
 		}
@@ -275,7 +259,7 @@ class Services_Tracker_Controller
 		return array(
 			'field' => $field,
 			'info' => $typeInfo,
-			'options' => $this->utilities->parseOptions($field['options'], $typeInfo),
+			'options' => $this->utilities->parseOptions($field['options_array'], $typeInfo),
 			'validation_types' => array(
 				'' => tr('None'),
 				'captcha' => tr('Captcha'),
@@ -285,7 +269,6 @@ class Services_Tracker_Controller
 				'regex' => tr('Regular Expression (Pattern)'),
 				'username' => tr('User Name'),
 			),
-			'types' => $types,
 		);
 	}
 

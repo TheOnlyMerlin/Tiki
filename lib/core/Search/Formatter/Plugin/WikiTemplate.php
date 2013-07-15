@@ -12,7 +12,7 @@ class Search_Formatter_Plugin_WikiTemplate implements Search_Formatter_Plugin_In
 
 	function __construct($template)
 	{
-		$this->template = WikiParser_PluginMatcher::match($template);
+		$this->template = $template;
 		$this->format = self::FORMAT_WIKI;
 	}
 
@@ -28,10 +28,11 @@ class Search_Formatter_Plugin_WikiTemplate implements Search_Formatter_Plugin_In
 
 	function getFields()
 	{
+		$matches = WikiParser_PluginMatcher::match($this->template);
 		$parser = new WikiParser_PluginArgumentParser;
 
 		$fields = array();
-		foreach ($this->template as $match) {
+		foreach ($matches as $match) {
 			$name = $match->getName();
 
 			if ($name === 'display') {
@@ -48,7 +49,7 @@ class Search_Formatter_Plugin_WikiTemplate implements Search_Formatter_Plugin_In
 
 	function prepareEntry($valueFormatter)
 	{
-		$matches = clone $this->template;
+		$matches = WikiParser_PluginMatcher::match($this->template);
 
 		foreach ($matches as $match) {
 			$name = $match->getName();

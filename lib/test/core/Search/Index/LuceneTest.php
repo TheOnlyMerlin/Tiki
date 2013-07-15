@@ -53,7 +53,8 @@ class Search_Index_LuceneTest extends PHPUnit_Framework_TestCase
 
 	function tearDown()
 	{
-		$this->index->destroy();
+		$dir = escapeshellarg($this->dir);
+		`rm -Rf $dir`;
 	}
 
 	function testBasicSearch()
@@ -148,6 +149,7 @@ class Search_Index_LuceneTest extends PHPUnit_Framework_TestCase
 
 	function testIndexProvidesHighlightHelper()
 	{
+		$this->markTestSkipped('TODO');
 		$query = new Search_Query('foobar or hello');
 		$resultSet = $query->search($this->index);
 

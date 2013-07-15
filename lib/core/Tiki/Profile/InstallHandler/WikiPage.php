@@ -1,6 +1,6 @@
 <?php
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -17,8 +17,7 @@ class Tiki_Profile_InstallHandler_WikiPage extends Tiki_Profile_InstallHandler
 	private $structure;
 	private $wysiwyg;
 	private $wiki_authors_style;
-	private $geolocation;
-
+	
 	private $mode = 'create_or_update';
 	private $exists;
 
@@ -54,8 +53,6 @@ class Tiki_Profile_InstallHandler_WikiPage extends Tiki_Profile_InstallHandler
 			$this->wysiwyg = $data['wysiwyg'];
 		if ( array_key_exists('wiki_authors_style', $data) )
 			$this->wiki_authors_style = $data['wiki_authors_style'];
-		if ( array_key_exists('geolocation', $data) )
-			$this->geolocation = $data['geolocation'];
 	}
 
 	function canInstall()
@@ -117,8 +114,7 @@ class Tiki_Profile_InstallHandler_WikiPage extends Tiki_Profile_InstallHandler
 		$this->replaceReferences($this->structure);
 		$this->replaceReferences($this->wysiwyg);
 		$this->replaceReferences($this->wiki_authors_style);
-		$this->replaceReferences($this->geolocation);
-
+	
 		$this->mode = $this->convertMode();
 
 		if ( strpos($this->content, 'wikidirect:') === 0 ) {
@@ -135,7 +131,7 @@ class Tiki_Profile_InstallHandler_WikiPage extends Tiki_Profile_InstallHandler
 			} else {
 				$this->wysiwyg = 'n';
 				$is_html = false;
-			}
+			} 
 			if ( ! $this->message ) {
 				$this->message = tra('Created by profile installer');
 			}
@@ -145,7 +141,7 @@ class Tiki_Profile_InstallHandler_WikiPage extends Tiki_Profile_InstallHandler
 			$info = $tikilib->get_page_info($finalName, true, true);
 
 			if ( ! $this->wysiwyg ) {
-				if ( ! empty($info['wysiwyg']) ) {
+				if ( ! empty($info['wysiwyg']) ) { 
 					$this->wysiwyg = $info['wysiwyg'];
 				} else {
 					$this->wysiwyg = 'n';
@@ -154,7 +150,7 @@ class Tiki_Profile_InstallHandler_WikiPage extends Tiki_Profile_InstallHandler
 					$is_html = $info['is_html'];
 				} else {
 					$is_html = false;
-				}
+				} 
 			} else {
 				$this->wysiwyg = 'y';
 				$is_html = true;
@@ -177,11 +173,6 @@ class Tiki_Profile_InstallHandler_WikiPage extends Tiki_Profile_InstallHandler
 			$tikilib->update_page($finalName, $this->content, $this->message, 'admin', '0.0.0.0', $this->description, 0, $this->lang, $is_html, null, null, $this->wysiwyg, $this->wiki_authors_style);
 		}
 
-		global $prefs;
-		if (! empty($prefs['geo_locate_wiki']) && $prefs['geo_locate_wiki'] == 'y' && ! empty($this->geolocation)) {
-			TikiLib::lib('geo')->set_coordinates('wiki page', $this->name, $this->geolocation);
-		}
-
 		global $multilinguallib;
 		require_once 'lib/multilingual/multilinguallib.php';
 
@@ -193,7 +184,7 @@ class Tiki_Profile_InstallHandler_WikiPage extends Tiki_Profile_InstallHandler
 				$multilinguallib->insertTranslation('wiki page', $current, $this->lang, $target['page_id'], $target['lang']);
 			}
 		}
-
+		
 		if (!empty($this->structure)) {
 			global $structlib; include_once 'lib/structures/structlib.php';
 			$structlib->s_create_page($this->structure, 0, $finalName, '', $this->structure);
@@ -214,27 +205,4 @@ class Tiki_Profile_InstallHandler_WikiPage extends Tiki_Profile_InstallHandler
 
 		return $name;
 	}
-
-	public static function export(Tiki_Profile_Writer $writer, $page)
-	{
-		$tikilib = \TikiLib::lib('tiki');
-		if (! $info = $tikilib->get_page_info($page)) {
-			return false;
-		}
-
-		$writer->writeExternal($page, $writer->getReference('wiki_content', $info['data']));
-		$writer->addObject(
-			'wiki_page',
-			$page,
-			array(
-				'name' => $page,
-				'content' => "wikicontent:$page",
-				'description' => $info['description'],
-				'lang' => $info['lang'],
-			)
-		);
-
-		return true;
-	}
 }
-

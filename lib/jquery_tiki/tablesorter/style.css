@@ -27,9 +27,6 @@
 	background-image: none;
 	padding: 4px;
 }
-.tablesorter thead .disabled {
-	display: none;
-}
 
 /* Zebra Widget */
 /* follows base odd/even colors from syles/layout/design.css */
@@ -173,7 +170,7 @@ span.currange {
 	margin: 2px 5px;
 }
 
-div.tablesorter-pager span.arrow {
+div.pager span.arrow {
 	background-repeat: no-repeat;
 	height:16px;
 	width:8px;
@@ -182,26 +179,26 @@ div.tablesorter-pager span.arrow {
 	color:transparent;
 }
 
-div.tablesorter-pager span.disabled {
+div.pager span.disabled {
 	opacity: 0.5;
 }
 
-div.tablesorter-pager span.first {
+div.pager span.first {
 	background-position: left;
 	background-image: url('../../../img/icons/control_start.png');
 }
 
-div.tablesorter-pager span.prev {
+div.pager span.prev {
 	background-position: left;
 	background-image: url('../../../img/icons/control_rewind.png');
 }
 
-div.tablesorter-pager span.next {
+div.pager span.next {
 	background-position: right;
 	background-image: url('../../../img/icons/control_fastforward.png');
 }
 
-div.tablesorter-pager span.last {
+div.pager span.last {
 	background-position: right;
 	background-image: url('../../../img/icons/control_end.png');
 }

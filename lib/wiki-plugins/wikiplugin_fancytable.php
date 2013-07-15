@@ -7,9 +7,9 @@
 
 function wikiplugin_fancytable_info()
 {
-
-	$ts = new Table_Plugin;
-	$ts->createParams();
+	include_once('lib/jquery_tiki/tablesorter/tablesorter-helper.php');
+	$tshelper = new tablesorterHelper();
+	$tshelper->createParams();
 	$params = array_merge(
 		array(
 			 'head' => array(
@@ -54,7 +54,7 @@ function wikiplugin_fancytable_info()
 				 'description' => tra('Table body column vertical alignments separated by |. Choices: top, middle, bottom, baseline.'),
 				 'default' => '',
 			 ),
-		), $ts->params
+		), $tshelper->params
 	);
 	return array(
 		'name' => tra('Fancy Table'),
@@ -80,37 +80,40 @@ function wikiplugin_fancytable($data, $params)
 	$msg = '';
 
 	if ((isset($sortable) && $sortable != 'n')) {
-		$ts = new Table_Plugin;
-		$ts->setSettings(
+		include_once('lib/jquery_tiki/tablesorter/tablesorter-helper.php');
+		$tshelper = new tablesorterHelper();
+		$tshelper->createCode(
 			'fancytable_' . $iFancytable, $sortable,
 			isset($sortList) ? $sortList : null,
 			isset($tsfilters) ? $tsfilters : null,
 			isset($tsfilteroptions) ? $tsfilteroptions : null,
 			isset($tspaginate) ? $tspaginate : null
 		);
-		if (is_array($ts->settings)) {
-			Table_Factory::build('plugin', $ts->settings);
-			$sort = true;
+		$sort = $tshelper->code !== false ? true : false;
+		if ($sort) {
+			$js1 = '$(".wikiplugin_trackerlist").tablesorter({
+					widgets: ["zebra", "filter"],
+					theme : \'dark\',
+					widgetOptions : {
+						filter_cssFilter   : \'tablesorter-filter\',
+						filter_hideFilters : false,
+						filter_reset : \'.reset\',
+						filter_searchDelay : 300,
+						filter_functions: {1: true}
+					}
+				});';
+			global $headerlib;
+			$headerlib->add_jq_onready(implode("\n", $tshelper->code['jq']));
+			$headerlib->add_jq_onready($js1);
 		} else {
-			$sort = false;
-		}
-
-		if ($sort === false) {
-			if ($prefs['feature_jquery_tablesorter'] === 'n') {
-				$msg = tra('The jQuery Sortable Tables feature must be activated for the sort feature to work.');
-			} elseif ($prefs['disableJavascript'] === 'y') {
-				$msg = tra('Javascript must be enabled for the sort feature to work.');
-			} else {
-				$msg = tra('Unable to load the jQuery Sortable Tables feature.');
-			}
+			$msg = tra('The JQuery Sortable Tables feature must be activated for the sort feature to work.');
 		}
 	} else {
 		$sort = false;
 	}
 
 	//Start the table
-	$wret = '<div id="fancytable_' . $iFancytable . '" style="visibility:hidden">' . "\r\t";
-	$wret .= '<table class="normal" id="fancytable_' . $iFancytable . '">' . "\r\t";
+	$wret = '<table class="normal" id="fancytable_'.$iFancytable.'">' . "\r\t";
 
 	//Header
 	if (isset($head)) {
@@ -139,13 +142,19 @@ function wikiplugin_fancytable($data, $params)
 			$tdhdr, '</th>',
 			isset($colwidths) ? $colwidths : '',
 			isset($headaligns) ? $headaligns : '',
-			isset($headvaligns) ? $headvaligns : ''
+			isset($headvaligns) ? $headvaligns : '',
+			isset($tshelper) ? $tshelper : null
 		);
 
 		//restore original tags and plugin syntax
 		postprocess_section($headrows, $tagremove, $pluginremove);
+		$buttons = '';
+		if (isset($tshelper) && is_array($tshelper->code['buttons']) && count($tshelper->code['buttons']) > 0) {
+			$buttons = implode("\n\t", $tshelper->code['buttons']);
+		}
+		$div = !empty($tshelper->code['div']) ? $tshelper->code['div'] : '';
 
-		$wret .= '<thead>' . $headrows . "\r\t" . '</thead>' . "\r\t" . '<tbody>';
+		$wret .= '<thead>' . $buttons . $div . $headrows . "\r\t" . '</thead>' . "\r\t" . '<tbody>';
 	}
 
 	//Body
@@ -179,7 +188,7 @@ function wikiplugin_fancytable($data, $params)
 	if (isset($head)) {
 		$wret .= "\r\t" . '</tbody>';
 	}
-	$wret .= "\r" . '</table></div>' . "\r" . $msg;
+	$wret .= "\r" . '</table>' . "\r" . $msg;
 	return $wret;
 }
 
@@ -296,7 +305,7 @@ function preprocess_section (&$data, &$tagremove, &$pluginremove)
  *
  * @return 		string			$wret		HTML string for the header or body rows processed
  */
-function process_section ($data, $type, $line_sep, $cellbeg, $cellend, $widths, $aligns, $valigns)
+function process_section ($data, $type, $line_sep, $cellbeg, $cellend, $widths, $aligns, $valigns, $tshelper = null)
 {
 	$separator = strpos($data, '~|~') === false ? '|' : '~|~';
 	$lines = explode($line_sep, $data);
@@ -364,6 +373,26 @@ function process_section ($data, $type, $line_sep, $cellbeg, $cellend, $widths, 
 					}
 				}
 
+				//set data-placeholder values for tablesorter filters where appropriate
+				$ph = '';
+				if ($type == 'hs') { 	//headers rows where sort is turned on
+					if (is_object($tshelper)) {
+						$fcols = $tshelper->code['columns'];
+					}
+					if (isset($fcols[$c]['placeholder'])) {
+						$ph = ' ' . $fcols[$c]['placeholder'];
+					}
+					if (isset($fcols[$c]['classes'])) {
+						if (strpos($cellbeg, 'class="') === false) {
+							$cellbeg .= ' class="';
+						}
+						foreach ($fcols[$c]['classes'] as $class) {
+							$cellbeg .= ' ' . $class;
+						}
+						$cellbeg .= '"';
+					}
+				}
+
 				//set column style
 				$colstyle = '';
 				if (!empty($widths) || !empty($aligns) || !empty($valigns)) {
@@ -377,7 +406,7 @@ function process_section ($data, $type, $line_sep, $cellbeg, $cellend, $widths, 
 					$colstyle .= !empty($valigns[$c]) ? ' vertical-align: ' . $valigns[$c] : '';
 					$colstyle .= '"';
 				}
-				$row .= $cellbeg . $colspan . $rowspan . $colstyle . '>' . $column . $cellend;
+				$row .= $cellbeg . $colspan . $rowspan . $colstyle . $ph . '>' . $column . $cellend;
 				$c++;//increment column number
 			}
 			$wret .= $trbeg . $row . $trend;

@@ -14,7 +14,6 @@ function wikiplugin_customsearch_info()
 		'prefs' => array('wikiplugin_customsearch', 'wikiplugin_list', 'feature_ajax'),
 		'body' => tra('LIST plugin configuration information'),
 		'filter' => 'wikicontent',
-		'profile_reference' => 'search_plugin_content',
 		'icon' => 'img/icons/text_list_bullets.png',
 		'tags' => array('advanced'),
 		'params' => array(
@@ -24,7 +23,6 @@ function wikiplugin_customsearch_info()
 				'description' => tra('Wiki page where search user interface template is found'),
 				'filter' => 'pagename',
 				'default' => '',
-				'profile_reference' => 'wiki_page',
 			),
 			'id' => array(
 				'required' => false,
@@ -143,16 +141,12 @@ function wikiplugin_customsearch($data, $params)
 	$builder->apply($matches);
 	$formatter = $builder->getFormatter();
 
-	$facets = new Search_Query_FacetWikiBuilder;
-	$facets->apply($matches);
-
 	$cachelib = TikiLib::lib('cache');
 	$cachelib->cacheItem(
 		$definitionKey, serialize(
 			array(
 				'query' => $query,
 				'formatter' => $formatter,
-				'facets' => $facets,
 			)
 		),
 		'customsearch'
@@ -259,9 +253,6 @@ customsearch_$id = customsearch;
 		$arguments = $parser->parse($match->getArguments());
 		$key = $match->getInitialStart();
 		$fieldid = "customsearch_{$id}_$key";
-		if (isset($arguments['id'])) {
-			$fieldid = $arguments['id'];
-		}
 		if ($name == 'sort' && !empty($arguments['mode']) && empty($sort_mode)) {
 			$sort_mode = $arguments['mode'];
 			$match->replaceWith('');

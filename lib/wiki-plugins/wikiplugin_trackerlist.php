@@ -24,7 +24,6 @@ function wikiplugin_trackerlist_info()
 				'description' => tra('Numeric value representing the tracker ID'),
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'tracker',
 			),
 			'fields' => array(
 				'required' => false,
@@ -33,7 +32,6 @@ function wikiplugin_trackerlist_info()
 				'filter' => 'digits',
 				'separator' => ':',
 				'default' => '',
-				'profile_reference' => 'tracker_field',
 			),
 			'sort' => array(
 				'required' => false,
@@ -265,7 +263,6 @@ function wikiplugin_trackerlist_info()
 				'filter' => 'digits',
 				'separator' => ':',
 				'default' => '',
-				'profile_reference' => 'tracker_field',
 			),
 			'filtervalue' => array(
 				'required' => false,
@@ -351,7 +348,6 @@ function wikiplugin_trackerlist_info()
 				'filter' => 'pagename',
 				'advanced' => true,
 				'default' => '',
-				'profile_reference' => 'wiki_page',
 			),
 			'tplwiki' => array(
 				'required' => false,
@@ -360,7 +356,6 @@ function wikiplugin_trackerlist_info()
 				'filter' => 'pagename',
 				'advanced' => true,
 				'default' => '',
-				'profile_reference' => 'wiki_page',
 			),
 			'view_user' => array(
 				'required' => false,
@@ -375,7 +370,6 @@ function wikiplugin_trackerlist_info()
 				'filter' => 'digits',
 				'separator' => ':',
 				'default' => '',
-				'profile_reference' => 'tracker_item',
 			),
 			'ignoreRequestItemId' => array(
 				'required' => false,
@@ -447,7 +441,6 @@ function wikiplugin_trackerlist_info()
 				'filter' => 'text',
 				'advanced' => true,
 				'default' => '',
-				'profile_reference' => 'tracker_field_string',
 			),
 			'silent' => array(
 				'required' => false,
@@ -567,7 +560,6 @@ function wikiplugin_trackerlist_info()
 				'separator' => ':',
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'tracker_field',
 			),
 			'calendarviewmode' => array(
 				'required' => false,
@@ -719,7 +711,6 @@ function wikiplugin_trackerlist_info()
 				'description' => tr('List of fields for which inline editing will be enabled.'),
 				'filter' => 'digits',
 				'separator' => ':',
-				'profile_reference' => 'tracker_field',
 				'default' => array(),
 			),
 			'editableall' => array(
@@ -779,8 +770,10 @@ function wikiplugin_trackerlist($data, $params)
 		$auto_query_args_local = array('trackerId', 'tr_initial',"tr_sort_mode$iTRACKERLIST",'tr_user', 'filterfield', 'filtervalue', 'exactvalue', 'itemId');
 		$auto_query_args = empty($auto_query_args)? $auto_query_args_local: array_merge($auto_query_args, $auto_query_args_local);
 		$smarty->assign('listTrackerId', $trackerId);
-		$definition = Tracker_Definition::get($trackerId);
-		$tracker_info = $definition->getInformation();
+		$tracker_info = $trklib->get_tracker($trackerId);
+		if ($t = $trklib->get_tracker_options($trackerId)) {
+			$tracker_info = array_merge($tracker_info, $t);
+		}
 
 		if (!isset($sort)) {
 			$sort = 'n';
@@ -790,8 +783,8 @@ function wikiplugin_trackerlist($data, $params)
 		if ($perms['tiki_p_view_trackers'] != 'y' && !$user) {
 			return;
 		}
-		$userCreatorFieldId = $definition->getAuthorField();
-		$groupCreatorFieldId = $definition->getWriterGroupField();
+		$userCreatorFieldId = $trklib->get_field_id_from_type($trackerId, 'u', '1%');
+		$groupCreatorFieldId = $trklib->get_field_id_from_type($trackerId, 'g', '1%');
 		if ($perms['tiki_p_view_trackers'] != 'y' && $tracker_info['writerCanModify'] != 'y' && empty($userCreatorFieldId) && empty($groupCreatorFieldId)) {
 			return;
 		}
@@ -1198,7 +1191,7 @@ function wikiplugin_trackerlist($data, $params)
 		$smarty->assign_by_ref('tr_initial', $tr_initial);
 
 		if ((isset($view) && $view == 'user') || isset($view_user) || isset($_REQUEST['tr_user'])) {
-			if ($f = $definition->getAuthorField()) {
+			if ($f = $trklib->get_field_id_from_type($trackerId, 'u', '1%')) {
 				$filterfield[] = $f;
 				$filtervalue[] = '';
 				if (!isset($_REQUEST['tr_user'])) {
@@ -1213,15 +1206,15 @@ function wikiplugin_trackerlist($data, $params)
 			}
 		}
 		if (isset($view) && $view == 'page' && isset($_REQUEST['page'])) {
-			if (($f = $trklib->get_page_field($trackerId))) {
-				$filterfield[] = $f['fieldId'];
+			if (($f = $trklib->get_field_id_from_type($trackerId, 'k', '1%')) || ($f = $trklib->get_field_id_from_type($trackerId, 'k', '%,1%')) || ($f =  $trklib->get_field_id_from_type($trackerId, 'k'))) {
+				$filterfield[] = $f;
 				$filtervalue[] = '';
 				$exactvalue[] = $_REQUEST['page'];
 			}
 		}
 
 		if (isset($view) && $view == 'ip') {
-			if ($f = $definition->getAuthorIpField()) {
+			if ($f = $trklib->get_field_id_from_type($trackerId, 'I', '1%')) {
 				$filterfield[] = $f;
 				$filtervalue[] = '';
 				$ip = $tikilib->get_ip_address();
@@ -1781,16 +1774,7 @@ function wikiplugin_trackerlist($data, $params)
 			} else {
 				$smarty->assign('trackerlistmapview', false);
 			}
-      
-			if ($prefs['feature_score'] == 'y' && isset($items['data'])) {
-				foreach($items['data'] as $score_item) {
-				  $item_info = $trklib->get_tracker_item($score_item['itemId']);
-				  $currentItemId = $score_item['itemId'];
-				  $tikilib->score_event($user, 'trackeritem_read', $currentItemId);
-				  $tikilib->score_event($item_info['createdBy'], 'trackeritem_is_read', "$user:$currentItemId");
-				}
-			}
-			
+
 			$tracker = $trklib->get_tracker($trackerId, 0, -1);
 			/*foreach ($query_array as $k=>$v) {
 				if (!is_array($v)) { //only to avoid an error: eliminate the params that are not simple (ex: if you have in the same page a tracker list plugin and a tracker plugin, filling the tracker plugin interfers with the tracker list. In any case this is buggy if two tracker list plugins in the same page and if one needs the query value....

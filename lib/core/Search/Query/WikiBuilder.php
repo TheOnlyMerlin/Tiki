@@ -61,15 +61,6 @@ class Search_Query_WikiBuilder
 		$query->filterType($value);
 	}
 
-	function wpquery_filter_nottype($query, $value)
-	{
-		$value = explode(',', $value);
-		$value = array_map(function ($v) {
-			return "NOT \"$v\"";
-		}, $value);
-		$query->filterContent(implode(' AND ', $value), 'object_type');
-	}
-
 	function wpquery_filter_categories($query, $value)
 	{
 		$query->filterCategory($value);
@@ -142,35 +133,6 @@ class Search_Query_WikiBuilder
 			TikiLib::lib('errorreport')->report(tr('Missing from or to for range filter.'));
 		}
 		$query->filterTextRange($arguments['from'], $arguments['to'], $value);
-	}
-
-	function wpquery_filter_personalize($query, $type, array $arguments)
-	{
-		global $user;
-		$targetUser = $user;
-
-		if (! $targetUser) {
-			$targetUser = "1"; // Invalid user name, make sure nothing matches
-		}
-
-		$subquery = $query->getSubQuery('personalize');
-
-		$types = array_filter(array_map('trim', explode(',', $type)));
-
-		if (in_array('self', $types)) {
-			$subquery->filterContributors($targetUser);
-			$subquery->filterContent($targetUser, 'user');
-		}
-
-		if (in_array('groups', $types)) {
-			$part = new Search_Expr_Or(array_map(function ($group) {
-				return new Search_Expr_Token($group, 'multivalue', 'user_groups');
-			}, Perms::get()->getGroups()));
-			$subquery->getExpr()->addPart(new Search_Expr_And(array(
-				$part,
-				new Search_Expr_Not(new Search_Expr_Token($targetUser, 'identifier', 'user')),
-			)));
-		}
 	}
 
 	function wpquery_sort_mode($query, $value, array $arguments)

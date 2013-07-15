@@ -14,7 +14,6 @@ function wikiplugin_list_info()
 		'prefs' => array('wikiplugin_list'),
 		'body' => tra('List configuration information'),
 		'filter' => 'wikicontent',
-		'profile_reference' => 'search_plugin_content',
 		'icon' => 'img/icons/text_list_bullets.png',
 		'tags' => array( 'basic' ),
 		'params' => array(
@@ -30,12 +29,16 @@ function wikiplugin_list($data, $params)
 	$output = null;
 
 	$query = new Search_Query;
-	$unifiedsearchlib->initQuery($query);
+	$query->setWeightCalculator($unifiedsearchlib->getWeightCalculator());
 
 	$matches = WikiParser_PluginMatcher::match($data);
 
 	$builder = new Search_Query_WikiBuilder($query);
 	$builder->apply($matches);
+
+	if (! Perms::get()->admin) {
+		$query->filterPermissions(Perms::get()->getGroups());
+	}
 
 	if (!empty($_REQUEST['sort_mode'])) {
 		$query->setOrder($_REQUEST['sort_mode']);

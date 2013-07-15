@@ -24,7 +24,6 @@ class Tiki_Profile_InstallHandler_Article extends Tiki_Profile_InstallHandler
 			'subtitle' => '',
 			'link_to' => '',
 			'language' => 'en',
-			'geolocation' => '',
 		);
 
 		$data = array_merge($defaults, $data);
@@ -44,7 +43,7 @@ class Tiki_Profile_InstallHandler_Article extends Tiki_Profile_InstallHandler
 
 	function _install()
 	{
-		global $artlib, $prefs;
+		global $artlib;
 		$data = $this->getData();
 
 		$this->replaceReferences($data);
@@ -77,10 +76,6 @@ class Tiki_Profile_InstallHandler_Article extends Tiki_Profile_InstallHandler
 			null,
 			$data['language']
 		);
-
-		if ($prefs['geo_locate_article'] == 'y' && ! empty($data['geolocation'])) {
-			TikiLib::lib('geo')->set_coordinates('article', $id, $data['geolocation']);
-		}
 
 		return $id;
 	}

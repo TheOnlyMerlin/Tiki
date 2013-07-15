@@ -29,30 +29,22 @@ class Tracker_Field_ItemsList extends Tracker_Field_Abstract
 						'name' => tr('Tracker ID'),
 						'description' => tr('Tracker to list items from'),
 						'filter' => 'int',
-						'legacy_index' => 0,
-						'profile_reference' => 'tracker',
 					),
 					'fieldIdThere' => array(
 						'name' => tr('Link Field ID'),
 						'description' => tr('Field ID from the other tracker containing an item link pointing to the item in this tracker or some other value to be matched.'),
 						'filter' => 'int',
-						'legacy_index' => 1,
-						'profile_reference' => 'tracker_field',
 					),
 					'fieldIdHere' => array(
 						'name' => tr('Value Field ID'),
 						'description' => tr('Field ID from this tracker matching the value in the link field ID from the other tracker if the field above is not an item link.'),
 						'filter' => 'int',
-						'legacy_index' => 2,
-						'profile_reference' => 'tracker_field',
 					),
 					'displayFieldIdThere' => array(
 						'name' => tr('Fields to display'),
 						'description' => tr('Display alternate fields from the other tracker instead of the item title'),
 						'filter' => 'int',
 						'separator' => '|',
-						'legacy_index' => 3,
-						'profile_reference' => 'tracker_field',
 					),
 					'linkToItems' => array(
 						'name' => tr('Display'),
@@ -62,7 +54,6 @@ class Tracker_Field_ItemsList extends Tracker_Field_Abstract
 							0 => tr('Value'),
 							1 => tr('Link'),
 						),
-						'legacy_index' => 4,
 					),
 					'status' => array(
 						'name' => tr('Status Filter'),
@@ -76,7 +67,6 @@ class Tracker_Field_ItemsList extends Tracker_Field_Abstract
 							'op' => tr('open, pending'),
 							'pc' => tr('pending, closed'),
 						),
-						'legacy_index' => 5,
 					),
 				),
 			),
@@ -115,8 +105,8 @@ class Tracker_Field_ItemsList extends Tracker_Field_Abstract
 				'trackeroutput/itemslist.tpl',
 				$context,
 				array(
-					'links' => (bool) $this->getOption('linkToItems'),
-					'raw' => (bool) $this->getOption('displayFieldIdThere'),
+					'links' => (bool) $this->getOption(4),
+					'raw' => (bool) $this->getOption(3),
 					'itemIds' => implode(',', $items),
 					'items' => $list,
 					'num' => count($list),
@@ -125,9 +115,8 @@ class Tracker_Field_ItemsList extends Tracker_Field_Abstract
 		}
 	}
 
-	function getDocumentPart(Search_Type_Factory_Interface $typeFactory)
+	function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
 	{
-		$baseKey = $this->getBaseKey();
 		$items = $this->getItemIds();
 
 		$list = $this->getItemLabels($items);
@@ -139,31 +128,30 @@ class Tracker_Field_ItemsList extends Tracker_Field_Abstract
 		);
 	}
 
-	function getProvidedFields()
+	function getProvidedFields($baseKey)
 	{
-		$baseKey = $this->getBaseKey();
 		return array(
 			$baseKey,
 			"{$baseKey}_text",
 		);
 	}
 
-	function getGlobalFields()
+	function getGlobalFields($baseKey)
 	{
 		return array();
 	}
 
 	private function getItemIds()
 	{
-		$trackerId = (int) $this->getOption('trackerId');
-		$remoteField = (int) $this->getOption('fieldIdThere');
-		$displayFields = $this->getOption('displayFieldIdThere');
-		$status = $this->getOption('status', 'opc');
+		$trackerId = (int) $this->getOption(0);
+		$remoteField = (int) $this->getOption(1);
+		$displayFields = $this->getOption(3);
+		$status = $this->getOption(5, 'opc');
 
 		$tracker = Tracker_Definition::get($trackerId);
 		$technique = 'value';
 
-		if ($tracker && ($field = $tracker->getField($remoteField)) && !$this->getOption('fieldIdHere')) {
+		if ($tracker && ($field = $tracker->getField($remoteField)) && !$this->getOption(2)) {
 			if ($field['type'] == 'r' || $field['type'] == 'q' && $field['options_array'][3] == 'itemId') {
 				$technique = 'id';
 			}
@@ -173,7 +161,7 @@ class Tracker_Field_ItemsList extends Tracker_Field_Abstract
 		if ($technique == 'id') {
 			$items = $trklib->get_items_list($trackerId, $remoteField, $this->getItemId(), $status);
 		} else {
-			$localField = (int) $this->getOption('fieldIdHere');
+			$localField = (int) $this->getOption(2);
 			$localValue = $this->getData($localField);
 			if (!$localValue) {
 				// in some cases e.g. pretty tracker $this->getData($localField) is not reliable as the info is not there
@@ -196,9 +184,9 @@ class Tracker_Field_ItemsList extends Tracker_Field_Abstract
 
 	private function getItemLabels($items)
 	{
-		$displayFields = $this->getOption('displayFieldIdThere');
-		$trackerId = (int) $this->getOption('trackerId');
-		$status = $this->getOption('status', 'opc');
+		$displayFields = $this->getOption(3);
+		$trackerId = (int) $this->getOption(0);
+		$status = $this->getOption(5, 'opc');
 
 		$definition = Tracker_Definition::get($trackerId);
 		if (! $definition) {

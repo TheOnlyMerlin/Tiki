@@ -1889,8 +1889,8 @@ class Comments extends TikiLib
 			TikiLib::lib('smarty')->loadPlugin('smarty_modifier_truncate');
 			return '"' .
 					smarty_modifier_truncate(
-						strip_tags(TikiLib::lib('parser')->parse_data($comment['data'])), $commentlength
-					) .'"';
+						strip_tags(TikiLib::lib('parser')->parse_data($comment['data'])), $commentlength) .
+					'"';
 		} else {
 			return $comment['title'];
 		}
@@ -3117,7 +3117,7 @@ class Comments extends TikiLib
      */
     function post_in_forum($forum_info, &$params, &$feedbacks, &$errors)
 	{
-		global $smarty, $tiki_p_admin_forum, $tiki_p_forum_post_topic, $tikilib;
+		global $smarty, $tiki_p_admin_forum, $tiki_p_forum_post_topic;
 		global  $tiki_p_forum_post, $prefs, $user, $tiki_p_forum_autoapp, $captchalib;
 
 		if (!empty($params['comments_grandParentId'])) {
@@ -3250,13 +3250,6 @@ class Comments extends TikiLib
 					);
 					// The thread *WAS* successfully created.
 
-					if ($prefs['feature_score'] == 'y') {
-					  if ($parent_id) {
-						$tikilib->score_event($user, 'forum_topic_reply', $threadId);
-					  } else {
-						$tikilib->score_event($user, 'forum_topic_post', $threadId);
-					  }
-					}
 					if ($threadId) {
 						// Deal with mail notifications.
 						include_once('lib/notifications/notificationemaillib.php');

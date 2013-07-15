@@ -64,86 +64,32 @@ class Search_Index_Lucene implements Search_Index_Interface
 		$this->getLucene()->addDocument($document);
 	}
 
-	function endUpdate()
-	{
-	}
-
 	function optimize()
 	{
 		$this->getLucene()->optimize();
 	}
 
-	function destroy()
+	function invalidateMultiple(Search_Expr_Interface $expr)
 	{
-		unset($this->lucene);
-
-		return (bool) $this->destroyDirectory($this->directory);
-	}
-
-	function exists()
-	{
-		return file_exists($this->directory);
-	}
-
-    /**
-	 * Private. Used by a callback, so made public until PHP 5.4.
-	 *
-     * @param $path
-     * @return int
-	 * @private
-     */
-	private function destroyDirectory($path)
-	{
-		if (!$path or !is_dir($path)) return false;
-
-		if ($dir = opendir($path)) {
-			while (false !== ($file = readdir($dir))) {
-				if ($file == '.' || $file == '..') {
-					continue;
-				}
-
-				if (is_dir($path . '/' . $file)) {
-					$this->destroyDirectory($path . '/' . $file);
-				} else {
-					unlink($path . '/' . $file);
-				}
-			}
-			closedir($dir);
-		}
-
-		rmdir($path);
-
-		return ! file_exists($path);
-	}
-
-
-	function invalidateMultiple(array $objectList)
-	{
-		$expr = $this->buildExpr($objectList);
+		$documents = array();
 
 		$lucene = $this->getLucene();
 		$query = $this->buildQuery($expr);
 		foreach ($lucene->find($query) as $hit) {
 			$document = $hit->getDocument();
+			$documents[] = array(
+				'object_type' => $document->object_type,
+				'object_id' => $document->object_id,
+			);
 			$lucene->delete($hit->id);
 		}
+
+		return $documents;
 	}
 
-	private function buildExpr(array $objectList)
+	function find(Search_Expr_Interface $query, Search_Query_Order $sortOrder, $resultStart, $resultCount)
 	{
-		$query = new Search_Query;
-		foreach ($objectList as $object) {
-			$object = (array) $object;
-			$query->addObject($object['object_type'], $object['object_id']);
-		}
-
-		return $query->getExpr();
-	}
-
-	function find(Search_Query_Interface $query, $resultStart, $resultCount)
-	{
-		$expr = $query->getExpr();
-		$data = $this->internalFind($expr, $query->getSortOrder());
+		$data = $this->internalFind($query, $sortOrder);
 
 		$result = array_slice($data['result'], $resultStart, $resultCount);
 
@@ -151,7 +97,7 @@ class Search_Index_Lucene implements Search_Index_Interface
 		$resultSet->setEstimate($data['count']);
 
 		if ($this->highlight) {
-			$resultSet->setHighlightHelper(new Search_Index_Lucene_HighlightHelper($expr));
+			$resultSet->setHighlightHelper(new Search_Index_Lucene_HighlightHelper($query));
 		} else {
 			$resultSet->setHighlightHelper(new Search_ResultSet_SnippetHelper);
 		}
@@ -351,8 +297,6 @@ class Search_Index_Lucene implements Search_Index_Interface
 			}
 		} elseif ($node instanceof Search_Expr_Token) {
 			$term = $this->buildTerm($node);
-		} else {
-			throw new Exception(tr('Feature not supported.'));
 		}
 
 		if ($term && method_exists($term, 'getBoost')) {

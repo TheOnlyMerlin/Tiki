@@ -26,7 +26,8 @@ class Search_Index_LuceneStemmingTest extends PHPUnit_Framework_TestCase
 
 	function tearDown()
 	{
-		$this->index->destroy();
+		$dir = escapeshellarg($this->dir);
+		`rm -Rf $dir`;
 	}
 
 	protected function populate($index)

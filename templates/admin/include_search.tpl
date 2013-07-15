@@ -73,12 +73,6 @@
 						</fieldset>
 					</div>
 
-					<div class="adminoptionboxchild unified_engine_childcontainer elastic">
-						{preference name="unified_elastic_url"}
-						{preference name="unified_elastic_index_prefix"}
-						{preference name="unified_elastic_index_current"}
-					</div>
-
 					{preference name=unified_excluded_categories}
 					{preference name=unified_excluded_plugins}
 					{preference name=unified_forum_deepindexing}
@@ -161,32 +155,21 @@ $("#log-rebuild").click(function(){
 		{/tab}
 
 		{tab name="{tr}Search Results{/tr}"}
-			{preference name=search_use_facets}
-			
-			<fieldset>
-				<legend>{tr}Select the items to display on the search results page:{/tr}</legend>
-				{preference name=search_default_interface_language}
-				{preference name=search_default_where}
-				{preference name=search_show_category_filter}
-				{preference name=search_show_tag_filter}
-				{preference name=feature_search_show_object_filter}
-				{preference name=search_show_sort_order}
-				{preference name=feature_search_show_search_box}
-			</fieldset>
-			<fieldset>
-				<legend>{tr}Select the information to display for each result:{/tr}</legend>
-				{preference name=feature_search_show_visit_count}
-				{preference name=feature_search_show_pertinence}
-				{preference name=feature_search_show_object_type}
-				{preference name=feature_search_show_last_modification}
-				{preference name=search_parsed_snippet}
-			</fieldset>
+			{tr}Select the items to display on the search results page:{/tr}
+			{preference name=search_default_interface_language}
+			{preference name=search_default_where}
+			{preference name=search_show_category_filter}
+			{preference name=search_show_tag_filter}
+			{preference name=feature_search_show_object_filter}
+			{preference name=search_show_sort_order}
+			{preference name=feature_search_show_search_box}
+			{tr}Select the information to display for each result:{/tr}
+			{preference name=feature_search_show_visit_count}
+			{preference name=feature_search_show_pertinence}
+			{preference name=feature_search_show_object_type}
+			{preference name=feature_search_show_last_modification}
+			{preference name=search_parsed_snippet}
 		{/tab}
-
-	{tab name="{tr}Tools{/tr}"}
-		<a href="tiki-report_string_in_db.php">{tr}Report all occurences of a string in any table{/tr}</a><br>
-	{/tab}
-
 	{/tabset}
 	<div class="heading input_submit_container" style="text-align: right">
 		<input type="submit" value="{tr}Change preferences{/tr}" />

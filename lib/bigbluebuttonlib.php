@@ -63,7 +63,7 @@ class BigBlueButtonLib
      * @param $room
      * @return array
      */
-	public function getAttendees( $room, $username=false)
+    public function getAttendees( $room )
 	{
 		if ( $meeting = $this->getMeeting($room) ) {
 			if ( $dom = $this->performRequest('getMeetingInfo', array('meetingID' => $room, 'password' => $meeting['moderatorPW'])) ) {
@@ -71,7 +71,7 @@ class BigBlueButtonLib
 				$attendees = array();
 
 				foreach ( $dom->getElementsByTagName('attendee') as $node ) {
-					$attendees[] = $this->grabValues($node, $username);
+					$attendees[] = $this->grabValues($node);
 				}
 
 				return $attendees;
@@ -83,7 +83,7 @@ class BigBlueButtonLib
      * @param $node
      * @return array
      */
-	private function grabValues( $node, $username=false)
+    private function grabValues( $node )
 	{
 		$values = array();
 
@@ -92,12 +92,7 @@ class BigBlueButtonLib
 				$values[$n->tagName] = $n->textContent;
 			}
 		}
-		if ($username && $values['fullName']) {
-			preg_match('!\(([^\)]+)\)!', $values['fullName'], $match);
-			$values['fullName'] = $match[1];
-		} else {
-			$values['fullName'] = trim(preg_replace('!\(([^\)]+)\)!', '', $values['fullName']));
-		}
+
 		return $values;
 	}
 
@@ -188,17 +183,15 @@ class BigBlueButtonLib
 
 		$tikilib = TikiLib::lib('tiki');
 		$client = $tikilib->get_http_client($this->getBaseUrl('/bigbluebutton/api/setConfigXML.xml'));
-		$client->setParameterPost(
-			array(
-				'meetingID' => $meetingName,
-				'checksum' => sha1($meetingName . rawurlencode($content) . $prefs['bigbluebutton_server_salt']),
-				'configXML' => rawurlencode($content),
-			)
-		);
+		$client->setParameterPost(array(
+			'meetingID' => $meetingName,
+			'checksum' => sha1($meetingName . rawurlencode($content) . $prefs['bigbluebutton_server_salt']),
+			'configXML' => rawurlencode($content),
+		));
 
 		$response = $client->request('POST');
 		$document = $response->getBody();
-
+		
 		$dom = new DOMDocument;
 		$dom->loadXML($document);
 
@@ -220,7 +213,6 @@ class BigBlueButtonLib
 		$password = $this->getAttendeePassword($room);
 
 		if ( $name && $password ) {
-			TikiLib::lib('logs')->add_action('Joined Room', $room, 'bigbluebutton');
 			$this->joinRawMeeting($room, $name, $password, $configToken);
 		}
 	}
@@ -241,12 +233,11 @@ class BigBlueButtonLib
     /**
      * @return bool|mixed|null|string
      */
-	private function getAttendeeName()
+    private function getAttendeeName()
 	{
 		global $user, $tikilib;
 
 		if ( $realName = $tikilib->get_user_preference($user, 'realName') ) {
-			$realName .= " (". $user . ")";
 			return $realName;
 		} elseif ( $user ) {
 			return $user;

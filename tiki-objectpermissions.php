@@ -48,8 +48,7 @@ if ($_REQUEST['objectType'] == 'wiki page') {
 } else {
 	$tikilib->get_perm_object($_REQUEST['objectId'], $_REQUEST['objectType']);
 	if ($_REQUEST['objectType'] == 'tracker') {
-		$definition = Tracker_Definition::get($_REQUEST['objectId']);
-		if ($groupCreatorFieldId = $definition->getWriterGroupField()) {
+		if ($groupCreatorFieldId = TikiLib::lib('trk')->get_field_id_from_type($_REQUEST['objectId'], 'g', '1%')) {
 			$smarty->assign('group_tracker', 'y');
 		}
 	}

@@ -16,7 +16,7 @@ if (function_exists('pcntl_signal')) {
 	};
 
 	pcntl_signal(SIGTERM, $exit);
-	pcntl_signal(SIGHUP, $exit);
+	pcntl_signal(SIGHUP,  $exit);
 	pcntl_signal(SIGINT, $exit);
 }
 
@@ -51,42 +51,21 @@ if (is_file($local_php)) {
 	$console->add(new Tiki\Command\UnavailableCommand('database:update'));
 }
 
-$installer = $installer = new Installer;
-
-if (is_file($local_php)) {
-	require_once 'tiki-setup.php';
+if (is_file($local_php) && ($installer = new Installer) && ! $installer->requiresUpdate()) {
+	require 'tiki-setup.php';
 	$console->add(new Tiki\Command\CacheClearCommand);
-} else {
-	$console->add(new Tiki\Command\UnavailableCommand('cache:clear'));
-}
-
-if (is_file($local_php) && ! $installer->requiresUpdate()) {
-	require_once 'tiki-setup.php';
 	$console->add(new Tiki\Command\IndexRebuildCommand);
 	$console->add(new Tiki\Command\IndexOptimizeCommand);
 	$console->add(new Tiki\Command\IndexCatchUpCommand);
 	$console->add(new Tiki\Command\ProfileForgetCommand);
 	$console->add(new Tiki\Command\ProfileInstallCommand);
-	$console->add(new Tiki\Command\ProfileExport\Init);
 } else {
+	$console->add(new Tiki\Command\UnavailableCommand('cache:clear'));
 	$console->add(new Tiki\Command\UnavailableCommand('index:rebuild'));
 	$console->add(new Tiki\Command\UnavailableCommand('index:optimize'));
 	$console->add(new Tiki\Command\UnavailableCommand('index:catch-up'));
 	$console->add(new Tiki\Command\UnavailableCommand('profile:forget'));
 	$console->add(new Tiki\Command\UnavailableCommand('profile:install'));
-	$console->add(new Tiki\Command\UnavailableCommand('profile:export:init'));
-}
-
-if (file_exists('profiles/info.ini')) {
-	$console->add(new Tiki\Command\ProfileExport\Category);
-	$console->add(new Tiki\Command\ProfileExport\IncludeProfile);
-	$console->add(new Tiki\Command\ProfileExport\Preference);
-	$console->add(new Tiki\Command\ProfileExport\RecentChanges);
-	$console->add(new Tiki\Command\ProfileExport\Tracker);
-	$console->add(new Tiki\Command\ProfileExport\TrackerField);
-	$console->add(new Tiki\Command\ProfileExport\WikiPage);
-
-	$console->add(new Tiki\Command\ProfileExport\Finalize);
 }
 
 $console->run();

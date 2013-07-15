@@ -1852,24 +1852,6 @@ class UsersLib extends TikiLib
 			$this->uncategorize_user_tracker_item($user, $group);
 		}
 
-		if ($prefs['feature_community_send_mail_leave'] == 'y') {
-			$group_base = trim(str_replace(array_map('trim', explode(",", $prefs['feature_community_Strings_to_ignore'])), '', $group));
-			if (!empty($prefs['feature_community_String_to_append'])) {
-				$grouplead = $group_base . " " . $prefs['feature_community_String_to_append'];
-				$groupleaders = $this->get_users_created_group($grouplead);
-				unset($groupleaders[$user]);
-				if (isset($groupleaders[$_SESSION['u_info']['login']])) {
-					unset($groupleaders[$_SESSION['u_info']['login']]);
-				}
-				if (!empty($groupleaders)) {
-				$par_data['gname'] = $group_base;
-				$par_data['user'] = $user;
-				require_once ("lib/notifications/notificationemaillib.php");
-					sendEmailNotification($groupleaders, 'group_lead_mail', 'user_left_group_notification_to_leads_subject.tpl', $par_data, 'user_left_group_notification_to_leads.tpl');
-				}
-			}
-		}
-
 		$_SESSION['u_info']['group'] = 'Registered';
 	}
 
@@ -2047,7 +2029,6 @@ class UsersLib extends TikiLib
 		$result = $this->query($query, array($user, 'y'));
 		$this->query('delete from `tiki_user_reports` where `user` = ?', array($user));
 		$this->query('delete from `tiki_user_reports_cache` where `user` = ?', array($user));
-		$this->query('delete from `tiki_user_mailin_struct` where `username` = ?', array($user));
 
 		$cachelib->invalidate('userslist');
 		return true;
@@ -2861,15 +2842,6 @@ class UsersLib extends TikiLib
 			array(
 				'name' => 'tiki_p_edit_article',
 				'description' => tra('Can edit articles'),
-				'level' => 'editors',
-				'type' => 'articles',
-				'admin' => false,
-				'prefs' => array('feature_articles'),
-				'scope' => 'object',
-			),
-			array(
-				'name' => 'tiki_p_edit_article_user',
-				'description' => tra('Can edit the user (owner) of articles'),
 				'level' => 'editors',
 				'type' => 'articles',
 				'admin' => false,
@@ -5079,15 +5051,6 @@ class UsersLib extends TikiLib
 				'scope' => 'global',
 			),
 			array(
-				'name' => 'tiki_p_send_mailin',
-				'description' => tra('Can send email to a mail-in accounts, and have the email integrated. Only applies when the mail-in setting "anonymous" = n'),
-				'level' => 'basic',
-				'type' => 'tiki',
-				'admin' => false,
-				'prefs' => array('feature_mailin', 'feature_wiki'),
-				'scope' => 'global',
-			),
-			array(
 				'name' => 'tiki_p_admin_mailin',
 				'description' => tra('Can admin mail-in accounts'),
 				'level' => 'admin',
@@ -5656,35 +5619,6 @@ class UsersLib extends TikiLib
 			}
 		}
 		$this->update_anniversary_expiry();
-
-		if ($prefs['feature_community_send_mail_join'] == 'y') {
-			$group_base = trim(str_replace(array_map('trim', explode(",", $prefs['feature_community_Strings_to_ignore'])), '', $group));
-			if (!empty($prefs['feature_community_String_to_append'])) {
-				$grouplead = $group_base . " " . trim($prefs['feature_community_String_to_append']);
-				$groupleaders = $this->get_users_created_group($grouplead);
-				unset($groupleaders[$user]);
-				if (isset($groupleaders[$_SESSION['u_info']['login']])) {
-					unset($groupleaders[$_SESSION['u_info']['login']]);
-				}
-				if (!empty($groupleaders)) {
-					$par_data['gname'] = $group_base;
-					$par_data['user'] = $user;
-					if (strpos($group, ' (Needs Approval)')) {
-						$mail_temp = 'user_joins_group_notification_to_leads_need_app.tpl';
-					} else {
-						$mail_temp = 'user_joins_group_notification_to_leads.tpl';
-					}
-					require_once ("lib/notifications/notificationemaillib.php");
-					sendEmailNotification(
-						$groupleaders,
-						'group_lead_mail',
-						'user_joins_group_notification_to_leads_subject.tpl',
-						$par_data,
-						$mail_temp
-					);
-				}
-			}
-		}
 
 		if ($group_ret) {
 			$watches = $tikilib->get_event_watches('user_joins_group', $group);
@@ -6721,14 +6655,13 @@ class UsersLib extends TikiLib
 						$listfields[$field['fieldId']] = $field;
 					}
 
-					$definition = Tracker_Definition::get($re['usersTrackerId']);
 					$items = $trklib->list_items(
 						$re['usersTrackerId'],
 						0,
 						1,
 						'',
 						$listfields,
-						$definition->getUserField(),
+						$trklib->get_field_id_from_type($re['usersTrackerId'], 'u', '1%'),
 						'',
 						'',
 						'',
@@ -7061,9 +6994,9 @@ class UsersLib extends TikiLib
 		$query = 'SELECT uu.* FROM `users_usergroups` uu' .
 						' LEFT JOIN `users_groups` ug ON (uu.`groupName`= ug.`groupName`)' .
 						' WHERE ( ug.`expireAfter` > ? AND uu.`created` IS NOT NULL AND uu.`expire` is NULL AND uu.`created` + ug.`expireAfter`*24*60*60 < ?)' .
-						' OR ((ug.`expireAfter` IS NOT NULL OR ug.`anniversary` > ?) AND uu.`expire` < ?)';
+						' OR ((ug.`expireAfter` > ? OR ug.`anniversary` > ?) AND uu.`expire` < ?)';
 
-		$result = $this->query($query, array(0, $tikilib->now, 0, $tikilib->now));
+		$result = $this->query($query, array(0, $tikilib->now, 0, 0, $tikilib->now));
 
 		while ($res = $result->fetchRow()) {
 			$this->remove_user_from_group($this->get_user_login($res['userId']), $res['groupName']);
@@ -7086,7 +7019,7 @@ class UsersLib extends TikiLib
 		}
 	}
 
-	function extend_membership($user, $group, $periods = 1, $date = null )
+	function extend_membership($user, $group, $periods = 1 )
 	{
 		global $tikilib;
 		$this->update_expired_groups();
@@ -7095,18 +7028,14 @@ class UsersLib extends TikiLib
 			$this->assign_user_to_group($user, $group);
 			if ($periods > 1) {
 				$periods--;
-			} elseif (empty($date)) {
+			} else {
 				return;
 			}
 		}
 
 		$info = $this->get_group_info($group);
 		$userInfo = $this->get_user_info($user);
-		if (empty($date)) {
-			$extend_until_info = $this->get_extend_until_info($user, $group, $periods);
-		} else {
-			$extend_until_info['timestamp'] = $date;
-		}
+		$extend_until_info = $this->get_extend_until_info($user, $group, $periods);
 
 		$this->query(
 			'UPDATE `users_usergroups` SET `expire` = ? WHERE `userId` = ? AND `groupName` = ?',
@@ -7218,17 +7147,17 @@ class UsersLib extends TikiLib
 		return array('timestamp' => $timestamp, 'ratio_prorated_first_period' => $ratio_prorated_first_period);
 	}
 
-	function get_users_created_group($group, $user=null, $with_expire=false)
+	function get_users_created_group($group, $user=null)
 	{
 		if (!empty($user)) {
-			$query = 'SELECT uug.`created`,uug.`expire` FROM `users_usergroups` uug' .
-								' LEFT JOIN `users_users` on (`users_users`.`userId`=uug.`userId`)' .
-								' WHERE `groupName`=? AND `login`=?';
+			$query = 'SELECT `users_usergroups`.`created` FROM `users_usergroups`' .
+								' LEFT JOIN `users_users` on (`users_users`.`userId`=`users_usergroups`.`userId`)' .
+								' WHERE `groupName`=? AND `user`=?';
 
 			$bindvars = array($group, $user);
 		} else {
-			$query = 'SELECT `login`, uug.`created`,uug.`expire` FROM `users_usergroups` uug' .
-								' LEFT JOIN `users_users` on (`users_users`.`userId`=uug.`userId`)' .
+			$query = 'SELECT `login`, `users_usergroups`.`created` FROM `users_usergroups`' .
+								' LEFT JOIN `users_users` on (`users_users`.`userId`=`users_usergroups`.`userId`)' .
 								' WHERE `groupName`=?';
 
 			$bindvars = array($group);
@@ -7237,16 +7166,7 @@ class UsersLib extends TikiLib
 		$ret = array();
 
 		while ($res = $result->fetchRow()) {
-			if ($with_expire) {
-				$ret[$res['login']]['created'] = $res['created'];
-				if (empty($res['expire']))
-					$re = $this->get_group_info($group);
-					if ($re['expireAfter'] > 0) {
-						$res['expire'] = $res['created'] + ($re['expireAfter'] * 24*60*60);
-					}
-				$ret[$res['login']]['expire'] = $res['expire'];
-			} else
-				$ret[$res['login']]= $res['created'];
+			$ret[$res['login']]= $res['created'];
 		}
 
 		return $ret;
@@ -7403,27 +7323,6 @@ class UsersLib extends TikiLib
 
 		$this->query($query, $groups);
 	}
-	function get_user_groups_date($userId)
-	{
-		$query = 'select * from `users_usergroups` where `userId`=?';
-		$result = $this->query($query, array($userId));
-		$ret = array();
-		while ($res = $result->fetchRow()) {
-			$g = $res['groupName'];
-			$ret[$g]['created'] = $res['created'];
-			$ret[$g]['defaultExpire'] = false;
-			if (empty($res['expire'])) {
-				$re = $this->get_group_info($g);
-				if ($re['expireAfter'] > 0) {
-					$res['expire'] = $res['created'] + ($re['expireAfter'] * 24*60*60);
-					$ret[$g]['defaultExpire'] = true;
-				}
-			}
-			$ret[$g]['expire'] = $res['expire'];
-		}
-		return $ret;
-	}
-
 
 }
 

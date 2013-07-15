@@ -63,7 +63,6 @@ function prefs_global_list($partial = false)
 			'size' => 20,
 			'default' => 'HomePage',
 			'tags' => array('basic'),
-			'profile_reference' => 'wiki_page',
 		),
 		'useGroupHome' => array(
 			'name' => tra('Use group homepages'),
@@ -250,7 +249,7 @@ function prefs_global_list($partial = false)
             'description' => tra(''),
 			'type' => 'text',
 			'size' => '3',
-			'default' => 25,
+			'default' => 24,
 			'tags' => array('basic'),
 		),
 		'maxVersions' => array(

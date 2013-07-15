@@ -28,7 +28,6 @@ class Tracker_Field_Math extends Tracker_Field_Abstract implements Tracker_Field
 						'name' => tr('Calculation'),
 						'description' => tr('Calculation in the Rating Language'),
 						'filter' => 'text',
-						'legacy_index' => 0,
 					),
 				),
 			),
@@ -73,21 +72,19 @@ class Tracker_Field_Math extends Tracker_Field_Abstract implements Tracker_Field
 		return $info;
 	}
 
-	function getDocumentPart(Search_Type_Factory_Interface $typeFactory)
+	function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
 	{
-		$baseKey = $this->getBaseKey();
 		return array(
 			$baseKey => $typeFactory->identifier($this->getValue()),
 		);
 	}
 
-	function getProvidedFields()
+	function getProvidedFields($baseKey)
 	{
-		$baseKey = $this->getBaseKey();
 		return array($baseKey);
 	}
 
-	function getGlobalFields()
+	function getGlobalFields($baseKey)
 	{
 		return array();
 	}

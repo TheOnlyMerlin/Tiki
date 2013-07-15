@@ -23,7 +23,6 @@ function wikiplugin_carousel_info()
 				'filter' => 'digits',
 				'accepted' => 'ID',
 				'default' => '',
-				'profile_reference' => 'file_gallery',
 			),
 			'sort_mode' => array(
 				'required' => false,

@@ -178,8 +178,7 @@ class FileGalLib extends TikiLib
 	 * @return int			user's gallery id if applicable
 	 */
 
-	function check_user_file_gallery($galleryId)
-	{
+	function check_user_file_gallery($galleryId) {
 		global $prefs;
 
 		if ($prefs['feature_use_fgal_for_user_files'] === 'y' && $galleryId == $prefs['fgal_root_user_id']) {
@@ -324,13 +323,7 @@ class FileGalLib extends TikiLib
 		if (isset($final_event) && $final_event) {
 			TikiLib::events()->trigger(
 				$final_event,
-				array(
-					'type' => 'file',
-					'object' => $fileId,
-					'user' => $GLOBALS['user'],
-					'galleryId' => $galleryId,
-					'filetype' => $type,
-				)
+				array('type' => 'file', 'object' => $fileId, 'galleryId' => $galleryId, 'filetype' => $type)
 			);
 		}
 
@@ -920,13 +913,6 @@ class FileGalLib extends TikiLib
 		return $file;
 	}
 
-	function get_file_label($fileId)
-	{
-		$info = $this->get_file_info($fileId, false, false, false);
-
-		return reset(array_filter(array($info['name'], $info['filename'])));
-	}
-
 	function get_files_info_from_gallery_id($galleryId, $include_search_data = false, $include_data = false)
 	{
 		return $this->get_files_info((int)$galleryId, null, $include_search_data, $include_data);
@@ -992,8 +978,7 @@ class FileGalLib extends TikiLib
 		return $result;
 	}
 
-	function duplicate_file($id, $galleryId = null, $newName = false)
-	{
+	function duplicate_file($id, $galleryId = null, $newName = false) {
 		global $user;
 
 		$file = $this->get_file($id);
@@ -1028,10 +1013,10 @@ class FileGalLib extends TikiLib
 			$path,
 			$file['comment'],
 			$file['author'],
-			'', // created now
+			'',						// created now
 			$file['lockedby'],
 			$file['deleteAfter'],
-			0, // id
+			0,						// id
 			$file['metadata']
 		);
 

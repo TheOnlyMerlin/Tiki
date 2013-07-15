@@ -9,9 +9,9 @@ class Tiki_Profile
 {
 	const SHORT_PATTERN = '/^\$((([\w\.-]+):)?((\w+):))?(\w+)$/';
 	const LONG_PATTERN = '/\$profileobject:((([\w\.-]+):)?((\w+):))?(\w+)\$/';
-	const INFO_REQUEST = '/\$profilerequest:([^\$\|]+)(\|(\w+))?\$([^\$]*)\$/';
+	const INFO_REQUEST = '/\$profilerequest:([^\$\|]+)(\|(\w+))?\$([^\$]+)\$/';
 
-	private $transport;
+	private $url;
 	private $pageUrl;
 	private $domain;
 	private $profile;
@@ -138,7 +138,7 @@ class Tiki_Profile
 	public static function fromUrl( $url ) // {{{
 	{
 		$profile = new self;
-		$profile->transport = new Tiki_Profile_Transport_Repository($url);
+		$profile->url = $url;
 
 		if ( $profile->analyseMeta($url) ) {
 
@@ -167,16 +167,11 @@ class Tiki_Profile
 
 	public static function fromNames( $domain, $profile ) // {{{
 	{
-		if ( strpos($domain, '://') === false) {
+		if ( strpos($domain, '://') === false)
 			$domain = "http://$domain";
-		}
 
 		if ( $domain == 'tiki://local' ) {
 			return self::fromDb($profile);
-		} elseif (strpos($domain, 'file://') === 0) {
-			$path = substr($domain, strlen('file://'));
-
-			return self::fromFile($path, $profile);
 		} else {
 			if (self::$developerMode) {
 				$url = "$domain/tiki-export_wiki_pages.php?latest=1&page=" . urlencode($profile);
@@ -198,17 +193,14 @@ class Tiki_Profile
 		$profile->domain = 'tiki://local';
 		$profile->profile = $pageName;
 		$profile->pageUrl = $wikilib->sefurl($pageName);
-		$profile->transport = new Tiki_Profile_Transport_Local;
+		$profile->url = 'tiki://local/' . urlencode($pageName);
 
-		if ($info = $tikilib->get_page_info($pageName)) {
-			$content = html_entity_decode($info['data']);
-			$parserlib->parse_wiki_argvariable($content);
-			$profile->loadYaml($content);
+		$info = $tikilib->get_page_info($pageName);
+		$content = html_entity_decode($info['data']);
+		$parserlib->parse_wiki_argvariable($content);
+		$profile->loadYaml($content);
 
-			return $profile;
-		}
-
-		return false;
+		return $profile;
 	} // }}}
 
 	public static function fromString( $string, $name = '' ) // {{{
@@ -217,35 +209,12 @@ class Tiki_Profile
 		$profile->domain = 'tiki://local';
 		$profile->profile = $name;
 		$profile->pageUrl = $name;
-		$profile->transport = new Tiki_Profile_Transport_Local;
+		$profile->url = 'tiki://local/' . $name;
 
 		$content = html_entity_decode($string);
 		$profile->loadYaml($content);
 
 		return $profile;
-	} // }}}
-
-	public static function fromFile($path, $name) // {{{
-	{
-		$path = rtrim($path, '/');
-		$ymlPath = "$path/$name.yml";
-
-		$profile = new self;
-		$profile->domain = "file://$path";
-		$profile->profile = $name;
-		$profile->pageUrl = $name;
-		$profile->transport = new Tiki_Profile_Transport_File($path, $name);
-
-		if (file_exists($ymlPath)) {
-			$profile->data = Horde_Yaml::load(file_get_contents($ymlPath));
-
-			$profile->fetchExternals();
-			$profile->getObjects();
-
-			return $profile;
-		}
-
-		return false;
 	} // }}}
 
 	private function __construct() // {{{
@@ -268,15 +237,13 @@ class Tiki_Profile
 	{
 		$parts = parse_url($url);
 
-		if ( ! isset($parts['query'], $parts['host'], $parts['path']) ) {
+		if ( ! isset($parts['query'], $parts['host'], $parts['path']) )
 			return false;
-		}
 
 		parse_str($parts['query'], $args);
 
-		if ( ! isset($args['page']) ) {
+		if ( ! isset($args['page']) )
 			return false;
-		}
 
 		$dir = dirname($parts['path']);
 		$this->domain = $parts['host'] . rtrim($dir, '/');
@@ -347,20 +314,51 @@ class Tiki_Profile
 
 	public function getPageContent( $pageName ) // {{{
 	{
-		$content = $this->transport->getPageContent($pageName);
-		if (! $content) {
-			$this->setFeedback(tra('Page cannot be found').' '.$pageName);
+		if ($this->domain == 'tiki://local') {
+			global $tikilib;
+			$info = $tikilib->get_page_info($pageName);
+			if (empty($info)) {
+				$this->setFeedback(tra('Page cannot be found').' '.$pageName);
+				return null;
+			}
+			return $info['data'];
 		}
+		$exportUrl = dirname($this->url) . '/tiki-export_wiki_pages.php?'
+			. http_build_query(array( 'page' => $pageName ));
 
-		return $content;
+		$content = TikiLib::lib('tiki')->httprequest($exportUrl);
+		$content = str_replace("\r", '', $content);
+		$begin = strpos($content, "\n\n");
+
+		if ( $begin !== false ) {
+			$content = substr($content, $begin + 2);
+
+			// This allows compatibility with Tiki 8 and below, which export page content HTML-escaped. This should not be done for Tiki 9 and above and should be removed once only these are supported (after Tiki 6 reaches EOL).
+			$content = htmlspecialchars_decode($content);
+
+			return $content;
+		} else {
+			return null;
+		}
 	} // }}}
 
 	public function getPageParsed( $pageName ) // {{{
 	{
-		$content = $this->transport->getPageParsed($pageName);
-		if (! $content) {
-			$this->setFeedback(tra('Page cannot be found').' '.$pageName);
+		if ($this->domain == 'tiki://local' || strpos($this->domain, 'localhost') === 0) {
+			global $tikilib;
+			$info = $tikilib->get_page_info($pageName, true, true);
+			if (empty($info)) {
+				$this->setFeedback(tra('Page cannot be found').' '.$pageName);
+				return null;
+			}
+			return $tikilib->parse_data($info['data']);
 		}
+		$pageUrl = dirname($this->url) . '/tiki-index_raw.php?'
+			. http_build_query(array( 'page' => $pageName ));
+
+		$content = TikiLib::lib('tiki')->httprequest($pageUrl);
+		// index_raw replaces index.php with itself, so undo that here
+		$content = str_replace('tiki-index_raw.php', 'tiki-index.php', $content);
 
 		return $content;
 	} // }}}
@@ -468,11 +466,9 @@ class Tiki_Profile
 			$profiles[$key] = self::fromNames($ext['domain'], $ext['profile']);
 		}
 
-		if ( $recursive ) {
-			foreach ( $profiles as $profile ) {
+		if ( $recursive )
+			foreach ( $profiles as $profile )
 				$profiles = array_merge($profiles, $profile->getRequiredProfiles(true, $profiles));
-			}
-		}
 
 		return $profiles;
 	} // }}}

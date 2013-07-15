@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "f9d2785ff858b7453fcca87397619ae6",
+    "hash": "5ab588081094be7314eb6d65e8140620",
     "packages": [
         {
             "name": "aFarkas/html5shiv",
@@ -92,17 +92,6 @@
                 "url": "https://composer.tiki.org/dist/ckeditor-ckeditor-4.1.1.zip",
                 "reference": "4.1.1",
                 "shasum": "53fab63173ba6dc6981be14cb1ce2cc02ceb47f7"
-            },
-            "type": "library"
-        },
-        {
-            "name": "ckeditor/ckeditor/plugins/divarea",
-            "version": "4.1.1",
-            "dist": {
-                "type": "zip",
-                "url": "https://composer.tiki.org/dist/ckeditor-ckeditor-plugins-divarea-4.1.1.zip",
-                "reference": "4.1.1",
-                "shasum": "a306b71d019fd0a31b29423657e005e0678806bc"
             },
             "type": "library"
         },
@@ -605,12 +594,12 @@
         },
         {
             "name": "jquery/plugins/tablesorter",
-            "version": "2.10.8",
+            "version": "2.9.1",
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/jquery-plugins-tablesorter-2.10.8.zip",
-                "reference": "2.10.8",
-                "shasum": "6bb018cd86e713c8f83811e8fc64ed7e134ed7c3"
+                "url": "https://composer.tiki.org/dist/jquery-plugins-tablesorter-2.9.1.zip",
+                "reference": "2.9.1",
+                "shasum": "ed1e16ad35a98fd8ae8352dc61ac238eaa58fd80"
             },
             "type": "library"
         },

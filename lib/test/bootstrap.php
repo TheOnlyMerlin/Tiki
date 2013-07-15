@@ -30,7 +30,7 @@ if (!is_file(dirname(__FILE__) . '/local.php')) {
 
 global $local_php, $api_tiki, $style_base;
 $api_tiki = 'adodb';
-$local_php = __DIR__ . '/local.php';
+$local_php = dirname(__FILE__) . '/local.php';
 require_once($local_php);
 
 $style_base = 'skeleton';
@@ -42,28 +42,18 @@ if (! class_exists('ADOConnection')) {
 
 $ADODB_FETCH_MODE = ADODB_FETCH_ASSOC;
 
-$initializer = new TikiDb_Initializer;
-$initializer->setPreferredConnector($api_tiki);
-$db = $initializer->getConnection(array(
-	'host' => $host_tiki,
-	'user' => $user_tiki,
-	'pass' => $pass_tiki,
-	'dbs' => $dbs_tiki,
-	'charset' => $client_charset,
-));
+// for now the unit test suite only works with adodb
+// using pdo generate an error when phpunit tries to serialize the globals variables
+// since it is not possible to serialize a PDO object
+$dbTiki = ADONewConnection($db_tiki);
 
-if (! $db) {
+if (!@$dbTiki->Connect($host_tiki, $user_tiki, $pass_tiki, $dbs_tiki)) {
 	die("\nUnable to connect to the database\n\n");
 }
 
-TikiDb::set($db);
-
-global $tikilib;
-require_once 'lib/tikilib.php';
-$tikilib = new TikiLib;
+TikiDb::set(new TikiDb_Adodb($dbTiki));
 
 // update db if needed
-require_once 'lib/init/initlib.php';
 include_once ('installer/installlib.php');
 $installer = new Installer;
 
@@ -81,12 +71,16 @@ global $smarty;
 require_once 'lib/init/smarty.php';
 $smarty->addPluginsDir('../smarty_tiki/');
 require_once 'lib/cache/cachelib.php';
+require_once 'lib/tikilib.php';
 require_once 'lib/wiki/wikilib.php';
 require_once 'lib/userslib.php';
 require_once 'lib/headerlib.php';
 require_once 'lib/init/tra.php';
+require_once 'lib/init/initlib.php';
 require_once 'lib/tikiaccesslib.php';
 
+global $tikilib;
+$tikilib = new TikiLib;
 $userlib = new UsersLib;
 $_SESSION = array(
 		'u_info' => array(

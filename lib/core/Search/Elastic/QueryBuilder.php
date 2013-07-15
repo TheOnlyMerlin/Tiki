@@ -11,19 +11,14 @@ use Search_Expr_Or as OrX;
 use Search_Expr_Not as NotX;
 use Search_Expr_Range as Range;
 use Search_Expr_Initial as Initial;
-use Search_Expr_MoreLikeThis as MoreLikeThis;
 
 class Search_Elastic_QueryBuilder
 {
 	private $factory;
-	private $documentReader;
 
 	function __construct()
 	{
 		$this->factory = new Search_Elastic_TypeFactory;
-		$this->documentReader = function ($type, $object) {
-			return null;
-		};
 	}
 
 	function build(Search_Expr_Interface $expr)
@@ -34,11 +29,6 @@ class Search_Elastic_QueryBuilder
 		return $query;
 	}
 
-	function setDocumentReader($callback)
-	{
-		$this->documentReader = $callback;
-	}
-
 	function __invoke($callback, $node, $childNodes)
 	{
 		if ($node instanceof Token) {
@@ -46,64 +36,32 @@ class Search_Elastic_QueryBuilder
 		} elseif (count($childNodes) === 1 && ($node instanceof AndX || $node instanceof OrX)) {
 			return reset($childNodes)->traverse($callback);
 		} elseif ($node instanceof OrX) {
-			$inner = array_map(
-				function ($expr) use ($callback) {
-					return $expr->traverse($callback);
-				}, $childNodes
-			);
-
 			return array(
 				'bool' => array(
-					'should' => $this->flatten($inner, 'should'),
+					'should' => array_map(
+						function ($expr) use ($callback) {
+							return $expr->traverse($callback);
+						}, $childNodes
+					),
 					"minimum_number_should_match" => 1,
 				),
 			);
 		} elseif ($node instanceof AndX) {
-			$not = array();
-			$inner = array_map(
-				function ($expr) use ($callback) {
-					return $expr->traverse($callback);
-				}, $childNodes
-			);
-
-			$inner = array_filter($inner, function ($part) use (& $not) {
-				// Only merge in the single-part NOT
-				if (isset($part['bool']['must_not']) && count($part['bool']) == 1) {
-					$not = array_merge($not, $part['bool']['must_not']);
-					return false;
-				} else {
-					return true;
-				}
-			});
-			$inner = $this->flatten($inner, 'must');
-			if (count($inner) == 1 && isset($inner[0]['bool'])) {
-				$base = $inner[0]['bool'];
-				if (! isset($base['must_not'])) {
-					$base['must_not'] = array();
-				}
-
-				$base['must_not'] = array_merge($base['must_not'], $not);
-
-				return array(
-					'bool' => array_filter($base),
-				);
-			} else {
-				return array(
-					'bool' => array_filter(array(
-						'must' => $inner,
-						'must_not' => $not,
-					)),
-				);
-			}
-		} elseif ($node instanceof NotX) {
-			$inner = array_map(
-				function ($expr) use ($callback) {
-					return $expr->traverse($callback);
-				}, $childNodes
-			);
 			return array(
 				'bool' => array(
-					'must_not' => $inner,
+					'must' => array_map(
+						function ($expr) use ($callback) {
+							return $expr->traverse($callback);
+						}, $childNodes
+					),
+				),
+			);
+		} elseif ($node instanceof NotX) {
+			return array(
+				'bool' => array(
+					'must_not' => array(
+						reset($childNodes)->traverse($callback),
+					),
 				),
 			);
 		} elseif ($node instanceof Initial) {
@@ -126,35 +84,7 @@ class Search_Elastic_QueryBuilder
 					),
 				),
 			);
-		} elseif ($node instanceof MoreLikeThis) {
-			$type = $node->getObjectType();
-			$object = $node->getObjectId();
-
-			$content = $this->getDocumentContent($type, $object);
-			return array(
-				'more_like_this' => array(
-					'fields' => array('contents'),
-					'like_text' => $content,
-					'boost' => $node->getWeight(),
-				),
-			);
-		} else {
-			throw new Exception(tr('Feature not supported.'));
 		}
-	}
-
-	private function flatten($list, $type)
-	{
-		$out = array();
-		foreach ($list as $entry) {
-			if (isset($entry['bool'][$type])) {
-				$out = array_merge($out, $entry['bool'][$type]);
-			} else {
-				$out[] = $entry;
-			}
-		}
-
-		return $out;
 	}
 
 	private function getTerm($node)
@@ -180,18 +110,6 @@ class Search_Elastic_QueryBuilder
 				$node->getField() => array("query" => $this->getTerm($node), "boost" => $node->getWeight()),
 			));
 		}
-	}
-
-	private function getDocumentContent($type, $object)
-	{
-		$cb = $this->documentReader;
-		$document = $cb($type, $object);
-
-		if (isset($document['contents'])) {
-			return $document['contents'];
-		}
-
-		return '';
 	}
 }
 

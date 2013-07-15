@@ -21,15 +21,12 @@ function wikiplugin_vote_info()
 				'description' => tra('Numeric value representing the tracker ID'),
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'tracker',
 			),
 			'fields' => array(
 				'required' => true,
 				'name' => tra('Fields'),
 				'description' => tra('Colon-separated list of field IDs to be displayed. Example: 2:4:5'),
 				'default' => '',
-				'separator' => ':',
-				'profile_reference' => 'tracker_field',
 			),
 			'show_percent' => array(
 				'required' => false,
@@ -40,8 +37,8 @@ function wikiplugin_vote_info()
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n'),
-				),
+					array('text' => tra('No'), 'value' => 'n')
+				)
 			),
 			'show_bar' => array(
 				'required' => false,
@@ -52,8 +49,8 @@ function wikiplugin_vote_info()
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n'),
-				),
+					array('text' => tra('No'), 'value' => 'n')
+				)
 			),
 			'show_stat' => array(
 				'required' => false,
@@ -64,8 +61,8 @@ function wikiplugin_vote_info()
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n'),
-				),
+					array('text' => tra('No'), 'value' => 'n')
+				)
 			),
 			'show_stat_only_after' => array(
 				'required' => false,
@@ -76,8 +73,8 @@ function wikiplugin_vote_info()
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n'),
-				),
+					array('text' => tra('No'), 'value' => 'n')
+				)
 			),
 			'show_creator' => array(
 				'required' => false,
@@ -88,8 +85,8 @@ function wikiplugin_vote_info()
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n'),
-				),
+					array('text' => tra('No'), 'value' => 'n')
+				)
 			),
 			'status' => array(
 				'required' => false,
@@ -105,8 +102,8 @@ function wikiplugin_vote_info()
 					array('text' => tra('Open & Pending'), 'value' => 'op'), 
 					array('text' => tra('Open & Closed'), 'value' => 'oc'), 
 					array('text' => tra('Pending & Closed'), 'value' => 'pc'), 
-					array('text' => tra('Open, Pending & Closed'), 'value' => 'opc'),
-				),
+					array('text' => tra('Open, Pending & Closed'), 'value' => 'opc')
+				)
 			),
 			'float' => array(
 				'required' => false,
@@ -119,7 +116,7 @@ function wikiplugin_vote_info()
 					array('text' => tra('Left'), 'value' => 'left'), 
 					array('text' => tra('Right'), 'value' => 'right'),
 					array('text' => tra('None'), 'value' => 'none'),
-				),
+				)
 			),
 			'show_toggle' => array(
 				'required' => false,
@@ -129,9 +126,9 @@ function wikiplugin_vote_info()
 				'default' => '',
 				'options' => array(
 					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n'),
-				),
+                                        array('text' => tra('Yes'), 'value' => 'y'),
+                                        array('text' => tra('No'), 'value' => 'n')
+				)
 			),
 		),
 	);
@@ -168,7 +165,7 @@ function wikiplugin_vote($data, $params)
 			}
 		}
 		if (!empty($ff)) {
-			$params['fields'] = $ff;
+			$params['fields'] = implode(':', $ff);
 		}
 	}
 	if (isset($show_creator) && $show_creator == 'y') {

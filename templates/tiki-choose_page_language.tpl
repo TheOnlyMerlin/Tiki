@@ -1,10 +1,4 @@
-{extends 'layout_edit.tpl'}
-
-{block name=title}
 <h1>{tr}Please choose the language for this page:{/tr}</h1>
-{/block}
-
-{block name=content}
 <div class="cbox-data">
 	<p>
 		<strong>{tr _0=$page|escape}Page: "%0"{/tr}</strong>
@@ -22,4 +16,3 @@
 		<input type="submit" name="select_language" value="{tr}Choose language{/tr}" onclick="needToConfirm=false;">
 	</form>
 </div>
-{/block}

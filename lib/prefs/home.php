@@ -15,7 +15,6 @@ function prefs_home_list($partial = false)
 			'type' => 'list',
 			'options' => $partial ? array() : listblog_pref(),
 			'default' => 0,
-			'profile_reference' => 'blog',
 		),
 		'home_forum' => array(
 			'name' => tra('Home Forum (main forum)'),
@@ -23,7 +22,6 @@ function prefs_home_list($partial = false)
 			'type' => 'list',
 			'options' => $partial ? array() : listforum_pref(),
 			'default' => 0,
-			'profile_reference' => 'forum',
 		),
 		'home_file_gallery' => array(
 			'name' => tra('Home File Gallery (main file gallery)'),
@@ -31,7 +29,6 @@ function prefs_home_list($partial = false)
 			'type' => 'list',
 			'options' => $partial ? array() : listfgal_pref(),
 			'default' => 1,
-			'profile_reference' => 'file_gallery',
 		),
 		'home_gallery' => array(
 			'name' => tra('Home Gallery (main gallery)'),
@@ -39,7 +36,6 @@ function prefs_home_list($partial = false)
 			'type' => 'list',
 			'options' => $partial ? array() : listimgal_pref(),
 			'default' => 0,
-			'profile_reference' => 'image_gallery',
 		),
 	);
 }

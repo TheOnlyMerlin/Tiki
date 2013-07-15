@@ -29,7 +29,6 @@
 		<div class="adminoptionboxchild" id="ajax_inline_edit_childcontainer">
 			{preference name=ajax_inline_edit_trackerlist}
 		</div>
-		{preference name=tracker_change_field_type}
 	</fieldset>
 
 	<fieldset class="admin">
