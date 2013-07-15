@@ -55,9 +55,8 @@ class Tracker_Field_UserGroups extends Tracker_Field_Abstract
 		return $this->renderTemplate('trackeroutput/usergroups.tpl', $context);
 	}
 
-	function getDocumentPart(Search_Type_Factory_Interface $typeFactory)
+	function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
 	{
-		$baseKey = $this->getBaseKey();
 		$data = $this->getFieldData();
 		$listtext = implode(' ', $data['value']);
 
@@ -67,15 +66,13 @@ class Tracker_Field_UserGroups extends Tracker_Field_Abstract
 		);
 	}
 
-	function getProvidedFields()
+	function getProvidedFields($baseKey)
 	{
-		$baseKey = $this->getBaseKey();
 		return array($baseKey);
 	}
 
-	function getGlobalFields()
+	function getGlobalFields($baseKey)
 	{
-		$baseKey = $this->getBaseKey();
 		return array($baseKey => true);
 	}
 }

@@ -1,11 +1,11 @@
 <?php
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-class Search_Query implements Search_Query_Interface
+class Search_Query
 {
 	private $objectList;
 	private $expr;
@@ -13,10 +13,6 @@ class Search_Query implements Search_Query_Interface
 	private $start = 0;
 	private $count = 50;
 	private $weightCalculator = null;
-	private $identifierFields = null;
-
-	private $subQueries = array();
-	private $facets = array();
 
 	function __construct($query = null)
 	{
@@ -25,11 +21,6 @@ class Search_Query implements Search_Query_Interface
 		if ($query) {
 			$this->filterContent($query);
 		}
-	}
-
-	function setIdentifierFields(array $fields)
-	{
-		$this->identifierFields = $fields;
 	}
 
 	function addObject($type, $objectId)
@@ -135,7 +126,7 @@ class Search_Query implements Search_Query_Interface
 
 	function filterInitial($initial, $field = 'title')
 	{
-		$this->addPart(new Search_Expr_Initial($initial), 'plaintext', $field);
+		$this->addPart(new Search_Expr_Range($initial, substr($initial, 0, -1) . chr(ord(substr($initial, -1)) + 1)), 'plaintext', $field);
 	}
 
 	function filterRelation($query, array $invertable = array())
@@ -144,17 +135,6 @@ class Search_Query implements Search_Query_Interface
 		$replacer = new Search_Query_RelationReplacer($invertable);
 		$query = $query->walk(array($replacer, 'visit'));
 		$this->addPart($query, 'multivalue', 'relations');
-	}
-
-	function filterSimilar($type, $object)
-	{
-		$this->expr->addPart(new Search_Expr_And(array(
-			new Search_Expr_Not(new Search_Expr_And(array(
-				new Search_Expr_Token($type, 'identifier', 'object_type'),
-				new Search_Expr_Token($object, 'identifier', 'object_id'),
-			))),
-			new Search_Expr_MoreLikeThis($type, $object),
-		)));
 	}
 
 	private function addPart($query, $type, $field)
@@ -166,7 +146,7 @@ class Search_Query implements Search_Query_Interface
 			$part->setField($f);
 			$parts[] = $part;
 		}
-
+		
 		if (count($parts) === 1) {
 			$this->expr->addPart($parts[0]);
 		} else {
@@ -197,38 +177,26 @@ class Search_Query implements Search_Query_Interface
 		$this->weightCalculator = $calculator;
 	}
 
-	function getSortOrder()
-	{
-		if ($this->sortOrder) {
-			return $this->sortOrder;
-		} else {
-			return Search_Query_Order::getDefault();
-		}
-	}
-
 	function search(Search_Index_Interface $index)
 	{
+		if ($this->sortOrder) {
+			$sortOrder = $this->sortOrder;
+		} else {
+			$sortOrder = Search_Query_Order::getDefault();
+		}
+
 		if ($this->weightCalculator) {
 			$this->expr->walk(array($this->weightCalculator, 'calculate'));
 		}
 
-		if ($this->identifierFields) {
-			$fields = $this->identifierFields;
-			$this->expr->walk(function (Search_Expr_Interface $expr) use ($fields) {
-				if (method_exists($expr, 'getField') && in_array($expr->getField(), $fields)) {
-					$expr->setType('identifier');
-				}
-			});
-		}
-
-		return $index->find($this, $this->start, $this->count);
+		return $index->find($this->expr, $sortOrder, $this->start, $this->count);
 	}
 
-	function getExpr()
+	function invalidate(Search_Index_Interface $index)
 	{
-		return $this->expr;
+		return $index->invalidateMultiple($this->expr);
 	}
-
+	
 	private function parse($query)
 	{
 		if (is_string($query)) {
@@ -239,49 +207,5 @@ class Search_Query implements Search_Query_Interface
 		}
 
 		return $query;
-	}
-
-	function getTerms()
-	{
-		$terms = array();
-
-		$extractor = new Search_Type_Factory_Direct;
-
-		$this->expr->walk(
-			function ($expr) use (& $terms, $extractor) {
-				if ($expr instanceof Search_Expr_Token && $expr->getField() == 'contents') {
-					$terms[] = $expr->getValue($extractor)->getValue();
-				}
-			}
-		);
-
-		return $terms;
-	}
-
-	function getSubQuery($name)
-	{
-		if (empty($name)) {
-			return $this;
-		}
-
-		if (! isset($this->subQueries[$name])) {
-			$subquery = new self;
-			$subquery->expr = new Search_Expr_Or(array());
-			$this->expr->addPart($subquery->expr);
-
-			$this->subQueries[$name] = $subquery;
-		}
-
-		return $this->subQueries[$name];
-	}
-
-	function requestFacet(Search_Query_Facet_Interface $facet)
-	{
-		$this->facets[] = $facet;
-	}
-
-	function getFacets()
-	{
-		return $this->facets;
 	}
 }

@@ -11,7 +11,7 @@
  * Letter key: ~d~ ~D~
  *
  */
-class Tracker_Field_Dropdown extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable, Search_FacetProvider_Interface
+class Tracker_Field_Dropdown extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
 {
 	public static function getTypes()
 	{
@@ -29,7 +29,6 @@ class Tracker_Field_Dropdown extends Tracker_Field_Abstract implements Tracker_F
 						'description' => tr('An option, if containing an equal sign, the prior part will be used as the value while the later as the label'),
 						'filter' => 'text',
 						'count' => '*',
-						'legacy_index' => 0,
 					),
 				),
 			),
@@ -46,7 +45,6 @@ class Tracker_Field_Dropdown extends Tracker_Field_Abstract implements Tracker_F
 						'description' => tr('An option, if containing an equal sign, the prior part will be used as the value while the later as the label. It is recommended to add an "other" option.'),
 						'filter' => 'text',
 						'count' => '*',
-						'legacy_index' => 0,
 					),
 				),
 			),
@@ -63,7 +61,6 @@ class Tracker_Field_Dropdown extends Tracker_Field_Abstract implements Tracker_F
 						'description' => tr('An option, if containing an equal sign, the prior part will be used as the value while the later as the label'),
 						'filter' => 'text',
 						'count' => '*',
-						'legacy_index' => 0,
 					),
 				),
 			),
@@ -80,7 +77,6 @@ class Tracker_Field_Dropdown extends Tracker_Field_Abstract implements Tracker_F
 						'description' => tr('An option, if containing an equal sign, the prior part will be used as the value while the later as the label'),
 						'filter' => 'text',
 						'count' => '*',
-						'legacy_index' => 0,
 					),
 				),
 			),
@@ -154,12 +150,7 @@ class Tracker_Field_Dropdown extends Tracker_Field_Abstract implements Tracker_F
 
 	private function getPossibilities()
 	{
-		$options = $this->getOption('options');
-
-		if (empty($options)) {
-			return array();
-		}
-
+		$options = $this->getConfiguration('options_array');
 		$out = array();
 		foreach ($options as $value) {
 			$out[$this->getValuePortion($value)] = $this->getLabelPortion($value);
@@ -170,7 +161,7 @@ class Tracker_Field_Dropdown extends Tracker_Field_Abstract implements Tracker_F
 	
 	private function getDefaultValue()
 	{
-		$options = $this->getOption('options');
+		$options = $this->getConfiguration('options_array');
 		
 		$parts = array();
 		$last = false;
@@ -201,40 +192,6 @@ class Tracker_Field_Dropdown extends Tracker_Field_Abstract implements Tracker_F
 		} else {
 			return substr($value, $pos + 1);
 		}
-	}
-
-	function getDocumentPart(Search_Type_Factory_Interface $typeFactory)
-	{
-		$value = $this->getValue();
-		$label = $this->getValueLabel($value);
-		$baseKey = $this->getBaseKey();
-
-		return array(
-			$baseKey => $typeFactory->identifier($value),
-			"{$baseKey}_text" => $typeFactory->sortable($label),
-		);
-	}
-
-	function getProvidedFields()
-	{
-		$baseKey = $this->getBaseKey();
-		return array($baseKey, $baseKey . '_text');
-	}
-
-	function getGlobalFields()
-	{
-		$baseKey = $this->getBaseKey();
-		return array("{$baseKey}_text" => true);
-	}
-
-	function getFacets()
-	{
-		$baseKey = $this->getBaseKey();
-		return array(
-			Search_Query_Facet_Term::fromField($baseKey)
-				->setLabel($this->getConfiguration('name'))
-				->setRenderMap($this->getPossibilities())
-		);
 	}
 }
 

@@ -247,7 +247,6 @@ function wp_map_plugin_searchlayer($body, $args)
 	$refresh = $args->refresh->int();
 	$suffix = $args->suffix->word();
 	$maxRecords = $args->maxRecords->digits();
-	$sort_mode = $args->sort_mode->word();
 
 	$args->replaceFilter('fields', 'word');
 	$fields = $args->asArray('fields', ',');
@@ -257,7 +256,6 @@ function wp_map_plugin_searchlayer($body, $args)
 	unset($args['suffix']);
 	unset($args['maxRecords']);
 	unset($args['fields']);
-	unset($args['sort_mode']);
 
 	$args->setDefaultFilter('text');
 
@@ -272,10 +270,6 @@ function wp_map_plugin_searchlayer($body, $args)
 		$maxRecords = '<input type="hidden" name="maxRecords" value="' . intval($maxRecords) . '"/>';
 	}
 
-	if ($sort_mode) {
-		$sort_mode = '<input type="hidden" name="sort_mode" value="' . $sort_mode . '"/>';
-	}
-
 	$fieldList = '';
 	if (! empty($fields)) {
 		$fieldList = '<input type="hidden" name="fields" value="' . smarty_modifier_escape(implode(',', $fields)) . '"/>';
@@ -285,7 +279,7 @@ function wp_map_plugin_searchlayer($body, $args)
 	$escapedSuffix = smarty_modifier_escape($suffix);
 	return <<<OUT
 <form method="post" action="tiki-searchindex.php" class="search-box onload" style="display: none" data-result-refresh="$refresh" data-result-layer="$escapedLayer" data-result-suffix="$escapedSuffix">
-	<p>$maxRecords$sort_mode$fieldList$filters<input type="submit"/></p>
+	<p>$maxRecords$fieldList$filters<input type="submit"/></p>
 
 </form>
 OUT;
@@ -333,8 +327,8 @@ function init() {
 }
 METHOD;
 	} else {
-		$headerlib->add_jsfile('vendor/jquery/plugins/colorpicker/js/colorpicker.js');
-		$headerlib->add_cssfile('vendor/jquery/plugins/colorpicker/css/colorpicker.css');
+		$headerlib->add_jsfile('lib/jquery/colorpicker/js/colorpicker.js');
+		$headerlib->add_cssfile('lib/jquery/colorpicker/css/colorpicker.css');
 		$methods = <<<METHOD
 function setColor(color) {
 	$(dialog).ColorPickerSetColor(color);

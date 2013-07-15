@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -115,7 +112,7 @@ $smarty->assign('type', $info["type"]);
 $smarty->assign('rating', $info["rating"]);
 // Assign parsed
 $smarty->assign('parsed_heading', $tikilib->parse_data($info["heading"]));
-$smarty->assign('parsed_body', $tikilib->parse_data($info["body"], array('is_html' => $artlib->is_html($info))));
+$smarty->assign('parsed_body', $tikilib->parse_data($info["body"], array('is_html' => $prefs['feature_wysiwyg'] === 'y' && $prefs['wysiwyg_htmltowiki'] !== 'y')));
 if (isset($_REQUEST["remove"])) {
 	$access->check_authenticity();
 	$commlib->remove_received_article($_REQUEST["remove"]);

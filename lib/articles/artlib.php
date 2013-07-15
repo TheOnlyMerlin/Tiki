@@ -1366,13 +1366,10 @@ class ArtLib extends TikiLib
 			`tiki_article_types`.`show_linkto`,
 			`tiki_article_types`.`show_image_caption`,
 			`tiki_article_types`.`creator_edit`
-			from `tiki_articles`
-			$fromSql
-			$join
-			$mid $mid2 order by " .
-			$this->convertSortMode(
-				$sort_mode,
-				array(
+				from `tiki_articles`
+				$fromSql
+				$join
+				$mid $mid2 order by " . $this->convertSortMode($sort_mode, array(
 					'title',
 					'state',
 					'authorName',
@@ -1383,8 +1380,7 @@ class ArtLib extends TikiLib
 					'created',
 					'author',
 					'rating',
-				)
-			);
+				));
 
 		$result = $this->query($query, $bindvars, $maxRecords, $offset);
 		$query_cant = "select distinct count(*) from `tiki_articles` $fromSql $join $mid $mid2";
@@ -1427,21 +1423,6 @@ class ArtLib extends TikiLib
 		$retval['data'] = $ret;
 		$retval['cant'] = $cant;
 		return $retval;
-	}
-
-	/**
-	 * Work out if body should be parsed as html or not
-	 * Currently (tiki 11) tries the prefs but also checks for html in body in case wysiwyg_htmltowiki wasn't enabled previously
-	 *
-	 * @param $article array of article data
-	 * @return bool
-	 */
-	function is_html($article) {
-		global $prefs;
-
-		return $prefs['feature_wysiwyg'] === 'y' &&
-				($prefs['wysiwyg_htmltowiki'] !== 'y' ||
-						preg_match('/(<\/p>|<\/span>|<\/div>|<\/?br>)/', $article['body']));
 	}
 
 	function list_submissions($offset = 0, $maxRecords = -1, $sort_mode = 'publishDate_desc', $find = '', $date = '')

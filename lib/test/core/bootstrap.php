@@ -4,8 +4,6 @@
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
-
-define('TIKI_IN_TEST', 1);
 require_once(dirname(__FILE__) . '/../TikiTestCase.php');
 
 ini_set('display_errors', 'on');
@@ -19,7 +17,11 @@ function tra($string)
 	return $string;
 }
 
-require __DIR__ . '/../../../vendor/autoload.php';
+function __autoload($name)
+{
+	$path = str_replace('_', '/', $name);
+	require_once($path . '.php');
+}
 
 $tikidomain = '';
 $api_tiki = null;

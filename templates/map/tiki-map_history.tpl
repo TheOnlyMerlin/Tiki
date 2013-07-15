@@ -1,4 +1,4 @@
-<a class="pagetitle" href="tiki-map_history.php?mapfile={$mapfile}">{tr}Mapfile History{/tr}</a> {tr}of{/tr}<a class="pagetitle" href="tiki-map_edit.php?mapfile={$mapfile}&mode=editing"> {$mapfile}</a><br>
+<a class="pagetitle" href="tiki-map_history.php?mapfile={$mapfile}">{tr}Mapfile History{/tr}</a> {tr}of{/tr}<a class="pagetitle" href="tiki-map_edit.php?mapfile={$mapfile}&mode=editing"> {$mapfile}</a><br />
 {if $preview}
 <h2>{tr}Version:{/tr} {$preview}</h2>
 <div  class="wikitext">{$previewd}</div>
@@ -44,25 +44,25 @@
       {if $diffdata[ix].type == "diffheader"}
 		{assign var="oldd" value=$diffdata[ix].old}
 		{assign var="newd" value=$diffdata[ix].new}
-           <br><div class="diffheader">@@ {tr}-Lines: {$oldd} changed to +Lines: {$newd}{/tr} @@</div>
+           <br /><div class="diffheader">@@ {tr}-Lines: {$oldd} changed to +Lines: {$newd}{/tr} @@</div>
       {elseif $diffdata[ix].type == "diffdeleted"}
 		<div class="diffdeleted">
 			{section name=iy loop=$diffdata[ix].data}
-				{if not $smarty.section.iy.first}<br>{/if}
+				{if not $smarty.section.iy.first}<br />{/if}
 				- {$diffdata[ix].data[iy]}
 			{/section}
             </div>
       {elseif $diffdata[ix].type == "diffadded"}
             <div class="diffadded">
 			{section name=iy loop=$diffdata[ix].data}
-				{if not $smarty.section.iy.first}<br>{/if}
+				{if not $smarty.section.iy.first}<br />{/if}
 				+ {$diffdata[ix].data[iy]}
 			{/section}
 		</div>
       {elseif $diffdata[ix].type == "diffbody"}
             <div class="diffbody">
 			{section name=iy loop=$diffdata[ix].data}
-				{if not $smarty.section.iy.first}<br>{/if}
+				{if not $smarty.section.iy.first}<br />{/if}
 				{$diffdata[ix].data[iy]}
 			{/section}
 		</div>
@@ -78,12 +78,12 @@
 {if $diff_style eq 'sidediff' || $diff_style eq 'minsidediff'}
   {if $diffdata}{$diffdata}{else}{tr}Versions are identical{/tr}</td></tr></table>{/if}
 {/if}
-<br>
+<br />
 
 {if $preview || $diff_style}<h2>{tr}History{/tr}</h2>{/if}
 <form action="tiki-map_history.php" method="get">
-<input type="hidden" name="page" value="{$page|escape}">
-<input type="hidden" name="mapfile" value="{$mapfile}">
+<input type="hidden" name="page" value="{$page|escape}" />
+<input type="hidden" name="mapfile" value="{$mapfile}" />
 <div style="text-align:center;">
 <div class="simplebox"><b>{tr}Legend:{/tr}</b> {tr}v=view{/tr} {if $prefs.default_wiki_diff_style eq "old"}, {tr}c=compare{/tr}, {tr}d=diff{/tr}{/if}</div>
 {if $prefs.default_wiki_diff_style ne "old" and $history}
@@ -105,7 +105,7 @@
 <th>{tr}Action{/tr}</th>
 {if $prefs.default_wiki_diff_style != "old" and $history}
 <th colspan="2">
-<input type="submit" name="compare" value="{tr}Compare{/tr}"><br>
+<input type="submit" name="compare" value="{tr}Compare{/tr}" /><br />
 </th>
 {/if}
 </tr>
@@ -126,11 +126,11 @@
 </td>
 {if $prefs.default_wiki_diff_style ne "old"}
 <td class="{cycle advance=false} button_container">
-<input type="radio" name="oldver" value="{$history[hist].version}" title="{tr}Older Version{/tr}" {if $old.version == $history[hist].version or (!$diff_style and $smarty.section.hist.first)}checked="checked"{/if}>
+<input type="radio" name="oldver" value="{$history[hist].version}" title="{tr}Older Version{/tr}" {if $old.version == $history[hist].version or (!$diff_style and $smarty.section.hist.first)}checked="checked"{/if} />
 </td>
 <td class="{cycle} button_container">
 {* if $smarty.section.hist.last &nbsp; *}
-<input type="radio" name="newver" value="{$history[hist].version}" title="Select a newer version for comparison" {if $new.version == $history[hist].version}checked="checked"{/if}>
+<input type="radio" name="newver" value="{$history[hist].version}" title="Select a newer version for comparison" {if $new.version == $history[hist].version}checked="checked"{/if} />
 </td>
 {/if}
 </tr>

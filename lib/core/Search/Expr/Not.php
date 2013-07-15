@@ -41,10 +41,5 @@ class Search_Expr_Not implements Search_Expr_Interface
 
 		return call_user_func($callback, $this, array($result));
 	}
-
-	function traverse($callback)
-	{
-		return call_user_func($callback, $callback, $this, array($this->expression));
-	}
 }
 

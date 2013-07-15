@@ -192,18 +192,16 @@ class ObjectLib extends TikiLib
 
 		$tikilib = TikiLib::lib('tiki');
 		$table = $this->table('tiki_objects');
-		return $table->insert(
-			array(
-				'type' => $type,
-				'itemId' => (string) $itemId,
-				'description' => $description,
-				'name' => $name,
-				'href' => $href,
-				'created' => (int) $tikilib->now,
-				'hits' => 0,
-				'comments_locked' => 'n',
-			)
-		);
+		return $table->insert(array(
+			'type' => $type,
+			'itemId' => (string) $itemId,
+			'description' => $description,
+			'name' => $name,
+			'href' => $href,
+			'created' => (int) $tikilib->now,
+			'hits' => 0,
+			'comments_locked' => 'n',
+		));
 	}
 
 	function get_object_id($type, $itemId)
@@ -390,10 +388,6 @@ class ObjectLib extends TikiLib
 				$info = TikiLib::lib('comments')->get_forum($object);
 				return (array('title' => $info['name']));
 
-			case 'forum post':
-				$info = TikiLib::lib('comments')->get_comment($object);
-				return (array('title' => $info['title']));
-
 			case 'tracker':
 				$info = TikiLib::lib('trk')->get_tracker($object);
 				return (array('title' => $info['name']));
@@ -433,11 +427,6 @@ class ObjectLib extends TikiLib
 		return $result->fetchRow();
 	}
 
-	/**
-	 * @param string $type
-	 * @param $id
-	 * @return void|string
-	 */
 	function get_title($type, $id)
 	{
 		switch ($type) {
@@ -445,11 +434,6 @@ class ObjectLib extends TikiLib
 				return TikiLib::lib('trk')->get_isMain_value(null, $id);
 			case 'category':
 				return TikiLib::lib('categ')->get_category_name($id);
-			case 'file':
-				return TikiLib::lib('filegal')->get_file_label($id);
-			case 'topic':
-				$meta=TikiLib::lib('art')->get_topic($id);
-				return $meta['name'];
 		}
 
 		$title = $this->table('tiki_objects')->fetchOne(

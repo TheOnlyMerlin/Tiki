@@ -5,13 +5,6 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-// File name: TextLink.php
-// Required path: /lib/core/Feed
-//
-// Programmer: Robert Plummer
-//
-// Purpose: Adds TextLink UI to page.  Makes it so that sentences wrapped in a textlink are distinguished from the rest of the text in a page for the end user
-
 Class Feed_TextLink extends Feed_Abstract
 {
 	public $type = 'textlink';
@@ -91,7 +84,7 @@ Class Feed_TextLink extends Feed_Abstract
 			->query();
 
 		if (count($result) > 0) {
-			foreach (Feed_ForwardLink_Send::sendAll() as $text => $received) {
+			foreach(Feed_ForwardLink_Send::sendAll() as $text => $received) {
 				$receivedJSON = json_decode($received);
 				if (isset($receivedJSON->feed) && $receivedJSON->feed == 'success') {
 					Tracker_Query::tracker('Wiki Attributes')
@@ -114,17 +107,15 @@ Class Feed_TextLink extends Feed_Abstract
 		//We add these to a stack that needs to be sent, rather than just sending all with the view event
 		$me = new self();
 
-		foreach ($me->getItems() as $item) {
+		foreach($me->getItems() as $item) {
 			Tracker_Query::tracker('Wiki Attributes')
 				->byName()
-				->replaceItem(
-					array(
-						'Page' => $page,
-						'Attribute' => $item->textlink->text,
-						'Value' => 'true',
-						'Type' => 'TextLink Send'
-					)
-				);
+				->replaceItem(array(
+					'Page' => $page,
+					'Attribute' => $item->textlink->text,
+					'Value' => 'true',
+					'Type' => 'TextLink Send'
+				));
 		}
 	}
 }

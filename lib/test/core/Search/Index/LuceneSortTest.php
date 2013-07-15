@@ -11,28 +11,25 @@
 class Search_Index_LuceneSortTest extends PHPUnit_Framework_TestCase
 {
 	private $dir;
-	protected $index;
+	private $index;
 
 	function setUp()
 	{
 		$this->dir = dirname(__FILE__) . '/test_index';
 		$this->tearDown();
 
-		$this->index = new Search_Index_Lucene($this->dir);
-
-		$this->populate($this->index);
-	}
-
-	protected function populate($index)
-	{
+		$index = new Search_Index_Lucene($this->dir);
 		$this->add($index, 'A', '1', 'Hello', 'foobar');
 		$this->add($index, 'B', '10', 'foobar', 'Hello');
 		$this->add($index, 'C', '2', 'Baz', 'Baz');
+
+		$this->index = $index;
 	}
 
 	function tearDown()
 	{
-		$this->index->destroy();
+		$dir = escapeshellarg($this->dir);
+		`rm -Rf $dir`;
 	}
 
 	function sortCases()
@@ -43,6 +40,8 @@ class Search_Index_LuceneSortTest extends PHPUnit_Framework_TestCase
 			array('numeric_field_asc', 'ABC'),
 			array('text_field_asc', 'CBA'),
 			array('text_field_desc', 'ABC'),
+			array('text_field_nasc', 'ABC'),
+			array('text_field_ndesc', 'ABC'),
 		);
 	}
 

@@ -11,9 +11,8 @@ require_once('lib/language/GetStrings.php');
 require_once('lib/language/FileType.php');
 require_once('lib/language/FileType/Php.php');
 require_once('lib/language/FileType/Tpl.php');
-use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\vfsStreamFile;
-use org\bovigo\vfs\vfsStreamDirectory;
+
+require_once('vfsStream/vfsStream.php');
 
 class Language_GetStringsEndToEndTest extends TikiTestCase
 {

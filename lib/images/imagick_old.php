@@ -7,18 +7,10 @@
 
 require_once('lib/images/abstract.php');
 
-/**
- *
- */
 class Image extends ImageAbstract
 {
 
-    /**
-     * @param $image
-     * @param bool $isfile
-     * @param string $format
-     */
-    function __construct($image, $isfile = false, $format = 'jpeg')
+	function __construct($image, $isfile = false, $format = 'jpeg')
 	{
 		if ( $isfile ) {
 			$this->filename = $image;
@@ -44,12 +36,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-    /**
-     * @param $x
-     * @param $y
-     * @return mixed
-     */
-    function _resize($x, $y)
+	function _resize($x, $y)
 	{
 		if ($this->data) {
 			return imagick_scale($this->data, $x, $y);
@@ -69,10 +56,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-    /**
-     * @return mixed
-     */
-    function get_mimetype()
+	function get_mimetype()
 	{
 		$this->_load_data();
 		if ($this->data) {
@@ -80,10 +64,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-    /**
-     * @param $format
-     */
-    function set_format($format)
+	function set_format($format)
 	{
 		$this->_load_data();
 		$this->format = $format;
@@ -92,18 +73,12 @@ class Image extends ImageAbstract
 		}
 	}
 
-    /**
-     * @return string
-     */
-    function get_format()
+	function get_format()
 	{
 		return $this->format;
 	}
 
-    /**
-     * @return mixed
-     */
-    function display()
+	function display()
 	{
 		$this->_load_data();
 		if ($this->data) {
@@ -111,11 +86,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-    /**
-     * @param $angle
-     * @return bool
-     */
-    function rotate($angle)
+	function rotate($angle)
 	{
 		$this->_load_data();
 		if ($this->data) {
@@ -126,11 +97,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-    /**
-     * @param $format
-     * @return bool
-     */
-    function is_supported($format)
+	function is_supported($format)
 	{
 		// not handled yet: html, mpeg, pdf
 		return in_array(
@@ -211,10 +178,7 @@ class Image extends ImageAbstract
 		);
 	}
 
-    /**
-     * @return mixed
-     */
-    function get_height()
+	function get_height()
 	{
 		$this->_load_data();
 		if ($this->data) {
@@ -222,10 +186,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-    /**
-     * @return mixed
-     */
-    function get_width()
+	function get_width()
 	{
 		$this->_load_data();
 		if ($this->data) {

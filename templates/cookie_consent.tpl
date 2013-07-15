@@ -9,16 +9,12 @@
 	<div class="description">
 		{wiki}{tr}{$prefs.cookie_consent_description}{/tr}{/wiki}
 	</div>
-	{if !empty($prefs.cookie_consent_question)}
-		<span class="question">
-			{wiki}{tr}{$prefs.cookie_consent_question}{/tr}{/wiki}
-		</span>
-		<input type="checkbox" name="cookie_consent_checkbox">&nbsp;
-	{else}
-		<input type="hidden" name="cookie_consent_checkbox" value="1">
-	{/if}
+	<span class="question">
+		{wiki}{tr}{$prefs.cookie_consent_question}{/tr}{/wiki}
+	</span>
+	<input type="checkbox" name="cookie_consent_checkbox">&nbsp;
 	{if $prefs.javascript_enabled neq 'y'}
-			<input type="submit" name="cookie_consent_button" value="{tr}{$prefs.cookie_consent_button}{/tr}">
+			<input type="submit" name="cookie_consent_button" value="{tr}{$prefs.cookie_consent_button}{/tr}" />
 		</form>
 	{else}
 		{button _text=$prefs.cookie_consent_button|tr_if _id='cookie_consent_button'}
@@ -26,7 +22,7 @@
 </div>
 {jq}
 $("#cookie_consent_button").click(function(){
-	if ($("input[name=cookie_consent_checkbox]:checked").length || $("input[name=cookie_consent_checkbox]").val()) {
+	if ($("input[name=cookie_consent_checkbox]:checked").length) {
 		var exp = new Date();
 		exp.setTime(exp.getTime()+(24*60*60*1000*{{$prefs.cookie_consent_expires}}));
 		jqueryTiki.no_cookie = false;

@@ -501,6 +501,7 @@ class WebMailLib extends TikiLib
 		if (!empty($this->current_account['imap'])) {
 
 			// connecting with Imap
+			require_once('lib/core/Zend/Mail/Storage/Imap.php');
 			return new Zend_Mail_Storage_Imap(
 				array(
 					'host'     => $this->current_account["imap"],
@@ -513,6 +514,7 @@ class WebMailLib extends TikiLib
 		} else if (!empty($this->current_account['mbox'])) {
 
 			// connecting with Mbox locally
+			require_once('lib/core/Zend/Mail/Storage/Mbox.php');
 			return new Zend_Mail_Storage_Mbox(
 				array('filename' => $this->current_account["mbox"])
 			);
@@ -520,6 +522,7 @@ class WebMailLib extends TikiLib
 		} else if (!empty($this->current_account['maildir'])) {
 
 			// connecting with Maildir locally
+			require_once('lib/core/Zend/Mail/Storage/Maildir.php');
 			return new Zend_Mail_Storage_Maildir(
 				array('dirname' => $this->current_account["mbox"])
 			);
@@ -527,6 +530,7 @@ class WebMailLib extends TikiLib
 		} else if (!empty($this->current_account['pop'])) {
 
 			// connecting with Pop3
+			require_once('lib/core/Zend/Mail/Storage/Pop3.php');
 			return new Zend_Mail_Storage_Pop3(
 				array(
 					'host'     => $this->current_account["pop"],
@@ -537,6 +541,7 @@ class WebMailLib extends TikiLib
 			);
 		}
 		// not returned yet?
+		require_once 'lib/core/Zend/Mail/Storage/Exception.php';
 		throw new Zend_Mail_Storage_Exception('No server to check');
 	}	// end get_mail_storage()
 

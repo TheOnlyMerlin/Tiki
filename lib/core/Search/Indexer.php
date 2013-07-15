@@ -18,13 +18,18 @@ class Search_Indexer
 
 	public $log = null;
 
-	public function __construct(Search_Index_Interface $searchIndex, $logWriter = null)
+	public function __construct(Search_Index_Interface $searchIndex, $loggit = false)
 	{
-		if (! $logWriter instanceof Zend_Log_Writer_Interface) {
-			$logWriter = new Zend_Log_Writer_Null();
+		if ($loggit) {
+			// unused externally, set this to true here to enable logging
+			include_once 'lib/core/Zend/Log/Writer/Syslog.php';
+			global $prefs;
+			$writer = new Zend_Log_Writer_Stream($prefs['tmpDir'] . '/Search_Indexer.log', 'w');
+		} else {
+			$writer = new Zend_Log_Writer_Null();
 		}
-		$logWriter->setFormatter(new Zend_Log_Formatter_Simple(Zend_Log_Formatter_Simple::DEFAULT_FORMAT . ' [%memoryUsage% bytes]' . PHP_EOL));
-		$this->log = new Zend_Log($logWriter);
+		$writer->setFormatter(new Zend_Log_Formatter_Simple(Zend_Log_Formatter_Simple::DEFAULT_FORMAT . ' [%memoryUsage% bytes]' . PHP_EOL));
+		$this->log = new Zend_Log($writer);
 
 		$this->searchIndex = $searchIndex;
 	}
@@ -66,38 +71,39 @@ class Search_Indexer
 		return $stat;
 	}
 
-	public function update(array $objectList)
+	public function update($searchArgument)
 	{
-		$this->searchIndex->invalidateMultiple($objectList);
+		if (is_array($searchArgument)) {
+			$query = new Search_Query;
+			foreach ($searchArgument as $object) {
+				$obj2array=(array) $object;
+				$query->addObject($obj2array['object_type'], $obj2array['object_id']);
+			}
 
-		foreach ($objectList as $object) {
-			$this->addDocument($object['object_type'], $object['object_id']);
+			$result = $query->invalidate($this->searchIndex);
+			$objectList = $searchArgument;
+		} elseif ($searchArgument instanceof Search_Query) {
+			$objectList = $searchArgument->invalidate($this->searchIndex);
 		}
 
-		$this->searchIndex->endUpdate();
+		foreach ($objectList as $object) {
+			$obj2array=(array) $object;
+			$this->addDocument($obj2array['object_type'], $obj2array['object_id']);
+		}
 	}
 
 	private function addDocument($objectType, $objectId)
 	{
-		$this->log("addDocument $objectType $objectId");
-
-		$data = $this->getDocuments($objectType, $objectId);
-		foreach ($data as $entry) {
-			try {
-				$this->searchIndex->addDocument($entry);
-			} catch (Exception $e) {
-				$msg = tr('Indexing failed while processing "%0" (type %1) with the error "%2"', $objectId, $objectType, $e->getMessage());
-				TikiLib::lib('errorreport')->report($msg);
-				$this->log->err($msg);
+		global $prefs;
+		if (!empty( $prefs['unified_excluded_categories'] )) {
+			$categs = TikiLib::lib('categ')->get_object_categories( $objectType, $objectId );
+			if (array_intersect($prefs['unified_excluded_categories'], $categs)) {
+				$this->log("addDocument skipped $objectType $objectId");
+				return 0;
 			}
 		}
 
-		return count($data);
-	}
-
-	function getDocuments($objectType, $objectId)
-	{
-		$out = array();
+		$this->log("addDocument $objectType $objectId");
 
 		$typeFactory = $this->searchIndex->getTypeFactory();
 
@@ -112,15 +118,23 @@ class Search_Indexer
 				}
 
 				foreach ($data as $entry) {
-					$out[] = $this->augmentDocument($objectType, $objectId, $entry, $typeFactory, $globalFields);
+					try {
+						$this->addDocumentFromContentData($objectType, $objectId, $entry, $typeFactory, $globalFields);
+					} catch (Exception $e) {
+						$msg = tr('Indexing failed while processing "%0" (type %1) with the error "%2"', $objectId, $objectType, $e->getMessage());
+						TikiLib::lib('errorreport')->report($msg);
+						$this->log->err($msg);
+					}
 				}
+
+				return count($data);
 			}
 		}
 
-		return $out;
+		return 0;
 	}
 
-	private function augmentDocument($objectType, $objectId, $data, $typeFactory, $globalFields)
+	private function addDocumentFromContentData($objectType, $objectId, $data, $typeFactory, $globalFields)
 	{
 		$initialData = $data;
 
@@ -143,7 +157,7 @@ class Search_Indexer
 
 		$data = $this->removeTemporaryKeys($data);
 
-		return $data;
+		$this->searchIndex->addDocument($data);
 	}
 
 	private function applyFilters($data)
@@ -164,12 +178,9 @@ class Search_Indexer
 	private function removeTemporaryKeys($data)
 	{
 		$keys = array_keys($data);
-		$toRemove = array_filter(
-			$keys,
-			function ($key) {
-				return $key{0} === '_';
-			}
-		);
+		$toRemove = array_filter($keys, function ($key) {
+			return $key{0} === '_';
+		});
 
 		foreach ($keys as $key) {
 			if ($key{0} === '_') {

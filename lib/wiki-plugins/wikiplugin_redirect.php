@@ -22,7 +22,6 @@ function wikiplugin_redirect_info()
 				'description' => tra('Wiki page name to redirect to.'),
 				'filter' => 'pagename',
 				'default' => '',
-				'profile_reference' => 'wiki_page',
 			),
 			'url' => array(
 				'required' => false,
@@ -37,7 +36,6 @@ function wikiplugin_redirect_info()
 				'description' => tra('The ID of a perspective to switch to (requires feature_perspective).'),
 				'filter' => 'int',
 				'default' => '',
-				'profile_reference' => 'perspective',
 			),
 		),
 	);
@@ -97,7 +95,8 @@ function wikiplugin_redirect($data, $params)
 		}
 		/* SEO: Redirect with HTTP status 301 - Moved Permanently than default 302 - Found */
 		if (isset($page)) {
-			TikiLib::lib('access')->redirect("tiki-index.php?page=$page&redirectpage=".$_REQUEST['page'], '', 301);
+			header("Location: tiki-index.php?page=$page&redirectpage=".$_REQUEST['page'], true, 301);
+			exit;
 		}
 		if (isset($url)) {
 
@@ -116,7 +115,8 @@ function wikiplugin_redirect($data, $params)
 					return '';						// don't redirect if we've already been redirected to the "home page"
 				}
 			}
-			TikiLib::lib('access')->redirect($url);
+			header("Location: $url");
+			exit;
 		}
 	}
 	return $areturn;

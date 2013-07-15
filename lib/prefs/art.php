@@ -81,12 +81,12 @@ function prefs_art_list()
 			'default' => 'n',
 		),
 		'art_list_author' => array(
-			'name' => tra('Author (owner)'),
+			'name' => tra('User'),
 			'type' => 'flag',
 			'default' => 'y',
 		),
 		'art_list_authorName' => array(
-			'name' => tra('Author Name (as displayed)'),
+			'name' => tra('Author'),
 			'type' => 'flag',
 			'default' => 'n',
 		),

@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -68,7 +65,7 @@ if (isset($_REQUEST["category"])) {
 		}
 		sort($categIds);
 		$categId = array('AND'=>$categIds);
-		$uniqueid .= '-' . implode('-', $categIds);;
+		$uniqueid .= '-' . implode('-',$categIds);;
 	} else {
 		$categId = $categlib->get_category_id($_REQUEST["category"]);
 		$uniqueid .= '-'.$categId;
@@ -80,7 +77,7 @@ if (isset($_REQUEST["categId"])) {
 		sort($_REQUEST["categId"]);
 		$categId = (int) $_REQUEST["categId"];
 		$categId = array('AND'=>$_REQUEST["categId"]);
-		$uniqueid .= '-' . implode('-', $_REQUEST["categId"]);;
+		$uniqueid .= '-' . implode('-',$_REQUEST["categId"]);;
 	} else {
 		$categId = (int) $_REQUEST["categId"];
 		$uniqueid .= '-'.$categId;

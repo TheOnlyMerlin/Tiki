@@ -16,6 +16,13 @@ class PreferencesLib
 	// prefs with system info etc
 	private $system_info = array( 'fgal_use_dir', 'sender_email' );
 
+	function PreferencesLib()
+	{
+		global $prefs;
+
+		$this->file = 'temp/preference-index-' . $prefs['language'];
+	}
+
 	function getPreference( $name, $deps = true, $source = null, $get_pages = false )
 	{
 		global $prefs, $systemConfiguration;
@@ -166,7 +173,7 @@ class PreferencesLib
 
 			if (!empty($info['admin']) || !empty($info['permission']) || !empty($info['view']) || !empty($info['module']) || !empty($info['plugin'])) {
 
-				$info['popup_html'] = '<div class="opaque"><div class="box-title">'.tra('Actions').'</div><div class="box-data adminoptionpopup">';
+				$info['popup_html'] = '<div class="opaque"><div class="box-title">'.tra('Actions').'</div><div class="box-data">';
 
 				if (!empty($info['admin'])) {
 					$icon = smarty_function_icon(array( '_id' => 'wrench', 'title' => tra('Admin')), $smarty);
@@ -289,15 +296,15 @@ class PreferencesLib
 	{
 		$index = $this->getIndex();
 
-		$query = new Search_Query($criteria);
+		// No input means it was a likely a query from a dependency, meaning every result should show
 		if ($filters) {
-			$this->buildPreferenceFilter($query, $filters);
+			$criteria = $this->buildPreferenceFilter($criteria, $filters);
 		}
-		$results = $query->search($index);
+		$results = $index->find($criteria);
 
 		$prefs = array();
 		foreach ( $results as $hit ) {
-			$prefs[] = $hit['object_id'];
+			$prefs[] = $hit->preference;
 		}
 
 		return $prefs;
@@ -394,7 +401,7 @@ class PreferencesLib
 	private function getFileData( $file, $partial = false )
 	{
 		if ( ! isset( $this->files[$file] ) ) {
-   			$inc_file = __DIR__ . "/prefs/{$file}.php";
+   		$inc_file = "lib/prefs/{$file}.php";
 			if (file_exists($inc_file)) {
 				require_once $inc_file;
 				$function = "prefs_{$file}_list";
@@ -406,10 +413,7 @@ class PreferencesLib
 			}
 		}
 
-		$ret = array();
-		if (isset($this->files[$file])) {
-			$ret = $this->files[$file];
-		}
+		$ret = $this->files[$file];
 
 		if ($partial) {
 			unset($this->files[$file]);
@@ -435,7 +439,7 @@ class PreferencesLib
 						|| ( $info['type'] != 'flag' && ! empty( $info['value'] ) )
 				);
 			} elseif ($key == 'profiles') {
-				foreach ( (array) $dep as $profile) {
+				foreach ($dep as $profile) {
 					$out[] = array(
 						'name' => $profile,
 						'label' => $profile,
@@ -454,40 +458,39 @@ class PreferencesLib
 
 	public function rebuildIndex()
 	{
-		$index = TikiLib::lib('unifiedsearch')->getIndex('preference');
-		$index->destroy();
-
-		$typeFactory = $index->getTypeFactory();
+		$index = Zend_Search_Lucene::create($this->file);
 
 		foreach ($this->getAvailableFiles() as $file) {
 			$data = $this->getFileData($file);
 
 			foreach ( $data as $pref => $info ) {
 				$info = $this->getPreference($pref);
-				$doc = $this->indexPreference($typeFactory, $pref, $info);
+				$doc = $this->indexPreference($pref, $info);
 				$index->addDocument($doc);
 			}
 		}
 
+		$index->optimize();
 		return $index;
 	}
 
 	private function getIndex()
 	{
-		$index = TikiLib::lib('unifiedsearch')->getIndex('preference');
+		global $prefs;
+		if ( $prefs['language'] == 'en' ) {
+			Zend_Search_Lucene_Analysis_Analyzer::setDefault(new StandardAnalyzer_Analyzer_Standard_English());
+		}
 
-		if (! $index->exists()) {
-			$index = null;
+		if ( $this->indexNeedsRebuilding()) {
 			return $this->rebuildIndex();
 		}
 
-		return $index;
+		return Zend_Search_Lucene::open($this->file);
 	}
 
-	function indexNeedsRebuilding()
+	public function indexNeedsRebuilding()
 	{
-		$index = TikiLib::lib('unifiedsearch')->getIndex('preference');
-		return ! $index->exists();
+		return !file_exists($this->file);
 	}
 
 	public function getPreferenceLocations( $name )
@@ -553,24 +556,25 @@ class PreferencesLib
 		$this->usageArray = $prefs_usage_array;
 	}
 
-	private function indexPreference( $typeFactory, $pref, $info )
+	private function indexPreference( $pref, $info )
 	{
-		$contents = array(
-			$info['name'],
-			isset($info['description']) ? $info['description'] : '',
-			isset($info['keywords']) ? $info['keywords'] : '',
-		);
-
-		if (isset($info['options'])) {
-			$contents = array_merge($contents, $info['options']);
+		$doc = new Zend_Search_Lucene_Document();
+		$doc->addField(Zend_Search_Lucene_Field::UnIndexed('preference', $pref));
+		$doc->addField(Zend_Search_Lucene_Field::Text('name', $info['name']));
+		if (!empty($info['description'])) {
+			$doc->addField(Zend_Search_Lucene_Field::Text('description', $info['description']));
+		}
+		if (!empty($info['keywords'])) {
+			$doc->addField(Zend_Search_Lucene_Field::Text('keywords', $info['keywords']));
 		}
 
-		return array(
-			'object_type' => $typeFactory->identifier('preference'),
-			'object_id' => $typeFactory->identifier($pref),
-			'contents' => $typeFactory->plaintext(implode(' ', $contents)),
-			'tags' => $typeFactory->plaintext(implode(' ', $info['tags'])),
-		);
+		if ( isset( $info['options'] ) ) {
+			$doc->addField(Zend_Search_Lucene_Field::Text('options', implode(' ', $info['options'])));
+		}
+
+		$doc->addField(Zend_Search_Lucene_Field::Text('tags', implode(' ', $info['tags'])));
+
+		return $doc;
 	}
 
 	private function _getFlagValue( $info, $data )
@@ -734,8 +738,8 @@ class PreferencesLib
 	private function getAvailableFiles()
 	{
 		$files = array();
-		foreach ( glob(__DIR__ . '/prefs/*.php') as $file ) {
-			if (basename($file) === "index.php")
+		foreach ( glob('lib/prefs/*.php') as $file ) {
+			if ($file === "lib/prefs/index.php")
 				continue;
 			$files[] = substr(basename($file), 0, -4);
 		}
@@ -790,23 +794,22 @@ class PreferencesLib
 		return $out;
 	}
 
-	private function buildPreferenceFilter($query, $input = null)
+	private function buildPreferenceFilter($criteria, $input = null)
 	{
 		$filters = $this->getFilters($input);
+		$positive = array();
+		$negative = array();
 
 		foreach ($filters as $tag => $info) {
 			if ($info['selected']) {
-				$positive[] = $tag;
+				$positive[] = "tags:$tag";
 			} elseif ($info['type'] == 'negative') {
-				$query->filterContent("NOT $tag", 'tags');
+				$negative[] = "-tags:$tag";
 			}
 		}
 
-		if (count($positive)) {
-			$query->filterContent(implode(' OR ', $positive), 'tags');
-		}
-
-		return $query;
+		$filters = '+(' . implode(' ', $positive) .') ' . implode(' ', $negative);
+		return "+($criteria) +($filters)";
 	}
 
 	/***
@@ -824,10 +827,10 @@ class PreferencesLib
 			$auser = $user;
 		}
 
-		$list = (array) $this->getRecent($auser);
-		array_unshift($list, $name);
-		$list = array_unique($list);
-		$list = array_slice($list, 0, 10);
+		$list = (array) $this->getRecent( $auser );
+		array_unshift( $list, $name );
+		$list = array_unique( $list );
+		$list = array_slice( $list, 0, 10 );
 
 		TikiLib::lib('tiki')->set_user_preference($auser, 'admin_recent_prefs', serialize($list));
 	}
@@ -855,24 +858,7 @@ class PreferencesLib
 		} else {
 			return unserialize($recent);
 		}
-	}
 
-	public function exportPreference(Tiki_Profile_Writer $writer, $preferenceName)
-	{
-		global $prefs;
-
-		if ($info = $this->getPreference($preferenceName)) {
-			if (isset($info['profile_reference'])) {
-				$writer->setPreference($preferenceName, $writer->getReference($info['profile_reference'], $info['value']));
-
-				return true;
-			} else {
-				$writer->setPreference($preferenceName, $info['value']);
-				return true;
-			}
-		}
-
-		return false;
 	}
 }
 

@@ -29,7 +29,6 @@ function wikiplugin_convene_info()
 				'description' => tra('ID number for the site calendar where to store the date for the events with maximum votes'),
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'calendar',
 			),
 			'minvotes' => array(
 				'required' => false,
@@ -62,14 +61,15 @@ function wikiplugin_convene($data, $params)
 	++$conveneI;
 	$i = $conveneI;
 
+
 	$params = array_merge(
-		array(
-			"title" => "Convene",
-			"calendarid" => "1",
-			"minvotes" => "3",
-			"dateformat" => "short"
-		),
-		$params
+					array(
+						"title" => "Convene",
+						"calendarid" => "1",
+						"minvotes" => "3",
+						"dateformat" => "short"
+					), 
+					$params
 	);
 
 	extract($params, EXTR_SKIP);
@@ -249,7 +249,7 @@ FORM;
 	$n = '\n';
 	$regexN = '/[\r\n]+/g';
 
-	$headerlib->add_jsfile("lib/jquery/ui/plugins/jquery-ui-timepicker-addon.js");
+	$headerlib->add_jsfile("lib/jquery/jquery-ui-timepicker-addon.js");
 	$headerlib->add_jq_onready(
 <<<JQ
 

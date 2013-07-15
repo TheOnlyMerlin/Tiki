@@ -2,7 +2,7 @@
 
 {include file='tiki-mytiki_bar.tpl'}
 {include file='messu-nav.tpl'}
-<br><br>
+<br /><br />
 
 {if $message}
 	<div class="simplebox highlight">
@@ -15,19 +15,19 @@
 		{/if}
 		{$message}
 		{if $preview eq '1'}
-			<br>
+			<br />
 			<form method="post">
-				<input type="hidden" name="groupbr" value="{$groupbr|escape}">
-				<input type="hidden" name="priority" value="{$priority|escape}">
-				<input type="hidden" name="replyto_hash" value="{$replyto_hash|escape}">
-				<input type="hidden" name="subject" value="{$subject|escape}">
-				<input type="hidden" name="body" value="{$body|escape}">
-				<input type="submit" name="send" value="{tr}Please Confirm{/tr}">
+				<input type="hidden" name="groupbr" value="{$groupbr|escape}" />
+				<input type="hidden" name="priority" value="{$priority|escape}" />
+				<input type="hidden" name="replyto_hash" value="{$replyto_hash|escape}" />
+				<input type="hidden" name="subject" value="{$subject|escape}" />
+				<input type="hidden" name="body" value="{$body|escape}" />
+				<input type="submit" name="send" value="{tr}Please Confirm{/tr}" />
 			</form>
 		{/if}
 	</div>
-	<br>
-	<br>
+	<br />
+	<br />
 {/if}
 
 {if $sent ne '1' and $preview ne '1'}
@@ -61,7 +61,7 @@
 						<option value="4" {if $priority eq 4}selected="selected"{/if}>4 -{tr}High{/tr}-</option>
 						<option value="5" {if $priority eq 5}selected="selected"{/if}>5 -{tr}Very High{/tr}-</option>
 					</select>
-					<input type="hidden" name="replyto_hash" value="{$replyto_hash}">
+					<input type="hidden" name="replyto_hash" value="{$replyto_hash}" />
 				</td>
 			</tr>
 			<tr>
@@ -69,15 +69,15 @@
 					<label for="broadcast-subject">{tr}Subject:{/tr}</label>
 				</td>
 				<td>
-					<input type="text" name="subject" id="broadcast-subject" value="{$subject|escape}" size="80" maxlength="255">
+					<input type="text" name="subject" id="broadcast-subject" value="{$subject|escape}" size="80" maxlength="255"/>
 				</td>
 			</tr>
 		</table>
-		<br>
+		<br />
 		<table class="normal" >
 			<tr>
 				<td style="text-align: center;">
-					<textarea rows="20" cols="80" name="body">{$body|escape}</textarea><br><input type="submit" name="preview" value="{tr}Send{/tr}">
+					<textarea rows="20" cols="80" name="body">{$body|escape}</textarea><br /><input type="submit" name="preview" value="{tr}Send{/tr}" />
 				</td>
 			</tr>
 		</table>

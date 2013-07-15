@@ -1,5 +1,5 @@
 {* $Id$ *}
-{if $tiki_p_create_file_galleries eq 'y' and $gal_info.type neq 'user'}
+{if $tiki_p_create_file_galleries eq 'y'}
 	<h2>{tr}Duplicate File Gallery{/tr}</h2>
 	<form action="tiki-list_file_gallery.php{if isset($filegals_manager) and $filegals_manager neq ''}?filegals_manager={$filegals_manager}{/if}" method="post">
 		<table class="formcolor">
@@ -8,7 +8,7 @@
 					<label for="name">{tr}Name:{/tr}</label>
 				</td>
 				<td>
-					<input type="text" size="50" id="name" name="name" value="">
+					<input type="text" size="50" id="name" name="name" value="" />
 				</td>
 			</tr>
 			<tr>
@@ -42,7 +42,7 @@
 					<label for="dupCateg">{tr}Duplicate categories:{/tr}</label>
 				</td>
 				<td>
-					<input type="checkbox" id="dupCateg" name="dupCateg">
+					<input type="checkbox" id="dupCateg" name="dupCateg" />
 				</td>
 			</tr>
 			<tr>
@@ -50,13 +50,13 @@
 					<label for="dupPerms">{tr}Duplicate permissions:{/tr}</label>
 				</td>
 				<td>
-					<input type="checkbox" id="dupPerms" name="dupPerms">
+					<input type="checkbox" id="dupPerms" name="dupPerms" />
 				</td>
 			</tr>
 			<tr>
 				<td></td>
 				<td>
-					<input type="submit" name="duplicate" value="{tr}Duplicate{/tr}">
+					<input type="submit" name="duplicate" value="{tr}Duplicate{/tr}" />
 				</td>
 			</tr>
 		</table>

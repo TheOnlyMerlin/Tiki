@@ -19,7 +19,7 @@ function prefs_contact_list()
 			'default' => 'n',
 			'tags' => array('basic'),			
 		),
-		'contact_priority_onoff' => array(
+			'contact_priority_onoff' => array(
 			'name' => tra('Display Contact Priority'),
 			'description' => tra('Display Contact Priority option'),
 			'type' => 'flag',
@@ -32,7 +32,7 @@ function prefs_contact_list()
 		),
 		'contact_user' => array(
 			'name' => tra('Contact user'),
-			'description' => tra('the user to Contact'),
+			'description' => tra('Contact user'),
 			'type' => 'text',
 			'size' => 40,
 			'dependencies' => array(

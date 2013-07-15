@@ -8,15 +8,10 @@
 class Search_Query_WikiBuilder
 {
 	private $query;
-	private $paginationArguments;
 
 	function __construct(Search_Query $query)
 	{
 		$this->query = $query;
-		$this->paginationArguments = array(
-			'offset_arg' => 'offset',
-			'max' => 50,
-		);
 	}
 
 	function apply(WikiParser_PluginMatcher $matches)
@@ -35,39 +30,22 @@ class Search_Query_WikiBuilder
 				}
 			}
 		}
-
-		$offsetArg = $this->paginationArguments['offset_arg'];
-		$maxRecords = $this->paginationArguments['max'];
-		if (isset($_REQUEST[$offsetArg])) {
-			$this->query->setRange($_REQUEST[$offsetArg], $maxRecords);
-		} else {
-			$this->query->setRange(0, $maxRecords);
-		}
-	}
-
-	function getPaginationArguments()
-	{
-		return $this->paginationArguments;
 	}
 
 	function wpquery_list_max($query, $value)
 	{
-		$this->paginationArguments['max'] = max(1, (int) $value);
+		if (!empty($_REQUEST['offset'])) {
+			$start = $_REQUEST['offset'];
+		} else {
+			$start = 0;
+		}
+		$query->setRange($start, $value);	
 	}
 
 	function wpquery_filter_type($query, $value)
 	{
 		$value = explode(',', $value);
 		$query->filterType($value);
-	}
-
-	function wpquery_filter_nottype($query, $value)
-	{
-		$value = explode(',', $value);
-		$value = array_map(function ($v) {
-			return "NOT \"$v\"";
-		}, $value);
-		$query->filterContent(implode(' AND ', $value), 'object_type');
 	}
 
 	function wpquery_filter_categories($query, $value)
@@ -144,77 +122,17 @@ class Search_Query_WikiBuilder
 		$query->filterTextRange($arguments['from'], $arguments['to'], $value);
 	}
 
-	function wpquery_filter_personalize($query, $type, array $arguments)
-	{
-		global $user;
-		$targetUser = $user;
-
-		if (! $targetUser) {
-			$targetUser = "1"; // Invalid user name, make sure nothing matches
-		}
-
-		$subquery = $query->getSubQuery('personalize');
-
-		$types = array_filter(array_map('trim', explode(',', $type)));
-
-		if (in_array('self', $types)) {
-			$subquery->filterContributors($targetUser);
-			$subquery->filterContent($targetUser, 'user');
-		}
-
-		if (in_array('groups', $types)) {
-			$part = new Search_Expr_Or(array_map(function ($group) {
-				return new Search_Expr_Token($group, 'multivalue', 'user_groups');
-			}, Perms::get()->getGroups()));
-			$subquery->getExpr()->addPart(new Search_Expr_And(array(
-				$part,
-				new Search_Expr_Not(new Search_Expr_Token($targetUser, 'identifier', 'user')),
-			)));
-		}
-	}
-
 	function wpquery_sort_mode($query, $value, array $arguments)
 	{
 		if ($value == 'randommode') {
 			if ( !empty($arguments['modes']) ) {
 				$modes = explode(',', $arguments['modes']);
-				$value = trim($modes[array_rand($modes)]);
-				// append a direction if not already supplied
-				$last = substr($value, strrpos($value, '_'));
-				$directions = array('_asc', '_desc', '_nasc', '_ndesc');
-				if (!in_array($last, $directions)) {
-					$direction = $directions[array_rand($directions)];
-					if (stripos($value, 'date')) {
-						$value .= $direction;
-					} else {
-						$value .= str_replace('n', '', $direction);
-					}
-				}
+				$value = $modes[array_rand($modes)];
 			} else {
 				return;
 			}
 		}
 		$query->setOrder($value);
-	}
-
-	function wpquery_pagination_onclick($query, $value)
-	{
-		$this->paginationArguments['_onclick'] = $value;
-	}
-
-	function wpquery_pagination_offset_jsvar($query, $value)
-	{
-		$this->paginationArguments['offset_jsvar'] = $value;
-	}
-
-	function wpquery_pagination_offset_arg($query, $value)
-	{
-		$this->paginationArguments['offset_arg'] = $value;
-	}
-
-	function wpquery_pagination_max($query, $value)
-	{
-		$this->paginationArguments['max'] = (int) $value;
 	}
 }
 

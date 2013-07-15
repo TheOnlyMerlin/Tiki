@@ -26,31 +26,6 @@ class Tiki_Profile_InstallHandler_FileGallery extends Tiki_Profile_InstallHandle
 			'parent' => 'parentId',
 		);
 
-		$columns = array(
-			'id',
-			'icon',
-			'name',
-			'size',
-			'description',
-			'created',
-			'hits',
-			'lastDownload',
-			'lockedby',
-			'modified',
-			'author',
-			'last_user',
-			'comment',
-			'files',
-			'backlinks',
-			'deleteAfter',
-			'checked',
-			'share',
-			'source',
-			'explorer',		// not really a column, but follows the same pattern
-			'path',			// also
-			'slideshow',	// also
-		);
-
 		$data = $this->obj->getData();
 
 		$data = Tiki_Profile::convertLists($data, array('flags' => 'y'));
@@ -58,26 +33,7 @@ class Tiki_Profile_InstallHandler_FileGallery extends Tiki_Profile_InstallHandle
 		$column = isset( $data['column'] ) ? $data['column'] : array();
 		$popup = isset( $data['popup'] ) ? $data['popup'] : array();
 
-		if (in_array('name', $column) && in_array('filename', $column)) {
-			$data['show_name'] = 'a';
-			unset($column[array_search('name', $column)], $column[array_search('filename', $column)]);
-			unset($columns[array_search('name', $columns)]);
-		} else if (in_array('name', $column)) {
-			$data['show_name'] = 'n';
-			unset($column[array_search('name', $column)]);
-			unset($columns[array_search('name', $columns)]);
-		} else if (in_array('filename', $column)) {
-			$data['show_name'] = 'f';
-			unset($column[array_search('filename', $column)]);
-			unset($columns[array_search('name', $columns)]);
-		}
 		$both = array_intersect($column, $popup);
-		if ($column || $popup) {
-			$hide = array_diff($columns, array_merge($column, $popup));
-		} else {
-			$hide = array();			// use defaults if nothing set
-		}
-
 		$column = array_diff($column, $both);
 		$popup = array_diff($popup, $both);
 
@@ -87,8 +43,6 @@ class Tiki_Profile_InstallHandler_FileGallery extends Tiki_Profile_InstallHandle
 			$data["show_$value"] = 'y';
 		foreach ( $popup as $value )
 			$data["show_$value"] = 'o';
-		foreach ( $hide as $value )
-			$data["show_$value"] = 'n';
 
 		unset( $data['popup'] );
 		unset( $data['column'] );

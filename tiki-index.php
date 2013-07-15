@@ -1,11 +1,8 @@
 <?php
-/**
- * Tiki's entry point.
- *
- * @package Tiki
- * @copyright (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project. All Rights Reserved. See copyright.txt for details and a complete list of authors.
- * @licence Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
- */
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+//
+// All Rights Reserved. See copyright.txt for details and a complete list of authors.
+// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 $inputConfiguration = array(
@@ -61,8 +58,7 @@ $auto_query_args = array(
 				'sort_mode',
 				'machine_translate_to_lang',
 				'version',
-				'date',
-				'itemId',
+				'date'
 );
 
 if ($prefs['feature_categories'] == 'y') {
@@ -122,7 +118,7 @@ $smarty->assign('structure', $structure);
 
 if ( $prefs['feature_wiki_structure'] == 'y' ) {
 	// Feature checks made in the function for structure language
-	if (!$use_best_language && isset($_REQUEST['page'])) {
+	if (!$use_best_language) {
 		$info = $tikilib->get_page_info($_REQUEST['page']);
 		$langContext = $info['lang'];
 	} else {
@@ -376,6 +372,9 @@ if (isset($_REQUEST['approve'], $_REQUEST['revision']) && $_REQUEST['revision'] 
 
 		if ($perms->wiki_approve) {
 			$flaggedrevisionlib->flag_revision($page, $_REQUEST['revision'], 'moderation', 'OK');
+
+			require_once('lib/search/refresh-functions.php');
+			refresh_index('pages', $page);
 		}
 	}
 	$access->redirect($wikilib->sefurl($page));
@@ -388,6 +387,8 @@ if ($prefs['flaggedrev_approval'] == 'y' && isset($_REQUEST['latest']) && $objec
 	$pageRenderer->forceLatest();
 }
 
+require_once 'lib/cache/pagecache.php';
+
 $pageCache = Tiki_PageCache::create()
 	->disableForRegistered()
 	->onlyForGet()
@@ -395,7 +396,7 @@ $pageCache = Tiki_PageCache::create()
 	->addValue('role', 'wiki-page-output')
 	->addValue('page', $page)
 	->addValue('locale', $prefs['language'])
-	->addKeys($_GET, array_keys($_GET))
+	->addKeys($_REQUEST, array( 'style_mode' ))
 	->checkMeta('wiki-page-output-meta-timestamp', array('page' => $page,))
 	->applyCache();
 
@@ -634,7 +635,7 @@ $smarty->assign('pdf_export', ($prefs['print_pdf_from_url'] != 'none') ? 'y' : '
 $pageRenderer->runSetups();
 
 //TRANSLATING HTML
-$page_content = (string) $smarty->getTemplateVars('parsed');		// convert from Tiki_Render_Lazy to string here
+$page_content = $smarty->getTemplateVars('parsed');
 if (!empty($_REQUEST['machine_translate_to_lang'])) {
 	$page_content = generate_machine_translated_content($page_content, $info, $_REQUEST['machine_translate_to_lang']);
 	$smarty->assign('parsed', $page_content);
@@ -643,29 +644,20 @@ if (!empty($_REQUEST['machine_translate_to_lang'])) {
 TikiLib::events()->trigger(
 	'tiki.wiki.view',
 	array_merge(
-		array(
-			'type' => 'wiki page',
-			'object' => $page,
-			'user' => $GLOBALS['user'],
-		),
+		array('type' => 'wiki', 'object' => $page,),
 		(is_array($info) ? $info : array())
 	)
 );
 
 $smarty->assign('info', $info);
+$smarty->assign('mid', 'tiki-show_page.tpl');
 
-$smarty->display('tiki-show_page.tpl');
+$smarty->display('tiki.tpl');
 
 // xdebug_dump_function_profile(XDEBUG_PROFILER_CPU);
 // debug: print all objects
 
 
-/**
- * generate machine translation of markup
- * @param $pageInfo
- * @param $targetLang
- * @return string
- */
 function generate_machine_translated_markup($pageInfo, $targetLang)
 {
 	make_sure_machine_translation_is_enabled();
@@ -674,13 +666,6 @@ function generate_machine_translated_markup($pageInfo, $targetLang)
 	return translate_text($pageContent, $sourceLang, $targetLang);
 }
 
-/**
- * generate machine translation of content
- * @param $pageContent
- * @param $pageInfo
- * @param $targetLang
- * @return string
- */
 function generate_machine_translated_content($pageContent, $pageInfo, $targetLang)
 {
 	make_sure_machine_translation_is_enabled();
@@ -689,29 +674,20 @@ function generate_machine_translated_content($pageContent, $pageInfo, $targetLan
 }
 
 
-/**
- * generate machine translation of text
- * @param $text
- * @param $sourceLang
- * @param $targetLang
- * @internal param bool $html
- * @return string
- */
-function translate_text($text, $sourceLang, $targetLang)
+function translate_text($text, $sourceLang, $targetLang, $html = true)
 {
-	$provider = new Multilingual_MachineTranslation;
-	$translator = $provider->getHtmlImplementation($sourceLang, $targetLang);
-	$translated = $translator->translateText($text);
-	return $translated;
+	require_once('lib/core/Multilingual/MachineTranslation/GoogleTranslateWrapper.php');
+	$translator = new Multilingual_MachineTranslation_GoogleTranslateWrapper($sourceLang, $targetLang, $html);
+	$translatedText = $translator->translateText($text);
+	return $translatedText;
+
 }
 
-/**
- * check this Tiki has the Translation feature enabled
- */
 function make_sure_machine_translation_is_enabled()
 {
 	global $access, $_REQUEST, $prefs;
-	if ($prefs['feature_machine_translation'] != 'y' || $prefs['lang_machine_translate_wiki' != 'y']) {
+	if ($prefs['feature_machine_translation'] != 'y') {
+		require_once('lib/tikiaccesslib.php');
 		$error_msg = tra('You have requested that this page be machine translated:') .
 						' <b>' .
 						$_REQUEST['page'] .

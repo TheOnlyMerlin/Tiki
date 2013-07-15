@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_youtube_info()
 {
 	return array(
@@ -47,13 +44,11 @@ function module_youtube_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_youtube($mod_reference, $module_params)
 {
 	global $smarty;
+	require_once 'Zend/Loader.php';
+	Zend_Loader::loadClass('Zend_Gdata_YouTube');
 	
 	$data = array(
 		'urls' => array(),

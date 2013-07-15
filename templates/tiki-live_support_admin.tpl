@@ -8,16 +8,16 @@
 </div>
 
 {if $html}
-	<b>Generated HTML code:</b><br>
-	Copy-paste the following XHTML snippet in the pages where you want to provide live support.<br>
+	<b>Generated HTML code:</b><br />
+	Copy-paste the following XHTML snippet in the pages where you want to provide live support.<br />
 	<table>
 	<tr>
 		<td>
-		<small>HTML code</small><br>	
+		<small>HTML code</small><br />	
 		<textarea rows="5" cols="60">{$html|escape}</textarea>
 		</td>
 		<td>
-		<small>result</small><br>
+		<small>result</small><br />
 		{$html}
 		</td>
 	</tr>
@@ -38,7 +38,7 @@
 {section name=ix loop=$online_operators}
 <tr class="{cycle}">
 		<td style="text-align:center;">
-			{$online_operators[ix].user|avatarize}<br>	
+			{$online_operators[ix].user|avatarize}<br />	
 			<b>{$online_operators[ix].user|escape}</b>
 		</td>
 		<td>
@@ -58,8 +58,8 @@
 		</td>
 		<td style="text-align:right;">
 		{if $tiki_p_live_support_admin eq 'y'}
-			<a href='tiki-live_support_admin.php?removeuser={$online_operators[ix].user|escape}'><img src='img/icons/trash.gif' alt="{tr}Del{/tr}" title="{tr}Del{/tr}"></a>
-<a href='tiki-live_support_admin.php?offline={$online_operators[ix].user|escape}'><img src='img/icons/icon_unwatch.png' alt="{tr}offline{/tr}" title="{tr}offline{/tr}"></a>
+			<a href='tiki-live_support_admin.php?removeuser={$online_operators[ix].user|escape}'><img src='img/icons/trash.gif' alt="{tr}Del{/tr}" title="{tr}Del{/tr}" /></a>
+<a href='tiki-live_support_admin.php?offline={$online_operators[ix].user|escape}'><img src='img/icons/icon_unwatch.png' alt="{tr}offline{/tr}" title="{tr}offline{/tr}" /></a>
 		{else}
 			&nbsp;
 		{/if}
@@ -84,7 +84,7 @@
 {section name=ix loop=$offline_operators}
 	<tr class="{cycle}">
 		<td style="text-align:center;">
-			{$offline_operators[ix].user|avatarize}<br>	
+			{$offline_operators[ix].user|avatarize}<br />	
 			<b>{$offline_operators[ix].user|escape}</b>
 		</td>
 		<td>
@@ -101,7 +101,7 @@
 		</td>
 		<td style="text-align:right;">
 		{if $tiki_p_live_support_admin eq 'y'}
-			<a href='tiki-live_support_admin.php?removeuser={$offline_operators[ix].user|escape}'><img src='img/icons/trash.gif' alt="{tr}Del{/tr}" title="{tr}Del{/tr}"></a>
+			<a href='tiki-live_support_admin.php?removeuser={$offline_operators[ix].user|escape}'><img src='img/icons/trash.gif' alt="{tr}Del{/tr}" title="{tr}Del{/tr}" /></a>
 		{else}
 			&nbsp;
 		{/if}
@@ -129,7 +129,7 @@
 	<tr>
 		<td>&nbsp;</td>
 		<td>
-			<input type="submit" name="adduser" value="{tr}Set as Operator{/tr}">
+			<input type="submit" name="adduser" value="{tr}Set as Operator{/tr}" />
 		</td>
 	</tr>
 </table>

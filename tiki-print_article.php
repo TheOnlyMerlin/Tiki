@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -60,7 +57,7 @@ if (isset($_REQUEST["articleId"])) {
 	$smarty->assign('edit_data', 'y');
 	$body = $article_data["body"];
 	$heading = $article_data["heading"];
-	$smarty->assign('parsed_body', $tikilib->parse_data($body, array('is_html' => $artlib->is_html($article_data))));
+	$smarty->assign('parsed_body', $tikilib->parse_data($body, array('is_html' => $prefs['feature_wysiwyg'] === 'y' && $prefs['wysiwyg_htmltowiki'] !== 'y')));
 	$smarty->assign('parsed_heading', $tikilib->parse_data($heading));
 }
 ask_ticket('print-article');

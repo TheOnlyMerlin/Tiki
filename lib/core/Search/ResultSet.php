@@ -13,7 +13,6 @@ class Search_ResultSet extends ArrayObject
 	private $maxRecords;
 
 	private $highlightHelper;
-	private $filters = array();
 
 	public static function create($list)
 	{
@@ -38,7 +37,6 @@ class Search_ResultSet extends ArrayObject
 	{
 		$return = new self($list, $this->count, $this->offset, $this->maxRecords);
 		$return->estimate = $this->estimate;
-		$return->filters = $this->filters;
 		$return->highlightHelper = $this->highlightHelper;
 
 		return $return;
@@ -86,7 +84,6 @@ class Search_ResultSet extends ArrayObject
 				 && $key != 'parent_object_id'
 				 && $key != 'relevance'
 				 && $key != 'url'
-			     && $key != 'title'
 				 && ! empty($value) // Skip empty
 				 && ! is_array($value) // Skip arrays, multivalues fields are not human readable
 				 && ! preg_match('/^[\w-]+$/', $value)) { // Skip anything that looks like a single token
@@ -103,25 +100,6 @@ class Search_ResultSet extends ArrayObject
 	function hasMore()
 	{
 		return $this->count > $this->offset + $this->maxRecords;
-	}
-
-	function getFacet(Search_Query_Facet_Interface $facet)
-	{
-		foreach ($this->filters as $filter) {
-			if ($filter->isFacet($facet)) {
-				return $filter;
-			}
-		}
-	}
-
-	function getFacets()
-	{
-		return $this->filters;
-	}
-
-	function addFacetFilter(Search_ResultSet_FacetFilter $facet)
-	{
-		$this->filters[$facet->getName()] = $facet;
 	}
 }
 

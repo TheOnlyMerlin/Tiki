@@ -25,11 +25,6 @@ class Search_Expr_Token implements Search_Expr_Interface
 		$this->type = $type;
 	}
 
-	function getType()
-	{
-		return $this->type;
-	}
-
 	function setField($field = 'global')
 	{
 		$this->field = $field;
@@ -59,11 +54,6 @@ class Search_Expr_Token implements Search_Expr_Interface
 	function getField()
 	{
 		return $this->field;
-	}
-
-	function traverse($callback)
-	{
-		return call_user_func($callback, $callback, $this, array());
 	}
 }
 

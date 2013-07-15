@@ -204,7 +204,7 @@
 				<div class="adminoptionbox">
 					{preference name=feature_cssmenus}
 					{preference name=menus_item_names_raw_teaser}
-					<div class="adminoptionboxchild" id="menus_item_names_raw_teaser_childcontainer">
+					<div class="adminoptionboxchild" id="menus_item_names_raw_teaser_childcontainer">	
 						{preference name=menus_item_names_raw}
 					</div>
 					{preference name=feature_userlevels}
@@ -232,14 +232,14 @@
 				<div class="adminoptionboxchild" id="useUrlIndex_childcontainer">
 					{preference name=urlIndex}
 				</div>
-
+				
 				{preference name=wikiHomePage}
 				{preference name=home_blog}
 				{preference name=home_forum}
 				{preference name=home_file_gallery}
 				{preference name=home_gallery}
 				{preference name=feature_custom_home}
-
+				
 			</fieldset>
 
 			<fieldset>
@@ -251,7 +251,7 @@
 				{preference name='permission_denied_login_box' mode='invert'}
 				<div class="adminoptionboxchild" id="permission_denied_login_box_childcontainer">
 					{tr}or{/tr}
-					<br>
+					<br />
 					{preference name=permission_denied_url}
 				</div>
 				{preference name='url_anonymous_page_not_found'}
@@ -301,7 +301,6 @@
 					<li>{tr}conflict with wiki syntax tagging{/tr}</li>
 					</ul>
 					{preference name=namespace_separator}
-					{preference name=namespace_indicator_in_structure}
 					<fieldset>
 						<legend>{tr}Settings that may be affected by the namespace separator{/tr}{help url="Watch"}</legend>
 

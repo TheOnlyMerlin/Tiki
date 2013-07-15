@@ -77,7 +77,7 @@
 
 				{if $prefs.feature_slideshow eq 'y' && $prefs.wiki_uses_slides eq 'y'}
 					{if $show_slideshow eq 'y'}
-						{button _keepall='y' href="./tiki-slideshow.php" page=$page _text="{tr}Slideshow{/tr}"}
+						{button _keepall='y' href="tiki-slideshow.php" page=$page _text="{tr}Slideshow{/tr}"}
 					{elseif $structure eq 'y'}
 						{button _keepall='y' href="tiki-slideshow2.php" page_ref_id=$page_info.page_ref_id _text="{tr}Slideshow{/tr}"}
 					{/if}
@@ -164,7 +164,7 @@
 						{button _keepall='y' href="tiki-admin_keywords.php" page=$page _text="{tr}Keywords{/tr}"}
 					{/if}
 					{if $user and (isset($tiki_p_create_bookmarks) and $tiki_p_create_bookmarks eq 'y') and $prefs.feature_user_bookmarks eq 'y'}
-						{assign var=urlurl value="{$page|sefurl}{$smarty.server.REQUEST_URI|regex_replace:'/^[^\?\&]*/':''|regex_replace:'/(\?page=[^\&]+)/':''}"}{button _script="tiki-user_bookmarks.php" urlname=$page urlurl=$urlurl addurl="Add" _text="{tr}Bookmark{/tr}" _auto_args="urlname,urlurl,addurl"}
+						{button _script="tiki-user_bookmarks.php" urlname=$page urlurl=$page|sefurl addurl="Add" _text="{tr}Bookmark{/tr}" _auto_args="urlname,urlurl,addurl"}
 					{/if}
 				{/if}
 			{/if}

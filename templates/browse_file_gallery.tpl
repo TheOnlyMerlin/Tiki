@@ -142,7 +142,7 @@
 					<div class="thumbactions" style="float:{if $view neq 'page'}right; width:{$thumbnail_size}px"{else}none"{/if}>
 				{if $gal_info.show_checked neq 'n' and $tiki_p_admin_file_galleries eq 'y' and $view neq 'page'}
 					<label style="float:left">
-						<input type="checkbox" onclick="flip_thumbnail_status('{$checkname}_{$files[changes].id}')" name="{$checkname}[]" value="{$files[changes].id|escape}" {if $is_checked eq 'y'}checked="checked"{/if}>
+						<input type="checkbox" onclick="flip_thumbnail_status('{$checkname}_{$files[changes].id}')" name="{$checkname}[]" value="{$files[changes].id|escape}" {if $is_checked eq 'y'}checked="checked"{/if} />
 						{if isset($checkbox_label)}
 							{$checkbox_label}
 						{/if}
@@ -171,7 +171,7 @@
 										{if empty($files[changes].icon_fileId)}
 											{icon _id="img/icons/large/fileopen48x48.png" width="48" height="48"}
 										{else}
-											<img src="{$files[changes].icon_fileId|sefurl:thumbnail}" alt="">
+											<img src="{$files[changes].icon_fileId|sefurl:thumbnail}" alt="" />
 										{/if}
 									</a>
 								{else}
@@ -188,17 +188,16 @@
 										{/if}
 										{if $over_infos neq ''}
 											{popup fullhtml="1" text=$over_infos|escape:"javascript"|escape:"html"}
-										{else}
-											title="{if $files[changes].name neq ''}{$files[changes].name|escape}{/if}{if $files[changes].description neq ''}{$files[changes].description|escape}{/if}"
-										{/if}>
-										{if $key_type neq 'image/svg' and $key_type neq 'image/svg+xml'}
-											{if $view eq 'page'}
-												<img src="tiki-download_file.php?fileId={$files[changes].id}" alt="" style="max-width:{$maxWidth}">
 											{else}
-												<img src="{$files[changes].id|sefurl:thumbnail}" alt="" style="max-height:{$thumbnailcontener_size}px">
+													title="{if $files[changes].name neq ''}{$files[changes].name|escape}{/if}{if $files[changes].description neq ''}{$files[changes].description|escape}{/if}"{/if}>
+										{if  $key_type neq "image/svg"}
+											{if $view eq 'page'}
+												<img src="tiki-download_file.php?fileId={$files[changes].id}" alt="" style="max-width:{$maxWidth}"/>
+												{else}
+												<img src="{$files[changes].id|sefurl:thumbnail}" alt="" />
 											{/if}
-										{else}
-											<object data="{$files[changes].id|sefurl:thumbnail}" alt=""  style="width:{$thumbnail_size}px;height:{$thumbnailcontener_size}px;" type="{$key_type}"></object>
+											{else} {*Since we can't resize an svg thumbnail at this time, we just show and scale it down *}
+											<img src="{$files[changes].id|sefurl:display}" alt=""  style="width:{$thumbnail_size}px;height:{$thumbnailcontener_size}px;" />
 										{/if}
 									</a>
 								{/if}
@@ -250,7 +249,15 @@
 										<div class="thumbnamecontener">
 											<div class="thumbname">
 												<div class="thumbnamesub" style="width:{$thumbnail_size}px; overflow: hidden;{if $view eq 'page'}text-align:center{/if}">
-													{if $gal_info.show_name eq 'f' or ($gal_info.show_name eq 'a'
+													{if $files[changes].isgal eq 1 and $files[changes].type eq 'user'}
+														<a class="fgalname" {$link}>
+															{if $files[changes].user eq $user}
+																<strong>{tr}My Files{/tr}</strong>
+															{else}
+																{tr}Files of {$files[changes].user}{/tr}
+															{/if}
+														</a>
+													{elseif $gal_info.show_name eq 'f' or ($gal_info.show_name eq 'a'
 														and $files[changes].name eq '')}
 														<a class="fgalname" {$link} title="{$files[changes].filename}" {if $view eq 'page'}style="text-align:center"{/if}>
 															{$files[changes].filename|truncate:$key_name_len}

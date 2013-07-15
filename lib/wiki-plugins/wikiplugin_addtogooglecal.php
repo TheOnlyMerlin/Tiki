@@ -24,8 +24,7 @@ function wikiplugin_addtogooglecal_info()
 				'filter' => 'digits', 
 				'default' => '',
 				'since' => '6.0', 
-				'profile_reference' => 'calendar',
-			),
+	),
 			'iconstyle' => array(
 				'required' => false,
 				'name' => tra('Icon Style'),

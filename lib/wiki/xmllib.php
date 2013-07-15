@@ -490,6 +490,8 @@ class XmlLib extends TikiLib
 }
 $xmllib = new XmlLib;
 
+require_once('lib/pear/XML_Parser/Parser.php');
+
 class page_Parser extends XML_Parser
 {
 	var $page;

@@ -5,17 +5,15 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-include_once "vendor_extra/elfinder/php/elFinderConnector.class.php";
-include_once "vendor_extra/elfinder/php/elFinder.class.php";
-include_once "vendor_extra/elfinder/php/elFinderVolumeDriver.class.php";
+include_once "lib/jquery/elfinder/php/elFinderConnector.class.php";
+include_once "lib/jquery/elfinder/php/elFinder.class.php";
+include_once "lib/jquery/elfinder/php/elFinderVolumeDriver.class.php";
 
 include_once 'lib/jquery_tiki/elfinder/elFinderVolumeTikiFiles.class.php';
 
 class Services_File_FinderController
 {
 	private $fileController;
-
-	private $parentIds;
 
 	function setUp()
 	{
@@ -28,9 +26,6 @@ class Services_File_FinderController
 			throw new Services_Exception_Disabled('fgal_elfinder_feature');
 		}
 		$this->fileController = new Services_File_Controller();
-		$this->fileController->setUp();
-
-		$this->parentIds = null;
 	}
 
 	/**********************
@@ -47,88 +42,45 @@ class Services_File_FinderController
 
 	public function action_finder($input)
 	{
-		global $prefs, $user;
+		global $prefs, $tikidomainslash;
 
+		static $parentIds = null;
 
-		if ($this->parentIds === null) {
+		if ($parentIds === null) {
 			$ids = TikiLib::lib('filegal')->getGalleriesParentIds();
-			$this->parentIds = array( 'galleries' => array(), 'files' => array() );
+			$parentIds = array( 'galleries' => array(), 'files' => array() );
 			foreach ($ids as $id) {
 				if ($id['parentId'] > 0) {
-					$this->parentIds['galleries'][(int) $id['galleryId']] = (int) $id['parentId'];
+					$parentIds['galleries'][(int) $id['galleryId']] = (int) $id['parentId'];
 				}
 			}
 			$tiki_files = TikiDb::get()->table('tiki_files');
-			$this->parentIds['files'] = $tiki_files->fetchMap('fileId', 'galleryId', array());
+			$parentIds['files'] = $tiki_files->fetchMap('fileId', 'galleryId', array());
 
 		}
 
-		// turn off some elfinder commands here too (stops the back-end methods being accessible)
-		$disabled = array('mkfile', 'edit', 'archive', 'resize');
-		// done so far: 'rename', 'rm', 'duplicate', 'upload', 'copy', 'cut', 'paste', 'mkdir', 'extract',
+		// turn off most elfinder commands here too (stops the back-end methods being accessible)
+		$disabled = array('rm', 'duplicate', 'rename', 'mkdir', 'mkfile', 'upload', 'copy', 'cut', 'paste', 'edit', 'extract', 'archive', 'resize');
 
-		// check for a "userfiles" gallery - currently although elFinder can support more than one root, it always starts in the first one
 		$opts = array(
 			'debug' => true,
-			'roots' => array(),
-		);
-
-		$rootDefaults = array(
-			'driver' => 'TikiFiles', // driver for accessing file system (REQUIRED)
-//			'path' => $rootId, // tiki root filegal - path to files (REQUIRED) - to be filled in later
-			'disabled' => $disabled,
-//			'URL'           => 									// URL to files (seems not to be REQUIRED)
-			'accessControl' => array($this, 'elFinderAccess'), // obey tiki perms
-			'uploadMaxSize' => ini_get('upload_max_filesize'),
-			'accessControlData' => array(
-				'deepGallerySearch' => $input->deepGallerySearch->int(),
-				'parentIds' => $this->parentIds,
-			),
-		);
-
-		// gallery to start in
-		$startGallery = $input->defaultGalleryId->int();
-
-		// 'startPath' not functioning with multiple roots as yet (https://github.com/Studio-42/elFinder/issues/351)
-		// so work around it for now with startRoot
-
-		$opts['roots'][] = array_merge(		// normal file gals
-			array(
-				'path' => $this->fileController->defaultGalleryId,		// should be $prefs['fgal_root_id']?
-			),
-			$rootDefaults
-		);
-		$startRoot = 0;
-
-		if (!empty($user) && $prefs['feature_use_fgal_for_user_files'] == 'y') {
-
-			if ($startGallery && $startGallery == $prefs['fgal_root_user_id'] && ! Perms::get('file gallery', $startGallery)->admin_trackers) {
-				$startGallery = (int) TikiLib::lib('filegal')->get_user_file_gallery();
-			}
-			$userRootId = $prefs['fgal_root_user_id'];
-
-			if ($startGallery != $userRootId) {
-
-				$gal_info = TikiLib::lib('filegal')->get_file_gallery_info($startGallery);
-				if ($gal_info['type'] == 'user') {
-					$startRoot = count($opts['roots']);
-				}
-			} else {
-				$startRoot = count($opts['roots']);
-			}
-			$opts['roots'][] = array_merge(
+			'roots' => array(
 				array(
-					'path' => $userRootId,		// should be $prefs['fgal_root_id']?
-				),
-				$rootDefaults
-			);
+					'driver'        => 'TikiFiles',   								// driver for accessing file system (REQUIRED)
+					'path'          => "{$this->fileController->defaultGalleryId}",	// path to files (REQUIRED)
+					'disabled'		=> $disabled,
 
-		}
-
-		if ($startGallery) {
-			$opts['startRoot'] = $startRoot;
-			$d = $opts['roots'][$startRoot]['path'] == $startGallery ? '' : 'd_';	// needs to be the cached name in elfinder (with 'd_' in front) unless it's the root id
-			$opts['roots'][$startRoot]['startPath'] = $d . $startGallery;
+//					'URL'           => 												// URL to files (seems not to be REQUIRED)
+					'accessControl' => array($this, 'elFinderAccess'),				// obey tiki perms
+				)
+			)
+		);
+		if ($input->defaultGalleryId->int()) {
+			$opts['roots'][0]['startPath'] = "d_{$input->defaultGalleryId->int()}";	// needs to be the cached name in elfinder (with 'd_' in front)
+			$opts['roots'][0]['accessControlData'] = array('startPath' => $input->defaultGalleryId->int(), 'deepGallerySearch' => $input->deepGallerySearch->int(), 'parentIds' => $parentIds);
+		} else if (!$input->deepGallerySearch->int()) {
+			$opts['roots'][0]['startPath'] = $this->fileController->defaultGalleryId;	// root path just needs the id
+			$opts['roots'][0]['accessControlData'] = array('startPath' => $this->fileController->defaultGalleryId, 'deepGallerySearch' => $input->deepGallerySearch->int(), 'parentIds' => $parentIds);
 		}
 
 /* thumb size not working due to css issues - tried this in setup/javascript.php but needs extensive css overhaul to get looking right
@@ -147,18 +99,12 @@ class Services_File_FinderController
 
 		if ($input->cmd->text() === 'tikiFileFromHash') {	// intercept tiki only commands
 			$fileId = $elFinder->realpath($input->hash->text());
-			$filegallib = TikiLib::lib('filegal');
-			$info = $filegallib->get_file(str_replace('f_', '', $fileId));
-			$info['wiki_syntax'] = $filegallib->getWikiSyntax($info['galleryId'], $info);
+			$info = TikiLib::lib('filegal')->get_file(str_replace('f_', '', $fileId));
 			return $info;
 		}
 
-		// elfinder needs "raw" $_GET or $_POST
-		if ($_SERVER["REQUEST_METHOD"] == 'POST') {
-			$_POST = $input->asArray();
-		} else {
-			$_GET = $input->asArray();
-		}
+		// elfinder needs "raw" $_GET
+		$_GET = $input->asArray();
 
 		$connector->run();
 		// deals with response
@@ -176,8 +122,7 @@ class Services_File_FinderController
 	 * @param $volume
 	 * @return bool|null
 	 */
-	function elFinderAccess($attr, $path, $data, $volume)
-	{
+	function elFinderAccess($attr, $path, $data, $volume) {
 
 		$ar = explode('_', $path);
 		$visible = true;		// for now
@@ -187,7 +132,7 @@ class Services_File_FinderController
 			if ($isgal) {
 				$visible = $this->isVisible($id, $data, $isgal);
 			} else {
-				$visible = $this->isVisible($this->parentIds['files'][$id], $data, $isgal);
+				$visible = $this->isVisible($data['parentIds']['files'][$id], $data, $isgal);
 			}
 		} else {
 			$isgal = true;
@@ -195,29 +140,18 @@ class Services_File_FinderController
 		}
 
 		if ($isgal) {
-			//$objectType = 'file gallery';
-			$galleryId = $id;
+			$objectType = 'file gallery';
 		} else {
 			$objectType = 'file';
-			// Seems individual file perms aren't set so use the gallery ones
-			$galleryId = $this->parentIds['files'][$id];
 		}
 
-		$perms = TikiLib::lib('tiki')->get_perm_object($galleryId, 'file gallery', TikiLib::lib('filegal')->get_file_gallery_info($galleryId));
+		$perms = Perms::get(array( 'type' => $objectType, 'object' => $id ));
 
 		switch($attr) {
 			case 'read':
-				if ($isgal) {
-					return $visible && $perms['tiki_p_view_file_gallery'] === 'y';
-				} else {
-					return $visible && $perms['tiki_p_download_files'] === 'y';
-				}
+				return $visible && $perms->download_files;
 			case 'write':
-				if ($isgal) {
-					return $visible && ($perms['tiki_p_admin_file_galleries'] === 'y' || $perms['tiki_p_upload_files'] === 'y');
-				} else {
-					return $visible && ($perms['tiki_p_edit_gallery_file'] === 'y' || $perms['tiki_p_remove_files'] === 'y');
-				}
+				return $visible && $perms->edit_gallery_file;
 			case 'locked':
 			case 'hidden':
 				return !$visible;
@@ -236,7 +170,7 @@ class Services_File_FinderController
 				$visible = true;
 				return $visible;
 			} else {
-				$isParentOf = $this->isParentOf($id, $data['startPath'], $this->parentIds['galleries']);
+				$isParentOf = $this->isParentOf($id, $data['startPath'], $data['parentIds']['galleries']);
 
 				if (isset($data['deepGallerySearch']) && $data['deepGallerySearch'] == 0) { // not startPath and not deep
 					if ($isParentOf && $isgal) {
@@ -252,13 +186,13 @@ class Services_File_FinderController
 					} else {
 						$visible = false;
 					}
-					$pid = $this->parentIds['galleries'][$id];
+					$pid = $data['parentIds']['galleries'][$id];
 					while ($pid) {
 						if ($pid == $data['startPath']) {
 							$visible = true;
 							break;
 						}
-						$pid = $this->parentIds['galleries'][$pid];
+						$pid = $data['parentIds']['galleries'][$pid];
 					}
 					return $visible;
 				}
@@ -267,8 +201,7 @@ class Services_File_FinderController
 		return $visible;
 	}
 
-	private function isParentOf( $id, $child, $parentIds)
-	{
+	private function isParentOf( $id, $child, $parentIds) {
 		if (!isset($parentIds[$child])) {
 			return false;
 		} else if ($parentIds[$child] == $id) {

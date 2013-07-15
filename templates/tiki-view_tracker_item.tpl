@@ -82,7 +82,7 @@
 
 				{foreach from=$fields key=ix item=cur_field}
 					{if !($tracker_info.doNotShowEmptyField eq 'y' and empty($cur_field.value) and empty($cur_field.cat) and empty($cur_field.links) and
-							$cur_field.type ne 's' and $cur_field.type ne 'STARS' and $cur_field.type ne 'h' and $cur_field.type ne 'l' and $cur_field.type ne 'W') and
+							$cur_field.type ne 's' and $cur_field.type ne 'STARS' and $cur_field.type ne 'h' and $cur_field.type ne 'l') and
 							($cur_field.options_array[0] ne 'password')}
 					
 						<tr class="field{$cur_field.fieldId}">
@@ -110,13 +110,13 @@
 				{if $tracker_info.showCreatedView eq 'y'}
 					<tr>
 						<td class="formlabel">{tr}Created{/tr}</td>
-						<td colspan="3" class="formcontent">{$info.created|tiki_long_datetime}{if $tracker_info.showCreatedBy eq 'y'}<br>by {if $prefs.user_show_realnames eq 'y'}{if empty($info.createdBy)}Unknown{else}{$info.createdBy|username}{/if}{else}{if empty($info.createdBy)}Unknown{else}{$info.createdBy}{/if}{/if}{/if}</td>
+						<td colspan="3" class="formcontent">{$info.created|tiki_long_datetime}{if $tracker_info.showCreatedBy eq 'y'}<br />by {if $prefs.user_show_realnames eq 'y'}{if empty($info.createdBy)}Unknown{else}{$info.createdBy|username}{/if}{else}{if empty($info.createdBy)}Unknown{else}{$info.createdBy}{/if}{/if}{/if}</td>
 					</tr>
 				{/if}
 				{if $tracker_info.showLastModifView eq 'y'}
 					<tr>
 						<td class="formlabel">{tr}LastModif{/tr}</td>
-						<td colspan="3" class="formcontent">{$info.lastModif|tiki_long_datetime}{if $tracker_info.showLastModifBy eq 'y'}<br>by {if $prefs.user_show_realnames eq 'y'}{if empty($info.lastModifBy)}Unknown{else}{$info.lastModifBy|username}{/if}{else}{if empty($info.lastModifBy)}Unknown{else}{$info.lastModifBy}{/if}{/if}{/if}</td>
+						<td colspan="3" class="formcontent">{$info.lastModif|tiki_long_datetime}{if $tracker_info.showLastModifBy eq 'y'}<br />by {if $prefs.user_show_realnames eq 'y'}{if empty($info.lastModifBy)}Unknown{else}{$info.lastModifBy|username}{/if}{else}{if empty($info.lastModifBy)}Unknown{else}{$info.lastModifBy}{/if}{/if}{/if}</td>
 					</tr>
 				{/if}
 			</table>
@@ -162,7 +162,7 @@
 
 			{if  $tiki_p_admin_trackers eq 'y' and !empty($trackers)}	
 				<form>
-					<input type="hidden" name="itemId" value="{$itemId}">
+					<input type="hidden" name="itemId" value="{$itemId}" />
 					<select name="moveto">
 						{foreach from=$trackers item=tracker}
 							{if $tracker.trackerId ne $trackerId}
@@ -170,27 +170,27 @@
 							{/if}
 						{/foreach}
 					</select>
-					<input type="submit" name="go" value="{tr}Move to another tracker{/tr}">
+					<input type="submit" name="go" value="{tr}Move to another tracker{/tr}" />
 				</form>
 			{/if}
 
 			<form enctype="multipart/form-data" action="tiki-view_tracker_item.php" method="post" id="editItemForm">
 				{if $special}
-					<input type="hidden" name="view" value=" {$special}">
+					<input type="hidden" name="view" value=" {$special}" />
 				{else}
-					<input type="hidden" name="trackerId" value="{$trackerId|escape}">
-					<input type="hidden" name="itemId" value="{$itemId|escape}">
+					<input type="hidden" name="trackerId" value="{$trackerId|escape}" />
+					<input type="hidden" name="itemId" value="{$itemId|escape}" />
 				{/if}
 				{if $from}
-					<input type="hidden" name="from" value="{$from}">
+					<input type="hidden" name="from" value="{$from}" />
 				{/if}
 				{section name=ix loop=$fields}
 					{if !empty($fields[ix].value)}
-						<input type="hidden" name="{$fields[ix].name|escape}" value="{$fields[ix].value|escape}">
+						<input type="hidden" name="{$fields[ix].name|escape}" value="{$fields[ix].value|escape}" />
 					{/if}
 				{/section}
 				{if $cant}
-					<input type="hidden" name="cant" value="{$cant}">
+					<input type="hidden" name="cant" value="{$cant}" />
 				{/if}
 
 				{remarksbox type="note"}<em class='mandatory_note'>{tr}Fields marked with a * are mandatory.{/tr}</em>{/remarksbox}
@@ -199,10 +199,10 @@
 					<tr>
 						<td colspan="2">
 							{if count($fields) >= 5}
-								<input type="submit" name="save" value="{tr}Save{/tr}" onclick="needToConfirm=false">
+								<input type="submit" name="save" value="{tr}Save{/tr}" onclick="needToConfirm=false" />
 								{* --------------------------- to return to tracker list after saving --------- *}
 								{if $canView}
-									<input type="submit" name="save_return" value="{tr}Save{/tr} &amp; {tr}Back to Items list{/tr}" onclick="needToConfirm=false">
+									<input type="submit" name="save_return" value="{tr}Save{/tr} &amp; {tr}Back to Items list{/tr}" onclick="needToConfirm=false" />
 									{if $canRemove}
 										<a class="link" href="tiki-view_tracker.php?trackerId={$trackerId}&amp;remove={$itemId}" title="{tr}Delete{/tr}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>
 									{/if}
@@ -269,10 +269,10 @@
 				{/if}
 				<tr>
 					<td colspan="2">
-						<input type="submit" name="save" value="{tr}Save{/tr}" onclick="needToConfirm=false">
+						<input type="submit" name="save" value="{tr}Save{/tr}" onclick="needToConfirm=false" />
 						{* --------------------------- to return to tracker list after saving --------- *}
 						{if $canView}
-							<input type="submit" name="save_return" value="{tr}Save{/tr} &amp; {tr}Back to Items List{/tr}" onclick="needToConfirm=false">
+							<input type="submit" name="save_return" value="{tr}Save{/tr} &amp; {tr}Back to Items List{/tr}" onclick="needToConfirm=false" />
 						{/if}
 						{if $canRemove}
 							<a class="link" href="tiki-view_tracker.php?trackerId={$trackerId}&amp;remove={$itemId}" title="{tr}Delete{/tr}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>
@@ -302,15 +302,15 @@
 						{assign var=valvar value=$cur_field.options_array[tl]|regex_replace:"/^[^:]*:/":""|escape}
 						{if $info.$valvar eq ''}
 							{assign var=valvar value=$cur_field.options_array[tl]|regex_replace:"/^[^\=]*\=/":""|escape}
-							<input type="hidden" name="{$cur_field.options_array[tl]|regex_replace:"/\=.*$/":""|escape}" value="{$valvar|escape}">
+							<input type="hidden" name="{$cur_field.options_array[tl]|regex_replace:"/\=.*$/":""|escape}" value="{$valvar|escape}" />
 						{else}
-							<input type="hidden" name="{$cur_field.options_array[tl]|regex_replace:"/:.*$/":""|escape}" value="{$info.$valvar|escape}">
+							<input type="hidden" name="{$cur_field.options_array[tl]|regex_replace:"/:.*$/":""|escape}" value="{$info.$valvar|escape}" />
 						{/if}
 					{/section}
 					<table class="formcolor">
 						<tr>
 							<td>{$cur_field.name}</td>
-							<td><input type="submit" name="trck_act" value="{$cur_field.options_array[0]|escape}" ></td>
+							<td><input type="submit" name="trck_act" value="{$cur_field.options_array[0]|escape}" /></td>
 						<tr>
 					</table>
 					</form>
@@ -327,7 +327,7 @@
 {/if}
 
 {/tabset}
-<br><br>
+<br /><br />
 
 {if isset($print_page) && $print_page eq 'y'}
 	{tr}The original document is available at{/tr} <a href="{$base_url|escape}{$itemId|sefurl:trackeritem}">{$base_url|escape}{$itemId|sefurl:trackeritem}</a>

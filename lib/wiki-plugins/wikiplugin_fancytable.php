@@ -7,55 +7,6 @@
 
 function wikiplugin_fancytable_info()
 {
-
-	$ts = new Table_Plugin;
-	$ts->createParams();
-	$params = array_merge(
-		array(
-			 'head' => array(
-				 'required' => false,
-				 'name' => tra('Heading Row'),
-				 'description' => tra('Header rows of the table. Use >> to separate multiple rows.'),
-				 'default' => '',
-			 ),
-			 'headclass' => array(
-				 'required' => false,
-				 'name' => tra('Heading CSS Class'),
-				 'description' => tra('CSS class to apply to the heading row.'),
-				 'default' => '',
-			 ),
-			 'headaligns' => array(
-				 'required' => false,
-				 'name' => tra('Header Horizontal Align'),
-				 'description' => tra('Horizontal alignments for header cells separated by |. Choices: left, right, center, justify.'),
-				 'default' => '',
-			 ),
-			 'headvaligns' => array(
-				 'required' => false,
-				 'name' => tra('Header Vertical Align'),
-				 'description' => tra('Vertical alignments for header cells separated by |. Choices: top, middle, bottom, baseline.'),
-				 'default' => '',
-			 ),
-			 'colwidths' => array(
-				 'required' => false,
-				 'name' => tra('Column Widths'),
-				 'description' => tra('Column widths followed by px for pixels or % for percentages. Each column separated by |.'),
-				 'default' => '',
-			 ),
-			 'colaligns' => array(
-				 'required' => false,
-				 'name' => tra('Cell Horizontal Align'),
-				 'description' => tra('Table body column horizontal alignments separated by |. Choices: left, right, center, justify.'),
-				 'default' => '',
-			 ),
-			 'colvaligns' => array(
-				 'required' => false,
-				 'name' => tra('Cell Vertical Align'),
-				 'description' => tra('Table body column vertical alignments separated by |. Choices: top, middle, bottom, baseline.'),
-				 'default' => '',
-			 ),
-		), $ts->params
-	);
 	return array(
 		'name' => tra('Fancy Table'),
 		'documentation' => 'PluginFancyTable',
@@ -64,7 +15,67 @@ function wikiplugin_fancytable_info()
 		'body' => tra('Rows separated by >> in the header; for the table body, one row per line. Cells separated by | in both cases.'),
 		'icon' => 'img/icons/table.png',
 		'tags' => array( 'basic' ),
-		'params' => $params,
+		'params' => array(
+			'head' => array(
+				'required' => false,
+				'name' => tra('Heading Row'),
+				'description' => tra('Header rows of the table. Use >> to separate multiple rows.'),
+				'default' => '',
+			),
+			'headclass' => array(
+				'required' => false,
+				'name' => tra('Heading CSS Class'),
+				'description' => tra('CSS class to apply to the heading row.'),
+				'default' => '',
+			),
+			'headaligns' => array(
+				'required' => false,
+				'name' => tra('Header Horizontal Align'),
+				'description' => tra('Horizontal alignments for header cells separated by |. Choices: left, right, center, justify.'),
+				'default' => '',
+			),
+			'headvaligns' => array(
+				'required' => false,
+				'name' => tra('Header Vertical Align'),
+				'description' => tra('Vertical alignments for header cells separated by |. Choices: top, middle, bottom, baseline.'),
+				'default' => '',
+			),
+			'sortable' => array(
+				'required' => false,
+				'name' => tra('Column Sort'),
+				'description' => tra('Indicate whether columns are sortable or not (not sortable by default)'),
+				'default' => 'n',
+				'options' => array(
+					array('text' => '', 'value' => ''),
+					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => tra('No'), 'value' => 'n')
+				),
+			),
+			'sortList' => array(
+				'required' => false,
+				'name' => tra('Pre-sorted Columns'),
+				'description' => tra('Bracketed numbers for column number and sort direction (0 = ascending, 1 = descending), for example: [0,0],[1,0]'),
+				'default' => '',
+			),
+			'colwidths' => array(
+				'required' => false,
+				'name' => tra('Column Widths'),
+				'description' => tra('Column widths followed by px for pixels or % for percentages. Each column separated by |.'),
+				'default' => '',
+			),
+			'colaligns' => array(
+				'required' => false,
+				'name' => tra('Cell Horizontal Align'),
+				'description' => tra('Table body column horizontal alignments separated by |. Choices: left, right, center, justify.'),
+				'default' => '',
+			),
+			'colvaligns' => array(
+				'required' => false,
+				'name' => tra('Cell Vertical Align'),
+				'description' => tra('Table body column vertical alignments separated by |. Choices: top, middle, bottom, baseline.'),
+				'default' => '',
+			),
+		),
 	);
 }
 
@@ -77,49 +88,14 @@ function wikiplugin_fancytable($data, $params)
 	++$iFancytable;
 	extract($params, EXTR_SKIP);
 	if (empty($sortable)) $sortable = 'n';
-	$msg = '';
-
-	if ((isset($sortable) && $sortable != 'n')) {
-		$ts = new Table_Plugin;
-		$ts->setSettings(
-			'fancytable_' . $iFancytable, $sortable,
-			isset($sortList) ? $sortList : null,
-			isset($tsfilters) ? $tsfilters : null,
-			isset($tsfilteroptions) ? $tsfilteroptions : null,
-			isset($tspaginate) ? $tspaginate : null
-		);
-		if (is_array($ts->settings)) {
-			Table_Factory::build('plugin', $ts->settings);
-			$sort = true;
-		} else {
-			$sort = false;
-		}
-
-		if ($sort === false) {
-			if ($prefs['feature_jquery_tablesorter'] === 'n') {
-				$msg = tra('The jQuery Sortable Tables feature must be activated for the sort feature to work.');
-			} elseif ($prefs['disableJavascript'] === 'y') {
-				$msg = tra('Javascript must be enabled for the sort feature to work.');
-			} else {
-				$msg = tra('Unable to load the jQuery Sortable Tables feature.');
-			}
-		}
-	} else {
-		$sort = false;
-	}
 
 	//Start the table
-	$wret = '<div id="fancytable_' . $iFancytable . '" style="visibility:hidden">' . "\r\t";
-	$wret .= '<table class="normal" id="fancytable_' . $iFancytable . '">' . "\r\t";
+	$wret = '<table class="normal'.($sortable=='y'? ' fancysort':'').'" id="fancytable_'.$iFancytable.'">' . "\r\t";
 
 	//Header
 	if (isset($head)) {
-		//set header class
 		if (!empty($headclass)) {
-			$tdhdr = "\r\t\t\t" . '<th class="' . $headclass;
-			if (!$sort) {
-				$tdhdr .= '"';
-			}
+			$tdhdr = "\r\t\t\t<th class=\"$headclass\"";
 		} else {
 			$tdhdr = "\r\t\t\t<th";
 		}
@@ -127,19 +103,10 @@ function wikiplugin_fancytable($data, $params)
 		//pipes (| or ~|~) inside aren't mistaken for cell dividers
 		preprocess_section($head, $tagremove, $pluginremove);
 
-		if ($sort) {
-			$type = 'hs';
-		} else {
-			$type = 'h';
-		}
 		//now create header table rows
 		$headrows = process_section(
-			$head,
-			$type, '>>',
-			$tdhdr, '</th>',
-			isset($colwidths) ? $colwidths : '',
-			isset($headaligns) ? $headaligns : '',
-			isset($headvaligns) ? $headvaligns : ''
+			$head, 'h', '>>', $tdhdr, '</th>', isset($colwidths) ? $colwidths : '',
+			isset($headaligns) ? $headaligns : '', isset($headvaligns) ? $headvaligns : ''
 		);
 
 		//restore original tags and plugin syntax
@@ -153,21 +120,15 @@ function wikiplugin_fancytable($data, $params)
 	//pipes (| or ~|~) inside aren't mistaken for cell dividers
 	preprocess_section($data, $tagremove, $pluginremove);
 
-	if ($sort) {
-		$type = 'bs';	//sortable body rows - do not assign odd/even class to these since jquery will do it
+	if ($sortable == 'y' && $prefs['disableJavascript'] == 'n' && $prefs['feature_jquery_tablesorter'] == 'y') {
+		$type = 's';	//sortable rows - do not assign odd/even class to these since jquery will do it
 	} else {
-		$type = 'b';	//plain body rows
+		$type = 'r';	//plain rows
 	}
 	//now create table body rows
 	$bodyrows = process_section(
-		$data,
-		$type,
-		"\n",
-		"\r\t\t\t" . '<td',
-		'</td>',
-		isset($colwidths) ? $colwidths : '',
-		isset($colaligns) ? $colaligns : '',
-		isset($colvaligns) ? $colvaligns : ''
+		$data, $type, "\n", '', '</td>', isset($colwidths) ? $colwidths : '',
+		isset($colaligns) ? $colaligns : '', isset($colvaligns) ? $colvaligns : ''
 	);
 
 	//restore original tags and plugin syntax
@@ -179,7 +140,19 @@ function wikiplugin_fancytable($data, $params)
 	if (isset($head)) {
 		$wret .= "\r\t" . '</tbody>';
 	}
-	$wret .= "\r" . '</table></div>' . "\r" . $msg;
+	$wret .= "\r" . '</table>' . "\r";
+	if ($sortable == 'y' && $prefs['disableJavascript'] == 'n') {
+		if ($prefs['feature_jquery_tablesorter'] != 'y') {
+			$wret .= tra('The feature must be activated:').' feature_jquery_tablesorter';
+		}
+		if (empty($sortList)) {
+			$js = '$("#fancytable_'.$iFancytable.'").tablesorter({widgets: ["zebra"]});';
+		} else {
+			$js = '$("#fancytable_'.$iFancytable.'").tablesorter({sortList:['.$sortList.'], widgets: ["zebra"]});';
+		}
+		global $headerlib;
+		$headerlib->add_jq_onready($js);
+	}
 	return $wret;
 }
 
@@ -314,7 +287,7 @@ function process_section ($data, $type, $line_sep, $cellbeg, $cellend, $widths, 
 	foreach ($lines as $line) {
 		$line = trim($line);
 		if (strlen($line) > 0) {
-			if ($type == 'b') {
+			if ($type == 'r') {
 				if ($row_is_odd) {
 					$cellbeg = "\r\t\t\t" . '<td class="odd"';
 					$row_is_odd = false;
@@ -322,9 +295,9 @@ function process_section ($data, $type, $line_sep, $cellbeg, $cellend, $widths, 
 					$cellbeg = "\r\t\t\t" . '<td class="even"';
 					$row_is_odd = true;
 				}
-				//don't set odd/even class if tablesorter is on because jquery will add it
-				//and the classes won't alternate correctly if added here too
-			} elseif ($type == 'bs') {
+			//don't set odd/even class if tablesorter is on because jquery will add it
+			//and the classes won't alternate correctly if added here too
+			} elseif ($type == 's') {
 				$cellbeg = "\r\t\t\t" . '<td';
 			}
 			$c = 0;
@@ -355,16 +328,16 @@ function process_section ($data, $type, $line_sep, $cellbeg, $cellend, $widths, 
 						$rowspan = ' rowspan="' . $rnum . '"';
 						//If there's another rowspan still in force, bump up the column number
 						if (isset(${$colnum}['col']) && ${$colnum}['col'] == $c) {
-							if ((${$colnum}['span'] - ($l - ${$colnum}['line'])) > 0) $c++;
+							if ((${$colnum}['span'] - ($l - ${$colnum}['line'])) > 0) {
+								$c++;
+							}
 						}
 						//Note the info for this new rowspan
-						${$colnum}['col'] = $c;
 						${$colnum}['line'] = $l;
+						${$colnum}['col'] = $c;
 						${$colnum}['span'] = $rnum;
 					}
 				}
-
-				//set column style
 				$colstyle = '';
 				if (!empty($widths) || !empty($aligns) || !empty($valigns)) {
 					//If there's another rowspan still in force, bump up the column number
@@ -376,9 +349,9 @@ function process_section ($data, $type, $line_sep, $cellbeg, $cellend, $widths, 
 					$colstyle .= !empty($aligns[$c]) ? ' text-align: ' . $aligns[$c] . ';' : '';
 					$colstyle .= !empty($valigns[$c]) ? ' vertical-align: ' . $valigns[$c] : '';
 					$colstyle .= '"';
+					$c++;//increment column number
 				}
 				$row .= $cellbeg . $colspan . $rowspan . $colstyle . '>' . $column . $cellend;
-				$c++;//increment column number
 			}
 			$wret .= $trbeg . $row . $trend;
 		}

@@ -91,5 +91,3 @@ if ($prefs['users_prefs_display_timezone'] == 'Site'
 		$prefs['display_timezone'] = $prefs['server_timezone'];
 	}
 }
-
-$smarty->refreshLanguage();

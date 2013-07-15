@@ -80,10 +80,6 @@ a.admbox.off img {
 	text-align: left;
 }
 
-.adminoptionpopup a {
-	display: block;
-}
-
 .labelColumns label {
 	display: block;
 	float: left;
@@ -374,21 +370,12 @@ a.admbox.off img {
 	display: none;
 }
 
-#save_modules a {
-	background-color: #faa;
-	background-image: none;
+#save_modules {
+	display: none;
 }
 
-/* make empty module zones more "droppable" */
-
-.ui-droppable.modules, .ui-sortable.modules {
-	min-height: 10ex;
-	-webkit-box-shadow: inset 0px 0px 5px 5px rgba(0, 0, 0, .1);
-	box-shadow: inset 0px 0px 5px 5px rgba(0, 0, 0, .1);
-}
-
-#right_left.ui-sortable, #right_modules.ui-sortable {
-	min-height: 100ex;
+.ui-droppable.modules {
+	min-height: 1em;
 }
 
 /* end modules revamp */
@@ -496,12 +483,6 @@ a.admbox.off img {
 }
 #export_to_yaml label {
 	margin-left: 1em;
-}
-
-#export_to_yaml .wikitext {
-	height: 30em;
-	overflow: auto;
-	padding: .5em;
 }
 
 /* end profiles */

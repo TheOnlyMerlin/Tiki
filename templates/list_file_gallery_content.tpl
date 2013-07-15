@@ -18,8 +18,8 @@
 			{else}
 				{assign var=nbCols value=1}
 			{/if}
-			<th style="width:1%">&nbsp;
-				
+			<th style="width:1%">
+				&nbsp;
 			</th>
 		{/if}
 
@@ -49,7 +49,7 @@
 						{if isset($other_columns)}
 							{$other_columns}
 						{/if}
-						{self_link sort_mode=$propname|cat:'_asc'}{$fgal_listing_conf.$propname.name}{/self_link}<br>
+						{self_link sort_mode=$propname|cat:'_asc'}{$fgal_listing_conf.$propname.name}{/self_link}<br />
 					{/capture}
 				{/if}
 			{/if}
@@ -105,7 +105,7 @@
 						<div class='box-data'>
 							{if !empty($other_columns_selected)}
 								{self_link sort_mode='NULL'}{tr}No Additional Sort{/tr}{/self_link}
-								<hr>
+								<hr />
 							{/if}
 							{$other_columns}
 						</div>
@@ -166,7 +166,7 @@
 			{capture name=over_preview}{strip}
 				{if $files[changes].type|truncate:6:'':true eq 'image/'}
 					<div class='opaque'>
-						<img src="{$files[changes].id|sefurl:thumbnail}">
+						<img src="{$files[changes].id|sefurl:thumbnail}" />
 					</div>
 				{/if}
 			{/strip}{/capture}
@@ -241,7 +241,7 @@
 							<div>
 								{if isset($files[changes].share.data)}
 									{foreach item=prop key=propname from=$files[changes].share.data}
-										<b>{$prop.email}</b>: {$prop.visit} / {$prop.maxhits}<br>
+										<b>{$prop.email}</b>: {$prop.visit} / {$prop.maxhits}<br />
 										{assign var=nb_over_share value=$nb_over_share+1}
 									{/foreach}
 								{/if}
@@ -269,7 +269,7 @@
 					{/if}
 					<input type="checkbox" name="{$checkname}[]" value="{$files[changes].id|escape}"
 						{if isset($smarty.request.$checkname) and $smarty.request.$checkname
-							and in_array($files[changes].id,$smarty.request.$checkname)}checked="checked"{/if}>
+							and in_array($files[changes].id,$smarty.request.$checkname)}checked="checked"{/if} />
 				</td>
 			{/if}
 
@@ -288,7 +288,7 @@
 			{if isset($show_thumb) and $show_thumb eq 'y'}
 				<td>
 					{if $files[changes].isgal == 0}
-						<a href="{if $absurl == 'y'}{$base_url}{/if}tiki-download_file.php?fileId={$files[changes].fileId}&display"><img src="{if $absurl == 'y'}{$base_url}{/if}tiki-download_file.php?fileId={$files[changes].fileId}&thumbnail"></a>
+						<a href="{if $absurl == 'y'}{$base_url}{/if}tiki-download_file.php?fileId={$files[changes].fileId}&display"><img src="{if $absurl == 'y'}{$base_url}{/if}tiki-download_file.php?fileId={$files[changes].fileId}&thumbnail" /></a>
 					{/if}
 				</td>
 			{/if}
@@ -355,6 +355,13 @@
 								{assign var=desc value=$files[changes].description|nl2br}
 							{/if}
 							{assign var=propval value="$propval<br><span class=\"description\">`$desc`</span>"}
+						{/if}
+						{if $files[changes].isgal eq 1 and $files[changes].type eq 'user'}
+							{if $files[changes].user eq $user}
+								{assign var=propval value="<strong>{tr}My Files{/tr}</strong>"}
+							{else}
+								{assign var=propval value="{tr}Files of {/tr}"|cat:$files[changes].user}
+							{/if}
 						{/if}
 					{elseif $propname eq 'created' or $propname eq 'lastModif' or $propname eq 'lastDownload'}
 						{if empty($propval)}
@@ -484,5 +491,5 @@
 
 </table>
 {if $prefs.feature_jquery_tooltips eq 'y'}
-	{jq}if (jqueryTiki.tooltips) { $('a.fgalbacklink').cluetip({showTitle:false, sticky:true}); }{/jq}
+	{jq}$('a.fgalbacklink').cluetip({showTitle:false, sticky:true});{/jq}
 {/if}

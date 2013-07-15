@@ -68,8 +68,7 @@ class CategLib extends ObjectLib
 	}
 	function get_category_name($categId,$real=false)
 	{
-		if ( $categId === 'orphan') return tr('None');
-	    if ( $categId==0 ) return tr('Top');
+	    if ( $categId==0 ) return 'Top';
 		$query = "select `name`,`parentId` from `tiki_categories` where `categId`=?";
 		$result=$this->query($query, array((int) $categId));
 		$res = $result->fetchRow();
@@ -138,16 +137,6 @@ class CategLib extends ObjectLib
 
 		$this->remove_category_from_watchlists($categId);
 
-		$logslib = TikiLib::lib('logs');
-		$logslib->add_action(
-			'Removed',
-			$categId,
-			'category',
-			array(
-				'name' => $categoryName,
-			)
-		);
-
 		return true;
 	}
 
@@ -192,16 +181,6 @@ class CategLib extends ObjectLib
 			"action"=>"category updated","oldCategoryName"=>$oldCategoryName, "oldCategoryPath"=>$oldCategoryPath,
 			"oldDescription"=>$oldDescription, "oldParentId" => $parentId, "oldParentName" => $oldParentName);
 		$this->notify($values);
-
-		$logslib = TikiLib::lib('logs');
-		$logslib->add_action(
-			'Updated',
-			$categId,
-			'category',
-			array(
-				'name' => $name,
-			)
-		);
 	}
 
 	// Throws an Exception if the category name conflicts
@@ -236,17 +215,6 @@ class CategLib extends ObjectLib
 			"description"=>$description, "parentId" => $parentId, "parentName" => $this->get_category_name($parentId),
 			"action"=>"category created");
 		$this->notify($values);
-
-		$logslib = TikiLib::lib('logs');
-		$logslib->add_action(
-			'Created',
-			$id,
-			'category',
-			array(
-				'name' => $name,
-			)
-		);
-
 		return $id;
 	}
 
@@ -312,31 +280,7 @@ class CategLib extends ObjectLib
 		return $id;
 	}
 
-	/**
-	 * categorizePage will do the required steps to categorize a wiki page
-	 *
-	 * @param mixed $pageName Page to categorize
-	 * @param mixed $categId CategoryId
-	 * @return nothing
-	 *
-	 */	
-	function categorizePage($pageName, $categId, $user = '')
-	{
-		global $objectlib;
-
-		// Categorize the new page
-		$objectId = $objectlib->add_object('wiki page', $pageName);
-
-		$description = NULL;
-		$name = NULL;
-		$href = NULL;
-		$checkHandled = true;
-		$this->add_categorized_object('wiki page', $pageName, $description, $name, $href, $checkHandled);
-
-		$this->categorize($objectId, $categId, $user);
-	}
-
-	function categorize($catObjectId, $categId, $user = '')
+	function categorize($catObjectId, $categId)
 	{
 		global $prefs;
 		if (empty($categId)) {
@@ -353,7 +297,7 @@ class CategLib extends ObjectLib
 		$info = TikiLib::lib('object')->get_object_via_objectid($catObjectId);
 		if ($prefs['feature_actionlog'] == 'y') {
 			global $logslib; include_once('lib/logs/logslib.php');
-			$logslib->add_action('Categorized', $info['itemId'], $info['type'], "categId=$categId", $user);
+			$logslib->add_action('Categorized', $info['itemId'], $info['type'], "categId=$categId");
 		}
 		require_once 'lib/search/refresh-functions.php';
 		refresh_index($info['type'], $info['itemId']);
@@ -388,7 +332,7 @@ class CategLib extends ObjectLib
 			if ($category == false) return false;
 			return array_merge(array($categId), $category['descendants']);
 		} else {
-			return array_keys($this->getCategories(NULL, false, false));
+			return $this->getCategories(NULL, false, false);
 		}
 	}
 
@@ -937,12 +881,12 @@ class CategLib extends ObjectLib
    	{
 		global $smarty, $prefs;
 
-		if (!isset($prefs['categorypath_excluded'])) {
+		if(!isset($prefs['categorypath_excluded'])) {
 			return false;
 		}
 
 		$excluded = array();
-		if (is_array($prefs['categorypath_excluded'])) {
+		if(is_array($prefs['categorypath_excluded'])) {
 			$excluded = $prefs['categorypath_excluded'];
 		} else {
 			$excluded = preg_split('/,/', $prefs['categorypath_excluded']);
@@ -1473,6 +1417,7 @@ class CategLib extends ObjectLib
 			}
 		}
 
+		require_once 'lib/core/Category/Manipulator.php';
 		$manip = new Category_Manipulator($objType, $objId);
 		if ($override_perms) {
 			$manip->overrideChecks();

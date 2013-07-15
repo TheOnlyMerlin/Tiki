@@ -29,8 +29,7 @@ class NlLib extends TikiLib
 			$allowArticleClip = 'y',
 			$autoArticleClip = 'n',
 			$articleClipRange = null,
-			$articleClipTypes = '',
-			$emptyClipBlocksSend = 'n'
+			$articleClipTypes = ''
 	)
 	{
 		if ($nlId) {
@@ -45,8 +44,7 @@ class NlLib extends TikiLib
 								`allowArticleClip`=?,
 								`autoArticleClip`=?,
 								`articleClipRange`=?,
-								`articleClipTypes`=?,
-								`emptyClipBlocksSend`=?
+								`articleClipTypes`=?
 								where `nlId`=?";
 			$result = $this->query(
 				$query,
@@ -63,7 +61,6 @@ class NlLib extends TikiLib
 						$autoArticleClip,
 						$articleClipRange,
 						$articleClipTypes,
-						$emptyClipBlocksSend,
 						(int) $nlId
 				)
 			);
@@ -441,34 +438,6 @@ class NlLib extends TikiLib
 			$zmail = tiki_get_admin_mail();
 			$zmail->setSubject(tra('Newsletter subscription information at').' '. $_SERVER["SERVER_NAME"]);
 			$zmail->setBodyText($mail_data);
-			//////////////////////////////////////////////////////////////////////////////////
-			//										//
-			// [BUG FIX] hollmeer 2012-11-04: 						//
-			// ADDED html part code	to fix a bug; if html-part not set, code stalls! 	//
-			// must be added in all functions in the file!					//
-			//										//
-			$mail_data_html = "";
-			try {
-				$mail_data_html = $smarty->fetch('mail/confirm_newsletter_subscription_html.tpl');
-			} catch (Exception $e) {
-				// html-template missing; ignore and use text-template below
-			}
-			if ($mail_data_html != '') {
-				//ensure body tags in html part
-				if (stristr($mail_data_html, '</body>') === false) {
-					$mail_data_html = "<body>" . nl2br($mail_data_html) . "</body>";
-				}
-			} else {
-				//no html-template, so just use text-template
-				if (stristr($mail_data, '</body>') === false) {
-					$mail_data_html = "<body>" . nl2br($mail_data) . "</body>";
-				} else {
-					$mail_data_html = $mail_data;
-				}
-			}
-			$zmail->setBodyHtml($mail_data_html);
-			//										//
-			//////////////////////////////////////////////////////////////////////////////////
 			$zmail->addTo($email);
 			try {
 				$zmail->send();
@@ -530,34 +499,6 @@ class NlLib extends TikiLib
 		$zmail->setSubject(sprintf($mail_data, $info["name"], $_SERVER["SERVER_NAME"]));
 		$mail_data = $smarty->fetchLang($lg, 'mail/newsletter_welcome.tpl');
 		$zmail->setBodyText($mail_data);
-		//////////////////////////////////////////////////////////////////////////////////
-		//										//
-		// [BUG FIX] hollmeer 2012-11-04: 						//
-		// ADDED html part code	to fix a bug; if html-part not set, code stalls! 	//
-		// must be added in all functions in the file!					//
-		//										//
-		$mail_data_html = "";
-		try {
-			$mail_data_html = $smarty->fetchLang($lg, 'mail/newsletter_welcome_html.tpl');
-		} catch (Exception $e) {
-			// html-template missing; ignore and use text-template below
-		}
-		if ($mail_data_html != '') {
-			//ensure body tags in html part
-			if (stristr($mail_data_html, '</body>') === false) {
-				$mail_data_html = "<body>" . nl2br($mail_data_html) . "</body>";
-			}
-		} else {
-			//no html-template, so just use text-template
-			if (stristr($mail_data, '</body>') === false) {
-				$mail_data_html = "<body>" . nl2br($mail_data) . "</body>";
-			} else {
-				$mail_data_html = $mail_data;
-			}
-		}
-		$zmail->setBodyHtml($mail_data_html);
-		//										//
-		//////////////////////////////////////////////////////////////////////////////////
 		$zmail->addTo($email);
 
 		try {
@@ -613,34 +554,6 @@ class NlLib extends TikiLib
 			$zmail->setSubject(sprintf($mail_data, $info["name"], $_SERVER["SERVER_NAME"]));
 			$mail_data = $smarty->fetchLang($lg, 'mail/newsletter_byebye.tpl');
 			$zmail->setBodyText($mail_data);
-			//////////////////////////////////////////////////////////////////////////////////
-			//										//
-			// [BUG FIX] hollmeer 2012-11-04: 						//
-			// ADDED html part code	to fix a bug; if html-part not set, code stalls! 	//
-			// must be added in all functions in the file!					//
-			//										//
-			$mail_data_html = "";
-			try {
-				$mail_data_html = $smarty->fetch('mail/newsletter_byebye_subject_html.tpl');
-			} catch (Exception $e) {
-				// html-template missing; ignore and use text-template below
-			}
-			if ($mail_data_html != '') {
-				//ensure body tags in html part
-				if (stristr($mail_data_html, '</body>') === false) {
-					$mail_data_html = "<body>" . nl2br($mail_data_html) . "</body>";
-				}
-			} else {
-				//no html-template, so just use text-template
-				if (stristr($mail_data, '</body>') === false) {
-					$mail_data_html = "<body>" . nl2br($mail_data) . "</body>";
-				} else {
-					$mail_data_html = $mail_data;
-				}
-			}
-			$zmail->setBodyHtml($mail_data_html);
-			//										//
-			//////////////////////////////////////////////////////////////////////////////////
 			$zmail->addTo($email);
 
 			try {
@@ -1231,9 +1144,6 @@ class NlLib extends TikiLib
 				$txtArticleClip = $this->generateTxtVersion($articleClip);
 				$info['datatxt'] = str_replace('~~~articleclip~~~', $txtArticleClip, $info['datatxt']);
 				$html = str_replace('~~~articleclip~~~', $articleClip, $html);
-				if ($articleClip == '<div class="articleclip"></div>' && $nl_info['emptyClipBlocksSend'] == 'y') {
-					return '';
-				}
 			}
 
 			if (stristr($html, '<base') === false) {
@@ -1273,7 +1183,7 @@ class NlLib extends TikiLib
 				$att->mimeType = $f['type'];
 			}
 
-			$zmail->setSubject($info['subject']);
+			$zmail->setSubject($info['subject']); // htmlMimeMail memorised the encoded subject
 
 			$mailcache[$editionId] = array(
 				'zmail' => $zmail,
@@ -1392,9 +1302,6 @@ class NlLib extends TikiLib
 
 			try {
 				$zmail = $this->get_edition_mail($info['editionId'], $us);
-				if (!$zmail) {
-					continue;
-				}
 				$zmail->send();
 				$sent[] = $email;
 				if ($browser) {
