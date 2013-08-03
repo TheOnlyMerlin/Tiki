@@ -468,7 +468,7 @@ function wikiplugin_rr($data, $params) {
 	
 				// Show the cached message for loged user and button to click on refresh if cached content exists and no refresh R is requested
 			if ( !empty($user) && $cached_script == "y" && $rrefresh =="n") {
-					$ret .= "(" . tr("Cached") . ")" . ' <a href="' . curPageURL() . '&rrefresh=y' . '" target="_self">' . '<img src=img/icons/arrow_refresh.png alt=Refresh></a>';
+					$ret .= "(" . tr("Cached R") . ")" . ' <a href="' . curPageURL() . '&rrefresh=y' . '" target="_self">' . '<img src=img/icons/arrow_refresh.png alt=Refresh></a>';
 		 	}
 
 
