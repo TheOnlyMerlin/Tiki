@@ -333,6 +333,14 @@ function wikiplugin_rr($data, $params) {
 		// which syntax was the one that produced that output seen on the page
 	}
 
+	if (isset($_REQUEST['rrefresh'])) {
+		$rrefresh = $_REQUEST['rrefresh'];
+		if ($rrefresh=="1") { $rrefresh = "y"; }
+		if ($rrefresh=="0") { $rrefresh = "n"; }
+	}else{
+		$rrefresh = "n";
+	}
+	
 	defined('r_ext') || define('r_ext', getcwd() . DIRECTORY_SEPARATOR . 'lib/r' );
 	defined('security')  || define('security',  0);
 	defined('sudouser')  || define('sudouser', 'rd');
@@ -448,13 +456,22 @@ function wikiplugin_rr($data, $params) {
 	// Check if new run is needed or cached results (from the same plugin r calls) can be shown
 	if ( file_exists($r_html) ) {
 		// do not execute R program to generate html but reuse the html previously generated 
+		$cached_script = 'y';
 		$fn   = $r_html;
 	} else {
 		// execute R program
-		$fn   = runR ($output, convert, $sha1, $data, $r_echo, $ws, $params, $user, $r_cmd, $r_dir, $graph_dir, $loadandsave);
+		$cached_script = 'n';
+		$fn   = runR ($output, convert, $sha1, $data, $r_echo, $ws, $params, $user, $r_cmd, $r_dir, $graph_dir, $loadandsave, $cached_script);
 	}
 
 	$ret = file_get_contents ($fn);
+	
+				// Show the cached message for loged user and button to click on refresh if cached content exists and no refresh R is requested
+			if ( !empty($user) && $cached_script == "y" && $rrefresh =="n") {
+					$ret .= "(" . tr("Cached") . ")" . ' <a href="' . curPageURL() . '&rrefresh=y' . '" target="_self">' . '<img src=img/icons/arrow_refresh.png alt=Refresh></a>';
+		 	}
+
+
 	
 	// Check for Tiki version, to apply parsing of content or not (behavior changed in Tiki7, it seems)
 	// Right now, the behavior seems the almost the same one on 7+ and <7, but just in case, I leave this version check in place, 
@@ -477,7 +494,7 @@ function wikiplugin_rr($data, $params) {
 }
 
 
-function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $r_cmd, $r_dir, $graph_dir, $loadandsave) {
+function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $r_cmd, $r_dir, $graph_dir, $loadandsave, $cached_script) {
 	static $r_count = 0;
 	
 	// Generate a graphics
