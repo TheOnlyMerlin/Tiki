@@ -313,11 +313,22 @@ function wikiplugin_rr($data, $params) {
 		$md5data = md5($info['data']);
 	}
 
-	if(isset($params["attId"]) ) {
+	if (isset($_REQUEST['itemId'])) {
+		global $trklib; require_once('lib/trackers/trackerlib.php');
+
+		// This fetches the whole row from the mysql tables for that tracker item
+		$item_info = $trklib->get_item_info($_REQUEST['itemId']);
+		// This $item_info['lastModif'] displays just the lastModification of the item.
+		// create the md5 hash for that value
+		$md5lastModif = md5($item_info['lastModif']);
+	
+	}	
+
+	if(isset($_REQUEST['itemId']) ) {
 		// Moved the hashing after the attId recognition attempt, in order to include the filename (if any) in the hash process
 		// so that if a new filename is passed through attId (and/or itemId), a new R script is generated and processed accordingly
 		// to avoid the former caching issues when dynamically passing a different attId to the same cached R custom script
-		$sha1 = md5($data . $md5data . $params . $output . $style);
+		$sha1 = md5($data . $md5lastModif . $params . $output . $style);
 	} else {
 		$sha1 = md5($data . $params . $output . $style);
 	}
