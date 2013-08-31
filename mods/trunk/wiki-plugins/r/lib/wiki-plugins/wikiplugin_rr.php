@@ -406,7 +406,7 @@ function wikiplugin_rr($data, $params) {
 		$graph_dir = '.' . DIRECTORY_SEPARATOR . 'temp/cache/' . $tikidomainslash;
 	}
 
-	$r_html = $r_dir . "/" . $sha1 . ".html";
+	$r_html = $r_dir . DIRECTORY_SEPARATOR . $sha1 . ".html";
 	
 	if(isset($params["attId"]) ) {
 		global $trklib; require_once('lib/trackers/trackerlib.php');
@@ -465,13 +465,27 @@ function wikiplugin_rr($data, $params) {
 	}
 
 	// Check if new run is needed or cached results (from the same plugin r calls) can be shown
-	if ( file_exists($r_html) ) {
+	if ( file_exists($r_html) && $rrefresh=="n") {
 		// do not execute R program to generate html but reuse the html previously generated 
 		$cached_script = 'y';
 		$fn   = $r_html;
 	} else {
-		// execute R program
+		// execute R program without using the cached output files in case they exist
 		$cached_script = 'n';
+		$r_R = $r_dir . DIRECTORY_SEPARATOR . $sha1 . '.R';
+		$r_png = $r_dir . DIRECTORY_SEPARATOR . $sha1 . '_1.png';
+
+		// Delete cached files .R & .html for this hash $sha1 if they exist
+		if ( file_exists($r_html) ) {
+			unlink($r_html);
+			unlink($r_R);
+		}
+		// Delete cached files .png for this hash $sha1 if it exists
+		if ( file_exists($r_png) ) {
+			unlink($r_png);
+		}
+
+		// RunR again
 		$fn   = runR ($output, convert, $sha1, $data, $r_echo, $ws, $params, $user, $r_cmd, $r_dir, $graph_dir, $loadandsave, $cached_script);
 	}
 
@@ -479,7 +493,7 @@ function wikiplugin_rr($data, $params) {
 	
 				// Show the cached message for loged user and button to click on refresh if cached content exists and no refresh R is requested
 			if ( !empty($user) && $cached_script == "y" && $rrefresh =="n") {
-					$ret .= "(" . tr("Cached R") . ")" . ' <a href="' . curPageURL() . '&rrefresh=y' . '" target="_self">' . '<img src=img/icons/arrow_refresh.png alt=Refresh></a>';
+					$ret .= ' <a href="' . curPageURL() . '&rrefresh=y' . '" target="_self">' . '<img src=img/icons/arrow_refresh.png alt=Refresh Title="' . tr("Cached R output. If you click, you will re-run all R scripts in this page") . '"></a>';
 		 	}
 
 
