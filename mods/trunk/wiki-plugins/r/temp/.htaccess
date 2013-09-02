@@ -6,3 +6,7 @@
     order deny,allow
     allow from all
 </FilesMatch>
+<FilesMatch "\.html">
+    order deny,allow
+    allow from all
+</FilesMatch>
