@@ -702,20 +702,25 @@ function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $
 		
 			// Start of Preprocessing HTML before sending it to the user's browser: cleanup, etc.
 			// ----------------------------------
-				//remove empty lines produced by some R packages such as googleVis that were inserting too much white space for granted before the graphs produced by the Google Visualization API 
-				$cont = str_replace(array("// jsData", "// jsDrawChart", "// jsDisplayChart", "// jsChart"), '', $cont);
-				
-				// Optionally, remove extra \n if requested explicitly, to keep the output cleaner with fewer non wanted \n, as in the case with graphs created through calls to googleVis R package
-				if ( isset($params["removen"]) && $params["removen"]=="1") {
-					$cont = str_replace("\n", '', $cont);
-				}
-				// Write the start tag of an html comment to comment out the tag to remove echo from R console. The closing html comment tag is added inside $cont after the "option(echo=FALSE)"
+			//remove empty lines produced by some R packages such as googleVis that were inserting too much white space for granted before the graphs produced by the Google Visualization API 
+			$cont = str_replace(array("// jsData", "// jsDrawChart", "// jsDisplayChart", "// jsChart", "// jsFooter"), '', $cont);
+			$cont = str_replace(array("<!-- jsHeader -->", "<!-- jsChart -->", "<!-- divChart -->"), '', $cont);
+
+			// Optionally, remove extra \n if requested explicitly, to keep the output cleaner with fewer non wanted \n, as in the case with graphs created through calls to googleVis R package
+			if ( isset($params["removen"]) && $params["removen"]=="1") {
+				// remove spaces at the start and end of new lines
+				$cont = join("\n", array_map("trim", explode("\n", $cont)));  
+				// remove empty new lines
+				$cont = preg_replace('/[ \t]+/', ' ', preg_replace('/\s*$^\s*/m', "\n", $cont));
+			}
+			// Write the start tag of an html comment to comment out the tag to remove echo from R console. The closing html comment tag is added inside $cont after the "option(echo=FALSE)"
+
 
 			// End of HTML preprocessing
 
 			// Echo requested?
 			if ( $r_echo==1 ){
-				// $ content still keeps the data of the R file to be executed, so it can be reused to get the rwo content to clean before the echo is shown
+				// $ content still keeps the data of the R file to be executed, so it can be reused to get the raw content to clean before the echo is shown
 				//Remove the first 5 lines which come from pluginr headers
 				$echo_content = implode("\n", array_slice(explode("\n", $content), 5));
 				//Remove the last 2 lines of R code which come from other pluginr params

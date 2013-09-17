@@ -2,10 +2,10 @@ contributor:
 $Author: xavi $
 
 revision: 
-$Revision: 0.83 $
+$Revision: 0.84 $
 
 lastmodif:
-$Date: 2013-09-02 07:12:00 $
+$Date: 2013-09-17 20:25:00 $
 
 files: 
 wiki-plugins/r/lib/wiki-plugins/wikiplugin_r.php lib/wiki-plugins/wikiplugin_r.php
@@ -18,7 +18,7 @@ wiki-plugins/r/pics/icons/r.png pics/icons/r.png
 wiki-plugins/r/img/icons/r.png img/icons/r.png
 
 Author:
-Xavier de Pedro (xavi)
+Xavier de Pedro Puente (xavi)
  
 Version:
 9
@@ -58,3 +58,4 @@ Changelog:
 0.81 Added message and icon to indicate when cached R content is displayed and how to force content refresh. The plugin currently avoids cached content when it detects some change in the tracker item (last Modif) associated in the run (via pretty tracker type of runs). Thanks Moises for bug reporting and jonnyb for code tips
 0.82 Cleaner indication of Cached R content, showing just an icon and some descriptive message on mouseover. Clearing R cache after clicking on that button fixed.
 0.83 Fixed for Tiki11+ the iframed wiki pages to include some html files produced server side by R packages (such as RCharts)
+0.84 Param removen improved a bit to match again some of the extra blank lines added for granted in charts from googleVis package
