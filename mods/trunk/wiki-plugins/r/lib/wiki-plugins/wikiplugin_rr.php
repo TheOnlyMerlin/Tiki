@@ -406,7 +406,7 @@ function wikiplugin_rr($data, $params) {
 		$graph_dir = '.' . DIRECTORY_SEPARATOR . 'temp/cache/' . $tikidomainslash;
 	}
 
-	$r_html = $r_dir . DIRECTORY_SEPARATOR . $sha1 . ".html";
+	$r_html = $r_dir . DIRECTORY_SEPARATOR . $user . "_" . $sha1 . ".html";
 	
 	if(isset($params["attId"]) ) {
 		global $trklib; require_once('lib/trackers/trackerlib.php');
@@ -415,7 +415,7 @@ function wikiplugin_rr($data, $params) {
 		
 		if( $info['data'] ) {
 			#$filepath = tempnam( '/tmp', 'r' );
-			$filepath = "/tmp/" . $sha1;
+			$filepath = "/tmp/" . $user . "_" . $sha1;
 			file_put_contents( $filepath, $info['data'] );
 		} else {
 			$filepath = $prefs['t_use_dir'].$info['path'];
@@ -472,8 +472,8 @@ function wikiplugin_rr($data, $params) {
 	} else {
 		// execute R program without using the cached output files in case they exist
 		$cached_script = 'n';
-		$r_R = $r_dir . DIRECTORY_SEPARATOR . $sha1 . '.R';
-		$r_png = $r_dir . DIRECTORY_SEPARATOR . $sha1 . '_1.png';
+		$r_R = $r_dir . DIRECTORY_SEPARATOR . $user . "_" . $sha1 . '.R';
+		$r_png = $r_dir . DIRECTORY_SEPARATOR . $user . "_" . $sha1 . '_1.png';
 
 		// Delete cached files .R & .html for this hash $sha1 if they exist
 		if ( file_exists($r_html) ) {
@@ -526,11 +526,11 @@ function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $
 	$prg = ''; # This variable is not being used. ToDo: Remove or reuse for something.
 	$err = "\n";
 	$rws = $r_dir . DIRECTORY_SEPARATOR;
-	$rst  = $r_dir . DIRECTORY_SEPARATOR . $sha1 . '.html';
+	$rst  = $r_dir . DIRECTORY_SEPARATOR . $user . "_" . $sha1 . '.html';
 	// Since pluginR 0.7, graphic file type is not hardcoded here into png; 
 	//  file extensions will be set later for png and svg and/or pdf
-	$rgo  = $r_dir . DIRECTORY_SEPARATOR . $sha1 ;
-	$rgo_rel  = $graph_dir . DIRECTORY_SEPARATOR . $sha1 ;
+	$rgo  = $r_dir . DIRECTORY_SEPARATOR . $user . "_" . $sha1 ;
+	$rgo_rel  = $graph_dir . DIRECTORY_SEPARATOR . $user . "_" . $sha1 ;
 
 	if (isset($params["wikisyntax"])) {
 		$wikisyntax = $params["wikisyntax"];
@@ -684,7 +684,7 @@ function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $
 
 		} // end of section where png can be used because R was compiled with support for X11
 		$content .= 'q()';
-		$fn = $r_dir . '/' . $sha1 . '.R';
+		$fn = $r_dir . '/' . $user . "_" . $sha1 . '.R';
 		$fd = fopen ($fn, 'w') or error('R', 'Can not open file: ' . $fn, $input . $err);
 		fwrite ($fd, $content);
 		fclose ($fd);
