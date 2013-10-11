@@ -88,13 +88,8 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
 	 * @return void
 	 * @throws UnexpectedValueException if invalid file mime type
 	 */
-	function import($filePath = null)
+	function import($filePath)
 	{
-        if ($filePath == null)
-        {
-            die("This particular implementation of the method requires an explicity file path.");
-        }
-
 		if (isset($_FILES['importFile']) && !in_array($_FILES['importFile']['type'], $this->validTypes)) {
 			throw new UnexpectedValueException(tra('Invalid file mime type'));
 		}

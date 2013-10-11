@@ -59,13 +59,13 @@
 			   <option value="unspecified">{tr}Unspecified{/tr}</option>
 				{section name=ix loop=$languages}
 				{if in_array($languages[ix].value, $prefs.available_languages) or $prefs.available_languages|@count eq 0 or !is_array($prefs.available_languages)}
-				<option value="{$languages[ix].value|escape}"{if $default_target_lang eq $languages[ix].value} selected="selected"{/if}>{$languages[ix].name|escape}</option>
+				<option value="{$languages[ix].value|escape}"{if $only_one_language_left eq "y"} selected="selected"{/if}>{$languages[ix].name|escape}</option>
 				{/if}
 				{/section}
 			</select>
 		</p>
 		<p>{tr}Enter the page title:{/tr}
-			<input type="text" size="40" name="page" id="translation_name" value="{$translation_name|escape}">
+			<input type="text" size="40" name="page" id="translation_name">
 			<input type="hidden" name="source_page" value="{$name|escape}">
 			<input type="hidden" name="oldver" value="-1">
 			<input type="hidden" name="is_new_translation" value="y">
@@ -76,6 +76,7 @@
 			{include file="categorize.tpl" notable=y}
 		{/if}
 		<p align="center"><input type="submit" class="btn btn-default" value="{tr}Create translation{/tr}"></p>
+		<textarea name="edit" style="display:none">{$translate_message}{$pagedata|escape:'htmlall':'UTF-8'}</textarea>
 	</fieldset>
 </form>
 {/if}

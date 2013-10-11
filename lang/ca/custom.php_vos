@@ -9,7 +9,7 @@
 // 
 // La traducció al català de tiki, en general, quan mostra algun missatge als usuaris
 // els tracta de tu. Aquest fitxer inclou traduccions al català en un estil més
-// formal tractan de vos/vosaltres als usuaris, o emprant formes impersonals.
+// formal tractant de vos/vosaltres als usuaris, o emprant formes impersonals.
 // 
 // Si voleu que tiki utilitzi aquestes traduccions més formals, canvieu el nom d'aquest
 // fitxer de "custom.php_vos" a "custom.php"
