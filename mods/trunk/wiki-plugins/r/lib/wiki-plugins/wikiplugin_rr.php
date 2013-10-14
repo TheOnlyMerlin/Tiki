@@ -195,10 +195,10 @@ function wikiplugin_rr_info() {
 			'loadandsave' => array(
 				'required' => false,
 				'name' => tra('LoadAndSave'),
-				'description' => tra('Load a previous R session (.RData, if any) for the same wiki page so that R object will be used while you work within the same page. For pretty trackers are used (wiki pages with itemId), the R session data (.RData) will be shared for the same itemId across wiki pages'),
+				'description' => tra('Load a previous R user session (.RData, if any) for the same wiki page so that R object will be used while you work within the same page. For pretty trackers are used (wiki pages with itemId), the R session data (.RData) will be shared for the same itemId across wiki pages'),
 				'filter' => 'int',
 				'default' => '0',
-				'since' => 'PluginR 0.61',
+				'since' => 'PluginR 0.61 (multiuser at 0.86)',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('No'), 'value' => '0'),
@@ -385,7 +385,7 @@ function wikiplugin_rr($data, $params) {
 		// --quiet : Do not print out the initial copyright and welcome messages from R
 		$r_cmd = getCmd('', 'R', ' --save --quiet');
 
-		//Convert spaces into some character to avoid R complaining becuase it can't create such folder in the server
+		//Convert spaces into some character to avoid R complaining because it can't create such folder in the server
 		$wikipage = str_replace(array(" ", "+"), "_", $_REQUEST['page']);
 
 		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
@@ -522,6 +522,11 @@ function wikiplugin_rr($data, $params) {
 function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $r_cmd, $r_dir, $graph_dir, $loadandsave, $cached_script) {
 	static $r_count = 0;
 	
+	//Convert spaces and @ into some character to avoid R complaining because it can't create such file on disk in the server
+	$user = str_replace(array(" ", "@"), "_", $user);
+	// Make one .Rdata per user
+	$rdata = '.' . $user . '_RData';
+
 	// Generate a graphics
 	$prg = ''; # This variable is not being used. ToDo: Remove or reuse for something.
 	$err = "\n";
@@ -621,7 +626,7 @@ function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $
 	}else{
 		$ln = 1; // Default value
 	}
-
+	
 	if (!file_exists($rst) or onsave) {
 		$content = '';
 		$content .= 'rfiles<-"' . $r_dir . '"' . "\n";
@@ -642,8 +647,8 @@ function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $
 				$content = 'options(echo=FALSE)'."\n". 'cat(" -->")'."\n". 'setwd("'. $r_dir .'/")'."\n";
 				
 				// Load .Rdata if requested and only if it exists in that folder
-				if ($loadandsave==1 && file_exists($r_dir . '/.RData')) {
-					$content .= 'load(".RData")' . "\n";
+				if ($loadandsave==1 && file_exists($r_dir . '/' . $rdata)) {
+					$content .= 'load("' . $rdata . '")' . "\n";
 				} // Else, case with no caching of r objects (loadandsave=0, therefore no .RData will be loaded at the beginning)
 
 				// Check if the user requested an svg file or pdf file to be generated instead of the standard png in the wiki page
@@ -679,7 +684,7 @@ function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $
 
 				// Save the image after the user input if requested with the param loadandsave
 				if ($loadandsave==1) {
-					$content .= 'save.image(".RData")' . "\n";
+					$content .= 'save.image("' . $rdata . '")' . "\n";
 				} // Else, case with no caching of r objects (loadandsave=0, therefore no .RData will be saved at the end)
 
 		} // end of section where png can be used because R was compiled with support for X11
