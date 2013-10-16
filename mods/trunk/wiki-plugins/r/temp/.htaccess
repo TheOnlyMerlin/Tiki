@@ -10,3 +10,7 @@
     order deny,allow
     allow from all
 </FilesMatch>
+<FilesMatch "\.pdf">
+    order deny,allow
+    allow from all
+</FilesMatch>
