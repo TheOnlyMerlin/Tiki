@@ -251,6 +251,20 @@ function wikiplugin_rr_info() {
 				'since' => 'PluginR 0.76',
 				'advanced' => true,
 			),
+			'customoutput' => array(
+		        'required' => false,
+		        'safe' => true,
+		        'name' => tra('Custom output'),
+		        'description' => tra('Write your custom png creation R command. Use tikiRRfilename for value of output. RR does not produce an output file.'),
+		        'filter' => 'int',
+		        'default' => '0',
+		        'options' => array(
+					array('text' => '', 'value' => ''),
+					array('text' => tra('No'), 'value' => '0'),
+					array('text' => tra('Yes'), 'value' => '1'),
+				),
+		        'advanced' => true,
+		    ),
 			'security' => array(
 				'required' => false,
 				'safe' => false,
@@ -335,8 +349,8 @@ function wikiplugin_rr($data, $params) {
 		
 	if (isset($params["echo"])) {
 		$r_echo = $params["echo"];
-		if ($r_echo=="1") { $r_echo = 1; }
-		if ($r_echo=="0") { $r_echo = 0; }
+		if ($r_echo=="1" OR $r_echo=="y" OR $r_echo=="yes") { $r_echo = 1; }
+		if ($r_echo=="0" OR $r_echo=="n" OR $r_echo=="no") { $r_echo = 0; }
 	}else{
 		$r_echo = 0;
 		// We set echo by default as 0 to respect the environment for earlier users, 
@@ -626,6 +640,14 @@ function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $
 	}else{
 		$ln = 1; // Default value
 	}
+
+	if (isset($params["customoutput"])) {
+		$customoutput = $params["customoutput"];
+		if ($customoutput=="1" OR $customoutput=="y" OR $customoutput=="yes") { $customoutput = 1; }
+		if ($customoutput=="0" OR $customoutput=="n" OR $customoutput=="no") { $customoutput = 0; }
+	}else{
+		$customoutput = 0; // Default value
+	}
 	
 	if (!file_exists($rst) or onsave) {
 		$content = '';
@@ -651,8 +673,16 @@ function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $
 					$content .= 'load("' . $rdata . '")' . "\n";
 				} // Else, case with no caching of r objects (loadandsave=0, therefore no .RData will be loaded at the beginning)
 
+
+				// Check if the user wants to handle the creation of his custom png
+		        if ( isset($params["customoutput"]) && $params["customoutput"]=="1" ) {
+		          $image_number = 1;
+		          $content .= 'tikiRRfilename <- "' . $rgo . "_$image_number.png" . '"' . "\n";
+		          // Add the user input code at the end
+		          $content .= $input . "\n";
+		
 				// Check if the user requested an svg file or pdf file to be generated instead of the standard png in the wiki page
-				if (isset($_REQUEST['gtype']) && $_REQUEST['gtype']=="svg") {
+				} elseif (isset($_REQUEST['gtype']) && $_REQUEST['gtype']=="svg") {
 					// Prepare the graphic device to create the svg file 
 					$content .= onefile . "<-" . $onefile . "\n";
 					$content .= 'svg(filename = if(onefile) "' . $rgo . '.svg' . '" else "' . $rgo . '%03d.svg' . '", onefile = ' . $onefile . ', width = ' . $width . ', height = ' . $height . ', pointsize = ' . $pointsize . ', bg = "' . $bg . '" , antialias = c("default", "none", "gray", "subpixel"))' . "\n";
