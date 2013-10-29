@@ -14,7 +14,7 @@
 	<div align="center">
 		{include file='find.tpl'}
 		{initials_filter_links}
-		<table class="table normal">
+		<table class="normal">
 			<tr>
 				<th>
 					<a href="tiki-webmail_contacts.php?element={$element}&amp;section=contacts&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'firstName_desc'}firstName_asc{else}firstName_desc{/if}">

@@ -813,7 +813,7 @@ class EditLib
 	/**
 	 * Converts wysiwyg plugins into wiki.
 	 * Also processes headings by removing surrounding <p> (possibly for wysiwyg_wiki_semi_parsed but not tested)
-	 * Also used by ajax preview in Services_Edit_Controller
+	 * Also used by ajax preview in tiki-auto_save.php
 	 *
 	 * @param string $inData	page data - mostly html but can have a bit of wiki in it
 	 * @return string			html with wiki plugins
@@ -868,11 +868,8 @@ class EditLib
 			if ($c[$i]["type"] == "text") {
 				if ( ! ctype_space($c[$i]["data"]) ) {
 					$add = $c[$i]["data"];
-					$noparsed = array();
-					 TikiLib::lib('parser')->plugins_remove($add, $noparsed);
 					$add = str_replace(array("\r","\n"), '', $add);
 					$add = str_replace('&nbsp;', ' ', $add);
-					TikiLib::lib('parser')->plugins_replace($add, $noparsed, true);
 					$src .= $add;
 				}
 			} elseif ($c[$i]["type"] == "comment") {

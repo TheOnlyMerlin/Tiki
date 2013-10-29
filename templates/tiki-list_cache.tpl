@@ -7,7 +7,7 @@
 {include file='find.tpl'}
 
 {cycle values="odd,even" print=false}
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>
 			<a href="tiki-list_cache.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'url_desc'}url_asc{else}url_desc{/if}">{tr}URL{/tr}</a>

@@ -15,6 +15,4 @@ if (isset($_REQUEST['userfeatures'])) {
 	check_ticket('admin-inc-community');
 }
 
-$smarty->assign('event_graph', TikiLib::events()->getEventGraph());
-
 ask_ticket('admin-inc-community');

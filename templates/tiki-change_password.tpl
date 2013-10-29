@@ -18,13 +18,13 @@
 			pass1 = document.getElementById('pass1').value;
 			pass2 = document.getElementById('pass2').value;
 			if (submit_counter > 10) {
-				ret_msg.innerHTML = "<img src='img/icons/exclamation.png' style='vertical-align:middle' alt='Overflow'> {tr}Too many tries{/tr}";
+				ret_msg.innerHTML = "<img src='img/icons/exclamation.png' style='vertical-align:middle' alt='Overflow'> Too many tries";
 				return false;
 			} else if ((pass0 == '') || (pass1 == '') || (pass2 == '')) {
-				ret_msg.innerHTML = "<img src='img/icons/exclamation.png' style='vertical-align:middle' alt='Missing'> {tr}Passwords missing{/tr}";
+				ret_msg.innerHTML = "<img src='img/icons/exclamation.png' style='vertical-align:middle' alt='Missing'> Passwords missing";
 				return false;
 			} else if ( pass1 != pass2 ) {
-				ret_msg.innerHTML = "<img src='img/icons/exclamation.png' style='vertical-align:middle' alt='Do not match'> {tr}Passwords don\'t match{/tr}";
+				ret_msg.innerHTML = "<img src='img/icons/exclamation.png' style='vertical-align:middle' alt='Do not match'> Passwords don\'t match";
 				return false;
 			}
 			return true;
@@ -90,7 +90,7 @@
 {/if}
 <tr>
   <td>&nbsp;</td>
-  <td><input type="submit" class="btn btn-default" name="change" value="{tr}Change{/tr}" onclick="return match_pass();"><span id="validate"></span></td>
+  <td><input type="submit" name="change" value="{tr}Change{/tr}" onclick="return match_pass();"><span id="validate"></span></td>
 </tr>
 </table>
 </fieldset>

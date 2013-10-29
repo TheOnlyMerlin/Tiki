@@ -16,7 +16,7 @@
 {/section}
 
   </select>
-  <input type="submit" class="btn btn-default" name="go" value="{tr}Go{/tr}">
+  <input type="submit" name="go" value="{tr}Go{/tr}">
 </form>
 {* Dislay a form to add or edit a category *} <br>
 {if $categId eq 0}
@@ -82,7 +82,7 @@
     {include file='categorize.tpl'}
     <tr>
       <td>&nbsp;</td>
-      <td><input class="btn btn-default" type="submit" name="save" value="{tr}Save{/tr}">
+      <td><input type="submit" name="save" value="{tr}Save{/tr}">
     </tr>
   </table>
 </form>
@@ -90,7 +90,7 @@
 <h2>{tr}Directory Subcategories{/tr}</h2>
 {* Display the list of categories (items) using pagination *}
 {* Links to edit, remove, browse the categories *}
-<table class="table normal">
+<table class="normal">
   <tr>
     <th><a href="tiki-directory_admin_categories.php?parent={$parent}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></th>
     <th><a href="tiki-directory_admin_categories.php?parent={$parent}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'childrenType_desc'}childrenType_asc{else}childrenType_desc{/if}">{tr}cType{/tr}</a></th>

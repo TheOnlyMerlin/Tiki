@@ -83,7 +83,7 @@ class Services_Workspace_Controller
 
 		$id = null;
 		if ($input->name->text()) {
-			$builder = new Services_Workspace_ProfileBuilder;
+			$builder = new Tiki_Profile_Builder;
 			$builder->addGroup('Base', $builder->user('group'));
 			$builder->setManagingGroup('Base');
 			$builder->setPermissions(
@@ -159,7 +159,7 @@ class Services_Workspace_Controller
 		}
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-			$builder = new Services_Workspace_ProfileBuilder;
+			$builder = new Tiki_Profile_Builder;
 
 			if ($prefs['feature_areas'] == 'y' && $input->area->int()) {
 				$builder->addObject(
@@ -204,7 +204,7 @@ class Services_Workspace_Controller
 
 		$template = $this->utilities->getTemplate($input->id->int());
 		$profile = Tiki_Profile::fromString($template['definition']);
-		$analyser = new Services_Workspace_ProfileAnalyser($profile);
+		$analyser = new Tiki_Profile_Analyser($profile);
 
 		$hasArea = $analyser->contains(
 			array(

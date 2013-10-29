@@ -15,7 +15,7 @@
 	<table border="0" cellpadding="0" cellspacing="0" >
 	  <tr>
 	     <td align="center" valign="middle">
-		<table class="table normal">
+		<table class="normal">
 		  <tr><td align="center"> 
 		  <div id="mapWindow" style="z-index:50;overflow:hidden;
 		  	{if $xsize != ""}width:{$xsize}px;{/if} 
@@ -145,7 +145,7 @@
 			<select name="size" size="1">
 				{html_options values=$possiblesizes selected=$size output=$displaysizes}
 			</select><br>
-			<input name="Redraw" value="{tr}Redraw{/tr}" type="Submit" class="btn btn-default"><br>
+			<input name="Redraw" value="{tr}Redraw{/tr}" type="Submit"><br>
 			<small>{tr}select zoom/pan/query and image size{/tr}</small>
 		</td></tr>
 			<tr><td align="center"> 
@@ -156,7 +156,7 @@
 			<option selected value="#">Select Location and Go!
 				{html_options values=$view_name name=$view output=$view_name}
 			</select>
-				<input type="submit" class="btn btn-default" name="Go" value="{tr}Go{/tr}">&nbsp;
+				<input type="submit" name="Go" value="{tr}Go{/tr}">&nbsp;
 			{/if}
 			 <input type="image" name="maponly" value="yes" src="img/icons/image.png" alt="{tr}View the Map Only{/tr}" title="{tr}View the Map Only{/tr}">
 			{if $tiki_p_map_edit eq 'y'}
@@ -181,7 +181,7 @@
 	     
 	     </td>
 		<td valign="top">
-		<table class="table normal">
+		<table class="normal">
 		   <tr><th align="center"><b>{tr}Overview{/tr}</b></th></tr>
 		   <tr><td align="center" valign="middle" bgcolor="FFFFFF">
 		   <img id="ref" src="{$image_ref_url}" border="1" alt="{tr}Overview{/tr}" title="{tr}Overview{/tr}"></td ></tr>
@@ -197,7 +197,7 @@
 			{tr}Layer Manager{/tr}
 			</div>
 			<div id='layermenu' style="{$mnu_layermenu}">
-    			<table class="table normal">
+    			<table class="normal">
 			<tr>
 				<th><b>{tr}Layer{/tr}</b></th>
 		  		<th><b>{tr}On{/tr}</b></th>
@@ -226,7 +226,7 @@
 					{tr}{$my_layers[j]->group}{/tr}		
 				</div>
 				<div id='submenu{$unique_layer_group[j]}' style="{$mnu_submenu}"> 
-					<table class="table normal">
+					<table class="normal">
 					{section name=i loop=$my_layers}
 					{if $my_layers[i]->group neq ""}
 					{if $my_layers[i]->group == $my_layers[j]->group}

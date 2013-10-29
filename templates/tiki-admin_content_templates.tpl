@@ -120,8 +120,8 @@
 		<tr>
 			<td/>
 			<td>
-				<input type="submit" name="save" class="btn btn-default" value="{tr}Save{/tr}" onclick="needToConfirm=false;">
-				<input type="submit" name="preview" class="btn btn-default" value="{tr}Preview{/tr}" onclick="needToConfirm=false;">
+				<input type="submit" name="save" value="{tr}Save{/tr}" onclick="needToConfirm=false;">
+				<input type="submit" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;">
 			</td>
 		</tr>
 	</table>
@@ -142,7 +142,7 @@
 	{include file='find.tpl'}
 {/if}
 
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>
 			<a href="tiki-admin_content_templates.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a>

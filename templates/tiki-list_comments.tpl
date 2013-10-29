@@ -11,7 +11,7 @@
 {/if}
 
 {assign var=numbercol value=2}
-<table class="table normal">
+<table class="normal">
 	<tr>
 		{if $comments}
 			<th>

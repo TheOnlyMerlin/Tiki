@@ -59,7 +59,7 @@ if (isset($_REQUEST['page_ref_id'])) {
 	// If a structure page has been requested
 	$page_ref_id = $_REQUEST['page_ref_id'];
 }
-$pdata = $tikilib->parse_data($info["data"], array('is_html' => $info["is_html"], 'print' => 'y', 'namespace' => $info["namespace"]));
+$pdata = $tikilib->parse_data($info["data"], array('is_html' => $info["is_html"], 'print' => 'y'));
 $smarty->assign_by_ref('parsed', $pdata);
 $smarty->assign_by_ref('lastModif', $info["lastModif"]);
 if (empty($info["user"])) {
@@ -78,7 +78,7 @@ $creator = $wikilib->get_creator($page);
 $smarty->assign('creator', $creator);
 $smarty->assign('print_page', 'y');
 $smarty->assign('urlprefix', $base_url); // Obsolete, use base_url instead. This is for compatibility purposes only.
-$smarty->assign('mid', 'tiki-show_content.tpl');
+$smarty->assign('mid', 'tiki-show_page.tpl');
 $smarty->assign('display', isset($_REQUEST['display']) ? $_REQUEST['display'] : '');
 // Allow PDF export by installing a Mod that define an appropriate function
 if (isset($_REQUEST['display']) && $_REQUEST['display'] == 'pdf') {

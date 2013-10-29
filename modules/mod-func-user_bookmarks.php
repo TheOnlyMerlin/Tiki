@@ -119,13 +119,20 @@ function module_user_bookmarks($mod_reference, $module_params)
 	
 				// Check if we are bookmarking a forum
 				if (strstr($_SERVER["REQUEST_URI"], 'tiki-view_forum')) {
-					$info = TikiLib::lib('comments')->get_forum($setup_query_data["forumId"]);
+					require_once('lib/comments/commentslib.php'); global $commentslib;
+					if (!isset($commentslib)) {
+						$commentslib = new Comments($dbTiki);
+					}
+					$info = $commentslib->get_forum($setup_query_data["forumId"]);
+	
 					$name = $info["name"];
 				}
 	
 				// Check if we are bookmarking a faq
 				if (strstr($_SERVER["REQUEST_URI"], 'tiki-view_faq')) {
-					$info = TikiLib::lib('faq')->get_faq($setup_query_data["faqId"]);
+					require_once ('lib/faqs/faqlib.php');
+					$info = $faqlib->get_faq($setup_query_data["faqId"]);
+	
 					$name = $info["title"];
 				}
 	

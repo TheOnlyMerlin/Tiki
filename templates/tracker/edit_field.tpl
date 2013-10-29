@@ -45,19 +45,13 @@
 								</option>
 							{/foreach}
 						</select>
-					{elseif $def.separator}
-						<input type="text" name="option~{$param|escape}" value="{$options[$param]|implode:$def.separator|escape}">
-					{elseif $def.count eq '*'}
-						<input type="text" name="option~{$param|escape}" value="{$options[$param]|implode:','|escape}">
 					{else}
 						<input type="text" name="option~{$param|escape}" value="{$options[$param]|escape}">
 					{/if}
-					<div class="description">{$def.description|escape}</div>
 					{if $def.count eq '*'}
 						<div class="description">{tr}Separate multiple with commas.{/tr}</div>
-					{elseif $def.separator}
-						<div class="description">{tr}Separate multiple with &quot;{$def.separator}&quot;{/tr}</div>
 					{/if}
+					<div class="description">{$def.description|escape}</div>
 				</label>
 			{/foreach}
 		</div>
@@ -178,7 +172,7 @@ $('select[name=type]').change(function () {
 	</div>
 
 	<div class="submit">
-		<input type="submit" class="btn btn-default" name="submit" value="{tr}Save{/tr}">
+		<input type="submit" name="submit" value="{tr}Save{/tr}">
 		<input type="hidden" name="trackerId" value="{$field.trackerId|escape}">
 		<input type="hidden" name="fieldId" value="{$field.fieldId|escape}">
 	</div>

@@ -185,7 +185,7 @@ Couldn't connect to database, please provide valid credentials.
 	<p><label for="dbhost">Database host</label>: <input type="text" id="dbhost" name="dbhost" value="localhost" /></p>
 	<p><label for="dbuser">Database username</label>: <input type="text" id="dbuser" name="dbuser" /></p>
 	<p><label for="dbpass">Database password</label>: <input type="password" id="dbpass" name="dbpass" /></p>
-	<p><input type="submit" class="btn btn-default" value=" Connect " /></p>
+	<p><input type="submit" value=" Connect " /></p>
 </form>
 DBC;
 	} else {
@@ -334,7 +334,7 @@ if (version_compare(PHP_VERSION, '5.1.0', '<')) {
 	);
 } elseif (version_compare(PHP_VERSION, '5.2.0', '<')) {
 	$php_properties['PHP version'] = array(
-		'fitness' => tra('bad'),
+		'fitness' => tra('ugly'),
 		'setting' => phpversion(),
 		'message' => 'You have a quite old version of PHP. You can run Tiki 6.x LTS but not later versions.'
 	);
@@ -342,13 +342,7 @@ if (version_compare(PHP_VERSION, '5.1.0', '<')) {
 	$php_properties['PHP version'] = array(
 		'fitness' => tra('ugly'),
 		'setting' => phpversion(),
-		'message' => 'You have an old version of PHP. You can run Tiki 6.x LTS or 9.x LTS but not later versions.'
-	);
-} elseif (version_compare(PHP_VERSION, '5.5.0', '<')) {
-	$php_properties['PHP version'] = array(
-		'fitness' => tra('ugly'),
-		'setting' => phpversion(),
-		'message' => 'You have a somewhat old version of PHP. You can run Tiki 6.x LTS, 9.x LTS or 12.x LTS but not later versions.'
+		'message' => 'You have a somewhat old version of PHP. You can run Tiki 6.x LTS or 9.x LTS but not later versions.'
 	);
 } else {
 	$php_properties['PHP version'] = array(
@@ -1069,16 +1063,6 @@ if ($connection || !$standalone) {
 		);
 	}
 
-	// MySQL SSL 
-	$haveMySQLSSL = $tikilib->haveMySQLSSL();
-	$smarty->assign('haveMySQLSSL', $haveMySQLSSL);
-	if ($haveMySQLSSL) {
-		$isSSL = $tikilib->isMySQLConnSSL();
-	} else {
-		$isSSL = false;
-	}
-	$smarty->assign('mysqlSSL', $isSSL);
-
 	// MySQL Variables
 	$query = "SHOW VARIABLES;";
 	$result = query($query, $connection);
@@ -1151,7 +1135,7 @@ if ( function_exists('apache_get_version')) {
 			}
 		} else {
 			$apache_properties['RewriteBase'] = array(
-				'setting' => tra('Not found'),
+				'setting' => $rewritebase,
 				'fitness' => tra('info') ,
 				'message' => tra('You haven\'t activated .htaccess. So this check is useless. If you want to use Search Engine Friendly URLs, you will have to activate .htaccess by copying _htaccess into its place (or a symlink if supported by your Operating System). Then come back to have a look at this check again.')
 			);
@@ -1321,8 +1305,8 @@ $fcts = array(
 		),
 		array (
 			'function' => 'proc_open',
-			'risky' => tra('Proc_open is similar to exec.').' '.tra('Tiki does not need it, you may want to disable it. However, Composer may need it (If you are running Tiki from SVN)'),
-			'safe' =>  tra('Proc_open is similar to exec.').' '.tra('Tiki does not need it, you are wise to have it disabled. However, Composer may need it (If you are running Tiki from SVN)')
+			'risky' => tra('Proc_open is similar to exec.').' '.tra('Tiki does not need it, you may want to disable it.'),
+			'safe' =>  tra('Proc_open is similar to exec.').' '.tra('Tiki does not need it, you are wise to have it disabled.')
 		),
 		array (
 			'function' => 'curl_exec',
@@ -1411,7 +1395,9 @@ if ($s == 1) {
 if (!$standalone) {
 	// The following is borrowed from tiki-admin_system.php
 	if ($prefs['feature_forums'] == 'y') {
-		$dirs = TikiLib::lib('comments')->list_directories_to_save();
+		include_once ('lib/comments/commentslib.php');
+		$commentslib = new Comments($dbTiki);
+		$dirs = $commentslib->list_directories_to_save();
 	} else {
 		$dirs = array();
 	}
@@ -1483,7 +1469,7 @@ if ($standalone) {
 	} else {
 		$render .= '<form method="post" action="'.$_SERVER['REQUEST_URI'].'">';
 		$render .= '<p><label for="e-mail">e-mail address to send test mail to</label>: <input type="text" id="email_test_to" name="email_test_to" /></p>';
-		$render .= '<p><input type="submit" class="btn btn-default" value=" Send e-mail " /></p>';
+		$render .= '<p><input type="submit" value=" Send e-mail " /></p>';
 		$render .= '<p><input type="hidden" id="dbhost" name="dbhost" value="';
 				if (isset($_POST['dbhost'])) {
 					$render .= $_POST['dbhost'];
@@ -1618,13 +1604,13 @@ function createPage($title, $content)
 				<div class="clearfix fixedwidth header_fixedwidth">
 					<header id="header" class="header">
 					<div class="content clearfix modules" id="top_modules" style="min-height: 168px;">
-						<div class="sitelogo" style="float: left">
+						<div id="sitelogo" style="float: left">
 END;
 echo tikiLogo();
 							echo <<< END
 						</div>
-						<div class="sitetitles" style="float: left;">
-							<div class="sitetitle" style="font-size: 42px;">$title</div>
+						<div id="sitetitles" style="float: left;">
+							<div id="sitetitle" style="font-size: 42px;">$title</div>
 						</div>
 					</div>
 					</header>

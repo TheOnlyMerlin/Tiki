@@ -24,7 +24,6 @@ function module_tracker_input_info()
 				'name' => tr('Tracker'),
 				'description' => tr('Tracker ID to render'),
 				'filter' => 'int',
-				'profile_reference' => 'tracker',
 			),
 			'textinput' => array(
 				'name' => tr('Text Input'),

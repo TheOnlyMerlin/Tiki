@@ -80,20 +80,6 @@ function prefs_geo_list()
 			'type' => 'flag',
 			'default' => 'n',
 		),
-		'geo_zoomlevel_to_found_location' => array(
-			'name' => tr('Zoom to found location'),
-			'description' => tr('Zoom to street level when finding a searched location'),
-			'type' => 'list',
-			'options' => array(
-					'street' => tra('Street level'),
-					'town' => tra('Town level'),
-					'region' => tra('Region level'),
-					'country' => tra('Country level'),
-					'continent' => tra('Continent level'),
-					'world' => tra('World'),
-				),
-			'default' => 'street',
-		),
 	);
 }
 

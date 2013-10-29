@@ -1,15 +1,4 @@
 {* $Id$ *}
-{extends 'layout_edit.tpl'}
-
-{block name=title}
-{if $translation_mode eq 'n'}
-	{title}{if isset($hdr) && $prefs.wiki_edit_section eq 'y'}{tr}Edit Section:{/tr}{else}{tr}Edit:{/tr}{/if} {$page}{if $pageAlias ne ''} ({$pageAlias}){/if}{/title}
-{else}
-   {title}{tr}Update '{$page}'{/tr}{/title}
-{/if}
-{/block}
-
-{block name=content}
 {if $page|lower neq 'sandbox' and $prefs.feature_contribution eq 'y' and $prefs.feature_contribution_mandatory eq 'y'}
 	{remarksbox type='tip' title="{tr}Tip{/tr}"}
 		<strong class='mandatory_note'>{tr}Fields marked with a * are mandatory.{/tr}</strong>
@@ -30,6 +19,7 @@
 </div>
 {jq} $(".previewBtn").click(function(){
 	if ($('#autosave_preview:visible').length === 0) {
+		auto_save_data['editwiki'] = "";
 		auto_save('editwiki', autoSaveId);
 		if (!ajaxPreviewWindow) {
 			$('#autosave_preview').slideDown('slow', function(){ ajax_preview( 'editwiki', autoSaveId, true );});
@@ -39,6 +29,11 @@
 	}
 	return false;
 });{/jq}
+{/if}
+{if $translation_mode eq 'n'}
+	{title}{if isset($hdr) && $prefs.wiki_edit_section eq 'y'}{tr}Edit Section:{/tr}{else}{tr}Edit:{/tr}{/if} {$page}{if $pageAlias ne ''} ({$pageAlias}){/if}{/title}
+{else}
+   {title}{tr}Update '{$page}'{/tr}{/title}
 {/if}
    
 {if isset($data.draft)}
@@ -79,7 +74,7 @@
 				{/section}
 			</ul>
 		{else}
-			<table class="table normal"><tr>
+			<table class="normal"><tr>
 				{cycle name=table values=',,,,</tr><tr>' print=false advance=false}
 				{section name=back loop=$likepages}
 					<td><a href="{$likepages[back]|sefurl}" class="wiki">{$likepages[back]|escape}</a></td>{cycle name=table}
@@ -134,7 +129,7 @@
 			<option value="inlinediff"{if isset($diff_style) && $diff_style eq "inlinediff"} selected="selected"{/if} >{tr}text{/tr}</option>			  
 			<option value="inlinediff-full"{if isset($diff_style) && $diff_style eq "inlinediff-full"} selected="selected"{/if} >{tr}text full{/tr}</option>			  
 		</select>
-		<input type="submit" class="wikiaction tips btn btn-default" title="{tr}Edit wiki page{/tr}|{tr}Change the style used to display differences to be translated.{/tr}" name="preview" value="{tr}Change diff styles{/tr}" onclick="needToConfirm=false;">
+		<input type="submit" class="wikiaction tips" title="{tr}Edit wiki page{/tr}|{tr}Change the style used to display differences to be translated.{/tr}" name="preview" value="{tr}Change diff styles{/tr}" onclick="needToConfirm=false;">
 	{/if}
 	
 	{if $page_ref_id}<input type="hidden" name="page_ref_id" value="{$page_ref_id}">{/if}
@@ -164,7 +159,7 @@
 						{/remarksbox}
 					{/if}
 						<p>{tr}Page name:{/tr} <input type="text" name="page" value="{$page|escape}">
-							<input type="submit" class="btn btn-default" name="rename" value="{tr}Rename{/tr}">
+							<input type="submit" name="rename" value="{tr}Rename{/tr}">
 						</p>
 				{else}
 					<input type="hidden" name="page" value="{$page|escape}"> 
@@ -299,7 +294,7 @@ $("input[name=allowhtml]").change(function() {
 								<fieldset>
 									<legend>{tr}Import HTML:{/tr}</legend>
 									<input class="wikiedit" type="text" id="suck_url" name="suck_url" value="{$suck_url|escape}">&nbsp;
-									<input type="submit" class="wikiaction btn btn-default" name="do_suck" value="{tr}Import{/tr}" onclick="needToConfirm=false;">&nbsp;
+									<input type="submit" class="wikiaction" name="do_suck" value="{tr}Import{/tr}" onclick="needToConfirm=false;">&nbsp;
 									<label><input type="checkbox" name="parsehtml" {if $parsehtml eq 'y'}checked="checked"{/if}>&nbsp;
 									{tr}Try to convert HTML to wiki{/tr}. </label>
 								</fieldset>
@@ -313,7 +308,6 @@ $("input[name=allowhtml]").change(function() {
 									{if $prefs.feature_wiki_export eq 'y' and $tiki_p_export_wiki eq 'y'}
 										<a href="tiki-export_wiki_pages.php?page={$page|escape:"url"}&amp;all=1" class="link">{tr}export all versions{/tr}</a>
 									{/if}
-									<input type="submit" class="wikiaction btn btn-default" name="attach" value="{tr}Attach{/tr}" onclick="javascript:needToConfirm=false;insertImgFile('editwiki','userfile2','hasAlreadyInserted2','file', 'page2', 'attach_comment'); return true;">
 								</fieldset>
 							{/if}
 							
@@ -326,7 +320,7 @@ $("input[name=allowhtml]").change(function() {
 										<input type="hidden" id="page2" name="page2" value="{$page}">
 										<input name="userfile2" type="file" id="attach-upload">
 										 <label>{tr}Comment:{/tr}<input type="text" name="attach_comment" maxlength="250" id="attach-comment"></label>
-										<input type="submit" class="wikiaction btn btn-default" name="attach" value="{tr}Attach{/tr}" onclick="javascript:needToConfirm=false;insertImgFile('editwiki','userfile2','hasAlreadyInserted2','file', 'page2', 'attach_comment'); return true;">
+										<input type="submit" class="wikiaction" name="attach" value="{tr}Attach{/tr}" onclick="javascript:needToConfirm=false;insertImgFile('editwiki','userfile2','hasAlreadyInserted2','file', 'page2', 'attach_comment'); return true;">
 									</fieldset>
 								{/if}
 	
@@ -518,28 +512,6 @@ $("input[name=allowhtml]").change(function() {
 								<div class="map-container" data-target-field="geolocation" style="height: 250px; width: 250px;"></div>
 								<input type="hidden" name="geolocation" value="{$geolocation_string}">
 							{/if}
-							{if $prefs.wiki_auto_toc eq 'y'}
-								<fieldset>
-									<legend>{tr}Page display options{/tr}</legend>
-									<ul>
-									
-									<li>{tr}Automatic Table of Contents generation{/tr} <select name="pageAutoToc"> 
-									<option value="0" {if $pageAutoToc == 0}selected{/if}></option>
-									{* <option value="1" {if $pageAutoToc == 1}selected{/if}>On</option> *}
-									<option value="-1" {if $pageAutoToc == -1}selected{/if}>Off</option>
-									</select>
-									</li>
-
-									<li>{tr}Show page title{/tr} <select name="page_hide_title"> 
-									<option value="0" {if $page_hide_title == 0}selected{/if}></option>
-									{* <option value="1" {if $page_hide_title == 1}selected{/if}>On</option> *}
-									<option value="-1" {if $page_hide_title == -1}selected{/if}>Off</option>
-									</select>
-									</li>
-									
-									</ul>
-								</fieldset>
-							{/if}
 							{if $prefs.namespace_enabled eq 'y'}
 								<fieldset>
 									<legend>{tr}Namespace{/tr}</legend>
@@ -582,4 +554,3 @@ $("input[name=allowhtml]").change(function() {
 	</table>
 </form>
 {include file='tiki-page_bar.tpl'}
-{/block}

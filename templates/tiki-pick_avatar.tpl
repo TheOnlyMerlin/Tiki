@@ -37,7 +37,7 @@
 
 {if $showall eq 'y'}
 <h2>{if $user eq $userwatch}{tr}Pick avatar from the library{/tr}{else}{tr}Pick user Avatar{/tr}{/if} <a href="tiki-pick_avatar.php?showall=n">{tr}Hide all{/tr}</a> {$numav} {tr}icons{/tr}</h2>
-<div class="table normal">
+<div class="normal">
 {section name=im loop=$avatars}
 <a href="tiki-pick_avatar.php?showall=n&amp;avatar={$avatars[im]|escape:"url"}&amp;uselib=use"><img src="{$avatars[im]}" alt=''></a>
 {/section}
@@ -89,9 +89,9 @@ function subavt() {
 <tr>
  <td>
    <div align="center">
-	 <input type="submit" class="btn btn-default" name="rand" value="{tr}random{/tr}">
-	 <input type="submit" class="btn btn-default" name="uselib" value="{tr}Use{/tr}">
-	 <input type="submit" class="btn btn-default" name="reset" value="{tr}no avatar{/tr}">
+	 <input type="submit" name="rand" value="{tr}random{/tr}">
+	 <input type="submit" name="uselib" value="{tr}Use{/tr}"> 
+	 <input type="submit" name="reset" value="{tr}no avatar{/tr}"> 
 	 </div>
  </td>
 </tr>
@@ -101,7 +101,7 @@ function subavt() {
 
 {/if}
 
-<div class="table normal">
+<div class="normal">
 <form enctype="multipart/form-data" action="tiki-pick_avatar.php" method="post">
 <fieldset>
 <legend><strong>{tr}Upload your own avatar{/tr}</strong></legend>
@@ -109,7 +109,7 @@ function subavt() {
 <label for="userfile1">{if $prefs.user_store_file_gallery_picture neq 'y'}{tr}File (only .gif, .jpg and .png images approximately 45px × 45px){/tr}{else}{tr}File (only .gif, .jpg and .png images){/tr}{/if}:</label>
 <input type="hidden" name="MAX_FILE_SIZE" value="10000000">
 <input id="userfile1" name="userfile1" type="file">
-<input type="submit" class="btn btn-default" name="upload" value="{tr}Upload{/tr}">
+<input type="submit" name="upload" value="{tr}Upload{/tr}">
 </fieldset>
 </form>
 </div>

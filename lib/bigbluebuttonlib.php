@@ -63,7 +63,7 @@ class BigBlueButtonLib
      * @param $room
      * @return array
      */
-	public function getAttendees( $room, $username=false)
+    public function getAttendees( $room )
 	{
 		if ( $meeting = $this->getMeeting($room) ) {
 			if ( $dom = $this->performRequest('getMeetingInfo', array('meetingID' => $room, 'password' => $meeting['moderatorPW'])) ) {
@@ -71,7 +71,7 @@ class BigBlueButtonLib
 				$attendees = array();
 
 				foreach ( $dom->getElementsByTagName('attendee') as $node ) {
-					$attendees[] = $this->grabValues($node, $username);
+					$attendees[] = $this->grabValues($node);
 				}
 
 				return $attendees;
@@ -83,7 +83,7 @@ class BigBlueButtonLib
      * @param $node
      * @return array
      */
-	private function grabValues( $node, $username=false)
+    private function grabValues( $node )
 	{
 		$values = array();
 
@@ -92,12 +92,7 @@ class BigBlueButtonLib
 				$values[$n->tagName] = $n->textContent;
 			}
 		}
-		if ($username && $values['fullName']) {
-			preg_match('!\(([^\)]+)\)!', $values['fullName'], $match);
-			$values['fullName'] = $match[1];
-		} else {
-			$values['fullName'] = trim(preg_replace('!\(([^\)]+)\)!', '', $values['fullName']));
-		}
+
 		return $values;
 	}
 
@@ -170,7 +165,10 @@ class BigBlueButtonLib
 			return null;
 		}
 
-		$content = $this->performRequest('getDefaultConfigXML', array('random' => '1'), false);
+		$baseUrl = $this->getBaseUrl('/client/conf/config.xml');
+		$tikilib = TikiLib::lib('tiki');
+
+		$content = $tikilib->httprequest($baseUrl);
 
 		if (! $content) {
 			return null;
@@ -183,24 +181,17 @@ class BigBlueButtonLib
 		}
 		$content = $config->getXml();
 
-		$parameters = array(
-			'meetingID' => $meetingName,
-			'configXML' => rawurlencode($content),
-		);
 		$tikilib = TikiLib::lib('tiki');
-		$checksum = $this->generateChecksum('setConfigXML', $parameters);
-		$client = $tikilib->get_http_client($this->getBaseUrl('/api/setConfigXML.xml') . '?');
-		$client->setParameterPost(
-			array(
-				'meetingID' => $meetingName,
-				'configXML' => rawurlencode($content),
-				'checksum' => $checksum,
-			)
-		);
+		$client = $tikilib->get_http_client($this->getBaseUrl('/bigbluebutton/api/setConfigXML.xml'));
+		$client->setParameterPost(array(
+			'meetingID' => $meetingName,
+			'checksum' => sha1($meetingName . rawurlencode($content) . $prefs['bigbluebutton_server_salt']),
+			'configXML' => rawurlencode($content),
+		));
 
 		$response = $client->request('POST');
 		$document = $response->getBody();
-
+		
 		$dom = new DOMDocument;
 		$dom->loadXML($document);
 
@@ -222,7 +213,6 @@ class BigBlueButtonLib
 		$password = $this->getAttendeePassword($room);
 
 		if ( $name && $password ) {
-			TikiLib::lib('logs')->add_action('Joined Room', $room, 'bigbluebutton');
 			$this->joinRawMeeting($room, $name, $password, $configToken);
 		}
 	}
@@ -243,12 +233,11 @@ class BigBlueButtonLib
     /**
      * @return bool|mixed|null|string
      */
-	private function getAttendeeName()
+    private function getAttendeeName()
 	{
 		global $user, $tikilib;
 
 		if ( $realName = $tikilib->get_user_preference($user, 'realName') ) {
-			$realName .= " (". $user . ")";
 			return $realName;
 		} elseif ( $user ) {
 			return $user;
@@ -319,7 +308,7 @@ class BigBlueButtonLib
      * @param array $parameters
      * @return DOMDocument
      */
-    private function performRequest( $action, array $parameters, $checkSuccess = true )
+    private function performRequest( $action, array $parameters )
 	{
 		global $tikilib;
 
@@ -329,10 +318,6 @@ class BigBlueButtonLib
 			$dom = new DOMDocument;
 			if ( $dom->loadXML($result) ) {
 				$nodes = $dom->getElementsByTagName('returncode');
-
-				if ( ! $checkSuccess ) {
-					return $dom;
-				}
 
 				if ( $nodes->length > 0 && ($returnCode = $nodes->item(0)) && $returnCode->textContent == 'SUCCESS' ) {
 					return $dom;
@@ -354,7 +339,7 @@ class BigBlueButtonLib
 			}
 		}
 
-		$url = $this->getBaseUrl("/api/$action");
+		$url = $this->getBaseUrl("/bigbluebutton/api/$action");
 		$url .= "?" . http_build_query($parameters, '', '&');
 		return $url;
 	}
@@ -364,8 +349,9 @@ class BigBlueButtonLib
 		global $prefs;
 
 		$base = rtrim($prefs['bigbluebutton_server_location'], '/');
-		if (false === strpos($base, '/bigbluebutton')) {
-			$base .= '/bigbluebutton';
+		$length = strlen('/bigbluebutton');
+		if (substr($base, -$length) === '/bigbluebutton') {
+			$base = substr($base, 0, -$length);
 		}
 
 		$url = "$base$path";

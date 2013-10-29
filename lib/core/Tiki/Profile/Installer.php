@@ -43,24 +43,13 @@ class Tiki_Profile_Installer
 		'webmail_account' => 'Tiki_Profile_InstallHandler_WebmailAccount',
 		'sheet' => 'Tiki_Profile_InstallHandler_Sheet',
 		'rating_config' => 'Tiki_Profile_InstallHandler_RatingConfig',
-		'rating_config_set' => 'Tiki_Profile_InstallHandler_RatingConfigSet',
 		'area_binding' => 'Tiki_Profile_InstallHandler_AreaBinding',
-		'activity_stream_rule' => 'Tiki_Profile_InstallHandler_ActivityStreamRule',
-		'activity_rule_set' => 'Tiki_Profile_InstallHandler_ActivityRuleSet',
 	);
 
 	private static $typeMap = array(
 		'wiki_page' => 'wiki page',
 		'file_gallery' => 'fgal',
 		'tracker_item' => 'trackeritem',
-	);
-
-	private static $typeMapInvert = array(
-		'wiki page' => 'wiki_page',
-		'wiki' => 'wiki_page',
-		'fgal' => 'file_gallery',
-		'trackeritem' => 'tracker_item',
-		'tracker item' => 'tracker_item',
 	);
 
 	private $userData = false;
@@ -99,25 +88,10 @@ class Tiki_Profile_Installer
 	
 	public static function convertType( $type ) // {{{
 	{
-		if (isset(self::$typeMap[$type])) {
+		if ( array_key_exists($type, self::$typeMap) )
 			return self::$typeMap[$type];
-		} else {
+		else
 			return $type;
-		}
-	} // }}}
-
-	/**
-	 * Converts a Tiki object type to a profile object type.
-	 */
-	public static function convertTypeInvert( $type ) // {{{
-	{
-		$typeMap = self::$typeMapInvert;
-
-		if (isset($typeMap[$type])) {
-			return $typeMap[$type];
-		} else {
-			return $type;
-		}
 	} // }}}
 
 	public static function convertObject( $type, $id, $contextualizedInfo = array() ) // {{{

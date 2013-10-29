@@ -1,5 +1,5 @@
 {* $Id$ *}
-<table class="table normal">
+<table class="normal">
 <tr>
 <th>{tr}Group Name{/tr}</th>
 <th>{tr}Number of Users{/tr}</th>

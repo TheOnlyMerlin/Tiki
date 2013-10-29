@@ -275,7 +275,7 @@ class Services_Tracker_Controller
 		return array(
 			'field' => $field,
 			'info' => $typeInfo,
-			'options' => $this->utilities->parseOptions($field['options'], $typeInfo),
+			'options' => $this->utilities->parseOptions($field['options_array'], $typeInfo),
 			'validation_types' => array(
 				'' => tr('None'),
 				'captcha' => tr('Captcha'),

@@ -63,18 +63,25 @@ class Reports_Send
 
 	protected function setSubject($reportCache)
 	{
-		$subject = tr(
-			'Report on %0 from %1 ',
-			$this->tikiPrefs['browsertitle'],
-			TikiLib::date_format($this->tikiPrefs['short_date_format'], $this->dt->format('U'))
-		);
-		if (!is_array($reportCache)) {
-			$subject .= tr('(no changes)');
-		} elseif (count($reportCache) == 1) {
-			$subject .= tr('(1 change)');
+		if (is_array($reportCache) && count($reportCache) >= 1) {
+			if (count($reportCache) == 1) {
+				$subject = tr(
+					'Report from %0 (1 change)',
+					TikiLib::date_format($this->tikiPrefs['short_date_format'], $this->dt->format('U'))
+				);
+			} else {
+				$subject = tr(
+					'Report from %0 (%1 changes)',
+					TikiLib::date_format($this->tikiPrefs['short_date_format'], $this->dt->format('U')), count($reportCache)
+				);
+			}
 		} else {
-			$subject .= tr('(%0 changes)', count($reportCache));
+			$subject = tr(
+				'Report from %0 (no changes)',
+				TikiLib::date_format($this->tikiPrefs['short_date_format'], $this->dt->format('U'))
+			);
 		}
+
 		$this->mail->setSubject($subject);
 	}
 }

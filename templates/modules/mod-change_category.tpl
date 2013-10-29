@@ -16,7 +16,7 @@
 
 		{if $detailed eq 'y'}
 			{cycle values="odd,even" print=false}
-			<table class="table normal">
+			<table class="normal">
 				{foreach key=k item=i from=$modcatlist}
 					{if $i.incat eq 'y'}
 						<tr>
@@ -69,7 +69,7 @@
 					</select>
 					{if $multiple eq 'y' and $add eq 'y'}
 						<div align="center">
-							<input type="submit" class="btn btn-default" name="categorize" value="{if isset($module_params.categorize)}{tr}{$module_params.categorize}{/tr}{else}{tr}Categorize{/tr}{/if}" />
+							<input type="submit" name="categorize" value="{if isset($module_params.categorize)}{tr}{$module_params.categorize}{/tr}{else}{tr}Categorize{/tr}{/if}" />
 						</div>
 					{/if}
 				</form>

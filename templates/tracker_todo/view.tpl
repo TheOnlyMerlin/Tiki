@@ -1,5 +1,5 @@
 <h4>{tr}Events{/tr}</h4>
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>{tr}From{/tr}</th>
 		<th>{tr}To{/tr}</th>
@@ -85,7 +85,7 @@
 		</label>
 	</fieldset>
 	<div class="submit">
-		<input type="submit" class="btn btn-default" value="{tr}Create{/tr}">
+		<input type="submit" value="{tr}Create{/tr}">
 	</div>
 </form>
 {jq}

@@ -100,16 +100,9 @@
 			</tr>
 		{/if}
 		<tr id='show_author' {if $types.$type.show_author eq 'y'}style="display:;"{else}style="display:none;"{/if}>
-			<td>{tr}Author Name (as displayed){/tr}</td>
+			<td>{tr}Author Name{/tr}</td>
 			<td>
 				<input type="text" name="authorName" value="{$authorName|escape}">
-			</td>
-		</tr>
-		<tr id='show_user' {if $tiki_p_edit_article_user eq 'y'}style="display:;"{else}style="display: none;"{/if}>
-			<td>{tr}User (article owner){/tr}</td>
-			<td>
-				<input id="author" type="text" name="author" value="{$author|escape}" >
-				{autocomplete element='#author' type='username'}
 			</td>
 		</tr>
 		<tr>
@@ -359,9 +352,9 @@
 	</table>
 	
 	<div align="center">
-		<input type="submit" class="wikiaction btn btn-default" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;">
-		<input type="submit" class="wikiaction btn btn-default" name="save" value="{tr}Save{/tr}"  onclick="this.form.saving=true;needToConfirm=false;">
-		{if $articleId}<input type="submit" class="wikiaction tips btn btn-default" title="{tr}Cancel{/tr}|{tr}Cancel the edit, you will lose your changes.{/tr}" name="cancel_edit" value="{tr}Cancel Edit{/tr}"  onclick="needToConfirm=false;">{/if}
+		<input type="submit" class="wikiaction" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;">
+		<input type="submit" class="wikiaction" name="save" value="{tr}Save{/tr}"  onclick="this.form.saving=true;needToConfirm=false;">
+		{if $articleId}<input type="submit" class="wikiaction tips" title="{tr}Cancel{/tr}|{tr}Cancel the edit, you will lose your changes.{/tr}" name="cancel_edit" value="{tr}Cancel Edit{/tr}"  onclick="needToConfirm=false;">{/if}
 	</div>
 {if $smarty.session.wysiwyg neq 'y'}
 	{jq}

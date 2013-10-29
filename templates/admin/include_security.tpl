@@ -13,33 +13,17 @@
 
 <form class="admin" id="security" name="security" action="tiki-admin.php?page=security" method="post">
 	<div class="heading input_submit_container" style="text-align: right">
-		<input type="submit" class="btn btn-default" name="security" value="{tr}Apply{/tr}" />
-		<input type="reset" class="btn btn-warning" name="securityreset" value="{tr}Reset{/tr}" />
+		<input type="submit" name="security" value="{tr}Apply{/tr}" />
+		<input type="reset" name="securityreset" value="{tr}Reset{/tr}" />
 	</div>
 
 {tabset}
 
 		{tab name="{tr}General Security{/tr}"}
-			
-			<div class="adminoptionboxchild" id="smarty_security_childcontainer">	
-			{if $haveMySQLSSL}
-				{if $mysqlSSL === true}
-					<p class="mysqlsslstatus"><img src="img/icons/lock.png" style="outline:lightgreen solid thin"/> {tr}MySQL SSL connection is active{/tr}</p>
-				{else}
-					<p class="mysqlsslstatus"><img src="img/icons/lock_open.png"  style="outline:pink solid thin"/> {tr}MySQL connection is not encrypted{/tr}<br>
-					{tr}To activate SSL, copy the keyfiles (.pem) til db/cert folder. The filenames must end with "-key.pem", "-cert.pem", "-ca.pem"{/tr}
-					</p>
-				{/if}
-			{else}
-				<p><img src="img/icons/lock_gray.png" style="outline:pink solid thin"/> {tr}MySQL Server does not have SSL activated{/tr}
-				</p>
-			{/if}
-			</div>
 			{preference name=smarty_security}
 			<div class="adminoptionboxchild" id="smarty_security_childcontainer">	
 				{preference name=smarty_security_functions}
 				{preference name=smarty_security_modifiers}
-				{preference name=smarty_security_dirs}
 			</div>
 			{preference name=feature_purifier}
 			{preference name=feature_htmlpurifier_output}
@@ -167,6 +151,6 @@
 {/tabset}	
 	
 	<div class="input_submit_container" style="margin-top: 5px; text-align: center">
-		<input type="submit" class="btn btn-default" name="security" value="{tr}Apply{/tr}" />
+		<input type="submit" name="security" value="{tr}Apply{/tr}" />
 	</div>
 </form>

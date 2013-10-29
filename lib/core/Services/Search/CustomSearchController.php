@@ -31,12 +31,11 @@ class Services_Search_CustomSearchController
 		$cachelib = TikiLib::lib('cache');
 		$definition = $input->definition->word();
 		if (empty($definition) || ! $definition = $cachelib->getSerialized($definition, 'customsearch')) {
-			throw new Services_Exception(tra('Unfortunately, the search cache has expired. Please reload the page to start over.'));
+			throw new Services_Exception(tra('Search expired.'));
 		}
 
 		$query = $definition['query'];
 		$formatter = $definition['formatter'];
-		$facetsBuilder = $definition['facets'];
 
 		$adddata = json_decode($input->adddata->text(), true);
 
@@ -99,17 +98,16 @@ class Services_Search_CustomSearchController
 					$config['type'] = $name;
 				}
 
-				$filter = 'content'; //default
-				if (isset($config['_filter']) || $name == 'categories' || $name == 'daterange') {
-					if ($config['_filter'] == 'language') {
-						$filter = 'language';
-					} elseif ($config['_filter'] == 'type') {
-						$filter = 'type';
-					} elseif ($config['_filter'] == 'categories' || $name == 'categories') {
-						$filter = 'categories';
-					} elseif ($name == 'daterange') {
-						$filter = 'daterange';
-					}
+				if ($config['_filter'] == 'language') {
+					$filter = 'language';
+				} elseif ($config['_filter'] == 'type') {
+					$filter = 'type';
+				} elseif ($config['_filter'] == 'categories' || $name == 'categories') {
+					$filter = 'categories';
+				} elseif ($name == 'daterange') {
+					$filter = 'daterange';
+				} else {
+					$filter = 'content'; //default
 				}
 
 				if (is_array($value) && count($value) > 1) {
@@ -142,10 +140,7 @@ class Services_Search_CustomSearchController
 		}
 
 		$unifiedsearchlib = TikiLib::lib('unifiedsearch');
-		$unifiedsearchlib->initQuery($query); // Done after cache because permissions vary
-
-		$facetsBuilder->build($query, $unifiedsearchlib->getFacetProvider());
-
+		$query->setWeightCalculator($unifiedsearchlib->getWeightCalculator());
 		$index = $unifiedsearchlib->getIndex();
 		$resultSet = $query->search($index);
 

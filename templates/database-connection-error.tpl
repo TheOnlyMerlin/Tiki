@@ -17,7 +17,7 @@
 <div id="fixedwidth"> {* enables fixed-width layouts *}
 	<div id="main">
 	<div id="siteheader" style="margin: 1em auto; max-width: 800px">
-			<div class="sitelogo">
+			<div id="sitelogo">
 				<img style="border: medium none ;" alt="Site Logo" src="img/tiki/Tiki_WCG.png">
 			</div>
 	</div>

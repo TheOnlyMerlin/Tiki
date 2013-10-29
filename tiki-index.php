@@ -49,7 +49,6 @@ if ( $prefs['feature_wiki_structure'] == 'y' ) {
 include_once('lib/wiki/wikilib.php');
 include_once('lib/stats/statslib.php');
 require_once ('lib/wiki/renderlib.php');
-require_once('lib/debug/Tracer.php');
 
 $auto_query_args = array(
 				'page',
@@ -186,20 +185,6 @@ if (!empty($page_ref_id)) {
 
 $page = $_REQUEST['page'];
 $smarty->assign_by_ref('page', $page);
-
-// Inline Ckeditor editor
-if ($prefs['wysiwyg_inline_editing'] == 'y' && $page &&
-		(	($tikilib->user_has_perm_on_object($user, $_REQUEST['page'], 'wiki page', 'edit')) ||
-			($tikilib->user_has_perm_on_object($user, $_REQUEST['page'], 'wiki page', 'edit_inline')) )) {
-
-	TikiLib::lib('wysiwyg')->setUpInlineEditor($_REQUEST['page']);		// init ckeditor
-
-} else if (getCookie('wysiwyg_inline_edit', 'preview')) {
-	setCookieSection('wysiwyg_inline_edit', 0, 'preview');	// kill cookie if pref off or no perms
-}
-
-// Process page display options
-$wikilib->processPageDisplayOptions();
 
 #Propagate the fullscreen parameter to templates
 if ( isset($_REQUEST['fullscreen']) ) {
@@ -403,6 +388,8 @@ if ($prefs['flaggedrev_approval'] == 'y' && isset($_REQUEST['latest']) && $objec
 	$pageRenderer->forceLatest();
 }
 
+require_once 'lib/cache/pagecache.php';
+
 if ($prefs['mobile_mode'] === 'y') {
 	$cache_mobile_mode = array('mobile_mode' => $prefs['mobile_mode']);
 } else {
@@ -506,18 +493,19 @@ if ( $user
 // Process an undo here
 if ( isset($_REQUEST['undo']) ) {
 	if ( $pageRenderer->canUndo() ) {
-		$access->check_authenticity(tra('Are you sure you want to undo the last change?'));
+		$access->check_authenticity();
 
-		$historylib = TikiLib::lib('hist');
-		$last = $historylib->get_page_latest_version($page);
-		if ( $last > 1 ) {
-			$historylib->use_version($page, $last);
-			// Restore page information
-			$info = $tikilib->get_page_info($page);
-			$pageRenderer->setInfos($info);
-		} else {
-			TikiLib::lib('errorreport')->report(tra('Nothing to undo'));
+		// Remove the last version
+		$wikilib->remove_last_version($page);
+
+		// If page was deleted then re-create
+		if ( ! $tikilib->page_exists($page) ) {
+			$tikilib->create_page($page, 0, '', $tikilib->now, 'Tiki initialization');
 		}
+
+		// Restore page information
+		$info = $tikilib->get_page_info($page);
+		$pageRenderer->setInfos($info);
 	}
 }
 
@@ -664,11 +652,7 @@ if (!empty($_REQUEST['machine_translate_to_lang'])) {
 TikiLib::events()->trigger(
 	'tiki.wiki.view',
 	array_merge(
-		array(
-			'type' => 'wiki page',
-			'object' => $page,
-			'user' => $GLOBALS['user'],
-		),
+		array('type' => 'wiki', 'object' => $page,),
 		(is_array($info) ? $info : array())
 	)
 );
@@ -676,7 +660,7 @@ TikiLib::events()->trigger(
 $smarty->assign('info', $info);
 $smarty->assign('mid', 'tiki-show_page.tpl');
 
-$smarty->display('tiki-show_page.tpl');
+$smarty->display('tiki.tpl');
 
 // xdebug_dump_function_profile(XDEBUG_PROFILER_CPU);
 // debug: print all objects
@@ -742,4 +726,3 @@ function make_sure_machine_translation_is_enabled()
 		$access->display_error($_REQUEST['page'], 'Cannot machine translate this page', '', true, $error_msg);
 	}
 }
-

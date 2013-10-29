@@ -11,7 +11,7 @@
 var CHECKBOX_LIST = [{{section name=user loop=$items}'sites[{$items[user].siteId}]'{if not $smarty.section.user.last},{/if}{/section}}];
 {/jq}
   <br>
-  <table class="table normal">
+  <table class="normal">
     <tr>
       <th>{if $items}
         <input type="checkbox" name="checkall" onclick="checkbox_list_check_all('form_validate_sites',CHECKBOX_LIST,this.checked);">
@@ -50,8 +50,8 @@ var CHECKBOX_LIST = [{{section name=user loop=$items}'sites[{$items[user].siteId
   </table>
   {if $items} <br>
   {tr}Perform action with selected:{/tr}
-  <input type="submit" class="btn btn-default" name="del" value="{tr}Remove{/tr}">
-  <input type="submit" class="btn btn-default" name="validate" value="{tr}Validate{/tr}">
+  <input type="submit" name="del" value="{tr}Remove{/tr}">
+  <input type="submit" name="validate" value="{tr}Validate{/tr}">
   {/if}
 </form>
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links} 

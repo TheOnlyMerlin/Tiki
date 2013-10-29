@@ -37,12 +37,10 @@ function tra($content, $lg = '', $unused = false, $args = array())
 	static $languages = array();
 
 	if ($lg == '') {
-		if (! empty($prefs['language'])) {
+		if ( $prefs['language'] ) {
 			$lang = $prefs['language'];
-		} elseif(! empty($prefs['site_language'])) {
-			$lang = $prefs['site_language'];
 		} else {
-			$lang = 'en';
+			$lang = $prefs['site_language'];
 		}
 	} else {
 		$lang = $lg;

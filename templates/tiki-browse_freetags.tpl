@@ -40,7 +40,7 @@
 		<b>{tr}Tags{/tr}</b> 
 		<input type="text" id="tagBox" name="tag" size="25" value="{$tagString|escape}">
 		{button _onclick="clearTags(); return false;" _text="{tr}Clear{/tr}"}
-		<input type="submit" class="btn btn-default" value="{tr}Go{/tr}">
+		<input type="submit" value="{tr}Go{/tr}">
 		<br>
 		<input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
 		<input type="radio" name="broaden" id="stopb1" value="n"{if $broaden eq 'n'} checked="checked"{/if}>
@@ -167,7 +167,7 @@
 
 		<input type="hidden" name="old_type" value="{$type|escape}">
 		<input type="text" name="find" value="{$find|escape}">
-		<input type="submit" class="btn btn-default" value="{tr}Filter{/tr}">
+		<input type="submit" value="{tr}Filter{/tr}">
 	{/capture}
 
 {if $cpt > 1}
@@ -197,7 +197,6 @@
 				</h3>
 				<div class="type">
 					{tr}{$objects[ix].type|replace:"wiki page":"Wiki"|replace:"article":"Article"|regex_replace:"/tracker [0-9]*/":"tracker item"}{/tr}
-				{if !empty($objects[ix].parent_object_id)} {tr}in{/tr} {object_link type=$objects[ix].parent_object_type id=$objects[ix].parent_object_id}{/if}
 				</div>
 				<div class="description">
 					{$objects[ix].description|strip_tags|escape}&nbsp;

@@ -372,7 +372,7 @@ class RSSLib extends TikiDb_Bridge
 
 		if (!$noUpdate) {
 			// Updating is normally required, except for cases where we know it will be updated later (e.g. after article generation is set, so that articles are created immediately)
-			$this->refresh_rss_module($rssId);
+			$this->update_feeds(array($rssId), true);
 		}
 		return $rssId;
 	}
@@ -381,7 +381,6 @@ class RSSLib extends TikiDb_Bridge
 	function remove_rss_module($rssId)
 	{
 		$this->modules->delete(array('rssId' => $rssId,));
-		$this->items->deleteMultiple(array('rssId' => $rssId,));
 
 		return true;
 	}
@@ -400,8 +399,6 @@ class RSSLib extends TikiDb_Bridge
 	function clear_rss_cache($rssId)
 	{
 		$this->items->deleteMultiple(array('rssId' => (int) $rssId));
-		$this->modules->update(array('refresh' => 0), array('rssId' => (int) $rssId,));
-
 	}
 
 	/* check if an rss feed name already exists */
@@ -597,17 +594,7 @@ class RSSLib extends TikiDb_Bridge
 		}
 		$data['content'] = trim($data['content']) == '' ? $data['content'] : '~np~' . $data['content'] . '~/np~';
 
-		$hash = md5($data['title'] . $data['description'] . $data['content']);
-
 		if ($configuration['submission'] == true) {
-			$subid = $this->table('tiki_submissions')->fetchOne('subId', array(
-				'linkto' => $data['url'],
-				'topicId' => $configuration['topic'],
-				'hash' => $hash,
-			));
-			if (!$subid) {
-				$subid = 0;
-			}
 			$subid = $artlib->replace_submission(
 				$data['title'],
 				$data['author'],
@@ -622,7 +609,7 @@ class RSSLib extends TikiDb_Bridge
 				$publication,
 				$expire,
 				'admin',
-				$subid,
+				0,
 				0,
 				0,
 				$configuration['atype'],
@@ -643,14 +630,6 @@ class RSSLib extends TikiDb_Bridge
 				}
 			}
 		} else {
-			$id = $this->table('tiki_articles')->fetchOne('articleId', array(
-				'linkto' => $data['url'],
-				'topicId' => $configuration['topic'],
-				'hash' => $hash,
-			));
-			if (!$id) {
-				$id = 0;
-			}
 			$id = $artlib->replace_article(
 				$data['title'],
 				$data['author'],
@@ -665,7 +644,7 @@ class RSSLib extends TikiDb_Bridge
 				$publication,
 				$expire,
 				'admin',
-				$id,
+				0,
 				0,
 				0,
 				$configuration['atype'],
@@ -733,7 +712,6 @@ class RSSLib extends TikiDb_Bridge
 				'future_publish' => -1,
 				'categories' => array(),
 				'rating' => 5,
-				'feed_name' => $module['name'],
 				);
 
 		foreach ( $actions as $action ) {

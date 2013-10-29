@@ -707,4 +707,4 @@ class TikiAccessLib extends TikiLib
 		}
 	}
 }
-global $access; $access = new TikiAccessLib;
+$access = new TikiAccessLib;

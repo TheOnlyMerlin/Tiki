@@ -23,8 +23,7 @@ function module_top_blog_posters_info()
 		'params' => array(
 			'blogId' => array(
 				'name' => tra('Blog ID'),
-				'description' => tra('Limit to a blog'),
-				'profile_reference' => 'blog',
+				'description' => tra('Limit to a blog')
 			)
 		),
 		'common_params' => array('nonums', 'rows')

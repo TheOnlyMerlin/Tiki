@@ -18,7 +18,7 @@
 
 {if $batchRes}
 	<h2>{tr}Batch Upload Results{/tr}</h2>
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th>{tr}Filename{/tr}</th>
 			<th>{tr}Status{/tr}</th>
@@ -164,7 +164,7 @@
 				<tr>
 					<td>&nbsp;</td>
 					<td>
-						<input type="submit" class="btn btn-default" name="upload" value="{tr}Upload{/tr}">
+						<input type="submit" name="upload" value="{tr}Upload{/tr}">
 					</td>
 				</tr>
 			</table>

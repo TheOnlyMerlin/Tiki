@@ -14,7 +14,7 @@ function smarty_function_toolbars($params, $smarty)
 	global $prefs, $is_html;
 	$default = array('comments' => '', 'is_html' => $is_html);
 	$params = array_merge($default, $params);
-
+	
 	if ($prefs['javascript_enabled'] != 'y') {
 		return '';
 	}
@@ -32,17 +32,17 @@ function smarty_function_toolbars($params, $smarty)
 	} else {
 		$comments = false;
 	}
-
+	
 	// some tool filters to help roll out textarea & toolbars to more sections quickly (for 4.0)
 
 	$hidden = array();
 //	if ($params['section'] != 'wiki page' && $params['section'] != 'blogs' && $params['section'] != 'newsletters' && $params['section'] != 'trackers') {
 //		$hidden[] = 'fullscreen';
 //	}
-	if ( (!isset( $params['switcheditor'] ) && !in_array($params['section'], array('wiki page', 'blogs', 'newsletters', 'cms', 'webmail'))) || $params['switcheditor'] !== 'y') {
+	if ( (!isset( $params['switcheditor'] ) || $params['switcheditor'] !== 'y') && !in_array($params['section'], array('wiki page', 'blogs', 'newsletters', 'cms', 'webmail'))) {
 		$hidden[] = 'switcheditor';
 	}
-
+	
 	if ( ! isset( $params['area_id'] ) ) {
 		$params['area_id'] = 'editwiki';
 	}
@@ -50,7 +50,7 @@ function smarty_function_toolbars($params, $smarty)
 	include_once( 'lib/toolbars/toolbarslib.php' );
 	$list = ToolbarsList::fromPreference($params['section'] . ($comments ? '_comments' : ''), $hidden);
 	if ( isset($params['_wysiwyg']) && $params['_wysiwyg'] == 'y') {
-		return $list->getWysiwygArray("'+CurrentEditorName+'", $params['is_html']);
+		return $list->getWysiwygArray( "'+CurrentEditorName+'", $params['is_html']);
 	} else {
 		return $list->getWikiHtml($params['area_id'], $params['comments']);
 	}

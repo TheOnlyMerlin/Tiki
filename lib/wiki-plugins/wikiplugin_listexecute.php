@@ -15,7 +15,6 @@ function wikiplugin_listexecute_info()
 		'body' => tra('List configuration information'),
 		'validate' => 'all',
 		'filter' => 'wikicontent',
-		'profile_reference' => 'search_plugin_content',
 		'icon' => 'img/icons/text_list_bullets.png',
 		'tags' => array( 'advanced' ),
 		'params' => array(
@@ -33,7 +32,6 @@ function wikiplugin_listexecute($data, $params)
 	$factory->register(
 		array(
 			'change_status' => 'Search_Action_ChangeStatusAction',
-			'delete' => 'Search_Action_Delete',
 			'email' => 'Search_Action_EmailAction',
 			'wiki_approval' => 'Search_Action_WikiApprovalAction',
 			'tracker_item_modify' => 'Search_Action_TrackerItemModify',
@@ -41,7 +39,7 @@ function wikiplugin_listexecute($data, $params)
 	);
 
 	$query = new Search_Query;
-	$unifiedsearchlib->initQuery($query);
+	$query->setWeightCalculator($unifiedsearchlib->getWeightCalculator());
 
 	$matches = WikiParser_PluginMatcher::match($data);
 
@@ -58,6 +56,10 @@ function wikiplugin_listexecute($data, $params)
 				$actions[$action->getName()] = $action;
 			}
 		}
+	}
+
+	if (! Perms::get()->admin) {
+		$query->filterPermissions(Perms::get()->getGroups());
 	}
 
 	if (!empty($_REQUEST['sort_mode'])) {

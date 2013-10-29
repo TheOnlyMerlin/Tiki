@@ -15,7 +15,7 @@
 <table class="formcolor">
 <tr><td>{tr}Option:{/tr}</td><td><textarea name="optionText" rows="5" cols="40">{$optionText|escape}</textarea></td></tr>
 <tr><td>{tr}Points:{/tr}</td><td><input type="text" name="points" value="{$points|escape}"></td></tr>
-<tr><td >&nbsp;</td><td><input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}"></td></tr>
+<tr><td >&nbsp;</td><td><input type="submit" name="save" value="{tr}Save{/tr}"></td></tr>
 </table>
 </form>
 
@@ -23,7 +23,7 @@
 
 {include file='find.tpl'}
 
-<table class="table normal">
+<table class="normal">
 <tr>
 <th><a href="tiki-edit_question_options.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'optionId_desc'}optionId_asc{else}optionId_desc{/if}">{tr}ID{/tr}</a></th>
 <th><a href="tiki-edit_question_options.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'optionText_desc'}optionText_asc{else}optionText_desc{/if}">{tr}text{/tr}</a></th>

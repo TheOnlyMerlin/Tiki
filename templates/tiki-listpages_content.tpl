@@ -25,7 +25,7 @@
 
 {assign var='pagefound' value='n'}
 
-<table class="table normal">
+<table class="normal">
 	<tr>
 		{if isset($checkboxes_on) and $checkboxes_on eq 'y' && count($listpages) > 0}
 			<th>
@@ -335,11 +335,7 @@
 
 				{if $listpages[changes].perms.tiki_p_assign_perm_wiki_page eq 'y'}
 					<a class="link" href="tiki-objectpermissions.php?objectName={$listpages[changes].pageName|escape:"url"}&amp;objectType=wiki+page&amp;permType=wiki&amp;objectId={$listpages[changes].pageName|escape:"url"}">
-						{if $listpages[changes].perms_active eq 'y'}
-							{icon _id='key_active' alt="{tr}Perms{/tr}"}
-						{else}
-							{icon _id='key' alt="{tr}Perms{/tr}"}
-						{/if}
+						{icon _id='key' alt="{tr}Perms{/tr}"}
 					</a>
 				{/if}
 
@@ -353,7 +349,7 @@
 		{capture assign='find_htmlescaped'}{$find|escape}{/capture}
 		{capture assign="intro"}{if $exact_match ne 'n'}{tr}No page:{/tr}{else}{tr}No pages found with:{/tr}{/if}{/capture}
 		{if $find ne '' && $aliases_were_found == 'y'}
-			{norecords _colspan=$cntcol _text="$intro &quot;$find_htmlescaped&quot;. <br/>However, some page aliases fitting the query were found (see Aliases section above)."}
+			{norecords _colspan=$cntcol _text="$intro &quot;$find_htmlescaped&dquot;. <br/>However, some page aliases fitting the query were found (see Aliases section above)."}
 		{elseif $find ne '' && $initial ne '' && $aliases_were_found == 'y'}
 			{norecords _colspan=$cntcol _text="$intro &quot;$find_htmlescaped&quot;and starting with &quot; $initial &quote;. <br/>However, some page aliases fitting the query were found (see Aliases section above)."}
                 {elseif $find ne '' && $initial ne ''}
@@ -404,7 +400,7 @@
 		//-->
 	</script>
 	<noscript>
-		<input type="submit" class="btn btn-default" value="{tr}OK{/tr}">
+		<input type="submit" value="{tr}OK{/tr}">
 	</noscript>
 {/if}
 

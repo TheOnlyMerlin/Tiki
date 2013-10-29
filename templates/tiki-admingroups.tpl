@@ -32,7 +32,7 @@
 	{/if}
 
 	<form name="checkform" method="post" action="{$smarty.server.PHP_SELF}">
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th style="width: 20px;">{select_all checkbox_names='checked[]'}</th>
 			<th>{self_link _sort_arg='sort_mode' _sort_field='id'}{tr}ID{/tr}{/self_link}</th>
@@ -96,7 +96,7 @@
 				<option value="remove_groups" >{tr}Remove{/tr}</option>
 			</select>
 		</label>
-		<input type="submit" class="btn btn-default" value="{tr}OK{/tr}">
+		<input type="submit" value="{tr}OK{/tr}">
 	</p>
 	</form>
 	{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
@@ -266,7 +266,7 @@
 						</select>
 						{if $userstrackerid or $prefs.javascript_enabled eq 'y'}
 							<br>
-							<select name="usersfield"{if empty($userstrackerid) and $prefs.javascript_enabled eq 'y' and $prefs.jquery_ui_chosen neq 'y'} style="display: none;"{/if}>
+							<select name="usersfield"{if empty($userstrackerid) and $prefs.javascript_enabled eq 'y'} style="display: none;"{/if}>
 								<option value="0">{tr}choose a field ...{/tr}</option>
 								{section name=ix loop=$usersFields}
 									<option value="{$usersFields[ix].fieldId}"{if $usersFields[ix].fieldId eq $usersfieldid} selected="selected"{/if}>{$usersFields[ix].fieldId} - {$usersFields[ix].name|escape}</option>
@@ -287,11 +287,7 @@ $("#userstracker").change(function () {
 				}
 				$usersfield.append('<option value="' + this.fieldId + '"' + sel + '>' + this.fieldId + ' - ' + this.name + '</option>');
 			});
-			if (jqueryTiki.chosen) {
-				$usersfield.trigger("chosen:updated");
-			} else {
-				$usersfield.show();
-			}
+			$usersfield.show();
 		}
 	});
 });
@@ -358,12 +354,12 @@ $("#userstracker").change(function () {
 						&nbsp;
 						<input type="hidden" name="olgroup" value="{$group|escape}">
 					</td>
-					<td><input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}"></td>
+					<td><input type="submit" name="save" value="{tr}Save{/tr}"></td>
 				</tr>
 			{else}
 				<tr>
 					<td >&nbsp;</td>
-					<td><input type="submit" class="btn btn-default" name="newgroup" value="{tr}Add{/tr}"></td>
+					<td><input type="submit" name="newgroup" value="{tr}Add{/tr}"></td>
 				</tr>
 			{/if}
 		</table>
@@ -393,7 +389,7 @@ $("#userstracker").change(function () {
 		<h2>{tr}Members List:{/tr} {$groupname|escape}</h2>
 		<form name="checkform" method="post" action="{$smarty.server.PHP_SELF}">
 		<input type="hidden" name="group" value="{$group|escape}">
-		<table class="table normal">
+		<table class="normal">
 			<tr>
 				<th class="auto">{if $memberslist}{select_all checkbox_names='members[]'}{/if}</th>
 				<th>{self_link _sort_arg='sort_mode_member' _sort_field='login'}{tr}User{/tr}{/self_link}</th>
@@ -426,7 +422,7 @@ $("#userstracker").change(function () {
 				<option value="unassign">{tr}Unassign{/tr}</option>
 			</select>
 		</label>
-		<input type="submit" class="btn btn-default" name="unassign_members" value="{tr}OK{/tr}">
+		<input type="submit" name="unassign_members" value="{tr}OK{/tr}">
 		</form>
 		{/if}
 
@@ -435,7 +431,7 @@ $("#userstracker").change(function () {
 		<div class="box">{$membersCount} {tr}users in group{/tr} {$groupname|escape}</div>
 
 		<h2>{tr}Banned members List:{/tr} {$groupname|escape}</h2>
-		<table class="table normal">
+		<table class="normal">
 			<tr>
 				<th>{tr}User{/tr}</th>
 				<th>{tr}Action{/tr}</th>
@@ -463,8 +459,8 @@ $("#userstracker").change(function () {
 							<option>{$iuser|escape}</option>
 						{/foreach}
 					</select>
-					<input type="submit" class="btn btn-default" name="adduser" value="{tr}Add to group{/tr}">
-					<input type="submit" class="btn btn-default" name="banuser" value="{tr}Ban user from group{/tr}">
+					<input type="submit" name="adduser" value="{tr}Add to group{/tr}">
+					<input type="submit" name="banuser" value="{tr}Ban user from group{/tr}">
 				</p>
 			</form>
 		{/if}
@@ -508,7 +504,7 @@ $("#userstracker").change(function () {
 				</tr>
 				<tr>
 					<td class="auto"></td>
-					<td class="auto"><input type="submit" class="btn btn-default" name="export" value="{tr}Export{/tr}"></td>
+					<td class="auto"><input type="submit" name="export" value="{tr}Export{/tr}"></td>
 				</tr>
 			</table>
 
@@ -526,7 +522,7 @@ $("#userstracker").change(function () {
 				</tr>
 				<tr>
 					<td class="auto"></td>
-					<td class="auto"><input type="submit" class="btn btn-default" name="import" value="{tr}Import{/tr}"></td>
+					<td class="auto"><input type="submit" name="import" value="{tr}Import{/tr}"></td>
 				</tr>
 			</table>
 		</form>

@@ -21,7 +21,7 @@
 		</option>
 	{/foreach}
 </select>
-<input type="submit" class="btn btn-default" name="search" value="{tr}Search{/tr}">
+<input type="submit" name="search" value="{tr}Search{/tr}">
 </form>
 </div>
 <div class="searchreplace_results">
@@ -30,7 +30,7 @@
 {/if}
 <form action="tiki-search_replace.php" method="post">
 {if isset($results)}
-	<table class="table normal">
+	<table class="normal">
 	<tr>
 		<td style="text-align: right">
 			{select_all checkbox_names='checked[]'}
@@ -71,7 +71,7 @@
 	<input type="hidden" name="maxRecords" value="{$maxRecords}">
 	<input type="hidden" name="casesensitive" value="{$casesensitive}">
 	<input type="hidden" name="paddingLength" value="{$paddingLength}">
-	<input type="submit" class="btn btn-default" name="replace" value="{tr}Replace selected{/tr}">
+	<input type="submit" name="replace" value="{tr}Replace selected{/tr}">
 	{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
 {/if}
 </form>

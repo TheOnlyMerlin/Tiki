@@ -381,8 +381,7 @@ class Comments extends TikiLib
 			$full = $pop3->getMsg($i);
 			$message = $pop3->getBody($i);
 
-			$mimelib = new mime();
-			$output = $mimelib->decode($full);
+			$output = mime::decode($full);
 			//unset ($parts);
 			//$this->parse_output($output, $parts, 0);
 
@@ -824,9 +823,6 @@ class Comments extends TikiLib
 		// Prevent ambiguous field database errors
 		if (strpos($sort_mode, 'commentDate') !== false) {
 			$sort_mode = str_replace('commentDate', 'a.commentDate', $sort_mode);
-		}
-		if (strpos($sort_mode, 'smiley') !== false) {
-			$sort_mode = str_replace('smiley', 'a.smiley', $sort_mode);
 		}
 
 		if (strpos($sort_mode, 'hits') !== false) {
@@ -1893,8 +1889,8 @@ class Comments extends TikiLib
 			TikiLib::lib('smarty')->loadPlugin('smarty_modifier_truncate');
 			return '"' .
 					smarty_modifier_truncate(
-						strip_tags(TikiLib::lib('parser')->parse_data($comment['data'])), $commentlength
-					) .'"';
+						strip_tags(TikiLib::lib('parser')->parse_data($comment['data'])), $commentlength) .
+					'"';
 		} else {
 			return $comment['title'];
 		}
@@ -2332,11 +2328,7 @@ class Comments extends TikiLib
 			return;
 		}
 
-		if ($type == 'trackeritem') {
-			$href .= $object . "&threadId=$threadId&cookietab=2#threadId$threadId";
-		} else {
-			$href .= $object . "&amp;threadId=$threadId&amp;comzone=show#threadId$threadId";
-		}
+		$href .= $object . "&amp;threadId=$threadId&amp;comzone=show#threadId$threadId";
 
 		return $href;
 	}
@@ -2461,11 +2453,11 @@ class Comments extends TikiLib
 	}
 
     /**
-	 * @param $data
-	 * @param $objectType
-	 * @param $threadId
+     * @param $data
+     * @param $objectType
+     * @param $threadId
      */
-	function update_comment_links($data, $objectType, $threadId)
+    function update_comment_links($data, $objectType, $threadId)
 	{
 		if ($objectType == 'forum') {
 			$type = 'forum post'; // this must correspond to that used in tiki_objects
@@ -2510,15 +2502,16 @@ class Comments extends TikiLib
 
 		// if exactly same title and data comment does not already exist, and is not the current thread
 		if (empty($existingThread) || in_array($threadId, $existingThread)) {
-			$comment = $this->get_comment($threadId);
+			$object = explode(":", $objectId, 2);
 			if ($prefs['feature_actionlog'] == 'y') {
+				$comment= $this->get_comment($threadId);
 				include_once('lib/diff/difflib.php');
 				$bytes = diff2($comment['data'], $data, 'bytes');
 				global $logslib; include_once('lib/logs/logslib.php');
-				if ($comment['objectType'] == 'forum')
-					$logslib->add_action('Updated', $comment['object'], $comment['objectType'], "comments_parentId=$threadId&amp;$bytes#threadId$threadId", '', '', '', '', $contributions);
+				if ($object[0] == 'forum')
+					$logslib->add_action('Updated', $object[1], $object[0], "comments_parentId=$threadId&amp;$bytes#threadId$threadId", '', '', '', '', $contributions);
 				else
-					$logslib->add_action('Updated', $comment['object'], 'comment', "type=".$comment['objectType']."&amp;$bytes#threadId$threadId", '', '', '', '', $contributions);
+					$logslib->add_action('Updated', $object[1], 'comment', "type=".$object[0]."&amp;$bytes#threadId$threadId", '', '', '', '', $contributions);
 			}
 			$comments->update(
 				array(
@@ -2537,40 +2530,14 @@ class Comments extends TikiLib
 				$contributionlib->assign_contributions($contributions, $threadId, 'comment', $title, '', '');
 			}
 
-			$this->update_comment_links($data, $comment['objectType'], $threadId);
-			$type = $this->update_index($comment['objectType'], $threadId);
-			if ($type == 'forum post') {
-				TikiLib::events()->trigger(
-					'tiki.forumpost.update',
-					array(
-						'type' => $type,
-						'object' => $threadId,
-						'forum_id' => $comment['object'],
-						'user' => $GLOBALS['user'],
-						'title' => $title,
-						'content' => $data,
-						'index_handled' => true,
-					)
-				);
-			} else {
-				if ($comment['objectType'] == 'trackeritem') {
-					$parentobject = TikiLib::lib('trk')->get_tracker_for_item($comment['object']);
-				} else {
-					$parentobject = 'not implemented';
-				}
-				TikiLib::events()->trigger(
-					'tiki.comment.update',
-					array(
-						'type' => $comment['objectType'],
-						'object' => $comment['object'],
-						'parentobject' => $parentobject,
-						'title' => $title,
-						'comment' => $threadId,
-						'user' => $GLOBALS['user'],
-						'content' => $data,
-					)
-				);
-			}
+			$type = $this->update_index($object[0], $threadId);
+			$href = $this->getHref($object[0], $object[1], $threadId);
+			global $tikilib;
+			$tikilib->object_post_save(
+				array('type'=>$type, 'object'=>$threadId, 'description'=>'', 'href'=>$href, 'name'=>$title),
+				array('content' => $data)
+			);
+			$this->update_comment_links($data, $object[0], $threadId);
 		} // end hash check
 	}
 
@@ -2597,7 +2564,7 @@ class Comments extends TikiLib
 	function post_new_comment($objectId, $parentId, $userName,
 		$title, $data, &$message_id, $in_reply_to = '', $type = 'n',
 		$summary = '', $smiley = '', $contributions = '', $anonymous_name = '',
-		$postDate = '', $anonymous_email = '', $anonymous_website = '', $parent_comment_info = ''
+		$postDate = '', $anonymous_email = '', $anonymous_website = ''
 	)
 	{
 		global $user;
@@ -2762,55 +2729,11 @@ class Comments extends TikiLib
 			$contributionlib->assign_contributions($contributions, $threadId, 'comment', $title, '', '');
 		}
 
-		$this->update_comment_links($data, $object[0], $threadId);
-		$tx = $this->begin();
 		$type = $this->update_index($object[0], $threadId, $parentId);
-		$finalEvent = 'tiki.comment.post';
-
-		if ($type == 'forum post') {
-			$finalEvent = $parentId ? 'tiki.forumpost.reply' : 'tiki.forumpost.create';
-			if ($parent_comment_info) {
-				$parent_title = $parent_comment_info['title'];
-			} else {
-				$parent_title = '';
-			}
-
-			TikiLib::events()->trigger(
-				$finalEvent,
-				array(
-					'type' => $type,
-					'object' => $threadId,
-					'parent_id' => $parentId,
-					'forum_id' => $object[1],
-					'user' => $GLOBALS['user'],
-					'title' => $title,
-					'parent_title' => $parent_title,
-					'content' => $data,
-					'index_handled' => true,
-				)
-			);
-		} else {
-			$finalEvent = $parentId ? 'tiki.comment.reply' : 'tiki.comment.post';
-
-			if ($object[0] == 'trackeritem') {
-				$parentobject = TikiLib::lib('trk')->get_tracker_for_item($object[1]);
-			} else {
-				$parentobject = 'not implemented';
-			}
-			TikiLib::events()->trigger(
-				$finalEvent,
-				array(
-					'type' => $object[0],
-					'object' => $object[1],
-					'parentobject' => $parentobject,
-					'user' => $GLOBALS['user'],
-					'title' => $title,
-					'content' => $data,
-				)
-			);
-		}
-
-		$tx->commit();
+		$href = $this->getHref($object[0], $object[1], $threadId);
+		global $tikilib;
+		$tikilib->object_post_save(array('type'=>$type, 'object'=>$threadId, 'description'=>'', 'href'=>$href, 'name'=>$title), array('content' => $data));
+		$this->update_comment_links($data, $object[0], $threadId);
 
 		return $threadId;
 		//return $return_result;
@@ -2969,13 +2892,10 @@ class Comments extends TikiLib
 			$this->remove_thread_attachment($att['attId']);
 		}
 
-		$tx = $this->begin();
 		// Update search index after deletion is done
 		foreach ($result as $res) {
 			$this->update_index($res['objectType'], $res['threadId']);
-			refresh_index($res['objectType'], $res['object']);
 		}
-		$tx->commit();
 
 		return true;
 	}
@@ -3197,7 +3117,7 @@ class Comments extends TikiLib
      */
     function post_in_forum($forum_info, &$params, &$feedbacks, &$errors)
 	{
-		global $smarty, $tiki_p_admin_forum, $tiki_p_forum_post_topic, $tikilib;
+		global $smarty, $tiki_p_admin_forum, $tiki_p_forum_post_topic;
 		global  $tiki_p_forum_post, $prefs, $user, $tiki_p_forum_autoapp, $captchalib;
 
 		if (!empty($params['comments_grandParentId'])) {
@@ -3249,18 +3169,8 @@ class Comments extends TikiLib
 		if (!empty($errors)) {
 			return 0;
 		}
-
-		$noparsed = array('key' => array(), 'data' => array());
-		$data = $params['comments_data'];
-		$parserlib = TikiLib::lib('parser');
-		$parserlib->plugins_remove($data, $noparsed, function ($match) {
-			return $match->getName() == 'code';
-		});
-
-		$data = strip_tags($data);
-		$data = str_replace($noparsed['key'], $noparsed['data'], $data);
-		$params['comments_data'] = rtrim($data);
-
+		// Remove HTML tags and empty lines at the end of the posted comment
+		$params['comments_data'] = rtrim(strip_tags($params['comments_data']));
 		if ($tiki_p_admin_forum != 'y') {// non admin can only post normal
 			$params['comment_topictype'] = 'n';
 			if ($forum_info['topic_summary'] != 'y')
@@ -3336,18 +3246,10 @@ class Comments extends TikiLib
 						$params['comment_topictype'],
 						$params['comment_topicsummary'],
 						$params['comment_topicsmiley'],
-						isset($params['contributions']) ? $params['contributions']: '',	$params['anonymous_name'],
-						'', $params['anonymous_email'], '', $parent_comment_info
+						isset($params['contributions']) ? $params['contributions']: '',	$params['anonymous_name']
 					);
 					// The thread *WAS* successfully created.
 
-					if ($prefs['feature_score'] == 'y') {
-					  if ($parent_id) {
-						$tikilib->score_event($user, 'forum_topic_reply', $threadId);
-					  } else {
-						$tikilib->score_event($user, 'forum_topic_post', $threadId);
-					  }
-					}
 					if ($threadId) {
 						// Deal with mail notifications.
 						include_once('lib/notifications/notificationemaillib.php');

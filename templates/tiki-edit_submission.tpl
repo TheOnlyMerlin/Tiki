@@ -94,10 +94,10 @@
 			<td>{tr}Topic{/tr}</td>
 			<td>
 				<select name="topicId">
+					{section name=t loop=$topics}
+						<option value="{$topics[t].topicId|escape}" {if $topicId eq $topics[t].topicId}selected="selected"{/if}>{$topics[t].name|escape}</option>
+					{/section}
 					<option value="" {if $topicId eq 0}selected="selected"{/if}>{tr}None{/tr}</option>
-					{foreach $topics as $topic}
-						<option value="{$topic.topicId|escape}" {if $topicId eq $topic.topicId}selected="selected"{/if}>{$topic.name|escape}</option>
-					{/foreach}
 				</select>
 				{if $tiki_p_admin_cms eq 'y'}
 					<a href="tiki-admin_topics.php" class="link">{tr}Admin Topics{/tr}</a>
@@ -317,10 +317,10 @@
 	
 	<div align="center">
 		{if $prefs.feature_antibot eq 'y'}<br><div align="center">{include file='antibot.tpl' antibot_table='y'}</div><br>{/if}
-		<input type="submit" class="wikiaction btn btn-default" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;">
-		<input type="submit" class="wikiaction btn btn-default" name="submitarticle" value="{tr}Submit Article{/tr}" onclick="needToConfirm=false;">
+		<input type="submit" class="wikiaction" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;">
+		<input type="submit" class="wikiaction" name="submitarticle" value="{tr}Submit Article{/tr}" onclick="needToConfirm=false;">
 		{if $tiki_p_autoapprove_submission eq 'y'}
-			<input type="submit" class="wikiaction btn btn-default" name="save" value="{tr}Auto-Approve Article{/tr}" onclick="needToConfirm=false;">
+			<input type="submit" class="wikiaction" name="save" value="{tr}Auto-Approve Article{/tr}" onclick="needToConfirm=false;">
 		{/if}
 	</div>
 {if $smarty.session.wysiwyg neq 'y'}

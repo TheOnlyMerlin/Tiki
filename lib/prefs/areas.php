@@ -16,7 +16,6 @@ function prefs_areas_list()
 			'filter' => 'digits',
 			'default' => 0,
 			'help' => 'Areas',
-			'profile_reference' => 'category',
 			'dependencies' => array(
 				'feature_areas',
 			),

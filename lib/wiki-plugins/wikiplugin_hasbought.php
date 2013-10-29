@@ -35,7 +35,6 @@ function wikiplugin_hasbought_info()
 				'description' => tra('Tracker from which to get passcode to check against'),
 				'filter' => 'text',
 				'default' => '',
-				'profile_reference' => 'tracker',
 			),
 			'fieldId' => array(
 				'required' => true,
@@ -43,7 +42,6 @@ function wikiplugin_hasbought_info()
 				'description' => tra('Field ID from which to get passcode to check against'),
 				'filter' => 'text',
 				'default' => '',
-				'profile_reference' => 'tracker_field',
 			),
 			'itemId' => array(
 				'required' => true,
@@ -51,7 +49,6 @@ function wikiplugin_hasbought_info()
 				'description' => tra('Item ID from which to get passcode to check against'),
 				'filter' => 'text',
 				'default' => '',
-				'profile_reference' => 'tracker_item',
 			),
 		),
 	);

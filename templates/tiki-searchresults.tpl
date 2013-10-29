@@ -159,7 +159,7 @@
 				{if $forumId}<input type="hidden" name="forumId" value="{$forumId|escape}">{/if}	
 			{/if}
 			<label class="findsubmit">
-				<input type="submit" class="btn btn-default" name="search" value="{tr}Go{/tr}">
+				<input type="submit" name="search" value="{tr}Go{/tr}">
 			</label>
 			{if !$searchNoResults}
 				{button _auto_args='highlight' href="tiki-searchresults.php?highlight=" _text="{tr}Clear Filter{/tr}"}
@@ -173,9 +173,9 @@
 	<div class="nohighlight simplebox" style="width:300px">
 		 {tr}Found{/tr} "{$words|escape}" {tr}in{/tr} 
 			{if $where_forum}
-				"{tr}{$where|escape}:{/tr}" {$where_forum|escape}
+				{tr}{$where|escape}:{/tr} {$where_forum|escape}
 			{else}
-				{$cant} "{tr}{$where_label|escape}"{/tr}
+				{$cant} {tr}{$where_label|escape}{/tr}
 			{/if}
 	</div><!--nohighlight-->
 {/if}

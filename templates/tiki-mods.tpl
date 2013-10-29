@@ -155,7 +155,7 @@ function update_button_install() {
 	<form method="get" action="tiki-mods.php">
 		{tr}Find{/tr}
 		<input type="text" name="find" value="{$find|escape}">
-		<input type="submit" class="btn btn-default" name="f" value="{tr}Find{/tr}">
+		<input type="submit" name="f" value="{tr}Find{/tr}">
 		{tr}in{/tr} <select name="type" onchange="this.form.submit();">
 			<option value="">{tr}all types{/tr}</option>
 			{foreach key=it item=i from=$types}
@@ -175,7 +175,7 @@ function update_button_install() {
 		{tr}No mods found.{/tr}
 	{/if}
 	
-	<table cellspacing="0" cellpadding="2" border="0" class="table normal">
+	<table cellspacing="0" cellpadding="2" border="0" class="normal">
 		{foreach key=type item=i from=$display}
 			<tr><td colspan="{if $prefs.feature_mods_provider eq 'y'}3{else}2{/if}">
 				{assign var=thistype value=$type|escape:"url"}

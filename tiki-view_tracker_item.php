@@ -56,8 +56,7 @@ if (!isset($_REQUEST['trackerId']) && $prefs['userTracker'] == 'y' && !isset($_R
 					'type' => 'u',
 					'value' => $user,
 				);
-				$definition = Tracker_Definition::get($_REQUEST['trackerId']);
-				if ($definition && $f = $definition->getUserField()) {
+				if ($f = $trklib->get_field_id_from_type($_REQUEST['trackerId'], "u", '1%')) {
 					if ($f != $utid['usersFieldId']) {
 						$addit[] = array(
 							'fieldId' => $f,
@@ -66,7 +65,7 @@ if (!isset($_REQUEST['trackerId']) && $prefs['userTracker'] == 'y' && !isset($_R
 						);
 					}
 				}
-				if ($definition && $f = $definition->getWriterGroupField()) {
+				if ($f = $trklib->get_field_id_from_type($_REQUEST['trackerId'], "g", 1)) {
 					$addit[] = array(
 						'fieldId' => $f,
 						'type' => 'g',
@@ -123,10 +122,7 @@ if ($prefs['userTracker'] == 'y' && isset($_REQUEST['view']) && $_REQUEST['view'
 		}
 	}
 	if (!empty($_REQUEST['trackerId']) && empty($fieldId)) {
-		$definition = Tracker_Definition::get($_REQUEST['trackerId']);
-		if ($definition) {
-			$fieldId = $definition->getUserField();
-		}
+		$fieldId = $trklib->get_field_id_from_type($_REQUEST['trackerId'], 'u', '1%');
 	}
 	if (!empty($_REQUEST['trackerId']) && !empty($fieldId)) {
 		$_REQUEST['itemId'] = $trklib->get_item_id($_REQUEST['trackerId'], $fieldId, $_REQUEST['user']);
@@ -150,13 +146,6 @@ if (!isset($_REQUEST["trackerId"]) || !$_REQUEST["trackerId"]) {
 	$smarty->assign('msg', tra("No tracker indicated"));
 	$smarty->display("error.tpl");
 	die;
-}
-
-if ($prefs['feature_score'] == 'y' && isset($_REQUEST["itemId"])) {
-    $item_info = $trklib->get_tracker_item($_REQUEST["itemId"]);
-    $currentItemId = $_REQUEST["itemId"];
-    $tikilib->score_event($user, 'trackeritem_read', $currentItemId);
-    $tikilib->score_event($item_info['createdBy'], 'trackeritem_is_read', "$user:$currentItemId");
 }
 
 $definition = Tracker_Definition::get($_REQUEST['trackerId']);

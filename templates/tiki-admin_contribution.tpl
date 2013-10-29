@@ -22,7 +22,7 @@
 			<tr>
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" class="btn btn-default" name="replace" value="{tr}Save{/tr}">
+					<input type="submit" name="replace" value="{tr}Save{/tr}">
 				</td>
 			</tr>
 		</table>
@@ -83,7 +83,7 @@
 		<tr class="{cycle}">
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" class="btn btn-default" name="setting" value="{tr}Save{/tr}">
+				<input type="submit" name="setting" value="{tr}Save{/tr}">
 			</td>
 		</tr>
 	</table>
@@ -107,14 +107,14 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" class="btn btn-default" name="add" value="{tr}Add{/tr}">
+				<input type="submit" name="add" value="{tr}Add{/tr}">
 			</td>
 		</tr>
 	</table>
 </form>
 
 <h2>{tr}List of contributions{/tr}</h2>
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>{tr}Name{/tr}</th>
 		<th>{tr}Description{/tr}</th>

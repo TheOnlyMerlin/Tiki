@@ -1216,8 +1216,7 @@ class CartLib
 			$tocheck[$trackerId][] = $f;
 		}
 		foreach ($tocheck as $trackerId => $flds) {
-			$definition = Tracker_Definition::get($todo['objectId']);
-			if ($fieldId = $definition->getUserField()) {
+			if ($fieldId = $trklib->get_field_id_from_type($trackerId, 'u', '1%')) { // user creator field
 				$item = $trklib->get_item($trackerId, $fieldId, $user);
 				foreach ($flds as $f) {
 					if (!isset($item[$f]) || !$item[$f]) {

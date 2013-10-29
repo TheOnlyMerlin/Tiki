@@ -32,7 +32,7 @@
 				<input type="text" name="position" value="{$position|escape}" size="4">
 			</td>
 			<td colspan="2">
-				<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
+				<input type="submit" name="save" value="{tr}Save{/tr}">
 			</td>
 		</tr>
 	</table>
@@ -42,7 +42,7 @@
 
 <h2>{tr}Poll options{/tr}</h2>
 <div align="center">
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th>{tr}Position{/tr}</th>
 			<th>{tr}Title{/tr}</th>

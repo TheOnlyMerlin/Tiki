@@ -7,8 +7,8 @@
 
 class TikiDb_Table
 {
-	protected $db;
-	protected $tableName;
+	private $db;
+	private $tableName;
 
 	function __construct($db, $tableName)
 	{
@@ -269,15 +269,6 @@ class TikiDb_Table
 		}
 	}
 
-	function notIn(array $values, $caseSensitive = false)
-	{
-		if (empty($values)) {
-			return $this->expr('1=0', array());
-		} else {
-			return $this->expr(($caseSensitive ? 'BINARY ' : '') . '$$ NOT IN(' . rtrim(str_repeat('?, ', count($values)), ', ') . ')', $values);
-		}
-	}
-
 	function findIn($value, array $fields)
 	{
 		$expr = $this->like("%$value%");
@@ -401,7 +392,7 @@ class TikiDb_Table
 		return "INSERT$ignore INTO {$this->escapeIdentifier($this->tableName)} ($fieldDefinition) VALUES ($fieldPlaceholders)";
 	}
 
-	protected function escapeIdentifier($identifier)
+	private function escapeIdentifier($identifier)
 	{
 		return "`$identifier`";
 	}

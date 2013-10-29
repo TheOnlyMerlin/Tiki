@@ -21,42 +21,42 @@ function wikiplugin_bigbluebutton_info()
 				'name' => tra('Meeting'),
 				'description' => tra('MeetingID for BigBlueButton. This is a 5 digit number, starting with a 7. Ex.: 77777 or 71111.'),
 				'filter' => 'text',
-				'default' => '',
+				'default' => ''
 			),
 			'prefix' => array(
 				'required' => false,
 				'name' => tra('Anonymous prefix'),
 				'description' => tra('Unregistered users will get this token prepended to their name.'),
 				'filter' => 'text',
-				'default' => '',
+				'default' => ''
 			),
 			'welcome' => array(
 				'required' => false,
 				'name' => tra('Welcome Message'),
 				'description' => tra('A message to be provided when someone enters the room.'),
 				'filter' => 'text',
-				'default' => '',
+				'default' => ''
 			),
 			'number' => array(
 				'required' => false,
 				'name' => tra('Dial Number'),
 				'description' => tra('The phone-in support number to join from traditional phones.'),
 				'filter' => 'text',
-				'default' => '',
+				'default' => ''
 			),
 			'voicebridge' => array(
 				'required' => false,
 				'name' => tra('Voice Bridge'),
 				'description' => tra('Code to enter for phone attendees to join the room. Typically, the same 5 digits of the MeetingID.'),
 				'filter' => 'digits',
-				'default' => '',
+				'default' => ''
 			),
 			'logout' => array(
 				'required' => false,
 				'name' => tra('Log-out URL'),
 				'description' => tra('URL to which the user will be redirected when logging out from BigBlueButton.'),
 				'filter' => 'url',
-				'default' => '',
+				'default' => ''
 			),
 			'recording' => array(
 				'required' => false,
@@ -85,7 +85,7 @@ function wikiplugin_bigbluebutton( $data, $params )
 
 		$perms = Perms::get('bigbluebutton', $meeting);
 
-		$params = array_merge(array('prefix' => '', 'recording' => 0), $params);
+		$params = array_merge(array('prefix' => ''), $params);
 		// This is incomplete, will only apply if the dynamic feature is enabled. To be completed.
 		$params['configuration'] = array(
 			'presentation' => array(
@@ -101,21 +101,19 @@ function wikiplugin_bigbluebutton( $data, $params )
 			}
 		}
 
-		if ($perms->bigbluebutton_view_rec && $params['recording']) {
-			$smarty->assign('bbb_recordings', $bigbluebuttonlib->getRecordings($meeting));
-		} else {
-			$smarty->assign('bbb_recordings', null);
-		}
-
 		if ( $perms->bigbluebutton_join ) {
 			$smarty->assign('bbb_attendees', $bigbluebuttonlib->getAttendees($meeting));
+			if ($perms->bigbluebutton_view_rec) {
+				$smarty->assign('bbb_recordings', $bigbluebuttonlib->getRecordings($meeting));
+			}
 
 			return $smarty->fetch('wiki-plugins/wikiplugin_bigbluebutton.tpl');
 
-		}
+		} elseif ( $perms->bigbluebutton_view_rec ) { # Case for anonymous users with the perm to view recordings but not to join meetings
+			$smarty->assign('bbb_recordings', $bigbluebuttonlib->getRecordings($meeting));
 
-		// Won't display anything if recordings were not loaded
-		return $smarty->fetch('wiki-plugins/wikiplugin_bigbluebutton_view_recordings.tpl');
+			return $smarty->fetch('wiki-plugins/wikiplugin_bigbluebutton_view_recordings.tpl');
+		}
 	} catch (Exception $e) {
 		return WikiParser_PluginOutput::internalError(tr('BigBlueButton misconfigured or unaccessible.'));
 	}

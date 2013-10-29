@@ -3,9 +3,7 @@
 {title help="$helpUrl"}{$admintitle}{/title}
 
 {if $prefs.sender_email eq ''}
-	<div class="alert alert-info">
-		{tr _0="tiki-admin.php?page=general&highlight=sender_email"}Your sender email is not set. You can set it <a href="%0" class="alert-link">here</a>{/tr}
-	</div>
+{tr _0="tiki-admin.php?page=general&highlight=sender_email"}Your sender email is not set. You can set it <a href="%0">here</a>{/tr}
 {/if}
 
 <form method="post" action="">
@@ -18,7 +16,7 @@
 			</label>
 		{/foreach}
 
-		<input type="submit" value="{tr}Set as my default{/tr}" class="btn btn-primary btn-xs">
+		<input type="submit" value="{tr}Set as my default{/tr}">
 
 		{if $prefs.connect_feature eq "y"}
 			<label>
@@ -39,7 +37,7 @@
 		};
 		var hide = function (selector) {
 			selector.hide();
-			/*selector.parents('fieldset:not(.tabcontent)').hide();*/
+			selector.parents('fieldset:not(.tabcontent)').hide();
 		};
 
 		var filters = [];
@@ -78,9 +76,8 @@
 	{/remarksbox*}
 	<p>
 		<label>{tr}Configuration search:{/tr} <input type="text" name="lm_criteria" value="{$lm_criteria|escape}"></label>
-		<input type="submit" class="btn btn-default" value="{tr}Search{/tr}" {if $indexNeedsRebuilding} class="tips" title="{tr}Configuration search{/tr}|{tr}Note: The search index needs rebuilding, this will take a few minutes.{/tr}"{/if} />
+		<input type="submit" value="{tr}Search{/tr}" {if $indexNeedsRebuilding} class="tips" title="{tr}Configuration search{/tr}|{tr}Note: The search index needs rebuilding, this will take a few minutes.{/tr}"{/if} />
 		<input type="hidden" name="filters">
-		<span class="adminWizardLink"><img src="img/icons/wizard16x16.png" /> <a href="tiki-wizard_admin.php?url=tiki-admin.php">{tr}Open Admin Wizard{/tr}</a></span>
 	</p>
 </form>
 {if $lm_error}

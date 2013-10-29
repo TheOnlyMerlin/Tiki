@@ -17,7 +17,8 @@ if (!isset($_REQUEST["forumId"])) {
 }
 
 $smarty->assign('forumId', $_REQUEST["forumId"]);
-$commentslib = TikiLib::lib('comments');
+include_once ("lib/comments/commentslib.php");
+$commentslib = new Comments($dbTiki);
 $forum_info = $commentslib->get_forum($_REQUEST["forumId"]);
 
 //Check individual permissions for this forum

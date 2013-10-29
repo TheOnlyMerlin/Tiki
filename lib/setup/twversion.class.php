@@ -24,11 +24,11 @@ class TWVersion
 		//   stable   : Represents stable releases.
 		//   unstable : Represents candidate and test/development releases.
 		//   trunk     : Represents next generation development version.
-		$this->branch 	= 'trunk';
+		$this->branch 	= 'stable';
 
 		// Set everything else, including defaults.
-		$this->version 	= '13.0svn';	// needs to have no spaces for releases
-		$this->star	= '?';
+		$this->version 	= '11.1';	// needs to have no spaces and use the format X.YabcZ see tikiVersions fn below for examples
+		$this->star	= 'Vega';
 		$this->releases	= array();
 
 		// Check for Subversion or not
@@ -72,8 +72,7 @@ class TWVersion
 				19=>'Acubens',		// 8.x
 				20=>'Herbig Haro',	// 9.x
 				21=>'Sun',			// 10.x
-				22=>'Vega',			// 11.x
-				22=>'Altair'		// 12.x
+				22=>'Vega'			// 11.x
 		);
 	}
 
@@ -159,6 +158,7 @@ class TWVersion
 				'6.10',
 				'6.11',
 				'6.12',
+				'6.13',
 				'7.0beta1',
 				'7.0beta2',
 				'7.0RC1',
@@ -187,6 +187,7 @@ class TWVersion
 				'9.4',
 				'9.5',
 				'9.6',
+				'9.7',
 				'10.0alpha',
 				'10.0beta',
 				'10.0',
@@ -194,8 +195,10 @@ class TWVersion
 				'10.2',
 				'10.3',
 				'10.4',
+				'10.5',
 				'11.0beta',
 				'11.0',
+				'11.1',
 				'12.0alpha',
 			);
 	}

@@ -24,7 +24,7 @@
 				{/foreach}
 		</select>
 	  </div>
-	  <div style="float:left;"><input type="submit" class="btn btn-default" name="filter" value="{tr}Filter{/tr}"></div>
+	  <div style="float:left;"><input type="submit" name="filter" value="{tr}Filter{/tr}"></div>
 	  </div>
 </form>
 
@@ -44,7 +44,7 @@
 					<div class="tabs-1">
 					<form method="post">
 					{foreach from=$filterGroup item=f}<input type="hidden" name="filterGroup[]" value="{$f|escape}">{/foreach}
-					<table class="table normal">
+					<table class="normal">
 					<tr>
 						<th class="checkbox">{select_all checkbox_names='groupPerm[]'}</th>
 						<th>{tr}Group{/tr}</th>
@@ -64,7 +64,7 @@
 						<div style="float:left">
 						{icon _id='cross' _tag='input_image' _confirm="{tr}Delete the selected permissions?{/tr}" name='delsel' alt="{tr}Delete the selected permissions{/tr}"}
 							 <br>						
-							 <input type="text" name="toGroup"><input type="submit" class="btn btn-default" name="dupsel" value="{tr}Duplicate the selected permissions on this group{/tr}">
+							 <input type="text" name="toGroup"><input type="submit" name="dupsel" value="{tr}Duplicate the selected permissions on this group{/tr}">
 	  					</div>
 					{/if}
 					</form>
@@ -76,7 +76,7 @@
 					{remarksbox}{tr}If an object is not listed in this section nor in the Category Permissions section, then only the global permissions apply to it.{/tr}{/remarksbox}
 					<form method="post">
 					{foreach from=$filterGroup item=f}<input type="hidden" name="filterGroup[]" value="{$f|escape}">{/foreach}
-					<table class="table normal">
+					<table class="normal">
 					<tr>
 						<th class="checkbox">{select_all checkbox_names='objectPerm[]'}</th>
 						<th>{tr}Object{/tr}</th>
@@ -110,7 +110,7 @@
 						<div style="float:left">
 							 {icon _id='cross' _tag='input_image' _confirm="{tr}Delete the selected permissions?{/tr}" name='delsel' alt="{tr}Delete the selected permissions{/tr}" style='vertical-align: middle;'}
 							 <br>						
-							 <input type="text" name="toGroup"><input type="submit" class="btn btn-default" name="dupsel" value="{tr}Duplicate the selected permissions on this group{/tr}">
+							 <input type="text" name="toGroup"><input type="submit" name="dupsel" value="{tr}Duplicate the selected permissions on this group{/tr}">
 						</div>
 					{/if}
 					</form>
@@ -121,7 +121,7 @@
 					<div class="tabs-3">
 					{remarksbox}{tr}If an object is not listed in this section nor in the Object Permissions section, then only the global permissions apply to it.{/tr}{/remarksbox}
 					<form method="post">
-					<table class="table normal">
+					<table class="normal">
 					<tr>
 						<th>{tr}Object{/tr}</th>
 						<th>{tr}Group{/tr}</th>

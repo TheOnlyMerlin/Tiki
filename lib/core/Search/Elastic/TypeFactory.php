@@ -22,7 +22,7 @@ class Search_Elastic_TypeFactory implements Search_Type_Factory_Interface
 		if (is_numeric($value)) {
 			return new Search_Type_PlainText(gmdate(DateTime::W3C, $value));
 		} else {
-			return new Search_Type_PlainText(null);
+			return new Search_Type_PlainText('');
 		}
 	}
 
@@ -31,14 +31,9 @@ class Search_Elastic_TypeFactory implements Search_Type_Factory_Interface
 		return new Search_Type_Whole($value);
 	}
 
-	function numeric($value)
-	{
-		return new Search_Type_Whole((float) $value);
-	}
-
 	function multivalue($values)
 	{
-		return new Search_Type_MultivaluePlain(array_values((array) $values));
+		return new Search_Type_Whole((array) $values);
 	}
 
 	function sortable($value)

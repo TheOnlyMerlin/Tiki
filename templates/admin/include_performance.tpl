@@ -4,8 +4,8 @@
 
 <form class="admin" id="performance" name="performance" action="tiki-admin.php?page=performance" method="post">
 	<div class="heading input_submit_container" style="text-align: right">
-		<input type="submit" class="btn btn-default" name="performance" value="{tr}Apply{/tr}" />
-		<input type="reset" class="btn btn-warning" name="performancereset" value="{tr}Reset{/tr}" />
+		<input type="submit" name="performance" value="{tr}Apply{/tr}" />
+		<input type="reset" name="performancereset" value="{tr}Reset{/tr}" />
 	</div>
 {tabset}
 
@@ -102,9 +102,6 @@
 						{/if}
 					</p>
 				{/if}
-				{if $opcode_stats.warning_check}
-					<p>{tr}Clear all APC caches:{/tr} {self_link apc_clear=true}{tr}Clear Caches{/tr}{/self_link}</p>
-				{/if}
 			{else}
 				{tr}Bytecode cache is not used. Using a bytecode cache (APC, XCache, WinCache) is highly recommended for production environments.{/tr}
 			{/if}
@@ -147,7 +144,6 @@
 			{preference name=log_sql}
 			{preference name=log_mail}
 			{preference name=log_tpl}
-			{preference name=category_browse_count_objects}
 			{preference name=error_reporting_level}
 			{remarksbox type="tip" title="{tr}Tip{/tr}"}
 				{tr}Many search options impact performance. Please see <a href="tiki-admin.php?page=search">Search admin panel</a>.{/tr}
@@ -177,6 +173,6 @@
 {/tabset}
 		
 	<div class="input_submit_container" style="margin-top: 5px; text-align: center">
-		<input type="submit" class="btn btn-default" name="performance" value="{tr}Apply{/tr}" />
+		<input type="submit" name="performance" value="{tr}Apply{/tr}" />
 	</div>
 </form>

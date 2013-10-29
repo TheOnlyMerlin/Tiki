@@ -198,12 +198,45 @@ class RegistrationLib extends TikiLib
 	}
 
 	/**
-	 *  Check registration datas
-	 * @param $registration array of registration (login, pass, email, etc.)
-	 * @param bool $from_intertiki
-	 * @return array (of errors)
+	 *  Create a new user in the database on user registration
+	 *  @access private
+	 *  @returns true on success, false to halt event proporgation
 	 */
-	private function local_check_registration($registration, $from_intertiki = false)
+	public function create_user()
+	{
+		global $_REQUEST, $_SERVER, $email_valid, $prefs;
+		global $customfields, $userlib, $tikilib, $Debug;
+
+		if ($Debug) {
+			print '::create_user';
+		}
+
+		if ($email_valid != 'no') {
+			if ($prefs['validateUsers'] == 'y') {
+				$apass = md5($tikilib->genPass());
+				$userlib->add_user($_REQUEST['name'], $apass, $_REQUEST['email'], $_REQUEST['pass']);
+			} else {
+				$userlib->add_user($_REQUEST['name'], $_REQUEST['pass'], $_REQUEST['email'], '');
+			}
+
+			// Custom fields
+			foreach ($customfields as $custpref => $prefvalue) {
+				if ($customfields[$custpref]['show']) {
+					//print $_REQUEST[$customfields[$custpref]['prefName']];
+					$tikilib->set_user_preference($_REQUEST['name'], $customfields[$custpref]['prefName'], $_REQUEST[$customfields[$custpref]['prefName']]);
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	 *  Check registration datas
+	 *  @param $registration datas of registration (login, pass, email, etc.)
+	 *  @returns ?
+	 */
+	/*private*/
+	public function local_check_registration($registration, $from_intertiki = false)
 	{
 		global $_SESSION, $prefs, $userlib, $captchalib;
 
@@ -305,12 +338,8 @@ class RegistrationLib extends TikiLib
 		return $errors;
 	}
 
-	/**
-	 * @param $registration
-	 * @param $from_intertiki
-	 * @return string
-	 */
-	private function register_new_user_local($registration, $from_intertiki)
+	/*private*/
+	public function register_new_user_local($registration, $from_intertiki)
 	{
 		global $_SESSION, $tikilib, $logslib, $userlib, $notificationlib, $prefs, $smarty;
 
@@ -429,12 +458,8 @@ class RegistrationLib extends TikiLib
 		return $result;
 	}
 
-	/**
-	 * @param $registration array
-	 * @param $from_intertiki bool
-	 * @return mixed|RegistrationError
-	 */
-	private function register_new_user_to_intertiki($registration, $from_intertiki)
+	/*private*/
+	public function register_new_user_to_intertiki($registration, $from_intertiki)
 	{
 		global $prefs;
 
@@ -471,11 +496,12 @@ class RegistrationLib extends TikiLib
 	}
 
 	/**
-	 *  Check registration data
-	 * @param $registration array of registration (login, pass, email, etc.)
-	 * @param $from_intertiki bool
-	 * @return array|string RegistrationError if error, string with message if ok
+	 *  Check registration datas
+	 *  @param $registration datas of registration (login, pass, email, etc.)
+	 *  @returns : Object RegistrationError if error
+	 *             string with message if ok
 	 */
+	/*public*/
 	public function register_new_user($registration, $from_intertiki=false)
 	{
 		global $prefs, $tikilib;
@@ -544,7 +570,8 @@ class RegistrationLib extends TikiLib
 		return $result;
 	}
 
-	private function init_registration_prefs()
+	/*private*/
+	public function init_registration_prefs()
 	{
 		global $userlib, $prefs;
 

@@ -98,7 +98,7 @@ if (isset($_SESSION['accessible'])) {
 							<form method="post" action="' . $_SERVER['REQUEST_URI'] . '">
 								<p><label for="dbuser">Database username</label>: <input type="text" id="dbuser" name="dbuser" /></p>
 								<p><label for="dbpass">Database password</label>: <input type="password" id="dbpass" name="dbpass" /></p>
-								<p><input type="submit" class="btn btn-default" value=" Validate and Continue " /></p>
+								<p><input type="submit" value=" Validate and Continue " /></p>
 							</form>
 							<p>&nbsp;</p>';
 	createPage($title, $content);
@@ -132,7 +132,7 @@ function createPage($title, $content)
 				<div class="clearfix fixedwidth header_fixedwidth">
 					<header id="header" class="header">
 						<div class="content clearfix modules" id="top_modules" style="display: table; width: 990px;">
-							<div class="sitelogo">
+							<div id="sitelogo">
 								<img alt="Site Logo" src="img/tiki/Tiki_WCG.png" style="margin-bottom: 10px;" />
 							</div>
 						</div>

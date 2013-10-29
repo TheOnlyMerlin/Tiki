@@ -22,18 +22,6 @@ function wikiplugin_youtube_info()
 				'filter' => 'url',
 				'default' => '',
 			),
-			'privacyEnhanced' => array(
-				'required' => false,
-				'name' => tra('Privacy-Enhanced'),
-				'description' => tra('Enable privacy-enhanced mode'),
-				'default' => '',
-				'filter' => 'alpha',
-    			'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n'),
-				),
-			),
 			'width' => array(
 				'required' => false,
 				'name' => tra('Width'),
@@ -134,13 +122,7 @@ function wikiplugin_youtube($data, $params)
 		return '^' . tra('Invalid YouTube URL provided');
 	}
 
-	if ($params['privacyEnhanced'] == 'y') {
-		$fqdn = 'www.youtube-nocookie.com';
-	} else {
-		$fqdn = 'www.youtube.com';
-	}
-
-	$params['movie'] = '//'.$fqdn.'/embed/' . $params['movie'] . '?';
+	$params['movie'] = $scheme . '://www.youtube.com/v/' . $sYoutubeId . '?';
 	// backward compatibility
 	if ($params['allowFullScreen'] == 'y') {
 		$params['allowFullScreen'] = 'true';
@@ -148,14 +130,10 @@ function wikiplugin_youtube($data, $params)
 		$params['allowFullScreen'] = 'false';
 	}
 
-	if (!empty($params['allowFullScreen'])) {
-		if ($params['allowFullScreen'] == 'true') {
-			$params['movie'] .= '&fs=1';
-		} else {
-			$params['movie'] .= '&fs=0';
-		}
+	if (!empty($params['allowFullScreen']) && $params['allowFullScreen'] == 'true') {
+		$params['movie'] .= '?fs=1';
 	}
-	if (isset($params['related']) && $params['related'] == 'n') {
+	if (isset($related) && $related == 'n') {
 		$params['movie'] .= '&rel=0';
 	}
 	if (!empty($params['border'])) {
@@ -165,10 +143,12 @@ function wikiplugin_youtube($data, $params)
 		$params['movie'] .= '&color2=0x' . $params['background'];
 	}
 
+	$code = $tikilib->embed_flash($params);
 
-	$iframe = ('<iframe src="'.$params['movie'].'" frameborder="0" width="'.$params['width'].'" height="'.$params['height'].'"></iframe>');
-
-	return '~np~' . $iframe . '~/np~';
+	if ( $code === false ) {
+		return tra('Missing parameter movie to the Youtube plugin');
+	}
+	return '~np~' . $code . '~/np~';
 }
 
 function getYoutubeId( $sYoutubeUrl)
@@ -189,7 +169,7 @@ function getYoutubeId( $sYoutubeUrl)
 			parse_str(parse_url($sYoutubeUrl, PHP_URL_QUERY), $aQueryString);
 			return $aQueryString["v"];
 		}
-	} elseif (preg_match('/^([\w-_]+)$/', $sYoutubeUrl, $matches)) {
+	} elseif (preg_match('/^([\w-_]+)$/', $sYoutubeUrl, $matches)){
 		$sYoutubeId = $sYoutubeUrl;
 	} else {
 		return false;

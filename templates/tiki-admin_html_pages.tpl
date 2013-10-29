@@ -70,8 +70,8 @@
 		<tr>
 			<td></td>
 			<td>
-				<input type="submit" class="btn btn-default" name="preview" value="{tr}Preview{/tr}">
-				<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
+				<input type="submit" name="preview" value="{tr}Preview{/tr}"> 
+				<input type="submit" name="save" value="{tr}Save{/tr}">
 			</td>
 		</tr>
 	</table>
@@ -82,7 +82,7 @@
 {if $channels}
 	{include file='find.tpl'}
 {/if}
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>
 			<a href="tiki-admin_html_pages.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a>

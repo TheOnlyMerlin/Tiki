@@ -26,7 +26,7 @@
 					<input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
 					<input type="hidden" name="menuId" value="{$menuId}">
 					<input type="hidden" name="offset" value="{$offset}">
-					<table class="table normal">
+					<table class="normal">
 						{assign var=numbercol value=0}
 						<tr>
 							<th>
@@ -112,7 +112,7 @@
 	{$editname = "{tr}Edit menu option{/tr}"}
 {/if}
 {tab name=$editname}
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<td valign="top" class="odd">
 				<h2>{$editname}</h2>
@@ -367,7 +367,7 @@
 						<tr>
 							<td>&nbsp;</td>
 							<td colspan="3">
-								<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
+								<input type="submit" name="save" value="{tr}Save{/tr}">
 							</td>
 						</tr>
 					</table>
@@ -409,7 +409,7 @@
 <h2>{tr}Export CSV data{/tr}</h2>
 <form action="tiki-admin_menu_options.php" method="post">
 	<input type="hidden" name="menuId" value="{$menuId}">
-	<input type="submit" class="btn btn-default" name="export" value="{tr}Export{/tr}">
+	<input type="submit" name="export" value="{tr}Export{/tr}">
 </form>
 
 <br>
@@ -419,7 +419,7 @@
 <form action="tiki-admin_menu_options.php" method="post" enctype="multipart/form-data">
 	<input type="hidden" name="menuId" value="{$menuId}">
 	{tr}File:{/tr} <input name="csvfile" type="file">
-	<input type="submit" class="btn btn-default" name="import" value="{tr}Import{/tr}">
+	<input type="submit" name="import" value="{tr}Import{/tr}">
 </form>
 {/tab}
 {/tabset}

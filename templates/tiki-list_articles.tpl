@@ -24,7 +24,7 @@
 <form name="checkform" method="get" action="{$smarty.server.PHP_SELF}">
 	<input type="hidden" name="maxRecords" value="{$maxRecords|escape}">
 	{assign var=numbercol value=1}
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th class="auto">
 				{if $listpages}
@@ -164,7 +164,7 @@
 					{/if}
 					{if $tiki_p_remove_article eq 'y'}
 						&nbsp;
-						{self_link remove=$listpages[changes].articleId}{icon _id='cross' alt="{tr}Remove{/tr}"}{/self_link}
+						<a class="link" href="tiki-list_articles.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$listpages[changes].articleId}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 					{/if}
 				</td>
 			</tr>
@@ -183,7 +183,7 @@
 								<option value="remove_articles" >{tr}Remove{/tr}</option>
 							</select>
 						</label>
-						<input type="submit" class="btn btn-default" value="{tr}OK{/tr}">
+						<input type="submit" value="{tr}OK{/tr}">
 					</p>
 				{/if}
 			</td>

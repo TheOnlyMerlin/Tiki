@@ -28,7 +28,7 @@
 			{if $channels or ($find ne '')}
 				{include file='find.tpl'}
 			{/if}
-			<table class="table normal">
+			<table class="normal">
 				<tr>
 					<th>{self_link _sort_arg='sort_mode' _sort_field='rssId'}{tr}ID{/tr}{/self_link}</th>
 					<th>{self_link _sort_arg='sort_mode' _sort_field='name'}{tr}Name{/tr}{/self_link}</th>
@@ -132,14 +132,14 @@
 				</tr>
 				<tr>
 					<td>&nbsp;</td>
-					<td><input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}"></td>
+					<td><input type="submit" name="save" value="{tr}Save{/tr}"></td>
 				</tr>
 			</table>
 		</form>
 	{/tab}
 	{if $articleConfig}
 		{tab name="{tr}Article Generator{/tr}"}
-			<h2>{tr _0='"'|cat:$articleConfig.feed_name|cat:'"'|escape}Article Generator for %0{/tr}</h2>
+			<h2>{tr}Article Generator{/tr}</h2>
 			<p>{tr}The article generator will create a new article for every item read in the RSS feed.{/tr}</p>
 
 			<form method="post" action="">
@@ -190,7 +190,7 @@
 					{include file='categorize.tpl'}
 				</p>
 				<p>
-					<input type="submit" class="btn btn-default" value="{tr}Configure{/tr}">
+					<input type="submit" value="{tr}Configure{/tr}">
 				</p>
 			</form>
 		{/tab}

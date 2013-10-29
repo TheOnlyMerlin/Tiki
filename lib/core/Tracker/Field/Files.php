@@ -11,7 +11,7 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 	{
 		global $prefs;
 
-		$options = array(
+		return array(
 			'FG' => array(
 				'name' => tr('Files'),
 				'description' => tr('Attached and upload files stored in the file galleries to the tracker item.'),
@@ -24,44 +24,35 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 						'name' => tr('Gallery ID'),
 						'description' => tr('File gallery to upload new files into.'),
 						'filter' => 'int',
-						'legacy_index' => 0,
-						'profile_reference' => 'file_gallery',
 					),
 					'filter' => array(
 						'name' => tr('MIME Type Filter'),
 						'description' => tr('Mask for accepted MIME types in the field'),
 						'filter' => 'text',
-						'legacy_index' => 1,
 					),
 					'count' => array(
 						'name' => tr('File Count'),
 						'description' => tr('Maximum number of files to be attached on the field.'),
 						'filter' => 'int',
-						'legacy_index' => 2,
 					),
-					'displayMode' => array(
-						'name' => tr('Display Mode'),
-						'description' => tr('Show files as object links or via a wiki plugins (img so far)'),
-						'filter' => 'word',
+					'displayImages' => array(
+						'name' => tr('Display Images'),
+						'description' => tr('Show files as images or object links'),
+						'filter' => 'int',
 						'options' => array(
-							'' => tr('Links'),
-							'img' => tr('Images'),
-							'googleviewer' => tr('Google Viewer'),
-							'moodlescorm' => tr('Moodle Scorm Viewer'),
+							0 => tr('Links'),
+							1 => tr('Images'),
 						),
-						'legacy_index' => 3,
 					),
-					'displayParams' => array(
-						'name' => tr('Display parameters'),
+					'imageParams' => array(
+						'name' => tr('Image parameters'),
 						'description' => tr('URL encoded params used as in the {img} plugin. e.g.') . ' "max=400&desc=namedesc&stylebox=block"',
 						'filter' => 'text',
-						'legacy_index' => 4,
 					),
-					'displayParamsForLists' => array(
-						'name' => tr('Display parameters for lists'),
+					'imageParamsForLists' => array(
+						'name' => tr('Image parameters for lists'),
 						'description' => tr('URL encoded params used as in the {img} plugin. e.g.') . ' "thumb=mouseover&rel="',
 						'filter' => 'text',
-						'legacy_index' => 5,
 					),
 					'deepGallerySearch' => array(
 						'name' => tr('Include Child Galleries'),
@@ -71,7 +62,6 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 							0 => tr('No'),
 							1 => tr('Yes'),
 						),
-						'legacy_index' => 6,
 					),
 					'replace' => array(
 						'name' => tr('Replace Existing File'),
@@ -82,30 +72,20 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 							'n' => tr('No'),
 							'y' => tr('Yes'),
 						),
-						'legacy_index' => 7,
 					),
 					'browseGalleryId' => array(
 						'name' => tr('Browse Gallery ID'),
 						'description' => tr('File gallery browse files. Use 0 for root file gallery. (requires elFinder feature - experimental)'),
 						'filter' => 'int',
-						'legacy_index' => 8,
-						'profile_reference' => 'file_gallery',
 					),
 					'duplicateGalleryId' => array(
 						'name' => tr('Duplicate Gallery ID'),
 						'description' => tr('File gallery to duplicate files into when copying the tracker item. 0 or empty means do not duplicate (default).'),
 						'filter' => 'int',
-						'legacy_index' => 9,
-						'profile_reference' => 'file_gallery',
 					),
 				),
 			),
 		);
-		if (isset($prefs['vimeo_upload']) && $prefs['vimeo_upload'] === 'y') {
-			$options['FG']['params']['displayMode']['description'] = tr('Show files as object links or via a wiki plugins (img, vimeo)');
-			$options['FG']['params']['displayMode']['options']['vimeo'] = tr('Vimeo');
-		}
-		return $options;
 	}
 
 	function getFieldData(array $requestData = array())
@@ -180,7 +160,7 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 			$gallery_list = $galleryId;
 		}
 
-		if ($this->getOption('displayMode') == 'img' && $fileIds) {
+		if ($this->getOption('displayImages') == 'y' && $fileIds) {
 			$firstfile = $fileIds[0];
 		} else {
 			$firstfile = 0;
@@ -211,9 +191,7 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 
 	function renderInput($context = array())
 	{
-		return $this->renderTemplate('trackerinput/files.tpl', $context, array(
-			'replaceFile' => 'y' == $this->getOption('replace', 'n'),
-		));
+		return $this->renderTemplate('trackerinput/files.tpl', $context);
 	}
 
 	function renderOutput($context = array())
@@ -233,79 +211,33 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 
 		$ret = '';
 		if (!empty($value)) {
-			if ($this->getOption('displayMode')) { // images etc
+			if ($this->getOption('displayImages')) { // images
 				$params = array(
 					'fileId' => $value,
 				);
 				if ($context['list_mode'] === 'y') {
-					$otherParams = $this->getOption('displayParamsForLists');
+					$params['thumb'] = $context['list_mode'];
+					$params['rel'] = 'box[' . $this->getInsertId() . ']';
+					$otherParams = $this->getOption('imageParamsForLists');
 				} else {
-					$otherParams = $this->getOption('displayParams');
+					$otherParams = $this->getOption('imageParams');
 				}
 				if ($otherParams) {
 					parse_str($otherParams, $otherParams);
 					$params = array_merge($params, $otherParams);
 				}
+
+				include_once('lib/wiki-plugins/wikiplugin_img.php');
 				$params['fromFieldId'] = $this->getConfiguration('fieldId');
 				$params['fromItemId'] = $this->getItemId();
 				$item = Tracker_Item::fromInfo($this->getItemData());
 				$params['checkItemPerms'] = $item->canModify() ? 'n' : 'y';
-
-				if ($this->getOption('displayMode') == 'img') { // img
-
-					if ($context['list_mode'] === 'y') {
-						$params['thumb'] = $context['list_mode'];
-						$params['rel'] = 'box[' . $this->getInsertId() . ']';
-					}
-					include_once('lib/wiki-plugins/wikiplugin_img.php');
-					$ret = wikiplugin_img('', $params);
-
-				} else if ($this->getOption('displayMode') == 'vimeo') {	// Vimeo videos stored as filegal REMOTEs
-
-					include_once('lib/wiki-plugins/wikiplugin_vimeo.php');
-					$ret = wikiplugin_vimeo('', $params);
-
-				} else if ($this->getOption('displayMode') == 'moodlescorm') {
-
-					include_once('lib/wiki-plugins/wikiplugin_playscorm.php');
-					foreach ($this->getConfiguration('files') as $fileId => $file) {
-						$params['fileId'] = $fileId;
-						$ret .= wikiplugin_playscorm('', $params);
-					}
-
-				} else if ($this->getOption('displayMode') == 'googleviewer') {
-					if ($prefs['auth_token_access'] != 'y') {
-						$ret = tra('Token access needs to be enabled for Google viewer to be used');
-					} else {
-						$files = array();
-						foreach ($this->getConfiguration('files') as $fileId => $file) {
-							global $base_url, $tikiroot, $https_mode;
-							if ($https_mode) {
-								$scheme = 'https';
-							} else {
-								$scheme = 'http';
-							}
-							$googleurl = $scheme . "://docs.google.com/viewer?url=";
-							$fileurl = urlencode($base_url . "tiki-download_file.php?fileId=" . $fileId);
-							require_once 'lib/auth/tokens.php';
-							$tokenlib = AuthTokens::build($prefs);
-							$token = $tokenlib->createToken($tikiroot . "tiki-download_file.php",
-								array('fileId' => $fileId), array('Registered'), array('timeout' => 300, 'hits' => 3));
-							$fileurl .= urlencode("&TOKEN=" . $token);
-							$url = $googleurl . $fileurl . '&embedded=true';
-							$title = $file['name'];
-							$files[] = array('url' => $url, 'title' => $title, 'id' => $fileId);
-						}
-						$smarty = TikiLib::lib('smarty');
-						$smarty->assign('files', $files);
-						$ret = $smarty->fetch('trackeroutput/files_googleviewer.tpl');
-					}
-				}
+				$ret = wikiplugin_img('', $params, 0);
 				$ret = preg_replace('/~\/?np~/', '', $ret);
 			} else {
 				$smarty = TikiLib::lib('smarty');
 				$smarty->loadPlugin('smarty_function_object_link');
-				$ret = '<ol class="tracker-item-files">';
+				$ret = '<ol>';
 
 				foreach ($this->getConfiguration('files') as $fileId => $file) {
 					$ret .= '<li>';
@@ -466,7 +398,7 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 
 		$fileIds = $this->getConfiguration('files');
 
-		if ($this->getOption('displayMode') == 'img' && is_array($fileIds) && count($fileIds) > 0) {
+		if ($this->getOption('displayImages') == 'y' && is_array($fileIds) && count($fileIds) > 0) {
 			return $filegallib->update_single_file($gal_info, $file['name'], $file['size'], $file['type'], file_get_contents($file['tmp_name']), $fileIds[0]);
 		} else {
 			return $filegallib->upload_single_file($gal_info, $file['name'], $file['size'], $file['type'], file_get_contents($file['tmp_name']));

@@ -18,16 +18,6 @@ class ServiceLib
 		return $this->broker;
 	}
 
-	function internal($controller, $action, $request = array())
-	{
-		return $this->getBroker()->internal($controller, $action, $request);
-	}
-
-	function render($controller, $action, $request = array())
-	{
-		return $this->getBroker()->internalRender($controller, $action, $request);
-	}
-
 	function getUrl($params)
 	{
 		global $prefs;
@@ -55,9 +45,7 @@ class ServiceLib
 	private function getControllerMap()
 	{
 		return array(
-			'activitystream' => 'Services_ActivityStream_Controller',
 			'auth_source' => 'Services_AuthSource_Controller',
-			'autosave' => 'Services_AutoSave_Controller',
 			'bigbluebutton' => 'Services_BigBlueButton_Controller',
 			'calendar' => 'Services_Calendar_Controller',
 			'category' => 'Services_Category_Controller',
@@ -66,28 +54,22 @@ class ServiceLib
 			'connect' => 'Services_Connect_Client',
 			'contenttemplate'=>  'Services_ContentTemplate_Controller',
 			'draw' => 'Services_Draw_Controller',
-			'edit' => 'Services_Edit_Controller',
-			'favorite' => 'Services_User_FavoriteController',
+			'favorite' => 'Services_Favorite_Controller',
 			'file_finder' => 'Services_File_FinderController',
 			'file' => 'Services_File_Controller',
 			'jcapture' => 'Services_JCapture_Controller',
 			'jison'=> 'Services_JisonParser_WikiPlugin',
 			'kaltura'=>  'Services_Kaltura_Controller',
-			'managestream' => 'Services_ActivityStream_ManageController',
-			'oauth' => 'Services_AuthSource_OAuthController',
 			'object' => 'Services_Object_Controller',
 			'rating'=>  'Services_Rating_Controller',
 			'report' => 'Services_Report_Controller',
 			'tracker_calendar' => 'Services_Tracker_CalendarController',
 			'search_customsearch' => 'Services_Search_CustomSearchController',
-			'showtikiorg' => 'Services_ShowTikiOrg_Controller',
-			'social' => 'Services_User_SocialController',
 			'tracker' => 'Services_Tracker_Controller',
 			'tracker_sync' => 'Services_Tracker_SyncController',
 			'tracker_todo' => 'Services_Tracker_TodoController',
 			'translation' => 'Services_Language_TranslationController',
 			'user' => 'Services_User_Controller',
-			'vimeo' => 'Services_File_VimeoController',
 			'wiki' => 'Services_Wiki_Controller',
 			'workspace'=>  'Services_Workspace_Controller',
 		);

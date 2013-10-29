@@ -3,7 +3,7 @@
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Id: wikiplugin_list.php 44375 2012-12-21 18:39:49Z lphuberdeau $
 
 class Search_Formatter_Builder
 {
@@ -61,7 +61,7 @@ class Search_Formatter_Builder
 
 		$formatter = new Search_Formatter($plugin);
 
-		if ($this->alternateOutput > '') {
+		if ($this->alternateOutput) {
 			$formatter->setAlternateOutput($this->alternateOutput);
 		} else {
 			$formatter->setAlternateOutput('^' . tra('No results for query.') . '^');
@@ -116,8 +116,7 @@ class Search_Formatter_Builder
 		}
 
 		if (isset($arguments['pagination'])) {
-
-			$plugin = new Search_Formatter_AppendPagination($plugin, $this->paginationArguments);
+			$plugin = new WikiPlugin_List_AppendPagination($plugin, $this->paginationArguments);
 		}
 
 		$this->formatterPlugin = $plugin;

@@ -12,7 +12,7 @@
 			<input type="hidden" name="filegals_manager" {if isset($filegals_manager)}value="{$filegals_manager}"{/if}>
 
 			<div class="input_submit_container" style="text-align: right">
-				<input type="submit" class="btn btn-default" value="{tr}Save{/tr}" name="edit">
+				<input type="submit" value="{tr}Save{/tr}" name="edit">
 				&nbsp;
 				<input type="checkbox" name="viewitem" checked="checked"> {tr}View inserted gallery{/tr}
 			</div>
@@ -239,9 +239,8 @@ $('#fgal_template').change( function() {
 							<td>
 								<input size="80" type="text" name="wiki_syntax" value="{$gal_info.wiki_syntax|escape}">
 								<br>
-								<i>{tr}The default is {/tr}"{literal}{img fileId="%fileId%" thumb="y" rel="box[g]"}{/literal}")</i><br>
-								<i>{tr}Field names will be replaced when enclosed in % chars. e.g. %fileId%, %name%, %filename%, %description%{/tr}</i><br>
-								<i>{tr}Attributes will be replaced when enclosed in % chars. e.g. %tiki.content.url% for remote file URLs{/tr}</i>
+								<i>{tr}The default is {/tr}"{literal}{img fileId="%fileId%" thumb="y" rel="box[g]"}{/literal}")</i>
+								<i>{tr}Field names will be replaced when enclosed in % chars. e.g. %fileId%, %name%, %filename%, %description%{/tr}</i>
 							</td>
 						</tr>
 
@@ -293,7 +292,7 @@ $('#fgal_template').change( function() {
 					</table>
 				{/tab}
 			{/tabset}
-			<input type="submit" class="btn btn-default" value="{tr}Save{/tr}" name="edit">
+			<input type="submit" value="{tr}Save{/tr}" name="edit">
 		</form>
 	</div>
 	<br>

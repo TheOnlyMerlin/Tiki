@@ -30,29 +30,15 @@ class Tiki_Profile_InstallHandler_ArticleTopic extends Tiki_Profile_InstallHandl
 
 	function _install()
 	{
-		$artlib = TikiLib::lib('art');
+		global $artlib;
 		$data = $this->getData();
 
 		$this->replaceReferences($data);
 
+		require_once 'lib/articles/artlib.php';
+
 		$id = $artlib->add_topic($data['name'], null, null, null, null);
 
 		return $id;
-	}
-
-	public static function export(Tiki_Profile_Writer $writer, $topicId)
-	{
-		$artlib = TikiLib::lib('art');
-		$info = $artlib->get_topic($topicId);
-
-		if ($info) {
-			$writer->addObject('article_topic', $topicId, array(
-				'name' => $info['name'],
-			));
-
-			return true;
-		}
-
-		return false;
 	}
 }

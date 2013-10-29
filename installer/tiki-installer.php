@@ -17,7 +17,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 require_once('tiki-filter-base.php');
 
 // Define and load Smarty components
-global $prefs;
 $prefs = array();
 $prefs['smarty_notice_reporting'] = 'n';
 $prefs['smarty_compilation'] = 'always';
@@ -43,13 +42,26 @@ class InstallerDatabaseErrorHandler implements TikiDb_ErrorHandler
 	}
 }
 
+// Force autoloading
+if (! class_exists('ADOConnection')) {
+	die('AdoDb not found');
+}
+
+$dbTiki = ADONewConnection($db_tiki);
+$db = new TikiDb_Adodb($dbTiki);
+$db->setServerType($db_tiki);
+$db->setErrorHandler(new InstallerDatabaseErrorHandler);
+TikiDb::set($db);
 $dbTiki = false;
 $commands = array();
 @ini_set('magic_quotes_runtime', 0);
 
-// tra() should not use $tikilib because this lib is not available in every steps of the installer
-//  and because we want to be sure that translations of the installer are the original ones, even for an upgrade
-$prefs['lang_use_db'] = 'n';
+// Initialize $prefs and force some values for the installer
+$prefs = array(
+	// tra() should not use $tikilib because this lib is not available in every steps of the installer
+	//  and because we want to be sure that translations of the installer are the original ones, even for an upgrade
+	'lang_use_db' => 'n'
+);
 
 // Which step of the installer
 if (empty($_REQUEST['install_step'])) {
@@ -324,10 +336,11 @@ $PHP_CONFIG_FILE_PATH/php.ini or $httpd_conf.
 
 // Try to see if we have an admin account
 /**
+ * @param $dbTiki
  * @param $api_tiki
  * @return string
  */
-function has_admin( $api_tiki )
+function has_admin( $dbTiki, $api_tiki )
 {
 	$query = "select hash from users_users where login='admin'";
 	$res = false;
@@ -352,7 +365,7 @@ function has_admin( $api_tiki )
  * @param $dbTiki
  * @return bool
  */
-function get_admin_email()
+function get_admin_email( $dbTiki )
 {
 	global $installer;
 	$query = "SELECT `email` FROM `users_users` WHERE `userId`=1";
@@ -370,7 +383,7 @@ function get_admin_email()
  * @param $prefs
  * @return bool
  */
-function update_preferences( &$prefs )
+function update_preferences( $dbTiki, &$prefs )
 {
 	global $installer;
 	$query = "SELECT `name`, `value` FROM `tiki_preferences`";
@@ -443,68 +456,117 @@ function list_disable_accounts()
  */
 function initTikiDB( &$api, &$driver, $host, $user, $pass, $dbname, $client_charset, &$dbTiki )
 {
-	$initializer = new TikiDb_Initializer;
-	$initializer->setPreferredConnector($driver);
-	$initializer->setInitializeCallback(
-		function ($db) {
-			$db->setServerType('pdo');
-			$db->setErrorHandler(new InstallerDatabaseErrorHandler);
-		}
-	);
-
 	global $tikifeedback;
 	$dbcon = false;
-	try {
-		$dbTiki = $initializer->getConnection(
-			array(
-				'host' => $host,
-				'user' => $user,
-				'pass' => $pass,
-				'dbs' => $dbname,
-				'charset' => $client_charset,
-			)
-		);
-	} catch (Exception $e) {
-		$tikifeedback[] = array( 'num' => 1, 'mes' => $e->getMessage() );
-	}
-	$dbcon = ! empty($dbTiki);
 
-	// Attempt to create database. This might work if the $user has create database permissions.
-	// First check that suggested database name will not cause issues
-	$dbname_clean = preg_replace('/[^a-z0-9$_-]/', "", $dbname);
-	if ($dbname_clean != $dbname) {
-		$tikifeedback[] = array( 'num' => 1, 'mes'=> tra("Some invalid characters were detected in database name. Please use alphanumeric characters or _ or -.", '', false, array($dbname_clean)) );
-		$attempt_creation=false;
-	} else {
-		$attempt_creation=true;
-	}
+	// This section handles the case of adodb (not the preferred case)
+	if ( ( isset($api) && $api == 'adodb' ) || ! extension_loaded('pdo') ) {
+		$api = 'adodb';
+		$dbTiki = ADONewConnection($driver);
+		$db = new TikiDb_Adodb($dbTiki);
+		if (! $dbcon = (bool) @$dbTiki->Connect($host, $user, $pass, $dbname) ) {
+			$tikifeedback[] = array( 'num' => 1, 'mes' => $dbTiki->ErrorMsg() );
+		}
 
-	if ( ($dbcon) && ($attempt_creation == true) ) {
-		$sql="CREATE DATABASE IF NOT EXISTS `$dbname_clean` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
-		$dbTiki->queryError($sql, $error);
-		if ( empty($error) ) {
-			$tikifeedback[] = array( 'num' => 1, 'mes'=> tra("Database `%0` was created.", '', false, array($dbname_clean)) );
+		// Attempt to create database. This might work if the $user has create database permissions.
+		// First check that suggested database name will not cause issues
+		$dbname_clean = preg_replace('/[^a-z0-9$_-]/', "", $dbname);
+		if ($dbname_clean != $dbname) {
+			$tikifeedback[] = array( 'num' => 1, 'mes'=> tra("Some invalid characters were detected in database name. Please use alphanumeric characters or _ or -.", '', false, array($dbname_clean)) );
+			$attempt_creation=false;
 		} else {
-			$tikifeedback[] = array( 'num' => 1, 'mes'=> tra("Database `%0` creation failed. You need to create the database.", '', false, array($dbname_clean)) );
+			$attempt_creation=true;
+		}
+		if ( (! $dbcon) && ($attempt_creation == true) ) {
+			$dbh = ADONewConnection($driver);
+			if ( @$dbh->Connect($host, $user, $pass) ) {
+				$sql="CREATE DATABASE IF NOT EXISTS `$dbname_clean` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
+				$dbcon=$dbh->Execute($sql);
+				if ( $dbcon ) {
+					$tikifeedback[] = array( 'num' => 1, 'mes'=> tra("Database `%0` was created.", '', false, array($dbname_clean)) );
+				} else {
+					$tikifeedback[] = array( 'num' => 1, 'mes'=> tra("Database `%0` creation failed. You need to create the database.", '', false, array($dbname_clean)) );
+				}
+			} else {
+				$tikifeedback[] = array( 'num' => 1, 'mes' => $dbh->ErrorMsg() );
+			}
+
+			if ( $dbcon ) {
+				$dbTiki = ADONewConnection($driver);
+				$db = new TikiDb_Adodb($dbTiki);
+				if (! $dbcon = (bool) @$dbTiki->Connect($host, $user, $pass, $dbname) ) {
+					$tikifeedback[] = array( 'num' => 1, 'mes' => $dbTiki->ErrorMsg() );
+				}
+			}
+
+		}
+
+	// This section handles the case of PDO (preferred case)
+	} else {
+		$db_hoststring = "host=$host";
+
+		if ( $driver == 'mysqli' ) {
+			$driver = 'mysql';
+			if ( isset( $socket_tiki ) ) {
+				$db_hoststring = "unix_socket=$socket_tiki";
+			}
 		}
 
 		try {
-			$dbTiki = $initializer->getConnection(
-				array(
-					'host' => $host,
-					'user' => $user,
-					'pass' => $pass,
-					'dbs' => $dbname,
-					'charset' => $client_charset,
-				)
-			);
-			$dbcon = ! empty($dbTiki);
-		} catch (Exception $e) {
-			$tikifeedback[] = array( 'num' => 1, 'mes' => $e->getMessage() );
+			$dbTiki = new PDO("$driver:$db_hoststring;dbname=$dbname", $user, $pass);
+			$db = new TikiDb_Pdo($dbTiki);
+			$dbcon = true;
+		} catch ( PDOException $e ) {
+			$dbcon = false;
+			$tikifeedback[] = array( 'num' => 1, 'mes'=> $e->getMessage() );
+		}
+
+		// Attempt to create database. This might work if the $user has create database permissions.
+		// First check that suggested database name will not cause issues
+		$dbname_clean = preg_replace('/[^a-z0-9$_-]/', "", $dbname);
+		if ($dbname_clean != $dbname) {
+			$tikifeedback[] = array( 'num' => 1, 'mes'=> tra("Some invalid characters were detected in database name. Please use alphanumeric characters or _ or -.", '', false, array($dbname_clean)) );
+			$attempt_creation=false;
+		} else {
+			$attempt_creation=true;
+		}
+		if ( (! $dbcon) && ($attempt_creation == true) ) {
+			try {
+				$dbh = new PDO("$driver:$db_hoststring", $user, $pass);
+				$sql="CREATE DATABASE IF NOT EXISTS `$dbname_clean` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
+				$dbcon=$dbh->exec($sql);
+				if ( $dbcon ) {
+					$tikifeedback[] = array( 'num' => 1, 'mes'=> tra("Database `%0` was created.", '', false, array($dbname_clean)) );
+				} else {
+					$tikifeedback[] = array( 'num' => 1, 'mes'=> tra("Database `%0` creation failed. You need to create the database.", '', false, array($dbname_clean)) );
+				}
+			} catch ( PDOException $e ) {
+				$dbcon = false;
+				$tikifeedback[] = array( 'num' => 1, 'mes'=> $e->getMessage() );
+			}
+
+			if ( $dbcon ) {
+				try {
+					$dbTiki = new PDO("$driver:$db_hoststring;dbname=$dbname", $user, $pass);
+					$db = new TikiDb_Pdo($dbTiki);
+				} catch ( PDOException $e ) {
+					$dbcon = false;
+					$tikifeedback[] = array( 'num' => 1, 'mes'=> $e->getMessage() );
+				}
+			}
+
 		}
 	}
 
-	TikiDb::set($dbTiki);
+	if ( $dbcon ) {
+		$db->setErrorHandler(new InstallerDatabaseErrorHandler);
+
+		if ( ! empty( $client_charset ) ) {
+			$db->query("SET CHARACTER SET $client_charset");
+		}
+
+		TikiDb::set($db);
+	}
 
 	return $dbcon;
 }
@@ -663,7 +725,7 @@ $client_charset = '';
 
 // next block checks if there is a local.php and if we can connect through this.
 // sets $dbcon to false if there is no valid local.php
-$dbcon = (bool) TikiDb::get();
+$dbcon = false;
 $installer = null;
 if ( file_exists($local) ) {
 	// include the file to get the variables
@@ -698,6 +760,8 @@ if ( file_exists($local) ) {
 		write_local_php($db_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $client_charset, ($api_tiki_forced ? $api_tiki : ''), $dbversion_tiki);
 	}
 
+	$ADODB_FETCH_MODE = ADODB_FETCH_ASSOC;
+
 	$dbcon = false;
 	$smarty->assign('resetdb', 'n');
 	if ( isset( $dbservers[$db_tiki] ) ) { // avoid errors in ADONewConnection() (wrong darabase driver etc...)
@@ -713,9 +777,6 @@ if ( file_exists($local) ) {
 			}
 		}
 	}
-} elseif ($dbcon) {
-	$installer = new Installer;
-	TikiDb::get()->setErrorHandler(new InstallerDatabaseErrorHandler);
 } else {
 	// If there is no local.php we check if there is a db/preconfiguration.php preconfiguration file with database connection values which we can prefill the installer with
 	if ( file_exists($preconfiguration) ) {
@@ -728,7 +789,7 @@ if ( file_exists($local) ) {
 }
 
 if ( $dbcon ) {
-	$admin_acc = has_admin($api_tiki);
+	$admin_acc = has_admin($dbTiki, $api_tiki);
 }
 
 if ( $admin_acc == 'n' ) {
@@ -788,7 +849,7 @@ if (isset($_REQUEST['useInnoDB'])) {
 
 if ( $dbcon ) {
 	$smarty->assign('dbcon', 'y');
-	$smarty->assign('dbname', isset($dbs_tiki) ? $dbs_tiki : null);
+	$smarty->assign('dbname', $dbs_tiki);
 } else {
 	$smarty->assign('dbcon', 'n');
 }
@@ -804,8 +865,8 @@ if ($dbcon) {
 	$smarty->assign('tikidb_oldPerms', $oldPerms);
 
 	if ($install_step == '6' && $has_tiki_db) {
-		update_preferences($prefs);
-		$smarty->assign('admin_email', get_admin_email());
+		update_preferences($dbTiki, $prefs);
+		$smarty->assign('admin_email', get_admin_email($dbTiki));
 		$smarty->assign('upgradefix', (empty($dbversion_tiki) || $dbversion_tiki[0] < 4) ? 'y' : 'n');
 	}
 	$smarty->assign('tikidb_is20', has_tiki_db_20());
@@ -827,7 +888,8 @@ $smarty->assign('logged', $logged);
 
 // Installation steps
 if (
-	$dbcon
+	isset($dbTiki)
+	&& is_object($dbTiki)
 	&& isset($_SESSION["install-logged-$multi"])
 	&& $_SESSION["install-logged-$multi"] == 'y'
 ) {
@@ -994,6 +1056,7 @@ unset($TWV);
 
 // write general settings
 if ( isset($_REQUEST['general_settings']) && $_REQUEST['general_settings'] == 'y' ) {
+	global $dbTiki;
 	$switch_ssl_mode = ( isset($_REQUEST['feature_switch_ssl_mode']) && $_REQUEST['feature_switch_ssl_mode'] == 'on' ) ? 'y' : 'n';
 	$show_stay_in_ssl_mode = ( isset($_REQUEST['feature_show_stay_in_ssl_mode']) && $_REQUEST['feature_show_stay_in_ssl_mode'] == 'on' ) ? 'y' : 'n';
 
@@ -1044,7 +1107,7 @@ jqueryTiki.ui_theme = "";
 jqueryTiki.tooltips = false;
 jqueryTiki.autocomplete = false;
 jqueryTiki.superfish = false;
-jqueryTiki.reflection = false;
+jqueryTiki.replection = false;
 jqueryTiki.tablesorter = false;
 jqueryTiki.colorbox = false;
 jqueryTiki.cboxCurrent = "{current} / {total}";

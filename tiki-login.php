@@ -69,23 +69,21 @@ if (!isset($_SESSION['loginfrom']) && isset($_SERVER['HTTP_REFERER']) && !preg_m
 		else $_SESSION['loginfrom'] = $base_url . $_SESSION['loginfrom'];
 	}
 }
-if (isset($_REQUEST['su'])) {
-	$loginlib = TikiLib::lib('login');
-
-	if ($loginlib->isSwitched() && $_REQUEST['su'] == 'revert') {
-		$loginlib->revertSwitch();
-		$access->redirect($_SESSION['loginfrom']);
-	} elseif ($tiki_p_admin == 'y') {
+if ($tiki_p_admin == 'y') {
+	if (isset($_REQUEST['su'])) {
 		if ( empty( $_REQUEST['username'] ) ) {
 			$smarty->assign('msg', tra('Username field cannot be empty. Please go back and try again.'));
 			$smarty->display('error.tpl');
 			exit;
 		}
 		if ($userlib->user_exists($_REQUEST['username'])) {
-			$loginlib->switchUser($_REQUEST['username']);
+			$username = $userlib->get_user_real_case($_REQUEST['username']);
+			$_SESSION[$user_cookie_site] = $username;
 		}
-		
-		$access->redirect($_SESSION['loginfrom']);
+		header('location: ' . $_SESSION['loginfrom']);
+		// Unset session variable for the next su
+		unset($_SESSION['loginfrom']);
+		exit;
 	}
 }
 $requestedUser = isset($_REQUEST['user']) ? $_REQUEST['user'] : false;
@@ -252,7 +250,7 @@ if ($isvalid) {
 	} else {
 		// User is valid and not due to change pass.. start session
 		$userlib->update_expired_groups();
-		TikiLib::lib('login')->activateSession($user);
+		$_SESSION[$user_cookie_site] = $user;
 		if (isset($_SESSION['openid_url'])) $userlib->assign_openid($user, $_SESSION['openid_url']);
 		$url = $_SESSION['loginfrom'];
 		$logslib->add_log('login', 'logged from ' . $url);
@@ -440,14 +438,6 @@ if ($stay_in_ssl_mode == 'y' && $https_mode) {
 }
 if (defined('SID') && SID != '')
 $url.= ((strpos($url, '?') === false) ? '?' : '&') . SID;
-
-// Check if a wizard should be run.
-// If a wizard is run, it will return to the $url location when it has completed. Thus no code after $wizardlib->onLogin will be executed
-// The user must be actually logged in before onLogin is called. If $isdue is set, then: "Note that the user is not logged in he's just validated to change his password"
-if (!$isdue) {
-	$wizardlib = TikiLib::lib('wizard');
-	$wizardlib->onLogin($user, $url);
-}
 
 header('Location: ' . $url);
 exit;

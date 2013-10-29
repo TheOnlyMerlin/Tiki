@@ -52,7 +52,6 @@ $installer = new Installer;
 if ( $_SERVER['argc'] == 2 && $_SERVER['argv'][1] == 'install' )
 	$installer->cleanInstall();
 else {
-	require_once 'tiki-setup.php';
 	$installer->update();
 
 	if (count($installer->installed)) {

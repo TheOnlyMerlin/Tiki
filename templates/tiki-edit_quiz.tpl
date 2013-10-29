@@ -17,7 +17,7 @@
 
 {include file='find.tpl'}
 
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>
 			{self_link _sort_arg='sort_mode' _sort_field='quizId'}{tr}ID{/tr}{/self_link}
@@ -202,7 +202,7 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
+				<input type="submit" name="save" value="{tr}Save{/tr}">
 			</td>
 		</tr>
 	</table>

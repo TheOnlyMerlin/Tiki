@@ -1,8 +1,8 @@
 {* $Id$ *}
-{title help="Server Check"}{tr}Server Check{/tr}{/title}
+{title help="Server+Check"}{tr}Server Check{/tr}{/title}
 
 <h2>{tr}MySQL or MariaDB Database Properties{/tr}</h2>
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>{tr}Property{/tr}</th>
 		<th>{tr}Value{/tr}</th>
@@ -34,22 +34,10 @@
 		{norecords _colspan=4}
 	{/foreach}
 </table>
-{if $haveMySQLSSL}
-	{if $mysqlSSL === true}
-		<p class="mysqlsslstatus"><img src="img/icons/lock.png" style="outline:lightgreen solid thin"/> {tr}MySQL SSL connection is active{/tr}</p>
-	{else}
-		<p class="mysqlsslstatus"><img src="img/icons/lock_open.png"  style="outline:pink solid thin"/> {tr}MySQL connection is not encrypted{/tr}<br>
-		{tr}To activate SSL, copy the keyfiles (.pem) til db/cert folder. The filenames must end with "-key.pem", "-cert.pem", "-ca.pem"{/tr}
-		</p>
-	{/if}
-{else}
-	<p><img src="img/icons/lock_gray.png" style="outline:pink solid thin"/> {tr}MySQL Server does not have SSL activated{/tr}
-	</p>
-{/if}
 
-<h2>{tr}MySQL crashed Tables{/tr}</h2>
-{remarksbox type="note" title="{tr}Be careful{/tr}"}{tr}The following list is just a very quick look at SHOW TABLE STATUS that tells you, if tables have been marked as crashed. If you are experiencing database problems you should still run CHECK TABLE or myisamchk to make sure{/tr}.{/remarksbox}
-<table class="table normal">
+<h2>MySQL crashed Tables</h2>
+{remarksbox type="note" title="{tr}Be careful{/tr}"}The following list is just a very quick look at SHOW TABLE STATUS that tells you, if tables have been marked as crashed. If you are experiencing database problems you should still run CHECK TABLE or myisamchk to make sure.{/remarksbox}
+<table class="normal">
 	<tr>
 		<th>{tr}Table{/tr}</th>
 		<th>{tr}Comment{/tr}</th>
@@ -65,11 +53,11 @@
 	{/foreach}
 </table>
 
-<h2>{tr}Test sending e-mails{/tr}</h2>
-{tr}To test if your installation is capable of sending emails please visit the <a href="tiki-install.php">Tiki Installer</a>{/tr}.
+<h2>Test sending e-mails</h2>
+To test if your installation is capable of sending emails please visit the <a href="tiki-install.php">Tiki Installer</a>.
 
 <h2>{tr}Server Information{/tr}</h2>
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>{tr}Property{/tr}</th>
 		<th>{tr}Value{/tr}</th>
@@ -86,7 +74,7 @@
 </table>
 
 <h2>{tr}Server Properties{/tr}</h2>
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>{tr}Property{/tr}</th>
 		<th>{tr}Value{/tr}</th>
@@ -119,10 +107,10 @@
 	{/foreach}
 </table>
 
-<h2>{tr}Special directories{/tr}</h2>
-{tr}To backup these directories go to <a href="tiki-admin_system.php">Admin->Tiki Cache/SysAdmin</a>{/tr}.
+<h2>Special directories</h2>
+To backup these directories go to <a href="tiki-admin_system.php">Admin->Tiki Cache/SysAdmin</a>.
 {if count($dirs)}
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th>{tr}Directory{/tr}</th>
 			<th>{tr}Fitness{/tr}</th>
@@ -141,9 +129,9 @@
 				</td>
 				<td>
 					{if $dirsWritable[$k]}
-						{tr}Directory is writeable{/tr}.
+						Directory is writeable.
 					{else}
-						{tr}Directory is not writeable!{/tr}
+						Directory is not writeable!
 					{/if}
 				</td>
 			</tr>
@@ -154,7 +142,7 @@
 
 <h2>{tr}Apache properties{/tr}</h2>
 {if $apache_properties}
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th>{tr}Property{/tr}</th>
 			<th>{tr}Value{/tr}</th>
@@ -192,7 +180,7 @@
 
 <h2>{tr}IIS properties{/tr}</h2>
 {if $iis_properties}
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th>{tr}Property{/tr}</th>
 			<th>{tr}Value{/tr}</th>
@@ -229,7 +217,7 @@
 {/if}
 
 <h2>{tr}PHP scripting language properties{/tr}</h2>
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>{tr}Property{/tr}</th>
 		<th>{tr}Value{/tr}</th>
@@ -263,8 +251,8 @@
 </table>
 
 <h2>{tr}PHP Security properties{/tr}</h2>
-{tr}To check the file integrity of your Tiki installation, go to <a href="tiki-admin_security.php">Admin->Security</a>{/tr}.
-<table class="table normal">
+To check the file integrity of your Tiki installation, go to <a href="tiki-admin_security.php">Admin->Security</a>.
+<table class="normal">
 	<tr>
 		<th>{tr}Property{/tr}</th>
 		<th>{tr}Value{/tr}</th>
@@ -298,7 +286,7 @@
 </table>
 
 <h2>{tr}MySQL Variable Information{/tr}</h2>
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>{tr}Property{/tr}</th>
 		<th>{tr}Value{/tr}</th>
@@ -315,4 +303,4 @@
 </table>
 
 <h2>{tr}PHP Info{/tr}</h2>
-{tr}For more detailed information about your PHP installation see <a href="tiki-phpinfo.php">Admin->phpinfo</a>{/tr}.
+For more detailed information about your PHP installation see <a href="tiki-phpinfo.php">Admin->phpinfo</a>.

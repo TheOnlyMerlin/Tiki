@@ -21,7 +21,7 @@
   <td>{tr}Source repository{/tr}</td>
   <td>
     <select name="srcrep">{html_options options=$reps}</select> &nbsp; &nbsp;
-    <input type="submit" class="btn btn-default" name="copy" value="{tr}Copy{/tr}">
+    <input type="submit" name="copy" value="{tr}Copy{/tr}">
   </td>
 </tr> </table>
 </form>
@@ -66,7 +66,7 @@
   </tr><tr>
     <td>&nbsp;</td>
     <td>
-      <input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">&nbsp;&nbsp;
+      <input type="submit" name="save" value="{tr}Save{/tr}">&nbsp;&nbsp;
       <input type="checkbox" name="enabled" {if $enabled eq 'y'}checked="checked"{/if} title="{tr}Check to enable this rule{/tr}">&nbsp;
       {tr}Enabled{/tr}
     </td>
@@ -88,7 +88,7 @@
     </td>
   </tr><tr>
     <td>&nbsp;</td>
-    <td><input type="submit" class="btn btn-default" name="preview" value="{tr}Preview{/tr}"></td>
+    <td><input type="submit" name="preview" value="{tr}Preview{/tr}"></td>
   </tr>
 </table>
 </form>
@@ -111,7 +111,7 @@
 <h2>{tr}Rules List{/tr}</h2>
 
 {* Table with list of repositories *}
-<table class="table normal" id="integrator_rules">
+<table class="normal" id="integrator_rules">
   <tr>
     <th rowspan="2"><span title="{tr}Rule order{/tr}">#</span></th>
     <th>{tr}Search{/tr}</th>

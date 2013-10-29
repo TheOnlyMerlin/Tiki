@@ -50,19 +50,19 @@ $focusDay = TikiLib::date_format("%d", $focusdate);
 $focusMonth = TikiLib::date_format("%m", $focusdate);
 $focusYear = TikiLib::date_format("%Y", $focusdate);
 // Validate input
-if (intval($focusDay) <= 0 || !is_numeric($focusDay) ||
-	intval($focusMonth) <= 0 || !is_numeric($focusDay) ||
+if(intval($focusDay) <= 0 || !is_numeric($focusDay) || 
+	intval($focusMonth) <= 0 || !is_numeric($focusDay) || 
 	intval($focusYear) <= 0 || !is_numeric($focusDay)) {
-	$_SESSION['CalendarFocusDate'] = $tikilib->now;
-	$smarty->assign('msg', tra('Invalid date format'));
-	$smarty->display('error.tpl');
-	die;
+		$_SESSION['CalendarFocusDate'] = $tikilib->now;
+		$smarty->assign('msg', tra('Invalid date format'));
+		$smarty->display('error.tpl');
+		die;
 }
 list($focus_day, $focus_month, $focus_year) = array(
-		$focusDay,
-		$focusMonth,
-		$focusYear
-);
+	$focusDay,
+	$focusMonth,
+	$focusYear
+	);
 
 $focus = array('day'=>$focus_day, 'month'=>$focus_month, 'year'=>$focus_year);
 $focuscell = $tikilib->make_time(0, 0, 0, $focus_month, $focus_day, $focus_year);

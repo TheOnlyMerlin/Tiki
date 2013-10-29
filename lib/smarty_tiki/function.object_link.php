@@ -73,10 +73,10 @@ function smarty_function_object_link( $params, $smarty )
 		break;
 	}
 
-	return $function($smarty, $object, $title, $type, $url, $params);
+	return $function($smarty, $object, $title, $type, $url);
 }
 
-function smarty_function_object_link_default( $smarty, $object, $title = null, $type = 'wiki page', $url = null, $params = array() )
+function smarty_function_object_link_default( $smarty, $object, $title = null, $type = 'wiki page', $url = null )
 {
 	global $base_url;
 
@@ -85,10 +85,6 @@ function smarty_function_object_link_default( $smarty, $object, $title = null, $
 
 	if (empty($title)) {
 		$title = TikiLib::lib('object')->get_title($type, $object);
-	}
-
-	if (empty($title) && ! empty($params['backuptitle'])) {
-		$title = $params['backuptitle'];
 	}
 
 	if (empty($title) && $type == 'freetag') {
@@ -122,11 +118,7 @@ function smarty_function_object_link_default( $smarty, $object, $title = null, $
 	$metadata = TikiLib::lib('object')->get_metadata($type, $object, $classList);
 	$class = ' class="' . implode(' ', $classList) . '"';
 
-	if (strpos($escapedHref, '://') === false) {
-		$html = '<a href="' . $base_url . $escapedHref . '"' . $class . $titleAttribute . $metadata . '>' . $escapedText . '</a>';
-	} else {
-		$html = '<a href="' . $escapedHref . '"' . $class . $titleAttribute . $metadata . '>' . $escapedText . '</a>';
-	}
+	$html = '<a href="' . $base_url . $escapedHref . '"' . $class . $titleAttribute . $metadata . '>' . $escapedText . '</a>';
 
 	$attributelib = TikiLib::lib('attribute');
 	$attributes = $attributelib->get_attributes($type, $object);

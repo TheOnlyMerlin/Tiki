@@ -23,8 +23,7 @@ function wikiplugin_sheet_info()
 				'filter' => 'digits',
 				'accepted' => 'Sheet ID number',
 				'default' => '',
-				'since' => '',
-				'profile_reference' => 'sheet',
+				'since' => ''
 			),
 			'url' => array(
 				'required' => false,
@@ -168,7 +167,7 @@ EOF;
 ~np~
 <form method="post" action="">
 	<p>
-		<input type="submit" name="create_sheet" class="btn btn-default" value="$label"/>
+		<input type="submit" name="create_sheet" value="$label"/>
 		<input type="hidden" name="index" value="$index"/>
 	</p>
 </form>

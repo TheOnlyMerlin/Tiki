@@ -53,7 +53,7 @@
 	</label>		
 {/if}
 <br>
-<input type="submit" class="btn btn-default" name="search" value="{tr}Find{/tr}">
+<input type="submit" name="search" value="{tr}Find{/tr}">
 </form>
 
 {section name=x loop=$poll_info_arr}
@@ -90,7 +90,7 @@
    <td class="findtable">
    <form method="get" action="tiki-poll_results.php">
      <input type="text" name="find" value="{$find|escape}">
-     <input type="submit" class="btn btn-default" value="{tr}Find{/tr}" name="search">
+     <input type="submit" value="{tr}Find{/tr}" name="search">
      <input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
 	 <input type="hidden" name="pollId" value="{$pollId|escape}">
 	 <input type="hidden" name="list" value="y">
@@ -103,7 +103,7 @@
 </tr>
 </table>
 </div>
-<table class="table normal">
+<table class="normal">
 <tr>
 	<th>{self_link _sort_arg='sort_mode' _sort_field='user'}{tr}User{/tr}{/self_link}</th>
 	<th>{self_link _sort_arg='sort_mode' _sort_field='ip'}{tr}IP{/tr}{/self_link}</th>
@@ -133,7 +133,7 @@
   ||  $tiki_p_post_comments  == 'y'
   ||  $tiki_p_edit_comments  == 'y')}
   <div id="page-bar" class="clearfix">
-		<span class="button btn-default"><a id="comment-toggle" href="{service controller=comment action=list type=poll objectId=$pollId}#comment-container">{tr}Comments{/tr}</a></span>
+		<span class="button"><a id="comment-toggle" href="{service controller=comment action=list type=poll objectId=$pollId}#comment-container">{tr}Comments{/tr}</a></span>
 		{jq}
 			$('#comment-toggle').comment_toggle();
 		{/jq}

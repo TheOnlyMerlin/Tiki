@@ -82,7 +82,7 @@ if ($prefs['javascript_enabled'] == 'y') {	// we have JavaScript
 	}
 
 	// setup timezone array
-	$tz = TikiDate::getTimezoneAbbreviations();
+	$tz = array_keys(DateTimeZone::listAbbreviations());
 	$headerlib->add_js(
 		'
 function inArray(item, array) {
@@ -128,7 +128,7 @@ jqueryTiki.ui_theme = "'.$prefs['feature_jquery_ui_theme'].'";
 jqueryTiki.tooltips = '.($prefs['feature_jquery_tooltips'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.autocomplete = '.($prefs['feature_jquery_autocomplete'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.superfish = '.($prefs['feature_jquery_superfish'] == 'y' ? 'true' : 'false') . ';
-jqueryTiki.reflection = '.($prefs['feature_jquery_reflection'] == 'y' ? 'true' : 'false') . ';
+jqueryTiki.replection = '.($prefs['feature_jquery_reflection'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.tablesorter = '.($prefs['feature_jquery_tablesorter'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.colorbox = '.($prefs['feature_shadowbox'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.cboxCurrent = "{current} / {total}";
@@ -225,7 +225,7 @@ var syntaxHighlighter = {
 			 *
 			 */
 			if (($fixoncss = $prefs['iepngfix_selectors']) == '') {
-				$fixoncss = '.sitelogo a img';
+				$fixoncss = '#sitelogo a img';
 			}
 			if (($fixondom = $prefs['iepngfix_elements']) != '') {
 				$fixondom = "DD_belatedPNG.fixPng($fixondom); // list of HTMLDomElements to fix separated by commas (default is none)";

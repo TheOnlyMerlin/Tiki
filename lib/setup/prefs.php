@@ -20,7 +20,6 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 
 // Prefs for which we want to use the site value (they will be prefixed with 'site_')
 // ( this is also used in tikilib, not only when reloading prefs )
-global $user_overrider_prefs, $prefs;
 $user_overrider_prefs = array(
 				'language',
 				'style',
@@ -64,7 +63,6 @@ function get_default_prefs()
 			'backlinks_name_len' => '0',
 			'feature_wiki_notepad' => 'n',
 			'feature_wiki_feedback_polls' => array(),
-			'mailin_respond_email' => 'y',
 			'mailin_autocheck' => 'n',
 			'mailin_autocheckFreq' => '0',
 			'mailin_autocheckLast' => 0,
@@ -404,8 +402,6 @@ function initialize_prefs()
 
 	// Override preferences with system-configured preferences.
 	$prefs = $systemConfiguration->preference->toArray() + $prefs;
-
-	define('TIKI_PREFS_DEFINED', 1);
 }
 
 /**

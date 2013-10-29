@@ -37,7 +37,6 @@ foreach (array('find', 'highlight', 'where') as $possibleKey) {
 	}
 }
 $filter = isset($_REQUEST['filter']) ? $_REQUEST['filter'] : array();
-$facets = array();
 
 if (count($filter)) {
 	if (isset($_REQUEST['save_query'])) {
@@ -54,8 +53,7 @@ if (count($filter)) {
 		$dataSource = $unifiedsearchlib->getDataSource('formatting');
 		$results = $dataSource->getInformation($results, $fetchFields);
 
-		$smarty->loadPlugin('smarty_function_object_link');
-		$smarty->loadPlugin('smarty_modifier_sefurl');
+		require_once 'lib/smarty_tiki/function.object_link.php';
 		foreach ($results as &$res) {
 			$res['link'] = smarty_function_object_link(
 				array(
@@ -65,21 +63,11 @@ if (count($filter)) {
 				),
 				$smarty
 			);
-			if (empty($res['url'])) {
-				$appendTitle = $res['object_type'] === 'article' || $res['object_type'] === 'blog' || $res['object_type'] === 'bogpost';
-				$res['url'] = smarty_modifier_sefurl($res['object_id'], $res['object_type'], '', '', $appendTitle ? 'y' : 'n', $res['title']);
-			}
-			$res = array_filter(
-				$res,
-				function ($v) {
-					return !is_null($v);
-				}
-			);	// strip out null values
 		}
 		$access->output_serialized(
 			$results,
 			array(
-				'feedTitle' => tr('%0: Results for "%1"', $prefs['sitetitle'], isset($filter['content']) ? $filter['content'] : ''),
+				'feedTitle' => tr('%0: Results for "%1"', $prefs['sitetitle'], $request['filter']['content']),
 				'feedDescription' => tr('Search Results'),
 				'entryTitleKey' => 'title',
 				'entryUrlKey' => 'url',
@@ -101,11 +89,6 @@ if (count($filter)) {
 		}
 		if (!$isCached) {
 			$results = tiki_searchindex_get_results($filter, $offset, $maxRecords);
-			$facets = array_map(
-				function ($facet) {
-					return $facet->getName();
-				}, $results->getFacets()
-			);
 			$dataSource = $unifiedsearchlib->getDataSource('formatting');
 
 			$plugin = new Search_Formatter_Plugin_SmartyTemplate(realpath('templates/searchresults-plain.tpl'));
@@ -144,16 +127,11 @@ if (count($filter)) {
 }
 
 $smarty->assign('filter', $filter);
-$smarty->assign('facets', $facets);
 
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
-
-if ($prefs['search_use_facets'] == 'y') {
-	$smarty->display("tiki-searchfacets.tpl");
-} else {
-	$smarty->display("tiki-searchindex.tpl");
-}
+$smarty->assign('mid', 'tiki-searchindex.tpl');
+$smarty->display("tiki.tpl");
 
 /**
  * @param $filter
@@ -164,7 +142,7 @@ if ($prefs['search_use_facets'] == 'y') {
 function tiki_searchindex_get_results($filter, $offset, $maxRecords)
 {
 	global $prefs;
-
+	
 	$unifiedsearchlib = TikiLib::lib('unifiedsearch');
 	$query = $unifiedsearchlib->buildQuery($filter);
 	$query->setRange($offset, $maxRecords);
@@ -180,22 +158,6 @@ function tiki_searchindex_get_results($filter, $offset, $maxRecords)
 		}
 	}
 
-	if ($prefs['search_use_facets'] == 'y') {
-		$provider = $unifiedsearchlib->getFacetProvider();
-
-		foreach ($provider->getFacets() as $facet) {
-			$query->requestFacet($facet);
-		}
-	}
-
-	try {
-		return $query->search($unifiedsearchlib->getIndex());
-	} catch (Search_Elastic_TransportException $e) {
-		TikiLib::lib('errorreport')->report('Search functionality currently unavailable.');
-	} catch (Exception $e) {
-		TikiLib::lib('errorreport')->report($e->getMessage());
-	}
-
-	return new Search_ResultSet(array(), 0, 0, -1);
+	return $query->search($unifiedsearchlib->getIndex());
 }
 

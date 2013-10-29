@@ -32,7 +32,7 @@ function tf_export_submit(fm) {
 <input type="hidden" name="trackerId" value="{$trackerId}">
 <input type="hidden" name="iTrackerFilter" value="{$iTrackerFilter}">
 {if !empty($count_item)}<input type="hidden" name="count_item" value="{$count_item}">{/if}
-<table class="table normal">
+<table class="normal">
 {if isset($line) && $line eq 'y'}<tr>{/if}
 {cycle values="even,odd" print=false}
 {foreach from=$filters item=filter}
@@ -115,18 +115,18 @@ function tf_export_submit(fm) {
 <td>
 	<div id="trackerFilter{$iTrackerFilter}-result"><div>
 	{if !empty($export_action)}
-		<input class="button submit btn btn-default" type="submit" name="export_filter" value="{tr}{$export_action}{/tr}">
+		<input class="button submit" type="submit" name="export_filter" value="{tr}{$export_action}{/tr}">
 	{elseif $action and $action neq " "}
-		<input class="button submit btn btn-default" type="submit" name="filter" value="{if empty($action)}{tr}Filter{/tr}{else}{tr}{$action}{/tr}{/if}">
-		<input class="button submit btn btn-default" type="submit" name="reset_filter" value="{tr}Reset{/tr}">
+		<input class="button submit" type="submit" name="filter" value="{if empty($action)}{tr}Filter{/tr}{else}{tr}{$action}{/tr}{/if}">
+		<input class="button submit" type="submit" name="reset_filter" value="{tr}Reset{/tr}">
 	{else}
 		&nbsp;
 	{/if}
 	{if $googlemapButtons && $googlemapButtons eq 'y'}
         {if isset($mapview) && $mapview}
-        <br><input class="button submit btn btn-default" type="submit" name="searchlist" value="{tr}List View{/tr}">
+        <br><input class="button submit" type="submit" name="searchlist" value="{tr}List View{/tr}">
         {else}
-        <br><input class="button submit btn btn-default" type="submit" name="searchmap" value="{tr}Map View{/tr}">
+        <br><input class="button submit" type="submit" name="searchmap" value="{tr}Map View{/tr}">
         {/if}
 	{/if}
 </td>

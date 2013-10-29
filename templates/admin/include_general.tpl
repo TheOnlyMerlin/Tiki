@@ -3,7 +3,7 @@
 <form action="tiki-admin.php?page=general" class="admin" method="post">
 	<input type="hidden" name="new_prefs" />
 	<div class="heading input_submit_container" style="text-align: right;">
-		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
 	{if !empty($error_msg)}
 		{remarksbox type='warning' title="{tr}Warning{/tr}" icon='error'}
@@ -15,7 +15,7 @@
 		{tab name="{tr}General Preferences{/tr}"}
 			<fieldset>
 				<legend>{tr}Server Fitness{/tr}</legend>
-				{tr}To check if your server meets the requirements for running Tiki please visit <a href="tiki-check.php">Tiki Server Compatibility Check</a>{/tr}.
+				To check if your server meets the requirements for running Tiki please visit <a href="tiki-check.php">Tiki Server Compatibility Check</a>.
 			</fieldset>
 
 			<fieldset>
@@ -332,13 +332,8 @@
 			{preference name=short_time_format}
 			<em>{tr}Sample:{/tr} {$now|tiki_short_time}</em>
 
-			<fieldset>
-				<legend>{tr}Date/time selectors{/tr}</legend>
-				{preference name=display_field_order}
-				{preference name=display_start_year}
-				{preference name=display_end_year}
-				{preference name=users_prefs_display_12hr_clock}
-			</fieldset>
+			{preference name=display_field_order}
+			{preference name=users_prefs_display_12hr_clock}
 			{preference name=tiki_same_day_time_only}
 			{preference name=wikiplugin_now}
 			{preference name=wikiplugin_countdown}
@@ -359,6 +354,6 @@
 	{/tabset}
 
 	<div class="heading input_submit_container" style="text-align: center;">
-		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
 </form>

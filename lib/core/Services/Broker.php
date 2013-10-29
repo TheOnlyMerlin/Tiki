@@ -43,21 +43,6 @@ class Services_Broker
 		}
 	}
 
-	function internal($controller, $action, $request = array())
-	{
-		if (! $request instanceof JitFilter) {
-			$request = new JitFilter($request);
-		}
-
-		return $this->attemptProcess($controller, $action, $request);
-	}
-
-	function internalRender($controller, $action, $request)
-	{
-		$output = $this->internal($controller, $action, $request);
-		return $this->render($controller, $action, $output, true);
-	}
-
 	private function attemptProcess($controller, $action, $request)
 	{
 		if (isset($this->controllerMap[$controller])) {
@@ -89,7 +74,7 @@ class Services_Broker
 		}
 	}
 
-	private function render($controller, $action, $output, $internal = false)
+	private function render($controller, $action, $output)
 	{
 		if (isset($output['FORWARD'])) {
 			$loc = $_SERVER['PHP_SELF'];
@@ -110,9 +95,7 @@ class Services_Broker
 			$smarty->assign($key, $value);
 		}
 
-		if ($internal) {
-			return $smarty->fetch($template);
-		} elseif ($access->is_xml_http_request()) {
+		if ($access->is_xml_http_request()) {
 			$headerlib = TikiLib::lib('header');
 			$content = $smarty->fetch($template);
 			$content .= $headerlib->output_js();

@@ -77,7 +77,7 @@
 				</tr>
 				<tr>
 					<td>&nbsp;</td>
-					<td><input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}"></td>
+					<td><input type="submit" name="save" value="{tr}Save{/tr}"></td>
 				</tr>
 			</table>
 		</form>
@@ -87,7 +87,7 @@
 		{if $channels or ($find ne '')}
 			{include file='find.tpl'}
 		{/if}
-		<table class="table normal">
+		<table class="normal">
 			{assign var=numbercol value=8}
 			<tr>
 				<th>{self_link _sort_arg='sort_mode' _sort_field='pollId' title="{tr}ID{/tr}"}{tr}ID{/tr}{/self_link}</th>
@@ -184,7 +184,7 @@
 				</tr>
 				<tr>
 					<td></td>
-					<td><input type="submit" class="btn btn-default" name="addPoll" value="{tr}Add{/tr}"></td>
+					<td><input type="submit" name="addPoll" value="{tr}Add{/tr}"></td>
 				</tr>
 			</table>
 		</form>

@@ -22,52 +22,10 @@ if (!empty($_REQUEST['lang'])) {
 include_once('lib/init/tra.php');
 
 $local_php = TikiInit::getCredentialsFile();
-global $default_api_tiki, $api_tiki, $db_tiki, $dbversion_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $tikidomain, $tikidomainslash;
 $re = false;
 if ( file_exists($local_php) ) {
 	$re = include($local_php);
 }
-
-if (! isset($client_charset)) {
-	$client_charset = 'utf8';
-}
-
-$credentials = array(
-	'api_tiki' => empty($api_tiki) ? $default_api_tiki : $api_tiki,
-	'api_tiki_forced' => ! empty($api_tiki),
-	'primary' => false,
-	'shadow' => false,
-);
-
-if ($parts = TikiInit::getEnvironmentCredentials()) {
-
-	$credentials['primary'] = $parts;
-	$re = true;
-} else {
-	if (isset($shadow_host, $shadow_user, $shadow_pass, $shadow_dbs)) {
-		$credentials['shadow'] = array(
-			'host' => $shadow_host,
-			'user' => $shadow_user,
-			'pass' => $shadow_pass,
-			'dbs' => $shadow_dbs,
-			'charset' => $client_charset,
-			'socket' => isset($socket_tiki) ? $socket_tiki : null,
-		);
-	}
-
-	if (isset($host_tiki, $user_tiki, $pass_tiki, $dbs_tiki)) {
-		$credentials['primary'] = array(
-			'host' => $host_tiki,
-			'user' => $user_tiki,
-			'pass' => $pass_tiki,
-			'dbs' => $dbs_tiki,
-			'charset' => $client_charset,
-			'socket' => null,
-		);
-	}
-}
-
-unset($host_map, $db_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $shadow_user, $shadow_pass, $shadow_host, $shadow_dbs);
 
 global $systemConfiguration;
 $systemConfiguration = new Zend_Config(
@@ -93,8 +51,15 @@ if (isset ($system_configuration_file)) {
 	$systemConfiguration = $systemConfiguration->merge(new Zend_Config_Ini($system_configuration_file, $system_configuration_identifier));
 }
 
+if ( empty( $api_tiki ) ) {
+	$api_tiki_forced = false;
+	$api_tiki = $default_api_tiki;
+} else {
+	$api_tiki_forced = true;
+}
+
 if ( $re === false ) {
-	if (! defined('TIKI_IN_INSTALLER')) {
+	if ( ! isset($in_installer) || $in_installer != 1) {
 		header('location: tiki-install.php');
 		exit;
 	} else {
@@ -185,60 +150,48 @@ class TikiDb_LegacyErrorHandler implements TikiDb_ErrorHandler
 	} // }}}
 }
 
-$initializer = new TikiDb_Initializer;
-$initializer->setPreferredConnector($credentials['api_tiki']);
-$initializer->setInitializeCallback(
-	function ($db) {
-		global $db_table_prefix, $common_users_table_prefix, $db_tiki;
-
-		$db->setServerType($db_tiki);
-
-		if (! defined('TIKI_CONSOLE')) {
-			$db->setErrorHandler(new TikiDb_LegacyErrorHandler);
-		}
-
-		if ( isset( $db_table_prefix ) ) {
-			$db->setTablePrefix($db_table_prefix);
-		}
-
-		if ( isset( $common_users_table_prefix ) ) {
-			$db->setUsersTablePrefix($common_users_table_prefix);
-		}
-	}
-);
-
-try {
-	$db = $initializer->getConnection($credentials['primary']);
-} catch (Exception $e) {
-	echo $e;
-	require_once 'lib/init/smarty.php';
-
-	$smarty->assign('msg', $e->getMessage());
-	$smarty->assign('where', 'connection');
-	echo $smarty->fetch('database-connection-error.tpl');
-	exit;
+$dbInitializer = 'db/tiki-db-adodb.php';
+if ($api_tiki == 'pdo' && extension_loaded("pdo") && in_array('mysql', PDO::getAvailableDrivers())) {
+	$dbInitializer = 'db/tiki-db-pdo.php';
 }
 
-if (! $db && ! defined('TIKI_IN_INSTALLER')) {
-	header('location: tiki-install.php');
-	exit;
-}
+require $dbInitializer;
+init_connection(TikiDb::get());
 
-TikiDb::set($db);
-
-if ($credentials['shadow']) {
+if ( isset( $shadow_host, $shadow_user, $shadow_pass, $shadow_dbs ) ) {
 	global $dbMaster, $dbSlave;
 	// Set-up the replication
-	$dbMaster = $db;
+	$dbMaster = TikiDb::get();
 
-	try {
-		if ($dbSlave = $initializer->getConnection($credentials['shadow'])) {
-			$db = new TikiDb_MasterSlaveDispatch($dbMaster, $dbSlave);
-			TikiDb::set($db);
-		}
-	} catch (Exception $e) {
-		// Just a slave, ignore
-	}
+	$host_tiki = $shadow_host;
+	$user_tiki = $shadow_user;
+	$pass_tiki = $shadow_pass;
+	$dbs_tiki = $shadow_dbs;
+	require $dbInitializer;
+	$dbSlave = TikiDb::get();
+	init_connection($dbSlave);
+
+	$db = new TikiDb_MasterSlaveDispatch($dbMaster, $dbSlave);
+	TikiDb::set($db);
 }
 
-unset($credentials);
+unset($host_map, $db_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $shadow_user, $shadow_pass, $shadow_host, $shadow_dbs);
+
+/**
+ * @param $db
+ */
+function init_connection( $db )
+{
+	global $db_table_prefix, $common_users_table_prefix, $db_tiki;
+
+	$db->setServerType($db_tiki);
+	$db->setErrorHandler(new TikiDb_LegacyErrorHandler);
+
+	if ( isset( $db_table_prefix ) ) {
+		$db->setTablePrefix($db_table_prefix);
+	}
+
+	if ( isset( $common_users_table_prefix ) ) {
+		$db->setUsersTablePrefix($common_users_table_prefix);
+	}
+}

@@ -42,7 +42,7 @@
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
-			<td><input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}"></td>
+			<td><input type="submit" name="save" value="{tr}Save{/tr}"></td>
 		</tr>
 	</table>
 </form>
@@ -73,7 +73,7 @@
 		</tr>
 	</table>
 	<div align="center">
-		<input type="submit" class="wikiaction btn btn-default" name="import" value="Import">
+		<input type="submit" class="wikiaction" name="import" value="Import">
 	</div>
 </form>
 
@@ -81,7 +81,7 @@
 <h2>{tr}Questions{/tr}</h2>
 {include file='find.tpl'}
 
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>
 			<a href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'questionId_desc'}questionId_asc{else}questionId_desc{/if}">{tr}ID{/tr}</a>

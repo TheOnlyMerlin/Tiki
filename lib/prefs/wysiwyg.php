@@ -10,17 +10,15 @@ function prefs_wysiwyg_list()
 	
 	return array(
 		'wysiwyg_optional' => array(
-			'name' => tra('Full Wysiwyg Editor is optional'),
+			'name' => tra('Wysiwyg Editor is optional'),
 			'type' => 'flag',
-			'description' => tra('If wysiwyg is optional, the wiki text editor is also available. Otherwise only the Wysiwyg editor is used.').' '.tra('Switching between html and wiki formats can cause problems for some pages.'),
 			'dependencies' => array(
 				'feature_wysiwyg',
 			),
 			'default' => 'y',
 		),
 		'wysiwyg_default' => array(
-			'name' => tra('Full Wysiwyg Editor is displayed by default'),
-			'description' => tra('If both the Wysiwyg editor and the text editor is available, the Wysiwyg editor is used by default, e.g when creating new pages'),
+			'name' => tra('Wysiwyg Editor is displayed by default'),
 			'type' => 'flag',
 			'dependencies' => array(
 				'wysiwyg_optional',
@@ -56,7 +54,7 @@ function prefs_wysiwyg_list()
 			'tags' => array('experimental'),
 		),
 		'wysiwyg_toolbar_skin' => array(
-			'name' => tra('Full Wysiwyg editor skin'),
+			'name' => tra('Wysiwyg editor skin'),
 			'type' => 'list',
 			'options' => array(
 				'moono' => tra('Moono (Default)'),
@@ -80,18 +78,6 @@ function prefs_wysiwyg_list()
 			'type' => 'textarea',
 			'size' => '3',
 			'default' => 'sans serif;serif;monospace;Arial;Century Gothic;Comic Sans MS;Courier New;Tahoma;Times New Roman;Verdana',
-		),
-		'wysiwyg_inline_editing' => array(
-			'name' => tra('Inline Wysiwyg editor'),
-			'description' => tra('Seamless inline editing. Uses CKEditor4. Inline editing lets the user edit pages without a context switch. The editor is embedded in the wiki page. When used on pages in wiki format, a conversion from HTML to Wiki format is required'),
-			'help' => 'Wiki Inline Editing', 
-			'type' => 'flag',
-			'default' => 'n',
-			'dependencies' => array(
-				'feature_wysiwyg',
-			),
-			'tags' => array('experimental'),
-			'warning' => tra('experimental'),
 		),
 	);
 }

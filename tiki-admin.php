@@ -195,7 +195,7 @@ if ( isset( $_REQUEST['lm_preference'] ) ) {
 				/* Add/Remove the plugin toolbars from the editor */
 				$toolbars = array('wikiplugin_addreference', 'wikiplugin_showreference');
 				$t_action = ($value=='y') ? 'add' : 'remove';
-				$tikilib->saveEditorToolbars($toolbars, 'global', $t_action);
+				$tikilib->saveEditorToolbars($toolbars, 'global', 'add', $t_action);
 			}
 		}
 	}
@@ -683,16 +683,6 @@ if (isset($_REQUEST['lm_criteria']) && isset($_REQUEST['exact'])) {
 foreach ($icons as &$icon) {
 	$icon = array_merge(array( 'disabled' => false, 'description' => '', 'icon' => 'img/icons/large/green_question48x48.png'), $icon);
 }
-
-// SSL setup
-$haveMySQLSSL = $tikilib->haveMySQLSSL();
-$smarty->assign('haveMySQLSSL', $haveMySQLSSL);
-if ($haveMySQLSSL) {
-	$isSSL = $tikilib->isMySQLConnSSL();
-} else {
-	$isSSL = false;
-}
-$smarty->assign('mysqlSSL', $isSSL);
 
 $smarty->assign('icons', $icons);
 

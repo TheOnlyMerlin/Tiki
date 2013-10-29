@@ -14,7 +14,7 @@
 
 <form method="post" action="tiki-admin.php?page=articles">
 	<div class="input_submit_container clear" style="text-align: right;">
-		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
 
 	{tabset name="admin_articles"}
@@ -41,7 +41,6 @@
 				</legend>
 
 				{preference name=feature_submissions}
-				{preference name=article_remembers_creator}
 				{preference name=feature_cms_rankings}
 				{preference name=article_user_rating}
 				<div class="adminoptionboxchild" id="article_user_rating_childcontainer">
@@ -107,7 +106,7 @@
 						<br>
 						<em>{tr}File format: title,authorName,heading,body,lang,user{/tr}....</em>
 						<div align="center">
-							<input type="submit" class="btn btn-default" name="import" value="{tr}Import{/tr}" />
+							<input type="submit" name="import" value="{tr}Import{/tr}" />
 						</div>
 					</div>
 				</div>
@@ -153,7 +152,7 @@
 		{/tab}
 	{/tabset}
 	<div class="input_submit_container clear" style="text-align: center;">
-		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
 </form>
 

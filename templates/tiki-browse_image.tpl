@@ -96,7 +96,7 @@
   
 {if $popup eq ""}
 	<br><br>
-	<table class="table normal noslideshow">
+	<table class="normal noslideshow">
 		<tr><td class="odd">{tr}Image Name:{/tr}</td><td class="odd">{$name}</td></tr>
 		<tr><td class="even">{tr}Created:{/tr}</td><td class="even">{$created|tiki_long_datetime}</td></tr>
 		<tr><td class="odd">{tr}Image size:{/tr}</td><td class="odd">{$xsize}x{$ysize}</td></tr>
@@ -125,14 +125,14 @@
 				      <option value="{$galleries[idx].id|escape}" {if $galleries[idx].id eq $galleryId}selected="selected"{/if}>{$galleries[idx].name}</option>
 				    {/section}
 					</select>
-					<input type="submit" class="btn btn-default" name="move_image" value="{tr}Move{/tr}">
+					<input type="submit" name="move_image" value="{tr}Move{/tr}">
 			  </form>
 			</td>
 		</tr>
 		{/if}
 	</table>
 	<br><br>    
-	<table class="table normal noslideshow" style="font-size:small">
+	<table class="normal noslideshow" style="font-size:small">
 		<tr>
 			<td class="even" style="border-bottom:0px" colspan="2">
 				{tr}Include the image in a tiki page using the following syntax:{/tr}

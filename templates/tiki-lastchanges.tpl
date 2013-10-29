@@ -33,7 +33,7 @@
 {if $findwhat!=""}
 	{tr}Found{/tr} "<b>{$findwhat|escape}</b>" {tr}in{/tr} {$cant_records|escape} {tr}LastChanges{/tr} 
 {/if}
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>{self_link _sort_arg='sort_mode' _sort_field='lastModif'}{tr}Date{/tr}{/self_link}</th>
 		<th>{self_link _sort_arg='sort_mode' _sort_field='object'}{tr}Page{/tr}{/self_link}</th>

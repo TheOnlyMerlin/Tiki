@@ -25,8 +25,7 @@ function module_random_images_info()
 			'galleryId' => array(
 				'name' => tra('Gallery identifier'),
 				'description' => tra('If set to an image gallery identifier, restricts the chosen images to those in the identified gallery.') . " " . tra('Example value: 13.') . " " . tra('Not set by default.'),
-				'filter' => 'int',
-				'profile_reference' => 'image_gallery',
+				'filter' => 'int'
 			),
 			'showlink' => array(
 				'name' => tra('Show link'),

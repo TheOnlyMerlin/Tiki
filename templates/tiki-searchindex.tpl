@@ -1,11 +1,7 @@
 {* $Id$ *}
-{extends 'layout_view.tpl'}
 
-{block name=title}
-	{title help="Search" admpage="search"}{tr}Search{/tr}{/title}
-{/block}
+{title help="Search" admpage="search"}{tr}Search{/tr}{/title}
 
-{block name=content}
 <div class="nohighlight">
 	{if $prefs.feature_search_show_search_box eq 'y'}
 		{filter action="tiki-searchindex.php" filter=$filter}{/filter}
@@ -16,4 +12,4 @@
 {if isset($results)}
 	{$results}
 {/if}
-{/block}
+

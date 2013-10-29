@@ -4,7 +4,7 @@
 {tabset name="tabs_admtokens"}
 	{tab name="{tr}List tokens{/tr}"}
 		<h2>{tr}List tokens{/tr}</h2>
-		<table class="table normal">
+		<table class="normal">
 			<tr>
 				<th>{tr}Id{/tr}</th>
 				<th>{tr}Entry{/tr}</th>
@@ -73,7 +73,7 @@
 				</tr>
 				<tr>
 					<td></td>
-					<td><input type="submit" class="btn btn-default" value="{tr}Add{/tr}"></td>
+					<td><input type="submit" value="{tr}Add{/tr}"></td>
 				</tr>
 			</table>
 		</form>

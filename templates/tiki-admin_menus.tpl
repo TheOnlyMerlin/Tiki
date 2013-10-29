@@ -9,7 +9,7 @@
 {tabset name="admin_menus"}
 	{tab name="{tr}Menus{/tr}"}
 		{include file='find.tpl'}
-		<table class="table normal">
+		<table class="normal">
 			<tr>
 				<th>{self_link _sort_arg='sort_mode' _sort_field='menuId'}{tr}ID{/tr}{/self_link}</th>
 				<th>{self_link _sort_arg='sort_mode' _sort_field='name'}{tr}Name{/tr}{/self_link}</th>
@@ -137,7 +137,7 @@
 			<tr>
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
+					<input type="submit" name="save" value="{tr}Save{/tr}">
 					{if $prefs.menus_items_icons neq 'y'}
 						<input type="hidden" name="use_items_icons" value="{$info.use_items_icons}">
 					{/if}

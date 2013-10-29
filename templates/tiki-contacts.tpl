@@ -66,7 +66,7 @@
 				<td>
 				</td>
 				<td>
-					<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
+					<input type="submit" name="save" value="{tr}Save{/tr}">
 				</td>
 			</tr>
 		</tbody>
@@ -77,7 +77,7 @@
 
 {initials_filter_links}
 
-<table class="table normal">
+<table class="normal">
 	<tr>
 		{assign var=numbercol value=4}
 		<th>

@@ -183,8 +183,7 @@ class FileGalLib extends TikiLib
 	 * @return int			user's gallery id if applicable
 	 */
 
-	function check_user_file_gallery($galleryId)
-	{
+	function check_user_file_gallery($galleryId) {
 		global $prefs;
 
 		if ($prefs['feature_use_fgal_for_user_files'] === 'y' && $galleryId == $prefs['fgal_root_user_id']) {
@@ -202,22 +201,6 @@ class FileGalLib extends TikiLib
 			return false;
 		}
 		$fileId = $fileInfo['fileId'];
-
-		if ($prefs['vimeo_upload'] === 'y' && $prefs['vimeo_delete'] === 'y' && $fileInfo['filetype'] === 'video/vimeo') {
-			$attributes = TikiLib::lib('attribute')->get_attributes('file', $fileId);
-			if($url = $attributes['tiki.content.url']) {
-				$video_id = substr($url, strrpos($url, '/') + 1);	// not ideal, but video_id not stored elsewhere (yet)
-				$result = TikiLib::lib('vimeo')->deleteVideo($video_id);
-				if ($result['stat'] != 'ok') {
-					$errMsg = tra('Vimeo error:') . ' ' . tra($result['err']['msg']) .
-						'<br>' . tra($result['err']['expl']) .
-						'<br>' . tr('File "%0" removed (id %1) Remote link was: "%2"', $fileInfo['name'], $fileInfo['fileId'], $url);
-					TikiLib::lib('errorreport')->report($errMsg);
-					// just report the error and continue to delete the tiki file for now
-				}
-			}
-
-		}
 
 		$savedir = $this->get_gallery_save_dir($fileInfo['galleryId'], $galInfo);
 
@@ -247,16 +230,6 @@ class FileGalLib extends TikiLib
 			global $logslib; include_once('lib/logs/logslib.php');
 			$logslib->add_action('Removed', $fileId . '/' . $fileInfo['filename'], 'file', '');
 		}
-
-		TikiLib::events()->trigger(
-			'tiki.file.delete',
-			array(
-				'type' => 'file',
-				'object' => $fileId,
-				'galleryId' => $fileInfo['galleryId'],
-				'filetype' => $fileInfo['filetype'],
-			)
-		);
 
 		return true;
 	}
@@ -355,13 +328,7 @@ class FileGalLib extends TikiLib
 		if (isset($final_event) && $final_event) {
 			TikiLib::events()->trigger(
 				$final_event,
-				array(
-					'type' => 'file',
-					'object' => $fileId,
-					'user' => $GLOBALS['user'],
-					'galleryId' => $galleryId,
-					'filetype' => $type,
-				)
+				array('type' => 'file', 'object' => $fileId, 'galleryId' => $galleryId, 'filetype' => $type)
 			);
 		}
 
@@ -951,15 +918,6 @@ class FileGalLib extends TikiLib
 		return $file;
 	}
 
-	function get_file_label($fileId)
-	{
-		$info = $this->get_file_info($fileId, false, false, false);
-
-		$arr = array_filter(array($info['name'], $info['filename']));
-
-		return reset($arr);
-	}
-
 	function get_files_info_from_gallery_id($galleryId, $include_search_data = false, $include_data = false)
 	{
 		return $this->get_files_info((int)$galleryId, null, $include_search_data, $include_data);
@@ -1025,8 +983,7 @@ class FileGalLib extends TikiLib
 		return $result;
 	}
 
-	function duplicate_file($id, $galleryId = null, $newName = false)
-	{
+	function duplicate_file($id, $galleryId = null, $newName = false) {
 		global $user;
 
 		$file = $this->get_file($id);
@@ -1061,10 +1018,10 @@ class FileGalLib extends TikiLib
 			$path,
 			$file['comment'],
 			$file['author'],
-			'', // created now
+			'',						// created now
 			$file['lockedby'],
 			$file['deleteAfter'],
-			0, // id
+			0,						// id
 			$file['metadata']
 		);
 
@@ -3024,15 +2981,7 @@ class FileGalLib extends TikiLib
 		return $res;
 	}
 
-	/**
-	 * convert markup to be inserted onclick - replace: %fileId%, %name%, %description% etc
-	 * also will convert attributes, e.g. %tiki.content.url% will be replaced with the remote url
-	 *
-	 * @param $syntax string	template syntax
-	 * @param $file array		file info
-	 * @return string			wiki syntax for that file
-	 */
-
+	// convert markup to be inserted onclick - replace: %fileId%, %name%, %description% etc
 	private function process_fgal_syntax($syntax, $file)
 	{
 		$replace_keys = array('fileId', 'name', 'filename', 'description', 'hits', 'author', 'filesize', 'filetype');
@@ -3040,10 +2989,6 @@ class FileGalLib extends TikiLib
 			if (isset($file[$k])) {
 				$syntax = preg_replace("/%$k%/", $file[$k], $syntax);
 			}
-		}
-		$attributes = TikiLib::lib('attribute')->get_attributes('file', $file['fileId']);
-		foreach ($attributes as $k => $v) {
-			$syntax = preg_replace("/%$k%/", $v, $syntax);
 		}
 		return $syntax;
 	}
@@ -3689,11 +3634,7 @@ class FileGalLib extends TikiLib
 			$data = null;
 		}
 
-		$tx = $this->begin();
-		$ret = $this->insert_file($gal_info['galleryId'], $name, '', $name, $data, $size, $type, $asuser, $fhash, '');
-		$tx->commit();
-
-		return $ret;
+		return $this->insert_file($gal_info['galleryId'], $name, '', $name, $data, $size, $type, $asuser, $fhash, '');
 	}
 
 	function update_single_file($gal_info, $name, $size, $type, $data, $id, $asuser = null)
@@ -3708,11 +3649,7 @@ class FileGalLib extends TikiLib
 
 		$didFileReplace = true;
 
-		$tx = $this->begin();
-		$ret = $this->replace_file($id, $name, '', $name, $data, $size, $type, $asuser, $fhash, '', $gal_info, $didFileReplace);
-		$tx->commit();
-
-		return $ret;
+		return $this->replace_file($id, $name, '', $name, $data, $size, $type, $asuser, $fhash, '', $gal_info, $didFileReplace);
 	}
 
 	private function convert_from_data($gal_info, & $fhash, $data)

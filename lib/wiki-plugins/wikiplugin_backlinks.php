@@ -119,25 +119,21 @@ function wikiplugin_backlinks_info()
 				'name' => tra('Page'),
 				'description' => tra('The page links will point to. Default value is the current page.'),
 				'advanced' => true,
-				'default' => '[pagename]',
-				'profile_reference' => 'wiki_page',
+				'default' => '[pagename]'
 			),
 			'info' => array(
 				'required' => false,
 				'name' => tra('Displayed Information'),
 				'description' => tra('Pipe separated list of fields to display. ex: hits|user'),
 				'advanced' => true,
-				'separator' => '|',
-				'default' => false,
+				'default' => false
 			),
 			'exclude' => array(
 				'required' => false,
 				'name' => tra('Excluded pages'),
 				'description' => tra('Pipe separated list of pages to be excluded from the listing. ex: HomePage|Sandbox'),
 				'advanced' => true,
-				'default' => '',
-				'separator' => '|',
-				'profile_reference' => 'wiki_page',
+				'default' => ''
 			),
 			'include_self' => array(
 				'required' => false,

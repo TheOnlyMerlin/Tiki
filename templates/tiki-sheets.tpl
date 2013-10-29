@@ -14,7 +14,7 @@
   {include file='find.tpl'}
 {/if}
 
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>{self_link _sort_arg='sort_mode' _sort_field='title'}{tr}Title{/tr}{/self_link}</th>
 		<th>{self_link _sort_arg='sort_mode' _sort_field='description'}{tr}Description{/tr}{/self_link}</th>
@@ -86,7 +86,7 @@
 						<em>{tr}Makes this sheet a "child" sheet of a multi-sheet set{/tr}</em>
 					</td>
 				</tr>
-				<tr><td>&nbsp;</td><td><input type="submit" class="btn btn-default" value="{tr}Save{/tr}" name="edit"></td></tr>
+				<tr><td>&nbsp;</td><td><input type="submit" value="{tr}Save{/tr}" name="edit"></td></tr>
 			</table>
 		</form>
 		

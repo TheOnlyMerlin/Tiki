@@ -7,7 +7,7 @@
 </div>
 
 <h2>{tr}List of featured links{/tr}</h2>
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>{tr}URL{/tr}</th>
 		<th>{tr}Title{/tr}</th>
@@ -57,6 +57,6 @@
 			</select>
 			</td>
 		</tr>
-		<tr><td>&nbsp;</td><td><input type="submit" class="btn btn-default" name="add" value="{tr}Save{/tr}"></td></tr>
+		<tr><td>&nbsp;</td><td><input type="submit" name="add" value="{tr}Save{/tr}"></td></tr>
 	</table>
 </form>

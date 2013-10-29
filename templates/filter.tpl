@@ -95,14 +95,14 @@
 			<input type="hidden" name="filter~language_unspecified" value="1">
 		{/if}
 	{/if}
-	<input type="submit" class="btn btn-default" value="{tr}Search{/tr}">
+	<input type="submit" value="{tr}Search{/tr}">
 </form>
 {jq}
 	$('.filter:not(.init)').addClass('init').each(function () {
 
 {{if $prefs.feature_categories eq 'y'}}
 		var categoryInput = $('.category-wizard', this).fancy_filter('init', {
-			map: {{$filter_categmap|json_encode}}
+			map: {{$filter_categmap}}
 		});
 
 		var categoryPicker = $('.category-picker', this).dialog({

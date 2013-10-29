@@ -10,7 +10,6 @@ include_once "vendor_extra/elfinder/php/elFinder.class.php";
 include_once "vendor_extra/elfinder/php/elFinderVolumeDriver.class.php";
 
 include_once 'lib/jquery_tiki/elfinder/elFinderVolumeTikiFiles.class.php';
-include_once 'lib/jquery_tiki/elfinder/tikiElFinder.php';
 
 class Services_File_FinderController
 {
@@ -93,10 +92,9 @@ class Services_File_FinderController
 		// 'startPath' not functioning with multiple roots as yet (https://github.com/Studio-42/elFinder/issues/351)
 		// so work around it for now with startRoot
 
-		$opts['roots'][] = array_merge(
-			// normal file gals
+		$opts['roots'][] = array_merge(		// normal file gals
 			array(
-				'path' => $prefs['fgal_root_id'],		// should be a function?
+				'path' => $this->fileController->defaultGalleryId,		// should be $prefs['fgal_root_id']?
 			),
 			$rootDefaults
 		);
@@ -144,7 +142,7 @@ class Services_File_FinderController
 		}
 */
 		// run elFinder
-		$elFinder = new tikiElFinder($opts);
+		$elFinder = new elFinder($opts);
 		$connector = new elFinderConnector($elFinder);
 
 		if ($input->cmd->text() === 'tikiFileFromHash') {	// intercept tiki only commands
@@ -197,10 +195,15 @@ class Services_File_FinderController
 		}
 
 		if ($isgal) {
-			$perms = TikiLib::lib('tiki')->get_perm_object($id, 'file gallery', TikiLib::lib('filegal')->get_file_gallery_info($id));
+			//$objectType = 'file gallery';
+			$galleryId = $id;
 		} else {
-			$perms = TikiLib::lib('tiki')->get_perm_object($id, 'file', TikiLib::lib('filegal')->get_file($id));
+			$objectType = 'file';
+			// Seems individual file perms aren't set so use the gallery ones
+			$galleryId = $this->parentIds['files'][$id];
 		}
+
+		$perms = TikiLib::lib('tiki')->get_perm_object($galleryId, 'file gallery', TikiLib::lib('filegal')->get_file_gallery_info($galleryId));
 
 		switch($attr) {
 			case 'read':

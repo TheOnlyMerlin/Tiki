@@ -206,7 +206,6 @@ class FreetagLib extends ObjectLib
 	{
 
 		global $tiki_p_admin, $user, $smarty, $prefs;
-		$objectIds = explode(':',$objectId);
 		if (!isset($tagArray) || !is_array($tagArray)) {
 			return false;
 		}
@@ -325,11 +324,9 @@ class FreetagLib extends ObjectLib
 			if ($row['type'] == 'blog post') {
 				$bloglib = TikiLib::lib('blog');
 				$post_info = $bloglib->get_post($row['itemId']);
-				if (!empty($objectId) && !in_array($post_info['blogId'],$objectIds) ) {
+				if (!empty($objectId) && $objectId != $post_info['blogId']) {
 				} elseif ($tiki_p_admin == 'y' || $this->user_has_perm_on_object($user, $post_info['blogId'], 'blog', 'tiki_p_read_blog')) {
 					$ok = true;
-					$row['parent_object_id'] = $post_info['blogId'];
-					$row['parent_object_type'] = 'blog';
 				}
 			} elseif ($tiki_p_admin == 'y') {
                                 $ok = true;
@@ -987,7 +984,6 @@ class FreetagLib extends ObjectLib
 	function get_most_popular_tags($user = '', $offset = 0, $maxRecords = 25, $type=null, $objectId=null, $tsort_mode='tag_asc')
 	{
 
-		$objectIds = explode(':',$objectId);
 		$join = '';
 		$mid = ''; $mid2 = '';
 		$bindvals = array();
@@ -998,19 +994,9 @@ class FreetagLib extends ObjectLib
 			$bindvals[] = $type;
 			if (!empty($objectId)) {
 				$join .= ' LEFT JOIN `tiki_blog_posts` tbp on (tob.`itemId` = tbp.`postId`)';
-				if (count($objectIds) == 1) {
-					$mid .= ' AND tbp.`blogId` = ?';
-					$mid2 .= ' AND tbp.`blogId` = ?';
-					$bindvals[] = intval($objectId);
-				} else {	// There is more than one blog Id
-					$multimid = array();
-					foreach ( $objectIds as $objId ) {
-						$multimid[] = ' tbp.`blogId` = ? ';
-						$bindvals[] = intval($objId);
-					}
-					$mid .= ' AND ( ' . implode( ' OR ', $multimid ) . ' ) ';
-					$mid2 .= ' AND ( ' . implode( ' OR ', $multimid ) . ' ) ';
-				}
+				$mid .= ' AND tbp.`blogId` = ?';
+				$mid2 .= ' AND tbp.`blogId` = ?';
+				$bindvals[] = $objectId;
 			}
 		}
 		$query = 'SELECT COUNT(*) as count'
@@ -1054,7 +1040,7 @@ class FreetagLib extends ObjectLib
 		}
 		switch ($tsort_mode) {
 			case 'count_desc':
-				array_multisort($count, SORT_DESC, $tag, SORT_ASC, $ret);
+				array_multisort($count, SORT_DESC,$tag, SORT_ASC, $ret);
 				break;
 			case 'tag_asc':
 			default:

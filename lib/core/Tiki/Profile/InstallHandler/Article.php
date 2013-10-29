@@ -24,7 +24,6 @@ class Tiki_Profile_InstallHandler_Article extends Tiki_Profile_InstallHandler
 			'subtitle' => '',
 			'link_to' => '',
 			'language' => 'en',
-			'geolocation' => '',
 		);
 
 		$data = array_merge($defaults, $data);
@@ -44,11 +43,12 @@ class Tiki_Profile_InstallHandler_Article extends Tiki_Profile_InstallHandler
 
 	function _install()
 	{
-		global $prefs;
-		$artlib = TikiLib::lib('art');
+		global $artlib;
 		$data = $this->getData();
 
 		$this->replaceReferences($data);
+
+		require_once 'lib/articles/artlib.php';
 
 		$dateConverter = new Tiki_Profile_DateConverter;
 
@@ -77,58 +77,6 @@ class Tiki_Profile_InstallHandler_Article extends Tiki_Profile_InstallHandler
 			$data['language']
 		);
 
-		if ($prefs['geo_locate_article'] == 'y' && ! empty($data['geolocation'])) {
-			TikiLib::lib('geo')->set_coordinates('article', $id, $data['geolocation']);
-		}
-
 		return $id;
-	}
-
-	public static function export(Tiki_Profile_Writer $writer, $id, $withTopic = false, $withType = false)
-	{
-		$artlib = TikiLib::lib('art');
-		$info = $artlib->get_article($id, false);
-
-		if (! $info) {
-			return false;
-		}
-
-		$bodypage = "article_{$id}_body";
-		$writer->writeExternal($bodypage, $writer->getReference('wiki_content', $info['body']));
-		$out = array(
-			'title' => $info['title'],
-			'author' => $info['authorName'],
-			'body' => "wikicontent:$bodypage",
-			'type' => $writer->getReference('article_type', $info['type']),
-			'publication_date' => $info['publishDate'],
-			'expiration_date' => $info['expireDate'],
-			'topline' => $info['topline'],
-			'subtitle' => $info['subtitle'],
-			'link_to' => $info['linkto'],
-			'language' => $info['lang'],
-		);
-
-		if ($info['topicId']) {
-			if ($withTopic) {
-				Tiki_Profile_InstallHandler_ArticleTopic::export($writer, $info['topicId']);
-			}
-
-			$out['topic'] = $writer->getReference('article_topic', $info['topicId']);
-		}
-
-		if ($info['heading']) {
-			$headerpage = "article_{$id}_heading";
-			$writer->writeExternal($headerpage, $writer->getReference('wiki_content', $info['heading']));
-			$out['heading'] = "wikicontent:$headerpage";
-		}
-
-		$out = array_filter($out);
-		$writer->addObject('article', $id, $out);
-
-		if ($withType) {
-			Tiki_Profile_InstallHandler_ArticleType::export($writer, $info['type']);
-		}
-
-		return true;
 	}
 }

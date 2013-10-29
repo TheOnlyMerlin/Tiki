@@ -214,7 +214,7 @@ $("#viewSwitcher").change(function() {
 						<label class="find_content">{tr}Search in content{/tr}
 							<input name="highlight" size="30" type="text">
 						</label>
-						<input type="submit" class="wikiaction btn btn-default" name="search" value="{tr}Go{/tr}">
+						<input type="submit" class="wikiaction" name="search" value="{tr}Go{/tr}">
 					</form>
 				</div>
 			{/if}
@@ -231,7 +231,7 @@ $("#viewSwitcher").change(function() {
 				<label for="maxWidth">
 					{tr}Max width{/tr}&nbsp;<input id="maxWidth" type="text" name="maxWidth" value="{$maxWidth}">
 				</label>
-				<input type="submit" class="wikiaction btn btn-default" name="setSize" value="{tr}Go{/tr}">
+				<input type="submit" class="wikiaction" name="setSize" value="{tr}Go{/tr}">
 			</form>
 		</div><br>
 		{pagination_links cant=$cant step=$maxRecords offset=$offset}
@@ -309,7 +309,7 @@ window.handleFinderFile = function (file, elfinder) {
 		|| $tiki_p_edit_comments == 'y')}
 
 		<div id="page-bar" class="clearfix">
-			<span class="button btn-default">
+			<span class="button">
 				<a id="comment-toggle" href="{service controller=comment action=list type="file gallery" objectId=$galleryId}#comment-container">
 					{tr}Comments{/tr}
 				</a>

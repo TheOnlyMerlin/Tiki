@@ -48,8 +48,7 @@ if ($_REQUEST['objectType'] == 'wiki page') {
 } else {
 	$tikilib->get_perm_object($_REQUEST['objectId'], $_REQUEST['objectType']);
 	if ($_REQUEST['objectType'] == 'tracker') {
-		$definition = Tracker_Definition::get($_REQUEST['objectId']);
-		if ($groupCreatorFieldId = $definition->getWriterGroupField()) {
+		if ($groupCreatorFieldId = TikiLib::lib('trk')->get_field_id_from_type($_REQUEST['objectId'], 'g', '1%')) {
 			$smarty->assign('group_tracker', 'y');
 		}
 	}
@@ -470,29 +469,23 @@ foreach ( $groupNames as $groupName ) {
 
 	if (\$(this).is(':checked')) {
 		\$('input[value=\"'+\$(this).val()+'\"]').					// other checkboxes of same value (perm)
-			filter('$beneficiaries').								// which inherit from this
-			prop('checked',\$(this).is(':checked')).				// check and disable
-			prop('disabled',\$(this).is(':checked'));
+			filter('$beneficiaries').									// which inherit from this
+			prop('checked',\$(this).is(':checked')).					// check and disable
+			attr('disabled',\$(this).is(':checked'));
 	}
 
-	\$(this).on( 'change', function(e, parent) {	// bind click event
+	\$(this).change( function() {									// bind click event
 
 		if (\$(this).is(':checked')) {
 			\$('input[value=\"'+\$(this).val()+'\"]').			// same...
-				filter('$beneficiaries').each(function() {
-					$(this).
-						prop('checked',true).					// check?
-						prop('disabled',true).					// disable
-						trigger('change', [this]);
-				});
+				filter('$beneficiaries').
+				prop('checked',true).							// check?
+				attr('disabled',true);							// disable
 		} else {
 			\$('input[value=\"'+\$(this).val()+'\"]').			// same...
-				filter('$beneficiaries').each(function() {
-					$(this).
-						prop('checked',false).					// check?
-						prop('disabled',false).					// disable
-						trigger('change', [this]);
-				});
+				filter('$beneficiaries').
+				prop('checked',false).							// check?
+				attr('disabled',false);							// disable
 		}
 	});
 }
@@ -501,27 +494,6 @@ foreach ( $groupNames as $groupName ) {
 ";
 	$i++;
 }	// end of for $groupNames loop
-
-	// add cell colouring helpers
-	$js .= '
-$("table.objectperms input[type=checkbox]").change(function () {
-	var $this = $(this);
-	var $parent = $this.parent();
-	if ($this.is(":checked")) {
-		if ($parent.hasClass("removed")) {
-			$parent.removeClass("removed");
-		} else {
-			$parent.addClass("added");
-		}
-	} else {
-		if ($parent.hasClass("added")) {
-			$parent.removeClass("added");
-		} else {
-			$parent.addClass("removed");
-		}
-	}
-});
-';
 
 $headerlib->add_jq_onready($js);
 
@@ -780,25 +752,6 @@ function get_displayed_permissions()
 		}
 		$smarty->assign('permissions_added', $added);
 		$smarty->assign('permissions_removed', $removed);
-
-		TikiLib::lib('header')->add_jq_onready('
-var permsAdded = ' . json_encode($permissions_added) . ';
-var permsRemoved = ' . json_encode($permissions_removed) . ';
-for (var group in permsAdded) {
-	if (permsAdded.hasOwnProperty(group)) {
-		for (var i = 0; i < permsAdded[group].length; i++) {
-			 $("input[name=\'perm[" + group + "][]\'][value=\'tiki_p_" + permsAdded[group][i] + "\']").parent().addClass("added");
-		}
-	}
-}
-for (var group in permsRemoved) {
-	if (permsRemoved.hasOwnProperty(group)) {
-		for (var i = 0; i < permsRemoved[group].length; i++) {
-			 $("input[name=\'perm[" + group + "][]\'][value=\'tiki_p_" + permsRemoved[group][i] + "\']").parent().addClass("removed");
-		}
-	}
-}
-');
 	}
 
 	return $displayedPermissions;

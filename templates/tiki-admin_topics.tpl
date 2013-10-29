@@ -20,14 +20,14 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" class="btn btn-default" name="addtopic" value="{tr}Add{/tr}">
+				<input type="submit" name="addtopic" value="{tr}Add{/tr}">
 			</td>
 		</tr>
 	</table>
 </form>
 
 <h2>{tr}Topics{/tr}</h2>
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>{tr}ID{/tr}</th>
 		<th>{tr}Name{/tr}</th>

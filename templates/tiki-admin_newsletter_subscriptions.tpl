@@ -10,7 +10,7 @@
 	{button href="tiki-send_newsletters.php?nlId=$nlid_encod" _text="{tr}Send Newsletters{/tr}"}
 </div>
 
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th colspan="2">{tr}Newsletter{/tr}</th>
 	</tr>
@@ -29,7 +29,7 @@
 {tab name="{tr}Subscriptions{/tr}"}
 {* groups------------------------------------ *}
 {if $nb_groups > 0}
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th>
 				<a href="tiki-admin_newsletter_subscriptions.php?nlId={$nlId|urlencode}&amp;offset={$offset_g|urlencode}&amp;sort_mode_g={if $sort_mode_g eq 'groupName_asc'}groupName_desc{else}groupName_asc{/if}">{tr}Group{/tr}</a>
@@ -61,7 +61,7 @@
 
 {* included------------------------------------ *}
 {if $nb_included > 0}
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th>
 				<a href="tiki-admin_newsletter_subscriptions.php?nlId={$nlId|urlencode}&amp;offset={$offset_g|urlencode}&amp;sort_mode_i={if $sort_mode_i eq 'name_asc'}name_desc{else}name_asc{/if}">{tr}Newsletter{/tr}</a>
@@ -85,7 +85,7 @@
 
 {* pages------------------------------------ *}
 {if $nb_pages > 0}
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th>{tr}Wiki Page Name{/tr}</th>
 			<th>{tr}Validate Addresses{/tr}</th>
@@ -111,7 +111,7 @@
 
 <form method="post" action="tiki-admin_newsletter_subscriptions.php">
 	<input type="hidden" name="nlId" value="{$nlId|escape}">
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>
 			{select_all checkbox_names='checked[]'}
@@ -248,7 +248,7 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td colspan="2">
-				<input type="submit" class="btn btn-default" name="add" value="{tr}Add{/tr}">
+				<input type="submit" name="add" value="{tr}Add{/tr}">
 			</td>
 		</tr>
 	</table>
@@ -280,7 +280,7 @@
 			<tr>
 				<td>&nbsp;</td>
 				<td colspan="2">
-					<input type="submit" class="btn btn-default" name="addbatch" value="{tr}Add{/tr}">
+					<input type="submit" name="addbatch" value="{tr}Add{/tr}">
 				</td>
 			</tr> 	 
 		</table> 	 
@@ -310,7 +310,7 @@
 			<tr>
 				<td width="30%">&nbsp;</td>
 				<td colspan="2">
-					<input type="submit" class="btn btn-default" name="importPage" value="{tr}Add{/tr}" width="30">
+					<input type="submit" name="importPage" value="{tr}Add{/tr}" width="30">
 				</td>
 			</tr>
 		</table>
@@ -342,7 +342,7 @@
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
-			<td colspan="2"><input type="submit" class="btn btn-default" name="addgroup" value="{tr}Add{/tr}"></td>
+			<td colspan="2"><input type="submit" name="addgroup" value="{tr}Add{/tr}"></td>
 		</tr>
 	</table>
 </form>
@@ -368,7 +368,7 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td colspan="2">
-				<input type="submit" class="btn btn-default" name="addincluded" value="{tr}Add{/tr}">
+				<input type="submit" name="addincluded" value="{tr}Add{/tr}">
 			</td>
 		</tr>
 	</table>
@@ -406,7 +406,7 @@
 		<tr>
 			<td width="30%">&nbsp;</td>
 			<td colspan="2">
-				<input type="submit" class="btn btn-default" name="addPage" value="{tr}Add{/tr}" width="30">
+				<input type="submit" name="addPage" value="{tr}Add{/tr}" width="30">
 			</td>
 		</tr>
 	</table>
@@ -422,7 +422,7 @@
 		<tr>
 			<td width="30%">&nbsp;</td>
 			<td colspan="2">
-				<input type="submit" class="btn btn-default" name="export" value="{tr}Export{/tr}">
+				<input type="submit" name="export" value="{tr}Export{/tr}">
 			</td>
 		</tr>
 	</table>

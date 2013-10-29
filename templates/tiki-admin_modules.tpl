@@ -56,10 +56,10 @@
 
 	<div id="assigned_modules">
 		{tabset}
-		{foreach from=$module_zone_list key=zone_initial item=zone_info}
+		{foreach from=$module_zones key=zone_initial item=zone_info}
 			{tab name=$zone_info.name|capitalize}
 				<div id="{$zone_info.id}_modules">
-					<table class="table normal" id="assigned_zone_{$zone_initial}">
+					<table class="normal" id="assigned_zone_{$zone_initial}">
 						<tr>
 							<th>{tr}Name{/tr}</th>
 							<th>{tr}Order{/tr}</th>
@@ -127,10 +127,8 @@
 					{include file='admin_modules_form.tpl'}
 				{if empty($assign_name)}
 					<div class="input_submit_container">
-						<input type="submit" class="btn btn-default" name="preview" value="{tr}Module Options{/tr}" onclick="needToConfirm=false;">
+						<input type="submit" name="preview" value="{tr}Module Options{/tr}" onclick="needToConfirm=false;">
 					</div>
-				{else}
-					{jq}$("#module_params").tabs();{/jq}
 				{/if}
 			</fieldset>
 		</form>
@@ -144,7 +142,7 @@
 		</legend>
 	{/if}
 	<h2>{tr}Custom Modules{/tr}</h2>
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th>{tr}Name{/tr}</th>
 			<th>{tr}Title{/tr}</th>
@@ -350,7 +348,7 @@
 					<a name="editcreate"></a>
 					{textarea name='um_data' id='um_data' rows="6" cols="80" _toolbars='y' _previewConfirmExit='n' _wysiwyg="n"}{$um_data}{/textarea}
 					<br>
-					<input type="submit" class="btn btn-default" name="um_update" value="{if empty($um_name)}{tr}Create{/tr}{else}{tr}Save{/tr}{/if}" onclick="needToConfirm=false">
+					<input type="submit" name="um_update" value="{if empty($um_name)}{tr}Create{/tr}{else}{tr}Save{/tr}{/if}" onclick="needToConfirm=false">
 				</td>
 			</tr>
 		</table>

@@ -14,7 +14,6 @@ function wikiplugin_customsearch_info()
 		'prefs' => array('wikiplugin_customsearch', 'wikiplugin_list', 'feature_ajax'),
 		'body' => tra('LIST plugin configuration information'),
 		'filter' => 'wikicontent',
-		'profile_reference' => 'search_plugin_content',
 		'icon' => 'img/icons/text_list_bullets.png',
 		'tags' => array('advanced'),
 		'params' => array(
@@ -24,7 +23,6 @@ function wikiplugin_customsearch_info()
 				'description' => tra('Wiki page where search user interface template is found'),
 				'filter' => 'pagename',
 				'default' => '',
-				'profile_reference' => 'wiki_page',
 			),
 			'id' => array(
 				'required' => false,
@@ -82,17 +80,6 @@ function wikiplugin_customsearch_info()
 				),
 				'filter' => 'digits',
 				'default' => '1',
-			),
-			'requireinput' => array(
-				'required' => false,
-				'name' => tra('Require non-empty search text'),
-				'description' => tra('Require first input field to be filled for search to trigger'),
-				'options' => array(
-					array('text' => tra('Yes'), 'value' => '1'),
-					array('text' => tra('No'), 'value' => '0'),
-				),
-				'filter' => 'digits',
-				'default' => '0',
 			),
 		),
 	);
@@ -154,16 +141,12 @@ function wikiplugin_customsearch($data, $params)
 	$builder->apply($matches);
 	$formatter = $builder->getFormatter();
 
-	$facets = new Search_Query_FacetWikiBuilder;
-	$facets->apply($matches);
-
 	$cachelib = TikiLib::lib('cache');
 	$cachelib->cacheItem(
 		$definitionKey, serialize(
 			array(
 				'query' => $query,
 				'formatter' => $formatter,
-				'facets' => $facets,
 			)
 		),
 		'customsearch'
@@ -194,7 +177,6 @@ function wikiplugin_customsearch($data, $params)
 		'results' => empty($params['destdiv']) ? "#customsearch_{$id}_results" : "#{$params['destdiv']}",
 		'autosearchdelay' => isset($params['autosearchdelay']) ? max(1500, (int) $params['autosearchdelay']) : 0,
 		'searchonload' => (int) $params['searchonload'],
-		'requireinput' => (bool) $params['requireinput'],
 	);
 
 	/**
@@ -249,9 +231,6 @@ var customsearch = {
 
 		if (that.options.autosearchdelay) {
 			that.auto = delayedExecutor(that.options.autosearchdelay, function () {
-				if (that.options.requireinput && !$('#customsearch_$id').find('input.searchFormBlockChildText:first').val()) {
-					return false;
-				}
 				that.load();
 			});
 		}
@@ -261,10 +240,6 @@ $('#customsearch_$id').click(function() {
 	customsearch.offset = 0;
 });
 $('#customsearch_$id').submit(function() {
-	if (customsearch.options.requireinput && !$(this).find('input.searchFormBlockChildText:first').val()) {
-		alert(tr('Please enter a search query'));
-		return false;
-	}
 	customsearch.load();
 	return false;
 });
@@ -278,9 +253,6 @@ customsearch_$id = customsearch;
 		$arguments = $parser->parse($match->getArguments());
 		$key = $match->getInitialStart();
 		$fieldid = "customsearch_{$id}_$key";
-		if (isset($arguments['id'])) {
-			$fieldid = $arguments['id'];
-		}
 		if ($name == 'sort' && !empty($arguments['mode']) && empty($sort_mode)) {
 			$sort_mode = $arguments['mode'];
 			$match->replaceWith('');

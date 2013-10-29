@@ -36,7 +36,7 @@
 	</table>
 	<br>
 	<div align="center">
-		<input type="submit" class="btn btn-default" value="{tr}Get Forum List{/tr}">
+		<input type="submit" value="{tr}Get Forum List{/tr}">
 	</div>
 	<br>
 	</form>
@@ -70,7 +70,7 @@
 	</table>
 	<br>
 	<div align="center">
-		<input type="submit" class="btn btn-default" value="Test Connection">
+		<input type="submit" value="Test Connection">
 	</div>
 	<br>
 	</form>
@@ -109,7 +109,7 @@ End hiding of unfinished section... *}
 	</td></tr>
 	</table>
 	<div align="center">
-		<input type="submit" class="btn btn-default" value="{tr}Get Forum List{/tr}">
+		<input type="submit" value="{tr}Get Forum List{/tr}">
 	</div>
 	<br>
 	</form>
@@ -143,9 +143,9 @@ End hiding of unfinished section... *}
 	<p> </p>
 	<div align="center">
 		{if $passed eq 'true'}
-		  <input type="submit" class="btn btn-default" value="{tr}Proceed{/tr}">
+		  <input type="submit" value="{tr}Proceed{/tr}">
 		{else}
-		  <input type="submit" class="btn btn-default" value="{tr}Go Back{/tr}">
+		  <input type="submit" value="{tr}Go Back{/tr}">
 		{/if}
 	</div>
 	<br>
@@ -165,7 +165,7 @@ End hiding of unfinished section... *}
 	<input type="hidden" name="prefix" value="{$fi_prefix}">
 	<input type="hidden" name="server" value="{$server}">
 
-	<table class="table normal">
+	<table class="normal">
 	<tr>
 	<th>Select</th>
 	<th>Forum Name</th>
@@ -189,7 +189,7 @@ End hiding of unfinished section... *}
 <div class="cbox">
 <div class="cbox-title">{tr}Which Forum Do You Wish to Import this Into?{/tr}</div>
 <div class="cbox-data">
-	<table class="table normal">
+	<table class="normal">
 	<tr>
 	<th>Select</th>
 	<th>Forum Name</th>
@@ -214,7 +214,7 @@ End hiding of unfinished section... *}
 		{elseif $noforumsT eq 'true'}
 			<b><i>There are no forums to migrate into!  Create one first.</i></b>
 		{else}
-			<input type="submit" class="btn btn-default" value="Import Forum">
+			<input type="submit" value="Import Forum">
 			<p> </p>
 			<b><i>Please note that by clicking on Import Forum, depending on the size of your SQL file, import may take several minutes.  Please be patient.</i></b>
 		{/if}
@@ -235,7 +235,7 @@ End hiding of unfinished section... *}
 
 		You must select both a source forum and a destination forum!
 		<div align="center">
-			<input type="submit" class="btn btn-default" value="{tr}Go Back{/tr}">
+			<input type="submit" value="{tr}Go Back{/tr}">
 		</div>
 		<br>
 		</form>

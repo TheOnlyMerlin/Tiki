@@ -25,13 +25,12 @@ function module_last_validated_faq_questions_info()
 			'faqId' => array(
 				'name' => tra('Faq identifier'),
 				'description' => tra('If set to a faq identifier, restricts the chosen questions to those in the identified faq.') . " " . tra('Example value: 13.') . " " . tra('Not set by default.'),
-				'profile_reference' => 'faq',
-				'filter' => 'int',
+				'filter' => 'int'
 			),
 			'truncate' => array(
 				'name' => tra('Number of characters to display'),
 				'description' => tra('Number of characters to display'),
-				'filter' => 'int',
+				'filter' => 'int'
 			),
 		),
 		'common_params' => array('nonums', 'rows')

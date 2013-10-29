@@ -17,7 +17,7 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" class="btn btn-default" name="add" value="{tr}Add{/tr}">
+				<input type="submit" name="add" value="{tr}Add{/tr}">
 			</td>
 		</tr>
 	</table>
@@ -27,7 +27,7 @@
 {if $words}
 	{include file='find.tpl'}
 {/if}
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>
 			<a href="tiki-admin_hotwords.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'word_desc'}word_asc{else}word_desc{/if}">{tr}Word{/tr}</a>

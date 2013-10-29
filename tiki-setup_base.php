@@ -65,9 +65,6 @@ $needed_prefs = array(
 	'min_pass_length' => 5,
 	'pass_chr_special' => 'n',
 	'menus_item_names_raw' => 'n',
-	'cookie_consent_feature' => 'n',
-	'cookie_consent_name' => 'tiki_cookies_accepted',
-
 );
 // check that tiki_preferences is there
 if ($tikilib->query("SHOW TABLES LIKE 'tiki_preferences'")->numRows() == 0) {
@@ -76,7 +73,6 @@ if ($tikilib->query("SHOW TABLES LIKE 'tiki_preferences'")->numRows() == 0) {
 	exit;
 }
 $tikilib->get_preferences($needed_prefs, true, true);
-global $systemConfiguration;
 $prefs = $systemConfiguration->preference->toArray() + $prefs;
 
 // IIS always sets the $_SERVER['HTTPS'] value (on|off)
@@ -121,14 +117,8 @@ if (isset($_GET[session_name()]) && $tikilib->get_ip_address() == '127.0.0.1') {
 	session_id($_GET[session_name()]);
 }
 
-if ($prefs['cookie_consent_feature'] === 'y' && empty($_COOKIE[$prefs['cookie_consent_name']])) {
-	$feature_no_cookie = true;
-} else {
-	$feature_no_cookie = false;
-}
-
 $start_session = true;
-if ( ($prefs['session_silent'] == 'y' || $feature_no_cookie) && empty($_COOKIE[session_name()]) ) {
+if ( isset($prefs['session_silent']) && $prefs['session_silent'] == 'y' && empty($_COOKIE[session_name()]) ) {
 	$start_session = false;
 }
 
@@ -559,8 +549,6 @@ array_unshift(
 			'mobile_mode' => 'alpha',
 			'categ' => 'striptags',
 			'local_tz' => 'text',
-			'preview' => 'text',
-			'rbox' => 'text',
 		),
 		'staticKeyFiltersForArrays' => array(
 			'cat_managed' => 'digits',

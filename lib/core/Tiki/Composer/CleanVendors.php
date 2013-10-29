@@ -28,16 +28,6 @@ class CleanVendors
 		self::deleteFile(     $vendors . 'jquery/jquery-sheet/jquery-1.5.2.js');
 		self::deleteFile(     $vendors . 'jquery/jquery-sheet/jquery-1.5.2.min.js');
 		self::deleteDirectory($vendors . 'jquery/jquery-sheet/jquery-ui');
-		self::deleteDirectory($vendors . 'jquery/jquery-timepicker-addon/lib');
-		self::deleteDirectory($vendors . 'jquery/jquery-timepicker-addon/src');
-		self::deleteDirectory($vendors . 'jquery/jquery-timepicker-addon/test');
-		self::deleteFile(     $vendors . 'jquery/jquery-timepicker-addon/.gitignore');
-		self::deleteFile(     $vendors . 'jquery/jquery-timepicker-addon/.jshintrc');
-		self::deleteFile(     $vendors . 'jquery/jquery-timepicker-addon/bower.json');
-		self::deleteFile(     $vendors . 'jquery/jquery-timepicker-addon/composer.json');
-		self::deleteFile(     $vendors . 'jquery/jquery-timepicker-addon/Gruntfile.js');
-		self::deleteFile(     $vendors . 'jquery/jquery-timepicker-addon/jquery-ui-timepicker-addon.json');
-		self::deleteFile(     $vendors . 'jquery/jquery-timepicker-addon/package.json');
 		self::deleteDirectory($vendors . 'jquery/jquery-ui-selectmenu/demos');
 		self::deleteDirectory($vendors . 'jquery/jquery-ui-selectmenu/tests');
 		self::deleteDirectory($vendors . 'jquery/jquery-ui/demos');
@@ -49,14 +39,6 @@ class CleanVendors
 		self::deleteDirectory($vendors . 'jquery/plugins/cluetip/demo');
 		self::deleteDirectory($vendors . 'jquery/plugins/cluetip/test');
 		self::deleteDirectory($vendors . 'jquery/plugins/colorbox/content');
-		self::deleteDirectory($vendors . 'jquery/plugins/superfish/examples');
-		self::deleteDirectory($vendors . 'jquery/plugins/superfish/src');
-		self::deleteDirectory($vendors . 'jquery/plugins/superfish/test');
-		self::deleteFile(     $vendors . 'jquery/plugins/superfish/Gruntfile.coffee');
-		self::deleteFile(     $vendors . 'jquery/plugins/superfish/.gitignore');
-		self::deleteFile(     $vendors . 'jquery/plugins/superfish/bower.json');
-		self::deleteFile(     $vendors . 'jquery/plugins/superfish/package.json');
-		self::deleteFile(     $vendors . 'jquery/plugins/superfish/superfish.jquery.json');
 		self::deleteDirectory($vendors . 'jquery/plugins/tablesorter/docs');
 		self::deleteDirectory($vendors . 'jquery/plugins/tablesorter/testing');
 		self::deleteFile(     $vendors . 'jquery/plugins/tablesorter/test.html');
@@ -76,12 +58,6 @@ class CleanVendors
 		self::deleteDirectory($vendors . 'zetacomponents/webdav/design');
 		self::deleteDirectory($vendors . 'zetacomponents/webdav/docs');
 		self::deleteDirectory($vendors . 'zetacomponents/webdav/tests');
-		self::deleteDirectory($vendors . 'player/flv/base');
-		self::deleteDirectory($vendors . 'player/flv/classes');
-		self::deleteDirectory($vendors . 'player/flv/html5');
-		self::deleteDirectory($vendors . 'player/flv/mtasc');
-		self::deleteDirectory($vendors . 'player/mp3/classes');
-		self::deleteDirectory($vendors . 'player/mp3/mtasc');
 	}
 
 	private static function deleteDirectory($path)

@@ -18,7 +18,6 @@ function wikiplugin_trackertoggle_info()
 				'name' => tra('Field ID'),
 				'description' => tra('Numeric value representing the field ID tested.'),
 				'filter' => 'digits',
-				'profile_reference' => 'tracker_field',
 			),
 			'value' => array(
 				'required' => true,
@@ -45,7 +44,6 @@ function wikiplugin_trackertoggle_info()
 				'description' => tra('Use the field of specific item. The URL param itemId is used if this parameter is not set.'),
 				'filter' => 'digits',
 				'default' => 0,
-				'profile_reference' => 'tracker_item',
 			),
 		),
 	);

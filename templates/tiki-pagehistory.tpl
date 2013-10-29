@@ -39,13 +39,13 @@
 					<p>{tr}This revision is currently marked as approved.{/tr}<p>
 					<div class="submit">
 						<input type="hidden" name="unapprove" value="{$preview|escape}">
-						<input type="submit" class="btn btn-default" name="flaggedrev" value="{tr}Remove Approval{/tr}">
+						<input type="submit" name="flaggedrev" value="{tr}Remove Approval{/tr}">
 					</div>
 				{else}
 					<p>{tr}This revision has not been approved.{/tr}<p>
 					<div class="submit">
 						<input type="hidden" name="approve" value="{$preview|escape}">
-						<input type="submit" class="btn btn-default" name="flaggedrev" value="{tr}Approve Revision{/tr}">
+						<input type="submit" name="flaggedrev" value="{tr}Approve Revision{/tr}">
 					</div>
 				{/if}
 			</form>
@@ -83,7 +83,7 @@
 			<p>{tr}This revision has not been approved.{/tr}<p>
 			<div class="submit">
 				<input type="hidden" name="approve" value="{$new.version|escape}">
-				<input type="submit" class="btn btn-default" name="flaggedrev" value="{tr}Approve Revision{/tr}">
+				<input type="submit" name="flaggedrev" value="{tr}Approve Revision{/tr}">
 			</div>
 		</form>
 	{/remarksbox}
@@ -107,8 +107,8 @@ $("#toggle_diffs a").click(function(){
 	if ($(this).text() == "{tr}Advanced{/tr}") {
 		$(this).text("{tr}Simple{/tr}");
 		if (jqueryTiki.chosen) {
-			$("#diff_style_all").next(".chosen-container").show();
-			$("#diff_style_simple").next(".chosen-container").hide();
+			$("#diff_style_all").next(".chzn-container").show();
+			$("#diff_style_simple").next(".chzn-container").hide();
 			$("#diff_style_all").attr("name", "diff_style");
 			$("#diff_style_simple").attr("name", "");
 		} else {
@@ -118,8 +118,8 @@ $("#toggle_diffs a").click(function(){
 	} else {
 		$(this).text("{tr}Advanced{/tr}");
 		if (jqueryTiki.chosen) {
-			$("#diff_style_all").next(".chosen-container").hide();
-			$("#diff_style_simple").next(".chosen-container").show();
+			$("#diff_style_all").next(".chzn-container").hide();
+			$("#diff_style_simple").next(".chzn-container").show();
 			$("#diff_style_all").attr("name", "");
 			$("#diff_style_simple").attr("name", "diff_style");
 		} else {
@@ -131,9 +131,9 @@ $("#toggle_diffs a").click(function(){
 });
 if (jqueryTiki.chosen) {
 	if ($("#diff_style_simple").html().indexOf("{{$diff_style}}") > -1) {
-		$("#diff_style_all").next(".chosen-container").hide().attr("name", "");
+		$("#diff_style_all").next(".chzn-container").hide().attr("name", "");
 	} else {
-		$("#diff_style_simple").next(".chosen-container").hide();
+		$("#diff_style_simple").next(".chzn-container").hide();
 	}
 }
 {{if $diff_style neq "htmldiff" and $diff_style neq "sidediff"}$("#toggle_diffs a").click();{/if}}
@@ -156,7 +156,7 @@ if (jqueryTiki.chosen) {
 						<option value="sidediff" {if $diff_style == "sidediff"}selected="selected"{/if}>{tr}Side-by-side diff{/tr}</option>
 					</select>{/if}
 					<input type="hidden" name="show_all_versions" value="{$show_all_versions}">
-					<input type="submit" class="btn btn-default" name="compare" value="{tr}Compare{/tr}">
+					<input type="submit" name="compare" value="{tr}Compare{/tr}">
 				</div>
 			{/if}
 			<div class="simplebox">
@@ -167,7 +167,7 @@ if (jqueryTiki.chosen) {
 			</div>
 			<table class="formcolor" width="100%">
 				<tr>
-					{if $tiki_p_remove eq 'y'}<th><input type="submit" class="btn btn-warning" name="delete" value="{tr}Del{/tr}"></th>{/if}
+					{if $tiki_p_remove eq 'y'}<th><input type="submit" name="delete" value="{tr}Del{/tr}"></th>{/if}
 					<th>{tr}Information{/tr}</th>
 					{if $prefs.feature_contribution eq 'y'}<th>{tr}Contribution{/tr}</th>{/if}
 					{if $prefs.feature_contribution eq 'y' and $prefs.feature_contributor_wiki eq 'y'}<th>{tr}Contributors{/tr}</th>{/if}
@@ -176,7 +176,7 @@ if (jqueryTiki.chosen) {
 					<th>{tr}Action{/tr}</th>
 					{if $prefs.default_wiki_diff_style != "old" and $history}
 						<th colspan="2">
-							<input type="submit" class="btn btn-default" name="compare" value="{tr}Compare{/tr}">
+							<input type="submit" name="compare" value="{tr}Compare{/tr}">
 						</th>
 					{/if}
 				</tr>
@@ -331,7 +331,7 @@ if (jqueryTiki.chosen) {
 								<option value="{$languages[ix].value|escape}"{if $lang eq $languages[ix].value} selected="selected"{/if}>{$languages[ix].name}</option>
 							{/section}
 						</select>
-						<input type="submit" class="btn btn-default" name="update_translation" value="{tr}Update Translation{/tr}"/>
+						<input type="submit" name="update_translation" value="{tr}Update Translation{/tr}"/>
 						{if $show_translation_history}
 							<input type="hidden" name="show_translation_history" value="1">
 							{button show_translation_history=0 _text="{tr}Hide translation history{/tr}" _auto_args="*"}

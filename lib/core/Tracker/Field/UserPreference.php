@@ -28,7 +28,6 @@ class Tracker_Field_UserPreference extends Tracker_Field_Abstract
 						'name' => tr('Preference Name'),
 						'description' => tr('Name of the preference to manipulate. password and email are not preferences, but are also valid values that will modify the user\'s profile.'),
 						'filter' => 'word',
-						'legacy_index' => 0,
 					),
 				),
 			),
@@ -51,10 +50,10 @@ class Tracker_Field_UserPreference extends Tracker_Field_Abstract
 				$itemUser = $this->getTrackerDefinition()->getItemUser($itemId);
 		
 				if (!empty($itemUser)) {
-					if ($this->getOption('type') == 'email') {
+					if ($this->getOption(0) == 'email') {
 						$value = $userlib->get_user_email($itemUser);
 					} else {
-						$value = $userlib->get_user_preference($itemUser, $this->getOption('type'));
+						$value = $userlib->get_user_preference($itemUser, $this->getOption(0));
 					}
 				}
 			}

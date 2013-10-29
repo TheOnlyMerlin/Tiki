@@ -3,7 +3,7 @@
 <a class="pagetitle" href="tiki-map_upload.php">Layer Management</a><br><br>
 <a class="link" href="tiki-map_upload.php?dir={$dir}">
 <h3>{tr}{$dir}{/tr}</h3></a>
-<table class="table normal">
+<table class="normal">
 <tr>
 <th colspan="2">{tr}Directories{/tr}</th>
 </tr>
@@ -77,14 +77,14 @@
 <input name="userfile5" type="file">
 <input name="userfile6" type="file">
 <br>
-<input type="submit" class="btn btn-default" value="{tr}Upload Files{/tr}"> ({$max_file_size}{tr}Bytes maximum{/tr})
+<input type="submit" value="{tr}Upload Files{/tr}"> ({$max_file_size}{tr}Bytes maximum{/tr})
 </form>
 <br>
 <form action="tiki-map_upload.php" method="get">
 <input type="hidden" name="dir" value="{$dir}">
 <input type="hidden" name="action" value="createdir">
 {tr}Create Directory:{/tr} <input name="directory" type="text">
-<input type="submit" class="btn btn-default" value="{tr}Create{/tr}">
+<input type="submit" value="{tr}Create{/tr}">
 </form>
 <br>
 <form action="tiki-map_upload.php" method="get">
@@ -92,6 +92,6 @@
 <input type="hidden" name="action" value="createindex">
 {tr}index file (.shp):{/tr} <input name="indexfile" type="text">
 {tr}files to index (regexp):{/tr} <input name="filestoindex" type="text">
-<input type="submit" class="btn btn-default" value="{tr}Create{/tr}">
+<input type="submit" value="{tr}Create{/tr}">
 </form>
 {/if}

@@ -19,7 +19,7 @@
 		<h2>{tr}List of Calendars{/tr}</h2>
 
 			{include file='find.tpl' find_in="<ul><li>{tr}Calendar name{/tr}</li></ul>"}
-			<table class="table normal">
+			<table class="normal">
 				<tr>
 					<th>
 						<a href="tiki-admin_calendars.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'calendarId_desc'}calendarId_asc{else}calendarId_desc{/if}">{tr}ID{/tr}</a>
@@ -301,13 +301,13 @@
 				<tr>
 					<td>&nbsp;</td>
 					<td>
-						<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
+						<input type="submit" name="save" value="{tr}Save{/tr}">
 					</td>
 				</tr>
 			</table>
 			<br>
 			{if $calendarId ne 0}{$name|escape} : {/if}
-			{tr}Delete events older than:{/tr} <input type="text" name="days" value="0"> {tr}days{/tr} <input type="submit" class="btn btn-default" name="clean" value="{tr}Delete{/tr}">
+			{tr}Delete events older than:{/tr} <input type="text" name="days" value="0"> {tr}days{/tr} <input type="submit" name="clean" value="{tr}Delete{/tr}">
 		</form>
 	{/tab}
 {/tabset}

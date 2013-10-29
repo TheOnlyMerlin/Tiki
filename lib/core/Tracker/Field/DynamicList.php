@@ -29,29 +29,21 @@ class Tracker_Field_DynamicList extends Tracker_Field_Abstract
 						'name' => tr('Tracker ID'),
 						'description' => tr('Tracker to link with'),
 						'filter' => 'int',
-						'legacy_index' => 0,
-						'profile_reference' => 'tracker',
 					),
 					'filterFieldIdThere' => array(
 						'name' => tr('Field ID (Other tracker)'),
 						'description' => tr('Field ID to link with in the other tracker'),
 						'filter' => 'int',
-						'legacy_index' => 1,
-						'profile_reference' => 'tracker_field',
 					),
 					'filterFieldIdHere' => array(
 						'name' => tr('Field ID (This tracker)'),
 						'description' => tr('Field ID to link with in the current tracker'),
 						'filter' => 'int',
-						'legacy_index' => 2,
-						'profile_reference' => 'tracker_field',
 					),
 					'listFieldIdThere' => array(
 						'name' => tr('Listed Field'),
 						'description' => tr('Field ID to be displayed in the drop list.'),
 						'filter' => 'int',
-						'legacy_index' => 3,
-						'profile_reference' => 'tracker_field',
 					),
 					'statusThere' => array(
 						'name' => tr('Status Filter'),
@@ -65,7 +57,6 @@ class Tracker_Field_DynamicList extends Tracker_Field_Abstract
 							'op' => tr('open, pending'),
 							'pc' => tr('pending, closed'),
 						),
-						'legacy_index' => 4,
 					),
 				),
 			),
@@ -89,7 +80,7 @@ class Tracker_Field_DynamicList extends Tracker_Field_Abstract
 
 		TikiLib::lib('header')->add_jq_onready(
 			'
-$("input[name=ins_' . $this->getOption('filterFieldIdHere') . '], select[name=ins_' . $this->getOption('filterFieldIdHere') . ']").change(function(e, val) {
+$("select[name=ins_' . $this->getOption('filterFieldIdHere') . ']").change(function(e, val) {
 	$.getJSON(
 		"tiki-tracker_http_request.php",
 		{
@@ -124,9 +115,8 @@ $("input[name=ins_' . $this->getOption('filterFieldIdHere') . '], select[name=in
 				}
 			}
 			if (jqueryTiki.chosen) {
-				$ddl.trigger("chosen:updated");
+				$ddl.trigger("liszt:updated");
 			}
-			$ddl.trigger("change");
 		}
 	);
 }).trigger("change", ["' . $this->getConfiguration('value') . '"]);
@@ -137,8 +127,7 @@ $("input[name=ins_' . $this->getOption('filterFieldIdHere') . '], select[name=in
 
 	}
 
-	public function renderInnerOutput($context = array())
-	{
+	public function renderInnerOutput($context = array()) {
 
 		$definition = Tracker_Definition::get($this->getOption('trackerId'));
 		$field = $definition->getField($this->getOption('listFieldIdThere'));

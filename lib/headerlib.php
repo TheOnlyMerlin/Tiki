@@ -26,9 +26,9 @@ class HeaderLib
 	public $wysiwyg_parsing;
 	public $lockMinifiedJs;
 
-	public $jquery_version = '1.10.2';
-	public $jqueryui_version = '1.10.3';
-	public $jquerymobile_version = '1.3.2';
+	public $jquery_version = '1.9.1';
+	public $jqueryui_version = '1.10.2';
+	public $jquerymobile_version = '1.3.1';
 
 
 	function __construct()
@@ -53,16 +53,14 @@ class HeaderLib
 
 		$https_mode = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on';
 
-		$cdn_ssl_uri = array_filter(preg_split('/\s+/', $prefs['tiki_cdn_ssl']));
-		$cdn_uri = array_filter(preg_split('/\s+/', $prefs['tiki_cdn']));
-		if ($https_mode && !empty($cdn_ssl_uri)) {
-			$cdn_pref = &$cdn_ssl_uri;
-		} elseif (!empty($cdn_uri)) {
-			$cdn_pref = &$cdn_uri;
+		if ($https_mode && !empty($prefs['tiki_cdn_ssl'])) {
+			$cdn_pref = $prefs['tiki_cdn_ssl'];
+		} elseif (!empty($prefs['tiki_cdn'])) {
+			$cdn_pref = $prefs['tiki_cdn'];
 		}
 
 		if ( !empty($cdn_pref) && 'http' != substr($file, 0, 4) && $type !== 'dynamic' ) {
-			$file = $cdn_pref[hexdec(hash("crc32b", $file)) % count($cdn_pref)] . $tikiroot . $file;
+			$file = $cdn_pref . $tikiroot . $file;
 		}
 
 		return $file;
@@ -747,19 +745,6 @@ class HeaderLib
 			'print' => array(),
 		);
 
-		$pushFile = function ($section, $file) use (& $files) {
-			global $prefs;
-			$files[$section][] = $file;
-
-			if ($prefs['feature_bidi'] == 'y') {
-				$rtl = str_replace('.css', '', $file) . '-rtl.css';
-
-				if (file_exists($rtl)) {
-					$files[$section][] = $rtl;
-				}
-			}
-		};
-
 		foreach ($this->cssfiles as $x=>$cssf) {
 			foreach ($cssf as $cf) {
 				if (!empty($tikidomain) && is_file("styles/$tikidomain/$style_base/$cf")) {
@@ -769,10 +754,10 @@ class HeaderLib
 				}
 				$cfprint = str_replace('.css', '', $cf) . '-print.css';
 				if (!file_exists($tikipath . $cfprint)) {
-					$pushFile('default', $cf);
+					$files['default'][] = $cf;
 				} else {
-					$pushFile('screen', $cf);
-					$pushFile('print', $cfprint);
+					$files['screen'][] = $cf;
+					$files['print'][] = $cfprint;
 				}
 			}
 		}
@@ -881,5 +866,5 @@ class HeaderLib
 	}
 }
 
-global $headerlib; $headerlib = new HeaderLib;
+$headerlib = new HeaderLib;
 $smarty->assignByRef('headerlib', $headerlib);

@@ -26,7 +26,6 @@ function module_map_edit_features_info()
 				'description' => tr('Tracker to store the feature in.'),
 				'required' => true,
 				'filter' => 'digits',
-				'profile_reference' => 'tracker',
 			),
 			'hiddeninput' => array(
 				'name' => tr('Hidden Input'),

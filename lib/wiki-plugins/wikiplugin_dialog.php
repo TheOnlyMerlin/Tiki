@@ -86,7 +86,6 @@ function wikiplugin_dialog_info()
 				'description' => tra('Wiki page to use as dialog body.'),
 				'filter' => 'pagename',
 				'default' => '',
-				'profile_reference' => 'wiki_page',
 			),
 			'openAction' => array(
 				'required' => false,

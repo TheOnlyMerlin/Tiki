@@ -248,7 +248,7 @@ function showDetails( id, domain, profile ) { // {{{
 				<form method="get" action="tiki-admin.php">
 					<div class="adminoptionbox">
 						<b>{tr}Step 1: Use the Quick or Manual Filter option to see a list of Configuration Profiles you can apply{/tr}</b>
-						<table class="table normal">
+						<table class="normal">
 							<tr>
 								<th width="50%" class="quickmode_notes">{tr}Option 1: Quick Filter{/tr}</th>
 	
@@ -327,7 +327,7 @@ $("#repository, #categories").change(function(){
 });
 										{/jq}
 									</div>
-								<div align="center"><input type="submit" class="btn btn-default" name="list" value="{tr}List{/tr}" /></div>
+								<div align="center"><input type="submit" name="list" value="{tr}List{/tr}" /></div>
 							</td>
 						</tr>
 					</table>
@@ -339,7 +339,7 @@ $("#repository, #categories").change(function(){
 	       {if isset($result) && $result|@count != '0'}
 	
 	        <b>{tr}Step 2: Click on a Configuration Profile Name below to review it and to be able to apply it on your Web site{/tr}</b>
-			<table class="table normal">
+			<table class="normal">
 				<tr>
 					<th>{tr}Profile Name{/tr}</th>
 					<th>{tr}Repository{/tr}</th>
@@ -366,7 +366,7 @@ $("#repository, #categories").change(function(){
 <fieldset class="admin">
 <legend>{tr}Status{/tr}</legend>
 <div class="adminoptionbox">
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th>{tr}Profile repository{/tr}</th>
 			<th>{tr}Status{/tr}</th>
@@ -477,7 +477,7 @@ $("#export_type").change(function(){
 });
 				{/jq}
 				<div class="input_submit_container">
-					<input type="submit" class="btn btn-default" name="export" value="{tr}Export{/tr}" />
+					<input type="submit" name="export" value="{tr}Export{/tr}" />
 				</div>
 			</fieldset>
 		</fieldset>
@@ -491,7 +491,7 @@ $("#export_type").change(function(){
 	{preference name=profile_sources}
 	{preference name=profile_channels}
 
-	<div align="center" style="padding:1em;"><input type="submit" class="btn btn-default" name="config" value="{tr}Save{/tr}" /></div>
+	<div align="center" style="padding:1em;"><input type="submit" name="config" value="{tr}Save{/tr}" /></div>
 </form>
 </fieldset>
 
@@ -519,7 +519,7 @@ $("#export_type").change(function(){
 					<textarea data-codemirror="true" data-syntax="yaml" id="profile_tester" name="profile_tester" rows="5" cols="40" style="width:95%;">{if isset($test_source)}{$test_source}{/if}</textarea>
 				</div>
 			</div>
-			<div align="center" style="padding:1em;"><input type="submit" class="btn btn-default" name="test" value="{tr}Test{/tr}" /></div>
+			<div align="center" style="padding:1em;"><input type="submit" name="test" value="{tr}Test{/tr}" /></div>
 		{/remarksbox}
 		</form>
 	</fieldset>

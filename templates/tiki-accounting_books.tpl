@@ -11,7 +11,7 @@
 {tabset}
 {tab name="{tr}My books{/tr}"}
 <div id="booklist">
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th>{tr}Id{/tr}</th>
 			<th>{tr}Name{/tr}</th>
@@ -107,7 +107,7 @@
 			</div>
 		</div>
 	</fieldset>
-	<input type="submit" class="btn btn-default" name="create" value="{tr}Create a new book{/tr}">
+	<input type="submit" name="create" value="{tr}Create a new book{/tr}">
  </form>
 </div>
 {/tab}

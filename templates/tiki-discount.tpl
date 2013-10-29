@@ -8,7 +8,7 @@
 {/if}
 {tabset}
 {tab name="{tr}List{/tr}"}
-	<table class="table normal">
+	<table class="normal">
 	<tr>
 		<th>{tr}Code{/tr}</th>
 		<th>{tr}Value{/tr}</th>
@@ -62,7 +62,7 @@
 	</tr>
 	<tr>
 		<td></td>
-		<td><input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}"></td>
+		<td><input type="submit" name="save" value="{tr}Save{/tr}"></td>
 	</tr>
 	</table>
 	</form>

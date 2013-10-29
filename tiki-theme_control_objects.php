@@ -55,7 +55,11 @@ switch ($_REQUEST['type']) {
     	break;
 
 	case 'forum':
-		$objects = TikiLib::lib('comments')->list_forums(0, -1, 'name_asc', $find_objects);
+		require_once ('lib/comments/commentslib.php');
+		if (!isset($commentslib)) {
+			$commentslib = new Comments($dbTiki);
+		}
+		$objects = $commentslib->list_forums(0, -1, 'name_asc', $find_objects);
 		$smarty->assign_by_ref('objects', $objects["data"]);
 		$objects = $objects['data'];
 		correct_array($objects, 'forumId', 'name');

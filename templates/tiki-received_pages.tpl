@@ -42,9 +42,9 @@
 			<tr>
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" class="btn btn-default" name="preview" value="{tr}Preview{/tr}">
+					<input type="submit" name="preview" value="{tr}Preview{/tr}">
 					&nbsp;
-					<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
+					<input type="submit" name="save" value="{tr}Save{/tr}">
 				</td>
 			</tr>
 		</table>
@@ -59,7 +59,7 @@
 			<span class="highlight">{tr}The highlight pages already exist.{/tr}</span> {tr}Please, change the name if you want the page to be uploaded.{/tr}
 		</p>
 	{/if}
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th>
 				<a href="tiki-received_pages.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'receivedPageId_desc'}receivedPageId_asc{else}receivedPageId_desc{/if}">{tr}ID{/tr}</a>
@@ -113,7 +113,7 @@
 	</p>
 {/if}
 <form action="tiki-received_pages.php" method="post">
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th>&nbsp;</th>
 			<th>
@@ -183,5 +183,5 @@
 		{select_all checkbox_names='checked[]' label="{tr}Select All{/tr}"}
 	</table>
 	{tr}Prefix the checked:{/tr}<input type="text" name="prefix">
-	{tr}Postfix the checked:{/tr}<input type="text" name="postfix">&nbsp;<input type="submit" class="btn btn-default" value="{tr}OK{/tr}">
+	{tr}Postfix the checked:{/tr}<input type="text" name="postfix">&nbsp;<input type="submit" value="{tr}OK{/tr}">
 </form>

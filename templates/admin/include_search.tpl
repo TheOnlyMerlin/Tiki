@@ -16,7 +16,7 @@
 <form action="tiki-admin.php?page=search" method="post">
 	<input type="hidden" name="searchprefs" />
 	<div class="heading input_submit_container" style="text-align: right">
-		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
 
 	{tabset name=admin_search}
@@ -47,7 +47,7 @@
 				{/if}
 
 				{preference name=feature_search visible="always"}
-				<div class="adminoptionboxchild" id="feature_search_childcontainer">
+				<div class="adminoptionboxchild" id="feature_search_childcontainer">				
 					{preference name=feature_search_stats}
 					{preference name=user_in_search_result}
 					{preference name="unified_incremental_update"}
@@ -73,20 +73,8 @@
 						</fieldset>
 					</div>
 
-					<div class="adminoptionboxchild unified_engine_childcontainer elastic">
-						{preference name="unified_elastic_url"}
-						{preference name="unified_elastic_index_prefix"}
-						{preference name="unified_elastic_index_current"}
-					</div>
-
 					{preference name=unified_excluded_categories}
 					{preference name=unified_excluded_plugins}
-
-					{preference name=unified_exclude_all_plugins}
-					<div class="adminoptionboxchild" id="unified_exclude_all_plugins_childcontainer">
-						{preference name=unified_included_plugins}
-					</div>
-
 					{preference name=unified_forum_deepindexing}
 
 					{preference name=unified_tokenize_version_numbers}
@@ -98,7 +86,6 @@
 					{preference name=unified_cached_formatters}
 
 					{preference name=unified_trackerfield_keys}
-					{preference name=unified_add_to_categ_search}
 
 					<h4>{tr}Index maintenance{/tr}</h4>
 					<ul>
@@ -168,35 +155,23 @@ $("#log-rebuild").click(function(){
 		{/tab}
 
 		{tab name="{tr}Search Results{/tr}"}
-			{preference name=search_use_facets}
-			{preference name=category_custom_facets}
-			
-			<fieldset>
-				<legend>{tr}Select the items to display on the search results page:{/tr}</legend>
-				{preference name=search_default_interface_language}
-				{preference name=search_default_where}
-				{preference name=search_show_category_filter}
-				{preference name=search_show_tag_filter}
-				{preference name=feature_search_show_object_filter}
-				{preference name=search_show_sort_order}
-				{preference name=feature_search_show_search_box}
-			</fieldset>
-			<fieldset>
-				<legend>{tr}Select the information to display for each result:{/tr}</legend>
-				{preference name=feature_search_show_visit_count}
-				{preference name=feature_search_show_pertinence}
-				{preference name=feature_search_show_object_type}
-				{preference name=feature_search_show_last_modification}
-				{preference name=search_parsed_snippet}
-			</fieldset>
+			{tr}Select the items to display on the search results page:{/tr}
+			{preference name=search_default_interface_language}
+			{preference name=search_default_where}
+			{preference name=search_show_category_filter}
+			{preference name=search_show_tag_filter}
+			{preference name=feature_search_show_object_filter}
+			{preference name=search_show_sort_order}
+			{preference name=feature_search_show_search_box}
+			{tr}Select the information to display for each result:{/tr}
+			{preference name=feature_search_show_visit_count}
+			{preference name=feature_search_show_pertinence}
+			{preference name=feature_search_show_object_type}
+			{preference name=feature_search_show_last_modification}
+			{preference name=search_parsed_snippet}
 		{/tab}
-
-	{tab name="{tr}Tools{/tr}"}
-		<a href="tiki-report_string_in_db.php">{tr}Report all occurences of a string in any table{/tr}</a><br>
-	{/tab}
-
 	{/tabset}
 	<div class="heading input_submit_container" style="text-align: right">
-		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
 </form>

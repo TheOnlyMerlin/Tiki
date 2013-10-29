@@ -347,29 +347,14 @@ class TikiDate
 	 */
 	static function TimezoneIsValidId($id)
 	{
-		return in_array(strtolower($id), self::getTimezoneAbbreviations()) || in_array($id, self::getTimezoneIdentifiers());
-	}
-
-	static function getTimezoneAbbreviations()
-	{
-		static $abbrevs = null;
+		static $abbrevs = null, $ids = null;
 
 		if (! $abbrevs) {
-			$abbrevs = array_keys(DateTimeZone::listAbbreviations());
-		}
-
-		return $abbrevs;
-	}
-
-	static function getTimezoneIdentifiers()
-	{
-		static $ids = null;
-
-		if (! $ids) {
+			$abbrevs = DateTimeZone::listAbbreviations();
 			$ids = DateTimeZone::listIdentifiers();
 		}
 
-		return $ids;
+		return array_key_exists(strtolower($id), $abbrevs) || in_array($id, $ids);
 	}
 }
 

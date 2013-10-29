@@ -351,7 +351,7 @@
 		{include file='categorize.tpl' notable='y'}<br>
 		<hr class="clear">
 		<div id="page_bar">
-			<input name="upload" type="submit" class="btn btn-default" value="{tr}Save{/tr}">
+			<input name="upload" type="submit" value="{tr}Save{/tr}">
 		</div>
 	{elseif $prefs.javascript_enabled neq 'y'}
 		{$upload_str}
@@ -359,14 +359,14 @@
 		{include file='categorize.tpl' notable='y'}<br>
 		<hr class="clear">
 		<div id="page_bar">
-			<input type="submit" class="btn btn-default" name="upload" value="{tr}Upload{/tr}">
+			<input type="submit" name="upload" value="{tr}Upload{/tr}">
 		</div>
 	{/if}
 </form>
 
 {if !$editFileId}
 	<div id="page_bar">
-		<input type="submit" class="btn btn-default"
+		<input type="submit"
 			{if $prefs.fgal_upload_progressbar eq 'n'}
 				onClick="upload_files(); return false"
 			{elseif $prefs.fgal_upload_progressbar eq 'ajax_flash'}
@@ -379,9 +379,9 @@
 		>
 		<hr class="clear">
 		{if $prefs.fgal_upload_progressbar eq 'ajax_flash'}
-			<input type="submit" id="btnCancel" class="btn btn-default" style="display:none" value="{tr}Cancel Upload{/tr}" onclick="return false">
+			<input type="submit" id="btnCancel" style="display:none" value="{tr}Cancel Upload{/tr}" onclick="return false">
 		{elseif $simpleMode neq 'y'}
-			<input type="submit" class="btn btn-default" onclick="javascript:add_upload_file('multiple_upload'); return false" value="{tr}Add Another File{/tr}">
+			<input type="submit" onclick="javascript:add_upload_file('multiple_upload'); return false" value="{tr}Add Another File{/tr}">
 		{/if}
 	</div>
 {/if}
@@ -557,13 +557,8 @@
 			<h3>{tr}Upload from URL{/tr}</h3>
 			<p>
 				<input type="hidden" name="galleryId" value="{$galleryId|escape}">
-				<label>{tr}URL:{/tr} <input type="url" name="url" placeholder="http://" size="40"></label>
-				{if $prefs.vimeo_upload eq 'y'}
-					<label>{tr}Reference:{/tr}
-						<input type="checkbox" name="reference" value="1" class="tips" title="{tr}Upload from URL{/tr}|{tr}Keeps a reference to the remote file{/tr}">
-					</label>
-				{/if}
-				<input type="submit" class="btn btn-default" value="{tr}Add{/tr}">
+				<label>{tr}URL:{/tr} <input type="url" name="url" placeholder="http://"></label>
+				<input type="submit" value="{tr}Add{/tr}">
 			</p>
 			<div class="result"></div>
 		</form>
@@ -580,34 +575,14 @@
 						$(form.url).val('');
 					},
 					complete: function () {
-						$('input', form).prop('disabled', false);
-					},
-					error: function (e) {
-						alert(tr("A remote file upload error occurred:") + "\n\"" + e.statusText + "\" (" + e.status + ")");
+						$('input', form).attr('disabled', 0);
 					}
 				});
 
-				$('input', this).prop('disabled', true);
+				$('input', this).attr('disabled', 1);
 				return false;
 			});
 		{/jq}
-		{if $prefs.vimeo_upload eq 'y'}
-			<fieldset>
-				<h3>{tr}Upload Video{/tr}</h3>
-				{wikiplugin _name='vimeo'}{/wikiplugin}
-			</fieldset>
-			{jq}
-var handleVimeoFile = function (link, data) {
-	if (data != undefined) {
-	$("#form").hide();
-	$("#progress").append(
-		$("<p> {tr}Video file uploaded:{/tr} " + data.file + "</p>")
-			.prepend($("<img src='img/icons/vimeo.png' width='16' height='16'>"))
-		);
-	}
-}
-			{/jq}
-		{/if}
 	{/if}
 
 {/if}

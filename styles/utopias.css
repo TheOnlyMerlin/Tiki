@@ -157,21 +157,21 @@ input[type=submit]:hover,
 	margin: .5em .5em 0;
 }
 
-.sitelogo {
+#sitelogo {
 	min-height: 100px;
 	padding: 0;
 }
 
-.sitelogo img {
+#sitelogo img {
 	margin: 0;
 }
 
-.sitetitles {
+#sitetitles {
 	color: #888;
 	padding: 2em 1em 1em;
 }
 
-.sitetitle {
+#sitetitle {
 	font-size: 3em;
 }
 
@@ -654,6 +654,10 @@ div#page-bar table, div#page-bar td, div#page-bar tr {
 	padding: 0;
 }
 
+#page-bar span {
+	float: left;
+}
+
 ul.floatleft {
 	display: block;
 	list-style: none;
@@ -1022,9 +1026,12 @@ body.tiki_blogs .post .postfooter {
 /* removed - unused so far */
 
 /* Comments */
+#comzone {
+	margin: .5em 0;
+}
 
-#comment-container ol ol {
-	list-style-image: url("../img/icons/quoteleft.gif");
+#comzoneopen {
+	margin: .5em 0;
 }
 
 /**** Image Galleries ****/

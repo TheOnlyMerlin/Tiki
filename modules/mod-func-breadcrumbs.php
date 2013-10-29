@@ -32,7 +32,6 @@ function module_breadcrumbs_info()
 				'description' => tra('Menu to take the crumb trail from.'),
 				'filter' => 'int',
 				'default' => 0,
-				'profile_reference' => 'menu',
 			),
 			'menuStartLevel' => array(
 				'name' => tra('Menu Start Level'),

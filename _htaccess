@@ -37,7 +37,7 @@
 	deny from all
 </FilesMatch>
 
-# This prevents reading of tags file for developers who run ctags on their server
+# This prevents reading of tags file for developpers who run ctags on their server
 #<Files tags>
 #	order deny,allow
 #	deny from all
@@ -53,26 +53,16 @@
 	AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/x-javascript application/javascript
 </IfModule>
 
-# Persistent connections: Allow multiple requests to be sent over 
-# the same TCP connection. Enable if you serve a lot of static content 
-# but, be aware of the possible disadvantages!
-# http://httpd.apache.org/docs/current/en/mod/core.html#keepalive
-
-# <IfModule mod_headers.c>
-#    Header set Connection Keep-Alive
-# </IfModule>
-
-
 # Using ETags will improve the YSlow scores
 FileETag none
 
-# Expires headers: If the site is in active development, you may want to comment out this section.
-<IfModule mod_expires.c>
-	<FilesMatch "\.(js|png|gif|jpg|css|ico)$">
-		ExpiresActive on
-		ExpiresDefault "access plus 1 month"
-	</FilesMatch>
-</IfModule>
+# If the site is stable, might be worth setting the expires header on all files for optimization.
+#<IfModule mod_expires.c>
+#	<FilesMatch "\.(js|png|gif|jpg|css|ico)$">
+#		ExpiresActive on
+#		ExpiresDefault "access plus 6 months"
+#	</FilesMatch>
+#</IfModule>
 
 # if you want to use the Web Server Auth
 #AuthType Basic
@@ -122,10 +112,6 @@ FileETag none
 <IfModule mod_rewrite.c>
 RewriteEngine On
 
-# You may need to uncomment and fix the RewriteBase value below to suit your installation. e.g. if your Tiki is not installed directly in the web root.
-# And if you get errors like "The requested URL /absolutepath/tiki-index.php was not found on this server",
-# RewriteBase   /tiki
-
 # Rewrite rules to maintain any hard-coded URLs following http://dev.tiki.org/ImgDirectoryRevamp
 RewriteRule ^img/icons2/(.*)$ img/icons/$1 
 RewriteRule ^pics/large/(.*)$ img/icons/large/$1
@@ -137,6 +123,13 @@ RewriteRule ^images/(.*)$ img/icons/$1
 # Rewrite rules for passing authorisation in CGI or FGI mode
 RewriteCond %{HTTP:Authorization} ^(.*)
 RewriteRule ^(.*) - [E=HTTP_AUTHORIZATION:%1]
+
+
+# You may need to uncomment and fix the RewriteBase value below to suit your installation. e.g. if your Tiki is not installed directly in the web root.
+#RewriteBase   /tiki
+# And if you get errors like "The requested URL /absolutepath/tiki-index.php was not found on this server",
+# You may need to uncomment the following line.
+# RewriteBase   /
 
 #If your website is a checkout
 RewriteRule	.*/\.svn/.*	-	[F,L]

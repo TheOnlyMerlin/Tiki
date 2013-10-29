@@ -17,7 +17,7 @@
 	{query _type='form_input'}
 {/if}
 
-<table class="table normal">
+<table class="normal">
 	<tr>
 		{if $posts and  $tiki_p_blog_admin eq 'y'}
 			<th>

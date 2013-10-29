@@ -97,14 +97,14 @@
 				<tr>
 					<td>&nbsp;</td>
 					<td>
-						<input type="submit" class="btn btn-default" name="sugg" value="{tr}Add{/tr}">
+						<input type="submit" name="sugg" value="{tr}Add{/tr}">
 					</td>
 				</tr>
 			</table>
 		</form>
 		{if count($suggested) != 0}
 			<br>
-			<table class="table normal">
+			<table class="normal">
 				<tr>
 					<th>{tr}Suggested questions{/tr}</th>
 				</tr>

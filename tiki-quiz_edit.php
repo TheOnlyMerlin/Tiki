@@ -58,9 +58,9 @@ $quiz = $quizlib->quiz_fetch($_REQUEST["quizId"]);
  * @param $_REQUEST
  * @param $option
  */
-function fetchYNOption(&$quiz, $request, $option)
+function fetchYNOption(&$quiz, $_REQUEST, $option)
 {
-	if (isset($request[$option]) && $request[$option] == 'on') {
+	if (isset($_REQUEST[$option]) && $_REQUEST[$option] == 'on') {
 		$quiz[$option] = 'y';
 	} else {
 		$quiz[$option] = 'n';

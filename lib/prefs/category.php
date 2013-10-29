@@ -16,7 +16,6 @@ function prefs_category_list()
 			'filter' => 'int',
 			'default' => array(''), //empty string needed to keep preference from setting unexpectedly
 			'detail' => tra('This should only be set for perspectives, and not globally.'),
-			'profile_reference' => 'category',
 		),
 		'category_jail_root' => array(
 			'name' => tra('Category Jail Root'),
@@ -25,7 +24,6 @@ function prefs_category_list()
 			'type' => 'text',
 			'filter' => 'int',
 			'default' => array(0), //empty string needed to keep preference from setting unexpectedly
-			'profile_reference' => 'category',
 		),
 		'category_defaults' => array(
 			'name' => tra('Category Defaults'),
@@ -36,7 +34,6 @@ function prefs_category_list()
 			'size' => 5,
 			'serialize' => 'prefs_category_serialize_defaults',
 			'unserialize' => 'prefs_category_unserialize_defaults',
-			'profile_reference' => 'category',
 			'default' => false,
 		),
 		'category_i18n_sync' => array(
@@ -120,7 +117,7 @@ function prefs_category_list()
             'description' => tra(''),
 			'type' => 'flag',
 			'default' => 'y',
-		),
+			),
 		'category_morelikethis_mincommon_max' => array(
 			'name' => tra('Maximum of objects more like this, otherwise use the default max records'),
             'description' => tra(''),
@@ -128,23 +125,7 @@ function prefs_category_list()
 			'size' => 3,
 			'filter' => 'int',
 			'default' => 0,
-		),
-		'category_custom_facets' => array(
-			'name' => tr('Generate custom facets from categories'),
-			'description' => tr('Comma separated list of category IDs.'),
-			'type' => 'text',
-			'size' => 15,
-			'filter' => 'int',
-			'separator' => ',',
-			'default' => '',
-		),
-		'category_browse_count_objects' => array(
-			'name' => tra('Show category object count'),
-            'description' => tra('Show object count when browsing categories, obeying search and type filters'),
-			'hint' => tra('Can make the categories page slow to load on large sites.'),
-			'type' => 'flag',
-			'default' => 'y',
-		),
+			),
 	);
 }
 

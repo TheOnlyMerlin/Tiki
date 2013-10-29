@@ -12,12 +12,12 @@
 	{button href="tiki-minical_prefs.php#import" _text="{tr}Import{/tr}"}
 </div>
 
-<table class="table normal" >
+<table class="normal" >
 	<tr>
 		<td>
 			<b>{tr}Upcoming Events{/tr}</b>
 			<br>
-			<table class="table normal">
+			<table class="normal">
 				{section name=ix loop=$upcoming}
 					<tr>
 						<td class="even">
@@ -89,7 +89,7 @@
 		{$week_start|tiki_date_format:"%b"} {$week_start|tiki_date_format:"%d"}-{$week_end|tiki_date_format:"%b"} {$week_end|tiki_date_format:"%d"}
 	</b>
 	<a class="link" href="tiki-minical.php?view={$view}&amp;day={$next_week_start|tiki_date_format:"%d"}&amp;mon={$next_week_start|tiki_date_format:"%m"}&amp;year={$next_week_start|tiki_date_format:"%Y"}">{icon _id='resultset_next'}</a>
-	<table class="table normal">
+	<table class="normal">
 		{section name=ix loop=$slots}
 			<tr class="{cycle}">
 				<td>
@@ -128,9 +128,9 @@
 	<a class="link" href="tiki-minical.php?view={$view}&amp;removeold=1">{tr}Remove old events{/tr}</a>
 	<form action="tiki-minical.php" method="post">
 		<input type="hidden" name="view" value="{$view|escape}">
-		<table class="table normal">
+		<table class="normal">
 			<tr>
-				<th><input type="submit" class="btn btn-default" name="delete" value="x "></th>
+				<th><input type="submit" name="delete" value="x "></th>
 				<th>
 					<a href="tiki-minical.php?view={$view}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'title_desc'}title_asc{else}title_desc{/if}">{tr}Title{/tr}</a>
 				</th>
@@ -225,9 +225,9 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
+				<input type="submit" name="save" value="{tr}Save{/tr}">
 				{if $eventId}
-					<input type="submit" class="btn btn-warning" name="remove2" value="{tr}Delete{/tr}">
+					<input type="submit" name="remove2" value="{tr}Delete{/tr}">
 				{/if}
 			</td>
 		</tr>

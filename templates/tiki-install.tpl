@@ -4,14 +4,14 @@
 			<div class="header_fixedwidth fixedwidth">
 				<header class="header" id="header">
 					<div class="content clearfix modules" id="top_modules" style="min-height: 168px;">
-						<div class="sitelogo" style="float: left">
+						<div id="sitelogo" style="float: left">
 							<img alt="{tr}Tiki Wiki CMS Groupware{/tr}" src="{if isset($ie6)}img/tiki/tikisitelogo.gif{else}img/tiki/Tiki_WCG.png{/if}">
 						</div>
-						<div class="sitetitles" style="float: left;">
-							<div class="sitetitle" style="font-size: 42px;">
+						<div id="sitetitles" style="float: left;">
+							<div id="sitetitle" style="font-size: 42px;">
 								{tr}Tiki installer{/tr}
 							</div>
-							<div class="sitesubtitle" style="font-size: 30px; margin-top: 16px;">
+							<div id="sitesubtitle" style="font-size: 30px; margin-top: 16px;">
 								{$tiki_version_name} <a title="{tr}Help{/tr}" href="http://doc.tiki.org/Installation" target="help"><img style="border:none" src='img/icons/help.png' alt="{tr}Help{/tr}"></a>
 							</div>
 						</div>
@@ -56,7 +56,7 @@
 {if $multi}		<input type="hidden" name="multi" value="{$multi}">{/if}
 {if $lang}		<input type="hidden" name="lang" value="{$lang}">{/if}
 		<input type="hidden" name="install_step" value="1">
-		<input type="submit" class="btn btn-default" value=" {tr}Continue{/tr} ">
+		<input type="submit" value=" {tr}Continue{/tr} ">
 	</form>
 </div>
 
@@ -69,7 +69,7 @@
 {if $multi}			<input type="hidden" name="multi" value="{$multi}">{/if}
 {if $lang}			<input type="hidden" name="lang" value="{$lang}">{/if}
 		<input type="hidden" name="install_step" value="2">
-		<input type="submit" class="btn btn-default" value=" {tr}Continue{/tr} " >
+		<input type="submit" value=" {tr}Continue{/tr} " >
 	</form>
 </div>
 
@@ -121,7 +121,7 @@
 		<input type="hidden" name="install_step" value="2">
 		<input type="hidden" name="perform_mail_test" value="y">
 		<div align="center">
-			<input type="submit" class="btn btn-default" value=" {tr}Send Test Message{/tr} ">
+			<input type="submit" value=" {tr}Send Test Message{/tr} ">
 		</div>
 {if $multi}		<input type="hidden" name="multi" value="{$multi}">{/if}
 {if $lang}		<input type="hidden" name="lang" value="{$lang}">{/if}
@@ -167,7 +167,7 @@
 <div align="center" style="margin-top:1em;">
 <form action="tiki-install.php" method="post">
 	<input type="hidden" name="install_step" value="3">
-	<input type="submit" class="btn btn-default" value=" {tr}Continue{/tr} ">
+	<input type="submit" value=" {tr}Continue{/tr} ">
 {if $multi}		<input type="hidden" name="multi" value="{$multi}">{/if}
 {if $lang}		<input type="hidden" name="lang" value="{$lang}">{/if}
 </form>
@@ -187,18 +187,14 @@
 	<div align="center" style="padding:1em">
 		<p>
 			<img src="img/icons/information.png" alt="{tr}Information{/tr}" style="vertical-align: bottom;">
-			{if $dbname}
-				{tr}Tiki found an existing database connection in your local.php file.{/tr}<br>
-				<em>{tr _0=$dbname}Database name: &quot;%0&quot;{/tr}</em>
-			{else}
-				{tr}Tiki found an automatic database connection for your environment.{/tr}
-			{/if}
+			{tr}Tiki found an existing database connection in your local.php file.{/tr}<br>
+			<em>{tr _0=$dbname}Database name: &quot;%0&quot;{/tr}</em>
 		</p>
 		<form action="tiki-install.php" method="post">
 			<input type="hidden" name="install_step" value="4">
 			{if $multi}<input type="hidden" name="multi" value="{$multi}">{/if}
 			{if $lang}<input type="hidden" name="lang" value="{$lang}">{/if}
-			<input type="submit" class="btn btn-default" value=" {tr}Use Existing Connection{/tr} ">
+			<input type="submit" value=" {tr}Use Existing Connection{/tr} ">
 		</form>
 		or<br>
 		<a href="#" onclick="$('#installer_3_new_db_form').toggle();return false;" class="button">{tr}Modify database connection{/tr}</a>
@@ -209,11 +205,7 @@
 	<br>
 {section name=n loop=$tikifeedback}
 	<div class="simplebox {if $tikifeedback[n].num > 0} highlight{/if}">
-		{if $tikifeedback[n].num > 0}
-		<img src="img/icons/delete.png" alt="{tr}Error{/tr}" style="vertical-align:middle"> {$tikifeedback[n].mes}
-		{else}
-		<img src="img/icons/accept.png" alt="{tr}Success{/tr}" style="vertical-align:middle"> {$tikifeedback[n].mes}
-		{/if}
+		<img src="img/icons/{if $tikifeedback[n].num > 0}delete.png" alt="{tr}Error{/tr}"{else}accept.png" alt="{tr}Success{/tr}"{/if} style="vertical-align:middle"> {$tikifeedback[n].mes}
 	</div>
 {/section}
 {/if}
@@ -286,7 +278,7 @@
 			<label for="force_utf8">{tr}Always force connection to use UTF-8{/tr}</label>
 		<p><a href="http://doc.tiki.org/Understanding+Encoding" onclick="window.open(this.href); return false;">{tr}More information{/tr}</a></p>
 		</fieldset>
-		<div align="center" style="margin-top:1em;"><input type="submit" class="btn btn-default" name="dbinfo" value=" {tr}Continue{/tr} "></div>
+		<div align="center" style="margin-top:1em;"><input type="submit" name="dbinfo" value=" {tr}Continue{/tr} "></div>	 
 	</form>
   </div>
 </div>
@@ -321,7 +313,7 @@
 					<legend>{tr}Character Set Conversion{/tr}</legend>
 					<p>{tr}Use at your own risk. If the data in the database currently contains improperly converted data, this may make matters worse. Suitable for new installations. Requires ALTER privilege on the database.{/tr}</p>
 					<p>
-						<input type="submit" class="btn btn-default" name="convert_to_utf8" value="{tr}Convert database and tables to UTF-8{/tr}">
+						<input type="submit" name="convert_to_utf8" value="{tr}Convert database and tables to UTF-8{/tr}">
 						<input type="hidden" name="install_step" value="4">
 					</p>
 				</fieldset>
@@ -369,7 +361,7 @@
 						<input type="hidden" name="useInnoDB" value="0">
 					{/if}
 				<p align="center">
-					<input type="submit" class="btn btn-default" name="scratch" value=" {if $tikidb_created}{tr}Reinstall{/tr}{else}{tr}Install{/tr}{/if} " style="margin: 32px;">
+					<input type="submit" name="scratch" value=" {if $tikidb_created}{tr}Reinstall{/tr}{else}{tr}Install{/tr}{/if} " style="margin: 32px;">
 				</p>
 			</div>
 			</fieldset>
@@ -383,7 +375,7 @@
 				{/remarksbox}
 			{/if}
 			<p>{tr}Automatically upgrade your existing database to v{/tr}{$tiki_version_name}.</p>
-			<p align="center"><input type="submit" class="btn btn-default" name="update" value=" {tr}Upgrade{/tr} "></p>
+			<p align="center"><input type="submit" name="update" value=" {tr}Upgrade{/tr} "></p>
 			</fieldset>
 			</td>
 			{/if}
@@ -401,7 +393,7 @@
           <table>
           <tr><td class="module">{tr}User:{/tr}</td><td><input value="admin" disabled="disabled" size="20"></td></tr>
           <tr><td class="module">{tr}Pass:{/tr}</td><td><input type="password" name="pass" size="20"></td></tr>
-          <tr><td colspan="2"><p align="center"><input type="submit" class="btn btn-default" name="login" value="{tr}Log in{/tr}"></p></td></tr>
+          <tr><td colspan="2"><p align="center"><input type="submit" name="login" value="{tr}Log in{/tr}"></p></td></tr>
           </table>
       </form>
 
@@ -480,7 +472,7 @@
 <div align="center">
 	<input type="hidden" name="install_step" value="6">
 	<input type="hidden" name="install_type" value="{$install_type}">
-	<input type="submit" class="btn btn-default" value=" {tr}Continue{/tr} ">
+	<input type="submit" value=" {tr}Continue{/tr} ">
 {if $multi}		<input type="hidden" name="multi" value="{$multi}">{/if}
 {if $lang}		<input type="hidden" name="lang" value="{$lang}">{/if}
 </div>
@@ -572,7 +564,7 @@
 	</fieldset>
 	{if $upgradefix eq 'y'}
 		<fieldset>
-			<legend><img src="img/icons/error.png" alt="{tr}error{/tr}" style="vertical-align:middle"> {tr}Upgrade fix{/tr}</legend>
+			<legend>{icon _id=error} {tr}Upgrade fix{/tr}</legend>
 			<p>{tr}Experiencing problems with the upgrade? Your administrator account lost its privileges? This may occur if you upgraded from a very old version of Tiki.</p>
 			<p>We can fix it! Doing so will:{/tr}</p>
 			<ol>
@@ -604,7 +596,7 @@
 	<input type="hidden" name="install_step" value="7">
 	<input type="hidden" name="install_type" value="{$install_type}">
 	<input type="hidden" name="general_settings" value="y">
-	<input type="submit" class="btn btn-default" value=" {tr}Continue{/tr} ">
+	<input type="submit" value=" {tr}Continue{/tr} ">
 </div>
 </form>
 
@@ -696,7 +688,7 @@
 							<option value="ucs2" title="Unicode (multilingual), Binary">ucs2</option>
 							<option value="ujis" title="Japanese, Binary">ujis</option>
 						</select>
-						<input type="submit" class="btn btn-default" name="fix_double_encoding" value="{tr}Dangerous: Fix double encoding{/tr}">
+						<input type="submit" name="fix_double_encoding" value="{tr}Dangerous: Fix double encoding{/tr}">
 						<input type="hidden" name="install_step" value="7">
 					</p>
 				{else}

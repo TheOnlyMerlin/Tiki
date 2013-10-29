@@ -25,7 +25,7 @@
 {/if}
 {if count($online_operators) > 0}
 <h2>{tr}Online operators{/tr}</h2>
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th style="text-align:center;">	
 		{tr}Operator{/tr}
@@ -72,7 +72,7 @@
 {if count($offline_operators) > 0}
 <h2>{tr}Offline operators{/tr}</h2>
 {cycle values='odd,even' print=false}
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th style="text-align:center;">	
 		{tr}Operator{/tr}
@@ -129,7 +129,7 @@
 	<tr>
 		<td>&nbsp;</td>
 		<td>
-			<input type="submit" class="btn btn-default" name="adduser" value="{tr}Set as Operator{/tr}">
+			<input type="submit" name="adduser" value="{tr}Set as Operator{/tr}">
 		</td>
 	</tr>
 </table>

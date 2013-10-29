@@ -18,14 +18,14 @@
 <form method="get" action="tiki-syslog.php">
   <label>{tr}Clean logs older than{/tr}&nbsp;
   <input type="text" name="months" size="4"></label> {tr}months{/tr}
-  <input type="submit" class="btn btn-default" value="{tr}Clean{/tr}" name="clean">
+  <input type="submit" value="{tr}Clean{/tr}" name="clean">
 </form>
 
 {include file='find.tpl'}
 
 {pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
 
-<table class="table normal">
+<table class="normal">
 <tr>
 <th>{self_link _sort_arg="sort_mode" _sort_field="actionid"}{tr}Id{/tr}{/self_link}</th>
 <th>{self_link _sort_arg="sort_mode" _sort_field="action"}{tr}Type{/tr}{/self_link}</th>

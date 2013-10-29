@@ -85,19 +85,8 @@ if (isset($_FILES['userfile1']) && is_uploaded_file($_FILES['userfile1']['tmp_na
 			$userprefslib->set_user_avatar($userwatch, 'u', '', $name, $size, $type, $data);
 		}
 	}
-	
-	if ($prefs['feature_score'] == 'y') {
-		global $tikilib ,$user;
-		$userid = $tikilib->get_user_id($user);
-		$tikilib->score_event($user, 'avatar_added', "avatar:$userid");
-	}
-	
 	/* redirect to prevent re-submit on page reload */
-	if ($tiki_p_admin == 'y' && $user !== $userwatch) {
-		header('Location: tiki-pick_avatar.php?view_user=' . $userwatch);
-	} else {
-		header('Location: tiki-pick_avatar.php');
-	}
+	header('Location: tiki-pick_avatar.php');
 	exit;
 }
 

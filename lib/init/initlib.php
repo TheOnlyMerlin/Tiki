@@ -15,14 +15,14 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
   exit;
 }
 
-if (! file_exists(__DIR__ . '/../../vendor/autoload.php')) {
+if (! file_exists('vendor/autoload.php')) {
 	echo "Your Tiki is not completely installed because Composer has not been run to fetch package dependencies.\n";
 	echo "You need to run 'sh setup.sh' from the command line.\n";
 	echo "See http://dev.tiki.org/Composer for details.\n";
 	exit;
 }
 
-require_once __DIR__ . '/../../vendor/autoload.php';
+require_once 'vendor/autoload.php';
 
 /**
  * performs some checks on the underlying system, before initializing Tiki.
@@ -305,25 +305,6 @@ class TikiInit
 		$api_tiki = '';
 
 		return $local_php;
-	}
-
-	static function getEnvironmentCredentials()
-	{
-		// Load connection strings from environment variables, as used by Azure and possibly other hosts
-		$connectionString = null;
-		foreach (array('MYSQLCONNSTR_Tiki', 'MYSQLCONNSTR_DefaultConnection') as $envVar) {
-			if (isset($_SERVER[$envVar])) {
-				$connectionString = $_SERVER[$envVar];
-				continue;
-			}
-		}
-
-		if ($connectionString && preg_match('/^Database=(?P<dbs>.+);Data Source=(?P<host>.+);User Id=(?P<user>.+);Password=(?P<pass>.+)$/', $connectionString, $parts)) {
-			$parts['charset'] = 'utf8';
-			$parts['socket'] = null;
-			return $parts;
-		}
-		return null;
 	}
 }
 

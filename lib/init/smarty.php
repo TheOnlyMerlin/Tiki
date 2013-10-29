@@ -67,19 +67,19 @@ class Tiki_Security_Policy extends Smarty_Security
 
 		$functions = array();
 		$modifiers = array();
-		$dirs = array();
+		$urls = array();
 		
 		//With phpunit and command line these don't exist yet for some reason
 		if (isset($tikilib) && method_exists($tikilib, "get_preference")) {
 			$functions = array_filter($tikilib->get_preference('smarty_security_functions', array(), true));
-			$modifiers = array_filter($tikilib->get_preference('smarty_security_modifiers', array(), true));
-			$dirs = array_filter($tikilib->get_preference('smarty_security_dirs', array(), true));
-
-			$cdns = preg_split('/\s+/', $tikilib->get_preference('tiki_cdn', ''));
-			$cdns_ssl = preg_split('/\s+/', $tikilib->get_preference('tiki_cdn_ssl', ''));
-			$cdn_uri = array_filter(array_merge($cdns, $cdns_ssl));
-			foreach ($cdn_uri as $uri) {
-				$this->trusted_uri[] = '#' . preg_quote($uri) . '$#';
+			$modifiers = array_filter($tikilib->get_preference('smarty_security_functions', array(), true));
+			$cdn = $tikilib->get_preference('tiki_cdn','');
+			if(!empty($cdn)) {
+				$this->trusted_uri[] = '#'. preg_quote($cdn) . '$#';
+			}
+			$cdn_ssl = $tikilib->get_preference('tiki_cdn_ssl','');
+			if(!empty($cdn_ssl)) {
+				$this->trusted_uri[] = '#'. preg_quote($cdn_ssl) . '$#';
 			}
 		}
 
@@ -87,8 +87,7 @@ class Tiki_Security_Policy extends Smarty_Security
 		$modifiers = (isset($modifiers) ? $modifiers : array());
 
 		$this->php_modifiers = array_merge(array( 'nl2br','escape', 'count', 'addslashes', 'ucfirst', 'ucwords', 'urlencode', 'md5', 'implode', 'explode', 'is_array', 'htmlentities', 'var_dump', 'strip_tags', 'json_encode', 'stristr'), $modifiers);
-		$this->php_functions = array_merge(array('isset', 'empty', 'count', 'sizeof', 'in_array', 'is_array', 'time', 'nl2br', 'tra', 'strlen', 'strstr', 'strtolower', 'basename', 'ereg', 'array_key_exists', 'preg_match', 'json_encode', 'stristr', 'is_numeric', 'array', 'zone_is_empty' ), $functions);
-		$this->secure_dir = array_merge($this->secure_dir, $dirs);
+		$this->php_functions = array_merge(array('isset', 'empty', 'count', 'sizeof', 'in_array', 'is_array', 'time', 'nl2br', 'tra', 'strlen', 'strstr', 'strtolower', 'basename', 'ereg', 'array_key_exists', 'preg_match', 'json_encode', 'stristr', 'is_numeric', 'array' ), $functions);
 	}
 }
 
@@ -104,17 +103,17 @@ class Smarty_Tiki extends Smarty
 	 * needs a proper description
 	 * @var array|null
 	 */
-	public $url_overriding_prefix_stack = null;
+	var $url_overriding_prefix_stack = null;
 	/**
 	 * needs a proper description
 	 * @var null
 	 */
-	public $url_overriding_prefix = null;
+	var $url_overriding_prefix = null;
 	/**
 	 * needs a proper description
 	 * @var null|string
 	 */
-	public $main_template_dir = null;
+	var $main_template_dir = null;
 
 	/**
 	 * needs a proper description
@@ -154,9 +153,6 @@ class Smarty_Tiki extends Smarty
 			$this->error_reporting = E_ALL ^ E_NOTICE;
 		}
 		$this->setCompileDir(realpath("templates_c"));
-		if (!empty($prefs['smarty_cache_perms'])) {
-			$this->_file_perms = (int) $prefs['smarty_cache_perms'];
-		}
 	}
 
 	/**
@@ -246,18 +242,17 @@ class Smarty_Tiki extends Smarty
 
 			$this->assign('mid_data', $data);
 
+			include_once('tiki-modules.php');
+
 		} elseif ($_smarty_tpl_file == 'confirm.tpl' || $_smarty_tpl_file == 'error.tpl' || $_smarty_tpl_file == 'error_ticket.tpl' || $_smarty_tpl_file == 'error_simple.tpl') {
 			ob_end_clean(); // Empty existing Output Buffer that may have been created in smarty before the call of this confirm / error* template
 			if ( $prefs['feature_obzip'] == 'y' ) {
 				ob_start('ob_gzhandler');
 			}
 
-		}
+			include_once('tiki-modules.php');
 
-		if (! defined('TIKI_IN_INSTALLER')) {
-			require_once 'tiki-modules.php';
 		}
-		
 		if (isset($style_base)) {
 			if ($tikidomain and file_exists("templates/$tikidomain/styles/$style_base/$_smarty_tpl_file")) {
 				$_smarty_tpl_file = "$tikidomain/styles/$style_base/$_smarty_tpl_file";
@@ -339,7 +334,6 @@ class Smarty_Tiki extends Smarty
 
 		global $prefs;
 
-		$this->refreshLanguage();
 		if ( !empty($prefs['feature_htmlpurifier_output']) and $prefs['feature_htmlpurifier_output'] == 'y' ) {
 			static $loaded = false;
 			static $purifier = null;
@@ -421,14 +415,7 @@ class Smarty_Tiki extends Smarty
 			$lang = 'default';
 		}
 
-		if (! empty($prefs['site_layout'])) {
-			$layout = $prefs['site_layout'];
-		} else {
-			$layout = 'classic';
-		}
-
-		$this->setCompileId("$lang-$tikidomain-$layout");
-		$this->initializePaths();
+		$this->setCompileId($lang . $tikidomain);
 	}
 
 	function initializePaths()
@@ -443,11 +430,6 @@ class Smarty_Tiki extends Smarty
 		if ($tikidomain) {
 			$tikidomain.= '/';
 		}
-
-		if (empty($prefs['site_layout'])) {
-			$prefs['site_layout'] = 'classic';
-		}
-
 		$this->main_template_dir = realpath('templates/');
 		$this->setTemplateDir(null);
 		if ( !empty($tikidomain) && $tikidomain !== '/' ) {
@@ -455,9 +437,10 @@ class Smarty_Tiki extends Smarty
 			$this->addTemplatedir($this->main_template_dir.'/'.$tikidomain.'/');
 		}
 		$this->addTemplateDir($this->main_template_dir.'/styles/'.$style_base.'/');
-		$this->addTemplateDir($this->main_template_dir.'/layouts/'.$prefs['site_layout'].'/');
-		$this->addTemplateDir($this->main_template_dir.'/layouts/');
 		$this->addTemplateDir($this->main_template_dir);
+
+		
+		$this->refreshLanguage();
 	}
 }
 

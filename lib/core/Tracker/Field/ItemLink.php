@@ -33,15 +33,11 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 						'name' => tr('Tracker ID'),
 						'description' => tr('Tracker to link to'),
 						'filter' => 'int',
-						'legacy_index' => 0,
-						'profile_reference' => 'tracker',
 					),
 					'fieldId' => array(
 						'name' => tr('Field ID'),
 						'description' => tr('Default field to display'),
 						'filter' => 'int',
-						'legacy_index' => 1,
-						'profile_reference' => 'tracker_field',
 					),
 					'linkToItem' => array(
 						'name' => tr('Display'),
@@ -51,15 +47,12 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 							0 => tr('Value'),
 							1 => tr('Link'),
 						),
-						'legacy_index' => 2,
 					),
 					'displayFieldsList' => array(
 						'name' => tr('Multiple Fields'),
 						'description' => tr('Display the values from multiple fields instead of a single one, separated by |'),
 						'separator' => '|',
 						'filter' => 'int',
-						'legacy_index' => 3,
-						'profile_reference' => 'tracker_field',
 					),
 					'status' => array(
 						'name' => tr('Status Filter'),
@@ -73,40 +66,31 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 							'op' => tr('open, pending'),
 							'pc' => tr('pending, closed'),
 						),
-						'legacy_index' => 4,
 					),
 					'linkPage' => array(
 						'name' => tr('Link Page'),
 						'description' => tr('Link to a wiki page instead of directly to the item'),
 						'filter' => 'pagename',
-						'legacy_index' => 5,
-						'profile_reference' => 'wiki_page',
 					),
 					'addItems' => array(
 						'name' => tr('Add Items'),
 						'description' => tr('Display text to allow new items to be added - e.g. "Add item..." (requires jQuery-UI)'),
 						'filter' => 'text',
-						'legacy_index' => 6,
 					),
 					'addItemsWikiTpl' => array(
 						'name' => tr('Add Item Template Page'),
 						'description' => tr('Wiki page to use as a Pretty Tracker template'),
 						'filter' => 'pagename',
-						'legacy_index' => 7,
-						'profile_reference' => 'wiki_page',
 					),
 					'preSelectFieldHere' => array(
 						'name' => tr('Preselect item based on value in this field'),
 						'description' => tr('Preselect item based on value in specified field ID of item being edited'),
 						'filter' => 'int',
-						'legacy_index' => 8,
 					),
 					'preSelectFieldThere' => array(
 						'name' => tr('Preselect based on value in this remote field'),
 						'description' => tr('Match preselect item with this field ID in tracker that is being linked to'),
 						'filter' => 'int',
-						'legacy_index' => 9,
-						'profile_reference' => 'tracker_field',
 					),
 					'preSelectFieldMethod' => array(
 						'name' => tr('Preselection matching method'),
@@ -116,9 +100,7 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 							'exact' => tr('Exact Match'),
 							'partial' => tr('Field here is part of field there'),
 							'domain' => tr('Match domain, used for URL fields'),
-							'crossSelect' => tr('Cross select. Load all matching items in the remote tracker'),
 						),
-						'legacy_index' => 10,
 					),
 					'displayOneItem' => array(
 						'name' => tr('One item per value'),
@@ -128,7 +110,6 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 							'multi' => tr('Displays all the items for a same label with a notation value (itemId)'),
 							'one' => tr('Only one random item for each label'),
 						),
-						'legacy_index' => 11,
 					),
 					'selectMultipleValues' => array(
 						'name' => tr('Select multiple values'),
@@ -137,16 +118,13 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 						'options' => array(
 							0 => tr('No'),
 							1 => tr('Yes'),
-						),
-						'legacy_index' => 12,
+						)
 					),
 					'indexRemote' => array(
 						'name' => tr('Index remote fields'),
 						'description' => tr('Index one or multiple fields from the master tracker along with the child, separated by |'),
 						'separator' => '|',
 						'filter' => 'int',
-						'legacy_index' => 13,
-						'profile_reference' => 'tracker_field',
 					),
 					'cascade' => array(
 						'name' => tr('Cascade actions'),
@@ -162,7 +140,6 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 							(self::CASCADE_DELETE | self::CASCADE_STATUS) => tr('Delete and status'),
 							(self::CASCADE_CATEG | self::CASCADE_STATUS | self::CASCADE_DELETE) => tr('All'),
 						),
-						'legacy_index' => 14,
 					),
 				),
 			),
@@ -208,9 +185,9 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 
 			$form = preg_replace(array('/<!--.*?-->/', '/\s+/', '/^~np~/', '/~\/np~/'), array('', ' ', '', ''), $form);	// remove comments etc
 
-			if ($displayFieldsList = $this->getDisplayFieldsListArray()) {
-				$displayFieldId = $displayFieldsList[0];
-				if (is_string($displayFieldId) && strpos($displayFieldId, '|') !== false) {
+			if ($this->getOption('displayFieldsList')) {
+				$displayFieldId = $this->getOption('displayFieldsList');
+				if (strpos($displayFieldId, '|') !== false) {
 					$displayFieldId = substr($displayFieldId, 0, strpos($displayFieldId, '|'));
 				}
 			} else {
@@ -257,7 +234,7 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 								ajaxLoadingHide();
 								$d.dialog( "close" );
 								if (jqueryTiki.chosen) {
-									$select.trigger("chosen:updated");
+									$select.trigger("liszt:updated");
 								}
 								return;
 							}, "json");
@@ -281,35 +258,7 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 
 		$data['selectMultipleValues'] = (bool) $this->getOption('selectMultipleValues');
 
-		// 'crossSelect' overrides the preselection reference, which is enabled, when a cross reference Item Link <-> Item Link
-		//	When selecting a value another item link can provide the relation, then the cross link can point to several records having the same linked value.
-		//	Example Contact and Report links to a Company. Report also links to Contact. When selecting Contact, Only Contacts in the same company as the Report is linked to, should be made visible.
-		//	When 'crossSelect' is enabled
-		//		1) The dropdown list is no longer disabled (else disabled)
-		//		2) All rows in the remote tracker matching the criterea are displayed in the dropdown list (else only 1 row is displayed)
-		$method = $this->getOption('preSelectFieldMethod');
-		if ($method == 'crossSelect') {
-			$data['crossSelect'] = 'y';
-		} else {
-			$data['crossSelect'] = 'n';
-		}
-
-		// Prepare for 'crossSelect'
-		$linkValue = false;		// Value which links the tracker items
-		if ($data['crossSelect'] === 'y') {
-			// Check if itemId is set / used.
-			// If not, it must be set here
-			$itemData = $this->getItemData();
-			if (empty($itemData['itemId'])) {
-				if (!empty($_REQUEST['itemId'])) {
-					$linkValue = $_REQUEST['itemId'];
-				}
-			} else {
-				$linkValue = $itemData['itemId'];
-			}
-		}
-
-		if ($preselection = $this->getPreselection($linkValue)) {
+		if ($preselection = $this->getPreselection()) {
 			$data['preselection'] = $preselection;
 		} else {
 			$data['preselection'] = '';
@@ -317,14 +266,6 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 
 		$data['filter'] = $this->buildFilter();
 
-		if ($data['crossSelect'] === 'y') {
-			$fullList = $data['list'];
-			if (!empty($preselection) && is_array($preselection)) {
-				$data['remoteData'] = array_intersect_key($fullList, array_flip($preselection));
-			} else {
-				$data['remoteData'] = $fullList;
-			}
-		}
 		return $this->renderTemplate('trackerinput/itemlink.tpl', $context, $data);
 	}
 
@@ -382,21 +323,17 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 		}
 	}
 
-	function getDocumentPart(Search_Type_Factory_Interface $typeFactory)
+	function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
 	{
 		$item = $this->getValue();
 		$label = $this->getItemLabel($item);
-		$baseKey = $this->getBaseKey();
 
 		$out = array(
 			$baseKey => $typeFactory->identifier($item),
 			"{$baseKey}_text" => $typeFactory->sortable($label),
 		);
 
-		if (is_array($indexRemote)) {
-			$indexRemote = array_filter($this->getOption('indexRemote'));
-		}
-
+		$indexRemote = array_filter(explode('|', $this->getOption('indexRemote')));
 		if (count($indexRemote) && is_numeric($item)) {
 			$utilities = new Services_Tracker_Utilities;
 			$trackerId = $this->getOption('trackerId');
@@ -414,15 +351,12 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 		return $out;
 	}
 
-	function getProvidedFields()
+	function getProvidedFields($baseKey)
 	{
-		$baseKey = $this->getBaseKey();
 		$fields = array($baseKey, "{$baseKey}_text");
 
 		$trackerId = $this->getOption('trackerId');
-		if (is_array($indexRemote)) {
-			$indexRemote = array_filter($this->getOption('indexRemote'));
-		}
+		$indexRemote = array_filter(explode('|', $this->getOption('indexRemote')));
 
 		if (count($indexRemote)) {
 			if ($definition = Tracker_Definition::get($trackerId)) {
@@ -438,7 +372,7 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 		return $fields;
 	}
 
-	function getGlobalFields()
+	function getGlobalFields($baseKey)
 	{
 		return array();
 	}
@@ -454,8 +388,8 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 
 		$parts = array();
 
-		if ($fields = $this->getDisplayFieldsListArray()) {
-			foreach ($fields as $fieldId) {
+		if ($fields = $this->getOption('displayFieldsList')) {
+			foreach(explode('|', $fields) as $fieldId) {
 				if (isset($item[$fieldId])) {
 					$parts[] = $item[$fieldId];
 				}
@@ -478,10 +412,10 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 
 	private function getItemList()
 	{
-		if ($displayFieldsList = $this->getDisplayFieldsListArray()) {
+		if ($this->getOption('displayFieldsList')) {
 			$list = TikiLib::lib('trk')->concat_all_items_from_fieldslist(
 				$this->getOption('trackerId'),
-				$displayFieldsList,
+				$this->getOption('displayFieldsList'),
 				$this->getOption('status', 'opc')
 			);
 		} else {
@@ -563,7 +497,7 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 		return implode(',', $parts);
 	}
 
-	private function getPreselection($linkValue = false)
+	private function getPreselection()
 	{
 		$trklib = TikiLib::lib('trk');
 
@@ -596,17 +530,7 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 			$partial = false;
 		}
 
-		// If $linkValue is specified, it means get_all_item_id should be called,
-		//	which can match a set of linked values. Not just 1
-		if (!empty($linkValue)) {
-			// get_all_item_id always collects all matching links. $partial is ignored
-			//	Use the local value in the search, when it's available
-			$value = empty($localValue) ? $linkValue : $localValue;
-			$data = $trklib->get_all_item_id($remoteTrackerId, $remoteField, $value);
-		} else {
-			$data = $trklib->get_item_id($remoteTrackerId, $remoteField, $localValue, $partial);
-		}
-		return $data;
+		return $trklib->get_item_id($remoteTrackerId, $remoteField, $localValue, $partial);
 	}
 
 	function handleSave($value, $oldValue)
@@ -615,8 +539,6 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 		// of options to string before saving the field value in the db
 		if ($this->getOption('selectMultipleValues')) {
 			$value = implode(',', $value);
-		} else {
-			$value = (int) $value;
 		}
 
 		return array(
@@ -632,8 +554,8 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 
 		$usedFields = array_merge(
 			array($this->getOption('fieldId')),
-			$this->getOption('indexRemote'),
-			$this->getDisplayFieldsListArray()
+			explode('|', $this->getOption('indexRemote')),
+			explode('|', $this->getOption('displayFieldsList'))
 		);
 
 		$intersect = array_intersect($usedFields, $modifiedFields);
@@ -671,19 +593,6 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 		$n = $this->getItemLabel($new);
 
 		return parent::watchCompare($o, $n);	// then compare as text
-	}
-
-	/**
-	 * @return mixed
-	 */
-	private function getDisplayFieldsListArray()
-	{
-		$option = $this->getOption('displayFieldsList');
-		if (!empty($option) && (!is_array($option) || !empty($option[0]))) {
-			return $option;
-		} else {
-			return array();
-		}
 	}
 
 }

@@ -31,7 +31,7 @@
 
 <form action="tiki-admin.php?page=wiki" method="post">
 	<div class="heading input_submit_container" style="text-align: right">
-		<input type="submit" class="btn btn-default" name="wikisetprefs" value="{tr}Change preferences{/tr}" />
+		<input type="submit" name="wikisetprefs" value="{tr}Change preferences{/tr}" />
 	</div>
 
 	{tabset name="admin_wiki"}
@@ -78,17 +78,6 @@
 				{preference name=wiki_topline_position}
 				{preference name=page_bar_position}
 				{preference name=wiki_encourage_contribution}
-
-				{preference name=wiki_auto_toc}
-				<div class="adminoptionbox clearfix" id="wiki_auto_toc_childcontainer">
-					<fieldset>
-						<legend>{tr}Auto TOC options{/tr}</legend>
-							{preference name=wiki_inline_auto_toc}
-							{preference name=wiki_inline_toc_pos}
-					</fieldset>
-				</div>
-
-				{preference name=wiki_page_hide_title}
 			</fieldset>
 
 			<fieldset>
@@ -157,7 +146,7 @@
 					<div class="adminoptionlabel">
 						<label for="tagname">{tr}Tag for current wiki:{/tr}</label>
 						<input maxlength="20" size="20" type="text" name="tagname" id="tagname" />
-						<input type="submit" class="btn btn-default" name="createtag" value="{tr}Create{/tr}" />
+						<input type="submit" name="createtag" value="{tr}Create{/tr}" />
 					</div>
 				</div>
 				<div class="adminoptionbox clearfix">
@@ -170,7 +159,7 @@
 								<option value=''>{tr}None{/tr}</option>
 							{/section}
 						</select>
-						<input type="submit" class="btn btn-default" name="restoretag" value="{tr}Restore{/tr}"{if $tags|@count eq '0'} disabled="disabled"{/if} />
+						<input type="submit" name="restoretag" value="{tr}Restore{/tr}"{if $tags|@count eq '0'} disabled="disabled"{/if} />
 					</div>
 				</div>
 				<div class="adminoptionbox clearfix">
@@ -183,7 +172,7 @@
 								<option value=''>{tr}None{/tr}</option>
 							{/section}
 						</select>
-						<input type="submit" class="btn btn-default" name="removetag" value="{tr}Remove{/tr}"{if $tags|@count eq '0'} disabled="disabled"{/if} />
+						<input type="submit" name="removetag" value="{tr}Remove{/tr}"{if $tags|@count eq '0'} disabled="disabled"{/if} />
 					</div>
 				</div>
 
@@ -272,7 +261,6 @@
 			{preference name=feature_create_webhelp}
 			{preference name=feature_wiki_structure_drilldownmenu}
 			{preference name=page_n_times_in_a_structure}
-			{preference name=feature_listorphanStructure}
 			{preference name=feature_wiki_no_inherit_perms_structure}
 			{preference name=wiki_structure_bar_position}
 			{preference name=wikiplugin_toc}
@@ -446,6 +434,6 @@
 {/tabset}
 
 <div class="heading input_submit_container" style="text-align: center">
-	<input type="submit" class="btn btn-default" name="wikisetprefs" value="{tr}Change preferences{/tr}" />
+	<input type="submit" name="wikisetprefs" value="{tr}Change preferences{/tr}" />
 </div>
 </form>

@@ -9,7 +9,7 @@
 				{else}
 					{icon _id=sticky alt="{tr}Error{/tr}"}
 				{/if}
-				{object_link type=$entry.object_type id=$entry.object_id backuptitle=$entry.title}
+				{object_link type=$entry.object_type id=$entry.object_id}
 			</li>
 		{/foreach}
 	</ol>
@@ -19,5 +19,5 @@
 			<option value="{$action|escape}">{$action|escape}</option>
 		{/foreach}
 	</select>
-	<input type="submit" class="btn btn-default" value="{tr}Apply{/tr}">
+	<input type="submit" value="{tr}Apply{/tr}">
 </form>

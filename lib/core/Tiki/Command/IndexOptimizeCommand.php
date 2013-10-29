@@ -19,7 +19,8 @@ class IndexOptimizeCommand extends Command
     {
         $this
             ->setName('index:optimize')
-            ->setDescription('Optimize the unified search index');
+            ->setDescription('Optimize the unified search index')
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

@@ -78,11 +78,11 @@
 {if !empty($topics)}
 	<select name="topic" class="findtopics">
 		<option value='' {if $find_topic eq ''}selected="selected"{/if}>{tr}any topic{/tr}</option>
-		{foreach $topics as $topic}
-			<option value="{$topic.topicId|escape}" {if $find_topic eq $topic.topicId}selected="selected"{/if}>
-				{$topic.name|tr_if|escape}
+		{section name=ix loop=$topics}
+			<option value="{$topics[ix].topicId|escape}" {if $find_topic eq $topics[ix].topicId}selected="selected"{/if}>
+				{$topics[ix].name|tr_if|escape}
 			</option>
-		{/foreach}
+		{/section}
 	</select>
 {/if}
 
@@ -119,11 +119,11 @@
 	<div id="date_range_find">
 		<span class="findDateFrom">
 			{tr}From{/tr}
-			{html_select_date time=$find_date_from prefix="find_from_" month_format="%m"}
+			{html_select_date time=$find_date_from prefix="find_from_" start_year="-2" end_year="+2" month_format="%m" field_order=$prefs.display_field_order}
 		</span>
 		<span class="findDateTo">
 			{tr}to{/tr}
-			{html_select_date time=$find_date_to prefix="find_to_" month_format="%m"}
+			{html_select_date time=$find_date_to prefix="find_to_" start_year="-2" end_year="+2" month_format="%m" field_order=$prefs.display_field_order}
 		</span>
 	</div>
 {/if}
@@ -228,18 +228,17 @@
 {/if}
 
 <label class="findsubmit">
-	<input type="submit" class="btn btn-default" name="search" value="{tr}Go{/tr}">
-	{if !empty($find) or !empty($find_type) or !empty($find_topic) or !empty($find_lang) or !empty($find_langOrphan) or !empty($find_categId) or !empty($find_orphans) or !empty($find_other_val) or $maxRecords ne $prefs.maxRecords}
-		{*  $find_date_from & $find_date_to get set usually *}
+	<input type="submit" name="search" value="{tr}Go{/tr}">
+	{if $find ne ''}
 		<span class="button">
-			<a href="{$smarty.server.PHP_SELF}?{query find='' type='' types='' topic='' lang='' langOrphan='' exact_match='' categId='' maxRecords=$prefs.maxRecords find_from_Month='' find_from_Day='' find_from_Year='' find_to_Month='' find_to_Day='' find_to_Year=''}" title="{tr}Clear Filter{/tr}">{tr}Clear Filter{/tr}</a>
+			<a href="{$smarty.server.PHP_SELF}?{query find='' type='' types='' topic='' lang='' langOrphan='' exact_match='' categId='' maxRecords='' find_from_Month='' find_from_Day='' find_from_Year='' find_to_Month='' find_to_Day='' find_to_Year=''}" title="{tr}Clear Filter{/tr}">{tr}Clear Filter{/tr}</a>
 		</span>
 	{/if}
 	{if (isset($gmapbuttons) && $gmapbuttons) and (isset($mapview) && $mapview)}
-		<input class="btn btn-default" type="submit" name="searchlist" value="{tr}List View{/tr}">
+		<input type="submit" name="searchlist" value="{tr}List View{/tr}">
 		<input type="hidden" name="mapview" value="y">
 	{elseif (isset($gmapbuttons) && $gmapbuttons)}
-		<input type="submit" class="btn btn-default" name="searchmap" value="{tr}Map View{/tr}">
+		<input type="submit" name="searchmap" value="{tr}Map View{/tr}">
 		<input type="hidden" name="mapview" value="n">
 	{/if}
 </label>

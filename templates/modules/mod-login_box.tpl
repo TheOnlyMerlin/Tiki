@@ -91,17 +91,8 @@ if (jqueryTiki.tooltips) {
 			<div style="text-align: center;">
 				{button href="tiki-logout.php" _text="{tr}Log out{/tr}"}
 			</div>
-			{if $login_module.can_revert}
-				<form action="{$login_module.login_url|escape}" method="post">
-					<fieldset>
-						<legend>{tr}Return to Main User{/tr}</legend>
-						<input type="hidden" name="su" value="revert" />
-						<input type="hidden" name="username" value="auto" />
-						<div style="text-align: center"><button type="submit" class="btn btn-default" name="actsu">{tr}Switch{/tr}</button></div>
-					</fieldset>
-				</form>
-			{elseif $tiki_p_admin eq 'y'}
-				<form action="{$login_module.login_url|escape}" method="post"{if $prefs.desactive_login_autocomplete eq 'y'} autocomplete="off"{/if}>
+			{if $tiki_p_admin eq 'y'}
+				<form action="{if $prefs.https_login eq 'encouraged' || $prefs.https_login eq 'required' || $prefs.https_login eq 'force_nocheck'}{$base_url_https}{/if}{$prefs.login_url}" method="post"{if $prefs.desactive_login_autocomplete eq 'y'} autocomplete="off"{/if}>
 					<fieldset>
 						<legend>{tr}Switch User{/tr}</legend>
 						<label for="login-switchuser_{$module_logo_instance}">{tr}Username:{/tr}</label>
@@ -110,7 +101,7 @@ if (jqueryTiki.tooltips) {
 							{help url="Switch+User" desc="{tr}Help{/tr}" desc="{tr}Switch User:{/tr}{tr}Enter user name and click 'Switch'.<br>Useful for testing permissions.{/tr}"}
 						{/if}
 						<input type="text" name="username" id="login-switchuser_{$module_logo_instance}" size="{if empty($module_params.input_size)}15{else}{$module_params.input_size}{/if}" />
-						<div style="text-align: center"><button type="submit" class="btn btn-default" name="actsu">{tr}Switch{/tr}</button></div>
+						<div style="text-align: center"><button type="submit" name="actsu">{tr}Switch{/tr}</button></div>
 						{autocomplete element="#login-switchuser_"|cat:$module_logo_instance type="username"}
 					</fieldset>
 				</form>
@@ -140,7 +131,7 @@ if (jqueryTiki.tooltips) {
 				{/foreach}
 				</select>
 				<input type="hidden" name="action" value="select"/>
-				<input type="submit" class="btn btn-default" value="{tr}Go{/tr}"/>
+				<input type="submit" value="{tr}Go{/tr}"/>
 			</fieldset>
 		</form>
 		{/if}
@@ -164,7 +155,7 @@ if (jqueryTiki.tooltips) {
 							<li class="tabcontent">
 								{capture assign="close_tags"}</li></ul></li></ul></div>{$close_tags}{/capture}
 		{/if}
-		<form name="loginbox" id="loginbox-{$module_logo_instance}" action="{$login_module.login_url|escape}"
+		<form name="loginbox" id="loginbox-{$module_logo_instance}" action="{if $prefs.https_login eq 'encouraged' || $prefs.https_login eq 'required' || $prefs.https_login eq 'force_nocheck'}{$base_url_https}{/if}{$prefs.login_url}"
 				method="post" {if $prefs.feature_challenge eq 'y'}onsubmit="doChallengeResponse()"{/if}
 				{if $prefs.desactive_login_autocomplete eq 'y'} autocomplete="off"{/if}> 
 		{if $prefs.feature_challenge eq 'y'}
@@ -256,7 +247,7 @@ function doChallengeResponse() {
 			{/if}
 		{/if}
 		<div style="text-align: center">
-			<input class="btn btn-default button submit" type="submit" name="login" value="{tr}Log in{/tr}" />
+			<input class="button submit" type="submit" name="login" value="{tr}Log in{/tr}" />
 		</div>
 		{if $module_params.show_forgot eq 'y' or $module_params.show_register eq 'y'}
 			<div {if $mode eq 'header'}style="text-align: right; display:inline"{/if}>
@@ -277,8 +268,8 @@ function doChallengeResponse() {
 		{/if}
 		{if $prefs.feature_switch_ssl_mode eq 'y' && ($prefs.https_login eq 'allowed' || $prefs.https_login eq 'encouraged')}
 			<div>
-				<a class="linkmodule" href="{$base_url_http|escape}{$prefs.login_url|escape}" title="{tr}Click here to login using the default security protocol{/tr}">{tr}Standard{/tr}</a>
-				<a class="linkmodule" href="{$base_url_https|escape}{$prefs.login_url|escape}" title="{tr}Click here to login using a secure protocol{/tr}">{tr}Secure{/tr}</a>
+				<a class="linkmodule" href="{$base_url_http}{$prefs.login_url}" title="{tr}Click here to login using the default security protocol{/tr}">{tr}Standard{/tr}</a>
+				<a class="linkmodule" href="{$base_url_https}{$prefs.login_url}" title="{tr}Click here to login using a secure protocol{/tr}">{tr}Secure{/tr}</a>
 			</div>
 		{/if}
 		{if $prefs.feature_show_stay_in_ssl_mode eq 'y' && $show_stay_in_ssl_mode eq 'y'}
@@ -311,7 +302,7 @@ function doChallengeResponse() {
 		<fieldset>
 			<legend>{tr}OpenID Log in{/tr}</legend>
 			<input class="openid_url" type="text" name="openid_url"/>
-			<input type="submit" class="btn btn-default" value="{tr}Go{/tr}"/>
+			<input type="submit" value="{tr}Go{/tr}"/>
 			<a class="linkmodule tikihelp" target="_blank" href="http://doc.tiki.org/OpenID">{tr}What is OpenID?{/tr}</a>
 		</fieldset>
 	</form>

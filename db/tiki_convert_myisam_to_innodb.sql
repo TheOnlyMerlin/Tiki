@@ -4,8 +4,6 @@
 --
 
 -- DROP all FULLTEXT indexes
--- 	If you are running MySQL 5.6 or later, InnoDB supports fulltext indexes.
---	Then this section should be removed / commented out
 ALTER TABLE tiki_articles DROP INDEX ft;
 ALTER TABLE tiki_blog_posts DROP INDEX ft;
 ALTER TABLE tiki_blogs DROP INDEX ft;
@@ -195,6 +193,8 @@ ALTER TABLE `users_users` ENGINE=InnoDB;
 ALTER TABLE `tiki_integrator_reps` ENGINE=InnoDB;
 ALTER TABLE `tiki_integrator_rules` ENGINE=InnoDB;
 ALTER TABLE `tiki_translated_objects` ENGINE=InnoDB;
+ALTER TABLE `tiki_friends` ENGINE=InnoDB;
+ALTER TABLE `tiki_friendship_requests` ENGINE=InnoDB;
 ALTER TABLE `tiki_score` ENGINE=InnoDB;
 ALTER TABLE `tiki_users_score` ENGINE=InnoDB;
 ALTER TABLE `tiki_file_handlers` ENGINE=InnoDB;
@@ -265,9 +265,3 @@ ALTER TABLE `tiki_page_references` ENGINE=InnoDB;
 ALTER TABLE `tiki_db_status` ENGINE=InnoDB;
 ALTER TABLE `tiki_mail_queue` ENGINE=InnoDB;
 ALTER TABLE `tiki_workspace_templates` ENGINE=InnoDB;
-ALTER TABLE `tiki_user_mailin_struct` ENGINE=InnoDB;
-ALTER TABLE `tiki_activity_stream` ENGINE=InnoDB;
-ALTER TABLE `tiki_activity_stream_mapping` ENGINE=InnoDB;
-ALTER TABLE `tiki_activity_stream_rules` ENGINE=InnoDB;
-
-

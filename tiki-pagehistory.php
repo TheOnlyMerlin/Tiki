@@ -438,9 +438,8 @@ TikiLib::events()->trigger(
 	'tiki.wiki.view',
 	array_merge(
 		array(
-			'type' => 'wiki page',
+			'type' => 'wiki',
 			'object' => $page,
-			'user' => $GLOBALS['user'],
 		),
 		$info
 	)

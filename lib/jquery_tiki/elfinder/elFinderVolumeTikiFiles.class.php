@@ -181,84 +181,6 @@ class elFinderVolumeTikiFiles extends elFinderVolumeDriver
    		return false;
 	}
 
-	// initially from https://github.com/Studio-42/elFinder/wiki/Adding-file-description-to-Properties-dialog
-	// adapted to send back tiki id's and syntax etc
-
-	public function info($target, $newdesc = '')
-	{
-		$path = $this->decode($target);
-		$id = $this->pathToId($path);
-		$isGal = ($path{0} !== 'f');
-		$smarty = TikiLib::lib('smarty');
-		$smarty->loadPlugin('smarty_function_object_link');
-
-		if ($isGal) {
-			$info = $this->filegallib->get_file_gallery($id);
-			$allowed = array('galleryId', 'name', 'type', 'description', 'created', 'visible',
-				'lastModif', 'user', 'hits', 'votes', 'public', 'icon_field'
-			);
-			// clever way of filtering by keys from http://stackoverflow.com/questions/4260086
-			$info = array_intersect_key($info, array_flip($allowed));
-			$info['link'] = smarty_function_object_link(
-				array(
-					'id' => $info['galleryId'],
-					'type' => 'file gallery',
-					'title' => $info['name'],
-				), $smarty
-			);
-			$perms = TikiLib::lib('tiki')->get_perm_object($id, 'file gallery', $info);
-		} else {
-			$info = $this->filegallib->get_file($id);
-			$allowed = array('fileId', 'galleryId', 'name', 'description', 'created', 'filename', 'filesize',
-				'filetype', 'user', 'author', 'hits', 'maxhits', 'votes', 'points', 'metadata',
-				'lastModif', 'lastModifUser', 'lockedby', 'comment', 'archiveId'
-			);
-			$info = array_intersect_key($info, array_flip($allowed));
-			$info['wiki_syntax'] = $this->filegallib->getWikiSyntax($info['galleryId'], $info);
-			if (in_array($info['filetype'], array('image/jpeg', 'image/gif', 'image/png'))) {
-				$type = 'display';
-			} else {
-				$type = 'file';
-			}
-			$info['link'] = smarty_function_object_link(
-				array(
-					'id' => $info['fileId'],
-					'type' => $type,
-					'title' => $info['name'],
-				), $smarty
-			);
-			$perms = TikiLib::lib('tiki')->get_perm_object($id, 'file', $info);
-		}
-
-		if ($perms['tiki_p_download_files'] === 'y') {
-			global $user;
-
-			if ($newdesc && $perms['tiki_p_edit_gallery_file'] === 'y') {
-				if ($isGal) {
-					$result = $this->fileGalleriesTable->update(
-						array(
-							'description' => $newdesc,
-							'lastModifUser' => $user,
-							'lastModif' => TikiLib::lib('tiki')->now,
-						),
-						array('galleryId' => $id)
-					);
-				} else {
-					$result = $this->filesTable->update(
-						array(
-							'description' => $newdesc,
-							'lastModifUser' => $user,
-							'lastModif' => TikiLib::lib('tiki')->now,
-						),
-						array('fileId' => $id)
-					);
-				}
-			}
-			return array_filter($info);
-		}
-		return '';
-	}
-
 
 	/*********************************************************************/
 	/*                               FS API                              */
@@ -864,12 +786,10 @@ class elFinderVolumeTikiFiles extends elFinderVolumeDriver
 	 **/
 	protected function _unlink($path)
 	{
-		$fileId = $this->pathToId($path);
-		$galleryId = $this->options['accessControlData']['parentIds']['files'][$fileId];
+		$galleryId = $this->options['accessControlData']['parentIds']['files'][$this->pathToId($path)];
 		$perms = TikiLib::lib('tiki')->get_perm_object($galleryId, 'file gallery', TikiLib::lib('filegal')->get_file_gallery_info($galleryId));
 		if ($perms['tiki_p_remove_files'] === 'y') {
-			$fileInfo = TikiLib::lib('filegal')->get_file_info($fileId, false, false);
-			return $this->filegallib->remove_file($fileInfo);
+			return $this->filegallib->remove_file(array('fileId' => $this->pathToId($path)));
 		} else {
 			return false;
 		}

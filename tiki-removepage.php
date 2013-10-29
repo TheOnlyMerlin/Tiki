@@ -52,17 +52,16 @@ if (isset($_REQUEST["remove"])) {
 	check_ticket('remove-page');
 	if (isset($_REQUEST["all"]) && $_REQUEST["all"] == 'on') {
 		$tikilib->remove_all_versions($_REQUEST["page"]);
-		$access->redirect();
+		header("location: tiki-index.php");
 		die;
 	} else {
-		$smarty->loadPlugin('smarty_modifier_sefurl');
 		if ($version == "last") {
 			$wikilib->remove_last_version($_REQUEST["page"]);
-			$access->redirect(smarty_modifier_sefurl($_REQUEST['page']));
 		} else {
 			$histlib->remove_version($_REQUEST['page'], $_REQUEST['version'], $_REQUEST['historyId']);
-			$access->redirect(smarty_modifier_sefurl($_REQUEST['page']));
 		}
+		header("location: tiki-index.php");
+		die;
 	}
 }
 ask_ticket('remove-page');

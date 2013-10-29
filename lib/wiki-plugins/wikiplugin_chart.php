@@ -19,7 +19,6 @@ function wikiplugin_chart_info()
 				'required' => true,
 				'name' => tra('Sheet ID'),
 				'description' => tra('Data sheet ID'),
-				'profile_reference' => 'sheet',
 			),
 			'type' => array(
 				'required' => true,

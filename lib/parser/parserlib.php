@@ -26,7 +26,6 @@
 
 class ParserLib extends TikiDb_Bridge
 {
-	private $makeTocCount = 0;
 	private $pre_handlers = array();
 	private $pos_handlers = array();
 	private $postedit_handlers = array();
@@ -89,12 +88,8 @@ class ParserLib extends TikiDb_Bridge
 				'namespace' => false,
 				'protect_email' => true,
 				'exclude_plugins' => array(),
-				'exclude_all_plugins' => false,
-				'include_plugins' => array(),
 			), empty($option) ? array() : (array) $this->option, (array)$option
 		);
-		$this->option['include_plugins'] = array_map('strtolower', $this->option['include_plugins']);
-		$this->option['exclude_plugins'] = array_map('strtolower', $this->option['exclude_plugins']);
 	}
 
 	function __construct()
@@ -235,20 +230,18 @@ class ParserLib extends TikiDb_Bridge
 	 * @param $noparsed array	output array
 	 */
 
-	function plugins_remove(&$data, &$noparsed, $removeCb = null)
+	function plugins_remove(&$data, &$noparsed)
 	{
 		$tikilib = TikiLib::lib('tiki');
 
 		$matches = WikiParser_PluginMatcher::match($data);		// find the plugins
 
 		foreach ($matches as $match) {							// each plugin
-			if (! $removeCb || $removeCb($match)) {
-				$plugin = (string) $match;
-				$key = '§'.md5($tikilib->genPass()).'§';				// by replace whole plugin with a guid
+			$plugin = (string) $match;
+			$key = '§'.md5($tikilib->genPass()).'§';				// by replace whole plugin with a guid
 
-				$noparsed['key'][] = $key;
-				$noparsed['data'][] = $plugin;
-			}
+			$noparsed['key'][] = $key;
+			$noparsed['data'][] = $plugin;
 		}
 		$data = isset($noparsed['data']) ? str_replace($noparsed['data'], $noparsed['key'], $data) : $data;
 	}
@@ -427,12 +420,7 @@ class ParserLib extends TikiDb_Bridge
 			$plugin_parent = isset($plugin_name) ? $plugin_name : false;
 			$plugin_name = $match->getName();
 
-			if (!$this->option['exclude_all_plugins'] && !empty($this->option['exclude_plugins']) && in_array($plugin_name, $this->option['exclude_plugins'])) {
-				$match->replaceWith('');
-				continue;
-			}
-
-			if ($this->option['exclude_all_plugins'] && (empty($this->option['include_plugins']) || !in_array($plugin_name, $this->option['include_plugins']))) {
+			if (isset($this->option['exclude_plugins']) && in_array($plugin_name, $this->option['exclude_plugins'])) {
 				$match->replaceWith('');
 				continue;
 			}
@@ -649,18 +637,16 @@ if ( \$('#$id') ) {
 			return $known[$name] = $class->info();
 		}
 
-		if (! $this->plugin_exists($name, true)) {
+		if ( ! $this->plugin_exists($name, true) )
 			return $known[$name] = false;
-		}
 
 		$func_name_info = "wikiplugin_{$name}_info";
 
 		if ( ! function_exists($func_name_info) ) {
-			if ($info = WikiPlugin_Negotiator_Wiki_Alias::info($name)) {
+			if ( $info = WikiPlugin_Negotiator_Wiki_Alias::info($name) )
 				return $known[$name] = $info['description'];
-			} else {
+			else
 				return $known[$name] = false;
-			}
 		}
 
 		return $known[$name] = $func_name_info();
@@ -957,11 +943,6 @@ if ( \$('#$id') ) {
 			$trklib = TikiLib::lib('trk');
 			$trklib->replace_pretty_tracker_refs($args);
 		}
-		foreach ($args as $arg) {
-			if (substr($arg, 0, 4) == '{$f_') {
-				return $name . ': ' . tra('Plugin cannot be executed because pretty tracker references are not replaced. Please use smarty wikiplugin tag instead.');
-			}
-		}
 
 		//This is the class name for new simplified plugin system, if object does exist, it will use it, if not it uses old plugins
 		$classExists = false;
@@ -1073,7 +1054,7 @@ if ( \$('#$id') ) {
 		// some plugins are just too fragile to do wysiwyg, so show the "source" for them ;(
 		$excluded = array('tracker', 'trackerlist', 'trackerfilter', 'kaltura', 'toc', 'freetagged', 'draw', 'googlemap',
 			'include', 'module', 'list', 'custom_search', 'iframe', 'map', 'calendar', 'file', 'files', 'mouseover', 'sort',
-			'slideshow', 'convene');
+			'slideshow');
 
 		$ignore = null;
 		$enabled = $this->plugin_enabled($name, $ignore);
@@ -1083,21 +1064,18 @@ if ( \$('#$id') ) {
 			// Tiki 7+ adds ~np~ to plugin output so remove them
 			$plugin_result = preg_replace('/~[\/]?np~/ms', '', $plugin_result);
 
-			if (!isset($info['format']) || $info['format'] !== 'html') {
-				$oldOptions = $this->option;
-				$plugin_result = $this->parse_data($plugin_result, array('is_html' => false, 'suppress_icons' => true, 'ck_editor' => true, 'noparseplugins' => true));
-				$this->setOptions($oldOptions);
-				// reset the noparseplugins option, to allow for proper display in CkEditor
-				$this->option['noparseplugins'] = false;
-			}
+			$oldOptions = $this->option;
+			$plugin_result = $this->parse_data($plugin_result, array('is_html' => false, 'suppress_icons' => true, 'ck_editor' => true, 'noparseplugins' => true));
+			$this->setOptions($oldOptions);
+			// reset the noparseplugins option, to allow for proper display in CkEditor
+			$this->option['noparseplugins'] = false;
 
-			if ( ! getCookie('wysiwyg_inline_edit', 'preview', false)) { // remove hrefs and onclicks
-				$plugin_result = preg_replace('/\shref\=/i', ' tiki_href=', $plugin_result);
-				$plugin_result = preg_replace('/\sonclick\=/i', ' tiki_onclick=', $plugin_result);
-				$plugin_result = preg_replace('/<script.*?<\/script>/mi', '', $plugin_result);
-				// remove hidden inputs
-				$plugin_result = preg_replace('/<input.*?type=[\'"]?hidden[\'"]?.*>/mi', '', $plugin_result);
-			}
+			// remove hrefs and onclicks
+			$plugin_result = preg_replace('/\shref\=/i', ' tiki_href=', $plugin_result);
+			$plugin_result = preg_replace('/\sonclick\=/i', ' tiki_onclick=', $plugin_result);
+			$plugin_result = preg_replace('/<script.*?<\/script>/mi', '', $plugin_result);
+			// remove hidden inputs
+			$plugin_result = preg_replace('/<input.*?type=[\'"]?hidden[\'"]?.*>/mi', '', $plugin_result);
 		}
 		if (!in_array($name, array('html'))) {		// remove <p> and <br>s from non-html
 			$data = str_replace(array('<p>', '</p>', "\t"), '', $data);
@@ -1123,7 +1101,7 @@ if ( \$('#$id') ) {
 				' data-syntax="' . htmlentities($ck_editor_plugin, ENT_QUOTES, 'UTF-8') . '"' .
 				' data-args="' . htmlentities($arg_str, ENT_QUOTES, 'UTF-8') . '"' .
 				' data-body="' . htmlentities($data, ENT_QUOTES, 'UTF-8') . '">'.	// not <!--{cke_protected}
-				'<img src="'.$icon.'" width="16" height="16" class="plugin_icon" />' .
+				'<img src="'.$icon.'" width="16" height="16" style="float:left;position:relative;z-index:10001" />' .
 				$plugin_result.'<!-- end tiki_plugin --></'.$elem.'>~/np~';
 
 		return 	$ret;
@@ -1131,7 +1109,7 @@ if ( \$('#$id') ) {
 
 	function process_save_plugins($data, array $context)
 	{
-        $parserlib = TikiLib::lib('parser');
+		$parserlib = TikiLib::lib('parser');
 
 		$argumentParser = new WikiParser_PluginArgumentParser;
 
@@ -1139,7 +1117,7 @@ if ( \$('#$id') ) {
 
 		foreach ($matches as $match) {
 			$plugin_name = $match->getName();
-            $body = $match->getBody();
+			$body = $match->getBody();
 			$arguments = $argumentParser->parse($match->getArguments());
 
 			$dummy_output = '';
@@ -1155,17 +1133,10 @@ if ( \$('#$id') ) {
 						$match->replaceWith($output);
 					}
 				}
-
-                if ($plugin_name == 'translationof')
-                {
-                    $this->add_translationof_relation($data, $arguments, $context['itemId']);
-                }
 			}
 		}
 
-        $matches_text = $matches->getText();
-
-        return $matches_text;
+		return $matches->getText();
 	}
 
 	//*
@@ -1511,7 +1482,7 @@ if ( \$('#$id') ) {
 		}
 
 		$old_wysiwyg_parsing = null;
-		if ($this->option['ck_editor'] && $this->isEditMode) {
+		if ($this->option['ck_editor']) {
 			$headerlib = TikiLib::lib('header');
 			$old_wysiwyg_parsing = $headerlib->wysiwyg_parsing;
 			$headerlib->wysiwyg_parsing = true;
@@ -1575,7 +1546,6 @@ if ( \$('#$id') ) {
 		// Handle pre- and no-parse sections and plugins
 		$preparsed = array('data'=>array(),'key'=>array());
 		$noparsed = array('data'=>array(),'key'=>array());
-		$this->strip_unparsed_block($data, $noparsed);
 		if (!$this->option['noparseplugins'] || $this->option['stripplugins']) {
 			$this->parse_first($data, $preparsed, $noparsed);
 			$this->parse_wiki_argvariable($data);
@@ -1679,10 +1649,6 @@ if ( \$('#$id') ) {
 		// reinsert hash-replaced links into page
 		foreach ($noparsedlinks as $np) {
 			$data = str_replace($np["key"], $np["data"], $data);
-		}
-
-		if ($prefs['wiki_pagination'] != 'y') {
-			$data = str_replace($prefs['wiki_page_separator'], $prefs['wiki_page_separator'] . ' <em>' . tr('Wiki Pagination has not been enabled on this site.') . '</em>', $data);
 		}
 
 		$data = $this->parse_data_externallinks($data);
@@ -1846,7 +1812,7 @@ if ( \$('#$id') ) {
 				if ($prefs['feature_wiki_ext_icon'] == 'y' && !($this->option['suppress_icons'] || $suppress_icons)) {
 					$smarty = TikiLib::lib('smarty');
 					include_once('lib/smarty_tiki/function.icon.php');
-					$ext_icon = smarty_function_icon(array('_id'=>'external_link', 'alt'=>'', '_class' => 'externallink', '_extension' => 'gif', '_defaultdir' => 'img/icons', 'width' => 15, 'height' => 14), $smarty);
+					$ext_icon = smarty_function_icon(array('_id'=>'external_link', 'alt'=>tra('(external link)'), '_class' => 'externallink', '_extension' => 'gif', '_defaultdir' => 'img/icons', 'width' => 15, 'height' => 14), $smarty);
 				}
 				$rel='external';
 				if ($prefs['feature_wiki_ext_rel_nofollow'] == 'y') {
@@ -2098,7 +2064,7 @@ if ( \$('#$id') ) {
 
 				if (isset($tiki_p_edit_dynvar)&& $tiki_p_edit_dynvar=='y') {
 					$span1 = "<span  style='display:inline;' id='dyn_".$dvar."_display'><a class='dynavar' onclick='javascript:toggle_dynamic_var(\"$dvar\");' title='".tra('Click to edit dynamic variable', '', true).": $dvar'>$value</a></span>";
-					$span2 = "<span style='display:none;' id='dyn_".$dvar."_edit'><input type='text' name='dyn_".$dvar."' value='".$value."' />".'<input type="submit" class="btn btn-default" name="_dyn_update" value="'.tra('Update variables', '', true).'"/></span>';
+					$span2 = "<span style='display:none;' id='dyn_".$dvar."_edit'><input type='text' name='dyn_".$dvar."' value='".$value."' />".'<input type="submit" name="_dyn_update" value="'.tra('Update variables', '', true).'"/></span>';
 				} else {
 					$span1 = "<span class='dynavar' style='display:inline;' id='dyn_".$dvar."_display'>$value</span>";
 					$span2 = '';
@@ -2111,7 +2077,7 @@ if ( \$('#$id') ) {
 				$data = str_replace("$enclose$dvar$enclose", $value, $data);
 			}
 			//At the end put an update button
-			//<br /><div align="center"><input type="submit" class="btn btn-default" name="dyn_update" value="'.tra('Update variables','',true).'"/></div>
+			//<br /><div align="center"><input type="submit" name="dyn_update" value="'.tra('Update variables','',true).'"/></div>
 			$data='<form method="post" name="dyn_vars">'."\n".$data.'</form>';
 		}
 
@@ -3141,18 +3107,5 @@ if ( \$('#$id') ) {
 		$cache_hotwords = $ret;
 		return $ret;
 	}
-
-    /*
-     * When we save a page that contains a TranslationOf plugin, we need to remember
-     * that relation, so we later, when the page referenced by this plugin gets translated,
-     * we can replace the plugin by a proper link to the translation.
-     */
-    public function add_translationof_relation($data, $arguments, $page_being_parsed)
-    {
-        global $relationlib;
-
-        $relationlib->add_relation('tiki.wiki.translationof', 'wiki page', $page_being_parsed, 'wiki page', $arguments['translation_page']);
-
-    }
 }
 

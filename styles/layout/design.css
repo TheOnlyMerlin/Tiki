@@ -74,10 +74,6 @@ body.fixed_width .fixedwidth .fixedwidth {
 	margin-right: 30px;
 }
 
-#role_main {
-    min-height: 40em;
-}
-
 .button {
 	display: inline-block;
 }
@@ -169,8 +165,8 @@ img {
 	clear: none;
 }
 
-.sitetitle,
-.sitesubtitle {
+#sitetitle,
+#sitesubtitle {
 	line-height: 1;
 }
 
@@ -688,7 +684,6 @@ a.toolbar {			/* each tool button */
 	background: #fff;
 	border: thin solid #000;
 	color: #000;
-	padding: 4px;
 }
 
 .toolbars-picker.specialchar {	/* colours, smilies etc */
@@ -696,7 +691,7 @@ a.toolbar {			/* each tool button */
 }
 
 .toolbars-picker a {
-	padding: 4px 0 4px 4px;
+	padding: 0;
 	margin: 0;
 	display: inline-block;
 	border: #fff 1px solid;
@@ -883,7 +878,7 @@ h3.box-title {
 .rbox-title {
 	display: inline-block;
 	width: auto;
-	z-index: 0;
+	z-index: 1;
 	position: relative;
 	margin-bottom: -0.33em;
 	padding: 0.35em 0.9em 0.1em;
@@ -1581,77 +1576,22 @@ body.tiki_forums .normal {
 }
 
 /* Comments */
-
-#comment-container {
+#comzone {
 	display: none;
-	margin: 0;
+	margin: 5px 0;
 	padding: 0;
 }
 
-#comment-container h4 {
+#comzoneopen {
+	display: block;
+	margin: 5px 0;
+	padding: 0;
+}
+
+.commentstitle {
 	font-weight: bold;
 	font-size: 1.2em;
 }
-
-#comment-container .buttons table {
-	width: 100%;
-}
-
-/* Comments (article, blogs) */
-
-#comment-container ol {
-	list-style: none;
-	margin: 0 0 0 1em;
-	padding: 0;
-}
-
-#comment-container ol ol {
-	margin: 0 0 0 4em;
-}
-
-/* Comment Annotations */
-
-dl.note-list {
-	background: #fff;
-	color: #000;
-	border: solid thin black;
-	margin: .5em;
-}
-
-#note-editor-comment {
-	background: yellow;
-	color: #000;
-	border: #999 1px solid;
-}
-
-.note-editor-text {
-	background: #eee;
-	color: #000;
-}
-
-.note-list .postbody-title {
-	background: #ccc;
-	color: #000;
-}
-
-/* Comments moderation */
-.post-approved-n {
-	border-left: 3px dotted blue;
-}
-
-.post-approved-r {
-	border-left: 3px double red;
-}
-
-.post-approved-r .content * {
-	background: url(../../img/icons/dots.gif);
-}
-
-
-#wikihelp-tab table td {
-	padding: 2px;
-}
-
 
 /* applied mainly to titles : option ? help-inline-level user defined  */
 .simple_comment {
@@ -1777,7 +1717,6 @@ body.filegal_popup #tiki-center {
 	padding: 0;
 	height: auto;
 	overflow: visible;
-	border: 1px solid transparent;
 }
 
 .multiselect table {
@@ -1811,8 +1750,6 @@ body.filegal_popup #tiki-center {
 	margin: 0 1em 0.5em .5em;
 	display: block;
 	float: left;
-	width: auto;
-	min-width: 20%;
 }
 
 .multiselect img {
@@ -1833,34 +1770,6 @@ body.filegal_popup #tiki-center {
 	padding: 0;
 	border: 1px solid transparent;
 	background: #fff;
-}
-
-.multiselect .odd {
-	color: #000;
-	background: #f4f6f7;
-}
-
-.multiselect .odd:hover {
-	background: #fff7e6;
-}
-
-.multiselect .even {
-	color: #000;
-	background: #e7e9ea;
-}
-
-.multiselect .even:hover {
-	background: #f0f2f3;
-}
-
-.multiselect div.odd,
-.multiselect div.even {
-	border: 1px solid #80b1e2;
-}
-
-.multiselect:hover,
-.multiselect .selection:hover {
-	border: 1px solid #80b1e2;
 }
 
 /***** Categories, Tags *****/
@@ -2123,7 +2032,7 @@ ul.freetagged li {
 .cluetip-close {
 	float: right;
 	margin: 0;
-	padding: .5em .2em;
+	padding-right: .1em;
 	background: transparent;
 	color: #900;
 }
@@ -2155,9 +2064,6 @@ ul.freetagged li {
 	border: none;
 }
 
-.ui-cluetip-header {
-    font-size: 1.4em;
-}
 /* Cluetip - JQuery tooltips
    =cluetipClass: 'default' */
 
@@ -2240,13 +2146,6 @@ table.treetable tr.expanded span.indenter a {
   background-image: url(../../img/toggle-collapse-dark.png);
 }
 
-table.treetable.objectperms td.added {
-	background-color: #dfd;
-}
-
-table.treetable.objectperms td.removed {
-	background-color: #fdd;
-}
 
 /* tree browser */
 
@@ -2662,16 +2561,17 @@ div.aclabel, span.aclabel, label.aclabel {
 	display: block;
 	width: 100%;
 	height: 100%;
-	margin: 0 !important;
-	padding: 0 !important;
+	margin: 0;
+	padding: 0;
 	border: 0px solid #BBBBBB;
 	opacity: 1;
 	width: 100%;
 	top: 0 !important;
 	left: 0 !important;
 	position: fixed !important;
+	top: expression(eval(document.body.scrollTop + 15) + "px");
+	/*left: expression(eval(document.body.scrollLeft) + "px");*/
 	background-color: gray;
-	z-index: 100 !important;
 }
 .TextArea-fullscreen #editwiki_toolbar {
 	width: 100% !important;
@@ -2690,23 +2590,19 @@ div.aclabel, span.aclabel, label.aclabel {
 .TextArea-fullscreen .actions, .CodeMirror-fullscreen .actions {
 	bottom: 0 !important;
 	left: 50%;
-	margin-left: -50%;
+	margin-left: -25%;
 	position: absolute;
 	text-align: center;
-	width: 100%;
-	z-index: 101 !important;
-	background-color: #fff;
-	padding: .4em 0 .2em;
-	border-top: #aaa 1px solid;
+	width: 50%;
+	z-index: 1;
 }
 .TextArea-fullscreen .actions input, .CodeMirror-fullscreen .actions input {
 	/*margin: 1px !important;*/
 }
 .TextArea-fullscreen .button, .CodeMirror-fullscreen .button {
-	bottom: 3em;
-    position: fixed;
-    right: 2em;
-    z-index: 102;
+	position: absolute;
+	bottom: 0;
+	z-index: 2;
 }
 
 .TextArea-fullscreen .cm-remove, .CodeMirror-fullscreen .cm-remove {
@@ -2880,13 +2776,8 @@ input {
 	display: block;
 }
 
-button.ui-button, button.ui-button:hover {
-    padding: 0;
-}
-
 /* highlight on interface text to draw attention; also
 highlight on "button" links, e.g. if there are some comments it highlights the "button" link in #page-bar under the content of the wiki pages */
-.searchresults blockquote em,
 .highlight,
 .button.highlight a,
 .button a.highlight {
@@ -2928,7 +2819,7 @@ input[type=radio] {
 }
 
 
-.sitelogo img {
+#sitelogo img {
 	margin-top: 10px;
 }
 
@@ -3333,16 +3224,6 @@ caption {
 	padding-right: 1px;
 }
 
-.normal.item th {
-	text-align: right;
-	padding: .2em .5em;
-}
-
-.normal.item td {
-	text-align: left;
-	padding: .2em .5em;
-}
-
 /***** Wiki *****/
 
 #cachedpage {
@@ -3621,6 +3502,57 @@ small.description {
 	padding: 5px 0px 15px 0px;
 }
 
+/* Comments (article, blogs) */
+
+#comment-container ol {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+/* Comment Annotations */
+
+dl.note-list {
+	background: #fff;
+	color: #000;
+	border: solid thin black;
+	margin: .5em;
+}
+
+#note-editor-comment {
+	background: yellow;
+	color: #000;
+	border: #999 1px solid;
+}
+
+.note-editor-text {
+	background: #eee;
+	color: #000;
+}
+
+.note-list .postbody-title {
+	background: #ccc;
+	color: #000;
+}
+
+/* Comments moderation */
+.post-approved-n {
+	border-left: 3px dotted blue;
+}
+
+.post-approved-r {
+	border-left: 3px double red;
+}
+
+.post-approved-r .content * {
+	background: url(../../img/icons/dots.gif);
+}
+
+
+#wikihelp-tab table td {
+	padding: 2px;
+}
+
 /**** Image Galleries ****/
 
 p.norecords {
@@ -3641,12 +3573,11 @@ p.norecords {
 }
 
 .opaque .box-title {
-	padding: .5em .5em .2em;
-	font-weight: bold;
+	padding: 3px 3px 0 3px;
 }
 
 .opaque .box-data {
-	padding: .2em .5em;
+	padding: 0 3px 3px 3px;
 }
 
 .thumbinfosothers {
@@ -3659,6 +3590,34 @@ p.norecords {
 }
 
 /***** Trackers (etc.) *****/
+
+.multiselect .odd {
+	color: #000;
+	background: #f4f6f7;
+}
+
+.multiselect .odd:hover {
+	background: #fff7e6;
+}
+
+.multiselect .even {
+	color: #000;
+	background: #e7e9ea;
+}
+
+.multiselect .even:hover {
+	background: #f0f2f3;
+}
+
+.multiselect div.odd,
+.multiselect div.even {
+	border: 1px solid #80b1e2;
+}
+
+.multiselect:hover,
+.multiselect .selection:hover {
+	border: 1px solid #80b1e2;
+}
 
 /***** Categories, Tags *****/
 
@@ -4191,8 +4150,6 @@ form.simple label.error {
 
 .tracker-item-files li {
 	clear: right;
-	padding-right: 1em;
-	font-size: 0.9em;
 }
 
 .tracker-item-files label {
@@ -4201,8 +4158,6 @@ form.simple label.error {
 }
 
 .tracker-item-files {
-	column-count: 2;
-	column-gap: 30px; 
 	-moz-column-count: 2;
 	-moz-column-gap: 30px;
 	-webkit-column-count: 2;
@@ -4226,11 +4181,6 @@ form.simple label .description {
 	padding-left: 20px;
 }
 
-form.simple label .warning {
-	padding-top: 12px;
-	color: #800;
-}
-
 form.simple textarea,
 form.simple input[type="text"],
 form.simple input[type="file"],
@@ -4249,25 +4199,29 @@ form.simple textarea.export {
 }
 
 /* $.fn.modal */
-.modal {
-	position: absolute;
-	text-align: center;
-}
-.modal .mask {
-	position: absolute;
-	background-color: #fff;
-	display: none;
-	width: 100%;
-	height: auto;
+.mask {
+	position:absolute;
+	z-index:999;
+	background-color:#FFFFFF;
+	display:none;
 }
 
-.modal .dialog {
-	position:absolute;
-	top: 50%;
-	left: 50%;
-	font-weight: bold;
+.boxes, .boxes * {
+	z-index: 2147483646;
 }
-/* end $.fn.modal */
+
+.boxes .dialog {
+	position:absolute;
+	width: auto;
+	height: auto;
+	font-weight: bold;
+	z-index: 2147483647;
+	text-align: center;
+}
+
+.boxes img {
+	z-index: 2147483647;
+}
 
 .structuremenu .menuSection {
 	margin-left: 6px;
@@ -4360,7 +4314,6 @@ form.simple textarea.export {
 	padding: 1px;
 	border-radius: 5px;
 	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
 	background: #eee;
 	max-width: 30px;
 	white-space: nowrap;
@@ -4483,121 +4436,6 @@ a.cke_button span.cke_icon {
     height: 16px;
     width: 16px;
     margin-top: -5px;
-}
-
-
-/* Inline CkEditor */
-.cke_editable:hover {
-	outline: #ccc dotted 1px;
-}
-.tiki_plugin {
-	display: inline-block;
-	background-color: transparent; /* was #f8f8f8; */
-	border: 1px solid #eee;
-}
-
-.tiki_plugin .plugin_icon {
-	float: left;
-	position: absolute;
-	opacity: .7;
-}
-
-.unsavedChangesInEditor 
-{
-    border: 1px solid;
-    border-color: Red;
-}
-
-div.tiki_plugin { width: 100%; }
-
-/* Auto TOC */
-div#outerToc {
-	position:fixed;
-	top:0px;
-	left: 75%;
-	background:#E0E0E0;
-	display:none;
-	border-radius:0px 0px 5px 5px;
-	z-index:5;
-	padding:5px;
-	margin:5px;
-}
-
-div#outerToc-static {
-    border: 1px solid;
-    border-collapse: collapse;
-	padding: 5px;
-	margin: 5px;
-}
-div#outerToc-static ul {
-	padding-left: 1em;
-}
-
-/* Friendship / Community  */
-
-.user-info {
-	font-size: .9em;
-	padding-bottom: 2em;
-}
-
-.user-info p {
-	margin-left: 50px;
-}
-
-.user-info .avatar {
-	float: left;
-	margin-right: .3em;
-}
-
-.user-info .gender,
-.user-info .email,
-.user-info .lastseen {
-	display: block;
-	clear: right;
-}
-
-.user-info .distance {
-	margin-left: 1em;
-}
-
-.user-info .friendship {
-	list-style: none;
-	margin: 0 1em 0 50px;
-	padding: 0;
-}
-
-.user-info .friendship li {
-	float: left;
-	margin-right: 1em;
-}
-
-.user-info .friendship li span {
-	padding-right: .5em;
-}
-
-/* User Wizard */
-
-.userWizardIconleft {
-    float: left;
-    margin-right: 10px;
-}
-
-.userWizardIconright {
-    float: right;
-    margin-left: 10px;
-}
-
-.userWizardContent {
-    margin-top: 1em;
-}
-
-.userWizardContent legend {
-    margin-bottom: 1em;
-    font-weight: bold;
-}
-
-.userWizardContent fieldset {
-    margin: 1em 0;
 }
 
 /* End of file */

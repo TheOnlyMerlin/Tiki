@@ -23,13 +23,13 @@
 		<input type="checkbox" name="only_pending"{if $only_pending eq 'y'} checked="checked"{/if}>
 	</label>
 	<br>
-	<input type="submit" class="btn btn-default" name="filter" value="{tr}Filter{/tr}">
+	<input type="submit" name="filter" value="{tr}Filter{/tr}">
 	</form>
 </div>
 
 {tr}Number of invitations:{/tr} {$cant}
 {if $cant > 0}
-<table class="table normal">
+<table class="normal">
 <tr>
 {if $tiki_p_admin eq 'y'}
 	<th>{self_link _sort_arg='sort_mode' _sort_field='inviter'}{tr}Inviter{/tr}{/self_link}</th>

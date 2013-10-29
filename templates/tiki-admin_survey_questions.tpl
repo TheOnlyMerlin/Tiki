@@ -50,14 +50,14 @@
 			</td>
 		</tr>
 		<tr><td>{tr}Options (if apply):{/tr}</td><td><input type="text" name="options" value="{$info.options|escape}" size="80"></td></tr>
-		<tr><td >&nbsp;</td><td><input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}"></td></tr>
+		<tr><td >&nbsp;</td><td><input type="submit" name="save" value="{tr}Save{/tr}"></td></tr>
 	</table>
 </form>
 <h2>{tr}Questions{/tr}</h2>
 
 {include file='find.tpl'}
 
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th><a href="tiki-admin_survey_questions.php?surveyId={$surveyId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'questionId_desc'}questionId_asc{else}questionId_desc{/if}">{tr}ID{/tr}</a></th>
 		<th><a href="tiki-admin_survey_questions.php?surveyId={$surveyId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'position_desc'}position_asc{else}position_desc{/if}">{tr}Position{/tr}</a></th>

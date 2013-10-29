@@ -13,7 +13,7 @@ class Tracker_Field_Factory
 	private $typeMap = array();
 	private $infoMap = array();
 
-	function __construct($trackerDefinition = null)
+	function __construct($trackerDefinition)
 	{
 		$this->trackerDefinition = $trackerDefinition;
 
@@ -86,10 +86,8 @@ class Tracker_Field_Factory
 			'infoMap' => $this->infoMap,
 		);
 
-		if (defined('TIKI_PREFS_DEFINED')) {
-			$cachelib->cacheItem($cacheKey, serialize($data));
-			$this->setPreCacheTypeMap($data);
-		}
+		$cachelib->cacheItem($cacheKey, serialize($data));
+		$this->setPreCacheTypeMap($data);
 	}
 
 	function compareName($a, $b)
@@ -100,13 +98,6 @@ class Tracker_Field_Factory
 	function getFieldTypes()
 	{
 		return $this->infoMap;
-	}
-
-	function getFieldInfo($type)
-	{
-		if (isset($this->infoMap[$type])) {
-			return $this->infoMap[$type];
-		}
 	}
 
 	function getHandler($field_info, $itemData = array())

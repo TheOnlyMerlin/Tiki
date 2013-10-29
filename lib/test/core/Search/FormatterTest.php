@@ -177,7 +177,7 @@ OUT;
 
 	function testPaginationInformationProvided()
 	{
-		$this->markTestSkipped('Template issues in this context.');
+		$this->markTestSkipped();
 		$plugin = new Search_Formatter_Plugin_SmartyTemplate(dirname(__FILE__).'/paginate.tpl');
 
 		$formatter = new Search_Formatter($plugin);

@@ -15,12 +15,12 @@
 	</select>
 
 	{if $categIdstr}<input type="hidden" name="categId" value="{$categIdstr}">{/if}
-	<input type="submit" class="btn btn-default" name="selrank" value="{tr}View{/tr}">
+	<input type="submit" name="selrank" value="{tr}View{/tr}">
 </form>
 
 {cycle values="odd,even" print=false}
 {section name=ix loop=$rankings}
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th>{tr}Rank{/tr}</th>
 			<th>{$rankings[ix].title}</th>

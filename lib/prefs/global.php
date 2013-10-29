@@ -59,12 +59,10 @@ function prefs_global_list($partial = false)
 		'wikiHomePage' => array(
 			'name' => tra('Wiki Home page'),
 			'description' => tra('Landing page used for the wiki when no page is specified. The page will be created if it does not exist.'),
-			'keywords' => 'homepage',
 			'type' => 'text',
 			'size' => 20,
 			'default' => 'HomePage',
 			'tags' => array('basic'),
-			'profile_reference' => 'wiki_page',
 		),
 		'useGroupHome' => array(
 			'name' => tra('Use group homepages'),
@@ -251,7 +249,7 @@ function prefs_global_list($partial = false)
             'description' => tra(''),
 			'type' => 'text',
 			'size' => '3',
-			'default' => 25,
+			'default' => 24,
 			'tags' => array('basic'),
 		),
 		'maxVersions' => array(
@@ -428,7 +426,7 @@ function prefs_global_list($partial = false)
  */
 function feature_home_pages($partial = false)
 {
-	global $prefs, $tikilib;
+	global $prefs, $tikilib, $commentslib;
 	$tikiIndex = array();
 
 	//wiki
@@ -471,9 +469,12 @@ function feature_home_pages($partial = false)
 	
 	// Forum
 	if ( ! $partial && $prefs['feature_forums'] == 'y' ) {
-
+		require_once ('lib/comments/commentslib.php');
+		if (!isset($commentslib)) {
+			$commentslib = new Comments;
+		}
 		if ($prefs['home_forum'] != '0') {
-			$hforuminfo = TikiLib::lib('comments')->get_forum($prefs['home_forum']);
+			$hforuminfo = $commentslib->get_forum($prefs['home_forum']);
 			$home_forum_name = substr($hforuminfo['name'], 0, 20);
 		} else {
 			$home_forum_name = tra('Set Forum homepage first');

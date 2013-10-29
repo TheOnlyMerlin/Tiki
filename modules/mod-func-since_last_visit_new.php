@@ -68,7 +68,7 @@ function module_since_last_visit_new_info()
 function module_since_last_visit_new($mod_reference, $params = null)
 {
 	global $smarty, $user;
-
+	global $commentslib; require_once('lib/comments/commentslib.php'); $commentslib = new Comments();
 	include_once('tiki-sefurl.php');
 
 	if (!$user) {
@@ -143,7 +143,7 @@ function module_since_last_visit_new($mod_reference, $params = null)
 
 	$count = 0;
 	while ($res = $result->fetchRow()) {
-		$ret['items']['comments']['list'][$count]['href'] = TikiLib::lib('comments')->getHref($res['objectType'], $res['object'], $res['threadId']);
+		$ret['items']['comments']['list'][$count]['href'] = $commentslib->getHref($res['objectType'], $res['object'], $res['threadId']);
 		switch ($res['objectType']) {
 			case 'article':
 				$perm = 'tiki_p_read_article';
@@ -566,9 +566,9 @@ function module_since_last_visit_new($mod_reference, $params = null)
 				$ret['items']['utrackers']['tid'][$res['trackerId']]['label'] = tra('in') .' '. tra($tracker_name[$res['trackerId']]);
 				$ret['items']['utrackers']['tid'][$res['trackerId']]['cname'] = 'slvn_utracker' . $res['trackerId'] . '_menu';
 				$ret['items']['utrackers']['tid'][$res['trackerId']]['list'][$countb[$res['trackerId']]]['href']  = filter_out_sefurl(
-					'tiki-view_tracker_item.php?itemId=' . $res['itemId'],
-					'trackeritem'
-				);
+						'tiki-view_tracker_item.php?itemId=' . $res['itemId'],
+						'trackeritem'
+					);
 				$ret['items']['utrackers']['tid'][$res['trackerId']]['list'][$countb[$res['trackerId']]]['title'] = $tikilib->get_short_datetime($res['lastModif']);
 
 				// routine to verify field in tracker that's used as label

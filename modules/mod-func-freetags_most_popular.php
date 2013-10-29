@@ -55,10 +55,10 @@ function module_freetags_most_popular_info()
 			),
 			'objectId' => array(
 				'required' => false,
-				'name' => tra('BlogId'),
-				'description' => tra('Blog Id if only blog posts selected. More than one blog can be provided, separated by colon. Example: 1:5'),
+                                'name' => tra('BlogId'),
+				'description' => tra('Blog Id if only blog posts selected'),
+				'filter' => 'int',
 				'default' => null,
-				'profile_reference' => 'blog',
 			),
 		),
 		'common_params' => array('rows') // This is not clean. We should use just max instead of max and rows as fallback,

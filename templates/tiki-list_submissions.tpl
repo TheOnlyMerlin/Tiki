@@ -7,12 +7,10 @@
 	{/if}
 </div>
 
-{if $listpages or ($find ne '') or ($types ne '') or ($topics ne '') or ($lang ne '') or ($categId ne '')}
-	{include file='find.tpl' find_show_languages='y' find_show_num_rows='y'}
-{/if}
+{include file='find.tpl' find_show_num_rows='y'}
 <form name="checkform" method="get" action="{$smarty.server.PHP_SELF}">
 	<input type="hidden" name="maxRecords" value="{$maxRecords|escape}">
-	<table class="table normal">
+	<table class="normal">
 		{assign var=numbercol value=0}
 		<tr>
 			{if $tiki_p_remove_submission eq 'y' or $tiki_p_approve_submission eq 'y'}
@@ -101,10 +99,10 @@
 						<a class="link" href="tiki-edit_submission.php?subId={$listpages[changes].subId}">{icon _id='page_edit'}</a>
 					{/if}
 					{if $tiki_p_approve_submission eq 'y'}
-						{self_link approve=$listpages[changes].subId}{icon _id='accept' alt="{tr}Approve{/tr}"}{/self_link}
+						<a class="link" href="tiki-list_submissions.php?approve={$listpages[changes].subId}">{icon _id='accept' alt="{tr}Approve{/tr}"}</a>
 					{/if}
 					{if $tiki_p_remove_submission eq 'y'}
-						{self_link remove=$listpages[changes].subId}{icon _id='cross' alt="{tr}Remove{/tr}"}{/self_link}
+						<a class="link" href="tiki-list_submissions.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$listpages[changes].subId}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 					{/if}
 				</td>
 			</tr>
@@ -118,7 +116,7 @@
 					{if $listpages}
 						<p align="left"> {*on the left to have it close to the checkboxes*}
 							{if $tiki_p_remove_submission eq 'y'}
-								{button _text="{tr}Select Duplicates{/tr}" _onclick="checkDuplicateRows(this,'td:not(:eq(2))'); return false;"}
+								{button _text="{tr}Select Duplicates{/tr}" _onclick="checkDuplicateRows(this); return false;"}
 							{/if}
 							<label>{tr}Perform action with checked:{/tr}
 								<select name="submit_mult">
@@ -127,7 +125,7 @@
 									{if $tiki_p_approve_submission eq 'y'}<option value="approve_subs" >{tr}Approve{/tr}</option>{/if}
 								</select>
 							</label>
-							<input type="submit" class="btn btn-default" value="{tr}Ok{/tr}">
+							<input type="submit" value="{tr}Ok{/tr}">
 						</p>
 					{/if}
 				</td>
@@ -135,4 +133,4 @@
 		{/if}
 	</table>
 	{pagination_links cant=$cant_pages step=$maxRecords offset=$offset}{/pagination_links}
-</form>
+<form>

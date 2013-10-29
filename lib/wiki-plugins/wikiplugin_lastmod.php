@@ -18,7 +18,6 @@ function wikiplugin_lastmod_info()
 				'required' => false,
 				'name' => tra('Page'),
 				'description' => tra('Page name to display information of. Default value is current page.'),
-				'profile_reference' => 'wiki_page',
 			),
 		),
 	);

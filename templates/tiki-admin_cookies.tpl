@@ -17,7 +17,7 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
+				<input type="submit" name="save" value="{tr}Save{/tr}">
 			</td>
 		</tr>
 	</table>
@@ -36,7 +36,7 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" class="btn btn-default" name="upload" value="{tr}Upload{/tr}">
+				<input type="submit" name="upload" value="{tr}Upload{/tr}">
 			</td>
 		</tr>
 	</table>
@@ -55,7 +55,7 @@
 	{include file='find.tpl'}
 {/if}
 
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>
 			<a href="tiki-admin_cookies.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'cookieId_desc'}cookieId_asc{else}cookieId_desc{/if}">{tr}ID{/tr}</a>
