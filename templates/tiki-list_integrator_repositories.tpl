@@ -11,7 +11,7 @@
 
 {* Table with list of repositories (if array is not empty) *}
 {if count($repositories) gt 0}
-<table class="table normal" id="integrator-repositories">
+<table class="normal" id="integrator-repositories">
   <tr>
     <th>{tr}Name{/tr}</th>
     <th>{tr}Description{/tr}</th>
@@ -19,12 +19,12 @@
   {cycle values="odd,even" print=false}
   {section name=rep loop=$repositories}
     <tr class="{cycle}">
-      <td class="text">
+      <td>
         <a href="tiki-integrator.php?repID={$repositories[rep].repID|escape}">
           {$repositories[rep].name}
         </a>
       </td>
-      <td class="text">{$repositories[rep].description}</td>
+      <td>{$repositories[rep].description}</td>
     </tr>
   {/section}
 </table>

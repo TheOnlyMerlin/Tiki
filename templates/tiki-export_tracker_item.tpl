@@ -25,8 +25,7 @@
 		{/if}
 		{assign var='comma' value='n'}
 	{/if}
-{/strip}{* this empty line below is necessary to make data starts on the line after the headers *}
-
+{/strip}{* this line break is necessary to make data starts on the line after the headers *}
 {foreach from=$items item=item}
 {strip}{* DO NOT ident this strip - the line must not begin with space *}
 		{assign var='comma' value='n'}
@@ -51,16 +50,14 @@
 			{foreach item=field_value from=$item.field_values name=list}
 				{if $field_value.isHidden ne 'c' or ($field_value.isHidden eq 'c' and ($item.itemUser eq $user or $tiki_p_admin_trackers eq 'y'))}
 					{capture name="line"}
-						{trackeroutput field=$field_value item=$item list_mode='csv' showlinks='n'}
+						{include file='tracker_item_field_value.tpl' list_mode='csv' showlinks='n'}
 					{/capture}
-					{$delimitorL}{$smarty.capture.line|replace:"\r\n":"$CR"|replace:"\n":"$CR"|replace:"<br>":"$CR"|replace:"$delimitorL":"$delimitorL$delimitorL"|replace:"$delimitorR":"$delimitorR$delimitorR"}{$delimitorR}
+					{$delimitorL}{$smarty.capture.line|replace:"\r\n":"`$CR`"|replace:"\n":"`$CR`"|replace:"<br />":"`$CR`"|replace:"`$delimitorL`":"`$delimitorL``$delimitorL`"|replace:"`$delimitorR`":"`$delimitorR``$delimitorR`"}{$delimitorR}
 				{else}
 					{$delimitorL}{$delimitorR}
 				{/if}
 				{if !$smarty.foreach.list.last}{$separator}{/if}
 			{/foreach}
 		{/if}
-	{/strip}{* this empty line below is necessary to make separate rows *}
-
+	{/strip}
 {/foreach}
-

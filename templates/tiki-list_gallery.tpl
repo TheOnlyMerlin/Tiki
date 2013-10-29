@@ -21,7 +21,7 @@
 
 <h2>{tr}Gallery Images{/tr}</h2>
 <div align="center">
-<table class="table normal">
+<table class="normal">
 <tr>
 <th><a href="tiki-list_gallery.php?galleryId={$galleryId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'imageId_desc'}imageId_asc{else}imageId_desc{/if}">{tr}ID{/tr}</a></th>
 <th><a href="tiki-list_gallery.php?galleryId={$galleryId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></th>
@@ -45,7 +45,9 @@
 <td>{$images[changes].filesize|kbsize}&nbsp;</td>
 </tr>
 {sectionelse}
-	{norecords _colspan=6}
+<tr><td colspan="6">
+<b>{tr}No records found{/tr}</b>
+</td></tr>
 {/section}
 </table>
 

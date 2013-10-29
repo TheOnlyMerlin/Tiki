@@ -69,7 +69,8 @@ input[type="submit"]:hover,
 }
 
 .highlight,
-.button.highlight a {
+.button.highlight a,
+.calfocuson {
 	border: #e4afd3;
 	color: #8e286a;
 	background: #ddf4ef;
@@ -120,23 +121,19 @@ textarea,
 	border: 2px solid #a82a76;
 }
 
-.caltable .odd,
-.caltable .even,
-.caltable .calborder,
+.calodd,
+.caleven,
 .wikicell {
 	border: 2px solid #efcde5;
 }
 
-.caltable td.calhighlight,
-td.calheadhighlight {
-	background: #ddf4ef;
-}
-
-.odd {
+.odd,
+.calodd {
 	background: #faf1f8;
 }
 
-.even {
+.even,
+.caleven {
 	background: #f4dded;
 }
 

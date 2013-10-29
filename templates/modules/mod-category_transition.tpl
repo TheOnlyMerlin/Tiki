@@ -10,13 +10,13 @@
 					<div id="trans{$trans.transitionId|escape}">
 						{foreach item=reason from=$trans.explain}
 							{if $reason.class eq 'missing'}
-								<p>{tr _0=$reason.count}Missing %0 of the following categories:{/tr}</p>
+								<p>{tr 0=$reason.count}Missing %0 of the following categories:{/tr}</p>
 							{elseif $reason.class eq 'extra'}
-								<p>{tr _0=$reason.count}%0 extra of the following categories:{/tr}</p>
+								<p>{tr 0=$reason.count}%0 extra of the following categories:{/tr}</p>
 							{elseif $reason.class eq 'unknown'}
-								<p>{tr _0=$reason.count}Unknown comparison:{/tr}</p>
+								<p>{tr 0=$reason.count}Unknown comparison:{/tr}</p>
 							{elseif $reason.class eq 'invalid'}
-								<p>{tr _0=$reason.count}Impossible condition, %0 of:{/tr}</p>
+								<p>{tr 0=$reason.count}Impossible condition, %0 of:{/tr}</p>
 							{/if}
 							<ul>
 								{foreach from=$reason.set item=state}
@@ -39,7 +39,7 @@
 					$(this.href.substr(this.href.lastIndexOf('#'))).toggle('fast');
 				} );
 		{/literal}{/jq}
-		<div><input type="submit" class="btn btn-default" value="{tr}Apply{/tr}"/></div>
+		<div><input type="submit" value="{tr}Apply{/tr}"/></div>
 	</form>
 	{/tikimodule}
 {/if}

@@ -24,8 +24,8 @@ input[type=reset] {
 	font: bold .95em/2em Verdana, Helvetica, Geneva, Arial, sans-serif;
 }
 
-.button a:link,
-.button a:visited {
+span.button a:link,
+span.button a:visited {
 	text-decoration: none;
 	border: 0;
 	padding: 0 4px;
@@ -49,19 +49,21 @@ td.third {
 }
 
 .wikitopline table {
-	font-size: 1.2em;
 	width: 97%;
 }
 
+.wikitopline table {
+	font-size: 1.2em;
+}
 .post .postbody {
 	font-size: 11px;
 }
 
-body .galtable {
+body table.galtable {
 	width: 97%;
 }
 
-.thumbname,
-.thumbimage {
+div.thumbname,
+div.thumbimage {
 	position: absolute;
 }

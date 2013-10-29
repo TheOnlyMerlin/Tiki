@@ -61,23 +61,23 @@ a:active {
 }
 
 h1 {
-	font-size: 24px;
+	24px;
 }
 
 h2 {
-	font-size: 22px;
+	22px;
 }
 
 h3 {
-	font-size: 19px
+	19px
 }
 
 h4 {
-	font-size: 16px;
+	16px;
 }
 
 h5 {
-	font-size: 15px;
+	15px;
 }
 
 legend {
@@ -111,11 +111,6 @@ input[type="submit"]:hover,
 
 select,
 input[type="text"],
-input[type="email"],
-input[type="file"],
-input[type="number"],
-input[type="password"],
-input[type="search"],
 textarea,
 .adminoptionbox option {
 	color: #fff;
@@ -227,17 +222,20 @@ input[type=submit]:hover {
 
 /* special arrows and arrow top padding */
 .cssmenu_vert li a .sf-sub-indicator {
-	background: url(../../../img/superfish/arrows-ffffff.png) no-repeat 0 0;
+	background: url(../../../lib/jquery/superfish/images/arrows-ffffff.png) no-repeat 0 0;
+}
+
+.separator {
+	margin-top: 4px;
+	margin-bottom: 2px;
+	padding-bottom: 2px;
+	border-bottom: 1px dashed #2255aa;
 }
 
 .separator {
 	color: #b1b299;
 	text-decoration: none;
 	font-size: 14px;
-	margin-top: 4px;
-	margin-bottom: 2px;
-	padding-bottom: 2px;
-	border-bottom: 1px dashed #2255aa;
 }
 
 .separator:hover {
@@ -263,18 +261,13 @@ input[type=submit]:hover {
 }
 
 /**infinite carousel**/
+
 #carousel {
         color: #122232;
 }
 
 #carousel a {
         color: #122232;
-}
-
-
-/** tree **/
-.ui-icon {
-background-image:url('../../../vendor/jquery/jquery-ui-themes/themes/smoothness/images/ui-icons_888888_256x240.png');
 }
 
 /**** Boxes *****/
@@ -292,7 +285,7 @@ h3.box-title {
 	color: #4477cc;
 	padding-left: 6px;
 	padding-right: 6px;
-	margin-bottom: 1px;
+	margin-bottom: 1px
 	margin-top: 0;
 	text-align: left;
 }
@@ -356,26 +349,20 @@ tr.diffheader {
 
 tr.odd td,
 td.odd,
-li.odd,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+li.odd {
 	background: #121212;
 	color: #aeaeae;
 }
 
 tr.even td,
 td.even,
-li.even,
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+li.even {
 	background: #222;
 	color: #aeaeae;
 }
 
 tr.odd:hover,
-tr.even:hover,
-table.normal tr:nth-child(2n+1):hover,
-table.normal tr:nth-child(2n):hover {
+tr.even:hover {
 	background: #000;
 }
 
@@ -422,7 +409,8 @@ table.normal tr:nth-child(2n):hover {
 
 .tabcontent {
 	background: #121212;
-}
+	border: /*tabcontent_border*/ !important;
+	border-top: none !important;}
 
 .statuson {
 	background: #424242;
@@ -520,11 +508,11 @@ a.admbox:active {
 	color: #262626;
 }
 
-.caltable .even, .caltable .odd {
+.caleven, .calodd {
 	color: black;
 }
 
-.calmodfocus a, .focus a {
+.calHeadingOn a, .calfocuson, .calfocuson a, .focus a {
 	color: #4477cc;
 }
 
@@ -532,36 +520,7 @@ a.admbox:active {
 	color: #27408B;
 }
 
-.calmodfocus a:hover, .focus a:hover, .Cal1 a:hover {
+.focus a:hover, .Cal1 a:hover {
 	color: white;
 }
-
-.caltable .odd {
-	background: #424242;
-}
-
-.caltable .even {
-	background: #222;
-}
-
-.caltable td.calhighlight,
-.caltable td.calhighlight a:link,
-.caltable td.calhighlight a:visited,
-.caltable .even,
-.caltable .odd {
-	color: #dede98;
-	font-weight: normal;
-}
-
-.calendarweek td.calheadhighlight.calHeading,
-.caltable td.calhighlight,
-#month_title.calheadhighlight {
-	background: #336699;
-}
-
-#month_title.calheadhighlight {
-	font-size: 12px;
-	font-weight: bold;
-}
-
 

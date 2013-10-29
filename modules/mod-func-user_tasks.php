@@ -1,23 +1,19 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
 
-/**
- * @return array
- */
-function module_user_tasks_info()
-{
+function module_user_tasks_info() {
 	return array(
-		'name' => tra('My Tasks'),
+		'name' => tra('User tasks'),
 		'description' => tra('Lightweight interface to user tasks, enabling to view them concisely and do some manipulations'),
 		'prefs' => array("feature_tasks"),
 		'params' => array(),
@@ -26,12 +22,7 @@ function module_user_tasks_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
-function module_user_tasks($mod_reference, $module_params)
-{
+function module_user_tasks( $mod_reference, $module_params ) {
 	global $user, $tasklib, $tikilib, $smarty, $tiki_p_tasks;
 	include_once('lib/tasks/tasklib.php');
 	
@@ -51,7 +42,7 @@ function module_user_tasks($mod_reference, $module_params)
 		if (isset($_REQUEST["modTasksSave"])) {
 		
 			$task = $tasklib->get_default_new_task($user);
-			if (strlen($_REQUEST["modTasksTitle"]) > 2) {
+			if(strlen($_REQUEST["modTasksTitle"]) > 2) {
 				$tasklib->new_task($user, $user, null, null, date('U'), array('title' => $_REQUEST["modTasksTitle"]));
 			} else {
 				$smarty->assign('msg', tra("The task title must have at least 3 characters"));

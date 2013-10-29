@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,17 +15,11 @@ if ($tiki_p_admin_tikitests != 'y' and $tiki_p_play_tikitests != 'y') {
 	die;
 }
 
-$smarty->assign('tidy', extension_loaded("tidy"));
-$smarty->assign('http', extension_loaded("http"));
-$smarty->assign('curl', extension_loaded("curl"));
+$smarty->assign("tidy",extension_loaded("tidy"));
+$smarty->assign("http",extension_loaded("http"));
+$smarty->assign("curl",extension_loaded("curl"));
 
-/**
- * @param $file
- * @return bool
- */
-function delete_test($file)
-{
-	global $access;
+function delete_test($file) {
 	$access->check_authenticity(tra("You are about to delete a TikiTest file, do you want to continue ?"));
 	// Clean the filename
 	$file = basename($file);
@@ -64,12 +58,12 @@ chdir('tiki_tests/tests');
 $files = glob('*.xml');
 chdir('../..');
 $files_number = count($files);
-$files = array_slice($files, $offset, $files_per_page);
+$files = array_slice($files,$offset,$files_per_page);
 
-$smarty->assign_by_ref("files", $files);
-$smarty->assign("offset", $offset);
-$smarty->assign("files_number", $files_number);
-$smarty->assign("files_per_page", $files_per_page);
-$smarty->assign('title', tra("TikiTest List"));
-$smarty->assign("mid", "tiki-tests_list.tpl");
+$smarty->assign_by_ref("files",$files);
+$smarty->assign("offset",$offset);
+$smarty->assign("files_number",$files_number);
+$smarty->assign("files_per_page",$files_per_page);
+$smarty->assign('title',tra("TikiTest List"));
+$smarty->assign("mid","tiki-tests_list.tpl");
 $smarty->display("tiki.tpl");

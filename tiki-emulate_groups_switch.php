@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -23,28 +20,28 @@ if ($prefs['feature_sefurl'] == 'y' && !strstr($orig_url, '.php') && !preg_match
 }
 
 // Handle form processing
-if ( isset($_REQUEST["emulategroups"]) ) {
-	if ( $_REQUEST["emulategroups"] == "setgroups" ) {
+if ( isset($_REQUEST["emulategroups"]) ){
+	if( $_REQUEST["emulategroups"] == "setgroups" ) {
 		// User has selected a list of groups to emulate
 		$_SESSION["groups_are_emulated"]="y";
-		if ( count($_REQUEST["switchgroups"]) ) {
+		if( count($_REQUEST["switchgroups"]) ) {
 			$groups_emulated = array();
 			$dont_forget_registered = 0;
-			while ( list(,$value)=each($_REQUEST["switchgroups"]) ) {
+			while( list(,$value)=each($_REQUEST["switchgroups"]) ) {
 				$groups_emulated[]=$value;
 				$included = $tikilib->get_included_groups($value);
 				$groups_emulated = array_merge($groups_emulated, $included);
 				// If one is member of a group different from Anonymous or Registered
 				// then one automatically has the rights of group "Registered"
-				if ( $value != "Registered" && $value != "Anonymous" ) $dont_forget_registered = 1;
+				if( $value != "Registered" && $value != "Anonymous" ) $dont_forget_registered = 1;
 			}
-			if ( $dont_forget_registered == 1 && isset($user) ) {
+			if( $dont_forget_registered == 1 && isset($user) ) {
 				$groups_emulated[]="Registered";
 				$included = $tikilib->get_included_groups("Registered");
 				$groups_emulated = array_merge($groups_emulated, $included);
 			}
 			$groups_emulated = array_unique($groups_emulated);
-		} else {
+		}else{
 			// Let's say clicking with nothing selected is the same as reset
 			// Saying it's the same as Anonymous would have the disadvantage of probably
 			// hiding the module, so the user would need to logout
@@ -53,7 +50,7 @@ if ( isset($_REQUEST["emulategroups"]) ) {
 			$_SESSION['groups_emulated'] = serialize($groups_emulated);
 		}
 		$_SESSION['groups_emulated'] = serialize($groups_emulated);
-	} elseif ( $_REQUEST["emulategroups"] == "resetgroups" ) {
+	}elseif( $_REQUEST["emulategroups"] == "resetgroups" ) {
 		// User stops groups emulation (logging out is an alternate solution for user)
 		$_SESSION["groups_are_emulated"]="n";
 		$groups_emulated = array();

@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -16,7 +13,7 @@ if (!$prefs['minical_reminders']) die;
 //$refresh=$_REQUEST['refresh']*1000;
 $refresh = 1000 * 60 * 1;
 $evs = $minicallib->minical_get_events_to_remind($user, $prefs['minical_reminders']);
-foreach ($evs as $ev) {
+foreach($evs as $ev) {
 	$command = "<script type='text/javascript'>alert('event " . $ev['title'] . " will start at " . date("h:i", $ev['start']) . "');</script>";
 	print ($command);
 	$minicallib->minical_event_reminded($user, $ev['eventId']);

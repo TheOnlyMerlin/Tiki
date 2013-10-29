@@ -1,12 +1,12 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
@@ -26,10 +26,10 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
  * params: prefix, default_unit(key word or value in secs), default (nb of units), default_value (duration in secs)
  * Purpose:  Prints the dropdowns for duration selection
  */
-function smarty_function_html_select_duration($params, $smarty)
+function smarty_function_html_select_duration($params, &$smarty)
 {
 	global $smarty;
-	$smarty->loadPlugin('smarty_function_html_options');
+	require_once $smarty->_get_plugin_filepath('function','html_options');
 	$html_result = '';
 	$default = array('prefix'=>'Duration_', 'default_unit'=>'week', 'default'=>'', 'default_value'=>'');
 	$params = array_merge($default, $params);
@@ -57,22 +57,14 @@ function smarty_function_html_select_duration($params, $smarty)
 		$prefix = $params['prefix'].'_unit';
 	}
 	$html_result .= '<select name="'.$prefix.'">';
-
-	$html_result .= smarty_function_html_options(
-		array(
-			'values' => $values,
-			'output' => $output,
-			'selected' => $selected
-		),
-		$smarty
-	);
-
+	$html_result .= smarty_function_html_options(array(
+		'values' => $values,
+		'output' => $output,
+		'selected' => $selected), $smarty);
 	$html_result .= '</select>';
-	return $html_result;
+    return $html_result;
 }
-
-function compute_select_duration($params, $prefix='Duration')
-{
+function compute_select_duration($params, $prefix='Duration') {
 	return $_REQUEST[$prefix] * $_REQUEST[$prefix.'_unit'];
 }
 

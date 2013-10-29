@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 /**
  * @group integration
@@ -21,7 +16,6 @@ class TikiLib_WikiParserTest extends PHPUnit_Framework_TestCase
 		global $prefs;
 		$prefs['feature_page_title'] = 'y';
 		$prefs['feature_wiki_paragraph_formatting'] = 'n';
-		$prefs['pass_chr_special'] = 'n';
 		$o = new TikiLib;
 		$this->assertEquals($output, $o->parse_data($input, $options));
 	}
@@ -39,8 +33,8 @@ class TikiLib_WikiParserTest extends PHPUnit_Framework_TestCase
 			array('__foo__', "<strong>foo</strong><br />" . "\n"),	 // bold
 			array('__ foo __', "<strong> foo </strong><br />" . "\n"),	 // bold
 
-			array('===foo===', '<u>foo</u>' . "<br />" . "\n"), // underline
-			array('=== foo ===', '<u> foo </u>' . "<br />" . "\n"), // underline
+			array('===foo===', '<span style="text-decoration:underline;">foo</span>' . "<br />" . "\n"), // underline
+			array('=== foo ===', '<span style="text-decoration:underline;"> foo </span>' . "<br />" . "\n"), // underline
 
 			array('-=foo=-', '<div class="titlebar">foo</div>' . "\n"),	// title bar
 			array('-= foo =-', '<div class="titlebar"> foo </div>' . "\n"),	// title bar
@@ -51,25 +45,25 @@ class TikiLib_WikiParserTest extends PHPUnit_Framework_TestCase
 			array('::foo::', '<div style="text-align: center;">foo</div><br />' . "\n"),	// center align
 			array(':: foo ::', '<div style="text-align: center;"> foo </div><br />' . "\n"),	// center align
 
-			array('! foo', '<h1 class="showhide_heading" id="foo"> foo</h1>' . "\n"),	// heading 1
-			array('!!foo', '<h2 class="showhide_heading" id="foo">foo</h2>' . "\n"),	// heading 2
-			array('!! foo', '<h2 class="showhide_heading" id="foo"> foo</h2>' . "\n"),	// heading 2
+			array('! foo', '<h2 class="showhide_heading" id="foo"> foo</h2>' . "\n"),	// heading 1
+			array('!!foo', '<h3 class="showhide_heading" id="foo">foo</h3>' . "\n"),	// heading 2
+			array('!! foo', '<h3 class="showhide_heading" id="foo"> foo</h3>' . "\n"),	// heading 2
 
 			//heading 1 with collapsible text open
 			array(
 				"!+foo\nheading text section",
-				"<h1 class=\"showhide_heading\" id=\"foo\">foo</h1><a id=\"flipperidHomePage1\" class=\"link\" href=\"javascript:flipWithSign('idHomePage1')\">[-]</a><div id=\"idHomePage1\" class=\"showhide_heading\" style=\"display:block;\">\nheading text section<br />\n</div>",
+				"<h2 class=\"showhide_heading\" id=\"foo\">foo</h2><a id=\"flipperidHomePage1\" class=\"link\" href=\"javascript:flipWithSign('idHomePage1')\">[-]</a><div id=\"idHomePage1\" class=\"showhide_heading\" style=\"display:block;\">\nheading text section<br />\n</div>",
 				array('page' => 'HomePage'),
 			),
 			
 			//heading 1 with collapsible text closed
 			array(
 				"!-foo\nheading text section",
-				"<h1 class=\"showhide_heading\" id=\"foo\">foo</h1><a id=\"flipperidHomePage1\" class=\"link\" href=\"javascript:flipWithSign('idHomePage1')\">[+]</a><div id=\"idHomePage1\" class=\"showhide_heading\" style=\"display:none;\">\nheading text section<br />\n</div>",
+				"<h2 class=\"showhide_heading\" id=\"foo\">foo</h2><a id=\"flipperidHomePage1\" class=\"link\" href=\"javascript:flipWithSign('idHomePage1')\">[+]</a><div id=\"idHomePage1\" class=\"showhide_heading\" style=\"display:none;\">\nheading text section<br />\n</div>",
 				array('page' => 'HomePage'),
 			),			
 			
-			array('--foo--', "<strike>foo</strike><br />\n"),	// strike out
+			array('--foo--', "<del>foo</del><br />\n"),	// strike out
 			array('-- foo --', "-- foo --<br />\n"),	// not parsed
 
 			array('[foo]', '<a class="wiki"  href="foo" rel="">foo</a><br />' . "\n"), // link
@@ -99,7 +93,6 @@ class TikiLib_WikiParserTest extends PHPUnit_Framework_TestCase
 			array("# foo\n+ Continuation1\n+Continuation2\n# bar\n", "<ol><li> foo\n<br /> Continuation1\n<br />Continuation2\n</li><li> bar\n</li></ol><br />\n"), // Numbered list with continuation
 
 			array("||r1c1|r1c2\nr2c1|r2c2||", '<table class="wikitable"><tr><td class="wikicell" >r1c1</td><td class="wikicell" >r1c2</td></tr><tr><td class="wikicell" >r2c1</td><td class="wikicell" >r2c2</td></tr></table><br />' . "\n"),
-			array("~pp~foo~/pp~", "<pre>foo</pre><br />\n"),
 		);
 	}
 }

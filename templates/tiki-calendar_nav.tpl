@@ -2,9 +2,6 @@
 {if !isset($ajax)}
 	{assign var='ajax' value='y'}
 {/if}
-{if !isset($module)}
-	{assign var='module' value='n'}
-{/if}
 {if empty($module_params.viewnavbar) || $module_params.viewnavbar eq 'y'}
 <div class="clearfix tabrow" {if $module eq 'y'}style="padding: 0pt"{/if}>
 {if $module neq 'y'}
@@ -12,7 +9,7 @@
 	<div class="tabrowLeft"></div>
 {/if}
 	<div class="viewmode">
-	{if !isset($calendar_type) or $calendar_type neq "tiki_actions"}
+	{if $calendar_type neq "tiki_actions"}
 			{if $module neq 'y'}
 				{button _auto_args="viewmode,focus" _title="{tr}Today{/tr}" _text="{tr}Today{/tr}" _class="calbuttonoff" viewmode='day' focus=$now todate=$now}
 			{else}
@@ -21,7 +18,7 @@
 				{else}
 					{button _auto_args="focus" _keepall=y _title="{tr}Today{/tr}" _text="{tr}Today{/tr}" _class="calbuttonoff" focus=$now todate=$now}
 				{/if}
-				<br class="clear">
+				<br class="clearfix" />
 			{/if}
 	{/if}
 
@@ -29,22 +26,22 @@
 {*previous*}
 		<div>
 		{if $viewmode eq "day"}
-			{self_link _ajax=$ajax _class="prev" todate=$focus_prev _title="{tr}Day{/tr}" _alt="{tr}Day{/tr}" _icon="resultset_previous"}{/self_link}
+			{self_link _ajax=$ajax _class="prev" todate=$focus_prev _title="{tr}Day{/tr}" _alt="{tr}Day{/tr}" _icon=resultset_previous"}{/self_link}
 		{elseif $viewmode eq "week"}
-			{self_link _ajax=$ajax _class="prev" todate=$focus_prev _title="{tr}Week{/tr}" _alt="{tr}Week{/tr}" _icon="resultset_previous"}{/self_link}
+			{self_link _ajax=$ajax _class="prev" todate=$focus_prev _title="{tr}Week{/tr}" _alt="{tr}Week{/tr}" _icon=resultset_previous"}{/self_link}
 		{elseif $viewmode eq "month"}
-			{self_link _ajax=$ajax _class="prev" todate=$focus_prev _title="{tr}Month{/tr}" _alt="{tr}Month{/tr}" _icon="resultset_previous"}{/self_link}
+			{self_link _ajax=$ajax _class="prev" todate=$focus_prev _title="{tr}Month{/tr}" _alt="{tr}Month{/tr}" _icon=resultset_previous"}{/self_link}
 		{elseif $viewmode eq "quarter"}
-			{self_link _ajax=$ajax _class="prev" todate=$focus_prev _title="{tr}Quarter{/tr}" _alt="{tr}Quarter{/tr}" _icon="resultset_previous"}{/self_link}
+			{self_link _ajax=$ajax _class="prev" todate=$focus_prev _title="{tr}Quarter{/tr}" _alt="{tr}Quarter{/tr}" _icon=resultset_previous"}{/self_link}
 		{elseif $viewmode eq "semester"}
-			{self_link _ajax=$ajax _class="prev" todate=$focus_prev _title="{tr}Semester{/tr}" _alt="{tr}Semester{/tr}" _icon="resultset_previous"}{/self_link}
+			{self_link _ajax=$ajax _class="prev" todate=$focus_prev _title="{tr}Semester{/tr}" _alt="{tr}Semester{/tr}" _icon=resultset_previous"}{/self_link}
 		{elseif $viewmode eq "year"}
-			{self_link _ajax=$ajax _class="prev" todate=$focus_prev _title="{tr}Year{/tr}" _alt="{tr}Year{/tr}" _icon="resultset_previous"}{/self_link}
+			{self_link _ajax=$ajax _class="prev" todate=$focus_prev _title="{tr}Year{/tr}" _alt="{tr}Year{/tr}" _icon=resultset_previous"}{/self_link}
 		{/if}
 		</div>
 
 {*viewmodes*}
-		{if !isset($calendar_type) or $calendar_type neq "tiki_actions"}
+		{if $calendar_type neq "tiki_actions"}
 			{if $module neq 'y'}
 				{button _ajax=$ajax href="?viewmode=day" _title="{tr}Day{/tr}" _text="{tr}Day{/tr}" _selected_class="buttonon" _selected="'$viewmode' == 'day'"}
 			{elseif empty($module_params.viewmode)}
@@ -68,17 +65,17 @@
 {*next*}
 		<div>
 		{if $viewmode eq "day"}
-			{self_link _ajax=$ajax _class="next" todate=$focus_next _title="{tr}Day{/tr}" _alt="{tr}Day{/tr}" _icon="resultset_next"}{/self_link}
+			{self_link _ajax=$ajax _class="next" todate=$focus_next _title="{tr}Day{/tr}" _alt="{tr}Day{/tr}" _icon=resultset_next"}{/self_link}
 		{elseif $viewmode eq "week"}
-			{self_link _ajax=$ajax _class="next" todate=$focus_next _title="{tr}Week{/tr}" _alt="{tr}Week{/tr}" _icon="resultset_next"}{/self_link}
+			{self_link _ajax=$ajax _class="next" todate=$focus_next _title="{tr}Week{/tr}" _alt="{tr}Week{/tr}" _icon=resultset_next"}{/self_link}
 		{elseif $viewmode eq "month"}
-			{self_link _ajax=$ajax _class="next" todate=$focus_next _title="{tr}Month{/tr}" _alt="{tr}Month{/tr}" _icon="resultset_next"}{/self_link}
+			{self_link _ajax=$ajax _class="next" todate=$focus_next _title="{tr}Month{/tr}" _alt="{tr}Month{/tr}" _icon=resultset_next"}{/self_link}
 		{elseif $viewmode eq "quarter"}
-			{self_link _ajax=$ajax _class="next" todate=$focus_next _title="{tr}Quarter{/tr}" _alt="{tr}Quarter{/tr}" _icon="resultset_next"}{/self_link}
+			{self_link _ajax=$ajax _class="next" todate=$focus_next _title="{tr}Quarter{/tr}" _alt="{tr}Quarter{/tr}" _icon=resultset_next"}{/self_link}
 		{elseif $viewmode eq "semester"}
-			{self_link _ajax=$ajax _class="next" todate=$focus_next _title="{tr}Semester{/tr}" _alt="{tr}Semester{/tr}" _icon="resultset_next"}{/self_link}
+			{self_link _ajax=$ajax _class="next" todate=$focus_next _title="{tr}Semester{/tr}" _alt="{tr}Semester{/tr}" _icon=resultset_next"}{/self_link}
 		{elseif $viewmode eq "year"}
-			{self_link _ajax=$ajax _class="next" todate=$focus_next _title="{tr}Year{/tr}" _alt="{tr}Year{/tr}" _icon="resultset_next"}{/self_link}
+			{self_link _ajax=$ajax _class="next" todate=$focus_next _title="{tr}Year{/tr}" _alt="{tr}Year{/tr}" _icon=resultset_next"}{/self_link}
 		{/if}
 		</div>
 		{/strip}</span>
@@ -92,17 +89,17 @@
 {*previous*}
 	 {if !empty($module_params.viewnavbar) && $module_params.viewnavbar eq 'partial'}
 		{if $viewmode eq "day"}
-			{self_link _ajax=$ajax _class="prev" todate=$focus_prev _title="{tr}Day{/tr}" _alt="{tr}Day{/tr}" _icon="resultset_previous"}{/self_link}
+			{self_link _ajax=$ajax _class="prev" todate=$focus_prev _title="{tr}Day{/tr}" _alt="{tr}Day{/tr}" _icon=resultset_previous"}{/self_link}
 		{elseif $viewmode eq "week"}
-			{self_link _ajax=$ajax _class="prev" todate=$focus_prev _title="{tr}Week{/tr}" _alt="{tr}Week{/tr}" _icon="resultset_previous"}{/self_link}
+			{self_link _ajax=$ajax _class="prev" todate=$focus_prev _title="{tr}Week{/tr}" _alt="{tr}Week{/tr}" _icon=resultset_previous"}{/self_link}
 		{elseif $viewmode eq "month"}
-			{self_link _ajax=$ajax _class="prev" todate=$focus_prev _title="{tr}Month{/tr}" _alt="{tr}Month{/tr}" _icon="resultset_previous"}{/self_link}
+			{self_link _ajax=$ajax _class="prev" todate=$focus_prev _title="{tr}Month{/tr}" _alt="{tr}Month{/tr}" _icon=resultset_previous"}{/self_link}
 		{elseif $viewmode eq "quarter"}
-			{self_link _ajax=$ajax _class="prev" todate=$focus_prev _title="{tr}Quarter{/tr}" _alt="{tr}Quarter{/tr}" _icon="resultset_previous"}{/self_link}
+			{self_link _ajax=$ajax _class="prev" todate=$focus_prev _title="{tr}Quarter{/tr}" _alt="{tr}Quarter{/tr}" _icon=resultset_previous"}{/self_link}
 		{elseif $viewmode eq "semester"}
-			{self_link _ajax=$ajax _class="prev" todate=$focus_prev _title="{tr}Semester{/tr}" _alt="{tr}Semester{/tr}" _icon="resultset_previous"}{/self_link}
+			{self_link _ajax=$ajax _class="prev" todate=$focus_prev _title="{tr}Semester{/tr}" _alt="{tr}Semester{/tr}" _icon=resultset_previous"}{/self_link}
 		{elseif $viewmode eq "year"}
-			{self_link _ajax=$ajax _class="prev" todate=$focus_prev _title="{tr}Year{/tr}" _alt="{tr}Year{/tr}" _icon="resultset_previous"}{/self_link}
+			{self_link _ajax=$ajax _class="prev" todate=$focus_prev _title="{tr}Year{/tr}" _alt="{tr}Year{/tr}" _icon=resultset_previous"}{/self_link}
 		{/if}
 	{/if}
 
@@ -125,17 +122,17 @@
 {*next*}
 	{if !empty($module_params.viewnavbar) && $module_params.viewnavbar eq 'partial'}
 		{if $viewmode eq "day"}
-			{self_link _ajax=$ajax _class="next" todate=$focus_next _title="{tr}Day{/tr}" _alt="{tr}Day{/tr}" _icon="resultset_next"}{/self_link}
+			{self_link _ajax=$ajax _class="next" todate=$focus_next _title="{tr}Day{/tr}" _alt="{tr}Day{/tr}" _icon=resultset_next"}{/self_link}
 		{elseif $viewmode eq "week"}
-			{self_link _ajax=$ajax _class="next" todate=$focus_next _title="{tr}Week{/tr}" _alt="{tr}Week{/tr}" _icon="resultset_next"}{/self_link}
+			{self_link _ajax=$ajax _class="next" todate=$focus_next _title="{tr}Week{/tr}" _alt="{tr}Week{/tr}" _icon=resultset_next"}{/self_link}
 		{elseif $viewmode eq "month"}
-			{self_link _ajax=$ajax _class="next" todate=$focus_next _title="{tr}Month{/tr}" _alt="{tr}Month{/tr}" _icon="resultset_next"}{/self_link}
+			{self_link _ajax=$ajax _class="next" todate=$focus_next _title="{tr}Month{/tr}" _alt="{tr}Month{/tr}" _icon=resultset_next"}{/self_link}
 		{elseif $viewmode eq "quarter"}
-			{self_link _ajax=$ajax _class="next" todate=$focus_next _title="{tr}Quarter{/tr}" _alt="{tr}Quarter{/tr}" _icon="resultset_next"}{/self_link}
+			{self_link _ajax=$ajax _class="next" todate=$focus_next _title="{tr}Quarter{/tr}" _alt="{tr}Quarter{/tr}" _icon=resultset_next"}{/self_link}
 		{elseif $viewmode eq "semester"}
-			{self_link _ajax=$ajax _class="next" todate=$focus_next _title="{tr}Semester{/tr}" _alt="{tr}Semester{/tr}" _icon="resultset_next"}{/self_link}
+			{self_link _ajax=$ajax _class="next" todate=$focus_next _title="{tr}Semester{/tr}" _alt="{tr}Semester{/tr}" _icon=resultset_next"}{/self_link}
 		{elseif $viewmode eq "year"}
-			{self_link _ajax=$ajax _class="next" todate=$focus_next _title="{tr}Year{/tr}" _alt="{tr}Year{/tr}" _icon="resultset_next"}{/self_link}
+			{self_link _ajax=$ajax _class="next" todate=$focus_next _title="{tr}Year{/tr}" _alt="{tr}Year{/tr}" _icon=resultset_next"}{/self_link}
 		{/if}
 	{/if}
 </div>

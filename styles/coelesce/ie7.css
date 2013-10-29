@@ -1,6 +1,6 @@
 /* Coelesce theme styles for IE7 */
 #tiki-top {
-	height: 35px;
+	height: 32px;
 }
 
 .wikiactions .icons,
@@ -8,12 +8,11 @@
 	display: inline;
 }
 
-.articletitle {
+div.articletitle {
 	background: url(tiki-centerbg.jpg) repeat-x
 }
 
-.articletitle h2 {
+div.articletitle h2 {
 	background: none;
 	line-height: normal;
 }
-

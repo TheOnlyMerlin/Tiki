@@ -1,13 +1,10 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-/**
- *
- */
 class ImageAbstract
 {
 	var $data = NULL;
@@ -18,17 +15,11 @@ class ImageAbstract
 	var $filename = null;
 	var $thumb = null;
 	var $loaded = false;
-	var $metadata = null;			//to hold metadata from the FileMetadata class
 
-    /**
-     * @param $image
-     * @param bool $isfile
-     */
-    function __construct($image, $isfile = false)
-	{
+	function __construct($image, $isfile = false) {
 		if ( ! empty($image) || $this->filename !== null ) {
-			if ( is_readable($this->filename) && function_exists('exif_thumbnail') && in_array(image_type_to_mime_type(exif_imagetype($this->filename)), array('image/jpeg', 'image/tiff'))) {
-				$this->thumb = @exif_thumbnail($this->filename);
+			if ( is_readable( $this->filename ) && function_exists('exif_thumbnail') && in_array(image_type_to_mime_type(exif_imagetype($this->filename)), array('image/jpeg', 'image/tiff'))) {
+				$this->thumb = @exif_thumbnail($this->filename, $this->width, $this->height);
 				if (trim($this->thumb) == "") $this->thumb = NULL;
 			}
 			$this->classname = get_class($this);
@@ -40,8 +31,7 @@ class ImageAbstract
 		}
 	}
 
-	function _load_data()
-	{
+	function _load_data() {
 		if (!$this->loaded) {
 			if (!empty($this->filename)) {
 				$this->data = $this->get_from_file($this->filename);
@@ -52,20 +42,11 @@ class ImageAbstract
 		}
 	}
 
-    /**
-     * @return bool
-     */
-    function is_empty()
-	{
+	function is_empty() {
 		return empty($this->data) && empty($this->filename);
 	}
 
-    /**
-     * @param $filename
-     * @return null|string
-     */
-    function get_from_file($filename)
-	{
+	function get_from_file($filename) {
 		$content = NULL;
 		if ( is_readable($filename) ) {
 			$f = fopen($filename, 'rb');
@@ -76,20 +57,9 @@ class ImageAbstract
 		return $content;
 	}
 
-    /**
-     * @param $x
-     * @param $y
-     */
-    function _resize($x, $y)
-	{
-	}
+	function _resize($x, $y) { }
 
-    /**
-     * @param int $x
-     * @param int $y
-     */
-    function resize($x = 0, $y = 0)
-	{
+	function resize($x = 0, $y = 0) {
 		$this->_load_data();
 		if ($this->data) {
 			$x0 = $this->get_width();
@@ -107,11 +77,7 @@ class ImageAbstract
 		}
 	}
 
-    /**
-     * @param $max
-     */
-    function resizemax($max)
-	{
+	function resizemax($max) {
 		$this->_load_data();
 		if ($this->data) {
 			$x0 = $this->get_width();
@@ -124,17 +90,12 @@ class ImageAbstract
 		}
 	}
 
-	function resizethumb()
-	{
+	function resizethumb() {
 		global $prefs;
 		$this->resizemax($prefs['fgal_thumb_max_size']);
 	}
 
-    /**
-     * @param $r
-     */
-    function scale($r)
-	{
+	function scale($r) {
 		$this->_load_data();
 		$x0 = $this->get_width();
 		$y0 = $this->get_height();
@@ -142,27 +103,15 @@ class ImageAbstract
 		$this->_resize($x0 * $r, $y0 * $r);
 	}
 
-    /**
-     * @return string
-     */
-    function get_mimetype()
-	{
+	function get_mimetype() {
 		return 'image/'.strtolower($this->get_format());
 	}
 
-    /**
-     * @param $format
-     */
-    function set_format($format)
-	{
+	function set_format($format) {
 		$this->format = $format;
 	}
 
-    /**
-     * @return string
-     */
-    function get_format()
-	{
+	function get_format() {
 		if ( $this->format == '' ) {
 			$this->set_format('jpeg');
 			return 'jpeg';
@@ -171,21 +120,12 @@ class ImageAbstract
 		}
 	}
 
-    /**
-     * @return null
-     */
-    function display()
-	{
+	function display() {
 		$this->_load_data();
 		return $this->data;
 	}
 
-    /**
-     * @param $format
-     * @return bool
-     */
-    function convert($format)
-	{
+	function convert($format) {
 		if ( $this->is_supported($format) ) {
 			$this->set_format($format);
 			return true;
@@ -194,57 +134,28 @@ class ImageAbstract
 		}
 	}
 
-    /**
-     * @param $angle
-     */
-    function rotate($angle)
-	{
-	}
+	function rotate() { }
 
-    /**
-     * @param $format
-     * @return bool
-     */
-    function is_supported($format)
-	{
+	function is_supported($format) {
 		return false;
 	}
 
-    /**
-     * @return string
-     */
-    function get_icon_default_format()
-	{
+	function get_icon_default_format() {
 		return 'png';
 	}
 
-    /**
-     * @return int
-     */
-    function get_icon_default_x()
-	{
+	function get_icon_default_x() {
 		return 16;
 	}
 
-    /**
-     * @return int
-     */
-    function get_icon_default_y()
-	{
+	function get_icon_default_y() {
 		return 16;
 	}
 
-    /**
-     * @param $extension
-     * @param int $x
-     * @param int $y
-     * @return bool|null|string
-     */
-    function icon($extension, $x = 0, $y = 0)
-	{
+	function icon($extension, $x = 0, $y = 0) {
 		$keep_original = ( $x == 0 && $y == 0 );
 
-		// This method is not necessarily called through an instance
+		// This method is not necessarely called through an instance
 		$class = isset($this) ? $this->classname : 'Image';
 		$format = call_user_func(array($class, 'get_icon_default_format'));
 
@@ -252,10 +163,10 @@ class ImageAbstract
 			$icon_format = $format;
 			$class = 'Image';
 
-			if ( call_user_func(array($class, 'is_supported'), 'png') ) {
-				$format = 'png';
-			} elseif ( call_user_func(array($class, 'is_supported'), 'svg') ) {
+			if ( call_user_func(array($class, 'is_supported'), 'svg') ) {
 				$format = 'svg';
+			} elseif ( call_user_func(array($class, 'is_supported'), 'png') ) {
+				$format = 'png';
 			} else {
 				return false;
 			}
@@ -266,7 +177,7 @@ class ImageAbstract
 			$name = "lib/images/icons/unknown.$format";
 		}
 
-		if ( ! $keep_original && $format != 'svg' ) {
+		if ( ! $keep_original ) {
 			$icon = new $class($name, true);
 			if ( $format != $icon_format ) {
 				$icon->convert($icon_format);
@@ -278,69 +189,23 @@ class ImageAbstract
 			return ImageAbstract::get_from_file($name);
 		}
 
-	}
+	} 
 
-    /**
-     * @return null
-     */
-    function _get_height()
-	{
-		return NULL;
-	}
+	function _get_height() { return NULL; }
 
-    /**
-     * @return null
-     */
-    function _get_width()
-	{
-		return NULL;
-	}
+	function _get_width() { return NULL; }
 
-    /**
-     * @return null
-     */
-    function get_height()
-	{
+	function get_height() {
 		if ( $this->height === NULL ) {
 			$this->height = $this->_get_height();
 		}
 		return $this->height;
 	}
 
-    /**
-     * @return null
-     */
-    function get_width()
-	{
+	function get_width() {
 		if ( $this->width === NULL ) {
 			$this->width = $this->_get_width();
 		}
 		return $this->width;
-	}
-
-    /**
-     * @param null $filename
-     * @param bool $ispath
-     * @param bool $extended
-     * @param bool $bestarray
-     * @return FileMetadata|null
-     */
-    function getMetadata($filename = null, $ispath = true, $extended = true, $bestarray = true)
-	{
-		include_once('lib/metadata/metadatalib.php');
-		if ($filename === null) {
-			if (!empty($this->filename)) {
-				$filename = $this->filename;
-				$ispath = true;
-			} elseif (!empty($this->data)) {
-				$filename = $this->data;
-				$ispath = false;
-			}
-		}
-		if (!is_object($this->metadata) || get_class($this->metadata) != 'FileMetadata') {
-			$metadata = new FileMetadata;
-			$this->metadata = $metadata->getMetadata($filename, $ispath, $extended);
-		}
-		return $this->metadata;
 	}
 }

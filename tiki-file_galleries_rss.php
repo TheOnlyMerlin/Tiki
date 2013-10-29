@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -19,8 +16,6 @@ if ($prefs['feed_file_galleries'] != 'y') {
         require_once ('tiki-rss_error.php');
 }
 
-$filegallib = TikiLib::lib('filegal');
-
 $feed = "filegals";
 $uniqueid = $feed;
 $output = $rsslib->get_from_cache($uniqueid);
@@ -35,7 +30,7 @@ if ($output["data"]=="EMPTY") {
 	$titleId = "filename";
 	$readrepl = "tiki-download_file.php?$id=%s";
 
-	$changes = $filegallib->list_files(0, $prefs['feed_file_galleries_max'], $dateId.'_desc', '');
+	$changes = $tikilib->list_files(0, $prefs['feed_file_galleries_max'], $dateId.'_desc', '');
 	$output = $rsslib->generate_feed($feed, $uniqueid, '', $changes, $readrepl, '', $id, $title, $titleId, $desc, $descId, $dateId, $authorId);
 }
 header("Content-type: ".$output["content-type"]);

@@ -1,12 +1,15 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 $section = 'mytiki';
 require_once ('tiki-setup.php');
+if ($prefs['ajax_xajax'] == "y") {
+	require_once ('lib/ajax/ajaxlib.php');
+}
 include_once ('lib/tasks/tasklib.php');
 include_once ('lib/messu/messulib.php');
 
@@ -52,7 +55,7 @@ if (isset($_REQUEST['remove_task_from_trash'])) {
 }
 if (isset($_REQUEST['update_percentage']) && isset($_REQUEST['task_perc'])) {
 	check_ticket('user-tasks');
-	foreach ($_REQUEST['task_perc'] as $task => $perc) {
+	foreach($_REQUEST['task_perc'] as $task => $perc) {
 		if ($perc == 'w') $perc = NULL;
 		$tasklib->update_task_percentage($task, $user, $perc);
 	}
@@ -60,7 +63,7 @@ if (isset($_REQUEST['update_percentage']) && isset($_REQUEST['task_perc'])) {
 if (isset($_REQUEST['update_tasks'])) {
 	if (($_REQUEST['action'] == 'move_marked_to_trash') && isset($_REQUEST['task'])) {
 		check_ticket('user-tasks');
-		foreach (array_keys($_REQUEST['task']) as $task) {
+		foreach(array_keys($_REQUEST['task']) as $task) {
 			$tasklib->mark_task_as_trash($task, $user);
 			$trashed_task = $tasklib->get_task($user, $task);
 			if ($trashed_task['user'] == $user) {
@@ -81,7 +84,7 @@ if (isset($_REQUEST['update_tasks'])) {
 	}
 	if (($_REQUEST['action'] == 'open_marked') && isset($_REQUEST['task'])) {
 		check_ticket('user-tasks');
-		foreach (array_keys($_REQUEST['task']) as $task) {
+		foreach(array_keys($_REQUEST['task']) as $task) {
 			$tasklib->open_task($task, $user);
 			$trashed_task = $tasklib->get_task($user, $task);
 			if ($trashed_task['user'] == $user) {
@@ -102,7 +105,7 @@ if (isset($_REQUEST['update_tasks'])) {
 	}
 	if (($_REQUEST['action'] == 'complete_marked') && isset($_REQUEST['task'])) {
 		check_ticket('user-tasks');
-		foreach (array_keys($_REQUEST['task']) as $task) {
+		foreach(array_keys($_REQUEST['task']) as $task) {
 			$tasklib->mark_complete_task($task, $user);
 			$trashed_task = $tasklib->get_task($user, $task);
 			if ($trashed_task['user'] == $user) {
@@ -123,13 +126,13 @@ if (isset($_REQUEST['update_tasks'])) {
 	}
 	if (($_REQUEST['action'] == 'remove_marked_from_trash') && isset($_REQUEST['task'])) {
 		check_ticket('user-tasks');
-		foreach (array_keys($_REQUEST['task']) as $task) {
+		foreach(array_keys($_REQUEST['task']) as $task) {
 			$tasklib->unmark_task_as_trash($task, $user);
 		}
 	}
 	if (($_REQUEST['action'] == 'waiting_marked') && isset($_REQUEST['task'])) {
 		check_ticket('user-tasks');
-		foreach (array_keys($_REQUEST['task']) as $task) {
+		foreach(array_keys($_REQUEST['task']) as $task) {
 			$tasklib->waiting_task($task, $user);
 		}
 	}
@@ -298,13 +301,6 @@ if ((isset($_REQUEST['save'])) || (isset($_REQUEST['preview']))) {
 		$msg_changes_head = '__' . tra("Changes:") . "__\n";
 	}
 	$msg_changes = '';
-	//Convert 12-hour clock hours to 24-hour scale to compute time
-	if (!empty($_REQUEST['start_Meridian'])) {
-		$_REQUEST['start_Hour'] = date('H', strtotime($_REQUEST['start_Hour'] . ':00 ' . $_REQUEST['start_Meridian']));
-	}
-	if (!empty($_REQUEST['end_Meridian'])) {
-		$_REQUEST['end_Hour'] = date('H', strtotime($_REQUEST['end_Hour'] . ':00 ' . $_REQUEST['end_Meridian']));
-	}
 	if (isset($_REQUEST['use_start_date']) and isset($_REQUEST['start_Hour']) and isset($_REQUEST['start_Minute']) and isset($_REQUEST['start_Month']) and isset($_REQUEST['start_Day']) and isset($_REQUEST['start_Year'])) {
 		$start_date = $tikilib->make_time($_REQUEST['start_Hour'], $_REQUEST['start_Minute'], 0, $_REQUEST['start_Month'], $_REQUEST['start_Day'], $_REQUEST['start_Year']);
 	} else $start_date = null;
@@ -520,23 +516,23 @@ if (isset($_REQUEST['save'])) {
 		switch ($info['priority']) {
 			case 1:
 				$mail_data.= tra("very low");
-    			break;
+				break;
 
 			case 2:
 				$mail_data.= tra("low");
-    			break;
+				break;
 
 			case 3:
 				$mail_data.= tra("normal");
-    			break;
+				break;
 
 			case 4:
 				$mail_data.= tra("high");
-    			break;
+				break;
 
 			case 5:
 				$mail_data.= tra("very high");
-    			break;
+				break;
 		}
 		$mail_data.= ".\n\n";
 		if ($info['start'] !== NULL) {
@@ -561,16 +557,14 @@ if (isset($_REQUEST['save'])) {
 		$msg_body = "__" . tra('Task') . ":__";
 		$msg_body.= '^[tiki-user_tasks.php?taskId=' . $info['taskId'] . "|" . $info['title'] . "]^\n";
 		$msg_body.= $task_info_message . $msg_changes_head . '^' . $msg_changes . '^';
-		$messulib->post_message(
-			$msg_to, //user
-			$msg_from, //from
-			$msg_to, //to
-			'', //cc
-			$msg_title, //title
-			$msg_body, //body
-			$info['priority'] //priority
-		);
-
+		$messulib->post_message($msg_to, //user
+		$msg_from, //from
+		$msg_to, //to
+		'', //cc
+		$msg_title, //title
+		$msg_body, //body
+		$info['priority']); //priority
+		
 	}
 	if ($show_admin) $user_for_group_list = $info['creator'];
 	$show_form = false;
@@ -628,10 +622,39 @@ $percs = array();
 for ($i = 0; $i <= 100; $i+= 10) {
 	$percs[] = $i;
 }
-//Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-include_once ('lib/userprefs/userprefslib.php');
-$smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
-
 $smarty->assign_by_ref('percs', $percs);
+$img_accepted = "img/icons2/tick.gif";
+$img_accepted_height = "15";
+$img_accepted_width = "15";
+$img_me_waiting = "img/icons2/1.gif";
+$img_me_waiting_height = "16";
+$img_me_waiting_width = "13";
+$img_he_waiting = "img/icons2/icn_forum.gif";
+$img_he_waiting_height = "16";
+$img_he_waiting_width = "16";
+$img_not_accepted = "img/icons2/error.gif";
+$img_not_accepted_height = "14";
+$img_not_accepted_width = "14";
+$smarty->assign('img_accepted', $img_accepted);
+$smarty->assign('img_accepted_height', $img_accepted_height);
+$smarty->assign('img_accepted_width', $img_accepted_width);
+$smarty->assign('img_he_waiting', $img_he_waiting);
+$smarty->assign('img_he_waiting_height', $img_he_waiting_height);
+$smarty->assign('img_he_waiting_width', $img_he_waiting_width);
+$smarty->assign('img_me_waiting', $img_me_waiting);
+$smarty->assign('img_me_waiting_height', $img_me_waiting_height);
+$smarty->assign('img_me_waiting_width', $img_me_waiting_width);
+$smarty->assign('img_not_accepted', $img_not_accepted);
+$smarty->assign('img_not_accepted_height', $img_not_accepted_height);
+$smarty->assign('img_not_accepted_width', $img_not_accepted_width);
+if ($prefs['ajax_xajax'] == "y") {
+	function user_tasks_ajax() {
+		global $ajaxlib, $xajax;
+		$ajaxlib->registerTemplate("tiki-user_tasks.tpl");
+		$ajaxlib->registerFunction("loadComponent");
+		$ajaxlib->processRequests();
+	}
+	user_tasks_ajax();
+}
 $smarty->assign('mid', 'tiki-user_tasks.tpl');
 $smarty->display("tiki.tpl");

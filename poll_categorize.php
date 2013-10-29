@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +8,7 @@
 //this script may only be included - so its better to err & die if called directly.
 //smarty is not there - we need setup
 require_once('tiki-setup.php');
-$access->check_script($_SERVER["SCRIPT_NAME"], basename(__FILE__));
+$access->check_script($_SERVER["SCRIPT_NAME"],basename(__FILE__));
 
 global $prefs;
 if ($prefs['feature_polls'] == 'y') {
@@ -19,9 +16,7 @@ if ($prefs['feature_polls'] == 'y') {
 	#echo '<div>hier</div>';
 	if (!is_object($categlib))  include_once('lib/categories/categlib.php');
 	if (!is_object($polllib))  include_once('lib/polls/polllib.php');
-	if (!isset($_REQUEST['poll_title'])) {
-		$_REQUEST['poll_title'] = 'rate it!';
-	}
+	if (!isset($_REQUEST['poll_title'])) { $_REQUEST['poll_title'] = 'rate it!'; }
 
 	if (isset($_REQUEST["poll_template"]) and $_REQUEST["poll_template"]) {
 		$catObjectId = $categlib->is_categorized($cat_type, $cat_objid);
@@ -39,6 +34,6 @@ if ($prefs['feature_polls'] == 'y') {
 			$catObjectId = $categlib->add_categorized_object($cat_type, $cat_objid, $cat_desc, $cat_name, $cat_href);
 		}
 		$olpoll = $polllib->get_poll($_REQUEST["olpoll"]);
-		$polllib->poll_categorize($catObjectId, $_REQUEST["olpoll"], $olpoll['title']);
+		$polllib->poll_categorize($catObjectId,$_REQUEST["olpoll"],	$olpoll['title']);
 	}
 }

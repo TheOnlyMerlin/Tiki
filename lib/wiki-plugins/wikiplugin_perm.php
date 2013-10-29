@@ -1,20 +1,21 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// Usage:
+// {PERM(perms=>tiki_p_someperm|tiki_p_otherperm)}wiki text{PERM}
 
-function wikiplugin_perm_info()
-{
+function wikiplugin_perm_help() {
+	$help = tra("Display wiki text if user has one of listed permissions").":\n";
+	$help.= "~np~{PERM(perms=>tiki_p_someperm|tiki_p_otherperm)}wiki text{PERM}~/np~";
+	return $help;
+}
+
+function wikiplugin_perm_info() {
 	return array(
 		'name' => tra('Permissions'),
-		'documentation' => 'PluginPerm',
-		'description' => tra('Display content based on permission settings'),
-		'body' => tra('Wiki text to display if conditions are met. The body may contain {ELSE}. Text after the marker will be displayed to users not matching the conditions.'),
+		'documentation' => tra('PluginPerm'),
+		'description' => tra('Display wiki text if and only if the user has at least one of a set of permissions (or none, if using notperms).'),
+		'body' => tra('Wiki text to display if conditions are met. The body may contain {ELSE}. Text after the marker will be displayed if conditions are not met.'),
 		'prefs' => array('wikiplugin_perm'),
 		'filter' => 'wikicontent',
-		'icon' => 'img/icons/page_white_key.png',
 		'params' => array(
 			'perms' => array(
 				'required' => false,
@@ -32,17 +33,16 @@ function wikiplugin_perm_info()
 	);
 }
 
-function wikiplugin_perm($data, $params)
-{
+function wikiplugin_perm($data, $params) {
 	global $user, $userlib;
 	if (!empty($params['perms']))
-		$perms = explode('|', $params['perms']);
+		$perms = explode('|',$params['perms']);
 	if (!empty($params['notperms']))
 		$notperms = explode('|', $params['notperms']);
 
-	if (strpos($data, '{ELSE}')) {
-		$dataelse = substr($data, strpos($data, '{ELSE}')+6);
-		$data = substr($data, 0, strpos($data, '{ELSE}'));
+	if (strpos($data,'{ELSE}')) {
+		$dataelse = substr($data,strpos($data,'{ELSE}')+6);
+		$data = substr($data,0,strpos($data,'{ELSE}'));
 	} else {
 		$dataelse = '';
 	}
@@ -57,7 +57,7 @@ function wikiplugin_perm($data, $params)
 				}
 			} else {
 	    		global $$perm;
-				if ($$perm == 'y') {
+	    		if ($$perm == 'y') {
 					$ok = true;
 					break;
 				}

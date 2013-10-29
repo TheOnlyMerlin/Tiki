@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -22,7 +19,7 @@ if ($_REQUEST["msgId"]) {
 	$info = $shoutboxlib->get_shoutbox($_REQUEST["msgId"]);
 	$owner = $info["user"];
 	if ($tiki_p_admin_shoutbox != 'y' && $owner != $user) {
-		$smarty->assign('msg', tr("You do not have permission to edit messages %0", $owner));
+		$smarty->assign('msg', tra("You do not have permission to edit messages $owner"));
 		$smarty->display("error.tpl");
 		die;
 	}
@@ -77,15 +74,10 @@ if (isset($_REQUEST["get"])) {
 	$get=0;
 }
 /* additions for ajax (formerly shoutjax) */
-/**
- * @param $formValues
- * @param string $destDiv
- */
-function processShout($formValues, $destDiv = 'mod-shoutbox')
-{	// AJAX_TODO
-	global $shoutboxlib, $user, $smarty, $prefs, $tiki_p_admin_shoutbox;
-	$smarty->assign('tweet', $formValues['tweet']);
-	$smarty->assign('facebook', $formValues['facebook']);
+function processShout($formValues, $destDiv = 'mod-shoutbox') {
+	global $shoutboxlib, $user, $smarty, $prefs, $ajaxlib, $tiki_p_admin_shoutbox;
+	$smarty->assign('tweet',$formValues['tweet']);
+	$smarty->assign('facebook',$formValues['facebook']);
 	if (array_key_exists('shout_msg', $formValues) && strlen($formValues['shout_msg']) > 2) {
 		if (empty($user) && $prefs['feature_antibot'] == 'y' && !$captchalib->validate()) {
 			$smarty->assign('shout_error', $captchalib->getErrors());
@@ -99,11 +91,19 @@ function processShout($formValues, $destDiv = 'mod-shoutbox')
 			$shoutboxlib->remove_shoutbox($formValues['shout_remove']);
 		}
 	}
-	//$ajaxlib->registerTemplate('mod-shoutbox.tpl');
+	$ajaxlib->registerTemplate('mod-shoutbox.tpl');
 	include ('lib/wiki-plugins/wikiplugin_module.php');
 	$data = wikiplugin_module('', Array('module' => 'shoutbox', 'max' => 10, 'np' => 0, 'nobox' => 'y', 'notitle' => 'y', 'tweet'=>$formValues['tweet']));
-	//$objResponse->assign($destDiv, "innerHTML", $data);
-	//return $objResponse;
+	$objResponse = new xajaxResponse();
+	$objResponse->assign($destDiv, "innerHTML", $data);
+	return $objResponse;
+}
+if ($prefs['ajax_xajax'] == 'y') {
+	global $ajaxlib;
+	include_once ('lib/ajax/ajaxlib.php');
+	$ajaxlib->registerFunction('processShout');
+	$ajaxlib->registerTemplate('mod-shoutbox.tpl');
+	$ajaxlib->processRequests();
 }
 /* end additions for ajax */
 $smarty->assign('find', $find);

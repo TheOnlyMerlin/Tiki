@@ -17,6 +17,16 @@ h3.box-title,
 	background: none;
 }
 
+.box {
+	border: none;
+}
+
+/* may need to change these 
+#tiki-top {
+color:#fff;
+font-size:1.1em;
+}
+*/
 h1, h2, h3, h4, h5 {
 	font-family: Arial, Helvetica, sans-serif;
 }
@@ -93,15 +103,12 @@ input {
 }
 
 input[type='text'],
-input[type='password'],
-input[type='email'],
-input[type='file'],
-input[type='number'],
-input[type='search'] {
+input[type='password'] {
 	font-size: 1em;
-	border: solid 1px #24880c;
 }
 
+input[type='text'],
+input[type='password'],
 textarea {
 	border: solid 1px #24880c;
 }
@@ -110,6 +117,8 @@ input[type="submit"], input[type="file"], select {
 	border: solid 1px #24880c;
 	background: #eef5ee;
 	color: #24880c;
+/*	height: 2em;
+	vertical-align: middle;*/
 }
 
 .button a,
@@ -170,25 +179,24 @@ h1 a.pagetitle:hover {
 	padding-left: 3px;
 	text-decoration: none;
 }
-
-div.articletitle h2 a {
-	color: white;
-	background: #24880c url(amette/gradient.png) center center repeat-x;
+/*
+h1 a {
+	font-size: large;
+	font-weight: normal;
 	text-decoration: none;
+	font-size: 25px;
+	text-align: center;
+	color: #fff;
+	margin-top: 0px;
+	padding-top: 4px;
+	padding-bottom: 4px; 
+	padding-left: 3px;
 }
 
-
-div.articletitle h2 a:visited {
-	color: #eef5ee;
-	background: #24880c url(amette/gradient.png) center center repeat-x;
-	text-decoration: none;
-}
-
-div.articletitle h2 a:hover {
-	color: blue;
-	background: #24880c url(amette/gradient.png) center center repeat-x;
-	text-decoration: none;
-}
+h1 a:hover {
+	background-color: transparent;
+	color: #86BE7D;
+}*/
 
 .box {
 	background-color: #eef5ee;
@@ -256,8 +264,50 @@ h3.box-title a {
 	color: #fff;
 }
 
+/*
+ * PHP Layers Menus
+ */
+.mdkhorbar {
+	color: black;
+	background-color: #fff;
+	border: 1px outset #525252;
+}
+
+.horbar {
+	background-color: #0174BB;
+	margin-left: 0;
+	text-align: center;
+}
+
 #tiki-top .cssmenu_horiz li a {
 	background-color: #0174BB;
+}
+
+.horbaritem {
+	text-align: right;
+}
+.horbaritem a {
+	text-align: right;
+	color: #fff;
+	font-size: 1em;
+	font-weight: bold;
+	text-decoration: none;
+	float: left;
+}
+.horbaritem a:hover {
+	color: #F0F0F0;
+	background-color: #24880c;
+}
+
+.mdkhorbaritem {
+	float: left;
+	white-space: nowrap;
+	font-size: 1em;
+}
+
+.mdkhorbaritem a {
+	display: block;
+	text-decoration: none;
 }
 
 .cssmenu_vert a {
@@ -270,10 +320,43 @@ h3.box-title a {
 .cssmenu_horiz a,
 .cssmenu_vert a,
 #tiki-top .cssmenu_horiz li ul li a,
-#tiki-top .cssmenu_horiz li:hover ul li a {
+#tiki-top .cssmenu_horiz li:hover ul li a,
+.mdkhorbaritem a:link {
 	color: #000;
 	font-size: 13px;
 }
+
+.mdkhorbaritem a:visited {
+	color: #000;
+}
+
+.mdkhorbaritem a:hover  {
+	background-color: #abcdef;
+}
+
+.mdkhorbaritem a:active {
+	color: #ff0000;
+}
+
+.mdkverbar {
+	color: black;
+	border: 1px solid #fdfefd;
+}
+
+.mdksubmenu {
+	position: absolute;
+	left: 0;
+	top: 0;
+	visibility: hidden;
+}
+
+.mdksubframe {
+	position: relative;
+	display: block;
+	background-color: #fff;
+	border: 1px solid #fdfefd;
+}
+
 /*dropdown background and border */
 .cssmenu_vert li ul li,
 .cssmenu_horiz li ul li {
@@ -291,6 +374,35 @@ h3.box-title a {
 .cssmenu_horiz li ul li:first-child {
 	border-top: 1px solid #3676c4;
 }
+
+.mdkitem {
+	position: relative;
+	white-space: nowrap;
+	font-size: 10px;
+	font-weight: bold;
+}
+
+.mdkitem a {
+	position: relative;
+	display: block;
+	text-decoration: none;
+}
+
+.mdkitem a:hover {
+	color: #000;
+	background-color: #abcdef;
+}
+
+.mdkitem a:active {
+	color: #ff0000;
+}
+
+.mdkitem .mdkfwdarr {
+	position: absolute;
+	top: 5px;
+	right: 12px;
+}
+
 
 .separator {
 	text-align: start;
@@ -355,6 +467,7 @@ h3.box-title a {
 	border-bottom: 1px solid #24880c;
 	list-style:none;
 	margin: 0px;
+	padding: -30px;
 }
 
 
@@ -372,13 +485,6 @@ tr.diffheader {
 	border: solid 1px #24880c;
 	font-size: 1em;
 	width: 15px;
-}
-
-th a,
-th a.link,
-td.heading a,
-tr.diffheader a {
-    color: #fff;
 }
 
 
@@ -466,14 +572,10 @@ h1.pagetitle a:hover {
 	text-decoration: none;
 	color: #fff;
 }
-.normal .even, /* table with class normal, even cells */
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+.normal .even { /* table with class normal, even cells */
 	background-color: #fff;
 }
-.normal .odd, /* table with class normal, odd cells */
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+.normal .odd { /* table with class normal, odd cells */
 	background-color: #fff;
 }
 .simplebox { /* simple box wiki syntax */
@@ -697,14 +799,11 @@ table.normal tr:nth-child(2n+1),
 	vertical-align: top;
 }
 
-.caltable td.calhighlight {
-	background: #fbf9ee;
+#caltable .calfocuson {
+	background: #000;
+	border: solid 1px #000;
 }
 
-td.calheadhighlight {
-	background: #eef5ee;
-}
-
-td.calheadhighlight {
-	border: solid 1px #24880c;
+#caltable .calfocuson a {
+	color: #000;
 }

@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -12,11 +9,9 @@ $section = 'file_galleries';
 require_once ('tiki-setup.php');
 include_once ('lib/filegals/filegallib.php');
 $access->check_feature(array('feature_file_galleries', 'feature_file_galleries_batch'));
-//get_strings tra('Directory batch')
+
 // Now check permissions to access this page
 $access->check_permission('tiki_p_batch_upload_file_dir');
-
-$auto_query_args = array( 'galleryId' );
 
 // check directory path
 if (!isset($prefs['fgal_batch_dir']) or !is_dir($prefs['fgal_batch_dir'])) {
@@ -37,7 +32,7 @@ if (!isset($_REQUEST['galleryId'])) {
 	$_REQUEST['galleryId'] = 0;
 	$podCastGallery = false;
 } else {
-	$gal_info = $filegallib->get_file_gallery($_REQUEST["galleryId"]);
+	$gal_info = $tikilib->get_file_gallery($_REQUEST["galleryId"]);
 	$podCastGallery = $filegallib->isPodCastGallery($_REQUEST["galleryId"], $gal_info);
 }
 $smarty->assign('filedir', $filedir);
@@ -55,45 +50,41 @@ $disallowed_types = array(
 	'php~'
 ); // list of filetypes you DO NOT want to show
 // recursively get all files from all subdirectories
-/**
- * @param $sub
- */
-function getDirContent($sub)
-{
+function getDirContent($sub) {
 	global $disallowed_types;
 	global $a_file;
 	global $a_path;
 	global $filedir, $smarty;
-
-	$tmp = rtrim($filedir . '/' . $sub, '/');
-
-	if (false === $allfile = scandir($tmp)) {
+	$tmp = $filedir;
+	if ($sub <> "") $tmp.= '/' . $sub;
+	if (!@($dfile = opendir($tmp))) {
 		$msg = tra("Invalid directory name");
 		$smarty->assign('msg', $msg);
 		$smarty->display("error.tpl");
 		die;
 	}
-
-	foreach ($allfile as $filefile) {
-		if ('.' === $filefile{0}) {
-			continue;
+	$allfile = array();
+	while ((false !== ($filef = readdir($dfile)))) {
+		if ($filef != "." && $filef != ".." && substr($filef, 0, 1) != ".") {
+			$allfile[] = $filef;
 		}
-
+	}
+	sort($allfile);
+	foreach($allfile as $filefile) {
 		if (is_dir($tmp . "/" . $filefile)) {
-			if ((substr($sub, -1) != "/") && (substr($sub, -1) != "\\")) {
+			if ((substr($sub, -1) <> "/") && (substr($sub, -1) <> "\\")) {
 				$sub.= '/';
 			}
 			getDirContent($sub . $filefile);
-		} elseif (!in_array(strtolower(substr($filefile, -(strlen($filefile) - strrpos($filefile, ".")))), $disallowed_types)) {
+		} elseif (!in_array(strtolower(substr($filefile, -(strlen($filefile) - strrpos($filefile, ".")))) , $disallowed_types)) {
 			$a_file[] = $filefile;
 			$a_path[] = $sub;
 		}
 	}
+	closedir($dfile);
 }
 // build a complete list of all files on filesystem including all necessary file info
-function buildFileList()
-{
-
+function buildFileList() {
 	global $a_file;
 	global $a_path;
 	global $filedir, $smarty;
@@ -102,26 +93,19 @@ function buildFileList()
 	$totfile = count($a_file); // total file number
 	$totalsize = 0;
 	// build file data array
-	foreach ($a_file as $x => $file) {
-		$path = $a_path[$x];
-
+	for ($x = 0; $x < $totfile; $x++) {
 		// get root dir
-		$filedir = rtrim($filedir, '/');
-
+		while (substr($filedir, -1) == '/') $filedir = substr($filedir, 0, -1);
 		$tmp = $filedir;
 		// add any subdir names
-		if ($path <> "") {
-			$tmp.= $path;
-		}
+		if ($a_path[$x] <> "") $tmp.= $a_path[$x];
 		// get file information
-		$filesize = @filesize($tmp . '/' . $file);
-		$filestring[$x][0] = $file;
-		if ($path) {
-			$filestring[$x][0] = $path . '/' . $file;
-		}
+		$filesize = @filesize($tmp . '/' . $a_file[$x]);
+		$filestring[$x][0] = $a_file[$x];
+		if ($a_path[$x] <> "") $filestring[$x][0] = $a_path[$x] . '/' . $a_file[$x];
 		$filestring[$x][1] = $filesize;
 		// type is string after last dot
-		$tmp = strtolower(substr($file, -(strlen($file) - 1 - strrpos($file, "."))));
+		$tmp = strtolower(substr($a_file[$x], -(strlen($a_file[$x]) - 1 - strrpos($a_file[$x], "."))));
 		$filestring[$x][2] = $tmp;
 		$totalsize+= $filesize;
 	}
@@ -131,9 +115,6 @@ function buildFileList()
 }
 
 if (isset($_REQUEST["batch_upload"]) and isset($_REQUEST['files']) and is_array($_REQUEST['files'])) {
-
-	@ini_set('max_execution_time', 0); // will not work if safe_mode is on
-
 	// default is: file names from request
 	$fileArray = $_REQUEST['files'];
 	$totfiles = count($fileArray);
@@ -154,78 +135,122 @@ if (isset($_REQUEST["batch_upload"]) and isset($_REQUEST['files']) and is_array(
 	}
 
 	// cycle through all files to upload
-	foreach ($fileArray as $x => $file) {
+	for ($x = 0; $x < $totfiles; $x++) {
+		$error = false;
 		if (!isset($filePathArray[$x])) {
-			$path = '';
-		} else if ($filePathArray[$x] != "") {
-			$path = $filePathArray[$x] . '/';
+			$filePathArray[$x] = '';
+		} else if ($filePathArray[$x] <> "") {
+			$filePathArray[$x].= '/';
 		} else {
 			// if there is a path in file name, move it to the path array
-			if (strrpos($file, "/") > 0) {
-				$path = substr($file, 0, strrpos($file, "/") + 1);
-				$file = substr($file, strrpos($file, "/") + 1);
+			if (strrpos($fileArray[$x], "/") > 0) {
+				$filePathArray[$x] = substr($fileArray[$x], 0, strrpos($fileArray[$x], "/") + 1);
+				$fileArray[$x] = substr($fileArray[$x], strrpos($fileArray[$x], "/") + 1);
 			}
 		}
 
-		$filepath = $filedir . $path . $file;
+		$filepath = $filedir . $filePathArray[$x] . $fileArray[$x];
 		$filesize = @filesize($filepath);
+		// type is string after last dot
+		$type = strtolower(substr($fileArray[$x], -(strlen($fileArray[$x]) - 1 - strrpos($fileArray[$x], "."))));
+		$data = '';
+		$sizeArray[$x] = 0;
+		$typeArray[$x] = "";
+		$savedir = '';
 
-		//add meadata
-		$metadata = $filegallib->extractMetadataJson($filepath);
+		$fp = @fopen($filepath, 'r');
+		if (!$fp) {
+			$feedback[] = "!!!" . sprintf(tra('Could not read file %s.') , $filepath);
+			$error = true;
+			continue;
+		}
+		$data = '';
+		$fhash = '';
 
 		$path_parts = pathinfo($filepath);
 		$ext = strtolower($path_parts["extension"]);
 		include_once ('lib/mime/mimetypes.php');
-		global $mimetypes;
-		$type = $mimetypes["$ext"];
+		$typeArray[$x] = $mimetypes["$ext"];
 
-		$result = $filegallib->handle_batch_upload(
-			$_REQUEST['galleryId'],
-			array(
-				'source' => $filepath,
-				'size' => $filesize,
-				'type' => $type,
-				'name' => $path_parts['basename'],
-			),
-			$ext
-		);
-
-		if (isset($result['error'])) {
-			$feedback[] = "!!!" . tr('Upload was not successful for %0 (%1)', $path_parts['basename'], $result['error']);
+		if (($prefs['fgal_use_db'] == 'n') || ($podCastGallery)) {
+			$fhash = md5($name = $fileArray[$x]);
+			$fhash = md5(uniqid($fhash));
+			// for podcast galleries add the extension so the
+			// file can be called directly if name is known,
+			$savedir = $prefs['fgal_use_dir'];
+			if ($podCastGallery) {
+				if (in_array($ext, array(
+					"m4a",
+					"mp3",
+					"mov",
+					"mp4",
+					"m4v",
+					"pdf"
+				))) {
+					$fhash.= "." . $ext;
+				}
+				$savedir = $prefs['fgal_podcast_dir'];
+			}
+			@$fw = @fopen($savedir . $fhash, "wb");
+			if (!$fw) {
+				$feedback[] = "!!!" . sprintf(tra('Could not write to file %s.'), $savedir . $fhash);
+				$error = true;
+			}
+		}
+		while (!feof($fp)) {
+			if (($prefs['fgal_use_db'] == 'y') && (!$podCastGallery)) {
+				$data.= @fread($fp, 8192 * 16);
+			} else {
+				$data = @fread($fp, 8192 * 16);
+				@fwrite($fw, $data);
+			}
+		}
+		@fclose($fp);
+		$sizeArray[$x] = @filesize($savedir . $fhash);
+		// file system is used:
+		if (($prefs['fgal_use_db'] == 'n') || ($podCastGallery)) {
+			fclose($fw);
+			$data = '';
 		} else {
+			// database is used:
+			if (!isset($data) || strlen($data) < 1) {
+				$feedback[] = "!!!" . sprintf(tra('File %s upload failed.') , $fileArray[$x]);
+				$error = true;
+			}
+		}
+		if (!$error) {
 			// check which gallery to upload to
 			$tmpGalId = (int)$_REQUEST["galleryId"];
 			// if subToDesc is set, set description:
 			if (isset($_REQUEST["subToDesc"])) {
 				// get last subdir 'last' from 'some/path/last'
-				$tmpDesc = preg_replace('/.*([^\/]*)\/([^\/]+)$/U', '$1', $file);
+				$tmpDesc = preg_replace('/.*([^\/]*)\/([^\/]+)$/U', '$1', $fileArray[$x]);
 			} else {
 				$tmpDesc = '';
 			}
 			// remove possible path from filename
-			$file = preg_replace('/.*([^\/]*)$/U', '$1', $file);
-			$name = $file;
+			$fileArray[$x] = preg_replace('/.*([^\/]*)$/U', '$1', $fileArray[$x]);
+			$name = $fileArray[$x];
 			// remove extension from name field
 			if (isset($_REQUEST["removeExt"])) {
 				$name = substr($name, 0, strrpos($name, "."));
 			}
-			$fileId = $filegallib->insert_file(
-				$tmpGalId, $name, $tmpDesc, $file, $result['data'], $filesize, $type,
-				$user, $result['fhash'], null, null, null, null, null, null, $metadata
-			);
+			$fileId = $filegallib->insert_file($tmpGalId, $name, $tmpDesc, $fileArray[$x], $data, $sizeArray[$x], $typeArray[$x], $user, $fhash);
 			if ($fileId) {
 				$feedback[] = tra('Upload was successful') . ': ' . $name;
-				@unlink($filepath);	// seems to return false sometimes even if the file was deleted
-				if (!file_exists($filepath)) {
-					$feedback[] = sprintf(tra('File %s removed from Batch directory.'), $file);
-				} else {
-					$feedback[] = "!!! " . sprintf(tra('Impossible to remove file %s from Batch directory.'), $file);
+				if (@unlink($filepath)) $feedback[] = sprintf(tra('File %s removed from Batch directory.') , $name);
+				else $feedback[] = "!!! " . sprintf(tra('Impossible to remove file %s from Batch directory.') , $name);
+			} else {
+				$feedback[] = "!!!" . tra('Upload was not successful') . ': ' . $name;
+				if (($prefs['fgal_use_db'] == 'n') || ($podCastGallery)) {
+					@unlink($savedir . $fhash);
 				}
 			}
-		}
-	}
+		} // if (!$error)
+		
+	} // for ($x=0; $x < $totfiles; $x++)
+	
 }
-
 $a_file = array();
 $a_path = array();
 buildFileList();
@@ -253,7 +278,6 @@ for ($i = 0; $i < $temp_max; $i++) {
 	}
 }
 $smarty->assign_by_ref('galleries', $galleries["data"]);
-$smarty->assign('treeRootId', $prefs['fgal_root_id']);
 include_once ('tiki-section_options.php');
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');

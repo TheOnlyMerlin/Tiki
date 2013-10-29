@@ -7,20 +7,21 @@
 {if isset($chosenGroup)}
 {tr}Group:{/tr} {$chosenGroup}{/if}
 {/if}
-{if isset($item)}
 
-{tr}User Tracker{/tr}
-{foreach item=field_value from=$item.field_values}
-	{$field_value.name}: {trackeroutput field=$field_value item=$item list_mode='csv' showlinks='n'}
-{/foreach}
-{/if}
 
 {tr}To validate that account, please follow the link:{/tr}
-{$validation_url}
+{$mail_machine}?user={$mail_user|escape:'url'}&pass={$mail_apass}
 
-{tr}Assign to a group:{/tr} {$assignuser_url}
-{tr}View user's data:{/tr} {$userpref_url}
+{tr}Assign to a group:{/tr} {$mail_machine_assignuser}?assign_user={$mail_user|escape:'url'}
+{tr}View user's data:{/tr} {$mail_machine_userprefs}?view_user={$mail_user|escape:'url'}
 
 
 {tr}Best regards{/tr}
+
+{if isset($item)}
+{tr}User Tracker{/tr}
+{foreach item=field_value from=$item.field_values}
+	{$field_value.name}: {include file="tracker_item_field_value.tpl" list_mode='csv' showlinks='n'}
+{/foreach}
+{/if}
 

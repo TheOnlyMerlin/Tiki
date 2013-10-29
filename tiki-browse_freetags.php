@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -11,6 +8,7 @@
 $section = 'freetags';
 require_once ('tiki-setup.php');
 include_once ('lib/freetag/freetaglib.php');
+$smarty->assign('headtitle', tra('Tags'));
 $access->check_feature('feature_freetags');
 $access->check_permission('tiki_p_view_freetags');
 
@@ -57,7 +55,7 @@ if (!isset($_REQUEST["offset"])) {
 }
 $smarty->assign_by_ref('offset', $offset);
 if (!isset($_REQUEST["type"])) {
-	$type = isset($_REQUEST['old_type'])?$_REQUEST['old_type']: '';
+	$type = '';
 } else {
 	$type = $_REQUEST["type"];
 }
@@ -79,7 +77,7 @@ if (isset($_REQUEST['broaden']) && $_REQUEST['broaden'] == 'last') {
 $smarty->assign('broaden', $broaden);
 $tagArray = $freetaglib->_parse_tag((isset($_REQUEST['tag'])) ? $_REQUEST['tag'] : '');
 $tagString = '';
-foreach ($tagArray as $t_ar) {
+foreach($tagArray as $t_ar) {
 	if (strstr($t_ar, ' ')) {
 		$tagString.= '"' . $t_ar . '" ';
 	} else {
@@ -97,29 +95,21 @@ if (empty($_REQUEST['maxPopular'])) {
 if (empty($_REQUEST['tsort_mode'])) {
 	$tsort_mode = 'tag_asc';
 } else {
-	$tsort_mode = $_REQUEST['tsort_mode'];
+	$tsort_mode = $_REQUEST['sort_mode'];
 	$smarty->assign_by_ref('tsort_mode', $tsort_mode);
 }
-if (!empty($_REQUEST['objectId'])) {
-	$objectId = $_REQUEST['objectId'];
-} else {
-	$objectId = null;
-}
-$smarty->assign_by_ref('objectId', $objectId);
-if ($prefs['feature_blogs'] == 'y' && $type == 'blog post') {
-	$blogs = TikiLib::lib('blog')->list_blogs();
-	$smarty->assign('blogs', $blogs['data']);
-}
-
-$most_popular_tags = $freetaglib->get_most_popular_tags('', 0, $maxPopular, $type, $objectId, $tsort_mode);
+$most_popular_tags = $freetaglib->get_most_popular_tags('', 0, $maxPopular, $tsort_mode);
 if (!empty($prefs['freetags_cloud_colors'])) {
 	$colors = explode(',', $prefs['freetags_cloud_colors']);
 	$prev = '';
-	foreach ($most_popular_tags as $id => $tag) {
+	foreach($most_popular_tags as $id => $tag) {
 		if (count($colors) == 1) {
 			$i = 0;
 		} elseif (count($colors) == 2) {
 			$i = $prev ? 0 : 1;
+		} else {
+			while (($i = rand(0, count($colors) - 1)) == $prev) {
+			}
 		}
 		$most_popular_tags[$id]['color'] = $colors[$i];
 		$prev = $i;
@@ -132,7 +122,7 @@ if ($broaden == 'last') {
 		$tagArray[count($tagArray) - 1]
 	);
 }
-$objects = $freetaglib->get_objects_with_tag_combo($tagArray, $type, $view_user, $offset, $maxRecords, $sort_mode, $find, $broaden, $objectId);
+$objects = $freetaglib->get_objects_with_tag_combo($tagArray, $type, $view_user, $offset, $maxRecords, $sort_mode, $find, $broaden);
 
 $smarty->assign_by_ref('objects', $objects["data"]);
 $smarty->assign_by_ref('cantobjects', $objects["cant"]);
@@ -142,23 +132,22 @@ $smarty->assign('cant', $objects['cant']);
 include_once ('tiki-section_options.php');
 ask_ticket('browse-freetags');
 
-$smarty->assign(
-	'objects_with_freetags',
-	array (
-		'wiki page',
-		'blog post',
-		'article',
-		'directory',
-		'faq',
-		'file gallery',
-		'image gallery',
-		'image',
-		'poll',
-		'quiz',
-		'survey',
-		'tracker',
-		'tracker %d'
-	)
-);
+$smarty->assign('objects_with_freetags',
+			array (
+				'wiki page',
+				'blog post',
+				'article',
+				'directory',
+				'faq',
+				'file gallery',
+				'image gallery',
+				'image',
+				'poll',
+				'quiz',
+				'survey',
+				'tracker',
+				'tracker %d'
+			)
+	);
 $smarty->assign('mid', 'tiki-browse_freetags.tpl');
 $smarty->display("tiki.tpl");

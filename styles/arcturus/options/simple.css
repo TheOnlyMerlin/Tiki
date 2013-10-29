@@ -22,9 +22,6 @@ h3.box-title,
 
 .box {
 	border: none;
-	background: #e1ebf0;
-	margin: 0.2em;
-	padding-bottom: 0; /* overrides padding-bottom: 10px of the arcturus.css */
 }
 
 h1, h2, h3, h4, h5 {
@@ -45,18 +42,18 @@ body {
 	font-family: "Trebuchet MS", "Luxi Sans", "Lucida Grande", Tahoma, helvetica, sans-serif;
 	font-size: 80% !important;
 }
-
+	
 html>body {
 	font-size: 0.75em !important;
 }
 
-
+	
 #tiki-top {
 	background: #e1ebf0;
 	border: 1px solid #6699cc;
 }
-
-.header,
+	
+#header,
 #c1c2,
 #c1c2 #wrapper,
 #c1c2 #wrapper #col1,
@@ -80,22 +77,17 @@ html>body {
 	width: 180px;
 	padding: 0;
 }
-
+	
 #col3 {
 	margin-left: -180px;
 }
-
+	
 #centercolumn {padding: 5px}
 #tiki-center {padding: 5px 0}
 
 
-.footerbgtrap {
-	background: transparent;
-	color: #000;
-}
-
+.footerbgtrap {background: transparent; color: #000}
 .content {padding: 1em}
-
 div {font-size: 1em}
 
 a,
@@ -117,9 +109,8 @@ hr {
 }
 
 fieldset {
-	padding: 0.9em;
+	padding: 0.2em;
 	margin-bottom: 0.2em;
-	border: solid 1px #99ccff;
 }
 
 input {
@@ -132,19 +123,11 @@ input {
 }
 
 input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="search"],
-input[type="number"] {
-	font-size: 1em;
-	border: solid 1px #abcdef;
-}
+input[type="password"] {font-size: 1em}
 
-textarea {
-	border: solid 1px #abcdef;
-	padding: 0.1em;
-	width: 98%
-}
+input[type="text"],
+input[type="password"],
+textarea {border: solid 1px #abcdef}
 
 input[type="submit"],
 input[type="file"],
@@ -194,7 +177,18 @@ input[type=submit]:hover,
 	vertical-align: middle;
 }
 
+fieldset {
+	border: solid 1px #99ccff;
+	padding: 0.9em
+}
+
 select {text-align: start}
+
+textarea {
+	padding: 0.1em;
+	width: 98%
+}
+
 
 #tiki-top a,
 #tiki-top a:visited {
@@ -211,10 +205,12 @@ select {text-align: start}
 #tiki-top label {
 	color: #000;
 }
-
-#topbar_modules .box-search {
-    top: 1.1em;
-    right: 1em;
+	
+.box {
+	background: #e1ebf0;
+	border: 0;
+	margin: 0.2em;
+	padding-bottom: 0; /* overrides padding-bottom: 10px of the arcturus.css */
 }
 
 h3.box-title {
@@ -331,7 +327,6 @@ td.heading,
 tr.diffheader {
 	background: #abcdef;
 	font-size: 1em;
-	color: #000;
 }
 
 .email .closeButton {width: 100%}
@@ -345,9 +340,7 @@ small {font-size: 0.8em}
 tr.even td,
 td.even,
 li.even,
-.eventhumb,
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+.eventhumb {
 	background: #f0f9ff;
 }
 
@@ -355,9 +348,7 @@ table.normal tr:nth-child(2n),
 tr.odd td,
 td.odd,
 li.odd,
-.oddthumb,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+.oddthumb  {
 	background: #def;
 }
 
@@ -599,7 +590,7 @@ body.wikitext {
 	display: block;
 	padding-top: 2px;
 	}
-.tabstoggle span a, .tabstoggle span a:hover {
+.tabstoggle span a; .tabstoggle span a:hover {
 	display: block;
 }
 
@@ -624,7 +615,7 @@ body.wikitext {
 	color: black;
 	background: #f0f9ff;
 }
-
+	
 .tabinactive:hover,
 .tabactive {
 	background: #f0f9ff;
@@ -639,7 +630,7 @@ body.wikitext {
 }
 
 .normal {
-	border: solid 1px #abcdef;
+	border: solid 1px #abcde
 }
 
 .categpath {
@@ -648,27 +639,15 @@ body.wikitext {
 
 .admbox {
 	border: 2px solid #abcdef;
-	height: 100px;
-	width: 100px;
-	text-align: center;
-	float: left;
-	margin: 5px;
-}
+	height: 100px; width: 100px;
+	text-align: center; float: left; margin: 5px}
 
 .admbox:hover {background: #ddeeff;}
 .admbox img {margin-top: 20px;}
 
 /* structures toc */
-.toc {
-	margin-left: 0.5em;
-	padding-left: 0.5em;
-	list-style-type: none;
-}
-
-.toc li {
-	margin-left: .2em;
-	padding-left: .2em;
-}
+.toc {margin-left: 0.5em; padding-left: 0.5em; list-style-type: 0}
+.toc li {margin-left: .2em; padding-left: .2em}
 
 /* jscalendar */
 .daterow {
@@ -697,22 +676,16 @@ body.wikitext {
 	padding: 0.1em;
 	vertical-align: top}
 
-.caltable td.calhighlight {
-	background: #abcdef;
-}
+#caltable .calfocuson {
+	background: #fc0;
+	border: solid 1px #000}
 
-td.calheadhighlight {
-	background: #ddeeff;
-}
+#caltable .calfocuson a {
+	color: #000}
 
-td.calHeading a {
-	color: #000;
-	font-size: 12px;
-}
-
-#month_title {
-	font-size: 12px;
-}
+#caltable .calfocus a,
+#caltable .calfocuson a {
+	text-decoration: none}
 
 .calcontent {
 	min-height: 7em;

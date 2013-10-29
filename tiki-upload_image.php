@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -126,7 +123,7 @@ if (isset($_REQUEST["upload"])) {
 				if (!move_uploaded_file($file_tmp_name, $tmp_dest)) {
 					if ($tiki_p_admin == 'y') {
 						$smarty->assign('msg', tra('Errors detected').'. '.tra('Check that these paths exist and are writable by the web server').': '.$file_tmp_name.' '.$tmp_dest);
-					} else {
+					}	else	{
 						$smarty->assign('msg', tra('Errors detected'));
 					}
 					$smarty->assign('errortype', 'no_redirect_login');

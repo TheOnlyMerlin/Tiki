@@ -1,18 +1,16 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_metrics_list()
-{
+function prefs_metrics_list() {
 	return array(
 		'metrics_pastresults' => array(
 			'name' => tra('Show past metrics results'),
 			'description' => tra('In the metrics dashboard, identify if the previously collected metrics should be displayed.'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'metrics_pastresults_count' => array(
 			'name' => tra('Past metrics count'),
@@ -20,44 +18,36 @@ function prefs_metrics_list()
 			'type' => 'text',
 			'size' => 4,
 			'filter' => 'digits',
-			'default' => 50,
 		),
 		'metrics_trend_novalue' => array(
 			'name' => tra('No metric trend value'),
 			'description' => tra('Value to display when no trend is available for the metric.'),
 			'type' => 'text',
 			'size' => 10,
-			'default' => '(N/A)',
 		),
 		'metrics_trend_prefix' => array(
 			'name' => tra('Metric trend prefix'),
 			'description' => tra('Portion of text to display before the metric trend value.'),
 			'type' => 'text',
 			'size' => 10,
-			'default' => '(',
 		),
 		'metrics_trend_suffix' => array(
 			'name' => tra('Metric trend suffix'),
 			'description' => tra('Portion of text to display after the metric trend value.'),
 			'type' => 'text',
 			'size' => 10,
-			'default' => '%)',
 		),
 		'metrics_metric_name_length' => array(
 			'name' => tra('Metric name length'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 4,
 			'filter' => 'digits',
-			'default' => 255,
 		),
 		'metrics_tab_name_length' => array(
 			'name' => tra('Metric tab name length'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 4,
 			'filter' => 'digits',
-			'default' => 255,
 		),
 		'metrics_cache_output' => array(
 			'name' => tra('Cache metrics output'),
@@ -67,7 +57,6 @@ function prefs_metrics_list()
 				'memcache_enabled',
 				'memcache_servers',
 			),
-			'default' => 'y',
 		),
 	);
 }

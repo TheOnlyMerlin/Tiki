@@ -1,22 +1,23 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_cclite_info()
-{
+/**
+ * General purpose cclite utility plugin
+ * To perform transaction list and summary     
+ */
+function wikiplugin_cclite_info() {
 	global $prefs;
 
 	return array(
 		'name' => tra('Cclite'),
-		'documentation' => 'PluginCclite',
+		'documentation' => tra('PluginCclite'),
 		'description' => tra('General purpose cclite utility plugin'),
 //		'validate' => '',
 		'prefs' => array( 'wikiplugin_cclite', 'payment_feature' ),
-		'icon' => 'img/icons/money.png',
-		'tags' => array( 'experimental' ),		
 		'params' => array(
 			'mode' => array(
 				'required' => false,
@@ -41,8 +42,7 @@ function wikiplugin_cclite_info()
 	);
 }
 
-function wikiplugin_cclite( $data, $params )
-{
+function wikiplugin_cclite( $data, $params, $offset ) {
 	global $smarty, $userlib, $prefs, $user, $headerlib;
 	//global $paymentlib; require_once 'lib/payment/paymentlib.php';
 	global $cclitelib;  require_once 'lib/payment/cclitelib.php';
@@ -56,20 +56,21 @@ function wikiplugin_cclite( $data, $params )
 	if (is_array($default['registry']) && !empty($default['registry'])) {
 		$default['registry'] = $default['registry'][0];
 	}
-	$params = array_merge($default, $params);
+	$params = array_merge( $default, $params );
 	
 	switch ($params['mode']) {
 		case 'recent':
 			$result = $cclitelib->cclite_send_request('recent');
-    		break;
+			break;
 		case 'summary':
 		default:
 			$result = $cclitelib->cclite_send_request('summary');
-    		break;
+			break;
+			
 	}
 	//$r = $cclitelib->cclite_send_request('logoff');
-	$result = '<em>In development...</em><br />' . $result;
-	$smarty->assign('wp_cclite_result', $result);
-	return '~np~' . $smarty->fetch('wiki-plugins/wikiplugin_cclite.tpl') . '~/np~';
+	$result = 'In development...<br />' . strip_tags($result);
+	$smarty->assign( 'wp_cclite_result', $result );
+	return '~np~' . $smarty->fetch( 'wiki-plugins/wikiplugin_cclite.tpl' ) . '~/np~';
 }
 

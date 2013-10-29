@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -10,24 +10,24 @@
  * eromneg adding additional File Gallery popup body class
  */
 
-function smarty_function_html_body_attributes($params, $smarty)
-{
-	global $section, $prefs, $cookietab, $page, $smarty, $tiki_p_edit, $section_class, $user;
+function smarty_function_html_body_attributes($params, &$smarty) {
+	global $section, $prefs, $cookietab, $page, $smarty, $tiki_p_edit, $section_class;
 	
 	$back = '';
 	$onload = '';
 	$class = '';
 	
-	$dblclickedit = $smarty->getTemplateVars('dblclickedit');
+	$dblclickedit = $smarty->get_template_vars('dblclickedit');
 	
 	if (isset($section) && $section == 'wiki page' && $prefs['user_dbl'] == 'y' and $dblclickedit == 'y' and $tiki_p_edit == 'y') {
-		$back .= ' ondblclick="location.href=\'tiki-editpage.php?page=' . rawurlencode($page) . '\';"';
+		$back .= ' ondblclick="location.href=\'tiki-editpage.php?page='.rawurlencode($page).'\';"';
 	}
-
-	$class .= 'tiki ';
+	
+	// this appears to be unused - smarty var $msgError is never assigned 
+	// {if $msgError} javascript:location.hash='msgError'{/if}"
 	
 	if (isset($section_class)) {
-		$class .= $section_class;
+		$class .= 'tiki '.$section_class;
 	}
 	
 	if ($prefs['feature_fixed_width'] == 'y') {
@@ -42,28 +42,13 @@ function smarty_function_html_body_attributes($params, $smarty)
 		$class .= empty($class) ? ' ' : '';
 		$class .= 'fullscreen';
 	}
-
-	if (isset($prefs['layout_add_body_group_class']) && $prefs['layout_add_body_group_class'] === 'y') {
-		if (empty($user)) {
-			$class .= ' grp_Anonymous';
-		} else if (TikiLib::lib('user')->user_is_in_group($user, 'Registered')) {
-			$class .= ' grp_Registered';
-			if (TikiLib::lib('user')->user_is_in_group($user, 'Admins')) {
-				$class .= ' grp_Admins';
-			}
-		}
-	}
-
-	if ($prefs['feature_perspective'] == 'y' && isset($_SESSION['current_perspective'])) {
-		$class .= ' perspective' . $_SESSION['current_perspective'];
-	}
 	
 	if (!empty($onload)) {
-		$back .= ' onload="' . $onload . '"';
+		$back .= ' onload="'.$onload.'"';
 	}
 	
 	if (!empty($class)) {
-		$back .= ' class="' . $class . '"';
+		$back .= ' class="'.$class.'"';
 	}
 	
 	return $back;

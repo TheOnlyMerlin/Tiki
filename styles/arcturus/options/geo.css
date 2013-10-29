@@ -25,27 +25,18 @@ h3.box-title,
 
 /* may need to change these */
 #tiki-top {
-	padding-right: 5px;
-	padding-left: 6px;
-	border-bottom: 1px dashed #777750;
 	color: #000;
 	font-size: 11px;
-}
-
-#tiki-top a {
-	color: #000;
 }
 
 h1, h2, h3, h4, h5 {
 	font-family: Arial, Helvetica, sans-serif;
 }
 
-/*#secondary_site_menu li,
+#secondary_site_menu li,
 #secondary_site_menu li a,
 #tiki-top .cssmenu_horiz li,
-#tiki-top .cssmenu_horiz li a*/
-.cssmenu_horiz li,
-.cssmenu_horiz li a {
+#tiki-top .cssmenu_horiz li a {
 	background: none;
 }
 
@@ -73,6 +64,16 @@ a:visited {
 
 #main {
 	background: url(geo/fond2tete.png) no-repeat fixed;
+}
+
+#tiki-top {
+	padding-right: 5px;
+	padding-left: 6px;
+	border-bottom: 1px dashed #777750;
+}
+
+#tiki-top a {
+	color: #000;
 }
 
 h1,
@@ -177,6 +178,9 @@ h3.box-title {
 	padding-bottom: 2px;
 	border-bottom: 1px dashed #777750;
 	width: auto;
+}
+
+.separator {
 	color: #595930;
 	text-decoration: none;
 }
@@ -193,8 +197,8 @@ h3.box-title {
 
 .cssmenu_horiz a,
 .cssmenu_vert ul a,
-.modules .cssmenu_horiz li ul li a,
-.modules .cssmenu_horiz li:hover ul li a {
+#tiki-top .cssmenu_horiz li ul li a,
+#tiki-top .cssmenu_horiz li:hover ul li a {
 	background: #d1d2a9;
 	text-decoration: none;
 	padding: .2em 1em;
@@ -226,18 +230,14 @@ tr.diffheader {
 tr.odd td,
 td.odd,
 li.odd,
-.oddthumb,
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+.oddthumb {
 	background: #d9d9b0;
 }
 
 tr.even td,
 td.even,
 li.even,
-.eventhumb,
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+.eventhumb {
 	background: #d1d2a9;
 }
 
@@ -333,19 +333,4 @@ a.pagetitle {
 	padding: 1px;
 	margin: 1px;
 	font-weight: bold;
-}
-
-/*** Calendar ***/
-
-.caltable .even {
-	background: #d1d2a9;
-}
-
-.caltable .odd {
-	background: #f1f1c9;
-}
-
-.caltable td.calhighlight,
-td.calheadhighlight {
-	background: #f1f8de;
 }

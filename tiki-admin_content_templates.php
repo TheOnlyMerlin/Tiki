@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,13 +9,9 @@ $section = 'admin';
 require_once ('tiki-setup.php');
 $access->check_feature(array('feature_wiki_templates','feature_cms_templates'), '', 'features', true);
 
-global $templateslib;
 include_once ('lib/templates/templateslib.php');
 
-$auto_query_args = array('templateId');
-
 $access->check_permission('tiki_p_edit_content_templates');
-//get_strings tra('Content Templates')
 
 if (!isset($_REQUEST["templateId"])) {
 	$_REQUEST["templateId"] = 0;
@@ -35,16 +28,6 @@ if ($_REQUEST["templateId"]) {
 		$info["section_wiki"] = 'y';
 	} else {
 		$info["section_wiki"] = 'n';
-	}
-	if ($templateslib->template_is_in_section($_REQUEST["templateId"], 'wiki_html')) {
-		$info["section_wiki_html"] = 'y';
-	} else {
-		$info["section_wiki_html"] = 'n';
-	}
-	if ($templateslib->template_is_in_section($_REQUEST["templateId"], 'file_galleries')) {
-		$info["section_file_galleries"] = 'y';
-	} else {
-		$info["section_file_galleries"] = 'n';
 	}
 	if ($templateslib->template_is_in_section($_REQUEST["templateId"], 'newsletters')) {
 		$info["section_newsletters"] = 'y';
@@ -74,13 +57,11 @@ if ($_REQUEST["templateId"]) {
 	$info["section_cms"] = 'n';
 	$info["section_html"] = 'n';
 	$info["section_wiki"] = 'n';
-	$info["section_wiki_html"] = 'n';
-	$info["section_file_galleries"] = 'n';
 	$info["section_newsletters"] = 'n';
 	$info["section_event"] = 'n';
 }
 
-$smarty->assign_by_ref('info', $info);
+$smarty->assign('info', $info);
 if (isset($_REQUEST["remove"])) {
 	$access->check_authenticity();
 	$templateslib->remove_template($_REQUEST["remove"]);
@@ -97,18 +78,13 @@ if (isset($_REQUEST["preview"])) {
 		$parsed = nl2br($_REQUEST["content"]);
 	} else {
 		$info["section_html"] = 'n';
-		$parsed = $tikilib->parse_data($_REQUEST["content"], array('is_html' => $info['section_wiki_html'] === 'y'));
+		$parsed = $tikilib->parse_data($_REQUEST["content"]);
 	}
 	$smarty->assign('parsed', $parsed);
 	if (isset($_REQUEST["section_wiki"]) && $_REQUEST["section_wiki"] == 'on') {
 		$info["section_wiki"] = 'y';
 	} else {
 		$info["section_wiki"] = 'n';
-	}
-	if (isset($_REQUEST["section_file_galleries"]) && $_REQUEST["section_file_galleries"] == 'on') {
-		$info["section_file_galleries"] = 'y';
-	} else {
-		$info["section_file_galleries"] = 'n';
 	}
 	if (isset($_REQUEST["section_newsletters"]) && $_REQUEST["section_newsletters"] == 'on') {
 		$info["section_newsletters"] = 'y';
@@ -135,20 +111,18 @@ if (isset($_REQUEST["save"])) {
 	check_ticket('admin-content-templates');
 	$type = $_REQUEST['template_type'];
 
-	if ( $type == 'page' ) {
+	if( $type == 'page' ) {
 		$content = 'page:' . $_REQUEST['page_name'];
 	} else {
 		$content = $_REQUEST["content"];
 	}
-	if (isset($_REQUEST["name"]) && $_REQUEST["name"] != "") {
+	if(isset($_REQUEST["name"]) && $_REQUEST["name"] != ""){
 		$tid = $templateslib->replace_template($_REQUEST["templateId"], $_REQUEST["name"], $content, $type);
 		$smarty->assign("templateId", '0');
 		$info["name"] = '';
 		$info["content"] = '';
 		$info["section_cms"] = 'n';
 		$info["section_wiki"] = 'n';
-		$info["section_wiki_html"] = 'n';
-		$info["section_file_galleries"] = 'n';
 		$info["section_newsletters"] = 'n';
 		$info["section_events"] = 'n';
 		$info["section_html"] = 'n';
@@ -162,16 +136,6 @@ if (isset($_REQUEST["save"])) {
 			$templateslib->add_template_to_section($tid, 'wiki');
 		} else {
 			$templateslib->remove_template_from_section($tid, 'wiki');
-		}
-		if (isset($_REQUEST["section_wiki_html"]) && $_REQUEST["section_wiki_html"] == 'on') {
-			$templateslib->add_template_to_section($tid, 'wiki_html');
-		} else {
-			$templateslib->remove_template_from_section($tid, 'wiki_html');
-		}
-		if (isset($_REQUEST["section_file_galleries"]) && $_REQUEST["section_file_galleries"] == 'on') {
-			$templateslib->add_template_to_section($tid, 'file_galleries');
-		} else {
-			$templateslib->remove_template_from_section($tid, 'file_galleries');
 		}
 		if (isset($_REQUEST["section_newsletters"]) && $_REQUEST["section_newsletters"] == 'on') {
 			$templateslib->add_template_to_section($tid, 'newsletters');
@@ -194,13 +158,11 @@ if (isset($_REQUEST["save"])) {
 		$info["content"] = (isset($_REQUEST["content"]) && $_REQUEST["content"] != '') ? $_REQUEST["content"] : '' ;
 		$info["section_cms"] = (isset($_REQUEST["section_cms"]) && $_REQUEST["section_cms"] == 'on') ? 'y' : 'n';
 		$info["section_wiki"] = (isset($_REQUEST["section_wiki"]) && $_REQUEST["section_wiki"] == 'on') ? 'y' : 'n';
-		$info["section_wiki_html"] = (isset($_REQUEST["section_wiki_html"]) && $_REQUEST["section_wiki_html"] == 'on') ? 'y' : 'n';
-		$info["section_file_galleries"] = (isset($_REQUEST["section_file_galleries"]) && $_REQUEST["section_file_galleries"] == 'on') ? 'y' : 'n';
 		$info["section_newsletters"] = (isset($_REQUEST["section_newsletters"]) && $_REQUEST["section_newsletters"] == 'on') ? 'y' : 'n' ;
 		$info["section_events"] = (isset($_REQUEST["section_events"]) && $_REQUEST["section_events"] == 'on') ? 'y' : 'n';
 		$info["section_html"] = (isset($_REQUEST["section_html"]) && $_REQUEST["section_html"] == 'on') ? 'y' : 'n';
 		$smarty->assign('info', $info);
-		$smarty->assign('emptyname', "true");
+		$smarty->assign('emptyname',"true");
 	}
 }
 if (!isset($_REQUEST["sort_mode"])) {
@@ -223,29 +185,8 @@ $smarty->assign('find', $find);
 $smarty->assign_by_ref('sort_mode', $sort_mode);
 $channels = $templateslib->list_all_templates($offset, $maxRecords, $sort_mode, $find);
 $smarty->assign_by_ref('cant_pages', $channels["cant"]);
-
 // wysiwyg decision
-if ($_REQUEST['templateId']) {
-	$info['is_html'] = $info['section_wiki_html'] === 'y' ? 1 : 0;
-	$info['wysiwyg'] = $info['section_wiki_html'];
-}
 include 'lib/setup/editmode.php';
-$info['section_wiki_html'] = $_SESSION['wysiwyg'];	//$info['is_html'] ? 'y' : 'n';
-
-// Handles switching editor modes
-global $editlib; include_once ('lib/wiki/editlib.php');
-if (isset($_REQUEST['mode_normal']) && $_REQUEST['mode_normal']=='y') {
-	// Parsing page data as first time seeing html page in normal editor
-	$smarty->assign('msg', "Parsing html to wiki");
-	$info['content'] = $editlib->parseToWiki($_REQUEST["content"]);
-	$smarty->assign('parsed', $parsed);
-} elseif (isset($_REQUEST['mode_wysiwyg']) && $_REQUEST['mode_wysiwyg']=='y') {
-	// Parsing page data as first time seeing wiki page in wysiwyg editor
-	$smarty->assign('msg', "Parsing wiki to html");
-	$info['content'] = $editlib->parseToWysiwyg($_REQUEST["content"]);
-	$smarty->assign('parsed', $parsed);
-}
-
 $smarty->assign_by_ref('channels', $channels["data"]);
 ask_ticket('admin-content-templates');
 global $wikilib;

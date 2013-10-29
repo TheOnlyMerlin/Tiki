@@ -1,12 +1,12 @@
 /* community option - released under LPGL license. For more information, visit http://themes.tiki.org. */
 
-.sitetitles {
+#sitetitles {
 	margin-left: 10px;
 	height: auto;
 	line-height: 60px;
 }
 
-.sitetitle {
+#sitetitle {
 	display: block;
 	margin: 0;
 }
@@ -16,17 +16,17 @@ input#fuser {
 	display: inline;
 }
 
-.sitesubtitle {
+#sitesubtitle {
 	margin-left: 20px;
 	font-size: 25px !important;
 	font-weight: bold;
 }
 
-.sitelogo {
+#sitelogo {
 	padding: 0;
 }
 
-.sitelogo img {
+#sitelogo img {
 	margin: 0;
 }
 
@@ -74,6 +74,18 @@ input#fuser {
 .postbody-content h3,
 .wikitext h3 {
 	color: #111155;
+}
+
+.postbody-content h4,
+.wikitext h4 {
+}
+
+.postbody-content h5,
+.wikitext h5 {
+}
+
+.postbody-content h6,
+.wikitext h6 {
 }
 
 body.tiki_wiki_page h1.pagetitle a,

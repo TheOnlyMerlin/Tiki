@@ -1,9 +1,4 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
 
 /******************************************************************
  * Use this file to run just a few tests that you care about, instead
@@ -11,8 +6,8 @@
  ******************************************************************/
   
 
-ini_set('display_errors', 'on');
-error_reporting(E_ALL);
+ini_set( 'display_errors', 'on' );
+error_reporting( E_ALL );
 
 /*
  * Load all the Tiki libraries, in case we need them for 
@@ -46,8 +41,7 @@ class AllTests
     }
 }
 
-function loadTikiLibraries()
-{
+function loadTikiLibraries() {
 	/*
  	 * Note: for some reason, we need to declare many of the Tiki global variables
  	 * here, otherwise they end up being NULL.
@@ -76,14 +70,14 @@ function loadTikiLibraries()
  	 * Need to reset error reporting because it is changed by 
  	 * some of the tiki include files
  	 */
-	ini_set('display_errors', 'on');
-	error_reporting(E_ALL);
-	ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . '.' . PATH_SEPARATOR . '../../lib' . PATH_SEPARATOR . '../..');
+	ini_set( 'display_errors', 'on' );
+	error_reporting( E_ALL );
+	ini_set( 'include_path', ini_get('include_path') . PATH_SEPARATOR . '.' . PATH_SEPARATOR . '../../lib' . PATH_SEPARATOR . '../..' );
 
 	/*
  	* Note: Need to reset the include pathes relative to the root of tiki, because 
  	* inclusion of the tiki files, move the currrent directory
  	* to the root.
  	*/
-	ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . './lib/test' . PATH_SEPARATOR . './lib' . PATH_SEPARATOR . '.');
+	ini_set( 'include_path', ini_get('include_path') . PATH_SEPARATOR . './lib/test' . PATH_SEPARATOR . './lib' . PATH_SEPARATOR . '.' );
 }

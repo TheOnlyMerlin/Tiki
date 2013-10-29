@@ -1,4 +1,4 @@
-{* $Id$ *}
+{* $Header: /cvsroot/tikiwiki/_mods/wiki-plugins/listpages/templates/wikiplugin_listpagenames.tpl,v 1.3 2007-04-19 16:33:25 sylvieg Exp $ *}
 {strip}
 <ul>
 {section name=ix loop=$listpages}
@@ -12,8 +12,5 @@
 	</a>
 </li>
 {/section}
-{if $showNumberOfPages eq 'y'}
-{tr}Number of result:{/tr}{$listpages|@count}
-{/if}
 </ul>
 {/strip}

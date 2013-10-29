@@ -1,20 +1,17 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_content_info()
-{
+function wikiplugin_content_info() {
 	return array(
-		'name' => tra('Dynamic Content'),
-		'documentation' => 'PluginContent',
-		'description' => tra('Display content from dynamic content repository'),
-		'prefs' => array( 'feature_dynamic_content', 'wikiplugin_content'),
+		'name' => tra( 'Dynamic Content' ),
+		'documentation' => tra('PluginContent'),		
+		'description' => tra( 'Includes content from the dynamic content system.' ),
+		'prefs' => array( 'feature_dynamic_content', 'wikiplugin_content' ),
 		'filter' => 'text',
-		'icon' => 'img/icons/database_table.png',
-		'tags' => array( 'basic' ),		
 		'params' => array(
 			'id' => array(
 				'required' => false,
@@ -34,19 +31,18 @@ function wikiplugin_content_info()
 	);
 }
 
-function wikiplugin_content( $data, $params )
-{
+function wikiplugin_content( $data, $params, $offset, $parseOptions) {
 
-	$dcslib = TikiLib::lib('dcs');
+	global $dcslib; require_once 'lib/dcs/dcslib.php';
 
 	$lang = null;
-	if ( isset( TikiLib::lib('parser')->option['language'] ) ) {
-		$lang = TikiLib::lib('parser')->option['language'];
+	if( isset( $parseOptions['language'] ) ) {
+		$lang = $parseOptions['language'];
 	}
 
-	if ( isset($params['id']) &&  $params['id'] ) {
+	if( $params['id'] ) {
 		return $dcslib->get_actual_content((int) $params['id'], $lang);
-	} elseif ( isset($params['label']) && $params['label'] ) {
-		return $dcslib->get_actual_content_by_label($params['label'], $lang);
+	} elseif( $params['label'] ) {
+		return $dcslib->get_actual_content_by_label( $params['label'], $lang);
 	}
 }

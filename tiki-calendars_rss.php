@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -16,13 +16,13 @@ if (!isset($prefs['feed_calendar']) || $prefs['feed_calendar'] != 'y') {
 }
 
 $res=$access->authorize_rss(array('tiki_p_view_calendar','tiki_p_admin_calendar'));
-if ($res) {
-	if ($res['header'] == 'y') {
-		header('WWW-Authenticate: Basic realm="'.$tikidomain.'"');
-		header('HTTP/1.0 401 Unauthorized');
-	}
-	$errmsg=$res['msg'];
-	require_once ('tiki-rss_error.php');
+if($res) {
+   if($res['header'] == 'y') {
+      header('WWW-Authenticate: Basic realm="'.$tikidomain.'"');
+      header('HTTP/1.0 401 Unauthorized');
+   }
+   $errmsg=$res['msg'];
+   require_once ('tiki-rss_error.php');
 }
 
 $feed = "calendar";
@@ -30,9 +30,9 @@ $calendarIds=array();
 if (isset($_REQUEST["calendarIds"])) {
     $calendarIds = $_REQUEST["calendarIds"];
     if (!is_array($calendarIds)) {
-		$calendarIds = array($calendarIds);
-    }
-    $uniqueid = $feed.".".implode(".", $calendarIds);
+	$calendarIds = array($calendarIds);
+    }	
+    $uniqueid = $feed.".".implode(".",$calendarIds);
 } else {
     $uniqueid = $feed;
     $calendarIds = array();
@@ -54,9 +54,11 @@ if ($output["data"]=="EMPTY") {
 
 	// build a list of viewable calendars
 	$calendars = array();
+
 	foreach ($rawcals['data'] as $cal) {
-		$calendars[] = $cal['calendarId'];
-	}
+
+			$calendars[] = $cal['calendarId'];
+	    }
 
 	$maxCalEntries = $prefs['feed_calendar_max'];
 	$cur_time = explode(',', $tikilib->date_format('%Y,%m,%d,%H,%M,%S', $publishDate));
@@ -66,10 +68,10 @@ if ($output["data"]=="EMPTY") {
 	require_once("lib/smarty_tiki/modifier.tiki_long_datetime.php");
 	require_once("lib/smarty_tiki/modifier.compactisodate.php");
 
-	foreach ($items as &$item) {
+	foreach($items as &$item) {
 		$start_d = smarty_modifier_compactisodate($item["start"]);
 		$end_d = smarty_modifier_compactisodate($item["end"]);
-
+	
 		$item["body"] = "<div class=\"vevent\"> <span class=\"summary\">" . $item["name"] . "</span>"."<br />\n";
  	    $item["body"] .=  "<abbr class=\"dtstart\" title=\"" .$start_d ."\">" .tra("Start:") . " " .smarty_modifier_tiki_long_datetime($item["start"]) . "</abbr>" ."<br />\n";
 	    $item["body"] .=  "<abbr class=\"dtend\" title=\""  .$end_d ."\">" . tra("End:") . " " .smarty_modifier_tiki_long_datetime($item["end"]). "</abbr>"."<br />\n";

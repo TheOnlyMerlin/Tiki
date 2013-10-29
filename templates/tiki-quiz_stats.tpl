@@ -11,7 +11,7 @@
 	{include file='find.tpl'}
 {/if}
 
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>
 			<a href="tiki-quiz_stats.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'quizName_desc'}quizName_asc{else}quizName_desc{/if}">{tr}Quiz{/tr}</a>
@@ -30,14 +30,16 @@
 	{section name=user loop=$channels}
 		{if ($tiki_p_admin eq 'y') or ($channels[user].individual eq 'n' and $tiki_p_view_quiz_stats eq 'y') or ($channels[user].individual_tiki_p_view_quiz_stats eq 'y')}
 			<tr class="{cycle}">
-				<td class="text"><a class="tablename" href="tiki-quiz_stats_quiz.php?quizId={$channels[user].quizId}">{$channels[user].quizName|escape}</a></td>
-				<td class="date">{$channels[user].timesTaken}</td>
-				<td class="integer">{$channels[user].avgavg}%</td>
-				<td class="date">{$channels[user].avgtime} secs</td>
+				<td><a class="tablename" href="tiki-quiz_stats_quiz.php?quizId={$channels[user].quizId}">{$channels[user].quizName|escape}</a></td>
+				<td>{$channels[user].timesTaken}</td>
+				<td>{$channels[user].avgavg}%</td>
+				<td>{$channels[user].avgtime} secs</td>
 			</tr>
 		{/if}
 	{sectionelse}
-		{norecords _colspan=4}
+		<tr class="{cycle}">
+			<td colspan="4">{tr}No records{/tr}</td>
+		</tr>
 	{/section}
 </table>
 

@@ -1,38 +1,30 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-// 
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
-
 /*
  * Parent class of all Selenium test cases.
  */
-
+ 
 require_once 'PHPUnit/Extensions/SeleniumTestCase.php';
 require_once 'TikiAcceptanceTestDBRestorer.php';
-
-
+ 
+ 
 class TikiSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase
 {
 	protected $backupGlobals = FALSE;
 	var $current_test_db; 
 	var $user_credentials = array (
-			'admin' => 'tiki'
-			);
+		'admin' => 'tiki'
+	);
 
-	function __construct($name = '')
-	{
+	function __construct($name) {
 		parent::__construct($name);
 		$this->configure();
 	}
 
-	private function configure()
-	{
+	private function configure() {
 		$test_tiki_root_url = NULL;
 		$config_fpath = './tests_config.php';
 
-		if (! file_exists($config_fpath))
+		if ( ! file_exists( $config_fpath ) )
 			return false;
 
 		$lines = file($config_fpath);
@@ -47,18 +39,16 @@ class TikiSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase
 		}	
 		if (!preg_match('/^http\:\/\/local/', $test_tiki_root_url)) {
 			exit("Error found in test configuration file '$config_fpath'\n".
-					"The URL specified by \$test_tiki_root_url should start with http://local, in order to prevent accidentally running tests on a non-local test site.\n".
-					"Value was: '$test_tiki_root_url'\n");
+				"The URL specified by \$test_tiki_root_url should start with http://local, in order to prevent accidentally running tests on a non-local test site.\n".
+				"Value was: '$test_tiki_root_url'\n");
 		}
 	}
 
-	public function openTikiPage($tikiPage)
-	{
+	public function openTikiPage($tikiPage) {
 		$this->open("http://localhost/tiki-trunk/$tikiPage");
 	}
 
-	public function restoreDBforThisTest()
-	{
+	public function restoreDBforThisTest() {
 		$dbRestorer = new TikiAcceptanceTestDBRestorerSQLDumps();
 		$error_msg = $dbRestorer->restoreDB($this->current_test_db);
 		if ($error_msg != null) {
@@ -66,22 +56,19 @@ class TikiSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase
 		}
 	}
 
-	public function logInIfNecessaryAs($my_user)
-	{
+	public function logInIfNecessaryAs($my_user) {
 		if (!$this->_login_as($my_user)) {
 			die("Couldn't log in as $my_user!");
 		}
 	}
 
-	public function logOutIfNecessary()
-	{
-		if ($this->isElementPresent("link=Logout")) {
+	public function logOutIfNecessary() {
+		if ($this->isElementPresent("link=Logout")){
 			$this->clickAndWait("link=Logout");
 		} 
 	}
 
-	public function assertSelectElementContainsItems($selectElementID, $expItems, $message)
-	{
+	public function assertSelectElementContainsItems($selectElementID, $expItems, $message) {
 		$this->assertElementPresent($selectElementID, "$message\nMarkup element '$selectElementID' did not exist");
 		$selectElementLabels = 	$this->getSelectOptions($selectElementID);
 		foreach ($expItems as $anItem => $anItemValue) {
@@ -91,8 +78,7 @@ class TikiSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase
 		}
 	}
 
-	public function assertSelectElementContainsAllTheItems($selectElementID, $expItems, $message)
-	{
+	public function assertSelectElementContainsAllTheItems($selectElementID, $expItems, $message) {
 		$this->assertElementPresent($selectElementID, "$message\nMarkup element '$selectElementID' did not exist");
 		$gotItemsText = $this->getSelectOptions($selectElementID);
 		$expItemsText = array_keys($expItems);
@@ -103,8 +89,7 @@ class TikiSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase
 		}
 	}
 
-	public function assertSelectElementDoesNotContainItems($selectElementID, $expItems, $message)
-	{
+	public function assertSelectElementDoesNotContainItems($selectElementID, $expItems, $message) {
 		$this->assertElementPresent($selectElementID, "$message\nMarkup element '$selectElementID' did not exist");
 		$gotItemsText = $this->getSelectOptions($selectElementID);
 		$expItemsText = array_keys($expItems);
@@ -115,24 +100,22 @@ class TikiSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase
 		}
 	}
 
-	private function _login_as($user)
-	{
-		if ($this->isElementPresent("sl-login-user")) {
+	private function _login_as($user) {
+		if ($this->isElementPresent("sl-login-user")){
 			$password = $this->user_credentials[$user];
 			$this->type("sl-login-user", $user);
 			$this->type("sl-login-pass", $password);
 			$this->clickAndWait("login");
-			if ($this->isTextPresent("Invalid username or password")) {
+			if ($this->isTextPresent("Invalid password")) {
 				return false;
 			}
 		}
 		return true;
 	}
 
-	public function implode_with_key($glue = null, $pieces, $hifen = '=>')
-	{
+	public function implode_with_key($glue = null, $pieces, $hifen = '=>') {
 		$return = null;
 		foreach ($pieces as $tk => $tv) $return .= $glue.$tk.$hifen.$tv;
-		return substr($return, 1);
+		return substr($return,1);
 	}
 } 

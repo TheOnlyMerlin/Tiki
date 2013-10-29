@@ -1,9 +1,9 @@
 {tikimodule error=$module_params.error title=$tpl_module_title name="upcoming_events" flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox notitle=$module_params.notitle}
-{if count($modUpcomingEvents)}
+{if $modUpcomingEvents[0] neq ''}
 	{if isset($module_params.date_format)}
 		{assign var=date_format value=$module_params.date_format}
 	{else}
-		{assign var=date_format value=$prefs.short_date_format|cat:' '|cat:$prefs.short_time_format}
+		{assign var=date_format value="`$prefs.short_date_format` `$prefs.short_time_format`"}
 	{/if}
 	<table border="0" cellpadding="{if isset($module_params.cellpadding)}{$module_params.cellpadding}{else}0{/if}" cellspacing="{if isset($module_params.cellspacing)}{$module_params.cellspacing}{else}0{/if}">
 		{section name=ix loop=$modUpcomingEvents}
@@ -23,7 +23,7 @@
 						<abbr class="dtend" title="{$modUpcomingEvents[ix].end|isodate}">{if $module_params.date_format}{$modUpcomingEvents[ix].end|tiki_date_format:$date_format}{elseif $modUpcomingEvents[ix].start|tiki_short_date ne $modUpcomingEvents[ix].end|tiki_short_date}{$modUpcomingEvents[ix].end|tiki_short_datetime}{else}{$modUpcomingEvents[ix].end|tiki_short_time}{/if}</abbr>
 					{/if}
 				{/if}
-				<br>
+				<br />
 				<a class="linkmodule summary" href="tiki-calendar_edit_item.php?viewcalitemId={$modUpcomingEvents[ix].calitemId}" title="{if $tooltip_infos neq 'n'}{$modUpcomingEvents[ix].lastModif|tiki_short_datetime}, {tr}by{/tr} {if $modUpcomingEvents[ix].user ne ''}{$modUpcomingEvents[ix].user|username}{else}{tr}Anonymous{/tr}{/if}{else}{tr}click to view{/tr}{/if}"{if $modUpcomingEvents[ix].status eq '2'} style="text-decoration: line-through;"{/if}>
 					{if $maxlen > 0}{* 0 is default value for maxlen eq to 'no truncate' *}
 						{$modUpcomingEvents[ix].name|truncate:$maxlen:"...":true|escape}
@@ -45,6 +45,6 @@
 {/if}
 
 {if $tiki_p_add_events eq 'y' && (empty($module_params.showaction) || $module_params.showaction ne 'n')}
-	<p><a href="tiki-calendar_edit_item.php"><img src="img/icons/add.png" alt=""> {tr}Add Event{/tr}</a></p>
+	<p><a href="tiki-calendar_edit_item.php"><img src="pics/icons/add.png" alt="" /> {tr}Add Event{/tr}</a></p>
 {/if}
 {/tikimodule}

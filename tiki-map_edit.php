@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -37,7 +34,7 @@ if (!isset($prefs['map_path']) or !$prefs['map_path']) {
 	die;
 }
 if (!is_dir($prefs['map_path'])) {
-	$smarty->assign('msg', tr('Please create a directory named %0 to hold your map files.', $prefs['map_path']));
+	$smarty->assign('msg', tra('Please create a directory named ' . $prefs['map_path'] . ' to hold your map files.'));
 	$smarty->display('error.tpl');
 	die;
 }
@@ -110,7 +107,7 @@ if (isset($_REQUEST["save"])) {
 	//Get the revision number
 	// Get mapfiles from the mapfiles directory
 	$files = $maplib->listMapsWithRev($prefs['map_path']);
-	foreach ($files as $file) {
+	foreach($files as $file) {
 		if (substr($file, 0, strlen($_REQUEST["mapfile"])) == $_REQUEST["mapfile"]) {
 			$suffix = substr($file, strlen($_REQUEST["mapfile"]));
 			$revision = "." . sprintf("%04d", intval(substr($suffix, 1)) + 1);
@@ -148,7 +145,7 @@ if (isset($_REQUEST["save"])) {
 	fclose($fp);
 	if ($prefs['feature_user_watches'] == 'y') {
 		$nots = $tikilib->get_event_watches('map_changed', $_REQUEST["mapfile"]);
-		foreach ($nots as $not) {
+		foreach($nots as $not) {
 			$smarty->assign('mail_site', $_SERVER["SERVER_NAME"]);
 			$smarty->assign('mail_page', $_REQUEST["mapfile"]);
 			$smarty->assign('mail_date', date("U"));
@@ -195,7 +192,7 @@ $smarty->assign('mode', $mode);
 // Get mapfiles from the mapfiles directory
 $files = $maplib->listMaps($prefs['map_path']);
 $mapstats = array();
-foreach ($files as $file) {
+foreach($files as $file) {
 	$mapstats[] = $statslib->object_hits($file, "map");
 	$mapstats7days[] = $statslib->object_hits($file, "map", 7);
 }
@@ -213,7 +210,7 @@ if ($prefs['feature_user_watches'] == 'y') {
 		}
 	}
 	$user_watching_map = array();
-	foreach ($files as $key => $value) {
+	foreach($files as $key => $value) {
 		$user_watching_map[$key] = 'n';
 		if ($user && $tikilib->user_watches($user, 'map_changed', $value, 'Map')) {
 			$user_watching_map[$key] = 'y';

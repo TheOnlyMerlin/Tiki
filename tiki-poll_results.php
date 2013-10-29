@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -45,26 +42,19 @@ if (isset($_REQUEST['which_date'])) {
 } else {
 	$which_date = '';
 }
-if ($tiki_p_admin == 'y' && !empty($_REQUEST['deletevote']) && !empty($_REQUEST['optionId'])) {
-	$polllib->delete_vote($_REQUEST['pollId'], $_REQUEST['user'], $_REQUEST['ip'], $_REQUEST['optionId']);
-}
-
 $pollIds = array();
 if (!empty($_REQUEST['pollId'])) {
 	$pollIds[] = $_REQUEST['pollId'];
 	$smarty->assign_by_ref('pollId', $_REQUEST['pollId']);
-	$previous = $polllib->get_user_vote('poll' . $_REQUEST['pollId'], $user);
-	if (!empty($previous))
-		$smarty->assign('msg', 'You have voted');
 } else {
 	$polls = $polllib->list_active_polls(0, $_REQUEST['maxRecords'], 'votes_desc', $_REQUEST['find']);
-	foreach ($polls['data'] as $pId) {
+	foreach($polls['data'] as $pId) {
 		$pollIds[] = $pId['pollId'];
 	}
 }
 $poll_info_arr = array();
 $start_year = date('Y', $now);
-foreach ($pollIds as $pK => $pId) { // iterate each poll
+foreach($pollIds as $pK => $pId) { // iterate each poll
 	$poll_info = $polllib->get_poll($pId);
 	$start_year = min($start_year, date('Y', $poll_info['publishDate']));
 	if ($which_date == 'all') {
@@ -79,18 +69,39 @@ foreach ($pollIds as $pK => $pId) { // iterate each poll
 		$vote_from_date = $vote_to_date = 0;
 	}
 	$options = $polllib->list_poll_options($pId, $vote_from_date, $vote_to_date);
-	$polllib->options_percent($poll_info, $options);
 	$poll_info_arr[$pK] = $poll_info;
+	if ($vote_from_date != 0) {
+		$poll_info_arr[$pK]['votes'] = 0;
+		foreach($options as $option) {
+			$poll_info_arr[$pK]['votes']+= $option['votes'];
+		}
+	}
+	$temp_max = count($options);
+	$total = 0;
+	$isNum = true; // try to find if it is a numeric poll with a title like +1, -2, 1 point...
+	foreach($options as $i => $option) {
+		if ($option['votes'] == 0) {
+			$percent = 0;
+		} else {
+			$percent = number_format($option['votes'] * 100 / $poll_info_arr[$pK]['votes'], 2);
+			$options[$i]['percent'] = $percent;
+			if ($isNum) {
+				if (preg_match('/^([+-]?[0-9]+).*/', $option['title'], $matches)) {
+					$total+= $option['votes'] * $matches[1];
+				} else {
+					$isNum = false; // it is not a nunmeric poll
+					
+				}
+			}
+		}
+		$width = $percent * 200 / 100;
+		$options[$i]['width'] = $percent;
+	}
 	$poll_info_arr[$pK]['options'] = $options;
+	$poll_info_arr[$pK]['total'] = $total;
 } // end iterate each poll
 
-/**
- * @param $a
- * @param $b
- * @return int
- */
-function scoresort($a, $b)
-{
+function scoresort($a, $b) {
 	if (isset($_REQUEST['scoresort_asc'])) {
 		$i = $_REQUEST['scoresort_asc'];
 	} else {
@@ -129,7 +140,6 @@ if (isset($_REQUEST['scoresort']) || isset($_REQUEST['scoresort_desc'])) {
 	$sort_ok = usort($t_arr, 'scoresort');
 	if ($sort_ok) $poll_info_arr = $t_arr;
 }
-	
 if ($tiki_p_view_poll_voters == 'y' && !empty($_REQUEST['list']) && isset($_REQUEST['pollId'])) {
 	$smarty->assign_by_ref('list', $_REQUEST['list']);
 	if (empty($_REQUEST['sort_mode'])) {
@@ -143,6 +153,15 @@ if ($tiki_p_view_poll_voters == 'y' && !empty($_REQUEST['list']) && isset($_REQU
 	$list_votes = $tikilib->list_votes('poll' . $_REQUEST['pollId'], $_REQUEST['offset'], $prefs['maxRecords'], $_REQUEST['sort_mode'], $_REQUEST['find'], 'tiki_poll_options', 'title', $vote_from_date, $vote_to_date);
 	$smarty->assign_by_ref('list_votes', $list_votes['data']);
 	$smarty->assign_by_ref('cant_pages', $list_votes['cant']);
+}
+// Poll comments
+if ($prefs['feature_poll_comments'] == 'y' && isset($_REQUEST['pollId'])) {
+	$comments_per_page = $prefs['poll_comments_per_page'];
+	$thread_sort_mode = $prefs['poll_comments_default_ordering'];
+	$comments_vars = array('pollId');
+	$comments_prefix_var = 'poll:';
+	$comments_object_var = 'pollId';
+	include_once ('comments.php');
 }
 $smarty->assign_by_ref('poll_info_arr', $poll_info_arr);
 $smarty->assign_by_ref('start_year', $start_year);

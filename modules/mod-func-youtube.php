@@ -1,21 +1,17 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
 
-/**
- * @return array
- */
-function module_youtube_info()
-{
+function module_youtube_info() {
 	return array(
 		'name' => tra('YouTube'),
 		'description' => tra('Displays YouTube videos and/or a link to a YouTube user\'s page.'),
@@ -47,33 +43,30 @@ function module_youtube_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
-function module_youtube($mod_reference, $module_params)
-{
+function module_youtube( $mod_reference, $module_params ) {
 	global $smarty;
+	require_once 'Zend/Loader.php';
+	Zend_Loader::loadClass('Zend_Gdata_YouTube');
 	
 	$data = array(
 		'urls' => array(),
 		'xhtml' => array()
 	);
 	
-	if (!empty($module_params['ids'])) {
+	if ( !empty($module_params['ids']) ) {
 		require_once('lib/wiki-plugins/wikiplugin_youtube.php');
 		$ids = explode(',', $module_params['ids']);
 		$data['urls']['gdata'] = array();
-		foreach ($ids as $id) {
+		foreach ( $ids as $id ) {
 			$data['urls']['gdata'][$id] = Zend_Gdata_YouTube::VIDEO_URI . '/' . $id;
 			$params = array('movie' => $id);
-			if (isset($module_params['width'])) $params['width'] = $module_params['width'];
-			if (isset($module_params['height'])) $params['height'] = $module_params['height'];
+			if ( isset($module_params['width']) ) $params['width'] = $module_params['width'];
+			if ( isset($module_params['height']) ) $params['height'] = $module_params['height'];
 			$data['xhtml'][$id] = preg_replace('/~np~(.*)~\/np~/', '$1', wikiplugin_youtube('', $params));
 		}
 	}
 	
-	if (!empty($module_params['user'])) {
+	if ( !empty($module_params['user']) ) {
 		$data['urls']['user_home'] = 'http://www.youtube.com/user/' . $module_params['user'];
 	}
 	

@@ -19,7 +19,7 @@
 			{if ($user and $creator eq $user) or $tiki_p_blog_admin eq "y"}
 				<a class="bloglink" href="tiki-edit_blog.php?blogId={$blogId}">{icon _id='page_edit' alt="{tr}Edit Blog{/tr}"}</a>
 				{if $allow_comments eq 'y'}
-					<a class='bloglink' href='tiki-list_comments.php?types_section=blogs&amp;blogId={$blogId}'>{icon _id='comments' alt="{tr}List all comments{/tr}" title="{tr}List all comments{/tr}"}</a>
+					<a class='bloglink' href='tiki-list_comments.php?types_section=blogs&blogId={$blogId}'>{icon _id='comments' alt="{tr}List all comments{/tr}" title="{tr}List all comments{/tr}"}</a>
 				{/if}
 			{/if}
 
@@ -39,29 +39,30 @@
 			{if $category_watched eq 'y'}
 				{tr}Watched by categories:{/tr}
 				{section name=i loop=$watching_categories}
-					<a href="tiki-browse_categories.php?parentId={$watching_categories[i].categId}" class="icon">{$watching_categories[i].name|escape}</a>&nbsp;
+					<a href="tiki-browse_categories.php?parentId={$watching_categories[i].categId}" class="icon">{$watching_categories[i].name}</a>&nbsp;
 				{/section}
 			{/if}
 		{/if}
 	</div>
+	<br />
 	
 	{if $use_find eq 'y'}
 		<div class="blogtools">
-			{include file='find.tpl'}
+			<form action="tiki-view_blog.php" method="get">
+				<input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
+				<input type="hidden" name="blogId" value="{$blogId|escape}" />
+				{tr}Find:{/tr} 
+				<input type="text" name="find" value="{$find|escape}" /> 
+				<input type="submit" name="search" value="{tr}Find{/tr}" />
+			</form>
 		</div>
 	{/if}
 {/if}
 
-{if $excerpt eq 'y'}
-	{assign "request_context" "excerpt"}
-{else}
-	{assign "request_context" "view_blog"}
-{/if}
-
 {foreach from=$listpages item=post_info}
-	<article class="blogpost post{if !empty($container_class)} {$container_class}{/if}">
-		{include file='blog_wrapper.tpl' blog_post_context=$request_context}
-	</article>
+	<div class="blogpost post{if !empty($container_class)} {$container_class}{/if}">
+		{include file='blog_wrapper.tpl' blog_post_context='view_blog'}
+	</div>
 {/foreach}
 
 {pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}

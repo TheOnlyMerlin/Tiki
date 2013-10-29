@@ -8,7 +8,7 @@
 
 {include file='find.tpl'}
 
-<table class="table normal">
+<table class="normal">
 <tr>
 <!-- term -->
 <th><a href="tiki-search_stats.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'term_desc'}term_asc{else}term_desc{/if}">{tr}Word{/tr}</a></th>
@@ -23,8 +23,8 @@
 {cycle values="odd,even" print=false}
 {section name=user loop=$channels}
   <tr class="{cycle}">
-    <td class="text">{$channels[user].term}</td>
-    <td class="integer">{$channels[user].hits}</td>
+    <td>{$channels[user].term}</td>
+    <td>{$channels[user].hits}</td>
   </tr>
 {/section}
 </table>

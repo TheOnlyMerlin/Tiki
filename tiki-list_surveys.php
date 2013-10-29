@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -33,10 +30,10 @@ if (isset($_REQUEST["find"])) {
 $smarty->assign('find', $find);
 $smarty->assign_by_ref('sort_mode', $sort_mode);
 $channels = $srvlib->list_surveys($offset, $maxRecords, $sort_mode, $find);
-Perms::bulk(array( 'type' => 'survey' ), 'object', $channels['data'], 'surveyId');
+Perms::bulk( array( 'type' => 'survey' ), 'object', $channels['data'], 'surveyId' );
 $temp_max = count($channels["data"]);
 for ($i = 0; $i < $temp_max; $i++) {
-	$survperms = Perms::get(array( 'type' => 'survey', 'object' => $channels['data'][$i]['surveyId'] ));
+	$survperms = Perms::get( array( 'type' => 'survey', 'object' => $channels['data'][$i]['surveyId'] ) );
 	$channels["data"][$i]["individual_tiki_p_take_survey"] = $survperms->take_survey ? 'y' : 'n';
 	$channels["data"][$i]["individual_tiki_p_view_survey_stats"] = $survperms->view_survey_stats ? 'y' : 'n';
 	$channels["data"][$i]["individual_tiki_p_admin_surveys"] = $survperms->admin_surveys ? 'y' : 'n';
