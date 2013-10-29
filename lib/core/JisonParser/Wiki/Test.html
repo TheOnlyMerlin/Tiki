@@ -1,8 +1,6 @@
 <html>
 	<head>
 		<script src="../../../jquery/jquery-1.7.2.js"></script>
-        <script src="../../../codemirror/lib/codemirror.js"></script>
-        <link rel="stylesheet" href="../../../codemirror/lib/codemirror.css" type="text/css" />
 		<script>
 			window.tr = function(o) {return o;};
 			window.jqueryTiki = {};
@@ -10,7 +8,7 @@
 		
 		<script src="../Wiki.js"></script>
 		<script src="Handler.js"></script>
-		<script>
+		<script style="text/javascript">
 			function wikiplugin_nobody() {
 				return "__This plugin has no body__";
 			}
@@ -53,35 +51,18 @@
 				}
 				return "";
 			}
-
-            function parse(editor) {
-                if (editor) {
-                    $('#output').html(Wiki.Parse(editor.getValue(), $('#errorsOn').is(':checked')));
-                } else {
-                    $('#output').html(Wiki.Parse($('#wiki').val(), $('#errorsOn').is(':checked')));
-                }
-            }
 			
 			$(function(){
-                var editor = CodeMirror.fromTextArea($('#wiki')[0], {
-                    onChange: function() {
-                        parse(editor);
-                    },
-                    onCursorActivity: function() {
-
-                    }
-                });
-
 				$('#runParser')
 					.click(function() {
-                        parse(editor);
+						$('#output').html(Wiki.Parse($('#wiki').val(), $('#errorsOn').is(':checked')));
 					});
 				$('#wiki')
 					.change(function() {
-                        parse(editor);
+						$('#output').html(Wiki.Parse($('#wiki').val(), $('#errorsOn').is(':checked')));
 					})
 					.keyup(function() {
-                        parse(editor);
+						$('#output').html(Wiki.Parse($('#wiki').val(), $('#errorsOn').is(':checked')));
 					})
 					.change();
 			});

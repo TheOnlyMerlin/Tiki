@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,11 +9,6 @@ $version = $_SERVER['argv'][1];
 
 rewriteSecdb('tiki-' . $version . '/db/tiki-secdb_'.$version.'_mysql.sql', 'tiki-' . $version, $version);
 
-/**
- * @param $file
- * @param $root
- * @param $version
- */
 function rewriteSecdb($file, $root, $version)
 {
 	$file_exists = @file_exists($file);
@@ -35,12 +30,6 @@ function rewriteSecdb($file, $root, $version)
 	}
 }
 
-/**
- * @param $root
- * @param $dir
- * @param $version
- * @param $queries
- */
 function md5CheckDir($root, $dir, $version, &$queries)
 {
 	$d = dir($dir);

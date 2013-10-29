@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -8,7 +8,7 @@
 class Services_Broker
 {
 	private $controllerMap;
-
+	
 	function __construct(array $controllerMap)
 	{
 		$this->controllerMap = $controllerMap;
@@ -19,17 +19,15 @@ class Services_Broker
 		$access = TikiLib::lib('access');
 
 		try {
-			$this->preExecute();
-
 			$output = $this->attemptProcess($controller, $action, $request);
 
 			if (isset($output['FORWARD'])) {
 				$output['FORWARD'] = array_merge(
-					array(
-						'controller' => $controller,
-						'action' => $action,
-					),
-					$output['FORWARD']
+								array(
+									'controller' => $controller,
+									'action' => $action,
+								), 
+								$output['FORWARD']
 				);
 			}
 
@@ -41,21 +39,6 @@ class Services_Broker
 		} catch (Services_Exception $e) {
 			$access->display_error(NULL, $e->getMessage(), $e->getCode());
 		}
-	}
-
-	function internal($controller, $action, $request = array())
-	{
-		if (! $request instanceof JitFilter) {
-			$request = new JitFilter($request);
-		}
-
-		return $this->attemptProcess($controller, $action, $request);
-	}
-
-	function internalRender($controller, $action, $request)
-	{
-		$output = $this->internal($controller, $action, $request);
-		return $this->render($controller, $action, $output, true);
 	}
 
 	private function attemptProcess($controller, $action, $request)
@@ -79,17 +62,7 @@ class Services_Broker
 		}
 	}
 
-	private function preExecute()
-	{
-		$access = TikiLib::lib('access');
-
-		if ($access->is_xml_http_request() && ! $access->is_serializable_request()) {
-			$headerlib = TikiLib::lib('header');
-			$headerlib->clear_js(); // Only need the partials
-		}
-	}
-
-	private function render($controller, $action, $output, $internal = false)
+	private function render($controller, $action, $output)
 	{
 		if (isset($output['FORWARD'])) {
 			$loc = $_SERVER['PHP_SELF'];
@@ -102,18 +75,17 @@ class Services_Broker
 
 		$template = "$controller/$action.tpl";
 
-		//if template doesn't exists, simply return the array given from the action
-		if ($smarty->templateExists($template) == false) return json_encode($output);
+		if ($smarty->templateExists($template) == false) return "";
+
 
 		$access = TikiLib::lib('access');
 		foreach ($output as $key => $value) {
 			$smarty->assign($key, $value);
 		}
 
-		if ($internal) {
-			return $smarty->fetch($template);
-		} elseif ($access->is_xml_http_request()) {
+		if ($access->is_xml_http_request()) {
 			$headerlib = TikiLib::lib('header');
+			$headerlib->clear_js(); // Only need the partials
 			$content = $smarty->fetch($template);
 			$content .= $headerlib->output_js();
 

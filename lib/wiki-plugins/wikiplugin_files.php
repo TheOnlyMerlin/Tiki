@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -25,7 +25,6 @@ function wikiplugin_files_info()
 									($prefs['feature_use_fgal_for_user_files'] === 'y' ? '.<br> ' . tra('Or enter a username for user files (hint: enter {{user}} for current logged in user).') : ''),
 				'default' => '',
 				'separator' => ':',
-				'profile_reference' => 'file_gallery',
 			),
 			'categId' => array(
 				'required' => false,
@@ -33,29 +32,27 @@ function wikiplugin_files_info()
 				'description' => tra('To restrict files listed to those belonging to one or more categories. Enter a single category or ID or list of them separated by colon'),
 				'default' => '',
 				'advanced' => true,
-				'profile_reference' => 'category',
 			),
 			'fileId' => array(
 				'required' => false,
 				'name' => tra('File ID'),
-				'description' => tra('To list only specified files, enter their file IDs separated by colon. If File IDs are specified here then the Gallery ID field above should be empty.'),
+				'description' => tra('To list only specified files, enter their file IDs separated by colon'),
 				'type' => 'fileId',
 				'area' => 'fgal_picker_id',
 				'default' => '',
 				'separator' => ':',
-				'profile_reference' => 'file',
 			),
 			'sort' => array(
 				'required' => false,
 				'name' => tra('Sort Order'),
-				'description' => tra('Order ascending, descending or random based on any field in the file gallery table. Default is name_asc').'. '.tra('Attributes: name, created, lastModif, filename, filesize, filetype, lastDownload'),
+				'description' => tra('Order ascending or descending based on any field in the file gallery table. Default is name_asc'),
 				'default' => 'name_asc',
 				'filter' => 'text'
 			),
 			'showaction' => array(
 				'required' => false,
 				'name' => tra('Show Action'),
-				'description' => tra('Show a column with icons for the various actions the user can take with each file (shown by default)'),
+				'description' => tra('Show a column with icons for the various actions the user can take with each file (not shown by default)'),
 				'filter' => 'alpha',
 				'default' => 'n',
 				'advanced' => true,
@@ -263,19 +260,6 @@ function wikiplugin_files_info()
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
-			'showsource' => array(
-				'required' => false,
-				'name' => tra('Show Source'),
-				'description' => tra('Show the source (shown by default).'),
-				'filter' => 'alpha',
-				'default' => 'n',
-				'advanced' => true,
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				)
-			),
 			'slideshow' => array(
 				'required' => false,
 				'name' => tra('Show Slideshow'),
@@ -446,7 +430,6 @@ function wikiplugin_files($data, $params)
 			$galleryId = array($galId);
 		}
 		$gal_info = $filegallib->get_file_gallery($galId);
-		$gal_info['name'] = $filegallib->get_user_gallery_name($gal_info, $user);
 
 		if ($tiki_p_admin != 'y' && $tiki_p_admin_files_galleries != 'y' && $gal_info['user'] != $user) {
 			$p_view_file_gallery = $tikilib->user_has_perm_on_object($user, $galId, 'file gallery', 'tiki_p_view_file_gallery') ? 'y' : 'n';
@@ -588,12 +571,10 @@ function wikiplugin_files($data, $params)
 	if (!empty($showaction)) $gal_info['show_action'] = $showaction;
 	if (!empty($showcomment)) $gal_info['show_comment'] = $showcomment;
 	if (!empty($showlasteditor)) $gal_info['show_last_user'] = $showlasteditor;
-	if (!empty($showsource)) $gal_info['show_source'] = $showsource;
 	if (!empty($showname) && $showname == 'y' && !empty($showfilename) && $showfilename == 'y') $gal_info['show_name'] = 'a';
 	if (!empty($showname) && $showname == 'y' && !empty($showfilename) && $showfilename == 'n') $gal_info['show_name'] = 'n';
 	if (!empty($showname) && $showname == 'n' && !empty($showfilename) && $showfilename == 'y') $gal_info['show_name'] = 'f';
 	if (!empty($showname) && $showname == 'n' && !empty($showfilename) && $showfilename == 'n') $gal_info['show_name'] = '';
-	$gal_info['show_parentName'] = $show_parentName;
 	$smarty->assign_by_ref('gal_info', $gal_info);
 
 	if (isset($categId)) {

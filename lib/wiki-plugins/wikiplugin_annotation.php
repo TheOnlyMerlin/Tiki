@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -412,7 +412,7 @@ SCRIPT;
 		<input type="hidden" name="message" value="$message"/>
 		<textarea id="$cid-content" name="content"></textarea>
 	</div>
-	<p><input type="submit" class="btn btn-default" value="$labelSave"/></p>
+	<p><input type="submit" value="$labelSave"/></p>
 </form>
 FORM;
 	else
@@ -444,7 +444,7 @@ JS;
 			<div><input type="text" name="label" id="$cid-label" style="width:96%" onkeyup="handleCancel(event, '$cid')"/></div>
 			<div style="display:none">Link</div>
 			<div style="display:none"><input type="text" name="link" id="$cid-link" style="width:96%" onkeyup="handleCancel(event, '$cid')"/></div>
-			<div><input type="submit" class="btn btn-default" value="Save"/></div>
+			<div><input type="submit" value="Save"/></div>
 		</form>
 	</div>
 </div>

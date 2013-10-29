@@ -8,7 +8,7 @@
 
 {include file='find.tpl'}
 
-<table class="table normal">
+<table class="normal">
 <tr>
 <!-- term -->
 <th><a href="tiki-search_stats.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'term_desc'}term_asc{else}term_desc{/if}">{tr}Word{/tr}</a></th>

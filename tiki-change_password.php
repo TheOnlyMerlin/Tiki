@@ -1,22 +1,10 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-$inputConfiguration = array(
-	array( 'staticKeyFilters' => array(
-		'user' => 'text',
-		'username' => 'text',
-		'pass' => 'none',
-		'pass2' => 'none',
-		'oldpass' => 'none',
-	) )
-);
 require_once ('tiki-setup.php');
 
 $access->check_feature('change_password');
@@ -91,16 +79,7 @@ if (isset($_REQUEST["change"])) {
 	// Login the user and display Home page
 	$_SESSION["$user_cookie_site"] = $_REQUEST["user"];
 	$logslib->add_log('login', 'logged from change_password', $_REQUEST['user'], '', '', $tikilib->now);
-	
-	// Check if a wizard should be run.
-	// If a wizard is run, it will return to the $url location when it has completed. Thus no code after $wizardlib->onLogin will be executed
-	$wizardlib = TikiLib::lib('wizard');
-	$force = $_REQUEST["user"] == 'admin';
-	$wizardlib->onLogin($user, $prefs['tikiIndex'], $force);
-	
-	// Go to homepage
-	$accesslib = TikiLib::lib('access');
-	$accesslib->redirect($prefs['tikiIndex']);
+	header('Location: '.$prefs['tikiIndex']);
 }
 ask_ticket('change-password');
 

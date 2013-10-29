@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -157,19 +157,8 @@ class Tracker_Definition
 	{
 		foreach ($this->getFields() as $field) {
 			if ($field['type'] == 'u'
-				&& $field['options_map']['autoassign'] == 1
-				&& $this->isEnabled('writerCanModify')) {
-
-				return $field['fieldId'];
-			}
-		}
-	}
-
-	function getAuthorIpField()
-	{
-		foreach ($this->getFields() as $field) {
-			if ($field['type'] == 'I'
-				&& $field['options_map']['autoassign'] == 1) {
+				&& isset($field['options'][0]) && $field['options'][0] == 1
+				&& isset($this->trackerInfo["writerCanModify"]) && $this->trackerInfo["writerCanModify"] == 'y') {
 
 				return $field['fieldId'];
 			}
@@ -180,7 +169,7 @@ class Tracker_Definition
 	{
 		foreach ($this->getFields() as $field) {
 			if (in_array($field['type'], array('u', 'I'))
-				&& $field['options_map']['autoassign'] == 1) {
+				&& isset($field['options'][0]) && $field['options'][0] == 1) {
 				return $field['fieldId'];
 			}
 		}
@@ -190,7 +179,7 @@ class Tracker_Definition
 	{
 		foreach ($this->getFields() as $field) {
 			if ($field['type'] == 'u'
-				&& $field['options_map']['autoassign'] == 1) {
+				&& isset($field['options'][0]) && $field['options'][0] == 1) {
 
 				return $field['fieldId'];
 			}
@@ -200,7 +189,7 @@ class Tracker_Definition
 	function getGeolocationField()
 	{
 		foreach ($this->getFields() as $field) {
-			if ($field['type'] == 'G' && in_array($field['options_map']['use_as_item_location'], array(1, 'y'))) {
+			if ($field['type'] == 'G' && isset($field['options_array'][0]) && ($field['options_array'][0] == 1 || $field['options_array'][0] == 'y')) {
 				return $field['fieldId'];
 			}
 		}
@@ -219,7 +208,7 @@ class Tracker_Definition
 	{
 		foreach ($this->getFields() as $field) {
 			if ($field['type'] == 'g'
-				&& $field['options_map']['autoassign'] == 1) {
+				&& isset($field['options'][0]) && $field['options'][0] == 1) {
 				return $field['fieldId'];
 			}
 		}
@@ -248,7 +237,7 @@ class Tracker_Definition
 	{
 		foreach ($this->getFields() as $field) {
 			if ($field['type'] == 'LANG'
-				&& $field['options_map']['autoassign'] == 1) {
+				&& isset($field['options'][0]) && $field['options'][0] == 1) {
 				return $field['fieldId'];
 			}
 		}
@@ -302,17 +291,6 @@ class Tracker_Definition
 			'last' => $attributes['tiki.sync.last'],
 			'modified' => $this->getConfiguration('lastModif') > $attributes['tiki.sync.last'],
 		);
-	}
-
-	function canInsert(array $keyList)
-	{
-		foreach ($keyList as $key) {
-			if (! $this->getFieldFromPermName($key)) {
-				return false;
-			}
-		}
-
-		return true;
 	}
 }
 

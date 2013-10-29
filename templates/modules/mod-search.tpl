@@ -41,13 +41,7 @@
 					  </select>
 				{/if}
 			{elseif !empty($prefs.search_default_where)}
-				 {if is_array($prefs.search_default_where)}
-					{foreach from=$prefs.search_default_where item=t}
-						<input type="hidden" name="{if $smod_params.search_action eq 'tiki-searchindex.php'}filter~type[]{else}where[]{/if}" value="{$t|escape}" />
-					{/foreach}
-				{else}
-					<input type="hidden" name="{if $smod_params.search_action eq 'tiki-searchindex.php'}filter~type{else}where{/if}" value="{$prefs.search_default_where|escape}" />
-				{/if}
+				<input type="hidden" name="{if $smod_params.search_action eq 'tiki-searchindex.php'}filter~type{else}where{/if}" value="{$prefs.search_default_where|escape}" />
 		    {/if}
 		    
 			{if $smod_params.tiki_search neq 'y'}
@@ -113,8 +107,7 @@
     {jq notonready=true}
 function submitSearch{{$search_mod_usage_counter}}() {
 	var $f = $('#search-module-form{{$search_mod_usage_counter}}');
-	if ($f.data('page_selected') === $("#search_mod_input_{{$search_mod_usage_counter}}").val()) {
-		$f.append($('<input name="find">').val($f.data('page_selected')));
+	if ($f.attr('page_selected') === $("#search_mod_input_{{$search_mod_usage_counter}}").val()) {
 		$f.attr('action', '{{$smod_params.go_action|escape:javascript}}');
 	} else if ($f.attr('action') == "#") {
 		$f.attr('action', '{{$smod_params.search_action|escape:javascript}}');
@@ -128,7 +121,7 @@ function submitSearch{{$search_mod_usage_counter}}() {
     {/jq}
 	{if $smod_params.use_autocomplete eq 'y'}
 		{capture name="selectFn"}select: function(event, item) {ldelim}
-	$('#search-module-form{$search_mod_usage_counter}').data('page_selected', item.item.value).find("input[name=exact_match]").val("On");
+	$('#search-module-form{$search_mod_usage_counter}').attr('page_selected', item.item.value).find("input[name=exact_match]").val("On");
 {rdelim}, open: function(event, item) {ldelim}
 	$(".search_mod_buttons", "#search-module-form{$search_mod_usage_counter}").hide();
 {rdelim}, close: function(event, item) {ldelim}

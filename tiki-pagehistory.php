@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -30,6 +30,8 @@ if (!isset($_REQUEST["page"])) {
 
 $auto_query_args = array('page', 'oldver', 'newver', 'compare', 'diff_style', 'show_translation_history', 'show_all_versions', 'history_offset', 'paginate', 'history_pagesize');
 
+$tikilib->get_perm_object($_REQUEST['page'], 'wiki page');
+
 // Now check permissions to access this page
 if (!isset($_REQUEST["source"])) {
 	$access->check_permission('tiki_p_wiki_view_history', '', 'wiki page', $_REQUEST['page']);
@@ -42,8 +44,6 @@ if (empty($info)) {
 	$smarty->display('error.tpl');
 	die;
 }
-
-$tikilib->get_perm_object($_REQUEST['page'], 'wiki page', $info);
 
 if (isset($_REQUEST['preview'], $_REQUEST['flaggedrev'], $_REQUEST['page']) && $prefs['flaggedrev_approval'] == 'y' && $tiki_p_wiki_approve == 'y') {
 	$targetFlag = null;
@@ -60,6 +60,9 @@ if (isset($_REQUEST['preview'], $_REQUEST['flaggedrev'], $_REQUEST['page']) && $
 		global $flaggedrevisionlib; require_once 'lib/wiki/flaggedrevisionlib.php';
 
 		$flaggedrevisionlib->flag_revision($info['pageName'], $targetVersion, 'moderation', $targetFlag);
+
+		require_once('lib/search/refresh-functions.php');
+		refresh_index('pages', $page);
 	}
 }
 
@@ -136,7 +139,7 @@ if (count($history) > 0) {
 	$lasttime = 0;		// secs
 	$idletime = 1800; 	// max gap between edits in sessions 30 mins? Maybe should use a pref?
 	for ($i = 0, $cnt = count($history); $i < $cnt; $i++) {
-
+		
 		if ($history[$i]['user'] != $lastuser || $lasttime - $history[$i]['lastModif'] > $idletime) {
 			$sessions[] = $history[$i];
 			//$history[$i]['session'] = $history[$i]['version'];
@@ -267,7 +270,7 @@ if (isset($_REQUEST['preview_idx'])) {
 	if (isset($_REQUEST['preview_date'])) {
 		$_REQUEST['preview'] = (int)$histlib->get_version_by_time($page, $_REQUEST["preview_date"]);
 	}
-
+	
 	if (isset($_REQUEST['preview'])) {
 		$preview = (int)$_REQUEST["preview"];
 		if ($_REQUEST['preview'] > 0) {
@@ -407,8 +410,8 @@ if (\$("input[name=newver][checked=checked]").length) {
 	\$("input[name=newver][checked=checked]").change();
 	\$("input[name=oldver][checked=checked]").change();
 } else if ($not_comparing) {
-	\$("input[name=newver]:eq(0)").prop("checked", "checked").change();
-	\$("input[name=oldver]:eq(1)").prop("checked", "checked").change();
+	\$("input[name=newver]:eq(0)").attr("checked", "checked").change();
+	\$("input[name=oldver]:eq(1)").attr("checked", "checked").change();
 }
 JS
 );
@@ -435,15 +438,14 @@ if (isset($_REQUEST['nohistory'])) {
 ask_ticket('page-history');
 
 TikiLib::events()->trigger(
-	'tiki.wiki.view',
-	array_merge(
-		array(
-			'type' => 'wiki page',
-			'object' => $page,
-			'user' => $GLOBALS['user'],
-		),
-		$info
-	)
+				'tiki.wiki.view',
+				array_merge(
+								array(
+									'type' => 'wiki',
+									'object' => $page,
+								),
+								$info
+				)
 );
 
 // disallow robots to index page:

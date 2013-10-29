@@ -96,8 +96,7 @@ input[type='text'],
 input[type='password'],
 input[type='email'],
 input[type='file'],
-input[type='number'],
-input[type='search'] {
+input[type='number'] {
 	font-size: 1em;
 	border: solid 1px #24880c;
 }
@@ -466,14 +465,12 @@ h1.pagetitle a:hover {
 	text-decoration: none;
 	color: #fff;
 }
-.normal .even, /* table with class normal, even cells */
-table.normal tr:nth-child(2n),
-.tablesorter tr.even td {
+.normal .even,	/* table with class normal, even cells */
+table.normal tr:nth-child(2n) {
 	background-color: #fff;
 }
-.normal .odd, /* table with class normal, odd cells */
-table.normal tr:nth-child(2n+1),
-.tablesorter tr.odd td {
+.normal .odd,	/* table with class normal, odd cells */
+table.normal tr:nth-child(2n+1) {
 	background-color: #fff;
 }
 .simplebox { /* simple box wiki syntax */
@@ -697,14 +694,11 @@ table.normal tr:nth-child(2n+1),
 	vertical-align: top;
 }
 
-.caltable td.calhighlight {
-	background: #fbf9ee;
+#caltable .calfocuson {
+	background: #000;
+	border: solid 1px #000;
 }
 
-td.calheadhighlight {
-	background: #eef5ee;
-}
-
-td.calheadhighlight {
-	border: solid 1px #24880c;
+#caltable .calfocuson a {
+	color: #000;
 }

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -27,9 +27,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_shoutbox_info()
 {
 	return array(
@@ -71,9 +68,6 @@ function module_shoutbox_info()
 	);
 }
 
-/**
- * @param $inFormValues
- */
 function doProcessShout($inFormValues)
 {
 	global $shoutboxlib, $user, $smarty, $prefs, $captchalib;
@@ -89,10 +83,6 @@ function doProcessShout($inFormValues)
 	}
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_shoutbox($mod_reference, $module_params)
 {
 	global $tikilib; require_once ('lib/tikilib.php');
@@ -151,13 +141,13 @@ function module_shoutbox($mod_reference, $module_params)
 		$smarty->assign('waittext', isset($module_params['waittext']) ? $module_params['waittext'] : tra('Please wait...'));
 
 		$smarty->assign(
-			'tweet',
-			isset($module_params['tweet']) &&($tikilib->get_user_preference($user, 'twitter_token')!='') ? $module_params['tweet'] : '0'
+						'tweet',
+						isset($module_params['tweet']) &&($tikilib->get_user_preference($user, 'twitter_token')!='') ? $module_params['tweet'] : '0'
 		);
 
 		$smarty->assign(
-			'facebook',
-			isset($module_params['facebook']) && ($tikilib->get_user_preference($user, 'facebook_token')!='') ? $module_params['facebook'] : '0'
+						'facebook',
+						isset($module_params['facebook']) && ($tikilib->get_user_preference($user, 'facebook_token')!='') ? $module_params['facebook'] : '0'
 		);
 	}
 }

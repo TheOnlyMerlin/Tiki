@@ -72,16 +72,12 @@ a.admbox.off img {
 .adminoptionbox {
 /*overall box */
 	padding: 0.5em;
-/*	text-align: left;*/
+	text-align: left;
 }
 	
 .adminoptionbox label, .adminoptionlabel {
 /* text label and text field */
-/*	text-align: left;*/
-}
-
-.adminoptionpopup a {
-	display: block;
+	text-align: left;
 }
 
 .labelColumns label {
@@ -110,22 +106,7 @@ a.admbox.off img {
 /*sub options */
 	margin-left:3em;
 	clear:both;
-}
-
-.multicheckbox label,
-.multicheckbox ul,
-.multicheckbox > div {
-	float: left;
-}
-
-.multicheckbox ul {
-	margin: 0;
-	padding: 0 1em;
-}
-
-.multicheckbox li {
-	list-style-type: none;
-}
+	}
 
 .admin input.fullwidth {
 	width: 100%;
@@ -332,13 +313,6 @@ a.admbox.off img {
 	text-align: right;
 }
 
-.pref_search_results {
-	max-height: 20em;
-	min-height: 10em;
-	overflow: auto;
-
-}
-
 /* end from ui-revamp branch */
 
 /* tiki 7 modules revamp */
@@ -381,25 +355,12 @@ a.admbox.off img {
 	display: none;
 }
 
-#save_modules a {
-	background-color: #faa;
-	background-image: none;
+#save_modules {
+	display: none;
 }
 
-.module_selector {
-	margin: .5em .2em;
-}
-
-/* make empty module zones more "droppable" */
-
-.ui-droppable.modules, .ui-sortable.modules {
-	min-height: 10ex;
-	-webkit-box-shadow: inset 0px 0px 5px 5px rgba(0, 0, 0, .1);
-	box-shadow: inset 0px 0px 5px 5px rgba(0, 0, 0, .1);
-}
-
-#right_left.ui-sortable, #right_modules.ui-sortable {
-	min-height: 100ex;
+.ui-droppable.modules {
+	min-height: 1em;
 }
 
 /* end modules revamp */
@@ -509,53 +470,4 @@ a.admbox.off img {
 	margin-left: 1em;
 }
 
-#export_to_yaml .wikitext {
-	height: 30em;
-	overflow: auto;
-	padding: .5em;
-}
-
 /* end profiles */
-
-/* Admin wizard */
-
-.adminWizardLink {
-    float: right;
-}
-
-.adminWizardContent {
-    margin-top: 1em;
-}
-
-.adminWizardContent legend {
-    margin-bottom: 1em;
-    font-weight: bold;
-}
-
-.adminWizardContent fieldset {
-    margin: 1em 0;
-}
-
-.adminWizardIconleft {
-    float: left;
-    margin-right: 10px;
-}
-
-.adminWizardIconright {
-    float: right;
-    margin-left: 10px;
-}
-
-.adminWizardtable {
-    border: 0px;
-    padding-left: 20px;
-}
-
-.adminWizardlookandfell {
-    position: absolute;
-    right: .5em;
-    top: 0.5em;
-}
-
-
-/* end Admin WIzard */

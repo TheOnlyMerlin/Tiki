@@ -6,7 +6,7 @@
 <form action="tiki-admin.php?page=module" method="post">
 	<input type="hidden" name="modulesetup" />
 	<div class="heading input_submit_container" style="text-align: right">
-		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
 	<fieldset>
 		<legend>{tr}{$crumbs[$crumb]->description}{/tr}{help crumb=$crumbs[$crumb]}</legend>
@@ -30,15 +30,11 @@
 				{preference name=module_zones_bottom}			
 			</fieldset>
 		</div>
-		
-		{preference name=module_file}
-		{preference name=module_zone_available_extra}		
-		
 		{remarksbox type="tip" title="{tr}Hint{/tr}"}
 			{tr}If you lose your login module, use tiki-login_scr.php to be able to login!{/tr}
 		{/remarksbox}
 	</fieldset>
 	<div class="heading input_submit_container" style="text-align: center">
-		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
 </form>

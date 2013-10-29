@@ -2,7 +2,7 @@ Tiki Copyright
 ----------------
 
 The following list attempts to gather the copyright holders for Tiki
-as of version 12.0.
+as of version 9.0.
 
 Accounts listed below with commits have contributed source code to CVS or SVN.
 Please note that even more people contributed on various other aspects (documentation,
@@ -12,8 +12,8 @@ This is how we implement the Tiki Social Contract.
 http://tiki.org/Social+Contract
 
 List of members of the Community
-As of 2013-10-11, the community has:
-  * 502 members on SourceForge.net,
+As of 2013-10-29, the community has:
+  * 528 members on SourceForge.net,
   * 0 of those people who made at least one code commit
 
 This list is automatically generated and alphabetically sorted
@@ -32,6 +32,11 @@ SF Role: Developer
 
 Nickname: ace_mtp
 Name: Vianney Lecroart
+SF Role: Developer
+
+Nickname: adren67
+Name: Cyril Chaboisseau
+First Commit: 2008-10-09
 SF Role: Developer
 
 Nickname: afahlvik
@@ -57,7 +62,7 @@ First Commit: 2009-12-11
 SF Role: Developer
 
 Nickname: alain_desilets
-Name: Alain DÃ©silets
+Name: Alain Désilets
 First Commit: 2008-03-11
 SF Role: Developer
 
@@ -117,8 +122,9 @@ Name: Lorinc Czegledi
 First Commit: 2004-08-11
 SF Role: Developer
 
-Nickname: anzhe
-Name: Drew Heath
+Nickname: anope
+Name: Andrzej
+First Commit: 2004-07-13
 SF Role: Developer
 
 Nickname: apnicsolutions
@@ -130,7 +136,7 @@ Name: apPmaKer
 SF Role: Developer
 
 Nickname: aproulx
-Name: AndrÃ© Proulx
+Name: André Proulx
 First Commit: 2008-11-07
 SF Role: Developer
 
@@ -158,6 +164,11 @@ SF Role: Developer
 
 Nickname: avdwheel
 Name: Andre
+SF Role: Developer
+
+Nickname: awolfff
+Name: Andreas Wolff
+First Commit: 2007-01-21
 SF Role: Developer
 
 Nickname: axold
@@ -195,7 +206,7 @@ Name: Wayne Herbert
 SF Role: Developer
 
 Nickname: benoitg
-Name: Benoit GrÃ©goire
+Name: Benoit Grégoire
 SF Role: Developer
 
 Nickname: bergmann
@@ -295,7 +306,7 @@ First Commit: 2011-03-07
 SF Role: Developer
 
 Nickname: campbe13
-Name: Patricia  M Campbell
+Name: Patricia M Campbell
 First Commit: 2009-02-19
 SF Role: Developer
 
@@ -318,9 +329,9 @@ Nickname: cbowman
 Name: Christopher
 SF Role: Developer
 
-Nickname: ccardinal
-Name: Ccardinal
-First Commit: 2013-07-14
+Nickname: cdrwhite
+Name: Jörn Ott
+First Commit: 2010-05-10
 SF Role: Developer
 
 Nickname: cdx
@@ -342,7 +353,7 @@ Name: Chandi Bernier
 SF Role: Developer
 
 Nickname: changi67
-Name: Jean-FranÃ§ois  B.
+Name: Jean-François B.
 First Commit: 2009-04-23
 SF Role: Admin
 
@@ -480,6 +491,11 @@ Nickname: dimaz-z
 Name: dimaz
 SF Role: Developer
 
+Nickname: djnz
+Name: OneOfMany
+First Commit: 2004-03-02
+SF Role: Developer
+
 Nickname: djoguet
 Name: Damien Joguet
 SF Role: Developer
@@ -490,7 +506,7 @@ First Commit: 2011-04-08
 SF Role: Developer
 
 Nickname: djst
-Name: David (djst) Tenser
+Name: David
 SF Role: Developer
 
 Nickname: dlech27
@@ -502,7 +518,7 @@ Name: Dmytro Kovalov
 SF Role: Developer
 
 Nickname: docekal
-Name: Jan LindÃ¥ker
+Name: Jan Lindåker
 First Commit: 2003-09-03
 SF Role: Developer
 
@@ -528,9 +544,6 @@ Nickname: eesa
 Name: Abdul-Wahid Paterson
 SF Role: Developer
 
-Nickname: egma
-SF Role: Developer
-
 Nickname: einstine
 Name: Thomas
 SF Role: Developer
@@ -541,6 +554,10 @@ SF Role: Developer
 
 Nickname: emanuelquintana
 Name: emanuelq
+SF Role: Developer
+
+Nickname: emenems
+Name: Marcel van Groenigen
 SF Role: Developer
 
 Nickname: eoyslebo
@@ -570,6 +587,10 @@ Nickname: essele
 Name: Lee Essen
 SF Role: Developer
 
+Nickname: estheban
+Name: Etienne Lachance
+SF Role: Developer
+
 Nickname: etuate
 Name: edagentile
 First Commit: 2008-05-14
@@ -581,7 +602,7 @@ First Commit: 2008-01-05
 SF Role: Developer
 
 Nickname: ewuerfel
-Name: Enrico WÃŒrfel
+Name: Enrico Würfel
 SF Role: Developer
 
 Nickname: ezago
@@ -602,7 +623,7 @@ Name: Frederic Bergeron
 SF Role: Developer
 
 Nickname: fernao_lopes
-Name: FernÄo Lopes
+Name: Fernăo Lopes
 SF Role: Developer
 
 Nickname: fhcorrea
@@ -636,7 +657,7 @@ First Commit: 2012-10-12
 SF Role: Developer
 
 Nickname: fmjrey
-Name: FranÃ§ois Rey
+Name: François Rey
 SF Role: Developer
 
 Nickname: fmk_ca
@@ -682,6 +703,11 @@ SF Role: Developer
 
 Nickname: garfield-sf
 Name: Garfield
+SF Role: Developer
+
+Nickname: garypp
+Name: Gary Pomerant
+First Commit: 2011-07-05
 SF Role: Developer
 
 Nickname: gaxweb
@@ -766,13 +792,22 @@ Nickname: gspira
 Name: Greg Spira
 SF Role: Developer
 
+Nickname: gta74
+First Commit: 2011-01-29
+SF Role: Developer
+
 Nickname: guideweb
-Name: Samuel Denis D&#39;Ortun
+Name: Samuel Denis D'Ortun
 First Commit: 2003-08-24
 SF Role: Developer
 
+Nickname: guidoscherp
+Name: Guido Scherp
+First Commit: 2007-08-10
+SF Role: Developer
+
 Nickname: gunnarre
-Name: Gunnar RenÃ© Åie
+Name: Gunnar René Řie
 First Commit: 2004-04-22
 SF Role: Developer
 
@@ -857,7 +892,7 @@ Name: Mike Benoit
 SF Role: Developer
 
 Nickname: isotopp
-Name: Kristian KÃ¶hntopp
+Name: Kristian Köhntopp
 First Commit: 2003-07-25
 SF Role: Developer
 
@@ -882,12 +917,20 @@ Nickname: jamk
 Name: Djamel Kadi
 SF Role: Developer
 
+Nickname: janptak
+Name: jan ptak
+SF Role: Developer
+
 Nickname: jasondiceman
 Name: Jason Diceman
 SF Role: Developer
 
 Nickname: jasonhendee
 Name: Jason Hendee
+SF Role: Developer
+
+Nickname: javaguru1729
+Name: Chandra
 SF Role: Developer
 
 Nickname: jaycampbell
@@ -903,9 +946,19 @@ Nickname: jcwinnie
 Name: Jonathan Smith
 SF Role: Developer
 
+Nickname: jcyrisse
+Name: Jana Sullinger
+First Commit: 2010-11-22
+SF Role: Developer
+
 Nickname: jdrexler
 Name: Josef Drexler
 First Commit: 2006-02-01
+SF Role: Developer
+
+Nickname: jean-lucnavarro
+Name: Jean-Luc NAVARRO
+First Commit: 2011-06-12
 SF Role: Developer
 
 Nickname: jeanhabib
@@ -923,11 +976,16 @@ First Commit: 2009-02-16
 SF Role: Developer
 
 Nickname: jfnoubel
-Name: Jean-FranÃ§ois Noubel
+Name: Jean-François Noubel
 SF Role: Developer
 
 Nickname: jjermann
 Name: Jonas Jermann
+SF Role: Developer
+
+Nickname: jjolly
+Name: John Jolly
+First Commit: 2004-10-13
 SF Role: Developer
 
 Nickname: jjongsma
@@ -940,19 +998,20 @@ First Commit: 2003-10-07
 SF Role: Developer
 
 Nickname: jlgordo
-Name: JosÃ© Luis Gordo Romero
+Name: José Luis Gordo Romero
 SF Role: Developer
 
 Nickname: jm0rin
 Name: Joshua Morin
 SF Role: Developer
 
-Nickname: jmjuzan
-Name: Juzan Jean-Michel
+Nickname: jmaspons
+Name: Joan Maspons
+First Commit: 2006-06-11
 SF Role: Developer
 
-Nickname: jobicarter
-Name: jcarter
+Nickname: jmjuzan
+Name: Juzan Jean-Michel
 SF Role: Developer
 
 Nickname: joeyhartmann
@@ -992,7 +1051,7 @@ Name: Jocelyn Poitras
 SF Role: Developer
 
 Nickname: jpgimenez
-Name: Juan Pablo GimÃ©nez
+Name: Juan Pablo Giménez
 First Commit: 2003-08-04
 SF Role: Developer
 
@@ -1005,10 +1064,6 @@ Name: Javier Reyes
 First Commit: 2006-01-14
 SF Role: Developer
 
-Nickname: jshauk
-Name: Gavin Crenshaw
-SF Role: Developer
-
 Nickname: jsocol
 Name: James Socol
 First Commit: 2010-01-22
@@ -1016,6 +1071,10 @@ SF Role: Developer
 
 Nickname: jtpuk
 Name: Suzanne Jones
+SF Role: Developer
+
+Nickname: jujusl
+Name: It is just me
 SF Role: Developer
 
 Nickname: jwigdahl
@@ -1074,8 +1133,8 @@ Name: Simon Vogl
 First Commit: 2004-02-08
 SF Role: Developer
 
-Nickname: koohiisan
-Name: Koohiisan
+Nickname: krose
+Name: Kent Primrose
 SF Role: Developer
 
 Nickname: kstingel
@@ -1087,8 +1146,9 @@ Nickname: ksumacgyver
 Name: Scott Harmon
 SF Role: Developer
 
-Nickname: kussmaul
-Name: Clifton Kussmaul
+Nickname: kwem
+Name: Karsten Wemheuer
+First Commit: 2012-10-05
 SF Role: Developer
 
 Nickname: kyori
@@ -1111,8 +1171,9 @@ Nickname: lauraxthomson
 Name: Laura Thomson
 SF Role: Developer
 
-Nickname: leagris
-Name: LÃ©a Gris
+Nickname: lechuckdapirate
+Name: Joan Vilarińo
+First Commit: 2003-05-02
 SF Role: Developer
 
 Nickname: leehongfay
@@ -1129,8 +1190,13 @@ Name: Luis Fagundes
 First Commit: 2004-02-23
 SF Role: Developer
 
-Nickname: limited1
-Name: Lee Wilson (aka stella12)
+Nickname: lihaowei2008
+Name: Haowei
+First Commit: 2007-09-09
+SF Role: Developer
+
+Nickname: limako
+Name: Steve Brewer
 SF Role: Developer
 
 Nickname: lindonb
@@ -1200,9 +1266,14 @@ Name: Lucas Emanoel
 SF Role: Developer
 
 Nickname: luciash
-Name: luciash d&#39; being
+Name: luciash d' being
 First Commit: 2003-08-05
 SF Role: Admin
+
+Nickname: lueders
+Name: Ralf E. Lueders
+First Commit: 2003-08-18
+SF Role: Developer
 
 Nickname: lukian-dev
 Name: Lukian Tabandjov
@@ -1230,7 +1301,7 @@ First Commit: 2009-04-16
 SF Role: Developer
 
 Nickname: marc-etienne
-Name: Marc-Etienne M.LÃ©veillÃ©
+Name: Marc-Etienne M.Léveillé
 First Commit: 2009-06-11
 SF Role: Developer
 
@@ -1249,7 +1320,7 @@ First Commit: 2006-04-18
 SF Role: Developer
 
 Nickname: marcoaasilva
-Name: Marco AurÃ©lio Silva
+Name: Marco Aurélio Silva
 First Commit: 2008-06-18
 SF Role: Developer
 
@@ -1286,7 +1357,7 @@ Nickname: martinmanyhats
 SF Role: Developer
 
 Nickname: martinschroeder
-Name: Martin SchrÃ¶der
+Name: Martin Schröder
 First Commit: 2012-05-18
 SF Role: Developer
 
@@ -1299,6 +1370,10 @@ Name: Peter "mash" Morgan
 First Commit: 2005-08-18
 SF Role: Developer
 
+Nickname: massimoi
+Name: Massimo Infunti
+SF Role: Developer
+
 Nickname: mastre
 SF Role: Developer
 
@@ -1306,7 +1381,18 @@ Nickname: mattlangley1
 Name: Matt Langley
 SF Role: Developer
 
+Nickname: matwho
+Name: Matthew Bickerton
+First Commit: 2008-08-25
+SF Role: Developer
+
+Nickname: mbrackeva
+Name: Mario Brackeva
+First Commit: 2008-06-22
+SF Role: Developer
+
 Nickname: mcfarland
+Name: d
 First Commit: 2006-02-04
 SF Role: Developer
 
@@ -1321,6 +1407,10 @@ SF Role: Developer
 Nickname: melmut
 Name: Yannick Majoros
 First Commit: 2004-02-11
+SF Role: Developer
+
+Nickname: merbster
+Name: Jesper Juel Merbt
 SF Role: Developer
 
 Nickname: mgfeller
@@ -1351,12 +1441,16 @@ Name: Mike Nielsen
 SF Role: Developer
 
 Nickname: mikespub
-Name: Mike&#39;s Pub
+Name: Mike's Pub
 First Commit: 2003-09-29
 SF Role: Developer
 
 Nickname: mikewalsh
 Name: MW
+SF Role: Developer
+
+Nickname: millette
+Name: Robin Millette
 SF Role: Developer
 
 Nickname: minger0
@@ -1396,7 +1490,7 @@ First Commit: 2011-07-27
 SF Role: Developer
 
 Nickname: monthorin
-Name: LoÄc Monthorin
+Name: Loďc Monthorin
 SF Role: Developer
 
 Nickname: moresun
@@ -1422,11 +1516,6 @@ SF Role: Developer
 Nickname: mrjc
 Name: Martin RJ. Cleaver
 First Commit: 2009-05-11
-SF Role: Developer
-
-Nickname: mroussel
-Name: Maxime Roussel
-First Commit: 2013-05-16
 SF Role: Developer
 
 Nickname: muscote
@@ -1493,11 +1582,6 @@ SF Role: Developer
 Nickname: nikejam
 Name: Jean Kim
 First Commit: 2012-11-22
-SF Role: Developer
-
-Nickname: nikhar
-Name: Nikhar
-First Commit: 2013-07-09
 SF Role: Developer
 
 Nickname: nkoth
@@ -1567,7 +1651,7 @@ First Commit: 2009-07-04
 SF Role: Developer
 
 Nickname: onewatt
-Name: AndrÃ© SenÃ©cal
+Name: André Senécal
 SF Role: Developer
 
 Nickname: opn-tech
@@ -1609,14 +1693,12 @@ Name: Pascal St-Jean
 First Commit: 2009-11-05
 SF Role: Developer
 
-Nickname: patrick-proulx
-Name: Patrick Proulx
-First Commit: 2013-07-14
-SF Role: Developer
-
 Nickname: patrickallard
 Name: Patrick Allard
 First Commit: 2009-01-26
+SF Role: Developer
+
+Nickname: pemen
 SF Role: Developer
 
 Nickname: penny336
@@ -1633,10 +1715,6 @@ SF Role: Developer
 
 Nickname: philbaret
 Name: Philippe Baret
-SF Role: Developer
-
-Nickname: philemon1999
-Name: Andre Archambault
 SF Role: Developer
 
 Nickname: philippeback
@@ -1683,6 +1761,10 @@ Name: Paulino Michelazzo
 First Commit: 2004-03-23
 SF Role: Developer
 
+Nickname: pmorenogarcia
+Name: Pablo Moreno García
+SF Role: Developer
+
 Nickname: pnimish
 Name: Nimish Pachapurkar
 SF Role: Developer
@@ -1724,7 +1806,7 @@ First Commit: 2003-05-08
 SF Role: Developer
 
 Nickname: qoumaq
-Name: Martin KosmÃ¡k
+Name: Martin Kosmák
 First Commit: 2010-11-19
 SF Role: Developer
 
@@ -1789,7 +1871,7 @@ First Commit: 2007-07-19
 SF Role: Admin
 
 Nickname: ripero
-Name: JosÃ© MarÃ­a EscartÃ­n
+Name: José María Escartín
 First Commit: 2010-10-02
 SF Role: Developer
 
@@ -1801,6 +1883,10 @@ SF Role: Developer
 Nickname: rleibman
 Name: Roberto Leibman
 First Commit: 2005-05-03
+SF Role: Developer
+
+Nickname: rlopezs
+First Commit: 2009-02-15
 SF Role: Developer
 
 Nickname: rlpowell
@@ -1859,7 +1945,7 @@ Name: martin sarsale
 SF Role: Developer
 
 Nickname: rv540
-Name: HervÃ© Schoenenberger
+Name: Hervé Schoenenberger
 First Commit: 2005-07-20
 SF Role: Developer
 
@@ -1889,18 +1975,35 @@ Nickname: scarle
 Name: Sylvain Carle
 SF Role: Developer
 
+Nickname: sdlee
+Name: Stephen Lee
+SF Role: Developer
+
+Nickname: sdoh
+Name: Stéphane DOH
+First Commit: 2010-08-31
+SF Role: Developer
+
 Nickname: sebpaquet
 Name: Seb
 SF Role: Developer
 
 Nickname: sept_7
-Name: StÃ©phane Casset
+Name: Stéphane Casset
 First Commit: 2007-07-03
 SF Role: Developer
 
 Nickname: sewilco
 Name: Scot Wilcoxon
 First Commit: 2008-09-18
+SF Role: Developer
+
+Nickname: sfyn
+Name: Sofian Benaissa
+SF Role: Developer
+
+Nickname: sghane
+Name: sameh
 SF Role: Developer
 
 Nickname: shinhan
@@ -1911,17 +2014,20 @@ Nickname: shiroitenshi
 Name: Chris White
 SF Role: Developer
 
+Nickname: sideshow_bob
+Name: 454abp
+SF Role: Developer
+
+Nickname: siegfried1e
+Name: Stephan Champagne
+SF Role: Developer
+
 Nickname: sikko23
 Name: Sikko
 SF Role: Developer
 
 Nickname: sil3nc3
 Name: Frank Gesang
-SF Role: Developer
-
-Nickname: sipherdee
-Name: Eric Beaurivage
-First Commit: 2013-07-15
 SF Role: Developer
 
 Nickname: siridhar
@@ -1934,7 +2040,7 @@ First Commit: 2012-11-20
 SF Role: Developer
 
 Nickname: slordjette
-Name: SÃ©bastien Lord-JettÃ©
+Name: Sébastien Lord-Jetté
 First Commit: 2009-04-08
 SF Role: Developer
 
@@ -1943,11 +2049,11 @@ Name: Scott MacVicar
 SF Role: Developer
 
 Nickname: smartingarcia
-Name: MartÃ­n GarcÃ­a Sixto Pablo
+Name: Martín García Sixto Pablo
 SF Role: Developer
 
 Nickname: soulhunter
-Name: JosÃ© Ildefonso Camargo Tolosa
+Name: José Ildefonso Camargo Tolosa
 First Commit: 2009-07-21
 SF Role: Developer
 
@@ -1972,11 +2078,11 @@ Name: Rasheed Abdal-Aziz
 SF Role: Developer
 
 Nickname: starrrider
-Name: Lee L Bell
+Name: ll
 SF Role: Developer
 
 Nickname: sthibault-php
-Name: StÃ©phane Thibault
+Name: Stéphane Thibault
 First Commit: 2009-05-03
 SF Role: Developer
 
@@ -2021,6 +2127,10 @@ Name: anatoly techtonik
 First Commit: 2004-02-21
 SF Role: Developer
 
+Nickname: teedog
+First Commit: 2003-08-07
+SF Role: Developer
+
 Nickname: telenieko
 Name: TeLeNiEkO
 First Commit: 2004-04-24
@@ -2038,14 +2148,14 @@ Nickname: thenano
 Name: Fernando Freire
 SF Role: Developer
 
-Nickname: thierrygervais
-Name: Thierry
-First Commit: 2013-07-14
-SF Role: Developer
-
 Nickname: thraxisp
 Name: Glenn Henshaw
 First Commit: 2010-11-12
+SF Role: Developer
+
+Nickname: tibistibi
+Name: tibi stibi
+First Commit: 2007-08-06
 SF Role: Developer
 
 Nickname: tictric
@@ -2082,10 +2192,6 @@ Name: bertrand Gugger
 First Commit: 2005-03-23
 SF Role: Developer
 
-Nickname: tomjrvs
-Name: Tom Jarvis
-SF Role: Developer
-
 Nickname: traivor
 Name: Harold Campbell
 First Commit: 2003-09-09
@@ -2101,17 +2207,16 @@ Name: Toni
 First Commit: 2005-03-22
 SF Role: Developer
 
-Nickname: ursuleacv
-Name: Ursuleac Valentin
-First Commit: 2013-07-14
-SF Role: Developer
-
 Nickname: v-woods
 Name: Van Woods
 SF Role: Developer
 
 Nickname: vaguery
 Name: Mickey Mullin
+SF Role: Developer
+
+Nickname: vikasrij
+Name: Vikas Rijsinghani
 SF Role: Developer
 
 Nickname: vinsz
@@ -2171,7 +2276,7 @@ First Commit: 2005-07-08
 SF Role: Admin
 
 Nickname: xbtheria
-Name: Xavier BarnabÃ©-ThÃ©riault
+Name: Xavier Barnabé-Thériault
 SF Role: Developer
 
 Nickname: xen216
@@ -2210,12 +2315,22 @@ Name: Yu Zhen Xin
 First Commit: 2005-11-21
 SF Role: Developer
 
+Nickname: zab-sv
+Name: Zabsv
+First Commit: 2009-09-29
+SF Role: Developer
+
 Nickname: zamboni
 Name: Diego Zamboni
 SF Role: Developer
 
 Nickname: zaufi
 First Commit: 2003-06-22
+SF Role: Developer
+
+Nickname: zcecil
+Name: Cecil Sheng
+First Commit: 2003-12-20
 SF Role: Developer
 
 Nickname: zchermit
@@ -2229,6 +2344,11 @@ SF Role: Developer
 
 Nickname: zibas
 Name: Ziba
+SF Role: Developer
+
+Nickname: zippohontas
+Name: Peter Hoste
+First Commit: 2012-05-18
 SF Role: Developer
 
 Nickname: zippy314

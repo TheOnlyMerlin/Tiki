@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -124,7 +121,7 @@ if ( $prefs['article_paginate'] == 'y' ) {
 	// Get ~pp~, ~np~ and <pre> out of the way. --rlpowell, 24 May 2004
 	$preparsed = array();
 	$noparsed = array();
-
+	
 	$parserlib->parse_first($article_data["body"], $preparsed, $noparsed);
 	$pages = $artlib->get_number_of_pages($article_data["body"]);
 	$article_data["body"] = $artlib->get_page($article_data["body"], $_REQUEST['page']);
@@ -154,7 +151,7 @@ if ($prefs["article_custom_attributes"] == 'y') {
 		if (in_array($att["itemId"], array_keys($t_article_attributes))) {
 			$article_attributes[$attname] = $t_article_attributes[$att["itemId"]];
 		}
-	}
+	} 
 	$smarty->assign('article_attributes', $article_attributes);
 } else {
 	$smarty->assign('article_attributes', array());
@@ -167,17 +164,9 @@ $smarty->assign('show_expdate', $article_data["show_expdate"]);
 $smarty->assign('edit_data', 'y');
 $body = $article_data["body"];
 $heading = $article_data["heading"];
-$smarty->assign('parsed_body', $tikilib->parse_data($body, array('is_html' => $artlib->is_html($article_data))));
-$smarty->assign(
-	'parsed_heading',
-	$tikilib->parse_data(
-		$heading,
-		array(
-			'min_one_paragraph' => true,
-			'is_html' => $artlib->is_html($article_data, true),
-		)
-	)
-);
+$smarty->assign('parsed_body', $tikilib->parse_data($body, array('is_html' => 'y')));
+$smarty->assign('parsed_heading', $tikilib->parse_data($heading, array('is_html' => 'y')));
+
 if ($prefs['article_related_articles'] == 'y') {
 	$article_data['related_articles'] = $artlib->get_related_articles($article_data['articleId']);
 	if (isset($article_data['related_articles']) && !empty($article_data['related_articles'])) {
@@ -198,10 +187,12 @@ if ($prefs['feature_categories'] == 'y') {
 // Display category path or not (like {catpath()})
 if (isset($is_categorized) && $is_categorized) {
 	$smarty->assign('is_categorized', 'y');
-	if ($prefs['feature_categories'] == 'y' && $prefs['feature_categorypath'] == 'y') {
-		$cats = $categlib->get_object_categories('article', $objId);
-		$display_catpath = $categlib->get_categorypath($cats);
-		$smarty->assign('display_catpath', $display_catpath);
+	if (isset($prefs['feature_categorypath']) and $prefs['feature_categories'] == 'y') {
+		if ($prefs['feature_categorypath'] == 'y') {
+			$cats = $categlib->get_object_categories('article', $objId);
+			$display_catpath = $categlib->get_categorypath($cats);
+			$smarty->assign('display_catpath', $display_catpath);
+		}
 	}
 	// Display current category objects or not (like {category()})
 	if (isset($prefs['feature_categoryobjects']) and $prefs['feature_categories'] == 'y') {

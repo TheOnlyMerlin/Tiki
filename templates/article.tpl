@@ -1,8 +1,8 @@
-<article class="article">
+<div class="article">
 	{if $show_topline eq 'y' and $topline}
 		<div class="articletopline">{$topline|escape}</div>
 	{/if}
-	<header class="articletitle">
+	<div class="articletitle">
 		<h2>
 			{object_link type=article id=$articleId title=$arttitle}
 		</h2>
@@ -16,7 +16,8 @@
 			{if $show_expdate eq 'y' && $expireDate}{tr}Expires At:{/tr} {$expireDate|tiki_short_datetime} - {/if}
 			{if $show_reads eq 'y'}({$reads} {tr}Reads{/tr}){/if}
 		</span>
-	</header>
+		<br />
+	</div>
 
 	{if $use_ratings eq 'y'}
 		<div class="articleheading">
@@ -59,13 +60,13 @@
 						 alt="{$smarty.capture.imgTitle}"
 						 src="article_image.php?image_type={if isset($preview) and $imageIsChanged eq 'y'}preview&amp;id={$previewId}{elseif isset($preview) and $subId}submission&amp;id={$subId}{else}article&amp;id={$articleId}{/if}"
 						 {if $image_x > 0}{$style=$style|cat:"max-width:"|cat:$image_x|cat:"px;"}{/if}
-						 {if $image_y > 0}{$style=$style|cat:"max-height:"|cat:$image_y|cat:"px;"}{/if} style="{$style}">
+						 {if $image_y > 0}{$style=$style|cat:"max-height:"|cat:$image_y|cat:"px;"}{/if} style="{$style}" />
 				{elseif $topicId}
 						{if $topics[$topicId].image_size > 0}
 							<img 
 								 {if $big_image}class="cboxElement"{elseif $isfloat eq 'y'}style="margin-right:4px;float:left;"{else}class="articleimage"{/if}
 								 alt="{tr}{$topicName}{/tr}"
-								 src="article_image.php?image_type=topic&amp;id={$topicId}">
+								 src="article_image.php?image_type=topic&amp;id={$topicId}" />
 					{else}
 						{tr}{$topics[$topicId].name|escape}{/tr}
 					{/if}
@@ -91,7 +92,7 @@
 					{if $article_attributes}
 						<div class="articleattributes">
 							{foreach from=$article_attributes key=attname item=attvalue}
-							{$attname|escape}: {$attvalue|escape}<br>
+							{$attname|escape}: {$attvalue|escape}<br />
 							{/foreach}
 						</div>
 					{/if}
@@ -115,7 +116,7 @@
 	
 		{if $prefs.article_paginate eq 'y' and $pages > 1}
 			<div align="center">
-				<a href="{$articleId|sefurl:article:with_next}page={$first_page}"><img src='img/icons/resultset_first.png' alt="{tr}First page{/tr}" title="{tr}First page{/tr}" width='16' height='16'></a>
+				<a href="{$articleId|sefurl:article:with_next}page={$first_page}"><img src='img/icons/resultset_first.png' alt="{tr}First page{/tr}" title="{tr}First page{/tr}" width='16' height='16' /></a>
 
 				<a href="{$articleId|sefurl:article:with_next}page={$prev_page}">{icon _id='resultset_previous' alt="{tr}Previous page{/tr}"}</a>
 
@@ -123,7 +124,7 @@
 
 				<a href="{$articleId|sefurl:article:with_next}page={$next_page}">{icon _id='resultset_next' alt="{tr}Next page{/tr}"}</a>
 
-				<a href="{$articleId|sefurl:article:with_next}page={$last_page}"><img src='img/icons/resultset_last.png' alt="{tr}Last page{/tr}" title="{tr}Last page{/tr}" width='16' height='16'></a>
+				<a href="{$articleId|sefurl:article:with_next}page={$last_page}"><img src='img/icons/resultset_last.png' alt="{tr}Last page{/tr}" title="{tr}Last page{/tr}" width='16' height='16' ></a>
 			</div>
 		{/if}
 	</div>
@@ -151,8 +152,8 @@
 
 	{* When copyright section is not empty show it *}
 	{if $smarty.capture.copyright_section neq ''}
-		<footer class="editdate">
+		<p class="editdate">
 			{$smarty.capture.copyright_section}
-		</footer>
+		</p>
 	{/if}
-</article>
+</div>

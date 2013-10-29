@@ -6,7 +6,7 @@
 
 <form action="tiki-admin.php?page=blogs" method="post">
 	<div class="heading input_submit_container" style="text-align: right">
-		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
 
 	{tabset name="admin_blogs"}
@@ -37,7 +37,6 @@
 				{/if}
 
 				{preference name=geo_locate_blogpost}
-				{preference name=feature_sefurl_title_blog}				
 			</fieldset>
 
 			<fieldset>
@@ -81,6 +80,6 @@
 		{/tab}
 	{/tabset}
 	<div class="heading input_submit_container" style="text-align: center">
-		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
 </form>

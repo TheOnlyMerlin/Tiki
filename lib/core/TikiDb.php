@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -70,7 +70,7 @@ abstract class TikiDb
 			if (empty($res)) {
 				return $res;
 			}
-
+		
 			return reset($res);
 		}
 
@@ -82,7 +82,7 @@ abstract class TikiDb
 		$result = $this->query($query, $values, $numrows, $offset, $reporterrors);
 
 		$rows = array();
-
+		
 		if ($result) {
 			while ($row = $result->fetchRow()) {
 				$rows[] = $row;
@@ -170,7 +170,7 @@ abstract class TikiDb
 		}
 	} // }}}
 
-	function convertSortMode( $sort_mode, $fields = null ) // {{{
+	function convertSortMode( $sort_mode ) // {{{
 	{
 		if ( !$sort_mode ) {
 			return '1';
@@ -188,8 +188,8 @@ abstract class TikiDb
 			return "RAND()";
 		}
 
-		$sorts = array();
-		foreach (explode(',', $sort_mode) as $sort) {
+		$sorts=explode(',', $sort_mode);
+		foreach ($sorts as $k => $sort) {
 
 			// force ending to either _asc or _desc unless it's "random"
 			$sep = strrpos($sort, '_');
@@ -201,28 +201,17 @@ abstract class TikiDb
 				$sort .= 'asc';
 			}
 
-			// When valid fields are specified, skip those not available
-			if (is_array($fields) && preg_match('/^(.*)_(asc|desc)$/', $sort, $parts)) {
-				if (! in_array($parts[1], $fields)) {
-					continue;
-				}
-			}
-
 			$sort = preg_replace('/_asc$/', '` asc', $sort);
 			$sort = preg_replace('/_desc$/', '` desc', $sort);
 			$sort = '`' . $sort;
 			$sort = str_replace('.', '`.`', $sort);
-			$sorts[] = $sort;
-		}
-
-		if (empty($sorts)) {
-			return '1';
+			$sorts[$k]=$sort;
 		}
 
 		$sort_mode=implode(',', $sorts);
 		return $sort_mode;
 	} // }}}
-
+	
 	function getQuery() // {{{
 	{
 		return $this->savedQuery;
@@ -295,22 +284,20 @@ abstract class TikiDb
 	*/
 	function getEngines()
 	{
-		static $engines = array();
-		if (empty($engines)) {
-			$result = $this->query('show engines');
-			if ($result) {
-				while ($res = $result->fetchRow()) {
-					$engines[] = $res['Engine'];
-				}
-			}
-		}
+		$engines = array();
+		$result = $this->query('show engines');
+		if ($result) {
+			while ($res = $result->fetchRow()) {
+				$engines[] = $res['Engine'];
+			}		
+		}		
 		return $engines;
 	}
-
+	
 	/**
 	 * Check if InnoDB is an avaible engine
 	 * @return true if the InnoDB engine is available
-	 */
+	 */ 
 	function hasInnoDB()
 	{
 		$engines = $this->getEngines();
@@ -326,128 +313,29 @@ abstract class TikiDb
 	 * Detect the engine used in the current schema.
 	 * Assumes that all tables use the same table engine
 	 * @return string identifying the current engine, or an empty string if not installed
-	 */
+	 */ 
 	function getCurrentEngine()
 	{
-		static $engine = '';
-		if (empty($engine)) {
-			$result = $this->query('SHOW TABLE STATUS LIKE ?', 'tiki_schema');
-			if ($result) {
-				$res = $result->fetchRow();
-				$engine  = $res['Engine'];
-			}
+		$engine = '';
+		$result = $this->query('SHOW TABLE STATUS LIKE ?', 'tiki_schema');
+		if ($result) {
+			$res = $result->fetchRow();
+			$engine  = $res['Engine'];
 		}
 		return $engine;
 	}
 
 	/**
 	 * Determine if MySQL fulltext search is supported by the current DB engine
-	 * Assumes that all tables use the same table engine.
-	 * Fulltext search is assumed supported if
-	 * 1) engine = MyISAM
-	 * 2) engine = InnoDB and MySQL version >= 5.6
+	 * Assumes that all tables use the same table engine
 	 * @return true if it is supported, otherwise false
-	 */
+	 */ 
 	function isMySQLFulltextSearchSupported()
 	{
 		$currentEngine = $this->getCurrentEngine();
 		if (strcasecmp($currentEngine, "MyISAM") == 0) {
 			return true;
-		} elseif (strcasecmp($currentEngine, "INNODB") == 0) {
-			$versionNr = $this->getMySQLVersionNr();
-			if ($versionNr >= 5.6) {
-				return true;
-			} else {
-				return false;
-			}
 		}
 		return false;
-	}
-
-
-	/**
-	 * Read the MySQL version string.
-	 * @return version string
-	 */
-	function getMySQLVersion()
-	{
-		static $version = '';
-		if (empty($version)) {
-			$result = $this->query('select version() as Version');
-			if ($result) {
-				$res = $result->fetchRow();
-				$version  = $res['Version'];
-			}
-		}
-		return $version;
-	}
-	/**
-	 * Read the MySQL version number, e.g. 5.5
-	 * @return version float
-	 */
-	function getMySQLVersionNr()
-	{
-		$versionNr = 0.0;
-		$version = $this->getMySQLVersion();
-		$versionNr = floatval($version);
-		return $versionNr;
-	}
-
-	function listTables()
-	{
-		$result = $this->fetchAll("show tables");
-		$list = array();
-
-		if ($result) {
-			foreach ($result as $row) {
-				$list[] = reset($row);
-			}
-		}
-
-		return $list;
-	}
-	
-	/*
-	*	isMySQLConnSSL
-	*	Check if MySQL is using an SSL connection
-	*	@return true if MySQL uses SSL. Otherwise false;
-	*/
-	function isMySQLConnSSL() 
-	{
-		if(!$this->haveMySQLSSL()) {
-			return false;
-		}
-		$result = $this->query('show status like "Ssl_cipher"');
-		$ret = $result->fetchRow();
-		$cypher = $ret['Value'];
-		return !empty($cypher);
-	}
-	
-	/*
-	*	Check if the MySQL installation has SSL activated
-	*	@return true is SSL is supported and activated on the current MySQL server
-	*/
-	function haveMySQLSSL()
-	{
-		static $haveMySQLSSL = null;
-		
-		if (!isset($haveMySQLSSL)) {
-			$result = $this->query('show variables like "have_ssl"');
-			$ret = $result->fetchRow();
-			if (empty($ret)) {
-				$result = $this->query('show variables like "have_openssl"');
-				$ret = $result->fetchRow();
-			}
-			if (!isset($ret)) {
-				$haveMySQLSSL = false;
-			}
-			$ssl = $ret['Value'];
-			if (empty($ssl)) {
-				$haveMySQLSSL = false;
-			} else {
-				$haveMySQLSSL = $ssl == 'YES';
-			}
-		}
-		return $haveMySQLSSL;
 	}
 }

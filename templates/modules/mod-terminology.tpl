@@ -1,6 +1,6 @@
 {tikimodule title=$tpl_module_title name="terminology" flip=$module_params.flip decorations=$module_params.decorations}
   <div align="left">
-    <b>{tr}Find term:{/tr}</b><br>
+    <b>{tr}Find term:{/tr}</b><br />
 	<div id="mod-search_wiki_pager1" style="display: block" class="clearfix box-data">
       <form class="forms" method="post" action="tiki-listpages.php">
       	{if $term_root_category_id != ''}
@@ -21,7 +21,7 @@
           </select>
         </label>
  
-        <input type="submit" class="wikiaction btn btn-default" name="search" value="{tr}Go{/tr}"/>
+        <input type="submit" class="wikiaction" name="search" value="{tr}Go{/tr}"/>
 
       </form>
       <!--[if IE]><br class="clear" style="height: 1px !important" /><![endif]-->

@@ -4,16 +4,13 @@
 
 <form class="admin" id="performance" name="performance" action="tiki-admin.php?page=performance" method="post">
 	<div class="heading input_submit_container" style="text-align: right">
-		<input type="submit" class="btn btn-default" name="performance" value="{tr}Apply{/tr}" />
-		<input type="reset" class="btn btn-warning" name="performancereset" value="{tr}Reset{/tr}" />
+		<input type="submit" name="performance" value="{tr}Apply{/tr}" />
+		<input type="reset" name="performancereset" value="{tr}Reset{/tr}" />
 	</div>
 {tabset}
 
 		{tab name="{tr}Performance{/tr}"}
 			{preference name=tiki_minify_javascript}
-			<div class="adminoptionboxchild" id="tiki_minify_javascript_childcontainer">
-				{preference name=tiki_minify_late_js_files}
-			</div>
 			{preference name=javascript_cdn}
 			{preference name=tiki_cdn}
 			{preference name=tiki_cdn_ssl}
@@ -26,7 +23,7 @@
 				{if $gzip_handler ne 'none'}
 					<div class="highlight" style="margin-left:30px;">
 						{tr}Output compression is active.{/tr}
-						<br>
+						<br />
 						{tr}Compression is handled by:{/tr} {$gzip_handler}.
 					</div>
 				{/if}
@@ -34,22 +31,6 @@
 			{preference name=tiki_cachecontrol_session}
 			{preference name=smarty_compilation}
 			{preference name=users_serve_avatar_static}
-
-			<fieldset>
-				<legend>{tr}PHP Settings{/tr}</legend>
-				<p>{tr}Some PHP.INI settings that can increase performance{/tr}</p>
-				<div class="adminoptionboxchild">
-					<p>
-						{tr _0=$realpath_cache_size_ini}'realpath_cache_size setting': %0{/tr}
-						{tr _0=$realpath_cache_size_percent}(percentage used %0 %{/tr})
-						{help url='php.ini#Performance'
-							desc='realpath_cache_size : {tr}Determines the size of the realpath cache to be used by PHP.{/tr}'}
-					</p>
-					<p>{tr _0=$realpath_cache_ttl}'realpath_cache_ttl setting': %0 seconds{/tr}
-					{help url='php.ini#Performance'
-					desc='realpath_cache_ttl : {tr}Duration of time (in seconds) for which to cache realpath information for a given file or directory.{/tr}'}
-				</div>
-			</fieldset>
 		{/tab}
 		
 		{tab name="{tr}Bytecode Cache{/tr}"}
@@ -63,8 +44,8 @@
 				<p>
 					<table style="width=520px;border: 0px;text-align:center">
 					<tr>
-					<td><img src="{$memory_graph|escape}" width="250" height="100"></td>
-					<td><img src="{$hits_graph|escape}" width="250" height="100"></td>
+					<td><img src="http://chart.apis.google.com/chart?cht=p3&amp;chs=250x100&amp;chd=t:{$opcode_stats.memory_used},{$opcode_stats.memory_avail}&amp;chl={tr}Available{/tr}|{tr}Used{/tr}&amp;chtt={tr}Memory{/tr}" width="250" height="100"/></td>
+					<td><img src="http://chart.apis.google.com/chart?cht=p3&amp;chs=250x100&amp;chd=t:{$opcode_stats.hit_hit},{$opcode_stats.hit_miss}&amp;chl={tr}Miss{/tr}|{tr}Hit{/tr}&amp;chtt={tr}Cache Hits{/tr}" width="250" height="100"/></td>
 					</tr>
 					<tr>
 					<td style="width=260px">
@@ -75,7 +56,7 @@
 					</td>
 					</tr>
 					</table>
-					<hr>
+					<hr />
 				</p>
 
 				{if $opcode_stats.warning_fresh}
@@ -101,9 +82,6 @@
 							{tr _0=$stat_flag}<em>%0</em> should not be disabled due to authentication on XCache.{/tr}
 						{/if}
 					</p>
-				{/if}
-				{if $opcode_stats.warning_check}
-					<p>{tr}Clear all APC caches:{/tr} {self_link apc_clear=true}{tr}Clear Caches{/tr}{/self_link}</p>
 				{/if}
 			{else}
 				{tr}Bytecode cache is not used. Using a bytecode cache (APC, XCache, WinCache) is highly recommended for production environments.{/tr}
@@ -147,7 +125,6 @@
 			{preference name=log_sql}
 			{preference name=log_mail}
 			{preference name=log_tpl}
-			{preference name=category_browse_count_objects}
 			{preference name=error_reporting_level}
 			{remarksbox type="tip" title="{tr}Tip{/tr}"}
 				{tr}Many search options impact performance. Please see <a href="tiki-admin.php?page=search">Search admin panel</a>.{/tr}
@@ -166,17 +143,9 @@
 				{preference name=newsletter_batch_size}
 			</div>
 		{/tab}
-		
-		{tab name="{tr}Time and Memory limits{/tr}"}
-				{preference name=allocate_memory_tracker_export_items}
-				{preference name=allocate_time_tracker_export_items}
-				{preference name="allocate_memory_unified_rebuild"}
-				{preference name="allocate_time_unified_rebuild"}				
-		{/tab}		
-		
 {/tabset}
 		
 	<div class="input_submit_container" style="margin-top: 5px; text-align: center">
-		<input type="submit" class="btn btn-default" name="performance" value="{tr}Apply{/tr}" />
+		<input type="submit" name="performance" value="{tr}Apply{/tr}" />
 	</div>
 </form>

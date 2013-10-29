@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- *
- */
 class mime
 {
 	function mime()
@@ -21,13 +18,7 @@ class mime
 
 	}
 
-    /**
-     * @param $input
-     * @param string $default_ctype
-     * @param string $crlf
-     * @return array|bool
-     */
-    function decode($input,$default_ctype = 'text/plain', $crlf = "\r\n")
+	function decode($input,$default_ctype = 'text/plain', $crlf = "\r\n")
 	{
 		$back = array();
 
@@ -66,7 +57,7 @@ class mime
 					case 'B':
 					case 'b':
 						$text = base64_decode($text);
-						break;
+									break;
 
 					case 'Q':
 					case 'q':
@@ -75,7 +66,7 @@ class mime
 						foreach ($matches[1] as $value) {
 							$text = str_replace('=' . $value, chr(hexdec($value)), $text);
 						}
-						break;
+									break;
 				}
 
 				if ($charset == 'iso-8859-1') {
@@ -126,7 +117,7 @@ class mime
 							$back['ctype_parameters'][$p_name] = $p_value;
 						}
 					}
-					break;
+								break;
 
 				case 'content-disposition':
 					$content_disposition = $it;
@@ -137,11 +128,11 @@ class mime
 							$back['d_parameters'][$p_name] = $p_value;
 						}
 					}
-					break;
+								break;
 
 				case 'content-transfer-encoding':
 					$content_transfer_encoding = $it;
-					break;
+								break;
 			}
 		}
 
@@ -156,7 +147,7 @@ class mime
 						$back['attachments'][] = $back['d_parameters'];
 					}
 					$encoding = isset($content_transfer_encoding) ? $content_transfer_encoding['value'] : '7bit';
-					$back['body'] = $this->decodeBody($body, $encoding);
+					$back['body'] = mime::decodeBody($body, $encoding);
 					if ( array_key_exists('ctype_parameters', $back)
 							and isset($back['ctype_parameters'])
 							and $back['ctype_parameters']
@@ -174,7 +165,7 @@ class mime
 					} else {
 						$back[$type][] = $back['body'];
 					}
-					break;
+								break;
 
 				case 'multipart/signed':
 				case 'multipart/digest':
@@ -188,23 +179,23 @@ class mime
 					}
 
 					for ($i = 0, $icount_parts = count($parts); $i < $icount_parts; $i++) {
-						$back['parts'][] = $this->decode($parts[$i], $default_ctype);
+						$back['parts'][] = mime::decode($parts[$i], $default_ctype);
 					}
-					break;
+								break;
 
 				case 'message/rfc822':
-					$back['parts'][] = $this->decode($body);
-					break;
+					$back['parts'][] = mime::decode($body);
+								break;
 
 				default:
 					if (!isset($content_transfer_encoding['value'])) {
 						$content_transfer_encoding['value'] = '7bit';
 					}
-					$back['body'] = $this->decodeBody($body, $content_transfer_encoding['value']);
-					break;
+					$back['body'] = mime::decodeBody($body, $content_transfer_encoding['value']);
+								break;
 			}
 		} else {
-			$back['body'] = $this->decodeBody($body);
+			$back['body'] = mime::decodeBody($body);
 		}
 		$ctype = explode('/', $default_ctype);
 		$back['ctype_primary'] = $ctype[0];
@@ -213,12 +204,7 @@ class mime
 		return $back;
 	}
 
-    /**
-     * @param $input
-     * @param string $encoding
-     * @return mixed|string
-     */
-    function decodeBody($input, $encoding = '7bit')
+	function decodeBody($input, $encoding = '7bit')
 	{
 		switch ($encoding) {
 			case '7bit':
@@ -246,11 +232,7 @@ class mime
 		}
 	}
 
-    /**
-     * @param $output
-     * @return array
-     */
-    function get_bodies($output)
+	function get_bodies($output)
 	{
 			$bodies = array();	/* BUG: only one body for the moment */
 			if (isset($output['text'][0]))
@@ -265,11 +247,7 @@ class mime
 			return $bodies;
 	}
 
-    /**
-     * @param $output
-     * @return array
-     */
-    function get_attachments($output)
+	function get_attachments($output)
 	{
 		$cnt = 0;
 		$attachments = array();

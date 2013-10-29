@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -32,21 +32,20 @@ function smarty_block_title($params, $content, $template, &$repeat)
 	if ( $repeat || empty($content) ) return;
 
 	$template->loadPlugin('smarty_function_icon');
-	$template->loadPlugin('smarty_modifier_sefurl');
 
 	if ( ! isset($params['help']) ) $params['help'] = '';
 	if ( ! isset($params['admpage']) ) $params['admpage'] = '';
+	if ( ! isset($params['url']) ) {
+		$template->loadPlugin('smarty_function_query');
+		$params['url'] = htmlspecialchars(smarty_function_query(array('_type' => 'absolute_path'), $template));
+		$params['url'] = str_replace('&amp;amp;', '&', $params['url']);
+	}
 
 	// Set the variable for the HTML title tag
 	$template->smarty->assign('headtitle', $content);
 
 	$class = 'pagetitle';
 	$current = current_object();
-
-	if ( ! isset($params['url']) ) {
-		$params['url'] = smarty_modifier_sefurl($current['object'], $current['type']);
-	}
-
 	$metadata = '';
 	$coordinates = TikiLib::lib('geo')->get_coordinates($current['type'], $current['object']);
 	if ($coordinates) {

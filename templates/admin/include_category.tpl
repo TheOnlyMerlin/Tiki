@@ -13,7 +13,7 @@
 <form action="tiki-admin.php?page=category" method="post">
 	<input type="hidden" name="categorysetup" />
 	<div class="input_submit_container clear" style="text-align: right;">
-		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
 
 	<fieldset class="admin">
@@ -37,7 +37,6 @@
 		{preference name=feature_categorypath}
 		<div class="adminoptionboxchild" id="feature_categorypath_childcontainer">
 			{preference name=categorypath_excluded}
-			{preference name=categorypath_format}
 		</div>
 		{preference name=category_sort_ascii}
 		<fieldset>
@@ -72,9 +71,8 @@
 		{preference name=feature_wiki_mandatory_category}
 		{preference name=feature_blog_mandatory_category}
 		{preference name=feature_image_gallery_mandatory_category}
-		{preference name=unified_add_to_categ_search}
 
-
+		
 	</fieldset>
 
 	<fieldset>
@@ -86,12 +84,11 @@
 	</fieldset>
 
 	<fieldset>
-		<legend>{tr}Performance{/tr}</legend>
+		<legend>{tr}Permissions{/tr}</legend>
 		{preference name=feature_search_show_forbidden_cat}
-		{preference name=category_browse_count_objects}
 	</fieldset>
 
 	<div class="input_submit_container clear" style="text-align: center;">
-		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
 </form>

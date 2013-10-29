@@ -2,7 +2,7 @@
 {tabset}
 	{tab name="{tr}List{/tr}"}
 		<a href="tiki-switch_perspective.php">{tr}Return to default perspective{/tr}</a>
-		<table class="table normal">
+		<table class="normal">
 			<tr>
 				<th>{tr}Perspective{/tr}</th>
 				<th>{tr}Actions{/tr}</th>
@@ -31,7 +31,7 @@
 	{if $tiki_p_perspective_create eq 'y'}
 		{tab name="{tr}Create{/tr}"}
 			<form method="post" action="tiki-edit_perspective.php">
-				<p>{tr}Name:{/tr} <input type="text" name="name"/> <input type="submit" class="btn btn-default" name="create" value="{tr}Create{/tr}"></p>
+				<p>{tr}Name:{/tr} <input type="text" name="name"/> <input type="submit" name="create" value="{tr}Create{/tr}"/></p>
 			</form>
 		{/tab}
 	{/if}
@@ -40,8 +40,8 @@
 			<form method="post" action="tiki-edit_perspective.php">
 				<p>
 					{tr}Name:{/tr}
-					<input type="text" name="name" value="{$perspective_info.name|escape}">
-					<input type="hidden" name="id" value="{$perspective_info.perspectiveId|escape}">
+					<input type="text" name="name" value="{$perspective_info.name|escape}"/>
+					<input type="hidden" name="id" value="{$perspective_info.perspectiveId|escape}"/>
 				</p>
 				<fieldset id="preferences" class="dropzone" style="text-align: left;">
 					<p>{tr}Configurations:{/tr}</p>
@@ -50,15 +50,15 @@
 					{/foreach}
 				</fieldset>
 				<p>
-					<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
+					<input type="submit" name="save" value="{tr}Save{/tr}"/>
 				</p>
 			</form>
 			<form method="post" id="searchform" action="tiki-edit_perspective.php">
 				{remarksbox type="info" title="{tr}Hint{/tr}"}{tr}Search for configurations below and drag them in to the configuration section above.{/tr}{/remarksbox}
 				<p>
-					<input type="hidden" name="id" value="{$perspective_info.perspectiveId|escape}">
-					<input id="criteria" type="text" name="criteria">
-					<input type="submit" class="btn btn-default" value="{tr}Search{/tr}">
+					<input type="hidden" name="id" value="{$perspective_info.perspectiveId|escape}"/>
+					<input id="criteria" type="text" name="criteria"/>
+					<input type="submit" value="{tr}Search{/tr}"/>
 				</p>
 				<fieldset id="resultzone" class="dropzone" style="text-align: left;"></fieldset>
 			</form>

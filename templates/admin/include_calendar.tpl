@@ -4,7 +4,7 @@
 
 <form action="tiki-admin.php?page=calendar" method="post">
 	<div class="input_submit_container clear" style="text-align: right;">
-		<input type="submit" class="btn btn-default" name="calprefs" value="{tr}Change settings{/tr}" />
+		<input type="submit" name="calprefs" value="{tr}Change settings{/tr}" />
 	</div>
 
 	<fieldset class="admin">
@@ -58,7 +58,6 @@
 		{preference name=calendar_timespan}
 		{preference name=feature_cal_manual_time}
 		{preference name=calendar_export}
-		{preference name=calendar_export_item}
 		{preference name=calendar_addtogooglecal}
 		{preference name=calendar_fullcalendar}
 
@@ -82,10 +81,9 @@
 		{preference name=calendar_view_tab}
 		{preference type='multicheckbox' name='calendar_view_days'}
 		{preference name=calendar_description_is_html}
-		{preference name=calendar_watch_editor}
 	</fieldset>
 	<div class="input_submit_container clear" style="text-align: center;">
-		<input type="submit" class="btn btn-default" name="calprefs" value="{tr}Change settings{/tr}" />
+		<input type="submit" name="calprefs" value="{tr}Change settings{/tr}" />
 	</div>
 </form>
 

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -141,6 +141,7 @@ function wikiplugin_mail($data, $params)
 			$mail->setSubject($_REQUEST['mail_subject']);
 			$mail->setText($_REQUEST['mail_mess']);
 			if ($mail->send($to)) {
+				//echo '<pre>MAIL'; print_r($to); echo '</pre>';
 				$smarty->assign_by_ref('sents', $to);
 			} else {
 				$mail_error = true;

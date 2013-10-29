@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -14,70 +14,42 @@ function tiki_setup_events()
 	$events = TikiLib::events();
 	$events->reset();
 
-	$defer = function ($lib, $function ) {
-		return Tiki_Event_Lib::defer($lib, $function);
-	};
-
 	if ($prefs['feature_wiki'] == 'y') {
 		if ( $prefs['quantify_changes'] == 'y' && $prefs['feature_multilingual'] == 'y' ) {
-			$events->bind('tiki.wiki.save', $defer('quantify', 'wiki_update'));
-		}
-
-		$prefix = $prefs['feature_wiki_userpage_prefix'];
-		if ($prefs['feature_wiki_userpage'] && ! empty($prefix)) {
-			$events->bind(
-				'tiki.wiki.save',
-				function ($args) use ($events, $prefix) {
-					global $prefs;
-					if ($prefix == substr($args['object'], 0, strlen($prefix))) {
-						$user = substr($args['object'], strlen($prefix));
-						$events->trigger(
-							'tiki.user.update',
-							array(
-								'type' => 'user',
-								'object' => $user,
-							)
-						);
-					}
-				}
-			);
+			$events->bind('tiki.wiki.save', Event_Lib::defer('quantify', 'wiki_update'));
 		}
 	}
 
 	if ($prefs['feature_trackers'] == 'y') {
-		$events->bind('tiki.trackeritem.save', $defer('trk', 'send_replace_item_notifications'));
-		$events->bind('tiki.trackeritem.save', $defer('trk', 'sync_item_geo'));
+		$events->bind('tiki.trackeritem.save', Event_Lib::defer('trk', 'send_replace_item_notifications'));
+		$events->bind('tiki.trackeritem.save', Event_Lib::defer('trk', 'sync_item_geo'));
 
 		if ($prefs['feature_categories'] == 'y') {
-			$events->bind('tiki.trackeritem.save', $defer('trk', 'sync_categories'));
-			$events->bind('tiki.trackeritem.save', $defer('trk', 'sync_item_auto_categories'));
+			$events->bind('tiki.trackeritem.save', Event_Lib::defer('trk', 'sync_categories'));
+			$events->bind('tiki.trackeritem.save', Event_Lib::defer('trk', 'sync_item_auto_categories'));
 		}
-
+		
 		if (! empty($prefs['user_trackersync_realname'])) {
-			$events->bind('tiki.trackeritem.save', $defer('trk', 'sync_user_realname'));
+			$events->bind('tiki.trackeritem.save', Event_Lib::defer('trk', 'sync_user_realname'));
 		}
 
 		if ($prefs['user_trackersync_groups'] == 'y') {
-			$events->bind('tiki.trackeritem.save', $defer('trk', 'sync_user_groups'));
+			$events->bind('tiki.trackeritem.save', Event_Lib::defer('trk', 'sync_user_groups'));
 		}
 
 		if ($prefs['user_trackersync_geo'] == 'y') {
-			$events->bind('tiki.trackeritem.save', $defer('trk', 'sync_user_geo'));
+			$events->bind('tiki.trackeritem.save', Event_Lib::defer('trk', 'sync_user_geo'));
 		}
 
 		if ($prefs['groupTracker'] == 'y') {
-			$events->bind('tiki.trackeritem.create', $defer('trk', 'group_tracker_create'));
-		}
-
-		if ($prefs['userTracker'] == 'y') {
-			$events->bind('tiki.trackeritem.save', $defer('trk', 'update_user_account'));
+			$events->bind('tiki.trackeritem.create', Event_Lib::defer('trk', 'group_tracker_create'));
 		}
 
 		if ($prefs['feature_freetags'] == 'y') {
-			$events->bind('tiki.trackeritem.save', $defer('trk', 'sync_freetags'));
+			$events->bind('tiki.trackeritem.save', Event_Lib::defer('trk', 'sync_freetags'));
 		}
 
-		$events->bind('tiki.trackeritem.save', $defer('trk', 'update_create_missing_pages'));
+		$events->bind('tiki.trackeritem.save', Event_Lib::defer('trk', 'update_create_missing_pages'));
 
 		if ($prefs['trackerfield_computed'] == 'y') {
 			$events->bind('tiki.trackeritem.save', array('Tracker_Field_Computed', 'computeFields'));
@@ -91,22 +63,20 @@ function tiki_setup_events()
 			$events->bind('tiki.trackeritem.save', array('Tracker_Field_Icon', 'updateIcon'));
 		}
 
-		$events->bind('tiki.trackeritem.save', $defer('trk', 'update_tracker_summary'));
-		$events->bind('tiki.trackeritem.save', $defer('trk', 'invalidate_item_cache'));
+		$events->bind('tiki.trackeritem.save', Event_Lib::defer('trk', 'update_tracker_summary'));
+		$events->bind('tiki.trackeritem.save', Event_Lib::defer('trk', 'invalidate_item_cache'));
 
 		if ($prefs['tracker_refresh_itemlink_detail'] == 'y') {
-			$events->bind('tiki.trackeritem.update', $defer('trk', 'refresh_index_on_master_update'));
+			$events->bind('tiki.trackeritem.update', Event_Lib::defer('trk', 'refresh_index_on_master_update'));
 		}
 	}
 
 	if ($prefs['feature_search'] == 'y' && $prefs['unified_incremental_update'] == 'y') {
-		$events->bindPriority(100, 'tiki.save', 'tiki_save_refresh_index');
-		$events->bindPriority(100, 'tiki.user.save', 'tiki_save_refresh_index');
-		$events->bindPriority(100, 'tiki.social.save', 'tiki_save_refresh_index');
+		$events->bind('tiki.save', 'tiki_save_refresh_index');
 	}
 
 	if ($prefs['feature_file_galleries'] == 'y') {
-		$events->bind('tiki.save', $defer('filegal', 'save_sync_file_backlinks'));
+		$events->bind('tiki.save', Event_Lib::defer('filegal', 'save_sync_file_backlinks'));
 	}
 
 	if ($prefs['dailyreports_enabled_for_new_users'] == 'y') {
@@ -114,28 +84,16 @@ function tiki_setup_events()
 	}
 
 	if ($prefs['scorm_enabled'] == 'y') {
-		$events->bind('tiki.file.create', $defer('scorm', 'handle_file_creation'));
-		$events->bind('tiki.file.update', $defer('scorm', 'handle_file_update'));
+		$events->bind('tiki.file.create', Event_Lib::defer('scorm', 'handle_file_creation'));
+		$events->bind('tiki.file.update', Event_Lib::defer('scorm', 'handle_file_update'));
 	}
 
-	if ($prefs['feature_futurelinkprotocol'] == 'y') {
-		$events->bind("tiki.wiki.view", 'tiki_wiki_view_pastlink');
-		$events->bind("tiki.wiki.save", 'tiki_wiki_save_pastlink');
+	if ($prefs['feature_forwardlinkprotocol'] == 'y') {
+		$events->bind("tiki.wiki.view", 'tiki_wiki_view_forwardlink');
+		$events->bind("tiki.wiki.save", 'tiki_wiki_save_forwardlink');
 	}
 
-	$events->bind('tiki.save', $defer('tiki', 'object_post_save'));
-
-	if ($prefs['activity_basic_events'] == 'y') {
-		TikiLib::lib('activity')->bindBasicEvents($events);
-	}
-
-	if ($prefs['activity_custom_events'] == 'y') {
-		try {
-			TikiLib::lib('activity')->bindCustomEvents($events);
-		} catch (Exception $e) {
-			TikiLib::lib('errorreport')->report($e->getMessage());
-		}
-	}
+	$events->bind('tiki.save', Event_Lib::defer('tiki', 'plugin_post_save_actions'));
 
 	// Chain events
 	$events->bind('tiki.wiki.update', 'tiki.wiki.save');
@@ -143,62 +101,35 @@ function tiki_setup_events()
 	$events->bind('tiki.wiki.save', 'tiki.save');
 	$events->bind('tiki.wiki.view', 'tiki.view');
 
-	$events->bind('tiki.trackeritem.rating', 'tiki.trackeritem.update');
 	$events->bind('tiki.trackeritem.update', 'tiki.trackeritem.save');
 	$events->bind('tiki.trackeritem.create', 'tiki.trackeritem.save');
 	$events->bind('tiki.trackeritem.save', 'tiki.save');
-	$events->bind('tiki.trackeritem.delete', 'tiki.save');
 
 	$events->bind('tiki.file.update', 'tiki.file.save');
 	$events->bind('tiki.file.create', 'tiki.file.save');
-	$events->bind('tiki.file.delete', 'tiki.file.save');
 	$events->bind('tiki.file.save', 'tiki.save');
-
-	$events->bind('tiki.forumpost.create', 'tiki.forumpost.save');
-	$events->bind('tiki.forumpost.reply', 'tiki.forumpost.save');
-	$events->bind('tiki.forumpost.update', 'tiki.forumpost.save');
-	$events->bind('tiki.forumpost.save', 'tiki.save');
-
-	$events->bind('tiki.comment.post', 'tiki.comment.save');
-	$events->bind('tiki.comment.reply', 'tiki.comment.save');
-	$events->bind('tiki.comment.update', 'tiki.comment.save');
-	$events->bind('tiki.comment.save', 'tiki.save');
 
 	$events->bind('tiki.user.update', 'tiki.user.save');
 	$events->bind('tiki.user.create', 'tiki.user.save');
-
-	$events->bind('tiki.user.follow.add', 'tiki.user.network');
-	$events->bind('tiki.user.follow.incoming', 'tiki.user.network');
-	$events->bind('tiki.user.friend.add', 'tiki.user.network');
-
-	$events->bind('tiki.social.like.add', 'tiki.social.save');
-	$events->bind('tiki.social.like.remove', 'tiki.social.save');
-	$events->bind('tiki.social.favorite.add', 'tiki.social.save');
-	$events->bind('tiki.social.favorite.remove', 'tiki.social.save');
-	$events->bind('tiki.social.relation.add', 'tiki.social.save');
-	$events->bind('tiki.social.relation.remove', 'tiki.social.save');
 }
 
 function tiki_save_refresh_index($args)
 {
-	if (! isset($args['index_handled'])) {
-		require_once('lib/search/refresh-functions.php');
-		$isBulk = isset($args['bulk_import']) && $args['bulk_import'];
-		refresh_index($args['type'], $args['object'], ! $isBulk);
-	}
+	require_once('lib/search/refresh-functions.php');
+	$isBulk = isset($args['bulk_import']) && $args['bulk_import'];
+	refresh_index($args['type'], $args['object'], ! $isBulk);
 }
 
 
-function tiki_wiki_view_pastlink($args)
+function tiki_wiki_view_forwardlink($args)
 {
-	FutureLink_ReceiveFromPast::wikiView($args);
-	FutureLink_PageLookup::wikiView($args);
-	FutureLink_FutureUI::wikiView($args);
-	FutureLink_PastUI::wikiView($args);
+	Feed_ForwardLink_Receive::wikiView($args);
+	Feed_ForwardLink_PageLookup::wikiView($args);
+	Feed_ForwardLink::wikiView($args);
+	Feed_ForwardLink_Send::wikiView($args);
 }
 
-function tiki_wiki_save_pastlink($args)
+function tiki_wiki_save_forwardlink($args)
 {
-	FutureLink_FutureUI::wikiSave($args);
-	FutureLink_PastUI::wikiSave($args);
+	Feed_ForwardLink::wikiSave($args);
 }

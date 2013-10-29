@@ -1,8 +1,5 @@
-<?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+<?php 
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -19,10 +16,6 @@ include_once('lib/wiki/wikilib.php');
 $map = array ("getSubGraph" => array( "function" => "getSubGraph" ) );
 $server = new XML_RPC_Server($map);
 
-/**
- * @param $params
- * @return XML_RPC_Response
- */
 function getSubGraph($params)
 {
     global $wikilib, $dbTiki, $base_url, $prefs;

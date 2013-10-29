@@ -1,4 +1,4 @@
-{if $prefs.feature_categories eq 'y' and $tiki_p_modify_object_categories eq 'y' and (count($categories) gt 0 or $tiki_p_admin_categories eq 'y')}
+{if $prefs.feature_categories eq 'y' and (count($categories) gt 0 or $tiki_p_admin_categories eq 'y')}
 {if !isset($notable) || $notable neq 'y'}
 <tr>
  <td>{tr}Categorize{/tr}</td>
@@ -13,7 +13,7 @@
   <div class="multiselect">
   {if count($categories) gt 0}
 	{$cat_tree}
-    <input type="hidden" name="cat_categorize" value="on">
+    <input type="hidden" name="cat_categorize" value="on" />
 	<div class="clear">
 	{if $tiki_p_admin_categories eq 'y'}
     	<div class="floatright"><a href="tiki-admin_categories.php" class="link">{tr}Admin Categories{/tr} {icon _id='wrench'}</a></div>

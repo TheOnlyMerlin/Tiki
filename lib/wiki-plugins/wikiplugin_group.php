@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -44,25 +44,23 @@ function wikiplugin_group_info()
 
 function wikiplugin_group($data, $params)
 {
-	// TODO : Re-implement friend filter
-	global $user, $prefs, $tikilib, $smarty, $groupPluginReturnAll;
+	global $user, $prefs, $tikilib, $smarty;
 	$dataelse = '';
 	if (strrpos($data, '{ELSE}')) {
 		$dataelse = substr($data, strrpos($data, '{ELSE}')+6);
 		$data = substr($data, 0, strrpos($data, '{ELSE}'));
 	}
 
-	if (isset($groupPluginReturnAll) && $groupPluginReturnAll == true) {
-		return $data.$dataelse;
+	if (!empty($params['friends']) && $prefs['feature_friends'] == 'y') {
+		$friends = explode('|', $params['friends']);
 	}
-
 	if (!empty($params['groups'])) {
 		$groups = explode('|', $params['groups']);
 	}
 	if (!empty($params['notgroups'])) {
 		$notgroups = explode('|', $params['notgroups']);
 	}
-	if (empty($groups) && empty($notgroups)) {
+	if (empty($friends) && empty($groups) && empty($notgroups)) {
 		return '';
 	}
 
@@ -77,6 +75,18 @@ function wikiplugin_group($data, $params)
 		}
 	}
 
+	if (!empty($friends)) {
+		$ok = false;
+
+		foreach ($friends as $key=>$friend) {
+		    if ($tikilib->verify_friendship($user, $friend)) {
+			    $ok = true;
+			    break;
+		    }
+		}
+		if (!$ok)
+			return $dataelse;
+	}
 	if (!empty($groups)) {
 		$ok = false;
 

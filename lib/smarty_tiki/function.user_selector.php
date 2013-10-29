@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -59,19 +59,8 @@ function smarty_function_user_selector($params, $smarty)
 	}
 	
 	$groupNames = array();
-	if (is_array($params['groupIds'])) {
-		foreach ($params['groupIds'] as $k => $groupId) {
-			if ($groupId <= 0) {
-				unset($params['groupIds'][$k]);
-			}
-		}
-		if (!empty($params['groupIds'])) {
-			$groupIds = $params['groupIds'];
-		}	
-	} elseif (!empty($params['groupIds'])) {
+	if (!empty($params['groupIds'])) {
 		$groupIds = explode('|', $params['groupIds']);
-	}
-	if (!empty($groupIds)) {
 		foreach ($groupIds as $groupId) {
 			$group_info = $userlib->get_groupId_info($groupId);
 			$groupNames[] = $group_info['groupName'];

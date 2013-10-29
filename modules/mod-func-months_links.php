@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_months_links_info()
 {
 	return array(
@@ -35,10 +32,6 @@ function module_months_links_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_months_links($mod_reference, $module_params)
 {
 	global $prefs, $sections, $smarty;
@@ -55,14 +48,14 @@ function module_months_links($mod_reference, $module_params)
 					$link = 'tiki-view_blog.php?blogId=' . $module_params['id'] . '&amp;' . $default_date_args;
 					$object_key = 'itemObjectType';
 				}
-				break;
+							break;
 
 			case 'cms':
 				if ($prefs['feature_articles'] == 'y') {
 					$link = 'tiki-view_articles.php?' . $default_date_args;
 					$object_key = 'objectType';
 				}
-				break;
+							break;
 		}
 	}
 
@@ -140,26 +133,26 @@ function module_months_links($mod_reference, $module_params)
 				}
 			} elseif ($module_params['feature'] == 'cms') {
 				$posts_of_month = $artlib->list_articles(
-					0,
-					-1,
-					'publishDate_desc',
-					'',
-					$timestamp_month_start,
-					$timestamp_month_end,
-					false,
-					'',
-					'',
-					'y',
-					'',
-					'',
-					'',
-					'',
-					'',
-					'',
-					'',
-					false,
-					'',
-					''
+								0,
+								-1,
+								'publishDate_desc',
+								'',
+								$timestamp_month_start,
+								$timestamp_month_end,
+								false,
+								'',
+								'',
+								'y',
+								'',
+								'',
+								'',
+								'',
+								'',
+								'',
+								'',
+								false,
+								'',
+								''
 				);
 
 				if ($posts_of_month["cant"] > 0) {

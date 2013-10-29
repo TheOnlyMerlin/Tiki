@@ -89,18 +89,6 @@ body {
 	border-bottom-right-radius: 		.6em;
 }
 
-/* popups */
-
-.ui-popup {
-	padding: .5em 1em;
-}
-
-/* toolbars */
-
-.helptool-admin {
-	display: none;	/* need jquery-ui dialogs */
-}
-
 /* reduce visual clutter */
 .cachedStatus {
 	display: none;
@@ -211,6 +199,17 @@ body {
 
 .ui-content.ui-body-e .even {
 	background: #FEEAA1;
+}
+
+.normal .ui-checkbox input, .normal .ui-radio input {
+	position: inherit;
+	left: auto;
+	top: auto;
+	width: auto;
+	height: auto;
+	margin: inherit;
+	outline: 0 !important;
+	z-index: auto;
 }
 
 /* Generic find.tpl

@@ -2,8 +2,8 @@
 
 <html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"> 
-    <link rel="StyleSheet"  href="styles/{$prefs.style}" type="text/css">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+    <link rel="StyleSheet"  href="styles/{$prefs.style}" type="text/css" />
     <title>{tr}Live support:Console{/tr}</title>
     {literal}
 	<script type="text/javascript" src="lib/live_support/live-support.js">
@@ -16,7 +16,7 @@
   <body style="background-color: white">
   {/literal}
   	{if $isOperator}
-	<table class="table normal" >
+	<table class="normal" >
 		<tr>
 			<th>{tr}Operator:{/tr} {$user}</th>
 			<th>{tr}Status:{/tr} <b>{tr}{$status}{/tr}</b></th>
@@ -40,7 +40,7 @@
 			sound();
 		</script>
     {/if}
-	<table id='reqs' class="table normal">
+	<table id='reqs' class="normal">
 		<tr>
 			<th>{tr}User{/tr}</th>
 			<th>{tr}Reason{/tr}</th>

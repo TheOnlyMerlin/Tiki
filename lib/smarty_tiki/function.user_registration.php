@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -29,14 +29,15 @@ function smarty_function_user_registration($params, $smarty)
 
 // NOTE that this is not a standard access check, it checks for the opposite of that, i.e. whether logged in already
 	if (!empty($user)) {
-		TikiLib::lib('access')->redirect($prefs['tikiIndex'], tr('You are already logged in'));
+		$smarty->assign('msg', tra('You are already logged in'));
+		$smarty->display('error.tpl');
 		return;
 	}
 	$smarty->assign('showmsg', 'n');
 // ensure ssl
 	if (!$https_mode && $prefs['https_login'] == 'required') {
-		TikiLib::lib('access')->redirect($base_url_https . 'tiki-register.php');
-		return;
+		header('Location: ' . $base_url_https . 'tiki-register.php');
+		die();
 	}
 //get custom fields
 	$customfields = $registrationlib->get_customfields();
@@ -118,9 +119,6 @@ function smarty_function_user_registration($params, $smarty)
 			if (isset($_REQUEST['name'])) {
 				$user = $_REQUEST['name'];	// so that one can set user preferences at registration time
 				$_REQUEST['iTRACKER'] = 1;	// only one tracker plugin on registration
-			}
-			if (!is_array($re['registrationUsersFieldIds'])) {
-				$re['registrationUsersFieldIds'] = explode(':', $re['registrationUsersFieldIds']);
 			}
 			if ($registrationlib->merged_prefs["user_register_prettytracker"] == 'y' && !empty($registrationlib->merged_prefs["user_register_prettytracker_tpl"])) {
 				if (substr($registrationlib->merged_prefs["user_register_prettytracker_tpl"], -4) == ".tpl") {

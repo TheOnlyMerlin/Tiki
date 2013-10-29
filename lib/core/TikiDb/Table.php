@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,8 +7,8 @@
 
 class TikiDb_Table
 {
-	protected $db;
-	protected $tableName;
+	private $db;
+	private $tableName;
 
 	function __construct($db, $tableName)
 	{
@@ -269,15 +269,6 @@ class TikiDb_Table
 		}
 	}
 
-	function notIn(array $values, $caseSensitive = false)
-	{
-		if (empty($values)) {
-			return $this->expr('1=0', array());
-		} else {
-			return $this->expr(($caseSensitive ? 'BINARY ' : '') . '$$ NOT IN(' . rtrim(str_repeat('?, ', count($values)), ', ') . ')', $values);
-		}
-	}
-
 	function findIn($value, array $fields)
 	{
 		$expr = $this->like("%$value%");
@@ -401,7 +392,7 @@ class TikiDb_Table
 		return "INSERT$ignore INTO {$this->escapeIdentifier($this->tableName)} ($fieldDefinition) VALUES ($fieldPlaceholders)";
 	}
 
-	protected function escapeIdentifier($identifier)
+	private function escapeIdentifier($identifier)
 	{
 		return "`$identifier`";
 	}

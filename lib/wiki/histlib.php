@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -43,8 +43,8 @@ class HistLib extends TikiLib
 		
 		// Store the current page in tiki_history before rolling back
 		if (strtolower($page) != 'sandbox') {
-			$info = $this->get_hist_page_info($page);
-			$old_version = $info['version'] + 1;
+			$info = $this->get_page_info($page);
+			$old_version = $this->get_page_latest_version($page) + 1;
 		    $lastModif = $info["lastModif"];
 		    $user = $info["user"];
 		    $ip = $info["ip"];
@@ -80,7 +80,7 @@ class HistLib extends TikiLib
 		if ($prefs['feature_wysiwyg'] == 'y' && $prefs['wysiwyg_optional'] == 'y' && $prefs['wysiwyg_memo'] == 'y') {
 			if ($res['is_html'] == 1) {
 				// big hack: when you move to wysiwyg you do not come back usually -> wysiwyg should be a column in tiki_history
-				$info = $this->get_hist_page_info($page);
+				$info = $this->get_page_info($page);
 				$bindvars[] = $info['wysiwyg'];
 			} else {
 				$bindvars[] = 'n';
@@ -166,11 +166,11 @@ class HistLib extends TikiLib
 	}
 
 	// Get page info for a specified version
-	function get_hist_page_info($pageName, $version = null)
+	function get_page_info($pageName, $version)
 	{
 		$info = parent::get_page_info($pageName);
 
-		if (empty($version)) {
+		if (!isset($version)) {
 			// No version = last version
 			return $info;
 		}
@@ -286,27 +286,20 @@ class HistLib extends TikiLib
 
 		return empty($ret)?$ret: $ret[0];
 	}
-
-	/**
-	 * note that this function returns the latest but one version in the
-	 * history db table, which is one less than the current version
-	 *
-	 * @param string $page			page name
-	 * @param string $sort_mode		default version_desc
-	 * @return bool int
-	 */
-
+	
+	// note that this function returns the latest version in the
+	// history db table, which is one less than the current version 
 	function get_page_latest_version($page, $sort_mode='version_desc')
 	{
 
 		$query = "select `version` from `tiki_history` where `pageName`=? order by ".$this->convertSortMode($sort_mode);
-		$result = $this->query($query, array($page), 2);
-		$ret = false;
+		$result = $this->query($query, array($page), 1);
+		$ret = array();
 		
 		if ($res = $result->fetchRow()) {
-			if ($res = $result->fetchRow()) {
-				$ret = $res['version'];
-			}
+			$ret = $res['version'];
+		} else {
+			$ret = FALSE;
 		}
 
 		return $ret;
@@ -515,7 +508,7 @@ class Document
 		$this->startmarker=$startmarker;
 		$this->endmarker=$endmarker;
 
-		$this->_info=$histlib->get_hist_page_info($page, true);
+		$this->_info=$histlib->get_page_info($page, true);
 		if ($lastversion==0) {
 			$lastversion=$this->_info['version'];		
 		}
@@ -1208,22 +1201,23 @@ function histlib_helper_setup_diff( $page, $oldver, $newver )
 			$old['data'] = strip_tags(preg_replace($search, $replace, $old['data']), '<h1><h2><h3><h4><b><i><u><span>');
 			$new['data'] = strip_tags(preg_replace($search, $replace, $new['data']), '<h1><h2><h3><h4><b><i><u><span>');
 		}
-		if ($_REQUEST["diff_style"] == "htmldiff" && $old['is_html'] != 1) {
+		if ($_REQUEST["diff_style"] == "htmldiff") {
 
-			$parse_options = array('is_html' => ($old['is_html'] == 1), 'noheadinc' => true, 'suppress_icons' => true, 'noparseplugins' => true);
+			$parse_options = array('is_html' => ($old['is_html'] == 1), 'noheadinc' => true, 'suppress_icons' => true);
 			$old["data"] = $tikilib->parse_data($old["data"], $parse_options);
 			$new["data"] = $tikilib->parse_data($new["data"], $parse_options);
 
 			$old['data'] = histlib_strip_irrelevant($old['data']);
 			$new['data'] = histlib_strip_irrelevant($new['data']);
 		}
-		# If the user doesn't have permission to view
-		# source, strip out all tiki-source-based comments
-		global $tiki_p_wiki_view_source;
-		if ($tiki_p_wiki_view_source != 'y') {
-			$old["data"] = preg_replace(';~tc~(.*?)~/tc~;s', '', $old["data"]);
-			$new["data"] = preg_replace(';~tc~(.*?)~/tc~;s', '', $new["data"]);
-		}
+
+                # If the user doesn't have permission to view 
+                # source, strip out all tiki-source-based comments
+                global $tiki_p_wiki_view_source;
+                if ($tiki_p_wiki_view_source != 'y' && $_REQUEST["diff_style"] != "htmldiff") {
+                  $old["data"] = preg_replace(';~tc~(.*?)~/tc~;s', '', $old["data"]);
+                  $new["data"] = preg_replace(';~tc~(.*?)~/tc~;s', '', $new["data"]);
+                }
 
 		$html = diff2($old["data"], $new["data"], $_REQUEST["diff_style"]);
 		$smarty->assign_by_ref('diffdata', $html);

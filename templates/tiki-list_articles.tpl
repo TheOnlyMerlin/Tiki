@@ -22,9 +22,9 @@
 {/if}
 
 <form name="checkform" method="get" action="{$smarty.server.PHP_SELF}">
-	<input type="hidden" name="maxRecords" value="{$maxRecords|escape}">
+	<input type="hidden" name="maxRecords" value="{$maxRecords|escape}" />
 	{assign var=numbercol value=1}
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th class="auto">
 				{if $listpages}
@@ -101,7 +101,7 @@
 		{section name=changes loop=$listpages}
 			<tr class="{cycle}">
 				<td class="checkbox">
-					<input type="checkbox" name="checked[]" value="{$listpages[changes].articleId|escape}" {if $listpages[changes].checked eq 'y'}checked="checked" {/if}>
+					<input type="checkbox" name="checked[]" value="{$listpages[changes].articleId|escape}" {if $listpages[changes].checked eq 'y'}checked="checked" {/if}/>
 				</td>
 				{if $prefs.art_list_title eq 'y'}
 					<td class="text">
@@ -164,7 +164,7 @@
 					{/if}
 					{if $tiki_p_remove_article eq 'y'}
 						&nbsp;
-						{self_link remove=$listpages[changes].articleId}{icon _id='cross' alt="{tr}Remove{/tr}"}{/self_link}
+						<a class="link" href="tiki-list_articles.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$listpages[changes].articleId}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 					{/if}
 				</td>
 			</tr>
@@ -183,7 +183,7 @@
 								<option value="remove_articles" >{tr}Remove{/tr}</option>
 							</select>
 						</label>
-						<input type="submit" class="btn btn-default" value="{tr}OK{/tr}">
+						<input type="submit" value="{tr}OK{/tr}" />
 					</p>
 				{/if}
 			</td>

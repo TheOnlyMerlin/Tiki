@@ -31,12 +31,12 @@
 
 <form action="tiki-admin.php?page=wiki" method="post">
 	<div class="heading input_submit_container" style="text-align: right">
-		<input type="submit" class="btn btn-default" name="wikisetprefs" value="{tr}Change preferences{/tr}" />
+		<input type="submit" name="wikisetprefs" value="{tr}Change preferences{/tr}" />
 	</div>
 
 	{tabset name="admin_wiki"}
 		{tab name="{tr}General Preferences{/tr}"}
-
+		
 			<fieldset class="admin">
 				<legend>{tr}Activate the feature{/tr}</legend>
 				{preference name=feature_wiki visible="always"}
@@ -52,11 +52,11 @@
 				{preference name=wikiplugin_attach}
 				{preference name=wikiplugin_backlinks}
 				{preference name=wikiplugin_listpages}
-				{preference name=wikiplugin_showpages}
+				{preference name=wikiplugin_showpages}				
 				{preference name=wikiplugin_titlesearch}
-				{preference name=wikiplugin_wantedpages}
+				{preference name=wikiplugin_wantedpages}				
 			</fieldset>
-
+		
 			{preference name=wikiHomePage}
 
 			<fieldset>
@@ -78,17 +78,6 @@
 				{preference name=wiki_topline_position}
 				{preference name=page_bar_position}
 				{preference name=wiki_encourage_contribution}
-
-				{preference name=wiki_auto_toc}
-				<div class="adminoptionbox clearfix" id="wiki_auto_toc_childcontainer">
-					<fieldset>
-						<legend>{tr}Auto TOC options{/tr}</legend>
-							{preference name=wiki_inline_auto_toc}
-							{preference name=wiki_inline_toc_pos}
-					</fieldset>
-				</div>
-
-				{preference name=wiki_page_hide_title}
 			</fieldset>
 
 			<fieldset>
@@ -98,7 +87,7 @@
 				{preference name=wiki_badchar_prevent}
 				{preference name=wiki_pagename_strip}
 			</fieldset>
-
+			
 			<fieldset>
 				<legend>{tr}Edit{/tr}</legend>
 
@@ -108,7 +97,7 @@
 				{preference name=feature_wiki_undo}
 				{preference name=feature_wiki_footnotes}
 				{preference name=feature_wiki_allowhtml}
-				{preference name=feature_wysiwyg}
+				{preference name=feature_wysiwyg}				
 				{preference name=wiki_timeout_warning}
 
 				{preference name=wiki_edit_section}
@@ -118,6 +107,13 @@
 
 				{preference name=wiki_edit_icons_toggle}
 				{preference name=wiki_edit_minor}
+				<div class="adminoptionboxchild" id="wiki_edit_minor_childcontainer">
+					{remarksbox type=note title="{tr}Note{/tr}"}{tr}Minor edits do not flag new content for translation and do not send watch notifications (unless "Watch minor edits" is enabled).{/tr}
+						<br />
+						{tr}Only user groups granted the tiki_p_minor permission (and admins) will be able to save minor edits when this is enabled.{/tr}
+						<a class="link" href="tiki-objectpermissions.php?permType=wiki&amp;textFilter=minor&amp;show_disabled_features=y" title="{tr}Permission{/tr}">{icon _id="key" alt="{tr}Permission{/tr}"}</a>
+					{/remarksbox}
+				</div>
 				{preference name=feature_wiki_mandatory_category}
 				{preference name=feature_actionlog_bytes}
 				{preference name=wiki_mandatory_edit_summary}
@@ -126,12 +122,11 @@
 		{/tab}
 
 		{tab name="{tr}Features{/tr}"}
-			<input type="hidden" name="wikifeatures" />
-
+			<input type="hidden" name="wikifeatures" />    	
 			{preference name=feature_sandbox}
-			{preference name=feature_references}
-			{preference name=feature_wiki_comments}
 
+			{preference name=feature_wiki_comments}
+			
 			{preference name=feature_wiki_attachments}
 			<div class="adminoptionboxchild" id="feature_wiki_attachments_childcontainer">
 					{preference name=w_displayed_default}
@@ -146,18 +141,13 @@
 					{/if}
 			</div>
 
-			{preference name=wiki_pagination}
-			<div class="adminoptionboxchild" id="wiki_pagination_childcontainer">
-				{preference name=wiki_page_separator}
-			</div>
-
 			{preference name=feature_dump}
 			<div class="adminoptionboxchild" id="feature_dump_childcontainer">
 				<div class="adminoptionbox clearfix">
 					<div class="adminoptionlabel">
 						<label for="tagname">{tr}Tag for current wiki:{/tr}</label>
 						<input maxlength="20" size="20" type="text" name="tagname" id="tagname" />
-						<input type="submit" class="btn btn-default" name="createtag" value="{tr}Create{/tr}" />
+						<input type="submit" name="createtag" value="{tr}Create{/tr}" />
 					</div>
 				</div>
 				<div class="adminoptionbox clearfix">
@@ -170,12 +160,12 @@
 								<option value=''>{tr}None{/tr}</option>
 							{/section}
 						</select>
-						<input type="submit" class="btn btn-default" name="restoretag" value="{tr}Restore{/tr}"{if $tags|@count eq '0'} disabled="disabled"{/if} />
+						<input type="submit" name="restoretag" value="{tr}Restore{/tr}"{if $tags|@count eq '0'} disabled="disabled"{/if} />
 					</div>
 				</div>
 				<div class="adminoptionbox clearfix">
 					<div class="adminoptionlabel">
-						<label for="removetag">{tr}Remove a tag:{/tr}</label>
+						<label for="removetag">{tr}Remove a tag:{/tr}</label> 
 						<select name="tagname" id="removetag"{if $tags|@count eq '0'} disabled="disabled"{/if}>
 							{section name=sel loop=$tags}
 								<option value="{$tags[sel]|escape}">{$tags[sel]}</option>
@@ -183,7 +173,7 @@
 								<option value=''>{tr}None{/tr}</option>
 							{/section}
 						</select>
-						<input type="submit" class="btn btn-default" name="removetag" value="{tr}Remove{/tr}"{if $tags|@count eq '0'} disabled="disabled"{/if} />
+						<input type="submit" name="removetag" value="{tr}Remove{/tr}"{if $tags|@count eq '0'} disabled="disabled"{/if} />
 					</div>
 				</div>
 
@@ -201,7 +191,7 @@
 			{preference name=feature_filegals_manager}
 			{button href="tiki-admin.php?page=wiki&amp;rmvunusedpic=1" _text="{tr}Remove unused pictures{/tr}"}
 			{button href="tiki-admin.php?page=wiki&amp;moveWikiUp=1" _text="{tr}Move images from wiki_up to the home file gallery{/tr}"}
-			<br><em>{tr}If you use these buttons please make sure to have a backup of the database and the directory wiki_up{/tr}</em>
+			<br /><em>{tr}If you use these buttons please make sure to have a backup of the database and the directory wiki_up{/tr}</em>
 		</div>
 
 		{preference name=feature_wiki_export}
@@ -209,7 +199,7 @@
 			<a class="link" href="tiki-objectpermissions.php?permType=wiki&amp;textFilter=export&amp;show_disabled_features=y" title="{tr}Permission{/tr}">{icon _id="key" alt="{tr}Permission{/tr}"}</a>
 			{button href="tiki-export_wiki_pages.php" _text="{tr}Export Wiki Pages{/tr}"}
 		</div>
-
+    
 		{preference name=feature_wikiwords}
 		<div class="adminoptionboxchild" id="feature_wikiwords_childcontainer">
 			{preference name=feature_wikiwords_usedash}
@@ -272,11 +262,9 @@
 			{preference name=feature_create_webhelp}
 			{preference name=feature_wiki_structure_drilldownmenu}
 			{preference name=page_n_times_in_a_structure}
-			{preference name=feature_listorphanStructure}
 			{preference name=feature_wiki_no_inherit_perms_structure}
 			{preference name=wiki_structure_bar_position}
 			{preference name=wikiplugin_toc}
-			{preference name=namespace_indicator_in_structure}
 		</div>
 
 		{preference name=feature_wiki_import_html}
@@ -302,7 +290,7 @@
 			{preference name=feature_wiki_multiprint}
 		</div>
 		{preference name=feature_print_indexed}
-
+		
 		{preference name=feature_wiki_mindmap}
 		{preference name=feature_morcego}
 
@@ -317,27 +305,6 @@
 		</div>
 		{preference name=wiki_keywords}
 		{preference name=geo_locate_wiki}
-
-		{preference name=namespace_enabled}
-		<div class="adminoptionboxchild" id="namespace_enabled_childcontainer">
-			{tr}The namespace separator should not{/tr}
-			<ul>
-			<li>{tr}contain any of the characters not allowed in wiki page names, typically{/tr} /?#[]@$&+;=&lt;&gt;</li>
-			<li>{tr}conflict with wiki syntax tagging{/tr}</li>
-			</ul>
-			{preference name=namespace_separator}
-			{preference name=namespace_indicator_in_structure}
-			<fieldset>
-				<legend>{tr}Settings that may be affected by the namespace separator{/tr}{help url="Watch"}</legend>
-
-				{tr}To use :: as a separator, you should also use ::: as the wiki center tag syntax{/tr}.<br/>
-				{tr}Note: a conversion of :: to ::: for existing pages must be done manually{/tr}
-				{preference name=feature_use_three_colon_centertag}
-
-				{tr}If the page name display stripper conflicts with the namespace separator, the namespace is used and the page name display is not stripped.{/tr}
-				{preference name=wiki_pagename_strip}
-			</fieldset>
-		</div>
 	{/tab}
 
 	{tab name="{tr}Flagged Revision{/tr}"}
@@ -352,7 +319,7 @@
 	{/tab}
 
 	{tab name="{tr}Page Listings{/tr}"}
-		<input type="hidden" name="wikilistprefs" />
+		<input type="hidden" name="wikilistprefs" />	  
 		{preference name=feature_listPages}
 		{preference name=feature_lastChanges}
 		{preference name=feature_listorphanPages}
@@ -370,7 +337,7 @@
 					{preference name=wiki_list_sortdirection}
 				</div>
 				{preference name=wiki_list_id}
-
+				
 				{preference name=wiki_list_name}
 				<div class="adminoptionboxchild" id="wiki_list_name_childcontainer">
 					{preference name=wiki_list_name_len}
@@ -399,10 +366,10 @@
 				{preference name=wiki_list_categories}
 				{preference name=wiki_list_categories_path}
 				{preference name=wiki_list_rating}
-			</fieldset>
+			</fieldset>  
 		</div>
 	{/tab}
-
+		
 	{if $prefs.feature_morcego eq 'y'}
 		{tab name="{tr}Wiki 3D Browser Configuration{/tr}"}
 			<fieldset>
@@ -438,14 +405,13 @@
 			</fieldset>
 		{/tab}
 	{/if}
-
+	
 	{tab name="{tr}Tools{/tr}"}
-		<a href="tiki-search_replace.php">{tr}Mass search and replace{/tr}</a><br>
-		<a href="tiki-report_direct_object_perms.php">{tr}Report wiki pages with direct object permissions{/tr}</a><br>
+		<a href="tiki-search_replace.php">{tr}Mass search and replace{/tr}</a>
 	{/tab}
 {/tabset}
 
 <div class="heading input_submit_container" style="text-align: center">
-	<input type="submit" class="btn btn-default" name="wikisetprefs" value="{tr}Change preferences{/tr}" />
+	<input type="submit" name="wikisetprefs" value="{tr}Change preferences{/tr}" />
 </div>
 </form>

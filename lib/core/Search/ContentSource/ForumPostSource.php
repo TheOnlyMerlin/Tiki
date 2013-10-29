@@ -1,24 +1,17 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-class Search_ContentSource_ForumPostSource implements Search_ContentSource_Interface, Tiki_Profile_Writer_ReferenceProvider
+class Search_ContentSource_ForumPostSource implements Search_ContentSource_Interface
 {
 	private $db;
 
 	function __construct()
 	{
 		$this->db = TikiDb::get();
-	}
-
-	function getReferenceMap()
-	{
-		return array(
-			'forum_id' => 'forum',
-		);
 	}
 
 	function getDocuments()
@@ -37,7 +30,6 @@ class Search_ContentSource_ForumPostSource implements Search_ContentSource_Inter
 		global $prefs;
 
 		$commentslib = TikiLib::lib('comments');
-		$commentslib->extras_enabled(false);
 		$comment = $commentslib->get_comment($objectId);
 
 		$lastModification = $comment['commentDate'];
@@ -56,15 +48,12 @@ class Search_ContentSource_ForumPostSource implements Search_ContentSource_Inter
 			}
 		}
 
-		$commentslib->extras_enabled(true);
-
 		$data = array(
 			'title' => $typeFactory->sortable($comment['title']),
 			'language' => $typeFactory->identifier($forum_language),
 			'modification_date' => $typeFactory->timestamp($lastModification),
 			'contributors' => $typeFactory->multivalue(array_unique($author)),
 
-			'forum_id' => $typeFactory->identifier($comment['object']),
 			'post_content' => $typeFactory->wikitext($content),
 			'parent_thread_id' => $typeFactory->identifier($comment['parentId']),
 
@@ -85,7 +74,6 @@ class Search_ContentSource_ForumPostSource implements Search_ContentSource_Inter
 			'contributors',
 
 			'post_content',
-			'forum_id',
 			'parent_thread_id',
 
 			'parent_view_permission',

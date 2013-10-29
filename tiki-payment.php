@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -37,7 +34,6 @@ $inputConfiguration = array(
 				'update' => 'word',
 				'daconfirm' => 'word',				// ticketlib
 				'ticket' => 'word',
-				'returnurl' => 'url',
 			),
 			'staticKeyFiltersForArrays' => array('cart' => 'digits',),	// params for cart module
 			'catchAllUnset' => null,
@@ -78,7 +74,7 @@ if ( isset($ipn_data) ) {
 	$info = $paymentlib->get_payment($invoice);
 
 	// Important to check with paypal first
-	if (isset($info) && $paypallib->is_valid($ipn_data, $info)) {
+	if ( $paypallib->is_valid($ipn_data, $info) && $info ) {
 		$amount = $paypallib->get_amount($ipn_data);
 		$paymentlib->enter_payment($invoice, $amount, 'paypal', $ipn_data);
 	} else {
@@ -94,18 +90,14 @@ if ( isset( $_POST['manual_amount'], $_POST['invoice'] ) && preg_match('/^\d+(\.
 
 	if ( $objectperms->payment_manual ) {
 		$paymentlib->enter_payment(
-			$_POST['invoice'],
-			$_POST['manual_amount'],
-			'user',
-			array(
-				'user' => $user,
-				'note' => $_POST['note'],
-			)
+						$_POST['invoice'],
+						$_POST['manual_amount'],
+						'user',
+						array(
+							'user' => $user,
+							'note' => $_POST['note'],
+						)
 		);
-		if (isset($_POST['returnurl'])) {
-			header('Location: ' . $_POST['returnurl']);
-			exit;
-		}
 
 		$access->redirect('tiki-payment.php?invoice=' . $_POST['invoice'], tra('Manual payment entered.'));
 	} else {
@@ -144,9 +136,6 @@ if ( isset($_REQUEST['cancel']) ) {
 }
 
 // Obtain information
-/**
- * @param $type
- */
 function fetch_payment_list($type)
 {
 	global $paymentlib, $globalperms, $user, $prefs, $smarty;

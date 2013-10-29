@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -81,12 +81,12 @@ function prefs_art_list()
 			'default' => 'n',
 		),
 		'art_list_author' => array(
-			'name' => tra('Author (owner)'),
+			'name' => tra('User'),
 			'type' => 'flag',
 			'default' => 'y',
 		),
 		'art_list_authorName' => array(
-			'name' => tra('Author Name (as displayed)'),
+			'name' => tra('Author'),
 			'type' => 'flag',
 			'default' => 'n',
 		),

@@ -11,8 +11,8 @@
 
 <h2>{if $questionId gt 0}{tr}Edit Survey Question{/tr}{else}{tr}Add a New Question to this survey{/tr}{/if}</h2>
 <form action="tiki-admin_survey_questions.php" method="post">
-	<input type="hidden" name="surveyId" value="{$surveyId|escape}">
-	<input type="hidden" name="questionId" value="{$questionId|escape}">
+	<input type="hidden" name="surveyId" value="{$surveyId|escape}" />
+	<input type="hidden" name="questionId" value="{$questionId|escape}" />
 	<table class="formcolor">
 		<tr><td>{tr}Question:{/tr}</td><td><textarea name="question" rows="5" cols="40">{$info.question|escape}</textarea></td></tr>
 		<tr><td>{tr}Position:{/tr}</td><td><select name="position">{html_options values=$positions output=$positions selected=$info.position}</select></td></tr>
@@ -31,33 +31,32 @@
 				</select>
 			</td>
 		</tr>
-		<tr><td>{tr}Answer is mandatory:{/tr}</td><td><input type="checkbox" name="mandatory" {if $info.mandatory eq 'y'}checked="checked"{/if}></td></tr>
+		<tr><td>{tr}Answer is mandatory:{/tr}</td><td><input type="checkbox" name="mandatory" {if $info.mandatory eq 'y'}checked="checked"{/if}/></td></tr>
 		<tr><td>{tr}Number of required answers (for multiple choices):{/tr}</td>
 			<td>
-				{tr}Min:{/tr}<input type="text" name="min_answers" size="4" value="{$info.min_answers}">
-				{tr}Max:{/tr}<input type="text" name="max_answers" size="4" value="{$info.max_answers}">
+				{tr}Min:{/tr}<input type="text" name="min_answers" size="4" value="{$info.min_answers}" />
+				{tr}Max:{/tr}<input type="text" name="max_answers" size="4" value="{$info.max_answers}" />
 			</td>
 		</tr>
 		<tr><td>&nbsp;</td>
 			<td>
 				{remarksbox type="tip" title="{tr}Tip{/tr}"}
 					{tr}For a multiple answer question put the answers into the following field, separated by a comma. Example: one,two,many,lots{/tr}.
-					<br>{tr}For a rate, you can give the maximum value.{/tr}
-					<br>{tr}For the 'multiple choices of thumbnail from a file gallery' type, options are: Gallery ID. Example: 4{/tr}
-					<br>{tr}For the 'wiki textarea' type, options are: rows,columns. Example: 10,60{/tr}
-					<br>{tr}For the 'short text' type, options are: columns. Example: 60{/tr}
+					<br />{tr}For a rate, you can give the maximum value.{/tr}
+					<br />{tr}For the 'multiple choices of thumbnail from a file gallery' type, options are: Gallery ID. Example: 4{/tr}
+					<br />{tr}For the 'wiki textarea' type, options are: rows,columns. Example: 10,60{/tr}
 				{/remarksbox}
 			</td>
 		</tr>
-		<tr><td>{tr}Options (if apply):{/tr}</td><td><input type="text" name="options" value="{$info.options|escape}" size="80"></td></tr>
-		<tr><td >&nbsp;</td><td><input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}"></td></tr>
+		<tr><td>{tr}Options (if apply):{/tr}</td><td><input type="text" name="options" value="{$info.options|escape}" size="80" /></td></tr>
+		<tr><td >&nbsp;</td><td><input type="submit" name="save" value="{tr}Save{/tr}" /></td></tr>
 	</table>
 </form>
 <h2>{tr}Questions{/tr}</h2>
 
 {include file='find.tpl'}
 
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th><a href="tiki-admin_survey_questions.php?surveyId={$surveyId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'questionId_desc'}questionId_asc{else}questionId_desc{/if}">{tr}ID{/tr}</a></th>
 		<th><a href="tiki-admin_survey_questions.php?surveyId={$surveyId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'position_desc'}position_asc{else}position_desc{/if}">{tr}Position{/tr}</a></th>

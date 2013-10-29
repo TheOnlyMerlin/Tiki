@@ -5,7 +5,7 @@
 
 <form method="post" action="tiki-admin.php?page=forums">
 	<div class="heading input_submit_container" style="text-align: right">
-		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
 
 	{tabset name="admin_forums"}
@@ -74,14 +74,9 @@
 			<div class="adminoptionboxchild" id="forum_list_desc_childcontainer">
 				{preference name=forum_list_description_len}
 			</div>
-
-			{preference name=forum_category_selector_in_list}
-			<div class="adminoptionboxchild" id="forum_category_selector_in_list_childcontainer">
-				{preference name=forum_available_categories}
-			</div>
 		{/tab}
 	{/tabset}
 	<div class="heading input_submit_container" style="text-align: center">
-		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
 </form>

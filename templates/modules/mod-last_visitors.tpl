@@ -8,7 +8,7 @@
 					<table class="admin">
 						<tr class="odd">
 							<td width="50">
-								<img src="img/icons/gradient.gif" width="48" height="48" alt="{tr}No avatar{/tr}">
+								<img src="img/icons/gradient.gif" width="48" height="48" alt="{tr}No avatar{/tr}" />
 							</td>
 							<td>
 				{/if}
@@ -24,7 +24,7 @@
 			</li>
 		{/if}
 		{cycle values="even,odd" print=false}
-		{capture assign='noAvatar'}<img src="img/icons/gradient.gif" width="48" height="48" alt="{tr}No avatar{/tr}">{/capture}
+		{capture assign='noAvatar'}<img src="img/icons/gradient.gif" width="48" height="48" alt="{tr}No avatar{/tr}" />{/capture}
 		{foreach from=$modLastVisitors key=key item=item}
 			<li>
 				{if $showavatars eq 'y'}
@@ -37,7 +37,7 @@
 				{/if}
 				<a class="linkmodule" href="tiki-user_information.php?view_user={$item.user|escape:"url"}">
 					{if $maxlen > 0}{* 0 is default value for maxlen eq to 'no truncate' *}
-						{$item.user|userlink:'userlink':'not_set':'':$maxlen}
+						{$item.user|userlink:'link':'not_set':'':$maxlen}
 					{else}
 						{$item.user|userlink}
 					{/if}

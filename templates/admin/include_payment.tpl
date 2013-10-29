@@ -2,7 +2,7 @@
 <form action="tiki-admin.php?page=payment" method="post">
 	<div class="navbar">
 		{button href="tiki-payment.php" _text="{tr}Payments{/tr}"}
-		<input type="submit" class="btn btn-default" name="paymentprefs" value="{tr}Change settings{/tr}" style="float:right;" />
+		<input type="submit" name="paymentprefs" value="{tr}Change settings{/tr}" style="float:right;" />
 	</div>
 	{if $prefs.payment_feature neq "y"}
 		<fieldset class="admin">
@@ -13,9 +13,9 @@
 	{tabset}
 		{tab name="{tr}Payment{/tr}"}
 			{remarksbox title="{tr}Choose payment system{/tr}"}
-				{tr}You can use only one payment method: PayPal or Cclite or Tiki User Credits{/tr}<br>
-				{tr}PayPal is working at the moment. See PayPal.com{/tr}<br>
-				{tr}Cclite: Community currency accounting for local exchange trading systems (LETS). See {/tr}<a href="http://sourceforge.net/projects/cclite/">{tr}sourceforge.net{/tr}</a><br>
+				{tr}You can use only one payment method: PayPal or Cclite or Tiki User Credits{/tr}<br />
+				{tr}PayPal is working at the moment. See PayPal.com{/tr}<br />
+				{tr}Cclite: Community currency accounting for local exchange trading systems (LETS). See {/tr}<a href="http://sourceforge.net/projects/cclite/">{tr}sourceforge.net{/tr}</a><br />
 				{tr}Tiki User Credits: Requires this other feature to be configured{/tr}
 			{/remarksbox}
 
@@ -29,7 +29,7 @@
 					{preference name=payment_user_only_his_own_past}
 				</fieldset>
 				<div id="payment_systems">
-					<h2 style="padding-left:25px">{tr}PayPal{/tr}</h2>
+					<h2>{tr}PayPal{/tr}</h2>
 					<div class="admin payment">
 						{preference name=payment_paypal_business}
 
@@ -39,7 +39,7 @@
 						</div>
 						{preference name=payment_invoice_prefix}
 					</div>
-					<h2 style="padding-left:25px">{tr}Cclite{/tr}</h2>
+					<h2>{tr}Cclite{/tr}</h2>
 					<div class="admin payment">
 						{remarksbox title="{tr}Experimental{/tr}" type="warning" icon="bricks"}
 							{tr}Cclite is for creating and managing alternative or complementary trading currencies and groups{/tr}
@@ -56,7 +56,7 @@
 							{preference name=payment_cclite_notify}
 						</div>
 					</div>
-					<h2 style="padding-left:25px">{tr}Tiki User Credits{/tr}</h2>
+					<h2>{tr}Tiki User Credits{/tr}</h2>
 					<div class="admin payment">
 						{preference name=payment_tikicredits_types}
 						{preference name=payment_tikicredits_xcrates}
@@ -169,6 +169,6 @@
 		{/tab}
 	{/tabset}
 	<div class="heading input_submit_container" style="text-align: center">
-		<input type="submit" class="btn btn-default" name="paymentprefs" value="{tr}Change settings{/tr}" />
+		<input type="submit" name="paymentprefs" value="{tr}Change settings{/tr}" />
 	</div>
 </form>

@@ -5,7 +5,7 @@
 <h2>{tr}Support requests{/tr}</h2>
 
 <form method="get" action="tiki-live_support_transcripts.php">
-<input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
+<input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
 <table>
 <tr>
 	<td>{tr}Find{/tr}</td>
@@ -15,7 +15,7 @@
 </tr>
 
 <tr>
-	<td><input type="text" name="find" value="{$find|escape}"></td>
+	<td><input type="text" name="find" value="{$find|escape}" /></td>
 	<td>
 		<select name="filter_user">
 			<option value="" {if $filter_user eq ''}selected="selected"{/if}>{tr}All{/tr}</option>
@@ -32,11 +32,11 @@
 			{/section}
 		</select>
 	</td>
-	<td><input type="submit" class="btn btn-default" value="{tr}Find{/tr}" name="filter"></td>
+	<td><input type="submit" value="{tr}Find{/tr}" name="filter" /></td>
 </tr>
 </table>
 </form>
-<table class="table normal">
+<table class="normal">
 <tr>
 <th><a href="tiki-live_support_transcripts.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'chat_started_desc'}chat_started_asc{else}chat_started_desc{/if}">{tr}started{/tr}</a></th>
 <th><a href="tiki-live_support_transcripts.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'tiki_user_desc'}tiki_user_asc{else}tiki_user_desc{/if}">{tr}Username{/tr}</a></th>
@@ -62,7 +62,7 @@
 
 {if $smarty.request.view}
 <h3>{tr}Transcript{/tr}</h3>
-<table class="table normal">
+<table class="normal">
 {section name=ix loop=$events}
 <tr>
 	<td  class="odd">

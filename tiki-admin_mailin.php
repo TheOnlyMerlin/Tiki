@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,12 +11,6 @@ include_once ('lib/mailin/mailinlib.php');
 $access->check_feature('feature_mailin');
 $access->check_permission(array('tiki_p_admin_mailin'));
 
-/**
- * @param $pop
- * @param $user
- * @param $pass
- * @return bool
- */
 function account_ok($pop, $user, $pass)
 {
 	include_once ('lib/webmail/net_pop3.php');
@@ -40,37 +31,28 @@ if (!isset($_REQUEST['accountId'])) $_REQUEST['accountId'] = 0;
 $smarty->assign('accountId', $_REQUEST['accountId']);
 if (isset($_REQUEST['new_acc'])) {
 	check_ticket('admin-mailin');
-	if (!account_ok($_REQUEST['pop'], $_REQUEST['username'], $_REQUEST['pass'])) {
-		$tikifeedback[] = array(
-			'num' => 1,
-			'mes' => sprintf(tra('Mail-in account %s incorrect'), $_REQUEST['account'])
-		);
-	} else {
+	if (!account_ok($_REQUEST['pop'], $_REQUEST['username'], $_REQUEST['pass'])) $tikifeedback[] = array(
+		'num' => 1,
+		'mes' => sprintf(tra('Mail-in account %s incorrect'), $_REQUEST['account'])
+	);
+	else {
 		$mailinlib->replace_mailin_account(
-			$_REQUEST['accountId'],
-			$_REQUEST['account'],
-			$_REQUEST['pop'],
-			$_REQUEST['port'],
-			$_REQUEST['username'],
-			$_REQUEST['pass'],
-			$_REQUEST['smtp'],
-			$_REQUEST['useAuth'],
-			$_REQUEST['smtpPort'],
-			$_REQUEST['type'],
-			$_REQUEST['active'],
-			$_REQUEST['anonymous'],
-			$_REQUEST['admin'],
-			$_REQUEST['attachments'],
-			$_REQUEST['routing'],
-			$_REQUEST['article_topicId'],
-			$_REQUEST['article_type'],
-			$_REQUEST['discard_after'],
-			$_REQUEST['show_inlineImages'],
-			$_REQUEST['save_html'],
-			$_REQUEST['categoryId'],
-			$_REQUEST['namespace'],
-			$_REQUEST['respond_email'],
-			$_REQUEST['leave_email']
+						$_REQUEST['accountId'],
+						$_REQUEST['account'],
+						$_REQUEST['pop'],
+						$_REQUEST['port'],
+						$_REQUEST['username'],
+						$_REQUEST['pass'],
+						$_REQUEST['smtp'],
+						$_REQUEST['useAuth'],
+						$_REQUEST['smtpPort'],
+						$_REQUEST['type'],
+						$_REQUEST['active'],
+						$_REQUEST['anonymous'],
+						$_REQUEST['attachments'],
+						$_REQUEST['article_topicId'],
+						$_REQUEST['article_type'],
+						$_REQUEST['discard_after']
 		);
 
 		$tikifeedback[] = array(
@@ -98,20 +80,13 @@ if ($_REQUEST['accountId']) {
 	$info['useAuth'] = 'n';
 	$info['port'] = 110;
 	$info['smtpPort'] = 25;
-	$info['type'] = 'wiki-put';
+	$info['type'] = 'article-put';
 	$info['active'] = 'y';
-	$info['anonymous'] = 'n';
-	$info['admin'] = 'y';
-	$info['attachments'] = 'y';
-	$info['routing'] = 'y';
+	$info['anonymous'] = 'y';
+	$info['anonymous'] = 'y';
+	$info['attachments'] = 'n';
 	$info['article_topicId'] = '';
 	$info['article_type'] = '';
-	$info['show_inlineImages'] = 'y';
-	$info['save_html'] = 'y';
-	$info['categoryId'] = 0;
-	$info['namespace'] = '';
-	$info['respond_email'] = 'y';
-	$info['leave_email'] = 'n';
 }
 $smarty->assign('info', $info);
 

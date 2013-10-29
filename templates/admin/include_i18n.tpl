@@ -14,7 +14,7 @@
 
 <form action="tiki-admin.php?page=i18n" method="post">
 	<div class="heading input_submit_container" style="text-align: right">
-		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
 <input type="hidden" name="i18nsetup" />
 {tabset name="admin_i18n"}
@@ -46,11 +46,6 @@
 	{preference name=feature_translation_incomplete_notice}
 	{preference name=feature_multilingual_one_page}
 	{preference name=quantify_changes}
-	
-	{preference name=wiki_edit_minor}
-	
-	{preference name=feature_user_watches_translations}
-	
 	{preference name=feature_multilingual_structures}
 	{preference name=freetags_multilingual}
 	{preference name=category_i18n_sync}
@@ -68,18 +63,6 @@
 {preference name=record_untranslated}
 	
 {preference name=feature_machine_translation}
-<div class="adminoptionboxchild" id="feature_machine_translation_childcontainer">
-	{preference name=lang_machine_translate_implementation}
-	<div class="adminoptionboxchild lang_machine_translate_implementation_childcontainer google">
-		{preference name=lang_google_api_key}
-	</div>
-	<div class="adminoptionboxchild lang_machine_translate_implementation_childcontainer bing">
-		{preference name=lang_bing_api_client_id}
-		{preference name=lang_bing_api_client_secret}
-	</div>
-	{preference name=lang_machine_translate_wiki}
-</div>
-
 </div>
 {/tab}
 
@@ -102,7 +85,7 @@
 				</option>
 			{/section}
 		</select>
-		<input type="submit" class="btn btn-default" name="custom" value="{tr}Edit{/tr}" />
+		<input type="submit" name="custom" value="{tr}Edit{/tr}" />
 	{else}
 		{if !empty($custom_error)}
 			{remarksbox title="{tr}Error{/tr}" type="error"}
@@ -126,7 +109,7 @@
 		{/section}
 		</h2>
 		<input type="hidden" name="custom_lang" value="{$custom_lang|escape}" />
-		<table class="table normal">
+		<table class="normal">
 		<tr><th>{tr}English{/tr}</th><th>{tr}Translation{/tr}</th></tr>
 		{if !empty($custom_translation)}
 			{foreach from=$custom_translation key=cfrom item=cto}
@@ -137,12 +120,12 @@
 			<tr><td><input type="text" name="from[]" value="{$fr|escape}"/></td><td><input type="text" name="to[]" value="{$to.$i|escape}"/></td></tr>
 		{/foreach}
 		</table>
-		<input type="submit" class="btn btn-default" name="custom_save" value="{tr}Save{/tr}" />
+		<input type="submit" name="custom_save" value="{tr}Save{/tr}" />
 	{/if}
 </div>
 {/tab}
 {/tabset}
 	<div class="heading input_submit_container" style="text-align: center">
-		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
 </form>
