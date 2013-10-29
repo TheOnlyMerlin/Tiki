@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -381,7 +378,6 @@ $smarty->assign('bannedlist', $bannedlist);
 
 $userslist=$userlib->list_all_users();
 if (!empty($memberslist)) {
-    $cookietab = '3';
 	foreach ($memberslist as $key => $values) {
 		if ( in_array($values["login"], $userslist) ) {
 			unset($userslist[array_search($values["login"], $userslist, true)]);
@@ -417,10 +413,6 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 $smarty->assign('mid', 'tiki-admingroups.tpl');
 $smarty->display("tiki.tpl");
 
-/**
- * @param $direct_groups
- * @return array
- */
 function indirectly_inherited_groups($direct_groups)
 {
 	global $userlib;

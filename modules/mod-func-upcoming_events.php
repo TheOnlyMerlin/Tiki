@@ -11,9 +11,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_upcoming_events_info()
 {
 	return array(
@@ -23,8 +20,7 @@ function module_upcoming_events_info()
 		'params' => array(
 			'calendarId' => array(
 				'name' => tra('Calendars filter'),
-				'description' => tra('If set to a list of calendar identifiers, restricts the events to those in the identified calendars. Identifiers are separated by vertical bars ("|"), commas (",") or colons (":").') . " " . tra('Example values:') . '"13", "4,7", "31:49". ' . tra('Not set by default.'),
-				'profile_reference' => 'calendar',
+				'description' => tra('If set to a list of calendar identifiers, restricts the events to those in the identified calendars. Identifiers are separated by vertical bars ("|"), commas (",") or colons (":").') . " " . tra('Example values:') . '"13", "4,7", "31:49". ' . tra('Not set by default.')
 			),
 			'maxDays' => array(
 				'name' => tra('Maximum days in the future'),
@@ -87,10 +83,6 @@ function module_upcoming_events_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_upcoming_events($mod_reference, $module_params)
 {
 	global $calendarlib, $user, $globalperms, $smarty;
@@ -125,7 +117,7 @@ function module_upcoming_events($mod_reference, $module_params)
 		$calIds = preg_split('/[\|:\&,]/', $module_params['calendarId']);
 	}
 
-	if (!empty($viewable)) {
+	if (!empty($viewable))
 		$events = $calendarlib->upcoming_events(
 			$mod_reference['rows'],
 			array_intersect($calIds, $viewable),
@@ -134,9 +126,8 @@ function module_upcoming_events($mod_reference, $module_params)
 			isset($module_params['priorDays']) ? (int) $module_params['priorDays'] : 0,
 			isset($module_params['maxDays']) ? (int) $module_params['maxDays'] : 365
 		);
-	}
 
-	$smarty->assign('modUpcomingEvents', $events['data']);
+	$smarty->assign('modUpcomingEvents', $events);
 	$smarty->assign('maxlen', isset($module_params["maxlen"]) ? $module_params["maxlen"] : 0);
 	$smarty->assign('showDescription', isset($module_params['showDescription']) ? $module_params['showDescription'] : 'n');
 	$smarty->assign('showEnd', isset($module_params['showEnd']) ? $module_params['showEnd'] : 'n');

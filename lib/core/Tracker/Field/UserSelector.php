@@ -34,7 +34,6 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 							1 => tr('Creator'),
 							2 => tr('Modifier'),
 						),
-						'legacy_index' => 0,
 					),
 					'notify' => array(
 						'name' => tr('Email Notification'),
@@ -45,24 +44,12 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 							1 => tr('Yes'),
 							2 => tr('Only when other users modify the item'),
 						),
-						'legacy_index' => 1,
 					),
 					'groupIds' => array(
 						'name' => tr('Group IDs'),
 						'description' => tr('Limit the list of users to members of specific groups.'),
 						'separator' => '|',
 						'filter' => 'int',
-						'legacy_index' => 2,
-					),
-					'showRealname' => array(
-						'name' => tr('Show real name if possible'),
-						'description' => tr('Show real name if possible'),
-						'filter' => 'int',
-						'options' => array(
-							0 => tr('No'),
-							1 => tr('Yes'),
-						),
-						'default' => 0,
 					),
 				),
 			),
@@ -77,7 +64,7 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 
 		$data = array();
 
-		$autoassign = (int) $this->getOption('autoassign');
+		$autoassign = (int) $this->getOption(0);
 
 		if ( isset($requestData[$ins_id])) {
 			if ($autoassign == 0 || $tiki_p_admin_trackers === 'y') {
@@ -111,12 +98,12 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 		$smarty = TikiLib::lib('smarty');
 
 		$value = $this->getConfiguration('value');
-		$autoassign = (int) $this->getOption('autoassign');
+		$autoassign = (int) $this->getOption(0);
 		if ((empty($value) && $autoassign == 1) || $autoassign == 2) {	// always use $user for last mod autoassign
 			$value = $user;
 		}
 		if ($autoassign == 0 || $tiki_p_admin_trackers === 'y') {
-			$groupIds = $this->getOption('groupIds', '');
+			$groupIds = $this->getOption(2, '');
 
 			$smarty->loadPlugin('smarty_function_user_selector');
 			return smarty_function_user_selector(
@@ -132,13 +119,8 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 				$smarty
 			);
 		} else {
-			if ($this->getOption('showRealname')) {
-				$smarty->loadPlugin('smarty_modifier_username');
-				$out = smarty_modifier_username($value);
-			} else {
-				$out = $value; 
-			}	
-			return $out . '<input type="hidden" name="' . $this->getInsertId() . '" value="' . $value . '">';
+			$smarty->loadPlugin('smarty_modifier_username');
+			return smarty_modifier_username($value) . '<input type="hidden" name="' . $this->getInsertId() . '" value="' . $value . '">';
 		}
 	}
 
@@ -148,12 +130,8 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 		if (empty($value)) {
 			return '';
 		} else {
-			if ($this->getOption('showRealname')) {
-				TikiLib::lib('smarty')->loadPlugin('smarty_modifier_username');
-				return smarty_modifier_username($value);
-			} else {
-				return $value;
-			}
+			TikiLib::lib('smarty')->loadPlugin('smarty_modifier_username');
+			return smarty_modifier_username($value);
 		}
 	}
 
@@ -169,7 +147,7 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 
 	function importRemoteField(array $info, array $syncInfo)
 	{
-		$groupIds = $this->getOption('groupIds', '');
+		$groupIds = $this->getOption(2, '');
 		$groupIds = array_filter(explode('|', $groupIds));
 		$groupIds = array_map('intval', $groupIds);
 
@@ -197,9 +175,8 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 		return $info;
 	}
 
-	function getDocumentPart(Search_Type_Factory_Interface $typeFactory)
+	function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
 	{
-		$baseKey = $this->getBaseKey();
 		return array(
 			$baseKey => $typeFactory->identifier($this->getValue()),
 		);

@@ -2,7 +2,7 @@
 <form action="tiki-admin.php?page=payment" method="post">
 	<div class="navbar">
 		{button href="tiki-payment.php" _text="{tr}Payments{/tr}"}
-		<input type="submit" class="btn btn-default" name="paymentprefs" value="{tr}Change settings{/tr}" style="float:right;" />
+		<input type="submit" name="paymentprefs" value="{tr}Change settings{/tr}" style="float:right;" />
 	</div>
 	{if $prefs.payment_feature neq "y"}
 		<fieldset class="admin">
@@ -13,9 +13,9 @@
 	{tabset}
 		{tab name="{tr}Payment{/tr}"}
 			{remarksbox title="{tr}Choose payment system{/tr}"}
-				{tr}You can use only one payment method: PayPal or Cclite or Tiki User Credits{/tr}<br>
-				{tr}PayPal is working at the moment. See PayPal.com{/tr}<br>
-				{tr}Cclite: Community currency accounting for local exchange trading systems (LETS). See {/tr}<a href="http://sourceforge.net/projects/cclite/">{tr}sourceforge.net{/tr}</a><br>
+				{tr}You can use only one payment method: PayPal or Cclite or Tiki User Credits{/tr}<br />
+				{tr}PayPal is working at the moment. See PayPal.com{/tr}<br />
+				{tr}Cclite: Community currency accounting for local exchange trading systems (LETS). See {/tr}<a href="http://sourceforge.net/projects/cclite/">{tr}sourceforge.net{/tr}</a><br />
 				{tr}Tiki User Credits: Requires this other feature to be configured{/tr}
 			{/remarksbox}
 
@@ -169,6 +169,6 @@
 		{/tab}
 	{/tabset}
 	<div class="heading input_submit_container" style="text-align: center">
-		<input type="submit" class="btn btn-default" name="paymentprefs" value="{tr}Change settings{/tr}" />
+		<input type="submit" name="paymentprefs" value="{tr}Change settings{/tr}" />
 	</div>
 </form>

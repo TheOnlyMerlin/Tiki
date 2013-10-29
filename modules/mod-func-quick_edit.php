@@ -11,9 +11,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_quick_edit_info()
 {
 	return array(
@@ -45,8 +42,7 @@ function module_quick_edit_info()
 			),
 			'addcategId' => array(
 				'name' => tra('Category to preselect'),
-				'description' => tra('If set, pages created through the module have this category prechecked to be categorized in.') . ' ' . tra('Not set by default.'),
-				'profile_reference' => 'category',
+				'description' => tra('If set, pages created through the module have this category prechecked to be categorized in.') . ' ' . tra('Not set by default.')
 			),
 			'customTip' => array(
 				'name' => tra('Tip to be shown'),
@@ -64,10 +60,6 @@ function module_quick_edit_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_quick_edit($mod_reference, $module_params)
 {
 	global $smarty, $prefs;

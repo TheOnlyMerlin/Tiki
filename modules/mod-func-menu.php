@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_menu_info()
 {
 	return array(
@@ -24,13 +21,11 @@ function module_menu_info()
 				'name' => tra('Menu'),
 				'description' => tra('Identifier of a menu (from tiki-admin_menus.php)'),
 				'filter' => 'int',
-				'profile_reference' => 'menu',
 			),
 			'structureId' => array(
 				'name' => tra('Structure'),
 				'description' => tra('Identifier of a structure of wiki pages (name or number from tiki-admin_structures.php)'),
 				'filter' => 'text',
-				'profile_reference' => 'structure',
 			),
 			'type' => array(
 				'name' => tra('Type'),
@@ -76,19 +71,10 @@ function module_menu_info()
 				'description' => tra('Open the menu to show current option if possible') . ' ' . tra('(y/n default y)'),
 				'filter' => 'alpha',
 			),
-			'show_namespace' => array(
-				'name' => tra('Show Namespace'),
-				'description' => tra('Show namespace prefix in page names').' ( y / n )',	// Do not translate y/n	
-				'default' => 'y'
-				),
 		)
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_menu($mod_reference, $module_params)
 {
 	global $smarty;
@@ -104,6 +90,4 @@ function module_menu($mod_reference, $module_params)
 		}
 	}
 	$smarty->assign('module_type', empty($module_params['css']) || $module_params['css'] === 'y' ? 'cssmenu' : 'menu');
-	$show_namespace = isset($module_params['show_namespace']) ? $module_params['show_namespace'] : 'y';
-	$smarty->assign('show_namespace',$show_namespace);
 }

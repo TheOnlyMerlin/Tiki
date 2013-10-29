@@ -42,8 +42,7 @@ function wikiplugin_prettytrackerviews_info()
 				'required' => true,
 				'name' => tra('Item ID'),
 				'description' => tra('Set to ID of tracker item'),
-				'default' => '',
-				'profile_reference' => 'tracker_item',
+				'default' => ''
 			),
 		),
 	);

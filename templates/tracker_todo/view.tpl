@@ -1,5 +1,5 @@
 <h4>{tr}Events{/tr}</h4>
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>{tr}From{/tr}</th>
 		<th>{tr}To{/tr}</th>
@@ -74,18 +74,18 @@
 		</label>
 		<label>
 			{tr}Mail subject text{/tr}
-			<input type="text" name="subject">
+			<input type="text" name="subject" />
 		</label>
 		<label>
 			{tr}Mail body ressource{/tr}
-			<input type="text" name="body">
+			<input type="text" name="body" />
 			<div class="description">
 				{tr}wiki:pageName for a wiki page or tplName.tpl for a template{/tr}
 			</div>
 		</label>
 	</fieldset>
 	<div class="submit">
-		<input type="submit" class="btn btn-default" value="{tr}Create{/tr}">
+		<input type="submit" value="{tr}Create{/tr}"/>
 	</div>
 </form>
 {jq}

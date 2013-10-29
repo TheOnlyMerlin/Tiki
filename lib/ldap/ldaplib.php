@@ -11,6 +11,8 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
+require_once ('lib/adodb/adodb.inc.php');
+
 class LdapLib extends TikiLib
 {
         /**
@@ -23,11 +25,6 @@ class LdapLib extends TikiLib
          */
         function get_field($dsn, $filter, $field)
         {
-				// Force autoloading
-				if (! class_exists('ADOConnection')) {
-					return null;
-				}
-
                 // Try to connect
                 $ldaplink = ADONewConnection($dsn);
                 $return = null;

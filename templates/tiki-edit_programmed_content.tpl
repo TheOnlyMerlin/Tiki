@@ -17,12 +17,12 @@
 </h2>
 
 {if $pId}
-	{tr}You are editing block:{/tr} {$pId}<br>
+	{tr}You are editing block:{/tr} {$pId}<br />
 {/if}
 
 <form action="tiki-edit_programmed_content.php" method="post">
-	<input type="hidden" name="contentId" value="{$contentId|escape}">
-	<input type="hidden" name="pId" value="{$pId|escape}">
+	<input type="hidden" name="contentId" value="{$contentId|escape}" />
+	<input type="hidden" name="pId" value="{$pId|escape}" />
 	<table class="formcolor">
 		<tr>
 			<td>{tr}Content Type:{/tr}</td>
@@ -37,7 +37,7 @@
 		<tr class="type-cond for-page">
 			<td>{tr}Page Name:{/tr}</td>
 			<td>
-				<input type="text" name="page_name" value="{$info.page_name|escape}">
+				<input type="text" name="page_name" value="{$info.page_name|escape}"/>
 			</td>
 		</tr>
 
@@ -57,7 +57,7 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
+				<input type="submit" name="save" value="{tr}Save{/tr}" />
 			</td>
 		</tr>
 	</table>
@@ -76,7 +76,7 @@
 	{include file='find.tpl'}
 {/if}
 
-<table class="table normal">
+<table class="normal">
   <tr>
     <th>{self_link _sort_arg='sort_mode' _sort_field='pId'}{tr}Id{/tr}{/self_link}</th>
     <th>{self_link _sort_arg='sort_mode' _sort_field='publishDate'}{tr}Publishing Date{/tr}{/self_link}</th>

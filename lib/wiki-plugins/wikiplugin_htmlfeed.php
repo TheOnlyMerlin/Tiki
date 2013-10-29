@@ -8,7 +8,7 @@
 function wikiplugin_htmlfeed_info()
 {
 	return array(
-		'name' => tra('HTML Feed'),
+		'name' => tra('Textlink'),
 		'documentation' => 'PluginHtmlFeed',
 		'description' => tra('Adds an item to HTML feed'),
 		'prefs' => array( 'feature_wiki', 'wikiplugin_htmlfeed' , 'feature_htmlfeed'),

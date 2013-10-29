@@ -6,7 +6,6 @@
  */
 
 lang = {
-	"Default" : "Por omisión",
 	"Very Secure" : "Muy Segura",
 	"Secure" : "Segura",
 	"Very Strong" : "Muy Fuerte",
@@ -15,7 +14,6 @@ lang = {
 	"Weak" : "Floja",
 	"Very Weak" : "Muy Floja",
 	"Strength" : "Fuerza",
-	"Valid User Name" : "Nombre válido de persona usuaria",
 	"Passwords match" : "Las contraseñas coinciden",
 	"Valid Email" : "Correo-e válido",
 	"Close" : "Cerrar",
@@ -41,11 +39,6 @@ lang = {
 	"Please enter a page name" : "Por favor, introduce un nombre de página",
 	"Change Highlighter" : "Cambia el Resaltador",
 	"Toggle Highlighter" : "Conmuta el Resaltador",
-	"Are you sure you want to unassign this module?" : "¿Estás seguro que quieres desasignar este módulo?",
-	"Search Location" : "Busca una dirección",
-	"To My Location" : "Localiza mi posición",
-	"StreetView is not available at this specific point on the map. Zoom in as needed and make sure to click on a blue line." : "La función StreetView no está disponible en este punto específico sobre el mapa. Aproxímate con el zoom lo que necesites y asegúrate que haces clic sobre una línea azul.",
-	"Browse Files" : "Abre la lista de archivos",
+	"Are you sure you want to unassign this module?" : "¿Estás seguro que quieres desasignar este módulo?"
 	// remember the IE does not support ending comma on last item
-	 "Bogus entry" : "bogus entry"
 };

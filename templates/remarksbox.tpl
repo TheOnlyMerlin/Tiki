@@ -1,20 +1,21 @@
-{* $Id$ *}
 {strip}
-	{* Simple remarks box used by Smarty entity block.remarksbox.php & wikiplugin_remarksbox.php *}
-	<div class="clearfix rbox {$rbox_params.type} panel {$rbox_params.class}" id="{$rbox_guid}">
-		{if $rbox_params.close and $rbox_params.type ne 'errors' and $rbox_params.type ne 'confirm'}
-			{icon _id="close" class="rbox-close close" aria-hidden="true" onclick=$rbox_close_click}
-		{/if}
-		{if $rbox_params.title ne ''}
-			<div class="rbox-title panel-heading">
-				{if $rbox_params.icon ne 'none'}
-                    <img src="img/icons/{$rbox_params.icon}.png" alt="{tr}{$rbox_params.type}{/tr}" style="vertical-align:middle">
-				{/if}
-				<span>{$rbox_params.title|escape}</span>
-			</div>
-		{/if}
-		<div class="rbox-data {$rbox_params.highlight} panel-body"{if !empty($rbox_params.width)} style="width:{$rbox_params.width}"{/if}>
-			{$remarksbox_content}
-		</div>
+{* $Id$ *}
+{* Simple remarks box used by Smarty entity block.remarksbox.php & wikiplugin_remarksbox.php *}
+<div class="clearfix rbox {$remarksbox_type}">
+{if $remarksbox_close eq 'y' and $remarksbox_type ne 'errors' and $remarksbox_type ne 'confirm'}
+	{icon _id='close' class='rbox-close' onclick='$(this).parent().fadeOut();'}
+{/if}
+{if $remarksbox_title ne ''}
+	<div class="rbox-title">
+{if $remarksbox_icon ne 'none'}
+	{capture name='alt'}{tr}{$remarksbox_type}{/tr}{/capture}
+	{icon _id=$remarksbox_icon alt=$smarty.capture.alt}
+{/if}
+		<span>{$remarksbox_title|escape}</span>
 	</div>
+{/if}
+	<div class="rbox-data{$remarksbox_highlight}"{if !empty($remarksbox_width)} style="width:{$remarksbox_width}"{/if}>
+		{$remarksbox_content}
+	</div>
+</div>
 {/strip}

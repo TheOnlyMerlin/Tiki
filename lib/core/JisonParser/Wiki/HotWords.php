@@ -7,15 +7,11 @@
 
 class JisonParser_Wiki_HotWords
 {
-	public $parser;
 	static public $hotWords = array();
 
-	function __construct(&$parser)
+	function __construct()
 	{
 		global $tikilib;
-
-		$this->parser = &$parser;
-
 		if ( !empty(self::$hotWords) ) {
 			return self::$hotWords;
 		}
@@ -27,7 +23,7 @@ class JisonParser_Wiki_HotWords
 		}
 	}
 
-	function parse(&$content) //TODO: needs handled with wiki tag creator
+	function parse(&$content)
 	{
 		global $prefs;
 		$hotw_nw = ($prefs['feature_hotwords_nw'] == 'y') ? "target='_blank'" : '';

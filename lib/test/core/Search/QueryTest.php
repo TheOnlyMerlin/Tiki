@@ -21,7 +21,6 @@ class Search_QueryTest extends PHPUnit_Framework_TestCase
 		);
 
 		$this->assertEquals($expr, $index->getLastQuery());
-		$this->assertEquals(array('hello'), $query->getTerms());
 	}
 
 	function testCompositeQuery()
@@ -43,7 +42,6 @@ class Search_QueryTest extends PHPUnit_Framework_TestCase
 		);
 
 		$this->assertEquals($expr, $index->getLastQuery());
-		$this->assertEquals(array('hello', 'world'), $query->getTerms());
 	}
 
 	function testFilterType()
@@ -62,7 +60,6 @@ class Search_QueryTest extends PHPUnit_Framework_TestCase
 		);
 
 		$this->assertEquals($expr, $index->getLastQuery());
-		$this->assertEquals(array('hello'), $query->getTerms());
 	}
 
 	function testFilterCategory()
@@ -85,7 +82,6 @@ class Search_QueryTest extends PHPUnit_Framework_TestCase
 		);
 
 		$this->assertEquals($expr, $index->getLastQuery());
-		$this->assertEquals(array(), $query->getTerms());
 	}
 
 	function testDeepFilterCategory()
@@ -130,7 +126,6 @@ class Search_QueryTest extends PHPUnit_Framework_TestCase
 		);
 
 		$this->assertEquals($expr, $index->getLastQuery());
-		$this->assertEquals(array(), $query->getTerms());
 	}
 
 	function testDefaultSearchOrder()
@@ -316,62 +311,6 @@ class Search_QueryTest extends PHPUnit_Framework_TestCase
 		);
 
 		$this->assertEquals($expr, $index->getLastQuery());
-	}
-
-	function testEmptySubQueryIsMainQuery()
-	{
-		$index = new Search_Index_Memory;
-		$query = new Search_Query;
-		$query->getSubQuery(null)
-			->filterContent('hello');
-
-		$query->search($index);
-
-		$expr = new Search_Expr_And(
-			array(
-				new Search_Expr_Token('hello', 'plaintext', 'contents'),
-			)
-		);
-
-		$this->assertEquals($expr, $index->getLastQuery());
-		$this->assertEquals(array('hello'), $query->getTerms());
-	}
-
-	function testSubQueryCreatesOrStatement()
-	{
-		$index = new Search_Index_Memory;
-		$query = new Search_Query;
-		$query->getSubQuery('abc')
-			->filterContent('hello');
-		$query->getSubQuery('abc')
-			->filterCategory('1 and 2');
-		$query->filterPermissions(array('Registered'));
-
-		$query->search($index);
-
-		$expr = new Search_Expr_And(
-			array(
-				new Search_Expr_Or(
-					array(
-						new Search_Expr_Token('hello', 'plaintext', 'contents'),
-						new Search_Expr_And(
-							array(
-								new Search_Expr_Token('1', 'multivalue', 'categories'),
-								new Search_Expr_Token('2', 'multivalue', 'categories'),
-							)
-						),
-					)
-				),
-				new Search_Expr_Or(
-					array(
-						new Search_Expr_Token('Registered', 'multivalue', 'allowed_groups'),
-					)
-				),
-			)
-		);
-
-		$this->assertEquals($expr, $index->getLastQuery());
-		$this->assertEquals(array('hello'), $query->getTerms());
 	}
 }
 

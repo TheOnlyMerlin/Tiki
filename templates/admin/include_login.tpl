@@ -28,7 +28,7 @@
 <form action="tiki-admin.php?page=login" class="admin" method="post" name="LogForm">
 	<input type="hidden" name="loginprefs" />
 	<div class="heading input_submit_container" style="text-align: right">
-		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
 
 	{tabset name="admin_login"}
@@ -66,7 +66,7 @@
 					<div class="adminoptionbox">
 						<div class="adminoptionlabel">
 							<label for="registration_choices">{tr}Users can select a group to join at registration:{/tr}</label>
-							<br>
+							<br />
 							<em>{tr}By default, new users automatically join the Registered group{/tr}.</em>
 						</div>
 						<div class="adminoptionlabel">
@@ -99,7 +99,6 @@
 				{preference name=user_trackersync_groups}
 				{preference name=user_trackersync_parentgroup}
 				{preference name=user_trackersync_lang}
-				{preference name=user_tracker_auto_assign_item_field}
 				</div>
 				{preference name=groupTracker}
 				{preference name=email_due}
@@ -109,7 +108,6 @@
 				{preference name=desactive_login_autocomplete}
 				{preference name=feature_challenge}
 
-				{preference name=login_multiple_forbidden}
 				{preference name=session_protected}
 				{preference name=https_login}
 				{preference name=login_http_basic}
@@ -132,7 +130,7 @@
 					{preference name=cookie_name}
 					{preference name=cookie_domain}
 					{preference name=cookie_path}
-					<hr>
+					<hr />
 					<strong>{tr}Cookie Consent{/tr}</strong>
 					{preference name=cookie_consent_feature}
 					<div class="adminoptionboxchild" id="cookie_consent_feature_childcontainer">
@@ -402,6 +400,6 @@
 		{/tab}
 	{/tabset}
 	<div class="heading input_submit_container" style="text-align: center">
-		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
 </form>

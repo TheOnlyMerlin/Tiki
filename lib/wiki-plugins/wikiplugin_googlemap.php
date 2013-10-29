@@ -22,7 +22,6 @@ function wikiplugin_googlemap_info()
 				'description' => tra('Type of items to show on google map'),
 				'filter' => 'alpha',
 				'default' => '',
-				'tags' => array( 'experimental' ),				
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Item'), 'value' => 'item'), 

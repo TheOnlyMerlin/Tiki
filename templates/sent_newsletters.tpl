@@ -2,7 +2,7 @@
 <div align="center">
 	{include file='find.tpl'}
 	
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th>
 				<a href="{$url}?nlId={$nlId}&amp;{$cur}_offset={$offset}&amp;{$bak}_offset={$offset_bak}&amp;{$cur}_sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}&amp;{$bak}_sort_mode={$sort_mode_bak}&amp;cookietab={$tab}">{tr}Newsletter{/tr}</a>
@@ -65,7 +65,7 @@
 			&nbsp;[<a class="prevnext" href="{$url}?nlId={$nlId}&amp;{$cur}_offset={$next_offset}&amp;{$bak}_offset={$offset_bak}&amp;{$cur}_sort_mode={$sort_mode}&amp;{$bak}_sort_mode={$sort_mode_bak}&amp;cookietab={$tab}">{tr}Next{/tr}</a>]
 	{/if}
 		{if $prefs.direct_pagination eq 'y'}
-			<br>
+			<br />
 			{section loop=$cant_pages name=foo}
 				{assign var=selector_offset value=$smarty.section.foo.index|times:$prefs.maxRecords}
 					<a class="prevnext" href="{$url}?nlId={$nlId}&amp;{$cur}_offset={$selector_offset}&amp;{$bak}_offset={$offset_bak}&amp;{$cur}_sort_mode={$sort_mode}&amp;{$bak}_sort_mode={$sort_mode_bak}&amp;cookietab={$tab}">

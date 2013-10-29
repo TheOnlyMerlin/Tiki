@@ -3,7 +3,7 @@
 <form action="tiki-admin.php?page=general" class="admin" method="post">
 	<input type="hidden" name="new_prefs" />
 	<div class="heading input_submit_container" style="text-align: right;">
-		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
 	{if !empty($error_msg)}
 		{remarksbox type='warning' title="{tr}Warning{/tr}" icon='error'}
@@ -15,7 +15,7 @@
 		{tab name="{tr}General Preferences{/tr}"}
 			<fieldset>
 				<legend>{tr}Server Fitness{/tr}</legend>
-				{tr}To check if your server meets the requirements for running Tiki please visit <a href="tiki-check.php">Tiki Server Compatibility Check</a>{/tr}.
+				To check if your server meets the requirements for running Tiki please visit <a href="tiki-check.php">Tiki Server Compatibility Check</a>.
 			</fieldset>
 
 			<fieldset>
@@ -204,7 +204,7 @@
 				<div class="adminoptionbox">
 					{preference name=feature_cssmenus}
 					{preference name=menus_item_names_raw_teaser}
-					<div class="adminoptionboxchild" id="menus_item_names_raw_teaser_childcontainer">
+					<div class="adminoptionboxchild" id="menus_item_names_raw_teaser_childcontainer">	
 						{preference name=menus_item_names_raw}
 					</div>
 					{preference name=feature_userlevels}
@@ -232,14 +232,14 @@
 				<div class="adminoptionboxchild" id="useUrlIndex_childcontainer">
 					{preference name=urlIndex}
 				</div>
-
+				
 				{preference name=wikiHomePage}
 				{preference name=home_blog}
 				{preference name=home_forum}
 				{preference name=home_file_gallery}
 				{preference name=home_gallery}
 				{preference name=feature_custom_home}
-
+				
 			</fieldset>
 
 			<fieldset>
@@ -251,7 +251,7 @@
 				{preference name='permission_denied_login_box' mode='invert'}
 				<div class="adminoptionboxchild" id="permission_denied_login_box_childcontainer">
 					{tr}or{/tr}
-					<br>
+					<br />
 					{preference name=permission_denied_url}
 				</div>
 				{preference name='url_anonymous_page_not_found'}
@@ -301,7 +301,6 @@
 					<li>{tr}conflict with wiki syntax tagging{/tr}</li>
 					</ul>
 					{preference name=namespace_separator}
-					{preference name=namespace_indicator_in_structure}
 					<fieldset>
 						<legend>{tr}Settings that may be affected by the namespace separator{/tr}{help url="Watch"}</legend>
 
@@ -332,13 +331,8 @@
 			{preference name=short_time_format}
 			<em>{tr}Sample:{/tr} {$now|tiki_short_time}</em>
 
-			<fieldset>
-				<legend>{tr}Date/time selectors{/tr}</legend>
-				{preference name=display_field_order}
-				{preference name=display_start_year}
-				{preference name=display_end_year}
-				{preference name=users_prefs_display_12hr_clock}
-			</fieldset>
+			{preference name=display_field_order}
+			{preference name=users_prefs_display_12hr_clock}
 			{preference name=tiki_same_day_time_only}
 			{preference name=wikiplugin_now}
 			{preference name=wikiplugin_countdown}
@@ -359,6 +353,6 @@
 	{/tabset}
 
 	<div class="heading input_submit_container" style="text-align: center;">
-		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
 </form>

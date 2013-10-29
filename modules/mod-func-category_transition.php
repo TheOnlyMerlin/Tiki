@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_category_transition_info()
 {
 	return array(
@@ -25,18 +22,11 @@ function module_category_transition_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_category_transition($mod_reference, $module_params)
 {
-	global $smarty, $modlib;
+	global $smarty, $cat_type, $cat_objid, $modlib;
 
-	if ($object = current_object()) {
-		$cat_type = $object['type'];
-		$cat_objid = $object['object'];
-
+	if ($cat_type && $cat_objid) {
 		$smarty->assign('objType', $cat_type);
 		$smarty->assign('objId', $cat_objid);
 

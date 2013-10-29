@@ -15,6 +15,13 @@ if (isset($_REQUEST['userfeatures'])) {
 	check_ticket('admin-inc-community');
 }
 
-$smarty->assign('event_graph', TikiLib::events()->getEventGraph());
+// Users Defaults
+if (isset($_REQUEST['users_defaults'])) {
+	check_ticket('admin-inc-login');
+
+	foreach ($_prefs as $pref) {
+		simple_set_value($pref);
+	}
+}
 
 ask_ticket('admin-inc-community');

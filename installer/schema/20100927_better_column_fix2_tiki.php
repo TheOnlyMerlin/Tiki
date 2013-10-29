@@ -16,7 +16,9 @@ function upgrade_20100927_better_column_fix2_tiki($installer)
 
 	$result = $installer->getOne(
 		"SELECT COUNT(*) FROM information_schema.COLUMNS" .
-		" WHERE COLUMN_NAME='show_lastDownload' AND TABLE_NAME='tiki_file_galleries' AND TABLE_SCHEMA='$dbs_tiki'"
+		" WHERE COLUMN_NAME='show_lastDownload' AND TABLE_NAME='tiki_file_galleries' AND TABLE_SCHEMA='" .
+		$dbs_tiki .
+		"'"
 	);
 
 	if ($result == 0) {
@@ -25,7 +27,8 @@ function upgrade_20100927_better_column_fix2_tiki($installer)
 
 	$result = $installer->getOne(
 		"SELECT COUNT(*) FROM information_schema.COLUMNS" .
-		" WHERE COLUMN_NAME='tweetId' AND TABLE_NAME='tiki_shoutbox' AND TABLE_SCHEMA='$dbs_tiki'"
+		" WHERE COLUMN_NAME='tweetId' AND TABLE_NAME='tiki_shoutbox' AND TABLE_SCHEMA='" .
+		$dbs_tiki."'"
 	);
 
 	if ($result == 0) {

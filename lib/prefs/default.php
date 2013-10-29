@@ -20,14 +20,12 @@ function prefs_default_list()
 		),
 		'default_map' => array(
 			'name' => tra('default mapfile'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '50',
 			'default' => '',
 		),
 		'default_wiki_diff_style' => array(
 			'name' => tra('Default diff style'),
-            'description' => tra(''),
 			'type' => 'list',
 			'options' => array(
 				'old' => tra('Only with last version'),
@@ -47,7 +45,6 @@ function prefs_default_list()
 		),
 		'default_rows_textarea_wiki' => array(
 			'name' => tra('Wiki'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '3',
 			'shorthint' => tra('rows'),
@@ -56,7 +53,6 @@ function prefs_default_list()
 		),
 		'default_rows_textarea_comment' => array(
 			'name' => tra('Default number of rows for comment box'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '3',
 			'shorthint' => tra('rows'),
@@ -65,7 +61,6 @@ function prefs_default_list()
 		),
 		'default_rows_textarea_forum' => array(
 			'name' => tra('Forum'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '3',
 			'shorthint' => tra('rows'),
@@ -74,7 +69,6 @@ function prefs_default_list()
 		),
 		'default_rows_textarea_forumthread' => array(
 			'name' => tra('Forum reply'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '3',
 			'shorthint' => tra('rows'),

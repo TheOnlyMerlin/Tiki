@@ -133,11 +133,10 @@ function smarty_function_listfilter($params, $smarty)
 		if (!empty($parentSelector)) {
 			$content .= "
 	\$('$parentSelector').show().each( function() {
-		if (\$('{$selectors}[data-tt-parent-id=' + \$(this).data('tt-id') + ']:visible:not(\"$exclude\")').length == 0) {	// excluded things don't count
+		var cl = '.$childPrefix' + \$(this).attr('id');
+		if (\$(cl + ':visible:not(\"$exclude\")').length == 0) {	// excluded things don't count
 			\$(this).hide();
-			\$('{$exclude}[data-tt-parent-id=' + \$(this).data('tt-id') + ']').hide();							// but need hiding if the parent is 'empty'
-		} else {
-			\$(this).removeClass('collapsed').addClass('expanded');
+			\$(cl + '$exclude').hide();							// but need hiding if the parent is 'empty'
 		}
 	});
 ";

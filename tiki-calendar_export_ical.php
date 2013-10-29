@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -144,38 +141,16 @@ if ( ((is_array($calendarIds) && (count($calendarIds) > 0)) or isset($_REQUEST["
 			$ea['Summary']=$event['name'];
 			$ea['dateStart']=$event['start'];
 			$ea['dateEnd']=$event['end'];
-			$ea['Description']= preg_replace(
-				'/\n/',
-				"\\n",
-				strip_tags(
-					TikiLib::lib('parser')->parse_data(
-						$event['description'],
-						array('is_html' => $prefs['calendar_description_is_html'] === 'y')
-					)
-				)
-			);
+			$ea['Description']=preg_replace('/\n/', "\\n", $event['description']);
 			if ($event['participants']) {
 				$ea['Attendees']=$event['participants'];
 			}
 			$ea['LastModified']=$event['lastModif'];
-
-			// re: Second character of duration value must be a 'P' ??
-			// jb for tiki 11 - feb 2013
-			// spec is at: https://tools.ietf.org/html/rfc5545#section-3.3.6, so i tried:
-			//	$durationSeconds = $event['end'] - $event['start'];
-			//	$duration = $durationSeconds > 0 ? '+' : '-';
-			//	$duration .= 'P' . $durationSeconds . 'S';
-			// however, when formatted seemingly correctly you then get an error saying it's not in integer! :(
-			// so just removing duration for now as it's implied by the start and end anyway - TODO better
-			// $ea['Duration']=($duration);
-
+			// Second character of duration value must be a 'P' ??
+			$ea['Duration']=($event['end'] - $event['start']);
 			$ea['Contact']=array($event['user']);
-			if (!empty($event['organizers'])) {
-				$ea['organizer']=array($event['organizers']);
-			}
-			if (!empty($event['url'])) {
-				$ea['URL']=$event['url'];
-			}
+			$ea['organizer']=array($event['organizers']);
+			$ea['URL']=$event['url'];
 			$ea['DateStamp']=$event['created'];
 			//$ea['RequestStatus']=$event['status'];
 			$ea['UID']='tiki-'.$event['calendarId'].'-'.$event['calitemId'];

@@ -5,16 +5,12 @@
 		<div id="quickadmin" style="text-align: left; padding-left: 12px;">
 			<ul class="cssmenu_horiz clearfix" style="display: inline-block;line-height: 30px;">
 				<li>
-					{if $prefs.feature_jquery_superfish eq "y"}
-						<a>&nbsp;</a>
-					{else}
-						{icon _id=arrow_down title="{tr}Recent preferences{/tr}" href="#"}
-					{/if}
+					<a>&nbsp;</a>
 					<ul class="recent-prefs">
 						<li style="line-height: 2em;"><em>{tr}Recent:{/tr}</em></li>
 						{foreach $recent_prefs as $p}
 							<li>
-								<a href="tiki-admin.php?lm_criteria={$p|stringfix:"_":" AND "}">{$p|stringfix}</a>
+								<a href="tiki-admin.php?lm_criteria=%22{$p}%22">{$p|stringfix}</a>
 							</li>
 						{foreachelse}
 							<li>{tr}None{/tr}</li>

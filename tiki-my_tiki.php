@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -50,8 +47,6 @@ if ($prefs['feature_blogs'] == 'y') {
 		$user_blogs = $bloglib->list_user_blogs($userwatch, false);
 		$smarty->assign_by_ref('user_blogs', $user_blogs);
 		$smarty->assign('mytiki_blogs', 'y');
-		$user_blog_posts = $bloglib->list_posts(0, -1, 'created_desc', '', -1, $userwatch);
-		$smarty->assign_by_ref('user_blog_posts', $user_blog_posts['data']);
 	}
 }
 if ($prefs['feature_galleries'] == 'y') {
@@ -76,14 +71,16 @@ if ($prefs['feature_trackers'] == 'y') {
 if ($prefs['feature_forums'] == 'y') {
 	$mytiki_forum_replies = $tikilib->get_user_preference($user, 'mytiki_forum_replies', 'y');
 	if ($mytiki_forum_replies == 'y') {
-		$commentslib = TikiLib::lib('comments');
+		include_once ("lib/comments/commentslib.php");
+		$commentslib = new Comments($dbTiki);
 		$user_forum_replies = $commentslib->get_user_forum_comments($userwatch, -1, 'replies');
 		$smarty->assign_by_ref('user_forum_replies', $user_forum_replies);
 		$smarty->assign('mytiki_forum_replies', 'y');
 	}
 	$mytiki_forum_topics = $tikilib->get_user_preference($user, 'mytiki_forum_topics', 'y');
 	if ($mytiki_forum_topics == 'y') {
-		$commentslib = TikiLib::lib('comments');
+		include_once ("lib/comments/commentslib.php");
+		$commentslib = new Comments($dbTiki);
 		$user_forum_topics = $commentslib->get_user_forum_comments($userwatch, -1, 'topics');
 		$smarty->assign_by_ref('user_forum_topics', $user_forum_topics);
 		$smarty->assign('mytiki_forum_topics', 'y');

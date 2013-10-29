@@ -20,23 +20,15 @@ class Tiki_Security
 		$this->salt = $salt;
 	}
 
-	/**
-	 * Encodes and sign data as a string to be sent to the browser and back to the server,
-	 * ensuring the content has not been altered. This allows for the controllers to be stateless.
-	 */
 	public function encode(array $data)
 	{
 		$hash = $this->getHash($data);
 
-		return base64_encode(json_encode(array('data' => $data, 'hash' => $hash)));
+		return json_encode(array('data' => $data, 'hash' => $hash));
 	}
 
 	public function decode($string)
 	{
-		if (! $string = base64_decode($string)) {
-			return null;
-		}
-
 		$decoded = json_decode($string, true);
 		$hash = $this->getHash($decoded['data']);
 

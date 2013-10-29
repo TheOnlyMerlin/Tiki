@@ -23,10 +23,10 @@ function codemirrorModes($minify = true)
 		$js .= @file_get_contents("lib/codemirror_tiki/mode/tiki/tiki.js");
 		$css .= @file_get_contents("lib/codemirror_tiki/mode/tiki/tiki.css");
 
-		foreach (glob('vendor/codemirror/codemirror/mode/*', GLOB_ONLYDIR) as $dir) {
+		foreach (glob('lib/codemirror/mode/*', GLOB_ONLYDIR) as $dir) {
 			foreach (glob($dir.'/*.js') as $jsFile) {
 				$js .= "//" . $jsFile . "\n";
-				$js .= "try {\n" . @file_get_contents($jsFile) . "\n} catch (e) { };\n";
+				$js .= "try{" . @file_get_contents($jsFile) . "}catch(e){}";
 			}
 			foreach (glob($dir.'/*.css') as $cssFile) {
 				$css .= "/*" . $cssFile . "*/\n";
@@ -35,7 +35,7 @@ function codemirrorModes($minify = true)
 		}
 
 		//load themes
-		foreach (glob('vendor/codemirror/codemirror/theme/*.css') as $cssFile) {
+		foreach (glob('lib/codemirror/theme/*.css') as $cssFile) {
 			$css .= @file_get_contents($cssFile);
 		}
 
@@ -47,6 +47,6 @@ function codemirrorModes($minify = true)
 	}
 
 	TikiLib::lib("header")
-		->add_jsfile($jsModes)
+		->add_jsfile_dependancy($jsModes)
 		->add_cssfile($cssModes);
 }

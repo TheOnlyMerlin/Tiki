@@ -7,7 +7,6 @@
 
 class JisonParser_Wiki_Link
 {
-	public $parser;
 	public $page;
 	public $pageLink;
 	public $type;
@@ -20,36 +19,21 @@ class JisonParser_Wiki_Link
 	public $language;
 	public $suppressIcons;
 	public $skipPageCache = false;
-	public $wikiExternal = '';
-	public $info;
-	public $includePageAsDataAttribute = false;
 
 	static $externals = false;
 
-	function __construct($page, &$parser)
+	function __construct()
 	{
-		global $tikilib, $prefs;
-
-		$this->page = $this->description = $page;
-		$this->parser = &$parser;
+		global $prefs;
 
 		$this->namespaceSeparator = $prefs['namespace_separator'];
-
-		if ( $prefs['feature_multilingual'] == 'y' && isset( $GLOBALS['pageLang'] ) ) {
-			$this->language = $GLOBALS['pageLang'];
-		}
-
-		// Fetch all externals once
-		if ( false === self::$externals ) {
-			self::$externals = $tikilib->fetchMap('SELECT LOWER(`name`), `extwiki` FROM `tiki_extwiki`');
-		}
-
-		$this->info = $this->findWikiPage();
 	}
 
-	static function page($page, &$parser)
+	static function page($page)
 	{
-		$link = new self($page, $parser);
+		$link = new self();
+
+		$link->page = $page;
 
 		$link->setDescription($page);
 
@@ -115,158 +99,97 @@ class JisonParser_Wiki_Link
 		return $this;
 	}
 
-	public function setWikiExternal($wikiExternal)
-	{
-		$this->wikiExternal = $wikiExternal;
-
-		return $this;
-	}
-
-	public function includePageAsDataAttribute($includePageAsDataAttribute)
-	{
-		$this->includePageAsDataAttribute = $includePageAsDataAttribute;
-
-		return $this;
-	}
-
 	function externalHtml()
 	{
 		global $tikilib, $prefs, $smarty;
 
-		$params = array(
-			"class" => "wiki",
-			"href" => $this->page
-		);
+		$target = '';
+		$class = 'wiki';
 		$ext_icon = '';
+		$rel = '';
 		$cached = '';
 
 		if ($prefs['popupLinks'] == 'y') {
-			$params['target'] = '_blank"';
+			$target = '_blank"';
 		}
 
 		if (!strstr($this->page, '://')) {
-			unset($params['target']);
+			$target = '';
 		} else {
-			$params['class'] .= ' external';
+			$class .= ' external';
 			if ($prefs['feature_wiki_ext_icon'] == 'y' && !$this->suppressIcons) {
 				include_once('lib/smarty_tiki/function.icon.php');
-				$ext_icon = $this->parser->createWikiHelper(
-					"linkExternal", "span",
-					smarty_function_icon(array('_id'=>'external_link', 'alt'=>tra('(external link)'), '_class' => 'externallink', '_extension' => 'gif', '_defaultdir' => 'img/icons', 'width' => 15, 'height' => 14), $smarty)
-				);
+				$ext_icon = smarty_function_icon(array('_id'=>'external_link', 'alt'=>tra('(external link)'), '_class' => 'externallink', '_extension' => 'gif', '_defaultdir' => 'img/icons', 'width' => 15, 'height' => 14), $smarty);
 			}
-			$params['rel'] ='external';
+			$rel='external';
 			if ($prefs['feature_wiki_ext_rel_nofollow'] == 'y') {
-				$params['rel'] .= ' nofollow';
+				$rel .= ' nofollow';
 			}
 		}
 
 		if ($prefs['cachepages'] == 'y' && $tikilib->is_cached($this->page)) {
-			$cached = $this->parser->createWikiHelper(
-				"linkExternal", "a", "(" . tra("cache") . ")",
-				array(
-					"class"=>"wikicache",
-					"target"=>"_blank",
-					"href"=>"tiki-view_cache.php?url=".urlencode($this->pageLink)
-				)
-			);
+			$cached = " <a class=\"wikicache\" target=\"_blank\" href=\"tiki-view_cache.php?url=".urlencode($this->pageLink)."\">(cache)</a>";
 		}
 
-		return $this->parser->createWikiTag("linkExternal", "a", $this->description, $params) . $ext_icon . $cached;
+		return '<a class="' . $class . '"' .
+			(!empty($target) ? ' target="' . $target . '"' : '') .
+			' href="' . $this->page .
+			(!empty($rel) ? '" rel="' . $rel : '') . '">' . $this->description . '</a>' . $ext_icon . $cached;
 	}
 
 	function getHtml()
 	{
 		switch ($this->type) {
 			case 'np':
-				return $this->parser->createWikiTag("linkNp", "span", $this->page);
-				break;
-			case 'external':
-				return $this->externalHtml();
+				return $this->page;
 				break;
 			case 'alias':
 				$this->reltype = $this->type;
 				break;
 			case 'word':
 				break;
+			case 'external':
+				return $this->externalHtml();
+				break;
 		}
 
-		if ( !empty($this->wikiExternal)) {
-			return $this->wikiExternal();
+		global $tikilib, $prefs;
+		$wikilib = TikiLib::lib('wiki');
+
+		// Fetch all externals once
+		if ( false === self::$externals ) {
+			self::$externals = $tikilib->fetchMap('SELECT LOWER(`name`), `extwiki` FROM `tiki_extwiki`');
 		}
 
-		return $this->wikiInternal();
-	}
+		$link = new WikiParser_OutputLink;
+		$link->setIdentifier($this->pageLink);
+		$link->setNamespace($this->namespace, $prefs['namespace_separator']);
+		$link->setQualifier($this->reltype);
+		$link->setDescription($this->description);
+		$link->setWikiLookup(array( &$this, 'findWikiPage' ));
+		$link->setWikiLinkBuilder(
+			function ($pageName)
+			{
+				$wikilib = TikiLib::lib('wiki');
+				return $wikilib->sefurl($pageName);
+			}
+		);
+		$link->setExternals(self::$externals);
+		$link->setHandlePlurals($this->processPlural);
+		$link->setAnchor($this->anchor);
 
-	function wikiExternal()
-	{
-		if (isset($this->externals[$this->wikiExternal])) {
-			$page = str_replace('$page', rawurlencode($this->page), $this->externals[$this->wikiExternal]);
-			return $this->parser->createWikiTag(
-				"link", "a", $this->description,
-				array(
-					"class" => 'wiki ext_page ' . $this->wikiExternal,
-					"href" => $page
-				)
-			);
+		if ( $prefs['feature_multilingual'] == 'y' && isset( $GLOBALS['pageLang'] ) ) {
+			$link->setLanguage($GLOBALS['pageLang']);
 		}
-	}
 
-	function wikiInternal()
-	{
-		global $wikilink;
-
-		$tagType = ($this->type == "word" ? "linkWord" : "link");
-
-		if ($this->info) {
-			$params = array(
-				"href" => TikiLib::lib('wiki')->sefurl(trim($this->page)),
-				"title" => $this->getTitle(),
-				"class" => 'wiki wiki_page ' . $this->reltype,
-			);
-
-			if ($this->includePageAsDataAttribute == true) {
-				$params['data-page'] = trim($this->page);
-			}
-
-			if (!empty($this->reltype)) {
-				$params['data-reltype'] = $this->reltype;
-			}
-
-			return $this->parser->createWikiTag($tagType, "a", $this->description, $params);
-		} else {
-			$params = array();
-
-			if ($this->includePageAsDataAttribute == true) {
-				$params['data-page'] = trim($this->page);
-			}
-
-			if (!empty($this->reltype)) {
-				$params['data-reltype'] = $this->reltype;
-			}
-
-			return $this->parser->createWikiTag($tagType, "span", $this->description, $params).
-			$this->parser->createWikiHelper(
-				"link", "a", "?",
-				array(
-					"href" => $url = 'tiki-editpage.php?page=' . urlencode($this->page) . (empty($this->language) ? '' : '&lang=' . urlencode($this->language)),
-					"title" => tra('Create page:') . ' ' . $this->page,
-					"class" => 'wiki wikinew' . $this->reltype,
-				)
-			);
-		}
+		return $link->getHtml();
 	}
 
 	function findWikiPage()
 	{
 		global $prefs;
 		$tikilib = TikiLib::lib('tiki');
-		$page_info = $tikilib->get_page_info($this->namespace . $this->namespaceSeparator . $this->page, false);
-
-		if ( $page_info === false ) {
-			$page_info = $tikilib->get_page_info($this->page, false);
-			$this->setDescription($this->renderPageName());
-		}
+		$page_info = $tikilib->get_page_info($this->page, false);
 
 		if ( $page_info !== false ) {
 			return $page_info;
@@ -324,44 +247,5 @@ class JisonParser_Wiki_Link
 				}
 			}
 		}
-	}
-
-	function getTitle()
-	{
-		if (!empty($this->info['description'])) {
-			return $this->info['description'];
-		} elseif (! empty($this->info['prettyName'])) {
-			return $this->info['prettyName'];
-		} else {
-			return $this->info['pageName'];
-		}
-	}
-
-	function renderPageName()
-	{
-		if (! isset($this->info['namespace_parts'])) {
-			return $this->info['pageName'];
-		}
-
-		$out = '';
-
-		$last = count($this->info['namespace_parts']) - 1;
-		foreach ($this->info['namespace_parts'] as $key => $part) {
-			$class = 'namespace';
-			if ($key === 0) {
-				$class .= ' first';
-			}
-			if ($key === $last) {
-				$class .= ' last';
-			}
-			$out .= $this->parser->createWikiHelper(
-				"link", "span", $part,
-				array(
-					"class"=>$class
-				)
-			);
-		}
-
-		return $out . $this->info['baseName'];
 	}
 }

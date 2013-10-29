@@ -3,7 +3,7 @@
 {if !empty($userGroups)}
 <h3>{tr}Groups you are in{/tr}</h3>
 {cycle values="odd,even" print=false}
-<table class="table normal">
+<table class="normal">
 {foreach from=$userGroups key=gr item=type}
 	<tr class="{cycle}">
 	<td>
@@ -46,17 +46,17 @@
 {elseif $showsubscribe ne 'n' && !empty($possibleGroups) && $subscribestyle eq 'table'}
 <h3{if !empty($userGroups)} style="margin-top: 15px;"{/if}>{tr}Groups you can join{/tr}</h3>
 <form method="post">
-<table class="table normal">
+<table class="normal">
 {foreach from=$possibleGroups item=gr}
 	<tr>
 	<td class="{cycle}">
-	<input name="assign[]" type="checkbox" value="{$gr|escape}"> 
+	<input name="assign[]" type="checkbox" value="{$gr|escape}" /> 
 	{if !in_array($gr, $privategroups)}<a href="{$allGroups.$gr.groupHome|escape:url}" class="groupLink">{else}<span class="groupLink">{/if}{if isset($basegroupnames.$gr)}{$basegroupnames.$gr|escape} <i>{tr}This group requires approval to join{/tr}</i>{else}{$gr|escape}{/if}{if !in_array($gr, $privategroups)}</a>{else}</span>{/if}
 	{if $showgroupdescription eq 'y'}<div style="padding-left: 25px;">{$allGroups.$gr.groupDesc|escape}</div>{/if}
 	</td>
 	</tr>
 {/foreach}
 </table>
-<input type="submit" class="btn btn-default" value="{if !empty($subscribe)}{$subscribe|escape}{else}{tr}Subscribe to groups{/tr}{/if}">
+<input type="submit" value="{if !empty($subscribe)}{$subscribe|escape}{else}{tr}Subscribe to groups{/tr}{/if}" />
 </form>{/if}
 </div>

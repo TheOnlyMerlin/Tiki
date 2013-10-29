@@ -33,14 +33,6 @@ function prefs_tracker_list()
 			'filter' => 'int',
 			'separator' => ',',
 			'default' => array(),
-			'profile_reference' => 'tracker',
-		),
-		'tracker_change_field_type' => array(
-			'name' => tr('Change Field Types'),
-			'description' => tr('Allow field type to be changed after creation.'),
-			'type' => 'flag',
-			'default' => 'n',
-			'warning' => tra('Use with care!'),
 		),
 	);
 }

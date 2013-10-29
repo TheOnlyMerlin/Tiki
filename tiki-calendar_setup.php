@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -50,18 +47,18 @@ $focusDay = TikiLib::date_format("%d", $focusdate);
 $focusMonth = TikiLib::date_format("%m", $focusdate);
 $focusYear = TikiLib::date_format("%Y", $focusdate);
 // Validate input
-if (intval($focusDay) <= 0 || !is_numeric($focusDay) ||
-	intval($focusMonth) <= 0 || !is_numeric($focusDay) ||
+if(intval($focusDay) <= 0 || !is_numeric($focusDay) || 
+	intval($focusMonth) <= 0 || !is_numeric($focusDay) || 
 	intval($focusYear) <= 0 || !is_numeric($focusDay)) {
-	$_SESSION['CalendarFocusDate'] = $tikilib->now;
-	$smarty->assign('msg', tra('Invalid date format'));
-	$smarty->display('error.tpl');
-	die;
+		$_SESSION['CalendarFocusDate'] = $tikilib->now;
+		$smarty->assign('msg', tra('Invalid date format'));
+		$smarty->display('error.tpl');
+		die;
 }
 list($focus_day, $focus_month, $focus_year) = array(
-		$focusDay,
-		$focusMonth,
-		$focusYear
+	$focusDay,
+	$focusMonth,
+	$focusYear
 );
 
 $focus = array('day'=>$focus_day, 'month'=>$focus_month, 'year'=>$focus_year);
@@ -283,15 +280,15 @@ if ( $calendarViewMode['casedefault'] == 'month' ||
 		$lastweek += $weeksinyear;
 	}
 
-	// [BUG FIX] hollmeer 2012-11-01: correct the bug if 1 Jan of the FOCUS YEAR is Sunday,
+	// [BUG FIX] hollmeer 2012-11-01: correct the bug if 1 Jan of the FOCUS YEAR is Sunday, 
 	// and $prefs['calendar_firstDayofWeek'] is set to start from Monday.
-	// Original seems to output only two weeks in such case, e.g for 2012:
+	// Original seems to output only two weeks in such case, e.g for 2012: 
 	// weeks 52/2011 and 01/2012, as the 1 Jan 2012 is Sunday (i.e., start of focus year).
 	// For 2013 and 2014 all weeks generated as ok, as 1 Jan 2013 is Tuesday, and 1 Jan 2014 is Wednesday etc
 	// The bug is that only one week was added in such case, and actually the focus year was omitted, so add 52 weeks
 	$auxneedtoaddweeks=0;
 	if ($calendarViewMode['casedefault'] == 'year') {
-		$auxTmpWeekday = TikiLib::date_format("%w", $tikilib->make_time(0, 0, 0, 1, 1, $focus_year));
+		$auxTmpWeekday = TikiLib::date_format("%w", $tikilib->make_time(0,0,0,1,1, $focus_year));
 		if ( $firstDayofWeek == 1 and $auxTmpWeekday == 0 ) {
 			$auxneedtoaddweeks=52;
 		}
@@ -381,11 +378,7 @@ $weeks = array();
 $cell = array();
 
 if (!function_exists('correct_start_day')) {
-    /**
-     * @param $d
-     * @return int
-     */
-    function correct_start_day($d)
+	function correct_start_day($d)
 	{
 		global $prefs;
 

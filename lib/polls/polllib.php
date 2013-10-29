@@ -21,14 +21,7 @@ include_once('lib/polls/polllib_shared.php');
 class PollLib extends PollLibShared
 {
 
-    /**
-     * @param $offset
-     * @param $maxRecords
-     * @param $sort_mode
-     * @param $find
-     * @return array
-     */
-    function list_polls($offset, $maxRecords, $sort_mode, $find)
+	function list_polls($offset, $maxRecords, $sort_mode, $find)
 	{
 		if ($find) {
 			$findesc = '%' . $find . '%';
@@ -59,14 +52,7 @@ class PollLib extends PollLibShared
 		return $retval;
 	}
 
-    /**
-     * @param $offset
-     * @param $maxRecords
-     * @param $sort_mode
-     * @param $find
-     * @return array
-     */
-    function list_active_polls($offset, $maxRecords, $sort_mode, $find)
+	function list_active_polls($offset, $maxRecords, $sort_mode, $find)
 	{
 
 		if ($find) {
@@ -94,14 +80,7 @@ class PollLib extends PollLibShared
 		return $retval;
 	}
 
-    /**
-     * @param $offset
-     * @param $maxRecords
-     * @param $sort_mode
-     * @param $find
-     * @return array
-     */
-    function list_all_polls($offset, $maxRecords, $sort_mode, $find)
+	function list_all_polls($offset, $maxRecords, $sort_mode, $find)
 	{
 
 		if ($find) {
@@ -151,22 +130,14 @@ class PollLib extends PollLibShared
 		$result = $this->query($query, array('a', (int) $this->now));
 	}
 
-    /**
-     * @param $optionId
-     * @return bool
-     */
-    function remove_poll_option($optionId)
+	function remove_poll_option($optionId)
 	{
 		$query = "delete from `tiki_poll_options` where `optionId`=?";
 		$result = $this->query($query, array($optionId));
 		return true;
 	}
 
-    /**
-     * @param $optionId
-     * @return bool
-     */
-    function get_poll_option($optionId)
+	function get_poll_option($optionId)
 	{
 		$query = "select * from `tiki_poll_options` where `optionId`=?";
 		$result = $this->query($query, array($optionId));
@@ -176,4 +147,4 @@ class PollLib extends PollLibShared
 	}
 
 }
-global $polllib; $polllib = new PollLib;
+$polllib = new PollLib;

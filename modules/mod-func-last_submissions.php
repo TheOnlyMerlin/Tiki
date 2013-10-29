@@ -12,9 +12,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 }
 
 
-/**
- * @return array
- */
 function module_last_submissions_info()
 {
 	return array(
@@ -26,10 +23,6 @@ function module_last_submissions_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_last_submissions($mod_reference, $module_params)
 {
 	global $artlib, $smarty; require_once 'lib/articles/artlib.php';

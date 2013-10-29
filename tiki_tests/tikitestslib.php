@@ -38,10 +38,6 @@ if (isset($_COOKIE['tikitest_record'])) {
 	return;
 }
 
-/**
- * @param $buffer
- * @return mixed
- */
 function test_callback($buffer)
 {
 	global $test_cookie, $test_post, $test_get, $test_url;
@@ -79,8 +75,8 @@ function test_callback($buffer)
 		}
 	}
 
-	$url = $dom->createElement('url');
-	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
+  $url = $dom->createElement('url');
+	if (!empty($_SERVER['HTTPS'])) {
 		$http = "https";
 	} else {
 		$http = "http";

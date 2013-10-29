@@ -11,19 +11,11 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- *
- */
 class MimeLib
 {
 	private $finfo;
 
-    /**
-     * @param $filename
-     * @param $path
-     * @return string
-     */
-    function from_path($filename, $path)
+	function from_path($filename, $path)
 	{
 		if ($type = $this->physical_check_from_path($path)) {
 			return $this->handle_physical_exceptions($type, $filename);
@@ -32,71 +24,40 @@ class MimeLib
 		return $this->from_file_extension($filename);
 	}
 
-    /**
-     * @param $filename
-     * @param $content
-     * @return string
-     */
-    function from_content($filename, $content)
+	function from_content($filename, $content)
 	{
 		if ($type = $this->physical_check_from_content($content)) {
-			return $this->handle_physical_exceptions($type, $filename, $content);
+			return $this->handle_physical_exceptions($type, $filename);
 		}
 
 		return $this->from_file_extension($filename);
 	}
 
-    /**
-     * @param $filename
-     * @return string
-     */
-    function from_filename($filename)
+	function from_filename($filename)
 	{
 		return $this->from_file_extension($filename);
 	}
 
-    /**
-     * @param $type
-     * @param $filename
-     * @param $content
-     * @return string
-     */
-    private function handle_physical_exceptions($type, $filename, $content = '')
+	private function handle_physical_exceptions($type, $filename)
 	{
-		global $prefs;
-
 		if ($type === 'application/zip') {
 			$extension = $this->get_extension($filename);
 
 			if (in_array($extension, array("xlsx", "xltx", "potx", "ppsx", "pptx", "sldx", "docx", "dotx", "xlam", "xlsb"))) {
 				return $this->from_file_extension($filename);
 			}
-		} else if ($type === 'text/html' && $this->get_extension($filename) == 'svg') {
-			$type = 'image/svg+xml';
-		} else if ($type === 'text/html' && $prefs['vimeo_upload'] === 'y' && is_numeric($filename)) {
-			if (strpos($content, 'vimeo.com') !== false) {
-				$type = 'video/vimeo';
-			}
 		}
 
 		return $type;
 	}
 
-    /**
-     * @param $filename
-     * @return string
-     */
-    private function get_extension($filename)
+	private function get_extension($filename)
 	{
 		$ext = pathinfo($filename);
 		return isset($ext['extension']) ? $ext['extension'] : '';
 	}
 
-    /**
-     * @param $filename
-     * @return string
-     */
-    private function from_file_extension($filename)
+	private function from_file_extension($filename)
 	{
 		global $mimetypes; include_once('lib/mime/mimetypes.php');
 
@@ -112,11 +73,7 @@ class MimeLib
         return "application/octet-stream";
 	}
 
-    /**
-     * @param $path
-     * @return string
-     */
-    private function physical_check_from_path($path)
+	private function physical_check_from_path($path)
 	{
 		if ($finfo = $this->get_finfo()) {
 			if (file_exists($path)) {
@@ -126,11 +83,7 @@ class MimeLib
 		}
 	}
 
-    /**
-     * @param $content
-     * @return string
-     */
-    private function physical_check_from_content($content)
+	private function physical_check_from_content($content)
 	{
 		if ($finfo = $this->get_finfo()) {
 			$type = $finfo->buffer($content);
@@ -138,10 +91,7 @@ class MimeLib
 		}
 	}
 
-    /**
-     * @return finfo
-     */
-    private function get_finfo()
+	private function get_finfo()
 	{
 		global $prefs;
 

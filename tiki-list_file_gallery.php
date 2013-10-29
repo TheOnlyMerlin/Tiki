@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -62,25 +59,13 @@ $gal_info = '';
 
 if ( empty($_REQUEST['galleryId']) && isset($_REQUEST['parentId']) ) {
 
-	// check perms on parent gallery
-	$parent_gal_info = $filegallib->get_file_gallery($_REQUEST['parentId']);
-	$tikilib->get_perm_object('', 'file gallery', $parent_gal_info);
-
+	$tikilib->get_perm_object('', 'file gallery');
 	$_REQUEST['galleryId'] = 0;
 
 	// Initialize listing fields with default values (used for the main gallery listing)
 	$gal_info = $filegallib->get_file_gallery();
 	$gal_info['usedSize'] = 0;
 	$gal_info['maxQuota'] = $filegallib->getQuota($_REQUEST['parentId'], true);
-
-	if ($prefs['feature_use_fgal_for_user_files'] === 'y' &&
-			$parent_gal_info['type'] === 'user' && $parent_gal_info['user'] === $user && $tiki_p_userfiles === 'y') {
-
-		$gal_info['type'] = 'user';
-		$gal_info['user'] = $user;
-	}
-
-	$old_gal_info = array();
 
 } else {
 	if ( ! isset($_REQUEST['galleryId']) ) {
@@ -101,11 +86,6 @@ if ( empty($_REQUEST['galleryId']) && isset($_REQUEST['parentId']) ) {
 	$gal_info['usedSize'] = $filegallib->getUsedSize($_REQUEST['galleryId']);
 	$gal_info['maxQuota'] = $filegallib->getQuota($gal_info['parentId']);
 	$gal_info['minQuota'] = $filegallib->getMaxQuotaDescendants($_REQUEST['galleryId']);
-
-	if ($_REQUEST['galleryId'] == $prefs['fgal_root_user_id'] && $tiki_p_admin_file_galleries !== 'y') {
-		include_once('tiki-sefurl.php');
-		header('Location: ' . filter_out_sefurl('tiki-list_file_gallery.php?galleryId=' . $filegallib->get_user_file_gallery()));
-	}
 }
 
 $galleryId = $_REQUEST['galleryId'];
@@ -591,12 +571,6 @@ if (isset($_REQUEST['edit'])) {
 
 // Process duplication of a gallery
 if (!empty($_REQUEST['duplicate']) && !empty($_REQUEST['name']) && !empty($_REQUEST['galleryId'])) {
-	if ($tiki_p_create_file_galleries != 'y' || $gal_info['type'] == 'user') {
-		$smarty->assign('errortype', 401);
-		$smarty->assign('msg', tra('You do not have permission to duplicate this gallery'));
-		$smarty->display('error.tpl');
-		die;
-	}
 	check_ticket('fgal');
 	$newGalleryId = $filegallib->duplicate_file_gallery(
 		$galleryId,
@@ -635,9 +609,7 @@ if (!empty($_REQUEST['removegal'])) {
 		die;
 	}
 
-	$mygal_to_delete = !empty($user) && $gal_info['type'] === 'user' && $gal_info['user'] !== $user && $tiki_p_userfiles === 'y' && $gal_info['parentId'] !== $prefs['fgal_root_user_id'];
-
-	if ($tiki_p_admin_file_galleries != 'y' && ! $mygal_to_delete) {
+	if ($tiki_p_admin_file_galleries != 'y' && (!$user || $gal_info['user'] != $user)) {
 		$smarty->assign('errortype', 401);
 		$smarty->assign('msg', tra('You do not have permission to remove this gallery'));
 		$smarty->display('error.tpl');
@@ -918,7 +890,7 @@ if (isset($_GET['slideshow'])) {
 		$smarty->assign('cant', $files['cant']);
 		$subs = 0;
 		if ($with_subgals) {
-			foreach ($files['data'] as $f) {
+			foreach($files['data'] as $f) {
 				$subs = $subs + $f['isgal'];
 			}
 		}

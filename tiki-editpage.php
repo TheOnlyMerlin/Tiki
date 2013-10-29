@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -15,7 +12,6 @@
 // WARNING: DO NOT COMMIT WITH TRUE!!!!
 $dieInsteadOfForwardingWithHeader = false;
 
-require_once('lib/debug/Tracer.php');
 
 $inputConfiguration = array(
 	array( 'staticKeyFilters' => array(
@@ -36,10 +32,6 @@ include_once ('lib/structures/structlib.php');
 include_once ('lib/notifications/notificationlib.php');
 require_once ("lib/wiki/editlib.php");
 
-/**
- * @param $page
- * @param $page_info
- */
 function guess_new_page_attributes_from_parent_pages($page, $page_info)
 {
 	global $editlib, $smarty, $_REQUEST, $tikilib, $prefs, $need_lang;
@@ -72,10 +64,6 @@ function guess_new_page_attributes_from_parent_pages($page, $page_info)
 	}
 }
 
-/**
- * @param $page_id
- * @return bool
- */
 function translationsToThisPageAreInProgress($page_id)
 {
 	global $multilinguallib;
@@ -107,19 +95,6 @@ function execute_module_translation()
 	$smarty->assign('content_of_update_translation_section', $out);
 }
 
-function possibly_set_pagedata_to_pretranslation_of_source_page()
-{
-    global $smarty, $multilinguallib, $editlib, $tracer;
-
-    if ($editlib->isNewTranslationMode())
-    {
-        $source_page = $_REQUEST['source_page'];
-        $possibly_pretranslated_content = $multilinguallib->partiallyPretranslateContentOfPage($source_page, $_REQUEST['lang']);
-        $smarty->assign('pagedata', $possibly_pretranslated_content);
-    }
-}
-
-
 $access->check_feature('feature_wiki');
 
 if ($editlib->isNewTranslationMode() || $editlib->isUpdateTranslationMode()) {
@@ -136,15 +111,6 @@ if (empty($_REQUEST["page"])) {
 	$smarty->assign('msg', tra("You must specify a page name, it will be created if it doesn't exist."));
 	$smarty->display("error.tpl");
 	die;
-}
-
-// The max pagename length is 160 characters ( tiki_pages.pageName varchar(160) ).
-//	However, wiki_rename_page stores a page in the format: $tmpName = "~".$newName."~";
-//	So, actual max page name length is 160 - 2 = 158
-//	Strip excess characters (silently) and proceed.
-$max_pagename_length = 158;
-if (strlen($_REQUEST["page"]) > $max_pagename_length) {
-	$_REQUEST["page"] = substr($_REQUEST["page"], 0, $max_pagename_length);
 }
 
 $page = $_REQUEST["page"];
@@ -257,11 +223,6 @@ if (isset($_REQUEST["current_page_id"])) {
 	$smarty->assign('add_child', false);
 }
 
-/**
- * @param $a1
- * @param $a2
- * @return mixed
- */
 function compare_import_versions($a1, $a2)
 {
 	return $a1["version"] - $a2["version"];
@@ -279,12 +240,12 @@ if (isset($_REQUEST['cancel_edit'])) {
 	} else {
 		$url = "location:".$wikilib->sefurl($page);
 		if (!empty($_REQUEST['page_ref_id'])) {
-			$url .= (strpos($url, '?') === false ? '?' : '&') . 'page_ref_id='.$_REQUEST['page_ref_id'];
+			$url .= '&page_ref_id='.$_REQUEST['page_ref_id'];
 		}
 	}
 
 	if ($prefs['feature_multilingual'] === 'y' && $prefs['feature_best_language'] === 'y' && isset($info['lang']) && $info['lang'] !== $prefs['language']) {
-		$url .= (strpos($url, '?') === false ? '?' : '&') . 'no_bl=y';
+		$url .= '&no_bl=y';
 	}
 
 	if ($dieInsteadOfForwardingWithHeader) die ("-- tiki-editpage: Dying before first call to header(), so we can see traces. Forwarding to: \$url='$url'");
@@ -396,8 +357,7 @@ if (isset($_FILES['userfile1']) && is_uploaded_file($_FILES['userfile1']['tmp_na
 	}
 	fclose($fp);
 	$name = $_FILES['userfile1']['name'];
-	$mimelib = new mime();
-	$output = $mimelib->decode($data);
+	$output = mime::decode($data);
 	$parts = array();
 	parse_output($output, $parts, 0);
 	$last_part = '';
@@ -512,7 +472,7 @@ if (isset($_FILES['userfile1']) && is_uploaded_file($_FILES['userfile1']['tmp_na
 			$url = $wikilib->sefurl($page);
 		}
 		if ($prefs['feature_best_language'] === 'y') {
-			$url .= (strpos($url, '?') === false ? '?' : '&') . 'no_bl=y';
+			$url .= '&no_bl=y';
 		}
 
 
@@ -520,7 +480,7 @@ if (isset($_FILES['userfile1']) && is_uploaded_file($_FILES['userfile1']['tmp_na
 			global $flaggedrevisionlib; require_once 'lib/wiki/flaggedrevisionlib.php';
 
 			if ($flaggedrevisionlib->page_requires_approval($page)) {
-				$url .= (strpos($url, '?') === false ? '?' : '&') . 'latest=1';
+				$url .= '&latest=1';
 			}
 		}
 		if ($dieInsteadOfForwardingWithHeader) die ("-- tiki-editpage: Dying before second call to header(), so we can see traces. Forwarding to: '$url'");
@@ -922,7 +882,7 @@ if ( !isset($_REQUEST['preview']) && !isset($_REQUEST['save']) ) {
 		}
 		$info['wysiwyg'] = true;
 	} elseif ($_SESSION['wysiwyg'] === 'y') {
-		if (empty($info['is_html'])) {
+		if ($prefs['wysiwyg_htmltowiki'] === 'y') {
 			if ($edit_data == 'ajax error') {
 				unset($_REQUEST['save']);	// don't save an ajax error
 			}
@@ -967,11 +927,6 @@ if (isset($_REQUEST["preview"])) {
 
 $smarty->assign_by_ref('parsed', $parsed);
 
-/**
- * @param $obj
- * @param $parts
- * @param $i
- */
 function parse_output(&$obj, &$parts, $i)
 {
 	if (!empty($obj['parts'])) {
@@ -1028,7 +983,7 @@ if ($prefs['wiki_mandatory_edit_summary'] === 'y') {
 	$headerlib->add_jq_onready(
 		'$("input[name=save],input[name=minor]").click(function(){
 			if (!$("#comment").val()) {
-				var s = prompt("'.tra('Describe the change you made').'", "");
+				var s = prompt("'.tra('Describe the change you made').'");
 				if (!s) return false;
 				$("#comment").val(s);
 			}
@@ -1171,22 +1126,9 @@ if (
 				$edit .= "\r\n";
 			$edit = substr($info['data'], 0, $real_start).$edit.substr($info['data'], $real_start + $real_len);
 		}
-		if (
-			isset($_REQUEST['jisonWyisywg']) &&
-			$_REQUEST['jisonWyisywg'] == 'true' &&
-			$prefs['feature_jison_wiki_parser'] == 'y' &&
-			$prefs['feature_wysiwyg'] === 'y'
-		) {
-			$parser = new JisonParser_Html_Handler();
-			print_r($edit);
-			$edit = $parser->parse($edit);
-			print_r($edit);
-			print_r(Tikilib::getOne('select data from tiki_pages where pageName = ?', array($page)));
-			die;
-		} else if ($_SESSION['wysiwyg'] === 'y' && $prefs['wysiwyg_wiki_parsed'] === 'y' && $prefs['wysiwyg_ckeditor'] === 'y') {
+		if ($_SESSION['wysiwyg'] === 'y' && $prefs['wysiwyg_wiki_parsed'] === 'y' && $prefs['wysiwyg_ckeditor'] === 'y') {
 			$edit = $editlib->partialParseWysiwygToWiki($edit);
 		}
-
 		$tikilib->update_page(
 			$_REQUEST["page"],
 			$edit,
@@ -1196,7 +1138,7 @@ if (
 			$description,
 			$minor,
 			$pageLang,
-			isset($_REQUEST['allowhtml']) ? $_REQUEST['allowhtml'] : $is_html,
+			$is_html,
 			$hash,
 			null,
 			$_REQUEST['wysiwyg'],
@@ -1306,18 +1248,6 @@ if (
 		TikiLib::lib('geo')->set_coordinates('wiki page', $page, $_REQUEST['geolocation']);
 	}
 
-	if ($prefs['wiki_auto_toc'] == 'y' && isset($_REQUEST['pageAutoToc'])) {
-		$isAutoTocActive = intval($_REQUEST['pageAutoToc']);
-		$isAutoTocActive = $isAutoTocActive == 0 ? null : $isAutoTocActive;
-		$wikilib->set_page_auto_toc($page, $isAutoTocActive);
-	}
-
-	if ($prefs['wiki_page_hide_title'] == 'y' && isset($_REQUEST['page_hide_title'])) {
-		$isHideTitle = intval($_REQUEST['page_hide_title']);
-		$isHideTitle = $isHideTitle == 0 ? null : $isHideTitle;
-		$wikilib->set_page_hide_title($page, $isHideTitle);
-	}
-
 	if ($prefs['namespace_enabled'] == 'y' && isset($_REQUEST['explicit_namespace'])) {
 		$wikilib->set_explicit_namespace($page, $_REQUEST['explicit_namespace']);
 	}
@@ -1334,14 +1264,14 @@ if (
 		$url = $wikilib->sefurl($page);
 	}
 	if ($prefs['feature_multilingual'] === 'y' && $prefs['feature_best_language'] === 'y' && isset($info['lang']) && $info['lang'] !== $prefs['language']) {
-		$url .= (strpos($url, '?') === false ? '?' : '&') . 'no_bl=y';
+		$url .= '&no_bl=y';
 	}
 
 	if ($prefs['flaggedrev_approval'] == 'y' && $tiki_p_wiki_approve == 'y') {
 		global $flaggedrevisionlib; require_once 'lib/wiki/flaggedrevisionlib.php';
 
 		if ($flaggedrevisionlib->page_requires_approval($page)) {
-			$url .= (strpos($url, '?') === false ? '?' : '&') . 'latest=1';
+			$url .= '&latest=1';
 		}
 	}
 
@@ -1500,8 +1430,6 @@ if ( $prefs['feature_multilingual'] === 'y' ) {
 }
 
 $smarty->assign('explicit_namespace', $wikilib->get_explicit_namespace($page));
-$smarty->assign('pageAutoToc', $wikilib->get_page_auto_toc($page));
-$smarty->assign('page_hide_title', $wikilib->get_page_hide_title($page));
 
 // setup properties tab visibility
 if (($prefs['feature_wiki_templates'] === 'y' && $tiki_p_use_content_templates === 'y') ||
@@ -1534,21 +1462,16 @@ ask_ticket('edit-page');
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 // Display the Edit Template or language check
+if ($need_lang) {
+	$smarty->assign('mid', 'tiki-choose_page_language.tpl');
+} else {
+	$smarty->assign('mid', 'tiki-editpage.tpl');
+}
 $smarty->assign('showtags', 'n');
 $smarty->assign('qtnum', '1');
 $smarty->assign('qtcycle', '');
+$smarty->display("tiki.tpl");
 
-possibly_set_pagedata_to_pretranslation_of_source_page();
-
-if ($need_lang) {
-	$smarty->display('tiki-choose_page_language.tpl');
-} else {
-	$smarty->display('tiki-editpage.tpl');
-}
-/**
- * @param $chkURL
- * @return bool
- */
 function isURL($chkURL)
 {
 	$rc = (false !== parse_url($chkURL));

@@ -10,8 +10,8 @@
 <h2>{if $questionId}{tr}Edit FAQ question{/tr}{else}{tr}Add FAQ question{/tr}{/if}</h2>
 
 <form action="tiki-faq_questions.php" method="post" id="editpageform">
-<input type="hidden" name="questionId" value="{$questionId|escape}">
-<input type="hidden" name="faqId" value="{$faqId|escape}">
+<input type="hidden" name="questionId" value="{$questionId|escape}" />
+<input type="hidden" name="faqId" value="{$faqId|escape}" />
 
 {* begin table *}
 <table class="formcolor">
@@ -34,7 +34,7 @@
   <tr>
     <td >&nbsp;</td>
     <td >
-      <input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
+      <input type="submit" name="save" value="{tr}Save{/tr}" />
       {* set your changes and save 'em *}
     </td>
   </tr>
@@ -44,16 +44,16 @@
 </form>
 {* This is the area for choosing questions from the db... it really should support choosing options from the answers, but only show if there are existing questions *}
 {if $allq}
-<br><h2> {tr}Use a question from another FAQ{/tr}</h2>
+<br /><h2> {tr}Use a question from another FAQ{/tr}</h2>
 <form action="tiki-faq_questions.php" method="post">
-<input type="hidden" name="questionId" value="{$questionId|escape}">
-<input type="hidden" name="faqId" value="{$faqId|escape}">
+<input type="hidden" name="questionId" value="{$questionId|escape}" />
+<input type="hidden" name="faqId" value="{$faqId|escape}" />
 <table class="formcolor">
 <tr>
 <td>{tr}Filter{/tr}</td>
 <td>
-<input type="text" name="filter" value="{$filter|escape}">
-<input type="submit" class="btn btn-default" name="filteruseq" value="{tr}Filter{/tr}">
+<input type="text" name="filter" value="{$filter|escape}" />
+<input type="submit" name="filteruseq" value="{tr}Filter{/tr}" />
 </td>
 </tr>
 <tr>
@@ -70,22 +70,22 @@
 <tr>
 <td>&nbsp;</td>
 <td>
-<input type="submit" class="btn btn-default" name="useq" value="{tr}Use{/tr}">
+<input type="submit" name="useq" value="{tr}Use{/tr}" />
 </td>
 </tr>
 </table>
 </form>
 {/if}
-<br>
+<br />
 
 {* next big chunk *}
-<br>
+<br />
 <h2>{tr}FAQ questions{/tr}</h2>
 {if $channels or ($find ne '')}
   {include file='find.tpl'}
 {/if}
 
-<table class="table normal">
+<table class="normal">
 <tr>
 <th>
 <a href="tiki-faq_questions.php?faqId={$faqId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'questionId_desc'}questionId_asc{else}questionId_desc{/if}">{tr}ID{/tr}</a>
@@ -114,7 +114,7 @@
 {if count($suggested) > 0}
 
 <h2>{tr}Suggested questions{/tr}</h2>
-<table class="table normal">
+<table class="normal">
 <tr>
   <th>{tr}Question{/tr}</th>
   <th>{tr}Answer{/tr}</th>

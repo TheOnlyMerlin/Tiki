@@ -11,9 +11,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_calendar_new_info()
 {
 	return array(
@@ -24,13 +21,12 @@ function module_calendar_new_info()
 		'params' => array(
 			'calIds' => array(
 				'name' => tra('Calendars filter'),
-				'description' => tra('If set to a list of calendar identifiers, restricts the events to those in the identified calendars. Identifiers are separated by vertical bars ("|"), commas (",") or colons (":"). Example values: "13", "4,7", "31:49". Not set by default.'),
-				'profile_reference' => 'calendar',
+				'description' => tra('If set to a list of calendar identifiers, restricts the events to those in the identified calendars. Identifiers are separated by vertical bars ("|"), commas (",") or colons (":"). Example values: "13", "4,7", "31:49". Not set by default.')
 			),
 			'month_delta' => array(
 				'name' => tra('Displayed month (relative)'),
 				'description' => tra('Distance in month to the month to display. A distance of -1 would display the previous month. Setting this option implies a calendar view type with a month time span. Example values: 2, 0, -2, -12.'),
-				'filter' => 'int',
+				'filter' => 'int'
 			),
 			'viewlist' => array(
 				'name' => tra('View type'),
@@ -74,23 +70,18 @@ function module_calendar_new_info()
 				'name' => tra('View navigation bar'),
 				'description' => 'y|n|partial',
 				'filter' => 'word',
-				'default' => 'y',
+				'default' => 'y'
 			)
 		)
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_calendar_new($mod_reference, $module_params)
 {
 	global $prefs, $user, $tiki_p_admin_calendars, $tikilib, $smarty;
 	global $calendarlib; include_once('lib/calendar/calendarlib.php');
 	global $userlib; include_once('lib/userslib.php');
-//	Note: calendar css file now loaded in tiki-modules.php
-//	global $headerlib; $headerlib->add_cssfile('css/calendar.css', 20);
+	global $headerlib; $headerlib->add_cssfile('css/calendar.css', 20);
 	global $calendarViewMode, $focusdate;
 	$default = array('viewnavbar' => 'y', 'viewmodelink' => 'week', 'showaction' => 'y', 'linkall' => 'n');
 	$module_params = array_merge($default, $module_params);

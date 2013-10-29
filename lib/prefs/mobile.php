@@ -22,7 +22,7 @@ function prefs_mobile_list()
 
 		'mobile_feature' => array(
 			'name' => tra('Mobile Access'),
-			'description' => tra('New mobile feature since Tiki 7'),
+			'description' => tra('New mobile feature for Tiki 7'),
 			'help' => 'Mobile',
 			'warning' => tra('Experimental. This feature is under development.'),
 			'type' => 'flag',
@@ -33,7 +33,7 @@ function prefs_mobile_list()
 		),
 		'mobile_perspectives' => array(
 			'name' => tra('Mobile Perspectives'),
-			'description' => tra('New mobile feature since Tiki 7'),
+			'description' => tra('New mobile feature for Tiki 7'),
 			'help' => 'Mobile',
 			'type' => 'text',
 			'separator' => ',',
@@ -42,11 +42,9 @@ function prefs_mobile_list()
 				'mobile_feature',
 			),
 			'default' => array(''),
-			'profile_reference' => 'perspective',
 		),
 		'mobile_theme_header' => array(
 			'name' => tra('Header Theme'),
-            'description' => tra(''),
 			'hint' => tra('jQuery Mobile Theme'),
 			'help' => "http://jquerymobile.com/demos/$jquerymobile_version/#docs/api/themes.html",
 			'type' => 'list',
@@ -58,7 +56,6 @@ function prefs_mobile_list()
 		),
 		'mobile_theme_content' => array(
 			'name' => tra('Content Theme'),
-            'description' => tra(''),
 			'hint' => tra('jQuery Mobile Theme'),
 			'help' => "http://jquerymobile.com/demos/$jquerymobile_version/#docs/api/themes.html",
 			'type' => 'list',
@@ -70,7 +67,6 @@ function prefs_mobile_list()
 		),
 		'mobile_theme_footer' => array(
 			'name' => tra('Footer Theme'),
-            'description' => tra(''),
 			'hint' => tra('jQuery Mobile Theme'),
 			'help' => "http://jquerymobile.com/demos/$jquerymobile_version/#docs/api/themes.html",
 			'type' => 'list',
@@ -82,8 +78,7 @@ function prefs_mobile_list()
 		),
 		'mobile_theme_modules' => array(
 			'name' => tra('Modules Theme'),
-            'description' => tra(''),
-			'hint' => tra('jQuery Mobile Theme'),
+			'hin' => tra('jQuery Mobile Theme'),
 			'help' => "http://jquerymobile.com/demos/$jquerymobile_version/#docs/api/themes.html",
 			'type' => 'list',
 			'options' => $mobile_themes,

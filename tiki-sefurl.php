@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -22,16 +19,16 @@ define('TITLE_SEPARATOR', '-');
  * @param string $tpl_output	original "unfriendly" url
  * @param string $type			type of object (article|blog|blogpost etc)
  * @param string $title			title of object
- * @param null $with_next		Appends '?' or a '&amp;' to the end of the returned URL so you can join further parameters
- * @param string $with_title	Add the object title to the end of the URL
- * @return string				sefurl
+ * @param null $with_next		unknown
+ * @param string $with_title	unknown
+ * @return string			sefurl
  */
 
 
 function filter_out_sefurl($tpl_output, $type = null, $title = '', $with_next = null, $with_title='y') 
 {
-	global $sefurl_regex_out, $tikilib, $prefs, $base_url, $in_installer;
-	if ($prefs['feature_sefurl'] != 'y' || !empty($in_installer) || ( preg_match('#^http(|s)://#', $tpl_output) and strpos($tpl_output, $base_url) !== 0 ) ) {
+	global $sefurl_regex_out, $tikilib, $prefs, $base_url;
+	if ($prefs['feature_sefurl'] != 'y' or ( preg_match('#^http(|s)://#', $tpl_output) and strpos($tpl_output, $base_url) !== 0 ) ) {
 		return $tpl_output;
 	}
 	global $cachelib;
@@ -128,26 +125,5 @@ function filter_out_sefurl($tpl_output, $type = null, $title = '', $with_next = 
 			}
 		}
 	}
-
-	if (strpos($tpl_output, '?') === false) {	// historically tiki has coped with malformed short urls with no ?
-		$amppos = strpos($tpl_output, '&');		// route.php requires that we no longer do that
-		$eqpos = strpos($tpl_output, '=');
-		if ( $amppos !== false && ($eqpos === false || $eqpos > $amppos)) {
-			if (substr($tpl_output, $amppos, 5) !== '&amp;') {
-				$tpl_output{$amppos} = '?';
-			} else {
-				$tpl_output = substr($tpl_output, 0, $amppos) . '?' . substr($tpl_output, $amppos + 5);
-			}
-		}
-	}
-
-	if ($with_next) {
-		if (strpos($tpl_output, '?') === false) {
-			$tpl_output .= '?';
-		} else {
-			$tpl_output .= '&amp;';
-		}
-	}
-
 	return $tpl_output;
 }

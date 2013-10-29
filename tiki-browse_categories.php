@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -135,29 +132,12 @@ foreach ($ctall as &$c) {
 unset($c);
 $tree_nodes = array();
 foreach ($ctall as $c) {
-	if ($prefs['category_browse_count_objects'] === 'y' || isset($_REQUEST['count'])) { 	// show/hide count button TODO after 12.0
-	 	// display correct count of objects depending on browse in and find filters -- luci Thu 05 Sep 2013 10:15:50 PM UTC
-		$objectcount = $categlib->list_category_objects(
-			$c['categId'],
-			0,
-			-1,
-			'',
-			$type,
-			$find,
-			$deep == 'on',
-			(!empty($_REQUEST['and'])) ? true : false
-		);
-		$countString = '<span class="object-count">' . $objectcount['cant'] . '</span>';
-	} else {
-		$countString = '';
-	}
-
 	$tree_nodes[] = array(
 		'id' => $c['categId'],
 		'categId' => $c['categId'],
 		'parent' => $c['parentId'],
 		'parentId' => $c['parentId'],
-		'data' => $countString .
+		'data' => '<span class="object-count">' . $c['objects'] . '</span>' .
 							$c['eyes'] . ' <a class="catname" href="tiki-browse_categories.php?parentId=' . $c['categId'] .
 							'&amp;deep=' . $deep . '&amp;type='. urlencode($type) . '">' . htmlspecialchars($c['name']) .'</a> ',
 	);
@@ -214,15 +194,6 @@ if (isset($_GET['plain'])) {				// used by profile repositories to list availabl
 	$smarty->display('tiki.tpl');
 }
 
-/**
- * @param $descendants
- * @param $usercatwatches
- * @param $requestid
- * @param $categid
- * @param $deep
- * @param $user
- * @return bool|string
- */
 function add_watch_icons($descendants, $usercatwatches, $requestid, $categid, $deep, $user)
 {
 	global $prefs;

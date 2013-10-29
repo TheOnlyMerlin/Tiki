@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -55,7 +52,7 @@ if ($output['data'] == 'EMPTY') {
 			$data['data'],
 			array(
 				'print' => true,
-				'is_html' => $data['wysiwyg'] === 'y' && $prefs['wysiwyg_htmltowiki'] !== 'y',
+				'is_html' => true,
 			)
 		);
 		$data['sefurl'] = filter_out_sefurl(sprintf($readrepl, $data['postId']), 'blogpost', urlencode($data['title']));

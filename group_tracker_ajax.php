@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -49,10 +46,6 @@ if ($prefs['feature_jquery_validation'] === 'y') {	// dig out the new rules for 
 	}
 }
 
-/**
- * @param $matches
- * @return string
- */
 function group_tracker_ajax_quote($matches)
 {
 	return '"' . $matches[1] . '":';

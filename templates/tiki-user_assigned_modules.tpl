@@ -12,13 +12,13 @@
 		{if $prefs.feature_left_column ne 'n' || count($modules_l) > 0}
 			<td >
 				<b>{tr}Left column{/tr}</b>
-				{if $prefs.feature_left_column eq 'n' and count($modules_l) > 0}<br><span class="highlight">{tr}The column is disabled{/tr}</span>{/if}
+				{if $prefs.feature_left_column eq 'n' and count($modules_l) > 0}<br /><span class="highlight">{tr}The column is disabled{/tr}</span>{/if}
 			</td>
 		{/if}
 		{if $prefs.feature_right_column ne 'n' || count($modules_r) > 0}
 			<td >
 				<b>{tr}Right column{/tr}</b>
-				{if $prefs.feature_right_column eq 'n' and count($modules_r) > 0}<br><span class="highlight">{tr}The column is disabled{/tr}</span>{/if}
+				{if $prefs.feature_right_column eq 'n' and count($modules_r) > 0}<br /><span class="highlight">{tr}The column is disabled{/tr}</span>{/if}
 			</td>
 		{/if}
 	</tr>
@@ -26,7 +26,7 @@
 		<!-- left column -->
 		{if $prefs.feature_left_column ne 'n' || count($modules_l) > 0}
 			<td>
-				<table  class="table normal">
+				<table  class="normal">
 					<tr>
 						<th>{tr}#{/tr}</th>
 						<th>{tr}Name{/tr}</th>
@@ -57,7 +57,7 @@
 		<!-- right column -->
 		{if $prefs.feature_right_column ne 'n' || count($modules_r) > 0}
 			<td >
-				<table  class="table normal">
+				<table  class="normal">
 					<tr>
 						<th>{tr}#{/tr}</th>
 						<th>{tr}Name{/tr}</th>
@@ -89,7 +89,7 @@
 </table>
 
 {if $canassign eq 'y'}
-<br>
+<br />
 	<form action="tiki-user_assigned_modules.php" method="post">
 		<h2>{tr}Assign module{/tr}</h2>
 		<table class="formcolor">
@@ -124,7 +124,7 @@
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
-				<td><input type="submit" class="btn btn-default" name="assign" value="{tr}Assign{/tr}"></td>
+				<td><input type="submit" name="assign" value="{tr}Assign{/tr}" /></td>
 			</tr>
 		</table>
 	</form>

@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -9,7 +6,7 @@
 // $Id$
 
 require_once ('tiki-setup.php');
-
+include_once ('lib/comments/commentslib.php');
 $auto_query_args = array('types_section', 'types', 'show_types', 'sort_mode', 'offset', 'find', 'findfilter_approved');
 
 if (isset($_REQUEST['blogId'])) {
@@ -28,7 +25,7 @@ if (isset($_REQUEST['blogId'])) {
 	$access->check_permission('tiki_p_admin_comments');
 }
 
-$commentslib = TikiLib::lib('comments');
+$commentslib = new Comments($dbTiki);
 $title = tra('Comments');
 $sections_keys = array('objectType' => 'commentsFeature', 'itemObjectType' => 'itemCommentsFeature');
 

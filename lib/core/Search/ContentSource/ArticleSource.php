@@ -5,21 +5,13 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-class Search_ContentSource_ArticleSource implements Search_ContentSource_Interface, Tiki_Profile_Writer_ReferenceProvider
+class Search_ContentSource_ArticleSource implements Search_ContentSource_Interface
 {
 	private $db;
 
 	function __construct()
 	{
 		$this->db = TikiDb::get();
-	}
-
-	function getReferenceMap()
-	{
-		return array(
-			'topic_id' => 'article_topic',
-			'article_type' => 'article_type',
-		);
 	}
 
 	function getDocuments()
@@ -47,7 +39,7 @@ class Search_ContentSource_ArticleSource implements Search_ContentSource_Interfa
 			'article_subtitle' => $typeFactory->wikitext($article['subtitle']),
 			'article_author' => $typeFactory->plaintext($article['authorName']),
 
-			'view_permission' => ($article['ispublished'] == 'y') ? $typeFactory->identifier('tiki_p_read_article') : $typeFactory->identifier('tiki_p_edit_article'),
+			'view_permission' => $typeFactory->identifier('tiki_p_read_article'),
 			'parent_object_type' => $typeFactory->identifier('topic'),
 			'parent_object_id' => $typeFactory->identifier($article['topicId']),
 			'parent_view_permission' => $typeFactory->identifier('tiki_p_read_topic'),

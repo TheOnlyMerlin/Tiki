@@ -11,19 +11,9 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- *
- */
 class SurveyLib extends TikiLib
 {
-    /**
-     * @param $offset
-     * @param $maxRecords
-     * @param $sort_mode
-     * @param $find
-     * @return array
-     */
-    public function list_surveys($offset, $maxRecords, $sort_mode, $find)
+	public function list_surveys($offset, $maxRecords, $sort_mode, $find)
 	{
 		if ($find) {
 			$findesc = '%' . $find . '%';
@@ -64,10 +54,7 @@ class SurveyLib extends TikiLib
 		return $retval;
 	}
 
-    /**
-     * @param $surveyId
-     */
-    public function add_survey_hit($surveyId)
+	public function add_survey_hit($surveyId)
 	{
 		global $prefs, $user;
 
@@ -77,11 +64,7 @@ class SurveyLib extends TikiLib
 		}
 	}
 
-    /**
-     * @param $questionId
-     * @param $value
-     */
-    public function register_survey_text_option_vote($questionId, $value)
+	public function register_survey_text_option_vote($questionId, $value)
 	{
 		$bindvars = array((int) $questionId, $value);
 		$cant = $this->getOne("select count(*) from `tiki_survey_question_options` where `questionId`=? and `qoption`=?", $bindvars);
@@ -93,11 +76,7 @@ class SurveyLib extends TikiLib
 		$result = $this->query($query, $bindvars);
 	}
 
-    /**
-     * @param $questionId
-     * @param $rate
-     */
-    public function register_survey_rate_vote($questionId, $rate)
+	public function register_survey_rate_vote($questionId, $rate)
 	{
 		$query = "update `tiki_survey_questions` set `votes`=`votes`+1, `value`=`value` + ? where `questionId`=?";
 		$result = $this->query($query, array((int) $rate,(int) $questionId));
@@ -105,20 +84,13 @@ class SurveyLib extends TikiLib
 		$result = $this->query($query, array((int) $questionId));
 	}
 
-    /**
-     * @param $questionId
-     * @param $optionId
-     */
-    public function register_survey_option_vote($questionId, $optionId)
+	public function register_survey_option_vote($questionId, $optionId)
 	{
 		$query = "update `tiki_survey_question_options` set `votes`=`votes`+1 where `questionId`=? and `optionId`=?";
 		$result = $this->query($query, array((int) $questionId, (int) $optionId));
 	}
 
-    /**
-     * @param $surveyId
-     */
-    public function clear_survey_stats($surveyId)
+	public function clear_survey_stats($surveyId)
 	{
 		$query = "update `tiki_surveys` set `taken`=0 where `surveyId`=?";
 		$this->query($query, array((int) $surveyId));
@@ -149,14 +121,7 @@ class SurveyLib extends TikiLib
 		$this->query($query, array('survey'.(int) $surveyId));
 	}
 
-    /**
-     * @param $surveyId
-     * @param $name
-     * @param $description
-     * @param $status
-     * @return mixed
-     */
-    public function replace_survey($surveyId, $name, $description, $status)
+	public function replace_survey($surveyId, $name, $description, $status)
 	{
 		if ($surveyId) {
 			$query = "update `tiki_surveys` set `name`=?, `description`=?, `status`=? where `surveyId`=?";
@@ -171,19 +136,7 @@ class SurveyLib extends TikiLib
 		return $surveyId;
 	}
 
-    /**
-     * @param $questionId
-     * @param $question
-     * @param $type
-     * @param $surveyId
-     * @param $position
-     * @param $options
-     * @param string $mandatory
-     * @param int $min_answers
-     * @param int $max_answers
-     * @return mixed
-     */
-    public function replace_survey_question($questionId, $question, $type
+	public function replace_survey_question($questionId, $question, $type
 		, $surveyId, $position, $options, $mandatory = 'n'
 		, $min_answers = 0, $max_answers = 0
 	)
@@ -239,11 +192,7 @@ class SurveyLib extends TikiLib
 		return $questionId;
 	}
 
-    /**
-     * @param $surveyId
-     * @return bool
-     */
-    public function get_survey($surveyId)
+	public function get_survey($surveyId)
 	{
 		$query = "select * from `tiki_surveys` where `surveyId`=?";
 		$result = $this->query($query, array((int) $surveyId));
@@ -254,11 +203,7 @@ class SurveyLib extends TikiLib
 		return $res;
 	}
 
-    /**
-     * @param $questionId
-     * @return bool
-     */
-    public function get_survey_question($questionId)
+	public function get_survey_question($questionId)
 	{
 		$query = "select * from `tiki_survey_questions` where `questionId`=?";
 		$result = $this->query($query, array((int) $questionId));
@@ -282,15 +227,7 @@ class SurveyLib extends TikiLib
 		return $res2;
 	}
 
-    /**
-     * @param $surveyId
-     * @param $offset
-     * @param $maxRecords
-     * @param $sort_mode
-     * @param $find
-     * @return array
-     */
-    public function list_survey_questions($surveyId, $offset, $maxRecords, $sort_mode, $find)
+	public function list_survey_questions($surveyId, $offset, $maxRecords, $sort_mode, $find)
 	{
 		global $tikilib;
 		$filegallib = TikiLib::lib('filegal');
@@ -403,14 +340,7 @@ class SurveyLib extends TikiLib
 		return $retval;
 	}
 
-    /**
-     * @param $offset
-     * @param $maxRecords
-     * @param $sort_mode
-     * @param $find
-     * @return array
-     */
-    public function list_all_questions($offset, $maxRecords, $sort_mode, $find)
+	public function list_all_questions($offset, $maxRecords, $sort_mode, $find)
 	{
 		$bindvars = array();
 		if ($find) {
@@ -437,11 +367,7 @@ class SurveyLib extends TikiLib
 		return $retval;
 	}
 
-    /**
-     * @param $questionId
-     * @return bool
-     */
-    public function remove_survey_question($questionId)
+	public function remove_survey_question($questionId)
 	{
 		$query = "delete from `tiki_survey_questions` where `questionId`=?";
 		$result = $this->query($query, array((int) $questionId));
@@ -450,11 +376,7 @@ class SurveyLib extends TikiLib
 		return true;
 	}
 
-    /**
-     * @param $surveyId
-     * @return bool
-     */
-    public function remove_survey($surveyId)
+	public function remove_survey($surveyId)
 	{
 		$query = "delete from `tiki_surveys` where `surveyId`=?";
 		$result = $this->query($query, array((int) $surveyId));
@@ -477,14 +399,7 @@ class SurveyLib extends TikiLib
 	}
 
 	// Check mandatory fields and min/max number of answers and register vote/answers if ok
-    /**
-     * @param $surveyId
-     * @param $questions
-     * @param $answers
-     * @param null $error_msg
-     * @return bool
-     */
-    public function register_answers($surveyId, $questions, $answers, &$error_msg = null)
+	public function register_answers($surveyId, $questions, $answers, &$error_msg = null)
 	{
 		if ($surveyId <= 0 || empty($questions)) {
 			return false;

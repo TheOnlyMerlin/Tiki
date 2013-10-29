@@ -23,7 +23,6 @@ class ObjectLib extends TikiLib
 	 * Handled object types: "article", "blog", "calendar", "directory", "faq",
 	 * "file", "file gallery", "forum", "image gallery", "poll", "quiz", "tracker", "trackeritem" and "wiki page".
 	 *
-	 * Remember to update get_supported_types if this changes
 	 */
 	function add_object($type, $itemId, $checkHandled = TRUE, $description = NULL, $name = NULL, $href = NULL)
 	{
@@ -74,7 +73,8 @@ class ObjectLib extends TikiLib
 
 					case 'faq':
 						{
-							$info = TikiLib::lib('faq')->get_faq($itemId);
+							require_once ('lib/faqs/faqlib.php');
+							$info = $faqlib->get_faq($itemId);
 
 							$description = $info['description'];
 							$name = $info['title'];
@@ -118,7 +118,7 @@ class ObjectLib extends TikiLib
 						break;
 
 					case 'perspective':
-						$info = TikiLib::lib('perspective')->get_perspective($itemId);
+						$perspective = TikiLib::lib('perspective')->get_perspective($itemId);
 						$name = $info['name'];
 						$href = 'tiki-switch_perspective.php?perspective=' . $itemId;
 						break;
@@ -183,31 +183,6 @@ class ObjectLib extends TikiLib
 		return $objectId;
 	}
 
-	/**
-	 * Returns an array of object types supported (and therefore can be categorised etc)
-	 *
-	 * @return array
-	 */
-	static function get_supported_types() {
-		return array(
-			'article',
-			'blog',
-			'calendar',
-			'directory',
-			'faq',
-			'file',
-			'file gallery',
-			'forum',
-			'image gallery',
-			'perspective',
-			'poll',
-			'quiz',
-			'tracker',
-			'trackeritem',
-			'wiki page',
-		);
-	}
-
 	function insert_object($type, $itemId, $description = '', $name = '', $href = '')
 	{
 		if (! $itemId) {
@@ -217,18 +192,16 @@ class ObjectLib extends TikiLib
 
 		$tikilib = TikiLib::lib('tiki');
 		$table = $this->table('tiki_objects');
-		return $table->insert(
-			array(
-				'type' => $type,
-				'itemId' => (string) $itemId,
-				'description' => $description,
-				'name' => $name,
-				'href' => $href,
-				'created' => (int) $tikilib->now,
-				'hits' => 0,
-				'comments_locked' => 'n',
-			)
-		);
+		return $table->insert(array(
+			'type' => $type,
+			'itemId' => (string) $itemId,
+			'description' => $description,
+			'name' => $name,
+			'href' => $href,
+			'created' => (int) $tikilib->now,
+			'hits' => 0,
+			'comments_locked' => 'n',
+		));
 	}
 
 	function get_object_id($type, $itemId)
@@ -415,10 +388,6 @@ class ObjectLib extends TikiLib
 				$info = TikiLib::lib('comments')->get_forum($object);
 				return (array('title' => $info['name']));
 
-			case 'forum post':
-				$info = TikiLib::lib('comments')->get_comment($object);
-				return (array('title' => $info['title']));
-
 			case 'tracker':
 				$info = TikiLib::lib('trk')->get_tracker($object);
 				return (array('title' => $info['name']));
@@ -458,11 +427,6 @@ class ObjectLib extends TikiLib
 		return $result->fetchRow();
 	}
 
-	/**
-	 * @param string $type
-	 * @param $id
-	 * @return void|string
-	 */
 	function get_title($type, $id)
 	{
 		switch ($type) {
@@ -470,11 +434,6 @@ class ObjectLib extends TikiLib
 				return TikiLib::lib('trk')->get_isMain_value(null, $id);
 			case 'category':
 				return TikiLib::lib('categ')->get_category_name($id);
-			case 'file':
-				return TikiLib::lib('filegal')->get_file_label($id);
-			case 'topic':
-				$meta=TikiLib::lib('art')->get_topic($id);
-				return $meta['name'];
 		}
 
 		$title = $this->table('tiki_objects')->fetchOne(

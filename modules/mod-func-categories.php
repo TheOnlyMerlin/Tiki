@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_categories_info()
 {
 	return array(
@@ -25,38 +22,32 @@ function module_categories_info()
 			'type' => array(
 				'name' => tra('Object type filter'),
 				'description' => tra('Object type filter to apply when accessing a linked category. Example values:') . ' wiki page, article, faq, blog, image gallery, image, file gallery, tracker, trackerItem, quiz, poll, survey, sheet',
-				'filter' => 'striptags',
+				'filter' => 'striptags'
 			),
 			'deep' => array(
 				'name' => tra('Deep'),
 				'description' => tra('Show subcategories objects when accessing a linked category. Possible values: on (default), off.'),
-				'filter' => 'word',
+				'filter' => 'word'
 			),
 			'categId' => array(
 				'name' => tra('Category ID'),
 				'description' => tra('Limits displayed categories to a subtree of categories starting with the category with the given ID. Example value: 11. Default: 0 (don\'t limit display).'),
-				'filter' => 'int',
-				'profile_reference' => 'category',
+				'filter' => 'int'
 			),
 			'categParentIds' => array(
 				'name' => tra('Show these categories and their children'),
 				'description' => tra('Show only these categories and the immediate child categories of these in the order the parameter specifies. Example values: 3,5,6.'),
-				'filter' => 'striptags',
-				'profile_reference' => 'category',
+				'filter' => 'striptags'
 			),
 			'selflink' => array(
 				'name' => tra('Category links to a page named as the category'),
 				'description' => 'y|n .'.tra('If y, category links to a page named as the category'),
-				'filter' => 'alpha',
+				'filter' => 'alpha'
 			),
 		),
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_categories($mod_reference, &$module_params)
 {
 	global $smarty, $prefs;
@@ -64,7 +55,7 @@ function module_categories($mod_reference, &$module_params)
 	global $categlib; include_once ('lib/categories/categlib.php');
 	if (isset($module_params['type'])) {
 		$type = $module_params['type'];
-		$urlEnd = 'type='.urlencode($type);
+		$urlEnd = '&amp;type='.urlencode($type);
 	} else {
 		$type = '';
 		$urlEnd = '';
@@ -73,10 +64,7 @@ function module_categories($mod_reference, &$module_params)
 		$deep = $module_params['deep'];
 	else
 		$deep= 'on';
-	if (empty($urlEnd)) {
-		$urlEnd .= '&amp;';
-	}
-	$urlEnd .= "deep=$deep";
+	$urlEnd .= "&amp;deep=$deep";
 	$name = "";
 
 
@@ -116,14 +104,14 @@ function module_categories($mod_reference, &$module_params)
 		if (isset($module_params['selflink']) && $module_params['selflink'] == 'y') {
 			$url = filter_out_sefurl('tiki-index.php?page=' . urlencode($cat['name']));
 		} else {
-			$url = filter_out_sefurl('tiki-browse_categories.php?parentId=' . $cat['categId'], 'category', $cat['name'], true) .$urlEnd;
+			$url = filter_out_sefurl('tiki-browse_categories.php?parentId=' . $cat['categId'], 'category', $cat['name']) .$urlEnd;
 		}
 		$tree_nodes[] = array(
 			"id" => $cat["categId"],
 			"parent" => $cat["parentId"],
 			'parentId' => $cat['parentId'],
 			'categId' => $cat['categId'],
-			"data" => '<span style="float: left; cursor: pointer; visibility: hidden;" class="ui-icon ui-icon-triangle-1-e"></span><a class="catname" href="'.$url.'">' . htmlspecialchars($cat['name']) . '</a><br />'
+			"data" => '<a class="catname" href="'.$url.'">' . htmlspecialchars($cat['name']) . '</a><br />'
 		);
 	}
 	$res = '';

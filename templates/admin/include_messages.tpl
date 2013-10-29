@@ -2,7 +2,7 @@
 
 <form action="tiki-admin.php?page=messages" method="post" name="messages">
 	<div class="heading input_submit_container" style="text-align: right">
-		<input type="submit" class="btn btn-default" name="messagesprefs" value="{tr}Change preferences{/tr}" />
+		<input type="submit" name="messagesprefs" value="{tr}Change preferences{/tr}" />
 	</div>
 
 	<fieldset class="admin">
@@ -19,10 +19,9 @@
 		{preference name=messu_archive_size}
 		{preference name=messu_sent_size}
 		{preference name=user_selector_realnames_messu}
-		{preference name=messu_truncate_internal_message}
 
 	</fieldset>
 	<div class="heading input_submit_container" style="text-align: center">
-		<input type="submit" class="btn btn-default" name="messagesprefs" value="{tr}Change preferences{/tr}" />
+		<input type="submit" name="messagesprefs" value="{tr}Change preferences{/tr}" />
 	</div>
 </form>

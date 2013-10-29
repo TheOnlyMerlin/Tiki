@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -385,6 +382,21 @@ if (!empty($multiprint_pages)) {
 		$smarty->assign('notable', 'y');
 		$smarty->assign('cat_tree', $categlib->generate_cat_tree($categories, true, $selectedCategories));
 		$smarty->assign_by_ref('categories', $categories);
+
+		if ((isset($prefs['wiki_list_categories']) && $prefs['wiki_list_categories'] == 'y')
+				|| (isset($prefs['wiki_list_categories_path']) && $prefs['wiki_list_categories_path'] == 'y')
+		) {
+			foreach ($listpages['data'] as $i => $check) {
+				$cats = $categlib->get_object_categories('wiki page', $check['pageName']);
+				$listpages['data'][$i]['categpath'] = array();
+				$listpages['data'][$i]['categname'] = array();
+				foreach ($cats as $cat) {
+					$listpages['data'][$i]['categpath'][] = $cp = $categlib->get_category_path_string($cat);
+					if ($s = strrchr($cp, ':')) $listpages['data'][$i]['categname'][] = substr($s, 1);
+					else $listpages['data'][$i]['categname'][] = $cp;
+				}
+			}
+		}
 	}
 
 	if ($prefs['feature_multilingual'] == 'y') {
@@ -403,14 +415,6 @@ if (!empty($multiprint_pages)) {
 				'title' => $p['pageName'],
 				'href' => 'tiki-index.php?page=' . urlencode($p['pageName']),
 			);
-		}
-	}
-
-	foreach ($listpages['data'] as & $p) {
-		if ($userlib->object_has_one_permission($p['pageName'], 'wiki page')) {
-			$p['perms_active'] = 'y';
-		} else {
-			$p['perms_active'] = 'n';
 		}
 	}
 
@@ -465,10 +469,6 @@ if (!empty($multiprint_pages)) {
 	}
 }
 
-/**
- * @param $filter
- * @return mixed
- */
 function setLangFilter($filter)
 {
 	global $smarty, $prefs, $multilinguallib;
@@ -486,9 +486,6 @@ function setLangFilter($filter)
 	return $filter;
 }
 
-/**
- * @param $query
- */
 function possibly_look_for_page_aliases($query)
 {
 	global $prefs, $smarty, $semanticlib, $_REQUEST;

@@ -1,17 +1,11 @@
 <?php
-/**
- * Tiki's Installation script.
- * 
- * Used to install a fresh Tiki instance, to upgrade an existing Tiki to a newer version and to test sendmail.
- *
- * @package TikiWiki 
- * @copyright (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project. All Rights Reserved. See copyright.txt for details and a complete list of authors.
- * @licence Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
- */
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// 
+// All Rights Reserved. See copyright.txt for details and a complete list of authors.
+// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 $in_installer = 1;
-define('TIKI_IN_INSTALLER', 1);
 if (!isset($title)) $title = 'Tiki Installer';
 if (!isset($content)) $content = 'No content specified. Something went wrong.<br/>Please tell your administrator.<br/>If you are the administrator, you may want to check for / file a bug report.';
 if (!isset($dberror)) $dberror = false;
@@ -30,7 +24,15 @@ if (version_compare(PHP_VERSION, '5.3.0', '<')) {
 
 require_once('lib/init/initlib.php');
 $tikipath = dirname(__FILE__) . '/';
+TikiInit::prependIncludePath($tikipath.'lib/pear');
+TikiInit::appendIncludePath($tikipath.'lib/core');
 TikiInit::appendIncludePath($tikipath);
+require_once 'Zend/Loader/Autoloader.php';
+Zend_Loader_Autoloader::getInstance()
+	->registerNamespace('TikiFilter')
+	->registerNamespace('DeclFilter')
+	->registerNamespace('JitFilter')
+	->registerNamespace('TikiDb');
 
 include_once('db/tiki-db.php');	// to set up multitiki etc if there
 
@@ -56,6 +58,9 @@ $session_params = session_get_cookie_params();
 session_set_cookie_params($session_params['lifetime'], $tikiroot);
 unset($session_params);
 session_start();
+
+require_once 'lib/core/TikiDb/Adodb.php';
+require_once 'lib/core/TikiDb/Pdo.php';
 
 // Were database details defined before? If so, load them
 if (file_exists('db/'.$tikidomainslash.'local.php')) {
@@ -98,21 +103,14 @@ if (isset($_SESSION['accessible'])) {
 							<form method="post" action="' . $_SERVER['REQUEST_URI'] . '">
 								<p><label for="dbuser">Database username</label>: <input type="text" id="dbuser" name="dbuser" /></p>
 								<p><label for="dbpass">Database password</label>: <input type="password" id="dbpass" name="dbpass" /></p>
-								<p><input type="submit" class="btn btn-default" value=" Validate and Continue " /></p>
+								<p><input type="submit" value=" Validate and Continue " /></p>
 							</form>
 							<p>&nbsp;</p>';
 	createPage($title, $content);
 }
 
 
-/**
- * creates the HTML page to be displayed.
- * 
- * Tiki may not have been installed when we reach here, so we can't use our templating system yet. 
- * 
- * @param string $title   page Title
- * @param mixed  $content page Content
- */
+
 function createPage($title, $content)
 {
 	echo <<<END
@@ -132,7 +130,7 @@ function createPage($title, $content)
 				<div class="clearfix fixedwidth header_fixedwidth">
 					<header id="header" class="header">
 						<div class="content clearfix modules" id="top_modules" style="display: table; width: 990px;">
-							<div class="sitelogo">
+							<div id="sitelogo">
 								<img alt="Site Logo" src="img/tiki/Tiki_WCG.png" style="margin-bottom: 10px;" />
 							</div>
 						</div>

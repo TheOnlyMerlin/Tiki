@@ -48,9 +48,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 
 require_once('lib/objectlib.php');
 
-/**
- *
- */
 class FreetagLib extends ObjectLib
 {
 	// The fields below should be tiki preferences
@@ -200,13 +197,10 @@ class FreetagLib extends ObjectLib
 																		, $sort_mode = 'name_asc'
 																		, $find = ''
 																		, $broaden = 'n'
-																		, $objectId = null
-
 																		)
 	{
 
 		global $tiki_p_admin, $user, $smarty, $prefs;
-		$objectIds = explode(':',$objectId);
 		if (!isset($tagArray) || !is_array($tagArray)) {
 			return false;
 		}
@@ -322,17 +316,14 @@ class FreetagLib extends ObjectLib
 		$permMap = TikiLib::lib('object')->map_object_type_to_permission();
 		while ($row = $result->fetchRow()) {
 			$ok = false;
-			if ($row['type'] == 'blog post') {
+			if ($tiki_p_admin == 'y') {
+				$ok = true;
+			} elseif ($row['type'] == 'blog post') {
 				$bloglib = TikiLib::lib('blog');
 				$post_info = $bloglib->get_post($row['itemId']);
-				if (!empty($objectId) && !in_array($post_info['blogId'],$objectIds) ) {
-				} elseif ($tiki_p_admin == 'y' || $this->user_has_perm_on_object($user, $post_info['blogId'], 'blog', 'tiki_p_read_blog')) {
+				if ($this->user_has_perm_on_object($user, $post_info['blogId'], 'blog', 'tiki_p_read_blog')) {
 					$ok = true;
-					$row['parent_object_id'] = $post_info['blogId'];
-					$row['parent_object_type'] = 'blog';
 				}
-			} elseif ($tiki_p_admin == 'y') {
-                                $ok = true;
 			} elseif ($this->user_has_perm_on_object($user, $row['itemId'], $row['type'], $permMap[$row['type']])) {
 				$ok = true;
 			}
@@ -806,11 +797,7 @@ class FreetagLib extends ObjectLib
 		return $this->getOne($query, array($tag));
 	}
 
-    /**
-     * @param $tagId
-     * @return mixed
-     */
-    function get_tag_from_id($tagId)
+	function get_tag_from_id($tagId)
 	{
 		return $this->table('tiki_freetags')->fetchOne('tag', array('tagId' => $tagId));
 	}
@@ -984,53 +971,30 @@ class FreetagLib extends ObjectLib
 	 *	 - 'count' => The number of objects tagged with this tag.
 	 */
 
-	function get_most_popular_tags($user = '', $offset = 0, $maxRecords = 25, $type=null, $objectId=null, $tsort_mode='tag_asc')
+	function get_most_popular_tags($user = '', $offset = 0, $maxRecords = 25, $tsort_mode = 'tag_asc')
 	{
 
-		$objectIds = explode(':',$objectId);
-		$join = '';
-		$mid = ''; $mid2 = '';
-		$bindvals = array();
-		if (!empty($type) || !empty($objectId)) {
-			$join .= ' LEFT JOIN `tiki_objects` tob on (tob.`objectId`= tfo.`objectId`)';
-			$mid .= ' AND `type` = ?';
-			$mid2 = 'WHERE `type`=?';
-			$bindvals[] = $type;
-			if (!empty($objectId)) {
-				$join .= ' LEFT JOIN `tiki_blog_posts` tbp on (tob.`itemId` = tbp.`postId`)';
-				if (count($objectIds) == 1) {
-					$mid .= ' AND tbp.`blogId` = ?';
-					$mid2 .= ' AND tbp.`blogId` = ?';
-					$bindvals[] = intval($objectId);
-				} else {	// There is more than one blog Id
-					$multimid = array();
-					foreach ( $objectIds as $objId ) {
-						$multimid[] = ' tbp.`blogId` = ? ';
-						$bindvals[] = intval($objId);
-					}
-					$mid .= ' AND ( ' . implode( ' OR ', $multimid ) . ' ) ';
-					$mid2 .= ' AND ( ' . implode( ' OR ', $multimid ) . ' ) ';
-				}
-			}
-		}
+		// get top tag popularity
 		$query = 'SELECT COUNT(*) as count'
-						. ' FROM `tiki_freetagged_objects` tfo'
-						. $join . $mid2
+						. ' FROM `tiki_freetagged_objects` o'
 						. ' GROUP BY `tagId`'
 						. ' ORDER BY count DESC'
 						;
 
-		$top = $this->getOne($query, $bindvals);
+		$top = $this->getOne($query);
+
+		$bindvals = array();
 
 		if (isset($user) && (!empty($user))) {
-			$mid .= ' AND `user` = ?';
+			$mid = 'AND `user` = ?';
 			$bindvals[] = $user;
+		} else {
+			$mid = '';
 		}
 
 		$query = 'SELECT `tag`, COUNT(*) as count'
-			. ' FROM `tiki_freetags` tf, `tiki_freetagged_objects` tfo'
-			. $join
-		   				. ' WHERE tf.`tagId`= tfo.`tagId` ' . $mid
+						. ' FROM `tiki_freetags` tf, `tiki_freetagged_objects` tfo'
+						. ' WHERE tf.`tagId`= tfo.`tagId` ' . $mid
 						. ' GROUP BY `tag`'
 						. ' ORDER BY count DESC, tag ASC'
 						;
@@ -1052,15 +1016,17 @@ class FreetagLib extends ObjectLib
 
 			$ret[] = $row;
 		}
+
 		switch ($tsort_mode) {
 			case 'count_desc':
-				array_multisort($count, SORT_DESC, $tag, SORT_ASC, $ret);
+				array_multisort($count, SORT_DESC,$tag, SORT_ASC, $ret);
 				break;
 			case 'tag_asc':
 			default:
 				array_multisort($tag, SORT_ASC, $count, SORT_DESC, $ret);
 				break;
 		}
+
 		return $ret;
 	}
 
@@ -1230,16 +1196,7 @@ class FreetagLib extends ObjectLib
 	 * Once you have enough tags, the results are quite good. It is very organic
 	 * as tagging is human-technology.
 	 */
-    /**
-     * @param $type
-     * @param $objectId
-     * @param int $maxResults
-     * @param null $targetType
-     * @param string $with
-     * @param null $minCommon
-     * @return array
-     */
-    function get_similar( $type, $objectId, $maxResults = 10, $targetType = null, $with = 'freetag', $minCommon=null )
+	function get_similar( $type, $objectId, $maxResults = 10, $targetType = null, $with = 'freetag', $minCommon=null )
 	{
 		global $prefs;
 		if ($with == 'category') {
@@ -1637,10 +1594,7 @@ class FreetagLib extends ObjectLib
 		return $tags;
 	}
 
-    /**
-     * @return Zend_Tag_Cloud
-     */
-    function get_cloud()
+	function get_cloud()
 	{
 		$query = "SELECT tag title, COUNT(*) weight, f.tagId FROM tiki_freetags f INNER JOIN tiki_freetagged_objects fo ON f.tagId = fo.tagId GROUP BY f.tagId";
 		$result = $this->fetchAll($query);

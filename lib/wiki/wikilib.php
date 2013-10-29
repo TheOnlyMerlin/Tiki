@@ -82,7 +82,7 @@ class WikiLib extends TikiLib
 			}
 			$ret = array();
 			foreach ($cache_page_contributors['contributors'] as $res) {
-				if (isset($res['user']) && $res['user'] != $last) {
+				if ($res['user'] != $last) {
 					$ret[] = $res;
 				}
 			}
@@ -144,10 +144,6 @@ class WikiLib extends TikiLib
 	// See http://dev.tiki.org/Bad+characters
 	public function contains_badchars($name)
 	{
-		if (preg_match('/^tiki\-(\w+)\-(\w+)$/', $name)) {
-			return true;
-		}
-
 		$badchars = $this->get_badchars();
 		$badchars = preg_quote($badchars, '/');
 		return preg_match("/[$badchars]/", $name);
@@ -190,7 +186,7 @@ class WikiLib extends TikiLib
 
 	// This method renames a wiki page
 	// If you think this is easy you are very very wrong
-	public function wiki_rename_page($oldName, $newName, $renameHomes = true, $user = '')
+	public function wiki_rename_page($oldName, $newName, $renameHomes = true)
 	{
 		global $prefs, $tikilib;
 		// if page already exists, stop here
@@ -206,10 +202,7 @@ class WikiLib extends TikiLib
 			throw new Exception("Bad characters", 1);
 		}
 
-		// The pre- and post-tags are eating away the max usable page name length
-		//	Use ~ instead of Tmp. Shorter
-		// $tmpName = "TmP".$newName."TmP";
-		$tmpName = "~".$newName."~";
+		$tmpName = "TmP".$newName."TmP";
 
 		// 1st rename the page in tiki_pages, using a tmpname inbetween for
 		// rename pages like ThisTestpage to ThisTestPage
@@ -248,7 +241,10 @@ class WikiLib extends TikiLib
 				//$data=addslashes(str_replace($oldName,$newName,$info['data']));
 				$data = $info['data'];
 			} elseif ($type == 'forum post' || substr($type, -7) == 'comment') {
-				$comment_info = TikiLib::lib('comments')->get_comment($objectId);
+				include_once ('lib/comments/commentslib.php');
+				global $dbTiki;
+				$commentslib = new Comments($dbTiki);
+				$comment_info = $commentslib->get_comment($objectId);
 				$data = $comment_info['data'];
 			}
 
@@ -320,7 +316,7 @@ class WikiLib extends TikiLib
 		$query = 'update `tiki_objects` set `itemId`=?,`name`=?,`href`=? where `itemId`=? and `type`=?';
 		$this->query($query, array( $newName, $newName, $newcathref, $oldName, 'wiki page'));
 
-		$this->rename_object('wiki page', $oldName, $newName, $user);
+		$this->rename_object('wiki page', $oldName, $newName);
 
 		// update categories if new name has a category default
 		$categlib = TikiLib::lib('categ');
@@ -441,11 +437,6 @@ class WikiLib extends TikiLib
 			$parse_options['suppress_icons'] = true;
 		}
 
-		if ($prefs['wysiwyg_inline_editing'] === 'y' && getCookie('wysiwyg_inline_edit', "preview", false)) {
-			$parse_options['ck_editor'] = true;
-			$parse_options['suppress_icons'] = true;
-		}
-
 		$wiki_cache = ($prefs['feature_wiki_icache'] == 'y' && !is_null($info['wiki_cache'])) ? $info['wiki_cache'] : $prefs['wiki_cache'];
 
 		if ($wiki_cache > 0 && empty($_REQUEST['offset']) && empty($_REQUEST['itemId']) && (empty($user) || $prefs['wiki_cache'] == 0) ) {
@@ -533,7 +524,6 @@ class WikiLib extends TikiLib
 		if ($prefs['feature_score'] == 'y') {
 			$this->score_event($user, 'wiki_attach_file');
 		}
-		$attId = 0;
 		if ($prefs['feature_user_watches'] = 'y') {
 			include_once('lib/notifications/notificationemaillib.php');
 			$query = 'select `attId` from `tiki_wiki_attachments` where `page`=? and `filename`=? and `created`=? and `user`=?';
@@ -546,9 +536,8 @@ class WikiLib extends TikiLib
 				$query = 'select `attId` from `tiki_wiki_attachments` where `page`=? and `filename`=? and `created`=? and `user`=?';
 				$attId = $this->getOne($query, array($page, $name, $now, $user));
 			}
-			$logslib->add_action('Created', $attId, 'wiki page attachment', '', $user);
+			$logslib->add_action('Created', $attId, 'wiki page attachment');
 		}
-		return $attId;
 	}
 
 	public function get_wiki_attach_file($page, $name, $type, $size)
@@ -1011,37 +1000,21 @@ class WikiLib extends TikiLib
 
 		if ($with_help) {
 			global $cachelib, $prefs;
-			$commonKey = '{{{area-id}}}';
-			$cachetag = 'plugindesc' . $this->get_language() . '_js=' . $prefs['javascript_enabled'];
+			$cachetag = 'plugindesc' . $this->get_language() . $area_id . '_js=' . $prefs['javascript_enabled'];
 			if (! $plugins = $cachelib->getSerialized($cachetag) ) {
 				$list = $parserlib->plugin_get_list();
 
 				$plugins = array();
 				foreach ($list as $name) {
-					$pinfo['help'] = $this->get_plugin_description($name, $enabled, $commonKey);
+					$pinfo['help'] = $this->get_plugin_description($name, $enabled, $area_id);
 					$pinfo['name'] = TikiLib::strtoupper($name);
 
 					if ( $enabled ) {
-						$info = $parserlib->plugin_info($name);
-						$pinfo['title'] = $info['name'];
-
 						$plugins[] = $pinfo;
 					}
 				}
-				usort(
-					$plugins,
-					function($ar1, $ar2){
-						return strcasecmp($ar1['title'], $ar2['title']);		// sort by translated name
-					}
-				);
 				$cachelib->cacheItem($cachetag, serialize($plugins));
 			}
-			array_walk_recursive(
-				$plugins,
-				function (& $item) use ($commonKey, $area_id) {
-					$item = str_replace($commonKey, $area_id, $item);
-				}
-			);
 			return $plugins;
 		} else {
 			// Only used by PluginManager ... what is that anyway?
@@ -1257,62 +1230,6 @@ class WikiLib extends TikiLib
 		return $ret;
 	}
 
-	/*
-	*	get_page_auto_toc
-	*	Get the auto generated TOC setting for the page
-	*	@return
-	*		+1 page_auto_toc is explicitly set to true
-	*		0  page_auto_toc is not set for page. Use global setting
-	*		-1 page_auto_toc is explicitly set to false
-	*/
-	public function get_page_auto_toc($pageName)
-	{
-		$attributes = TikiLib::lib('attribute')->get_attributes('wiki page', $pageName);
-		$rc = 0;
-		if (!isset($attributes['tiki.wiki.autotoc'])) {
-			return 0;
-		}
-		$value = intval($attributes['tiki.wiki.autotoc']);
-		if($value > 0)
-			return 1;
-		else
-			return -1;
-	}
-
-	public function set_page_auto_toc($pageName, $isAutoToc)
-	{
-		TikiLib::lib('attribute')->set_attribute('wiki page', $pageName, 'tiki.wiki.autotoc', $isAutoToc);
-	}
-
-
-
-	/*
-	*	get_page_hide_title
-	*	Allow the title to be hidden for individual wiki pages
-	*	@return
-	*		+1 page_hide_title is explicitly set to true
-	*		0  page_hide_title is not set for page. Use global setting
-	*		-1 page_hide_title is explicitly set to false
-	*/
-	public function get_page_hide_title($pageName)
-	{
-		$attributes = TikiLib::lib('attribute')->get_attributes('wiki page', $pageName);
-		$rc = 0;
-		if (!isset($attributes['tiki.wiki.page_hide_title'])) {
-			return 0;
-		}
-		$value = intval($attributes['tiki.wiki.page_hide_title']);
-		if($value > 0)
-			return 1;
-		else
-			return -1;
-	}
-
-	public function set_page_hide_title($pageName, $isHideTitle)
-	{
-		TikiLib::lib('attribute')->set_attribute('wiki page', $pageName, 'tiki.wiki.page_hide_title', $isHideTitle);
-	}
-
 	public function get_without_namespace($pageName)
 	{
 		global $prefs;
@@ -1399,77 +1316,6 @@ class WikiLib extends TikiLib
 		}
 
 		return array();
-	}
-
-	// Page display options
-	//////////////////////////
-	public function processPageDisplayOptions()
-	{
-		global	$prefs, $headerlib;
-
-		$currPage = isset($_REQUEST['page']) ? $_REQUEST['page'] : '';
-		if (!empty($currPage) &&
-			(strstr($_SERVER["SCRIPT_NAME"], "tiki-editpage.php") === false) &&
-			(strstr($_SERVER["SCRIPT_NAME"], 'tiki-pagehistory.php') === false)) {
-
-			// Determine the auto TOC setting
-			$isAutoTocActive = isset($prefs['wiki_auto_toc']) ? $prefs['wiki_auto_toc'] === 'y' : false;
-			if ($isAutoTocActive) {
-				$wikilib = TikiLib::lib('wiki');
-				$isPageAutoToc = $wikilib->get_page_auto_toc($currPage);
-				if ($isPageAutoToc != 0) {
-					// Use page specific setting
-					$isAutoTocActive = $isPageAutoToc > 0 ? true : false;
-				}
-				// Add Auto TOC if enabled
-				if ($isAutoTocActive) {
-					// Enable Auto TOC
-					$headerlib->add_jsfile('lib/jquery_tiki/autoToc.js');
-
-					// Show/Hide the static inline TOC
-					$isAddInlineToc = isset($prefs['wiki_inline_auto_toc']) ? $prefs['wiki_inline_auto_toc'] === 'y' : false;
-					if ($isAddInlineToc) {
-						// Enable static, inline TOC
-						$headerlib->add_css('div#outerToc-static {display: block;}');
-
-						// Postion TOC top/left/right
-						$tocPos = !empty($prefs['wiki_inline_toc_pos']) ? $prefs['wiki_inline_toc_pos'] : 'right';
-						switch(strtolower($tocPos)) {
-							case 'top':
-								$headerlib->add_css('div#outerToc-static {border: 0px;}');
-								break;
-							case 'left':
-								$headerlib->add_css('div#outerToc-static {float: left;}');
-								break;
-							case 'right':
-							default:
-								$headerlib->add_css('div#outerToc-static {float: right;}');
-								break;
-						}
-					} else {
-						$headerlib->add_css('div#outerToc-static {display: none;}');
-					}
-				}
-			}
-
-			// Hide title per page
-			$isHideTitlePerPage = isset($prefs['wiki_page_hide_title']) ? $prefs['wiki_page_hide_title'] === 'y' : false;
-			if ($isHideTitlePerPage) {
-				$isHideTitle = false;
-				if (!empty($currPage)) {
-					$wikilib = TikiLib::lib('wiki');
-					$isPageHideTitle = $wikilib->get_page_hide_title($currPage);
-					if ($isPageHideTitle != 0) {
-						// Use page specific setting
-						$isHideTitle = $isPageHideTitle < 0 ? true : false;
-					}
-				}
-				if ($isHideTitle) {
-					$headerlib->add_css('.pagetitle {display: none;}');
-					$headerlib->add_css('.titletop {display: none;}');
-				}
-			}
-		}
 	}
 }
 

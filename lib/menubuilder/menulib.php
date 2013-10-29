@@ -98,7 +98,7 @@ class MenuLib extends TikiLib
 	public function reset_app_menu()
 	{
 		$tiki_sql = file_get_contents('db/tiki.sql');
-		preg_match_all('/^(?:INSERT|UPDATE) (?:INTO )?`?tiki_menu_options`? .*$/mi', $tiki_sql, $matches);
+		preg_match_all('/^INSERT (?:INTO )?`tiki_menu_options` .*$/mi', $tiki_sql, $matches);
 
 		if ($matches && count($matches[0])) {
 			$menuoptions = $this->table('tiki_menu_options');
@@ -607,7 +607,7 @@ class MenuLib extends TikiLib
 			$conditions['userlevel'] = $options->lesserThan($level + 1);
 		}
 
-		$menu = $this->get_menu($menuId);
+		$menu = $this->get_menu( $menuId );
 
 		$sort = $options->expr($this->convertSortMode($sort_mode));
 		$result = $options->fetchAll($options->all(), $conditions, $maxRecords, $offset, $sort);

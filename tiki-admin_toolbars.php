@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -25,7 +22,7 @@ require_once 'tiki-setup.php';
 require_once 'lib/toolbars/toolbarslib.php';
 
 $access->check_permission('tiki_p_admin');
-$access->check_feature(array('javascript_enabled', 'feature_jquery_ui'));
+$access->check_feature('javascript_enabled');
 
 $sections = array( 'global' => tra('Global'), 'admin' => tra('Admin'));
 $sections2 = array();

@@ -32,53 +32,47 @@
 					{else}
 						<h4 class="title">{$comment.title}</h4>
 						<span class="avatar">{$comment.userName|avatarize}</span>
-						<div class="author_info">{tr _0=$comment.userName|userlink _1=$comment.commentDate|tiki_long_datetime}Comment posted by %0 on %1{/tr}</div>
+						<div class="author_info">{tr _0=$comment.userName|userlink _1=$comment.commentDate|tiki_long_datetime}Comment posted by %0 on %1{/tr}</div>						
 					{/if}
 					<div class="body">
 						{$comment.parsed}
 					</div>
 
-					<div class="buttons comment-form">
-						<table>
-							<tr>
-								{if $allow_post && $comment.locked neq 'y'}
-								<td>
-									<div class="button">{self_link controller=comment action=post type=$type objectId=$objectId parentId=$comment.threadId}{tr}Reply{/tr}{/self_link}</div>
-								</td>
-								{/if}
-								<td>
-								{if $comment.can_edit}
-									<div class="button">{self_link controller=comment action=edit threadId=$comment.threadId}{tr}Edit{/tr}{/self_link}</div>
-								{/if}
-								</td>
+					<table style="width: 100%;">
+						<tr>
+							{if $allow_post && $comment.locked neq 'y'}
+							<td>
+								<div class="button comment-form">{self_link controller=comment action=post type=$type objectId=$objectId parentId=$comment.threadId}{tr}Reply{/tr}{/self_link}</div>
+							</td>
+							{/if}
 
-								{if $prefs.wiki_comments_simple_ratings eq 'y'}
-								<td>
-									<form class="commentRatingForm" method="post" action="" style="float: right;">
-										{rating type="comment" id=$comment.threadId}
-										<input type="hidden" name="id" value="{$comment.threadId}" />
-										<input type="hidden" name="type" value="comment" />
-									</form>
-									{jq}
-										var crf = $('form.commentRatingForm').submit(function() {
-											var vals = $(this).serialize();
-											$.modal(tr('Loading...'));
-											$.post($.service('rating', 'vote'), vals, function() {
-												$.modal();
-												$.notify(tr('Thanks for rating!'));
-											});
-											return false;
+							{if $prefs.wiki_comments_simple_ratings eq 'y'}
+							<td>
+								<form class="commentRatingForm" method="post" action="" style="float: right;">
+									{rating type="comment" id=$comment.threadId}
+									<input type="hidden" name="id" value="{$comment.threadId}" />
+									<input type="hidden" name="type" value="comment" />
+								</form>
+								{jq}
+									var crf = $('form.commentRatingForm').submit(function() {
+										var vals = $(this).serialize();
+										$.modal(tr('Loading...'));
+										$.post($.service('rating', 'vote'), vals, function() {
+											$.modal();
+											$.notify(tr('Thanks for rating!'));
 										});
-									{/jq}
-								</td>
-								{/if}
-							</tr>
-						</table>
-					</div>
+										return false;
+									});
+								{/jq}
+							</td>
+							{/if}
+						</tr>
+					</table>
+
 					{if $comment.replies_info.numReplies gt 0}
 						{include file='comment/list.tpl' comments=$comment.replies_info.replies cant=$comment.replies_info.numReplies parentId=$comment.threadId}
 					{/if}
-				</article>
+				</article>	
 			</li>
 		{/foreach}
 	</ol>
@@ -89,7 +83,7 @@
 {/if}
 
 {if ! $parentId && $allow_post}
-	<div class="button buttons comment-form {if $prefs.wiki_comments_form_displayed_default eq 'y'}autoshow{/if}">{self_link controller=comment action=post type=$type objectId=$objectId}{tr}Post new comment{/tr}{/self_link}</div>
+	<div class="button comment-form">{self_link controller=comment action=post type=$type objectId=$objectId}{tr}Post new comment{/tr}{/self_link}</div>
 {/if}
 
 {if ! $parentId && $prefs.feature_wiki_paragraph_formatting eq 'y'}
@@ -100,3 +94,112 @@
 var ajax_url = '{$base_url}';
 var objectId = '{$objectId}';
 </script>
+{if $prefs.wiki_comments_form_displayed_default eq 'y'}
+{jq}
+function comment_load(url) {
+	$('#top .note-list').remove();
+
+	this.each(function () {
+		var comment_container = this;
+		$(this).load(url, function (response, status) {
+			$(this).show();
+			$('.comment.inline dt:contains("note")', this)
+				.closest('.comment')
+				.addnotes( $('#top') );
+
+            if(jqueryTiki.useInlineComment) {
+				$('#top').noteeditor($('.comment-form:last a', comment_container), '#note-editor-comment');
+			} 
+
+			$('.comment-form a', this).click(function () {
+				$(this).parent().empty().removeClass('button').load($(this).attr('href'), function () {
+					var form = $('form', this).submit(function () {
+						var errors;
+						$.post(form.attr('action'), $(this).serialize(), function (data, st) {
+							if (data.threadId) {
+								$(comment_container).empty().comment_load(url);
+								$comm_counter = $('span.count_comments');
+								if ($comm_counter.length != 0) {
+									var comment_count = parseInt($comm_counter.text()) + 1;
+									$comm_counter.text(comment_count);
+								}
+							} else {
+								errors = $('ol.errors', form).empty();
+								if (! errors.length) {
+									$(':submit', form).after(errors = $('<ol class="errors"/>'));
+								}
+								
+								$.each(data.errors, function (k, v) {
+									errors.append($('<li/>').text(v));
+								});
+							}
+						}, 'json');
+						return false;
+					});
+
+					//allow syntax highlighting
+					if ($.fn.flexibleSyntaxHighlighter) {
+						// console.log(form.find('textarea.wikiedit'));
+						form.find('textarea.wikiedit').flexibleSyntaxHighlighter();
+					}
+				});
+				return false;
+			});
+
+			$('.button.comment-form.autoshow a').click(); // allow autoshowing of comment forms through autoshow css class 
+
+			$('.confirm-prompt', this).requireConfirm({
+				success: function (data) { 
+					if (data.status === 'DONE') {
+						$(comment_container).empty().comment_load(url);
+						$comm_counter = $('span.count_comments');
+						if ($comm_counter.length != 0) {
+							var comment_count = parseInt($comm_counter.text()) - 1;
+							$comm_counter.text(comment_count);
+						}
+					}
+				}
+			});
+		});
+	});
+
+	return this;
+};
+
+$this = $('.comment-form').last().find('a');
+$this.parent().empty().removeClass('button').load($this.attr('href'), function () {
+	var form = $('form', this).submit(function () {
+		var errors;
+		$.post(form.attr('action'), $(this).serialize(), function (data, st) {
+			if (data.threadId) {
+				$("#comment-container").empty().comment_load($.service('comment', 'list', {
+					type: data.type,
+					objectId: data.objectId
+				});
+				$comm_counter = $('span.count_comments');
+				if ($comm_counter.length != 0) {
+					var comment_count = parseInt($comm_counter.text()) + 1;
+					$comm_counter.text(comment_count);
+				}
+			} else {
+				errors = $('ol.errors', form).empty();
+				if (! errors.length) {
+					$(':submit', form).after(errors = $('<ol class="errors"/>'));
+				}
+				
+				$.each(data.errors, function (k, v) {
+					errors.append($('<li/>').text(v));
+				});
+			}
+		}, 'json');
+		return false;
+	});
+
+	//allow syntax highlighting
+	if ($.fn.flexibleSyntaxHighlighter) {
+		// console.log(form.find('textarea.wikiedit'));
+		form.find('textarea.wikiedit').flexibleSyntaxHighlighter();
+	}
+});
+{/jq}
+{/if}

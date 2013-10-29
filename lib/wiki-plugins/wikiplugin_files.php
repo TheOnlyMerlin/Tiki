@@ -7,7 +7,6 @@
 
 function wikiplugin_files_info()
 {
-	global $prefs;
 	return array(
 		'name' => tra('Files'),
 		'documentation' => 'PluginFiles',
@@ -21,11 +20,9 @@ function wikiplugin_files_info()
 			'galleryId' => array(
 				'required' => false,
 				'name' => tra('File Galleries ID'),
-				'description' => tra('To list only files contained in these file galleries (multiple IDs separated by colon)') .
-									($prefs['feature_use_fgal_for_user_files'] === 'y' ? '.<br> ' . tra('Or enter a username for user files (hint: enter {{user}} for current logged in user).') : ''),
+				'description' => tra('To list only files contained in these file galleries (multiple IDs separated by colon)'),
 				'default' => '',
 				'separator' => ':',
-				'profile_reference' => 'file_gallery',
 			),
 			'categId' => array(
 				'required' => false,
@@ -33,22 +30,20 @@ function wikiplugin_files_info()
 				'description' => tra('To restrict files listed to those belonging to one or more categories. Enter a single category or ID or list of them separated by colon'),
 				'default' => '',
 				'advanced' => true,
-				'profile_reference' => 'category',
 			),
 			'fileId' => array(
 				'required' => false,
 				'name' => tra('File ID'),
-				'description' => tra('To list only specified files, enter their file IDs separated by colon. If File IDs are specified here then the Gallery ID field above should be empty.'),
+				'description' => tra('To list only specified files, enter their file IDs separated by colon'),
 				'type' => 'fileId',
 				'area' => 'fgal_picker_id',
 				'default' => '',
 				'separator' => ':',
-				'profile_reference' => 'file',
 			),
 			'sort' => array(
 				'required' => false,
 				'name' => tra('Sort Order'),
-				'description' => tra('Order ascending, descending or random based on any field in the file gallery table. Default is name_asc').'. '.tra('Attributes: name, created, lastModif, filename, filesize, filetype, lastDownload'),
+				'description' => tra('Order ascending, descending or random based on any field in the file gallery table. Default is name_asc'),
 				'default' => 'name_asc',
 				'filter' => 'text'
 			),
@@ -441,18 +436,12 @@ function wikiplugin_files($data, $params)
 		$sort = 'name_asc';
 	if (isset($galleryId)) {
 		$galId = $galleryId[0];
-		if ($prefs['feature_use_fgal_for_user_files'] === 'y' && !is_numeric($galId)) {	// if not number could be a userfiles gallery
-			$galId = $filegallib->get_user_file_gallery($galId);
-			$galleryId = array($galId);
-		}
 		$gal_info = $filegallib->get_file_gallery($galId);
-		$gal_info['name'] = $filegallib->get_user_gallery_name($gal_info, $user);
-
 		if ($tiki_p_admin != 'y' && $tiki_p_admin_files_galleries != 'y' && $gal_info['user'] != $user) {
 			$p_view_file_gallery = $tikilib->user_has_perm_on_object($user, $galId, 'file gallery', 'tiki_p_view_file_gallery') ? 'y' : 'n';
 			if ($p_view_file_gallery != 'y')
 				return;
-			$p_download_files = $tikilib->user_has_perm_on_object($user, $galId, 'file gallery', 'tiki_p_download_files') ? 'y' : 'n';
+			$p_download_files = $tikilib->user_has_perm_on_object($user, $gal, 'file gallery', 'tiki_p_download_files') ? 'y' : 'n';
 			if ($showupload == 'y' && $tikilib->user_has_perm_on_object($user, $galId, 'file gallery', 'tiki_p_upload_files')) {
 				$params['showupload'] = 'y';
 			}
@@ -593,7 +582,6 @@ function wikiplugin_files($data, $params)
 	if (!empty($showname) && $showname == 'y' && !empty($showfilename) && $showfilename == 'n') $gal_info['show_name'] = 'n';
 	if (!empty($showname) && $showname == 'n' && !empty($showfilename) && $showfilename == 'y') $gal_info['show_name'] = 'f';
 	if (!empty($showname) && $showname == 'n' && !empty($showfilename) && $showfilename == 'n') $gal_info['show_name'] = '';
-	$gal_info['show_parentName'] = $show_parentName;
 	$smarty->assign_by_ref('gal_info', $gal_info);
 
 	if (isset($categId)) {

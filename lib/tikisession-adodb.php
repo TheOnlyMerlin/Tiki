@@ -17,7 +17,4 @@ unset($user_tiki);
 unset($pass_tiki);
 unset($dbs_tiki);
 ini_set('session.save_handler', 'user');
-// Force autoload
-if (! class_exists('ADODB_Session')) {
-	die('AdoDb Session missing');
-}
+include_once('lib/adodb/session/adodb-session.php');

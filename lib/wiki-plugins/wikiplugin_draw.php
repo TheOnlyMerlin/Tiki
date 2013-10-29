@@ -22,8 +22,7 @@ function wikiplugin_draw_info()
 				'filter' => 'digits',
 				'accepted' => ' ID number',
 				'default' => '',
-				'since' => '7.1',
-				'profile_reference' => 'file',
+				'since' => '7.1'
 			),
 			'width' => array(
 				'required' => false,
@@ -120,7 +119,7 @@ JQ
 		~np~
 		<form id="newDraw$drawIndex" method="get" action="tiki-edit_draw.php">
 			<p>
-				<input type="submit" class="btn btn-default" name="label" value="$label" class="newSvgButton" />$in
+				<input type="submit" name="label" value="$label" class="newSvgButton" />$in
 				<select name="galleryId">
 					$galHtml
 				</select>

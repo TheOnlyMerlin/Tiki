@@ -44,26 +44,4 @@ class Tiki_Profile_InstallHandler_RatingConfig extends Tiki_Profile_InstallHandl
 
 		return $id;
 	}
-
-	public static function export(Tiki_Profile_Writer $writer, $id)
-	{
-		if (is_array($id)) {
-			$info = $id;
-		} else {
-			$ratingconfiglib = TikiLib::lib('ratingconfig');
-			$info = $ratingconfiglib->get_configuration($id);
-		}
-
-		if (! $info) {
-			return false;
-		}
-
-		$writer->addObject('rating_config', $info['ratingConfigId'], array(
-			'name' => $info['name'],
-			'expiry' => $info['expiry'],
-			'formula' => $info['formula'],
-		));
-
-		return true;
-	}
 }

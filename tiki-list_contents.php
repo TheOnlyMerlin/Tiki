@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -9,13 +6,14 @@
 // $Id$
 
 require_once ('tiki-setup.php');
+include_once ('lib/dcs/dcslib.php');
 $auto_query_args = array('sort_mode', 'offset', 'find');
+if (!isset($dcslib)) {
+	$dcslib = new DCSLib;
+}
 //get_strings tra('Dynamic content')
 $access->check_feature('feature_dynamic_content');
 $access->check_permission('tiki_p_admin_dynamic');
-
-$dcslib = TikiLib::lib('dcs');
-
 if (isset($_REQUEST["remove"])) {
 	$access->check_authenticity();
 	$dcslib->remove_contents($_REQUEST["remove"]);

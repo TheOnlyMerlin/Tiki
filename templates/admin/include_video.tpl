@@ -9,7 +9,7 @@
 {button _text="{tr}Add New Media{/tr}" href="tiki-kaltura_upload.php"}
 
 <div class="heading input_submit_container" style="text-align: right">
-	<input type="submit" class="btn btn-default" name="video" value="{tr}Change preferences{/tr}" />
+	<input type="submit" name="video" value="{tr}Change preferences{/tr}" />
 </div>
 <fieldset class="admin">
 
@@ -34,7 +34,7 @@
 	{preference name=kaltura_secret}
 </fieldset>
 
-<br>
+<br />
 
 <fieldset class="admin">
 <legend>{tr}Kaltura Dynamic Player{/tr}</legend>
@@ -43,25 +43,24 @@
 	{$kplayerlist}
 </fieldset>
 
-<br>
+<br />
 
 <fieldset class="admin">
-	<legend>{tr}Kaltura Contribution Wizard{/tr}</legend>
+<legend>{tr}Kaltura Contribution Wizard{/tr}</legend>
 	{$kcwText}
-	<div class="adminoptionbox">{tr}You can manually edit these values in lib/videogals/standardTikiKcw.xml{/tr}<br>
-	{tr}Recreate KCW "uiConf"{/tr} {button _text='{tr}Update{/tr}' kcw_rebuild=1 _keepall='y' _auto_args='*'}</div>
+{tr}You can manually edit these values in lib/videogals/standardTikiKcw.xml{/tr}
 </fieldset>
 
-<br>
+<br />
 
 <fieldset class="admin">
 <legend>{tr}Legacy support{/tr}</legend>
 	{preference name=kaltura_legacyremix}
 </fieldset>
 
-<br>
+<br />
 
-<div align="center" style="padding:1em;"><input type="submit" class="btn btn-default" name="video" value="{tr}Change preferences{/tr}" /></div>
+<div align="center" style="padding:1em;"><input type="submit" name="video" value="{tr}Change preferences{/tr}" /></div>
 </form>
 {/tab}
 {tab name="{tr}Ustream Watershed{/tr}"}
@@ -112,6 +111,6 @@
 	{preference name=watershed_fme_key}
 </fieldset>
 
-<div align="center" style="padding:1em;"><input type="submit" class="btn btn-default" name="video" value="{tr}Change preferences{/tr}" /></div>
+<div align="center" style="padding:1em;"><input type="submit" name="video" value="{tr}Change preferences{/tr}" /></div>
 {/tab}
 {/tabset}

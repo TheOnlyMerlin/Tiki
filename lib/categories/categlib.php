@@ -68,8 +68,7 @@ class CategLib extends ObjectLib
 	}
 	function get_category_name($categId,$real=false)
 	{
-		if ( $categId === 'orphan') return tr('None');
-	    if ( $categId==0 ) return tr('Top');
+	    if ( $categId==0 ) return 'Top';
 		$query = "select `name`,`parentId` from `tiki_categories` where `categId`=?";
 		$result=$this->query($query, array((int) $categId));
 		$res = $result->fetchRow();
@@ -138,16 +137,6 @@ class CategLib extends ObjectLib
 
 		$this->remove_category_from_watchlists($categId);
 
-		$logslib = TikiLib::lib('logs');
-		$logslib->add_action(
-			'Removed',
-			$categId,
-			'category',
-			array(
-				'name' => $categoryName,
-			)
-		);
-
 		return true;
 	}
 
@@ -192,16 +181,6 @@ class CategLib extends ObjectLib
 			"action"=>"category updated","oldCategoryName"=>$oldCategoryName, "oldCategoryPath"=>$oldCategoryPath,
 			"oldDescription"=>$oldDescription, "oldParentId" => $parentId, "oldParentName" => $oldParentName);
 		$this->notify($values);
-
-		$logslib = TikiLib::lib('logs');
-		$logslib->add_action(
-			'Updated',
-			$categId,
-			'category',
-			array(
-				'name' => $name,
-			)
-		);
 	}
 
 	// Throws an Exception if the category name conflicts
@@ -236,17 +215,6 @@ class CategLib extends ObjectLib
 			"description"=>$description, "parentId" => $parentId, "parentName" => $this->get_category_name($parentId),
 			"action"=>"category created");
 		$this->notify($values);
-
-		$logslib = TikiLib::lib('logs');
-		$logslib->add_action(
-			'Created',
-			$id,
-			'category',
-			array(
-				'name' => $name,
-			)
-		);
-
 		return $id;
 	}
 
@@ -312,31 +280,7 @@ class CategLib extends ObjectLib
 		return $id;
 	}
 
-	/**
-	 * categorizePage will do the required steps to categorize a wiki page
-	 *
-	 * @param mixed $pageName Page to categorize
-	 * @param mixed $categId CategoryId
-	 * @return nothing
-	 *
-	 */	
-	function categorizePage($pageName, $categId, $user = '')
-	{
-		global $objectlib;
-
-		// Categorize the new page
-		$objectId = $objectlib->add_object('wiki page', $pageName);
-
-		$description = NULL;
-		$name = NULL;
-		$href = NULL;
-		$checkHandled = true;
-		$this->add_categorized_object('wiki page', $pageName, $description, $name, $href, $checkHandled);
-
-		$this->categorize($objectId, $categId, $user);
-	}
-
-	function categorize($catObjectId, $categId, $user = '')
+	function categorize($catObjectId, $categId)
 	{
 		global $prefs;
 		if (empty($categId)) {
@@ -353,7 +297,7 @@ class CategLib extends ObjectLib
 		$info = TikiLib::lib('object')->get_object_via_objectid($catObjectId);
 		if ($prefs['feature_actionlog'] == 'y') {
 			global $logslib; include_once('lib/logs/logslib.php');
-			$logslib->add_action('Categorized', $info['itemId'], $info['type'], "categId=$categId", $user);
+			$logslib->add_action('Categorized', $info['itemId'], $info['type'], "categId=$categId");
 		}
 		require_once 'lib/search/refresh-functions.php';
 		refresh_index($info['type'], $info['itemId']);
@@ -388,7 +332,7 @@ class CategLib extends ObjectLib
 			if ($category == false) return false;
 			return array_merge(array($categId), $category['descendants']);
 		} else {
-			return array_keys($this->getCategories(NULL, false, false));
+			return $this->getCategories(NULL, false, false);
 		}
 	}
 
@@ -488,13 +432,6 @@ class CategLib extends ObjectLib
 		return $this->filter_object_list($result, $cant, $offset, $maxRecords);
 	}
 
-	/**
-	 * @param array $result		object list
-	 * @param int $cant			size of list
-	 * @param int $offset		start of list
-	 * @param int $maxRecords	size of page - NB: -1 will check perms etc on every object and can be very slow
-	 * @return array
-	 */
 	private function filter_object_list($result, $cant, $offset, $maxRecords)
 	{
 		global $user, $prefs;
@@ -504,27 +441,14 @@ class CategLib extends ObjectLib
 		// Filter based on permissions
 		$contextMap = array( 'type' => 'type', 'object' => 'itemId' );
 		$contextMapMap = array_fill_keys(array_keys($permMap), $contextMap);
+		$result = Perms::mixedFilter(array(), 'type', 'object', $result, $contextMapMap, $permMap);
 
 		if ( $maxRecords == -1 ) {
-			$requiredResult = $result;
-		} else {
-			$requiredResult = array_slice($result, $offset, $maxRecords);
+			$maxRecords = $cant;
 		}
-		$requiredResult = Perms::mixedFilter(array(), 'type', 'object', $requiredResult, $contextMapMap, $permMap);
 
-		if ($maxRecords != -1) {	// if filtered result is less than what's there look for more
-			while (count($requiredResult) < $maxRecords && count($requiredResult) < $cant) {
-				$nextResults = array_slice($result, $maxRecords, $maxRecords - count($requiredResult));
-				$nextResults = Perms::mixedFilter(array(), 'type', 'object', $nextResults, $contextMapMap, $permMap);
-				if (empty($nextResults)) {
-					break;
-				}
-				$requiredResult = array_merge($requiredResult, $nextResults);
-			}
-		} else {
-			$cant = count($requiredResult);
-		}
-		$result = $requiredResult;
+		// Capture only the required portion
+		$result = array_slice($result, $offset, $maxRecords);
 
 		$ret = array();
 		$objs = array();
@@ -957,12 +881,12 @@ class CategLib extends ObjectLib
    	{
 		global $smarty, $prefs;
 
-		if (!isset($prefs['categorypath_excluded'])) {
+		if(!isset($prefs['categorypath_excluded'])) {
 			return false;
 		}
 
 		$excluded = array();
-		if (is_array($prefs['categorypath_excluded'])) {
+		if(is_array($prefs['categorypath_excluded'])) {
 			$excluded = $prefs['categorypath_excluded'];
 		} else {
 			$excluded = preg_split('/,/', $prefs['categorypath_excluded']);
@@ -1001,12 +925,11 @@ class CategLib extends ObjectLib
 	// Format a list of objects in the given categories, returning HTML code.
 	function get_categoryobjects($catids,$types="*",$sort='created_desc',$split=true,$sub=false,$and=false, $maxRecords = 500, $filter=null, $displayParameters = array())
 	{
-		global $smarty, $prefs, $user;
+		global $smarty, $prefs;
 
 		$typetokens = array(
 			"article" => "article",
 			"blog" => "blog",
-			"blog post" => "blog post",
 			"directory" => "directory",
 			"faq" => "faq",
 			"fgal" => "file gallery",
@@ -1026,7 +949,6 @@ class CategLib extends ObjectLib
 		$typetitles = array(
 			"article" => "Articles",
 			"blog" => "Blogs",
-			"blog post" => "Blog Post",
 			"directory" => "Directories",
 			"faq" => "FAQs",
 			"file gallery" => "File Galleries",
@@ -1092,9 +1014,6 @@ class CategLib extends ObjectLib
 		}
 		$out=$smarty->fetch("categobjects_title.tpl");
 		foreach ($catids as $id) {
-			if (!$this->user_has_perm_on_object($user, $id, 'category', 'tiki_p_view_category')) {
-				continue;
-			} 
 			$titles["$id"] = $this->get_category_name($id);
 			$objectcat = array();
 			$objectcat = $this->list_category_objects($id, $offset, $and? -1: $maxRecords, $sort, $types == '*'? '': $typesallowed, $find, $sub, false, $filter);
@@ -1498,6 +1417,7 @@ class CategLib extends ObjectLib
 			}
 		}
 
+		require_once 'lib/core/Category/Manipulator.php';
 		$manip = new Category_Manipulator($objType, $objId);
 		if ($override_perms) {
 			$manip->overrideChecks();
@@ -1783,13 +1703,6 @@ class CategLib extends ObjectLib
 		}
 		$ret = array_unique($ret);
 		return $ret;
-	}
-	
-	function getCustomFacets()
-	{
-		$list = array_filter(array_map('intval', $this->get_preference('category_custom_facets', array(), true)));
-
-		return $list;
 	}
 }
 $categlib = new CategLib;

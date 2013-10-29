@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -59,7 +56,7 @@ if (isset($_REQUEST['page_ref_id'])) {
 	// If a structure page has been requested
 	$page_ref_id = $_REQUEST['page_ref_id'];
 }
-$pdata = $tikilib->parse_data($info["data"], array('is_html' => $info["is_html"], 'print' => 'y', 'namespace' => $info["namespace"]));
+$pdata = $tikilib->parse_data($info["data"], array('is_html' => $info["is_html"], 'print' => 'y'));
 $smarty->assign_by_ref('parsed', $pdata);
 $smarty->assign_by_ref('lastModif', $info["lastModif"]);
 if (empty($info["user"])) {
@@ -78,7 +75,7 @@ $creator = $wikilib->get_creator($page);
 $smarty->assign('creator', $creator);
 $smarty->assign('print_page', 'y');
 $smarty->assign('urlprefix', $base_url); // Obsolete, use base_url instead. This is for compatibility purposes only.
-$smarty->assign('mid', 'tiki-show_content.tpl');
+$smarty->assign('mid', 'tiki-show_page.tpl');
 $smarty->assign('display', isset($_REQUEST['display']) ? $_REQUEST['display'] : '');
 // Allow PDF export by installing a Mod that define an appropriate function
 if (isset($_REQUEST['display']) && $_REQUEST['display'] == 'pdf') {

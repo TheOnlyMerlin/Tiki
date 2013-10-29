@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -75,7 +72,7 @@ $smarty->assign(
 
 if (isset($_REQUEST['templateId']) && $_REQUEST['templateId'] > 0) {
 	global $templateslib; require_once 'lib/templates/templateslib.php';
-	$template_data = $templateslib->get_template($_REQUEST['templateId'], $prefs['language']);
+	$template_data = $templateslib->get_template($_REQUEST['templateId'],$prefs['language']);
 	$_REQUEST['preview'] = 1;
 	$_REQUEST['body'] = $template_data['content'];
 	if ($templateslib->template_is_in_section($_REQUEST['templateId'], 'wiki_html')) {
@@ -157,7 +154,7 @@ if (isset($_REQUEST["articleId"]) and $_REQUEST["articleId"] > 0) {
 	$smarty->assign('list_image_y', $article_data['list_image_y']);
 	$smarty->assign('reads', $article_data['nbreads']);
 	$smarty->assign('type', $article_data['type']);
-	$smarty->assign('author', ($prefs['article_remembers_creator'] == 'y')?$article_data['author']:$user);
+	$smarty->assign('author', $article_data['author']);
 	$smarty->assign('creator_edit', $article_data['creator_edit']);
 	$smarty->assign('rating', $article_data['rating']);
 	$smarty->assign('ispublished', $article_data['ispublished']);
@@ -177,17 +174,8 @@ if (isset($_REQUEST["articleId"]) and $_REQUEST["articleId"] > 0) {
 
 	$body = $article_data['body'];
 	$heading = $article_data['heading'];
-	$smarty->assign('parsed_body', $tikilib->parse_data($body, array('is_html' => $artlib->is_html($article_data))));
-	$smarty->assign(
-		'parsed_heading',
-		$tikilib->parse_data(
-			$heading,
-			array(
-				'min_one_paragraph' => true,
-				'is_html' => $artlib->is_html($article_data, true),
-			)
-		)
-	);
+	$smarty->assign('parsed_body', $tikilib->parse_data($body, array('is_html' => 'y')));
+	$smarty->assign('parsed_heading', $tikilib->parse_data($heading), array('is_html' => 'y'));
 }
 if (!empty($_REQUEST['translationOf'])) {
 	$translationOf = $_REQUEST['translationOf'];
@@ -213,7 +201,7 @@ if (isset($_REQUEST['allowhtml'])) {
 	} else {
 		$smarty->assign('allowhtml', 'n');
 	}
-} else if ($_SESSION['wysiwyg'] === 'y' && $artlib->is_html($article_data)) {
+} else if ($_SESSION['wysiwyg'] === 'y' && $prefs['wysiwyg_htmltowiki'] !== 'y') {
 	$smarty->assign('allowhtml', 'y');
 }
 
@@ -387,9 +375,9 @@ if (isset($_REQUEST['preview']) or !empty($errors)) {
 	$smarty->assign('edit_data', 'y');
 
 	if (isset($_REQUEST['allowhtml']) && $_REQUEST['allowhtml'] == 'on') {
-		$body = $jitRequest->body->purifier();
+		$body = $_REQUEST['body'];
 
-		$heading = $jitRequest->heading->purifier();
+		$heading = $_REQUEST['heading'];
 	} else {
 		$body = strip_tags($_REQUEST['body'], '<a><pre><p><img><hr><b><i>');
 
@@ -398,7 +386,7 @@ if (isset($_REQUEST['preview']) or !empty($errors)) {
 
 	$smarty->assign('size', strlen($body));
 
-	$parsed_body = $tikilib->parse_data($body, array('is_html' => $artlib->is_html(array($body))));
+	$parsed_body = $tikilib->parse_data($body, array('is_html' => 'y'));
 	$parsed_heading = $tikilib->parse_data($heading, array('is_html' => 'y'));
 
 	$smarty->assign('parsed_body', $parsed_body);
@@ -447,9 +435,9 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 	}
 
 	if (isset($_REQUEST['allowhtml']) && $_REQUEST['allowhtml'] == 'on' || $_SESSION['wysiwyg'] == 'y') {
-		$body = $jitRequest->body->purifier();
+		$body = $_REQUEST['body'];
 
-		$heading = $jitRequest->heading->purifier();
+		$heading = $_REQUEST['heading'];
 	} else {
 		$body = strip_tags($_REQUEST['body'], '<a><pre><p><img><hr><b><i>');
 
@@ -531,20 +519,6 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 	else
 		$ispublished = 'n';
 
-	// The field 'user' which is initially the author login is never displayed but it is used in ownership checks and "User Information" → "User contributions" tab
-	// This is not the same as authorName which is just for display and can be edited
-	// Before pref article_remembers_creator it was changed to the last editor at every edition.
-	// With article_remembers_creator == y memory of creator (owner) is kept. With permission tiki_p_edit_article_user it is possible for admins to reattribute the article
-	if ( $tiki_p_edit_article_user == 'y' && isset($_REQUEST['author']) ) {
-		$author = $_REQUEST['author'];
-	} else {
-		if ($prefs['article_remembers_creator'] == 'y') {
-			$author = $_REQUEST['author'];
-		} else {
-			$author = $user;
-		}
-	}
-
 	$_REQUEST['title'] = strip_tags($_REQUEST['title'], '<a><pre><p><img><hr><b><i>');
 	$artid = $artlib->replace_article(
 		$_REQUEST['title'],
@@ -559,7 +533,7 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 		$body,
 		$publishDate,
 		$expireDate,
-		$author,
+		$user,
 		$articleId,
 		$_REQUEST['image_x'],
 		$_REQUEST['image_y'],
@@ -621,10 +595,7 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 	@$artlib->delete_image_cache('preview', $previewId);
 
 	include_once('tiki-sefurl.php');
-	$smarty->loadPlugin('smarty_modifier_sefurl');
-	$url = smarty_modifier_sefurl($artid, 'article');
-	header('location: '.$url);
-	exit;
+	header('location: '.	filter_out_sefurl("tiki-read_article.php?articleId=$artid", 'article', $_REQUEST['title']));
 }
 $smarty->assign_by_ref('errors', $errors);
 

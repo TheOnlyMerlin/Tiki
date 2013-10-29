@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -153,7 +150,8 @@ if (!isset($_REQUEST["comments_reply_threadId"])) {
 $smarty->assign("comments_reply_threadId", $_REQUEST["comments_reply_threadId"]);
 
 // Include the library for comments (if not included)
-$commentslib = TikiLib::lib('comments');
+include_once ("lib/comments/commentslib.php");global $dbTiki;
+$commentslib = new Comments($dbTiki);
 
 if (!isset($comments_prefix_var)) {
 	$comments_prefix_var = '';
@@ -341,11 +339,8 @@ if ($forum_check[0] == 'forum' ) {
 	$smarty->assign('forumId', $forum_check[1]);
 }
 
-$smarty->assign(
-	'comments_grandParentId',
-	isset($_REQUEST['comments_grandParentId'])
-	? $_REQUEST['comments_grandParentId'] : ''
-);
+$smarty->assign('comments_grandParentId', isset($_REQUEST['comments_grandParentId'])
+	? $_REQUEST['comments_grandParentId'] : '');
 
 if (isset($_REQUEST["post_reply"]) && isset($_REQUEST["comments_reply_threadId"])) {
 	$threadId_if_reply = $_REQUEST["comments_reply_threadId"];

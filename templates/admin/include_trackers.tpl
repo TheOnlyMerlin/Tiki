@@ -2,7 +2,7 @@
 
 <form action="tiki-admin.php?page=trackers" method="post">
 	<div class="heading input_submit_container" style="text-align: right">
-		<input type="submit" class="btn btn-default" name="trkset" value="{tr}Change preferences{/tr}" />
+		<input type="submit" name="trkset" value="{tr}Change preferences{/tr}" />
 	</div>
 {tabset}
 	{tab name="{tr}Settings{/tr}"}
@@ -19,17 +19,9 @@
 		{preference name="tracker_refresh_itemlink_detail"}
 		{preference name="tracker_clone_item"}
 		{preference name="wikiplugin_insert"}
-		<div class="adminoptionboxchild" id="wikiplugin_insert_childcontainer">
+		<div id="wikiplugin_insert_childcontainer">
 			{preference name=tracker_insert_allowed}
 		</div>
-		{preference name=allocate_memory_tracker_export_items}
-		{preference name=allocate_time_tracker_export_items}
-
-		{preference name=ajax_inline_edit}
-		<div class="adminoptionboxchild" id="ajax_inline_edit_childcontainer">
-			{preference name=ajax_inline_edit_trackerlist}
-		</div>
-		{preference name=tracker_change_field_type}
 	</fieldset>
 
 	<fieldset class="admin">
@@ -49,7 +41,7 @@
 				{tr}Use a directory to store files:{/tr}</td>
 			  <td>
 				<input type="radio" name="t_use_db" value="n" {if $prefs.t_use_db eq 'n'}checked="checked"{/if}/> {tr}Path:{/tr}
-				<br>
+				<br />
 				<input type="text" name="t_use_dir" value="{$prefs.t_use_dir|escape}" size="50" />
 			  </td>
 			</tr>
@@ -90,7 +82,7 @@
 	{/tab}
 {/tabset}
 	<div class="heading input_submit_container" style="text-align: center">
-		<input type="submit" class="btn btn-default" name="trkset" value="{tr}Change preferences{/tr}" />
+		<input type="submit" name="trkset" value="{tr}Change preferences{/tr}" />
 	</div>
 </form>
 
@@ -101,11 +93,11 @@
 {if $attachements}
       <form action="tiki-admin.php?page=trackers" method="post">
         <input type="text" name="find" value="{$find|escape}" />
-        <input type="submit" class="btn btn-default" name="action" value="{tr}Find{/tr}" />
+        <input type="submit" name="action" value="{tr}Find{/tr}" />
       </form>
 {/if}
       {cycle values="odd,even" print=false}
-      <table class="table normal">
+      <table class="normal">
         <tr>
           <th>
             <a href="tiki-admin.php?page=trackers&amp;sort_mode=user_{if $sort_mode eq 'attId'}asc{else}desc{/if}">{tr}ID{/tr}</a>
@@ -165,13 +157,13 @@
         <td>
           <form action="tiki-admin.php?page=trackers" method="post">
             <input type="hidden" name="all2db" value="1" />
-            <input type="submit" class="btn btn-default" name="action" value="{tr}Change all to db{/tr}" />
+            <input type="submit" name="action" value="{tr}Change all to db{/tr}" />
           </form>
         </td>
         <td>
           <form action="tiki-admin.php?page=trackers" method="post">
             <input type="hidden" name="all2file" value="1" />
-            <input type="submit" class="btn btn-default" name="action" value="{tr}Change all to file{/tr}" />
+            <input type="submit" name="action" value="{tr}Change all to file{/tr}" />
           </form>
         </td>
       </tr>

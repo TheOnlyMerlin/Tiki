@@ -11,6 +11,8 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
+require_once ('lib/comments/commentslib.php');
+
 /**
  * Importer
  * A library to handle importing of forum posts from Tiki or from other forum

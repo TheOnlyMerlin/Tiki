@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -55,9 +52,6 @@ $disallowed_types = array(
 	'php~'
 ); // list of filetypes you DO NOT want to show
 // recursively get all files from all subdirectories
-/**
- * @param $sub
- */
 function getDirContent($sub)
 {
 	global $disallowed_types;

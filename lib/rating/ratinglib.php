@@ -136,11 +136,12 @@ class RatingLib extends TikiDb_Bridge
 	function record_user_vote( $user, $type, $objectId, $score, $time = null )
 	{
 		global $tikilib, $prefs;
+
 		if ( ! $this->is_valid($type, $score, $objectId) ) {
-            return false;
+			return false;
 		}
 
-        if ( is_null($time) ) {
+		if ( is_null($time) ) {
 			$time = time();
 		}
 
@@ -531,10 +532,11 @@ class RatingLib extends TikiDb_Bridge
 
 	private function get_runner()
 	{
+		require_once 'Math/Formula/Runner.php';
 		return new Math_Formula_Runner(
 			array(
-				'Math_Formula_Function_' => '',
-				'Tiki_Formula_Function_' => '',
+				'Math_Formula_Function_' => 'lib/core/Math/Formula/Function',
+				'Tiki_Formula_Function_' => dirname(__FILE__) . '/formula',
 			)
 		);
 	}

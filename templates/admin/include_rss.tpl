@@ -5,7 +5,7 @@
 <form action="tiki-admin.php?page=rss" method="post">
 	<input type="hidden" name="rss" />
 	<div class="heading input_submit_container" style="text-align: right">
-		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
 
 	{tabset name="admin_rss"}
@@ -29,6 +29,7 @@
 		{/tab}
 
 		{tab name="{tr}Feeds{/tr}"}
+
 			{preference name=feed_articles}
 			<div class="adminoptionboxchild" id="feed_articles_childcontainer">
 				<a href="tiki-articles_rss.php" title="{tr}Feed for articles{/tr}"> {icon _id=feed}</a>
@@ -138,7 +139,6 @@
 				{preference name=feed_tracker_max}
 				{preference name=feed_tracker_showAuthor}
 				{preference name=feed_tracker_homepage}
-				{preference name=feed_tracker_labels}
 			</div>
 
 			{preference name=feed_calendar}
@@ -174,6 +174,6 @@
 	{/tabset}
 
 	<div class="heading input_submit_container" style="text-align: center">
-		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
 </form>

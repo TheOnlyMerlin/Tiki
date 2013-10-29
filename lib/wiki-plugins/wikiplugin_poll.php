@@ -20,8 +20,7 @@ function wikiplugin_poll_info()
 				'required' => true,
 				'name' => tra('Poll'),
 				'description' => tra('Numeric value representing the poll ID'),
-				'default' => '',
-				'profile_reference' => 'poll',
+				'default' => ''
 			),
 			'showtitle' => array(
 				'required' => false,

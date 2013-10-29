@@ -2,14 +2,14 @@
 {if $field.type eq 'R'}
 	{foreach from=$field.possibilities key=value item=label}
 		<label>
-			<input type="radio" name="{$field.ins_id|escape}" value="{$value|escape}" {if $field.value eq $value}checked="checked"{/if}>
+			<input type="radio" name="{$field.ins_id|escape}" value="{$value|escape}" {if $field.value eq $value}checked="checked"{/if} />
 			{$label|tr_if|escape}
 		</label>
 	{/foreach}
 {elseif $field.type eq 'M'}
 	{foreach from=$field.possibilities key=value item=label}
 		<label>
-			<input type="checkbox" name="{$field.ins_id|escape}[]" value="{$value|escape}" {if in_array($value, $field.selected)}checked="checked"{/if}>
+			<input type="checkbox" name="{$field.ins_id|escape}[]" value="{$value|escape}" {if in_array($value, $field.selected)}checked="checked"{/if}/>
 			{$label|tr_if|escape}
 		</label>
 	{/foreach}
@@ -28,28 +28,23 @@
 	</select>
 
 	{if $field.type eq 'D'}
-		&nbsp;
+		<br />
 		<label>
 			{tr}Other:{/tr}
-			<input type="text" class="group_{$field.ins_id|escape}" name="other_{$field.ins_id}" value="{if !isset($field.possibilities[$field.value])}{$field.value|escape}{/if}">
+			<input type="text" class="group_{$field.ins_id|escape}" name="other_{$field.ins_id}" value="{if !isset($field.possibilities[$field.value])}{$field.value|escape}{/if}" />
 		</label>
-		{jq}
-{{if !isset($field.possibilities[$field.value]) && $field.value}}
-if (!$('select[name="{{$field.ins_id|escape}}"] > [selected]').length) {
-	$('select[name="{{$field.ins_id|escape}}"]').val('{tr}other{/tr}').trigger('chosen:updated');
-}
-{{/if}}
-$('select[name="{{$field.ins_id|escape}}"]').change(function() {
-	if ($('select[name="{{$field.ins_id|escape}}"]').val() != '{tr}other{/tr}') {
-		$('input[name="other_{{$field.ins_id|escape}}"]').val('');
-	}
-});
-$('input[name="other_{{$field.ins_id|escape}}"]').change(function(){
-	if ($(this).val()) {
-		$('select[name="{{$field.ins_id|escape}}"]').val(tr('other')).trigger('chosen:updated');
-	}
-});
-		{/jq}
+		{if !isset($field.possibilities[$field.value]) && $field.value}
+			{jq}
+			if (!$('select[name="{{$field.ins_id|escape}}"] > [selected]').length) {
+				$('select[name="{{$field.ins_id|escape}}"]').val('other');
+			}
+			$('select[name="{{$field.ins_id|escape}}"]').change(function() {
+				if ($('select[name="{{$field.ins_id|escape}}"]').val() != 'other') {
+					$('input[name="other_{{$field.ins_id|escape}}"]').val('');
+				}
+			});
+			{/jq}
+		{/if}
 	{/if}
 
 {/if}

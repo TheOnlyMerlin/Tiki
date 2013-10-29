@@ -126,7 +126,7 @@ class XmlLib extends TikiLib
 		}
 
 		if ($prefs['feature_wiki_comments'] == 'y' && $this->config['comments']) {
-			$commentslib = TikiLib::lib('comments');
+			global $dbTiki; include_once('lib/comments/commentslib.php'); $commentslib = new Comments($dbTiki);
 			$comments = $commentslib->get_comments('wiki page:'.$page, 0, 0, 0, 'commentDate_asc', '', 0, 'commentStyle_plain');
 			if (!empty($comments['cant'])) {
 				$smarty->assign_by_ref('comments', $comments['data']);
@@ -339,24 +339,22 @@ class XmlLib extends TikiLib
 		}
 
 		if ($prefs['feature_wiki_comments'] == 'y' && $tiki_p_edit_comments == 'y' && !empty($info['comments'])) {
-			$newThreadIds = array();
-
 			foreach ($info['comments'] as $comment) {
-				$commentslib = TikiLib::lib('comments');
+				global $commentslib; include_once('lib/comments/commentslib.php'); $commentslib = new Comments($dbTiki);
 				$parentId = empty($comment['parentId']) ? 0: $newThreadIds[$comment['parentId']];
 				if ($parentId) {
-					$reply_info = $commentslib->get_comment($parentId);
+					$reply_info = $commentslib->get_comment($parentd);
 					$in_reply_to = $reply_info['message_id'];
 				}
 
 				$newThreadIds[$comment['threadId']] = $commentslib->post_new_comment(
 					'wiki page:' . $info['name'],
 					$parentId,
-					$this->config['fromUser'] ? $this->config['fromUser'] : $comment['user'],
+					$config['fromUser'] ? $config['fromUser'] : $comment['user'],
 					$comment['title'],
 					$comment['data'],
 					$message_id,
-					$in_reply_to,
+					$reply_to,
 					'n',
 					'',
 					'',
@@ -491,6 +489,8 @@ class XmlLib extends TikiLib
 
 }
 $xmllib = new XmlLib;
+
+require_once('lib/pear/XML_Parser/Parser.php');
 
 class page_Parser extends XML_Parser
 {

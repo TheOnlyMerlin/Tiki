@@ -1,5 +1,5 @@
 {* $Id$ *}<!DOCTYPE html>
-<html id="print" lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}">
+<html id="print" xmlns="http://www.w3.org/1999/xhtml" xml:lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}" lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}">
 	<head>
 {include file='header.tpl'}
 	</head>
@@ -14,12 +14,12 @@
 			<div class="articleheading">
 {if $useImage eq 'y'}
 	{if $hasImage eq 'y'}
-				<img alt="{tr}Article image{/tr}" src="article_image.php?image_type=article&amp;id={$articleId}"{if $image_x lt 0} width="{$image_x}"{/if}{if $image_y gt 0} height="{$image_y}"{/if}>
+				<img alt="{tr}Article image{/tr}" src="article_image.php?image_type=article&amp;id={$articleId}"{if $image_x lt 0} width="{$image_x}"{/if}{if $image_y gt 0} height="{$image_y}"{/if} />
 	{elseif $topicId ne 0}
-				<img alt="{tr}Topic image{/tr}" src="article_image.php?image_type=topic&amp;id={$topicId}">
+				<img alt="{tr}Topic image{/tr}" src="article_image.php?image_type=topic&amp;id={$topicId}" />
 	{/if}
 {elseif $topicId ne 0}
-				<img alt="{tr}Topic image{/tr}" src="article_image.php?image_type=topic&amp;id={$topicId}">
+				<img alt="{tr}Topic image{/tr}" src="article_image.php?image_type=topic&amp;id={$topicId}" />
 {/if}
 				<div class="articleheadingtext">{$parsed_heading}</div>
 			</div>

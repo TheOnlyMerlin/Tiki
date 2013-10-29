@@ -11,14 +11,8 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- *
- */
 class ImageGalsLib extends TikiLib
 {
-	/**
-	 *
-	 */
 	function __construct()
 	{
 		parent::__construct();
@@ -95,9 +89,6 @@ class ImageGalsLib extends TikiLib
 		}
 	}
 
-	/**
-	 * @return int
-	 */
 	function max_img_upload_size()
 	{
 		global $tikilib;
@@ -111,9 +102,6 @@ class ImageGalsLib extends TikiLib
 	}
 
 	// Features
-	/**
-	 * @return bool
-	 */
 	function canrotate()
 	{
 		return $this->canrotate;
@@ -122,9 +110,6 @@ class ImageGalsLib extends TikiLib
 	//
 	// Wrappers
 	//
-	/**
-	 * @return bool
-	 */
 	function validhandle()
 	{
 		if (isset($this->imagehandle)) {
@@ -145,9 +130,6 @@ class ImageGalsLib extends TikiLib
 		return false;
 	}
 
-	/**
-	 * @return bool
-	 */
 	function readimagefromstring()
 	{
 		if (!isset($this->image)) {
@@ -181,10 +163,6 @@ class ImageGalsLib extends TikiLib
 		}
 	}
 
-	/**
-	 * @param $fname
-	 * @return bool
-	 */
 	function readimagefromfile($fname)
 	{
 		@$fp = fopen($fname, "rb");
@@ -205,9 +183,6 @@ class ImageGalsLib extends TikiLib
 	}
 
 	// for piping out a image
-	/**
-	 * @param $fname
-	 */
 	function pipeimage($fname)
 	{
 		$fp = fopen($fname, "rb");
@@ -252,9 +227,6 @@ class ImageGalsLib extends TikiLib
 	}
 
 	// GD can only get the mimetype from the file
-	/**
-	 * @param $fname
-	 */
 	function getfileinfo($fname)
 	{
 		$this->filesize = filesize($fname);
@@ -292,11 +264,6 @@ class ImageGalsLib extends TikiLib
 	}
 
 	// resize Image
-	/**
-	 * @param $newx
-	 * @param $newy
-	 * @return bool
-	 */
 	function resizeImage($newx, $newy)
 	{
 		if (!isset($this->imagehandle)) {
@@ -344,11 +311,6 @@ class ImageGalsLib extends TikiLib
 
 	// rescale Image, almost the same as resize, but keeps apect ratio
 	// bbx and bby give the boundary box
-	/**
-	 * @param $bbx
-	 * @param $bby
-	 * @return bool
-	 */
 	function rescaleImage($bbx, $bby)
 	{
 		if (!$bbx || !$bby)
@@ -376,9 +338,6 @@ class ImageGalsLib extends TikiLib
 		return $this->resizeImage($newx, $newy);
 	}
 
-	/**
-	 * @param $angle
-	 */
 	function rotateimage($angle)
 	{
 		if ($this->uselib == "imagick") {
@@ -400,10 +359,6 @@ class ImageGalsLib extends TikiLib
 
 	// function to determine supported image types
 	// imagick has no function to get the supported image types
-	/**
-	 * @param $imagetype
-	 * @return bool
-	 */
 	function issupported($imagetype)
 	{
 		if ($this->uselib == "imagick") {
@@ -456,18 +411,12 @@ class ImageGalsLib extends TikiLib
 	}
 
 	// Batch image uploads todo
-	/**
-	 * @param $galleryId
-	 * @param $file
-	 * @param $user
-	 * @return bool|int
-	 */
 	function process_batch_image_upload($galleryId, $file, $user)
 	{
 		global $prefs;
 
 		$numimages = 0;
-		include_once ('vendor_extra/pclzip/pclzip.lib.php');
+		include_once ('lib/pclzip/pclzip.lib.php');
 		$archive = new PclZip($file);
 		// Read Archive contents
 		$ziplist = $archive->listContent();
@@ -557,10 +506,6 @@ class ImageGalsLib extends TikiLib
 		return $numimages;
 	}
 
-	/**
-	 * @param $id
-	 * @return bool
-	 */
 	function add_image_hit($id)
 	{
 		global $prefs, $user;
@@ -580,10 +525,6 @@ class ImageGalsLib extends TikiLib
 		return true;
 	}
 
-	/**
-	 * @param $id
-	 * @return bool
-	 */
 	function add_gallery_hit($id)
 	{
 		global $prefs, $user;
@@ -604,18 +545,6 @@ class ImageGalsLib extends TikiLib
 		return true;
 	}
 
-	/**
-	 * @param $dst_img
-	 * @param $src_img
-	 * @param $dst_x
-	 * @param $dst_y
-	 * @param $src_x
-	 * @param $src_y
-	 * @param $dst_w
-	 * @param $dst_h
-	 * @param $src_w
-	 * @param $src_h
-	 */
 	function ImageCopyResampleBicubic(&$dst_img, &$src_img, $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h)
 	{
 		$palsize = ImageColorsTotal($src_img);
@@ -652,10 +581,6 @@ class ImageGalsLib extends TikiLib
 		}
 	}
 
-	/**
-	 * @param bool $overwrite
-	 * @return bool
-	 */
 	function store_image_data($overwrite = false)
 	{
 		global $prefs;
@@ -719,40 +644,22 @@ class ImageGalsLib extends TikiLib
 					`imageId`=? and `type`=? and
 					`xsize`=? and `ysize`=?";
 			$bindvars = array($this->filetype, $this->filename, ($prefs['gal_use_db'] == 'y') ? $this->image : '', (int)$size, (int)$this->xsize, (int)$this->ysize, (int)$this->imageId, $this->type, (int)$this->oldxsize, (int)$this->oldysize);
-
-			$result = $this->query($query, $bindvars);
 		} else {
-			$table = $this->table('tiki_images_data')->insertOrUpdate(
-				array(
-					'xsize' => (int)$this->xsize,
-					'ysize' => (int)$this->ysize,
-					'type' => $this->type,
-					'filesize' => (int)$size,
-					'filetype' => $this->filetype,
-					'filename' => $this->filename,
-					'data' => ($prefs['gal_use_db'] == 'y') ? $this->image : '',
-				), array(
-					'imageId' => (int) $this->imageId,
-				)
-			);
+			$query = "insert into `tiki_images_data`(`imageId`,`xsize`,`ysize`,
+				`type`,`filesize`,`filetype`,`filename`,`data`)
+					values (?,?,?,?,?,?,?,?)";
+			$bindvars = array((int)$this->imageId, (int)$this->xsize, (int)$this->ysize, $this->type, (int)$size, $this->filetype, $this->filename, ($prefs['gal_use_db'] == 'y') ? $this->image : '');
 		}
+
+		$result = $this->query($query, $bindvars);
 		return true;
 	}
 
-	/**
-	 * @param $imageid
-	 * @param $itype
-	 * @param $xsize
-	 * @param int $ysize
-	 * @return bool
-	 */
 	function rebuild_image($imageid, $itype, $xsize, $ysize=0)
 	{
 		global $prefs;
 
 		$galid = $this->get_gallery_from_image($imageid);
-		if (empty($galid))
-			return false;
 		if ($ysize == 0) {
 			$ysize = $xsize;
 		}
@@ -820,9 +727,8 @@ class ImageGalsLib extends TikiLib
 		$filename = $this->filename; // filename of original image
 		$this->type = $itype;
 
-		// We only reach this point if rebuild_thumbnails() was run, i.e. there is nothing
-		// in the database - so we need overwrite param to be false to insert into database
-		$this->store_image_data(false);
+		//store (needs overwrite param to be true to update, not create new)
+		$this->store_image_data(true);
 
 		//return new size
 		$newsize["xsize"] = $this->xsize;
@@ -830,10 +736,6 @@ class ImageGalsLib extends TikiLib
 		return $newsize;
 	}
 
-	/**
-	 * @param $galleryId
-	 * @return bool
-	 */
 	function rebuild_thumbnails($galleryId)
 	{
 		global $prefs;
@@ -859,10 +761,6 @@ class ImageGalsLib extends TikiLib
 		return true;
 	}
 
-	/**
-	 * @param $galleryId
-	 * @param $imageId
-	 */
 	function rebuild_scales($galleryId, $imageId = -1)
 	{
 		// doesn't really rebuild, it deletes the scales and thumbs for
@@ -912,15 +810,6 @@ class ImageGalsLib extends TikiLib
 		}
 	}
 
-	/**
-	 * @param $id
-	 * @param $name
-	 * @param $description
-	 * @param null $lat
-	 * @param null $lon
-	 * @param null $file
-	 * @return bool
-	 */
 	function edit_image($id, $name, $description, $lat=NULL, $lon=NULL, $file=NULL)
 	{
 		global $prefs;
@@ -957,24 +846,6 @@ class ImageGalsLib extends TikiLib
 		return true;
 	}
 
-	/**
-	 * @param $galleryId
-	 * @param $name
-	 * @param $description
-	 * @param $filename
-	 * @param $filetype
-	 * @param $data
-	 * @param $size
-	 * @param $xsize
-	 * @param $ysize
-	 * @param $user
-	 * @param $t_data
-	 * @param $t_type
-	 * @param null $lat
-	 * @param null $lon
-	 * @param null $gal_info
-	 * @return bool
-	 */
 	function insert_image($galleryId, $name, $description, $filename, $filetype, &$data, $size, $xsize, $ysize, $user, $t_data, $t_type, $lat=NULL, $lon=NULL, $gal_info=NULL)
 	{
 		global $prefs;
@@ -1046,16 +917,6 @@ class ImageGalsLib extends TikiLib
 		return $imageId;
 	}
 
-	/**
-	 * @param $imageId
-	 * @param $galleryId
-	 * @param $name
-	 * @param $filename
-	 * @param $description
-	 * @param $galleryName
-	 * @param $action
-	 * @param $user
-	 */
 	function notify($imageId, $galleryId, $name, $filename, $description, $galleryName, $action, $user)
 	{
 		global $prefs, $smarty, $tikilib;
@@ -1080,10 +941,6 @@ class ImageGalsLib extends TikiLib
 		}
 	}
 
-	/**
-	 * @param $id
-	 * @param $angle
-	 */
 	function rotate_image($id, $angle)
 	{
 		//get image
@@ -1098,27 +955,16 @@ class ImageGalsLib extends TikiLib
 		$result = $this->query($query, array((int)$id, 'o'));
 	}
 
-	/**
-	 * @param $id
-	 */
 	function rotate_right_image($id)
 	{
 		$this->rotate_image($id, 270);
 	}
 
-	/**
-	 * @param $id
-	 */
 	function rotate_left_image($id)
 	{
 		$this->rotate_image($id, 90);
 	}
 
-	/**
-	 * @param $id
-	 * @param $user
-	 * @return bool
-	 */
 	function remove_image($id, $user)
 	{
 		global $prefs;
@@ -1148,14 +994,6 @@ class ImageGalsLib extends TikiLib
 		return true;
 	}
 
-	/**
-	 * @param $offset
-	 * @param $maxRecords
-	 * @param $sort_mode
-	 * @param $find
-	 * @param $galleryId
-	 * @return array
-	 */
 	function get_images($offset, $maxRecords, $sort_mode, $find, $galleryId = -1)
 	{
 
@@ -1201,14 +1039,6 @@ class ImageGalsLib extends TikiLib
 		return $retval;
 	}
 
-	/**
-	 * @param $offset
-	 * @param $maxRecords
-	 * @param $sort_mode
-	 * @param $find
-	 * @param $galleryId
-	 * @return array
-	 */
 	function get_subgalleries($offset, $maxRecords, $sort_mode, $find, $galleryId = -1)
 	{
 
@@ -1259,12 +1089,6 @@ class ImageGalsLib extends TikiLib
 		return $retval;
 	}
 
-	/**
-	 * @param $galleryId
-	 * @param string $rule
-	 * @param string $sort_mode
-	 * @return mixed
-	 */
 	function get_gallery_image($galleryId, $rule='', $sort_mode = '')
 	{
 		$query = 'select i.`imageId` from `tiki_images` i, `tiki_images_data` d
@@ -1350,13 +1174,6 @@ class ImageGalsLib extends TikiLib
 		return($imageId);
 	}
 
-	/**
-	 * @param $sort_mode
-	 * @param $find
-	 * @param $imageId
-	 * @param $galleryId
-	 * @return array
-	 */
 	function get_prev_and_next_image($sort_mode, $find, $imageId, $galleryId = -1)
 	{
 
@@ -1407,12 +1224,6 @@ class ImageGalsLib extends TikiLib
 		return array('prev' => ($prev > 0 ? $prev : 0), 'next' => $next);
 	}
 
-	/**
-	 * @param $sort_mode
-	 * @param $find
-	 * @param $galleryId
-	 * @return mixed
-	 */
 	function get_first_image($sort_mode, $find, $galleryId = -1)
 	{
 
@@ -1447,12 +1258,6 @@ class ImageGalsLib extends TikiLib
 		return $res['imageId'];
 	}
 
-	/**
-	 * @param $sort_mode
-	 * @param $find
-	 * @param $galleryId
-	 * @return mixed
-	 */
 	function get_last_image($sort_mode, $find, $galleryId = -1)
 	{
 		if (strstr($sort_mode, 'asc')) {
@@ -1492,23 +1297,11 @@ class ImageGalsLib extends TikiLib
 		return $res['imageId'];
 	}
 
-	/**
-	 * @param $offset
-	 * @param $maxRecords
-	 * @param $sort_mode
-	 * @param $find
-	 * @param $galleryId
-	 * @return array
-	 */
 	function list_images($offset, $maxRecords, $sort_mode, $find, $galleryId = -1)
 	{
 		return $this->get_images($offset, $maxRecords, $sort_mode, $find, $galleryId);
 	}
 
-	/**
-	 * @param $galleryId
-	 * @return array
-	 */
 	function get_random_image($galleryId = -1)
 	{
 		$whgal = "";
@@ -1544,14 +1337,6 @@ class ImageGalsLib extends TikiLib
 		return ($ret);
 	}
 
-	/**
-	 * @param int $offset
-	 * @param $maxRecords
-	 * @param string $sort_mode
-	 * @param string $user
-	 * @param null $find
-	 * @return array
-	 */
 	function list_galleries($offset = 0, $maxRecords = -1, $sort_mode = 'name_desc', $user = '', $find = null)
 	{
 		// If $user is admin then get ALL galleries, if not only user galleries are shown
@@ -1627,14 +1412,6 @@ class ImageGalsLib extends TikiLib
 		return $retval;
 	}
 
-	/**
-	 * @param int $offset
-	 * @param $maxRecords
-	 * @param string $sort_mode
-	 * @param $user
-	 * @param $find
-	 * @return array
-	 */
 	function list_visible_galleries($offset = 0, $maxRecords = -1, $sort_mode = 'name_desc', $user, $find)
 	{
 		global $tiki_p_admin_galleries, $tikilib;
@@ -1718,10 +1495,6 @@ class ImageGalsLib extends TikiLib
 		return $retval;
 	}
 
-	/**
-	 * @param $id
-	 * @return mixed
-	 */
 	function get_gallery($id)
 	{
 		$query = "select * from `tiki_galleries` where `galleryId`=?";
@@ -1730,10 +1503,6 @@ class ImageGalsLib extends TikiLib
 		return $res;
 	}
 
-	/**
-	 * @param $galleryId
-	 * @return mixed
-	 */
 	function get_gallery_owner($galleryId)
 	{
 		$query = "select `user` from `tiki_galleries` where `galleryId`=?";
@@ -1742,10 +1511,6 @@ class ImageGalsLib extends TikiLib
 		return $user;
 	}
 
-	/**
-	 * @param $imageid
-	 * @return mixed
-	 */
 	function get_gallery_from_image($imageid)
 	{
 		$query = "select `galleryId` from `tiki_images` where `imageId`=?";
@@ -1754,11 +1519,6 @@ class ImageGalsLib extends TikiLib
 		return $galid;
 	}
 
-	/**
-	 * @param $imgId
-	 * @param $galId
-	 * @return bool
-	 */
 	function move_image($imgId, $galId)
 	{
 		$query = "update `tiki_images` set `galleryId`=? where `imageId`=?";
@@ -1767,13 +1527,6 @@ class ImageGalsLib extends TikiLib
 		return true;
 	}
 
-	/**
-	 * @param $id
-	 * @param string $itype
-	 * @param int $xsize
-	 * @param int $ysize
-	 * @return mixed
-	 */
 	function get_image_info($id, $itype = 'o', $xsize = 0, $ysize = 0)
 	{
 		// code may be merged with get_image
@@ -1813,13 +1566,6 @@ class ImageGalsLib extends TikiLib
 	}
 
 	// Add an option to establish Image size (x, y)
-	/**
-	 * @param $id
-	 * @param string $itype
-	 * @param int $xsize
-	 * @param int $ysize
-	 * @return mixed
-	 */
 	function get_image($id, $itype = 'o', $xsize = 0, $ysize = 0)
 	{
 		global $prefs;
@@ -1964,13 +1710,6 @@ class ImageGalsLib extends TikiLib
 
 	}
 
-	/**
-	 * @param $id
-	 * @param string $itype
-	 * @param int $xsize
-	 * @param int $ysize
-	 * @return bool
-	 */
 	function get_etag($id, $itype = 'o', $xsize = 0, $ysize = 0)
 	{
 		// used to get the etag of a image. This function can be called
@@ -2025,11 +1764,6 @@ class ImageGalsLib extends TikiLib
 	}
 
 
-	/**
-	 * @param $name
-	 * @param int $galleryId
-	 * @return mixed
-	 */
 	function get_imageid_byname($name, $galleryId=0)
 	{
 
@@ -2049,45 +1783,11 @@ class ImageGalsLib extends TikiLib
 
 	}
 
-	/**
-	 * @param $id
-	 * @return mixed
-	 */
 	function get_image_thumb($id)
 	{
 		return $this->get_image($id, 't');
 	}
 
-	/**
-	 * @param $galleryId
-	 * @param $name
-	 * @param $description
-	 * @param $theme
-	 * @param $user
-	 * @param $maxRows
-	 * @param $rowImages
-	 * @param $thumbSizeX
-	 * @param $thumbSizeY
-	 * @param $public
-	 * @param string $visible
-	 * @param string $sortorder
-	 * @param string $sortdirection
-	 * @param string $galleryimage
-	 * @param $parentgallery
-	 * @param string $showname
-	 * @param string $showimageid
-	 * @param string $showdescription
-	 * @param string $showcreated
-	 * @param string $showuser
-	 * @param string $showhits
-	 * @param string $showxysize
-	 * @param string $showfilesize
-	 * @param string $showfilename
-	 * @param string $defaultscale
-	 * @param string $geographic
-	 * @param string $showcategories
-	 * @return mixed
-	 */
 	function replace_gallery(
 					$galleryId,
 					$name,
@@ -2221,10 +1921,6 @@ class ImageGalsLib extends TikiLib
 		return $galleryId;
 	}
 
-	/**
-	 * @param $galleryId
-	 * @param $scale
-	 */
 	function add_gallery_scale($galleryId, $scale)
 	{
 		$old_scale = $this->getOne("select scale from tiki_galleries_scales where galleryId = ? AND scale = ?", array((int)$galleryId, (int)$scale));
@@ -2235,10 +1931,6 @@ class ImageGalsLib extends TikiLib
 		}
 	}
 
-	/**
-	 * @param $galleryId
-	 * @param int $scale
-	 */
 	function remove_gallery_scale($galleryId, $scale= 0)
 	{
 		$mid = "";
@@ -2252,10 +1944,6 @@ class ImageGalsLib extends TikiLib
 		$result = $this->query($query, $bindvars);
 	}
 
-	/**
-	 * @param $id
-	 * @return bool
-	 */
 	function remove_gallery($id)
 	{
 		global $prefs;
@@ -2311,20 +1999,12 @@ class ImageGalsLib extends TikiLib
 		return true;
 	}
 
-	/**
-	 * @param $id
-	 * @return mixed
-	 */
 	function get_gallery_info($id)
 	{
 		// alias for get_gallery
 		return $this->get_gallery($id);
 	}
 
-	/**
-	 * @param $id
-	 * @return array
-	 */
 	function get_gallery_scale_info($id)
 	{
 		$query = "select * from `tiki_galleries_scales` where `galleryId`=?
@@ -2340,11 +2020,6 @@ class ImageGalsLib extends TikiLib
 		return $resa;
 	}
 
-	/**
-	 * @param $id
-	 * @param int $scale
-	 * @return mixed
-	 */
 	function get_gallery_next_scale($id, $scale= 0)
 	{
 		$query = "select * from `tiki_galleries_scales` where `galleryId`=?
@@ -2354,10 +2029,6 @@ class ImageGalsLib extends TikiLib
 		return $res;
 	}
 
-	/**
-	 * @param $id
-	 * @return mixed
-	 */
 	function get_gallery_default_scale($id)
 	{
 		$query = "select `defaultscale` from `tiki_galleries` where `galleryId`=?";
@@ -2365,11 +2036,6 @@ class ImageGalsLib extends TikiLib
 		return $ret;
 	}
 
-	/**
-	 * @param $id
-	 * @param $currentscale
-	 * @return array
-	 */
 	function get_gallery_prevnext_scale($id, $currentscale)
 	{
 		$ret=array();
@@ -2393,10 +2059,6 @@ class ImageGalsLib extends TikiLib
 	}
 
 	//Capture Images from wiki, blogs, ....
-	/**
-	 * @param $data
-	 * @return mixed
-	 */
 	function capture_images($data)
 	{
 		global $prefs, $tikilib;
@@ -2502,14 +2164,6 @@ class ImageGalsLib extends TikiLib
 		return $page_data;
 	}
 
-	/**
-	 * @param $userfile
-	 * @param int $galleryId
-	 * @param string $name
-	 * @param string $description
-	 * @param string $gal_info
-	 * @return array
-	 */
 	function get_one_image_from_disk($userfile, $galleryId=0, $name='', $description='', $gal_info='')
 	{
 		global $prefs, $user;
@@ -2566,11 +2220,6 @@ class ImageGalsLib extends TikiLib
 	}
 
 	// function to move images from one store to another (fs to db or db to fs)
-	/**
-	 * @param $imageId
-	 * @param string $direction
-	 * @return bool|int
-	 */
 	function move_image_store($imageId, $direction = 'to_fs')
 	{
 		global $prefs;
@@ -2618,11 +2267,6 @@ class ImageGalsLib extends TikiLib
 		return(0);
 	}
 
-	/**
-	 * @param $galId
-	 * @param string $direction
-	 * @return array|bool
-	 */
 	function move_gallery_store($galId, $direction='to_fs')
 	{
 		$met = ini_get('max_execution_time');
@@ -2686,13 +2330,6 @@ class ImageGalsLib extends TikiLib
 	}
 
 	/* compute the ratio the image $xsize,$size must have to go in the box */
-	/**
-	 * @param $xsize
-	 * @param $ysize
-	 * @param int $xbox
-	 * @param int $ybox
-	 * @return float|int|mixed
-	 */
 	function ratio($xsize, $ysize, $xbox=0, $ybox=0)
 	{
 		if (empty($xbox) && empty($ybox))

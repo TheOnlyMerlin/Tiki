@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -167,11 +164,6 @@ ask_ticket('dir-add-site');
 // Display the template
 $smarty->assign('mid', 'tiki-directory_add_site.tpl');
 $smarty->display("tiki.tpl");
-/**
- * @param $a
- * @param $b
- * @return int
- */
 function country_sort($a, $b)
 {
 	if ($a == 'None' || $b == 'Other') {

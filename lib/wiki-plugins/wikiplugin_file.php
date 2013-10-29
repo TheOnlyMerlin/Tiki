@@ -33,7 +33,10 @@ function wikiplugin_file_info()
 			'name' => array(
 				'required' => true,
 				'name' => tra('Name'),
-				'description' => tra('Identify an attachment by entering its file name, which will show as a link to the file. If the page parameter is empty, it must be a file name of an attachment to the page where the plugin is used.'),
+				'description' => tra(
+					'Identify an attachment by entering its file name, which will show as a link to the file.
+					 If the page parameter is empty, it must be a file name of an attachment to the page where the plugin is used.'
+				),
 				'default' => '',
 				'parent' => array('name' => 'type', 'value' => 'attachment'),
 			),
@@ -52,7 +55,6 @@ function wikiplugin_file_info()
 				'parent' => array('name' => 'type', 'value' => 'attachment'),
 				'default' => '',
 				'advanced' => true,
-				'profile_reference' => 'wiki_page',
 			),
 			'showdesc' => array(
 				'required' => false,
@@ -89,7 +91,6 @@ function wikiplugin_file_info()
 				'filter' => 'digits',
 				'default' => '',
 				'parent' => array('name' => 'type', 'value' => 'gallery'),
-				'profile_reference' => 'file',
 			),
 			'date' => array(
 				'required' => false,
@@ -168,7 +169,7 @@ function wikiplugin_file( $data, $params )
 		if (empty($data)) { // to avoid problem with parsing
 			$data = empty($info['name'])?$info['filename']: $info['name'];
 		}
-		if (isset($params['showicon']) && $params['showicon'] == "y") {
+		if (isset($params['showicon']) & $params['showicon'] == "y") {
 			return "{img src=tiki-download_file.php?fileId=$fileId&amp;thumbnail=y&amp;x=16 link=tiki-download_file.php?fileId=$fileId} [tiki-download_file.php?fileId=$fileId|$data]";
 		} else {
 			return "[tiki-download_file.php?fileId=$fileId|$data]";

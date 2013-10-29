@@ -26,7 +26,6 @@ class EditLib_ParseToWysiwyg_ListTest extends TikiTestCase
 
 		$_SERVER['HTTP_HOST'] = ''; // editlib expects that HTTP_HOST is defined
 
-		require_once 'lib/wiki/editlib.php';
 		$this->el = new EditLib();
 		chdir($this->dir);
 		chdir('../../'); // the tiki installation directory
@@ -47,7 +46,6 @@ class EditLib_ParseToWysiwyg_ListTest extends TikiTestCase
 	function testBulletList()
 	{
 
-        $this->markTestSkipped("As of 2013-10-02, this test is broken, and nobody knows how to fix it. Mark as Skipped for now.");
 		/*
 		 * *Item 1
 		 * *Item 2 
@@ -85,7 +83,6 @@ class EditLib_ParseToWysiwyg_ListTest extends TikiTestCase
 	function testBulletListContinuation()
 	{
 
-        $this->markTestSkipped("As of 2013-10-02, this test is broken, and nobody knows how to fix it. Mark as Skipped for now.");
 
 		/*
 		 * *Item 1
@@ -126,7 +123,6 @@ class EditLib_ParseToWysiwyg_ListTest extends TikiTestCase
 	function testNumberedList()
 	{
 
-        $this->markTestSkipped("As of 2013-10-02, this test is broken, and nobody knows how to fix it. Mark as Skipped for now.");
 		/*
 		 * #Item 1
 		 * #Item 2 
@@ -164,7 +160,6 @@ class EditLib_ParseToWysiwyg_ListTest extends TikiTestCase
 	function testNumberedListContinuation()
 	{
 
-        $this->markTestSkipped("As of 2013-10-02, this test is broken, and nobody knows how to fix it. Mark as Skipped for now.");
 
 		/*
 		 * #Item 1

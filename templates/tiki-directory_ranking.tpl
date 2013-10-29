@@ -1,13 +1,13 @@
 {title url="tiki-directory_ranking.php?sort_mode=$sort_mode"}{tr}Directory ranking{/tr}{/title}
 
 {* Display the title using parent *}
-{include file='tiki-directory_bar.tpl'}<br>
-<br>
+{include file='tiki-directory_bar.tpl'}<br />
+<br />
 {* Navigation bar to admin, admin related, etc *}
 
 {* Display the list of categories (items) using pagination *}
 {* Links to edit, remove, browse the categories *}
-<table class="table normal">
+<table class="normal">
   <tr>
     <th><a href="tiki-directory_ranking.php?parent={$parent}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></th>
     <th><a href="tiki-directory_ranking.php?parent={$parent}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'url_desc'}url_asc{else}url_desc{/if}">{tr}Url{/tr}</a></th>
@@ -20,7 +20,7 @@
     <td class="text"><a class="link" href="tiki-directory_redirect.php?siteId={$items[user].siteId}" {if $prefs.directory_open_links eq 'n'}target='_blank'{/if}>{$items[user].name}</a></td>
     <td class="text">{$items[user].url}</td>
     {if $prefs.directory_country_flag eq 'y'}
-    <td class="icon"><img src='img/flags/{$items[user].country}.gif' alt='{$items[user].country}'></td>
+    <td class="icon"><img src='img/flags/{$items[user].country}.gif' alt='{$items[user].country}'/></td>
     {/if}
     <td class="integer">{$items[user].hits}</td>
   </tr>

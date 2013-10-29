@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_since_last_visit_info()
 {
 	return array(
@@ -22,10 +19,6 @@ function module_since_last_visit_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param null $params
- */
 function module_since_last_visit($mod_reference, $params = null)
 {
 	global $user, $tikilib, $smarty;

@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -118,7 +115,7 @@ if ($postId > 0) {
 
 	$smarty->assign('post_info', $data);
 	$smarty->assign('data', $data['data']);
-	$smarty->assign('parsed_data', $tikilib->parse_data($data['data'], array('is_html' => $is_wysiwyg)));
+	$smarty->assign('parsed_data', $tikilib->parse_data($data['data']), array('is_html' => $is_wysiwyg));
 	$smarty->assign('blogpriv', $data['priv']);
 
 	check_ticket('blog');
@@ -242,10 +239,9 @@ if (isset($_REQUEST['save']) && !$contribution_needed) {
 	include_once ("categorize.php");
 
 	require_once('tiki-sefurl.php');
-	$smarty->loadPlugin('smarty_modifier_sefurl');
-	$url = smarty_modifier_sefurl($postId, 'blogpost');
+	$url = filter_out_sefurl("tiki-view_blog_post.php?postId=$postId", 'blogpost');
 	header("location: $url");
-	exit;
+	die;
 }
 
 if ($contribution_needed) {

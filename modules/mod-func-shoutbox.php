@@ -27,9 +27,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_shoutbox_info()
 {
 	return array(
@@ -71,9 +68,6 @@ function module_shoutbox_info()
 	);
 }
 
-/**
- * @param $inFormValues
- */
 function doProcessShout($inFormValues)
 {
 	global $shoutboxlib, $user, $smarty, $prefs, $captchalib;
@@ -89,10 +83,6 @@ function doProcessShout($inFormValues)
 	}
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_shoutbox($mod_reference, $module_params)
 {
 	global $tikilib; require_once ('lib/tikilib.php');

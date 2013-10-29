@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -48,8 +45,7 @@ if ($_REQUEST['objectType'] == 'wiki page') {
 } else {
 	$tikilib->get_perm_object($_REQUEST['objectId'], $_REQUEST['objectType']);
 	if ($_REQUEST['objectType'] == 'tracker') {
-		$definition = Tracker_Definition::get($_REQUEST['objectId']);
-		if ($groupCreatorFieldId = $definition->getWriterGroupField()) {
+		if ($groupCreatorFieldId = TikiLib::lib('trk')->get_field_id_from_type($_REQUEST['objectId'], 'g', '1%')) {
 			$smarty->assign('group_tracker', 'y');
 		}
 	}
@@ -87,6 +83,9 @@ $smarty->assign_by_ref('permType', $_REQUEST['permType']);
 if ( $_REQUEST['objectType'] == 'wiki' ) {
 	$_REQUEST['objectType'] = 'wiki page';
 }
+
+require_once 'lib/core/Perms/Applier.php';
+require_once 'lib/core/Perms/Reflection/Factory.php';
 
 $objectFactory = Perms_Reflection_Factory::getDefaultFactory();
 $currentObject = $objectFactory->get($_REQUEST['objectType'], $_REQUEST['objectId']);
@@ -253,6 +252,8 @@ if (!empty($_SESSION['perms_clipboard'])) {
 //Quickperms apply {{{
 //Test to map permissions of ile galleries into read write admin admin levels.
 if ( $prefs['feature_quick_object_perms'] == 'y' ) {
+	require_once 'lib/core/Perms/Reflection/Quick.php';
+
 	$qperms = quickperms_get_data();
 	$smarty->assign('quickperms', $qperms);
 	$quickperms = new Perms_Reflection_Quick;
@@ -456,72 +457,50 @@ foreach ( $groupNames as $groupName ) {
 		}
 	}
 
-	$js .= "\$('input[name=\"perm[$groupName][]\"]').eachAsync({
-	delay: 10,
-	bulk: 0,
-";
+	$js .= <<< JS
+\$('input[name="perm[$groupName][]"]').eachAsync({
+			delay: 10,
+			bulk: 0,
+JS;
 	if ($i == count($groupNames)-1) {
-		$js .= "end: function () {
+		$js .= <<< JS
+
+			end: function () {
 				\$('#perms_busy').hide();
 			},
-";
+JS;
 	}
-	$js .= "loop: function() { 		// each one of this group
+	$js .= <<< JS
+
+			loop: function() { 		// each one of this group
 
 	if (\$(this).is(':checked')) {
-		\$('input[value=\"'+\$(this).val()+'\"]').					// other checkboxes of same value (perm)
-			filter('$beneficiaries').								// which inherit from this
-			prop('checked',\$(this).is(':checked')).				// check and disable
-			prop('disabled',\$(this).is(':checked'));
+		\$('input[value="'+\$(this).val()+'"]').					// other checkboxes of same value (perm)
+			filter('$beneficiaries').									// which inherit from this
+			attr('checked',\$(this).is(':checked')).					// check and disable
+			attr('disabled',\$(this).is(':checked'));
 	}
 
-	\$(this).on( 'change', function(e, parent) {	// bind click event
+	\$(this).change( function() {									// bind click event
 
 		if (\$(this).is(':checked')) {
-			\$('input[value=\"'+\$(this).val()+'\"]').			// same...
-				filter('$beneficiaries').each(function() {
-					$(this).
-						prop('checked',true).					// check?
-						prop('disabled',true).					// disable
-						trigger('change', [this]);
-				});
+			\$('input[value="'+\$(this).val()+'"]').			// same...
+				filter('$beneficiaries').
+				attr('checked',true).							// check?
+				attr('disabled',true);						// disable
 		} else {
-			\$('input[value=\"'+\$(this).val()+'\"]').			// same...
-				filter('$beneficiaries').each(function() {
-					$(this).
-						prop('checked',false).					// check?
-						prop('disabled',false).					// disable
-						trigger('change', [this]);
-				});
-		}
-	});
+			\$('input[value="'+\$(this).val()+'"]').			// same...
+				filter('$beneficiaries').
+				attr('checked',false).									// check?
+				attr('disabled',false);								// disable
 }
+	});
+			}
 });
 
-";
+JS;
 	$i++;
 }	// end of for $groupNames loop
-
-	// add cell colouring helpers
-	$js .= '
-$("table.objectperms input[type=checkbox]").change(function () {
-	var $this = $(this);
-	var $parent = $this.parent();
-	if ($this.is(":checked")) {
-		if ($parent.hasClass("removed")) {
-			$parent.removeClass("removed");
-		} else {
-			$parent.addClass("added");
-		}
-	} else {
-		if ($parent.hasClass("added")) {
-			$parent.removeClass("added");
-		} else {
-			$parent.addClass("removed");
-		}
-	}
-});
-';
 
 $headerlib->add_jq_onready($js);
 
@@ -539,9 +518,6 @@ if (isset($_REQUEST['filegals_manager']) && $_REQUEST['filegals_manager'] != '')
 }
 
 
-/**
- * @return mixed
- */
 function get_assign_permissions()
 {
 	global $objectFactory;
@@ -577,9 +553,6 @@ function get_assign_permissions()
 	return $currentPermissions;
 }
 
-/**
- * @return array
- */
 function quickperms_get_data()
 {
 	if ($_REQUEST['permType']=='file galleries') {
@@ -589,9 +562,6 @@ function quickperms_get_data()
 	}
 }
 
-/**
- * @return array
- */
 function quickperms_get_filegal()
 {
 	return array(
@@ -647,9 +617,6 @@ function quickperms_get_filegal()
 	);
 }
 
-/**
- * @return array
- */
 function quickperms_get_generic()
 {
 	global $userlib;
@@ -702,9 +669,6 @@ function quickperms_get_generic()
 	return $perms;
 }
 
-/**
- * @return array|bool
- */
 function perms_get_restrictions()
 {
 	global $userlib;
@@ -730,9 +694,6 @@ function perms_get_restrictions()
 	return $allowed;
 }
 
-/**
- * @return mixed
- */
 function get_displayed_permissions()
 {
 	global $objectFactory, $smarty;
@@ -780,25 +741,6 @@ function get_displayed_permissions()
 		}
 		$smarty->assign('permissions_added', $added);
 		$smarty->assign('permissions_removed', $removed);
-
-		TikiLib::lib('header')->add_jq_onready('
-var permsAdded = ' . json_encode($permissions_added) . ';
-var permsRemoved = ' . json_encode($permissions_removed) . ';
-for (var group in permsAdded) {
-	if (permsAdded.hasOwnProperty(group)) {
-		for (var i = 0; i < permsAdded[group].length; i++) {
-			 $("input[name=\'perm[" + group + "][]\'][value=\'tiki_p_" + permsAdded[group][i] + "\']").parent().addClass("added");
-		}
-	}
-}
-for (var group in permsRemoved) {
-	if (permsRemoved.hasOwnProperty(group)) {
-		for (var i = 0; i < permsRemoved[group].length; i++) {
-			 $("input[name=\'perm[" + group + "][]\'][value=\'tiki_p_" + permsRemoved[group][i] + "\']").parent().addClass("removed");
-		}
-	}
-}
-');
 	}
 
 	return $displayedPermissions;

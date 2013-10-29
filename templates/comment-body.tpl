@@ -31,7 +31,7 @@
 			{/if}
 			{if $forum_info.ui_level eq 'y' and $comment.user_level}
 			<span class="author_stars">
-				<img src="img/icons/{$comment.user_level}stars.gif" alt="{$comment.user_level} {tr}stars{/tr}" title="{tr}User Level{/tr}">
+				<img src="img/icons/{$comment.user_level}stars.gif" alt="{$comment.user_level} {tr}stars{/tr}" title="{tr}User Level{/tr}" />
 			</span>
 			{/if}
 
@@ -87,7 +87,7 @@
 		{/if}
 	>{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 	{/if}
-	<br>
+	<br />
 	{/section}
 </div>
 {/if}
@@ -100,8 +100,8 @@
 				{$deliberation.data}
 				<form class="forumDeliberationRatingForm" method="post" action="" style="float: right;">
 					{rating type="comment" id=$deliberation.threadId}
-					<input type="hidden" name="id" value="{$deliberation.threadId}">
-					<input type="hidden" name="type" value="comment">
+					<input type="hidden" name="id" value="{$deliberation.threadId}" />
+					<input type="hidden" name="type" value="comment" />
 				</form>
 			</div>
 		{/foreach}

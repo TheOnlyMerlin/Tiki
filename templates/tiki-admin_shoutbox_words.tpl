@@ -10,18 +10,18 @@
 	<table class="formcolor">
 		<tr>
 			<td>{tr}Word{/tr}</td>
-			<td><input type="text" name="word"></td>
+			<td><input type="text" name="word" /></td>
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
-			<td><input type="submit" class="btn btn-default" name="add" value="{tr}Add{/tr}"></td>
+			<td><input type="submit" name="add" value="{tr}Add{/tr}" /></td>
 		</tr>
 	</table>
 </form>
 
 {include file='find.tpl'}
 
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>
 			<a href="tiki-admin_shoutbox_words.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'word_desc'}word_asc{else}word_desc{/if}">{tr}Word{/tr}</a>

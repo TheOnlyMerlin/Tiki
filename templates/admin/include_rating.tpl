@@ -2,8 +2,8 @@
 
 <form class="admin" id="performance" name="performance" action="tiki-admin.php?page=rating" method="post">
 	<div class="heading input_submit_container" style="text-align: right">
-		<input type="submit" class="btn btn-default" value="{tr}Apply{/tr}" />
-		<input type="reset" class="btn btn-warning" value="{tr}Reset{/tr}" />
+		<input type="submit" value="{tr}Apply{/tr}" />
+		<input type="reset" value="{tr}Reset{/tr}" />
 	</div>
 
 	<fieldset>
@@ -47,14 +47,14 @@
 	</fieldset>
 	
 	<div class="input_submit_container" style="margin-top: 5px; text-align: center">
-		<input type="submit" class="btn btn-default" value="{tr}Apply{/tr}" />
+		<input type="submit" value="{tr}Apply{/tr}" />
 	</div>
 </form>
 <div id="rating_advanced_childcontainer">
 	{foreach from=$configurations item=config}
 		<form class="config" method="post" action="">
 			<fieldset>
-				<legend>{$config.name|escape} (ID: {$config.ratingConfigId|escape}, Search Field: <em>adv_rating_{$config.ratingConfigId|escape}</em>)</legend>
+				<legend>{$config.name|escape}</legend>
 				<input type="hidden" name="config" value="{$config.ratingConfigId|escape}"/>
 				<div>
 					<label for="rating_name_{$config.ratingConfigId|escape}">{tr}Name{/tr}</label>
@@ -68,7 +68,7 @@
 					<textarea name="formula" rows="5" style="width: 100%;">{$config.formula|escape}</textarea>
 				</div>
 				<div class="error"></div>
-				<input type="submit" class="btn btn-default" name="edit" value="{tr}Save{/tr}"/>
+				<input type="submit" name="edit" value="{tr}Save{/tr}"/>
 			</fieldset>
 		</form>
 	{/foreach}
@@ -77,7 +77,7 @@
 			<legend>{tr}Create New{/tr}</legend>
 			<label for="rating_config_new">{tr}Name{/tr}</label>
 			<input type="text" name="name" id="rating_config_new"/>
-			<input type="submit" class="btn btn-default" name="create" value="{tr}Create{/tr}"/>
+			<input type="submit" name="create" value="{tr}Create{/tr}"/>
 		</fieldset>
 	</form>
 </div>

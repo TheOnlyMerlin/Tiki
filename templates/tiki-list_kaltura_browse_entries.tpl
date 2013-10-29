@@ -19,19 +19,19 @@
 
 	<div class="center">
 		<object name="mykdp" id="mykdp" type="application/x-shockwave-flash" height="365" width="595" data="{$prefs.kaltura_kServiceUrl}index.php/kwidget/wid/_{$prefs.kaltura_partnerId}/uiconf_id/{$prefs.kaltura_kdpUIConf}/entry_id/{$videoInfo->id}">
-			<param name="allowScriptAccess" value="always">
-			<param name="allowNetworking" value="all">
-			<param name="allowFullScreen" value="true">
-			<param name="movie" value="{$prefs.kaltura_kServiceUrl}index.php/kwidget/wid/_{$prefs.kaltura_partnerId}/uiconf_id/{$prefs.kaltura_kdpUIConf}/entry_id/{$klist[0]->id}">
-			<param name="flashVars" value="entry_id={$klist[0]->id}">
-			<param name="wmode" value="opaque">
+			<param name="allowScriptAccess" value="always" />
+			<param name="allowNetworking" value="all" />
+			<param name="allowFullScreen" value="true" />
+			<param name="movie" value="{$prefs.kaltura_kServiceUrl}index.php/kwidget/wid/_{$prefs.kaltura_partnerId}/uiconf_id/{$prefs.kaltura_kdpUIConf}/entry_id/{$klist[0]->id}"/>
+			<param name="flashVars" value="entry_id={$klist[0]->id}" />
+			<param name="wmode" value="opaque" />
 		</object>
 		<div class="navi kaltura">
 			<a class="prev"></a> 
 			<div class="scrollable"> 
 				<div class="items"> 
 					{foreach from=$klist key=key item=item}					
-						<a href="#" onclick="loadMedia('{$item->id}'); return false"><img class="athumb" src="{$item->thumbnailUrl}" alt="{$item->description}" height="80" width="120"></a>					
+						<a href="#" onclick="loadMedia('{$item->id}'); return false"><img class="athumb" src="{$item->thumbnailUrl}" alt="{$item->description}" height="80" width="120" /></a>					
 					{/foreach}
 				</div>
 			</div>

@@ -113,7 +113,7 @@ class Tracker_Query
 	 */
 	public static function tracker($tracker)
 	{
-		return (new Tracker_Query($tracker));
+		return new self($tracker);
 	}
 
 	/**
@@ -1298,7 +1298,7 @@ class Tracker_Query
 
 		if ($this->canDelete()) {
 			$results = $this->query();
-			foreach ($results as $itemId => $result) {
+			foreach($results as $itemId => $result) {
 				$trklib->remove_tracker_item($itemId, $bulkMode);
 			}
 		}

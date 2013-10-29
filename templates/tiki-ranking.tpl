@@ -14,13 +14,13 @@
 		<option value="100" {if $limit eq 100}selected="selected"{/if}>{tr}Top 100{/tr}</option>
 	</select>
 
-	{if $categIdstr}<input type="hidden" name="categId" value="{$categIdstr}">{/if}
-	<input type="submit" class="btn btn-default" name="selrank" value="{tr}View{/tr}">
+	{if $categIdstr}<input type="hidden" name="categId" value="{$categIdstr}" />{/if}
+	<input type="submit" name="selrank" value="{tr}View{/tr}" />
 </form>
 
 {cycle values="odd,even" print=false}
 {section name=ix loop=$rankings}
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th>{tr}Rank{/tr}</th>
 			<th>{$rankings[ix].title}</th>

@@ -12,7 +12,7 @@
   {include file='find.tpl'}
 {/if}
 
-<table class="table normal">
+<table class="normal">
 {assign var=numbercol value=0}
 <tr>
 {if $prefs.blog_list_title eq 'y' or $prefs.blog_list_description eq 'y'}
@@ -78,7 +78,7 @@
 {if $prefs.blog_list_user eq 'link'}
 	<td class="username">&nbsp;{$listpages[changes].user|userlink}&nbsp;</td>
 {elseif $prefs.blog_list_user eq 'avatar'}
-	<td>&nbsp;{$listpages[changes].user|avatarize}&nbsp;<br>
+	<td>&nbsp;{$listpages[changes].user|avatarize}&nbsp;<br />
 	&nbsp;{$listpages[changes].user|userlink}&nbsp;</td>
 {else}
 	<td class="username">&nbsp;{$listpages[changes].user|escape}&nbsp;</td>

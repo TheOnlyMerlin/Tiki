@@ -11,16 +11,9 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- *
- */
 class BanLib extends TikiLib
 {
-    /**
-     * @param $banId
-     * @return mixed
-     */
-    function get_rule($banId)
+	function get_rule($banId)
 	{
 		$query = "select * from `tiki_banning` where `banId`=?";
 
@@ -39,10 +32,7 @@ class BanLib extends TikiLib
 		return $res;
 	}
 
-    /**
-     * @param $banId
-     */
-    function remove_rule($banId)
+	function remove_rule($banId)
 	{
 		$query = "delete from `tiki_banning` where `banId`=?";
 
@@ -51,15 +41,7 @@ class BanLib extends TikiLib
 		$this->query($query, array($banId));
 	}
 
-    /**
-     * @param $offset
-     * @param $maxRecords
-     * @param $sort_mode
-     * @param $find
-     * @param string $where
-     * @return array
-     */
-    function list_rules($offset, $maxRecords, $sort_mode, $find, $where = '')
+	function list_rules($offset, $maxRecords, $sort_mode, $find, $where = '')
 	{
 
 		if ($find) {
@@ -114,11 +96,7 @@ class BanLib extends TikiLib
 		return $retval;
 	}
 
-    /**
-     * @param $rules
-     * @return string
-     */
-    function export_rules($rules)
+	function export_rules($rules)
 	{
 		$csv = "banId,mode,title,ip1,ip2,ip3,ip4,user,date_from,date_to,use_dates,created,created_readable,message,sections\n";
 		foreach ($rules as $rule) {
@@ -167,12 +145,7 @@ class BanLib extends TikiLib
 		return $csv;
 	}
 
-    /**
-     * @param $fname
-     * @param $import_as_new
-     * @return int
-     */
-    function importCSV($fname, $import_as_new)
+	function importCSV($fname, $import_as_new)
 	{
 		global $smarty;
 
@@ -225,22 +198,7 @@ class BanLib extends TikiLib
 	  message text,
 	  primary key(banId)
 	  */
-    /**
-     * @param $banId
-     * @param $mode
-     * @param $title
-     * @param $ip1
-     * @param $ip2
-     * @param $ip3
-     * @param $ip4
-     * @param $user
-     * @param $date_from
-     * @param $date_to
-     * @param $use_dates
-     * @param $message
-     * @param $sections
-     */
-    function replace_rule($banId, $mode, $title, $ip1, $ip2, $ip3, $ip4, $user, $date_from, $date_to, $use_dates, $message, $sections)
+	function replace_rule($banId, $mode, $title, $ip1, $ip2, $ip3, $ip4, $user, $date_from, $date_to, $use_dates, $message, $sections)
 	{
 
 		$count = TikiDb::get()->table('tiki_banning')->fetchCount(array('banId' => $banId));

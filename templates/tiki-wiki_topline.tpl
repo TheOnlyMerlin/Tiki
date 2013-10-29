@@ -48,27 +48,6 @@
 										<a title="{tr}View edit icons{/tr}" href="#" id="wiki_plugin_edit_view">{icon _id='wiki_plugin_edit_view' title="{tr}View edit icons{/tr}"}</a>
 									{/if}
 								{/if}
-								{if ($tiki_p_edit eq 'y' or $tiki_p_edit_inline eq 'y' or $page|lower eq 'sandbox') and $beingEdited ne 'y' and $machine_translate_to_lang eq ''}
-									{if $prefs.wysiwyg_inline_editing eq 'y' and $prefs.feature_wysiwyg eq 'y'}
-										{jq}
-											$("#wysiwyg_inline_edit").click( function () {
-												var src = $("#wysiwyg_inline_edit img").attr("src");
-												if (src.indexOf("page.png") > -1) {
-													if (enableWysiwygInlineEditing()) {
-														$("#wysiwyg_inline_edit img").attr("src", src.replace("page.png", "page_lightning.png"));
-													}
-												} else {
-													if (disableWyiswygInlineEditing()) {
-														$("#wysiwyg_inline_edit img").attr("src", src.replace("page_lightning.png", "page.png"));
-													}
-												}
-												return false;
-											});
-											if (getCookie("wysiwyg_inline_edit", "preview")) { $("#wysiwyg_inline_edit").click(); }
-										{/jq}
-										<a title="{tr}Inline Edit{/tr}" href="#" id="wysiwyg_inline_edit">{icon _id='page' title="{tr}Inline Edit{/tr}"}</a>
-									{/if}
-								{/if}
 							{/if}
 							{if $prefs.feature_morcego eq 'y' && $prefs.wiki_feature_3d eq 'y'}
 								<a title="{tr}3d browser{/tr}" href="javascript:wiki3d_open('{$page|escape}',{$prefs.wiki_3d_width}, {$prefs.wiki_3d_height})">{icon _id='wiki3d' alt="{tr}3d browser{/tr}"}</a>

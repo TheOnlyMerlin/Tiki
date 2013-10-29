@@ -20,8 +20,7 @@ function prefs_page_list()
 			'default' => 'bottom',
 		),
 		'page_n_times_in_a_structure' => array(
-			'name' => tra('page occurrence in structure'),
-            'description' => tra('A page can occur multiple times in a structure'),
+			'name' => tra('A page can occur multiple times in a structure'),
 			'type' => 'flag',
 			'default' => 'n',
 		),

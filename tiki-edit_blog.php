@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -29,7 +26,7 @@ $smarty->assign('blogId', $blogId);
 $smarty->assign('title', '');
 $smarty->assign('description', '');
 $smarty->assign('public', 'y');
-$smarty->assign('use_find', 'n');
+$smarty->assign('use_find', 'y');
 $smarty->assign('add_date', 'y');
 $smarty->assign('use_title', 'y');
 $smarty->assign('use_title_in_post', 'y');

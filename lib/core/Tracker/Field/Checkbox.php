@@ -33,9 +33,9 @@ class Tracker_Field_Checkbox extends Tracker_Field_Abstract implements Tracker_F
 	{
 		$ins_id = $this->getInsertId();
 
-		if (!empty($requestData[$ins_id])) {
+		if (isset($requestData[$ins_id]) && $requestData[$ins_id] == 'on') {
 			$val = 'y';
-		} elseif (!empty($requestData[$ins_id . '_old'])) {
+		} elseif (!empty($requestData)) {
 			$val = 'n';
 		} else {
 			$val = $this->getValue();
@@ -91,9 +91,8 @@ class Tracker_Field_Checkbox extends Tracker_Field_Abstract implements Tracker_F
 		}
 	}
 
-	function getDocumentPart(Search_Type_Factory_Interface $typeFactory)
+	function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
 	{
-		$baseKey = $this->getBaseKey();
 		$checked = $this->getValue() === 'y';
 
 		return array(

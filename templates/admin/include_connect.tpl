@@ -28,7 +28,7 @@
 			<legend><strong>{tr}Spread the word{/tr}</strong></legend>
 			<p>
 				{tr}Add the "Powered by" module to your site. {/tr}
-				{button href="tiki-admin_modules.php?textFilter=powered&cookietab=3" _text="{tr}Manage Modules{/tr}"}
+				{button href="tiki-admin_modules.php?textFilter=powered&cookietab=3" _text="{tr}Manage Modules{/tr}"}</a>
 			</p>
 		</fieldset>
 		<fieldset>
@@ -42,7 +42,7 @@
 			<legend><strong>{tr}Make a financial contribution to the Tiki Association{/tr}</strong></legend>
 			<p>
 				<a href="http://tiki.org/Donation">
-					<img src="img/tiki/Tiki_Contribute_Button.png" alt="{tr}Contribute to Tiki{/tr}">
+					<img src="img/tiki/Tiki_Contribute_Button.png" alt="{tr}Contribute to Tiki{/tr}" />
 				</a>
 			</p>
 		</fieldset>
@@ -53,9 +53,9 @@
 				<legend>{tr}Tiki Connect{/tr}</legend>
 				{remarksbox type="info" title="{tr}New Feature{/tr}" icon="bricks"}
 					<p><em>{tr}Please note: Experimental - work in progress{/tr}</em></p>
-					<p>{tr}Tiki Connect is a way to let the Tiki project know how it is being used, and which parts people like or would like fixing (or explaining).{/tr}<br>
+					<p>{tr}Tiki Connect is a way to let the Tiki project know how it is being used, and which parts people like or would like fixing (or explaining).{/tr}<br />
 					{tr}When you click the "Send Info" below you will be connected with mother.tiki.org, which is where the data will be collected.{/tr}</p>
-					<p>{tr}You can also send feedback about Tiki by checking the "Feedback" checkbox above. Icons will appear next to all the preferences where you can "like", request a "fix" or ask "what's this for?"{/tr}<br>
+					<p>{tr}You can also send feedback about Tiki by checking the "Feedback" checkbox above. Icons will appear next to all the preferences where you can "like", request a "fix" or ask "what's this for?"{/tr}<br />
 					{tr}Your votes are sent when you connect with mother.tiki.org (currently only be clicking the "Send Info" button){/tr}</p>
 					<p>{tr}For more info{/tr} <a href="http://doc.tiki.org/Connect">{tr}click here{/tr}</a></p>
 				{/remarksbox}
@@ -102,7 +102,7 @@
 			</fieldset>
 
 			<div class="heading input_submit_container" style="text-align: center;">
-				<input type="submit" class="btn btn-default" name="connectprefs" value="{tr}Change preferences{/tr}" />
+				<input type="submit" name="connectprefs" value="{tr}Change preferences{/tr}" />
 			</div>
 		</form>
 	{/tab}
@@ -111,14 +111,14 @@
 			<h2>{tr}Recent connections{/tr}</h2>
 			<form class="admin" name="cserver_form" action="tiki-admin.php?page=connect" method="post">
 				<input name="cserver_search" type="text" value="{$cserver_search_text}" />
-				<input name="cserver" type="submit" class="btn btn-default" value="{tr}Search{/tr}" />
+				<input name="cserver" type="submit" value="{tr}Search{/tr}" />
 				{button cserver="rebuild" _auto_args="cserver,page" _text="{tr}Rebuild Index{/tr}" _title="{tr}Rebuild received connections index{/tr}"}
 				{if !empty($connect_stats)}
 					<span>{tr _0=$connect_stats.received _1=$connect_stats.guids}<strong>Server stats:</strong> %0 reports received from %1 Tikis{/tr}</span>
 				{/if}
 			</form>
 
-			<table class="table normal">
+			<table class="normal">
 				<tr>
 					<th>{tr}Created{/tr}</th>
 					<th>{tr}Title{/tr}</th>

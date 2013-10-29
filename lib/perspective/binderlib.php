@@ -16,6 +16,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 
 require_once('lib/perspectivelib.php');
 require_once('lib/categories/categlib.php');
+include_once('lib/core/Zend/OpenId.php');	// contains useful redirect selfUrl functions
 
 class AreasLib extends CategLib
 {
@@ -121,7 +122,6 @@ class AreasLib extends CategLib
 	function update_areas()
 	{
 		global $prefs;
-		$this->areas->deleteMultiple();	// empty areas table before rebuilding
 		$areas = array();
 		$descendants = $this->get_category_descendants($prefs['areas_root']);
 		if (is_array($descendants)) {
@@ -141,11 +141,12 @@ class AreasLib extends CategLib
 
 				foreach (array_filter($areas) as $key => $item) { // don't bother with categs with no perspectives
 					$data = array();
-					// update checkboxes from form
-					$data['enabled'] = !empty($_REQUEST['enabled'][$key]) ? 'y' : 'n';
-					$data['exclusive'] = !empty($_REQUEST['exclusive'][$key]) ? 'y' : 'n';
-					$data['share_common'] = !empty($_REQUEST['share_common'][$key]) ? 'y' : 'n';
+					if (isset($_REQUEST['update_areas'])) { // update checkboxes from form
 
+						$data['enabled'] = !empty($_REQUEST['enabled'][$key]) ? 'y' : 'n';
+						$data['exclusive'] = !empty($_REQUEST['exclusive'][$key]) ? 'y' : 'n';
+						$data['share_common'] = !empty($_REQUEST['share_common'][$key]) ? 'y' : 'n';
+					}
 					$this->bind_area($key, $item, $data);
 				}
 			} else {

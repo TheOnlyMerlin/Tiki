@@ -437,7 +437,7 @@ class ArtLib extends TikiLib
 
 		$query = 'select `name` from `tiki_topics` where `topicId` = ?';
 		$topicName = $this->getOne($query, array($topicId));
-		$size = $body ? mb_strlen($body) : mb_strlen($heading);
+		$size = strlen($body);
 
 		if ($articleId) {
 			$oldArticle = $this->get_article($articleId);
@@ -1366,13 +1366,10 @@ class ArtLib extends TikiLib
 			`tiki_article_types`.`show_linkto`,
 			`tiki_article_types`.`show_image_caption`,
 			`tiki_article_types`.`creator_edit`
-			from `tiki_articles`
-			$fromSql
-			$join
-			$mid $mid2 order by " .
-			$this->convertSortMode(
-				$sort_mode,
-				array(
+				from `tiki_articles`
+				$fromSql
+				$join
+				$mid $mid2 order by " . $this->convertSortMode($sort_mode, array(
 					'title',
 					'state',
 					'authorName',
@@ -1383,8 +1380,7 @@ class ArtLib extends TikiLib
 					'created',
 					'author',
 					'rating',
-				)
-			);
+				));
 
 		$result = $this->query($query, $bindvars, $maxRecords, $offset);
 		$query_cant = "select distinct count(*) from `tiki_articles` $fromSql $join $mid $mid2";
@@ -1429,26 +1425,7 @@ class ArtLib extends TikiLib
 		return $retval;
 	}
 
-	/**
-	 * Work out if body (or heading) should be parsed as html or not
-	 * Currently (tiki 11) tries the prefs but also checks for html in body in case wysiwyg_htmltowiki wasn't enabled previously
-	 *
-	 * @param array $article of article data
-	 * @param bool $check_heading	use heading or (default) body
-	 * @return bool
-	 */
-	function is_html($article, $check_heading = false)
-	{
-		global $prefs;
-
-		$text = $check_heading ? $article['heading'] : $article['body'];
-
-		return $prefs['feature_wysiwyg'] === 'y' &&
-				($prefs['wysiwyg_htmltowiki'] !== 'y' ||
-						preg_match('/(<\/p>|<\/span>|<\/div>|<\/?br>)/', $text));
-	}
-
-	function list_submissions($offset = 0, $maxRecords = -1, $sort_mode = 'publishDate_desc', $find = '', $date = '', $type = '', $topicId = '', $lang = '')
+	function list_submissions($offset = 0, $maxRecords = -1, $sort_mode = 'publishDate_desc', $find = '', $date = '')
 	{
 		if ($find) {
 			$findPattern = '%' . $find . '%';
@@ -1466,24 +1443,6 @@ class ArtLib extends TikiLib
 				$mid = ' where `publishDate` <= ? ';
 			}
 			$bindvars[] = $date;
-		}
-
-		if ($type) {
-			$mid .= $mid ? ' AND ' : ' WHERE ';
-			$mid .= ' `type` = ? ';
-			$bindvars[] = $type;
-		}
-
-		if ($topicId) {
-			$mid .= $mid ? ' AND ' : ' WHERE ';
-			$mid .= ' `topicId` = ? ';
-			$bindvars[] = $topicId;
-		}
-
-		if ($lang) {
-			$mid .= $mid ? ' AND ' : ' WHERE ';
-			$mid .= ' `lang` = ? ';
-			$bindvars[] = $lang;
 		}
 
 		$query = "select * from `tiki_submissions` $mid order by " . $this->convertSortMode($sort_mode);
@@ -1519,6 +1478,7 @@ class ArtLib extends TikiLib
 	function get_article($articleId, $checkPerms = true)
 	{
 		global $user, $prefs;
+		$mid = ' where `tiki_articles`.`type` = `tiki_article_types`.`type` ';
 		$query = "select `tiki_articles`.*,
 								`users_users`.`avatarLibName`,
 								`tiki_article_types`.`use_ratings`,
@@ -1539,10 +1499,8 @@ class ArtLib extends TikiLib
 								`tiki_article_types`.`show_linkto`,
 								`tiki_article_types`.`show_image_caption`,
 								`tiki_article_types`.`creator_edit`
-						from `tiki_articles`
-						inner join `tiki_article_types` ON `tiki_articles`.`type` = `tiki_article_types`.`type`
-						left join `users_users` on `tiki_articles`.`author` = `users_users`.`login` 
-						where `tiki_articles`.`articleId`=?"
+						from (`tiki_articles`, `tiki_article_types`)
+						left join `users_users` on `tiki_articles`.`author` = `users_users`.`login` $mid and `tiki_articles`.`articleId`=?"
 						;
 
 		$result = $this->query($query, array((int)$articleId));
