@@ -5,18 +5,24 @@
 */
  
 /* Import foundation CSS files. */
+@import url("lite/lite.css");
+@import url("layout/layout.css");
 @import url("layout/design.css");
 
 /***** XHTML Elements (body tag here, others follow Layout) *****/
 
 body {
     background: #fff;
-	font-family: Century Gothic,Lucida Grande,Arial,Helvetcia,sans-serif;
+	font: 90% Century Gothic,Lucida Grande,Arial,Helvetcia,sans-serif;
     color: rgb(30, 30, 30);
 }
 
 .tiki {
     background: url('greenvalley/background.jpg') repeat;
+}
+
+html > body {
+    font-size: 0.85em;
 }
 
 #middle {

@@ -361,7 +361,7 @@
 					{assign var=class value=""}
 				{/if}
 				<tr class="{$class}">
-					<td class="checkbox-cell">
+					<td class="checkbox">
 						<input type="checkbox" name="msg[]" value="{$list[ix].msgid}">
 						<input type="hidden" name="realmsg[{$list[ix].msgid}]" value="{$list[ix].realmsgid|escape}">
 					</td>
@@ -521,9 +521,9 @@
 	</div>
 
 	{section name=ix loop=$attachs}
-		<div class="panel panel-default"><div class="panel-body">
+		<div class="simplebox">
 			<a class="link" href="tiki-webmail_download_attachment.php?locSection=read&amp;msgid={$msgid}&amp;getpart={$attachs[ix].part}">{$attachs[ix].name|iconify}{$attachs[ix].name}</a>
-		</div></div>
+		</div>
 	{/section}
 {/if}
 {if $locSection eq 'compose'}
@@ -617,7 +617,7 @@
 						</tr>
 						{section name=ix loop=$not_contacts}
 							<tr>
-								<td class="checkbox-cell">
+								<td class="checkbox">
 									<input type="checkbox" name="add[{$smarty.section.ix.index}]">
 									<input type="hidden" name="addemail[{$smarty.section.ix.index}]" value="{$not_contacts[ix]|escape}">
 								</td>

@@ -1,4 +1,4 @@
-<fieldset class="table">
+<fieldset class="admin">
 	<legend>{tr}Wiki attachments{/tr}</legend>
 			<form action="tiki-admin.php?page=wikiatt" method="post">
 				<input type="text" name="find" value="{$find|escape}" />
@@ -6,7 +6,7 @@
 			</form>
 
 			{cycle values="odd,even" print=false}
-			<table class="table normal">
+			<table class="normal">
 				<tr>
 					<th>{self_link _sort_arg='sort_mode' _sort_field='user'}{tr}User{/tr}{/self_link}</th>
 					<th>{self_link _sort_arg='sort_mode' _sort_field='page'}{tr}Page{/tr}{/self_link}</th>

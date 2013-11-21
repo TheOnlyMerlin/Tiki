@@ -2,20 +2,20 @@
 
 {title help="Groups+Management" admpage="login"}{tr}Admin groups{/tr}{/title}
 
-<div class="t_navbar btn-group">
-	{button class="btn btn-default" _text="{tr}Admin groups{/tr}"}
-	{button href="tiki-adminusers.php" class="btn btn-default" _text="{tr}Admin users{/tr}"}
-	{button href="tiki-admingroups.php?clean=y" class="btn btn-default" _text="{tr}Clear cache{/tr}"}
+<div class="navbar">
+	{button _text="{tr}Admin groups{/tr}"}
+	{button href="tiki-adminusers.php" _text="{tr}Admin users{/tr}"}
+	{button href="tiki-admingroups.php?clean=y" _text="{tr}Clear cache{/tr}"}
 	{if $groupname}
 		{if $prefs.feature_tabs ne 'y'}
-			{button href="tiki-admingroups.php?add=1&amp;cookietab=2#tab2" class="btn btn-default" _text="{tr}Add new group{/tr}"}
+			{button href="tiki-admingroups.php?add=1&amp;cookietab=2#tab2" _text="{tr}Add new group{/tr}"}
 		{else}
-			{button href="tiki-admingroups.php?add=1&amp;cookietab=2" class="btn btn-default" _text="{tr}Add new group{/tr}"}
+			{button href="tiki-admingroups.php?add=1&amp;cookietab=2" _text="{tr}Add new group{/tr}"}
 		{/if}
 	{/if}
-	{button href="tiki-objectpermissions.php" class="btn btn-default" _text="{tr}Manage permissions{/tr}"}
+	{button href="tiki-objectpermissions.php" _text="{tr}Manage permissions{/tr}"}
 	{if $prefs.feature_invite eq 'y' and $tiki_p_invite eq 'y'}
-		{button href="tiki-list_invite.php" class="btn btn-default" _text="{tr}Invitation List{/tr}"}
+		{button href="tiki-list_invite.php" _text="{tr}Invitation List{/tr}"}
 	{/if}
 </div>
 
@@ -51,7 +51,7 @@
 		{cycle values="even,odd" print=false}
 		{section name=user loop=$users}
 			<tr class="{cycle}">
-				<td class="checkbox-cell">
+				<td class="checkbox">
 					{if $users[user].groupName ne 'Admins' and $users[user].groupName ne 'Anonymous' and $users[user].groupName ne 'Registered'}
 						<input type="checkbox" name="checked[]" value="{$users[user].groupName|escape}">
 					{/if}
@@ -405,7 +405,7 @@ $("#userstracker").change(function () {
 			<tr>
 				{foreach from=$memberslist item=member}
 					<tr class="{cycle}">
-					<td class="checkbox-cell"><input type="checkbox" name="members[]" value="{$member.userId}"></td>
+					<td class="checkbox"><input type="checkbox" name="members[]" value="{$member.userId}"></td>
 					<td class="username">{$member.login|userlink}</td>
 					<td class="date">{$member.created|tiki_short_datetime}</td>
 					<td class="date">{if !empty($member.expire)}{$member.expire|tiki_short_datetime}{/if}</td>

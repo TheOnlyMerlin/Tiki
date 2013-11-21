@@ -2750,12 +2750,12 @@ function prefs_feature_list($partial = false)
 			'warning' => tra('Experimental'),
 			'tags' => array('experimental'),
 		),
-		'feature_futurelinkprotocol' => array(
-			'name' => tra('FutureLink-Protocol'),
+		'feature_forwardlinkprotocol' => array(
+			'name' => tra('ForwardLink-Protocol'),
             'description' => tra('A Dynamic Compendia'),
 			'type' => 'flag',
-			'help' => 'FutureLinkProtocol',
-			'keywords' => 'future link futurelink share feed',
+			'help' => 'ForwardLinkProtocol',
+			'keywords' => 'forward link forwardlink share feed',
 			'default' => 'n',
 			'warning' => tra('Experimental'),
 			'tags' => array('experimental'),
@@ -2801,13 +2801,6 @@ function prefs_feature_list($partial = false)
 			),
 			'type' => 'flag',
 			'default' => 'n',
-		),
-		'feature_hidden_links' => array(
-			'name' => tra('Hidden anchors/links shown on mouseover of headers'),
-			'description' => tra('This is useful to share a URL to exact location on the page.'),
-			'type' => 'flag',
-			'default' => 'y',
-			'tags' => array('advanced'),
 		),
 	);
 }

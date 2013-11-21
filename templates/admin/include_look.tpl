@@ -18,7 +18,6 @@
 					{preference name=style_option}
 
 					{preference name=site_layout}
-					{preference name=site_layout_per_object}
 
 					{preference name=style_admin}
 					{preference name=style_admin_option}
@@ -155,7 +154,7 @@
 
 		{tab name="{tr}UI Effects{/tr}"}
 			<div class="adminoptionbox">
-				<fieldset class="table">
+				<fieldset class="admin">
 					<legend>{tr}Standard UI effects{/tr}</legend>
 					{preference name=jquery_effect}
 					{preference name=jquery_effect_speed}
@@ -164,7 +163,7 @@
 			</div>
 
 			<div class="adminoptionbox">
-				<fieldset class="table">
+				<fieldset class="admin">
 					<legend>{tr}Tab UI effects{/tr}</legend>
 					{preference name=jquery_effect_tabs}
 					{preference name=jquery_effect_tabs_speed}
@@ -180,7 +179,6 @@
 							{preference name=jquery_colorbox_theme}
 						</div>
 					{preference name=feature_jscalendar}
-                    {preference name=feature_hidden_links}
 				</div>
 			</fieldset>
 		{/tab}
@@ -300,7 +298,7 @@
 			</div>
 
 			<div class="adminoptionbox">
-				<fieldset class="table">
+				<fieldset class="admin">
 					<legend>{tr}Context Menus{/tr} (<em>{tr}Currently used in File Galleries only{/tr}.</em>)</legend>
 					{preference name=use_context_menu_icon}
 					{preference name=use_context_menu_text}

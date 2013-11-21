@@ -9,10 +9,9 @@
 		<div class="box-shadow">{$prefs.box_shadow_start}
 	{/if}
 	{if !isset($moduleId)}{assign var=moduleId value=' '}{/if}
-	<div id="module_{$moduleId}" class="panel panel-default box-{$module_name}{if $module_type eq 'cssmenu'} cssmenubox{/if} module"{if !empty($tpl_module_style)} style="{$tpl_module_style}"{/if}>
+	<div id="module_{$moduleId}" class="box box-{$module_name}{if $module_type eq 'cssmenu'} cssmenubox{/if} module"{if !empty($tpl_module_style)} style="{$tpl_module_style}"{/if}>
 	{if $module_decorations ne 'n'}
-        <div class="panel-heading">
-		<h3 class="panel-title clearfix" {if !empty($module_params.bgcolor)} style="background-color:{$module_params.bgcolor};"{/if}>
+		<h3 class="box-title clearfix" {if !empty($module_params.bgcolor)} style="background-color:{$module_params.bgcolor};"{/if}>
 		{if $user and $prefs.user_assigned_modules == 'y' and $prefs.feature_modulecontrols eq 'y'}
 			<span class="modcontrols">
 			<a title="{tr}Move module up{/tr}" href="{$current_location|escape}{$mpchar|escape}mc_up={$module_name}">
@@ -35,7 +34,7 @@
 		{if $module_flip eq 'y' and $prefs.javascript_enabled ne 'n'}
 			<span class="moduleflip" id="moduleflip-{$smarty.capture.name}">
 				<a title="{tr}Toggle module contents{/tr}" class="flipmodtitle" href="javascript:icntoggle('mod-{$smarty.capture.name}','module.png');">
-					{icon id="icnmod-"|cat:$smarty.capture.name class="flipmodimage" _id="module" alt="[{tr}Toggle{/tr}]"}
+					{icon id="icnmod-"|cat:$smarty.capture.name class="flipmodimage" _id="module" alt="[{tr}toggle{/tr}]"}
 				</a>
 			</span>
 			{if $prefs.menus_items_icons eq 'y'}
@@ -46,24 +45,28 @@
 				</span>
 			{/if}
 		{/if}
-        </h3></div>
-	{elseif $module_notitle ne 'y'}{* means when module decorations are set to 'n' don't render the panel-heading wrapper as above *}
+		<!--[if IE]><br class="clear" style="height: 1px !important" /><![endif]--></h3>
+	{elseif $module_notitle ne 'y'}
 		{if $module_flip eq 'y' and $prefs.javascript_enabled ne 'n'}
-	<h3 class="panel-title" ondblclick="javascript:icntoggle('mod-{$smarty.capture.name}','module.png');"{if !empty($module_params.color)} style="color:{$module_params.color};"{/if}>
+			<h3 class="box-title" ondblclick="javascript:icntoggle('mod-{$smarty.capture.name}','module.png');"{if !empty($module_params.color)} style="color:{$module_params.color};"{/if}>
 		{else}
-	<h3 class="panel-title"{if !empty($module_params.color)} style="color:{$module_params.color};"{/if}>
+			<h3 class="box-title"{if !empty($module_params.color)} style="color:{$module_params.color};"{/if}>
 		{/if}
 		{$module_title}
 		{if $module_flip eq 'y' and $prefs.javascript_enabled ne 'n'}
-			<span class="moduleflip" id="moduleflip-{$smarty.capture.name}">
+			<span id="moduleflip-{$smarty.capture.name}">
 				<a title="{tr}Toggle module contents{/tr}" class="flipmodtitle" href="javascript:icntoggle('mod-{$smarty.capture.name}','module.png');">
-					{icon name="icnmod-"|cat:$smarty.capture.name class="flipmodimage" _id="module" alt="[{tr}Toggle{/tr}]"}
+					{assign var="name" value="icnmod-"|cat:$smarty.capture.name}
+					{capture name=name}
+						icnmod-{$smarty.capture.name}
+					{/capture}
+					{icon name="icnmod-"|cat:$smarty.capture.name class="flipmodimage" _id="module" alt="[{tr}Hide{/tr}]"}
 				</a>
 			</span>
 		{/if}
-	</h3>
+		<!--[if IE]><br class="clear" style="height: 1px !important" /><![endif]--></h3>
 	{/if}
-		<div id="mod-{$smarty.capture.name}" style="display: {if !isset($module_display) or $module_display}block{else}none{/if};{$module_params.style}" class="clearfix panel-body{if !empty($module_params.class)} {$module_params.class}{/if}">
+		<div id="mod-{$smarty.capture.name}" style="display: {if !isset($module_display) or $module_display}block{else}none{/if};{$module_params.style}" class="clearfix box-data{if !empty($module_params.class)} {$module_params.class}{/if}">
 {else}{* $module_nobox eq 'y' *}
 		<div id="module_{$moduleId}" style="{$module_params.style}{$tpl_module_style}" class="module{if !empty($module_params.class)} {$module_params.class}{/if} box-{$module_name} clearfix">
 			<div id="mod-{$smarty.capture.name}" class="clearfix">
@@ -72,7 +75,7 @@
 {$module_error}
 {if $module_nobox neq 'y'}
 		</div>
-		<div class="module-footer">
+		<div class="box-footer">
 
 		</div>
 	</div>

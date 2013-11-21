@@ -1,14 +1,14 @@
 {title url="tiki-admin_poll_options.php?pollId=$pollId"}{tr}Admin Polls:{/tr} {$menu_info.title}{/title}
 
-<div class="t_navbar btn-group">
-	{button href="tiki-admin_polls.php" class="btn btn-default" _text="{tr}List polls{/tr}"}
-	{button href="tiki-admin_polls.php?pollId=$pollId" class="btn btn-default" _text="{tr}Edit this poll{/tr}"}
+<div class="navbar">
+	{button href="tiki-admin_polls.php" _text="{tr}List polls{/tr}"}
+	{button href="tiki-admin_polls.php?pollId=$pollId" _text="{tr}Edit this poll{/tr}"}
 </div>
 
 <h2>{tr}Preview poll{/tr}</h2>
 <div align="center">
 	<div style="text-align:left;width:130px;" class="cbox">
-		<div class="panel-heading">{$menu_info.name}</div>
+		<div class="cbox-title">{$menu_info.name}</div>
 		<div class="cbox-data">
 			{include file='tiki-poll.tpl'}
 		</div>

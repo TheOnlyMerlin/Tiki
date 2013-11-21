@@ -2,7 +2,10 @@
 <form method="get" action="{$filter_action|escape}" class="filter">
 	<label>
 		{tr}Content{/tr}
-		<input type="search" name="filter~content" value="{$filter_content|escape}">
+		<input type="text" name="filter~content" value="{$filter_content|escape}">
+		{add_help show='y' title="{tr}Search Help{/tr}" id="unified_search_help"}
+			{include file='unified_search_help.tpl'}
+		{/add_help}
 	</label>
 	{if $prefs.search_show_sort_order eq 'y'}
 		<label>
@@ -92,10 +95,7 @@
 			<input type="hidden" name="filter~language_unspecified" value="1">
 		{/if}
 	{/if}
-	<input type="submit" class="btn btn-primary" value="{tr}Search{/tr}">
-	{add_help show='y' title="{tr}Search Help{/tr}" id="unified_search_help"}
-		{include file='unified_search_help.tpl'}
-	{/add_help}
+	<input type="submit" class="btn btn-default" value="{tr}Search{/tr}">
 </form>
 {jq}
 	$('.filter:not(.init)').addClass('init').each(function () {

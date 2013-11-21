@@ -3,8 +3,8 @@
 {title help="Communication+Center"}{tr}Send objects{/tr}{/title}
 
 {if $msg}
-	<div class="panel panel-default">
-		<div class="panel-heading">
+	<div class="cbox">
+		<div class="cbox-title">
 			{tr}Transmission results{/tr}
 		</div>
 		<div class="cbox-data">
@@ -17,8 +17,8 @@
 <br>
 
 <form method="post" action="tiki-send_objects.php">
-	<div class="panel panel-default">
-		<div class="panel-heading">
+	<div class="cbox">
+		<div class="cbox-title">
 			{tr}Filter{/tr}
 		</div>
 		<div class="cbox-data">
@@ -30,17 +30,17 @@
 	<br>
 
 	{if $tiki_p_send_pages eq 'y'}
-		<div class="panel panel-default">
-			<div class="panel-heading">
+		<div class="cbox">
+			<div class="cbox-title">
 				{tr}Send Wiki Pages{/tr}
 			</div>
 			<div class="cbox-data">
-				<div class="panel panel-default"><div class="panel-body">
+				<div class="simplebox">
 					<b>{tr}Pages{/tr}</b>:
 					{section name=ix loop=$sendpages}
 						{$sendpages[ix]}&nbsp;
 					{/section}
-				</div></div>
+				</div>
 				<select name="pageName">
 					{section name=ix loop=$pages}
 						<option value="{$pages[ix].pageName|escape}">{$pages[ix].pageName|escape}</option>
@@ -55,16 +55,17 @@
 	<br>
 
 		{if count($structures)}
-			<div class="panel panel-default">
-				<div class="panel-heading">
+			<div class="cbox">
+				<div class="cbox-title">
 					{tr}Send a structure{/tr}
 				</div>
-					<div class="panel panel-default"><div class="panel-body">
+				<div class="cbox-data">
+					<div class="simplebox">
 						<b>{tr}Structures{/tr}</b>:
 						{section name=ix loop=$sendstructures_names}
 							{$sendstructures_names[ix]}&nbsp;
 						{/section}
-					</div></div>
+					</div>
 					<select name="structure">
 						{foreach item=struct from=$structures}
 							<option value="{$struct.page_ref_id|escape}">{$struct.pageName|escape}{if $struct.page_alias} (alias: {$struct.page_alias}){/if}</option>
@@ -81,18 +82,17 @@
 	<br>
 
 	{if $tiki_p_send_articles eq 'y'}
-		<div class="panel panel-default">
-			<div class="panel-heading">
+		<div class="cbox">
+			<div class="cbox-title">
 				{tr}Send Articles{/tr}
 			</div>
-			<div class="panel panel-default">
-                <div class="panel-body">
-				    <b>{tr}Articles{/tr}</b>:
-				    {section name=ix loop=$sendarticles}
-				    {$sendarticles[ix]}&nbsp;
+			<div class="cbox-data">
+				<div class="simplebox">
+					<b>{tr}Articles{/tr}</b>:
+					{section name=ix loop=$sendarticles}
+						{$sendarticles[ix]}&nbsp;
 					{/section}
 				</div>
-            </div>
 				<select name="articleId">
 					{section name=ix loop=$articles}
 						<option value="{$articles[ix].articleId|escape}">{$articles[ix].articleId}: {$articles[ix].title|escape}</option>
@@ -107,11 +107,11 @@
 	<br>
 	<br>
 
-	<div class="panel panel-default">
-		<div class="panel-heading">
+	<div class="cbox">
+		<div class="cbox-title">
 			{tr}Send objects to this site{/tr}
 		</div>
-		<div class="panel-body">
+		<div class="cbox-data">
 			<input type="hidden" name="sendpages" value="{$form_sendpages|escape}">
 			<input type="hidden" name="sendstructures" value="{$form_sendstructures|escape}">
 			<input type="hidden" name="sendarticles" value="{$form_sendarticles|escape}">

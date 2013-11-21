@@ -1131,7 +1131,7 @@ if ( \$('#$id') ) {
 
 	function process_save_plugins($data, array $context)
 	{
-        $parserlib = TikiLib::lib('parser');
+		$parserlib = TikiLib::lib('parser');
 
 		$argumentParser = new WikiParser_PluginArgumentParser;
 
@@ -1139,7 +1139,7 @@ if ( \$('#$id') ) {
 
 		foreach ($matches as $match) {
 			$plugin_name = $match->getName();
-            $body = $match->getBody();
+			$body = $match->getBody();
 			$arguments = $argumentParser->parse($match->getArguments());
 
 			$dummy_output = '';
@@ -1155,17 +1155,10 @@ if ( \$('#$id') ) {
 						$match->replaceWith($output);
 					}
 				}
-
-                if ($plugin_name == 'translationof')
-                {
-                    $this->add_translationof_relation($data, $arguments, $context['itemId']);
-                }
 			}
 		}
 
-        $matches_text = $matches->getText();
-
-        return $matches_text;
+		return $matches->getText();
 	}
 
 	//*
@@ -2098,7 +2091,7 @@ if ( \$('#$id') ) {
 
 				if (isset($tiki_p_edit_dynvar)&& $tiki_p_edit_dynvar=='y') {
 					$span1 = "<span  style='display:inline;' id='dyn_".$dvar."_display'><a class='dynavar' onclick='javascript:toggle_dynamic_var(\"$dvar\");' title='".tra('Click to edit dynamic variable', '', true).": $dvar'>$value</a></span>";
-					$span2 = "<span style='display:none;' id='dyn_".$dvar."_edit'><input type='text' name='dyn_".$dvar."' value='".$value."' />".'<input type="submit" class="btn btn-default" name="_dyn_update" value="'.tra('Update variables', '', true).'"/></span>';
+					$span2 = "<span style='display:none;' id='dyn_".$dvar."_edit'><input type='text' name='dyn_".$dvar."' value='".$value."' />".'<input type="submit" name="_dyn_update" value="'.tra('Update variables', '', true).'"/></span>';
 				} else {
 					$span1 = "<span class='dynavar' style='display:inline;' id='dyn_".$dvar."_display'>$value</span>";
 					$span2 = '';
@@ -2111,7 +2104,7 @@ if ( \$('#$id') ) {
 				$data = str_replace("$enclose$dvar$enclose", $value, $data);
 			}
 			//At the end put an update button
-			//<br /><div align="center"><input type="submit" class="btn btn-default" name="dyn_update" value="'.tra('Update variables','',true).'"/></div>
+			//<br /><div align="center"><input type="submit" name="dyn_update" value="'.tra('Update variables','',true).'"/></div>
 			$data='<form method="post" name="dyn_vars">'."\n".$data.'</form>';
 		}
 
@@ -3141,18 +3134,5 @@ if ( \$('#$id') ) {
 		$cache_hotwords = $ret;
 		return $ret;
 	}
-
-    /*
-     * When we save a page that contains a TranslationOf plugin, we need to remember
-     * that relation, so we later, when the page referenced by this plugin gets translated,
-     * we can replace the plugin by a proper link to the translation.
-     */
-    public function add_translationof_relation($data, $arguments, $page_being_parsed)
-    {
-        global $relationlib;
-
-        $relationlib->add_relation('tiki.wiki.translationof', 'wiki page', $page_being_parsed, 'wiki page', $arguments['translation_page']);
-
-    }
 }
 

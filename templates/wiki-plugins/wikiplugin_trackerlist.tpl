@@ -206,7 +206,7 @@ $('.exportButton a').click(function() {
 {* ------- popup ---- *}
 		{if !empty($popupfields)}
 			{capture name=popup}
-<div class="panel panel-default">
+<div class="cbox">
 	<table style="width:100%">
 				{cycle values="odd,even" print=false}
 				{foreach from=$items[user].field_values item=f}

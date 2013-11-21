@@ -1,13 +1,13 @@
 {title help="User+Contacts+Prefs"}{tr}User Contacts Preferences{/tr}{/title}
 
 {include file='tiki-mytiki_bar.tpl'}
-<div class="t_navbar">
-	{button href="tiki-contacts.php" class="btn btn-default" _text="{tr}Contacts{/tr}"}
+<div class="navbar">
+	{button href="tiki-contacts.php" _text="{tr}Contacts{/tr}"}
 </div>
 
 {tabset name="contact_prefs"}
 	{tab name="{tr}Options{/tr}"}
-		<div class="panel panel-default">
+		<div class="cbox">
 			<div class="cbox-data">
 				<form method='post' action='tiki-user_contacts_prefs.php'>
 					<table class="formcolor">
@@ -32,7 +32,7 @@
 	{/tab}
 
 	{tab name="{tr}Manage Fields{/tr}"}
-		<div class="panel panel-default">
+		<div class="cbox">
 			<div class="cbox-data">
 				<form method='post' action='tiki-user_contacts_prefs.php'>
 					<table class="table normal">

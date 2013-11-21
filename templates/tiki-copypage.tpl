@@ -1,7 +1,7 @@
 {* $Id$ *}
 {title}{tr}Copy page:{/tr} {$page}{/title}
 
-<div class="t_navbar">
+<div class="navbar">
 	{assign var=thispage value=$page|escape:url}
 	{button href="tiki-index.php?page=$thispage" _text="{tr}View page{/tr}"}
 </div>

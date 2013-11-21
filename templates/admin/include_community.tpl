@@ -1,9 +1,9 @@
 {* $Id$ *}
 
-<div class="t_navbar btn-group">
-	{button href="tiki-admingroups.php" class="btn btn-default" _text="{tr}Admin Groups{/tr}"}
-	{button href="tiki-adminusers.php" class="btn btn-default" _text="{tr}Admin Users{/tr}"}
-	{button href="tiki-objectpermissions.php" class="btn btn-default" _text="{tr}Manage permissions{/tr}"}
+<div class="navbar">
+	{button href="tiki-admingroups.php" _text="{tr}Admin Groups{/tr}"}
+	{button href="tiki-adminusers.php" _text="{tr}Admin Users{/tr}"}
+	{button href="tiki-objectpermissions.php" _text="{tr}Manage permissions{/tr}"}	
 </div>
 
 <form action="tiki-admin.php?page=community" method="post">
@@ -52,7 +52,7 @@
 			</div>
 		{/tab}
 		{tab name="{tr}Social Network{/tr}"}
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Friendship and Followers{/tr}</legend>
 				{preference name=feature_friends}
 				<div class="adminoptionboxchild" id="feature_friends_childcontainer">
@@ -68,7 +68,7 @@
 				</div>
 			</fieldset>
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Activity Stream{/tr}</legend>
 				{preference name=activity_basic_events visible="always"}
 

@@ -1,12 +1,12 @@
 {title}{tr}Directory batch upload{/tr}{/title}
 
-<div class="t_navbar btn-group">
+<div class="navbar">
 	{if $galleryId ne ''}
-		{button href="tiki-list_file_gallery.php?galleryId=$galleryId" class="btn btn-default" _text="{tr}Browse File Gallery{/tr}"}
+		{button href="tiki-list_file_gallery.php?galleryId=$galleryId" _text="{tr}Browse File Gallery{/tr}"}
 	{else}
-		{button href="tiki-list_file_gallery.php" class="btn btn-default" _text="{tr}Browse File Gallery{/tr}"}
+		{button href="tiki-list_file_gallery.php" _text="{tr}Browse File Gallery{/tr}"}
 	{/if}
-	{button href="tiki-upload_file.php?galleryId=$galleryId" class="btn btn-default" _text="{tr}Upload From Disk{/tr}"}
+	{button href="tiki-upload_file.php?galleryId=$galleryId" _text="{tr}Upload From Disk{/tr}"}
 </div>
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Please do not use this feature to upload data into the database.{/tr}{/remarksbox}
@@ -27,7 +27,7 @@
 		{cycle print=false values="even,odd"}
 		{foreach key=k item=it from=$filestring}
 			<tr class="{cycle}">
-				<td class="checkbox-cell">
+				<td class="checkbox">
 					<input type="checkbox" name="files[]" value="{$it[0]}" id="box_{$k}">
 				</td>
 				<td><label for="box_{$k}">{$it[0]}</label></td>

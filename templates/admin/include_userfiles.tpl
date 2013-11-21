@@ -3,7 +3,7 @@
 		<input type="submit" class="btn btn-default" name="userfilesprefs" value="{tr}Change preferences{/tr}" />
 	</div>
 
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Activate the feature{/tr}</legend>
 		{preference name=feature_userfiles visible="always"}
 		<div class="adminoptionboxchild" id="feature_userfiles_childcontainer">
@@ -11,14 +11,14 @@
 		</div>
 	</fieldset>
 
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Settings{/tr}</legend>
 		{preference name=userfiles_quota}
 		{preference name=userfiles_private}
 		{preference name=userfiles_hidden}
 
 		{if $prefs.feature_use_fgal_for_user_files eq 'n'}
-			<table class="table">
+			<table class="admin">
 
 				<tr>
 					<td>{tr}Use database to store userfiles:{/tr}</td>

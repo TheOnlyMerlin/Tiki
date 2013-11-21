@@ -1,7 +1,7 @@
 {* $Id: include_comments.tpl 44059 2012-11-22 16:13:24Z lphuberdeau $ *}
 
-<div class="t_navbar">
-	{button href="tiki-list_comments.php" class="btn btn-default" _text="{tr}List comments{/tr}"}
+<div class="navbar">
+	{button href="tiki-list_comments.php" _text="{tr}List comments{/tr}"}
 </div>
 
 
@@ -62,7 +62,7 @@
 			<fieldset>
 				<legend>{tr}Using comments in various features{/tr}</legend>
 
-				<div class="table">
+				<div class="admin">
 					{preference name=feature_article_comments}
 					{preference name=feature_wiki_comments}
 					<div class="adminoptionboxchild" id="feature_wiki_comments_childcontainer">

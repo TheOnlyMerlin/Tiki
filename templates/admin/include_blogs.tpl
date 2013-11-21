@@ -12,12 +12,12 @@
 	{tabset name="admin_blogs"}
 		{tab name="{tr}General Settings{/tr}"}
 		
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Activate the feature{/tr}</legend>
 				{preference name=feature_blogs visible="always"}
 			</fieldset>
 			
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Plugins{/tr}</legend>
 				{preference name=wikiplugin_bloglist}
 			</fieldset>

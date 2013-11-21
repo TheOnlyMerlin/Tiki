@@ -2,7 +2,7 @@
 {title help="Structures"}{tr}Structures{/tr}{/title}
 
 {if $tiki_p_admin eq 'y'}
-	<div class="t_navbar">
+	<div class="navbar">
 		{button href='tiki-import_xml_zip.php' _text="{tr}XML Zip Import{/tr}"}
 	</div>
 {/if}
@@ -82,7 +82,7 @@
 				{section loop=$channels name=ix}
 					<tr class="{cycle}">
 						{if $tiki_p_admin eq 'y'}
-							<td class="checkbox-cell">
+							<td class="checkbox">
 								<input type="checkbox" name="action[]" value='{$channels[ix].page_ref_id}' style="border:1px;font-size:80%;">
 							</td>
 						{/if}

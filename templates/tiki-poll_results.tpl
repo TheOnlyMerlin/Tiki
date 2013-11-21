@@ -2,9 +2,9 @@
 
 {title help="polls" admpage="polls"}{tr}Poll Results{/tr}{/title}
 
-<div class="t_navbar btn-group">
-	{button href="tiki-old_polls.php" class="btn btn-default" _text="{tr}Polls{/tr}"}
-	{button href="tiki-poll_results.php" class="btn btn-default" _text="{tr}Top Voted Polls{/tr}"}
+<div class="navbar">
+	{button href="tiki-old_polls.php" _text="{tr}Polls{/tr}"}
+	{button href="tiki-poll_results.php" _text="{tr}Top Voted Polls{/tr}"}
 	{if $tiki_p_admin_polls eq 'y'}
 		{if empty($pollId)}{button href="tiki-admin_polls.php" _text="{tr}Admin Polls{/tr}"}{else}{button href="tiki-admin_polls.php?pollId=$pollId" _text="{tr}Edit Poll{/tr}"}{/if}
 	{/if}
@@ -70,9 +70,9 @@
 	</div>
 {/if}
 {if $tiki_p_view_poll_voters eq 'y' && $poll_info_arr[x].votes > 0}
-	<div class="t_navbar">
+	<div class="navbar">
 		{assign var=thispoll_info_arr value=$poll_info_arr[x].pollId}
-		{button href="?list=y&amp;pollId=$thispoll_info_arr" class="btn btn-default" _text="{tr}List Votes{/tr}" _auto_args="$auto_args"}
+		{button href="?list=y&amp;pollId=$thispoll_info_arr" _text="{tr}List Votes{/tr}" _auto_args="$auto_args"}
 	</div>
 {/if}
 
@@ -132,7 +132,7 @@
   && ($tiki_p_read_comments  == 'y'
   ||  $tiki_p_post_comments  == 'y'
   ||  $tiki_p_edit_comments  == 'y')}
-  <div id="page-bar" class="btn-group btn-group-justified">
+  <div id="page-bar" class="clearfix">
 		<span class="button btn-default"><a id="comment-toggle" href="{service controller=comment action=list type=poll objectId=$pollId}#comment-container">{tr}Comments{/tr}</a></span>
 		{jq}
 			$('#comment-toggle').comment_toggle();

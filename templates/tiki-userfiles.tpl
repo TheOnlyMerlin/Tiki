@@ -29,7 +29,7 @@
 		{cycle values="odd,even" print=false}
 		{section name=user loop=$channels}
 			<tr class="{cycle}">
-				<td class="checkbox-cell">
+				<td class="checkbox">
 					<input type="checkbox" name="userfile[{$channels[user].fileId}]">
 				</td>
 				<td class="text">{$channels[user].filename|iconify}

@@ -1,8 +1,8 @@
 {* $Id$ *}
 <div id="tiki-center">
 <br>
-<div class="panel panel-default">
-	 <div class="panel-heading">
+<div class="cbox">
+	 <div class="cbox-title">
 	 {tr}Information{/tr}
 	 </div>
 

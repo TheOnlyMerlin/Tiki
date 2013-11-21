@@ -41,7 +41,7 @@
 
 {title help="Banning+System"}{tr}Banning system{/tr}{/title}
 
-<div class="t_navbar">
+<div class="navbar">
 	<form action="tiki-admin_banning.php" method="post">
 	<input type="hidden" name="export" value="y">
 		<input type="submit" class="btn btn-default" name="csv" value="{tr}Export as CSV{/tr}" class="button">
@@ -212,7 +212,7 @@
 		{cycle values="odd,even" print=false}
 		{section name=user loop=$items}
 			<tr class="{cycle}">
-				<td class="checkbox-cell">
+				<td class="checkbox">
 					<input type="checkbox" name="delsec[{$items[user].banId}]">
 				</td>
 				<td class="text">

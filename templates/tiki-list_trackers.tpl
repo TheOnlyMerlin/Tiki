@@ -2,7 +2,7 @@
 
 {title help="Trackers" admpage="trackers"}{tr}Trackers{/tr}{/title}
 
-<div class="t_navbar btn-group">
+<div class="navbar">
 	{include file="tracker_actions.tpl"}
 </div>
 
@@ -210,69 +210,69 @@
 {if $tiki_p_admin_trackers eq 'y'}
 {tab name="{tr}Duplicate/Import Tracker{/tr}"}
 {* --- tab with raw form --- *}
+	<h2>{tr}Duplicate Tracker{/tr}</h2>
 
-	{accordion}
-		{accordion_group title="{tr}Duplicate Tracker{/tr}"}
-			<form class="simple" action="{service controller=tracker action=duplicate}" method="post">
-				<label>
-					{tr}Name{/tr}
-					<input type="text" name="name">
-				</label>
-				<label>
-					{tr}Tracker{/tr}
-					<select name="trackerId">
-						{foreach from=$trackers item=tr}
-							<option value="{$tr.trackerId|escape}">{$tr.name|escape}</option>
-						{/foreach}
-					</select>
-				</label>
-				{if $prefs.feature_categories eq 'y'}
-					<label>
-						<input type="checkbox" name="dupCateg" value="1">
-						{tr}Duplicate categories{/tr}
-					</label>
-				{/if}
-				<label>
-					<input type="checkbox" name="dupPerms" value="1">
-					{tr}Duplicate permissions{/tr}
-				</label>
-				<div class="submit">
-					<input type="submit" class="btn btn-default" value="{tr}Duplicate{/tr}">
-				</div>
-			</form>
-		{/accordion_group}
-			
-		{if $prefs.tracker_remote_sync eq 'y'}
-			{accordion_group title="{tr}Duplicate Remote Tracker{/tr}"}
-				<form class="simple" method="post" action="{service controller=tracker_sync action=clone_remote}">
-					<label>
-						{tr}URL:{/tr}
-						<input type="url" name="url" required="required">
-					</label>
-					<div>
-						<input type="submit" class="btn btn-default" value="{tr}Search for trackers to clone{/tr}">
-					</div>
-				</form>
-			{/accordion_group}
+	<form class="simple" action="{service controller=tracker action=duplicate}" method="post">
+		<label>
+			{tr}Name{/tr}
+			<input type="text" name="name">
+		</label>
+		<label>
+			{tr}Tracker{/tr}
+			<select name="trackerId">
+				{foreach from=$trackers item=tr}
+					<option value="{$tr.trackerId|escape}">{$tr.name|escape}</option>
+				{/foreach}
+			</select>
+		</label>
+		{if $prefs.feature_categories eq 'y'}
+			<label>
+				<input type="checkbox" name="dupCateg" value="1">
+				{tr}Duplicate categories{/tr}
+			</label>
 		{/if}
-		{accordion_group title="{tr}Import Structure{/tr}"}
-			<form class="simple" method="post" action="{service controller=tracker action=import}">
-				<label>
-					{tr}Raw data{/tr}
-					<textarea name="raw" rows="20"></textarea>
-				</label>
-				<label>
-					<input type="checkbox" name="preserve" value="1">
-					{tr}Preserve tracker ID{/tr}
-				</label>
-				{remarksbox close='n' title='{tr}Note{/tr}'}{tr}Use "Tracker -> Export -> Structure" to produce this data.{/tr}{/remarksbox}
-				<div class="submit">
-					<input type="submit" class="btn btn-default" value="{tr}Import{/tr}">
-				</div>
-			</form>
-		{/accordion_group}
+		<label>
+			<input type="checkbox" name="dupPerms" value="1">
+			{tr}Duplicate permissions{/tr}
+		</label>
+		<div class="submit">
+			<input type="submit" class="btn btn-default" value="{tr}Duplicate{/tr}">
+		</div>
+	</form>
+	
+	{if $prefs.tracker_remote_sync eq 'y'}
+		<h2>{tr}Duplicate Remote Tracker{/tr}</h2>
+		<form class="simple" method="post" action="{service controller=tracker_sync action=clone_remote}">
+			<label>
+				{tr}URL:{/tr}
+				<input type="url" name="url" required="required">
+			</label>
+			<div>
+				<input type="submit" class="btn btn-default" value="{tr}Search for trackers to clone{/tr}">
+			</div>
+		</form>
+	{/if}
 
-        {accordion_group title="{tr}Import From Profile/YAML{/tr}"}
+	<div class="importFromExport">
+		<h2>{tr}Import{/tr}</h2>
+		<h4>{tr}Import Structure{/tr}</h4>
+		<form class="simple" method="post" action="{service controller=tracker action=import}">
+			<label>
+				{tr}Raw data{/tr}
+				<textarea name="raw" rows="20"></textarea>
+			</label>
+			<label>
+				<input type="checkbox" name="preserve" value="1">
+				{tr}Preserve tracker ID{/tr}
+			</label>
+			{remarksbox close='n' title='{tr}Note{/tr}'}{tr}Use "Tracker -> Export -> Structure" to produce this data.{/tr}{/remarksbox}
+			<div class="submit">
+				<input type="submit" class="btn btn-default" value="{tr}Import{/tr}">
+			</div>
+		</form>
+
+        <h4>{tr}Import From Profile/YAML{/tr}</h4>
+        <div>
 	        <form id="forumImportFromProfile" action="{service controller=tracker action=import_profile trackerId=$trackerId}" method="post" enctype="multipart/form-data">
 				{remarksbox type="info" title="{tr}New Feature{/tr}" icon="bricks"}
 	                <p><em>{tr}Please note: Experimental - work in progress{/tr}</em></p>
@@ -285,14 +285,19 @@
                     <input type="submit" class="btn btn-default" value="{tr}Import{/tr}">
                 </div>
             </form>
-        {/accordion_group}
-	{/accordion}
+        </div>
+	</div>
 {/tab}
 {/if}
 
 {/tabset}
 
 {jq}
+	$('.importFromExport').visible(function() {
+		$(this).accordion({
+			header: 'h4'
+		});
+	});
 	$('#forumImportFromProfile').submit(function() {
 		$.modal(tr('Loading...'));
 		$.post($(this).attr('action'), {yaml: $('#importFromProfileYaml').val()}, function(feedback) {

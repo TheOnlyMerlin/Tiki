@@ -7,8 +7,8 @@
 {/if}
 
 {if $prefs.feature_tabs neq 'y' and $user and $prefs.feature_messages eq 'y' and $tiki_p_messages eq 'y' and $allowMsgs eq 'y'}
-	<div class="t_navbar">
-		{button href="#message" class="btn btn-default" _text="{tr}Send me a message{/tr}"}
+	<div class="navbar">
+		{button href="#message" _text="{tr}Send me a message{/tr}"}
 	</div>
 {/if}
 
@@ -42,8 +42,8 @@
 			{/if}
 
 			{cycle values="even,odd" print=false}
-			<div class="panel panel-default">
-                <div class="panel-body">
+			<div class="simplebox">
+				<div>
 					{if $avatar}
 						<div class="clearfix {cycle}">
 							<div class="floatleft">{tr}Avatar{/tr} ({tr}User Icon{/tr}):</div>
@@ -147,8 +147,10 @@
 							</div>
 						{/if}
 					{/section}
-			    </div>
-            </div>
+
+
+				</div>
+			</div>
 		</div>
 	</div>
 {else}{* infoPublic eq 'n' *}
@@ -159,7 +161,7 @@
 {/tab}
 
 {if $prefs.user_tracker_infos and $infoPublic eq "y"}{tab name="{tr}Additional Information{/tr}"}
-	<div class="panel panel-default"><div class="panel-body">
+	<div class="simplebox">
 		<div class="clearfix">
 			<div class="floatleft">
 				<h2 class="center">{tr}Additional Information{/tr} &ndash; {$userinfo.login|userlink}</h2>
@@ -181,12 +183,12 @@
 				</div>
 			{/if}
 		{/foreach}
-	</div></div>
+	</div>
 {/tab}{/if}
 
 {if $prefs.feature_display_my_to_others eq 'y' and $infoPublic eq "y"}{tab name="{tr}User Contribution{/tr}"}
 <div>
-	<div class="panel panel-default"><div class="panel-body">
+	<div class="simplebox">
 		{if ($user_pages|@count > 0) or ($user_galleries|@count > 0) or ($user_blogs|@count > 0) or ($user_blog_posts|@count > 0) or ($user_articles|@count > 0) or ($user_forum_comments|@count > 0) or ($user_forum_topics|@count > 0) or ($user_items|@count > 0)}
 			<h2 class="center">{tr}User{/tr} {$userinfo.login|userlink}</h2>
 			<p><em>{tr}has contributed to the following content{/tr}&hellip;</em></p>
@@ -315,13 +317,13 @@
 				</div>
 			{/if}
 		</div>
-	</div></div>
+	</div>
 	{/tab}{/if}
 
 
 	{if $prefs.feature_actionlog eq 'y' and $prefs.user_who_viewed_my_stuff eq 'y' and !empty($user) and ($prefs.user_who_viewed_my_stuff_show_others eq 'y' or $user eq $userinfo.login or $tiki_p_admin eq "y") and $infoPublic eq "y"}
 		{tab name="{tr}Who Looks At Stuff?{/tr}"}
-			<div class="panel panel-default"><div class="panel-body">
+			<div class="simplebox">
 				<h2 class="center">{if $user eq $userinfo.login}{tr}Who Looks At Your Stuff?{/tr}{else}{tr}Who Looks At His Stuff?{/tr}{/if}</h2>
 				{cycle values="even,odd" print=false}
 				{section name=ix loop=$whoviewed}
@@ -336,12 +338,12 @@
 						</div>
 					</div>
 				{/section}
-			</div></div>
+			</div>
 		{/tab}
 	{/if}
 
 	{if $user and $prefs.feature_messages eq 'y' and $tiki_p_messages eq 'y' and $allowMsgs eq 'y'}{tab name="{tr}Send Me A Message{/tr}"}
-		<div id="message" class="panel panel-default"><div class="panel-body">
+		<div id="message" class="simplebox">
 			{if $sent}
 				{$message}
 			{else}
@@ -391,7 +393,7 @@
 
 				</form>
 			{/if}
-		</div></div>
+		</div>
 	{/tab}{/if}
 	{/tabset}
 

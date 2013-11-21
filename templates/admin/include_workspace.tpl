@@ -6,21 +6,21 @@
 	{tabset}
 		{tab name="{tr}Workspaces{/tr}"}
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Activate the feature{/tr}</legend>
 				{preference name=workspace_ui visible="always"}
 			</fieldset>
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Administration{/tr}</legend>
 				<a class="button service-dialog" href="{service controller=workspace action=create}">{tr}Create a workspace{/tr}</a>
 
 				<div id="template-list">
 				</div>
-				<a class="button service-dialog reload" href="{service controller=workspace action=add_template}">{tr}Create a workspace template{/tr}</a>
+				<a class="button service-dialog reload" href="{service controller=workspace action=add_template}">{tr}Add a workspace template{/tr}</a>
 			</fieldset>
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Dependencies{/tr}</legend>
 				{preference name=namespace_enabled}
 				{preference name=namespace_separator}
@@ -29,7 +29,7 @@
 				{preference name=feature_wiki}
 			</fieldset>
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Advanced{/tr}</legend>
 				{preference name=workspace_root_category}
 			</fieldset>
@@ -52,16 +52,16 @@ $('#template-list').load($.service('workspace', 'list_templates'));
 		{/tab}
 		{tab name="{tr}Areas{/tr}"}
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Activate the feature{/tr}</legend>
 				{preference name=feature_areas}
 			</fieldset>
 			{if isset($error)}
 				{remarksbox type="warning" title="{tr}Error{/tr}"}{$error} {tr}Nothing was updated.{/tr}{/remarksbox}
 			{/if}
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Areas{/tr}</legend>
-				<table class="table normal">
+				<table class="normal">
 					<tr>
 						<th>{tr}On{/tr}</th>
 						<th colspan="2">{tr}Category{/tr}</th>

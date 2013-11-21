@@ -15,30 +15,25 @@ function wikiplugin_box_info()
 		'body' => tra('text'),
 		'icon' => 'img/icons/layout_header.png',
 		'tags' => array( 'basic' ),
-                'validate' => 'arguments',
 		'params' => array(
 			'title' => array(
 				'required' => false,
-				'safe' => true,
 				'name' => tra('Box title'),
 				'description' => tra('Displayed above the content'),
 				'default' => '',
 			),
 			'bg' => array(
 				'required' => false,
-				'safe' => true,
 				'name' => tra('Background color'),
 				'description' => tra('As defined by CSS, name or Hex code.'),
 			),
 			'width' => array(
 				'required' => false,
-				'safe' => true,
 				'name' => tra('Box width'),
 				'description' => tra('In pixels or percentage. Default value is 100%.'),
 			),
 			'align' => array(
 				'required' => false,
-				'safe' => true,
 				'name' => tra('Text Alignment'),
 				'description' => tra('Aligns the text within the box (left aligned by default)'),
 				'filter' => 'alpha',
@@ -51,7 +46,6 @@ function wikiplugin_box_info()
 			),
 			'float' => array(
 				'required' => false,
-				'safe' => true,
 				'name' => tra('Float Position'),
 				'description' => tra(
 					'Set the alignment for the entire box. For elements with a width of less than 100%, other elements will wrap around it
@@ -67,7 +61,6 @@ function wikiplugin_box_info()
 			),
 			'clear' => array(
 				'required' => false,
-				'safe' => true,
 				'name' => tra('Clear'),
 				'description' => tra('Items are not allowed to wrap around the box if this parameter is set to.1 (Yes)'),
 				'filter' => 'text',
@@ -80,25 +73,14 @@ function wikiplugin_box_info()
 			),
 			'class' => array(
 				'required' => false,
-				'safe' => true,
 				'name' => tra('CSS Class'),
 				'description' => tra('Apply custom CSS class to the box.'),
 			),
-                        'style' => array(
-                                'required' => false,
-                                'name' => tra('CSS Style'),
-                                'description' => tra('Enter CSS styling tags for the div type used.'),
-                                'filter' => 'text',
-//                              'advanced' => true,
-                                'default' => '',
-                        ),
 			'id' => array(
 				'required' => false,
-				'safe' => true,
 				'name' => tra('ID'),
 				'description' => tra('ID'),
 			),
-
 		),
 	);
 }
@@ -118,15 +100,15 @@ function wikiplugin_box($data, $params)
 	$f = (isset($float) && ($float == "left" || $float == "right")) ? " float:$float" : "";
 	$c = (isset($clear))    ? " clear:both" : "";
 	if (empty($float)) {
-	$begin = "<div class='panel panel-default$class' $id style='$bg;$f;margin:0;$w;$c;$style'>";
+	$begin = "<div class='cbox$class' $id style='$bg;$f;margin:0;$w;$c'>";
     } else {
-	$begin = "<div class='panel panel-default$class' $id style='$bg;$f;margin:1em;margin-$float:0;$w;$c;style'>";
+	$begin = "<div class='cbox$class' $id style='$bg;$f;margin:1em;margin-$float:0;$w;$c'>";
 	}
 
 	if (isset($title)) {
-		$begin .= "<div class='panel-heading'>$title</div>";
+		$begin .= "<div class='cbox-title'>$title</div>";
 	}
-	$begin.= "<div class='panel-body'".(strlen($bg) > 0 ? " style=\"$bg\"" : "").">";
+	$begin.= "<div class='cbox-data'".(strlen($bg) > 0 ? " style=\"$bg\"" : "").">";
 	$end = "</div></div>";
 	// Prepend any newline char with br
 	//$data = preg_replace("/\\n/", "<br />", $data);

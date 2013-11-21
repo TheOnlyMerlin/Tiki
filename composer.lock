@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "d42b6db31d6eb136d9d90385f6430eb2",
+    "hash": "1d2242f9d2b6aa6f03d83440effd4baf",
     "packages": [
         {
             "name": "aFarkas/html5shiv",
@@ -866,17 +866,6 @@
             "time": "2013-03-01 06:43:14"
         },
         {
-            "name": "twitter/bootstrap",
-            "version": "3.0.2",
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/twbs/bootstrap/releases/download/v3.0.2/bootstrap-3.0.2-dist.zip",
-                "reference": null,
-                "shasum": null
-            },
-            "type": "library"
-        },
-        {
             "name": "zetacomponents/base",
             "version": "1.8",
             "source": {
@@ -1567,7 +1556,7 @@
     "platform": [
 
     ],
-    "platform-dev": {
-        "ext-xml": "*"
-    }
+    "platform-dev": [
+
+    ]
 }

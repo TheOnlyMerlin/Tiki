@@ -5,8 +5,6 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-require_once('lib/debug/Tracer.php');
-
 // this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	header("location: index.php");
@@ -3884,8 +3882,7 @@ class TikiLib extends TikiDb_Bridge
 	function get_preference($name, $default = '', $expectArray = false )
 	{
 		global $prefs;
-
-        $value = isset($prefs[$name]) ? $prefs[$name] : $default;
+		$value = isset($prefs[$name]) ? $prefs[$name] : $default;
 
 		if ( empty($value) ) {
 			if ( $expectArray ) {
@@ -4282,9 +4279,7 @@ class TikiLib extends TikiDb_Bridge
 	 **/
 	function create_page($name, $hits, $data, $lastModif, $comment, $user = 'admin', $ip = '0.0.0.0', $description = '', $lang='', $is_html = false, $hash=null, $wysiwyg=NULL, $wiki_authors_style='', $minor=0, $created='')
 	{
-		global $prefs, $tracer;
-
-        $tracer->trace('tikilib.create_page', "** invoked");
+		global $prefs;
 
 		if ( ! $is_html ) {
 			$data = str_replace('<x>', '', $data);
@@ -4306,14 +4301,9 @@ class TikiLib extends TikiDb_Bridge
 		}
 
 		if ($this->page_exists($name))
-        {
-            $tracer->trace('tikilib.create_page', "** Page \$name already exists. Exiting...");
-            return false;
-        }
+			return false;
 
-        $tracer->trace('tikilib.create_page', "** TikiLib::lib...");
-        $parserlib = TikiLib::lib('parser');
-        $tracer->trace('tikilib.create_page', "** invoking process_save_plugins, \$parserlib=".get_class($parserlib));
+		$parserlib = TikiLib::lib('parser');
 		$data = $parserlib->process_save_plugins(
 			$data,
 			array(
@@ -4450,8 +4440,6 @@ class TikiLib extends TikiDb_Bridge
 			$wikilib->wiki_rename_page($name, $temppage, false, $user);
 			$wikilib->wiki_rename_page($temppage, $name, false, $user);
 		}
-
-        $tracer->trace('tikilib.create_page', "** Returning");
 
 		return true;
 	}

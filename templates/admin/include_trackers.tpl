@@ -6,11 +6,11 @@
 	</div>
 {tabset}
 	{tab name="{tr}Settings{/tr}"}
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Activate the feature{/tr}</legend>
 		{preference name=feature_trackers visible="always"}
 	</fieldset>
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Tracker settings{/tr}</legend>
 		{preference name=user_selector_threshold}
 		{preference name=user_selector_realnames_tracker}
@@ -32,9 +32,9 @@
 		{preference name=tracker_change_field_type}
 	</fieldset>
 
-	<fieldset class="table">
+	<fieldset class="admin">
 	  <legend>{tr}Tracker attachment preferences{/tr}</legend>
-		  <table class="table">
+		  <table class="admin">
 			<tr>
 			  <td>
 				{tr}Use database to store files:{/tr}
@@ -59,7 +59,7 @@
 
 	{/tab}
 	{tab name="{tr}Plugins{/tr}"}
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Plugins{/tr}</legend>
 		{preference name=wikiplugin_tracker}
 		{preference name=wikiplugin_trackerlist}
@@ -80,7 +80,7 @@
 	</fieldset>
 	{/tab}
 	{tab name="{tr}Field Types{/tr}"}
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Field Types{/tr}</legend>
 		{foreach from=$fieldPreferences item=name}
 			{preference name=$name}
@@ -95,9 +95,9 @@
 </form>
 
 
-<fieldset class="table">
+<fieldset class="admin">
   <legend>{tr}Tracker attachments{/tr}</legend>
-    <div class="table">
+    <div class="admin">
 {if $attachements}
       <form action="tiki-admin.php?page=trackers" method="post">
         <input type="text" name="find" value="{$find|escape}" />
@@ -105,7 +105,7 @@
       </form>
 {/if}
       {cycle values="odd,even" print=false}
-      <table class="table normal">
+      <table class="normal">
         <tr>
           <th>
             <a href="tiki-admin.php?page=trackers&amp;sort_mode=user_{if $sort_mode eq 'attId'}asc{else}desc{/if}">{tr}ID{/tr}</a>

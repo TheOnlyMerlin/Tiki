@@ -1,20 +1,25 @@
 /* Tikinewt theme stylesheet (tikinewt.css);
- (imports design.css)
+ (imports lite.css, layout.css and design.css) 
 
 /* Import layout and default styles: */
+@import url("lite/lite.css");
+@import url("layout/layout.css");
 @import url("layout/design.css");
  
 /***** XHTML Elements (body tag here,
 			others follow Layout) *****/
 body {
 	background: #e9ecef;
-	font-family: Corbel, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", "Bitstream Vera Sans", "Liberation Sans", Verdana, sans-serif;
+	font: 76% Corbel, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", "Bitstream Vera Sans", "Liberation Sans", Verdana, sans-serif;
 	line-height: 1.6;
 	color: #000;
 }
 
+ /***** Layout (overrides layout.css
+		and styles page layout divs)  *****/
 #tiki-main {
 	margin: 0;
+	font-size: 1em;
 }
 
 /* Enable header and footer content to widen when middle has wide content. */ 
@@ -25,9 +30,13 @@ body.fixed_width .fixedwidth .fixedwidth {
 
 #middle {
 	text-align: left;
+	font-size: 1em;
 	margin-bottom: 2px;
 }
 
+#c1c2 {
+	font-size: 1em;
+}
 
 #c1c2	#wrapper #col1 > .content {
 	background: #fff;
@@ -79,7 +88,7 @@ body.fixed_width .fixedwidth .fixedwidth {
 	padding-top: 10px;
 	padding-bottom: 5px;
 	background: #c7d0d9;
-	margin: 10px auto;
+	margin: 10px;
 	border: 1px solid #8cacbb;
 	border-width: 1px;
 	text-align: center;
@@ -161,7 +170,7 @@ form {
 	padding: 0;
 }
 
-.btn-default,
+button,
 input,
 textarea,
 select {
@@ -175,6 +184,11 @@ input[type=radio] {
 	border: 0;
 }
 
+#page-bar table, #page-bar td, #page-bar tr {
+	margin: 0;
+	padding: 0;
+}
+
 .navbar,
 .categbar,
 .findtable {
@@ -185,8 +199,8 @@ input[type=radio] {
 	margin: 0;
 }
 
-.btn-default,
-.btn-default:visited,
+.button a,
+.button a:visited,
 button,
 input[type=reset],
 input[type=submit],
@@ -204,7 +218,7 @@ input[type=submit],
 	font-weight: bold;
 }
 	
-.btn-default:hover,
+.button a:hover,
 button:hover,
 input[type=reset]:hover,
 input[type=submit]:hover,
@@ -946,59 +960,64 @@ td.third {
 	float: left;
 }
 
-.nav-tabs > li > a {
+.tabmark {
+	list-style-image: none;
+	float: left;
 	border: solid 1px #aaa;
+	border-bottom: none !important;
+	margin: 0 .2em 0 0;
 }
 
-.nav-tabs > li > a,
-.nav-tabs > li > a:visited {
+.tabmark a,
+.tabmark a:visited {
 	padding: 0.5em 1em;
 	color: #666;
 	font-weight: bold;
 }
 
-.nav-tabs > li > a:active {
+.tabmark a:active {
 	color: #f00;
 }
 
-.nav-tabs > li > a:hover {
+.tabmark a:hover {
 	color: #000;
 	text-decoration: none;
 }
 
-.nav-tabs > li.active > a {
+.tabactive {
 	border: solid 1px #225566;
+	border-bottom-width: 0;
 	background: #eee;
 }
 
-.nav-tabs > li.active > a:hover {
+.tabmark:hover {
 	background: #ccc;
 }
 
-.nav-tabs > li > a:hover {
+.tabactive:hover {
 	background: #eee;
 }
 
-.nav-tabs > li > a:hover {
+.tabactive a:hover {
 	color: #666;
 	text-decoration: none;
 }
 
-.tab-content {
+.tabcontent {
 	border: 1px solid #225566 !important;
-	border-top: none;
+	border-top: none !important;
 	padding: 6px 2px 2px 2px;
 	background: #eee;
-	margin-top: 0;
+	margin-top: 0 !important;
 }
 
-.tab-content table {
+.tabcontent table {
 	margin: 1% auto 2% auto;
 	text-align: left;
 	width: 95%;
 }
 
-.tab-content table td {
+.tabcontent table td {
 	padding: 5px;
 }
 
@@ -1041,6 +1060,12 @@ h1.pagetitle strong {
 	padding: 0 6px 1px 6px;
 	margin: 3px 0 6px 0;
 	font-weight: bold;
+}
+
+#page-bar {
+	padding-bottom: 40px;
+	display: block;
+	padding-top: 5px;
 }
 
 .cache {

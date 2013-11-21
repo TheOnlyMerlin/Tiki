@@ -2,14 +2,14 @@
 
 {title admpage="wiki"}{tr}History:{/tr} {$page}{/title}
 
-<div class="t_navbar btn-group">
+<div class="navbar">
 	{assign var=thispage value=$page|escape:url}
-	{button href="tiki-index.php?page=$thispage" class="btn btn-default" _text="{tr}View page{/tr}"}
+	{button href="tiki-index.php?page=$thispage" _text="{tr}View page{/tr}"}
 	{if !isset($noHistory)}
 		{if $show_all_versions eq "y"}
-			{button _text="{tr}Show Edit Sessions{/tr}" show_all_versions="n" href="?clear_versions=1" _auto_args="*" class="btn btn-default"}
+			{button _text="{tr}Show Edit Sessions{/tr}" show_all_versions="n" href="?clear_versions=1" _auto_args="*"}
 		{else}
-			{button _text="{tr}Show All Versions{/tr}" show_all_versions="y" href="?clear_versions=1" _auto_args="*" class="btn btn-default"}
+			{button _text="{tr}Show All Versions{/tr}" show_all_versions="y" href="?clear_versions=1" _auto_args="*"}
 		{/if}
 	{/if}
 </div>
@@ -159,13 +159,13 @@ if (jqueryTiki.chosen) {
 					<input type="submit" class="btn btn-default" name="compare" value="{tr}Compare{/tr}">
 				</div>
 			{/if}
-			<div class="panel panel-default"><div class="panel-body">
+			<div class="simplebox">
 				<b>{tr}Legend:{/tr}</b> {tr}v=view{/tr}
 				{if $tiki_p_wiki_view_source eq "y" and $prefs.feature_source eq "y"}, {tr}s=source{/tr} {/if}
 				{if $prefs.default_wiki_diff_style eq "old"}, {tr}c=compare{/tr}, {tr}d=diff{/tr}{/if}
 				{if $tiki_p_rollback eq 'y'}, {tr}b=rollback{/tr}{/if}
-			</div></div>
-			<table class="table">
+			</div>
+			<table class="formcolor" width="100%">
 				<tr>
 					{if $tiki_p_remove eq 'y'}<th><input type="submit" class="btn btn-warning" name="delete" value="{tr}Del{/tr}"></th>{/if}
 					<th>{tr}Information{/tr}</th>

@@ -2,19 +2,19 @@
 
 {title help="Users+Management" admpage="login" url="tiki-adminusers.php"}{tr}Admin Users{/tr}{/title}
 
-<div class="t_navbar btn-group">
+<div class="navbar">
 	{if $tiki_p_admin eq 'y'} {* only full admins can manage groups, not tiki_p_admin_users *}
-		{button href="tiki-admingroups.php" class="btn btn-default" _text="{tr}Admin Groups{/tr}"}
+		{button href="tiki-admingroups.php" _text="{tr}Admin Groups{/tr}"}
 	{/if}
-	{button class="btn btn-default" _text="{tr}Admin Users{/tr}"}
+	{button _text="{tr}Admin Users{/tr}"}
 	{if $tiki_p_admin eq 'y'}
-	{button href="tiki-objectpermissions.php" class="btn btn-default" _text="{tr}Manage permissions{/tr}"}
+	{button href="tiki-objectpermissions.php" _text="{tr}Manage permissions{/tr}"}
 	{/if}
 	{if isset($userinfo.userId)}
-		{button href="?add=1" class="btn btn-default" _text="{tr}Add a New User{/tr}"}
+		{button href="?add=1" _text="{tr}Add a New User{/tr}"}
 	{/if}
 	{if $prefs.feature_invite eq 'y' and $tiki_p_invite eq 'y'}
-		{button href="tiki-list_invite.php" class="btn btn-default" _text="{tr}Invitation List{/tr}"}
+		{button href="tiki-list_invite.php" _text="{tr}Invitation List{/tr}"}
 	{/if}
 </div>
 
@@ -155,7 +155,7 @@
 					{if $users[user].editable}
 						{capture assign=username}{$users[user].user|escape}{/capture}
 						<tr class="{cycle}">
-							<td class="checkbox-cell">
+							<td class="checkbox">
 								{if $users[user].user ne 'admin'}
 									<input type="checkbox" name="checked[]" value="{$users[user].user|escape}" {if isset($users[user].checked) && $users[user].checked eq 'y'}checked="checked" {/if}>
 								{/if}

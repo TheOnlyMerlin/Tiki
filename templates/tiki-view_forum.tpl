@@ -6,7 +6,7 @@
 	<div class="description">{wiki}{$forum_info.description}{/wiki}</div>
 {/if}
 
-<div class="t_navbar">
+<div class="navbar">
 	<table width="97%">
 		<tr>
 			<td>
@@ -489,7 +489,7 @@
 			{/if}
 			<tr class="{cycle}">
 				{if $tiki_p_admin_forum eq 'y'}
-					<td class="checkbox-cell">
+					<td class="checkbox">
 						<input type="checkbox" name="forumtopic[]" value="{$comments_coms[ix].threadId|escape}" {if isset($smarty.request.forumtopic) and in_array($comments_coms[ix].threadId,$smarty.request.forumtopic)}checked="checked"{/if}>
 					</td>
 				{/if}	
@@ -657,7 +657,7 @@
 	<br>
 {/if}
 
-<div id="page-bar" class="btn-group btn-group-justified">
+<div id="page-bar" class="clearfix">
 	{button href="javascript:flip('filteroptions');" _flip_id="filteroptions" _text="{tr}Filter Posts{/tr}"}
 	{if $prefs.feature_forum_quickjump eq 'y' and count($all_forums) > 1}
 		<form id='quick' method="post" action="tiki-view_forum.php" style="float:right;">

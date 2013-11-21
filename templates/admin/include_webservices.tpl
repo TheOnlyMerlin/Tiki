@@ -1,16 +1,16 @@
 <form method="post" action="tiki-admin.php?page=webservices">
 
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Activate the feature{/tr}</legend>
 		{preference name=feature_webservices visible="always"}
 	</fieldset>		
 
-	<div class="t_navbar btn-group">
+	<div class="navbar">
 		{foreach from=$webservices item=name}
-			{button href="tiki-admin.php?page=webservices&amp;name=$name" class="btn btn-default" _text=$name}
+			{button href="tiki-admin.php?page=webservices&amp;name=$name" _text=$name}
 		{/foreach}
 		{if $storedName}
-			{button href="tiki-admin.php?page=webservices" class="btn btn-default" _text="{tr}Create New{/tr}"}
+			{button href="tiki-admin.php?page=webservices" _text="{tr}Create New{/tr}"}
 		{/if}
 	</div>
 
@@ -54,7 +54,7 @@
 	{/if}
 	{if $data}
 		<h3>{tr}Response Information{/tr}</h3>
-		<table class="table normal">
+		<table class="normal">
 			<tr>
 				<th>{tr}OIntegrate Version{/tr}</th>
 				<td>{if $response->version}{$response->version|escape}{else}<em>{tr}Not supported{/tr}</em>{/if}

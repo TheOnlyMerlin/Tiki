@@ -85,7 +85,7 @@
 				{preference name=feature_html_pages}	
 				
 				{preference name=feature_htmlfeed}
-				{preference name=feature_futurelinkprotocol}
+				{preference name=feature_forwardlinkprotocol}
 
 				{preference name=feature_jcapture}
 				<div class="adminoptionboxchild" id="feature_jcapture_childcontainer">
@@ -139,14 +139,14 @@
 {/tab}
 			
 {tab name="{tr}Interface{/tr}"}
-			<fieldset class="table clearfix featurelist">
+			<fieldset class="admin clearfix featurelist">
 				<legend> {tr}Ajax{/tr} </legend>	
 				{preference name=feature_ajax}
 				<div class="adminoptionboxchild half_width" id="feature_ajax_childcontainer">
 					{preference name=ajax_autosave}
 				</div>
 			</fieldset>
-			<fieldset class="table clearfix featurelist">
+			<fieldset class="admin clearfix featurelist">
 				<legend> {tr}jQuery plugins and add-ons{/tr} </legend>
 				{preference name=feature_jquery_autocomplete}
 				{preference name=feature_jquery_media}
@@ -170,7 +170,7 @@
 				</div>
 			</fieldset>
 
-			<fieldset class="table clearfix featurelist">
+			<fieldset class="admin clearfix featurelist">
 				<legend> {tr}Mobile{/tr} </legend>
 					{preference name=mobile_feature}
 
@@ -222,7 +222,7 @@
 				</fieldset>
 			</div>
 
-			<div class="table">
+			<div class="admin">
 				<fieldset>
 					<legend>{tr}Custom Code{/tr}</legend>
 					{preference name="header_custom_js"}

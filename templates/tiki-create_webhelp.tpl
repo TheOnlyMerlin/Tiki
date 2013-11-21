@@ -1,15 +1,15 @@
 {title help='WebHelp' url='tiki-create_webhelp.php'}{tr}Create WebHelp{/tr}{/title}
 {if  $generated eq 'y'}
-	<div class="t_navbar">
+	<div class="navbar">
 		<span class="button">
 			<a class="link" href="whelp/{$dir}/index.html">{tr}View generated WebHelp.{/tr}</a>
 		</span>
 	</div>
 {/if}
 {if $output ne ''}
-	<div class="panel panel-default"><div class="panel-body">
+	<div class="simplebox">
 		{$output}
-	</div></div>
+	</div>
 {/if}
 <form method="post" action="tiki-create_webhelp.php">
 	<table class="formcolor">

@@ -1,14 +1,14 @@
 {* $Id$ *}
 {strip}
 {title help="mods"}{tr}Tiki Mods{/tr}{/title}
-<div class="t_navbar btn-group">
-	{button href="tiki-mods_admin.php" class="btn btn-default" _text="{tr}Mods Configuration{/tr}"}
-	{button href="tiki-mods.php?reload=1$findarg$typearg$versionarg" class="btn btn-default" _text="{tr}Update remote index{/tr}"}
-	{button href="tiki-mods.php?rebuild=1$findarg$typearg$versionarg" class="btn btn-default" _text="{tr}Rebuild local list{/tr}"}
+<div class="navbar">
+	{button href="tiki-mods_admin.php" _text="{tr}Mods Configuration{/tr}"}
+	{button href="tiki-mods.php?reload=1$findarg$typearg$versionarg" _text="{tr}Update remote index{/tr}"}
+	{button href="tiki-mods.php?rebuild=1$findarg$typearg$versionarg" _text="{tr}Rebuild local list{/tr}"}
 	{if $prefs.feature_mods_provider eq 'y'}
-		{button href="tiki-mods.php?republishall=1$findarg$typearg$versionarg" class="btn btn-default" _text="{tr}Republish all{/tr}"}
-		{button href="tiki-mods.php?publishall=1$findarg$typearg$versionarg" class="btn btn-default" _text="{tr}Publish all{/tr}"}
-		{button href="tiki-mods.php?unpublishall=1$findarg$typearg$versionarg" class="btn btn-default" _text="{tr}Unpublish all{/tr}"}
+		{button href="tiki-mods.php?republishall=1$findarg$typearg$versionarg" _text="{tr}Republish all{/tr}"}
+		{button href="tiki-mods.php?publishall=1$findarg$typearg$versionarg" _text="{tr}Publish all{/tr}"}
+		{button href="tiki-mods.php?unpublishall=1$findarg$typearg$versionarg" _text="{tr}Unpublish all{/tr}"}
 	{/if}
 </div>
 
@@ -32,7 +32,7 @@
 {/if}
 {if $installask}
 <form method='post' action='?'>
-	<div class="panel panel-default"><div class="panel-body">
+	<div class="simplebox">
 		<ul>
 		{if $installask.wanted}
 			<li>You asked to install these mods:
@@ -138,7 +138,7 @@ function update_button_install() {
 	button.style.display='';
 }
 {/jq}
-	</div></div>
+	</div>
 </form>
 {/if}
 <br>
@@ -271,7 +271,7 @@ function update_button_install() {
 							<table>
 								<tr>
 									<td>
-										<div class="panel panel-default"><div class="panel-body">
+										<div class="simplebox">
 											{if $more->docurl}Documentation :<br>{foreach key=ku item=iu from=$more->docurl}<a href="{$iu}">{$iu}</a><br>{/foreach}{/if}
 											{if $more->devurl}Development : <br>{foreach key=ku item=iu from=$more->devurl}<a href="{$iu}">{$iu}</a><br>{/foreach}{/if}
 											{if $more->help}{$more.help}<br>{/if}
@@ -281,7 +281,7 @@ function update_button_install() {
 											
 											{tr}Last Modification:{/tr} {$more->lastmodif}<br>
 											{tr}by:{/tr} {$more->contributor[0]}<br>
-										</div></div>
+										</div>
 									</td><td>
 										{foreach key=kk item=ii from=$more->files}
 											{$ii[0]} -&gt; <b>{$ii[1]}</b><br>

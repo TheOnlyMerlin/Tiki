@@ -1,7 +1,7 @@
 {title}{tr}Object Permissions List{/tr}{/title}
 
-<div class="t_navbar">
-{button href="tiki-objectpermissions.php" class="btn btn-default" _text="{tr}Manage Permissions{/tr}"}
+<div class="navbar">
+{button href="tiki-objectpermissions.php" _text="{tr}Manage Permissions{/tr}"}
 </div>
 
 {if !empty($feedbacks)}
@@ -46,14 +46,14 @@
 					{foreach from=$filterGroup item=f}<input type="hidden" name="filterGroup[]" value="{$f|escape}">{/foreach}
 					<table class="table normal">
 					<tr>
-						<th class="checkbox-cell">{select_all checkbox_names='groupPerm[]'}</th>
+						<th class="checkbox">{select_all checkbox_names='groupPerm[]'}</th>
 						<th>{tr}Group{/tr}</th>
 						<th>{tr}Permission{/tr}</th>
 					</tr>
 					{cycle values="even,odd" print=false}
 					{foreach from=$content.default item=default}
 						<tr class="{cycle}">
-							<td class="checkbox-cell"><input type="checkbox" name="groupPerm[]" value='{$default|json_encode|escape}'></td>
+							<td class="checkbox"><input type="checkbox" name="groupPerm[]" value='{$default|json_encode|escape}'></td>
 							<td class="text">{$default.group|escape}</td>
 							<td class="text">{$default.perm|escape}</td>
 						</tr>
@@ -78,7 +78,7 @@
 					{foreach from=$filterGroup item=f}<input type="hidden" name="filterGroup[]" value="{$f|escape}">{/foreach}
 					<table class="table normal">
 					<tr>
-						<th class="checkbox-cell">{select_all checkbox_names='objectPerm[]'}</th>
+						<th class="checkbox">{select_all checkbox_names='objectPerm[]'}</th>
 						<th>{tr}Object{/tr}</th>
 						<th>{tr}Group{/tr}</th>
 						<th>{tr}Permission{/tr}</th>
@@ -88,7 +88,7 @@
 						{if !empty($object.special)}
 							{foreach from=$object.special item=special}
 								<tr class="{cycle}">
-									<td class="checkbox-cell"><input type="checkbox" name="objectPerm[]" value='{$special|json_encode|escape}'></td>
+									<td class="checkbox"><input type="checkbox" name="objectPerm[]" value='{$special|json_encode|escape}'></td>
 									<td class="text">{$special.objectName|escape}</td>
 									<td class="text">{$special.group|escape}</td>
 									<td class="text">{$special.perm|escape}</td>

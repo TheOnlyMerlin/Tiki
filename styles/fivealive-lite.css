@@ -4,6 +4,8 @@ the Fivealive theme options (styles/fivealive/options/).
 */
 
 /* Import foundation CSS files. */
+@import url("lite/lite.css");
+@import url("layout/layout.css");
 @import url("layout/design.css");
 
 /* make sure whole browser viewport background is always set to white */
@@ -14,11 +16,15 @@ html {
 /***** XHTML Elements (body tag here,
 			others follow Layout) *****/
 body {
-	font-family: Verdana,Arial,sans-serif;
+	font: 76% Verdana,Arial,sans-serif;
 	line-height: 1.5;
 	color: #000;
 	background: #fff;
 }
+
+html > body,
+*:first-child+html body {font-size: 74%}
+
 
 body.filegal_popup {
 	background-image: none;
@@ -753,6 +759,7 @@ fieldset.admin label,
 }
 
 /** Tabs **/
+/* reset what's in layout.css */
 
 .tabactive,
 .tabinactive,

@@ -120,7 +120,7 @@
 	{if $prefs.feature_intertiki_mymaster eq ''}
 		{tab name="{tr}Intertiki server{/tr}"}
 			<form action="tiki-admin.php?page=intertiki" method="post" name="intertiki">
-				<table class="table">
+				<table class="admin">
 					<tr>
 						<td>
 							{tr}Intertiki shared cookie for sliding auth under same domain:{/tr}</td>

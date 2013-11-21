@@ -74,7 +74,7 @@
 			</tr>
 		</table>
 		<br>
-		<table class="table normal" >
+		<table class="normal" >
 			<tr>
 				<td style="text-align: center;">
 					<textarea rows="20" cols="80" name="body">{$body|escape}</textarea><br><input type="submit" class="btn btn-default" name="preview" value="{tr}Send{/tr}">

@@ -1,11 +1,11 @@
 {* $Id$ *}
 <form action="tiki-admin.php?page=payment" method="post">
-	<div class="t_navbar btn-group">
-		{button href="tiki-payment.php" class="btn btn-default" _text="{tr}Payments{/tr}"}
+	<div class="navbar">
+		{button href="tiki-payment.php" _text="{tr}Payments{/tr}"}
 		<input type="submit" class="btn btn-default" name="paymentprefs" value="{tr}Change settings{/tr}" style="float:right;" />
 	</div>
 	{if $prefs.payment_feature neq "y"}
-		<fieldset class="table">
+		<fieldset class="admin">
 			<legend>{tr}Activate the feature{/tr}</legend>
 			{preference name=payment_feature visible="always"}
 		</fieldset>
@@ -20,7 +20,7 @@
 			{/remarksbox}
 
 			<div class="adminoptionboxchild" id="payment_feature_childcontainer">
-				<fieldset class="table">
+				<fieldset class="admin">
 					{preference name=payment_system}
 					{preference name=payment_currency}
 					{preference name=payment_default_delay}
@@ -134,7 +134,7 @@
 
 		{tab name="{tr}Plugins{/tr}"}
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Plugins{/tr}</legend>
 				{preference name=wikiplugin_addtocart}
 				{preference name=wikiplugin_adjustinventory}

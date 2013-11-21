@@ -248,7 +248,7 @@ function showDetails( id, domain, profile ) { // {{{
 				<form method="get" action="tiki-admin.php">
 					<div class="adminoptionbox">
 						<b>{tr}Step 1: Use the Quick or Manual Filter option to see a list of Configuration Profiles you can apply{/tr}</b>
-						<table class="table normal">
+						<table class="normal">
 							<tr>
 								<th width="50%" class="quickmode_notes">{tr}Option 1: Quick Filter{/tr}</th>
 	
@@ -339,7 +339,7 @@ $("#repository, #categories").change(function(){
 	       {if isset($result) && $result|@count != '0'}
 	
 	        <b>{tr}Step 2: Click on a Configuration Profile Name below to review it and to be able to apply it on your Web site{/tr}</b>
-			<table class="table normal">
+			<table class="normal">
 				<tr>
 					<th>{tr}Profile Name{/tr}</th>
 					<th>{tr}Repository{/tr}</th>
@@ -363,10 +363,10 @@ $("#repository, #categories").change(function(){
 
 
 
-<fieldset class="table">
+<fieldset class="admin">
 <legend>{tr}Status{/tr}</legend>
 <div class="adminoptionbox">
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th>{tr}Profile repository{/tr}</th>
 			<th>{tr}Status{/tr}</th>
@@ -395,7 +395,7 @@ $("#repository, #categories").change(function(){
 			{if !empty($export_yaml)}
 				<div class="wikitext">{$export_yaml}</div>
 			{/if}
-			<div class="t_navbar">
+			<div class="navbar">
 				<label for="export_type">{tr}Object type:{/tr}</label>
 				<select name="export_type" id="export_type">
 					<option value="prefs"{if $export_type eq "prefs"} selected="selected"{/if}>
@@ -408,7 +408,7 @@ $("#repository, #categories").change(function(){
 			</div>
 			<fieldset>
 				<legend>{tr}Export modified preferences as YAML{/tr}</legend>
-				<div class="t_navbar">
+				<div class="navbar">
 					{listfilter selectors=".profile_export_list > li"}
 					<label for="select_all_prefs_to_export">{tr}Toggle Visible{/tr}</label>
 					<input type="checkbox" id="select_all_prefs_to_export" />

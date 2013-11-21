@@ -1,8 +1,8 @@
 {* $Id$ *}
-<div class="t_navbar btn-group">
-	{button href="tiki-browse_categories.php" class="btn btn-default" _text="{tr}Browse categories{/tr}"}
-	{button href="tiki-admin_categories.php" class="btn btn-default" _text="{tr}Administer categories{/tr}"}
-	{button href="tiki-edit_categories.php" class="btn btn-default" _text="{tr}Organize Objects{/tr}" _title="{tr}Organize Objects{/tr}"}
+<div class="navbar">
+	{button href="tiki-browse_categories.php" _text="{tr}Browse categories{/tr}"}
+	{button href="tiki-admin_categories.php" _text="{tr}Administer categories{/tr}"}
+	{button href="tiki-edit_categories.php" _text="{tr}Organize Objects{/tr}" _title="{tr}Organize Objects{/tr}"}	
 </div>
 {if !empty($feedbacks) || !empty($assignWikiCategories)}
 	{remarksbox type="feedback" title="{tr}Feedback{/tr}"}
@@ -16,12 +16,12 @@
 		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
 	</div>
 
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Activate the feature{/tr}</legend>
 		{preference name=feature_categories visible="always"}
 	</fieldset>	
 
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Plugins{/tr}</legend>
 		{preference name=wikiplugin_category}
 		{preference name=wikiplugin_catpath}

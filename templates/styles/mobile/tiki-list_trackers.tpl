@@ -2,7 +2,7 @@
 
 {title help="Trackers" admpage="trackers"}{tr}Trackers{/tr}{/title}
 
-<div class="navbar btn-group">
+<div class="navbar">
 	{include file="tracker_actions.tpl"}
 </div>
 

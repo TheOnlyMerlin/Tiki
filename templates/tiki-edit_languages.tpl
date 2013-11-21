@@ -1,6 +1,6 @@
 {title admpage="i18n"}{tr}Edit or export languages{/tr}{/title}
 
-<div class="t_navbar">
+<div class="navbar">
 	{if $smarty.session.interactive_translation_mode eq 'on'}
 		{button href="tiki-interactive_trans.php?interactive_translation_mode=off" _text="{tr}Toggle interactive translation off{/tr}" _ajax="n"}
 	{else}
@@ -60,7 +60,7 @@
 				<input type="hidden" name="only_db_untranslated" value="{$only_db_untranslated}">
 			{/if}
 			{if $action eq 'add_tran_sw'}
-				<div class="panel panel-default"><div class="panel-body">
+				<div class="simplebox">
 					<h4>{tr}Add a translation:{/tr}</h4>
 					<table class="formcolor">
 						<tr>
@@ -71,10 +71,10 @@
 							<td align="center"><input type="submit" class="btn btn-default" name="add_tran" value="{tr}Add{/tr}"></td>
 						</tr>
 					</table>
-				</div></div>
+				</div>
 			{/if}
 			{if $action eq 'edit_tran_sw' || $action eq 'edit_rec_sw'}
-				<div class="panel panel-default"><div class="panel-body">
+				<div class="simplebox">
 					<h4>{if $action eq 'edit_tran_sw'}{tr}Edit translations:{/tr}{else}{tr}Untranslated strings:{/tr}{/if}</h4>
 					<table class="formcolor" id="edit_translations">
 						<tr>
@@ -144,7 +144,7 @@
 					{pagination_links cant=$total step=$maxRecords offset=$offset _ajax='n'}{strip}
 						tiki-edit_languages.php?edit_language={$edit_language}&action={$action}&maxRecords={$maxRecords}&only_db_translations={$only_db_translations}&only_db_untranslated={$only_db_untranslated}{if isset($find)}&find={$find}{/if}
 					{/strip}{/pagination_links}
-				</div></div>
+				</div>
 			{/if}
 		</form>
 	{/tab}

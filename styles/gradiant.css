@@ -3,6 +3,8 @@
 	No images were harmed during creation of this theme.
 	Lots of CSS3 going on here ! ;)
 */
+@import url("lite/lite.css");
+@import url("layout/layout.css");
 @import url("layout/design.css");
 * {
 	vertical-align: middle !important;
@@ -28,7 +30,7 @@ a:focus, a:active		{
 }
 body {
 	background: #f0f0f0;
-	font-family: 'Liberation Serif', Cambria, Georgia, serif;
+	font: 76%/1.5em 'Liberation Serif', Cambria, Georgia, serif;
 }
 a {
 	color: #333;

@@ -1,7 +1,7 @@
 {title help="Forums" admpage="forums"}{tr}Reported messages for forum{/tr}&nbsp;{$forum_info.name}{/title}
 
-<div class="t_navbar">
-	{button href="tiki-view_forum.php?forumId=$forumId" class="btn btn-default" _text="{tr}Back to forum{/tr}"}
+<div class="navbar">
+	{button href="tiki-view_forum.php?forumId=$forumId" _text="{tr}Back to forum{/tr}"}
 </div>
 
 <h2>{tr}List of messages{/tr} ({$cant})</h2>
@@ -41,7 +41,7 @@
 {cycle values="odd,even" print=false}
 {section name=ix loop=$items}
 <tr class="{cycle}">
-	<td class="checkbox-cell">
+	<td class="checkbox">
 	  <input type="checkbox" name="msg[{$items[ix].threadId}]">
 	</td>
 	<td class="text">

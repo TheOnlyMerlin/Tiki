@@ -5,7 +5,7 @@
 
 	{tabset}
 		{tab name="{tr}General{/tr}"}
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Social Network Integration{/tr}</legend>
 				{preference name=feature_socialnetworks visible="always"}
 			</fieldset>

@@ -9,9 +9,9 @@
 5. {tr}Finally if the user didn't select a theme the default theme is used{/tr}
 {/remarksbox}
 
-<div class="navbar btn-group">
-	{button href="tiki-theme_control.php" class="btn btn-default" _text="{tr}Control by Categories{/tr}"}
-	{button href="tiki-theme_control_objects.php" class="btn btn-default" _text="{tr}Control by Objects{/tr}"}
+<div class="navbar">
+	{button href="tiki-theme_control.php" _text="{tr}Control by Categories{/tr}"}
+	{button href="tiki-theme_control_objects.php" _text="{tr}Control by Objects{/tr}"}
 </div>
 
 <h2>{tr}Assign themes to sections{/tr}</h2>
@@ -72,7 +72,7 @@
 		{cycle values="odd,even" print=false}
 		{section name=user loop=$channels}
 			<tr class="{cycle}">
-				<td class="checkbox-cell">
+				<td class="checkbox">
 					<input type="checkbox" name="sec[{$channels[user].section}]">
 				</td>
 				<td class="text">{$channels[user].section}</td>

@@ -16,14 +16,12 @@ function wikiplugin_div_info()
 		'icon' => 'img/icons/script_code_red.png',
 		'filter' => 'wikicontent',
 		'tags' => array( 'basic' ),
-		'validate' => 'arguments',
 		'params' => array(
 			'type' => array(
 				'required' => false,
 				'name' => tra('Type'),
 				'description' => tra('Indicate the type of HTML tag to use (default is div)'),
 				'filter' => 'alpha',
-				'safe' => true,
 				'default' => 'div',
 				'options' => array(
 					array('text' => tra('None'), 'value' => ''),
@@ -42,7 +40,6 @@ function wikiplugin_div_info()
 				'name' => tra('Background Color'),
 				'description' => tra('As defined by CSS, name or Hex code.'),
 				'filter' => 'striptags',
-				'safe' => true,
 				'default' => '',
 			),
 			'width' => array(
@@ -51,14 +48,12 @@ function wikiplugin_div_info()
 				'description' => tra('In pixels or percentage. Default is original size'),
 				'default' => '',
 				'filter' => 'text',
-				'safe' => true,
 			),
 			'align' => array(
 				'required' => false,
 				'name' => tra('Text Alignment'),
 				'description' => tra('Aligns the text within the element'),
 				'filter' => 'alpha',
-				'safe' => true,
 				'default' => '',
 				'options' => array(
 					array('text' => '', 'value' => ''),
@@ -76,7 +71,6 @@ function wikiplugin_div_info()
 					unless the clear parameter is appropriately set.)'
 				),
 				'filter' => 'alpha',
-				'safe' => true,
 				'default' => '',
 				'options' => array(
 					array('text' => '', 'value' => ''),
@@ -90,7 +84,6 @@ function wikiplugin_div_info()
 				'name' => tra('Clear'),
 				'description' => tra('Items are not allowed to wrap around the side(s) this parameter is set to.'),
 				'filter' => 'text',
-				'safe' => true,
 				'default' => '',
 				'options' => array(
 					array('text' => '', 'value' => ''),
@@ -105,7 +98,6 @@ function wikiplugin_div_info()
 				'name' => tra('CSS Class'),
 				'description' => tra('Apply custom CSS class to the div.'),
 				'filter' => 'text',
-				'safe' => true,
 				'default' => '',
 			),
 			'id' => array(
@@ -113,7 +105,6 @@ function wikiplugin_div_info()
 				'name' => tra('HTML ID'),
 				'description' => tra('Sets the div\'s id attribute, as defined by HTML.'),
 				'filter' => 'striptags',
-				'safe' => true,
 				'default' => '',
 			),
 			'title' => array(
@@ -121,18 +112,8 @@ function wikiplugin_div_info()
 				'name' => tra('Title attribute'),
 				'description' => tra('Title for the div, usually displayed as a tooltip.'),
 				'filter' => 'text',
-				'safe' => true,
 				'default' => '',
 			),
-			'style' => array(
-                                'required' => false,
-                                'name' => tra('Style attribute'),
-                                'description' => tra('Enter CSS styling tags for the div type used.'),
-                                'filter' => 'text',
-				'advanced' => true,
-                                'default' => '',
-                        ),
-
 		),
 	);
 }
@@ -157,9 +138,9 @@ function wikiplugin_div($data, $params)
 		$title = '';
 	}
 	$begin  = "<{$t}{$title}";
-	$format = "$style$bg$al$w$fl$cl";
-	if (!empty($format)) {
-		$begin .= " style=\"$format\"";
+	$style = "$bg$al$w$fl$cl";
+	if (!empty($style)) {
+		$begin .= " style=\"$style\"";
 	}
 	$begin .= " $c $id>";
 	$end = "</$t>";

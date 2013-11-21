@@ -2,11 +2,11 @@
 {title help="Blogs" admpage="blogs"}{tr}Blogs{/tr}{/title}
 
 {if $tiki_p_create_blogs eq 'y'}
-  <div class="t_navbar">
+  <div class="navbar">
 		{button href="tiki-edit_blog.php" _text="{tr}Create New Blog{/tr}"}
 	</div>
 {/if}
-<div class="text-center">
+<div align="center">
 
 {if $listpages or ($find ne '')}
   {include file='find.tpl'}
