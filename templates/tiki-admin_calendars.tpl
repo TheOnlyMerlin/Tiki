@@ -4,13 +4,13 @@
 	{title help=Calendar url="tiki-admin_calendars.php" admpage="calendar"}{tr}Admin Calendars{/tr}{/title}
 {/if}
 
-<div class="t_navbar btn-group form-group">
+<div class="navbar">
 	{if !empty($calendarId) && $tiki_p_admin_calendar eq 'y'}
-		{button _text="{tr}Create Calendar{/tr}" href="tiki-admin_calendars.php?cookietab=2" class="btn btn-default"}
+		{button _text="{tr}Create Calendar{/tr}" href="tiki-admin_calendars.php?cookietab=2"}
 	{/if}
-	{button _text="{tr}View Calendars{/tr}" href="tiki-calendar.php" class="btn btn-default"}
+	{button _text="{tr}View Calendars{/tr}" href="tiki-calendar.php"}
 	{if $tiki_p_admin_calendar eq 'y'}
-		{button _text="{tr}Import{/tr}" href="tiki-calendar_import.php" class="btn btn-default"}
+		{button _text="{tr}Import{/tr}" href="tiki-calendar_import.php"}
 	{/if}
 </div>
 
@@ -301,13 +301,13 @@
 				<tr>
 					<td>&nbsp;</td>
 					<td>
-						<input type="submit" class="btn btn-default btn-sm" name="save" value="{tr}Save{/tr}">
+						<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 					</td>
 				</tr>
 			</table>
 			<br>
 			{if $calendarId ne 0}{$name|escape} : {/if}
-			{tr}Delete events older than:{/tr} <input type="text" name="days" value="0"> {tr}days{/tr} <input type="submit" class="btn btn-default btn-sm" name="clean" value="{tr}Delete{/tr}">
+			{tr}Delete events older than:{/tr} <input type="text" name="days" value="0"> {tr}days{/tr} <input type="submit" class="btn btn-default" name="clean" value="{tr}Delete{/tr}">
 		</form>
 	{/tab}
 {/tabset}

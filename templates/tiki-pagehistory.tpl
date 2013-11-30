@@ -2,14 +2,14 @@
 
 {title admpage="wiki"}{tr}History:{/tr} {$page}{/title}
 
-<div class="t_navbar form-group">
+<div class="navbar">
 	{assign var=thispage value=$page|escape:url}
-	{button href="tiki-index.php?page=$thispage" class="btn btn-default" _text="{tr}View page{/tr}"}
+	{button href="tiki-index.php?page=$thispage" _text="{tr}View page{/tr}"}
 	{if !isset($noHistory)}
 		{if $show_all_versions eq "y"}
-			{button _text="{tr}Show Edit Sessions{/tr}" show_all_versions="n" href="?clear_versions=1" _auto_args="*" class="btn btn-default"}
+			{button _text="{tr}Show Edit Sessions{/tr}" show_all_versions="n" href="?clear_versions=1" _auto_args="*"}
 		{else}
-			{button _text="{tr}Show All Versions{/tr}" show_all_versions="y" href="?clear_versions=1" _auto_args="*" class="btn btn-default"}
+			{button _text="{tr}Show All Versions{/tr}" show_all_versions="y" href="?clear_versions=1" _auto_args="*"}
 		{/if}
 	{/if}
 </div>
@@ -39,13 +39,13 @@
 					<p>{tr}This revision is currently marked as approved.{/tr}<p>
 					<div class="submit">
 						<input type="hidden" name="unapprove" value="{$preview|escape}">
-						<input type="submit" class="btn btn-default btn-sm" name="flaggedrev" value="{tr}Remove Approval{/tr}">
+						<input type="submit" class="btn btn-default" name="flaggedrev" value="{tr}Remove Approval{/tr}">
 					</div>
 				{else}
 					<p>{tr}This revision has not been approved.{/tr}<p>
 					<div class="submit">
 						<input type="hidden" name="approve" value="{$preview|escape}">
-						<input type="submit" class="btn btn-default btn-sm" name="flaggedrev" value="{tr}Approve Revision{/tr}">
+						<input type="submit" class="btn btn-default" name="flaggedrev" value="{tr}Approve Revision{/tr}">
 					</div>
 				{/if}
 			</form>
@@ -83,7 +83,7 @@
 			<p>{tr}This revision has not been approved.{/tr}<p>
 			<div class="submit">
 				<input type="hidden" name="approve" value="{$new.version|escape}">
-				<input type="submit" class="btn btn-default btn-sm" name="flaggedrev" value="{tr}Approve Revision{/tr}">
+				<input type="submit" class="btn btn-default" name="flaggedrev" value="{tr}Approve Revision{/tr}">
 			</div>
 		</form>
 	{/remarksbox}
@@ -156,19 +156,18 @@ if (jqueryTiki.chosen) {
 						<option value="sidediff" {if $diff_style == "sidediff"}selected="selected"{/if}>{tr}Side-by-side diff{/tr}</option>
 					</select>{/if}
 					<input type="hidden" name="show_all_versions" value="{$show_all_versions}">
-					<input type="submit" class="btn btn-default btn-sm" name="compare" value="{tr}Compare{/tr}">
+					<input type="submit" class="btn btn-default" name="compare" value="{tr}Compare{/tr}">
 				</div>
 			{/if}
-			<div class="panel panel-default"><div class="panel-body">
+			<div class="simplebox">
 				<b>{tr}Legend:{/tr}</b> {tr}v=view{/tr}
 				{if $tiki_p_wiki_view_source eq "y" and $prefs.feature_source eq "y"}, {tr}s=source{/tr} {/if}
 				{if $prefs.default_wiki_diff_style eq "old"}, {tr}c=compare{/tr}, {tr}d=diff{/tr}{/if}
 				{if $tiki_p_rollback eq 'y'}, {tr}b=rollback{/tr}{/if}
-			</div></div>
-            <div class="table-responsive">
-			<table class="table">
+			</div>
+			<table class="formcolor" width="100%">
 				<tr>
-					{if $tiki_p_remove eq 'y'}<th><input type="submit" class="btn btn-warning btn-sm" name="delete" value="{tr}Del{/tr}"></th>{/if}
+					{if $tiki_p_remove eq 'y'}<th><input type="submit" class="btn btn-warning" name="delete" value="{tr}Del{/tr}"></th>{/if}
 					<th>{tr}Information{/tr}</th>
 					{if $prefs.feature_contribution eq 'y'}<th>{tr}Contribution{/tr}</th>{/if}
 					{if $prefs.feature_contribution eq 'y' and $prefs.feature_contributor_wiki eq 'y'}<th>{tr}Contributors{/tr}</th>{/if}
@@ -177,7 +176,7 @@ if (jqueryTiki.chosen) {
 					<th>{tr}Action{/tr}</th>
 					{if $prefs.default_wiki_diff_style != "old" and $history}
 						<th colspan="2">
-							<input type="submit" class="btn btn-default btn-sm" name="compare" value="{tr}Compare{/tr}">
+							<input type="submit" class="btn btn-default" name="compare" value="{tr}Compare{/tr}">
 						</th>
 					{/if}
 				</tr>
@@ -332,7 +331,7 @@ if (jqueryTiki.chosen) {
 								<option value="{$languages[ix].value|escape}"{if $lang eq $languages[ix].value} selected="selected"{/if}>{$languages[ix].name}</option>
 							{/section}
 						</select>
-						<input type="submit" class="btn btn-default btn-sm" name="update_translation" value="{tr}Update Translation{/tr}"/>
+						<input type="submit" class="btn btn-default" name="update_translation" value="{tr}Update Translation{/tr}"/>
 						{if $show_translation_history}
 							<input type="hidden" name="show_translation_history" value="1">
 							{button show_translation_history=0 _text="{tr}Hide translation history{/tr}" _auto_args="*"}
@@ -343,7 +342,6 @@ if (jqueryTiki.chosen) {
 				</tr>
 				{/if}
 			</table>
-			</div>
 			{if $paginate}
 				{if isset($smarty.request.history_offset)}
 					{pagination_links cant=$history_cant offset=$smarty.request.history_offset offset_arg="history_offset" step=$maxRecords}{/pagination_links}

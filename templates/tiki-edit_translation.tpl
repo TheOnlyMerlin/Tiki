@@ -1,6 +1,6 @@
 {title help="i18n" admpage="i18n"}{tr}Translate:{/tr} {$name}{if isset($languageName)} ({$languageName}, {$langpage}){/if}{/title}
 
-<div class="t_navbar">
+<div class="navbar">
 	{if $type eq 'wiki page'}
 		{assign var=thisname value=$name|escape:'url'}
 		{button href="tiki-index.php?page=$thisname&no_bl=y" _text="{tr}View Page{/tr}"}
@@ -10,7 +10,7 @@
 </div>
 
 {if $error}
-	<div class="alert alert-warning">
+	<div class="simplebox highlight">
 	{if $error == "traLang"}
 		{tr}You must specify the object language{/tr}
 	{elseif $error == "srcExists"}
@@ -58,12 +58,12 @@
 			<select name="lang" id="language_list" size="1">
 			   <option value="unspecified">{tr}Unspecified{/tr}</option>
 				{section name=ix loop=$languages}
-				<option value="{$languages[ix].value|escape}"{if $default_target_lang eq $languages[ix].value} selected="selected"{/if}>{$languages[ix].name|escape}</option>
+				<option value="{$languages[ix].value|escape}"{if $only_one_language_left eq "y"} selected="selected"{/if}>{$languages[ix].name|escape}</option>
 				{/section}
 			</select>
 		</p>
 		<p>{tr}Enter the page title:{/tr}
-			<input type="text" size="40" name="page" id="translation_name" value="{$translation_name|escape}">
+			<input type="text" size="40" name="page" id="translation_name">
 			<input type="hidden" name="source_page" value="{$name|escape}">
 			<input type="hidden" name="oldver" value="-1">
 			<input type="hidden" name="is_new_translation" value="y">
@@ -73,7 +73,8 @@
 			<br>
 			{include file="categorize.tpl" notable=y}
 		{/if}
-		<p align="center"><input type="submit" class="btn btn-default btn-sm" value="{tr}Create translation{/tr}"></p>
+		<p align="center"><input type="submit" class="btn btn-default" value="{tr}Create translation{/tr}"></p>
+		<textarea name="edit" style="display:none">{$translate_message}{$pagedata|escape:'htmlall':'UTF-8'}</textarea>
 	</fieldset>
 </form>
 {/if}
@@ -128,15 +129,15 @@ function validate_translation_request() {
 	</select>
 	<input type="hidden" name="id" value="{$id}">
 	<input type="hidden" name="type" value="{$type}">
-	<input type="submit" class="btn btn-default btn-sm" name="switch" value="{tr}Change Language{/tr}">
+	<input type="submit" class="btn btn-default" name="switch" value="{tr}Change Language{/tr}">
 </div>
 </form>
 
 {else}
-	<div class="panel panel-default"><div class="panel-body">
+	<div class="simplebox">
 		{icon _id=delete alt="{tr}Alert{/tr}" style="vertical-align:middle"} 
 		{tr}No language is assigned to this page.{/tr}
-	</div></div>
+	</div>
 	<p>{tr}Please select a language before performing translation.{/tr}</p>
 	<form method="post" action="tiki-edit_translation.php">
 		<p>
@@ -147,7 +148,7 @@ function validate_translation_request() {
 			</select>
 			<input type="hidden" name="id" value="{$id}">
 			<input type="hidden" name="type" value="{$type|escape}">
-			<input type="submit" class="btn btn-default btn-sm" value="{tr}Set Current Page's Language{/tr}">
+			<input type="submit" class="btn btn-default" value="{tr}Set Current Page's Language{/tr}">
 		</p>
 	</form>
 {/if}

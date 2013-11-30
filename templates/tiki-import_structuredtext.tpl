@@ -16,13 +16,12 @@
 </tr>
 <tr>
   <td>&nbsp;</td>
-  <td><input type="submit" class="btn btn-default btn-sm" name="import" value="{tr}import{/tr}"></td>
+  <td><input type="submit" class="btn btn-default" name="import" value="{tr}import{/tr}"></td>
 </tr>
 </table>
 </form>
 <br><br>
 {if $result eq 'y'}
-<div class="table-responsive">
 <table class="table normal">
 <tr>
   <th>{tr}page{/tr}</th>
@@ -40,5 +39,4 @@
 </tr>
 {/section}
 </table>
-</div>
 {/if}

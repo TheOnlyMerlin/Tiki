@@ -5,6 +5,8 @@
 */
  
 /* Import layout foundation CSS files. */
+@import url("lite/lite.css");
+@import url("layout/layout.css");
 @import url("layout/design.css");
  
 /***** XHTML Elements (body tag here,
@@ -12,9 +14,14 @@
 body {
 	background: #b1c1db url(snow/flakesptn.jpg) repeat;
 	color: #000;
-	font-family: arial, helvetica, verdana, sans-serif;
+	font: 76% arial, helvetica, verdana, sans-serif;
+	line-height: 1.4;
 }
 
+*:first-child+html body {font-size: 74% !important}
+
+ /***** Layout (overrides layout.css;
+		also styling of page layout divs)  *****/
 .header {text-align: left}
 #middle {text-align: left}
 
@@ -574,6 +581,7 @@ td.heading,
 	float: left;
 }
 
+/* reset what's in layout.css */
 .tabactive,
 .tabinactive,
 [class].tabactive,
@@ -690,6 +698,7 @@ a.pagetitle:hover {
 	border-collapse: collapse}
 
 .editdate {padding-bottom: 5px}
+#page-bar {margin-top: 0}
 
 ul.floatleft {
 	display: block;

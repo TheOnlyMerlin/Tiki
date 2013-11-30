@@ -8,7 +8,6 @@
 {/if}
 {tabset}
 {tab name="{tr}List{/tr}"}
-    <div class="table-responsive">
 	<table class="table normal">
 	<tr>
 		<th>{tr}Code{/tr}</th>
@@ -35,7 +34,6 @@
 		{norecords _colspan=6}
 	{/foreach}
 	</table>
-    </div>
 	{pagination_links cant=$discounts.cant step=$discounts.max offset=$discounts.offset}{/pagination_links}
 {/tab}
 {capture name=tabtitle}{if empty($info.id)}{tr}Create{/tr}{else}{tr}Edit{/tr}{/if}{/capture}
@@ -64,7 +62,7 @@
 	</tr>
 	<tr>
 		<td></td>
-		<td><input type="submit" class="btn btn-default btn-sm" name="save" value="{tr}Save{/tr}"></td>
+		<td><input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}"></td>
 	</tr>
 	</table>
 	</form>

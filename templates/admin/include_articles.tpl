@@ -5,7 +5,7 @@
 {/remarksbox}
 
 {if !empty($msgs)}
-	<div class="alert alert-warning">
+	<div class="simplebox highlight">
 	{foreach from=$msgs item=msg}
 	{$msg}			 
 	{/foreach}
@@ -13,24 +13,20 @@
 {/if}
 
 <form method="post" action="tiki-admin.php?page=articles">
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-                <input type="submit" class="btn btn-default btn-sm" value="{tr}Change preferences{/tr}">
-            </div>
-        </div>
-    </div>
+	<div class="input_submit_container clear" style="text-align: right;">
+		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+	</div>
 
 	{tabset name="admin_articles"}
 		{tab name="{tr}General Settings{/tr}"}
 			<input type="hidden" name="articlesprefs" />
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Activate the feature{/tr}</legend>
 				{preference name=feature_articles visible="always"}
 			</fieldset>
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Plugins{/tr}</legend>
 				{preference name=wikiplugin_articles}
 				{preference name=wikiplugin_article}
@@ -111,7 +107,7 @@
 						<br>
 						<em>{tr}File format: title,authorName,heading,body,lang,user{/tr}....</em>
 						<div align="center">
-							<input type="submit" class="btn btn-default btn-sm" name="import" value="{tr}Import{/tr}" />
+							<input type="submit" class="btn btn-default" name="import" value="{tr}Import{/tr}" />
 						</div>
 					</div>
 				</div>
@@ -156,11 +152,8 @@
 			</fieldset>
 		{/tab}
 	{/tabset}
-    <br>{* I cheated. *}
-    <div class="row">
-        <div class="form-group col-lg-12 text-center">
-            <input type="submit" class="btn btn-default btn-sm" value="{tr}Change preferences{/tr}">
-        </div>
-    </div>
+	<div class="input_submit_container clear" style="text-align: center;">
+		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>
 

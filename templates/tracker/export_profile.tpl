@@ -1,5 +1,5 @@
 {if $yaml}
-	<div class="t_navbar form-group">
+	<div class="navbar">
 		{include file="tracker_actions.tpl"}
 	</div>
 	{remarksbox type="note" title="{tr}YAML Export{/tr}"}

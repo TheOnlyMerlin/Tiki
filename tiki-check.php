@@ -185,7 +185,7 @@ Couldn't connect to database, please provide valid credentials.
 	<p><label for="dbhost">Database host</label>: <input type="text" id="dbhost" name="dbhost" value="localhost" /></p>
 	<p><label for="dbuser">Database username</label>: <input type="text" id="dbuser" name="dbuser" /></p>
 	<p><label for="dbpass">Database password</label>: <input type="password" id="dbpass" name="dbpass" /></p>
-	<p><input type="submit" class="btn btn-default btn-sm" value=" Connect " /></p>
+	<p><input type="submit" value=" Connect " /></p>
 </form>
 DBC;
 	} else {
@@ -334,7 +334,7 @@ if (version_compare(PHP_VERSION, '5.1.0', '<')) {
 	);
 } elseif (version_compare(PHP_VERSION, '5.2.0', '<')) {
 	$php_properties['PHP version'] = array(
-		'fitness' => tra('bad'),
+		'fitness' => tra('ugly'),
 		'setting' => phpversion(),
 		'message' => 'You have a quite old version of PHP. You can run Tiki 6.x LTS but not later versions.'
 	);
@@ -342,13 +342,7 @@ if (version_compare(PHP_VERSION, '5.1.0', '<')) {
 	$php_properties['PHP version'] = array(
 		'fitness' => tra('ugly'),
 		'setting' => phpversion(),
-		'message' => 'You have an old version of PHP. You can run Tiki 6.x LTS or 9.x LTS but not later versions.'
-	);
-} elseif (version_compare(PHP_VERSION, '5.5.0', '<')) {
-	$php_properties['PHP version'] = array(
-		'fitness' => tra('ugly'),
-		'setting' => phpversion(),
-		'message' => 'You have a somewhat old version of PHP. You can run Tiki 6.x LTS, 9.x LTS or 12.x LTS but not later versions.'
+		'message' => 'You have a somewhat old version of PHP. You can run Tiki 6.x LTS or 9.x LTS but not later versions.'
 	);
 } else {
 	$php_properties['PHP version'] = array(
@@ -1473,7 +1467,7 @@ if ($standalone) {
 	} else {
 		$render .= '<form method="post" action="'.$_SERVER['REQUEST_URI'].'">';
 		$render .= '<p><label for="e-mail">e-mail address to send test mail to</label>: <input type="text" id="email_test_to" name="email_test_to" /></p>';
-		$render .= '<p><input type="submit" class="btn btn-default btn-sm" value=" Send e-mail " /></p>';
+		$render .= '<p><input type="submit" value=" Send e-mail " /></p>';
 		$render .= '<p><input type="hidden" id="dbhost" name="dbhost" value="';
 				if (isset($_POST['dbhost'])) {
 					$render .= $_POST['dbhost'];

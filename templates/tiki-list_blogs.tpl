@@ -2,17 +2,16 @@
 {title help="Blogs" admpage="blogs"}{tr}Blogs{/tr}{/title}
 
 {if $tiki_p_create_blogs eq 'y'}
-  <div class="t_navbar">
+  <div class="navbar">
 		{button href="tiki-edit_blog.php" _text="{tr}Create New Blog{/tr}"}
 	</div>
 {/if}
-<div class="text-center">
+<div align="center">
 
 {if $listpages or ($find ne '')}
   {include file='find.tpl'}
 {/if}
 
-<div class="table-responsive">
 <table class="table normal">
 {assign var=numbercol value=0}
 <tr>
@@ -129,7 +128,6 @@
 	{norecords _colspan=$numbercol}
 {/section}
 </table>
-</div>
 
 {pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
 </div>

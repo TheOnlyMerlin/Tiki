@@ -15,7 +15,7 @@
 	<input type="hidden" name="maxRecords" value="{$maxRecords|escape}">
 </form>
 		{if isset($error) and $error}
-<div class="alert alert-warning">
+<div class="simplebox highlight">
 			{$error}
 </div>
 		{/if}

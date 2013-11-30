@@ -11,6 +11,24 @@ function capLock(e, el){
 }
 {/jq}
 {jq}
+//We were having problems with the menu disapearing when you selected an input, this prevents the menu from going away once you have put focus on an input
+var hasFocus = false;
+var loginPopup = $('.siteloginbar_popup .cssmenu_horiz')
+
+loginPopup.find('ul')
+	.mouseout(function() {
+		return !hasFocus;
+	});
+
+loginPopup.find(':input')
+	.focus(function() {
+		hasFocus = true;
+	})
+	.blur(function() {
+		hasFocus = false;
+	});
+{/jq}
+{jq}
 $("#loginbox-{{$module_logo_instance}}").submit( function () {
 	if ($("#login-user_{{$module_logo_instance}}").val() && $("#login-pass_{{$module_logo_instance}}").val()) {
 		return true;
@@ -29,6 +47,38 @@ if (jqueryTiki.no_cookie) {
 	});
 }
 {/jq}
+{if $prefs.feature_jquery_tooltips eq 'y'}
+	{assign var="closeText" value="{tr}Close{/tr}"}
+	{jq}
+if (jqueryTiki.tooltips) {
+	$('.login_link').cluetip({
+		activation: 'click',
+		arrows: false,
+		showTitle: false,
+		closePosition: 'bottom',
+		closeText: '{{$closeText}}',
+		cluetipClass: 'transparent',
+		dropShadow: false,
+		hideLocal: true,
+		local: true,
+		leftOffset: -100,
+		positionBy: 'topBottom',
+		sticky: true,
+		topOffset: 10,
+		fx: {
+			open: 'fadeIn', // can be 'show' or 'slideDown' or 'fadeIn'
+			openSpeed: '200'
+		},
+		width: 'auto',
+		onShow: function() {
+			$('#main').one('mousedown',function() {
+				$(document).trigger('hideCluetip');
+			})
+		}
+	});
+}
+	{/jq}
+{/if}
 {if !isset($tpl_module_title)}{assign var=tpl_module_title value="{tr}Log in{/tr}"}{/if}{* Left for performance, since tiki-login_scr.php includes this template directly. *}
 {if !isset($module_params)}{assign var=module_params value=' '}{/if}
 {if isset($nobox)}{$module_params.nobox = $nobox}{/if}
@@ -38,7 +88,7 @@ if (jqueryTiki.no_cookie) {
 	{if $user}
 		{if empty($mode) or $mode eq "module"}
 			<div>{tr}Logged in as:{/tr} <span style="white-space: nowrap">{$user|userlink}</span></div>
-			<div class="text-center">
+			<div style="text-align: center;">
 				{button href="tiki-logout.php" _text="{tr}Log out{/tr}"}
 			</div>
 			{if $login_module.can_revert}
@@ -47,7 +97,7 @@ if (jqueryTiki.no_cookie) {
 						<legend>{tr}Return to Main User{/tr}</legend>
 						<input type="hidden" name="su" value="revert" />
 						<input type="hidden" name="username" value="auto" />
-						<div class="text-center"><button type="submit" class="btn btn-default btn-sm" name="actsu">{tr}Switch{/tr}</button></div>
+						<div style="text-align: center"><button type="submit" class="btn btn-default" name="actsu">{tr}Switch{/tr}</button></div>
 					</fieldset>
 				</form>
 			{elseif $tiki_p_admin eq 'y'}
@@ -60,7 +110,7 @@ if (jqueryTiki.no_cookie) {
 							{help url="Switch+User" desc="{tr}Help{/tr}" desc="{tr}Switch User:{/tr}{tr}Enter user name and click 'Switch'.<br>Useful for testing permissions.{/tr}"}
 						{/if}
 						<input type="text" name="username" id="login-switchuser_{$module_logo_instance}" size="{if empty($module_params.input_size)}15{else}{$module_params.input_size}{/if}" />
-						<div class="text-center"><button type="submit" class="btn btn-default btn-sm" name="actsu">{tr}Switch{/tr}</button></div>
+						<div style="text-align: center"><button type="submit" class="btn btn-default" name="actsu">{tr}Switch{/tr}</button></div>
 						{autocomplete element="#login-switchuser_"|cat:$module_logo_instance type="username"}
 					</fieldset>
 				</form>
@@ -68,16 +118,14 @@ if (jqueryTiki.no_cookie) {
 		{elseif $mode eq "header"}
 			<span style="white-space: nowrap">{$user|userlink}</span> <a href="tiki-logout.php" title="{tr}Log out{/tr}">{tr}Log out{/tr}</a>
 		{elseif $mode eq "popup"}
-			<div class="siteloginbar_popup dropdown">
-				<a href="tiki-logout.php" class="login_link" data-toggle="dropdown">
-					{tr}Log out{/tr}
-				</a>
-				<ul class="clearfix dropdown-menu pull-right">
-					<li>
-						{$user|userlink}
-					</li>
-					<li>
-						<a href="tiki-logout.php" title="{tr}Log out{/tr}">{tr}Log out{/tr}</a>
+			<div class="siteloginbar_popup">
+				<ul class="clearfix cssmenu_horiz">
+					<li id="logout_link_{$module_logo_instance}"><div class="tabmark"><a href="tiki-logout.php" class="login_link">{tr}Log out{/tr}</a></div>
+						<ul class="siteloginbar_poppedup">
+							<li class="tabcontent">
+								{*<div class="cbox">*}{$user|userlink} <a href="tiki-logout.php" title="{tr}Log out{/tr}">{tr}Log out{/tr}</a>{*</div>*}
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</div>
@@ -92,7 +140,7 @@ if (jqueryTiki.no_cookie) {
 				{/foreach}
 				</select>
 				<input type="hidden" name="action" value="select"/>
-				<input type="submit" class="btn btn-default btn-sm btn-sm" value="{tr}Go{/tr}"/>
+				<input type="submit" class="btn btn-default" value="{tr}Go{/tr}"/>
 			</fieldset>
 		</form>
 		{/if}
@@ -109,13 +157,12 @@ if (jqueryTiki.no_cookie) {
 	{else}
 		{assign var='close_tags' value=''}
 		{if $mode eq "popup"}
-			<div class="siteloginbar_popup dropdown">
-				<a href="tiki-login.php" class="login_link btn" data-toggle="dropdown">
-					<span>{tr}Log in{/tr}</span>
-					<span class="caret"></span>
-				</a>
-				<div class="siteloginbar_poppedup panel panel-body dropdown-menu pull-right">
-						{capture assign="close_tags"}</div></div>{$close_tags}{/capture}
+			<div class="siteloginbar_popup">
+				<ul class="clearfix{if $prefs.feature_jquery_tooltips ne 'y'} cssmenu_horiz{/if}">
+					<li id="logout_link_{$module_logo_instance}"><div class="tabmark"><a href="tiki-login.php" class="login_link" onclick="return false;" rel=".siteloginbar_poppedup">{tr}Log in{/tr}</a></div>
+						<ul class="siteloginbar_poppedup cbox">
+							<li class="tabcontent">
+								{capture assign="close_tags"}</li></ul></li></ul></div>{$close_tags}{/capture}
 		{/if}
 		<form name="loginbox" id="loginbox-{$module_logo_instance}" action="{$login_module.login_url|escape}"
 				method="post" {if $prefs.feature_challenge eq 'y'}onsubmit="doChallengeResponse()"{/if}
@@ -177,7 +224,7 @@ function doChallengeResponse() {
 			{if $prefs.rememberme eq 'always'}
 				<input type="hidden" name="rme" id="login-remember-module-input_{$module_logo_instance}" value="on" />
 			{else}
-				<div class="text-center rme">
+				<div style="text-align: center" class="rme">
 					<label for="login-remember-module_{$module_logo_instance}">{tr}Remember me{/tr}
 					({tr}for{/tr}
 					{if $prefs.remembertime eq 300}
@@ -208,11 +255,11 @@ function doChallengeResponse() {
 					{capture assign="close_tags"}</div>{$close_tags}{/capture}
 			{/if}
 		{/if}
-		<div class="text-center">
-			<input class="btn btn-default btn-sm button submit" type="submit" name="login" value="{tr}Log in{/tr}" />
+		<div style="text-align: center">
+			<input class="button submit" type="submit" name="login" value="{tr}Log in{/tr}" />
 		</div>
 		{if $module_params.show_forgot eq 'y' or $module_params.show_register eq 'y'}
-			<div {if $mode eq 'header'}class="text-right" display:inline"{/if}>
+			<div {if $mode eq 'header'}style="text-align: right; display:inline"{/if}>
 				{strip}
 				{if $module_params.show_forgot eq 'y' && $prefs.forgotPass eq 'y'}
 					<div class="pass"><a {*class="linkmodule"*} href="tiki-remind_password.php" title="{tr}Click here if you've forgotten your password{/tr}">{tr}I forgot my password{/tr}</a></div>
@@ -264,13 +311,13 @@ function doChallengeResponse() {
 		<fieldset>
 			<legend>{tr}OpenID Log in{/tr}</legend>
 			<input class="openid_url" type="text" name="openid_url"/>
-			<input type="submit" class="btn btn-default btn-sm btn-sm" value="{tr}Go{/tr}"/>
+			<input type="submit" class="btn btn-default" value="{tr}Go{/tr}"/>
 			<a class="linkmodule tikihelp" target="_blank" href="http://doc.tiki.org/OpenID">{tr}What is OpenID?{/tr}</a>
 		</fieldset>
 	</form>
 {/if}
 {if $prefs.socialnetworks_facebook_login eq 'y' and $mode neq "header" and $mode neq "popup"}
-	<div class="text-center"><a href="tiki-socialnetworks.php?request_facebook=true"><img src="http://developers.facebook.com/images/devsite/login-button.png"></a></div>
+	<div style="text-align: center"><a href="tiki-socialnetworks.php?request_facebook=true"><img src="http://developers.facebook.com/images/devsite/login-button.png"></a></div>
 {/if}
 {if $mode eq "header"}</div>{/if}
 {/tikimodule}

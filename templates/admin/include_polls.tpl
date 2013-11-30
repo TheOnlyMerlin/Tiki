@@ -2,17 +2,17 @@
 
 <form method="post" action="tiki-admin.php?page=polls">
 	<div class="heading input_submit_container" style="text-align: right">
-		<input type="submit" class="btn btn-default btn-sm" name="calprefs" value="{tr}Change settings{/tr}" />
+		<input type="submit" class="btn btn-default" name="calprefs" value="{tr}Change settings{/tr}" />
 	</div>
 
 	{tabset name="admin_wiki"}
 		{tab name="{tr}Polls{/tr}"}
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Activate the feature{/tr}</legend>
 				{preference name=feature_polls visible="always"}
 			</fieldset>
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Plugins{/tr}</legend>
 				{preference name=wikiplugin_poll}
 			</fieldset>
@@ -33,7 +33,7 @@
 			</fieldset>
 		{/tab}
 		{tab name="{tr}Surveys{/tr}"}
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Activate the feature{/tr}</legend>
 				{preference name=feature_surveys visible="always"}
 			</fieldset>
@@ -43,6 +43,6 @@
 		{/tab}
 	{/tabset}	
 	<div class="heading input_submit_container" style="text-align: center">
-		<input type="submit" class="btn btn-default btn-sm" name="calprefs" value="{tr}Change settings{/tr}" />
+		<input type="submit" class="btn btn-default" name="calprefs" value="{tr}Change settings{/tr}" />
 	</div>
 </form>

@@ -1,22 +1,16 @@
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}To configure your trackers, select "Trackers" in the application menu, or{/tr} <a class="rbox-link" href="tiki-list_trackers.php">{tr}Click Here{/tr}</a>.{/remarksbox}
 
 <form action="tiki-admin.php?page=trackers" method="post">
-
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-                <input type="submit" class="btn btn-default btn-sm" name="trkset" value="{tr}Change preferences{/tr}">
-            </div>
-        </div>
-    </div>
-
-    {tabset}
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" class="btn btn-default" name="trkset" value="{tr}Change preferences{/tr}" />
+	</div>
+{tabset}
 	{tab name="{tr}Settings{/tr}"}
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Activate the feature{/tr}</legend>
 		{preference name=feature_trackers visible="always"}
 	</fieldset>
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Tracker settings{/tr}</legend>
 		{preference name=user_selector_threshold}
 		{preference name=user_selector_realnames_tracker}
@@ -36,12 +30,11 @@
 			{preference name=ajax_inline_edit_trackerlist}
 		</div>
 		{preference name=tracker_change_field_type}
-		{preference name=tracker_show_comments_below}
 	</fieldset>
 
-	<fieldset class="table">
+	<fieldset class="admin">
 	  <legend>{tr}Tracker attachment preferences{/tr}</legend>
-		  <table class="table">
+		  <table class="admin">
 			<tr>
 			  <td>
 				{tr}Use database to store files:{/tr}
@@ -66,7 +59,7 @@
 
 	{/tab}
 	{tab name="{tr}Plugins{/tr}"}
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Plugins{/tr}</legend>
 		{preference name=wikiplugin_tracker}
 		{preference name=wikiplugin_trackerlist}
@@ -87,7 +80,7 @@
 	</fieldset>
 	{/tab}
 	{tab name="{tr}Field Types{/tr}"}
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Field Types{/tr}</legend>
 		{foreach from=$fieldPreferences item=name}
 			{preference name=$name}
@@ -97,23 +90,22 @@
 	{/tab}
 {/tabset}
 	<div class="heading input_submit_container" style="text-align: center">
-		<input type="submit" class="btn btn-default btn-sm" name="trkset" value="{tr}Change preferences{/tr}" />
+		<input type="submit" class="btn btn-default" name="trkset" value="{tr}Change preferences{/tr}" />
 	</div>
 </form>
 
 
-<fieldset class="table">
+<fieldset class="admin">
   <legend>{tr}Tracker attachments{/tr}</legend>
-    <div class="table">
+    <div class="admin">
 {if $attachements}
       <form action="tiki-admin.php?page=trackers" method="post">
         <input type="text" name="find" value="{$find|escape}" />
-        <input type="submit" class="btn btn-default btn-sm" name="action" value="{tr}Find{/tr}" />
+        <input type="submit" class="btn btn-default" name="action" value="{tr}Find{/tr}" />
       </form>
 {/if}
       {cycle values="odd,even" print=false}
-      <div class="table-responsive">
-      <table class="table normal">
+      <table class="normal">
         <tr>
           <th>
             <a href="tiki-admin.php?page=trackers&amp;sort_mode=user_{if $sort_mode eq 'attId'}asc{else}desc{/if}">{tr}ID{/tr}</a>
@@ -164,7 +156,6 @@
 			{norecords _colspan=10}
         {/section}
       </table>
-      </div>
       
 		{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
     </div>
@@ -174,13 +165,13 @@
         <td>
           <form action="tiki-admin.php?page=trackers" method="post">
             <input type="hidden" name="all2db" value="1" />
-            <input type="submit" class="btn btn-default btn-sm" name="action" value="{tr}Change all to db{/tr}" />
+            <input type="submit" class="btn btn-default" name="action" value="{tr}Change all to db{/tr}" />
           </form>
         </td>
         <td>
           <form action="tiki-admin.php?page=trackers" method="post">
             <input type="hidden" name="all2file" value="1" />
-            <input type="submit" class="btn btn-default btn-sm" name="action" value="{tr}Change all to file{/tr}" />
+            <input type="submit" class="btn btn-default" name="action" value="{tr}Change all to file{/tr}" />
           </form>
         </td>
       </tr>

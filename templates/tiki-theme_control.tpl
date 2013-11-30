@@ -9,9 +9,9 @@
 5. {tr}Finally if the user didn't select a theme the default theme is used{/tr}
 {/remarksbox}
 
-<div class="t_navbar btn-group form-group">
-	{button href="tiki-theme_control_objects.php" class="btn btn-default" _text="{tr}Control by Objects{/tr}"}
-	{button href="tiki-theme_control_sections.php" class="btn btn-default" _text="{tr}Control by Sections{/tr}"}
+<div class="navbar">
+	{button href="tiki-theme_control_objects.php" _text="{tr}Control by Objects{/tr}"}
+	{button href="tiki-theme_control_sections.php" _text="{tr}Control by Sections{/tr}"}
 </div>
 
 <h2>{tr}Assign themes to categories{/tr}</h2>
@@ -49,7 +49,7 @@
 				</select>
 			</td>
 			<td>
-				<input type="submit" class="btn btn-default btn-sm" name="assigcat" value="{tr}Assign{/tr}">
+				<input type="submit" class="btn btn-default" name="assigcat" value="{tr}Assign{/tr}">
 			</td>
 		</tr>
 	</table>
@@ -60,10 +60,9 @@
 {include file='find.tpl'}
 
 <form action="tiki-theme_control.php" method="post">
-    <div class="table-responsive">
 	<table class="table normal">
 		<tr>
-			<th><input type="submit" class="btn btn-default btn-sm" name="delete" value="{tr}Del{/tr}"></th>
+			<th><input type="submit" class="btn btn-default" name="delete" value="{tr}Del{/tr}"></th>
 			<th>
 				<a href="tiki-theme_control.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">
 					{tr}Category{/tr}
@@ -78,7 +77,7 @@
 	{cycle values="odd,even" print=false}
 		{section name=user loop=$channels}
 			<tr class="{cycle}">
-				<td class="checkbox-cell">
+				<td class="checkbox">
 					<input type="checkbox" name="categ[{$channels[user].categId}]">
 				</td>
 				<td class="text">{$channels[user].name|escape} ({$channels[user].categId})</td>
@@ -86,6 +85,5 @@
 			</tr>
 		{/section}
 	</table>
-    </div>
 </form>
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}

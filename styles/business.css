@@ -4,14 +4,21 @@
 	Visit http://themes.tiki.org for more information.
 
 /* Import basic layout files: */
+@import url("lite/lite.css");
+@import url("layout/layout.css");
 @import url("layout/design.css");
 
 /***** XHTML Elements (body tag here, others follow Layout) *****/
 
 body {
-	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font: 70% Verdana, Geneva, Arial, Helvetica, sans-serif;
+	line-height: 1.4;
 	color: #848484;
 }
+
+/***** Layout (overrides layout.css;
+also styling of page layout divs) *****/
+
 
 #c1c2 {
 	text-align: left;
@@ -496,8 +503,8 @@ a.highlight,
 
 /***** Boxes *****/
 /** Modules **/
-.module {
-	margin-bottom: 25px; /* added for bootstrap compatibility */
+.box {
+	margin: 0 25px 25px 25px;
 	background: #3475c6 url(business/title_bg.png) no-repeat 100% 0;
 }
 
@@ -659,6 +666,7 @@ td.odd a, td.odd a:visited {
 	margin-right: 35px;
 }
 
+/* reset layout.css */
 .tabactive,
 .tabinactive,
 [class].tabactive,

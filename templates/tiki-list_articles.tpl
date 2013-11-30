@@ -2,14 +2,14 @@
 
 {title help="Articles" admpage="articles"}{tr}Articles{/tr}{/title}
 
-<div class="t_navbar form-group">
+<div class="navbar">
 	{if $tiki_p_edit_article eq 'y'}
-		{button href="tiki-edit_article.php" class="btn btn-default" _text="{tr}New Article{/tr}"}
+		{button href="tiki-edit_article.php" _text="{tr}New Article{/tr}"}
 	{/if}
-	{button href="tiki-view_articles.php" class="btn btn-default" _text="{tr}View Articles{/tr}"}
+	{button href="tiki-view_articles.php" _text="{tr}View Articles{/tr}"}
 
 	{if $prefs.feature_submissions == 'y' && ($tiki_p_approve_submission == "y" || $tiki_p_remove_submission == "y" || $tiki_p_edit_submission == "y")}
-		{button href="tiki-list_submissions.php" class="btn btn-default" _text="{tr}View Submissions{/tr}"}
+		{button href="tiki-list_submissions.php" _text="{tr}View Submissions{/tr}"}
 	{/if}
 </div>
 
@@ -24,7 +24,6 @@
 <form name="checkform" method="get" action="{$smarty.server.PHP_SELF}">
 	<input type="hidden" name="maxRecords" value="{$maxRecords|escape}">
 	{assign var=numbercol value=1}
-    <div class="table-responsive">
 	<table class="table normal">
 		<tr>
 			<th class="auto">
@@ -106,7 +105,7 @@
 			{/if}
 
 			<tr class="{cycle}">
-				<td class="checkbox-cell">
+				<td class="checkbox">
 					<input type="checkbox" name="checked[]" value="{$listpages[changes].articleId|escape}" {if $listpages[changes].checked eq 'y'}checked="checked" {/if}>
 				</td>
 				{if $prefs.art_list_title eq 'y'}
@@ -189,13 +188,12 @@
 								<option value="remove_articles" >{tr}Remove{/tr}</option>
 							</select>
 						</label>
-						<input type="submit" class="btn btn-default btn-sm" value="{tr}OK{/tr}">
+						<input type="submit" class="btn btn-default" value="{tr}OK{/tr}">
 					</p>
 				{/if}
 			</td>
 		</tr>
 	</table>
-    </div>
 
 	{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
 </form>

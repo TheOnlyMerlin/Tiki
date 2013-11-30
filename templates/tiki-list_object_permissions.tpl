@@ -1,7 +1,7 @@
 {title}{tr}Object Permissions List{/tr}{/title}
 
-<div class="t_navbar">
-{button href="tiki-objectpermissions.php" class="btn btn-default" _text="{tr}Manage Permissions{/tr}"}
+<div class="navbar">
+{button href="tiki-objectpermissions.php" _text="{tr}Manage Permissions{/tr}"}
 </div>
 
 {if !empty($feedbacks)}
@@ -24,7 +24,7 @@
 				{/foreach}
 		</select>
 	  </div>
-	  <div style="float:left;"><input type="submit" class="btn btn-default btn-sm" name="filter" value="{tr}Filter{/tr}"></div>
+	  <div style="float:left;"><input type="submit" class="btn btn-default" name="filter" value="{tr}Filter{/tr}"></div>
 	  </div>
 </form>
 
@@ -44,29 +44,27 @@
 					<div class="tabs-1">
 					<form method="post">
 					{foreach from=$filterGroup item=f}<input type="hidden" name="filterGroup[]" value="{$f|escape}">{/foreach}
-                    <div class="table-responsive">
 					<table class="table normal">
 					<tr>
-						<th class="checkbox-cell">{select_all checkbox_names='groupPerm[]'}</th>
+						<th class="checkbox">{select_all checkbox_names='groupPerm[]'}</th>
 						<th>{tr}Group{/tr}</th>
 						<th>{tr}Permission{/tr}</th>
 					</tr>
 					{cycle values="even,odd" print=false}
 					{foreach from=$content.default item=default}
 						<tr class="{cycle}">
-							<td class="checkbox-cell"><input type="checkbox" name="groupPerm[]" value='{$default|json_encode|escape}'></td>
+							<td class="checkbox"><input type="checkbox" name="groupPerm[]" value='{$default|json_encode|escape}'></td>
 							<td class="text">{$default.group|escape}</td>
 							<td class="text">{$default.perm|escape}</td>
 						</tr>
 					{/foreach}
 					</table>
-                    </div>
 					{if count($content.default)}
 						<div style="float:left">{tr}Perform action with checked:{/tr}</div>
 						<div style="float:left">
 						{icon _id='cross' _tag='input_image' _confirm="{tr}Delete the selected permissions?{/tr}" name='delsel' alt="{tr}Delete the selected permissions{/tr}"}
 							 <br>						
-							 <input type="text" name="toGroup"><input type="submit" class="btn btn-default btn-sm" name="dupsel" value="{tr}Duplicate the selected permissions on this group{/tr}">
+							 <input type="text" name="toGroup"><input type="submit" class="btn btn-default" name="dupsel" value="{tr}Duplicate the selected permissions on this group{/tr}">
 	  					</div>
 					{/if}
 					</form>
@@ -78,10 +76,9 @@
 					{remarksbox}{tr}If an object is not listed in this section nor in the Category Permissions section, then only the global permissions apply to it.{/tr}{/remarksbox}
 					<form method="post">
 					{foreach from=$filterGroup item=f}<input type="hidden" name="filterGroup[]" value="{$f|escape}">{/foreach}
-                    <div class="table-responsive">
 					<table class="table normal">
 					<tr>
-						<th class="checkbox-cell">{select_all checkbox_names='objectPerm[]'}</th>
+						<th class="checkbox">{select_all checkbox_names='objectPerm[]'}</th>
 						<th>{tr}Object{/tr}</th>
 						<th>{tr}Group{/tr}</th>
 						<th>{tr}Permission{/tr}</th>
@@ -91,7 +88,7 @@
 						{if !empty($object.special)}
 							{foreach from=$object.special item=special}
 								<tr class="{cycle}">
-									<td class="checkbox-cell"><input type="checkbox" name="objectPerm[]" value='{$special|json_encode|escape}'></td>
+									<td class="checkbox"><input type="checkbox" name="objectPerm[]" value='{$special|json_encode|escape}'></td>
 									<td class="text">{$special.objectName|escape}</td>
 									<td class="text">{$special.group|escape}</td>
 									<td class="text">{$special.perm|escape}</td>
@@ -108,13 +105,12 @@
 						{/if}
 					{/foreach}
 					</table>
-                    </div>
 					{if count($content.objects)}
 						<div style="float:left">{tr}Perform action with checked:{/tr}</div>
 						<div style="float:left">
 							 {icon _id='cross' _tag='input_image' _confirm="{tr}Delete the selected permissions?{/tr}" name='delsel' alt="{tr}Delete the selected permissions{/tr}" style='vertical-align: middle;'}
 							 <br>						
-							 <input type="text" name="toGroup"><input type="submit" class="btn btn-default btn-sm" name="dupsel" value="{tr}Duplicate the selected permissions on this group{/tr}">
+							 <input type="text" name="toGroup"><input type="submit" class="btn btn-default" name="dupsel" value="{tr}Duplicate the selected permissions on this group{/tr}">
 						</div>
 					{/if}
 					</form>
@@ -125,7 +121,6 @@
 					<div class="tabs-3">
 					{remarksbox}{tr}If an object is not listed in this section nor in the Object Permissions section, then only the global permissions apply to it.{/tr}{/remarksbox}
 					<form method="post">
-                    <div class="table-responsive">
 					<table class="table normal">
 					<tr>
 						<th>{tr}Object{/tr}</th>
@@ -153,7 +148,6 @@
 						{/if}
 					{/foreach}
 					</table>
-                    </div>
 					</form>
 					</div>
 				{/tab}

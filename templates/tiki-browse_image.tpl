@@ -11,10 +11,10 @@
 
 	{title}{tr}Browsing Image:{/tr} {$name}{/title}
 <div id="{$rootid}browse_image">
-	<div class="t_navbar">
-		{button href="tiki-browse_gallery.php?galleryId=$galleryId&amp;offset=$offset" class="btn btn-default" _text="{tr}Return to Gallery{/tr}"}
+	<div class="navbar">
+		{button href="tiki-browse_gallery.php?galleryId=$galleryId&amp;offset=$offset" _text="{tr}Return to Gallery{/tr}"}
 		{if $tiki_p_admin_galleries eq 'y' or ($user and $user eq $owner)}
-			{button href="tiki-edit_image.php?galleryId=$galleryId&amp;edit=$imageId&amp;sort_mode=$sort_mode" class="btn btn-default" _text="{tr}Edit Image{/tr}"}
+			{button href="tiki-edit_image.php?galleryId=$galleryId&amp;edit=$imageId&amp;sort_mode=$sort_mode" _text="{tr}Edit Image{/tr}"}
 		{/if}
 	</div>
 {/if}
@@ -96,7 +96,6 @@
   
 {if $popup eq ""}
 	<br><br>
-    <div class="table-responsive">
 	<table class="table normal noslideshow">
 		<tr><td class="odd">{tr}Image Name:{/tr}</td><td class="odd">{$name}</td></tr>
 		<tr><td class="even">{tr}Created:{/tr}</td><td class="even">{$created|tiki_long_datetime}</td></tr>
@@ -126,15 +125,13 @@
 				      <option value="{$galleries[idx].id|escape}" {if $galleries[idx].id eq $galleryId}selected="selected"{/if}>{$galleries[idx].name}</option>
 				    {/section}
 					</select>
-					<input type="submit" class="btn btn-default btn-sm" name="move_image" value="{tr}Move{/tr}">
+					<input type="submit" class="btn btn-default" name="move_image" value="{tr}Move{/tr}">
 			  </form>
 			</td>
 		</tr>
 		{/if}
 	</table>
-    </div>
-	<br><br>
-    <div class="table-responsive">
+	<br><br>    
 	<table class="table normal noslideshow" style="font-size:small">
 		<tr>
 			<td class="even" style="border-bottom:0px" colspan="2">
@@ -191,7 +188,6 @@
 			</td>
 		</tr>
 	</table>
-    </div>
 {/if}  
 
 </div> {* id="{$rootid}browse_image" *}

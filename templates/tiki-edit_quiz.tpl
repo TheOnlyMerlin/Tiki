@@ -6,9 +6,9 @@
 
 {title help="Quiz"}{tr}Admin Quizzes{/tr}{/title}
 
-<div class="t_navbar">
-	{button href="tiki-list_quizzes.php" class="btn btn-default" _text="{tr}List Quizzes{/tr}"}
-	{button href="tiki-quiz_stats.php" class="btn btn-default" _text="{tr}Quiz Stats{/tr}"}
+<div class="navbar">
+	{button href="tiki-list_quizzes.php" _text="{tr}List Quizzes{/tr}"}
+	{button href="tiki-quiz_stats.php" _text="{tr}Quiz Stats{/tr}"}
 </div>
 
 {tabset}
@@ -17,7 +17,6 @@
 
 {include file='find.tpl'}
 
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		<th>
@@ -70,7 +69,6 @@
 		{norecords _colspan=7}
 	{/section}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
 
@@ -204,7 +202,7 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" class="btn btn-default btn-sm" name="save" value="{tr}Save{/tr}">
+				<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 			</td>
 		</tr>
 	</table>

@@ -3,7 +3,6 @@
 {if !empty($userGroups)}
 <h3>{tr}Groups you are in{/tr}</h3>
 {cycle values="odd,even" print=false}
-<div class="table-responsive">
 <table class="table normal">
 {foreach from=$userGroups key=gr item=type}
 	<tr class="{cycle}">
@@ -30,7 +29,6 @@
 	</tr>
 {/foreach}
 </table>
-</div>
 {/if}
 
 {if $showsubscribe ne 'n' && !empty($possibleGroups) && $subscribestyle eq 'dropdown'}
@@ -48,7 +46,6 @@
 {elseif $showsubscribe ne 'n' && !empty($possibleGroups) && $subscribestyle eq 'table'}
 <h3{if !empty($userGroups)} style="margin-top: 15px;"{/if}>{tr}Groups you can join{/tr}</h3>
 <form method="post">
-<div class="table-responsive">
 <table class="table normal">
 {foreach from=$possibleGroups item=gr}
 	<tr>
@@ -60,7 +57,6 @@
 	</tr>
 {/foreach}
 </table>
-</div>
-<input type="submit" class="btn btn-default btn-sm" value="{if !empty($subscribe)}{$subscribe|escape}{else}{tr}Subscribe to groups{/tr}{/if}">
+<input type="submit" class="btn btn-default" value="{if !empty($subscribe)}{$subscribe|escape}{else}{tr}Subscribe to groups{/tr}{/if}">
 </form>{/if}
 </div>

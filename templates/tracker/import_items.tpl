@@ -1,5 +1,5 @@
 {if $return}
-	<div class="t_navbar form-group">
+	<div class="navbar">
 		{include file="tracker_actions.tpl"}
 	</div>
 	{remarksbox type="note" title="{tr}Confirmation{/tr}"}
@@ -53,6 +53,6 @@
 	</label>
 	<div class="submit">
 		<input type="hidden" name="trackerId" value="{$trackerId|escape}">
-		<input type="submit" class="btn btn-default btn-sm" value="{tr}Import{/tr}">
+		<input type="submit" class="btn btn-default" value="{tr}Import{/tr}">
 	</div>
 </form>

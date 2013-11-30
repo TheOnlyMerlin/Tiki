@@ -15,7 +15,6 @@
 // WARNING: DO NOT COMMIT WITH TRUE!!!!
 $dieInsteadOfForwardingWithHeader = false;
 
-require_once('lib/debug/Tracer.php');
 
 $inputConfiguration = array(
 	array( 'staticKeyFilters' => array(
@@ -106,19 +105,6 @@ function execute_module_translation()
 	$out = $modlib->execute_module($module_reference);
 	$smarty->assign('content_of_update_translation_section', $out);
 }
-
-function possibly_set_pagedata_to_pretranslation_of_source_page()
-{
-    global $smarty, $multilinguallib, $editlib, $tracer;
-
-    if ($editlib->isNewTranslationMode())
-    {
-        $source_page = $_REQUEST['source_page'];
-        $possibly_pretranslated_content = $multilinguallib->partiallyPretranslateContentOfPage($source_page, $_REQUEST['lang']);
-        $smarty->assign('pagedata', $possibly_pretranslated_content);
-    }
-}
-
 
 $access->check_feature('feature_wiki');
 
@@ -1037,20 +1023,6 @@ if ($prefs['wiki_mandatory_edit_summary'] === 'y') {
 	);
 }
 
-if ($prefs['site_layout_per_object'] == 'y') {
-	$attributelib = TikiLib::lib('attribute');
-
-	if (isset($jitPost['object_layout'])) {
-		$attributelib->set_attribute('wiki page', $page, 'tiki.object.layout', $jitPost->object_layout->word());
-	}
-
-	$attributes = $attributelib->get_attributes('wiki page', $page);
-	$smarty->assign('object_layout', array(
-		'available' => TikiLib::lib('css')->list_layouts(),
-		'current' => isset($attributes['tiki.object.layout']) ? $attributes['tiki.object.layout'] : null,
-	));
-}
-
 if (
 				isset($_REQUEST["save"])
 		&& (strtolower($_REQUEST['page']) !== 'sandbox' || $tiki_p_admin === 'y')
@@ -1539,7 +1511,6 @@ if (($prefs['feature_wiki_templates'] === 'y' && $tiki_p_use_content_templates =
 		($prefs['feature_wiki_ratings'] === 'y' && $tiki_p_wiki_admin_ratings ==='y') ||
 		$prefs['feature_multilingual'] === 'y' ||
 		$prefs['namespace_enabled'] === 'y' ||
-		$prefs['site_layout_per_object'] === 'y' ||
 		! empty($prefs['geo_locate_wiki']) && $prefs['geo_locate_wiki'] === 'y') {
 
 	$smarty->assign('showPropertiesTab', 'y');
@@ -1552,8 +1523,6 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 $smarty->assign('showtags', 'n');
 $smarty->assign('qtnum', '1');
 $smarty->assign('qtcycle', '');
-
-possibly_set_pagedata_to_pretranslation_of_source_page();
 
 if ($need_lang) {
 	$smarty->display('tiki-choose_page_language.tpl');

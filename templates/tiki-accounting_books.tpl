@@ -1,6 +1,6 @@
 {* $Id$ *}
 {if !empty($errors)}
-	<div class="alert alert-warning">
+	<div class="simplebox highlight">
 		{icon _id=exclamation alt="{tr}Error{/tr}" style="vertical-align:middle" align="left"}
 		{foreach from=$errors item=m name=errors}
 			{$m}
@@ -10,7 +10,7 @@
 {/if}
 {tabset}
 {tab name="{tr}My books{/tr}"}
-<div id="booklist" class="table-responsive">
+<div id="booklist">
 	<table class="table normal">
 		<tr>
 			<th>{tr}Id{/tr}</th>
@@ -107,7 +107,7 @@
 			</div>
 		</div>
 	</fieldset>
-	<input type="submit" class="btn btn-default btn-sm" name="create" value="{tr}Create a new book{/tr}">
+	<input type="submit" class="btn btn-default" name="create" value="{tr}Create a new book{/tr}">
  </form>
 </div>
 {/tab}

@@ -1,9 +1,9 @@
 {* $Id$ *}
 
-<div class="t_navbar btn-group form-group">
-	{button href="tiki-admingroups.php" class="btn btn-default" _text="{tr}Admin Groups{/tr}"}
-	{button href="tiki-adminusers.php" class="btn btn-default" _text="{tr}Admin Users{/tr}"}
-	{button href="tiki-objectpermissions.php" class="btn btn-default" _text="{tr}Manage permissions{/tr}"}
+<div class="navbar">
+	{button href="tiki-admingroups.php" _text="{tr}Admin Groups{/tr}"}
+	{button href="tiki-adminusers.php" _text="{tr}Admin Users{/tr}"}
+	{button href="tiki-objectpermissions.php" _text="{tr}Manage permissions{/tr}"}
 </div>
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}
@@ -13,7 +13,7 @@
 
 <form class="admin" id="security" name="security" action="tiki-admin.php?page=security" method="post">
 	<div class="heading input_submit_container" style="text-align: right">
-		<input type="submit" class="btn btn-default btn-sm" name="security" value="{tr}Apply{/tr}" />
+		<input type="submit" class="btn btn-default" name="security" value="{tr}Apply{/tr}" />
 		<input type="reset" class="btn btn-warning" name="securityreset" value="{tr}Reset{/tr}" />
 	</div>
 
@@ -161,6 +161,6 @@
 {/tabset}	
 	
 	<div class="input_submit_container" style="margin-top: 5px; text-align: center">
-		<input type="submit" class="btn btn-default btn-sm" name="security" value="{tr}Apply{/tr}" />
+		<input type="submit" class="btn btn-default" name="security" value="{tr}Apply{/tr}" />
 	</div>
 </form>

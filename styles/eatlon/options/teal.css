@@ -10,14 +10,20 @@
 	Teal option adapted by jonny b jan 2011
 */
 
+/* Import the default layout properties files: */
+@import url("../../lite/lite.css");
+@import url("../../layout/layout.css");
+@import url("../../layout/design.css");
+
 /***** XHTML Elements (body tag here,
 			others follow Layout) *****/
 body {
 	background: #9DC4C4 url(teal/body_bg.gif) repeat-x;
 	font-family: arial, sans-serif;
 	color: #8f8f8f;
-	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-}
+	font: 76%/1.4em Verdana, Geneva, Arial, Helvetica, sans-serif}
+
+html>body {font-size: 76% !important}
 body.fullscreen {padding: 3em}
 
 /* next two: fixed-width: 960px */
@@ -34,6 +40,9 @@ body.fixed_width #fixedwidth {
 	margin-bottom:0;
 	margin-top: 0;
 }
+
+ /***** Layout (overrides layout.css;
+		also styling of page layout divs)  *****/
 
 /* Enable header and footer content to widen when middle has wide content. */
 body.fixed_width .fixedwidth .fixedwidth {
@@ -507,6 +516,11 @@ h3.box-title {
 
 /***** Tables, Tabs *****/
 /** Tables **/
+/*
+.admin tr td #page-bar {
+	margin-left: 5px;
+	margin-bottom: 0;
+	background: transparent}*/
 
 .wikitable td {
 	margin: 0;
@@ -535,6 +549,7 @@ td.even,
 * body th {font-size: 12px}
 
 /** Tabs **/
+/* reset what's in layout.css */
 
 .tabactive,
 .tabinactive,

@@ -2,21 +2,21 @@
 
 {title help="Forums" admpage="forums"}{tr}Admin Forums{/tr}{/title}
 
-<div class="t_navbar form-group">
+<div class="navbar">
 	{if $tiki_p_admin_forum eq 'y' && $forumId > 0 or (isset($dup_mode) and $dup_mode eq 'y')}
-		{button class="btn btn-default" href="?" _text="{tr}Create New Forum{/tr}"}
+		{button href="?" _text="{tr}Create New Forum{/tr}"}
 	{/if}
 	{if $tiki_p_admin_forum eq 'y' && (!isset($dup_mode) or $dup_mode ne 'y')}
-		{button class="btn btn-default" href="tiki-admin_forums.php?dup_mode=y" _text="{tr}Duplicate Forum{/tr}"}
+		{button href="tiki-admin_forums.php?dup_mode=y" _text="{tr}Duplicate Forum{/tr}"}
 	{/if}
 	{if $forumId > 0}
-		{button class="btn btn-default" href="tiki-view_forum.php?forumId=$forumId" _text="{tr}View this forum{/tr}"}
+		{button href="tiki-view_forum.php?forumId=$forumId" _text="{tr}View this forum{/tr}"}
 	{/if}
 	{if $tiki_p_admin_forum eq 'y'}
-		{button class="btn btn-default" href="tiki-forum_import.php" _text="{tr}Import forums{/tr}"}
+		{button href="tiki-forum_import.php" _text="{tr}Import forums{/tr}"}
 	{/if}
 	{if $tiki_p_forum_read eq 'y'}
-		{button class="btn btn-default" href="tiki-forums.php" _text="{tr}List forums{/tr}"}
+		{button href="tiki-forums.php" _text="{tr}List forums{/tr}"}
 	{/if}
 </div>
 
@@ -29,7 +29,6 @@
 {/if}
 
 <form action="#">
-    <div class="table-responsive">
 	<table class="table normal">
 		{assign var=numbercol value=8}
 		<tr>
@@ -102,8 +101,7 @@
 			{norecords _colspan=$numbercol}
 		{/section}
 	</table>
-	</div>
-
+	
 	{if $channels}
 		<div style="text-align:left">
 			<br>
@@ -114,7 +112,7 @@
 					<option value="delsel_x">{tr}Delete{/tr}</option>
 				{/if}
 			</select>
-			<input type="submit" class="btn btn-default btn-sm" name="batchaction" value="{tr}OK{/tr}">
+			<input type="submit" class="btn btn-default" name="batchaction" value="{tr}OK{/tr}">
 		</div>
 	{/if}
 </form>
@@ -507,7 +505,7 @@
 			{/if}
 			<tr>
 				<td>&nbsp;</td>
-				<td><input type="submit" class="btn btn-default btn-sm" name="save" value="{tr}Save{/tr}"></td>
+				<td><input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}"></td>
 			</tr>
 		</table>
 	</form>
@@ -544,7 +542,7 @@
 			</tr>
 			<tr>
 				<td></td>
-				<td><input type="submit" class="btn btn-default btn-sm" name="duplicate" value="{tr}Duplicate{/tr}"></td>
+				<td><input type="submit" class="btn btn-default" name="duplicate" value="{tr}Duplicate{/tr}"></td>
 			</tr>
 		</table>
 	</form>

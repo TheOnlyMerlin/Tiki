@@ -3,18 +3,18 @@
 {strip}
 {title help="Modules" admpage="module"}{tr}Admin Modules{/tr}{/title}
 
-<div class="t_navbar">
-	{button href="tiki-admin_modules.php?clear_cache=1" class="btn btn-default" _text="{tr}Clear Cache{/tr}"}
+<div class="navbar">
+	{button href="tiki-admin_modules.php?clear_cache=1" _text="{tr}Clear Cache{/tr}"}
 	{if $tiki_p_edit_menu eq 'y'}
-		{button href="tiki-admin_menus.php" class="btn btn-default" _text="{tr}Admin Menus{/tr}"}
+		{button href="tiki-admin_menus.php" _text="{tr}Admin Menus{/tr}"}
 	{/if}
 	{if empty($smarty.request.show_hidden_modules)}
-		{button show_hidden_modules="y" class="btn btn-default" _text="{tr}Show hidden modules{/tr}"}
+		{button show_hidden_modules="y" _text="{tr}Show hidden modules{/tr}"}
 	{else}
-		{button show_hidden_modules="" class="btn btn-default" _text="{tr}Hide hidden modules{/tr}"}
+		{button show_hidden_modules="" _text="{tr}Hide hidden modules{/tr}"}
 	{/if}
-	{button href="./" class="btn btn-default" _text="{tr}Exit Modules{/tr}"}
-	{button save_modules="y" _text="{tr}Save{/tr}" _type="primary" _class="hidden" _id="save_modules" _ajax="n"}
+	{button href="./" _text="{tr}Exit Modules{/tr}"}
+	{button save_modules="y" _text="{tr}Save{/tr}" _style="display:none;" _id="save_modules" _ajax="n"}
 </div>
 
 {if !empty($missing_params)}
@@ -58,7 +58,7 @@
 		{tabset}
 		{foreach from=$module_zone_list key=zone_initial item=zone_info}
 			{tab name=$zone_info.name|capitalize}
-				<div id="{$zone_info.id}_modules" class="table-responsive">
+				<div id="{$zone_info.id}_modules">
 					<table class="table normal" id="assigned_zone_{$zone_initial}">
 						<tr>
 							<th>{tr}Name{/tr}</th>
@@ -127,7 +127,7 @@
 					{include file='admin_modules_form.tpl'}
 				{if empty($assign_name)}
 					<div class="input_submit_container">
-						<input type="submit" class="btn btn-default btn-sm" name="preview" value="{tr}Module Options{/tr}" onclick="needToConfirm=false;">
+						<input type="submit" class="btn btn-default" name="preview" value="{tr}Module Options{/tr}" onclick="needToConfirm=false;">
 					</div>
 				{else}
 					{jq}$("#module_params").tabs();{/jq}
@@ -144,7 +144,6 @@
 		</legend>
 	{/if}
 	<h2>{tr}Custom Modules{/tr}</h2>
-    <div class="table-responsive">
 	<table class="table normal">
 		<tr>
 			<th>{tr}Name{/tr}</th>
@@ -166,7 +165,6 @@
          {norecords _colspan=3}
 		{/section}
 	</table>
-    </div>
 	<br>
 	{if $um_name eq ''}
 		<h2>{tr}Create new custom module{/tr}</h2>
@@ -352,7 +350,7 @@
 					<a name="editcreate"></a>
 					{textarea name='um_data' id='um_data' rows="6" cols="80" _toolbars='y' _previewConfirmExit='n' _wysiwyg="n"}{$um_data}{/textarea}
 					<br>
-					<input type="submit" class="btn btn-default btn-sm" name="um_update" value="{if empty($um_name)}{tr}Create{/tr}{else}{tr}Save{/tr}{/if}" onclick="needToConfirm=false">
+					<input type="submit" class="btn btn-default" name="um_update" value="{if empty($um_name)}{tr}Create{/tr}{else}{tr}Save{/tr}{/if}" onclick="needToConfirm=false">
 				</td>
 			</tr>
 		</table>

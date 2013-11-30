@@ -5,8 +5,8 @@
 {tabset}
 {tab name="{tr}List{/tr}"}
 {if $tiki_p_edit_sheet eq 'y'}
-	<div class="t_navbar">
-		{button href="tiki-sheets.php?edit_mode=1&amp;sheetId=0" class="btn btn-default" _text="{tr}Create New Sheet{/tr}"}
+	<div class="navbar">
+		{button href="tiki-sheets.php?edit_mode=1&amp;sheetId=0" _text="{tr}Create New Sheet{/tr}"}
 	</div>
 {/if}
 <h2>{tr}Spreadsheet{/tr}</h2>
@@ -14,7 +14,6 @@
   {include file='find.tpl'}
 {/if}
 
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		<th>{self_link _sort_arg='sort_mode' _sort_field='title'}{tr}Title{/tr}{/self_link}</th>
@@ -34,7 +33,6 @@
 		{norecords _colspan=6}
 	{/foreach}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
 {/tab}
@@ -88,7 +86,7 @@
 						<em>{tr}Makes this sheet a "child" sheet of a multi-sheet set{/tr}</em>
 					</td>
 				</tr>
-				<tr><td>&nbsp;</td><td><input type="submit" class="btn btn-default btn-sm" value="{tr}Save{/tr}" name="edit"></td></tr>
+				<tr><td>&nbsp;</td><td><input type="submit" class="btn btn-default" value="{tr}Save{/tr}" name="edit"></td></tr>
 			</table>
 		</form>
 		

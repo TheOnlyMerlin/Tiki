@@ -1,9 +1,9 @@
 {* $Id$ *}
 {title help="Quiz"}{tr}Stats for quizzes{/tr}{/title}
 
-<div class="t_navbar form-group">
-	{button href="tiki-list_quizzes.php" class="btn btn-default" _text="{tr}List Quizzes{/tr}"}
-	{button href="tiki-edit_quiz.php" class="btn btn-default" _text="{tr}Admin Quizzes{/tr}"}
+<div class="navbar">
+	{button href="tiki-list_quizzes.php" _text="{tr}List Quizzes{/tr}"}
+	{button href="tiki-edit_quiz.php" _text="{tr}Admin Quizzes{/tr}"}
 </div>
 
 <h2>{tr}Quizzes{/tr}</h2>
@@ -11,7 +11,6 @@
 	{include file='find.tpl'}
 {/if}
 
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		<th>
@@ -41,6 +40,5 @@
 		{norecords _colspan=4}
 	{/section}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}

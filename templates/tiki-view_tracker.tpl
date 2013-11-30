@@ -1,23 +1,23 @@
 {* $Id$ *}
 {title url="tiki-view_tracker.php?trackerId=$trackerId" adm="trackers"}{tr}Tracker:{/tr} {$tracker_info.name}{/title}
 
-<div class="t_navbar">
+<div class="navbar">
 	 {if $prefs.feature_group_watches eq 'y' and ( $tiki_p_admin_users eq 'y' or $tiki_p_admin eq 'y' )}
-	 	 <a class="btn btn-default" href="tiki-object_watches.php?objectId={$trackerId|escape:"url"}&amp;watch_event=tracker_modified&amp;objectType=tracker&amp;objectName={$tracker_info.name|escape:"url"}&amp;objectHref={'tiki-view_tracker.php?trackerId='|cat:$trackerId|escape:"url"}" class="icon">{icon _id='eye_group' alt="{tr}Group Monitor{/tr}" align='right' hspace="1"}</a>
+	 	 <a href="tiki-object_watches.php?objectId={$trackerId|escape:"url"}&amp;watch_event=tracker_modified&amp;objectType=tracker&amp;objectName={$tracker_info.name|escape:"url"}&amp;objectHref={'tiki-view_tracker.php?trackerId='|cat:$trackerId|escape:"url"}" class="icon">{icon _id='eye_group' alt="{tr}Group Monitor{/tr}" align='right' hspace="1"}</a>
 	{/if}
 	{if $prefs.feature_user_watches eq 'y' and $tiki_p_watch_trackers eq 'y' and $user}
 		{if $user_watching_tracker ne 'y'}
-			<a class="btn btn-default" href="tiki-view_tracker.php?trackerId={$trackerId}&amp;watch=add" title="{tr}Monitor{/tr}">{icon _id='eye' align="right" hspace="1" alt="{tr}Monitor{/tr}"}</a>
+			<a href="tiki-view_tracker.php?trackerId={$trackerId}&amp;watch=add" title="{tr}Monitor{/tr}">{icon _id='eye' align="right" hspace="1" alt="{tr}Monitor{/tr}"}</a>
 		{else}
-			<a class="btn btn-default" href="tiki-view_tracker.php?trackerId={$trackerId}&amp;watch=stop" title="{tr}Stop Monitor{/tr}">{icon _id='no_eye' align="right" hspace="1" alt="{tr}Stop Monitor{/tr}"}</a>
+			<a href="tiki-view_tracker.php?trackerId={$trackerId}&amp;watch=stop" title="{tr}Stop Monitor{/tr}">{icon _id='no_eye' align="right" hspace="1" alt="{tr}Stop Monitor{/tr}"}</a>
 		{/if}
 	{/if}
 
 	{if $prefs.feed_tracker eq "y"}
-		<a class="btn btn-default" href="tiki-tracker_rss.php?trackerId={$trackerId}">{icon _id='feed' align="right" hspace="1" alt="{tr}RSS feed{/tr}"}</a>
+		<a href="tiki-tracker_rss.php?trackerId={$trackerId}">{icon _id='feed' align="right" hspace="1" alt="{tr}RSS feed{/tr}"}</a>
 	{/if}
 	{if $tiki_p_admin_trackers eq "y"}
-		<a class="btn btn-default" title="{tr}Import{/tr}" class="import dialog" href="{service controller=tracker action=import_items trackerId=$trackerId}">{icon _id='upload' align="right" alt="{tr}Import{/tr}"}</a>
+		<a title="{tr}Import{/tr}" class="import dialog" href="{service controller=tracker action=import_items trackerId=$trackerId}">{icon _id='upload' align="right" alt="{tr}Import{/tr}"}</a>
 		{jq}
 			$('.import.dialog').click(function () {
 				var link = this;
@@ -34,7 +34,7 @@
 		{/jq}
 	{/if}
 	{if $tiki_p_export_tracker eq "y"}
-		<a class="btn btn-default" title="{tr}Export{/tr}" class="export dialog" href="{service controller=tracker action=export trackerId=$trackerId}">{icon _id='disk' align="right" alt="{tr}Export{/tr}"}</a>
+		<a title="{tr}Export{/tr}" class="export dialog" href="{service controller=tracker action=export trackerId=$trackerId}">{icon _id='disk' align="right" alt="{tr}Export{/tr}"}</a>
 		{jq}
 			$('.export.dialog').click(function () {
 				var link = this;
@@ -96,7 +96,6 @@
 			{if $items|@count ge '1'}
 				{* ------- list headings --- *}
 				<form name="checkform" method="post" action="{$smarty.server.PHP_SELF}">
-                    <div class="table-responsive">
 					<table class="table normal">
 						<tr>
 							{if $tracker_info.showStatus eq 'y' or ($tracker_info.showStatusAdminOnly eq 'y' and $tiki_p_admin_trackers eq 'y')}
@@ -148,7 +147,7 @@
 									</td>
 								{/if}
 								{if $tiki_p_admin_trackers eq 'y'}
-									<td class="checkbox-cell">
+									<td class="checkbox">
 								  		<input type="checkbox" name="action[]" value='{$items[user].itemId}' style="border:1px;font-size:80%;">
 									</td>
 								{/if}
@@ -194,7 +193,6 @@
 							{assign var=itemoff value=$itemoff+1}
 						{/section}
 					</table>
-                    </div>
 					
 					{if $tiki_p_admin_trackers eq 'y'}
 						<div style="text-align:left">
@@ -209,7 +207,7 @@
 								{/if}
 							</select>
 							<input type="hidden" name="trackerId" value="{$trackerId}">
-							<input type="submit" class="btn btn-default btn-sm" name="act" value="{tr}OK{/tr}">
+							<input type="submit" class="btn btn-default" name="act" value="{tr}OK{/tr}">
 						</div>
 					{/if}
 				</form>
@@ -287,7 +285,7 @@
 			<tr>
 				<td class="formlabel">&nbsp;</td>
 				<td class="formcontent">
-					<input type="submit" class="btn btn-default btn-sm" name="save" value="{tr}Save{/tr}" onclick="needToConfirm = false;">
+					<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}" onclick="needToConfirm = false;">
 					<input type="radio" name="viewitem" value="view" /> {tr}View inserted item{/tr}
 					{* --------------------------- to continue inserting items after saving --------- *}
 					<input type="radio" name="viewitem" value="new" checked="checked"> {tr}Insert new item{/tr}
@@ -308,13 +306,13 @@
 			</p>
 			{permission name=tiki_p_admin_trackers}
 				<form class="sync-refresh" method="post" action="{service controller=tracker_sync action=sync_meta trackerId=$trackerId}">
-					<p><input type="submit" class="btn btn-default btn-sm" value="{tr}Reload field definitions{/tr}"></p>
+					<p><input type="submit" class="btn btn-default" value="{tr}Reload field definitions{/tr}"></p>
 				</form>
 				<form class="sync-refresh" method="post" action="{service controller=tracker_sync action=sync_new trackerId=$trackerId}">
 					<p>{tr}Items added locally{/tr}</p>
 					<ul class="load-items items">
 					</ul>
-					<p><input type="submit" class="btn btn-default btn-sm" value="{tr}Push new items{/tr}"></p>
+					<p><input type="submit" class="btn btn-default" value="{tr}Push new items{/tr}"></p>
 				</form>
 				<form class="sync-refresh" method="post" action="{service controller=tracker_sync action=sync_edit trackerId=$trackerId}">
 					<div class="item-block">
@@ -328,7 +326,7 @@
 						</ul>
 					</div>
 					<p>{tr}On push, local items will be removed until data reload.{/tr}</p>
-					<p><input type="submit" class="btn btn-default btn-sm" value="{tr}Push local changes{/tr}"></p>
+					<p><input type="submit" class="btn btn-default" value="{tr}Push local changes{/tr}"></p>
 				</form>
 				<form class="sync-refresh" method="post" action="{service controller=tracker_sync action=sync_refresh trackerId=$trackerId}">
 					{if $tracker_sync.modified}
@@ -348,7 +346,7 @@
 					{/if}
 					<div class="submit">
 						<input type="hidden" name="confirm" value="1">
-						<input type="submit" class="btn btn-default btn-sm" name="submit" value="{tr}Reload data from source{/tr}">
+						<input type="submit" class="btn btn-default" name="submit" value="{tr}Reload data from source{/tr}">
 					</div>
 				</form>
 				{jq}

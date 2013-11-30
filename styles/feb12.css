@@ -2,11 +2,13 @@
  * See http://themes.tikwiki.org for more information. -- */
 
 /* import default layout and styles: */
+@import url("lite/lite.css");
+@import url("layout/layout.css");
 @import url("layout/design.css");
 
 /* XHTML Elements */
 body {
-	font-family: 'Trebuchet MS', sans-serif;
+	font: normal 75% 'Trebuchet MS', sans-serif;
 	line-height: 1.5;
 	color: #333;
 	background: #fff;
@@ -235,12 +237,24 @@ ul span, ol span {
 	padding: 1em;
 }
 
-#col2 {
+#c1c2 #col2 {
+	width: 240px;
 	overflow: visible;
 	background: #A8CCE2 url(feb12/columnbg.jpg) repeat-x;
 }
 
 #c1c2 #col2 .content {
+	padding: 1em;
+}
+
+#col3 {
+	margin-left: -240px;
+	width: 240px;
+	text-align: left;
+}
+
+#col3 .content {
+	margin: 0;
 	padding: 1em;
 }
 
@@ -370,7 +384,7 @@ body.fixed_width .fixedwidth .fixedwidth {
 }
 
 /* tiki-top_bar.tpl - menu and search */
-#topbar_modules .navbar-default {
+#tiki-top {
 	background: url(feb12/header.jpg) repeat-x;
 	color: #F5F5F5;
 	height: 34px;
@@ -378,14 +392,8 @@ body.fixed_width .fixedwidth .fixedwidth {
 	font-size: 14px;
 }
 
-#topbar_modules a {
+#tiki-top a {
 	color: #F5F5F5;
-}
-
-.navbar-collapse {
-	border: none;
-	padding-left: 0;
-	padding-right: 0;
 }
 
 #topbar_modules .box-search {
@@ -719,6 +727,7 @@ tr.diffheader {
 }
 
 /** Tabs **/
+/* reset what's in layout.css */
 
 .tabactive,
 .tabinactive,

@@ -33,7 +33,7 @@
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
-			<td><input type="submit" class="btn btn-default btn-sm" name="save" value="{tr}Save{/tr}"></td>
+			<td><input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}"></td>
 		</tr>
 	</table>
 </form>
@@ -42,10 +42,9 @@
 {include file='find.tpl'}
 
 <form action="tiki-usermenu.php" method="post">
-    <div class="table-responsive">
 	<table class="table normal">
 		<tr>
-			<th><input type="submit" class="btn btn-warning btn-sm" name="delete" value="x " title="{tr}Delete Selected{/tr}"></th>
+			<th><input type="submit" class="btn btn-warning" name="delete" value="x " title="{tr}Delete Selected{/tr}"></th>
 			<th><a href="tiki-usermenu.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'position_desc'}position_asc{else}position_desc{/if}">{tr}Pos{/tr}</a></th>
 			<th><a href="tiki-usermenu.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></th>
 			<th><a href="tiki-usermenu.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'url_desc'}url_asc{else}url_desc{/if}">{tr}URL{/tr}</a></th>
@@ -54,7 +53,7 @@
 		{cycle values="odd,even" print=false}
 		{section name=user loop=$channels}
 			<tr class="{cycle}">
-				<td class="checkbox-cell">
+				<td class="checkbox">
 					<input type="checkbox" name="menu[{$channels[user].menuId}]">
 				</td>
 				<td class="text">{$channels[user].position}</td>
@@ -70,7 +69,6 @@
 			{norecords _colspan=5}
 		{/section}
 	</table>
-    </div<
 </form>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}

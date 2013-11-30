@@ -15,7 +15,7 @@
 		{/section}
 	
   </select>
-  <input type="submit" class="btn btn-default btn-sm" name="go" value="{tr}Go{/tr}">
+  <input type="submit" class="btn btn-default" name="go" value="{tr}Go{/tr}">
 </form>
 {* Dislay a form to add or edit a site *}
 <h2>{if $siteId}{tr}Edit a site{/tr}{else}{tr}Add a Site{/tr}{/if}</h2>
@@ -71,7 +71,7 @@
     </tr>
     <tr>
       <td>&nbsp;</td>
-      <td><input type="submit" class="btn btn-default btn-sm" name="save" value="{tr}Save{/tr}"></td>
+      <td><input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}"></td>
     </tr>
   </table>
 </form>
@@ -79,7 +79,6 @@
 {* Display the list of categories (items) using pagination *}
 {* Links to edit, remove, browse the categories *}
 <form action="tiki-directory_admin_sites.php" method="post">
-  <div class="table-responsive">
   <table class="table normal">
     <tr>
       <th> </th>
@@ -95,7 +94,7 @@
     {cycle values="odd,even" print=false}
     {section name=user loop=$items}
     <tr class="{cycle advance=false}">
-      <td class="checkbox-cell"><input type="checkbox" name="remove[]" value="{$items[user].siteId}"></td>
+      <td class="checkbox"><input type="checkbox" name="remove[]" value="{$items[user].siteId}"></td>
       <td class="text">{$items[user].name|escape}</td>
       <td class="text"><a href="{$items[user].url}" target="_new">{$items[user].url}</a></td>
       {if $prefs.directory_country_flag eq 'y'}
@@ -121,10 +120,9 @@
 		{/if}
     {/section}
   </table>
-  </div>
   {if $items}
   {tr}Perform action with selected:{/tr}
-  <input type="submit" class="btn btn-default btn-sm" name="groupdel" value=" {tr}Delete{/tr} ">
+  <input type="submit" class="btn btn-default" name="groupdel" value=" {tr}Delete{/tr} ">
   {/if}
 </form>
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links} 

@@ -1,7 +1,7 @@
 {title help="Html+Pages"}{tr}Admin HTML pages{/tr}{/title}
 
 {if $pageName ne ''}
-	<div class="navt_bar">
+	<div class="navbar">
 		{button _text="{tr}Create new HTML page{/tr}"}
 	</div>
 {/if}
@@ -70,8 +70,8 @@
 		<tr>
 			<td></td>
 			<td>
-				<input type="submit" class="btn btn-default btn-sm" name="preview" value="{tr}Preview{/tr}">
-				<input type="submit" class="btn btn-default btn-sm" name="save" value="{tr}Save{/tr}">
+				<input type="submit" class="btn btn-default" name="preview" value="{tr}Preview{/tr}">
+				<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 			</td>
 		</tr>
 	</table>
@@ -82,7 +82,6 @@
 {if $channels}
 	{include file='find.tpl'}
 {/if}
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		<th>
@@ -117,6 +116,5 @@
 		{norecords _colspan=4}
 	{/section}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}

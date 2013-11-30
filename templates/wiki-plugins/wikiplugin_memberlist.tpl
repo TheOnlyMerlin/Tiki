@@ -6,7 +6,7 @@
 				{tab name="{$groupName|escape}"}
 					<div class="group">
 						{if !empty($user) and $prefs.feature_user_watches eq 'y'}
-							<div class="pull-right">
+							<div class="floatright">
 								{if not $groupData.isWatching}
 									{self_link watch=$groupName}
 										{icon _id='eye' alt="{tr}Group is NOT being monitored. Click icon to START monitoring.{/tr}"}
@@ -72,7 +72,7 @@
 		{/tabset}
 	</div>
 	{if $can_apply}
-		<input type="submit" class="btn btn-default btn-sm" value="{tr}Apply{/tr}">
+		<input type="submit" class="btn btn-default" value="{tr}Apply{/tr}">
 	{/if}
 </form>
 {jq}

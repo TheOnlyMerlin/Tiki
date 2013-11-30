@@ -1,10 +1,10 @@
 {* $Id$ *}
 <form action="tiki-admin.php?page=look" id="look" name="look" class="labelColumns" onreset="return(confirm("{tr}Cancel Edit{/tr}"))" class="admin" method="post">
-<div class="row">
-<div class="btn-group pull-right form-group">
-		<input type="submit" class="btn btn-default btn-sm" name="looksetup" value="{tr}Apply{/tr}" />
-		<input type="reset" class="btn btn-danger btn-sm" name="looksetupreset" value="{tr}Reset{/tr}" />
-</div></div>
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" class="btn btn-default" name="looksetup" value="{tr}Apply{/tr}" />
+		<input type="reset" class="btn btn-warning" name="looksetupreset" value="{tr}Reset{/tr}" />
+	</div>
+
 	{tabset name="admin_look"}
 		{tab name="{tr}Theme{/tr}"}
 
@@ -18,13 +18,12 @@
 					{preference name=style_option}
 
 					{preference name=site_layout}
-					{preference name=site_layout_per_object}
 
 					{preference name=style_admin}
 					{preference name=style_admin_option}
 
 					{if $prefs.javascript_enabled eq 'n' or $prefs.feature_jquery eq 'n'}
-						<input type="submit" class="btn btn-default btn-sm" name="changestyle" value="{tr}Go{/tr}" />
+						<input type="submit" class="btn btn-default" name="changestyle" value="{tr}Go{/tr}" />
 					{/if}
 				</div>
 			</div>
@@ -155,7 +154,7 @@
 
 		{tab name="{tr}UI Effects{/tr}"}
 			<div class="adminoptionbox">
-				<fieldset class="table">
+				<fieldset class="admin">
 					<legend>{tr}Standard UI effects{/tr}</legend>
 					{preference name=jquery_effect}
 					{preference name=jquery_effect_speed}
@@ -164,7 +163,7 @@
 			</div>
 
 			<div class="adminoptionbox">
-				<fieldset class="table">
+				<fieldset class="admin">
 					<legend>{tr}Tab UI effects{/tr}</legend>
 					{preference name=jquery_effect_tabs}
 					{preference name=jquery_effect_tabs_speed}
@@ -180,7 +179,6 @@
 							{preference name=jquery_colorbox_theme}
 						</div>
 					{preference name=feature_jscalendar}
-                    {preference name=feature_hidden_links}
 				</div>
 			</fieldset>
 		{/tab}
@@ -195,8 +193,8 @@
 						<div  class="adminoptionboxchild" id="themegenerator_feature_childcontainer">
 
 							<input type="text" name="tg_edit_theme_name" value="{$tg_edit_theme_name|escape}"{if !empty($prefs.themegenerator_theme)} style="display:none;"{/if} />
-							<input type="submit" class="btn btn-default btn-sm" name="tg_new_theme" value="{tr}New{/tr}"{if !empty($prefs.themegenerator_theme)} style="display:none;"{/if} />
-							<input type="submit" class="btn btn-default btn-sm" name="tg_delete_theme" value="{tr}Delete{/tr}"{if empty($prefs.themegenerator_theme)} style="display:none;"{/if} />
+							<input type="submit" class="btn btn-default" name="tg_new_theme" value="{tr}New{/tr}"{if !empty($prefs.themegenerator_theme)} style="display:none;"{/if} />
+							<input type="submit" class="btn btn-default" name="tg_delete_theme" value="{tr}Delete{/tr}"{if empty($prefs.themegenerator_theme)} style="display:none;"{/if} />
 							{jq}$("select[name=themegenerator_theme]").change(function(){
 	if ($(this)[0].selectedIndex === 0) {
 		$("input[name=tg_edit_theme_name]").keyup(function(e){
@@ -219,7 +217,7 @@
 							<div id="themegenerator_container">
 								{include file="themegen.tpl"}
 								<div class="input_submit_container clear" style="text-align: center">
-									<input type="submit" class="btn btn-default btn-sm" name="tg_preview" value="{tr}Preview Theme{/tr}">
+									<input type="submit" class="btn btn-default" name="tg_preview" value="{tr}Preview Theme{/tr}">
 								</div>
 							</div>
 							{if $prefs.themegenerator_feature eq 'y'}
@@ -300,7 +298,7 @@
 			</div>
 
 			<div class="adminoptionbox">
-				<fieldset class="table">
+				<fieldset class="admin">
 					<legend>{tr}Context Menus{/tr} (<em>{tr}Currently used in File Galleries only{/tr}.</em>)</legend>
 					{preference name=use_context_menu_icon}
 					{preference name=use_context_menu_text}
@@ -331,6 +329,6 @@
 	{/tabset}
 
 	<div class="input_submit_container clear" style="text-align: center">
-		<input type="submit" class="btn btn-default btn-sm" name="looksetup" value="{tr}Apply{/tr}" />
+		<input type="submit" class="btn btn-default" name="looksetup" value="{tr}Apply{/tr}" />
 	</div>
 </form>

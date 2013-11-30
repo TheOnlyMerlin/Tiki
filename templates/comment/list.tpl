@@ -11,15 +11,11 @@
 {/if}
 
 {if $cant gt 0}
-	<ol class="media-list">
+	<ol>
 		{foreach from=$comments item=comment}
-			<li class="media comment {if $comment.archived eq 'y'}archived{/if} {if ! $parentId && $prefs.feature_wiki_paragraph_formatting eq 'y'}inline{/if}" data-comment-thread-id="{$comment.threadId|escape}">
+			<li class="comment {if $comment.archived eq 'y'}archived{/if} {if ! $parentId && $prefs.feature_wiki_paragraph_formatting eq 'y'}inline{/if}" data-comment-thread-id="{$comment.threadId|escape}">
 				<article>
-                    <div class="pull-left" href="#">
-                        <span class="avatar">{$comment.userName|avatarize}</span>
-                    </div>
-                    <div class="media-body">
-                        <div class="actions">
+					<div class="actions">
 						{if $allow_remove}
 							{self_link controller=comment action=remove threadId=$comment.threadId _icon=cross _class="confirm-prompt" _confirm="{tr}Are you sure you want to remove this comment?{/tr}"}{tr}Remove{/tr}{/self_link}
 						{/if}
@@ -37,45 +33,58 @@
 					</div>
 					{if $prefs.comments_notitle eq 'y'}
 						<div class="title notitle clearfix">
-							<h4 class="media-heading">{tr _0=$comment.userName|userlink}By %0{/tr}</h4>
+							<span class="avatar">{$comment.userName|avatarize}</span>
+							<h4>{tr _0=$comment.userName|userlink}By %0{/tr}</h4>
 							<div class="date">{tr _0=$comment.commentDate|tiki_short_datetime}On %0{/tr}</div>
 						</div>
 						{else}
 						<div class="title clearfix">
-							<h4 class="media-heading">{$comment.title}</h4>
+							<h4 class="title">{$comment.title}</h4>
+							<span class="avatar">{$comment.userName|avatarize}</span>
 							<div class="author_info">{tr _0=$comment.userName|userlink}Comment posted by %0{/tr}</div>
 							<div class="date">{tr _0=$comment.commentDate|tiki_short_datetime}On %0{/tr}</div>
 						</div>
 					{/if}
-                        {$comment.parsed}
+					<div class="body">
+						{$comment.parsed}
+					</div>
 
-                    </div>
+					<div class="buttons comment-form">
+						<table>
+							<tr>
+								{if $allow_post && $comment.locked neq 'y'}
+								<td>
+									<div class="button">{self_link controller=comment action=post type=$type objectId=$objectId parentId=$comment.threadId}{tr}Reply{/tr}{/self_link}</div>
+								</td>
+								{/if}
+								<td>
+								{if $comment.can_edit}
+									<div class="button">{self_link controller=comment action=edit threadId=$comment.threadId}{tr}Edit{/tr}{/self_link}</div>
+								{/if}
+								</td>
 
-					<div class="buttons comment-form btn-group">
-						{if $allow_post && $comment.locked neq 'y'}
-							{self_link _class='btn btn-default btn-sm' controller=comment action=post type=$type objectId=$objectId parentId=$comment.threadId}{tr}Reply{/tr}{/self_link}
-						{/if}
-						{if $comment.can_edit}
-							{self_link _class='btn btn-default btn-sm' controller=comment action=edit threadId=$comment.threadId}{tr}Edit{/tr}{/self_link}
-						{/if}
-						{if $prefs.wiki_comments_simple_ratings eq 'y'}
-							<form class="commentRatingForm" method="post">
-								{rating type="comment" id=$comment.threadId}
-								<input type="hidden" name="id" value="{$comment.threadId}" />
-								<input type="hidden" name="type" value="comment" />
-							</form>
-							{jq}
-var crf = $('form.commentRatingForm').submit(function() {
-	var vals = $(this).serialize();
-	$.modal(tr('Loading...'));
-	$.post($.service('rating', 'vote'), vals, function() {
-		$.modal();
-		$.notify(tr('Thanks for rating!'));
-	});
-	return false;
-});
-							{/jq}
-						{/if}
+								{if $prefs.wiki_comments_simple_ratings eq 'y'}
+								<td>
+									<form class="commentRatingForm" method="post" action="" style="float: right;">
+										{rating type="comment" id=$comment.threadId}
+										<input type="hidden" name="id" value="{$comment.threadId}" />
+										<input type="hidden" name="type" value="comment" />
+									</form>
+									{jq}
+										var crf = $('form.commentRatingForm').submit(function() {
+											var vals = $(this).serialize();
+											$.modal(tr('Loading...'));
+											$.post($.service('rating', 'vote'), vals, function() {
+												$.modal();
+												$.notify(tr('Thanks for rating!'));
+											});
+											return false;
+										});
+									{/jq}
+								</td>
+								{/if}
+							</tr>
+						</table>
 					</div>
 					{if $comment.replies_info.numReplies gt 0}
 						{include file='comment/list.tpl' comments=$comment.replies_info.replies cant=$comment.replies_info.numReplies parentId=$comment.threadId}

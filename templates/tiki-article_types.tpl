@@ -7,7 +7,6 @@
 		{section name=user loop=$types}
 			<h3>{tr}{$types[user].type|escape}{/tr}</h3>
 			<a class="link" href="tiki-view_articles.php?type={$types[user].type|escape:url}">{tr}View articles with this type{/tr}</a>
-            <div class="table-responsive">
 			<table class="table normal">
 				<tr>
 					<th>{tr}Articles{/tr}</th>
@@ -26,34 +25,34 @@
 				<input type="hidden" name="type_array[{$types[user].type|escape}]">
 				<tr class="{cycle}">
 					<td class="integer">{$types[user].article_cnt}</td>
-					<td class="checkbox-cell">
+					<td class="checkbox">
 						<input type="checkbox" name="use_ratings[{$types[user].type|escape}]" {if $types[user].use_ratings eq 'y'}checked="checked"{/if}>
 					</td>
-					<td class="checkbox-cell">
+					<td class="checkbox">
 						<input type="checkbox" name="show_pre_publ[{$types[user].type|escape}]" {if $types[user].show_pre_publ eq 'y'}checked="checked"{/if}>
 					</td>
-					<td class="checkbox-cell">
+					<td class="checkbox">
 						<input type="checkbox" name="show_post_expire[{$types[user].type|escape}]" {if $types[user].show_post_expire eq 'y'}checked="checked"{/if}>
 					</td>
-					<td class="checkbox-cell">
+					<td class="checkbox">
 						<input type="checkbox" name="heading_only[{$types[user].type|escape}]" {if $types[user].heading_only eq 'y'}checked="checked"{/if}>
 					</td>
-					<td class="checkbox-cell">
+					<td class="checkbox">
 						<input type="checkbox" name="allow_comments[{$types[user].type|escape}]" {if $types[user].allow_comments eq 'y'}checked="checked"{/if}>
 					</td>
-					<td class="checkbox-cell">
+					<td class="checkbox">
 						<input type="checkbox" name="comment_can_rate_article[{$types[user].type|escape}]" {if $types[user].comment_can_rate_article eq 'y'}checked="checked"{/if}>
 					</td>
-					<td class="checkbox-cell">
+					<td class="checkbox">
 						<input type="checkbox" name="show_image[{$types[user].type|escape}]" {if $types[user].show_image eq 'y'}checked="checked"{/if}>
 					</td>
-					<td class="checkbox-cell">
+					<td class="checkbox">
 						<input type="checkbox" name="show_avatar[{$types[user].type|escape}]" {if $types[user].show_avatar eq 'y'}checked="checked"{/if}>
 					</td>
-					<td class="checkbox-cell">
+					<td class="checkbox">
 						<input type="checkbox" name="show_author[{$types[user].type|escape}]" {if $types[user].show_author eq 'y'}checked="checked"{/if}>
 					</td>
-					<td class="checkbox-cell">
+					<td class="checkbox">
 						<input type="checkbox" name="show_pubdate[{$types[user].type|escape}]" {if $types[user].show_pubdate eq 'y'}checked="checked"{/if}>
 					</td>
 				</tr>
@@ -69,28 +68,28 @@
 					<th colspan="2">{tr}Action{/tr}</th>
 				</tr>
 				<tr class="{cycle}">
-					<td class="checkbox-cell">
+					<td class="checkbox">
 						<input type="checkbox" name="show_expdate[{$types[user].type|escape}]" {if $types[user].show_expdate eq 'y'}checked="checked"{/if}>
 					</td>
-					<td class="checkbox-cell">
+					<td class="checkbox">
 						<input type="checkbox" name="show_reads[{$types[user].type|escape}]" {if $types[user].show_reads eq 'y'}checked="checked"{/if}>
 					</td>
-					<td class="checkbox-cell">
+					<td class="checkbox">
 						<input type="checkbox" name="show_size[{$types[user].type|escape}]" {if $types[user].show_size eq 'y'}checked="checked"{/if}>
 					</td>
-					<td class="checkbox-cell">
+					<td class="checkbox">
 						<input type="checkbox" name="show_topline[{$types[user].type|escape}]" {if $types[user].show_topline eq 'y'}checked="checked"{/if}>
 					</td>
-					<td class="checkbox-cell">
+					<td class="checkbox">
 						<input type="checkbox" name="show_subtitle[{$types[user].type|escape}]" {if $types[user].show_subtitle eq 'y'}checked="checked"{/if}>
 					</td>
-					<td class="checkbox-cell">
+					<td class="checkbox">
 						<input type="checkbox" name="show_linkto[{$types[user].type|escape}]" {if $types[user].show_linkto eq 'y'}checked="checked"{/if}>
 					</td>
-					<td class="checkbox-cell">
+					<td class="checkbox">
 						<input type="checkbox" name="show_image_caption[{$types[user].type|escape}]" {if $types[user].show_image_caption eq 'y'}checked="checked"{/if}>
 					</td>
-					<td class="checkbox-cell">
+					<td class="checkbox">
 						<input type="checkbox" name="creator_edit[{$types[user].type|escape}]" {if $types[user].creator_edit eq 'y'}checked="checked"{/if}>
 					</td>
 					<td class="action" colspan="2">
@@ -104,9 +103,7 @@
 					</td>
 			</tr>
 		</table>
-        </div>
 		{if $prefs.article_custom_attributes eq 'y'}
-            <div class="table-responsive">
 			<table class="table normal">
 				<tr>
 					<th>{tr}Custom attribute{/tr}</th>
@@ -128,16 +125,15 @@
 					<td>&nbsp;</td>
 				</tr>
 			</table>
-            </div>
 		{/if}
-		<input type="submit" class="btn btn-default btn-sm" name="update_type" value="{tr}Save{/tr}"><br>
+		<input type="submit" class="btn btn-default" name="update_type" value="{tr}Save{/tr}"><br>
 		<hr>
 		<br>
 		{/section}
 	{/tab}
 	{tab name="{tr}Add Type{/tr}"}
 		<h3>{tr}Add article type{/tr}</h3>
-		<input type="text" name="new_type"><input type="submit" class="btn btn-default btn-sm" name="add_type" value="{tr}Add{/tr}">
+		<input type="text" name="new_type"><input type="submit" class="btn btn-default" name="add_type" value="{tr}Add{/tr}">
 	{/tab}
 	</form>
 {/tabset}

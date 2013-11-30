@@ -5,13 +5,12 @@
 	{remarksbox type="warning" title="{tr}Notice{/tr}"}{tr}This feature is disabled{/tr}<br>{tr}You will not see the latest queries.{/tr}{/remarksbox}
 {/if}
 
-<div class="t_navbar">
-	{button href="?clean=y" class="btn btn-default" _text="{tr}Clean{/tr}"}
+<div class="navbar">
+	{button href="?clean=y" _text="{tr}Clean{/tr}"}
 </div>
 
 {include file='find.tpl' find_show_num_rows='y'}
 
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		<th>{self_link _sort_arg='sort_mode' _sort_field='created'}{tr}Created{/tr}{/self_link}</th>
@@ -30,6 +29,4 @@
 		</tr>
 	{/foreach}
 </table>
-</div>
-
 {pagination_links cant=$cant step=$numrows offset=$offset}{/pagination_links}

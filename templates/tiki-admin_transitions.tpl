@@ -44,7 +44,7 @@
 			</fieldset>
 
 			<p>
-				{tr}Once you have selected at least two, click:{/tr} <input type="submit" class="btn btn-default btn-sm" value="{tr}Select{/tr}"> {tr}and then, click the "New/Edit" tab which will appear above.{/tr}
+				{tr}Once you have selected at least two, click:{/tr} <input type="submit" class="btn btn-default" value="{tr}Select{/tr}"> {tr}and then, click the "New/Edit" tab which will appear above.{/tr}
 			</p>
 		</form>
 		{jq}
@@ -90,7 +90,6 @@
 			return false;
 		} );
 		{/jq}
-		<div class="table-responsive">
 		<table class="table normal">
 			<thead>
 				<tr>
@@ -123,7 +122,6 @@
 				{/foreach}
 			</tbody>
 		</table>
-        </div>
 	{/tab}
 
 	{tab name="{tr}New / Edit{/tr}"}
@@ -168,14 +166,13 @@
 				{/foreach}
 			</fieldset>
 			<p>
-				<input type="submit" class="btn btn-default btn-sm" value="{tr}Save{/tr}">
+				<input type="submit" class="btn btn-default" value="{tr}Save{/tr}">
 			</p>
 		</form>
 	{/tab}
 
 	{if $selected_transition}
 		{tab name="{tr}Guards{/tr}"}
-		    <div class="table-responsive">
 			<table class="table normal">
 				<thead>
 					<tr>
@@ -208,7 +205,6 @@
 					{/foreach}
 				</tbody>
 			</table>
-			</div>
 			<form method="post" action="tiki-admin_transitions.php?action=addguard&amp;transitionId={$selected_transition.transitionId|escape}&amp;cookietab=4" style="text-align: left;">
 				<h2>{tr}New Guard{/tr}</h2>
 				<fieldset>
@@ -236,7 +232,7 @@
 					{/foreach}
 				</fieldset>
 				<p>
-					<input type="submit" class="btn btn-default btn-sm" value="{tr}Add{/tr}">
+					<input type="submit" class="btn btn-default" value="{tr}Add{/tr}">
 				</p>
 			</form>
 		{/tab}

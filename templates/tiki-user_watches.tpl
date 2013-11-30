@@ -94,7 +94,7 @@
 	</tr>
 	{/if}
 	<tr><td>&nbsp;</td>
-	<td><input type="submit" class="btn btn-default btn-sm" name="add" value="{tr}Add{/tr}"></td>
+	<td><input type="submit" class="btn btn-default" name="add" value="{tr}Add{/tr}"></td>
 	</tr>
 	</table>
 	</form>
@@ -143,7 +143,6 @@
 </form>
 <br>
 <form action="tiki-user_watches.php" method="post">
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		{if $watches}
@@ -156,7 +155,7 @@
 	{foreach item=w from=$watches}
 		<tr class="{cycle}">
 			{if $watches}
-				<td class="checkbox-cell">
+				<td class="checkbox">
 					<input type="checkbox" name="watch[{$w.watchId}]">
 				</td>
 			{/if}
@@ -184,9 +183,8 @@
 		{norecords _colspan=2}
 	{/foreach}
 </table>
-</div>
 {if $watches}
-	{tr}Perform action with checked:{/tr} <input type="submit" class="btn btn-warning btn-sm" name="delete" value="{tr}Delete{/tr}">
+	{tr}Perform action with checked:{/tr} <input type="submit" class="btn btn-warning" name="delete" value="{tr}Delete{/tr}">
 {/if}
 </form>
 {/tab}
@@ -203,7 +201,7 @@
 		<p><input type="checkbox" name="user_calendar_watch_editor" value="true" {if $user_calendar_watch_editor eq 'y'}checked{/if}> {tr}Calendar{/tr}</p>
 		<p><input type="checkbox" name="user_comment_watch_editor" value="true" {if $user_comment_watch_editor eq 'y'}checked{/if}> {tr}Comment{/tr}</p>
 
-		<p><input type="submit" class="btn btn-default btn-sm" name="submit" value=" {tr}Apply{/tr} "></p>
+		<p><input type="submit" class="btn btn-default" name="submit" value=" {tr}Apply{/tr} "></p>
 	</form>
 {/tab}
 {/tabset}

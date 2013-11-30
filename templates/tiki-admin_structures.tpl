@@ -2,7 +2,7 @@
 {title help="Structures"}{tr}Structures{/tr}{/title}
 
 {if $tiki_p_admin eq 'y'}
-	<div class="t_navbar">
+	<div class="navbar">
 		{button href='tiki-import_xml_zip.php' _text="{tr}XML Zip Import{/tr}"}
 	</div>
 {/if}
@@ -72,7 +72,6 @@
 		{/if}
 		<br>
 		<form>
-            <div class="table-responsive">
 			<table class="table normal">
 				<tr>
 					{if $tiki_p_admin eq 'y'}<th width="15">{select_all checkbox_names='action[]'}</th>{/if}
@@ -83,7 +82,7 @@
 				{section loop=$channels name=ix}
 					<tr class="{cycle}">
 						{if $tiki_p_admin eq 'y'}
-							<td class="checkbox-cell">
+							<td class="checkbox">
 								<input type="checkbox" name="action[]" value='{$channels[ix].page_ref_id}' style="border:1px;font-size:80%;">
 							</td>
 						{/if}
@@ -125,7 +124,6 @@
 					{if $tiki_p_admin eq 'y'}{norecords _colspan=3}{else}{norecords _colspan=2}{/if}
 				{/section}
 			</table>
-            </div>
 
 			{if $tiki_p_admin eq 'y'}
 				<div style="text-align:left">
@@ -135,7 +133,7 @@
 						<option value="delete">{tr}Delete{/tr}</option>
 						<option value="delete_with_page">{tr}Delete with the pages{/tr}</option>
 					</select>
-					<input type="submit" class="btn btn-default btn-sm" name="act" value="{tr}OK{/tr}">
+					<input type="submit" class="btn btn-default" name="act" value="{tr}OK{/tr}">
 				</form>
 			</div>
 		{/if}
@@ -166,7 +164,7 @@
 					<tr>
 						<td>&nbsp;</td>
 						<td colspan="2">
-							<input type="submit" class="btn btn-default btn-sm" value="{tr}Create New Structure{/tr}" name="create">
+							<input type="submit" class="btn btn-default" value="{tr}Create New Structure{/tr}" name="create">
 						</td>
 					</tr>
 				</table>

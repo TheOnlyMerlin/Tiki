@@ -11,7 +11,7 @@
 	{title help="Edit+Templates"}{tr}Edit templates{/tr}{/title}
 {/if}
 
-<div class="t_navbar form-group">
+<div class="navbar">
 	{if $prefs.feature_editcss eq 'y'}
 		{button href="tiki-edit_css.php" _text="{tr}Edit CSS{/tr}"}
 	{/if}
@@ -75,9 +75,9 @@
 			<input type="hidden" name="template" value="{$template|escape}">
 			{if $prefs.feature_edit_templates eq 'y' and $tiki_p_edit_templates eq 'y'}
 				{if $style_local eq 'n'}
-					<input type="submit" class="btn btn-default btn-sm" name="save" value="{tr}Save{/tr}">
+					<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 				{/if}
-				<input type="submit" class="btn btn-default btn-sm" name="saveTheme" value="{tr}Save Only in the Theme:{/tr} {$prefs.style|replace:'.css':''}">
+				<input type="submit" class="btn btn-default" name="saveTheme" value="{tr}Save Only in the Theme:{/tr} {$prefs.style|replace:'.css':''}">
 				{if $style_local eq 'y'}
 					<a href="tiki-edit_templates.php?template={$template|escape}&amp;delete=y">
 						<img src="img/icons/cross.png" alt="{tr}Delete the copy in the theme:{/tr} {$prefs.style|replace:'.css':''}" 

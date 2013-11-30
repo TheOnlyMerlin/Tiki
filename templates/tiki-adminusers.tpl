@@ -2,19 +2,19 @@
 
 {title help="Users+Management" admpage="login" url="tiki-adminusers.php"}{tr}Admin Users{/tr}{/title}
 
-<div class="t_navbar form-group">
+<div class="navbar">
 	{if $tiki_p_admin eq 'y'} {* only full admins can manage groups, not tiki_p_admin_users *}
-		{button href="tiki-admingroups.php" class="btn btn-default" _text="{tr}Admin Groups{/tr}"}
+		{button href="tiki-admingroups.php" _text="{tr}Admin Groups{/tr}"}
 	{/if}
-	{button class="btn btn-default" _text="{tr}Admin Users{/tr}"}
+	{button _text="{tr}Admin Users{/tr}"}
 	{if $tiki_p_admin eq 'y'}
-	{button href="tiki-objectpermissions.php" class="btn btn-default" _text="{tr}Manage permissions{/tr}"}
+	{button href="tiki-objectpermissions.php" _text="{tr}Manage permissions{/tr}"}
 	{/if}
 	{if isset($userinfo.userId)}
-		{button href="?add=1" class="btn btn-default" _text="{tr}Add a New User{/tr}"}
+		{button href="?add=1" _text="{tr}Add a New User{/tr}"}
 	{/if}
 	{if $prefs.feature_invite eq 'y' and $tiki_p_invite eq 'y'}
-		{button href="tiki-list_invite.php" class="btn btn-default" _text="{tr}Invitation List{/tr}"}
+		{button href="tiki-list_invite.php" _text="{tr}Invitation List{/tr}"}
 	{/if}
 </div>
 
@@ -40,7 +40,6 @@
 		<br>
 		<br>
 		{if $discardlist != ''}
-            <div class="table-responsive">
 			<table class="table normal">
 				<tr>
 					<th>{tr}Username{/tr}</th>
@@ -53,7 +52,6 @@
 					</tr>
 				{/section}
 			</table>
-            </div>
 		{/if}
 
 		{if $errors}
@@ -72,11 +70,11 @@
 	<h2>{tr}Users{/tr}</h2>
 	{if !$tsOn}
 		<form method="get" action="tiki-adminusers.php">
-			<table class="text-center">
+			<table class="findtable">
 				<tr>
 					<td><label for="find">{tr}Find{/tr}</label></td>
 					<td><input type="text" id="find" name="find" value="{$find|escape}"></td>
-					<td><input type="submit" class="btn btn-default btn-sm" value="{tr}Find{/tr}" name="search"></td>
+					<td><input type="submit" class="btn btn-default" value="{tr}Find{/tr}" name="search"></td>
 					<td><label for="numrows">{tr}Number of displayed rows{/tr}</label></td>
 					<td><input type="text" size="4" id="numrows" name="numrows" value="{$numrows|escape}"></td>
 				</tr>
@@ -90,7 +88,7 @@
 			{autocomplete element='#find' type='username'}
 
 			<div id="search" {if $filterGroup or $filterEmail}style="display:block;"{else}style="display:none;"{/if}>
-				<table class="text-center">
+				<table class="findtable">
 					<tr>
 						<td><label for="filterGroup">{tr}Group (direct){/tr}</label></td>
 						<td>
@@ -157,7 +155,7 @@
 					{if $users[user].editable}
 						{capture assign=username}{$users[user].user|escape}{/capture}
 						<tr class="{cycle}">
-							<td class="checkbox-cell">
+							<td class="checkbox">
 								{if $users[user].user ne 'admin'}
 									<input type="checkbox" name="checked[]" value="{$users[user].user|escape}" {if isset($users[user].checked) && $users[user].checked eq 'y'}checked="checked" {/if}>
 								{/if}
@@ -283,7 +281,7 @@
 										{/if}
 									</select>
 									</label>
-									<input type="submit" class="btn btn-default btn-sm" value="{tr}OK{/tr}">
+									<input type="submit" class="btn btn-default" value="{tr}OK{/tr}">
 								{elseif $group_management_mode eq 'y'}
 									<select name="group_management">
 										<option value="add">{tr}Assign selected to{/tr}</option>
@@ -299,7 +297,7 @@
 										{/section}
 									</select></label>
 									<br>
-									<input type="submit" class="btn btn-default btn-sm" value="{tr}OK{/tr}">
+									<input type="submit" class="btn btn-default" value="{tr}OK{/tr}">
 									{if $prefs.jquery_ui_chosen neq 'y'}{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use Ctrl+Click to select multiple options{/tr}{/remarksbox}{/if}
 								{elseif $set_default_groups_mode eq 'y'}
 									<label>{tr}Set the default group of the selected users to:{/tr}
@@ -312,7 +310,7 @@
 										{/section}
 									</select></label>
 									<br>
-									<input type="submit" class="btn btn-default btn-sm" value="{tr}OK{/tr}">
+									<input type="submit" class="btn btn-default" value="{tr}OK{/tr}">
 									<input type="hidden" name="set_default_groups" value="{$set_default_groups_mode}">
 								{elseif $email_mode eq 'y'}
 									<label>{tr}Template wiki page{/tr}
@@ -320,7 +318,7 @@
 									<br>
 									<label>{tr}bcc{/tr}
 									<input type="text" name="bcc"></label>
-									<input type="submit" class="btn btn-default btn-sm" value="{tr}OK{/tr}">
+									<input type="submit" class="btn btn-default" value="{tr}OK{/tr}">
 									<input type="hidden" name="emailChecked" value="{$email_mode}">
 								{/if}
 							</p>
@@ -534,9 +532,9 @@
 						{if isset($userinfo.userId) && $userinfo.userId}
 							<input type="hidden" name="user" value="{$userinfo.userId|escape}">
 							<input type="hidden" name="edituser" value="1">
-							<input type="submit" class="btn btn-default btn-sm" name="save" value="{tr}Save{/tr}">
+							<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 						{else}
-							<input type="submit" class="btn btn-default btn-sm" name="newuser" value="{tr}Add{/tr}">
+							<input type="submit" class="btn btn-default" name="newuser" value="{tr}Add{/tr}">
 						{/if}
 					</td>
 				</tr>
@@ -593,7 +591,7 @@
 			<tr>
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" class="btn btn-default btn-sm" name="batch" value="{tr}Add{/tr}">
+					<input type="submit" class="btn btn-default" name="batch" value="{tr}Add{/tr}">
 				</td>
 			</tr>
 		</table>

@@ -1,7 +1,7 @@
 {title help="Menus" admpage="general&amp;cookietab=3"}{tr}Admin Menus{/tr}{/title}
 
 {if $tiki_p_admin eq 'y'}
-	<div class="t_navbar">
+	<div class="navbar">
 		{button href="tiki-admin_modules.php" _text="{tr}Admin Modules{/tr}"}
 	</div>
 {/if}
@@ -9,7 +9,6 @@
 {tabset name="admin_menus"}
 	{tab name="{tr}Menus{/tr}"}
 		{include file='find.tpl'}
-        <div class="table-responsive">
 		<table class="table normal">
 			<tr>
 				<th>{self_link _sort_arg='sort_mode' _sort_field='menuId'}{tr}ID{/tr}{/self_link}</th>
@@ -58,7 +57,6 @@
 				{norecords _colspan=5}
 			{/section}
 		</table>
-        </div>
 		{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links} 
 	{/tab}
 
@@ -139,7 +137,7 @@
 			<tr>
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" class="btn btn-default btn-sm" name="save" value="{tr}Save{/tr}">
+					<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 					{if $prefs.menus_items_icons neq 'y'}
 						<input type="hidden" name="use_items_icons" value="{$info.use_items_icons}">
 					{/if}

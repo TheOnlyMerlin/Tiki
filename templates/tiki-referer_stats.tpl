@@ -1,12 +1,11 @@
 {title help="Referer+Stats"}{tr}Referer stats{/tr}{/title}
 
-<div class="t_navbar">
-	{button href="tiki-referer_stats.php?clear=1" class="btn btn-default" _text="{tr}Clear Stats{/tr}"}
+<div class="navbar">
+	{button href="tiki-referer_stats.php?clear=1" _text="{tr}Clear Stats{/tr}"}
 </div>
 
 {include file='find.tpl'}
 
-<div class="table-responsive">
 <table class="table normal">
   <tr>
   <th>
@@ -30,6 +29,5 @@
 		{norecords _colspan=3}
   {/section}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}

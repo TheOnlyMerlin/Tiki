@@ -430,14 +430,14 @@ if ($prefs['mobile_feature'] === 'y' && $prefs['mobile_mode'] === 'y') {
 			$headerlib->add_cssfile('vendor/jquery/plugins/chosen/chosen.css');
 			$headerlib->add_css(
 				'.chosen-container .chosen-drop, .chosen-results li { z-index: 10000; color: #444 }
-select { font-size: 14px; padding: 6px 12px; }
-.chosen-container-multi .chosen-choices li.search-field input[type="text"] { height: inherit; }'
+select { font-size: 13px; margin-right: 26px; padding: 0 0 0 8px; }
+select[multiple=multiple] { margin: 3px 0 3px 5px; padding: 3px 20px 3px 5px; }'
 			);
 		}
 		if ( $prefs['jquery_ui_selectmenu'] == 'y' ) {
 			$headerlib->add_jsfile('vendor/jquery/jquery-ui-selectmenu/ui/jquery.ui.selectmenu.js');
 			$headerlib->add_cssfile('vendor/jquery/jquery-ui-selectmenu/themes/base/jquery.ui.selectmenu.css');
-			// deprecated feature
+			// standard css for selectmenu seems way too big for tiki - to be added to layout.css when not so experimental
 			$headerlib->add_css(
 				'.ui-selectmenu-menu ul li a, .ui-selectmenu-status { white-space: nowrap; }
 				.ui-selectmenu { height: 1.8em; padding-right: 16px; }
@@ -687,16 +687,5 @@ if ($prefs['openpgp_gpg_pgpmimemail'] == 'y') {
 // ******************************************************************** //
 //////////////////////////////////////////////////////////////////////////
 
-$headerlib->add_jsfile('vendor/twitter/bootstrap/js/bootstrap.js');
-$headerlib->add_cssfile('vendor/twitter/bootstrap/css/bootstrap.min.css');
 
 $headerlib->lockMinifiedJs();
-
-if( $prefs['feature_hidden_links'] == 'y' ) {
-	$headerlib->add_js("$('body').find('h1, h2, h3, h4, h5, h6').each(function() {
-	var headerid = $(this).attr('id');
-		if(headerid != undefined) {
-			$(this).append('<a class=\"tiki_anchor\" href=\"#'+headerid+'\"></a>');
-		}
-	});");
-}

@@ -26,14 +26,15 @@ fieldset {
 }
 
 hr {
-	border-top: #bcb923;
+	color: #bcb923;
+	background: #bcb923;
 }
 
 .header_outer {
 	background: url(kiwi/siteheadertile.png) 0 0 no-repeat;
 }
 
-.header_container .header {
+#header {
 	background: url(kiwi/siteheader.png) -250px 0 no-repeat;
 }
 
@@ -60,8 +61,13 @@ hr {
 	color: #ebdc14;
 }
 
-.btn-default,
-.btn-default:visited,
+.button a,
+.button a:visited,
+button,
+input[type="reset"],
+input[type="submit"],
+.button input,
+.calbuttonBox a,
 #genPass .button a,
 #genPass .button a:visited,
 .daterow {
@@ -70,9 +76,13 @@ hr {
 	border-color: #f0e884 #b2a713 #b2a713 #f0e884;
 	font-weight: bold;
 }
-
-.btn-default:hover,
+	
 .button a:hover,
+button:hover,
+input[type="reset"]:hover,
+input[type="submit"]:hover,
+.button input:hover,
+.calbuttonBox:hover,
 #genPass .button a:hover,
 .daterow:hover {
 	background: #baba25;
@@ -91,24 +101,20 @@ hr {
 	color: #638637;
 }
 
-#topbar_modules .dropdown-menu,
 .cssmenu_vert li ul a,
 .cssmenu_horiz li ul a,
 .header .cssmenu_horiz li ul a,
 .header .cssmenu_horiz li:hover ul a,
-#topbar_modules .cssmenu_horiz li ul a,
- #topbar_modules .cssmenu_horiz li:hover ul a  {
+#main #topbar_modules .cssmenu_horiz li ul a,
+#main #topbar_modules .cssmenu_horiz li:hover ul a  {
 	background: #658838;
 	color: #fff;
 }
 
-#topbar_modules .dropdown-menu,
 #tiki-top .cssmenu_horiz li a {
 	background: url(kiwi/siteheader.png) no-repeat -600px -40px;
 }
 
-#topbar_modules .dropdown-menu > li > a:hover,
-#topbar_modules .dropdown-menu > li > a:focus,
 #tiki-top .cssmenu_horiz li a:hover,
 .cssmenu_vert li ul a:hover,
 .cssmenu_horiz li ul a:hover,
@@ -117,12 +123,6 @@ hr {
 	background: #e1d518;
 }
 
-#tiki-top .cssmenu_horiz li a {
-	background: #c94c23 url(kiwi/siteheader.png) no-repeat -600px -40px;
-}
-
-#top_modules #secondary_site_menu .cssmenu_horiz li.selected a,
-#topbar_modules .dropdown-menu li.active a, /* bootstrap */
 .header .cssmenu_horiz li.selected a,
 #topbar_modules .cssmenu_horiz li.selected a,
 .cssmenu_horiz li.selected a,
@@ -131,7 +131,6 @@ hr {
 }
 
 .header .cssmenu_horiz li.selected li a,
-#top_modules #secondary_site_menu .cssmenu_horiz li.selected li a,
 #topbar_modules .cssmenu_horiz li.selected li a,
 .cssmenu_horiz li.selected li a,
 .cssmenu_vert li.selected li a {
@@ -144,36 +143,42 @@ hr {
 }
 
 select,
+input[type="text"],
+input[type="password"],
+input[type="file"],
+input[type="email"],
+input[type="file"],
+input[type="search"],
+input[type="number"],
+input#login-pass,
 textarea,
-.adminoptionbox option {
+.adminoptionbox option  {
 	background: #f8f9d4;
-	color: #000;
 	border-color: #f5fb86 #fbfbee #fbfbee #f5fb86;
 }
 
 .titlebar,
-.panel-default .panel-heading {
+.rbox-title, 
+.rbox-data {
 	border-color: #bcb923;
 	background: #f5f6c1;
 	color: #648637;
 }
 
-.panel-default.module > .panel-heading,
-.panel-default.module > .panel-body {
-	background: none;
+.cbox {
+	background: #f5f6c1;
+	color: #648637;
 }
 
-.panel-default.module .panel-heading {
+.cbox-title {
 	border-bottom: 3px solid #bcb923;
 }
 
-.well {
-	background: #f5f6c1;
-	color: #638637;
+.simplebox {
 	border: 2px solid #bcb923;
 }
 
-.panel-heading,
+h3.box-title,
 .postbody-title,
 #top_modules .module.secondary_site_menu {
 	background: #e1d518 url(kiwi/siteheader.png) no-repeat -1000px -200px;
@@ -183,7 +188,7 @@ textarea,
 	background: #bcb923;
 }
 
-.table,
+.normal,
 .wikitable {
 	border: 2px solid #dbd11a;
 }
@@ -211,13 +216,13 @@ td.calheadhighlight {
 }
 
 .odd,
-table.table tr:nth-child(2n+1),
+table.normal tr:nth-child(2n+1),
 .tablesorter tr.odd td {
 	background: #f0e884;
 }
 
 .even,
-table.table tr:nth-child(2n),
+table.normal tr:nth-child(2n),
 .tablesorter tr.even td {
 	background: #f8f9d4;
 }
@@ -258,6 +263,10 @@ form.admin fieldset,
 	border-left: 8px solid #f5f6c1;
 }
 
+.postbody-title > br {
+	display: none;
+}
+
 .post .author,
 .dirsite {
 	background: #f5f6c1;
@@ -292,3 +301,4 @@ form.admin fieldset,
 .cluetip-default #cluetip-title a {
 	color: #F8F9D5;
 }
+  

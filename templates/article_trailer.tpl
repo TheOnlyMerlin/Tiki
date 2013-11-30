@@ -5,7 +5,7 @@
 				({$size} {tr}bytes{/tr})
 			{/if}
 		</span>
-		<div class="actions pull-right">
+		<div class="actions">
 		{if $prefs.feature_multilingual eq 'y' and $lang and $prefs.show_available_translations eq 'y'}	
 			<div class="lang_select">
 				{include file='translated-lang.tpl' object_type='article'}

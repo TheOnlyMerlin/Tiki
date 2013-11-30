@@ -1,7 +1,7 @@
 <h1><a class="pagetitle" href="tiki-admin_keywords.php">{tr}Admin keywords{/tr}</a></h1>
 
 {if $keywords_updated}
-	<div class="alert alert-warning">
+	<div class="simplebox highlight">
 		{if $keywords_updated == 'y'}{tr}Keywords have been updated{/tr} 
 		{else}{tr}Updating keywords has failed. Page probably doesn't exist.{/tr}{/if}
 		{if $keywords_updated_on} ({$keywords_updated_on|escape}){/if}
@@ -20,7 +20,7 @@
 					</tr>
 					<tr>
 						<td></td>
-						<td><input type="submit" class="btn btn-default btn-sm" name="save_keywords" value="{tr}Save{/tr}"></td>
+						<td><input type="submit" class="btn btn-default" name="save_keywords" value="{tr}Save{/tr}"></td>
 					</tr>
 				</tbody>
 			</table>
@@ -32,14 +32,13 @@
 <form method="get" action="tiki-admin_keywords.php">
 	<label for="q">{tr}Search by page:{/tr}</label>
 	<input type="text" name="q" value="{if $smarty.request.q}{$smarty.request.q|escape}{/if}">
-	<input type="submit" class="btn btn-default btn-sm" name="search" value="{tr}Go{/tr}">
+	<input type="submit" class="btn btn-default" name="search" value="{tr}Go{/tr}">
 </form>
 {if $search_on}
 	<div style="font-weight:bold;">{$search_cant|escape} {tr}results found!{/tr}</div>
 {/if}
 <br class="clear"/>
 {if $existing_keywords}
-<div class="table-responsive">
 	<table class="table normal">
 		<tbody>	
 			<tr>
@@ -60,7 +59,6 @@
 			{/section}
 		</tbody>
 	</table>
-    </div>
 {else}
 	<h2>{tr}No pages found{/tr}</h2>
 {/if}

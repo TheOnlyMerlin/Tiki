@@ -22,7 +22,7 @@
 {/if}
 <div class="description">{$parent_info.description|escape}</div>
 {if count($items) > 0}
-<div class="text-center">
+<div class="findtable">
   <form action="tiki-directory_search.php" method="post">
     <input type="hidden" name="parent" value="{$parent|escape}">
     {tr}Find:{/tr}
@@ -35,7 +35,7 @@
       <option value="all">{tr}in entire directory{/tr}</option>
       <option value="cat">{tr}in current directory category{/tr}</option>
     </select>
-    <input type="submit" class="btn btn-default btn-sm" value="{tr}Search{/tr}">
+    <input type="submit" class="btn btn-default" value="{tr}Search{/tr}">
   </form>
 </div>
 {/if}
@@ -81,7 +81,7 @@
 <h2>{tr}Links{/tr}</h2>
 {if count($items) > 0}
 <div class="dirlistsites">
-  <div class="text-center">
+  <div class="findtable">
   <form method="post" action="tiki-directory_browse.php">
     <input type="hidden" name="parent" value="{$parent|escape}">
     {tr}Sort by:{/tr}&nbsp;
@@ -95,7 +95,7 @@
       <option value="lastModif_desc" {if $sort_mode eq 'lastModif_desc'}selected="selected"{/if}>{tr}Last updated (desc){/tr}</option>
       <option value="lastModif_asc" {if $sort_mode eq 'lastModif_asc'}selected="selected"{/if}>{tr}Last updated (asc){/tr}</option>
     </select>
-    <input type="submit" class="btn btn-default btn-sm" name="xx" value="{tr}sort{/tr}">
+    <input type="submit" class="btn btn-default" name="xx" value="{tr}sort{/tr}">
   </form>
   </div>
   {section name=ix loop=$items}

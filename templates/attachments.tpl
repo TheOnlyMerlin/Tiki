@@ -27,8 +27,7 @@
 		{else}
 			{$offsetparam = ''}
 		{/if}
-        <div class="table-responsive">
-		<table class="table normal">
+		<table class="normal">
 			<caption> {tr}List of attached files{/tr} </caption>
 			<tr>
 				<th>
@@ -76,7 +75,6 @@
 				</tr>
 			{/section}
 		</table>
-        </div>
 	{/if}{* Generate table if view ... attached files > 0 *}
 
 	{* It is allow to attach files or current user have admin rights *}
@@ -96,7 +94,7 @@
 						<label for="attach-upload">{tr}Upload file:{/tr}</label><input type="hidden" name="MAX_FILE_SIZE" value="1000000000">
 						<input size="16" name="userfile1" type="file" id="attach-upload">
 						<label for="attach-comment">{tr}Comment:{/tr}</label><input type="text" name="attach_comment" maxlength="250" id="attach-comment">
-						<input type="submit" class="btn btn-default btn-sm" name="attach" value="{tr}Attach{/tr}">
+						<input type="submit" class="btn btn-default" name="attach" value="{tr}Attach{/tr}">
 					</td>
 				</tr>
 			</table>

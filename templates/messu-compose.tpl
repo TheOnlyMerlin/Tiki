@@ -4,16 +4,16 @@
 {include file='messu-nav.tpl'}
 
 {if $allowMsgs ne 'y'}<br>
-	<div class="panel panel-default"><div class="panel-body">
+	<div class="simplebox">
 		{icon _id=information style="vertical-align:middle" align="left"} {tr}If you want people to be able to reply to you, enable <a href='tiki-user_preferences.php'>Allow messages from other users</a> in your preferences.{/tr}
-	</div></div>
+	</div>
 	<br>
 	<br>
 {/if}
 
 
 {if $sent}
-	<div class="alert alert-warning">
+	<div class="simplebox highlight">
 		{if (strstr($message, "{tr}ERROR{/tr}")) or (strstr($message, "{tr}Invalid{/tr}"))}
 			{icon _id=delete alt="{tr}Error{/tr}" style="vertical-align:middle" align="left"}
 		{else}
@@ -91,7 +91,7 @@
 			<tr>
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" class="btn btn-default btn-sm" name="send" value="{tr}Send{/tr}">
+					<input type="submit" class="btn btn-default" name="send" value="{tr}Send{/tr}">
 					<input type="checkbox" name="replytome" id="replytome">
 					<label for="replytome">
 						{tr}Reply-to my email{/tr}

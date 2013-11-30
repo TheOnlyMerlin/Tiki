@@ -1,6 +1,5 @@
 {* $Id$ *}
 {if $cant > 0}
-    <div class="table-responsive">
 	<table class="table normal" id="selectable">
 		<tr>
 			<th width="100">&nbsp;</th>
@@ -33,7 +32,6 @@
 		{/if}
 		{/foreach}
 	</table>
-    </div>
 {else}
 	{remarksbox type="info" title="{tr}No entries{/tr}"}
 	{tr}No mix entries found.{/tr} 

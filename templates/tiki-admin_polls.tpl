@@ -1,11 +1,11 @@
 {* $Id$ *}
 {title help="Polls" admpage="polls"}{tr}Admin Polls{/tr}{/title}
 
-<div class="t_navbar btn-group form-group">
-	{button href="tiki-admin_polls.php?setlast=1" class="btn btn-default" _text="{tr}Set last poll as current{/tr}"}
-	{button href="tiki-admin_polls.php?closeall=1" class="btn btn-default" _text="{tr}Close all polls but last{/tr}"}
-	{button href="tiki-admin_polls.php?activeall=1" class="btn btn-default" _text="{tr}Activate all polls{/tr}"}
-	{if $pollId neq '0'}{button pollId=0 cookietab=1 class="btn btn-default" _text="{tr}Create poll{/tr}"}{/if}
+<div class="navbar">
+	{button href="tiki-admin_polls.php?setlast=1" _text="{tr}Set last poll as current{/tr}"}
+	{button href="tiki-admin_polls.php?closeall=1" _text="{tr}Close all polls but last{/tr}"}
+	{button href="tiki-admin_polls.php?activeall=1" _text="{tr}Activate all polls{/tr}"}
+	{if $pollId neq '0'}{button pollId=0 cookietab=1 _text="{tr}Create poll{/tr}"}{/if}
 </div>
 
 {tabset}
@@ -77,7 +77,7 @@
 				</tr>
 				<tr>
 					<td>&nbsp;</td>
-					<td><input type="submit" class="btn btn-default btn-sm" name="save" value="{tr}Save{/tr}"></td>
+					<td><input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}"></td>
 				</tr>
 			</table>
 		</form>
@@ -87,7 +87,6 @@
 		{if $channels or ($find ne '')}
 			{include file='find.tpl'}
 		{/if}
-        <div class="table-responsive">
 		<table class="table normal">
 			{assign var=numbercol value=8}
 			<tr>
@@ -145,7 +144,6 @@
 	         {norecords _colspan=$numbercol}
 			{/section}
 		</table>
-        </div>
 		{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
 	{/tab}
 
@@ -186,7 +184,7 @@
 				</tr>
 				<tr>
 					<td></td>
-					<td><input type="submit" class="btn btn-default btn-sm" name="addPoll" value="{tr}Add{/tr}"></td>
+					<td><input type="submit" class="btn btn-default" name="addPoll" value="{tr}Add{/tr}"></td>
 				</tr>
 			</table>
 		</form>

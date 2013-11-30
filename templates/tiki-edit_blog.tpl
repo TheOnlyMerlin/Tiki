@@ -4,12 +4,12 @@
   {title help="Blogs"}{tr}Create Blog{/tr}{/title}
 {/if}
 
-<div class="t_navbar btn-group form-group">
-	{button href="tiki-list_blogs.php" class="btn btn-default" _text="{tr}List Blogs{/tr}"}
+<div class="navbar">
+	{button href="tiki-list_blogs.php" _text="{tr}List Blogs{/tr}"}
 	 
   {if $blogId > 0}
 		{assign var=thisblogId value=$blogId|sefurl:blog}
-		{button href=$thisblogId class="btn btn-default" _text="{tr}View Blog{/tr}"}
+		{button href=$thisblogId _text="{tr}View Blog{/tr}"}
 	{/if}
 </div>
 
@@ -55,19 +55,19 @@
           </td>
         </tr>
         <tr class="editblogform">
-          <td class="checkbox-cell"><input type="checkbox" name="public" id="blogs-allow_others" {if $public eq 'y'}checked='checked'{/if}></td>
+          <td class="checkbox"><input type="checkbox" name="public" id="blogs-allow_others" {if $public eq 'y'}checked='checked'{/if}></td>
           <td><label for="blogs-allow_others">{tr}Allow other users to post in this blog{/tr}</label></td>
         </tr>	
         <tr class="editblogform">
-          <td class="checkbox-cell"><input type="checkbox" name="alwaysOwner" id="blogs-always_owner" {if isset($alwaysOwner) and $alwaysOwner eq 'y'}checked='checked'{/if}></td>
+          <td class="checkbox"><input type="checkbox" name="alwaysOwner" id="blogs-always_owner" {if isset($alwaysOwner) and $alwaysOwner eq 'y'}checked='checked'{/if}></td>
           <td><label for="blogs-always_owner">{tr}If others post to blog, author should always be owner{/tr}</label></td>
         </tr>
         <tr class="editblogform">
-          <td class="checkbox-cell"><input type="checkbox" name="use_find" id="blogs-search" {if $use_find eq 'y'}checked='checked'{/if}></td>
+          <td class="checkbox"><input type="checkbox" name="use_find" id="blogs-search" {if $use_find eq 'y'}checked='checked'{/if}></td>
           <td><label for="blogs-search">{tr}Allow search{/tr}</label></td>
         </tr>
         <tr class="editblogform">
-          <td class="checkbox-cell">
+          <td class="checkbox">
             <input type="checkbox" name="allow_comments" id="blogs-comments" {if $allow_comments eq 'y' or $allow_comments eq 'c'}checked='checked'{/if}{if $prefs.feature_blogposts_comments ne 'y'} disabled="disabled"{/if}>
             {if $prefs.feature_blogposts_comments ne 'y'}Global post-level comments is disabled.{/if}
           </td>

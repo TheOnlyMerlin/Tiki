@@ -17,7 +17,7 @@
 			{/if}
 			{if $country}
 				<span class="country">{icon _id='img/flags/'|cat:$country|cat:'.gif'}<span> {$country|stringfix}</span></span>
-				<span class="distance">{$distance}<span> away</span></span>
+				<span class="distance">{$distance}<span>{if !empty($distance)} away{/if}</span></span>
 			{/if}
 			{if $email}
 				<span class="email">Email: {$email}</span>
@@ -33,18 +33,18 @@
 					<li>
 						{icon _id='social_'|cat:$relation.type _title=$relation.label|escape}<span> {$relation.label|escape}</span>
 						{if !empty($relation.remove)}
-							<a class="pull-right remove-friend" href="{service controller=social action=remove_friend friend=$other_user}"
+							<a class="floatright remove-friend" href="{service controller=social action=remove_friend friend=$other_user}"
 										title="{$relation.remove}" data-confirm="{tr _0=$other_user}Do you really want to remove %0?{/tr}">
 								{icon _id=cross alt="{$relation.remove}"}
 							</a>
 						{/if}
 						{if !empty($relation.add)}
-							<a class="pull-right add-friend" title="{$relation.add}" href="{service controller=social action=add_friend username=$other_user}">
+							<a class="floatright add-friend" title="{$relation.add}" href="{service controller=social action=add_friend username=$other_user}">
 								{icon _id=add alt="{$relation.add}"}
 							</a>
 						{/if}
 						{if !empty($relation.approve)}
-							<a class="pull-right approve-friend" title="{$relation.approve}" href="{service controller=social action=approve_friend friend=$other_user}">
+							<a class="floatright approve-friend" title="{$relation.approve}" href="{service controller=social action=approve_friend friend=$other_user}">
 								{icon _id=accept alt="{$relation.approve}"}
 							</a>
 						{/if}

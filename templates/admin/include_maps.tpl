@@ -1,14 +1,8 @@
 <form action="tiki-admin.php?page=maps" method="post">
-
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-                <input type="submit" class="btn btn-default btn-sm" name="mapsset" value="{tr}Change preferences{/tr}">
-            </div>
-        </div>
-    </div>
-
-	<fieldset class="table">
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" class="btn btn-default" name="mapsset" value="{tr}Change preferences{/tr}" />
+	</div>
+	<fieldset class="admin">
 		<legend>{tr}Settings{/tr}</legend>
 
 		{preference name=geo_tilesets}
@@ -50,7 +44,7 @@
 		{preference name=gmap_defaultz}
 	</fieldset>
 
-	<fieldset class="table">
+	<fieldset class="admin">			
 		<legend>{tr}MapServer settings{/tr}</legend>
 		
 		{preference name=feature_maps}
@@ -65,14 +59,11 @@
 			{preference name=gdaltindex}
 			{preference name=ogr2ogr}
 			{preference name=mapzone}
+		</div>			
+		
+		<div class="heading input_submit_container" style="text-align: center">
+			<input type="submit" class="btn btn-default" name="mapsset" value="{tr}Change preferences{/tr}" />
+			<input type="submit" class="btn btn-default" name="mapuser" value="{tr}Generate User Map{/tr}" />
 		</div>
-
-        <br>{* I cheated. *}
-        <div class="row">
-            <div class="form-group col-lg-12 text-center">
-                <input type="submit" class="btn btn-default btn-sm" name="mapsset"  value="{tr}Change preferences{/tr}" />
-                <input type="submit" class="btn btn-default btn-sm" name="mapuser" value="(tr}Generate User Map{/tr}" />
-            </div>
-        </div>
-    </fieldset>
+	</fieldset>
 </form>

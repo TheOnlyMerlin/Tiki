@@ -1,17 +1,12 @@
 <form action="tiki-admin.php?page=metrics" onreset="return(confirm("{tr}Cancel Edit{/tr}"))" class="admin" method="post">
-
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-                <input type="submit" class="btn btn-default btn-sm" value="{tr}Change preferences{/tr}">
-            </div>
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+	</div>
 	<fieldset>
 		<legend>{tr}Metrics Dashboard{/tr}</legend>
 
-	<div class="t_navbar">
-		{button href="tiki-admin_metrics.php" class="btn btn-default" _text="{tr}Configure metrics{/tr}"}
+	<div class="navbar">
+		{button href="tiki-admin_metrics.php" _text="{tr}Configure metrics{/tr}"}
 	</div>
 
   		{preference name=feature_metrics_dashboard visible="always"}
@@ -26,10 +21,7 @@
 			{preference name=metrics_cache_output}
 		</div>
 	</fieldset>
-<br>{* I cheated. *}
-<div class="row">
-    <div class="form-group col-lg-12">
-        <input type="submit" class="btn btn-default btn-sm pull-right" value="{tr}Change preferences{/tr}">
-    </div>
-</div>
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>

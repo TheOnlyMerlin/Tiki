@@ -1,18 +1,14 @@
 {* $Id: include_comments.tpl 44059 2012-11-22 16:13:24Z lphuberdeau $ *}
 
-<div class="t_navbar">
-	{button href="tiki-list_comments.php" class="btn btn-default" _text="{tr}List comments{/tr}"}
+<div class="navbar">
+	{button href="tiki-list_comments.php" _text="{tr}List comments{/tr}"}
 </div>
 
 
 <form action="tiki-admin.php?page=comments" method="post">
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-                <input type="submit" class="btn btn-default btn-sm" name="commentssetprefs" value="{tr}Change preferences{/tr}">
-            </div>
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" class="btn btn-default" name="commentssetprefs" value="{tr}Change preferences{/tr}" />
+	</div>
 
 	{tabset name="admin_wiki"}
 		{tab name="{tr}General Preferences{/tr}"}
@@ -66,7 +62,7 @@
 			<fieldset>
 				<legend>{tr}Using comments in various features{/tr}</legend>
 
-				<div class="table">
+				<div class="admin">
 					{preference name=feature_article_comments}
 					{preference name=feature_wiki_comments}
 					<div class="adminoptionboxchild" id="feature_wiki_comments_childcontainer">
@@ -92,10 +88,7 @@
 		{/tab}
 {/tabset}
 
-    <br>{* I cheated. *}
-    <div class="row">
-        <div class="form-group col-lg-12 text-center">
-            <input type="submit" class="btn btn-default btn-sm" value="{tr}Change preferences{/tr}">
-        </div>
-    </div>
+<div class="heading input_submit_container" style="text-align: center">
+	<input type="submit" class="btn btn-default" name="commentssetprefs" value="{tr}Change preferences{/tr}" />
+</div>
 </form>

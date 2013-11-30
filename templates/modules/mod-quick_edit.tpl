@@ -16,7 +16,7 @@
 			<input type="hidden" name="wikiHeaderTpl" value="{$wikiHeaderTpl|escape}" />
 		{/if}
 		{if $mod_quickedit_heading}
-			<div class="panel-body">{$mod_quickedit_heading|escape}</div>
+			<div class="box-data">{$mod_quickedit_heading|escape}</div>
 		{/if}
 		<input id="{$qefield}" size="{$size}" type="text" name="page" />
 		{if $addcategId}
@@ -31,7 +31,7 @@
 				</label>
 			</div>
 		{/if}
-		<input type="submit" class="btn btn-default btn-sm btn-sm" name="qedit" value="{$submit|escape}" />
+		<input type="submit" class="btn btn-default" name="qedit" value="{$submit|escape}" />
 	</div>
 </form>
 {if $prefs.javascript_enabled eq 'y' and $prefs.feature_jquery_autocomplete eq 'y'}

@@ -1,22 +1,17 @@
 {* $Id$ *}
 
-<div class="t_navbar btn-group form-group">
-	{button href="tiki-admingroups.php" class="btn btn-default" _text="{tr}Admin Groups{/tr}"}
-	{button href="tiki-adminusers.php" class="btn btn-default" _text="{tr}Admin Users{/tr}"}
-	{button href="tiki-objectpermissions.php" class="btn btn-default" _text="{tr}Manage permissions{/tr}"}
+<div class="navbar">
+	{button href="tiki-admingroups.php" _text="{tr}Admin Groups{/tr}"}
+	{button href="tiki-adminusers.php" _text="{tr}Admin Users{/tr}"}
+	{button href="tiki-objectpermissions.php" _text="{tr}Manage permissions{/tr}"}	
 </div>
 
 <form action="tiki-admin.php?page=community" method="post">
-<div class="row">
-    <div class="form-group col-lg-12 clearfix">
-        <div class="pull-right">
-            <input type="submit" class="btn btn-default btn-sm" value="{tr}Change preferences{/tr}">
-        </div>
-    </div>
-</div>
+	<div class="input_submit_container clear" style="text-align: right;">
+		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+	</div>
 
-
-{tabset name="admin_community"}
+	{tabset name="admin_community"}
 		{tab name="{tr}User features{/tr}"}
 	
 			<div class="admin featurelist">
@@ -57,7 +52,7 @@
 			</div>
 		{/tab}
 		{tab name="{tr}Social Network{/tr}"}
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Friendship and Followers{/tr}</legend>
 				{preference name=feature_friends}
 				<div class="adminoptionboxchild" id="feature_friends_childcontainer">
@@ -73,7 +68,7 @@
 				</div>
 			</fieldset>
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Activity Stream{/tr}</legend>
 				{preference name=activity_basic_events}
 
@@ -233,10 +228,7 @@
 			</div>
 		{/tab}
 	{/tabset}
-<br>{* I cheated. *}
-<div class="row">
-    <div class="form-group col-lg-12 text-center">
-        <input type="submit" class="btn btn-default btn-sm" value="{tr}Change preferences{/tr}">
-    </div>
-</div>
+	<div class="input_submit_container clear" style="text-align: center;">
+		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>

@@ -5,8 +5,8 @@
 {tr}This feature currently searches and replaces within wiki pages only{/tr}
 {/remarksbox}
  
-<div class="panel panel-default"><div class="panel-body">
-    <form action="tiki-search_replace.php" method="post">
+<div class="simplebox">
+<form action="tiki-search_replace.php" method="post">
 {tr}Search:{/tr} <input type="text" size="30" name="searchtext" value="{$searchtext|escape}">
 &nbsp;{tr}Case sensitive:{/tr} <input type="checkbox" name="casesensitive" value="y" {if $casesensitive eq 'y'}checked="checked"{/if}>
 <br>{tr}Replace:{/tr} <input type="text" size="30" name="replacetext" value="{$replacetext|escape}">
@@ -21,16 +21,15 @@
 		</option>
 	{/foreach}
 </select>
-<input type="submit" class="btn btn-default btn-sm" name="search" value="{tr}Search{/tr}">
+<input type="submit" class="btn btn-default" name="search" value="{tr}Search{/tr}">
 </form>
-</div></div>
+</div>
 <div class="searchreplace_results">
 {if isset($message)}
 	{$message}
 {/if}
 <form action="tiki-search_replace.php" method="post">
 {if isset($results)}
-    <div class="table-responsive">
 	<table class="table normal">
 	<tr>
 		<td style="text-align: right">
@@ -67,13 +66,12 @@
 	{/if}
 	{/section}
 	</table>
-    </div>
 	<input type="hidden" name="searchtext" value="{$searchtext}"> 
 	<input type="hidden" name="replacetext" value="{$replacetext}">
 	<input type="hidden" name="maxRecords" value="{$maxRecords}">
 	<input type="hidden" name="casesensitive" value="{$casesensitive}">
 	<input type="hidden" name="paddingLength" value="{$paddingLength}">
-	<input type="submit" class="btn btn-default btn-sm" name="replace" value="{tr}Replace selected{/tr}">
+	<input type="submit" class="btn btn-default" name="replace" value="{tr}Replace selected{/tr}">
 	{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
 {/if}
 </form>

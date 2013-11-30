@@ -1,10 +1,10 @@
 {* $Id$ *}
 {title help="Newsletters"}{tr}Admin newsletters{/tr}{/title}
 
-<div class="t_navbar btn-group form-group">
-	{button href="tiki-admin_newsletters.php?cookietab=2" class="btn btn-default" _text="{tr}Create Newsletter{/tr}"}
-	{button href="tiki-newsletters.php" class="btn btn-default" _text="{tr}List Newsletters{/tr}"}
-	{button href="tiki-send_newsletters.php" class="btn btn-default" _text="{tr}Send Newsletters{/tr}"}
+<div class="navbar">
+	{button href="tiki-admin_newsletters.php?cookietab=2" _text="{tr}Create Newsletter{/tr}"}
+	{button href="tiki-newsletters.php" _text="{tr}List Newsletters{/tr}"}
+	{button href="tiki-send_newsletters.php" _text="{tr}Send Newsletters{/tr}"}
 </div>
 
 {tabset}
@@ -15,7 +15,6 @@
   {include file='find.tpl'}
 {/if}
 
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		<th>{self_link _sort_arg='sort_mode' _sort_field='nlId'}{tr}ID{/tr}{/self_link}</th>
@@ -60,7 +59,6 @@
          {norecords _colspan=8}
 	{/section}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
 {/tab}
@@ -153,7 +151,7 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" class="btn btn-default btn-sm" name="save" value="{tr}Save{/tr}">
+				<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 			</td>
 		</tr>
 	</table>

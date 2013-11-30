@@ -248,8 +248,7 @@ function showDetails( id, domain, profile ) { // {{{
 				<form method="get" action="tiki-admin.php">
 					<div class="adminoptionbox">
 						<b>{tr}Step 1: Use the Quick or Manual Filter option to see a list of Configuration Profiles you can apply{/tr}</b>
-                        <div class="table-responsive">
-						<table class="table normal">
+						<table class="normal">
 							<tr>
 								<th width="50%" class="quickmode_notes">{tr}Option 1: Quick Filter{/tr}</th>
 	
@@ -328,11 +327,10 @@ $("#repository, #categories").change(function(){
 });
 										{/jq}
 									</div>
-								<div align="center"><input type="submit" class="btn btn-default btn-sm" name="list" value="{tr}List{/tr}" /></div>
+								<div align="center"><input type="submit" class="btn btn-default" name="list" value="{tr}List{/tr}" /></div>
 							</td>
 						</tr>
 					</table>
-                    </div>
 				</div>
 		</form>
 	        <a name="step2"></a>
@@ -341,8 +339,7 @@ $("#repository, #categories").change(function(){
 	       {if isset($result) && $result|@count != '0'}
 	
 	        <b>{tr}Step 2: Click on a Configuration Profile Name below to review it and to be able to apply it on your Web site{/tr}</b>
-            <div class="table-responsive">
-			<table class="table normal">
+			<table class="normal">
 				<tr>
 					<th>{tr}Profile Name{/tr}</th>
 					<th>{tr}Repository{/tr}</th>
@@ -359,7 +356,6 @@ $("#repository, #categories").change(function(){
 				<tr><td colspan="3" class="odd">{tr}None{/tr}</td></tr>
 				{/if}
 			</table>
-            </div>
 			{/if}
 	
 	</fieldset>
@@ -367,11 +363,10 @@ $("#repository, #categories").change(function(){
 
 
 
-<fieldset class="table">
+<fieldset class="admin">
 <legend>{tr}Status{/tr}</legend>
 <div class="adminoptionbox">
-    <div class="table-responsive">
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th>{tr}Profile repository{/tr}</th>
 			<th>{tr}Status{/tr}</th>
@@ -385,7 +380,6 @@ $("#repository, #categories").change(function(){
 			</tr>
 		{/foreach}
 	</table>
-    </div>
 </div>
 </fieldset>
 {else}
@@ -401,7 +395,7 @@ $("#repository, #categories").change(function(){
 			{if !empty($export_yaml)}
 				<div class="wikitext">{$export_yaml}</div>
 			{/if}
-			<div class="t_navbar">
+			<div class="navbar">
 				<label for="export_type">{tr}Object type:{/tr}</label>
 				<select name="export_type" id="export_type">
 					<option value="prefs"{if $export_type eq "prefs"} selected="selected"{/if}>
@@ -414,7 +408,7 @@ $("#repository, #categories").change(function(){
 			</div>
 			<fieldset>
 				<legend>{tr}Export modified preferences as YAML{/tr}</legend>
-				<div class="t_navbar">
+				<div class="navbar">
 					{listfilter selectors=".profile_export_list > li"}
 					<label for="select_all_prefs_to_export">{tr}Toggle Visible{/tr}</label>
 					<input type="checkbox" id="select_all_prefs_to_export" />
@@ -483,7 +477,7 @@ $("#export_type").change(function(){
 });
 				{/jq}
 				<div class="input_submit_container">
-					<input type="submit" class="btn btn-default btn-sm" name="export" value="{tr}Export{/tr}" />
+					<input type="submit" class="btn btn-default" name="export" value="{tr}Export{/tr}" />
 				</div>
 			</fieldset>
 		</fieldset>
@@ -497,7 +491,7 @@ $("#export_type").change(function(){
 	{preference name=profile_sources}
 	{preference name=profile_channels}
 
-	<div align="center" style="padding:1em;"><input type="submit" class="btn btn-default btn-sm" name="config" value="{tr}Save{/tr}" /></div>
+	<div align="center" style="padding:1em;"><input type="submit" class="btn btn-default" name="config" value="{tr}Save{/tr}" /></div>
 </form>
 </fieldset>
 
@@ -525,7 +519,7 @@ $("#export_type").change(function(){
 					<textarea data-codemirror="true" data-syntax="yaml" id="profile_tester" name="profile_tester" rows="5" cols="40" style="width:95%;">{if isset($test_source)}{$test_source}{/if}</textarea>
 				</div>
 			</div>
-			<div align="center" style="padding:1em;"><input type="submit" class="btn btn-default btn-sm" name="test" value="{tr}Test{/tr}" /></div>
+			<div align="center" style="padding:1em;"><input type="submit" class="btn btn-default" name="test" value="{tr}Test{/tr}" /></div>
 		{/remarksbox}
 		</form>
 	</fieldset>

@@ -1,16 +1,11 @@
 <form action="tiki-admin.php?page=socialnetworks" method="post">
-
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-                <input type="submit" class="btn btn-default btn-sm" name="socialnetworksset" value="{tr}Change preferences{/tr}">
-            </div>
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" class="btn btn-default" name="socialnetworksset" value="{tr}Change preferences{/tr}" />
+	</div>
 
 	{tabset}
 		{tab name="{tr}General{/tr}"}
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Social Network Integration{/tr}</legend>
 				{preference name=feature_socialnetworks visible="always"}
 			</fieldset>
@@ -66,6 +61,6 @@
 
 
 	<div class="heading input_submit_container" style="text-align: center">
-		<input type="submit" class="btn btn-default btn-sm" name="socialnetworksset" value="{tr}Change preferences{/tr}" />
+		<input type="submit" class="btn btn-default" name="socialnetworksset" value="{tr}Change preferences{/tr}" />
 	</div>
 </form>

@@ -26,14 +26,15 @@ fieldset {
 }
 
 hr {
-	border-top: #c31e3b;
+	background: #c31e3b;
+	color: #c31e3b;
 }
 
-.header_outer {
+#main .header_outer {
 	background: url(watermelon/siteheadertile.png) 0 0 no-repeat;
 }
 
-.header_container .header {
+#header {
 	background: url(watermelon/siteheader.png) -250px 0 no-repeat;
 }
 
@@ -59,20 +60,29 @@ hr {
 	color: #eb1e41;
 }
 
-.btn-default,
-.btn-default:visited,
-#genPass .button a,
-#genPass .button a:visited,
+.button a,
+.button a:visited,
+button,
+input[type="reset"],
+input[type="submit"],
+.button input,
+.calbuttonBox a,
+span#genPass .button a,
+span#genPass .button a:visited,
 .daterow {
 	color: #fff;
 	background: #c31e3b;
 	border-color: #e7768a #a61d35 #a61d35 #e7768a;
 	font-weight: bold;
 }
-
-.btn-default:hover,
+	
 .button a:hover,
-#genPass .button a:hover,
+button:hover,
+input[type="reset"]:hover,
+input[type="submit"]:hover,
+.button input:hover,
+.calbuttonBox:hover,
+span#genPass .button a:hover,
 .daterow:hover {
 	background: #b4135f;
 	border-color: #a61d35 #e7768a #e7768a #a61d35;
@@ -90,7 +100,6 @@ hr {
 	color: #b51360;
 }
 
-#topbar_modules .dropdown-menu,
 .cssmenu_vert li ul a,
 .cssmenu_horiz li ul a,
 .header .cssmenu_horiz li ul a,
@@ -101,13 +110,10 @@ hr {
 	color: #fff;
 }
 
-#topbar_modules .dropdown-menu,
 #tiki-top .cssmenu_horiz li a {
 	background: #c61e3c url(watermelon/siteheader.png) no-repeat -600px -40px;
 }
 
-#topbar_modules .dropdown-menu > li > a:hover,
-#topbar_modules .dropdown-menu > li > a:focus,
 #tiki-top .cssmenu_horiz li a:hover,
 .cssmenu_vert li ul a:hover,
 .cssmenu_horiz li ul a:hover,
@@ -116,8 +122,6 @@ hr {
 	background: #fb999e;
 }
 
-#top_modules #secondary_site_menu .cssmenu_horiz li.selected a,
-#topbar_modules .dropdown-menu li.active a, /* bootstrap */
 .header .cssmenu_horiz li.selected a,
 #topbar_modules .cssmenu_horiz li.selected a,
 .cssmenu_horiz li.selected a,
@@ -126,7 +130,6 @@ hr {
 }
 
 .header .cssmenu_horiz li.selected li a,
-#top_modules #secondary_site_menu .cssmenu_horiz li.selected li a,
 #topbar_modules .cssmenu_horiz li.selected li a,
 .cssmenu_horiz li.selected li a,
 .cssmenu_vert li.selected li a {
@@ -139,35 +142,52 @@ hr {
 }
 
 select,
+input[type="text"],
+input[type="password"],
+input[type="file"],
+input[type="email"],
+input[type="file"],
+input[type="search"],
+input[type="number"],
+input#login-pass,
 textarea,
 .adminoptionbox option {
 	background: #f9dfe2;
 	border-color: #fb999e #f9f0f0 #f9f0f0 #fb999e;
 }
 
+/*th a:link,
+th a:visited,
+td.heading a:link,
+td.heading a:visited,
+tr.diffheader a:link,
+tr.diffheader a:visited,
+.calHeading {
+	color: #fff
+}*/
+
 .titlebar,
-.panel-default .panel-heading {
+.rbox-title, 
+.rbox-data {
 	border-color: #c31e3b;
 	background: #f6cdd2;
 	color: #8b1932;
 }
 
-.panel-default.module > .panel-heading,
-.panel-default.module > .panel-body {
-	background: none;
+.cbox {
+	background: #f6cdd2;
+	color: #8b1932;
 }
 
-.panel-default.module .panel-heading {
+.cbox-title {
 	border-bottom: 3px solid #c31e3b;
 }
 
-.well {
-	background: #f6cdd2;
-	color: #8b1932;
+.simplebox {
 	border: 2px solid #c31e3b;
 }
 
-.panel-heading,
+h3.box-title,
 .postbody-title,
 #top_modules .module.secondary_site_menu {
 	background: #e41e40 url(watermelon/siteheader.png) no-repeat -1000px -200px;
@@ -177,7 +197,7 @@ textarea,
 	background: #c31e3b;
 }
 
-.table,
+.normal,
 .wikitable {
 	border: 2px solid #8b1932;
 }
@@ -204,13 +224,13 @@ td.calheadhighlight {
 }
 
 .odd,
-table.table tr:nth-child(2n+1),
+table.normal tr:nth-child(2n+1),
 .tablesorter tr.odd td {
 	background: #f6cdd2;
 }
 
 .even,
-table.table tr:nth-child(2n),
+table.normal tr:nth-child(2n),
 .tablesorter tr.even td {
 	background: #f9f0f0;
 }
@@ -257,6 +277,10 @@ form.admin fieldset,
 
 .postbody-title {
 	background: #e31e40 url(watermelon/siteheader.png) -550px -90px no-repeat;
+}
+
+.postbody-title > br {
+	display: none;
 }
 
 .post .author,

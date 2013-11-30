@@ -16,7 +16,6 @@
 	</fieldset>
 	<fieldset>
 		<legend>{tr}Version{/tr}</legend>
-        <div class="table-responsive">
 		  <table class="table normal">
 			<tr>
 			  <th>{tr}Version{/tr}</th>
@@ -34,11 +33,10 @@
 					<td class="date">{$element.lastModif|tiki_short_datetime}</td>
 					<td class="text">{$element.user|userlink}</td>
 				</tr>{/foreach}
-		</table>
-       </div>
+			</table>
 	</fieldset>
 	<div>
-		<input type="submit" class="btn btn-default btn-sm" name="show" value="{tr}Show contributions{/tr}">
+		<input type="submit" class="btn btn-default" name="show" value="{tr}Show contributions{/tr}">
 		{button href="tiki-index.php?page=$page" _text="{tr}View page{/tr}"}
 	</div>
 </form>

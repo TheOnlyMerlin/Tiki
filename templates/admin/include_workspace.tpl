@@ -1,26 +1,26 @@
 {* $Id$ *}
 <form action="tiki-admin.php?page=workspace" method="post">
 	<div class="heading input_submit_container" style="text-align: right">
-		<input type="submit" class="btn btn-default btn-sm" name="workspacesetprefs" value="{tr}Change preferences{/tr}" />
+		<input type="submit" class="btn btn-default" name="workspacesetprefs" value="{tr}Change preferences{/tr}" />
 	</div>
 	{tabset}
 		{tab name="{tr}Workspaces{/tr}"}
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Activate the feature{/tr}</legend>
 				{preference name=workspace_ui visible="always"}
 			</fieldset>
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Administration{/tr}</legend>
 				<a class="button service-dialog" href="{service controller=workspace action=create}">{tr}Create a workspace{/tr}</a>
 
 				<div id="template-list">
 				</div>
-				<a class="button service-dialog reload" href="{service controller=workspace action=add_template}">{tr}Create a workspace template{/tr}</a>
+				<a class="button service-dialog reload" href="{service controller=workspace action=add_template}">{tr}Add a workspace template{/tr}</a>
 			</fieldset>
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Dependencies{/tr}</legend>
 				{preference name=namespace_enabled}
 				{preference name=namespace_separator}
@@ -29,7 +29,7 @@
 				{preference name=feature_wiki}
 			</fieldset>
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Advanced{/tr}</legend>
 				{preference name=workspace_root_category}
 			</fieldset>
@@ -52,17 +52,16 @@ $('#template-list').load($.service('workspace', 'list_templates'));
 		{/tab}
 		{tab name="{tr}Areas{/tr}"}
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Activate the feature{/tr}</legend>
 				{preference name=feature_areas}
 			</fieldset>
 			{if isset($error)}
 				{remarksbox type="warning" title="{tr}Error{/tr}"}{$error} {tr}Nothing was updated.{/tr}{/remarksbox}
 			{/if}
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Areas{/tr}</legend>
-                <div class="table-responsive">
-				<table class="table normal">
+				<table class="normal">
 					<tr>
 						<th>{tr}On{/tr}</th>
 						<th colspan="2">{tr}Category{/tr}</th>
@@ -100,11 +99,10 @@ $(".enabledChecks").click(function() {
 						<td class="{cycle}" colspan="7">{tr}No areas found. Click "Update Areas" to populate this list{/tr}</td>
 					{/if}
 				</table>
-                </div>
 			</fieldset>
 			{remarksbox type="info" title="{tr}Hint{/tr}"}{tr}This tab shows you an overview of categories affected by the areas feature. <br> More help here: <a href="http://doc.tiki.org/Areas" target="tikihelp">doc.tiki.org/Areas</a> {/tr}{/remarksbox}
 			<div class="heading input_submit_container" style="text-align: center">
-				<input type="submit" class="btn btn-default btn-sm" name="update_areas" value="{tr}Update areas{/tr}" />
+				<input type="submit" class="btn btn-default" name="update_areas" value="{tr}Update areas{/tr}" />
 			</div>
 			<div class="adminoptionboxchild" id="feature_areas_childcontainer">
 				{preference name=areas_root}
@@ -113,6 +111,6 @@ $(".enabledChecks").click(function() {
 		{/tab}
 	{/tabset}
 	<div class="heading input_submit_container" style="text-align: center">
-		<input type="submit" class="btn btn-default btn-sm" name="workspacesetprefs" value="{tr}Change preferences{/tr}" />
+		<input type="submit" class="btn btn-default" name="workspacesetprefs" value="{tr}Change preferences{/tr}" />
 	</div>
 </form>

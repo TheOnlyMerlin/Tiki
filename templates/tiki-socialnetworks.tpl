@@ -5,7 +5,7 @@
 {include file='tiki-mytiki_bar.tpl'}
 
 {if $tikifeedback}
-  <div class="alert alert-warning">
+  <div class="simplebox highlight">
     {section name=n loop=$tikifeedback}<div>{$tikifeedback[n].mes}</div>{/section}
   </div>
 {/if}
@@ -75,7 +75,7 @@
 {/if}
 </tr>
 <tr>
-<td colspan="2" class="input_submit_container"><input type="submit" class="btn btn-default btn-sm" name="accounts" value="{tr}Save changes{/tr}"></td>
+<td colspan="2" class="input_submit_container"><input type="submit" class="btn btn-default" name="accounts" value="{tr}Save changes{/tr}"></td>
 </tr>
 </table>
 </form>

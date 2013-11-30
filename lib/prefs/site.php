@@ -7,7 +7,12 @@
 
 function prefs_site_list()
 {
-    $available_layouts = TikiLib::lib('css')->list_layouts();
+    $available_layouts = array();
+	foreach (scandir('templates/layouts/') as $layoutName) {
+		if ($layoutName[0] != '.' && $layoutName != 'index.php') {
+			$available_layouts[$layoutName] = ucfirst($layoutName);
+		}   
+	}   
 
 	return array (
 		'site_closed' => array(
@@ -131,11 +136,5 @@ function prefs_site_list()
 			'default' => 'classic',
 			'options' => $available_layouts,
 		),  
-		'site_layout_per_object' => array(
-			'name' => tr('Allow per-object layout'),
-			'description' => tr('Allows objects to define an alternate layout for their rendering.'),
-			'type' => 'flag',
-			'default' => 'n',
-		),
 	);
 }

@@ -23,13 +23,12 @@ function test_xpath(index) {
 <input type="checkbox" name="show_post" value="y" {if $show_post eq 'y'} checked="checked"{/if}>{tr}Show POST Data{/tr}<br/>
 <input type="checkbox" name="current_session" value="y" {if $current_session eq 'y'} checked="checked"{/if}>{tr}Use Current Session/Log out{/tr}<br/>
 <input type="hidden" name="filename" value="{$filename}">
-<center><input type="submit" class="btn btn-default btn-sm" name="action" value="{tr}Refresh{/tr}"></center>
+<center><input type="submit" class="btn btn-default" name="action" value="{tr}Refresh{/tr}"></center>
 {if $result}
 </fieldset>
 <fieldset>
 <legend>{tr}Recorded Links{/tr}</legend>
-<div class="table-responsive">
-<table class="table normal">
+<table class="table normal" width="100%">
 {foreach from=$result item=r name=url}
 	<tr>
 		<th style="width:10%">{tr}Request:{/tr}&nbsp;{$r.method}</td><td>{$r.url}</th>
@@ -51,8 +50,7 @@ function test_xpath(index) {
 	{if $show_tidy}
 	<tr><th colspan="4">{tr}Tidy Results{/tr}</th></tr>
 	<tr><td colspan="2">
-    <div class="table-responsive">
-	<table class="table normal">
+	<table class="table normal" width="100%">
  		<tr><td colspan="2" width="50%"><pre>{$r.ref_error_msg|escape:"html"}</pre></td>
 		</tr>
 	</table>
@@ -65,9 +63,7 @@ function test_xpath(index) {
 	</tr>
 	{/foreach}
 </table>
-</div>
-</div>
 </fieldset>
-<center><input type="submit" class="btn btn-default btn-sm" name="action" value="{tr}Edit{/tr}"></center>
+<center><input type="submit" class="btn btn-default" name="action" value="{tr}Edit{/tr}"></center>
 {/if}
 </form>

@@ -8,14 +8,14 @@
   {capture name=my}
   {if $prefs.feature_wiki eq 'y' and $mytiki_pages eq 'y'}
     <div id="content1" class="content">
-      <div class="panel panel-default">
-        <div class="panel-heading">
+      <div class="cbox">
+        <div class="cbox-title">
           {if $userwatch eq $user}
             {tr}My pages{/tr}{else}{tr}User Pages{/tr}
           {/if}
         </div>
-        <div class="panel-body">
-            <div class="table-responsive">
+        <div class="cbox-data">
+          
           <table class="table normal">
             <tr>
               <th>
@@ -52,7 +52,6 @@
               </tr>
             {/section}
           </table>
-          </div>
 		  <div style="text-align:right;">{tr}Records:{/tr} {$user_pages|@count}</div>
         </div>
       </div>
@@ -61,12 +60,11 @@
 
   {if $prefs.feature_galleries eq 'y' and $mytiki_gals eq 'y'}
     <div id="content2" class="content">
-      <div class="panel panel-default">
-        <div class="panel-heading">
+      <div class="cbox">
+        <div class="cbox-title">
           {if $userwatch eq $user}{tr}My galleries{/tr}{else}{tr}User Galleries{/tr}{/if}
         </div>
-        <div class="panel-body">
-          <div class="table-responsive">
+        <div class="cbox-data">
           <table class="table normal">
             <tr>
               <th>{tr}Gallery{/tr}</th>
@@ -86,7 +84,6 @@
               </tr>
             {/section}
           </table>
-          </div>
 		  <div style="text-align:right;">{tr}Records:{/tr} {$user_galleries|@count}</div>
         </div>
       </div>
@@ -95,12 +92,11 @@
 
   {if $prefs.feature_articles eq 'y' and $mytiki_articles eq 'y'}
     <div id="content2" class="content">
-      <div class="panel panel-default">
-        <div class="panel-heading">
+      <div class="cbox">
+        <div class="cbox-title">
           {if $userwatch eq $user}{tr}My Articles{/tr}{else}{tr}User Articles{/tr}{/if}
         </div>
-        <div class="panel-body">
-          <div class="table-responsive">
+        <div class="cbox-data">
           <table class="table normal">
             <tr>
               <th>{tr}Article{/tr}</th>
@@ -120,7 +116,6 @@
               </tr>
             {/section}
           </table>
-          </div>
 		  <div style="text-align:right;">{tr}Records:{/tr} {$user_articles|@count}</div>
         </div>
       </div>
@@ -129,12 +124,11 @@
 
   {if $prefs.feature_trackers eq 'y' and $mytiki_user_items eq 'y'}
     <div id="content3" class="content">
-      <div class="panel panel-default">
-        <div class="panel-heading">
+      <div class="cbox">
+        <div class="cbox-title">
           {if $userwatch eq $user}{tr}My User Items{/tr}{else}{tr}User Items{/tr}{/if}
         </div>
-        <div class="panel-body">
-          <div class="table-responsive">
+        <div class="cbox-data">
           <table class="table normal">
             <tr>
               <th>{tr}Item{/tr}</th>
@@ -152,7 +146,6 @@
               </tr>
             {/section}
           </table>
-          </div>
 		  <div style="text-align:right;">
 		  	   {tr}Records:{/tr} {$user_items|@count}
 			   {if !empty($nb_item_comments)}<br>{tr}Comments:{/tr} {$nb_item_comments}{/if}
@@ -164,10 +157,9 @@
 
   {if $prefs.feature_messages eq 'y' and $mytiki_msgs eq 'y'}
     <div id="content4" class="content">
-      <div class="panel panel-default">
-        <div class="panel-heading">{tr}Unread Messages{/tr}</div>
-        <div class="panel-body">
-          <div class="table-responsive">
+      <div class="cbox">
+        <div class="cbox-title">{tr}Unread Messages{/tr}</div>
+        <div class="cbox-data">
           <table class="table normal">
             <tr>
               <th>{tr}Subject{/tr}</th>
@@ -189,7 +181,6 @@
               </tr>
             {/section}
           </table>
-          </div>
 		  <div style="text-align:right;">{tr}Records:{/tr} {$msgs|@count}</div>
         </div>
       </div>
@@ -198,12 +189,11 @@
 
   {if $prefs.feature_tasks eq 'y' and $mytiki_tasks eq 'y'}
     <div id="content5" class="content">
-      <div class="panel panel-default">
-        <div class="panel-heading">
+      <div class="cbox">
+        <div class="cbox-title">
           {if $userwatch eq $user}{tr}My tasks{/tr}{else}{tr}My Tasks{/tr}{/if}
         </div>
         <div class="cbox-data">
-          <div class="table-responsive">
           <table class="table normal">
             <tr>
               <th>{tr}Tasks{/tr}</th>
@@ -217,7 +207,6 @@
               </tr>
             {/section}
           </table>
-          </div>
 		  <div style="text-align:right;">{tr}Records:{/tr} {$tasks|@count}</div>
         </div>
       </div>
@@ -226,12 +215,11 @@
 
   {if $prefs.feature_forums eq 'y' && $mytiki_forum_topics eq 'y'}
     <div id="content8" class="content">
-      <div class="panel panel-default">
-        <div class="panel-heading">
+      <div class="cbox">
+        <div class="cbox-title">
           {if $userwatch eq $user}{tr}My forum topics{/tr}{else}{tr}User forum topics{/tr}{/if}
         </div>
-        <div class="panel-body">
-          <div class="table-responsive">
+        <div class="cbox-data">
           <table class="table normal">
             <tr>
               <th>{tr}Forum topics{/tr}</th>              
@@ -249,7 +237,6 @@
               </tr>
             {/section}
           </table>
-          </div>
 		  <div style="text-align:right;">{tr}Records:{/tr} {$user_forum_topics|@count}</div>
         </div>
       </div>
@@ -258,12 +245,11 @@
   
     {if $prefs.feature_forums eq 'y' && $mytiki_forum_replies eq 'y'}
     <div id="content9" class="content">
-      <div class="panel panel-default">
-        <div class="panel-heading">
+      <div class="cbox">
+        <div class="cbox-title">
           {if $userwatch eq $user}{tr}My forum replies{/tr}{else}{tr}User forum replies{/tr}{/if}
         </div>
-        <div class="panel-body">
-          <div class="table-responsive">
+        <div class="cbox-data">
           <table class="table normal">
             <tr>
               <th>{tr}Forum replies{/tr}</th>              
@@ -281,7 +267,6 @@
               </tr>
             {/section}
           </table>
-          </div>
 		  <div style="text-align:right;">{tr}Records:{/tr} {$user_forum_replies|@count}</div>
         </div>
       </div>
@@ -290,12 +275,11 @@
   
   {if $prefs.feature_blogs eq 'y' && $mytiki_blogs eq 'y'}
     <div id="content6" class="content">
-      <div class="panel panel-default">
-        <div class="panel-heading">
+      <div class="cbox">
+        <div class="cbox-title">
           {if $userwatch eq $user}{tr}My blogs{/tr}{else}{tr}User Blogs{/tr}{/if}
         </div>
-        <div class="panel-body">
-          <div class="table-responsive">
+        <div class="cbox-data">
           <table class="table normal">
             <tr>
               <th>{tr}Blogs{/tr}</th>
@@ -315,16 +299,14 @@
               </tr>
             {/section}
           </table>
-          </div>
 		  <div style="text-align:right;">{tr}Records:{/tr} {$user_blogs|@count}</div>
         </div>
       </div>
- <div class="panel panel-default">
-        <div class="panel-heading">
+ <div class="cbox">
+        <div class="cbox-title">
           {if $userwatch eq $user}{tr}My blog Posts{/tr}{else}{tr}User Blog Posts{/tr}{/if}
         </div>
         <div class="cbox-data">
-          <div class="table-responsive">
           <table class="table normal">
             <tr>
               <th>{tr}Blog Posts{/tr}</th>
@@ -344,7 +326,6 @@
               </tr>
             {/section}
           </table>
-          </div>
 		  <div style="text-align:right;">{tr}Records:{/tr} {$user_blog_posts|@count}</div>
         </div>
       </div>

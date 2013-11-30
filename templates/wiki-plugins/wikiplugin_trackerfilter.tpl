@@ -1,7 +1,7 @@
 {*param :  $msgTrackerFilter, $line, $open, $iTrackerFilter, $trackerId, $filters(array(name, format, fieldId, selected, opts)), $showFieldId *}
 {strip}
 {if isset($msgTrackerFilter) && $msgTrackerFilter}
-<div class="alert alert-warning">{$msgTrackerFilter|escape}</div>
+<div class="simplebox highlight">{$msgTrackerFilter|escape}</div>
 {/if}
 {if (!isset($line) || $line ne 'y') and $prefs.javascript_enabled eq 'y' and $noflipflop ne 'y'}
 {button _text="{tr}Filters{/tr}" _flip_id="trackerFilter$iTrackerFilter"}
@@ -32,7 +32,6 @@ function tf_export_submit(fm) {
 <input type="hidden" name="trackerId" value="{$trackerId}">
 <input type="hidden" name="iTrackerFilter" value="{$iTrackerFilter}">
 {if !empty($count_item)}<input type="hidden" name="count_item" value="{$count_item}">{/if}
-<div class="table-responsive">
 <table class="table normal">
 {if isset($line) && $line eq 'y'}<tr>{/if}
 {cycle values="even,odd" print=false}
@@ -140,7 +139,6 @@ function tf_export_submit(fm) {
 {/if}
 {if (!isset($line) || $line ne 'y' ) and $action}</tr>{/if}
 </table>
-</div>
 {if empty($inForm)}</form>{/if}
 </div>
 {if !empty($dataRes)}<div class="trackerfilter-result">{$dataRes}</div>{/if}

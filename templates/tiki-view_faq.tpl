@@ -1,15 +1,15 @@
 {title help="FAQs"}{tr}{$faq_info.title}{/tr}{/title}
 <div class="description">{$faq_info.description|escape}</div>
 
-<div class="t_navbar btn-group form-group">
+<div class="navbar">
 	{self_link print='y'}{icon _id='printer' align='right' hspace='1' alt="{tr}Print{/tr}"}{/self_link}
-	{button href="tiki-list_faqs.php" class="btn btn-default" _text="{tr}List FAQs{/tr}"}
+	{button href="tiki-list_faqs.php" _text="{tr}List FAQs{/tr}"}
 	
 	{if $tiki_p_admin_faqs eq 'y'}
-		{button href="tiki-list_faqs.php?faqId=$faqId" class="btn btn-default" _text="{tr}Edit this FAQ{/tr}"}
+		{button href="tiki-list_faqs.php?faqId=$faqId" _text="{tr}Edit this FAQ{/tr}"}
 	{/if}
 	{if $tiki_p_admin_faqs eq 'y'}
-		{button href="tiki-faq_questions.php?faqId=$faqId" class="btn btn-default" _text="{tr}New Question{/tr}"}
+		{button href="tiki-faq_questions.php?faqId=$faqId" _text="{tr}New Question{/tr}"}
 	{/if}
 </div>
 
@@ -71,7 +71,7 @@
 	<div class="faq_suggestions" id="faqsugg" style="display:{if !empty($error)}block{else}none{/if};">
 		{if !empty($error)}
 			<br>
-			<div class="alert alert-warning">{icon _id=exclamation alt="{tr}Error{/tr}" style="vertical-align:middle"} {$error}</div>
+			<div class="simplebox highlight">{icon _id=exclamation alt="{tr}Error{/tr}" style="vertical-align:middle"} {$error}</div>
 		{/if}
 		<br>
 		<form action="tiki-view_faq.php" method="post">
@@ -97,14 +97,13 @@
 				<tr>
 					<td>&nbsp;</td>
 					<td>
-						<input type="submit" class="btn btn-default btn-sm" name="sugg" value="{tr}Add{/tr}">
+						<input type="submit" class="btn btn-default" name="sugg" value="{tr}Add{/tr}">
 					</td>
 				</tr>
 			</table>
 		</form>
 		{if count($suggested) != 0}
 			<br>
-            <div class="table-responsive">
 			<table class="table normal">
 				<tr>
 					<th>{tr}Suggested questions{/tr}</th>
@@ -116,7 +115,6 @@
 					</tr>
 				{/section}
 			</table>
-            </div>
 		{/if}
 	</div>
 {/if}

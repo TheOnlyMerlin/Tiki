@@ -6,7 +6,7 @@
 	<div class="description">{wiki}{$forum_info.description}{/wiki}</div>
 {/if}
 
-<div class="t_navbar">
+<div class="navbar">
 	<table width="97%">
 		<tr>
 			<td>
@@ -75,7 +75,7 @@
 						{if isset($category_watched) and $category_watched eq 'y'}
 							{tr}Watched by categories:{/tr}
 							{section name=i loop=$watching_categories}
-								<a class="btn btn-default btn-sm" href="tiki-browse_categories.php?parentId={$watching_categories[i].categId}">{$watching_categories[i].name|escape}</a>
+								<a href="tiki-browse_categories.php?parentId={$watching_categories[i].categId}">{$watching_categories[i].name|escape}</a>
 								&nbsp;
 							{/section}
 						{/if}	
@@ -342,9 +342,9 @@
 						{if empty($user)}
 							{tr}Enter your name:{/tr}&nbsp;<input type="text" maxlength="50" size="12" id="anonymous_name" name="anonymous_name">
 						{/if}
-						<input type="submit" class="btn btn-default btn-sm" name="comments_postComment" value="{tr}Post{/tr}" {if empty($user)}onclick="setCookie('anonymous_name',document.getElementById('anonymous_name').value);needToConfirm=false;"{/if}>
-						<input type="submit" class="btn btn-default btn-sm" name="comments_previewComment" value="{tr}Preview{/tr}" {if empty($user)}onclick="setCookie('anonymous_name',document.getElementById('anonymous_name').value);needToConfirm=false;"{/if}>
-						<input type="submit" class="btn btn-default btn-sm" name="comments_postCancel" value="{tr}Cancel{/tr}" {if $comment_preview neq 'y'}onclick="hide('forumpost');window.location='#header';return false;"{/if}>
+						<input type="submit" class="btn btn-default" name="comments_postComment" value="{tr}Post{/tr}" {if empty($user)}onclick="setCookie('anonymous_name',document.getElementById('anonymous_name').value);needToConfirm=false;"{/if}>
+						<input type="submit" class="btn btn-default" name="comments_previewComment" value="{tr}Preview{/tr}" {if empty($user)}onclick="setCookie('anonymous_name',document.getElementById('anonymous_name').value);needToConfirm=false;"{/if}>
+						<input type="submit" class="btn btn-default" name="comments_postCancel" value="{tr}Cancel{/tr}" {if $comment_preview neq 'y'}onclick="hide('forumpost');window.location='#header';return false;"{/if}>
 					</td>
 				</tr>
 			</table>
@@ -368,7 +368,7 @@
 {/if}
 
 {if $prefs.feature_forum_content_search eq 'y' and $prefs.feature_search eq 'y'}
-	<div class="text-center">
+	<div class="findtable">
 		<form id="search-form" class="forms" method="get" action="tiki-search{if $prefs.feature_forum_local_tiki_search eq 'y'}index{else}results{/if}.php">
 				<input name="highlight" size="30" type="text">
 				<input type="hidden" name="where" value="forums">
@@ -384,7 +384,6 @@
 	<input type="hidden" name="comments_threshold" value="{$comments_threshold|escape}">
 	<input type="hidden" name="thread_sort_mode" value="{$thread_sort_mode|escape}">
 	<input type="hidden" name="forumId" value="{$forumId|escape}">
-    <div class="table-responsive">
 	<table class="table normal">
 		{if $tiki_p_admin_forum eq 'y'}
 			<tr>
@@ -434,7 +433,7 @@
 								{/if}
 							{/section}
 						</select>
-						<input type="submit" class="btn btn-default btn-sm" name="mergesel" value="{tr}Merge{/tr}">
+						<input type="submit" class="btn btn-default" name="mergesel" value="{tr}Merge{/tr}">
 					</td>
 				</tr>
 			{/if}
@@ -490,7 +489,7 @@
 			{/if}
 			<tr class="{cycle}">
 				{if $tiki_p_admin_forum eq 'y'}
-					<td class="checkbox-cell">
+					<td class="checkbox">
 						<input type="checkbox" name="forumtopic[]" value="{$comments_coms[ix].threadId|escape}" {if isset($smarty.request.forumtopic) and in_array($comments_coms[ix].threadId,$smarty.request.forumtopic)}checked="checked"{/if}>
 					</td>
 				{/if}	
@@ -631,7 +630,6 @@
 			{norecords _colspan=8 _text="No topics yet"}
 		{/section}
 	</table>
-    </div>
 </form>
 
 {pagination_links cant=$comments_cant step=$comments_per_page offset=$comments_offset offset_arg='comments_offset'}{/pagination_links}
@@ -639,7 +637,6 @@
 {if $forum_info.forum_last_n > 0 && count($last_comments)}
 	{* Last n titles *}
 	{cycle values="odd,even" print=false}
-    <div class="table-responsive">
 	<table class="table normal">
 		<tr>
 			<th>{tr}Last{/tr} {$forum_info.forum_last_n} {tr}posts in this forum{/tr}</th>
@@ -657,11 +654,10 @@
 			</tr>
 		{/section}
 	</table>
-    </div>
 	<br>
 {/if}
 
-<div id="page-bar" class="btn-group">
+<div id="page-bar" class="clearfix">
 	{button href="javascript:flip('filteroptions');" _flip_id="filteroptions" _text="{tr}Filter Posts{/tr}"}
 	{if $prefs.feature_forum_quickjump eq 'y' and count($all_forums) > 1}
 		<form id='quick' method="post" action="tiki-view_forum.php" style="float:right;">
@@ -776,7 +772,7 @@
 				<tr>
 					<td>&nbsp;</td>
 					<td>
-						<input type="submit" class="btn btn-default btn-sm" id="filter_submit" value="{tr}Filter{/tr}">
+						<input type="submit" class="btn btn-default" id="filter_submit" value="{tr}Filter{/tr}">
 					</td>
 				</tr>
 				</table>

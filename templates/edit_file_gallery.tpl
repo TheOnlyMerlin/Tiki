@@ -11,14 +11,10 @@
 			<input type="hidden" name="galleryId" value="{$galleryId|escape}">
 			<input type="hidden" name="filegals_manager" {if isset($filegals_manager)}value="{$filegals_manager}"{/if}>
 
-			<div class="row"> {* 100% width, padding: 0 -15px *}
-                <div class="form-group col-lg-12 clearfix"> {* bottom margin: 20px; padding: 0 15px; clear float *}
-                    <div class="pull-right"> {* float: right; *}
-        				<input type="submit" class="btn btn-default btn-sm" value="{tr}Save{/tr}" name="edit">
-	        			&nbsp;
-			        	<input type="checkbox" name="viewitem" checked="checked"> {tr}View inserted gallery{/tr}
-                    </div>
-                </div>
+			<div class="input_submit_container" style="text-align: right">
+				<input type="submit" class="btn btn-default" value="{tr}Save{/tr}" name="edit">
+				&nbsp;
+				<input type="checkbox" name="viewitem" checked="checked"> {tr}View inserted gallery{/tr}
 			</div>
 			{tabset name="list_file_gallery"}
 				{tab name="{tr}Properties{/tr}"}
@@ -297,7 +293,7 @@ $('#fgal_template').change( function() {
 					</table>
 				{/tab}
 			{/tabset}
-			<input type="submit" class="btn btn-default btn-sm" value="{tr}Save{/tr}" name="edit">
+			<input type="submit" class="btn btn-default" value="{tr}Save{/tr}" name="edit">
 		</form>
 	</div>
 	<br>

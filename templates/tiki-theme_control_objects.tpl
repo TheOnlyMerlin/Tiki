@@ -9,9 +9,9 @@
 5. {tr}Finally if the user didn't select a theme the default theme is used{/tr}
 {/remarksbox}
 
-<div class="t_navbar btn-group form-group">
-	{button href="tiki-theme_control.php" class="btn btn-default" _text="{tr}Control by Categories{/tr}"}
-	{button href="tiki-theme_control_sections.php" class="btn btn-default" _text="{tr}Control by Sections{/tr}"}
+<div class="navbar">
+	{button href="tiki-theme_control.php" _text="{tr}Control by Categories{/tr}"}
+	{button href="tiki-theme_control_sections.php" _text="{tr}Control by Sections{/tr}"}
 </div>
 
 <h2>{tr}Assign themes to objects{/tr}</h2>
@@ -21,7 +21,7 @@
 			<option value="{$objectypes[ix]|escape}" {if $type eq $objectypes[ix]}selected="selected"{/if}>{$objectypes[ix]}</option>
 		{/section}
 	</select>
-<!--<input type="submit" class="btn btn-default btn-sm" name="settype" value="{tr}Set{/tr}">-->
+<!--<input type="submit" class="btn btn-default" name="settype" value="{tr}Set{/tr}">-->
 	<table class="formcolor">
 		<tr>
 			<td>{tr}Object{/tr}</td>
@@ -53,7 +53,7 @@
 				</select>
 			</td>
 			<td>
-				<input type="submit" class="btn btn-default btn-sm" name="assign" value="{tr}Assign{/tr}">
+				<input type="submit" class="btn btn-default" name="assign" value="{tr}Assign{/tr}">
 			</td>
 		</tr>
 	</table>
@@ -65,10 +65,9 @@
 
 <form action="tiki-theme_control_objects.php" method="post">
 	<input type="hidden" name="type" value="{$type|escape}">
-    <div class="table-responsive">
 	<table class="table normal">
 		<tr>
-			<th><input type="submit" class="btn btn-default btn-sm" name="delete" value="{tr}Del{/tr}"></th>
+			<th><input type="submit" class="btn btn-default" name="delete" value="{tr}Del{/tr}"></th>
 			<th>
 				<a href="tiki-theme_control_objects.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'type_desc'}type_asc{else}type_desc{/if}">
 					{tr}Type{/tr}
@@ -87,7 +86,7 @@
 		{cycle values="odd,even" print=false}
 		{section name=user loop=$channels}
 			<tr class="{cycle}">
-				<td class="checkbox-cell">
+				<td class="checkbox">
 					<input type="checkbox" name="obj[{$channels[user].objId}]">
 				</td>
 				<td class="text">{$channels[user].type}</td>
@@ -96,7 +95,6 @@
 			</tr>
 		{/section}
 	</table>
-    </div>
 </form>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links} 

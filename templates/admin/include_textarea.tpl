@@ -3,15 +3,10 @@
 {/remarksbox}
 
 <form action="tiki-admin.php?page=textarea" method="post">
-
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-                <input type="submit" class="btn btn-default btn-sm" name="textareasetup" value="{tr}Change preferences{/tr}">
-            </div>
-        </div>
-    </div>
-
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" class="btn btn-default" name="textareasetup" value="{tr}Change preferences{/tr}" />
+	</div>
+	
 	{tabset name="admin_textarea"}
 		{tab name="{tr}General Settings{/tr}"}
 			<fieldset>
@@ -41,7 +36,7 @@
 				{preference name=wiki_dynvar_multilingual}
 			</fieldset>
 
-			<fieldset class="table featurelist">
+			<fieldset class="admin featurelist">
 				<legend>{tr}Plugins{/tr}</legend>
 				{preference name=wikiplugin_showreference}
 				{preference name=wikiplugin_addreference}
@@ -139,24 +134,24 @@
 				{/remarksbox}
 			{/if}
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Plugin preferences{/tr}</legend>
 				{preference name=wikipluginprefs_pending_notification}
 			</fieldset>
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Edit plugin icons{/tr}</legend>
 				{preference name=wiki_edit_plugin}
 				{preference name=wiki_edit_icons_toggle}
 			</fieldset>
 			
-			<fieldset class="table" id="plugins">
+			<fieldset class="admin" id="plugins">
 				<legend>{tr}Plugins{/tr}</legend>
-				<fieldset class="table donthide">
+				<fieldset class="admin donthide">
 					{listfilter selectors='#plugins fieldset.admin' exclude=".donthide"}
 				</fieldset>
 				{foreach from=$plugins key=plugin item=info}
-					<fieldset class="table">
+					<fieldset class="admin">
 						<legend>{$info.name|escape}</legend>
 						<div class="adminoptionbox">
 							<strong>{$plugin|escape}</strong>: {$info.description|escape}{assign var=pref value="wikiplugin_$plugin"}{help url="Plugin$plugin"}
@@ -253,8 +248,8 @@ if (window.location.href.indexOf('plugin_alias_new=true') > -1) {
 						<a href="tiki-admin.php?page=textarea&amp;plugin_alias={$name|escape}">{$name|escape}</a>
 					{/foreach}
 					<div align="center">
-						<input type="submit" class="btn btn-default btn-sm" name="enable" value="{tr}Enable Plugins{/tr}"/>
-						<input type="submit" class="btn btn-warning btn-sm" name="delete" value="{tr}Delete Plugins{/tr}"/>
+						<input type="submit" class="btn btn-default" name="enable" value="{tr}Enable Plugins{/tr}"/>
+						<input type="submit" class="btn btn-warning" name="delete" value="{tr}Delete Plugins{/tr}"/>
 					</div>
 					{remarksbox type="tip" title="{tr}Tip{/tr}"}
 						{tr}Click on the plugin name to edit it.{/tr} {tr}Click on the + icon to add a new one.{/tr}
@@ -483,7 +478,7 @@ $('#pluginalias_simple_new').hide();
 		{/tab}
 	{/tabset}
 	<div class="heading input_submit_container" style="text-align: right">
-		<input type="submit" class="btn btn-default btn-sm" name="textareasetup" value="{tr}Change preferences{/tr}" />
+		<input type="submit" class="btn btn-default" name="textareasetup" value="{tr}Change preferences{/tr}" />
 	</div>
 </form>
 

@@ -41,10 +41,10 @@
 
 {title help="Banning+System"}{tr}Banning system{/tr}{/title}
 
-<div class="t_navbar">
+<div class="navbar">
 	<form action="tiki-admin_banning.php" method="post">
 	<input type="hidden" name="export" value="y">
-		<input type="submit" class="btn btn-default btn-sm" name="csv" value="{tr}Export as CSV{/tr}" class="button">
+		<input type="submit" class="btn btn-default" name="csv" value="{tr}Export as CSV{/tr}" class="button">
 		{button _text="{tr}Import as CSV{/tr}" href="#Import_rules_as_CSV" class="button"}
 	</form>
 </div>
@@ -161,7 +161,7 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" class="btn btn-default btn-sm" name="save" value="{tr}Save{/tr}">
+				<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 			</td>
 		</tr>
 	</table>
@@ -182,7 +182,7 @@
         	<input type="checkbox" name="import_as_new">
         	{tr}Import as new rules{/tr}
         </label>
-        <input type="submit" class="btn btn-default btn-sm" name="import" value="{tr}import{/tr}">
+        <input type="submit" class="btn btn-default" name="import" value="{tr}import{/tr}">
       </td>
     </tr>
   </table>
@@ -201,10 +201,9 @@
 	<input type="hidden" name="offset" value="{$offset|escape}">
 	<input type="hidden" name="find" value="{$find|escape}">
 	<input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
-    <div class="table-responsive">
 	<table class="table normal">
 		<tr>
-			<th><input type="submit" class="btn btn-warning btn-sm" name="del" value="{tr}x{/tr} "></th>
+			<th><input type="submit" class="btn btn-warning" name="del" value="{tr}x{/tr} "></th>
 			<th>{tr}Title{/tr}</th>
 			<th>{tr}User/IP{/tr}</th>
 			<th>{tr}Sections{/tr}</th>
@@ -213,7 +212,7 @@
 		{cycle values="odd,even" print=false}
 		{section name=user loop=$items}
 			<tr class="{cycle}">
-				<td class="checkbox-cell">
+				<td class="checkbox">
 					<input type="checkbox" name="delsec[{$items[user].banId}]">
 				</td>
 				<td class="text">
@@ -244,7 +243,6 @@
 				{norecords _colspan=5}
 		{/section}
 	</table>
-    </div>
 </form>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}

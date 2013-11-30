@@ -202,7 +202,7 @@ $("#viewSwitcher").change(function() {
 		{/if}
 		{if $prefs.fgal_search_in_content eq 'y' and $galleryId > 0}
 			{if $view neq 'page'}
-				<div class="text-center">
+				<div class="findtable">
 					<form id="search-form" class="forms" method="get" action="tiki-search{if $prefs.feature_forum_local_tiki_search eq 'y'}index{else}results{/if}.php">
 						<input type="hidden" name="where" value="files">
 						<input type="hidden" name="galleryId" value="{$galleryId}">
@@ -303,7 +303,7 @@ window.handleFinderFile = function (file, elfinder) {
 		|| $tiki_p_post_comments == 'y'
 		|| $tiki_p_edit_comments == 'y')}
 
-		<div id="page-bar" class="btn-group">
+		<div id="page-bar" class="clearfix">
 			<span class="button btn-default">
 				<a id="comment-toggle" href="{service controller=comment action=list type="file gallery" objectId=$galleryId}#comment-container">
 					{tr}Comments{/tr}

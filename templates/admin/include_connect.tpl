@@ -20,7 +20,7 @@
 		<fieldset>
 			<legend><strong>{tr}Promote your site{/tr}</strong></legend>
 			<p>
-				{tr}Add your site to the Tiki directory.{/tr}
+				{tr}Add your site to the Tiki diretory.{/tr}
 				{button href="tiki-register_site.php" _text="{tr}Submit your site{/tr}"}
 			</p>
 		</fieldset>
@@ -61,11 +61,11 @@
 				{/remarksbox}
 				{preference name="connect_feature"}
 				<div class="adminoptionboxchild" id="connect_feature_childcontainer">
-					<div class="t_navbar btn-group form-group">
-						{button _script="#" class="btn btn-default" _text="{tr}Send Info{/tr}" _title="{tr}Send the data{/tr}" _id="connect_send_btn"}
-						{button _script="#" class="btn btn-default" _text="{tr}Preview info{/tr}" _title="{tr}See what is going to be sent{/tr}" _id="connect_list_btn"}
+					<div class="navbar">
+						{button _script="#" _text="{tr}Send Info{/tr}" _title="{tr}Send the data{/tr}" _id="connect_send_btn"}
+						{button _script="#" _text="{tr}Preview info{/tr}" _title="{tr}See what is going to be sent{/tr}" _id="connect_list_btn"}
 						{if empty($prefs.connect_site_title)}
-							{button _text="{tr}Fill form{/tr}" class="btn btn-default" _title="{tr}Fill this form in based on other preferences{/tr}" _id="connect_defaults_btn" _script="#"}
+							{button _text="{tr}Fill form{/tr}" _title="{tr}Fill this form in based on other preferences{/tr}" _id="connect_defaults_btn" _script="#"}
 						{/if}
 					</div>
 					{preference name="connect_send_info"}
@@ -102,7 +102,7 @@
 			</fieldset>
 
 			<div class="heading input_submit_container" style="text-align: center;">
-				<input type="submit" class="btn btn-default btn-sm" name="connectprefs" value="{tr}Change preferences{/tr}" />
+				<input type="submit" class="btn btn-default" name="connectprefs" value="{tr}Change preferences{/tr}" />
 			</div>
 		</form>
 	{/tab}
@@ -118,8 +118,7 @@
 				{/if}
 			</form>
 
-                <div class="table-responsive">
-                <table class="table normal">
+			<table class="normal">
 				<tr>
 					<th>{tr}Created{/tr}</th>
 					<th>{tr}Title{/tr}</th>
@@ -146,7 +145,6 @@
 					{norecords _colspan=4}
 				{/section}
 			</table>
-            </div>
 
 		{/tab}
 	{/if}

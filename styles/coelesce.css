@@ -3,13 +3,20 @@
  * original design by Patrick Allard. Distributed under the LGPL license.
  */
 
-/* design defaults: */
+/* Import *lite as the base: */
+@import url("lite/lite.css");
+
+/* Then import the default layout properties file: */
+@import url("layout/layout.css");
+
+/* And design defaults: */
 @import url("layout/design.css");
 
 /***** XHTML Elements ******/
 body {
 	text-align: left;
-	font-family: Arial, Helvetica, sans-serif;
+	font: .7em Arial, Helvetica, sans-serif;
+	line-height: 1.4;
 }
 
 a,
@@ -902,6 +909,7 @@ a.forumnameread {
 }
 
 /** Tabs **/
+/* reset what's in layout.css */
 .tabactive,
 .tabinactive,
 [class].tabactive,
@@ -1114,6 +1122,11 @@ h1.pagetitle {
 
 .split {
 	border: 1px dashed #696969;
+}
+
+#page-bar {
+	width: 100%;
+	float: none;
 }
 
 .editdate {

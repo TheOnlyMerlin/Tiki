@@ -4,15 +4,15 @@
 
 <form action="tiki-admin.php?page=calendar" method="post">
 	<div class="input_submit_container clear" style="text-align: right;">
-		<input type="submit" class="btn btn-default btn-sm" name="calprefs" value="{tr}Change settings{/tr}" />
+		<input type="submit" class="btn btn-default" name="calprefs" value="{tr}Change settings{/tr}" />
 	</div>
 
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Activate the feature{/tr}</legend>
 		{preference name=feature_calendar visible="always"}
 	</fieldset>
 	
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Plugins{/tr}</legend>
 		{preference name=wikiplugin_calendar}
 		{preference name=wikiplugin_events}
@@ -85,7 +85,7 @@
 		{preference name=calendar_watch_editor}
 	</fieldset>
 	<div class="input_submit_container clear" style="text-align: center;">
-		<input type="submit" class="btn btn-default btn-sm" name="calprefs" value="{tr}Change settings{/tr}" />
+		<input type="submit" class="btn btn-default" name="calprefs" value="{tr}Change settings{/tr}" />
 	</div>
 </form>
 

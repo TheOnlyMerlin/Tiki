@@ -25,7 +25,7 @@
 {/if}
 	
 {if $prefs.ajax_autosave eq "y"}
-<div class="pull-right">
+<div class="floatright">
 	{self_link _icon="magnifier" _class="previewBtn" _ajax="n"}{tr}Preview your changes.{/tr}{/self_link}
 </div>
 {jq} $(".previewBtn").click(function(){
@@ -79,13 +79,12 @@
 				{/section}
 			</ul>
 		{else}
-            <div class="table-responsive">
 			<table class="table normal"><tr>
 				{cycle name=table values=',,,,</tr><tr>' print=false advance=false}
 				{section name=back loop=$likepages}
 					<td><a href="{$likepages[back]|sefurl}" class="wiki">{$likepages[back]|escape}</a></td>{cycle name=table}
 				{/section}
-			</tr></table></div>
+			</tr></table>
 		{/if}
 	</div>
 {/if}
@@ -167,7 +166,7 @@
 						{/remarksbox}
 					{/if}
 						<p>{tr}Page name:{/tr} <input type="text" name="page" value="{$page|escape}">
-							<input type="submit" class="btn btn-default btn-sm" name="rename" value="{tr}Rename{/tr}">
+							<input type="submit" class="btn btn-default" name="rename" value="{tr}Rename{/tr}">
 						</p>
 				{else}
 					<input type="hidden" name="page" value="{$page|escape}"> 
@@ -556,18 +555,6 @@ $("input[name=allowhtml]").change(function() {
 										{tr}Explicit Namespace{/tr}
 										<input type="text" name="explicit_namespace" value="{$explicit_namespace|escape}">
 									</label>
-								</fieldset>
-							{/if}
-							{if $prefs.site_layout_per_object eq 'y'}
-								<fieldset>
-									<legend>{tr}Presentation{/tr}</legend>
-									<label for="object_layout">{tr}Layout{/tr}</label>
-									<select name="object_layout">
-										<option value="">{tr}Site Default{/tr}</option>
-										{foreach $object_layout.available as $key => $label}
-											<option value="{$key|escape}"{if $object_layout.current eq $key} selected{/if}>{$label|escape}</option>
-										{/foreach}
-									</select>
 								</fieldset>
 							{/if}
 							{if $tiki_p_admin_wiki eq "y"}

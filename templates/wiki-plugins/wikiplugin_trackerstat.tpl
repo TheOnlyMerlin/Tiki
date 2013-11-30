@@ -1,5 +1,4 @@
 {* $Id$ *}
-<div class="table-responsive">
 <table class="table normal wikiplugin_trackerstat">
 {cycle values="even,odd" print=false}
 {section name=istat loop=$stats}
@@ -20,4 +19,3 @@
 {/foreach}
 {/section}
 </table>
-</div>

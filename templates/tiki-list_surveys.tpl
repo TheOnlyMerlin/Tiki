@@ -1,16 +1,15 @@
 {* $Id$ *}
 {title help="Surveys"}{tr}Surveys{/tr}{/title}
 
-<div class="t_navbar form-group">
+<div class="navbar">
 	{if $tiki_p_view_survey_stats eq 'y'}
-		{button href="tiki-survey_stats.php" class="btn btn-default" _text="{tr}Survey stats{/tr}"}
+		{button href="tiki-survey_stats.php" _text="{tr}Survey stats{/tr}"}
 	{/if}
 	{if $tiki_p_admin_surveys eq 'y'}
-		{button href="tiki-admin_surveys.php" class="btn btn-default" _text="{tr}Create New Survey{/tr}"}
+		{button href="tiki-admin_surveys.php" _text="{tr}Create New Survey{/tr}"}
 	{/if}
 </div>
 
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		<th>
@@ -53,6 +52,5 @@
 		{norecords _colspan=3}
 	{/section}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$maxRecords offset=$offset}{/pagination_links}

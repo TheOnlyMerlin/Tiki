@@ -1,5 +1,5 @@
-<div class="panel panel-default" id="{$plugin_fingerprint|escape}">
-<div class="panel-heading">
+<div class="cbox" id="{$plugin_fingerprint|escape}">
+<div class="cbox-title">
 	{icon _id=error style="vertical-align:middle"}
 	{if $plugin_status eq 'rejected'}
 		{tr}Plugin execution was denied{/tr}
@@ -7,7 +7,7 @@
 		{tr}Plugin execution pending approval{/tr}
 	{/if}
 </div>
-<div class="well">
+<div class="cbox-data">
 	{if $plugin_status eq 'rejected'}
 		<p>{tr}After argument validation by an editor, the execution of this plugin was denied. This plugin will eventually be removed or corrected.{/tr}</p>
 	{else}
@@ -39,11 +39,11 @@
 				{/if}
 
 				{if $plugin_body}
-					<div class="panel panel-default">
-					<div class="panel-heading">
+					<div class="cbox">
+					<div class="cbox-title">
 						 {tr}Body{/tr}
 					</div>
-					<div class="panel-body">
+					<div class="cbox-data">
 						<textarea rows="10" style="width: 99%">{$plugin_body}</textarea>
 					</div>
 					</div>
@@ -54,11 +54,11 @@
 					<p>
 					<input type="hidden" name="plugin_fingerprint" value="{$plugin_fingerprint|escape}">
 					{if $plugin_preview}
-						<input type="submit" class="btn btn-default btn-sm" name="plugin_preview" value="{tr}Preview{/tr}">
+						<input type="submit" class="btn btn-default" name="plugin_preview" value="{tr}Preview{/tr}">
 					{/if}
 					{if $plugin_approve}
-						<input type="submit" class="btn btn-default btn-sm" name="plugin_accept" value="{tr}Approve{/tr}">
-						<input type="submit" class="btn btn-warning btn-sm" name="plugin_reject" value="{tr}Reject{/tr}">
+						<input type="submit" class="btn btn-default" name="plugin_accept" value="{tr}Approve{/tr}">
+						<input type="submit" class="btn btn-warning" name="plugin_reject" value="{tr}Reject{/tr}">
 					{/if}
 					</p>
 				</form>

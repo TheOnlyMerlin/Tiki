@@ -23,15 +23,14 @@
 
 			<tr>
 				<td></td>
-				<td><input type="submit" class="btn btn-default btn-sm" name="attach" value={if $attach_file}"{tr}Edit{/tr}"{else}"{tr}Attach{/tr}"{/if}></td>
+				<td><input type="submit" class="btn btn-default" name="attach" value={if $attach_file}"{tr}Edit{/tr}"{else}"{tr}Attach{/tr}"{/if}></td>
 			</tr>
 		</table>
 	</form>
 {/if}
 
 <h2>{tr}Attachments{/tr}</h2>
-<div class="table-responsive">
-    <table class="table normal">
+<table class="normal">
 	<tr>
 		{assign var='nbcols' value=2}
 		<th class="auto">&nbsp;</th>
@@ -83,5 +82,4 @@
 	</tr>
 	{/section}
 </table>
-<div class="table-responsive">
-    {/strip}
+{/strip}

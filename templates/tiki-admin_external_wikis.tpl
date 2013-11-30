@@ -21,7 +21,7 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" class="btn btn-default btn-sm" name="save" value="{tr}Save{/tr}">
+				<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 			</td>
 		</tr>
 	</table>
@@ -29,7 +29,6 @@
 
 <h2>{tr}External Wiki{/tr}</h2>
 
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		<th>
@@ -56,6 +55,5 @@
 		{norecords _colspan=3}
 	{/section}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}

@@ -10,16 +10,16 @@
 
 <div class="nohighlight">
 	{if $searchStyle neq "menu" && $prefs.feature_search_show_object_filter eq 'y'}
-		<div class="t_navbar">
+		<div class="navbar">
 			{tr}Search in:{/tr}
 			{foreach item=name key=k from=$where_list}
-				{button _auto_args='where,highlight' href="tiki-searchresults.php?where=$k"  _selected="'$where'=='$k'" _selected_class="highlight" class="btn btn-default" _text="$name"}
+				{button _auto_args='where,highlight' href="tiki-searchresults.php?where=$k"  _selected="'$where'=='$k'" _selected_class="highlight" _text="$name"}
 			{/foreach}
 		</div>
 	{/if}
 
 	{if $prefs.feature_search_show_search_box eq 'y' or  $searchStyle eq "menu"}
-		<form action="tiki-searchresults.php" method="get" id="search-form" class="text-center">
+		<form action="tiki-searchresults.php" method="get" id="search-form" class="findtable">
 			<label class="findtitle">
 				{tr}Search{/tr} <input id="highlight{$iSearch}" name="highlight" style="width:300px" type="text" accesskey="s" value="{$words|escape}">
 			</label>
@@ -84,14 +84,14 @@
 								{$cat_tree}
 								<div class="clear">
 									{if $tiki_p_admin_categories eq 'y'}
-										<div class="pull-right"><a href="tiki-admin_categories.php" class="link">{tr}Admin Categories{/tr} {icon _id='wrench'}</a></div>
+										<div class="floatright"><a href="tiki-admin_categories.php" class="link">{tr}Admin Categories{/tr} {icon _id='wrench'}</a></div>
 									{/if}
 									{select_all checkbox_names='cat_categories[]' label="{tr}Select/deselect all categories{/tr}"}
 								</div>
 							{else}
 								<div class="clear">
 									{if $tiki_p_admin_categories eq 'y'}
-										<div class="pull-right"><a href="tiki-admin_categories.php" class="link">{tr}Admin Categories{/tr} {icon _id='wrench'}</a></div>
+										<div class="floatright"><a href="tiki-admin_categories.php" class="link">{tr}Admin Categories{/tr} {icon _id='wrench'}</a></div>
 									{/if}
 									{tr}No categories defined{/tr}
 								</div>
@@ -157,7 +157,7 @@
 				{if $forumId}<input type="hidden" name="forumId" value="{$forumId|escape}">{/if}	
 			{/if}
 			<label class="findsubmit">
-				<input type="submit" class="btn btn-default btn-sm" name="search" value="{tr}Go{/tr}">
+				<input type="submit" class="btn btn-default" name="search" value="{tr}Go{/tr}">
 			</label>
 			{if !$searchNoResults}
 				{button _auto_args='highlight' href="tiki-searchresults.php?highlight=" _text="{tr}Clear Filter{/tr}"}

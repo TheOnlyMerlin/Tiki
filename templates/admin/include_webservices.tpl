@@ -1,16 +1,16 @@
 <form method="post" action="tiki-admin.php?page=webservices">
 
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Activate the feature{/tr}</legend>
 		{preference name=feature_webservices visible="always"}
 	</fieldset>		
 
-	<div class="t_navbar form-group">
+	<div class="navbar">
 		{foreach from=$webservices item=name}
-			{button href="tiki-admin.php?page=webservices&amp;name=$name" class="btn btn-default" _text=$name}
+			{button href="tiki-admin.php?page=webservices&amp;name=$name" _text=$name}
 		{/foreach}
 		{if $storedName}
-			{button href="tiki-admin.php?page=webservices" class="btn btn-default" _text="{tr}Create New{/tr}"}
+			{button href="tiki-admin.php?page=webservices" _text="{tr}Create New{/tr}"}
 		{/if}
 	</div>
 
@@ -28,7 +28,7 @@
 		</select></p>
 		<p id="ws_postbody">{tr}Parameters (%name%):{/tr}<textarea name="postbody">{$postbody|escape}</textarea></p>
 		<p id="ws_operation" style="display: none;">{tr}Operation:{/tr}<input type="text" name="operation" size="30" value="{$operation|escape}" /></p>
- 		<p><input type="submit" class="btn btn-default btn-sm" name="parse" value="{tr}Lookup{/tr}"/></p>
+ 		<p><input type="submit" class="btn btn-default" name="parse" value="{tr}Lookup{/tr}"/></p>
 	{/if}
 	{if $url}
 		<h3>{tr}Parameters{/tr}</h3>
@@ -47,15 +47,14 @@
 			{/if}
 			<tr>
 				<td colspan="2">
-					<input type="submit" class="btn btn-default btn-sm" name="test" value="{tr}Test Input{/tr}" />
+					<input type="submit" class="btn btn-default" name="test" value="{tr}Test Input{/tr}" />
 				</td>
 			</tr>
 		</table>
 	{/if}
 	{if $data}
 		<h3>{tr}Response Information{/tr}</h3>
-        <div class="table-responsive">
-		<table class="table normal">
+		<table class="normal">
 			<tr>
 				<th>{tr}OIntegrate Version{/tr}</th>
 				<td>{if $response->version}{$response->version|escape}{else}<em>{tr}Not supported{/tr}</em>{/if}
@@ -89,7 +88,7 @@
 				<tr>
 					<th>
 						{$template.engine|escape}/{$template.output|escape}
-						<input type="submit" class="btn btn-default btn-sm" name="add[{$number}]" value="{tr}Add{/tr}"/>
+						<input type="submit" class="btn btn-default" name="add[{$number}]" value="{tr}Add{/tr}"/>
 					</th>
 					<td><pre>{$template.content|escape}</pre></td>
 				</tr>
@@ -99,12 +98,11 @@
 				</tr>
 			{/foreach}
 		</table>
-        </div>
 		{if ! $storedName}
 			<p>{tr}Register this web service. It will be possible to register the templates afterwards. Service name must only contain letters.{/tr}</p>
 			<p>
 				<input type="text" name="new_name" />
-				<input type="submit" class="btn btn-default btn-sm" name="register" value="{tr}Register Service{/tr}" />
+				<input type="submit" class="btn btn-default" name="register" value="{tr}Register Service{/tr}" />
 			</p>
 		{else}
 			<h3>{tr}Registered Templates{/tr}</h3>
@@ -118,12 +116,12 @@
 				{foreach from=$storedTemplates item=template}
 					<tr>
 						<td>
-							<input type="submit" class="btn btn-default btn-sm" name="loadtemplate" value="{$template->name|escape}"/>
+							<input type="submit" class="btn btn-default" name="loadtemplate" value="{$template->name|escape}"/>
 							<a href="tiki-admin.php?page=webservices&amp;name={$storedName|escape}&amp;delete={$template->name|escape}">{icon _id='cross'}</a>
 						</td>
 						<td>{$template->engine|escape}</td>
 						<td>{$template->output|escape}</td>
-						<td><input type="submit" class="btn btn-default btn-sm" name="preview" value="{$template->name|escape}"/></td>
+						<td><input type="submit" class="btn btn-default" name="preview" value="{$template->name|escape}"/></td>
 					</tr>
 					<tr><td colspan="4"><pre>{$template->content|escape}</pre></td></tr>
 					{if $preview eq $template->name}
@@ -136,7 +134,7 @@
 					<td><input type="text" name="nt_output" value="{$nt_output|escape}"/></td>
 				</tr>
 				<tr><td colspan="4"><textarea name="nt_content" rows="10">{$nt_content|escape}</textarea></td></tr>
-				<tr><td colspan="4"><input type="submit" class="btn btn-default btn-sm" name="create_template" value="{tr}Register Template{/tr}"/></td></tr>
+				<tr><td colspan="4"><input type="submit" class="btn btn-default" name="create_template" value="{tr}Register Template{/tr}"/></td></tr>
 			</table>
 		{/if}
 	{/if}

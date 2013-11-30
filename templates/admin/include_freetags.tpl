@@ -1,21 +1,16 @@
 <form action="tiki-admin.php?page=freetags" method="post">
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-                <input type="submit" class="btn btn-default btn-sm" value="{tr}Change preferences{/tr}">
-            </div>
-        </div>
-    </div>
-
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+	</div>
 	{tabset name="admin_freetags"}
 		{tab name="{tr}General Settings{/tr}"}
 		
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Activate the feature{/tr}</legend>
 		{preference name=feature_freetags visible="always"}
 	</fieldset>			
 	
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Plugins{/tr}</legend>
 		{preference name=wikiplugin_freetagged}
 		{preference name=wikiplugin_addfreetag}		
@@ -63,7 +58,7 @@
 				<div class="adminoptionbox">
 					<div class="adminoptionlabel">
 						<div align="center">
-							<input type="submit" class="btn btn-default btn-sm" value="{tr}Cleanup unused tags{/tr}" name="cleanup" />
+							<input type="submit" class="btn btn-default" value="{tr}Cleanup unused tags{/tr}" name="cleanup" />
 						</div>
 					</div>
 				</div>
@@ -107,10 +102,7 @@
 			{/tab}
 		{/if}
 	{/tabset}
-    <br>{* I cheated. *}
-    <div class="row">
-        <div class="form-group col-lg-12 text-center">
-            <input type="submit" class="btn btn-default btn-sm" value="{tr}Change preferences{/tr}">
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: center">
+		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>

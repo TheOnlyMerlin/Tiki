@@ -2,10 +2,10 @@
 
 {title help="Surveys"}{tr}Admin surveys{/tr}{/title}
 
-<div class="t_navbar btn-group form-group">
-	{button href="tiki-list_surveys.php" class="btn btn-default" _text="{tr}List Surveys{/tr}"}
-	{button href="tiki-survey_stats.php" class="btn btn-default" _text="{tr}Survey Stats{/tr}"}
-	{button surveyId=0 cookietab=2 _auto_args="surveyId,cookietab" class="btn btn-default" _text="{tr}Create Survey{/tr}"}
+<div class="navbar">
+	{button href="tiki-list_surveys.php" _text="{tr}List Surveys{/tr}"}
+	{button href="tiki-survey_stats.php" _text="{tr}Survey Stats{/tr}"}
+	{button surveyId=0 cookietab=2 _auto_args="surveyId,cookietab" _text="{tr}Create Survey{/tr}"}
 </div>
 
 {tabset}
@@ -16,7 +16,6 @@
 	{include file='find.tpl'}
 {/if}
 
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		<th>
@@ -68,7 +67,6 @@
 		{norecords _colspan=5}
 	{/section}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
 {/tab}
@@ -108,7 +106,7 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" class="btn btn-default btn-sm" name="save" value="{tr}Save{/tr}">
+				<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 			</td>
 		</tr>
 	</table>

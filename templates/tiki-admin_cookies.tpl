@@ -17,7 +17,7 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" class="btn btn-default btn-sm" name="save" value="{tr}Save{/tr}">
+				<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 			</td>
 		</tr>
 	</table>
@@ -36,7 +36,7 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" class="btn btn-default btn-sm" name="upload" value="{tr}Upload{/tr}">
+				<input type="submit" class="btn btn-default" name="upload" value="{tr}Upload{/tr}">
 			</td>
 		</tr>
 	</table>
@@ -46,7 +46,7 @@
 
 <h2>{tr}Cookies{/tr}</h2>
 {if $channels}
-	<div class="t_navbar">
+	<div class="navbar">
 		{button href="?removeall=1" _text="{tr}Remove all cookies{/tr}"}
 	</div>
 {/if}
@@ -55,7 +55,6 @@
 	{include file='find.tpl'}
 {/if}
 
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		<th>
@@ -80,8 +79,7 @@
 		</tr>
 	{sectionelse}
 		{norecords _colspan=3}
-	{/section}>
+	{/section}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}

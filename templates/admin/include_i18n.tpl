@@ -13,14 +13,9 @@
 {/jq}
 
 <form action="tiki-admin.php?page=i18n" method="post">
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-                <input type="submit" class="btn btn-default btn-sm" value="{tr}Change preferences{/tr}">
-            </div>
-        </div>
-    </div>
-
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+	</div>
 <input type="hidden" name="i18nsetup" />
 {tabset name="admin_i18n"}
 	{tab name="{tr}Internationalization{/tr}"}
@@ -107,7 +102,7 @@
 				</option>
 			{/section}
 		</select>
-		<input type="submit" class="btn btn-default btn-sm" name="custom" value="{tr}Edit{/tr}" />
+		<input type="submit" class="btn btn-default" name="custom" value="{tr}Edit{/tr}" />
 	{else}
 		{if !empty($custom_error)}
 			{remarksbox title="{tr}Error{/tr}" type="error"}
@@ -131,8 +126,7 @@
 		{/section}
 		</h2>
 		<input type="hidden" name="custom_lang" value="{$custom_lang|escape}" />
-        <div class="table-responsive">
-		<table class="table normal">
+		<table class="normal">
 		<tr><th>{tr}English{/tr}</th><th>{tr}Translation{/tr}</th></tr>
 		{if !empty($custom_translation)}
 			{foreach from=$custom_translation key=cfrom item=cto}
@@ -143,16 +137,12 @@
 			<tr><td><input type="text" name="from[]" value="{$fr|escape}"/></td><td><input type="text" name="to[]" value="{$to.$i|escape}"/></td></tr>
 		{/foreach}
 		</table>
-        </div>
-		<input type="submit" class="btn btn-default btn-sm" name="custom_save" value="{tr}Save{/tr}" />
+		<input type="submit" class="btn btn-default" name="custom_save" value="{tr}Save{/tr}" />
 	{/if}
 </div>
 {/tab}
 {/tabset}
-    <br>{* I cheated. *}
-    <div class="row">
-        <div class="form-group col-lg-12 text-center">
-            <input type="submit" class="btn btn-default btn-sm" value="{tr}Change preferences{/tr}">
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: center">
+		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>
