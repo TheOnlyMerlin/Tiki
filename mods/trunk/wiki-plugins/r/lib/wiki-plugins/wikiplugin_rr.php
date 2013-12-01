@@ -366,13 +366,13 @@ function wikiplugin_rr($data, $params) {
 		$rrefresh = "n";
 	}
 	
-	defined('r_ext') || define('r_ext', getcwd() . DIRECTORY_SEPARATOR . 'lib/r' );
-	defined('security')  || define('security',  0);
-	defined('sudouser')  || define('sudouser', 'rd');
+	defined('r_ext') || define('r_ext', getcwd() . DIRECTORY_SEPARATOR . 'lib/r' ); // NEEDS REWRITING
+	defined('security')  || define('security',  0); // NEEDS REWRITING
+	defined('sudouser')  || define('sudouser', 'rd'); // NEEDS REWRITING
 
-	defined('convert')   || define('convert',   getCmd('', 'convert', ''));
-	defined('sudo')      || define('sudo',      getCmd('', 'sudo', ' -u ' . sudouser . ' '));
-	defined('chmod')     || define('chmod',     getCmd('', 'chmod', ' 664 '));
+	defined('convert')   || define('convert',   getCmd('', 'convert', '')); // NEEDS REWRITING
+	defined('sudo')      || define('sudo',      getCmd('', 'sudo', ' -u ' . sudouser . ' ')); // NEEDS REWRITING
+	defined('chmod')     || define('chmod',     getCmd('', 'chmod', ' 664 ')); // NEEDS REWRITING
 	
 	if (isset($params["loadandsave"])) {
 		$loadandsave = $params["loadandsave"];
@@ -887,21 +887,21 @@ function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $
 
 }
 
-function runRinShell ($cmd, $chmf, &$r_exitcode) {
-   $stdout = "";
+function runRinShell ($cmd, $chmf, &$r_exitcode) { // NEEDS REWRITING
+   $stdout = ""; // NEEDS REWRITING
    $msg = "";
-     exec ($cmd, $stdout, $r_exitcode);
+     exec ($cmd, $stdout, $r_exitcode); // NEEDS REWRITING
 
-// Alex, got error message here if no output
-   if (is_array($stdout)) { 
-     foreach($stdout as $row) $msg .= $row . "\n";
-   }
-   if (is_string($stdout)) {
-     $msg .= $row . "\n";
-   }
+// Alex, got error message here if no output // NEEDS REWRITING
+   if (is_array($stdout)) {  // NEEDS REWRITING
+     foreach($stdout as $row) $msg .= $row . "\n"; // NEEDS REWRITING
+   } // NEEDS REWRITING
+   if (is_string($stdout)) { // NEEDS REWRITING
+     $msg .= $row . "\n"; // NEEDS REWRITING
+   } // NEEDS REWRITING
 
-   return ($msg);
-}
+   return ($msg); // NEEDS REWRITING
+} // NEEDS REWRITING
 
 function curPageURL() {
  	$pageURL = 'http';
@@ -915,8 +915,8 @@ function curPageURL() {
  return $pageURL;
 }
 
-function checkCommands ($input) {
-	// Thanks to the R-php people  :) 
+function checkCommands ($input) { // NEEDS REWRITING?
+	// Thanks to the R-php & R-MediaWiki people. We understand that the list of commands is not licensed since it's not PHP code as such)
 	$banned = array('.C', '.Call', '.Call.graphics', '.External', '.External.graphics',
         	'.Fortran', '.readRDS', '.saveRDS', '.Script', '.Tcl',
         	'.Tcl.args', '.Tcl.callback', '.Tk.ID', '.Tk.newwin', '.Tk.subwin',
@@ -974,33 +974,33 @@ function checkCommands ($input) {
 	return $found;
 }
 
-function error ($cmd, $msg, $input) {
-  $txt = '<pre>ERROR: &lt;' . $cmd . '...&gt; ' . $msg . ' <em>in</em></pre><p>';
-  $txt = $txt . '<pre>' . $input . '</pre>';
-  die ($txt);
-  return 0;
-}
+function error ($cmd, $msg, $input) { // NEEDS REWRITING
+  $txt = '<pre>ERROR: &lt;' . $cmd . '...&gt; ' . $msg . ' <em>in</em></pre><p>'; // NEEDS REWRITING
+  $txt = $txt . '<pre>' . $input . '</pre>'; // NEEDS REWRITING
+  die ($txt); // NEEDS REWRITING
+  return 0; // NEEDS REWRITING
+} // NEEDS REWRITING
 
 # The callback function for converting the input text to HTML output
-function renderFilename ($input) {
-  if (strncmp(PHP_OS, 'WIN', 3)==0) {
-    return str_replace('/', '\\', $input);
-  } 
-  return ($input);
-}
+function renderFilename ($input) { // NEEDS REWRITING
+  if (strncmp(PHP_OS, 'WIN', 3)==0) { // NEEDS REWRITING
+    return str_replace('/', '\\', $input); // NEEDS REWRITING
+  }  // NEEDS REWRITING
+  return ($input); // NEEDS REWRITING
+} // NEEDS REWRITING
 
 /* need some rework for windows, SK 9 Jul 06 */
-function getCmd ($pre, $cmd, $post) {
-  $path = array('/usr/bin/', '/usr/local/bin/', '/bin/');
-  $n    = count($path);  
-  for ($i = 0; $i < $n; $i++) {
-    $cmdf = $path[$i] . $cmd;
-    if (file_exists($cmdf)) { return ($pre . $cmdf . $post); }
-  }
-  $cmdf = `which $cmd`;
-  if ($cmdf!='') {
-    $cmdf = $pre . trim($cmdf) . $post;
-    return $cmdf;
-  }
-  error ($cmd, 'command not found', '');
-}
+function getCmd ($pre, $cmd, $post) { // NEEDS REWRITING
+  $path = array('/usr/bin/', '/usr/local/bin/', '/bin/'); // NEEDS REWRITING
+  $n    = count($path);   // NEEDS REWRITING
+  for ($i = 0; $i < $n; $i++) { // NEEDS REWRITING
+    $cmdf = $path[$i] . $cmd; // NEEDS REWRITING
+    if (file_exists($cmdf)) { return ($pre . $cmdf . $post); } // NEEDS REWRITING
+  } // NEEDS REWRITING
+  $cmdf = `which $cmd`; // NEEDS REWRITING
+  if ($cmdf!='') { // NEEDS REWRITING
+    $cmdf = $pre . trim($cmdf) . $post; // NEEDS REWRITING
+    return $cmdf; // NEEDS REWRITING
+  } // NEEDS REWRITING
+  error ($cmd, 'command not found', ''); // NEEDS REWRITING
+} // NEEDS REWRITING
