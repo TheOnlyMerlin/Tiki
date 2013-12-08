@@ -399,8 +399,10 @@ function wikiplugin_rr($data, $params) {
 		// --quiet : Do not print out the initial copyright and welcome messages from R
 		$r_cmd = getCmd('', 'R', ' --save --quiet');
 
-		//Convert spaces into some character to avoid R complaining because it can't create such folder in the server
-		$wikipage = str_replace(array(" ", "+"), "_", $_REQUEST['page']);
+		// Convert strange characters into some simple character to avoid R complaining because it can't create such folder in the server
+		// Also prefix with page id to ensure uniqueness
+		$page_id = $tikilib->get_page_id_from_name($_REQUEST['page']);
+		$wikipage = "page${page_id}_" . preg_replace('/[^a-zA-Z0-9]/', "_", $_REQUEST['page']);
 
 		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
 		$r_dir = getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' . $tikidomainslash . 'R_' . $wikipage;
