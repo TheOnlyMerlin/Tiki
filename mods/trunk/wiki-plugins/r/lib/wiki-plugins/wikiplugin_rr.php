@@ -206,6 +206,20 @@ function wikiplugin_rr_info() {
 				),
 				'advanced' => true,
 			),
+			'cacheby' => array(
+				'required' => false,
+				'name' => tra('CacheBy'),
+				'description' => tra('Write cached files inside a folder containing the Page id (pageid; default option) or the Page name (pagename)'),
+				'filter' => 'alpha',
+				'default' => 'pageid',
+				'since' => 'PluginR 0.88',
+				'options' => array(
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Page Name (pagename)'), 'value' => 'pagename'),
+					array('text' => tra('Page Id (pageid)'), 'value' => 'pageid'),
+				),
+				'advanced' => true,
+			),
 			'attId' => array(
 				'required' => false,
 				'safe' => true,
@@ -381,7 +395,15 @@ function wikiplugin_rr($data, $params) {
 	}else{
 		$loadandsave = 1;
 	}
-	
+
+	if (isset($params["cacheby"])) {
+		$cacheby = $params["cacheby"];
+		if ($cacheby=="name") { $cacheby = "pagename"; }
+		if ($cacheby=="id") { $cacheby = "pageid"; }
+	}else{
+		$cacheby = "pageid";
+	}
+		
 	if ($loadandsave==1 && isset($_REQUEST['itemId'])  && $_REQUEST['itemId'] > 0) {
 		// --save : data sets are saved at the end of the R session
 		// --quiet : Do not print out the initial copyright and welcome messages from R
@@ -399,10 +421,15 @@ function wikiplugin_rr($data, $params) {
 		// --quiet : Do not print out the initial copyright and welcome messages from R
 		$r_cmd = getCmd('', 'R', ' --save --quiet');
 
-		// Convert strange characters into some simple character to avoid R complaining because it can't create such folder in the server
-		// Also prefix with page id to ensure uniqueness
-		$page_id = $tikilib->get_page_id_from_name($_REQUEST['page']);
-		$wikipage = "page${page_id}_" . preg_replace('/[^a-zA-Z0-9]/', "_", $_REQUEST['page']);
+		if ($cacheby=='pagename') { // Cache by pagename as explicitly requested
+			//Convert spaces into some character to avoid R complaining because it can't create such folder in the server
+			$wikipage = str_replace(array(" ", "+", "'", "ç", "ñ"), "_", $_REQUEST['page']);
+		} else { // Cache by page id  (default safest option) 
+			// Convert strange characters into some simple character to avoid R complaining because it can't create such folder in the server
+			// Also prefix with page id to ensure uniqueness
+			$page_id = $tikilib->get_page_id_from_name($_REQUEST['page']);
+			$wikipage = "page${page_id}_" . preg_replace('/[^a-zA-Z0-9]/', "_", $_REQUEST['page']);
+		}
 
 		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
 		$r_dir = getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' . $tikidomainslash . 'R_' . $wikipage;
