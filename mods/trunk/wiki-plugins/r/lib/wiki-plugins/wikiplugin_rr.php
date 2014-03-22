@@ -534,12 +534,16 @@ function wikiplugin_rr($data, $params) {
 
 	$ret = file_get_contents ($fn);
 	
-				// Show the cached message for loged user and button to click on refresh if cached content exists and no refresh R is requested
-			if ( !empty($user) && $cached_script == "y" && $rrefresh =="n") {
-					$ret .= ' <a href="' . curPageURL() . '&rrefresh=y' . '" target="_self">' . '<img src=img/icons/arrow_refresh.png alt=Refresh Title="' . tr("Cached R output. If you click, you will re-run all R scripts in this page") . '"></a>';
-		 	}
+	if ( preg_match('/tiki-index.php/', curPageURL() ) == 1) {
+		$concat_char = '&'; // Presumably, question mark present in the url, so new params go after &
+	} else {
+		$concat_char = '?'; // Presumably, no previous question mark in the url, so params go after ?
+	}
 
-
+		// Show the cached message for loged user and button to click on refresh if cached content exists and no refresh R is requested
+	if ( !empty($user) && $cached_script == "y" && $rrefresh =="n") {
+			$ret .= ' <a href="' . curPageURL() . $concat_char . 'rrefresh=y' . '" target="_self">' . '<img src=img/icons/arrow_refresh.png alt=Refresh Title="' . tr("Cached R output. If you click, you will re-run all R scripts in this page") . '"></a>';
+ 	}
 	
 	// Check for Tiki version, to apply parsing of content or not (behavior changed in Tiki7, it seems)
 	// Right now, the behavior seems the almost the same one on 7+ and <7, but just in case, I leave this version check in place, 
