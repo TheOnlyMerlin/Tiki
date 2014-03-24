@@ -261,12 +261,12 @@ function prefs_wiki_list($partial = false)
 			'default' => 'n',
 		),
 		'wiki_comments_displayed_default' => array(
-			'name' => tra('Display comment list by default'),
+			'name' => tra('Display by default'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'wiki_comments_form_displayed_default' => array(
-			'name' => tra('Display Post new comment form by default'),
+			'name' => tra('Display comments form by default'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
@@ -629,13 +629,13 @@ function prefs_wiki_list($partial = false)
 			'default' => 'n',
 		),
 		'wiki_freetags_edit_position' => array(
-			'name' => tra('Choose position of tags selection'),
-			'description' => tra('If you wish to place tags selection more prominently than in the properties tab.'),
+			'name' => tra('Choose position of freetags selection'),
+			'description' => tra('If you wish to place freetags selection more prominently than in the properties tab.'),
 			'type' => 'list',
 			'options' => array(
 				'properties' => tra('Properties tab'),
 				'edit' => tra('Edit tab'),
-				'freetagstab' => tra('Tags tab'),
+				'freetagstab' => tra('Freetags tab'),
 			),
 			'default' => 'properties',
 		),

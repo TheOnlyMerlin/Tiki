@@ -54,7 +54,7 @@
 	</a>
 	<br><br>
 	{if $show_description eq 'y'}
-		<div class="panel-body">
+		<div class="box-data">
 			{$celldescription|truncate:250:'...'}
 		</div>
 		<br>

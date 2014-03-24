@@ -3766,7 +3766,7 @@ class UsersLib extends TikiLib
 			),
 			array(
 				'name' => 'tiki_p_view_freetags',
-				'description' => tra('Can browse tags'),
+				'description' => tra('Can browse freetags'),
 				'level' => 'basic',
 				'type' => 'freetags',
 				'admin' => false,
@@ -3775,7 +3775,7 @@ class UsersLib extends TikiLib
 			),
 			array(
 				'name' => 'tiki_p_admin_freetags',
-				'description' => tra('Can admin tags'),
+				'description' => tra('Can admin freetags'),
 				'level' => 'admin',
 				'type' => 'freetags',
 				'admin' => true,
@@ -5520,24 +5520,6 @@ class UsersLib extends TikiLib
 				'type' => 'workspace',
 				'admin' => false,
 				'prefs' => array('workspace_ui'),
-				'scope' => 'object',
-			),
-			array(
-				'name' => 'tiki_p_goal_admin',
-				'description' => tr('Can manage all aspects of the goal'),
-				'level' => 'admin',
-				'type' => 'goal',
-				'admin' => true,
-				'prefs' => ['goal_enabled'],
-				'scope' => 'object',
-			),
-			array(
-				'name' => 'tiki_p_goal_modify_eligible',
-				'description' => tr('Can manage who is eligible to a goal'),
-				'level' => 'admin',
-				'type' => 'goal',
-				'admin' => false,
-				'prefs' => ['goal_enabled'],
 				'scope' => 'object',
 			),
 		);
@@ -7310,11 +7292,10 @@ class UsersLib extends TikiLib
 	{
 		global $tikilib, $prefs;
 		if ( $prefs['user_show_realnames'] == 'y' || $force_check_realnames) {
-			// need to trim to prevent mustMatch failure
-			$realname = trim($tikilib->get_user_preference($u, 'realName', ''));
+			$realname = $tikilib->get_user_preference($u, 'realName', '');
 		}
 		if (!empty($realname)) {
-			$u = $realname;
+			$u = trim($realname); // need to trim to prevent mustMatch failure
 		} elseif ($prefs['login_is_email_obscure'] == 'y' && $atsign = strpos($u, '@')) {
 			$u = substr($u, 0, $atsign);
 			if (!$login_fallback) {

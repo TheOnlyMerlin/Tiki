@@ -1,10 +1,3 @@
-{extends 'layout_view.tpl'}
-
-{block name="title"}
-	{title}{$title|escape}{/title}
-{/block}
-
-{block name="content"}
 <form method="post" action="{service controller=workspace action=create}">
 	<label>
 		{tr}Template{/tr}
@@ -19,7 +12,6 @@
 		<input type="text" name="name" value=""/>
 	</label>
 	<div class="submit">
-		<input type="submit" class="btn btn-default btn-sm" value="{tr}Create{/tr}"/>
+		<input type="submit" class="btn btn-default" value="{tr}Create{/tr}"/>
 	</div>
 </form>
-{/block}

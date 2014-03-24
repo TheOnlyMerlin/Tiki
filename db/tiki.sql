@@ -2001,7 +2001,6 @@ CREATE TABLE `tiki_sheet_layout` (
   `className` varchar(64) default NULL,
   `parseValues` char( 1 ) NOT NULL default 'n',
   `clonedSheetId` int(8) NULL,
-  `metadata` longblob,
   UNIQUE KEY `sheetId` (`sheetId`, `begin`)
 ) ENGINE=MyISAM;
 
@@ -3797,53 +3796,3 @@ CREATE TABLE `tiki_user_mailin_struct` (
 	`is_active` char(1) NULL DEFAULT 'n',
    PRIMARY KEY (`mailin_struct_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1;
-
-DROP TABLE IF EXISTS `tiki_search_queries`;
-CREATE TABLE `tiki_search_queries` (
-	`queryId` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	`userId` INT NOT NULL,
-	`lastModif` INT,
-	`label` VARCHAR(100) NOT NULL,
-	`priority` VARCHAR(15) NOT NULL,
-	`query` BLOB,
-	`description` TEXT,
-	INDEX `query_userId` (`userId`),
-	UNIQUE KEY `tiki_user_query_uq` (`userId`, `label`)
-) ENGINE=MyISAM AUTO_INCREMENT=1;
-
-DROP TABLE IF EXISTS `tiki_user_monitors`;
-CREATE TABLE `tiki_user_monitors` (
-	`monitorId` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	`userId` INT NOT NULL,
-	`event` VARCHAR(50) NOT NULL,
-	`priority` VARCHAR(10) NOT NULL,
-	`target` VARCHAR(25) NOT NULL,
-	INDEX `userid_target_ix` (`userId`, `target`),
-	UNIQUE `event_target_uq` (`event`, `target`, `userId`)
-) ENGINE=MyISAM;
-
-DROP TABLE IF EXISTS `tiki_goals`;
-CREATE TABLE `tiki_goals` (
-	`goalId` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	`name` VARCHAR(50) NOT NULL,
-	`type` VARCHAR(10) NOT NULL DEFAULT 'user',
-	`description` TEXT,
-	`enabled` INT NOT NULL DEFAULT 0,
-	`daySpan` INT NOT NULL DEFAULT 14,
-	`from` DATETIME,
-	`to` DATETIME,
-	`eligible` BLOB,
-	`conditions` BLOB,
-	`rewards` BLOB
-) ENGINE=MyISAM;
-
-DROP TABLE IF EXISTS `tiki_goal_events`;
-CREATE TABLE `tiki_goal_events` (
-	`eventId` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	`eventDate` INT NOT NULL,
-	`eventType` VARCHAR(50) NOT NULL,
-	`targetType` VARCHAR(50),
-	`targetObject` VARCHAR(255),
-	`user` VARCHAR(200) NOT NULL,
-	`groups` BLOB NOT NULL
-) ENGINE=MyISAM;

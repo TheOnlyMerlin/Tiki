@@ -1,11 +1,5 @@
 {* $Id$ *}
 {* ==> put in this file what is not displayed in the layout (javascript, debug..)*}
-<div id="bootstrap-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-		</div>
-	</div>
-</div>
 {if (! isset($display) or $display eq '')}
 	{if count($phpErrors)}
 		{if ($prefs.error_reporting_adminonly eq 'y' and $tiki_p_admin eq 'y') or $prefs.error_reporting_adminonly eq 'n'}
@@ -72,21 +66,3 @@ if ($("#antibotcode").parents('form').data("validator")) {
     });
 }
 {/jq}
-
-{if isset($prefs.socialnetworks_user_firstlogin) && $prefs.socialnetworks_user_firstlogin == 'y'}
-	{include file='tiki-socialnetworks_firstlogin_launcher.tpl'}
-{/if}
-
-{if $prefs.site_google_analytics_account}
-	{wikiplugin _name=googleanalytics account=$prefs.site_google_analytics_account}{/wikiplugin}
-{/if}
-{if $prefs.feature_endbody_code}
-	{eval var=$prefs.feature_endbody_code}
-{/if}
-{interactivetranslation}
-<!-- Put JS at the end -->
-{if $headerlib}
-	{$headerlib->output_js_config()}
-	{$headerlib->output_js_files()}
-	{$headerlib->output_js()}
-{/if}

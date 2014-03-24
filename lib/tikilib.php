@@ -5,8 +5,6 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-require_once('lib/debug/Tracer.php');
-
 // this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	header("location: index.php");
@@ -41,8 +39,6 @@ class TikiLib extends TikiDb_Bridge
 	 * @var array
 	 */
 	protected static $libraries = array();
-
-	protected static $isExternalContext = false;
 
 	/**
 	 * @param $name
@@ -203,15 +199,9 @@ class TikiLib extends TikiDb_Bridge
 			case 'rss':
 				global $rsslib; include_once('lib/rss/rsslib.php');
 				return self::$libraries[$name] = $rsslib;
-			case 'pagecontent':
-				global $rsslib; include_once('lib/rss/pagecontentlib.php');
-				return self::$libraries[$name] = new PageContentLib;
 			case 'unifiedsearch':
 				global $unifiedsearchlib; include_once('lib/search/searchlib-unified.php');
 				return self::$libraries[$name] = $unifiedsearchlib;
-			case 'storedsearch':
-				include_once('lib/search/storedsearchlib.php');
-				return self::$libraries[$name] = new StoredSearchLib;
 			case 'searchstats':
 				global $searchstatslib; include_once('lib/search/searchstatslib.php');
 				return self::$libraries[$name] = $searchstatslib;
@@ -313,30 +303,9 @@ class TikiLib extends TikiDb_Bridge
 			case 'wizard':
 				require_once 'lib/wizard/wizardlib.php';
 				return self::$libraries[$name] = new WizardLib();
-			case 'monitor':
-				require_once 'lib/user/monitorlib.php';
-				return self::$libraries[$name] = new MonitorLib();
-			case 'monitormail':
-				require_once 'lib/user/monitormaillib.php';
-				return self::$libraries[$name] = new MonitorMailLib();
-			case 'crypt':
-				global $cryptlib; require_once 'lib/crypt/cryptlib.php';
-				return self::$libraries[$name] = new CryptLib();
 			case 'cart':
 				require_once 'lib/payment/cartlib.php';
 				return self::$libraries[$name] = new CartLib();
-			case 'goal':
-				require_once 'lib/goal/goallib.php';
-				return self::$libraries[$name] = new GoalLib();
-			case 'goalevent':
-				require_once 'lib/goal/eventlib.php';
-				return self::$libraries[$name] = new GoalEventLib();
-			case 'goalreward':
-				require_once 'lib/goal/rewardlib.php';
-				return self::$libraries[$name] = new GoalRewardLib();
-			case 'credits':
-				global $creditslib; require_once 'lib/credits/creditslib.php';
-				return self::$libraries[$name] = $creditslib;
 		}
 	}
 
@@ -3930,8 +3899,7 @@ class TikiLib extends TikiDb_Bridge
 	function get_preference($name, $default = '', $expectArray = false )
 	{
 		global $prefs;
-
-        $value = isset($prefs[$name]) ? $prefs[$name] : $default;
+		$value = isset($prefs[$name]) ? $prefs[$name] : $default;
 
 		if ( empty($value) ) {
 			if ( $expectArray ) {
@@ -4328,9 +4296,7 @@ class TikiLib extends TikiDb_Bridge
 	 **/
 	function create_page($name, $hits, $data, $lastModif, $comment, $user = 'admin', $ip = '0.0.0.0', $description = '', $lang='', $is_html = false, $hash=null, $wysiwyg=NULL, $wiki_authors_style='', $minor=0, $created='')
 	{
-		global $prefs, $tracer;
-
-        $tracer->trace('tikilib.create_page', "** invoked");
+		global $prefs;
 
 		if ( ! $is_html ) {
 			$data = str_replace('<x>', '', $data);
@@ -4352,14 +4318,9 @@ class TikiLib extends TikiDb_Bridge
 		}
 
 		if ($this->page_exists($name))
-        {
-            $tracer->trace('tikilib.create_page', "** Page \$name already exists. Exiting...");
-            return false;
-        }
+			return false;
 
-        $tracer->trace('tikilib.create_page', "** TikiLib::lib...");
-        $parserlib = TikiLib::lib('parser');
-        $tracer->trace('tikilib.create_page', "** invoking process_save_plugins, \$parserlib=".get_class($parserlib));
+		$parserlib = TikiLib::lib('parser');
 		$data = $parserlib->process_save_plugins(
 			$data,
 			array(
@@ -4496,8 +4457,6 @@ class TikiLib extends TikiDb_Bridge
 			$wikilib->wiki_rename_page($name, $temppage, false, $user);
 			$wikilib->wiki_rename_page($temppage, $name, false, $user);
 		}
-
-        $tracer->trace('tikilib.create_page', "** Returning");
 
 		return true;
 	}
@@ -5751,7 +5710,6 @@ class TikiLib extends TikiDb_Bridge
 	}
 
 	/**
-	 * Includes the full tiki path in the links for external link generation.
 	 * @param string $relative
 	 * @param array $args
 	 * @return string
@@ -5772,28 +5730,6 @@ class TikiLib extends TikiDb_Bridge
 		}
 
 		return $base;
-	}
-
-	/**
-	 * Include the full tiki path if requested in an external context.
-	 * Otherwise, leave as-is.
-	 *
-	 * @param string $relative
-	 * @param array $args
-	 * @return string
-	 */
-	static function tikiUrlOpt($relative)
-	{
-		if (self::$isExternalContext) {
-			return self::tikiUrl($relative);
-		} else {
-			return $relative;
-		}
-	}
-
-	static function setExternalContext($isExternal)
-	{
-		self::$isExternalContext = (bool) $isExternal;
 	}
 
 	/**

@@ -8,7 +8,6 @@
 {/if}
 {tabset}
 {tab name="{tr}List{/tr}"}
-    <div class="table-responsive">
 	<table class="table normal">
 	<tr>
 		<th>{tr}Code{/tr}</th>
@@ -18,9 +17,9 @@
 		<th>{tr}Comment{/tr}</th>
 		<th>{tr}Actions{/tr}</th>
 	</tr>
-
+	{cycle values="odd,even" print=false}
 	{foreach from=$discounts.data item=discount}
-	<tr>
+	<tr class="{cycle}">
 		<td class="text">{$discount.code|escape}</td>
 		<td class="text">{$discount.value|escape}{if !strstr($discount.value, '%')} {$prefs.payment_currency|escape}{/if}</td>
 		<td class="date">{$discount.created|tiki_short_date}</td>
@@ -35,7 +34,6 @@
 		{norecords _colspan=6}
 	{/foreach}
 	</table>
-    </div>
 	{pagination_links cant=$discounts.cant step=$discounts.max offset=$discounts.offset}{/pagination_links}
 {/tab}
 {capture name=tabtitle}{if empty($info.id)}{tr}Create{/tr}{else}{tr}Edit{/tr}{/if}{/capture}
@@ -64,7 +62,7 @@
 	</tr>
 	<tr>
 		<td></td>
-		<td><input type="submit" class="btn btn-default btn-sm" name="save" value="{tr}Save{/tr}"></td>
+		<td><input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}"></td>
 	</tr>
 	</table>
 	</form>

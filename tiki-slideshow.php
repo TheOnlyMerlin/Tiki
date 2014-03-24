@@ -197,7 +197,7 @@ $headerlib->add_jq_onready(
 						});
 					}
 
-					$.tikiModal(tr("Updating Theme..."));
+					$.modal(tr("Updating Theme..."));
 					$.get("tiki-slideshow.php", {theme: theme}, function(o) {
 						$.s5.makeTheme($.parseJSON(o));
 						
@@ -212,11 +212,11 @@ $headerlib->add_jq_onready(
 								content: "~same~",
 								params: (window.slideshowSettings ? window.slideshowSettings : {})
 							}, function() {
-								$.tikiModal();
+								$.modal();
 								window.s5Busy = false;
 							});
 						} else {*/
-							$.tikiModal();
+							$.modal();
 							window.s5Busy = false;
 /*						}*/
 					}); 

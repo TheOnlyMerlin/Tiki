@@ -3,6 +3,12 @@
 	Adapted for Tiki 7.x
 	$Id$ */
 
+/* Import *lite as the base: */
+@import url("lite/lite.css");
+
+/* Then import the default layout properties file: */
+@import url("layout/layout.css");
+
 /* And design defaults: */
 @import url("layout/design.css");
 
@@ -14,7 +20,7 @@ html {
 }
 
 body {
-	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font: 12px Verdana, Geneva, Arial, Helvetica, sans-serif;
 	line-height: 1.4;
 	background-color: #fff;
 }
@@ -129,11 +135,13 @@ h6 {
 }
 
 hr {
-	border-top-color: #000;
+	background: #aaa;
+	color: #000;
 }
 
 fieldset {
 	border: solid 1px #077aa7;
+	padding: 10px;
 }
 
 textarea,
@@ -201,8 +209,8 @@ input#comments-title {
 }
 
 /* Links in buttons */
-.btn-default,
-.btn-default a:visited,
+.button a,
+.button a:visited,
 button,
 input[type=reset],
 input[type=submit],
@@ -217,7 +225,7 @@ input[type=submit],
 	font: normal 11px Verdana, Helvetica, Geneva, Arial, sans-serif;
 }
 
-.btn:hover,
+.button a:hover,
 button:hover,
 input[type=reset]:hover,
 input[type=submit]:hover,
@@ -229,7 +237,7 @@ input[type=submit]:hover,
 	font-size: 11px;
 }
 
-.btn:active,	
+.button a:active,	
 button:active,
 input[type=reset]:active,
 input[type=submit]:active,
@@ -258,6 +266,10 @@ input[type="submit"]:hover {
 	padding: .1em .8em;
 }
 
+/*.button {
+    margin: 2px;
+}*/
+
 small {
 	font-size: .9em;
 }
@@ -273,12 +285,35 @@ label {
 	color: #000;
 }
 
+/*** override lite.css ***/
+#main {
+	text-align: left;
+}
+
+#main[id] {
+	height: auto;
+	min-height: 100%;
+}
+
 #middle {
 	background: #fff;
+	padding: 0;
 }
 
 #c1c2 {
 	background: #fff;
+}
+
+/*.fullscreen #col1 {
+	margin: 0 30px !important;
+}*/
+
+#c1c2 #wrapper .marginleft {
+	margin-left: 240px;
+}
+
+#c1c2 #wrapper .marginright {
+	margin-right: 210px;
 }
 
 #c1c2 #wrapper #col1 #tiki-center {
@@ -286,13 +321,27 @@ label {
 }
 
 #c1c2 #col2 {
+	width: 240px;
+	text-align: right;
 	background: url(strasa/box_top.gif) no-repeat 100% 0;
 	padding-top: 5px;
 }
 
 #c1c2 #col2 .content {
+	text-align: left;
+	margin-left: 58px;
 	padding-bottom: 5px;
 	background: url(strasa/box_bottom.gif) no-repeat 0 100%;
+}
+
+#col3 {
+	margin-left: -210px;
+	width: 210px;
+	text-align: left;
+}
+
+#col3 .content {
+	margin-right: 58px;
 }
 
 #footer {
@@ -1083,7 +1132,7 @@ a.forumnameread {
 	background: #cce5ff !important;
 }
 
-[class].tabactive {
+[class].tabactive {/* override layout.css */
 	top: 1px;
 }
 
@@ -1169,6 +1218,10 @@ a.pagetitle:hover {
 	padding: 3px;
 	border: 1px solid #a9a9a9;
 	border-collapse: collapse;
+}
+
+#page-bar {
+	margin-top: 8px;
 }
 
 #wikihelp-tab table,
@@ -1887,12 +1940,32 @@ a.admbox.off:active {
 body.fixed_width {
 	background: #214d68 url(strasa/body-bg_fw.png) repeat-x !important
 }
+
+body.fixed_width #c1c2 #wrapper .marginleft {
+ margin-left: 180px;
+}
+
+body.fixed_width #c1c2 #wrapper .marginright {
+	margin-right: 180px;
+}
+
 body.fixed_width #c1c2 #col2 {
+	width: 180px;
 	background: url(strasa/box_top_fw.gif) no-repeat 100% 0;
 }
 
 body.fixed_width #c1c2 #col2 .content {
+	margin-left: 0;
 	background: url(strasa/box_bottom_fw.gif) no-repeat 100% 100%;
+}
+
+body.fixed_width #col3 {
+	margin-left: -180px;
+	width: 180px;
+}
+
+body.fixed_width #col3 .content {
+	margin-right: 0;
 }
 
 body.fixed_width #outer_wrapper {

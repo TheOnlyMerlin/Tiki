@@ -50,7 +50,7 @@ if (!$sheetlib->user_can_view($_REQUEST['sheetId'])) {
 	die;
 }
 
-$smarty->assign('page', isset($_REQUEST['page']) ? $_REQUEST['page'] : '');
+$smarty->assign('page', $_REQUEST['page']);
 $smarty->assign('objectperms', $objectperms);
 
 if (isset($_REQUEST['height'])) {
@@ -187,10 +187,10 @@ if ( isset($_REQUEST['relate']) && isset($_REQUEST['trackerId']) ) {
 
 	$smarty->assign('parseValues', $grid->parseValues);
 
-	$tableHtml[0] = $grid->getTableHtml(true, isset($_REQUEST['readdate']) ? $_REQUEST['readdate'] : null);
+	$tableHtml[0] = $grid->getTableHtml(true, $_REQUEST['readdate']);
 
-	if (!empty($relatedTrackersAsHtml)) {
-		$tableHtml[0] .= $relatedTrackersAsHtml;
+	if (strlen($relatedTrackersAsHtml) > 0) {
+		$tableHtml[0] = $tableHtml[0] . $relatedTrackersAsHtml;
 	}
 }
 
@@ -213,15 +213,14 @@ if (!empty($_REQUEST['parse']) && $_REQUEST['parse'] == 'edit') {
 
 $headerlib->add_jq_onready(
 	'$.sheet.tikiOptions = $.extend($.sheet.tikiOptions, {
-					menuLeft: $("#sheetMenu").clone().html()
+					menu: $("#sheetMenu").clone().html()
 				});
 
 				jST = $("div.tiki_sheet")
-				    .height(window.innerHeight * 0.8)
 					.sheet($.sheet.tikiOptions);
 
-				jST.id = "' . ($_REQUEST['sheetId'] * 1) . '";
-				jST.file = "' . ( isset($fileInfo) ? 'true' : 'false' ) .'";
+				jST.id = "'.$_REQUEST['sheetId'].'";
+				jST.file = "'.$_REQUEST['file'].'";
 
 				$.sheet.link.setupUI();
 				$.sheet.readyState();

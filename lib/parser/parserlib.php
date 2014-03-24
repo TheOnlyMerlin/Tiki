@@ -1143,7 +1143,7 @@ if ( \$('#$id') ) {
 
 	function process_save_plugins($data, array $context)
 	{
-        $parserlib = TikiLib::lib('parser');
+		$parserlib = TikiLib::lib('parser');
 
 		$argumentParser = new WikiParser_PluginArgumentParser;
 
@@ -1151,7 +1151,7 @@ if ( \$('#$id') ) {
 
 		foreach ($matches as $match) {
 			$plugin_name = $match->getName();
-            $body = $match->getBody();
+			$body = $match->getBody();
 			$arguments = $argumentParser->parse($match->getArguments());
 
 			$dummy_output = '';
@@ -1167,17 +1167,10 @@ if ( \$('#$id') ) {
 						$match->replaceWith($output);
 					}
 				}
-
-                if ($plugin_name == 'translationof')
-                {
-                    $this->add_translationof_relation($data, $arguments, $context['itemId']);
-                }
 			}
 		}
 
-        $matches_text = $matches->getText();
-
-        return $matches_text;
+		return $matches->getText();
 	}
 
 	//*
@@ -1676,7 +1669,7 @@ if ( \$('#$id') ) {
 		if (!$simple_wiki) {
 			// Replace boxes
 			$delim = (isset($prefs['feature_simplebox_delim']) && $prefs['feature_simplebox_delim'] !="" )?preg_quote($prefs['feature_simplebox_delim']):preg_quote("^");
-			$data = preg_replace("/${delim}(.+?)${delim}/s", "<div class=\"well\">$1</div>", $data);
+			$data = preg_replace("/${delim}(.+?)${delim}/s", "<div class=\"simplebox\">$1</div>", $data);
 
 			// Underlined text
 			$data = preg_replace("/===(.+?)===/", "<u>$1</u>", $data);
@@ -2101,131 +2094,9 @@ if ( \$('#$id') ) {
 							$value='';
 							break;	
 						}
-					case 'lastVersion':
-						global $histlib;
-						include_once ('lib/wiki/histlib.php');
-						// get_page_history arguments: page name, page contents (set to "false" to save memory), history_offset (none, therefore "0"), max. records (just one for this case);
-						$history = $histlib->get_page_history($this->option['page'], false, 0, 1);
-						if ($history[0]['version'] != null) {
-							$value = $history[0]['version'];
-							break;	
-						} else {
-							$value='';
-							break;	
-						}
-					case 'lastAuthor':
-				        global $histlib;
-				        include_once ('lib/wiki/histlib.php');
-   				        
-				        // get_page_history arguments: page name, page contents (set to "false" to save memory), history_offset (none, therefore "0"), max. records (just one for this case);
-				        $history = $histlib->get_page_history($this->option['page'], false, 0, 1);
-				        if ($history[0]['user'] != null ) {
-							if ($prefs['user_show_realnames']== 'y') {
-								$value = TikiLib::lib('user')->clean_user($history[0]['user']);
-								break;
-							} else {
-			                    $value = $history[0]['user'];
-       							break;
-			                }  
-				        } else {
-				            $value='';
-				            break;  
-				        }
-					case 'lastModif':
-						global $histlib;
-						include_once ('lib/wiki/histlib.php');
-						// get_page_history arguments: page name, page contents (set to "false" to save memory), history_offset (none, therefore "0"), max. records (just one for this case);
-						$history = $histlib->get_page_history($this->option['page'], false, 0, 1);
-						if ($history[0]['lastModif'] != null) {
-							$value = $tikilib->get_short_datetime($history[0]['lastModif']);
-							break;	
-						} else {
-							$value='';
-							break;	
-						}
-					case 'lastItemVersion':
-						global $trklib; include_once ('lib/trackers/trackerlib.php');
-						$auto_query_args = array('itemId');
-						if (!empty($_REQUEST['itemId'])) {
-							$item_info = $trklib->get_item_info($_REQUEST['itemId']);
-							$perms = Perms::get(array('type'=>'tracker', 'object'=> $item_info['trackerId']));
-							if (!$perms->view_trackers) {
-								$smarty->assign('errortype', 401);
-								$smarty->assign('msg', tra('You do not have permission to view this information from this tracker.'));
-								$smarty->display('error.tpl');
-								die;
-							}
-							$fieldId = empty($_REQUEST['fieldId'])?0: $_REQUEST['fieldId'];
-							$filter = array();
-							if (!empty($_REQUEST['version'])) {
-								$filter['version'] = $_REQUEST['version'];
-							}
-							$offset = empty($_REQUEST['offset'])? 0: $_REQUEST['offset'];
-							$history = $trklib->get_item_history($item_info, $fieldId, $filter, $offset, $prefs['maxRecords']);
-
-							$value = $history['data'][0]['version'];
-							break;	
-
-						} else {
-							$value='';
-							break;	
-						}
-					case 'lastItemAuthor':
-						global $trklib; include_once ('lib/trackers/trackerlib.php');
-						$auto_query_args = array('itemId');
-						if (!empty($_REQUEST['itemId'])) {
-							$item_info = $trklib->get_item_info($_REQUEST['itemId']);
-							$perms = Perms::get(array('type'=>'tracker', 'object'=> $item_info['trackerId']));
-							if (!$perms->view_trackers) {
-								$smarty->assign('errortype', 401);
-								$smarty->assign('msg', tra('You do not have permission to view this information from this tracker.'));
-								$smarty->display('error.tpl');
-								die;
-							}
-							if ($item_info['lastModifBy'] != null) {
-								if ($prefs['user_show_realnames']== 'y') {
-									$value = TikiLib::lib('user')->clean_user($item_info['lastModifBy']);
-									break;
-								} else {
-				                    $value = $item_info['lastModifBy'];
-	       							break;
-				                } 
-				            }
-							break;	
-							
-						} else {
-							$value='';
-							break;	
-						}
-					case 'lastItemModif':
-						global $trklib; include_once ('lib/trackers/trackerlib.php');
-						$auto_query_args = array('itemId');
-						if (!empty($_REQUEST['itemId'])) {
-							$item_info = $trklib->get_item_info($_REQUEST['itemId']);
-							$perms = Perms::get(array('type'=>'tracker', 'object'=> $item_info['trackerId']));
-							if (!$perms->view_trackers) {
-								$smarty->assign('errortype', 401);
-								$smarty->assign('msg', tra('You do not have permission to view this information from this tracker.'));
-								$smarty->display('error.tpl');
-								die;
-							}
-							$value = $tikilib->get_short_datetime($item_info['lastModif']);
-							break;	
-							
-						} else {
-							$value='';
-							break;	
-						}
 					default:
-						if ( isset($_GET[$name]) ) {
+						if ( isset($_GET[$name]) )
 							$value = $_GET[$name];
-						} else {
-								
-							include_once('lib/wiki-plugins/wikiplugin_showpref.php');	
-							if ($prefs['wikiplugin_showpref'] == 'y' && $showpref = wikiplugin_showpref('', array('pref' => $name))) {
-								$value = $showpref; //TODO after mani setups the $pref for the whitelist, check the whitelist before running the plugin.
-							}
-						}
 						break;
 					}
 
@@ -2267,7 +2138,7 @@ if ( \$('#$id') ) {
 
 				if (isset($tiki_p_edit_dynvar)&& $tiki_p_edit_dynvar=='y') {
 					$span1 = "<span  style='display:inline;' id='dyn_".$dvar."_display'><a class='dynavar' onclick='javascript:toggle_dynamic_var(\"$dvar\");' title='".tra('Click to edit dynamic variable', '', true).": $dvar'>$value</a></span>";
-					$span2 = "<span style='display:none;' id='dyn_".$dvar."_edit'><input type='text' name='dyn_".$dvar."' value='".$value."' />".'<input type="submit" class="btn btn-default btn-sm" name="_dyn_update" value="'.tra('Update variables', '', true).'"/></span>';
+					$span2 = "<span style='display:none;' id='dyn_".$dvar."_edit'><input type='text' name='dyn_".$dvar."' value='".$value."' />".'<input type="submit" name="_dyn_update" value="'.tra('Update variables', '', true).'"/></span>';
 				} else {
 					$span1 = "<span class='dynavar' style='display:inline;' id='dyn_".$dvar."_display'>$value</span>";
 					$span2 = '';
@@ -2280,7 +2151,7 @@ if ( \$('#$id') ) {
 				$data = str_replace("$enclose$dvar$enclose", $value, $data);
 			}
 			//At the end put an update button
-			//<br /><div align="center"><input type="submit" class="btn btn-default btn-sm" name="dyn_update" value="'.tra('Update variables','',true).'"/></div>
+			//<br /><div align="center"><input type="submit" name="dyn_update" value="'.tra('Update variables','',true).'"/></div>
 			$data='<form method="post" name="dyn_vars">'."\n".$data.'</form>';
 		}
 
@@ -2614,7 +2485,7 @@ if ( \$('#$id') ) {
 						// Update the current title number to hide all parents levels numbers if the parent has no autonumbering
 						$hideall = false;
 						for ( $j = $hdrlevel ; $j > 0 ; $j-- ) {
-							if ( $hideall || empty($show_title_level[$j]) ) {
+							if ( $hideall || ! $show_title_level[$j] ) {
 								unset($hdr_structure[$nb_hdrs][$j - 1]);
 								$hideall = true;
 							}
@@ -3318,18 +3189,5 @@ if ( \$('#$id') ) {
 		$cache_hotwords = $ret;
 		return $ret;
 	}
-
-    /*
-     * When we save a page that contains a TranslationOf plugin, we need to remember
-     * that relation, so we later, when the page referenced by this plugin gets translated,
-     * we can replace the plugin by a proper link to the translation.
-     */
-    public function add_translationof_relation($data, $arguments, $page_being_parsed)
-    {
-        global $relationlib;
-
-        $relationlib->add_relation('tiki.wiki.translationof', 'wiki page', $page_being_parsed, 'wiki page', $arguments['translation_page']);
-
-    }
 }
 

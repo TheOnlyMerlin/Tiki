@@ -54,17 +54,6 @@
 			"type": "package",
 			"package": {
 				"name": "ckeditor/ckeditor",
-				"version": "4.2.3",
-				"dist": {
-					"url": "https://github.com/ckeditor/ckeditor-releases/archive/4.2.3/full.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "ckeditor/ckeditor",
 				"version": "4.3.0",
 				"dist": {
 					"url": "https://github.com/ckeditor/ckeditor-releases/archive/4.3.0/full.zip",
@@ -98,17 +87,6 @@
 			"type": "package",
 			"package": {
 				"name": "ckeditor/ckeditor/skins/kama",
-				"version": "4.2.3",
-				"dist": {
-					"url": "http://download.ckeditor.com/kama/releases/kama_4.2.3.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "ckeditor/ckeditor/skins/kama",
 				"version": "4.3.0",
 				"dist": {
 					"url": "http://download.ckeditor.com/kama/releases/kama_4.3.zip",
@@ -134,17 +112,6 @@
 				"version": "4.2.1",
 				"dist": {
 					"url": "http://download.ckeditor.com/divarea/releases/divarea_4.2.1.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "ckeditor/ckeditor/plugins/divarea",
-				"version": "4.2.3",
-				"dist": {
-					"url": "http://download.ckeditor.com/divarea/releases/divarea_4.2.3.zip",
 					"type": "zip"
 				}
 			}
@@ -274,9 +241,9 @@
 			"type": "package",
 			"package": {
 				"name": "jquery/jquery-sheet",
-				"version": "3.1-rc-5",
+				"version": "3.0",
 				"dist": {
-					"url": "https://github.com/Spreadsheets/jQuery.sheet/archive/3.1-rc-5.zip",
+					"url": "http://jquerysheet.googlecode.com/files/jquery.sheet-3.0.zip",
 					"type": "zip"
 				}
 			}
@@ -768,28 +735,6 @@
 		{
 			"type": "package",
 			"package": {
-				"name": "jquery/plugins/tablesorter",
-				"version": "2.14.4",
-				"dist": {
-					"url": "https://github.com/Mottie/tablesorter/archive/v2.14.4.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "jquery/plugins/tablesorter",
-				"version": "2.15.9",
-				"dist": {
-					"url": "https://github.com/Mottie/tablesorter/archive/v2.15.9.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
 				"name": "jquery/plugins/treetable",
 				"version": "3.0.1",
 				"dist": {
@@ -899,7 +844,7 @@
 		},
 		{
 			"type": "svn",
-			"url": "http://svn.code.sf.net/p/jcapture-applet/code/trunk@47"
+			"url": "http://svn.code.sf.net/p/jcapture-applet/code/trunk@46"
 		},
 		{
 			"type": "svn",
@@ -915,13 +860,12 @@
 		"ckeditor/ckeditor/plugins/divarea": "*",
 		"codemirror/codemirror": "*",
 		"ezyang/htmlpurifier": "4.5.0",
-		"fivefilters/php-readability": "1.0",
 		"jarnokurlin/fullcalendar": "*",
 		"jcapture-applet/jcapture-applet": "dev-master",
 		"jquery/jquery": "*",
 		"jquery/jquery-min": "*",
 		"jquery/jquery-s5": "dev-master",
-		"jquery/jquery-sheet": "3.1",
+		"jquery/jquery-sheet": "3.0",
 		"jquery/jquery-ui": "*",
 		"jquery/jquery-mobile": "*",
 		"jquery/jquery-ui-themes": "*",
@@ -962,8 +906,7 @@
 		"simile_timeline/simile_timeline": "2.3.0",
 		"smarty/smarty": ">=3.1.14",
 		"svg-edit/svg-edit": "2.6",
-		"symfony/console": "2.4.1",
-		"tijsverkoyen/css-to-inline-styles": "1.2.1",
+		"symfony/console": "2.2.0",
 		"zetacomponents/base": "1.8"
 	},
 	"archive": {

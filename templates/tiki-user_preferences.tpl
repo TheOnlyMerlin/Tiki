@@ -11,10 +11,10 @@
 {/if}
 
 {if $tiki_p_admin_users eq 'y'}
-	<div class="t_navbar btn-group form-group">
+	<div class="navbar">
 		{assign var=thisuser value=$userinfo.login}
-		{button href="tiki-assignuser.php?assign_user=$thisuser" class="btn btn-default" _text="{tr}Assign Group{/tr}"}
-		{button href="tiki-user_information.php?view_user=$thisuser" class="btn btn-default" _text="{tr}User Information{/tr}"}
+		{button href="tiki-assignuser.php?assign_user=$thisuser" _text="{tr}Assign Group{/tr}"}
+		{button href="tiki-user_information.php?view_user=$thisuser" _text="{tr}User Information{/tr}"}
 	</div>
 {/if}
 
@@ -26,12 +26,11 @@
 		{/section}
 	</div>
 {/if}
-
+{cycle values="odd,even" print=false}
 {tabset name="mytiki_user_preference"}
 
 {if $prefs.feature_userPreferences eq 'y'}
 	{tab name="{tr}Personal Information{/tr}"}
-        <h2>{tr}Personal Information{/tr}</h2>
 		<form action="tiki-user_preferences.php" method="post">
 		<input type="hidden" name="view_user" value="{$userwatch|escape}">
 
@@ -195,12 +194,11 @@
 				<td><span class="description">{$userinfo.lastLogin|tiki_long_datetime}</span></td>
 			</tr>
 			<td colspan="2" class="input_submit_container">
-				<input type="submit" class="btn btn-default btn-sm" name="new_prefs"  value="{tr}Save changes{/tr}">
+				<input type="submit" class="btn btn-default" name="new_prefs"  value="{tr}Save changes{/tr}">
 			</td>
 		</table>
 	{/tab}
 	{tab name="{tr}Preferences{/tr}"}
-        <h2>{tr}Preferences{/tr}</h2>
 		<table class="formcolor">
 		<tr>
 			<th colspan="2">{tr}General settings{/tr}</th>
@@ -551,7 +549,7 @@
 
 		<tr>
 			<td colspan="2" class="input_submit_container">
-				<input type="submit" class="btn btn-default btn-sm" name="new_prefs" value="{tr}Save changes{/tr}">
+				<input type="submit" class="btn btn-default" name="new_prefs" value="{tr}Save changes{/tr}">
 			</td>
 		</tr>
 		</table>
@@ -561,7 +559,6 @@
 
 {if $prefs.change_password neq 'n' or ! ($prefs.login_is_email eq 'y' and $userinfo.login neq 'admin')}
 	{tab name="{tr}Account Information{/tr}"}
-        <h2>{tr}Account Information{/tr}</h2>
 		<form action="tiki-user_preferences.php" method="post">
 			<input type="hidden" name="view_user" value="{$userwatch|escape}">
 			<table class="formcolor">
@@ -604,7 +601,7 @@
 
 				<tr>
 					<td colspan="2" class="input_submit_container">
-						<input type="submit" class="btn btn-default btn-sm" name="chgadmin" value="{tr}Save changes{/tr}">
+						<input type="submit" class="btn btn-default" name="chgadmin" value="{tr}Save changes{/tr}">
 					</td>
 				</tr>
 			</table>
@@ -614,12 +611,11 @@
 
 {if $tiki_p_delete_account eq 'y' and $userinfo.login neq 'admin'}
 	{tab name="{tr}Account Deletion{/tr}"}
-        <h2>{tr}Account Deletion{/tr}</h2>
 		<form action="tiki-user_preferences.php" method="post"
 			  onsubmit='return confirm("{tr _0=$userwatch|escape}Are you really sure you want to delete the account %0?{/tr}");'>
 			{if !empty($userwatch)}<input type="hidden" name="view_user" value="{$userwatch|escape}">{/if}
 			<table class="formcolor">
-				<tr>
+				<tr class="{cycle}">
 					<td></td>
 					<td>
 						<input type='checkbox' name='deleteaccountconfirm' value='1'>
@@ -628,7 +624,7 @@
 				</tr>
 				<tr>
 					<td colspan="2" class="input_submit_container">
-						<input type="submit" class="btn btn-default btn-sm" name="deleteaccount" value="{if !empty($userwatch)}{tr}Delete the account:{/tr} {$userwatch|escape}{else}{tr}Delete my account{/tr}{/if}">
+						<input type="submit" class="btn btn-default" name="deleteaccount" value="{if !empty($userwatch)}{tr}Delete the account:{/tr} {$userwatch|escape}{else}{tr}Delete my account{/tr}{/if}">
 					</td>
 				</tr>
 			</table>

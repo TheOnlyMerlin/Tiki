@@ -51,7 +51,7 @@ class ServiceLib
 			$url .= '?' . http_build_query($params, '', '&');
 		}
 
-		return TikiLib::tikiUrlOpt($url);
+		return $url;
 	}
 
 	private function getControllerMap()
@@ -70,7 +70,6 @@ class ServiceLib
 			'draw' => 'Services_Draw_Controller',
 			'edit' => 'Services_Edit_Controller',
 			'favorite' => 'Services_User_FavoriteController',
-			'goal' => 'Services_Goal_Controller',
 			'file_finder' => 'Services_File_FinderController',
 			'file' => 'Services_File_Controller',
 			'jcapture' => 'Services_JCapture_Controller',
@@ -78,7 +77,6 @@ class ServiceLib
 			'kaltura'=>  'Services_Kaltura_Controller',
 			'managestream' => 'Services_ActivityStream_ManageController',
 			'module' => 'Services_Module_Controller',
-			'monitor' => 'Services_User_MonitorController',
 			'oauth' => 'Services_AuthSource_OAuthController',
 			'object' => 'Services_Object_Controller',
 			'payment' => 'Services_Payment_Controller',
@@ -86,10 +84,8 @@ class ServiceLib
 			'report' => 'Services_Report_Controller',
 			'tracker_calendar' => 'Services_Tracker_CalendarController',
 			'search_customsearch' => 'Services_Search_CustomSearchController',
-			'search_stored' => 'Services_Search_StoredController',
 			'showtikiorg' => 'Services_ShowTikiOrg_Controller',
 			'social' => 'Services_User_SocialController',
-			'suite' => 'Services_Suite_Controller',
 			'tracker' => 'Services_Tracker_Controller',
 			'tracker_sync' => 'Services_Tracker_SyncController',
 			'tracker_todo' => 'Services_Tracker_TodoController',

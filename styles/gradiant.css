@@ -3,6 +3,8 @@
 	No images were harmed during creation of this theme.
 	Lots of CSS3 going on here ! ;)
 */
+@import url("lite/lite.css");
+@import url("layout/layout.css");
 @import url("layout/design.css");
 * {
 	vertical-align: middle !important;
@@ -28,7 +30,7 @@ a:focus, a:active		{
 }
 body {
 	background: #f0f0f0;
-	font-family: 'Liberation Serif', Cambria, Georgia, serif;
+	font: 76%/1.5em 'Liberation Serif', Cambria, Georgia, serif;
 }
 a {
 	color: #333;
@@ -372,14 +374,14 @@ tt, code, kbd, samp {
 	border-radius: 0;
 }
 .sitetitle a {
-	font: normal bold 4rem "Segoe UI", "Lucida Grande", sans-serif;
+	font: normal bold 4em "Segoe UI", "Lucida Grande", sans-serif;
 	padding: 0 .5em;
 	-webkit-background-clip: text;
 	-moz-background-clip: text;
 	background-clip: text;
 	color: rgba(55,55,55,.5);
 	text-shadow: #fff 0 0 3em, rgba(255,255,255,.7) .2em .2em .3em, #fff 0 -.1em .5em, rgba(255,255,255,.7) -.2em 0 .3em;
-	line-height: 1.5rem;
+	line-height: 1.5em;
 	-moz-transition: all .5s ease;
 	-o-transition: all .5s ease;
 	-webkit-transition: all .5s ease;

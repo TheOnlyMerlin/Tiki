@@ -11,5 +11,5 @@
 	{/foreach}
 {/if}
 {foreach from=$p.notes item=note}
-	<div class="help-block pref_note">{$note|escape}</div>
+	<div class="pref_note">{$note|escape}</div>
 {/foreach}

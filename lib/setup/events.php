@@ -7,10 +7,6 @@
 
 tiki_setup_events();
 
-register_shutdown_function(function () {
-	TikiLib::events()->trigger('tiki.process.shutdown', []);
-});
-
 function tiki_setup_events()
 {
 	global $prefs;
@@ -125,13 +121,9 @@ function tiki_setup_events()
 		$events->bind('tiki.file.update', $defer('scorm', 'handle_file_update'));
 	}
 
-	if ($prefs['feature_futurelinkprotocol'] == 'y') {
-		$events->bind("tiki.wiki.view", 'tiki_wiki_view_pastlink');
-		$events->bind("tiki.wiki.save", 'tiki_wiki_save_pastlink');
-	}
-
-	if ($prefs['goal_enabled'] == 'y') {
-		TikiLib::lib('goalevent')->bindEvents($events);
+	if ($prefs['feature_forwardlinkprotocol'] == 'y') {
+		$events->bind("tiki.wiki.view", 'tiki_wiki_view_forwardlink');
+		$events->bind("tiki.wiki.save", 'tiki_wiki_save_forwardlink');
 	}
 
 	$events->bind('tiki.save', $defer('tiki', 'object_post_save'));
@@ -146,14 +138,6 @@ function tiki_setup_events()
 		} catch (Exception $e) {
 			TikiLib::lib('errorreport')->report($e->getMessage());
 		}
-	}
-
-	if ($prefs['storedsearch_enabled'] == 'y' && $prefs['monitor_enabled'] == 'y') {
-		$events->bind('tiki.query.hit', $defer('storedsearch', 'handleQueryNotification'));
-	}
-
-	if ($prefs['monitor_enabled'] == 'y') {
-		TikiLib::lib('monitor')->bindEvents($events);
 	}
 
 	// Chain events
@@ -196,15 +180,6 @@ function tiki_setup_events()
 	$events->bind('tiki.social.favorite.remove', 'tiki.social.save');
 	$events->bind('tiki.social.relation.add', 'tiki.social.save');
 	$events->bind('tiki.social.relation.remove', 'tiki.social.save');
-
-	$events->bind('tiki.query.critical', 'tiki.query.hit');
-	$events->bind('tiki.query.high', 'tiki.query.hit');
-	$events->bind('tiki.query.low', 'tiki.query.hit');
-
-	if (function_exists('fastcgi_finish_request')) {
-		// If available, try to send everything to the user at this point
-		$events->bindPriority(-10, 'tiki.process.shutdown', 'fastcgi_finish_request');
-	}
 }
 
 function tiki_save_refresh_index($args)
@@ -217,16 +192,16 @@ function tiki_save_refresh_index($args)
 }
 
 
-function tiki_wiki_view_pastlink($args)
+function tiki_wiki_view_forwardlink($args)
 {
-	FutureLink_ReceiveFromPast::wikiView($args);
-	FutureLink_PageLookup::wikiView($args);
-	FutureLink_FutureUI::wikiView($args);
-	FutureLink_PastUI::wikiView($args);
+	Feed_ForwardLink_Receive::wikiView($args);
+	Feed_ForwardLink_PageLookup::wikiView($args);
+	Feed_ForwardLink::wikiView($args);
+	Feed_TextLink::wikiView($args);
 }
 
-function tiki_wiki_save_pastlink($args)
+function tiki_wiki_save_forwardlink($args)
 {
-	FutureLink_FutureUI::wikiSave($args);
-	FutureLink_PastUI::wikiSave($args);
+	Feed_ForwardLink::wikiSave($args);
+	Feed_TextLink::wikiSave($args);
 }

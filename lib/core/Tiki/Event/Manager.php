@@ -10,7 +10,6 @@ class Tiki_Event_Manager
 	private $eventRegistry = array();
 	private $priorities = array();
 	private $currentPriority = false;
-	private $counter = 0;
 
 	function reset()
 	{
@@ -55,8 +54,6 @@ class Tiki_Event_Manager
 
 	function trigger($eventName, array $arguments = array())
 	{
-		$arguments['EVENT_ID'] = ++$this->counter;
-
 		$priorities = array_unique($this->priorities);
 		sort($priorities);
 		$this->priorities = $priorities;

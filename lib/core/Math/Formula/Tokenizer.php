@@ -13,21 +13,13 @@ class Math_Formula_Tokenizer
 
 		$len = strlen($string);
 		$current = '';
-		$inString = false;
-
 		for ( $i = 0; $len > $i; ++$i ) {
 			$chr = $string{$i};
 
 			$end = false;
 			$extra = null;
 
-			if ( $chr == '"' ) {
-				$current .= $chr;
-				$inString = ! $inString;
-				$end = ! $inString;
-			} elseif ( $inString ) {
-				$current .= $chr;
-			} elseif ( ctype_space($chr) ) {
+			if ( ctype_space($chr) ) {
 				$end = true;
 			} elseif ( $chr == '(' || $chr == ')' ) {
 				$extra = $chr;

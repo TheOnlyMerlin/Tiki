@@ -36,20 +36,12 @@ class Services_Broker
 			if ($access->is_serializable_request()) {
 				echo $access->output_serialized($output);
 			} else {
-				echo $this->render($controller, $action, $output, $request);
+				echo $this->render($controller, $action, $output);
 			}
+		} catch (Services_Exception $e) {
+			$access->display_error(NULL, $e->getMessage(), $e->getCode());
 		} catch (Exception $e) {
-			if ($request->modal->int()) {
-				// Special handling for modal dialog requests
-				// Do not send an error code as bootstrap will just blank out
-				// Render the error as a modal
-				$smarty = TikiLib::lib('smarty');
-				$smarty->assign('title', tr('Oops'));
-				$smarty->assign('detail', ['message' => $e->getMessage()]);
-				$smarty->display("extends:internal/modal.tpl|error-ajax.tpl");
-			} else {
-				$access->display_error(NULL, $e->getMessage(), $e->getCode());
-			}
+			$access->display_error(NULL, $e->getMessage(), $e->getCode());
 		}
 	}
 
@@ -64,12 +56,8 @@ class Services_Broker
 
 	function internalRender($controller, $action, $request)
 	{
-		if (! $request instanceof JitFilter) {
-			$request = new JitFilter($request);
-		}
-
 		$output = $this->internal($controller, $action, $request);
-		return $this->render($controller, $action, $output, $request, true);
+		return $this->render($controller, $action, $output, true);
 	}
 
 	private function attemptProcess($controller, $action, $request)
@@ -103,11 +91,13 @@ class Services_Broker
 		}
 	}
 
-	private function render($controller, $action, $output, JitFilter $request, $internal = false)
+	private function render($controller, $action, $output, $internal = false)
 	{
 		if (isset($output['FORWARD'])) {
-			$url = TikiLib::lib('service')->getUrl($output['FORWARD']);
-			TikiLib::lib('access')->redirect($url);
+			$loc = $_SERVER['PHP_SELF'];
+			$arguments = $output['FORWARD'];
+			header("Location: $loc?" . http_build_query($arguments, '', '&'));
+			exit;
 		}
 
 		$smarty = TikiLib::lib('smarty');
@@ -115,33 +105,28 @@ class Services_Broker
 		$template = "$controller/$action.tpl";
 
 		//if template doesn't exists, simply return the array given from the action
-        //if noTemplate is specified in the query string, it will skip the template
-		if (! $smarty->templateExists($template) || strpos($_SERVER['QUERY_STRING'], '&noTemplate') !== false) {
-			return json_encode($output);
-		}
+		if ($smarty->templateExists($template) == false) return json_encode($output);
 
 		$access = TikiLib::lib('access');
 		foreach ($output as $key => $value) {
 			$smarty->assign($key, $value);
 		}
 
-		$layout = null;
-
 		if ($internal) {
-			$layout = "layouts/internal/layout_view.tpl";
+			return $smarty->fetch($template);
 		} elseif ($access->is_xml_http_request()) {
-			$layout = $request->modal->int()
-				? 'layouts/internal/modal.tpl'
-				: 'layouts/internal/ajax.tpl';
-		}
+			$headerlib = TikiLib::lib('header');
 
-		if ($layout) {
-			$out = $smarty->fetch("extends:$layout|$template");
+			$content = $smarty->fetch($template);
+
+			$content .= $headerlib->output_js_files();
+			$content .= $headerlib->output_js();
+
+			return $content;
 		} else {
-			$out = $smarty->fetch($template);
+			$smarty->assign('mid', $template);
+			return $smarty->fetch('tiki.tpl');
 		}
-
-		return $out;
 	}
 }
 

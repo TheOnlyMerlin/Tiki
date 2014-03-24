@@ -32,11 +32,10 @@
 			{/section}
 		</select>
 	</td>
-	<td><input type="submit" class="btn btn-default btn-sm" value="{tr}Find{/tr}" name="filter"></td>
+	<td><input type="submit" class="btn btn-default" value="{tr}Find{/tr}" name="filter"></td>
 </tr>
 </table>
 </form>
-<div class="table-responsive">
 <table class="table normal">
 <tr>
 <th><a href="tiki-live_support_transcripts.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'chat_started_desc'}chat_started_asc{else}chat_started_desc{/if}">{tr}started{/tr}</a></th>
@@ -45,9 +44,9 @@
 <th><a href="tiki-live_support_transcripts.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'operator_desc'}operator_asc{else}operator_desc{/if}">{tr}operator{/tr}</a></th>
 <th>{tr}msgs{/tr}</th>
 </tr>
-
+{cycle values="odd,even" print=false}
 {section name=ix loop=$items}
-<tr>
+<tr class="{cycle}">
 <td>{$items[ix].chat_started|tiki_short_datetime}</td><!--date_format:"%d %b [%H:%M]"-->
 <td>{if $items[ix].tiki_user ne ""}{$items[ix].tiki_user}{else}{$items[ix].user|escape}{/if}</td>
 <td>{$items[ix].reason}</td>
@@ -58,13 +57,11 @@
 	{norecords _colspan=5}
 {/section}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
 
 {if $smarty.request.view}
 <h3>{tr}Transcript{/tr}</h3>
-<div class="table-responsive">
 <table class="table normal">
 {section name=ix loop=$events}
 <tr>
@@ -77,5 +74,4 @@
 </tr>	
 {/section}
 </table>
-</div>
 {/if}

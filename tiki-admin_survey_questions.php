@@ -48,6 +48,7 @@ if ($_REQUEST["questionId"]) {
 	$info["min_answers"] = '';
 	$info["max_answers"] = '';
 }
+$smarty->assign_by_ref('info', $info);
 if (isset($_REQUEST["remove"])) {
 	$access->check_authenticity();
 	$srvlib->remove_survey_question($_REQUEST["remove"]);
@@ -63,6 +64,7 @@ if (isset($_REQUEST["save"])) {
 	$info["min_answers"] = '';
 	$info["max_answers"] = '';
 	$smarty->assign('questionId', 0);
+	$smarty->assign('info', $info);
 }
 if (!isset($_REQUEST["sort_mode"])) {
 	$sort_mode = 'position_asc';
@@ -86,7 +88,6 @@ $channels = $srvlib->list_survey_questions($_REQUEST["surveyId"], $offset, $maxR
 if (empty($info["position"])) {
 	$info["position"] = $channels["cant"] + 1;
 }
-$smarty->assign_by_ref('info', $info);
 $smarty->assign_by_ref('cant_pages', $channels["cant"]);
 $smarty->assign_by_ref('channels', $channels["data"]);
 // Fill array with possible number of questions per page

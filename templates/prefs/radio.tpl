@@ -17,7 +17,7 @@
 	{/if}
 	{include file="prefs/shared-flags.tpl"}
 	{if $p.hint}
-		<div class="help-block">{$p.hint|simplewiki}</div>
+		<br/><em>{$p.hint|simplewiki}</em>
 	{/if}
 	{include file="prefs/shared-dependencies.tpl"}
 </div>

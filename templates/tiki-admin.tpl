@@ -3,20 +3,19 @@
 {title help="$helpUrl"}{$admintitle}{/title}
 
 {if $prefs.sender_email eq ''}
-	{remarksbox type=warning title="{tr}Warning{/tr}"}
-		{tr _0="tiki-admin.php?page=general&highlight=sender_email"}Your sender email is not set. You can set it <a href="%0" class="alert-link">in the general admin panel.</a>{/tr}
-	{/remarksbox}
+	<div class="alert alert-info">
+		{tr _0="tiki-admin.php?page=general&highlight=sender_email"}Your sender email is not set. You can set it <a href="%0" class="alert-link">here</a>{/tr}
+	</div>
 {/if}
-
 
 {* Limit the wizard link to the home page, leave some screen space for the main content *}
 {if ! $smarty.get.page}
-<div class="alert alert-info">
-    <a href="tiki-wizard_admin.php?&stepNr=0&url=tiki-admin.php"><img src="img/icons/large/wizard48x48.png"></a>{tr _0="tiki-wizard_admin.php?&stepNr=0&url=tiki-admin.php"}Use the <a href="%0" class="alert-link">Configuration Wizards</a> to more easily set up your site.{/tr}
-</div>
+{remarksbox type="note" title="{tr}Note{/tr}"}
+    <div style="float:left">&nbsp;&nbsp;<a href="tiki-wizard_admin.php?&stepNr=0&url=tiki-admin.php"><img src="img/icons/wizard22x22.png"></a></div>&nbsp;&nbsp;{tr _0="tiki-wizard_admin.php?&stepNr=0&url=tiki-admin.php"}Use the <a href="%0" class="rbox-link" >Configuration Wizards</a> to more easily set up your site.{/tr}
+{/remarksbox}
 {/if}
 
-<form method="post" action="" class="horizontal-form">
+<form method="post" action="">
 	<fieldset>
 		<legend>{tr}Preference Filters{/tr}</legend>
 		{foreach from=$pref_filters key=name item=info}
@@ -82,45 +81,33 @@
 {if !isset($smarty.get.page) or $smarty.get.page != 'profiles'} {* We don't want on this page because it results in two search boxes *}
 <form method="post" action="">
 	{*remarksbox type="note" title="{tr}Development Notice{/tr}"}
-		{tr}This search feature and the <a class="alert-link" href="tiki-edit_perspective.php">perspectives GUI</a> need <a class="alert-link" href="http://dev.tiki.org/Dynamic+Preferences">dev.tiki.org/Dynamic+Preferences</a>. If you search for something and it's not appearing, please help improve keywords/descriptions.{/tr}
+		{tr}This search feature and the <a href="tiki-edit_perspective.php">perspectives GUI</a> need <a href="http://dev.tiki.org/Dynamic+Preferences">dev.tiki.org/Dynamic+Preferences</a>. If you search for something and it's not appearing, please help improve keywords/descriptions.{/tr}
 	{/remarksbox*}
-	<div class="form-group">
-		<div class="input-group">
-			<span class="input-group-addon">
-				<span class="glyphicon glyphicon-search"></span>
-			</span>
-			<input type="text" name="lm_criteria" value="{$lm_criteria|escape}" class="form-control" placeholder="{tr}Configuration search{/tr}">
-			<div class="input-group-btn">
-				<button type="submit" class="btn btn-default" {if $indexNeedsRebuilding} class="tips" title="{tr}Configuration search{/tr}|{tr}Note: The search index needs rebuilding, this will take a few minutes.{/tr}"{/if}>{tr}Search{/tr}</button>
-			</div>
-		</div>
-	</div>
-	<input type="hidden" name="filters">
+	<p>
+		<label>{tr}Configuration search:{/tr} <input type="text" name="lm_criteria" value="{$lm_criteria|escape}"></label>
+		<input type="submit" value="{tr}Search{/tr}" {if $indexNeedsRebuilding} class="tips" title="{tr}Configuration search{/tr}|{tr}Note: The search index needs rebuilding, this will take a few minutes.{/tr}"{/if} />
+		<input type="hidden" name="filters">
+	</p>
 </form>
 {if $lm_error}
 	{remarksbox type="warning" title="{tr}Search error{/tr}"}{$lm_error}{/remarksbox}
 {elseif $lm_searchresults}
-<div class="panel panel-default">
-	<div class="panel-heading">
-		<h3 class="panel-title">{tr}Search Results{/tr}</h3>
-	</div>
-	<form method="post" action="" class="table" role="form">
-		<div class="pref_search_results panel-body">
+<fieldset>
+<legend>{tr}Preferences Search Results{/tr}</legend>
+	<form method="post" action="">
+		<div class="pref_search_results box">
 			{foreach from=$lm_searchresults item=prefName}
 				{preference name=$prefName get_pages="y"}
 			{/foreach}
 		</div>
-		<div class="panel-footer text-center">
-			<input class="btn btn-primary" type="submit" value="{tr}Change{/tr}">
-		</div>
+		<input type="submit" value="{tr}Change{/tr}" class="clear">
 		<input type="hidden" name="lm_criteria" value="{$lm_criteria|escape}">
 	</form>
-</div>
+</fieldset>
 {elseif $lm_criteria}
 	{remarksbox type="note" title="{tr}No results{/tr}" icon="magnifier"}{tr}No preferences were found for your search query.{/tr}{if $prefs.unified_engine eq 'lucene'}{tr} Not what you expected? Try {/tr}<a class="rbox-link" href="tiki-admin.php?prefrebuild">{tr}rebuild{/tr}</a> {tr}the preferences search index.{/tr}{/if}{/remarksbox}
 {/if}
 {/if}
-
 
 <div id="pageheader">
 {* bother to display this only when breadcrumbs are on *}
@@ -131,9 +118,9 @@
 {/if}
 *}
 {if $db_requires_update}
-	{remarksbox type="error" title="{tr}Database Version Problem{/tr}"}
-	{tr}Your database requires an update to match the current Tiki version. Please proceed to <a class="alert-link" href="tiki-install.php">the installer</a>. Using Tiki with an incorrect database version usually provokes errors.{/tr}
-	{tr}If you have shell (SSH) access, you can also use the following, on the command line, from the root of your Tiki installation:{/tr} php console.php database:update
+	{remarksbox type="errors" title="{tr}Database Version Problem{/tr}"}
+	{tr}Your database requires an update to match the current Tiki version. Please proceed to <a href="tiki-install.php">the installer</a>. Using Tiki with an incorrect database version usually provokes errors.{/tr}
+	{tr}If you have shell (SSH) access, you can also use the following, on the command line, from the root of your Tiki installation:{/tr} php installer/shell.php
 	{/remarksbox}
 {/if}
 {*{tr}{$description}{/tr}*}
@@ -153,7 +140,7 @@ Add a value in first check when you create a new admin page. *}
   {assign var="include" value="list_sections"}
 {/if}
 {if $include != "list_sections"}
-  <div class="alert alert-warning adminanchors clearfix" >{include file='admin/include_anchors.tpl'}</div>
+  <div class="simplebox adminanchors clearfix" >{include file='admin/include_anchors.tpl'}</div>
 {/if}
 
 {if $upgrade_messages|count}
@@ -171,11 +158,11 @@ Add a value in first check when you create a new admin page. *}
 
 {if $tikifeedback}
 	{remarksbox type="note" title="{tr}Note{/tr}"}
-
+		{cycle values="odd,even" print=false}
 		{tr}The following list of changes has been applied:{/tr}
 		<ul>
 		{section name=n loop=$tikifeedback}
-			<li>
+			<li class="{cycle}">
 				<p>
 			{if $tikifeedback[n].st eq 0}
 				{icon _id=delete alt="{tr}Disabled{/tr}" style="vertical-align: middle"}
@@ -203,7 +190,6 @@ if $pagetop_msg}
 	{/remarksbox}
 {/if*}
 
-
 {include file="admin/include_$include.tpl"}
 
 <br style="clear:both" />
@@ -211,29 +197,29 @@ if $pagetop_msg}
 
 	{tr}Administration features:{/tr}<br>
 	{* TODO: to be fixed {if $prefs.feature_debug_console eq 'y'} <a href="javascript:toggle("debugconsole")">{tr}(debug){/tr}</a> {/if} *}
-	<a href="tiki-adminusers.php" class="alert-link">{tr}Users{/tr}</a> 
-	<a href="tiki-admingroups.php" class="alert-link">{tr}Groups{/tr}</a> 
-	<a href="tiki-admin_security.php" class="alert-link">{tr}Security{/tr}</a> 
-	<a href="tiki-admin_system.php" class="alert-link">{tr}TikiCache/System{/tr}</a> 
-	<a href="tiki-syslog.php" class="alert-link">{tr}SysLogs{/tr}</a> 
-	<a href="tiki-mods.php" class="alert-link">{tr}Mods{/tr}</a>
+	<a href="tiki-adminusers.php">{tr}Users{/tr}</a> 
+	<a href="tiki-admingroups.php">{tr}Groups{/tr}</a> 
+	<a href="tiki-admin_security.php">{tr}Security{/tr}</a> 
+	<a href="tiki-admin_system.php">{tr}TikiCache/System{/tr}</a> 
+	<a href="tiki-syslog.php">{tr}SysLogs{/tr}</a> 
+	<a href="tiki-mods.php">{tr}Mods{/tr}</a>
 	<hr>
 
 	{tr}Transversal features{/tr} ({tr}which apply to more than one section{/tr}):<br>
-	<a href="tiki-admin_notifications.php" class="alert-link">{tr}Mail Notifications{/tr}</a> 
+	<a href="tiki-admin_notifications.php">{tr}Mail Notifications{/tr}</a> 
 	<hr>
 
 	{tr}Navigation features:{/tr}<br>
-	<a href="tiki-admin_menus.php" class="alert-link">{tr}Menus{/tr}</a> 
-	<a href="tiki-admin_modules.php" class="alert-link">{tr}Modules{/tr}</a>
+	<a href="tiki-admin_menus.php">{tr}Menus{/tr}</a> 
+	<a href="tiki-admin_modules.php">{tr}Modules{/tr}</a>
 	<hr>
 
 	{tr}Text area features{/tr} ({tr}features you can use in all text areas, like wiki pages, blogs, articles, forums, etc{/tr}):<br>
-	<a href="tiki-admin_cookies.php" class="alert-link">{tr}Cookies{/tr}</a> 
-	<a href="tiki-list_cache.php" class="alert-link">{tr}External Pages Cache{/tr}</a> 
-	<a href="tiki-admin_toolbars.php" class="alert-link">{tr}Toolbars{/tr}</a> 
-	<a href="tiki-admin_dsn.php" class="alert-link">{tr}DSN{/tr}</a> 
-	<a href="tiki-admin_external_wikis.php" class="alert-link">{tr}External Wikis{/tr}</a> 
+	<a href="tiki-admin_cookies.php">{tr}Cookies{/tr}</a> 
+	<a href="tiki-list_cache.php">{tr}External Pages Cache{/tr}</a> 
+	<a href="tiki-admin_toolbars.php">{tr}Toolbars{/tr}</a> 
+	<a href="tiki-admin_dsn.php">{tr}DSN{/tr}</a> 
+	<a href="tiki-admin_external_wikis.php">{tr}External Wikis{/tr}</a> 
 	<hr>
 
 {/remarksbox}

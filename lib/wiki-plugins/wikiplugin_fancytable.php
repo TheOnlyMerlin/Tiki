@@ -7,15 +7,11 @@
 
 function wikiplugin_fancytable_info()
 {
-	$tsOn = Table_Check::perms();
-	if ($tsOn === true) {
-		$ts = new Table_Plugin;
-		$ts->createParams();
-		$tsparams = $ts->params;
-		unset($tsparams['server']);
-	} else {
-		$tsparams = array();
-	}
+
+	$ts = new Table_Plugin;
+	$ts->createParams();
+	$tsparams = $ts->params;
+	unset($tsparams['server']);
 	$params = array_merge(
 		array(
 			 'head' => array(
@@ -86,8 +82,8 @@ function wikiplugin_fancytable($data, $params)
 	$msg = '';
 
 	if ((isset($sortable) && $sortable != 'n')) {
-		if (Table_Check::perms()) {
-			$ts = new Table_Plugin;
+		$ts = new Table_Plugin;
+		if ($ts->perms !== false) {
 			$ts->setSettings(
 				'fancytable_' . $iFancytable,
 				'n',
@@ -98,12 +94,12 @@ function wikiplugin_fancytable($data, $params)
 				isset($tsfilteroptions) ? $tsfilteroptions : null,
 				isset($tspaginate) ? $tspaginate : null
 			);
-			if (is_array($ts->settings)) {
-				Table_Factory::build('plugin', $ts->settings);
-				$sort = true;
-			} else {
-				$sort = false;
-			}
+		} else {
+			$sort = false;
+		}
+		if (is_array($ts->settings)) {
+			Table_Factory::build('plugin', $ts->settings);
+			$sort = true;
 		} else {
 			$sort = false;
 		}

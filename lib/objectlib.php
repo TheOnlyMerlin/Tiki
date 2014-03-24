@@ -396,35 +396,32 @@ class ObjectLib extends TikiLib
 			case 'wiki page':
 				global $tikilib; include_once('lib/tikilib.php');
 				$info = $tikilib->get_page_info($object);
-				return array('title'=>$object, 'data'=>$info['data'], 'is_html'=>$info['is_html']);
+				return (array('title'=>$object, 'data'=>$info['data'], 'is_html'=>$info['is_html']));
 
 			case 'article':
 				global $artlib; require_once 'lib/articles/artlib.php';
 				$info = $artlib->get_article($object);
-				return array('title'=>$info['title'], 'data'=>$info['body']);
+				return (array('title'=>$info['title'], 'data'=>$info['body']));
 
 			case 'file gallery':
 				$info = TikiLib::lib('filegal')->get_file_gallery_info($object);
-				return array('title' => $info['name']);
+				return (array('title' => $info['name']));
 
 			case 'blog':
 				$info = TikiLib::lib('blog')->get_blog($object);
-				return array('title' => $info['title']);
+				return (array('title' => $info['title']));
 
 			case 'forum':
 				$info = TikiLib::lib('comments')->get_forum($object);
-				return array('title' => $info['name']);
+				return (array('title' => $info['name']));
 
 			case 'forum post':
 				$info = TikiLib::lib('comments')->get_comment($object);
-				return array('title' => $info['title']);
+				return (array('title' => $info['title']));
 
 			case 'tracker':
 				$info = TikiLib::lib('trk')->get_tracker($object);
-				return array('title' => $info['name']);
-
-			case 'goal':
-				return TikiLib::lib('goal')->fetchGoal($object);
+				return (array('title' => $info['name']));
 		}
 		return (array('error'=>'true'));
 	}
@@ -478,8 +475,6 @@ class ObjectLib extends TikiLib
 			case 'topic':
 				$meta=TikiLib::lib('art')->get_topic($id);
 				return $meta['name'];
-			case 'group':
-				return $id;
 		}
 
 		$title = $this->table('tiki_objects')->fetchOne(
@@ -498,10 +493,6 @@ class ObjectLib extends TikiLib
 
 		if (isset($info['title'])) {
 			return $info['title'];
-		}
-
-		if (isset($info['name'])) {
-			return $info['name'];
 		}
 	}
 

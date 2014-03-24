@@ -6,6 +6,8 @@
 */
 
 /* Import layout foundation CSS files: */
+@import url("lite/lite.css");
+@import url("layout/layout.css");
 @import url("layout/design.css");
 
 /***** XHTML Elements (body tag here,
@@ -14,18 +16,33 @@
 body {
 	background: #000 url(abse/wgreenwall.png) fixed;
 	color: #fff;
-	font-family: "Bitstream Vera Sans", Verdana, Geneva, sans-serif}
+	font: 70% "Bitstream Vera Sans", Verdana, Geneva, sans-serif}
 
+html>body {font-size: .7em !important}
+
+ /***** Layout (overrides layout.css
+		and styles page layout divs)  *****/
+
+/* Enable header and footer content to widen when middle has wide content. */
+body.fixed_width .fixedwidth .fixedwidth {
+	width: 100%;
+	padding: 0;
+}
 
 #middle {padding-top: 8px}
 
 #c1c2 {
+	text-align: left;
 	font-size: 1em;
 	background: transparent}
 
 #c1c2	#wrapper	#col1 {
 	background: transparent;
 	color: #fff}
+
+#c1c2	#wrapper	#col1.marginleft  {margin-left: 200px;}
+#c1c2	#wrapper	#col1.marginright {margin-right: 200px;}
+#c1c2	#wrapper	#col1	.content {background: transparent}
 
 #c1c2 #wrapper #col1 #tiki-center {
 	padding: 15px 20px 5px;
@@ -35,16 +52,30 @@ body {
 	background: url(abse/titlebgoff.png) repeat-x;
 	font-size: 1em}
 
+* html #tiki-center {font-size: 1em}
+
 html>body #c1c2 #wrapper #col1 #tiki-center:hover {
 	background: #0E1D10 url(abse/titlebgon.png) repeat-x}
 
 #c1c2 #col2 {
 	background: transparent;
+	width: 200px;
 	font-size: 1em}
 
+#c1c2 #col2 .content {
+	margin: 0;
+	padding: 0 4px 4px}
+
 #col3 {
+	margin-left: -200px;
+	margin-top: -3px;
 	background: transparent;
+	width: 200px;
 	font-size: 1em}
+
+#col3 .content {
+	padding: 3px;
+	overflow: hidden}
 
 #footer {
 	clear: both;
@@ -93,7 +124,7 @@ img {border: 0}
 
 fieldset {
 	border: solid 1px #3f6041;
-}
+	padding: 10px}
 
 hr {
 	color: #bdcec3;
@@ -134,6 +165,7 @@ option {
 button,
 .button input,
 .submitbutton,
+.calbuttonBox,
 input[type=submit],
 input[type=reset] {
 	background: #424248 url(abse/titlebgoff.png) repeat-x;
@@ -153,7 +185,8 @@ select {
 button:hover,
 .button input:hover,
 .submitbutton:hover,
-option:hover {
+option:hover,
+.calbuttonBox a:hover {
 	background: url(abse/titlebgon.png) repeat-x 0 1px;
 	color: #fff/*#BDCEC3*/;
 	text-decoration: none}
@@ -564,6 +597,7 @@ td.heading {
 }
 
 /** Tabs **/
+/* reset what's in layout.css */
 
 .tabactive,
 .tabinactive,
@@ -663,6 +697,7 @@ li.tabmark {
 	border-right: 1px solid #a9a9a9;
 	border-bottom: 1px solid #a9a9a9}
 
+.editdate {padding-bottom: 5px}
 textarea.wikiedit {font-size: 1.25em}
 .help_section,
 

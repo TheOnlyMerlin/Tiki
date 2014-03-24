@@ -1,10 +1,3 @@
-{extends 'layout_view.tpl'}
-
-{block name="title"}
-	{title}{$title|escape}{/title}
-{/block}
-
-{block name="content"}
 <form class="simple" method="post" action="{service controller=managestream action=tracker_filter}">
 	<label>
 		{tr}Notes{/tr}
@@ -21,7 +14,7 @@
 	<label>
 		{tr}New Event{/tr}
 		<input type="text" name="targetEvent" value="{$targetEvent|escape}"/>
-		<div class="description help-block">
+		<div class="description">
 			{tr}All event names are required to have at least 3 components.{/tr}
 		</div>
 	</label>
@@ -39,7 +32,6 @@
 	</label>
 	<div class="submit">
 		<input type="hidden" name="ruleId" value="{$rule.ruleId|escape}"/>
-		<input type="submit" class="btn btn-default btn-sm" value="{tr}Save Rule{/tr}"/>
+		<input type="submit" class="btn btn-default" value="{tr}Save Rule{/tr}"/>
 	</div>
 </form>
-{/block}

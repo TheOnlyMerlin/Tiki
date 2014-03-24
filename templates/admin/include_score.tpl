@@ -2,22 +2,22 @@
 
 <form action="tiki-admin.php?page=score" method="post">
 	<div class="heading input_submit_container" style="text-align: right">
-		<input type="submit" class="btn btn-default btn-sm" name="scoreevents" value="{tr}Save{/tr}" />
+		<input type="submit" class="btn btn-default" name="scoreevents" value="{tr}Save{/tr}" />
 	</div>
 
-<fieldset class="table">
+<fieldset class="admin">
 	<legend>{tr}Activate the feature{/tr}</legend>
 	{preference name=feature_score visible="always"}
 </fieldset>
 
-<fieldset class="table">
+<fieldset class="admin">
 	<legend>{tr}Expire score older than certain days{/tr}</legend>
 	{preference name=feature_score_expday visible="always"}
 </fieldset>	
 
-<fieldset class="table">
+<fieldset class="admin">
 <legend>{tr}Settings{/tr}</legend>
-<table class="table">
+<table class="admin">
 <tr>
   <td style="padding-left:5px"></td>
   <td></td>
@@ -51,6 +51,6 @@
 </table>
 </fieldset>
 	<div class="heading input_submit_container" style="text-align: center">
-		<input type="submit" class="btn btn-default btn-sm" name="scoreevents" value="{tr}Save{/tr}" />
+		<input type="submit" class="btn btn-default" name="scoreevents" value="{tr}Save{/tr}" />
 	</div>
 </form>

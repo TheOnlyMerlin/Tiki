@@ -297,11 +297,6 @@ class Perms
 		$this->groups = $groups;
 	}
 
-	function getGroups()
-	{
-		return $this->groups;
-	}
-
 	function setPrefix($prefix)
 	{
 		$this->prefix = $prefix;

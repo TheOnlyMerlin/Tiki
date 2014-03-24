@@ -756,7 +756,8 @@ if ($tiki_p_admin == 'y') {
 }
 
 //add tablesorter sorting and filtering
-$tsOn = Table_Check::perms(true);
+$tsOn	= $prefs['disableJavascript'] == 'n' && $prefs['feature_jquery_tablesorter'] == 'y'
+		&& $prefs['feature_ajax'] == 'y' ? true : false;
 
 $smarty->assign('tsOn', $tsOn);
 $tsAjax = isset($_REQUEST['tsAjax']) && $_REQUEST['tsAjax'] ? true : false;
@@ -791,12 +792,12 @@ if ($tsOn && !$tsAjax) {
 	$ts_groups = array_flip($ts_groups);
 	//set tablesorter code
 	Table_Factory::build(
-		'TikiAdminusers',
+		'adminusers',
 		array(
 			 'total' => $users['cant'],
-			 'columns' => array(
-				 6 => array(
-					 'filter' => array(
+			 'filters' => array(
+				 'columns' => array(
+					 6 => array(
 						 'options' => $ts_groups
 				 	)
 				)

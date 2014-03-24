@@ -1,6 +1,5 @@
 {* $Id$ *}
-<table class="table">
-	<thead>
+<table>
 	{$header=false}
 	{foreach from=$column item=col}
 		{if !empty($col.label) or !empty($col.sort)}
@@ -21,8 +20,6 @@
 			{/foreach}
 		</tr>
 	{/if}
-	</thead>
-	<tbody>
 	{foreach from=$results item=row}
 		<tr>
 			{foreach from=$column item=col}
@@ -34,6 +31,5 @@
 			{/foreach}
 		</tr>
 	{/foreach}
-	</tbody>
 </table>
 {pagination_links resultset=$results}{/pagination_links}

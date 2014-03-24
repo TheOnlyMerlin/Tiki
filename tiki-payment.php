@@ -89,18 +89,6 @@ if ( isset($ipn_data) ) {
 	exit;
 }
 
-if (isset($_GET['invoice']) && $jitGet->OKauthentication->word()) {
-	// Return URL - check payment right away through APIs
-	$id = $_GET['invoice'];
-	$verified = $paymentlib->check_payment($id, $jitGet, $jitPost);
-
-	if ($verified) {
-		$access->redirect('tiki-payment.php?invoice=' . $id, tra('Payment has been confirmed.'));
-	} else {
-		$access->redirect('tiki-payment.php?invoice=' . $id, tra('Payment confirmation has not been received yet.'));
-	}
-}
-
 if ( isset( $_POST['manual_amount'], $_POST['invoice'] ) && preg_match('/^\d+(\.\d{2})?$/', $_POST['manual_amount']) ) {
 	$objectperms = Perms::get('payment', $_REQUEST['invoice']);
 

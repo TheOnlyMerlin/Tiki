@@ -5,15 +5,9 @@
 
 <form action="tiki-admin.php?page=module" method="post">
 	<input type="hidden" name="modulesetup" />
-
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-                <input type="submit" class="btn btn-default btn-sm" value="{tr}Change preferences{/tr}">
-            </div>
-        </div>
-    </div>
-
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+	</div>
 	<fieldset>
 		<legend>{tr}{$crumbs[$crumb]->description}{/tr}{help crumb=$crumbs[$crumb]}</legend>
 
@@ -44,10 +38,7 @@
 			{tr}If you lose your login module, use tiki-login_scr.php to be able to login!{/tr}
 		{/remarksbox}
 	</fieldset>
-    <br>{* I cheated. *}
-    <div class="row">
-        <div class="form-group col-lg-12 text-center">
-            <input type="submit" class="btn btn-default btn-sm" value="{tr}Change preferences{/tr}">
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: center">
+		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>

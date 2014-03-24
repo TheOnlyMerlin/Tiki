@@ -3,80 +3,88 @@
 {title help="forums" admpage="forums"}{$forum_info.name}{/title}
 
 {if $forum_info.show_description eq 'y'}
-	<div class="description help-block">{wiki}{$forum_info.description}{/wiki}</div>
+	<div class="description">{wiki}{$forum_info.description}{/wiki}</div>
 {/if}
 
-<div class="t_navbar form-group">
-    {assign var=thisforum_info value=$forum_info.forumId}
-	{if ($tiki_p_forum_post_topic eq 'y' and ($prefs.feature_wiki_discuss ne 'y' or $prefs.$forumId ne $prefs.wiki_forum_id)) or $tiki_p_admin_forum eq 'y'}
-	    {if !isset($comments_threadId) or $comments_threadId eq 0}
-		    {button href="tiki-view_forum.php?openpost=1&amp;forumId=$thisforum_info&amp;comments_threadId=0&amp;comments_threshold=$comments_threshold&amp;comments_offset=$comments_offset&amp;thread_sort_mode=$thread_sort_mode&amp;comments_per_page=$comments_per_page" _onclick="$('#forumpost').show();return false;" _text="{tr}New Topic{/tr}"}
-		{else}
-			{button href="tiki-view_forum.php?openpost=1&amp;forumId=$thisforum_info&amp;comments_threadId=0&amp;comments_threshold=$comments_threshold&amp;comments_offset=$comments_offset&amp;thread_sort_mode=$thread_sort_mode&amp;comments_per_page=$comments_per_page" _onclick="$('#forumpost').show();return false;" _text="{tr}New Topic{/tr}"}
-		{/if}
-	{/if}
-	{if $tiki_p_admin_forum eq 'y' or !isset($all_forums) or $all_forums|@count > 1}
-	{* No need for users to go to forum list if they are already looking at the only forum BUT note that all_forums only defined with quickjump feature *}
-		{button href="tiki-forums.php" _text="{tr}Forum List{/tr}"}
-	{/if}
-	{if $tiki_p_admin_forum eq 'y'}
-		{button href="tiki-admin_forums.php?forumId=$thisforum_info&amp;cookietab=2" _text="{tr}Edit Forum{/tr}"}
-	{/if}
+<div class="navbar">
+	<table width="97%">
+		<tr>
+			<td>
+				{assign var=thisforum_info value=$forum_info.forumId}
+				{if ($tiki_p_forum_post_topic eq 'y' and ($prefs.feature_wiki_discuss ne 'y' or $prefs.$forumId ne $prefs.wiki_forum_id)) or $tiki_p_admin_forum eq 'y'}
+					{if !isset($comments_threadId) or $comments_threadId eq 0}
+						{button href="tiki-view_forum.php?openpost=1&amp;forumId=$thisforum_info&amp;comments_threadId=0&amp;comments_threshold=$comments_threshold&amp;comments_offset=$comments_offset&amp;thread_sort_mode=$thread_sort_mode&amp;comments_per_page=$comments_per_page" _onclick="$('#forumpost').show();return false;" _text="{tr}New Topic{/tr}"}
+					{else}
+						{button href="tiki-view_forum.php?openpost=1&amp;forumId=$thisforum_info&amp;comments_threadId=0&amp;comments_threshold=$comments_threshold&amp;comments_offset=$comments_offset&amp;thread_sort_mode=$thread_sort_mode&amp;comments_per_page=$comments_per_page" _onclick="$('#forumpost').show();return false;" _text="{tr}New Topic{/tr}"}
+					{/if}
+				{/if}
+				{if $tiki_p_admin_forum eq 'y' or !isset($all_forums) or $all_forums|@count > 1}
+				{* No need for users to go to forum list if they are already looking at the only forum BUT note that all_forums only defined with quickjump feature *}
+					{button href="tiki-forums.php" _text="{tr}Forum List{/tr}"}
+				{/if}
+				{if $tiki_p_admin_forum eq 'y'}
+					{button href="tiki-admin_forums.php?forumId=$thisforum_info&amp;cookietab=2" _text="{tr}Edit Forum{/tr}"}
+				{/if}
 
-	{if $queued > 0}
-		{button href="tiki-forum_queue.php?forumId=$forumId" _text="{tr}Manage Message Queue{/tr}&nbsp;($queued)"}
-	{/if}
+				{if $queued > 0}
+					{button href="tiki-forum_queue.php?forumId=$forumId" _text="{tr}Manage Message Queue{/tr}&nbsp;($queued)"}
+				{/if}
 
-	{if $reported > 0}
-		{button href="tiki-forums_reported.php?forumId=$forumId" _text="{tr}Manage Reported Messages{/tr}&nbsp;($reported)"}
-	{/if}
+				{if $reported > 0}
+					{button href="tiki-forums_reported.php?forumId=$forumId" _text="{tr}Manage Reported Messages{/tr}&nbsp;($reported)"}
+				{/if}
+			</td>
+			
+			<td style="text-align:right;">
+				{if $prefs.feed_forum eq 'y'}
+					<a href="tiki-forum_rss.php?forumId={$forumId}" title="{tr}RSS feed{/tr}">{icon _id="feed" alt="{tr}RSS feed{/tr}"}</a>
+				{/if}
 
-	{if $prefs.feed_forum eq 'y'}
-		<a href="tiki-forum_rss.php?forumId={$forumId}" title="{tr}RSS feed{/tr}">{icon _id="feed" alt="{tr}RSS feed{/tr}"}</a>
-	{/if}
+				{if !empty($tiki_p_forum_lock) and $tiki_p_forum_lock eq 'y'}
+					{if $forum_info.is_locked eq 'y'}
+						{self_link lock='n' _icon='lock_break' _alt="{tr}Unlock{/tr}"}{/self_link}
+					{else}
+						{self_link lock='y' _icon='lock_add' _alt="{tr}Lock{/tr}"}{/self_link}
+					{/if}
+				{/if}
 
-    {if !empty($tiki_p_forum_lock) and $tiki_p_forum_lock eq 'y'}
-		{if $forum_info.is_locked eq 'y'}
-			{self_link lock='n' _icon='lock_break' _alt="{tr}Unlock{/tr}"}{/self_link}
-		{else}
-	    	{self_link lock='y' _icon='lock_add' _alt="{tr}Lock{/tr}"}{/self_link}
-		{/if}
-	{/if}
+				{if $user and $prefs.feature_user_watches eq 'y'}
+					{if $user_watching_forum eq 'n'}
+						<a href="tiki-view_forum.php?forumId={$forumId}&amp;watch_event=forum_post_topic&amp;watch_object={$forumId}&amp;watch_action=add" title="{tr}Monitor Topics of this Forum{/tr}">{icon _id='eye' alt="{tr}Monitor Topics of this Forum{/tr}"}</a>
+					{else}
+						<a href="tiki-view_forum.php?forumId={$forumId}&amp;watch_event=forum_post_topic&amp;watch_object={$forumId}&amp;watch_action=remove" title="{tr}Stop Monitoring Topics of this Forum{/tr}">{icon _id='no_eye' alt="{tr}Stop Monitoring Topics of this Forum{/tr}"}</a>
+					{/if}			
+				{/if}
 
-	{if $user and $prefs.feature_user_watches eq 'y'}
-		{if $user_watching_forum eq 'n'}
-			<a class="btn btn-default pull-right" href="tiki-view_forum.php?forumId={$forumId}&amp;watch_event=forum_post_topic&amp;watch_object={$forumId}&amp;watch_action=add" title="{tr}Monitor Topics of this Forum{/tr}">{icon _id='eye' alt="{tr}Monitor Topics of this Forum{/tr}"}</a>
-		{else}
-			<a class="btn btn-default pull-right" href="tiki-view_forum.php?forumId={$forumId}&amp;watch_event=forum_post_topic&amp;watch_object={$forumId}&amp;watch_action=remove" title="{tr}Stop Monitoring Topics of this Forum{/tr}">{icon _id='no_eye' alt="{tr}Stop Monitoring Topics of this Forum{/tr}"}</a>
-		{/if}
-	{/if}
+				{if $user and $prefs.feature_user_watches eq 'y'}
+					{if $user_watching_forum_topic_and_thread eq 'n'}
+						<a href="tiki-view_forum.php?forumId={$forumId}&amp;watch_event=forum_post_topic_and_thread&amp;watch_object={$forumId}&amp;watch_action=add" title="{tr}Monitor Topics and Threads of this Forum{/tr}">{icon _id='eye_magnifier' alt="{tr}Monitor Topics and Threads of this Forum{/tr}"}</a>
+					{else}
+						<a href="tiki-view_forum.php?forumId={$forumId}&amp;watch_event=forum_post_topic_and_thread&amp;watch_object={$forumId}&amp;watch_action=remove" title="{tr}Stop Monitoring Topics and Threads of this Forum{/tr}">{icon _id='no_eye' alt="{tr}Stop Monitoring Topics and Threads of this Forum{/tr}"}</a>
+					{/if}
+				{/if}
+				{if $prefs.feature_group_watches eq 'y' and ( $tiki_p_admin_users eq 'y' or $tiki_p_admin eq 'y' )}
+					<a href="tiki-object_watches.php?objectId={$forumId|escape:"url"}&amp;watch_event=forum_post_topic&amp;objectType=forum&amp;objectName={$forum_info.name|escape:"url"}&amp;objectHref={'tiki-view_forum.php?forumId='|cat:$forumId|escape:"url"}" class="icon">{icon _id='eye_group' alt="{tr}Group Monitor Topics of this Forum{/tr}"}</a>
+				{/if}
+				{if $prefs.feature_group_watches eq 'y' and ( $tiki_p_admin_users eq 'y' or $tiki_p_admin eq 'y' )}
+					<a href="tiki-object_watches.php?objectId={$forumId|escape:"url"}&amp;watch_event=forum_post_topic_and_thread&amp;objectType=forum&amp;objectName={$forum_info.name|escape:"url"}&amp;objectHref={'tiki-view_forum.php?forumId='|cat:$forumId|escape:"url"}" class="icon">{icon _id='eye_group' alt="{tr}Group Monitor Topics and Threads of this Forum{/tr}"}</a>
+				{/if}
 
-	{if $user and $prefs.feature_user_watches eq 'y'}
-		{if $user_watching_forum_topic_and_thread eq 'n'}
-			<a class="btn btn-default pull-right" href="tiki-view_forum.php?forumId={$forumId}&amp;watch_event=forum_post_topic_and_thread&amp;watch_object={$forumId}&amp;watch_action=add" title="{tr}Monitor Topics and Threads of this Forum{/tr}">{icon _id='eye_magnifier' alt="{tr}Monitor Topics and Threads of this Forum{/tr}"}</a>
-		{else}
-			<a class="btn btn-default pull-right" href="tiki-view_forum.php?forumId={$forumId}&amp;watch_event=forum_post_topic_and_thread&amp;watch_object={$forumId}&amp;watch_action=remove" title="{tr}Stop Monitoring Topics and Threads of this Forum{/tr}">{icon _id='no_eye' alt="{tr}Stop Monitoring Topics and Threads of this Forum{/tr}"}</a>
-		{/if}
-	{/if}
+				<div class="categbar" align="right" >
+					{if $user and $prefs.feature_user_watches eq 'y'}
+						{if isset($category_watched) and $category_watched eq 'y'}
+							{tr}Watched by categories:{/tr}
+							{section name=i loop=$watching_categories}
+								<a href="tiki-browse_categories.php?parentId={$watching_categories[i].categId}">{$watching_categories[i].name|escape}</a>
+								&nbsp;
+							{/section}
+						{/if}	
+					{/if}
+				</div>
 
-    {if $prefs.feature_group_watches eq 'y' and ( $tiki_p_admin_users eq 'y' or $tiki_p_admin eq 'y' )}
-		<a href="tiki-object_watches.php?objectId={$forumId|escape:"url"}&amp;watch_event=forum_post_topic&amp;objectType=forum&amp;objectName={$forum_info.name|escape:"url"}&amp;objectHref={'tiki-view_forum.php?forumId='|cat:$forumId|escape:"url"}" class="icon">{icon _id='eye_group' alt="{tr}Group Monitor Topics of this Forum{/tr}"}</a>
-	{/if}
-	{if $prefs.feature_group_watches eq 'y' and ( $tiki_p_admin_users eq 'y' or $tiki_p_admin eq 'y' )}
-		<a href="tiki-object_watches.php?objectId={$forumId|escape:"url"}&amp;watch_event=forum_post_topic_and_thread&amp;objectType=forum&amp;objectName={$forum_info.name|escape:"url"}&amp;objectHref={'tiki-view_forum.php?forumId='|cat:$forumId|escape:"url"}" class="icon">{icon _id='eye_group' alt="{tr}Group Monitor Topics and Threads of this Forum{/tr}"}</a>
-	{/if}
-
-	<div class="categbar" align="right" >
-		{if $user and $prefs.feature_user_watches eq 'y'}
-    		{if isset($category_watched) and $category_watched eq 'y'}
-				{tr}Watched by categories:{/tr}
-	   			{section name=i loop=$watching_categories}
-					<a class="btn btn-default btn-sm" href="tiki-browse_categories.php?parentId={$watching_categories[i].categId}">{$watching_categories[i].name|escape}</a>
-					&nbsp;
-				{/section}
-			{/if}
-		{/if}
-	</div>
+			</td>
+		</tr>
+	</table>
 </div>
 
 <a class="link" href="tiki-forums.php">{tr}Forums{/tr}</a> {$prefs.site_crumb_seper} <a class="link" href="tiki-view_forum.php?forumId={$forumId}">{$forum_info.name|escape}</a>
@@ -140,27 +148,23 @@
 			<input type="hidden" name="comments_threshold" value="{$comments_threshold|escape}">
 			<input type="hidden" name="thread_sort_mode" value="{$thread_sort_mode|escape}">
 			<input type="hidden" name="forumId" value="{$forumId|escape}">
-			<div class="form-horizontal">
-				<div class="form-group">
-                    <label class="col-sm-2 control-label" for="comments_title">{tr}Title{/tr}</label>
-					<div class="col-sm-10">
-                        <input type="text" class="form-control" name="comments_title" id="comments_title" value="{$comment_title|escape}">
-                    </div>
-                </div>
+			<table class="formcolor">
+				<tr>
+					<td>{tr}Title{/tr}</td>
+					<td><input type="text" name="comments_title" value="{$comment_title|escape}" size="80"></td>
+				</tr>
 				{if $forum_info.forum_use_password ne 'n'}
-					<div class="form-group">
-						<label class="col-sm-2 control-label" for="comment_password">{tr}Password{/tr}</label>
-						<div class="col-sm-10">
-                            <input type="password" name="comment_password" id="comment_password" class="form-control">
-                        </div>
-                    </div>
+					<tr>
+						<td>{tr}Password{/tr}</td>
+						<td><input type="password" name="password"></td>
+					</tr>
 				{/if}
 				{if $tiki_p_admin_forum eq 'y' or $forum_info.topic_smileys eq 'y'}
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" for="comments_topictype">{tr}Type{/tr}</label>
-                    <div class="col-sm-2">
-					    {if $tiki_p_admin_forum eq 'y'}
-								<select name="comment_topictype" id="comment_topictype" class="form-control comment_topictype">
+					<tr>
+						<td>{tr}Type{/tr}</td>
+						<td>
+							{if $tiki_p_admin_forum eq 'y'}
+								<select name="comment_topictype" class="comment_topictype">
 									<option value="n" {if $comment_topictype eq 'n'}selected="selected"{/if}>{tr}Normal{/tr}</option>
 									<option value="a" {if $comment_topictype eq 'a'}selected="selected"{/if}>{tr}Announce{/tr}</option>
 									<option value="h" {if $comment_topictype eq 'h'}selected="selected"{/if}>{tr}Hot{/tr}</option>
@@ -168,10 +172,8 @@
 									<option value="d" {if $comment_topictype eq 'd'}selected="selected"{/if}>{tr}Deliberation{/tr}</option>
 								</select>
 							{/if}
-                        </div>
-                        <div class="col-sm-2">
 							{if $forum_info.topic_smileys eq 'y'}
-								<select name="comment_topicsmiley" class="form-control comment_topicsmiley">
+								<select name="comment_topicsmiley" class="comment_topicsmiley">
 									<option value="" {if $comment_topicsmiley eq ''}selected="selected"{/if}>{tr}no feeling{/tr}</option>
 									<option value="icon_frown.gif" {if $comment_topicsmiley eq 'icon_frown.gif'}selected="selected"{/if}>{tr}frown{/tr}</option>
 									<option value="icon_exclaim.gif" {if $comment_topicsmiley eq 'icon_exclaim.gif'}selected="selected"{/if}>{tr}exclaim{/tr}</option>
@@ -184,32 +186,33 @@
 									<option value="icon_wink.gif" {if $comment_topicsmiley eq 'icon_wink.gif'}selected="selected"{/if}>{tr}wink{/tr}</option>
 								</select>
 							{/if}
-                        </div>
-                    </div>
+						</td>
+					</tr>
 				{/if}
 
 				{if $forum_info.topic_summary eq 'y'}
-					<div class="form-group">
-						<label class="col-sm-2 control-label">{tr}Summary{/tr}</label>
-						<div class="col-sm-10">
-							<input type="text" class="form-control" name="comment_topicsummary" id="comment_topicsummary" value="{$comment_topicsummary|escape}" maxlength="240">
-                        </div>
-                    </div>
+					<tr>
+						<td>{tr}Summary{/tr}</td>
+						<td>
+							<input type="text" size="60" name="comment_topicsummary" value="{$comment_topicsummary|escape}" maxlength="240">
+						</td>
+					</tr>
 				{/if}
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" for="editpost">{tr}Message{/tr}</label>
-                    <div class="col-sm-10">
-                        {textarea id="editpost" class="form-control" name="comments_data" _simple="y" codemirror="y" syntax="tiki" _toolbars=$prefs.feature_forum_parse}{$comment_data}{/textarea}
-				    </div>
-    			</div>
+
+			<tr>
+				<td>{tr}Edit{/tr}
+				</td>
+				<td>					
+					{textarea id='editpost' name="comments_data" _simple="y" codemirror="y" syntax="tiki" _toolbars=$prefs.feature_forum_parse}{$comment_data}{/textarea}
+				</td>
+			</tr>
 				{if ($forum_info.att eq 'att_all') or ($forum_info.att eq 'att_admin' and $tiki_p_admin_forum eq 'y') or ($forum_info.att eq 'att_perm' and $tiki_p_forum_attach eq 'y')}
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label" for="userfile1">{tr}Attach file{/tr}</label>
-                        <div class="col-sm-10">
-						    <input type="hidden" name="MAX_FILE_SIZE" value="{$forum_info.att_max_size|escape}">
-                            <input name="userfile1" id="userfile1"  class="form-control" type="file">{tr}Maximum size:{/tr} {$forum_info.att_max_size|kbsize}
-					    </div>
-					</div>
+					<tr>
+						<td>{tr}Attach file{/tr}</td>
+						<td>
+							<input type="hidden" name="MAX_FILE_SIZE" value="{$forum_info.att_max_size|escape}"><input name="userfile1" type="file">{tr}Maximum size:{/tr} {$forum_info.att_max_size|kbsize}
+						</td>
+					</tr>
 				{/if}
 			
 				{if $prefs.feature_contribution eq 'y'}
@@ -282,12 +285,12 @@
 					$('.forum_deliberation_add_item').click(function() {
 						var thisItem;
 						if (!itemMaster) {
-							$.tikiModal(tr('Loading...'));
+							$.modal(tr('Loading...'));
 							$.get('tiki-ajax_services', {controller: 'comment', action: "deliberation_item"}, function(itemInput) {
 								itemMaster = itemInput;
 								thisItem = $(itemMaster).insertBefore('div.forum_deliberation_items_toolbar');
 								configureDeliberationItemRatings(thisItem);
-								$.tikiModal();
+								$.modal();
 							});
 						} else {
 							thisItem = $(itemMaster).insertBefore('div.forum_deliberation_items_toolbar');
@@ -297,14 +300,14 @@
 						return false;
 					});
 				{/jq}
-				<div class="form-group forum_deliberation" style="display: none;">
-					<label class="col-sm-2 control-label">{tr}Deliberation{/tr}</label>
-					<div class="col-sm-10 forum_deliberation_items">
+				<tr class="forum_deliberation" style="display: none;">
+					<td>{tr}Deliberation{/tr}</td>
+					<td class="forum_deliberation_items">
 						<div class="forum_deliberation_items_toolbar">
 							{button href="#" _class="forum_deliberation_add_item" _text="{tr}Add Deliberation Item{/tr}"}
 						</div>
-					</div>
-				</div>
+					</td>
+				</tr>
 
 				{if $prefs.feature_antibot eq 'y'}
 					{include file='antibot.tpl' tr_style="formcolor"}
@@ -315,55 +318,57 @@
 				{/if}
 
 				{if $user and $prefs.feature_user_watches eq 'y' and (!isset($comments_threadId) or $comments_threadId eq 0)}
-					<div class="form-group">
-						<label class="col-sm-2 control-label">{tr}Watch for replies{/tr}</label>
-						<div class="col-sm-10">
+					<tr>
+						<td>{tr}Watch for replies{/tr}</td>
+						<td>
 							<input type="radio" name="set_thread_watch" value="y" id="thread_watch_yes" checked="checked">
 							<label for="thread_watch_yes">{tr}Send me an e-mail when someone replies to my topic{/tr}</label>
 							<br>
 							<input type="radio" name="set_thread_watch" value="n" id="thread_watch_no">
 							<label for="thread_watch_no">{tr}Don't send me any e-mails{/tr}</label>
-						</div>
-					</div>
+						</td>
+					</tr>
 				{/if}
 				{if empty($user) && $prefs.feature_user_watches eq 'y'}
-					<div class="form-group">
-						<label for="anonymous_email" class="col-sm-2 control-label">{tr}If you would like to be notified when someone replies to this topic<br>please tell us your e-mail address:{/tr}</label></td>
-						<div class="col-sm-10">
-                            <input type="text" class="form-control" id="anonymous_email" name="anonymous_email">
-                        </div>
-					</div>
+					<tr>
+						<td><label for="anonymous_email">{tr}If you would like to be notified when someone replies to this topic<br>please tell us your e-mail address:{/tr}</label></td>
+						<td><input type="text" size="30" id="anonymous_email" name="anonymous_email"></td>
+					</tr>
 				{/if}
 
-				<div class="form-group">
-					<label class="col-sm-2 control-label" for="anonymous_name">{tr}Post{/tr}</label>
-					<div class="col-sm-10">
+				<tr>
+					<td>{tr}Post{/tr}</td>
+					<td>
 						{if empty($user)}
-							{tr}Enter your name:{/tr}&nbsp;<input type="text" maxlength="50" id="anonymous_name" name="anonymous_name">
+							{tr}Enter your name:{/tr}&nbsp;<input type="text" maxlength="50" size="12" id="anonymous_name" name="anonymous_name">
 						{/if}
-						<input type="submit" class="btn btn-default btn-sm" name="comments_postComment" value="{tr}Post{/tr}" {if empty($user)}onclick="setCookie('anonymous_name',document.getElementById('anonymous_name').value);needToConfirm=false;"{/if}>
-						<input type="submit" class="btn btn-default btn-sm" name="comments_previewComment" value="{tr}Preview{/tr}" {if empty($user)}onclick="setCookie('anonymous_name',document.getElementById('anonymous_name').value);needToConfirm=false;"{/if}>
-						<input type="submit" class="btn btn-default btn-sm" name="comments_postCancel" value="{tr}Cancel{/tr}" {if $comment_preview neq 'y'}onclick="hide('forumpost');window.location='#header';return false;"{/if}>
-                    </div>
-                </div>
-            </div>
+						<input type="submit" class="btn btn-default" name="comments_postComment" value="{tr}Post{/tr}" {if empty($user)}onclick="setCookie('anonymous_name',document.getElementById('anonymous_name').value);needToConfirm=false;"{/if}>
+						<input type="submit" class="btn btn-default" name="comments_previewComment" value="{tr}Preview{/tr}" {if empty($user)}onclick="setCookie('anonymous_name',document.getElementById('anonymous_name').value);needToConfirm=false;"{/if}>
+						<input type="submit" class="btn btn-default" name="comments_postCancel" value="{tr}Cancel{/tr}" {if $comment_preview neq 'y'}onclick="hide('forumpost');window.location='#header';return false;"{/if}>
+					</td>
+				</tr>
+			</table>
 		</form>
-
-        <div class="alert alert-info alert-dismissable col-sm-10 col-sm-push-2" id="commentshelp">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-			<h4><span class="glyphicon glyphicon-info-sign"></span> {tr}Editing posts:{/tr}</h4>
-            <span class="help-block">
-                {tr}Use{/tr} [http://example.org] {tr}or{/tr} [http://example.org|description] {tr}for links{/tr}<br>
-	    		{tr}HTML tags are not allowed inside posts{/tr}
-            </span>
-		</div>
+		<br>
+		
+		<table class="formcolor" id="commentshelp">
+			<tr>
+				<td class="even">
+					<b>{tr}Editing posts:{/tr}</b>
+					<br>
+					<br>
+					{tr}Use{/tr} [http://example.org] {tr}or{/tr} [http://example.org|description] {tr}for links{/tr}<br>
+					{tr}HTML tags are not allowed inside posts{/tr}<br>
+				</td>
+			</tr>
+		</table>
 	</div> <!-- end forumpost -->
 
 	<br>
 {/if}
 
 {if $prefs.feature_forum_content_search eq 'y' and $prefs.feature_search eq 'y'}
-	<div class="text-center">
+	<div class="findtable">
 		<form id="search-form" class="forms" method="get" action="tiki-search{if $prefs.feature_forum_local_tiki_search eq 'y'}index{else}results{/if}.php">
 				<input name="highlight" size="30" type="text">
 				<input type="hidden" name="where" value="forums">
@@ -379,7 +384,6 @@
 	<input type="hidden" name="comments_threshold" value="{$comments_threshold|escape}">
 	<input type="hidden" name="thread_sort_mode" value="{$thread_sort_mode|escape}">
 	<input type="hidden" name="forumId" value="{$forumId|escape}">
-    <div class="table-responsive">
 	<table class="table normal">
 		{if $tiki_p_admin_forum eq 'y'}
 			<tr>
@@ -429,7 +433,7 @@
 								{/if}
 							{/section}
 						</select>
-						<input type="submit" class="btn btn-default btn-sm" name="mergesel" value="{tr}Merge{/tr}">
+						<input type="submit" class="btn btn-default" name="mergesel" value="{tr}Merge{/tr}">
 					</td>
 				</tr>
 			{/if}
@@ -484,16 +488,16 @@
 			<th>{tr}Actions{/tr}</th>
 		</tr>
 		
-
+		{cycle values="odd,even" print=false}
 		{section name=ix loop=$comments_coms}
 			{if $userinfo && $comments_coms[ix].lastPost > $userinfo.lastLogin}
 				{assign var="newtopic" value="_new"}
 			{else}
 				{assign var="newtopic" value=""}
 			{/if}
-			<tr>
+			<tr class="{cycle}">
 				{if $tiki_p_admin_forum eq 'y'}
-					<td class="checkbox-cell">
+					<td class="checkbox">
 						<input type="checkbox" name="forumtopic[]" value="{$comments_coms[ix].threadId|escape}" {if isset($smarty.request.forumtopic) and in_array($comments_coms[ix].threadId,$smarty.request.forumtopic)}checked="checked"{/if}>
 					</td>
 				{/if}	
@@ -640,21 +644,19 @@
 			{norecords _colspan=8 _text="No topics yet"}
 		{/section}
 	</table>
-    </div>
 </form>
 
 {pagination_links cant=$comments_cant step=$comments_per_page offset=$comments_offset offset_arg='comments_offset'}{/pagination_links}
 
 {if $forum_info.forum_last_n > 0 && count($last_comments)}
 	{* Last n titles *}
-
-    <div class="table-responsive">
+	{cycle values="odd,even" print=false}
 	<table class="table normal">
 		<tr>
 			<th>{tr}Last{/tr} {$forum_info.forum_last_n} {tr}posts in this forum{/tr}</th>
 		</tr>
 		{section name=ix loop=$last_comments}
-			<tr>
+			<tr class="{cycle}">
 				<td>
 					{if $last_comments[ix].parentId eq 0}
 						{assign var="idt" value=$last_comments[ix].threadId}
@@ -666,11 +668,10 @@
 			</tr>
 		{/section}
 	</table>
-    </div>
 	<br>
 {/if}
 
-<div id="page-bar" class="btn-group">
+<div id="page-bar" class="clearfix">
 	{button href="javascript:flip('filteroptions');" _flip_id="filteroptions" _text="{tr}Filter Posts{/tr}"}
 	{if $prefs.feature_forum_quickjump eq 'y' and count($all_forums) > 1}
 		<form id='quick' method="post" action="tiki-view_forum.php" style="float:right;">
@@ -785,7 +786,7 @@
 				<tr>
 					<td>&nbsp;</td>
 					<td>
-						<input type="submit" class="btn btn-default btn-sm" id="filter_submit" value="{tr}Filter{/tr}">
+						<input type="submit" class="btn btn-default" id="filter_submit" value="{tr}Filter{/tr}">
 					</td>
 				</tr>
 				</table>
@@ -797,14 +798,3 @@
 		if (js_anonymous_name) document.getElementById('anonymous_name').value = js_anonymous_name;
 	{/jq}
 {/if}
-{jq}
-    var $forum = $("#editpageform");
-    $forum.submit(function() {
-        // prevent double submission
-        if (!$forum.data("sub")) {
-            $forum.tikiModal('Save in Progress...');
-            $forum.data("sub", true);
-            $forum.submit();
-        }
-    });
-{/jq}

@@ -6,7 +6,7 @@
 		{/if}
 	>
 	{if $prefs.javascript_enabled neq 'y'}<form action="{$smarty.server.PHP_SELF}" method="POST">{/if}
-	<div class="description help-block">
+	<div class="description">
 		{wiki}{tr}{$prefs.cookie_consent_description}{/tr}{/wiki}
 	</div>
 	{if !empty($prefs.cookie_consent_question)}
@@ -18,7 +18,7 @@
 		<input type="hidden" name="cookie_consent_checkbox" value="1">
 	{/if}
 	{if $prefs.javascript_enabled neq 'y'}
-			<input type="submit" class="btn btn-default btn-sm" name="cookie_consent_button" value="{tr}{$prefs.cookie_consent_button}{/tr}">
+			<input type="submit" class="btn btn-default" name="cookie_consent_button" value="{tr}{$prefs.cookie_consent_button}{/tr}">
 		</form>
 	{else}
 		{button _text=$prefs.cookie_consent_button|tr_if _id='cookie_consent_button'}

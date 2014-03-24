@@ -30,7 +30,7 @@ class TikiDb_Adodb extends TikiDb
 		return $this->db->quote($str);
 	} // }}}
 
-	function query( $query = null, $values = null, $numrows = -1, $offset = -1, $reporterrors = parent::ERR_DIRECT ) // {{{
+	function query( $query = null, $values = null, $numrows = -1, $offset = -1, $reporterrors = true ) // {{{
 	{
 		global $num_queries;
 		$num_queries++;
@@ -53,7 +53,9 @@ class TikiDb_Adodb extends TikiDb
 		if (!$result ) {
 			$this->setErrorMessage($this->db->ErrorMsg());
 
-			$this->handleQueryError($query, $values, $result, $reporterrors);
+			if ($reporterrors) {
+				$this->handleQueryError($query, $values, $result);
+			}
 		}
 
 		global $num_queries;

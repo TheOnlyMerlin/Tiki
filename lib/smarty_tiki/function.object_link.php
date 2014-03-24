@@ -68,9 +68,6 @@ function smarty_function_object_link( $params, $smarty )
 	case 'trackeritem':
 		$function = 'smarty_function_object_link_trackeritem';
 		break;
-	case 'group':
-		// Nowhere to link, at least, yet.
-		return $object;
 	default:
 		$function = 'smarty_function_object_link_default';
 		break;
@@ -109,7 +106,7 @@ function smarty_function_object_link_default( $smarty, $object, $title = null, $
 	$escapedText = smarty_modifier_escape($text ? $text : tra('No title specified'));
 
 	if ($url) {
-		$escapedHref = smarty_modifier_escape(TikiLib::tikiUrlOpt($url));
+		$escapedHref = smarty_modifier_escape($url);
 	} else {
 		$escapedHref = smarty_modifier_escape(smarty_modifier_sefurl($object, $type));
 	}
@@ -123,11 +120,6 @@ function smarty_function_object_link_default( $smarty, $object, $title = null, $
 	}
 
 	$metadata = TikiLib::lib('object')->get_metadata($type, $object, $classList);
-
-	if (! empty($params['class'])) {
-		$classList[] = $params['class'];
-	}
-
 	$class = ' class="' . implode(' ', $classList) . '"';
 
 	if (strpos($escapedHref, '://') === false) {
@@ -286,7 +278,7 @@ function smarty_function_object_link_freetag( $smarty, $tag, $title = null )
 {
 	global $prefs;
 	if ($prefs['feature_freetags'] != 'y') {
-		return tr('tags disabled');
+		return tr('freetags disabled');
 	}
 
 	if (is_numeric($tag)) {

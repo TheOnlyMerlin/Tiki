@@ -1,10 +1,3 @@
-{extends 'layout_view.tpl'}
-
-{block name="title"}
-	{title}{$title|escape}{/title}
-{/block}
-
-{block name="content"}
 <form class="simple" method="post" action="{service controller=tracker action=edit_field}">
 	<div class="accordion">
 		<h4>{tr}General{/tr}</h4>
@@ -61,11 +54,11 @@
 					{else}
 						<input type="text" name="option~{$param|escape}" value="{$options[$param]|escape}">
 					{/if}
-					<div class="description help-block">{$def.description|escape}</div>
+					<div class="description">{$def.description|escape}</div>
 					{if $def.count eq '*'}
-						<div class="description help-block">{tr}Separate multiple with commas.{/tr}</div>
+						<div class="description">{tr}Separate multiple with commas.{/tr}</div>
 					{elseif $def.separator}
-						<div class="description help-block">{tr}Separate multiple with &quot;{$def.separator}&quot;{/tr}</div>
+						<div class="description">{tr}Separate multiple with &quot;{$def.separator}&quot;{/tr}</div>
 					{/if}
 				</label>
 			{/foreach}
@@ -110,7 +103,7 @@
 					<option value="c"{if $field.isHidden eq 'c'} selected="selected"{/if}>{tr}Editable by administrators and creator only{/tr}</option>
 					<option value="i"{if $field.isHidden eq 'i'} selected="selected"{/if}>{tr}Immutable after creation{/tr}</option>
 				</select>
-				<div class="description help-block">
+				<div class="description">
 					{tr}Creator requires a user field with auto-assign to creator (1){/tr}
 				</div>
 			</label>
@@ -139,7 +132,7 @@
 			<label>
 				{tr}Permanent Name:{/tr}
 				<input type="text" name="permName" value="{$field.permName|escape}" pattern="[a-zA-Z0-9_]+">
-				<div class="description help-block">
+				<div class="description">
 					{tr}Changing the permanent name may have consequences in integrated systems.{/tr}
 				</div>
 			</label>
@@ -187,7 +180,7 @@ $('select[name=type]').change(function () {
 	</div>
 
 	<div class="submit">
-		<input type="submit" class="btn btn-default btn-sm" name="submit" value="{tr}Save{/tr}">
+		<input type="submit" class="btn btn-default" name="submit" value="{tr}Save{/tr}">
 		<input type="hidden" name="trackerId" value="{$field.trackerId|escape}">
 		<input type="hidden" name="fieldId" value="{$field.fieldId|escape}">
 	</div>
@@ -198,4 +191,3 @@ $('.accordion').removeClass('accordion').accordion({
 	heightStyle: "content"
 });
 {/jq}
-{/block}

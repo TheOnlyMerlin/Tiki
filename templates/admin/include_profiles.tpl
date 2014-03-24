@@ -222,11 +222,11 @@ function showDetails( id, domain, profile ) { // {{{
 
 {if isset($profilefeedback)}
 	{remarksbox type="note" title="{tr}Note{/tr}"}
-
+		{cycle values="odd,even" print=false}
 		{tr}The following list of changes has been applied:{/tr}
 		<ul>
 		{section name=n loop=$profilefeedback}
-			<li>
+			<li class="{cycle}">
 				<p>{$profilefeedback[n]}</p>
 			</li>
 		{/section}
@@ -235,7 +235,8 @@ function showDetails( id, domain, profile ) { // {{{
 {/if}
 {tabset name='tabs_admin-profiles'}
 	{tab name="{tr}Apply Profiles{/tr}"}
-		<h2>{tr}Configure Tiki in 3 easy steps using Profiles{/tr}</h2>
+	
+		<h3>{tr}Configure Tiki in 3 easy steps using Profiles{/tr}</h3>
 		{if $prefs.javascript_enabled eq 'y'}
 				{if $openSources == 'some'}
 					{remarksbox type="warning" title="{tr}A Friendly Warning{/tr}"}
@@ -247,8 +248,7 @@ function showDetails( id, domain, profile ) { // {{{
 				<form method="get" action="tiki-admin.php">
 					<div class="adminoptionbox">
 						<b>{tr}Step 1: Use the Quick or Manual Filter option to see a list of Configuration Profiles you can apply{/tr}</b>
-                        <div class="table-responsive">
-						<table class="table normal">
+						<table class="normal">
 							<tr>
 								<th width="50%" class="quickmode_notes">{tr}Option 1: Quick Filter{/tr}</th>
 	
@@ -327,11 +327,10 @@ $("#repository, #categories").change(function(){
 });
 										{/jq}
 									</div>
-								<div align="center"><input type="submit" class="btn btn-default btn-sm" name="list" value="{tr}List{/tr}" /></div>
+								<div align="center"><input type="submit" class="btn btn-default" name="list" value="{tr}List{/tr}" /></div>
 							</td>
 						</tr>
 					</table>
-                    </div>
 				</div>
 		</form>
 	        <a name="step2"></a>
@@ -340,8 +339,7 @@ $("#repository, #categories").change(function(){
 	       {if isset($result) && $result|@count != '0'}
 	
 	        <b>{tr}Step 2: Click on a Configuration Profile Name below to review it and to be able to apply it on your Web site{/tr}</b>
-            <div class="table-responsive">
-			<table class="table normal">
+			<table class="normal">
 				<tr>
 					<th>{tr}Profile Name{/tr}</th>
 					<th>{tr}Repository{/tr}</th>
@@ -366,10 +364,9 @@ $("#repository, #categories").change(function(){
 				<tr><td colspan="3" class="odd">{tr}None{/tr}</td></tr>
 				{/if}
 			</table>
-            {if $show_details_for_profile_num != ""}
-                {jq}showDetails('profile-{{$show_details_for_profile_num}}', '{{$show_details_for_domain}}', '{{$show_details_for_fullname}}');{/jq}
-            {/if}
-            </div>
+	            {if $show_details_for_profile_num != ""}
+	                {jq}showDetails('profile-{{$show_details_for_profile_num}}', '{{$show_details_for_domain}}', '{{$show_details_for_fullname}}');{/jq}
+	            {/if}
 			{/if}
 	
 	</fieldset>
@@ -377,11 +374,10 @@ $("#repository, #categories").change(function(){
 
 
 
-<fieldset class="table">
+<fieldset class="admin">
 <legend>{tr}Status{/tr}</legend>
 <div class="adminoptionbox">
-    <div class="table-responsive">
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th>{tr}Profile repository{/tr}</th>
 			<th>{tr}Status{/tr}</th>
@@ -395,7 +391,6 @@ $("#repository, #categories").change(function(){
 			</tr>
 		{/foreach}
 	</table>
-    </div>
 </div>
 </fieldset>
 {else}
@@ -405,14 +400,13 @@ $("#repository, #categories").change(function(){
 {/if}
 {/tab}
 {tab name="{tr}Export{/tr}"}
-    <h2>{tr}Export{/tr}</h2>
 	<form action="tiki-admin.php?page=profiles" method="post">
 		<fieldset id="export_to_yaml">
 			<legend>{tr}Export YAML{/tr}</legend>
 			{if !empty($export_yaml)}
 				<div class="wikitext">{$export_yaml}</div>
 			{/if}
-			<div class="t_navbar">
+			<div class="navbar">
 				<label for="export_type">{tr}Object type:{/tr}</label>
 				<select name="export_type" id="export_type">
 					<option value="prefs"{if $export_type eq "prefs"} selected="selected"{/if}>
@@ -425,7 +419,7 @@ $("#repository, #categories").change(function(){
 			</div>
 			<fieldset>
 				<legend>{tr}Export modified preferences as YAML{/tr}</legend>
-				<div class="t_navbar">
+				<div class="navbar">
 					{listfilter selectors=".profile_export_list > li"}
 					<label for="select_all_prefs_to_export">{tr}Toggle Visible{/tr}</label>
 					<input type="checkbox" id="select_all_prefs_to_export" />
@@ -434,9 +428,9 @@ $("#repository, #categories").change(function(){
 							{if !empty($smarty.request.export_show_added)} checked="checked"{/if} />
 				</div>
 				<ul id="prefs_to_export_list" class="profile_export_list"{if $export_type neq "prefs"} style=display:none;"{/if}>
-
+					{cycle values="odd,even" print=false}
 					{foreach from=$modified_list  key="name" item="data"}
-						<li>
+						<li class="{cycle}">
 							{if is_array($data.current.expanded)}
 								{assign var=current value=$data.current.expanded|implode:", "}
 								{assign var=current value="[$current]"}
@@ -465,9 +459,9 @@ $("#repository, #categories").change(function(){
 					{/foreach}
 				</ul>
 				<ul id="modules_to_export_list" class="profile_export_list"{if $export_type neq "modules"} style=display:none;"{/if}>
-
+					{cycle values="odd,even" print=false}
 					{foreach from=$modules_for_export  key="name" item="data"}
-						<li>
+						<li class="{cycle}">
 							<input type="checkbox" name="modules_to_export[{$name}]" value="{$data.name|escape}"
 								   id="modcheckbox_{$name}"{if isset($modules_to_export[$name])} checked="checked"{/if} />
 							<label for="modcheckbox_{$name}">
@@ -494,14 +488,13 @@ $("#export_type").change(function(){
 });
 				{/jq}
 				<div class="input_submit_container">
-					<input type="submit" class="btn btn-default btn-sm" name="export" value="{tr}Export{/tr}" />
+					<input type="submit" class="btn btn-default" name="export" value="{tr}Export{/tr}" />
 				</div>
 			</fieldset>
 		</fieldset>
 	</form>
 {/tab}
 {tab name="{tr}Advanced{/tr}"}
-    <h2>{tr}Advanced{/tr}</h2>
 
 <fieldset><legend>{tr}Repositories{/tr}</legend>
 <form action="tiki-admin.php?page=profiles" method="post">
@@ -509,7 +502,7 @@ $("#export_type").change(function(){
 	{preference name=profile_sources}
 	{preference name=profile_channels}
 
-	<div align="center" style="padding:1em;"><input type="submit" class="btn btn-default btn-sm" name="config" value="{tr}Save{/tr}" /></div>
+	<div align="center" style="padding:1em;"><input type="submit" class="btn btn-default" name="config" value="{tr}Save{/tr}" /></div>
 </form>
 </fieldset>
 
@@ -537,7 +530,7 @@ $("#export_type").change(function(){
 					<textarea data-codemirror="true" data-syntax="yaml" id="profile_tester" name="profile_tester" rows="5" cols="40" style="width:95%;">{if isset($test_source)}{$test_source}{/if}</textarea>
 				</div>
 			</div>
-			<div align="center" style="padding:1em;"><input type="submit" class="btn btn-default btn-sm" name="test" value="{tr}Test{/tr}" /></div>
+			<div align="center" style="padding:1em;"><input type="submit" class="btn btn-default" name="test" value="{tr}Test{/tr}" /></div>
 		{/remarksbox}
 		</form>
 	</fieldset>

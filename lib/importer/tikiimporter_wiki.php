@@ -65,7 +65,7 @@ class TikiImporter_Wiki extends TikiImporter
 	 *
 	 * @return void
 	 */
-	function import($filePath = null)
+	function import()
 	{
 		// how many revisions to import for each page
 		if (!empty($_POST['wikiRevisions']) && $_POST['wikiRevisions'] > 0)
@@ -102,7 +102,7 @@ class TikiImporter_Wiki extends TikiImporter
 	 *
 	 * @return array $countData stats about the content that has been imported
 	 */
-	function insertData($parsedData = null)
+	function insertData($parsedData)
 	{
 		$countData = array();
 		$countPages = 0;

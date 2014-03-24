@@ -25,7 +25,6 @@
 
 {assign var='pagefound' value='n'}
 
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		{if isset($checkboxes_on) and $checkboxes_on eq 'y' && count($listpages) > 0}
@@ -165,7 +164,7 @@
 		{/if}
 	</tr>
 
-
+	{cycle values="even,odd" print=false}
 	{section name=changes loop=$listpages}
 
 	{if isset($mapview) and $mapview}
@@ -176,9 +175,9 @@
 		{assign var='pagefound' value='y'}
 	{/if}
 
-	<tr>
+	<tr class="{cycle}">
 		{if $checkboxes_on eq 'y'}
-			<td class="checkbox-cell">
+			<td class="checkbox">
 				<input type="checkbox" name="checked[]" value="{$listpages[changes].pageName|escape}">
 			</td>
 		{/if}
@@ -340,7 +339,13 @@
 				{/if}
 
 				{if $listpages[changes].perms.tiki_p_assign_perm_wiki_page eq 'y'}
-					{permission_link mode=icon type="wiki page" permType=wiki id=$listpages[changes].pageName title=$listpages[changes].pageName}
+					<a class="link" href="tiki-objectpermissions.php?objectName={$listpages[changes].pageName|escape:"url"}&amp;objectType=wiki+page&amp;permType=wiki&amp;objectId={$listpages[changes].pageName|escape:"url"}">
+						{if $listpages[changes].perms_active eq 'y'}
+							{icon _id='key_active' alt="{tr}Perms{/tr}"}
+						{else}
+							{icon _id='key' alt="{tr}Perms{/tr}"}
+						{/if}
+					</a>
 				{/if}
 
 				{if $listpages[changes].perms.tiki_p_remove eq 'y'}
@@ -366,7 +371,7 @@
 		{/if}
 	{/section}
 </table>
-</div>
+
 {if $checkboxes_on eq 'y' && count($listpages) > 0} {* what happens to the checked items? *}
 	<p align="left"> {*on the left to have it close to the checkboxes*}
 		<label for="submit_mult">{tr}Perform action with checked:{/tr}</label>
@@ -404,15 +409,15 @@
 		//-->
 	</script>
 	<noscript>
-		<input type="submit" class="btn btn-default btn-sm" value="{tr}OK{/tr}">
+		<input type="submit" class="btn btn-default" value="{tr}OK{/tr}">
 	</noscript>
 {/if}
 
 {if $find and $tiki_p_edit eq 'y' and $pagefound eq 'n' and $alias_found eq 'n'}
 	{capture assign='find_htmlescaped'}{$find|escape}{/capture}
 	{capture assign='find_urlescaped'}{$find|escape:'url'}{/capture}
-	<div class="t_navbar">
-		 {button _text="{tr}Create Page:{/tr} $find_htmlescaped" href="tiki-editpage.php?page=$find_urlescaped&lang=$find_lang&templateId=$template_id&template_name=$template_name&categId=$create_page_with_categId" class="btn btn-default" _title="{tr}Create{/tr}"}
+	<div class="navbar">
+		 {button _text="{tr}Create Page:{/tr} $find_htmlescaped" href="tiki-editpage.php?page=$find_urlescaped&lang=$find_lang&templateId=$template_id&template_name=$template_name&categId=$create_page_with_categId" _title="{tr}Create{/tr}"}
 	</div>
 {/if}
 {if $checkboxes_on eq 'y'}

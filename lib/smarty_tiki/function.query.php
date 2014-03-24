@@ -163,18 +163,7 @@ function smarty_function_query($params, $smarty)
 					$smarty
 				);
 			} else {
-				if ($_SERVER['PHP_SELF'] == 'tiki-ajax_services.php' && isset($_GET['controller'], $_GET['action'])) {
-					$smarty->loadPlugin('smarty_function_service');
-					$php_self = smarty_function_service(
-						array(
-							'controller' => $_GET['controller'],
-							'action' => $_GET['action'],
-						),
-						$smarty
-					);
-				} else {
-					$php_self = htmlspecialchars($_SERVER['PHP_SELF']);
-				}
+				$php_self = htmlspecialchars($_SERVER['PHP_SELF']);
 			}
 
 		} else {

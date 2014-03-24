@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "efccd5ec0a7274016dbca3ae07108185",
+    "hash": "a20823afd1e4ac8f4a60212ff6e85229",
     "packages": [
         {
             "name": "aFarkas/html5shiv",
@@ -86,34 +86,34 @@
         },
         {
             "name": "ckeditor/ckeditor",
-            "version": "4.3.0",
+            "version": "4.2.3",
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/ckeditor-ckeditor-4.3.0.zip",
-                "reference": "4.3.0",
-                "shasum": "278c3eb8dc0ef309f023151339335ef369ef8f74"
+                "url": "https://composer.tiki.org/dist/ckeditor-ckeditor-4.2.3.zip",
+                "reference": "4.2.3",
+                "shasum": "626c6720e02614f718ebae3761d17e51dbae6741"
             },
             "type": "library"
         },
         {
             "name": "ckeditor/ckeditor/plugins/divarea",
-            "version": "4.3.0",
+            "version": "4.2.3",
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/ckeditor-ckeditor-plugins-divarea-4.3.0.zip",
-                "reference": "4.3.0",
-                "shasum": "dc0ce6317627e6c753f03103f2180166eb5b2ca8"
+                "url": "https://composer.tiki.org/dist/ckeditor-ckeditor-plugins-divarea-4.2.3.zip",
+                "reference": "4.2.3",
+                "shasum": "cbd1a971e4bf85c5d3e4e859d79b87cbb13521d0"
             },
             "type": "library"
         },
         {
             "name": "ckeditor/ckeditor/skins/kama",
-            "version": "4.3.0",
+            "version": "4.2.3",
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/ckeditor-ckeditor-skins-kama-4.3.0.zip",
-                "reference": "4.3.0",
-                "shasum": "66ab34ed9c68d3d776c687da38ec81b140df65a7"
+                "url": "https://composer.tiki.org/dist/ckeditor-ckeditor-skins-kama-4.2.3.zip",
+                "reference": "4.2.3",
+                "shasum": "aebec58a06ff6ac2d45511a66bf451ffaa184988"
             },
             "type": "library"
         },
@@ -171,58 +171,6 @@
                 "html"
             ],
             "time": "2013-02-18 00:04:08"
-        },
-        {
-            "name": "fivefilters/php-readability",
-            "version": "v1.0",
-            "source": {
-                "type": "git",
-                "url": "http://code.fivefilters.org/php-readability.git",
-                "reference": "4f56053bd1fd540969b6cfb7f799a31c7352faee"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://composer.tiki.org/dist/fivefilters-php-readability-v1.0-0b40ad.zip",
-                "reference": "v1.0",
-                "shasum": "e8fc0c99403385c0aae090787991fe3746a86813"
-            },
-            "require": {
-                "php": ">=5.2"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Readability": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Keyvan Minoukadeh",
-                    "email": "keyvan@keyvan.net",
-                    "homepage": "http://keyvan.net",
-                    "role": "Developer (ported Python code to PHP)"
-                },
-                {
-                    "name": "Arc90",
-                    "homepage": "http://arc90.com",
-                    "role": "Developer (original JS version)"
-                }
-            ],
-            "description": "Automatic article extraction from HTML",
-            "homepage": "http://code.fivefilters.org/php-readability/",
-            "keywords": [
-                "article",
-                "article extraction",
-                "content",
-                "content extraction",
-                "extraction",
-                "html"
-            ],
-            "time": "2013-04-17 13:51:09"
         },
         {
             "name": "jcapture-applet/jcapture-applet",
@@ -338,12 +286,12 @@
         },
         {
             "name": "jquery/jquery-sheet",
-            "version": "3.1",
+            "version": "2.0.1",
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/Spreadsheets/jQuery.sheet/archive/3.1-rc-5.zip",
-                "reference": null,
-                "shasum": null
+                "url": "https://composer.tiki.org/dist/jquery-jquery-sheet-2.0.1.zip",
+                "reference": "2.0.1",
+                "shasum": "c74cdaf7e96137ef248967f3455f077ac4210941"
             },
             "type": "library"
         },
@@ -657,12 +605,12 @@
         },
         {
             "name": "jquery/plugins/tablesorter",
-            "version": "2.15.9",
+            "version": "2.14.4",
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/jquery-plugins-tablesorter-2.15.9.zip",
-                "reference": "2.15.9",
-                "shasum": "2222cb39173ecfef5375c7111481e24d90063134"
+                "url": "https://composer.tiki.org/dist/jquery-plugins-tablesorter-2.14.4.zip",
+                "reference": "2.14.4",
+                "shasum": "0f612301d82821ab85acc9d0995e0346562b3acf"
             },
             "type": "library"
         },
@@ -922,87 +870,6 @@
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
             "time": "2014-01-01 08:14:50"
-        },
-        {
-            "name": "tijsverkoyen/css-to-inline-styles",
-            "version": "1.2.1",
-            "target-dir": "TijsVerkoyen/CssToInlineStyles",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/tijsverkoyen/CssToInlineStyles.git",
-                "reference": "e53f25f6685d167f80b9d51b91b09aa70ea6c1c9"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://composer.tiki.org/dist/tijsverkoyen-css-to-inline-styles-e53f25f6685d167f80b9d51b91b09aa70ea6c1c9-zip-cd3ab0.zip",
-                "reference": "1.2.1",
-                "shasum": "5055fcdc9436ec9d1da29733bfcd1a53c8f0205d"
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "TijsVerkoyen\\CssToInlineStyles": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD"
-            ],
-            "authors": [
-                {
-                    "name": "Tijs Verkoyen",
-                    "email": "css_to_inline_styles@verkoyen.eu",
-                    "role": "Developer"
-                }
-            ],
-            "description": "CssToInlineStyles is a class that enables you to convert HTML-pages/files into HTML-pages/files with inline styles. This is very useful when you're sending emails.",
-            "homepage": "https://github.com/tijsverkoyen/CssToInlineStyles",
-            "time": "2013-02-09 17:48:44"
-        },
-        {
-            "name": "twitter/bootstrap",
-            "version": "v3.1.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/twbs/bootstrap.git",
-                "reference": "a365d8689c3f3cee7f1acf86b61270ecca8e106d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/a365d8689c3f3cee7f1acf86b61270ecca8e106d",
-                "reference": "a365d8689c3f3cee7f1acf86b61270ecca8e106d",
-                "shasum": ""
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.0.x-dev"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jacob Thornton",
-                    "email": "jacobthornton@gmail.com"
-                },
-                {
-                    "name": "Mark Otto",
-                    "email": "markdotto@gmail.com"
-                }
-            ],
-            "description": "Sleek, intuitive, and powerful mobile first front-end framework for faster and easier web development.",
-            "homepage": "http://getbootstrap.com",
-            "keywords": [
-                "bootstrap",
-                "css"
-            ],
-            "time": "2014-02-13 17:24:59"
         },
         {
             "name": "zetacomponents/base",

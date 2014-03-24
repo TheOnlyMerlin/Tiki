@@ -80,7 +80,7 @@ JS
 	$params['name'] = isset($params['name']) ? $params['name'] : 'edit';
 	$params['id'] = isset($params['id']) ? $params['id'] : 'editwiki';
 	$params['area_id'] = isset($params['area_id']) ? $params['area_id'] : $params['id'];	// legacy param for toolbars?
-	$params['class'] = isset($params['class']) ? $params['class'] : 'wikiedit form-control';
+	$params['class'] = isset($params['class']) ? $params['class'] : 'wikiedit';
 	$params['comments'] = isset($params['comments']) ? $params['comments'] : 'n';
 	$params['autosave'] = isset($params['autosave']) ? $params['autosave'] : 'y';
 
@@ -101,7 +101,7 @@ JS
 		$params['section'] = $section ? $section: 'wiki page';
 	}
 	if ( ! isset($params['style']) && ! isset($params['cols']) ) {
-		$params['style'] = 'auto'; // changed from 99% to allow CSS to control width (class=form-control).
+		$params['style'] = 'width:99%';
 	}
 	$html = '';
     if (!$included) $html .= '<input type="hidden" name="mode_wysiwyg" value="" /><input type="hidden" name="mode_normal" value="" />';
@@ -116,7 +116,7 @@ JS
 	if ($params['_simple'] === 'n' && $editWarning) {
 		$remrepeat = false;
 		$html .= smarty_block_remarksbox(
-			array( 'type'=>'warning', 'title'=>tra('Warning')),
+			array( 'type'=>'tip', 'title'=>tra('Tip')),
 			tra('This edit session will expire in') .
 			' <span id="edittimeout">' . (ini_get('session.gc_maxlifetime') / 60) .'</span> '. tra('minutes') . '. ' .
 			tra('<strong>Preview</strong> (if available) or <strong>Save</strong> your work to restart the edit session timer'),
@@ -212,7 +212,7 @@ CKEDITOR.on("instanceReady", function(event) {
 		// setup for wiki editor
 
 		$params['rows'] = !empty($params['rows']) ? $params['rows'] : 20;
-//		$params['cols'] = !empty($params['cols']) ? $params['cols'] : 80;
+		$params['cols'] = !empty($params['cols']) ? $params['cols'] : 80;
 
 		$textarea_attributes = '';
 		foreach ($params as $k => $v) {

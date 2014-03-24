@@ -1,6 +1,6 @@
 {title admpage="i18n"}{tr}Edit or export languages{/tr}{/title}
 
-<div class="t_navbar">
+<div class="navbar">
 	{if $smarty.session.interactive_translation_mode eq 'on'}
 		{button href="tiki-interactive_trans.php?interactive_translation_mode=off" _text="{tr}Toggle interactive translation off{/tr}" _ajax="n"}
 	{else}
@@ -10,7 +10,6 @@
 
 {tabset}
 	{tab name="{tr}Edit languages{/tr}"}
-        <h2>{tr}Edit languages{/tr}</h2>
 		<form action="tiki-edit_languages.php" id="select_action" method="post">
 			{if isset($find)}
 				<input type="hidden" name="find" value="{$find}">
@@ -61,7 +60,7 @@
 				<input type="hidden" name="only_db_untranslated" value="{$only_db_untranslated}">
 			{/if}
 			{if $action eq 'add_tran_sw'}
-				<div class="panel panel-default"><div class="panel-body">
+				<div class="simplebox">
 					<h4>{tr}Add a translation:{/tr}</h4>
 					<table class="formcolor">
 						<tr>
@@ -69,13 +68,13 @@
 							<td><input name="add_tran_source" size=20 maxlength=255></td>
 							<td>{tr}Translation:{/tr}</td>
 							<td><input name="add_tran_tran" size=20 maxlength=255></td>
-							<td align="center"><input type="submit" class="btn btn-default btn-sm" name="add_tran" value="{tr}Add{/tr}"></td>
+							<td align="center"><input type="submit" class="btn btn-default" name="add_tran" value="{tr}Add{/tr}"></td>
 						</tr>
 					</table>
-				</div></div>
+				</div>
 			{/if}
 			{if $action eq 'edit_tran_sw' || $action eq 'edit_rec_sw'}
-				<div class="panel panel-default"><div class="panel-body">
+				<div class="simplebox">
 					<h4>{if $action eq 'edit_tran_sw'}{tr}Edit translations:{/tr}{else}{tr}Untranslated strings:{/tr}{/if}</h4>
 					<table class="formcolor" id="edit_translations">
 						<tr>
@@ -89,9 +88,9 @@
 								<td><label for="source_{$smarty.foreach.translations.index}">{tr}Original:{/tr}</label></td>
 								<td><input id="source_{$smarty.foreach.translations.index}" name="source_{$smarty.foreach.translations.index}" value="{$item.source|escape}" size=65 readonly="readonly">
 								<td align="center" align="center" rowspan="{if isset($item.originalTranslation)}5{else}3{/if}">
-									<input type="submit" class="btn btn-default btn-sm" name="edit_tran_{$smarty.foreach.translations.index}" value="{tr}Translate{/tr}">
+									<input type="submit" class="btn btn-default" name="edit_tran_{$smarty.foreach.translations.index}" value="{tr}Translate{/tr}">
 									{if $action eq 'edit_tran_sw' && isset($item.changed)}
-										<input type="submit" class="btn btn-default btn-sm" name="del_tran_{$smarty.foreach.translations.index}" value="{tr}Delete{/tr}">
+										<input type="submit" class="btn btn-default" name="del_tran_{$smarty.foreach.translations.index}" value="{tr}Delete{/tr}">
 									{/if}
 									{assign var=itemIndex value=$smarty.foreach.translations.index}
 									{if isset($item.originalTranslation)}
@@ -129,12 +128,12 @@
 						<tr>
 							<td colspan="3">
 								{if !empty($translations)}
-									<input type="submit" class="btn btn-default btn-sm" name="translate_all" value="{tr}Translate all{/tr}">
+									<input type="submit" class="btn btn-default" name="translate_all" value="{tr}Translate all{/tr}">
 									{if $action eq 'edit_rec_sw' && $hasDbTranslations == true && $only_db_untranslated eq 'y'}
-										<input type="submit" class="btn btn-default btn-sm" name="tran_reset" value="{tr}Delete all{/tr}" onclick="return confirm('{tr}Are you sure you want to delete all untranslated strings from database?{/tr}')">
+										<input type="submit" class="btn btn-default" name="tran_reset" value="{tr}Delete all{/tr}" onclick="return confirm('{tr}Are you sure you want to delete all untranslated strings from database?{/tr}')">
 									{/if}
 									{if $action eq 'edit_tran_sw' && $only_db_translations eq 'y' && $tiki_p_admin eq 'y'}
-										<input type="submit" class="btn btn-default btn-sm" name="delete_all" value="{tr}Delete all{/tr}" onclick="return confirm('{tr}Are you sure you want to delete all translations from database?{/tr}')">
+										<input type="submit" class="btn btn-default" name="delete_all" value="{tr}Delete all{/tr}" onclick="return confirm('{tr}Are you sure you want to delete all translations from database?{/tr}')">
 									{/if}
 								{/if}								
 							</td>
@@ -145,13 +144,12 @@
 					{pagination_links cant=$total step=$maxRecords offset=$offset _ajax='n'}{strip}
 						tiki-edit_languages.php?edit_language={$edit_language}&action={$action}&maxRecords={$maxRecords}&only_db_translations={$only_db_translations}&only_db_untranslated={$only_db_untranslated}{if isset($find)}&find={$find}{/if}
 					{/strip}{/pagination_links}
-				</div></div>
+				</div>
 			{/if}
 		</form>
 	{/tab}
 
 	{tab name="{tr}Export languages{/tr}"}
-        <h2>{tr}Export languages{/tr}</h2>
 		<form action="tiki-edit_languages.php" method="post">
 			{if isset($expmsg)}
 			    {remarksbox type="note" title="{tr}Note:{/tr}"}
@@ -186,9 +184,9 @@
 					{/remarksbox}
 				{/if}
 				<div class="adminoptionbox">
-					<input type="submit" class="btn btn-default btn-sm" name="downloadFile" value="{tr}Download database translations{/tr}">
+					<input type="submit" class="btn btn-default" name="downloadFile" value="{tr}Download database translations{/tr}">
 					{if $tiki_p_admin eq 'y' and $langIsWritable}
-						<input type="submit" class="btn btn-default btn-sm" name="exportToLanguage" value="{tr}Write to language.php{/tr}">
+						<input type="submit" class="btn btn-default" name="exportToLanguage" value="{tr}Write to language.php{/tr}">
 					{/if}
 				</div>
 			{/if}

@@ -549,10 +549,14 @@ class TikiAccessLib extends TikiLib
 		list($res, $rest) = $userlib->validate_user_tiki($attempt, $pass, false, false);
 
 		if ($res == USER_VALID) {
-			global $_permissionContext;
+			global $permissionList;
+			$user = $attempt;
+			$groups = $userlib->get_user_groups($user);
+			$perms = Perms::getInstance();
+			$perms->setGroups($groups);
 
-			$_permissionContext = new Perms_Context($attempt, false);
-			$_permissionContext->activate(true);
+			$perms = Perms::get();
+			$perms->globalize($permissionList, $smarty);
 
 			return true;
 		} else {

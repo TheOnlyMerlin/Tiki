@@ -418,7 +418,7 @@ abstract class Toolbar
 
 		$params = array();
 		$params['_onclick'] = $click . (substr($click, strlen($click)-1) != ';' ? ';' : '') . 'return false;';
-		$params['_class'] = 'toolbar btn btn-xs btn-link' . (!empty($class) ? ' '.$class : '');
+		$params['_class'] = 'toolbar ' . (!empty($class) ? ' '.$class : '');
 		$params['_ajax'] = 'n';
 		$content = $title;
 		$params['_icon'] = $this->icon;
@@ -2068,7 +2068,7 @@ class ToolbarsList
 						if (!empty($right)) {
 							$right = '<span class="toolbar-list">' . $right . '</span>';
 						}
-						$lineHtml = "<div class='helptool-admin pull-right'>$lineBit $right</div>" . $lineHtml;
+						$lineHtml = "<div class='helptool-admin'>$lineBit $right</div>" . $lineHtml;
 					} else {
 						$lineHtml = $lineBit;
 					}
@@ -2076,7 +2076,7 @@ class ToolbarsList
 
 				// adding admin icon if no right part - messy - TODO better
 				if ($c == 0 && empty($lineBit) && !empty($right)) {
-					$lineHtml .= "<div class='helptool-admin pull-right'>$right</div>";
+					$lineHtml .= "<div class='helptool-admin'>$right</div>";
 				}
 			}
 			if ( !empty($lineHtml) ) {

@@ -31,7 +31,7 @@ function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_lan
 	}
 	switch ($type) {
 		case 'wiki':
-			return TikiLib::tikiUrlOpt($wikilib->sefurl($source, $with_next, $all_langs));
+			return $wikilib->sefurl($source, $with_next, $all_langs);
 
 		case 'blog':
 			$href = $sefurl ? "blog$source" : "tiki-view_blog.php?blogId=$source";
@@ -93,7 +93,7 @@ function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_lan
 				$replacementpage = $trklib->get_trackeritem_pagealias($source);
 			}
 			if ($replacementpage) {
-				return TikiLib::tikiUrlOpt($wikilib->sefurl($replacementpage, $with_next, $all_langs));
+				return $wikilib->sefurl($replacementpage, $with_next, $all_langs);
 			} else {
 				$href = 'tiki-view_tracker_item.php?itemId='. $source;
 			}
@@ -152,8 +152,8 @@ function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_lan
 
 	if ($prefs['feature_sefurl'] == 'y' && $smarty) {
 		include_once('tiki-sefurl.php');
-		return TikiLib::tikiUrlOpt(filter_out_sefurl($href, $type, $title, $with_next, $with_title));
+		return filter_out_sefurl($href, $type, $title, $with_next, $with_title);
 	} else {
-		return TikiLib::tikiUrlOpt($href);
+		return $href;
 	}
 }

@@ -1,9 +1,316 @@
 /* $Id$
 	This Tiki Wiki CMS Groupware file contains common design
-	and layout properties, is to be imported by theme stylesheets.
+	properties and, similar to lite.css and layout.css for
+	layout properties, is to be imported by theme stylesheets.
 */
 
+/* First the layout part - merged from old layout.css
+   TODO: merge and optimize with the DESIGN part (search for "DESIGN" below) */
+
+/***** XHTML Elements *****/
+body {
+	display: block;
+	margin: 0;
+	padding: 0;
+	text-align: left;
+	width: 100%;
+}
+
+body.db_error #tiki-main {
+	max-width: 800px;
+	margin: 1em auto;
+}
+
+/* ckeditor body definition */
+html[dir=ltr]>body {
+	display: block;
+	padding: 1em;
+	width: auto;
+}
+
+/* Make HTML 5 elements display block-level */
+header, nav, article, section, footer, address {
+    display: block;
+}
+
+/* general #fixedwidth wrapper when fixed width is off */
+.fixedwidth {
+	display: table;
+	margin: 0 auto;
+	width: 100%;
+}
+
+/* when fixed width is set to on */
+.fixed_width .fixedwidth {
+	display: table;
+}
+
+.fixed_width > .fixedwidth {
+	width: 990px;
+	margin-top: 18px;
+	margin-bottom: 5px;
+}
+
+/* avoid table-like height properties in .header_fixedwidth */
+.header_container .fixedwidth {
+	display: block;
+	width: auto;
+	margin-left: 0; /* so header contents stay left rather than centered when wide middle content extends page to the right. */
+}
+
+body.fixed_width .fixedwidth .fixedwidth {
+	margin: 0 auto;
+}
+
+.fixed_width .fixedwidth[id] {
+	height: auto;
+}
+
+.fullscreen #c1c2 #wrapper #col1.marginleft {
+	margin-left: 30px;
+}
+
+.fullscreen #c1c2 #wrapper #col1.marginright {
+	margin-right: 30px;
+}
+
+#role_main {
+    min-height: 40em;
+}
+
+.button {
+	display: inline-block;
+}
+
+/* Links in buttons */
+.button a,
+.button a:visited,
+button,
+.button input,
+.calbuttonBox a {
+	text-decoration: none;
+	white-space: nowrap;
+	cursor: pointer;
+}
+
+/* Definitions below are the same as above, but are separated to make those above work in IE6 */
+input[type=reset],
+input[type=submit] {
+	text-decoration: none;
+	white-space: nowrap;
+	cursor: pointer;
+}
+
+/* submit buttons input type="submit" in a container */
+.input_submit_container {
+	padding: 1px;
+}
+
+/* Some default values for basic CSS menus layout */
+.cssmenu_horiz a, .cssmenu_vert a, .cssmenu_horiz ul li a {
+	line-height: 16px;
+	padding-left: .5em;
+	text-decoration: none;
+}
+
+.iconmenu {
+	display: inline;
+}
+
+#col2 select,
+#col3 select,
+#col3 input[type="text"],
+#col2 input[type="text"],
+#col3 input[type="password"],
+#col2 input[type="password"] {
+	width: 95%;
+}
+
+#col2 input.openid_url,
+#col3 input.openid_url {
+	padding: 1px 1px 1px 18px;
+	min-height: 16px;
+	width: 85%;
+}
+
+label {
+	cursor: pointer;
+	vertical-align: middle;
+}
+
+form {
+	margin: 0;
+	padding: 0;
+}
+
+input, legend {
+	vertical-align: middle;
+}
+
+hr {
+	width: 100%;
+	height: 1px;
+	border-width: 0;
+	padding: 0;
+}
+
+img {
+	border: 0;
+}
+
 /***** Site Header & Identity *****/
+.floatright {
+	float: right;
+	clear: none;
+}
+
+.floatleft {
+	float: left;
+	clear: none;
+}
+
+.sitetitle,
+.sitesubtitle {
+	line-height: 1;
+}
+
+/* default minimum height in case only login, etc. (absolutely positioned) is assigned */
+#top_modules {
+	min-height: 96px;
+}
+
+/* Siteloginbar (no popup, items arranged horizontally) */
+#top_modules .box-login_box {
+	position: absolute;
+	right: 10px;
+	bottom: 1px;
+}
+
+#top_modules .box-login_box .siteloginbar {
+	margin-bottom: 5px;
+}
+
+.siteloginbar div {
+	display: inline-block;
+}
+
+.siteloginbar_popup .tabcontent fieldset {
+	margin: 0 0 0 -4px;
+	border: none;
+}
+
+.siteloginbar_poppedup div {
+	text-align: right;
+}
+
+li#register_link {
+	margin-right: 5px;
+}
+
+.tabmark a.register_link,
+.tabmark a.login_link {
+	padding-right: 26px !important;
+}
+
+.siteloginbar_popup ul, ul.siteloginbar_poppedup {
+	list-style: none;
+}
+.siteloginbar_popup ul.clearfix {
+	width: inherit;
+	margin: inherit;
+}
+
+.siteloginbar_popup ul.clearfix ul li {
+	width: 100%;
+	font-size: inherit;
+}
+
+.siteloginbar_popup form {
+	text-align: left;
+	width: auto;
+	white-space: normal !important;
+}
+
+li#logout_link a {
+	padding-right: 40px;
+}
+
+.siteloginbar_popup #logout_link {
+	text-align: center;
+}
+
+.siteloginbar_popup ul.clearfix div a.login_link {
+	display: block;
+}
+
+.siteloginbar_popup ul.clearfix div a {
+	display: inline;
+}
+
+.siteloginbar_poppedup {
+	padding: 0;
+	margin: 2px 2px 3px 1px;
+	display: none;
+}
+
+.siteloginbar_poppedup * {
+	line-height: 1.1;
+	margin: 2px;
+}
+.siteloginbar_poppedup li {
+	display: table;
+}
+
+
+.siteloginbar_popup .rme {
+	display: block;
+	padding: 5px 0;
+	text-align: right;
+}
+
+.siteloginbar_popup .pass {
+	margin: 0;
+	padding: 0;
+	text-align: left;
+	width: 47%;
+}
+
+.siteloginbar_popup div.pass a {
+	text-align: left;
+	display:block;
+}
+
+.siteloginbar_popup .register {
+	float: right;
+	margin: 0;
+	padding: 0;
+	width: 47%;
+}
+.siteloginbar_popup .wikiaction {
+	clear: both;
+	float: right;
+}
+/* end Sitelogin Popup */
+
+#sitesearchbar {
+	float: right;
+	clear: left;
+	padding-right: 4px;
+	text-align: right;
+	display: block;
+	margin: 0;
+}
+
+#tiki-top form.findtable {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+#tiki-top table {
+	width: auto;
+	white-space: nowrap;
+}
+
 #top_modules .box-quickadmin {
 	position: absolute;
 	right: 1em;
@@ -25,6 +332,101 @@
 }
 
 /***** Misc. *****/
+/* Minimize Menus */
+.minimize-modules-left #col1 {
+	margin-left: 80px !important;
+}
+
+.minimize-modules-right #col1 {
+	margin-right: 80px !important;
+}
+
+.minimize-modules-left #col2 .separatoricon-toggle,
+.minimize-modules-left #col2 .box .menuText,
+.minimize-modules-left #col2 .mdkfwdarr,
+.minimize-modules-right #col3 .separatoricon-toggle,
+.minimize-modules-right #col3 .box .menuText,
+.minimize-modules-right #col3 .mdkfwdarr {
+	display: none !important;
+}
+
+.minimize-modules-left #col2 .box .menuLevel1 .menuText,
+.minimize-modules-left #col2 .separatoricon-url,
+.minimize-modules-right #col3 .box .menuLevel1 .menuText,
+.minimize-modules-right #col3 .separatoricon-url {
+  display: inline !important;
+}
+
+.moduleflip-vert {
+	display: block;
+	top: 20px !important;
+	right: 1% !important;
+}
+
+#col2 .moduleflip-vert .flipmodimage,
+.minimize-modules-right #col3 .moduleflip-vert .flipmodimage {
+	background-image: url(../../img/icons/resultset_first.png) !important;
+}
+
+#col3 .moduleflip-vert .flipmodimage,
+.minimize-modules-left #col2 .moduleflip-vert .flipmodimage {
+	background-image: url(../../img/icons/resultset_last.png) !important;
+}
+
+.minimize-modules-left #col2 .separator,
+.minimize-modules-right #col3 .separator {
+	padding: 0;
+	background: transparent;
+	border: none;
+}
+
+.minimize-modules-left #col2 .box-shadow,
+.minimize-modules-left #col2 .box,
+.minimize-modules-right #col3 .box-shadow,
+.minimize-modules-right #col3 .box {
+	width: 70px !important;
+}
+
+.minimize-modules-left #col2 .content,
+.minimize-modules-right #col3 .content {
+	margin: 0 !important;
+}
+
+.minimize-modules-left #col2 .option,
+.minimize-modules-left #col2 .optionline,
+.minimize-modules-right #col3 .option,
+.minimize-modules-right #col3 .optionline {
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+
+.minimize-modules-left #col2,
+.minimize-modules-right #col3 {
+	width: 60px !important;
+}
+
+
+/* Minimize CSS Menus */
+.minimize-modules-left #col2 .cssmenu_vert,
+.minimize-modules-left #col2 .cssmenu_vert div > ul,
+.minimize-modules-left #col2 .cssmenu_vert li.menuLevel0,
+.minimize-modules-left #col2 .cssmenu_vert li.menuLevel0 > a,
+.minimize-modules-right #col3 .cssmenu_vert,
+.minimize-modules-right #col3 .cssmenu_vert div > ul,
+.minimize-modules-right #col3 .cssmenu_vert li.menuLevel0,
+.minimize-modules-right #col3 .cssmenu_vert li.menuLevel0 > a {
+	width: 44px;
+}
+
+.minimize-modules-left #col2 .cssmenu_vert li.menuLevel0 > ul {
+	margin-left: 55px;
+}
+
+.minimize-modules-right #col3 .cssmenu_vert li.menuLevel0 > ul {
+	margin-right: 55px;
+}
+
 .mod-share-item {
 	float: left;
 }
@@ -37,8 +439,28 @@
 	margin-left: .5em;
 }
 
+/* centercolumn */
+.fullscreen .tellafriend,
+.fullscreen .share {
+	margin-right: 100px;
+	margin-top: 2px;
+}
+
 .share img {
 	margin-bottom: -5px;
+}
+
+#rss {
+	padding: 1em 1em 0;
+}
+
+#power {
+	padding: 0 1em 1em;
+	font-size: .9em;
+}
+
+#credits {
+	display: inline;
 }
 
 #show-errors-button {
@@ -59,7 +481,58 @@
 	color: #090;
 }
 
+/** off-screen **/
+ul.jumplinks {
+	font-size: 0.8em;
+	list-style-type: none;
+}
+
+ul.jumplinks,
+.jumplinks {
+	position: absolute;
+	top: -9000px;
+	left: -9000px;
+	z-index: 9;
+}
+
+.jumplinks a:focus,
+.jumplinks a:active {
+	position: absolute;
+	top: 9010px;
+	left: 9010px;
+	padding: 5px;
+	width: 6em;
+	z-index: 9;
+}
+
+.fullscreenbutton,
+#fullscreenbutton {
+	position: absolute;
+	top: 2px;
+	right: 10px;
+	z-index: 10;
+	font-size: 80%;
+}
+
+#tiki-clean {
+	text-align: left;
+	padding: 1em;
+	background: #fff;
+	color: #000;
+}
+
 /****** Misc. Global Classes (layout and style) ****/
+.floatlist {
+	clear: left;
+	list-style-type: none;
+	margin: 0;
+	padding-left: 0;
+}
+
+.floatlist li {
+	float: left;
+}
+
 /* put all the one-liners which should not display together */
 
 #attzone,
@@ -84,9 +557,109 @@
 #attzoneopen,
 #comzoneopen {
 	display: block;
+	margin-top: 10px;
+}
+
+#attzone {
+	margin-top: 10px;
+}
+
+.clear,
+#clear {
+	clear: both;
+}
+
+/* Clearfix for modern browsers */
+.clearfix:before,
+.clearfix:after {
+    content: "";
+    display: inherit;
+}
+
+.clearfix:after {
+    clear: both;
+}
+
+#overdiv table {
+	width: auto !important;
+}
+
+.imagerank {
+	margin: 10px 5px;
+}
+
+#debugconsole table {
+	width: 100%;
+}
+
+#debugconsole input[type="text"] {
+	width: auto;
+}
+
+.mini {
+	width: 100%;
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.pagenums input[type="text"] {
+	margin-top: -1px;
+}
+
+a.tikihelp,
+a.tikihelp:visited {
+	border: 0;
+	vertical-align: text-top;
+}
+
+a.tikihelp:hover {
+	cursor: help;
+	vertical-align: text-top;
+}
+
+#rss img,
+a.icon,
+img.icon {
+	vertical-align: middle;
+}
+
+.iconmenutext {
+	white-space: nowrap;
+}
+
+/** Titles (not boxed) bold lines alone not in summary used by categobjects.tpl + ? **/
+.simple_title {
+	font-weight: bold;
+	display: block;
+	padding: 8px 5px 5px 0;
+}
+
+/** Find form **/
+.findtable {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.findtitle,
+.findexactmatch,
+.findnumrows,
+.findtypes,
+.findlang {
+	display: inline;
+	vertical-align: middle;
+	margin: 0 1px;
+}
+
+.findtable ul li {
+	float: left;
 }
 
 /* New Toolbars */
+
+.textarea-toolbar {
+	width: 100%;
+}
 
 .textarea-toolbar img.icon {
 	vertical-align: middle;
@@ -94,6 +667,7 @@
 }
 
 .helptool-admin {	/* right justified section of toolbars */
+	float: right;
 	padding-left: 8px;
 	margin-left: 8px;
 	border-left: medium double #bfbfbf;
@@ -178,6 +752,13 @@ a.toolbar {			/* each tool button */
 	overflow: auto;
 }
 
+/* Inline_help : the inline_help are text displayed dependinf of user option : beginner, confirmed, expert */
+.simple_inlinehelp {
+	font-style: italic;
+	font-size: small;
+	font-family: sans-serif;
+}
+
 .box-share > div {
 	text-align: center;
 }
@@ -205,6 +786,7 @@ a.toolbar {			/* each tool button */
 
 /***** Boxes *****/
 /** Modules **/
+
 .modules {
 	position: relative;
 }
@@ -214,43 +796,47 @@ a.toolbar {			/* each tool button */
 	max-width: 180px;
 }
 
-h3.panel-title {
+h3.box-title {
 	display: block;
 	padding-top: 0;
 	position: relative; /* Needed for module shading icon to work. */
 }
 
 .moduleflip,
-.moduleflip img {
+.box-title span img.flipmodimage {
 	display: none;
 	position: absolute;
 	right: 1%;
 	top: 0;
 }
 
-.panel:hover .moduleflip,
-.panel:hover .moduleflip img {
+.box:hover .moduleflip,
+.box:hover .box-title span img.flipmodimage {
 	display: block;
 }
 
-.panel-body table {
+.box:hover img.flipmodimage {
+	border: 1px solid transparent;
+}
+
+.box-data table {
 	width: 100%;
 }
 
-.panel-body a.linkmenu {
+.box-data a.linkmenu {
 	display: block;
 }
 
-.panel-body ol,
-.panel-body ul {
-	padding-left: 1.5em;
+.box-data ol,
+.box-data ul {
+	padding-left: 2em;
 	padding-right: .6em;
 	overflow: hidden;
 	margin-top: 0;
 	margin-bottom: 0;
 }
 
-.panel-body ul {
+.box-data ul {
 	padding-left: 1.3em;
 }
 
@@ -288,9 +874,43 @@ h3.panel-title {
 }
 
 /* mod-switch_lang */
-.box-switch_lang .panel-body img {
+.box-switch_lang .box-data img {
 	padding: .2em;
 	vertical-align: middle;
+}
+
+.cbox,
+.cbox-data,
+.rbox-title,
+.rbox-data {
+	overflow: hidden;
+}
+
+/* For wikitext or custom code areas, editors can add, for example, a div class="halffloat"
+and put two modules or other divs between its tags;, each of these will use just under half of the width of the
+wikitext or custom content area. Similarly for three or four modules (or divs) across the page. */
+.halffloat .box,
+.wikitext .halffloat .box {
+	float: left !important;
+	clear: none;
+	width: 48%;
+	margin: 0 2% 0 0;
+ }
+
+.thirdfloat .box,
+.wikitext .thirdfloat .box {
+	float: left !important;
+	clear: none;
+	width: 31%;
+	margin: 0 2% 0 0;
+}
+
+.quarterfloat .box,
+.wikitext .quarterfloat .box {
+	float: left !important;
+	clear: none;
+	width: 22%;
+	margin: 0 2% 0 0;
 }
 
 #autosave_preview > div {
@@ -301,6 +921,14 @@ h3.panel-title {
 
 /***** Tables, Tabs ****/
 /** Tables **/
+
+.normal,
+.normalnoborder,
+.admin {
+	padding: 0;
+	margin: 0;
+	width: 100%;
+}
 
 .ui-accordion .normal,
 .ui-accordion .normalnoborder,
@@ -313,12 +941,19 @@ td {
 }
 
 td.third,
+th,
 td.heading,
 tr.diffheader {
 	text-align: center;
 }
 
 /** Tabs **/
+.tabs {
+	margin: 10px 3px 0 3px;
+	padding: 0;
+	position: relative;
+	z-index: 2;
+}
 
 .tabstoggle {
 	font-size: .8em;
@@ -341,11 +976,69 @@ tr.diffheader {
 	position: relative;
 	clear: none;
 }
-
 .tabs .tabstoggle.floatright .button {
 	position: absolute;
 	top: 0;
 	right: 0;
+}
+
+.tabs .container {
+	float: left;
+	width: 84%;
+}
+
+.tabs .full_width {
+	width: 100%;
+}
+
+.tabmark {
+	display: inline;
+	margin: 0 5px 0 0;
+	padding: 1px 0;
+	white-space: nowrap;
+}
+
+.tabmark a {
+	border-bottom: 0;
+	padding: 1px 5px;
+	text-decoration: none;
+}
+
+.tabactive {
+	border: solid 1px #999;
+	border-bottom: none;
+	border-top-width: 2px;
+	position: relative;
+	top: 0;
+}
+
+.tabinactive {
+	border-bottom: none;
+	position: relative;
+	top: 0;
+}
+
+.tabcontent {
+	z-index: 1;
+	position: relative;
+	padding: 4px;
+	top: 0;
+/*	border-top: none;*/
+	margin: 0;
+}
+
+.tabcontent table {
+	text-align: left;
+	width: auto;
+	background: transparent;
+}
+
+.tabcontent .normal {
+	width: 100%;
+}
+
+.tabcontent table td {
+	padding: 5px;
 }
 
 /***** Wiki *****/
@@ -355,13 +1048,17 @@ tr.diffheader {
 	clear: both;
 }
 
+.wikiactions {
+	white-space: nowrap !important;
+}
+
 .split {
 	clear: both;
 }
 
 #page-bar {
-/*	display: block;
-	margin-top: 0; */
+	display: block;
+	margin-top: 0;
 }
 
 #page-bar > span {
@@ -460,6 +1157,10 @@ ul.floatleft {
 ul.floatleft li {
 	float: left;
 	padding: 4px 2px;
+}
+
+.editdate ul.floatleft {
+	margin-top: 8px;
 }
 
 .editplugin {
@@ -567,9 +1268,22 @@ img.articleimage {
 	float: left;
 }
 
+.article .status {
+	position: absolute;
+	left: 0;
+}
+
 .articletrailer span {
 	display: inline-block;
 	margin: auto;
+	white-space: nowrap;
+}
+
+.article .actions {
+	position: absolute;
+	right: 0;
+	top: 0;
+	text-align: right;
 	white-space: nowrap;
 }
 
@@ -629,6 +1343,11 @@ body.tiki_blogs .post_single {
 	padding-bottom: 30px;
 }
 
+body.tiki_blogs .post .postfooter {
+	clear: both;
+	float: right;
+}
+
 /* Related content */
 .related_posts, .related_articles {
 	margin-top: 3em;
@@ -672,6 +1391,12 @@ body.tiki_forums .normal {
 	margin-top: 3px;
 }
 
+.post .author {
+	float: right;
+	text-align: right;
+	vertical-align: top;
+}
+
 .post .author_post_info {
 	padding-left: 4px;
 	padding-bottom: 4px;
@@ -689,6 +1414,18 @@ body.tiki_forums .normal {
 	float: left;
 }
 
+.post .postbody-title .actions {
+	float: right;
+}
+
+.postbody-content {
+	padding: 3px;
+}
+
+.postbody .content {
+	margin: 5px;
+}
+
 .post .postbody .attachments {
 	clear: both;
 	margin-top: 5px;
@@ -698,8 +1435,40 @@ body.tiki_forums .normal {
 	vertical-align: text-bottom;
 }
 
+.post .postfooter {
+	text-align: right;
+	width: 100%;
+	margin-top: 5px;
+}
 .post .postfooter .rating {
 	display: inline;
+}
+
+.post .postfooter .actions,
+.post .postfooter .author_actions,
+.post .postfooter .status {
+	display: inline;
+	vertical-align: top;
+}
+
+.post .postfooter .actions,
+.post .postfooter .author_actions {
+	float: left;
+	margin-left: 5px;
+}
+
+.post .postfooter .status {
+	float: right;
+	margin-right: 5px;
+}
+
+.post .postfooter .actions .share {
+	float: right;
+	margin: 1px 2px 2px 5px;
+}
+
+.post .inner > .postfooter {
+	clear: both;
 }
 
 .post .avatar {
@@ -768,6 +1537,11 @@ body.tiki_forums .normal {
 	padding-top: 2px;
 }
 
+.thread_pagination {
+	text-align: center;
+	margin-bottom: 10px;
+}
+
 .nb_replies {
 	white-space: nowrap;
 }
@@ -806,6 +1580,15 @@ body.tiki_forums .normal {
 	margin-bottom: 0.2em;
 }
 
+#comment-container .buttons table td, #comment-container-below .buttons table td {
+	padding: 0;
+}
+#comment-container .buttons table .button, #comment-container-below .buttons table .button {
+	margin: 0;
+}
+#comment-container .body { 
+	margin-top: 10px;
+}
 /* Comments (article, blogs) */
 
 #comment-container .actions, #comment-container-below .actions {
@@ -832,12 +1615,6 @@ body.tiki_forums .normal {
 
 #comment-container .date, #comment-container-below .date {
 	font-style: italic;
-}
-
-#comment-container .commentRatingForm, #comment-container-below .commentRatingForm {
-	white-space: nowrap;
-	padding-left: .5em;
-	display: inline-block;
 }
 
 /* Comment Annotations */
@@ -921,6 +1698,13 @@ textarea#editpost2 {
 }
 
 /**** Image Galleries ****/
+.galtable {
+	width: 100%;
+}
+
+body.tiki_galleries .findtable {
+	display: inline;
+}
 
 .oddthumb {
 	border-collapse: collapse;
@@ -1127,7 +1911,7 @@ a.categpath {
 	display: inline;
 }
 
-/***** Tags (freetags) *****
+/***** Tags (freetags) *****/
 .freetaglist {
 	padding: 0 20px 8px;
 	text-align: right;
@@ -1207,7 +1991,7 @@ ul.freetag {
 .freetagObjectName a {
 	text-decoration: none;
 }
-************/
+
 /* freetegged plugin */
 
 ul.freetagged li {
@@ -1247,17 +2031,11 @@ ul.freetagged li {
 /***** Messages *****/
 
 /***** TikiSheets *****/
-.tiki_sheet * {
-    line-height: normal;
-    font-size: 14px;
-}
 .tiki_sheet table td { /* override .tabcontent table td */
 	padding: 0;
 	border: 1px solid #909090;
 }
-.jSBarTopParent .jSBarController {
-    height: 0px ! important;
-}
+
 .plugin-sample {
 	padding: 5px;
 	font-family: "Courier New", Courier, monospace;
@@ -1414,6 +2192,8 @@ ul.freetagged li {
 	padding: .2em .8em;
 }
 
+
+
 /***** New (unsorted) *****/
 
 /* webmail & groupmail */
@@ -1421,6 +2201,11 @@ ul.freetagged li {
 .box-webmail_inbox img.icon {
 	vertical-align: middle;
 }
+
+@media print {
+	.tikihelp, .navbar, .categbar, .tabstoggle, .tabs, #show-errors-button {display:none;}
+}
+
 
 /* treeTable definitions - used in object-perms so far */
 
@@ -1476,6 +2261,17 @@ table.treetable.objectperms td.removed {
 	text-align: center;
 	display: inline-block;
 	vertical-align: top;
+}
+
+/* special workaround for IE 7 */
+*:first-child+html
+.thumbnailcontener {
+	float: left;
+}
+
+/* special workaround for IE 6 */
+* html .thumbnailcontener {
+	float: left;
 }
 
 .tree li {
@@ -2057,10 +2853,55 @@ textarea:disabled {
 	color: #888 !important;
 }
 
+fieldset {
+	border: solid 1px #999;
+	margin-bottom: 2px;
+	padding: 0.3em;
+	clear: both;
+}
+
+/* margin and padding for span surrounding the "button" links, same definition for button form element */
+/*button,
+.button,
+.button.highlight {
+	margin: 1px 2px;
+	padding: 2px;
+}
+
+.button a,
+.button a:visited,
+.button a:hover,
+.button input,
+.calbuttonBox a {
+	padding: 1px 4px;
+}*/
+
 #genPass .button a,
 #genPass .button a:visited,
 #genPass .button a:hover {
 	padding: 1px 4px !important;
+}
+
+.button,
+.button:hover,
+button,
+button:hover,
+input[type=reset],
+input[type=submit],
+input[type=reset]:hover,
+input[type=submit]:hover {
+	margin: 0 0 4px 2px;
+	font-size: inherit;
+	font-family: inherit;
+}
+
+input {
+	padding: 0;
+}
+
+.button a {
+	padding: .1em 1em;
+	display: block;
 }
 
 button.ui-button, button.ui-button:hover {
@@ -2112,6 +2953,13 @@ div.highlight {
 	display: block;
 	font-weight: bold;
 }
+
+input[type=checkbox],
+input[type=radio] {
+	border: 0;
+	margin-left:10px;
+}
+
 
 .sitelogo img {
 	margin-top: 10px;
@@ -2203,6 +3051,11 @@ a.flip:hover,
 	font-size: .9em;
 }
 
+.prevnext {
+	font-size: 1em;
+	padding: 1px 6px;
+}
+
 #rss small {
 	font-size: 1em;
 }
@@ -2212,6 +3065,14 @@ a.flip:hover,
 	width: 190px;
 	text-align: left;
 	margin: auto;
+}
+
+.findtitle input {
+	margin-left: 2px;
+}
+
+.findtable ul {
+	list-style: none;
 }
 
 .alphafilter {
@@ -2347,7 +3208,90 @@ div #metadata fieldset.tabcontent, div #metadata div.tabs {
 	background-color: transparent;
 }
 
+.admin #content1 .tabcontent .cbox {
+	background: transparent;
+}
+
+/* To display content without module-style background and border. */
+.halffloat > .box,
+.wikitext .halffloat > .box,
+.thirdfloat > .box,
+.wikitext .thirdfloat > .box,
+.quarterfloat > .box,
+.wikitext .quarterfloat > .box {
+	background: none;
+	border: none;
+}
+
+.cbox-title {
+	padding: 3px 3px 0 3px;
+}
+
+.cbox-data {
+	padding: 0 3px 3px 3px;
+}
+
 /* remarks boxes */
+
+.rbox {
+	margin: 1em .3em .3em .3em;
+}
+
+.rbox-title,
+.rbox-data {
+	padding: .3em .6em;
+	border: 1px solid #000;
+	background: #eee;
+	color: #000;
+}
+
+/* remarks boxes */
+.rbox-title {
+	display: inline-block;
+	width: auto;
+	z-index: 0;
+	position: relative;
+	margin-bottom: -0.33em;
+	padding: 0 0.6em 0.2em;
+	font-weight: bold;
+	border-bottom: none;
+}
+
+.rbox-title .icon {
+	padding: 0 .5em 0 0;
+	vertical-align: middle;
+}
+
+.rbox-data {
+	position: relative;
+	z-index: 0;
+}
+
+.rbox-close {
+	float: right;
+	cursor: pointer;
+}
+
+.error .rbox-title,
+.errors .rbox-title,
+.warning .rbox-title {
+	background: #ffc;
+	color: #000;
+	border-color: #f00;
+	border-bottom: none;
+}
+
+.error .rbox-data,
+.errors .rbox-data,
+.warning .rbox-data {
+	background: #ffc;
+	color: #000;
+	border-color: #f00;
+}
+
+.error .rbox-data label {
+	color: #000;
+}
 
 #error {
 	background: yellow;
@@ -2360,10 +3304,28 @@ div #metadata fieldset.tabcontent, div #metadata div.tabs {
 	color: #b93c2e;
 }
 
+.simplebox {
+	border: 1px solid #999;
+	padding: 3px;
+}
+
 /* odd and even classes for tr, td, and li */
 .odd {
         background: #f0f0f0;
         color: #000;
+}
+table.normal tr:nth-child(2n+1) {
+	background: #f0f0f0;
+	color: #000;
+}
+
+.even {
+        background: #fff;
+        color: #000;
+}
+table.normal tr:nth-child(2n) {
+	background: #fff;
+	color: #000;
 }
 
 /** Tables **/
@@ -2374,11 +3336,17 @@ td.italiclabel {
 	font-style: italic;
 }
 
+.normal,
+.admin {
+	border-collapse: collapse;
+}
+
 .normal td,
 .wikitable td,
 .odd,
 .even,
 .form,
+.formcolor td,
 .editblogform td {
 	margin: 0;
 	padding: 3px;
@@ -2398,7 +3366,10 @@ td.form {
 td.integer {
 	text-align: right;
 }
-td.checkbox-cell {
+td.date {
+	text-align: center;
+}
+td.checkbox {
 	text-align: center;
 	width: 20px;
 }
@@ -2441,6 +3412,13 @@ caption {
 
 body.tiki_wiki #comments {
 	padding: 1em;
+}
+
+.editdate {
+	padding-bottom: 5px;
+	padding-top: 10px;
+	font-size: 0.9em;
+	font-style: italic;
 }
 
 /* wikiplugin_code */
@@ -2677,6 +3655,17 @@ body.tiki_wiki #comments {
 	font-style: italic;
 }
 
+.blogtools {
+	padding: 3px;
+	text-align: right
+}
+
+a.blogt,
+a.blog:visited {
+	border: 0;
+	text-decoration: none;
+}
+
 small.description {
 	display: block;
 }
@@ -2686,6 +3675,18 @@ small.description {
 	font-style: italic;
 }
 
+
+/*body.tiki_blogs*/ .post .title {
+	margin-top: 0;
+}
+
+/*body.tiki_blogs .post*/ .postfooter {
+	margin-bottom: 2em;
+}
+
+/*body.tiki_blogs div*/.author_info {
+	padding: 5px 0px 15px 0px;
+}
 
 /**** Image Galleries ****/
 
@@ -2831,6 +3832,24 @@ a.freetag_7 {
 }
 
 /***** Shoutbox *****/
+
+.shoutboxmsg {
+	margin-bottom: 0;
+	padding: 4px;
+	padding-bottom: 1px;
+}
+
+.shoutboxmodmsg {
+	font-size: .95em;
+	margin: 0 5px 4px 5px;
+	padding-top: 5px;
+	padding-bottom: 1px
+}
+
+textarea.tshoutbox{
+	font-size: .95em;
+	width: 90%;
+}
 
 /***** Directory *****/
 
@@ -3171,10 +4190,8 @@ a.freetag_7 {
 }
 
 /* jquery validation */
-div.form-group label.error {
-	font-weight: normal !important;
-}
 
+label.error,
 form.simple label.error {
 	background : url('../../img/icons/error.png') no-repeat 0 4px;
 	color:red;
@@ -3308,11 +4325,11 @@ form.simple textarea.export {
 }
 
 /* $.fn.modal */
-.tiki-modal {
+.modal {
 	position: absolute;
 	text-align: center;
 }
-.tiki-modal .mask {
+.modal .mask {
 	position: absolute;
 	background-color: #fff;
 	display: none;
@@ -3320,7 +4337,7 @@ form.simple textarea.export {
 	height: auto;
 }
 
-.tiki-modal .dialog {
+.modal .dialog {
 	position:absolute;
 	top: 50%;
 	left: 50%;
@@ -3336,6 +4353,50 @@ form.simple textarea.export {
 .structuremenu .menuSection .option, .structuremenu .menuSection .optionline {
 	background: transparent url(../../img/icons/h_trenner.gif) center left no-repeat;
 	padding-left: 21px;
+}
+
+/* Site Login Bar Pop-up */
+.siteloginbar_poppedup .user,
+.siteloginbar_poppedup .pass {
+	display: table-row;
+}
+.siteloginbar_poppedup .user label,
+.siteloginbar_poppedup .pass label,
+.siteloginbar_poppedup .user input,
+.siteloginbar_poppedup .pass input {
+	display: table-cell;
+	vertical-align: top;
+}
+.siteloginbar_poppedup .user label,
+.siteloginbar_poppedup .pass label {
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 5px;
+}
+
+.siteloginbar_popup * {
+	padding: 0;
+}
+.siteloginbar_popup a {
+	line-height: 16px;
+	position: relative;
+}
+.siteloginbar_popup .tabmark a:focus {
+	outline: none;
+}
+.siteloginbar_popup .tabmark a:after {
+	content: "";
+	position: absolute;
+	top: 100%;
+	right: 8px;
+	border-top: 5px solid black;
+	border-top-color: #ccc;
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+	margin-top: -15px;
+}
+.siteloginbar_popup .tabmark a:hover:after {
+	border-top-color: #fff;
 }
 
 /* Twitter module styling */
@@ -3629,67 +4690,21 @@ div#outerToc-static ul {
     margin: 1em 0;
 }
 
-
-/** Hidden anchors/links shown on mouseover of header  **/
-a.tiki_anchor:before {
-    content: "¶";
+/** Spreadsheet **/
+.tiki_sheet .ui-widget-header {
+	border: 0 !important;
 }
-a.tiki_anchor {
-    display: none;
-    font-size: 85%;
-    font-weight: lighter;
-    margin-left: 0.7em;
-    text-decoration: none;
-    line-height: 100%;
+/** jquery chosen **/
+.chosen-container-single .chosen-single span {
+	width: 100%;
 }
-h1:hover a.tiki_anchor,
-h2:hover a.tiki_anchor,
-h3:hover a.tiki_anchor,
-h4:hover a.tiki_anchor,
-h5:hover a.tiki_anchor,
-h6:hover a.tiki_anchor {
-    color: #BBBBBB;
-    display: inline;
+.chosen-container-single .chosen-single {
+	min-width: 45px;
 }
-h1 a.tiki_anchor:hover,
-h2 a.tiki_anchor:hover,
-h3 a.tiki_anchor:hover,
-h4 a.tiki_anchor:hover,
-h5 a.tiki_anchor:hover,
-h6 a.tiki_anchor:hover {
-    color: #3333CC;
+.chosen-container .chosen-results, .chosen-container .chosen-drop {
+    min-width: 200px; 
 }
-
-/* override default Bootstrap style */
-.page-header {
-	border-bottom: none;
-	margin: auto;
-	padding-bottom: 0;
+.chosen-container .chosen-results li.highlighted, .chosen-container .chosen-results li.active-result {
+    width: 90%;
 }
-
-/* Modal submit buttons need to be hidden to avoid blink */
-.modal-body div.submit {
-	display: none;
-}
-
-/* Conditions and Terms validation */
-
-.age-validation .form-control {
-	width: auto;
-	display: inline;
-	margin: 0 1em;
-}
-
-/* Password domain module */
-.pwddom_domain_name {
-    font-weight: bold;
-}
-.pwddom_username_name {
-    font-weight: bold;
-}
-
-body.navbar-padding {
-	padding-top: 70px;
-}
-
 /* End of file */

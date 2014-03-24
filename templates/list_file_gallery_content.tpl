@@ -2,12 +2,11 @@
 {if empty($sort_arg)}
 	{assign var='sort_arg' value='sort_mode'}
 {/if}
-<div class="table-responsive">
-<table class="table table-bordered">
+<table class="normal">
 	<tr>
 		{if $prefs.fgal_checked ne 'n' and ($tiki_p_admin_file_galleries eq 'y' or $tiki_p_upload_files eq 'y')}
 			{assign var=nbCols value=$nbCols+1}
-			<th class="checkbox-cell">
+			<th class="checkbox">
 				{select_all checkbox_names='file[],subgal[]'}
 			</th>
 		{/if}
@@ -146,7 +145,7 @@
 		{/if}
 	</tr>
 
-
+	{cycle values="odd,even" print=false}
 	{section name=changes loop=$files}
 
 		{if ( ( ! isset($fileId) ) || $fileId == 0 ) || ( $fileId == $files[changes].id )}
@@ -266,10 +265,10 @@
 			{/if}
 			
 			
-		<tr>
+		<tr class="{cycle}">
 
 			{if $prefs.fgal_checked neq 'n' and ($tiki_p_admin_file_galleries eq 'y' or $tiki_p_upload_files eq 'y')}
-				<td class="checkbox-cell">
+				<td class="checkbox">
 					{if $files[changes].isgal eq 1}
 						{assign var='checkname' value='subgal'}
 					{else}
@@ -491,7 +490,6 @@
 
 
 </table>
-</div>
 {if $prefs.feature_jquery_tooltips eq 'y'}
 	{jq}if (jqueryTiki.tooltips) { $('a.fgalbacklink').cluetip({showTitle:false, sticky:true}); }{/jq}
 {/if}

@@ -721,18 +721,6 @@ function wikiplugin_trackerlist_info()
 					 array('text' => tra('No'), 'value' => 'n')
 				 )
 			 ),
-			 'force_separate_compile' => array(
-				'required' => false,
-				'name' => tra('Force separate compiles for each itemId'),
-				'description' => tra('Instead of forcing a complete smarty tpl(recompile), it simply compiles separately for each itemId'),
-				'filter' => 'alpha',
-				'default' => 'y',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				)
-			 ),
 		), $tsparams
 	);
 	return array(
@@ -780,10 +768,6 @@ function wikiplugin_trackerlist($data, $params)
 	extract($params, EXTR_SKIP);
 
 	$skip_status_perm_check = false;
-
-	if($force_separate_compile == 'y') {
-		$smarty->assign('force_separate_compile', 'y');
-	}
 
 	if ($prefs['feature_trackers'] != 'y' || !isset($trackerId) || !($tracker_info = $trklib->get_tracker($trackerId))) {
 		return $smarty->fetch("wiki-plugins/error_tracker.tpl");
@@ -848,11 +832,11 @@ function wikiplugin_trackerlist($data, $params)
 			}
 		} elseif (!empty($wiki) || !empty($tpl) || !empty($tplwiki)) {
 				if (!empty($wiki)) {
-					$listfields = $trklib->get_pretty_fieldIds($wiki, 'wiki', $outputPretty, $trackerId);
+					$listfields = $trklib->get_pretty_fieldIds($wiki, 'wiki', $outputPretty);
 				} elseif (!empty($tplwiki)) {
-					$listfields = $trklib->get_pretty_fieldIds($tplwiki, 'wiki', $outputPretty, $trackerId);
+					$listfields = $trklib->get_pretty_fieldIds($tplwiki, 'wiki', $outputPretty);
 				} else {
-					$listfields = $trklib->get_pretty_fieldIds($tpl, 'tpl', $outputPretty, $trackerId);
+					$listfields = $trklib->get_pretty_fieldIds($tpl, 'tpl', $outputPretty);
 				}
 		} else {
 			$listfields = '';
@@ -869,7 +853,8 @@ function wikiplugin_trackerlist($data, $params)
 		//note whether tablesorter will be used
 		$tsServer = isset($params['server']) && $params['server'] === 'y' ? true : false;
 
-		$tsOn	= (Table_Check::perms(true) || $tsServer === false) && isset($sortable) && $sortable !== 'n' ? true : false;
+		$tsOn	= $prefs['disableJavascript'] === 'n' && $prefs['feature_jquery_tablesorter'] === 'y'
+		&& ($prefs['feature_ajax'] === 'y' || $tsServer === false) && isset($sortable) && $sortable !== 'n' ? true : false;
 		$smarty->assign('tsOn', $tsOn);
 
 		//note whether this is the initial tablesorter ajax call or a subsequent ajax call

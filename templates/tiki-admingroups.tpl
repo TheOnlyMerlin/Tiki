@@ -2,20 +2,20 @@
 
 {title help="Groups+Management" admpage="login"}{tr}Admin groups{/tr}{/title}
 
-<div class="t_navbar form-group">
-	{button class="btn btn-default" _text="{tr}Admin groups{/tr}"}
-	{button href="tiki-adminusers.php" class="btn btn-default" _text="{tr}Admin users{/tr}"}
-	{button href="tiki-admingroups.php?clean=y" class="btn btn-default" _text="{tr}Clear cache{/tr}"}
+<div class="navbar">
+	{button _text="{tr}Admin groups{/tr}"}
+	{button href="tiki-adminusers.php" _text="{tr}Admin users{/tr}"}
+	{button href="tiki-admingroups.php?clean=y" _text="{tr}Clear cache{/tr}"}
 	{if $groupname}
 		{if $prefs.feature_tabs ne 'y'}
-			{button href="tiki-admingroups.php?add=1&amp;cookietab=2#tab2" class="btn btn-default" _text="{tr}Add new group{/tr}"}
+			{button href="tiki-admingroups.php?add=1&amp;cookietab=2#tab2" _text="{tr}Add new group{/tr}"}
 		{else}
-			{button href="tiki-admingroups.php?add=1&amp;cookietab=2" class="btn btn-default" _text="{tr}Add new group{/tr}"}
+			{button href="tiki-admingroups.php?add=1&amp;cookietab=2" _text="{tr}Add new group{/tr}"}
 		{/if}
 	{/if}
-	{permission_link mode=button label="{tr}Manage permissions{/tr}"}
+	{button href="tiki-objectpermissions.php" _text="{tr}Manage permissions{/tr}"}
 	{if $prefs.feature_invite eq 'y' and $tiki_p_invite eq 'y'}
-		{button href="tiki-list_invite.php" class="btn btn-default" _text="{tr}Invitation List{/tr}"}
+		{button href="tiki-list_invite.php" _text="{tr}Invitation List{/tr}"}
 	{/if}
 </div>
 
@@ -32,7 +32,6 @@
 	{/if}
 
 	<form name="checkform" method="post" action="{$smarty.server.PHP_SELF}">
-    <div class="table-responsive">
 	<table class="table normal">
 		<tr>
 			<th style="width: 20px;">{select_all checkbox_names='checked[]'}</th>
@@ -49,10 +48,10 @@
 			<th>{tr}Permissions{/tr}</th>
 			<th style="width: 20px;">&nbsp;</th>
 		</tr>
-
+		{cycle values="even,odd" print=false}
 		{section name=user loop=$users}
-			<tr>
-				<td class="checkbox-cell">
+			<tr class="{cycle}">
+				<td class="checkbox">
 					{if $users[user].groupName ne 'Admins' and $users[user].groupName ne 'Anonymous' and $users[user].groupName ne 'Registered'}
 						<input type="checkbox" name="checked[]" value="{$users[user].groupName|escape}">
 					{/if}
@@ -79,8 +78,7 @@
 
 				<td class="text">{tr}{$users[user].userChoice}{/tr}</td>
 				<td class="text">
-					{permission_link mode=icon group=$users[user].groupName}
-					{$users[user].permcant|escape}
+					<a class="link" href="tiki-objectpermissions.php?group={$users[user].groupName|escape:"url"}" title="{tr}Permissions{/tr}">{icon _id='key' alt="{tr}Permissions{/tr}"} {$users[user].permcant}</a>
 				</td>
 				<td class="action">
 					<a class="link" href="tiki-admingroups.php?group={$users[user].groupName|escape:"url"}&amp;cookietab=2{if $prefs.feature_tabs ne 'y'}#tab2{/if}" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
@@ -91,7 +89,6 @@
 			</tr>
 		{/section}
 	</table>
-    </div>
 	<p align="left"> {*on the left to have it close to the checkboxes*}
 		<label>{tr}Perform action with checked:{/tr}
 			<select name="submit_mult">
@@ -99,7 +96,7 @@
 				<option value="remove_groups" >{tr}Remove{/tr}</option>
 			</select>
 		</label>
-		<input type="submit" class="btn btn-default btn-sm" value="{tr}OK{/tr}">
+		<input type="submit" class="btn btn-default" value="{tr}OK{/tr}">
 	</p>
 	</form>
 	{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
@@ -115,7 +112,7 @@
 {* ----------------------- tab with form --------------------------------------- *}
 
 	{if !empty($user) and $prefs.feature_user_watches eq 'y'}
-		<div class="pull-right">
+		<div class="floatright">
 			{if not $group_info.isWatching}
 				{self_link watch=$groupname}
 					{icon _id='eye' alt="{tr}Group is NOT being monitored. Click icon to START monitoring.{/tr}"}
@@ -312,12 +309,6 @@ $("#userstracker").change(function () {
 					<td>{tr}Users Information Tracker Fields Asked at Registration Time<br>(fieldIds separated with :){/tr}</td>
 					<td><input type="text" style="width:95%" name="registrationUsersFieldIds" value="{$registrationUsersFieldIds|escape}"></td>
 				</tr>
-				{if $prefs.feature_wizard_user eq 'y' and $groupname == 'Registered'}
-				<tr>
-					<td>{tr}Users Information Tracker Fields Asked in the User Wizard:{/tr}</td>
-					<td>{tr}By default, the same fields as in Registration{/tr}. {tr _0="tiki-admin.php?page=login"}You can choose in the <a href="%0">Login admin panel</a> to show different fields in User Wizard than the ones asked at Registration Time{/tr}.</td>
-				</tr>
-				{/if}
 			{/if}
 
 		{if $groupname neq 'Anonymous' and $groupname neq 'Registered' and $groupname neq 'Admins'}
@@ -355,7 +346,9 @@ $("#userstracker").change(function () {
 						{tr}Assign group <em>management</em> permissions:{/tr}
 					</td>
 					<td>
-						{permission_link mode=icon type="group" id=$groupname title=$groupname}
+						{self_link _script="tiki-objectpermissions.php" objectType="group" objectId=$groupname objectName=$groupname permType="group"}
+							{icon _text="{tr}Assign Permissions{/tr}" _id="key"}
+						{/self_link}
 					</td>
 				</tr>
 				{/if}
@@ -365,12 +358,12 @@ $("#userstracker").change(function () {
 						&nbsp;
 						<input type="hidden" name="olgroup" value="{$group|escape}">
 					</td>
-					<td><input type="submit" class="btn btn-default btn-sm" name="save" value="{tr}Save{/tr}"></td>
+					<td><input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}"></td>
 				</tr>
 			{else}
 				<tr>
 					<td >&nbsp;</td>
-					<td><input type="submit" class="btn btn-default btn-sm" name="newgroup" value="{tr}Add{/tr}"></td>
+					<td><input type="submit" class="btn btn-default" name="newgroup" value="{tr}Add{/tr}"></td>
 				</tr>
 			{/if}
 		</table>
@@ -400,7 +393,6 @@ $("#userstracker").change(function () {
 		<h2>{tr}Members List:{/tr} {$groupname|escape}</h2>
 		<form name="checkform" method="post" action="{$smarty.server.PHP_SELF}">
 		<input type="hidden" name="group" value="{$group|escape}">
-        <div class="table-responsive">
 		<table class="table normal">
 			<tr>
 				<th class="auto">{if $memberslist}{select_all checkbox_names='members[]'}{/if}</th>
@@ -409,11 +401,11 @@ $("#userstracker").change(function () {
 				<th>{self_link _sort_arg='sort_mode_member' _sort_field='expire'}{tr}Expire{/tr}{/self_link}</th>
 				<th>{tr}Action{/tr}</th>
 			</tr>
-
+			{cycle values="even,odd" print=false}
 			<tr>
 				{foreach from=$memberslist item=member}
-					<tr>
-					<td class="checkbox-cell"><input type="checkbox" name="members[]" value="{$member.userId}"></td>
+					<tr class="{cycle}">
+					<td class="checkbox"><input type="checkbox" name="members[]" value="{$member.userId}"></td>
 					<td class="username">{$member.login|userlink}</td>
 					<td class="date">{$member.created|tiki_short_datetime}</td>
 					<td class="date">{if !empty($member.expire)}{$member.expire|tiki_short_datetime}{/if}</td>
@@ -426,7 +418,6 @@ $("#userstracker").change(function () {
 					</tr>
 				{/foreach}
 		</table>
-        </div>
 
 		{if $groupname neq 'Registered'}
 		<label>{tr}Perform action with checked:{/tr}
@@ -435,7 +426,7 @@ $("#userstracker").change(function () {
 				<option value="unassign">{tr}Unassign{/tr}</option>
 			</select>
 		</label>
-		<input type="submit" class="btn btn-default btn-sm" name="unassign_members" value="{tr}OK{/tr}">
+		<input type="submit" class="btn btn-default" name="unassign_members" value="{tr}OK{/tr}">
 		</form>
 		{/if}
 
@@ -444,16 +435,15 @@ $("#userstracker").change(function () {
 		<div class="box">{$membersCount} {tr}users in group{/tr} {$groupname|escape}</div>
 
 		<h2>{tr}Banned members List:{/tr} {$groupname|escape}</h2>
-        <div class="table-responsive">
 		<table class="table normal">
 			<tr>
 				<th>{tr}User{/tr}</th>
 				<th>{tr}Action{/tr}</th>
 			</tr>
-
+			{cycle values="even,odd" print=false}
 			<tr>
 				{foreach from=$bannedlist item=member}
-					<tr>
+					<tr class="{cycle}">
 					<td class="username">{$member|userlink}</td>
 					<td class="action">
 						{self_link user=$member|escape:"url" action=unbanuser group=$groupname|escape:url _title="{tr}Unban user{/tr}"}
@@ -463,7 +453,6 @@ $("#userstracker").change(function () {
 					</tr>
 				{/foreach}
 		</table>
-        </div>
 		{if ! empty($userslist)}
 			<h2>{tr}Add or Ban members to:{/tr} {$groupname|escape}</h2>
 			<form method="post" action="tiki-admingroups.php">
@@ -474,8 +463,8 @@ $("#userstracker").change(function () {
 							<option>{$iuser|escape}</option>
 						{/foreach}
 					</select>
-					<input type="submit" class="btn btn-default btn-sm" name="adduser" value="{tr}Add to group{/tr}">
-					<input type="submit" class="btn btn-default btn-sm" name="banuser" value="{tr}Ban user from group{/tr}">
+					<input type="submit" class="btn btn-default" name="adduser" value="{tr}Add to group{/tr}">
+					<input type="submit" class="btn btn-default" name="banuser" value="{tr}Ban user from group{/tr}">
 				</p>
 			</form>
 		{/if}
@@ -519,7 +508,7 @@ $("#userstracker").change(function () {
 				</tr>
 				<tr>
 					<td class="auto"></td>
-					<td class="auto"><input type="submit" class="btn btn-default btn-sm" name="export" value="{tr}Export{/tr}"></td>
+					<td class="auto"><input type="submit" class="btn btn-default" name="export" value="{tr}Export{/tr}"></td>
 				</tr>
 			</table>
 
@@ -537,7 +526,7 @@ $("#userstracker").change(function () {
 				</tr>
 				<tr>
 					<td class="auto"></td>
-					<td class="auto"><input type="submit" class="btn btn-default btn-sm" name="import" value="{tr}Import{/tr}"></td>
+					<td class="auto"><input type="submit" class="btn btn-default" name="import" value="{tr}Import{/tr}"></td>
 				</tr>
 			</table>
 		</form>

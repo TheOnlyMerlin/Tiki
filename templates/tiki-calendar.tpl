@@ -10,7 +10,7 @@
 
 <div id="calscreen">
 
-	<div class="t_navbar form-group">
+	<div class="navbar">
 		{if $prefs.mobile_mode eq "y"}<div data-role="controlgroup" data-type="horizontal" style="float:right">{/if} {* mobile *}
 			{if $displayedcals|@count eq 1 and $prefs.feature_group_watches eq 'y' and ( $tiki_p_admin_users eq 'y' or $tiki_p_admin eq 'y' )}
 				<a {if $prefs.mobile_mode eq "y"}data-role="button" data-mini="true" data-inline="true" {/if}href="tiki-object_watches.php?objectId={$displayedcals[0]|escape:"url"}&amp;watch_event=calendar_changed&amp;objectType=calendar&amp;objectName={$infocals[$x].name|escape:"url"}&amp;objectHref={'tiki-calendar.php?calIds[]='|cat:$displayedcals[0]|escape:"url"}" class="icon">{icon _id='eye_group' alt="{tr}Group Monitor{/tr}" align='right' hspace="1"}</a> {* mobile *}
@@ -51,7 +51,7 @@
 			{button href="#" _onclick="toggle('filtercal');return false;" _text="{tr}Visible Calendars{/tr}" _title="{tr}Click to select visible calendars{/tr}"}
 
 			{if count($thiscal)}
-				<div id="configlinks" class="form-group text-right">
+				<div id="configlinks">
 				{assign var='maxCalsForButton' value=20}
 				{if count($checkedCals) > $maxCalsForButton}<select size="5">{/if}
 				{foreach item=k from=$listcals name=listc}
@@ -111,7 +111,7 @@
 			{/foreach}
 			<div class="calinput">
 				<input type="hidden" name="todate" value="{$focusdate}">
-				<input type="submit" class="btn btn-default btn-sm" name="refresh" value="{tr}Refresh{/tr}">
+				<input type="submit" class="btn btn-default" name="refresh" value="{tr}Refresh{/tr}">
 			</div>
 		</form>
 	{/if}
@@ -133,8 +133,8 @@
 				<a href="{$iCalAdvParamsUrl}">{tr}advanced parameters{/tr}</a>
 			</div>
 			<div class="calinput">
-				<input type="submit" class="btn btn-default btn-sm" name="ical" value="{tr}Export as iCal{/tr}">
-				<input type="submit" class="btn btn-default btn-sm" name="csv" value="{tr}Export as CSV{/tr}">
+				<input type="submit" class="btn btn-default" name="ical" value="{tr}Export as iCal{/tr}">
+				<input type="submit" class="btn btn-default" name="csv" value="{tr}Export as CSV{/tr}">
 			</div>
 		</form>
 	{/if}

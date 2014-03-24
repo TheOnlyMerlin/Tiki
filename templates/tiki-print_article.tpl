@@ -34,7 +34,7 @@
 {if $tiki_p_read_article eq 'y'}
 				{$parsed_body}
 {else}
-				<div class="alert alert-warning simplebox">
+				<div class="error simplebox">
 					{tr}You do not have permission to read complete articles.{/tr}
 				</div>
 {/if}

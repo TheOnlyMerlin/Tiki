@@ -20,12 +20,9 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	header('location: index.php');
 	exit;
 }
-if (version_compare(PHP_VERSION, '5.5.0', '<') && php_sapi_name() != 'cli') {
+if (version_compare(PHP_VERSION, '5.3.0', '<')) {
 	header('location: tiki-install.php');
 	exit;
-} elseif (version_compare(PHP_VERSION, '5.5.0', '<') && php_sapi_name() == 'cli') {
-	// This is command-line. No 'location' command make sense here. Let admins access what works and deal with the rest.
-	echo "Warning: Tiki13 and above expects PHP 5.5.0 and above. You are running " . phpversion() . " at your own risk\n";
 }
 
 // Be sure that the user is not already defined by PHP on hosts that still have the php.ini config "register_globals = On"
@@ -458,13 +455,14 @@ if ($prefs['mobile_feature'] === 'y' && $prefs['mobile_mode'] === 'y') {
 			$headerlib->add_cssfile('vendor/jquery/plugins/chosen/chosen.css');
 			$headerlib->add_css(
 				'.chosen-container .chosen-drop, .chosen-results li { z-index: 10000; color: #444 }
-.chosen-container-multi .chosen-choices li.search-field input[type="text"] { height: inherit; }'
+select { font-size: 13px; margin-right: 26px; padding: 0 0 0 8px; }
+select[multiple=multiple] { margin: 3px 0 3px 5px; padding: 3px 20px 3px 5px; }'
 			);
 		}
 		if ( $prefs['jquery_ui_selectmenu'] == 'y' ) {
 			$headerlib->add_jsfile('vendor/jquery/jquery-ui-selectmenu/ui/jquery.ui.selectmenu.js');
 			$headerlib->add_cssfile('vendor/jquery/jquery-ui-selectmenu/themes/base/jquery.ui.selectmenu.css');
-			// deprecated feature
+			// standard css for selectmenu seems way too big for tiki - to be added to layout.css when not so experimental
 			$headerlib->add_css(
 				'.ui-selectmenu-menu ul li a, .ui-selectmenu-status { white-space: nowrap; }
 				.ui-selectmenu { height: 1.8em; padding-right: 16px; }
@@ -626,7 +624,7 @@ if ($prefs['feature_sefurl'] != 'y') {
 	);
 }
 
-if ($prefs['feature_friends'] == 'y' || $prefs['monitor_enabled'] == 'y') {
+if ($prefs['feature_friends'] == 'y') {
 	$headerlib->add_jsfile('lib/jquery_tiki/social.js');
 }
 
@@ -710,14 +708,6 @@ if ($prefs['openpgp_gpg_pgpmimemail'] == 'y') {
 // ******************************************************************** //
 //////////////////////////////////////////////////////////////////////////
 
-if( $prefs['feature_hidden_links'] == 'y' ) {
-	$headerlib->add_js("$('body').find('h1, h2, h3, h4, h5, h6').each(function() {
-	var headerid = $(this).attr('id');
-		if(headerid != undefined) {
-			$(this).append('<a class=\"tiki_anchor\" href=\"#'+headerid+'\"></a>');
-		}
-	});");
-}
 
 $headerlib->lockMinifiedJs();
 

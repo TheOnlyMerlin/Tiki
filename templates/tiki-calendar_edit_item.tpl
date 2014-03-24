@@ -1,29 +1,29 @@
 {strip}
 	{title admpage="calendar"}{tr}Calendar event : {/tr}{$calitem.name}{/title}
 	
-	<div class="t_navbar btn-group form-group">
+	<div class="navbar">
 		{if $tiki_p_view_calendar eq 'y'}
-			{button href="tiki-calendar.php" class="btn btn-default" _text="{tr}View Calendars{/tr}"}
+			{button href="tiki-calendar.php" _text="{tr}View Calendars{/tr}"}
 		{/if}
 		{if $tiki_p_admin_calendar eq 'y'}
-			{button href="tiki-admin_calendars.php?calendarId=$calendarId" class="btn btn-default" _text="{tr}Edit Calendar{/tr}"}
+			{button href="tiki-admin_calendars.php?calendarId=$calendarId" _text="{tr}Edit Calendar{/tr}"}
 		{/if}
 		{if $tiki_p_add_events eq 'y' and $id}
-			{button href="tiki-calendar_edit_item.php" class="btn btn-default" _text="{tr}New event{/tr}"}
+			{button href="tiki-calendar_edit_item.php" _text="{tr}New event{/tr}"}
 		{/if}
 		{if $id}
 			{if $edit}
-				{button href="tiki-calendar_edit_item.php?viewcalitemId=$id" class="btn btn-default" _text="{tr}View event{/tr}"}
+				{button href="tiki-calendar_edit_item.php?viewcalitemId=$id" _text="{tr}View event{/tr}"}
 			{elseif $tiki_p_change_events eq 'y'}
-				{button href="tiki-calendar_edit_item.php?calitemId=$id" class="btn btn-default" _text="{tr}Edit/Delete event{/tr}"}
+				{button href="tiki-calendar_edit_item.php?calitemId=$id" _text="{tr}Edit/Delete event{/tr}"}
 			{/if}
 		{/if}
 		{if $tiki_p_admin_calendar eq 'y'}
-			{button href="tiki-admin_calendars.php" class="btn btn-default" _text="{tr}Admin Calendars{/tr}"}
+			{button href="tiki-admin_calendars.php" _text="{tr}Admin Calendars{/tr}"}
 		{/if}
 		{if $prefs.calendar_fullcalendar neq 'y' or not $edit}
 			{if $prefs.calendar_export_item == 'y' and $tiki_p_view_calendar eq 'y'}
-				{button href='tiki-calendar_export_ical.php? export=y&calendarItem='|cat:$id class="btn btn-default" _text='{tr}Export Event as iCal{/tr}'}
+				{button href='tiki-calendar_export_ical.php? export=y&calendarItem='|cat:$id _text='{tr}Export Event as iCal{/tr}'}
 			{/if}
 		{/if}
 	</div>
@@ -64,7 +64,7 @@
 					{if $edit}
 						{if $prefs.javascript_enabled eq 'n'}
 							{$calendar.name|escape}<br>{tr}or{/tr}&nbsp;
-							<input type="submit" class="btn btn-default btn-sm" name="changeCal" value="{tr}Go to{/tr}">
+							<input type="submit" class="btn btn-default" name="changeCal" value="{tr}Go to{/tr}">
 						{/if}
 						<select name="save[calendarId]" id="calid" onchange="javascript:needToConfirm=false;document.getElementById('editcalitem').submit();">
 							{foreach item=it key=itid from=$listcals}
@@ -1041,7 +1041,7 @@
 								<form action="tiki-calendar_edit_item.php" method="post">
 									<input type ="hidden" name="viewcalitemId" value="{$id}">
 									<input type="text" name="guests">{help desc="{tr}Format:{/tr} {tr}Participant names separated by comma{/tr}" url='calendar'}
-									<input type="submit" class="btn btn-default btn-sm" name="add_guest" value="Add guests">
+									<input type="submit" class="btn btn-default" name="add_guest" value="Add guests">
 								</form>
 							{/if}
 						{/if}
@@ -1094,16 +1094,16 @@
 				{/if}
 				<tr>
 					<td>
-						<input type="submit" class="btn btn-default btn-sm" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;">
+						<input type="submit" class="btn btn-default" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;">
 						&nbsp;
-						<input type="submit" class="btn btn-default btn-sm" name="act" value="{tr}Save{/tr}" onclick="needToConfirm=false;">
+						<input type="submit" class="btn btn-default" name="act" value="{tr}Save{/tr}" onclick="needToConfirm=false;">
 						{if $id}
 							&nbsp;
-							<input type="submit" class="btn btn-default btn-sm" onclick="needToConfirm=false;document.location='tiki-calendar_edit_item.php?calitemId={$id}&amp;delete=y';return false;" value="{tr}Delete event{/tr}">
+							<input type="submit" class="btn btn-default" onclick="needToConfirm=false;document.location='tiki-calendar_edit_item.php?calitemId={$id}&amp;delete=y';return false;" value="{tr}Delete event{/tr}">
 						{/if}
 						{if $recurrence.id}
 							&nbsp;
-							<input type="submit" class="btn btn-default btn-sm" onclick="needToConfirm=false;document.location='tiki-calendar_edit_item.php?recurrenceId={$recurrence.id}&amp;delete=y';return false;" value="{tr}Delete Recurrent events{/tr}">
+							<input type="submit" class="btn btn-default" onclick="needToConfirm=false;document.location='tiki-calendar_edit_item.php?recurrenceId={$recurrence.id}&amp;delete=y';return false;" value="{tr}Delete Recurrent events{/tr}">
 						{/if}
 						&nbsp;
 						{if $prefs.calendar_fullcalendar eq 'y'}
@@ -1113,7 +1113,7 @@
 						{/if}
 						&nbsp;
 						&nbsp;
-						<input type="submit" class="btn btn-default btn-sm" onclick="needToConfirm=false;document.location='{$referer|escape:'html'}';return false;" value="{tr}Cancel{/tr}">
+						<input type="submit" class="btn btn-default" onclick="needToConfirm=false;document.location='{$referer|escape:'html'}';return false;" value="{tr}Cancel{/tr}">
 					</td>
 				</tr>
 			</table>

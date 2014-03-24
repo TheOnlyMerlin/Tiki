@@ -4,14 +4,21 @@
 	Visit http://themes.tiki.org for more information.
 
 /* Import basic layout files: */
+@import url("lite/lite.css");
+@import url("layout/layout.css");
 @import url("layout/design.css");
 
 /***** XHTML Elements (body tag here, others follow Layout) *****/
 
 body {
-	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font: 70% Verdana, Geneva, Arial, Helvetica, sans-serif;
+	line-height: 1.4;
 	color: #848484;
 }
+
+/***** Layout (overrides layout.css;
+also styling of page layout divs) *****/
+
 
 #c1c2 {
 	text-align: left;
@@ -23,6 +30,13 @@ body {
 	background: #fbfbfb url(business/image1.jpg) repeat-x;
 }
 
+#c1c2 #wrapper #col1.marginleft {
+	margin-left: 280px;
+}
+
+#c1c2 #wrapper #col1.marginright {
+	margin-right: 280px;
+}
 
 #c1c2 #wrapper #col1 .content {
 	background: transparent;
@@ -32,9 +46,15 @@ body {
 	padding: 20px 30px;
 }
 
+#c1c2 #col2 {
+	width: 280px;
+	overflow: visible;
+}
 
 #col3 {
+	width: 280px;
 	margin-top: 8px;
+	margin-left: -280px;
 	margin-bottom: 0;
 	font-size: 1em;
 }
@@ -109,7 +129,8 @@ legend {
 button,
 input[type="reset"],
 input[type="submit"],
-.button input {
+.button input,
+.calbuttonBox a {
 	color: #fff;
 	background: url(business/nav.gif) repeat-x;
 	border: 1px solid;
@@ -121,7 +142,8 @@ input[type="submit"],
 button:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover,
-.button input:hover {
+.button input:hover,
+.calbuttonBox a:hover {
 	background: url(business/nav_h.gif) repeat-x;
 	border: 1px solid;
 	border-color: #1957aa #3676c4 #3676c4 #1957aa;
@@ -481,8 +503,8 @@ a.highlight,
 
 /***** Boxes *****/
 /** Modules **/
-.module {
-	margin-bottom: 25px; /* added for bootstrap compatibility */
+.box {
+	margin: 0 25px 25px 25px;
 	background: #3475c6 url(business/title_bg.png) no-repeat 100% 0;
 }
 
@@ -644,6 +666,7 @@ td.odd a, td.odd a:visited {
 	margin-right: 35px;
 }
 
+/* reset layout.css */
 .tabactive,
 .tabinactive,
 [class].tabactive,

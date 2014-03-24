@@ -45,7 +45,7 @@
 	<input type="hidden" name="actpass" value="{$smarty.request.actpass|escape}">
 {/if}
 <fieldset>{if $new_user_validation neq 'y'}<legend>{tr}Change your password{/tr}</legend>{/if}
-	<div class="alert alert-warning" id="divRegCapson" style="visibility:hidden">{icon _id=error style="vertical-align:middle"} {tr}CapsLock is on.{/tr}</div>
+	<div class="simplebox highlight" id="divRegCapson" style="visibility:hidden">{icon _id=error style="vertical-align:middle"} {tr}CapsLock is on.{/tr}</div>
 <table class="formcolor">
 <tr>
   <td><label for="user">{tr}Username:{/tr}</label></td>
@@ -90,7 +90,7 @@
 {/if}
 <tr>
   <td>&nbsp;</td>
-  <td><input type="submit" class="btn btn-default btn-sm" name="change" value="{tr}Change{/tr}" onclick="return match_pass();"><span id="validate"></span></td>
+  <td><input type="submit" class="btn btn-default" name="change" value="{tr}Change{/tr}" onclick="return match_pass();"><span id="validate"></span></td>
 </tr>
 </table>
 </fieldset>

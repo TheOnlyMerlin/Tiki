@@ -1,10 +1,3 @@
-{extends 'layout_view.tpl'}
-
-{block name="title"}
-	{title}{$title|escape}{/title}
-{/block}
-
-{block name="content"}
 <form class="simple" method="post" action="{service controller=tracker action=add_field}">
 	<label>
 		{tr}Name:{/tr}
@@ -58,15 +51,14 @@
 	<label>
 		<input type="checkbox" name="adminOnly" value="1">
 		{tr}Restrict visibility to administrators{/tr}
-		<div class="description help-block">
+		<div class="description">
 			{tr}Useful if you are working on a live tracker.{/tr}
 		</div>
 	</label>
 	<div>
-		<input type="submit" class="btn btn-default btn-sm" name="submit" value="{tr}Add Field{/tr}">
-		<input type="submit" class="btn btn-default btn-sm" name="submit_and_edit" value="{tr}Add Field &amp; Edit Advanced Options{/tr}">
+		<input type="submit" class="btn btn-default" name="submit" value="{tr}Add Field{/tr}">
+		<input type="submit" class="btn btn-default" name="submit_and_edit" value="{tr}Add Field &amp; Edit Advanced Options{/tr}">
 		<input type="hidden" name="trackerId" value="{$trackerId|escape}">
 		<input type="hidden" name="next" value="close">
 	</div>
 </form>
-{/block}

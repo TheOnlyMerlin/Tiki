@@ -1,18 +1,17 @@
 {* $Id$ *}
 <form action="tiki-admin.php?page=payment" method="post">
-	<div class="t_navbar form-group">
-		{button href="tiki-payment.php" class="btn btn-default" _text="{tr}Payments{/tr}"}
-		<input type="submit" class="btn btn-default btn-sm" name="paymentprefs" value="{tr}Change settings{/tr}" style="float:right;" />
+	<div class="navbar">
+		{button href="tiki-payment.php" _text="{tr}Payments{/tr}"}
+		<input type="submit" class="btn btn-default" name="paymentprefs" value="{tr}Change settings{/tr}" style="float:right;" />
 	</div>
 	{if $prefs.payment_feature neq "y"}
-		<fieldset class="table">
+		<fieldset class="admin">
 			<legend>{tr}Activate the feature{/tr}</legend>
 			{preference name=payment_feature visible="always"}
 		</fieldset>
 	{/if}
 	{tabset}
 		{tab name="{tr}Payment{/tr}"}
-            <h2>{tr}Payment{/tr}</h2>
 			{remarksbox title="{tr}Choose payment system{/tr}"}
 				{tr}You can use only one payment method: PayPal or Cclite or Tiki User Credits{/tr}<br>
 				{tr}PayPal is working at the moment. See PayPal.com{/tr}<br>
@@ -21,7 +20,7 @@
 			{/remarksbox}
 
 			<div class="adminoptionboxchild" id="payment_feature_childcontainer">
-				<fieldset class="table">
+				<fieldset class="admin">
 					{preference name=payment_system}
 					{preference name=payment_currency}
 					{preference name=payment_default_delay}
@@ -33,20 +32,12 @@
 					<h2 style="padding-left:25px">{tr}PayPal{/tr}</h2>
 					<div class="admin payment">
 						{preference name=payment_paypal_business}
-                        {preference name=payment_paypal_password}
-                        {preference name=payment_paypal_signature}
 
 						<div class="adminoptionboxchild">
 							{preference name=payment_paypal_environment}
 							{preference name=payment_paypal_ipn}
 						</div>
 						{preference name=payment_invoice_prefix}
-					</div>
-					<h2 style="padding-left:25px">{tr}Israel Post Payment Module{/tr}</h2>
-					<div class="admin payment">
-						{preference name=payment_israelpost_environment}
-						{preference name=payment_israelpost_business_id}
-						{preference name=payment_israelpost_api_password}
 					</div>
 					<h2 style="padding-left:25px">{tr}Cclite{/tr}</h2>
 					<div class="admin payment">
@@ -79,7 +70,6 @@
 			</div>
 		{/tab}
 		{tab name="{tr}Advanced Shopping Cart{/tr}"}
-            <h2>{tr}Advanced Shopping Cart{/tr}</h2>
 			<fieldset>
 				<legend>{tr}Advanced Cart Tracker Names Setup{/tr}</legend>
 				{preference name=payment_cart_product_tracker_name}
@@ -143,9 +133,8 @@
 		{/tab}
 
 		{tab name="{tr}Plugins{/tr}"}
-            <h2>{tr}Plugins{/tr}</h2>
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Plugins{/tr}</legend>
 				{preference name=wikiplugin_addtocart}
 				{preference name=wikiplugin_adjustinventory}
@@ -160,7 +149,6 @@
 		{/tab}
 
 		{tab name="{tr}Shipping{/tr}"}
-            <h2>{tr}Shipping{/tr}</h2>
 			{preference name=shipping_service}
 
 			{preference name=shipping_fedex_enable}
@@ -181,6 +169,6 @@
 		{/tab}
 	{/tabset}
 	<div class="heading input_submit_container" style="text-align: center">
-		<input type="submit" class="btn btn-default btn-sm" name="paymentprefs" value="{tr}Change settings{/tr}" />
+		<input type="submit" class="btn btn-default" name="paymentprefs" value="{tr}Change settings{/tr}" />
 	</div>
 </form>

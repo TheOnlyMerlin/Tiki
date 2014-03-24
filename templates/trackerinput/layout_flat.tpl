@@ -7,7 +7,7 @@
 	</label>
 	<div id="trackerinput_{$field.fieldId|escape}">
 		{trackerinput field=$field}
-		<div class="description help-block">
+		<div class="description">
 			{$field.description|escape}
 		</div>
 	</div>

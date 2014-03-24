@@ -569,9 +569,9 @@ function wikiplugin_tracker($data, $params)
 					$wiki = $prefs["user_register_prettytracker_tpl"];
 				}
 				if (!empty($wiki)) {
-					$outf = $trklib->get_pretty_fieldIds($wiki, 'wiki', $outputPretty, $trackerId);
+					$outf = $trklib->get_pretty_fieldIds($wiki, 'wiki', $outputPretty);
 				} elseif (!empty($tpl)) {
-					$outf = $trklib->get_pretty_fieldIds($tpl, 'tpl', $outputPretty, $trackerId);
+					$outf = $trklib->get_pretty_fieldIds($tpl, 'tpl', $outputPretty);
 				} elseif (!empty($fields)) {
 					$outf = $fields;
 				}
@@ -1096,7 +1096,7 @@ function wikiplugin_tracker($data, $params)
 						}
 					}
 					if (!$ok) {
-						$back .= '<div class="alert alert-warning">' . tra('Incorrect fieldId:').' '.$l . '</div>';
+						$back .= '<div class="error">' . tra('Incorrect fieldId:').' '.$l . '</div>';
 					}
 				}
 			} elseif (empty($fields) && empty($wiki) && empty($tpl)) {
@@ -1117,7 +1117,7 @@ function wikiplugin_tracker($data, $params)
 						}
 					}
 					if (!$ok) {
-						$back .= '<div class="alert alert-warning">' . tra('Incorrect fieldId:').' '.$l . '</div>';
+						$back .= '<div class="error">' . tra('Incorrect fieldId:').' '.$l . '</div>';
 					}
 				}
 			}
@@ -1161,7 +1161,7 @@ function wikiplugin_tracker($data, $params)
 				$_REQUEST['error'] = 'y';
 			}
 			if (isset($field_errors['err_outputwiki'])) {
-				$back.= '<div class="alert alert-warning"><img src="img/icons/exclamation.png" alt=" '.tra('Error').'" style="vertical-align:middle" /> ';
+				$back.= '<div class="simplebox highlight"><img src="img/icons/exclamation.png" alt=" '.tra('Error').'" style="vertical-align:middle" /> ';
 				$back .= $field_errors['err_outputwiki'];
 				$back.= '</div><br />';
 				$_REQUEST['error'] = 'y';
@@ -1371,18 +1371,17 @@ function wikiplugin_tracker($data, $params)
 					}
 					if (!empty($tpl) || !empty($wiki)) {
 						if (!empty($outputPretty) && in_array($f['fieldId'], $outputPretty)) {
-							$prettyout = '<span class="outputPretty" id="track_'.$f['fieldId'].'" name="track_'.$f['fieldId'].'">'. wikiplugin_tracker_render_value($f, $item) . '</span>';
-							$smarty->assign('f_'.$f['fieldId'], $prettyout);
-							$smarty->assign('f_'.$f['permName'], $prettyout);
+							$smarty->assign('f_'.$f['fieldId'], '<span class="outputPretty" id="track_'.$f['fieldId'].'" name="track_'.$f['fieldId'].'">'. wikiplugin_tracker_render_value($f, $item) . '</span>');
 						} else {
 							$mand =  ($showmandatory == 'y' and $f['isMandatory'] == 'y')? "&nbsp;<strong class='mandatory_star'>*</strong>&nbsp;":'';
-							$prettyout = wikiplugin_tracker_render_input($f, $item, $dynamicSave) .
+							$smarty->assign(
+								'f_'.$f['fieldId'],
+								wikiplugin_tracker_render_input($f, $item, $dynamicSave) .
 								$mand .
 								'<div class="trackerplugindesc">' .
 								($f['descriptionIsParsed'] == 'y' ? $tikilib->parse_data($f['description']) : tra($f['description'])) .
-								'</div>';
-							$smarty->assign('f_'.$f['fieldId'], $prettyout);
-							$smarty->assign('f_'.$f['permName'], $prettyout);
+								'</div>'
+							);
 						}
 					} else {
 						$back.= '<tr><td class="tracker_input_label"';
@@ -1486,7 +1485,7 @@ FILL;
 				if ($tikilib->page_exists($wiki)) {
 					$back .= $smarty->fetch('wiki:'.$wiki);
 				} else {
-					$back .= '<span class="alert-warning">' . tr('Missing wiki template page "%0"', htmlspecialchars($wiki)) . '</span>';
+					$back .= '<span class="error">' . tr('Missing wiki template page "%0"', htmlspecialchars($wiki)) . '</span>';
 				}
 			}
 			include_once('lib/smarty_tiki/function.trackerheader.php');
@@ -1518,10 +1517,10 @@ FILL;
 					$back .= '<input class="button submit preview" type="reset" name="tr_reset" value="'.tra($reset).'" />';
 				}
 				if (!empty($preview)) {
-					$back .= '<input class="btn btn-default button submit preview" type="submit" name="tr_preview" value="'.tra($preview).'" />';
+					$back .= '<input class="button submit preview" type="submit" name="tr_preview" value="'.tra($preview).'" />';
 				}
 				foreach ($action as $key=>$act) {
-					$back .= '<input class="btn btn-default button submit" type="submit" name="action'.$key.'" value="'.tra($act).'" onclick="needToConfirm=false" />';
+					$back .= '<input class="button submit" type="submit" name="action'.$key.'" value="'.tra($act).'" onclick="needToConfirm=false" />';
 				}
 				$back .= '</div>';
 			}

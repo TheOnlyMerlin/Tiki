@@ -86,8 +86,8 @@ class Tiki_Security_Policy extends Smarty_Security
 		$functions = (isset($functions) ? $functions : array());
 		$modifiers = (isset($modifiers) ? $modifiers : array());
 
-		$this->php_modifiers = array_merge(array( 'nl2br','escape', 'count', 'addslashes', 'ucfirst', 'ucwords', 'urlencode', 'md5', 'implode', 'explode', 'is_array', 'htmlentities', 'var_dump', 'strip_tags', 'json_encode', 'stristr', 'trim'), $modifiers);
-		$this->php_functions = array_merge(array('isset', 'empty', 'count', 'sizeof', 'in_array', 'is_array', 'time', 'nl2br', 'tra', 'strlen', 'strstr', 'strtolower', 'basename', 'ereg', 'array_key_exists', 'preg_match', 'json_encode', 'stristr', 'is_numeric', 'array', 'zone_is_empty', 'min', 'max' ), $functions);
+		$this->php_modifiers = array_merge(array( 'nl2br','escape', 'count', 'addslashes', 'ucfirst', 'ucwords', 'urlencode', 'md5', 'implode', 'explode', 'is_array', 'htmlentities', 'var_dump', 'strip_tags', 'json_encode', 'stristr'), $modifiers);
+		$this->php_functions = array_merge(array('isset', 'empty', 'count', 'sizeof', 'in_array', 'is_array', 'time', 'nl2br', 'tra', 'strlen', 'strstr', 'strtolower', 'basename', 'ereg', 'array_key_exists', 'preg_match', 'json_encode', 'stristr', 'is_numeric', 'array', 'zone_is_empty' ), $functions);
 		$this->secure_dir = array_merge($this->secure_dir, $dirs);
 	}
 }
@@ -134,6 +134,12 @@ class Smarty_Tiki extends Smarty
 		$this->compile_check = ( $prefs['smarty_compilation'] != 'never' );
 		$this->force_compile = ( $prefs['smarty_compilation'] == 'always' );
 		$this->assign('app_name', 'Tiki');
+		$this->setPluginsDir(
+			array(	// the directory order must be like this to overload a plugin
+				TIKI_SMARTY_DIR,
+				SMARTY_DIR.'plugins'
+			)
+		);
 
 		if ( ! isset($prefs['smarty_security']) || $prefs['smarty_security'] == 'y' ) {
 			$this->enableSecurity('Tiki_Security_Policy');
@@ -147,6 +153,7 @@ class Smarty_Tiki extends Smarty
 		} else {
 			$this->error_reporting = E_ALL ^ E_NOTICE;
 		}
+		$this->setCompileDir(realpath("templates_c"));
 		if (!empty($prefs['smarty_cache_perms'])) {
 			$this->_file_perms = (int) $prefs['smarty_cache_perms'];
 		}
@@ -200,7 +207,6 @@ class Smarty_Tiki extends Smarty
 	{
 		global $prefs, $style_base, $tikidomain, $inclusion;
 		$this->muteExpectedErrors();
-		$this->refreshLanguage();
 
 		if ( ($tpl = $this->getTemplateVars('mid')) && ( $_smarty_tpl_file == 'tiki.tpl' || $_smarty_tpl_file == 'tiki-print.tpl' || $_smarty_tpl_file == 'tiki_full.tpl' ) ) {
 
@@ -337,6 +343,7 @@ class Smarty_Tiki extends Smarty
 
 		global $prefs;
 		$this->muteExpectedErrors();
+		$this->refreshLanguage();
 		if ( !empty($prefs['feature_htmlpurifier_output']) and $prefs['feature_htmlpurifier_output'] == 'y' ) {
 			static $loaded = false;
 			static $purifier = null;
@@ -357,15 +364,6 @@ class Smarty_Tiki extends Smarty
 		if ( $content_type != '' && ! headers_sent() ) {
 			header('Content-Type: '.$content_type);
 		}
-
-		if (function_exists('current_object') && $obj = current_object()) {
-			$attributes = TikiLib::lib('attribute')->get_attributes($obj['type'], $obj['object']);
-			if (isset($attributes['tiki.object.layout'])) {
-				$prefs['site_layout'] = $attributes['tiki.object.layout'];
-			}
-		}
-
-		$this->refreshLanguage();
 		if ( !empty($prefs['feature_htmlpurifier_output']) and $prefs['feature_htmlpurifier_output'] == 'y' ) {
 			return $purifier->purify(parent::display($resource_name, $cache_id, $compile_id));
 		} else {
@@ -454,18 +452,7 @@ class Smarty_Tiki extends Smarty
 			$prefs['site_layout'] = 'classic';
 		}
 
-		if (! $this->main_template_dir) {
-			// First run only
-			$this->main_template_dir = TIKI_PATH . '/templates/';
-			$this->setCompileDir(TIKI_PATH . "/templates_c");
-			$this->setPluginsDir(
-				array(	// the directory order must be like this to overload a plugin
-					TIKI_PATH . '/' . TIKI_SMARTY_DIR,
-					SMARTY_DIR.'plugins'
-				)
-			);
-		}
-
+		$this->main_template_dir = realpath('templates/');
 		$this->setTemplateDir(null);
 		if ( !empty($tikidomain) && $tikidomain !== '/' ) {
 			$this->addTemplateDir($this->main_template_dir.'/'.$tikidomain.'/styles/'.$style_base.'/');

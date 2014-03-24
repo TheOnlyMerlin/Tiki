@@ -6,13 +6,15 @@
 */
 
 /* Import the default layout files: */
+@import url("lite/lite.css");
+@import url("layout/layout.css");
 @import url("layout/design.css");
 
 /***** XHTML Elements (body tag here,
 			others follow Layout) *****/
 body {
 	background: #0f1644 url(twist/background.gif);
-	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font: 76% Verdana, Geneva, Arial, Helvetica, sans-serif;
 	line-height: 1.6;
 	color: black;
 }
@@ -30,11 +32,20 @@ body.cke_show_borders {
 	color: #000;	
 }
 
+#main[id] {
+	margin-top: 0;
+}
+
 .middle_outer {
 	background: #fff;
 }
 
+*:first-child+html #c1c2 {
+	margin-left: 0;
+	padding-left: 0}
+
 #c1c2 {
+	text-align: left;
 	background: #fff;
 }
 
@@ -42,18 +53,36 @@ body.cke_show_borders {
 	border-top: 1px solid #ccc;
 }
 	
+#c1c2 #wrapper #col1.marginleft  {
+	margin-left: 190px;
+}
+
+#c1c2 #wrapper #col1.marginright {
+	margin-right: 150px;
+}
+
+#c1c2 #wrapper #col1 .content {
+	background: transparent}
+
 #c1c2 #wrapper #col1 #tiki-center {
 	padding: 0 40px}
+
+* html #tiki-center {font-size: 1em}
 	
 #c1c2 #col2 {
 	background: #fff;
 	border-bottom: 1px solid #ccc;
 	padding-top: 20px;
+	vertical-align: top;
+	width: 190px;
 }
 
 #col3 {
 	background: #efefef;
 	padding-top: 20px;
+	vertical-align: top;
+	width: 150px;
+	margin-left: -150px;
 }
 
 #footer {
@@ -116,7 +145,7 @@ p {
 
 fieldset {
 	border: solid 1px #a9a9a9;
-}
+	padding: 10px}
 
 input,
 textarea,

@@ -7,14 +7,19 @@
 */
 
 /* Import default layout properties: */
+@import url("lite/lite.css");
+@import url("layout/layout.css");
 @import url("layout/design.css");
 
 /***** XHTML Elements (body tag here,
 			others follow Layout) *****/
 body {
 	background: #90140C url(darkshine/stripes.png) repeat-x 50% 0;
-	font-family: arial, verdana, helvetica, sans-serif;
+	font: normal 76% arial, verdana, helvetica, sans-serif;
+	line-height: 1.5;
 }
+
+html>body {font-size: 72% !important}
 
 body.fullscreen {
 	background: #90140C url(darkshine/stripes.png) repeat-x;
@@ -42,6 +47,11 @@ body.fixed_width .fixedwidth .fixedwidth {
 	width: 880px;
 }
 
+ /***** Layout (overrides layout.css;
+		also styling of page layout divs)  *****/
+
+
+
 .fixed_width #main,
 #fixedwidth {
     margin-top: 0;
@@ -56,6 +66,26 @@ body.fixed_width .fixedwidth .fixedwidth {
 #middle {
 	background: #F3F3F3;
 	text-align: left;
+}
+
+#c1c2 #wrapper #col1.marginleft {margin-left: 200px}
+#c1c2 #wrapper #col1.marginright {margin-right: 200px}
+
+#c1c2 #col2 {
+	width: 200px;
+}
+
+#col2 .content {
+	margin: 0 10px 0 20px
+}
+
+#col3 {
+	margin-left: -200px;
+	width: 200px;
+}
+
+#col3 .content {
+	margin: 0 20px 0 10px
 }
 
 .footerbgtrap {
@@ -127,7 +157,8 @@ input[type=radio] {border: 0}
 button,
 input[type="reset"],
 input[type="submit"],
-.button input  {
+.button input,
+.calbuttonBox a  {
 	background:#FD9339 url(darkshine/hover_list.jpg) repeat-x scroll 0 0;
 	color: #fff;
 	border: 1px solid #783C1C;
@@ -138,7 +169,8 @@ input[type="submit"],
 button:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover,
-.button input:hover {
+.button input:hover,
+.calbuttonBox:hover {
 	background: #FD9339 url(darkshine/hover_list.jpg) repeat-x scroll 0 100%;
 	font-size: 94%;
 	font-weight: bold;
@@ -629,6 +661,7 @@ table.normal tr:nth-child(2n) {
 
 /** Tabs **/
 
+/* reset what's in layout.css */
 .tabactive,
 .tabinactive,
 [class].tabactive,

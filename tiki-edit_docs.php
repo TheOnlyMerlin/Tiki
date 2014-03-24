@@ -150,14 +150,14 @@ $headerlib->add_jq_onready(
 	});
 
 	runtime.writeFile = function(path, data) {
-		$.tikiModal($savingText);
+		$.modal($savingText);
 		var base64 = new core.Base64();
 		data = base64.convertUTF8ArrayToBase64(data);
 		$.post('tiki-edit_docs.php', {
 			fileId: $('#fileId').val(),
 			data: data
 		}, function(id) {
-				$.tikiModal();
+				$.modal();
 				$('#fileId').val(id);
 		});
 	};

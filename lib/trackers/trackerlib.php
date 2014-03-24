@@ -1583,17 +1583,13 @@ class TrackerLib extends TikiLib
 			}
 		}
 
-		// get permnames
-		$permNames = array();
-		foreach ($fil as $fieldId => $value) {
-			$field = $tracker_definition->getField($fieldId);
-			$permNames[$fieldId] = $field['permName'];
-		}
-
 		if (count($final)) {
 			$data = array();
 			foreach ($fil as $fieldId => $value) {
-				$data[$permNames[$fieldId]] = $value;
+				$field = $tracker_definition->getField($fieldId);
+				$permName = $field['permName'];
+
+				$data[$permName] = $value;
 			}
 
 			foreach ($final as $job) {
@@ -1601,15 +1597,6 @@ class TrackerLib extends TikiLib
 				$data[$job['field']['permName']] = $value;
 				$this->modify_field($currentItemId, $job['field']['fieldId'], $value);
 			}
-		}
-
-		$values_by_permname = array();
-		$old_values_by_permname = array();
-		foreach ($values as $fieldId => $value) {
-			$values_by_permname[$permNames[$fieldId]] = $value;
-		}
-		foreach ($old_values as $fieldId => $value) {
-			$old_values_by_permname[$permNames[$fieldId]] = $value;
 		}
 
 		TikiLib::events()->trigger(
@@ -1622,8 +1609,6 @@ class TrackerLib extends TikiLib
 				'trackerId' => $trackerId,
 				'values' => $fil,
 				'old_values' => $old_values,
-				'values_by_permname' => $values_by_permname,
-				'old_values_by_permname' => $old_values_by_permname,
 				'bulk_import' => $bulk_import,
 				'aggregate' => sha1("trackeritem/$currentItemId"),
 			)
@@ -3601,7 +3586,7 @@ class TrackerLib extends TikiLib
 	/* get the fields from the pretty tracker template
 	 * return a list of fieldIds
 	 */
-	public function get_pretty_fieldIds($resource, $type='wiki', &$outputPretty, $trackerId = 0)
+	public function get_pretty_fieldIds($resource, $type='wiki', &$outputPretty)
 	{
 		$tikilib = TikiLib::lib('tiki');
 		$smarty = TikiLib::lib('smarty');
@@ -3618,25 +3603,13 @@ class TrackerLib extends TikiLib
 			$f = file_get_contents($resource_name);
 		}
 		if (!empty($f)) {
-			preg_match_all('/\$f_(\w+)(\|output)?/', $f, $matches);
-			$ret = array();
-			foreach ($matches[1] as $i => $val) {
-				if (ctype_digit($val)) {
-					$ret[] = $val;
-				} elseif ($fieldId = $this->table('tiki_tracker_fields')->fetchOne('fieldId', array('permName' => $val, 'trackerId' => $trackerId))) {
-					$ret[] = $fieldId;
-				}
-			}
+			preg_match_all('/\$f_([0-9]+)(\|output)?/', $f, $matches);
 			foreach ($matches[2] as $i => $val) {
 				if (!empty($val)) {
-					if (ctype_digit($val)) {
-						$outputPretty[] = $matches[1][$i];
-					} elseif ($fieldId = $this->table('tiki_tracker_fields')->fetchOne('fieldId', array('permName' => $matches[1][$i], 'trackerId' => $trackerId))) {
-						$outputPretty[] = $fieldId;
-					}
+					$outputPretty[] = $matches[1][$i];
 				}
 			}
-			return $ret;
+			return $matches[1];
 		}
 		return array();
 	}
@@ -3654,7 +3627,7 @@ class TrackerLib extends TikiLib
 			}
 		} else {
 			// array syntax for callback function needed for some versions of PHP (5.2.0?) - thanks to mariush on http://php.net/preg_replace_callback
-			$value = preg_replace_callback('/\{\$(f_\w+)\}/', array( &$this, '_pretty_tracker_replace_value'), $value);
+			$value = preg_replace_callback('/\{\$(f_\d+)\}/', array( &$this, '_pretty_tracker_replace_value'), $value);
 		}
 	}
 
@@ -4782,8 +4755,6 @@ class TrackerLib extends TikiLib
 			}
 
 			TikiLib::lib('smarty')->assign("f_$fieldId", $r);
-			$fieldPermName = $field['permName'];
-			TikiLib::lib('smarty')->assign("f_$fieldPermName", $r);
 			return $r;
 		}
 	}

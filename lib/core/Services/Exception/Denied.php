@@ -15,12 +15,5 @@ class Services_Exception_Denied extends Services_Exception
 
 		parent::__construct($message, 403);
 	}
-
-	public static function checkAuth()
-	{
-		if (empty($GLOBALS['user'])) {
-			throw new self(tr('Authentication required'));
-		}
-	}
 }
 
