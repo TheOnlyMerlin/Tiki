@@ -15,13 +15,6 @@ class Search_Expr_And implements Search_Expr_Interface
 		$this->parts = $parts;
 	}
 
-	function __clone()
-	{
-		$this->parts = array_map(function ($part) {
-			return clone $part;
-		}, $this->parts);
-	}
-
 	function addPart(Search_Expr_Interface $part)
 	{
 		$this->parts[] = $part;

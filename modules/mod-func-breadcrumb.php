@@ -43,15 +43,14 @@ function module_breadcrumb_info()
  */
 function module_breadcrumb($mod_reference, $module_params)
 {
-	global $prefs;
-	$smarty = TikiLib::lib('smarty');
-	$categlib = TikiLib::lib('categ');
+	global $smarty, $prefs;
+	global $categlib; include_once ('lib/categories/categlib.php');
 	if (!isset($_SESSION["breadCrumb"])) {
 		$_SESSION["breadCrumb"] = array();
 	}
 
 	if ($jail = $categlib->get_jail()) {
-		$objectlib = TikiLib::lib('object');
+		global $objectlib; include_once ('lib/objectlib.php');//
 		$objectIds=$objectlib->get_object_ids("wiki page", $_SESSION["breadCrumb"]);
 
 		$breadIds=array();

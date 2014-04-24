@@ -228,7 +228,6 @@ class EditLib_ParseToWysiwyg_LinkTest extends TikiTestCase
 	function testWebResource()
 	{
 
-        $this->markTestSkipped("As of 2013-10-02, this test is broken, and nobody knows how to fix it. Mark as Skipped for now.");
 
 		/*
 		 * Web Page:
@@ -330,8 +329,6 @@ class EditLib_ParseToWysiwyg_LinkTest extends TikiTestCase
 	{
 
 		global $tikilib;
-
-        $this->markTestSkipped("As of 2013-10-02, this test is broken, and nobody knows how to fix it. Mark as Skipped for now.");
 
 		$homePage = 'HomePage';
 		$noPage = 'Page does not exist not exist';

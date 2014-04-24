@@ -114,7 +114,7 @@ if (empty($current)) {
 }
 $smarty->assign('not_default', false);
 if ($section == 'global') {
-	$cachelib = TikiLib::lib('cache');
+	global $cachelib;
 	if ( $defprefs = $cachelib->getSerialized("tiki_default_preferences_cache") ) {
 		if ($defprefs['toolbar_global' . ($comments ? '_comments' : '')] != $current) {
 			$smarty->assign('not_default', true);

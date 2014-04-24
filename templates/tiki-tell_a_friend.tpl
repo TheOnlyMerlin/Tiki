@@ -8,12 +8,12 @@
 	{/if}
 {/title}
 
-<div class="t_navbar">
-	{button href="$url" class="btn btn-default" _text="{tr}Back{/tr}"}
+<div class="navbar">
+	{button href="$url" _text="{tr}Back{/tr}"}
 </div>
 
 {if isset($sent)}
-	<div class="alert alert-warning">{icon _id=accept alt="{tr}OK{/tr}" style="vertical-align:middle" align="left"}
+	<div class="simplebox highlight">{icon _id=accept alt="{tr}OK{/tr}" style="vertical-align:middle" align="left"} 
 		{if $report eq 'y'}
 			{tr}Your email was sent{/tr}.
 		{else}
@@ -24,7 +24,7 @@
 {/if}
 
 {if !empty($errors)}
-	<div class="alert alert-warning">
+	<div class="simplebox highlight">
 		{icon _id=exclamation alt="{tr}Error{/tr}" style="vertical-align:middle" align="left"} 
 		{foreach from=$errors item=m name=errors}
 			{$m}
@@ -71,7 +71,7 @@
 		<tr>
 			<td></td>
 			<td>
-				<input type="submit" class="btn btn-default btn-sm" name="send" value="{tr}Send{/tr}">
+				<input type="submit" class="btn btn-default" name="send" value="{tr}Send{/tr}">
 				{if $prefs.auth_token_tellafriend eq 'y'}
 					<input type="checkbox" name="share_access" value="1" id="share_access">
 					<label for="share_access">{tr}Share access rights{/tr}</label>

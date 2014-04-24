@@ -14,7 +14,7 @@ if ($prefs['feature_xmlrpc'] != 'y' || $prefs['wiki_feature_3d'] != 'y') {
 }
 
 require_once("XML/Server.php");
-$wikilib = TikiLib::lib('wiki');
+include_once('lib/wiki/wikilib.php');
 
 $map = array ("getSubGraph" => array( "function" => "getSubGraph" ) );
 $server = new XML_RPC_Server($map);
@@ -25,8 +25,7 @@ $server = new XML_RPC_Server($map);
  */
 function getSubGraph($params)
 {
-    global $base_url, $prefs;
-	$wikilib = TikiLib::lib('wiki');
+    global $wikilib, $dbTiki, $base_url, $prefs;
 
     $nodeName = $params->getParam(0); $nodeName = $nodeName->scalarVal();
     $depth = $params->getParam(1); $depth = $depth->scalarVal();

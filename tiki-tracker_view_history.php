@@ -13,7 +13,7 @@ require_once ('tiki-setup.php');
 
 $access->check_feature('feature_trackers');
 
-$trklib = TikiLib::lib('trk');
+global $trklib; include_once ('lib/trackers/trackerlib.php');
 
 $auto_query_args = array('offset', 'itemId', 'fieldId', 'filter');
 

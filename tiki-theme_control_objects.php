@@ -10,8 +10,8 @@
 
 require_once ('tiki-setup.php');
 include_once ('lib/themecontrol/tcontrol.php');
-$categlib = TikiLib::lib('categ');
-$filegallib = TikiLib::lib('filegal');
+include_once ('lib/categories/categlib.php');
+include_once ('lib/filegals/filegallib.php');
 include_once ('lib/htmlpages/htmlpageslib.php');
 /**
  * @param $arr

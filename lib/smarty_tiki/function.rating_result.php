@@ -7,8 +7,8 @@
 
 function smarty_function_rating_result( $params, $smarty )
 {
-	global $prefs;
-	$ratinglib = TikiLib::lib('rating');
+	global $prefs, $ratinglib;
+	require_once 'lib/rating/ratinglib.php';
 	$votings = $ratinglib->votings($params['id'], $params['type']);
 	$smiles = $ratinglib->get_options_smiles($params['type'], $params['id'], true);
 	$tableBody = "";

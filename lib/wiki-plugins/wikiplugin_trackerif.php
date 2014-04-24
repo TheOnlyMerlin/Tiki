@@ -6,6 +6,7 @@
 // $Id$
 
 require_once('lib/ldap/filter.php');
+require_once('lib/trackers/trackerlib.php');
 
 function wikiplugin_trackerif_info()
 {
@@ -34,7 +35,7 @@ function wikiplugin_trackerif_info()
 
 function wikiplugin_trackerif ($data, $params)
 {
-	$trklib = TikiLib::lib('trk');
+	global $trklib;
 	$test = null;
 	$values = array();
 	$dataelse = '';

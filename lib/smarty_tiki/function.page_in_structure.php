@@ -22,7 +22,8 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 
 function smarty_function_page_in_structure($params, $smarty)
 {					
-	$structlib = TikiLib::lib('struct');
+	global $structlib;
+	include_once ('lib/structures/structlib.php');
 	extract($params, EXTR_SKIP);
 	
 	if ( !isset($pagechecked) ) {

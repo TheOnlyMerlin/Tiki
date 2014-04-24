@@ -77,7 +77,7 @@ class TikiImporter_Blog extends TikiImporter
 	 *
 	 * @return null
 	 */
-	function import($filePath = null)
+	function import()
 	{
 		$this->setupTiki();
 
@@ -118,7 +118,7 @@ class TikiImporter_Blog extends TikiImporter
 	 *
 	 * @return array $countData stats about the content that has been imported
 	 */
-	function insertData($parsedData = null)
+	function insertData()
 	{
 		$countData = array();
 
@@ -308,7 +308,7 @@ class TikiImporter_Blog extends TikiImporter
 	 */
 	function createCategories($categories)
 	{
-		$categlib = TikiLib::lib('categ');
+		global $categlib; require_once('lib/categories/categlib.php');
 
 		foreach ($categories as $categ) {
 			if (!empty($categ['parent'])) {
@@ -331,7 +331,7 @@ class TikiImporter_Blog extends TikiImporter
 	 */
 	function linkObjectWithCategories($objId, $type, $categories)
 	{
-		$categlib = TikiLib::lib('categ');
+		global $categlib; require_once('lib/categories/categlib.php');
 
 		foreach ($categories as $categName) {
 			$categId = $categlib->get_category_id($categName);
@@ -354,7 +354,7 @@ class TikiImporter_Blog extends TikiImporter
 	 */
 	function insertPage($page)
 	{
-		$objectlib = TikiLib::lib('object');
+		global $objectlib; require_once('lib/objectlib.php');
 
 		$this->instantiateImporterWiki();
 		$pageName = $this->importerWiki->insertPage($page);
@@ -376,7 +376,7 @@ class TikiImporter_Blog extends TikiImporter
 	function insertPost($post)
 	{
 		global $bloglib;
-		$objectlib = TikiLib::lib('object');
+		global $objectlib; require_once('lib/objectlib.php');
 
 		$post = array_merge(array('content' => '', 'excerpt' => '', 'author' => '', 'name' => '', 'created' => 0), $post);	// set defaults
 

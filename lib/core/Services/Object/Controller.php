@@ -34,7 +34,6 @@ class Services_Object_Controller
 			'object' => $input->object->none(),
 			'content' => $this->{'infobox_' . $type}($input),
 			'plain' => $input->plain->int(),
-			'format' => $input->format->word(),
 		);
 	}
 
@@ -85,7 +84,6 @@ class Services_Object_Controller
 
 		$smarty = TikiLib::lib('smarty');
 		$smarty->assign('activity', $itemId);
-		$smarty->assign('format', $input->format->word());
 		return $smarty->fetch('object/infobox/activity.tpl');
 	}
 

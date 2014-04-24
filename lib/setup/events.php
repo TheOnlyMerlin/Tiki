@@ -5,12 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-
 tiki_setup_events();
-
-register_shutdown_function(function () {
-	TikiLib::events()->trigger('tiki.process.shutdown', []);
-});
 
 function tiki_setup_events()
 {
@@ -104,10 +99,6 @@ function tiki_setup_events()
 		if ($prefs['tracker_refresh_itemlink_detail'] == 'y') {
 			$events->bind('tiki.trackeritem.update', $defer('trk', 'refresh_index_on_master_update'));
 		}
-
-		if ($prefs['tracker_wikirelation_synctitle'] == 'y') {
-			$events->bind('tiki.trackeritem.save', $defer('trk', 'rename_linked_page'));
-		}
 	}
 
 	if ($prefs['feature_search'] == 'y' && $prefs['unified_incremental_update'] == 'y') {
@@ -130,18 +121,9 @@ function tiki_setup_events()
 		$events->bind('tiki.file.update', $defer('scorm', 'handle_file_update'));
 	}
 
-	if ($prefs['feature_futurelinkprotocol'] == 'y') {
-		if ($prefs['feature_wikilingo'] == 'y') {
-			$events->bind("tiki.wiki.view", $defer('wlte', 'wikilingo_flp_view'));
-			$events->bind("tiki.wiki.save", $defer('wlte', 'wikilingo_flp_save'));
-		} else {
-			$events->bind("tiki.wiki.view", $defer('wlte', 'tiki_wiki_view_pastlink'));
-			$events->bind("tiki.wiki.save", $defer('wlte', 'tiki_wiki_save_pastlink'));
-		}
-	}
-
-	if ($prefs['goal_enabled'] == 'y') {
-		TikiLib::lib('goalevent')->bindEvents($events);
+	if ($prefs['feature_forwardlinkprotocol'] == 'y') {
+		$events->bind("tiki.wiki.view", 'tiki_wiki_view_forwardlink');
+		$events->bind("tiki.wiki.save", 'tiki_wiki_save_forwardlink');
 	}
 
 	$events->bind('tiki.save', $defer('tiki', 'object_post_save'));
@@ -156,14 +138,6 @@ function tiki_setup_events()
 		} catch (Exception $e) {
 			TikiLib::lib('errorreport')->report($e->getMessage());
 		}
-	}
-
-	if ($prefs['storedsearch_enabled'] == 'y' && $prefs['monitor_enabled'] == 'y') {
-		$events->bind('tiki.query.hit', $defer('storedsearch', 'handleQueryNotification'));
-	}
-
-	if ($prefs['monitor_enabled'] == 'y') {
-		TikiLib::lib('monitor')->bindEvents($events);
 	}
 
 	// Chain events
@@ -206,15 +180,6 @@ function tiki_setup_events()
 	$events->bind('tiki.social.favorite.remove', 'tiki.social.save');
 	$events->bind('tiki.social.relation.add', 'tiki.social.save');
 	$events->bind('tiki.social.relation.remove', 'tiki.social.save');
-
-	$events->bind('tiki.query.critical', 'tiki.query.hit');
-	$events->bind('tiki.query.high', 'tiki.query.hit');
-	$events->bind('tiki.query.low', 'tiki.query.hit');
-
-	if (function_exists('fastcgi_finish_request')) {
-		// If available, try to send everything to the user at this point
-		$events->bindPriority(-10, 'tiki.process.shutdown', 'fastcgi_finish_request');
-	}
 }
 
 function tiki_save_refresh_index($args)
@@ -224,4 +189,19 @@ function tiki_save_refresh_index($args)
 		$isBulk = isset($args['bulk_import']) && $args['bulk_import'];
 		refresh_index($args['type'], $args['object'], ! $isBulk);
 	}
+}
+
+
+function tiki_wiki_view_forwardlink($args)
+{
+	Feed_ForwardLink_Receive::wikiView($args);
+	Feed_ForwardLink_PageLookup::wikiView($args);
+	Feed_ForwardLink::wikiView($args);
+	Feed_TextLink::wikiView($args);
+}
+
+function tiki_wiki_save_forwardlink($args)
+{
+	Feed_ForwardLink::wikiSave($args);
+	Feed_TextLink::wikiSave($args);
 }

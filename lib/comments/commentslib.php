@@ -619,9 +619,7 @@ class Comments extends TikiLib
 	//Approve queued message -> post as new comment
 	function approve_queued($qId)
 	{
-		global $prefs;
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
+		global $userlib, $tikilib, $prefs;
 		$info = $this->queue_get($qId);
 
 		$message_id = '';
@@ -795,7 +793,7 @@ class Comments extends TikiLib
 			$bind_time[] = $type;
 		}
 
-		$categlib = TikiLib::lib('categ');
+		global $categlib; require_once 'lib/categories/categlib.php';
 		if ($jail = $categlib->get_jail()) {
 			$categlib->getSqlJoin($jail, 'forum', '`a`.`object`', $join, $where, $bind_vars);
 		} else {
@@ -910,7 +908,6 @@ class Comments extends TikiLib
      * @param string $topic_smileys
      * @param string $topic_summary
      * @param string $ui_avatar
-     * @param string $ui_rating_choice_topic
      * @param string $ui_flag
      * @param string $ui_posts
      * @param string $ui_level
@@ -946,7 +943,7 @@ class Comments extends TikiLib
 			$inbound_pop_user='', $inbound_pop_password='', $outbound_address='',
 			$outbound_mails_for_inbound_mails='n', $outbound_mails_reply_link='n',
 			$outbound_from='', $topic_smileys='n', $topic_summary='n', $ui_avatar='y',
-			$ui_rating_choice_topic='y', $ui_flag='y', $ui_posts='n', $ui_level='n', $ui_email='n', $ui_online='n',
+			$ui_flag='y', $ui_posts='n', $ui_level='n', $ui_email='n', $ui_online='n',
 			$approval_type='all_posted', $moderator_group='', $forum_password='',
 			$forum_use_password='n', $att='att_no', $att_store='db', $att_store_dir='',
 			$att_max_size=1000000, $forum_last_n=0, $commentsPerPage='', $threadStyle='',
@@ -983,7 +980,6 @@ class Comments extends TikiLib
 			'topic_smileys' => $topic_smileys,
 			'topic_summary' => $topic_summary,
 			'ui_avatar' => $ui_avatar,
-			'ui_rating_choice_topic' => $ui_rating_choice_topic,
 			'ui_flag' => $ui_flag,
 			'ui_posts' => $ui_posts,
 			'ui_level' => $ui_level,
@@ -1684,7 +1680,7 @@ class Comments extends TikiLib
 
 		$initial_sort_mode = $sort_mode;
 		if ($prefs['rating_advanced'] == 'y') {
-			$ratinglib = TikiLib::lib('rating');
+			global $ratinglib; require_once 'lib/rating/ratinglib.php';
 			$query .= $ratinglib->convert_rating_sort($sort_mode, 'comment', '`threadId`');
 		}
 
@@ -1932,8 +1928,7 @@ class Comments extends TikiLib
 												$approved='y'
 	)
 	{
-		global $tiki_p_admin_comments, $prefs;
-		$userlib = TikiLib::lib('user');
+		global $userlib, $tiki_p_admin_comments, $prefs;
 
 		$orig_maxRecords = $maxRecords;
 		$orig_offset = $offset;
@@ -2010,7 +2005,7 @@ class Comments extends TikiLib
 
 		$initial_sort_mode = $sort_mode;
 		if ($prefs['rating_advanced'] == 'y') {
-			$ratinglib = TikiLib::lib('rating');
+			global $ratinglib; require_once 'lib/rating/ratinglib.php';
 			$join = $ratinglib->convert_rating_sort($sort_mode, 'comment', '`tc1`.`threadId`');
 		} else {
 			$join = '';
@@ -2264,7 +2259,7 @@ class Comments extends TikiLib
 			$left = ', tc.`title` as parentTitle';
 		}
 
-		$categlib = TikiLib::lib('categ');
+		global $categlib; require_once 'lib/categories/categlib.php';
 		if ($jail = $categlib->get_jail()) {
 			$categlib->getSqlJoin($jail, '`objectType`', 'tc.`object`', $jail_join, $jail_where, $jail_bind, 'tc.`objectType`');
 		} else {
@@ -2516,12 +2511,11 @@ class Comments extends TikiLib
 			if ($prefs['feature_actionlog'] == 'y') {
 				include_once('lib/diff/difflib.php');
 				$bytes = diff2($comment['data'], $data, 'bytes');
-				$logslib = TikiLib::lib('logs');
-				if ($comment['objectType'] == 'forum') {
+				global $logslib; include_once('lib/logs/logslib.php');
+				if ($comment['objectType'] == 'forum')
 					$logslib->add_action('Updated', $comment['object'], $comment['objectType'], "comments_parentId=$threadId&amp;$bytes#threadId$threadId", '', '', '', '', $contributions);
-				} else {
+				else
 					$logslib->add_action('Updated', $comment['object'], 'comment', "type=".$comment['objectType']."&amp;$bytes#threadId$threadId", '', '', '', '', $contributions);
-				}
 			}
 			$comments->update(
 				array(
@@ -2548,7 +2542,6 @@ class Comments extends TikiLib
 					array(
 						'type' => $type,
 						'object' => $threadId,
-						'parent_id' => $comment['parentId'],
 						'forum_id' => $comment['object'],
 						'user' => $GLOBALS['user'],
 						'title' => $title,
@@ -2730,13 +2723,12 @@ class Comments extends TikiLib
 		global $prefs;
 		if ($prefs['feature_actionlog'] == 'y') {
 			$logslib = TikiLib::lib('logs');
-			$tikilib = TikiLib::lib('tiki');
-			if ($parentId == 0) {
+			global $tikilib;
+			if ($parentId == 0)
 				$l = strlen($data);
-			} else {
+			else
 				$l = $tikilib->strlen_quoted($data);
-			}
-			if ($object[0] == 'forum') {
+			if ($object[0] == 'forum')
 				$logslib->add_action(
 					($parentId == 0)? 'Posted': 'Replied',
 					$object[1],
@@ -2748,7 +2740,7 @@ class Comments extends TikiLib
 					'',
 					$contributions
 				);
-			} else {
+			else
 				$logslib->add_action(
 					($parentId == 0)? 'Posted': 'Replied',
 					$object[1],
@@ -2760,7 +2752,6 @@ class Comments extends TikiLib
 					'',
 					$contributions
 				);
-			}
 		}
 
 		if ($prefs['feature_contribution'] == 'y') {
@@ -3092,7 +3083,6 @@ class Comments extends TikiLib
 			$forum_info['topic_smileys'],
 			$forum_info['topic_summary'],
 			$forum_info['ui_avatar'],
-			$forum_info['ui_rating_choice_topic'],
 			$forum_info['ui_flag'],
 			$forum_info['ui_posts'],
 			$forum_info['ui_level'],
@@ -3485,7 +3475,8 @@ class Comments extends TikiLib
 			);
 
 			if (isset($rating_override[$i])) {
-				$ratinglib = TikiLib::lib('rating');
+				global $ratinglib;
+				require_once('lib/rating/ratinglib.php');
 				$ratinglib->set_override('comment', $deliberation_id, $rating_override[$i]);
 			}
 		}
@@ -3498,7 +3489,8 @@ class Comments extends TikiLib
      */
     function get_forum_deliberations($threadId)
 	{
-		$ratinglib = TikiLib::lib('rating');
+		global $ratinglib;
+		require_once 'lib/rating/ratinglib.php';
 
 		$deliberations = $this->fetchAll('SELECT * from tiki_comments WHERE object = ? AND objectType = "forum_deliberation"', array($threadId));
 

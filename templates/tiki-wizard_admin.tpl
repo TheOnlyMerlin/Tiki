@@ -5,19 +5,19 @@
 <form action="tiki-wizard_admin.php" method="post">
 {include file="wizard/wizard_bar_admin.tpl"}
 <div id="wizardBody">
-<div class="row">
+<table class="adminWizardTable">
+	<tr>
 	{if !empty($wizard_toc)}
-	    <div class="col-sm-4">
-		    <span class="adminWizardTOCTitle">{tr}Wizard Steps{/tr}</span>
-            <ol>
-			    {$wizard_toc}
-            </ol>
-		</div>
+		<td class="adminWizardTOC">
+			<span class="adminWizardTOCTitle">{tr}Wizard Steps{/tr}</span><br>
+			{$wizard_toc}
+		</td>
 	{/if}
-	<div class="{if !empty($wizard_toc)}col-sm-8{else}col-sm-12{/if}">
-	    {include file="{$wizardBody}"}
-	</div>
-</div>
+		<td class="adminWizardBody">
+			{include file="{$wizardBody}"}
+		</td>
+	</tr>
+</table>
 </div>
 {include file="wizard/wizard_bar_admin.tpl"}
 </form>

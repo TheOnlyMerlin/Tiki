@@ -21,7 +21,10 @@ if ($prefs['feature_freetags'] == 'y') {
 }
 
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	global $categlib;
+	if (!is_object($categlib)) {
+		include_once ('lib/categories/categlib.php');
+	}
 }
 
 $access->check_feature('feature_blogs');

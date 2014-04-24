@@ -10,9 +10,9 @@
 
 $section = 'mytiki';
 require_once ('tiki-setup.php');
-$modlib = TikiLib::lib('mod');
+include_once ('lib/modules/modlib.php');
 include_once ('lib/userprefs/scrambleEmail.php');
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 // User preferences screen
 if ($prefs['feature_userPreferences'] != 'y' && $prefs['change_password'] != 'y' && $tiki_p_admin_users != 'y') {
 	$smarty->assign('msg', tra("This feature is disabled") . ": feature_userPreferences");
@@ -158,11 +158,11 @@ if ($prefs['feature_userPreferences'] == 'y' && isset($_REQUEST["new_prefs"])) {
 		if (isset($_REQUEST[$customfields[$custpref]['prefName']])) $tikilib->set_user_preference($userwatch, $customfields[$custpref]['prefName'], $_REQUEST[$customfields[$custpref]['prefName']]);
 	}
 	if (isset($_REQUEST["realName"]) && ($prefs['auth_ldap_nameattr'] == '' || $prefs['auth_method'] != 'ldap')) {
-		$tikilib->set_user_preference($userwatch, 'realName', $_REQUEST["realName"]);
-		if ( $prefs['user_show_realnames'] == 'y' ) {
-			$cachelib = TikiLib::lib('cache');
-			$cachelib->invalidate('userlink.'.$user.'0');
-		}
+     $tikilib->set_user_preference($userwatch, 'realName', $_REQUEST["realName"]);
+     if ( $prefs['user_show_realnames'] == 'y' ) {
+       global $cachelib;
+       $cachelib->invalidate('userlink.'.$user.'0');
+     }
 	}
 	if ($prefs['feature_community_gender'] == 'y') {
 		if (isset($_REQUEST["gender"])) $tikilib->set_user_preference($userwatch, 'gender', $_REQUEST["gender"]);
@@ -304,12 +304,6 @@ if (isset($_REQUEST['chgadmin'])) {
 			die;
 		}
 		$userlib->change_user_password($userwatch, $_REQUEST["pass1"]);
-		if ($prefs['feature_user_encryption'] === 'y') {
-			// Notify CryptLib about the login
-			$cryptlib = TikiLib::lib('crypt');
-			$cryptlib->onChangeUserPassword($_REQUEST["pass"], $_REQUEST["pass1"]);
-		}
-
 		$tikifeedback[] = array('num' => 1, 'mes' => sprintf(tra('Password has been changed')));
 	}
 }
@@ -405,7 +399,7 @@ $useritemId = false;
 if ($prefs['userTracker'] == 'y') {
 	$re = $userlib->get_usertracker($userinfo["userId"]);
 	if (isset($re['usersTrackerId']) and $re['usersTrackerId']) {
-		$trklib = TikiLib::lib('trk');
+		include_once ('lib/trackers/trackerlib.php');
 		$info = $trklib->get_item_id($re['usersTrackerId'], $trklib->get_field_id($re['usersTrackerId'], 'Login'), $userwatch);
 		$usertrackerId = $re['usersTrackerId'];
 		$useritemId = $info;

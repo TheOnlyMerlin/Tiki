@@ -33,16 +33,6 @@ class Tracker_Field_Math extends Tracker_Field_Abstract implements Tracker_Field
 						'filter' => 'text',
 						'legacy_index' => 0,
 					),
-					'recalculate' => array(
-						'name' => tr('Re-calculation event'),
-						'type' => 'list',
-						'description' => tr('Allow to specify special calculation handling. Selecting indexing is useful for dynamic score fields that will not be displayed.'),
-						'filter' => 'word',
-						'options' => array(
-							'save' => tr('Save'),
-							'index' => tr('Indexing'),
-						),
-					),
 				),
 			),
 		);
@@ -88,24 +78,9 @@ class Tracker_Field_Math extends Tracker_Field_Abstract implements Tracker_Field
 
 	function getDocumentPart(Search_Type_Factory_Interface $typeFactory)
 	{
-		$value = $this->getValue();
-
-		if ('index' == $this->getOption('recalculate')) {
-			$runner = $this->getFormulaRunner();
-			$data = [];
-
-			foreach ($runner->inspect() as $fieldName) {
-				$data[$fieldName] = $this->getItemField($fieldName);
-			}
-
-			$runner->setVariables($data);
-
-			$value = $runner->evaluate();
-		}
-
 		$baseKey = $this->getBaseKey();
 		return array(
-			$baseKey => $typeFactory->sortable($value),
+			$baseKey => $typeFactory->identifier($this->getValue()),
 		);
 	}
 
@@ -122,29 +97,22 @@ class Tracker_Field_Math extends Tracker_Field_Abstract implements Tracker_Field
 
 	function handleFinalSave(array $data)
 	{
-		try {
-			$runner = $this->getFormulaRunner();
-			$runner->setVariables($data);
-
-			return $runner->evaluate();
-		} catch (Math_Formula_Exception $e) {
-			return $e->getMessage();
-		}
-	}
-
-	private function getFormulaRunner()
-	{
 		static $cache = array();
 		$fieldId = $this->getConfiguration('fieldId');
 		if (! isset($cache[$fieldId])) {
 			$cache[$fieldId] = $this->getOption('calculation');
 		}
 
-		$runner = self::getRunner();
+		try {
+			$runner = self::getRunner();
 
-		$cache[$fieldId] = $runner->setFormula($cache[$fieldId]);
+			$cache[$fieldId] = $runner->setFormula($cache[$fieldId]);
+			$runner->setVariables($data);
 
-		return $runner;
+			return $runner->evaluate();
+		} catch (Math_Formula_Exception $e) {
+			return $e->getMessage();
+		}
 	}
 
 	public static function getRunner()

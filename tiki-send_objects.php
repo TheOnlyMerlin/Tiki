@@ -6,7 +6,7 @@
 // $Id$
 
 require_once ('tiki-setup.php');
-$structlib = TikiLib::lib('struct');
+include_once ('lib/structures/structlib.php');
 
 //get_strings tra("Send Pages");
 $access->check_feature('feature_comm');

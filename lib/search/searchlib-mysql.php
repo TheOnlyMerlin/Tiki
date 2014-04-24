@@ -68,14 +68,15 @@ class SearchLib extends TikiLib
 					$searchDate = 0,
 					$categId = 0)
 	{
-		global $tiki_p_admin, $prefs, $user;
-		$userlib = TikiLib::lib('user');
+		global $tiki_p_admin, $prefs, $userlib, $user, $categlib;
 
 		if (!is_int($searchDate) && !ctype_digit($searchDate)) {
 			exit("Error: searchDate not an integer");
 		}
 
-		$categlib = TikiLib::lib('categ');
+		if (!is_object($categlib)) {
+			require_once('lib/categories/categlib.php');
+		}
 
 		$words = trim($words);
 
@@ -839,7 +840,7 @@ class SearchLib extends TikiLib
      */
     function find_trackers($words = '', $offset = 0, $maxRecords = -1, $fulltext = false, $filter='', $boolean='n', $searchDate = 0, $categId = 0)
 	{
-		$trklib = TikiLib::lib('trk');
+		global $trklib; require_once('lib/trackers/trackerlib.php');
 		global $tiki_p_view_trackers_pending; global $tiki_p_view_trackers_closed;
 
 		static $search_trackers = array(

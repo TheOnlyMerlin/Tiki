@@ -59,10 +59,9 @@ function module_categories_info()
  */
 function module_categories($mod_reference, &$module_params)
 {
-	global $prefs;
+	global $smarty, $prefs;
 	global $user;
-	$smarty = TikiLib::lib('smarty');
-	$categlib = TikiLib::lib('categ');
+	global $categlib; include_once ('lib/categories/categlib.php');
 	if (isset($module_params['type'])) {
 		$type = $module_params['type'];
 		$urlEnd = 'type='.urlencode($type);

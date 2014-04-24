@@ -5,7 +5,9 @@
 */
  
 /* Don't import foundation CSS files. *
-@import url("layout/tiki.css");
+@import url("lite/lite.css");
+@import url("layout/layout.css");
+@import url("layout/design.css");
 * End of File */
 
 .hidden {
@@ -19,7 +21,8 @@ body {
 	font-size: 1em;
 }
 
-/* remarks boxes from tiki.css */
+/* remarks boxes from layout.css */
+/* also some from design.css */
 
 .rbox {
 	margin: 1em .3em .3em .3em;

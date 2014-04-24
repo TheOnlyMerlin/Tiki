@@ -60,10 +60,8 @@ function wikiplugin_include_info()
 
 function wikiplugin_include($dataIn, $params)
 {
-	global $user, $killtoc;
+	global $tikilib,$userlib,$user, $killtoc;
     static $included_pages, $data;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
 
 	$killtoc = true;
 	$max_times = 5;
@@ -72,11 +70,6 @@ function wikiplugin_include($dataIn, $params)
 	if (!isset($page)) {
 		return ("<b>missing page for plugin INCLUDE</b><br />");
 	}
-
-	// This variable is for accessing included page name within plugins in that page
-	global $wikiplugin_included_page;
-	$wikiplugin_included_page = $page;
-
 	$memo = $page;
 	if (isset($start)) $memo .= "/$start";
 	if (isset($end)) $memo .= "/$end";

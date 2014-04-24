@@ -181,7 +181,7 @@ function wp_map_getscope($params)
 
 	switch ($scope) {
 		case 'center':
-			return '#col1 .geolocated';
+			return '#tiki-center .geolocated';
 		case 'all':
 			return '.geolocated';
 		default:
@@ -303,7 +303,7 @@ function wp_map_plugin_searchlayer($body, $args)
 	$escapedSuffix = smarty_modifier_escape($suffix);
 	return <<<OUT
 <form method="post" action="tiki-searchindex.php" class="search-box onload" style="display: none" data-result-refresh="$refresh" data-result-layer="$escapedLayer" data-result-suffix="$escapedSuffix" data-load-delay="$load_delay">
-	<p>$maxRecords$sort_mode$fieldList$filters<input type="submit" class="btn btn-default btn-sm" /></p>
+	<p>$maxRecords$sort_mode$fieldList$filters<input type="submit"/></p>
 
 </form>
 OUT;

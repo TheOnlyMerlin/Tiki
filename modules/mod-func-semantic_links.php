@@ -30,12 +30,12 @@ function module_semantic_links_info()
  */
 function module_semantic_links($mod_reference, $module_params)
 {
-	global $page;
-	$smarty = TikiLib::lib('smarty');
+	global $page, $smarty;
 	$smarty->assign('show_semantic_links_module', false);
 
 	if (isset($page) && !empty($page)) {
-		$semanticlib = TikiLib::lib('semantic');
+		global $semanticlib;
+		require_once('lib/wiki/semanticlib.php');
 	
 		$msl_page = $page;
 		$relations = $semanticlib->getRelationList($msl_page);

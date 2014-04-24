@@ -1,9 +1,4 @@
 <?php
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
-
 /**
  * Tiki initialization functions and classes
  *
@@ -38,50 +33,8 @@ class TikiInit
 	/**
 	 * dummy constructor
 	 */
-	function __construct()
+	function TikiInit()
 	{
-	}
-
-	static function getContainer()
-	{
-		static $container;
-
-		if ($container) {
-			return $container;
-		}
-
-		$cache = TIKI_PATH . '/temp/cache/container.php';
-		if (is_readable($cache)) {
-			require_once $cache;
-			$container = new TikiCachedContainer;
-			return $container;
-		}
-
-		$path = TIKI_PATH . '/db/config';
-		$container = new ContainerBuilder;
-		$container->addCompilerPass(new \Tiki\MailIn\Provider\CompilerPass);
-
-		$container->setParameter('kernel.root_dir', TIKI_PATH);
-		$loader = new XmlFileLoader($container, new FileLocator($path));
-
-		$loader->load('tiki.xml');
-		$loader->load('controllers.xml');
-		$loader->load('mailin.xml');
-
-		try {
-			$loader->load('custom.xml');
-		} catch (InvalidArgumentException $e) {
-			// Do nothing, absence of custom.xml file is expected
-		}
-
-		$container->compile();
-
-		$dumper = new PhpDumper($container);
-		file_put_contents($cache, $dumper->dump([
-			'class' => 'TikiCachedContainer',
-		]));
-
-		return $container;
 	}
 
 /** Return 'windows' if windows, otherwise 'unix'

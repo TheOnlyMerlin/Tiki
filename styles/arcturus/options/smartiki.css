@@ -43,6 +43,10 @@ body {
 	background: #fff;
 }
 
+html>body {
+	font-size: 13px;
+}
+
 a,
 a:visited {
 	text-decoration: none;
@@ -75,7 +79,8 @@ legend {
 button,
 input[type="reset"],
 input[type="submit"],
-.button input {
+.button input,
+.calbuttonBox a {
 	background-color: #f0c040;
 	border: 1px solid #676767;
 	margin: 0;
@@ -88,7 +93,8 @@ input[type="submit"],
 button:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover,
-.button input:hover {
+.button input:hover,
+.calbuttonBox:hover {
 	background-color: #f0ead8;
 	margin: 0;
 	padding: 0 6px;
@@ -111,10 +117,19 @@ h1, .pagetitle {
 
 #c1c2 #col2 {
 	background: #f0ead8;
+	text-align: right;
 	border-right: 1px solid #ddccbb;
 }
 
+#c1c2 #col2 .content {
+	margin-right: 2px;
+	width: 168px;
+	text-align: left;
+}
+
 #col3 {
+	width: 170px;
+	margin-left: -170px;
 	background: #f0ead8;
 	border-left: 1px solid #ddccbb;
 }

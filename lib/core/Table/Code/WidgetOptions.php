@@ -28,14 +28,14 @@ class Table_Code_WidgetOptions extends Table_Code_Manager
 		$wo[] = 'stickyHeaders : \'tablesorter-stickyHeader\'';
 
 		//sort
-		if (parent::$sorts) {
+		if (parent::$sort) {
 			//row grouping
 			if (parent::$group) {
 				$wo[] = 'group_collapsible : true';
 				$wo[] = 'group_count : \' ({num})\'';
 			}
 			//saveSort
-			if (isset(parent::$s['sorts']['type']) && strpos(parent::$s['sorts']['type'], 'save') !== false) {
+			if (isset(parent::$s['sort']['type']) && strpos(parent::$s['sort']['type'], 'save') !== false) {
 				$wo[] = 'saveSort : true';
 			}
 		}
@@ -56,19 +56,17 @@ class Table_Code_WidgetOptions extends Table_Code_Manager
 				$wo[] = 'filter_reset : \'button#' . parent::$s['filters']['reset']['id'] . '\'';
 			}
 			//filter_functions and filter_formatter
-			if (parent::$filtercol) {
+			if (isset(parent::$s['filters']['columns']) && is_array(parent::$s['filters']['columns'])) {
 				$ffunc = '';
 				$fform = '';
-				foreach (parent::$s['columns'] as $col => $info) {
-					$info = $info['filter'];
+				foreach (parent::$s['filters']['columns'] as $col => $info) {
 					switch($info['type']) {
 						case 'dropdown' :
 							$o = '';
 							if (array_key_exists('options', $info)) {
 								foreach ($info['options'] as $key => $val) {
 									$label = is_numeric($key) ? $val : $key;
-									$o[] = parent::$ajax ? '\'' . $label . '\' : function() {}' :
-										'\'' . $label . '\' : function(e, n, f, i) { return /' . $val . '/.test(e);}';
+									$o[] = '\'' . $label . '\' : function(e, n, f, i) { return /' . $val . '/.test(e);}';
 								}
 								$options = $this->iterate($o, '{', $this->nt4 . '}', $this->nt5, '', ',');
 								$ffunc[] = $col . ' : ' . $options;

@@ -141,16 +141,6 @@ class Services_Search_CustomSearchController
 			}
 		}
 
-		if ($prefs['storedsearch_enabled'] == 'y' && $queryId = $input->store_query->int()) {
-			// Store prior to adding 
-			$storedsearchlib = TikiLib::lib('storedsearch');
-			$storeResult = $storedsearchlib->storeUserQuery($queryId, $query);
-
-			if (! $storeResult) {
-				throw new Services_Exception('Failed to store the query.', 500);
-			}
-		}
-
 		$unifiedsearchlib = TikiLib::lib('unifiedsearch');
 		$unifiedsearchlib->initQuery($query); // Done after cache because permissions vary
 

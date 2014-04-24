@@ -10,7 +10,7 @@
 
 require_once ('tiki-setup.php');
 require_once ('lib/tikilib.php');
-$trklib = TikiLib::lib('trk');
+require_once ('lib/trackers/trackerlib.php');
 require_once ('lib/rss/rsslib.php');
 require_once ('lib/smarty_tiki/modifier.sefurl.php');
 

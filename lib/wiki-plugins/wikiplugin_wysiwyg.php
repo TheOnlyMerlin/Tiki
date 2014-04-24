@@ -48,22 +48,10 @@ function wikiplugin_wysiwyg($data, $params)
 	}
 	$params = array_merge($defaults, $params);
 
+	$html = TikiLib::lib('tiki')->parse_data($data, array('is_html' => true));
+
 	global $tiki_p_edit, $page, $prefs;
 	static $execution = 0;
-
-	global $wikiplugin_included_page;
-	if (!empty($wikiplugin_included_page)) {
-		$sourcepage = $wikiplugin_included_page;
-	} else {
-		$sourcepage = $page;
-	}
-
-	if ($prefs['wysiwyg_htmltowiki'] == 'y') {
-		$is_html = false;
-	} else {
-		$is_html = true;
-	}
-	$html = TikiLib::lib('edit')->parseToWysiwyg( $data, true, $is_html, array('page' => $sourcepage) );
 
 	if ($tiki_p_edit === 'y') {
 		$class = "wp_wysiwyg";
@@ -72,23 +60,13 @@ function wikiplugin_wysiwyg($data, $params)
 
 		$params['section'] = empty($params['section']) ? 'wysiwyg_plugin' : $params['section'];
 		$params['_wysiwyg'] = 'y';
-		$params['is_html'] = $is_html;
+		$params['is_html'] = true;
 		//$params['comments'] = true;
 		$ckoption = TikiLib::lib('wysiwyg')->setUpEditor(true, $exec_key, $params, '', false);
 
-		if ($prefs['namespace_enabled'] == 'y' && $prefs['namespace_force_links'] == 'y') {
-			$namespace = TikiLib::lib('wiki')->get_namespace($sourcepage);
-			if ($namespace) {
-				$namespace .= $prefs['namespace_separator'];
-			}
-		} else {
-			$namespace = '';
-		}
-		$namespace = htmlspecialchars($namespace);
+		$html = "<div id='$exec_key' class='{$class}'$style>" . $html . '</div>';
 
-		$html = "<div id='$exec_key' class='{$class}'$style data-initial='$namespace'>" . $html . '</div>';
-
-		$js = '$("#' . $exec_key . '").wysiwygPlugin("' . $execution . '", "' . $sourcepage . '", ' . $ckoption . ')';
+		$js = '$("#' . $exec_key . '").wysiwygPlugin("' . $execution . '", "' . $page . '", ' . $ckoption . ')';
 
 		TikiLib::lib('header')
 			->add_jsfile('lib/ckeditor_tiki/tiki-ckeditor.js')

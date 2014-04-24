@@ -1,6 +1,6 @@
 <div class="adminoptionbox preference clearfix {$p.tagstring|escape}{if isset($smarty.request.highlight) and $smarty.request.highlight eq $p.preference} highlight{/if}">
 	{if $p.name}
-		<label for="{$p.id|escape}" class="control-label">{$p.name|escape}</label>
+		<label for="{$p.id|escape}">{$p.name|escape}:</label>
 	{/if}
 
 	{foreach from=$p.options key=value item=label name=loop}
@@ -17,7 +17,7 @@
 	{/if}
 	{include file="prefs/shared-flags.tpl"}
 	{if $p.hint}
-		<div class="help-block">{$p.hint|simplewiki}</div>
+		<br/><em>{$p.hint|simplewiki}</em>
 	{/if}
 	{include file="prefs/shared-dependencies.tpl"}
 </div>

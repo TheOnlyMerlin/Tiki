@@ -151,11 +151,7 @@ class PreferencesLib
 			}
 
 			if (!empty($info['admin'])) {
-				if (preg_match('/^\w+$/', $info['admin'])) {
-					$info['admin'] = 'tiki-admin.php?page=' . urlencode($info['admin']);
-				} else {
-					$info['admin'] = $info['admin'];
-				}
+				$info['admin'] = 'tiki-admin.php?page=' . urlencode($info['admin']);
 			}
 
 			if (!empty($info['module'])) {
@@ -171,29 +167,29 @@ class PreferencesLib
 
 			if (!empty($info['admin']) || !empty($info['permission']) || !empty($info['view']) || !empty($info['module']) || !empty($info['plugin'])) {
 
-				$info['popup_html'] = '<ul class="list-unstyled">';
+				$info['popup_html'] = '<div class="opaque"><div class="box-title">'.tra('Actions').'</div><div class="box-data adminoptionpopup">';
 
 				if (!empty($info['admin'])) {
 					$icon = smarty_function_icon(array( '_id' => 'wrench', 'title' => tra('Admin')), $smarty);
-					$info['popup_html'] .= '<li><a class="icon" href="'.$info['admin'].'">' . $icon . ' ' . tra('Admin') .'</a></li>';
+					$info['popup_html'] .= '<a class="icon" href="'.$info['admin'].'">' . $icon . ' ' . tra('Admin') .'</a>';
 				}
 				if (!empty($info['permission'])) {
 					$icon = smarty_function_icon(array( '_id' => 'key', 'title' => tra('Permissions')), $smarty);
-					$info['popup_html'] .= '<li><a class="icon" href="'.$info['permission'].'">' . $icon . ' ' . tra('Permissions').'</a></li>';
+					$info['popup_html'] .= '<a class="icon" href="'.$info['permission'].'">' . $icon . ' ' . tra('Permissions').'</a>';
 				}
 				if (!empty($info['view'])) {
 					$icon = smarty_function_icon(array( '_id' => 'magnifier', 'title' => tra('View')), $smarty);
-					$info['popup_html'] .= '<li><a class="icon" href="'.$info['view'].'">' . $icon . ' ' . tra('View').'</a></li>';
+					$info['popup_html'] .= '<a class="icon" href="'.$info['view'].'">' . $icon . ' ' . tra('View').'</a>';
 				}
 				if (!empty($info['module'])) {
 					$icon = smarty_function_icon(array( '_id' => 'module', 'title' => tra('Module')), $smarty);
-					$info['popup_html'] .= '<li><a class="icon" href="'.$info['module'].'">' . $icon . ' ' . tra('Module').'</a></li>';
+					$info['popup_html'] .= '<a class="icon" href="'.$info['module'].'">' . $icon . ' ' . tra('Module').'</a>';
 				}
 				if (!empty($info['plugin'])) {
 					$icon = smarty_function_icon(array( '_id' => 'plugin', 'title' => tra('Plugin')), $smarty);
-					$info['popup_html'] .= '<li><a class="icon" href="'.$info['plugin'].'">' . $icon . ' ' . tra('Plugin').'</a></li>';
+					$info['popup_html'] .= '<a class="icon" href="'.$info['plugin'].'">' . $icon . ' ' . tra('Plugin').'</a>';
 				}
-				$info['popup_html'] .= '</ul>';
+				$info['popup_html'] .= '</div></div>';
 			}
 
 			if (isset($prefs['connect_feature']) && $prefs['connect_feature'] === 'y') {

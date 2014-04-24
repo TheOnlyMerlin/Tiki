@@ -109,13 +109,18 @@
 										{/if}
 *}
 											{error_report}
+											{if $display_msg}
+												{remarksbox type="note" title="{tr}Notice{/tr}"}{$display_msg|escape}{/remarksbox}
+											{/if}
 											<div id="role_main">
 												{block name=title}{/block}
 												{block name=content}{/block}
+												{block name=show_content}{/block}{* Help separate the page content from the whole page. Must be defined at root to work. AB *}
 											</div>
 											{if $prefs.module_zones_pagebottom eq 'fixed' or ($prefs.module_zones_pagebottom ne 'n' && ! zone_is_empty('pagebottom'))}
 												{modulelist zone=pagebottom}
 											{/if}
+											{show_help}
 										</div>{* end #tiki-center *}
 										{if $prefs.feature_layoutshadows eq 'y'}{eval var=$prefs.center_shadow_end}</div>{/if}
 									</div>
@@ -136,7 +141,7 @@
 										{modulelist zone=right class="content modules"}
 										{if $module_pref_errors}
 											<div data-role="collapsible" data-theme="{$prefs.mobile_theme_modules}" data-collapsed="true">
-												<h3 href="#" class="alert-warning">{tr}Module errors{/tr}</h3>
+												<h3 href="#" class="error">{tr}Module errors{/tr}</h3>
 												{remarksbox type="warning" title="{tr}Module errors{/tr}"}
 													{tr}The following modules could not be loaded{/tr}
 													<form method="post" action="tiki-admin.php">

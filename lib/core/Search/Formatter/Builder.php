@@ -97,9 +97,7 @@ class Search_Formatter_Builder
 		if (isset($arguments['template'])) {
 			if ($arguments['template'] == 'table') {
 				$arguments['template'] = dirname(__FILE__) . '/../../../../templates/table.tpl';
-			} elseif ($arguments['template'] == 'medialist') {
-				$arguments['template'] = dirname(__FILE__) . '/../../../../templates/medialist.tpl';
-			} elseif (!file_exists($arguments['template'])) {
+			} else if (!file_exists($arguments['template'])) {
 				TikiLib::lib('errorreport')->report(tr('Missing template "%0"', $arguments['template']));
 				return '';
 			}

@@ -97,7 +97,7 @@ class Reports_Send_EmailBuilder
      */
     public function makeEmailBody(array $report_cache, array $report_preferences)
     {
-		$userlib = TikiLib::lib('user');
+        global $userlib;
 
         $change_array = $this->makeChangeArray($report_cache);
         $body = '';

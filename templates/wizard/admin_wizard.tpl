@@ -1,6 +1,5 @@
 {* $Id$ *}
 
-
 <fieldset>
 	<legend>{tr}Get Started{/tr}</legend>
 

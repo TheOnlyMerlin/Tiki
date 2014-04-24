@@ -13,7 +13,7 @@ require_once ('tiki-setup.php');
 include_once ('lib/blogs/bloglib.php');
 //get_strings tra('List Blog Posts')
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	include_once ('lib/categories/categlib.php');
 }
 $access->check_feature('feature_blogs');
 $access->check_permission('tiki_p_read_blog');

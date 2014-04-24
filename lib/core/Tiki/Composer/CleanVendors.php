@@ -20,14 +20,10 @@ class CleanVendors
 		self::deleteDirectory($vendors . 'adodb/adodb/tests');
 		self::deleteDirectory($vendors . 'aFarkas/html5shiv/build');
 		self::deleteDirectory($vendors . 'aFarkas/html5shiv/test');
-		self::deleteDirectory($vendors . 'alvarotrigo/fullpage.js/examples');
-		self::deleteDirectory($vendors . 'bombayworks/zendframework1/library/Zend/Service/WindowsAzure/CommandLine/Scaffolders');
 		self::deleteDirectory($vendors . 'codemirror/codemirror/demo');
 		self::deleteDirectory($vendors . 'codemirror/codemirror/doc');
 		self::deleteDirectory($vendors . 'codemirror/codemirror/test');
 		self::deleteDirectory($vendors . 'codemirror/codemirror/mode/tiki');
-		self::deleteDirectory($vendors . 'dompdf/dompdf/www');
-		self::deleteDirectory($vendors . 'gabordemooij/redbean/testing');
 		self::deleteDirectory($vendors . 'jarnokurlin/fullcalendar/demos');
 		self::deleteDirectory($vendors . 'jcapture-applet/jcapture-applet/src');
 		self::deleteDirectory($vendors . 'jquery/jquery-mobile/demos');
@@ -47,11 +43,14 @@ class CleanVendors
 		self::deleteFile(     $vendors . 'jquery/jquery-timepicker-addon/package.json');
 		self::deleteDirectory($vendors . 'jquery/jquery-ui-selectmenu/demos');
 		self::deleteDirectory($vendors . 'jquery/jquery-ui-selectmenu/tests');
-		self::deleteDirectory($vendors . 'jquery/jquery-ui/development-bundle');
-		self::deleteFile     ($vendors . 'jquery/jquery-ui/js/jquery-1.10.2.js');
+		self::deleteDirectory($vendors . 'jquery/jquery-ui/demos');
+		self::deleteDirectory($vendors . 'jquery/jquery-ui/tests');
+		self::deleteDirectory($vendors . 'jquery/jquery-ui/themes');
 		self::deleteDirectory($vendors . 'jquery/photoswipe/examples');
 		self::deleteDirectory($vendors . 'jquery/plugins/anythingslider/demos');
 		self::deleteDirectory($vendors . 'jquery/plugins/brosho/__MACOSX');
+		self::deleteDirectory($vendors . 'jquery/plugins/cluetip/demo');
+		self::deleteDirectory($vendors . 'jquery/plugins/cluetip/test');
 		self::deleteDirectory($vendors . 'jquery/plugins/colorbox/content');
 		self::deleteDirectory($vendors . 'jquery/plugins/superfish/examples');
 		self::deleteDirectory($vendors . 'jquery/plugins/superfish/src');
@@ -71,15 +70,9 @@ class CleanVendors
 		self::deleteDirectory($vendors . 'ezyang/htmlpurifier/tests');
 		self::deleteDirectory($vendors . 'phpcas/phpcas/CAS-1.3.2/docs');
 		self::deleteDirectory($vendors . 'phpseclib/phpseclib/tests');
-		self::deleteFile     ($vendors . 'player/mp3/template_default/test.mp3');
-		self::deleteFile     ($vendors . 'player/mp3/template_mini/test.mp3');
-		self::deleteFile     ($vendors . 'player/mp3/template_maxi/test.mp3');
-		self::deleteFile     ($vendors . 'player/mp3/template_js/test.mp3');
-		self::deleteFile     ($vendors . 'player/mp3/template_multi/test.mp3');
 		self::deleteDirectory($vendors . 'smarty/smarty/development');
 		self::deleteDirectory($vendors . 'smarty/smarty/documentation');
 		self::deleteDirectory($vendors . 'smarty/smarty/distribution/demo');
-		self::deleteDirectory($vendors . 'twitter/bootstrap/docs');
 		self::deleteDirectory($vendors . 'zetacomponents/base/design');
 		self::deleteDirectory($vendors . 'zetacomponents/base/docs');
 		self::deleteDirectory($vendors . 'zetacomponents/base/tests');
@@ -92,16 +85,6 @@ class CleanVendors
 		self::deleteDirectory($vendors . 'player/flv/mtasc');
 		self::deleteDirectory($vendors . 'player/mp3/classes');
 		self::deleteDirectory($vendors . 'player/mp3/mtasc');
-
-		// These are removed to avoid composer warnings caused by classes declared in multiple locations
-		self::deleteDirectory($vendors . 'adodb/adodb/datadict/datadict');
-		self::deleteDirectory($vendors . 'adodb/adodb/session/session');
-		self::deleteDirectory($vendors . 'adodb/adodb/perf/perf');
-		self::deleteDirectory($vendors . 'adodb/adodb/drivers/drivers');
-		self::deleteFile(     $vendors . 'adodb/adodb/adodb-active-recordx.inc.php');
-		self::deleteFile(     $vendors . 'adodb/adodb/drivers/adodb-informix.inc.php');
-		self::deleteFile(     $vendors . 'adodb/adodb/perf/perf-informix.inc.php');
-		self::deleteFile(     $vendors . 'adodb/adodb/datadict/datadict-informix.inc.php');
 	}
 
 	private static function deleteDirectory($path)

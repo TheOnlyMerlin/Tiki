@@ -45,7 +45,13 @@ class Search_Query_WikiBuilder
 			$name = $match->getName();
 			$arguments = $argumentParser->parse($match->getArguments());
 
-			$this->addQueryArgument($name, $arguments);
+			foreach ($arguments as $key => $value) {
+				$function = "wpquery_{$name}_{$key}";
+
+				if (method_exists($this, $function)) {
+					call_user_func(array($this, $function), $this->query, $value, $arguments);
+				}
+			}
 		}
 
 		$offsetArg = $this->paginationArguments['offset_arg'];
@@ -54,17 +60,6 @@ class Search_Query_WikiBuilder
 			$this->query->setRange($_REQUEST[$offsetArg], $maxRecords * $this->boost);
 		} else {
 			$this->query->setRange(0, $maxRecords * $this->boost);
-		}
-	}
-
-	function addQueryArgument($name, $arguments)
-	{
-		foreach ($arguments as $key => $value) {
-			$function = "wpquery_{$name}_{$key}";
-
-			if (method_exists($this, $function)) {
-				call_user_func(array($this, $function), $this->query, $value, $arguments);
-			}
 		}
 	}
 
@@ -222,17 +217,6 @@ class Search_Query_WikiBuilder
 
 		if (in_array('follow', $types)) {
 			$subquery->filterMultivalue($targetUser, 'user_followers');
-		}
-
-		$userId = TikiLib::lib('tiki')->get_user_id($targetUser);
-		if (in_array('stream_critical', $types)) {
-			$subquery->filterMultivalue("critical$userId", 'stream');
-		}
-		if (in_array('stream_high', $types)) {
-			$subquery->filterMultivalue("high$userId", 'stream');
-		}
-		if (in_array('stream_low', $types)) {
-			$subquery->filterMultivalue("low$userId", 'stream');
 		}
 	}
 

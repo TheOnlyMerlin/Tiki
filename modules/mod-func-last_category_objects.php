@@ -50,6 +50,8 @@ function module_last_category_objects_info()
  */
 function module_last_category_objects($mod_reference, $module_params)
 {
+	global $smarty;
+
 	if (!isset($module_params['type'])) {
 		$module_params['type'] = 'wiki page';
 	}
@@ -58,8 +60,8 @@ function module_last_category_objects($mod_reference, $module_params)
 		$module_params['type'] = '';
 	}
 
-	$smarty = TikiLib::lib('smarty');
-	$categlib = TikiLib::lib('categ');
+	global $categlib;
+	require_once ('lib/categories/categlib.php');
 
 	$last = $categlib->last_category_objects($module_params['id'], $mod_reference['rows'], $module_params['type']);
 

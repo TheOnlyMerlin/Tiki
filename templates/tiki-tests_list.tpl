@@ -4,15 +4,14 @@
 
 {pagination_links cant=$files_number offset=$offset step=$files_per_page}{/pagination_links}
 
-<div class="table-responsive">
-<table class="table normal">
+<table class="table normal" style="clear: both;">
 <tr>
 	<th>{tr}File Name{/tr}</th>
 	<th>{tr}Actions{/tr}</th>
 </tr>
-
+{cycle values="odd,even" print=false}
 {foreach from=$files item=file}
-<tr>
+<tr class="{cycle}">
 	<td class="text">{$file}</td>
 	<td class="action">
 		{self_link action={tr}Remove{/tr} filename="$file" _ajax='n' _icon='cross'}{tr}Remove{/tr}{/self_link}
@@ -22,6 +21,5 @@
 </tr>
 {/foreach}
 </table>
-</div>
 
 {pagination_links cant=$files_number offset=$offset step=$files_per_page}{/pagination_links}

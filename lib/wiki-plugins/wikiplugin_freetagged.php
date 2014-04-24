@@ -8,7 +8,7 @@
 function wikiplugin_freetagged_info()
 {
 	return array(
-		'name' => tra('Tagged'),
+		'name' => tra('Freetagged'),
 		'documentation' => 'PluginFreetagged',
 		'description' => tra('List similarly tagged objects'),
 		'prefs' => array('feature_freetags','wikiplugin_freetagged'),
@@ -217,7 +217,7 @@ function wikiplugin_freetagged($data, $params)
 					}
     				break;
 				case 'file':
-					$filegallib = TikiLib::lib('filegal');
+					global $filegallib; include_once('lib/filegals/filegallib.php');
 					$info = $filegallib->get_file($obj['itemId']);
 					$obj['description'] = $info['description'];
 					$obj['date'] = $info['lastModif'];

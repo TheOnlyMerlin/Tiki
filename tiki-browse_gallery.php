@@ -16,7 +16,10 @@ include_once ('lib/stats/statslib.php');
 $access->check_feature('feature_galleries');
 
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	global $categlib;
+	if (!is_object($categlib)) {
+		include_once ('lib/categories/categlib.php');
+	}
 }
 
 if ($_REQUEST["galleryId"] == 0 && $tiki_p_admin_galleries != 'y') {
@@ -234,7 +237,7 @@ $newoffset = $offset - $subgals['cant'];
 if ($newoffset < 0) $newoffset=0;
 $images = $imagegallib->get_images($newoffset, $remainingImages, $sort_mode, $find, $_REQUEST["galleryId"]);
 //get categories for each images
-$objectlib = TikiLib::lib('object');
+global $objectlib;
 if ($prefs['feature_categories'] == 'y') {
 	$type = 'image';
 	$arr = array();

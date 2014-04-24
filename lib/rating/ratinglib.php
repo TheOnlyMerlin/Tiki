@@ -27,11 +27,6 @@ class RatingLib extends TikiDb_Bridge
 		return $this->get_user_vote($target, $type, $objectId);
 	}
 
-	function get_vote_comment_author( $comment_author, $type, $objectId )
-	{
-		return $this->get_user_vote($comment_author, $type, $objectId);
-	}
-
 	function convert_rating_sort( & $sort_mode, $type, $objectKey )
 	{
 		if ( preg_match('/^adv_rating_(\d+)_(asc|desc)$/', $sort_mode, $parts) ) {
@@ -140,13 +135,13 @@ class RatingLib extends TikiDb_Bridge
 
 	function record_user_vote( $user, $type, $objectId, $score, $time = null )
 	{
-		global $prefs;
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib, $prefs;
+
 		if ( ! $this->is_valid($type, $score, $objectId) ) {
-            return false;
+			return false;
 		}
 
-        if ( is_null($time) ) {
+		if ( is_null($time) ) {
 			$time = time();
 		}
 
@@ -204,7 +199,7 @@ class RatingLib extends TikiDb_Bridge
 				break;
 		}
 
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 
 		$override = $this->get_override($type, $objectId);
 
@@ -217,6 +212,7 @@ class RatingLib extends TikiDb_Bridge
 
 	function set_override($type, $objectId, $value)
 	{
+		global $attributelib;
 		$options = $this->override_array($type);
 
 		$attributelib->set_attribute($type, $objectId, $type.".rating.override", $options[$value - 1]);
@@ -224,7 +220,8 @@ class RatingLib extends TikiDb_Bridge
 
 	function get_override($type, $objectId)
 	{
-		$attributelib = TikiLib::lib('attribute');
+		global $attributelib;
+		require_once('lib/attributes/attributelib.php');
 		$attrs = $attributelib->get_attributes($type, $objectId);
 		end($attrs);
 		$key = key($attrs);
@@ -516,7 +513,7 @@ class RatingLib extends TikiDb_Bridge
 
 	private function internal_refresh_rating( $type, $object, $runner, $configurations )
 	{
-		$ratingconfiglib = TikiLib::lib('ratingconfig');
+		global $ratingconfiglib; require_once 'lib/rating/configlib.php';
 		$runner->setVariables(array('type' => $type, 'object-id' => $object));
 
 		foreach ( $configurations as $config ) {
@@ -561,4 +558,6 @@ class RatingLib extends TikiDb_Bridge
 		return $this->configurations = $configurations;
 	}
 }
+
+global $ratinglib; $ratinglib = new RatingLib;
 

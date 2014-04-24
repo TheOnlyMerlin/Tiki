@@ -20,10 +20,7 @@
  */
 function payment_behavior_perform_trade( $params )
 {
-	global $prefs, $cclitelib;
-	$userlib = TikiLib::lib('user');
-	$paymentlib = TikiLib::lib('payment');
-	$smarty = TikiLib::lib('smarty');
+	global $userlib, $paymentlib, $prefs, $cclitelib, $smarty;
 	require_once 'lib/payment/cclitelib.php';
 
 	$default = array( 'wanted' => 'n', 'registry' => '', 'currency' => '' );

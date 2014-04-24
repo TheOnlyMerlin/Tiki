@@ -1,10 +1,3 @@
-{extends 'layout_view.tpl'}
-
-{block name="title"}
-	{title}{$title|escape}{/title}
-{/block}
-
-{block name="content"}
 <form method="post" action="{service controller=workspace action=advanced_edit id=$id}">
 	{if $is_advanced != 'y'}
 		{remarksbox type=warning title="{tr}No turning back{/tr}"}
@@ -18,7 +11,6 @@
 	</label>
 	{textarea syntax='tiki' codemirror='true'}{$definition}{/textarea}
 	<div class="submit">
-		<input type="submit" class="btn btn-default btn-sm" value="{tr}Save{/tr}">
+		<input type="submit" class="btn btn-default" value="{tr}Save{/tr}">
 	</div>
 </form>
-{/block}

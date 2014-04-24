@@ -186,7 +186,7 @@ class LatexRender
         $string .= "\\pagestyle{empty}\n";
         $string .= "\\begin{document}\n";
         $string .= "\$".$latex_formula."\$\n";
-	    $string .= "\\end{document}\n";
+	$string .= "\\end{document}\n";
 
         return $string;
     }

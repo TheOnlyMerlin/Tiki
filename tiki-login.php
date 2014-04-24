@@ -161,7 +161,8 @@ if (isset($_REQUEST['intertiki']) and in_array($_REQUEST['intertiki'], array_key
 				$userlib->set_user_fields($user_details['info']);
 				$user = $requestedUser;
 				if ($prefs['feature_userPreferences'] == 'y' && $prefs['feature_intertiki_import_preferences'] == 'y') {
-					$userprefslib = TikiLib::lib('userprefs');
+					global $userprefslib;
+					include_once ('lib/userprefs/userprefslib.php');
 					$userprefslib->set_user_avatar($user, 'u', '', $user_details['avatarName'], $user_details['avatarSize'], $user_details['avatarFileType'], $avatarData);
 					$userlib->set_user_preferences($user, $user_details['preferences']);
 				}
@@ -271,7 +272,7 @@ if ($isvalid) {
 			$url = ${$_REQUEST['page']};
 		} else {
 			if (!empty($_REQUEST['url'])) {
-				$cachelib = TikiLib::lib('cache');
+				global $cachelib; include_once('lib/cache/cachelib.php');
 				preg_match('/(.*)\?cache=(.*)/', $_REQUEST['url'], $matches);
 				if (!empty($matches[2]) && $cdata = $cachelib->getCached($matches[2], 'edit')) {
 					if (!empty($matches[1])) {
@@ -468,14 +469,6 @@ $url.= ((strpos($url, '?') === false) ? '?' : '&') . SID;
 // If a wizard is run, it will return to the $url location when it has completed. Thus no code after $wizardlib->onLogin will be executed
 // The user must be actually logged in before onLogin is called. If $isdue is set, then: "Note that the user is not logged in he's just validated to change his password"
 if (!$isdue) {
-
-	if ($prefs['feature_user_encryption'] === 'y') {
-		// Notify CryptLib about the login
-		$cryptlib = TikiLib::lib('crypt');
-		$cryptlib->onUserLogin($pass);
-	}
-
-	// Process wizard
 	$wizardlib = TikiLib::lib('wizard');
 	$wizardlib->onLogin($user, $url);
 }

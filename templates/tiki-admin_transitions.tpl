@@ -2,7 +2,6 @@
 
 {tabset}
 	{tab name="{tr}Subset Selection{/tr}"}
-        <h2>{tr}Subset Selection{/tr}</h2>
 		<form method="post" action="tiki-admin_transitions.php?action=subset" style="text-align: left;">
 			<fieldset>
 				<legend>{tr}Type{/tr}</legend>
@@ -45,7 +44,7 @@
 			</fieldset>
 
 			<p>
-				{tr}Once you have selected at least two, click:{/tr} <input type="submit" class="btn btn-default btn-sm" value="{tr}Select{/tr}"> {tr}and then, click the "New/Edit" tab which will appear above.{/tr}
+				{tr}Once you have selected at least two, click:{/tr} <input type="submit" class="btn btn-default" value="{tr}Select{/tr}"> {tr}and then, click the "New/Edit" tab which will appear above.{/tr}
 			</p>
 		</form>
 		{jq}
@@ -81,7 +80,6 @@
 	{/tab}
 	{if $available_states|@count > 0}
 	{tab name="{tr}Transitions{/tr}"}
-	    <h2>{tr}Transitions{/tr}</h2>
 		{$headerlib->add_dracula()}
 		<div id="graph-canvas" class="graph-canvas" data-graph-nodes="{$graph_nodes|escape}" data-graph-edges="{$graph_edges|escape}"></div>
 		<a href="#" id="graph-draw" class="button">{tr}Draw Transition Diagram{/tr}</a>
@@ -92,7 +90,6 @@
 			return false;
 		} );
 		{/jq}
-		<div class="table-responsive">
 		<table class="table normal">
 			<thead>
 				<tr>
@@ -113,7 +110,9 @@
 						<td class="action">
 							{self_link transitionId=$trans.transitionId action=edit cookietab=3}{icon _id=page_edit alt="{tr}Edit{/tr}"}{/self_link}
 							{self_link transitionId=$trans.transitionId action=remove}{icon _id=cross alt="{tr}Remove{/tr}"}{/self_link}
-							{permission_link mode=icon type=transition id=$trans.transitionId title=$trans.name}
+							<a class="link" href="tiki-objectpermissions.php?objectName={$trans.name|escape:url}&amp;objectType=transition&amp;permType=transition&amp;objectId={$trans.transitionId|escape:"url"}">
+								{icon _id='key' class=titletips title="{tr}Assign permissions for transition{/tr}" alt="{tr}Permissions{/tr}"}
+							</a>
 						</td>
 					</tr>
 				{foreachelse}
@@ -123,7 +122,6 @@
 				{/foreach}
 			</tbody>
 		</table>
-        </div>
 	{/tab}
 
 	{tab name="{tr}New / Edit{/tr}"}
@@ -168,15 +166,13 @@
 				{/foreach}
 			</fieldset>
 			<p>
-				<input type="submit" class="btn btn-default btn-sm" value="{tr}Save{/tr}">
+				<input type="submit" class="btn btn-default" value="{tr}Save{/tr}">
 			</p>
 		</form>
 	{/tab}
 
 	{if $selected_transition}
 		{tab name="{tr}Guards{/tr}"}
-		    <h2>{tr}Guards{/tr}</h2>
-		    <div class="table-responsive">
 			<table class="table normal">
 				<thead>
 					<tr>
@@ -209,7 +205,6 @@
 					{/foreach}
 				</tbody>
 			</table>
-			</div>
 			<form method="post" action="tiki-admin_transitions.php?action=addguard&amp;transitionId={$selected_transition.transitionId|escape}&amp;cookietab=4" style="text-align: left;">
 				<h2>{tr}New Guard{/tr}</h2>
 				<fieldset>
@@ -237,7 +232,7 @@
 					{/foreach}
 				</fieldset>
 				<p>
-					<input type="submit" class="btn btn-default btn-sm" value="{tr}Add{/tr}">
+					<input type="submit" class="btn btn-default" value="{tr}Add{/tr}">
 				</p>
 			</form>
 		{/tab}

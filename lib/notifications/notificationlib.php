@@ -49,7 +49,7 @@ class NotificationLib extends TikiLib
 	function get_mail_events($event, $object)
 	{
 		global $tikilib;
-		$objectlib = TikiLib::lib('object');
+		require_once('lib/objectlib.php');
 		$query = "select * from `tiki_user_watches` where `event`=? and (`object`=? or `object`='*')";
 		$result = $this->query($query, array($event, $object));
 		$ret = array();

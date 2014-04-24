@@ -48,7 +48,7 @@ if (isset($_POST['langwatch'])) {
 }
 
 if ($prefs['feature_categories']) {
-	$categlib = TikiLib::lib('categ');
+	include_once ('lib/categories/categlib.php');
 	$categories = $categlib->getCategories(NULL, true, false);
 } else {
 	$categories = array();

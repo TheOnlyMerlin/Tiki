@@ -1,8 +1,8 @@
 {title}{tr}Calendar import{/tr}{/title}
 
-<div class="t_navbar">
-{button class="btn btn-default" _text="{tr}View Calendars{/tr}" href="tiki-calendar.php"}
-{button class="btn btn-default" _text="{tr}Admin Calendars{/tr}" href="tiki-admin_calendars.php"}
+<div class="navbar">
+{button _text="{tr}View Calendars{/tr}" href="tiki-calendar.php"}
+{button _text="{tr}Admin Calendars{/tr}" href="tiki-admin_calendars.php"}
 </div>
 
 {if isset($updated) and $updated eq 'y'}
@@ -29,7 +29,7 @@
       </td>
       <td>
         <input type="file" name="fileCSV" size="50">
-        <input type="submit" class="btn btn-default btn-sm" name="import" value="{tr}import{/tr}">
+        <input type="submit" class="btn btn-default" name="import" value="{tr}import{/tr}">
       </td>
     </tr>
   </table>

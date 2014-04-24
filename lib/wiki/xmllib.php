@@ -69,7 +69,7 @@ class XmlLib extends TikiLib
 		}
 
 		if (!empty($structure)) {
-			$structlib = TikiLib::lib('struct');
+			global $structlib; include_once('lib/structures/structlib.php');
 			$pages = $structlib->s_get_structure_pages($structure);
 			$stack = array();
 			foreach ($pages as $page) {
@@ -197,7 +197,7 @@ class XmlLib extends TikiLib
 		$smarty->assign_by_ref('images', $images);
 
 		if ($prefs['feature_wiki_attachments'] == 'y' && $this->config['attachments']) {
-			$wikilib = TikiLib::lib('wiki');
+			global $wikilib; include_once('lib/wiki/wikilib.php');
 			$attachments = $wikilib->list_wiki_attachments($page, 0, -1);
 			if (!empty($attachments['cant'])) {
 				foreach ($attachments['data'] as $key=>$att) {
@@ -222,7 +222,7 @@ class XmlLib extends TikiLib
 		}
 
 		if ($prefs['feature_history'] == 'y' && $this->config['history']) {
-			$histlib = TikiLib::lib('hist');
+			global $histlib; include_once ('lib/wiki/histlib.php');
 			$history = $histlib->get_page_history($page, false);
 			foreach ($history as $key=>$hist) {
 				$all = $histlib->get_version($page, $hist['version']); // can be optimised if returned in the list
@@ -293,8 +293,7 @@ class XmlLib extends TikiLib
 	/* create a page from an xml parsing result */
 	function create_page($info)
 	{
-		global $prefs, $tiki_p_wiki_attach_files, $tiki_p_edit_comments, $tikidomain;
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib, $wikilib, $prefs, $tiki_p_wiki_attach_files, $tiki_p_edit_comments, $dbTiki, $tikidomain;
 
 		if (($info['data'] = $this->zip->getFromName($info['zip'])) === false) {
 			$this->errors[] = 'Can not unzip';
@@ -392,7 +391,7 @@ class XmlLib extends TikiLib
 					}
 				}
 
-				$wikilib = TikiLib::lib('wiki');
+				global $wikilib; include_once('lib/wiki/wikilib.php');
 				$wikilib->wiki_attach_file(
 					$info['name'],
 					$attachment['filename'],
@@ -404,6 +403,8 @@ class XmlLib extends TikiLib
 					$fhash,
 					$attachment['created']
 				);
+				//change the page data attach is needed $res['attId']
+				//$res = $wikilib->get_wiki_attach_file($info['name'], $attachment['filename'], $attachment['type'], $attachment['size']);
 			}
 		}
 
@@ -466,7 +467,7 @@ class XmlLib extends TikiLib
 		}
 
 		if ($prefs['feature_wiki_structure'] == 'y' && !empty($info['structure'])) {
-			$structlib = TikiLib::lib('struct');
+			global $structlib; include_once('lib/structures/structlib.php');
 			//TODO alias
 			if ($info['structure'] == 1) {
 				$this->structureStack[$info['structure']] = $structlib->s_create_page(null, null, $info['name'], '');

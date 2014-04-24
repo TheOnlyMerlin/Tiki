@@ -42,16 +42,15 @@ $section = 'wiki page';
 $isHomePage = (!isset($_REQUEST['page']));
 require_once('tiki-setup.php');
 
-$multilinguallib = TikiLib::lib('multilingual');
+require_once('lib/multilingual/multilinguallib.php');
 
 if ( $prefs['feature_wiki_structure'] == 'y' ) {
-	$structlib = TikiLib::lib('struct');
+	include_once('lib/structures/structlib.php');
 }
 
-$wikilib = TikiLib::lib('wiki');
-$statslib = TikiLib::lib('stats');
+include_once('lib/wiki/wikilib.php');
+include_once('lib/stats/statslib.php');
 require_once ('lib/wiki/renderlib.php');
-require_once('lib/debug/Tracer.php');
 
 $auto_query_args = array(
 				'page',
@@ -69,7 +68,10 @@ $auto_query_args = array(
 );
 
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	global $categlib;
+	if (!is_object($categlib)) {
+		include_once('lib/categories/categlib.php');
+	}
 }
 
 if (!empty($_REQUEST['machine_translate_to_lang'])) {
@@ -87,7 +89,7 @@ if (!isset($_SESSION['thedate'])) {
 }
 
 // Check if a WS is active
-$perspectivelib = TikiLib::lib('perspective');
+global $perspectivelib; require_once 'lib/perspectivelib.php';
 $activeWS = $perspectivelib->get_current_perspective(null);
 
 // If there's a WS active and the WS has a homepage, then load the WS homepage
@@ -189,16 +191,6 @@ $smarty->assign_by_ref('page', $page);
 $cat_type = 'wiki page';
 $cat_objid = $page;
 
-if ($prefs['tracker_wikirelation_redirectpage'] == 'y' && !isset($_REQUEST['admin'])) {
-	$relatedItems = TikiLib::lib('relation')->get_object_ids_with_relations_from( 'wiki page', $page, 'tiki.wiki.linkeditem' );
-	$relatedItem = reset($relatedItems);
-	if ($relatedItem) {
-		$url = 'tiki-view_tracker_item.php?itemId=' . $relatedItem;
-		include_once('tiki-sefurl.php');
-		header('location: '. filter_out_sefurl($url, 'trackeritem'));
-	}
-}
-
 // Inline Ckeditor editor
 if ($prefs['wysiwyg_inline_editing'] == 'y' && $page &&
 		(	($tikilib->user_has_perm_on_object($user, $_REQUEST['page'], 'wiki page', 'edit')) ||
@@ -231,7 +223,7 @@ if ( function_exists('utf8_encode') ) {
 if (!$info || isset($_REQUEST['date']) || isset($_REQUEST['version'])) {
 	if ($prefs['feature_wiki_use_date'] == 'y' && isset($_REQUEST['date'])) {
 		// Date is required
-		$histlib = TikiLib::lib('hist');
+		include_once ('lib/wiki/histlib.php');
 
 		try {
 			$page_view_date = $histlib->get_view_date($_REQUEST['date']);
@@ -252,7 +244,7 @@ if (!$info || isset($_REQUEST['date']) || isset($_REQUEST['version'])) {
 
 	if ($prefs['feature_wiki_use_date'] == 'y' && isset($_REQUEST['version'])) {
 		// Version is required
-		$histlib = TikiLib::lib('hist');
+		include_once ('lib/wiki/histlib.php');
 
 		try {
 			$info = $histlib->get_page_info($page, $_REQUEST['version']);
@@ -315,7 +307,10 @@ if (empty($info) && !($user && $prefs['feature_wiki_userpage'] == 'y' && strcase
 				if (!ctype_digit($suffix) && $suffix) {
 					// allow escaped numerics as text
 					$suffix = stripslashes($suffix);
-					$semanticlib = TikiLib::lib('semantic');
+					global $semanticlib;
+					if (!is_object($semanticlib)) {
+						require_once 'lib/wiki/semanticlib.php';
+					}
 					$items = $semanticlib->getItemsFromTracker($newPage, $suffix);
 					if (count($items) > 1) {
 						$msg = tra('There is more than one item in the tracker with this title');
@@ -394,7 +389,7 @@ $page = $info['pageName'];
 //}
 
 if (isset($_REQUEST['approve'], $_REQUEST['revision']) && $_REQUEST['revision'] <= $info['version']) {
-	$flaggedrevisionlib = TikiLib::lib('flaggedrevision');
+	global $flaggedrevisionlib; require_once 'lib/wiki/flaggedrevisionlib.php';
 
 	if ($flaggedrevisionlib->page_requires_approval($page)) {
 		$perms = Perms::get('wiki page', $page);
@@ -740,9 +735,7 @@ function translate_text($text, $sourceLang, $targetLang)
  */
 function make_sure_machine_translation_is_enabled()
 {
-	global $prefs;
-
-	$access = TikiLib::lib('access');
+	global $access, $_REQUEST, $prefs;
 	if ($prefs['feature_machine_translation'] != 'y' || $prefs['lang_machine_translate_wiki' != 'y']) {
 		$error_msg = tra('You have requested that this page be machine translated:') .
 						' <b>' .

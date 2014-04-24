@@ -51,11 +51,7 @@ function discardUser($u, $reason)
 
 function batchImportUsers()
 {
-	global $tiki_p_admin, $prefs, $userGroups;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
-	$logslib = TikiLib::lib('logs');
+	global $userlib, $smarty, $logslib, $tiki_p_admin, $prefs, $userGroups, $tikilib;
 
 	$fname = $_FILES['csvlist']['tmp_name'];
 	$fhandle = fopen($fname, 'r');
@@ -714,7 +710,7 @@ if (isset($_REQUEST['user']) and $_REQUEST['user']) {
 	if ($prefs['userTracker'] == 'y') {
 		$re = $userlib->get_usertracker($_REQUEST['user']);
 		if ($re['usersTrackerId']) {
-			$trklib = TikiLib::lib('trk');
+			include_once ('lib/trackers/trackerlib.php');
 			$userstrackerid = $re['usersTrackerId'];
 			$smarty->assign('userstrackerid', $userstrackerid);
 			$usersFields = $trklib->list_tracker_fields($usersTrackerId, 0, -1, 'position_asc', '');
@@ -759,10 +755,11 @@ if ($tiki_p_admin == 'y') {
 }
 
 //add tablesorter sorting and filtering
-$tsOn = Table_Check::isEnabled(true);
+$tsOn	= $prefs['disableJavascript'] == 'n' && $prefs['feature_jquery_tablesorter'] == 'y'
+		&& $prefs['feature_ajax'] == 'y' ? true : false;
 
 $smarty->assign('tsOn', $tsOn);
-$tsAjax = Table_Check::isAjaxCall();
+$tsAjax = isset($_REQUEST['tsAjax']) && $_REQUEST['tsAjax'] ? true : false;
 
 if ($tsOn) {
 	$ts_countid = 'usertable-count';
@@ -794,12 +791,12 @@ if ($tsOn && !$tsAjax) {
 	$ts_groups = array_flip($ts_groups);
 	//set tablesorter code
 	Table_Factory::build(
-		'TikiAdminusers',
+		'adminusers',
 		array(
 			 'total' => $users['cant'],
-			 'columns' => array(
-				 6 => array(
-					 'filter' => array(
+			 'filters' => array(
+				 'columns' => array(
+					 6 => array(
 						 'options' => $ts_groups
 				 	)
 				)

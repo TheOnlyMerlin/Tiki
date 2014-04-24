@@ -14,7 +14,8 @@ function payment_behavior_cart_exchange_product( $exchangeorderitemid = 0, $exch
 		return false;
 	}
 
-	$trklib = TikiLib::lib('trk');
+	global $trklib;
+	include_once ('lib/trackers/trackerlib.php');
 
 	$orderitemsTrackerId = $prefs['payment_cart_orderitems_tracker'];
 

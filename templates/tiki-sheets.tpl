@@ -4,10 +4,9 @@
 
 {tabset}
 {tab name="{tr}List{/tr}"}
-    <h2>{tr}List{/tr}</h2>
 {if $tiki_p_edit_sheet eq 'y'}
-	<div class="t_navbar">
-		{button href="tiki-sheets.php?edit_mode=1&amp;sheetId=0" class="btn btn-default" _text="{tr}Create New Sheet{/tr}"}
+	<div class="navbar">
+		{button href="tiki-sheets.php?edit_mode=1&amp;sheetId=0" _text="{tr}Create New Sheet{/tr}"}
 	</div>
 {/if}
 <h2>{tr}Spreadsheet{/tr}</h2>
@@ -15,7 +14,6 @@
   {include file='find.tpl'}
 {/if}
 
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		<th>{self_link _sort_arg='sort_mode' _sort_field='title'}{tr}Title{/tr}{/self_link}</th>
@@ -25,7 +23,7 @@
 		<th>{self_link _sort_arg='sort_mode' _sort_field='user'}{tr}User{/tr}{/self_link}</th>
 		<th>{tr}Actions{/tr}</th>
 	</tr>
-
+	{cycle values="odd,even" print=false}
 	{foreach item=sheet from=$sheets}
 		{include name='base' file='tiki-sheets_listing.tpl' sheet=$sheet}
 		{foreach item=childSheet from=$sheet.children}
@@ -35,7 +33,6 @@
 		{norecords _colspan=6}
 	{/foreach}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
 {/tab}
@@ -50,7 +47,9 @@
 		{/if}
 		
 		{if $individual eq 'y'}
-			{permission_link mode=link type=sheet id=$sheetId title=$name label="{tr}There are individual permissions set for this sheet{/tr}"}
+			<a class="gallink" href="tiki-objectpermissions.php?objectName={$name|escape:"url"}&amp;objectType=sheet&amp;permType=sheet&amp;objectId={$sheetId}">
+				{tr}There are individual permissions set for this sheet{/tr}
+			</a>
 		{/if}
 		<form action="tiki-sheets.php" method="post">
 			<input type="hidden" name="sheetId" value="{$sheetId|escape}">
@@ -87,7 +86,7 @@
 						<em>{tr}Makes this sheet a "child" sheet of a multi-sheet set{/tr}</em>
 					</td>
 				</tr>
-				<tr><td>&nbsp;</td><td><input type="submit" class="btn btn-default btn-sm" value="{tr}Save{/tr}" name="edit"></td></tr>
+				<tr><td>&nbsp;</td><td><input type="submit" class="btn btn-default" value="{tr}Save{/tr}" name="edit"></td></tr>
 			</table>
 		</form>
 		

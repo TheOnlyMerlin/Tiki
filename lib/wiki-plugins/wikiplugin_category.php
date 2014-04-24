@@ -191,13 +191,13 @@ function wikiplugin_category_info()
 
 function wikiplugin_category($data, $params)
 {
-	global $prefs;
+	global $prefs, $categlib;
 
 	if ($prefs['feature_categories'] != 'y') {
 		return "<span class='warn'>" . tra("Categories are disabled"). "</span>";
 	}
 	
-	$categlib = TikiLib::lib('categ');
+	require_once ("lib/categories/categlib.php");
 
 	$default = array('maxRecords' => 50);
 	$params = array_merge($default, $params);

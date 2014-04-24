@@ -6,7 +6,6 @@
 // $Id$
 
 define('TIKI_IN_TEST', 1);
-define('TIKI_PATH', realpath(__DIR__ . '/../../'));
 define('CUSTOM_ERROR_LEVEL', defined('E_DEPRECATED') ? E_ALL ^ E_DEPRECATED : E_ALL);
 
 ini_set('display_errors', 'on');
@@ -86,13 +85,14 @@ chdir(dirname(__FILE__) . '/../..');
 global $smarty;
 require_once 'lib/init/smarty.php';
 $smarty->addPluginsDir('../smarty_tiki/');
-$cachelib = TikiLib::lib('cache');
-$wikilib = TikiLib::lib('wiki');
-$userlib = TikiLib::lib('user');
-$headerlib = TikiLib::lib('header');
+require_once 'lib/cache/cachelib.php';
+require_once 'lib/wiki/wikilib.php';
+require_once 'lib/userslib.php';
+require_once 'lib/headerlib.php';
 require_once 'lib/init/tra.php';
 require_once 'lib/tikiaccesslib.php';
 
+$userlib = new UsersLib;
 $_SESSION = array(
 		'u_info' => array(
 			'login' => null

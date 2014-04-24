@@ -170,9 +170,8 @@ function wikiplugin_trackertimeline_info()
 
 function wikiplugin_trackertimeline( $data, $params )
 {
-	$trklib = TikiLib::lib('trk');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $trklib, $smarty, $tikilib;
+	require_once 'lib/trackers/trackerlib.php';
 
 	static $instance = 0;
 	$instance++;

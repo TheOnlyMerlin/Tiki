@@ -11,10 +11,10 @@
 {/if}
 
 {if $tiki_p_admin_users eq 'y'}
-	<div class="t_navbar btn-group form-group">
+	<div class="navbar">
 		{assign var=thisuser value=$userinfo.login}
-		{button href="tiki-assignuser.php?assign_user=$thisuser" class="btn btn-default" _text="{tr}Assign Group{/tr}"}
-		{button href="tiki-user_information.php?view_user=$thisuser" class="btn btn-default" _text="{tr}User Information{/tr}"}
+		{button href="tiki-assignuser.php?assign_user=$thisuser" _text="{tr}Assign Group{/tr}"}
+		{button href="tiki-user_information.php?view_user=$thisuser" _text="{tr}User Information{/tr}"}
 	</div>
 {/if}
 
@@ -26,12 +26,11 @@
 		{/section}
 	</div>
 {/if}
-
+{cycle values="odd,even" print=false}
 {tabset name="mytiki_user_preference"}
 
 {if $prefs.feature_userPreferences eq 'y'}
 	{tab name="{tr}Personal Information{/tr}"}
-        <h2>{tr}Personal Information{/tr}</h2>
 		<form action="tiki-user_preferences.php" method="post">
 		<input type="hidden" name="view_user" value="{$userwatch|escape}">
 
@@ -195,12 +194,11 @@
 				<td><span class="description">{$userinfo.lastLogin|tiki_long_datetime}</span></td>
 			</tr>
 			<td colspan="2" class="input_submit_container">
-				<input type="submit" class="btn btn-default btn-sm" name="new_prefs"  value="{tr}Save changes{/tr}">
+				<input type="submit" class="btn btn-default" name="new_prefs"  value="{tr}Save changes{/tr}">
 			</td>
 		</table>
 	{/tab}
 	{tab name="{tr}Preferences{/tr}"}
-        <h2>{tr}Preferences{/tr}</h2>
 		<table class="formcolor">
 		<tr>
 			<th colspan="2">{tr}General settings{/tr}</th>
@@ -551,7 +549,7 @@
 
 		<tr>
 			<td colspan="2" class="input_submit_container">
-				<input type="submit" class="btn btn-default btn-sm" name="new_prefs" value="{tr}Save changes{/tr}">
+				<input type="submit" class="btn btn-default" name="new_prefs" value="{tr}Save changes{/tr}">
 			</td>
 		</tr>
 		</table>
@@ -561,78 +559,75 @@
 
 {if $prefs.change_password neq 'n' or ! ($prefs.login_is_email eq 'y' and $userinfo.login neq 'admin')}
 	{tab name="{tr}Account Information{/tr}"}
-        <h2>{tr}Account Information{/tr}</h2>
-		<form action="tiki-user_preferences.php" method="post" class="form-horizontal">
+		<form action="tiki-user_preferences.php" method="post">
 			<input type="hidden" name="view_user" value="{$userwatch|escape}">
-
+			<table class="formcolor">
 				{if $prefs.auth_method neq 'cas' || ($prefs.cas_skip_admin eq 'y' && $user eq 'admin')}
 					{if $prefs.change_password neq 'n' and ($prefs.login_is_email ne 'y' or $userinfo.login eq 'admin')}
-						<div class="form-group">
-							<div>{tr}Leave "New password" and "Confirm new password" fields blank to keep current password{/tr}</div>
-                        </div>
+						<tr>
+							<td colspan="2">{tr}Leave "New password" and "Confirm new password" fields blank to keep current password{/tr}</td>
+						</tr>
 					{/if}
 				{/if}
 
 				{if $prefs.login_is_email eq 'y' and $userinfo.login neq 'admin'}
 					<input type="hidden" name="email" value="{$userinfo.email|escape}">
 				{else}
-                    <div class="form-group">
-						<label class="col-md-4 control-label" for="email">{tr}Email address:{/tr}</label>
-                        <div class="col-md-8">
-    						<input type="text" class="form-control" name="email" id="email" value="{$userinfo.email|escape}">
-                        </div>
-					</div>
+					<tr>
+						<td>{tr}Email address:{/tr}</td>
+						<td><input type="text" name="email" value="{$userinfo.email|escape}"></td>
+					</tr>
 				{/if}
 
 				{if $prefs.auth_method neq 'cas' || ($prefs.cas_skip_admin eq 'y' && $user eq 'admin')}
 					{if $prefs.change_password neq 'n'}
-                        <div class="form-group">
-                            <label class="col-md-4 control-label" for="pass1">{tr}New password:{/tr}</label>
-                            <div class="col-md-8">
-    							<input class="form-control" type="password" name="pass1" id="pass1">
-                            </div>
-						</div>
-                        <div class="form-group">
-							<label class="col-md-4 control-label" for="pass2">{tr}Confirm new password:{/tr}</label>
-                            <div class="col-md-8">
-    							<input  class="form-control" type="password" name="pass2" id="pass2">
-                            </div>
-						</div>
+						<tr>
+							<td>{tr}New password:{/tr}</td>
+							<td><input type="password" name="pass1"></td>
+						</tr>
+						<tr>
+							<td>{tr}Confirm new password:{/tr}</td>
+							<td><input type="password" name="pass2"></td>
+						</tr>
 					{/if}
 
 					{if $tiki_p_admin ne 'y' or $userwatch eq $user}
-                        <div class="form-group">
-							<label class="col-md-4 control-label" for="pass">{tr}Current password (required):{/tr}</label>
-                            <div class="col-md-8">
-    							<input class="form-control" type="password" name="pass" id="pass">
-                            </div>
-						</div>
+						<tr>
+							<td>{tr}Current password (required):{/tr}</td>
+							<td><input type="password" name="pass"></td>
+						</tr>
 					{/if}
 				{/if}
 
-				<div class="text-center">
-					<input type="submit" class="btn btn-default btn-sm" name="chgadmin" value="{tr}Save changes{/tr}">
-				</div>
+				<tr>
+					<td colspan="2" class="input_submit_container">
+						<input type="submit" class="btn btn-default" name="chgadmin" value="{tr}Save changes{/tr}">
+					</td>
+				</tr>
+			</table>
 		</form>
 	{/tab}
 {/if}
 
 {if $tiki_p_delete_account eq 'y' and $userinfo.login neq 'admin'}
 	{tab name="{tr}Account Deletion{/tr}"}
-        <h2>{tr}Account Deletion{/tr}</h2>
 		<form action="tiki-user_preferences.php" method="post"
 			  onsubmit='return confirm("{tr _0=$userwatch|escape}Are you really sure you want to delete the account %0?{/tr}");'>
 			{if !empty($userwatch)}<input type="hidden" name="view_user" value="{$userwatch|escape}">{/if}
-			<div class="form-inline">
-                <div class="form-group">
-					<label for="deleteaccountconfirm">{tr}Check this box if you really want to delete the account{/tr}</label>
-                    <input type='checkbox' name='deleteaccountconfirm' id="deleteaccountconfirm" value='1'>
-
-                </div>
-				<div class="form-group">
-						<input type="submit" class="btn btn-default btn-sm" name="deleteaccount" value="{if !empty($userwatch)}{tr}Delete the account:{/tr} {$userwatch|escape}{else}{tr}Delete my account{/tr}{/if}">
-                </div>
-            </div>
+			<table class="formcolor">
+				<tr class="{cycle}">
+					<td></td>
+					<td>
+						<input type='checkbox' name='deleteaccountconfirm' value='1'>
+						{tr}Check this box if you really want to delete the account{/tr}
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" class="input_submit_container">
+						<input type="submit" class="btn btn-default" name="deleteaccount" value="{if !empty($userwatch)}{tr}Delete the account:{/tr} {$userwatch|escape}{else}{tr}Delete my account{/tr}{/if}">
+					</td>
+				</tr>
+			</table>
 		</form>
 	{/tab}
 {/if}

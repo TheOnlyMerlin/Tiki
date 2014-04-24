@@ -129,7 +129,7 @@ class LogsLib extends TikiLib
 		}
 
 		if ($logCateg) {
-			$categlib = TikiLib::lib('categ');
+			global $categlib; include_once('lib/categories/categlib.php');
 			if ($objectType == 'comment') {
 				preg_match('/type=([^&]*)/', $param, $matches);
 				$categs = $categlib->get_object_categories($matches[1], $object);
@@ -185,7 +185,7 @@ class LogsLib extends TikiLib
 		}
 
 		if ($logCateg) {
-			$categlib = TikiLib::lib('categ');
+			global $categlib; include_once('lib/categories/categlib.php');
 			if ($objectType == 'comment') {
 				preg_match('/type=([^&]*)/', $param, $matches);
 				$categs = $categlib->get_object_categories($matches[1], $object);
@@ -383,9 +383,8 @@ class LogsLib extends TikiLib
 			, $end=0, $categId='', $all=false
 			)
 	{
-		global $prefs, $section;
-		$tikilib = TikiLib::lib('tiki');
-		$contributionlib = TikiLib::lib('contribution');
+		global $prefs, $section, $tikilib, $contributionlib;
+		include_once('lib/contribution/contributionlib.php');
 
 		$bindvars = array();
 		$bindvarsU = array();
@@ -502,7 +501,7 @@ class LogsLib extends TikiLib
 			}
 
 			if ($res['objectType'] == 'comment' && empty($res['categId'])) {
-				$categlib = TikiLib::lib('categ');
+				global $categlib; include_once('lib/categories/categlib.php');
 				preg_match('/type=([^&]*)/', $res['comment'], $matches);
 				$categs = $categlib->get_object_categories($matches[1], $res['object']);
 				$i = 0;
@@ -1576,7 +1575,7 @@ class LogsLib extends TikiLib
 					}
 
 					if (!isset($fileGalleryNames)) {
-						$filegallib = TikiLib::lib('filegal');
+						global $filegallib; include_once('lib/filegals/filegallib.php');
 						$objects = $filegallib->list_file_galleries(0, -1, 'name_asc', 'admin', '', $prefs['fgal_root_id']);
 						foreach ($objects['data'] as $object) {
 							$fileGalleryNames[$object['galleryId']] = $object['name'];
@@ -1798,3 +1797,4 @@ class LogsLib extends TikiLib
 	}
 }
 
+$logslib = new LogsLib;

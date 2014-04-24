@@ -69,8 +69,7 @@ class groupAlertLib extends TikiLib
      */
     function Notify ( $ListUserToAlert,$URI )
 	{
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib,$userlib ;
 		if (!is_array($ListUserToAlert)) {
 			return;
 		}

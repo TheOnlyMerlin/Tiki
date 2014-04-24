@@ -10,7 +10,7 @@
 
 <div id="calscreen">
 
-	<div class="t_navbar form-group">
+	<div class="navbar">
 		{if $prefs.mobile_mode eq "y"}<div data-role="controlgroup" data-type="horizontal" style="float:right">{/if} {* mobile *}
 			{if $displayedcals|@count eq 1 and $prefs.feature_group_watches eq 'y' and ( $tiki_p_admin_users eq 'y' or $tiki_p_admin eq 'y' )}
 				<a {if $prefs.mobile_mode eq "y"}data-role="button" data-mini="true" data-inline="true" {/if}href="tiki-object_watches.php?objectId={$displayedcals[0]|escape:"url"}&amp;watch_event=calendar_changed&amp;objectType=calendar&amp;objectName={$infocals[$x].name|escape:"url"}&amp;objectHref={'tiki-calendar.php?calIds[]='|cat:$displayedcals[0]|escape:"url"}" class="icon">{icon _id='eye_group' alt="{tr}Group Monitor{/tr}" align='right' hspace="1"}</a> {* mobile *}
@@ -51,7 +51,7 @@
 			{button href="#" _onclick="toggle('filtercal');return false;" _text="{tr}Visible Calendars{/tr}" _title="{tr}Click to select visible calendars{/tr}"}
 
 			{if count($thiscal)}
-				<div id="configlinks" class="form-group text-right">
+				<div id="configlinks">
 				{assign var='maxCalsForButton' value=20}
 				{if count($checkedCals) > $maxCalsForButton}<select size="5">{/if}
 				{foreach item=k from=$listcals name=listc}
@@ -98,22 +98,20 @@
 	</div>
 
 	{if count($listcals) >= 1}
-		<form class="modal-content" id="filtercal" method="get" action="{$myurl}" name="f" style="display:none;">
-			<div class="modal-header caltitle">{tr}Group Calendars{/tr}</div>
-            <div class="modal-body">
-			    <div class="caltoggle">
-			    	{select_all checkbox_names='calIds[]' label="{tr}Check / Uncheck All{/tr}"}
-			    </div>
-			    {foreach item=k from=$listcals}
-				    <div class="calcheckbox">
-					    <input type="checkbox" name="calIds[]" value="{$k|escape}" id="groupcal_{$k}" {if $thiscal.$k}checked="checked"{/if}>
-					    <label for="groupcal_{$k}" class="calId{$k}">{$infocals.$k.name|escape} (id #{$k})</label>
-				    </div>
-			    {/foreach}
-			    <div class="calinput">
-				    <input type="hidden" name="todate" value="{$focusdate}">
-				    <input type="submit" class="btn btn-default btn-sm" name="refresh" value="{tr}Refresh{/tr}">
-                </div>
+		<form id="filtercal" method="get" action="{$myurl}" name="f" style="display:none;">
+			<div class="caltitle">{tr}Group Calendars{/tr}</div>
+			<div class="caltoggle">
+				{select_all checkbox_names='calIds[]' label="{tr}Check / Uncheck All{/tr}"}				
+			</div>
+			{foreach item=k from=$listcals}
+				<div class="calcheckbox">
+					<input type="checkbox" name="calIds[]" value="{$k|escape}" id="groupcal_{$k}" {if $thiscal.$k}checked="checked"{/if}>
+					<label for="groupcal_{$k}" class="calId{$k}">{$infocals.$k.name|escape} (id #{$k})</label>
+				</div>
+			{/foreach}
+			<div class="calinput">
+				<input type="hidden" name="todate" value="{$focusdate}">
+				<input type="submit" class="btn btn-default" name="refresh" value="{tr}Refresh{/tr}">
 			</div>
 		</form>
 	{/if}
@@ -135,8 +133,8 @@
 				<a href="{$iCalAdvParamsUrl}">{tr}advanced parameters{/tr}</a>
 			</div>
 			<div class="calinput">
-				<input type="submit" class="btn btn-default btn-sm" name="ical" value="{tr}Export as iCal{/tr}">
-				<input type="submit" class="btn btn-default btn-sm" name="csv" value="{tr}Export as CSV{/tr}">
+				<input type="submit" class="btn btn-default" name="ical" value="{tr}Export as iCal{/tr}">
+				<input type="submit" class="btn btn-default" name="csv" value="{tr}Export as CSV{/tr}">
 			</div>
 		</form>
 	{/if}
@@ -182,9 +180,8 @@ $('#calendar').fullCalendar({
 			slotMinutes: {{$prefs.calendar_timespan}},
 			defaultView: {{if $prefs.calendar_view_mode === 'week'}}'agendaWeek'{{else if $prefs.calendar_view_mode === 'day'}}'agendaDay'{{else}}'month'{{/if}},
 			eventAfterRender : function( event, element, view ) {
-				element.attr('title',event.title);
-				element.data('content', event.description);
-				element.popover({ trigger: 'hover' });
+				element.attr('title',event.title +'|'+event.description);
+				element.cluetip({arrows: true, splitTitle: '|', clickThrough: true});
 			},
 			eventClick: function(event) {
         if (event.url && event.editable) {

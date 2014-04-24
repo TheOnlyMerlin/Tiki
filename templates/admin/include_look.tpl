@@ -1,43 +1,29 @@
 {* $Id$ *}
-<form action="tiki-admin.php?page=look" id="look" name="look" class="form-horizontal labelColumns" onreset="return(confirm('{tr}Cancel Edit{/tr}'))" class="admin" method="post">
-	<div class="row">
-		<div class="form-group col-lg-12">
-			<div class="pull-right">
-				<input type="reset" class="btn btn-link btn-sm" name="looksetupreset" title="{tr}Reset Changes{/tr}" value="{tr}Reset{/tr}" />
-				<input type="submit" class="btn btn-primary btn-sm" name="looksetup" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}" />
-			</div>
-		</div>
+<form action="tiki-admin.php?page=look" id="look" name="look" class="labelColumns" onreset="return(confirm('{tr}Cancel Edit{/tr}'))" class="admin" method="post">
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" class="btn btn-default" name="looksetup" value="{tr}Apply{/tr}" />
+		<input type="reset" class="btn btn-warning" name="looksetupreset" value="{tr}Reset{/tr}" />
 	</div>
+
 	{tabset name="admin_look"}
 		{tab name="{tr}Theme{/tr}"}
-			<h2>{tr}Theme{/tr}</h2>
 
-			<div class="row">
-				<div class="col-md-3 col-md-push-9">
-					<div  class="thumbnail">
-						<img src="{$thumbfile}" alt="{tr}Theme Screenshot{/tr}" id="style_thumb">
-					</div>
+			<div style="position:relative;">
+				<div style="position:absolute;right:.5em;top:0.5em;">
+					<img src="{$thumbfile}" alt="{tr}Theme Screenshot{/tr}" id="style_thumb" width="160px" height="120px">
 				</div>
-				<div class="col-md-9 col-md-pull-3 adminoptionbox">
-					{preference name=theme_active}
 
-					<div class="adminoptionbox theme_active_childcontainer custom">
-						{preference name=theme_custom}
-					</div>
-
-					<div class="adminoptionbox theme_active_childcontainer legacy">
-						{preference name=style}
-						{preference name=style_option}
-
-						{preference name=style_admin}
-						{preference name=style_admin_option}
-					</div>
+				<div class="adminoptionbox">
+					{preference name=style}
+					{preference name=style_option}
 
 					{preference name=site_layout}
-					{preference name=site_layout_per_object}
+
+					{preference name=style_admin}
+					{preference name=style_admin_option}
 
 					{if $prefs.javascript_enabled eq 'n' or $prefs.feature_jquery eq 'n'}
-						<input type="submit" class="btn btn-default btn-sm" name="changestyle" value="{tr}Go{/tr}" />
+						<input type="submit" class="btn btn-default" name="changestyle" value="{tr}Go{/tr}" />
 					{/if}
 				</div>
 			</div>
@@ -69,17 +55,15 @@
 
 			{preference name=useGroupTheme}
 			{preference name=feature_theme_control}
-				<div class="adminoptionboxchild" id="feature_theme_control_childcontainer">
+			{if $prefs.feature_theme_control eq 'y'}
+				<div class="adminoptionboxchild">
 					{button _text="{tr}Theme Control{/tr}" href="tiki-theme_control.php"}
-					{preference name=feature_theme_control_savesession}
-					{preference name=feature_theme_control_parentcategory}
-					{preference name=feature_theme_control_autocategorize}
 				</div>
+			{/if}
 
 		{/tab}
 
 		{tab name="{tr}General Layout{/tr}"}
-			<h2>{tr}General Layout{/tr}</h2>
 
 			{remarksbox type="tip" title="{tr}Tip{/tr}"}
 				{tr}&quot;Modules&quot; are the items of content at the top &amp; bottom and in the right &amp; left columns of the site.{/tr} {tr}Select{/tr}
@@ -95,7 +79,6 @@
 					{preference name=sitelogo_bgcolor}
 					{preference name=sitelogo_title}
 					{preference name=sitelogo_alt}
-					{preference name=sitelogo_icon}
 				</fieldset>
 
 				<fieldset>
@@ -131,7 +114,6 @@
 		{/tab}
 
 		{tab name="{tr}Shadow layer{/tr}"}
-			<h2>{tr}Shadow layer{/tr}</h2>
 			{preference name=feature_layoutshadows}
 			<div class="adminoptionboxchild" id="feature_layoutshadows_childcontainer">
 				{preference name=main_shadow_start}
@@ -155,7 +137,6 @@
 		{/tab}
 
 		{tab name="{tr}Pagination{/tr}"}
-			<h2>{tr}Pagination{/tr}</h2>
 			{preference name=user_selector_threshold}
 			{preference name=maxRecords}
 			{preference name=nextprev_pagination}
@@ -172,9 +153,8 @@
 		{/tab}
 
 		{tab name="{tr}UI Effects{/tr}"}
-			<h2>{tr}UI Effects{/tr}</h2>
 			<div class="adminoptionbox">
-				<fieldset class="table">
+				<fieldset class="admin">
 					<legend>{tr}Standard UI effects{/tr}</legend>
 					{preference name=jquery_effect}
 					{preference name=jquery_effect_speed}
@@ -183,7 +163,7 @@
 			</div>
 
 			<div class="adminoptionbox">
-				<fieldset class="table">
+				<fieldset class="admin">
 					<legend>{tr}Tab UI effects{/tr}</legend>
 					{preference name=jquery_effect_tabs}
 					{preference name=jquery_effect_tabs_speed}
@@ -199,13 +179,11 @@
 							{preference name=jquery_colorbox_theme}
 						</div>
 					{preference name=feature_jscalendar}
-					{preference name=feature_hidden_links}
 				</div>
 			</fieldset>
 		{/tab}
 
 		{tab name="{tr}Customization{/tr}"}
-			<h2>{tr}Customization{/tr}</h2>
 			<fieldset>
 				<legend>{tr}Theme Generator{/tr} <em>({tr}Experimental{/tr})</em></legend>
 				{preference name="themegenerator_feature"}
@@ -214,9 +192,9 @@
 						{preference name="themegenerator_theme"}
 						<div  class="adminoptionboxchild" id="themegenerator_feature_childcontainer">
 
-							<input type="text" name="tg_edit_theme_name" value="{$tg_edit_theme_name|default:''|escape}"{if !empty($prefs.themegenerator_theme)} style="display:none;"{/if} />
-							<input type="submit" class="btn btn-default btn-sm" name="tg_new_theme" value="{tr}New{/tr}"{if !empty($prefs.themegenerator_theme)} style="display:none;"{/if} />
-							<input type="submit" class="btn btn-default btn-sm" name="tg_delete_theme" value="{tr}Delete{/tr}"{if empty($prefs.themegenerator_theme)} style="display:none;"{/if} />
+							<input type="text" name="tg_edit_theme_name" value="{$tg_edit_theme_name|escape}"{if !empty($prefs.themegenerator_theme)} style="display:none;"{/if} />
+							<input type="submit" class="btn btn-default" name="tg_new_theme" value="{tr}New{/tr}"{if !empty($prefs.themegenerator_theme)} style="display:none;"{/if} />
+							<input type="submit" class="btn btn-default" name="tg_delete_theme" value="{tr}Delete{/tr}"{if empty($prefs.themegenerator_theme)} style="display:none;"{/if} />
 							{jq}$("select[name=themegenerator_theme]").change(function(){
 	if ($(this)[0].selectedIndex === 0) {
 		$("input[name=tg_edit_theme_name]").keyup(function(e){
@@ -239,7 +217,7 @@
 							<div id="themegenerator_container">
 								{include file="themegen.tpl"}
 								<div class="input_submit_container clear" style="text-align: center">
-									<input type="submit" class="btn btn-default btn-sm" name="tg_preview" value="{tr}Preview Theme{/tr}">
+									<input type="submit" class="btn btn-default" name="tg_preview" value="{tr}Preview Theme{/tr}">
 								</div>
 							</div>
 							{if $prefs.themegenerator_feature eq 'y'}
@@ -296,7 +274,6 @@
 		{/tab}
 
 		{tab name="{tr}Miscellaneous{/tr}"}
-			<h2>{tr}Miscellaneous{/tr}</h2>
 			{preference name=feature_tabs}
 			<div class="adminoptionboxchild" id="feature_tabs_childcontainer">
 				{preference name=layout_tabs_optional}
@@ -321,7 +298,7 @@
 			</div>
 
 			<div class="adminoptionbox">
-				<fieldset class="table">
+				<fieldset class="admin">
 					<legend>{tr}Context Menus{/tr} (<em>{tr}Currently used in File Galleries only{/tr}.</em>)</legend>
 					{preference name=use_context_menu_icon}
 					{preference name=use_context_menu_text}
@@ -350,12 +327,8 @@
 
 		{/tab}
 	{/tabset}
-	<div class="row">
-		<div class="form-group col-lg-12">
-			<div class="text-center">
-				<input type="reset" class="btn btn-link btn-sm" name="looksetupreset" title="{tr}Reset Changes{/tr}" value="{tr}Reset{/tr}" />
-				<input type="submit" class="btn btn-primary btn-sm" name="looksetup" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}" />
-			</div>
-		</div>
+
+	<div class="input_submit_container clear" style="text-align: center">
+		<input type="submit" class="btn btn-default" name="looksetup" value="{tr}Apply{/tr}" />
 	</div>
 </form>

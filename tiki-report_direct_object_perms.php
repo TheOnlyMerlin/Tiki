@@ -10,7 +10,7 @@
 
 require_once ('tiki-setup.php');
 
-$wikilib = TikiLib::lib('wiki');
+include_once ('lib/wiki/wikilib.php');
 
 $access->check_feature(array('feature_wiki'));
 $access->check_permission(array('tiki_p_admin_wiki'));

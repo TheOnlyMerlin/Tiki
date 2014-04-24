@@ -246,7 +246,7 @@ class FileGalLib extends TikiLib
 		if ( ! $disable_notifications ) $this->notify($fileInfo['galleryId'], $fileInfo['name'], $fileInfo['filename'], '', 'remove file', $user);
 
 		if ($prefs['feature_actionlog'] == 'y') {
-			$logslib = TikiLib::lib('logs');
+			global $logslib; include_once('lib/logs/logslib.php');
 			$logslib->add_action('Removed', $fileId . '/' . $fileInfo['filename'], 'file', '');
 		}
 
@@ -347,7 +347,7 @@ class FileGalLib extends TikiLib
 		}
 
 		if ($prefs['feature_actionlog'] == 'y') {
-			$logslib = TikiLib::lib('logs');
+			global $logslib; include_once('lib/logs/logslib.php');
 			$logslib->add_action('Uploaded', $galleryId, 'file gallery', "fileId=$fileId&amp;add=$size");
 		}
 
@@ -632,7 +632,7 @@ class FileGalLib extends TikiLib
 		}
 
 		if ($prefs['feature_categories'] == 'y') {
-			$categlib = TikiLib::lib('categ');
+			global $categlib; require_once('lib/categories/categlib.php');
 			$categlib->uncategorize_object('file', $id);
 		}
 
@@ -1485,9 +1485,7 @@ class FileGalLib extends TikiLib
 	// not the best optimisation as using a library using files and not content
 	function zip($fileIds, &$error, $zipName='')
 	{
-		global $tiki_p_admin_file_galleries, $prefs, $user;
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
+		global $tiki_p_admin_file_galleries, $userlib, $tikilib, $prefs, $user;
 		$list = array();
 		$temp = 'temp/'.md5($tikilib->now).'/';
 		if (!mkdir($temp)) {
@@ -1644,9 +1642,7 @@ class FileGalLib extends TikiLib
 			$useCache = true;
 		}
 
-		global $user;
-		$cachelib = TikiLib::lib('cache');
-
+		global $cachelib, $user;
 		if ( $useCache ) {
 			$cacheName = 'pid' . $parentId . '_' . $this->get_all_galleries_cache_name($user);
 			$cacheType = $this->get_all_galleries_cache_type();
@@ -2008,7 +2004,7 @@ class FileGalLib extends TikiLib
 		foreach ($objects as $object) {
 			$pobjects[$object['type']][] = $object;
 		}
-		$objectlib = TikiLib::lib('object');
+		include_once('lib/objectlib.php');
 		$map = ObjectLib::map_object_type_to_permission();
 		foreach ($pobjects as $type=>$list) {
 			if ($type == 'blog post') {
@@ -3145,10 +3141,7 @@ class FileGalLib extends TikiLib
 	// TODO: This does not necessarily handle a file upload. Just edits a file. File replacements are handled somewhere else.
 	private function _actionHandler_uploadFile( $params )
 	{
-		global $user, $prefs, $tiki_p_admin, $tiki_p_batch_upload_files;
-		$logslib = TikiLib::lib('logs');
-		$smarty = TikiLib::lib('smarty');
-		$tikilib = TikiLib::lib('tiki');
+		global $user, $prefs, $tikilib, $logslib, $smarty, $tiki_p_admin, $tiki_p_batch_upload_files;
 
 		$batch_job = false;
 		$didFileReplace = false;
@@ -4117,4 +4110,4 @@ class FileGalLib extends TikiLib
 		}
 	}
 }
-
+$filegallib = new FileGalLib;

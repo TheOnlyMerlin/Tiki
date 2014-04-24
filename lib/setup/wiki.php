@@ -45,7 +45,7 @@ if (strstr($_SERVER['SCRIPT_NAME'], 'tiki-index.php')
 			&& (isset($_REQUEST['page']) || isset($_REQUEST['page_ref_id']) || isset($_REQUEST['page_id']))
 	) { // perhaps we have to go to an another page
 
-		$multilinguallib = TikiLib::lib('multilingual');
+		global $multilinguallib; include_once('lib/multilingual/multilinguallib.php');
 		if ( $multilinguallib->useBestLanguage()) {
 
 			if (empty($_REQUEST['page_id'])) {
@@ -53,7 +53,7 @@ if (strstr($_SERVER['SCRIPT_NAME'], 'tiki-index.php')
 					$info = $tikilib->get_page_info($_REQUEST['page']);
 					$_REQUEST['page_id'] = $info['page_id'];
 				} elseif (!empty($_REQUEST['page_ref_id'])) {
-					$structlib = TikiLib::lib('struct');
+					global $structlib; include_once('lib/structures/structlib.php');
 					$info = $structlib->s_get_page_info($_REQUEST['page_ref_id']);
 					$_REQUEST['page_id'] = $info['page_id'];
 				}

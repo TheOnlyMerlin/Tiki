@@ -7,7 +7,7 @@
 
 require_once('lib/wizard/wizard.php');
 require_once('lib/notifications/notificationlib.php');
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 
 /**
  * Set up the wysiwyg editor, including inline editing

@@ -18,7 +18,7 @@ function module_action_similarcontent_info()
 {
 	return array(
 		'name' => tra('Similar Content'),
-		'description' => tra('Find similar content based on tags.'),
+		'description' => tra('Find similar content based on FreeTags.'),
 		'prefs' => array("feature_freetags"),
 		'params' => array(
 			'contentType' => array(

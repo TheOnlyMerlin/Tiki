@@ -1,11 +1,11 @@
 {* $Id$ *}
 {title help="Polls" admpage="polls"}{tr}Admin Polls{/tr}{/title}
 
-<div class="t_navbar btn-group form-group">
-	{button href="tiki-admin_polls.php?setlast=1" class="btn btn-default" _text="{tr}Set last poll as current{/tr}"}
-	{button href="tiki-admin_polls.php?closeall=1" class="btn btn-default" _text="{tr}Close all polls but last{/tr}"}
-	{button href="tiki-admin_polls.php?activeall=1" class="btn btn-default" _text="{tr}Activate all polls{/tr}"}
-	{if $pollId neq '0'}{button pollId=0 cookietab=1 class="btn btn-default" _text="{tr}Create poll{/tr}"}{/if}
+<div class="navbar">
+	{button href="tiki-admin_polls.php?setlast=1" _text="{tr}Set last poll as current{/tr}"}
+	{button href="tiki-admin_polls.php?closeall=1" _text="{tr}Close all polls but last{/tr}"}
+	{button href="tiki-admin_polls.php?activeall=1" _text="{tr}Activate all polls{/tr}"}
+	{if $pollId neq '0'}{button pollId=0 cookietab=1 _text="{tr}Create poll{/tr}"}{/if}
 </div>
 
 {tabset}
@@ -15,7 +15,6 @@
 		{assign var='title' value="{tr}Edit poll{/tr}"}
 	{/if}
 	{tab name=$title}
-        <h2>{$title}</h2>
 		<form action="tiki-admin_polls.php" method="post">
 			<input type="hidden" name="pollId" value="{$pollId|escape}">
 			<table class="formcolor">
@@ -78,18 +77,16 @@
 				</tr>
 				<tr>
 					<td>&nbsp;</td>
-					<td><input type="submit" class="btn btn-default btn-sm" name="save" value="{tr}Save{/tr}"></td>
+					<td><input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}"></td>
 				</tr>
 			</table>
 		</form>
 	{/tab}
 
 	{tab name="{tr}Polls{/tr}"}
-        <h2>{tr}Polls{/tr}</h2>
 		{if $channels or ($find ne '')}
 			{include file='find.tpl'}
 		{/if}
-        <div class="table-responsive">
 		<table class="table normal">
 			{assign var=numbercol value=8}
 			<tr>
@@ -104,9 +101,9 @@
 				<th>{tr}Options{/tr}</th>
 				<th>{tr}Action{/tr}</th>
 			</tr>
-
+			{cycle values="odd,even" print=false}
 			{section name=user loop=$channels}
-				<tr>
+				<tr class="{cycle}">
 					<td class="id">{$channels[user].pollId}</td>
 					<td class="text">
 						<a class="tablename" href="tiki-poll_results.php?pollId={$channels[user].pollId}">{$channels[user].title|escape}</a>
@@ -147,12 +144,10 @@
 	         {norecords _colspan=$numbercol}
 			{/section}
 		</table>
-        </div>
 		{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
 	{/tab}
 
 	{tab name="{tr}Add poll to pages{/tr}"}
-        <h2>{tr}Add poll to pages{/tr}</h2>
 		<form action="tiki-admin_polls.php" method="post">
 			<table class="formcolor">
 				<tr>
@@ -189,7 +184,7 @@
 				</tr>
 				<tr>
 					<td></td>
-					<td><input type="submit" class="btn btn-default btn-sm" name="addPoll" value="{tr}Add{/tr}"></td>
+					<td><input type="submit" class="btn btn-default" name="addPoll" value="{tr}Add{/tr}"></td>
 				</tr>
 			</table>
 		</form>

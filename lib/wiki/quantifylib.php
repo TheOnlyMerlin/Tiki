@@ -98,4 +98,5 @@ class QuantifyLib extends TikiLib
 		$this->recordChangeSize($arguments['page_id'], $arguments['version'], $arguments['old_data'], $arguments['data']);
 	}
 }
+$quantifylib = new QuantifyLib;
 

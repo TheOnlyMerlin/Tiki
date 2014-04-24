@@ -7,8 +7,8 @@
 
 function smarty_function_rating( $params, $smarty )
 {
-	global $prefs, $user;
-	$ratinglib = TikiLib::lib('rating');
+	global $prefs, $ratinglib, $user;
+	require_once 'lib/rating/ratinglib.php';
 
 	if ( ! isset($params['type'], $params['id']) ) {
 		return tra('No object information provided for rating.');
@@ -37,14 +37,15 @@ function smarty_function_rating( $params, $smarty )
 	        }
 
 			if ($prefs['feature_score'] == 'y' && $id) {
-				$tikilib = TikiLib::lib('tiki');
+				global $tikilib;
 				if ($type == 'comment') {
 				  $forum_id = $commentslib->get_comment_forum_id($id);
 				  $forum_info = $commentslib->get_forum($forum_id);
 				  $thread_info = $commentslib->get_comment($id, null, $forum_info);
 				  $item_user = $thread_info['userName'];
 				} elseif ($type == 'article') {
-				  $artlib = TikiLib::lib('art');
+				  require_once 'lib/articles/artlib.php';
+				  $artlib = new ArtLib();
 				  $res = $artlib->get_article($id);
 				  $item_user = $res['author'];
 				}

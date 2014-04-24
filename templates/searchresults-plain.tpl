@@ -2,18 +2,16 @@
 {if $facets|@count}
 	<div class="facets" style="width: 25%; float: right;">
 		{foreach from=$facets item=facet}
-			<div class="form-group facet-hide-group">
-				<label for="{$facet.name|escape}">{$facet.label|escape}</label>
-				<select id="{$facet.name|escape}" class="form-control" multiple data-for="#search-form input[name='filter~{$facet.name|escape}']" data-join="{$facet.operator|escape}">
-					{foreach from=$facet.options key=value item=label}
-						<option value="{$value|escape}">{$label|escape}</option>
-					{/foreach}
-				</select>
-			</div>
+			<h6>{$facet.label|escape}</h6>
+			<select multiple data-for="#search-form input[name='filter~{$facet.name|escape}']" data-join="{$facet.operator|escape}">
+				{foreach from=$facet.options key=value item=label}
+					<option value="{$value|escape}">{$label|escape}</option>
+				{/foreach}
+			</select>
 		{/foreach}
-		<div class="form-group">
-			<button class="btn btn-default">{tr}Filter{/tr}</button>
-		</div>
+		<p>
+			<button>{tr}Filter{/tr}</button>
+		</p>
 	</div>
 	{jq}
 		$('.facets select').registerFacet();

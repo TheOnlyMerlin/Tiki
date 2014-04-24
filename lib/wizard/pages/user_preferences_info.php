@@ -7,7 +7,7 @@
 
 
 require_once('lib/wizard/wizard.php');
-$userprefslib = TikiLib::lib('userprefs');
+include_once('lib/userprefs/userprefslib.php');
 /**
  * Set up the Basic User Information
  */
@@ -34,10 +34,7 @@ class UserWizardPreferencesInfo extends Wizard
 	function onSetupPage ($homepageUrl) 
 	{
 
-		global $user, $prefs, $user_preferences;
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
-		$smarty = TikiLib::lib('smarty');
+		global	$smarty, $userlib, $tikilib, $user, $prefs, $user_preferences;
 
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
@@ -80,6 +77,7 @@ class UserWizardPreferencesInfo extends Wizard
 		if ($prefs['userTracker'] == 'y') {
 			$re = $userlib->get_usertracker($userinfo["userId"]);
 			if (isset($re['usersTrackerId']) and $re['usersTrackerId']) {
+				include_once ('lib/trackers/trackerlib.php');
 				$trklib = TikiLib::lib('trk');
 				$info = $trklib->get_item_id($re['usersTrackerId'], $trklib->get_field_id($re['usersTrackerId'], 'Login'), $userwatch);
 				$usertrackerId = $re['usersTrackerId'];
@@ -98,8 +96,7 @@ class UserWizardPreferencesInfo extends Wizard
 
 	function onContinue ($homepageUrl) 
 	{
-		global $user, $prefs;
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib, $user, $prefs;
 		
 		$userwatch = $user;
 		
@@ -107,11 +104,11 @@ class UserWizardPreferencesInfo extends Wizard
 		parent::onContinue($homepageUrl);
 		
 		if (isset($_REQUEST["realName"]) && ($prefs['auth_ldap_nameattr'] == '' || $prefs['auth_method'] != 'ldap')) {
-			$tikilib->set_user_preference($userwatch, 'realName', $_REQUEST["realName"]);
-			if ( $prefs['user_show_realnames'] == 'y' ) {
-				$cachelib = TikiLib::lib('cache');
-				$cachelib->invalidate('userlink.'.$user.'0');
-			}
+	     $tikilib->set_user_preference($userwatch, 'realName', $_REQUEST["realName"]);
+	     if ( $prefs['user_show_realnames'] == 'y' ) {
+	       global $cachelib;
+	       $cachelib->invalidate('userlink.'.$user.'0');
+	     }
 		}
 		if ($prefs['feature_community_gender'] == 'y') {
 			if (isset($_REQUEST["gender"])) $tikilib->set_user_preference($userwatch, 'gender', $_REQUEST["gender"]);

@@ -14,19 +14,24 @@ function smarty_function_favorite($params, $smarty)
 		return;
 	}
 
-	$servicelib = TikiLib::lib('service');
-	$smarty = TikiLib::lib('smarty');
-	$smarty->loadPlugin('smarty_modifier_escape');
-
-	$url = $servicelib->getUrl(array(
-		'controller' => 'favorite',
-		'action' => 'toggle',
-		'type' => $params['type'],
-		'object' => $params['object'],
-	));
-
-	$url = smarty_modifier_escape($url);
-
-	return '<a class="btn btn-default favorite-toggle" href="' . $url . '">' . tr('Favorite') . '</a>';
+	$smarty->loadPlugin('smarty_function_button');
+	$smarty->loadPlugin('smarty_function_service');
+	return smarty_function_button(
+		array(
+			'_keepall' => 'y',
+			'_class' => 'favorite-toggle',
+			'href' => smarty_function_service(
+				array(
+					'controller' => 'favorite',
+					'action' => 'toggle',
+					'type' => $params['type'],
+					'object' => $params['object'],
+				),
+				$smarty
+			),
+			'_text' => tr('Favorite'),
+		),
+		$smarty
+	);
 }
 

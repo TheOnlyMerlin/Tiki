@@ -113,7 +113,7 @@ class Tracker_Query
 	 */
 	public static function tracker($tracker)
 	{
-		return (new Tracker_Query($tracker));
+		return new self($tracker);
 	}
 
 	/**
@@ -761,8 +761,7 @@ class Tracker_Query
 	 */
 	function query()
 	{
-		$trklib = TikiLib::lib('trk');
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib, $trklib;
 		$params = array();
 		$fields_safe = "";
 		$status_safe = "";
@@ -1022,7 +1021,7 @@ class Tracker_Query
 	 */
 	private function render_field_value($fieldDefinition, $value)
 	{
-		$trklib = TikiLib::lib('trk');
+		global $trklib;
 		$fieldDefinition['value'] = $value;
 
 		//if type is text, no need to render value
@@ -1295,7 +1294,7 @@ class Tracker_Query
 	 */
 	public function delete($bulkMode = false)
 	{
-		$trklib = TikiLib::lib('trk');
+		global $trklib;
 
 		if ($this->canDelete()) {
 			$results = $this->query();

@@ -21,7 +21,7 @@ function prefs_server_list($partial = false)
 
 	sort($timezones);
 
-	$tikidate = TikiLib::lib('tikidate');
+	global $tikidate;
 	
 	return array(
 		'server_timezone' => array(

@@ -34,7 +34,7 @@ $s = new XML_RPC_Server($map);
  */
 function check_individual($user,$blogid,$permName)
 {
-	$userlib = TikiLib::lib('user');
+	global $userlib;
 
 	// If the user is admin he can do everything
 	if ($userlib->user_has_permission($user, 'tiki_p_blog_admin')) return true;
@@ -57,8 +57,7 @@ function check_individual($user,$blogid,$permName)
  */
 function getUserInfo($params)
 {
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $userlib;
 
 	$appkeyp = $params->getParam(0);
 	$appkey = $appkeyp->scalarval();
@@ -96,9 +95,7 @@ function getUserInfo($params)
  */
 function newPost($params)
 {
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$bloglib = TikiLib::lib('blog');
+	global $tikilib, $userlib, $bloglib;
 
 	$appkeyp = $params->getParam(0);
 	$appkey = $appkeyp->scalarval();
@@ -164,9 +161,7 @@ function newPost($params)
  */
 function editPost($params)
 {
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$bloglib = TikiLib::lib('blog');
+	global $tikilib, $userlib, $bloglib;
 
 	$appkeyp = $params->getParam(0);
 	$appkey = $appkeyp->scalarval();
@@ -229,9 +224,7 @@ function editPost($params)
  */
 function deletePost($params)
 {
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$bloglib = TikiLib::lib('blog');
+	global $tikilib, $userlib, $bloglib;
 
 	$appkeyp = $params->getParam(0);
 	$appkey = $appkeyp->scalarval();
@@ -280,9 +273,7 @@ function deletePost($params)
  */
 function getPost($params)
 {
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$bloglib = TikiLib::lib('blog');
+	global $tikilib, $userlib, $bloglib;
 
 	$appkeyp = $params->getParam(0);
 	$appkey = $appkeyp->scalarval();
@@ -347,9 +338,7 @@ function getPost($params)
  */
 function getRecentPosts($params)
 {
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$bloglib = TikiLib::lib('blog');
+	global $tikilib, $userlib, $bloglib;
 
 	$appkeyp = $params->getParam(0);
 	$appkey = $appkeyp->scalarval();
@@ -421,9 +410,7 @@ function getRecentPosts($params)
  */
 function getUserBlogs($params)
 {
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$bloglib = TikiLib::lib('blog');
+	global $tikilib, $userlib, $bloglib;
 
 	$appkeyp = $params->getParam(0);
 	$appkey=$appkeyp->scalarval();

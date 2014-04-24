@@ -13,7 +13,9 @@ function prefs_user_list($partial = false)
 	$catree = array('-1' => tra('None'));
 
 	if (! $partial && $prefs['feature_categories'] == 'y') {
-		$categlib = TikiLib::lib('categ');
+		global $categlib;
+
+		include_once ('lib/categories/categlib.php');
 		$all_categs = $categlib->getCategories(NULL, true, false);
 
 		$catree['0'] = tra('All');

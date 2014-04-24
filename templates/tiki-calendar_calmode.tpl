@@ -1,5 +1,5 @@
 {* $Id$ *}
-<table border="0" cellpadding="0" cellspacing="0" class="caltable table">
+<table border="0" cellpadding="0" cellspacing="0" class="caltable" tyle="width:100%;border-collapse:collapse">
   <tr valign="middle" style="height:36px">
 <td width="1%" class="heading weeks"></td>
 {section name=dn loop=$daysnames}
@@ -8,7 +8,7 @@
 		{/if}
 {/section}
   </tr>
-
+{cycle values="odd,even" print=false}
 {section name=w loop=$cell}
   <tr id="row_{$smarty.section.w.index}" style="height:80px">
   <td width="1%" class="heading weeks"><a {if $prefs.mobile_mode eq "y"}data-role="button" data-inline="true" {/if}href="{$myurl}?viewmode=week&amp;todate={$cell[w][0].day}" title="{tr}View this Week{/tr}">{$weekNumbers[w]}</a></td> {* mobile *}
