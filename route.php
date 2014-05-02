@@ -70,7 +70,6 @@ function tiki_route($path)
 	tiki_route_attempt('|^blogpost(\d+)(\-.*)?$|', 'tiki-view_blog_post.php', tiki_route_single(1, 'postId'));
 	tiki_route_attempt('|^cat(\d+)(\-.*)?$|', 'tiki-browse_categories.php', tiki_route_single(1, 'parentId'));
 	tiki_route_attempt_prefix('browseimage', 'tiki-browse_image.php', 'imageId');
-	tiki_route_attempt('/^event(\d+)(\-.*)?$/', 'tiki-calendar_edit_item.php', tiki_route_single(1, 'viewcalitemId'));
 
 	tiki_route_attempt(
 		'|^cal(\d[\d,]*)$|',
@@ -104,8 +103,7 @@ function tiki_route($path)
 	);
 	tiki_route_attempt_prefix('int', 'tiki-integrator.php', 'repID');
 	tiki_route_attempt_prefix('item', 'tiki-view_tracker_item.php', 'itemId');
-	tiki_route_attempt_prefix('newsletter', 'tiki-newsletters.php', 'nlId', array('info' => '1'));
-	tiki_route_attempt_prefix('nl', 'tiki-newsletters.php', 'nlId', array('info' => '1'));
+	tiki_route_attempt_prefix('newsletter', 'tiki-newsletters.php', 'nlId=1', array('info' => '1'));
 	tiki_route_attempt_prefix('poll', 'tiki-poll_form.php', 'pollId');
 	tiki_route_attempt_prefix('quiz', 'tiki-take_quiz.php', 'quizId');
 	tiki_route_attempt_prefix('survey', 'tiki-take_survey.php', 'surveyId');
@@ -138,16 +136,10 @@ function tiki_route($path)
 		'|^tiki\-(\w+)\-(\w+)$|',
 		'tiki-ajax_services.php',
 		function ($parts) {
-			if ($parts[2] == 'x') {
-				return array(
-					'controller' => $parts[1],
-				);
-			} else {
-				return array(
-					'controller' => $parts[1],
-					'action' => $parts[2],
-				);
-			}
+			return array(
+				'controller' => $parts[1],
+				'action' => $parts[2],
+			);
 		}
 	);
 
@@ -179,7 +171,7 @@ function tiki_route_attempt($pattern, $file, $callback = null, $extra = array())
 	if (preg_match($pattern, $path, $parts)) {
 		$inclusion = $file;
 
-		if ($callback && is_callable($callback)) {
+		if ($callback) {
 			$_GET = array_merge($_GET, $callback($parts), $extra);
 		}
 	}
@@ -232,7 +224,7 @@ default:
 
 if (is_null($base) || is_null($path)) {
 	header('HTTP/1.0 500 Internal Server Error');
-	header('Content-Type: text/plain; charset=utf-8');
+	header('Content-Type: text/plain');
 
 	echo "Request could not be understood. Verify routing file.";
 	exit;
@@ -244,10 +236,8 @@ if ($inclusion) {
 	$_SERVER['PHP_SELF'] = $inclusion;
 	include __DIR__ . '/' . $inclusion;
 } else {
-	error_log("No route found - full:$full query:{$_SERVER['QUERY_STRING']}");
-
-	header('HTTP/1.0 404 Not Found');
-	header('Content-Type: text/plain; charset=utf-8');
+	header('HTTP/1.0 Not Found');
+	header('Content-Type: text/plain');
 
 	echo "No route found. Please see http://dev.tiki.org/URL+Rewriting+Revamp";
 	exit;

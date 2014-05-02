@@ -28,8 +28,6 @@ class Tracker_Field_Category extends Tracker_Field_Abstract implements Tracker_F
 						'name' => tr('Parent Category'),
 						'description' => tr('Child categories will be provided as options for the field.'),
 						'filter' => 'int',
-						'legacy_index' => 0,
-						'profile_reference' => 'category',
 					),
 					'inputtype' => array(
 						'name' => tr('Input Type'),
@@ -42,7 +40,6 @@ class Tracker_Field_Category extends Tracker_Field_Abstract implements Tracker_F
 							'm' => tr('List box'),
 							'checkbox' => tr('Multiple-selection check-boxes'),
 						),
-						'legacy_index' => 1,
 					),
 					'selectall' => array(
 						'name' => tr('Select All'),
@@ -52,7 +49,6 @@ class Tracker_Field_Category extends Tracker_Field_Abstract implements Tracker_F
 							0 => tr('No controls'),
 							1 => tr('Include controls'),
 						),
-						'legacy_index' => 2,
 					),
 					'descendants' => array(
 						'name' => tr('All descendants'),
@@ -63,7 +59,6 @@ class Tracker_Field_Category extends Tracker_Field_Abstract implements Tracker_F
 							1 => tr('All descendants'),
 							2 => tr('All descendants and display full path'),
 						),
-						'legacy_index' => 3,
 					),
 					'help' => array(
 						'name' => tr('Help'),
@@ -72,18 +67,6 @@ class Tracker_Field_Category extends Tracker_Field_Abstract implements Tracker_F
 						'options' => array(
 							0 => tr('No help'),
 							1 => tr('Tooltip'),
-						),
-						'legacy_index' => 4,
-					),
-					'outputtype' => array(
-						'name' => tr('Output Type'),
-						'description' => tr('.'),
-						'filter' => 'word',
-						'options' => array(
-							'' => tr('Plain list separate by line breaks (default)'),
-							'links' => tr('Links separate by line breaks'),
-							'ul' => tr('Unordered list of labels'),
-							'ulinks' => tr('Unordered list of links'),
 						),
 					),
 				),
@@ -121,11 +104,10 @@ class Tracker_Field_Category extends Tracker_Field_Abstract implements Tracker_F
 
 	public function renderInput($context = array())
 	{
-		$smarty = TikiLib::lib('smarty');
-		$smarty->assign('cat_tree', array());
 		if ($this->getOption('descendants') > 0 && $this->getOption('inputtype') === 'checkbox') {
 			$categories = $this->getConfiguration('list');
 			$selected_categories = $this->getConfiguration('selected_categories');
+			$smarty = TikiLib::lib('smarty');
 			$smarty->assign_by_ref('categories', $categories);
 			$cat_tree = TikiLib::lib('categ')->generate_cat_tree($categories, true, $selected_categories);
 			$cat_tree = str_replace('name="cat_categories[]"', 'name="' . $this->getInsertId() . '[]"', $cat_tree);
@@ -143,38 +125,15 @@ class Tracker_Field_Category extends Tracker_Field_Abstract implements Tracker_F
 			foreach ($categories as $category) {
 				if ($category['categId'] == $categId) {
 					if ($this->getOption('descendants') == 2) {
-						$str = $category['relativePathString'];
+						$ret[] = $category['relativePathString'];
 					} else {
-						$str = $category['name'];
+						$ret[] = $category['name'];
 					}
-					if (strpos($this->getOption('outputtype'), 'links') !== false) {
-						TikiLib::lib('smarty')->loadPlugin('smarty_modifier_sefurl');
-						$deep = $this->getOption('descendants') != 0;
-						$href = smarty_modifier_sefurl($categId, 'category', $deep, '', 'y', $str);
-						if ($deep) {
-							$href .= 'deep=on';
-						}
-						$str = "<a href=\"$href\">$str</a>";
-					}
-					$ret[] = $str;
 					break;
 				}
 			}
 		}
-		if (strpos($this->getOption('outputtype'), 'ul') === 0) {
-			if (count($ret)) {
-				$out = '<ul class="tracker_field_category">';
-				foreach($ret as $li) {
-					$out .= '<li>' . $li . '</li>';
-				}
-				$out .= '</ul>';
-				return $out;
-			} else {
-				return '';
-			}
-		} else {
-			return implode('<br/>', $ret);
-		}
+		return implode('<br/>', $ret);
 	}
 
 	public function handleSave($value, $oldValue)
@@ -234,22 +193,13 @@ class Tracker_Field_Category extends Tracker_Field_Abstract implements Tracker_F
 
 	private function getApplicableCategories()
 	{
-		static $cache = array();
-		$fieldId = $this->getConfiguration('fieldId');
-
-		if (! isset($cache[$fieldId])) {
-			$parentId = (int) $this->getOption('parentId');
-			$descends = $this->getOption('descendants') > 0;
-			if ($parentId > 0) {
-				$data = TikiLib::lib('categ')->getCategories(array('identifier'=>$parentId, 'type'=>$descends ? 'descendants' : 'children'));
-			} else {
-				$data = TikiLib::lib('categ')->getCategories(array('type' => $descends ? 'all' : 'roots'));
-			}
-
-			$cache[$fieldId] = $data;
+		$parentId = (int) $this->getOption('parentId');
+		$descends = $this->getOption('descendants') > 0;
+		if ($parentId > 0) {
+			return TikiLib::lib('categ')->getCategories(array('identifier'=>$parentId, 'type'=>$descends ? 'descendants' : 'children'));
+		} else {
+			return TikiLib::lib('categ')->getCategories(array('type' => $descends ? 'all' : 'roots'));
 		}
-
-		return $cache[$fieldId];
 	}
 
 	private function getCategories()

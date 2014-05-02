@@ -21,7 +21,7 @@ function wikiplugin_comment_info()
 				'description' => tra('Object Type'),
 				'filter' => 'text',
 				'options' => array(
-					array('text' => tr('Tracker Item'), 'value' => 'trackeritem'),
+					array('text' => tr('Tracker'), 'value' => 'tracker'),
 					array('text' => tr('Image Gallery'), 'value' => 'image gallery'),
 					array('text' => tr('Image'), 'value' => 'image'),
 					array('text' => tr('File Gallery'), 'value' => 'file gallery'),
@@ -45,12 +45,10 @@ function wikiplugin_comment_info()
 				'description' => tra('Object ID'),
 				'filter' => 'int',
 				'default' => tr('The current wiki page you have added the plugin to'),
-				'profile_reference' => 'type_in_param',
 			),
 		)
 	);
 }
-
 function wikiplugin_comment($data, $params)
 {
 	global $smarty, $page;

@@ -14,15 +14,13 @@ $access->check_permission(array('tiki_p_clean_cache'));
 $done = '';
 $output = '';
 $buf = '';
-$cachelib = TikiLib::lib('cache');
+global $cachelib;
+include_once ('lib/cache/cachelib.php');
 if (isset($_GET['do'])) {
 	$cachelib->empty_cache($_GET['do']);
 	if ($_GET['do'] === 'all') {
 		// seems combination of clearing prefs and public now messes up the page, so reload (tiki 11)
-		include_once('lib/setup/prefs.php');
-		initialize_prefs();
-		include('lib/setup/mobile.php');
-		include('lib/setup/javascript.php');
+		header('Location: ' . $base_url . 'tiki-admin_system.php');
 	}
 }
 if (isset($_GET['compiletemplates'])) {
@@ -58,7 +56,8 @@ foreach ($languages as $clang) {
 }
 $smarty->assign_by_ref('templates', $templates);
 if ($prefs['feature_forums'] == 'y') {
-	$commentslib = TikiLib::lib('comments');
+	include_once ('lib/comments/commentslib.php');
+	$commentslib = new Comments($dbTiki);
 	$dirs = $commentslib->list_directories_to_save();
 } else {
 	$dirs = array();

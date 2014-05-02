@@ -12,54 +12,59 @@
 {/title}
 
 {if $edit_mode neq 'y' and $gal_info.description neq ''}
-	<div class="description help-block">
+	<div class="description">
 		{$gal_info.description|escape|nl2br}
 	</div>
 {/if}
 
 {* admin icons on the right side of the top navigation bar under the title *}
-<div class="t_navbar form-group"{if $prefs.mobile_mode eq 'y'} data-role="controlgroup" data-type="horizontal"{/if}>
+<div class="navbar"{if $prefs.mobile_mode eq 'y'} data-role="controlgroup" data-type="horizontal"{/if}>
 	{if $galleryId gt 0}
-		{if $prefs.mobile_mode eq 'y'}<div class="navbar" align="right" data-role="controlgroup" data-type="horizontal">{/if} {* mobile *}
-			{if $prefs.feature_group_watches eq 'y' and ( $tiki_p_admin_users eq 'y' or $tiki_p_admin eq 'y' )}
-				<a {if $prefs.mobile_mode eq 'y'} data-role="button"{/if} href="tiki-object_watches.php?objectId={$galleryId|escape:"url"}&amp;watch_event=file_gallery_changed&amp;objectType=File+Gallery&amp;objectName={$gal_info.name|escape:"url"}&amp;objectHref={'tiki-list_file_gallery.php?galleryId='|cat:$galleryId|escape:"url"}" class="icon">
-					{icon _id='eye_group' alt="{tr}Group monitor{/tr}" align='right' hspace="1"}
-				</a>
+		{if $prefs.feature_group_watches eq 'y' and ( $tiki_p_admin_users eq 'y' or $tiki_p_admin eq 'y' )}
+			<a href="tiki-object_watches.php?objectId={$galleryId|escape:"url"}&amp;watch_event=file_gallery_changed&amp;objectType=File+Gallery&amp;objectName={$gal_info.name|escape:"url"}&amp;objectHref={'tiki-list_file_gallery.php?galleryId='|cat:$galleryId|escape:"url"}" class="icon">
+				{icon _id='eye_group' alt="{tr}Group monitor{/tr}" align='right' hspace="1"}
+			</a>
+		{/if}
+		{if $user and $prefs.feature_user_watches eq 'y'}
+			{if !isset($user_watching_file_gallery) or $user_watching_file_gallery eq 'n'}
+				{self_link galleryName=$name watch_event='file_gallery_changed' watch_object=$galleryId watch_action='add'}
+					{icon _id='eye' align='right' alt="{tr}Monitor this gallery{/tr}" hspace="1"}
+				{/self_link}
+			{else}
+				{self_link galleryName=$name watch_event='file_gallery_changed' watch_object=$galleryId watch_action='remove'}
+					{icon _id='no_eye' align='right' alt="{tr}Stop monitoring this gallery{/tr}" hspace="1"}
+				{/self_link}
 			{/if}
-			{if $user and $prefs.feature_user_watches eq 'y'}
-				{if !isset($user_watching_file_gallery) or $user_watching_file_gallery eq 'n'}
-					<a {if $prefs.mobile_mode eq 'y'} data-role="button"{/if} href="{query _type='relative' galleryName=$name watch_event='file_gallery_changed' watch_object=$galleryId watch_action='add'}" title="{tr}Monitor this gallery{/tr}">{icon _id=eye align='right' hspace="1" alt="{tr}Monitor this gallery{/tr}"}</a> {* mobile *}
-				{else}
-	
-					<a {if $prefs.mobile_mode eq 'y'} data-role="button"{/if} href="{query _type='relative' galleryName=$name watch_event='file_gallery_changed' watch_object=$galleryId watch_action='remove'}" title="{tr}Stop monitoring this gallery{/tr}">{icon _id=no_eye align='right' hspace="1" alt="{tr}Stop monitoring this gallery{/tr}"}</a> {* mobile *}
-				{/if}
-			{/if}
+		{/if}
 		{if $prefs.feed_file_gallery eq 'y'}
 			{if $gal_info.type eq "podcast" or $gal_info.type eq "vidcast"}
-				<a {if $prefs.mobile_mode eq 'y'} data-role="button"{/if} href="tiki-file_gallery_rss.php?galleryId={$galleryId}&amp;ver=PODCAST">
+				<a href="tiki-file_gallery_rss.php?galleryId={$galleryId}&amp;ver=PODCAST">
 					<img src='img/rss_podcast_80_15.png' alt="{tr}RSS feed{/tr}" title="{tr}RSS feed{/tr}" align='right'>
 				</a>
 			{else}
-				<a {if $prefs.mobile_mode eq 'y'} data-role="button"{/if} href="tiki-file_gallery_rss.php?galleryId={$galleryId}">
+				<a href="tiki-file_gallery_rss.php?galleryId={$galleryId}">
 					{icon _id='feed' alt="{tr}RSS feed{/tr}" title="{tr}RSS feed{/tr}" align='right'}
 				</a>
 			{/if}
 		{/if}
 		{if $view eq 'browse'}
 			{if $show_details eq 'y'}
-				<a {if $prefs.mobile_mode eq 'y'} data-role="button"{/if} href="{query _type='relative' show_details='n'}" title="{tr}Hide file information from list view{/tr}">{icon _id=no_information align='right' alt="{tr}Hide file information from list view{/tr}"}</a>  {* mobile *}
+				{self_link show_details='n'}
+					{icon _id='no_information' align='right' alt="{tr}Hide file information from list view{/tr}" }
+				{/self_link}
 			{else}
-				<a {if $prefs.mobile_mode eq 'y'} data-role="button"{/if} href="{query _type='relative' show_details='y'}" title="{tr}Show file information from list view{/tr}">{icon _id=information align='right' alt="{tr}Show file information from list view{/tr}"}</a>  {* mobile *}
+				{self_link show_details='y'}
+					{icon _id='information' align='right' alt="{tr}Show file information from list view{/tr}"}
+				{/self_link}
 			{/if}
 		{/if}
-		{if $prefs.mobile_mode eq 'y'}</div>{/if} {* mobile *}
 {* main navigation buttons under the page title *}
 		{if $treeRootId eq $prefs.fgal_root_id && ( $tiki_p_list_file_galleries eq 'y'
 			or (!isset($tiki_p_list_file_galleries) and $tiki_p_view_file_gallery eq 'y') )}
 			{button _text="{tr}List Galleries{/tr}" href="?"}
 		{/if}
 		{if $tiki_p_create_file_galleries eq 'y' and $edit_mode ne 'y'}
-			{button _keepall='y' _text="{tr}Create a gallery{/tr}" edit_mode=1 parentId=$galleryId cookietab=1}
+			{button _keepall='y' _text="{tr}Create a Gallery{/tr}" edit_mode=1 parentId=$galleryId cookietab=1}
 		{/if}
 		{if $tiki_p_create_file_galleries eq 'y' and $dup_mode ne 'y' and $gal_info.type neq 'user'}
 			{button _text="{tr}Duplicate Gallery{/tr}" dup_mode=1 galleryId=$galleryId}
@@ -124,7 +129,7 @@ $("#viewSwitcher").change(function() {
 			{/if}
 		{/if}
 		{if $tiki_p_assign_perm_file_gallery eq 'y'}
-			{permission_link mode=button type="file gallery" permType="file galleries" id=$galleryId title=$name}
+			{button _keepall='y' _text="{tr}Permissions{/tr}" href="tiki-objectpermissions.php" objectName=$name objectType='file+gallery' permType='file+galleries' objectId=$galleryId}
 		{/if}
 		{if $tiki_p_admin_file_galleries eq 'y' or $user eq $gal_info.user or $gal_info.public eq 'y'}
 			{if $tiki_p_upload_files eq 'y'}
@@ -142,7 +147,7 @@ $("#viewSwitcher").change(function() {
 			{button _text="{tr}List Galleries{/tr}" href='?'}
 		{/if}
 		{if $tiki_p_create_file_galleries eq 'y' and $edit_mode ne 'y'}
-			{button _keepall='y' _text="{tr}Create a gallery{/tr}" edit_mode="1" parentId="-1" galleryId="0"}
+			{button _keepall='y' _text="{tr}Create a Gallery{/tr}" edit_mode="1" parentId="-1" galleryId="0"}
 		{/if}
 		{if $tiki_p_upload_files eq 'y'}
 			{button _text="{tr}Upload File{/tr}" href="tiki-upload_file.php"}
@@ -202,14 +207,14 @@ $("#viewSwitcher").change(function() {
 		{/if}
 		{if $prefs.fgal_search_in_content eq 'y' and $galleryId > 0}
 			{if $view neq 'page'}
-				<div class="text-center">
+				<div class="findtable">
 					<form id="search-form" class="forms" method="get" action="tiki-search{if $prefs.feature_forum_local_tiki_search eq 'y'}index{else}results{/if}.php">
 						<input type="hidden" name="where" value="files">
 						<input type="hidden" name="galleryId" value="{$galleryId}">
 						<label class="find_content">{tr}Search in content{/tr}
 							<input name="highlight" size="30" type="text">
 						</label>
-						<input type="submit" class="wikiaction btn btn-default" name="search" value="{tr}Go{/tr}">
+						<input type="submit" class="wikiaction" name="search" value="{tr}Go{/tr}">
 					</form>
 				</div>
 			{/if}
@@ -226,7 +231,7 @@ $("#viewSwitcher").change(function() {
 				<label for="maxWidth">
 					{tr}Max width{/tr}&nbsp;<input id="maxWidth" type="text" name="maxWidth" value="{$maxWidth}">
 				</label>
-				<input type="submit" class="wikiaction btn btn-default" name="setSize" value="{tr}Go{/tr}">
+				<input type="submit" class="wikiaction" name="setSize" value="{tr}Go{/tr}">
 			</form>
 		</div><br>
 		{pagination_links cant=$cant step=$maxRecords offset=$offset}
@@ -303,8 +308,8 @@ window.handleFinderFile = function (file, elfinder) {
 		|| $tiki_p_post_comments == 'y'
 		|| $tiki_p_edit_comments == 'y')}
 
-		<div id="page-bar" class="btn-group">
-			<span class="button btn-default">
+		<div id="page-bar" class="clearfix">
+			<span class="button">
 				<a id="comment-toggle" href="{service controller=comment action=list type="file gallery" objectId=$galleryId}#comment-container">
 					{tr}Comments{/tr}
 				</a>

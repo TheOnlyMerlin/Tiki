@@ -29,7 +29,7 @@ function module_breadcrumb_info()
 			),
 			'show_namespace' => array(
 				'name' => tra('Show Namespace'),
-				'description' => tra('Show namespace prefix in page names.').' ( y / n )',	// Do not translate y/n
+				'description' => tra('Show namespace prefix in page names.').' ( y / n )',	// Do not translate y/n					
 				'default' => 'y'
 			)
 		),
@@ -43,17 +43,16 @@ function module_breadcrumb_info()
  */
 function module_breadcrumb($mod_reference, $module_params)
 {
-	global $prefs;
-	$smarty = TikiLib::lib('smarty');
-	$categlib = TikiLib::lib('categ');
+	global $smarty, $prefs;
+	global $categlib; include_once ('lib/categories/categlib.php');
 	if (!isset($_SESSION["breadCrumb"])) {
 		$_SESSION["breadCrumb"] = array();
 	}
 
 	if ($jail = $categlib->get_jail()) {
-		$objectlib = TikiLib::lib('object');
+		global $objectlib; include_once ('lib/objectlib.php');//
 		$objectIds=$objectlib->get_object_ids("wiki page", $_SESSION["breadCrumb"]);
-
+	
 		$breadIds=array();
 		foreach ($_SESSION["breadCrumb"] as $step) {
 			if (isset($objectIds[$step])) $breadIds[$objectIds[$step]]=$step;
@@ -75,5 +74,5 @@ function module_breadcrumb($mod_reference, $module_params)
 	$bbreadCrumb = array_slice(array_reverse($fullBreadCrumb), 0, $mod_reference['rows']);
 	$smarty->assign('breadCrumb', $bbreadCrumb);
 	$smarty->assign('maxlen', isset($module_params["maxlen"]) ? $module_params["maxlen"] : 0);
-	$smarty->assign('namespaceoption', isset($module_params['show_namespace']) ? $module_params['show_namespace'] : 'y');
+	$smarty->assign('namespaceoption',isset($module_params['show_namespace']) ? $module_params['show_namespace'] : 'y');
 }

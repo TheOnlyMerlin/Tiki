@@ -16,7 +16,6 @@ class Tiki_Profile_InstallHandler_BlogPost extends Tiki_Profile_InstallHandler
 			'title' => 'Title',
 			'private' => 'n',
 			'user' => '',
-			'geolocation' => '',
 		);
 
 		$data = array_merge($defaults, $this->obj->getData());
@@ -39,16 +38,16 @@ class Tiki_Profile_InstallHandler_BlogPost extends Tiki_Profile_InstallHandler
 
 	function _install()
 	{
-		global $prefs;
-		$bloglib = TikiLib::lib('blog');
+		global $bloglib;
+		if ( ! $bloglib ) require_once 'lib/blogs/bloglib.php';
 
 		$data = $this->getData();
 
 		$this->replaceReferences($data);
 
 		if ( isset( $data['blog'] ) && empty( $data['user'] ) ) {
-			$tikilib = TikiLib::lib('tiki');
-			$bloglib = TikiLib::lib('blog');
+			global $bloglib, $tikilib;
+			if ( ! $bloglib ) require_once 'lib/blogs/bloglib.php';
 
 			$result = $tikilib->query("SELECT `user` FROM `tiki_blogs` WHERE `blogId` = ?", array( $data['blog'] ));
 
@@ -58,10 +57,6 @@ class Tiki_Profile_InstallHandler_BlogPost extends Tiki_Profile_InstallHandler
 		}
 
 		$entryId = $bloglib->blog_post($data['blog'], $data['content'], $data['excerpt'], $data['user'], $data['title'], '', $data['private']);
-
-		if ($prefs['geo_locate_blogpost'] == 'y' && ! empty($data['geolocation'])) {
-			TikiLib::lib('geo')->set_coordinates('blog post', $entryId, $data['geolocation']);
-		}
 
 		return $entryId;
 	}

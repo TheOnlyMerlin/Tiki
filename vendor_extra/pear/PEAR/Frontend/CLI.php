@@ -20,6 +20,10 @@
  * @link       http://pear.php.net/package/PEAR
  * @since      File available since Release 0.1
  */
+/**
+ * base class
+ */
+require_once 'PEAR/Frontend.php';
 
 /**
  * Command-line Frontend for the PEAR Installer

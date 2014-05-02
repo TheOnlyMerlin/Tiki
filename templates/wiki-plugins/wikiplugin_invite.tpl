@@ -8,8 +8,7 @@
 {/if}
 
 <form method="post">
-<div class="table-responsive">
-<table class="table normal invite">
+<table class="normal invite">
 <tr>
 	<td>
 		<label for="email">{tr}Email address the person you want to invite{/tr}</label>
@@ -40,8 +39,7 @@
 </tr>
 <tr>
 	<td>&nbsp;</td>
-	<td><input type="submit" class="btn btn-default btn-sm" name="invite" value="{tr}Invite{/tr}"></td>
+	<td><input type="submit" name="invite" value="{tr}Invite{/tr}"></td>
 </tr>
 </table>
-</div>
 </form>

@@ -25,7 +25,7 @@ if ( ($id = (int)$_GET['id']) > 0 ) {
 		&& $prefs['search_refresh_index_mode'] == 'normal'
 		&& $prefs['fgal_asynchronous_indexing'] == 'y'
 	) {
-		$filegallib = TikiLib::lib('filegal');
+		require_once('lib/filegals/filegallib.php');
 		require_once('lib/search/refresh-functions.php');
 
 		$info = $filegallib->get_file_info($id);

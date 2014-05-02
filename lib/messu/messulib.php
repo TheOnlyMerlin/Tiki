@@ -19,9 +19,7 @@ class Messu extends TikiLib
 	 */
 	function save_sent_message($user, $from, $to, $cc, $subject, $body, $priority, $replyto_hash = '')
 	{
-		global $prefs;
-		$userlib = TikiLib::lib('user');
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $userlib, $prefs;
 
 		$subject = strip_tags($subject);
 		$body = strip_tags($body, '<a><b><img><i>');
@@ -79,9 +77,7 @@ class Messu extends TikiLib
 	 */
 	function post_message($user, $from, $to, $cc, $subject, $body, $priority, $replyto_hash = '', $replyto_email = '', $bcc_sender = '')
 	{
-		global $prefs;
-		$userlib = TikiLib::lib('user');
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $userlib, $prefs;
 
 		$subject = strip_tags($subject);
 		$body = strip_tags($body, '<a><b><img><i>');
@@ -121,7 +117,6 @@ class Messu extends TikiLib
 		);
 
 		// Now check if the user should be notified by email
-		$magId = $this->getOne('select LAST_INSERT_ID() from `messu_messages`', array());
 		$foo = parse_url($_SERVER['REQUEST_URI']);
 		$machine = $this->httpPrefix(true) . $foo['path'];
 		$machine = str_replace('messu-compose', 'messu-mailbox', $machine);
@@ -146,8 +141,6 @@ class Messu extends TikiLib
 				$smarty->assign('mail_from', stripslashes($from));
 				$smarty->assign('mail_subject', stripslashes($subject));
 				$smarty->assign('mail_body', stripslashes($body));
-				$smarty->assign('mail_truncate', $prefs['messu_truncate_internal_message']);
-				$smarty->assign('messageid', $magId);
 
 				try {
 					$mail = new TikiMail($user, $from_email);

@@ -53,7 +53,7 @@ if (empty($_REQUEST['report']) || $_REQUEST['report'] != 'y') {
 	// message related
 	if (isset($prefs['feature_messages']) and $prefs['feature_messages'] == 'y') {
 		include_once ('lib/messu/messulib.php');
-		$logslib = TikiLib::lib('logs');
+		include_once ('lib/logs/logslib.php');
 
 		$smarty->assign('priority', (isset($_REQUEST['priority'])?$_REQUEST['priority']:3));
 		$smarty->assign('do_message', (isset($_REQUEST['do_message'])?$_REQUEST['do_message']:true));
@@ -71,7 +71,8 @@ if (empty($_REQUEST['report']) || $_REQUEST['report'] != 'y') {
 	$smarty->assign('messageto', (isset($_REQUEST['messageto'])?$_REQUEST['messageto']:''));
 
 	if (isset($prefs['feature_forums']) and $prefs['feature_forums'] == 'y') {
-		$commentslib = TikiLib::lib('comments'); // not done in commentslib
+		include_once ('lib/comments/commentslib.php');
+		$commentslib = new Comments($dbTiki); // not done in commentslib
 		$sort_mode = $prefs['forums_ordering'];
 		$channels = $commentslib->list_forums(0, -1, $sort_mode, '');
 		Perms::bulk(array( 'type' => 'forum' ), 'object', $channels['data'], 'forumId');
@@ -191,8 +192,7 @@ if (isset($_REQUEST['send'])) {
 			if (substr($_REQUEST['addresses'], -2) == ', ') {
 				$_REQUEST['addresses'] = substr($_REQUEST['addresses'], 0, -2);
 			}
-			// Call checkAddresses with error = false to avoid double error reporting
-			$adresses = checkAddresses($_REQUEST['addresses'], false);
+			$adresses = checkAddresses($_REQUEST['addresses']);
 
 			require_once 'lib/auth/tokens.php';
 			if ($prefs['share_can_choose_how_much_time_access']
@@ -232,12 +232,9 @@ if (isset($_REQUEST['send'])) {
 
 				if (is_array($tokenlist)) {
 					foreach ($tokenlist as $i=>$data) {
-						$query = parse_url($data);
-						parse_str($query['query'],$query_vars);
-						$detailtoken = $tokenlib->getToken($query_vars['TOKEN']);
 						// Delete old user watch if it's necessary => avoid bad mails
-						$tikilib->remove_user_watch_object('auth_token_called', $detailtoken['tokenId'], 'security');
-						$tikilib->add_user_watch($user, 'auth_token_called', $detailtoken['tokenId'], 'security', tra('Token called'), $data);
+						$tikilib->remove_user_watch_object('auth_token_called', $data['tokenId'], 'security');
+						$tikilib->add_user_watch($user, 'auth_token_called', $data['tokenId'], 'security', tra('Token called'), $data['url']);
 					}
 				}
 
@@ -335,12 +332,11 @@ $smarty->display('tiki.tpl');
  * @param array|string	$recipients		list of recipients as an array or a comma/semicolon separated list
  * @return array|bool
  */
-function checkAddresses($recipients, $error = true)
+function checkAddresses($recipients)
 {
-	global $errors, $prefs, $user;
-	$userlib = TikiLib::lib('user');
-	$registrationlib = TikiLib::lib('registration');
-	$logslib = TikiLib::lib('logs');
+	global $errors, $prefs;
+	global $registrationlib, $userlib;
+	include_once ('lib/registration/registrationlib.php');
 
 	$e = array();
 
@@ -358,9 +354,8 @@ function checkAddresses($recipients, $error = true)
 			$ret = $registrationlib->SnowCheckMail($recipient, '', 'mini');
 			$ok = $ret[0];
 		}
-		if ( $error && !$ok) {
+		if (!$ok) {
 			$e[] = tra('One of the email addresses you typed is invalid:') . '&nbsp;' . $recipient;
-			$logslib->add_log('share', tra('One of the email addresses you typed is invalid:') . ' ' . $recipient . ' ' . tra('by') . ' ' . $user);
 		}
 	}
 
@@ -384,11 +379,8 @@ function checkAddresses($recipients, $error = true)
  */
 function sendMail($sender, $recipients, $subject, $tokenlist = array())
 {
-	global $errors, $prefs, $user;
-	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
-	$registrationlib = TikiLib::lib('registration');
-	$logslib = TikiLib::lib('logs');
+	global $errors, $prefs, $smarty, $user, $userlib, $logslib;
+	global $registrationlib; include_once ('lib/registration/registrationlib.php');
 
 	if (empty($sender)) {
 		$errors[] = tra('Your email is mandatory');
@@ -443,7 +435,6 @@ function sendMail($sender, $recipients, $subject, $tokenlist = array())
 		$mailsent = $mail->send(array($recipient));
 		if (!$mailsent) {
 			$errors[] = tra('Error sending mail to'). " $recipient";
-			$logslib->add_log('share', tra('Error sending mail to'). " $recipient "  . tra('by') .' ' . $user);
 		} else {
 			$logslib->add_log('share', tra('Share page').': '.$url_for_friend.' '.tra('to').' '.$recipient.' '.tra('by').' '.$user);
 		}
@@ -460,12 +451,8 @@ function sendMail($sender, $recipients, $subject, $tokenlist = array())
  */
 function sendMessage($recipients, $subject)
 {
-	global $errors, $prefs, $user;
-	global $messulib;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
-	$logslib = TikiLib::lib('logs');
+	global $errors, $prefs, $smarty, $user, $userlib, $tikilib;
+	global $messulib, $logslib;
 
 	$ok = true;
 	if (!is_array($recipients)) {
@@ -546,12 +533,9 @@ function sendMessage($recipients, $subject)
  */
 function postForum($forumId, $subject)
 {
-	global $errors, $prefs, $user;
+	global $errors, $prefs, $smarty, $user, $userlib, $tikilib, $_REQUEST;
+	global $commentslib;
 	global $feedbacks;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
-	$commentslib = TikiLib::lib('comments');
 
 	$forum_info = $commentslib->get_forum($forumId);
 	$forumperms = Perms::get(array( 'type' => 'forum', 'object' => $forumId ));

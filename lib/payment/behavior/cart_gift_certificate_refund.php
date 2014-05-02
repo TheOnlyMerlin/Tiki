@@ -12,7 +12,7 @@ function payment_behavior_cart_gift_certificate_refund(
 		$giftcertDiscount = 0
 		)
 {
-	$cartlib = TikiLib::lib('cart');
+	global $cartlib; require_once("lib/payment/cartlib.php");
 	global $prefs;
 
 	if ($giftcertMode == "Percentage" || $giftcertMode == "Coupon Percentage") {

@@ -4,12 +4,12 @@
 {/title}
 
 {if isset($sent) && empty($errors)}
-	<div id="success" class="alert alert-warning">
+	<div class="simplebox highlight">
 		{icon _id=accept alt="{tr}OK{/tr}" style="vertical-align:middle" align="left"}
 		{tr}Page shared:{/tr}<br>
 		{if isset($emailSent)}
 			<div>
-				{tr}The link was sent via email to the following addresses:{/tr} {$addresses|escape}
+				{tr}The link was sent via e-Mail to the following addresses:{/tr} {$addresses|escape}
 			</div>
 		{/if}
 		{if isset($tweetId)}
@@ -40,7 +40,7 @@
 {/if}
 
 {if !empty($errors)}
-	<div id="shareerror" class="alert alert-warning">
+	<div class="simplebox highlight">
 		{icon _id=exclamation alt="{tr}Error{/tr}" style="vertical-align:middle" align="left"}
 		{foreach from=$errors item=m name=errors}
 			{$m}
@@ -50,7 +50,6 @@
 {/if}
 
 {if !isset($sent) && empty($errors)}
-    <div id="ajaxmsg"></div>
 	<form method="post" action="tiki-share.php?url={$url|escape:url}" id="share-form">
 		<input type="hidden" name="url" value="{$url|escape:url}">
 		<input type="hidden" name="report" value="{$report}">
@@ -86,9 +85,9 @@
 	
 			<tr>
 				<td rowspan="2">
-					<img src="img/icons/large/evolution48x48.png" alt="{tr}email{/tr}">
+					<img src="img/icons/large/evolution48x48.png" alt="{tr}e-Mail{/tr}">
 					<br>
-					{tr}Send via email{/tr}
+					{tr}Send via e-Mail{/tr}
 				</td>
 				<td>
 					{if $report !='y' && !$twitterRegistered && !$facebookRegistered && !$prefs.feature_forums}
@@ -124,7 +123,7 @@
 								<tr>
 									<td>{tr}Your name{/tr}</td>
 									<td>
-										<input style="width:95%;" type="text" name="name" value="{$name|username:false:true}">
+										<input style="width:95%;" type="text" name="name" value="{$name}">
 									</td>
 								</tr>
 								<tr>
@@ -373,7 +372,7 @@
 			<tr>
 				<td></td>
 				<td>
-					<input type="submit" class="button btn btn-default" name="send" value="{tr}Share{/tr}">
+					<input type="submit" class="button" name="send" value="{tr}Share{/tr}">
 					{if $share_access}
 						<input type="hidden" name="share_access" value="1">
 					{/if}
@@ -388,35 +387,3 @@
 {else}
 	<p><a href="javascript:window.history.go(-2);">{tr}Return to previous page{/tr}</a></p>
 {/if}
-{jq}
-    $('#share-form').submit(function(e){
-        if($('#addresses').val() !='') {
-            $(this).tikiModal("Please wait....");
-            var postData = $(this).serializeArray();
-            var formURL = 'tiki-share.php?send=share';
-            $.ajax({
-                url : formURL,
-                type: "POST",
-                data : postData,
-                success:function(data, textStatus, jqXHR) {
-                    var shrsuccess =  $($.parseHTML(data)).find("#success").html();
-                    var shrerror = $($.parseHTML(data)).find("#shareerror").html();
-                    if(shrsuccess) {
-                        $('#ajaxmsg').html("<div class='alert alert-warning'>"+shrsuccess+"</div>");
-                    } else {
-                        $('#ajaxmsg').html("<div class='alert alert-warning'>"+shrerror+"</div>");
-                    }
-                    $('#share-form').tikiModal("");
-                    $('#addresses').val('');
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    $('#share-form').tikiModal("");
-                }
-            });
-        } else {
-            alert("You must provide at least one recipient email address");
-        }
-        e.preventDefault();
-        return false;
-    });
-{/jq}

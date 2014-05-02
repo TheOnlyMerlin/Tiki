@@ -7,10 +7,10 @@
 
 function smarty_function_rating_override_menu( $params, $smarty )
 {
-	global $prefs;
-	$headerlib = TikiLib::lib('header');
-	$ratinglib = TikiLib::lib('rating');
+	global $prefs, $headerlib, $ratinglib;
+	require_once("lib/rating/ratinglib.php");
 
+	require_once('lib/comments/commentslib.php');
 	$menu = '';
 	$options = $ratinglib->override_array($params['type'], true, true);
 	$optionsLength = count($options);

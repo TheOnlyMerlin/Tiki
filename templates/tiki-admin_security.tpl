@@ -6,17 +6,16 @@
 {/remarksbox}
 
 <h2>{tr}Tiki settings{/tr}</h2>
-<div class="table-responsive">
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>{tr}Tiki variable{/tr}</th>
 		<th>{tr}Setting{/tr}</th>
 		<th>{tr}Risk Factor{/tr}</th>
 		<th>{tr}Explanation{/tr}</th>
 	</tr>
-
+	{cycle values="even,odd" print=false}
 	{foreach from=$tikisettings key=key item=item}
-		<tr>
+		<tr class="{cycle}">
 			<td class="text">{$key}</td>
 			<td class="text">{$item.setting}</td>
 			<td class="text">
@@ -38,7 +37,7 @@
 		{norecords _colspan=4}
 	{/if}
 </table>
-</div>
+
 {tr}About WikiPlugins and security: Make sure to only grant the "tiki_p_plugin_approve" permission to trusted editors.{/tr} {tr}You can deactivate risky plugins at (<a href="tiki-admin.php?page=textarea">tiki-admin.php?page=textarea</a>).{/tr} {tr}You can approve plugin use at <a href="tiki-plugins.php">tiki-plugins.php</a>.{/tr}
 
 <br>
@@ -51,9 +50,8 @@
 	<br>
 </div>
 {if $filecheck}
-
-    <div class="table-responsive">
-	<table class="table normal">
+	{cycle values="even,odd" print=false}
+	<table class="normal">
 		<tr>
 			<th colspan="2">{tr}File checks{/tr}</th>
 		</tr>
@@ -62,13 +60,12 @@
 			<th>{tr}State{/tr}</th>
 		</tr>
 		{foreach from=$tikifiles key=key item=item}
-			<tr>
+			<tr class="{cycle}">
 				<td class="text">{$key}</td>
 				<td class="text">{$item}</td>
 			</tr>
 		{/foreach}
 	</table>
-    </div>
 {/if}
 
 <a href="tiki-admin_security.php?check_file_permissions">{tr}Check file permissions{/tr}</a>
@@ -83,8 +80,7 @@
 
 
 {if $permcheck}
-    <div class="table-responsive">
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th rowspan="2">{tr}Filename{/tr}</th>
 			<th rowspan="2">{tr}type{/tr}</th>
@@ -113,9 +109,9 @@
 		<tr>
 			<th colspan="16">{tr}Set User ID (suid) files{/tr}</th>
 		</tr>
-
+		{cycle values="even,odd" print=false}
 		{foreach from=$suid key=key item=item}
-			<tr>
+			<tr class="{cycle}">
 				<td class="text">{$key}</td>
 				<td class="text">{$item.t}</td>
 				<td class="text">{$item.u}</td>
@@ -139,7 +135,7 @@
 			<th colspan="16">{tr}World writable files or directories{/tr}</th>
 		</tr>
 		{foreach from=$worldwritable key=key item=item}
-			<tr>
+			<tr class="{cycle}">
 				<td class="text">{$key}</td>
 				<td class="text">{$item.t}</td>
 				<td class="text">{$item.u}</td>
@@ -163,7 +159,7 @@
 			<th colspan="16">{tr}Files or directories the Webserver can write to{/tr}</th>
 		</tr>
 		{foreach from=$apachewritable key=key item=item}
-			<tr>
+			<tr class="{cycle}">
 				<td class="text">{$key}</td>
 				<td class="text">{$item.t}</td>
 				<td class="text">{$item.u}</td>
@@ -183,11 +179,11 @@
 			</tr>
 		{/foreach}
 
-		<tr>
+		<tr class="{cycle}">
 			<th colspan="16">{tr}Strange Inodes (not file, not link, not directory){/tr}</th>
 		</tr>
 		{foreach from=$strangeinode key=key item=item}
-			<tr>
+			<tr class="{cycle}">
 				<td class="text">{$key}</td>
 				<td class="text">{$item.t}</td>
 				<td class="text">{$item.u}</td>
@@ -207,11 +203,11 @@
 			</tr>
 		{/foreach}
 
-		<tr>
+		<tr class="{cycle}">
 			<th colspan="16">{tr}Executable files{/tr}</th>
 		</tr>
 		{foreach from=$executable key=key item=item}
-			<tr>
+			<tr class="{cycle}">
 				<td class="text">{$key}</td>
 				<td class="text">{$item.t}</td>
 				<td class="text">{$item.u}</td>
@@ -231,7 +227,6 @@
 			</tr>
 		{/foreach}
 	</table>
-    </div>
 
 	{remarksbox type="tip" title="{tr}Info{/tr}"}
 		{tr}What to do with these check results?{/tr}

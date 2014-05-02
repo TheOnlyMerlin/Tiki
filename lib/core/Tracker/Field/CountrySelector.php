@@ -33,7 +33,6 @@ class Tracker_Field_CountrySelector extends Tracker_Field_Abstract implements Tr
 							1 => tr('Name only'),
 							2 => tr('Flag only'),
 						),
-						'legacy_index' => 0,
 					),
 					'sortorder' => array(
 						'name' => tr('Sort Order'),
@@ -43,7 +42,6 @@ class Tracker_Field_CountrySelector extends Tracker_Field_Abstract implements Tr
 							0 => tr('Translated name'),
 							1 => tr('English name'),
 						),
-						'legacy_index' => 1,
 					),
 				),
 			),
@@ -58,7 +56,7 @@ class Tracker_Field_CountrySelector extends Tracker_Field_Abstract implements Tr
 			'value' => isset($requestData[$ins_id])
 				? $requestData[$ins_id]
 				: $this->getValue(),
-			'flags' => TikiLib::lib('trk')->get_flags(true, true, ($this->getOption('sortorder') != 1)),
+			'flags' => TikiLib::lib('trk')->get_flags(true, true, ($this->getOption(1) != 1)),
 			'defaultvalue' => 'None',
 		);
 		
@@ -77,14 +75,14 @@ class Tracker_Field_CountrySelector extends Tracker_Field_Abstract implements Tr
 		$out = '';
 		
 		if ($context['list_mode'] != 'csv') {
-			if ($this->getOption('name_flag') != 1) {
+			if ($this->getOption(0) != 1) {
 				$out .= '<img src="img/flags/'.$current.'.gif" title="'.$label.'" alt="'.$label.'" />';
 			}
-			if ($this->getOption('name_flag') == 0) {
+			if ($this->getOption(0) == 0) {
 				$out .= ' ';
 			}
 		}
-		if ($this->getOption('name_flag') != 2) {
+		if ($this->getOption(0) != 2) {
 			$out .= $label;
 		}
 		
@@ -109,6 +107,13 @@ class Tracker_Field_CountrySelector extends Tracker_Field_Abstract implements Tr
 	function importRemoteField(array $info, array $syncInfo)
 	{
 		return $info;
+	}
+
+	function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
+	{
+		return array(
+			$baseKey => $typeFactory->sortable($this->getValue()),
+		);
 	}
 }
 

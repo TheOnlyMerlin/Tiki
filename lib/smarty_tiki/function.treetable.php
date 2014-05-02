@@ -58,8 +58,6 @@
  * _openall					: show folder button to open all areas (y/n default=n)
  *
  * _showSelected			: checkbox to show only selected (y/n default=n)
- *
- * _selectAllHiddenToo = 'n': select all checkbox incudes hidden rows
  */
 
 //this script may only be included - so its better to die if called directly.
@@ -83,7 +81,6 @@ function smarty_function_treetable($params, $smarty)
 	$_checkboxTitles = empty($_checkboxTitles) ? '' : $_checkboxTitles;
 	$_openall = isset($_openall) ? $_openall : 'n';
 	$_showSelected = isset($_showSelected) ? $_showSelected : 'n';
-	$_selectAllHiddenToo = isset($_selectAllHiddenToo) ? $_selectAllHiddenToo : 'n';
 
 	if (is_string($_checkbox) && strpos($_checkbox, ',') !== false) {
 		$_checkbox = preg_split('/,/', trim($_checkbox));
@@ -175,7 +172,7 @@ function smarty_function_treetable($params, $smarty)
 		$_sortColumn = $_groupColumn;
 	}
 
-	$class = empty($class) ? 'table table-striped' : $class;	// treetable
+	$class = empty($class) ? 'treetable' : $class;	// treetable
 
 /*
 	if ($prefs['feature_jquery_tablesorter'] == 'y' && strpos($class, 'sortable') === false) {
@@ -209,7 +206,7 @@ function smarty_function_treetable($params, $smarty)
 		$headerlib->add_jq_onready(
 			'
 $("#'.$id.'_openall").click( function () {
-	$this = $(this).tikiModal(" ");
+	$this = $(this).modal(" ");
 	var img = $("img:first", this)[0];
 	if (img.src.indexOf("ofolder.png") > -1) {
 
@@ -220,7 +217,7 @@ $("#'.$id.'_openall").click( function () {
 				$(this).click();
 			},
 			end: function ()  {
-				$this.tikiModal();
+				$this.modal();
 			}
 		});
 		img.src = img.src.replace("ofolder", "folder");
@@ -232,7 +229,7 @@ $("#'.$id.'_openall").click( function () {
 				$(this).click();
 			},
 			end: function ()  {
-				$this.tikiModal();
+				$this.modal();
 			}
 		});
 		img.src = img.src.replace("folder", "ofolder");
@@ -272,8 +269,7 @@ $("#'.$id.'_showSelected").click( function () {
 			$html .= smarty_function_select_all(
 				array(
 					'checkbox_names'=>array($_checkbox[$i] . '[]'),
-					'label' => empty($_checkboxTitles) ? '' : htmlspecialchars($_checkboxTitles[$i]),
-					'hidden_too' => $_selectAllHiddenToo,
+					'label' => empty($_checkboxTitles) ? '' : htmlspecialchars($_checkboxTitles[$i])
 				),
 				$smarty
 			);
@@ -297,6 +293,7 @@ $("#'.$id.'_showSelected").click( function () {
 		// set up tree hierarchy
 		if ($_sortColumn) {
 			$treeType = htmlspecialchars(trim($row[$_sortColumn]));
+			$treeTypeId = '';
 			$childRowClass = '';
 
 			if (!empty($_sortColumnDelimiter)) {	// nested
@@ -306,14 +303,19 @@ $("#'.$id.'_showSelected").click( function () {
 					$part = preg_replace('/\s+/', '_', $parts[$i]);
 					if (in_array($part, $treeSectionsAdded) && $i > 0) {
 						$treeParentId = preg_replace('/\s+/', '_', $parts[$i]);
+//						$childRowClass = ' child-of-' . $id . '_' . $treeParentId;
+						$treeTypeId = preg_replace('/\s+/', '_', $parts[$i - 1]);
+						$treeType = $parts[$i - 1];
 						$tt_parent_id = $id . '_' . $treeParentId;
+						$tt_id = $id . '_' . $treeParentId;
 						break;
 					}
 				}
 
-				$treeTypeId = preg_replace('/\s+/', '_', $parts[0]);
-				$tt_id = $id . '_' . $treeTypeId;
-
+				if (empty($treeTypeId)) {
+					$treeTypeId = preg_replace('/\s+/', '_', $part);
+					$tt_id = $id . '_' . $treeTypeId;
+				}
 				$treeSectionsAdded[] = $treeTypeId;
 
 			} else {
@@ -374,7 +376,7 @@ $("#'.$id.'_showSelected").click( function () {
 				$cbxVal = htmlspecialchars($row[$_checkboxColumnIndex[$i]]);
 				$rowVal = htmlspecialchars($row[$_valueColumnIndex]);
 				$cbxTit = empty($_checkboxTitles) ? $cbxVal : htmlspecialchars($_checkboxTitles[$i]);
-				$html .= '<td class="checkBoxCell" style="white-space: nowrap;">';
+				$html .= '<td class="checkBoxCell">';
 				$html .= '<input type="checkbox" name="' . htmlspecialchars($_checkbox[$i]) . '[]" value="' . $rowVal . '"' .
 									($cbxVal=='y' ? ' checked="checked"' : '') . ' title="' . $cbxTit . '" />';
 				if ($cbxVal == 'y') {

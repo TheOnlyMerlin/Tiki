@@ -15,7 +15,6 @@ function prefs_home_list($partial = false)
 			'type' => 'list',
 			'options' => $partial ? array() : listblog_pref(),
 			'default' => 0,
-			'profile_reference' => 'blog',
 		),
 		'home_forum' => array(
 			'name' => tra('Home Forum (main forum)'),
@@ -23,7 +22,6 @@ function prefs_home_list($partial = false)
 			'type' => 'list',
 			'options' => $partial ? array() : listforum_pref(),
 			'default' => 0,
-			'profile_reference' => 'forum',
 		),
 		'home_file_gallery' => array(
 			'name' => tra('Home File Gallery (main file gallery)'),
@@ -31,7 +29,6 @@ function prefs_home_list($partial = false)
 			'type' => 'list',
 			'options' => $partial ? array() : listfgal_pref(),
 			'default' => 1,
-			'profile_reference' => 'file_gallery',
 		),
 		'home_gallery' => array(
 			'name' => tra('Home Gallery (main gallery)'),
@@ -39,7 +36,6 @@ function prefs_home_list($partial = false)
 			'type' => 'list',
 			'options' => $partial ? array() : listimgal_pref(),
 			'default' => 0,
-			'profile_reference' => 'image_gallery',
 		),
 	);
 }
@@ -52,7 +48,8 @@ function prefs_home_list($partial = false)
  */
 function listimgal_pref()
 {
-	$imagegallib = TikiLib::lib('imagegal');
+	include_once ('lib/imagegals/imagegallib.php');
+	global $imagegallib;
 
 	$allimgals = $imagegallib->list_visible_galleries(0, -1, 'name_desc', 'admin', '');
 
@@ -79,16 +76,13 @@ function listfgal_pref()
 {
 	$filegallib = TikiLib::lib('filegal');
 
-	global $prefs;
-	$allfgals = $filegallib->getSubGalleries($prefs['fgal_root_id']);
-	array_unshift($allfgals['data'], $filegallib->get_file_gallery($prefs['fgal_root_id']));
-	$allfgals['data'][0]['id'] = $allfgals['data'][0]['galleryId'];	// sometimes galleries have a galleryId, sometimes it's in id :(
+	$allfgals = $filegallib->list_visible_file_galleries(0, -1, 'name_desc', 'admin', '');
 
 	$listfgals = array();
 
 	if ($allfgals['cant'] > 0) {
 		foreach ($allfgals['data'] as $onefgal) {
-			$listfgals[ $onefgal['id'] ] = substr($onefgal['name'], 0, 30);
+			$listfgals[ $onefgal['galleryId'] ] = substr($onefgal['name'], 0, 30);
 		}
 	} else {
 		$listfgals[''] = tra('No file gallery available (create one first)');
@@ -105,7 +99,9 @@ function listfgal_pref()
  */
 function listforum_pref()
 {
-	$allforums = TikiLib::lib('comments')->list_forums(0, -1, 'name_desc', '');
+	include_once ('lib/comments/commentslib.php');
+	$commentslib = new Comments();
+	$allforums = $commentslib->list_forums(0, -1, 'name_desc', '');
 
 	$listforums = array('' => 'None');
 
@@ -128,7 +124,7 @@ function listforum_pref()
  */
 function listblog_pref()
 {
-	$bloglib = TikiLib::lib('blog');
+	global $bloglib; require_once('lib/blogs/bloglib.php');
 
 	$allblogs = $bloglib->list_blogs(0, -1, 'created_desc', '');
 	$listblogs = array('' => 'None');

@@ -9,6 +9,11 @@
  * @subpackage  Examples
  */
 
+/**
+ * require the parser
+ */
+require_once 'XML/Parser/Simple.php';
+
 class myHandlerSimple
 {
    /**

@@ -22,7 +22,7 @@
 	{title help="Articles" admpage="articles"}{tr}Submit article{/tr}{/title}
 {/if}
 
-<div class="t_navbar">
+<div class="navbar">
 	{button href="tiki-list_submissions.php" _text="{tr}List Submissions{/tr}"}
 </div>
 
@@ -39,12 +39,12 @@
 	<input type="hidden" name="image_type" value="{$image_type|escape}">
 	<input type="hidden" name="image_name" value="{$image_name|escape}">
 	<input type="hidden" name="image_size" value="{$image_size|escape}">
-	<div class="panel panel-default"><div class="panel-body">
+	<div class="simplebox">
 		{tr}<b>*</b>=optional{/tr}
 		{if $types.$type.show_topline eq 'y'}, {tr}<b>Topline</b>=small line above Title{/tr}{/if} 
 		{if $types.$type.show_subtitle eq 'y'}, {tr}<b>Subtitle</b>=small line below Title{/tr}{/if}
 		{if $types.$type.show_linkto eq 'y'}, {tr}<b>Source</b>=URL to article source{/tr}{/if}
-	</div></div>
+	</div>
 	<br>
 	<table class="formcolor">
 		<tr id='show_topline' {if $types.$type.show_topline eq 'y'}style="display:;"{else}style="display:none;"{/if}>
@@ -94,10 +94,10 @@
 			<td>{tr}Topic{/tr}</td>
 			<td>
 				<select name="topicId">
+					{section name=t loop=$topics}
+						<option value="{$topics[t].topicId|escape}" {if $topicId eq $topics[t].topicId}selected="selected"{/if}>{$topics[t].name|escape}</option>
+					{/section}
 					<option value="" {if $topicId eq 0}selected="selected"{/if}>{tr}None{/tr}</option>
-					{foreach $topics as $topic}
-						<option value="{$topic.topicId|escape}" {if $topicId eq $topic.topicId}selected="selected"{/if}>{$topic.name|escape}</option>
-					{/foreach}
 				</select>
 				{if $tiki_p_admin_cms eq 'y'}
 					<a href="tiki-admin_topics.php" class="link">{tr}Admin Topics{/tr}</a>
@@ -141,7 +141,6 @@
 					<option value="1.5" {if $rating eq "1.5"}selected="selected"{/if}>1.5</option>
 					<option value="1" {if $rating eq 1}selected="selected"{/if}>1</option>
 					<option value="0.5" {if $rating eq "0.5"}selected="selected"{/if}>0.5</option>
-					<option value="0" {if $rating eq "0"}selected="selected"{/if}>0</option>
 				</select>
 			</td>
 		</tr>
@@ -318,10 +317,10 @@
 	
 	<div align="center">
 		{if $prefs.feature_antibot eq 'y'}<br><div align="center">{include file='antibot.tpl' antibot_table='y'}</div><br>{/if}
-		<input type="submit" class="wikiaction btn btn-default" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;">
-		<input type="submit" class="wikiaction btn btn-default" name="submitarticle" value="{tr}Submit Article{/tr}" onclick="needToConfirm=false;">
+		<input type="submit" class="wikiaction" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;">
+		<input type="submit" class="wikiaction" name="submitarticle" value="{tr}Submit Article{/tr}" onclick="needToConfirm=false;">
 		{if $tiki_p_autoapprove_submission eq 'y'}
-			<input type="submit" class="wikiaction btn btn-default" name="save" value="{tr}Auto-Approve Article{/tr}" onclick="needToConfirm=false;">
+			<input type="submit" class="wikiaction" name="save" value="{tr}Auto-Approve Article{/tr}" onclick="needToConfirm=false;">
 		{/if}
 	</div>
 {if $smarty.session.wysiwyg neq 'y'}

@@ -35,7 +35,7 @@ function wikiplugin_proposal_info()
 
 function wikiplugin_proposal_save( $context, $data, $params )
 {
-	$attributelib = TikiLib::lib('attribute');
+	global $attributelib; require_once 'lib/attributes/attributelib.php';
 
 	static $objects = array();
 	$key = $context['type'] . ':' . $context['object'];

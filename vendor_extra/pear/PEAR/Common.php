@@ -203,6 +203,9 @@ class PEAR_Common extends PEAR
         $tempfiles =& $GLOBALS['_PEAR_Common_tempfiles'];
         while ($file = array_shift($tempfiles)) {
             if (@is_dir($file)) {
+                if (!class_exists('System')) {
+                    require_once 'System.php';
+                }
                 System::rm(array('-rf', $file));
             } elseif (file_exists($file)) {
                 unlink($file);
@@ -226,6 +229,9 @@ class PEAR_Common extends PEAR
      */
     function addTempFile($file)
     {
+        if (!class_exists('PEAR_Frontend')) {
+            require_once 'PEAR/Frontend.php';
+        }
         PEAR_Frontend::addTempFile($file);
     }
 
@@ -245,6 +251,9 @@ class PEAR_Common extends PEAR
     function mkDirHier($dir)
     {
         $this->log(2, "+ create dir $dir");
+        if (!class_exists('System')) {
+            require_once 'System.php';
+        }
         return System::mkDir(array('-p', $dir));
     }
 
@@ -265,6 +274,9 @@ class PEAR_Common extends PEAR
     function log($level, $msg, $append_crlf = true)
     {
         if ($this->debug >= $level) {
+            if (!class_exists('PEAR_Frontend')) {
+                require_once 'PEAR/Frontend.php';
+            }
             $ui = &PEAR_Frontend::singleton();
             if (is_a($ui, 'PEAR_Frontend')) {
                 $ui->log($msg, $append_crlf);
@@ -296,6 +308,9 @@ class PEAR_Common extends PEAR
             $topt = array();
         }
         $topt = array_merge($topt, array('-d', 'pear'));
+        if (!class_exists('System')) {
+            require_once 'System.php';
+        }
         if (!$tmpdir = System::mktemp($topt)) {
             return false;
         }
@@ -1073,6 +1088,9 @@ class PEAR_Common extends PEAR
      */
     function downloadHttp($url, &$ui, $save_dir = '.', $callback = null)
     {
+        if (!class_exists('PEAR_Downloader')) {
+            require_once 'PEAR/Downloader.php';
+        }
         return PEAR_Downloader::downloadHttp($url, $ui, $save_dir, $callback);
     }
 
@@ -1098,3 +1116,5 @@ class PEAR_Common extends PEAR
         return false;
     }
 }
+require_once 'PEAR/Config.php';
+require_once 'PEAR/PackageFile.php';

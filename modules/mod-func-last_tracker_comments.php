@@ -24,14 +24,12 @@ function module_last_tracker_comments_info()
 			'trackerId' => array(
 				'name' => tra('Tracker identifier'),
 				'description' => tra('If set to a tracker identifier, only displays the comments on the given tracker.') . " " . tra('Example value: 13.') . " " . tr('Not set by default.'),
-				'filter' => 'int',
-				'profile_reference' => 'tracker',
+				'filter' => 'int'
 			),
 			'itemId' => array(
 				'name' => tra('Item identifier'),
 				'description' => tra('If set to an item identifier, only displays the comments on the given item.') . " " . tra('Example value: 13.') . " " . tr('Not set by default.'),
-				'filter' => 'int',
-				'profile_reference' => 'tracker_item',
+				'filter' => 'int'
 			)
 		),
 		'common_params' => array('rows', 'nonums')
@@ -50,7 +48,8 @@ function module_last_tracker_comments($mod_reference, $module_params)
 	
 	$itemId = isset($module_params["itemId"]) ? $module_params["itemId"] : 0;
 
-	$trklib = TikiLib::lib('trk');
+	global $trklib;
+	require_once ('lib/trackers/trackerlib.php');
 		
 	$ranking = $trklib->list_last_comments($trackerId, $itemId, 0, $mod_reference["rows"]);
 	$smarty->assign('modLastModifComments', isset($ranking['data']) ? $ranking["data"] : array());

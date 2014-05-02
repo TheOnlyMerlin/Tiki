@@ -1,9 +1,4 @@
 <?php
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
-
 /**
  * Tiki initialization functions and classes
  *
@@ -20,14 +15,14 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
   exit;
 }
 
-if (! file_exists(__DIR__ . '/../../vendor/autoload.php')) {
+if (! file_exists('vendor/autoload.php')) {
 	echo "Your Tiki is not completely installed because Composer has not been run to fetch package dependencies.\n";
 	echo "You need to run 'sh setup.sh' from the command line.\n";
 	echo "See http://dev.tiki.org/Composer for details.\n";
 	exit;
 }
 
-require_once __DIR__ . '/../../vendor/autoload.php';
+require_once 'vendor/autoload.php';
 
 /**
  * performs some checks on the underlying system, before initializing Tiki.
@@ -38,50 +33,8 @@ class TikiInit
 	/**
 	 * dummy constructor
 	 */
-	function __construct()
+	function TikiInit()
 	{
-	}
-
-	static function getContainer()
-	{
-		static $container;
-
-		if ($container) {
-			return $container;
-		}
-
-		$cache = TIKI_PATH . '/temp/cache/container.php';
-		if (is_readable($cache)) {
-			require_once $cache;
-			$container = new TikiCachedContainer;
-			return $container;
-		}
-
-		$path = TIKI_PATH . '/db/config';
-		$container = new ContainerBuilder;
-		$container->addCompilerPass(new \Tiki\MailIn\Provider\CompilerPass);
-
-		$container->setParameter('kernel.root_dir', TIKI_PATH);
-		$loader = new XmlFileLoader($container, new FileLocator($path));
-
-		$loader->load('tiki.xml');
-		$loader->load('controllers.xml');
-		$loader->load('mailin.xml');
-
-		try {
-			$loader->load('custom.xml');
-		} catch (InvalidArgumentException $e) {
-			// Do nothing, absence of custom.xml file is expected
-		}
-
-		$container->compile();
-
-		$dumper = new PhpDumper($container);
-		file_put_contents($cache, $dumper->dump([
-			'class' => 'TikiCachedContainer',
-		]));
-
-		return $container;
 	}
 
 /** Return 'windows' if windows, otherwise 'unix'
@@ -352,25 +305,6 @@ class TikiInit
 		$api_tiki = '';
 
 		return $local_php;
-	}
-
-	static function getEnvironmentCredentials()
-	{
-		// Load connection strings from environment variables, as used by Azure and possibly other hosts
-		$connectionString = null;
-		foreach (array('MYSQLCONNSTR_Tiki', 'MYSQLCONNSTR_DefaultConnection') as $envVar) {
-			if (isset($_SERVER[$envVar])) {
-				$connectionString = $_SERVER[$envVar];
-				continue;
-			}
-		}
-
-		if ($connectionString && preg_match('/^Database=(?P<dbs>.+);Data Source=(?P<host>.+);User Id=(?P<user>.+);Password=(?P<pass>.+)$/', $connectionString, $parts)) {
-			$parts['charset'] = 'utf8';
-			$parts['socket'] = null;
-			return $parts;
-		}
-		return null;
 	}
 }
 

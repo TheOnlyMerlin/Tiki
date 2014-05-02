@@ -38,7 +38,7 @@ class Services_Workspace_Controller
 			if (! $perms->workspace_instantiate) {
 				throw new Services_Exception_Denied;
 			}
-			$workspaceName = $name;
+
 			$name = $templateInfo['name'] . $prefs['namespace_separator'] . $name;
 
 			$transaction = TikiDb::get()->begin();
@@ -64,7 +64,6 @@ class Services_Workspace_Controller
 		}
 
 		return array(
-			'title' => tr('Create Workspace'),
 			'templates' => $templates,
 		);
 	}
@@ -72,7 +71,6 @@ class Services_Workspace_Controller
 	function action_list_templates($input)
 	{
 		return array(
-			'title' => tr('Workspace Templates'),
 			'list' => $this->utilities->getTemplateList(),
 		);
 	}
@@ -85,7 +83,7 @@ class Services_Workspace_Controller
 
 		$id = null;
 		if ($input->name->text()) {
-			$builder = new Services_Workspace_ProfileBuilder;
+			$builder = new Tiki_Profile_Builder;
 			$builder->addGroup('Base', $builder->user('group'));
 			$builder->setManagingGroup('Base');
 			$builder->setPermissions(
@@ -143,7 +141,6 @@ class Services_Workspace_Controller
 		}
 
 		return array(
-			'title' => tr('Create Workspace Template'),
 			'id' => $id,
 		);
 	}
@@ -162,7 +159,7 @@ class Services_Workspace_Controller
 		}
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-			$builder = new Services_Workspace_ProfileBuilder;
+			$builder = new Tiki_Profile_Builder;
 
 			if ($prefs['feature_areas'] == 'y' && $input->area->int()) {
 				$builder->addObject(
@@ -207,7 +204,7 @@ class Services_Workspace_Controller
 
 		$template = $this->utilities->getTemplate($input->id->int());
 		$profile = Tiki_Profile::fromString($template['definition']);
-		$analyser = new Services_Workspace_ProfileAnalyser($profile);
+		$analyser = new Tiki_Profile_Analyser($profile);
 
 		$hasArea = $analyser->contains(
 			array(
@@ -255,7 +252,6 @@ class Services_Workspace_Controller
 		$template = $this->utilities->getTemplate($input->id->int());
 
 		return array(
-			'title' => tr('Edit template %0', $template['name']),
 			'id' => $input->id->int(),
 			'name' => $template['name'],
 			'definition' => $template['definition'],
@@ -322,6 +318,5 @@ class Services_Workspace_Controller
 			'content' => $content,
 		);
 	}
-	
 }
 

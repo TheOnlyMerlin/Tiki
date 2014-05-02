@@ -25,7 +25,6 @@ function module_menupage_info()
 				'description' => tra('Page to display in the menu. Example value: HomePage.'),
 				'filter' => 'pagename',
 				'required' => true,
-				'profile_reference' => 'wiki_page',
 			),
 			'use_namespace' => array(
 				'name' => tra('Use default namespace'),
@@ -78,7 +77,7 @@ function module_menupage($mod_reference, $module_params)
 		if ($perms->view) {
 			$content = $wikilib->get_parse($pagemenu, $dummy, true);
 		} else {
-			$content = '<label class="alert-warning">' . tra("You are not logged in") . '</label>';
+			$content = '<label class="error">' . tra("You are not logged in") . '</label>';
 		}
 
 		if (! empty($content) && ! empty($module_params['menu_type']) && in_array($module_params['menu_type'], array('horiz', 'vert'))) {

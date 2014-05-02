@@ -6,9 +6,8 @@
 
 {include file='find.tpl'}
 
-
-<div class="table-responsive">
-<table class="table normal">
+{cycle values="odd,even" print=false}
+<table class="normal">
 	<tr>
 		<th>
 			<a href="tiki-list_cache.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'url_desc'}url_asc{else}url_desc{/if}">{tr}URL{/tr}</a>
@@ -19,7 +18,7 @@
 		<th>{tr}Action{/tr}</th>
 	</tr>
 	{section name=changes loop=$listpages}
-		<tr>
+		<tr class="{cycle}">
 			<td class="text">
 				<a class="link" href="{$listpages[changes].url}">{$listpages[changes].url}</a>
 			</td>
@@ -36,6 +35,5 @@
 		{norecords _colspan=3}
 	{/section}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}

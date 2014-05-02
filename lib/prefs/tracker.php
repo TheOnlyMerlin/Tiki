@@ -10,7 +10,7 @@ function prefs_tracker_list()
 	return array(
 		'tracker_remote_sync' => array(
 			'name' => tr('Synchronize Remote Tracker'),
-			'description' => tr('Allows a tracker to be cloned on a remote host and synchronize the data locally on demand.'),
+			'description' => tr('Allows to clone a tracker on a remote host and synchronize the data locally on demand.'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
@@ -33,7 +33,6 @@ function prefs_tracker_list()
 			'filter' => 'int',
 			'separator' => ',',
 			'default' => array(),
-			'profile_reference' => 'tracker',
 		),
 		'tracker_change_field_type' => array(
 			'name' => tr('Change Field Types'),
@@ -41,33 +40,6 @@ function prefs_tracker_list()
 			'type' => 'flag',
 			'default' => 'n',
 			'warning' => tra('Use with care!'),
-		),
-		'tracker_show_comments_below' => array(
-			'name' => tr('Show comments below items'),
-			'description' => tr('Show comments to a tracker item below the item itself like in other trackers, instead of enclosed in a tab'),
-			'type' => 'flag',
-			'default' => 'n',
-		),		
-		'tracker_legacy_insert' => array(
-			'name' => tr('Use legacy tracker insertion screen'),
-			'description' => tr('Use the legacy tracker insertion screen as a tab instead of the dialog.'),
-			'type' => 'flag',
-			'default' => 'n',
-		),		
-		'tracker_wikirelation_synctitle' => array(
-			'name' => tr('Sync wiki page name to linked tracker field'),
-			'description' => tr('When wiki page is renamed or when the value of the trackerfield that is linked to the wiki page is changed, make the corresponding change as well to the other linked via tiki.wiki.linkedfield relation.'),
-			'type' => 'flag',
-			'tags' => array('advanced'),
-			'default' => 'n',
-		),
-		'tracker_wikirelation_redirectpage' => array(
-			'name' => tr('Redirect page views to linked tracker item'),
-			'description' => tr('Redirect the user to the tracker item when trying to view a wiki page that has a linked tracker item via tiki.wiki.linkeditem relation. Can be bypassed by adding &admin (?admin in sefurl) to the URL.'),
-			'warning' => tra('To get to the wiki page after activation, you can add &admin (?admin in sefurl) to the URL.'),
-			'type' => 'flag',
-			'tags' => array('advanced'),
-			'default' => 'n',
 		),
 	);
 }

@@ -9,7 +9,7 @@
 // $Id$
 
 require_once ('tiki-setup.php');
-$histlib = TikiLib::lib('hist');
+include_once ('lib/wiki/histlib.php');
 
 $access->check_feature('feature_wiki');
 $access->check_permission('tiki_p_admin');

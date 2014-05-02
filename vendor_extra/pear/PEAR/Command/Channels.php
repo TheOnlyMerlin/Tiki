@@ -24,6 +24,11 @@
  */
 
 /**
+ * base class
+ */
+require_once 'PEAR/Command/Common.php';
+
+/**
  * PEAR commands for managing channels.
  *
  * @category   pear
@@ -245,6 +250,9 @@ password via the system\'s process list.
                 }
                 fclose($fp);
             }
+            if (!class_exists('PEAR_ChannelFile')) {
+                require_once 'PEAR/ChannelFile.php';
+            }
             $chan = new PEAR_ChannelFile;
             $chan->fromXmlString($contents);
             $chan->validate();
@@ -413,6 +421,7 @@ password via the system\'s process list.
             $downloader = &$this->getDownloader();
             $tmpdir = $this->config->get('temp_dir');
             if (!file_exists($tmpdir)) {
+                require_once 'System.php';
                 PEAR::staticPushErrorHandling(PEAR_ERROR_RETURN);
                 $err = System::mkdir(array('-p', $tmpdir));
                 PEAR::staticPopErrorHandling();
@@ -450,6 +459,9 @@ password via the system\'s process list.
                 $contents .= fread($fp, 1024);
             }
             fclose($fp);
+        }
+        if (!class_exists('PEAR_ChannelFile')) {
+            require_once 'PEAR/ChannelFile.php';
         }
         $channel = new PEAR_ChannelFile;
         PEAR::staticPushErrorHandling(PEAR_ERROR_RETURN);
@@ -491,6 +503,7 @@ password via the system\'s process list.
     {
         $tmpdir = $this->config->get('temp_dir');
         if (!file_exists($tmpdir)) {
+            require_once 'System.php';
             PEAR::staticPushErrorHandling(PEAR_ERROR_RETURN);
             $err = System::mkdir(array('-p', $tmpdir));
             PEAR::staticPopErrorHandling();
@@ -534,6 +547,9 @@ password via the system\'s process list.
                 return;
             }
             $contents = implode('', file($contents));
+            if (!class_exists('PEAR_ChannelFile')) {
+                require_once 'PEAR/ChannelFile.php';
+            }
             $channel = new PEAR_ChannelFile;
             $channel->fromXmlString($contents);
             if (!$channel->getErrors()) {
@@ -578,6 +594,9 @@ password via the system\'s process list.
                 }
                 fclose($fp);
             }
+            if (!class_exists('PEAR_ChannelFile')) {
+                require_once 'PEAR/ChannelFile.php';
+            }
             $channel = new PEAR_ChannelFile;
             $channel->fromXmlString($contents);
         }
@@ -612,6 +631,9 @@ password via the system\'s process list.
 
     function &getDownloader()
     {
+        if (!class_exists('PEAR_Downloader')) {
+            require_once 'PEAR/Downloader.php';
+        }
         $a = new PEAR_Downloader($this->ui, array(), $this->config);
         return $a;
     }

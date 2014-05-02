@@ -17,7 +17,7 @@ require_once ('tiki-setup.php');
 
 $access->check_feature('feature_wiki');
 
-$wikilib = TikiLib::lib('wiki');
+include_once ('lib/wiki/wikilib.php');
 $plugins = $wikilib->list_plugins(true);
 $smarty->assign_by_ref('plugins', $plugins);
 $smarty->display("tiki-edit_help.tpl");

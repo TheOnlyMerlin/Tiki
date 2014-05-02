@@ -71,7 +71,6 @@ class Search_ContentSource_UserSource implements Search_ContentSource_Interface
 			'user_country' => $typeFactory->sortable($detail['preferences']['country']),
 			'geo_located' => $typeFactory->identifier(empty($loc) ? 'n' : 'y'),
 			'geo_location' => $typeFactory->identifier($loc),
-			'_extra_groups' => array('Registered'), // Add all registered to allowed groups
 		);
 
 		$data = array_merge($data, $this->getTrackerFieldsForUser($objectId, $typeFactory));
@@ -170,7 +169,7 @@ class Search_ContentSource_UserSource implements Search_ContentSource_Interface
 			$item = $this->trk->get_tracker_item($row['itemId']);
 
 			foreach (Search_ContentSource_TrackerItemSource::getIndexableHandlers($definition, $item) as $baseKey => $handler) {
-				$data = array_merge($data, $handler->getDocumentPart($typeFactory));
+				$data = array_merge($data, $handler->getDocumentPart($baseKey, $typeFactory));
 			}
 		}
 

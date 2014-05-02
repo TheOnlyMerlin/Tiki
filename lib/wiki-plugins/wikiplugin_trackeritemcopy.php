@@ -23,7 +23,6 @@ function wikiplugin_trackeritemcopy_info()
 				'filter' => 'text',
 				'default' => '',
 				'separator' => array(':'),
-				'profile_reference' => 'tracker',
 			),
 			'linkFieldIds' => array(
 				'required' => true,
@@ -32,7 +31,6 @@ function wikiplugin_trackeritemcopy_info()
 				'filter' => 'text',
 				'default' => '',
 				'separator' => array(':'),
-				'profile_reference' => 'tracker_field',
 			),
 			'copyFieldIds' => array(
 				'required' => true,
@@ -41,7 +39,6 @@ function wikiplugin_trackeritemcopy_info()
 				'filter' => 'text',
 				'default' => '',
 				'separator' => array('|', ':'),
-				'profile_reference' => 'tracker_field',
 			),
 			'updateFieldIds' => array(
 				'required' => false,
@@ -50,7 +47,6 @@ function wikiplugin_trackeritemcopy_info()
 				'filter' => 'text',
 				'default' => '',
 				'separator' => array('|', ':'),
-				'profile_reference' => 'tracker_field',
 			),
 			'updateFieldValues' => array(
 				'required' => false,
@@ -59,7 +55,6 @@ function wikiplugin_trackeritemcopy_info()
 				'filter' => 'text',
 				'default' => '',
 				'separator' => array('|', ':'),
-				'profile_reference' => 'tracker_field',
 			),
 			'itemId' => array(
 				'required' => false,
@@ -67,7 +62,6 @@ function wikiplugin_trackeritemcopy_info()
 				'description' => tra('ID of item to make copy of, otherwise input is asked for'),
 				'filter' => 'text',
 				'default' => '',
-				'profile_reference' => 'tracker_item',
 			),
 			'copies_on_load' => array(
 				'required' => false,
@@ -90,8 +84,8 @@ function wikiplugin_trackeritemcopy_info()
 
 function wikiplugin_trackeritemcopy( $data, $params )
 {
+	global $smarty;
 	$trklib = TikiLib::lib("trk");
-	$smarty = TikiLib::lib('smarty');
 
 	if (!isset($params["trackerId"]) || !isset($params["copyFieldIds"])) {
 		return tra('Missing mandatory parameters');
@@ -113,8 +107,9 @@ function wikiplugin_trackeritemcopy( $data, $params )
 
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-		$items_copy = function ($trackerId, $updateFieldIds, $updateFieldValues, $copyFieldIds, $itemIds, $linkFieldId, $itemLinkId, $copies) {
-			$trklib = TikiLib::lib('trk');
+		function items_copy($trackerId, $updateFieldIds, $updateFieldValues, $copyFieldIds, $itemIds, $linkFieldId, $itemLinkId, $copies)
+		{
+			global $trklib, $_POST;
 
 			if (is_array($itemIds) == false) $itemIds = array($itemIds);
 
@@ -185,7 +180,7 @@ function wikiplugin_trackeritemcopy( $data, $params )
 				"data" => $newitemsdata,
 				"list" => $newitemslist
 			);
-		};
+		}
 
 		$return_array = array();
 		$itemIds = array();
@@ -226,7 +221,7 @@ function wikiplugin_trackeritemcopy( $data, $params )
 					}
 				}
 
-				$return_array[] = $items_copy(
+				$return_array[] = items_copy(
 					$trackerId[$key],
 					$updateFieldIds[$key],
 					$updateFieldValues[$key],

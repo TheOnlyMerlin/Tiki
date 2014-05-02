@@ -158,6 +158,22 @@
  */
 
 /**
+ * Require utility classes and functions for the consumer.
+ */
+require_once "Auth/OpenID.php";
+require_once "Auth/OpenID/Message.php";
+require_once "Auth/OpenID/HMAC.php";
+require_once "Auth/OpenID/Association.php";
+require_once "Auth/OpenID/CryptUtil.php";
+require_once "Auth/OpenID/DiffieHellman.php";
+require_once "Auth/OpenID/KVForm.php";
+require_once "Auth/OpenID/Nonce.php";
+require_once "Auth/OpenID/Discover.php";
+require_once "Auth/OpenID/URINorm.php";
+require_once "Auth/Yadis/Manager.php";
+require_once "Auth/Yadis/XRI.php";
+
+/**
  * This is the status code returned when the complete method returns
  * successfully.
  */
@@ -1165,7 +1181,7 @@ class Auth_OpenID_GenericConsumer {
         // oidutil.log('Performing discovery on %s' % (claimed_id,))
         list($unused, $services) = call_user_func($this->discoverMethod,
                                                   $claimed_id,
-												  $this->fetcher);
+												  &$this->fetcher);
 
         if (!$services) {
             return new Auth_OpenID_FailureResponse(null,

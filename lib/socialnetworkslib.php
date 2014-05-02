@@ -10,7 +10,7 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	header('location: index.php');
 	exit;
 }
-$logslib = TikiLib::lib('logs');
+require_once ('lib/logs/logslib.php');
 
 
 /**
@@ -78,7 +78,7 @@ class SocialNetworksLib extends LogsLib
 
 
 		$this->options['callbackUrl'] = $this->getURL();
-		$this->options['siteUrl'] = 'https://api.twitter.com/oauth';
+		$this->options['siteUrl'] = 'http://api.twitter.com/oauth';
 		$this->options['consumerKey'] = $prefs['socialnetworks_twitter_consumer_key'];
 		$this->options['consumerSecret'] = $prefs['socialnetworks_twitter_consumer_secret'];
 
@@ -159,9 +159,6 @@ class SocialNetworksLib extends LogsLib
 		if ($prefs['socialnetworks_facebook_manage_pages'] == 'y') {
 			$scopes[] = 'manage_pages';
 		}
-		if ($prefs['socialnetworks_facebook_email'] === 'y') {
-			$scopes[] = 'email';
-		}
 		$scope = implode(',', $scopes);
 		$url = $this->getURL();
 		if (strpos($url, '?') != 0) {
@@ -184,8 +181,7 @@ class SocialNetworksLib extends LogsLib
 	 */
 	function getFacebookAccessToken()
 	{
-		global $prefs, $user;
-		$userlib = TikiLib::lib('user');
+		global $prefs, $user, $userlib;
 		if ($prefs['socialnetworks_facebook_application_id'] == '' or $prefs['socialnetworks_facebook_application_secr'] == '') {
 			return false;
 		}
@@ -225,7 +221,6 @@ class SocialNetworksLib extends LogsLib
 			if (empty($fb_profile->id)) {
 				return false;
 			}
-			// echo '<!-- $ret=' . var_export($fb_profile, true) . '-->';
 			if (!$user) {
 				if ($prefs['socialnetworks_facebook_login'] != 'y') {
 					return false;
@@ -235,13 +230,8 @@ class SocialNetworksLib extends LogsLib
 					$user = $local_user;
 				} elseif ($prefs['socialnetworks_facebook_autocreateuser'] == 'y') {
 					$randompass = $userlib->genPass();
-					$email = $prefs['socialnetworks_facebook_email'] === 'y' ? $fb_profile->email : '';
-					if ($prefs['login_is_email'] == 'y' && $email) {
-						$user = $email;
-					} else {
-						$user = 'fb_' . $fb_profile->id;
-					}
-					$userlib->add_user($user, $randompass, $email);
+					$user = 'fb_' . $fb_profile->id;
+					$userlib->add_user($user, $randompass, '');
 					$this->set_user_preference($user, 'realName', $fb_profile->name);
 					if ($prefs['socialnetworks_facebook_firstloginpopup'] == 'y') {
 						$this->set_user_preference($user, 'socialnetworks_user_firstlogin', 'y');
@@ -258,7 +248,6 @@ class SocialNetworksLib extends LogsLib
 				$userlib->update_expired_groups();
 				$this->set_user_preference($user, 'facebook_id', $fb_profile->id);
 				$this->set_user_preference($user, 'facebook_token', $access_token);
-				$userlib->update_lastlogin($user);
 				header('Location: tiki-index.php');
 				die;
 			} else {
@@ -306,15 +295,13 @@ class SocialNetworksLib extends LogsLib
 		$this->options['callbackUrl'] = $this->getURL();
 		$this->options['consumerKey'] = $prefs['socialnetworks_twitter_consumer_key'];
 		$this->options['consumerSecret'] = $prefs['socialnetworks_twitter_consumer_secret'];
-		$twitter = new Zend_Service_Twitter(
-			array(
-				'oauthOptions' => array(
-					'consumerKey' => $prefs['socialnetworks_twitter_consumer_key'],
-					'consumerSecret' => $prefs['socialnetworks_twitter_consumer_secret'],
-				),
-				'accessToken' => $token
-			)
-		);
+		$twitter = new Zend_Service_Twitter(array(
+			'oauthOptions' => array(
+				'consumerKey' => $prefs['socialnetworks_twitter_consumer_key'],
+				'consumerSecret' => $prefs['socialnetworks_twitter_consumer_secret'],
+			),
+			'accessToken' => $token
+		));
 
 		try {
 			$response = $twitter->statusesUpdate($message);
@@ -352,15 +339,13 @@ class SocialNetworksLib extends LogsLib
 		$this->options['callbackUrl'] = $this->getURL();
 		$this->options['consumerKey'] = $prefs['socialnetworks_twitter_consumer_key'];
 		$this->options['consumerSecret'] = $prefs['socialnetworks_twitter_consumer_secret'];
-		$twitter = new Zend_Service_Twitter(
-			array(
-				'oauthOptions' => array(
-					'consumerKey' => $prefs['socialnetworks_twitter_consumer_key'],
-					'consumerSecret' => $prefs['socialnetworks_twitter_consumer_secret'],
-				),
-				'accessToken' => $token
-			)
-		);
+		$twitter = new Zend_Service_Twitter(array(
+			'oauthOptions' => array(
+				'consumerKey' => $prefs['socialnetworks_twitter_consumer_key'],
+				'consumerSecret' => $prefs['socialnetworks_twitter_consumer_secret'],
+			),
+			'accessToken' => $token
+		));
 		try {
 			$response = $twitter->statusesDestroy($id);
 		} catch(Zend_Http_Client_Exception $e)	{
@@ -587,16 +572,14 @@ class SocialNetworksLib extends LogsLib
 
 		$token = unserialize($token);
 
-		$twitter = new Zend_Service_Twitter(
-			array(
-				'oauthOptions' => array(
-					'consumerKey' => $prefs['socialnetworks_twitter_consumer_key'],
-					'consumerSecret' => $prefs['socialnetworks_twitter_consumer_secret'],
-				),
-				'accessToken' => $token
-			)
-		);
-
+		$twitter = new Zend_Service_Twitter(array(
+			'oauthOptions' => array(
+				'consumerKey' => $prefs['socialnetworks_twitter_consumer_key'],
+				'consumerSecret' => $prefs['socialnetworks_twitter_consumer_secret'],
+			),
+			'accessToken' => $token
+		));
+		
 		if ($timelineType=='friends') {
 			$response = $twitter->statusesHomeTimeline();
 		} else {

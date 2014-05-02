@@ -15,7 +15,7 @@ function isValidLocale($localeIdentifier = '')
 {
 	global $prefs;
 	return preg_match("/[a-zA-Z-_]+$/", $localeIdentifier) && file_exists('lang/'. $localeIdentifier .'/language.php')
-		&& ($prefs['restrict_language'] === 'n' || empty($prefs['available_languages']) || in_array($localeIdentifier, $prefs['available_languages']));
+		&& (empty($prefs['available_languages']) || in_array($localeIdentifier, $prefs['available_languages']));
 }
 
 // Sets the language
@@ -50,8 +50,6 @@ if ( $prefs['change_language'] == 'y') {
 			$prefs['language'] = $browser_language;
 		}
 	}
-} else {
-	$prefs['language'] = $prefs['site_language'];
 }
 
 if (!isValidLocale($prefs['language'])) {
@@ -59,4 +57,5 @@ if (!isValidLocale($prefs['language'])) {
 	setLanguage($prefs['site_language']);
 }
 
-TikiLib::lib('multilingual')->setupBiDi();
+// Some languages need BiDi support. Add their code names here ...
+$prefs['feature_bidi'] = in_array($prefs['language'], array('ar', 'he', 'fa')) ? 'y' : 'n';

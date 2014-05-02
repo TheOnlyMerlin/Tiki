@@ -21,6 +21,11 @@
  */
 
 /**
+ * base class
+ */
+require_once 'PEAR/Command/Common.php';
+
+/**
  * PEAR commands for providing file mirrors
  *
  * @category   pear

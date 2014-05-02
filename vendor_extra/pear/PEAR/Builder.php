@@ -25,6 +25,11 @@
  */
 
 /**
+ * Needed for extending PEAR_Builder
+ */
+require_once 'PEAR/Common.php';
+require_once 'PEAR/PackageFile.php';
+/**
  * Class to handle building (compiling) extensions.
  *
  * @category   pear

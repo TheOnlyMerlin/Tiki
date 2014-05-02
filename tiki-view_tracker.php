@@ -13,13 +13,13 @@ require_once ('tiki-setup.php');
 
 $access->check_feature('feature_trackers');
 
-$trklib = TikiLib::lib('trk');
+global $trklib; include_once ('lib/trackers/trackerlib.php');
 if ($prefs['feature_groupalert'] == 'y') {
-	$groupalertlib = TikiLib::lib('groupalert');
+	include_once ('lib/groupalert/groupalertlib.php');
 }
-$notificationlib = TikiLib::lib('notification');
+include_once ('lib/notifications/notificationlib.php');
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	include_once ('lib/categories/categlib.php');
 }
 $auto_query_args = array(
 	'offset',
@@ -56,8 +56,7 @@ if (!empty($_REQUEST['show']) && $_REQUEST['show'] == 'view') {
 } elseif (!empty($_REQUEST['show']) && $_REQUEST['show'] == 'mod') {
 	$cookietab = '2';
 } elseif (empty($_REQUEST['cookietab'])) {
-	if ((isset($tracker_info['writerCanModify']) && $tracker_info['writerCanModify'] == 'y' && $user) or
-		(isset($tracker_info['userCanSeeOwn']) && $tracker_info['userCanSeeOwn'] == 'y' && $user)) $cookietab = '1';
+	if (isset($tracker_info['writerCanModify']) && $tracker_info['writerCanModify'] == 'y' && $user) $cookietab = '1';
 	elseif (!($tiki_p_view_trackers == 'y' || $tiki_p_admin == 'y' || $tiki_p_admin_trackers == 'y') && $tiki_p_create_tracker_items == 'y') $cookietab = "2";
 	else if (!isset($cookietab)) {
 		$cookietab = '1';
@@ -101,19 +100,16 @@ if ($tiki_p_create_tracker_items == 'y' && !empty($t['end'])) {
 	}
 }
 
-$access->check_permission_either(array('tiki_p_view_trackers', 'tiki_p_create_tracker_items'), tra('Create or view tracker'), 'tracker', $_REQUEST["trackerId"]);
-$tikilib->get_perm_object($_REQUEST['trackerId'], 'tracker', $tracker_info);
+$access->check_permission_either(array('tiki_p_view_trackers', 'tiki_p_create_tracker_items'));
 
 if ($tracker_info['adminOnlyViewEditItem'] === 'y') {
 	$access->check_permission('tiki_p_admin_trackers', tra('Admin this tracker'), 'tracker', $tracker_info['trackerId']);
 }
 
 if ($tiki_p_view_trackers != 'y') {
-	$userCreatorFieldId = $writerfield;
-	$groupCreatorFieldId = $writergroupfield;
-	if ($user && !$my and ( (isset($tracker_info['writerCanModify']) and $tracker_info['writerCanModify'] == 'y') or
-							(isset($tracker_info['userCanSeeOwn']) and $tracker_info['userCanSeeOwn'] == 'y'))
-							 and !empty($userCreatorFieldId)) {
+	$userCreatorFieldId = $trklib->get_field_id_from_type($_REQUEST['trackerId'], 'u', '1%');
+	$groupCreatorFieldId = $trklib->get_field_id_from_type($_REQUEST['trackerId'], 'g', '1%');
+	if ($user && !$my and isset($tracker_info['writerCanModify']) and $tracker_info['writerCanModify'] == 'y' and !empty($userCreatorFieldId)) {
 		$my = $user;
 	} elseif ($user && !$ours and isset($tracker_info['writerGroupCanModify']) and $tracker_info['writerGroupCanModify'] == 'y' and !empty($groupCreatorFieldId)) {
 		$ours = $group;
@@ -234,11 +230,6 @@ foreach ($xfields['data'] as $i => $current_field) {
 	//exclude fields that should not be listed
 	if ($fieldIsVisible && ($current_field_ins['isTblVisible'] == 'y' or in_array($fid, $popupFields))) {
 		$listfields[$fid] = $current_field_ins;
-		if ($fieldIsEditable) {
-			$listfields[$fid]['editable'] = true;
-		} else {
-			$listfields[$fid]['editable'] = false;
-		}
 	}
 
 	if (! empty($current_field_ins)) {
@@ -249,17 +240,19 @@ foreach ($xfields['data'] as $i => $current_field) {
 			$fields['data'][$i] = $current_field_ins;
 		}
 	}
+	if ($fieldIsEditable) {
+		$listfields[$fid]['editable'] = true;
+	} else {
+		$listfields[$fid]['editable'] = false;
+	}
 }
 
 // Collect information from the provided fields
 $newItemRateField = null;
-$newItemRate = null;
-if (!empty($ins_fields['data'])) {
-	foreach ($ins_fields['data'] as $current_field) {
-		if ($current_field['type'] == 's' && $current_field['name'] == 'Rating') {
-			$newItemRateField = $current_field;
-			$newItemRate = $current_field['request_rate'];
-		}
+foreach ($ins_fields['data'] as $current_field) {
+	if ($current_field['type'] == 's' && $current_field['name'] == 'Rating') {
+		$newItemRateField = $current_field;
+		$newItemRate = $current_field['request_rate'];
 	}
 }
 
@@ -340,7 +333,7 @@ if ($prefs['feature_user_watches'] == 'y' and $tiki_p_watch_trackers == 'y') {
 
 if (isset($_REQUEST["save"])) {
 	if ($itemObject->canModify()) {
-		$captchalib = TikiLib::lib('captcha');
+		global $captchalib; include_once 'lib/captcha/captchalib.php';
 		if (empty($user) && $prefs['feature_antibot'] == 'y' && !$captchalib->validate()) {
 			$smarty->assign('msg', $captchalib->getErrors());
 			$smarty->assign('errortype', 'no_redirect_login');
@@ -370,6 +363,13 @@ if (isset($_REQUEST["save"])) {
 			}
 			$cookietab = "1";
 			$smarty->assign('itemId', '');
+			$mainfield = '';
+			foreach ($ins_fields as $f) {
+				if ($f['isMain'] == 'y' && ! empty($f['value'])) {
+					$mainfield = $f['value'];
+					break;
+				}
+			}
 			if (isset($newItemRate)) {
 				$trackerId = $_REQUEST["trackerId"];
 				$trklib->replace_rating($trackerId, $itemid, $newItemRateField, $user, $newItemRate);
@@ -548,12 +548,13 @@ ask_ticket('view-trackers');
 
 // Generate validation js
 if ($prefs['feature_jquery'] == 'y' && $prefs['feature_jquery_validation'] == 'y') {
-	$validatorslib = TikiLib::lib('validators');
+	global $validatorslib;
+	include_once('lib/validatorslib.php');
 	$validationjs = $validatorslib->generateTrackerValidateJS($fields['data']);
 	$smarty->assign('validationjs', $validationjs);
 }
 //Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 $smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
 
 // Display the template

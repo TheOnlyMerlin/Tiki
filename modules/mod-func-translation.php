@@ -72,7 +72,8 @@ function module_translation($mod_reference, $module_params)
 
 	if (! empty($page) && is_string($page)) {
 
-		$multilinguallib = TikiLib::lib('multilingual');
+		global $multilinguallib;
+		include_once('lib/multilingual/multilinguallib.php');
 
 		if (isset($module_params['show_language']) && $module_params['show_language'] == 'n') {
 			$smarty->assign('show_language', 'n');

@@ -10,8 +10,8 @@
 
 require_once ('tiki-setup.php');
 include_once ('lib/themecontrol/tcontrol.php');
-$categlib = TikiLib::lib('categ');
-$filegallib = TikiLib::lib('filegal');
+include_once ('lib/categories/categlib.php');
+include_once ('lib/filegals/filegallib.php');
 include_once ('lib/htmlpages/htmlpageslib.php');
 /**
  * @param $arr
@@ -55,14 +55,18 @@ switch ($_REQUEST['type']) {
     	break;
 
 	case 'forum':
-		$objects = TikiLib::lib('comments')->list_forums(0, -1, 'name_asc', $find_objects);
+		require_once ('lib/comments/commentslib.php');
+		if (!isset($commentslib)) {
+			$commentslib = new Comments($dbTiki);
+		}
+		$objects = $commentslib->list_forums(0, -1, 'name_asc', $find_objects);
 		$smarty->assign_by_ref('objects', $objects["data"]);
 		$objects = $objects['data'];
 		correct_array($objects, 'forumId', 'name');
     	break;
 
 	case 'blog':
-		$bloglib = TikiLib::lib('blog');
+		require_once('lib/blogs/bloglib.php');
 		$objects = $bloglib->list_blogs(0, -1, 'title_asc', $find_objects);
 		$smarty->assign_by_ref('objects', $objects["data"]);
 		$objects = $objects['data'];
@@ -99,7 +103,7 @@ switch ($_REQUEST['type']) {
     	break;
 
 	case 'article':
-		$artlib = TikiLib::lib('art');
+		global $artlib; require_once 'lib/articles/artlib.php';
 		$objects = $artlib->list_articles(0, -1, 'title_asc', $find_objects, 0, 0, $user);
 		$smarty->assign_by_ref('objects', $objects["data"]);
 		$objects = $objects['data'];

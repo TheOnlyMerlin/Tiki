@@ -1,29 +1,23 @@
 <form action="tiki-admin.php?page=freetags" method="post">
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-                <input type="submit" class="btn btn-default btn-sm" value="{tr}Change preferences{/tr}">
-            </div>
-        </div>
-    </div>
-
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" value="{tr}Change preferences{/tr}" />
+	</div>
 	{tabset name="admin_freetags"}
 		{tab name="{tr}General Settings{/tr}"}
-            <h2>{tr}General Settings{/tr}</h2>
 		
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Activate the feature{/tr}</legend>
 		{preference name=feature_freetags visible="always"}
 	</fieldset>			
 	
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Plugins{/tr}</legend>
 		{preference name=wikiplugin_freetagged}
 		{preference name=wikiplugin_addfreetag}		
 	</fieldset>
 		
 			<fieldset>
-				<legend>{tr}Tags{/tr}{help url="Tags"}</legend>
+				<legend>{tr}Freetags{/tr}{help url="Tags"}</legend>
 				<input type="hidden" name="freetagsfeatures" />
 				{preference name=freetags_browse_show_cloud}
 
@@ -33,6 +27,8 @@
 
 				{preference name=freetags_3d_autoload}
 				{preference name=freetags_show_middle}
+				{preference name=freetags_preload_random_search}
+				<em>{tr}When arriving on <a href="tiki-browse_freetags.php">freetag search page</a>{/tr}.</em>
 
 				<div class="adminoptionbox">
 					<div class="adminoptionlabel">
@@ -56,20 +52,13 @@
 				{preference name=morelikethis_algorithm}
 				{preference name=morelikethis_basic_mincommon}
 			</fieldset>
-	
-			<fieldset class="admin">
-				<legend>{tr}Freetag search page{/tr}</legend>
-				{preference name=freetags_sort_mode}
-				{preference name=freetags_preload_random_search}
-				<em>{tr}When arriving on <a href="tiki-browse_freetags.php">freetag search page</a>{/tr}.</em>
-			</fieldset>
 
 			<fieldset>
 				<legend>{tr}Tag Management{/tr}</legend>
 				<div class="adminoptionbox">
 					<div class="adminoptionlabel">
 						<div align="center">
-							<input type="submit" class="btn btn-default btn-sm" value="{tr}Cleanup unused tags{/tr}" name="cleanup" />
+							<input type="submit" value="{tr}Cleanup unused tags{/tr}" name="cleanup" />
 						</div>
 					</div>
 				</div>
@@ -78,7 +67,6 @@
 
 		{if $prefs.feature_morcego eq 'y'}
 			{tab name="{tr}3D Tag Browser Configuration{/tr}"}
-                <h2>{tr}3D Tag Browser Configuration{/tr}</h2>
 				{preference name=freetags_feature_3d}
 				<div id=freetags_feature_3d_childcontainer>
 					<fieldset>
@@ -114,10 +102,7 @@
 			{/tab}
 		{/if}
 	{/tabset}
-    <br>{* I cheated. *}
-    <div class="row">
-        <div class="form-group col-lg-12 text-center">
-            <input type="submit" class="btn btn-default btn-sm" value="{tr}Change preferences{/tr}">
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: center">
+		<input type="submit" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>

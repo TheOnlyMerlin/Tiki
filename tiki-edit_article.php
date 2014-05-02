@@ -14,12 +14,13 @@ $inputConfiguration = array(
 );
 
 require_once ('tiki-setup.php');
-$categlib = TikiLib::lib('categ');
-$artlib = TikiLib::lib('art');
+include_once ('lib/categories/categlib.php');
+include_once ('lib/articles/artlib.php');
 
 //get_strings tra('New Article')
 if ($prefs['feature_freetags'] == 'y') {
-	$freetaglib = TikiLib::lib('freetag');
+	global $freetaglib;
+	include_once('lib/freetag/freetaglib.php');
 }
 $access->check_feature('feature_articles');
 
@@ -58,18 +59,6 @@ if (isset($_REQUEST['cancel_edit'])) {
 	die;
 }
 
-if (!empty($_REQUEST['topicId'])) {
-	$topicId = $_REQUEST['topicId'];
-} else {
-	$topicId = '';
-}
-
-if (!empty($_REQUEST['type'])) {
-	$type = $_REQUEST['type'];
-} else {
-	$type = '';
-}
-
 // We need separate numbering of previews, since we access preview images by this number
 if (isset($_REQUEST['previewId'])) {
 	$previewId = $_REQUEST['previewId'];
@@ -86,7 +75,7 @@ $smarty->assign(
 
 if (isset($_REQUEST['templateId']) && $_REQUEST['templateId'] > 0) {
 	global $templateslib; require_once 'lib/templates/templateslib.php';
-	$template_data = $templateslib->get_template($_REQUEST['templateId'], $prefs['language']);
+	$template_data = $templateslib->get_template($_REQUEST['templateId'],$prefs['language']);
 	$_REQUEST['preview'] = 1;
 	$_REQUEST['body'] = $template_data['content'];
 	if ($templateslib->template_is_in_section($_REQUEST['templateId'], 'wiki_html')) {
@@ -107,7 +96,7 @@ $expireDate = $tikilib->make_time(
 );
 
 //Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 $smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
 
 $smarty->assign('arttitle', '');
@@ -118,8 +107,7 @@ $smarty->assign('image_caption', '');
 $smarty->assign('lang', $prefs['language']);
 $authorName = $tikilib->get_user_preference($user, 'realName', $user);
 $smarty->assign('authorName', $authorName);
-$smarty->assign('topicId', $topicId);
-$smarty->assign('type', $type);
+$smarty->assign('topicId', '');
 $smarty->assign('useImage', 'n');
 $smarty->assign('isfloat', 'n');
 $hasImage = 'n';
@@ -134,7 +122,7 @@ $smarty->assign('list_image_x', $prefs['article_default_list_image_size_x']);
 $smarty->assign('list_image_y', $prefs['article_default_list_image_size_y']);
 $smarty->assign('heading', '');
 $smarty->assign('body', '');
-$smarty->assign('author', $user);
+$smarty->assign('author', '');
 $smarty->assign('rating', 7);
 $smarty->assign('edit_data', 'n');
 $smarty->assign('emails', '');
@@ -169,7 +157,7 @@ if (isset($_REQUEST["articleId"]) and $_REQUEST["articleId"] > 0) {
 	$smarty->assign('list_image_y', $article_data['list_image_y']);
 	$smarty->assign('reads', $article_data['nbreads']);
 	$smarty->assign('type', $article_data['type']);
-	$smarty->assign('author', ($prefs['article_remembers_creator'] == 'y')?$article_data['author']:$user);
+	$smarty->assign('author', $article_data['author']);
 	$smarty->assign('creator_edit', $article_data['creator_edit']);
 	$smarty->assign('rating', $article_data['rating']);
 	$smarty->assign('ispublished', $article_data['ispublished']);
@@ -190,16 +178,10 @@ if (isset($_REQUEST["articleId"]) and $_REQUEST["articleId"] > 0) {
 	$body = $article_data['body'];
 	$heading = $article_data['heading'];
 	$smarty->assign('parsed_body', $tikilib->parse_data($body, array('is_html' => $artlib->is_html($article_data))));
-	$smarty->assign(
-		'parsed_heading',
-		$tikilib->parse_data(
-			$heading,
-			array(
-				'min_one_paragraph' => true,
-				'is_html' => $artlib->is_html($article_data, true),
-			)
-		)
-	);
+	$smarty->assign('parsed_heading', $tikilib->parse_data($heading, array(
+			'min_one_paragraph' => true,
+			'is_html' => $artlib->is_html($article_data, true),
+		)));
 }
 if (!empty($_REQUEST['translationOf'])) {
 	$translationOf = $_REQUEST['translationOf'];
@@ -209,9 +191,8 @@ if (!empty($_REQUEST['translationOf'])) {
 // Now check permissions to access this page
 if ($tiki_p_admin_cms != 'y'
 			&& !$tikilib->user_has_perm_on_object($user, $articleId, 'article', 'tiki_p_edit_article')
-			&& ($article_data['author'] != $user
-			|| empty($user)
-			|| $article_data['creator_edit'] != 'y')
+			and ($article_data['author'] != $user
+			or $article_data['creator_edit'] != 'y')
 ) {
 	$smarty->assign('errortype', 401);
 	$smarty->assign('msg', tra('You do not have permission to edit this article'));
@@ -401,32 +382,8 @@ if (isset($_REQUEST['preview']) or !empty($errors)) {
 
 	if (isset($_REQUEST['allowhtml']) && $_REQUEST['allowhtml'] == 'on') {
 		$body = $_REQUEST['body'];
-		$parserlib = TikiLib::lib('parser');
-		$noparsed = array();
-		$parserlib->plugins_remove($body, $noparsed);
-
-		$body = TikiFilter::get('xss')->filter($body);
-
-		$parserlib->isEditMode = true;
-		$parserlib->plugins_replace($body, $noparsed, true);
-		$parserlib->isEditMode = false;
 
 		$heading = $_REQUEST['heading'];
-		$noparsed = array();
-		$parserlib->plugins_remove($heading, $noparsed);
-
-		$heading = TikiFilter::get('xss')->filter($heading);
-
-		$parserlib->isEditMode = true;
-		$parserlib->plugins_replace($heading, $noparsed, true);
-		$parserlib->isEditMode = false;
-
-		//html is stored encoded in wysiwyg
-		if (isset($jitRequest['wysiwyg']) && $jitRequest['wysiwyg'] == 'y') {
-			$body = html_entity_decode($body, ENT_QUOTES, 'UTF-8');
-			$heading = html_entity_decode($heading, ENT_QUOTES, 'UTF-8');
-		}
-
 	} else {
 		$body = strip_tags($_REQUEST['body'], '<a><pre><p><img><hr><b><i>');
 
@@ -447,7 +404,7 @@ if (isset($_REQUEST['preview']) or !empty($errors)) {
 
 if (isset($_REQUEST['save']) && empty($errors)) {
 	check_ticket('edit-article');
-	$imagegallib = TikiLib::lib('imagegal');
+	include_once ('lib/imagegals/imagegallib.php');
 
 	# convert from the displayed 'site' time to 'server' time
 	if (isset($_REQUEST['publish_Hour'])) {
@@ -485,32 +442,8 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 
 	if (isset($_REQUEST['allowhtml']) && $_REQUEST['allowhtml'] == 'on' || $_SESSION['wysiwyg'] == 'y') {
 		$body = $_REQUEST['body'];
-		$parserlib = TikiLib::lib('parser');
-		$noparsed = array();
-		$parserlib->plugins_remove($body, $noparsed);
-
-		$body = TikiFilter::get('xss')->filter($body);
-
-		$parserlib->isEditMode = true;
-		$parserlib->plugins_replace($body, $noparsed, true);
-		$parserlib->isEditMode = false;
 
 		$heading = $_REQUEST['heading'];
-		$noparsed = array();
-		$parserlib->plugins_remove($heading, $noparsed);
-
-		$heading = TikiFilter::get('xss')->filter($heading);
-
-		$parserlib->isEditMode = true;
-		$parserlib->plugins_replace($heading, $noparsed, true);
-		$parserlib->isEditMode = false;
-
-		//html is stored encoded in wysiwyg
-		if (isset($jitRequest['wysiwyg']) && $jitRequest['wysiwyg'] == 'y') {
-			$body = html_entity_decode($body, ENT_QUOTES, 'UTF-8');
-			$heading = html_entity_decode($heading, ENT_QUOTES, 'UTF-8');
-		}
-
 	} else {
 		$body = strip_tags($_REQUEST['body'], '<a><pre><p><img><hr><b><i>');
 
@@ -578,7 +511,7 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 				&& isset($_REQUEST['lang'])
 				&& $article_data['lang'] != $_REQUEST['lang']
 	) {
-		$multilinguallib = TikiLib::lib('multilingual');
+		include_once('lib/multilingual/multilinguallib.php');
 		if ($multilinguallib->updateObjectLang('article', $article_data['articleId'], $_REQUEST['lang'], true)) {
 			$_REQUEST['lang'] = $article_data['lang'];
 			$smarty->assign('msg', tra("The language can't be changed as its set of translations has already this language"));
@@ -591,20 +524,6 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 		$ispublished = 'y';
 	else
 		$ispublished = 'n';
-
-	// The field 'user' which is initially the author login is never displayed but it is used in ownership checks and "User Information" → "User contributions" tab
-	// This is not the same as authorName which is just for display and can be edited
-	// Before pref article_remembers_creator it was changed to the last editor at every edition.
-	// With article_remembers_creator == y memory of creator (owner) is kept. With permission tiki_p_edit_article_user it is possible for admins to reattribute the article
-	if ( $tiki_p_edit_article_user == 'y' && isset($_REQUEST['author']) ) {
-		$author = $_REQUEST['author'];
-	} else {
-		if ($prefs['article_remembers_creator'] == 'y') {
-			$author = $_REQUEST['author'];
-		} else {
-			$author = $user;
-		}
-	}
 
 	$_REQUEST['title'] = strip_tags($_REQUEST['title'], '<a><pre><p><img><hr><b><i>');
 	$artid = $artlib->replace_article(
@@ -620,7 +539,7 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 		$body,
 		$publishDate,
 		$expireDate,
-		$author,
+		$user,
 		$articleId,
 		$_REQUEST['image_x'],
 		$_REQUEST['image_y'],
@@ -652,7 +571,7 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 		$translatedArticle = $artlib->get_article($translationOf);
 		// Quietly fail if translated article does not exist.
 		if (!empty($translatedArticle) && $translatedArticle['lang'] && $_REQUEST['lang'] != $translatedArticle['lang']) {
-			$multilinguallib = TikiLib::lib('multilingual');
+			include_once('lib/multilingual/multilinguallib.php');
 			$multilinguallib->insertTranslation('article', $translatedArticle['articleId'], $translatedArticle['lang'], $artid, $_REQUEST["lang"]);
 		}
 	}
@@ -694,8 +613,7 @@ $_SESSION['thedate'] = $tikilib->now;
 
 // get list of valid types
 $types = $artlib->list_types_byname();
-
-if (empty($article_data) && empty($_REQUEST['type'])) {
+if (empty($article_data)) {
 	// Select the first type as default selection
 	if (empty($types)) {
 		$type = '';
@@ -739,7 +657,7 @@ if ($prefs['feature_multilingual'] == 'y') {
 	$smarty->assign_by_ref('languages', $languages);
 	// get translations
 	if ($articleId) {
-		$multilinguallib = TikiLib::lib('multilingual');
+		include_once('lib/multilingual/multilinguallib.php');
 		$translations = $multilinguallib->getTranslations('article', $articleId);
 	} else {
 		$translations = array();
@@ -768,7 +686,7 @@ $smarty->assign('siteTimeZone', $prefs['display_timezone']);
 
 include_once ('tiki-section_options.php');
 
-$wikilib = TikiLib::lib('wiki');
+global $wikilib; include_once('lib/wiki/wikilib.php');
 $plugins = $wikilib->list_plugins(true, 'body');
 $smarty->assign_by_ref('plugins', $plugins);
 

@@ -127,11 +127,11 @@ class Services_Category_Controller
 
 		$tx = TikiDb::get()->begin();
 
-		foreach ($objects as & $object) {
+		foreach ($objects as $object) {
 			$type = $object['type'];
 			$id = $object['id'];
 
-			$object['catObjectId'] = $this->$function($categId, $type, $id);
+			$this->$function($categId, $type, $id);
 		}
 
 		$tx->commit();
@@ -153,7 +153,7 @@ class Services_Category_Controller
 	private function doCategorize($categId, $type, $id)
 	{
 		$categlib = TikiLib::lib('categ');
-		return $categlib->categorize_any($type, $id, $categId);
+		$categlib->categorize_any($type, $id, $categId);
 	}
 
 	private function doUncategorize($categId, $type, $id)
@@ -161,9 +161,7 @@ class Services_Category_Controller
 		$categlib = TikiLib::lib('categ');
 		if ($oId = $categlib->is_categorized($type, $id)) {
 			$categlib->uncategorize($oId, $categId);
-			return $oId;
 		}
-		return 0;
 	}
 
 	private function convertObjects($objects)

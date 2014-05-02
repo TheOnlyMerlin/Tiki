@@ -1,5 +1,5 @@
 {* $Id$ *}
-<div class="postbody-content panel-body">
+<div class="clearfix content">
 
 	<div class="clearfix author">
 
@@ -14,9 +14,6 @@
 		<span class="author_info">
 
 			<span class="author_post_info">
-				{if $first neq 'y' and $forum_info.ui_rating_choice_topic eq 'y' }
-					{rating_choice comment_author=$comment.userName type=comment id=$comments_parentId }
-				{/if}
 				{if isset($comment.anonymous_name) and $comment.anonymous_name}
 					{tr}Posted by{/tr} <span class="author_post_info_by">{if $comment.website}<a href="{$comment.website}" target="_blank">{/if}{$comment.anonymous_name}{if $comment.website}</a>{/if}</span>
 				{elseif isset($comment.userName)}
@@ -67,10 +64,10 @@
 	</div>
 
 {if $thread_style != 'commentStyle_headers'}
-
+<div class="postbody-content">
 	{$comment.parsed}
 	{* <span class="signature"><!-- SIGNATURE --></span> *}
-
+</div>
 {/if}
 
 </div>
@@ -106,17 +103,14 @@
 					<input type="hidden" name="id" value="{$deliberation.threadId}">
 					<input type="hidden" name="type" value="comment">
 				</form>
-				{if $tiki_p_ratings_view_results eq 'y' or $tiki_p_admin eq 'y'}
-					{rating_result type="comment" id=$deliberation.threadId}
-				{/if}
 			</div>
 		{/foreach}
 		{jq}
 			var crf = $('form.forumDeliberationRatingForm').submit(function() {
 				var vals = $(this).serialize();
-				$.tikiModal(tr('Loading...'));
+				$.modal(tr('Loading...'));
 				$.get('tiki-ajax_services.php?controller=rating&action=vote&' + vals, function() {
-					$.tikiModal();
+					$.modal();
 					$.notify(tr('Thanks for deliberating!'));
 					if ($('div.ratingDeliberationResultTable').length) document.location = document.location + '';
 				});

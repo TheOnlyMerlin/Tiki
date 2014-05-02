@@ -8,7 +8,6 @@
 	{tabset}
 		{if not $grid_content eq ''}
 			{tab name="{tr}View{/tr}"}
-                <h2>{tr}View{/tr}</h2>
 				<div id="tiki_sheets_container">
 					<table style="width: 100%;" id="tiki_sheet_container">
 						<tr>
@@ -22,7 +21,7 @@
 							{section name=date loop=$grid_content}
 								<td class="sheet_sibling">
 									<div style="font-size: 1.5em; text-align: center;">
-										Revision: {$history[$sheetIndexes[$smarty.section.date.index]].prettystamp}
+										Revision: {$history[$smarty.section.date.index].prettystamp}
 									</div>
 								</td>
 							{/section}
@@ -40,9 +39,9 @@
 							{section name=date loop=$grid_content}
 								<td class="sheet_sibling">
 									<div style="text-align: center;">
-										{button _keepall='y' href="tiki-view_sheets.php" sheetId=$sheetId readdate=$history[$sheetIndexes[$smarty.section.date.index]].stamp parse="y" class="view_button" _text="{tr}View{/tr}" _htmlelement="role_main" _title="{tr}View{/tr}"}
-										{button _keepall='y' href="tiki-view_sheets.php" sheetId=$sheetId readdate=$history[$sheetIndexes[$smarty.section.date.index]].stamp parse="clone" class="clone_button" _text="{tr}Clone{/tr}" _htmlelement="role_main" _title="{tr}Clone{/tr}"}
-										{button _keepall='y' href="tiki-view_sheets.php" sheetId=$sheetId readdate=$history[$sheetIndexes[$smarty.section.date.index]].stamp parse="rollback" class="rollback_button" _text="{tr}Rollback{/tr}" _htmlelement="role_main" _title="{tr}Rollback{/tr}"}
+										{button _keepall='y' href="tiki-view_sheets.php" sheetId=$sheetId readdate=$history[$smarty.section.date.index].stamp parse="y" class="view_button" _text="{tr}View{/tr}" _htmlelement="role_main" _title="{tr}View{/tr}"}
+										{button _keepall='y' href="tiki-view_sheets.php" sheetId=$sheetId readdate=$history[$smarty.section.date.index].stamp parse="clone" class="clone_button" _text="{tr}Clone{/tr}" _htmlelement="role_main" _title="{tr}Clone{/tr}"}
+										{button _keepall='y' href="tiki-view_sheets.php" sheetId=$sheetId readdate=$history[$smarty.section.date.index].stamp parse="rollback" class="rollback_button" _text="{tr}Rollback{/tr}" _htmlelement="role_main" _title="{tr}Rollback{/tr}"}
 									</div>
 								</td>
 							{/section}
@@ -56,7 +55,6 @@
 		{/if}
 	
 		{tab name="{tr}Date Selection{/tr}"}
-            <h2>{tr}Date Selection{/tr}</h2>
 			<table style="width: 100%;">
 				<tr>
 					<th>{tr}Edit Date{/tr}</th>
@@ -64,7 +62,7 @@
 					<th>{tr}Actions{/tr}</th>
 					<th colspan="2">
 						<input type="hidden" name="sheetId" id="sheetId" value="{$sheetId}">
-						<input type="submit" id="compareSheetsSubmit" class="btn btn-default" value="compare" return false;">
+						<input type="submit" id="compareSheetsSubmit" value="compare" return false;">
 					</th>
 				</tr>
 				{section name=revision_date loop=$history}

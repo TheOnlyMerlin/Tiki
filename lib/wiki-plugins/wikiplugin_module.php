@@ -297,8 +297,8 @@ function wikiplugin_module($data, $params)
 			'name' => $module,
 			'params' => $params,
 			'rows' => $max,
-			'position' => '_wp_',
-			'ord' => $instance,
+			'position' => null,
+			'ord' => null,
 			'cache_time'=> 0,
 		);
 
@@ -321,9 +321,5 @@ function wikiplugin_module($data, $params)
 		$data = "<div class=\"highlight\">" . tra("Sorry, no such module"). "<br /><b>$module</b></div>" . $data;
 	}
 
-	if ($module == 'register') {
-        // module register (maybe others too?) adds ~np~ to plugin output so remove them
-        $data = preg_replace('/~[\/]?np~/ms', '', $data);
-	}
 	return $data;
 }

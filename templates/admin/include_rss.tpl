@@ -4,17 +4,12 @@
 
 <form action="tiki-admin.php?page=rss" method="post">
 	<input type="hidden" name="rss" />
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-                <input type="submit" class="btn btn-default btn-sm" value="{tr}Change preferences{/tr}">
-            </div>
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" value="{tr}Change preferences{/tr}" />
+	</div>
 
 	{tabset name="admin_rss"}
 		{tab name="{tr}General Preferences{/tr}"}
-            <h2>{tr}General Preferences{/tr}</h2>
 			{preference name=feed_default_version}
 			<div class="adminoptionboxchild feed_default_version_childcontainer 5">
 				{preference name=feed_atom_author_name}
@@ -34,7 +29,6 @@
 		{/tab}
 
 		{tab name="{tr}Feeds{/tr}"}
-            <h2>{tr}Feeds{/tr}</h2>
 			{preference name=feed_articles}
 			<div class="adminoptionboxchild" id="feed_articles_childcontainer">
 				<a href="tiki-articles_rss.php" title="{tr}Feed for articles{/tr}"> {icon _id=feed}</a>
@@ -177,16 +171,9 @@
 				{preference name=feed_shoutbox_homepage}
 			</div>
 		{/tab}
-		{tab name="{tr}Incoming Feeds{/tr}"}
-            <h2>{tr}Incoming Feeds{/tr}</h2>
-			{preference name=page_content_fetch}
-		{/tab}
 	{/tabset}
 
-    <br>{* I cheated. *}
-    <div class="row">
-        <div class="form-group col-lg-12 text-center">
-            <input type="submit" class="btn btn-default btn-sm" value="{tr}Change preferences{/tr}">
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: center">
+		<input type="submit" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>

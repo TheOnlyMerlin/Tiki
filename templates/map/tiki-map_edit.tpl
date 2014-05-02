@@ -5,8 +5,7 @@
 {if $mapfile}<h2>{tr}Mapfile:{/tr} {$mapfile}</h2>{/if}
 {if $mode eq 'listing'}
 <h3>{tr}Available mapfiles:{/tr}</h3>
-<div class="table-responsive">
-<table class="table normal">
+<table class="normal">
 <tr>
 <th>{tr}Mapfile{/tr}</th>
 <th style="width:20%">{tr}Actions{/tr}</th>
@@ -71,12 +70,11 @@
 <tr><td colspan="2" class="odd">{tr}No records found{/tr}</td></tr>
 {/section}
 </table>
-</div>
 {if $tiki_p_map_create eq 'y'}
 <h3>{tr}Create a new mapfile{/tr}</h3>
 <form action="tiki-map_edit.php" method="post">
 <input type="text" name="newmapfile" size="20">
-<input type="submit" name="create" class="btn btn-default" value="{tr}Create{/tr}">
+<input type="submit" name="create" value="{tr}Create{/tr}">
 {/if}
 {/if}
 {if $mode eq 'editing'}
@@ -85,8 +83,7 @@
 <a class="link" href="tiki-map_edit.php?mapfile={$mapfile}&mode=editing">{tr}Reload{/tr}</a>&nbsp;&nbsp;
 <a class="link" href="tiki-map_history.php?mapfile={$mapfile}">{tr}History{/tr}</a><br>
 
-<div class="table-responsive">
-<table class="table normal">
+<table class="normal">
 <tr class="formcolor">
 <td>
 <div id='edit-zone'>
@@ -100,10 +97,9 @@
 </td>
 </tr>
 </table>
-</div>
 
 <div align="center">
-<input type="submit" class="wikiaction btn btn-default" name="save" value="{tr}Save{/tr}">
+<input type="submit" class="wikiaction" name="save" value="{tr}Save{/tr}"> 
 </div>
 </form>
 
@@ -114,13 +110,13 @@
 <div align="center">
 <form class="wikiaction" action="tiki-map_edit.php" method="get" id='editpageform'>
 <input type="hidden" name="mapfile" value="{$mapfile}">
-<input type="submit" name="delete" class="btn btn-default" value="{tr}Delete{/tr}">
+<input type="submit" name="delete" value="{tr}Delete{/tr}">
 </form>
 </div>
 {/if}
   <br>
-  <div align="center table-responsive">
-  <table class="table normal">
+  <div align="center">
+  <table class="normal">
   <tr>
   	<td class="even">
   	<small>

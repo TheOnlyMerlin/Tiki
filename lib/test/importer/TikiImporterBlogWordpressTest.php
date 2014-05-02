@@ -307,8 +307,7 @@ class TikiImporter_Blog_Wordpress_Test extends TikiImporter_TestCase
 
 	public function testExtractCommentShouldReturnCommentArray()
 	{
-        $this->markTestSkipped("As of 2013-09-30, this test is broken. Skipping it for now.");
-        $expectedResult = array(
+		$expectedResult = array(
 			'author' => 'rodrigo',
 			'author_email' => 'test@test.com',
 			'author_url' => '',
@@ -431,7 +430,7 @@ Estou a disposição para te ajudar com mais informações. Abraços, Rodrigo.',
 
 	public function testDownloadAttachmentsShouldDisplayMessageIfNoAttachments()
 	{
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; require_once('lib/filegals/filegallib.php');
 
 		$filegallib = $this->getMock('FileGalLib', array('insert_file',));
 		$filegallib->expects($this->exactly(0))->method('insert_file')->will($this->returnValue(1));
@@ -443,7 +442,7 @@ Estou a disposição para te ajudar com mais informações. Abraços, Rodrigo.',
 
 	function testCreateFileGallery()
 	{
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; require_once('lib/filegals/filegallib.php');
 
 		$filegallib = $this->getMock('FileGalLib', array('replace_file_gallery'));
 		$filegallib->expects($this->once())->method('replace_file_gallery')->will($this->returnValue(3));
@@ -455,7 +454,7 @@ Estou a disposição para te ajudar com mais informações. Abraços, Rodrigo.',
 
 	public function testDownloadAttachment()
 	{
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; require_once('lib/filegals/filegallib.php');
 
 		$filegallib = $this->getMock('FileGalLib', array('insert_file'));
 		$filegallib->expects($this->exactly(3))->method('insert_file')->will($this->returnValue(1));
@@ -539,7 +538,7 @@ Estou a disposição para te ajudar com mais informações. Abraços, Rodrigo.',
 
 	public function testDownloadAttachmentShouldNotCallInsertFileWhenZendHttpClientFails()
 	{
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; require_once('lib/filegals/filegallib.php');
 
 		$filegallib = $this->getMock('FileGalLib', array('insert_file'));
 		$filegallib->expects($this->exactly(0))->method('insert_file');
@@ -563,7 +562,7 @@ Estou a disposição para te ajudar com mais informações. Abraços, Rodrigo.',
 
 	public function testDownloadAttachmentShouldNotCallInsertFileWhen404()
 	{
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; require_once('lib/filegals/filegallib.php');
 
 		$filegallib = $this->getMock('FileGalLib', array('insert_file'));
 		$filegallib->expects($this->exactly(0))->method('insert_file');

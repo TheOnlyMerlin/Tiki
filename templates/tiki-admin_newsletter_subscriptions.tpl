@@ -2,16 +2,15 @@
 {assign var=nlId_urlencoded value=$nlId|urlencode}
 {title url="tiki-admin_newsletter_subscriptions.php?nlId=$nlId_urlencoded"}{tr}Admin newsletter subscriptions{/tr}{/title}
 
-<div class="t_navbar btn-group form-group">
-	{button href="tiki-newsletters.php" class="btn btn-default" _text="{tr}List Newsletters{/tr}"}
+<div class="navbar">
+	{button href="tiki-newsletters.php" _text="{tr}List Newsletters{/tr}"}
 	{assign var="nlid_encod" value=$nlId|urlencode}
-	{button href="tiki-admin_newsletters.php?nlId=$nlid_encod" class="btn btn-default" _text="{tr}Edit Newsletter{/tr}"}
-	{button href="tiki-admin_newsletters.php" class="btn btn-default" _text="{tr}Admin Newsletters{/tr}"}
-	{button href="tiki-send_newsletters.php?nlId=$nlid_encod" class="btn btn-default" _text="{tr}Send Newsletters{/tr}"}
+	{button href="tiki-admin_newsletters.php?nlId=$nlid_encod" _text="{tr}Edit Newsletter{/tr}"}
+	{button href="tiki-admin_newsletters.php" _text="{tr}Admin Newsletters{/tr}"}
+	{button href="tiki-send_newsletters.php?nlId=$nlid_encod" _text="{tr}Send Newsletters{/tr}"}
 </div>
 
-<div class="table-responsive">
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th colspan="2">{tr}Newsletter{/tr}</th>
 	</tr>
@@ -24,25 +23,22 @@
 		<td class="even">{$nl_info.description|escape|nl2br}</td>
 	</tr>
 </table>
-</div>
 
 {tabset name='tabs_newsletter_subscriptions'}
 
 {tab name="{tr}Subscriptions{/tr}"}
-    <h2>{tr}Subscriptions{/tr}</h2>
 {* groups------------------------------------ *}
 {if $nb_groups > 0}
-    <div class="table-responsive">
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th>
 				<a href="tiki-admin_newsletter_subscriptions.php?nlId={$nlId|urlencode}&amp;offset={$offset_g|urlencode}&amp;sort_mode_g={if $sort_mode_g eq 'groupName_asc'}groupName_desc{else}groupName_asc{/if}">{tr}Group{/tr}</a>
 			</th>
 			<th>{tr}Action{/tr}</th>
 		</tr>
-
+		{cycle values="odd,even" print=false}
 		{section name=ix loop=$groups_g}
-			<tr>
+			<tr class="{cycle}">
 				<td class="text">
 					{$groups_g[ix].groupName|escape}
 					{if count($groups_g[ix].additional_groups)}
@@ -60,23 +56,21 @@
 			</tr>
 		{/section}
 	</table>
-    </div>
 {/if}
 {* /groups------------------------------------ *}
 
 {* included------------------------------------ *}
 {if $nb_included > 0}
-    <div class="table-responsive">
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th>
 				<a href="tiki-admin_newsletter_subscriptions.php?nlId={$nlId|urlencode}&amp;offset={$offset_g|urlencode}&amp;sort_mode_i={if $sort_mode_i eq 'name_asc'}name_desc{else}name_asc{/if}">{tr}Newsletter{/tr}</a>
 			</th>
 			<th>{tr}Action{/tr}</th>
 		</tr>
-
+		{cycle values="odd,even" print=false}
 		{foreach key=incId item=incName from=$included_n}
-			<tr>
+			<tr class="{cycle}">
 				<td class="text">
 					<a href="tiki-admin_newsletter_subscriptions.php?nlId={$incId|urlencode}">{$incName|escape}</a>
 				</td>
@@ -86,23 +80,21 @@
 			</tr>
 		{/foreach}
 	</table>
-    </div>
 {/if}
 {* /included------------------------------------ *}
 
 {* pages------------------------------------ *}
 {if $nb_pages > 0}
-    <div class="table-responsive">
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th>{tr}Wiki Page Name{/tr}</th>
 			<th>{tr}Validate Addresses{/tr}</th>
 			<th>{tr}Add To List{/tr}</th>
 			<th>{tr}Action{/tr}</th>
 		</tr>
-
+		{cycle values="odd,even" print=false}
 		{section name=ix loop=$pages}
-			<tr>
+			<tr class="{cycle}">
 				<td class="text"><a href="{$pages[ix].wikiPageName|sefurl}">{$pages[ix].wikiPageName|escape}</a></td>
 				<td class="text">{$pages[ix].validateAddrs|escape}</td>
 				<td class="text">{$pages[ix].addToList|escape}</td>
@@ -112,7 +104,6 @@
 			</tr>
 		{/section}
 	</table>
-    </div>
 {/if}
 {* /pages------------------------------------ *}
 
@@ -120,8 +111,7 @@
 
 <form method="post" action="tiki-admin_newsletter_subscriptions.php">
 	<input type="hidden" name="nlId" value="{$nlId|escape}">
-<div class="table-responsive">
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>
 			{select_all checkbox_names='checked[]'}
@@ -137,10 +127,10 @@
 		</th>
 		<th>{tr}Action{/tr}</th>
 	</tr>
-
+	{cycle values="odd,even" print=false}
 	{section name=user loop=$channels}
-		<tr>
-			<td class="checkbox-cell">
+		<tr class="{cycle}">
+			<td class="checkbox">
 				<input type="checkbox" name="checked[]" value="{$channels[user].code}" {if $smarty.request.checked and in_array($channels[user].code, $smarty.request.checked)}checked="checked"{/if}>
 			</td>
 			<td class="username">
@@ -168,7 +158,6 @@
          {norecords _colspan=5}
 	{/section}
 </table>
-</div>
 
 {if $channels}
 	<div align="left">
@@ -259,7 +248,7 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td colspan="2">
-				<input type="submit" class="btn btn-default btn-sm" name="add" value="{tr}Add{/tr}">
+				<input type="submit" name="add" value="{tr}Add{/tr}">
 			</td>
 		</tr>
 	</table>
@@ -275,7 +264,7 @@
 				<td colspan="2">
 					<input type="file" name="batch_subscription">
 					<br>
-					<i>{tr}txt file, one email per line{/tr}</i>
+					<i>{tr}txt file, one e-mail per line{/tr}</i>
 				</td>
 			</tr> 	 
 			{if $nl_info.validateAddr eq "y"}
@@ -291,7 +280,7 @@
 			<tr>
 				<td>&nbsp;</td>
 				<td colspan="2">
-					<input type="submit" class="btn btn-default btn-sm" name="addbatch" value="{tr}Add{/tr}">
+					<input type="submit" name="addbatch" value="{tr}Add{/tr}">
 				</td>
 			</tr> 	 
 		</table> 	 
@@ -305,7 +294,7 @@
 				<td colspan="2">
 					<input type="text" name="wikiPageName" value="" size="60">
 					<br>
-					<i>{tr}Wiki page, one email per line{/tr}</i>
+					<i>{tr}Wiki page, one e-mail per line{/tr}</i>
 				</td>
 			</tr>
 			{if $nl_info.validateAddr eq "y"}
@@ -321,7 +310,7 @@
 			<tr>
 				<td width="30%">&nbsp;</td>
 				<td colspan="2">
-					<input type="submit" class="btn btn-default btn-sm" name="importPage" value="{tr}Add{/tr}" width="30">
+					<input type="submit" name="importPage" value="{tr}Add{/tr}" width="30">
 				</td>
 			</tr>
 		</table>
@@ -353,7 +342,7 @@
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
-			<td colspan="2"><input type="submit" class="btn btn-default btn-sm" name="addgroup" value="{tr}Add{/tr}"></td>
+			<td colspan="2"><input type="submit" name="addgroup" value="{tr}Add{/tr}"></td>
 		</tr>
 	</table>
 </form>
@@ -379,7 +368,7 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td colspan="2">
-				<input type="submit" class="btn btn-default btn-sm" name="addincluded" value="{tr}Add{/tr}">
+				<input type="submit" name="addincluded" value="{tr}Add{/tr}">
 			</td>
 		</tr>
 	</table>
@@ -394,7 +383,7 @@
 			<td colspan="2">
 				<input type="text" name="wikiPageName" value="" size="60">
 				<br>
-				<i>{tr}Emails on a wiki page which will be added at each newsletter sending, one email per line{/tr}</i>
+				<i>{tr}Emails on a wiki page which will be added at each newsletter sending, one e-mail per line{/tr}</i>
 				{autocomplete element='input[name=wikiPageName]' type='pagename'}
 			</td>
 		</tr>
@@ -417,7 +406,7 @@
 		<tr>
 			<td width="30%">&nbsp;</td>
 			<td colspan="2">
-				<input type="submit" class="btn btn-default btn-sm" name="addPage" value="{tr}Add{/tr}" width="30">
+				<input type="submit" name="addPage" value="{tr}Add{/tr}" width="30">
 			</td>
 		</tr>
 	</table>
@@ -426,14 +415,14 @@
 
 
 {tab name="{tr}Export Subscriber Emails{/tr}"}
-    <h2>{tr}Export Subscriber Emails{/tr}</h2>
+
 <form action="tiki-admin_newsletter_subscriptions.php" method="post">
 	<input type="hidden" name="nlId" value="{$nlId|escape}"> 
 	<table class="formcolor">
 		<tr>
 			<td width="30%">&nbsp;</td>
 			<td colspan="2">
-				<input type="submit" class="btn btn-default btn-sm" name="export" value="{tr}Export{/tr}">
+				<input type="submit" name="export" value="{tr}Export{/tr}">
 			</td>
 		</tr>
 	</table>

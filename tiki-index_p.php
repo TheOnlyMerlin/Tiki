@@ -10,14 +10,17 @@
 
 $section = 'wiki page';
 require_once('tiki-setup.php');
-$structlib = TikiLib::lib('struct');
+include_once('lib/structures/structlib.php');
 
-$wikilib = TikiLib::lib('wiki');
+include_once('lib/wiki/wikilib.php');
 
 $parserlib = TikiLib::lib('parser');
 
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	global $categlib;
+	if (!is_object($categlib)) {
+		include_once('lib/categories/categlib.php');
+	}
 }
 
 $access->check_feature('feature_wiki');
@@ -58,7 +61,7 @@ if ($prefs['flaggedrev_approval'] == 'y' && isset($_REQUEST['latest']) && $objec
 	$pageRenderer->forceLatest();
 }
 
-$access->check_permission('tiki_p_view', '', 'wiki page', $page);
+$access->check_permission('tiki_p_view');
 
 // BreadCrumbNavigation here
 // Remember to reverse the array when posting the array

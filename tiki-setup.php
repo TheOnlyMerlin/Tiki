@@ -20,12 +20,9 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	header('location: index.php');
 	exit;
 }
-if (version_compare(PHP_VERSION, '5.5.0', '<') && php_sapi_name() != 'cli') {
+if (version_compare(PHP_VERSION, '5.3.0', '<')) {
 	header('location: tiki-install.php');
 	exit;
-} elseif (version_compare(PHP_VERSION, '5.5.0', '<') && php_sapi_name() == 'cli') {
-	// This is command-line. No 'location' command make sense here. Let admins access what works and deal with the rest.
-	echo "Warning: Tiki13 and above expects PHP 5.5.0 and above. You are running " . phpversion() . " at your own risk\n";
 }
 
 // Be sure that the user is not already defined by PHP on hosts that still have the php.ini config "register_globals = On"
@@ -95,8 +92,6 @@ if (strpos($prefs['tiki_domain_redirects'], ',') !== false) {
 		list($old, $new) = array_map('trim', explode(',', $row, 2));
 		$domain_map[$old] = $new;
 	}
-	unset($old);
-	unset($new);
 }
 
 if ( isset($domain_map[$host]) ) {
@@ -112,6 +107,12 @@ if (isset($_REQUEST['PHPSESSID'])) {
 	$tikilib->setSessionId($_REQUEST['PHPSESSID']);
 }
 elseif (function_exists('session_id')) $tikilib->setSessionId(session_id());
+
+if ($prefs['cookie_consent_feature'] === 'y' && empty($_COOKIE[$prefs['cookie_consent_name']])) {
+	$feature_no_cookie = true;
+} else {
+	$feature_no_cookie = false;
+}
 
 // Session info needs to be kept up to date if pref login_multiple_forbidden is set
 if ( $prefs['login_multiple_forbidden'] == 'y' ) {
@@ -173,7 +174,7 @@ if ($prefs['feature_sefurl'] == 'y') {
 	//TODO: need a better way to know which is the type of the tikiIndex URL (wiki page, blog, file gallery etc)
 	//TODO: implement support for types other than wiki page and blog
 	if ($prefs['tikiIndex'] == 'tiki-index.php' && $prefs['wikiHomePage']) {
-		$wikilib = TikiLib::lib('wiki');
+		global $wikilib; include_once('lib/wiki/wikilib.php');
 		$prefs['tikiIndex'] = $wikilib->sefurl($userlib->best_multilingual_page($prefs['wikiHomePage']));
 	} else if (substr($prefs['tikiIndex'], 0, strlen('tiki-view_blog.php')) == 'tiki-view_blog.php') {
 		include_once('tiki-sefurl.php');
@@ -218,6 +219,7 @@ if ($prefs['feature_lastup'] == 'y') {
 	require_once ('lib/setup/last_update.php');
 }
 if (!empty($_SESSION['interactive_translation_mode']) && ($_SESSION['interactive_translation_mode'] == 'on')) {
+	include_once ('lib/multilingual/multilinguallib.php');
 	$cachelib->empty_cache('templates_c');
 }
 if ($prefs['feature_freetags'] == 'y') {
@@ -244,10 +246,8 @@ if ($prefs['feature_wysiwyg'] == 'y') {
 }
 
 
-if ($prefs['feature_antibot'] == 'y' && empty($user)) {
-	if ($prefs['recaptcha_enabled'] === 'y') {
-		$headerlib->add_jsfile('https://www.google.com/recaptcha/api/js/recaptcha_ajax.js');
-	}
+if ($prefs['feature_antibot'] == 'y' && is_null($user)) {
+	TikiLib::lib('header')->add_jsfile('https://www.google.com/recaptcha/api/js/recaptcha_ajax.js');
 	require_once('lib/captcha/captchalib.php');
 	$smarty->assign_by_ref('captchalib', $captchalib);
 }
@@ -290,8 +290,6 @@ $smarty->assign('tiki_branch', $TWV->branch);
 $smarty->assign('tiki_star', $TWV->getStar());
 $smarty->assign('tiki_uses_svn', $TWV->svn);
 
-$smarty->assign('symbols', TikiLib::symbols());
-
 if ( isset( $_GET['msg'] ) ) {
 	$smarty->assign('display_msg', $_GET['msg']);
 } elseif ( isset( $_SESSION['msg'] ) ) {
@@ -304,7 +302,7 @@ if ( isset( $_GET['msg'] ) ) {
 require_once 'lib/setup/events.php';
 
 if ( $prefs['rating_advanced'] == 'y' && $prefs['rating_recalculation'] == 'randomload' ) {
-	$ratinglib = TikiLib::lib('rating');
+	global $ratinglib; require_once 'lib/rating/ratinglib.php';
 	$ratinglib->attempt_refresh();
 }
 
@@ -313,27 +311,30 @@ $headerlib->add_jsfile('lib/tiki-js.js');
 if ( $prefs['feature_cssmenus'] == 'y' ) {
 	$headerlib->add_cssfile('css/cssmenus.css');
 }
+if ( $prefs['feature_bidi'] == 'y' ) {
+	$headerlib->add_cssfile('styles/BiDi/BiDi.css');
+}
 
-// using jquery-migrate-1.2.1.js plugin for tiki 11, still required in tiki 12 LTS to support some 3rd party plugins
+// using jquery-migrate-1.1.1.js plugin for tiki 11, to be removed for tiki 12 LTS
 
 if ( isset($prefs['javascript_cdn']) && $prefs['javascript_cdn'] == 'google' ) {
 	$headerlib->add_jsfile_dependancy("$url_scheme://ajax.googleapis.com/ajax/libs/jquery/$headerlib->jquery_version/jquery.min.js");
-	$headerlib->add_jsfile_dependancy("vendor/jquery/plugins/migrate-min/jquery-migrate-1.2.1.min.js");
+	$headerlib->add_jsfile_dependancy("vendor/jquery/plugins/migrate-min/jquery-migrate-1.1.1.min.js");
 } else if ( isset($prefs['javascript_cdn']) && $prefs['javascript_cdn'] == 'jquery' ) {
-	$headerlib->add_jsfile_dependancy("//code.jquery.com/jquery-$headerlib->jquery_version.min.js");
-	$headerlib->add_jsfile_dependancy("//code.jquery.com/jquery-migrate-1.2.1.min.js");
+	$headerlib->add_jsfile_dependancy("http://code.jquery.com/jquery-$headerlib->jquery_version.min.js");
+	$headerlib->add_jsfile_dependancy("http://code.jquery.com/jquery-migrate-1.1.1.min.js");
 } else {
 	if ( $prefs['tiki_minify_javascript'] === 'y' ) {
 		$headerlib->add_jsfile_dependancy("vendor/jquery/jquery-min/jquery-$headerlib->jquery_version.min.js");
-		$headerlib->add_jsfile_dependancy("vendor/jquery/plugins/migrate-min/jquery-migrate-1.2.1.min.js");
+		$headerlib->add_jsfile_dependancy("vendor/jquery/plugins/migrate-min/jquery-migrate-1.1.1.min.js");
 	} else {
 		$headerlib->add_jsfile_dependancy("vendor/jquery/jquery/jquery-$headerlib->jquery_version.js");
-		$headerlib->add_jsfile_dependancy("vendor/jquery/plugins/migrate/jquery-migrate-1.2.1.js");
+		$headerlib->add_jsfile_dependancy("vendor/jquery/plugins/migrate/jquery-migrate-1.1.1.js");
 	}
 }
 
 if ( $prefs['fgal_elfinder_feature'] === 'y' ) {
-	$str = $prefs['tiki_minify_javascript'] === 'y' ? 'min' : 'full';
+	$str = 'min';	// use 'full' for debugging
 	$headerlib->add_jsfile('vendor_extra/elfinder/js/elfinder.' . $str . '.js')
 			->add_cssfile('vendor_extra/elfinder/css/elfinder.' . $str . '.css')
 			->add_jsfile('lib/jquery_tiki/elfinder/tiki-elfinder.js');
@@ -346,46 +347,15 @@ if ( $prefs['fgal_elfinder_feature'] === 'y' ) {
 }
 
 $headerlib->add_jsfile('lib/jquery_tiki/tiki-jquery.js');
-
-if (isset($_REQUEST['geo_zoomlevel_to_found_location'])) {
-	$zoomToFoundLocation = $_REQUEST['geo_zoomlevel_to_found_location'];
-} else {
-	$zoomToFoundLocation = isset($prefs['geo_zoomlevel_to_found_location']) ? $prefs['geo_zoomlevel_to_found_location'] : 'street';
-}
-$headerlib->add_js('var zoomToFoundLocation = "'.$zoomToFoundLocation.'";');	// Set the zoom option after searching for a location
-
 $headerlib->add_jsfile('lib/jquery_tiki/tiki-maps.js');
 $headerlib->add_jsfile('vendor/jquery/plugins/jquery-json/jquery.json-2.4.js');
-
-if ($prefs['feature_jquery_zoom'] === 'y') {
-	$headerlib->add_jsfile('vendor/jquery/plugins/zoom/jquery.zoom.js')
-		->add_css('
-.img_zoom {
-	display:inline-block;
-}
-.img_zoom:after {
-	content:"";
-	display:block;
-	width:33px;
-	height:33px;
-	position:absolute;
-	top:0;
-	right:0;
-	background:url(vendor/jquery/plugins/zoom/icon.png);
-}
-.img_zoom img {
-	display:block;
-}
-');
-}
 
 if ($prefs['feature_syntax_highlighter'] == 'y') {
 	//add codemirror stuff
 	$headerlib
 		->add_cssfile('vendor/codemirror/codemirror/lib/codemirror.css')
 		->add_jsfile_dependancy('vendor/codemirror/codemirror/lib/codemirror.js')
-		->add_jsfile('vendor/codemirror/codemirror/addon/search/searchcursor.js', 3)
-		->add_jsfile('vendor/codemirror/codemirror/addon/mode/overlay.js')
+		->add_jsfile('vendor/codemirror/codemirror/lib/util/searchcursor.js', 3)
 	//add tiki stuff
 		->add_cssfile('lib/codemirror_tiki/codemirror_tiki.css')
 		->add_jsfile('lib/codemirror_tiki/codemirror_tiki.js', 5);
@@ -393,16 +363,7 @@ if ($prefs['feature_syntax_highlighter'] == 'y') {
 	require_once("lib/codemirror_tiki/tiki_codemirror.php");
 	codemirrorModes($prefs['tiki_minify_javascript'] === 'y');
 }
-if ($prefs['feature_wikilingo'] == 'y') {
-    $headerlib
-        //flp stuff
-        ->add_cssfile('vendor/jquery/plugins/tablesorter/css/theme.dropbox.css')
-        ->add_jsfile('vendor/jquery/plugins/tablesorter/js/jquery.tablesorter.js');
-}
 
-if ( $prefs['feature_jquery_carousel'] == 'y' ) {
-	$headerlib->add_jsfile('vendor/jquery/plugins/infinitecarousel/jquery.infinitecarousel3.js');
-}
 
 if ($prefs['mobile_feature'] === 'y' && $prefs['mobile_mode'] === 'y') {
 
@@ -411,8 +372,8 @@ if ($prefs['mobile_feature'] === 'y' && $prefs['mobile_mode'] === 'y') {
 	$jsmin = $prefs['tiki_minify_javascript'] === 'y' ? '.min' : '';
 	$cssmin = $prefs['tiki_minify_css'] === 'y' ? '.min' : '';
 	if ($prefs['mobile_use_latest_lib'] === 'y') {
-		$headerlib->add_jsfile("//code.jquery.com/mobile/latest/jquery.mobile$jsmin.js");
-		$headerlib->add_cssfile("//code.jquery.com/mobile/latest/jquery.mobile$cssmin.css");
+		$headerlib->add_jsfile("http://code.jquery.com/mobile/latest/jquery.mobile$jsmin.js");
+		$headerlib->add_cssfile("http://code.jquery.com/mobile/latest/jquery.mobile$cssmin.css");
 	} else {
 		// TODO add jQuery CDN when 1.1 is available there
 		$headerlib->add_jsfile("vendor/jquery/jquery-mobile/jquery.mobile-$headerlib->jquerymobile_version$jsmin.js");
@@ -421,7 +382,7 @@ if ($prefs['mobile_feature'] === 'y' && $prefs['mobile_mode'] === 'y') {
 
 	$headerlib->drop_cssfile('css/cssmenus.css');
 
-} else {	// js includes that don't work or aren't needed in mobile mode
+} else {
 
 	$headerlib->add_jsfile('lib/swfobject/swfobject.js');
 
@@ -435,21 +396,22 @@ if ($prefs['mobile_feature'] === 'y' && $prefs['mobile_mode'] === 'y') {
 		if ( isset($prefs['javascript_cdn']) && $prefs['javascript_cdn'] == 'google' ) {
 			$headerlib->add_jsfile_dependancy("$url_scheme://ajax.googleapis.com/ajax/libs/jqueryui/$headerlib->jqueryui_version/jquery-ui.min.js");
 		} else if ( isset($prefs['javascript_cdn']) && $prefs['javascript_cdn'] == 'jquery' ) {
-			$headerlib->add_jsfile_dependancy("//code.jquery.com/ui/$headerlib->jqueryui_version/jquery-ui.min.js");
+			$headerlib->add_jsfile_dependancy("http://code.jquery.com/ui/$headerlib->jqueryui_version/jquery-ui.min.js");
 		} else {
 			if ( $prefs['tiki_minify_javascript'] === 'y' ) {
-				$headerlib->add_jsfile_dependancy("vendor/jquery/jquery-ui/js/jquery-ui-$headerlib->jqueryui_version.min.js");
+				$headerlib->add_jsfile_dependancy("vendor/jquery/jquery-ui/ui/minified/jquery-ui.min.js");
 			} else {
-				$headerlib->add_jsfile_dependancy("vendor/jquery/jquery-ui/js/jquery-ui-$headerlib->jqueryui_version.js");
+				$headerlib->add_jsfile_dependancy("vendor/jquery/jquery-ui/ui/jquery-ui.js");
 			}
 		}
+		if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6') !== false) {
+			$headerlib->add_jsfile('vendor/jquery/plugins/cluetip/lib/jquery.bgiframe.js');
+		}
 
-		if ( $prefs['feature_jquery_ui_theme'] !== 'none' ) {
-			if ( isset($prefs['javascript_cdn']) && $prefs['javascript_cdn'] == 'jquery' ) {
-				$headerlib->add_cssfile("//code.jquery.com/ui/$headerlib->jqueryui_version/themes/{$prefs['feature_jquery_ui_theme']}/jquery-ui.css");
-			} else {
-				$headerlib->add_cssfile('vendor/jquery/jquery-ui-themes/themes/' . $prefs['feature_jquery_ui_theme'] . '/jquery-ui.css');
-			}
+		if ( isset($prefs['javascript_cdn']) && $prefs['javascript_cdn'] == 'jquery' ) {
+			$headerlib->add_cssfile("http://code.jquery.com/ui/$headerlib->jqueryui_version/themes/{$prefs['feature_jquery_ui_theme']}/jquery-ui.css");
+		} else {
+			$headerlib->add_cssfile('vendor/jquery/jquery-ui-themes/themes/' . $prefs['feature_jquery_ui_theme'] . '/jquery-ui.css');
 		}
 
 		if ( $prefs['feature_jquery_autocomplete'] == 'y' ) {
@@ -458,21 +420,17 @@ if ($prefs['mobile_feature'] === 'y' && $prefs['mobile_mode'] === 'y') {
 			);
 		}
 		if ( $prefs['jquery_ui_chosen'] == 'y' ) {
-			$headerlib->add_jsfile('vendor/jquery/plugins/chosen/chosen.jquery.js');
-
-			// Note: This pref is set manually in lib/setup/theme.php
-			if ($prefs['jquery_ui_chosen_css'] == 'y') {
-				$headerlib->add_cssfile('vendor/jquery/plugins/chosen/chosen.css');
-				$headerlib->add_css(
-					'.chosen-container .chosen-drop, .chosen-results li { z-index: 10000; color: #444 }
-	.chosen-container-multi .chosen-choices li.search-field input[type="text"] { height: inherit; }'
-				);
-			}
+			$headerlib->add_jsfile('vendor/jquery/plugins/chosen/chosen/chosen.jquery.js');
+			$headerlib->add_cssfile('vendor/jquery/plugins/chosen/chosen/chosen.css');
+			$headerlib->add_css(
+				'.chzn-drop, .chzn-results li { z-index: 100; }
+				.chzn-container { min-width: 120px; }'	// z-index not working, but it should
+			);
 		}
 		if ( $prefs['jquery_ui_selectmenu'] == 'y' ) {
 			$headerlib->add_jsfile('vendor/jquery/jquery-ui-selectmenu/ui/jquery.ui.selectmenu.js');
 			$headerlib->add_cssfile('vendor/jquery/jquery-ui-selectmenu/themes/base/jquery.ui.selectmenu.css');
-			// deprecated feature
+			// standard css for selectmenu seems way too big for tiki - to be added to layout.css when not so experimental
 			$headerlib->add_css(
 				'.ui-selectmenu-menu ul li a, .ui-selectmenu-status { white-space: nowrap; }
 				.ui-selectmenu { height: 1.8em; padding-right: 16px; }
@@ -481,16 +439,24 @@ if ($prefs['mobile_feature'] === 'y' && $prefs['mobile_mode'] === 'y') {
 				.ui-selectmenu-status { line-height: .8em; margin-right: 16px; }'
 			);
 		}
-		$headerlib->add_jsfile('vendor/jquery/jquery-timepicker-addon/dist/jquery-ui-timepicker-addon.js');
-		$headerlib->add_cssfile('vendor/jquery/jquery-timepicker-addon/dist/jquery-ui-timepicker-addon.css');
+		$headerlib->add_jsfile('vendor/jquery/jquery-timepicker-addon/jquery-ui-timepicker-addon.js');
+		$headerlib->add_cssfile('vendor/jquery/jquery-timepicker-addon/jquery-ui-timepicker-addon.css');
+	}
+
+	if ( $prefs['feature_jquery_tooltips'] == 'y' ) {
+		if ( $prefs['feature_jquery_ui'] !== 'y' ) {
+			$headerlib->add_jsfile('vendor/jquery/plugins/cluetip/lib/jquery.bgiframe.min.js');
+		}
+		$headerlib->add_jsfile('vendor/jquery/plugins/cluetip/jquery.cluetip.js');
+		$headerlib->add_cssfile('vendor/jquery/plugins/cluetip/jquery.cluetip.css');
 	}
 
 	if ( $prefs['feature_jquery_superfish'] == 'y' ) {
-		$headerlib->add_jsfile('vendor/jquery/plugins/superfish/dist/js/superfish.js');
-		$headerlib->add_jsfile('vendor/jquery/plugins/superfish/dist/js/supersubs.js');
+		$headerlib->add_jsfile('vendor/jquery/plugins/superfish/js/superfish.js');
+		$headerlib->add_jsfile('vendor/jquery/plugins/superfish/js/supersubs.js');
 	}
 	if ( $prefs['feature_jquery_tooltips'] === 'y' || $prefs['feature_jquery_superfish'] === 'y' ) {
-		$headerlib->add_jsfile('vendor/jquery/plugins/superfish/dist/js/hoverIntent.js');
+		$headerlib->add_jsfile('vendor/jquery/plugins/superfish/js/hoverIntent.js');
 	}
 	if ( $prefs['feature_jquery_reflection'] == 'y' ) {
 		$headerlib->add_jsfile('vendor/jquery/plugins/reflection-jquery/js/reflection.js');
@@ -499,6 +465,7 @@ if ($prefs['mobile_feature'] === 'y' && $prefs['mobile_mode'] === 'y') {
 		$headerlib->add_jsfile('vendor/jquery/plugins/media/jquery.media.js');
 	}
 	if ( $prefs['feature_jquery_tablesorter'] == 'y' ) {
+		$headerlib->add_jsfile('vendor/jquery/plugins/tablesorter/addons/pager/jquery.tablesorter.pager.js');
 		$headerlib->add_cssfile('lib/jquery_tiki/tablesorter/style.css');
 		if ( $prefs['tiki_minify_javascript'] === 'y' ) {
 			//tablesorter has bad syntax in the non-min file, however the min file seems to work fine when double minned :)
@@ -512,17 +479,27 @@ if ($prefs['mobile_feature'] === 'y' && $prefs['mobile_mode'] === 'y') {
 			$headerlib->add_jsfile('vendor/jquery/plugins/tablesorter/js/jquery.tablesorter.widgets.js');
 			$headerlib->add_jsfile('vendor/jquery/plugins/tablesorter/js/jquery.tablesorter.widgets-filter-formatter.js');
 		}
-		$headerlib->add_jsfile('vendor/jquery/plugins/tablesorter/js/widgets/widget-grouping.js');
-		$headerlib->add_jsfile('vendor/jquery/plugins/tablesorter/js/widgets/widget-pager.js');
-		$headerlib->add_jsfile('vendor/jquery/plugins/tablesorter/js/parsers/parser-input-select.js');
 	}
 	if ( $prefs['feature_shadowbox'] == 'y' ) {
 		$headerlib->add_jsfile('vendor/jquery/plugins/colorbox/jquery.colorbox.js');
 		$headerlib->add_cssfile('vendor/jquery/plugins/colorbox/' . $prefs['jquery_colorbox_theme'] . '/colorbox.css');
 	}
+	if ( $prefs['feature_jquery_carousel'] == 'y' ) {
+		$headerlib->add_jsfile('vendor/jquery/plugins/infinitecarousel/jquery.infinitecarousel3.js');
+	}
+
+	if ( $prefs['feature_jquery'] != 'y' || $prefs['feature_jquery_tablesorter'] != 'y' ) {
+		$headerlib->add_jsfile('lib/tiki-js-sorttable.js');
+	}
 
 	if ( $prefs['wikiplugin_flash'] == 'y' ) {
 		$headerlib->add_jsfile('lib/swfobject/swfobject.js');
+	}
+
+	if ( $prefs['feature_metrics_dashboard'] == 'y' ) {
+		$headerlib->add_cssfile("css/metrics.css");
+		$headerlib->add_jsfile("vendor/jquery/plugins/sparkline/jquery.sparkline.min.js");
+		$headerlib->add_jsfile("lib/metrics.js");
 	}
 
 	// include and setup themegen editor if already open
@@ -611,14 +588,10 @@ if ($prefs['feature_sefurl'] != 'y') {
 		}
 
 		return "tiki-ajax_services.php?" + $.map(query, function (v, k) {
-			return k + "=" + tiki_encodeURIComponent(v);
+			return k + "=" + tiki_encodeURI(v);
 		}).join("&");
 	};'
 	);
-}
-
-if ($prefs['feature_friends'] == 'y' || $prefs['monitor_enabled'] == 'y') {
-	$headerlib->add_jsfile('lib/jquery_tiki/social.js');
 }
 
 if ($prefs['ajax_inline_edit'] == 'y') {
@@ -701,28 +674,4 @@ if ($prefs['openpgp_gpg_pgpmimemail'] == 'y') {
 // ******************************************************************** //
 //////////////////////////////////////////////////////////////////////////
 
-if( $prefs['feature_hidden_links'] == 'y' && isset($jitRequest['wysiwyg']) && $jitRequest['wysiwyg'] != 'y') {
-	$headerlib->add_js("$('body').find('h1, h2, h3, h4, h5, h6').each(function() {
-	var headerid = $(this).attr('id');
-		if(headerid != undefined) {
-			$(this).append('<a class=\"tiki_anchor\" href=\"#'+headerid+'\"></a>');
-		}
-	});");
-}
-
 $headerlib->lockMinifiedJs();
-
-if ( $prefs['conditions_enabled'] == 'y' ) {
-	if (! Services_User_ConditionsController::hasRequiredAge($user)) {
-		$servicelib = TikiLib::lib('service');
-		$broker = $servicelib->getBroker();
-		$broker->process('user_conditions', 'age_validation', $jitRequest);
-		exit;
-	}
-	if (Services_User_ConditionsController::requiresApproval($user)) {
-		$servicelib = TikiLib::lib('service');
-		$broker = $servicelib->getBroker();
-		$broker->process('user_conditions', 'approval', $jitRequest);
-		exit;
-	}
-}

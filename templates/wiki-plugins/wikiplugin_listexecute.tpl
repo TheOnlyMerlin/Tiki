@@ -1,5 +1,4 @@
 <form method="post" action="">
-	<button class="listexecute-select-all">{tr}Select All{/tr}</button>
 	<ol>
 		{foreach from=$results item=entry}
 			<li>
@@ -10,7 +9,7 @@
 				{else}
 					{icon _id=sticky alt="{tr}Error{/tr}"}
 				{/if}
-				{object_link type=$entry.object_type id=$entry.object_id backuptitle=$entry.title}
+				{object_link type=$entry.object_type id=$entry.object_id}
 			</li>
 		{/foreach}
 	</ol>
@@ -20,12 +19,5 @@
 			<option value="{$action|escape}">{$action|escape}</option>
 		{/foreach}
 	</select>
-	<input type="submit" class="btn btn-default btn-sm" value="{tr}Apply{/tr}">
+	<input type="submit" value="{tr}Apply{/tr}">
 </form>
-{jq}
-$('.listexecute-select-all').removeClass('listexecute-select-all')
-	.on('click', function (e) {
-		$(this).closest('form').find(':checkbox:not(:checked)').click();
-		e.preventDefault();
-	});
-{/jq}

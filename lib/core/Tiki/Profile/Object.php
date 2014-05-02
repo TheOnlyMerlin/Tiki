@@ -15,13 +15,6 @@ class Tiki_Profile_Object
 
 	public static function serializeNamedObject( $object ) // {{{
 	{
-		if ( strpos($object['domain'], '://') === false ) {
-			if ( is_dir($object['domain']) ) {
-				$object['domain'] = "file://" . $object['domain'];
-			} else {
-				$object['domain'] = "http://" . $object['domain'];
-			}
-		}
 		return sprintf("%s#%s", Tiki_Profile::getProfileKeyfor($object['domain'], $object['profile']), $object['object']);
 	} // }}}
 
@@ -49,8 +42,7 @@ class Tiki_Profile_Object
 		$str = '';
 		if ($this->isWellStructured()) {
 			$str .= $this->getType().' ';
-			$name = isset($this->data['data']['name']) ? $this->data['data']['name'] : tra('No name');
-			$str .= '"'.$name.'"';
+			$str .= '"'.isset($this->data['data']['name']) ? $this->data['data']['name'] : tra('No name').'"';
 		} else {
 			$str .= tra('Bad object');
 		}
@@ -59,7 +51,7 @@ class Tiki_Profile_Object
 	
 	function isWellStructured() // {{{
 	{
-		$is = isset($this->data['type'], $this->data['data']);
+		$is =  isset($this->data['type'], $this->data['data']);
 		return $is;
 	} // }}}
 
@@ -70,9 +62,8 @@ class Tiki_Profile_Object
 
 	function getRef() // {{{
 	{
-		if (isset($this->data['ref'])) {
-			return trim($this->data['ref']);
-		}
+		if ( array_key_exists('ref', $this->data) )
+			return $this->data['ref'];
 	} // }}}
 
 	function getValue() // {{{
@@ -82,6 +73,7 @@ class Tiki_Profile_Object
 
 	function setValue( $value ) // {{{
 	{
+		global $tikilib;
 		$this->id = $value;
 
 		$named = 'y';
@@ -104,9 +96,8 @@ class Tiki_Profile_Object
 
 	function getData() // {{{
 	{
-		if ( array_key_exists('data', $this->data) ) {
+		if ( array_key_exists('data', $this->data) )
 			return $this->data['data'];
-		}
 
 		return array();
 	} // }}}

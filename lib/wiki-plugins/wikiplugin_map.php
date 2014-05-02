@@ -12,7 +12,7 @@ function wikiplugin_map_info()
 		'format' => 'html',
 		'documentation' => 'PluginMap',
 		'description' => tra('Display a map'),
-		'prefs' => array( 'wikiplugin_map', 'feature_search' ),
+		'prefs' => array( 'wikiplugin_map' ),
 		'icon' => 'img/icons/map.png',
 		'tags' => array( 'basic' ),
 		'filter' => 'wikicontent',
@@ -48,7 +48,7 @@ function wikiplugin_map_info()
 			'center' => array(
 				'requied' => false,
 				'name' => tra('Center'),
-				'description' => tr('Format: x,y,zoom where x is the longitude, and y is the latitude. Zoom is between 0 (view Earth) and 19.'),
+				'description' => tr('Format: x,y,zoom where x is the longitude, and y is the latitude. Zoom is between 0(view Earth) and 19.'),
 				'filter' => 'text',
 			),
 			'popupstyle' => array(
@@ -81,14 +81,6 @@ function wikiplugin_map_info()
 				'name' => tra('Size'),
 				'description' => tra('Size of the map'),
 				'filter' => 'int',
-				'advanced' => true,
-			),
-			'tooltips' => array(
-				'required' => false,
-				'name' => tra('Tooltips'),
-				'description' => tra('Show item name in a tooltip on hover (n/y).'),
-				'default' => 'n',
-				'filter' => 'alpha',
 				'advanced' => true,
 			),
 		),
@@ -128,12 +120,6 @@ function wikiplugin_map($data, $params)
 		$params['popupstyle'] = 'bubble';
 	}
 
-	if (! empty($params['tooltips']) && $params['tooltips'] === 'y') {
-		$tooltips = ' data-tooltips="1"';
-	} else {
-		$tooltips = '';
-	}
-
 	$popupStyle = smarty_modifier_escape($params['popupstyle']);
 
 	$controls = array_intersect($params['controls'], wp_map_available_controls());
@@ -141,19 +127,17 @@ function wikiplugin_map($data, $params)
 	$controls = implode(',', $controls);
 
 	$center = null;
-	$geolib = TikiLib::lib('geo');
 	if (isset($params['center'])) {
+		$geolib = TikiLib::lib('geo');
 		if ($coords = $geolib->parse_coordinates($params['center'])) {
 			$center = ' data-geo-center="' . smarty_modifier_escape($geolib->build_location_string($coords)) . '" ';
 		}
-	} else {
-		$center = $geolib->get_default_center();
 	}
 
 	TikiLib::lib('header')->add_map();
 	$scope = smarty_modifier_escape(wp_map_getscope($params));
 
-	$output = "<div class=\"map-container\" data-marker-filter=\"$scope\" data-map-controls=\"{$controls}\" data-popup-style=\"$popupStyle\" style=\"width: {$width}; height: {$height};\" $center{$tooltips}>";
+	$output = "<div class=\"map-container\" data-marker-filter=\"$scope\" data-map-controls=\"{$controls}\" data-popup-style=\"$popupStyle\" style=\"width: {$width}; height: {$height};\" $center>";
 
 	$argumentParser = new WikiParser_PluginArgumentParser;
 	$matches = WikiParser_PluginMatcher::match($data);
@@ -181,7 +165,7 @@ function wp_map_getscope($params)
 
 	switch ($scope) {
 		case 'center':
-			return '#col1 .geolocated';
+			return '#tiki-center .geolocated';
 		case 'all':
 			return '.geolocated';
 		default:
@@ -264,7 +248,6 @@ function wp_map_plugin_searchlayer($body, $args)
 	$suffix = $args->suffix->word();
 	$maxRecords = $args->maxRecords->digits();
 	$sort_mode = $args->sort_mode->word();
-	$load_delay = $args->load_delay->int();
 
 	$args->replaceFilter('fields', 'word');
 	$fields = $args->asArray('fields', ',');
@@ -275,7 +258,6 @@ function wp_map_plugin_searchlayer($body, $args)
 	unset($args['maxRecords']);
 	unset($args['fields']);
 	unset($args['sort_mode']);
-	unset($args['load_delay']);
 
 	$args->setDefaultFilter('text');
 
@@ -302,8 +284,8 @@ function wp_map_plugin_searchlayer($body, $args)
 	$escapedLayer = smarty_modifier_escape($layer);
 	$escapedSuffix = smarty_modifier_escape($suffix);
 	return <<<OUT
-<form method="post" action="tiki-searchindex.php" class="search-box onload" style="display: none" data-result-refresh="$refresh" data-result-layer="$escapedLayer" data-result-suffix="$escapedSuffix" data-load-delay="$load_delay">
-	<p>$maxRecords$sort_mode$fieldList$filters<input type="submit" class="btn btn-default btn-sm" /></p>
+<form method="post" action="tiki-searchindex.php" class="search-box onload" style="display: none" data-result-refresh="$refresh" data-result-layer="$escapedLayer" data-result-suffix="$escapedSuffix">
+	<p>$maxRecords$sort_mode$fieldList$filters<input type="submit"/></p>
 
 </form>
 OUT;
@@ -331,19 +313,7 @@ function init() {
 		.dialog({
 			autoOpen: false,
 			width: 200,
-			title: $(dialog).data('title'),
-			close: function (e) {
-				$.each(container.map.getControlsByClass('OpenLayers.Control.ModifyFeature'), function (k, control) {
-					if (feature && control) {
-						control.unselectFeature(feature);
-					}
-				});
-				$.each(container.map.getControlsByClass('OpenLayers.Control.SelectFeature'), function (k, control) {
-					if (feature && control) {
-						control.unselect(feature);
-					}
-				});
-			}
+			title: $(dialog).data('title')
 		})
 		.append($('<div class="current" style="height: $size;"/>'));
 
@@ -374,19 +344,7 @@ function init() {
 		.dialog({
 			autoOpen: false,
 			width: 400,
-			title: $(dialog).data('title'),
-			close: function (e) {
-				$.each(container.map.getControlsByClass('OpenLayers.Control.ModifyFeature'), function (k, control) {
-					if (feature && control) {
-						control.unselectFeature(feature);
-					}
-				});
-				$.each(container.map.getControlsByClass('OpenLayers.Control.SelectFeature'), function (k, control) {
-					if (feature && control) {
-						control.unselect(feature);
-					}
-				});
-			}
+			title: $(dialog).data('title')
 		})
 		.ColorPicker({
 			flat: true,
@@ -410,7 +368,6 @@ $("#$target").closest('.map-container').bind('initialized', function () {
 		, vlayer
 		, feature
 		, dialog = '#$target'
-		, defaultRules
 		;
 
 	$methods
@@ -423,37 +380,22 @@ $("#$target").closest('.map-container').bind('initialized', function () {
 
 			feature = ev.feature;
 
+			if (feature.attributes.intent === 'marker') {
+				return false;
+			}
+
 			$.each(container.map.getControlsByClass('OpenLayers.Control.ModifyFeature'), function (k, control) {
 				active = active || control.active;
-				if (active) {
-					control.selectFeature(feature);
-				}
 			});
 
-			if (active && feature.attributes.intent !== 'marker') {
+			if (active) {
 				setColor(feature.attributes.color);
-				vlayer.redraw();
 				$(dialog).dialog('open');
 			}
 		},
 		featureunselected: function (ev) {
 			feature = null;
 			$(dialog).dialog('close');
-
-			vlayer.styleMap = container.defaultStyleMap;
-			$.each(container.map.getControlsByClass('OpenLayers.Control.ModifyFeature'), function (k, control) {
-				if (ev.feature && control.active) {
-					control.unselectFeature(ev.feature);
-				}
-			});
-		},
-		beforefeaturemodified: function (ev) {
-			defaultRules = this.styleMap.styles["default"].rules;
-			this.styleMap.styles["default"].rules = [];
-		},
-		afterfeaturemodified: function (ev) {
-			this.styleMap.styles["default"].rules = defaultRules;
-			this.redraw();
 		}
 	});
 

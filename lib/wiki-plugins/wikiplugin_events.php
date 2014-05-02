@@ -20,7 +20,6 @@ function wikiplugin_events_info()
 				'name' => tra('Calendar IDs'),
 				'description' => tra('ID numbers for the site calendars whose events are to be displayed, separated by vertical bars (|)'),
 				'default' => '',
-				'profile_reference' => 'calendar',
 			),
 			'maxdays' => array(
 				'required' => false,
@@ -82,11 +81,11 @@ function wikiplugin_events_info()
 
 function wikiplugin_events($data,$params)
 {
-	global $tiki_p_admin, $tiki_p_view_calendar, $user;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
-	$calendarlib = TikiLib::lib('calendar');
+	global $calendarlib, $userlib, $tikilib, $tiki_p_admin, $tiki_p_view_calendar, $smarty, $user;
+
+	if (!isset($calendarlib)) {
+		include_once ('lib/calendar/calendarlib.php');
+	}
 
 	extract($params, EXTR_SKIP);
 
@@ -217,7 +216,7 @@ function wikiplugin_events($data,$params)
 	$repl="";
 	if (count($events)<$max) $max = count($events);
 
-	$repl .= '<table class="table-bordered">';
+	$repl .= '<table class="normal">';
 	$repl .= '<tr class="heading"><td colspan="2">'.tra("Upcoming Events").'</td></tr>';
 	for ($j = 0; $j < $max; $j++) {
 		if ($datetime!=1) {

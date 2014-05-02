@@ -28,7 +28,6 @@ function wikiplugin_toc_info()
 				'required' => false,
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'structure',
 			),
 			'order' => array(
 				'name' => tra('Order'),
@@ -82,7 +81,6 @@ function wikiplugin_toc_info()
 				'description' => tra('By default, the table of contents for the current page will be displayed. Alternate page may be provided.'),
 				'required' => false,
 				'default' => '',
-				'profile_reference' => 'wiki_page',
 			),
 		),
 	);
@@ -104,8 +102,8 @@ function wikiplugin_toc( $data, $params )
 	$params = array_merge($defaults, $params);
 	extract($params, EXTR_SKIP);
 
-	global $page_ref_id;
-	$structlib = TikiLib::lib('struct');
+	global $structlib, $page_ref_id;
+	include_once ("lib/structures/structlib.php");
 
 	global $prefs;
 	if ($prefs['feature_jquery_ui'] === 'y' && $type === 'admin') {
@@ -130,13 +128,13 @@ function wikiplugin_toc( $data, $params )
 	}
 
 	if (empty($structId)) {
-		$pageName_ref_id = null;
-		if (!empty($pagename)) {
-			$pageName_ref_id = $structlib->get_struct_ref_id($pagename);
-		} else if (!empty($page_ref_id)) {
-			$pageName_ref_id = $page_ref_id;
-		}
-		if (!empty($pageName_ref_id)) {	// we have a structure
+		if (!empty($page_ref_id)) {	//And we are currently viewing a structure
+			$pageName_ref_id = null;
+			if (!empty($pagename)) {
+				$pageName_ref_id = $structlib->get_struct_ref_id($pagename);
+			} else {
+				$pageName_ref_id = $page_ref_id;
+			}
 			$page_info = $structlib->s_get_page_info($pageName_ref_id);
 			$structure_info = $structlib->s_get_structure_info($pageName_ref_id);
 			if (isset($page_info)) {
@@ -144,6 +142,7 @@ function wikiplugin_toc( $data, $params )
 				return "~np~$button $html $button~/np~";
 			}
 		}
+			//Dont display the {toc} string for non structure pages
 		return '';
 	} else {
 		$structure_info = $structlib->s_get_structure_info($structId);

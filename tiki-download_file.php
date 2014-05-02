@@ -38,12 +38,12 @@ if ( isset($_GET['fileId']) && isset($_GET['thumbnail']) && isset($_COOKIE[ sess
 
 if (!$skip) {
 	require_once('tiki-setup.php');
-	$filegallib = TikiLib::lib('filegal');
+	include_once('lib/filegals/filegallib.php');
 	$access->check_feature('feature_file_galleries');
 }
 
 if ($prefs["user_store_file_gallery_picture"] == 'y' && isset($_REQUEST["avatar"])) {
-	$userprefslib = TikiLib::lib('userprefs');
+	require_once ('lib/userprefs/userprefslib.php');
 	if ($user_picture_id = $userprefslib->get_user_picture_id($_REQUEST["avatar"])) {
 		$_REQUEST['fileId'] = $user_picture_id;
 	} elseif (!empty($prefs['user_default_picture_id'])) {
@@ -121,7 +121,7 @@ if (isset($attributes['tiki.content.url'])) {
 // Add hits ( if download or display only ) + lock if set
 if ( ! isset($_GET['thumbnail']) && ! isset($_GET['icon']) ) {
 
-	$statslib = TikiLib::lib('stats');
+	require_once('lib/stats/statslib.php');
 	$filegallib = TikiLib::lib('filegal');
 	if ( ! $filegallib->add_file_hit($info['fileId']) ) {
 		$access->display_error('', tra('You cannot download this file right now. Your score is low or file limit was reached.'), 401);
@@ -129,7 +129,7 @@ if ( ! isset($_GET['thumbnail']) && ! isset($_GET['icon']) ) {
 	$statslib->stats_hit($info['filename'], 'file', $info['fileId']);
 
 	if ( $prefs['feature_actionlog'] == 'y' ) {
-		$logslib = TikiLib::lib('logs');
+		global $logslib; require_once('lib/logs/logslib.php');
 		$logslib->add_action('Downloaded', $info['galleryId'], 'file gallery', 'fileId='.$info['fileId']);
 	}
 
@@ -143,7 +143,7 @@ if ( ! isset($_GET['thumbnail']) && ! isset($_GET['icon']) ) {
 
 session_write_close(); // close the session in case of large downloads to enable further browsing
 error_reporting(E_ALL);
-while (ob_get_level()>1) {
+while (ob_get_level()) {
 	ob_end_clean();
 }// Be sure output buffering is turned off
 
@@ -163,7 +163,7 @@ if ( ! empty($info['path']) ) {
 		$last_modified = $file_stats['mtime'];
 		$md5 = empty($info['hash']) ?
 			md5($file_stats['mtime'].'='.$file_stats['ino'].'='.$file_stats['size'])
-			: md5($info['hash'] . $last_modified);
+			: $info['hash'];
 	} else {
 		// File missing or not readable
 		header("HTTP/1.0 404 Not Found");
@@ -173,7 +173,7 @@ if ( ! empty($info['path']) ) {
 	}
 } elseif ( ! empty($content) ) {
 	$last_modified = $info['lastModif'];
-	$md5 = empty($info['hash']) ? md5($content) : md5($info['hash'] . $last_modified);
+	$md5 = empty($info['hash']) ? md5($content) : $info['hash'];
 } else {
 	// Empty content
 	die;
@@ -226,7 +226,7 @@ if ( isset($_GET['preview']) || isset($_GET['thumbnail']) || isset($_GET['displa
 	$cacheName = '';
 	$cacheType = '';
 	if ( ( isset($_GET['thumbnail']) || isset($_GET['preview']) ) && ! isset($_GET['display']) && ! isset($_GET['icon']) && ! isset($_GET['scale']) && ! isset($_GET['x']) && ! isset($_GET['y']) && ! isset($_GET['format']) && ! isset($_GET['max']) ) {
-		$cachelib = TikiLib::lib('cache');
+		global $cachelib; include_once('lib/cache/cachelib.php');
 		$cacheName = $md5;
 		$cacheType = ( isset($_GET['thumbnail']) ? 'thumbnail_' : 'preview_' ) . ((int)$_REQUEST['fileId']).'_';
 		$use_cache = true;
@@ -372,9 +372,7 @@ if ( isset($_GET['preview']) || isset($_GET['thumbnail']) || isset($_GET['displa
 }
 
 $mimelib = TikiLib::lib('mime');
-if ( empty($info['filetype']) || $info['filetype'] == 'application/x-octetstream'
-			|| $info['filetype'] == 'application/octet-stream' || $info['filetype'] == 'unknown') {
-
+if ( empty($info['filetype']) || $info['filetype'] == 'application/x-octetstream' || $info['filetype'] == 'application/octet-stream' ) {
 	$info['filetype'] = $mimelib->from_path($info['filename'], $filepath);
 
 } else if (isset($_GET['thumbnail']) && (strpos($info['filetype'], 'image') === false || ($content_changed && strpos($info['filetype'], 'image/svg') === false))) {	// use thumb format

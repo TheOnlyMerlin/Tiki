@@ -2,13 +2,9 @@
 
 <form action="tiki-admin.php?page=general" class="admin" method="post">
 	<input type="hidden" name="new_prefs" />
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-		<input type="submit" class="btn btn-default btn-sm" value="{tr}Change preferences{/tr}" />
-	        </div>
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: right;">
+		<input type="submit" value="{tr}Change preferences{/tr}" />
+	</div>
 	{if !empty($error_msg)}
 		{remarksbox type='warning' title="{tr}Warning{/tr}" icon='error'}
 			{$error_msg}
@@ -17,10 +13,9 @@
 
 	{tabset name="admin_general"}
 		{tab name="{tr}General Preferences{/tr}"}
-            <h2>{tr}General Preferences{/tr}</h2>
 			<fieldset>
 				<legend>{tr}Server Fitness{/tr}</legend>
-				{tr}To check if your server meets the requirements for running Tiki please visit <a href="tiki-check.php">Tiki Server Compatibility Check</a>{/tr}.
+				To check if your server meets the requirements for running Tiki please visit <a href="tiki-check.php">Tiki Server Compatibility Check</a>.
 			</fieldset>
 
 			<fieldset>
@@ -119,7 +114,6 @@
 		{/tab}
 
 		{tab name="{tr}General Settings{/tr}"}
-            <h2>{tr}General Settings{/tr}</h2>
 			<fieldset>
 				<legend>{tr}Server{/tr}</legend>
 				{preference name=tmpDir}
@@ -150,7 +144,7 @@
 				{remarksbox type="note" title="{tr}Advanced configuration warning{/tr}"}
 					{tr}Note that storing session data in the database is an advanced systems administration option, and is for admins who have comprehensive access and understanding of the database, in order to deal with any unexpected effects.{/tr}
 				{/remarksbox}
-				<div style="padding:.5em; text-align:left;">
+				<div style="padding:.5em;" align="left">
 					{icon _id=information style="vertical-align:middle"} {tr}Changing this feature will immediately log you out when you save this preference.{/tr} {if $prefs.forgotPass ne 'y'}If there is a chance you have forgotten your password, enable "Forget password" feature.<a href="tiki-admin.php?page=features" title="{tr}Features{/tr}">{tr}Enable now{/tr}</a>.{/if}
 				</div>
 				{preference name=session_storage}
@@ -193,16 +187,6 @@
 					{preference name=print_pdf_webservice_url}
 				</div>
 			</fieldset>
-			
-			<fieldset>
-				<legend>{tr}Terms and Conditions{/tr}</legend>
-
-				{preference name=conditions_enabled}
-				<div class="adminoptionboxchild" id="conditions_enabled_childcontainer">
-					{preference name=conditions_page_name}
-					{preference name=conditions_minimum_age}
-				</div>
-			</fieldset>
 
 			<fieldset>
 				<legend>{tr}Miscellaneous{/tr}</legend>
@@ -214,7 +198,6 @@
 		{/tab}
 
 		{tab name="{tr}Navigation{/tr}"}
-            <h2>{tr}Navigation{/tr}</h2>
 			<fieldset>
 				<legend>{tr}Menus{/tr}</legend>
 				<em>{tr}Create and edit menus {/tr}</em><a href="tiki-admin_menus.php"><em>{tr}here{/tr}</em></a>
@@ -314,7 +297,7 @@
 				<div class="adminoptionboxchild" id="namespace_enabled_childcontainer">
 					{tr}The namespace separator should not{/tr}
 					<ul>
-					<li>{tr}contain any of the characters not allowed in wiki page names, typically{/tr} /?#[]@$&amp;+;=&lt;&gt;</li>
+					<li>{tr}contain any of the characters not allowed in wiki page names, typically{/tr} /?#[]@$&+;=&lt;&gt;</li>
 					<li>{tr}conflict with wiki syntax tagging{/tr}</li>
 					</ul>
 					{preference name=namespace_separator}
@@ -335,7 +318,6 @@
 		{/tab}
 
 		{tab name="{tr}Date and Time{/tr}"}
-            <h2>{tr}Date and Time{/tr}</h2>
 			{preference name=server_timezone}
 			{preference name=users_prefs_display_timezone}
 			{preference name=long_date_format}
@@ -350,13 +332,8 @@
 			{preference name=short_time_format}
 			<em>{tr}Sample:{/tr} {$now|tiki_short_time}</em>
 
-			<fieldset>
-				<legend>{tr}Date/time selectors{/tr}</legend>
-				{preference name=display_field_order}
-				{preference name=display_start_year}
-				{preference name=display_end_year}
-				{preference name=users_prefs_display_12hr_clock}
-			</fieldset>
+			{preference name=display_field_order}
+			{preference name=users_prefs_display_12hr_clock}
 			{preference name=tiki_same_day_time_only}
 			{preference name=wikiplugin_now}
 			{preference name=wikiplugin_countdown}
@@ -370,17 +347,13 @@
 		{/tab}
 
 		{tab name="{tr}Change admin password{/tr}"}
-            <h2>{tr}Change admin password{/tr}</h2>
-			<div style="padding:1em; text-align:left;">
+			<div style="padding:1em;" align="left">
 				<p>{tr}Change the <strong>Admin</strong> password:{/tr} <a href="tiki-adminusers.php?find=admin">{tr}User administration{/tr}</a></p>
 			</div>
 		{/tab}
 	{/tabset}
 
-    <br>{* I cheated. *}
-    <div class="row">
-        <div class="form-group col-lg-12 text-center">
-            <input type="submit" class="btn btn-default btn-sm" value="{tr}Change preferences{/tr}">
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: center;">
+		<input type="submit" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>

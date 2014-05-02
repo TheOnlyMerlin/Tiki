@@ -13,8 +13,6 @@
  */
 class Tracker_Field_Math extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable, Tracker_Field_Indexable
 {
-	private static $runner;
-
 	public static function getTypes()
 	{
 		return array(
@@ -28,20 +26,8 @@ class Tracker_Field_Math extends Tracker_Field_Abstract implements Tracker_Field
 				'params' => array(
 					'calculation' => array(
 						'name' => tr('Calculation'),
-						'type' => 'textarea',
 						'description' => tr('Calculation in the Rating Language'),
 						'filter' => 'text',
-						'legacy_index' => 0,
-					),
-					'recalculate' => array(
-						'name' => tr('Re-calculation event'),
-						'type' => 'list',
-						'description' => tr('Allow to specify special calculation handling. Selecting indexing is useful for dynamic score fields that will not be displayed.'),
-						'filter' => 'word',
-						'options' => array(
-							'save' => tr('Save'),
-							'index' => tr('Indexing'),
-						),
 					),
 				),
 			),
@@ -63,7 +49,7 @@ class Tracker_Field_Math extends Tracker_Field_Abstract implements Tracker_Field
 
 	function renderInput($context = array())
 	{
-		return tr('Value will be re-calculated on save. Current value: %0', $this->getValue());
+		return tr('Feature cannot be set or modified through this interface.');
 	}
 
 	function renderOutput($context = array())
@@ -86,36 +72,19 @@ class Tracker_Field_Math extends Tracker_Field_Abstract implements Tracker_Field
 		return $info;
 	}
 
-	function getDocumentPart(Search_Type_Factory_Interface $typeFactory)
+	function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
 	{
-		$value = $this->getValue();
-
-		if ('index' == $this->getOption('recalculate')) {
-			$runner = $this->getFormulaRunner();
-			$data = [];
-
-			foreach ($runner->inspect() as $fieldName) {
-				$data[$fieldName] = $this->getItemField($fieldName);
-			}
-
-			$runner->setVariables($data);
-
-			$value = $runner->evaluate();
-		}
-
-		$baseKey = $this->getBaseKey();
 		return array(
-			$baseKey => $typeFactory->sortable($value),
+			$baseKey => $typeFactory->identifier($this->getValue()),
 		);
 	}
 
-	function getProvidedFields()
+	function getProvidedFields($baseKey)
 	{
-		$baseKey = $this->getBaseKey();
 		return array($baseKey);
 	}
 
-	function getGlobalFields()
+	function getGlobalFields($baseKey)
 	{
 		return array();
 	}
@@ -123,47 +92,19 @@ class Tracker_Field_Math extends Tracker_Field_Abstract implements Tracker_Field
 	function handleFinalSave(array $data)
 	{
 		try {
-			$runner = $this->getFormulaRunner();
+			$runner = new Math_Formula_Runner(
+				array(
+					'Math_Formula_Function_' => '',
+				)
+			);
+
+			$runner->setFormula($this->getOption('calculation'));
 			$runner->setVariables($data);
 
 			return $runner->evaluate();
 		} catch (Math_Formula_Exception $e) {
 			return $e->getMessage();
 		}
-	}
-
-	private function getFormulaRunner()
-	{
-		static $cache = array();
-		$fieldId = $this->getConfiguration('fieldId');
-		if (! isset($cache[$fieldId])) {
-			$cache[$fieldId] = $this->getOption('calculation');
-		}
-
-		$runner = self::getRunner();
-
-		$cache[$fieldId] = $runner->setFormula($cache[$fieldId]);
-
-		return $runner;
-	}
-
-	public static function getRunner()
-	{
-		if (! self::$runner) {
-			self::$runner = new Math_Formula_Runner(
-				array(
-					'Math_Formula_Function_' => '',
-					'Tiki_Formula_Function_' => '',
-				)
-			);
-		}
-
-		return self::$runner;
-	}
-
-	public static function resetRunner()
-	{
-		self::$runner = null;
 	}
 }
 

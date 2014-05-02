@@ -79,6 +79,11 @@
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache
  */
 
+/**
+ * Require Auth_OpenID::arrayGet().
+ */
+require_once "Auth/OpenID.php";
+
 class Auth_OpenID_Parse {
 
     /**

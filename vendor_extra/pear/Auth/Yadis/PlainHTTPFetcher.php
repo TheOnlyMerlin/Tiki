@@ -14,6 +14,10 @@
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache
  */
 
+/**
+ * Interface import
+ */
+require_once "Auth/Yadis/HTTPFetcher.php";
 
 /**
  * This class implements a plain, hand-built socket-based fetcher

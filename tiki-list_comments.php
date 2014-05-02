@@ -9,11 +9,11 @@
 // $Id$
 
 require_once ('tiki-setup.php');
-
+include_once ('lib/comments/commentslib.php');
 $auto_query_args = array('types_section', 'types', 'show_types', 'sort_mode', 'offset', 'find', 'findfilter_approved');
 
 if (isset($_REQUEST['blogId'])) {
-	$bloglib = TikiLib::lib('blog');
+	require_once('lib/blogs/bloglib.php');
 	$blogId = $_REQUEST['blogId'];
 	$access->check_feature('feature_blogs');
 	$bloglib->check_blog_exists($blogId);
@@ -28,7 +28,7 @@ if (isset($_REQUEST['blogId'])) {
 	$access->check_permission('tiki_p_admin_comments');
 }
 
-$commentslib = TikiLib::lib('comments');
+$commentslib = new Comments($dbTiki);
 $title = tra('Comments');
 $sections_keys = array('objectType' => 'commentsFeature', 'itemObjectType' => 'itemCommentsFeature');
 

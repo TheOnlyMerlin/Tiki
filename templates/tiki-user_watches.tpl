@@ -13,7 +13,6 @@
 {tabset name="user_watches"}
 	{if $prefs.feature_daily_report_watches eq 'y'}
 	{tab name="{tr}Report Preferences{/tr}"}
-        <h2>{tr}Report Preferences{/tr}</h2>
 		{if isset($remove_user_watch_error) && $remove_user_watch_error}
 			{remarksbox type="error" title="{tr}Error{/tr}"}{tr}You are not allowed to remove this notification !{/tr}{/remarksbox}
 		{else}
@@ -29,7 +28,7 @@
 			<select name="interval">
 					<option value="minute" {if $report_preferences.interval eq "minute"}selected{/if}>{tr}Every minute{/tr}</option>
 					<option value="hourly" {if $report_preferences.interval eq "hourly"}selected{/if}>{tr}Hourly{/tr}</option>
-					<option value="daily" {if $report_preferences.interval eq "daily" or !isset($report_preferences.interval)}selected{/if}>{tr}Daily{/tr}</option>
+					<option value="daily" {if $report_preferences.interval eq "daily"}selected{/if}>{tr}Daily{/tr}</option>
 					<option value="weekly" {if $report_preferences.interval eq "weekly"}selected{/if}>{tr}Weekly{/tr}</option>
 					<option value="monthly" {if $report_preferences.interval eq "monthly"}selected{/if}>{tr}Monthly{/tr}</option>
 			</select>
@@ -47,12 +46,11 @@
 				<input type="checkbox" name="always_email" value="1"{if $report_preferences.always_email eq 1 OR $report_preferences eq false} checked="checked"{/if}> {tr}Send me an email also if nothing happened{/tr}
 			</div>
 			
-			<p><input type="submit" name="submit" class="btn btn-default" value=" {tr}Apply{/tr} "></p>
+			<p><input type="submit" name="submit" value=" {tr}Apply{/tr} "></p>
 		</form>
 	{/tab}
 	{/if}
 	{tab name="{tr}My watches{/tr}"}
-        <h2>{tr}My watches{/tr}</h2>
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use "watches" to monitor wiki pages or other objects.{/tr} {tr}Watch new items by clicking the {icon _id=eye} button on specific pages.{/tr}{/remarksbox}
 
@@ -96,7 +94,7 @@
 	</tr>
 	{/if}
 	<tr><td>&nbsp;</td>
-	<td><input type="submit" class="btn btn-default btn-sm" name="add" value="{tr}Add{/tr}"></td>
+	<td><input type="submit" name="add" value="{tr}Add{/tr}"></td>
 	</tr>
 	</table>
 	</form>
@@ -145,8 +143,7 @@
 </form>
 <br>
 <form action="tiki-user_watches.php" method="post">
-<div class="table-responsive">
-<table class="table normal">
+<table class="normal">
 	<tr>
 		{if $watches}
 			<th style="text-align:center;"></th>
@@ -154,11 +151,11 @@
 		<th>{tr}Event{/tr}</th>
 		<th>{tr}Object{/tr}</th>
 	</tr>
-
+	{cycle values="odd,even" print=false}
 	{foreach item=w from=$watches}
-		<tr>
+		<tr class="{cycle}">
 			{if $watches}
-				<td class="checkbox-cell">
+				<td class="checkbox">
 					<input type="checkbox" name="watch[{$w.watchId}]">
 				</td>
 			{/if}
@@ -186,37 +183,25 @@
 		{norecords _colspan=2}
 	{/foreach}
 </table>
-</div>
 {if $watches}
-	{tr}Perform action with checked:{/tr} <input type="submit" class="btn btn-warning btn-sm" name="delete" value="{tr}Delete{/tr}">
+	{tr}Perform action with checked:{/tr} <input type="submit" name="delete" value="{tr}Delete{/tr}">
 {/if}
 </form>
 {/tab}
 {tab name="{tr}Notification Preferences{/tr}"}
-    <h2>{tr}Notification Preferences{/tr}</h2>
 	{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use this form to control notifications about objects you are watching.{/tr}{/remarksbox}
 	
 	<form action="tiki-user_notifications.php" method="post">
 		<input type="hidden" name="notification_preferences" value="true">
-		<p>{tr}Send notification when I am the editor:{/tr}</p>
-        {if $prefs.feature_wiki eq 'y'}
+		<p>Send notification when I am the editor:</p>
 		<p><input type="checkbox" name="user_wiki_watch_editor" value="true" {if $user_wiki_watch_editor eq 'y'}checked{/if}> {tr}Wiki{/tr}</p>
-        {/if}
-        {if $prefs.feature_articles eq 'y'}
 		<p><input type="checkbox" name="user_article_watch_editor" value="true" {if $user_article_watch_editor eq 'y'}checked{/if}> {tr}Article{/tr}</p>
-        {/if}
-        {if $prefs.feature_blogs eq 'y'}
 		<p><input type="checkbox" name="user_blog_watch_editor" value="true" {if $user_blog_watch_editor eq 'y'}checked{/if}> {tr}Blog{/tr}</p>
-        {/if}
-        {if $prefs.feature_trackers eq 'y'}
 		<p><input type="checkbox" name="user_tracker_watch_editor" value="true" {if $user_tracker_watch_editor eq 'y'}checked{/if}> {tr}Tracker{/tr}</p>
-        {/if}
-        {if $prefs.feature_calendar eq 'y'}
 		<p><input type="checkbox" name="user_calendar_watch_editor" value="true" {if $user_calendar_watch_editor eq 'y'}checked{/if}> {tr}Calendar{/tr}</p>
-        {/if}
 		<p><input type="checkbox" name="user_comment_watch_editor" value="true" {if $user_comment_watch_editor eq 'y'}checked{/if}> {tr}Comment{/tr}</p>
 
-		<p><input type="submit" class="btn btn-default btn-sm" name="submit" value=" {tr}Apply{/tr} "></p>
+		<p><input type="submit" name="submit" value=" {tr}Apply{/tr} "></p>
 	</form>
 {/tab}
 {/tabset}

@@ -9,7 +9,7 @@
 // $Id$
 $section = 'cms';
 require_once ('tiki-setup.php');
-$artlib = TikiLib::lib('art');
+include_once ('lib/articles/artlib.php');
 $access->check_feature('feature_articles');
 $access->check_permission('tiki_p_read_article');
 $auto_query_args = array('sort_mode', 'category', 'offset', 'maxRecords', 'find', 'find_from_Month', 'find_from_Day', 'find_from_Year', 'find_to_Month', 'find_to_Day', 'find_to_Year', 'type', 'topic', 'cat_categories', 'categId', 'lang', 'mode', 'mapview', 'searchmap', 'searchlist');
@@ -180,7 +180,8 @@ $smarty->assign_by_ref('topics', $topics);
 $types = $artlib->list_types();
 $smarty->assign_by_ref('types', $types);
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	global $categlib;
+	include_once ('lib/categories/categlib.php');
 	$categories = $categlib->getCategories();
 	$smarty->assign_by_ref('categories', $categories);
 	$smarty->assign('cat_tree', $categlib->generate_cat_tree($categories, true, $selectedCategories));	
@@ -192,7 +193,7 @@ if ($prefs['feature_multilingual'] == 'y') {
 }
 if ($tiki_p_edit_article != 'y' && $tiki_p_remove_article != 'y') { //check one editable
 	foreach ($listpages['data'] as $page) {
-		if (!empty($user) && $page['author'] == $user && $page['creator_edit'] == 'y') {
+		if ($page['author'] == $user && $page['creator_edit'] == 'y') {
 			$smarty->assign('oneEditPage', 'y');
 			break;
 		}

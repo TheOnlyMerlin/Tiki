@@ -32,7 +32,6 @@ function prefs_available_list($partial = false)
 			'type' => 'multilist',
 			'dependencies' => array(
 				'feature_multilingual',
-				'restrict_language',
 			),
 			'tags' => array('basic'),
 			'options' => $map,

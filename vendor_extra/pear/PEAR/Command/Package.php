@@ -24,6 +24,11 @@
  */
 
 /**
+ * base class
+ */
+require_once 'PEAR/Command/Common.php';
+
+/**
  * PEAR commands for login/logout
  *
  * @category   pear
@@ -284,12 +289,21 @@ used for automated conversion or learning the format.
     // }}}
     function &getPackager()
     {
+        if (!class_exists('PEAR_Packager')) {
+            require_once 'PEAR/Packager.php';
+        }
         $a = &new PEAR_Packager;
         return $a;
     }
 
     function &getPackageFile($config, $debug = false, $tmpdir = null)
     {
+        if (!class_exists('PEAR_Common')) {
+            require_once 'PEAR/Common.php';
+        }
+        if (!class_exists('PEAR_PackageFile')) {
+            require_once 'PEAR/PackageFile.php';
+        }
         $a = &new PEAR_PackageFile($config, $debug, $tmpdir);
         $common = new PEAR_Common;
         $common->ui = $this->ui;
@@ -588,6 +602,7 @@ used for automated conversion or learning the format.
                     $data['data'][] = array($req, $type, $name, $rel, $version);
                 }
             } else { // package.xml 2.0 dependencies display
+                require_once 'PEAR/Dependency2.php';
                 $deps = $info->getDependencies();
                 $reg = &$this->config->getRegistry();
                 if (is_array($deps)) {
@@ -664,6 +679,8 @@ used for automated conversion or learning the format.
 
     function doSign($command, $options, $params)
     {
+        require_once 'System.php';
+        require_once 'Archive/Tar.php';
         // should move most of this code into PEAR_Packager
         // so it'll be easy to implement "pear package --sign"
         if (sizeof($params) != 1) {
@@ -727,6 +744,9 @@ used for automated conversion or learning the format.
      */
     function &getInstaller(&$ui)
     {
+        if (!class_exists('PEAR_Installer')) {
+            require_once 'PEAR/Installer.php';
+        }
         $a = &new PEAR_Installer($ui);
         return $a;
     }

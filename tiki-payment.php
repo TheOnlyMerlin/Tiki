@@ -45,7 +45,7 @@ $inputConfiguration = array(
 );
 
 require_once 'tiki-setup.php';
-$categlib = TikiLib::lib('categ');
+require_once 'lib/categories/categlib.php';
 require_once 'lib/payment/paymentlib.php';
 $access->check_feature('payment_feature');
 
@@ -87,19 +87,6 @@ if ( isset($ipn_data) ) {
 	}
 
 	exit;
-}
-
-if ($prefs['payment_system'] == 'israelpost' && isset($_GET['invoice']) && $jitGet->OKauthentication->word()) {
-	$gateway = $paymentlib->gateway('israelpost');
-	// Return URL - check payment right away through APIs
-	$id = $_GET['invoice'];
-	$verified = $gateway->check_payment($id, $jitGet, $jitPost);
-
-	if ($verified) {
-		$access->redirect('tiki-payment.php?invoice=' . $id, tra('Payment has been confirmed.'));
-	} else {
-		$access->redirect('tiki-payment.php?invoice=' . $id, tra('Payment confirmation has not been received yet.'));
-	}
 }
 
 if ( isset( $_POST['manual_amount'], $_POST['invoice'] ) && preg_match('/^\d+(\.\d{2})?$/', $_POST['manual_amount']) ) {
@@ -205,7 +192,6 @@ fetch_payment_list('outstanding');
 fetch_payment_list('overdue');
 fetch_payment_list('past');
 fetch_payment_list('canceled');
-fetch_payment_list('authorized');
 
 $smarty->assign('mid', 'tiki-payment.tpl');
 $smarty->display('tiki.tpl');

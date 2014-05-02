@@ -20,6 +20,10 @@
  * @since      File available since Release 1.4.3
  */
 
+/**
+ * For downloading REST xml/txt files
+ */
+require_once 'PEAR/REST.php';
 
 /**
  * Implement REST 1.1
@@ -163,6 +167,9 @@ class PEAR_REST_11
                     }
                     if ($d) {
                         if (isset($d['required'])) {
+                            if (!class_exists('PEAR_PackageFile_v2')) {
+                                require_once 'PEAR/PackageFile/v2.php';
+                            }
                             if (!isset($pf)) {
                                 $pf = new PEAR_PackageFile_v2;
                             }

@@ -13,17 +13,6 @@ function smarty_function_error_report($params, $smarty)
 	$pre = '<div id="error_report">';
 	$post = '</div>';
 
-	$repeat = false;
-	$legacy = $smarty->getTemplateVars('display_msg');
-	if ($legacy) {
-		// Handle reporting ofthe display_msg smarty variable
-		$smarty->loadPlugin('smarty_block_remarksbox');
-		$post .= smarty_block_remarksbox(array(
-			'type' => 'note',
-			'title' => tr('Notice'),
-		), $legacy, $smarty, $repeat);
-	}
-
 	TikiLib::lib('header')->add_js(
 		'
 	$(document).ajaxComplete(function (e, jqxhr) {
@@ -35,10 +24,6 @@ function smarty_function_error_report($params, $smarty)
 				$("ul", "#error_report").append($(error).find("li"));
 			}
 		}
-		$("#error_report .clear").on("click", function () {
-			$("#error_report").empty();
-			return false;
-		});
 	});
 	$("#error_report .clear").on("click", function () {
 		$("#error_report").empty();

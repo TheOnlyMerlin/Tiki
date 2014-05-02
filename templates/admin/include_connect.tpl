@@ -1,7 +1,6 @@
 <div>&nbsp;</div>
 {tabset}
 	{tab name="{tr}Tiki Connect{/tr}"}
-        <h2>{tr}Tiki Connect{/tr}</h2>
 		<fieldset>
 			<legend><strong>{tr}Join the community!{/tr}</strong></legend>
 			<p>{tr}Tiki Wiki CMS Groupware is Free and Open Source Software (FOSS). It is a community-driven project which exists and improves thanks to the participation of people just like YOU.{/tr}</p>
@@ -21,7 +20,7 @@
 		<fieldset>
 			<legend><strong>{tr}Promote your site{/tr}</strong></legend>
 			<p>
-				{tr}Add your site to the Tiki directory.{/tr}
+				{tr}Add your site to the Tiki diretory.{/tr}
 				{button href="tiki-register_site.php" _text="{tr}Submit your site{/tr}"}
 			</p>
 		</fieldset>
@@ -49,7 +48,6 @@
 		</fieldset>
 	{/tab}
 	{tab name="{tr}Settings{/tr}"}
-        <h2>{tr}Settings{/tr}</h2>
 		<form class="admin" id="connect" name="connect" action="tiki-admin.php?page=connect" method="post">
 			<fieldset>
 				<legend>{tr}Tiki Connect{/tr}</legend>
@@ -63,11 +61,11 @@
 				{/remarksbox}
 				{preference name="connect_feature"}
 				<div class="adminoptionboxchild" id="connect_feature_childcontainer">
-					<div class="t_navbar btn-group form-group">
-						{button _script="#" class="btn btn-default" _text="{tr}Send Info{/tr}" _title="{tr}Send the data{/tr}" _id="connect_send_btn"}
-						{button _script="#" class="btn btn-default" _text="{tr}Preview info{/tr}" _title="{tr}See what is going to be sent{/tr}" _id="connect_list_btn"}
+					<div class="navbar">
+						{button _script="#" _text="{tr}Send Info{/tr}" _title="{tr}Send the data{/tr}" _id="connect_send_btn"}
+						{button _script="#" _text="{tr}Preview info{/tr}" _title="{tr}See what is going to be sent{/tr}" _id="connect_list_btn"}
 						{if empty($prefs.connect_site_title)}
-							{button _text="{tr}Fill form{/tr}" class="btn btn-default" _title="{tr}Fill this form in based on other preferences{/tr}" _id="connect_defaults_btn" _script="#"}
+							{button _text="{tr}Fill form{/tr}" _title="{tr}Fill this form in based on other preferences{/tr}" _id="connect_defaults_btn" _script="#"}
 						{/if}
 					</div>
 					{preference name="connect_send_info"}
@@ -84,7 +82,7 @@
 						{preference name="connect_site_location"}
 						<div class="adminoptionboxchild" style="padding-left:5em;">
 							{$headerlib->add_map()}
-							<div class="adminoptionboxchild map-container" style="height:250px;width:400px;" data-geo-center="{defaultmapcenter}" data-target-field="connect_site_location"{if $prefs.connect_server_mode eq "y"}
+							<div class="adminoptionboxchild map-container" style="height:250px;width:400px;"  data-target-field="connect_site_location"{if $prefs.connect_server_mode eq "y"}
 								data-icon-name="tiki" data-icon-src="img/tiki/tikiicon.png"
 								data-icon-size="[16,16]" data-icon-offset="[-8,-16]" data-marker-filter=".geolocated.connection"{/if}></div>
 						</div>
@@ -104,7 +102,7 @@
 			</fieldset>
 
 			<div class="heading input_submit_container" style="text-align: center;">
-				<input type="submit" class="btn btn-default btn-sm" name="connectprefs" value="{tr}Change preferences{/tr}" />
+				<input type="submit" name="connectprefs" value="{tr}Change preferences{/tr}" />
 			</div>
 		</form>
 	{/tab}
@@ -113,24 +111,23 @@
 			<h2>{tr}Recent connections{/tr}</h2>
 			<form class="admin" name="cserver_form" action="tiki-admin.php?page=connect" method="post">
 				<input name="cserver_search" type="text" value="{$cserver_search_text}" />
-				<input name="cserver" type="submit" class="btn btn-default" value="{tr}Search{/tr}" />
+				<input name="cserver" type="submit" value="{tr}Search{/tr}" />
 				{button cserver="rebuild" _auto_args="cserver,page" _text="{tr}Rebuild Index{/tr}" _title="{tr}Rebuild received connections index{/tr}"}
 				{if !empty($connect_stats)}
 					<span>{tr _0=$connect_stats.received _1=$connect_stats.guids}<strong>Server stats:</strong> %0 reports received from %1 Tikis{/tr}</span>
 				{/if}
 			</form>
 
-                <div class="table-responsive">
-                <table class="table normal">
+			<table class="normal">
 				<tr>
 					<th>{tr}Created{/tr}</th>
 					<th>{tr}Title{/tr}</th>
 					<th>{tr}Language{/tr}</th>
 					<th>{tr}Keywords{/tr}</th>
 				</tr>
-
+				{cycle values="odd,even" print=false}
 				{section name=connection loop=$connect_recent}
-					<tr>
+					<tr class="{cycle}">
 						<td>
 							{$connect_recent[connection].created}
 						</td>
@@ -148,26 +145,7 @@
 					{norecords _colspan=4}
 				{/section}
 			</table>
-            </div>
 
 		{/tab}
 	{/if}
-	{tab name="{tr}Jitsi{/tr}"}
-		<form class="admin" id="connect" name="connect" action="tiki-admin.php?page=connect" method="post">
-			<fieldset>
-				<legend>{tr}Jitsi{/tr}</legend>
-
-				<div class="form-row">
-					<label for="jitsi-url">{tr}Provision URL{/tr}</label>
-					<input id="jitsi-url" readonly type="text" value="{$jitsi_url|escape}" class="form-control">
-				</div>
-				{preference name=suite_jitsi_provision}
-				{preference name=suite_jitsi_configuration}
-			</fieldset>
-
-			<div class="heading input_submit_container" style="text-align: center;">
-				<input type="submit" class="btn btn-default btn-sm" name="connectprefs" value="{tr}Change preferences{/tr}" />
-			</div>
-		</form>
-	{/tab}
 {/tabset}

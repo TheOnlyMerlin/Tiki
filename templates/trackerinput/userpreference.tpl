@@ -6,9 +6,11 @@
 {elseif $field.options_array[0] eq 'language'}
 	<select name="{$field.ins_id}">
 		{section name=ix loop=$languages}
-			<option value="{$languages[ix].value|escape}" {if $field.value eq $languages[ix].value}selected="selected"{/if}>
-				{$languages[ix].name}
-			</option>
+			{if count($prefs.available_languages) == 0 || in_array($languages[ix].value, $prefs.available_languages)}
+				<option value="{$languages[ix].value|escape}" {if $field.value eq $languages[ix].value}selected="selected"{/if}>
+					{$languages[ix].name}
+				</option>
+			{/if}
 		{/section}
 		<option value='' {if !$field.value}selected="selected"{/if}>{tr}Site default{/tr}</option>
 	</select>

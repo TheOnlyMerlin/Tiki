@@ -20,7 +20,6 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 
 // Prefs for which we want to use the site value (they will be prefixed with 'site_')
 // ( this is also used in tikilib, not only when reloading prefs )
-global $user_overrider_prefs, $prefs;
 $user_overrider_prefs = array(
 				'language',
 				'style',
@@ -38,11 +37,10 @@ initialize_prefs();
 function get_default_prefs()
 {
 	static $prefs;
-	if ( is_array($prefs) ) {
+	if ( is_array($prefs) )
 		return $prefs;
-	}
 
-	$cachelib = TikiLib::lib('cache');
+	global $cachelib; require_once 'lib/cache/cachelib.php';
 	if ( $prefs = $cachelib->getSerialized('tiki_default_preferences_cache') ) {
 		return $prefs;
 	}
@@ -65,7 +63,6 @@ function get_default_prefs()
 			'backlinks_name_len' => '0',
 			'feature_wiki_notepad' => 'n',
 			'feature_wiki_feedback_polls' => array(),
-			'mailin_respond_email' => 'y',
 			'mailin_autocheck' => 'n',
 			'mailin_autocheckFreq' => '0',
 			'mailin_autocheckLast' => 0,
@@ -256,9 +253,9 @@ function get_default_prefs()
 			// cannot contain spaces, commas, forward-slash or pipe chars within tool names
 			'toolbar_global' => '
 				bold, italic, underline, strike, sub, sup,-, color, -, tikiimage, tikilink, link, unlink, anchor, -,
-				undo, redo, -, find, replace, -, removeformat, specialchar, smiley | help, switcheditor, autosave, admintoolbar /
+				undo, redo, -, find, replace, -, removeformat, specialchar, smiley | help, switcheditor, autosave /
 				format, templates, cut, copy, paste, pastetext, pasteword, -, h1, h2, h3, left, center, -,
-				blockquote, list, numlist, -, pagebreak, rule, -, table, pastlink, -, source, showblocks, screencapture | fullscreen /
+				blockquote, list, numlist, -, pagebreak, rule, -, table, -, source, showblocks, screencapture | fullscreen /
 				style, fontname, fontsize, outdent, indent /
 			',
 			'toolbar_global_comments' => '
@@ -339,12 +336,12 @@ function get_default_prefs()
 }
 
 
-function initialize_prefs($force = false)
+function initialize_prefs()
 {
 	global $prefs, $user_overrider_prefs, $in_installer, $section, $systemConfiguration;
 
 
-	if (! $force && (defined('TIKI_IN_INSTALLER') || defined('TIKI_IN_TEST'))) {
+	if (defined('TIKI_IN_INSTALLER') || defined('TIKI_IN_TEST')) {
 		$prefs = get_default_prefs();
 		return;
 	}
@@ -358,7 +355,7 @@ function initialize_prefs($force = false)
 		// Find which preferences need to be serialized/unserialized, based on the default
 		//  values (those with arrays as values) and preferences with special serializations
 		$serializedPreferences = array();
-		$prefslib = TikiLib::lib('prefs');
+		global $prefslib; require_once 'lib/prefslib.php';
 		foreach ( $defaults as $preference => $value ) {
 			if ( is_array($value) || in_array($preference, array('category_defaults', 'memcache_servers'))) {
 				$serializedPreferences[] = $preference;
@@ -374,7 +371,7 @@ function initialize_prefs($force = false)
 
 		// Unserialize serialized preferences
 		foreach ( $serializedPreferences as $serializedPreference ) {
-			if ( !empty($modified[$serializedPreference]) && ! is_array($modified[$serializedPreference]) ) {
+			if ( isset($modified[$serializedPreference]) && ! is_array($modified[$serializedPreference]) ) {
 				$modified[$serializedPreference] = unserialize($modified[$serializedPreference]);
 			}
 		}
@@ -395,7 +392,7 @@ function initialize_prefs($force = false)
 
 	if ( $prefs['feature_perspective'] == 'y') {
 		if ( ! isset( $section ) || $section != 'admin' ) {
-			$perspectivelib = TikiLib::lib('perspective');
+			global $perspectivelib; require_once 'lib/perspectivelib.php';
 			if ( $persp = $perspectivelib->get_current_perspective($prefs) ) {
 				$perspectivePreferences = $perspectivelib->get_preferences($persp);
 				$prefs = $perspectivePreferences + $prefs;
@@ -405,8 +402,6 @@ function initialize_prefs($force = false)
 
 	// Override preferences with system-configured preferences.
 	$prefs = $systemConfiguration->preference->toArray() + $prefs;
-
-	if ( !defined('TIKI_PREFS_DEFINED') ) define('TIKI_PREFS_DEFINED', 1);
 }
 
 /**

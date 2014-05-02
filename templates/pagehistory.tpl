@@ -1,9 +1,8 @@
-{if (!empty($smarty.request.diff_style) or !empty($diff_style)) and $old and $new or $diffdata}
+{if  isset($smarty.request.diff_style) and $smarty.request.diff_style}
 	{if !isset($translation_mode) or $translation_mode ne 'y'}
 		<h2>{tr}Comparing version {$old.version} with version {$new.version}{/tr}</h2>		
 	{/if}
-<div class="table-responsive">
-	<table class="table normal diff">
+	<table class="normal diff">
 	{if isset($translation_mode) and $translation_mode eq 'n'}
 		<tr>
 			<th colspan="2"><b>{tr}Version:{/tr} <a href="tiki-pagehistory.php?page={$page|escape:"url"}&amp;preview={$old.version}" title="{tr}View{/tr}">{$old.version}</a>{if $old.version == $info.version} ({tr}Current{/tr}){/if}</b></th>
@@ -102,5 +101,4 @@
 			{if $diffdata}{$diffdata}{else}<tr><td colspan="4">{tr}Versions are identical{/tr}</td></tr>{/if}
 		{/if}
 	</table>
-</div>
 {/if}

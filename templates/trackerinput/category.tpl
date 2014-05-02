@@ -3,7 +3,7 @@
 {/if}
 {if $field.options_array[1] eq 'd' || $field.options_array[1] eq 'm'}
 	{if $field.options_array[1] eq 'm' and $prefs.jquery_ui_chosen neq 'y'}<small>{tr}Hold "Ctrl" in order to select multiple values{/tr}</small><br>{/if}
-	<select name="{$field.ins_id}[]"{if $field.options_array[1] eq 'm'} multiple="multiple"{/if} class="form-control">
+	<select name="{$field.ins_id}[]"{if $field.options_array[1] eq 'm'} multiple="multiple"{/if}>
 	{if $field.options_array[1] eq 'd' and (empty($field.value[0]) or $field.isMandatory ne 'y')}
 		<option value=""></option>
 	{/if}
@@ -19,7 +19,6 @@
 	{foreach key=ku item=iu from=$field.list name=eforeach}
 	{assign var=fcat value=$iu.categId}
 	<td width="50%"  class="trackerCategoryName">
-		<input id="cat{$iu.categId|escape}_hidden" type="hidden" name="cat_managed[]" value="{$iu.categId|escape}">
 		<input type={if $field.options_array[1] eq "radio"}"radio"{else}"checkbox"{/if} name="{$field.ins_id}[]" value="{$iu.categId}" id="cat{$iu.categId}" {if in_array($fcat, $field.selected_categories)} checked="checked"{/if}>
 		{if $field.options_array[4] eq 1 && !empty($iu.description)}<a href="{$iu.description|escape}" target="tikihelp" class="tikihelp" title="{$iu.name|escape}:{$iu.description|escape}">{icon _id=help alt=''}</a>{/if}
 		<label for="cat{$iu.categId}">{$iu.name|escape}</label>

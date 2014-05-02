@@ -65,11 +65,7 @@ $needed_prefs = array(
 	'min_pass_length' => 5,
 	'pass_chr_special' => 'n',
 	'menus_item_names_raw' => 'n',
-	'cookie_consent_feature' => 'n',
-	'cookie_consent_name' => 'tiki_cookies_accepted',
-
 );
-
 // check that tiki_preferences is there
 if ($tikilib->query("SHOW TABLES LIKE 'tiki_preferences'")->numRows() == 0) {
 	// smarty not initialised at this point to do a polite message, sadly
@@ -77,24 +73,7 @@ if ($tikilib->query("SHOW TABLES LIKE 'tiki_preferences'")->numRows() == 0) {
 	exit;
 }
 $tikilib->get_preferences($needed_prefs, true, true);
-global $systemConfiguration;
 $prefs = $systemConfiguration->preference->toArray() + $prefs;
-
-// mose : simulate strong var type checking for http vars
-$patterns['int'] = "/^[0-9]*$/"; // *Id
-$patterns['intSign'] = "/^[-+]?[0-9]*$/"; // *offset,
-$patterns['char'] = "/^(pref:)?[-,_a-zA-Z0-9]*$/"; // sort_mode
-$patterns['string'] = "/^<\/?(b|strong|small|br *\/?|ul|li|i)>|[^<>\";#]*$/"; // find, and such extended chars
-$patterns['stringlist'] = "/^[^<>\"#]*$/"; // to, cc, bcc (for string lists like: user1;user2;user3)
-$patterns['vars'] = "/^[-_a-zA-Z0-9]*$/"; // for variable keys
-$patterns['dotvars'] = "/^[-_a-zA-Z0-9\.]*$/"; // same pattern as a variable key, but that may contain a dot
-$patterns['hash'] = "/^[a-z0-9]*$/"; // for hash reqId in live support
-// allow quotes in url for additional tag attributes if html allowed in menu options links
-if ($prefs['menus_item_names_raw'] == 'y' and strpos($_SERVER["SCRIPT_NAME"], 'tiki-admin_menu_options.php') !== false) {
-	$patterns['url'] = "/^(https?:\/\/)?[^<>]*$/";
-} else {
-	$patterns['url'] = "/^(https?:\/\/)?[^<>\"]*$/";
-}
 
 // IIS always sets the $_SERVER['HTTPS'] value (on|off)
 $noSSLActive = !isset($_SERVER['HTTPS']) || (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'off');
@@ -103,10 +82,13 @@ if (isset($prefs['session_protected']) && $prefs['session_protected'] == 'y' && 
 	exit;
 }
 
-$cachelib = TikiLib::lib('cache');
-$logslib = TikiLib::lib('logs');
+global $cachelib;
+require_once ('lib/cache/cachelib.php');
+global $logslib;
+require_once ('lib/logs/logslib.php');
 include_once ('lib/init/tra.php');
-$tikidate = TikiLib::lib('tikidate');
+require_once ('lib/tikidate.php');
+$tikidate = new TikiDate();
 // set session lifetime
 if (isset($prefs['session_lifetime']) && $prefs['session_lifetime'] > 0) {
 	ini_set('session.gc_maxlifetime', $prefs['session_lifetime'] * 60);
@@ -135,14 +117,8 @@ if (isset($_GET[session_name()]) && $tikilib->get_ip_address() == '127.0.0.1') {
 	session_id($_GET[session_name()]);
 }
 
-if ($prefs['cookie_consent_feature'] === 'y' && empty($_COOKIE[$prefs['cookie_consent_name']])) {
-	$feature_no_cookie = true;
-} else {
-	$feature_no_cookie = false;
-}
-
 $start_session = true;
-if ( ($prefs['session_silent'] == 'y' || $feature_no_cookie) && empty($_COOKIE[session_name()]) ) {
+if ( isset($prefs['session_silent']) && $prefs['session_silent'] == 'y' && empty($_COOKIE[session_name()]) ) {
 	$start_session = false;
 }
 
@@ -209,8 +185,8 @@ global $smarty; require_once ('lib/init/smarty.php');
 $maxRecords = $prefs['maxRecords'];
 $smarty->assignByRef('maxRecords', $maxRecords);
 
-global $userlib;
-$userlib = TikiLib::lib('user');
+require_once ('lib/userslib.php'); global $userlib;
+$userlib = new UsersLib;
 require_once ('lib/tikiaccesslib.php');
 $access = new TikiAccessLib;
 require_once ('lib/breadcrumblib.php');
@@ -228,6 +204,21 @@ function remove_gpc(&$var)
 	} else {
 		$var = stripslashes($var);
 	}
+}
+// mose : simulate strong var type checking for http vars
+$patterns['int'] = "/^[0-9]*$/"; // *Id
+$patterns['intSign'] = "/^[-+]?[0-9]*$/"; // *offset,
+$patterns['char'] = "/^(pref:)?[-,_a-zA-Z0-9]*$/"; // sort_mode
+$patterns['string'] = "/^<\/?(b|strong|small|br *\/?|ul|li|i)>|[^<>\";#]*$/"; // find, and such extended chars
+$patterns['stringlist'] = "/^[^<>\"#]*$/"; // to, cc, bcc (for string lists like: user1;user2;user3)
+$patterns['vars'] = "/^[-_a-zA-Z0-9]*$/"; // for variable keys
+$patterns['dotvars'] = "/^[-_a-zA-Z0-9\.]*$/"; // same pattern as a variable key, but that may contain a dot
+$patterns['hash'] = "/^[a-z0-9]*$/"; // for hash reqId in live support
+// allow quotes in url for additional tag attributes if html allowed in menu options links
+if ($prefs['menus_item_names_raw'] == 'y' and strpos($_SERVER["SCRIPT_NAME"], 'tiki-admin_menu_options.php') !== false) {
+	$patterns['url'] = "/^(https?:\/\/)?[^<>]*$/";
+} else {
+	$patterns['url'] = "/^(https?:\/\/)?[^<>\"]*$/";
 }
 // parameter type definitions. prepend a + if variable may not be empty, e.g. '+int'
 $vartype['id'] = '+int';
@@ -250,6 +241,7 @@ $vartype['thread_style'] = '+char';
 $vartype['comments_per_page'] = '+int';
 $vartype['topics_offset'] = 'int';
 $vartype['topics_sort_mode'] = '+char';
+$vartype['priority'] = 'int';
 $vartype['theme'] = 'string';
 $vartype['flag'] = 'char';
 $vartype['lang'] = 'char';
@@ -457,7 +449,8 @@ if (isset($_SESSION["$user_cookie_site"])) {
 	// Example : If using the same PHP SESSION cookies for more than one tiki.
 	$user_details = $userlib->get_user_details($user);
 	if (!is_array($user_details) || !is_array($user_details['info']) || (int) $user_details['info']['lastLogin'] <= 0) {
-		$cachelib = TikiLib::lib('cache');
+		global $cachelib;
+		require_once ('lib/cache/cachelib.php');
 		$cachelib->invalidate('user_details_' . $user);
 		$user_details = $userlib->get_user_details($user);
 		if (!is_array($user_details) || !is_array($user_details['info'])) {
@@ -556,8 +549,6 @@ array_unshift(
 			'mobile_mode' => 'alpha',
 			'categ' => 'striptags',
 			'local_tz' => 'text',
-			'preview' => 'text',
-			'rbox' => 'text',
 		),
 		'staticKeyFiltersForArrays' => array(
 			'cat_managed' => 'digits',
@@ -633,7 +624,5 @@ if (function_exists('mb_internal_encoding')) {
 if (!isset($_SERVER['QUERY_STRING'])) {
 	$_SERVER['QUERY_STRING'] = '';
 }
-
-
 
 $smarty->assign("tikidomain", $tikidomain);

@@ -15,12 +15,6 @@ $sources = $list->getSources();
 
 $parserlib = TikiLib::lib('parser');
 
-$show_details_for = "";
-if (isset($_REQUEST['show_details_for'])) {
-    $show_details_for = $_REQUEST['show_details_for'];
-}
-$smarty->assign('show_details_for', $show_details_for);
-
 if ($prefs['profile_unapproved'] == 'y') {
 	Tiki_Profile::enableDeveloperMode();
 }
@@ -46,10 +40,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$transaction->commit();
 
 		if ($target = $profile->getInstructionPage()) {
-			$wikilib = TikiLib::lib('wiki');
+			global $wikilib;
+			require_once 'lib/wiki/wikilib.php';
 			$target = $wikilib->sefurl($target);
 			header('Location: ' . $target);
-            exit;
+			exit;
 		} else {
 			if (count($installer->getFeedback()) > 0) {
 				$smarty->assign_by_ref('profilefeedback', $installer->getFeedback());
@@ -60,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 
 	if (isset($_POST['install'], $_POST['pd'], $_POST['pp'])) {
-        $data = array();
+		$data = array();
 
 		foreach ($_POST as $key => $value) {
 			if ($key != 'url' && $key != 'install') {
@@ -74,10 +69,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$installer->install($profile);
 
 		if (($profile != null) && ($target = $profile->getInstructionPage())) {
-			$wikilib = TikiLib::lib('wiki');
+			global $wikilib;
+			require_once 'lib/wiki/wikilib.php';
 			$target = $wikilib->sefurl($target);
 			header('Location: ' . $target);
-            exit;
+			exit;
 		} else {
 			if (count($installer->getFeedback()) > 0) {
 				$smarty->assign_by_ref('profilefeedback', $installer->getFeedback());
@@ -88,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 
 	if (isset($_POST['test'], $_POST['profile_tester'], $_POST['profile_tester_name'])) {
-        $test_source = $_POST['profile_tester'];
+		$test_source = $_POST['profile_tester'];
 		if (strpos($test_source, '{CODE}') === false) {
 			// wrap in CODE tags if none there
 			$test_source = "{CODE(caption=>YAML)}\n$test_source\n{CODE}";
@@ -105,10 +101,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$installer->install($profile, $empty_cache);
 
 		if ($target = $profile->getInstructionPage()) {
-			$wikilib = TikiLib::lib('wiki');
+			global $wikilib;
+			require_once 'lib/wiki/wikilib.php';
 			$target = $wikilib->sefurl($target);
 			header('Location: ' . $target);
-            exit;
+			exit;
 		} else {
 			if (count($installer->getFeedback()) > 0) {
 				$smarty->assign_by_ref('profilefeedback', $installer->getFeedback());
@@ -117,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	} // }}}
 
 	if (isset($_GET['refresh'])) {
-        $toRefresh = (int) $_GET['refresh'];
+		$toRefresh = (int) $_GET['refresh'];
 		if (isset($sources[$toRefresh])) {
 			echo json_encode(
 				array(
@@ -128,11 +125,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		} else {
 			echo '{}';
 		}
-        exit;
+		exit;
 	}
 
 	if (isset($_GET['getinfo'], $_GET['pd'], $_GET['pp'])) {
-        $installer = new Tiki_Profile_Installer;
+		$installer = new Tiki_Profile_Installer;
 		$profile = Tiki_Profile::fromNames($_GET['pd'], $_GET['pp']);
 		$error = '';
 
@@ -142,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$error = "Profile is not available: ".$_GET['pd'].", ". $_GET['pp'];
 		}
 
-        try {
+		try {
 			if (!empty($error)) {
 				$sequencable = false;
 			} else if (!$deps = $installer->getInstallOrder($profile)) {
@@ -163,7 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$url = '';
 		$feedback = '';
 
-        if ($profile !== false) {
+		if ($profile !== false) {
 			foreach ($deps as $d) {
 				$dependencies[] = $d->pageUrl;
 				$userInput = array_merge($userInput, $d->getRequiredInput());
@@ -175,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$url =  $profile->url;
 			$feedback = $profile->getFeedback();
 		}
-        echo json_encode(
+		echo json_encode(
 			array(
 				'dependencies' => $dependencies,
 				'userInput' => $userInput,
@@ -187,7 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 				'feedback' => $feedback,
 			)
 		);
-        exit;
+		exit;
 	} // }}}
 
 }

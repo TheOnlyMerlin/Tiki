@@ -29,9 +29,7 @@ function wikiplugin_pagetabs_info()
 				'name' => tra('Wiki page names'),
 				'description' => tra('The wiki pages you would like to use in this plugin, optional, separate with pipe "|".  Or a table with the class of "pagetabs" on the main page. On child pages use as a way to redirect to the parent.'),
 				'default' => '',
-				'separator' => '|',
-				'filter' => 'pagename',
-				'profile_reference' => 'wiki_page',
+				'filter' => 'striptags',
 			),
 		),
 	);
@@ -44,7 +42,7 @@ function wikiplugin_pagetabs($data, $params)
 	++$pagetabsindex;
 	extract($params, EXTR_SKIP);
 
-	$pages = json_encode($pages);
+	$pages = json_encode(explode('|', $pages));
 
 	$pageTabs = true;
 

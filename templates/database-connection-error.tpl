@@ -17,7 +17,7 @@
 <div id="fixedwidth"> {* enables fixed-width layouts *}
 	<div id="main">
 	<div id="siteheader" style="margin: 1em auto; max-width: 800px">
-			<div class="sitelogo">
+			<div id="sitelogo">
 				<img style="border: medium none ;" alt="Site Logo" src="img/tiki/Tiki_WCG.png">
 			</div>
 	</div>
@@ -27,7 +27,7 @@
 			<div style="margin:10px 30px;">
 				{if $prefs.error_reporting_level and ( $tiki_p_admin eq 'y' or $prefs.error_reporting_adminonly ne 'y' )}
 					<h1>{tr}System error.{/tr}</h1>
-					<div class="text-left">
+					<div class="left">
 						<p>{tr}The following error message was returned:{/tr}</p>
 						<strong>
 							<pre>{$msg|escape|nl2br}</pre>

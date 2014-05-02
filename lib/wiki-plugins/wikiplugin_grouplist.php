@@ -49,10 +49,7 @@ function wikiplugin_grouplist_info()
 
 function wikiplugin_grouplist( $data, $params )
 {
-	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
-	$access = TikiLib::lib('access');
-
+	global $smarty, $userlib, $access;
 	$default = array('recur' => 'n', 'linkhome' => 'n');
 	$params = array_merge($default, $params);
 	if ($params['linkhome'] == 'y') {

@@ -16,8 +16,6 @@ class FlaggedRevisionLib extends TikiDb_Bridge
 		$histlib = TikiLib::lib('hist');
 
 		if ($version_info = $histlib->get_version($pageName, $version)) {
-			$tx = TikiDb::get()->begin();
-
 			if ($prefs['feature_actionlog'] == 'y') {
 				$logslib = TikiLib::lib('logs');
 				$logslib->add_action(self::ACTION, $pageName, 'wiki page', "flag=$flag&version=$version&value=$value");
@@ -28,8 +26,6 @@ class FlaggedRevisionLib extends TikiDb_Bridge
 
 			require_once('lib/search/refresh-functions.php');
 			refresh_index('pages', $pageName);
-			refresh_index('pages', "$pageName~~latest");
-			$tx->commit();
 
 			return true;
 		} else {
@@ -82,7 +78,7 @@ class FlaggedRevisionLib extends TikiDb_Bridge
 		}
 
 		if ($prefs['feature_categories'] == 'y') {
-			$categlib = TikiLib::lib('categ');
+			global $categlib; require_once 'lib/categories/categlib.php';
 			$approvalCategories = $tikilib->get_preference('flaggedrev_approval_categories', array(), true);
 
 			$objectCategories = $categlib->get_object_categories('wiki page', $pageName);
@@ -117,3 +113,4 @@ class FlaggedRevisionLib extends TikiDb_Bridge
 	}
 }
 
+global $flaggedrevisionlib; $flaggedrevisionlib = new FlaggedRevisionLib;

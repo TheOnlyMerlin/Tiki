@@ -47,10 +47,8 @@ class InstallCommand extends Command
 				}
 			}
 
-			include_once 'tiki-setup.php';
-			\TikiLib::lib('cache')->empty_cache();
-			initialize_prefs(true);
-			\TikiLib::lib('unifiedsearch')->rebuild();
+			global $cachelib; require_once 'lib/cache/cachelib.php';
+			$cachelib->empty_cache();
 		} else {
 			$output->writeln('<error>Database already exists.</error>');
 		}

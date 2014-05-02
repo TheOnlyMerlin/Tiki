@@ -161,7 +161,6 @@ function prefs_auth_list()
 			'size' => 20,
 			'perspective' => false,
 			'default' => '',
-			'extensions' => ['ldap'],
 		),
 		'auth_ldap_port' => array(
 			'name' => tra('Port'),
@@ -171,7 +170,6 @@ function prefs_auth_list()
 			'filter' => 'digits',
 			'perspective' => false,
 			'default' => '',
-			'extensions' => ['ldap'],
 		),
 		'auth_ldap_debug' => array(
 			'name' => tra('Write LDAP debug Information in Tiki Logs'),
@@ -277,7 +275,7 @@ function prefs_auth_list()
 			'default' => '',
 		),
 		'auth_ldap_emailattr' => array(
-			'name' => tra('Email attribute'),
+			'name' => tra('E-mail attribute'),
             'description' => tra(''),
 			'type' => 'text',
 			'size' => 20,

@@ -10,7 +10,6 @@ include_once "vendor_extra/elfinder/php/elFinder.class.php";
 include_once "vendor_extra/elfinder/php/elFinderVolumeDriver.class.php";
 
 include_once 'lib/jquery_tiki/elfinder/elFinderVolumeTikiFiles.class.php';
-include_once 'lib/jquery_tiki/elfinder/tikiElFinder.php';
 
 class Services_File_FinderController
 {
@@ -90,21 +89,12 @@ class Services_File_FinderController
 		// gallery to start in
 		$startGallery = $input->defaultGalleryId->int();
 
-		if ($startGallery) {
-			$gal_info = TikiLib::lib('filegal')->get_file_gallery_info($startGallery);
-			if (!$gal_info) {
-				TikiLib::lib('errorreport')->report(tr('Gallery ID %0 not found', $startGallery));
-				$startGallery = $prefs['fgal_root_id'];
-			}
-		}
-
 		// 'startPath' not functioning with multiple roots as yet (https://github.com/Studio-42/elFinder/issues/351)
 		// so work around it for now with startRoot
 
-		$opts['roots'][] = array_merge(
-			// normal file gals
+		$opts['roots'][] = array_merge(		// normal file gals
 			array(
-				'path' => $prefs['fgal_root_id'],		// should be a function?
+				'path' => $this->fileController->defaultGalleryId,		// should be $prefs['fgal_root_id']?
 			),
 			$rootDefaults
 		);
@@ -112,7 +102,7 @@ class Services_File_FinderController
 
 		if (!empty($user) && $prefs['feature_userfiles'] == 'y' && $prefs['feature_use_fgal_for_user_files'] == 'y') {
 
-			if ($startGallery && $startGallery == $prefs['fgal_root_user_id'] && ! Perms::get('file gallery', $startGallery)->admin_file_galleries) {
+			if ($startGallery && $startGallery == $prefs['fgal_root_user_id'] && ! Perms::get('file gallery', $startGallery)->admin_trackers) {
 				$startGallery = (int) TikiLib::lib('filegal')->get_user_file_gallery();
 			}
 			$userRootId = $prefs['fgal_root_user_id'];
@@ -135,18 +125,6 @@ class Services_File_FinderController
 
 		}
 
-		if ($prefs['feature_wiki_attachments'] == 'y' && $prefs['feature_use_fgal_for_wiki_attachments'] === 'y') {
-			if ($startGallery && $startGallery == $prefs['fgal_root_wiki_attachments_id']) {
-				$startRoot = count($opts['roots']);
-			}
-			$opts['roots'][] = array_merge(
-				array(
-					'path' => $prefs['fgal_root_wiki_attachments_id'],		// should be $prefs['fgal_root_id']?
-				),
-				$rootDefaults
-			);
-		}
-
 		if ($startGallery) {
 			$opts['startRoot'] = $startRoot;
 			$d = $opts['roots'][$startRoot]['path'] == $startGallery ? '' : 'd_';	// needs to be the cached name in elfinder (with 'd_' in front) unless it's the root id
@@ -164,22 +142,14 @@ class Services_File_FinderController
 		}
 */
 		// run elFinder
-		$elFinder = new tikiElFinder($opts);
+		$elFinder = new elFinder($opts);
 		$connector = new elFinderConnector($elFinder);
 
 		if ($input->cmd->text() === 'tikiFileFromHash') {	// intercept tiki only commands
 			$fileId = $elFinder->realpath($input->hash->text());
 			$filegallib = TikiLib::lib('filegal');
 			$info = $filegallib->get_file(str_replace('f_', '', $fileId));
-			$params = array();
-			if ($input->filegals_manager->text()) {
-				$params['filegals_manager'] = $input->filegals_manager->text();
-			}
-			if ($input->insertion_syntax->text()) {
-				$params['insertion_syntax'] = $input->insertion_syntax->text();
-			}
-			$info['wiki_syntax'] = $filegallib->getWikiSyntax($info['galleryId'], $info, $params);
-			$info['data'] = '';	// binary data makes JSON fall over
+			$info['wiki_syntax'] = $filegallib->getWikiSyntax($info['galleryId'], $info);
 			return $info;
 		}
 
@@ -225,10 +195,15 @@ class Services_File_FinderController
 		}
 
 		if ($isgal) {
-			$perms = TikiLib::lib('tiki')->get_perm_object($id, 'file gallery', TikiLib::lib('filegal')->get_file_gallery_info($id));
+			//$objectType = 'file gallery';
+			$galleryId = $id;
 		} else {
-			$perms = TikiLib::lib('tiki')->get_perm_object($id, 'file', TikiLib::lib('filegal')->get_file($id));
+			$objectType = 'file';
+			// Seems individual file perms aren't set so use the gallery ones
+			$galleryId = $this->parentIds['files'][$id];
 		}
+
+		$perms = TikiLib::lib('tiki')->get_perm_object($galleryId, 'file gallery', TikiLib::lib('filegal')->get_file_gallery_info($galleryId));
 
 		switch($attr) {
 			case 'read':

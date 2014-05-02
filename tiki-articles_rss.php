@@ -9,7 +9,9 @@
 // $Id$
 
 require_once ('tiki-setup.php');
-$rsslib = TikiLib::lib('rss');
+require_once ('lib/tikilib.php');
+require_once ('lib/articles/artlib.php');
+require_once ('lib/rss/rsslib.php');
 
 $access->check_feature('feature_articles');
 
@@ -34,7 +36,7 @@ if (isset($_REQUEST["topic"])) {
     $uniqueid = $feed.".".$topic;
     $topic = (int) preg_replace('/[^0-9]/', '', $topic);
 } elseif (isset($_REQUEST['topicname'])) {
-	$artlib = TikiLib::lib('art');
+	global $artlib; require_once 'lib/articles/artlib.php';
 	$topic = $artlib->fetchtopicId($_REQUEST['topicname']);
 	$uniqueid = $feed.".".$topic;
 } else {
@@ -66,7 +68,7 @@ if (isset($_REQUEST["category"])) {
 		}
 		sort($categIds);
 		$categId = array('AND'=>$categIds);
-		$uniqueid .= '-' . implode('-', $categIds);;
+		$uniqueid .= '-' . implode('-',$categIds);;
 	} else {
 		$categId = $categlib->get_category_id($_REQUEST["category"]);
 		$uniqueid .= '-'.$categId;
@@ -78,7 +80,7 @@ if (isset($_REQUEST["categId"])) {
 		sort($_REQUEST["categId"]);
 		$categId = (int) $_REQUEST["categId"];
 		$categId = array('AND'=>$_REQUEST["categId"]);
-		$uniqueid .= '-' . implode('-', $_REQUEST["categId"]);;
+		$uniqueid .= '-' . implode('-',$_REQUEST["categId"]);;
 	} else {
 		$categId = (int) $_REQUEST["categId"];
 		$uniqueid .= '-'.$categId;
@@ -112,8 +114,7 @@ if ($output["data"]=="EMPTY") {
 		$desc = $tmp;
 	}
 
-	$artlib = TikiLib::lib('art');
-	$changes = $artlib->list_articles(0, $prefs['feed_articles_max'], $dateId.'_desc', '', 0, $tikilib->now, $user, $type, $topic, 'y', '', $categId, '', '', $articleLang, '', '', false, 'y');
+	$changes = $artlib -> list_articles(0, $prefs['feed_articles_max'], $dateId.'_desc', '', 0, $tikilib->now, $user, $type, $topic, 'y', '', $categId, '', '', $articleLang, '', '', false, 'y');
 	$tmp = array();
 	include_once('tiki-sefurl.php');
 	foreach ($changes["data"] as $data) {

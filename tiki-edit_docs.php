@@ -10,7 +10,7 @@
 $section = 'docs';
 
 require_once ('tiki-setup.php');
-$filegallib = TikiLib::lib('filegal');
+include_once ('lib/filegals/filegallib.php');
 include_once ('lib/mime/mimetypes.php');
 global $mimetypes;
 
@@ -50,12 +50,9 @@ $gal_info = $filegallib->get_file_gallery($_REQUEST['galleryId']);
 $fileType = reset(explode(';', $fileInfo['filetype']));
 $extension = end(explode('.', $fileInfo['filename']));
 $supportedExtensions = array('odt', 'ods', 'odp');
-$supportedTypes = array_map(
-	function ($type) use ($mimetypes) {
-		return $mimetypes[$type];
-	},
-	$supportedExtensions
-);
+$supportedTypes = array_map(function ($type) use ($mimetypes) {
+	return $mimetypes[$type];
+}, $supportedExtensions);
 
 if (! in_array($extension, $supportedExtensions) && ! in_array($fileType, $supportedTypes)) {
 	$smarty->assign('msg', tr('Wrong file type, expected one of %0', implode(', ', $supportedTypes)));
@@ -150,14 +147,14 @@ $headerlib->add_jq_onready(
 	});
 
 	runtime.writeFile = function(path, data) {
-		$.tikiModal($savingText);
+		$.modal($savingText);
 		var base64 = new core.Base64();
 		data = base64.convertUTF8ArrayToBase64(data);
 		$.post('tiki-edit_docs.php', {
 			fileId: $('#fileId').val(),
 			data: data
 		}, function(id) {
-				$.tikiModal();
+				$.modal();
 				$('#fileId').val(id);
 		});
 	};

@@ -18,7 +18,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 
 class Cachelib
 {
-	private $implementation;
+	public $implementation;
 
 	function __construct()
 	{
@@ -29,14 +29,6 @@ class Cachelib
 		} else {
 			$this->implementation = new CacheLibFileSystem;
 		}
-	}
-
-	function replaceImplementation($implementation)
-	{
-		$old = $this->implementation;
-		$this->implementation = $implementation;
-
-		return $old;
 	}
 
 	function cacheItem($key, $data, $type='')
@@ -78,12 +70,8 @@ class Cachelib
 	 */
 	function empty_cache( $dir_names = array('all'), $log_section = 'system' )
 	{
-		global $tikidomain, $prefs;
-		$logslib = TikiLib::lib('logs');
-		$tikilib = TikiLib::lib('tiki');
+		global $tikidomain, $logslib, $tikilib, $prefs;
 		
-		$inInstaller = defined('TIKI_IN_INSTALLER');
-
 		if (!is_array($dir_names)) {
 			$dir_names = array($dir_names);
 		}
@@ -92,46 +80,39 @@ class Cachelib
 			$this->erase_dir_content("temp/public/$tikidomain");
 			$this->erase_dir_content("temp/cache/$tikidomain");
 			$this->erase_dir_content("modules/cache/$tikidomain");
-
-			$banner=glob("temp/banner*.*");
-			array_map('unlink', $banner);
-
-			$banner=glob("temp/TMPIMG*");
-			array_map('unlink', $banner);
-
 			$this->flush_opcode_cache();
-			$this->flush_memcache();
+			$prefs = $this->flush_memcache();
 			$this->invalidate('global_preferences');
-			if (! $inInstaller) {
+			if (is_object($logslib)) {
 				$logslib->add_log($log_section, 'erased all cache content');
 			}
 		}
 		if (in_array('templates_c', $dir_names)) {
 			$this->erase_dir_content("templates_c/$tikidomain");
 			$this->flush_opcode_cache();
-			if (! $inInstaller) {
+			if (is_object($logslib)) {
 				$logslib->add_log($log_section, 'erased templates_c content');
 			}
 		}
 		if (in_array('temp_cache', $dir_names)) {
 			$this->erase_dir_content("temp/cache/$tikidomain");
 			// Next case is needed to clean also cached data created through mod PluginR
-			if ((isset($prefs['wikiplugin_rr']) && $prefs['wikiplugin_rr'] == 'y') OR (isset($prefs['wikiplugin_r']) && $prefs['wikiplugin_r'] == 'y')) {
+			if ($prefs['wikiplugin_rr'] == 'y' OR $prefs['wikiplugin_r'] == 'y') { 
 				$this->erase_dir_content("temp/cache/$tikidomain/R_*/");
 			}
-			if (! $inInstaller) {
+			if (is_object($logslib)) {
 				$logslib->add_log($log_section, 'erased temp/cache content');
 			}
 		}
 		if (in_array('temp_public', $dir_names)) {
 			$this->erase_dir_content("temp/public/$tikidomain");
-			if (! $inInstaller) {
+			if (is_object($logslib)) {
 				$logslib->add_log($log_section, 'erased temp/public content');
 			}
 		}
 		if (in_array('modules_cache', $dir_names)) {
 			$this->erase_dir_content("modules/cache/$tikidomain");
-			if (! $inInstaller) {
+			if (is_object($logslib)) {
 				$logslib->add_log($log_section, 'erased modules/cache content');
 			}
 		}
@@ -253,12 +234,12 @@ class Cachelib
 				if (
 							// .RData case needed to clean also cached data created through mod PluginR
 							( substr($file, 0, 1) == "." &&	substr($file, -5) != $extracheck ) or
-							$file == 'CVS' or
-							$file == '.svn' or
-							$file == "index.php" or
-							$file == "README" or
-							$file == "web.config" or
-							($virtuals && in_array($file, $virtuals))
+							$file == 'CVS' or 
+							$file == '.svn' or 
+							$file == "index.php" or 
+							$file == "README" or 
+							$file == "web.config" or 
+							($virtuals && in_array($file, $virtuals)) 
 				)
 					continue;
 
@@ -275,8 +256,7 @@ class Cachelib
 
 	function cache_templates($path,$newlang)
 	{
-		global $prefs, $tikidomain;
-		$smarty = TikiLib::lib('smarty');
+		global $prefs, $smarty, $tikidomain;
 
 		$oldlang = $prefs['language'];
 		$prefs['language'] = $newlang;
@@ -414,31 +394,5 @@ class CacheLibMemcache
 	}
 }
 
-class CacheLibNoCache
-{
-	function cacheItem($key, $data, $type='')
-	{
-		return false;
-	}
-
-	function isCached($key, $type='')
-	{
-		return false;
-	}
-
-	function getCached($key, $type='', $lastModif = false)
-	{
-		return false;
-	}
-
-	function invalidate($key, $type='')
-	{
-		return false;
-	}
-
-	function empty_type_cache( $type )
-	{
-		return false;
-	}
-}
-
+global $cachelib;
+$cachelib = new Cachelib();

@@ -37,11 +37,11 @@ class DeclFilter implements Zend_Filter_Interface
 						) {
 						$filter->$real($argument);
 					} else {
-						trigger_error('Disallowed filtering rule: ' . $method, E_USER_WARNING);
+						trigger_error('Disallowed filtering rule: ' . $method, E_USER_ERROR);
 					}
 				}
 			} else {
-				trigger_error('Invalid input configuration structure', E_USER_WARNING);
+				trigger_error('Invalid input configuration structure', E_USER_ERROR);
 			}
 		}
 

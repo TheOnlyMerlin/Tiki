@@ -25,7 +25,6 @@ function wikiplugin_files_info()
 									($prefs['feature_use_fgal_for_user_files'] === 'y' ? '.<br> ' . tra('Or enter a username for user files (hint: enter {{user}} for current logged in user).') : ''),
 				'default' => '',
 				'separator' => ':',
-				'profile_reference' => 'file_gallery',
 			),
 			'categId' => array(
 				'required' => false,
@@ -33,7 +32,6 @@ function wikiplugin_files_info()
 				'description' => tra('To restrict files listed to those belonging to one or more categories. Enter a single category or ID or list of them separated by colon'),
 				'default' => '',
 				'advanced' => true,
-				'profile_reference' => 'category',
 			),
 			'fileId' => array(
 				'required' => false,
@@ -43,7 +41,6 @@ function wikiplugin_files_info()
 				'area' => 'fgal_picker_id',
 				'default' => '',
 				'separator' => ':',
-				'profile_reference' => 'file',
 			),
 			'sort' => array(
 				'required' => false,
@@ -402,14 +399,11 @@ function wikiplugin_files_info()
 }
 function wikiplugin_files($data, $params)
 {
-	global $prefs, $tiki_p_admin, $tiki_p_admin_files_galleries, $user;
+	global $prefs, $tikilib, $smarty, $tiki_p_admin, $tiki_p_admin_files_galleries, $user;
 	if ($prefs['feature_file_galleries'] != 'y') {
 		return('');
 	}
-	$filegallib = TikiLib::lib('filegal');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
-
+	global $filegallib; include_once('lib/filegals/filegallib.php');
 	$default = array('showfind'=>'n', 'showtitle'=>'y', 'showupload' => 'n', 'showgallery' => 'n', 'max' => -1, 'showthumb' => 'n', 'recursive' => 'n', 'withsubgals'=>'y');
 	$params = array_merge($default, $params);
 	$filter = '';
@@ -419,7 +413,7 @@ function wikiplugin_files($data, $params)
 		if (isset($categId))
 			unset($categId);
 	} else {
-		$categlib = TikiLib::lib('categ');
+		global $categlib; include_once('lib/categories/categlib.php');
 	}
 
 	$files = array();
@@ -616,11 +610,8 @@ function wikiplugin_files($data, $params)
 }
 function  wikiplugin_files_check_perm_file($fileId)
 {
-		global $tiki_p_admin, $user, $tiki_p_admin_files_galleries;
-		$tikilib = TikiLib::lib('tiki');
-		$filegallib = TikiLib::lib('filegal');
-
-		$info = $filegallib->get_file_info($fileId, false, false);
+		global $filegallib, $tikilib, $tiki_p_admin, $user, $tiki_p_admin_files_galleries;
+		$info = $filegallib->get_file_info($fileId);
 		$gal_info = $filegallib->get_file_gallery($info['galleryId']);
 		if ($tiki_p_admin != 'y' && $tiki_p_admin_files_galleries != 'y' && $gal_info['user'] != $user) {
 			$info['p_view_file_gallery'] = $tikilib->user_has_perm_on_object($user, $info['galleryId'], 'file gallery', 'tiki_p_view_file_gallery') ? 'y' : 'n';

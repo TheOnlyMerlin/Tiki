@@ -17,6 +17,9 @@ p {
 	font-size: 1.1em;
 }
 
+ /***** Layout (overrides layout.css;
+		also styling of page layout divs)  *****/
+
 /* Enable header and footer content to widen when middle has wide content. */
 body.fixed_width .fixedwidth .fixedwidth {
 	padding: 0;
@@ -252,6 +255,10 @@ html > body #col3[id] {
 	color: #000000;
 	font-weight: bold !important;
 	text-transform: uppercase;
+}
+
+.siteloginbar_poppedup {
+	display: none !important;
 }
 
 #topbar_modules .module.box-login_box:hover {

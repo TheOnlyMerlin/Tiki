@@ -213,7 +213,7 @@ if ($isPre) {
 
 	if (! $options['no-packaging'] && important_step("Build packages files (based on the '$tag' tag)")) {
 		build_packages($packageVersion, $tag);
-		echo color("\nUpload the files on SourceForge.\nInstructions can be found here: https://sourceforge.net/apps/trac/sourceforge/wiki/Release%20files%20for%20download\n\n", 'cyan');
+		echo color("\nUpload the files on SourceForge.\nInstructions can be found here: http://tinyurl.com/59uubv\n\n", 'cyan');
 	} else {
 		echo color("This was the last step.\n", 'cyan');
 	}
@@ -376,7 +376,6 @@ function check_smarty_syntax(&$error_msg)
 	$prefs['maxRecords'] = 25;
 	$prefs['log_tpl'] = 'y';
 	$prefs['feature_sefurl_filter'] = 'y';
-	require_once 'vendor/smarty/smarty/distribution/libs/Smarty.class.php';
 	require_once 'lib/init/smarty.php';
 	set_error_handler('check_smarty_syntax_error_handler');
 
@@ -692,8 +691,7 @@ function update_changelog_file($newVersion)
 	}
 
 	$isNewMajorVersion = substr($newVersion, -1) == 0;
-	$majorVersion = substr($newVersion, 0, strpos($newVersion, '.'));
-	$releaseNotesURL = '<http://doc.tiki.org/Tiki' . $majorVersion . '>';
+	$releaseNotesURL = '<http://tiki.org/ReleaseNotes'.str_replace('.', '', $newVersion).'>';
 	$parseLogs = $sameFinalVersion = $skipBuffer = false;
 	$lastReleaseMajorNumber = -1;
 	$minRevision = $currentParsedRevision = 0;
@@ -907,7 +905,7 @@ function parse_copyrights()
  * @param int $step
  * @return mixed
  */
-function get_contributors_data($path, &$contributors, $minRevision, $maxRevision, $step = 20000)
+function get_contributors_data($path, &$contributors, $minRevision, $maxRevision, $step = 15000)
 {
 	global $nbCommiters;
 
@@ -1017,9 +1015,8 @@ function update_readme_file($releaseVersion, $mainVersion)
 	$copyrights_file = COPYRIGHTS_FILENAME;
 	$license_file = LICENSE_FILENAME;
 
-	$majorVersion = substr($mainVersion, 0, strpos($mainVersion, '.'));
-	$release_notes_url = 'http://doc.tiki.org/Tiki' . $majorVersion;
-	// Changed from Tiki 12 to point to http://doc.tiki.org/Tiki12 instead of http://tiki.org/ReleaseNotes30
+	$release_notes_url = 'http://tiki.org/ReleaseNotes' . str_replace('.', '', $mainVersion);
+	// For example, Tiki 3.x release notes are on http://tiki.org/ReleaseNotes30
 
 	$readme = <<<EOF
 Tiki! The wiki with a lot of features!

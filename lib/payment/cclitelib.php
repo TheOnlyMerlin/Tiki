@@ -289,8 +289,7 @@ class CCLiteLib extends TikiDb_Bridge
 	 */
 	private function cclite_remote_logon($username = '', $registry = '')
 	{
-		global $user, $prefs;
-		$userlib = TikiLib::lib('user');
+		global $user, $prefs, $userlib;
 
 		if (empty($username)) {
 			$username = $user;

@@ -50,7 +50,7 @@
 					{/if}
 
 					{if $tiki_p_admin_wiki eq 'y' or $tiki_p_assign_perm_wiki_page eq 'y'}
-						{permission_link mode=button type="wiki page" permType=wiki id=$page title=$page}
+						{button _keepall='y' href="tiki-objectpermissions.php" objectId=$page objectName=$page objectType="wiki+page" permType="wiki" _text="{tr}Permissions{/tr}"}
 					{/if}
 
 					{if $prefs.feature_history eq 'y' and $tiki_p_wiki_view_history eq 'y'}
@@ -77,7 +77,7 @@
 
 				{if $prefs.feature_slideshow eq 'y' && $prefs.wiki_uses_slides eq 'y'}
 					{if $show_slideshow eq 'y'}
-						{button _keepall='y' href="./tiki-slideshow.php" page=$page _text="{tr}Slideshow{/tr}"}
+						{button _keepall='y' href="tiki-slideshow.php" page=$page _text="{tr}Slideshow{/tr}"}
 					{elseif $structure eq 'y'}
 						{button _keepall='y' href="tiki-slideshow2.php" page_ref_id=$page_info.page_ref_id _text="{tr}Slideshow{/tr}"}
 					{/if}
@@ -112,14 +112,14 @@
 						{/jq}
 						{/if}
 
-						{*<span class="button btn-default"> mobile *}
-							<a class="btn btn-default" data-role="button" id="comment-toggle" href="{service controller=comment action=list type="wiki page" objectId=$page}#comment-container">
+						<span class="button">
+							<a id="comment-toggle" href="{service controller=comment action=list type="wiki page" objectId=$page}#comment-container">
 								{tr}Comments{/tr}
 								{if $count_comments}
 									&nbsp;(<span class="count_comments">{$count_comments}</span>)
 								{/if}
 							</a>
-						{*</span> mobile*}
+						</span>
 						{jq}
 							$('#comment-toggle').comment_toggle();
 						{/jq}

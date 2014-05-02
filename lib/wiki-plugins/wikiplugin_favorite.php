@@ -27,7 +27,6 @@ function wikiplugin_favorite_info()
 				'description' => tra('Object ID'),
 				'filter' => 'text',
 				'default' => '',
-				'profile_reference' => 'type_in_param',
 			),
 		)
 	);

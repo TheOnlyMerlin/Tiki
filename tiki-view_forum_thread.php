@@ -13,7 +13,8 @@ require_once ('tiki-setup.php');
 
 $access->check_feature('feature_forums');
 
-$commentslib = TikiLib::lib('comments');
+include_once ("lib/comments/commentslib.php");
+$commentslib = new Comments($dbTiki);
 if (!isset($_REQUEST['comments_parentId']) && isset($_REQUEST['threadId'])) {
 	$_REQUEST['comments_parentId'] = $_REQUEST['threadId'];
 }
@@ -39,6 +40,7 @@ if (empty($forum_info)) {
 		die;
 }
 
+require_once 'lib/cache/pagecache.php';
 $pageCache = Tiki_PageCache::create()
 	->disableForRegistered()
 	->onlyForGet()
@@ -48,14 +50,14 @@ $pageCache = Tiki_PageCache::create()
 	->addKeys($_REQUEST, array( 'locale', 'forumId', 'comments_parentId' ))
 	->checkMeta(
 		'forum-page-output-meta-time', array(
-			'forumId'           => $jitRequest->forumId->int(),
-			'comments_parentId' => $jitRequest->comments_parentId->int(),
+			'forumId'           => @$_REQUEST['forumId'],
+			'comments_parentId' => @$_REQUEST['comments_parentId']
 		)
 	)
 	->applyCache();
 
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	global $categlib; include_once ('lib/categories/categlib.php');
 }
 if (!isset($_REQUEST['topics_offset'])) {
 	$_REQUEST['topics_offset'] = 0;
@@ -198,14 +200,6 @@ if (isset($_REQUEST['post_reported'])) {
 }
 $smarty->assign_by_ref('forum_info', $forum_info);
 $thread_info = $commentslib->get_comment($_REQUEST["comments_parentId"], null, $forum_info);
-
-if ($prefs['feature_score'] == 'y' && $user != $thread_info['userName']) {
-	$score_user = $_SESSION['u_info']['login'];
-	$score_id = $thread_info["threadId"];
-	$tikilib->score_event($score_user, 'forum_post_read', $_REQUEST["comments_parentId"]);
-	$tikilib->score_event($thread_info['userName'], 'forum_post_is_read', "$score_user:$score_id");
-}
-
 if (empty($thread_info)) {
 	$smarty->assign('msg', tra("Incorrect thread"));
 	$smarty->display("error.tpl");
@@ -325,7 +319,8 @@ if ($prefs['feature_actionlog'] == 'y') {
 }
 ask_ticket('view-forum');
 if ($prefs['feature_forum_parse'] == 'y') {
-	$wikilib = TikiLib::lib('wiki');
+	global $wikilib;
+	include_once ('lib/wiki/wikilib.php');
 	$plugins = $wikilib->list_plugins(true, 'editpost2');
 	$smarty->assign_by_ref('plugins', $plugins);
 }

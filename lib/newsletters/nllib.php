@@ -172,8 +172,7 @@ class NlLib extends TikiLib
 
 	public function get_all_subscribers($nlId, $genUnsub)
 	{
-		global $prefs, $user;
-		$userlib = TikiLib::lib('user');
+		global $userlib, $prefs, $user;
 		$return = array();
 		$all_users = array();
 		$group_users = array();
@@ -390,10 +389,7 @@ class NlLib extends TikiLib
 
 	public function newsletter_subscribe($nlId, $add, $isUser='n', $validateAddr='', $addEmail='')
 	{
-		global $user, $prefs;
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $tikilib, $user, $prefs, $userlib;
 		if (empty($add)) {
 			return false;
 		}
@@ -497,10 +493,7 @@ class NlLib extends TikiLib
 
 	public function confirm_subscription($code)
 	{
-		global $prefs;
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $tikilib, $prefs, $userlib;
 		$foo = parse_url($_SERVER["REQUEST_URI"]);
 		$url_subscribe = $tikilib->httpPrefix(true) . $foo["path"];
 		$query = "select * from `tiki_newsletter_subscriptions` where `code`=?";
@@ -578,10 +571,7 @@ class NlLib extends TikiLib
 
 	public function unsubscribe($code, $mailit = false)
 	{
-		global $prefs;
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $prefs, $userlib, $tikilib;
 		$foo = parse_url($_SERVER["REQUEST_URI"]);
 		$url_subscribe = $tikilib->httpPrefix(true). $foo["path"];
 		$query = "select * from `tiki_newsletter_subscriptions` where `code`=?";
@@ -972,10 +962,7 @@ class NlLib extends TikiLib
 
 	public function get_unsub_msg($nlId, $email, $lang, $code='', $user='')
 	{
-		global $prefs;
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $userlib, $tikilib, $prefs;
 		$pth = $tikilib->httpPrefix(true). substr($_SERVER["REQUEST_URI"], 0, strpos($_SERVER["REQUEST_URI"], 'tiki-'));
 		$foo = parse_url($_SERVER["REQUEST_URI"]);
 		 $smarty->assign('url', $pth);
@@ -1092,8 +1079,8 @@ class NlLib extends TikiLib
 
 	public function clip_articles($nlId)
 	{
-		$smarty = TikiLib::lib('smarty');
-		$artlib = TikiLib::lib('art');
+		global $artlib, $smarty;
+		require_once 'lib/articles/artlib.php';
 		$query = 'select `articleClipTypes`, `articleClipRange` from `tiki_newsletters` where nlId = ?';
 		$result = $this->fetchAll($query, array($nlId));
 		$articleClipTypes = unserialize($result[0]['articleClipTypes']);
@@ -1134,9 +1121,9 @@ class NlLib extends TikiLib
 
 	public function get_emails_from_page($wikiPageName)
 	{
-		global $prefs;
+		global $prefs, $wikilib;
 
-		$wikilib = TikiLib::lib('wiki');
+		include_once 'lib/wiki/wikilib.php';
 		$emails = false;
 
 		$canBeRefreshed = false;
@@ -1209,7 +1196,7 @@ class NlLib extends TikiLib
 		return $retval;
 	}
 
-	private function get_edition_mail($editionId, $target, $is_html = null)
+	private function get_edition_mail($editionId, $target)
 	{
 		global $prefs, $base_url;
 		static $mailcache = array();
@@ -1225,11 +1212,7 @@ class NlLib extends TikiLib
 			// build the html
 			$beginHtml = '<body class="tiki_newsletters"><div id="tiki-center" class="clearfix content"><div class="wikitext">';
 			$endHtml = '</div></div></body>';
-			if ($is_html === null) {
-				$is_html = $info['wysiwyg'] === 'y' && $prefs['wysiwyg_htmltowiki'] !== 'y'; // parse as html if wysiwyg and not htmltowiki
-			} else {
-				$is_html = !empty($is_html);
-			}
+			$is_html = $info['wysiwyg'] === 'y' && $prefs['wysiwyg_htmltowiki'] !== 'y';	// parse as html if wysiwyg and not htmltowiki
 			if (stristr($info['data'], '<body') === false) {
 				$html = "<html>$beginHtml" . $tikilib->parse_data(
 					$info['data'], array(
@@ -1408,7 +1391,7 @@ class NlLib extends TikiLib
 			}
 
 			try {
-				$zmail = $this->get_edition_mail($info['editionId'], $us, $info['is_html']);
+				$zmail = $this->get_edition_mail($info['editionId'], $us);
 				if (!$zmail) {
 					continue;
 				}

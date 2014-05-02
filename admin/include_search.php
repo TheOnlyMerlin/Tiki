@@ -132,7 +132,6 @@ if ($tiki_p_admin == 'y' && !empty($_REQUEST['process'])) {
 }
 
 $smarty->assign('queue_count', $queueCount);
-$smarty->assign('engine_info', $unifiedsearchlib->getEngineInfo());
 
 if ($tiki_p_admin == 'y' && isset($_REQUEST['optimize']) && $_REQUEST['optimize'] == 'now') {
 	global $unifiedsearchlib; require_once 'lib/search/searchlib-unified.php';
@@ -166,18 +165,6 @@ if ($tiki_p_admin == 'y' && !empty($_REQUEST['refresh_tracker_index_now']) && $_
 	require_once ('lib/search/refresh-functions.php');
 	refresh_index('tracker_items');
 	$smarty->assign('refresh_tracker_index_now', $_REQUEST['refresh_tracker_index_now']);
-}
-
-$lastLogItem = $unifiedsearchlib->getLastLogItem();
-if ($lastLogItem['web']) {
-	$smarty->assign('lastLogItemWeb', $lastLogItem['web']);
-} else {
-	$smarty->assign('lastLogItemWeb', tr('Unable to get info from log file.'));
-}
-if ($lastLogItem['console']) {
-	$smarty->assign('lastLogItemConsole', $lastLogItem['console']);
-} else {
-	$smarty->assign('lastLogItemConsole', tr('Unable to get info from log file.'));
 }
 
 if (isMySQLFulltextSearchSupported()) {

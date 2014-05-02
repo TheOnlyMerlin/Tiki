@@ -25,12 +25,11 @@ function module_change_category_info()
 			'id' => array(
 				'name' => tra('Category identifier'),
 				'description' => tra('Changes the root of the displayed categories from default "TOP" to the category with the given identifier.') . " " . tra('Note that the root category is not displayed.') . " " . tra('Example value: 13.') . " " . tra('Defaults to 0 (root).'),
-				'filter' => 'int',
-				'profile_reference' => 'category',
+				'filter' => 'int'
 			),
 			'notop' => array(
 				'name' => tra('No top'),
-				'description' => tra('In non-detailed view, disallow uncategorizing. Example value: 1.') . " " . tra('Not set by default.'),
+				'description' => tra('In non-detailed view, disallow uncategorizing. Example value: 1.') . " " . tra('Not set by default.')
 			),
 			'path' => array(
 				'name' => tra('Display path'),
@@ -121,8 +120,7 @@ function module_change_category($mod_reference, $module_params)
 		$categories = $categlib->getCategories($id ? array('identifier'=>$id, 'type'=>'descendants') : null);
 
 		if (!empty($module_params['group']) && $module_params['group'] == 'y') {
-			global $user;
-			$userlib = TikiLib::lib('user');
+			global $userlib, $user;
 			if (!$user) {
 				return;
 			}

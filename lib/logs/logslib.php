@@ -129,7 +129,7 @@ class LogsLib extends TikiLib
 		}
 
 		if ($logCateg) {
-			$categlib = TikiLib::lib('categ');
+			global $categlib; include_once('lib/categories/categlib.php');
 			if ($objectType == 'comment') {
 				preg_match('/type=([^&]*)/', $param, $matches);
 				$categs = $categlib->get_object_categories($matches[1], $object);
@@ -141,10 +141,6 @@ class LogsLib extends TikiLib
 	function add_action($action, $object, $objectType='wiki page', $param='', $who='', $ip='', $client='', $date='', $contributions='', $hash='')
 	{
 		global $user, $prefs;
-
-		if (is_array($param)) {
-			$param = http_build_query($param, '', '&');
-		}
 
 		if ($objectType == 'wiki page' && $action != 'Viewed') {
 			$logObject = true; // to have the tiki_my_edit, history and mod-last_modif_pages
@@ -185,7 +181,7 @@ class LogsLib extends TikiLib
 		}
 
 		if ($logCateg) {
-			$categlib = TikiLib::lib('categ');
+			global $categlib; include_once('lib/categories/categlib.php');
 			if ($objectType == 'comment') {
 				preg_match('/type=([^&]*)/', $param, $matches);
 				$categs = $categlib->get_object_categories($matches[1], $object);
@@ -205,11 +201,7 @@ class LogsLib extends TikiLib
 			'proxy_pass'
 		);
 		if ( $logObject ) {
-			if (function_exists('mb_strcut')) {
-				$param = mb_strcut($param, 0, 200);
-			} else {
-				$param = substr($param, 0, 200);
-			}
+			$param = substr($param, 0, '200');
 			if ($logCateg && count($categs) > 0) {
 				foreach ($categs as $categ) {
 					$query = "insert into `tiki_actionlog` " .
@@ -332,7 +324,7 @@ class LogsLib extends TikiLib
 						" order by `objectType` desc, `action` asc"
 						;
 		$result = $this->query($query, array($type, $action));
-
+		
 		while ($res = $result->fetchRow()) {
 			if ( $res['action'] == '%' ) {
 				$res['action'] = '*';
@@ -383,9 +375,8 @@ class LogsLib extends TikiLib
 			, $end=0, $categId='', $all=false
 			)
 	{
-		global $prefs, $section;
-		$tikilib = TikiLib::lib('tiki');
-		$contributionlib = TikiLib::lib('contribution');
+		global $prefs, $section, $tikilib, $contributionlib;
+		include_once('lib/contribution/contributionlib.php');
 
 		$bindvars = array();
 		$bindvarsU = array();
@@ -502,7 +493,7 @@ class LogsLib extends TikiLib
 			}
 
 			if ($res['objectType'] == 'comment' && empty($res['categId'])) {
-				$categlib = TikiLib::lib('categ');
+				global $categlib; include_once('lib/categories/categlib.php');
 				preg_match('/type=([^&]*)/', $res['comment'], $matches);
 				$categs = $categlib->get_object_categories($matches[1], $res['object']);
 				$i = 0;
@@ -684,7 +675,7 @@ class LogsLib extends TikiLib
 
 	function get_stat_contributions_per_group($actions, $selectedGroups)
 	{
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 		$statGroups = array();
 		foreach ($actions as $action) {
 			if (!empty($previousAction) &&
@@ -1450,7 +1441,7 @@ class LogsLib extends TikiLib
 	function insert_image($galleryId, $graph, $ext, $title, $period)
 	{
 		global $prefs, $user;
-		$imagegallib = TikiLib::lib('imagegal');
+		global $imagegallib; include_once('lib/imagegals/imagegallib.php');
 
 		$filename = $prefs['tmpDir'] . '/' . md5(rand() . time()) . '.' . $ext;
 		$graph->Stroke($filename);
@@ -1507,10 +1498,10 @@ class LogsLib extends TikiLib
 					break;
 
 				case 'article':
+					global $artlib; require_once 'lib/articles/artlib.php';
 					$action['link'] = 'tiki-read_article.php?articleId='.$action['object'];
 
 					if (!isset($articleNames)) {
-						$artlib = TikiLib::lib('art');
 						$objects = $artlib->list_articles(0, -1, 'title_asc', '', 0, 0, '');
 						$articleNames = array();
 						foreach ($objects['data'] as $object) {
@@ -1537,7 +1528,8 @@ class LogsLib extends TikiLib
 					}
 
 					if (!isset($forumNames)) {
-						$objects = TikiLib::lib('comments')->list_forums(0, -1, 'name_asc', '');
+						global $commentslib; include_once('lib/comments/commentslib.php');
+						$objects = $commentslib->list_forums(0, -1, 'name_asc', '');
 						$forumNames = array();
 						foreach ($objects['data'] as $object) {
 							$forumNames[$object['forumId']] = $object['name'];
@@ -1556,7 +1548,7 @@ class LogsLib extends TikiLib
 					}
 
 					if (!isset($imageGalleryNames)) {
-						$imagegallib = TikiLib::lib('imagegal');
+						global $imagegallib; include_once('lib/imagegals/imagegallib.php');
 						$objects = $imagegallib->list_galleries(0, -1, 'name_asc', 'admin');
 						foreach ($objects['data'] as $object) {
 							$imageGalleryNames[$object['galleryId']] = $object['name'];
@@ -1576,7 +1568,7 @@ class LogsLib extends TikiLib
 					}
 
 					if (!isset($fileGalleryNames)) {
-						$filegallib = TikiLib::lib('filegal');
+						global $filegallib; include_once('lib/filegals/filegallib.php');
 						$objects = $filegallib->list_file_galleries(0, -1, 'name_asc', 'admin', '', $prefs['fgal_root_id']);
 						foreach ($objects['data'] as $object) {
 							$fileGalleryNames[$object['galleryId']] = $object['name'];
@@ -1613,7 +1605,7 @@ class LogsLib extends TikiLib
 
 				case 'sheet':
 					if (!isset($sheetNames)) {
-						$sheetlib = TikiLib::lib('sheet');
+						global $sheetlib; include_once('lib/sheet/grid.php');
 						$objects = $sheetlib->list_sheets();
 						foreach ($objects['data'] as $object) {
 							$sheetNames[$object['sheetId']] = $object['title'];
@@ -1630,7 +1622,7 @@ class LogsLib extends TikiLib
 				case 'blog':
 
 					if (!isset($blogNames)) {
-						$bloglib = TikiLib::lib('blog');
+						global $bloglib; require_once('lib/blogs/bloglib.php');
 						$objects = $bloglib->list_blogs();
 						foreach ($objects['data'] as $object) {
 							$blogNames[$object['blogId']] = $object['title'];
@@ -1729,72 +1721,6 @@ class LogsLib extends TikiLib
 
 		return $ret;
 	}
-
-	function get_log_count($objectType, $action)
-	{
-		$query = "SELECT m.user,m.object,m.action
-			FROM tiki_actionlog AS m
-			INNER JOIN (
-			  SELECT MAX(i.lastModif) lastModif, i.user
-			  FROM tiki_actionlog i
-			  where objectType = ?
-			  GROUP BY i.user, i.object
-			) AS j ON (j.lastModif = m.lastModif AND j.user = m.user)";
-		return $this->fetchAll($query, array($objectType));
-	}
-
-	function get_bigblue_login_time($logins, $startDate, $endDate, $actions)
-	{
-		if ($endDate > $this->now) {
-			$endDate = $this->now;
-		}
-			$logTimes = array();
-
-			foreach ($logins as $login) {
-				if ($login['objectType'] == 'bigbluebutton') {
-					if ($login['action'] == 'Joined Room') {
-						if (!isset($logTimes[$login['user']][$login['object']]['starttime'])) {
-							$logTimes[$login['user']][$login['object']]['starttime'] = $login['lastModif'];
-						}
-					}
-
-					if ($login['action'] == 'Left Room') {
-						if (isset($logTimes[$login['user']][$login['object']]['starttime'])) {
-							$logTimes[$login['user']][$login['object']]['total'][] = $login['lastModif'] - $logTimes[$login['user']][$login['object']]['starttime'];
-							unset($logTimes[$login['user']][$login['object']]['starttime']);
-						}
-					}
-				}
-			}
-
-		foreach ($logTimes as $user=>$object) {
-			foreach ($object as $room=>$times) {
-				foreach ($times['total'] as $key => $time) {
-					$nbMin = floor($time/60);
-					$nbHour = floor($nbMin/60);
-					$nbDay = floor($nbHour/24);
-					$log[$user][$room][$key] = floor($time/60);
-				}
-			}
-		}
-		return $log;
-	}
-
-	function export_bbb($actionlogs)
-	{
-		foreach ($actionlogs as $user=>$room) {
-			foreach ($room as $room_name=>$values) {
-				foreach ($values as $value) {
-					$csv.= '"' . $user
-					. '","' . $room_name
-					. '","' . $value
-					.'","'
-					;
-					$csv .= "\"\n";
-				}
-			}
-		}
-		return $csv;
-	}
 }
 
+$logslib = new LogsLib;

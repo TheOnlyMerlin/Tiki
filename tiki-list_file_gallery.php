@@ -17,11 +17,12 @@ $inputConfiguration = array(
 $section = 'file_galleries';
 require_once ('tiki-setup.php');
 $access->check_feature(array('feature_file_galleries', 'feature_jquery_tooltips'));
-$filegallib = TikiLib::lib('filegal');
+include_once ('lib/filegals/filegallib.php');
 include_once ('lib/stats/statslib.php');
 
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	global $categlib;
+	include_once ('lib/categories/categlib.php');
 }
 
 if ($prefs['feature_file_galleries_templates'] == 'y') {
@@ -146,7 +147,7 @@ $smarty->assign('reindex_file_id', -1);
 $_REQUEST['view'] = isset($_REQUEST['view']) ? $_REQUEST['view'] : $gal_info['default_view'];
 
 // Execute batch actions
-if ($tiki_p_admin_file_galleries == 'y' || $tiki_p_remove_files === 'y') {
+if ($tiki_p_admin_file_galleries == 'y') {
 	if (isset($_REQUEST['delsel_x'])) {
 		check_ticket('fgal');
 		if (isset($_REQUEST['file'])) {
@@ -157,41 +158,27 @@ if ($tiki_p_admin_file_galleries == 'y' || $tiki_p_remove_files === 'y') {
 			}
 		}
 
-		if (isset($_REQUEST['subgal']) && $tiki_p_admin_file_galleries == 'y') {
+		if (isset($_REQUEST['subgal'])) {
 			foreach (array_values($_REQUEST['subgal']) as $subgal) {
-				$subgalInfo = $filegallib->get_file_gallery_info($subgal);
-				$subgalPerms = $tikilib->get_perm_object($subgal, 'file gallery', $subgalInfo, false);
-
-				if ($subgalPerms['tiki_p_admin_file_galleries'] === 'y') {
-					$filegallib->remove_file_gallery($subgal, $galleryId);
-				}
+				$filegallib->remove_file_gallery($subgal, $galleryId);
 			}
 		}
 	}
 
 	if (isset($_REQUEST['movesel'])) {
 		check_ticket('fgal');
-		$movegalInfo = $filegallib->get_file_gallery_info($_REQUEST['moveto']);
-		$movegalPerms = $tikilib->get_perm_object($_REQUEST['moveto'], 'file gallery', $movegalInfo, false);
-
-		if ($movegalPerms['tiki_p_upload_files'] === 'y') {
-			if (isset($_REQUEST['file'])) {
-				foreach (array_values($_REQUEST['file']) as $file) {
-					$filegallib->set_file_gallery($file, $_REQUEST['moveto']);
-				}
+		if (isset($_REQUEST['file'])) {
+			foreach (array_values($_REQUEST['file']) as $file) {
+				$filegallib->set_file_gallery($file, $_REQUEST['moveto']);
 			}
 		}
-		if ($tiki_p_admin_file_galleries == 'y' || $movegalPerms['tiki_p_admin_file_galleries'] === 'y') {
-			if (isset($_REQUEST['subgal'])) {
-				foreach (array_values($_REQUEST['subgal']) as $subgal) {
-					$filegallib->move_file_gallery($subgal, $_REQUEST['moveto']);
-				}
+		if (isset($_REQUEST['subgal'])) {
+			foreach (array_values($_REQUEST['subgal']) as $subgal) {
+				$filegallib->move_file_gallery($subgal, $_REQUEST['moveto']);
 			}
 		}
 	}
-}
 
-if ($tiki_p_admin_file_galleries == 'y') {
 	if (isset($_REQUEST['defaultsel_x'])) {
 		check_ticket('fgal');
 		if (!empty($_REQUEST['subgal'])) {
@@ -564,7 +551,7 @@ if (isset($_REQUEST['edit'])) {
 			$gal_info['show_path'] = $old_gal_info['show_path'];
 		}
 
-		if ($prefs['fgal_checked'] != 'y') {
+		if ($prefs['fgal_show_checked'] != 'y') {
 			$gal_info['show_checked'] = $old_gal_info['show_checked'];
 		}
 
@@ -618,7 +605,8 @@ if (!empty($_REQUEST['duplicate']) && !empty($_REQUEST['name']) && !empty($_REQU
 	);
 
 	if (isset($_REQUEST['dupCateg']) && $_REQUEST['dupCateg'] == 'on' && $prefs['feature_categories'] == 'y') {
-		$categlib = TikiLib::lib('categ');
+		global $categlib;
+		include_once ('lib/categories/categlib.php');
 		$cats = $categlib->get_object_categories('file gallery', $galleryId);
 		$catObjectId = $categlib->add_categorized_object(
 			'file gallery',
@@ -815,7 +803,8 @@ if ($prefs['feature_categories'] == 'y') {
 
 	// load categories for find
 	if ($prefs['feature_categories'] == 'y' && !isset($_REQUEST['edit_mode'])) {
-		$categlib = TikiLib::lib('categ');
+		global $categlib;
+		include_once ('lib/categories/categlib.php');
 		$categories = $categlib->getCategories();
 		$smarty->assign_by_ref('categories', $categories);
 		$smarty->assign('cat_tree', $categlib->generate_cat_tree($categories, true, $selectedCategories));
@@ -1023,13 +1012,7 @@ $smarty->assign('treeRootId', $subGalleries['parentId']);
 if ($prefs['fgal_show_explorer'] == 'y' || $prefs['fgal_show_path'] == 'y' || isset($_REQUEST['movesel_x']) || isset($_REQUEST["edit_mode"])) {
 	$gals = array();
 	foreach ($subGalleries['data'] as $gal) {
-		$gals[] = array(
-			'label' => $gal['parentName'] . ' > ' . $gal['name'],
-			'id' => $gal['id'],
-			'perms' => $gal['perms'],
-			'public' => $gal['public'],
-			'user' => $gal['user'],
-		);
+		$gals[] = array('label' => $gal['parentName'] . ' > ' . $gal['name'], 'id' => $gal['id']);
 	}
 	sort($gals);
 	$smarty->assign_by_ref('all_galleries', $gals);

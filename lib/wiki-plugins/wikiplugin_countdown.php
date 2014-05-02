@@ -136,11 +136,7 @@ function wikiplugin_countdown($data, $params)
 	$tz = $tikilib->get_display_timezone();
 	$nowobj = new DateTime(null, new DateTimeZone($tz));
 	//set then date & time
-	try {
-		$thenobj = new DateTime($enddate, new DateTimeZone($tz));
-	} catch (Exception $e) {
-		return "<span class=\"error\">{$e->getMessage()}</span>";
-	}
+	$thenobj = new DateTime($enddate, new DateTimeZone($tz));
 
 	$difference = $thenobj->getTimestamp() - $nowobj->getTimestamp();
 

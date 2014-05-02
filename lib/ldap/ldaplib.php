@@ -13,47 +13,48 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 
 class LdapLib extends TikiLib
 {
-	/**
-	 * Retrieve a specific field from a LDAP filter.
-	 *
-	 * @param str $dsn
-	 * @param str $filter
-	 * @param str $field
-	 * @param bool $all : return all records if true
-	 * @return str or array if $all = true
-	 */
-	function get_field($dsn, $filter, $field, $all = false)
-	{
-		// Force autoloading
-		if (! class_exists('ADOConnection')) {
-			return null;
-		}
-
-		// Try to connect
-		$ldaplink = ADONewConnection($dsn);
-		$return = null;
-
-		if (!$ldaplink) {
-			// Wrong DSN
-			return $return;
-		}
-
-		$ldaplink->SetFetchMode(ADODB_FETCH_ASSOC);
-		$rs = $ldaplink->Execute($filter);
-		if ($rs) {
-			while ($arr = $rs->FetchRow()) {
-				if (isset($arr[$field])) {
-					// Retrieve field
-					$return[] = $arr[$field];
-					if ( $all === false ) break;
+        /**
+         * Retrieve a specific field from a LDAP filter.
+         *
+         * @param str $dsn
+         * @param str $filter
+         * @param str $field
+         * @return str
+         */
+        function get_field($dsn, $filter, $field)
+        {
+				// Force autoloading
+				if (! class_exists('ADOConnection')) {
+					return null;
 				}
-			}
-		}
 
-		// Disconnect
-		$ldaplink->Close();
+                // Try to connect
+                $ldaplink = ADONewConnection($dsn);
+                $return = null;
 
-		return ($all ? $return : array_shift($return)) ;
-	}
+                if (!$ldaplink) {
+                        // Wrong DSN
+                        return $return;
+                }
+
+                $ldaplink->SetFetchMode(ADODB_FETCH_ASSOC);
+                $rs = $ldaplink->Execute($filter);
+
+                if ($rs) {
+                        while ($arr = $rs->FetchRow()) {
+                                if (isset($arr[$field])) {
+                                        // Retrieve field
+                                        $return = $arr[$field];
+                                        break;
+                                }
+                        }
+                }
+
+                // Disconnect
+                $ldaplink->Close();
+
+                return $return;
+        }
 }
 
+$ldaplib = new LdapLib();

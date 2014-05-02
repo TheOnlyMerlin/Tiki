@@ -24,11 +24,7 @@
 					{/if}
 				{/if}
 				<br>
-				<a class="linkmodule summary" href="{if $prefs.feature_sefurl eq 'y'}
-                                   event{$modUpcomingEvents[ix].calitemId}
-                                 {else}
-                                   tiki-calendar_edit_item.php?viewcalitemId={$modUpcomingEvents[ix].calitemId}
-                                 {/if}" title="{if $tooltip_infos neq 'n'}{$modUpcomingEvents[ix].lastModif|tiki_short_datetime}, {tr}by{/tr} {if $modUpcomingEvents[ix].user ne ''}{$modUpcomingEvents[ix].user|username}{else}{tr}Anonymous{/tr}{/if}{else}{tr}click to view{/tr}{/if}"{if $modUpcomingEvents[ix].status eq '2'} style="text-decoration: line-through;"{/if}>
+				<a class="linkmodule summary" href="tiki-calendar_edit_item.php?viewcalitemId={$modUpcomingEvents[ix].calitemId}" title="{if $tooltip_infos neq 'n'}{$modUpcomingEvents[ix].lastModif|tiki_short_datetime}, {tr}by{/tr} {if $modUpcomingEvents[ix].user ne ''}{$modUpcomingEvents[ix].user|username}{else}{tr}Anonymous{/tr}{/if}{else}{tr}click to view{/tr}{/if}"{if $modUpcomingEvents[ix].status eq '2'} style="text-decoration: line-through;"{/if}>
 					{if $maxlen > 0}{* 0 is default value for maxlen eq to 'no truncate' *}
 						{$modUpcomingEvents[ix].name|truncate:$maxlen:"...":true|escape}
 					{else}
@@ -36,7 +32,7 @@
 					{/if}
 				</a>
 				{if $showDescription eq 'y'}
-					<div class="description help-block">{$modUpcomingEvents[ix].parsed}</div>
+					<div class="description">{$modUpcomingEvents[ix].parsed}</div>
 				{/if}
 		{if $smarty.section.ix.last}
 			</td>

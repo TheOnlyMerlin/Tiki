@@ -25,7 +25,6 @@ function prefs_payment_list()
 			'type' => 'list',
 			'options' => array(
 				'paypal' => tra('PayPal'),
-				'israelpost' => tra('Israel Post Payment Module'),
 				'cclite' => tra('Cclite'),
 				'tikicredits' => tra('Tiki User Credits'),
 			),
@@ -35,36 +34,13 @@ function prefs_payment_list()
 		'payment_paypal_business' => array(
 			'name' => tra('Paypal Business ID'),
 			'description' => tra('Enable payments through paypal.'),
-			'hint' => tra('Primary email of your PayPal account'),
+			'hint' => tra('Email address'),
 			'type' => 'text',
 			'filter' => 'email',
 			'dependencies' => array( 'payment_feature' ),
 			'size' => 50,
 			'default' => '',
 		),
-
-        'payment_paypal_password' => array(
-            'name' => tra('Paypal Business Password'),
-            'description' => tra('The Paypal password associated with you PayPal Pro business account.'),
-            'hint' => tra('Primary password of your PayPal Pro business account'),
-            'type' => 'password',
-            'filter' => 'text',
-            'dependencies' => array( 'payment_feature' ),
-            'size' => 50,
-            'default' => '',
-            ''
-        ),
-
-        'payment_paypal_signature' => array(
-            'name' => tra('Paypal Business Signature'),
-            'description' => tra('Your API signature associated with your PayPal Pro business account'),
-            'hint' => tra('Your API signature associated with your PayPal Pro business account'),
-            'type' => 'text',
-            'filter' => 'text',
-            'dependencies' => array( 'payment_feature' ),
-            'size' => 50,
-            'default' => '',
-        ),
 		'payment_paypal_environment' => array(
 			'name' => tra('Paypal Environment'),
 			'description' => tra('Used to switch between the paypal sandbox, used for testing and development and the live environment.'),
@@ -113,7 +89,7 @@ function prefs_payment_list()
 		'payment_cclite_currencies' => array(
 			'name' => tra('Cclite Registry Currencies'),
 			'description' => tra('Currencies in Cclite.'),
-			'hint' => tra('Each registry in Cclite can have its own currency. Must be one per registry. (case sensitive)'),
+			'hint' => tra('Each registry in Cclite can have it\'s own currency. Must be one per registry. (case sensitive)'),
 			'type' => 'text',
 			'dependencies' => array( 'payment_feature' ),
 			'size' => 40,
@@ -229,7 +205,6 @@ function prefs_payment_list()
 			'filter' => 'digits',
 			'size' => 3,
 			'default' => '',
-			'profile_reference' => 'tracker',
 		),
 		'payment_cart_product_tracker_name' => array(
 			'name' => tra('Products Tracker Name'),
@@ -389,7 +364,6 @@ function prefs_payment_list()
 			'filter' => 'digits',
 			'size' => 3,
 			'default' => '',
-			'profile_reference' => 'tracker',
 		),
 		'payment_cart_event_tracker_name' => array(
 			'name' => tra('Events Tracker Name'),
@@ -424,7 +398,6 @@ function prefs_payment_list()
 			'filter' => 'digits',
 			'size' => 3,
 			'default' => '',
-			'profile_reference' => 'tracker',
 		),
 		'payment_cart_giftcerts' => array(
 			'name' => tra('Gift certificates'),
@@ -441,7 +414,6 @@ function prefs_payment_list()
 			'filter' => 'digits',
 			'size' => 3,
 			'default' => '',
-			'profile_reference' => 'tracker',
 		),
 		'payment_cart_giftcert_tracker_name' => array(
 			'name' => tra('Gift Certificate Tracker Name'),
@@ -465,36 +437,6 @@ function prefs_payment_list()
 			'name' => tra('Product Classes Tracker Name'),
 			'description' => tra('Name of tracker that is the Product Classes tracker'),
 			'type' => 'text',
-			'default' => '',
-		),
-		'payment_israelpost_environment' => array(
-			'name' => tra('Israel Post Payment Environment'),
-			'description' => tra('Switch between test transactions and real transactions'),
-			'type' => 'list',
-			'options' => array(
-				'https://www.israelpost.co.il/extpay.nsf/' => tr('Production'),
-				'https://test.israelpost.co.il/extpay.nsf/' => tr('Test'),
-			),
-			'default' => 'https://www.israelpost.co.il/extpay.nsf/',
-		),
-		'payment_israelpost_request_preauth' => array(
-			'name' => tra('Israel Post use pre-authorization'),
-			'description' => tra('Use the pre-authorization mechanism prior to processing the real transaction. Must match the account configuration at IsraelPost.'),
-			'type' => 'flag',
-			'default' => 'n',
-		),
-		'payment_israelpost_business_id' => array(
-			'name' => tra('Israel Post Business ID'),
-			'description' => tra('Provided by Israel Post, usually the business name.'),
-			'type' => 'text',
-			'filter' => 'text',
-			'default' => '',
-		),
-		'payment_israelpost_api_password' => array(
-			'name' => tra('Israel Post API Password'),
-			'description' => tra('Provided by Israel Post.'),
-			'type' => 'text',
-			'filter' => 'text',
 			'default' => '',
 		),
 	);

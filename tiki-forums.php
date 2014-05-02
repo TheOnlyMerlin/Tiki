@@ -17,7 +17,8 @@ $access->check_feature('feature_forums');
 $access->check_permission('tiki_p_forum_read');
 
 // This shows a list of forums everybody can use this listing
-$commentslib = TikiLib::lib('comments');
+include_once ("lib/comments/commentslib.php");
+$commentslib = new Comments($dbTiki);
 
 if (!isset($_REQUEST["sort_mode"])) {
 	$sort_mode = $prefs['forums_ordering'];

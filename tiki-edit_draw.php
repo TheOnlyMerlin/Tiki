@@ -18,7 +18,7 @@ $section = "draw";
 require_once ('tiki-setup.php');
 global $drawFullscreen, $prefs, $headerlib;
 
-$filegallib = TikiLib::lib('filegal');
+include_once ('lib/filegals/filegallib.php');
 
 $access->check_feature('feature_draw');
 $access->check_feature('feature_file_galleries');
@@ -35,9 +35,6 @@ $smarty->assign('fileId', $_REQUEST['fileId']);
 
 if ($_REQUEST['fileId'] > 0) {
 	$fileInfo = $filegallib->get_file_info($_REQUEST['fileId']);
-	if (empty($_REQUEST['galleryId'])) {
-		$_REQUEST['galleryId'] = $fileInfo['galleryId'];
-	}
 } else {
 	$fileInfo = array();
 }
@@ -63,10 +60,10 @@ if (
 	die;
 }
 
-$perms = TikiLib::lib('tiki')->get_perm_object( $gal_info['galleryId'], 'file gallery', $gal_info );
+$globalperms = Perms::get(array( 'type' => 'file gallery', 'object' => $fileInfo['galleryId'] ));
 
 //check permissions
-if ($perms['tiki_p_upload_files'] !== 'y' ) {
+if (!($globalperms->upload_files == 'y')) {
 	$smarty->assign('errortype', 401);
 	$smarty->assign('msg', tra("You do not have permission to view/edit this file"));
 	$smarty->display("error.tpl");

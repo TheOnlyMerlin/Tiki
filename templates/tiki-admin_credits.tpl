@@ -15,8 +15,7 @@
 
 {if $editing}
 <form method="post" action="tiki-admin_credits.php">
-    <div class="table-responsive">
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<td></td>
 			<td><b>{tr}Type{/tr}</b></td>
@@ -54,12 +53,10 @@
 			<td colspan="1"><input type="submit" name="save" value="{tr}Save{/tr}"><input type="hidden" name="userfilter" value="{$userfilter|escape}"></td>
 		</tr>
 	</table>
-    </div>
 </form>
 
 <h2>{tr}User Credits Expiry Summary (Plans){/tr}</h2>
-<div class="table-responsive">
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>{tr}User Plan{/tr}</th>
 		<th>{tr}Start of Latest Plan{/tr}</th>
@@ -75,7 +72,7 @@
 	</tr>
 	{/foreach}
 </table>
-</div>
+
 
 <h2>{tr}Use User Credits{/tr}</h2>
 <form method="post" action="tiki-admin_credits.php">
@@ -149,8 +146,7 @@
 <hr>
 <h1>{tr}Manage Credit Types{/tr}</h1>
 <form method="post" action="tiki-admin_credits.php">
-    <div class="table-responsive">
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<td></td>
 			<td><b>{tr}Type{/tr}</b></td>
@@ -187,7 +183,6 @@
 			<td colspan="6"><input type="submit" name="update_types" value="{tr}Save{/tr}"><input type="hidden" name="userfilter" value="{$userfilter|escape}"></td>
 		</tr>
 	</table>
-    </div>
 
 </form>
 

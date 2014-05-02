@@ -5,7 +5,7 @@
 {/remarksbox}
 
 {if !empty($msgs)}
-	<div class="alert alert-warning">
+	<div class="simplebox highlight">
 	{foreach from=$msgs item=msg}
 	{$msg}			 
 	{/foreach}
@@ -13,25 +13,20 @@
 {/if}
 
 <form method="post" action="tiki-admin.php?page=articles">
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-                <input type="submit" class="btn btn-default btn-sm" value="{tr}Change preferences{/tr}">
-            </div>
-        </div>
-    </div>
+	<div class="input_submit_container clear" style="text-align: right;">
+		<input type="submit" value="{tr}Change preferences{/tr}" />
+	</div>
 
 	{tabset name="admin_articles"}
 		{tab name="{tr}General Settings{/tr}"}
-            <h2>{tr}General Settings{/tr}</h2>
 			<input type="hidden" name="articlesprefs" />
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Activate the feature{/tr}</legend>
 				{preference name=feature_articles visible="always"}
 			</fieldset>
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Plugins{/tr}</legend>
 				{preference name=wikiplugin_articles}
 				{preference name=wikiplugin_article}
@@ -46,7 +41,6 @@
 				</legend>
 
 				{preference name=feature_submissions}
-				{preference name=article_remembers_creator}
 				{preference name=feature_cms_rankings}
 				{preference name=article_user_rating}
 				<div class="adminoptionboxchild" id="article_user_rating_childcontainer">
@@ -112,7 +106,7 @@
 						<br>
 						<em>{tr}File format: title,authorName,heading,body,lang,user{/tr}....</em>
 						<div align="center">
-							<input type="submit" class="btn btn-default btn-sm" name="import" value="{tr}Import{/tr}" />
+							<input type="submit" name="import" value="{tr}Import{/tr}" />
 						</div>
 					</div>
 				</div>
@@ -120,7 +114,6 @@
 		{/tab}
 
 		{tab name="{tr}Articles Listing{/tr}"}
-            <h2>{tr}Articles Listing{/tr}</h2>
 			<fieldset>
 				<legend>{tr}List Articles{/tr}</legend>
 				<div class="adminoptionbox">
@@ -145,7 +138,6 @@
 				{preference name=art_list_author}
 				{preference name=art_list_authorName}
 				{preference name=art_list_rating}
-				{preference name=art_list_usersRating}
 				{preference name=art_list_reads}
 				{preference name=art_list_size}
 				{preference name=art_list_img}
@@ -159,11 +151,8 @@
 			</fieldset>
 		{/tab}
 	{/tabset}
-    <br>{* I cheated. *}
-    <div class="row">
-        <div class="form-group col-lg-12 text-center">
-            <input type="submit" class="btn btn-default btn-sm" value="{tr}Change preferences{/tr}">
-        </div>
-    </div>
+	<div class="input_submit_container clear" style="text-align: center;">
+		<input type="submit" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>
 

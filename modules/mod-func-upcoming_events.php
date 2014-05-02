@@ -23,8 +23,7 @@ function module_upcoming_events_info()
 		'params' => array(
 			'calendarId' => array(
 				'name' => tra('Calendars filter'),
-				'description' => tra('If set to a list of calendar identifiers, restricts the events to those in the identified calendars. Identifiers are separated by vertical bars ("|"), commas (",") or colons (":").') . " " . tra('Example values:') . '"13", "4,7", "31:49". ' . tra('Not set by default.'),
-				'profile_reference' => 'calendar',
+				'description' => tra('If set to a list of calendar identifiers, restricts the events to those in the identified calendars. Identifiers are separated by vertical bars ("|"), commas (",") or colons (":").') . " " . tra('Example values:') . '"13", "4,7", "31:49". ' . tra('Not set by default.')
 			),
 			'maxDays' => array(
 				'name' => tra('Maximum days in the future'),

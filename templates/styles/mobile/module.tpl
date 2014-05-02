@@ -44,12 +44,12 @@
 						{capture name='name'}
 							icnmodv-{$smarty.capture.name}
 						{/capture}
-						{icon name="icnmod-"|cat:$smarty.capture.name class="flipmodimage" _id="trans" alt="[{tr}Toggle Vertically{/tr}]" _defaultdir="img"}
+						{icon name="icnmod-"|cat:$smarty.capture.name class="flipmodimage" _id="trans" alt="[{tr}Toggle Vertically{/tr}]" _defaultdir="pics"}
 					</a>
 				</span>
 			{/if}
 		{/if}
-		</h3>
+		<!--[if IE]><br class="clear" style="height: 1px !important" /><![endif]--></h3>
 	{elseif $module_notitle ne 'y'}
 		{if $module_flip eq 'y' and $prefs.javascript_enabled ne 'n'}
 			<h3 class="box-title" ondblclick="javascript:icntoggle('mod-{$smarty.capture.name}','module.png');"{if !empty($module_params.color)} style="color:{$module_params.color};"{/if}>
@@ -68,7 +68,7 @@
 				</a>
 			</span>
 		{/if}
-		</h3>
+		<!--[if IE]><br class="clear" style="height: 1px !important" /><![endif]--></h3>
 	{/if}
 		<div id="mod-{$smarty.capture.name}" style="display: {if !isset($module_display) or $module_display}block{else}none{/if};{$module_params.style}" class="clearfix box-data{if !empty($module_params.class)} {$module_params.class}{/if}">
 {else}{* mobile *}

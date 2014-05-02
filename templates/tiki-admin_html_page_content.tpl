@@ -2,11 +2,11 @@
 
 <h2>{tr}Page:{/tr} {$pageName}</h2>
 
-<div class="t_navbar btn-group">
-	{button href="tiki-admin_html_pages.php" class="btn btn-default" _text="{tr}Admin HTML pages{/tr}"}
-	{assign var='pname' value=$pageName|escape:"url" class="btn btn-default"}
-	{button href="tiki-admin_html_pages.php?pageName=$pname" class="btn btn-default" _text="{tr}Edit this page{/tr}"}
-	{button href="tiki-page.php?pageName=$pname" class="btn btn-default" _text="{tr}View page{/tr}"}
+<div class="navbar">
+	{button href="tiki-admin_html_pages.php" _text="{tr}Admin HTML pages{/tr}"}
+	{assign var='pname' value=$pageName|escape:"url"}
+	{button href="tiki-admin_html_pages.php?pageName=$pname" _text="{tr}Edit this page{/tr}"}
+	{button href="tiki-page.php?pageName=$pname" _text="{tr}View page{/tr}"}
 </div>
 
 {if $zone}
@@ -31,7 +31,7 @@
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
-				<td><input type="submit" class="btn btn-default btn-sm" name="save" value="{tr}Save{/tr}"></td>
+				<td><input type="submit" name="save" value="{tr}Save{/tr}"></td>
 			</tr>
 		</table>
 	</form>
@@ -44,7 +44,7 @@
 <form action="tiki-admin_html_page_content.php" method="post">
 	<input type="hidden" name="pageName" value="{$pageName|escape}">
 	<input type="hidden" name="zone" value="{$zone|escape}">
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th>
 				<a href="tiki-admin_html_page_content.php?pageName={$pageName|escape:"url"}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'zone_desc'}zone_asc{else}zone_desc{/if}">{tr}zone{/tr}</a>
@@ -54,9 +54,9 @@
 			</th>
 			<th>{tr}Action{/tr}</th>
 		</tr>
-
+		{cycle values="odd,even" print=false}
 		{section name=user loop=$channels}
-			<tr>
+			<tr class="{cycle}">
 				<td class="text">{$channels[user].zone}</td>
 				<td class="text">
 					{if $channels[user].type eq 'ta'}
@@ -73,7 +73,7 @@
 	</table>
 
 	<div align="center">
-		<input type="submit" class="btn btn-default btn-sm" name="editmany" value="{tr}Mass update{/tr}">
+		<input type="submit" name="editmany" value="{tr}Mass update{/tr}">
 	</div>
 </form>
 

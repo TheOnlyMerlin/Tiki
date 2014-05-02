@@ -34,7 +34,6 @@ function wikiplugin_trackerpasscode_info()
 				'description' => tra('Tracker from which to get passcode to check against'),
 				'filter' => 'text',
 				'default' => '',
-				'profile_reference' => 'tracker',
 			),
 			'fieldId' => array(
 				'required' => true,
@@ -42,7 +41,6 @@ function wikiplugin_trackerpasscode_info()
 				'description' => tra('Field ID from which to get passcode to check against'),
 				'filter' => 'text',
 				'default' => '',
-				'profile_reference' => 'tracker_field',
 			),
 			'itemId' => array(
 				'required' => true,
@@ -50,7 +48,6 @@ function wikiplugin_trackerpasscode_info()
 				'description' => tra('Item ID from which to get passcode to check against'),
 				'filter' => 'text',
 				'default' => '',
-				'profile_reference' => 'tracker_item',
 			),
 		),
 	);
@@ -79,7 +76,7 @@ function wikiplugin_trackerpasscode( $data, $params )
 		$data = substr($data, 0, strpos($data, '{ELSE}'));
 	}
 	// check code
-	$trklib = TikiLib::lib('trk');
+	global $trklib; require_once("lib/trackers/trackerlib.php");
 	$correctcode = $trklib->get_item_value($params['trackerId'], $params['itemId'], $params['fieldId']);
 	if ($_SESSION['wikiplugin_trackerpasscode'][$key] == $correctcode) {
 		return $data;

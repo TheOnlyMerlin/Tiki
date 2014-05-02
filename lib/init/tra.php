@@ -37,12 +37,10 @@ function tra($content, $lg = '', $unused = false, $args = array())
 	static $languages = array();
 
 	if ($lg == '') {
-		if (! empty($prefs['language'])) {
+		if ( $prefs['language'] ) {
 			$lang = $prefs['language'];
-		} elseif(! empty($prefs['site_language'])) {
-			$lang = $prefs['site_language'];
 		} else {
-			$lang = 'en';
+			$lang = $prefs['site_language'];
 		}
 	} else {
 		$lang = $lg;
@@ -76,25 +74,18 @@ function init_language( $lg )
 		// include mods language files if any
 		$files = glob("lang/$lg/language_*.php");
 		if (is_array($files)) {
-			global $lang_mod;
 			foreach ($files as $file) {
 				require($file);
 				$lang = array_merge($lang, $lang_mod);
 			}
 		}
 
-		$customfile = "lang/$lg/custom.php";
-		if (is_file($customfile)) {
-			if (! check_file_BOM($customfile)) {
-				include_once($customfile);
-			}
+		if (is_file("lang/$lg/custom.php")) {
+			include_once("lang/$lg/custom.php");
 		}
 
-		$customfile = "lang/$lg/$tikidomain/custom.php";
-		if (!empty($tikidomain) && is_file($customfile)) {
-			if (! check_file_BOM($customfile)) {
-				include_once($customfile);
-			}
+		if (!empty($tikidomain) && is_file("lang/$lg/$tikidomain/custom.php")) {
+			include_once("lang/$lg/$tikidomain/custom.php");
 		}
 
 		if ( isset( $prefs['lang_use_db'] ) && $prefs['lang_use_db'] == 'y' ) {
@@ -219,41 +210,5 @@ function get_collected_strings()
 {
 	global $interactive_collected_strings;
 	return $interactive_collected_strings;
-}
-
-/**
- * Checks a php file for a Byte Order Mark (BOM) and trigger error (and report error for admin)
- *
- * @param string $filename		full path of file to check
- * @param bool $try_to_fix		if file perms allow remove BOM if found
- *
- * @return bool					true if file still has a BOM
- */
-function check_file_BOM($filename, $try_to_fix = true) {
-	$BOM_found = false;
-
-	if (is_readable($filename)) {
-		$file = @fopen($filename, "r");
-		$BOM_found = (fread($file, 3) === "\xEF\xBB\xBF");
-
-		if ($try_to_fix && $BOM_found && is_writable($filename)) {
-			$content = fread($file, filesize($filename));
-			fclose($file);
-			file_put_contents($filename, $content);
-			trigger_error('File "' . $filename . '" contained a BOM which has been fixed.');
-			$BOM_found = false;
-		} else {
-			fclose($file);
-		}
-	}
-	if ($BOM_found) {
-		$message = 'Warning: File "' . $filename . '" contains a BOM which cannot be fixed. Please re-edit and save as "UTF-8 without BOM"';
-		if (Perms::get()->admin) {
-			TikiLib::lib('errorreport')->report($message);
-		}
-		trigger_error($message);
-	}
-
-	return $BOM_found;
 }
 

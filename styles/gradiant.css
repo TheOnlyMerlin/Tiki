@@ -3,7 +3,9 @@
 	No images were harmed during creation of this theme.
 	Lots of CSS3 going on here ! ;)
 */
-@import url("layout/tiki.css");
+@import url("lite/lite.css");
+@import url("layout/layout.css");
+@import url("layout/design.css");
 * {
 	vertical-align: middle !important;
 }
@@ -28,7 +30,7 @@ a:focus, a:active		{
 }
 body {
 	background: #f0f0f0;
-	font-family: 'Liberation Serif', Cambria, Georgia, serif;
+	font: 76%/1.5em 'Liberation Serif', Cambria, Georgia, serif;
 }
 a {
 	color: #333;
@@ -106,7 +108,7 @@ input.url, textarea {
 	line-height: 2em !important;
 }
 .menuLevel1 a:hover, .menuLevel1 a:focus, .menuLevel1 a:active {
-	background: rgba(0,0,0,.5);
+	background: transparent;
 	border-radius: 0;
 	color: #fff;
 	text-shadow: none;
@@ -158,7 +160,7 @@ nav ul.cssmenu_horiz.sf-shadow ul li:first-child:before {
 }
 
 /* Login pop-up */
-#top_modules .box-login_box { /* workaround for Opera; for some reason on hover it does funny dance when the tiki.css's setting bottom: 1px was applied) */
+#top_modules .box-login_box { /* workaround for Opera; for some reason on hover it does funny dance when the design.css's setting bottom: 1px was applied) */
 	bottom: auto;
 	top: 100%;
 	min-height: 2em;
@@ -303,13 +305,13 @@ tt, code, kbd, samp {
     line-height: inherit;
 }
 
-.sitelogo {
+#sitelogo {
 	display: block;
 	height: 15em;
 	position: relative;
 	padding-left: 10px;
 }
-.sitelogo a {
+#sitelogo a {
 	background: rgba(5,5,5,.05);
 	border-radius: 100em / 5em;
 	box-shadow: 0 0 .6em .4em rgba(5,5,5,.05);
@@ -320,7 +322,7 @@ tt, code, kbd, samp {
 	width: 18em;
 	height: .6em;
 }
-.sitelogo img {
+#sitelogo img {
 	position: absolute;
 	top: -13em;
 	left: -1em;
@@ -371,25 +373,25 @@ tt, code, kbd, samp {
 #editwiki_toolbar div {
 	border-radius: 0;
 }
-.sitetitle a {
-	font: normal bold 4rem "Segoe UI", "Lucida Grande", sans-serif;
+#sitetitle a {
+	font: normal bold 4em "Segoe UI", "Lucida Grande", sans-serif;
 	padding: 0 .5em;
 	-webkit-background-clip: text;
 	-moz-background-clip: text;
 	background-clip: text;
 	color: rgba(55,55,55,.5);
 	text-shadow: #fff 0 0 3em, rgba(255,255,255,.7) .2em .2em .3em, #fff 0 -.1em .5em, rgba(255,255,255,.7) -.2em 0 .3em;
-	line-height: 1.5rem;
+	line-height: 1.5em;
 	-moz-transition: all .5s ease;
 	-o-transition: all .5s ease;
 	-webkit-transition: all .5s ease;
 	transition: all .5s ease;
 }
-.sitetitle a:hover {
+#sitetitle a:hover {
 	color: #fff;
 	text-shadow: #fff 0 0 6em, rgba(255,255,255,.7) .2em .2em .6em, #fff 0 -.1em 1em, rgba(255,255,255,.7) -.2em 0 .6em;
 }
-.sitesubtitle {
+#sitesubtitle {
 	-webkit-background-clip: text;
 	-moz-background-clip: text;
 	background-clip: text;

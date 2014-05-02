@@ -14,7 +14,8 @@ function payment_behavior_cart_exchange_product( $exchangeorderitemid = 0, $exch
 		return false;
 	}
 
-	$trklib = TikiLib::lib('trk');
+	global $trklib;
+	include_once ('lib/trackers/trackerlib.php');
 
 	$orderitemsTrackerId = $prefs['payment_cart_orderitems_tracker'];
 
@@ -67,7 +68,7 @@ function payment_behavior_cart_exchange_product( $exchangeorderitemid = 0, $exch
 	$trklib->replace_item($orderitemsTrackerId, $orderItemId, $ins_fields);
 
 	// Replace inventory for original product
-	$cartlib = TikiLib::lib('cart');
+	global $cartlib; require_once 'lib/payment/cartlib.php';
 	$cartlib->change_inventory($fromproductId, $amountBought);
 
 	return true;

@@ -7,8 +7,6 @@
 
 function prefs_site_list()
 {
-    $available_layouts = TikiLib::lib('css')->list_layouts();
-
 	return array (
 		'site_closed' => array(
 			'name' => tra('Close site (except for those with permission)'),
@@ -97,7 +95,7 @@ function prefs_site_list()
 		),
 		'site_terminal_active' => array(
 			'name' => tra('Site Terminal'),
-			'description' => tra('Allows users to be directed to a specific perspective depending on the origin IP address. Can be used inside intranets to use different configurations for users depending on their departements or discriminate people in web contexts. Unspecified IPs will fall back to default behavior, including multi-domain handling. Manually selected perspectives take precedence over this.'),
+			'description' => tra('Allows to direct users to a specific perspective depending on the origin IP address. Can be used inside intranets to use different configurations for users depending on their departements or discriminate people in web contexts. Unspecified IPs will fall back to default behavior, including multi-domain handling. Manually selected perspectives take precedence over this.'),
 			'type' => 'flag',
 			'dependencies' => array(
 				'feature_perspective',
@@ -123,19 +121,6 @@ function prefs_site_list()
 			'dependencies' => array(
 				'wikiplugin_googleanalytics',
 			),
-		),
-		'site_layout' => array(
-			'name' => tr('Site Layout'),
-			'description' => tr('Changes the overall site layout templates'),
-			'type' => 'list',
-			'default' => 'classic',
-			'options' => $available_layouts,
-		),  
-		'site_layout_per_object' => array(
-			'name' => tr('Allow per-object layout'),
-			'description' => tr('Allows objects to define an alternate layout for their rendering.'),
-			'type' => 'flag',
-			'default' => 'n',
 		),
 	);
 }

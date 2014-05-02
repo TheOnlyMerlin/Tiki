@@ -10,9 +10,9 @@
 
 $section = 'wiki page';
 require_once ('tiki-setup.php');
-$tikilib = TikiLib::lib('tiki');
-$structlib = TikiLib::lib('struct');
-$wikilib = TikiLib::lib('wiki');
+global $tikilib;
+include_once ('lib/structures/structlib.php');
+include_once ('lib/wiki/wikilib.php');
 include_once ('lib/wiki-plugins/wikiplugin_slideshow.php');
 
 $access->check_feature('feature_wiki');
@@ -40,9 +40,8 @@ if (isset($_REQUEST['pdf'])) {
 	$_POST["html"] = urldecode($_POST["html"]);
 	
 	define("DOMPDF_ENABLE_REMOTE", true);
-	define('DOMPDF_ENABLE_AUTOLOAD', false);
 	
-	require_once("vendor/dompdf/dompdf/dompdf_config.inc.php");
+	require_once("vendor/jquery/jquery-s5/lib/dompdf/dompdf_config.inc.php");
 	
 	if ( isset( $_POST["html"] ) ) {
 		$dompdf = new DOMPDF();
@@ -143,8 +142,8 @@ include_once ('tiki-section_options.php');
 $headerlib->add_cssfile('vendor/jquery/jquery-s5/jquery.s5.css');
 $headerlib->add_jsfile('vendor/jquery/jquery-s5/jquery.s5.js');
 $headerlib->add_jq_onready(
-    '
-	$("#toc").remove();
+    '//slideshow corrupts s5 and is not needed in s5 at all
+	$("#toc,.cluetip-title").remove();
 	
 	window.s5Settings = (window.s5Settings ? window.s5Settings : {});
 	
@@ -167,12 +166,6 @@ $headerlib->add_jq_onready(
 		},
 		themeName: (window.s5Settings.themeName ? window.s5Settings.themeName : "default")
 	}));
-
-	if (window.s5Settings.themeName != "none") {
-		$(".s5-slide").each(function() {
-			$(this).addClass("transparent");
-		});
-	}
 	
 	$("#main").hide();
 	
@@ -187,22 +180,11 @@ $headerlib->add_jq_onready(
 					theme = (theme ? theme : "default");
 					
 					window.s5Settings.themeName = theme;
-
-					if (window.s5Settings.themeName != "none") {
-						$(".s5-slide").each(function() {
-							$(this).addClass("transparent");
-						});
-					} else {
-						$(".s5-slide").each(function() {
-							$(this).removeClass("transparent");
-						});
-					}
-
-					$.tikiModal(tr("Updating Theme..."));
+					$.modal(tr("Updating Theme..."));
 					$.get("tiki-slideshow.php", {theme: theme}, function(o) {
 						$.s5.makeTheme($.parseJSON(o));
 						
-/* Commented out: Do not modify wikiplugin when no option to opt-out!						if (window.slideshowSettings) {
+						if (window.slideshowSettings) {
 							window.slideshowSettings.theme = theme;
 							
 							$.post("tiki-wikiplugin_edit.php", {
@@ -213,13 +195,13 @@ $headerlib->add_jq_onready(
 								content: "~same~",
 								params: (window.slideshowSettings ? window.slideshowSettings : {})
 							}, function() {
-								$.tikiModal();
+								$.modal();
 								window.s5Busy = false;
 							});
-						} else {*/
-							$.tikiModal();
+						} else {
+							$.modal();
 							window.s5Busy = false;
-/*						}*/
+						}
 					}); 
 				})
 				.val(window.s5Settings.themeName);
@@ -236,20 +218,6 @@ $headerlib->add_jq_onready(
 		})
 		.change();'
 );
-// Jquery Chosen not working in slide footer.
-$headerlib->add_js('
-	if(jqueryTiki.chosen) {
-		jqueryTiki.chosen = false;
-	}
-	setTimeout(function(){
-		jQuery(".s5-slide-grid .s5-slide-left").each(function(){
-			jQuery(this).siblings(".s5-slide-right").append(jQuery(this).find("video").clone());
-		 	jQuery(this).find("video").remove();
-		 	jQuery(this).siblings(".s5-slide-right").append(jQuery(this).find("object, embed").clone());
-		 	jQuery(this).find("object, embed").remove();
-		});
-	}, 500);
-');
 
 ask_ticket('index-raw');
 

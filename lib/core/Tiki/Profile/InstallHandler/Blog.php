@@ -42,7 +42,8 @@ class Tiki_Profile_InstallHandler_Blog extends Tiki_Profile_InstallHandler
 
 	function _install()
 	{
-		$bloglib = TikiLib::lib('blog');
+		global $bloglib;
+		if ( ! $bloglib ) require_once 'lib/blogs/bloglib.php';
 
 		$data = $this->getData();
 

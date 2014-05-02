@@ -26,18 +26,17 @@ function module_last_category_objects_info()
 				'description' => tra('Identifier of the category from which objects are listed. Objects merely in child categories will not be displayed.') .
 								" " . tra('Example value: 13.'),
 				'filter' => 'int',
-				'required' => true,
-				'profile_reference' => 'category',
+				'required' => true
 			),
 			'maxlen' => array(
 				'name' => tra('Maximum length'),
 				'description' => tra('Maximum number of characters in object names allowed before truncating.'),
-				'filter' => 'int',
+				'filter' => 'int'
 			),
 			'type' => array(
 				'name' => tra('Object type filter'),
 				'description' => tra('Type of the objects to list. Example values:') . ' *, wiki page, article, faq, blog, image gallery, image, file gallery, tracker, trackerItem, quiz, poll, survey, sheet. ' . tra('Default value:') . ' wiki page',
-				'filter' => 'striptags',
+				'filter' => 'striptags'
 			)
 		),
 		'common_params' => array('rows')
@@ -50,6 +49,8 @@ function module_last_category_objects_info()
  */
 function module_last_category_objects($mod_reference, $module_params)
 {
+	global $smarty;
+
 	if (!isset($module_params['type'])) {
 		$module_params['type'] = 'wiki page';
 	}
@@ -58,8 +59,8 @@ function module_last_category_objects($mod_reference, $module_params)
 		$module_params['type'] = '';
 	}
 
-	$smarty = TikiLib::lib('smarty');
-	$categlib = TikiLib::lib('categ');
+	global $categlib;
+	require_once ('lib/categories/categlib.php');
 
 	$last = $categlib->last_category_objects($module_params['id'], $mod_reference['rows'], $module_params['type']);
 

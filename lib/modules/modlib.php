@@ -69,10 +69,10 @@ class ModLib extends TikiLib
 
 			$result = $this->query($query, array($name,$title,$data,$parse));
 
-			$cachelib = TikiLib::lib('cache');
+			global $cachelib; require_once("lib/cache/cachelib.php");
 			$cachelib->invalidate("user_modules_$name");
 
-			$wikilib = TikiLib::lib('wiki');
+			require_once("lib/wiki/wikilib.php");
 			$converter = new convertToTiki9();
 			$converter->saveObjectStatus($name, 'tiki_user_modules', 'new9.0+');
 
@@ -137,7 +137,11 @@ class ModLib extends TikiLib
 		if ($res["groups"]) {
 			$grps = unserialize($res["groups"]);
 
-			$res["module_groups"] = implode(' ', $res['groups']);
+			$res["module_groups"] = '';
+
+			foreach ($grps as $grp) {
+				$res["module_groups"] .= " $grp ";
+			}
 		}
 
 		return $res;
@@ -293,7 +297,7 @@ class ModLib extends TikiLib
 		$query = " delete from `tiki_user_modules` where `name`=?";
 		$result = $this->query($query, array($name));
 
-		$cachelib = TikiLib::lib('cache');
+		global $cachelib; require_once("lib/cache/cachelib.php");
 		$cachelib->invalidate('user_modules');
 
 		return true;
@@ -761,9 +765,6 @@ class ModLib extends TikiLib
 
 		$cachelib = TikiLib::lib('cache');
 		$cacheKey = 'module.' . $moduleName . $prefs['language'];
-		if ($prefs['mobile_feature'] === 'y') {
-			$cacheKey .=  $prefs['mobile_mode'];
-		}
 		$info = $cachelib->getSerialized($cacheKey, 'module');
 
 		if ($info) {
@@ -833,7 +834,6 @@ class ModLib extends TikiLib
 					'section' => 'visibility',
 					'separator' => ';',
 					'filter' => 'alnum',
-					'profile_reference' => 'category',
 				),
 				'nocategory' => array(
 					'name' => tra('No Category'),
@@ -841,7 +841,6 @@ class ModLib extends TikiLib
 					'section' => 'visibility',
 					'separator' => ';',
 					'filter' => 'alnum',
-					'profile_reference' => 'category',
 				),
 				'subtree' => array(
 					'name' => tra('Category subtrees'),
@@ -855,7 +854,6 @@ class ModLib extends TikiLib
 					'separator' => ';',
 					'filter' => 'digits',
 					'section' => 'visibility',
-					'profile_reference' => 'perspective',
 				),
 				'lang' => array(
 					'name' => tra('Language'),
@@ -866,7 +864,7 @@ class ModLib extends TikiLib
 				),
 				'section' => array(
 					'name' => tra('Section'),
-					'description' => tra('Module only applicable for the specified sections. Multiple values can be separated by semi-colons. Choose values from: blogs; calendar; categories; cms (for "articles"); contacts; directory; faqs; featured_links; file_galleries; forums; galleries (for "image galleries"); gmaps; html_pages; maps; mytiki; newsletters; poll; quizzes; surveys; trackers; user_messages; webmail; wiki page'),
+					'description' => tra('Module only applicable for the specified sections. Multiple values can be separated by semi-colons.'),
 					'separator' => ';',
 					'filter' => 'striptags',
 					'section' => 'visibility',
@@ -877,7 +875,6 @@ class ModLib extends TikiLib
 					'separator' => ';',
 					'filter' => 'pagename',
 					'section' => 'visibility',
-					'profile_reference' => 'wiki_page',
 				),
 				'nopage' => array(
 					'name' => tra('No Page'),
@@ -885,7 +882,6 @@ class ModLib extends TikiLib
 					'separator' => ';',
 					'filter' => 'pagename',
 					'section' => 'visibility',
-					'profile_reference' => 'wiki_page',
 				),
 				'theme' => array(
 					'name' => tra('Theme'),
@@ -1374,7 +1370,20 @@ class ModLib extends TikiLib
      */
     function get_user_module($name)
 	{
-		return $this->table('tiki_user_modules')->fetchFullRow(array('name' => $name));
+		$cachelib = TikiLib::lib('cache');
+		$cacheKey = "user_modules_$name";
+
+		if ( $cachelib->isCached($cacheKey) ) {
+			$return = unserialize($cachelib->getCached($cacheKey));
+		} else {
+			$return = $this->table('tiki_user_modules')->fetchFullRow(array('name' => $name));
+
+			if ($return) {
+				$cachelib->cacheItem($cacheKey, serialize($return));
+			}
+		}
+
+		return $return;
 	}
 
 	/**
@@ -1456,29 +1465,5 @@ class ModLib extends TikiLib
 	}
 
 }
-
-/**
- * Function made available in the template files to behave differently depending on if a zone is empty or not.
- */
-function zone_is_empty($zoneName)
-{
-	$smarty = TikiLib::lib('smarty');
-	$moduleZones = $smarty->getTemplateVars('module_zones');
-
-	$key = $zoneName . '_modules';
-	if (empty($moduleZones[$key])) {
-		return true;
-	}
-
-	foreach ($moduleZones[$key] as $module) {
-		$data = (string) (isset($module['data']) ? $module['data'] : '');
-		if (! empty($data)) {
-			return false;
-		}
-	}
-
-	return true;
-}
-
 global $modlib;
 $modlib = new ModLib;

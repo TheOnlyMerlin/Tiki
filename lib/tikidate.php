@@ -24,16 +24,16 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
  */
 class TikiDate
 {
-	public $trad = array(
+	var $trad = array(
 					'January','February','March','April','May','June','July','August','September','October','November','December',
 					'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec',
 					'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday',
 					'Mon','Tue','Wed','Thu','Fri','Sat','Sun','of'
 	);
 
-	public $translated_trad = array();
-	public $date;
-	public $translation_array = array (
+	var $translated_trad = array();
+	var $date;
+	var	$translation_array = array (
 				'%a' => 'D',
 				'%A' => 'l',
 				'%b' => 'M',
@@ -69,25 +69,28 @@ class TikiDate
 				'%W' => 'W',
 				'%y' => 'y',
 				'%Y' => 'Y',
-				'%Z' => 'T',
+				'%Z' => 'T'
 	);
 
 	/**
 	 * Default constructor
 	 */
-	function __construct()
+	function TikiDate()
 	{
 
-		if (isset($_SERVER['TZ']) && !empty($_SERVER['TZ'])) {	// apache - can be set in .htaccess
-			$tz = $_SERVER['TZ'];
-		} else if (ini_get('date.timezone')) {					// set in php.ini
-			$tz = ini_get('date.timezone');
-		} else if (getenv('TZ')) {								// system env setting
-			$tz = getenv('TZ');
-		} else {
-			$tz = 'UTC';
+		if (function_exists('date_default_timezone_set')) {			// function not available < PHP 5.1
+
+			if (isset($_SERVER['TZ']) && !empty($_SERVER['TZ'])) {	// apache - can be set in .htaccess
+				$tz = $_SERVER['TZ'];
+			} else if (ini_get('date.timezone')) {					// set in php.ini
+				$tz = ini_get('date.timezone');
+			} else if (getenv('TZ')) {								// system env setting
+				$tz = getenv('TZ');
+			} else {
+				$tz = 'UTC';
+			}
+			date_default_timezone_set($tz);
 		}
-		date_default_timezone_set($tz);
 
 		$this->date = new DateTime();	// was: DateTime(date("Y-m-d H:i:s Z"))
 										// the Z (timezone) param was causing an error
@@ -226,10 +229,6 @@ class TikiDate
      */
     function setTZbyID($tz_id)
 	{
-        global $prefs;
-        if (isset($prefs['timezone_offset']) && !empty($prefs['timezone_offset'])) {
-            $tz_id = timezone_name_from_abbr($tz_id, $prefs['timezone_offset'] * 3600);
-        }
 		$dtz = null;
 		while (!$dtz) {
 			try {
@@ -348,29 +347,14 @@ class TikiDate
 	 */
 	static function TimezoneIsValidId($id)
 	{
-		return in_array(strtolower($id), self::getTimezoneAbbreviations()) || in_array($id, self::getTimezoneIdentifiers());
-	}
-
-	static function getTimezoneAbbreviations()
-	{
-		static $abbrevs = null;
+		static $abbrevs = null, $ids = null;
 
 		if (! $abbrevs) {
-			$abbrevs = array_keys(DateTimeZone::listAbbreviations());
-		}
-
-		return $abbrevs;
-	}
-
-	static function getTimezoneIdentifiers()
-	{
-		static $ids = null;
-
-		if (! $ids) {
+			$abbrevs = DateTimeZone::listAbbreviations();
 			$ids = DateTimeZone::listIdentifiers();
 		}
 
-		return $ids;
+		return array_key_exists(strtolower($id), $abbrevs) || in_array($id, $ids);
 	}
 }
 

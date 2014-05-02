@@ -22,6 +22,11 @@
  */
 
 /**
+ * base class
+ */
+require_once 'PEAR/Command/Common.php';
+
+/**
  * PEAR commands for managing configuration data.
  *
  * @category   pear

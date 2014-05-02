@@ -7,7 +7,7 @@
 
 $section = 'blogs';
 require_once ('tiki-setup.php');
-$bloglib = TikiLib::lib('blog');
+include_once ('lib/blogs/bloglib.php');
 $access->check_feature('feature_blogs');
 
 if (!isset($_REQUEST["postId"])) {

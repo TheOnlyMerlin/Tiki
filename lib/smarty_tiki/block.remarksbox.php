@@ -52,39 +52,30 @@ function smarty_block_remarksbox($params, $content, $smarty, &$repeat)
 	} else {
 		$highlightClass = '';
 	}
-
-	switch ($type) {
-	case 'warning':
-		$class = 'alert-warning';
-		$icon = 'flash';
-		break;
-	case 'error':
-	case 'errors':
-		$class = 'alert-danger';
-		$icon = 'fire';
-		break;
-	case 'confirm':
-	case 'feedback':
-		$class = 'alert-success';
-		$icon = 'ok';
-		break;
-	default:
-		$class = 'alert-info';
-		$icon = 'info-sign';
-		break;
+	if (!isset($icon) || $icon=='') {
+		if ($type=='tip') {//get_strings tra('tip')
+			$icon='book_open';
+		} else if ($type=='comment') {//get_strings tra('comment')
+			$icon='comments';
+		} else if ($type=='warning' || $type == 'confirm') {//get_strings tra('warning') tra('confirm')
+			$icon='exclamation';
+		} else if ($type=='note') {//get_strings tra('note')
+			$icon='information';
+		} else if ($type == 'errors') {//get_strings tra('errors')
+			$icon = 'delete';
+		} else {//get_strings tra('information')
+			$icon = 'information';
+		}
 	}
 	
 	if ($prefs['javascript_enabled'] != 'y') {
 		$close = false;
-	} else {
-		$close = $close != 'n';
 	}
 	
 	$smarty->assign('remarksbox_title', $title);
 	$smarty->assign('remarksbox_type', $type);
-	$smarty->assign('remarksbox_icon', $icon);
-	$smarty->assign('remarksbox_class', $class);
 	$smarty->assign('remarksbox_highlight', $highlightClass);
+	$smarty->assign('remarksbox_icon', $icon);
 	$smarty->assign('remarksbox_close', $close);
 	$smarty->assign('remarksbox_width', $width);
 	$smarty->assignByRef('remarksbox_content', $content);

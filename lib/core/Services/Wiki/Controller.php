@@ -9,16 +9,22 @@ class Services_Wiki_Controller
 {
 	function setUp()
 	{
-		Services_Exception_Disabled::check('feature_wiki');
+		global $prefs;
+
+		if ($prefs['feature_wiki'] !== 'y') {
+			throw new Services_Exception(tr('Feature disabled'), 403);
+		}
+		if ($prefs['feature_wiki_structure'] !== 'y') {
+			throw new Services_Exception(tr('Feature disabled'), 403);
+		}
 	}
 
 	function action_save_structure($input)
 	{
-		Services_Exception_Disabled::check('feature_wiki_structure');
-
+		$rc = false;
 		$data = json_decode($input->data->text());
 		if ($data) {
-			$structlib = TikiLib::lib('struct');
+			global $structlib; include_once('lib/structures/structlib.php');
 			$structlib->reorder_structure($data);
 			$params = json_decode($input->params->text());
 
@@ -37,17 +43,5 @@ class Services_Wiki_Controller
 		return array('html' => $html);
 	}
 
-	function action_get_page($input)
-	{
-		$wikilib = TikiLib::lib('wiki');
-		$page = $input->page->text();
-		$info = $wikilib->get_page_info($page);
-		if (!$info) {
-			throw new Services_Exception_NotFound(tr('Page "%0" not found', $page));
-		}
-		$canBeRefreshed = false;
-		$data = $wikilib->get_parse($page, $canBeRefreshed);
-		return array('data' => $data);
-	}
 }
 

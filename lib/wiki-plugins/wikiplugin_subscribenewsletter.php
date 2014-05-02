@@ -22,7 +22,6 @@ function wikiplugin_subscribenewsletter_info()
 				'description' => tra('Identification number (nlId) of the Newsletter that you want to allow the users to subscribe to'),
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'newsletter',
 			),
 			'thanks' => array(
 				'required' => false,
@@ -55,10 +54,7 @@ function wikiplugin_subscribenewsletter_info()
 }
 function wikiplugin_subscribenewsletter($data, $params)
 {
-	global $prefs, $user;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $prefs, $user, $userlib, $smarty, $tikilib;
 	global $nllib; include_once('lib/newsletters/nllib.php');
 	extract($params, EXTR_SKIP);
 	if ($prefs['feature_newsletters'] != 'y') {

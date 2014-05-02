@@ -20,14 +20,8 @@ function prefs_page_list()
 			'default' => 'bottom',
 		),
 		'page_n_times_in_a_structure' => array(
-			'name' => tra('Pages can re-occur in structure'),
+			'name' => tra('page occurrence in structure'),
             'description' => tra('A page can occur multiple times in a structure'),
-			'type' => 'flag',
-			'default' => 'n',
-		),
-		'page_content_fetch' => array(
-			'name' => tra('Fetch page content from incoming feeds'),
-			'description' => tra('Page content from the source will be fetched before sending the content to the generators'),
 			'type' => 'flag',
 			'default' => 'n',
 		),

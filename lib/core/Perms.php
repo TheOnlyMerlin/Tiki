@@ -297,11 +297,6 @@ class Perms
 		$this->groups = $groups;
 	}
 
-	function getGroups()
-	{
-		return $this->groups;
-	}
-
 	function setPrefix($prefix)
 	{
 		$this->prefix = $prefix;
@@ -357,16 +352,6 @@ class Perms
 	{
 		foreach ($this->factories as $factory) {
 			$data = $factory->bulk($baseContext, $bulkKey, $data);
-		}
-	}
-
-	public function clear()
-	{
-		$this->hashes = array();
-		foreach ($this->factories as $factory) {
-			if (method_exists($factory, 'clear')) {
-				$factory->clear();
-			}
 		}
 	}
 }

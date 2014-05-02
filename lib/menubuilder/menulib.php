@@ -16,7 +16,7 @@ class MenuLib extends TikiLib
 
 	public function empty_menu_cache($menuId = 0)
 	{
-		$cachelib = TikiLib::lib('cache');
+		global $cachelib; include_once('lib/cache/cachelib.php');
 		if ( $menuId > 0 ) {
 			$cachelib->empty_type_cache('menu_'.$menuId.'_');
 		} else {
@@ -98,7 +98,7 @@ class MenuLib extends TikiLib
 	public function reset_app_menu()
 	{
 		$tiki_sql = file_get_contents('db/tiki.sql');
-		preg_match_all('/^(?:INSERT|UPDATE) (?:INTO )?`?tiki_menu_options`? .*$/mi', $tiki_sql, $matches);
+		preg_match_all('/^INSERT (?:INTO )?`tiki_menu_options` .*$/mi', $tiki_sql, $matches);
 
 		if ($matches && count($matches[0])) {
 			$menuoptions = $this->table('tiki_menu_options');
@@ -292,12 +292,12 @@ class MenuLib extends TikiLib
 			$option['url'] = preg_replace('/&structure=.*/', '', $option['url']);
 		}
 		if (preg_match('/.*tiki.index.php$/', $url)) {
-			$wikilib = TikiLib::lib('wiki');
+			global $wikilib; include_once('lib/wiki/wikilib.php');
 			$homePage = $wikilib->get_default_wiki_page();
 			$url .= "?page=$homePage";
 		}
 		if (preg_match('/.*tiki.index.php$/', $option['url'])) {
-			$wikilib = TikiLib::lib('wiki');
+			global $wikilib; include_once('lib/wiki/wikilib.php');
 			$homePage = $wikilib->get_default_wiki_page();
 			$option['url'] .= "?page=$homePage";
 		}
@@ -504,8 +504,7 @@ class MenuLib extends TikiLib
 
 	public function import_menu_options()
 	{
-		$smarty = TikiLib::lib('smarty');
-
+		global $smarty;
 		$options = array();
 		$fname = $_FILES['csvfile']['tmp_name'];
 		$fhandle = fopen($fname, "r");
@@ -590,7 +589,7 @@ class MenuLib extends TikiLib
 		return $res;
 	}
 
-	public function list_menu_options($menuId, $offset=0, $maxRecords=-1, $sort_mode='position_asc', $find='', $full=false, $level=0, $do_not_parse = false)
+	public function list_menu_options($menuId, $offset=0, $maxRecords=-1, $sort_mode='position_asc', $find='', $full=false, $level=0)
 	{
 		global $user, $tiki_p_admin, $prefs;
 		$wikilib = TikiLib::lib('wiki');
@@ -617,7 +616,7 @@ class MenuLib extends TikiLib
 		$ret = array();
 		foreach ($result as $res) {
 			$res['canonic'] = $res['url'];
-			if (!$do_not_parse && isset($menu['parse']) && $menu['parse'] === 'y') {
+			if (isset($menu['parse']) && $menu['parse'] === 'y') {
 				$res['name'] = $wikilib->parse_data($res['name'], array('is_html' => ($prefs['menus_item_names_raw'] === 'y')));
 			}
 			if (preg_match('|^\(\((.+?)\)\)$|', $res['url'], $matches)) {
@@ -762,3 +761,4 @@ class MenuLib extends TikiLib
 		}
 	}
 }
+$menulib = new MenuLib;

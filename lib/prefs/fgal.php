@@ -229,7 +229,7 @@ function prefs_fgal_list()
 		),
 		'fgal_source_refresh_frequency' => array(
 			'name' => tra('Remote source refresh frequency limit'),
-			'description' => tra('Minimum amount of seconds to be elapsed between source checks to prevent flooding servers.'),
+			'description' => tra('Minimum amount of seconds to be ellapsed between source checks to prevent flooding servers.'),
 			'type' => 'text',
 			'filter' => 'int',
 			'size' => 5,
@@ -246,7 +246,7 @@ function prefs_fgal_list()
 			'name' => tra('Allow searching for existing files in the tracker files field'),
 			'description' => tra('Search files using the search index.'),
 			'type' => 'flag',
-			'default' => 'n',
+			'default' => 'y',
 			'dependencies' => array('feature_search'),
 		),
 		'fgal_fix_mime_type' => array(
@@ -293,10 +293,9 @@ function prefs_fgal_list()
 		),
 		'fgal_elfinder_feature' => array(
 			'name' => tra('Use elFinder UI'),
-			'description' => tra('Modern file manager, with drag and drop capability'),
+			'description' => tra('Modern file manager'),
 			'type' => 'flag',
 			'default' => 'n',
-			'help' => 'elFinder',
 			'warning' => tra('Experimental'),
 			'tags' => array('experimental'),
 			'dependencies' => array('feature_jquery_ui'),

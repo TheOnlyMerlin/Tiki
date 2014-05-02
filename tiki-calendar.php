@@ -12,7 +12,7 @@ $section = 'calendar';
 require_once ('tiki-setup.php');
 
 include_once ('lib/calendar/calendarlib.php');
-$categlib = TikiLib::lib('categ');
+include_once ('lib/categories/categlib.php');
 include_once ('lib/newsletters/nllib.php');
 
 $headerlib->add_cssfile('css/calendar.css', 20);
@@ -422,7 +422,7 @@ foreach ($cell as $w=>$weeks) {
 	}
 }
 //Use 12- or 24-hour clock for times listed in day or week view based on admin and user preferences
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 $user_24hr_clock = $userprefslib->get_user_clock_pref($user);
 
 $hrows = array();
@@ -804,7 +804,8 @@ if (!empty($prefs['calendar_fullcalendar']) && $prefs['calendar_fullcalendar'] =
 	$smarty->assign('minHourOfDay', $minHourOfDay);
 	$smarty->assign('maxHourOfDay', $maxHourOfDay);
 	if ($prefs['feature_wysiwyg'] == 'y' && $prefs['wysiwyg_default'] == 'y') {
-		TikiLib::lib('wysiwyg')->setUpEditor(false, 'editwiki');		// init ckeditor if default editor
+		include_once('lib/ckeditor_tiki/wysiwyglib.php');
+		$wysiwyglib->setUpEditor(false, 'editwiki');		// init ckeditor if default editor
 	}
 }
 

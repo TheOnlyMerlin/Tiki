@@ -163,18 +163,7 @@ function smarty_function_query($params, $smarty)
 					$smarty
 				);
 			} else {
-				if ($_SERVER['PHP_SELF'] == 'tiki-ajax_services.php' && isset($_GET['controller'], $_GET['action'])) {
-					$smarty->loadPlugin('smarty_function_service');
-					$php_self = smarty_function_service(
-						array(
-							'controller' => $_GET['controller'],
-							'action' => $_GET['action'],
-						),
-						$smarty
-					);
-				} else {
-					$php_self = htmlspecialchars($_SERVER['PHP_SELF']);
-				}
+				$php_self = htmlspecialchars($_SERVER['PHP_SELF']);
 			}
 
 		} else {
@@ -183,13 +172,9 @@ function smarty_function_query($params, $smarty)
 			$params['_type'] = 'anchor';
 
 		}
-		if (!empty($php_self)) {
-			if (basename($php_self) === 'route.php') {
-				global $inclusion;
-				$php_self = str_replace('route.php', $inclusion, $php_self);
-			} else if (basename($php_self) === 'tiki-ajax_services.php' && !empty($_SERVER['HTTP_REFERER'])) {
-				$php_self = str_replace('tiki-ajax_services.php', basename($_SERVER['HTTP_REFERER']), $php_self);
-			}
+		if (isset($php_self) && basename($php_self) === 'route.php') {
+			global $inclusion;
+			$php_self = str_replace('route.php', $inclusion, $php_self);
 		}
 
 		switch ( $params['_type'] ) {

@@ -39,7 +39,8 @@ global $tikilib;
 $pluginsAlias = WikiPlugin_Negotiator_Wiki_Alias::getList();
 $pluginsReal = $parserlib->plugin_get_list(true, false);
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$cachelib = TikiLib::lib('cache');
+	global $cachelib;
+	require_once ('lib/cache/cachelib.php');
 	$areanames = array(
 		'editwiki',
 		'editpost',

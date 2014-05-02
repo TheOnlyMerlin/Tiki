@@ -9,7 +9,7 @@
 // $Id$
 
 require_once ('tiki-setup.php');
-$wikilib = TikiLib::lib('wiki');
+include_once ('lib/wiki/wikilib.php');
 $access->check_feature(array('feature_wiki', 'feature_backlinks'));
 
 // Get the page from the request var or default it to HomePage

@@ -11,13 +11,13 @@
 $section = 'admin';
 
 require_once ('tiki-setup.php');
-$adminlib = TikiLib::lib('admin');
+include_once ('lib/admin/adminlib.php');
 
 $tikifeedback = array();
 $auto_query_args = array('page');
 
 $access->check_permission('tiki_p_admin');
-$logslib = TikiLib::lib('logs');
+global $logslib; include_once('lib/logs/logslib.php');
 
 /**
  * Display feedback on prefs changed
@@ -51,10 +51,7 @@ function add_feedback( $name, $message, $st, $num = null )
  */
 function simple_set_toggle($feature)
 {
-	global $prefs;
-	$logslib = TikiLib::lib('logs');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $_REQUEST, $tikilib, $smarty, $prefs, $logslib;
 	if (isset($_REQUEST[$feature]) && $_REQUEST[$feature] == 'on') {
 		if ((!isset($prefs[$feature]) || $prefs[$feature] != 'y')) {
 			// not yet set at all or not set to y
@@ -72,7 +69,8 @@ function simple_set_toggle($feature)
 			}
 		}
 	}
-	$cachelib = TikiLib::lib('cache');
+	global $cachelib;
+	require_once ('lib/cache/cachelib.php');
 	$cachelib->invalidate('allperms');
 }
 
@@ -87,10 +85,7 @@ function simple_set_toggle($feature)
  */
 function simple_set_value($feature, $pref = '', $isMultiple = false)
 {
-	global $prefs;
-	$logslib = TikiLib::lib('logs');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $_REQUEST, $tikilib, $prefs, $logslib;
 	$old = $prefs[$feature];
 	if (isset($_REQUEST[$feature])) {
 		if ($pref != '') {
@@ -115,7 +110,8 @@ function simple_set_value($feature, $pref = '', $isMultiple = false)
 		add_feedback($feature, ($_REQUEST[$feature]) ? tr('%0 set', $feature) : tr('%0 unset', $feature), 2);
 		$logslib->add_action('feature', $feature, 'system', $old .'=>'.isset($_REQUEST['feature'])?$_REQUEST['feature']:'');
 	}
-	$cachelib = TikiLib::lib('cache');
+	global $cachelib;
+	require_once ('lib/cache/cachelib.php');
 	$cachelib->invalidate('allperms');
 }
 
@@ -128,10 +124,7 @@ function simple_set_value($feature, $pref = '', $isMultiple = false)
  */
 function simple_set_int($feature)
 {
-	global $prefs;
-	$logslib = TikiLib::lib('logs');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $_REQUEST, $tikilib, $prefs, $logslib;
 	if (isset($_REQUEST[$feature]) && is_numeric($_REQUEST[$feature])) {
 		$old = $prefs[$feature];
 		if ($old != $_REQUEST[$feature]) {
@@ -152,6 +145,7 @@ function simple_set_int($feature)
  */
 function byref_set_value($feature, $pref = '')
 {
+	global $_REQUEST, $tikilib, $smarty, $logslib;
 	simple_set_value($feature, $pref);
 }
 
@@ -163,7 +157,7 @@ $helpDescription = $description = '';
 $url = 'tiki-admin.php';
 $adminPage = '';
 
-$prefslib = TikiLib::lib('prefs');
+global $prefslib; require_once 'lib/prefslib.php';
 
 if ( isset ($_REQUEST['pref_filters']) ) {
 	$prefslib->setFilters($_REQUEST['pref_filters']);
@@ -201,7 +195,7 @@ if ( isset( $_REQUEST['lm_preference'] ) ) {
 				/* Add/Remove the plugin toolbars from the editor */
 				$toolbars = array('wikiplugin_addreference', 'wikiplugin_showreference');
 				$t_action = ($value=='y') ? 'add' : 'remove';
-				$tikilib->saveEditorToolbars($toolbars, 'global', $t_action);
+				$tikilib->saveEditorToolbars($toolbars, 'global', 'add', $t_action);
 			}
 		}
 	}
@@ -230,7 +224,6 @@ $smarty->assign('indexNeedsRebuilding', $prefslib->indexNeedsRebuilding());
 
 if (isset($_REQUEST['prefrebuild'])) {
 	$prefslib->rebuildIndex();
-	header('Location: ' . $base_url . 'tiki-admin.php');
 }
 
 $icons = array(
@@ -351,15 +344,10 @@ $icons = array(
 		'position' => '-300px -215px;',
 		'icon' => 'img/icons/large/rating.png',
 		'title' => tr('Rating'),
-		'help' => 'Rating',
+		'help' => 'Advanced+Rating',
 		'disabled' => $prefs['wiki_simple_ratings'] !== 'y' &&
-						$prefs['wiki_comments_simple_ratings'] !== 'y' &&
-						$prefs['comments_vote'] !== 'y' &&
 						$prefs['rating_advanced'] !== 'y' &&
-						$prefs['trackerfield_rating'] !== 'y' &&
-						$prefs['article_user_rating'] !== 'y' &&
-						$prefs['rating_results_detailed'] !== 'y' &&
-						$prefs['rating_smileys'] !== 'y',
+						$prefs['article_user_rating'] !== 'y',
 	),
 	"search" => array(
 		'icon' => 'img/icons/large/xfce4-appfinder.png',
@@ -469,9 +457,9 @@ $icons = array(
 	"freetags" => array(
 		'icon' => 'img/icons/large/vcard.png',
 		'position' => '-300px -415px;',
-		'title' => tr('Tags'),
+		'title' => tr('Freetags'),
 		'disabled' => $prefs['feature_freetags'] != 'y',
-		'description' => tr('Settings and features for tags'),
+		'description' => tr('Settings and features for freetags'),
 		'help' => 'Tags',
 	),
 	"faqs" => array(
@@ -489,6 +477,14 @@ $icons = array(
 		'disabled' => $prefs['feature_directory'] != 'y',
 		'description' => tr('Settings and features for directory of links'),
 		'help' => 'Directory',
+	),
+	"gmap" => array(
+		'icon' => 'img/icons/large/google_maps.png',
+		'position' => '-200px -515px;',
+		'title' => tr('Google Maps'),
+		'disabled' => $prefs['feature_gmap'] != 'y',
+		'description' => tr('Defaults and API key for Google Maps'),
+		'help' => 'gmap',
 	),
 	"copyright" => array(
 		'icon' => 'img/icons/large/copyright.png',
@@ -675,7 +671,7 @@ if ($prefs['feature_version_checks'] == 'y' || $forcecheck) {
 }
 
 if (isset($_REQUEST['lm_criteria']) && isset($_REQUEST['exact'])) {
-	$headerlib = TikiLib::lib('header');
+	global $headerlib;
 	$headerlib->add_jq_onready(
 		"$('body,html')
 			.animate({scrollTop: $('." . htmlspecialchars($_REQUEST['lm_criteria']). "')
@@ -687,16 +683,6 @@ if (isset($_REQUEST['lm_criteria']) && isset($_REQUEST['exact'])) {
 foreach ($icons as &$icon) {
 	$icon = array_merge(array( 'disabled' => false, 'description' => '', 'icon' => 'img/icons/large/green_question48x48.png'), $icon);
 }
-
-// SSL setup
-$haveMySQLSSL = $tikilib->haveMySQLSSL();
-$smarty->assign('haveMySQLSSL', $haveMySQLSSL);
-if ($haveMySQLSSL) {
-	$isSSL = $tikilib->isMySQLConnSSL();
-} else {
-	$isSSL = false;
-}
-$smarty->assign('mysqlSSL', $isSSL);
 
 $smarty->assign('icons', $icons);
 

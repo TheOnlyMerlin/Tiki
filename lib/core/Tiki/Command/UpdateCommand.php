@@ -38,15 +38,13 @@ class UpdateCommand extends Command
 			$installer->update();
 			$output->writeln('Update completed.');
 			if (count($installer->installed)) {
-				foreach ($installer->installed as $patch) {
+				foreach ($installer->installed as $patch)
 					$output->writeln("<info>Installed: $patch</info>");
-				}
 			}
 
 			if ( count($installer->executed) ) {
-				foreach ( $installer->executed as $script ) {
+				foreach ( $installer->executed as $script )
 					$output->writeln("<info>Executed: $script</info>");
-				}
 			}
 
 			$output->writeln('<info>Queries executed successfully: ' . count($installer->success) . '</info>');
@@ -63,7 +61,7 @@ class UpdateCommand extends Command
 				}
 			}
 
-			$cachelib = \TikiLib::lib('cache');
+			global $cachelib; require_once 'lib/cache/cachelib.php';
 			$cachelib->empty_cache();
 		} else {
 			$output->writeln('<error>Database not found.</error>');

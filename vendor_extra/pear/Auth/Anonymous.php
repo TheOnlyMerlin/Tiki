@@ -24,6 +24,11 @@
  */
 
 /**
+ * Include Auth package
+ */
+require_once 'Auth.php';
+
+/**
  * Anonymous Authentication
  *
  * This class provides anonymous authentication if username and password

@@ -25,29 +25,27 @@ function module_categories_info()
 			'type' => array(
 				'name' => tra('Object type filter'),
 				'description' => tra('Object type filter to apply when accessing a linked category. Example values:') . ' wiki page, article, faq, blog, image gallery, image, file gallery, tracker, trackerItem, quiz, poll, survey, sheet',
-				'filter' => 'striptags',
+				'filter' => 'striptags'
 			),
 			'deep' => array(
 				'name' => tra('Deep'),
 				'description' => tra('Show subcategories objects when accessing a linked category. Possible values: on (default), off.'),
-				'filter' => 'word',
+				'filter' => 'word'
 			),
 			'categId' => array(
 				'name' => tra('Category ID'),
 				'description' => tra('Limits displayed categories to a subtree of categories starting with the category with the given ID. Example value: 11. Default: 0 (don\'t limit display).'),
-				'filter' => 'int',
-				'profile_reference' => 'category',
+				'filter' => 'int'
 			),
 			'categParentIds' => array(
 				'name' => tra('Show these categories and their children'),
 				'description' => tra('Show only these categories and the immediate child categories of these in the order the parameter specifies. Example values: 3,5,6.'),
-				'filter' => 'striptags',
-				'profile_reference' => 'category',
+				'filter' => 'striptags'
 			),
 			'selflink' => array(
 				'name' => tra('Category links to a page named as the category'),
 				'description' => 'y|n .'.tra('If y, category links to a page named as the category'),
-				'filter' => 'alpha',
+				'filter' => 'alpha'
 			),
 		),
 	);
@@ -59,10 +57,9 @@ function module_categories_info()
  */
 function module_categories($mod_reference, &$module_params)
 {
-	global $prefs;
+	global $smarty, $prefs;
 	global $user;
-	$smarty = TikiLib::lib('smarty');
-	$categlib = TikiLib::lib('categ');
+	global $categlib; include_once ('lib/categories/categlib.php');
 	if (isset($module_params['type'])) {
 		$type = $module_params['type'];
 		$urlEnd = 'type='.urlencode($type);
@@ -70,17 +67,14 @@ function module_categories($mod_reference, &$module_params)
 		$type = '';
 		$urlEnd = '';
 	}
-	if (isset($module_params['deep'])) {
+	if (isset($module_params['deep']))
 		$deep = $module_params['deep'];
-	} else {
+	else
 		$deep= 'on';
+	if (empty($urlEnd)) {
+		$urlEnd .= '&amp;';
 	}
-	if ($deep === 'on') {
-		if (!empty($urlEnd)) {
-			$urlEnd .= '&amp;';
-		}
-		$urlEnd .= "deep=$deep";
-	}
+	$urlEnd .= "deep=$deep";
 	$name = "";
 
 
@@ -96,7 +90,6 @@ function module_categories($mod_reference, &$module_params)
 		$categId = 0;
 	}
 	if (empty($categories)) {
-		$smarty->clearAssign('tree');
 		return;
 	}
 
@@ -121,7 +114,7 @@ function module_categories($mod_reference, &$module_params)
 		if (isset($module_params['selflink']) && $module_params['selflink'] == 'y') {
 			$url = filter_out_sefurl('tiki-index.php?page=' . urlencode($cat['name']));
 		} else {
-			$url = filter_out_sefurl('tiki-browse_categories.php?parentId=' . $cat['categId'], 'category', $cat['name'], !empty($urlEnd)) .$urlEnd;
+			$url = filter_out_sefurl('tiki-browse_categories.php?parentId=' . $cat['categId'], 'category', $cat['name'], true) .$urlEnd;
 		}
 		$tree_nodes[] = array(
 			"id" => $cat["categId"],
@@ -132,7 +125,7 @@ function module_categories($mod_reference, &$module_params)
 		);
 	}
 	$res = '';
-	$tm = new BrowseTreeMaker('mod_categ' . $mod_reference['position'] . $mod_reference['ord']);
+	$tm = new BrowseTreeMaker('mod_categ' . $module_params['module_position'] . $module_params['module_ord']);
 	foreach ($categlib->findRoots($tree_nodes) as $node) {
 		$res .= $tm->make_tree($node, $tree_nodes);
 	}

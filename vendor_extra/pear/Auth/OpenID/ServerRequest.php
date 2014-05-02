@@ -15,6 +15,11 @@
  */
 
 /**
+ * Imports
+ */
+require_once "Auth/OpenID.php";
+
+/**
  * Object that holds the state of a request to the OpenID server
  *
  * With accessor functions to get at the internal request data.

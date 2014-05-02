@@ -10,7 +10,7 @@
 
 $section_class="tiki_wiki_page print";
 require_once ('tiki-setup.php');
-$wikilib = TikiLib::lib('wiki');
+include_once ('lib/wiki/wikilib.php');
 
 $access->check_feature(array('feature_wiki', 'feature_wiki_print'));
 
@@ -55,27 +55,11 @@ if ($info["flag"] == 'L') {
 } else {
 	$smarty->assign('lock', false);
 }
-if ($prefs['feature_wiki_structure'] == 'y') {
-	$structlib = TikiLib::lib('struct');
-	if (isset($_REQUEST['page_ref_id'])) {
-		// If a structure page has been requested
-		$page_ref_id = $_REQUEST['page_ref_id'];
-	} else {
-		$page_ref_id = $structlib->get_struct_ref_id($_REQUEST['page']);
-	}
-	if ($page_ref_id) {
-		$page_info = $structlib->s_get_page_info($page_ref_id);
-		$structure = 'y';
-		$structure_path = $structlib->get_structure_path($page_ref_id);
-		$smarty->assign('structure_path', $structure_path);
-		if (!empty($page_info['page_alias'])) {
-			$crumbpage = $page_info['page_alias'];
-		} else {
-			$crumbpage = $page;
-		}
-	}
+if (isset($_REQUEST['page_ref_id'])) {
+	// If a structure page has been requested
+	$page_ref_id = $_REQUEST['page_ref_id'];
 }
-$pdata = $tikilib->parse_data($info["data"], array('is_html' => $info["is_html"], 'print' => 'y', 'namespace' => $info["namespace"]));
+$pdata = $tikilib->parse_data($info["data"], array('is_html' => $info["is_html"], 'print' => 'y'));
 $smarty->assign_by_ref('parsed', $pdata);
 $smarty->assign_by_ref('lastModif', $info["lastModif"]);
 if (empty($info["user"])) {
@@ -83,7 +67,9 @@ if (empty($info["user"])) {
 }
 $smarty->assign_by_ref('lastVersion', $info["version"]);
 $smarty->assign_by_ref('lastUser', $info["user"]);
-$crumbs[] = new Breadcrumb(isset($crumbpage)?$crumbpage:$page, $info["description"], 'tiki-index.php?page=' . urlencode($page), '', '');
+if (isset($structure) && $structure == 'y' && isset($page_info['page_alias']) && $page_info['page_alias'] != '') $crumbpage = $page_info['page_alias'];
+else $crumbpage = $page;
+$crumbs[] = new Breadcrumb($crumbpage, $info["description"], 'tiki-index.php?page=' . urlencode($page), '', '');
 ask_ticket('print');
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
@@ -92,7 +78,7 @@ $creator = $wikilib->get_creator($page);
 $smarty->assign('creator', $creator);
 $smarty->assign('print_page', 'y');
 $smarty->assign('urlprefix', $base_url); // Obsolete, use base_url instead. This is for compatibility purposes only.
-$smarty->assign('mid', 'extends:layouts/internal/layout_view.tpl|tiki-show_page.tpl');
+$smarty->assign('mid', 'tiki-show_page.tpl');
 $smarty->assign('display', isset($_REQUEST['display']) ? $_REQUEST['display'] : '');
 // Allow PDF export by installing a Mod that define an appropriate function
 if (isset($_REQUEST['display']) && $_REQUEST['display'] == 'pdf') {

@@ -2,17 +2,17 @@
 {* include file for module edit form - to be called by ajax *}
 
 			
-<div class="module_selector">
-	<label for="assign_name"><strong>{tr}Module Name{/tr}</strong></label>
-	<select id="assign_name" name="assign_name">
-		<option value=""></option>
-		{foreach key=name item=info from=$all_modules_info}
-			<option value="{$name|escape}" {if $assign_name eq $name || $assign_selected eq $name}selected="selected"{/if}>{$info.name}</option>
-		{/foreach}
-	</select>
-	{if isset($assign_info)}<div class="description help-block">{$assign_info.description}{if isset($assign_info.documentation)} {help url=$assign_info.documentation}{/if}</div>{/if}
-</div>
 <div id="module_params">
+	<div class="cbox-data">
+		<label for="assign_name"><strong>{tr}Module Name{/tr}</strong></label>
+		<select id="assign_name" name="assign_name">
+			<option value=""></option>
+			{foreach key=name item=info from=$all_modules_info}
+				<option value="{$name|escape}" {if $assign_name eq $name || $assign_selected eq $name}selected="selected"{/if}>{$info.name}</option>
+			{/foreach}
+		</select>
+		{if isset($assign_info)}<div class="description">{$assign_info.description}{if isset($assign_info.documentation)} {help url=$assign_info.documentation}{/if}</div>{/if}
+	</div>
 	{if !empty($assign_name)}
 		{if isset($assign_info.type) and $assign_info.type eq 'function'}
 			<ul>
@@ -27,7 +27,7 @@
 			<div class="admin2cols adminoptionbox clearfix">
 				<label for="assign_position">{tr}Position{/tr}</label>
 				<select id="assign_position" name="assign_position">
-					{foreach from=$module_zone_list key=code item=zone}
+					{foreach from=$module_zones key=code item=zone}
 						<option value="{$code|escape}"{if $code eq $assign_position} selected="selected"{/if}>{$zone.name|escape}</option>
 					{/foreach}
 				</select>
@@ -62,13 +62,11 @@
 							<option value="{$groups[ix].groupName|escape}" {if $groups[ix].selected eq 'y'}selected="selected"{/if}>{$groups[ix].groupName|escape}</option>
 						{/section}
 					</select>
-					{if $prefs.jquery_ui_chosen ne 'y'}
-						{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use Ctrl+Click to select multiple options{/tr}{/remarksbox}
-					{/if}
+					{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use Ctrl+Click to select multiple options{/tr}{/remarksbox}
 					{if $prefs.modallgroups eq 'y'}
-						<div class="panel panel-default"><div class="panel-body">
+						<div class="simplebox">
 							{icon _id=information style="vertical-align:middle;float:left"} {tr}The{/tr} <a class="rbox-link" href="tiki-admin.php?page=module">{tr}Display Modules to All Groups{/tr}</a> {tr}setting will override your selection of specific groups.{/tr}
-						</div></div>
+						</div>
 						<br>
 					{/if}
 				</div>
@@ -90,9 +88,9 @@
 								{tr}Not displayed until a user chooses it{/tr}
 							</option>
 						</select>
-						<div class="panel panel-default"><div class="panel-body">
+						<div class="simplebox">
 							{icon _id=information style="vertical-align:middle;float:left;"}{tr}Because <a class="rbox-link" href="tiki-admin.php?page=module">Users can Configure Modules</a>, select either{/tr} &quot;{tr}Displayed now for all eligible users even with personal assigned modules{/tr}&quot; {tr}or{/tr} &quot;{tr}Displayed now, can't be unassigned{/tr}&quot; {tr}to make sure users will notice any newly assigned modules.{/tr}
-						</div></div>
+						</div>
 					</div>
 				{/if}
 			</fieldset>
@@ -115,10 +113,11 @@
 					</fieldset>
 				{/foreach}
 				{autocomplete element=".pagename" type="pagename" options="multiple: true, multipleSeparator:';'"}
+				{jq}$("#module_params").tabs();{/jq}
 			{else}
 				<div class="admin2cols adminoptionbox clearfix">
 					<div class="q1">
-						<a title="{tr}Parameters{/tr}" {popup text="{tr}Params: specific params to the module and/or general params ('lang', 'flip', 'title', 'decorations', 'section', 'overflow', 'page', 'nobox', 'bgcolor', 'color', 'theme', 'notitle', 'nopage'). Separator between params:'&amp;'. E.g. maxlen=15&amp;nonums=y.{/tr}" width=200 center=true}>
+						<a {popup text="{tr}Params: specific params to the module and/or general params ('lang', 'flip', 'title', 'decorations', 'section', 'overflow', 'page', 'nobox', 'bgcolor', 'color', 'theme', 'notitle', 'nopage'). Separator between params:'&amp;'. E.g. maxlen=15&amp;nonums=y.{/tr}" width=200 center=true}>
 							<label for="assign_params">{tr}Parameters{/tr}</label>
 						</a>
 						&nbsp;{help url="Module+Parameters" desc="{tr}Enter the parameters in URL format, e.g. 'nobox=y&class=rbox-data'{/tr}"}
@@ -129,11 +128,9 @@
 					</div>
 				</div>
 			{/if}
-                <div class="form-group clearfix">
-                    <div class="pull-right">
-			            <input type="submit" class="btn btn-default btn-sm" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;">
-			            <input type="submit" class="btn btn-default btn-sm" name="assign" value="{tr}Assign{/tr}" onclick="needToConfirm=false;">
-		            </div>
-                </div>
+		<div class="input_submit_container">
+			<input type="submit" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;">
+			<input type="submit" name="assign" value="{tr}Assign{/tr}" onclick="needToConfirm=false;">
+		</div>
 	{/if}
 </div>

@@ -119,10 +119,6 @@ class Tracker_Item
 	private function canFromSpecialPermissions($operation)
 	{
 		global $user;
-		if (! $this->definition) {
-			return false;
-		}
-
 		if ($this->definition->getConfiguration('writerCan' . $operation, 'n') == 'y' && $user && $this->owner && $user === $this->owner) {
 			return true;
 		}
@@ -375,7 +371,7 @@ class Tracker_Item
 
 	public function getViewPermission()
 	{
-		$status = isset($this->info['status']) ? $this->info['status'] : 'o';
+		$status = $this->info['status'];
 
 		if ($status == 'c') {
 			return 'view_trackers_closed';

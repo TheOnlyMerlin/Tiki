@@ -7,6 +7,11 @@
  */
 
 /**
+ * Require the base class file.
+ */
+require_once "Auth/OpenID/SQLStore.php";
+
+/**
  * An SQL store that uses MySQL as its backend.
  *
  * @package OpenID

@@ -8,6 +8,8 @@
  * http://openid.net/developers/specs/
  */
 
+require_once "Auth/OpenID/Extension.php";
+
 define('Auth_OpenID_PAPE_NS_URI',
        "http://specs.openid.net/extensions/pape/1.0");
 

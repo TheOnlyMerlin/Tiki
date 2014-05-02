@@ -15,6 +15,10 @@
  * @link       http://pear.php.net/package/Text_Wiki
  */
 
+/**
+ * "master" class for handling the management and convenience
+ */
+require_once('Text/Wiki.php');
 
 /**
  * Base Text_Wiki handler class extension for Mediawiki markup

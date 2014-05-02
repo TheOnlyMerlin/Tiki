@@ -24,13 +24,11 @@ function module_menu_info()
 				'name' => tra('Menu'),
 				'description' => tra('Identifier of a menu (from tiki-admin_menus.php)'),
 				'filter' => 'int',
-				'profile_reference' => 'menu',
 			),
 			'structureId' => array(
 				'name' => tra('Structure'),
 				'description' => tra('Identifier of a structure of wiki pages (name or number from tiki-admin_structures.php)'),
 				'filter' => 'text',
-				'profile_reference' => 'structure',
 			),
 			'type' => array(
 				'name' => tra('Type'),
@@ -91,19 +89,17 @@ function module_menu_info()
  */
 function module_menu($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	$smarty->assign('module_error', '');
 	if (empty($module_params['id']) && empty($module_params['structureId'])) {
 		$smarty->assign('module_error', tr('One of these parameters has to be set:') . ' ' . tr('Menu') . ', ' . tr('Structure') . '.');
 	}
 	if (!empty($module_params['structureId'])) {
-		$structlib = TikiLib::lib('struct');
+		global $structlib; include_once('lib/structures/structlib.php');
 
 		if (empty($module_params['title'])) {
 			$smarty->assign('tpl_module_title', $module_params['structureId']);
 		}
 	}
 	$smarty->assign('module_type', empty($module_params['css']) || $module_params['css'] === 'y' ? 'cssmenu' : 'menu');
-	$show_namespace = isset($module_params['show_namespace']) ? $module_params['show_namespace'] : 'y';
-	$smarty->assign('show_namespace',$show_namespace);
 }

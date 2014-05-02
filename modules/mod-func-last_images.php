@@ -24,12 +24,11 @@ function module_last_images_info()
 			'galleryId' => array(
 				'name' => tra('Gallery identifier'),
 				'description' => tra('If set to an image gallery identifier, restricts the images to those in the identified gallery.') . " " . tra('Example value: 13.') . " " . tra('Not set by default.'),
-				'filter' => 'int',
-				'profile_reference' => 'file_gallery',
+				'filter' => 'int'
 			),
 			'content' => array(
 				'name' => tra('Link content'),
-				'description' => tra('Display the links as image names or thumbnails.') . " " . tra('Possible values: "names" or "thumbnails". Default value: "names"'),
+				'description' => tra('Display the links as image names or thumbnails.') . " " . tra('Possible values: "names" or "thumbnails". Default value: "names"')
 			)
 		),
 		'common_params' => array('nonums', 'rows')
@@ -42,8 +41,8 @@ function module_last_images_info()
  */
 function module_last_images($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
-	$imagegallib = TikiLib::lib('imagegal');
+	global $smarty;
+	global $imagegallib; include_once ("lib/imagegals/imagegallib.php");
 	
 	$smarty->assign("content", isset($module_params["content"]) ? $module_params["content"] : "names");
 	$galleryId = isset($module_params["galleryId"]) ? $module_params["galleryId"] : -1;

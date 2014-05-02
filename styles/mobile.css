@@ -5,7 +5,9 @@
 */
  
 /* Don't import foundation CSS files. *
-@import url("layout/tiki.css");
+@import url("lite/lite.css");
+@import url("layout/layout.css");
+@import url("layout/design.css");
 * End of File */
 
 .hidden {
@@ -19,7 +21,8 @@ body {
 	font-size: 1em;
 }
 
-/* remarks boxes from tiki.css */
+/* remarks boxes from layout.css */
+/* also some from design.css */
 
 .rbox {
 	margin: 1em .3em .3em .3em;
@@ -84,18 +87,6 @@ body {
 	-moz-border-radius-bottomright: 	.6em;
 	-webkit-border-bottom-right-radius: .6em;
 	border-bottom-right-radius: 		.6em;
-}
-
-/* popups */
-
-.ui-popup {
-	padding: .5em 1em;
-}
-
-/* toolbars */
-
-.helptool-admin {
-	display: none;	/* need jquery-ui dialogs */
 }
 
 /* reduce visual clutter */
@@ -236,36 +227,4 @@ body {
 
 .thumbnailcontener {
 	float: left;
-}
-
-/* wikiplugin_convene */
-
-.conveneHeaderRow td {
-	text-align: center;
-}
-
-.conveneVotes td,
-.conveneFooterRow td,
-.conveneHeaderRow td {
-	vertical-align: middle;
-}
-
-.convene-ok {
-	background-color: #D1F3D1 !important;
-	background-image: none !important;
-	text-align: center;
-}
-.convene-no {
-	background-color: #FFCCCA !important;
-	background-image: none !important;
-	text-align: center;
-}
-.convene-no img {
-	display: none;
-}
-.convene-unconfirmed {
-	text-align: center;
-}
-.conveneFooter, .conveneHeader {
-	text-align: center;
 }

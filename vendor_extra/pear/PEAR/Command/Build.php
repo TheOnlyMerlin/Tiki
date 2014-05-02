@@ -23,6 +23,11 @@
  */
 
 /**
+ * base class
+ */
+require_once 'PEAR/Command/Common.php';
+
+/**
  * PEAR commands for building extensions.
  *
  * @category   pear
@@ -71,6 +76,7 @@ Builds one or more extensions contained in a package.'
 
     function doBuild($command, $options, $params)
     {
+        require_once 'PEAR/Builder.php';
         if (sizeof($params) < 1) {
             $params[0] = 'package.xml';
         }

@@ -24,8 +24,7 @@ if ($prefs['feature_categories'] == 'y' && isset($cat_type) && isset($cat_objid)
 	$categlib = TikiLib::lib('categ');
 
 	if ( ! isset( $cat_object_exists ) ) {
-		// article generator uses 'null' for type and id and puts the category id's in $_REQUEST
-		$cat_object_exists = ($cat_objid === 'null') ? false : (bool) $cat_objid;
+		$cat_object_exists = (bool) $cat_objid;
 	}
 
 	if ( $cat_object_exists ) {
@@ -48,8 +47,6 @@ if ($prefs['feature_categories'] == 'y' && isset($cat_type) && isset($cat_objid)
 	}
 
  	$can = $catobjperms->modify_object_categories;
-
-	$categories = Perms::filter(array('type' => 'category'), 'object', $categories, array( 'object' => 'categId' ), array('view_category'));
 
 	foreach ($categories as &$category) {
 		$catperms = Perms::get(array( 'type' => 'category', 'object' => $category['categId'] ));

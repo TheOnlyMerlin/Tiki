@@ -1,6 +1,6 @@
 <div id="{$field.ins_id|escape}_container">
 	<input type="hidden" name="{$field.ins_id|escape}[]" value="">
-	<ul class="related_items">
+	<ul>
 		{foreach from=$data.labels item=label key=id}
 			<li>{$label|escape}</li>
 		{/foreach}
@@ -12,9 +12,8 @@
 (function () {
 	var inverts = {{$field.inverts|@json_encode}};
 	var container = $('#{{$field.ins_id}}_container')[0];
-	var currents = [];
 
-	var createItem = function (id, label, highlight) {
+	var createItem = function (id, label) {
 		if (!id) {
 			return false;
 		}
@@ -37,30 +36,19 @@
 					})
 			);
 		}
-		$('ul.related_items li', container).removeClass('highlight');
 
-		if (-1 === $.inArray(id, currents)) {
-			currents.push(id);
-			$('ul.related_items', container).append(item);
-		} else if (highlight) {
-			$('ul.related_items input', container)
-				.filter(function () {
-					return id === $(this).val();
-				})
-				.closest('li')
-				.addClass('highlight');
-		}
+		$('ul', container).append(item);
 	};
 
-	$('ul.related_items', container).empty();
+	$('ul', container).empty();
 	$('textarea', container).remove();
 	var labels = {{$data.labels|@json_encode}};
 	$.each(labels, createItem);
 
-	$('ul.related_items', container).sortList();
+	$('ul', container).sortList();
 	$('.selector', container).change(function () {
-		createItem($(this).val(), $(this).data('label'), true);
-		$('ul.related_items', container).sortList();
+		createItem($(this).val(), $(this).data('label'));
+		$('ul', container).sortList();
 	});
 }());
 {/jq}

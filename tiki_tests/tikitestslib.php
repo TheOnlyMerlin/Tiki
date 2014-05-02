@@ -79,8 +79,8 @@ function test_callback($buffer)
 		}
 	}
 
-	$url = $dom->createElement('url');
-	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
+  $url = $dom->createElement('url');
+	if (!empty($_SERVER['HTTPS'])) {
 		$http = "https";
 	} else {
 		$http = "http";

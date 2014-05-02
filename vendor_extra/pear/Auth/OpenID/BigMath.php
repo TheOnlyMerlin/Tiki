@@ -16,6 +16,16 @@
  */
 
 /**
+ * Needed for random number generation
+ */
+require_once 'Auth/OpenID/CryptUtil.php';
+
+/**
+ * Need Auth_OpenID::bytes().
+ */
+require_once 'Auth/OpenID.php';
+
+/**
  * The superclass of all big-integer math implementations
  * @access private
  * @package OpenID

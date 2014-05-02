@@ -11,10 +11,13 @@
 $section = 'forums';
 require_once ('tiki-setup.php');
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	global $categlib;
+	if (!is_object($categlib)) {
+		include_once ('lib/categories/categlib.php');
+	}
 }
 if ($prefs['feature_freetags'] == 'y') {
-	$freetaglib = TikiLib::lib('freetag');
+	include_once ('lib/freetag/freetaglib.php');
 }
 
 $access->check_feature('feature_forums');
@@ -32,7 +35,9 @@ $auto_query_args = array(
 	'reply_state'
 );
 
-$commentslib = TikiLib::lib('comments');
+include_once ('lib/comments/commentslib.php');
+
+$commentslib = new Comments($dbTiki);
 
 if (!isset($_REQUEST['forumId']) || !($forum_info = $commentslib->get_forum($_REQUEST['forumId']))) {
 	$smarty->assign('errortype', 'no_redirect_login');
@@ -232,7 +237,7 @@ if (isset($_REQUEST['comments_postComment'])) {
 	// Check if the thread/topic already existis
 	$threadId = $commentslib->check_for_topic($_REQUEST['comments_title'], $_REQUEST['comments_data']);
 	// If it does, send the user there with no delay.
-	if ($threadId && count($errors) === 0) {
+	if ($threadId) {
 		// If the samely titled comment already
 		// exists, go straight to it.
 		$url = 'tiki-view_forum_thread.php?comments_parentId=' . urlencode($threadId) . '&forumId=' . urlencode($_REQUEST["forumId"]);
@@ -503,7 +508,8 @@ if ($prefs['feature_contribution'] == 'y') {
 }
 
 if ($prefs['feature_forum_parse'] == 'y') {
-	$wikilib = TikiLib::lib('wiki');
+	global $wikilib;
+	include_once ('lib/wiki/wikilib.php');
 	$plugins = $wikilib->list_plugins(true, 'editpost');
 	$smarty->assign_by_ref('plugins', $plugins);
 }

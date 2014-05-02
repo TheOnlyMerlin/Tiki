@@ -17,14 +17,13 @@ function module_tracker_input_info()
 {
 	return array(
 		'name' => tra('Tracker Input'),
-		'description' => tra('Allows a dialog to be opened to create new tracker items.'),
+		'description' => tra('Allows to open a dialog to create new tracker items.'),
 		'prefs' => array('feature_trackers'),
 		'params' => array(
 			'trackerId' => array(
 				'name' => tr('Tracker'),
 				'description' => tr('Tracker ID to render'),
 				'filter' => 'int',
-				'profile_reference' => 'tracker',
 			),
 			'textinput' => array(
 				'name' => tr('Text Input'),

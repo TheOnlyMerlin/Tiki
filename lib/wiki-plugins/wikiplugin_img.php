@@ -39,7 +39,6 @@ function wikiplugin_img_info()
 				'filter' => 'striptags',
 				'default' => '',
 				'parent' => array('name' => 'type', 'value' => 'fileId'),
-				'profile_reference' => 'file',
 			),
 			'id' => array(
 				'required' => true,
@@ -75,7 +74,6 @@ function wikiplugin_img_info()
 				'advanced' => true,
 				'default' => '',
 				'parent' => array('name' => 'type', 'value' => 'fgalId'),
-				'profile_reference' => 'file_gallery',
 			),
 			'attId' => array(
 				'required' => true,
@@ -349,27 +347,18 @@ function wikiplugin_img_info()
 			'description' => tra('Do not show draw/edit icon button under image.'),
 			'advanced' => true,
 			'options' => array(
-				array('text' => tra('None'), 'value' => ''),			
 				array('text' => tra('No'), 'value' => 'n'),
 				array('text' => tra('Yes'), 'value' => 'y'),
 			),
-			'default' => '',
+			'default' => 'n',
 		);
 	}
-
-	if ($prefs['feature_jquery_zoom'] === 'y') {
-		$info['params']['thumb']['options'][] = array('text' => tra('Overlay with zoom'), 'value' => 'zoombox', 'description' => tra('Full size image appears with zoom option in a "Colorbox" overlay when thumbnail is clicked.'));
-		$info['params']['thumb']['options'][] = array('text' => tra('Zoom'), 'value' => 'zoom', 'description' => tra('Adds a magnifying glass icon and zooms the image when hovered over.'));
-	}
-
 	return $info;
 }
 
 function wikiplugin_img( $data, $params )
 {
-	global $tikidomain, $prefs, $user;
-	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
+	global $tikidomain, $prefs, $smarty, $userlib, $user;
 
 	$imgdata = array();
 
@@ -556,7 +545,8 @@ function wikiplugin_img( $data, $params )
 		) {
 			//Try to get image from database
 			if (!empty($imgdata['id'])) {
-				$imagegallib = TikiLib::lib('imagegal');
+				global $imagegallib;
+				include_once('lib/imagegals/imagegallib.php');
 				$dbinfo = $imagegallib->get_image_info($imgdata['id'], 'o');
 				$dbinfo2 = $imagegallib->get_image($imgdata['id'], 'o');
 				$dbinfo = isset($dbinfo) && isset($dbinfo2) ? array_merge($dbinfo, $dbinfo2) : array();
@@ -570,7 +560,8 @@ function wikiplugin_img( $data, $params )
 				$basepath = $prefs['fgal_use_dir'];
 			} else {					//only attachments left
 				global $atts;
-				$wikilib = TikiLib::lib('wiki');
+				global $wikilib;
+				include_once('lib/wiki/wikilib.php');
 				$dbinfo = $wikilib->get_item_attachment($imgdata['attId']);
 				$basepath = $prefs['w_use_dir'];
 			}
@@ -1028,27 +1019,8 @@ function wikiplugin_img( $data, $params )
 				$link = $browse_full_image;
 			}
 		}
-		if (($imgdata['thumb'] == 'box' || $imgdata['thumb'] == 'zoombox') && empty($imgdata['rel'])) {
+		if ($imgdata['thumb'] == 'box' && empty($imgdata['rel'])) {
 			$imgdata['rel'] = 'box';
-		} else if ($imgdata['thumb'] == 'zoom') {
-			$imgdata['rel'] = 'zoom';
-		}
-
-		if($imgdata['thumb'] == 'zoombox') {
-			$zoomscript = "$(document).bind('cbox_complete', function(){
-								$('.cboxPhoto').wrap('<span class=\"zoom_container\" style=\"display:inline-block\"></span>')
-								.css('display', 'block')
-								.parent()
-								.zoom({
-									on: 'click'
-								});
-								$('.zoom_container').append('<div class=\"zoomIcon\"></div>');
-								$('.zoomIcon').css('position','relative').css('height','20px').css('width','90px').css('top','-20px')
-									.css('background','white').css('padding','3px').css('font-size','14px')
-									.html('Click to zoom');
-								$('#cboxLoadedContent').css('height', 'auto');
-							});";
-			TikiLib::lib('header')->add_jq_onready($zoomscript);
 		}
 		// Set other link-related attributes
 		// target
@@ -1125,7 +1097,6 @@ function wikiplugin_img( $data, $params )
 						$link_button = $browse_full_image;
 					}
 				}
-				$link_button = filter_out_sefurl($link_button);
 			} else {
 				$link_button = $link;
 			}
@@ -1240,7 +1211,7 @@ function wikiplugin_img( $data, $params )
 			$prefs['feature_draw'] == 'y' && !empty($dbinfo['galleryId']) && $imgdata['noDrawIcon'] !== 'y') {
 
 		global $tiki_p_edit;
-		$perms = TikiLib::lib('tiki')->get_perm_object( $imgdata['fileId'], 'file', $dbinfo );
+		$globalperms = Perms::get(array( 'type' => 'file gallery', 'object' => $dbinfo['galleryId'] ));
 		if ($imgdata['fromItemId']) {
 			if ($imgdata['checkItemPerms'] !== 'n') {
 				$perms_Accessor = Perms::get(array('type' => 'tracker item', 'object' => $imgdata['fromItemId']));
@@ -1252,7 +1223,7 @@ function wikiplugin_img( $data, $params )
 			$trackerItemPerms = false;
 		}
 
-		if ($perms['tiki_p_upload_files'] === 'y' &&
+		if ($globalperms->upload_files == 'y' &&
 			(empty($src) == true || $srcIsEditable == true) &&
 			($tiki_p_edit == 'y' || $trackerItemPerms)) {
 

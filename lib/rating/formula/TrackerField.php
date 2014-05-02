@@ -36,11 +36,6 @@ class Tiki_Formula_Function_TrackerField extends Math_Formula_Function
 			return $default;
 		}
 
-		return $this->fetchValue($object, $field, $default);
-	}
-
-	protected function fetchValue($object, $field, $default)
-	{
 		$trklib = TikiLib::lib('trk');
 		$item = $trklib->get_tracker_item($object);
 
@@ -62,7 +57,7 @@ class Tiki_Formula_Function_TrackerField extends Math_Formula_Function
 			return $default;
 		}
 
-		return $item[$fieldId];
+		return (float) $item[$fieldId];
 	}
 }
 

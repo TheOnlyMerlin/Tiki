@@ -129,7 +129,8 @@ input[type="submit"],
 button:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover,
-.button input:hover
+.button input:hover,
+.calbuttonBox:hover,
 .daterow:hover {
 	background: url(matrix/ltgreen.png);
 	border: 1px solid #676767;
@@ -644,6 +645,14 @@ td.calheadhighlight {
 .caltable .odd:hover,
 .caltable .even:hover {
 	border: 1px outset #00ff00 !important;
+}
+
+.opaque {
+	background: #000;
+}
+
+.opaque span.box-title {
+	color: #00a000;
 }
 
 .focus a,

@@ -26,22 +26,13 @@ class Tracker_Field_Url extends Tracker_Field_Abstract implements Tracker_Field_
 					'linkToURL' => array(
 						'name' => tr('Display'),
 						'description' => tr('How the URL should be rendered'),
-						'filter' => 'int',
+                                                'filter' => 'int',
 						'options' => array(
 							0 => tr('URL as link'),
 							1 => tr('Plain text'),
 							2 => tr('Site title as link'),
 							3 => tr('URL as link plus site title'),
-							4 => tr('Text as link (see Other)'),
 						),
-						'legacy_index' => 0,
-						'default' => 0,
-					),
-					'other' => array(
-						'name' => tr('Other'),
-						'description' => tr('Label of the link text. Requires "Display" to be set to "Text as link"'),
-						'filter' => 'text',
-						'default' => '',
 					),
 				),
 			),
@@ -65,9 +56,9 @@ class Tracker_Field_Url extends Tracker_Field_Abstract implements Tracker_Field_
 
 		$url = $this->getConfiguration('value');
 
-		if (empty($url) || $context['list_mode'] == 'csv' || $this->getOption('linkToURL') == 1 ) {
+		if (empty($url) || $context['list_mode'] == 'csv' || $this->getOption(0) == 1 ) {
 			return $url;
-		} elseif ($this->getOption('linkToURL') == 2) { // Site title as link
+		} elseif ($this->getOption(0) == 2) { // Site title as link
 			$smarty->loadPlugin('smarty_function_object_link');
 			return smarty_function_object_link(
 				array(
@@ -76,7 +67,7 @@ class Tracker_Field_Url extends Tracker_Field_Abstract implements Tracker_Field_
 				),
 				$smarty
 			);
-		} elseif ($this->getOption('linkToURL') == 0) { // URL as link
+		} elseif (!$this->getOption(0)) { // URL as link
 			$parsedUrl = trim(str_replace('<br />', '', TikiLib::lib('tiki')->parse_data($url)));
 			if ($parsedUrl != $url) {
 				return $parsedUrl;
@@ -90,22 +81,12 @@ class Tracker_Field_Url extends Tracker_Field_Abstract implements Tracker_Field_
 				),
 				$smarty
 			);
-		} elseif ($this->getOption('linkToURL') == 3) { // URL + site title
+		} elseif ($this->getOption(0) == 3) { // URL + site title
 			$smarty->loadPlugin('smarty_function_object_link');
 			return smarty_function_object_link(
 				array(
 					'type' => 'external_extended',
 					'id' => $url,
-				),
-				$smarty
-			);
-		} elseif ($this->getOption('linkToURL') == 4) { // URL as link
-			$smarty->loadPlugin('smarty_function_object_link');
-			return smarty_function_object_link(
-				array(
-					'type' => 'external',
-					'id' => $url,
-					'title' => tr($this->getOption('other')),
 				),
 				$smarty
 			);

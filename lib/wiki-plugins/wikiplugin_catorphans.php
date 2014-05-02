@@ -42,12 +42,9 @@ function wikiplugin_catorphans_info()
 
 function wikiplugin_catorphans($data, $params)
 {
-	global $prefs;
+	global $dbTiki, $smarty, $tikilib, $prefs, $access;
 	$access->check_feature('feature_categories');
-	$access = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
-	$categlib = TikiLib::lib('categ');
+	global $categlib; require_once ('lib/categories/categlib.php');
 
 	$default = array('offset'=>0, 'max'=>$prefs['maxRecords'], 'objects'=>'wiki');
 	$params = array_merge($default, $params);

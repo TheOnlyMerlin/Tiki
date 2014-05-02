@@ -17,6 +17,10 @@
 /**
 * Includes
 */
+require_once 'PEAR.php';
+require_once 'Net/LDAP2.php';
+require_once 'Net/LDAP2/Entry.php';
+require_once 'Net/LDAP2/Util.php';
 
 /**
 * LDIF capabilitys for Net_LDAP2, closely taken from PERLs Net::LDAP

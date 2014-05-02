@@ -33,7 +33,6 @@ class Services_Tracker_TodoController
 		$trklib = TikiLib::lib('trk');
 
 		return array(
-			'title' => tr('Events'),
 			'trackerId' => $trackerId,
 			'todos' => $todolib->listTodoObject('tracker', $trackerId),
 			'statusTypes' => $trklib->status_types(),

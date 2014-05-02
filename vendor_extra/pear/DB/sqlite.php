@@ -26,6 +26,11 @@
  */
 
 /**
+ * Obtain the DB_common class so it can be extended from
+ */
+require_once 'DB/common.php';
+
+/**
  * The methods PEAR DB uses to interact with PHP's sqlite extension
  * for interacting with SQLite databases
  *

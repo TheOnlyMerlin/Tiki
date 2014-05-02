@@ -34,7 +34,6 @@ class Services_Comment_Controller
 		$this->markEditable($comments['data']);
 
 		return array(
-			'title' => tr('Comments'),
 			'comments' => $comments['data'],
 			'type' => $type,
 			'objectId' => $objectId,
@@ -142,7 +141,7 @@ class Services_Comment_Controller
 					$title,
 					$data,
 					$message_id,
-					isset($parent['message_id']) ? $parent['message_id'] : '',
+					$parent ? $parent['message_id'] : '',
 					'n',
 					'',
 					'',
@@ -403,7 +402,7 @@ class Services_Comment_Controller
 		return true;
 	}
 
-	public function canPost($type, $objectId)
+	private function canPost($type, $objectId)
 	{
 		global $prefs;
 
@@ -419,7 +418,7 @@ class Services_Comment_Controller
 		return true;
 	}
 
-	public function isEnabled($type, $objectId)
+	private function isEnabled($type, $objectId)
 	{
 		global $prefs;
 
@@ -451,8 +450,6 @@ class Services_Comment_Controller
 			return true;
 		case 'article':
 			return $prefs['feature_article_comments'] == 'y';
-		case 'activity':
-			return $prefs['activity_basic_events'] == 'y' || $prefs['activity_custom_events'] == 'y' || $prefs['monitor_enabled'] == 'y';
 		default:
 			return false;
 		}

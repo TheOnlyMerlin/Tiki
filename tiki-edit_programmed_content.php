@@ -36,7 +36,7 @@ if (isset($_REQUEST["remove"])) {
 $smarty->assign('data', '');
 $smarty->assign('publishDate', $tikilib->now);
 //Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 $smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
 
 $smarty->assign('actual', '');

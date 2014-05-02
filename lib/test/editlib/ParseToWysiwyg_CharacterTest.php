@@ -10,6 +10,8 @@
  *
  */
 
+require_once 'lib/wiki/editlib.php';
+
 class EditLib_ParseToWysiwyg_CharacterTest extends TikiTestCase
 {
 	private $el = null; // the EditLib
@@ -24,7 +26,6 @@ class EditLib_ParseToWysiwyg_CharacterTest extends TikiTestCase
 	{
 		$_SERVER['HTTP_HOST'] = ''; // editlib expects that HTTP_HOST is defined
 
-		require_once 'lib/wiki/editlib.php';
 		$this->el = new EditLib();
 		chdir($this->dir);
 		chdir('../../'); // the tiki installation directory

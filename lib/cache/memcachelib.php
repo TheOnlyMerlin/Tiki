@@ -28,32 +28,12 @@ class Memcachelib
 	 */
 	function Memcachelib($memcached_servers=FALSE, $memcached_options=FALSE)
 	{
-		global $prefs, $tikidomainslash;
-
-		if ($memcached_servers === false && $memcached_options === false) {
-			if ( is_array($prefs['memcache_servers']) ) {
-				$memcached_servers = $prefs['memcache_servers'];
-			} else {
-				$memcached_servers = unserialize($prefs['memcache_servers']);
-			}
-
-			$memcached_options = array(
-				'enabled' => true,
-				'expiration' => (int) $prefs['memcache_expiration'],
-				'key_prefix' => $prefs['memcache_prefix'],
-				'compress' => $prefs['memcache_compress'],
-			);
-		}
-
-		$localphp = "db/{$tikidomainslash}local.php";
-
-		if (is_readable($localphp)) {
-			// Should be defined by unserializing $prefs['memcache_options']
-			// and $prefs['memcache_servers']. Currently happens in
-			// /webroot/tiki-setup_base.php
-			// preferences are overwritten in local.php (if defined)
-			require($localphp);
-		}
+		global $tikidomainslash;
+		// Should be defined by unserializing $prefs['memcache_options']
+		// and $prefs['memcache_servers']. Currently happens in
+		// /webroot/tiki-setup_base.php
+		// preferences are overwritten in local.php (if defined)
+		require("db/{$tikidomainslash}local.php");
 
 		if (!$memcached_servers || (!empty($memcached_options) && !$memcached_options['enabled']) || ! class_exists('Memcache') ) {
 			$this->memcache = FALSE;
@@ -113,7 +93,7 @@ class Memcachelib
 	function isEnabled()
 	{
 		global $prefs;
-		if ( isset($prefs['memcache_enabled']) && $prefs['memcache_enabled'] == 'y' ) {
+		if ( $prefs['memcache_enabled'] == 'y' ) {
 			return $this->memcache && $this->getOption('enabled', FALSE);
 		} else {
 			return false;
@@ -239,3 +219,19 @@ class Memcachelib
 	}
 }
 
+global $prefs, $memcachelib;
+
+if ( is_array($prefs['memcache_servers']) ) {
+	$servers = $prefs['memcache_servers'];
+} else {
+	$servers = unserialize($prefs['memcache_servers']);
+}
+
+$memcachelib = new Memcachelib(
+	$servers, array(
+		'enabled' => true,
+		'expiration' => (int) $prefs['memcache_expiration'],
+		'key_prefix' => $prefs['memcache_prefix'],
+		'compress' => $prefs['memcache_compress'],
+	)
+);

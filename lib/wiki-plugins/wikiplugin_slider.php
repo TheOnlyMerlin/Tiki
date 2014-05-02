@@ -33,7 +33,7 @@ function wikiplugin_slider_info()
 			'height' => array(
 				'required' => false,
 				'name' => tra('Height'),
-				'description' => tra('Height in pixels or percentage. Default value is complete slider height. if expand parameter set to y, then don\'t use percent only use pixels '),
+				'description' => tra('Height in pixels or percentage. Default value is complete slider height.'),
 				'filter' => 'striptags',
 				'accepted' => 'Number of pixels followed by \'px\' or percent followed by % (e.g. "200px" or "100%").',
 				'default' => 'Slider height',
@@ -43,32 +43,21 @@ function wikiplugin_slider_info()
 				'name' => tra('Theme'),
 				'description' => tra('The theme to use in slider.'),
 				'filter' => 'striptags',
-				'accepted' => 'Name of the theme you want to use',
+				'accepted' => 'name of the theme you want to use',
 				'default' => 'default',
 				'options' => array(
 					array('text' => 'default', 'value' => ''),
 					array('text' => 'construction', 'value' => 'construction'),
-					array('text' => 'cs-portfolio', 'value' => 'cs-portfolio'),
-					array('text' => 'default1', 'value' => 'default1'),
-					array('text' => 'default2', 'value' => 'default2'),
+					array('text' => 'portfolio', 'value' => 'portfolio'),
 					array('text' => 'metallic', 'value' => 'metallic'),
-					array('text' => 'mini-dark', 'value' => 'mini-dark'),
-					array('text' => 'mini-light', 'value' => 'mini-light'),
 					array('text' => 'minimalist-round', 'value' => 'minimalist-round'),
-					array('text' => 'minimalist-square', 'value' => 'minimalist-square'),
-					array('text' => 'office', 'value' => 'office'),
-					array('text' => 'polished', 'value' => 'polished'),
-					array('text' => 'ribbon', 'value' => 'ribbon'),
-					array('text' => 'shiny', 'value' => 'shiny'),
-					array('text' => 'simple', 'value' => 'simple'),
-					array('text' => 'tabs-dark', 'value' => 'tabs-dark'),
-					array('text' => 'tabs-light', 'value' => 'tabs-light')
+					array('text' => 'minimalist-square', 'value' => 'minimalist-square')
 				)
 			),
 			'expand' => array(
 				'required' => false,
 				'name' => tra('Expand'),
-				'description' => tra('if y, the entire slider will expand to fit the parent element and height parameter should not be empty'),
+				'description' => tra('if y, the entire slider will expand to fit the parent element'),
 				'filter' => 'alpha',
 				'accepted' => 'y or n',
 				'default' => 'n',
@@ -323,20 +312,6 @@ function wikiplugin_slider_info()
 				'accepted' => 'a number',
 				'default' => '600',
 			),
-			'hashtags' => array(
-				'required' => false,
-				'name' => tra('Display panel hashtag'),
-				'description' => tra('if y, each panel has a hashtag that will appear in the page URL, allowing you to link to a specific panel.'),
-				'filter' => 'alpha',
-				'accepted' => 'y or n',
-				'default' => 'y',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				)
-			),
-
 		),
 	);
 }
@@ -356,36 +331,14 @@ function wikiplugin_slider($data, $params)
 	$headerlib->add_cssfile('vendor/jquery/plugins/anythingslider/css/theme-metallic.css');
 	$headerlib->add_cssfile('vendor/jquery/plugins/anythingslider/css/theme-minimalist-round.css');
 	$headerlib->add_cssfile('vendor/jquery/plugins/anythingslider/css/theme-minimalist-square.css');
-	$headerlib->add_cssfile('vendor_extra/anythingslider-themes/css/theme-default1.css');
-	$headerlib->add_cssfile('vendor_extra/anythingslider-themes/css/theme-default2.css');
-	$headerlib->add_cssfile('vendor_extra/anythingslider-themes/css/theme-mini-dark.css');
-	$headerlib->add_cssfile('vendor_extra/anythingslider-themes/css/theme-mini-light.css');
-	$headerlib->add_cssfile('vendor_extra/anythingslider-themes/css/theme-office.css');
-	$headerlib->add_cssfile('vendor_extra/anythingslider-themes/css/theme-polished.css');
-	$headerlib->add_cssfile('vendor_extra/anythingslider-themes/css/theme-ribbon.css');
-	$headerlib->add_cssfile('vendor_extra/anythingslider-themes/css/theme-shiny.css');
-	$headerlib->add_cssfile('vendor_extra/anythingslider-themes/css/theme-simple.css');
-	$headerlib->add_cssfile('vendor_extra/anythingslider-themes/css/theme-tabs-dark.css');
-	$headerlib->add_cssfile('vendor_extra/anythingslider-themes/css/theme-tabs-light.css');
-	
+
 	if (isset($theme) && !empty($theme)) {
 		switch (strtolower($theme)) {
 			case 'construction':
-			case 'cs-portfolio':
-			case 'default1':
-			case 'default2':
+			case 'portfolio':
 			case 'metallic':
-			case 'mini-dark':
-			case 'mini-light':
 			case 'minimalist-round':
 			case 'minimalist-square':
-			case 'office':
-			case 'polished':
-			case 'ribbon':
-			case 'shiny':
-			case 'simple':
-			case 'tabs-dark':
-			case 'tabs-light':
 				$theme = $theme;
     			break;
 			default:
@@ -437,7 +390,6 @@ function wikiplugin_slider($data, $params)
 			// Navigation
 			startPanel          : 1,
 			changeBy            : 1,
-			hashTags            : ".makeBool($hashtags, true).",
 
 			// Slideshow options
 			autoPlay            : ".makeBool($autoplay, false).",
@@ -480,16 +432,7 @@ function wikiplugin_slider($data, $params)
 		</div>";
 	}
 
-	if($expand == 'y') {
-		/** if expand eq 'y', "100%" height not working **/
-		/** Temp fix: if $height is empty**/
-		$height = (empty($height) === false ? $height : '300px');
-		$result = "<div style='width: $width; height: $height;'><div class='tiki-slider'>$ret</div></div>";
-	} else {
-		$result = "<div class='tiki-slider' style='width: $width; height: $height;'>$ret</div>";
-	}
-	
 	return <<<EOF
-	~np~$result~/np~
+	~np~<div class='tiki-slider' style='width: $width; height: $height;'>$ret</div>~/np~
 EOF;
 }

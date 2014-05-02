@@ -2,14 +2,13 @@
 
 {title help="SearchStats"}{tr}Search stats{/tr}{/title}
 
-<div class="t_navbar">
-	{button href="?clear=1" class="btn btn-default" _text="{tr}Clear Stats{/tr}"}
+<div class="navbar">
+	{button href="?clear=1" _text="{tr}Clear Stats{/tr}"}
 </div>
 
 {include file='find.tpl'}
 
-<div class="table-responsive">
-<table class="table normal">
+<table class="normal">
 <tr>
 <!-- term -->
 <th><a href="tiki-search_stats.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'term_desc'}term_asc{else}term_desc{/if}">{tr}Word{/tr}</a></th>
@@ -21,14 +20,13 @@
 <!-- How can we increase the number of items displayed on a page? -->
 
 </tr>
-
+{cycle values="odd,even" print=false}
 {section name=user loop=$channels}
-  <tr>
+  <tr class="{cycle}">
     <td class="text">{$channels[user].term}</td>
     <td class="integer">{$channels[user].hits}</td>
   </tr>
 {/section}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}

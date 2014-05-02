@@ -1,11 +1,4 @@
-{extends "internal/ajax.tpl"}
-
-{block name=title}
-	{title}{tr}Oops{/tr}{/title}
-{/block}
-
-{block name=content}
-	<div class="alert alert-warning">
-		{$detail.message|escape}
-	</div>
-{/block}
+<h3>{tr}Error{/tr}</h3>
+<ul>
+	<li>{$detail.message|escape}</li>
+</ul>

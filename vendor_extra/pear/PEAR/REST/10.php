@@ -21,6 +21,11 @@
  */
 
 /**
+ * For downloading REST xml/txt files
+ */
+require_once 'PEAR/REST.php';
+
+/**
  * Implement REST 1.0
  *
  * @category   pear
@@ -575,6 +580,9 @@ class PEAR_REST_10
                         $d = unserialize($d);
                         if ($d) {
                             if (isset($d['required'])) {
+                                if (!class_exists('PEAR_PackageFile_v2')) {
+                                    require_once 'PEAR/PackageFile/v2.php';
+                                }
                                 if (!isset($pf)) {
                                     $pf = new PEAR_PackageFile_v2;
                                 }
@@ -703,6 +711,9 @@ class PEAR_REST_10
         $allreleases = $this->_rest->retrieveData($base . 'r/' . strtolower($package) .
             '/allreleases.xml', false, false, $channel);
         if (!PEAR::isError($allreleases)) {
+            if (!class_exists('PEAR_PackageFile_v2')) {
+                require_once 'PEAR/PackageFile/v2.php';
+            }
             if (!is_array($allreleases['r']) || !isset($allreleases['r'][0])) {
                 $allreleases['r'] = array($allreleases['r']);
             }

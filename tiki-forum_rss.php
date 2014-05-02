@@ -30,7 +30,10 @@ if ($tiki_p_forum_read != 'y') {
 	require_once ('tiki-rss_error.php');
 }
 
-$commentslib = TikiLib::lib('comments');
+require_once('lib/comments/commentslib.php');
+if (!isset($commentslib)) {
+	$commentslib = new Comments($dbTiki);
+}
 
 $feed = "forum";
 $id = "forumId";

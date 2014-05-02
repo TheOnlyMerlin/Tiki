@@ -1,8 +1,7 @@
 {* $Id$ *} 
 <a class="icon" href="tiki-accounting_export.php?action=print&what=journal&bookId={$bookId}{if isset($account.accountId)}&accountId={$account.accountId}{/if}" target="new">{icon _id="printer" alt="{tr}printable version{/tr}"}</a>
 <a class="icon" href="tiki-accounting_export.php?action=settings&what=journal&bookId={$bookId}{if isset($account.accountId)}&accountId={$account.accountId}{/if}">{icon _id="table" alt="{tr}export table{/tr}"}</a>
-<div class="table-responsive">
-<table class="table normal">
+<table class="normal">
  <tr>
   <th rowspan="2">{tr}Id{/tr}</th>
   <th rowspan="2">{tr}Date{/tr}</th>
@@ -54,4 +53,3 @@
  </tr> 
 {/if}
 </table>
-</div>

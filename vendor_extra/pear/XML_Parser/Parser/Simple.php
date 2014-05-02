@@ -48,6 +48,11 @@
  */
 
 /**
+ * built on XML_Parser
+ */
+require_once 'XML/Parser.php';
+
+/**
  * Simple XML parser class.
  *
  * This class is a simplified version of XML_Parser.
