@@ -209,24 +209,10 @@ function current_object()
 		);
 	}
 
-	if ($section == 'forums' && ! empty($_REQUEST['comments_parentId'])) {
-		return array(
-			'type' => 'forum post',
-			'object' => $_REQUEST['comments_parentId'],
-		);
-	}
-
 	if ( $cat_type && $cat_objid ) {
 		return array(
 			'type' => $cat_type,
 			'object' => $cat_objid,
-		);
-	}
-
-	if ($section == 'trackers' && ! empty($_REQUEST['itemId'])) {
-		return array(
-			'type' => 'trackeritem',
-			'object' => $_REQUEST['itemId'],
 		);
 	}
 

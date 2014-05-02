@@ -46,14 +46,14 @@ function smarty_function_listfilter($params, $smarty)
 		$childPrefix = isset($childPrefix) ? $childPrefix : 'child-of-';
 		$exclude = isset($exclude) ? $exclude : '';
 
-		$input = ' <div class="form-horizontal"><div class="form-group"><label class="col-sm-2 control-label">';
+		$input = "<label>";
 
 		if (!isset($prefix)) {
 			$input .= tra("Filter:");
 		} else {
 			$input .= tra($prefix);
 		}
-		$input .= '</label><div class="col-sm-10"><input type="text" class="form-control"';
+		$input .= "&nbsp;<input type='text'";
 		if (!isset($id)) {
 			if (isset($listfilter_id)) {
 				$listfilter_id++;
@@ -103,9 +103,9 @@ function smarty_function_listfilter($params, $smarty)
 			);
 		}
 
-		$input .= " class='listfilter' /></div></div></div>";
+		$input .= " class='listfilter' />";
 		$input .= "<img src='img/icons/close.png' onclick=\"\$('#$id').val('').focus().keyup();return false;\" class='closeicon' width='16' height='16' style='visibility:hidden;position:relative;right:20px;top:6px;'/>";
-		$input .= '</label>';
+		$input .= "</label>";
 
 		if (!isset($selectors)) $selectors = ".$id table tr";
 
@@ -133,11 +133,10 @@ function smarty_function_listfilter($params, $smarty)
 		if (!empty($parentSelector)) {
 			$content .= "
 	\$('$parentSelector').show().each( function() {
-		if (\$('{$selectors}[data-tt-parent-id=' + \$(this).data('tt-id') + ']:visible:not(\"$exclude\")').length == 0) {	// excluded things don't count
+		var cl = '.$childPrefix' + \$(this).attr('id');
+		if (\$(cl + ':visible:not(\"$exclude\")').length == 0) {	// excluded things don't count
 			\$(this).hide();
-			\$('{$exclude}[data-tt-parent-id=' + \$(this).data('tt-id') + ']').hide();							// but need hiding if the parent is 'empty'
-		} else {
-			\$(this).removeClass('collapsed').addClass('expanded');
+			\$(cl + '$exclude').hide();							// but need hiding if the parent is 'empty'
 		}
 	});
 ";

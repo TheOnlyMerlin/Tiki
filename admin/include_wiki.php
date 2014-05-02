@@ -38,6 +38,7 @@ if (!empty($_REQUEST['moveWikiUp'])) {
 }
 
 // Included for the forum dropdown
+include_once ('lib/comments/commentslib.php');
 if (isset($_REQUEST['createtag'])) {
 	check_ticket('admin-inc-wiki');
 	// Check existance
@@ -84,7 +85,8 @@ if (isset($_REQUEST['wikifeatures'])) {
 	}
 
 	if (isset($backlinksChange) && $backlinksChange) {
-		$wikilib = TikiLib::lib('wiki');
+		global $wikilib;
+		include_once ('lib/wiki/wikilib.php');
 		$wikilib->refresh_backlinks();
 	}
 }

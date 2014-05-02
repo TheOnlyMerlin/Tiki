@@ -75,7 +75,7 @@ function prefs_wiki_list($partial = false)
 		),
 		'wiki_pagename_strip' => array(
 			'name' => tra('Page name display stripper'),
-			'description' => tra('Character to use as a delimiter in the page name. The portion of the name after this character will not be displayed. If the page name display stripper conflicts with the namespace separator, the namespace is used and the page name display is not stripped'),
+			'description' => tra('Character to use as a delimiter in the page name. The portion of the name after this character will not be displayed.'),
 			'type' => 'text',
 			'size' => 5,
 			'default' => '',
@@ -96,7 +96,7 @@ function prefs_wiki_list($partial = false)
 		),
 		'wiki_authors_style_by_page' => array(
 			'name' => tra('Specify wiki author list style per page'),
-			'description' => tra('Allows the style in which the author list is displayed to be modified on a per-page basis.'),
+			'description' => tra('Allows to modify the style in which the author list is displayed on a per-page basis.'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
@@ -137,7 +137,6 @@ function prefs_wiki_list($partial = false)
 		'wiki_cache' => array(
 			'name' => tra('Cache wiki pages (global)'),
 			'description' => tra('Enable page cache globally for wiki pages.'),
-			'warning' => tra("Wiki cache reduces server load but can cause some empty pages and other issues when using wiki plugins. Use only if you really need it, and it's perhaps better to use Individual wiki cache on only the pages that require it."),
 			'type' => 'list',
 			'options' => array(
 				0 => tra('no cache'),
@@ -252,21 +251,17 @@ function prefs_wiki_list($partial = false)
 			'default' => 'n',
 		),
 		'wiki_edit_minor' => array(
-			'name' => tra('Allow minor edits of wiki pages'),
+			'name' => tra('Allow minor edits'),
 			'type' => 'flag',
-			'description' => tra('Minor edits do not flag new content for translation and do not send watch notifications (unless "Watch minor edits" is enabled).'),			
-			'permission' => array(
-				'textFilter' => 'tiki_p_minor',
-			),		
 			'default' => 'n',
 		),
 		'wiki_comments_displayed_default' => array(
-			'name' => tra('Display comment list by default'),
+			'name' => tra('Display by default'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'wiki_comments_form_displayed_default' => array(
-			'name' => tra('Display Post new comment form by default'),
+			'name' => tra('Display comments form by default'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
@@ -292,7 +287,9 @@ function prefs_wiki_list($partial = false)
 			'name' => tra('Wiki rating options'),
 			'description' => tra('List of options available for the rating of wiki comments.'),
 			'type' => 'text',
-			'default' => "1,2,3,4,5",
+			'separator' => ',',
+			'filter' => 'int',
+			'default' => range(1, 5),
 		),
 		'wiki_uses_slides' => array(
 			'name' => tra('Add a slideshow button on wiki pages'),
@@ -627,13 +624,13 @@ function prefs_wiki_list($partial = false)
 			'default' => 'n',
 		),
 		'wiki_freetags_edit_position' => array(
-			'name' => tra('Choose position of tags selection'),
-			'description' => tra('If you wish to place tags selection more prominently than in the properties tab.'),
+			'name' => tra('Choose position of freetags selection'),
+			'description' => tra('If you wish to place freetags selection more prominently than in the properties tab.'),
 			'type' => 'list',
 			'options' => array(
 				'properties' => tra('Properties tab'),
 				'edit' => tra('Edit tab'),
-				'freetagstab' => tra('Tags tab'),
+				'freetagstab' => tra('Freetags tab'),
 			),
 			'default' => 'properties',
 		),
@@ -689,50 +686,6 @@ function prefs_wiki_list($partial = false)
 				'feature_semantic', // this is needed at point of creation of semantic link otherwise link will not register
 			),
 			'default' => '',
-		),
-		'wiki_pagination' => array(
-			'name' => tr('Wiki Pagination'),
-			'description' => tr('Allows to separate a wiki page into a paginated page using a separator.'),
-			'type' => 'flag',
-			'default' => 'n',
-		),
-		'wiki_page_separator' => array(
-			'name' => tr('Wiki page separator'),
-			'description' => tr('Separator used within the content of a wiki page to split the content.'),
-			'type' => 'text',
-			'default' => '...page...',
-		),
-		'wiki_auto_toc' => array(
-			'name' => tr('Wiki auto-toc'),
-			'description' => tr('Automatic Table of Contents generation for wiki pages. It will automatically generate 2 Table Of Contents: one in the wiki page and one floating when scrolling down the page. Enable fast(!) header navigation.'),
-			'type' => 'flag',
-			'help' => 'Auto TOC',
-			'default' => 'n',
-		),
-		'wiki_inline_auto_toc' => array(
-			'name' => tr('Add inline auto-toc'),
-			'description' => tr('Automatically add an inline Table of Contents for wiki pages. This setting can be toogled per page, in the page properties'),
-			'type' => 'flag',
-			'default' => 'y',
-			'dependencies' => array(
-				'wiki_auto_toc',
-			),
-		),
-		'wiki_inline_toc_pos' => array(
-			'name' => tr('Inline toc position'),
-			'description' => tr('Position for inline Table of Contents. One of top, left, right (right = default)'),
-			'type' => 'text',
-			'default' => 'right',
-			'dependencies' => array(
-				'wiki_inline_auto_toc',
-			),
-		),
-		'wiki_page_hide_title' => array(
-			'name' => tr('Hide title per wiki page'),
-			'description' => tr('Allow the title to be hidden for individual wiki pages'),
-			'type' => 'flag',
-			'default' => 'y',
-			'dependencies' => array(),
 		),
 	);
 }

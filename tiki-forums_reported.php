@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -21,7 +18,8 @@ if (!isset($_REQUEST["forumId"])) {
 }
 
 $smarty->assign('forumId', $_REQUEST["forumId"]);
-$commentslib = TikiLib::lib('comments');
+include_once ("lib/comments/commentslib.php");
+$commentslib = new Comments($dbTiki);
 $forum_info = $commentslib->get_forum($_REQUEST["forumId"]);
 
 //Check individual permissions for this forum

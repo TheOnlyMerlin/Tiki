@@ -13,7 +13,7 @@ function payment_behavior_cart_gift_certificate_purchase(
 		$orderItemId = 0
 		)
 {
-	$trklib = TikiLib::lib('trk');
+	global $trklib; require_once("lib/trackers/trackerlib.php");
 	global $prefs;
 	$params['trackerId'] = $prefs['payment_cart_giftcert_tracker'];
 
@@ -91,6 +91,7 @@ function payment_behavior_cart_gift_certificate_purchase(
 	$mail = new TikiMail();
 	$mail->setSubject($mail_subject);
 	$mail->setText($mail_data);
+	$mail->setHeader("From", $prefs['sender_email']);
 	$mail->send($giftcertemail);
 
 	return true;

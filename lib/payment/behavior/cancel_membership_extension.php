@@ -7,7 +7,7 @@
 
 function payment_behavior_cancel_membership_extension( $users, $groupId )
 {
-	$userlib = TikiLib::lib('user');
+	global $userlib;
 
 	$users = (array) $users;
 

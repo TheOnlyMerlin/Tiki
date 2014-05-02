@@ -11,14 +11,11 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 }
 
 
-/**
- * @return array
- */
 function module_map_edit_features_info()
 {
 	return array(
 		'name' => tra('Map Feature Editor'),
-		'description' => tra('Allows shapes to be drawn over the map.'),
+		'description' => tra('Allows to draw shapes over the map.'),
 		'prefs' => array(),
 		'params' => array(
 			'trackerId' => array(
@@ -26,7 +23,6 @@ function module_map_edit_features_info()
 				'description' => tr('Tracker to store the feature in.'),
 				'required' => true,
 				'filter' => 'digits',
-				'profile_reference' => 'tracker',
 			),
 			'hiddeninput' => array(
 				'name' => tr('Hidden Input'),
@@ -55,10 +51,6 @@ function module_map_edit_features_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_map_edit_features($mod_reference, $module_params)
 {
 	$targetField = null;

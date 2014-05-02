@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_top_visited_blogs_info()
 {
 	return array(
@@ -38,14 +35,10 @@ function module_top_visited_blogs_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_top_visited_blogs($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
-	$bloglib = TikiLib::lib('blog');
+	global $smarty;
+	global $bloglib; require_once('lib/blogs/bloglib.php');
 	$with = '';
 	if (isset($mod_reference['params']['showlastpost']) && $mod_reference['params']['showlastpost'] == 'y') {
 		$with = array('showlastpost'=>'y');

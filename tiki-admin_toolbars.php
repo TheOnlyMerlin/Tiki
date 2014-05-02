@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -25,7 +22,7 @@ require_once 'tiki-setup.php';
 require_once 'lib/toolbars/toolbarslib.php';
 
 $access->check_permission('tiki_p_admin');
-$access->check_feature(array('javascript_enabled', 'feature_jquery_ui'));
+$access->check_feature('javascript_enabled');
 
 $sections = array( 'global' => tra('Global'), 'admin' => tra('Admin'));
 $sections2 = array();
@@ -58,7 +55,7 @@ if ( isset($_REQUEST['comments']) && $_REQUEST['comments'] == 'on') {
 }
 
 foreach ($sections as $skey => $sval) {
-	if ($prefs['toolbar_' . $skey . ($comments ? '_comments' : '') . 'modified'] == 'y') {
+	if (!empty($prefs['toolbar_' . $skey . ($comments ? '_comments' : '')])) {
 		$sections[$skey] = $sval . ' *';
 	}
 }
@@ -79,13 +76,18 @@ if (!empty($_REQUEST['reset_all_custom_tools'])) {
 if ( isset($_REQUEST['save'], $_REQUEST['pref']) ) {
 	$prefName = 'toolbar_' . $section . ($comments ? '_comments' : '');
 	$tikilib->set_preference($prefName, $_REQUEST['pref']);
-	$tikilib->set_preference($prefName . 'modified', 'y');
 }
 
-if ( (isset($_REQUEST['reset']) && $section != 'global') || (isset($_REQUEST['reset_global']) && $section == 'global') ) {
+if ( isset($_REQUEST['reset']) && $section != 'global' ) {
 	$prefName = 'toolbar_' . $section . ($comments ? '_comments' : '');
 	$tikilib->delete_preference($prefName);
-	$tikilib->set_preference($prefName . 'modified', 'n');
+	$smarty->loadPlugin('smarty_function_query');
+	header('location: ?'. smarty_function_query(array('_urlencode'=>'n'), $smarty));
+}
+
+if ( isset($_REQUEST['reset_global']) && $section == 'global' ) {
+	$prefName = 'toolbar_' . $section . ($comments ? '_comments' : '');
+	$tikilib->delete_preference($prefName);
 	$smarty->loadPlugin('smarty_function_query');
 	header('location: ?'. smarty_function_query(array('_urlencode'=>'n'), $smarty));
 }
@@ -114,7 +116,7 @@ if (empty($current)) {
 }
 $smarty->assign('not_default', false);
 if ($section == 'global') {
-	$cachelib = TikiLib::lib('cache');
+	global $cachelib;
 	if ( $defprefs = $cachelib->getSerialized("tiki_default_preferences_cache") ) {
 		if ($defprefs['toolbar_global' . ($comments ? '_comments' : '')] != $current) {
 			$smarty->assign('not_default', true);

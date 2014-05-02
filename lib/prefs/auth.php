@@ -78,28 +78,24 @@ function prefs_auth_list()
 		),
 		'auth_phpbb_create_tiki' => array(
 			'name' => tra('Create user if not in Tiki'),
-            'description' => tra('Automatically create a new Tiki User for the PHPbb login'),
-            'type' => 'flag',
+			'type' => 'flag',
 			'perspective' => false,
 			'default' => 'n',
 		),
 		'auth_phpbb_skip_admin' => array(
 			'name' => tra('Use Tiki authentication for Admin login'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'perspective' => false,
 			'default' => 'y',
 		),
 		'auth_phpbb_disable_tikionly' => array(
 			'name' => tra("Disable Tiki users who don't have a phpBB login. (They could have been deleted)."),
-            'description' => tra(''),
 			'type' => 'flag',
 			'perspective' => false,
 			'default' => 'n',
 		),
 		'auth_phpbb_version' => array(
 			'name' => tra('phpBB Version'),
-            'description' => tra(''),
 			'type' => 'list',
 			'perspective' => false,
 			'options' => array(
@@ -109,7 +105,6 @@ function prefs_auth_list()
 		),
 		'auth_phpbb_dbhost' => array(
 			'name' => tra('phpBB Database Hostname'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 40,
 			'perspective' => false,
@@ -117,7 +112,6 @@ function prefs_auth_list()
 		),
 		'auth_phpbb_dbuser' => array(
 			'name' => tra('phpBB Database Username'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 40,
 			'perspective' => false,
@@ -125,7 +119,6 @@ function prefs_auth_list()
 		),
 		'auth_phpbb_dbpasswd' => array(
 			'name' => tra('phpBB Database Password'),
-            'description' => tra(''),
 			'type' => 'password',
 			'size' => 40,
 			'perspective' => false,
@@ -133,7 +126,6 @@ function prefs_auth_list()
 		),
 		'auth_phpbb_dbname' => array(
 			'name' => tra('phpBB Database Name'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 40,
 			'perspective' => false,
@@ -141,7 +133,6 @@ function prefs_auth_list()
 		),
 		'auth_phpbb_table_prefix' => array(
 			'name' => tra('phpBB Table Prefix'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 40,
 			'perspective' => false,
@@ -149,54 +140,45 @@ function prefs_auth_list()
 		),
 		'auth_ldap_permit_tiki_users' => array(
 			'name' => tra('Use Tiki authentication for users created in Tiki'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'perspective' => false,
 			'default' => 'n',
 		),
 		'auth_ldap_host' => array(
 			'name' => tra('Host'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 20,
 			'perspective' => false,
 			'default' => '',
-			'extensions' => ['ldap'],
 		),
 		'auth_ldap_port' => array(
 			'name' => tra('Port'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 5,
 			'filter' => 'digits',
 			'perspective' => false,
 			'default' => '',
-			'extensions' => ['ldap'],
 		),
 		'auth_ldap_debug' => array(
 			'name' => tra('Write LDAP debug Information in Tiki Logs'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'perspective' => false,
 			'default' => 'n',
 		),
 		'auth_ldap_ssl' => array(
 			'name' => tra('Use SSL (ldaps)'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'perspective' => false,
 			'default' => 'n',
 		),
 		'auth_ldap_starttls' => array(
 			'name' => tra('Use TLS'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'perspective' => false,
 			'default' => 'n',
 		),
 		'auth_ldap_type' => array(
 			'name' => tra('LDAP Bind Type'),
-            'description' => tra(''),
 			'type' => 'list',
 			'perspective' => false,
 			'options' => array(
@@ -210,7 +192,6 @@ function prefs_auth_list()
 		),
 		'auth_ldap_scope' => array(
 			'name' => tra('Search scope'),
-            'description' => tra(''),
 			'type' => 'list',
 			'perspective' => false,
 			'options' => array(
@@ -222,7 +203,6 @@ function prefs_auth_list()
 		),
 		'auth_ldap_version' => array(
 			'name' => tra('LDAP version'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 5,
 			'perspective' => false,
@@ -230,7 +210,6 @@ function prefs_auth_list()
 		),
 		'auth_ldap_basedn' => array(
 			'name' => tra('Base DN'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 15,
 			'perspective' => false,
@@ -238,7 +217,6 @@ function prefs_auth_list()
 		),
 		'auth_ldap_userdn' => array(
 			'name' => tra('User DN'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 20,
 			'perspective' => false,
@@ -246,7 +224,6 @@ function prefs_auth_list()
 		),
 		'auth_ldap_userattr' => array(
 			'name' => tra('User attribute'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 20,
 			'perspective' => false,
@@ -254,7 +231,6 @@ function prefs_auth_list()
 		),
 		'auth_ldap_useroc' => array(
 			'name' => tra('User OC'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 20,
 			'perspective' => false,
@@ -262,7 +238,6 @@ function prefs_auth_list()
 		),
 		'auth_ldap_nameattr' => array(
 			'name' => tra('Realname attribute'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 20,
 			'perspective' => false,
@@ -270,15 +245,13 @@ function prefs_auth_list()
 		),
 		'auth_ldap_countryattr' => array(
 			'name' => tra('Country attribute'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 20,
 			'perspective' => false,
 			'default' => '',
 		),
 		'auth_ldap_emailattr' => array(
-			'name' => tra('Email attribute'),
-            'description' => tra(''),
+			'name' => tra('E-mail attribute'),
 			'type' => 'text',
 			'size' => 20,
 			'perspective' => false,
@@ -286,7 +259,6 @@ function prefs_auth_list()
 		),
 		'auth_ldap_groupdn' => array(
 			'name' => tra('Group DN'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 20,
 			'perspective' => false,
@@ -294,7 +266,6 @@ function prefs_auth_list()
 		),
 		'auth_ldap_groupattr' => array(
 			'name' => tra('Group name attribute'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 20,
 			'perspective' => false,
@@ -302,7 +273,6 @@ function prefs_auth_list()
 		),
 		'auth_ldap_groupdescattr' => array(
 			'name' => tra('Group description attribute'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 20,
 			'perspective' => false,
@@ -310,7 +280,6 @@ function prefs_auth_list()
 		),
 		'auth_ldap_groupoc' => array(
 			'name' => tra('Group OC'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 20,
 			'perspective' => false,
@@ -318,7 +287,6 @@ function prefs_auth_list()
 		),
 		'auth_ldap_memberattr' => array(
 			'name' => tra('Member attribute'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 20,
 			'perspective' => false,
@@ -326,14 +294,12 @@ function prefs_auth_list()
 		),
 		'auth_ldap_memberisdn' => array(
 			'name' => tra('Member is DN'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'perspective' => false,
 			'default' => 'y',
 		),
 		'auth_ldap_usergroupattr' => array(
 			'name' => tra('Group attribute'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 20,
 			'perspective' => false,
@@ -341,7 +307,6 @@ function prefs_auth_list()
 		),
 		'auth_ldap_groupgroupattr' => array(
 			'name' => tra('Group attribute in group entry'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 20,
 			'hint' => tra('(Leave this empty if the group name is already given in the user attribute)'),
@@ -350,7 +315,6 @@ function prefs_auth_list()
 		),
 		'auth_ldap_adminuser' => array(
 			'name' => tra('Admin user'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 15,
 			'autocomplete' => 'off',
@@ -359,7 +323,6 @@ function prefs_auth_list()
 		),
 		'auth_ldap_adminpass' => array(
 			'name' => tra('Admin password'),
-            'description' => tra(''),
 			'type' => 'password',
 			'size' => 15,
 			'autocomplete' => 'off',
@@ -368,14 +331,12 @@ function prefs_auth_list()
 		),
 		'auth_ldap_group_external' => array(
 			'name' => tra('Use an external LDAP server for groups'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'perspective' => false,
 			'default' => 'n',
 		),
 		'auth_ldap_group_host' => array(
 			'name' => tra('Host'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 20,
 			'perspective' => false,
@@ -383,7 +344,6 @@ function prefs_auth_list()
 		),
 		'auth_ldap_group_port' => array(
 			'name' => tra('Port'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 5,
 			'filter' => 'digits',
@@ -392,28 +352,24 @@ function prefs_auth_list()
 		),
 		'auth_ldap_group_debug' => array(
 			'name' => tra('Write LDAP debug Information in Tiki Logs'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'perspective' => false,
 			'default' => 'n',
 		),
 		'auth_ldap_group_ssl' => array(
 			'name' => tra('Use SSL (ldaps)'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'perspective' => false,
 			'default' => 'n',
 		),
 		'auth_ldap_group_starttls' => array(
 			'name' => tra('Use TLS'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'perspective' => false,
 			'default' => 'n',
 		),
 		'auth_ldap_group_type' => array(
 			'name' => tra('LDAP Bind Type'),
-            'description' => tra(''),
 			'type' => 'list',
 			'perspective' => false,
 			'options' => array(
@@ -427,7 +383,6 @@ function prefs_auth_list()
 		),
 		'auth_ldap_group_scope' => array(
 			'name' => tra('Search scope'),
-            'description' => tra(''),
 			'type' => 'list',
 			'perspective' => false,
 			'options' => array(
@@ -439,7 +394,6 @@ function prefs_auth_list()
 		),
 		'auth_ldap_group_version' => array(
 			'name' => tra('LDAP version'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 5,
 			'perspective' => false,
@@ -447,7 +401,6 @@ function prefs_auth_list()
 		),
 		'auth_ldap_group_basedn' => array(
 			'name' => tra('Base DN'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 15,
 			'perspective' => false,
@@ -455,7 +408,6 @@ function prefs_auth_list()
 		),
 		'auth_ldap_group_userdn' => array(
 			'name' => tra('User DN'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 20,
 			'perspective' => false,
@@ -463,7 +415,6 @@ function prefs_auth_list()
 		),
 		'auth_ldap_group_userattr' => array(
 			'name' => tra('User attribute'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 20,
 			'perspective' => false,
@@ -471,7 +422,6 @@ function prefs_auth_list()
 		),
 		'auth_ldap_group_corr_userattr' => array(
 			'name' => tra('Corresponding user attribute in 1st directory'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 20,
 			'perspective' => false,
@@ -479,7 +429,6 @@ function prefs_auth_list()
 		),
 		'auth_ldap_group_useroc' => array(
 			'name' => tra('User OC'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 20,
 			'perspective' => false,
@@ -487,7 +436,6 @@ function prefs_auth_list()
 		),
 		'auth_ldap_group_adminuser' => array(
 			'name' => tra('Admin user'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 15,
 			'perspective' => false,
@@ -495,7 +443,6 @@ function prefs_auth_list()
 		),
 		'auth_ldap_group_adminpass' => array(
 			'name' => tra('Admin password'),
-            'description' => tra(''),
 			'type' => 'password',
 			'size' => 15,
 			'perspective' => false,
@@ -503,7 +450,6 @@ function prefs_auth_list()
 		),
 		'auth_ws_create_tiki' => array(
 			'name' => tra('Create user if not in Tiki'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'perspective' => false,
 			'default' => 'n',

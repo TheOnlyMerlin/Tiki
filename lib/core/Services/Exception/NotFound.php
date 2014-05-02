@@ -7,12 +7,9 @@
 
 class Services_Exception_NotFound extends Services_Exception
 {
-	function __construct($message = '')
+	function __construct()
 	{
-		if (empty($message)) {
-			$message = tr('Not found');
-		}
-		parent::__construct($message, 404);
+		parent::__construct(tr('Not found'), 404);
 	}
 }
 

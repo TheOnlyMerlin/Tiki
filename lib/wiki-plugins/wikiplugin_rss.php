@@ -24,7 +24,6 @@ function wikiplugin_rss_info()
 				'filter' => 'int',
 				'description' => tra('List of feed IDs separated by colons. ex: feedId:feedId2'),
 				'default' => '',
-				'profile_reference' => 'rss',
 			),
 			'max' => array(
 				'required' => false,
@@ -151,7 +150,7 @@ function wikiplugin_rss($data,$params)
 	}
 
 	if ($params['desc'] > 0 && $params['desclen'] > 0) {
-		foreach ($items as &$item) {
+		foreach($items as &$item) {
 			$item['description'] = limit_text($item['description'], $params['desclen']);
 		}
 	}
@@ -168,8 +167,7 @@ function wikiplugin_rss($data,$params)
 	return $smarty->fetch('wiki-plugins/wikiplugin_rss.tpl');
 }
 
-function limit_text($text, $limit)
-{
+function limit_text($text, $limit) {
 	if (str_word_count($text, 0) > $limit) {
 		$words = str_word_count($text, 2);
 		$pos = array_keys($words);

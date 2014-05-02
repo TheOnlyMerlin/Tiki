@@ -7,9 +7,7 @@
 
 function payment_behavior_cart_send_confirm_email( $u, $email_template_ids = array() )
 {
-	global $prefs;
-	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
+	global $prefs, $smarty, $userlib;
 	require_once('lib/webmail/tikimaillib.php');
 	$email = $userlib->get_user_email($u);
 	if (!$email) return false;
@@ -23,6 +21,7 @@ function payment_behavior_cart_send_confirm_email( $u, $email_template_ids = arr
 	} else {
 		$mail->setHtml($mail_data);
 	}
+	$mail->setHeader("From", $prefs['sender_email']);
 	$mail->send($email);
 	return true;
 }

@@ -27,14 +27,11 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_shoutbox_info()
 {
 	return array(
 		'name' => tra('Shoutbox'),
-		'description' => tra('The shoutbox is a quick messaging tool. Messages reload each time the page changes. Anyone with the right permission can see all messages. Another permission allows messages to be sent..'),
+		'description' => tra('The shoutbox is a quick messaging tool. Messages reload each time the page changes. Anyone with the right permission can see all messages. Another permission allows to send messages.'),
 		'prefs' => array('feature_shoutbox'),
 		'documentation' => 'Module shoutbox',
 		'params' => array(
@@ -71,9 +68,6 @@ function module_shoutbox_info()
 	);
 }
 
-/**
- * @param $inFormValues
- */
 function doProcessShout($inFormValues)
 {
 	global $shoutboxlib, $user, $smarty, $prefs, $captchalib;
@@ -89,10 +83,6 @@ function doProcessShout($inFormValues)
 	}
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_shoutbox($mod_reference, $module_params)
 {
 	global $tikilib; require_once ('lib/tikilib.php');

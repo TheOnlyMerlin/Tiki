@@ -7,12 +7,9 @@
 
 class PaymentLib extends TikiDb_Bridge
 {
-	private $gateways = array();
-
 	function request_payment( $description, $amount, $paymentWithin, $detail = null, $currency = null )
 	{
-		global $prefs, $user;
-		$userlib = TikiLib::lib('user');
+		global $prefs, $userlib, $user;
 
 		$description = substr($description, 0, 100);
 		if (empty($currency)) {
@@ -54,9 +51,9 @@ class PaymentLib extends TikiDb_Bridge
 
 	function get_outstanding( $offset, $max, $ofUser = '' )
 	{
-		$conditions = '`amount_paid` < `amount` AND NOW() <= `due_date` AND `cancel_date` IS NULL AND (`authorized_until` IS NULL OR `authorized_until` <= NOW())';
+		$conditions = '`amount_paid` < `amount` AND NOW() <= `due_date` AND `cancel_date` IS NULL';
 		if ($ofUser) {
-			$conditions .= " AND uu.`login` = " . $this->qstr($ofUser);
+			$conditions .= " AND uu.`login` = '$ofUser'";
 		}
 		return $this->get_payments($conditions, $offset, $max);
 	}
@@ -65,7 +62,7 @@ class PaymentLib extends TikiDb_Bridge
 	{
 		$conditions = 'tpr.`amount` <= tpr.`amount_paid` AND tpr.`cancel_date` IS NULL';
 		if ($ofUser) {
-			$conditions .= " AND uu.`login` = " . $this->qstr($ofUser);
+			$conditions .= " AND uu.`login` = '$ofUser'";
 		}
 
 		$count = 'SELECT COUNT(*) FROM `tiki_payment_requests` tpr LEFT JOIN `users_users` uu ON (uu.`userId` = tpr.`userId`) WHERE ' .
@@ -75,7 +72,7 @@ class PaymentLib extends TikiDb_Bridge
 						' tp.`details` as `payment_detail`, uup.`login` as `payer`' .
 						' FROM `tiki_payment_requests` tpr' .
 						' LEFT JOIN `users_users` uu ON (uu.`userId` = tpr.`userId`)' .
-						' LEFT JOIN `tiki_payment_received` tp ON (tp.`paymentRequestId`=tpr.`paymentRequestId` AND tp.`status` = "paid")' .
+						' LEFT JOIN `tiki_payment_received` tp ON (tp.`paymentRequestId`=tpr.`paymentRequestId`)' .
 						' LEFT JOIN `users_users` uup ON (uup.`userId` = tp.`userId`) WHERE ' . $conditions;
 
 		$all = $this->fetchAll($data, array(), $max, $offset);
@@ -94,18 +91,9 @@ class PaymentLib extends TikiDb_Bridge
 
 	function get_overdue( $offset, $max, $ofUser = '' )
 	{
-		$conditions = '`amount_paid` < `amount` AND NOW() > `due_date` AND `cancel_date` IS NULL AND (`authorized_until` IS NULL OR `authorized_until` <= NOW())';
+		$conditions = '`amount_paid` < `amount` AND NOW() > `due_date` AND `cancel_date` IS NULL';
 		if ($ofUser) {
-			$conditions .= " AND uu.`login` = " . $this->qstr($ofUser);
-		}
-		return $this->get_payments($conditions, $offset, $max);
-	}
-
-	function get_authorized( $offset, $max, $ofUser = '' )
-	{
-		$conditions = '`amount_paid` < `amount` AND `cancel_date` IS NULL AND `authorized_until` IS NOT NULL AND `authorized_until` >= NOW()';
-		if ($ofUser) {
-			$conditions .= " AND uu.`login` = " . $this->qstr($ofUser);
+			$conditions .= " AND uu.`login` = '$ofUser'";
 		}
 		return $this->get_payments($conditions, $offset, $max);
 	}
@@ -114,7 +102,7 @@ class PaymentLib extends TikiDb_Bridge
 	{
 		$conditions = '`cancel_date` IS NOT NULL';
 		if ($ofUser) {
-			$conditions .= " AND uu.`login` = " . $this->qstr($ofUser);
+			$conditions .= " AND uu.`login` = '$ofUser'";
 		}
 		return $this->get_payments($conditions, $offset, $max);
 	}
@@ -138,13 +126,14 @@ class PaymentLib extends TikiDb_Bridge
 	function get_payment( $id )
 	{
 		global $tikilib, $prefs;
-		$info = $this->fetchAll(
-			'SELECT tpr.*, uu.`login` as `user` FROM `tiki_payment_requests` tpr' .
-			' LEFT JOIN `users_users` uu ON (uu.`userId` = tpr.`userId`)' .
-			' WHERE `paymentRequestId` = ?',
-			array($id)
+		$info = reset(
+			$this->fetchAll(
+				'SELECT tpr.*, uu.`login` as `user` FROM `tiki_payment_requests` tpr' .
+				' LEFT JOIN `users_users` uu ON (uu.`userId` = tpr.`userId`)' .
+				' WHERE `paymentRequestId` = ?',
+				array($id)
+			)
 		);
-		$info = reset($info);
 
 		if ( $info ) {
 			$info['state'] = $this->find_state($info);
@@ -156,13 +145,9 @@ class PaymentLib extends TikiDb_Bridge
 				array('invoice' => $info['paymentRequestId'],)
 			);
 
-			$info['returnurl'] = $tikilib->tikiUrl(
-				'tiki-payment.php',
-				array('invoice' => $info['paymentRequestId'],)
-			);
+			$info['returnurl'] = $info['url'];
 
 			// Add token if feature is activated (need prefs
-			global $user;
 			if ($prefs['auth_token_access'] == 'y' &&
 					(!$user || isset($_SESSION['forceanon']) &&
 					$_SESSION['forceanon'] == 'y' &&
@@ -219,13 +204,7 @@ class PaymentLib extends TikiDb_Bridge
 			return 'past';
 		}
 
-		$current = date('Y-m-d H:i:s');
-
-		if ( $info['authorized_until'] && $info['authorized_until'] > $current ) {
-			return 'authorized';
-		}
-
-		if ( $info['due_date'] < $current ) {
+		if ( $info['due_date'] < date('Y-m-d H:i:s') ) {
 			return 'overdue';
 		}
 
@@ -234,25 +213,19 @@ class PaymentLib extends TikiDb_Bridge
 
 	private function extract_actions( $actions )
 	{
-		$out = array(
-			'authorize' => array(),
-			'complete' => array(),
-			'cancel' => array(),
-		);
-		if ( ! empty($actions) ) {
-			$out = array_merge(
-				$out,
-				json_decode($actions, true)
+		if ( empty($actions) ) {
+			return array(
+				'complete' => array(),
+				'cancel' => array(),
 			);
 		}
 
-		return $out;
+		return json_decode($actions, true);
 	}
 
 	function enter_payment( $invoice, $amount, $type, array $data )
 	{
-		global $user;
-		$userlib = TikiLib::lib('user');
+		global $user, $userlib;
 		if ( $info = $this->get_payment($invoice) ) {
 			if ( $info['state'] != 'past' && $info['amount_remaining_raw'] - $amount <= 0 ) {
 				$results = $this->run_behaviors($info, 'complete');
@@ -283,65 +256,9 @@ class PaymentLib extends TikiDb_Bridge
 		}
 	}
 
-	function enter_authorization( $invoice, $type, $validForDays, array $data )
-	{
-		global $user;
-		$userlib = TikiLib::lib('user');
-		if ( $info = $this->get_payment($invoice) ) {
-			if ( $info['state'] != 'past' ) {
-				$results = $this->run_behaviors($info, 'authorize');
-				if ($info['state'] == 'canceled') {
-					// in the case of canceled payments being paid (e.g. user was delayed at Paypal when cancellation happened)
-					$this->uncancel_payment($invoice);
-				}
-			}
-			if (!empty($results)) {
-				$data = array_merge($results, $data);
-			}
-			$data = json_encode($data);
-			$this->query(
-				'INSERT INTO `tiki_payment_received` ( `paymentRequestId`, `payment_date`, `amount`, `type`, `details`, `userId`, `status` )' .
-				' VALUES( ?, NOW(), ?, ?, ?, ?, "auth_pending" )',
-				array(
-					$invoice,
-					0,
-					$type,
-					$data,
-					empty($user)? $info['userId']: $userlib->get_user_id($user)
-				)
-			);
-			$this->query(
-				'UPDATE `tiki_payment_requests` SET `authorized_until` = DATE_ADD(NOW(), INTERVAL ? DAY) WHERE `paymentRequestId` = ?',
-				array( (int) $validForDays, $invoice )
-			);
-		}
-	}
-
-	function capture_payment($paymentId)
-	{
-		if ($info = $this->get_payment($paymentId)) {
-			foreach ($info['payments'] as $received) {
-				if ($received['status'] != 'auth_pending') {
-					continue;
-				}
-
-				if ($gateway = $this->gateway($received['type'])) {
-					if (is_callable(array($gateway, 'capture_payment'))) {
-						// Result is about request reception success, not actual capture success
-						$result = $gateway->capture_payment($info, $received);
-						
-						if ($result) {
-							$this->query('UPDATE `tiki_payment_received` SET `status` = "auth_captured" WHERE `paymentReceivedId` = ?', array($received['paymentReceivedId']));
-						}
-					}
-				}
-			}
-		}
-	}
-
 	function register_behavior( $invoice, $event, $behavior, array $arguments )
 	{
-		if ( ! in_array($event, array( 'complete', 'cancel', 'authorize' )) ) {
+		if ( ! in_array($event, array( 'complete', 'cancel' )) ) {
 			return false;
 		}
 
@@ -386,20 +303,8 @@ class PaymentLib extends TikiDb_Bridge
 			}
 		}
 	}
-
-	function gateway($name)
-	{
-		if (isset($this->gateways[$name])) {
-			return $this->gateways[$name];
-		}
-
-		switch ($name) {
-		case 'israelpost':
-			require_once 'lib/payment/israelpostlib.php';
-			return $this->gateways[$name] = new IsraelPostLib($this);
-		}
-	}
 }
 
-global $paymentlib; $paymentlib = new PaymentLib;
+global $paymentlib;
+$paymentlib = new PaymentLib;
 

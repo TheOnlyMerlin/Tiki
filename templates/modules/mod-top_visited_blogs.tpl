@@ -9,8 +9,8 @@
 			<a class="linkmodule" href="{$modTopVisitedBlogs[ix].blogId|sefurl:blog}">
 				{$modTopVisitedBlogs[ix].postTitle|escape}
 			</a>
-			<br>{tr}Posted to:{/tr} {$modTopVisitedBlogs[ix].title|escape}
-			<div class="description help-block">
+			<br />{tr}Posted to:{/tr} {$modTopVisitedBlogs[ix].title|escape}
+			<div class="description">
 				{capture name="parse"}{wiki}{$modTopVisitedBlogs[ix].postData}{/wiki}{/capture}
 				{$smarty.capture.parse|strip_tags|truncate:250:'...'|escape}
 				<a class="linkmodule more" href="{$modTopVisitedBlogs[ix].blogId|sefurl:blog}">

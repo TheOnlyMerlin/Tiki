@@ -7,17 +7,17 @@
 
 class Tracker_Field_Relation extends Tracker_Field_Abstract
 {
-	const OPT_RELATION = 'relation';
-	const OPT_FILTER = 'filter';
-	const OPT_READONLY = 'readonly';
-	const OPT_INVERT = 'invert';
+	const OPT_RELATION = 0;
+	const OPT_FILTER = 1;
+	const OPT_READONLY = 2;
+	const OPT_INVERT = 3;
 
 	public static function getTypes()
 	{
 		return array(
 			'REL' => array(
 				'name' => tr('Relations'),
-				'description' => tr('Allows arbitrary relations to be created between the trackers and other objects in the system.'),
+				'description' => tr('Allows to create arbitrary relations between the trackers and other objects in the system.'),
 				'prefs' => array('trackerfield_relation'),
 				'tags' => array('advanced'),
 				'default' => 'n',
@@ -26,14 +26,11 @@ class Tracker_Field_Relation extends Tracker_Field_Abstract
 						'name' => tr('Relation'),
 						'description' => tr('Relation qualifier. Must be a three-part qualifier containing letters and separated by dots.'),
 						'filter' => 'attribute_type',
-						'legacy_index' => 0,
 					),
 					'filter' => array(
 						'name' => tr('Filter'),
 						'description' => tr('URL-encoded list of filters to be applied on object selection.'),
 						'filter' => 'url',
-						'legacy_index' => 1,
-						'profile_reference' => 'search_urlencoded',
 					),
 					'readonly' => array(
 						'name' => tr('Read-only'),
@@ -43,7 +40,6 @@ class Tracker_Field_Relation extends Tracker_Field_Abstract
 							0 => tr('No'),
 							1 => tr('Yes'),
 						),
-						'legacy_index' => 2,
 					),
 					'invert' => array(
 						'name' => tr('Include Invert'),
@@ -52,27 +48,6 @@ class Tracker_Field_Relation extends Tracker_Field_Abstract
 						'options' => array(
 							0 => tr('No'),
 							1 => tr('Yes'),
-						),
-						'legacy_index' => 3,
-					),
-					'display' => array(
-						'name' => tr('Display'),
-						'description' => tr('Control how the relations are displayed in view mode'),
-						'filter' => 'word',
-						'options' => array(
-							'list' => tr('List'),
-							'count' => tr('Count'),
-							'toggle' => tr('Count with toggle for list'),
-						),
-						'legacy_index' => 4,
-					),
-					'refresh' => array(
-						'name' => tr('Force Refresh'),
-						'description' => tr('Re-save related tracker items.'),
-						'filter' => 'alpha',
-						'options' => array(
-							'' => tr('No'),
-							'save' => tr('On Save'),
 						),
 					),
 				),
@@ -92,7 +67,7 @@ class Tracker_Field_Relation extends Tracker_Field_Abstract
 			} else {
 				$data = (array) $requestData[$insertId];
 			}
-			$data = array_unique(array_filter($data));
+			$data = array_unique($data);
 		} else {
 			$data = $this->getRelations($this->getOption(self::OPT_RELATION));
 		}
@@ -146,34 +121,13 @@ class Tracker_Field_Relation extends Tracker_Field_Abstract
 		if ($context['list_mode'] === 'csv') {
 			return $this->getConfiguration('value');
 		} else {
-			$display = $this->getOption('display');
-			if (! in_array($display, array('list', 'count', 'toggle'))) {
-				$display = 'list';
-			}
-
-			return $this->renderTemplate(
-				'trackeroutput/relation.tpl',
-				$context,
-				array(
-					'display' => $display,
-				)
-			);
+			return $this->renderTemplate('trackeroutput/relation.tpl', $context);
 		}
 	}
 
 	function handleSave($value, $oldValue)
 	{
-		if ($value) {
-			$target = explode("\n", trim($value));
-		} else {
-			$target = array();
-		}
-
 		if ($this->getOption(self::OPT_READONLY)) {
-			if ($this->getOption('refresh') == 'save') {
-				$this->prepareRefreshRelated($target);
-			}
-
 			return array(
 				'value' => $value,
 			);
@@ -188,6 +142,11 @@ class Tracker_Field_Relation extends Tracker_Field_Abstract
 			$map[$key] = $id;
 		}
 
+		if ($value) {
+			$target = explode("\n", trim($value));
+		} else {
+			$target = array();
+		}
 		$toRemove = array_diff(array_keys($map), $target);
 		$toAdd = array_diff($target, array_keys($map));
 
@@ -202,10 +161,6 @@ class Tracker_Field_Relation extends Tracker_Field_Abstract
 			$relationlib->add_relation($this->getOption(self::OPT_RELATION), 'trackeritem', $this->getItemId(), $type, $id);
 		}
 
-		if ($this->getOption('refresh') == 'save') {
-			$this->prepareRefreshRelated($target);
-		}
-
 		return array(
 			'value' => $value,
 		);
@@ -213,26 +168,6 @@ class Tracker_Field_Relation extends Tracker_Field_Abstract
 
 	function watchCompare($old, $new)
 	{
-	}
-
-	private function prepareRefreshRelated($target)
-	{
-		$itemId = $this->getItemId();
-		// After saving the field, bind a temporary event on save to refresh child elements
-
-		TikiLib::events()->bind('tiki.trackeritem.save', function ($args) use ($itemId, $target) {
-			if ($args['type'] == 'trackeritem' && $args['object'] == $itemId) {
-				$utilities = new Services_Tracker_Utilities;
-
-				foreach ($target as $key) {
-					list($type, $id) = explode(':', $key, 2);
-
-					if ($type == 'trackeritem') {
-						$utilities->resaveItem($id);
-					}
-				}
-			}
-		});
 	}
 
 	private function buildFilter()

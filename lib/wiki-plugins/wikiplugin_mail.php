@@ -98,10 +98,7 @@ function wikiplugin_mail_info()
 
 function wikiplugin_mail($data, $params)
 {
-	global $user;
-	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
+	global $userlib, $smarty, $tikilib, $user;
 	static $ipluginmail=0;
 	$smarty->assign_by_ref('ipluginmail', $ipluginmail);
 	$default = array('showuser' => 'y', 'showuserdd' => 'n', 'showrealnamedd' => 'n', 'showgroupdd' => 'n', 'group' => array(), 'recurse' => 'y', 'recurseuser' => 0);
@@ -144,6 +141,7 @@ function wikiplugin_mail($data, $params)
 			$mail->setSubject($_REQUEST['mail_subject']);
 			$mail->setText($_REQUEST['mail_mess']);
 			if ($mail->send($to)) {
+				//echo '<pre>MAIL'; print_r($to); echo '</pre>';
 				$smarty->assign_by_ref('sents', $to);
 			} else {
 				$mail_error = true;
@@ -165,7 +163,7 @@ function wikiplugin_mail($data, $params)
 }
 function wikiplugin_mail_to($params)
 {
-	$userlib = TikiLib::lib('user');
+	global $userlib;
 	$to = array();
 	if (!empty($params['mail_user_dd'])) {
 		$to = array_merge($to, $params['mail_user_dd']);

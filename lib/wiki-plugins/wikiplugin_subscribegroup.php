@@ -105,10 +105,7 @@ function wikiplugin_subscribegroup_info()
 
 function wikiplugin_subscribegroup($data, $params)
 {
-	global $tiki_p_subscribe_groups, $user;
-	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
-
+	global $tiki_p_subscribe_groups, $userlib, $user, $smarty;
 	static $iSubscribeGroup = 0;
 	++$iSubscribeGroup;
 	if (empty($user)) {
@@ -150,6 +147,7 @@ function wikiplugin_subscribegroup($data, $params)
 				}
 				$userlib->set_default_group($user, $group);
 			}
+			include_once('lib/core/Zend/OpenId.php');	// contains useful redirect selfUrl functions
 			if (!empty($params['defgroup_url']) && $params['defgroup_url'] === 'n') {
 				Zend_OpenId::redirect(Zend_OpenId::selfUrl());
 			} else {

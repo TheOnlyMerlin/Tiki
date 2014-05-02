@@ -1,19 +1,15 @@
 {* $Id$ *}
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}
-	{tr}See also{/tr} <a class="rbox-link" href="tiki-admin.php?page=metatags">{tr}Meta tags{/tr}</a>.
+	{tr}See also{/tr} <a class="rbox-link" href="tiki-admin.php?page=metatags">{tr}Meta-tags{/tr}</a>.
 {/remarksbox}
 
 <form class="admin" method="post" action="tiki-admin.php?page=sefurl">
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-                <input type="submit" class="btn btn-default btn-sm" name="save" value="{tr}Change preferences{/tr}">
-            </div>
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: right;">
+		<input type="submit" name="save" value="{tr}Change preferences{/tr}" />
+	</div>
 	
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Activate the feature{/tr}</legend>
 		{preference name=feature_sefurl visible="always"}
 
@@ -36,7 +32,7 @@
 				{/remarksbox}
 			{elseif $configurationFile eq 'unexpected reference' or $configurationFile eq 'unexpected enabled'}
 				{remarksbox type="warning" title="{tr}Warning{/tr}"}
-				{tr _0=$enabledFileName}%0 is not in the expected format.{/tr} {tr}Unable to verify that your URL rewriting configuration is up to date.{/tr} {tr}SEFURL may not work completely or correctly if Tiki URL rewriting configuration is not current.{/tr}<br>
+				{tr _0=$enabledFileName}%0 is not in the expected format.{/tr} {tr}Unable to verify that your URL rewriting configuration is up to date.{/tr} {tr}SEFURL may not work completely or correctly if Tiki URL rewriting configuration is not current.{/tr}<br />
 				{tr _0=$enabledFileName}%0 may simply be outdated.{/tr}
 				{tr _0="<strong>$referenceFileName</strong>" _1="<strong>$enabledFileName</strong>"}To update this file, if it was not customized, copy the %0 file (located in the main directory of your Tiki installation) to %1, overwriting the latter.{/tr}
 				{/remarksbox}
@@ -55,7 +51,7 @@
 		{/if}
 	</fieldset>		
 	
-	<fieldset class="table">
+	<fieldset class="admin">
 		
 		<legend>{tr}Settings{/tr}</legend>
 		{preference name=feature_sefurl_filter}
@@ -80,10 +76,7 @@
 		{preference name=feature_sefurl_tracker_prefixalias}
 		{preference name=feature_canonical_url}
 	</fieldset>
-    <br>{* I cheated. *}
-    <div class="row">
-        <div class="form-group col-lg-12 text-center">
-            <input type="submit" class="btn btn-default btn-sm" value="{tr}Change preferences{/tr}">
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: center;padding:1em;">
+		<input type="submit" name="save" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>

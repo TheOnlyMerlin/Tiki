@@ -5,20 +5,16 @@
 
 <form action="tiki-admin.php?page=gmap" method="post">
 	<input type="hidden" name="gmapsetup" value="" />
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-                <input type="submit" class="btn btn-default btn-sm" value="{tr}Change preferences{/tr}">
-            </div>
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" value="{tr}Change preferences{/tr}" />
+	</div>
 	
-<fieldset class="table">
+<fieldset class="admin">
 	<legend>{tr}Activate the feature{/tr}</legend>
 	{preference name=feature_gmap visible="always"}
 </fieldset>	
 
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Settings{/tr}</legend>
 		<div class="adminoptionbox">
 			<div class="adminoptionlabel">
@@ -37,13 +33,10 @@
 				{preference name=gmap_article_list}
 				{preference name=gmap_page_list}
 		</fieldset>	
-	</fieldset>
-    <br>{* I cheated. *}
-    <div class="row">
-        <div class="form-group col-lg-12 text-center">
-            <input type="submit" class="btn btn-default btn-sm" value="{tr}Change preferences{/tr}">
-        </div>
-    </div>
+	</fieldset>	
+	<div class="heading input_submit_container" style="text-align: center">
+		<input type="submit" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>
 
 {if $prefs.feature_gmap eq 'y' and $show_map eq 'y'}

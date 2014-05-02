@@ -36,8 +36,8 @@ class BlogLib extends TikiDb_Bridge
 	 */
 	function list_blogs($offset = 0, $maxRecords = -1, $sort_mode = 'created_desc', $find = '', $ref='', $with = '')
 	{
-		$tikilib = TikiLib::lib('tiki');
-		$categlib = TikiLib::lib('categ');
+		global $tikilib, $categlib;
+		if (!$categlib) require_once 'lib/categories/categlib.php';
 		$bindvars = array();
 		$join = '';
 		$where = '';
@@ -90,9 +90,8 @@ class BlogLib extends TikiDb_Bridge
 	 */
 	function get_blog($blogId)
 	{
-		global $prefs, $user;
-		$tikilib = TikiLib::lib('tiki');
-		$categlib = TikiLib::lib('categ');
+		global $tikilib, $prefs, $user, $categlib; if (!$categlib) require_once 'lib/categories/categlib.php';
+
 		$bindvars = array();
 
 		if ( $jail = $categlib->get_jail() ) {
@@ -152,7 +151,7 @@ class BlogLib extends TikiDb_Bridge
 	 */
 	function list_user_blogs($user, $include_public = false)
 	{
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 
 		$query = "select * from `tiki_blogs` where `user`=? ";
 		$bindvars=array($user);
@@ -180,9 +179,7 @@ class BlogLib extends TikiDb_Bridge
 	 */
 	function list_blogs_user_can_post()
 	{
-		global $tiki_p_blog_admin, $user;
-		$tikilib = TikiLib::lib('tiki');
-
+		global $tikilib, $tiki_p_blog_admin, $user;
 		$query = "select * from `tiki_blogs` order by `title` asc";
 		$result = $this->fetchAll($query);
 		$ret = array();
@@ -211,7 +208,7 @@ class BlogLib extends TikiDb_Bridge
 	 */
 	function list_posts($offset = 0, $maxRecords = -1, $sort_mode = 'created_desc', $find = '', $filterByBlogId = -1, $author='', $ref='', $date_min = 0, $date_max = 0)
 	{
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 
 		$authorized_blogs = $this->list_blogs(0, -1, 'created_desc', '', $ref);
 		$permit_blogs = array();
@@ -382,7 +379,7 @@ class BlogLib extends TikiDb_Bridge
 	 */
 	function get_post_images($postId)
 	{
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 		$query = "select `postId`,`filename`,`filesize`,`imgId` from `tiki_blog_posts_images` where `postId`=?";
 
 		$result = $this->query($query, array((int) $postId));
@@ -448,8 +445,7 @@ class BlogLib extends TikiDb_Bridge
 	)
 	{
 		//TODO: all the display parameters can be one single array parameter
-		global $prefs;
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib, $prefs;
 
 		if ($lastModif == 0) {
 			$lastModif = $tikilib->now;
@@ -503,11 +499,14 @@ class BlogLib extends TikiDb_Bridge
 							$date_min = '', $date_max = '', $approved = 'y'
 	)
 	{
-		global $tiki_p_admin, $tiki_p_blog_admin, $tiki_p_blog_post, $user, $prefs;
+		global $tikilib, $tiki_p_admin, $tiki_p_blog_admin, $tiki_p_blog_post, $user;
+		global $commentslib; require_once('lib/comments/commentslib.php');
 
 		$parserlib = TikiLib::lib('parser');
-		$categlib = TikiLib::lib('categ');
-		$tikilib = TikiLib::lib('tiki');
+
+		if (!is_object($commentslib)) {
+			$commentslib = new Comments();
+		}
 
 		$mid = array();
 		$bindvars = array();
@@ -560,42 +559,31 @@ class BlogLib extends TikiDb_Bridge
 		}
 
 		$mid = empty($mid) ? '' : 'where ' . implode(' and ', $mid);
-
-		$join = '';
-		if ( $jail = $categlib->get_jail() ) {
-			$categlib->getSqlJoin($jail, 'blog post', '`tbp`.`postId`', $join, $mid, $bindvars);
-		}
-
-		$query = "select tbp.*,tb.title as blogTitle from `tiki_blog_posts` as tbp, `tiki_blogs` as tb $join $mid order by ".$this->convertSortMode($sort_mode);
-		$query_cant = "select count(*) from `tiki_blog_posts` as tbp, `tiki_blogs` as tb $join $mid";
+		$query = "select tbp.*,tb.title as blogTitle from `tiki_blog_posts` as tbp, `tiki_blogs` as tb $mid order by ".$this->convertSortMode($sort_mode);
+		$query_cant = "select count(*) from `tiki_blog_posts` as tbp, `tiki_blogs` as tb $mid";
 		$result = $this->query($query, $bindvars, $maxRecords, $offset);
 		$cant = $this->getOne($query_cant, $bindvars);
 		$ret = array();
 
 		while ($res = $result->fetchRow()) {
-			$res["comments"] = TikiLib::lib('comments')->count_comments('blog post:' . $res['postId']);
+			$res["comments"] = $commentslib->count_comments('blog post:' . $res['postId']);
 			$res['pages'] = $this->get_number_of_pages($res['data']);
 			$res['avatar'] = $tikilib->get_user_avatar($res['user']);
 
-			$is_html = $res['wysiwyg'] === 'y' && $prefs['wysiwyg_htmltowiki'] !== 'y';
+			if (isset($res['excerpt']) && $res['excerpt'] != NULL) {
+				$res['excerpt'] = $parserlib->parse_data($res['excerpt'], array('is_html' => true));
+			}
 
-			$res['parsed_excerpt'] = $parserlib->parse_data($res['excerpt'], array('is_html' => $is_html));
-			$res['parsed_data'] =  $parserlib->parse_data($res['data'], array('is_html' => $is_html));
-
-			if ($prefs['feature_freetags'] == 'y') { // And get the Tags for the posts
-				$res['freetags'] = TikiLib::lib('freetag')->get_tags_on_object($res['postId'], 'blog post');
-			} else {
-				$res['freetags'] = array();
+			if (isset($res['wysiwyg']) && $res['wysiwyg'] == 'n') {
+				$res['data'] =  $parserlib->parse_data($res['data']);
 			}
 
 			$ret[] = $res;
 		}
 
-		$ret = Perms::filter(array( 'type' => 'blog post' ), 'object', $ret, array( 'object' => 'postId' ), array('read_blog', 'blog_post_view_ref'));
-
 		$retval = array();
-		$retval['data'] = $ret;
-		$retval['cant'] = $cant;
+		$retval["data"] = $ret;
+		$retval["cant"] = $cant;
 
 		return $retval;
 	}
@@ -610,9 +598,7 @@ class BlogLib extends TikiDb_Bridge
 	 */
 	function list_blog_post_comments($approved = 'y', $maxRecords = -1)
 	{
-		global $user, $tiki_p_admin, $tiki_p_blog_admin, $tiki_p_blog_post;
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
+		global $user, $tikilib, $userlib, $tiki_p_admin, $tiki_p_blog_admin, $tiki_p_blog_post;
 
 		// TODO: use commentslib instead of querying database directly
 		// Blog Recent Comments
@@ -728,9 +714,7 @@ class BlogLib extends TikiDb_Bridge
 	function blog_post($blogId, $data, $excerpt, $user, $title = '', $contributions = '', $priv = 'n', $created = 0, $is_wysiwyg=FALSE)
 	{
 		// update tiki_blogs and call activity functions
-		global $prefs;
-		$tikilib = TikiLib::lib('tiki');
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $tikilib, $prefs;
 
 		$wysiwyg=$is_wysiwyg==TRUE?'y':'n';
 		if (!$created) {
@@ -780,7 +764,7 @@ class BlogLib extends TikiDb_Bridge
 				$smarty->assign('mail_data', $data);
 
 				if ($prefs['feature_contribution'] == 'y' && !empty($contributions)) {
-					$contributionlib = TikiLib::lib('contribution');
+					global $contributionlib; include_once('lib/contribution/contributionlib.php');
 					$smarty->assign('mail_contributions', $contributionlib->print_contributions($contributions));
 				}
 				sendEmailNotification($nots, "watch", "user_watch_blog_post_subject.tpl", $_SERVER["SERVER_NAME"], "user_watch_blog_post.tpl");
@@ -792,7 +776,7 @@ class BlogLib extends TikiDb_Bridge
 		}
 
 		if ($prefs['feature_actionlog'] == 'y') {
-			$logslib = TikiLib::lib('logs');
+			global $logslib; include_once('lib/logs/logslib.php');
 			$logslib->add_action('Posted', $blogId, 'blog', "blogId=$blogId&amp;postId=$id&amp;add=" . strlen($data) . "#postId$id", '', '', '', '', $contributions);
 		}
 
@@ -833,8 +817,8 @@ class BlogLib extends TikiDb_Bridge
 	 */
 	function remove_post($postId)
 	{
-		$tikilib = TikiLib::lib('tiki');
-		$objectlib = TikiLib::lib('object');
+		global $tikilib;
+		global $objectlib; require_once('lib/objectlib.php');
 
 		$query = "select `blogId`, `data` from `tiki_blog_posts` where `postId`=?";
 		$result = $this->query($query, array((int) $postId));
@@ -846,7 +830,7 @@ class BlogLib extends TikiDb_Bridge
 
 		global $prefs;
 		if ($prefs['feature_actionlog'] == 'y') {
-			$logslib = TikiLib::lib('logs');
+			global $logslib; include_once('lib/logs/logslib.php');
 			$param = "blogId=$blogId&amp;postId=$postId";
 			if ($blogId)
 				$param .= "&amp;del=" . strlen($res['data']);
@@ -888,7 +872,7 @@ class BlogLib extends TikiDb_Bridge
 	 */
 	function get_post($postId, $adjacent = false)
 	{
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 
 		$query = "select * from `tiki_blog_posts` where `postId`=?";
 		$result = $this->query($query, array((int) $postId));
@@ -914,7 +898,7 @@ class BlogLib extends TikiDb_Bridge
 	 */
 	function get_related_posts($postId, $maxResults = 5)
 	{
-		$freetaglib = TikiLib::lib('freetag');
+		global $freetaglib;
 		$related_posts = $freetaglib->get_similar('blog post', $postId, $maxResults);
 
 		// extract 'postId' from href to be able to use {self_link}
@@ -932,7 +916,7 @@ class BlogLib extends TikiDb_Bridge
 	 * @param int $created when the post was created
 	 * @return array
 	 */
-	function _get_adjacent_posts($blogId, $created, $publishDate = null, $user=null, $allowprivate=null)
+	function _get_adjacent_posts($blogId, $created, $publishDate = null, $user=null)
 	{
 		$res = array();
 
@@ -943,7 +927,6 @@ class BlogLib extends TikiDb_Bridge
 			$bindvars[] = $publishDate;
 			$bindvars[] = $user;
 		}
-		if($allowprivate == 'n') { $next_query .= ' AND `priv` = "n"'; }
 		$next_query .= ' ORDER BY created ASC';
 		$result = $this->fetchAll($next_query, $bindvars, 1);
 		$res['next'] = !empty($result[0]) ? $result[0] : null;
@@ -955,7 +938,6 @@ class BlogLib extends TikiDb_Bridge
 			$bindvars[] = $publishDate;
 			$bindvars[] = $user;
 		}
-		if($allowprivate == 'n') { $prev_query .= ' AND `priv` = "n"'; }
 		$prev_query .= ' ORDER BY created DESC';
 		$result = $this->fetchAll($prev_query, $bindvars, 1);
 		$res['prev'] = !empty($result[0]) ? $result[0] : null;
@@ -982,8 +964,7 @@ class BlogLib extends TikiDb_Bridge
 						$contributions = '', $priv='n', $created = 0, $is_wysiwyg=FALSE
 	)
 	{
-		global $prefs;
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib, $prefs;
 
 		if ($is_wysiwyg) {
 			$data = TikiFilter::get('purifier')->filter($data);
@@ -1002,7 +983,7 @@ class BlogLib extends TikiDb_Bridge
 			$result = $this->query($query, array($blogId, $data, $excerpt, $user, $title, $priv, $wysiwyg, $postId));
 		}
 		if ($prefs['feature_actionlog'] == 'y') {
-			$logslib = TikiLib::lib('logs');
+			global $logslib; include_once('lib/logs/logslib.php');
 			$logslib->add_action('Updated', $blogId, 'blog', "blogId=$blogId&amp;postId=$postId#postId$postId", '', '', '', '', $contributions);
 		}
 
@@ -1061,7 +1042,7 @@ class BlogLib extends TikiDb_Bridge
 	 */
 	function add_blog_activity($blogId)
 	{
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 
 		//Caclulate activity, update tiki_blogs and purge activity table
 		$today = $tikilib->make_time(0, 0, 0, $tikilib->date_format("%m"), $tikilib->date_format("%d"), $tikilib->date_format("%Y"));
@@ -1133,7 +1114,7 @@ class BlogLib extends TikiDb_Bridge
 	 */
 	function check_blog_exists($blogId)
 	{
-		$smarty = TikiLib::lib('smarty');
+		global $smarty;
 
 		if (!$this->blog_exists($blogId)) {
 			$msg = tra('Blog cannot be found');
@@ -1156,72 +1137,7 @@ class BlogLib extends TikiDb_Bridge
 
 		return array_keys($result);
 	}
-	function top_bloggers($limit, $blogId=null)
-	{
-		$mid = '';
-		$bindvars = array();
-		if ($blogId) {
-			$mid = 'where `blogId`=?';
-			$bindvars = array($blogId);
-		}
-		$query = 'select distinct(`user`), count(`user`) as posts from `tiki_blog_posts` ' . $mid . ' group by `user` order by `posts` desc';
-		$result = $this->query($query, $bindvars, $limit, 0);
-		$ret = array();
-		while ($res =$result->fetchRow()) {
-			$ret[] = $res;
-		}
-		$query = 'select count(distinct(`user`))  from `tiki_blog_posts`';
-		$nb = $this->getOne($query);
-		return array('data' => $ret, 'count' => $nb);
-	}
-	function mod_blog_posts(&$blogItems, $charCount, $wordBoundary='y', $ellipsis='y', $more='y')
-	{
-		$smarty = TikiLib::lib('smarty');
-
-		/* The function takes an argument asking if the break should occur on a
-		   word boundary. The truncate function asks if words can be broken.
-		   The same question is asked inversely so the supplied parameter needs
-		   to be reversed to remain accurate. */
-		$breakword = ($wordBoundary == 'y') ? false : true;
-
-		$etc = ($ellipsis == 'y') ? ' ... ' : ' ';
-		$numBlogs = count($blogItems["data"]);
-		for ($i=0; $i<$numBlogs; $i++) {
-			$pos = 0;
-			$counter = 'char';
-			$arrString = array();
-			$tally = array( "char" => 0, "tags" => 0 );
-//			preg_match_all("[\s|\w]",$blogItems['data'][$i]['parsed_data'],$arrString);
-			$arrString = $blogItems['data'][$i]['parsed_data'];
-
-			/* We don't want to stop this loop until we've counted sufficient displaying
-			   characters, not just string positions */
-			for ($pos=0; $tally['char']<$charCount; $pos++) {
-				if ($arrString[$pos] == '<' && $counter == 'char') {
-					$counter = 'tags';
-				} elseif ($arrString[$pos] == '>' && $counter == 'tags') {
-					$counter = 'char';
-				}
-				$tally[$counter]++;
-			}
-			$segLength = $charCount + $tally['tags'];
-			$smarty->loadPlugin('smarty_modifier_truncate');
-			$blogItems['data'][$i]['parsed_data'] =
-				smarty_modifier_truncate(
-					$blogItems['data'][$i]['parsed_data'],
-					$segLength,
-					$etc,
-					$breakword
-				);
-
-			if ($more == 'y') {
-				$blogItems['data'][$i]['parsed_data'] .=
-					'<a class="link" href="tiki-view_blog_post.php?postId=' .
-					$blogItems['data'][$i]['postId'] . '"> &#60more&#62</a>';
-			}
-			unset( $arrString );
-		}
-  		return( $blogItems );
-	}
 }
 
+global $bloglib;
+$bloglib = new BlogLib;

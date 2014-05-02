@@ -22,8 +22,7 @@ function wikiplugin_draw_info()
 				'filter' => 'digits',
 				'accepted' => ' ID number',
 				'default' => '',
-				'since' => '7.1',
-				'profile_reference' => 'file',
+				'since' => '7.1'
 			),
 			'width' => array(
 				'required' => false,
@@ -64,7 +63,7 @@ function wikiplugin_draw_info()
 function wikiplugin_draw($data, $params)
 {
 	global $dbTiki, $tiki_p_edit, $tiki_p_admin,$tiki_p_upload_files, $prefs, $user, $page, $tikilib, $smarty, $headerlib, $globalperms;
-	$filegallib = TikiLib::lib('filegal');
+	global $filegallib; include_once ('lib/filegals/filegallib.php');
 	extract(array_merge($params, array()), EXTR_SKIP);
 
 	static $drawIndex = 0;
@@ -83,12 +82,6 @@ function wikiplugin_draw($data, $params)
 		$gals=$filegallib->list_file_galleries(0, -1, 'name_desc', $user);
 
 		$galHtml = "";
-		if (!function_exists('wp_draw_cmp')) {
-			function wp_draw_cmp($a, $b) {
-				return strcmp(strtolower($a["name"]), strtolower($b["name"]));
-			}
-		}
-		usort($gals['data'], 'wp_draw_cmp');
 		foreach ($gals['data'] as $gal) {
 			if ($gal['name'] != "Wiki Attachments" && $gal['name'] != "Users File Galleries")
 				$galHtml .= "<option value='".$gal['id']."'>".$gal['name']."</option>";
@@ -126,7 +119,7 @@ JQ
 		~np~
 		<form id="newDraw$drawIndex" method="get" action="tiki-edit_draw.php">
 			<p>
-				<input type="submit" class="btn btn-default btn-sm" name="label" value="$label" class="newSvgButton" />$in
+				<input type="submit" name="label" value="$label" class="newSvgButton" />$in
 				<select name="galleryId">
 					$galHtml
 				</select>

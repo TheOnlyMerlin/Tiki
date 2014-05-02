@@ -14,9 +14,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 // Module special params:
 // - user: Tiki username to show Twitter timeline of
 
-/**
- * @return array
- */
 function module_twitter_info()
 {
 	return array(
@@ -43,10 +40,6 @@ function module_twitter_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_twitter( $mod_reference, $module_params )
 {
 	global $tikilib, $smarty, $prefs;
@@ -61,13 +54,12 @@ function module_twitter( $mod_reference, $module_params )
 		if ($response == -1) {
 			$timeline[0]['text'] = tra('user not registered with twitter').": $user";
 		}
+		for ($i = 0, $count_response_status = count($response->status); $i < $count_response_status; $i++) {
 
-		for ($i = 0, $count_response_status = count($response); $i < $count_response_status; $i++) {
-
-			$timeline[$i]['text']=$response[$i]->text;
-			$timeline[$i]['id']=$response[$i]->id;
-			$timeline[$i]['created_at']=$response[$i]->created_at;
-			$timeline[$i]['screen_name']=$response[$i]->user->screen_name;
+			$timeline[$i]['text']=$response->status[$i]->text;
+			$timeline[$i]['id']=$response->status[$i]->id;
+			$timeline[$i]['created_at']=$response->status[$i]->created_at;
+			$timeline[$i]['screen_name']=$response->status[$i]->user->screen_name;
 		}
 	} else {
 		$i=0;

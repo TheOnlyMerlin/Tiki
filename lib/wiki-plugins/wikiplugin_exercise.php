@@ -10,7 +10,7 @@ function wikiplugin_exercise_info()
 	return array(
 		'name' => tra('Exercise'),
 		'documentation' => tra('PluginExercise'),
-		'description' => tra('Creates exercises within a wiki page for students to test their new skills. Inline questions and optional answers selections can be defined. A score is given for multiple exercises within a page.'),
+		'description' => tra('Creates exercises within a wiki page for students to test their new skills. The plugin allows to define inline questions and optional answers to be selected from. A score is given for multiple exercises within a page.'),
 		'prefs' => array('wikiplugin_exercise'),
 		'filter' => 'text',
 		'format' => 'html',
@@ -200,7 +200,7 @@ JS;
 	return <<<HTML
 <form class="exercise-form" method="get" action="#">
 	<p>$yourScoreIs</p>
-	<input type="submit" class="btn btn-default btn-sm" value="$checkYourScore"/>
+	<input type="submit" value="$checkYourScore"/>
 </form>
 HTML;
 }

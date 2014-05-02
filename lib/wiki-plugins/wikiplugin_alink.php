@@ -20,15 +20,14 @@ function wikiplugin_alink_info()
 				'required' => true,
 				'name' => tra('Anchor Name'),
 				'description' => tra('The anchor name as defined in the ANAME plugin.'),
-				'default' => '',
+				'default' => ''
 			),
 			'pagename' => array(
 				'required' => false,
 				'name' => tra('Page Name'),
 				'description' => tra('The name of the wiki page containing the anchor. If empty, the anchor name will be searched for on the wiki page where the plugin is used.'),
 				'filter' => 'pagename',
-				'default' => '',
-				'profile_reference' => 'wiki_page',
+				'default' => ''
 			),
 		),
 	);
@@ -36,10 +35,12 @@ function wikiplugin_alink_info()
 
 function wikiplugin_alink($data, $params)
 {
-	global $prefs;
-	$multilinguallib = TikiLib::lib('multilingual');
-	$tikilib = TikiLib::lib('tiki');
-	extract($params, EXTR_SKIP);
+	global $multilinguallib, $tikilib, $prefs;
+
+	if ( ! isset( $multilinguallib ) || !is_object($multilinguallib) ) {
+		include_once('lib/multilingual/multilinguallib.php');// must be done even in feature_multilingual not set
+	}
+        extract($params, EXTR_SKIP);
 
 	if (!isset($aname)) {
 		return ("<b>missing parameter for aname</b><br />");

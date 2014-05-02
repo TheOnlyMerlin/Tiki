@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -10,7 +7,7 @@
 
 require_once ('tiki-setup.php');
 include_once ('lib/themecontrol/tcontrol.php');
-$categlib = TikiLib::lib('categ');
+include_once ('lib/categories/categlib.php');
 
 $access->check_feature('feature_theme_control', '', 'look');
 $access->check_permission('tiki_p_admin');

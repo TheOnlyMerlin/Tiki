@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_switch_lang_info()
 {
 	return array(
@@ -30,10 +27,6 @@ function module_switch_lang_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_switch_lang($mod_reference, $module_params)
 {
 	global $tikilib, $smarty, $prefs;
@@ -44,7 +37,7 @@ function module_switch_lang($mod_reference, $module_params)
 	$languages = $tikilib->list_languages(false, 'y');
 	$mode = isset($module_params["mode"]) ? $module_params["mode"] : "droplist";
 	$smarty->assign('mode', $mode);
-	if ($mode == 'flags' || $mode == 'words' || $mode == 'abrv') {
+	if ($mode == 'flags' || $mode == 'words') {
 		include('lang/flagmapping.php');
 		global $pageRenderer;
 		//$trads = $multilinguallib->getTranslations('wiki page', $page_id, $page, $prefs['language']);

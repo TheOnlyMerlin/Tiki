@@ -10,7 +10,9 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	header('location: index.php');
 	exit;
 }
-$logslib = TikiLib::lib('logs');
+require_once ('lib/core/Zend/Oauth/Consumer.php');
+require_once ('lib/core/Zend/Service/Twitter.php');
+require_once ('lib/logs/logslib.php');
 
 
 /**
@@ -78,7 +80,6 @@ class SocialNetworksLib extends LogsLib
 
 
 		$this->options['callbackUrl'] = $this->getURL();
-		$this->options['siteUrl'] = 'https://api.twitter.com/oauth';
 		$this->options['consumerKey'] = $prefs['socialnetworks_twitter_consumer_key'];
 		$this->options['consumerSecret'] = $prefs['socialnetworks_twitter_consumer_secret'];
 
@@ -87,7 +88,7 @@ class SocialNetworksLib extends LogsLib
 			$token = $consumer->getRequestToken();
 			$_SESSION['TWITTER_REQUEST_TOKEN'] = serialize($token);
 			$consumer->redirect();
-		} catch (Zend_Oauth_Exception $e) {
+		} catch (Zend_Http_Client_Exception $e) {
 			return false;
 		}
 	}
@@ -159,9 +160,6 @@ class SocialNetworksLib extends LogsLib
 		if ($prefs['socialnetworks_facebook_manage_pages'] == 'y') {
 			$scopes[] = 'manage_pages';
 		}
-		if ($prefs['socialnetworks_facebook_email'] === 'y') {
-			$scopes[] = 'email';
-		}
 		$scope = implode(',', $scopes);
 		$url = $this->getURL();
 		if (strpos($url, '?') != 0) {
@@ -184,8 +182,7 @@ class SocialNetworksLib extends LogsLib
 	 */
 	function getFacebookAccessToken()
 	{
-		global $prefs, $user;
-		$userlib = TikiLib::lib('user');
+		global $prefs, $user, $userlib;
 		if ($prefs['socialnetworks_facebook_application_id'] == '' or $prefs['socialnetworks_facebook_application_secr'] == '') {
 			return false;
 		}
@@ -225,7 +222,6 @@ class SocialNetworksLib extends LogsLib
 			if (empty($fb_profile->id)) {
 				return false;
 			}
-			// echo '<!-- $ret=' . var_export($fb_profile, true) . '-->';
 			if (!$user) {
 				if ($prefs['socialnetworks_facebook_login'] != 'y') {
 					return false;
@@ -235,13 +231,8 @@ class SocialNetworksLib extends LogsLib
 					$user = $local_user;
 				} elseif ($prefs['socialnetworks_facebook_autocreateuser'] == 'y') {
 					$randompass = $userlib->genPass();
-					$email = $prefs['socialnetworks_facebook_email'] === 'y' ? $fb_profile->email : '';
-					if ($prefs['login_is_email'] == 'y' && $email) {
-						$user = $email;
-					} else {
-						$user = 'fb_' . $fb_profile->id;
-					}
-					$userlib->add_user($user, $randompass, $email);
+					$user = 'fb_' . $fb_profile->id;
+					$userlib->add_user($user, $randompass, '');
 					$this->set_user_preference($user, 'realName', $fb_profile->name);
 					if ($prefs['socialnetworks_facebook_firstloginpopup'] == 'y') {
 						$this->set_user_preference($user, 'socialnetworks_user_firstlogin', 'y');
@@ -258,7 +249,6 @@ class SocialNetworksLib extends LogsLib
 				$userlib->update_expired_groups();
 				$this->set_user_preference($user, 'facebook_id', $fb_profile->id);
 				$this->set_user_preference($user, 'facebook_token', $access_token);
-				$userlib->update_lastlogin($user);
 				header('Location: tiki-index.php');
 				die;
 			} else {
@@ -302,34 +292,33 @@ class SocialNetworksLib extends LogsLib
 			}
 		}
 		$token = unserialize($token);
+		$token = (object)$token;
 
 		$this->options['callbackUrl'] = $this->getURL();
 		$this->options['consumerKey'] = $prefs['socialnetworks_twitter_consumer_key'];
 		$this->options['consumerSecret'] = $prefs['socialnetworks_twitter_consumer_secret'];
-		$twitter = new Zend_Service_Twitter(
-			array(
-				'oauthOptions' => array(
-					'consumerKey' => $prefs['socialnetworks_twitter_consumer_key'],
-					'consumerSecret' => $prefs['socialnetworks_twitter_consumer_secret'],
-				),
-				'accessToken' => $token
-			)
-		);
+		$client = $token->getHttpClient($this->options);
+		$clientconfig['timeout'] = 60; // allow a longer timeout for twitter makes sense
+		$client->setConfig($clientconfig);
+		$twitter = new Zend_Service_Twitter();
+		$twitter->setLocalHttpClient($client);
 
 		try {
-			$response = $twitter->statusesUpdate($message);
-		} catch (Zend_Service_Twitter_Exception $e) {
+			$response = $twitter->status->update($message);
+		} catch (Zend_Http_Client_Exception $e) {
 			$this->add_log('tweet', 'twitter error ' . $e->getMessage());
 			return -($e->getCode());
 		}
 
-		if (!$response->isSuccess()) {
-			$errors = $response->getErrors();
-			$this->add_log('tweet', 'twitter response: ' . $errors[0]->message . ' - Code: ' . $errors[0]->code);
-			return -$errors['code'];
+		$status = $response->getStatus();
+
+		if ($status != 200) {
+			$this->add_log('tweet', 'twitter response ' . $status);
+			return -$status;
 		} else {
-			$id = $response->toValue();
-			return $id->id_str;
+			$id = (string)$response->id;
+			$this->add_log('tweet', 'id: ' . $id);
+			return $id;
 		}
 	}
 
@@ -349,21 +338,16 @@ class SocialNetworksLib extends LogsLib
 			return false;
 		}
 		$token = unserialize($token);
+		$token = (object)$token;
 		$this->options['callbackUrl'] = $this->getURL();
 		$this->options['consumerKey'] = $prefs['socialnetworks_twitter_consumer_key'];
 		$this->options['consumerSecret'] = $prefs['socialnetworks_twitter_consumer_secret'];
-		$twitter = new Zend_Service_Twitter(
-			array(
-				'oauthOptions' => array(
-					'consumerKey' => $prefs['socialnetworks_twitter_consumer_key'],
-					'consumerSecret' => $prefs['socialnetworks_twitter_consumer_secret'],
-				),
-				'accessToken' => $token
-			)
-		);
+		$client = $token->getHttpClient($this->options);
+		$twitter = new Zend_Service_Twitter();
+		$twitter->setLocalHttpClient($client);
 		try {
-			$response = $twitter->statusesDestroy($id);
-		} catch(Zend_Http_Client_Exception $e)	{
+			$response = $twitter->status->destroy($id);
+		} catch(Zend_Http_Client_Adapter_Exception $e)	{
 			return false;
 		}
 		return true;
@@ -586,29 +570,32 @@ class SocialNetworksLib extends LogsLib
 		}
 
 		$token = unserialize($token);
+		$token= (object)$token;
 
-		$twitter = new Zend_Service_Twitter(
-			array(
-				'oauthOptions' => array(
-					'consumerKey' => $prefs['socialnetworks_twitter_consumer_key'],
-					'consumerSecret' => $prefs['socialnetworks_twitter_consumer_secret'],
-				),
-				'accessToken' => $token
-			)
-		);
-
-		if ($timelineType=='friends') {
-			$response = $twitter->statusesHomeTimeline();
-		} else {
-			$response = $twitter->statusesUserTimeline();
+		$this->options['callbackUrl']=$this->getURL();
+		$this->options['consumerKey']=$prefs['socialnetworks_twitter_consumer_key'];
+		$this->options['consumerSecret']=$prefs['socialnetworks_twitter_consumer_secret'];
+		$client = $token->getHttpClient($this->options);
+		$clientconfig['timeout']=30;
+		$client->setConfig($clientconfig);
+		$twitter = new Zend_Service_Twitter();
+		$twitter->setLocalHttpClient($client);
+		try {
+			if ($timelineType=='friends') {
+				$response = $twitter->status->friendsTimeline();
+			} else {
+				$response = $twitter->status->userTimeline();
+			}
+		} catch (Zend_Http_Client_Exception $e) {
+			$this->add_log('tweet', 'twitter error '.$e->getMessage());
+			return -($e->getCode());
 		}
-
-		if (!$response->isSuccess()) {
-			$errors = $response->getErrors();
-			$this->add_log('tweet', 'twitter response: ' . $errors[0]->message . ' - Code: ' . $errors[0]->code);
-			return -$errors['code'];
+		$status=$response->getStatus();
+		if ($status!=200) {
+			$this->add_log('tweet', 'twitter response ' . $status);
+			return -$status;
 		} else {
-			return $response->toValue();
+			return $response;
 		}
 	}
 

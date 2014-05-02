@@ -20,19 +20,19 @@ class Perms_Reflection_Object implements Perms_Reflection_Container
 
 	function add( $group, $permission )
 	{
-		$userlib = TikiLib::lib('user');
+		global $userlib;
 		$userlib->assign_object_permission($group, $this->object, $this->type, $permission);
 	}
 
 	function remove( $group, $permission )
 	{
-		$userlib = TikiLib::lib('user');
+		global $userlib;
 		$userlib->remove_object_permission($group, $this->object, $this->type, $permission);
 	}
 
 	function getDirectPermissions()
 	{
-		$userlib = TikiLib::lib('user');
+		global $userlib;
 		$set = new Perms_Reflection_PermissionSet;
 
 		$permissions = $userlib->get_object_permissions($this->object, $this->type);
@@ -75,7 +75,7 @@ class Perms_Reflection_Object implements Perms_Reflection_Container
 
 	private function getCategories()
 	{
-		$categlib = TikiLib::lib('categ');
+		global $categlib; require_once 'lib/categories/categlib.php';
 
 		return $categlib->get_object_categories($this->type, $this->object);
 	}

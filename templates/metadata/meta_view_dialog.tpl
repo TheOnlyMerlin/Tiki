@@ -73,7 +73,7 @@
 	});
 	$("#{{$id_link}}").click(function() {
 		$("#{{$id}}").tabs({
-			heightStyle: "content",
+			autoHeight: false,
 			collapsible: true
 		}).dialog('open');
 		return false;

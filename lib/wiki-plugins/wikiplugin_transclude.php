@@ -21,7 +21,6 @@ function wikiplugin_transclude_info()
 				'name' => tra('Page Name'),
 				'description' => tra('Name of the wiki page to use as a template for the values.'),
 				'default' => '',
-				'profile_reference' => 'wiki_page',
 			),
 		),
 	);

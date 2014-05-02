@@ -31,7 +31,6 @@ class Services_JCapture_Controller
 
 		$area = $input->area->text();
 		$page = $input->page->text();
-		$page = urldecode($page);
 		$page = TikiLib::lib('tiki')->take_away_accent($page);
 
 		/* Perform suggested seperator substitutions. */

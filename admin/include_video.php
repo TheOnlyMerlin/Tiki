@@ -12,14 +12,10 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 }
 
 if ($prefs['feature_kaltura'] === 'y') {
-	$kalturaadminlib = TikiLib::lib('kalturaadmin');
-
-	if ($kalturaadminlib->getSessionKey()) {
+	require_once 'lib/videogals/kalturalib.php';
+	if (is_object($kalturaadminlib) && !empty($kalturaadminlib->session)) {
 		// contribution wizard
-		$kcwDefault = $prefs['kaltura_kcwUIConf'];
-		if (empty($kcwDefault) || !empty($_REQUEST['kcw_rebuild'])) {
-			$kcwDefault = $kalturaadminlib->updateStandardTikiKcw();
-		}
+		$kcwDefault = $kalturaadminlib->updateStandardTikiKcw();
 		if ($kcwDefault) {
 			$kcwText = "<div class='adminoptionbox'>KCW Configuration ID: $kcwDefault (automatically configured)</div>";
 		} else {

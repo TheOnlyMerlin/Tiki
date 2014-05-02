@@ -12,9 +12,6 @@ require_once('lib/language/FileType.php');
 require_once('lib/language/FileType/Php.php');
 require_once('lib/language/FileType/Tpl.php');
 
-use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\vfsStreamFile;
-
 class Language_GetStringsTest extends TikiTestCase
 {
 	protected $collectFiles;
@@ -122,6 +119,8 @@ class Language_GetStringsTest extends TikiTestCase
 
 	public function testCollectString_shouldNotConsiderEmptyCallsToTra()
 	{
+		require_once('vfsStream/vfsStream.php');
+
 		$this->obj->addFileType(new Language_FileType_Php);
 
 		$fileName = 'file1.php';

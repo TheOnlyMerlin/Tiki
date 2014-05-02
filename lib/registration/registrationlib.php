@@ -22,6 +22,7 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 require_once('lib/tikilib.php'); // httpScheme(), get_user_preference
 require_once('lib/webmail/tikimaillib.php');
 require_once('lib/db/tiki_registration_fields.php');
+require_once('lib/notifications/notificationlib.php');
 
 if (!isset($Debug)) {
 	$Debug = false;
@@ -197,22 +198,53 @@ class RegistrationLib extends TikiLib
 	}
 
 	/**
-	 *  Check registration datas
-	 * @param $registration array of registration (login, pass, email, etc.)
-	 * @param bool $from_intertiki
-	 * @return array (of errors)
+	 *  Create a new user in the database on user registration
+	 *  @access private
+	 *  @returns true on success, false to halt event proporgation
 	 */
-	private function local_check_registration($registration, $from_intertiki = false)
+	public function create_user()
 	{
-		global $prefs;
-		$userlib = TikiLib::lib('user');
-		$captchalib = TikiLib::lib('captcha');
+		global $_REQUEST, $_SERVER, $email_valid, $prefs;
+		global $registrationlib_apass, $customfields, $userlib, $tikilib, $Debug;
+
+		if ($Debug) {
+			print '::create_user';
+		}
+
+		if ($email_valid != 'no') {
+			if ($prefs['validateUsers'] == 'y') {
+				$apass = md5($tikilib->genPass());
+				$registrationlib_apass = $apass;
+				$userlib->add_user($_REQUEST['name'], $apass, $_REQUEST['email'], $_REQUEST['pass']);
+			} else {
+				$userlib->add_user($_REQUEST['name'], $_REQUEST['pass'], $_REQUEST['email'], '');
+			}
+
+			// Custom fields
+			foreach ($customfields as $custpref => $prefvalue) {
+				if ($customfields[$custpref]['show']) {
+					//print $_REQUEST[$customfields[$custpref]['prefName']];
+					$tikilib->set_user_preference($_REQUEST['name'], $customfields[$custpref]['prefName'], $_REQUEST[$customfields[$custpref]['prefName']]);
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	 *  Check registration datas
+	 *  @param $registration datas of registration (login, pass, email, etc.)
+	 *  @returns ?
+	 */
+	/*private*/
+	public function local_check_registration($registration, $from_intertiki = false)
+	{
+		global $_SESSION, $prefs, $userlib, $captchalib;
 
 		$errors = array();
 
 		//do not recheck if already validated
 		if (!isset($registration['valerror']) || $registration['valerror'] !== false) {
-
 			if (empty($registration['name'])) {
 				$errors[] = new RegistrationError('name', tra('Username is required'));
 			}
@@ -306,19 +338,10 @@ class RegistrationLib extends TikiLib
 		return $errors;
 	}
 
-	/**
-	 * @param $registration
-	 * @param $from_intertiki
-	 * @return string
-	 */
-	private function register_new_user_local($registration, $from_intertiki)
+	/*private*/
+	public function register_new_user_local($registration, $from_intertiki)
 	{
-		global $prefs;
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
-		$smarty = TikiLib::lib('smarty');
-		$logslib = TikiLib::lib('logs');
-		$notificationlib = TikiLib::lib('notification');
+		global $_SESSION, $tikilib, $logslib, $userlib, $notificationlib, $prefs, $smarty;
 
 		$result = '';
 
@@ -435,12 +458,8 @@ class RegistrationLib extends TikiLib
 		return $result;
 	}
 
-	/**
-	 * @param $registration array
-	 * @param $from_intertiki bool
-	 * @return mixed|RegistrationError
-	 */
-	private function register_new_user_to_intertiki($registration, $from_intertiki)
+	/*private*/
+	public function register_new_user_to_intertiki($registration, $from_intertiki)
 	{
 		global $prefs;
 
@@ -477,11 +496,12 @@ class RegistrationLib extends TikiLib
 	}
 
 	/**
-	 *  Check registration data
-	 * @param $registration array of registration (login, pass, email, etc.)
-	 * @param $from_intertiki bool
-	 * @return array|string RegistrationError if error, string with message if ok
+	 *  Check registration datas
+	 *  @param $registration datas of registration (login, pass, email, etc.)
+	 *  @returns : Object RegistrationError if error
+	 *             string with message if ok
 	 */
+	/*public*/
 	public function register_new_user($registration, $from_intertiki=false)
 	{
 		global $prefs, $tikilib;
@@ -550,98 +570,10 @@ class RegistrationLib extends TikiLib
 		return $result;
 	}
 
-	/**
-	 * Adds jquery validation javascript to the page to validate the registration form inputs
-	 */
-	public function addRegistrationFormValidationJs()
+	/*private*/
+	public function init_registration_prefs()
 	{
-		global $prefs, $user;
-
-		if ($prefs['feature_jquery_validation'] === 'y') {
-			$js_m = '';
-			$js = '
-			$("form[name=RegForm]").validate({
-				rules: {
-					name: {
-						required: true,';
-			if ($prefs['login_is_email'] === 'y') {
-				$js .= '
-						email: true,';
-			}
-			$js .= '
-						remote: {
-							url: "validate-ajax.php",
-							type: "post",
-							data: {
-								validator: "username",
-								input: function() { return $("#name").val(); }
-							}
-						}
-					},
-					email: {
-						required: true,
-						email: true
-					},
-					pass: {
-						required: true,
-						remote: {
-							url: "validate-ajax.php",
-							type: "post",
-							data: {
-								validator: "password",
-								input: function() { return $("#pass1").val(); }
-							}
-						}
-					},
-					passAgain: { equalTo: "#pass1" }';
-
-			if ($prefs['user_must_choose_group'] === 'y') {
-				$choosable_groups = $this->merged_prefs['choosable_groups'];
-				$js .= ',
-					chosenGroup: {
-						required: true
-					}';
-				$js_m .= ' "chosenGroup": { required: "' . tra('One of these groups is required') . '"}, ';
-			}
-
-			if (extension_loaded('gd') && function_exists('imagepng') && function_exists('imageftbbox') && $prefs['feature_antibot'] == 'y' && empty($user) && $prefs['recaptcha_enabled'] != 'y') {
-				// antibot validation
-				$js .= ',
-			"captcha[input]": {
-				required: true,
-				remote: {
-					url: "validate-ajax.php",
-					type: "post",
-					data: {
-						validator: "captcha",
-						parameter: function() { return $jq("#captchaId").val(); },
-						input: function() { return $jq("#antibotcode").val(); }
-					}
-				}
-			}
-		';
-				$js_m .= ' "captcha[input]": { required: "' . tra('This field is required') . '"}, ';
-			}
-
-			$js .= '
-				},
-				messages: {' . $js_m . '
-					name: { required: "This field is required"},
-					email: { email: "Invalid email", required: "This field is required"},
-					pass: { required: "This field is required"},
-					passAgain: { equalTo: "Passwords do not match"}
-				},
-				submitHandler: function(){process_submit(this.currentForm);}
-			});
-		';
-			TikiLib::lib('header')->add_jq_onready($js);
-		}
-	}
-
-	private function init_registration_prefs()
-	{
-		global $prefs;
-		$userlib = TikiLib::lib('user');
+		global $userlib, $prefs;
 
 		if (!is_array($this->merged_prefs)) {
 			// local tiki prefs

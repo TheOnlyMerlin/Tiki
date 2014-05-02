@@ -16,10 +16,7 @@ if (isset($_REQUEST['connectprefs'])) {
 }
 
 ask_ticket('admin-inc-connect');
-global $prefs, $base_url;
-$userlib = TikiLib::lib('user');
-$headerlib = TikiLib::lib('header');
-$smarty = TikiLib::lib('smarty');
+global $userlib, $prefs, $base_url, $headerlib, $smarty;
 
 $headerlib->add_jsfile('lib/jquery_tiki/tiki-connect.js');
 
@@ -66,5 +63,3 @@ if ($prefs['connect_server_mode'] === 'y') {
 	$smarty->assign('connect_stats', null);
 	$smarty->assign('connect_recent', null);
 }
-
-$smarty->assign('jitsi_url', Services_Suite_Controller::getJitsiUrl());

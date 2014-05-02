@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -507,7 +504,7 @@ if ($calendar['customlocations'] == 'y') {
 $smarty->assign('listlocs', $listlocs);
 $smarty->assign('changeCal', isset($_REQUEST['changeCal']));
 
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 $smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
 
 if ($calendar['customcategories'] == 'y') {
@@ -582,7 +579,7 @@ if ($calitem['allday']) {
 if (array_key_exists('CalendarViewGroups', $_SESSION) && count($_SESSION['CalendarViewGroups']) == 1)
 	$smarty->assign('calendarView', $_SESSION['CalendarViewGroups'][0]);
 
-$wikilib = TikiLib::lib('wiki');
+global $wikilib; include_once('lib/wiki/wikilib.php');
 $plugins = $wikilib->list_plugins(true, 'editwiki');
 $smarty->assign_by_ref('plugins', $plugins);
 $smarty->assign('impossibleDates', $impossibleDates);

@@ -35,7 +35,7 @@ function wikiplugin_contributionsdashboard_info()
 			'types' => array(
 				'required' => true,
 				'name' => tra('Dashboard Types'),
-				'description' => tra('The type of charts that will be rendered separated by comma'),
+				'description' => tra('The type of charts that will be rendered seperated by comma'),
 				'filter' => 'striptags',
 				'default' => 'trackeritems',
 			),
@@ -71,8 +71,8 @@ function wikiplugin_contributionsdashboard($data, $params)
 
 	$types = explode(',', $types);
 
-	$headerlib->add_jsfile("vendor/jquery/jquery-sheet/plugins/raphael-min.js", "external");
-	$headerlib->add_jsfile("vendor/jquery/jquery-sheet/plugins/g.raphael-min.js", "external");
+	$headerlib->add_jsfile("lib/jquery.sheet/plugins/raphael-min.js", "external");
+	$headerlib->add_jsfile("lib/jquery.sheet/plugins/g.raphael-min.js", "external");
 	$headerlib->add_jq_onready("$('.cDashDate').datepicker();");
 
 	$usersTrackerItems = array();

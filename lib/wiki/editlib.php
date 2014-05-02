@@ -29,11 +29,8 @@ class EditLib
 
 	function make_sure_page_to_be_created_is_not_an_alias($page, $page_info)
 	{
-		$access = TikiLib::lib('access');
-		$tikilib = TikiLib::lib('tiki');
-		$wikilib = TikiLib::lib('wiki');
-		$semanticlib = TikiLib::lib('semantic');
-
+		global $_REQUEST, $semanticlib, $access, $wikilib, $tikilib;
+		require_once 'lib/wiki/semanticlib.php';
 		$aliases = $semanticlib->getAliasContaining($page, true);
 		if (!$page_info && count($aliases) > 0) {
 			$error_title = tra("Cannot create aliased page");
@@ -53,7 +50,7 @@ class EditLib
 
 	function user_needs_to_specify_language_of_page_to_be_created($page, $page_info, $new_page_inherited_attributes = null)
 	{
-		global $prefs;
+		global $_REQUEST, $multilinguallib, $prefs, $tikilib;
 		if (isset($_REQUEST['need_lang']) && $_REQUEST['need_lang'] == 'n') {
 			return false;
 		}
@@ -658,12 +655,10 @@ class EditLib
 		};
 
 		// get the entry points on the stacks
-		$keys = array_keys($p['wikistack']);
-		$key = end($keys);
+		$key = end(array_keys($p['wikistack']));
 		$wiki = &$p['wikistack'][$key];
 
-		$keys = array_keys($p['stack']);
-		$key = end($keys);
+		$key = end(array_keys($p['stack']));
 		$stack = &$p['stack'][$key];
 		$string = &$stack['string'];
 
@@ -683,7 +678,7 @@ class EditLib
 
 	function saveCompleteTranslation()
 	{
-		$multilinguallib = TikiLib::lib('multilingual');
+		global $multilinguallib, $tikilib;
 
 		$sourceInfo = $tikilib->get_page_info($this->sourcePageName);
 		$targetInfo = $tikilib->get_page_info($this->targetPageName);
@@ -700,7 +695,7 @@ class EditLib
 
 	function savePartialTranslation()
 	{
-		$multilinguallib = TikiLib::lib('multilingual');
+		global $multilinguallib, $tikilib;
 
 		$sourceInfo = $tikilib->get_page_info($this->sourcePageName);
 		$targetInfo = $tikilib->get_page_info($this->targetPageName);
@@ -714,8 +709,8 @@ class EditLib
 	 * Used by "switch editor" and when saving in wysiwyg_htmltowiki mode
 	 * When saving in mixed "html" mode the "unparsing" is done in JavaScript client-side
 	 *
-	 * @param $inData string	editor content
-	 * @return string			wiki markup
+	 * @param $inData		editor content
+	 * @return string		wiki markup
 	 */
 
 	function parseToWiki( $inData )
@@ -763,13 +758,13 @@ class EditLib
 	 * Render html to send to ckeditor, including parsing plugins for wysiwyg editing
 	 * From both wiki page source (for wysiwyg_htmltowiki) and "html" modes
 	 *
-	 * @param $inData string	page data, can be wiki or mixed html/wiki
+	 * @param $inData			page data, can be wiki or mixed html/wiki
 	 * @param bool $fromWiki	set if converting from wiki page using "switch editor"
-	 * @param bool $isHtml 		set if are doing WYSIWYG Wiki
+	 * @param bool $isHtml set if are doing WYSIWYG Wiki
 	 * @return string			html to send to ckeditor
 	 */
 
-	function parseToWysiwyg( $inData, $fromWiki = false, $isHtml = false, $options = array() )
+	function parseToWysiwyg( $inData, $fromWiki = false, $isHtml = false )
 	{
 		global $tikilib, $tikiroot, $prefs;
 		// Parsing page data for wysiwyg editor
@@ -779,7 +774,7 @@ class EditLib
 
 		$parsed = $tikilib->parse_data(
 			$parsed,
-			array_merge( array(
+			array(
 				'absolute_links'=>true,
 				'noheaderinc'=>true,
 				'suppress_icons' => true,
@@ -787,7 +782,7 @@ class EditLib
 				'is_html' => ($isHtml && !$fromWiki),
 				'process_wiki_paragraphs' => (!$isHtml || $fromWiki),
 				'process_double_brackets' => 'n'
-			), $options )
+			)
 		);
 
 		if ($fromWiki) {
@@ -816,7 +811,7 @@ class EditLib
 	/**
 	 * Converts wysiwyg plugins into wiki.
 	 * Also processes headings by removing surrounding <p> (possibly for wysiwyg_wiki_semi_parsed but not tested)
-	 * Also used by ajax preview in Services_Edit_Controller
+	 * Also used by ajax preview in tiki-auto_save.php
 	 *
 	 * @param string $inData	page data - mostly html but can have a bit of wiki in it
 	 * @return string			html with wiki plugins
@@ -871,11 +866,8 @@ class EditLib
 			if ($c[$i]["type"] == "text") {
 				if ( ! ctype_space($c[$i]["data"]) ) {
 					$add = $c[$i]["data"];
-					$noparsed = array();
-					 TikiLib::lib('parser')->plugins_remove($add, $noparsed);
 					$add = str_replace(array("\r","\n"), '', $add);
 					$add = str_replace('&nbsp;', ' ', $add);
-					TikiLib::lib('parser')->plugins_replace($add, $noparsed, true);
 					$src .= $add;
 				}
 			} elseif ($c[$i]["type"] == "comment") {
@@ -1223,9 +1215,7 @@ class EditLib
 
 	function get_new_page_attributes_from_parent_pages($page, $page_info)
 	{
-		$tikilib = TikiLib::lib('tiki');
-		$wikilib = TikiLib::lib('wiki');
-
+		global $wikilib, $tikilib;
 		$new_page_attrs = array();
 		$parent_pages = $wikilib->get_parent_pages($page);
 		$parent_pages_info = array();

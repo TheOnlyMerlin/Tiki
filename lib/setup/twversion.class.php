@@ -24,11 +24,11 @@ class TWVersion
 		//   stable   : Represents stable releases.
 		//   unstable : Represents candidate and test/development releases.
 		//   trunk     : Represents next generation development version.
-		$this->branch 	= 'trunk';
+		$this->branch 	= 'stable';
 
 		// Set everything else, including defaults.
-		$this->version 	= '13.0svn';	// needs to have no spaces for releases
-		$this->star	= '?';
+		$this->version 	= '10.6';	// Never ever put any spaces in this value.  This will appear in tiki-admin.php?page=general
+		$this->star	= 'Sun';
 		$this->releases	= array();
 
 		// Check for Subversion or not
@@ -77,7 +77,7 @@ class TWVersion
 		);
 	}
 
- 	// Returns an array of all valid versions of Tiki.
+	// Returns an array of all valid versions of Tiki.
 	function tikiVersions()
 	{
 		// These are all the valid release versions of Tiki.
@@ -197,6 +197,7 @@ class TWVersion
 				'10.3',
 				'10.4',
 				'10.5',
+				'10.6',
 				'11.0beta',
 				'11.0',
 				'11.1',
@@ -205,6 +206,7 @@ class TWVersion
 				'12.0',
 				'12.1alpha',
 				'12.1beta',
+				'12.1',
 			);
 	}
 

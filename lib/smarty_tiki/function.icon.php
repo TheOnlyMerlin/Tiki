@@ -28,13 +28,10 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
  */
 function smarty_function_icon($params, $smarty)
 {
-	if ( ! is_array($params) ) {
+	if ( ! is_array($params) )
 		$params = array();
-	}
 
-	global $prefs, $tc_theme, $tc_theme_option, $url_path, $base_url, $tikipath;
-	$tikilib = TikiLib::lib('tiki');
-	$cachelib = TikiLib::lib('cache');
+	global $prefs, $tc_theme, $tc_theme_option, $cachelib, $url_path, $base_url, $tikipath, $tikilib;
 
 	if (empty($tc_theme)) {
 		$current_style = $prefs['style'];
@@ -53,11 +50,7 @@ function smarty_function_icon($params, $smarty)
 	}
 
 	$serialized_params = serialize(array_merge($params, array($current_style, $current_style_option, isset($_SERVER['HTTPS']))));
-	if ($prefs['mobile_feature'] === 'y') {
-		$serialized_params .=  $prefs['mobile_mode'];
-	}
-	$language = isset($prefs['language']) ? $prefs['language'] : 'en';
-	$cache_key = 'icons_' . $language . '_' . md5($serialized_params);
+	$cache_key = 'icons_' . $prefs['language'] . '_' . md5($serialized_params);
 	if ( $cached = $cachelib->getCached($cache_key) ) {
 		return $cached;
 	}
@@ -167,15 +160,9 @@ function smarty_function_icon($params, $smarty)
 		$params['file'] = '/'.$params['file'];
 	}
 
-	if ( $tag == 'img' && is_readable($params['file']) ) {
-		$dim = getimagesize($params['file']);
-
-		if ( ! isset($params['width']) ) {
-			$params['width'] = $dim[0] ? $dim[0] : $default_width;
-		}
-		if ( ! isset($params['height']) ) {
-			$params['height'] = $dim[1] ? $dim[1] : $default_height;
-		}
+	if ( $tag == 'img' ) {
+		if ( ! isset($params['width']) ) $params['width'] = $default_width;
+		if ( ! isset($params['height']) ) $params['height'] = $default_height;
 	}
 
 	if ( $notag ) {
@@ -205,26 +192,19 @@ function smarty_function_icon($params, $smarty)
 			}
 		}
 
-		$headerlib = TikiLib::lib('header');
-		if (!empty($params['file']) && $headerlib) {
+		global $headerlib;
+		if (!empty($params['file'])) {
 			$params['file'] = $headerlib->convert_cdn($params['file']);
 		}
 
 		switch ( $tag ) {
 			case 'input_image':
-				if ($prefs['mobile_feature'] !== 'y' || $prefs['mobile_mode'] !== 'y') {
-					$html = '<input type="image"'.$html.' />';
-				} else {
-					$html = '<span data-role="button" data-inline="true"><input type="image"'.$html.' /></span>';
-				}
+				$html = '<input type="image"'.$html.' />';
 				break;
 			case 'img':
 			default:
 				try {
 					$html = smarty_function_html_image($params, $smarty);
-					if ($prefs['mobile_feature'] === 'y' && $prefs['mobile_mode'] === 'y' && (!empty($params['link']) ||!empty($params['href']))) {
-						$html = str_replace('<a ', '<a  data-role="button" data-inline="true"', $html);
-					}
 				} catch (Exception $e) {
 					$html = '<span class="icon error" title="' . tra('Error:') . ' ' . $e->getMessage() . '">?</span>';
 				}

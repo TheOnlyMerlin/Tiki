@@ -2,32 +2,32 @@
 
 {include file='tiki-mytiki_bar.tpl'}
 {include file='messu-nav.tpl'}
-<br>
+<br />
 {if $prev}<a class="readlink" href="messu-read_archive.php?offset={$offset}&amp;msgId={$prev}&amp;sort_mode={$sort_mode}&amp;find={$find}&amp;flag={$flag}&amp;priority={$priority}&amp;flagval={$flagval}">{tr}Prev{/tr}</a>{/if} 
 {if $next}<a class="readlink" href="messu-read_archive.php?offset={$offset}&amp;msgId={$next}&amp;sort_mode={$sort_mode}&amp;find={$find}&amp;flag={$flag}&amp;priority={$priority}&amp;flagval={$flagval}">{tr}Next{/tr}</a>{/if} 
 <a class="readlink" href="messu-read_archive.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;find={$find}&amp;flag={$flag}&amp;priority={$priority}&amp;flagval={$flagval}">{tr}Return to archive{/tr}</a>
-<br><br>
+<br /><br />
 {if $legend}
   {$legend}
 {else}
   <table>
   <tr><td>
     <form method="post" action="messu-read_archive.php">
-    <input type="hidden" name="offset" value="{$offset|escape}">
-    <input type="hidden" name="find" value="{$find|escape}">
-    <input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
-    <input type="hidden" name="flag" value="{$flag|escape}">
-    <input type="hidden" name="flagval" value="{$flagval|escape}">
-    <input type="hidden" name="priority" value="{$priority|escape}">
-    <input type="hidden" name="msgdel" value="{$msgId|escape}">
+    <input type="hidden" name="offset" value="{$offset|escape}" />
+    <input type="hidden" name="find" value="{$find|escape}" />
+    <input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
+    <input type="hidden" name="flag" value="{$flag|escape}" />
+    <input type="hidden" name="flagval" value="{$flagval|escape}" />
+    <input type="hidden" name="priority" value="{$priority|escape}" />
+    <input type="hidden" name="msgdel" value="{$msgId|escape}" />
     {if $next}
-    <input type="hidden" name="msgId" value="{$next|escape}">
+    <input type="hidden" name="msgId" value="{$next|escape}" />
     {elseif $prev}
-    <input type="hidden" name="msgId" value="{$prev|escape}">
+    <input type="hidden" name="msgId" value="{$prev|escape}" />
     {else}
-    <input type="hidden" name="msgId" value="">
+    <input type="hidden" name="msgId" value="" />
     {/if}
-    <input type="submit" class="btn btn-default btn-sm" name="delete" value="{tr}Delete{/tr}">
+    <input type="submit" name="delete" value="{tr}Delete{/tr}" />
     </form>
   </td>
 </tr>

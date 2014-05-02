@@ -5,16 +5,12 @@
 		<div id="quickadmin" style="text-align: left; padding-left: 12px;">
 			<ul class="cssmenu_horiz clearfix" style="display: inline-block;line-height: 30px;">
 				<li>
-					{if $prefs.feature_jquery_superfish eq "y"}
-						<a>&nbsp;</a>
-					{else}
-						{icon _id=arrow_down title="{tr}Recent preferences{/tr}" href="#"}
-					{/if}
+					<a>&nbsp;</a>
 					<ul class="recent-prefs">
 						<li style="line-height: 2em;"><em>{tr}Recent:{/tr}</em></li>
 						{foreach $recent_prefs as $p}
 							<li>
-								<a href="tiki-admin.php?lm_criteria={$p|stringfix:"_":"%20AND%20"}">{$p|stringfix}</a>
+								<a href="tiki-admin.php?lm_criteria=%22{$p}%22">{$p|stringfix}</a>
 							</li>
 						{foreachelse}
 							<li>{tr}None{/tr}</li>
@@ -22,12 +18,11 @@
 					</ul>
 				</li>
 			</ul>
-			{icon _id=wizard16x16 title="{tr}Wizards{/tr}" href="tiki-wizard_admin.php?stepNr=0&amp;url=index.php"}
 			{icon _id=house title="{tr}Admin home{/tr}" href="tiki-admin.php"} 
 			{icon _id=wrench title="{tr}Modify the look &amp; feel (logo, theme, etc.){/tr}" href="tiki-admin.php?page=look&amp;cookietab=2"} 
 			{icon _id=user title="{tr}Users{/tr}" href="tiki-adminusers.php"}
 			{icon _id=group title="{tr}Groups{/tr}" href="tiki-admingroups.php"}			
-			{permission_link mode=icon label="{tr}Manage permissions{/tr}"}
+			{icon _id=key title="{tr}Permissions{/tr}" href="tiki-objectpermissions.php"}
 			{icon _id=application_side_tree title="{tr}Menus{/tr}" href="tiki-admin_menus.php"}
 			{if $prefs.lang_use_db eq "y"}
 				{if isset($smarty.session.interactive_translation_mode) && $smarty.session.interactive_translation_mode eq "on"}

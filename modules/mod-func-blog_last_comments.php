@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_blog_last_comments_info()
 {
 	return array(
@@ -34,14 +31,10 @@ function module_blog_last_comments_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_blog_last_comments($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
-	$bloglib = TikiLib::lib('blog');
+	global $bloglib, $smarty;
+	include_once ('lib/blogs/bloglib.php');
 	$comments = $bloglib->list_blog_post_comments('y', $mod_reference["rows"]);
 	
 	$smarty->assign('comments', $comments['data']);

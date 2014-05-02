@@ -5,26 +5,15 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-/**
- *
- */
 class ZoteroLib extends TikiDb_Bridge
 {
-    /**
-     * @return bool
-     */
-    function is_authorized()
+	function is_authorized()
 	{
 		$oauthlib = TikiLib::lib('oauth');
 		return $oauthlib->is_authorized('zotero');
 	}
 
-    /**
-     * @param $tag
-     * @param int $limit
-     * @return array|bool
-     */
-    function get_references($tag, $limit = 25)
+	function get_references($tag, $limit = 25)
 	{
 		global $prefs;
 
@@ -70,11 +59,7 @@ class ZoteroLib extends TikiDb_Bridge
 		return false;
 	}
 
-    /**
-     * @param $tag
-     * @return bool|mixed
-     */
-    function get_first_entry($tag)
+	function get_first_entry($tag)
 	{
 		if ($references = $this->get_references($tag, 1)) {
 			return reset($references);
@@ -83,11 +68,7 @@ class ZoteroLib extends TikiDb_Bridge
 		return false;
 	}
 
-    /**
-     * @param $itemId
-     * @return array|bool
-     */
-    function get_entry($itemId)
+	function get_entry($itemId)
 	{
 		global $prefs;
 
@@ -126,11 +107,7 @@ class ZoteroLib extends TikiDb_Bridge
 		return false;
 	}
 
-    /**
-     * @param $tag
-     * @return bool
-     */
-    function get_formatted_references($tag)
+	function get_formatted_references($tag)
 	{
 		global $prefs;
 

@@ -12,7 +12,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 }
 
 /*
- * smarty_function_button: Display a Tiki button
+ * smarty_function_button: Display a Tikiwiki button
  *
  * params will be used as params for as smarty self_link params, except those special params specific to smarty button :
  *	- _text: Text that will be shown in the button
@@ -22,14 +22,11 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
  *	- _flip_hide_text: if set to 'n', do not display a '(Hide)' suffix after _text when status is not 'hidden'
  *	- _flip_default_open: if set to 'y', the flip is open by default (if no cookie jar)
  *	- _escape: if set to 'y', will escape the apostrophes in onclick
- *  - _type: button styling. Possible values: default, primary, success, info, warning, danger, link (following bootstrap conventions)
  */
 function smarty_function_button($params, $smarty)
 {
 	if ( ! is_array($params) || ! isset($params['_text']) ) return;
 	global $tikilib, $prefs, $auto_query_args;
-
-	$class = null;
 
 	$smarty->loadPlugin('smarty_block_self_link');
 
@@ -172,9 +169,11 @@ function smarty_function_button($params, $smarty)
 		);
 	}
 
-	$type = isset($params['_type']) ? $params['type'] : 'default';
-
 	$auto_query_args = $auto_query_args_orig;
-	$html = preg_replace('/<a /', '<a class="btn btn-' . $type . ' ' . $class . '" data-role="button" data-inline="true" ' . $id . ' ', $html);
+	if ($prefs['mobile_feature'] !== 'y' || $prefs['mobile_mode'] !== 'y') {
+		$html = '<span class="'.(!empty($params['_noborder']) ? '' : 'button').(!empty($class)?" $class":'').'"'.$id.'>'.$html.'</span>';
+	} else {
+		$html = preg_replace('/<a /', '<a  data-role="button" ', $html);
+	}
 	return $html;
 }

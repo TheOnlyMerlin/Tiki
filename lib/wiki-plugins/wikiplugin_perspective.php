@@ -19,19 +19,15 @@ function wikiplugin_perspective_info()
 				'required' => false,
 				'name' => tra('Allowed Perspectives'),
 				'description' => tra('Pipe-separated list of identifiers of perspectives in which the block is shown.') . tra('Example value:') . '2|3|5',
-				'filter' => 'digits',
-				'separator' => '|',
-				'default' => '',
-				'profile_reference' => 'perspective',
+				'filter' => 'text',
+				'default' => ''
 			),
 			'notperspectives' => array(
 				'required' => false,
 				'name' => tra('Denied Perspectives'),
 				'description' => tra('Pipe-separated list of identifiers of perspectives in which the block is not shown.') . tra('Example value:') . '3|5|8',
-				'filter' => 'digits',
-				'separator' => '|',
-				'default' => '',
-				'profile_reference' => 'perspective',
+				'filter' => 'text',
+				'default' => ''
 			),
 		),
 	);
@@ -48,10 +44,10 @@ function wikiplugin_perspective($data, $params)
 	}
 
 	if (!empty($params['perspectives'])) {
-		$perspectives = $params['perspectives'];
+		$perspectives = explode('|', $params['perspectives']);
 	}
 	if (!empty($params['notperspectives'])) {
-		$notperspectives = $params['notperspectives'];
+		$notperspectives = explode('|', $params['notperspectives']);
 	}
 	if (empty($perspectives) && empty($notperspectives)) {
 		return '';

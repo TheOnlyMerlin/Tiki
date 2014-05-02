@@ -56,8 +56,6 @@ abstract class Toolbar
 			return new ToolbarHelptool;
 		elseif ( $tagName == 'switcheditor' )
 			return new ToolbarSwitchEditor;
-		elseif ( $tagName == 'admintoolbar' )
-			return new ToolbarAdmin;
 		elseif ( $tagName == 'screencapture' )
 			return new ToolbarCapture();
 		elseif ( $tagName == '-' )
@@ -105,7 +103,6 @@ abstract class Toolbar
 					'h2',
 					'h3',
 					'titlebar',
-					'pastlink',
 					'toc',
 					'list',
 					'numlist',
@@ -143,12 +140,10 @@ abstract class Toolbar
 					'tikifile',
 					'switcheditor',
 					'autosave',
-					'admintoolbar',
 					'nonparsed',
 					'bidiltr',
 					'bidirtl',
 					'screencapture',
-					'image',
 
 					'sheetsave',	// spreadsheet ones
 					'addrow',
@@ -163,8 +158,6 @@ abstract class Toolbar
 					'sheetfind',
 					'sheetrefresh',
 					'sheetclose',
-
-					'objectlink',
 				),
 				$plugins
 			)
@@ -254,10 +247,13 @@ abstract class Toolbar
 
 	public static function deleteAllCustomTools()
 	{
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 
 		$tikilib->query('DELETE FROM `tiki_preferences` WHERE `name` LIKE \'toolbar_tool_%\'');
 		$tikilib->delete_preference('toolbar_custom_list');
+
+		//global $cachelib; require_once("lib/cache/cachelib.php");
+		//$cachelib->invalidate('tiki_preferences_cache');
 	}
 
 
@@ -320,7 +316,7 @@ abstract class Toolbar
 						->setType($data['type']);
 
 		return $tag;
-	}	// }}}
+	}	// {{{
 
 	abstract function getWikiHtml( $areaId );
 
@@ -412,11 +408,11 @@ abstract class Toolbar
 
 	function getSelfLink( $click, $title, $class )
 	{ // {{{
-		global $smarty, $prefs;
+		global $smarty;
 
 		$params = array();
 		$params['_onclick'] = $click . (substr($click, strlen($click)-1) != ';' ? ';' : '') . 'return false;';
-		$params['_class'] = 'toolbar btn btn-xs btn-link' . (!empty($class) ? ' '.$class : '');
+		$params['_class'] = 'toolbar ' . (!empty($class) ? ' '.$class : '');
 		$params['_ajax'] = 'n';
 		$content = $title;
 		$params['_icon'] = $this->icon;
@@ -425,20 +421,17 @@ abstract class Toolbar
 			$params['_menu_text'] = 'y';
 			$params['_menu_icon'] = 'y';
 		}
-		if ($prefs['mobile_mode'] !== 'y') {
-			return smarty_block_self_link($params, $content, $smarty);
-		} else {
-			return str_replace('<a ', '<a data-role="button" ', smarty_block_self_link($params, $content, $smarty));
-		}
+		return smarty_block_self_link($params, $content, $smarty);
 	} // }}}
 
 	protected function setupCKEditorTool($js, $name, $label = '', $icon = '')
 	{
+		global $headerlib;
 		if (empty($label)) {
 			$label = $name;
 		}
 		$label = addcslashes($label, "'");
-		TikiLib::lib('header')->add_js(
+		$headerlib->add_js(
 <<< JS
 if (typeof window.CKEDITOR !== "undefined" && !window.CKEDITOR.plugins.get("{$name}")) {
 	window.CKEDITOR.config.extraPlugins += (window.CKEDITOR.config.extraPlugins ? ',{$name}' : '{$name}' );
@@ -447,7 +440,6 @@ if (typeof window.CKEDITOR !== "undefined" && !window.CKEDITOR.plugins.get("{$na
 			var command = editor.addCommand( '{$name}', new window.CKEDITOR.command( editor , {
 				modes: { wysiwyg:1 },
 				exec: function (elem, editor, data) {
-				    CurrentEditorName=editor.name;
 					{$js}
 				},
 				canUndo: false
@@ -505,11 +497,7 @@ class ToolbarCkOnly extends Toolbar
 
 		switch( $name ) {
 		case 'templates':
-			if ($prefs['feature_wiki_templates'] === 'y') {
-				return new self( 'Templates' );
-			} else {
-				return null;
-			}
+			return new self( 'Templates' );
 		case 'cut':
 			return new self( 'Cut' );
 		case 'copy':
@@ -564,10 +552,6 @@ class ToolbarCkOnly extends Toolbar
 			}
 		case 'autosave':
 			return new self( 'autosave', 'lib/ckeditor_tiki/plugins/autosave/images/ajaxAutoSaveDirty.gif');
-		case 'inlinesave':
-			return new self( 'inlinesave', 'lib/ckeditor_tiki/plugins/inlinesave/images/ajaxSaveDirty.gif');
-		case 'inlinecancel':
-			return new self( 'inlinecancel', 'lib/ckeditor_tiki/plugins/inlinecancel/images/cross.png');
 		case 'sub':
 			return new self( 'Subscript' );
 		case 'sup':
@@ -580,14 +564,6 @@ class ToolbarCkOnly extends Toolbar
 			return new self( 'BidiLtr' );
 		case 'bidirtl':
 			return new self( 'BidiRtl' );
-		case 'image':
-			return new self( 'Image' );
-		case 'table':
-			return new self( 'Table' );
-		case 'link':
-			return new self( 'Link' );
-		case 'unlink':
-			return new self( 'Unlink' );
 		}
 	} // }}}
 
@@ -595,16 +571,6 @@ class ToolbarCkOnly extends Toolbar
 	{
 		return null;
 	} // }}}
-
-	function getWysiwygToken($areaId) {
-		if ($this->wysiwyg === 'Image') {	// cke's own image tool
-			global $headerlib,  $smarty, $prefs;
-			// can't do upload the cke way yet
-			$url = 'tiki-list_file_gallery.php?galleryId='.$prefs['home_file_gallery'].'&filegals_manager=fgal_picker';
-			$headerlib->add_js('if (typeof window.CKEDITOR !== "undefined") {window.CKEDITOR.config.filebrowserBrowseUrl = "'.$url.'"}', 5);
-		}
-		return $this->wysiwyg;
-	}
 
 	function getWysiwygWikiToken( $areaId ) // {{{ // wysiwyg_htmltowiki
 	{
@@ -634,23 +600,23 @@ class ToolbarCkOnly extends Toolbar
 
 	function getIconHtml() // {{{ for admin page
 	{
-		global $headerlib, $prefs;
+		global $headerlib;
 
 		if ((!empty($this->icon) && $this->icon !== 'img/icons/shading.png') || in_array($this->label, array('Autosave'))) {
 			return parent::getIconHtml();
 		}
 
-		$skin = $prefs['wysiwyg_toolbar_skin'];
-		$headerlib->add_cssfile('vendor/ckeditor/ckeditor/skins/' . $skin . '/editor.css');
+		$headerlib->add_cssfile('lib/ckeditor/skins/kama/editor.css');
 		$cls = strtolower($this->wysiwyg);
+		$cls = str_replace(array('selectall', 'removeformat', 'spellchecker'), array('selectAll', 'removeFormat', 'checkspell'), $cls);	// work around some "features" in ckeditor icons.css
 		$headerlib->add_css(
-			'span.cke_skin_' . $skin . ' {border: none;background: none;padding:0;margin:0;}'.
-			'.toolbars-admin .row li.toolbar > span.cke_skin_' . $skin . ' {display: inline-block;}'
+			'span.cke_skin_kama {border: none;background: none;padding:0;margin:0;}'.
+			'.toolbars-admin .row li.toolbar > span.cke_skin_kama {display: inline-block;}'
 		);
-		return '<span class="cke_skin_' . $skin . '"><a class="cke_button cke_ltr"><span class="cke_button__' . htmlentities($cls, ENT_QUOTES, 'UTF-8') . '_icon"' .
+		return '<span class="cke_skin_kama"><span class="cke_button"><span class="cke_button_' . htmlentities($cls, ENT_QUOTES, 'UTF-8') . '"' .
 			' title="' . htmlentities($this->getLabel(), ENT_QUOTES, 'UTF-8') . '">'.
 			'<span class="cke_icon"> </span>'.
-			'</span></a></span>';
+			'</span></span></span>';
 	} // }}}
 }
 
@@ -749,16 +715,6 @@ class ToolbarBlock extends ToolbarInline // Will change in the future
 	public static function fromName( $tagName ) // {{{
 	{
 		global $prefs;
-
-        $isWikiLingo = false;
-        if ($prefs['feature_wikilingo'] === 'y') {
-            $isWikiLingo = true;
-        }
-        $isFutureLinkProtocol = false;
-        if ($prefs['feature_futurelinkprotocol'] === 'y') {
-            $isFutureLinkProtocol = true;
-        }
-
 		switch( $tagName ) {
 		case 'center':
 			$label = tra('Align Center');
@@ -776,32 +732,13 @@ class ToolbarBlock extends ToolbarInline // Will change in the future
 			$wysiwyg = 'HorizontalRule';
 			$syntax = '---';
 			break;
-        case 'pastlink':
-            if ($isWikiLingo && $isFutureLinkProtocol) {
-                $label = tra('PastLink');
-                $icon = tra('img/icons/PastLink.svg');
-                $wysiwyg = 'PastLink';
-                $syntax = '@FLP(clipboarddata)text@)';
-                break;
-            }
-            else{
-                break;
-            }
 		case 'pagebreak':
-            if ($isWikiLingo) {
-                return;
-            }
-
 			$label = tra('Page Break');
 			$icon = tra('img/icons/page_break.png');
 			$wysiwyg = 'PageBreak';
 			$syntax = '...page...';
 			break;
 		case 'box':
-            if ($isWikiLingo) {
-                return;
-            }
-
 			$label = tra('Box');
 			$icon = tra('img/icons/box.png');
 			$wysiwyg = 'Box';
@@ -828,9 +765,6 @@ class ToolbarBlock extends ToolbarInline // Will change in the future
 			$syntax = '-=text=-';
 			break;
 		case 'toc':
-            if ($isWikiLingo) {
-                return;
-            }
 			$label = tra('Table of contents');
 			$icon = tra('img/icons/book.png');
 			$wysiwyg = 'TOC';
@@ -889,7 +823,14 @@ class ToolbarLineBased extends ToolbarInline // Will change in the future
 			break;
 		case 'indent':
 			global $prefs;
-            return null;
+			if ($prefs['feature_jison_wiki_parser'] === 'y') {	// leading spaces does nothing in the current parser, maybe it was for jison?
+				$label = tra('Indent');
+				$icon = tra('img/icons/arrow_right.png');
+				$wysiwyg = null;
+				$syntax = '  text';
+			} else {
+				return null;
+			}
 			break;
 		default:
 			return null;
@@ -923,18 +864,8 @@ class ToolbarPicker extends Toolbar
 
 	public static function fromName( $tagName ) // {{{
 	{
-		global $headerlib, $section, $prefs;
-
-        $isWikiLingo = false;
-        if ($prefs['feature_wikilingo'] === 'y') {
-            $isWikiLingo = true;
-        }
-
-		if ($prefs['mobile_mode'] === 'y') {
-			return '';
-		}
-
-		$tool_prefs = array();
+		global $headerlib, $section;
+		$prefs = array();
 		$styleType = '';
 
 		switch( $tagName ) {
@@ -947,23 +878,18 @@ class ToolbarPicker extends Toolbar
 			$list = array_combine($list, $list);
 			break;
 		case 'smiley':
-            if ($isWikiLingo) {
-                return;
-            }
+			$wysiwyg = 'Smiley';
+			$label = tra('Smileys');
+			$icon = tra('img/smiles/icon_smile.gif');
+			$rawList = array( 'biggrin', 'confused', 'cool', 'cry', 'eek', 'evil', 'exclaim', 'frown', 'idea', 'lol', 'mad', 'mrgreen', 'neutral', 'question', 'razz', 'redface', 'rolleyes', 'sad', 'smile', 'surprised', 'twisted', 'wink', 'arrow', 'santa' );
+			$prefs[] = 'feature_smileys';
 
-            $wysiwyg = 'Smiley';
-            $label = tra('Smileys');
-            $icon = tra('img/smiles/icon_smile.gif');
-            $rawList = array( 'biggrin', 'confused', 'cool', 'cry', 'eek', 'evil', 'exclaim', 'frown', 'idea', 'lol', 'mad', 'mrgreen', 'neutral', 'question', 'razz', 'redface', 'rolleyes', 'sad', 'smile', 'surprised', 'twisted', 'wink', 'arrow', 'santa' );
-            $tool_prefs[] = 'feature_smileys';
-
-            $list = array();
-            global $headerlib;
-            foreach ( $rawList as $smiley ) {
-                $tra = htmlentities(tra($smiley), ENT_QUOTES, 'UTF-8');
-                $list["(:$smiley:)"] = '<img src="' . $headerlib->convert_cdn('img/smiles/icon_' .$smiley . '.gif') . '" alt="' . $tra . '" title="' . $tra . '" width="15" height="15" />';
-            }
-
+			$list = array();
+			global $headerlib;
+			foreach ( $rawList as $smiley ) {
+				$tra = htmlentities(tra($smiley), ENT_QUOTES, 'UTF-8');
+				$list["(:$smiley:)"] = '<img src="' . $headerlib->convert_cdn('img/smiles/icon_' .$smiley . '.gif') . '" alt="' . $tra . '" title="' . $tra . '" width="15" height="15" />';
+			}
 			break;
 		case 'color':
 			$wysiwyg = 'TextColor';
@@ -992,6 +918,7 @@ class ToolbarPicker extends Toolbar
 			if ($section == 'sheet')
 				$list['reset'] = "<span title='".tra("Reset Colors")."' class='toolbars-picker-reset' reset='true'>".tra("Reset")."</span>";
 
+			$headerlib->add_css('.toolbars-picker span {display: block; width: 14px; height: 12px}');
 			break;
 
 		case 'bgcolor':
@@ -1020,6 +947,7 @@ class ToolbarPicker extends Toolbar
 			if ($section == 'sheet')
 				$list['reset'] = "<span title='".tra("Reset Colors")."' class='toolbars-picker-reset' reset='true'>".tra("Reset")."</span>";
 
+			$headerlib->add_css('.toolbars-picker span {display: block; width: 14px; height: 12px}');
 			break;
 
 		default:
@@ -1035,7 +963,7 @@ class ToolbarPicker extends Toolbar
 			->setName($tagName)
 			->setStyleType($styleType);
 
-		foreach ( $tool_prefs as $pref ) {
+		foreach ( $prefs as $pref ) {
 			$tag->addRequiredPreference($pref);
 		}
 
@@ -1099,7 +1027,6 @@ class ToolbarPicker extends Toolbar
 		static $pickerAdded = false;
 
 		if ( ! $pickerAdded ) {
-			TikiLib::lib('header')->add_jsfile('lib/jquery_tiki/tiki-toolbars.js');
 			$pickerAdded = true;
 		}
 	}
@@ -1107,7 +1034,11 @@ class ToolbarPicker extends Toolbar
 	function getWikiHtml( $areaId ) // {{{
 	{
 		global $headerlib, $prefs;
-		$headerlib->add_js("if (! window.pickerData) { window.pickerData = {}; } window.pickerData['$this->name'] = " . str_replace('\/', '/', json_encode($this->list)) . ";");
+		$headerlib->add_js("window.pickerData['$this->name'] = " . str_replace('\/', '/', json_encode($this->list)) . ";");
+		if ($prefs['feature_jquery_ui'] != 'y') {
+			$headerlib->add_jsfile("lib/jquery/jquery-ui/ui/jquery-ui-$headerlib->jqueryui_version.js");
+			$headerlib->add_cssfile('lib/jquery/jquery-ui/themes/' . $prefs['feature_jquery_ui_theme'] . '/jquery-ui.css');
+		}
 
 		return $this->getSelfLink(
 			$this->getSyntax($areaId),
@@ -1133,11 +1064,6 @@ class ToolbarDialog extends Toolbar
 	public static function fromName( $tagName ) // {{{
 	{
 		global $prefs;
-
-		if ($prefs['mobile_mode'] === 'y') {
-			return '';
-		}
-
 		$tool_prefs = array();
 
 		switch( $tagName ) {
@@ -1157,31 +1083,6 @@ class ToolbarDialog extends Toolbar
 						'{"open": function () { dialogInternalLinkOpen(area_id); },
 						"buttons": { "Cancel": function() { dialogSharedClose(area_id,this); },'.
 									'"Insert": function() { dialogInternalLinkInsert(area_id,this); }}}'
-					);
-
-			break;
-		case 'objectlink':
-			$types = TikiLib::lib('unifiedsearch')->getSupportedTypes();
-			$options = '';
-			foreach ($types as $type => $title) {
-				$options .= '<option value="' . $type . '">' . $title . '</option>';
-			}
-			$label = tra('Object Link');
-			$icon = tra('img/icons/page_link.png');
-			$wysiwyg = 'Object Link';
-			$list = array('Object Link',
-						'<label for="tbOLinkDesc">Show this text</label>',
-						'<input type="text" id="tbOLinkDesc" />',
-						'<label for="tbOLinkObjectType">Types of object</label>',
-						'<select id="tbOLinkObjectType" class="ui-widget-content ui-corner-all" style="width: 98%">' .
-							'<option value="">' . tra('All') . '</option>' .
-							$options .
-						'</select>',
-						'<label for="tbOLinkObjectSelector">Link to this object</label>',
-						'<input type="text" id="tbOLinkObjectSelector" class="ui-widget-content ui-corner-all" style="width: 98%" />',
-						'{"open": function () { dialogObjectLinkOpen(area_id); },
-						"buttons": { "Cancel": function() { dialogSharedClose(area_id,this); },'.
-									'"Insert": function() { dialogObjectLinkInsert(area_id,this); }}}'
 					);
 
 			break;
@@ -1299,15 +1200,20 @@ class ToolbarDialog extends Toolbar
 		return 'displayDialog( this, ' . $this->index . ', \'' . $areaId . '\')';
 	}
 
-	static function setupJs()
+	static private function setupJs()
 	{
-		TikiLib::lib('header')->add_jsfile('lib/jquery_tiki/tiki-toolbars.js');
+
+		static $dialogAdded = false;
+
+		if ( ! $dialogAdded ) {
+			$dialogAdded = true;
+		}
 	}
 
 	function getWikiHtml( $areaId ) // {{{
 	{
 		global $headerlib;
-		$headerlib->add_js("if (! window.dialogData) { window.dialogData = {}; } window.dialogData[$this->index] = " . json_encode($this->list) . ";", 1 + $this->index);
+		$headerlib->add_js("window.dialogData[$this->index] = " . json_encode($this->list) . ";", 1 + $this->index);
 
 		return $this->getSelfLink(
 			$this->getSyntax($areaId),
@@ -1318,13 +1224,38 @@ class ToolbarDialog extends Toolbar
 
 	function getWysiwygToken( $areaId ) // {{{
 	{
-		if (!empty($this->wysiwyg)) {
+		if (!empty($this->wysiwyg) && $this->name == 'tikilink') {	// TODO remove when ckeditor can handle tikilinks
 
-			TikiLib::lib('header')->add_js(
-				"window.dialogData[$this->index] = " . json_encode($this->list) . ";",
-				1 + $this->index
+			global $headerlib;
+			$headerlib->add_js("window.dialogData[$this->index] = " . json_encode($this->list) . ";", 1 + $this->index);
+			$label = addcslashes($this->label, "'");
+			$headerlib->add_js(
+<<< JS
+if (typeof window.CKEDITOR !== "undefined" && !window.CKEDITOR.plugins.get("{$this->name}")) {
+	window.CKEDITOR.config.extraPlugins += (window.CKEDITOR.config.extraPlugins ? ',{$this->name}' : '{$this->name}' );
+	window.CKEDITOR.plugins.add( '{$this->name}', {
+		init : function( editor ) {
+			var command = editor.addCommand( '{$this->name}', new window.CKEDITOR.command( editor , {
+				modes: { wysiwyg:1 },
+				exec: function(elem, editor, data) {
+					{$this->getSyntax( $areaId )};
+				},
+				canUndo: false
+			}));
+			editor.ui.addButton( '{$this->name}', {
+				label : '{$label}',
+				command : '{$this->name}',
+				icon: editor.config._TikiRoot + '{$this->icon}'
+			});
+
+		}
+	});
+}
+JS
+				,
+				10
 			);
-			$this->setupCKEditorTool($this->getSyntax($areaId), $this->wysiwyg, $this->label, $this->icon);
+
 		}
 		return $this->wysiwyg;
 	} // }}}
@@ -1335,14 +1266,7 @@ class ToolbarDialog extends Toolbar
 			case 'tikilink':
 				$this->wysiwyg = 'tikilink';
 				break;
-			case 'objectlink':
-				$this->wysiwyg = 'objectlink';
-				break;
-			case 'table':
-				$this->wysiwyg = 'tikitable';
-				break;
 			default:
-				return $this->wysiwyg;
 		}
 
 		return $this->getWysiwygToken($areaId);
@@ -1389,45 +1313,79 @@ class ToolbarHelptool extends Toolbar
 
 	function getWikiHtml( $areaId ) // {{{
 	{
-		$smarty = TikiLib::lib('smarty');
-		$servicelib = TikiLib::lib('service');
-
-		$params = ['controller' => 'edit', 'action' => 'help', 'modal' => 1];
-		$params['wiki'] = 1;
-		$params['plugins'] = 1;
-		$params['areaId'] = $areaId;
-
-		if ($section == 'sheet') {
-			$params['sheet'] = 1;
+		global $wikilib, $smarty, $plugins, $section;
+		if (!isset($plugins)) {
+			include_once ('lib/wiki/wikilib.php');
+			$plugins = $wikilib->list_plugins(true, $areaId);
 		}
 
-		$smarty->loadPlugin('smarty_function_icon');
-		$icon = smarty_function_icon(array('_id' => 'help'), $smarty);
-		$url = $servicelib->getUrl($params);
+		$sheethelp = '';
 
-		return "<a href=\"$url\" data-toggle=\"modal\" data-target=\"#bootstrap-modal\">$icon</a>";
+		if ($section == 'sheet') {
+			$sheethelp .= $smarty->fetch('tiki-edit_help_sheet.tpl');
+			$sheethelp .= $smarty->fetch('tiki-edit_help_sheet_interface.tpl');
+		}
+
+		$smarty->assign_by_ref('plugins', $plugins);
+		return  $smarty->fetch('tiki-edit_help.tpl') .
+				$smarty->fetch('tiki-edit_help_plugins.tpl') .
+				$sheethelp;
+
 	} // }}}
 
 	function getWysiwygToken( $areaId ) // {{{
 	{
 
-		$smarty = TikiLib::lib('smarty');
-		$servicelib = TikiLib::lib('service');
+		global $wikilib, $smarty, $plugins;
 
-		$params = ['controller' => 'edit', 'action' => 'help', 'modal' => 1];
-		$params['wysiwyg'] = 1;
-		$params['plugins'] = 1;
-		$params['areaId'] = $areaId;
+		include_once ('lib/wiki/wikilib.php');
+		$plugins = $wikilib->list_plugins(true, $areaId);
 
-		if ($section == 'sheet') {
-			$params['sheet'] = 1;
+		$smarty->assign_by_ref('plugins', $plugins);
+
+		global $prefs;
+		if ($prefs['wysiwyg_htmltowiki'] === 'y') {
+			$exec_js = $smarty->fetch('tiki-edit_help_wiki_wysiwyg.tpl') .
+					$smarty->fetch('tiki-edit_help_plugins.tpl');
+			$this->setLabel(tra('Wiki Wysiwyg Help'));
+		} else {
+			$exec_js = $smarty->fetch('tiki-edit_help_wysiwyg.tpl') .
+					$smarty->fetch('tiki-edit_help_plugins.tpl');
+			$this->setLabel(tra('Wysiwyg Help'));
 		}
 
-		$smarty->loadPlugin('smarty_function_icon');
-		$icon = smarty_function_icon(array('_id' => 'help'), $smarty);
-		$url = $servicelib->getUrl($params);
+		$name = 'tikihelp';
 
-		return "<a href=\"$url\" data-toggle=\"modal\" data-target=\"#bootstrap-modal\">$icon</a>";
+		global $headerlib;
+		$label = addcslashes($this->label, "'");
+		$headerlib->add_js(
+<<< JS
+if (typeof window.CKEDITOR !== "undefined" && !window.CKEDITOR.plugins.get("{$name}")) {
+	window.CKEDITOR.config.extraPlugins += (window.CKEDITOR.config.extraPlugins ? ',{$name}' : '{$name}' );
+	window.CKEDITOR.plugins.add( '{$name}', {
+		init : function( editor ) {
+			var command = editor.addCommand( '{$name}', new window.CKEDITOR.command( editor , {
+				modes: { wysiwyg:1 },
+				exec: function(elem, editor, data) {
+					$.openEditHelp();
+					return false;
+				},
+				canUndo: false
+			}));
+			editor.ui.addButton( '{$name}', {
+				label : '{$label}',
+				command : '{$name}',
+				icon: editor.config._TikiRoot + '{$this->icon}'
+			});
+
+		}
+	});
+}
+JS
+,
+			10
+		);
+		return $name;
 	}
 
 	function getWysiwygWikiToken( $areaId ) // {{{ // wysiwyg_htmltowiki
@@ -1452,37 +1410,9 @@ class ToolbarFileGallery extends Toolbar
 
 	function getSyntax( $areaId )
 	{
-		global $prefs;
-		if ($prefs['fgal_elfinder_feature'] !== 'y') {
-			$smarty = TikiLib::lib('smarty');
-			$smarty->loadPlugin('smarty_function_filegal_manager_url');
-			return 'openFgalsWindow(\''.htmlentities(smarty_function_filegal_manager_url(array('area_id'=>$areaId), $smarty)).'\', true);';
-		} else {
-			TikiLib::lib('header')->add_jq_onready(
-				'window.handleFinderInsertAt = function (file, elfinder, area_id) {
-					$.getJSON($.service("file_finder", "finder"), { cmd: "tikiFileFromHash", hash: file.hash },
-						function (data) {
-							$(window).data("elFinderDialog").dialog("close");
-							$($(window).data("elFinderDialog")).remove();
-							$(window).data("elFinderDialog", null);
-							window.insertAt(area_id, data.wiki_syntax);
-							return false;
-						}
-					);
-				};'
-			);
-			return 'openElFinderDialog(
-				this,
-				{
-					defaultGalleryId: ' . (empty($prefs['home_file_gallery']) ? $prefs['fgal_root_id'] : $prefs['home_file_gallery']) . ',
-					deepGallerySearch: true,
-					getFileCallback: function(file,elfinder) {
-							window.handleFinderInsertAt(file,elfinder,\''.$areaId.'\');
-						},
-					eventOrigin:this
-				}
-			);';
-		}
+		global $smarty;
+		$smarty->loadPlugin('smarty_function_filegal_manager_url');
+		return 'openFgalsWindow(\''.htmlentities(smarty_function_filegal_manager_url(array('area_id'=>$areaId), $smarty)).'\', true);';
 	}
 
 	function getWikiHtml( $areaId ) // {{{
@@ -1560,10 +1490,34 @@ class ToolbarSwitchEditor extends Toolbar
 		if (!empty($this->wysiwyg)) {
 			$this->name = $this->wysiwyg;	// temp
 
-			if ($prefs['feature_wysiwyg'] == 'y' && $prefs['wysiwyg_optional'] == 'y') {
-				$js = "switchEditor('wiki', $('#$areaId').parents('form')[0]);";
-				$this->setupCKEditorTool($js, $this->name, $this->label, $this->icon);
-			}
+		if ($prefs['feature_wysiwyg'] == 'y' && $prefs['wysiwyg_optional'] == 'y') {
+			global $headerlib;
+			$label = addcslashes($this->label, "'");
+			$headerlib->add_js(
+<<< JS
+if (typeof window.CKEDITOR !== "undefined" && !window.CKEDITOR.plugins.get("{$this->name}")) {
+	window.CKEDITOR.config.extraPlugins += (window.CKEDITOR.config.extraPlugins ? ',{$this->name}' : '{$this->name}' );
+	window.CKEDITOR.plugins.add( '{$this->name}', {
+		init : function( editor ) {
+			var command = editor.addCommand( '{$this->name}', new window.CKEDITOR.command( editor , {
+				modes: { wysiwyg:1 },
+				exec: function(elem, editor, data) {
+					switchEditor('wiki', $('#$areaId').parents('form')[0]);
+				},
+				canUndo: false
+			}));
+			editor.ui.addButton( '{$this->name}', {
+				label : '{$label}',
+				command : '{$this->name}',
+				icon: editor.config._TikiRoot + '{$this->icon}'
+			});
+		}
+	});
+}
+JS
+				, 10
+			);
+		}
 
 		}
 		return $this->wysiwyg;
@@ -1590,51 +1544,6 @@ class ToolbarSwitchEditor extends Toolbar
 		return $this->label;
 	} // }}}
 */
-
-}
-
-
-class ToolbarAdmin extends Toolbar
-{
-	private $name;
-	function __construct() // {{{
-	{
-		$this->setLabel(tra('Admin Toolbars'))
-			->setIcon(tra('img/icons/wrench.png'))
-			->setWysiwygToken('admintoolbar')
-			->setType('admintoolbar');
-			//->addRequiredPreference('feature_wysiwyg');
-	} // }}}
-
-	function getWikiHtml( $areaId ) // {{{
-	{
-		return $this->getSelfLink(
-			'admintoolbar();',
-			htmlentities($this->label, ENT_QUOTES, 'UTF-8'),
-			'qt-switcheditor'
-		);
-	} // }}}
-
-	function getWysiwygToken( $areaId ) // {{{
-	{
-		global $prefs;
-		if (!empty($this->wysiwyg)) {
-			$this->name = $this->wysiwyg;	// temp
-
-			if ($prefs['feature_wysiwyg'] == 'y') {
-				$js = "admintoolbar();";
-				$this->setupCKEditorTool($js, $this->name, $this->label, $this->icon);
-			}
-
-		}
-		return $this->wysiwyg;
-	} // }}}
-
-
-	function getWysiwygWikiToken( $areaId ) // {{{ // wysiwyg_htmltowiki
-	{
-		return $this->getWysiwygToken($areaId);
-	} // }}}
 
 }
 
@@ -1680,7 +1589,7 @@ class ToolbarCapture extends Toolbar
 	function getSyntax( $areaId )
 	{
 		global $page;
-		return 'openJCaptureDialog(\''.$areaId.'\', \'' . urlencode($page) . '\', event);return false;';
+		return 'openJCaptureDialog(\''.$areaId.'\', \'' . $page . '\', event);return false;';
 	}
 
 }
@@ -1754,8 +1663,18 @@ class ToolbarWikiplugin extends Toolbar
 	function getWysiwygToken( $areaId, $add_js = true ) // {{{
 	{
 		if (!empty($this->wysiwyg) && $add_js) {
-			$js = "popup_plugin_form('{$areaId}','{$this->pluginName}');";
-			$this->setupCKEditorTool($js, $this->wysiwyg, $this->label, $this->icon);
+			if ($this->wysiwyg === 'Image') {	// cke's own image tool overrides this so set it up to use our filegal
+				global $headerlib,  $smarty, $prefs;
+				// can't do upload the cke way yet
+				//$smarty->loadPlugin('smarty_function_filegal_manager_url');
+				//$url =  smarty_function_filegal_manager_url(array('area_id'=> 'fgal_picker'), $smarty);
+				//$headerlib->add_js('CKEDITOR.config.filebrowserUploadUrl = "'.$url.'"', 5);
+				$url = 'tiki-list_file_gallery.php?galleryId='.$prefs['home_file_gallery'].'&filegals_manager=fgal_picker';
+				$headerlib->add_js('if (typeof window.CKEDITOR !== "undefined") {window.CKEDITOR.config.filebrowserBrowseUrl = "'.$url.'"}', 5);
+			} else {
+				$js = "popup_plugin_form('{$areaId}','{$this->pluginName}');";
+				$this->setupCKEditorTool($js, $this->wysiwyg, $this->label, $this->icon);
+			}
 		}
 		return $this->wysiwyg;
 	} // }}}
@@ -1764,7 +1683,7 @@ class ToolbarWikiplugin extends Toolbar
 	{
 		switch ($this->pluginName) {
 			case 'img':
-				$this->wysiwyg = 'wikiplugin_img';	// don't use ckeditor's html image dialog
+				$this->wysiwyg = '';	// don't use ckeditor's html image dialog
 				break;
 			default:
 		}
@@ -2029,14 +1948,12 @@ class ToolbarsList
 			foreach ( $line as $bit ) {
 				foreach ( $bit as $group) {
 					$group_count = 0;
-                    if ($isHtml) {
-					        foreach ( $group as $tag ) {
-								if ( $token = $tag->getWysiwygToken($areaId) ) {
-								    $lineOut[] = $token; $group_count++;
-							    }
-                            }
-					} else {
-                        foreach ( $group as $tag ) {
+					foreach ( $group as $tag ) {
+						if ($isHtml) {
+							if ( $token = $tag->getWysiwygToken($areaId) ) {
+								$lineOut[] = $token; $group_count++;
+							}
+						} else {
 							if ( $token = $tag->getWysiwygWikiToken($areaId) ) {
 								$lineOut[] = $token; $group_count++;
 							}
@@ -2062,6 +1979,12 @@ class ToolbarsList
 		global $tiki_p_admin, $tiki_p_admin_toolbars, $smarty, $section, $prefs, $headerlib;
 		$html = '';
 
+		// $.selection() is in jquery.autocomplete.min.js
+
+		if ($prefs['feature_jquery_autocomplete'] != 'y') {
+			$headerlib->add_jsfile('lib/jquery/jquery-autocomplete/jquery.autocomplete.min.js');
+		}
+
 		$c = 0;
 		foreach ( $this->lines as $line ) {
 			$lineHtml = '';
@@ -2074,7 +1997,7 @@ class ToolbarsList
 			for ($bitx = 0, $bitxcount_line = count($line); $bitx < $bitxcount_line; $bitx++ ) {
 				$lineBit = '';
 
-				/*if ($c == 0 && $bitx == 1 && ($tiki_p_admin == 'y' or $tiki_p_admin_toolbars == 'y')) {
+				if ($c == 0 && $bitx == 1 && ($tiki_p_admin == 'y' or $tiki_p_admin_toolbars == 'y')) {
 					$params = array('_script' => 'tiki-admin_toolbars.php', '_onclick' => 'needToConfirm = true;', '_class' => 'toolbar', '_icon' => 'wrench', '_ajax' => 'n');
 					if (isset($comments) && $comments == 'y')
 						$params['comments'] = 'on';
@@ -2082,7 +2005,7 @@ class ToolbarsList
 						$params['section'] = $section;
 					$content = tra('Admin Toolbars');
 					$right .= smarty_block_self_link($params, $content, $smarty);
-				}*/
+				}
 
 				foreach ( $line[$bitx] as $group ) {
 					$groupHtml = '';
@@ -2092,17 +2015,13 @@ class ToolbarsList
 
 					if ( !empty($groupHtml) ) {
 						$param = empty($lineBit) ? '' : ' class="toolbar-list"';
-						if ($prefs['mobile_mode'] !== 'y') {
-							$lineBit .= "<span$param>$groupHtml</span>";
-						} else {
-							$lineBit .= "<span$param data-role='controlgroup' data-type='horizontal'>$groupHtml</span>";
-						}
+						$lineBit .= "<span$param>$groupHtml</span>";
 					}
 					if ($bitx == 1) {
 						if (!empty($right)) {
 							$right = '<span class="toolbar-list">' . $right . '</span>';
 						}
-						$lineHtml = "<div class='helptool-admin pull-right'>$lineBit $right</div>" . $lineHtml;
+						$lineHtml = "<div class='helptool-admin'>$lineBit $right</div>" . $lineHtml;
 					} else {
 						$lineHtml = $lineBit;
 					}
@@ -2110,7 +2029,7 @@ class ToolbarsList
 
 				// adding admin icon if no right part - messy - TODO better
 				if ($c == 0 && empty($lineBit) && !empty($right)) {
-					$lineHtml .= "<div class='helptool-admin pull-right'>$right</div>";
+					$lineHtml .= "<div class='helptool-admin'>$right</div>";
 				}
 			}
 			if ( !empty($lineHtml) ) {

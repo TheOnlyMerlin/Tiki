@@ -1,15 +1,12 @@
 {* $Id$ *}
-<div class="postfooter panel-footer">
-	<div class="status pull-right">
+<div class="postfooter">
+	<div class="status">
 	{if $prefs.feature_contribution eq 'y' and $prefs.feature_contribution_display_in_comment eq 'y'}
 		<span class="contributions">
 		{section name=ix loop=$comment.contributions}
 			<span class="contribution">{$comment.contributions[ix].name|escape}</span>
 		{/section}
 		</span>
-	{/if}
-	{if $forum_info.vote_threads eq 'y' and ($tiki_p_ratings_view_results eq 'y' or $tiki_p_admin eq 'y')}
-		<span class="ratingResultAvg">{tr}Users Rating: {/tr}</span>{rating_result_avg type=comment id=$comment.threadId }
 	{/if}
 	{if $forum_info.vote_threads eq 'y' and $tiki_p_forum_vote eq 'y'}
 		<span class="score">
@@ -27,9 +24,6 @@
 
 		{/if}
 		</span>
-	{/if}
-	{if $forum_info.vote_threads eq 'y' and ($tiki_p_ratings_view_results eq 'y' or $tiki_p_admin eq 'y')}
-		{rating_result type=comment id=$comment.threadId }
 	{/if}
 	
 	{if isset($first) and $first eq 'y'}

@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -13,7 +10,7 @@ require_once("lib/phpseclib_tiki/tikisecure.php");
 
 global $prefs;
 
-if ($prefs['feature_futurelinkprotocol'] == "y") {
+if ($prefs['feature_forwardlinkprotocol'] == "y") {
 	$requester = gethostbyaddr($_SERVER['REMOTE_ADDR']);
 	
 	if (isset($requester)) {

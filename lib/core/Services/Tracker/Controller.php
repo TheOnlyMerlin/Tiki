@@ -19,7 +19,6 @@ class Services_Tracker_Controller
 
 	function action_add_field($input)
 	{
-		$modal = $input->modal->int();
 		$trackerId = $input->trackerId->int();
 
 		$perms = Perms::get('tracker', $trackerId);
@@ -83,14 +82,12 @@ class Services_Tracker_Controller
 						'action' => 'edit_field',
 						'fieldId' => $fieldId,
 						'trackerId' => $trackerId,
-						'modal' => $modal,
 					),
 				);
 			}
 		}
 
 		return array(
-			'title' => tr('Add Field'),
 			'trackerId' => $trackerId,
 			'fieldId' => $fieldId,
 			'name' => $name,
@@ -99,7 +96,6 @@ class Services_Tracker_Controller
 			'types' => $types,
 			'description' => $description,
 			'descriptionIsParsed' => $wikiparse,
-			'modal' => $modal,
 		);
 	}
 
@@ -239,21 +235,6 @@ class Services_Tracker_Controller
 			);
 			$visibleBy = $input->asArray('visible_by', ',');
 			$editableBy = $input->asArray('editable_by', ',');
-
-			global $prefs;
-			if ($prefs['tracker_change_field_type'] === 'y') {
-				$type = $input->type->text();
-				if ($field['type'] !== $type) {
-					if (!isset($types[$type])) {
-						throw new Services_Exception(tr('Type does not exist'), 400);
-					}
-					$typeInfo = $types[$type]; // update typeInfo and clear out old options if changed type
-					$input->offsetSet('option', new JitFilter(array()));
-				}
-			} else {
-				$type = $field['type'];
-			}
-
 			$this->utilities->updateField(
 				$trackerId,
 				$fieldId,
@@ -271,16 +252,14 @@ class Services_Tracker_Controller
 					'isHidden' => $input->visibility->alpha(),
 					'errorMsg' => $input->error_message->text(),
 					'permName' => $permName,
-					'type' => $type,
 				)
 			);
 		}
 
 		return array(
-			'title' => tr('Edit %0', $field['name']),
 			'field' => $field,
 			'info' => $typeInfo,
-			'options' => $this->utilities->parseOptions($field['options'], $typeInfo),
+			'options' => $this->utilities->parseOptions($field['options_array'], $typeInfo),
 			'validation_types' => array(
 				'' => tr('None'),
 				'captcha' => tr('Captcha'),
@@ -290,7 +269,6 @@ class Services_Tracker_Controller
 				'regex' => tr('Regular Expression (Pattern)'),
 				'username' => tr('User Name'),
 			),
-			'types' => $types,
 		);
 	}
 
@@ -365,7 +343,6 @@ class Services_Tracker_Controller
 		}
 
 		return array(
-			'title' => tr('Export Fields'),
 			'trackerId' => $trackerId,
 			'fields' => $fields,
 			'export' => $data,
@@ -390,18 +367,15 @@ class Services_Tracker_Controller
 
 		$data = TikiLib::lib('tiki')->read_raw($raw);
 
-		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-			if (! $data) {
-				throw new Services_Exception(tr('Invalid data provided'), 400);
-			}
+		if (! $data) {
+			throw new Services_Exception(tr('Invalid data provided'), 400);
+		}
 
-			foreach ($data as $info) {
-				$this->utilities->importField($trackerId, new JitFilter($info), $preserve);
-			}
+		foreach ($data as $info) {
+			$this->utilities->importField($trackerId, new JitFilter($info), $preserve);
 		}
 
 		return array(
-			'title' => tr('Import Tracker Fields'),
 			'trackerId' => $trackerId,
 		);
 	}
@@ -535,13 +509,6 @@ class Services_Tracker_Controller
 
 			$id = $this->utilities->insertItem($definition, $itemData);
 
-			foreach ($definition->getFields() as $field) {
-				$handler = $definition->getFieldFactory()->getHandler($field, $itemData);
-				if (method_exists($handler, 'handleClone')) {
-					$handler->handleClone();
-				}
-			}
-
 			$itemObject = Tracker_Item::fromId($id);
 
 			$trklib = TikiLib::lib('trk');
@@ -553,20 +520,7 @@ class Services_Tracker_Controller
 					$data = $childItem->getData();
 					$data['fields'][$info['field']] = $id;
 
-					$childDefinition = $childItem->getDefinition();
-
-					// handle specific cloning actions
-
-					foreach ($childDefinition->getFields() as $field) {
-						$handler = $childDefinition->getFieldFactory()->getHandler($field, $data);
-						if (method_exists($handler, 'handleClone')) {
-							$newData = $handler->handleClone();
-							$data['fields'][$field['permName']] = $newData['value'];
-						}
-					}
-
-					$new = $this->utilities->insertItem($childDefinition, $data);
-
+					$new = $this->utilities->insertItem($childItem->getDefinition(), $data);
 				}
 			}
 
@@ -587,14 +541,6 @@ class Services_Tracker_Controller
 		$processedFields = array();
 
 		$trackerId = $input->trackerId->int();
-
-		if (! $trackerId) {
-			return [
-				'FORWARD' => ['controller' => 'tracker', 'action' => 'select_tracker'],
-			];
-		}
-
-		$trackerName = $this->trackerName($trackerId);
 		$definition = Tracker_Definition::get($trackerId);
 
 		if (! $definition) {
@@ -663,11 +609,6 @@ class Services_Tracker_Controller
 			if ($itemId) {
 				TikiLib::lib('unifiedsearch')->processUpdateQueue();
 
-				if ($next = $input->next->url()) {
-					$access = TikiLib::lib('access');
-					$access->redirect($next, tr('Item created'));
-				}
-
 				return $this->utilities->getItem($trackerId, $itemId);
 			} else {
 				throw new Services_Exception(tr('Item could not be created.'), 400);
@@ -675,14 +616,10 @@ class Services_Tracker_Controller
 		}
 
 		return array(
-			'title' => tr('Create Item'),
 			'trackerId' => $trackerId,
-			'trackerName' => $trackerName,
 			'itemId' => $itemId,
 			'fields' => $processedFields,
 			'forced' => $forced,
-			'trackerLogo' => $definition->getConfiguration('logo'),
-			'modal' => $input->modal->int(),
 		);
 	}
 
@@ -752,42 +689,9 @@ class Services_Tracker_Controller
 		}
 
 		return array(
-			'title' => tr('Update'),
 			'trackerId' => $trackerId,
 			'itemId' => $itemId,
 			'fields' => $processedFields,
-		);
-	}
-
-	function action_fetch_item_field($input)
-	{
-		$trackerId = $input->trackerId->int();
-		$definition = Tracker_Definition::get($trackerId);
-
-		if (! $definition) {
-			throw new Services_Exception_NotFound;
-		}
-
-		if (! $field = $definition->getField($input->fieldId->int())) {
-			throw new Services_Exception_NotFound;
-		}
-
-		if (! $itemId = $input->itemId->int()) {
-			throw new Services_Exception_MissingValue('itemId');
-		}
-
-		$itemInfo = TikiLib::lib('trk')->get_tracker_item($itemId);
-		if (! $itemInfo || $itemInfo['trackerId'] != $trackerId) {
-			throw new Services_Exception_NotFound;
-		}
-
-		$itemObject = Tracker_Item::fromInfo($itemInfo);
-		if (! $processed = $itemObject->prepareFieldInput($field, $input->none())) {
-			throw new Services_Exception_Denied;
-		}
-
-		return array(
-			'field' => $processed,
 		);
 	}
 
@@ -845,6 +749,8 @@ class Services_Tracker_Controller
 
 	function action_remove_item($input)
 	{
+		$processedFields = array();
+
 		$trackerId = $input->trackerId->int();
 		$definition = Tracker_Definition::get($trackerId);
 
@@ -867,42 +773,11 @@ class Services_Tracker_Controller
 		}
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
-			$trklib = TikiLib::lib('trk');
-			foreach ($trklib->get_child_items($itemId) as $info) {
-				$childItem = Tracker_Item::fromId($info['itemId']);
-
-				if ($childItem->canRemove()) {
-					$data = $childItem->getData();
-
-					$childDefinition = $childItem->getDefinition();
-
-					// handle specific deleting actions
-					foreach ($childDefinition->getFields() as $field) {
-						$handler = $childDefinition->getFieldFactory()->getHandler($field, $data);
-						if (method_exists($handler, 'handleDelete')) {
-							$handler->handleDelete();
-						}
-					}
-
-					$this->utilities->removeItem($info['itemId']);
-				}
-			}
-
-			foreach ($definition->getFields() as $field) {
-				$itemData = $itemObject->getData();
-				$handler = $definition->getFieldFactory()->getHandler($field, $itemData);
-				if (method_exists($handler, 'handleDelete')) {
-					$handler->handleDelete();
-				}
-			}
-
 			$this->utilities->removeItem($itemId);
 			TikiLib::lib('unifiedsearch')->processUpdateQueue();
 		}
 
 		return array(
-			'title' => tr('Remove'),
 			'trackerId' => $trackerId,
 			'itemId' => $itemId,
 		);
@@ -1021,7 +896,6 @@ class Services_Tracker_Controller
 				'modItemStatus' => $input->modItemStatus->word(),
 				'outboundEmail' => $input->outboundEmail->email(),
 				'simpleEmail' => $input->simpleEmail->int() ? 'y' : 'n',
-				'userCanSeeOwn' => $input->userCanSeeOwn->int() ? 'y' : 'n',
 				'writerCanModify' => $input->writerCanModify->int() ? 'y' : 'n',
 				'writerCanRemove' => $input->writerCanRemove->int() ? 'y' : 'n',
 				'userCanTakeOwnership' => $input->userCanTakeOwnership->int() ? 'y' : 'n',
@@ -1051,7 +925,6 @@ class Services_Tracker_Controller
 				'publishRSS' => $input->publishRSS->int() ? 'y' : 'n',
 				'sectionFormat' => $input->sectionFormat->word(),
 				'adminOnlyViewEditItem' => $input->adminOnlyViewEditItem->int() ? 'y' : 'n',
-				'logo' => $input->logo->text(),
 			);
 
 			$trackerId = $this->utilities->updateTracker($trackerId, $data);
@@ -1077,7 +950,6 @@ class Services_Tracker_Controller
 		$groupalertlib = TikiLib::lib('groupalert');
 		$groupforAlert = $groupalertlib->GetGroup('tracker', 'trackerId');
 		return array(
-			'title' => $trackerId ? tr('Edit %0', $definition->getConfiguration('name')) : tr('Create Tracker'),
 			'trackerId' => $trackerId,
 			'info' => $definition->getInformation(),
 			'statusTypes' => TikiLib::lib('trk')->status_types(),
@@ -1096,34 +968,29 @@ class Services_Tracker_Controller
 
 	function action_duplicate($input)
 	{
-		$confirm = $input->confirm->int();
-		
-		if ($confirm) {
-			$trackerId = $input->trackerId->int();
-			$perms = Perms::get('tracker', $trackerId);
-				if (! $perms->admin_trackers || ! Perms::get()->admin_trackers) {
-					throw new Services_Exception_Denied(tr('Reserved to tracker administrators'));
-				}
-			$definition = Tracker_Definition::get($trackerId);
-				if (! $definition) {
-					throw new Services_Exception_NotFound;
-				}
-			$name = $input->name->text();
-			if (! $name) {
-				throw new Services_Exception_MissingValue('name');
-			}
-			$newId = $this->utilities->duplicateTracker($trackerId, $name, $input->dupCateg->int(), $input->dupPerms->int());
-			return array(
-				'trackerId' => $newId,
-				'name' => $name,
-			);
-		} else {
-			$trackers = $this->action_list_trackers();
-			return array(
-				'title' => tr('Duplicate Tracker'),
-				'trackers' => $trackers["data"],
-			);
+		$trackerId = $input->trackerId->int();
+		$perms = Perms::get('tracker', $trackerId);
+		if (! $perms->admin_trackers || ! Perms::get()->admin_trackers) {
+			throw new Services_Exception_Denied(tr('Reserved to tracker administrators'));
 		}
+
+		$definition = Tracker_Definition::get($trackerId);
+		if (! $definition) {
+			throw new Services_Exception_NotFound;
+		}
+
+		$name = $input->name->text();
+
+		if (! $name) {
+			throw new Services_Exception_MissingValue('name');
+		}
+
+		$newId = $this->utilities->duplicateTracker($trackerId, $name, $input->dupCateg->int(), $input->dupPerms->int());
+
+		return array(
+			'trackerId' => $newId,
+			'name' => $name,
+		);
 	}
 
 	function action_export($input)
@@ -1156,7 +1023,6 @@ class Services_Tracker_Controller
 		}
 
 		return array(
-			'title' => tr('Export Items'),
 			'trackerId' => $trackerId,
 			'export' => $out,
 			'fields' => $definition->getFields(),
@@ -1166,138 +1032,115 @@ class Services_Tracker_Controller
 
 	function action_export_items($input)
 	{
-		TikiLib::lib('tiki')->allocate_extra(
-			'tracker_export_items',
-			function () use ($input) {
-				$trackerId = $input->trackerId->int();
+		@ini_set('max_execution_time', 0); //will not work in safe_mode is on
+		$trackerId = $input->trackerId->int();
 
-				$definition = Tracker_Definition::get($trackerId);
+		$definition = Tracker_Definition::get($trackerId);
 
-				if (! $definition) {
-					throw new Services_Exception_NotFound;
-				}
+		if (! $definition) {
+			throw new Services_Exception_NotFound;
+		}
 
-				$perms = Perms::get('tracker', $trackerId);
-				if (! $perms->export_tracker) {
-					throw new Services_Exception_Denied(tr('Not allowed to export'));
-				}
+		$perms = Perms::get('tracker', $trackerId);
+		if (! $perms->export_tracker) {
+			throw new Services_Exception_Denied(tr('Not allowed to export'));
+		}
 
-				$fields = array();
-				foreach ((array) $input->listfields->int() as $fieldId) {
-					if ($f = $definition->getField($fieldId)) {
-						$fields[$fieldId] = $f;
-					}
-				}
+		$fields = array();
+		foreach ((array) $input->listfields->int() as $fieldId) {
+			if ($f = $definition->getField($fieldId)) {
+				$fields[$fieldId] = $f;
+			}
+		}
 
-				if (0 === count($fields)) {
-					throw new Services_Exception(tr('No valid field selected for export'), 400);
-				}
+		if (0 === count($fields)) {
+			throw new Services_Exception(tr('No valid field selected for export'), 400);
+		}
 
-				$showItemId = $input->showItemId->int();
-				$showStatus = $input->showStatus->int();
-				$showCreated = $input->showCreated->int();
-				$showLastModif = $input->showLastModif->int();
-				$keepItemlinkId = $input->keepItemlinkId->int();
-				$keepCountryId = $input->keepCountryId->int();
-				$dateFormatUnixTimestamp = $input->dateFormatUnixTimestamp->int();
+		$showItemId = $input->showItemId->int();
+		$showStatus = $input->showStatus->int();
+		$showCreated = $input->showCreated->int();
+		$showLastModif = $input->showLastModif->int();
+		$keepItemlinkId = $input->keepItemlinkId->int();
+		$dateFormatUnixTimestamp = $input->dateFormatUnixTimestamp->int();
 
-				$encoding = $input->encoding->text();
-				if (! in_array($encoding, array('UTF-8', 'ISO-8859-1'))) {
-					$encoding = 'UTF-8';
-				}
-				$separator = $input->separator->none();
-				$delimitorR = $input->delimitorR->none();
-				$delimitorL = $input->delimitorL->none();
+		$encoding = $input->encoding->text();
+		if (! in_array($encoding, array('UTF-8', 'ISO-8859-1'))) {
+			$encoding = 'UTF-8';
+		}
+		$separator = $input->separator->none();
+		$delimitorR = $input->delimitorR->none();
+		$delimitorL = $input->delimitorL->none();
 
-				$cr = $input->CR->none();
+		$cr = $input->CR->none();
 
-				$recordsMax = $input->recordsMax->int();
-				$recordsOffset = $input->recordsOffset->int() - 1;
+		$recordsMax = $input->recordsMax->int();
+		$recordsOffset = $input->recordsOffset->int() - 1;
 
-				$writeCsv = function ($fields) use($separator, $delimitorL, $delimitorR, $encoding, $cr) {
-					$values = array();
-					foreach ($fields as $v) {
-						$values[] = "$delimitorL$v$delimitorR";
-					}
+		session_write_close();
 
-					$line = implode($separator, $values);
-					$line = str_replace(array("\r\n", "\n", "<br/>", "<br />"), $cr, $line);
+		$trklib = TikiLib::lib('trk');
+		$trklib->write_export_header($encoding, $trackerId);
 
-					if ($encoding === 'ISO-8859-1') {
-						echo utf8_decode($line) . "\n";
-					} else {
-						echo $line . "\n";
-					}
-				};
+		$header = array();
+		if ($showItemId) {
+			$header[] = 'itemId';
+		}
+		if ($showStatus) {
+			$header[] = 'status';
+		}
+		if ($showCreated) {
+			$header[] = 'created';
+		}
+		if ($showLastModif) {
+			$header[] = 'lastModif';
+		}
+		foreach ($fields as $f) {
+			$header[] = $f['name'] . ' -- ' . $f['fieldId'];
+		}
 
-			 	session_write_close();
+		$this->writeCsv($header, $separator, $delimitorL, $delimitorR, $encoding);
 
-				$trklib = TikiLib::lib('trk');
-				$trklib->write_export_header($encoding, $trackerId);
+		$items = $trklib->list_items($trackerId, $recordsOffset, $recordsMax, 'itemId_asc', $fields);
 
-				$header = array();
-				if ($showItemId) {
-					$header[] = 'itemId';
-				}
-				if ($showStatus) {
-					$header[] = 'status';
-				}
-				if ($showCreated) {
-					$header[] = 'created';
-				}
-				if ($showLastModif) {
-					$header[] = 'lastModif';
-				}
-				foreach ($fields as $f) {
-					$header[] = $f['name'] . ' -- ' . $f['fieldId'];
-				}
-
-				$writeCsv($header);
-
-				$items = $trklib->list_items($trackerId, $recordsOffset, $recordsMax, 'itemId_asc', $fields);
-
-				$smarty = TikiLib::lib('smarty');
-				$smarty->loadPlugin('smarty_modifier_tiki_short_datetime');
-				foreach ($items['data'] as $row) {
-					$toDisplay = array();
-					if ($showItemId) {
-						$toDisplay[] = $row['itemId'];
-					}
-					if ($showStatus) {
-						$toDisplay[] = $row['status'];
-					}
-					if ($showCreated) {
-						if ($dateFormatUnixTimestamp) {
-							$toDisplay[] = $row['created'];
-						} else {
-							$toDisplay[] = smarty_modifier_tiki_short_datetime($row['created'], '', 'n');
-						}
-					}
-					if ($showLastModif) {
-						if ($dateFormatUnixTimestamp) {
-							$toDisplay[] = $row['lastModif'];
-						} else {
-							$toDisplay[] = smarty_modifier_tiki_short_datetime($row['lastModif'], '', 'n');
-						}
-					}
-					foreach ($row['field_values'] as $val) {
-						if ( ($keepItemlinkId) && ($val['type'] == 'r') ) {
-							$toDisplay[] = $val['value'];
-						} elseif ( ($keepCountryId) && ($val['type'] == 'y') ) {
-							$toDisplay[] = $val['value'];
-						} elseif ( ($dateFormatUnixTimestamp) && ($val['type'] == 'f') ) {
-							$toDisplay[] = $val['value'];
-						} elseif ( ($dateFormatUnixTimestamp) && ($val['type'] == 'j') ) {
-							$toDisplay[] = $val['value'];
-						} else {
-							$toDisplay[] = $trklib->get_field_handler($val, $row)->renderOutput(array('list_mode' => 'csv'));
-						}
-					}
-
-					$writeCsv($toDisplay);
+		$smarty = TikiLib::lib('smarty');
+		$smarty->loadPlugin('smarty_modifier_tiki_short_datetime');
+		foreach ($items['data'] as $row) {
+			$toDisplay = array();
+			if ($showItemId) {
+				$toDisplay[] = $row['itemId'];
+			}
+			if ($showStatus) {
+				$toDisplay[] = $row['status'];
+			}
+			if ($showCreated) {
+				if ($dateFormatUnixTimestamp) {
+					$toDisplay[] = $row['created'];
+				} else {
+					$toDisplay[] = smarty_modifier_tiki_short_datetime($row['created'], '', 'n');
 				}
 			}
-		);
+			if ($showLastModif) {
+				if ($dateFormatUnixTimestamp) {
+					$toDisplay[] = $row['lastModif'];
+				} else {
+					$toDisplay[] = smarty_modifier_tiki_short_datetime($row['lastModif'], '', 'n');
+				}
+			}
+			foreach ($row['field_values'] as $val) {
+				if ( ($keepItemlinkId) && ($val['type'] == 'r') ) {
+					$toDisplay[] = $val['value'];
+				} elseif ( ($dateFormatUnixTimestamp) && ($val['type'] == 'f') ) {
+					$toDisplay[] = $val['value'];
+				} elseif ( ($dateFormatUnixTimestamp) && ($val['type'] == 'j') ) {
+					$toDisplay[] = $val['value'];
+				} else {
+					$toDisplay[] = $trklib->get_field_handler($val)->renderOutput(array('list_mode' => 'csv'));
+				}
+			}
+
+			$this->writeCsv($toDisplay, $separator, $delimitorL, $delimitorR, $encoding, $cr);
+		}
 
 		exit;
 	}
@@ -1366,47 +1209,51 @@ class Services_Tracker_Controller
 		}
 	}
 
+	private function writeCsv($fields, $separator, $delimitorL, $delimitorR, $encoding, $cr = '%%%')
+	{
+		$values = array();
+		foreach ($fields as $v) {
+			$values[] = "$delimitorL$v$delimitorR";
+		}
+
+		$line = implode($separator, $values);
+		$line = str_replace(array("\r\n", "\n", "<br/>", "<br />"), $cr, $line);
+
+		if ($encoding === 'ISO-8859-1') {
+			echo utf8_decode($line) . "\n";
+		} else {
+			echo $line . "\n";
+		}
+	}
+
 	function action_import($input)
 	{
 		if (! Perms::get()->admin_trackers) {
 			throw new Services_Exception_Denied(tr('Reserved to tracker administrators'));
 		}
-		
-		unset($success);
-		$confirm = $input->confirm->int();
-		
-		if ($confirm) {
-				
-			$raw = $input->raw->none();
-			$preserve = $input->preserve->int();
 
-			$data = TikiLib::lib('tiki')->read_raw($raw);
+		$raw = $input->raw->none();
+		$preserve = $input->preserve->int();
 
-			if (! $data || ! isset($data['tracker'])) {
-				throw new Services_Exception(tr('Invalid data provided'), 400);
-			}
+		$data = TikiLib::lib('tiki')->read_raw($raw);
 
-			$data = $data['tracker'];
+		if (! $data || ! isset($data['tracker'])) {
+			throw new Services_Exception(tr('Invalid data provided'), 400);
+		}
 
-			$trackerId = 0;
-			if ($preserve) {
-				$trackerId = (int) $data['trackerId'];
-			}
+		$data = $data['tracker'];
 
-			unset($data['trackerId']);
-			$trackerId = $this->utilities->updateTracker($trackerId, $data);
-			$success = 1;
-			
-			return array(
-				'trackerId' => $trackerId,
-				'name' => $data['name'],
-				'success' => $success,
-			);
-		} 
-		
+		$trackerId = 0;
+		if ($preserve) {
+			$trackerId = (int) $data['trackerId'];
+		}
+
+		unset($data['trackerId']);
+		$trackerId = $this->utilities->updateTracker($trackerId, $data);
+
 		return array(
-			'title' => tr('Import Tracker Structure'),
-			'modal' => $input->modal->int(),
+			'trackerId' => $trackerId,
+			'name' => $data['name'],
 		);
 	}
 
@@ -1456,7 +1303,6 @@ class Services_Tracker_Controller
 		}
 
 		return array(
-			'title' => tr('Import Items'),
 			'trackerId' => $trackerId,
 			'return' => '',
 		);
@@ -1487,43 +1333,27 @@ class Services_Tracker_Controller
 
 	public function action_import_profile($input)
 	{
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib, $access;
+		$access->check_permission('tiki_p_admin');
+		$transaction = $tikilib->begin();
+		$installer = new Tiki_Profile_Installer;
 
-		$perms = Perms::get();
-		if (! $perms->admin) {
-			throw new Services_Exception_Denied(tr('Reserved for administrators'));
-		}
-		
-		unset($success);
-		$confirm = $input->confirm->int();
-		
-		if ($confirm) {
-		
-			$transaction = $tikilib->begin();
-			$installer = new Tiki_Profile_Installer;
+		$yaml = $input->yaml->string();
+		$name = "tracker_import:" . md5($yaml);
+		$profile = Tiki_Profile::fromString( '{CODE(caption="yaml")}' . "\n" . $yaml . "\n" . '{CODE}' , $name );
 
-			$yaml = $input->yaml->string();
-			$name = "tracker_import:" . md5($yaml);
-			$profile = Tiki_Profile::fromString('{CODE(caption="yaml")}' . "\n" . $yaml . "\n" . '{CODE}', $name);
-
-			if ($installer->isInstallable($profile) == true) {
-				if ($installer->isInstalled($profile) == true) {
-					$installer->forget($profile);
-				}
-
-				$installer->install($profile);
-				$feedback = $installer->getFeedback();
-				$transaction->commit();
-				return $feedback;
-				$success=1;
-			} else {
-				return false;
+		if ($installer->isInstallable($profile) == true) {
+			if ($installer->isInstalled($profile) == true) {
+				$installer->forget($profile);
 			}
+
+			$installer->install($profile);
+			$feedback = $installer->getFeedback();
+			$transaction->commit();
+			return $feedback;
+		} else {
+			return false;
 		}
-		return array(
-			'title' => tr('Import Tracker From Profile/YAML'),
-			'modal' => $input->modal->int(),
-		);
 	}
 
 	private function getSortFields($definition)
@@ -1607,36 +1437,6 @@ class Services_Tracker_Controller
 		}
 
 		return $out;
-	}
-	
-	function action_select_tracker($input)
-	{
-		$confirm = $input->confirm->int();
-		
-		if ($confirm) {
-			$trackerId = $input->trackerId->int();
-			return array(
-				'FORWARD' => array(
-						'action' => 'insert_item',
-						'trackerId' => $trackerId,
-				),
-			);
-		}
-		else {
-			$trklib = TikiLib::lib('trk');
-			$trackers = $trklib->list_trackers();
-			return array(
-				'title' => tr('Select Tracker'),
-				'trackers' => $trackers["data"],
-			);
-		}
-	}
-
-	function action_search_help($input)
-	{
-		return [
-			'title' => tr('Help'),
-		];
 	}
 }
 

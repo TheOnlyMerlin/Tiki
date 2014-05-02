@@ -15,11 +15,6 @@ class Search_Expr_Not implements Search_Expr_Interface
 		$this->expression = $expression;
 	}
 
-	function __clone()
-	{
-		$this->expression = clone $this->expression;
-	}
-
 	function setType($type)
 	{
 		$this->expression->setType($type);
@@ -45,11 +40,6 @@ class Search_Expr_Not implements Search_Expr_Interface
 		$result = $this->expression->walk($callback);
 
 		return call_user_func($callback, $this, array($result));
-	}
-
-	function traverse($callback)
-	{
-		return call_user_func($callback, $callback, $this, array($this->expression));
 	}
 }
 

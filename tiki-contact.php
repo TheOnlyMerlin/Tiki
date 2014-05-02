@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -55,7 +52,7 @@ if (isset($_REQUEST['send'])) {
 		if (!$hasContent) {
 			$message = tra("You must include a subject or a message.");
 		} elseif (empty($from)) {
-			$message = tra("You must make sure to have a valid email address in the From field.");
+			$message = tra("You must make sure to have a valid e-mail address in the From field.");
 		} else {
 			$message = $captchalib->getErrors();
 		}

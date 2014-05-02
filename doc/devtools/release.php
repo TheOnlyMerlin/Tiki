@@ -22,7 +22,7 @@ define('CHANGELOG_FILENAME', 'changelog.txt');
 define('CHANGELOG', ROOT . '/' . CHANGELOG_FILENAME);
 define('COPYRIGHTS_FILENAME', 'copyright.txt');
 define('COPYRIGHTS', ROOT . '/' . COPYRIGHTS_FILENAME);
-define('SF_TW_MEMBERS_URL', 'http://sourceforge.net/p/tikiwiki/_members');
+define('SF_TW_MEMBERS_URL', 'http://sourceforge.net/project/memberlist.php?group_id=64258');
 define('DEV_TW_MEMBERS_URL', 'http://dev.tiki.org/getTikiUser.php');
 define('README_FILENAME', 'README');
 define('README', ROOT . '/' . README_FILENAME);
@@ -213,7 +213,7 @@ if ($isPre) {
 
 	if (! $options['no-packaging'] && important_step("Build packages files (based on the '$tag' tag)")) {
 		build_packages($packageVersion, $tag);
-		echo color("\nUpload the files on SourceForge.\nInstructions can be found here: https://sourceforge.net/apps/trac/sourceforge/wiki/Release%20files%20for%20download\n\n", 'cyan');
+		echo color("\nUpload the files on SourceForge.\nInstructions can be found here: http://tinyurl.com/59uubv\n\n", 'cyan');
 	} else {
 		echo color("This was the last step.\n", 'cyan');
 	}
@@ -221,11 +221,6 @@ if ($isPre) {
 
 // Helper functions
 
-/**
- * @param $file
- * @param $root
- * @param $version
- */
 function write_secdb($file, $root, $version)
 {
 	$file_exists = @file_exists($file);
@@ -252,12 +247,6 @@ function write_secdb($file, $root, $version)
 	}
 }
 
-/**
- * @param $root
- * @param $dir
- * @param $version
- * @param $queries
- */
 function md5_check_dir($root, $dir, $version, &$queries)
 {
 	$d = dir($dir);
@@ -293,10 +282,6 @@ function md5_check_dir($root, $dir, $version, &$queries)
 	$d->close();
 }
 
-/**
- * @param $releaseVersion
- * @param $svnRelativePath
- */
 function build_packages($releaseVersion, $svnRelativePath)
 {
 	global $options;
@@ -314,12 +299,6 @@ function build_packages($releaseVersion, $svnRelativePath)
 	passthru("ls ~/tikipack/$releaseVersion");
 }
 
-/**
- * @param $dir
- * @param $entries
- * @param $regexp_pattern
- * @return bool
- */
 function get_files_list($dir, &$entries, $regexp_pattern)
 {
 	$d = dir($dir);
@@ -340,11 +319,6 @@ function get_files_list($dir, &$entries, $regexp_pattern)
 	return true;
 }
 
-/**
- * @param $alreadyDone
- * @param $toDo
- * @param $message
- */
 function display_progress_percentage($alreadyDone, $toDo, $message)
 {
 	$onePercent = ceil($toDo / 100);
@@ -354,9 +328,6 @@ function display_progress_percentage($alreadyDone, $toDo, $message)
 	}
 }
 
-/**
- * @param $error_msg
- */
 function check_smarty_syntax(&$error_msg)
 {
 	global $tikidomain, $prefs, $smarty;
@@ -376,17 +347,12 @@ function check_smarty_syntax(&$error_msg)
 	$prefs['maxRecords'] = 25;
 	$prefs['log_tpl'] = 'y';
 	$prefs['feature_sefurl_filter'] = 'y';
-	require_once 'vendor/smarty/smarty/distribution/libs/Smarty.class.php';
 	require_once 'lib/init/smarty.php';
 	set_error_handler('check_smarty_syntax_error_handler');
 
 	$smarty->compileAllTemplates('.tpl', true);
 }
 
-/**
- * @param $error_msg
- * @return bool
- */
 function check_smarty_syntax2(&$error_msg)
 {
 	global $tikidomain, $prefs, $smarty;
@@ -461,26 +427,12 @@ function check_smarty_syntax2(&$error_msg)
 	return true;
 }
 
-/**
- * @param $errno
- * @param $errstr
- * @param string $errfile
- * @param int $errline
- * @param array $errcontext
- */
 function check_smarty_syntax_error_handler($errno, $errstr, $errfile = '', $errline = 0, $errcontext = array())
 {
 	//	throw new Exception($errstr);
 	error($errstr);
 }
 
-/**
- * @param $dir
- * @param $error_msg
- * @param $hide_php_warnings
- * @param int $retry
- * @return bool
- */
 function check_php_syntax(&$dir, &$error_msg, $hide_php_warnings, $retry = 10)
 {
 	global $phpCommand;
@@ -527,9 +479,6 @@ function check_php_syntax(&$dir, &$error_msg, $hide_php_warnings, $retry = 10)
 	return true;
 }
 
-/**
- * @return array|bool
- */
 function get_options()
 {
 	if ($_SERVER['argc'] <= 1) {
@@ -612,12 +561,6 @@ function get_options()
 	return $options;
 }
 
-/**
- * @param $msg
- * @param bool $increment_step
- * @param bool $commit_msg
- * @return bool
- */
 function important_step($msg, $increment_step = true, $commit_msg = false)
 {
 	global $options;
@@ -681,10 +624,6 @@ function important_step($msg, $increment_step = true, $commit_msg = false)
 	return $do_step;
 }
 
-/**
- * @param $newVersion
- * @return array|bool
- */
 function update_changelog_file($newVersion)
 {
 	if (! is_readable(CHANGELOG) || ! is_writable(CHANGELOG) || ! ($handle = @fopen(CHANGELOG, "r"))) {
@@ -692,8 +631,7 @@ function update_changelog_file($newVersion)
 	}
 
 	$isNewMajorVersion = substr($newVersion, -1) == 0;
-	$majorVersion = substr($newVersion, 0, strpos($newVersion, '.'));
-	$releaseNotesURL = '<http://doc.tiki.org/Tiki' . $majorVersion . '>';
+	$releaseNotesURL = '<http://tiki.org/ReleaseNotes'.str_replace('.', '', $newVersion).'>';
 	$parseLogs = $sameFinalVersion = $skipBuffer = false;
 	$lastReleaseMajorNumber = -1;
 	$minRevision = $currentParsedRevision = 0;
@@ -783,10 +721,6 @@ EOS;
 	return file_put_contents(CHANGELOG, $newChangelog . $newChangelogEnd) ? $return : false;
 }
 
-/**
- * @param $newVersion
- * @return array|bool
- */
 function update_copyright_file($newVersion)
 {
 	if (! is_readable(COPYRIGHTS) || ! is_writable(COPYRIGHTS)) {
@@ -872,9 +806,6 @@ EOS;
 	return file_put_contents(COPYRIGHTS, $copyrights) ? $return : false;
 }
 
-/**
- * @return array|bool
- */
 function parse_copyrights()
 {
 	if (! $copyrights = @file(COPYRIGHTS)) {
@@ -899,15 +830,7 @@ function parse_copyrights()
 	return $return;
 }
 
-/**
- * @param $path
- * @param $contributors
- * @param $minRevision
- * @param $maxRevision
- * @param int $step
- * @return mixed
- */
-function get_contributors_data($path, &$contributors, $minRevision, $maxRevision, $step = 20000)
+function get_contributors_data($path, &$contributors, $minRevision, $maxRevision, $step = 15000)
 {
 	global $nbCommiters;
 
@@ -964,9 +887,6 @@ function get_contributors_data($path, &$contributors, $minRevision, $maxRevision
 	return $contributors;
 }
 
-/**
- * @param $contributors
- */
 function get_contributors_sf_data(&$contributors)
 {
 	global $options;
@@ -978,34 +898,32 @@ function get_contributors_sf_data(&$contributors)
 		error("PHP 'iconv' function is not available on this system. Impossible to get SF.net data.");
 	}
 
-	$html = $options['http-proxy'] ? file_get_contents(SF_TW_MEMBERS_URL, 0, $options['http-proxy']) : file_get_contents(SF_TW_MEMBERS_URL);
+	#$html = $options['http-proxy'] ? file_get_contents(SF_TW_MEMBERS_URL, 0, $options['http-proxy']) : file_get_contents(SF_TW_MEMBERS_URL);
+	$html = $options['http-proxy'] ? file_get_contents(DEV_TW_MEMBERS_URL, 0, $options['http-proxy']) : file_get_contents(DEV_TW_MEMBERS_URL);
 
-	if (!empty($html) && preg_match('/(<table.*<\/\s*table>)/sim', $html, $matches)) {
-		$usersInfo = array();
-		if (preg_match_all('/<tr[^>]*>' . str_repeat('\s*<td[^>]*>(.*)<\/td>\s*', 3).'<\/\s*tr>/Usim', $matches[0], $usersInfo, PREG_SET_ORDER)) {
-			foreach ($usersInfo as $k => $userInfo) {
-				$userInfo = array_map('trim', array_map('strip_tags', $userInfo));
-				$user = strtolower($userInfo['2']);
-				if (empty($user)) {
-					continue;
-				}
-				$contributors[$user] = array(
-					'Name' => html_entity_decode(iconv("ISO-8859-15", "UTF-8", $userInfo['1']), ENT_COMPAT, 'UTF-8'),
-					'SF Role' => $userInfo['3']
-				);
-			}
-		}
+#	if (!empty($html) && preg_match('/(<table.*<\/\s*table>)/sim', $html, $matches)) {
+#		$usersInfo = array();
+#		if (preg_match_all('/<tr[^>]*>' . str_repeat('\s*<td[^>]*>(.*)<\/td>\s*', 4).'<\/\s*tr>/Usim', $matches[0], $usersInfo, PREG_SET_ORDER)) {
+#			foreach ($usersInfo as $k => $userInfo) {
+#				$userInfo = array_map('trim', array_map('strip_tags', $userInfo));
+#				$user = strtolower($userInfo['2']);
+#				if (empty($user)) {
+#					continue;
+#				}
+#				$contributors[$user] = array(
+#					'Name' => html_entity_decode(iconv("ISO-8859-15", "UTF-8", $userInfo['1']), ENT_COMPAT, 'UTF-8'),
+#					'SF Role' => $userInfo['3']
+#				);
+#			}
+#		}
+	if (!empty($html)) {
+		$contributors = json_decode($html, true);
 	} else {
 		error('Impossible to get SF.net users information. If you need to use a web proxy, try the --http-proxy option.');
 		die;
 	}
 }
 
-/**
- * @param $releaseVersion
- * @param $mainVersion
- * @return bool
- */
 function update_readme_file($releaseVersion, $mainVersion)
 {
 	if (! is_readable(README) || ! is_writable(README)) {
@@ -1017,9 +935,8 @@ function update_readme_file($releaseVersion, $mainVersion)
 	$copyrights_file = COPYRIGHTS_FILENAME;
 	$license_file = LICENSE_FILENAME;
 
-	$majorVersion = substr($mainVersion, 0, strpos($mainVersion, '.'));
-	$release_notes_url = 'http://doc.tiki.org/Tiki' . $majorVersion;
-	// Changed from Tiki 12 to point to http://doc.tiki.org/Tiki12 instead of http://tiki.org/ReleaseNotes30
+	$release_notes_url = 'http://tiki.org/ReleaseNotes' . str_replace('.', '', $mainVersion);
+	// For example, Tiki 3.x release notes are on http://tiki.org/ReleaseNotes30
 
 	$readme = <<<EOF
 Tiki! The wiki with a lot of features!

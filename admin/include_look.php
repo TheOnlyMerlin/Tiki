@@ -109,10 +109,8 @@ $js
 			if (none) {
 				optionDropDown.attr('disabled',true);
 			}
+
 			optionDropDown.change();
-			if (jqueryTiki.chosen) {
-				optionDropDown.trigger("chosen:updated");
-			}
 		}).change();
 		optionDropDown.change( function() {
 			if (showPreview !== undefined) {

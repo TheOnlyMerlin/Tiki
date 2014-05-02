@@ -10,9 +10,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @param $installer
- */
 function post_20091214_perspective_management_tiki($installer)
 {
 	$result = $installer->query('SELECT perspectiveId, pref, value FROM tiki_perspective_preferences');

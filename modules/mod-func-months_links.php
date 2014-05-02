@@ -11,9 +11,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_months_links_info()
 {
 	return array(
@@ -35,14 +32,9 @@ function module_months_links_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_months_links($mod_reference, $module_params)
 {
-	global $prefs, $sections;
-	$smarty = TikiLib::lib('smarty');
+	global $prefs, $sections, $smarty;
 
 	if (isset($module_params['feature'])
 		&& isset($sections[$module_params['feature']])
@@ -68,11 +60,13 @@ function module_months_links($mod_reference, $module_params)
 	}
 
 	if (isset($link)) {
-		$tikilib = TIkiLib::lib('tiki');
+		global $tikilib;
 		if ($module_params['feature'] == 'blogs') {
-			$bloglib = TikiLib::lib('blog');
+			global $bloglib;
+			include_once ('lib/blogs/bloglib.php');
 		} elseif ($module_params['feature'] == 'cms') {
-			$artlib = TikiLib::lib('art');
+			global $artlib;
+			include_once ('lib/articles/artlib.php');
 		}
 
 		$month_names = array(
@@ -105,7 +99,7 @@ function module_months_links($mod_reference, $module_params)
 			$month_expanded = $month_names[$current_month_num-1];
 		}
 		$archives = array();
-		$numrows = $mod_reference['rows'] > 0 ? $mod_reference['rows'] : 120;
+		$numrows = $mod_reference['rows'] > 0 ? $mod_reference['rows'] : 12;
 
 		for ($i = 0 ; $i < $numrows ; $i++, $current_month_num--) {
 			if ($current_month_num == 0) {

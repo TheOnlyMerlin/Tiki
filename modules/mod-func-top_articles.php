@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_top_articles_info()
 {
 	return array(
@@ -25,16 +22,10 @@ function module_top_articles_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_top_articles($mod_reference, $module_params)
 {
-	global $user;
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
-	$artlib = TikiLib::lib('art');
+	global $tikilib, $smarty, $user;
+	global $artlib; require_once 'lib/articles/artlib.php';
 
 	$lang = '';
 	if (isset($module_params['lang'])) {

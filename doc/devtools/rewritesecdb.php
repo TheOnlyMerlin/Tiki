@@ -9,11 +9,6 @@ $version = $_SERVER['argv'][1];
 
 rewriteSecdb('tiki-' . $version . '/db/tiki-secdb_'.$version.'_mysql.sql', 'tiki-' . $version, $version);
 
-/**
- * @param $file
- * @param $root
- * @param $version
- */
 function rewriteSecdb($file, $root, $version)
 {
 	$file_exists = @file_exists($file);
@@ -35,12 +30,6 @@ function rewriteSecdb($file, $root, $version)
 	}
 }
 
-/**
- * @param $root
- * @param $dir
- * @param $version
- * @param $queries
- */
 function md5CheckDir($root, $dir, $version, &$queries)
 {
 	$d = dir($dir);

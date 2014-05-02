@@ -1,23 +1,22 @@
 {* $Id$ *}
 
-{title url='tiki-admin_surveys.php' help="Surveys"}{tr}Admin surveys{/tr}{/title}
+{title help="Surveys"}{tr}Admin surveys{/tr}{/title}
 
-<div class="t_navbar btn-group form-group">
-	{button href="tiki-list_surveys.php" class="btn btn-default" _text="{tr}List Surveys{/tr}"}
-	{button href="tiki-survey_stats.php" class="btn btn-default" _text="{tr}Survey Stats{/tr}"}
-	{button surveyId=0 cookietab=2 _auto_args="surveyId,cookietab" class="btn btn-default" _text="{tr}Create Survey{/tr}"}
+<div class="navbar">
+	{button href="tiki-list_surveys.php" _text="{tr}List Surveys{/tr}"}
+	{button href="tiki-survey_stats.php" _text="{tr}Survey Stats{/tr}"}
+	{button surveyId=0 cookietab=2 _auto_args="surveyId,cookietab" _text="{tr}Create Survey{/tr}"}
 </div>
 
 {tabset}
 
 {tab name="{tr}Surveys{/tr}"}
-    <h2>{tr}Surveys{/tr}</h2>
+
 {if $channels or ($find ne '')}
 	{include file='find.tpl'}
 {/if}
 
-<div class="table-responsive">
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>
 			{self_link _sort_arg='sort_mode' _sort_field='surveyId'}{tr}ID{/tr}{/self_link}
@@ -32,9 +31,9 @@
 		<th style="width:120px;">{tr}Action{/tr}</th>
 	</tr>
 	
-
+	{cycle values="odd,even" print=false}
 	{section name=user loop=$channels}
-		<tr>
+		<tr class="{cycle}">
 			<td class="id">{$channels[user].surveyId}</td>
 			<td class="text">
 				<b>{$channels[user].name|escape}</b>
@@ -52,9 +51,13 @@
 			<td class="integer">{$channels[user].questions}</td>
 			<td class="action">
 				{self_link _icon='page_edit' cookietab='2' _anchor='anchor2' surveyId=$channels[user].surveyId}{tr}Edit{/tr}{/self_link}
-				<a class="link" href="tiki-admin_survey_questions.php?surveyId={$channels[user].surveyId}">{icon _id='application_view_list' alt="{tr}Questions{/tr}" title="{tr}Questions{/tr}"}</a>
+				<a class="link" href="tiki-admin_survey_questions.php?surveyId={$channels[user].surveyId}">{icon _id='help' alt="{tr}Questions{/tr}" title="{tr}Questions{/tr}"}</a>
 				<a class="link" href="tiki-admin_surveys.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].surveyId}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
-				{permission_link mode=icon type=survey permType=surveys id=$channels[user].surveyId title=$channels[user].name}
+				{if $channels[user].individual eq 'y'}
+					<a class="link" href="tiki-objectpermissions.php?objectName={$channels[user].name|escape:"url"}&amp;objectType=survey&amp;permType=surveys&amp;objectId={$channels[user].surveyId}">{icon _id='key_active' alt="{tr}Active Perms{/tr}"}</a>
+				{else}
+					<a class="link" href="tiki-objectpermissions.php?objectName={$channels[user].name|escape:"url"}&amp;objectType=survey&amp;permType=surveys&amp;objectId={$channels[user].surveyId}">{icon _id='key' alt="{tr}Perms{/tr}"}</a>
+				{/if}
 				{if ($tiki_p_admin eq 'y') or ($channels[user].individual eq 'n' and $tiki_p_view_survey_stats eq 'y') or ($channels[user].individual_tiki_p_view_survey_stats eq 'y')}
 					<a class="link" href="tiki-survey_stats_survey.php?surveyId={$channels[user].surveyId}">{icon _id='chart_curve' alt="{tr}Stats{/tr}"}</a>
 				{/if}
@@ -64,7 +67,6 @@
 		{norecords _colspan=5}
 	{/section}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
 {/tab}
@@ -77,38 +79,37 @@
 {/if}
 
 {if $individual eq 'y'}
-	{permission_link mode=link type=survey permType=surveys id=$info.surveyId title=$info.name label="{tr}There are individual permissions set for this survey{/tr}"}
+	<a class="link" href="tiki-objectpermissions.php?objectName={$info.name|escape:"url"}&amp;objectType=survey&amp;permType=surveys&amp;objectId={$info.surveyId}">{tr}There are individual permissions set for this survey{/tr}</a><br /><br />
 {/if}
 
-<form action="tiki-admin_surveys.php" method="post" class="form-horizontal" role="form">
-    <div class="form-group">
-    	<input type="hidden" name="surveyId" value="{$info.surveyId|escape}">
-        <label for="name" class="col-sm-2 control-label">{tr}Name{/tr}</label>
-        <div class="col-sm-10">
-			<input type="text" name="name" id="name" class="form-control" value="{$info.name|escape}">
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="description" class="col-sm-2 control-label">{tr}Description{/tr}</label>
-        <div class="col-sm-10">
-			{textarea name="description" rows="6" id="description" class="form-control" _toolbars='y' _simple='y' comments='y'}{$info.description}{/textarea}
-		</div>
-    </div>
-    <div class=" table spacer-bottom-15px">
+<form action="tiki-admin_surveys.php" method="post">
+	<input type="hidden" name="surveyId" value="{$info.surveyId|escape}" />
+	<table class="formcolor">
+		<tr>
+			<td>{tr}Name:{/tr}</td>
+			<td><input type="text" name="name" size="80" value="{$info.name|escape}" /></td>
+		</tr>
+		<tr>
+			<td>{tr}Description:{/tr}</td>
+			<td>{textarea name="description" rows="6" cols="80" _toolbars='y' _simple='y' comments='y'}{$info.description}{/textarea}</td>
+		</tr>
 		{include file='categorize.tpl'}
-    </div>
-    <div class="form-group">
-        <label for="status" class="col-sm-2 control-label">{tr}Status{/tr}</label>
-        <div class="col-sm-10">
-			<select name="status" class="form-control">
-				<option value="o" {if $info.status eq 'o'}selected='selected'{/if}>{tr}Open{/tr}</option>
-				<option value="c" {if $info.status eq 'c'}selected='selected'{/if}>{tr}Closed{/tr}</option>
-			</select>
-		</div>
-    </div>
-    <div class="form-group">
-        <input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
-	</div>
+		<tr>
+			<td>{tr}Status{/tr}</td>
+			<td>
+				<select name="status">
+					<option value="o" {if $info.status eq 'o'}selected='selected'{/if}>{tr}Open{/tr}</option>
+					<option value="c" {if $info.status eq 'c'}selected='selected'{/if}>{tr}Closed{/tr}</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td>
+				<input type="submit" name="save" value="{tr}Save{/tr}" />
+			</td>
+		</tr>
+	</table>
 </form>
 {/tab}
 

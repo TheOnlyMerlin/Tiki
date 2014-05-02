@@ -9,16 +9,11 @@
 // See http://doc.tiki.org/Restore+Help+Pages
 
 include_once("lib/init/initlib.php");
-include_once("lib/tikilib.php");
 require_once("db/tiki-db.php");
-$tikilib = TikiLib::lib('tiki');
-$categlib = TikiLib::lib('categ');
-$structlib = TikiLib::lib('struct');
+require_once("lib/tikilib.php");
+require_once("lib/categories/categlib.php");
+require_once("lib/structures/structlib.php");
 
-/**
- * @param $s
- * @return mixed
- */
 function tra($s)
 { 
 	return $s; 

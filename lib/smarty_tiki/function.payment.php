@@ -9,10 +9,8 @@
 // @params url $returnurl: optional return url
 function smarty_function_payment( $params, $smarty )
 {
-	global $prefs, $user, $globalperms;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$paymentlib = TikiLib::lib('payment');
+	global $tikilib, $prefs, $userlib, $user, $globalperms;
+	global $paymentlib; require_once 'lib/payment/paymentlib.php';
 	$invoice = (int) $params['id'];
 
 	$objectperms = Perms::get('payment', $invoice);
@@ -31,23 +29,19 @@ function smarty_function_payment( $params, $smarty )
 		$objectperms->payment_view &&
 		(
 			(
-				(
-					$info['state'] == 'outstanding' ||
-					$info['state'] == 'overdue'
-				) &&
-				$prefs['payment_user_only_his_own'] != 'y'
-			) ||
-			(
-				$info['state'] == 'past' &&
-				$prefs['payment_user_only_his_own_past'] != 'y'
-			) ||
+				$info['state'] == 'outstanding' ||
+				$info['state'] == 'overdue'
+			) &&
+			$prefs['payment_user_only_his_own'] != 'y' ||
+			$info['state'] == 'past' &&
+			$prefs['payment_user_only_his_own_past'] != 'y' ||
 			$theguy
 		)
 	) {
 		if ($prefs['payment_system'] == 'cclite' && isset($_POST['cclite_payment_amount']) && $_POST['cclite_payment_amount'] == $info['amount_remaining']) {
-			global $cclitelib; require_once 'lib/payment/cclitelib.php';
-			$access = TikiLib::lib('access');
-			$cartlib = TikiLib::lib('cart');
+			global $access, $cclitelib, $cartlib;
+			require_once 'lib/payment/cclitelib.php';
+			require_once 'lib/payment/cartlib.php';
 
 			//$access->check_authenticity( tr('Transfer currency? %0 %1?', $info['amount'], $info['currency'] ));
 
@@ -86,14 +80,8 @@ function smarty_function_payment( $params, $smarty )
 
 
 		$info['fullview'] = $objectperms->payment_view || $theguy;
-
-		if (!empty($smarty->tpl_vars['returnurl']->value)) {
-			$returl = $smarty->tpl_vars['returnurl'];
-			$info['returnurl'] = TikiLib::tikiUrl($returl);
-		}
-
 		if (!empty($params['returnurl']) && empty($result)) {
-			$info['url'] = TikiLib::tikiUrl($params['returnurl']);
+			$info['url'] = preg_match('|^https?://|', $params['returnurl']) ? $params['returnurl'] : $tikilib->tikiUrl($params['returnurl']);
 			$info['url'] .= (strstr($params['returnurl'], '.php?') || !strstr($params['returnurl'], '.php')? '&':'?') . "invoice=$invoice";
 		}
 		$smarty->assign('payment_info', $info);

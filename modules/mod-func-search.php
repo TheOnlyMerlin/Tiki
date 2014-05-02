@@ -11,9 +11,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_search_info()
 {
 	return array(
@@ -121,10 +118,6 @@ function module_search_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $smod_params
- */
 function module_search($mod_reference, $smod_params) 	// modifies $smod_params so uses & reference
 {
 	global $smarty, $prefs;
@@ -253,7 +246,7 @@ function module_search($mod_reference, $smod_params) 	// modifies $smod_params s
 		$smod_params['input_value'] = $_REQUEST['words'];
 	} else if (!empty($_REQUEST['find'])) {
 		$smod_params['input_value'] = $_REQUEST['find'];
-	} else if (!empty($_REQUEST['filter']['content']) && is_array($_REQUEST['filter'])) {
+	} else if (!empty($_REQUEST['filter']['content'])) {
 		$smod_params['input_value'] = $_REQUEST['filter']['content'];
 	} else {
 		$smod_params['input_value'] = '';

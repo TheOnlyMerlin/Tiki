@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_last_image_galleries_info()
 {
 	return array(
@@ -25,15 +22,10 @@ function module_last_image_galleries_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_last_image_galleries($mod_reference, $module_params)
 {
-	global $user;
-	$smarty = TikiLib::lib('smarty');
-	$imagegallib = TikiLib::lib('imagegal');
+	global $smarty, $user;
+	global $imagegallib; include_once 'lib/imagegals/imagegallib.php';
 	$ranking = $imagegallib->list_visible_galleries(0, $mod_reference["rows"], 'lastModif_desc', $user, '');
 	
 	$smarty->assign('modLastGalleries', $ranking["data"]);

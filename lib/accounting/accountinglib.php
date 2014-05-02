@@ -11,7 +11,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	exit;
 }
 
-$logslib = TikiLib::lib('logs');
+require_once ('lib/logs/logslib.php');
 
 /**
  * Basic functions used by the accounting feature
@@ -64,7 +64,6 @@ class AccountingLib extends LogsLib
 	 * @return	int/string					bookId on success, error message otherwise
 	 */
 	function createBook($bookName
-			, $bookClosed = 'n'
 			, $bookStartDate
 			, $bookEndDate
 			, $bookCurrency
@@ -76,10 +75,10 @@ class AccountingLib extends LogsLib
 			, $exportEOL
 			, $exportQuote
 			, $bookAutoTax = 'y'
+			, $bookClosed = 'n'
 			)
 	{
-		global $user;
-		$userlib = TikiLib::lib('user');
+		global $userlib, $user;
 		if (strlen($bookName) == 0) {
 			return "The book must have a name";
 		}
@@ -373,9 +372,7 @@ class AccountingLib extends LogsLib
 			$errors = array_merge($errors, $this->validateId('taxId', $accountTax, 'tiki_acct_tax', true, 'taxBookId', $bookId));
 		}
 
-		if (!empty($errors)) {
-			return $errors;
-		}
+		if (count($errors) != 0) return $errors;
 
 		$query = 'INSERT INTO tiki_acct_account' .
 						' SET accountBookId=?, accountId=?, accountName=?,' .
@@ -1387,48 +1384,29 @@ class AccountingLib extends LogsLib
 	{
 		$errors = array();
 		if (!is_numeric($id)) {
-			$errors[] = htmlspecialchars($idname) . ' (' . htmlspecialchars($id) . ')'
-				. tra('is is not a number.');
-		} elseif ($id <= 0) {
-			$errors[] = htmlspecialchars($idname) . ' ' . tra('must be > 0.');
+			$errors[] = "$idname ($id) " . tra('is is not a number.');
 		} else {
-			//static whitelist based on usage of the validateId function in accountinglib.php
-			$tablesWhitelist = array(
-				'tiki_acct_tax' => array(
-					'idname'     => 'taxId',
-					'bookIdName' => 'taxBookId'
-				),
-				'tiki_acct_account' => array(
-					'idname'     => 'accountId',
-					'bookIdName' => 'accountBookId'
-				)
-			);
-			if (!array_key_exists($table, $tablesWhitelist)) {
-				$errors[] = tra('Invalid transaction - please contact administrator.');
-			} elseif ($idname !== $tablesWhitelist[$table]['idname']){
-				$errors[] = tra('Invalid transaction - please contact administrator.');
+			if ($id <= 0) {
+				$errors[] = "$idname " . tra('must be >0.');
 			} else {
-				$query = "SELECT $idname FROM $table WHERE $idname = ?";
-				$bindvars = array($id);
-				if ($bookIdName === $tablesWhitelist[$table]['bookIdName']) {
-					$query .= " AND $bookIdName = ?";
-					array_push($bindvars, $bookId);
+				$query = "SELECT $idname FROM $table WHERE $idname=$id";
+				if ($bookIdName != '') {
+					$query .= " AND $bookIdName=$bookId";
 				}
 
-				$res = $this->query($query, $bindvars);
+				$res = $this->query($query);
 				if ($res === false) {
-					$errors[] = tra('Error checking') .  htmlspecialchars($idname) . ': ' . $this->ErrorNo() . ': '
-						. $this->ErrorMsg() . '<br /><pre>' . htmlspecialchars($query) . '</pre>';
+					$errors[] = tra('Error checking') & " $idname: " . $this->ErrorNo() . ": " . $this->ErrorMsg() . "<br /><pre>$query</pre>";
 				} else {
 					if ($exists) {
 						if ($res->numRows() == 0)
-							$errors[] = htmlspecialchars($idname) . ' ' . tra('does not exist.');
+							$errors[] = "$idname " . tra('does not exist.');
 					} else {
 						if ($res->numRows()>0)
-							$errors[] = htmlspecialchars($idname) . ' ' . tra('already exists');
+							$errors[] = "$idname $id " . tra('already exists');
 					} //existence
 				} // query
-			}
+			} // 0
 		} // numeric
 		return $errors;
 	} // validateId

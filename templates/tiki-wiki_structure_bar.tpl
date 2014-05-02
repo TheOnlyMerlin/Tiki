@@ -10,33 +10,33 @@
     	<a href="{sefurl page=$prev_info.pageName structure=$home_info.pageName page_ref_id=$prev_info.page_ref_id}">
     		{icon _id='resultset_previous' alt="{tr}Previous page{/tr}" title=$icon_title}</a>
     {else}
-    	<img src="img/icons/8.gif" alt="" height="1" width="8px">
+    	<img src="img/icons/8.gif" alt="" height="1" width="8" />
     {/if}
 
     {if $parent_info}{if $parent_info.page_alias}{assign var=icon_title value=$parent_info.page_alias}{else}{assign var=icon_title value=$parent_info.pageName}{/if}
     	<a href="{sefurl page=$parent_info.pageName structure=$home_info.pageName page_ref_id=$parent_info.page_ref_id}">
     		{icon _id='resultset_up' alt="{tr}Parent page{/tr}" title=$icon_title}</a>
     {else}
-    	<img src="img/icons/8.gif" alt="" height="1" width="8px">
+    	<img src="img/icons/8.gif" alt="" height="1" width="8" />
     {/if}
 
-    {if $next_info and $next_info.page_ref_id}{if $next_info.page_alias}{assign var=icon_title value=$next_info.page_alias}{else}{assign var=icon_title value=$next_info.pageName}{/if}<a href="{sefurl page=$next_info.pageName structure=$home_info.pageName page_ref_id=$next_info.page_ref_id}">{icon _id='resultset_next' alt="{tr}Next page{/tr}" title=$icon_title}</a>{else}<img src="img/icons/8.gif" alt="" height="1px" width="8px">{/if}
+    {if $next_info and $next_info.page_ref_id}{if $next_info.page_alias}{assign var=icon_title value=$next_info.page_alias}{else}{assign var=icon_title value=$next_info.pageName}{/if}<a href="{sefurl page=$next_info.pageName structure=$home_info.pageName page_ref_id=$next_info.page_ref_id}">{icon _id='resultset_next' alt="{tr}Next page{/tr}" title=$icon_title}</a>{else}<img src="img/icons/8.gif" alt="" height="1" width="8" />{/if}
 
 		</div>
   		<div style="float: left;">
 {if $struct_editable eq 'y'}
 	<form action="tiki-editpage.php" method="post">
 		<div class="form">
-			<input type="hidden" name="current_page_id" value="{$page_info.page_ref_id}">
-			<input type="text" id="structure_add_page" name="page">
+			<input type="hidden" name="current_page_id" value="{$page_info.page_ref_id}" />
+			<input type="text" id="structure_add_page" name="page" />
 			{autocomplete element='#structure_add_page' type='pagename'}
 			{* Cannot add peers to head of structure *}
 			{if $page_info and !$parent_info}
-				<input type="hidden" name="add_child" value="checked"> 
+				<input type="hidden" name="add_child" value="checked" /> 
 			{else}
-				<input type="checkbox" name="add_child"> {tr}Child{/tr}
+				<input type="checkbox" name="add_child" /> {tr}Child{/tr}
 			{/if}      
-			<input type="submit" class="btn btn-default btn-sm" name="insert_into_struct" value="{tr}Add Page{/tr}">
+			<input type="submit" name="insert_into_struct" value="{tr}Add Page{/tr}" />
 		</div>
 	</form>
 	</div>
@@ -52,7 +52,7 @@
 	      {if $structure_path[ix].page_alias}
 	        {$structure_path[ix].page_alias}
 		  {else}
-	        {$structure_path[ix].stripped_pageName|pagename}
+	        {$structure_path[ix].pageName|pagename}
 		  {/if}
 		  </a>
 		{/section}

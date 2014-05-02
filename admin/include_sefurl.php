@@ -32,7 +32,7 @@ $smarty->assign('httpd', $httpd);
 // Check if the URL rewriting configuration file is present and current
 $configurationFile = "missing";
 if (isset($enabledFileName)) {
-	$enabledFile = @fopen($enabledFileName, "r");
+	$enabledFile = fopen($enabledFileName, "r");
 	if ($enabledFile) {
 		$referenceFile = fopen($referenceFileName, "r");
 		if ($referenceFile) {
@@ -55,7 +55,7 @@ if (isset($enabledFileName)) {
 				global $url_path;
 				$rewritebase = '/';
 				while ($nextLine = fgets($enabledFile)) {
-					if (preg_match('/^\s*?RewriteBase\s*[\'"]?(.*?)[\'"]?$/', $nextLine, $m)) {
+					if (preg_match('/^RewriteBase\s*(.*)$/', $nextLine, $m)) {
 						$rewritebase = substr($m[1], -1) !== '/' ? $m[1] . '/' : $m[1];
 						break;
 					}

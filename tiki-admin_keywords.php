@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -13,11 +10,6 @@ require_once ('tiki-setup.php');
 $access->check_feature('wiki_keywords');
 $access->check_permission('tiki_p_admin_wiki');
 
-/**
- * @param $page
- * @param string $keywords
- * @return bool
- */
 function set_keywords( $page, $keywords="" )
 {
 	global $tikilib;
@@ -32,22 +24,12 @@ function set_keywords( $page, $keywords="" )
 	return true;
 }
 
-/**
- * @param $page
- * @return bool
- */
 function get_keywords( $page )
 {
 	global $tikilib;
 	return $tikilib->get_page_info($page);
 }
 
-/**
- * @param int $limit
- * @param int $offset
- * @param string $page
- * @return array
- */
 function get_all_keywords($limit=0, $offset=0, $page="")
 {
 	global $tikilib;

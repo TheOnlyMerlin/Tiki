@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -10,7 +7,7 @@
 
 $section = 'freetags';
 require_once ('tiki-setup.php');
-$freetaglib = TikiLib::lib('freetag');
+include_once ('lib/freetag/freetaglib.php');
 $access->check_feature('feature_freetags');
 $access->check_permission('tiki_p_view_freetags');
 
@@ -39,11 +36,10 @@ if (!isset($_REQUEST['tag']) && $prefs['freetags_preload_random_search'] == 'y')
 	}
 }
 if (!isset($_REQUEST["sort_mode"])) {
-	$sort_mode = $prefs['freetags_sort_mode'];
+	$sort_mode = 'name_asc';
 } else {
 	$sort_mode = $_REQUEST["sort_mode"];
 }
-$query_sort_mode = str_replace('created', 'o.`created`', $sort_mode);
 if (isset($_REQUEST["find"])) {
 	$find = $_REQUEST["find"];
 } else {
@@ -58,7 +54,7 @@ if (!isset($_REQUEST["offset"])) {
 }
 $smarty->assign_by_ref('offset', $offset);
 if (!isset($_REQUEST["type"])) {
-	$type = isset($_REQUEST['old_type'])?$_REQUEST['old_type']: '';
+	$type = '';
 } else {
 	$type = $_REQUEST["type"];
 }
@@ -101,18 +97,7 @@ if (empty($_REQUEST['tsort_mode'])) {
 	$tsort_mode = $_REQUEST['tsort_mode'];
 	$smarty->assign_by_ref('tsort_mode', $tsort_mode);
 }
-if (!empty($_REQUEST['objectId'])) {
-	$objectId = $_REQUEST['objectId'];
-} else {
-	$objectId = null;
-}
-$smarty->assign_by_ref('objectId', $objectId);
-if ($prefs['feature_blogs'] == 'y' && $type == 'blog post') {
-	$blogs = TikiLib::lib('blog')->list_blogs();
-	$smarty->assign('blogs', $blogs['data']);
-}
-
-$most_popular_tags = $freetaglib->get_most_popular_tags('', 0, $maxPopular, $type, $objectId, $tsort_mode);
+$most_popular_tags = $freetaglib->get_most_popular_tags('', 0, $maxPopular, $tsort_mode);
 if (!empty($prefs['freetags_cloud_colors'])) {
 	$colors = explode(',', $prefs['freetags_cloud_colors']);
 	$prev = '';
@@ -133,7 +118,7 @@ if ($broaden == 'last') {
 		$tagArray[count($tagArray) - 1]
 	);
 }
-$objects = $freetaglib->get_objects_with_tag_combo($tagArray, $type, $view_user, $offset, $maxRecords, $query_sort_mode, $find, $broaden, $objectId);
+$objects = $freetaglib->get_objects_with_tag_combo($tagArray, $type, $view_user, $offset, $maxRecords, $sort_mode, $find, $broaden);
 
 $smarty->assign_by_ref('objects', $objects["data"]);
 $smarty->assign_by_ref('cantobjects', $objects["cant"]);

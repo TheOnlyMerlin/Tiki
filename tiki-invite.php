@@ -14,10 +14,6 @@ require_once ('lib/webmail/tikimaillib.php');
 $prefs['feature_wiki_protect_email'] = 'n'; //not to alter the email
 
 /* csv format: lastname,firstname,mail */
-/**
- * @param $bloc
- * @return array
- */
 function parsemails_csv($bloc)
 {
 	$results=array();
@@ -35,10 +31,6 @@ function parsemails_csv($bloc)
 }
 
 /* everything format */
-/**
- * @param $bloc
- * @return array
- */
 function parsemails_all($bloc)
 {
 	$bloc=str_replace("\r\n", "\n", $bloc);
@@ -140,6 +132,7 @@ if (isset($_REQUEST['send'])) {
             $mail = new TikiMail();
             $mail->setFrom($prefs['sender_email']);
             $mail->setSubject($_REQUEST["emailsubject"]);
+            $mail->setCrlf("\n");
             $url=str_replace('tiki-invite.php', 'tiki-invited.php', $_SERVER['SCRIPT_URI'])
                 .'?invite='.$id.'&email='.urlencode($m['email']);
             $text=$_text;

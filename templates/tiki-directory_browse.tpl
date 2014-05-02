@@ -20,22 +20,22 @@
 {* The category path *}
 {if $prefs.feature_breadcrumbs ne 'y'} <a class="dirlink" href="tiki-directory_browse.php?parent=0">{tr}Top{/tr}</a>{if $parent > 0} >> {/if}{$path}
 {/if}
-<div class="description help-block">{$parent_info.description|escape}</div>
+<div class="description">{$parent_info.description|escape}</div>
 {if count($items) > 0}
-<div class="text-center">
+<div class="findtable">
   <form action="tiki-directory_search.php" method="post">
-    <input type="hidden" name="parent" value="{$parent|escape}">
+    <input type="hidden" name="parent" value="{$parent|escape}" />
     {tr}Find:{/tr}
     <select name="how">
       <option value="or">{tr}any{/tr}</option>
       <option value="and">{tr}All{/tr}</option>
     </select>
-    <input type="text" name="words" size="30">
+    <input type="text" name="words" size="30" />
     <select name="where">
       <option value="all">{tr}in entire directory{/tr}</option>
       <option value="cat">{tr}in current directory category{/tr}</option>
     </select>
-    <input type="submit" class="btn btn-default btn-sm" value="{tr}Search{/tr}">
+    <input type="submit" value="{tr}Search{/tr}" />
   </form>
 </div>
 {/if}
@@ -48,7 +48,7 @@
     <tr> {section name=numloop loop=$categs}
       <td><a class="dirlink" href="tiki-directory_browse.php?parent={$categs[numloop].categId}">{$categs[numloop].name|escape}</a> {if $categs[numloop].showCount eq 'y'}
         ({$categs[numloop].sites})
-        {/if} <br>
+        {/if} <br />
         {* Now display subcats if any *}
         {section name=ix loop=$categs[numloop].subcats}
         {if $categs[numloop].childrenType ne 'd'} <a class="dirsublink" href="tiki-directory_browse.php?parent={$categs[numloop].subcats[ix].categId}">{$categs[numloop].subcats[ix].name}</a> {else}
@@ -81,9 +81,9 @@
 <h2>{tr}Links{/tr}</h2>
 {if count($items) > 0}
 <div class="dirlistsites">
-  <div class="text-center">
+  <div class="findtable">
   <form method="post" action="tiki-directory_browse.php">
-    <input type="hidden" name="parent" value="{$parent|escape}">
+    <input type="hidden" name="parent" value="{$parent|escape}" />
     {tr}Sort by:{/tr}&nbsp;
     <select name="sort_mode">
       <option value="name_desc" {if $sort_mode eq 'name_desc'}selected="selected"{/if}>{tr}Name (desc){/tr}</option>
@@ -95,22 +95,22 @@
       <option value="lastModif_desc" {if $sort_mode eq 'lastModif_desc'}selected="selected"{/if}>{tr}Last updated (desc){/tr}</option>
       <option value="lastModif_asc" {if $sort_mode eq 'lastModif_asc'}selected="selected"{/if}>{tr}Last updated (asc){/tr}</option>
     </select>
-    <input type="submit" class="btn btn-default btn-sm" name="xx" value="{tr}sort{/tr}">
+    <input type="submit" name="xx" value="{tr}sort{/tr}" />
   </form>
   </div>
   {section name=ix loop=$items}
-  <div class="dirsite"> {if $prefs.directory_country_flag eq 'y'} <img alt="flag" src="img/flags/{$items[ix].country}.gif"> {/if} <a class="dirsitelink" href="tiki-directory_redirect.php?siteId={$items[ix].siteId}" {if $prefs.directory_open_links eq 'n'}target='_blank'{/if}>{$items[ix].name|escape}</a> {if $tiki_p_admin_directory_sites eq 'y'} 
+  <div class="dirsite"> {if $prefs.directory_country_flag eq 'y'} <img alt="flag" src="img/flags/{$items[ix].country}.gif" /> {/if} <a class="dirsitelink" href="tiki-directory_redirect.php?siteId={$items[ix].siteId}" {if $prefs.directory_open_links eq 'n'}target='_blank'{/if}>{$items[ix].name|escape}</a> {if $tiki_p_admin_directory_sites eq 'y'} 
     [<a class="dirsitelink" href="tiki-directory_admin_sites.php?parent={$parent}&amp;siteId={$items[ix].siteId}">{tr}Edit{/tr}</a>]
     {/if} 
     {if $prefs.cachepages eq 'y'}
     (<a  class="dirsitelink" href="tiki-view_cache.php?url={$items[ix].url}" target="_blank">{tr}Cache{/tr}</a>)
     {/if}
-    <div class="description help-block">{$items[ix].description}</div>
+    <div class="description">{$items[ix].description}</div>
     {assign var=fsfs value=1} <span class="dirsitecats"> {tr}Directory Categories:{/tr}
     {section name=ii loop=$items[ix].cats}
     {if $fsfs}
     {assign var=fsfs value=0}{else},&nbsp;
-    {/if} <a class="dirsublink" href="tiki-directory_browse.php?parent={$items[ix].cats[ii].categId}">{$items[ix].cats[ii].path|escape}</a> {/section} </span> <br>
+    {/if} <a class="dirsublink" href="tiki-directory_browse.php?parent={$items[ix].cats[ii].categId}">{$items[ix].cats[ii].path|escape}</a> {/section} </span> <br />
     <span class="dirsitetrail"> {tr}Added:{/tr} {$items[ix].created|tiki_short_date} {tr}Last updated:{/tr} {$items[ix].lastModif|tiki_short_date} {tr}Hits:{/tr} {$items[ix].hits} </span> </div>
   {/section} </div>
 {pagination_links cant=$cant_pages step=$prefs.directory_links_per_page offset=$offset}{/pagination_links}
@@ -120,9 +120,9 @@
 {/if}
 
 {if count($related)>0}
-<div class="dirrelated"> {tr}Related directory categories{/tr} <br>
-  <br>
-  {section name=ix loop=$related} <a class="dirlink" href="tiki-directory_browse.php?parent={$related[ix].relatedTo}">{$related[ix].path}</a> <br>
+<div class="dirrelated"> {tr}Related directory categories{/tr} <br />
+  <br />
+  {section name=ix loop=$related} <a class="dirlink" href="tiki-directory_browse.php?parent={$related[ix].relatedTo}">{$related[ix].path}</a> <br />
   {/section} </div>
 {/if}
 

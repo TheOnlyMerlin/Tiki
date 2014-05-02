@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -183,7 +183,7 @@ $('#appframe .tab').parent().each(function () {
 });
 $('#appframe .accordion').parent().each(function () {
 	$('.accordion', this).wrapAll('<div/>').parent().accordion({
-		heightStyle: "content"
+		autoHeight: false
 	});
 });
 $('#appframe .anchor').wrapAll('<div/>').parent()
@@ -243,8 +243,7 @@ function wikiplugin_appframe_execute($plugin)
 {
 	$name = $plugin->getName();
 	$body = $plugin->getBody();
-	$argumentParger = new WikiParser_PluginArgumentParser();
-	$params = $argumentParger->parse($plugin->getArguments());
+	$params = WikiParser_PluginArgumentParser::parse($plugin->getArguments());
 
 	if (! in_array($name, array('tab', 'column', 'page', 'module', 'cond', 'anchor', 'overlay', 'template', 'hidden', 'mapcontrol'))) {
 		return null;
@@ -438,20 +437,15 @@ function wikiplugin_appframe_mapcontrol($data, $params, $start)
 		$label = tr('Select');
 		break;
 	case 'modify_feature':
-		$control = 'new OpenLayers.Control.ModifyFeature(vlayer, {
-			mode: OpenLayers.Control.ModifyFeature.DRAG | OpenLayers.Control.ModifyFeature.RESHAPE,
-			standalone: true,
-			virtualStyle: drawStyle,
-			vertexRenderIntent: "vertex"
-		}), new OpenLayers.Control.SelectFeature(vlayer)';
+		$control = 'new OpenLayers.Control.ModifyFeature(vlayer, {mode: OpenLayers.Control.ModifyFeature.DRAG | OpenLayers.Control.ModifyFeature.RESHAPE})';
 		$label = tr('Select/Modify');
 		break;
 	case 'draw_polygon':
-		$control = 'new OpenLayers.Control.DrawFeature(vlayer, OpenLayers.Handler.Polygon, {handlerOptions:{style:drawStyle}})';
+		$control = 'new OpenLayers.Control.DrawFeature(vlayer, OpenLayers.Handler.Polygon)';
 		$label = tr('Draw Polygon');
 		break;
 	case 'draw_path':
-		$control = 'new OpenLayers.Control.DrawFeature(vlayer, OpenLayers.Handler.Path, {handlerOptions:{style:drawStyle}})';
+		$control = 'new OpenLayers.Control.DrawFeature(vlayer, OpenLayers.Handler.Path)';
 		$label = tr('Draw Path');
 		break;
 	case 'reset_zoom':

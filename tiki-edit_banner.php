@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -10,13 +7,17 @@
 
 require_once ('tiki-setup.php');
 
-$tikilib = TikiLib::lib('tiki');
-$bannerlib = TikiLib::lib('banner');
+require_once ('lib/tikilib.php'); # httpScheme()
+include_once ('lib/banners/bannerlib.php');
+
+if (!isset($bannerlib)) {
+	$bannerlib = new BannerLib;
+}
 
 $access->check_feature('feature_banners');
 $access->check_permission('tiki_p_admin_banners');
 //Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 $smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
 
 if (isset($_REQUEST["bannerId"]) && $_REQUEST["bannerId"] > 0) {

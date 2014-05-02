@@ -5,11 +5,13 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+require_once 'Math/Formula/Function.php';
+
 class Tiki_Formula_Function_ArticleInfo extends Math_Formula_Function
 {
 	function evaluate( $element )
 	{
-		global $prefs;
+		global $prefs, $artlib;
 
 		if ( count($element) != 3 ) {
 			$this->error(tra('Expecting three arguments for article-info.'));
@@ -29,7 +31,7 @@ class Tiki_Formula_Function_ArticleInfo extends Math_Formula_Function
 		$property = $element[2];
 
 		if ( $type == 'article' ) {
-			$artlib = TikiLib::lib('art');
+			require_once 'lib/articles/artlib.php';
 			$article = $artlib->get_article($object, false);
 
 			if ( $property == 'rating' ) {

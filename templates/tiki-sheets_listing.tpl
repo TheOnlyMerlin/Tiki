@@ -1,6 +1,6 @@
 {* $Id: tiki-sheets.tpl 35450 2011-07-17 19:03:36Z changi67 $ *}
 
-<tr>
+<tr class="{cycle}">
 	<td class="text">
 		{if $sheet.parentSheetId}
 			<span class="ui-icon ui-icon-grip-dotted-vertical" style="float: left;"></span>
@@ -15,7 +15,7 @@
 	<td class="action">
 		{if $chart_enabled eq 'y'}
 			<a class="gallink" href="tiki-graph_sheet.php?sheetId={$sheet.sheetId}">
-				<img src='img/icons/chart_curve.png' width='16' height='16' alt="{tr}Graph{/tr}" title="{tr}Graph{/tr}">
+				<img src='img/icons/chart_curve.png' width='16' height='16' alt="{tr}Graph{/tr}" title="{tr}Graph{/tr}" />
 			</a>
 		{/if}
 		{if $tiki_p_view_sheet_history eq 'y'}
@@ -32,7 +32,13 @@
 			</a>
 		{/if}
 		{if $tiki_p_admin_sheet eq 'y'}
-			{permission_link mode=icon type=sheet id=$sheet.sheetId title=$sheet.title}
+			<a class="gallink" href="tiki-objectpermissions.php?objectName={$sheet.title|escape:"url"}&amp;objectType=sheet&amp;permType=sheet&amp;objectId={$sheet.sheetId}">
+			{if $sheet.individual eq 'y'}
+				{icon _id='key_active' alt="{tr}Active Perms{/tr}"}
+			{else}
+				{icon _id='key' alt="{tr}Perms{/tr}"}
+			{/if}
+			</a>
 		{/if}
 		{if $sheet.tiki_p_edit_sheet eq 'y'}
 			<a class="gallink" href="tiki-sheets.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;edit_mode=1&amp;sheetId={$sheet.sheetId}">

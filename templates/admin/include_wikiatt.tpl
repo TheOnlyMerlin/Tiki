@@ -1,13 +1,12 @@
-<fieldset class="table">
+<fieldset class="admin">
 	<legend>{tr}Wiki attachments{/tr}</legend>
 			<form action="tiki-admin.php?page=wikiatt" method="post">
 				<input type="text" name="find" value="{$find|escape}" />
-				<input type="submit" class="btn btn-default btn-sm" name="action" value="{tr}Find{/tr}"/>
+				<input type="submit" name="action" value="{tr}Find{/tr}"/>
 			</form>
 
-
-            <div class="table-responsive">
-			<table class="table normal">
+			{cycle values="odd,even" print=false}
+			<table class="normal">
 				<tr>
 					<th>{self_link _sort_arg='sort_mode' _sort_field='user'}{tr}User{/tr}{/self_link}</th>
 					<th>{self_link _sort_arg='sort_mode' _sort_field='page'}{tr}Page{/tr}{/self_link}</th>
@@ -40,7 +39,6 @@
 					{norecords _colspan=9}
 				{/section}
 			</table>
-            </div>
 
 			{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
 		
@@ -49,13 +47,13 @@
 				<td>
 					<form action="tiki-admin.php?page=wikiatt" method="post">
 						<input type="hidden" name="all2db" value="1" />
-						<input type="submit" class="btn btn-default btn-sm" name="action" value="{tr}Change all to db{/tr}"/>
+						<input type="submit" name="action" value="{tr}Change all to db{/tr}"/>
 					</form>
 				</td>
 				<td>
 					<form action="tiki-admin.php?page=wikiatt" method="post">
 						<input type="hidden" name="all2file" value="1" />
-						<input type="submit" class="btn btn-default btn-sm" name="action" value="{tr}Change all to file{/tr}"/>
+						<input type="submit" name="action" value="{tr}Change all to file{/tr}"/>
 					</form>
 				</td>
 			</tr>

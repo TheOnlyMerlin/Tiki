@@ -70,43 +70,10 @@ function smarty_function_menu($params, $smarty)
 	}
 
 	list($menu_info, $channels) = get_menu_with_selections($params);
+
 	$smarty->assign('menu_channels', $channels['data']);
 	$smarty->assign('menu_info', $menu_info);
 	$smarty->assign('escape_menu_labels', ($prefs['menus_item_names_raw'] === 'n' && isset($menu_info['parse']) && $menu_info['parse'] === 'n'));
-
-	if (isset($params['bootstrap'])) {
-		$structured = array();
-		$activeSection = null;
-		foreach ($channels['data'] as $element) {
-			if ($element['type'] == 's') {
-				if ($activeSection) {
-					$structured[] = $activeSection;
-				}
-
-				$activeSection = $element;
-				$activeSection['children'] = array();
-			} elseif ($element['type'] == 'o') {
-				if ($activeSection) {
-					$activeSection['children'][] = $element;
-				} else {
-					$structured[] = $element;
-				}
-			}
-		}
-
-		if ($activeSection) {
-			$structured[] = $activeSection;
-		}
-
-		$smarty->assign('list', $structured);
-		switch ($params['bootstrap']) {
-		case 'navbar':
-			return $smarty->fetch('bootstrap_menu_navbar.tpl');
-		default:
-			return $smarty->fetch('bootstrap_menu.tpl');
-		}
-	}
-
 	$data = $smarty->fetch($tpl);
 	$menulib = TikiLib::lib('menu');
 	return $menulib->clean_menu_html($data);
@@ -119,10 +86,9 @@ function compare_menu_options($a, $b)
 
 function get_menu_with_selections($params)
 {
-	global $user, $prefs;
-	$tikilib = TikiLib::lib('tiki');
-	$menulib = TikiLib::lib('menu');
-	$cachelib = TikiLib::lib('cache');
+	global $tikilib, $user, $prefs;
+	global $menulib; include_once('lib/menubuilder/menulib.php');
+	global $cachelib; include_once('lib/cache/cachelib.php');
 	$cacheName = isset($prefs['mylevel']) ? $prefs['mylevel'] : 0;
 	$cacheName .= '_'.$prefs['language'].'_'.md5(implode("\n", $tikilib->get_user_groups($user)));
 
@@ -137,7 +103,7 @@ function get_menu_with_selections($params)
 	if ( $cdata = $cachelib->getSerialized($cacheName, $cacheType) ) {
 		list($menu_info, $channels) = $cdata;
 	} elseif (!empty($structureId)) {
-		$structlib = TikiLib::lib('struct');
+		global $structlib; include_once('lib/structures/structlib.php');
 
 		if (!is_numeric($structureId)) {
 			$structureId = $structlib->get_struct_ref_id($structureId);
@@ -145,30 +111,20 @@ function get_menu_with_selections($params)
 
 		$channels = $structlib->build_subtree_toc($structureId);
 		$structure_info =  $structlib->s_get_page_info($structureId);
-		$channels = $structlib->to_menu($channels, $structure_info['pageName'], 0, 0, $params);
+		$channels = $structlib->to_menu($channels, $structure_info['pageName']);
 		$menu_info = array('type'=>'d', 'menuId'=> "s_$structureId", 'structure' => 'y');
+		//echo '<pre>'; print_r($channels); echo '</pre>';
 	} else if (!empty($id)) {
 		$menu_info = $menulib->get_menu($id);
 		$channels = $menulib->list_menu_options($id, 0, -1, 'position_asc', '', '', isset($prefs['mylevel'])?$prefs['mylevel']:0);
 		$channels = $menulib->sort_menu_options($channels);
+		if (strpos($_SERVER['SCRIPT_NAME'], 'tiki-register') === false) {
+			$cachelib->cacheItem($cacheName, serialize(array($menu_info, $channels)), $cacheType);
+		}
 	} else {
-		return '<span class="alert-warning">menu function: Menu or Structure ID not set</span>';
-	}
-	if (strpos($_SERVER['SCRIPT_NAME'], 'tiki-register') === false) {
-		$cachelib->cacheItem($cacheName, serialize(array($menu_info, $channels)), $cacheType);
+		return '<span class="error">menu function: Menu or Structure ID not set</span>';
 	}
 	$channels = $menulib->setSelected($channels, isset($sectionLevel)?$sectionLevel:'', isset($toLevel)?$toLevel: '', $params);
-
-	foreach ($channels['data'] as & $item) {
-		if (!empty($menu_info['parse']) && $menu_info['parse'] === 'y') {
-			if (TikiLib::lib('parser')->contains_html_block($item['name'])) {
-				$item['block'] = true;
-			} else {
-				$item['block'] = false;
-			}
-			$item['name'] = preg_replace('/(.*)\n$/', '$1', $item['name']);	// parser adds a newline to everything
-		}
-	}
 
 	return array($menu_info, $channels);
 }

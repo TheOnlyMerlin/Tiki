@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -26,11 +23,11 @@ If you leave the data field blank, the default is to use all the questions from 
 You can also set the same option under the Generl Options section.
 */
 require_once ('tiki-setup.php');
+include_once ('lib/quizzes/quizlib.php');
 
 $access->check_feature('feature_quizzes');
 //Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-$quizlib = TikiLib::lib('quiz');
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 $smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
 
 // quizId of 0 is used as a placeholder; There should NEVER be a row in the
@@ -53,14 +50,9 @@ if (isset($_REQUEST["preview"]) || isset($_REQUEST["xmlview"]) || isset($_REQUES
 }
 $quiz = $quizlib->quiz_fetch($_REQUEST["quizId"]);
 
-/**
- * @param $quiz
- * @param $_REQUEST
- * @param $option
- */
-function fetchYNOption(&$quiz, $request, $option)
+function fetchYNOption(&$quiz, $_REQUEST, $option)
 {
-	if (isset($request[$option]) && $request[$option] == 'on') {
+	if (isset($_REQUEST[$option]) && $_REQUEST[$option] == 'on') {
 		$quiz[$option] = 'y';
 	} else {
 		$quiz[$option] = 'n';
@@ -68,9 +60,6 @@ function fetchYNOption(&$quiz, $request, $option)
 }
 
 // Load the data from the
-/**
- * @return array
- */
 function quiz_data_load()
 {
 	global $_REQUEST;
@@ -155,9 +144,6 @@ if (isset($_REQUEST["save"])) {
 
 $smarty->assign('quiz', $quiz);
 
-/**
- * @param $tpl
- */
 function setup_options(&$tpl)
 {
 	global $tikilib;

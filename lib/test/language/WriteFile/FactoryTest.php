@@ -7,9 +7,7 @@
 
 require_once('lib/language/Exception.php');
 require_once('lib/language/WriteFile/Factory.php');
-
-use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\vfsStreamFile;
+require_once('vfsStream/vfsStream.php');
 
 class Language_WriteFile_FactoryTest extends TikiTestCase
 {

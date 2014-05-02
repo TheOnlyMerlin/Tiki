@@ -26,7 +26,7 @@ function smarty_block_filter($params, $content, $smarty, &$repeat)
 
 	$tikilib = TikiLib::lib('tiki');
 	$unifiedsearchlib = TikiLib::lib('unifiedsearch');
-
+	
 	if (! isset($params['action'])) {
 		$params['action'] = '';
 	}
@@ -53,17 +53,17 @@ function smarty_block_filter($params, $content, $smarty, &$repeat)
 		'modification_date_ndesc' => tra('Modified date'),
 		'visits_ndesc' => tra('Visits'),
 	);
-	$smarty->assign('sort_mode', $sort_mode);
+	$smarty->assign('sort_mode', $sort_mode );
 	$smarty->assign('sort_modes', $sort_modes);
 
 	// Categories
-	if ($prefs['feature_categories'] == 'y' && $prefs['search_show_category_filter'] == 'y') {
+	if ($prefs['feature_categories'] == 'y') {
 		$smarty->assign('filter_deep', isset($filter['deep']));
 		$smarty->assign('filter_categories', isset($filter['categories']) ? $filter['categories'] : '');
 		$smarty->assign('filter_categmap', json_encode(TikiDb::get()->fetchMap('SELECT categId, name FROM tiki_categories')));
 
 		// Generate the category tree {{{
-		$categlib = TikiLib::lib('categ');
+		global $categlib; require_once 'lib/categories/categlib.php';
 		require_once 'lib/tree/BrowseTreeMaker.php';
 		$ctall = $categlib->getCategories();
 
@@ -96,8 +96,8 @@ BODY;
 	}
 
 	if ($prefs['feature_freetags'] == 'y') {
-		$freetaglib = TikiLib::lib('freetag');
-
+		global $freetaglib; require_once 'lib/freetag/freetaglib.php';
+		
 		$smarty->assign('filter_tags', isset($filter['tags']) ? $filter['tags'] : '');
 		$smarty->assign('filter_tagmap', json_encode(TikiDb::get()->fetchMap('SELECT tagId, tag FROM tiki_freetags')));
 		$smarty->assign('filter_tags_picker', (string) $freetaglib->get_cloud());

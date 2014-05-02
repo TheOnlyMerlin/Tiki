@@ -10,13 +10,12 @@ function prefs_menus_list()
 	return array(
 		'menus_items_icons' => array(
 			'name' => tra('Menu icons'),
-			'description' => tra('Allows icons to be defined for menu entries'),
+			'description' => tra('Allows to define icons for menu entries'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'menus_items_icons_path' => array(
 			'name' => tra('Default path for the icons'),
-            'description' => tra(''),
 			'type' => 'text',
 			'default' => 'img/icons/large',
 		),

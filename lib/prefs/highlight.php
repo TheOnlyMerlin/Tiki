@@ -11,7 +11,6 @@ function prefs_highlight_list($partial = false)
 	return array(
 		'highlight_group' => array(
 			'name' => tra('Highlight group'),
-            'description' => tra(''),
 			'help' => 'Groups',
 			'type' => 'list',
 			'options' => highlight_group_values($partial),
@@ -28,7 +27,7 @@ function prefs_highlight_list($partial = false)
  */
 function highlight_group_values($partial)
 {
-	$userlib = TikiLib::lib('user');
+	global $userlib;
 
 	if ($partial) {
 		return false;

@@ -57,7 +57,7 @@ class WikiRenderer
 
 	function applyPermissions() // {{{
 	{
-		$userlib = TikiLib::lib('user');
+		global $userlib;
 		$permNames = $userlib->get_permission_names_for('wiki');
 		$objectperms = Perms::get(array( 'type' => 'wiki page', 'object' => $this->page ));
 
@@ -74,8 +74,7 @@ class WikiRenderer
 
 	function restoreAll() // {{{
 	{
-		global $prefs;
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $prefs;
 		foreach ( $this->toRestore as $name => $value ) {
 			$GLOBALS[$name] = $value;
 		}
@@ -118,9 +117,7 @@ class WikiRenderer
 		if ( ! $this->structureInfo )
 			return;
 
-		global $structure, $structure_path;
-		$structlib = TikiLib::lib('struct');
-		$tikilib = TikiLib::lib('tiki');
+		global $structlib, $tikilib, $structure, $structure_path;
 
 		$structure = 'y';
 		$this->smartyassign('structure', $structure);
@@ -162,8 +159,7 @@ class WikiRenderer
 
 	private function setupContributors() // {{{
 	{
-		global $prefs;
-		$wikilib = TikiLib::lib('wiki');
+		global $prefs, $wikilib;
 
 		if ( $prefs['wiki_authors_style'] != 'classic' ) {
 			$contributors = $wikilib->get_contributors($this->page, $this->info['user']);
@@ -173,7 +169,7 @@ class WikiRenderer
 
 	private function setupCreator() // {{{
 	{
-		$wikilib = TikiLib::lib('wiki');
+		global $wikilib;
 
 		if (isset($this->info['creator'])) {
 			$creator = $this->info['creator'];
@@ -202,9 +198,10 @@ class WikiRenderer
 			$this->smartyassign('pageLang', $pageLang);
 		}
 
-		if ($prefs['feature_machine_translation'] == 'y' && $prefs['lang_machine_translate_wiki'] == 'y' && !empty($this->info['lang'])) {
-			$provider = new Multilingual_MachineTranslation;
-			$langsCandidatesForMachineTranslation = $provider->getAvailableLanguages($this->trads);
+		if ($prefs['feature_machine_translation'] == 'y' && !empty($this->info['lang'])) {
+			require_once('lib/core/Multilingual/MachineTranslation/GoogleTranslateWrapper.php');
+			$translator = new Multilingual_MachineTranslation_GoogleTranslateWrapper($this->info['lang'], $this->info['lang']);
+			$langsCandidatesForMachineTranslation = $translator->getLangsCandidatesForMachineTranslation($this->trads);
 			$this->smartyassign('langsCandidatesForMachineTranslation', $langsCandidatesForMachineTranslation);
 		}
 
@@ -220,8 +217,7 @@ class WikiRenderer
 
 	private function setupBacklinks() // {{{
 	{
-		global $prefs, $tiki_p_view_backlink;
-		$wikilib = TikiLib::lib('wiki');
+		global $prefs, $wikilib, $tiki_p_view_backlink;
 
 		if ( $prefs['feature_backlinks'] == 'y' && $tiki_p_view_backlink == 'y') {
 			$backlinks = $wikilib->get_backlinks($this->page);
@@ -231,8 +227,7 @@ class WikiRenderer
 
 	private function setupActions() // {{{
 	{
-		global $prefs, $tiki_p_edit, $tiki_p_remove, $tiki_p_admin_wiki;
-		$wikilib = TikiLib::lib('wiki');
+		global $prefs, $wikilib, $tiki_p_edit, $tiki_p_remove, $tiki_p_admin_wiki;
 
 		// Verify lock status
 		if ( $prefs['feature_wiki_usrlock'] == 'y' ) {
@@ -251,7 +246,7 @@ class WikiRenderer
 		if (!isset($this->info['is_html'])) {
 			$this->info['is_html'] = false;
 		}
-
+		
 		$this->setupComments();
 	} // }}}
 
@@ -278,9 +273,7 @@ class WikiRenderer
 
 	private function setupPage() // {{{
 	{
-		global $prefs, $user;
-		$wikilib = TikiLib::lib('wiki');
-		$tikilib = TikiLib::lib('tiki');
+		global $prefs, $tikilib, $wikilib, $user;
 
 		$this->smartyassign('page', $this->page);
 		$this->smartyassign('show_page', 'y');
@@ -296,30 +289,22 @@ class WikiRenderer
 		// Get the authors style for this page
 		$wiki_authors_style = ( $prefs['wiki_authors_style_by_page'] == 'y' && $this->info['wiki_authors_style'] != '' ) ? $this->info['wiki_authors_style'] : $prefs['wiki_authors_style'];
 		$this->smartyassign('wiki_authors_style', $wiki_authors_style);
-		$this->smartyassign('revision_approval_info', null);
 
 		$this->smartyassign('cached_page', 'n');
 
 		if ($prefs['flaggedrev_approval'] == 'y') {
-			$flaggedrevisionlib = TikiLib::lib('flaggedrevision');
+			global $flaggedrevisionlib; require_once 'lib/wiki/flaggedrevisionlib.php';
 
 			if ($flaggedrevisionlib->page_requires_approval($this->page)) {
 				$this->smartyassign('revision_approval', true);
 
 				if ($version_info = $flaggedrevisionlib->get_version_with($this->page, 'moderation', 'OK')) {
 					$this->smartyassign('revision_approved', $version_info['version']);
-					$revision_displayed = $this->info['version'];
-
 					if ($this->content_to_render === null) {
+						$this->smartyassign('revision_displayed', $version_info['version']);
 						$this->content_to_render = $version_info['data'];
-						$revision_displayed = $version_info['version'];
-					}
-
-					$this->smartyassign('revision_displayed', $revision_displayed);
-
-					if ($revision_displayed == $version_info['version']) {
-						$approval = $flaggedrevisionlib->find_approval_information($this->page, $revision_displayed);
-						$this->smartyassign('revision_approval_info', $approval);
+					} else {
+						$this->smartyassign('revision_displayed', $this->info['version']);
 					}
 				} else {
 					$this->smartyassign('revision_approved', null);
@@ -334,71 +319,43 @@ class WikiRenderer
 		}
 
 		if ($this->content_to_render === null) {
-			$page = $this->page;
-			$pdata = new Tiki_Render_Lazy(
-				function () use ($page) {
-					$wikilib = TikiLib::lib('wiki');
-					$smarty = TikiLib::lib('smarty');
-					$parsed = $wikilib->get_parse($page, $canBeRefreshed);
+			$pdata = $wikilib->get_parse($this->page, $canBeRefreshed);
 
-					if ($canBeRefreshed) {
-						$smarty->assign('cached_page', 'y');
-					}
-
-					return $parsed;
-				}
-			);
+			if ($canBeRefreshed) {
+				$this->smartyassign('cached_page', 'y');
+			}
 		} else {
 			$parse_options = array(
 				'is_html' => $this->info['is_html'],
 				'language' => $this->info['lang'],
 			);
 
-			$content = $this->content_to_render;
 			if ($this->raw) {
-				$pdata = new Tiki_Render_Lazy(
-					function () use ($content) {
-						$parserlib = TikiLib::lib('parser');
-						return $parserlib->parse_data_raw($content);
-					}
-				);
+				$parserlib = TikiLib::lib('parser');
+				$pdata = $parserlib->parse_data_raw($this->content_to_render);
 			} else {
-				$pdata = new Tiki_Render_Lazy(
-					function () use ($content, $parse_options) {
-						$wikilib = TikiLib::lib('wiki');
-						return $wikilib->parse_data($content, $parse_options);
-					}
-				);
+				$pdata = $wikilib->parse_data($this->content_to_render, $parse_options);
 			}
 		}
 
-		if ($prefs['wiki_pagination'] == 'y') {
-			$pages = $wikilib->get_number_of_pages($pdata);
-			$pdata = $wikilib->get_page($pdata, $this->pageNumber);
-			$this->smartyassign('pages', $pages);
+		$pages = $wikilib->get_number_of_pages($pdata);
+		$pdata = $wikilib->get_page($pdata, $this->pageNumber);
+		$this->smartyassign('pages', $pages);
 
-			if ($pages>$this->pageNumber) {
-				$this->smartyassign('next_page', $this->pageNumber+1);
-			} else {
-				$this->smartyassign('next_page', $this->pageNumber);
-			}
-			if ($this->pageNumber>1) {
-				$this->smartyassign('prev_page', $this->pageNumber-1);
-			} else {
-				$this->smartyassign('prev_page', 1);
-			}
-
-			$this->smartyassign('first_page', 1);
-			$this->smartyassign('last_page', $pages);
-			$this->smartyassign('pagenum', $this->pageNumber);
+		if ($pages>$this->pageNumber) {
+			$this->smartyassign('next_page', $this->pageNumber+1);
 		} else {
-			$this->smartyassign('pages', 1);
-			$this->smartyassign('next_page', 1);
-			$this->smartyassign('prev_page', 1);
-			$this->smartyassign('first_page', 1);
-			$this->smartyassign('last_page', 1);
-			$this->smartyassign('pagenum', 1);
+			$this->smartyassign('next_page', $this->pageNumber);
 		}
+		if ($this->pageNumber>1) {
+			$this->smartyassign('prev_page', $this->pageNumber-1);
+		} else {
+			$this->smartyassign('prev_page', 1);
+		}
+
+		$this->smartyassign('first_page', 1);
+		$this->smartyassign('last_page', $pages);
+		$this->smartyassign('pagenum', $this->pageNumber);
 
 		$this->smartyassign('lastVersion', $this->info["version"]);
 		if (isset($this->info['last_version'])) {
@@ -420,18 +377,14 @@ class WikiRenderer
 
 	private function setupAttachments() // {{{
 	{
-		global $prefs;
-		$wikilib = TikiLib::lib('wiki');
-
-		if ( $prefs['feature_wiki_attachments'] != 'y' || $prefs['feature_use_fgal_for_wiki_attachments'] == 'y' ) {
+		global $prefs, $wikilib;
+		if ( $prefs['feature_wiki_attachments'] != 'y' || $prefs['feature_use_fgal_for_wiki_attachments'] == 'y' )
 			return;
-		}
 
 		// If anything below here is changed, please change lib/wiki-plugins/wikiplugin_attach.php as well.
 		$this->smartyassign('sort_mode', $this->sortMode);
-		if ( $this->showAttachments !== false ) {
+		if ( $this->showAttachments !== false )
 			$this->smartyassign('atts_show', $this->showAttachments);
-		}
 
 		$atts = $wikilib->list_wiki_attachments($this->page, 0, -1, $this->sortMode, '');
 		$this->smartyassign('atts', $atts["data"]);
@@ -440,9 +393,7 @@ class WikiRenderer
 
 	private function setupFootnotes() // {{{
 	{
-		global $prefs;
-		$wikilib = TikiLib::lib('wiki');
-		$tikilib = TikiLib::lib('tiki');
+		global $prefs, $wikilib, $tikilib;
 
 		$this->smartyassign('footnote', '');
 		$this->smartyassign('has_footnote', 'n');
@@ -462,10 +413,8 @@ class WikiRenderer
 
 	private function setupWatch() // {{{
 	{
-		global $prefs;
-		$tikilib = TikiLib::lib('tiki');
-		$categlib = TikiLib::lib('categ');
-		$userlib = TikiLib::lib('user');
+		global $prefs, $tikilib, $categlib, $userlib;
+		require_once 'lib/categories/categlib.php';
 		if ($prefs['feature_user_watches'] != 'y')
 			return;
 
@@ -497,8 +446,8 @@ class WikiRenderer
 
 	private function setupCategories() // {{{
 	{
-		global $prefs;
-		$categlib = TikiLib::lib('categ');
+		global $prefs, $categlib;
+		require_once 'lib/categories/categlib.php';
 
 		$cats = array();
 		if ($prefs['feature_categories'] == 'y' && $categlib->is_categorized('wiki page', $this->page)) {
@@ -507,7 +456,7 @@ class WikiRenderer
 				$cats = $categlib->get_object_categories('wiki page', $this->page);
 			}
 			if ($prefs['category_morelikethis_algorithm'] != '') {
-				$freetaglib = TikiLib::lib('freetag');
+				global $freetaglib; include_once('lib/freetag/freetaglib.php');
 				$category_related_objects = $freetaglib->get_similar('wiki page', $this->page, empty($prefs['category_morelikethis_mincommon_max'])?$prefs['maxRecords']: $prefs['category_morelikethis_mincommon_max'], null, 'category');
 				$this->smartyassign('category_related_objects', $category_related_objects);
 			}
@@ -527,9 +476,7 @@ class WikiRenderer
 
 	private function setupPoll() // {{{
 	{
-		global $prefs, $tiki_p_wiki_view_ratings;
-		$polllib = TikiLib::lib('poll');
-		$tikilib = TikiLib::lib('tiki');
+		global $prefs, $polllib, $tikilib, $tiki_p_wiki_view_ratings;
 
 		if ($prefs['feature_polls'] !='y' || $prefs['feature_wiki_ratings'] != 'y' || $tiki_p_wiki_view_ratings != 'y')
 			return;
@@ -583,7 +530,7 @@ class WikiRenderer
 
 	private function smartyassign( $name, $value ) // {{{
 	{
-		$smarty = TikiLib::lib('smarty');
+		global $smarty;
 		if ( ! array_key_exists($name, $this->smartyRestore) )
 			$this->smartyRestore[$name] = $smarty->getTemplateVars($name);
 
@@ -629,7 +576,10 @@ class WikiRenderer
 
 	private function setupComments()
 	{
-		$count_comments = TikiLib::lib('comments')->count_comments('wiki page:'.$this->page, 'n');
+		global $commentslib;
+		include_once('lib/comments/commentslib.php');
+		$commentslib = new Comments();
+		$count_comments = $commentslib->count_comments('wiki page:'.$this->page, 'n');
 		$this->smartyassign('count_comments', $count_comments);
 	}
 }

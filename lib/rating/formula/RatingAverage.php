@@ -5,6 +5,8 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+require_once 'Math/Formula/Function.php';
+
 class Tiki_Formula_Function_RatingAverage extends Math_Formula_Function
 {
 	protected $mode = 'avg';
@@ -56,7 +58,7 @@ class Tiki_Formula_Function_RatingAverage extends Math_Formula_Function
 			}
 		}
 
-		$ratinglib = TikiLib::lib('rating');
+		global $ratinglib; require_once 'lib/rating/ratinglib.php';
 		return $ratinglib->collect($type, $object, $this->mode, $params);
 	}
 }

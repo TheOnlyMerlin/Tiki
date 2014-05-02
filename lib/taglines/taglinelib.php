@@ -11,20 +11,10 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- *
- */
 class TagLineLib extends TikiLib
 {
 
-    /**
-     * @param $offset
-     * @param $maxRecords
-     * @param $sort_mode
-     * @param $find
-     * @return array
-     */
-    public function list_cookies($offset, $maxRecords, $sort_mode, $find)
+	public function list_cookies($offset, $maxRecords, $sort_mode, $find)
 	{
 		if ($find) {
 			$mid = " where (`cookie` like ?)";
@@ -47,12 +37,7 @@ class TagLineLib extends TikiLib
 		return $retval;
 	}
 
-    /**
-     * @param $cookieId
-     * @param $cookie
-     * @return bool
-     */
-    public function replace_cookie($cookieId, $cookie)
+	public function replace_cookie($cookieId, $cookie)
 	{
 		//$cookie = addslashes($cookie);
 		// Check the name
@@ -69,22 +54,14 @@ class TagLineLib extends TikiLib
 		return true;
 	}
 
-    /**
-     * @param $cookieId
-     * @return bool
-     */
-    public function remove_cookie($cookieId)
+	public function remove_cookie($cookieId)
 	{
 		$query = "delete from `tiki_cookies` where `cookieId`=?";
 		$result = $this->query($query, array((int) $cookieId));
 		return true;
 	}
 
-    /**
-     * @param $cookieId
-     * @return bool
-     */
-    public function get_cookie($cookieId)
+	public function get_cookie($cookieId)
 	{
 		$query = "select * from `tiki_cookies` where `cookieId`=?";
 		$result = $this->query($query, array((int) $cookieId));

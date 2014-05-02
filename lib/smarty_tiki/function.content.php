@@ -14,7 +14,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 // Param: 'id' or 'label'
 function smarty_function_content($params, $smarty)
 {
-  $dcslib = TikiLib::lib('dcs');
+  global $dcslib; require_once 'lib/dcs/dcslib.php';
 
   if ( isset($params['id']) ) {
     $data = $dcslib->get_actual_content($params['id']);

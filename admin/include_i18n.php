@@ -55,7 +55,7 @@ if (!empty($_REQUEST['custom_save'])) {
 				$smarty->assign('custom_error', 'file');
 			}
 			fclose($fp);
-			$cachelib = TikiLib::lib('cache');
+			global $cachelib; include_once ('lib/cache/cachelib.php');
 			$cachelib->empty_cache('templates_c');
 			$smarty->assign('custom_ok', 'y');
 		}
@@ -89,12 +89,3 @@ if (!empty($_REQUEST['custom_lang'])) {
 	}
 }
 
-global $tikifeedback;
-if (!empty($tikifeedback)) {
-	foreach ($tikifeedback as $item) {
-		if ($item['name'] === 'available_languages' || $item['name'] === 'restrict_language') {
-			TikiLib::lib('cache')->empty_cache('temp_cache');
-			break;
-		}
-	}
-}

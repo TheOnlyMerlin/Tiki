@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -212,7 +209,7 @@ $headerlib->add_jq_onready(
 	});
 
 	window.checkAll = function() {
-		designer.find(".fieldPicker").find("input").prop("checked", "true");
+		designer.find(".fieldPicker").find("input").attr("checked", "true");
 	};
 
 	window.uncheckAll = function() {

@@ -11,9 +11,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_since_last_visit_new_info()
 {
 	return array(
@@ -49,26 +46,15 @@ function module_since_last_visit_new_info()
 				'description' => tra('Instead of the last login time, go back this minimum time, specified in days, in case the last login time is more recent.') . ' ' . tra('Default value:') . ' "0"',
 				'filter' => 'int'
 			),
-			'commentlength' => array(
-				'name' => tra('Maximum comment length'),
-				'description' => tra("If comments don't use titles this sets the maximum length for the comment snippet."),
-				'filter' => 'digits',
-				'default' => 40,
-			),
 		),
 		'common_params' => array('nonums', 'rows'),
 	);
 }
 
-/**
- * @param $mod_reference
- * @param null $params
- * @return bool
- */
 function module_since_last_visit_new($mod_reference, $params = null)
 {
 	global $smarty, $user;
-
+	global $commentslib; require_once('lib/comments/commentslib.php'); $commentslib = new Comments();
 	include_once('tiki-sefurl.php');
 
 	if (!$user) {
@@ -95,15 +81,10 @@ function module_since_last_visit_new($mod_reference, $params = null)
 		$smarty->assign('opposite_folding', 'block');
 	}
 
-	if (empty($params['commentlength'])) {
-		$params['commentlength'] = 40;
-	}
 
 	$resultCount = $mod_reference['rows'];
 
-	global $prefs;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $userlib, $prefs;
 	$ret = array();
 	if ($params == null) {
 		$params = array();
@@ -139,13 +120,13 @@ function module_since_last_visit_new($mod_reference, $params = null)
 	$ret['items']['comments']['cname'] = 'slvn_comments_menu';
 
 	//TODO: should be a function on commentslib.php or use one of the existent functions
-	$query = 'select `object`,`objectType`,`title`,`commentDate`,`userName`,`threadId`, `parentId`, `approved`, `archived`, `data`' .
+	$query = 'select `object`,`objectType`,`title`,`commentDate`,`userName`,`threadId`, `parentId`, `approved`, `archived`' .
 					" from `tiki_comments` where `commentDate`>? and `objectType` != 'forum' order by `commentDate` desc";
 	$result = $tikilib->query($query, array((int) $last), $resultCount);
 
 	$count = 0;
 	while ($res = $result->fetchRow()) {
-		$ret['items']['comments']['list'][$count]['href'] = TikiLib::lib('comments')->getHref($res['objectType'], $res['object'], $res['threadId']);
+		$ret['items']['comments']['list'][$count]['href'] = $commentslib->getHref($res['objectType'], $res['object'], $res['threadId']);
 		switch ($res['objectType']) {
 			case 'article':
 				$perm = 'tiki_p_read_article';
@@ -199,7 +180,7 @@ function module_since_last_visit_new($mod_reference, $params = null)
 		if ($visible) {
 			require_once('lib/smarty_tiki/modifier.username.php');
 			$ret['items']['comments']['list'][$count]['title'] = $tikilib->get_short_datetime($res['commentDate']) .' '. tra('by') .' '. smarty_modifier_username($res['userName']);
-			$ret['items']['comments']['list'][$count]['label'] = TikiLib::lib('comments')->process_comment_title($res, $params['commentlength']);;
+			$ret['items']['comments']['list'][$count]['label'] = $res['title'];
 
 			if ($res['archived'] == 'y') {
 				$ret['items']['comments']['list'][$count]['label'] .= tra(' (archived)');
@@ -410,7 +391,7 @@ function module_since_last_visit_new($mod_reference, $params = null)
 		$count = 0;
 		while ($res = $result->fetchRow()) {
 			if ($userlib->user_has_perm_on_object($user, $res['galleryId'], 'file gallery', 'tiki_p_view_file_gallery')) {
-				$ret['items']['fileGalleries']['list'][$count]['href']  = filter_out_sefurl('tiki-list_file_gallery.php?galleryId=' . $res['galleryId'], 'file gallery');
+				$ret['items']['fileGalleries']['list'][$count]['href']  = 'tiki-list_file_gallery.php?galleryId=' . $res['galleryId'];
 				$ret['items']['fileGalleries']['list'][$count]['title'] = $tikilib->get_short_datetime($res['created']) . ' ' . tra('by') . ' ' . $res['user'];
 				$ret['items']['fileGalleries']['list'][$count]['label'] = $res['name'];
 				$count++;
@@ -421,13 +402,13 @@ function module_since_last_visit_new($mod_reference, $params = null)
 		// files
 		$ret['items']['files']['label'] = tra('new files');//get_strings tra('new files');
 		$ret['items']['files']['cname'] = 'slvn_files_menu';
-		$query = 'select `fileId`, `galleryId`,`name`,`filename`,`created`,`user` from `tiki_files` where `created`>? order by `created` desc';
+		$query = 'select `galleryId`,`name`,`filename`,`created`,`user` from `tiki_files` where `created`>? order by `created` desc';
 		$result = $tikilib->query($query, array((int) $last), $resultCount);
 
 		$count = 0;
 		while ($res = $result->fetchRow()) {
 			if ($userlib->user_has_perm_on_object($user, $res['galleryId'], 'file gallery', 'tiki_p_view_file_gallery')) {
-				$ret['items']['files']['list'][$count]['href']  = filter_out_sefurl('tiki-list_file_gallery.php?galleryId=' . $res['galleryId']. '&fileId=' . $res['fileId']. '&view=page', 'file gallery');
+				$ret['items']['files']['list'][$count]['href']  = 'tiki-list_file_gallery.php?galleryId=' . $res['galleryId'];
 				$ret['items']['files']['list'][$count]['title'] = $tikilib->get_short_datetime($res['created']) .' '. tra('by') .' '. $res['user'];
 				$ret['items']['files']['list'][$count]['label'] = $res['name'] . ' (' . $res['filename'] . ')';
 				$count++;
@@ -490,7 +471,8 @@ function module_since_last_visit_new($mod_reference, $params = null)
 		$count = 0;
 		$counta = array();
 		$tracker_name = array();
-		$cachelib = TikiLib::lib('cache');
+		global $cachelib;
+		require_once('lib/cache/cachelib.php');
 		while ($res = $result->fetchRow()) {
 			if ($userlib->user_has_perm_on_object($user, $res['trackerId'], 'tracker', 'tiki_p_view_trackers')) {
 				// Initialize tracker counter if needed.
@@ -548,7 +530,8 @@ function module_since_last_visit_new($mod_reference, $params = null)
 
 		$count = 0;
 		$countb = array();
-		$cachelib = TikiLib::lib('cache');
+		global $cachelib;
+		require_once('lib/cache/cachelib.php');
 
 		while ($res = $result->fetchRow()) {
 			if ($userlib->user_has_perm_on_object($user, $res['trackerId'], 'tracker', 'tiki_p_view_trackers')) {
@@ -565,10 +548,7 @@ function module_since_last_visit_new($mod_reference, $params = null)
 
 				$ret['items']['utrackers']['tid'][$res['trackerId']]['label'] = tra('in') .' '. tra($tracker_name[$res['trackerId']]);
 				$ret['items']['utrackers']['tid'][$res['trackerId']]['cname'] = 'slvn_utracker' . $res['trackerId'] . '_menu';
-				$ret['items']['utrackers']['tid'][$res['trackerId']]['list'][$countb[$res['trackerId']]]['href']  = filter_out_sefurl(
-					'tiki-view_tracker_item.php?itemId=' . $res['itemId'],
-					'trackeritem'
-				);
+				$ret['items']['utrackers']['tid'][$res['trackerId']]['list'][$countb[$res['trackerId']]]['href']  = 'tiki-view_tracker_item.php?itemId=' . $res['itemId'];
 				$ret['items']['utrackers']['tid'][$res['trackerId']]['list'][$countb[$res['trackerId']]]['title'] = $tikilib->get_short_datetime($res['lastModif']);
 
 				// routine to verify field in tracker that's used as label
@@ -595,59 +575,12 @@ function module_since_last_visit_new($mod_reference, $params = null)
 		$ret['items']['utrackers']['count'] = $count;
 	}
 
-	/////////////////////////////////////////////////////////////////////////
-	// CALENDARS & THEIR EVENTS
-	if ($prefs['feature_calendar'] == 'y') {
-		$ret['items']['calendar']['label'] = tra('new calendars');
-		$ret['items']['calendar']['cname'] = 'slvn_calendar_menu';
-
-		$query = "select `calendarId`, `name`, `user`, `created` from `tiki_calendars` where `created`>? order by `created` desc";
-		$result = $tikilib->query($query, array((int) $last), $resultCount);
-
-		$count = 0;
-		while ($res = $result->fetchRow()) {
-			if ($userlib->user_has_perm_on_object($user, $res['calendarId'], 'calendar', 'tiki_p_view_calendar')) {
-				$ret['items']['calendar']['list'][$count]['href']  = filter_out_sefurl('tiki-calendar.php?calIds[]=' . $res['calendarId'], 'calendar', $res['name']);
-				$ret['items']['calendar']['list'][$count]['title'] = $tikilib->get_short_datetime($res['created']) .' '. tra('by') .' '. $res['user'];
-				$ret['items']['calendar']['list'][$count]['label'] = $res['name'];
-				$count++;
-			}
-		}
-		$ret['items']['calendar']['count'] = $count;
-
-		$ret['items']['events']['label'] = tra('new events');
-		$ret['items']['events']['cname'] = 'slvn_events_menu';
-
-		$query = "select `calitemId`, `calendarId`, `name`, `user`, `created`, `start` from `tiki_calendar_items` where `created`>? order by `created` desc";
-		$result = $tikilib->query($query, array((int) $last), $resultCount);
-
-		$count = 0;
-		while ($res = $result->fetchRow()) {
-			if ($userlib->user_has_perm_on_object($user, $res['calendarId'], 'calendar', 'tiki_p_view_events')) {
-				$ret['items']['events']['list'][$count]['href']  = filter_out_sefurl('tiki-calendar_edit_item.php?viewcalitemId=' . $res['calitemId'], 'event', $res['name']);
-				$ret['items']['events']['list'][$count]['title'] = $tikilib->get_short_datetime($res['created']) .' '. tra('by') .' '. $res['user'] .', '. tra('starting on') .' '. $tikilib->get_short_datetime($res['start']) ;
-				$ret['items']['events']['list'][$count]['label'] = $res['name'];
-				$count++;
-			}
-		}
-		$ret['items']['events']['count'] = $count;
-	}
-
 	//////////////////////////////////////////////////////////////////////////
 	// SUMMARY
 	//get the total of items
 	$ret['cant'] = 0;
-	$ret['nonempty'] = 0;
 	foreach ($ret['items'] as $item) {
 		$ret['cant'] += $item['count'];
-		if ($item['count'] > 0) {
-			$ret['nonempty']++;
-		}
-	}
-	if ($ret['nonempty'] > 0) {
-		$ret['li_width'] = min(22, (int)90 / $ret['nonempty']);
-	} else {
-		$ret['li_width'] = 90;
 	}
 
 	$smarty->assign('slvn_info', $ret);

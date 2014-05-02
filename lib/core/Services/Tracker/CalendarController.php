@@ -14,8 +14,6 @@ class Services_Tracker_CalendarController
 
 	function action_list($input)
 	{
-		global $prefs;
-
 		$unifiedsearchlib = TikiLib::lib('unifiedsearch');
 		$index = $unifiedsearchlib->getIndex();
 		$dataSource = $unifiedsearchlib->getDataSource();
@@ -33,7 +31,6 @@ class Services_Tracker_CalendarController
 
 		$query = $unifiedsearchlib->buildQuery(array());
 		$query->filterRange($input->start->int(), $input->end->int(), array($start, $end));
-		$query->setRange(0, $prefs['unified_lucene_max_result']);
 
 		if ($body = $input->filters->none()) {
 			$builder = new Search_Query_WikiBuilder($query);
@@ -46,47 +43,19 @@ class Services_Tracker_CalendarController
 
 		$response = array();
 
-		$fields = array();
-		if ($definition = Tracker_Definition::get($input->trackerId->int())) {
-			foreach ($definition->getPopupFields() as $fieldId) {
-				if ($field = $definition->getField($fieldId)) {
-					$fields[] = $field;
-				}
-			}
-		}
-
 		$smarty = TikiLib::lib('smarty');
 		$smarty->loadPlugin('smarty_modifier_sefurl');
-		$trklib = TikiLib::lib('trk');
 		foreach ($result as $row) {
 			$item = Tracker_Item::fromId($row['object_id']);
-			$description = '';
-			foreach ($fields as $field) {
-				if ($item->canViewField($field['fieldId'])) {
-					$val = trim($trklib->field_render_value(
-						array(
-							'field' => $field,
-							'item' => $item->getData(),
-							'process' => 'y',
-						)
-					));
-					if ($val) {
-						if (count($fields) > 1) {
-							$description .= "<h5>{$field['name']}</h5>";
-						}
-						$description .= $val;
-					}
-				}
-			}
 			$response[] = array(
 				'id' => $row['object_id'],
 				'trackerId' => isset($row['tracker_id']) ? $row['tracker_id'] : null,
 				'title' => $row['title'],
-				'description' => $description,
+				'description' => '',
 				'url' => smarty_modifier_sefurl($row['object_id'], $row['object_type']),
 				'allDay' => false,
-				'start' => $this->getTimestamp($row[$start]),
-				'end' => $this->getTimestamp($row[$end]),
+				'start' => (int) $row[$start],
+				'end' => (int) $row[$end],
 				'editable' => $item->canModify(),
 				'color' => $this->getColor(isset($row[$coloring]) ? $row[$coloring] : ''),
 				'textColor' => '#000',
@@ -95,19 +64,6 @@ class Services_Tracker_CalendarController
 		}
 
 		return $response;
-	}
-
-	private function getTimestamp($value)
-	{
-		if (preg_match('/^\d{14}$/', $value)) {
-			// Facing a date formated as YYYYMMDDHHIISS as indexed in lucene
-			// Always stored as UTC
-			return date_create_from_format('YmdHise', $value . 'UTC')->getTimestamp();
-		} elseif (is_numeric($value)) {
-			return $value;
-		} else {
-			return strtotime($value);
-		}
 	}
 
 	private function getColor($value)

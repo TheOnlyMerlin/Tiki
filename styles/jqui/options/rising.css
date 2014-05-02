@@ -1,6 +1,6 @@
 /* $Id: $
 	Jqui theme (jqui.css), Rising theme option (rising.css)
-	for Tiki Wiki CMS Groupware 2013
+	for Tiki Wiki CMS/Groupware 2012
 	Visit http://themes.tiki.org for more information
 */
 
@@ -49,7 +49,9 @@ a {
 button,
 input[type="reset"],
 input[type="submit"],
-.button input {
+.button input,
+.calbuttonBox
+a {
 	border: 1px solid #777;
 	font-weight: bold;
 	color: #555
@@ -59,7 +61,7 @@ input[type="submit"],
 button:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover,
-.button input:hover {
+.button input:hover, .calbuttonBox:hover {
 	border: 1px solid #666;
 	font-weight: bold;
 	color: #212121;

@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -10,7 +7,7 @@
 
 $section = 'mytiki';
 require_once ('tiki-setup.php');
-$contactlib = TikiLib::lib('contact');
+require_once ('lib/webmail/contactlib.php');
 
 $access->check_feature('feature_contacts', '', 'community');
 $access->check_user($user);

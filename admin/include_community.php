@@ -15,24 +15,13 @@ if (isset($_REQUEST['userfeatures'])) {
 	check_ticket('admin-inc-community');
 }
 
-$smarty->assign('event_graph', TikiLib::events()->getEventGraph());
+// Users Defaults
+if (isset($_REQUEST['users_defaults'])) {
+	check_ticket('admin-inc-login');
 
-$command_parts = [
-	realpath(__DIR__ . '/../console.php'),
-	$url_host,
-	7,
-];
-
-if ($url_port) {
-	$command_parts[] = '--port=' . $url_port;
+	foreach ($_prefs as $pref) {
+		simple_set_value($pref);
+	}
 }
-if ($tikiroot != '/') {
-	$command_parts[] = '--path=' . $tikiroot;
-}
-if ($url_scheme == 'https') {
-	$command_parts[] = '--ssl';
-}
-$command = implode(' ', $command_parts);
-$smarty->assign('monitor_command', $command);
 
 ask_ticket('admin-inc-community');

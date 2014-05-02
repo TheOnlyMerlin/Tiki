@@ -78,10 +78,7 @@ abstract class TikiAcceptanceTestDBRestorer
 
 	function reinitialize_internal_values_and_clear_caches()
 	{
-		global $prefs;
-		$tikilib = TikiLib::lib('tiki');
-		$cachelib = TikiLib::lib('cache');
-
+		global $cachelib, $prefs, $tikilib;
 		initialize_prefs();			
 		$tikilib->cache_page_info = array();	
 		$cachelib->empty_cache();

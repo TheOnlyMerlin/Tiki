@@ -1,3 +1,21 @@
+/* hack for IE http://www.wellstyled.com/css-underscore-hack.html */
+
+.tabrowLeft {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 23px;
+	height: 24px !important;
+}
+
+.tabrowRight {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 30px;
+	height: 24px !important;
+}
+
 .tabrow {
 	position: relative;
 	left: 0;
@@ -12,13 +30,22 @@
 	text-decoration: none;
 }
 
+.tabrow .viewmode {
+	float: left;
+}
+
 .tabrow .jscalrow {
 	float: right;
 	white-space: nowrap;
 	cursor: pointer;
 }
 
-.calHeading {
+.tabrow .daterow {
+	border: 1px #ddd;
+}
+
+.calHeading,
+.calHeadingOn {
 	height: 36px;
 	text-align: center;
 	vertical-align: middle;
@@ -27,11 +54,20 @@
 .calHours {
 	vertical-align: middle;
 	text-align: center;
+	border-width: 1px 0 0 1px;
+	border-color: #cfd0d0 #e0e0e0;
+	border-style: solid;
 }
 
 .calDay {
 	padding: 0;
 	border-width: 0 1px 1px 1px;
+	border-style: solid;
+}
+
+.calWeek {
+	border-width: 1px 1px 0 1px;
+	border-color: #cfd0d0 #e0e0e0;
 	border-style: solid;
 }
 
@@ -43,6 +79,235 @@
 	width: 100%;
 	border-collapse: collapse;
 	border-bottom: 1px solid #ccc;
+}
+
+.Cal {
+	font-weight: normal;
+	border-color: transparent;
+}
+
+.Cal0,
+.Cal1,
+.Cal2 {
+	color: #425262;
+	font-size: 10px;
+	padding-right: 0;
+	font-weight: normal;
+	border-width: 1px;
+	border-style: solid;
+}
+
+.Cal0 a,
+.Cal1 a,
+.Cal2 a {
+	font-weight: normal;
+	text-decoration: none;
+}
+.caltitle {
+	font-weight: bold;
+	color: #425262;
+}
+
+.calcheckbox {
+	background: #ffffff;
+}
+
+.caltoggle {
+	font-size: 9px;
+	margin-bottom: 7px;
+}
+
+.calfocus a,
+.calfocus a:visited {
+	text-decoration: none;
+	font-weight: normal;
+	color: #000000;
+}
+
+.calfocuson {
+	font-size: 9px;
+	background: #f3e498;
+}
+
+.calfocuson a {
+	text-decoration: none;
+	font-weight: normal;
+	color: #000000;
+}
+
+.Calwiki,
+.Calblog,
+.Calgal,
+.Calart,
+.Calforum,
+.Caldir,
+.Calfgal,
+.Calfaq,
+.Calquiz,
+.Caltrack,
+.Calsurv,
+.Calnl,
+.Calchart {
+	border-top: 1px dashed #CCCCCC;
+	font-size: 10px;
+	padding: 0 3px;
+	margin-top: 0;
+}
+
+.Calwiki a {
+	color: #443f39;
+	font-weight: normal;
+}
+
+.Calwiki:before {
+	content: "w";
+	font-family:  monospace;
+	background: #ffffff;
+}
+
+.Calblog a {
+	color: #443f39;
+	font-weight: normal;
+}
+
+.Calblog:before {
+	content: "b";
+	font-family: monospace;
+	background: #ffffff;
+}
+
+.Calgal a {
+	font-weight: normal;
+	color: #303f49;
+}
+
+.Calgal:before {
+	content: "i";
+	font-family: monospace;
+	background: #ffffff;
+}
+
+.Calart a {
+	color: #304f30;
+	font-weight: normal;
+}
+
+.Calart:before {
+	content: "a";
+	font-family: monospace;
+	background: #ffffff;
+}
+
+.Calforum a {
+	color: #304f30;
+	font-weight: normal;
+}
+
+.Calforum:before {
+	content: "fo";
+	font-family: monospace;
+	background: #ffffff;
+}
+
+.Caldir a {
+	color: #304F30;
+	font-weight: normal;
+}
+
+.Caldir:before {
+	content: "d";
+	font-family: monospace;
+	background: #FFFFFF;
+}
+
+.Calfgal a {
+	color: #304F30;
+	font-weight: normal;
+}
+
+.Calfgal:before {
+	content: "fi";
+	font-family: monospace;
+	background: #FFFFFF;
+}
+
+.Calfaq a {
+	color: #304F30;
+	font-weight: normal;
+}
+
+.Calfaq:before {
+	content: "fq";
+	font-family: monospace;
+	background: #FFFFFF;
+}
+
+.Calquiz a {
+	color: #304F30;
+	font-weight: normal;
+}
+
+.Calquiz:before {
+	content: "q";
+	font-family: monospace;
+	background: #FFFFFF;
+}
+
+.Caltrack a {
+	color: #304F30;
+	font-weight: normal;
+}
+
+.Caltrack:before {
+	content: "t";
+	font-family: monospace;
+	background: #FFFFFF;
+}
+
+.Calsurv a {
+	color: #304F30;
+	font-weight: normal;
+}
+
+.Calsurv:before {
+	content: "s";
+	font-family: monospace;
+	background: #FFFFFF;
+}
+
+.Calnl a {
+	color: #304F30;
+	font-weight: normal;
+}
+
+.Calnl:before {
+	content: "n";
+	font-family: monospace;
+	background: #FFFFFF;
+}
+
+.Calchart a {
+	color: #304F30;
+	font-weight: normal;
+}
+
+.Calchart:before {
+	content: "ch";
+	font-family: monospace;
+	background: #FFFFFF;
+}
+
+.calweb {
+	font-weight: bold;
+	font-size: 10px;
+	text-decoration: none;
+	padding-left: 3px;
+	padding-right: 3px;
+	color: #336699;
+}
+
+.calweb:hover {
+	color: #996633;
 }
 
 #calprio {
@@ -116,6 +381,10 @@
 	line-height: 11px;
 }
 
+.calnavigation a:hover {
+	background: #FE3;
+}
+
 .calnavigation a.prev {
 	float: left;
 }
@@ -128,6 +397,23 @@
 	vertical-align: middle;
 }
 
+.mininotes {
+	font-size: 9px;
+	color: #666666;
+}
+
+.opaque {
+	background: #FFFFFF;
+	width: auto;
+	border: 1px solid #666666;
+	padding: 5px;
+}
+
+.opaque .box-title,
+.opaque .box-data {
+	width: auto;
+}
+
 .calcontent {
 	min-height: 60px;
 	height: auto;
@@ -135,13 +421,56 @@
 	padding-left: 0;
 }
 
+* html .calcontent {
+	height: 60px;
+}
+
+.viewmodeon {
+	padding: 0;
+}
+
+.viewmodeoff {
+	padding-left: 0;
+}
+
+a.viewmodeon img {
+	margin: 0;
+	padding: 0;
+	padding-left: 3px;
+	border: 1px solid #900;
+}
+
+* html a.viewmodeon img {
+	padding-left: 0;
+}
+
+a.viewmodeoff img {
+	margin: 1px;
+	padding: 0;
+	padding-left: 3px;
+	border: 0;
+}
+
+* html a.viewmodeoff img {
+	padding-left: 0;
+}
+
+.caltable {
+	border-collapse: collapse;
+	border-bottom: 1px solid #CFD0D0;
+}
+
 .caltable .days {
 	height: 20px;
 	text-align: center;
 	border: 0;
+	border-bottom: 1px solid #999;
 }
 
 .caltable .weeks {
+	border-right: 1px solid #999;
+	font-size: 8px;
+	color: #666;
 	vertical-align: middle;
 }
 
@@ -150,14 +479,27 @@
 	float: right;
 }
 
+.caldark,
+.calfocus,
+.calfocuson {
+	height: 20px;
+}
+
 #configlinks {
 	width: 100%;
 	padding: 5px;
 }
 
+* html .addevent,
+* html .caldark {
+	padding: 0;
+}
+
 #filtercal {
+	background: #FFF;
 	position: absolute;
 	z-index: 2 !important;
+	border: 1px solid #000;
 	right: 190px;
 }
 
@@ -173,7 +515,9 @@
 
 #exportcal {
 	z-index: 200 !important;
+	background: #FFF;
 	position: absolute;
+	border: 1px solid #000;
 	right: 240px;
 }
 
@@ -192,6 +536,9 @@
 	width: 120px;
 	padding: 0 3px;
 	font-weight: bold;
+	background: #eee;
+	border: 1px solid #AAA;
+	color: #999;
 }
 
 .status0 {
@@ -223,7 +570,9 @@ select[name=end_Minute] {
 #calscreen .normal {
 		clear: both;
 		border-collapse: collapse;
+		margin-top: 5px;
 		width: 100%;
+		font-size: 11px;
 }
 
 .caltable td {
@@ -241,6 +590,44 @@ select[name=end_Minute] {
 .days {
 	font-size: 11px;
 	font-weight: bold;
+	color: #555555;
+}
+
+.calfocus a:hover {
+	background: transparent;
+}
+
+.calfocuson a:hover {
+	background: transparent;
+}
+
+.calfocus,
+.calfocuson {
+	padding-bottom: 4px;
+}
+
+.calfocus {
+	border-bottom: 1px dotted #8CACBB;
+	background: #b4d0ec;
+	font-size: 9px;
+}
+
+.caldark a {
+	display: none;
+}
+
+.caldark {
+	border: 1px dotted #8CACBB;
+	background: transparent;
+}
+
+.caldark .calfocus {
+	background: #DEF;
+	border-width: 0;
+}
+
+.calfocuson + .calcontent {
+	background: none;
 }
 
 .html_select_time {
@@ -263,4 +650,10 @@ select[name=end_Minute] {
 a.prev img,
 a.next img {
 	vertical-align: middle;
+}
+
+/* Smaller icons inside calendar headers, in order to have no impact on the position of items on the week and day views */
+.calHeading a img {
+	height: 14px;
+	width: 14px;
 }

@@ -2,16 +2,16 @@
 	{if $kmode eq 'edit'}{tr}Change Details:{/tr}{$videoInfo->name}
 	{elseif $kmode eq 'view'}{tr}View:{/tr}{$videoInfo->name}
 	{else}{tr}Kaltura Video{/tr}{/if}{/title}
-<div class="navbar btn-group">
+<div class="navbar">
 	{if $tiki_p_list_videos eq 'y'}
-	{button class="btn btn-default" _text="{tr}List Media{/tr}" href="tiki-list_kaltura_entries.php"}
+	{button _text="{tr}List Media{/tr}" href="tiki-list_kaltura_entries.php"}
 	{/if}
 	{if $kmode ne ''}
 	{if $kmode ne 'edit' and ($tiki_p_edit_videos eq 'y' or $tiki_p_admin_kaltura eq 'y' or $tiki_p_admin eq 'y')}
 		{if $entryType eq "media"}
-			{button class="btn btn-default" _text="{tr}Change Details{/tr}" href="tiki-kaltura_video.php?mediaId=$videoId&action=edit"}
+			{button _text="{tr}Change Details{/tr}" href="tiki-kaltura_video.php?mediaId=$videoId&action=edit"}
 		{else}
-			{button class="btn btn-default" _text="{tr}Change Details{/tr}" href="tiki-kaltura_video.php?mixId=$videoId&action=edit"}
+			{button _text="{tr}Change Details{/tr}" href="tiki-kaltura_video.php?mixId=$videoId&action=edit"}		
 		{/if}
 	{/if}
 	{/if}
@@ -25,12 +25,12 @@
 		<tr>
 			<td width="50%" align="center">
 			<object name="kaltura_player" id="kaltura_player" type="application/x-shockwave-flash" height="365" width="595" data="{$prefs.kaltura_kServiceUrl}index.php/kwidget/wid/_{$prefs.kaltura_partnerId}/uiconf_id/{$kaltura_kdpId}/entry_id/{$videoInfo->id}">
-			<param name="allowScriptAccess" value="always">
-			<param name="allowNetworking" value="all">
-			<param name="allowFullScreen" value="true">
-			<param name="movie" value="{$prefs.kaltura_kServiceUrl}index.php/kwidget/wid/_{$prefs.kaltura_partnerId}/uiconf_id/{$kaltura_kdpId}/entry_id/{$videoInfo->id}">
-			<param name="flashVars" value="entry_id={$videoInfo->id}&ks={$kalturaSession}">
-			<param name="wmode" value="opaque">
+			<param name="allowScriptAccess" value="always" />
+			<param name="allowNetworking" value="all" />
+			<param name="allowFullScreen" value="true" />
+			<param name="movie" value="{$prefs.kaltura_kServiceUrl}index.php/kwidget/wid/_{$prefs.kaltura_partnerId}/uiconf_id/{$kaltura_kdpId}/entry_id/{$videoInfo->id}"/>
+			<param name="flashVars" value="entry_id={$videoInfo->id}&ks={$kalturaSession}"/>
+			<param name="wmode" value="opaque"/>
 			</object>			
 			</td>
 		</tr>
@@ -40,7 +40,7 @@
 					<td class="even">{tr}Video Title{/tr}</td>
 					<td class="even">
 						{if $kmode eq 'edit'}
-						<input style="width:99%" type="text" name="name" {if $videoInfo->name}value="{$videoInfo->name}"{/if} size="40">
+						<input style="width:99%" type="text" name="name" {if $videoInfo->name}value="{$videoInfo->name}"{/if} size="40" />
 						{else}
 						{$videoInfo->name}
 						{/if}
@@ -60,7 +60,7 @@
 					<td class="even">{tr}Tags{/tr}</td>
 					<td class="even">
 						{if $kmode eq 'edit'}
-						<input style="width:99%" type="text" name="tags" {if $videoInfo->tags}value="{$videoInfo->tags}"{/if} size="40">
+						<input style="width:99%" type="text" name="tags" {if $videoInfo->tags}value="{$videoInfo->tags}"{/if} size="40" />
 						{else}
 						{$videoInfo->tags}
 						{/if}
@@ -115,8 +115,8 @@
 	<form  action='tiki-kaltura_video.php' enctype='multipart/form-data' method='post' style='margin:0px; padding:0px'>
 		{$edit_info}
 		<input type="hidden" name="action" value="edit">
-		<input type="hidden" name="{$entryType}Id" value="{$videoInfo->id}">
-		<input name="update" type="submit" class="btn btn-default" value="{tr}Save{/tr}">
+		<input type="hidden" name="{$entryType}Id" value="{$videoInfo->id}"/>
+		<input name="update" type="submit" value="{tr}Save{/tr}"/>
 	</form>
 	</div>
 	{elseif $kmode eq 'view'}

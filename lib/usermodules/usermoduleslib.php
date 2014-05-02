@@ -159,8 +159,7 @@ class UserModulesLib extends TikiLib
 	// Return the list of modules that can be assigned by the user
 	function get_user_assignable_modules($user)
 	{
-		global $prefs;
-		$userlib = TikiLib::lib('user');
+		global $prefs,$userlib;
 
 		$query = "select * from `tiki_modules`";
 		$result = $this->query($query, array());
@@ -250,4 +249,4 @@ class UserModulesLib extends TikiLib
 		}
 	} 
 }
-global $usermoduleslib; $usermoduleslib = new UserModulesLib;
+$usermoduleslib = new UserModulesLib;

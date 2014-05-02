@@ -10,9 +10,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @param $installer
- */
 function upgrade_20101126_fgal_add_gallerie_user_tiki($installer)
 {
 	global $dbs_tiki;

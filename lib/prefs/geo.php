@@ -62,7 +62,6 @@ function prefs_geo_list()
 		'geo_google_streetview' => array(
 			'name' => tr('Google Street View'),
 			'description' => tr('Open up Google Street View in a window to see the visible coordinates.'),
-			'dependencies' => array('gmap_key'),
 			'type' => 'flag',
 			'default' => 'n',
 			'tags' => array('basic', 'experimental'),
@@ -70,7 +69,6 @@ function prefs_geo_list()
 		'geo_google_streetview_overlay' => array(
 			'name' => tr('Google Street View Overlay'),
 			'description' => tr('Open up Google Street View in a window to see the visible coordinates.'),
-			'dependencies' => array('geo_google_streetview'),
 			'warning' => tr('This is not guaranteed to work.'),
 			'type' => 'flag',
 			'default' => 'n',
@@ -81,20 +79,6 @@ function prefs_geo_list()
 			'description' => tr('Load the OpenLayers library even if no map is explicitly included in the page'),
 			'type' => 'flag',
 			'default' => 'n',
-		),
-		'geo_zoomlevel_to_found_location' => array(
-			'name' => tr('Zoom to found location'),
-			'description' => tr('Zoom to street level when finding a searched location'),
-			'type' => 'list',
-			'options' => array(
-					'street' => tra('Street level'),
-					'town' => tra('Town level'),
-					'region' => tra('Region level'),
-					'country' => tra('Country level'),
-					'continent' => tra('Continent level'),
-					'world' => tra('World'),
-				),
-			'default' => 'street',
 		),
 	);
 }

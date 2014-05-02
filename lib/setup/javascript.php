@@ -20,7 +20,8 @@ if ($prefs['disableJavascript'] == 'y' ) {
 	// Update the pref with the cookie value
 	$prefs['javascript_enabled'] = $js_cookie;
 } else {
-	$prefs['javascript_enabled'] = 'y';
+	// Set the cookie to 'n', through PHP / HTTP headers
+	$prefs['javascript_enabled'] = 'n';
 }
 
 if ( $prefs['javascript_enabled'] != 'y' && $prefs['disableJavascript'] != 'y' ) {
@@ -71,18 +72,8 @@ if ($prefs['javascript_enabled'] == 'y') {	// we have JavaScript
 		}
 	}
 
-	/** Use custom.js in lang dir if there **/
-	$language = $prefs['language'];
-	if (is_file("lang/$language/custom.js")) {
-		TikiLib::lib('header')->add_jsfile("lang/$language/custom.js", 40);	// before styles custom.js
-	}
-
-	if (!empty($tikidomain) && is_file("lang/$language/$tikidomain/custom.js")) {		// Note: lang tikidomain dirs not created automatically
-		TikiLib::lib('header')->add_jsfile("lang/$language/$tikidomain/custom.js", 40);
-	}
-
 	// setup timezone array
-	$tz = TikiDate::getTimezoneAbbreviations();
+	$tz = array_keys(DateTimeZone::listAbbreviations());
 	$headerlib->add_js(
 		'
 function inArray(item, array) {
@@ -96,8 +87,6 @@ function inArray(item, array) {
 var allTimeZoneCodes = ' . json_encode(array_map("strtoupper", $tz)) . ';
 var now = new Date();
 var now_string = now.toString();
-var offsethours = - now.getTimezoneOffset() / 60;
-setCookie("local_tzoffset", offsethours);
 var m = now_string.match(/[ \(]([A-Z]{3,6})[ \)]?[ \d]*$/);	// try three or more char tz first at the end or just before the year
 if (!m) {
 	m = now_string.match(/[ \(]([A-Z]{1,6})[ \)]?[ \d]*$/);	// might be a "military" one if not
@@ -130,14 +119,13 @@ jqueryTiki.ui_theme = "'.$prefs['feature_jquery_ui_theme'].'";
 jqueryTiki.tooltips = '.($prefs['feature_jquery_tooltips'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.autocomplete = '.($prefs['feature_jquery_autocomplete'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.superfish = '.($prefs['feature_jquery_superfish'] == 'y' ? 'true' : 'false') . ';
-jqueryTiki.reflection = '.($prefs['feature_jquery_reflection'] == 'y' ? 'true' : 'false') . ';
+jqueryTiki.replection = '.($prefs['feature_jquery_reflection'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.tablesorter = '.($prefs['feature_jquery_tablesorter'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.colorbox = '.($prefs['feature_shadowbox'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.cboxCurrent = "{current} / {total}";
 jqueryTiki.sheet = '.($prefs['feature_sheet'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.carousel = '.($prefs['feature_jquery_carousel'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.validate = '.($prefs['feature_jquery_validation'] == 'y' ? 'true' : 'false') . ';
-jqueryTiki.zoom = '.($prefs['feature_jquery_zoom'] == 'y' ? 'true' : 'false') . ';
 
 jqueryTiki.effect = "'.$prefs['jquery_effect'].'";				// Default effect
 jqueryTiki.effect_direction = "'.$prefs['jquery_effect_direction'].'";	// "horizontal" | "vertical" etc
@@ -151,7 +139,6 @@ jqueryTiki.autosave = '.($prefs['ajax_autosave'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.sefurl = '.($prefs['feature_sefurl'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.ajax = '.($prefs['feature_ajax'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.syntaxHighlighter = '.($prefs['feature_syntax_highlighter'] == 'y' ? 'true' : 'false') . ';
-jqueryTiki.chosen = '.($prefs['jquery_ui_chosen'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.selectmenu = '.($prefs['jquery_ui_selectmenu'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.selectmenuAll = '.($prefs['jquery_ui_selectmenu_all'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.mapTileSets = ' . json_encode($tikilib->get_preference('geo_tilesets', array('openstreetmap'), true)) . ';
@@ -159,15 +146,12 @@ jqueryTiki.infoboxTypes = ' . json_encode(Services_Object_Controller::supported(
 jqueryTiki.googleStreetView = '.($prefs['geo_google_streetview'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.googleStreetViewOverlay = '.($prefs['geo_google_streetview_overlay'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.structurePageRepeat = '.($prefs['page_n_times_in_a_structure'] == 'y' ? 'true' : 'false') . ';
-jqueryTiki.mobile = '.((isset($prefs['mobile_mode']) && $prefs['mobile_mode'] == 'y') ? 'true' : 'false') . ';
+jqueryTiki.mobile = '.($prefs['mobile_mode'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.jcapture = '.($prefs['feature_jcapture'] == 'y' ? 'true' : 'false') . ';
 //do not fix following line for notices -  appropriately throws off a notice when user has not
 //flushed prefs cache after upgrading - i.e. not running the updater
 jqueryTiki.jcaptureFgal = ' . ((int)$prefs['fgal_for_jcapture']) . ';
 jqueryTiki.no_cookie = false;
-jqueryTiki.language = "' . $prefs['language'] . '";
-jqueryTiki.useInlineComment = '.($prefs['feature_inline_comments'] === 'y' ? 'true' : 'false') . ';
-jqueryTiki.helpurl = "' . ($prefs['feature_help'] === 'y' ? $prefs['helpurl'] : '') . '";
 ';	// NB replace "normal" speeds with int to workaround issue with jQuery 1.4.2
 
 	if ($prefs['mobile_feature'] === 'y' && $prefs['mobile_mode'] === 'y') {
@@ -180,6 +164,7 @@ jqueryTiki.autocomplete = false;
 jqueryTiki.superfish = false;
 jqueryTiki.colorbox = false;
 jqueryTiki.tablesorter = false;
+jqueryTiki.useInlineComment = false;	// Inline comments do not seem to work, and an option is missing. Disable for now.
 ';
 		if ($prefs['feature_ajax'] !== 'y') {
 			$headerlib->add_js_config('var mobile_ajaxEnabled = false;');
@@ -212,7 +197,7 @@ var syntaxHighlighter = {
 
 	$headerlib->add_js($js);
 
-	if (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6') !== false) {
+	if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6') !== false) {
 
 		$smarty->assign('ie6', true);
 
@@ -224,7 +209,7 @@ var syntaxHighlighter = {
 			 *
 			 */
 			if (($fixoncss = $prefs['iepngfix_selectors']) == '') {
-				$fixoncss = '.sitelogo a img';
+				$fixoncss = '#sitelogo a img';
 			}
 			if (($fixondom = $prefs['iepngfix_elements']) != '') {
 				$fixondom = "DD_belatedPNG.fixPng($fixondom); // list of HTMLDomElements to fix separated by commas (default is none)";

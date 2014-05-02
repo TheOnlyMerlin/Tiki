@@ -29,8 +29,7 @@ class NlLib extends TikiLib
 			$allowArticleClip = 'y',
 			$autoArticleClip = 'n',
 			$articleClipRange = null,
-			$articleClipTypes = '',
-			$emptyClipBlocksSend = 'n'
+			$articleClipTypes = ''
 	)
 	{
 		if ($nlId) {
@@ -45,8 +44,7 @@ class NlLib extends TikiLib
 								`allowArticleClip`=?,
 								`autoArticleClip`=?,
 								`articleClipRange`=?,
-								`articleClipTypes`=?,
-								`emptyClipBlocksSend`=?
+								`articleClipTypes`=?
 								where `nlId`=?";
 			$result = $this->query(
 				$query,
@@ -63,7 +61,6 @@ class NlLib extends TikiLib
 						$autoArticleClip,
 						$articleClipRange,
 						$articleClipTypes,
-						$emptyClipBlocksSend,
 						(int) $nlId
 				)
 			);
@@ -172,8 +169,7 @@ class NlLib extends TikiLib
 
 	public function get_all_subscribers($nlId, $genUnsub)
 	{
-		global $prefs, $user;
-		$userlib = TikiLib::lib('user');
+		global $userlib, $prefs, $user;
 		$return = array();
 		$all_users = array();
 		$group_users = array();
@@ -390,10 +386,7 @@ class NlLib extends TikiLib
 
 	public function newsletter_subscribe($nlId, $add, $isUser='n', $validateAddr='', $addEmail='')
 	{
-		global $user, $prefs;
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $tikilib, $user, $prefs, $userlib;
 		if (empty($add)) {
 			return false;
 		}
@@ -445,34 +438,6 @@ class NlLib extends TikiLib
 			$zmail = tiki_get_admin_mail();
 			$zmail->setSubject(tra('Newsletter subscription information at').' '. $_SERVER["SERVER_NAME"]);
 			$zmail->setBodyText($mail_data);
-			//////////////////////////////////////////////////////////////////////////////////
-			//										//
-			// [BUG FIX] hollmeer 2012-11-04: 						//
-			// ADDED html part code	to fix a bug; if html-part not set, code stalls! 	//
-			// must be added in all functions in the file!					//
-			//										//
-			$mail_data_html = "";
-			try {
-				$mail_data_html = $smarty->fetch('mail/confirm_newsletter_subscription_html.tpl');
-			} catch (Exception $e) {
-				// html-template missing; ignore and use text-template below
-			}
-			if ($mail_data_html != '') {
-				//ensure body tags in html part
-				if (stristr($mail_data_html, '</body>') === false) {
-					$mail_data_html = "<body>" . nl2br($mail_data_html) . "</body>";
-				}
-			} else {
-				//no html-template, so just use text-template
-				if (stristr($mail_data, '</body>') === false) {
-					$mail_data_html = "<body>" . nl2br($mail_data) . "</body>";
-				} else {
-					$mail_data_html = $mail_data;
-				}
-			}
-			$zmail->setBodyHtml($mail_data_html);
-			//										//
-			//////////////////////////////////////////////////////////////////////////////////
 			$zmail->addTo($email);
 			try {
 				$zmail->send();
@@ -497,10 +462,7 @@ class NlLib extends TikiLib
 
 	public function confirm_subscription($code)
 	{
-		global $prefs;
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $tikilib, $prefs, $userlib;
 		$foo = parse_url($_SERVER["REQUEST_URI"]);
 		$url_subscribe = $tikilib->httpPrefix(true) . $foo["path"];
 		$query = "select * from `tiki_newsletter_subscriptions` where `code`=?";
@@ -537,34 +499,6 @@ class NlLib extends TikiLib
 		$zmail->setSubject(sprintf($mail_data, $info["name"], $_SERVER["SERVER_NAME"]));
 		$mail_data = $smarty->fetchLang($lg, 'mail/newsletter_welcome.tpl');
 		$zmail->setBodyText($mail_data);
-		//////////////////////////////////////////////////////////////////////////////////
-		//										//
-		// [BUG FIX] hollmeer 2012-11-04: 						//
-		// ADDED html part code	to fix a bug; if html-part not set, code stalls! 	//
-		// must be added in all functions in the file!					//
-		//										//
-		$mail_data_html = "";
-		try {
-			$mail_data_html = $smarty->fetchLang($lg, 'mail/newsletter_welcome_html.tpl');
-		} catch (Exception $e) {
-			// html-template missing; ignore and use text-template below
-		}
-		if ($mail_data_html != '') {
-			//ensure body tags in html part
-			if (stristr($mail_data_html, '</body>') === false) {
-				$mail_data_html = "<body>" . nl2br($mail_data_html) . "</body>";
-			}
-		} else {
-			//no html-template, so just use text-template
-			if (stristr($mail_data, '</body>') === false) {
-				$mail_data_html = "<body>" . nl2br($mail_data) . "</body>";
-			} else {
-				$mail_data_html = $mail_data;
-			}
-		}
-		$zmail->setBodyHtml($mail_data_html);
-		//										//
-		//////////////////////////////////////////////////////////////////////////////////
 		$zmail->addTo($email);
 
 		try {
@@ -578,10 +512,7 @@ class NlLib extends TikiLib
 
 	public function unsubscribe($code, $mailit = false)
 	{
-		global $prefs;
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $prefs, $userlib, $tikilib;
 		$foo = parse_url($_SERVER["REQUEST_URI"]);
 		$url_subscribe = $tikilib->httpPrefix(true). $foo["path"];
 		$query = "select * from `tiki_newsletter_subscriptions` where `code`=?";
@@ -623,34 +554,6 @@ class NlLib extends TikiLib
 			$zmail->setSubject(sprintf($mail_data, $info["name"], $_SERVER["SERVER_NAME"]));
 			$mail_data = $smarty->fetchLang($lg, 'mail/newsletter_byebye.tpl');
 			$zmail->setBodyText($mail_data);
-			//////////////////////////////////////////////////////////////////////////////////
-			//										//
-			// [BUG FIX] hollmeer 2012-11-04: 						//
-			// ADDED html part code	to fix a bug; if html-part not set, code stalls! 	//
-			// must be added in all functions in the file!					//
-			//										//
-			$mail_data_html = "";
-			try {
-				$mail_data_html = $smarty->fetch('mail/newsletter_byebye_subject_html.tpl');
-			} catch (Exception $e) {
-				// html-template missing; ignore and use text-template below
-			}
-			if ($mail_data_html != '') {
-				//ensure body tags in html part
-				if (stristr($mail_data_html, '</body>') === false) {
-					$mail_data_html = "<body>" . nl2br($mail_data_html) . "</body>";
-				}
-			} else {
-				//no html-template, so just use text-template
-				if (stristr($mail_data, '</body>') === false) {
-					$mail_data_html = "<body>" . nl2br($mail_data) . "</body>";
-				} else {
-					$mail_data_html = $mail_data;
-				}
-			}
-			$zmail->setBodyHtml($mail_data_html);
-			//										//
-			//////////////////////////////////////////////////////////////////////////////////
 			$zmail->addTo($email);
 
 			try {
@@ -972,10 +875,7 @@ class NlLib extends TikiLib
 
 	public function get_unsub_msg($nlId, $email, $lang, $code='', $user='')
 	{
-		global $prefs;
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $userlib, $tikilib, $prefs;
 		$pth = $tikilib->httpPrefix(true). substr($_SERVER["REQUEST_URI"], 0, strpos($_SERVER["REQUEST_URI"], 'tiki-'));
 		$foo = parse_url($_SERVER["REQUEST_URI"]);
 		 $smarty->assign('url', $pth);
@@ -1092,8 +992,8 @@ class NlLib extends TikiLib
 
 	public function clip_articles($nlId)
 	{
-		$smarty = TikiLib::lib('smarty');
-		$artlib = TikiLib::lib('art');
+		global $artlib, $smarty;
+		require_once 'lib/articles/artlib.php';
 		$query = 'select `articleClipTypes`, `articleClipRange` from `tiki_newsletters` where nlId = ?';
 		$result = $this->fetchAll($query, array($nlId));
 		$articleClipTypes = unserialize($result[0]['articleClipTypes']);
@@ -1122,7 +1022,7 @@ class NlLib extends TikiLib
 			$smarty->assign("nlArticleClipId", $art["articleId"]);
 			$smarty->assign("nlArticleClipTitle", $art["title"]);
 			$smarty->assign("nlArticleClipSubtitle", $art["subtitle"]);
-			$smarty->assign("nlArticleClipParsedheading", $this->parse_data($art["heading"], array('is_html' => $artlib->is_html($art, true))));
+			$smarty->assign("nlArticleClipParsedheading", $this->parse_data($art["heading"]));
 			$smarty->assign("nlArticleClipPublishDate", $art["publishDate"]);
 			$smarty->assign("nlArticleClipAuthorName", $art["authorName"]);
 			$articleClip .= $smarty->fetch("mail/newsletter_articleclip.tpl");
@@ -1134,9 +1034,9 @@ class NlLib extends TikiLib
 
 	public function get_emails_from_page($wikiPageName)
 	{
-		global $prefs;
+		global $prefs, $wikilib;
 
-		$wikilib = TikiLib::lib('wiki');
+		include_once 'lib/wiki/wikilib.php';
 		$emails = false;
 
 		$canBeRefreshed = false;
@@ -1209,7 +1109,7 @@ class NlLib extends TikiLib
 		return $retval;
 	}
 
-	private function get_edition_mail($editionId, $target, $is_html = null)
+	private function get_edition_mail($editionId, $target)
 	{
 		global $prefs, $base_url;
 		static $mailcache = array();
@@ -1225,11 +1125,7 @@ class NlLib extends TikiLib
 			// build the html
 			$beginHtml = '<body class="tiki_newsletters"><div id="tiki-center" class="clearfix content"><div class="wikitext">';
 			$endHtml = '</div></div></body>';
-			if ($is_html === null) {
-				$is_html = $info['wysiwyg'] === 'y' && $prefs['wysiwyg_htmltowiki'] !== 'y'; // parse as html if wysiwyg and not htmltowiki
-			} else {
-				$is_html = !empty($is_html);
-			}
+			$is_html = $info['wysiwyg'] === 'y' && $prefs['wysiwyg_htmltowiki'] !== 'y';	// parse as html if wysiwyg and not htmltowiki
 			if (stristr($info['data'], '<body') === false) {
 				$html = "<html>$beginHtml" . $tikilib->parse_data(
 					$info['data'], array(
@@ -1248,9 +1144,6 @@ class NlLib extends TikiLib
 				$txtArticleClip = $this->generateTxtVersion($articleClip);
 				$info['datatxt'] = str_replace('~~~articleclip~~~', $txtArticleClip, $info['datatxt']);
 				$html = str_replace('~~~articleclip~~~', $articleClip, $html);
-				if ($articleClip == '<div class="articleclip"></div>' && $nl_info['emptyClipBlocksSend'] == 'y') {
-					return '';
-				}
 			}
 
 			if (stristr($html, '<base') === false) {
@@ -1290,7 +1183,7 @@ class NlLib extends TikiLib
 				$att->mimeType = $f['type'];
 			}
 
-			$zmail->setSubject($info['subject']);
+			$zmail->setSubject($info['subject']); // htmlMimeMail memorised the encoded subject
 
 			$mailcache[$editionId] = array(
 				'zmail' => $zmail,
@@ -1404,14 +1297,11 @@ class NlLib extends TikiLib
 				}
 				// Browsers needs a certain amount of data, for each flush, to display something
 				print str_repeat(' ', 4096) . "\n";
-				print '<div class="confirmation">' . tra("Sending to") . " '<b>$email</b>': <font color=";
+				print '<div class="confirmation">' . tra("Sending to") . "'<b>$email</b>': <font color=";
 			}
 
 			try {
-				$zmail = $this->get_edition_mail($info['editionId'], $us, $info['is_html']);
-				if (!$zmail) {
-					continue;
-				}
+				$zmail = $this->get_edition_mail($info['editionId'], $us);
 				$zmail->send();
 				$sent[] = $email;
 				if ($browser) {

@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -12,8 +9,8 @@ require 'tiki-setup.php';
 
 $access->check_feature('feature_userPreferences');
 
-global $tikidomain;
-$userprefslib = TikiLib::lib('userprefs');
+global $userprefslib, $tikidomain;
+include_once ('lib/userprefs/userprefslib.php');
 // application to display an image from the database with
 // option to resize the image dynamically creating a thumbnail on the fly.
 // you have to check if the user has permission to see this gallery

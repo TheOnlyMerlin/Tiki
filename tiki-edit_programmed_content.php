@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -9,12 +6,14 @@
 // $Id$
 
 require_once ('tiki-setup.php');
+include_once ('lib/dcs/dcslib.php');
 $auto_query_args = array('contentId','sort_mode','offset','find');
 
+if (!isset($dcslib)) {
+	$dcslib = new DCSLib;
+}
 $access->check_feature('feature_dynamic_content');
 $access->check_permission('tiki_p_admin_dynamic');
-
-$dcslib = TikiLib::lib('dcs');
 
 if (!isset($_REQUEST["contentId"])) {
 	$smarty->assign('msg', tra("No content id indicated"));
@@ -36,7 +35,7 @@ if (isset($_REQUEST["remove"])) {
 $smarty->assign('data', '');
 $smarty->assign('publishDate', $tikilib->now);
 //Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 $smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
 
 $smarty->assign('actual', '');

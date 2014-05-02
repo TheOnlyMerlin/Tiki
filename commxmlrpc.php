@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -9,6 +6,7 @@
 // $Id$
 
 include_once("tiki-setup.php");
+include_once ("lib/pear/XML/Server.php");
 include_once ('lib/commcenter/commlib.php');
 
 if ($tikilib->get_preference("feature_comm", 'n') != 'y') {
@@ -23,17 +21,10 @@ $map = array(
 
 $s = new XML_RPC_Server($map);
 
-/**
- * @param $params
- * @return XML_RPC_Response
- */
 function sendStructurePage($params)
 {
-	global $commlib, $prefs;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$structlib = TikiLib::lib('struct');
-
+	global $tikilib, $userlib, $commlib, $prefs;
+	include_once ('lib/structures/structlib.php');
 	$site = $params->getParam(0); $site = $site->scalarval();
 	$user = $params->getParam(1); $user = $user->scalarval();
 	$pass = $params->getParam(2); $pass = $pass->scalarval();
@@ -68,16 +59,10 @@ function sendStructurePage($params)
 }
 
 /* Validates the user and returns user information */
-/**
- * @param $params
- * @return XML_RPC_Response
- */
 function sendPage($params)
 {
 	// Get the page and store it in received_pages
-	global $commlib, $prefs;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $userlib, $commlib, $prefs;
 
 	$pp = $params->getParam(0);
 	$site = $pp->scalarval();
@@ -114,16 +99,10 @@ function sendPage($params)
 	return new XML_RPC_Response(new XML_RPC_Value(1, "boolean"));
 }
 
-/**
- * @param $params
- * @return XML_RPC_Response
- */
 function sendArticle($params)
 {
 	// Get the page and store it in received_pages
-	global $commlib, $prefs;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $userlib, $commlib, $prefs;
 
 	$pp = $params->getParam(0);
 	$site = $pp->scalarval();

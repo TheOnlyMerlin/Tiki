@@ -67,7 +67,7 @@ class Tracker_Field_GeographicFeature extends Tracker_Field_Abstract implements 
 		return $info;
 	}
 
-	function getDocumentPart(Search_Type_Factory_Interface $typeFactory)
+	function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
 	{
 		return array(
 			'geo_located' => $typeFactory->identifier('y'),
@@ -76,12 +76,12 @@ class Tracker_Field_GeographicFeature extends Tracker_Field_Abstract implements 
 		);
 	}
 
-	function getProvidedFields()
+	function getProvidedFields($baseKey)
 	{
 		return array('geo_located', 'geo_feature', 'geo_feature_field');
 	}
 
-	function getGlobalFields()
+	function getGlobalFields($baseKey)
 	{
 		return array();
 	}

@@ -9,7 +9,6 @@ class Search_Formatter_DataSource_Declarative implements Search_Formatter_DataSo
 {
 	private $contentSources = array();
 	private $globalSources = array();
-	private $prefilter;
 
 	function addContentSource($type, Search_ContentSource_Interface $contentSource)
 	{
@@ -27,7 +26,7 @@ class Search_Formatter_DataSource_Declarative implements Search_Formatter_DataSo
 			$type = $entry['object_type'];
 			$object = $entry['object_id'];
 			$hash = isset($entry['hash']) ? $entry['hash'] : null;
-			$missingFields = $this->handlePrefilter($fields, $entry);
+			$missingFields = $fields;
 			
 			$entry = array_merge($entry, $this->obtainFromContentSource($type, $object, $hash, $missingFields));
 
@@ -94,7 +93,7 @@ class Search_Formatter_DataSource_Declarative implements Search_Formatter_DataSo
 
 	private function sourceProvidesValue($contentSource, $missingFields)
 	{
-		return ! empty($missingFields) && count(array_intersect($missingFields, $contentSource->getProvidedFields())) > 0;
+		return count(array_intersect($missingFields, $contentSource->getProvidedFields())) > 0;
 	}
 
 	private function getRaw($data, & $missingFields)
@@ -112,25 +111,6 @@ class Search_Formatter_DataSource_Declarative implements Search_Formatter_DataSo
 		}
 
 		return $raw;
-	}
-
-	/**
-	 * Set a filter function to determine the fields to select.
-	 * First parameter, field list
-	 * Second parameter, the entry
-	 */
-	function setPrefilter($callback)
-	{
-		$this->prefilter = $callback;
-	}
-
-	private function handlePrefilter(array $fields, $entry)
-	{
-		if ($callback = $this->prefilter) {
-			return $callback($fields, $entry);
-		} else {
-			return $fields;
-		}
 	}
 }
 

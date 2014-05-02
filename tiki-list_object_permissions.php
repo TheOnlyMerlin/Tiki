@@ -9,11 +9,6 @@ include_once ('tiki-setup.php');
 $access->check_permission('tiki_p_admin');
 $all_perms = $userlib->get_permissions();
 
-/**
- * @param $permName
- * @param $objectType
- * @return bool
- */
 function is_perm($permName, $objectType)
 {
 	global $all_perms, $tikilib;
@@ -25,18 +20,9 @@ function is_perm($permName, $objectType)
 	}
 	return false;
 }
-
-/**
- * @param $objectId
- * @param $objectType
- * @param $objectName
- * @param string $filterGroup
- * @return array
- */
 function list_perms($objectId, $objectType, $objectName, $filterGroup='')
 {
-	global $prefs;
-	$userlib = TikiLib::lib('user');
+	global $userlib, $prefs;
 	$ret = array();
 	$cats = array();
 	$perms = $userlib->get_object_permissions($objectId, $objectType);
@@ -49,7 +35,8 @@ function list_perms($objectId, $objectType, $objectName, $filterGroup='')
 			}
 		}
 	} elseif ($prefs['feature_categories'] == 'y') {
-		$categlib = TikiLib::lib('categ');
+		global $categlib;
+		include_once ('lib/categories/categlib.php');
 		$categs = $categlib->get_object_categories($objectType, $objectId);
 		if (!empty($categs)) {
 			foreach ($categs as $categId) {
@@ -104,8 +91,8 @@ if ($del || $dup) {
 	}
 }
 
-$types = array('wiki page', 'file gallery', 'tracker', 'forum', 'group', 'articles', 'blog', 'calendar', 'sheet');
-$commentslib = TikiLib::lib('comments');
+$types = array('wiki page', 'file gallery', 'tracker', 'forum', 'group');
+include_once ("lib/comments/commentslib.php"); global $commentslib; $commentslib = new Comments($dbTiki);
 $all_groups = $userlib->list_all_groups();
 $res = array();
 foreach ($types as $type) {
@@ -188,64 +175,6 @@ foreach ($types as $type) {
 				}
 				if (count($r['category']) > 0) {
 					$res[$type]['category'][] = array('objectId' => $r['objectId'], 'category' => $r['category']);
-				}
-			}
-    		break;
-		
-		case 'calendar':
-			$calendarlib = TikiLib::lib('calendar');
-			$objects = $calendarlib->list_calendars();
-			foreach ($objects['data'] as $object) {
-				$r = list_perms($object['calendarId'], $type, $object['name'], $filterGroup);
-				if (count($r['special']) > 0) {
-					$res[$type]['objects'][] = array('objectId' => $r['objectId'], 'special' => $r['special'], 'objectName' => $object['name']);
-				}
-				if (count($r['category']) > 0) {
-					$res[$type]['category'][] = array('objectId' => $r['objectId'], 'category' => $r['category'], 'objectName' => $object['name']);
-				}
-			}
-    		break;
-		
-		case 'articles':
-			$artlib = TikiLib::lib('art');
-			$objects = $artlib->list_articles();
-			foreach ($objects['data'] as $object) {
-				$r = list_perms($object['articleId'], $type, $object['title'], $filterGroup);
-				if (count($r['special']) > 0) {
-					$res[$type]['objects'][] = array('objectId' => $r['objectId'], 'special' => $r['special'], 'objectName' => $object['title']);
-				}
-				if (count($r['category']) > 0) {
-					$res[$type]['category'][] = array('objectId' => $r['objectId'], 'category' => $r['category'], 'objectName' => $object['title']);
-				}
-			}
-    		break;
-		
-		case 'blog':
-			$bloglib = TikiLib::lib('blog');
-			$objects = $bloglib->list_blogs();
-			
-			foreach ($objects['data'] as $object) {
-				
-				$r = list_perms($object['blogId'], $type, $object['name'], $filterGroup);
-				if (count($r['special']) > 0) {
-					$res[$type]['objects'][] = array('objectId' => $r['objectId'], 'special' => $r['special'], 'objectName' => $object['name']);
-				}
-				if (count($r['category']) > 0) {
-					$res[$type]['category'][] = array('objectId' => $r['objectId'], 'category' => $r['category'], 'objectName' => $object['name']);
-				}
-			}
-    		break;
-		
-		case 'sheet':
-			$sheetlib = TikiLib::lib('sheet');
-			$objects = $sheetlib->list_sheets();
-			foreach ($objects['data'] as $object) {
-				$r = list_perms($object['sheetId'], $type, $object['name'], $filterGroup);
-				if (count($r['special']) > 0) {
-					$res[$type]['objects'][] = array('objectId' => $r['objectId'], 'special' => $r['special'], 'objectName' => $object['name']);
-				}
-				if (count($r['category']) > 0) {
-					$res[$type]['category'][] = array('objectId' => $r['objectId'], 'category' => $r['category'], 'objectName' => $object['name']);
 				}
 			}
     		break;

@@ -10,6 +10,25 @@
 					{$cellprio}
 				</span>
 			{/if}
+			{if $prefs.calendar_sticky_popup eq "y"}
+				<span style="right:2px; position:absolute">
+					<a href="javascript:void(0)" onclick="nd();return false;">
+						{icon _id="close" alt="{tr}Close{/tr}" width="16" height="16"}
+					</a>
+				</span>
+			{/if}
+		</div>
+	{else}
+		<div style="float:right">
+			{if $prefs.calendar_sticky_popup eq "y"}
+				{button _noborder='y' _text="{tr}Export event{/tr}" _icon="task_submitted" href="tiki-calendar_export_ical.php" calendarItem=$cellid export='y' _auto_args="calendarItem,export"}
+				{if $tiki_p_change_events eq 'y' || $celluser eq $user}
+					{button _noborder='y' _text="{tr}Edit event{/tr}" _icon="page_edit" href="tiki-calendar_edit_item.php" calitemId=$cellid _auto_args="calitemId"}
+					{button _noborder='y' _text="{tr}Delete event{/tr}" _icon="cross" href="tiki-calendar_edit_item.php" calitemId=$cellid delete="y" _auto_args="calitemId,delete"}
+				{/if}
+				{button _noborder='y' _text="{tr}View event{/tr}" _icon="magnifier" href="tiki-calendar_edit_item.php" viewcalitemId=$cellid _auto_args="viewcalitemId"}
+			{/if}
+			{button _noborder='y' _text="{tr}Close{/tr}" _icon="close" href="javascript:void(0)" _onclick="nd();return false;"}
 		</div>
 	{/if}
 	{if $group_by_item ne 'y'}
@@ -17,7 +36,7 @@
 			{if $allday}
 				{$cellstart|tiki_short_date}
 				{if $cellend - $cellstart >=86400}&ndash; {$cellend|tiki_short_date}
-					<br>
+					<br />
 				{/if}
 				({tr}All day{/tr})
 			{else}
@@ -28,30 +47,30 @@
 				{/if}
 			{/if}
 		</strong>
-		<br>
+		<br />
 	{/if}
 	<a href="tiki-calendar_edit_item.php?viewcalitemId={$cellid}" title="{tr}Details{/tr}"{if isset($cellstatus) and $cellstatus eq '2'} style="text-decoration:line-through"{/if}>
 		{$cellname|escape}
 	</a>
-	<br><br>
+	<br />
 	{if $show_description eq 'y'}
-		<div class="panel-body">
+		<div class="box-data">
 			{$celldescription|truncate:250:'...'}
 		</div>
-		<br>
+		<br />
 	{/if}
 	{if isset($show_participants) and $show_participants eq 'y' and $cellparticipants}
 		<span class="box-title">
 			{tr}Organized by:{/tr}
 		</span>
 		{$cellorganizers}
-		<br>
+		<br />
 		<span class="box-title">
 			{tr}Participants:{/tr}
 		</span>
 		{$cellparticipants}
-		<br>
-		<br>
+		<br />
+		<br />
 	{/if}
 	{* need to check $cellCalendarId separately to eliminate notice fro some reason *}
 	{if isset($cellcalendarId) and isset($infocals.$cellcalendarId.custompriorities)
@@ -60,7 +79,7 @@
 			{tr}Priority:{/tr}
 		</span>
 		{$cellprio}
-		<br>
+		<br />
 	{/if}
 	{if isset($show_category) and $show_category eq 'y' and isset($infocals.$cellcalendarId.customcategories)
 		and $infocals.$cellcalendarId.customcategories eq 'y' and $cellcategory}
@@ -68,7 +87,7 @@
 			{tr}Classification:{/tr}
 		</span>
 		{$cellcategory|escape}
-		<br>
+		<br />
 	{/if}
 	{if isset($show_location) and $show_location eq 'y' and isset($infocals.$cellcalendarId.customlocations)
 		and $infocals.$cellcalendarId.customlocations eq 'y' and $celllocation}
@@ -76,7 +95,7 @@
 			{tr}Location:{/tr}
 		</span>
 		{$celllocation|escape}
-		<br>
+		<br />
 	{/if}
 	{if isset($show_url) and $show_url eq 'y' and isset($infocals.$cellcalendarId.customurl)
 		and $infocals.$cellcalendarId.customurl eq 'y' and $cellurl}
@@ -86,18 +105,18 @@
 		<a href="{$cellurl|escape:'url'}" title="{$cellurl|escape:'url'}">
 			 {$cellurl|truncate:32:'...'}
 		 </a>
-		<br>
+		<br />
 	{/if}
 	{if isset($show_calname) and $show_calname eq 'y' and $cellcalname}
 		<span class='box-title'>
 			{tr}Calendar:{/tr}
 		</span>
-		<span style="height:12px;width:12px;color:#{$infocals.$cellcalendarId.customfgcolor};{if !empty($infocals.$cellcalendarId.custombgcolor)}background-color:#{$infocals.$cellcalendarId.custombgcolor};{/if}{if !empty($infocals.$cellcalendarId.customfgcolor)}border-color:#{$infocals.$cellcalendarId.customfgcolor};{/if}border-width:1px;border-style:solid;">
+		<span style="height:12px;width:12px;{if !empty($infocals.$cellcalendarId.custombgcolor)}background-color:#{$infocals.$cellcalendarId.custombgcolor};{/if}{if !empty($infocals.$cellcalendarId.customfgcolor)}border-color:#{$infocals.$cellcalendarId.customfgcolor};{/if}border-width:1px;border-style:solid;">
 			&nbsp;{$cellcalname|escape}&nbsp;
 		</span>
-		<br>
+		<br />
 	{/if}
-	<br>
+	<br />
 	{if isset($show_status) and $show_status eq 'y'}
 		<div class="statusbox status{$cellstatus}">
 			{if $cellstatus eq 0}

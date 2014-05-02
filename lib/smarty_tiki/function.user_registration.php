@@ -7,15 +7,15 @@
 
 function smarty_function_user_registration($params, $smarty)
 {
-	global $prefs, $https_mode, $base_url_https, $user;
-	$registrationlib = TikiLib::lib('registration');
-	$userlib = TikiLib::lib('user');
+	global $prefs, $userlib, $https_mode, $base_url_https, $registrationlib, $user;
 
 	if ($prefs['allowRegister'] != 'y') {
 		return;
 	}
 
 	$errorreportlib = TikiLib::lib('errorreport');
+
+	include_once('lib/registration/registrationlib.php');
 
 	$_VALID = tra("Please enter a valid %s.  No spaces, more than %d characters and contain %s");
 	$smarty->assign('_PROMPT_UNAME', sprintf($_VALID, tra("username"), $registrationlib->merged_prefs['min_username_length'], "0-9,a-z,A-Z"));
@@ -52,6 +52,7 @@ function smarty_function_user_registration($params, $smarty)
 			$smarty->assign('trackerEditFormId', 1);	// switch on to make mandatory_star *'s appear even though the tracker form is loaded by ajax
 		}
 	}
+
 	if (isset($_REQUEST['register']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 		check_ticket('register');
 		$cookie_name = $prefs['session_cookie_name'];
@@ -118,14 +119,11 @@ function smarty_function_user_registration($params, $smarty)
 				$user = $_REQUEST['name'];	// so that one can set user preferences at registration time
 				$_REQUEST['iTRACKER'] = 1;	// only one tracker plugin on registration
 			}
-			if (!is_array($re['registrationUsersFieldIds'])) {
-				$re['registrationUsersFieldIds'] = explode(':', $re['registrationUsersFieldIds']);
-			}
 			if ($registrationlib->merged_prefs["user_register_prettytracker"] == 'y' && !empty($registrationlib->merged_prefs["user_register_prettytracker_tpl"])) {
 				if (substr($registrationlib->merged_prefs["user_register_prettytracker_tpl"], -4) == ".tpl") {
-					$userTrackerData = wikiplugin_tracker('', array('trackerId' => $re['usersTrackerId'], 'fields' => $re['registrationUsersFieldIds'], 'showdesc' => 'y', 'showmandatory' => 'y', 'embedded' => 'n', 'action' => tra('Register'), 'registration' => 'y', 'tpl' => $registrationlib->merged_prefs["user_register_prettytracker_tpl"], 'userField' => $re['usersFieldId'], 'outputwiki' => $outputwiki, 'outputtowiki' => $outputtowiki));
+					$userTrackerData = wikiplugin_tracker('', array('trackerId' => $re['usersTrackerId'], 'fields' => $re['registrationUsersFieldIds'], 'showdesc' => 'y', 'showmandatory' => 'y', 'embedded' => 'n', 'action' => tra('Register'), 'registration' => 'y', 'tpl' => $re["user_register_prettytracker_tpl"], 'userField' => $re['usersFieldId'], 'outputwiki' => $outputwiki, 'outputtowiki' => $outputtowiki));
 				} else {
-					$userTrackerData = wikiplugin_tracker('', array('trackerId' => $re['usersTrackerId'], 'fields' => $re['registrationUsersFieldIds'], 'showdesc' => 'y', 'showmandatory' => 'y', 'embedded' => 'n', 'action' => tra('Register'), 'registration' => 'y', 'wiki' => $registrationlib->merged_prefs["user_register_prettytracker_tpl"], 'userField' => $re['usersFieldId'],'outputwiki' => $outputwiki, 'outputtowiki' => $outputtowiki));
+					$userTrackerData = wikiplugin_tracker('', array('trackerId' => $re['usersTrackerId'], 'fields' => $re['registrationUsersFieldIds'], 'showdesc' => 'y', 'showmandatory' => 'y', 'embedded' => 'n', 'action' => tra('Register'), 'registration' => 'y', 'wiki' => $re["user_register_prettytracker_tpl"], 'userField' => $re['usersFieldId'],'outputwiki' => $outputwiki, 'outputtowiki' => $outputtowiki));
 				}
 			} else {
 				$userTrackerData = wikiplugin_tracker('', array('trackerId' => $re['usersTrackerId'], 'fields' => $re['registrationUsersFieldIds'], 'showdesc' => 'y', 'showmandatory' => 'y', 'embedded' => 'n', 'action' => tra('Register'), 'registration' => 'y', 'userField' => $re['usersFieldId']));
@@ -158,11 +156,86 @@ function smarty_function_user_registration($params, $smarty)
 		}
 	}
 
-	if ($needs_validation_js) {
-		$registrationlib->addRegistrationFormValidationJs();
+	if ($needs_validation_js && $prefs['feature_jquery_validation'] === 'y') {
+		$js_m = '';
+		$js = '
+	$("form[name=RegForm]").validate({
+		rules: {
+			name: {
+				required: true,';
+		if ($prefs['login_is_email'] === 'y') {
+			$js .= '
+				email: true,';
+		}
+		$js .= '
+				remote: {
+					url: "validate-ajax.php",
+					type: "post",
+					data: {
+						validator: "username",
+						input: function() { return $("#name").val(); }
+					}
+				}
+			},
+			email: {
+				required: true,
+				email: true
+			},
+			pass: {
+				required: true,
+				remote: {
+					url: "validate-ajax.php",
+					type: "post",
+					data: {
+						validator: "password",
+						input: function() { return $("#pass1").val(); }
+					}
+				}
+			},
+			passAgain: { equalTo: "#pass1" }';
+
+		if ($prefs['user_must_choose_group'] === 'y') {
+			$choosable_groups = $registrationlib->merged_prefs['choosable_groups'];
+			$js .= ',
+			chosenGroup: {
+				required: true
+			}';
+			$js_m .= ' "chosenGroup": { required: "' . tra('One of these groups is required') . '"}, ';
+		}
+
+
+		if (extension_loaded('gd') && function_exists('imagepng') && function_exists('imageftbbox') && $prefs['feature_antibot'] == 'y' && empty($user) && $prefs['recaptcha_enabled'] != 'y') {
+			// antibot validation
+			$js .= ',
+	"captcha[input]": {
+		required: true,
+		remote: {
+			url: "validate-ajax.php",
+			type: "post",
+			data: {
+				validator: "captcha",
+				parameter: function() { return $jq("#captchaId").val(); },
+				input: function() { return $jq("#antibotcode").val(); }
+			}
+		}
+	}
+';
+			$js_m .= ' "captcha[input]": { required: "' . tra('This field is required') . '"}, ';
+		}
+
+		$js .= '},
+		messages: {' . $js_m . '
+			name: { required: "This field is required"},
+			email: { email: "Invalid email", required: "This field is required"},
+			pass: { required: "This field is required"},
+			passAgain: { equalTo: "Passwords do not match"}
+		},
+		submitHandler: function(){process_submit(this.currentForm);}
+	});
+';
+		TikiLib::lib('header')->add_jq_onready($js);
 	}
 
 	$smarty->assign('email_valid', 'y');
 	return $smarty->fetch('user_registration.tpl');
 }
-

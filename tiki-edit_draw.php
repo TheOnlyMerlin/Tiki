@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -18,7 +15,7 @@ $section = "draw";
 require_once ('tiki-setup.php');
 global $drawFullscreen, $prefs, $headerlib;
 
-$filegallib = TikiLib::lib('filegal');
+include_once ('lib/filegals/filegallib.php');
 
 $access->check_feature('feature_draw');
 $access->check_feature('feature_file_galleries');
@@ -35,9 +32,6 @@ $smarty->assign('fileId', $_REQUEST['fileId']);
 
 if ($_REQUEST['fileId'] > 0) {
 	$fileInfo = $filegallib->get_file_info($_REQUEST['fileId']);
-	if (empty($_REQUEST['galleryId'])) {
-		$_REQUEST['galleryId'] = $fileInfo['galleryId'];
-	}
 } else {
 	$fileInfo = array();
 }
@@ -63,10 +57,10 @@ if (
 	die;
 }
 
-$perms = TikiLib::lib('tiki')->get_perm_object( $gal_info['galleryId'], 'file gallery', $gal_info );
+$globalperms = Perms::get(array( 'type' => 'file gallery', 'object' => $fileInfo['galleryId'] ));
 
 //check permissions
-if ($perms['tiki_p_upload_files'] !== 'y' ) {
+if (!($globalperms->upload_files == 'y')) {
 	$smarty->assign('errortype', 401);
 	$smarty->assign('msg', tra("You do not have permission to view/edit this file"));
 	$smarty->display("error.tpl");
@@ -85,19 +79,11 @@ $_REQUEST['name'] = htmlspecialchars(str_replace(".svg", "", $_REQUEST['name']))
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_REQUEST['data'])) {
 	$_REQUEST["galleryId"] = (int)$_REQUEST["galleryId"];
 	$_REQUEST["fileId"] = (int)$_REQUEST["fileId"];
-	if (isset($_REQUEST['imgParams'])) {
-		$_REQUEST['fromFieldId'] = (int)$_REQUEST['imgParams']['fromFieldId'];
-		$_REQUEST['fromItemId'] = (int)$_REQUEST['imgParams']['fromItemId'];
-	}
-	$_REQUEST['description'] = htmlspecialchars(isset($_REQUEST['description']) ? $_REQUEST['description'] : '');
+	$_REQUEST['description'] = htmlspecialchars(isset($_REQUEST['description']) ? $_REQUEST['description'] : $_REQUEST['name']);
 
 	$type = $mimetypes["svg"];
 	$fileId = '';
-	$isConversion = $fileInfo['filetype'] != $mimetypes["svg"];
-
-	if (empty($_REQUEST["fileId"]) == false && $_REQUEST["fileId"] > 0 &&
-			($prefs['feature_draw_separate_base_image'] !== 'y' || !$isConversion)) {
-
+	if (empty($_REQUEST["fileId"]) == false && $_REQUEST["fileId"] > 0) {
 		//existing file
 		$fileId = $filegallib->save_archive(
 			$_REQUEST["fileId"],
@@ -115,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_REQUEST['data'])) {
 			$user
 		);
 		// this is a conversion from an image other than svg
-		if ($isConversion && $prefs['fgal_keep_fileId'] == 'y') {
+		if ($fileInfo['filetype'] != $mimetypes["svg"] && $prefs['fgal_keep_fileId'] == 'y') {
 			$newFileInfo = $filegallib->get_file_info($fileId);
 
 			$archiveFileId = $tikilib->getOne(
@@ -148,15 +134,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_REQUEST['data'])) {
 		}
 	} else {
 		//new file
-		if ($isConversion) {
-			$_REQUEST['name'] = preg_replace('/\.(:?jpg|gif|png|tif[f]?)$/', '', $_REQUEST['name']) . tra(' drawing');	// strip extension
-		}
-		$galleryId = $_REQUEST["galleryId"];
-		if ($prefs['feature_draw_in_userfiles'] === 'y') {
-			$galleryId = TikiLib::lib('filegal')->get_user_file_gallery();
-		}
 		$fileId = $filegallib->insert_file(
-			$galleryId,
+			$_REQUEST["galleryId"],
 			$_REQUEST['name'],
 			$_REQUEST['description'],
 			$_REQUEST['name'].".svg",
@@ -168,19 +147,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_REQUEST['data'])) {
 		);
 	}
 
-	if (!empty($_REQUEST['fromItemId'])) {		// a tracker item, so update the item field
-		$item = Tracker_Item::fromId($_REQUEST['fromItemId']);
-		if ($item->canModifyField($_REQUEST['fromFieldId'])) {
-			$definition = $item->getDefinition();
-			$field = $definition->getField($_REQUEST['fromFieldId']);
-			$trackerInput = $item->prepareFieldInput($field, array($_REQUEST['fromFieldId'] -> $fileId));
-			$trackerInput['value'] = $fileId;
-
-			TikiLib::lib('trk')->replace_item($field['trackerId'], $_REQUEST['fromItemId'], array('data' => array($trackerInput)));
-		}
-
-	}
-
 	echo $fileId;
 	die;
 }
@@ -189,8 +155,8 @@ if ($fileInfo['filetype'] == $mimetypes["svg"]) {
 	$data = $fileInfo["data"];
 } else { //we already confirmed that this is an image, here we make it compatible with svg
 	$src = $tikilib->tikiUrl() . 'tiki-download_file.php?fileId=' . $fileInfo['fileId'];
-	$w = @imagesx($src);		// can't see how this can ever work - imagesx param is a resource not a string url (jb)
-	$h = @imagesy($src);
+	$w = imagesx($image);
+	$h = imagesy($image);
 
 	if (empty($w) || empty($h)) { //go ahead and download the image, it may exist off-site, copywrited content
 		$image = imagecreatefromstring(file_get_contents($src));

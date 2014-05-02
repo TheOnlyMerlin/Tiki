@@ -1,7 +1,4 @@
 <?php
-/**
- * @package tikiwiki
- */
 // (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
@@ -33,13 +30,13 @@ switch ($_REQUEST['action']) {
 			die;
 		}
 					$bookId=$accountinglib->createBook(
-						$_REQUEST['bookName'], 'n',
+						$_REQUEST['bookName'],
 						$_REQUEST['bookStartDate'], $_REQUEST['bookEndDate'],
 						$_REQUEST['bookCurrency'], $_REQUEST['bookCurrencyPos'],
 						$_REQUEST['bookDecimals'], $_REQUEST['bookDecPoint'],
 						$_REQUEST['bookThousand'], $_REQUEST['exportSeparator'],
 						$_REQUEST['exportEOL'], $_REQUEST['exportQuote'],
-						$_REQUEST['bookAutoTax']
+						$_REQUEST['bookAutoTax'], false
 					);
 					if (!is_numeric($bookId)) {
 						$errors[]=tra($bookId);

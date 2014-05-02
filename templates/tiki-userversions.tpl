@@ -2,9 +2,9 @@
 {if $preview}
 <h2>{tr}Version:{/tr} {$version}</h2>
 <div class="wikitext">{$preview.data}</div>
-<br> 
+<br /> 
 {/if}
-<br>
+<br />
 <div align="center">
 <table  border="1"  cellpadding="0" cellspacing="0">
 <tr>
@@ -15,7 +15,7 @@
 <td id="heading">{tr}Comment{/tr}</td>
 <td id="heading">{tr}Action{/tr}</td>
 </tr>
-
+{cycle values="even,odd" print=false}
 {section name=hist loop=$history}
 <tr>
 <td id="{cycle advance=false}">&nbsp;{$history[hist].lastModif|tiki_long_datetime}&nbsp;</td>

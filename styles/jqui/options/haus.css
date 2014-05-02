@@ -49,16 +49,13 @@ h1,h2,h3,h4,h5,h6, #top .pagetitle a {
 	color: #888;
 }
 
-#top_modules .box-login_box {
-	bottom: -6px;
-}
-
 .button a,
 .button a:visited,
 button,
 input[type="reset"],
 input[type="submit"],
-.button input {
+.button input,
+.calbuttonBox a {
     border: 1px solid #777;
     font-weight: bold;
     color: #555555;
@@ -68,7 +65,8 @@ input[type="submit"],
 button:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover,
-.button input:hover {
+.button input:hover,
+.calbuttonBox:hover {
     border: 1px solid #666;
     font-weight: bold;
     color: #212121;
@@ -82,9 +80,5 @@ input[type="submit"]:hover,
 
 #tiki-top .cssmenu_horiz {
     line-height: 0;
-}
-
-.tabmark a {
-    font-size: 0.85em;
 }
 

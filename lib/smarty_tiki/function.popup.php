@@ -9,6 +9,7 @@
  * Smarty plugin for Tiki using jQuery ClueTip instead of OverLib
  */
 
+
 /**
  * Smarty {popup} function plugin
  *
@@ -20,7 +21,7 @@
  * @author   Jonny Bradley, replacing Smarty original (by Monte Ohrt <monte at ohrt dot com>)
  * @param    array
  * @param    Smarty
- * @return   string now formatted to use popover natively
+ * @return   string now formatted to use convertOverlib() in tiki-jquery.js
  *
  * params still relevant:
  *
@@ -32,53 +33,102 @@
  */
 function smarty_function_popup($params, $smarty)
 {
-	$options = array();
-    $trigger = 'hover';
-	$body = '';
-	$title = '';
-
-	foreach ($params as $key => $value) {
-		switch ($key) {
+	$append = '';
+	foreach ($params as $_key => $_value) {
+		switch ($_key) {
 			case 'text':
-				$body = $value;
-				break;
 			case 'trigger':
-				switch ($value) {
-					case 'onclick':
-					case 'onClick':
-						$trigger = 'click';
-						break;
-					default:
-						break;
+			case 'function':
+			case 'inarray':
+				$$_key = (string) $_value;
+				if ($_key == 'function' || $_key == 'inarray') {
+					$append .= ',\'' . strtoupper($_key) . "=$_value'";
 				}
 				break;
+
 			case 'caption':
-				$title = $value;
+			case 'closetext':
+			case 'status':
+				$append .= ',\'' . strtoupper($_key) . "=" . str_replace("'", "\'", $_value) . "'";
 				break;
+
+			case 'fgcolor':
+			case 'bgcolor':
+			case 'textcolor':
+			case 'capcolor':
+			case 'closecolor':
+			case 'textfont':
+			case 'captionfont':
+			case 'closefont':
+			case 'fgbackground':
+			case 'bgbackground':
+			case 'caparray':
+			case 'capicon':
+			case 'background':
+			case 'frame':
+				$append .= ',\'' . strtoupper($_key) . "=$_value'";
+				break;
+
+			case 'textsize':
+			case 'captionsize':
+			case 'closesize':
+			case 'width':
+			case 'height':
+			case 'border':
+			case 'offsetx':
+			case 'offsety':
+			case 'snapx':
+			case 'snapy':
+			case 'fixx':
+			case 'fixy':
+			case 'padx':
+			case 'pady':
+			case 'timeout':
+			case 'delay':
+				$append .= ',\'' . strtoupper($_key) . "=$_value'";
+				break;
+
+			case 'sticky':
+			case 'left':
+			case 'right':
+			case 'center':
+			case 'above':
+			case 'below':
+			case 'noclose':
+			case 'autostatus':
+			case 'autostatuscap':
+			case 'fullhtml':
+			case 'hauto':
+			case 'vauto':
+			case 'mouseoff':
+			case 'followmouse':
+			case 'closeclick':
+				if ($_value) {
+					$append .= ',\'' . strtoupper($_key) . '\'';
+				}
+				break;
+
+			default:
+				trigger_error("[popup] unknown parameter $_key", E_USER_WARNING);
 		}
 	}
 
-    if (empty($title) && empty($body)) {
-		trigger_error("popover: attribute 'text' or 'caption' required");
-        return false;
+	if (empty($text) && !isset($inarray) && empty($function)) {
+		trigger_error("overlib: attribute 'text' or 'inarray' or 'function' required");
+		return false;
 	}
 
-	$body = preg_replace(array('/\\\\r\n/','/\\\\n/','/\\\\r/', '/\\t/'), '', $body);
-	$body = str_replace('\&#039;', '&#039;', $body);	// unescape previous js escapes
-	$body = str_replace('\&quot;', '&quot;', $body);
-	$body = str_replace('&lt;\/', '&lt;/', $body);
-	$retval = ' data-toggle="popover" data-container="body" class="tips" ';
-	if (isset($options['activation']) && $options['activation'] !== 'click') {
-		$retval = ' data-trigger="hover" ';
+	if (empty($trigger)) {
+		$trigger = "onmouseover";
 	} else {
-		$retval = ' data-trigger="click" ';
+		$append .= ',\'' . $trigger . '\'';
 	}
-	if ($title) {
-		$retval .= ' title="' . $title . '"';
-	}
-	if ($body) {
-		$retval .= ' data-content="' . $body . '" ';
-	}
+
+	// Remove newlines to avoid JavaScript statement over several lines
+	$text = preg_replace(array('/\\\\r\n/','/\\\\n/','/\\\\r/'), "", $text);
+	$retval = $trigger . '="return convertOverlib(this,\'' . $text . '\'';
+	$append = trim($append, ',');
+	$retval .= ',[' . $append . ']);"';
 
 	return $retval;
 }

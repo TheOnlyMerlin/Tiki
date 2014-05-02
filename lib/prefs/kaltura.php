@@ -11,13 +11,15 @@ function prefs_kaltura_list()
 	$players = array();
 
 	if (isset($prefs['feature_kaltura']) && $prefs['feature_kaltura'] === 'y') {
-		$kalturaadminlib = TikiLib::lib('kalturaadmin');
-		$playerList = $kalturaadminlib->getPlayersUiConfs();
-		foreach ($playerList as $pl) {
-			$players[$pl['id']] = tra($pl['name']);
+		global $kalturaadminlib; require_once 'lib/videogals/kalturalib.php';
+		if (is_object($kalturaadminlib) && !empty($kalturaadminlib->session)) {
+			$players1 = $kalturaadminlib->getPlayersUiConfs();
+			foreach ($players1 as & $pl) {
+				$players[$pl['id']] = tra($pl['name']);
+			}
+			unset($players1);
 		}
 	}
-
 	return array(
 		'kaltura_partnerId' => array(
 			'name' => tra('Partner ID'),
@@ -73,10 +75,10 @@ function prefs_kaltura_list()
 		),
 		'kaltura_kServiceUrl' => array(
 			'name' => tra('Kaltura Service URL'),
-			'description' => tra('e.g. https://www.kaltura.com/'),
+			'description' => tra('e.g. http://www.kaltura.com/'),
 			'type' => 'text',
 			'size' => 40,
-			'default' => 'https://www.kaltura.com/',
+			'default' => 'http://www.kaltura.com/',
 			'tags' => array('basic'),
 		),
 		'kaltura_legacyremix' => array(

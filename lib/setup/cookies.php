@@ -30,33 +30,26 @@ $smarty->assign_by_ref('cookie', $_COOKIE);
 
 // fix margins for hidden columns - css (still) doesn't work as it needs to know the "normal" margins FIXME
 if (getCookie('show_col2') == 'n') {
-	if (getCookie('rtl') == 'y') { // check if we are in RTL language mode
-		$headerlib->add_css('#c1c2 #wrapper #col1.marginright { margin-right: 0; }', 100);
-	} else {
-		$headerlib->add_css('#c1c2 #wrapper #col1.marginleft { margin-left: 0; }', 100);
-	}
+	$headerlib->add_css('#c1c2 #wrapper #col1.marginleft { margin-left: 0; }', 100);
 }
 if (getCookie('show_col3') == 'n') {
-	if (getCookie('rtl') == 'y') {
-		$headerlib->add_css('#c1c2 #wrapper #col1.marginleft { margin-left: 0; }', 100);
-	} else {
-		$headerlib->add_css('#c1c2 #wrapper #col1.marginright { margin-right: 0; }', 100);
-	}
+	$headerlib->add_css('#c1c2 #wrapper #col1.marginright { margin-right: 0; }', 100);
 }
 
 function getCookie($name, $section = null, $default = null)
 {
 	global $feature_no_cookie;
 
-	if ($feature_no_cookie || (empty($section) && !isset($_COOKIE[$name]) && isset($_SESSION['tiki_cookie_jar'][$name]))) {
-		if (isset($_SESSION['tiki_cookie_jar'][$name])) {
-			return $_SESSION['tiki_cookie_jar'][$name];
-		} else {
-			return $default;
+	if ($feature_no_cookie || (empty($section) && isset($_SESSION['tiki_cookie_jar'][$name]))) {
+		if (isset($_SESSION['tiki_cookie_jar'])) {// if cookie jar doesn't work
+			if (isset($_SESSION['tiki_cookie_jar'][$name]))
+				return $_SESSION['tiki_cookie_jar'][$name];
+			else
+				return $default;
 		}
 	} else if ($section) {
 		if (isset($_COOKIE[$section])) {
-			if (preg_match("/@" . preg_quote($name, '/') . "\:([^@;]*)/", $_COOKIE[$section], $matches))
+			if (preg_match("/@" . $name . "\:([^@;]*)/", $_COOKIE[$section], $matches))
 				return $matches[1];
 			else
 				return $default;

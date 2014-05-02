@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_top_images_info()
 {
 	return array(
@@ -30,14 +27,10 @@ function module_top_images_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_top_images($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
-	$imagegallib = TikiLib::lib('imagegal');
+	global $smarty;
+	global $imagegallib; include_once ("lib/imagegals/imagegallib.php");
 	
 	$smarty->assign("content", isset($module_params["content"]) ? $module_params["content"] : "names");
 

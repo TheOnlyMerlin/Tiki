@@ -10,6 +10,9 @@
  *  from a LDAP directory
  */
 
+// class uses Pears Net_LDAP2
+require_once ('Net/LDAP2.php');
+
 
 class TikiLdapLib
 {
@@ -59,10 +62,10 @@ class TikiLdapLib
 	public function __construct($options)
 	{
 		// debug setting
-		$logslib = TikiLib::lib('logs');
+		global $logslib;
 		if (isset($options['debug']) && ($options['debug']===true || $options['debug']=='y' )&& ($logslib instanceof LogsLib)) {
 			$this->options['debug'] = true;
-			$this->logslib = $logslib;
+			$this->logslib = &$logslib;
 		}
 		// Configure the connection
 

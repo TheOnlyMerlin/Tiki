@@ -272,7 +272,8 @@ if (isset($_REQUEST['tiki_view_mode']) and $_REQUEST['tiki_view_mode'] == 'view'
 if (isset($_REQUEST['tiki_view_mode']) and $_REQUEST['tiki_view_mode'] == 'edit') {
 	$show_form = true;
 	$smarty->assign('show_form', $show_form);
-	$wikilib = TikiLib::lib('wiki');
+	global $wikilib;
+	include_once ('lib/wiki/wikilib.php');
 	$plugins = $wikilib->list_plugins(true, 'description');
 	$smarty->assign_by_ref('plugins', $plugins);
 }
@@ -628,7 +629,7 @@ for ($i = 0; $i <= 100; $i+= 10) {
 	$percs[] = $i;
 }
 //Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 $smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
 
 $smarty->assign_by_ref('percs', $percs);

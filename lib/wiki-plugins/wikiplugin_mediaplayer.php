@@ -39,13 +39,13 @@ function wikiplugin_mediaplayer_info()
 			'mp3' => array(
 				'required' => false,
 				'name'=> tra('MP3 URL'),
-				'description' => tra("Complete URL to the MP3 to include. http://example.org/example.mp3 for an external file or the following for a local file: tiki-download_file.php?fileId=2 (No need for http:// in this case)"),
+				'description' => tra('Complete URL to the mp3 to include.'),
 				'filter' => 'url',
 			),
 			'flv' => array(
 				'required' => false,
 				'name'=> tra('FLV URL'),
-				'description' => tra("Complete URL to the FLV to include. http://example.org/example.flv for an external file or the following for a local file: http:tiki-download_file.php?fileId=2 (the missing // is intentional as this is a valid internal link)"),
+				'description' => tra('Complete URL to the flv to include.'),
 				'filter' => 'url'
 			),
 
@@ -143,13 +143,13 @@ function wikiplugin_mediaplayer($data, $params)
 		'width' => 200,
 		'height' => 20,
 		'player' => 'player_mp3.swf',
-		'where' => 'vendor/player/mp3/template_default/',
+		'where' => 'http://flash-mp3-player.net/medias/',
 	);
 	$defaults_flv = array(
 		'width' => 320,
 		'height' => 240,
 		'player' => 'player_flv.swf',
-		'where' => 'vendor/player/flv/template_default/'
+		'where' => 'http://flv-player.net/medias/',
 	);
 	$defaults = array(
 		'width' => 320,
@@ -193,7 +193,6 @@ function wikiplugin_mediaplayer($data, $params)
 	if (empty($params['style']) || $params['style'] == 'normal' || !in_array($params['style'], $styles)) {
 		$player = $params['player'];
 	} else {
-		$params['where'] = str_replace('_default', '_'.$params['style'], $params['where']);
 		$player = str_replace('.swf', '_'.$params['style'].'.swf', $params['player']);
 	}
 	$code = '<object type="application/x-shockwave-flash" data="'.$params['where'].$player.'" width="'.$params['width'].'" height="'.$params['height'].'">';

@@ -19,7 +19,6 @@ function wikiplugin_trackercalendar_info()
 				'required' => false,
 				'default' => 0,
 				'filter' => 'int',
-				'profile_reference' => 'tracker',
 			),
 			'begin' => array(
 				'name' => tr('Begin date field'),
@@ -45,126 +44,6 @@ function wikiplugin_trackercalendar_info()
 				'required' => false,
 				'filter' => 'word',
 			),
-			'amonth' => array(
-				'required' => false,
-				'name' => tra('Agenda by Months'),
-				'description' => tra('Display the option to change the view to agenda by months'),
-				'filter' => 'alpha',
-				'default' => 'y',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				)
-			),
-			'aweek' => array(
-				'required' => false,
-				'name' => tra('Agenda by Weeks'),
-				'description' => tra('Display the option to change the view to agenda by weeks'),
-				'filter' => 'alpha',
-				'default' => 'y',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				)
-			),			
-			'aday' => array(
-				'required' => false,
-				'name' => tra('Agenda by Days'),
-				'description' => tra('Display the option to change the view to agenda by days'),
-				'filter' => 'alpha',
-				'default' => 'y',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				)
-			),			
-			'rmonth' => array(
-				'required' => false,
-				'name' => tra('Resources by Months'),
-				'description' => tra('Display the option to change the view to resources by months'),
-				'filter' => 'alpha',
-				'default' => 'y',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				)
-			),
-			'rweek' => array(
-				'required' => false,
-				'name' => tra('Resources by Weeks'),
-				'description' => tra('Display the option to change the view to resources by weeks'),
-				'filter' => 'alpha',
-				'default' => 'y',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				)
-			),			
-			'rday' => array(
-				'required' => false,
-				'name' => tra('Resources by Days'),
-				'description' => tra('Display the option to change the view to resources by days'),
-				'filter' => 'alpha',
-				'default' => 'y',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				)
-			),			
-			'dView' => array(
-				'required' => false,
-				'name' => tra('Default View'),
-				'description' => tra('Choose the default view for the Tracker Calendar'),
-				'filter' => 'alpha',
-				'default' => 'month',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('month'), 'value' => 'Agenda by Months'),
-					array('text' => tra('agendaWeek'), 'value' => 'Agenda by Weeks'),
-					array('text' => tra('agendaDay'), 'value' => 'Agenda by Days'),
-					array('text' => tra('resourceMonth'), 'value' => 'Resources by Months'),
-					array('text' => tra('resourceWeek'), 'value' => 'Resources by Weeks'),
-					array('text' => tra('resourceDay'), 'value' => 'Resources by Days')
-				)
-			),
-			'dYear' => array(
-				'required' => false,
-				'name' => tra('Default Year'),
-				'description' => tra('Choose the default year (yyyy) to use for the display'),
-				'required' => false,
-				'default' => 0,
-				'filter' => 'int',
-			),			
-			'dMonth' => array(
-				'required' => false,
-				'name' => tra('Default Month'),
-				'description' => tra('Choose the default month (mm, as numeric value) to use for the display. Numeric values here are 1-based, meaning January=1, February=2, etc'),
-				'required' => false,
-				'default' => 0,
-				'filter' => 'int',
-			),
-			'dDay' => array(
-				'required' => false,
-				'name' => tra('Default Day'),
-				'description' => tra('Choose the default day (dd) to use for the display'),
-				'required' => false,
-				'default' => 0,
-				'filter' => 'int',
-			),
-			'fDayofWeek' => array(
-				'required' => false,
-				'name' => tra('First day of the Week'),
-				'description' => tra('Choose the day that each week begins with, for the tracker calendar display. The value must be a number that represents the day of the week: Sunday=0, Monday=1, Tuesday=2, etc. Default: 0 (Sunday)'),
-				'required' => false,
-				'default' => 0,
-				'filter' => 'int',
-			),
 		),
 	);
 }
@@ -173,8 +52,8 @@ function wikiplugin_trackercalendar($data, $params)
 {
 	static $id = 0;
 	$headerlib = TikiLib::lib('header');
-	$headerlib->add_cssfile('vendor_extra/fullcalendar-resourceviews/fullcalendar/fullcalendar.css');
-	$headerlib->add_jsfile('vendor_extra/fullcalendar-resourceviews/fullcalendar/fullcalendar.min.js');
+	$headerlib->add_cssfile('lib/fullcalendar/fullcalendar.css');
+	$headerlib->add_jsfile('lib/fullcalendar/fullcalendar.min.js');
 
 	$jit = new JitFilter($params);
 	$definition = Tracker_Definition::get($jit->trackerId->int());
@@ -191,80 +70,16 @@ function wikiplugin_trackercalendar($data, $params)
 		return WikiParser_PluginOutput::userError(tr('Fields not found.'));
 	}
 
-	$views = array();
-	if (!empty($params['amonth']) and $params['amonth'] != y) {
-		$amonth = 'n';
-	} else {
-		$amonth = 'y';
-		$views[] = 'month';
-	}
-	if (!empty($params['aweek']) and $params['aweek'] != y) {
-		$aweek = 'n';
-	} else {
-		$aweek = 'y';
-		$views[] = 'agendaWeek';		
-	}
-	if (!empty($params['aday']) and $params['aday'] != y) {
-		$aday = 'n';
-	} else {
-		$aday = 'y';
-		$views[] = 'agendaDay';
-	}
+	$views = array('month', 'agendaWeek', 'agendaDay');
 
 	$resources = array();
 	if ($resourceField = $jit->resource->word()) {
 		$field = $definition->getFieldFromPermName($resourceField);
 		$resources = wikiplugin_trackercalendar_get_resources($field);
-
-		if (!empty($params['rmonth']) and $params['rmonth'] != y) {
-			$rmonth = 'n';
-		} else {
-			$rmonth = 'y';
-			$views[] = 'resourceMonth';
-		}
-		if (!empty($params['rweek']) and $params['rweek'] != y) {
-			$rweek = 'n';
-		} else {
-			$rweek = 'y';
-			$views[] = 'resourceWeek';
-		}
-		if (!empty($params['rday']) and $params['rday'] != y) {
-			$rday = 'n';
-		} else {
-			$rday = 'y';
-			$views[] = 'resourceDay';
-		}
+		$views[] = 'resourceMonth';
+		$views[] = 'resourceWeek';
+		$views[] = 'resourceDay';
 	}
-	
-	// Define the default View (dView)
-		if (!empty($params['dView'])) {
-			$dView = $params['dView'];
-		} else {
-			$dView = 'month';
-		}
-
-	// Define the default date (dYear, dMonth, dDay)
-		if (!empty($params['dYear'])) {
-			$dYear = $params['dYear'];
-		} else {
-			$dYear = (int) date('Y');
-		}
-		if (!empty($params['dMonth']) and $params['dMonth'] > 0 and $params['dMonth'] < 13) {
-			$dMonth = $params['dMonth'];
-		} else {
-			$dMonth = (int) date('n');
-		}
-		if (!empty($params['dDay']) and $params['dDay'] > 0 and $params['dDay'] < 32) {
-			$dDay = $params['dDay'];
-		} else {
-			$dDay = (int) date('j');
-		}
-
-		if (!empty($params['fDayofWeek']) and $params['fDayofWeek'] > -1 and $params['fDayofWeek'] < 7) {
-			$firstDayofWeek = $params['fDayofWeek'];
-		} else {
-			$firstDayofWeek = 0;
-		}
 
 	$smarty = TikiLib::lib('smarty');
 	$smarty->assign(
@@ -279,16 +94,15 @@ function wikiplugin_trackercalendar($data, $params)
 			'coloring' => $jit->coloring->word(),
 			'beginFieldName' => 'ins_' . $beginField['fieldId'],
 			'endFieldName' => 'ins_' . $endField['fieldId'],
-			'firstDayofWeek' => $firstDayofWeek,
+			'firstDayofWeek' => 0,
 			'views' => implode(',', $views),
-			'viewyear' => $dYear,
-			'viewmonth' => $dMonth,
-			'viewday' => $dDay,
+			'viewyear' => (int) date('Y'),
+			'viewmonth' => (int) date('n'),
+			'viewday' => (int) date('j'),
 			'minHourOfDay' => 7,
-			'maxHourOfDay' => 24,
+			'maxHourOfDay' => 20,
 			'addTitle' => tr('Insert'),
 			'canInsert' => $itemObject->canModify(),
-			'dView' => $dView,
 			'body' => $data,
 		)
 	);

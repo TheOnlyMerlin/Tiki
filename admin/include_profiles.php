@@ -15,12 +15,6 @@ $sources = $list->getSources();
 
 $parserlib = TikiLib::lib('parser');
 
-$show_details_for = "";
-if (isset($_REQUEST['show_details_for'])) {
-    $show_details_for = $_REQUEST['show_details_for'];
-}
-$smarty->assign('show_details_for', $show_details_for);
-
 if ($prefs['profile_unapproved'] == 'y') {
 	Tiki_Profile::enableDeveloperMode();
 }
@@ -46,10 +40,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$transaction->commit();
 
 		if ($target = $profile->getInstructionPage()) {
-			$wikilib = TikiLib::lib('wiki');
+			global $wikilib;
+			require_once 'lib/wiki/wikilib.php';
 			$target = $wikilib->sefurl($target);
 			header('Location: ' . $target);
-            exit;
+			exit;
 		} else {
 			if (count($installer->getFeedback()) > 0) {
 				$smarty->assign_by_ref('profilefeedback', $installer->getFeedback());
@@ -60,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 
 	if (isset($_POST['install'], $_POST['pd'], $_POST['pp'])) {
-        $data = array();
+		$data = array();
 
 		foreach ($_POST as $key => $value) {
 			if ($key != 'url' && $key != 'install') {
@@ -73,11 +68,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$profile = Tiki_Profile::fromNames($_POST['pd'], $_POST['pp']);
 		$installer->install($profile);
 
-		if (($profile != null) && ($target = $profile->getInstructionPage())) {
-			$wikilib = TikiLib::lib('wiki');
+		if ($target = $profile->getInstructionPage()) {
+			global $wikilib;
+			require_once 'lib/wiki/wikilib.php';
 			$target = $wikilib->sefurl($target);
 			header('Location: ' . $target);
-            exit;
+			exit;
 		} else {
 			if (count($installer->getFeedback()) > 0) {
 				$smarty->assign_by_ref('profilefeedback', $installer->getFeedback());
@@ -88,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 
 	if (isset($_POST['test'], $_POST['profile_tester'], $_POST['profile_tester_name'])) {
-        $test_source = $_POST['profile_tester'];
+		$test_source = $_POST['profile_tester'];
 		if (strpos($test_source, '{CODE}') === false) {
 			// wrap in CODE tags if none there
 			$test_source = "{CODE(caption=>YAML)}\n$test_source\n{CODE}";
@@ -99,16 +95,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$profile = Tiki_Profile::fromString($test_source, $_POST['profile_tester_name']);
 		$profile->removeSymbols();
 		$installer = new Tiki_Profile_Installer;
-		$empty_cache = $_REQUEST['empty_cache'];
-		$smarty->assign('empty_cache', $empty_cache);
-
-		$installer->install($profile, $empty_cache);
+		$installer->install($profile);
 
 		if ($target = $profile->getInstructionPage()) {
-			$wikilib = TikiLib::lib('wiki');
+			global $wikilib;
+			require_once 'lib/wiki/wikilib.php';
 			$target = $wikilib->sefurl($target);
 			header('Location: ' . $target);
-            exit;
+			exit;
 		} else {
 			if (count($installer->getFeedback()) > 0) {
 				$smarty->assign_by_ref('profilefeedback', $installer->getFeedback());
@@ -117,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	} // }}}
 
 	if (isset($_GET['refresh'])) {
-        $toRefresh = (int) $_GET['refresh'];
+		$toRefresh = (int) $_GET['refresh'];
 		if (isset($sources[$toRefresh])) {
 			echo json_encode(
 				array(
@@ -128,24 +122,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		} else {
 			echo '{}';
 		}
-        exit;
+		exit;
 	}
 
 	if (isset($_GET['getinfo'], $_GET['pd'], $_GET['pp'])) {
-        $installer = new Tiki_Profile_Installer;
+		$installer = new Tiki_Profile_Installer;
 		$profile = Tiki_Profile::fromNames($_GET['pd'], $_GET['pp']);
 		$error = '';
-
-		// Check if profile is available.
-		// This will not be the case for a misconfigured profile server
-		if ($profile === false) {
-			$error = "Profile is not available: ".$_GET['pd'].", ". $_GET['pp'];
-		}
-
-        try {
-			if (!empty($error)) {
-				$sequencable = false;
-			} else if (!$deps = $installer->getInstallOrder($profile)) {
+		try {
+			if (!$deps = $installer->getInstallOrder($profile)) {
 				$deps = $profile->getRequiredProfiles(true);
 				$deps[] = $profile;
 				$sequencable = false;
@@ -159,23 +144,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 		$dependencies = array();
 		$userInput = array();
-		$installed = false;
-		$url = '';
-		$feedback = '';
 
-        if ($profile !== false) {
-			foreach ($deps as $d) {
-				$dependencies[] = $d->pageUrl;
-				$userInput = array_merge($userInput, $d->getRequiredInput());
-			}
-
-			$parsed = $parserlib->parse_data($profile->pageContent);
-			$installed = $installer->isInstalled($profile);
-
-			$url =  $profile->url;
-			$feedback = $profile->getFeedback();
+		foreach ($deps as $d) {
+			$dependencies[] = $d->pageUrl;
+			$userInput = array_merge($userInput, $d->getRequiredInput());
 		}
-        echo json_encode(
+
+		$parsed = $parserlib->parse_data($profile->pageContent);
+		$installed = $installer->isInstalled($profile);
+
+		echo json_encode(
 			array(
 				'dependencies' => $dependencies,
 				'userInput' => $userInput,
@@ -183,11 +161,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 				'error' => $error,
 				'content' => $parsed,
 				'already' => $installed,
-				'url' => $url,
-				'feedback' => $feedback,
+				'url' => $profile->url,
+				'feedback' => $profile->getFeedback(),
 			)
 		);
-        exit;
+		exit;
 	} // }}}
 
 }
@@ -286,7 +264,7 @@ if (isset($_REQUEST['export'])) {
 	$export_yaml = "{CODE(caption=>YAML,wrap=>0)}\n" . $export_yaml . "{CODE}\n";
 
 	include_once 'lib/wiki-plugins/wikiplugin_code.php';
-	$export_yaml = wikiplugin_code($export_yaml, array('caption' => 'Wiki markup', 'colors' => 'tiki' ), null, array());
+	$export_yaml = wikiplugin_code($export_yaml, array('caption' => 'Wiki markup', 'colors' => 'tikiwiki' ), null, array());
 	$export_yaml = preg_replace('/~[\/]?np~/', '', $export_yaml);
 
 	$smarty->assign('export_yaml', $export_yaml);
