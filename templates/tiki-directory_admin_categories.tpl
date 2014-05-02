@@ -16,7 +16,7 @@
 {/section}
 
   </select>
-  <input type="submit" class="btn btn-default btn-sm" name="go" value="{tr}Go{/tr}">
+  <input type="submit" class="btn btn-default" name="go" value="{tr}Go{/tr}">
 </form>
 {* Dislay a form to add or edit a category *} <br>
 {if $categId eq 0}
@@ -90,7 +90,6 @@
 <h2>{tr}Directory Subcategories{/tr}</h2>
 {* Display the list of categories (items) using pagination *}
 {* Links to edit, remove, browse the categories *}
-<div class="table-responsive">
 <table class="table normal">
   <tr>
     <th><a href="tiki-directory_admin_categories.php?parent={$parent}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></th>
@@ -101,9 +100,9 @@
     <th><a href="tiki-directory_admin_categories.php?parent={$parent}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'editorGroup_desc'}editorGroup_asc{else}editorGroup_desc{/if}">{tr}editor{/tr}</a></th>
     <th>{tr}Action{/tr}</th>
   </tr>
-
+  {cycle values="odd,even" print=false}
   {section name=user loop=$items}
-  <tr>
+  <tr class="{cycle}">
     <td class="text"><a class="tablename" href="tiki-directory_admin_categories.php?parent={$items[user].categId}">{$items[user].name|escape}</a></td>
     <td class="text">{$items[user].childrenType}</td>
     <td class="integer">{$items[user].viewableChildren}</td>
@@ -116,5 +115,4 @@
 		{norecords _colspan=7}
   {/section}
 </table>
-</div>
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links} 

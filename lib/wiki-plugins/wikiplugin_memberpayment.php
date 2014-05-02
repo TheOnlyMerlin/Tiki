@@ -160,13 +160,10 @@ function wikiplugin_memberpayment_info()
 
 function wikiplugin_memberpayment( $data, $params, $offset )
 {
-	global $prefs, $user;
+	global $smarty, $userlib, $prefs, $user, $headerlib;
+	global $paymentlib; require_once 'lib/payment/paymentlib.php';
 	static $iPluginMemberpayment = 0;
 	$attributelib = TikiLib::lib('attribute');
-	$userlib = TikiLib::lib('user');
-	$headerlib = TikiLib::lib('header');
-	$smarty = TikiLib::lib('smarty');
-	$paymentlib = TikiLib::lib('payment');
 
 	$iPluginMemberpayment++;
 	$smarty->assign('iPluginMemberpayment', $iPluginMemberpayment);

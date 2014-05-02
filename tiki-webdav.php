@@ -121,7 +121,7 @@ if ( $_SERVER['REQUEST_METHOD'] === 'GET' && $_SERVER['REQUEST_URI'] === $_SERVE
 	}
 
 	print_debug("\n=== handle() ===\n");
-	$filegallib = TikiLib::lib('filegal');
+	global $filegallib; require_once('lib/filegals/filegallib.php');
 	$server->handle($backend, $path); 
 	print_debug("\n=== end handle() ===\n");
 }

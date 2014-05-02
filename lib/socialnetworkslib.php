@@ -10,7 +10,7 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	header('location: index.php');
 	exit;
 }
-$logslib = TikiLib::lib('logs');
+require_once ('lib/logs/logslib.php');
 
 
 /**
@@ -184,8 +184,7 @@ class SocialNetworksLib extends LogsLib
 	 */
 	function getFacebookAccessToken()
 	{
-		global $prefs, $user;
-		$userlib = TikiLib::lib('user');
+		global $prefs, $user, $userlib;
 		if ($prefs['socialnetworks_facebook_application_id'] == '' or $prefs['socialnetworks_facebook_application_secr'] == '') {
 			return false;
 		}

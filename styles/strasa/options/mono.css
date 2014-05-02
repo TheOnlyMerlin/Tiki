@@ -69,6 +69,7 @@ button,
 input[type=reset],
 input[type=submit],
 .button input,
+.calbuttonBox,
 .siteloginbar input.wikiaction {
 	color: #fff;
 	background: #565656;
@@ -866,6 +867,12 @@ body.tiki_blogs .postbody-title,
 	background: #212121;
 }
 
+.calbuttonBox {
+	color: #fff;
+	background: #565656;
+	border-color: #878787 #343434 #343434 #878787;
+}
+
 .buttonon a,
 .calbuttonon a,
 .calbuttonoff a {
@@ -1047,6 +1054,26 @@ a.admbox.off:active {
 }
 
 /* MiniChat  */
+
+/* ClueTip tooltips */
+
+.cluetip-default {
+	background: #ccc;
+	color: #000;
+}
+
+.cluetip-default #cluetip-outer {
+	background: #ccc;
+}
+.cluetip-default h3#cluetip-title {
+	background: #444;
+	color: #fff;
+}
+
+.cluetip-default #cluetip-title a {
+	color: #ccc;
+	font-size: 0.95em;
+}
 
 body.fixed_width {
 	background: #424242 url(mono/body-bg_fw.gif) repeat-x !important

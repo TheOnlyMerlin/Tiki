@@ -30,5 +30,10 @@ class Search_Index_CategoryFilterDecorator extends Search_Index_AbstractIndexDec
 		}
 		return $this->parent->addDocument($document);
 	}
+
+	function getIdentifierFields()
+	{
+		return array_keys(array_filter($this->mapping));
+	}
 }
 

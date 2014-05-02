@@ -41,8 +41,7 @@ function module_months_links_info()
  */
 function module_months_links($mod_reference, $module_params)
 {
-	global $prefs, $sections;
-	$smarty = TikiLib::lib('smarty');
+	global $prefs, $sections, $smarty;
 
 	if (isset($module_params['feature'])
 		&& isset($sections[$module_params['feature']])
@@ -68,11 +67,13 @@ function module_months_links($mod_reference, $module_params)
 	}
 
 	if (isset($link)) {
-		$tikilib = TIkiLib::lib('tiki');
+		global $tikilib;
 		if ($module_params['feature'] == 'blogs') {
-			$bloglib = TikiLib::lib('blog');
+			global $bloglib;
+			include_once ('lib/blogs/bloglib.php');
 		} elseif ($module_params['feature'] == 'cms') {
-			$artlib = TikiLib::lib('art');
+			global $artlib;
+			include_once ('lib/articles/artlib.php');
 		}
 
 		$month_names = array(

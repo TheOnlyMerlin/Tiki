@@ -8,8 +8,7 @@
 class Search_Elastic_Connection
 {
 	private $dsn;
-	private $dirty = array();
-	private $dirtyPercolator = false;
+	private $dirty = false;
 
 	private $indices = array();
 
@@ -73,46 +72,17 @@ class Search_Elastic_Connection
 
 	function search($index, array $query, $resultStart, $resultCount)
 	{
-		if (! empty($this->dirty[$index])) {
+		if ($this->dirty) {
 			$this->refresh($index);
 		}
 
 		return $this->get("/$index/_search", json_encode($query));
 	}
 
-	function storeQuery($index, $name, $query)
-	{
-		return $this->rawIndex('_percolator', $index, $name, $query);
-	}
-
-	function unstoreQuery($index, $name)
-	{
-		return $this->delete("/_percolator/$index/$name");
-	}
-
-	function percolate($index, $type, $document)
-	{
-		if (! empty($this->dirty['_percolator'])) {
-			$this->refresh('_percolator');
-		}
-
-		$type = $this->simplifyType($type);
-		return $this->get("/$index/$type/_percolate", json_encode(array(
-			'doc' => $document,
-			'prefer_local' => false,
-		)));
-	}
-
 	function index($index, $type, $id, array $data)
 	{
+		$this->dirty = true;
 		$type = $this->simplifyType($type);
-
-		$this->rawIndex($index, $type, $id, $data);
-	}
-
-	private function rawIndex($index, $type, $id, $data)
-	{
-		$this->dirty[$index] = true;
 
 		if ($this->bulk) {
 			$this->bulk->index($index, $type, $id, $data);
@@ -125,7 +95,7 @@ class Search_Elastic_Connection
 
 	function unindex($index, $type, $id)
 	{
-		$this->dirty[$index] = true;
+		$this->dirty = true;
 		$type = $this->simplifyType($type);
 
 		if ($this->bulk) {
@@ -149,12 +119,12 @@ class Search_Elastic_Connection
 		$this->flush();
 
 		$this->post("/$index/_refresh", '');
-		$this->dirty[$index] = false;
+		$this->dirty = false;
 	}
 
 	function document($index, $type, $id)
 	{
-		if (! empty($this->dirty[$index])) {
+		if ($this->dirty) {
 			$this->refresh($index);
 		}
 
@@ -283,10 +253,8 @@ class Search_Elastic_Connection
 			return $content;
 		} elseif (isset($content->exists) && $content->exists === false) {
 			throw new Search_Elastic_NotFoundException($content->_type, $content->_id);
-		} elseif (isset($content->error)) {
-			throw new Search_Elastic_Exception($content->error, $content->status);
 		} else {
-			return $content;
+			throw new Search_Elastic_Exception($content->error, $content->status);
 		}
 	}
 

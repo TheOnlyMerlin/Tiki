@@ -138,7 +138,8 @@ span.button a:visited,
 button,
 input[type=reset],
 input[type=submit],
-span.button input {
+span.button input,
+.calbuttonBox a {
 	color: #7e7d66;
 	background: #f3f2c5;
 	border: 1px solid #cbcaa5;
@@ -148,7 +149,8 @@ span.button input {
 button:hover,
 input[type=reset]:hover,
 input[type=submit]:hover,
-.button input:hover {
+.button input:hover,
+.calbuttonBox:hover {
 	color: #6f9898;
 	background: #fffecf;
 	border: 1px solid #999;

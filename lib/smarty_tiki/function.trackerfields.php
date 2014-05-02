@@ -21,10 +21,6 @@ function smarty_function_trackerfields($params, $smarty)
 		return tr('Missing or invalid tracker reference.');
 	}
 
-	if (! isset($params['mode'])) {
-		$params['mode'] = 'edit';
-	}
-
 	$sectionFormat = $definition->getConfiguration('sectionFormat', 'flat');
 
 	switch ($sectionFormat) {
@@ -49,19 +45,11 @@ function smarty_function_trackerfields($params, $smarty)
 		}
 
 		$smarty->assign('sections', $out);
-		if ($params['mode'] == 'view') {
-			return $smarty->fetch('trackeroutput/layout_tab.tpl');
-		} else {
-			return $smarty->fetch('trackerinput/layout_tab.tpl');
-		}
+		return $smarty->fetch('trackerinput/layout_tab.tpl');
 	case 'flat':
 	default:
 		$smarty->assign('fields', $params['fields']);
-		if ($params['mode'] == 'view') {
-			return $smarty->fetch('trackeroutput/layout_flat.tpl');
-		} else {
-			return $smarty->fetch('trackerinput/layout_flat.tpl');
-		}
+		return $smarty->fetch('trackerinput/layout_flat.tpl');
 	}
 }
 

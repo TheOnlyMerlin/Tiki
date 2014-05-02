@@ -1,10 +1,3 @@
-{extends 'layout_view.tpl'}
-
-{block name="title"}
-	{title}{$title|escape}{/title}
-{/block}
-
-{block name="content"}
 {if $removed}
 	{tr}The rule has been removed.{/tr}
 {else}
@@ -13,9 +6,8 @@
 		<div>{$rule.notes|escape}</div>
 		<pre>{$rule.rule|escape}</pre>
 		<div class="submit">
-			<input type="submit" class="btn btn-default btn-sm" value="{tr}Delete{/tr}"/>
+			<input type="submit" class="btn btn-default" value="{tr}Delete{/tr}"/>
 			<input type="hidden" name="ruleId" value="{$rule.ruleId|escape}"/>
 		</div>
 	</form>
 {/if}
-{/block}

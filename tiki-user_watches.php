@@ -19,7 +19,7 @@ if ($prefs['feature_user_watches_translations']) {
 	$smarty->assign_by_ref('languages', $languages);
 }
 
-$notificationlib = TikiLib::lib('notification');
+require_once('lib/notifications/notificationlib.php');
 
 $notification_types = $notificationlib->get_global_watch_types(true);
 if ($prefs['feature_user_watches_translations'] == 'y') {
@@ -48,7 +48,7 @@ if (isset($_POST['langwatch'])) {
 }
 
 if ($prefs['feature_categories']) {
-	$categlib = TikiLib::lib('categ');
+	include_once ('lib/categories/categlib.php');
 	$categories = $categlib->getCategories(NULL, true, false);
 } else {
 	$categories = array();

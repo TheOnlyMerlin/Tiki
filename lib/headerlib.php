@@ -26,8 +26,8 @@ class HeaderLib
 	public $wysiwyg_parsing;
 	public $lockMinifiedJs;
 
-	public $jquery_version = '1.11.0';
-	public $jqueryui_version = '1.10.4';
+	public $jquery_version = '1.10.2';
+	public $jqueryui_version = '1.10.3';
 	public $jquerymobile_version = '1.3.2';
 
 
@@ -785,13 +785,6 @@ class HeaderLib
 		return $files;
 	}
 
-	function get_css_files()
-	{
-		$files = $this->collect_css_files();
-
-		return array_merge($files['default'], $files['screen']);
-	}
-
 	private function process_themegen_files($files)
 	{
 		global $prefs, $tikidomainslash, $in_installer;
@@ -894,4 +887,4 @@ class HeaderLib
 
 global $headerlib; $headerlib = new HeaderLib;
 global $smarty;
-$smarty->assign('headerlib', $headerlib);
+$smarty->assignByRef('headerlib', $headerlib);

@@ -9,7 +9,9 @@
 // $Id$
 
 require_once ('tiki-setup.php');
-$rsslib = TikiLib::lib('rss');
+require_once ('lib/tikilib.php');
+require_once ('lib/articles/artlib.php');
+require_once ('lib/rss/rsslib.php');
 
 $access->check_feature('feature_articles');
 
@@ -34,7 +36,7 @@ if (isset($_REQUEST["topic"])) {
     $uniqueid = $feed.".".$topic;
     $topic = (int) preg_replace('/[^0-9]/', '', $topic);
 } elseif (isset($_REQUEST['topicname'])) {
-	$artlib = TikiLib::lib('art');
+	global $artlib; require_once 'lib/articles/artlib.php';
 	$topic = $artlib->fetchtopicId($_REQUEST['topicname']);
 	$uniqueid = $feed.".".$topic;
 } else {
@@ -112,8 +114,7 @@ if ($output["data"]=="EMPTY") {
 		$desc = $tmp;
 	}
 
-	$artlib = TikiLib::lib('art');
-	$changes = $artlib->list_articles(0, $prefs['feed_articles_max'], $dateId.'_desc', '', 0, $tikilib->now, $user, $type, $topic, 'y', '', $categId, '', '', $articleLang, '', '', false, 'y');
+	$changes = $artlib -> list_articles(0, $prefs['feed_articles_max'], $dateId.'_desc', '', 0, $tikilib->now, $user, $type, $topic, 'y', '', $categId, '', '', $articleLang, '', '', false, 'y');
 	$tmp = array();
 	include_once('tiki-sefurl.php');
 	foreach ($changes["data"] as $data) {

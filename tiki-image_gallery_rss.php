@@ -9,9 +9,9 @@
 // $Id$
 
 require_once ('tiki-setup.php');
-
-$imagegallib = TikiLib::lib('imagegal');
-$rsslib = TikiLib::lib('rss');
+require_once ('lib/tikilib.php');
+require_once ('lib/imagegals/imagegallib.php');
+require_once ('lib/rss/rsslib.php');
 
 if ($prefs['feed_image_gallery'] != 'y') {
 	$errmsg = tra('rss feed disabled');

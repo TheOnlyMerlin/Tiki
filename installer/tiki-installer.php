@@ -76,7 +76,6 @@ $prefs['smarty_notice_reporting'] = 'n';
 $prefs['smarty_compilation'] = 'always';
 $prefs['smarty_security'] = 'y';
 require_once 'lib/init/initlib.php';
-require_once 'lib/tikilib.php';
 set_error_handler("tiki_error_handling", error_reporting());
 require_once ( 'lib/init/smarty.php');
 require_once ('installer/installlib.php');
@@ -121,7 +120,7 @@ if (empty($_POST['install_step'])) {
 	$install_step = $_POST['install_step'];
 
 	if ($install_step == 3) {	// clear caches after system requirements page
-		$cachelib = TikiLib::lib('cache');
+		global $cachelib; include 'lib/cache/cachelib.php';
 		$cachelib->empty_cache();
 	}
 }
@@ -740,7 +739,7 @@ if (!defined('ADODB_CASE_ASSOC')) { // typo in adodb's driver for sybase? // so 
 	define('ADODB_CASE_ASSOC', 2);
 }
 
-require_once('lib/tikilib.php');
+include('lib/tikilib.php');
 
 // Get list of available languages
 $languages = TikiLib::list_languages(false, null, true);
@@ -941,8 +940,10 @@ if (
 		$install_type = 'scratch';
 		require_once 'lib/tikilib.php';
 		$tikilib = new TikiLib;
-		$userlib = TikiLib::lib('user');
-		$tikidate = TikiLib::lib('tikidate');
+		require_once 'lib/userslib.php';
+		$userlib = new UsersLib;
+		require_once 'lib/tikidate.php';
+		$tikidate = new TikiDate();
 	}
 
 	if (isset($_POST['update'])) {
@@ -979,8 +980,7 @@ if ($install_step == '8') {
 		touch('db/'.$tikidomainslash.'lock');
 	}
 
-	$userlib = TikiLib::lib('user');
-	$cachelib = TikiLib::lib('cache');
+	global $userlib, $cachelib;
 	if (session_id()) {
 		session_destroy();
 	}
@@ -989,7 +989,7 @@ if ($install_step == '8') {
 	if ($install_type == 'scratch') {
 		initialize_prefs(true);
 		TikiLib::lib('unifiedsearch')->rebuild();
-		$u = 'tiki-change_password.php?user=admin&oldpass=admin&newuser=y';
+		$u = 'tiki-change_password.php?user=admin&oldpass=admin';
 	} else {
 		$u = '';
 	}
@@ -1145,7 +1145,7 @@ if ( isset($_POST['general_settings']) && $_POST['general_settings'] == 'y' ) {
 
 include_once "lib/headerlib.php";
 $headerlib->add_js("var tiki_cookie_jar=new Array();");
-$headerlib->add_cssfile('vendor/twitter/bootstrap/dist/css/bootstrap.css');
+$headerlib->add_cssfile('styles/fivealive.css');
 $headerlib->add_jsfile('lib/tiki-js.js');
 $headerlib->add_jsfile_dependancy("vendor/jquery/jquery-min/jquery-$headerlib->jquery_version.min.js");
 $headerlib->add_jsfile('lib/jquery_tiki/tiki-jquery.js');

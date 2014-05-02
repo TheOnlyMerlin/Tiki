@@ -23,12 +23,12 @@ if ( isset($_POST['PHPSESSID']) && $_POST['PHPSESSID'] != '' ) {
 
 require_once ('tiki-setup.php');
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	include_once ('lib/categories/categlib.php');
 }
 
 $access->check_feature('feature_file_galleries');
 
-$filegallib = TikiLib::lib('filegal');
+include_once ('lib/filegals/filegallib.php');
 if ($prefs['feature_groupalert'] == 'y') {
 	include_once ('lib/groupalert/groupalertlib.php');
 }

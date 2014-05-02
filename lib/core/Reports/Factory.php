@@ -42,7 +42,7 @@ class Reports_Factory
 			case 'Reports_Cache':
 				return new Reports_Cache($db, $dt);
 			case 'Reports_Manager':
-				$userlib = TikiLib::lib('user');
+				global $userlib;
 				return new Reports_Manager(
 					Reports_Factory::build('Reports_Users', $dt, $tm, $tikilib),
 					Reports_Factory::build('Reports_Cache', $dt, $tm, $tikilib),

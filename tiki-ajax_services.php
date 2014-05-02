@@ -35,10 +35,7 @@ if (isset($_REQUEST['controller'], $_REQUEST['action'])) {
 	$inputConfiguration[] = array('catchAllUnset' => null);
 }
 
-//Some times the filters spit out some errors, here we get the error into a var, so the ajax still works.
-ob_start();
 require_once ('tiki-setup.php');
-$errMsg = ob_get_clean();
 
 if (isset($_REQUEST['controller'], $_REQUEST['action'])) {
 	$controller = $_REQUEST['controller'];
@@ -148,7 +145,7 @@ if ($access->is_serializable_request() && isset($_REQUEST['listonly'])) {
 				
 		$access->output_serialized($finalusers);
 	} elseif ( $_REQUEST['listonly'] == 'tags' ) {
-		$freetaglib = TikiLib::lib('freetag');
+		global $freetaglib; require_once 'lib/freetag/freetaglib.php';
 
 		$tags = $freetaglib->get_tags_containing($_REQUEST['q']);
 		$access->output_serialized($tags);

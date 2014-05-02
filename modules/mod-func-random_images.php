@@ -53,8 +53,8 @@ function module_random_images_info()
  */
 function module_random_images($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
-	$imagegallib = TikiLib::lib('imagegal');
+	global $smarty;
+	global $imagegallib; include_once ("lib/imagegals/imagegallib.php");
 	
 	if (isset($module_params["galleryId"])) {
 		$galleryId = $module_params["galleryId"];

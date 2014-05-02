@@ -10,16 +10,17 @@ function prefs_feature_list($partial = false)
 
 	global $prefs;
 
-	$catree = $catlist = array('-1' => tra('None'));
+	$catree = array('-1' => tra('None'));
 
 	if (! $partial && isset($prefs['feature_categories']) && $prefs['feature_categories'] == 'y') {
-		$categlib = TikiLib::lib('categ');
+		global $categlib;
+
+		include_once ('lib/categories/categlib.php');
 		$all_categs = $categlib->getCategories(NULL, true, false);
 
 		$catree['0'] = tra('All');
 
 		foreach ($all_categs as $categ) {
-			$catlist[$categ['categId']] = $categ['name'] . " (" .$categ['categId'] . ")";
 			$catree[$categ['categId']] = $categ['categpath'];
 		}
 	}
@@ -567,26 +568,6 @@ function prefs_feature_list($partial = false)
 			'help' => 'Quickperms',
 			'type' => 'flag',
 			'default' => 'n',
-			'tags' => array('experimental'),
-		),
-		'feature_user_encryption' => array(
-			'name' => tra('User Encryption'),
-			'description' => tra('Tiki user encryption enables a personal, secure storage of sensitive data, e.g. password. Only the user can see the data. No decryption passwords are stored.'),
-			'hint' => tra('Enable personal, secure storage of sensitive data, e.g. passwords'),
-			'help' => 'User Encryption',
-			'warning' => tra('This is an experimental feature. Using it may cause loss of the encrypted data.'),
-			'type' => 'flag',
-			'default' => 'n',
-			'tags' => array('experimental'),
-		),
-		'feature_password_domains' => array(
-			'name' => tra('Password Domains'),
-			'description' => tra('Securely store extra user passwords and other user specific data for other "domains", or just for yourself'),
-			'type' => 'text',
-			'default' => 'userkey',
-			'dependencies' => array(
-				'feature_user_encryption',
-			),
 			'tags' => array('experimental'),
 		),
 		'feature_purifier' => array(
@@ -1735,9 +1716,6 @@ function prefs_feature_list($partial = false)
 			'description' => tra('Assign different themes to different sections, categories, and objects'),
 			'keywords' => tra('design themes'),
 			'type' => 'flag',
-			'dependencies' => array(
-				'feature_categories',
-			),
 			'default' => 'n',
 			'view' => 'tiki-theme_control.php',
 		),
@@ -2362,6 +2340,18 @@ function prefs_feature_list($partial = false)
 			'type' => 'flag',
 			'default' => 'n',
 		),
+		'feature_metrics_dashboard' => array(
+			'name' => tra('Metrics Dashboard'),
+			'description' => tra('Generate automated statistics from configured database queries.'),
+			'type' => 'flag',
+			'dependencies' => array(
+				'feature_jquery_ui',
+			),
+			'default' => 'n',
+			'tags' => array('experimental'),
+			'view' => 'tiki-admin_metrics.php',
+			'admin' => 'metrics',
+		),
 		'feature_wiki_argvariable' => array(
 			'name' => tra('Wiki argument variables'),
 			'description' => tra('Allow to write request variables inside wiki content using {{paramname}} or {{paramname|default}} - special case {{page}} {{user}}'),
@@ -2726,16 +2716,16 @@ function prefs_feature_list($partial = false)
 			),
 			'default' => 'off',
 		),
-        'feature_wikilingo' => array(
-            'name' => tra('wikiLingo'),
-            'description' => tra('A wiki content platform'),
-            'type' => 'flag',
-            'help' => 'wikiLingo',
-            'keywords' => 'parser',
-            'default' => 'n',
-            'warning' => tra('Experimental'),
-            'tags' => array('experimental'),
-        ),
+		'feature_jison_wiki_parser' => array(
+			'name' => tra('Jison Wiki Parser'),
+            'description' => tra('Is a new strategy for parsing wiki pages more like a programming language'),
+			'type' => 'flag',
+			'help' => 'Jison+Wiki+Parser',
+			'keywords' => 'parser',
+			'default' => 'n',
+			'warning' => tra('Experimental'),
+			'tags' => array('experimental'),
+		),
 		'feature_dummy' => array(
 			'name' => tra('Dummy preference'),
             'description' => tra('This is useful for developers to learn how to create a new preference.'),
@@ -2787,12 +2777,12 @@ function prefs_feature_list($partial = false)
 			'warning' => tra('Experimental'),
 			'tags' => array('experimental'),
 		),
-		'feature_futurelinkprotocol' => array(
-			'name' => tra('FutureLink-Protocol'),
+		'feature_forwardlinkprotocol' => array(
+			'name' => tra('ForwardLink-Protocol'),
             'description' => tra('A Dynamic Compendia'),
 			'type' => 'flag',
-			'help' => 'FutureLinkProtocol',
-			'keywords' => 'future link futurelink share feed',
+			'help' => 'ForwardLinkProtocol',
+			'keywords' => 'forward link forwardlink share feed',
 			'default' => 'n',
 			'warning' => tra('Experimental'),
 			'tags' => array('experimental'),
@@ -2838,49 +2828,6 @@ function prefs_feature_list($partial = false)
 			),
 			'type' => 'flag',
 			'default' => 'n',
-			'help' => 'Inline+comments',
-		),
-		'feature_hidden_links' => array(
-			'name' => tra('Hidden anchors/links shown on mouseover of headers'),
-			'description' => tra('This is useful to share a URL to exact location on the page.'),
-			'type' => 'flag',
-			'default' => 'y',
-			'tags' => array('advanced'),
-		),
-		'feature_theme_control_savesession' => array(
-			'name' => tra('Store session variable for current theme'),
-			'description' => tra('Store a session variable for current theme so that it can  be used for auto-selecting a category when categorizing'),
-			'type' => 'flag',
-			'default' => 'n',
-		),
-		'feature_theme_control_parentcategory' => array(
-			'name' => tra('Parent category of theme control categories'),
-			'description' => tra('Choose the parent category that contains categories used in theme control'),
-			'type' => 'list',
-			'options' => $catlist,
-			'dependencies' => array(
-				'feature_categories',
-			),
-			'default' => 'n',
-		),
-		'feature_theme_control_autocategorize' => array(
-			'name' => tra('Automatically select theme control category of current theme when categorizing'),
-			'description' => tra('When creating or editing object, automatically check the category that matches the theme control category of the current theme'),
-			'type' => 'flag',
-			'dependencies' => array('feature_theme_control_savesession', 'feature_theme_control_parentcategory'),
-			'default' => 'n',
-		),
-		'feature_lang_nonswitchingpages' => array(
-			'name' => tra('List of page names that always redirect to home page on language switching'),
-			'description' => tra('List of page names that always redirect to home page on language switching'),
-			'type' => 'flag',
-			'default' => 'n',
-		),
-		'feature_lang_nonswitchingpages_names' => array(
-			'name' => tra('Enter the multiple page names with comma separated'),
-			'description' => tra('List of page names that always redirect to home page on language switching'),
-			'type' => 'textarea',
-			'default' => 'n',
 		),
 		'feature_wizard_user' => array(
 			'name' => tra('User Wizard'),
@@ -2889,24 +2836,5 @@ function prefs_feature_list($partial = false)
 			'type' => 'flag',
 			'default' => 'n',
 		),		
-		'feature_userWizardDifferentUsersFieldIds' => array(
-			'name' => tra('Ask different fields in the User Wizard than the ones in Registration'),
-			'description' => tra('Ask a different set of fields for the User Details section in the User Wizard than the ones shown in the Registration form'),
-			'help' => 'User+Wizard',
-			'type' => 'flag',
-			'default' => 'y',
-		),
-		'feature_userWizardUsersFieldIds' => array(
-			'name' => tra('Tracker Fields Asked in the User Wizard as User Details'),
-			'description' => tra('Users Information Tracker Fields Asked in the User Wizard as User Details (fieldIds separated with colon)'),
-			'help' => 'User+Wizard',
-			'type' => 'text',
-			'size' => '50',
-			'dependencies' => array(
-				'userTracker',
-				'feature_wizard_user',
-			),
-			'default' => '',
-		),						
 	);
 }

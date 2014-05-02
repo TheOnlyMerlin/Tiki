@@ -18,6 +18,6 @@ function smarty_function_categoryName($params, $smarty)
         return;
     }
 
-	$categlib = TikiLib::lib('categ');
+	global $categlib; require_once 'lib/categories/categlib.php';
 	return $categlib->get_category_name($params['id']);
 }

@@ -64,7 +64,7 @@ function wikiplugin_draw_info()
 function wikiplugin_draw($data, $params)
 {
 	global $dbTiki, $tiki_p_edit, $tiki_p_admin,$tiki_p_upload_files, $prefs, $user, $page, $tikilib, $smarty, $headerlib, $globalperms;
-	$filegallib = TikiLib::lib('filegal');
+	global $filegallib; include_once ('lib/filegals/filegallib.php');
 	extract(array_merge($params, array()), EXTR_SKIP);
 
 	static $drawIndex = 0;
@@ -126,7 +126,7 @@ JQ
 		~np~
 		<form id="newDraw$drawIndex" method="get" action="tiki-edit_draw.php">
 			<p>
-				<input type="submit" class="btn btn-default btn-sm" name="label" value="$label" class="newSvgButton" />$in
+				<input type="submit" name="label" value="$label" class="newSvgButton" />$in
 				<select name="galleryId">
 					$galHtml
 				</select>

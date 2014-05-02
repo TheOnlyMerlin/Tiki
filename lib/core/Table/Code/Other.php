@@ -29,7 +29,7 @@ class Table_Code_Other extends Table_Code_Manager
 		$sr = '';
 		//reset sort button
 		$x = array('reset' => '', 'savereset' => '');
-		$s = parent::$s['sorts'];
+		$s = parent::$s['sort'];
 		$s = isset($s['type']) && $s['type'] !== true && array_key_exists($s['type'], $x) ? $s : false;
 		if ($s) {
 			if ($s['type'] === 'savereset') {
@@ -127,33 +127,15 @@ class Table_Code_Other extends Table_Code_Manager
 		}
 
 		if (parent::$ajax) {
+			//bind to ajax event to show processing
 			$bind = array(
-				//dim rows while processing when using ajax
-				'	if ($.inArray(e.type, [\'filterStart\', \'sortStart\', \'pageMoved\']) > -1) {',
-				'		$(\'' . parent::$tid . ' tbody tr td\').css(\'opacity\', 0.25);',
-				'	}',
-				//note when filter is in place - used for setting offset when simplified ajax url is used
-				'	if (e.type === \'filterStart\') {',
-				'		if (typeof this.config.pager.ajaxData !== \'undefined\') {',
-				'			this.config.pager.ajaxData.filter = true;',
-				'		}',
-				'	}',
-			);
-			$prejq[] = $this->iterate(
-				$bind,
-				'$(\'' . parent::$tid . '\').bind(\'filterStart sortStart pageMoved\', function(e){',
-				$this->nt2 . '});',
-				$this->nt3,
-				'',
-				''
-			);
-			//un-dim rows after ajax processing and make sure odd/even row formatting is applied
-			$bind = array_merge($prejq, array(
+				'if (e.type === \'ajaxSend\') {',
+				'	$(\'' . parent::$tid . ' tbody tr td\').css(\'opacity\', 0.25);',
+				'}',
 				'if (e.type === \'ajaxComplete\') {',
 				'	$(\'' . parent::$tid . ' tbody tr td\').css(\'opacity\', 1);',
-				'	$(\'' . parent::$tid . ' tbody tr td\').trigger(\'applyWidgetId\', [\'zebra\']);',
 				'}'
-			));
+			);
 			$jq[] = $this->iterate(
 				$bind,
 				'$(document).bind(\'ajaxSend ajaxComplete\', function(e){',
@@ -162,26 +144,36 @@ class Table_Code_Other extends Table_Code_Manager
 				'',
 				''
 			);
+			//note when filter is in place - used for setting offset when simplified ajax url is used
+			$bind = array(
+				'if (typeof this.config.pager.ajaxData !== \'undefined\') {',
+				'	this.config.pager.ajaxData.filter = true;',
+				'}',
+			);
+			$jq[] = $this->iterate(
+				$bind,
+				'$(\'' . parent::$tid . '\').bind(\'filterStart\', function(){',
+				$this->nt . '});',
+				$this->nt2,
+				'',
+				''
+			);
 			//change pages dropdown when filtering to show only filtered pages
 			$bind = array(
 				'var ret = c.pager.ajaxData;',
-				'var opts = $(c.pager.$goto.selector + \' option\').length;',
-				'if (ret.rows.length > 0) {',
-				'	if (ret.fp != opts && opts != 0) {',
-				'		$(c.pager.$goto.selector).empty();',
-				'		for (var i = 1; i <= ret.fp; i++) {',
-				'			$(c.pager.$goto.selector).append($(\'<option>\', {',
-				'				text: i',
-				'			}));',
-				'		}',
+				'opts = $(\'select.gotoPage option\').length;',
+				'if (ret.fp != opts && opts != 0) {',
+				'	$(\'select.gotoPage\').empty();',
+				'	for (var i = 1; i <= ret.fp; i++) {',
+				'		$(\'select.gotoPage\').append($(\'<option>\', {',
+				'		    text: i',
+				'		}));',
 				'	}',
-				'	var page = ret.offset == 0 ? 0 : Math.ceil(ret.offset / c.pager.size);',
-				'	$(c.pager.$goto.selector + \' option\')[page].selected = true;',
-				'	if (page != c.pager.page) {',
-				'		$(\'' . parent::$tid . '\').trigger(\'pageSet\', page);',
-				'	}',
-				'} else {',
-				'	$(c.pager.$goto.selector).empty();',
+				'}',
+				'var page = ret.offset == 0 ? 0 : Math.ceil(ret.offset / c.pager.size);',
+				'$(\'select.gotoPage option\')[page].selected = true;',
+				'if (page != c.pager.page) {',
+				'	$(\'' . parent::$tid . '\').trigger(\'pageSet\', page);',
 				'}',
 			);
 			$jq[] = $this->iterate(

@@ -19,7 +19,7 @@ $access->check_script($_SERVER["SCRIPT_NAME"], basename(__FILE__));
 global $prefs;
 
 if ($prefs['feature_contribution'] == 'y') {
-	$contributionlib = TikiLib::lib('contribution');
+	global $contributionlib; include_once('lib/contribution/contributionlib.php');
 	$contributions = $contributionlib->list_contributions();
 	if (!empty($_REQUEST['contributions'])) {
 		for ($i = $contributions['cant'] - 1; $i >= 0; -- $i) {

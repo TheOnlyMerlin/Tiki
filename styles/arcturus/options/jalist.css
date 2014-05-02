@@ -40,6 +40,10 @@ body {
 	background: #efefef;
 }
 
+html>body {
+	font-size: 11px;
+}
+
 a,
 a:visited {
 	text-decoration: none;
@@ -95,7 +99,8 @@ legend {
 button,
 input[type="reset"],
 input[type="submit"],
-.button input {
+.button input,
+.calbuttonBox a {
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	background-color: #ccc;
@@ -107,7 +112,8 @@ input[type="submit"],
 button:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover,
-.button input:hover {
+.button input:hover,
+.calbuttonBox:hover {
 	font-size: 11px;
 	color: #636363;
 }
@@ -123,6 +129,14 @@ input[type="submit"]:hover,
 	color: #fff;
 }
 
+#c1c2	#wrapper	#col1.marginleft  {
+	margin-left: 180px;
+}
+
+#c1c2	#wrapper	#col1.marginright {
+	margin-right: 180px;
+}
+
 #c1c2	#wrapper	#col1	.content {
 	background: transparent;
 }
@@ -131,11 +145,22 @@ input[type="submit"]:hover,
 	padding: 10px;
 }
 
+#c1c2 #col2 {
+	width: 180px;
+	overflow: visible
+}
+
+#col3 {
+	width: 180px;
+	margin-left: -180px;
+}
+
 .footerbgtrap {
 	padding-top: 10px;
 	margin-top: 0;
 	background: #CECECE;
 	padding-bottom: 15px;
+
 }
 
 .box {

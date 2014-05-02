@@ -122,7 +122,7 @@ include_once ('tiki-section_options.php');
 ask_ticket('faq-questions');
 
 
-$wikilib = TikiLib::lib('wiki');
+global $wikilib; include_once('lib/wiki/wikilib.php');
 $plugins = $wikilib->list_plugins(true, 'faqans');
 $smarty->assign_by_ref('plugins', $plugins);
 

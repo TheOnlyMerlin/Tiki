@@ -1,5 +1,5 @@
 {* $Id$ *}
-<table border="0" cellpadding="0" cellspacing="0" class="caltable table">
+<table border="0" cellpadding="0" cellspacing="0" class="caltable" tyle="width:100%;border-collapse:collapse">
   <tr valign="middle" style="height:36px">
 <td width="1%" class="heading weeks"></td>
 {section name=dn loop=$daysnames}
@@ -8,7 +8,7 @@
 		{/if}
 {/section}
   </tr>
-
+{cycle values="odd,even" print=false}
 {section name=w loop=$cell}
   <tr id="row_{$smarty.section.w.index}" style="height:80px">
   <td width="1%" class="heading weeks"><a {if $prefs.mobile_mode eq "y"}data-role="button" data-inline="true" {/if}href="{$myurl}?viewmode=week&amp;todate={$cell[w][0].day}" title="{tr}View this Week{/tr}">{$weekNumbers[w]}</a></td> {* mobile *}
@@ -51,11 +51,11 @@
 	{assign var=calendarId value=$cell[w][d].items[item].calendarId}
 		<tr valign="top">
 {if is_array($cell[w][d].items[item])}
-			<td class="Cal{$cell[w][d].items[item].type} calId{$cell[w][d].items[item].calendarId} viewcalitemId_{$cell[w][d].items[item].calitemId} tips" style="padding:0px;height:14px;background-color:#{$infocals.$calendarId.custombgcolor};border-color:#{$infocals.$calendarId.customfgcolor};opacity:{if $cell[w][d].items[item].status eq '0'}0.8{else}1{/if};filter:Alpha(opacity={if $cell[w][d].items[item].status eq '0'}80{else}100{/if});text-align:left;border-width:1px {if $cell[w][d].items[item].endTimeStamp <= ($cell[w][d].day + 86400)}1{else}0{/if}px 1px {if $cell[w][d].items[item].startTimeStamp >= $cell[w][d].day}1{else}0{/if}px;cursor:pointer"
+			<td class="Cal{$cell[w][d].items[item].type} calId{$cell[w][d].items[item].calendarId} viewcalitemId_{$cell[w][d].items[item].calitemId}" style="padding:0px;height:14px;background-color:#{$infocals.$calendarId.custombgcolor};border-color:#{$infocals.$calendarId.customfgcolor};opacity:{if $cell[w][d].items[item].status eq '0'}0.8{else}1{/if};filter:Alpha(opacity={if $cell[w][d].items[item].status eq '0'}80{else}100{/if});text-align:left;border-width:1px {if $cell[w][d].items[item].endTimeStamp <= ($cell[w][d].day + 86400)}1{else}0{/if}px 1px {if $cell[w][d].items[item].startTimeStamp >= $cell[w][d].day}1{else}0{/if}px;cursor:pointer"
 			{if $prefs.calendar_sticky_popup eq 'y'}
-				{popup caption="{tr}Event{/tr}" vauto=true hauto=true sticky=true fullhtml="1" trigger="onClick" text=$over|escape:"javascript"|escape:"html"}
+				{popup vauto=true hauto=true sticky=true fullhtml="1" trigger="onClick" text=$over|escape:"javascript"|escape:"html"}
 			{else}
-				{popup caption="{tr}Event{/tr}" vauto=true hauto=true sticky=false fullhtml="1" text=$over|escape:"javascript"|escape:"html"}
+				{popup vauto=true hauto=true sticky=false fullhtml="1" text=$over|escape:"javascript"|escape:"html"}
 			{/if}>
 
 			{if $myurl eq "tiki-action_calendar.php" or ($cell[w][d].items[item].startTimeStamp >= $cell[w][d].day or $smarty.section.d.index eq '0' or $cell[w][d].firstDay or $infocals[$cell[w][d].items[item].calendarId].nameoneachday eq 'y')}

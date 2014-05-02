@@ -6,8 +6,8 @@
 // $Id$
 
 require_once ('tiki-setup.php');
-$histlib = TikiLib::lib('hist');
-$wikilib = TikiLib::lib('wiki');
+include_once ('lib/wiki/histlib.php');
+include_once ('lib/wiki/wikilib.php');
 
 $access->check_feature('feature_wiki');
 
@@ -44,7 +44,7 @@ $access->check_permission(array('tiki_p_rollback', 'tiki_p_edit'));
 
 if (isset($_REQUEST["rollback"])) {
 	require_once('lib/diff/difflib.php');
-	$categlib = TikiLib::lib('categ');
+	require_once('lib/categories/categlib.php');
 	rollback_page_to_version($_REQUEST['page'], $_REQUEST['version']);
 	header("location: tiki-index.php?page=" . urlencode($page));
 	die;

@@ -37,13 +37,11 @@ class AdminWizardCategory extends Wizard
 			return false;
 		}
 
-		return true;
-	}
-
-	function getTemplate()
-	{
+		// Assign the page tempalte
 		$wizardTemplate = 'wizard/admin_category.tpl';
-		return $wizardTemplate;
+		$smarty->assign('wizardBody', $wizardTemplate);
+		
+		return true;
 	}
 
 	function onContinue ($homepageUrl) 

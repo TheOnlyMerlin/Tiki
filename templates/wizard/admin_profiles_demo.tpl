@@ -32,8 +32,8 @@
 		<a href="http://tiki.org/display520" class="internal" rel="box" title="{tr}Click to expand{/tr}">
 			<img src="http://tiki.org/display520"  width="100" style="display:block; margin-left:auto; margin-right:auto;border:1px solid darkgray;" alt="Click to expand" class="regImage pluginImg" title="{tr}Click to expand{/tr}" />
 		</a>
-		<div class="mini">
-			<div class="thumbcaption text-center">{tr}Click to expand{/tr}</div>
+		<div class="mini" style="width:100px;">
+			<div class="thumbcaption">{tr}Click to expand{/tr}</div>
 		</div>
 	</div>
 	</td>
@@ -58,8 +58,8 @@
 		<a href="http://tiki.org/display521" class="internal" rel="box" title="{tr}Click to expand{/tr}">
 			<img src="http://tiki.org/display521"  width="100" style="display:block; margin-left:auto; margin-right:auto;border:1px solid darkgray;" alt="Click to expand" class="regImage pluginImg" title="{tr}Click to expand{/tr}" />
 		</a>
-		<div class="mini">
-			<div class="thumbcaption text-center">{tr}Click to expand{/tr}</div>
+		<div class="mini" style="width:100px;">
+			<div class="thumbcaption">{tr}Click to expand{/tr}</div>
 		</div>
 	</div>
 	</td>
@@ -83,8 +83,8 @@
 		<a href="http://doc.tiki.org/display722" class="internal" rel="box" title="{tr}Click to expand{/tr}">
 			<img src="http://doc.tiki.org/display722"  width="100" style="display:block; margin-left:auto; margin-right:auto;border:1px solid darkgray;" alt="Click to expand" class="regImage pluginImg" title="{tr}Click to expand{/tr}" />
 		</a>
-		<div class="mini">
-			<div class="thumbcaption text-center">{tr}Click to expand{/tr}</div>
+		<div class="mini" style="width:100px;">
+			<div class="thumbcaption">{tr}Click to expand{/tr}</div>
 		</div>
 	</div>
 	</td>
@@ -109,13 +109,15 @@
 		<a href="http://tiki.org/display522" class="internal" rel="box" title="{tr}Click to expand{/tr}">
 			<img src="http://tiki.org/display522"  width="100" style="display:block; margin-left:auto; margin-right:auto;border:1px solid darkgray;" alt="Click to expand" class="regImage pluginImg" title="{tr}Click to expand{/tr}" />
 		</a>
-		<div class="mini">
-			<div class="thumbcaption text-center">{tr}Click to expand{/tr}</div>
+		<div class="mini" style="width:100px;">
+			<div class="thumbcaption">{tr}Click to expand{/tr}</div>
 		</div>
 	</div>
 	</td>
 	</tr>
 	</table>
+	<br>
+	<em>{tr}See also{/tr} <a href="tiki-admin.php?page=profiles&amp;alt=Profiles" target="_blank">{tr}Profiles admin panel{/tr}</a></em>
 </fieldset>
 <br>
 </div>

@@ -12,7 +12,7 @@ $section = 'calendar';
 require_once ('tiki-setup.php');
 
 include_once ('lib/calendar/calendarlib.php');
-$categlib = TikiLib::lib('categ');
+include_once ('lib/categories/categlib.php');
 include_once ('lib/newsletters/nllib.php');
 
 $headerlib->add_cssfile('css/calendar.css', 20);
@@ -422,7 +422,7 @@ foreach ($cell as $w=>$weeks) {
 	}
 }
 //Use 12- or 24-hour clock for times listed in day or week view based on admin and user preferences
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 $user_24hr_clock = $userprefslib->get_user_clock_pref($user);
 
 $hrows = array();

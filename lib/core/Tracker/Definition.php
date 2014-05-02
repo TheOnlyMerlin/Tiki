@@ -278,7 +278,7 @@ class Tracker_Definition
 	 */
 	function getItemUser($itemId)
 	{
-		$trklib = TikiLib::lib('trk');
+		global $trklib;
 		return $trklib->get_item_creator($this->trackerInfo['trackerId'], $itemId);
 	}
 

@@ -81,8 +81,8 @@ class WikiPluginTitleSearch extends PluginsLib
 	}
 	function run ($data, $params)
 	{
-		$wikilib = TikiLib::lib('wiki');
-		$tikilib = TikiLib::lib('tiki');
+		global $wikilib; include_once('lib/wiki/wikilib.php');
+		global $tikilib;
 		$aInfoPreset = array_keys($this->aInfoPresetNames);
 		$params = $this->getParams($params, true);
 		extract($params, EXTR_SKIP);

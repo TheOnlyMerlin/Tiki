@@ -10,18 +10,21 @@
 
 $section = 'blogs';
 require_once ('tiki-setup.php');
-$bloglib = TikiLib::lib('blog');
+include_once ('lib/blogs/bloglib.php');
 
 $auto_query_args = array(
 	'blogId'
 );
 
 if ($prefs['feature_freetags'] == 'y') {
-	$freetaglib = TikiLib::lib('freetag');
+	include_once ('lib/freetag/freetaglib.php');
 }
 
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	global $categlib;
+	if (!is_object($categlib)) {
+		include_once ('lib/categories/categlib.php');
+	}
 }
 
 $access->check_feature('feature_blogs');

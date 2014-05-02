@@ -18,7 +18,7 @@ $section = "draw";
 require_once ('tiki-setup.php');
 global $drawFullscreen, $prefs, $headerlib;
 
-$filegallib = TikiLib::lib('filegal');
+include_once ('lib/filegals/filegallib.php');
 
 $access->check_feature('feature_draw');
 $access->check_feature('feature_file_galleries');

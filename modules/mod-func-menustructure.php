@@ -35,11 +35,11 @@ function module_menustructure_info()
  */
 function module_menustructure($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	$structure = $module_params['structure'];
 
 	if (!empty($structure)) {
-		$structlib = TikiLib::lib('struct');
+		global $structlib; include_once('lib/structures/structlib.php');
 		$smarty->assign('tpl_module_title', $structure);
 
 		$structureId = $structlib->get_struct_ref_id($structure);

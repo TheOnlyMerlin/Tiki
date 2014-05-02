@@ -1,5 +1,5 @@
 {* $Id$ *}
-<h1 class="pagetitle"><a href="tiki-list_file_gallery.php{if $galleryId}?galleryId={$galleryId}{if isset($edit_mode) and $edit_mode ne 'n'}&amp;edit_mode=1{/if}{if $filegals_manager neq ''}&amp;filegals_manager={$filegals_manager|escape}{/if}{else}{if $filegals_manager neq ''}?filegals_manager={$filegals_manager|escape}{/if}{/if}">{tr}File Galleries{/tr}</a>
+<h1><a class="pagetitle" href="tiki-list_file_gallery.php{if $galleryId}?galleryId={$galleryId}{if isset($edit_mode) and $edit_mode ne 'n'}&amp;edit_mode=1{/if}{if $filegals_manager neq ''}&amp;filegals_manager={$filegals_manager|escape}{/if}{else}{if $filegals_manager neq ''}?filegals_manager={$filegals_manager|escape}{/if}{/if}">{tr}File Galleries{/tr}</a>
 {if $prefs.feature_help eq 'y'}
 <a href="{$prefs.helpurl}File+Galleries" target="tikihelp" class="tikihelp" title="{tr}File Galleries{/tr}">{icon _id='help'}</a>
 {/if}
@@ -15,17 +15,17 @@
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Be careful to set the right permissions on the files you link to{/tr}.{/remarksbox}
 {/if}
 
-<div class="t_navbar form-group">
+<div class="navbar">
 {if $edit_mode eq 'y' or $dup_mode eq 'y'}
-<a href="tiki-list_file_gallery.php{if $filegals_manager neq ''}?filegals_manager={$filegals_manager|escape}{/if}" class="btn btn-default">{tr}List Galleries{/tr}</a>
-{if $galleryId}<a href="tiki-list_file_gallery.php?galleryId={$galleryId}{if $filegals_manager neq ''}&amp;filegals_manager={$filegals_manager|escape}{/if}" class="btn btn-default">{tr}Browse Gallery{/tr}</a>{/if}
+<a href="tiki-list_file_gallery.php{if $filegals_manager neq ''}?filegals_manager={$filegals_manager|escape}{/if}">{tr}List Galleries{/tr}</a>
+{if $galleryId}<a href="tiki-list_file_gallery.php?galleryId={$galleryId}{if $filegals_manager neq ''}&amp;filegals_manager={$filegals_manager|escape}{/if}">{tr}Browse Gallery{/tr}</a>{/if}
 {/if}
 {if $tiki_p_create_file_galleries eq 'y'and $edit_mode ne 'y'}
-<a href="tiki-list_file_gallery.php?edit_mode=1&amp;galleryId=0{if $filegals_manager neq ''}&amp;filegals_manager={$filegals_manager|escape}{/if}" class="btn btn-default">{tr}Create New File Gallery{/tr}</a>
+<a href="tiki-list_file_gallery.php?edit_mode=1&amp;galleryId=0{if $filegals_manager neq ''}&amp;filegals_manager={$filegals_manager|escape}{/if}">{tr}Create New File Gallery{/tr}</a>
 {/if}
 
 {if $tiki_p_create_file_galleries eq 'y'and $dup_mode ne 'y'}
-<a href="tiki-list_file_gallery.php?dup_mode=1{if $filegals_manager neq ''}&amp;filegals_manager={$filegals_manager|escape}{/if}" class="btn btn-default">{tr}Duplicate File Gallery{/tr}</a>
+<a href="tiki-list_file_gallery.php?dup_mode=1{if $filegals_manager neq ''}&amp;filegals_manager={$filegals_manager|escape}{/if}">{tr}Duplicate File Gallery{/tr}</a>
 {/if}
 </div>
 

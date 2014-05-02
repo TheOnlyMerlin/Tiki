@@ -9,8 +9,9 @@
 // $Id$
 
 require_once ('tiki-setup.php');
-$bloglib = TikiLib::lib('blog');
-$rsslib = TikiLib::lib('rss');
+require_once ('lib/tikilib.php');
+require_once ('lib/blogs/bloglib.php');
+require_once ('lib/rss/rsslib.php');
 $access->check_feature('feature_blogs');
 
 if ($prefs['feed_blogs'] != 'y') {
@@ -57,6 +58,7 @@ if ($output["data"] == "EMPTY") {
 	$tmp = array();
 	include_once ('tiki-sefurl.php');
 	foreach ($changes["data"] as $data) {
+		global $bloglib;
 		$data["$descId"] = $tikilib->parse_data(
 			$data[$descId],
 			array(

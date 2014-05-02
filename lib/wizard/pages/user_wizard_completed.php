@@ -28,13 +28,11 @@ class UserWizardCompleted extends Wizard
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
 		
-		return true;
-	}
-
-	function getTemplate()
-	{
+		// Assign the page template
 		$wizardTemplate = 'wizard/user_wizard_completed.tpl';
-		return $wizardTemplate;
+		$smarty->assign('wizardBody', $wizardTemplate);
+		
+		return true;
 	}
 
 	function onContinue ($homepageUrl) 

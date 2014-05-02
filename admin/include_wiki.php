@@ -84,7 +84,8 @@ if (isset($_REQUEST['wikifeatures'])) {
 	}
 
 	if (isset($backlinksChange) && $backlinksChange) {
-		$wikilib = TikiLib::lib('wiki');
+		global $wikilib;
+		include_once ('lib/wiki/wikilib.php');
 		$wikilib->refresh_backlinks();
 	}
 }

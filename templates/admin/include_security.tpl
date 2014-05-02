@@ -1,9 +1,9 @@
 {* $Id$ *}
 
-<div class="t_navbar btn-group form-group">
-	{button href="tiki-admingroups.php" class="btn btn-default" _text="{tr}Admin Groups{/tr}"}
-	{button href="tiki-adminusers.php" class="btn btn-default" _text="{tr}Admin Users{/tr}"}
-	{permission_link mode=button label="{tr}Manage permissions{/tr}"}
+<div class="navbar">
+	{button href="tiki-admingroups.php" _text="{tr}Admin Groups{/tr}"}
+	{button href="tiki-adminusers.php" _text="{tr}Admin Users{/tr}"}
+	{button href="tiki-objectpermissions.php" _text="{tr}Manage permissions{/tr}"}
 </div>
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}
@@ -13,14 +13,14 @@
 
 <form class="admin" id="security" name="security" action="tiki-admin.php?page=security" method="post">
 	<div class="heading input_submit_container" style="text-align: right">
-		<input type="submit" class="btn btn-default btn-sm" name="security" value="{tr}Apply{/tr}" />
+		<input type="submit" class="btn btn-default" name="security" value="{tr}Apply{/tr}" />
 		<input type="reset" class="btn btn-warning" name="securityreset" value="{tr}Reset{/tr}" />
 	</div>
 
 {tabset}
 
 		{tab name="{tr}General Security{/tr}"}
-			<h2>{tr}General Security{/tr}</h2>
+			
 			<div class="adminoptionboxchild" id="smarty_security_childcontainer">
 			{if $haveMySQLSSL}
 				{if $mysqlSSL === true}
@@ -68,22 +68,6 @@
 			{preference name=tiki_check_file_content}
 			{preference name=tiki_allow_trust_input}
 			{preference name=feature_quick_object_perms}
-			{preference name=feature_user_encryption}
-			<div class="adminoptionboxchild" id="feature_user_encryption_childcontainer">
-				{if isset($no_mcrypt)}
-					{remarksbox type="warning" title="{tr}Mcrypt is not loaded{/tr}"}
-					{tr}User Encryption requires the PHP expension Mcrypt for encryption.
-						You should activate Mcrypt before activating User Encryption{/tr}</a>.
-					{/remarksbox}
-				{else}
-					Requires the Mcrypt PHP extension for encryption. <u>You have Mcrypt installed</u>.<br>
-				{/if}
-				You may also want to add the "Domain Password" module somewhere.<br>
-				<br>
-				Comma separated list of password domains, e.g.: Company ABC,Company XYZ<br>
-				The user can add passwords for a registered password domain.
-				{preference name=feature_password_domains}
-			</div>
 		<fieldset>
 			<legend>{tr}CSRF Security{/tr}{help url="Security"}</legend>
 			<div class="adminoptionbox">
@@ -95,7 +79,6 @@
 		{/tab}
 
 		{tab name="{tr}Spam protection{/tr}"}
-            <h2>{tr}Spam protection{/tr}</h2>
 			<fieldset>
 			<legend>{tr}Captcha{/tr}</legend>
 			{preference name=feature_antibot}
@@ -129,13 +112,11 @@
 		{/tab}
 	
 		{tab name="{tr}Search results{/tr}"}
-            <h2>{tr}Search results{/tr}</h2>
 				{preference name=feature_search_show_forbidden_cat}
 				{preference name=feature_search_show_forbidden_obj}
 		{/tab}
 
 		{tab name="{tr}Site Access{/tr}"}
-            <h2>{tr}Site Access{/tr}</h2>
 				{preference name=site_closed}
 				<div class="adminoptionboxchild" id="site_closed_childcontainer">
 					{preference name=site_closed_msg}
@@ -149,7 +130,6 @@
 		{/tab}
 
 		{tab name="{tr}Tokens{/tr}"}
-            <h2>{tr}Tokens{/tr}</h2>
 				{remarksbox type="tip" title="{tr}Tip{/tr}"}
 					{tr}To manage tokens go to <a href="tiki-admin_tokens.php">Admin Tokens</a> page{/tr}
 				{/remarksbox}
@@ -161,7 +141,6 @@
 		{/tab}
 
 		{tab name="{tr}OpenPGP{/tr}"}
-            <h2>{tr}OpenPGP{/tr}</h2>
 			<fieldset>
 				<legend>{tr}OpenPGP fuctionality for PGP/MIME encrypted email messaging{/tr}</legend>
 				{remarksbox type="tip" title="{tr}Note{/tr}"}
@@ -192,6 +171,6 @@
 {/tabset}	
 	
 	<div class="input_submit_container" style="margin-top: 5px; text-align: center">
-		<input type="submit" class="btn btn-default btn-sm" name="security" value="{tr}Apply{/tr}" />
+		<input type="submit" class="btn btn-default" name="security" value="{tr}Apply{/tr}" />
 	</div>
 </form>

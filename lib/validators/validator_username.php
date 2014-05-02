@@ -7,8 +7,7 @@
 
 function validator_username($input, $parameter = '', $message = '')
 {
-	global $prefs;
-	$userlib = TikiLib::lib('user');
+	global $userlib, $prefs;
 	if ($userlib->user_exists($input)) {
 		return tra("User already exists");
 	}

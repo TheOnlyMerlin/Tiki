@@ -916,7 +916,6 @@ CREATE TABLE `tiki_forums` (
   `inbound_pop_password` varchar(80) default NULL,
   `topic_smileys` char(1) default NULL,
   `ui_avatar` char(1) default NULL,
-  `ui_rating_choice_topic` char(1) DEFAULT NULL,
   `ui_flag` char(1) default NULL,
   `ui_posts` char(1) default NULL,
   `ui_email` char(1) default NULL,
@@ -1264,13 +1263,15 @@ CREATE TABLE `tiki_mailin_accounts` (
   `accountId` int(12) NOT NULL auto_increment,
   `user` varchar(200) NOT NULL default '',
   `account` varchar(50) NOT NULL default '',
-  `protocol` varchar(10) NOT NULL DEFAULT 'pop',
-  `host` varchar(255) default NULL,
+  `pop` varchar(255) default NULL,
   `port` int(4) default NULL,
   `username` varchar(100) default NULL,
   `pass` varchar(100) default NULL,
   `active` char(1) default NULL,
   `type` varchar(40) default NULL,
+  `smtp` varchar(255) default NULL,
+  `useAuth` char(1) default NULL,
+  `smtpPort` int(4) default NULL,
   `anonymous` char(1) NOT NULL default 'y',
   `admin` char(1) NOT NULL default 'y',
   `attachments` char(1) NOT NULL default 'n',
@@ -2000,7 +2001,6 @@ CREATE TABLE `tiki_sheet_layout` (
   `className` varchar(64) default NULL,
   `parseValues` char( 1 ) NOT NULL default 'n',
   `clonedSheetId` int(8) NULL,
-  `metadata` longblob,
   UNIQUE KEY `sheetId` (`sheetId`, `begin`)
 ) ENGINE=MyISAM;
 
@@ -3305,6 +3305,39 @@ CREATE TABLE `tiki_auth_tokens` (
     KEY `tiki_auth_tokens_token` (`token`)
 ) ENGINE=MyISAM;
 
+DROP TABLE IF EXISTS `metrics_assigned`;
+CREATE TABLE `metrics_assigned` (
+    `assigned_id` int(11) NOT NULL AUTO_INCREMENT,
+    `metric_id` int(11) NOT NULL,
+    `tab_id` int(11) NOT NULL,
+    PRIMARY KEY (`assigned_id`),
+    KEY `metric_id` (`metric_id`),
+    KEY `tab_id` (`tab_id`)
+) ENGINE=MyISAM;
+
+DROP TABLE IF EXISTS `metrics_metric`;
+CREATE TABLE `metrics_metric` (
+    `metric_id` int(11) NOT NULL AUTO_INCREMENT,
+    `metric_name` varchar(255) NOT NULL,
+    `metric_range` varchar(1) NOT NULL DEFAULT '+' COMMENT 'values: + (daily), @ (monthly&weekly), - (weekly)',
+    `metric_datatype` varchar(1) NOT NULL DEFAULT 'i' COMMENT 'values: i(nteger), %(percentage), f(loat), L(ist)',
+    `metric_lastupdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `metric_query` text,
+    `metric_dsn` VARCHAR(200) NOT NULL DEFAULT 'local',
+    PRIMARY KEY (`metric_id`),
+    UNIQUE KEY `metric_name` (`metric_name`)
+) ENGINE=MyISAM;
+
+DROP TABLE IF EXISTS `metrics_tab`;
+CREATE TABLE `metrics_tab` (
+    `tab_id` int(11) NOT NULL AUTO_INCREMENT,
+    `tab_name` varchar(255) NOT NULL,
+    `tab_order` int(11) NOT NULL DEFAULT '0',
+    `tab_content` longtext NOT NULL,
+    PRIMARY KEY (`tab_id`),
+    UNIQUE KEY `tab_name` (`tab_name`)
+) ENGINE=MyISAM;
+
 DROP TABLE IF EXISTS `tiki_file_backlinks`;
 CREATE TABLE `tiki_file_backlinks` (
        `fileId` int(14) NOT NULL,
@@ -3321,7 +3354,6 @@ CREATE TABLE `tiki_payment_requests` (
     `currency` CHAR(3) NOT NULL,
     `request_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `due_date` TIMESTAMP NOT NULL,
-	`authorized_until` TIMESTAMP NULL,
     `cancel_date` TIMESTAMP NULL,
     `description` VARCHAR(100) NOT NULL,
     `actions` TEXT,
@@ -3337,7 +3369,6 @@ CREATE TABLE `tiki_payment_received` (
     `payment_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `amount` DECIMAL(7,2),
     `type` VARCHAR(15),
-	`status` VARCHAR(15) NOT NULL DEFAULT 'paid',
     `details` TEXT,
     `userId` int(8),
     PRIMARY KEY(`paymentReceivedId`),
@@ -3765,62 +3796,3 @@ CREATE TABLE `tiki_user_mailin_struct` (
 	`is_active` char(1) NULL DEFAULT 'n',
    PRIMARY KEY (`mailin_struct_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1;
-
-DROP TABLE IF EXISTS `tiki_search_queries`;
-CREATE TABLE `tiki_search_queries` (
-	`queryId` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	`userId` INT NOT NULL,
-	`lastModif` INT,
-	`label` VARCHAR(100) NOT NULL,
-	`priority` VARCHAR(15) NOT NULL,
-	`query` BLOB,
-	`description` TEXT,
-	INDEX `query_userId` (`userId`),
-	UNIQUE KEY `tiki_user_query_uq` (`userId`, `label`)
-) ENGINE=MyISAM AUTO_INCREMENT=1;
-
-DROP TABLE IF EXISTS `tiki_user_monitors`;
-CREATE TABLE `tiki_user_monitors` (
-	`monitorId` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	`userId` INT NOT NULL,
-	`event` VARCHAR(50) NOT NULL,
-	`priority` VARCHAR(10) NOT NULL,
-	`target` VARCHAR(25) NOT NULL,
-	INDEX `userid_target_ix` (`userId`, `target`),
-	UNIQUE `event_target_uq` (`event`, `target`, `userId`)
-) ENGINE=MyISAM;
-
-DROP TABLE IF EXISTS `tiki_output`;
-CREATE TABLE `tiki_output` (
-  `entityId` varchar(160) NOT NULL default '',
-  `objectType` varchar(32) NOT NULL default '',
-  `outputType` varchar(32) NOT NULL default '',
-  `version` int(8) NOT NULL default '0',
-  `outputId` INT NOT NULL PRIMARY KEY AUTO_INCREMENT
-) ENGINE=MyISAM AUTO_INCREMENT=1;
-
-DROP TABLE IF EXISTS `tiki_goals`;
-CREATE TABLE `tiki_goals` (
-	`goalId` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	`name` VARCHAR(50) NOT NULL,
-	`type` VARCHAR(10) NOT NULL DEFAULT 'user',
-	`description` TEXT,
-	`enabled` INT NOT NULL DEFAULT 0,
-	`daySpan` INT NOT NULL DEFAULT 14,
-	`from` DATETIME,
-	`to` DATETIME,
-	`eligible` BLOB,
-	`conditions` BLOB,
-	`rewards` BLOB
-) ENGINE=MyISAM;
-
-DROP TABLE IF EXISTS `tiki_goal_events`;
-CREATE TABLE `tiki_goal_events` (
-	`eventId` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	`eventDate` INT NOT NULL,
-	`eventType` VARCHAR(50) NOT NULL,
-	`targetType` VARCHAR(50),
-	`targetObject` VARCHAR(255),
-	`user` VARCHAR(200) NOT NULL,
-	`groups` BLOB NOT NULL
-) ENGINE=MyISAM;

@@ -1,7 +1,6 @@
 {* $Id$ *}
 {tabset name="admin_interwiki"}
 	{tab name="{tr}Intertiki client{/tr}"}
-        <h2>{tr}Intertiki client{/tr}</h2>
 		<form action="tiki-admin.php?page=intertiki" method="post" name="intertiki">
 			<table class="formcolor">
 				<tr>
@@ -113,16 +112,15 @@
 				</tr>
 			</table>
 			<div class="heading input_submit_container" style="text-align: center">
-				<input type="submit" class="btn btn-default btn-sm" name="intertikiclient" value="{tr}Save{/tr}" />
+				<input type="submit" class="btn btn-default" name="intertikiclient" value="{tr}Save{/tr}" />
 			</div>
 		</form>
 	{/tab}
 
 	{if $prefs.feature_intertiki_mymaster eq ''}
 		{tab name="{tr}Intertiki server{/tr}"}
-            <h2>{tr}Intertiki server{/tr}</h2>
 			<form action="tiki-admin.php?page=intertiki" method="post" name="intertiki">
-				<table class="table">
+				<table class="admin">
 					<tr>
 						<td>
 							{tr}Intertiki shared cookie for sliding auth under same domain:{/tr}</td>
@@ -207,7 +205,7 @@
 					</tr>
 				</table>
 				<div class="heading input_submit_container" style="text-align: center">
-					<input type="submit" class="btn btn-default btn-sm" name="intertikiserver" value="{tr}Save{/tr}" />
+					<input type="submit" class="btn btn-default" name="intertikiserver" value="{tr}Save{/tr}" />
 				</div>
 			</form>
 		{/tab}

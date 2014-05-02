@@ -375,7 +375,7 @@ class Tracker_Item
 
 	public function getViewPermission()
 	{
-		$status = isset($this->info['status']) ? $this->info['status'] : 'o';
+		$status = $this->info['status'];
 
 		if ($status == 'c') {
 			return 'view_trackers_closed';

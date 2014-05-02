@@ -16,7 +16,7 @@ if ($prefs['feature_theme_control'] == 'y') {
 	// search for theme for $cat_type
 	// then search for theme for md5($cat_type.cat_objid)
 	include_once ('lib/themecontrol/tcontrol.php');
-	$categlib = TikiLib::lib('categ');
+	include_once ('lib/categories/categlib.php');
 	global $tc_theme, $tc_theme_option;
 	
 	if (isset($tc_theme)) {
@@ -45,9 +45,6 @@ if ($prefs['feature_theme_control'] == 'y') {
 	}
 	
 	if ($tc_theme) {
-		if ($prefs['feature_theme_control_savesession'] == 'y' && !empty($tc_theme_option)) {
-			$_SESSION['tc_theme'] = $tc_theme_option;
-		}
 		if ($old_tc_theme) {
 			$headerlib->drop_cssfile($tikilib->get_style_path('', '', $old_tc_theme));
 			$headerlib->drop_cssfile($tikilib->get_style_path($old_tc_theme, $old_tc_theme_option, $old_tc_theme_option));

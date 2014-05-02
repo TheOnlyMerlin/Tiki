@@ -4,7 +4,7 @@
 {tikimodule error=$module_error title=$smod_params.title name="search" flip=$smod_params.flip decorations=$smod_params.decorations nobox=$smod_params.nobox notitle=$smod_params.notitle}
 {if $smod_params.tiki_search neq 'none'}
     <form id="search-module-form{$search_mod_usage_counter}" method="get" action="{$smod_params.search_action}"{if $smod_params.use_autocomplete eq 'y'} onsubmit="return submitSearch{$search_mod_usage_counter}()"{/if}>
-    	<div style="position: relative">
+    	<div>
 			<input id="search_mod_input_{$search_mod_usage_counter}" name="{if $smod_params.search_action eq 'tiki-searchindex.php'}filter~content{else}find{/if}" {if !empty($smod_params.input_size)}size="{$smod_params.input_size}" style="width: auto"{/if} type="text" accesskey="s" value="{$smod_params.input_value|escape}" />
 			
 		 	{if $smod_params.show_object_filter eq 'y'}
@@ -58,21 +58,26 @@
 				{/if}
 				<input type="hidden" name="boolean_last" value="{$smod_params.advanced_search}" />
 				{if $smod_params.advanced_search_help eq 'y'}
-					<a href="{service controller=search action=help modal=1}" data-toggle="modal" data-target="#bootstrap-modal">{tr}Search Help{/tr} {icon _id=help}</a>
+					{capture name=advanced_search_help}
+						{include file='advanced_search_help.tpl'}
+					{/capture}
+					{add_help show='y' title="{tr}Search Help{/tr}" id="advanced_search_help"}
+						{$smarty.capture.advanced_search_help}
+					{/add_help}
 				{/if}
 			{/if}
 			{if $smod_params.compact eq "y"}
 				{icon _id="magnifier" class="search_mod_magnifier icon"}
-				{if $prefs.mobile_mode neq "y"}<div class="search_mod_buttons box" style="display:none; position: absolute; left: 0; padding: 0 1em; z-index: 2; white-space: nowrap;">{/if} {* mobile *}
+				{if $prefs.mobile_mode neq "y"}<div class="search_mod_buttons box" style="display:none; position: absolute; right: 0; padding: 0 1em; z-index: 2; white-space: nowrap;">{/if} {* mobile *}
 			{/if}
 			{if $smod_params.show_search_button eq 'y'}
-					<input type = "submit" class = "tips{if $smod_params.default_button eq 'search'} button_default{/if}"
+					<input type = "submit" class = "wikiaction tips{if $smod_params.default_button eq 'search'} button_default{/if}"
 						   name = "search" value = "{$smod_params.search_submit|escape}"
 							title="{tr}Search{/tr}|{tr}Search for text throughout the site.{/tr}"
 							onclick = "$('#search-module-form{$search_mod_usage_counter}').attr('action', '{$smod_params.search_action|escape:javascript}').attr('page_selected','');" />
 				{/if}
 			{if $smod_params.show_go_button eq 'y'}
-					<input type = "submit" class = "tips{if $smod_params.default_button eq 'go'} button_default{/if}"
+					<input type = "submit" class = "wikiaction tips{if $smod_params.default_button eq 'go'} button_default{/if}"
 						   name = "go" value = "{$smod_params.go_submit|escape}"
 							title="{tr}Search{/tr}|{tr}Go directly to a page, or search in page titles if exact match is not found.{/tr}"
 							onclick = "$('#search-module-form{$search_mod_usage_counter}').attr('action', '{$smod_params.go_action|escape:javascript}').attr('page_selected','');
@@ -82,7 +87,7 @@
 					<input type="hidden" name="exact_match" value="" />
 				{/if}
 			{if $smod_params.show_edit_button eq 'y' and $tiki_p_edit eq 'y'}
-					<input type = "submit" class = "tips{if $smod_params.default_button eq 'edit'} button_default{/if}"
+					<input type = "submit" class = "wikiaction tips{if $smod_params.default_button eq 'edit'} button_default{/if}"
 						   name = "edit" value = "{$smod_params.edit_submit|escape}"
 							title="{tr}Search{/tr}|{tr}Edit existing page or create a new one.{/tr}"
 							onclick = "$('#search-module-form{$search_mod_usage_counter} input[name!={if $smod_params.search_action eq 'tiki-searchindex.php'}\'filter~content\'{else}\'find\'{/if}]').attr('name', '');

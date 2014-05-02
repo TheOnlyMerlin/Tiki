@@ -10,13 +10,16 @@
 
 $section = "galleries";
 require_once ('tiki-setup.php');
-$imagegallib = TikiLib::lib('imagegal');
-$statslib = TikiLib::lib('stats');
+include_once ("lib/imagegals/imagegallib.php");
+include_once ('lib/stats/statslib.php');
 
 $access->check_feature('feature_galleries');
 
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	global $categlib;
+	if (!is_object($categlib)) {
+		include_once ('lib/categories/categlib.php');
+	}
 }
 
 if (!isset($_REQUEST['imageId'])) {

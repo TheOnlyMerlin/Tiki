@@ -1,10 +1,4 @@
-{extends 'layout_view.tpl'}
-
-{block name="title"}
 	{title}{$title|escape}{/title}
-{/block}
-
-{block name="content"}
 	{if $birth_date}
 		<form class="age-validation form-horizontal" method="post" action="{service controller=user_conditions action=age_validation}">
 			<p>{tr _0=$prefs.conditions_minimum_age _1=$birth_date}To login to this site you must be %0 years old, which does not match the birthdate of %1 you provided.{/tr}</p>
@@ -29,4 +23,3 @@
             </div>
 		</form>
 	{/if}
-{/block}

@@ -79,12 +79,9 @@ function wikiplugin_trade_info()
 
 function wikiplugin_trade( $data, $params, $offset )
 {
-	global $prefs, $user;
-	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
-	$headerlib = TikiLib::lib('header');
-	$paymentlib = TikiLib::lib('payment');
+	global $smarty, $userlib, $prefs, $user, $headerlib;
 	global $cclitelib; require_once 'lib/payment/cclitelib.php';
+	global $paymentlib; require_once 'lib/payment/paymentlib.php';
 	static $iPluginTrade = 0;
 
 	$default = array( 'inputtitle'=>'', 'wanted' => 'n', 'action' => tra('Continue'), 'registry' => '', 'currency' => '' );

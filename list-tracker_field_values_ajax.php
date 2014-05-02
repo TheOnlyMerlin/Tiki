@@ -9,7 +9,7 @@
 // $Id$
 
 require_once('tiki-setup.php');
-$trklib = TikiLib::lib('trk');
+global $trklib; include_once('lib/trackers/trackerlib.php');
 $err = false;
 
 if ($prefs['feature_trackers'] !== 'y' || $prefs['feature_jquery'] !== 'y' || $prefs['feature_jquery_autocomplete'] !== 'y' ||

@@ -1,6 +1,5 @@
 {* $Id$ *}
 {if $cant > 0}
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		<th width="100">&nbsp;</th>
@@ -21,12 +20,11 @@
 		<td class="text">{$item->userId}</td>
 		<td class="text">{$item->tags}</td>
 			{include file='tiki-list_kaltura_entries_add_info.tpl'}	
-		<td class="text"><a href="#" title="{tr}Information{/tr}" {popup trigger="onmouseover" fullhtml="1" sticky=true text=$smarty.capture.add_info|escape:"javascript"|escape:"html" left=true}>{icon _id='information' class='' title='{tr}More Information{/tr}'}</a><a href="#" title="{tr}Actions{/tr}" {popup trigger="onclick" sticky=1 fullhtml="1" text=$smarty.capture.actions|escape:"javascript"|escape:"html"}>{icon _id='wrench' class='' title='{tr}Actions{/tr}'}</a></td>
+		<td class="text"><a href="#" {popup trigger="onmouseover" fullhtml="1" sticky=true text=$smarty.capture.add_info|escape:"javascript"|escape:"html" left=true}>{icon _id='information' class='' title='{tr}More Information{/tr}'}</a><a href="#" {popup trigger="onclick" sticky=1 fullhtml="1" text=$smarty.capture.actions|escape:"javascript"|escape:"html"}>{icon _id='wrench' class='' title='{tr}Actions{/tr}'}</a></td>
 	</tr>
 		{/if}
 	{/foreach}
 </table>
-</div>
 {else}
 {remarksbox type="info" title="{tr}No entries{/tr}"}
 {tr}No media entries found.{/tr} <a href="tiki-kaltura_upload.php">{tr}Click here{/tr}</a> {tr}to upload.{/tr}{/remarksbox}

@@ -27,11 +27,6 @@ class RatingLib extends TikiDb_Bridge
 		return $this->get_user_vote($target, $type, $objectId);
 	}
 
-	function get_vote_comment_author( $comment_author, $type, $objectId )
-	{
-		return $this->get_user_vote($comment_author, $type, $objectId);
-	}
-
 	function convert_rating_sort( & $sort_mode, $type, $objectKey )
 	{
 		if ( preg_match('/^adv_rating_(\d+)_(asc|desc)$/', $sort_mode, $parts) ) {
@@ -141,11 +136,12 @@ class RatingLib extends TikiDb_Bridge
 	function record_user_vote( $user, $type, $objectId, $score, $time = null )
 	{
 		global $tikilib, $prefs;
+
 		if ( ! $this->is_valid($type, $score, $objectId) ) {
-            return false;
+			return false;
 		}
 
-        if ( is_null($time) ) {
+		if ( is_null($time) ) {
 			$time = time();
 		}
 
@@ -179,19 +175,15 @@ class RatingLib extends TikiDb_Bridge
 
 	function is_valid( $type, $value, $objectId )
 	{
-		$options = $this->get_options($type, $objectId, false, $hasLabel);
+		$options = $this->get_options($type, $objectId);
 
-        if($hasLabel){
-            return array_key_exists($value, $options);
-        }
-		    return in_array($value, $options);
-
+		return in_array($value, $options);
 	}
 
-	function get_options( $type, $objectId, $skipOverride = false, &$hasLabels = false )
+	function get_options( $type, $objectId, $skipOverride = false )
 	{
 		$pref = 'rating_default_options';
-        $expectedArray = true;
+
 		switch( $type ) {
 			case 'wiki page':
 				$pref = 'wiki_simple_ratings_options';
@@ -204,12 +196,10 @@ class RatingLib extends TikiDb_Bridge
 				break;
 			case 'forum':
 				$pref = 'wiki_comments_simple_ratings_options';
-                $expectedArray = false;
 				break;
 		}
 
-		global $tikilib,
-               $prefs;
+		global $tikilib;
 
 		$override = $this->get_override($type, $objectId);
 
@@ -217,16 +207,7 @@ class RatingLib extends TikiDb_Bridge
 			return $override;
 		}
 
-        $value = $prefs[$pref];
-
-        if ( is_string($value) && strpos($value, '=') !== false ){
-            $hasLabels = true;
-            $parser = new WikiLingo\Utilities\Parameters\Parser();
-            $parsedPref = $parser->parse($value);
-            return $parsedPref;
-        }
-
-		return $tikilib->get_preference($pref, range(1, 5), $expectedArray);
+		return $tikilib->get_preference($pref, range(1, 5), true);
 	}
 
 	function set_override($type, $objectId, $value)
@@ -239,7 +220,8 @@ class RatingLib extends TikiDb_Bridge
 
 	function get_override($type, $objectId)
 	{
-		$attributelib = TikiLib::lib('attribute');
+		global $attributelib;
+		require_once('lib/attributes/attributelib.php');
 		$attrs = $attributelib->get_attributes($type, $objectId);
 		end($attrs);
 		$key = key($attrs);
@@ -325,23 +307,14 @@ class RatingLib extends TikiDb_Bridge
 			$votings[$user_voting['optionId']]++;
 		}
 
-		$voteOptionsOverride = $this->get_options($type, $threadId, false, $hasLabels);
+		$voteOptionsOverride = $this->get_options($type, $threadId);
 		ksort($voteOptionsOverride);
 		$voteOptionsGeneral = $this->get_options($type, $threadId, true);
 		ksort($voteOptionsGeneral);
 
-        if ($hasLabels){
-            ksort($voteOptionsOverride);
-            $overrideMin = key($voteOptionsOverride);
-            end($voteOptionsOverride);
-            $overrideMax = key($voteOptionsOverride);
-        }
-        else
-        {
-            ksort($voteOptionsOverride);
-            $overrideMin = reset($voteOptionsOverride);
-            $overrideMax = end($voteOptionsOverride);
-        }
+
+		$overrideMin = (int)$voteOptionsOverride[0];
+		$overrideMax = (int)$voteOptionsOverride[count($voteOptionsOverride) - 1];
 
 		//$generalMin = (int)$voteOptionsGeneral[0];
 		//$generalMax = (int)$voteOptionsGeneral[count($voteOptionsGeneral) - 1];
@@ -492,7 +465,7 @@ class RatingLib extends TikiDb_Bridge
 
 	function get_options_smiles($type, $objectId = 0, $sort = false)
 	{
-		$options = $this->get_options($type, $objectId, false, $hasLabels);
+		$options = $this->get_options($type, $objectId);
 		$colors = $this->get_options_smiles_colors();
 
 		$optionsAsKeysSorted = array();

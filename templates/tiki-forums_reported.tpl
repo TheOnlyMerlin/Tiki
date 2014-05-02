@@ -1,7 +1,7 @@
-{title help="Forums" admpage="forums"}{tr _0=$forum_info.name}Reported messages for forum %0{/tr}{/title}
+{title help="Forums" admpage="forums"}{tr}Reported messages for forum{/tr}&nbsp;{$forum_info.name}{/title}
 
-<div class="t_navbar">
-	{button href="tiki-view_forum.php?forumId=$forumId" class="btn btn-default" _text="{tr}Back to forum{/tr}"}
+<div class="navbar">
+	{button href="tiki-view_forum.php?forumId=$forumId" _text="{tr}Back to forum{/tr}"}
 </div>
 
 <h2>{tr}List of messages{/tr} ({$cant})</h2>
@@ -16,7 +16,7 @@
 <td>
 	<small>{tr}Find{/tr}</small>
 	<input size="8" type="text" name="find" value="{$find|escape}">
-	<input type="submit" class="btn btn-default btn-sm" name="filter" value="{tr}Filter{/tr}">
+	<input type="submit" class="btn btn-default" name="filter" value="{tr}Filter{/tr}">
 </td>
 </tr>
 </table>	
@@ -38,10 +38,10 @@
 <th>{tr}Message{/tr}</th>
 <th>{tr}Reported by{/tr}</th>
 </tr>
-
+{cycle values="odd,even" print=false}
 {section name=ix loop=$items}
-<tr>
-	<td class="checkbox-cell">
+<tr class="{cycle}">
+	<td class="checkbox">
 	  <input type="checkbox" name="msg[{$items[ix].threadId}]">
 	</td>
 	<td class="text">
@@ -56,7 +56,7 @@
 {/section}
 </table>
 {if $items}
-{tr}Perfom action with checked:{/tr} <input type="submit" class="btn btn-warning btn-sm" name="del" value=" {tr}Un-report{/tr} ">
+{tr}Perfom action with checked:{/tr} <input type="submit" class="btn btn-warning" name="del" value=" {tr}Un-report{/tr} ">
 {/if}
 
 </form>

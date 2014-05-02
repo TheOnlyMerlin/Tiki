@@ -19,18 +19,12 @@ function wikiplugin_customsearch_info()
 		'tags' => array('advanced'),
 		'params' => array(
 			'wiki' => array(
-				'required' => false,
+				'required' => true,
 				'name' => tra('Template wiki page'),
 				'description' => tra('Wiki page where search user interface template is found'),
 				'filter' => 'pagename',
 				'default' => '',
 				'profile_reference' => 'wiki_page',
-			),
-			'tpl' => array(
-				'required' => false,
-				'name' => tra('Template file'),
-				'description' => tra('TPL file where search user interface template is found'),
-				'default' => '',
 			),
 			'id' => array(
 				'required' => false,
@@ -58,8 +52,8 @@ function wikiplugin_customsearch_info()
 				'name' => tra('Return users to same search parameters on coming back to the search page after leaving'),
 				'description' => tra('In the same session, return users to same search parameters on coming back to the search page after leaving'),
 				'options' => array(
-					array('text' => tra('No'), 'value' => '0'),
 					array('text' => tra('Yes'), 'value' => '1'),
+					array('text' => tra('No'), 'value' => '0'),
 				),
 				'filter' => 'digits',
 				'default' => '0',
@@ -83,8 +77,8 @@ function wikiplugin_customsearch_info()
 				'name' => tra('Search On Load'),
 				'description' => tra('Execute the search when the page loads (default: Yes)'),
 				'options' => array(
-					array('text' => tra('No'), 'value' => '0'),
 					array('text' => tra('Yes'), 'value' => '1'),
+					array('text' => tra('No'), 'value' => '0'),
 				),
 				'filter' => 'digits',
 				'default' => '1',
@@ -94,8 +88,8 @@ function wikiplugin_customsearch_info()
 				'name' => tra('Require non-empty search text'),
 				'description' => tra('Require first input field to be filled for search to trigger'),
 				'options' => array(
-					array('text' => tra('No'), 'value' => '0'),
 					array('text' => tra('Yes'), 'value' => '1'),
+					array('text' => tra('No'), 'value' => '0'),
 				),
 				'filter' => 'digits',
 				'default' => '0',
@@ -107,9 +101,9 @@ function wikiplugin_customsearch_info()
 function wikiplugin_customsearch($data, $params)
 {
 	global $prefs;
-	if (empty($params['wiki']) && empty($params['tpl'])) {
+	if (!isset($params['wiki'])) {
 		return tra('Template is not specified');
-	} elseif (!empty($params['wiki']) && !TikiLib::lib('tiki')->page_exists($params['wiki'])) {
+	} elseif (!TikiLib::lib('tiki')->page_exists($params['wiki'])) {
 		return tra('Template page not found');
 	}
 	if (isset($params['id'])) {
@@ -153,9 +147,6 @@ function wikiplugin_customsearch($data, $params)
 	if (!isset($params['searchonload'])) {
 		$params['searchonload'] = 1;
 	}
-	if (!isset($params['requireinput'])) {
-		$params['requireinput'] = false;
-	}
 
 	$definitionKey = md5($data);
 	$matches = WikiParser_PluginMatcher::match($data);
@@ -190,11 +181,7 @@ function wikiplugin_customsearch($data, $params)
 		'customsearch'
 	);
 
-	if (!empty($params['wiki'])) {
-		$wikitpl = "tplwiki:" . $params['wiki'];
-	} else {
-		$wikitpl = $params['tpl'];
-	}
+	$wikitpl = "tplwiki:" . $params['wiki'];
 	$wikicontent = TikiLib::lib('smarty')->fetch($wikitpl);
 	TikiLib::lib('parser')->parse_wiki_argvariable($wikicontent);
 
@@ -259,14 +246,13 @@ var customsearch = {
 			selector = '#customsearch_' + cs.id;
 		}
 
-		$(selector).tikiModal(cs.options.searchfadetext);
+		$(selector).modal(cs.options.searchfadetext);
 
 		cs._load(function (data) {
-			$(selector).tikiModal();
+			$(selector).modal();
 			$(cs.options.results).html(data);
 			$(document).trigger('pageSearchReady');
 		});
-		cs.store_query = '';
 	}),
 	init: function () {
 		var that = this;
@@ -372,7 +358,6 @@ customsearch._load = function (receive) {
 		searchid: this.id,
 		offset: customsearch.offset,
 		maxRecords: this.maxRecords,
-		store_query: this.store_query,
 		page: " . json_encode($page) . ",
 		recalllastsearch: $recalllastsearch
 	};
@@ -394,7 +379,6 @@ customsearch._load = function (receive) {
 customsearch.sort_mode = " . json_encode($sort_mode) . ";
 customsearch.offset = $offset;
 customsearch.maxRecords = $maxRecords;
-customsearch.store_query ='';
 customsearch.init();
 ";
 
@@ -734,36 +718,4 @@ $('#{$fieldid_from}_dptxt,#{$fieldid_to}_dptxt').change(function() {
 ";
 
 	return $picker;
-}
-
-function cs_design_store($id, $fieldname, $fieldid, $arguments, $default, &$script)
-{
-	global $prefs;
-	if ($prefs['storedsearch_enabled'] != 'y') {
-		return;
-	}
-
-	$document = new DOMDocument;
-	$element = $document->createElement('input');
-	$element->setAttribute('type', 'submit');
-	cs_design_setbasic($element, $fieldid, $fieldname, $arguments);
-	$document->appendChild($element);
-
-	$script .= "
-
-$('#$fieldid').click(function() {
-	$(this).serviceDialog({
-		title: $(this).val(),
-		controller: 'search_stored',
-		action: 'select',
-		success: function (data) {
-			customsearch.store_query = data.queryId;
-			customsearch.load();
-		}
-	});
-	return false;
-});
-";
-
-	return $document->saveHTML();
 }

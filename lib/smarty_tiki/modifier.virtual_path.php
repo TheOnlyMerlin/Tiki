@@ -17,7 +17,7 @@ function smarty_modifier_virtual_path($fileId, $type = 'file')
 {
 	global $prefs;
 	global $base_url;
-	$filegallib = TikiLib::lib('filegal');
+	global $filegallib; include_once('lib/filegals/filegallib.php');
 
 	return  $base_url . 'tiki-webdav.php' . ($filegallib->get_full_virtual_path($fileId, $type));
 }

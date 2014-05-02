@@ -18,7 +18,6 @@ $inputConfiguration = array(
     'searchLang' => 'word',
     'words' =>'text',
     'boolean' =>'word',
-	'storeAs' => 'int',
     )
   )
 );
@@ -167,24 +166,12 @@ function tiki_searchindex_get_results($filter, $offset, $maxRecords)
 	global $prefs;
 
 	$unifiedsearchlib = TikiLib::lib('unifiedsearch');
-
-	$query = new Search_Query;
-	$unifiedsearchlib->initQueryBase($query);
-	$query = $unifiedsearchlib->buildQuery($filter, $query);
+	$query = $unifiedsearchlib->buildQuery($filter);
+	$query->setRange($offset, $maxRecords);
 
 	if (isset($_REQUEST['sort_mode']) && $order = Search_Query_Order::parse($_REQUEST['sort_mode'])) {
 		$query->setOrder($order);
 	}
-
-	if ($prefs['storedsearch_enabled'] == 'y' && ! empty($_POST['storeAs'])) {
-		$storedsearch = TikiLib::lib('storedsearch');
-		$storedsearch->storeUserQuery($_POST['storeAs'], $query);
-		TikiLib::lib('smarty')->assign('display_msg', tr('Your query was stored.'));
-	}
-
-	$unifiedsearchlib->initQueryPermissions($query);
-
-	$query->setRange($offset, $maxRecords);
 
 	if ($prefs['feature_search_stats'] == 'y') {
 		$stats = TikiLib::lib('searchstats');

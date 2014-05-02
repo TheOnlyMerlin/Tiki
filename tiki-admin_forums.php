@@ -75,7 +75,6 @@ if (isset($_REQUEST["save"])) {
 	$_REQUEST['topic_summary'] = isset($_REQUEST['topic_summary']) ? 'y' : 'n';
 	$_REQUEST['topic_smileys'] = isset($_REQUEST['topic_smileys']) ? 'y' : 'n';
 	$_REQUEST['ui_avatar'] = isset($_REQUEST['ui_avatar']) ? 'y' : 'n';
-	$_REQUEST['ui_rating_choice_topic'] = isset($_REQUEST['ui_rating_choice_topic']) ? 'y' : 'n';
 	$_REQUEST['ui_flag'] = isset($_REQUEST['ui_flag']) ? 'y' : 'n';
 	$_REQUEST['ui_email'] = isset($_REQUEST['ui_email']) ? 'y' : 'n';
 	$_REQUEST['ui_posts'] = isset($_REQUEST['ui_posts']) ? 'y' : 'n';
@@ -112,7 +111,7 @@ if (isset($_REQUEST["save"])) {
 		$_REQUEST['inbound_pop_password'], trim($_REQUEST['outbound_address']),
 		$_REQUEST['outbound_mails_for_inbound_mails'], $_REQUEST['outbound_mails_reply_link'],
 		$_REQUEST['outbound_from'], $_REQUEST['topic_smileys'], $_REQUEST['topic_summary'],
-		$_REQUEST['ui_avatar'], $_REQUEST['ui_rating_choice_topic'], $_REQUEST['ui_flag'], $_REQUEST['ui_posts'],
+		$_REQUEST['ui_avatar'], $_REQUEST['ui_flag'], $_REQUEST['ui_posts'],
 		$_REQUEST['ui_level'], $_REQUEST['ui_email'], $_REQUEST['ui_online'],
 		$_REQUEST['approval_type'], $_REQUEST['moderator_group'], $_REQUEST['forum_password'],
 		$_REQUEST['forum_use_password'], $_REQUEST['att'], $_REQUEST['att_store'],
@@ -133,7 +132,8 @@ if (isset($_REQUEST["save"])) {
 if (!empty($_REQUEST['duplicate']) && !empty($_REQUEST['name']) && !empty($_REQUEST['forumId'])) {
 	$newForumId = $commentslib->duplicate_forum($_REQUEST['forumId'], $_REQUEST['name'], isset($_REQUEST['description']) ? $_REQUEST['description'] : '');
 	if (isset($_REQUEST['dupCateg']) && $_REQUEST['dupCateg'] == 'on' && $prefs['feature_categories'] == 'y') {
-		$categlib = TikiLib::lib('categ');
+		global $categlib;
+		include_once ('lib/categories/categlib.php');
 		$cats = $categlib->get_object_categories('forum', $_REQUEST['forumId']);
 		$catObjectId = $categlib->add_categorized_object('forum', $newForumId, isset($_REQUEST['description']) ? $_REQUEST['description'] : '', $_REQUEST['name'], "tiki-view_forum.php?forumId=$newForumId");
 		foreach ($cats as $cat) {
@@ -141,7 +141,8 @@ if (!empty($_REQUEST['duplicate']) && !empty($_REQUEST['name']) && !empty($_REQU
 		}
 	}
 	if (isset($_REQUEST['dupPerms']) && $_REQUEST['dupPerms'] == 'on') {
-		$userlib = TikiLib::lib('user');
+		global $userlib;
+		include_once ('lib/userslib.php');
 		$userlib->copy_object_permissions($_REQUEST['forumId'], $newForumId, 'forum');
 	}
 	$_REQUEST['forumId'] = $newForumId;
@@ -180,7 +181,6 @@ if ($_REQUEST["forumId"]) {
 	$info["topic_summary"] = 'n';
 	$info["topic_smileys"] = 'n';
 	$info["ui_avatar"] = 'y';
-	$info["ui_rating_choice_topic"] = 'n';
 	$info["ui_flag"] = 'y';
 	$info["ui_posts"] = 'n';
 	$info['ui_level'] = 'n';

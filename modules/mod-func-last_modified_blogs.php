@@ -31,8 +31,9 @@ function module_last_modified_blogs_info()
  */
 function module_last_modified_blogs($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
-	$bloglib = TikiLib::lib('blog');
+	global $smarty;
+
+	global $bloglib; require_once('lib/blogs/bloglib.php');
 
 	$ranking = $bloglib->list_blogs(0, $mod_reference["rows"], 'lastModif_desc', '', 'blog');
 	

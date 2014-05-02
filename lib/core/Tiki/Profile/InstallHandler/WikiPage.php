@@ -182,7 +182,8 @@ class Tiki_Profile_InstallHandler_WikiPage extends Tiki_Profile_InstallHandler
 			TikiLib::lib('geo')->set_coordinates('wiki page', $this->name, $this->geolocation);
 		}
 
-		$multilinguallib = TikiLib::lib('multilingual');
+		global $multilinguallib;
+		require_once 'lib/multilingual/multilinguallib.php';
 
 		$current = $tikilib->get_page_id_from_name($finalName);
 		foreach ( $this->translations as $targetName ) {
@@ -194,7 +195,7 @@ class Tiki_Profile_InstallHandler_WikiPage extends Tiki_Profile_InstallHandler
 		}
 
 		if (!empty($this->structure)) {
-			$structlib = TikiLib::lib('struct');
+			global $structlib; include_once 'lib/structures/structlib.php';
 			$structlib->s_create_page($this->structure, 0, $finalName, '', $this->structure);
 		}
 

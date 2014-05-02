@@ -62,7 +62,8 @@ class Tiki_Profile_InstallHandler_Category extends Tiki_Profile_InstallHandler
 		$this->replaceReferences($this->migrateparent);
 		$this->replaceReferences($this->items);
 		
-		$categlib = TikiLib::lib('categ');
+		global $categlib;
+		require_once 'lib/categories/categlib.php';
 		if ($id = $categlib->exist_child_category($this->parent, $this->name)) {
 			$categlib->update_category($id, $this->name, $this->description, $this->parent);
 		} else {

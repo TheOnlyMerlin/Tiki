@@ -30,9 +30,8 @@ function module_users_own_rank_info()
  */
 function module_users_own_rank( $mod_reference, $module_params )
 {
-	global $user;
-	$scorelib = TikiLib::lib('score');
-	$smarty = TikiLib::lib('smarty');
+	global $scorelib, $smarty, $user;
+	include_once('lib/score/scorelib.php');
 
 	$position = $scorelib->user_position($user);
 	$smarty->assign('position', $position);
