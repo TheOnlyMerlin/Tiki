@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,12 +11,19 @@
 
 // param: $contributionItemId: id of the comment if in coment/forum
 
-require_once('tiki-setup.php');
-$access->check_script($_SERVER["SCRIPT_NAME"], basename(__FILE__));
+if (strpos($_SERVER['SCRIPT_NAME'],basename(__FILE__)) !== FALSE) {
+  //smarty is not there - we need setup
+  require_once('tiki-setup.php');
+  $smarty->assign('msg',tra('This script cannot be called directly'));
+  $smarty->display('error.tpl');
+  die;
+}
+
+require_once('tiki-setup.php'); 
 global $prefs;
 
 if ($prefs['feature_contribution'] == 'y') {
-	$contributionlib = TikiLib::lib('contribution');
+	global $contributionlib; include_once('lib/contribution/contributionlib.php');
 	$contributions = $contributionlib->list_contributions();
 	if (!empty($_REQUEST['contributions'])) {
 		for ($i = $contributions['cant'] - 1; $i >= 0; -- $i) {

@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,13 +7,17 @@
 
 $section = 'cms';
 require_once ('tiki-setup.php');
+
 include_once ('lib/rankings/ranklib.php');
+
+$smarty->assign('headtitle',tra('Rankings'));
+
 $access->check_feature(array('feature_articles', 'feature_cms_rankings'));
 $access->check_permission('tiki_p_read_article');
 
 $allrankings = array(
 	array(
-	'name' => tra('Top Articles'),
+	'name' => tra('Top articles'),
 	'value' => 'cms_ranking_top_articles'
 ),
 	array(

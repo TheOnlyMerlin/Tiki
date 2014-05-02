@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -51,7 +51,7 @@ $smarty->assign_by_ref('info', $info);
 if (isset($_REQUEST["remove"])) {
 	if (is_array($_REQUEST["remove"])) {
 		check_ticket('dir-admin-sites');
-		foreach ($_REQUEST["remove"] as $remid) {
+		foreach($_REQUEST["remove"] as $remid) {
 			$dirlib->dir_remove_site($remid);
 		}
 	} else {
@@ -84,7 +84,7 @@ if (isset($_REQUEST["save"])) {
 	else $_REQUEST["isValid"] = 'n';
 	$siteId = $dirlib->dir_replace_site($_REQUEST["siteId"], $_REQUEST["name"], $_REQUEST["description"], $_REQUEST["url"], $_REQUEST["country"], $_REQUEST["isValid"]);
 	$dirlib->remove_site_from_categories($siteId);
-	foreach ($_REQUEST["siteCats"] as $acat) {
+	foreach($_REQUEST["siteCats"] as $acat) {
 		$dirlib->dir_add_site_to_category($siteId, $acat);
 	}
 	$info = array();

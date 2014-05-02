@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -49,29 +49,29 @@ class Text_Diff_Renderer_character_inline extends Tiki_Text_Diff_Renderer
 
     function _getChange($lines)
     {
-	return str_replace("<br />", "↵<br />", join("", $lines));
+	return str_replace("<br />", "↵<br />", join ("", $lines));
     }
 
     function _lines($type, $lines, $prefix = '')
     {
-		if ($type == 'context') {
-			$this->diff .= join("", $lines);
-		} elseif ($type == 'added' || $type == 'change-added') {
-			$t = $this->_getChange($lines);
+    	if ($type == 'context') {
+		$this->diff .= join ("", $lines);
+    	} elseif ($type == 'added' || $type == 'change-added') {
+		$t = $this->_getChange($lines);
 	        if (!empty($t))
 	            $this->diff .= "<span class='diffadded'>$t</span>";
-		} elseif ($type == 'deleted' || $type == 'change-deleted') {
-			$t = $this->_getChange($lines);
+    	} elseif ($type == 'deleted' || $type == 'change-deleted') {
+		$t = $this->_getChange($lines);
 	        if (!empty($t))
 	            $this->diff .= "<span class='diffinldel'>$t</span>";
-		} elseif ($type == 'changed') {
-			$t = $this->_getChange($lines[0]);
-			if (!empty($t))
-				$this->diff .= "<span class='diffinldel'>$t</span>";
-			$t = $this->_getChange($lines[1]);
-			if (!empty($t))
-				$this->diff .= "<span class='diffadded'>$t</span>";
-		}
+	} elseif ($type == 'changed') {
+		$t = $this->_getChange($lines[0]);
+		if (!empty($t))
+			$this->diff .= "<span class='diffinldel'>$t</span>";
+		$t = $this->_getChange($lines[1]);
+		if (!empty($t))
+			$this->diff .= "<span class='diffadded'>$t</span>";
+	}
     }
 
     function _context($lines)

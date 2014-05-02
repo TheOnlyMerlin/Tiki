@@ -1,39 +1,33 @@
 {* $Id$ *}
 
-{title admpage="articles" help="Articles"}{tr}Admin Article Topics{/tr}{/title}
+{title help="Articles"}{tr}Admin Topics{/tr}{/title}
 
-<h2>{tr}Add topic{/tr}</h2>
+<h2>{tr}Create a new topic{/tr}</h2>
 
-<form enctype="multipart/form-data" action="tiki-admin_topics.php" method="post" class="form-horizontal">
-    <div class="form-group">
-        <label class="col-sm-2 control-label" for="name">{tr}Name{/tr}</label>
-        <div class="col-sm-10">
-            <input type="text" name="name" id="name" class="form-control">
-        </div>
-	</div>
-    <div class="form-group">
-        <label class="col-sm-2 control-label" for="image">{tr}Image{/tr}</label>
-        <div class="col-sm-10">
-	    	<input type="hidden" name="MAX_FILE_SIZE" value="1000000" class="form-control">
-			<input name="userfile1" type="file" class="form-control">
-		</div>
-	</div>
-    <div class="form-group">
-        <label class="col-sm-2 control-label" for="notificationemail">{tr}Notification Email{/tr}</label>
-        <div class="col-sm-10">
-			{tr}You will be able to add a notification email per article topic when you edit the topic after its creation{/tr}
-		</div>
-	</div>
-    <div class="form-group">
-        <div class="col-sm-10 col-sm-offset-2">
-			<input type="submit" class="btn btn-default btn-sm" name="addtopic" value="{tr}Add{/tr}">
-	    </div>
-	</div>
+<form enctype="multipart/form-data" action="tiki-admin_topics.php" method="post">
+	<table class="formcolor">
+		<tr>
+			<td>{tr}Topic Name{/tr}</td>
+			<td><input type="text" name="name" /></td>
+		</tr>
+		<tr>
+			<td>{tr}Upload Image{/tr}</td>
+			<td>
+				<input type="hidden" name="MAX_FILE_SIZE" value="1000000" />
+				<input name="userfile1" type="file" />
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td>
+				<input type="submit" name="addtopic" value="{tr}Add{/tr}" />
+			</td>
+		</tr>
+	</table>
 </form>
 
-<h2>{tr}Topics{/tr}</h2>
-<div class="table-responsive">
-<table class="table normal">
+<h2>{tr}List of topics{/tr}</h2>
+<table class="normal">
 	<tr>
 		<th>{tr}ID{/tr}</th>
 		<th>{tr}Name{/tr}</th>
@@ -41,28 +35,32 @@
 		<th>{tr}Active{/tr}</th>
 		<th>{tr}Articles{/tr}</th>
 		{if $prefs.feature_submissions eq 'y'}<th>{tr}Submissions{/tr}</th>{/if}
-		<th>{tr}Actions{/tr}</th>
+		<th>{tr}Action{/tr}</th>
 	</tr>
-
+	{cycle print=false values="even,odd"}
 	{section name=user loop=$topics}
-		<tr>
-			<td class="integer">{$topics[user].topicId}</td>
-			<td class="text">
+		<tr class="{cycle}">
+			<td>{$topics[user].topicId}</td>
+			<td>
 				<a class="link" href="tiki-view_articles.php?topic={$topics[user].topicId}">{$topics[user].name|escape}</a>
 			</td>
-			<td class="text">
+			<td>
 				{if $topics[user].image_size}
-					<img alt="{tr}topic image{/tr}" src="article_image.php?image_type=topic&amp;id={$topics[user].topicId}&amp;reload=1">
+					<img alt="{tr}topic image{/tr}" src="article_image.php?image_type=topic&amp;id={$topics[user].topicId}&amp;reload=1" />
 				{else}
 					&nbsp;
 				{/if}
 			</td>
-			<td class="text">{$topics[user].active}</td>
-			<td class="integer">{$topics[user].arts}</td>
+			<td>{$topics[user].active}</td>
+			<td>{$topics[user].arts}</td>
 			{if $prefs.feature_submissions eq 'y'}<td>{$topics[user].subs}</td>{/if}
-			<td class="action">
+			<td>
 				 <a class="link" href="tiki-edit_topic.php?topicid={$topics[user].topicId}">{icon _id='page_edit'}</a>
-				{permission_link mode=icon type=topic permType=articles id=$topics[user].topicId title=$topics[user].name}
+				{if $topics[user].individual eq 'y'}
+					<a title="{tr}Active Permissions{/tr}" class="link" href="tiki-objectpermissions.php?objectName={$topics[user].name|escape:"url"}&amp;objectType=topic&amp;permType=cms&amp;objectId={$topics[user].topicId}">{icon _id='key_active' alt="{tr}Active Permissions{/tr}"}</a>
+				{else}
+					<a title="{tr}Permissions{/tr}" class="link" href="tiki-objectpermissions.php?objectName={$topics[user].name|escape:"url"}&amp;objectType=topic&amp;permType=cms&amp;objectId={$topics[user].topicId}">{icon _id='key' alt="{tr}Permissions{/tr}"}</a>
+				{/if}
 				{if $topics[user].active eq 'n'}
 					<a class="link" href="tiki-admin_topics.php?activate={$topics[user].topicId}">{icon _id='accept' alt="{tr}Activate{/tr}" title="{tr}Inactive - Click to Activate{/tr}"}</a>
 				{else}
@@ -73,7 +71,8 @@
 			</td>
 		</tr>
 	{sectionelse}
-		{if $prefs.feature_submissions eq 'y'}{norecords _colspan=7}{else}{norecords _colspan=6}{/if}
+		<tr>
+			<td colspan="{if $prefs.feature_submissions eq 'y'}7{else}6{/if}" class="odd">{tr}No records found{/tr}</td>
+		</tr>
 	{/section}
 </table>
-</div>

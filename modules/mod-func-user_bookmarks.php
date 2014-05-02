@@ -1,40 +1,30 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
 
-/**
- * @return array
- */
-function module_user_bookmarks_info()
-{
+function module_user_bookmarks_info() {
 	return array(
-		'name' => tra('My Bookmarks'),
+		'name' => tra('User bookmarks'),
 		'description' => tra('Lightweight interface to user bookmarks, enabling to view them concisely, do some manipulations and bookmark the page being viewed'),
 		'prefs' => array("feature_user_bookmarks"),
 		'params' => array()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
-function module_user_bookmarks($mod_reference, $module_params)
-{
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+function module_user_bookmarks( $mod_reference, $module_params ) {
+	global $tikilib, $smarty;
 	
-	global $user, $prefs, $tiki_p_create_bookmarks;
-	global $bookmarklib; include_once ('lib/bookmarks/bookmarklib.php');
+	global $bookmarklib, $imagegallib, $user, $prefs, $tiki_p_create_bookmarks;
+	include_once ('lib/bookmarks/bookmarklib.php');
 	
 	$setup_parsed_uri = parse_url($_SERVER["REQUEST_URI"]);
 	
@@ -88,7 +78,7 @@ function module_user_bookmarks($mod_reference, $module_params)
 	
 				// Check if we are bookmarking an article
 				if (strstr($_SERVER["REQUEST_URI"], 'tiki-read_article')) {
-					$artlib = TikiLib::lib('art');
+					global $artlib; require_once 'lib/articles/artlib.php';
 					$info = $artlib->get_article($setup_query_data["articleId"]);
 	
 					$name = $info["title"];
@@ -96,15 +86,14 @@ function module_user_bookmarks($mod_reference, $module_params)
 	
 				// Check if we are bookmarking a file gallery
 				if (strstr($_SERVER["REQUEST_URI"], 'tiki-list_file_gallery')) {
-					$filegallib = TikiLib::lib('filegal');
-					$info = $filegallib->get_file_gallery($setup_query_data["galleryId"]);
+					$info = $tikilib->get_file_gallery($setup_query_data["galleryId"]);
 	
 					$name = $info["name"];
 				}
 	
 				// Check if we are bookmarking an image gallery
 				if (strstr($_SERVER["REQUEST_URI"], 'tiki-browse_gallery') || strstr($_SERVER["REQUEST_URI"], 'tiki-list_gallery')) {
-					$imagegallib = TikiLib::lib('imagegal');
+					include_once ("lib/imagegals/imagegallib.php");
 					$info = $imagegallib->get_gallery($setup_query_data["galleryId"]);
 	
 					$name = $info["name"];
@@ -112,7 +101,7 @@ function module_user_bookmarks($mod_reference, $module_params)
 
 				// Check if we are bookmarking an image
 				if (strstr($_SERVER["REQUEST_URI"], 'tiki-browse_image')) {
-					$imagegallib = TikiLib::lib('imagegal');
+					include_once ("lib/imagegals/imagegallib.php");
 					$info = $imagegallib->get_image($setup_query_data["imageId"]);
 	
 					$name = $info["name"];
@@ -120,19 +109,25 @@ function module_user_bookmarks($mod_reference, $module_params)
 	
 				// Check if we are bookmarking a forum
 				if (strstr($_SERVER["REQUEST_URI"], 'tiki-view_forum')) {
-					$info = TikiLib::lib('comments')->get_forum($setup_query_data["forumId"]);
+					require_once('lib/comments/commentslib.php'); global $commentslib;
+					if (!isset($commentslib)) {
+						$commentslib = new Comments($dbTiki);
+					}
+					$info = $commentslib->get_forum($setup_query_data["forumId"]);
+	
 					$name = $info["name"];
 				}
 	
 				// Check if we are bookmarking a faq
 				if (strstr($_SERVER["REQUEST_URI"], 'tiki-view_faq')) {
-					$info = TikiLib::lib('faq')->get_faq($setup_query_data["faqId"]);
+					$info = $tikilib->get_faq($setup_query_data["faqId"]);
+	
 					$name = $info["title"];
 				}
 	
 				// Check if we are bookmarking a weblog
 				if (strstr($_SERVER["REQUEST_URI"], 'tiki-view_blog')) {
-					$bloglib = TikiLib::lib('blog');
+					global $bloglib; require_once('lib/blogs/bloglib.php');
 					$info = $bloglib->get_blog($setup_query_data["blogId"]);
 	
 					$name = $info["title"];

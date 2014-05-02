@@ -15,7 +15,7 @@
 			 <ul>
 			{foreach from=$typeStat key=type item=list}
 				{foreach from=$list key=what item=nb} 
-					<li>{$what}: {$nb}</li>
+					<li>{tr}{$what}{/tr}: {$nb}</li>
 				{/foreach}
 			{/foreach}
 			</ul>

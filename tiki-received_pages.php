@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,7 +7,7 @@
 
 require_once ('tiki-setup.php');
 include_once ('lib/commcenter/commlib.php');
-$wikilib = TikiLib::lib('wiki');
+include_once ('lib/wiki/wikilib.php');
 $auto_query_args = array('receivedPageId', 'sort_mode', 'offset', 'find', 'sort_modes');
 $access->check_feature('feature_comm');
 $access->check_permission('tiki_p_admin_received_pages');
@@ -62,7 +62,7 @@ if (isset($_REQUEST["save"])) {
 }
 if (!empty($_REQUEST['checked']) && (!empty($_REQUEST['prefix']) || !empty($_REQUEST['postfix']))) {
 	check_ticket('received-pages');
-	foreach ($_REQUEST['checked'] as $page) {
+	foreach($_REQUEST['checked'] as $page) {
 		$newpage = empty($_REQUEST['postfix']) ? $_REQUEST['prefix'] . $page : $page . $_REQUEST['postfix'];
 		if ($tikilib->page_exists($newpage)) {
 			$errors[] = array('error' => 'Page already exists', 'param' => $page);

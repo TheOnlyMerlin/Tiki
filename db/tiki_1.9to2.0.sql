@@ -1,23 +1,16 @@
 # $Id$
 
-#
-# If you are using Tiki 3.x or later, this script will automatically be run by the installer when it detects that your data is from pre 3.x
-#
-# This approach of making one .sql file per version is obsolete. The new system is explained at: http://dev.tiki.org/Database+Schema+Upgrade
-#
-#
-#
-# The following script will update a Tiki database from version 1.9 to 2.0 (which was previously named 1.10)
+# The following script will update a tiki database from version 1.9 to 1.10
 # 
 # To execute this file do the following:
 #
-# $ mysql -f dbname < tiki_1.9to2.0.sql
+# $ mysql -f dbname < tiki_1.9to1.10.sql
 #
 # where dbname is the name of your tiki database.
 #
 # For example, if your tiki database is named tiki (not a bad choice), type:
 #
-# $ mysql -f tiki < tiki_1.9to2.0.sql
+# $ mysql -f tiki < tiki_1.9to1.10.sql
 # 
 # You may execute this command as often as you like, 
 # and may safely ignore any error messages that appear.
@@ -204,7 +197,7 @@ CREATE INDEX login ON users_users (login);
 #2005-12-15 amette - Freetag permissions and menu item
 INSERT INTO users_permissions (permName, permDesc, level, type) VALUES ('tiki_p_view_freetags', 'Can browse freetags', 'basic', 'freetags');
 INSERT INTO users_permissions (permName, permDesc, level, type) VALUES ('tiki_p_freetags_tag', 'Can tag objects', 'registered', 'freetags');
-DELETE FROM `tiki_menu_options` WHERE menuId='42' and type='o' and name='Tags' and url='tiki-browse_freetags.php' and position='27' and perm='tiki_p_view_freetags' and groupname='' ;
+DELETE FROM `tiki_menu_options` WHERE menuId='42' and type='o' and name='Freetags' and url='tiki-browse_freetags.php' and position='27' and perm='tiki_p_view_freetags' and groupname='' ;
 INSERT INTO tiki_menu_options (menuId,type,name,url,position,section,perm,groupname) VALUES (42,'o','Freetags','tiki-browse_freetags.php',27,'feature_freetags','tiki_p_view_freetags','');
 
 #2005-12-16 lfagundes

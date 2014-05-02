@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +7,7 @@
 
 $section = 'file_galleries';
 require_once ('tiki-setup.php');
-$filegallib = TikiLib::lib('filegal');
+include_once ('lib/filegals/filegallib.php');
 
 $access->check_feature('feature_file_galleries');
 
@@ -20,7 +17,7 @@ if (empty($_REQUEST['fileId']) || !($fileInfo = $filegallib->get_file_info($_REQ
 	die;
 }
 
-$gal_info = $filegallib->get_file_gallery($fileInfo['galleryId']);
+$gal_info = $tikilib->get_file_gallery($fileInfo['galleryId']);
 
 $tikilib->get_perm_object($fileInfo['galleryId'], 'file gallery', $gal_info, true);
 

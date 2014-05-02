@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -48,12 +45,12 @@ $users = $userlib->get_users(0, -1, 'login_asc', $_REQUEST['find_users']);
 $ok_users = array();
 $temp_max = count($users['data']);
 for ($i = 0; $i < $temp_max; $i++) {
-	foreach ($online_operators as $op) {
+	foreach($online_operators as $op) {
 		if ($op['user'] == $users['data'][$i]['user']) {
 			unset($users[$i]);
 		}
 	}
-	foreach ($offline_operators as $op) {
+	foreach($offline_operators as $op) {
 		if (isset($users['data'][$i]) && $op['user'] == $users['data'][$i]['user']) {
 			unset($users['data'][$i]);
 		}

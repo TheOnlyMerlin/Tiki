@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -41,5 +38,7 @@ $smarty->assign_by_ref('items', $items["data"]);
 $smarty->assign_by_ref('cant', $items["cant"]);
 include_once ('tiki-section_options.php');
 ask_ticket('dir-ranking');
+$smarty->assign('headtitle', tra('Directory'));
+// Display the template
 $smarty->assign('mid', 'tiki-directory_ranking.tpl');
 $smarty->display("tiki.tpl");

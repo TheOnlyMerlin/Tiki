@@ -7,10 +7,11 @@
 				{if $post_info.comments == 0 && $tiki_p_post_comments eq 'y'}
 					{tr}Leave a comment{/tr}
 				{else}
+					{$post_info.comments}
 					{if $post_info.comments == 1}
-						{tr _0=$post_info.comments}%0 comment{/tr}
+						{tr}comment{/tr}
 					{else}
-						{tr _0=$post_info.comments}%0 comments{/tr}
+						{tr}comments{/tr}
 					{/if}
 				{/if}
 			</a>

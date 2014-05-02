@@ -1,18 +1,23 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_agentinfo_info()
-{
+// Wiki plugin to display a browser client information
+// damian aka damosoft May 2004
+
+function wikiplugin_agentinfo_help() {
+        return tra("Displays browser client info").":<br />~np~{AGENTINFO(info=>IP or SVRSW or BROWSER)/}~/np~";
+}
+
+function wikiplugin_agentinfo_info() {
 	return array(
-		'name' => tra('User Agent Info'),
-		'documentation' => 'PluginAgentinfo',
-		'description' => tra('Show user\'s browser and server information'),
+		'name' => tra( 'User Agent Info' ),
+		'documentation' => tra('PluginAgentinfo'),
+		'description' => tra( 'Displays various information about the client.' ),
 		'prefs' => array('wikiplugin_agentinfo'),
-		'icon' => 'img/icons/computer.png',
 		'params' => array(
 			'info' => array(
 				'required' => false,
@@ -20,23 +25,22 @@ function wikiplugin_agentinfo_info()
 				'description' => tra('Display\'s the visitor\'s IP address (IP or default), browser information (BROWSER), or server software (SVRSW).'),
 				'default' => 'IP',
 				'filter' => 'alpha',
-				'options' => array(
+    			'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('IP address'), 'value' => 'IP'), 
 					array('text' => tra('Server software'), 'value' => 'SVRSW'), 
 					array('text' => tra('Browser'), 'value' => 'BROWSER'), 
-				),
+				),  		
 				
 			),
 		),
 	);
 }
 
-function wikiplugin_agentinfo($data, $params)
-{
+function wikiplugin_agentinfo($data, $params) {
 	global $tikilib;
 	
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 
 	$asetup = '';
 
@@ -48,11 +52,11 @@ function wikiplugin_agentinfo($data, $params)
 		$asetup = $tikilib->get_ip_address();
 	}
 
-	if ($info == 'SVRSW' && isset($_SERVER['SERVER_SOFTWARE'])) {
+	if ($info == 'SVRSW') {
 		$asetup = $_SERVER["SERVER_SOFTWARE"];
 	}
 	
-	if ($info == 'BROWSER' && isset($_SERVER['HTTP_USER_AGENT'])) {
+	if ($info == 'BROWSER') {
 		$asetup = $_SERVER["HTTP_USER_AGENT"];
 	}
 

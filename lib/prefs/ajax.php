@@ -1,14 +1,23 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_ajax_list()
-{
+function prefs_ajax_list() {
 
 	return array(
+
+		'ajax_xajax' => array(
+			'name' => tra('Ajax Xajax'),
+			'description' => tra('Use "xajax" library to "ajaxify" most Tiki pages.'),
+			'help' => 'Ajax',
+			'type' => 'flag',
+			'dependencies' => array(
+				'feature_ajax',
+			),
+		),
 		'ajax_autosave' => array(
 			'name' => tra('Ajax auto-save'),
 			'description' => tra('Saves your edits as you go along enabling you to recover your work after an "interruption". Also enables "Live" preview and is required for wysiwyg plugin processing.'),
@@ -17,21 +26,7 @@ function prefs_ajax_list()
 			'dependencies' => array(
 				'feature_ajax',
 			),
-			'default' => 'y',
 		),
 		
-		'ajax_inline_edit' => array(
-			'name' => tr('Inline editing'),
-			'description' => tr('Allow in-line editing of certain values. Currently limited to tracker item fields.'),
-			'type' => 'flag',
-			'default' => 'n',
-		),
-		'ajax_inline_edit_trackerlist' => array(
-			'name' => tr('Tracker list inline editing'),
-			'description' => tr('Enable inline editing on all fields listed in the tracker list page.'),
-			'type' => 'flag',
-			'default' => 'y',
-			'dependencies' => array('ajax_inline_edit'),
-		),
 	);
 }

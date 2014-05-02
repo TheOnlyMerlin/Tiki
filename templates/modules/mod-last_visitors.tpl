@@ -5,10 +5,10 @@
 		{if !$user}
 			<li>
 				{if $showavatars eq 'y'}
-					<table class="table">
+					<table class="admin">
 						<tr class="odd">
 							<td width="50">
-								<img src="img/icons/gradient.gif" width="48" height="48" alt="{tr}No avatar{/tr}">
+								<img src="img/icons/gradient.gif" width="48" height="48" alt="{tr}No avatar{/tr}" />
 							</td>
 							<td>
 				{/if}
@@ -23,21 +23,20 @@
 				{/if}
 			</li>
 		{/if}
-
-		{capture assign='noAvatar'}<img src="img/icons/gradient.gif" width="48" height="48" alt="{tr}No avatar{/tr}">{/capture}
+		{cycle values="even,odd" print=false}
 		{foreach from=$modLastVisitors key=key item=item}
 			<li>
 				{if $showavatars eq 'y'}
-					<table class="table">
+					<table class="admin">
 						<tr class="{cycle advance=true}">
 							<td width="50">
-								{$item.user|avatarize|default:$noAvatar}
+								{$item.user|avatarize|default:'<img src="img/icons/gradient.gif" width="48" height="48" alt="{tr}No avatar{/tr}" />'}
 							</td>
 						<td>
 				{/if}
 				<a class="linkmodule" href="tiki-user_information.php?view_user={$item.user|escape:"url"}">
 					{if $maxlen > 0}{* 0 is default value for maxlen eq to 'no truncate' *}
-						{$item.user|userlink:'userlink':'not_set':'':$maxlen}
+						{$item.user|userlink:'link':'not_set':'':$maxlen}
 					{else}
 						{$item.user|userlink}
 					{/if}

@@ -1,13 +1,13 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
-$histlib = TikiLib::lib('hist');
-$wikilib = TikiLib::lib('wiki');
+include_once ('lib/wiki/histlib.php');
+include_once ('lib/wiki/wikilib.php');
 
 $access->check_feature('feature_wiki');
 
@@ -40,18 +40,18 @@ if (!$histlib->version_exists($page, $version)) {
 }
 
 $tikilib->get_perm_object($page, 'wiki page', $info);
-$access->check_permission(array('tiki_p_rollback', 'tiki_p_edit'));
+$access->check_permission( array('tiki_p_rollback', 'tiki_p_edit') );
 
+$version = $histlib->get_version($page, $version);
+$version["data"] = $tikilib->parse_data($version["data"], array('preview_mode' => true));
+$smarty->assign_by_ref('preview', $version);
 if (isset($_REQUEST["rollback"])) {
 	require_once('lib/diff/difflib.php');
-	$categlib = TikiLib::lib('categ');
+	require_once('lib/categories/categlib.php');
 	rollback_page_to_version($_REQUEST['page'], $_REQUEST['version']);
 	header("location: tiki-index.php?page=" . urlencode($page));
 	die;
 }
-$version = $histlib->get_version($page, $version);
-$version["data"] = $tikilib->parse_data($version["data"], array('preview_mode' => true, 'is_html' => $version['is_html']));
-$smarty->assign_by_ref('preview', $version);
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 $smarty->assign('mid', 'tiki-rollback.tpl');

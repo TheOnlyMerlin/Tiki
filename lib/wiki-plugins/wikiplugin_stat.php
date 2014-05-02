@@ -1,18 +1,16 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_stat_info()
-{
+function wikiplugin_stat_info() {
 	return array(
 		'name' => tra('Stat'),
-		'documentation' => 'PluginStat',
-		'description' => tra('Show various statistics for an object'),
+		'documentation' => tra('PluginStat'),
+		'description' => tra('Displays statistics for articles, wiki pages and tracker items'),
 		'prefs' => array('wikiplugin_stat'),
-		'icon' => 'img/icons/calculator.png',
 		'params' => array(
 			'type' => array(
 				'required' => true,
@@ -43,7 +41,6 @@ function wikiplugin_stat_info()
 				'required' => false,
 				'name' => tra('Parent ID'),
 				'description' => tra('Enter a tracker ID to restrict stats to that tracker (for use with trackeritems only).'),
-				'profile_reference' => 'tracker',
 			),
 			'lastday' => array(
 				'required' => false,
@@ -169,8 +166,7 @@ function wikiplugin_stat_info()
 	);
 }
 
-function wikiplugin_stat($data, $params) 
-{
+function wikiplugin_stat($data, $params) {
 	global $smarty;
 	global $statslib; include_once('lib/stats/statslib.php');
 	$stat = array();
@@ -195,16 +191,16 @@ function wikiplugin_stat($data, $params)
 					}
 					//for tracker items, only added items can be shown, so eith a or v will result in added items being displayed
 					$stat[$when][$type]['Added tracker items'] = $statslib->count_this_period('tiki_tracker_items', 'created', $when, 'trackerId', $params['parentId']);
-    				break;
+					break;
 				case 'wiki':
 					if ($what == 'v') {
 						$stat[$when][$type]['Viewed wiki pages'] = $statslib->hit_this_period('wiki', $when);
-					} elseif ($what == 'a') {
+					} elseif ($what == 'a'){
 						$stat[$when][$type]['Added wiki pages'] = $statslib->count_this_period('tiki_pages', 'created', $when);
 					} else {
 						return tra('Incorrect parameter: ') . $what;
 					}
-    				break;
+					break;
 				case 'article':
 					if ($what == 'v') {
 						$stat[$when][$type]['Viewed articles'] = $statslib->hit_this_period('article', $when);
@@ -213,7 +209,7 @@ function wikiplugin_stat($data, $params)
 					} else {
 						return tra('Incorrect parameter: ') . $what;
 					}
-    				break;
+					break;
 				default:
 					return tra('Incorrect parameter: ').$type;
 				}

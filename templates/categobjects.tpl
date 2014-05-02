@@ -1,24 +1,24 @@
 {* $Id$ *}
 
-<div class="catblock clearfix"> 
+<div class="catblock clearfix">
 	{if !isset($params.showTitle) or $params.showTitle eq 'y'}
 		<div class="cattitle">
-			<span class="label">{tr}Category:{/tr} </span>
-			{foreach name=for key=id item=cattitle from=$titles}
+			<span class="label">{tr}Category{/tr}: </span>
+			{foreach name=for key=id item=title from=$titles}
 				{if $params.categoryshowlink ne 'n'}<a href="tiki-browse_categories.php?parentId={$id}">{/if}
-				{$cattitle|tr_if|escape}
+				{$title|tr_if|escape}
 				{if $params.categoryshowlink ne 'n'}</a>{/if}
 				{if !$smarty.foreach.for.last} &amp; {/if}
 			{/foreach}
 		</div>
 	{/if}
   <div class="catlists">
-    <ul class="{if $params.showtype ne 'n'}catfeatures{elseif $params.one eq 'y'}catitemsone{else}list-inline{/if}">
+    <ul class="{if $params.showtype ne 'n'}catfeatures{elseif $params.one eq 'y'}catitemsone{else}catitems{/if}">
    {foreach key=t item=i from=$listcat}
    	{if $params.showtype ne 'n'}
       <li>
-      {$t}:
-      <ul class="{if $params.one eq 'y'}catitemsone{else}list-inline{/if}">
+      {tr}{$t}{/tr}:
+      <ul class="{if $params.one eq 'y'}catitemsone{else}catitems{/if}">
 	{/if}
         {section name=o loop=$i}
         <li>

@@ -1,97 +1,92 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_groupmailcore_info()
-{
+// Wiki plugin to display controls etc for GroupMail 
+// Started: jonnybradley July 2009
+
+function wikiplugin_groupmailcore_help() {
+        return tra("Displays GroupMail functions on a wiki page").":<br />~np~{groupmail_core()}{groupmail}~/np~";
+}
+
+function wikiplugin_groupmailcore_info() {
 	return array(
-		'name' => tra('GroupMail Core'),
-		'documentation' => 'PluginGroupMailCore',
+		'name' => tra('GroupMailCore'),
+		'documentation' => tra('PluginGroupMailCore'),
 		'description' => tra('Displays GroupMail functions on a wiki page. Usually set up using a plugin alias created by the GroupMail profile.'),
 		'prefs' => array('wikiplugin_groupmailcore', 'feature_trackers'),
 		//'extraparams' => true,
-		'icon' => 'img/icons/email.png',
-		'tags' => array( 'experimental' ),	
 		'params' => array(
 			'fromEmail' => array(
 				'required' => true,
 				'name' => tra('From Email'),
 				'description' => tra('Email address to report.'),
-				'default' => '',
+				'default' => ''
 			),
 			'trackerId' => array(
 				'required' => true,
 				'name' => tra('Tracker Id'),
 				'description' => tra('Id of GroupMail Logs tracker (set up in alias by profile).'),
 				'filter' => 'digits',
-				'default' => '',
-				'profile_reference' => 'tracker',
+				'default' => ''
 			),
 			'fromFId' => array(
 				'required' => true,
 				'name' => tra('From Field Id'),
 				'description' => tra('Id of GroupMail Logs tracker field (usually set up in alias by profile).'),
 				'filter' => 'digits',
-				'default' => '',
-				'profile_reference' => 'tracker_field',
+				'default' => ''
 			),
 			'operatorFId' => array(
 				'required' => true,
 				'name' => tra('Operator Field Id'),
 				'description' => tra('Id of GroupMail Logs tracker field (usually set up in alias by profile).'),
 				'filter' => 'digits',
-				'default' => '',
-				'profile_reference' => 'tracker_field',
+				'default' => ''
 			),
 			'subjectFId' => array(
 				'required' => true,
 				'name' => tra('Subject Field Id'),
 				'description' => tra('Id of GroupMail Logs tracker field (usually set up in alias by profile).'),
 				'filter' => 'digits',
-				'default' => '',
-				'profile_reference' => 'tracker_field',
+				'default' => ''
 			),
 			'messageFId' => array(
 				'required' => true,
 				'name' => tra('Message Field Id'),
 				'description' => tra('Id of GroupMail Logs tracker field (usually set up in alias by profile).'),
 				'filter' => 'digits',
-				'default' => '',
-				'profile_reference' => 'tracker_field',
+				'default' => ''
 			),
 			'contentFId' => array(
 				'required' => true,
 				'name' => tra('Content Field Id'),
 				'description' => tra('Id of GroupMail Logs tracker field (usually set up in alias by profile).'),
 				'filter' => 'digits',
-				'default' => '',
-				'profile_reference' => 'tracker_field',
+				'default' => ''
 			),
 			'accountFId' => array(
 				'required' => true,
 				'name' => tra('Account Field Id'),
 				'description' => tra('Id of GroupMail Logs tracker field (usually set up in alias by profile).'),
 				'filter' => 'digits',
-				'default' => '',
-				'profile_reference' => 'tracker_field',
+				'default' => ''
 			),
 			'datetimeFId' => array(
 				'required' => true,
 				'name' => tra('Datetime Field Id'),
 				'description' => tra('Id of GroupMail Logs tracker field (usually set up in alias by profile).'),
 				'filter' => 'digits',
-				'default' => '',
-				'profile_reference' => 'tracker_field',
+				'default' => ''
 			),
 		),
 	);
 }
 
-function wikiplugin_groupmailcore($data, $params)
-{
+function wikiplugin_groupmailcore($data, $params) {
 	global $tikilib;
 	require_once('lib/wiki-plugins/wikiplugin_trackerlist.php');
 	

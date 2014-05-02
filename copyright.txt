@@ -2,10 +2,10 @@ Tiki Copyright
 ----------------
 
 The following list attempts to gather the copyright holders for Tiki
-as of version 12.0.
+as of version 6.0.
 
-Accounts listed below with commits have contributed source code to CVS or SVN.
-Please note that even more people contributed on various other aspects (documentation,
+Accounts listed below with commits have contributed source code to CVS or SVN. 
+Please note that even more people contributed on various other aspects (documentation, 
 bug reporting, testing, etc.)
 
 This is how we implement the Tiki Social Contract.
@@ -13,33 +13,32 @@ http://tiki.org/Social+Contract
 
 List of members of the Community
 As of 2014-05-02, the community has:
-  * 584 members on SourceForge.net,
+  * 427 members on SourceForge.net,
   * 300 of those people who made at least one code commit
 
 This list is automatically generated and alphabetically sorted
 from subversion repository by the following script:
-  doc/devtools/release.php
+  doc/devtools/release_copyright.php
 
 Counting the commits is not as trivial as it may sound. If your number of commits
-seems incorrect, it could be that the script is not detecting them all. This
-has been reported especially for commits early on in the project. Nonetheless,
+seems incorrect, it could be that the script is not detecting them all. This 
+has been reported especially for commits early on in the project. Nonetheless, 
 the list provides a general idea.
 
 ====================================================================
 
-Nickname: abbasmousavi
-SF Role: Developer
-
 Nickname: ace_mtp
 Name: Vianney Lecroart
 SF Role: Developer
+    
+    
+    
+        Cyril Chaboisseau
 
 Nickname: adren67
-Name: Cyril Chaboisseau
 First Commit: 2008-10-09
 Last Commit: 2009-02-03
 Number of Commits: 7
-SF Role: Developer
 
 Nickname: afahlvik
 Name: Arve Fahlvik
@@ -47,18 +46,18 @@ First Commit: 2004-03-25
 Last Commit: 2004-04-21
 Number of Commits: 6
 SF Role: Developer
-
-Nickname: agorski
-Name: Adam Gorski
-SF Role: Developer
+    
+    
+    
+        Adam Gorski
 
 Nickname: aigarius
 Name: Aigars Mahinovs
 SF Role: Developer
-
-Nickname: ajd24
-Name: Art
-SF Role: Developer
+    
+    
+    
+        Art
 
 Nickname: akshi
 Name: Akshi Gupta
@@ -66,70 +65,78 @@ First Commit: 2009-12-11
 Last Commit: 2010-02-10
 Number of Commits: 2
 SF Role: Developer
+    
+    
+    
+        Alain Désilets
 
 Nickname: alain_desilets
-Name: Alain DÃ©silets
 First Commit: 2008-03-11
 Last Commit: 2013-12-12
 Number of Commits: 192
-SF Role: Developer
 
 Nickname: albrown
 Name: Al Brown
 SF Role: Developer
+    
+    
+    
+        Alena Ernst
 
 Nickname: alenaernst
-Name: Alena Ernst
 First Commit: 2009-12-10
 Last Commit: 2009-12-10
 Number of Commits: 1
-SF Role: Developer
 
 Nickname: alercunha
 Name: Alexandre Cunha
 SF Role: Developer
-
-Nickname: alex
-Name: Alexander Meisel
-SF Role: Developer
+    
+    
+    
+        Alexander Meisel
 
 Nickname: alex_freire
 Name: Alexandre Freire
 SF Role: Developer
+    
+    
+    
+        Alexandre Quessy
 
 Nickname: alexandrequessy
-Name: Alexandre Quessy
 First Commit: 2014-04-17
 Last Commit: 2014-04-17
 Number of Commits: 2
-SF Role: Developer
 
 Nickname: alrahal
 Name: Alessandro
 SF Role: Developer
+    
+    
+    
+        Alexander Mette
 
 Nickname: amette
-Name: Alexander Mette
 First Commit: 2005-05-19
 Last Commit: 2014-04-21
 Number of Commits: 225
-SF Role: Developer
 
 Nickname: amotl
 Name: Andreas Motl
 SF Role: Developer
-
-Nickname: andreas_bac
-Name: Andreas Bacouroff
-SF Role: Developer
+    
+    
+    
+        Andreas Bacouroff
 
 Nickname: anellic
 Name: Claudio Anelli
 SF Role: Developer
-
-Nickname: anenga
-Name: Chris Kaleiki
-SF Role: Developer
+    
+    
+    
+        Chris Kaleiki
 
 Nickname: aneuhaus
 Name: Andreas Neuhaus
@@ -137,32 +144,34 @@ First Commit: 2003-12-03
 Last Commit: 2003-12-03
 Number of Commits: 1
 SF Role: Developer
+    
+    
+    
+        Lorinc Czegledi
 
 Nickname: ang23
-Name: Lorinc Czegledi
 First Commit: 2004-08-11
 Last Commit: 2008-05-29
 Number of Commits: 23
-SF Role: Developer
 
 Nickname: anope
 Name: Andrzej
-First Commit: 2004-07-14
+First Commit: 2004-07-13
 Last Commit: 2005-05-06
 Number of Commits: 5
 SF Role: Developer
-
-Nickname: anzhe
-Name: Drew Heath
-SF Role: Developer
+    
+    
+    
+        Drew Heath
 
 Nickname: apnicsolutions
 Name: APNIC Solutions
 SF Role: Developer
-
-Nickname: app_maker
-Name: apPmaKer
-SF Role: Developer
+    
+    
+    
+        apPmaKer
 
 Nickname: aproulx
 Name: AndrÃ© Proulx
@@ -170,12 +179,15 @@ First Commit: 2008-11-07
 Last Commit: 2010-12-07
 Number of Commits: 24
 SF Role: Developer
+    
+    
+    
+        arildb
 
 Nickname: arildb
 First Commit: 2011-09-04
 Last Commit: 2014-04-25
 Number of Commits: 954
-SF Role: Developer
 
 Nickname: arion92fr
 Name: Xavier Soler
@@ -183,27 +195,33 @@ First Commit: 2013-03-11
 Last Commit: 2013-03-12
 Number of Commits: 2
 SF Role: Developer
-
-Nickname: as6o
-Name: Aaron Siri
-SF Role: Developer
+    
+    
+    
+        Aaron Siri
 
 Nickname: atooni
 First Commit: 2005-10-21
 Last Commit: 2005-10-21
 Number of Commits: 1
 SF Role: Developer
+    
+    
+    
+        Marc
 
 Nickname: aurel42
-Name: Marc
 First Commit: 2004-03-01
-Last Commit: 2004-03-16
+Last Commit: 2004-03-15
 Number of Commits: 10
-SF Role: Developer
 
 Nickname: avdwheel
 Name: Andre
 SF Role: Developer
+    
+    
+    
+        Andreas Wolff
 
 Nickname: awcolley
 First Commit: 2003-06-17
@@ -211,11 +229,9 @@ Last Commit: 2003-11-17
 Number of Commits: 27
 
 Nickname: awolfff
-Name: Andreas Wolff
 First Commit: 2007-01-21
 Last Commit: 2009-05-12
 Number of Commits: 8
-SF Role: Developer
 
 Nickname: axold
 Name: Aldo Bg
@@ -223,55 +239,62 @@ First Commit: 2008-11-19
 Last Commit: 2009-10-10
 Number of Commits: 115
 SF Role: Developer
+    
+    
+    
+        az3rty
 
 Nickname: axonrg
 First Commit: 2003-05-15
 Last Commit: 2003-06-20
 Number of Commits: 7
 
-Nickname: az3rty
-SF Role: Developer
-
 Nickname: baci
 Name: Chris Bacigalupo
 SF Role: Developer
+    
+    
+    
+        Bartek Jurkiewicz
 
 Nickname: bajur
-Name: Bartek Jurkiewicz
 First Commit: 2011-03-15
 Last Commit: 2011-04-07
 Number of Commits: 4
-SF Role: Developer
 
 Nickname: batchman82
 Name: Markus Liljergren
 SF Role: Developer
+    
+    
+    
+        Baptiste Burgaud
 
 Nickname: bburgaud
-Name: Baptiste Burgaud
 First Commit: 2003-12-15
 Last Commit: 2003-12-17
 Number of Commits: 8
-SF Role: Developer
 
 Nickname: bdsdev
 Name: Valentin Nedkov
 SF Role: Developer
-
-Nickname: beastrider
-Name: Wayne Herbert
-SF Role: Developer
+    
+    
+    
+        Wayne Herbert
 
 Nickname: benoitg
 Name: Benoit GrÃ©goire
 SF Role: Developer
+    
+    
+    
+        Sebastian Bergmann
 
 Nickname: bergmann
-Name: Sebastian Bergmann
 First Commit: 2009-10-14
 Last Commit: 2009-10-14
 Number of Commits: 5
-SF Role: Developer
 
 Nickname: berryweb
 Name: Berry Parker
@@ -279,55 +302,59 @@ First Commit: 2004-05-14
 Last Commit: 2004-10-25
 Number of Commits: 4
 SF Role: Developer
+    
+    
+    
+        Sylvain
 
 Nickname: beuc
-Name: Sylvain
 First Commit: 2006-05-22
 Last Commit: 2008-08-22
 Number of Commits: 5
-SF Role: Developer
 
 Nickname: billsos
 First Commit: 2009-01-15
 Last Commit: 2009-01-18
 Number of Commits: 3
 SF Role: Developer
+    
+    
+    
+        Bitey McBiterson
 
 Nickname: bitey
-Name: Bitey McBiterson
 First Commit: 2008-08-27
-Last Commit: 2008-10-27
+Last Commit: 2008-10-26
 Number of Commits: 7
-SF Role: Developer
 
 Nickname: bligneri
 Name: Benoit des Ligneris
 First Commit: 2003-09-14
-Last Commit: 2003-09-27
+Last Commit: 2003-09-26
 Number of Commits: 3
 SF Role: Developer
-
-Nickname: bludok
-Name: Bludok Systems Limited
-SF Role: Developer
+    
+    
+    
+        Bludok Systems Limited
 
 Nickname: bluestrain
 Name: Dave Thacker
 First Commit: 2006-11-19
-Last Commit: 2008-03-26
+Last Commit: 2008-03-25
 Number of Commits: 8
 SF Role: Developer
-
-Nickname: bluybrink
-Name: Bluy Brink
-SF Role: Developer
+    
+    
+    
+        Bluy Brink
 
 Nickname: bobenrieth
 SF Role: Developer
-
-Nickname: bozze
-Name: Bruno Zuzze
-SF Role: Developer
+    
+    
+    
+        Bruno Zuzze
 
 Nickname: brab
 Name: Alan Schmitt
@@ -335,46 +362,50 @@ First Commit: 2004-02-10
 Last Commit: 2004-02-10
 Number of Commits: 1
 SF Role: Developer
+    
+    
+    
+        Brian Moore
 
 Nickname: brian_moore
-Name: Brian Moore
 First Commit: 2008-04-16
-Last Commit: 2008-10-18
+Last Commit: 2008-10-17
 Number of Commits: 6
-SF Role: Developer
 
 Nickname: broubrou
 Name: Vincent B
 First Commit: 2004-08-26
-Last Commit: 2004-08-27
+Last Commit: 2004-08-26
 Number of Commits: 1
 SF Role: Developer
-
-Nickname: btallman
-Name: Ben Tallman
-SF Role: Developer
+    
+    
+    
+        Ben Tallman
 
 Nickname: btodoroff
 Name: Brian Todoroff
 First Commit: 2004-01-09
-Last Commit: 2004-02-01
+Last Commit: 2004-01-31
 Number of Commits: 9
 SF Role: Developer
+    
+    
+    
+        Burghard W.V. Britzke
 
 Nickname: bubi
-Name: Burghard W.V. Britzke
 First Commit: 2010-05-19
 Last Commit: 2011-05-16
 Number of Commits: 8
-SF Role: Developer
 
 Nickname: bulldogtor
 Name: Nick Rapitosovich
 SF Role: Developer
-
-Nickname: c0ldfusi0n
-Name: Pier Luc Petitclerc
-SF Role: Developer
+    
+    
+    
+        Pier Luc Petitclerc
 
 Nickname: c_schmitz
 Name: Carsten Schmitz
@@ -382,13 +413,15 @@ First Commit: 2008-11-06
 Last Commit: 2013-03-10
 Number of Commits: 4
 SF Role: Developer
+    
+    
+    
+        carsten aevermann
 
 Nickname: caevermann
-Name: carsten aevermann
 First Commit: 2011-03-07
 Last Commit: 2011-03-07
 Number of Commits: 1
-SF Role: Developer
 
 Nickname: campbe13
 Name: Patricia  M Campbell
@@ -396,16 +429,18 @@ First Commit: 2009-02-19
 Last Commit: 2011-04-07
 Number of Commits: 18
 SF Role: Developer
-
-Nickname: carlom
-SF Role: Developer
+    
+    
+    
+        carlom
 
 Nickname: carolg
 Name: Carol Gauthier
 SF Role: Developer
-
-Nickname: carpasbo
-SF Role: Developer
+    
+    
+    
+        carpasbo
 
 Nickname: caustin_ats
 Name: Chris Austin
@@ -413,10 +448,10 @@ First Commit: 2003-10-21
 Last Commit: 2003-11-05
 Number of Commits: 5
 SF Role: Developer
-
-Nickname: cbowman
-Name: Christopher
-SF Role: Developer
+    
+    
+    
+        Christopher
 
 Nickname: ccardinal
 Name: Ccardinal
@@ -424,24 +459,26 @@ First Commit: 2013-07-14
 Last Commit: 2013-07-14
 Number of Commits: 2
 SF Role: Developer
+    
+    
+    
+        Jörn Ott
 
 Nickname: cdrwhite
-Name: JÃ¶rn Ott
 First Commit: 2010-05-10
 Last Commit: 2012-03-13
 Number of Commits: 50
-SF Role: Developer
 
 Nickname: cdx
 Name: Claudio Bustos
 First Commit: 2003-10-08
-Last Commit: 2003-11-12
+Last Commit: 2003-11-11
 Number of Commits: 23
 SF Role: Developer
-
-Nickname: cfreeze
-Name: Chris Freeze
-SF Role: Developer
+    
+    
+    
+        Chris Freeze
 
 Nickname: ch-w
 Name: Christophe Weis
@@ -449,10 +486,10 @@ First Commit: 2013-02-07
 Last Commit: 2013-02-07
 Number of Commits: 2
 SF Role: Developer
-
-Nickname: chandi
-Name: Chandi Bernier
-SF Role: Developer
+    
+    
+    
+        Chandi Bernier
 
 Nickname: changi67
 Name: Jean-FranÃ§ois  B.
@@ -460,6 +497,10 @@ First Commit: 2009-04-23
 Last Commit: 2013-12-20
 Number of Commits: 1631
 SF Role: Admin
+    
+    
+    
+        Gary Cunningham-Lee
 
 Nickname: chealer
 Name: Philippe Cloutier
@@ -467,17 +508,15 @@ First Commit: 2003-09-27
 Last Commit: 2013-11-13
 Number of Commits: 1844
 SF Role: Developer
-
-Nickname: chessy
-Name: Juanan Pereira
-SF Role: Developer
+    
+    
+    
+        Juanan Pereira
 
 Nickname: chibaguy
-Name: Gary Cunningham-Lee
 First Commit: 2006-02-04
 Last Commit: 2014-04-30
 Number of Commits: 2144
-SF Role: Admin
 
 Nickname: chris_holman
 Name: Chris Holman
@@ -485,64 +524,72 @@ First Commit: 2003-10-08
 Last Commit: 2004-09-06
 Number of Commits: 39
 SF Role: Developer
+    
+    
+    
+        Chris Cramer
 
 Nickname: chriscramer
-Name: Chris Cramer
 First Commit: 2008-03-04
 Last Commit: 2008-03-04
 Number of Commits: 5
-SF Role: Developer
 
 Nickname: chuck
 Name: Chuck Hagenbuch
 SF Role: Developer
+    
+    
+    
+        Citadel Rock Online Communities
 
 Nickname: citadelrock
-Name: Citadel Rock Online Communities
 First Commit: 2012-04-24
 Last Commit: 2013-10-23
 Number of Commits: 54
-SF Role: Developer
 
 Nickname: claborne
 Name: Chris Claborne
 SF Role: Developer
-
-Nickname: colinmo
-Name: Colin Morris
-SF Role: Developer
+    
+    
+    
+        Colin Morris
 
 Nickname: coloradoweb
-First Commit: 2004-01-11
+First Commit: 2004-01-10
 Last Commit: 2004-06-29
 Number of Commits: 9
 
 Nickname: conner_bw
 Name: Dac Chartrand
 First Commit: 2009-05-03
-Last Commit: 2009-05-04
+Last Commit: 2009-05-03
 Number of Commits: 2
 SF Role: Developer
+    
+    
+    
+        Conner Mo
 
 Nickname: connermo
-Name: Conner Mo
 First Commit: 2003-07-30
 Last Commit: 2003-08-17
 Number of Commits: 2
-SF Role: Developer
 
 Nickname: cyantree
 First Commit: 2004-08-10
 Last Commit: 2004-08-10
 Number of Commits: 1
 SF Role: Developer
+    
+    
+    
+        Daniel Cedilotte
 
 Nickname: cyberdrek
-Name: Daniel Cedilotte
 First Commit: 2011-02-05
 Last Commit: 2011-02-05
 Number of Commits: 1
-SF Role: Developer
 
 Nickname: d0cster
 Name: Docster
@@ -550,10 +597,10 @@ First Commit: 2012-10-13
 Last Commit: 2012-10-13
 Number of Commits: 1
 SF Role: Developer
-
-Nickname: d_pocock
-Name: Daniel Pocock
-SF Role: Developer
+    
+    
+    
+        Daniel Pocock
 
 Nickname: dabright
 Name: D.A. Bright
@@ -561,13 +608,15 @@ First Commit: 2003-11-12
 Last Commit: 2014-03-02
 Number of Commits: 12
 SF Role: Developer
+    
+    
+    
+        Dirk Aevermann
 
 Nickname: daevermann
-Name: Dirk Aevermann
 First Commit: 2011-03-16
 Last Commit: 2011-03-17
 Number of Commits: 2
-SF Role: Developer
 
 Nickname: damienmckenna
 First Commit: 2003-03-24
@@ -582,9 +631,10 @@ Number of Commits: 401
 Nickname: dan-btown
 Name: Dan.BTown
 SF Role: Developer
-
-Nickname: daniam
-SF Role: Developer
+    
+    
+    
+        daniam
 
 Nickname: darzee
 Name: C. Outteryck
@@ -592,10 +642,10 @@ First Commit: 2007-01-23
 Last Commit: 2007-01-31
 Number of Commits: 5
 SF Role: Developer
-
-Nickname: dcedilotte
-Name: Daniel Cedilotte
-SF Role: Developer
+    
+    
+    
+        Daniel Cedilotte
 
 Nickname: dcengija
 First Commit: 2003-10-07
@@ -608,23 +658,23 @@ First Commit: 2010-11-22
 Last Commit: 2010-11-22
 Number of Commits: 1
 SF Role: Developer
+    
+    
+    
+        Salem Derisavi
 
 Nickname: deragon
 First Commit: 2004-08-27
 Last Commit: 2004-08-27
 Number of Commits: 1
 
-Nickname: derisavi
-Name: Salem Derisavi
-SF Role: Developer
-
 Nickname: devilwct
 Name: Johnny Verstijlen
 SF Role: Developer
-
-Nickname: devniv
-Name: Nicolas Vilz
-SF Role: Developer
+    
+    
+    
+        Nicolas Vilz
 
 Nickname: dexl_2000
 Name: Thunder_Dex
@@ -632,47 +682,47 @@ First Commit: 2009-06-02
 Last Commit: 2009-11-09
 Number of Commits: 23
 SF Role: Developer
+    
+    
+    
+        Douglas Green
 
 Nickname: dgdaniels
 First Commit: 2003-08-10
-Last Commit: 2004-06-21
+Last Commit: 2004-06-20
 Number of Commits: 152
 
-Nickname: dgreen34
-Name: Douglas Green
-SF Role: Developer
-
 Nickname: dheltzel
-First Commit: 2003-07-16
+First Commit: 2003-07-15
 Last Commit: 2003-12-29
 Number of Commits: 137
 
 Nickname: dialogik
 Name: Dia Logik
 SF Role: Developer
-
-Nickname: die
-Name: diE
-SF Role: Developer
+    
+    
+    
+        diE
 
 Nickname: dim_m
 Name: Dimitris Moraitis
 SF Role: Developer
-
-Nickname: dimaz-z
-Name: dimaz
-SF Role: Developer
+    
+    
+    
+        dimaz
 
 Nickname: djnz
 Name: MrAnchovy
 First Commit: 2004-03-02
-Last Commit: 2004-04-02
+Last Commit: 2004-04-01
 Number of Commits: 7
 SF Role: Developer
-
-Nickname: djoguet
-Name: Damien Joguet
-SF Role: Developer
+    
+    
+    
+        Damien Joguet
 
 Nickname: djpgm
 Name: Philippe Dallaire
@@ -680,18 +730,18 @@ First Commit: 2011-04-08
 Last Commit: 2011-04-08
 Number of Commits: 1
 SF Role: Developer
-
-Nickname: djst
-Name: David (djst) Tenser
-SF Role: Developer
+    
+    
+    
+        David (djst) Tenser
 
 Nickname: dlech27
 Name: David Lechner
 SF Role: Developer
-
-Nickname: dmytro
-Name: Dmytro Kovalov
-SF Role: Developer
+    
+    
+    
+        Dmytro Kovalov
 
 Nickname: docekal
 Name: Jan LindÃ¥ker
@@ -699,13 +749,15 @@ First Commit: 2003-09-03
 Last Commit: 2003-11-22
 Number of Commits: 3
 SF Role: Developer
+    
+    
+    
+        Christoph Drieschner
 
 Nickname: drieschner
-Name: Christoph Drieschner
 First Commit: 2003-07-01
 Last Commit: 2003-07-04
 Number of Commits: 5
-SF Role: Developer
 
 Nickname: drsassafras
 Name: Dr. Sassafras
@@ -713,12 +765,15 @@ First Commit: 2014-04-03
 Last Commit: 2014-04-03
 Number of Commits: 1
 SF Role: Developer
+    
+    
+    
+        duebel
 
 Nickname: duebel
 First Commit: 2008-11-15
 Last Commit: 2009-08-27
 Number of Commits: 5
-SF Role: Developer
 
 Nickname: durkin10
 Name: Sean B. Durkin
@@ -726,28 +781,31 @@ First Commit: 2011-10-17
 Last Commit: 2011-10-17
 Number of Commits: 1
 SF Role: Developer
-
-Nickname: eatac
-Name: Emin
-SF Role: Developer
+    
+    
+    
+        Emin
 
 Nickname: eesa
 Name: Abdul-Wahid Paterson
 SF Role: Developer
+    
+    
+    
+        egma
 
 Nickname: egma
 First Commit: 2013-10-02
 Last Commit: 2013-10-14
 Number of Commits: 4
-SF Role: Developer
 
 Nickname: einstine
 Name: Thomas
 SF Role: Developer
-
-Nickname: elecnix
-Name: Nicolas Marchildon
-SF Role: Developer
+    
+    
+    
+        Nicolas Marchildon
 
 Nickname: eliasgonzales
 Name: Elias Gonzales
@@ -755,21 +813,23 @@ First Commit: 2014-03-12
 Last Commit: 2014-03-12
 Number of Commits: 1
 SF Role: Developer
-
-Nickname: emanuelquintana
-Name: emanuelq
-SF Role: Developer
+    
+    
+    
+        emanuelq
 
 Nickname: emenems
 Name: Marcel van Groenigen
 SF Role: Developer
+    
+    
+    
+        Espen Oyslebo
 
 Nickname: eoyslebo
-Name: Espen Oyslebo
 First Commit: 2010-01-17
-Last Commit: 2010-01-19
+Last Commit: 2010-01-18
 Number of Commits: 2
-SF Role: Developer
 
 Nickname: epolidor
 Name: Eduardo Daniel Polidor
@@ -777,83 +837,92 @@ First Commit: 2002-11-25
 Last Commit: 2003-12-20
 Number of Commits: 12
 SF Role: Developer
-
-Nickname: eraserhd
-Name: Jason M. Felice
-SF Role: Developer
+    
+    
+    
+        Jason M. Felice
 
 Nickname: ericisgood
 Name: EricIsGood
 First Commit: 2008-11-02
-Last Commit: 2008-11-03
+Last Commit: 2008-11-02
 Number of Commits: 1
 SF Role: Developer
+    
+    
+    
+        eromneg
 
 Nickname: eromneg
 First Commit: 2009-06-07
 Last Commit: 2014-02-28
 Number of Commits: 145
-SF Role: Developer
 
 Nickname: essele
 Name: Lee Essen
 SF Role: Developer
-
-Nickname: estheban
-Name: Etienne Lachance
-SF Role: Developer
+    
+    
+    
+        Etienne Lachance
 
 Nickname: etuate
 Name: edagentile
 First Commit: 2008-05-14
-Last Commit: 2008-09-23
+Last Commit: 2008-09-22
 Number of Commits: 12
 SF Role: Developer
+    
+    
+    
+        Evan Prodromou
 
 Nickname: evanprodromou
-Name: Evan Prodromou
 First Commit: 2008-01-05
 Last Commit: 2008-01-06
 Number of Commits: 5
-SF Role: Developer
 
 Nickname: evertpot
 Name: Evert
 SF Role: Developer
-
-Nickname: ewuerfel
-Name: Enrico WÃŒrfel
-SF Role: Developer
+    
+    
+    
+        Enrico Würfel
 
 Nickname: ezago
 Name: Eric Zago
 SF Role: Developer
+    
+    
+    
+        Ephes
 
 Nickname: fantoms
-Name: Ephes
 First Commit: 2009-04-30
 Last Commit: 2009-04-30
 Number of Commits: 1
-SF Role: Developer
 
 Nickname: fanzila
 Name: Pierre Doleans
 SF Role: Developer
+    
+    
+    
+        FAREH Abdelhak
 
 Nickname: fareh1abdelhak
-Name: FAREH Abdelhak
 First Commit: 2013-12-05
 Last Commit: 2013-12-06
 Number of Commits: 3
-SF Role: Developer
 
 Nickname: fbergeron
 Name: Frederic Bergeron
 SF Role: Developer
-
-Nickname: fernao_lopes
-Name: FernÄo Lopes
-SF Role: Developer
+    
+    
+    
+        Fernăo Lopes
 
 Nickname: fhcorrea
 Name: Fernando Henrique
@@ -861,13 +930,15 @@ First Commit: 2004-06-15
 Last Commit: 2004-06-15
 Number of Commits: 1
 SF Role: Developer
+    
+    
+    
+        Filip Miletic
 
 Nickname: filmil
-Name: Filip Miletic
 First Commit: 2004-03-31
-Last Commit: 2004-05-18
+Last Commit: 2004-05-17
 Number of Commits: 9
-SF Role: Developer
 
 Nickname: floh1111
 Name: Floh1111
@@ -875,13 +946,15 @@ First Commit: 2009-06-11
 Last Commit: 2009-07-31
 Number of Commits: 19
 SF Role: Developer
+    
+    
+    
+        Florian Link
 
 Nickname: florianlink
-Name: Florian Link
 First Commit: 2004-02-16
 Last Commit: 2004-03-03
 Number of Commits: 4
-SF Role: Developer
 
 Nickname: fmathias
 Name: Fabio Rampazzo Mathias
@@ -889,38 +962,44 @@ First Commit: 2006-09-07
 Last Commit: 2006-09-07
 Number of Commits: 1
 SF Role: Developer
+    
+    
+    
+        Frank Guthausen
 
 Nickname: fmg-sf
-Name: Frank Guthausen
 First Commit: 2012-10-12
 Last Commit: 2014-04-03
 Number of Commits: 117
-SF Role: Developer
 
 Nickname: fmjrey
 Name: FranÃ§ois Rey
 SF Role: Developer
+    
+    
+    
+        Frank M. Kromann
 
 Nickname: fmk_ca
-Name: Frank M. Kromann
 First Commit: 2007-01-10
-Last Commit: 2007-01-11
+Last Commit: 2007-01-10
 Number of Commits: 1
-SF Role: Developer
 
 Nickname: fr_rodo
 Name: rodo
 First Commit: 2006-11-28
-Last Commit: 2008-06-16
+Last Commit: 2008-06-15
 Number of Commits: 29
 SF Role: Developer
+    
+    
+    
+        Franck Martin
 
 Nickname: franck
-Name: Franck Martin
 First Commit: 2003-08-06
 Last Commit: 2008-11-13
 Number of Commits: 96
-SF Role: Developer
 
 Nickname: frank_p
 First Commit: 2007-09-14
@@ -930,10 +1009,10 @@ Number of Commits: 32
 Nickname: freephile
 Name: Greg Rundlett
 SF Role: Developer
-
-Nickname: freevic
-Name: alain vicet
-SF Role: Developer
+    
+    
+    
+        alain vicet
 
 Nickname: fukuchi
 Name: Kentaro Fukuchi
@@ -941,80 +1020,90 @@ First Commit: 2003-08-10
 Last Commit: 2003-09-23
 Number of Commits: 7
 SF Role: Developer
+    
+    
+    
+        John Bair
 
 Nickname: fumphco
-Name: John Bair
 First Commit: 2006-09-27
 Last Commit: 2006-10-28
 Number of Commits: 6
-SF Role: Developer
 
 Nickname: garem
 Name: Alain Gaeremynck
 SF Role: Developer
-
-Nickname: garethmcc
-Name: Gareth McCumskey
-SF Role: Developer
+    
+    
+    
+        Gareth McCumskey
 
 Nickname: garfield-sf
 Name: Garfield
 SF Role: Developer
+    
+    
+    
+        Gary Pomerant
 
 Nickname: garygriffin
-First Commit: 2007-01-21
-Last Commit: 2007-02-07
+First Commit: 2007-01-20
+Last Commit: 2007-02-06
 Number of Commits: 2
 
 Nickname: garypp
-Name: Gary Pomerant
 First Commit: 2011-07-05
 Last Commit: 2011-07-05
 Number of Commits: 1
-SF Role: Developer
 
 Nickname: gaxweb
 First Commit: 2011-10-04
 Last Commit: 2013-03-15
 Number of Commits: 4
 SF Role: Developer
-
-Nickname: gene203
-Name: Gene
-SF Role: Developer
+    
+    
+    
+        Gene
 
 Nickname: gertdewit
 Name: Gert Dewit
 SF Role: Developer
+    
+    
+    
+        gezza
 
 Nickname: gezzzan
-Name: gezza
 First Commit: 2009-05-02
 Last Commit: 2014-04-29
 Number of Commits: 154
-SF Role: Developer
 
 Nickname: ggd
 Name: Gour
 SF Role: Developer
+    
+    
+    
+        George Geller
 
 Nickname: ggeller
-Name: George Geller
 First Commit: 2003-12-07
 Last Commit: 2005-11-30
 Number of Commits: 161
-SF Role: Developer
 
 Nickname: giak
 Name: Giacomel
 SF Role: Developer
+    
+    
+    
+        Gilles Maire
 
 Nickname: gillesm
-Name: Gilles Maire
 First Commit: 2003-11-04
 Last Commit: 2012-04-19
 Number of Commits: 103
-SF Role: Developer
 
 Nickname: gilshwartz
 Name: Gil Shwartz
@@ -1022,32 +1111,36 @@ First Commit: 2002-12-31
 Last Commit: 2003-07-17
 Number of Commits: 49
 SF Role: Developer
+    
+    
+    
+        Giotto
 
 Nickname: gimpster
-First Commit: 2003-08-04
+First Commit: 2003-08-03
 Last Commit: 2003-08-06
 Number of Commits: 6
 
 Nickname: giottomx
-Name: Giotto
 First Commit: 2004-07-15
-Last Commit: 2004-08-25
+Last Commit: 2004-08-24
 Number of Commits: 15
-SF Role: Developer
 
 Nickname: gmuslera
 Name: Gustavo Muslera
 First Commit: 2003-10-22
-Last Commit: 2004-10-04
+Last Commit: 2004-10-03
 Number of Commits: 33
 SF Role: Developer
+    
+    
+    
+        Dimitri Smits
 
 Nickname: gongo
-Name: Dimitri Smits
 First Commit: 2003-11-09
-Last Commit: 2004-02-04
+Last Commit: 2004-02-03
 Number of Commits: 51
-SF Role: Developer
 
 Nickname: gravesweeper
 Name: spider
@@ -1055,10 +1148,10 @@ First Commit: 2004-01-06
 Last Commit: 2004-01-07
 Number of Commits: 5
 SF Role: Developer
-
-Nickname: gregejack
-Name: Greg J
-SF Role: Developer
+    
+    
+    
+        Greg J
 
 Nickname: gregmartin
 Name: Greg Martin
@@ -1066,10 +1159,10 @@ First Commit: 2006-12-19
 Last Commit: 2012-10-09
 Number of Commits: 19
 SF Role: Developer
-
-Nickname: grom_3
-Name: Cameron Zemek
-SF Role: Developer
+    
+    
+    
+        Cameron Zemek
 
 Nickname: grundsch
 Name: Stephane Grundschober
@@ -1077,23 +1170,25 @@ First Commit: 2012-05-25
 Last Commit: 2012-05-25
 Number of Commits: 1
 SF Role: Developer
-
-Nickname: gspira
-Name: Greg Spira
-SF Role: Developer
+    
+    
+    
+        Greg Spira
 
 Nickname: gta74
 First Commit: 2011-01-29
 Last Commit: 2012-09-22
 Number of Commits: 122
 SF Role: Developer
+    
+    
+    
+        Samuel Denis D&#39;Ortun
 
 Nickname: guideweb
-Name: Samuel Denis D&#39;Ortun
 First Commit: 2003-08-24
 Last Commit: 2003-08-25
 Number of Commits: 2
-SF Role: Developer
 
 Nickname: guidoscherp
 Name: Guido Scherp
@@ -1101,25 +1196,27 @@ First Commit: 2007-08-10
 Last Commit: 2007-08-10
 Number of Commits: 4
 SF Role: Developer
+    
+    
+    
+        Gunnar René Řie
 
 Nickname: gunnarre
-Name: Gunnar RenÃ© Åie
 First Commit: 2004-04-22
 Last Commit: 2004-12-07
 Number of Commits: 7
-SF Role: Developer
 
 Nickname: gunner98
 Name: Sean
 SF Role: Developer
-
-Nickname: guyfr
-Name: Francois Guy
-SF Role: Developer
+    
+    
+    
+        Francois Guy
 
 Nickname: halon
-First Commit: 2004-01-20
-Last Commit: 2004-02-15
+First Commit: 2004-01-19
+Last Commit: 2004-02-14
 Number of Commits: 27
 
 Nickname: hangerman
@@ -1128,28 +1225,28 @@ First Commit: 2006-07-31
 Last Commit: 2007-02-01
 Number of Commits: 27
 SF Role: Developer
-
-Nickname: hans33
-Name: Hans van Ee
-SF Role: Developer
+    
+    
+    
+        Hans van Ee
 
 Nickname: hartsa1
 Name: Hartsa1
 SF Role: Developer
-
-Nickname: hina
-Name: hinasita
-SF Role: Developer
+    
+    
+    
+        hinasita
 
 Nickname: hollmeer
 First Commit: 2012-11-01
 Last Commit: 2012-12-01
 Number of Commits: 5
 SF Role: Developer
-
-Nickname: homunq
-Name: Homunq
-SF Role: Developer
+    
+    
+    
+        Homunq
 
 Nickname: hsaelens
 Name: Hans Saelens
@@ -1157,29 +1254,31 @@ First Commit: 2004-01-28
 Last Commit: 2006-12-13
 Number of Commits: 4
 SF Role: Developer
-
-Nickname: hubert_doublev3
-Name: Hubert Sirois
-SF Role: Developer
+    
+    
+    
+        Hubert Sirois
 
 Nickname: hybridruide
 Name: Peter.Lucius
 SF Role: Developer
-
-Nickname: hyper
-Name: Bobby Joe
-SF Role: Developer
+    
+    
+    
+        Bobby Joe
 
 Nickname: ibtubed
 Name: Dennis Cooley
 SF Role: Developer
+    
+    
+    
+        Conrad Rentsch
 
 Nickname: ice8878
-Name: Conrad Rentsch
 First Commit: 2006-03-03
 Last Commit: 2006-03-03
 Number of Commits: 1
-SF Role: Developer
 
 Nickname: idou
 Name: Idou
@@ -1187,41 +1286,46 @@ First Commit: 2009-12-22
 Last Commit: 2010-06-07
 Number of Commits: 19
 SF Role: Developer
-
-Nickname: ikky
-SF Role: Developer
+    
+    
+    
+        ikky
 
 Nickname: illori
 First Commit: 2006-09-12
-Last Commit: 2008-03-25
+Last Commit: 2008-03-24
 Number of Commits: 8
 SF Role: Developer
+    
+    
+    
+        Inge Solvoll
 
 Nickname: ingesol
-Name: Inge Solvoll
 First Commit: 2003-05-28
 Last Commit: 2003-10-05
 Number of Commits: 6
-SF Role: Developer
 
 Nickname: ipso
 Name: Mike Benoit
 SF Role: Developer
+    
+    
+    
+        Kristian Köhntopp
 
 Nickname: isotopp
-Name: Kristian KÃ¶hntopp
 First Commit: 2003-07-25
 Last Commit: 2003-07-25
 Number of Commits: 1
-SF Role: Developer
 
 Nickname: isotrol
 Name: Elvira
 SF Role: Developer
-
-Nickname: jaan1024
-Name: Ivan Muravyev
-SF Role: Developer
+    
+    
+    
+        Ivan Muravyev
 
 Nickname: jacmoe2
 Name: jacmoe
@@ -1229,39 +1333,39 @@ First Commit: 2009-12-12
 Last Commit: 2010-06-11
 Number of Commits: 17
 SF Role: Developer
-
-Nickname: jahlewis
-Name: John Lewis
-SF Role: Developer
+    
+    
+    
+        John Lewis
 
 Nickname: jamk
 Name: Djamel Kadi
 SF Role: Developer
-
-Nickname: janptak
-Name: jan ptak
-SF Role: Developer
+    
+    
+    
+        jan ptak
 
 Nickname: jasondiceman
 Name: Jason Diceman
 SF Role: Developer
-
-Nickname: jasonhendee
-Name: Jason Hendee
-SF Role: Developer
+    
+    
+    
+        Jason Hendee
 
 Nickname: javaguru1729
 Name: Chandra
 SF Role: Developer
+    
+    
+    
+        Jay Campbell
 
 Nickname: jaw959
 First Commit: 2003-02-15
 Last Commit: 2003-02-16
 Number of Commits: 9
-
-Nickname: jaycampbell
-Name: Jay Campbell
-SF Role: Developer
 
 Nickname: jburleyebuilt
 Name: Josh Burley
@@ -1269,10 +1373,10 @@ First Commit: 2004-12-02
 Last Commit: 2005-01-05
 Number of Commits: 2
 SF Role: Developer
-
-Nickname: jcwinnie
-Name: Jonathan Smith
-SF Role: Developer
+    
+    
+    
+        Jonathan Smith
 
 Nickname: jcyrisse
 Name: Jana Sullinger
@@ -1280,13 +1384,15 @@ First Commit: 2010-11-22
 Last Commit: 2010-11-22
 Number of Commits: 1
 SF Role: Developer
+    
+    
+    
+        Josef Drexler
 
 Nickname: jdrexler
-Name: Josef Drexler
 First Commit: 2006-02-01
 Last Commit: 2006-02-04
 Number of Commits: 4
-SF Role: Developer
 
 Nickname: jean-lucnavarro
 Name: Jean-Luc NAVARRO
@@ -1294,43 +1400,45 @@ First Commit: 2011-06-12
 Last Commit: 2011-11-29
 Number of Commits: 90
 SF Role: Developer
-
-Nickname: jeanhabib
-Name: habib
-SF Role: Developer
+    
+    
+    
+        habib
 
 Nickname: jenolan1701
 Name: Larry Lewis
 First Commit: 2003-09-02
-Last Commit: 2003-09-07
+Last Commit: 2003-09-06
 Number of Commits: 3
 SF Role: Developer
+    
+    
+    
+        Jeremy Lee
 
 Nickname: jeremy_lee
-Name: Jeremy Lee
 First Commit: 2009-02-16
 Last Commit: 2009-02-17
 Number of Commits: 2
-SF Role: Developer
 
 Nickname: jfnoubel
 Name: Jean-FranÃ§ois Noubel
 SF Role: Developer
-
-Nickname: jjermann
-Name: Jonas Jermann
-SF Role: Developer
+    
+    
+    
+        Jonas Jermann
 
 Nickname: jjolly
 Name: John Jolly
-First Commit: 2004-10-14
-Last Commit: 2004-10-14
+First Commit: 2004-10-13
+Last Commit: 2004-10-13
 Number of Commits: 1
 SF Role: Developer
-
-Nickname: jjongsma
-Name: Jeremy Jongsma
-SF Role: Developer
+    
+    
+    
+        Jeremy Jongsma
 
 Nickname: jkring
 Name: Jim Kring
@@ -1338,31 +1446,36 @@ First Commit: 2003-10-07
 Last Commit: 2003-10-07
 Number of Commits: 1
 SF Role: Developer
-
-Nickname: jlgordo
-Name: JosÃ© Luis Gordo Romero
-SF Role: Developer
+    
+    
+    
+        José Luis Gordo Romero
 
 Nickname: jm0rin
 Name: Joshua Morin
 SF Role: Developer
+    
+    
+    
+        Joan Maspons
 
 Nickname: jmaspons
-Name: Joan Maspons
 First Commit: 2006-06-11
-Last Commit: 2006-10-08
+Last Commit: 2006-10-07
 Number of Commits: 7
-SF Role: Developer
 
 Nickname: jmjuzan
 Name: Juzan Jean-Michel
 SF Role: Developer
+    
+    
+    
+        jobicarter
 
 Nickname: jobicarter
 First Commit: 2013-11-14
 Last Commit: 2013-12-05
 Number of Commits: 8
-SF Role: Developer
 
 Nickname: joeyhartmann
 Name: Johann-Peter Hartmann
@@ -1370,10 +1483,10 @@ First Commit: 2005-07-13
 Last Commit: 2005-07-13
 Number of Commits: 1
 SF Role: Developer
-
-Nickname: johan_mx
-Name: Johan Hovold
-SF Role: Developer
+    
+    
+    
+        Johan Hovold
 
 Nickname: johannesmoser
 Name: Johannes Moser
@@ -1381,10 +1494,10 @@ First Commit: 2008-11-20
 Last Commit: 2008-11-20
 Number of Commits: 1
 SF Role: Developer
-
-Nickname: johndpar
-Name: John
-SF Role: Developer
+    
+    
+    
+        John
 
 Nickname: johndparker
 Name: John Parker
@@ -1392,13 +1505,21 @@ First Commit: 2012-07-08
 Last Commit: 2012-07-10
 Number of Commits: 2
 SF Role: Developer
+    
+    
+    
+        josefgc
 
 Nickname: jonnybradley
 Name: jonny Bradley
 First Commit: 2007-08-15
 Last Commit: 2014-05-02
-Number of Commits: 6730
+Number of Commits: 6747
 SF Role: Admin
+    
+    
+    
+        Jean-Marc Libs
 
 Nickname: jorgercosta
 First Commit: 2004-04-14
@@ -1409,18 +1530,19 @@ Nickname: josefgc
 First Commit: 2006-11-20
 Last Commit: 2006-11-20
 Number of Commits: 2
-SF Role: Developer
 
 Nickname: jospoi3
 Name: Jocelyn Poitras
 SF Role: Developer
+    
+    
+    
+        John.P.Eagle
 
 Nickname: jp_eagle
-Name: John.P.Eagle
 First Commit: 2014-04-02
 Last Commit: 2014-04-25
 Number of Commits: 5
-SF Role: Developer
 
 Nickname: jpgimenez
 Name: Juan Pablo GimÃ©nez
@@ -1428,10 +1550,10 @@ First Commit: 2003-08-04
 Last Commit: 2003-08-04
 Number of Commits: 1
 SF Role: Developer
-
-Nickname: jpowys
-Name: Jason powers
-SF Role: Developer
+    
+    
+    
+        Jason powers
 
 Nickname: jreyesg
 Name: Javier Reyes
@@ -1439,35 +1561,39 @@ First Commit: 2006-01-14
 Last Commit: 2007-03-03
 Number of Commits: 21
 SF Role: Developer
+    
+    
+    
+        Gavin Crenshaw
 
 Nickname: jshauk
-Name: Gavin Crenshaw
 First Commit: 2014-01-21
 Last Commit: 2014-04-29
 Number of Commits: 18
-SF Role: Developer
 
 Nickname: jsocol
 Name: James Socol
 First Commit: 2010-01-22
-Last Commit: 2010-01-23
+Last Commit: 2010-01-22
 Number of Commits: 1
 SF Role: Developer
-
-Nickname: jtpuk
-Name: Suzanne Jones
-SF Role: Developer
+    
+    
+    
+        Suzanne Jones
 
 Nickname: jujusl
 Name: It is just me
 SF Role: Developer
+    
+    
+    
+        Marie-Michelle Ouellet
 
 Nickname: juxtagonale
-Name: Marie-Michelle Ouellet
 First Commit: 2013-11-18
 Last Commit: 2013-11-18
 Number of Commits: 2
-SF Role: Developer
 
 Nickname: jwigdahl
 Name: James Wigdahl
@@ -1475,17 +1601,15 @@ First Commit: 2003-08-20
 Last Commit: 2003-10-29
 Number of Commits: 2
 SF Role: Developer
-
-Nickname: jyesbeat
-Name: Jyes Beat
-SF Role: Developer
+    
+    
+    
+        Jyes Beat
 
 Nickname: jyhem
-Name: Jean-Marc Libs
 First Commit: 2006-12-11
 Last Commit: 2014-04-27
 Number of Commits: 870
-SF Role: Admin
 
 Nickname: k2s
 Name: Martin Minka
@@ -1493,10 +1617,10 @@ First Commit: 2005-12-18
 Last Commit: 2005-12-20
 Number of Commits: 2
 SF Role: Developer
-
-Nickname: kalendin
-Name: Till
-SF Role: Developer
+    
+    
+    
+        Till
 
 Nickname: karneevor
 First Commit: 2006-02-16
@@ -1509,10 +1633,10 @@ First Commit: 2007-08-30
 Last Commit: 2009-09-12
 Number of Commits: 71
 SF Role: Developer
-
-Nickname: kfink
-Name: Kimberly Fink
-SF Role: Developer
+    
+    
+    
+        Kimberly Fink
 
 Nickname: killianebel
 Name: Killian EBEL
@@ -1520,24 +1644,28 @@ First Commit: 2010-12-07
 Last Commit: 2010-12-23
 Number of Commits: 45
 SF Role: Developer
+    
+    
+    
+        Kissaki
 
 Nickname: kissaki
-Name: Kissaki
 First Commit: 2009-07-26
-Last Commit: 2009-12-22
+Last Commit: 2009-12-21
 Number of Commits: 44
-SF Role: Developer
 
 Nickname: kodewulf
 Name: KodeWulf
 SF Role: Developer
+    
+    
+    
+        koko
 
 Nickname: kokohuyb
-Name: koko
 First Commit: 2008-03-25
-Last Commit: 2008-04-07
+Last Commit: 2008-04-06
 Number of Commits: 9
-SF Role: Developer
 
 Nickname: koobla
 Name: Simon Vogl
@@ -1545,32 +1673,36 @@ First Commit: 2004-02-08
 Last Commit: 2004-02-20
 Number of Commits: 4
 SF Role: Developer
+    
+    
+    
+        Koohiisan
 
 Nickname: koohiisan
-Name: Koohiisan
 First Commit: 2014-02-13
 Last Commit: 2014-03-13
 Number of Commits: 9
-SF Role: Developer
 
 Nickname: krose
 Name: Kent Primrose
 SF Role: Developer
+    
+    
+    
+        Karen Stingel
 
 Nickname: kstingel
-Name: Karen Stingel
 First Commit: 2011-07-15
 Last Commit: 2013-04-28
 Number of Commits: 189
-SF Role: Developer
 
 Nickname: ksumacgyver
 Name: Scott Harmon
 SF Role: Developer
-
-Nickname: kussmaul
-Name: Clifton Kussmaul
-SF Role: Developer
+    
+    
+    
+        Clifton Kussmaul
 
 Nickname: kwem
 First Commit: 2012-10-05
@@ -1580,28 +1712,28 @@ Number of Commits: 7
 Nickname: kylebishop
 Name: Kyle Bishop
 SF Role: Developer
-
-Nickname: kyori
-Name: Kyori Yaganagi
-SF Role: Developer
+    
+    
+    
+        Kyori Yaganagi
 
 Nickname: lack
 Name: Jim Ramsay
 SF Role: Developer
-
-Nickname: lady_6thofau
-Name: lady
-SF Role: Developer
+    
+    
+    
+        lady
 
 Nickname: laetzer
 First Commit: 2004-01-09
 Last Commit: 2004-01-10
 Number of Commits: 6
 SF Role: Developer
-
-Nickname: lauraxthomson
-Name: Laura Thomson
-SF Role: Developer
+    
+    
+    
+        Laura Thomson
 
 Nickname: leagris
 Name: LÃ©a Gris
@@ -1609,24 +1741,28 @@ First Commit: 2013-07-24
 Last Commit: 2013-08-08
 Number of Commits: 8
 SF Role: Developer
+    
+    
+    
+        Joan Vilarińo
 
 Nickname: lechuckdapirate
-Name: Joan VilariÅo
 First Commit: 2003-05-02
 Last Commit: 2003-05-12
 Number of Commits: 15
-SF Role: Developer
 
 Nickname: leehongfay
 Name: Vincent Lee
 SF Role: Developer
+    
+    
+    
+        Yan Levasseur
 
 Nickname: leyan
-Name: Yan Levasseur
 First Commit: 2008-03-01
 Last Commit: 2008-05-18
 Number of Commits: 8
-SF Role: Developer
 
 Nickname: lfagundes
 Name: Luis Fagundes
@@ -1634,21 +1770,23 @@ First Commit: 2004-02-23
 Last Commit: 2006-11-30
 Number of Commits: 159
 SF Role: Developer
+    
+    
+    
+        Haowei
 
 Nickname: lihaowei2008
-Name: Haowei
-First Commit: 2007-09-10
+First Commit: 2007-09-09
 Last Commit: 2007-09-11
 Number of Commits: 2
-SF Role: Developer
 
 Nickname: limako
 Name: Steve Brewer
 SF Role: Developer
-
-Nickname: limited1
-Name: Lee Wilson (aka stella12)
-SF Role: Developer
+    
+    
+    
+        Lee Wilson (aka stella12)
 
 Nickname: lindonb
 Name: Lindon Barnfield
@@ -1656,40 +1794,42 @@ First Commit: 2009-05-10
 Last Commit: 2014-05-01
 Number of Commits: 989
 SF Role: Developer
-
-Nickname: llunax
-Name: Lluna
-SF Role: Developer
+    
+    
+    
+        Lluna
 
 Nickname: lmoss
 Name: Laurent Moss
 First Commit: 2005-12-28
-Last Commit: 2006-11-30
+Last Commit: 2006-11-29
 Number of Commits: 3
 SF Role: Developer
-
-Nickname: lnewby
-Name: Lew Newby
-SF Role: Developer
+    
+    
+    
+        Lew Newby
 
 Nickname: lonelyp
 Name: Wells Wang
 SF Role: Developer
-
-Nickname: lorfds
-Name: Jon
-SF Role: Developer
+    
+    
+    
+        Jon
 
 Nickname: louis-martin
 Name: Louis-Martin Richard
 SF Role: Developer
+    
+    
+    
+        Louis-Philippe Huberdeau
 
 Nickname: lphuberdeau
-Name: Louis-Philippe Huberdeau
 First Commit: 2004-04-10
 Last Commit: 2014-04-30
 Number of Commits: 4030
-SF Role: Developer
 
 Nickname: lrargerich
 Name: Luis Argerich
@@ -1697,6 +1837,10 @@ First Commit: 2002-10-08
 Last Commit: 2003-11-28
 Number of Commits: 399
 SF Role: Admin
+    
+    
+    
+        luciash d&#39; being
 
 Nickname: lrrcenter
 Name: LRRC
@@ -1704,10 +1848,10 @@ First Commit: 2012-05-16
 Last Commit: 2012-06-20
 Number of Commits: 14
 SF Role: Developer
-
-Nickname: lsces
-Name: Lester Caine
-SF Role: Developer
+    
+    
+    
+        Lester Caine
 
 Nickname: luatdo
 Name: Luatdo
@@ -1715,25 +1859,23 @@ First Commit: 2012-11-06
 Last Commit: 2012-11-06
 Number of Commits: 1
 SF Role: Developer
-
-Nickname: lucamarletta
-Name: Luca Marletta
-SF Role: Developer
+    
+    
+    
+        Luca Marletta
 
 Nickname: lucas
 Name: Lucas Eduardo
 SF Role: Developer
-
-Nickname: lucasemanoel
-Name: Lucas Emanoel
-SF Role: Developer
+    
+    
+    
+        Lucas Emanoel
 
 Nickname: luciash
-Name: luciash d&#39; being
 First Commit: 2003-08-05
 Last Commit: 2014-05-02
-Number of Commits: 1169
-SF Role: Admin
+Number of Commits: 1175
 
 Nickname: lueders
 Name: Ralf E. Lueders
@@ -1741,28 +1883,30 @@ First Commit: 2003-08-18
 Last Commit: 2005-03-13
 Number of Commits: 24
 SF Role: Developer
-
-Nickname: lukian-dev
-Name: Lukian Tabandjov
-SF Role: Developer
+    
+    
+    
+        Lukian Tabandjov
 
 Nickname: m_akat
 Name: loxs
 SF Role: Developer
+    
+    
+    
+        stef
 
 Nickname: m_stef
-Name: stef
 First Commit: 2008-07-09
 Last Commit: 2010-01-10
 Number of Commits: 23
-SF Role: Developer
 
 Nickname: magius
 SF Role: Developer
-
-Nickname: makenai
-Name: Pawel Szymczykowski
-SF Role: Developer
+    
+    
+    
+        Pawel Szymczykowski
 
 Nickname: mangapower
 Name: Ben Palacios
@@ -1770,12 +1914,15 @@ First Commit: 2009-04-16
 Last Commit: 2009-10-08
 Number of Commits: 84
 SF Role: Developer
+    
+    
+    
+        manivannans
 
 Nickname: manivannans
 First Commit: 2013-10-24
 Last Commit: 2014-02-26
 Number of Commits: 109
-SF Role: Developer
 
 Nickname: marc-etienne
 Name: Marc-Etienne M.LÃ©veillÃ©
@@ -1783,12 +1930,15 @@ First Commit: 2009-06-11
 Last Commit: 2009-06-11
 Number of Commits: 1
 SF Role: Developer
+    
+    
+    
+        marcius
 
 Nickname: marcius
 First Commit: 2003-11-25
-Last Commit: 2003-11-30
+Last Commit: 2003-11-29
 Number of Commits: 4
-SF Role: Developer
 
 Nickname: marclaporte
 Name: Marc Laporte
@@ -1796,6 +1946,10 @@ First Commit: 2003-11-28
 Last Commit: 2014-04-23
 Number of Commits: 1821
 SF Role: Admin
+    
+    
+    
+        mose
 
 Nickname: marcmont
 Name: SnowCrash
@@ -1803,39 +1957,41 @@ First Commit: 2006-04-18
 Last Commit: 2006-05-16
 Number of Commits: 8
 SF Role: Developer
+    
+    
+    
+        Marco Aurélio Silva
 
 Nickname: marcoaasilva
-Name: Marco AurÃ©lio Silva
 First Commit: 2008-06-18
 Last Commit: 2009-08-15
 Number of Commits: 13
-SF Role: Developer
 
 Nickname: marcop13
 Name: marco parronchi
 SF Role: Developer
-
-Nickname: marianat
-Name: Mariana Tome
-SF Role: Developer
+    
+    
+    
+        Mariana Tome
 
 Nickname: markajaroski
 Name: Mark A. Jaroski
 SF Role: Developer
-
-Nickname: marklubin
-Name: Mark Lubin
-SF Role: Developer
+    
+    
+    
+        Mark Lubin
 
 Nickname: markusvk
 First Commit: 2003-11-12
 Last Commit: 2003-12-03
 Number of Commits: 7
 SF Role: Developer
-
-Nickname: marp2901
-Name: Philippe Marcoux
-SF Role: Developer
+    
+    
+    
+        Philippe Marcoux
 
 Nickname: martincomeau
 Name: Martin Comeau
@@ -1843,9 +1999,10 @@ First Commit: 2009-06-14
 Last Commit: 2009-06-16
 Number of Commits: 3
 SF Role: Developer
-
-Nickname: martinmanyhats
-SF Role: Developer
+    
+    
+    
+        martinmanyhats
 
 Nickname: martinschroeder
 Name: Martin SchrÃ¶der
@@ -1853,10 +2010,10 @@ First Commit: 2012-05-18
 Last Commit: 2012-05-18
 Number of Commits: 1
 SF Role: Developer
-
-Nickname: marylly
-Name: **Mya**
-SF Role: Developer
+    
+    
+    
+        **Mya**
 
 Nickname: mashmorgan
 Name: Peter "mash" Morgan
@@ -1864,60 +2021,64 @@ First Commit: 2005-08-18
 Last Commit: 2005-10-31
 Number of Commits: 7
 SF Role: Developer
-
-Nickname: massimoi
-Name: Massimo Infunti
-SF Role: Developer
+    
+    
+    
+        Massimo Infunti
 
 Nickname: mastre
 SF Role: Developer
-
-Nickname: mattlangley1
-Name: Matt Langley
-SF Role: Developer
+    
+    
+    
+        Matt Langley
 
 Nickname: matwho
 Name: Matthew Bickerton
-First Commit: 2008-08-26
+First Commit: 2008-08-25
 Last Commit: 2009-05-07
 Number of Commits: 30
 SF Role: Developer
+    
+    
+    
+        Mario Brackeva
 
 Nickname: mbrackeva
-Name: Mario Brackeva
 First Commit: 2008-06-22
 Last Commit: 2008-06-22
 Number of Commits: 1
-SF Role: Developer
 
 Nickname: mcfarland
 First Commit: 2006-02-04
-Last Commit: 2007-07-21
+Last Commit: 2007-07-20
 Number of Commits: 5
 SF Role: Developer
-
-Nickname: mcgucken
-Name: Dr. Elliot McGucken
-SF Role: Developer
+    
+    
+    
+        Dr. Elliot McGucken
 
 Nickname: mchurch
 Name: Mike Churchward
 SF Role: Developer
+    
+    
+    
+        Yannick Majoros
 
 Nickname: melmut
-Name: Yannick Majoros
 First Commit: 2004-02-11
 Last Commit: 2004-04-07
 Number of Commits: 6
-SF Role: Developer
 
 Nickname: merbster
 Name: Jesper Juel Merbt
 SF Role: Developer
-
-Nickname: mgfeller
-Name: Michael Gfeller
-SF Role: Developer
+    
+    
+    
+        Michael Gfeller
 
 Nickname: mhausi
 Name: Hausi
@@ -1925,24 +2086,26 @@ First Commit: 2005-02-08
 Last Commit: 2005-02-25
 Number of Commits: 4
 SF Role: Developer
-
-Nickname: mhryciuk
-Name: Michal Hryciuk
-SF Role: Developer
+    
+    
+    
+        Michal Hryciuk
 
 Nickname: michael_davey
 Name: Michael Davey
 First Commit: 2005-01-31
-Last Commit: 2005-10-12
+Last Commit: 2005-10-11
 Number of Commits: 144
 SF Role: Developer
+    
+    
+    
+        william champion
 
 Nickname: mickchamp
-Name: william champion
 First Commit: 2014-03-12
 Last Commit: 2014-03-12
 Number of Commits: 1
-SF Role: Developer
 
 Nickname: mikelcu
 Name: Mike Culbertson
@@ -1950,10 +2113,10 @@ First Commit: 2004-02-12
 Last Commit: 2004-02-12
 Number of Commits: 1
 SF Role: Developer
-
-Nickname: mikenielsen
-Name: Mike Nielsen
-SF Role: Developer
+    
+    
+    
+        Mike Nielsen
 
 Nickname: mikespub
 Name: Mike&#39;s Pub
@@ -1961,29 +2124,31 @@ First Commit: 2003-09-29
 Last Commit: 2004-09-23
 Number of Commits: 16
 SF Role: Developer
-
-Nickname: mikewalsh
-Name: MW
-SF Role: Developer
+    
+    
+    
+        MW
 
 Nickname: millette
 Name: Robin Millette
 SF Role: Developer
+    
+    
+    
+        Gergely
 
 Nickname: minger0
-Name: Gergely
 First Commit: 2010-04-30
 Last Commit: 2011-01-30
 Number of Commits: 32
-SF Role: Developer
 
 Nickname: mitchmurphy
 Name: Mitch Murphy
 SF Role: Developer
-
-Nickname: mixolyde
-Name: Brian Williams
-SF Role: Developer
+    
+    
+    
+        Brian Williams
 
 Nickname: mjeanson3
 Name: Michael Jeanson
@@ -1991,23 +2156,28 @@ First Commit: 2012-07-10
 Last Commit: 2012-07-10
 Number of Commits: 1
 SF Role: Developer
+    
+    
+    
+        Michael Linton
 
 Nickname: mlinton
-Name: Michael Linton
 First Commit: 2004-11-26
 Last Commit: 2005-04-13
 Number of Commits: 14
-SF Role: Developer
 
 Nickname: mlowerison
 Name: Michael Lowerison
 SF Role: Developer
+    
+    
+    
+        mlpvolt
 
 Nickname: mlpvolt
 First Commit: 2008-08-19
-Last Commit: 2008-08-20
+Last Commit: 2008-08-19
 Number of Commits: 2
-SF Role: Developer
 
 Nickname: mlustenberg
 Name: Mauriz
@@ -2015,32 +2185,31 @@ First Commit: 2011-07-27
 Last Commit: 2011-10-09
 Number of Commits: 98
 SF Role: Developer
-
-Nickname: monthorin
-Name: LoÄc Monthorin
-SF Role: Developer
+    
+    
+    
+        Loďc Monthorin
 
 Nickname: moresun
 Name: Markus Bader
 SF Role: Developer
-
-Nickname: morgamic
-Name: Michael Morgan
-SF Role: Developer
+    
+    
+    
+        Michael Morgan
 
 Nickname: mortenson
 Name: Leif Mortenson
 SF Role: Developer
+    
+    
+    
+        Renato da Silva Pereira
 
 Nickname: mose
 First Commit: 2003-06-12
 Last Commit: 2008-03-22
 Number of Commits: 1954
-SF Role: Admin
-
-Nickname: mrbuiu
-Name: Renato da Silva Pereira
-SF Role: Developer
 
 Nickname: mrjc
 Name: Martin RJ. Cleaver
@@ -2048,13 +2217,15 @@ First Commit: 2009-05-11
 Last Commit: 2009-05-19
 Number of Commits: 29
 SF Role: Developer
+    
+    
+    
+        Maxime Roussel
 
 Nickname: mroussel
-Name: Maxime Roussel
 First Commit: 2013-05-16
 Last Commit: 2013-05-16
 Number of Commits: 1
-SF Role: Developer
 
 Nickname: muscote
 Name: Torsten Fabricius
@@ -2062,15 +2233,15 @@ First Commit: 2011-07-07
 Last Commit: 2013-09-28
 Number of Commits: 6
 SF Role: Developer
+    
+    
+    
+        Michael Wexler
 
 Nickname: musus
 First Commit: 2003-12-18
 Last Commit: 2004-02-25
 Number of Commits: 108
-
-Nickname: mwexler
-Name: Michael Wexler
-SF Role: Developer
 
 Nickname: mystic_ca
 Name: Tom A.
@@ -2078,36 +2249,38 @@ First Commit: 2008-03-02
 Last Commit: 2008-03-02
 Number of Commits: 1
 SF Role: Developer
+    
+    
+    
+        Nagendra Koilada
 
 Nickname: nagendra016
-Name: Nagendra Koilada
 First Commit: 2009-05-05
 Last Commit: 2009-11-03
 Number of Commits: 51
-SF Role: Developer
 
 Nickname: najb
 Name: Jan B
 SF Role: Developer
-
-Nickname: nalsar
-Name: prashant
-SF Role: Developer
+    
+    
+    
+        prashant
 
 Nickname: nanoia
 SF Role: Developer
-
-Nickname: natig
-Name: Natalia Golmar
-SF Role: Developer
+    
+    
+    
+        Natalia Golmar
 
 Nickname: natster
 Name: Nathan Waterhouse
 SF Role: Developer
-
-Nickname: neidhart
-Name: Dietmar Neidhart
-SF Role: Developer
+    
+    
+    
+        Dietmar Neidhart
 
 Nickname: nhuffschmid
 Name: Norbert Huffschmid
@@ -2115,24 +2288,28 @@ First Commit: 2003-06-23
 Last Commit: 2003-12-03
 Number of Commits: 28
 SF Role: Developer
+    
+    
+    
+        Nicolas Dimitrijevic
 
 Nickname: niclone
-Name: Nicolas Dimitrijevic
 First Commit: 2006-07-24
 Last Commit: 2010-09-02
 Number of Commits: 415
-SF Role: Developer
 
 Nickname: nielhirjee
 Name: Niel Hirjee
 SF Role: Developer
+    
+    
+    
+        Nik Chankov
 
 Nickname: nikchankov
-Name: Nik Chankov
 First Commit: 2006-02-06
 Last Commit: 2006-02-08
 Number of Commits: 3
-SF Role: Developer
 
 Nickname: nikejam
 Name: Jean Kim
@@ -2140,13 +2317,15 @@ First Commit: 2012-11-22
 Last Commit: 2012-11-22
 Number of Commits: 1
 SF Role: Developer
+    
+    
+    
+        Nikhar
 
 Nickname: nikhar
-Name: Nikhar
 First Commit: 2013-07-09
 Last Commit: 2013-07-09
 Number of Commits: 1
-SF Role: Developer
 
 Nickname: nkoth
 Name: Nelson
@@ -2154,31 +2333,35 @@ First Commit: 2007-05-17
 Last Commit: 2014-05-01
 Number of Commits: 1670
 SF Role: Admin
+    
+    
+    
+        Patrice W.
 
 Nickname: normandaoust
 Name: Norm
 SF Role: Developer
-
-Nickname: notgod
-Name: Brian Nelson
-SF Role: Developer
+    
+    
+    
+        Brian Nelson
 
 Nickname: notix
 SF Role: Developer
+    
+    
+    
+        Nuno M. C. Tavares
 
 Nickname: ntavares
-Name: Nuno M. C. Tavares
 First Commit: 2007-11-08
 Last Commit: 2007-11-26
 Number of Commits: 16
-SF Role: Developer
 
 Nickname: nyloth
-Name: Patrice W.
 First Commit: 2006-11-09
 Last Commit: 2011-07-14
 Number of Commits: 1929
-SF Role: Admin
 
 Nickname: obnoxxx
 Name: Michael Adam
@@ -2186,10 +2369,10 @@ First Commit: 2008-11-05
 Last Commit: 2009-09-26
 Number of Commits: 16
 SF Role: Developer
-
-Nickname: oc73
-Name: FreeLikeGNU
-SF Role: Developer
+    
+    
+    
+        FreeLikeGNU
 
 Nickname: oeversetten
 Name: Jens Dodenhoff
@@ -2197,6 +2380,10 @@ First Commit: 2011-09-09
 Last Commit: 2011-10-21
 Number of Commits: 66
 SF Role: Developer
+    
+    
+    
+        Richard Mortimer
 
 Nickname: ohertel
 Name: Oliver Hertel
@@ -2204,64 +2391,68 @@ First Commit: 2003-03-16
 Last Commit: 2013-06-14
 Number of Commits: 395
 SF Role: Admin
-
-Nickname: oldelvet
-Name: Richard Mortimer
-SF Role: Developer
+    
+    
+    
+        pkdille
 
 Nickname: oliland
 Name: Oli Kingshott
 SF Role: Developer
-
-Nickname: olinuxx
-Name: Olivier HUMBERT
-SF Role: Developer
+    
+    
+    
+        Olivier HUMBERT
 
 Nickname: oliverscheck
 Name: Oliver Scheck
 SF Role: Developer
+    
+    
+    
+        Olaf-Michael Stefanov
 
 Nickname: omstefanov
-Name: Olaf-Michael Stefanov
 First Commit: 2009-07-04
 Last Commit: 2013-11-14
 Number of Commits: 14
-SF Role: Developer
 
 Nickname: onewatt
 Name: AndrÃ© SenÃ©cal
 SF Role: Developer
-
-Nickname: opn-tech
-Name: David Bovill
-SF Role: Developer
+    
+    
+    
+        David Bovill
 
 Nickname: orionrobots
 Name: Danny Staple
 SF Role: Developer
-
-Nickname: otalunak
-Name: Ota Lunak
-SF Role: Developer
+    
+    
+    
+        Ota Lunak
 
 Nickname: pablod
 Name: Pablo Ariel Duboue
 SF Role: Developer
-
-Nickname: panamaus
-Name: David Carter
-SF Role: Developer
+    
+    
+    
+        David Carter
 
 Nickname: panathos
 Name: Panathos
 SF Role: Developer
+    
+    
+    
+        Justin Patrin
 
 Nickname: papercrane
-Name: Justin Patrin
 First Commit: 2005-05-18
 Last Commit: 2005-06-27
 Number of Commits: 58
-SF Role: Developer
 
 Nickname: parkercroft
 Name: Damian Parker-Croft
@@ -2269,13 +2460,15 @@ First Commit: 2007-09-02
 Last Commit: 2007-09-02
 Number of Commits: 1
 SF Role: Developer
+    
+    
+    
+        Pascal St-Jean
 
 Nickname: pascalstjean
-Name: Pascal St-Jean
 First Commit: 2009-11-05
 Last Commit: 2013-08-20
 Number of Commits: 118
-SF Role: Developer
 
 Nickname: patrick-proulx
 Name: Patrick Proulx
@@ -2283,41 +2476,43 @@ First Commit: 2013-07-14
 Last Commit: 2014-04-25
 Number of Commits: 11
 SF Role: Developer
+    
+    
+    
+        Patrick Allard
 
 Nickname: patrickallard
-Name: Patrick Allard
 First Commit: 2009-01-26
-Last Commit: 2009-04-23
+Last Commit: 2009-04-22
 Number of Commits: 3
-SF Role: Developer
 
 Nickname: patvdv
 First Commit: 2003-06-09
-Last Commit: 2004-05-14
+Last Commit: 2004-05-13
 Number of Commits: 4
 
 Nickname: pemen
 SF Role: Developer
-
-Nickname: penny336
-Name: Alex
-SF Role: Developer
+    
+    
+    
+        Alex
 
 Nickname: peoman
 Name: Cedric Fontaine
 SF Role: Developer
-
-Nickname: pgewissen
-Name: Paul
-SF Role: Developer
+    
+    
+    
+        Paul
 
 Nickname: philbaret
 Name: Philippe Baret
 SF Role: Developer
-
-Nickname: philemon1999
-Name: Andre Archambault
-SF Role: Developer
+    
+    
+    
+        Andre Archambault
 
 Nickname: philippeback
 Name: Philippe Back
@@ -2325,72 +2520,77 @@ First Commit: 2008-09-30
 Last Commit: 2010-12-07
 Number of Commits: 7
 SF Role: Developer
+    
+    
+    
+        Phil
 
 Nickname: philwhipps
-Name: Phil
 First Commit: 2006-05-22
 Last Commit: 2006-05-22
 Number of Commits: 2
-SF Role: Developer
 
 Nickname: phunkymunky
 SF Role: Developer
+    
+    
+    
+        Giancarlo Pinerolo
 
 Nickname: pingus
-Name: Giancarlo Pinerolo
 First Commit: 2009-03-27
 Last Commit: 2010-01-23
 Number of Commits: 48
-SF Role: Developer
 
 Nickname: pippone
 First Commit: 2003-05-02
-Last Commit: 2003-05-13
+Last Commit: 2003-05-12
 Number of Commits: 2
 
 Nickname: pistoljitsu
 Name: Pete Thompson
 SF Role: Developer
+    
+    
+    
+        Phil Jollans
 
 Nickname: pjollans
-Name: Phil Jollans
 First Commit: 2009-02-08
 Last Commit: 2009-02-08
 Number of Commits: 1
-SF Role: Developer
 
 Nickname: pkdille
 First Commit: 2007-03-14
 Last Commit: 2013-07-04
 Number of Commits: 1911
-SF Role: Admin
 
 Nickname: plillevold
 Name: Peter Lillevold
 SF Role: Developer
-
-Nickname: plungerman
-Name: Stephen Kurkowski
-SF Role: Developer
+    
+    
+    
+        Stephen Kurkowski
 
 Nickname: pmichelazzo
 Name: Paulino Michelazzo
 First Commit: 2004-03-23
-Last Commit: 2004-03-24
+Last Commit: 2004-03-23
 Number of Commits: 1
 SF Role: Developer
-
-Nickname: pmorenogarcia
-Name: Pablo Moreno GarcÃ­a
-SF Role: Developer
+    
+    
+    
+        Pablo Moreno García
 
 Nickname: pnimish
 Name: Nimish Pachapurkar
 SF Role: Developer
-
-Nickname: polatouche
-Name: Antoine Polatouche
-SF Role: Developer
+    
+    
+    
+        Antoine Polatouche
 
 Nickname: popovich
 Name: Peter Popovich
@@ -2398,13 +2598,15 @@ First Commit: 2004-06-10
 Last Commit: 2004-06-10
 Number of Commits: 1
 SF Role: Developer
+    
+    
+    
+        p0r$h
 
 Nickname: porsh
-Name: p0r$h
 First Commit: 2008-12-24
 Last Commit: 2008-12-24
 Number of Commits: 1
-SF Role: Developer
 
 Nickname: ppttrr
 Name: Pete Jalajas
@@ -2412,34 +2614,36 @@ First Commit: 2012-06-30
 Last Commit: 2013-12-14
 Number of Commits: 7
 SF Role: Developer
-
-Nickname: pratesi
-Name: Marco Pratesi
-SF Role: Developer
+    
+    
+    
+        Marco Pratesi
 
 Nickname: prezkennedy
 Name: Matthew Kennedy
 SF Role: Developer
+    
+    
+    
+        Peter
 
 Nickname: princessxine
 First Commit: 2008-08-01
 Last Commit: 2008-08-17
 Number of Commits: 9
 
-Nickname: ptalindstrom
-Name: Peter
-SF Role: Developer
-
 Nickname: ptydotcc
 Name: Tom Salter
 SF Role: Developer
+    
+    
+    
+        Aaron Holmes
 
 Nickname: pyrotknix
-Name: Aaron Holmes
 First Commit: 2003-05-08
 Last Commit: 2003-05-08
 Number of Commits: 1
-SF Role: Developer
 
 Nickname: qoumaq
 Name: Martin KosmÃ¡k
@@ -2447,37 +2651,37 @@ First Commit: 2010-11-19
 Last Commit: 2010-11-26
 Number of Commits: 3
 SF Role: Developer
-
-Nickname: r1_r1
-Name: Erwan
-SF Role: Developer
+    
+    
+    
+        Erwan
 
 Nickname: rabiddog
 Name: Everard Brown
 First Commit: 2005-09-18
-Last Commit: 2005-09-20
+Last Commit: 2005-09-19
 Number of Commits: 2
 SF Role: Developer
-
-Nickname: ramiro_v
-Name: Ramiro Vera
-SF Role: Developer
+    
+    
+    
+        Ramiro Vera
 
 Nickname: raspencer
 Name: Reid Spencer
 SF Role: Developer
-
-Nickname: razorwyre
-Name: Matt E. Patterson
-SF Role: Developer
+    
+    
+    
+        Matt E. Patterson
 
 Nickname: rbschmidt
 Name: Rodrigo B. Schmidt
 SF Role: Developer
-
-Nickname: rcogley
-Name: Rick Cogley
-SF Role: Developer
+    
+    
+    
+        Rick Cogley
 
 Nickname: redflo
 Name: Florian Gleixner
@@ -2485,6 +2689,10 @@ First Commit: 2003-03-04
 Last Commit: 2012-04-29
 Number of Commits: 341
 SF Role: Admin
+    
+    
+    
+        Rick Sapir
 
 Nickname: reiknir
 Name: Olafur Gunnlaugsson
@@ -2492,36 +2700,36 @@ First Commit: 2010-04-03
 Last Commit: 2010-05-24
 Number of Commits: 5
 SF Role: Developer
-
-Nickname: renoirb
-Name: Renoir Boulanger
-SF Role: Developer
+    
+    
+    
+        Renoir Boulanger
 
 Nickname: rhwinter
 Name: Roberto H. Winter
 SF Role: Developer
-
-Nickname: richardsnow
-Name: Richard Snow
-SF Role: Developer
+    
+    
+    
+        Richard Snow
 
 Nickname: richtl
 Name: Richard Tango-Lowy
 SF Role: Developer
+    
+    
+    
+        José María Escartín
 
 Nickname: ricks99
-Name: Rick Sapir
 First Commit: 2007-07-19
 Last Commit: 2014-03-28
 Number of Commits: 390
-SF Role: Admin
 
 Nickname: ripero
-Name: JosÃ© MarÃ­a EscartÃ­n
 First Commit: 2010-10-02
-Last Commit: 2011-04-04
+Last Commit: 2011-04-03
 Number of Commits: 5
-SF Role: Developer
 
 Nickname: rischconsulting
 Name: mrisch
@@ -2529,26 +2737,30 @@ First Commit: 2006-06-24
 Last Commit: 2013-03-30
 Number of Commits: 34
 SF Role: Developer
+    
+    
+    
+        Roberto Leibman
 
 Nickname: rleibman
-Name: Roberto Leibman
 First Commit: 2005-05-03
 Last Commit: 2005-05-03
 Number of Commits: 3
-SF Role: Developer
 
 Nickname: rlopezs
 First Commit: 2009-02-15
 Last Commit: 2009-09-16
 Number of Commits: 29
 SF Role: Developer
+    
+    
+    
+        Robin Powell
 
 Nickname: rlpowell
-Name: Robin Powell
 First Commit: 2003-09-17
 Last Commit: 2010-08-01
 Number of Commits: 194
-SF Role: Developer
 
 Nickname: robertplummer
 Name: Robert Plummer
@@ -2556,32 +2768,36 @@ First Commit: 2010-06-30
 Last Commit: 2014-05-01
 Number of Commits: 1788
 SF Role: Developer
+    
+    
+    
+        Rob Ferguson
 
 Nickname: robferguson
-Name: Rob Ferguson
 First Commit: 2008-08-19
 Last Commit: 2009-10-02
 Number of Commits: 10
-SF Role: Developer
 
 Nickname: rockpaper
 Name: Chris Campbell
 SF Role: Developer
-
-Nickname: rod3712
-Name: Rodrigo Curvelo
-SF Role: Developer
+    
+    
+    
+        Rodrigo Curvelo
 
 Nickname: ronchon
 Name: Patrice ALBARET
 SF Role: Developer
+    
+    
+    
+        Ron Sheely
 
 Nickname: ronsheely
-Name: Ron Sheely
 First Commit: 2012-03-25
 Last Commit: 2012-03-25
 Number of Commits: 1
-SF Role: Developer
 
 Nickname: rook1666
 Name: Simon Grabher
@@ -2589,13 +2805,15 @@ First Commit: 2008-11-05
 Last Commit: 2008-11-21
 Number of Commits: 11
 SF Role: Developer
+    
+    
+    
+        Ross Smith II
 
 Nickname: rossta
-Name: Ross Smith II
 First Commit: 2002-12-03
-Last Commit: 2004-03-17
+Last Commit: 2004-03-16
 Number of Commits: 132
-SF Role: Developer
 
 Nickname: roysinn
 Name: Roy Sinn
@@ -2603,18 +2821,18 @@ First Commit: 2004-08-13
 Last Commit: 2004-08-13
 Number of Commits: 1
 SF Role: Developer
-
-Nickname: rpgoldman
-Name: Robert P. Goldman
-SF Role: Developer
+    
+    
+    
+        Robert P. Goldman
 
 Nickname: rubaiyat
 Name: James Morgan
 SF Role: Developer
-
-Nickname: runix2
-Name: martin sarsale
-SF Role: Developer
+    
+    
+    
+        martin sarsale
 
 Nickname: russwilde
 First Commit: 2004-05-13
@@ -2624,23 +2842,25 @@ Number of Commits: 2
 Nickname: rv540
 Name: HervÃ© Schoenenberger
 First Commit: 2005-07-20
-Last Commit: 2005-09-02
+Last Commit: 2005-09-01
 Number of Commits: 4
 SF Role: Developer
-
-Nickname: ryo-on
-Name: Ryo ONODERA
-SF Role: Developer
+    
+    
+    
+        Ryo ONODERA
 
 Nickname: sabdelma
 SF Role: Developer
+    
+    
+    
+        DEUTSCHER Matthieu
 
 Nickname: sacados1
-Name: DEUTSCHER Matthieu
 First Commit: 2010-12-10
 Last Commit: 2010-12-10
 Number of Commits: 1
-SF Role: Developer
 
 Nickname: sacra
 Name: Paulo Sacramento
@@ -2648,6 +2868,10 @@ First Commit: 2009-05-21
 Last Commit: 2009-05-27
 Number of Commits: 3
 SF Role: Developer
+    
+    
+    
+        Sylvain Carle
 
 Nickname: sampaioprimo
 Name: Rodrigo Sampaio Primo
@@ -2655,32 +2879,36 @@ First Commit: 2005-10-17
 Last Commit: 2013-08-30
 Number of Commits: 1143
 SF Role: Admin
-
-Nickname: scarle
-Name: Sylvain Carle
-SF Role: Developer
+    
+    
+    
+        Sylvie Greverend
 
 Nickname: sdlee
 Name: Stephen Lee
 SF Role: Developer
+    
+    
+    
+        Stéphane DOH
 
 Nickname: sdoh
-Name: StÃ©phane DOH
 First Commit: 2010-08-31
 Last Commit: 2010-09-30
 Number of Commits: 20
-SF Role: Developer
 
 Nickname: sebpaquet
 Name: Seb
 SF Role: Developer
+    
+    
+    
+        Stéphane Casset
 
 Nickname: sept_7
-Name: StÃ©phane Casset
 First Commit: 2007-07-03
 Last Commit: 2013-12-18
 Number of Commits: 1158
-SF Role: Developer
 
 Nickname: sewilco
 Name: Scot Wilcoxon
@@ -2688,56 +2916,60 @@ First Commit: 2008-09-18
 Last Commit: 2009-04-10
 Number of Commits: 47
 SF Role: Developer
-
-Nickname: sfyn
-Name: Sofian Benaissa
-SF Role: Developer
+    
+    
+    
+        Sofian Benaissa
 
 Nickname: sghane
 Name: sameh
 SF Role: Developer
-
-Nickname: shinhan
-Name: Daniyel Sili
-SF Role: Developer
+    
+    
+    
+        Daniyel Sili
 
 Nickname: shiroitenshi
 Name: Chris White
 SF Role: Developer
-
-Nickname: sideshow_bob
-Name: 454abp
-SF Role: Developer
+    
+    
+    
+        454abp
 
 Nickname: siegfried1e
 Name: Stephan Champagne
 SF Role: Developer
-
-Nickname: sikko23
-Name: Sikko
-SF Role: Developer
+    
+    
+    
+        Sikko
 
 Nickname: sil3nc3
 Name: Frank Gesang
 SF Role: Developer
+    
+    
+    
+        Eric Beaurivage
 
 Nickname: sipherdee
-Name: Eric Beaurivage
 First Commit: 2013-07-15
 Last Commit: 2013-10-09
 Number of Commits: 3
-SF Role: Developer
 
 Nickname: siridhar
 Name: Sridhar
 SF Role: Developer
+    
+    
+    
+        Steve C
 
 Nickname: skinut
-Name: Steve C
 First Commit: 2012-11-20
 Last Commit: 2013-11-26
 Number of Commits: 9
-SF Role: Developer
 
 Nickname: slordjette
 Name: SÃ©bastien Lord-JettÃ©
@@ -2745,56 +2977,58 @@ First Commit: 2009-04-08
 Last Commit: 2010-04-26
 Number of Commits: 2
 SF Role: Developer
-
-Nickname: smacvicar
-Name: Scott MacVicar
-SF Role: Developer
+    
+    
+    
+        Scott MacVicar
 
 Nickname: smartingarcia
 Name: MartÃ­n GarcÃ­a Sixto Pablo
 SF Role: Developer
+    
+    
+    
+        José Ildefonso Camargo Tolosa
 
 Nickname: soulhunter
-Name: JosÃ© Ildefonso Camargo Tolosa
 First Commit: 2009-07-21
 Last Commit: 2009-07-21
 Number of Commits: 2
-SF Role: Developer
 
 Nickname: sparr
 Name: Clarence Risher
 SF Role: Developer
-
-Nickname: spaztica
-Name: cem gencer
-SF Role: Developer
+    
+    
+    
+        cem gencer
 
 Nickname: spiderr
 Name: Christian Fowler
 SF Role: Developer
-
-Nickname: squareing
-Name: Max Kremmel
-SF Role: Developer
+    
+    
+    
+        Max Kremmel
 
 Nickname: squee-d
 Name: Rasheed Abdal-Aziz
 SF Role: Developer
-
-Nickname: starrrider
-Name: Lee L Bell
-SF Role: Developer
+    
+    
+    
+        Lee L Bell
 
 Nickname: sthibault-php
 Name: StÃ©phane Thibault
 First Commit: 2009-05-03
-Last Commit: 2009-05-04
+Last Commit: 2009-05-03
 Number of Commits: 1
 SF Role: Developer
-
-Nickname: stingtao
-Name: sting tao
-SF Role: Developer
+    
+    
+    
+        sting tao
 
 Nickname: stojanovim
 Name: Marta S.
@@ -2802,18 +3036,18 @@ First Commit: 2009-01-27
 Last Commit: 2009-10-30
 Number of Commits: 50
 SF Role: Developer
-
-Nickname: stuartd
-Name: Stuart Donaldson
-SF Role: Developer
+    
+    
+    
+        Stuart Donaldson
 
 Nickname: subnoodle
 Name: Sam
 SF Role: Developer
-
-Nickname: swayambhu
-Name: Vijay Aswadhati
-SF Role: Developer
+    
+    
+    
+        Vijay Aswadhati
 
 Nickname: swillie
 Name: Wil Huijben
@@ -2821,33 +3055,36 @@ First Commit: 2004-01-30
 Last Commit: 2004-01-30
 Number of Commits: 1
 SF Role: Developer
+    
+    
+    
+        S Racine
 
 Nickname: sylvieg
-Name: Sylvie Greverend
 First Commit: 2003-05-28
 Last Commit: 2013-11-03
 Number of Commits: 7141
-SF Role: Admin
 
 Nickname: syracine
-Name: S Racine
 First Commit: 2008-08-17
 Last Commit: 2013-07-22
 Number of Commits: 7
-SF Role: Developer
 
 Nickname: techtonik
 Name: anatoly techtonik
 First Commit: 2004-02-21
-Last Commit: 2004-03-17
+Last Commit: 2004-03-16
 Number of Commits: 11
 SF Role: Developer
+    
+    
+    
+        teedog
 
 Nickname: teedog
 First Commit: 2003-08-07
 Last Commit: 2004-08-18
 Number of Commits: 330
-SF Role: Developer
 
 Nickname: telenieko
 Name: TeLeNiEkO
@@ -2855,18 +3092,18 @@ First Commit: 2004-04-24
 Last Commit: 2005-01-18
 Number of Commits: 23
 SF Role: Developer
-
-Nickname: temeluchus
-Name: Myrkul
-SF Role: Developer
+    
+    
+    
+        Myrkul
 
 Nickname: terris
 Name: Terris Linenbach
 SF Role: Developer
-
-Nickname: thenano
-Name: Fernando Freire
-SF Role: Developer
+    
+    
+    
+        Fernando Freire
 
 Nickname: thierrygervais
 Name: Thierry
@@ -2874,24 +3111,26 @@ First Commit: 2013-07-14
 Last Commit: 2013-07-14
 Number of Commits: 1
 SF Role: Developer
+    
+    
+    
+        Glenn Henshaw
 
 Nickname: thraxisp
-Name: Glenn Henshaw
 First Commit: 2010-11-12
 Last Commit: 2010-11-12
 Number of Commits: 1
-SF Role: Developer
 
 Nickname: tibistibi
 Name: tibi stibi
 First Commit: 2007-08-06
-Last Commit: 2007-08-07
+Last Commit: 2007-08-06
 Number of Commits: 4
 SF Role: Developer
-
-Nickname: tictric
-Name: Manfred Mislik
-SF Role: Developer
+    
+    
+    
+        Manfred Mislik
 
 Nickname: tikii18nbot
 Name: Tiki i18n bot
@@ -2899,28 +3138,31 @@ First Commit: 2011-06-27
 Last Commit: 2013-09-23
 Number of Commits: 58
 SF Role: Developer
-
-Nickname: tilttek
-Name: Philippe Gamache
-SF Role: Developer
+    
+    
+    
+        Philippe Gamache
 
 Nickname: timedout_net
 Name: TimeO
 SF Role: Developer
+    
+    
+    
+        tna
 
 Nickname: tna
 First Commit: 2004-07-20
-Last Commit: 2004-07-21
+Last Commit: 2004-07-20
 Number of Commits: 1
-SF Role: Developer
 
 Nickname: todd_here
 Name: toddb
 SF Role: Developer
-
-Nickname: tofreal
-Name: Real
-SF Role: Developer
+    
+    
+    
+        Real
 
 Nickname: toggg
 Name: bertrand Gugger
@@ -2928,6 +3170,10 @@ First Commit: 2005-03-23
 Last Commit: 2007-06-16
 Number of Commits: 45
 SF Role: Developer
+    
+    
+    
+        Tom Jarvis
 
 Nickname: tombombadilom
 First Commit: 2003-11-01
@@ -2935,11 +3181,9 @@ Last Commit: 2008-07-31
 Number of Commits: 110
 
 Nickname: tomjrvs
-Name: Tom Jarvis
 First Commit: 2013-12-24
 Last Commit: 2013-12-24
 Number of Commits: 1
-SF Role: Developer
 
 Nickname: traivor
 Name: Harold Campbell
@@ -2947,19 +3191,25 @@ First Commit: 2003-09-09
 Last Commit: 2003-11-13
 Number of Commits: 31
 SF Role: Developer
+    
+    
+    
+        Trebly
 
 Nickname: trebly
-Name: Trebly
 First Commit: 2010-12-20
 Last Commit: 2012-01-26
 Number of Commits: 41
-SF Role: Developer
 
 Nickname: trosen
 First Commit: 2013-10-26
 Last Commit: 2013-10-26
 Number of Commits: 1
 SF Role: Developer
+    
+    
+    
+        Toni
 
 Nickname: troworld
 First Commit: 2004-05-08
@@ -2967,16 +3217,14 @@ Last Commit: 2004-08-03
 Number of Commits: 2
 
 Nickname: uid138927
-First Commit: 2006-12-08
-Last Commit: 2006-12-08
+First Commit: 2006-12-07
+Last Commit: 2006-12-07
 Number of Commits: 1
 
 Nickname: uiprncss
-Name: Toni
 First Commit: 2005-03-22
 Last Commit: 2005-03-22
 Number of Commits: 2
-SF Role: Developer
 
 Nickname: ursuleacv
 Name: Ursuleac Valentin
@@ -2984,26 +3232,26 @@ First Commit: 2013-07-14
 Last Commit: 2013-07-15
 Number of Commits: 2
 SF Role: Developer
-
-Nickname: v-woods
-Name: Van Woods
-SF Role: Developer
+    
+    
+    
+        Van Woods
 
 Nickname: vaguery
 Name: Mickey Mullin
 SF Role: Developer
-
-Nickname: vikasrij
-Name: Vikas Rijsinghani
-SF Role: Developer
+    
+    
+    
+        Vikas Rijsinghani
 
 Nickname: vinsz
 Name: Vincent Guffens
 SF Role: Developer
-
-Nickname: vradd
-Name: cnd
-SF Role: Developer
+    
+    
+    
+        cnd
 
 Nickname: vulgrin
 Name: Dave Sanders
@@ -3011,9 +3259,10 @@ First Commit: 2003-12-27
 Last Commit: 2003-12-27
 Number of Commits: 2
 SF Role: Developer
-
-Nickname: wbeaver
-SF Role: Developer
+    
+    
+    
+        wbeaver
 
 Nickname: wesleywillians
 Name: Wesley Willians
@@ -3021,24 +3270,28 @@ First Commit: 2005-08-20
 Last Commit: 2006-09-06
 Number of Commits: 10
 SF Role: Developer
+    
+    
+    
+        Wallace Goulart Gaudie Ley
 
 Nickname: wggley
-Name: Wallace Goulart Gaudie Ley
 First Commit: 2009-02-11
 Last Commit: 2009-05-22
 Number of Commits: 11
-SF Role: Developer
 
 Nickname: whomaj
 Name: Maj
 SF Role: Developer
+    
+    
+    
+        Eric Kelner
 
 Nickname: wikiman
-Name: Eric Kelner
 First Commit: 2008-12-21
 Last Commit: 2009-06-30
 Number of Commits: 3
-SF Role: Developer
 
 Nickname: wings-of-glory
 Name: A. Zargamy
@@ -3046,59 +3299,66 @@ First Commit: 2008-09-07
 Last Commit: 2008-09-18
 Number of Commits: 3
 SF Role: Developer
+    
+    
+    
+        Nick Woolley
 
 Nickname: wolff_borg
-First Commit: 2003-08-07
+First Commit: 2003-08-06
 Last Commit: 2004-02-24
 Number of Commits: 42
-
-Nickname: wu-lee
-Name: Nick Woolley
-SF Role: Developer
 
 Nickname: wvdploeg
 Name: W van der Ploeg
 SF Role: Developer
-
-Nickname: xaman
-SF Role: Developer
+    
+    
+    
+        xaman
 
 Nickname: xavidp
 Name: Xavier de Pedro
 First Commit: 2005-07-08
 Last Commit: 2014-05-02
-Number of Commits: 1379
+Number of Commits: 1389
 SF Role: Admin
+    
+    
+    
+        abbasmousavi
 
 Nickname: xbtheria
 Name: Xavier BarnabÃ©-ThÃ©riault
 SF Role: Developer
+    
+    
+    
+        XEN
 
 Nickname: xen216
-Name: XEN
 First Commit: 2011-05-26
 Last Commit: 2012-02-02
 Number of Commits: 29
-SF Role: Developer
 
 Nickname: xenfasa
 Name: Ben
 First Commit: 2003-11-15
-Last Commit: 2003-11-19
+Last Commit: 2003-11-18
 Number of Commits: 4
 SF Role: Developer
-
-Nickname: xeno_tt
-Name: Martin Zwickel
-SF Role: Developer
+    
+    
+    
+        Martin Zwickel
 
 Nickname: yanturgeon
 Name: yturgeon
 SF Role: Developer
-
-Nickname: ybey
-Name: Youcef Bey
-SF Role: Developer
+    
+    
+    
+        Youcef Bey
 
 Nickname: yonixxx
 Name: Bernard Sfez
@@ -3106,10 +3366,10 @@ First Commit: 2008-02-25
 Last Commit: 2014-02-11
 Number of Commits: 148
 SF Role: Developer
-
-Nickname: ysoya
-Name: YongHa Kim
-SF Role: Developer
+    
+    
+    
+        YongHa Kim
 
 Nickname: yuzhenxin
 Name: Yu Zhen Xin
@@ -3117,45 +3377,52 @@ First Commit: 2005-11-21
 Last Commit: 2005-12-05
 Number of Commits: 11
 SF Role: Developer
+    
+    
+    
+        Zabsv
 
 Nickname: zab-sv
-Name: Zabsv
 First Commit: 2009-09-29
 Last Commit: 2009-09-29
 Number of Commits: 1
-SF Role: Developer
 
 Nickname: zamboni
 Name: Diego Zamboni
 SF Role: Developer
+    
+    
+    
+        zaufi
 
 Nickname: zaufi
 First Commit: 2003-06-22
 Last Commit: 2005-04-17
 Number of Commits: 226
-SF Role: Developer
 
 Nickname: zcecil
 Name: Cecil Sheng
 First Commit: 2003-12-20
-Last Commit: 2004-02-20
+Last Commit: 2004-02-19
 Number of Commits: 4
 SF Role: Developer
+    
+    
+    
+        Serg Kravchenko
 
 Nickname: zchermit
-Name: Serg Kravchenko
 First Commit: 2009-05-27
 Last Commit: 2009-11-06
 Number of Commits: 23
-SF Role: Developer
 
 Nickname: zcopley
 Name: Zach Copley
 SF Role: Developer
-
-Nickname: zibas
-Name: Ziba
-SF Role: Developer
+    
+    
+    
+        Ziba
 
 Nickname: zippohontas
 Name: Peter Hoste
@@ -3163,7 +3430,7 @@ First Commit: 2012-05-18
 Last Commit: 2012-05-18
 Number of Commits: 1
 SF Role: Developer
-
-Nickname: zippy314
-Name: Eric Harris-Braun
-SF Role: Developer
+    
+    
+    
+        Eric Harris-Braun

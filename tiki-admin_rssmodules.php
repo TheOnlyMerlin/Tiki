@@ -1,16 +1,12 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
-$rsslib = TikiLib::lib('rss');
-//get_strings tra('External Feeds')
+include_once ('lib/rss/rsslib.php');
 $auto_query_args = array(
 	'rssId',
 	'offset',
@@ -18,29 +14,27 @@ $auto_query_args = array(
 	'sort_mode',
 	'find'
 );
-
+if (!isset($rsslib)) {
+	$rsslib = new RssLib;
+}
 $access->check_permission('tiki_p_admin_rssmodules');
 
 if (isset($_REQUEST["rssId"])) {
 	$smarty->assign('rssId', $_REQUEST["rssId"]);
-	$cookietab = 2;
 }
 $smarty->assign('preview', 'n');
 if (isset($_REQUEST["view"])) {
 	$smarty->assign('preview', 'y');
 	$data = $rsslib->get_rss_module($_REQUEST["view"]);
-
-	if ( $data['sitetitle'] ) {
-		$smarty->assign(
-			'feedtitle',
-			array(
-				'title' => $data['sitetitle'],
-				'link' => $data['siteurl']
-			)
-		);
+	
+	if( $data['sitetitle'] ) {
+		$smarty->assign('feedtitle', array(
+			'title' => $data['sitetitle'],
+			'link' => $data['siteurl']
+		) );
 	}
 
-	$smarty->assign('items', $rsslib->get_feed_items($_REQUEST['view']));
+	$smarty->assign( 'items', $rsslib->get_feed_items( $_REQUEST['view'] ) );
 }
 if (isset($_REQUEST["rssId"])) {
 	$info = $rsslib->get_rss_module($_REQUEST["rssId"]);
@@ -63,50 +57,32 @@ $smarty->assign('showPubDate', $info["showPubDate"]);
 if (isset($_REQUEST["refresh"])) {
 	$rsslib->refresh_rss_module($_REQUEST["refresh"]);
 }
-if (isset($_REQUEST['clear'])) {
-	$rsslib->clear_rss_cache($_REQUEST['clear']);
-}
 if (isset($_REQUEST["remove"])) {
 	$access->check_authenticity();
 	$rsslib->remove_rss_module($_REQUEST["remove"]);
 }
 
-if ( isset($_REQUEST['article']) && $prefs['feature_articles'] == 'y' ) {
-	if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
-		$rsslib->set_article_generator(
-			$_REQUEST['article'],
-			array(
-				'active' => isset( $_POST['enable'] ),
-				'expiry' => $jitPost->expiry->int(),
-				'atype' => $jitPost->type->text(),
-				'custom_atype' => $jitPost->custom_atype->asArray(),
-				'topic' => $jitPost->topic->int(),
-				'custom_topic' => $jitPost->custom_topic->asArray(),
-				'future_publish' => $jitPost->future_publish->int(),
-				'categories' => (array) $jitPost->cat_categories->int(),
-				'rating' => $jitPost->rating->int(),
-				'custom_rating' => $jitPost->custom_rating->asArray(),
-				'submission' => isset( $_POST['submission'] ),
-				'custom_priority' => $jitPost->custom_priority->asArray(),
-			)
-		);
-		$cookietab = 1;
-	} else {
-		$cookietab = 3;
+if( isset($_REQUEST['article']) && $prefs['feature_articles'] == 'y' ) {
+	if( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
+		$rsslib->set_article_generator( $_REQUEST['article'], array(
+			'active' => isset( $_POST['enable'] ),
+			'expiry' => $jitPost->expiry->int(),
+			'atype' => $jitPost->type->text(),
+			'topic' => $jitPost->topic->int(),
+			'future_publish' => $jitPost->future_publish->int(),
+			'categories' => (array) $jitPost->cat_categories->int(),
+			'rating' => $jitPost->rating->int(),
+			'submission' => isset( $_POST['submission'] ),
+		) );
 	}
 
-	$config = $rsslib->get_article_generator($_REQUEST['article']);
-	$smarty->assign('articleConfig', $config);
-	$smarty->assign('ratingOptions', array_map('strval', range(0, 10)));
+	$config = $rsslib->get_article_generator( $_REQUEST['article'] );
+	$smarty->assign( 'articleConfig', $config );
+	$smarty->assign( 'ratingOptions', range( 0, 10 ) );
 
-	$sourcecats = $rsslib->get_feed_source_categories($_REQUEST["article"]);
-	$smarty->assign('sourcecats', $sourcecats);
-	$article_custom_info = $rsslib->get_article_custom_info($_REQUEST["article"]);
-	$smarty->assign('article_custom_info', $article_custom_info);
-
-	$artlib = TikiLib::lib('art');
-	$smarty->assign('topics', $artlib->list_topics());
-	$smarty->assign('types', $artlib->list_types());
+	global $artlib; require_once 'lib/articles/artlib.php';
+	$smarty->assign( 'topics', $artlib->list_topics() );
+	$smarty->assign( 'types', $artlib->list_types() );
 
 	$cat_type = 'null';
 	$cat_objid = 'null';
@@ -139,7 +115,6 @@ if (isset($_REQUEST["save"])) {
 	$smarty->assign('refresh', 900);
 	$smarty->assign('showTitle', 'n');
 	$smarty->assign('showPubDate', 'n');
-	$cookietab = 1;
 }
 if (!isset($_REQUEST["sort_mode"])) {
 	$sort_mode = 'name_desc';

@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -35,12 +32,7 @@ if (!is_dir($prefs['mods_dir'] . "/Cache")) {
 	mkdir($prefs['mods_dir'] . "/Cache", 02777);
 }
 $feedback = array();
-/**
- * @param $num
- * @param $err
- */
-function tikimods_feedback_listener($num, $err)
-{
+function tikimods_feedback_listener($num, $err) {
 	global $feedback;
 	$feedback[] = array('num' => $num, 'mes' => $err);
 }
@@ -65,8 +57,8 @@ if (isset($_REQUEST['version']) and trim($_REQUEST['version'])) {
 	$versionarg = '&amp;version=' . urlencode($_REQUEST['version']);
 	$version = $_REQUEST['version'];
 } else {
-	$version = '7';
-	$versionarg = '&amp;version=7';
+	$version = '3';
+	$versionarg = '&amp;version=3';
 }
 $smarty->assign('versionarg', $versionarg);
 $smarty->assign('version', $version);
@@ -169,7 +161,7 @@ if ($type) {
 	if (!isset($remote[$type])) $remote[$type] = array();
 	$display[$type] = array_merge($local[$type], $remote[$type]);
 } else {
-	foreach ($types as $t => $tt) {
+	foreach($types as $t => $tt) {
 		if (isset($local[$t])) {
 			if (isset($remote[$t])) {
 				$display[$t] = array_merge($local[$t], $remote[$t]);
@@ -184,9 +176,9 @@ if ($type) {
 if (!empty($version)) { // filter out other versions
 	$filtered = array();
 	if ($version == - 1) {
-		foreach ($display as $t => $ms) {
+		foreach($display as $t => $ms) {
 			$filtmod = array();
-			foreach ($ms as $k => $m) {
+			foreach($ms as $k => $m) {
 				if (empty($m->version[0])) {
 					$filtmod[$k] = $m;
 				}
@@ -197,9 +189,9 @@ if (!empty($version)) { // filter out other versions
 		}
 	} else {
 		$v = floatval($version);
-		foreach ($display as $t => $ms) {
+		foreach($display as $t => $ms) {
 			$filtmod = array();
-			foreach ($ms as $k => $m) {
+			foreach($ms as $k => $m) {
 				$mv = floatval($m->version[0]);
 				// TODO - fix the data, but for the mean time...
 				if (strpos($m->version[0], '1.10') !== false || strpos($m->version[0], ' 2 ') !== false) {
@@ -222,37 +214,6 @@ if (!empty($version)) { // filter out other versions
 					$mv = 6.0; // e.g. version= "Compatible with Tiki 6 releases." or "6+"
 					
 				}
-				
-				if (strpos($m->version[0], ' 7 ') !== false || strpos($m->version[0], ' 7+') !== false) {
-					$mv = 7.0; // e.g. version= "Compatible with Tiki 7 releases." or "7+"
-					
-				}
-
-				if (strpos($m->version[0], ' 8 ') !== false || strpos($m->version[0], ' 8+') !== false) {
-					$mv = 8.0; // e.g. version= "Compatible with Tiki 8 releases." or "8+"
-					
-				}				
-
-				if (strpos($m->version[0], ' 9 ') !== false || strpos($m->version[0], ' 9+') !== false) {
-					$mv = 9.0; // e.g. version= "Compatible with Tiki 9 releases." or "9+"
-
-				}
-
-				if (strpos($m->version[0], ' 10 ') !== false || strpos($m->version[0], ' 10+') !== false) {
-					$mv = 10.0; // e.g. version= "Compatible with Tiki 10 releases." or "10+"
-
-				}
-
-				if (strpos($m->version[0], ' 11 ') !== false || strpos($m->version[0], ' 11+') !== false) {
-					$mv = 11.0; // e.g. version= "Compatible with Tiki 11 releases." or "11+"
-
-				}
-
-				if (strpos($m->version[0], ' 12 ') !== false || strpos($m->version[0], ' 12+') !== false) {
-					$mv = 12.0; // e.g. version= "Compatible with Tiki 12 releases." or "12+"
-
-				}
-
 				if ($mv >= $v) {
 					$filtmod[$k] = $m;
 				}

@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -20,13 +17,13 @@ if ($prefs['feed_shoutbox'] != 'y') {
 }
 
 $res=$access->authorize_rss(array('tiki_p_view_shoutbox','tiki_p_admin_cms'));
-if ($res) {
-	if ($res['header'] == 'y') {
-		header('WWW-Authenticate: Basic realm="'.$tikidomain.'"');
-		header('HTTP/1.0 401 Unauthorized');
-	}
-	$errmsg=$res['msg'];
-	require_once ('tiki-rss_error.php');
+if($res) {
+   if($res['header'] == 'y') {
+      header('WWW-Authenticate: Basic realm="'.$tikidomain.'"');
+      header('HTTP/1.0 401 Unauthorized');
+   }
+   $errmsg=$res['msg'];
+   require_once ('tiki-rss_error.php');
 }
 
 $feed = "shoutbox";
@@ -35,7 +32,7 @@ $output = $rsslib->get_from_cache($uniqueid);
 if ($output["data"]=="EMPTY") {
 	$title = $prefs['feed_shoutbox_title'];
 	$desc = $prefs['feed_shoutbox_desc'];
-
+	
 	$id = "msgId";
 	$titleId = "msgId";
 	$descId = "message";
@@ -43,7 +40,7 @@ if ($output["data"]=="EMPTY") {
 	$authorId = "user";
 	$readrepl = "tiki-shoutbox.php?get=%s";
 
-	$changes = $shoutboxlib -> list_shoutbox(0, $prefs['feed_articles_max'], $id.'_desc', false);
+	$changes = $shoutboxlib -> list_shoutbox(0, $prefs['feed_articles_max'], $id.'_desc');
 	$tmp = null;
 	$output = $rsslib->generate_feed($feed, $uniqueid, '', $changes, $readrepl, '', $id, $title, $titleId, $desc, $descId, $dateId, $authorId);
 }

@@ -3,7 +3,7 @@
 
 
 {* Display command results if we have smth to show... *}
-{if $result_type ne 0} {*NO_RESULT *}
+{if $result_type ne 0 } {*NO_RESULT *}
 
   <pre>&gt;&nbsp;{$command|escape:"html"}</pre>
 
@@ -11,7 +11,7 @@
 
     {* Show text in PRE section *}
     <pre>{strip}
-      {$command_result|escape:"html"|wordwrap:90:"\n":true|replace:"\n":"<br>"}
+      {$command_result|escape:"html"|wordwrap:90:"\n":true|replace:"\n":"<br />"}
     {/strip}</pre>
 
   {elseif $result_type == 2}{*HTML_RESULT*}
@@ -26,5 +26,5 @@
 
   {/if}{* Check result type *}
 
-<br>
+<br />
 {/if}{* We have smth to show as result *}

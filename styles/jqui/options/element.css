@@ -42,7 +42,8 @@ h1,h2,h3,h4,h5,h6, #top .pagetitle a {
 button,
 input[type="reset"],
 input[type="submit"],
-.button input {
+.button input,
+.calbuttonBox a {
     border: 1px solid #777;
     font-weight: bold;
     color: #555555;
@@ -52,10 +53,20 @@ input[type="submit"],
 button:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover,
-.button input:hover {
+.button input:hover,
+.calbuttonBox:hover {
     border: 1px solid #666;
     font-weight: bold;
     color: #212121;
 	background-color: #ea6;
 }
     
+#tiki-top {
+	padding: 0 .3em 0;
+	margin: 0.6em 0.9em 0.6em;
+}
+
+#tiki-top .cssmenu_horiz {
+    line-height: 0;
+}
+

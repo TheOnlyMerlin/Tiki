@@ -1,14 +1,13 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 class DiscountLib extends TikiDb_Bridge
 {
-	function replace_discount($params)
-	{
+	function replace_discount($params) {
 		$info = $this->find_discount($params['code'], $params['id']);
 		if (empty($info)) {
 			if (empty($params['id'])) {
@@ -23,15 +22,11 @@ class DiscountLib extends TikiDb_Bridge
 			return false;
 		}
 	}
-
-	function del_discount($id)
-	{
+	function del_discount($id) {
 		$query = 'delete from `tiki_discount` where `id`=?';
 		$this->query($query, array($id));
 	}
-
-	function use_discount($code)
-	{
+	function use_discount($code) {
 		$info = $this->find_discount($code);
 		if (empty($info) || $info['max'] == 0) {
 			return false;
@@ -41,23 +36,17 @@ class DiscountLib extends TikiDb_Bridge
 		}
 		return $info['value'];
 	}
-
-	function find_discount($code, $notid=0)
-	{
+	function find_discount($code, $notid=0) {
 		$query = 'select * from `tiki_discount` where `code`=? and `id` !=?';
-		$info = $this->fetchAll($query, array($code, $notid), 1, 0);
+		$info = $this->fetchAll($query, array($code, $notid), 1, 0); 
 		return $info? $info[0]: null;
 	}
-
-	function get_discount($id)
-	{
+	function get_discount($id) {
 		$query = 'select * from `tiki_discount` where `id` =?';
 		$info = $this->fetchAll($query, array($id), 1, 0);
 		return $info? $info[0]: null;
 	}
-
-	function list_discounts($offset=0, $max=-1)
-	{
+	function list_discounts($offset=0, $max=-1) {
 		$query = 'select * from `tiki_discount`';
 		$bindvars = array();
 		$discounts['data'] = $this->fetchAll($query, $bindvars, $max, $offset);

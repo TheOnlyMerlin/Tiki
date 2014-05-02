@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -85,12 +82,12 @@ $smarty->assign_by_ref('site_stats', $site_stats);
 if (isset($_REQUEST['startDate_Year']) || isset($_REQUEST['endDate_Year'])) {
 	$start_date = $tikilib->make_time(23, 59, 59, $_REQUEST['startDate_Month'], $_REQUEST['startDate_Day'], $_REQUEST['startDate_Year']);
 	$end_date = $tikilib->make_time(23, 59, 59, $_REQUEST['endDate_Month'], $_REQUEST['endDate_Day'], $_REQUEST['endDate_Year']);
-	$smarty->assign('startDate', $start_date);
-	$smarty->assign('endDate', $end_date);
+	$smarty->assign( 'startDate', $start_date);
+	$smarty->assign( 'endDate', $end_date);
 } else {
 	$start_date = $site_stats['started'];
 	$end_date = $tikilib->make_time(23, 59, 59, date("m"), date("d"), date("Y"));
-	$smarty->assign('startDate', $start_date);
+	$smarty->assign( 'startDate', $start_date );
 }
 $smarty->assign('start_year', date('Y', $site_stats['started']));
 $smarty->assign('end_year', date('Y', $tikilib->now));

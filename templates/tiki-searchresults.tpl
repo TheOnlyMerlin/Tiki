@@ -4,92 +4,98 @@
 	{title admpage="search" help="Search"}{tr}Search{/tr}{/title}
 {/if}
 
+{capture name=advanced_search_help}
+	{include file='advanced_search_help.tpl'}	 
+{/capture}
+
 <div class="nohighlight">
 	{if $searchStyle neq "menu" && $prefs.feature_search_show_object_filter eq 'y'}
-		<div class="t_navbar">
+		<div class="navbar">
 			{tr}Search in:{/tr}
 			{foreach item=name key=k from=$where_list}
-				{button _auto_args='where,highlight' href="tiki-searchresults.php?where=$k"  _selected="'$where'=='$k'" _selected_class="highlight" class="btn btn-default" _text="$name"}
+				{button _auto_args='where,highlight' href="tiki-searchresults.php?where=$k"  _selected="'$where'=='$k'" _selected_class="highlight" _text="$name"}
 			{/foreach}
 		</div>
 	{/if}
 
 	{if $prefs.feature_search_show_search_box eq 'y' or  $searchStyle eq "menu"}
-		<form action="tiki-searchresults.php" method="get" id="search-form" class="form-inline" role="form">
-            <div class="form-group">
-			    <label class="sr-only">{tr}Search{/tr}</label>
-                <input id="highlight{$iSearch}" name="highlight" class="form-control" type="text" accesskey="s" placeholder="{tr}Search{/tr}" value="{$words|escape}">
-            <!--/div-->
-			{if $prefs.search_autocomplete eq 'y'}
-				{autocomplete element="#highlight$iSearch" type='pagename'}
-			{/if}
-            </div>
+		<form action="tiki-searchresults.php" method="get" id="search-form" class="findtable">
+		{if ($searchStyle eq "menu") and ($prefs.feature_multilingual eq "y")}	
+			<input type="hidden" name="searchLang" value="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}" />
+		{/if}
+		
+			<label class="findtitle">
+				{tr}Find{/tr} <input id="highlight{$iSearch}" name="words" size="14" type="text" accesskey="s" value="{$words|escape}" />
+			</label>
+			{if $prefs.javascript_enabled eq 'y' and $prefs.feature_jquery_autocomplete eq 'y' and $prefs.search_autocomplete eq 'y'}
+				{jq}
+					$("#highlight{{$iSearch}}").tiki("autocomplete", "pagename");
+				{/jq}
+			{/if}			
 				{if !( $searchStyle eq "menu" )}
-                <div class="form-group">
-				    <label class="searchboolean control-label" for="boolean">
-					    {tr}Advanced search:{/tr} <input type="checkbox" name="boolean" id="boolean" {if $boolean eq 'y'} checked="checked"{/if}>
-				    </label>
-					<a href="{service controller=search action=help modal=1}" data-toggle="modal" data-target="#bootstrap-modal">{tr}Search Help{/tr} {icon _id=help}</a>
-                </div>
-				{if $prefs.feature_search_show_last_modification eq 'y'}
-                    <div class="form-group">
-				        <label class="searchdate control-label" for="date">{tr}Date Search:{/tr}</label>
-					    <select id="date" class="form-control" name="date" onchange="javascript:submit()">
-						    {section name=date start=0 loop=12 step=1}
-							    <option value="{$smarty.section.date.index|escape}" {if $smarty.section.date.index eq $date}selected="selected"{/if}>
-								    {if $smarty.section.date.index eq 0}
-									    {tr}All dates{/tr}
-								    {else}
-									    {$smarty.section.date.index|escape} {tr}Month{/tr}
-								    {/if}
-							    </option>
-						    {/section}
-					    </select>
-
-                    </div>
-				{/if}
-
+				<label class="searchboolean" for="boolean">
+					{tr}Advanced search:{/tr}<input type="checkbox" name="boolean" id="boolean" {if $boolean eq 'y'} checked="checked"{/if} />
+				</label>
+				{add_help show='y' title="{tr}Advanced Search Help{/tr}" id="advanced_search_help"}
+					{$smarty.capture.advanced_search_help}
+				{/add_help}
+				<label class="searchdate" for="date">
+					{tr}Date Search:{/tr}
+					<select id="date" name="date" onchange="javascript:submit()">
+						{section name=date start=0 loop=12 step=1}	
+							<option value="{$smarty.section.date.index|escape}" {if $smarty.section.date.index eq $date}selected="selected"{/if}>
+								{if $smarty.section.date.index eq 0}
+									{tr}All dates{/tr}
+								{else}
+									{$smarty.section.date.index|escape} {tr}Month{/tr}
+								{/if}
+							</option>
+						{/section}
+					</select>
+				</label>
 				{if $prefs.feature_multilingual eq 'y' and ($where eq 'wikis' || $where eq 'articles')}
 					<label class="searchLang" for="searchLang">
 						   <select id="searchLang" name="searchLang">
 						   <option value="" >{tr}any language{/tr}</option>
 						   {section name=ix loop=$languages}
-								<option value="{$languages[ix].value|escape}" {if $searchLang eq $languages[ix].value}selected="selected"{/if}>
+						   		{if !is_array($prefs.available_languages) || count($prefs.available_languages) == 0 || in_array($languages[ix].value, $prefs.available_languages)}
+									<option value="{$languages[ix].value|escape}" {if $searchLang eq $languages[ix].value}selected="selected"{/if}>
 									{tr}{$languages[ix].name}{/tr}
-								</option>
+									</option>
+								{/if}
 							{/section}
 						   </select>
 					</label>
 				{/if}
 				
-				{if $prefs.feature_categories eq 'y' and !empty($categories) and $tiki_p_view_category eq 'y' and $prefs.search_show_category_filter eq 'y'}
-					<div id="category_singleselect_find" style="display: {if $findSelectedCategoriesNumber > 1}none{else}block{/if};">
+				{if $prefs.feature_categories eq 'y' and !empty($categories)}
+					<div id="category_singleselect_find" style="display: {if $find_cat_categories|@count > 1}none{else}block{/if};">
 						<label class="findcateg"> 
 							<select name="categId">
 								<option value='' {if $find_categId eq ''}selected="selected"{/if}>{tr}any category{/tr}</option>
-								{foreach $categories as $catix}
-									<option value="{$catix.categId|escape}" {if $find_categId eq $catix.categId}selected="selected"{/if}>
-										{capture}{tr}{$catix.categpath}{/tr}{/capture}{$smarty.capture.default|escape}
+								{section name=ix loop=$categories}
+									<option value="{$categories[ix].categId|escape}" {if $find_categId eq $categories[ix].categId}selected="selected"{/if}>
+										{capture}{tr}{$categories[ix].categpath}{/tr}{/capture}{$smarty.capture.default|escape}
 									</option>
-								{/foreach}
+								{/section}
 							</select>
 						</label>
 						{if $prefs.javascript_enabled eq 'y'}<a href="#" onclick="show('category_multiselect_find');hide('category_singleselect_find');">{tr}Multiple select{/tr}</a>{/if}
 					</div>
-					<div id="category_multiselect_find" style="display: {if $findSelectedCategoriesNumber > 1}block{else}none{/if};">
+					<div id="category_multiselect_find" style="display: {if $find_cat_categories|@count > 1}block{else}none{/if};">
 				  		<div class="multiselect"> 
 				  			{if count($categories) gt 0}
 								{$cat_tree}
-								<div class="clearfix">
+								<div class="clear">
 									{if $tiki_p_admin_categories eq 'y'}
-										<div class="pull-right"><a href="tiki-admin_categories.php" class="link">{tr}Admin Categories{/tr} {icon _id='wrench'}</a></div>
+										<div class="floatright"><a href="tiki-admin_categories.php" class="link">{tr}Admin Categories{/tr} {icon _id='wrench'}</a></div>
 									{/if}
 									{select_all checkbox_names='cat_categories[]' label="{tr}Select/deselect all categories{/tr}"}
 								</div>
 							{else}
-								<div class="clearfix">
+								<div class="clear">
 									{if $tiki_p_admin_categories eq 'y'}
-										<div class="pull-right"><a href="tiki-admin_categories.php" class="link">{tr}Admin Categories{/tr} {icon _id='wrench'}</a></div>
+										<div class="floatright"><a href="tiki-admin_categories.php" class="link">{tr}Admin Categories{/tr} {icon _id='wrench'}</a></div>
 									{/if}
 									{tr}No categories defined{/tr}
 								</div>
@@ -101,7 +107,7 @@
 			{/if}
 			
 			{if $prefs.feature_search_show_object_filter eq 'y'}
-				{if $searchStyle eq "menu"}
+				{if $searchStyle eq "menu" }
 					<span class='searchMenu'>
 						{tr}in{/tr}
 						<select name="where">
@@ -147,15 +153,15 @@
 						</select>
 					</span>
 				{else}
-					<input type="hidden" name="where" value="{$where|escape}">
-					{if $forumId}<input type="hidden" name="forumId" value="{$forumId|escape}">{/if}
+					<input type="hidden" name="where" value="{$where|escape}" />
+					{if $forumId}<input type="hidden" name="forumId" value="{$forumId|escape}" />{/if}
 				{/if}
 			{elseif !empty($where)}
-				<input type="hidden" name="where" value="{$where|escape}">
-				{if $forumId}<input type="hidden" name="forumId" value="{$forumId|escape}">{/if}	
+				<input type="hidden" name="where" value="{$where|escape}" />
+				{if $forumId}<input type="hidden" name="forumId" value="{$forumId|escape}" />{/if}	
 			{/if}
 			<label class="findsubmit">
-				<input type="submit" class="btn btn-default btn-sm" name="search" value="{tr}Go{/tr}">
+				<input type="submit" name="search" value="{tr}Go{/tr}" />
 			</label>
 			{if !$searchNoResults}
 				{button _auto_args='highlight' href="tiki-searchresults.php?highlight=" _text="{tr}Clear Filter{/tr}"}
@@ -165,18 +171,18 @@
 </div><!--nohighlight-->
 	{* do not change the comment above, since smarty 'highlight' outputfilter is hardcoded to find exactly this... instead you may experience white pages as results *}
 
-{if $searchStyle ne 'menu' and ! $searchNoResults}
-	<div class="nohighlight simplebox" style="width:300px">
+{if $searchStyle ne 'menu' and ! $searchNoResults }
+	<div class="nohighlight simplebox">
 		 {tr}Found{/tr} "{$words|escape}" {tr}in{/tr} 
 			{if $where_forum}
-				"{tr}{$where|escape}:{/tr}" {$where_forum|escape}
+				{tr}{$where|escape}:{/tr} {$where_forum|escape}
 			{else}
-				{$cant} "{tr}{$where_label|escape}"{/tr}
+				{$cant} {tr}{$where_label|escape}{/tr}
 			{/if}
 	</div><!--nohighlight-->
 {/if}
 
-{if ! $searchNoResults}
+{if ! $searchNoResults }
 	<ul class="searchresults">
 		{section name=search loop=$results}
 		<li>
@@ -186,9 +192,7 @@
 			{if !empty($results[search].parentName)}
 					<a href="{$results[search].parentHref}" class="parentname">{$results[search].parentName|escape}</a>
 				{/if}
-			{page_in_structure pagechecked=$results[search].pageName} {* check if page in structure *}
-			{if $page_in_structure} {page_alias pagechecked=$results[search].pageName} {/if}
-			<a href="{$results[search].href}" class="objectname">{if $page_in_structure and $page_alias ne ''}{$page_alias}{else}{$results[search].pageName|escape}{/if}</a>
+			<a href="{$results[search].href}&amp;highlight={$words|escape:url}" class="objectname">{$results[search].pageName|escape}</a>
 			{if $prefs.feature_search_show_visit_count eq 'y'}
 				<span class="itemhits">({tr}Hits:{/tr} {$results[search].hits|escape})</span>
 			{/if}
@@ -212,5 +216,5 @@
 		<li>	{tr}No pages matched the search criteria{/tr}</li>
 		{/section}
 	</ul>
-	{pagination_links cant=$cant step=$maxRecords offset=$offset _keepall=true}{/pagination_links}
+	{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
 {/if}

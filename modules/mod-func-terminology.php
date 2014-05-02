@@ -1,21 +1,17 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
-if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
+if (strpos($_SERVER["SCRIPT_NAME"],basename(__FILE__)) !== false) {
   header("location: index.php");
   exit;
 }
 
-/**
- * @return array
- */
-function module_terminology_info()
-{
+function module_terminology_info() {
 	return array(
 		'name' => tra('Terminology'),
 		'description' => tra('Support for multilingual terminology'),
@@ -25,28 +21,21 @@ function module_terminology_info()
 				'name' => tra('Root category'),
 				'description' => tra('All terms will automatically be put in that category. ')
 												. tra('Note that the category must already exist. ')
-												. tra('Defaults to \'Term\''),
-				'profile_reference' => 'category',
+												. tra('Defaults to \'Term\'')
 			),
 		)
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
-function module_terminology($mod_reference, $module_params)
-{
-	global $prefs;
+function module_terminology( $mod_reference, $module_params ) {
+	global $smarty, $prefs;
 	if ($prefs['feature_multilingual'] != 'y') {
 		return;
 	}
 	
-	$smarty = TikiLib::lib('smarty');
 	init_from_parameters($module_params);
 	
-	$multilinguallib = TikiLib::lib('multilingual');
+	global $multilinguallib; include_once('lib/multilingual/multilinguallib.php');
 	
 	$search_terms_in_lang = $multilinguallib->currentTermSearchLanguage();
 	$smarty->assign('search_terms_in_lang', $search_terms_in_lang);
@@ -58,23 +47,20 @@ function module_terminology($mod_reference, $module_params)
 }
 
 
-/**
- * @param $module_params
- */
-function init_from_parameters($module_params)
-{
+function init_from_parameters($module_params) {
+	global $smarty, $categlib;
+
 	$root_category = 'Term';
 	if (isset($module_params['root_category']) && $module_params['root_category'] != '') {
 		$root_category = $module_params['root_category'];
 	}
 
-	$smarty = TikiLib::lib('smarty');
-	$categlib = TikiLib::lib('categ');
+	include_once('lib/categories/categlib.php');
 	$root_category_id = $categlib->get_category_id($root_category);
 
 	if ($root_category_id == null) {
 		$root_category_id = '';
 	}
 	
-	$smarty->assign('term_root_category_id', $root_category_id);
+	$smarty->assign( 'term_root_category_id', $root_category_id);
 }

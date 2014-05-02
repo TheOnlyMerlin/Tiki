@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,8 +7,8 @@
 
 $section = 'galleries';
 require_once ('tiki-setup.php');
-$categlib = TikiLib::lib('categ');
-$imagegallib = TikiLib::lib('imagegal');
+include_once ('lib/categories/categlib.php');
+include_once ("lib/imagegals/imagegallib.php");
 $access->check_feature('feature_galleries');
 if (empty($_REQUEST["galleryId"]) && $_REQUEST["galleryId"] != '0') {
 	$smarty->assign('msg', tra("No gallery indicated"));
@@ -24,10 +21,10 @@ if ($_REQUEST["galleryId"] != '0' && $imagegallib->get_gallery($_REQUEST["galler
 	die;
 }
 
-$tikilib->get_perm_object($_REQUEST['galleryId'], 'image gallery');
+$tikilib->get_perm_object( $_REQUEST['galleryId'], 'image gallery' );
 $access->check_permission('tiki_p_view_image_gallery');
 /*
-if ($tiki_p_upload_images != 'y') {
+if($tiki_p_upload_images != 'y') {
 $smarty->assign('errortype', 401);
 $smarty->assign('msg',tra("You do not have permission to upload images"));
 $smarty->display("error.tpl");
@@ -40,7 +37,7 @@ if ($_REQUEST["galleryId"] != 0) {
 	//$smarty->assign_by_ref('theme',$gal_info["theme"]);
 	//$smarty->assign('use_theme','y');
 	/*
-	if ( $tiki_p_admin != 'y' && $user!=$gal_info["user"] && $gal_info["public"]!='y') {
+	if( $tiki_p_admin != 'y' && $user!=$gal_info["user"] && $gal_info["public"]!='y') {
 	$smarty->assign('errortype', 401);
 	$smarty->assign('msg',tra("You do not have permission to browse this gallery"));
 	$smarty->display("error.tpl");

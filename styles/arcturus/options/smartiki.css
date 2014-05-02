@@ -21,8 +21,6 @@ h3.box-title,
 
 .box {
 	border: none;
-	padding-top: 3px;
-	margin-top: 13px;
 }
 
 #secondary_site_menu li,
@@ -41,6 +39,10 @@ body {
 	font: 13px Verdana, sans-serif;
 	color: #333;
 	background: #fff;
+}
+
+html>body {
+	font-size: 13px;
 }
 
 a,
@@ -75,7 +77,8 @@ legend {
 button,
 input[type="reset"],
 input[type="submit"],
-.button input {
+.button input,
+.calbuttonBox a {
 	background-color: #f0c040;
 	border: 1px solid #676767;
 	margin: 0;
@@ -88,7 +91,8 @@ input[type="submit"],
 button:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover,
-.button input:hover {
+.button input:hover,
+.calbuttonBox:hover {
 	background-color: #f0ead8;
 	margin: 0;
 	padding: 0 6px;
@@ -111,10 +115,19 @@ h1, .pagetitle {
 
 #c1c2 #col2 {
 	background: #f0ead8;
+	text-align: right;
 	border-right: 1px solid #ddccbb;
 }
 
+#c1c2 #col2 .content {
+	margin-right: 2px;
+	width: 168px;
+	text-align: left;
+}
+
 #col3 {
+	width: 170px;
+	margin-left: -170px;
 	background: #f0ead8;
 	border-left: 1px solid #ddccbb;
 }
@@ -174,6 +187,9 @@ h1, .pagetitle {
 	margin-bottom: 2px;
 	padding-bottom: 2px;
 	background: none;
+}
+
+.separator {
 	color: #b1b299;
 	text-decoration: none;
 	font-size: 1em;
@@ -197,9 +213,14 @@ h1, .pagetitle {
 	color: #000;
 }
 
+.box {
+	padding-top: 3px;
+	margin-top: 13px;
+}
+
 h3.box-title {
 	font-weight: bold;
-	color: #000;
+	color: #000
 	margin-bottom: 7px;
 	padding: 0 3px 3px;
 	border-bottom: 1px solid #e0dac8;
@@ -240,33 +261,23 @@ tr.diffheader {
   padding-right: 5px;
 }
 
-th a,
-th a.link,
-td.heading a,
-tr.diffheader a {
-    color: #000;
-}
-
 tr.odd td,
 td.odd,
-li.odd,
-table.normal tr:nth-child(2n+1) td {
+li.odd {
 	font-size: 12px;
 	background-color:#f0f0f0;
 	border:1px solid #676767;}
 
 tr.odd td:hover,
 td.odd:hover,
-li.odd:hover,
-table.normal tr:nth-child(2n+1) td:hover {
+li.odd:hover {
 	background: #fff7e6;
 }
 
 tr.even td,
 td.even,
 li.even,
-.forum_actions,
-table.normal tr:nth-child(2n) td {
+.forum_actions {
 	border: 1px solid #676767;
 	font-size: 12px;
 	background-color: #e0e0e0;
@@ -275,8 +286,7 @@ table.normal tr:nth-child(2n) td {
 
 tr.even td:hover,
 td.even:hover,
-li.even:hover,
-table.normal tr:nth-child(2n) td:hover {
+li.even:hover {
 	background: #fff7e6;
 }
 
@@ -359,19 +369,4 @@ table.normal tr:nth-child(2n) td:hover {
 	background: #f7f9fa;
 	border: 1px solid #8cacbb;
 	border-collapse: collapse;
-}
-
-/*** Calendar ***/
-td.calheadhighlight {
-	background: #f0c040;
-	border: 1px solid #676767;
-	font-size: 12px;
-}
-
-.caltable td.calhighlight {
-	background: #f0c040;
-}
-
-.calborder {
-	border: 1px solid #aaa;
 }

@@ -1,24 +1,19 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
+include_once ('lib/polls/polllib.php');
+if (!isset($polllib)) {
+	$polllib = new PollLib;
+}
 $access->check_feature('feature_polls');
 $access->check_permission('tiki_p_admin_polls');
 
-$polllib = TikiLib::lib('poll');
-
 $auto_query_args = array('pollId', 'sort_mode', 'offset', 'find');
-
-//Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-$userprefslib = TikiLib::lib('userprefs');
-$smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
 
 if (!isset($_REQUEST["pollId"])) {
 	$_REQUEST["pollId"] = 0;
@@ -42,10 +37,6 @@ if (isset($_REQUEST["remove"])) {
 }
 if (isset($_REQUEST["save"])) {
 	check_ticket('admin-polls');
-	//Convert 12-hour clock hours to 24-hour scale to compute time
-	if (!empty($_REQUEST['Time_Meridian'])) {
-		$_REQUEST['Time_Hour'] = date('H', strtotime($_REQUEST['Time_Hour'] . ':00 ' . $_REQUEST['Time_Meridian']));
-	}
 	$publishDate = $tikilib->make_time($_REQUEST["Time_Hour"], $_REQUEST["Time_Minute"], 0, $_REQUEST["Date_Month"], $_REQUEST["Date_Day"], $_REQUEST["Date_Year"]);
 	if (!isset($_REQUEST['voteConsiderationSpan'])) $_REQUEST['voteConsiderationSpan'] = 0;
 	$pid = $polllib->replace_poll($_REQUEST["pollId"], $_REQUEST["title"], $_REQUEST["active"], $publishDate, $_REQUEST['voteConsiderationSpan']);
@@ -53,7 +44,7 @@ if (isset($_REQUEST["save"])) {
 	if (isset($_REQUEST['options']) && is_array($_REQUEST['options'])) {
 		//TODO insert options into poll
 		check_ticket('admin-poll-options');
-		foreach ($_REQUEST['options'] as $i => $option) {
+		foreach($_REQUEST['options'] as $i => $option) {
 			//continue;
 			if ($option == "") {
 				if (isset($_REQUEST['optionsId']) && isset($_REQUEST['optionsId'][$i])) $polllib->remove_poll_option($_REQUEST['optionsId'][$i]);
@@ -71,10 +62,12 @@ if (isset($_REQUEST["save"])) {
 	include_once ("categorize.php");
 }
 if (isset($_REQUEST['addPoll']) && !empty($_REQUEST['poll_template']) && !empty($_REQUEST['pages'])) {
-	$wikilib = TikiLib::lib('wiki');
-	$categlib = TikiLib::lib('categ');
+	global $wikilib;
+	include_once ('lib/wiki/wikilib.php');
+	global $categlib;
+	include_once ('lib/categories/categlib.php');
 	$cat_type = 'wiki page';
-	foreach ($_REQUEST['pages'] as $cat_objid) {
+	foreach($_REQUEST['pages'] as $cat_objid) {
 		if (!$catObjectId = $categlib->is_categorized($cat_type, $cat_objid)) {
 			$info = $tikilib->get_page_info($cat_objid);
 			$cat_desc = $info['description'];
@@ -96,7 +89,6 @@ if ($_REQUEST["pollId"]) {
 	$info['voteConsiderationSpan'] = 0;
 	$options = array();
 }
-
 $smarty->assign('info', $info);
 $smarty->assign('options', $options);
 if (!isset($_REQUEST["sort_mode"])) {
@@ -120,12 +112,12 @@ $smarty->assign_by_ref('sort_mode', $sort_mode);
 $channels = $polllib->list_polls($offset, $maxRecords, $sort_mode, $find);
 $smarty->assign_by_ref('cant_pages', $channels["cant"]);
 if ($prefs['poll_list_categories'] == 'y') {
-	foreach ($channels['data'] as $key => $channel) {
+	foreach($channels['data'] as $key => $channel) {
 		$channels['data'][$key]['categories'] = $polllib->get_poll_categories($channel['pollId']);
 	}
 }
 if ($prefs['poll_list_objects'] == 'y') {
-	foreach ($channels['data'] as $key => $channel) {
+	foreach($channels['data'] as $key => $channel) {
 		$channels['data'][$key]['objects'] = $polllib->get_poll_objects($channel['pollId']);
 	}
 }

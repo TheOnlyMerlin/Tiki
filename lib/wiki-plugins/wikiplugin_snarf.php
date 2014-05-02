@@ -1,19 +1,28 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_snarf_info()
-{
+/* Tiki-Wiki plugin SNARF
+ * 
+ * This plugin replaces itself with the body (HTML) text at the URL given in the url argument.
+ *
+ */
+
+
+function wikiplugin_snarf_help() {
+    return tra("The SNARF plugin replaces itself with the HTML body of a URL.  Arbitrary regex replacement can be done on this content using regex and regexres, the latter being used as the second argument to preg_replace.").":<br />~np~{SNARF(url=>http://www.lojban.org,regex=>;.*<!-- Content -->(.*)<!-- /Content -->.*;, regexres=>$1)}".tra("This data is put in a CODE caption.")."{SNARF}~/np~";
+}
+
+function wikiplugin_snarf_info() {
 	return array(
 		'name' => tra('Snarf'),
-		'documentation' => 'PluginSnarf',
-		'description' => tra('Display the contents of another web page'),
+		'documentation' => tra('PluginSnarf'),
+		'description' => tra('Include the content of a remote HTTP page. Regular expression selecting the content portion to include must be specified.'),
 		'prefs' => array( 'wikiplugin_snarf' ),
 		'validate' => 'all',
-		'icon' => 'img/icons/page_copy.png',
 		'params' => array(
 			'url' => array(
 				'required' => true,

@@ -1,13 +1,12 @@
 {title help="Referer+Stats"}{tr}Referer stats{/tr}{/title}
 
-<div class="t_navbar">
-	{button href="tiki-referer_stats.php?clear=1" class="btn btn-default" _text="{tr}Clear Stats{/tr}"}
+<div class="navbar">
+	{button href="tiki-referer_stats.php?clear=1" _text="{tr}Clear Stats{/tr}"}
 </div>
 
 {include file='find.tpl'}
 
-<div class="table-responsive">
-<table class="table normal">
+<table class="normal">
   <tr>
   <th>
     <a href="tiki-referer_stats.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'referer_desc'}referer_asc{else}referer_desc{/if}">{tr}Domain{/tr}</a>
@@ -19,17 +18,15 @@
     <a href="tiki-referer_stats.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'last_desc'}last_asc{else}last_desc{/if}">{tr}Last{/tr}</a>
   </th>
   </tr>
-
+  {cycle values="odd,even" print=false}
   {section name=user loop=$channels}
-    <tr>
-      <td class="text"><a href="{$channels[user].lasturl}" target="_blank">{$channels[user].referer}</a></td>
-      <td class="integer">{$channels[user].hits}</td>
-      <td class="date">{$channels[user].last|tiki_short_datetime}</td>
+    <tr class="{cycle}">
+      <td>{$channels[user].referer}</td>
+      <td>{$channels[user].hits}</td>
+      <td>{$channels[user].last|tiki_short_datetime}</td>
     </tr>
-  {sectionelse}
-		{norecords _colspan=3}
+  {sectionelse}<tr><td colspan="3">{tr}No records{/tr}</td></tr>	
   {/section}
 </table>
-</div>
 
-{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
+{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset }{/pagination_links}

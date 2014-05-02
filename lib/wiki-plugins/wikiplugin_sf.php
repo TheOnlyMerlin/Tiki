@@ -1,49 +1,50 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-define('SF_CACHE', 48); # in hours
+define('SF_CACHE',48); # in hours
 
-function wikiplugin_sf_info()
-{
+function wikiplugin_sf_help() {
+	return tra('Creates a link to SourceForge tracker items (bugs, fetaure requests, patches and support requests') 
+			. ':<br />~np~{SF(groupid=> , trackerid=> , itemid=> , title=> )}{SF}~/np~';
+}
+
+function wikiplugin_sf_info() {
 	return array(
 		'name' => tra('SourceForge'),
-		'documentation' => 'PluginSF',
-		'description' => tra('Creates a link to SourceForge tracker items'),
+		'documentation' => tra('PluginSF'),		
+		'description' => tra('Creates a link to SourceForge tracker items (bugs, fetaure requests, patches and support requests) with the title of the item as the link text.'),
 		'prefs' => array( 'wikiplugin_sf' ),
 		'body' => tra('text'),
-		'icon' => 'img/icons/world_link.png',
 		'params' => array(
 			'groupid' => array(
 				'required' => true,
 				'name' => tra('Group ID'),
-				'description' => tra('SourceForge project ID (shows as group_id in the URL of a tracker item'),
+				'description' => tra('SourceForge project ID (shows as group_id in the url of a tracker item'),
 				'filter' => 'digits',
 				'default' => '',
 			),
 			'trackerid' => array(
 				'required' => true,
 				'name' => tra('Tracker ID'),
-				'description' => tra('SourceForge tracker ID (shows as atid in the URL of a tracker item'),
+				'description' => tra('SourceForge tracker ID (shows as atid in the url of a tracker item'),
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'tracker',
 			),
 			'itemid' => array(
 				'required' => true,
 				'name' => tra('Item ID'),
-				'description' => tra('SourceForge item ID (shows as aid in the URL of a tracker item'),
+				'description' => tra('SourceForge item ID (shows as aid in the url of a tracker item'),
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'tracker_item',
 			),
 			'title' => array(
 				'required' => false,
 				'name' => tra('Link title'),
-				'description' => tra('First part of link tooltip identifying the type of tracker item (bug, feature request, patch or support request).'),
+				'description' => tra('First part of link tooltip identifying the type of tracker item (bog, feature request, patch or support request).'),
 				'filter' => 'alpha',
 				'default' => 'Item',
 				'since' => 7.0,
@@ -52,8 +53,7 @@ function wikiplugin_sf_info()
 	);
 }
 
-function get_artifact_label($gid, $atid, $aid, $reload=false)
-{
+function get_artifact_label($gid, $atid, $aid, $reload=false) {
 	$agent = $_SERVER['HTTP_USER_AGENT'];
 	$cachefile = "temp/sftrackers.cache.$gid.$atid.$aid";
 	$cachelimit = time() - 60*60*SF_CACHE;
@@ -65,27 +65,26 @@ function get_artifact_label($gid, $atid, $aid, $reload=false)
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_USERAGENT, $agent);
 		curl_setopt($ch, CURLOPT_REFERER, $url);
-		$buffer = curl_exec($ch);
-		curl_close($ch);
-		if (preg_match("/<title>[^-]*-([^<]*)<\/title>/i", $buffer, $match)) {
-			$fp = fopen($cachefile, "wb");
-			fputs($fp, $match[1]);
+		$buffer = curl_exec ($ch);
+		curl_close ($ch);
+		if (preg_match("/<title>[^-]*-([^<]*)<\/title>/i",$buffer,$match)) {
+			$fp = fopen($cachefile,"wb");
+			fputs($fp,$match[1]);
 			fclose($fp);
 		} elseif (is_file($cachefile)) {
-			$fp = fopen($cachefile, "rb");
+			$fp = fopen($cachefile,"rb");
 			$back = fgets($fp);
 			fclose($fp);
 		}
 	} else {
-		$fp = fopen($cachefile, "rb");
-		$back = fgets($fp, 4096);
+		$fp = fopen($cachefile,"rb");
+		$back = fgets($fp,4096);
 		fclose($fp);
 	}
 	return $back;
 }
 
-function wikiplugin_sf($data, $params)
-{	
+function wikiplugin_sf($data, $params) {	
 	if (function_exists('curl_init')) {
 		if (empty($params['itemid']) || empty($params['groupid']) || empty($params['trackerid'])) {
 			return 'Plugin SF failed. One or more of the following parameters are missing: groupid, trackerid or itemid.';

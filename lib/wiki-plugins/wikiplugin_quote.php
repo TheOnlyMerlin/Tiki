@@ -1,21 +1,33 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_quote_info()
-{
+/*
+ * Tikiwiki QUOTE plugin.
+ * 
+ * Syntax:
+ * 
+ *  {QUOTE([replyto=>name])}
+ *   Content inside box
+ *  {QUOTE}
+ * 
+ */
+function wikiplugin_quote_help() {
+	return tra("Quote text by surrounding the text with a box, like the [QUOTE] BBCode").":<br />~np~{QUOTE(replyto=>name)}".tra("text")."{QUOTE}~/np~";
+}
+
+function wikiplugin_quote_info() {
 	return array(
 		'name' => tra('Quote'),
-		'documentation' => 'PluginQuote',
-		'description' => tra('Format text as a quote'),
+		'documentation' => tra('PluginQuote'),
+		'description' => tra("Quote text by surrounding the text with a box, like the [QUOTE] BBCode"),
 		'prefs' => array( 'wikiplugin_quote' ),
 		'body' => tra('Quoted text'),
-		'icon' => 'img/icons/quotes.png',
+		'icon' => 'pics/icons/quotes.png',
 		'filter' => 'text',
-		'tags' => array( 'basic' ),
 		'params' => array(
 			'replyto' => array(
 				'required' => false,
@@ -28,8 +40,7 @@ function wikiplugin_quote_info()
 	);
 }
 
-function wikiplugin_quote($data, $params)
-{
+function wikiplugin_quote($data, $params) {
 	/* set default values for some args */
 	
 	// Remove first <ENTER> if exists...
@@ -37,7 +48,7 @@ function wikiplugin_quote($data, $params)
 	// trim space/returns from beginning and end
 	$data = trim($data);
     
-	extract($params, EXTR_SKIP);
+	extract ($params, EXTR_SKIP);
 	if (!empty($replyto)) {
 		$caption = $replyto .' '.tra('wrote:');
 	} else {

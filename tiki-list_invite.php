@@ -1,28 +1,14 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
-
 require_once('tiki-setup.php');
 $access->check_feature('feature_invite');
 $access->check_permission('tiki_p_invite');
 
-/**
- * @param int $offset
- * @param $max
- * @param null $inviter
- * @param null $status
- * @param null $nostatus
- * @param string $sort_mode
- * @return array
- */
-function list_inviteds($offset=0, $max=-1, $inviter=null, $status=null, $nostatus=null, $sort_mode='ts_desc')
-{
+function list_inviteds($offset=0, $max=-1, $inviter=null, $status=null, $nostatus=null, $sort_mode='ts_desc') {
 	global $tikilib;
 	$bindvars = array();
 	if (!empty($inviter)) {

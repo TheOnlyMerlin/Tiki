@@ -1,13 +1,13 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 $section = 'blogs';
 require_once ('tiki-setup.php');
-$bloglib = TikiLib::lib('blog');
+include_once ('lib/blogs/bloglib.php');
 $access->check_feature('feature_blogs');
 
 if (!isset($_REQUEST["postId"])) {
@@ -31,8 +31,8 @@ if (!$blog_data) {
 	die;
 }
 
-$parsed_data = $tikilib->parse_data($post_info["data"], array('is_html' => true));
-$parsed_data = preg_replace('/\.\.\.page\.\.\./', '<hr />', $parsed_data);
+$parsed_data = $tikilib->parse_data($post_info["data"]);
+$parsed_data = preg_replace('/\.\.\.page\.\.\./','<hr />',$parsed_data);
 
 $smarty->assign('blog_data', $blog_data);
 $smarty->assign('blogId', $blogId);

@@ -1,6 +1,4 @@
-{* $Id$ *}
-
-<h1 class="pagetitle"><a href="tiki-invited.php">{tr}Invitation{/tr}</a></h1>
+<h1><a href="tiki-invited.php" class="pagetitle">{tr}Invitation{/tr}</a></h1>
 
 {if $error}
  {$error|escape}
@@ -10,7 +8,7 @@
 
  {if $user}
   You are currently logged as "{$user|escape}", if you want to validate this invitation on this account, click here :
-  <form method='POST'><input type='submit' name='validate-existing-account' value='Validate'></form>
+  <form method='POST'><input type='submit' name='validate-existing-account' value='Validate'/></form>
  {else}
   <div>
    If you want to validate this invitation on an already existing account, please login first: : <a href='tiki-login_scr.php'>login</a>

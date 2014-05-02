@@ -1,11 +1,11 @@
 {* $Id$ *}
 {title help="Polls" admpage="polls"}{tr}Admin Polls{/tr}{/title}
 
-<div class="t_navbar btn-group form-group">
-	{button href="tiki-admin_polls.php?setlast=1" class="btn btn-default" _text="{tr}Set last poll as current{/tr}"}
-	{button href="tiki-admin_polls.php?closeall=1" class="btn btn-default" _text="{tr}Close all polls but last{/tr}"}
-	{button href="tiki-admin_polls.php?activeall=1" class="btn btn-default" _text="{tr}Activate all polls{/tr}"}
-	{if $pollId neq '0'}{button pollId=0 cookietab=1 class="btn btn-default" _text="{tr}Create poll{/tr}"}{/if}
+<div class="navbar">
+	{button href="tiki-admin_polls.php?setlast=1" _text="{tr}Set last poll as current{/tr}"}
+	{button href="tiki-admin_polls.php?closeall=1" _text="{tr}Close all polls but last{/tr}"}
+	{button href="tiki-admin_polls.php?activeall=1" _text="{tr}Activate all polls{/tr}"}
+	{if $pollId neq '0'}{button pollId=0 cookietab=1 _text="{tr}Create poll{/tr}"}{/if}
 </div>
 
 {tabset}
@@ -15,16 +15,15 @@
 		{assign var='title' value="{tr}Edit poll{/tr}"}
 	{/if}
 	{tab name=$title}
-        <h2>{$title}</h2>
 		<form action="tiki-admin_polls.php" method="post">
-			<input type="hidden" name="pollId" value="{$pollId|escape}">
+			<input type="hidden" name="pollId" value="{$pollId|escape}" />
 			<table class="formcolor">
 				<tr>
-					<td>{tr}Title:{/tr}</td>
-					<td><input type="text" name="title" value="{$info.title|escape}"></td>
+					<td>{tr}Title{/tr}:</td>
+					<td><input type="text" name="title" value="{$info.title|escape}" /></td>
 				</tr>
 				<tr>
-					<td>{tr}Active:{/tr}</td>
+					<td>{tr}Active{/tr}:</td>
 					<td>
 						<select name="active">
 							<option value='a' {if $info.active eq 'a'}selected="selected"{/if}>{tr}active{/tr}</option>
@@ -45,58 +44,55 @@
 							<div id="tikiPollsOptions">
 								{section name=opt loop=$options}
 									<div>
-										<input type="hidden" name="optionsId[]" value="{$options[opt].optionId}">
-										<input type="text" name="options[]" value="{$options[opt].title}">
+										<input type="hidden" name="optionsId[]" value="{$options[opt].optionId}" />
+										<input type="text" name="options[]" value="{$options[opt].title}" />
 									</div>
 								{/section}
-								<div><input type="text" name="options[]"></div>
+								<div><input type="text" name="options[]" /></div>
 							</div>
 							<a href="javascript://Add Option"	onclick="pollsAddOption()">{tr}Add Option{/tr}</a>
 							{remarksbox type="tip" title="{tr}Tip{/tr}"}
-								{tr}Leave box empty to delete an option.{/tr}
+								{tr}Leave box empty for deleting an option.{/tr}
 							{/remarksbox}
 						</div>
 					</td>
 				</tr>
 				{include file='categorize.tpl'}
 				<tr>
-					<td>{tr}Publish Date:{/tr}</td>
+					<td>{tr}PublishDate{/tr}:</td>
 					<td>
-						{html_select_date time=$info.publishDate end_year="+1" field_order=$prefs.display_field_order} {tr}at{/tr} 
-						{html_select_time time=$info.publishDate display_seconds=false use_24_hours=$use_24hr_clock}
+						{html_select_date time=$info.publishDate end_year="+1" field_order=$prefs.display_field_order} {tr}at{/tr} {html_select_time time=$info.publishDate display_seconds=false}
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<label id="voteConsiderationSpan">{tr}Votes older than these days are not considered{/tr}</label>
+						<label id="voteConsiderationSpan">{tr}Votes older than these days are no more considered{/tr}</label>
 					</td>
 					<td>
-						<input type="text" id="voteConsiderationSpan" name="voteConsiderationSpan" size="5" value="{$info.voteConsiderationSpan|escape}">
-						<br>
+						<input type="text" id="voteConsiderationSpan" name="voteConsiderationSpan" size="5" value="{$info.voteConsiderationSpan|escape}"/>
+						<br />
 						<i>{tr}0 for no limit{/tr}</i>
 					</td>
 				</tr>
 				<tr>
 					<td>&nbsp;</td>
-					<td><input type="submit" class="btn btn-default btn-sm" name="save" value="{tr}Save{/tr}"></td>
+					<td><input type="submit" name="save" value="{tr}Save{/tr}" /></td>
 				</tr>
 			</table>
 		</form>
 	{/tab}
 
 	{tab name="{tr}Polls{/tr}"}
-        <h2>{tr}Polls{/tr}</h2>
 		{if $channels or ($find ne '')}
 			{include file='find.tpl'}
 		{/if}
-        <div class="table-responsive">
-		<table class="table normal">
+		<table class="normal">
 			{assign var=numbercol value=8}
 			<tr>
 				<th>{self_link _sort_arg='sort_mode' _sort_field='pollId' title="{tr}ID{/tr}"}{tr}ID{/tr}{/self_link}</th>
 				<th>{self_link _sort_arg='sort_mode' _sort_field='title' title="{tr}Title{/tr}"}{tr}Title{/tr}{/self_link}</th>
-				{if $prefs.poll_list_categories eq 'y'}<th>{tr}Categories{/tr}</th>{assign var=numbercol value=$numbercol+1}{/if}
-				{if $prefs.poll_list_objects eq 'y'}<th>{tr}Objects{/tr}</th>{assign var=numbercol value=$numbercol+1}{/if}
+				{if $prefs.poll_list_categories eq 'y'}<th>{tr}Categories{/tr}</th>{assign var=numbercol value=`$numbercol+1`}{/if}
+				{if $prefs.poll_list_objects eq 'y'}<th>{tr}Objects{/tr}</th>{assign var=numbercol value=`$numbercol+1`}{/if}
 				<th>{self_link _sort_arg='sort_mode' _sort_field='active' title="{tr}Active{/tr}"}{tr}Active{/tr}{/self_link}</th>
 				<th>{self_link _sort_arg='sort_mode' _sort_field='votes' title="{tr}Votes{/tr}"}{tr}Votes{/tr}{/self_link}</th>
 				<th>{self_link _sort_arg='sort_mode' _sort_field='publishDate' title="{tr}Publish{/tr}"}{tr}Publish{/tr}{/self_link}</th>
@@ -104,39 +100,39 @@
 				<th>{tr}Options{/tr}</th>
 				<th>{tr}Action{/tr}</th>
 			</tr>
-
+			{cycle values="odd,even" print=false}
 			{section name=user loop=$channels}
-				<tr>
-					<td class="id">{$channels[user].pollId}</td>
-					<td class="text">
+				<tr class="{cycle}">
+					<td>{$channels[user].pollId}</td>
+					<td>
 						<a class="tablename" href="tiki-poll_results.php?pollId={$channels[user].pollId}">{$channels[user].title|escape}</a>
 					</td>
 					{if $prefs.poll_list_categories eq 'y'}
-						<td class="text">
+						<td>
 							{section name=cat loop=$channels[user].categories}
 								{$channels[user].categories[cat].name}
 								{if !$smarty.section.cat.last}
-									<br>
+									<br />
 								{/if}
 							{/section}
 						</td>
 					{/if}
 					{if $prefs.poll_list_objects eq 'y'}
-						<td class="text">
+						<td>
 							{section name=obj loop=$channels[user].objects}
 								<a href="{$channels[user].objects[obj].href}">{$channels[user].objects[obj].name}</a>
 								{if !$smarty.section.obj.last}
-									<br>
+									<br />
 								{/if}
 							{/section}
 						</td>
 					{/if}
-					<td class="text">{$channels[user].active}</td>
-					<td class="integer">{$channels[user].votes}</td>
-					<td class="date">{$channels[user].publishDate|tiki_short_datetime}</td>
-					<td class="integer">{$channels[user].voteConsiderationSpan|escape}</td>
-					<td class="integer">{$channels[user].options}</td>
-					<td class="action">
+					<td>{$channels[user].active}</td>
+					<td>{$channels[user].votes}</td>
+					<td>{$channels[user].publishDate|tiki_short_datetime}</td>
+					<td>{$channels[user].voteConsiderationSpan|escape}</td>
+					<td>{$channels[user].options}</td>
+					<td>
 						{self_link pollId=$channels[user].pollId}{icon _id=page_edit}{/self_link}
 						<a class="link" href="tiki-admin_poll_options.php?pollId={$channels[user].pollId}" title="{tr}Options{/tr}">{icon _id=table alt="{tr}Options{/tr}"}</a>
 						<a class="link" href="tiki-poll_results.php?pollId={$channels[user].pollId}">{icon _id="chart_curve" alt="{tr}Results{/tr}"}</a>
@@ -144,15 +140,15 @@
 					</td>
 				</tr>
 			{sectionelse}
-	         {norecords _colspan=$numbercol}
+				<tr>
+					<td colspan="{$numbercol}" class="odd">{tr}No records found{/tr}</td>
+				</tr>
 			{/section}
 		</table>
-        </div>
-		{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
+		{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset }{/pagination_links}
 	{/tab}
 
 	{tab name="{tr}Add poll to pages{/tr}"}
-        <h2>{tr}Add poll to pages{/tr}</h2>
 		<form action="tiki-admin_polls.php" method="post">
 			<table class="formcolor">
 				<tr>
@@ -170,7 +166,7 @@
 				</tr>
 				<tr>
 					<td>{tr}Title{/tr}</td>
-					<td><input type="text" name="poll_title"></td>
+					<td><input type="text" name="poll_title" /></td>
 				</tr>
 				<tr>
 					<td>{tr}Wiki pages{/tr}</td>
@@ -185,11 +181,11 @@
 				</tr>
 				<tr>
 					<td>{tr}Lock the pages{/tr}</td>
-					<td><input type="checkbox" name="locked"></td>
+					<td><input type="checkbox" name="locked" /></td>
 				</tr>
 				<tr>
 					<td></td>
-					<td><input type="submit" class="btn btn-default btn-sm" name="addPoll" value="{tr}Add{/tr}"></td>
+					<td><input type="submit" name="addPoll" value="{tr}Add{/tr}" /></td>
 				</tr>
 			</table>
 		</form>

@@ -1,47 +1,29 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
+if (empty($argv)) { // can only be used in a cron or line command
+	return;
+}
 
 include('tiki-setup.php');
-
-$access->check_feature('feature_newsletters');
-
-if (php_sapi_name() != 'cli') {
-	$access->check_permission('tiki_p_send_newsletters');
-}
-
 global $nllib; include_once('lib/newsletters/nllib.php');
 
-function display_usage() 
-{
-	$helpMsg = "\nUsage: php tiki-batch_send_newsletter.php editionId=X\n"
-		. "Usage: http://path_to_tiki/tiki-batch_send_newsletter.php?editionId=X\n";
-		
-	if (php_sapi_name() == 'cli') {
-		echo $helpMsg;
-	} else {
-		echo nl2br($helpMsg);
-	}
+function display_usage() {
+	echo 'Usage: php tiki-batch_send_newsletter.php <editionId>';
 	die;
 }
-error_reporting(E_ALL);
-
-$request = new Tiki_Request();
-
-$editionId = $request->getProperty('editionId'); 
-
-if (empty($editionId)) {
+error_reporting (E_ALL);
+	
+if (empty($argv[1])) {
 	display_usage();
 }
+$editionId = $argv[1];
 
 if (!($edition_info = $nllib->get_edition($editionId))) {
-	echo "Incorrect editionId: $editionId";
+	echo "Incorrect editionId; $editionId";
 	die;
 }
 if (!($nl_info = $nllib->get_newsletter($edition_info['nlId']))) {
@@ -50,7 +32,6 @@ if (!($nl_info = $nllib->get_newsletter($edition_info['nlId']))) {
 $edition_info['editionId'] = 0;
 $sent = $errors = array();
 $logFileName = '';
-$edition_info['begin'] = 'y';
 $nllib->send($nl_info, $edition_info, false, $sent, $errors, $logFileName);
 if (!empty($errors)) {
 	echo "Errors\n";

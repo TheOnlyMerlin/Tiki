@@ -1,18 +1,16 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_calendar_info()
-{
+function wikiplugin_calendar_info() {
 	return array(
 		'name' => tra('Calendar'),
-		'documentation' => 'PluginCalendar',
-		'description' => tra('Display a calendar and its events'),
+		'documentation' => tra('PluginCalendar'),
+		'description' => tra('Includes a calendar and/or a list of calendar events.'),
 		'prefs' => array( 'feature_calendar', 'wikiplugin_calendar' ),
-		'icon' => 'img/icons/calendar.png',
 		'params' => array(
 			'calIds' => array(
 				'name' => tra('Calendar IDs'),
@@ -20,7 +18,6 @@ function wikiplugin_calendar_info()
 				'filter' => 'digits',
 				'separator' => ',',
 				'default' => '',
-				'profile_reference' => 'calendar',
 			),
 			'viewlist' => array(
 				'required' => false,
@@ -67,12 +64,11 @@ function wikiplugin_calendar_info()
 	);
 }
 
-function wikiplugin_calendar($data, $params)
-{
-	global $smarty, $tikilib, $prefs, $tiki_p_admin, $tiki_p_view_calendar;
-	global $dbTiki, $dc, $user, $calendarlib;
+function wikiplugin_calendar($data, $params) {
+    global $smarty, $tikilib, $prefs, $tiki_p_admin, $tiki_p_view_calendar;
+    global $dbTiki, $dc, $user, $calendarlib;
 
-	require_once("lib/calendar/calendarlib.php");
+    require_once("lib/calendar/calendarlib.php");
 
 	if ( empty($params['calIds']) ) {
 		$params['calIds'] = array(1);
@@ -102,11 +98,11 @@ function wikiplugin_calendar($data, $params)
 	global $modlib; require_once 'lib/modules/modlib.php';
 	$out = '';
 	if ($params['viewlist'] == 'table' || $params['viewlist'] == 'both') {
-		$out .= $modlib->execute_module($module_reference);
+		$out .= $modlib->execute_module( $module_reference );
 	}
 	if ( $params['viewlist'] == 'list' || $params['viewlist'] == 'both' ) {
 		$module_reference['params']['viewlist'] = 'list';
-		$out .= "<div>".$modlib->execute_module($module_reference)."</div>";
+		$out .= "<div>".$modlib->execute_module( $module_reference )."</div>";
 	}
 
 	return "<div>$out</div>";
