@@ -10,17 +10,17 @@ input[type="submit"] {
 	font-size: 10px;
 	font-weight: normal;
 	color: #fff;
-	background: #1b5880 url(header_bg.jpg) -30px 0 no-repeat}
+	background: #1b5880 url(twist/header.jpg) -30px 0 no-repeat}
 
 td#main-header,
 .header {height: 108px;}
 #header-top {height: 82px}
 
-.sitetitles {
+#sitetitles {
 	width: 300px;
 	padding-top: 35px}
 	
-.sitesubtitle {
+#sitesubtitle {
 	margin-top: 8px;
 }
 	
@@ -29,6 +29,6 @@ td#main-header,
 .box-data ul {margin-left: 0}
 .galtable {width: 97%}
 
-.caltable .odd,
-.caltable .even,
+.calodd,
+.caleven,
 .caldark {padding: 0}

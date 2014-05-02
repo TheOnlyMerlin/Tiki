@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,19 +14,24 @@ function smarty_function_favorite($params, $smarty)
 		return;
 	}
 
-	$servicelib = TikiLib::lib('service');
-	$smarty = TikiLib::lib('smarty');
-	$smarty->loadPlugin('smarty_modifier_escape');
-
-	$url = $servicelib->getUrl(array(
-		'controller' => 'favorite',
-		'action' => 'toggle',
-		'type' => $params['type'],
-		'object' => $params['object'],
-	));
-
-	$url = smarty_modifier_escape($url);
-
-	return '<a class="btn btn-default favorite-toggle" href="' . $url . '">' . tr('Favorite') . '</a>';
+	$smarty->loadPlugin('smarty_function_button');
+	$smarty->loadPlugin('smarty_function_service');
+	return smarty_function_button(
+					array(
+						'_keepall' => 'y',
+						'_class' => 'favorite-toggle',
+						'href' => smarty_function_service(
+										array(
+											'controller' => 'favorite',
+											'action' => 'toggle',
+											'type' => $params['type'],
+											'object' => $params['object'],
+										), 
+										$smarty
+						),
+						'_text' => tr('Favorite'),
+					), 
+					$smarty
+	);
 }
 

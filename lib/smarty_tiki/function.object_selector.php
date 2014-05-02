@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -29,43 +29,32 @@ function smarty_function_object_selector( $params, $smarty )
 {
 	static $uniqid = 0;
 
-	$arguments = [
-		'name' => null,
-		'class' => null,
-		'id' => null,
-		'value' => null,
-		'filter' => [],
-		'title' => null,
-	];
-
 	// Handle reserved parameters
 	foreach (array('name', 'class', 'id', 'value', 'filter') as $var) {
+		$$var = '';
 		if (isset($params["_$var"])) {
-			$arguments[$var] = $params["_$var"];
+			$$var = $params["_$var"];
 		}
 		unset($params["_$var"]);
 	}
 
-	if (empty($arguments['id'])) {
-		$arguments['id'] = 'object_selector_' . ++$uniqid;
+	if (empty($id)) {
+		$id = 'object_selector_' . ++$uniqid;
 	}
 
-	if ($arguments['filter']) {
-		$arguments['filter'] = array_merge($arguments['filter'], $params);
-	} else {
-		$arguments['filter'] = $params;
-	}
-
-	$arguments['filter'] = json_encode($arguments['filter']);
-
-	if ($arguments['value']) {
-		list($type, $object) = explode(':', $arguments['value'], 2);
-		$arguments['title'] = TikiLib::lib('object')->get_title($type, $object);
+	if ($filter) {
+		$params = array_merge($filter, $params);
 	}
 
 	$smarty->assign(
-		'object_selector',
-		$arguments
+					'object_selector', 
+					array(
+						'filter' => json_encode($params),
+						'id' => $id,
+						'name' => $name,
+						'class' => $class,
+						'value' => $value,
+					)
 	);
 
 	return $smarty->fetch('object_selector.tpl');

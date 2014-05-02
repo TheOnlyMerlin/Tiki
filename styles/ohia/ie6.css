@@ -20,7 +20,7 @@ input[type="submit"] {
 	
 .findtable input {font-size: 1em}
 
-.sitetitle {
+#sitetitle {
 	margin-top: 10px;
 	font-size: 26px;
 	height: 34px;
@@ -48,8 +48,7 @@ td {
 
 .postbody table {font-size: 11px}
 body .galtable {width: 97%}
-
-.addevent,
-.caltable .odd,
-.caltable .even,
+.addevent {padding: 0}
+.calodd {padding: 0}
+.caleven {padding: 0}
 .caldark {padding: 0}

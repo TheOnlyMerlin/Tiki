@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -25,21 +25,13 @@ function wikiplugin_datachannel_info()
 				'name' => tra('Channel Name'),
 				'description' => tra('Name of the channel as registered by the administrator.'),
 				'default' => '',
-				'profile_reference' => 'datachannel',
 			),
 			'returnURI' => array(
 				'required' => false,
 				'name' => tra('Return URL'),
-				'description' => tra('URL to go to after data channel has run. Defaults to current page. Can contain placeholders %reference% or %reference:urlencode%, where reference matches a profile object ref, allowing to redirect conditionally to a freshly created object.'),
-				'filter' => 'url',
-				'default' => '',
-			),
-			'returnErrorURI' => array(
-				'required' => false,
-				'name' => tra('Return URL on error'),
-				'description' => tra('URL to go to after data channel has run and failed. If not specified, use the success URL.'),
-				'filter' => 'url',
-				'default' => '',
+				'description' => tra('URL to go to after data channel has run. Defaults to current page.'),
+				'filter' => 'pagename',
+				'default' => '$_SERVER[\'HTTP_REFERER\']',
 			),
 			'quietReturn' => array(
 				'required' => false,
@@ -172,6 +164,10 @@ function wikiplugin_datachannel( $data, $params )
 		}
 	}
 	
+	require_once 'lib/profilelib/profilelib.php';
+	require_once 'lib/profilelib/channellib.php';
+	require_once 'lib/profilelib/installlib.php';
+
 	$groups = Perms::get()->getGroups();
 
 	$config = Tiki_Profile_ChannelList::fromConfiguration($prefs['profile_channels']);
@@ -255,8 +251,6 @@ function wikiplugin_datachannel( $data, $params )
 				return '^~np~' . smarty_function_payment(array( 'id' => $id ), $smarty) . '~/np~^';
 			}
 
-			$success = true;
-			$arguments = array();
 			foreach ($inputs as $input) {
 				$userInput = array_merge($input, $static);
 	
@@ -277,31 +271,19 @@ function wikiplugin_datachannel( $data, $params )
 					$installer->setDebug();
 				}
 				$params['emptyCache'] = isset($params['emptyCache']) ? $params['emptyCache'] : 'all';
-				$success = $installer->install($profile, $params['emptyCache']) && $success;
-
-				foreach ($profile->getObjects() as $object) {
-					$arguments["%{$object->getRef()}%"] = $object->getValue();
-					$arguments["%{$object->getRef()}:urlencode%"] = rawurlencode($object->getValue());
-				}
+				$installer->install($profile, $params['emptyCache']);
 			}
 			
 			if (empty($params['returnURI'])) {
-				// default to return to same page
 				$params['returnURI'] = $_SERVER['HTTP_REFERER'];
-			}
-			if (empty($params['returnErrorURI'])) {
-				$params['returnErrorURI'] = $params['returnURI'];
-			}
-
+			}	// default to return to same page
 			if (empty($params['debug']) || $params['debug'] != 'y') {
 				if (isset($params['quietReturn']) && $params['quietReturn'] == 'y') {
 					return true;
 				} else {
-					$url = $success ? $params['returnURI'] : $params['returnErrorURI'];
-					$url = str_replace(array_keys($arguments), array_values($arguments), $url);
-					$access = TikiLib::lib('access');
-					$access->redirect($url);
+					header('Location: ' . $params['returnURI']);
 				}
+				die;
 			}
 			$smarty->assign('datachannel_feedbacks', array_merge($installer->getFeedback(), $profile->getFeedback()));
 		}

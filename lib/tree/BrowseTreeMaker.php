@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -93,7 +93,7 @@ class BrowseTreeMaker extends TreeMaker
 	function node_child_start_code($nodeinfo)
 	{
 		return '<ul class="tree" data-id="' . $nodeinfo['id'] .
-			   	'" data-prefix="' . $this->prefix . '"' . ($this->node_cookie_state($nodeinfo['id']) != 'o' ? ' style="display:none;"' : '') . '>';
+			   		'" data-prefix="' . $this->prefix . '">';
 	}
 
 	//

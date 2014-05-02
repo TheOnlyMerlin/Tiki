@@ -16,21 +16,21 @@
 {/section}
 
   </select>
-  <input type="submit" class="btn btn-default btn-sm" name="go" value="{tr}Go{/tr}">
+  <input type="submit" name="go" value="{tr}Go{/tr}" />
 </form>
-{* Dislay a form to add or edit a category *} <br>
+{* Dislay a form to add or edit a category *} <br />
 {if $categId eq 0}
 <h2>{tr}Add a directory category{/tr}</h2>
 {else}
 <h2>{tr}Edit this directory category:{/tr} {$info.name}</h2>
 <a href="tiki-directory_admin_categories.php">{tr}Add a Directory Category{/tr}</a> {/if}
 <form action="tiki-directory_admin_categories.php" method="post">
-  <input type="hidden" name="parent" value="{$parent|escape}">
-  <input type="hidden" name="categId" value="{$categId|escape}">
+  <input type="hidden" name="parent" value="{$parent|escape}" />
+  <input type="hidden" name="categId" value="{$categId|escape}" />
   <table class="formcolor">
     <tr>
       <td>{tr}Name:{/tr}</td>
-      <td><input type="text" name="name" value="{$info.name|escape}">
+      <td><input type="text" name="name" value="{$info.name|escape}" />
     </tr>
     <tr>
       <td>{tr}Description:{/tr}</td>
@@ -59,11 +59,11 @@
     </tr>
     <tr>
       <td>{tr}Allow sites in this directory category:{/tr}</td>
-      <td><input name="allowSites" type="checkbox" {if $info.allowSites eq 'y'}checked="checked"{/if}></td>
+      <td><input name="allowSites" type="checkbox" {if $info.allowSites eq 'y'}checked="checked"{/if} /></td>
     </tr>
     <tr>
       <td>{tr}Show number of sites in this directory category:{/tr}</td>
-      <td><input name="showCount" type="checkbox" {if $info.showCount eq 'y'}checked="checked"{/if}></td>
+      <td><input name="showCount" type="checkbox" {if $info.showCount eq 'y'}checked="checked"{/if} /></td>
     </tr>
     <tr>
       <td>{tr}Editor group:{/tr}</td>
@@ -82,16 +82,15 @@
     {include file='categorize.tpl'}
     <tr>
       <td>&nbsp;</td>
-      <td><input class="btn btn-default" type="submit" name="save" value="{tr}Save{/tr}">
+      <td><input type="submit" name="save" value="{tr}Save{/tr}" />
     </tr>
   </table>
 </form>
-<br>
+<br />
 <h2>{tr}Directory Subcategories{/tr}</h2>
 {* Display the list of categories (items) using pagination *}
 {* Links to edit, remove, browse the categories *}
-<div class="table-responsive">
-<table class="table normal">
+<table class="normal">
   <tr>
     <th><a href="tiki-directory_admin_categories.php?parent={$parent}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></th>
     <th><a href="tiki-directory_admin_categories.php?parent={$parent}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'childrenType_desc'}childrenType_asc{else}childrenType_desc{/if}">{tr}cType{/tr}</a></th>
@@ -101,20 +100,19 @@
     <th><a href="tiki-directory_admin_categories.php?parent={$parent}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'editorGroup_desc'}editorGroup_asc{else}editorGroup_desc{/if}">{tr}editor{/tr}</a></th>
     <th>{tr}Action{/tr}</th>
   </tr>
-
+  {cycle values="odd,even" print=false}
   {section name=user loop=$items}
-  <tr>
+  <tr class="{cycle}">
     <td class="text"><a class="tablename" href="tiki-directory_admin_categories.php?parent={$items[user].categId}">{$items[user].name|escape}</a></td>
     <td class="text">{$items[user].childrenType}</td>
     <td class="integer">{$items[user].viewableChildren}</td>
     <td class="text">{$items[user].allowSites}{if $items[user].allowSites eq 'y'} ({$items[user].sites}) {/if}</td>
     <td class="text">{$items[user].showCount}</td>
     <td class="text">{$items[user].editorGroup}</td>
-    <td class="action"><a class="link" href="tiki-directory_admin_related.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;categId={$items[user].categId}"><img src='img/icons/admin_move.gif' alt="{tr}relate{/tr}" title="{tr}relate{/tr}"></a> <a class="link" href="tiki-directory_admin_categories.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;parent={$parent}&amp;categId={$items[user].categId}">{icon _id='page_edit'}</a> <a class="link" href="tiki-directory_admin_categories.php?parent={$parent}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$items[user].categId}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a> </td>
+    <td class="action"><a class="link" href="tiki-directory_admin_related.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;categId={$items[user].categId}"><img src='img/icons/admin_move.gif' alt="{tr}relate{/tr}" title="{tr}relate{/tr}" /></a> <a class="link" href="tiki-directory_admin_categories.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;parent={$parent}&amp;categId={$items[user].categId}">{icon _id='page_edit'}</a> <a class="link" href="tiki-directory_admin_categories.php?parent={$parent}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$items[user].categId}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a> </td>
   </tr>
   {sectionelse}
 		{norecords _colspan=7}
   {/section}
 </table>
-</div>
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links} 

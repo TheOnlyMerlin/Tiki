@@ -178,17 +178,19 @@ form .normal,
 	border: none;
 }
 
-.caltable .odd,
-.caltable .even,
+.calodd,
+.caleven,
 .wikicell {
 	border: 2px solid #c2eef8;
 }
 
-.odd {
+.odd,
+.calodd {
 	background: #e3f7fb;
 }
 
-.even {
+.even,
+.caleven {
 	background: #d6f3fa;
 }
 

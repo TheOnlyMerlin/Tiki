@@ -32,31 +32,22 @@
 		</applet>
 	</div>
 {/if}
-{jq}
-	$('#tagBox').tiki('autocomplete', 'tag', {multiple: true, multipleSeparator: " "} );
-{/jq}
-<form action="tiki-browse_freetags.php" method="get" class="freetagsearch col-md-12 form-inline form-horizontal" role="form">
-    <div class="row">
-        <label class="control-label col-sm-2" for="tabBox">{tr}Tags{/tr}</label>
-        <div class="input-group col-sm-7">
-		    <input type="text" id="tagBox" class="form-control" name="tag" value="{$tagString|escape}">
-        </div>
-        <div class="col-sm-3">
-		    {button _onclick="clearTags(); return false;" _text="{tr}Clear{/tr}"}
-	    	<input type="submit" class="btn btn-default" value="{tr}Go{/tr}">
-    	</div>
-    </div>
-    <div class="row table spacer-bottom-15px">
-        <div class="col-sm-10 col-sm-offset-2 radio">
-		    <input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
-		    <input type="radio" name="broaden" class="radio" id="stopb1" value="n"{if $broaden eq 'n'} checked="checked"{/if}>
-		    <label for="stopb1">{tr}With all selected tags{/tr}</label>
-		    <input type="radio" name="broaden" class="radio" id="stopb2" value="y"{if $broaden eq 'y'} checked="checked"{/if}>
-		    <label for="stopb2">{tr}With one selected tag{/tr}</label>
-		    <input type="radio" name="broaden" class="radio" id="stopb3" value="last"{if $broaden eq 'last'} checked="checked"{/if}>
-		    <label for="stopb3">{tr}With last selected tag{/tr}</label>
-        </div>
-    </div>
+
+<form class="freetagsearch" action="tiki-browse_freetags.php" method="get">
+	<div class="freetagskeywords">
+		<b>{tr}Tags{/tr}</b> 
+		<input type="text" id="tagBox" name="tag" size="25" value="{$tagString|escape}" />
+		{button _onclick="clearTags(); return false;" _text="{tr}Clear{/tr}"}
+		<input type="submit" value="{tr}Go{/tr}" />
+		<br />
+		<input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
+		<input type="radio" name="broaden" id="stopb1" value="n"{if $broaden eq 'n'} checked="checked"{/if} />
+		<label for="stopb1">{tr}With all selected tags{/tr}</label>
+		<input type="radio" name="broaden" id="stopb2" value="y"{if $broaden eq 'y'} checked="checked"{/if}/>
+		<label for="stopb2">{tr}With one selected tag{/tr}</label>
+		<input type="radio" name="broaden" id="stopb3" value="last"{if $broaden eq 'last'} checked="checked"{/if} />
+		<label for="stopb3">{tr}With last selected tag{/tr}</label>
+	</div>
 
 	{if $prefs.freetags_browse_show_cloud eq 'y'}
 		{jq notonready=true}
@@ -69,7 +60,7 @@
 				}
 		{/jq}
 
-		<div class="freetaglist table spacer-bottom-15px">
+		<div class="freetaglist"> 
 			{foreach from=$most_popular_tags item=popular_tag}
 				{capture name=tagurl}{if (strstr($popular_tag.tag, ' '))}"{$popular_tag.tag}"{else}{$popular_tag.tag}{/if}{/capture}
 				<a class="freetag_{$popular_tag.size}{if $tag eq $popular_tag.tag|escape} selectedtag{/if}" href="tiki-browse_freetags.php?tag={$smarty.capture.tagurl|escape:'url'}" onclick="javascript:addTag('{$popular_tag.tag|escape:'javascript'}');return false;" ondblclick="location.href=this.href;"{if $popular_tag.color} style="color:{$popular_tag.color}"{/if}>{$popular_tag.tag|escape}</a> 
@@ -77,18 +68,18 @@
 		</div>
 
 		<div class="freetagsort">
-			<div class="text-center">
+			<div class="mini">
 				{if empty($maxPopular)}
 					{assign var=maxPopular value=50+$prefs.freetags_browse_amount_tags_in_cloud}
 				{/if}
 				<a class='more' href="{$smarty.server.PHP_SELF}?{query maxPopular=$maxPopular tagString=$tagString}">{tr}More Popular Tags{/tr}</a>
 			</div>
 
-			<div class="text-center">
+			<div class="mini">
 				{tr}Sort:{/tr}<a href="{$smarty.server.PHP_SELF}?{query tsort_mode=tag_asc}">{tr}Alphabetically{/tr}</a> | <a href="{$smarty.server.PHP_SELF}?{query tsort_mode=count_desc tagString=$tagString}">{tr}By Size{/tr}</a>
 			</div>
 
-			<div class="text-center">
+			<div class="mini">
 				<a href="{$smarty.server.PHP_SELF}?{query mode=c tagString=$tagString}">{tr}Cloud{/tr}</a> | <a href="{$smarty.server.PHP_SELF}?{query mode=l tagString=$tagString}">{tr}List{/tr}</a>
 			</div>
 		</div>
@@ -110,7 +101,7 @@
 			{assign var=thisbroaden value=''}
 		{/if}
 	
-		{button _text="{tr}All{/tr}" _class=$thisclass href="tiki-browse_freetags.php?tag=$tagString$thisbroaden&amp;type="}
+		{button _text="{tr}All{/tr}" _class=$thisclass href="tiki-browse_freetags.php?tag=$tagString$thisbroaden"}
 
 		{foreach item=objectType from=$objects_with_freetags}
 			{foreach item=sect key=key from=$sections_enabled}
@@ -130,7 +121,7 @@
 				
 					{assign var=thistype value=$objectType|escape:'url'}
 					{capture name="fl"}{tr}{$feature_label}{/tr}{/capture}
-					{button _text=$smarty.capture.fl _class=$thisclass href="tiki-browse_freetags.php?tag=$tagString$thisbroaden&amp;type=$thistype&amp;sort_mode=$sort_mode"}
+					{button _text=$smarty.capture.fl _class=$thisclass href="tiki-browse_freetags.php?tag=$tagString$thisbroaden&amp;type=$thistype"}
 					{assign var=cpt value=$cpt+1}
 				{/if}
 
@@ -156,32 +147,19 @@
 
 					{assign var=thistype value=$objectType|escape:'url'}
 					{capture name="fl"}{tr}{$feature_label}{/tr}{/capture}
-					{button _text=$smarty.capture.fl _class=$thisclass href="tiki-browse_freetags.php?tag=$tagString$thisbroaden&amp;type=$thistype&amp;sort_mode=$sort_mode"}
+					{button _text=$smarty.capture.fl _class=$thisclass href="tiki-browse_freetags.php?tag=$tagString$thisbroaden&amp;type=$thistype"}
 					{assign var=cpt value=$cpt+1}
 				{/if}
 			{/foreach}
 		{/foreach}
-		{if !empty($blogs)}
-			<div id="blogs"{if $type ne 'blog post'} style="visibility:hidden"{/if}>
-			<select name="objectId" onchange="this.form.submit();">
-				<option value="">--{tr}All blogs{/tr}--</option>
-				{foreach item=blog from=$blogs}
-					<option value="{$blog.blogId|escape}"{if $blog.blogId eq $objectId} selected="selected"{/if}>{$blog.title|escape}</option>
-				{/foreach}
-			</select>
-			</div>
-		{/if}
 
-		<input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
-		<input type="hidden" name="old_type" value="{$type|escape}">
-		<input type="text" name="find" value="{$find|escape}">
-		<input type="submit" class="btn btn-default btn-sm" value="{tr}Filter{/tr}">
+		<input type="text" name="find" value="{$find}" />
+		<input type="submit" value="{tr}Filter{/tr}" />
 	{/capture}
+</form>
 
 {if $cpt > 1}
 	<div class="freetagsbrowse">{$smarty.capture.browse}</div>{/if}
-
-</form>
 
 <div class="freetagresult">
 	{if $tagString}
@@ -194,20 +172,19 @@
 		{/if}
 	{/if}
 	{if $cantobjects > 0}
-
+		{cycle values="odd,even" print=false}
 		{section name=ix loop=$objects}
 			<div class="{cycle} freetagitemlist" >
-				<h4>
+				<h3>
 					<a href="{$objects[ix].href}">{$objects[ix].name|strip_tags|escape}</a>
 					{if $tiki_p_unassign_freetags eq 'y' or $tiki_p_admin eq 'y'}
 						<a href="tiki-browse_freetags.php?del=1&amp;tag={$tag}{if $type}&amp;type={$type|escape:'url'}{/if}&amp;typeit={$objects[ix].type|escape:'url'}&amp;itemit={$objects[ix].name|escape:'url'}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>
 					{/if}
-				</h4>
+				</h3>
 				<div class="type">
 					{tr}{$objects[ix].type|replace:"wiki page":"Wiki"|replace:"article":"Article"|regex_replace:"/tracker [0-9]*/":"tracker item"}{/tr}
-				{if !empty($objects[ix].parent_object_id)} {tr}in{/tr} {object_link type=$objects[ix].parent_object_type id=$objects[ix].parent_object_id}{/if}
 				</div>
-				<div class="description help-block">
+				<div class="description">
 					{$objects[ix].description|strip_tags|escape}&nbsp;
 				</div>
 			</div>

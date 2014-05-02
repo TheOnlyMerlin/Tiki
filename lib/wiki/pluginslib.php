@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -209,7 +209,7 @@ class PluginsLibUtil
 				$sOutput .= '<em>'. tra('Required parameters are in</em> <b>bold</b>') . '<br />';
 			}
 			// Header for info
-			$sOutput .= '<table class="table-bordered">' . "\n\t" . '<tr>' . "\n\t\t" . '<td class="heading"' . $sStyle. '>'
+			$sOutput .= '<table class="normal">' . "\n\t" . '<tr>' . "\n\t\t" . '<td class="heading"' . $sStyle. '>' 
 				. tra($aPrincipalField['name']) . '</td>';
 			foreach ($aInfo as $iInfo => $sHeader) {
 				if ($sHeader == 'paraminfo') {
@@ -321,7 +321,7 @@ class PluginsLibUtil
 		$aPrincipalField = array('field' => 'pageName', 'name' => 'Pages');
 
 		// Header for info
-		$sOutput = '<table class="table-bordered"><tr><td class="heading">' . tra($aPrincipalField['name']) . '</td></tr><tr><td class="even">';
+		$sOutput = '<table class="normal"><tr><td class="heading">' . tra($aPrincipalField['name']) . '</td></tr><tr><td class="even">';
 		$iCounter = 0;
 		// create a comma separated list of entries
 		foreach ($aData as $aPage) {

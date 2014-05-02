@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -18,7 +18,7 @@ function wikiplugin_memberlist_info()
 			'groups' => array(
 				'required' => true,
 				'name' => tra('Groups'),
-				'description' => tra('List of groups to handle through the interface (use "*" for all). Semi-colon separated.'),
+				'description' => tra('List of groups to handle through the interface (use "*" for all). Colon separated.'),
 				'separator' => ':',
 				'filter' => 'groupname',
 				'default' => '',
@@ -105,8 +105,7 @@ function wikiplugin_memberlist_info()
 
 function wikiplugin_memberlist( $data, $params )
 {
-	global $prefs, $user;
-	$userlib = TikiLib::lib('user');
+	global $prefs, $userlib, $user;
 	static $execution = 0;
 	$exec_key = 'memberlist-execution-' . ++ $execution;
 
@@ -235,8 +234,8 @@ function wikiplugin_memberlist( $data, $params )
 		$prefs['feature_tabs'] = 'n';
 		// css workarounds for when in non tabs mode
 		TikiLib::lib('header')->add_css(
-			'.memberlist > fieldset { border: none; margin:  0; padding:  0; }
-			.memberlist > fieldset > legend { display: none; }'
+						'.memberlist > fieldset { border: none; margin:  0; padding:  0; }
+						.memberlist > fieldset > legend { display: none; }'
 		);
 	}
 	$out = '~np~' . $smarty->fetch('wiki-plugins/wikiplugin_memberlist.tpl') . '~/np~';
@@ -249,7 +248,7 @@ function wikiplugin_memberlist( $data, $params )
 
 function wikiplugin_memberlist_get_members( $groupName, $maxRecords = -1, $sort_mode = 'login_asc')
 {
-	$userlib = TikiLib::lib('user');
+	global $userlib;
 
 	$raw = $userlib->get_users(0, $maxRecords, $sort_mode, '', '', false, $groupName);
 	$users = array();
@@ -265,14 +264,13 @@ function wikiplugin_memberlist_get_members( $groupName, $maxRecords = -1, $sort_
 
 function wikiplugin_memberlist_get_group_details( $groups, $maxRecords = -1, $sort_mode = 'login_asc', $readOnly = false )
 {
-	global $user, $prefs;
-	$userlib = TikiLib::lib('user');
+	global $user, $prefs, $userlib;
 	$validGroups = array();
 	foreach ( $groups as $groupName ) {
 		if ( ! $userlib->group_exists($groupName) ) {
 			continue;
 		}
-
+		
 		$perms = Perms::get(array( 'type' => 'group', 'object' => $groupName ));
 
 		if ( $perms->group_view ) {
@@ -312,8 +310,7 @@ function wikiplugin_memberlist_get_group_details( $groups, $maxRecords = -1, $so
 
 function wikiplugin_memberlist_join( $groups, $joins )
 {
-	global $user;
-	$userlib = TikiLib::lib('user');
+	global $user, $userlib;
 	foreach ( $joins as $group ) {
 		if ( isset( $groups[$group] ) ) {
 			if ( $groups[$group]['can_join'] ) {
@@ -325,8 +322,7 @@ function wikiplugin_memberlist_join( $groups, $joins )
 
 function wikiplugin_memberlist_leave( $groups, $leaves )
 {
-	global $user;
-	$userlib = TikiLib::lib('user');
+	global $user, $userlib;
 	foreach ( $leaves as $group ) {
 		if ( isset( $groups[$group] ) ) {
 			if ( $groups[$group]['can_leave'] ) {
@@ -338,7 +334,7 @@ function wikiplugin_memberlist_leave( $groups, $leaves )
 
 function wikiplugin_memberlist_add( $groups, $adds, $asdefault=false )
 {
-	$userlib = TikiLib::lib('user');
+	global $userlib;
 
 	foreach ( $adds as $group => $members ) {
 		if ( isset( $groups[$group] ) ) {
@@ -363,7 +359,7 @@ function wikiplugin_memberlist_add( $groups, $adds, $asdefault=false )
 
 function wikiplugin_memberlist_remove( $groups, $removes )
 {
-	$userlib = TikiLib::lib('user');
+	global $userlib;
 
 	foreach ( $removes as $group=> $members ) {
 		if ( isset( $groups[$group] ) ) {

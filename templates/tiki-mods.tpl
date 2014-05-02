@@ -1,14 +1,14 @@
 {* $Id$ *}
 {strip}
 {title help="mods"}{tr}Tiki Mods{/tr}{/title}
-<div class="t_navbar form-group">
-	{button href="tiki-mods_admin.php" class="btn btn-default" _text="{tr}Mods Configuration{/tr}"}
-	{button href="tiki-mods.php?reload=1$findarg$typearg$versionarg" class="btn btn-default" _text="{tr}Update remote index{/tr}"}
-	{button href="tiki-mods.php?rebuild=1$findarg$typearg$versionarg" class="btn btn-default" _text="{tr}Rebuild local list{/tr}"}
+<div class="navbar">
+	{button href="tiki-mods_admin.php" _text="{tr}Mods Configuration{/tr}"}
+	{button href="tiki-mods.php?reload=1$findarg$typearg$versionarg" _text="{tr}Update remote index{/tr}"}
+	{button href="tiki-mods.php?rebuild=1$findarg$typearg$versionarg" _text="{tr}Rebuild local list{/tr}"}
 	{if $prefs.feature_mods_provider eq 'y'}
-		{button href="tiki-mods.php?republishall=1$findarg$typearg$versionarg" class="btn btn-default" _text="{tr}Republish all{/tr}"}
-		{button href="tiki-mods.php?publishall=1$findarg$typearg$versionarg" class="btn btn-default" _text="{tr}Publish all{/tr}"}
-		{button href="tiki-mods.php?unpublishall=1$findarg$typearg$versionarg" class="btn btn-default" _text="{tr}Unpublish all{/tr}"}
+		{button href="tiki-mods.php?republishall=1$findarg$typearg$versionarg" _text="{tr}Republish all{/tr}"}
+		{button href="tiki-mods.php?publishall=1$findarg$typearg$versionarg" _text="{tr}Publish all{/tr}"}
+		{button href="tiki-mods.php?unpublishall=1$findarg$typearg$versionarg" _text="{tr}Unpublish all{/tr}"}
 	{/if}
 </div>
 
@@ -32,7 +32,7 @@
 {/if}
 {if $installask}
 <form method='post' action='?'>
-	<div class="panel panel-default"><div class="panel-body">
+	<div class="simplebox">
 		<ul>
 		{if $installask.wanted}
 			<li>You asked to install these mods:
@@ -40,7 +40,7 @@
 					{if $element->repository eq 'unavailable'}
 						<li>{$element->name|escape} ({$element->type|escape}) but is not in any repository</li>
 					{else}
-						<li><input type='checkbox' onchange='update_button_install();' name='install-wants[]' value='{$element->modname|escape}' checked >{$element->name|escape} {$element->revision} ({$element->type|escape})</li>
+						<li><input type='checkbox' onchange='update_button_install();' name='install-wants[]' value='{$element->modname|escape}' checked />{$element->name|escape} {$element->revision} ({$element->type|escape})</li>
 					{/if}
 				{/foreach}</ul>
 			</li>
@@ -49,7 +49,7 @@
 			<li>You asked to <strong>remove</strong> these mods:
 				<ul>{foreach from=$installask.wantedtoremove item=element}
 					{if $element->repository eq 'installed'}
-						<li><input type='checkbox' onchange='update_button_install();' name='install-wants[]' value='{$element->modname|escape}' checked >{$element->name|escape} {$element->revision} ({$element->type|escape})</li>
+						<li><input type='checkbox' onchange='update_button_install();' name='install-wants[]' value='{$element->modname|escape}' checked />{$element->name|escape} {$element->revision} ({$element->type|escape})</li>
 					{else}
 						<li>{$element->name|escape} ({$element->type|escape}) but is not installed</li>
 					{/if}
@@ -117,18 +117,18 @@
 				{if $element->repository eq 'unavailable'}
 					<li>{$element[0]->name|escape} ({$element[0]->type|escape}) but is not in any repository</li>
 				{else}
-					<li><input type='checkbox' onchange='update_button_install();' name='install-wants[]' value='{$element[0]->modname|escape}'>{$element[0]->name|escape} ({$element[0]->type|escape})</li>
+					<li><input type='checkbox' onchange='update_button_install();' name='install-wants[]' value='{$element[0]->modname|escape}' />{$element[0]->name|escape} ({$element[0]->type|escape})</li>
 				{/if}
 			{/foreach}</ul>
 			</li>
 		{/if}
 		</ul>
 
-		<br>
+		<br />
 		{if $installask.wanted}
-			<input type='submit' id='button_install' name='button-install' value="{tr}Install{/tr}"{if $installask.unavailable} style='display: none;'{/if}>
+			<input type='submit' id='button_install' name='button-install' value="{tr}Install{/tr}"{if $installask.unavailable} style='display: none;'{/if} />
 		{elseif $installask.wantedtoremove}
-			<input type='submit' id='button_install' name='button-remove' value="{tr}Remove{/tr}"{if $installask.unavailable} style='display: none;'{/if}>
+			<input type='submit' id='button_install' name='button-remove' value="{tr}Remove{/tr}"{if $installask.unavailable} style='display: none;'{/if} />
 		{/if}
 {jq}
 function update_button_install() {
@@ -138,24 +138,24 @@ function update_button_install() {
 	button.style.display='';
 }
 {/jq}
-	</div></div>
+	</div>
 </form>
 {/if}
-<br>
+<br />
 {if $tikifeedback}
-	<br>
+	<br />
 	{section name=n loop=$tikifeedback}
-		<div class="alert {if $tikifeedback[n].num > 0} alert-warning{/if}">
+		<div class="simplebox {if $tikifeedback[n].num > 0} highlight{/if}">
 			{if $tikifeedback[n].num > 0}{icon _id=delete alt="Alert" style="vertical-align:middle;"}{/if}{$tikifeedback[n].mes}
-		</div><br>
+		</div><br />
 	{/section}
 {/if}
 
 {if not $installask}
 	<form method="get" action="tiki-mods.php">
 		{tr}Find{/tr}
-		<input type="text" name="find" value="{$find|escape}">
-		<input type="submit" class="btn btn-default btn-sm" name="f" value="{tr}Find{/tr}">
+		<input type="text" name="find" value="{$find|escape}" />
+		<input type="submit" name="f" value="{tr}Find{/tr}" />
 		{tr}in{/tr} <select name="type" onchange="this.form.submit();">
 			<option value="">{tr}all types{/tr}</option>
 			{foreach key=it item=i from=$types}
@@ -175,14 +175,14 @@ function update_button_install() {
 		{tr}No mods found.{/tr}
 	{/if}
 	
-	<table cellspacing="0" cellpadding="2" border="0" class="table normal">
+	<table cellspacing="0" cellpadding="2" border="0" class="normal">
 		{foreach key=type item=i from=$display}
 			<tr><td colspan="{if $prefs.feature_mods_provider eq 'y'}3{else}2{/if}">
 				{assign var=thistype value=$type|escape:"url"}
 				{button href="tiki-mods.php?type=$thistype$findarg" _title="{tr}Display only this type{/tr}" _text=$type}
 			</td><td colspan="7">&nbsp;</td>
 			</tr>
-
+			{cycle values="odd,even" print=false}
 			{foreach key=item item=it from=$display.$type}
 				<tr class="{if $focus and $focus eq $display.$type.$item->name}focus{else}{cycle}{/if}">
 				{if $prefs.feature_mods_provider eq 'y'}
@@ -266,25 +266,25 @@ function update_button_install() {
 				{/if}
 				</tr>
 				{if $focus and $focus eq $local.$type.$item->modname}
-					<tr>
+					<tr class="{cycle}">
 						<td colspan="{if $prefs.feature_mods_provider eq 'y'}9{else}8{/if}">
 							<table>
 								<tr>
 									<td>
-										<div class="panel panel-default"><div class="panel-body">
-											{if $more->docurl}Documentation :<br>{foreach key=ku item=iu from=$more->docurl}<a href="{$iu}">{$iu}</a><br>{/foreach}{/if}
-											{if $more->devurl}Development : <br>{foreach key=ku item=iu from=$more->devurl}<a href="{$iu}">{$iu}</a><br>{/foreach}{/if}
-											{if $more->help}{$more.help}<br>{/if}
-											{if $more->help}{$more.help}<br>{/if}
-											{if $more->author}{tr}Author:{/tr} {$more->author[0]}<br>{/if}
-											{if $more->licence}{tr}licence:{/tr} {$more->licence}<br>{/if}
+										<div class="simplebox">
+											{if $more->docurl}Documentation :<br />{foreach key=ku item=iu from=$more->docurl}<a href="{$iu}">{$iu}</a><br />{/foreach}{/if}
+											{if $more->devurl}Development : <br />{foreach key=ku item=iu from=$more->devurl}<a href="{$iu}">{$iu}</a><br />{/foreach}{/if}
+											{if $more->help}{$more.help}<br />{/if}
+											{if $more->help}{$more.help}<br />{/if}
+											{if $more->author}{tr}Author:{/tr} {$more->author[0]}<br />{/if}
+											{if $more->licence}{tr}licence:{/tr} {$more->licence}<br />{/if}
 											
-											{tr}Last Modification:{/tr} {$more->lastmodif}<br>
-											{tr}by:{/tr} {$more->contributor[0]}<br>
-										</div></div>
+											{tr}Last Modification:{/tr} {$more->lastmodif}<br />
+											{tr}by:{/tr} {$more->contributor[0]}<br />
+										</div>
 									</td><td>
 										{foreach key=kk item=ii from=$more->files}
-											{$ii[0]} -&gt; <b>{$ii[1]}</b><br>
+											{$ii[0]} -&gt; <b>{$ii[1]}</b><br />
 										{/foreach}
 									</td>
 								</tr>

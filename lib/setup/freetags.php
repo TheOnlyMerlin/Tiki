@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,7 +9,7 @@
 $access->check_script($_SERVER['SCRIPT_NAME'], basename(__FILE__));
 
 if ( isset($section) and isset($sections[$section])) {
-	$freetaglib = TikiLib::lib('freetag');
+	include_once ('lib/freetag/freetaglib.php');
 	$here = $sections[$section];
 	if ( $tiki_p_freetags_tag == 'y' && isset($_POST['addtags']) && trim($_POST['addtags']) != '' ) {
 		if ( ! isset($user) ) $userid = 0;
@@ -67,8 +67,8 @@ if ( isset($section) and isset($sections[$section])) {
 
 		if ( $ft_multi && $object = current_object() ) {
 			$smarty->assign(
-				'freetags_mixed_lang',
-				'tiki-freetag_translate.php?objType=' . urlencode($object['type']) . '&objId=' . urlencode($object['object'])
+							'freetags_mixed_lang',
+							'tiki-freetag_translate.php?objType=' . urlencode($object['type']) . '&objId=' . urlencode($object['object'])
 			);
 		}
 	}

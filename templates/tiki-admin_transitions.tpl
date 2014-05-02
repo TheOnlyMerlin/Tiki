@@ -2,23 +2,18 @@
 
 {tabset}
 	{tab name="{tr}Subset Selection{/tr}"}
-        <h2>{tr}Subset Selection{/tr}</h2>
 		<form method="post" action="tiki-admin_transitions.php?action=subset" style="text-align: left;">
 			<fieldset>
 				<legend>{tr}Type{/tr}</legend>
 
 				<p>
 					{if $prefs.feature_categories eq 'y'}
-						<label class="checkbox-inline">
-							<input type="radio" name="transition_mode" value="category" id="transition-mode-category"{if $transition_mode eq 'category'} checked="checked"{/if}>
-							{tr}Category{/tr}
-						</label>
+					<input type="radio" name="transition_mode" value="category" id="transition-mode-category"{if $transition_mode eq 'category'} checked="checked"{/if}/>
+					<label for="transition-mode-category">{tr}Category{/tr}</label>
 					{/if}
 
-					<label class="checkbox-inline">
-						<input type="radio" name="transition_mode" value="group" id="transition-mode-group"{if $transition_mode eq 'group' or $prefs.feature_categories ne 'y'} checked="checked"{/if}>
-						{tr}Group{/tr}
-					</label>
+					<input type="radio" name="transition_mode" value="group" id="transition-mode-group"{if $transition_mode eq 'group' or $prefs.feature_categories ne 'y'} checked="checked"{/if}/>
+					<label for="transition-mode-group">{tr}Group{/tr}</label>
 				</p>
 			</fieldset>
 
@@ -35,33 +30,27 @@
 					{if $transition_mode eq 'group'}
 						{foreach from=$available_states item=state}
 							<li>
-								<input type="hidden" name="groups[]" value="{$state|escape}">
+								<input type="hidden" name="groups[]" value="{$state|escape}"/>
 								{$state|escape}
 								{icon _id=cross class="removeitem"}
 							</li>
 						{/foreach}
 					{/if}
 				</ul>
-				<div class="form-group">
-					<label for="transition-group-auto">{tr}Add Group{/tr}</label>
-					<input type="text" id="transition-group-auto">
-					<div class="help-block">
-						{tr}Press Enter for each group{/tr}
-					</div>
-				</div>
+				<p>
+					<label for="transition-group-auto">{tr}Type in a group name and click "enter"{/tr}</label>
+					<input type="text" id="transition-group-auto"/> 
+				</p>
 			</fieldset>
 
 			<p>
-				<input type="submit" class="btn btn-primary" value="{tr}Select{/tr}">
-				<div class="help-block">
-					{tr}At least two elements are required to create transitions. Additional tabs appear once the selection is completed.{/tr}
-				</div>
+				{tr}Once you have selected at least two, click:{/tr} <input type="submit" value="{tr}Select{/tr}"/> {tr}and then, click the "New/Edit" tab which will appear above.{/tr}
 			</p>
 		</form>
 		{jq}
 			var blocks = $('#transition-group-selection, #transition-category-selection');
 			$(':radio[name=transition_mode]').change( function( e ) {
-				if( $(this).prop('checked') ) {
+				if( $(this).attr('checked') ) {
 					blocks.hide();
 					blocks.filter( '#transition-' + $(this).val() + '-selection' ).show();
 				}
@@ -77,21 +66,20 @@
 					if( $(this).val() === '' ) {
 						return;
 					}
-					$('#transition-group-list').append(
+					$('#transition-group-list').append( 
 						$('<li/>').text( $(this).val() )
-							.append( $('<input type="hidden" name="groups[]">').val( $(this).val() ) )
+							.append( $('<input type="hidden" name="groups[]"/>').val( $(this).val() ) )
 							.append( $('{{icon _id=cross class="removeitem"}}') )
 					);
 					$(this).val('');
 				} );
-			$('#transition-group-list .removeitem').on( 'click', function( e ) {
+			$('#transition-group-list .removeitem').live( 'click', function( e ) {
 				$(this).parent().remove();
 			} );
 		{/jq}
 	{/tab}
 	{if $available_states|@count > 0}
 	{tab name="{tr}Transitions{/tr}"}
-	    <h2>{tr}Transitions{/tr}</h2>
 		{$headerlib->add_dracula()}
 		<div id="graph-canvas" class="graph-canvas" data-graph-nodes="{$graph_nodes|escape}" data-graph-edges="{$graph_edges|escape}"></div>
 		<a href="#" id="graph-draw" class="button">{tr}Draw Transition Diagram{/tr}</a>
@@ -102,8 +90,7 @@
 			return false;
 		} );
 		{/jq}
-		<div class="table-responsive">
-		<table class="table normal">
+		<table class="normal">
 			<thead>
 				<tr>
 					<th>{tr}Label{/tr}</th>
@@ -117,13 +104,15 @@
 				{foreach from=$transitions item=trans}
 					<tr>
 						<td class="text">{$trans.name|escape}</td>
-						<td class="text">{$trans.from_label|escape} {if $trans.preserve}<span class="label label-info">{tr}preserved{/tr}</span>{/if}</td>
+						<td class="text">{$trans.from_label|escape} {if $trans.preserve} - <em>{tr}preserved{/tr}</em>{/if}</td>
 						<td class="text">{$trans.to_label|escape}</td>
 						<td class="integer">{self_link transitionId=$trans.transitionId action=edit cookietab=4}{$trans.guards|@count|escape}{/self_link}</td>
 						<td class="action">
 							{self_link transitionId=$trans.transitionId action=edit cookietab=3}{icon _id=page_edit alt="{tr}Edit{/tr}"}{/self_link}
 							{self_link transitionId=$trans.transitionId action=remove}{icon _id=cross alt="{tr}Remove{/tr}"}{/self_link}
-							{permission_link mode=icon type=transition id=$trans.transitionId title=$trans.name}
+							<a class="link" href="tiki-objectpermissions.php?objectName={$trans.name|escape:url}&amp;objectType=transition&amp;permType=transition&amp;objectId={$trans.transitionId|escape:"url"}">
+								{icon _id='key' class=titletips title="{tr}Assign permissions for transition{/tr}" alt="{tr}Permissions{/tr}"}
+							</a>
 						</td>
 					</tr>
 				{foreachelse}
@@ -133,15 +122,14 @@
 				{/foreach}
 			</tbody>
 		</table>
-        </div>
 	{/tab}
-
+		
 	{tab name="{tr}New / Edit{/tr}"}
 		<form method="post" action="tiki-admin_transitions.php?action={if $selected_transition}edit{else}new{/if}&amp;cookietab=2" style="text-align: left;">
 			{if $selected_transition}
 				<h2>
 					{tr _0=$selected_transition.name}Edit <em>%0</em>{/tr}
-					<input type="hidden" name="transitionId" value="{$selected_transition.transitionId|escape}">
+					<input type="hidden" name="transitionId" value="{$selected_transition.transitionId|escape}"/>
 					(<a href="tiki-admin_transitions.php">{tr}Create new{/tr}</a>)
 				</h2>
 			{else}
@@ -149,56 +137,43 @@
 			{/if}
 			<fieldset>
 				<legend>{tr}General{/tr}</legend>
-				<div class="form-group">
-					<label class="control-label" for="new-transition-name">{tr}Label{/tr}</label>
-					<input type="text" name="label" {if $selected_transition}value="{$selected_transition.name|escape}"{/if} class="form-control">
-				</div>
-				<div class="checkbox">
-					<label>
-						<input type="checkbox" name="preserve" value="y" id="new-transition-preserve" {if $selected_transition && $selected_transition.preserve}checked="checked"{/if}>
-						{tr}Upon trigger, preserve the initial state{/tr}
-					</label>
-				</div>
+				<p>
+					<label for="new-transition-name">{tr}Label{/tr}</label>
+					<br/>
+					<input type="text" name="label" {if $selected_transition}value="{$selected_transition.name|escape}"{/if}/>
+				</p>
+				<p>
+					<input type="checkbox" name="preserve" value="y" id="new-transition-preserve" {if $selected_transition && $selected_transition.preserve}checked="checked"{/if}/>
+					<label for="new-transition-preserve">{tr}Upon trigger, preserve the initial state{/tr}</label>
+				</p>
 			</fieldset>
-			<div class="row">
-				<div class="col-md-6">
-					<fieldset>
-						<legend>{tr}From{/tr}</legend>
-						{foreach from=$available_states item=label key=value}
-							<div class="checkbox">
-								<label for="state-from-{$value|escape}">
-									<input type="radio" name="from" value="{$value|escape}" id="state-from-{$value|escape}"{if $selected_transition && $selected_transition.from eq $value} checked="checked"{/if}>
-									{$label|escape}
-								</label>
-							</div>
-						{/foreach}
-					</fieldset>
-				</div>
-				<div class="col-md-6">
-					<fieldset>
-						<legend>{tr}To{/tr}</legend>
-						{foreach from=$available_states item=label key=value}
-							<div class="checkbox">
-								<label for="state-to-{$value|escape}">
-									<input type="radio" name="to" value="{$value|escape}" id="state-to-{$value|escape}"{if $selected_transition && $selected_transition.to eq $value} checked="checked"{/if}>
-									{$label|escape}
-								</label>
-							</div>
-						{/foreach}
-					</fieldset>
-				</div>
-			</div>
-			<div class="submit">
-				<input type="submit" class="btn btn-primary" value="{tr}Save{/tr}">
-			</div>
+			<fieldset style="float: left; width: 48%;">
+				<legend>{tr}From{/tr}</legend>
+				{foreach from=$available_states item=label key=value}
+					<p>
+						<input type="radio" name="from" value="{$value|escape}" id="state-from-{$value|escape}"{if $selected_transition && $selected_transition.from eq $value} checked="checked"{/if}/>
+						<label for="state-from-{$value|escape}">{$label|escape}</label>
+					</p>
+				{/foreach}
+			</fieldset>
+			<fieldset style="float: left; width: 48%;">
+				<legend>{tr}To{/tr}</legend>
+				{foreach from=$available_states item=label key=value}
+					<p>
+						<input type="radio" name="to" value="{$value|escape}" id="state-to-{$value|escape}"{if $selected_transition && $selected_transition.to eq $value} checked="checked"{/if}/>
+						<label for="state-to-{$value|escape}">{$label|escape}</label>
+					</p>
+				{/foreach}
+			</fieldset>
+			<p>
+				<input type="submit" value="{tr}Save{/tr}"/>
+			</p>
 		</form>
 	{/tab}
 
 	{if $selected_transition}
 		{tab name="{tr}Guards{/tr}"}
-		    <h2>{tr}Guards{/tr}</h2>
-		    <div class="table-responsive">
-			<table class="table normal">
+			<table class="normal">
 				<thead>
 					<tr>
 						<th>{tr}Type{/tr}</th>
@@ -230,38 +205,35 @@
 					{/foreach}
 				</tbody>
 			</table>
-			</div>
 			<form method="post" action="tiki-admin_transitions.php?action=addguard&amp;transitionId={$selected_transition.transitionId|escape}&amp;cookietab=4" style="text-align: left;">
 				<h2>{tr}New Guard{/tr}</h2>
 				<fieldset>
 					<legend>{tr}General{/tr}</legend>
-					<div class="form-group">
-						<label class="control-label" for="guard-type">{tr}Type{/tr}</label>
-						<select id="guard-type" name="type" class="form-control">
+					<p>
+						<label for="guard-type">{tr}Type{/tr}</label>
+						<select id="guard-type" name="type">
 							<option value="exactly">{tr}Exactly{/tr}</option>
 							<option value="atLeast">{tr}At Least{/tr}</option>
 							<option value="atMost">{tr}At Most{/tr}</option>
 						</select>
-					</div>
-					<div class="form-group">
-						<label for="guard-count" class="control-label">{tr}Count{/tr}</label>
-						<input type="text" name="count" class="form-control">
-					</div>
+					</p>
+					<p>
+						<label for="guard-count">{tr}Count{/tr}</label>
+						<input type="text" name="count"/>
+					</p>
 				</fieldset>
 				<fieldset>
 					<legend>{tr}States{/tr}</legend>
 					{foreach from=$available_states item=label key=value}
-						<div class="checkbox">
-							<label for="guard-state-{$value|escape}">
-								<input type="checkbox" name="states[]" value="{$value|escape}" id="guard-state-{$value|escape}">
-								{$label|escape}
-							</label>
-						</div>
+						<p>
+							<input type="checkbox" name="states[]" value="{$value|escape}" id="guard-state-{$value|escape}"/>
+							<label for="guard-state-{$value|escape}">{$label|escape}</label>
+						</p>
 					{/foreach}
 				</fieldset>
-				<div class="submit">
-					<input type="submit" class="btn btn-primary" value="{tr}Add{/tr}">
-				</div>
+				<p>
+					<input type="submit" value="{tr}Add{/tr}"/>
+				</p>
 			</form>
 		{/tab}
 	{/if}

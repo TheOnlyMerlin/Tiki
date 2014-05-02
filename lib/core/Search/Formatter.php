@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -10,7 +10,6 @@ class Search_Formatter
 	private $plugin;
 	private $subFormatters = array();
 	private $dataSource;
-	private $alternateOutput;
 
 	function __construct(Search_Formatter_Plugin_Interface $plugin)
 	{
@@ -22,27 +21,12 @@ class Search_Formatter
 		$this->dataSource = $dataSource;
 	}
 
-	function setAlternateOutput($output)
-	{
-		$this->alternateOutput = $output;
-	}
-
 	function addSubFormatter($name, $formatter)
 	{
 		$this->subFormatters[$name] = $formatter;
 	}
 
 	function format($list)
-	{
-		if (0 == count($list) && $this->alternateOutput) {
-			return $this->alternateOutput;
-		}
-
-		$list = $this->getPopulatedList($list);
-		return $this->render($this->plugin, $list, Search_Formatter_Plugin_Interface::FORMAT_WIKI);
-	}
-
-	function getPopulatedList($list)
 	{
 		$list = Search_ResultSet::create($list);
 		$defaultValues = $this->plugin->getFields();
@@ -82,11 +66,12 @@ class Search_Formatter
 			$data[] = $this->plugin->prepareEntry(new Search_Formatter_ValueFormatter($row));
 		}
 
-		return $list->replaceEntries($data);
-	}
+		$list = $list->replaceEntries($data);
 
-	private function is_empty_string($v)
-	{
+		return $this->render($this->plugin, $list, Search_Formatter_Plugin_Interface::FORMAT_WIKI);
+	}
+	
+	private function is_empty_string($v) {
 		return $v !== '';
 	}
 

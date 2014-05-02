@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -36,9 +36,7 @@ class WikiPluginPluginManager extends PluginsLib
 	}
 	function run($data, $params)
 	{
-		global $helpurl;
-		$wikilib = TikiLib::lib('wiki');
-		$tikilib = TikiLib::lib('tiki');
+		global $wikilib, $helpurl, $tikilib;
 		if (!is_dir(PLUGINS_DIR)) {
 			return $this->error('No plugin directory defined');
 		}
@@ -305,7 +303,7 @@ class WikiPluginPluginManager extends PluginsLib
 				$pluginprefs = '';
 			}
 			$sOutput = $title . '<em>' . tr('Required parameters are in%0 %1bold%2', '</em>', '<b>', '</b>') . '<br />' . 
-						$pluginprefs . '<table class="table-bordered">' . $header . $rows . '</table>' . "\n";
+						$pluginprefs . '<table class="normal">' . $header . $rows . '</table>' . "\n";
 			return $sOutput;
 		}
 	}

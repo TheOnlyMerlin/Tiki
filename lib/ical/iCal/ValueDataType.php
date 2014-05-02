@@ -234,7 +234,9 @@ class File_iCal_ValueDataType_Duration extends File_iCal_ValueDataType
         $dur = substr($d, 2);
         $this->_length = 0; //set default length to 0 seconds
 
-        $match = null;
+        $match;
+
+
 
         //if we have a week identifier
         if ($w = strpos($dur, 'W'))

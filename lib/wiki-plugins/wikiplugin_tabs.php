@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -32,7 +32,7 @@ function wikiplugin_tabs_info()
 			'toggle' => array(
 				'required' => false,
 				'name' => tra('Toggle Tabs'),
-				'description' => tra('Allow toggling from tabs to no tabs view'),
+				'description' => tra('Allows to toggle from tabs to no tabs view'),
 				'default' => 'y',
 				'options' => array (
 					array('value' => 'y' , 'text' => tra('Yes')),

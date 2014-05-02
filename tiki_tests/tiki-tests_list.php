@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -19,11 +19,7 @@ $smarty->assign('tidy', extension_loaded("tidy"));
 $smarty->assign('http', extension_loaded("http"));
 $smarty->assign('curl', extension_loaded("curl"));
 
-/**
- * @param $file
- * @return bool
- */
-function delete_test($file)
+function delete_test($file) 
 {
 	global $access;
 	$access->check_authenticity(tra("You are about to delete a TikiTest file, do you want to continue ?"));

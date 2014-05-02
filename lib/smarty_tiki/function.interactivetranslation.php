@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -24,19 +24,19 @@ function smarty_function_interactivetranslation($params, $smarty)
 	usort($strings, 'sort_strings_by_length');
 
 	$strings = json_encode($strings);
-
+	
 	// add wrench icon link
 	$smarty->loadPlugin('smarty_block_self_link');
 	$help .= smarty_block_self_link(
-		array(
-			'_icon'=>'wrench',
-			'_script'=>'tiki-edit_languages.php',
-			'_title'=>tra('Click here to go to Edit Languages')
-		),
-		'',
-		$smarty
+					array( 
+						'_icon'=>'wrench',
+						'_script'=>'tiki-edit_languages.php',
+						'_title'=>tra('Click here to go to Edit Languages')
+					),
+					'', 
+					$smarty
 	);
-
+	
 	$jq = <<<JS
 	var data = $strings;
 JS;

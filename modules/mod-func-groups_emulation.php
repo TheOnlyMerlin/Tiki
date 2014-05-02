@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_groups_emulation_info()
 {
 	return array(
@@ -26,15 +23,9 @@ function module_groups_emulation_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_groups_emulation($mod_reference, $module_params)
 {
-	global $user, $tiki_p_admin;
-	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
+	global $smarty, $user, $tiki_p_admin, $userlib;
 	
 	$smarty->assign('groups_are_emulated', isset($_SESSION['groups_are_emulated']) ? $_SESSION['groups_are_emulated'] : 'n');
 	if (isset($_SESSION['groups_emulated']))

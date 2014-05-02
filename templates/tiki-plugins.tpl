@@ -10,12 +10,11 @@
 		<p>{tr}If a plugin is no longer in use (for example, it has been removed from the wiki page), use <strong>Clear</strong> to remove it from this list.{/tr} {tr}The plugin will automatically be added if it is encountered.{/tr}
 		</p>
 		<p>{tr}Plugins can be individually previewed, approved, or rejected from the particular location that contains the plugin.{/tr} {tr}For security, you should review each plugin to ensure it is safe to approve.{/tr}</p>
-	<form method="post" action="#">
-
+	<form method="post" action="">
+{cycle values="even,odd" print=false}
 		
-		{listfilter selectors='#plugins_list tr.odd,#plugins_list tr.even'}
-        <div class="table-responsive">
-		<table class="table normal" id="plugins_list">
+		{listfilter selectors='#plugins_list tr.odd,#plugins_list tr.even'} 
+		<table class="normal" id="plugins_list">
 			<tr>
 				<th>{select_all checkbox_names='clear[]'}</th>
 				<th>{tr}Plugin{/tr} </th>
@@ -24,11 +23,11 @@
 				<th>{tr}Actions{/tr} </th>
 			</tr>
 {foreach name=foo from=$plugin_list item=plugin}
-			<tr>
-				<td class="checkbox-cell"><input type="checkbox" name="clear[]" value="{$plugin.fingerprint|escape}" id="{$plugin.fingerprint|escape}"></td>
-				<td class="text"><label for="{$plugin.fingerprint|escape}"><strong>{$plugin.fingerprint|substring:0:20|escape|replace:"-":"</strong> <br>{tr}Signature:{/tr} "}...</label></td>
+			<tr class="{cycle}">
+				<td class="checkbox"><input type="checkbox" name="clear[]" value="{$plugin.fingerprint|escape}" id="{$plugin.fingerprint|escape}"/></td>
+				<td class="text"><label for="{$plugin.fingerprint|escape}"><strong>{$plugin.fingerprint|substring:0:20|escape|replace:"-":"</strong> <br />{tr}Signature:{/tr} "}...</label></td>
 				<td class="text">{if $plugin.last_objectType eq 'wiki page'}
-					{tr _0=$plugin.last_objectId|sefurl:'wiki page' _1=$plugin.last_objectId|escape _2=$plugin.fingerprint}Wiki page: <a href="%0#%2" title="View this page.">%1</a>{/tr}
+					{tr _0=$plugin.last_objectId|sefurl:'wiki page' _1=$plugin.last_objectId|escape _2=$plugin.fingerprint}Wiki page: <a href="%0#%2" title="{tr}View this page.{/tr}">%1</a>{/tr}
 					{else}
 					{tr}Unknown{/tr}
 					{/if}
@@ -39,13 +38,12 @@
 					<a href="tiki-plugins.php?approveone={$plugin.fingerprint}">{icon _id='accept' alt="{tr}Approve{/tr}"}</a>
 					<a href="tiki-plugins.php?clearone={$plugin.fingerprint}">{icon _id='delete' alt="{tr}Clear{/tr}"}</a>
 {if $plugin.last_objectType eq 'wiki page'}
-{tr _0=$plugin.last_objectId|sefurl:'wiki page' _1=$plugin.last_objectId|escape _2=$plugin.fingerprint}<a href="%0#%2" title="View this page.">{icon _id='page'}</a>{/tr}
+{tr _0=$plugin.last_objectId|sefurl:'wiki page' _1=$plugin.last_objectId|escape _2=$plugin.fingerprint}<a href="%0#%2" title="{tr}View this page.{/tr}">{icon _id='page'}</a>{/tr}	
 {/if}	
 				</td>
 			</tr>
 {/foreach}
 		</table>
-        </div>
 		<p>
 		<label for="submit_mult">{tr}Perform action with checked:{/tr}</label>
 		<select name="submit_mult" id="submit_mult" onchange="this.form.submit();">
@@ -53,7 +51,7 @@
 			<option value="clear" >Clear</option>
 			<option value="approve">Approve</option>
 		</select> {tr}or{/tr}
-		<input type="submit" class="btn btn-default btn-sm" name="approveall" value="{tr}Approve all pending plugins{/tr}">
+		<input type="submit" name="approveall" value="{tr}Approve all pending plugins{/tr}"/>
 		</p>
 {remarksbox type="warning" title="{tr}Warning{/tr}"}
 {tr}Using <strong>Approve</strong> or <strong>Approve All</strong> will approve and activate the pending plugins.{/tr} {tr}Use this feature <strong>only</strong> if you have verified that all the pending plugins are safe.{/tr}
@@ -65,7 +63,7 @@
 		//-->
 	</script>
 	<noscript>
-		<input type="submit" class="btn btn-default btn-sm" value="{tr}OK{/tr}">
+		<input type="submit" value="{tr}OK{/tr}" />
 	</noscript>
 </form>
 {else}

@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,10 +9,7 @@ $_SERVER["SCRIPT_NAME"] = basename(__FILE__);
 require_once ('tiki-setup.php');
 
 // was lib/setup/menus.php but only used here
-/**
- * @param $name
- */
-function setDisplayMenu($name)
+function setDisplayMenu($name) 
 {
 	global $smarty;
 	if ( getCookie($name, 'menu', isset($_COOKIE['menu']) ? null : 'o') == 'o' ) {
@@ -96,14 +90,7 @@ if (!is_file($map_path . $mapfile) || preg_match("/(\/\.)/", $map_path . $mapfil
 	die;
 }
 // user defined error handling function to handle errors in loading mapfile
-/**
- * @param $errno
- * @param $errmsg
- * @param $filename
- * @param $linenum
- * @param $vars
- */
-function userErrorHandler($errno, $errmsg, $filename, $linenum, $vars)
+function userErrorHandler($errno, $errmsg, $filename, $linenum, $vars) 
 {
 	global $smarty;
 	global $style_base;

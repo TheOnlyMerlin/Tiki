@@ -1,28 +1,16 @@
 {* $Id$ *}
-<table class="table">
-	<thead>
-	{$header=false}
-	{foreach from=$column item=col}
-		{if !empty($col.label) or !empty($col.sort)}
-			{$header=true}
-			{break}
-		{/if}
-	{/foreach}
-	{if $header}
-		<tr>
-			{foreach from=$column item=col}
-				<th>
-					{if $col.sort}
-						{self_link _sort_arg='sort_mode' _sort_field=$col.sort}{$col.label|escape}{/self_link}
-					{else}
-						{$col.label|escape}
-					{/if}
-				</th>
-			{/foreach}
-		</tr>
-	{/if}
-	</thead>
-	<tbody>
+<table>
+	<tr>
+		{foreach from=$column item=col}
+			<th>
+				{if $col.sort}
+					{self_link _sort_arg='sort_mode' _sort_field=$col.sort}{$col.label|escape}{/self_link}
+				{else}
+					{$col.label|escape}
+				{/if}
+			</th>
+		{/foreach}
+	</tr>
 	{foreach from=$results item=row}
 		<tr>
 			{foreach from=$column item=col}
@@ -34,6 +22,5 @@
 			{/foreach}
 		</tr>
 	{/foreach}
-	</tbody>
 </table>
 {pagination_links resultset=$results}{/pagination_links}

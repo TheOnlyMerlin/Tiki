@@ -2,9 +2,9 @@
 
 {include file='tiki-mytiki_bar.tpl'}
 
-<div class="t_navbar">
-	{button href="tiki-user_tasks.php?show_form=y" class="btn btn-default" _text="{tr}New task{/tr}"}
-	{button href="tiki-user_tasks.php" class="btn btn-default" _text="{tr}Task list{/tr}"}
+<div class="navbar">
+	{button href="tiki-user_tasks.php?show_form=y" _text="{tr}New task{/tr}"}
+	{button href="tiki-user_tasks.php" _text="{tr}Task list{/tr}"}
 
 	{if $task_admin}
 		{if $admin_mode}
@@ -101,8 +101,8 @@
 {/if}
 </table>
 </div>
-<br>
-{if $admin_mode}<div align="center"><a class="highlight" >{tr}Admin Mode{/tr}</a></div><br>{/if}
+<br />
+{if $admin_mode}<div align="center"><a class="highlight" >{tr}Admin Mode{/tr}</a></div><br />{/if}
 {* start ************ view  ***************}
 {if (($tiki_view_mode eq 'view') or ($tiki_view_mode eq 'preview'))}
 {include file='tiki-user_tasks_view.tpl'}
@@ -130,6 +130,6 @@
 {* end ************ Task list ***************}
 
 
-<br>
-<br>
+<br />
+<br />
 {* start ************ Search ***************}

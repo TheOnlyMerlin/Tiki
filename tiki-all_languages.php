@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,12 +8,11 @@
 global $prefs;
 
 require 'tiki-setup.php';
+include_once('lib/multilingual/multilinguallib.php');
+include_once('lib/wiki/wikilib.php');
 include_once('lib/wiki/renderlib.php');
 
 $access->check_feature(array('feature_multilingual', 'feature_multilingual_one_page'));
-
-$multilinguallib = TikiLib::lib('multilingual');
-$wikilib = TikiLib::lib('wiki');
 
 if ( !isset($_REQUEST['page']) ) {
 	header('Location: tiki-index.php');
@@ -74,7 +70,7 @@ foreach ( $preferred_langs as $lang )
 $contents = array();
 
 $show_langs_side_by_side = false;
-if (count($pages) <= 2) {
+if (count($pages) >= 2) {
    // If only two languages, its best to show 
    // them side by side for easier comparison
    // (as opposed to one on top of the other).
@@ -94,7 +90,7 @@ foreach ( array_reverse($pages) as $id => $info ) {
 	if ( $tiki_p_view == 'y' ) {
 		$renderer->runSetups();
 
-		$contents[] = $smarty->fetch('tiki-show_content.tpl');
+		$contents[] = $smarty->fetch('tiki-show_page.tpl');
 
 		if ( $id === count($pages) - 1 )
 			$renderer->restoreAll();

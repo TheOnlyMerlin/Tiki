@@ -4,19 +4,14 @@
 {/remarksbox}
 
 <form method="post" action="tiki-admin.php?page=forums">
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-                <input type="submit" class="btn btn-default btn-sm" value="{tr}Change preferences{/tr}">
-            </div>
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" value="{tr}Change preferences{/tr}" />
+	</div>
 
 	{tabset name="admin_forums"}
 		{tab name="{tr}General Settings{/tr}"}
-            <h2>{tr}General Settings{/tr}</h2>
 		
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Activate the feature{/tr}</legend>
 				{preference name=feature_forums visible="always"}
 			</fieldset>
@@ -67,7 +62,6 @@
 		{/tab}
 
 		{tab name="{tr}Forums Listing{/tr}"}
-            <h2>{tr}Forums Listing{/tr}</h2>
 			<input type="hidden" name="forumlistprefs" />
 			{preference name=forums_ordering}
 			{tr}Select which items to display when listing forums:{/tr}
@@ -80,17 +74,9 @@
 			<div class="adminoptionboxchild" id="forum_list_desc_childcontainer">
 				{preference name=forum_list_description_len}
 			</div>
-
-			{preference name=forum_category_selector_in_list}
-			<div class="adminoptionboxchild" id="forum_category_selector_in_list_childcontainer">
-				{preference name=forum_available_categories}
-			</div>
 		{/tab}
 	{/tabset}
-    <br>{* I cheated. *}
-    <div class="row">
-        <div class="form-group col-lg-12 text-center">
-            <input type="submit" class="btn btn-default btn-sm" value="{tr}Change preferences{/tr}">
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: center">
+		<input type="submit" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>

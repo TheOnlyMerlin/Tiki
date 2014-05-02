@@ -5,14 +5,14 @@
 {tr}This feature currently searches and replaces within wiki pages only{/tr}
 {/remarksbox}
  
-<div class="panel panel-default"><div class="panel-body">
-    <form action="tiki-search_replace.php" method="post">
-{tr}Search:{/tr} <input type="text" size="30" name="searchtext" value="{$searchtext|escape}">
-&nbsp;{tr}Case sensitive:{/tr} <input type="checkbox" name="casesensitive" value="y" {if $casesensitive eq 'y'}checked="checked"{/if}>
-<br>{tr}Replace:{/tr} <input type="text" size="30" name="replacetext" value="{$replacetext|escape}">
-<br>{tr}Max number of pages at a time:{/tr} <input type="text" size="5" name="maxRecords" value="{$maxRecords|escape}">
-&nbsp;{tr}Number of surrounding chars to preview:{/tr} <input type="text" size="5" name="paddingLength" value="{$paddingLength|escape}">
-<br>
+<div class="simplebox">
+<form action="tiki-search_replace.php" method="post">
+{tr}Search:{/tr} <input type="text" size="30" name="searchtext" value="{$searchtext|escape}" />
+&nbsp;{tr}Case sensitive:{/tr} <input type="checkbox" name="casesensitive" value="y" {if $casesensitive eq 'y'}checked="checked"{/if} />
+<br />{tr}Replace:{/tr} <input type="text" size="30" name="replacetext" value="{$replacetext|escape}" />
+<br />{tr}Max number of pages at a time:{/tr} <input type="text" size="5" name="maxRecords" value="{$maxRecords|escape}" />
+&nbsp;{tr}Number of surrounding chars to preview:{/tr} <input type="text" size="5" name="paddingLength" value="{$paddingLength|escape}" />
+<br />
 <select name="categId">
 	<option value='' {if $find_categId eq ''}selected="selected"{/if}>{tr}any category{/tr}</option>
 	{foreach $categories as $catix}
@@ -21,23 +21,22 @@
 		</option>
 	{/foreach}
 </select>
-<input type="submit" class="btn btn-default btn-sm" name="search" value="{tr}Search{/tr}">
+<input type="submit" name="search" value="{tr}Search{/tr}" />
 </form>
-</div></div>
+</div>
 <div class="searchreplace_results">
 {if isset($message)}
 	{$message}
 {/if}
 <form action="tiki-search_replace.php" method="post">
 {if isset($results)}
-    <div class="table-responsive">
-	<table class="table normal">
+	<table class="normal">
 	<tr>
 		<td style="text-align: right">
 			{select_all checkbox_names='checked[]'}
 		</td>
 	</tr>
-
+	{cycle values="even,odd" print=false}
 	{section name=search loop=$results}
 	{if isset($results[search].searchreplace)}
 	<tr>
@@ -47,7 +46,7 @@
 			<a href="{$results[search].pageName|sefurl}" target="_blank">{$results[search].pageName|escape}</a>
 			</th></tr>
 			{section name=snippet loop=$results[search].beforeSnippet}
-			<tr>
+			<tr class="{cycle}">
 				<td style="border: 1px solid">
 					{* note that non-escaping is intentional *}
 					{$results[search].beforeSnippet[snippet]}
@@ -57,7 +56,7 @@
 					{$results[search].afterSnippet[snippet]}
 				</td>
 				<td>
-					{if $results[search].searchreplace[snippet] != '0:0:0'}<input type="checkbox" name="checked[]" value="{$results[search].searchreplace[snippet]}">{/if} 
+					{if $results[search].searchreplace[snippet] != '0:0:0'}<input type="checkbox" name="checked[]" value="{$results[search].searchreplace[snippet]}"/>{/if} 
 				</td>
 			</tr>
 			{/section}
@@ -67,13 +66,12 @@
 	{/if}
 	{/section}
 	</table>
-    </div>
-	<input type="hidden" name="searchtext" value="{$searchtext}"> 
-	<input type="hidden" name="replacetext" value="{$replacetext}">
-	<input type="hidden" name="maxRecords" value="{$maxRecords}">
-	<input type="hidden" name="casesensitive" value="{$casesensitive}">
-	<input type="hidden" name="paddingLength" value="{$paddingLength}">
-	<input type="submit" class="btn btn-default btn-sm" name="replace" value="{tr}Replace selected{/tr}">
+	<input type="hidden" name="searchtext" value="{$searchtext}" /> 
+	<input type="hidden" name="replacetext" value="{$replacetext}" />
+	<input type="hidden" name="maxRecords" value="{$maxRecords}" />
+	<input type="hidden" name="casesensitive" value="{$casesensitive}" />
+	<input type="hidden" name="paddingLength" value="{$paddingLength}" />
+	<input type="submit" name="replace" value="{tr}Replace selected{/tr}" />
 	{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
 {/if}
 </form>

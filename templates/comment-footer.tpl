@@ -1,15 +1,12 @@
 {* $Id$ *}
-<div class="postfooter panel-footer">
-	<div class="status pull-right">
+<div class="postfooter">
+	<div class="status">
 	{if $prefs.feature_contribution eq 'y' and $prefs.feature_contribution_display_in_comment eq 'y'}
 		<span class="contributions">
 		{section name=ix loop=$comment.contributions}
 			<span class="contribution">{$comment.contributions[ix].name|escape}</span>
 		{/section}
 		</span>
-	{/if}
-	{if $forum_info.vote_threads eq 'y' and ($tiki_p_ratings_view_results eq 'y' or $tiki_p_admin eq 'y')}
-		<span class="ratingResultAvg">{tr}Users Rating: {/tr}</span>{rating_result_avg type=comment id=$comment.threadId }
 	{/if}
 	{if $forum_info.vote_threads eq 'y' and $tiki_p_forum_vote eq 'y'}
 		<span class="score">
@@ -28,11 +25,8 @@
 		{/if}
 		</span>
 	{/if}
-	{if $forum_info.vote_threads eq 'y' and ($tiki_p_ratings_view_results eq 'y' or $tiki_p_admin eq 'y')}
-		{rating_result type=comment id=$comment.threadId }
-	{/if}
 	
-	{if isset($first) and $first eq 'y'}
+	{if $first eq 'y'}
                 <span class="post_reads"><b>{tr}Reads{/tr}</b>: {$comment.hits}</span>
 	{else}
 		<span class="back_to_top"><a href="#tiki-top" title="{tr}top of page{/tr}">{icon  _id='resultset_up' alt="{tr}top of page{/tr}"}</a></span>
@@ -40,7 +34,7 @@
 
 	</div>
 
-	{if $thread_style != 'commentStyle_headers' and isset($comment.approved) and $comment.approved eq 'y'}
+	{if $thread_style != 'commentStyle_headers' and $comment.approved eq 'y'}
 	<div class="actions">
 		{if ( $prefs.feature_comments_locking neq 'y' or $thread_is_locked neq 'y' ) and
 			( $tiki_p_forum_post eq 'y' and ( $forum_is_locked neq 'y' or $prefs.feature_comments_locking neq 'y' ) )}

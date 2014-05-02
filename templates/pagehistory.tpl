@@ -1,10 +1,9 @@
-{if (!empty($smarty.request.diff_style) or !empty($diff_style)) and $old and $new or $diffdata}
-	{if !isset($translation_mode) or $translation_mode ne 'y'}
+{if $smarty.request.diff_style}
+	{if $translation_mode ne 'y'}
 		<h2>{tr}Comparing version {$old.version} with version {$new.version}{/tr}</h2>		
 	{/if}
-<div class="table-responsive">
-	<table class="table normal diff">
-	{if isset($translation_mode) and $translation_mode eq 'n'}
+	<table class="normal diff">
+	{if $translation_mode eq 'n'}
 		<tr>
 			<th colspan="2"><b>{tr}Version:{/tr} <a href="tiki-pagehistory.php?page={$page|escape:"url"}&amp;preview={$old.version}" title="{tr}View{/tr}">{$old.version}</a>{if $old.version == $info.version} ({tr}Current{/tr}){/if}</b></th>
 			<th colspan="2"><b>{tr}Version:{/tr} <a href="tiki-pagehistory.php?page={$page|escape:"url"}&amp;preview={$new.version}" title="{tr}View{/tr}">{$new.version}</a>{if $new.version == $info.version} ({tr}Current{/tr}){/if}</b></th>
@@ -67,25 +66,25 @@
 							{if $diffdata[ix].type == "diffheader"}
 								{assign var="oldd" value=$diffdata[ix].old}
 								{assign var="newd" value=$diffdata[ix].new}
-								<br><div class="diffheader">@@ {tr}-Lines: {$oldd} changed to +Lines: {$newd}{/tr} @@</div>
+								<br /><div class="diffheader">@@ {tr}-Lines: {$oldd} changed to +Lines: {$newd}{/tr} @@</div>
 							{elseif $diffdata[ix].type == "diffdeleted"}
 								<div class="diffdeleted">
 								{section name=iy loop=$diffdata[ix].data}
-									{if not $smarty.section.iy.first}<br>{/if}
+									{if not $smarty.section.iy.first}<br />{/if}
 									- {$diffdata[ix].data[iy]}
 								{/section}
 								</div>
 							{elseif $diffdata[ix].type == "diffadded"}
 								<div class="diffadded">
 									{section name=iy loop=$diffdata[ix].data}
-										{if not $smarty.section.iy.first}<br>{/if}
+										{if not $smarty.section.iy.first}<br />{/if}
 										+ {$diffdata[ix].data[iy]}
 									{/section}
 								</div>
 							{elseif $diffdata[ix].type == "diffbody"}
 								<div class="diffbody">
 								{section name=iy loop=$diffdata[ix].data}
-									{if not $smarty.section.iy.first}<br>{/if}
+									{if not $smarty.section.iy.first}<br />{/if}
 									{$diffdata[ix].data[iy]}
 								{/section}
 							</div>
@@ -102,5 +101,4 @@
 			{if $diffdata}{$diffdata}{else}<tr><td colspan="4">{tr}Versions are identical{/tr}</td></tr>{/if}
 		{/if}
 	</table>
-</div>
 {/if}

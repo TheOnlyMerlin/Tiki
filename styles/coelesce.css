@@ -3,13 +3,20 @@
  * original design by Patrick Allard. Distributed under the LGPL license.
  */
 
-/* design defaults: */
-@import url("layout/tiki.css");
+/* Import *lite as the base: */
+@import url("lite/lite.css");
+
+/* Then import the default layout properties file: */
+@import url("layout/layout.css");
+
+/* And design defaults: */
+@import url("layout/design.css");
 
 /***** XHTML Elements ******/
 body {
 	text-align: left;
-	font-family: Arial, Helvetica, sans-serif;
+	font: .7em Arial, Helvetica, sans-serif;
+	line-height: 1.4;
 }
 
 a,
@@ -58,6 +65,7 @@ hr {
 
 fieldset {
 	border: solid 1px #527ca6;
+	padding: 10px;
 }
 
 legend {
@@ -98,22 +106,35 @@ pre {
 	line-height: 20px;
 }
 
+/* "button" links wrappers */
+/*.button {
+	padding-left: 0;
+	padding-right: 0;
+}*/
+
 /* Links in buttons */
 .button a,
 .button a:visited,
 button,
 input[type="reset"],
 input[type="submit"],
-.button input {
+.button input,
+.calbuttonBox a {
 	color: #449cd0;
 	background: #ededed;
 	border: 1px solid #c5c5c5;
 	font: bold .95em Verdana, Helvetica, Geneva, Arial, sans-serif;
 }
 
+/*.button a,
+.button a:visited {
+	padding: 1px 4px;
+}*/
+
 .button a:hover,
 button:hover,
-.button input:hover {
+.button input:hover,
+.calbuttonbox a:hover {
 	background: white;
 	font: bold .95em Verdana, Helvetica, Geneva, Arial, sans-serif;
 
@@ -129,7 +150,8 @@ input[type=submit]:hover {
 button:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover,
-.button input:hover {
+.button input:hover,
+.calbuttonBox:hover {
 	color: #449cd0;
 	background: #dbdbdb;
 	border: 1px solid #527ca6;
@@ -151,6 +173,10 @@ input[type="reset"]:hover,
 input[type="submit"]:hover {
 	padding: .1em .8em;
 }
+
+/*span.button {
+	margin: 2px;
+}*/
 
 form.admin input[name="features"] {
 	margin-bottom: 3px !important;
@@ -191,6 +217,14 @@ label {
 	margin-bottom: 20px;
 }
 
+#c1c2 #wrapper .marginleft {
+	margin-left: 230px;
+}
+
+#c1c2 #wrapper .marginright {
+	margin-right: 230px;
+}
+
 #c1c2 #wrapper #col1 #tiki-center {
 	background: url(coelesce/tiki-centerbg.jpg) repeat-x;
 	color: #2d2d2d;
@@ -198,8 +232,39 @@ label {
 	margin-right: 30px;
 }
 
+body.tiki_wiki_page #c1c2 #wrapper #col1 > .content {
+	position: relative;
+}
+
+body.tiki_cms #c1c2 #wrapper #col1 #tiki-center,
+body.tiki_login #c1c2 #wrapper #col1 #tiki-center,
+body.tiki_wiki_page #c1c2 #wrapper #col1 #tiki-center {
+	background: none;
+}
 body.tiki_wiki_page.manage #c1c2 #wrapper #col1 #tiki-center {
 	background: url(coelesce/tiki-centerbg.jpg) repeat-x;
+}
+
+#c1c2 #col2 {
+	width: 230px;
+	overflow: visible;
+}
+
+#c1c2 #col2 .content {
+	padding-left: 18px;
+	padding-top: 1px;
+}
+
+#col3 {
+	margin-left: -230px;
+	width: 230px;
+	text-align: left;
+}
+
+#col3 .content {
+	margin-left: 0;
+	padding-top: 1px;
+	padding-right: 18px;
 }
 
 #footer {
@@ -238,13 +303,13 @@ body.fixed_width .fixedwidth .fixedwidth {
 	overflow: hidden;
 }
 
-.sitelogo,
-.sitelogo * {
+#sitelogo,
+#sitelogo * {
 	float: left;
 }
 
-.sitelogo,
-.sitetitles {
+#sitelogo,
+#sitetitles {
 	margin-left: 8px;
 }
 
@@ -291,24 +356,26 @@ body.fixed_width .fixedwidth .fixedwidth {
 	padding-top: 8px;
 }
 
+
+.box-search form .ac_input,
+.box-search form input[type=text] {
+	border: none;
+	background: none;
+}
+
 .box-search form {
 	padding-top: 8px;
 	margin-right: 8px;
 	font-size: 12px;
+	white-space: nowrap;
 }
 
 .box-search ul.cssmenu * {
 	width: 40px;
 }
 
-#top_modules .box-search form .ac_input,
-#top_modules .box-search form input[type=text],
-#topbar_modules .box-search form .ac_input,
-#topbar_modules .box-search form input[type=text],
-#top_modules .box-search .findtitle input,
-#top_modules .box-search input#search_mod_input_1,
-#topbar_modules .box-search .findtitle input,
-#topbar_modules .box-search input#search_mod_input_1 {
+.box-search .findtitle input,
+.box-search input#search_mod_input_1 {
 	border: none;
 	background: none;
 }
@@ -341,15 +408,11 @@ input[name="search"] {
 	color: #FFFFFF;
 }
 
-.siteloginbar_popup .tabmark:hover a {
-	background: none;
-}
-
 #sitelocbar {
 	float: left;
 }
 
-.sitetitles {
+#sitetitles {
 	color: #fff;
 	display: inline;
 	height: 97px;
@@ -358,8 +421,8 @@ input[name="search"] {
 	vertical-align: bottom;
 }
 
-.sitetitle,
-.sitesubtitle {
+#sitetitle,
+#sitesubtitle {
 	display: inline;
 	white-space: nowrap;
 	font-family: Arial, Helvetica, sans-serif;
@@ -369,22 +432,22 @@ input[name="search"] {
 	margin-bottom: 30px;
 }
 
-.sitetitle {
+#sitetitle {
 	color: #9eb8d5;
 	font-size: 34px;
 	display: inline;
 	margin-bottom: 10px;
 }
 
-.sitetitle a,
-.sitetitle a:link,
-.sitetitle a:visited,
-.sitetitle a:hover {
+#sitetitle a,
+#sitetitle a:link,
+#sitetitle a:visited,
+#sitetitle a:hover {
 	color: #9eb8d5;
 	text-decoration: none;
 }
 
-.sitesubtitle {
+#sitesubtitle {
 	display: inline;
 	margin-left: 14px;
 	margin-bottom: 0;
@@ -488,16 +551,12 @@ small.date {
 
 .box-data .cssmenu_vert {
 	position: relative;
-	z-index: 70;
-}
-
-#col2 .box-data .cssmenu_vert ul {
-	padding-left: 0;
+	z-index: 700;
 }
 
 .cssmenu_vert li.menuLevel1,
 .cssmenu_horiz li.menuLevel1 {
-        z-index: 91;
+        z-index: 991;
 }
 
 .cssmenu_horiz ul li {
@@ -824,7 +883,7 @@ td.form,
 .editblogform td,
 .formcolor td,
 table.normal tr:nth-child(2n+1) td,
-table.normal tr:nth-child(2n) td{
+table.normal tr:nth-child(2n) td {
 	padding: 3px;
 }
 
@@ -844,6 +903,7 @@ a.forumnameread {
 }
 
 /** Tabs **/
+/* reset what's in layout.css */
 .tabactive,
 .tabinactive,
 [class].tabactive,
@@ -911,6 +971,7 @@ li.tabmark ul li a {
 }
 
 .tabcontent {
+	z-index: 200;
 	border: 1px solid #abcdef;
 	padding: 26px 0 2px 0;
 	background: #fff;
@@ -1056,6 +1117,15 @@ h1.pagetitle {
 
 .split {
 	border: 1px dashed #696969;
+}
+
+#page-bar {
+	width: 100%;
+	float: none;
+}
+
+.editdate {
+	border-top: 1px solid #8CACBB;
 }
 
 #wikihelp-tab table,
@@ -1575,6 +1645,166 @@ a.freetag_7:hover {
 
 /***** Calendar *****/
 /* Overrides calendar.css, etc. */
+.cal0,
+.cal1,
+.cal2 {
+	font-size: 90%;
+}
+
+.calart,
+.calblog,
+.calchart,
+.caldir,
+.caleph,
+.calfaq,
+.calfgal,
+.calforum,
+.calgal,
+.calnl,
+.calquiz,
+.calsurv,
+.caltrack,
+.calwiki {
+	font-size: 90%;
+}
+
+.calart,
+.calart a,
+.calart a:visited {
+	color: #fa8072;
+}
+
+.calblog,
+.calblog a,
+.calblog a:visited {
+	color: #da70d6;
+}
+
+.calchart,
+.calchart a,
+.calchart a:visited {
+	color: #304f30;
+}
+
+.caldir,
+.caldir a,
+.caldir a:visited {
+	color: #800080;
+}
+
+.caleph,
+.caleph a,
+.caleph a:visited {
+	color: #008000;
+}
+
+.calfaq,
+.calfaq a,
+.calfaq a:visited {
+	color: #822222;
+}
+
+.calfgal,
+.calfgal a,
+.calfgal a:visited {
+	font-weight: normal;
+}
+
+.calforum,
+.calforum a,
+.calforum a:visited {
+	color: #808000;
+}
+
+.calgal,
+.calgal a,
+.calgal a:visited {
+	color: #8b4513;
+}
+
+.calnl,
+.calnl a,
+.calnl a:visited {
+	color: #708090;
+}
+
+.calquiz,
+.calquiz a,
+.calquiz a:visited {
+	color: #5f9ea0;
+}
+
+.calsurv,
+.calsurv a,
+.calsurv a:visited {
+	color: #daa520;
+}
+
+.caltrack,
+.caltrack a,
+.caltrack a:visited {
+	color: #00bd02;
+}
+
+
+.calweb {
+	font-size: 90%;
+}
+
+.calwiki,
+.calwiki a,
+.calwiki a:visited {
+	color: #2c4b80;
+}
+
+.calart a:hover,
+.calblog a:hover,
+.calchart a:hover,
+.caldir a:hover,
+.caleph a:hover,
+.calfaq a:hover,
+.calfgal a:hover,
+.calforum a:hover,
+.calgal a:hover,
+.calnl a:hover,
+.calquiz a:hover,
+.calsurv a:hover,
+.caltrack a:hover,
+.calwiki a:hover {
+	color: #82a7c8;
+}
+
+.calart:before,
+.calblog:before,
+.calchart:before,
+.caldir:before,
+.caleph:before,
+.calfaq:before,
+.calfgal:before,
+.calforum:before,
+.calgal:before,
+.calnl:before,
+.calquiz:before,
+.calsurv:before,
+.caltrack:before,
+.calwiki:before {
+	background: #f8f8ff;
+}
+
+.calfocus {
+	font-size: 90%;
+	background: #ccdceb;
+}
+
+.calfocuson {
+	font-size: 100%;
+	background: #8df378;
+}
+
+.calHeadingOn, .calHeadingOn a {
+	background: #8df378;
+}
+
 .calprio1 a,
 .calprio2 a,
 .calprio3 a,
@@ -1589,6 +1819,19 @@ a.freetag_7:hover {
 
 .caltoggle {
 	font-size: 90%;
+}
+
+.opaque {
+	border: 1px solid #ccdceb;
+	background: #f8f8ff;
+}
+
+.opaque .box-title {
+	border-bottom: 1px solid #ccdceb;
+}
+
+.opaque a {
+	text-decoration: none;
 }
 
 .searchresults li .objecttype,
@@ -1616,17 +1859,41 @@ a.freetag_7:hover {
 	border: solid 1px #696969;
 }
 
+.caltable .calfocuson {
+	background: #8df378;
+}
+
+.caltable .calfocuson a {
+	color: #000;
+}
+
+.caltable .calfocus a,
+.caltable .calfocuson a {
+	text-decoration: none;
+}
+
 .buttonon a, .calbuttonon a {
 	color: #295c8e !important;
 }
 
-.caltable td.calhighlight,
-td.calheadhighlight {
+.calheadingon {
 	background: #ccdceb;
 }
 
 .calinput {
 	background: #4a6a90;
+}
+
+.calfocuson + .calcontent {
+	background: #8df378;
+}
+
+#calscreen .calfocuson {
+	background: #8df378;
+}
+
+.calfocuson a {
+	font-size: 90%;
 }
 
 .days {
@@ -1651,16 +1918,20 @@ a.viewthisday:hover {
 	float: right;
 }
 
-.caltable .odd, .caltable .even {
+.calodd, .caleven {
 	border: 1px solid #a9a9a9;
 }
 
-.caltable .odd {
+.calodd {
 	background: #fbfbfb;
 }
 
-.caltable .even {
+.caleven {
 	background: #f0f0f0;
+}
+
+.caldark .calfocus {
+	background: none;
 }
 
 .viewmode div {
