@@ -10,8 +10,8 @@
 
 $section = 'galleries';
 require_once ('tiki-setup.php');
-$categlib = TikiLib::lib('categ');
-$imagegallib = TikiLib::lib('imagegal');
+include_once ('lib/categories/categlib.php');
+include_once ("lib/imagegals/imagegallib.php");
 $access->check_feature('feature_galleries');
 if (empty($_REQUEST["galleryId"]) && $_REQUEST["galleryId"] != '0') {
 	$smarty->assign('msg', tra("No gallery indicated"));

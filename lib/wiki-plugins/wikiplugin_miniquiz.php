@@ -38,7 +38,7 @@ function shuf(&$ar)
 function wikiplugin_miniquiz($data, $params)
 {
 	global $tikilib, $user, $group, $prefs, $smarty;
-	$trklib = TikiLib::lib('trk');
+	global $trklib; include_once('lib/trackers/trackerlib.php');
 	extract($params, EXTR_SKIP);
 
 	if ($prefs['feature_trackers'] != 'y' || !isset($trackerId) || !($tracker = $trklib->get_tracker($trackerId))) {

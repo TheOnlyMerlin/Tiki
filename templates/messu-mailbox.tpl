@@ -40,7 +40,7 @@
 	</select>
 	<label for="mess-mailcont">{tr}Containing:{/tr}</label>
 	<input type="text" name="find" id="mess-mailcont" value="{$find|escape}">
-	<input type="submit" class="btn btn-default btn-sm" name="filter" value="{tr}Filter{/tr}">
+	<input type="submit" class="btn btn-default" name="filter" value="{tr}Filter{/tr}">
 </form>
 <br>
 
@@ -54,8 +54,7 @@
 {jq notonready=true}
 var CHECKBOX_LIST = [{{section name=user loop=$items}'msg[{$items[user].msgId}]'{if not $smarty.section.user.last},{/if}{/section}}];
 {/jq}
-    <div class="table-responsive">
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th>{if $items}<input title="{tr}Select All{/tr}" type="checkbox" name="checkall" onclick="checkbox_list_check_all('form_messu_mailbox',CHECKBOX_LIST,this.checked);">{/if}</th>
 			<th style="width:18px">&nbsp;</th>
@@ -65,7 +64,7 @@ var CHECKBOX_LIST = [{{section name=user loop=$items}'msg[{$items[user].msgId}]'
 			<th>{tr}is reply to{/tr}</th>
 			<th style="text-align:right;">{tr}Size{/tr}</th>
 		</tr>
-
+		{cycle values="odd,even" print=false}
 		{section name=user loop=$items}
 			<tr>
 				<td class="prio{$items[user].priority}"><input type="checkbox" name="msg[{$items[user].msgId}]"></td>
@@ -86,19 +85,18 @@ var CHECKBOX_LIST = [{{section name=user loop=$items}'msg[{$items[user].msgId}]'
 			<tr><td colspan="7" class="odd">{tr}No messages to display{/tr}</td></tr>
 		{/section}
 	</table>
-    </div>
 	{if $items}
 		<p>{tr}Perform action with checked:{/tr}
-		<input type="submit" class="btn btn-warning btn-sm" name="delete" value="{tr}Delete{/tr}">
-		<input type="submit" class="btn btn-default btn-sm" name="archive" value="{tr}Archive{/tr}">
-		<input type="submit" class="btn btn-default btn-sm" name="download" value="{tr}Download{/tr}">
+		<input type="submit" class="btn btn-warning" name="delete" value="{tr}Delete{/tr}">
+		<input type="submit" class="btn btn-default" name="archive" value="{tr}Archive{/tr}">
+		<input type="submit" class="btn btn-default" name="download" value="{tr}Download{/tr}">
 		<select name="action">
 			<option value="isRead_y">{tr}Mark as read{/tr}</option>
 			<option value="isRead_n">{tr}Mark as unread{/tr}</option>
 			<option value="isFlagged_y">{tr}Mark as flagged{/tr}</option>
 			<option value="isFlagged_n">{tr}Mark as unflagged{/tr}</option>
 		</select>
-		<input type="submit" class="btn btn-default btn-sm" name="mark" value="{tr}Mark{/tr}">
+		<input type="submit" class="btn btn-default" name="mark" value="{tr}Mark{/tr}">
 		</p>
 	{/if}
 </form>

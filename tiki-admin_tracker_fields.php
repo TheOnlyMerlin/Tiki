@@ -9,7 +9,7 @@
 // $Id$
 
 require_once ('tiki-setup.php');
-$trklib = TikiLib::lib('trk');
+include_once ('lib/trackers/trackerlib.php');
 
 $access->check_feature('feature_trackers');
 
@@ -53,4 +53,5 @@ ask_ticket('admin-tracker-fields');
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 // Display the template
-$smarty->display("tiki-admin_tracker_fields.tpl");
+$smarty->assign('mid', 'tiki-admin_tracker_fields.tpl');
+$smarty->display("tiki.tpl");

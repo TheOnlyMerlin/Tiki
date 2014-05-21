@@ -64,10 +64,12 @@ function loadTikiLibraries()
  	 * Note that most of those global variables will be system variables that have nothing
  	 * to do with Tiki, so we probably can ignore most of them.  
  	 */
+	global $wikilib, $dbTiki, $smarty, $tikilib, $multilinguallib;
 	require_once('tiki-setup.php');
-	$wikilib = TikiLib::lib('wiki');
-	$multilinguallib = TikiLib::lib('multilingual');
-	$tikilib = TikiLib::lib('tiki');
+	include_once('lib/wiki/wikilib.php');
+	include_once('lib/multilingual/multilinguallib.php');
+	require_once('lib/tikilib.php');
+//	print "-- AllTestsAcceptance: \$multilinguallib="; var_dump($multilinguallib); print "\n";
 
 
 	/*

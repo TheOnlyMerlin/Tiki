@@ -14,7 +14,6 @@
 	<div align="center">
 		{include file='find.tpl'}
 		{initials_filter_links}
-        <div class="table-responsive">
 		<table class="table normal">
 			<tr>
 				<th>
@@ -38,9 +37,9 @@
 					</a>
 				</th>
 			</tr>
-
+			{cycle values="odd,even" print=false}
 			{section name=user loop=$channels}
-				<tr>
+				<tr class="{cycle}">
 					<td class="text">{$channels[user].firstName}</td>
 					<td class="text">{$channels[user].lastName}</td>
 					<td class="email">
@@ -57,8 +56,7 @@
 				</tr>
 			{/section}
 		</table>
-        </div>
-		<div class="center-block">
+		<div class="mini">
 			{if $prev_offset >= 0}
 				[<a class="prevnext" href="tiki-webmail_contacts.php?element={$element}&amp;section=contacts&amp;find={$find}&amp;offset={$prev_offset}&amp;sort_mode={$sort_mode}">
 					{tr}Prev{/tr}

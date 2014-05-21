@@ -10,8 +10,8 @@
 
 $section = 'wiki page';
 require_once ('tiki-setup.php');
-$structlib = TikiLib::lib('struct');
-$categlib = TikiLib::lib('categ');
+include_once ('lib/structures/structlib.php');
+include_once ('lib/categories/categlib.php');
 include_once ("lib/ziplib.php");
 $access->check_feature(array('feature_wiki', 'feature_wiki_structure'));
 $access->check_permission('tiki_p_view');

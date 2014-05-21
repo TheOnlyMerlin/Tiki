@@ -50,7 +50,7 @@ class Table_Manager
 	/**
 	 * Adds code to header
 	 */
-	private function addToHeader()
+	public function addToHeader()
 	{
 		if (!empty(Table_Code_Manager::$code)) {
 			global $headerlib;

@@ -11,8 +11,8 @@
 $section = 'wiki page';
 require_once ('tiki-setup.php');
 
-$structlib = TikiLib::lib('struct');
-$wikilib = TikiLib::lib('wiki');
+include_once ('lib/structures/structlib.php');
+include_once ('lib/wiki/wikilib.php');
 
 if ($prefs['feature_wiki'] != 'y') {
 	$smarty->assign('msg', tra("This feature is disabled").": feature_wiki");

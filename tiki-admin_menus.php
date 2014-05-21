@@ -9,7 +9,7 @@
 // $Id$
 
 require_once ('tiki-setup.php');
-$menulib = TikiLib::lib('menu');
+include_once ('lib/menubuilder/menulib.php');
 $auto_query_args = array(
 	'offset',
 	'sort_mode',

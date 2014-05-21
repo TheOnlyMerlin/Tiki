@@ -129,3 +129,4 @@ class ScoreLib extends TikiLib
 	}
 
 }
+$scorelib = new ScoreLib;

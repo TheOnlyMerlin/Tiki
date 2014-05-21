@@ -11,9 +11,12 @@
 // TODO - refactor to ajax-services then KILME
 
 require_once ('tiki-setup.php');
-$trklib = TikiLib::lib('trk');
+include_once ('lib/trackers/trackerlib.php');
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	global $categlib;
+	if (!is_object($categlib)) {
+		include_once ('lib/categories/categlib.php');
+	}
 }
 if ($prefs['feature_trackers'] != 'y') {
 	die;

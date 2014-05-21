@@ -13,9 +13,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 }
 function smarty_modifier_tasklink($taskId, $class_name="link", $offset="0", $sort_mode="priority_desc")
 {
-	global $tasklib, $user, $prefs;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $tasklib, $userlib, $user, $dbTiki, $prefs;
 
 	include_once('lib/tasks/tasklib.php');
 

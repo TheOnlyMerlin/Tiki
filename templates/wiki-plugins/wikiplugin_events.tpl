@@ -1,8 +1,7 @@
 {* $Id$ *}
-<div class="table-responsive">
 <table class="table normal">
 <tr><th colspan="2">{tr}Upcoming Events{/tr}</th></tr>
-
+{cycle values="odd,even" print=false}
 {foreach from=$events item=event}
 	<tr class="{cycle advance=false}">
 		<td>
@@ -23,7 +22,6 @@
 	</tr><!-- {cycle} -->
 {/foreach}
 </table>
-</div>
 {*Pagination *}
 {if !empty($events) && $usePagination ne 'n'}
 	{pagination_links cant=$cant step=$maxEvents offset=$offset}{/pagination_links}

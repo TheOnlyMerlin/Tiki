@@ -16,7 +16,6 @@
 	</fieldset>
 	<fieldset>
 		<legend>{tr}Version{/tr}</legend>
-        <div class="table-responsive">
 		  <table class="table normal">
 			<tr>
 			  <th>{tr}Version{/tr}</th>
@@ -28,17 +27,16 @@
 					<td><strong>{$info.lastModif|tiki_short_datetime}</strong></td>
 					<td><strong>{$info.user|userlink}</strong></td>
 				</tr>
-{foreach name=hist item=element from=$history}
-				<tr>
+{cycle values="odd,even" print=false}{foreach name=hist item=element from=$history}
+				<tr class="{cycle}">
 					<td class="text"><label><input type="radio" name="lastversion" value="{$element.version}"{if $lastversion==$element.version} checked="checked"{/if}  title="{tr}Version{/tr} {$info.version}"> {$element.version}</label></td>
 					<td class="date">{$element.lastModif|tiki_short_datetime}</td>
 					<td class="text">{$element.user|userlink}</td>
 				</tr>{/foreach}
-		</table>
-       </div>
+			</table>
 	</fieldset>
 	<div>
-		<input type="submit" class="btn btn-default btn-sm" name="show" value="{tr}Show contributions{/tr}">
+		<input type="submit" class="btn btn-default" name="show" value="{tr}Show contributions{/tr}">
 		{button href="tiki-index.php?page=$page" _text="{tr}View page{/tr}"}
 	</div>
 </form>

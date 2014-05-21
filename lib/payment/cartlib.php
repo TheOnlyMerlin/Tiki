@@ -502,8 +502,8 @@ class CartLib
 
 	function has_gift_certificate()
 	{
-		global $prefs;
-		$trklib = TikiLib::lib('trk');
+		global $trklib, $prefs;
+		require_once('lib/trackers/trackerlib.php');
 		return ($trklib->get_tracker_by_name($prefs['payment_cart_giftcert_tracker_name']) ? true : false );
 	}
 
@@ -960,9 +960,7 @@ class CartLib
 
 	function process_item($invoice, $total, $info, $userInput, $cartuser, $profileinstaller, $orderitemprofile, $parentQuantity = 0, $parentCode = 0 )
 	{
-		global $user, $prefs, $record_profile_items_created;
-		$userlib = TikiLib::lib('user');
-		$paymentlib = TikiLib::lib('payment');
+		global $user, $userlib, $paymentlib, $prefs, $record_profile_items_created;
 		if ($bundledProducts = $this->get_bundled_products($info['code'])) {
 			foreach ($bundledProducts as $i) {
 				$this->process_item($invoice, $total, $i, $userInput, $cartuser, $profileinstaller, $orderitemprofile, $info['quantity'], $info['code']);
@@ -1103,7 +1101,8 @@ class CartLib
 		global $prefs;
 		$productTrackerId = $prefs['payment_cart_product_tracker'];
 		$inventoryTypeFieldId = $prefs['payment_cart_inventory_type_field'];
-		$trklib = TikiLib::lib('trk');
+		global $trklib;
+		require_once('lib/trackers/trackerlib.php');
 		return $trklib->get_item_value($productTrackerId, $productId, $inventoryTypeFieldId);
 	}
 
@@ -1127,7 +1126,8 @@ class CartLib
 		} else {
 			$inventoryFieldId = $inventoryTotalFieldId;
 		}
-		$trklib = TikiLib::lib('trk');
+		global $trklib;
+		require_once('lib/trackers/trackerlib.php');
 		return $trklib->get_item_value($productTrackerId, $productId, $inventoryFieldId);
 	}
 
@@ -1214,7 +1214,8 @@ class CartLib
 
 	private function modify_tracker_item( $trackerId, $itemId, $trackerFields )
 	{
-		$trklib = TikiLib::lib('trk');
+		global $trklib;
+		require_once('lib/trackers/trackerlib.php');
 		$tracker_fields_info = $trklib->list_tracker_fields($trackerId);
 		$fieldTypes = array();
 		foreach ($tracker_fields_info['data'] as $t) {
@@ -1316,7 +1317,8 @@ class CartLib
 	function get_missing_user_information_fields( $product_class_id, $type = 'required' )
 	{
 		global $user, $prefs;
-		$trklib = TikiLib::lib('trk');
+		global $trklib;
+		require_once('lib/trackers/trackerlib.php');
 		if ($type == 'required') {
 			$fields_str = $this->get_tracker_value_custom($prefs['payment_cart_productclasses_tracker_name'], 'Required Field IDs', $product_class_id);
 		} else if ($type == 'postpurchase') {
@@ -1369,8 +1371,7 @@ class CartLib
 	function get_group_discount()
 	{
 		// TOTALLY CUSTOM until proper feature is ready
-		global $user;
-		$userlib = TikiLib::lib('user');
+		global $user, $userlib;
 		if (!$user) return 0;
 		$userGroups = $userlib->get_user_groups($user);
 		if (in_array('Shop Free', $userGroups)) {

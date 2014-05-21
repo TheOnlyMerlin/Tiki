@@ -31,23 +31,21 @@ $pages = array();
 require_once('lib/wizard/pages/admin_wizard.php'); 
 $pages[] = new AdminWizard();
 
-// If $useDefaultPrefs is set, the "profiles wizard" should be run. Otherwise the "admin wizard". 
+// If $useDefaultPrefs is set, the profiles "wizard" should be run. Otherwise the standard 
 $useDefaultPrefs = isset($_REQUEST['use-default-prefs']) ? true : false;
-// If $useUpgradeWizard is set, the "upgrade wizard" should be run. Otherwise the "admin wizard". 
-$useUpgradeWizard = isset($_REQUEST['use-upgrade-wizard']) ? true : false;
 if ($useDefaultPrefs) {
 	
 	// Store the default prefs selection in the wizard bar
 	$smarty->assign('useDefaultPrefs', $useDefaultPrefs);
 
-	require_once('lib/wizard/pages/profiles_featured_site_confs.php');
-	$pages[] = new ProfilesWizardFeaturedSiteConfs();
+    require_once('lib/wizard/pages/profiles_featured_site_confs.php');
+    $pages[] = new ProfilesWizardFeaturedSiteConfs();
 
     require_once('lib/wizard/pages/profiles_useful_micro_confs.php');
     $pages[] = new ProfilesWizardUsefulMicroConfs();
 
-	require_once('lib/wizard/pages/profiles_useful_changes_in_display.php');
-	$pages[] = new ProfilesWizardUsefulChangesInDisplay();
+    require_once('lib/wizard/pages/profiles_useful_changes_in_display.php');
+    $pages[] = new ProfilesWizardUsefulChangesInDisplay();
 
     require_once('lib/wizard/pages/profiles_useful_new_tech_confs.php');
     $pages[] = new ProfilesWizardUsefulNewTechConfs();
@@ -58,52 +56,19 @@ if ($useDefaultPrefs) {
     require_once('lib/wizard/pages/profiles_demo_common_confs.php');
     $pages[] = new ProfilesWizardDemoCommonConfs();
 
-	require_once('lib/wizard/pages/profiles_demo_interesting_use_cases.php');
-	$pages[] = new ProfilesWizardDemoInterestingUseCases();
+    require_once('lib/wizard/pages/profiles_demo_interesting_use_cases.php');
+    $pages[] = new ProfilesWizardDemoInterestingUseCases();
 
-	require_once('lib/wizard/pages/profiles_demo_more_advanced_confs.php');
-	$pages[] = new ProfilesWizardDemoMoreAdvancedConfs();
+    require_once('lib/wizard/pages/profiles_demo_more_advanced_confs.php');
+    $pages[] = new ProfilesWizardDemoMoreAdvancedConfs();
 
-	require_once('lib/wizard/pages/profiles_demo_highly_specialized_confs.php');
-	$pages[] = new ProfilesWizardHighlySpecializedConfs();
+    require_once('lib/wizard/pages/profiles_demo_highly_specialized_confs.php');
+    $pages[] = new ProfilesWizardHighlySpecializedConfs();
 
-	require_once('lib/wizard/pages/profiles_completed.php');
-	$pages[] = new AdminWizardProfilesCompleted();
-
-} elseif ($useUpgradeWizard) {
-
-	// Store the use Upgrade Wizard selection in the wizard bar
-	$smarty->assign('useUpgradeWizard', $useUpgradeWizard);
-	
-	require_once('lib/wizard/pages/upgrade_ui.php');
-	$pages[] = new UpgradeWizardUI();
-
-	require_once('lib/wizard/pages/upgrade_novice_admin_assistance.php');
-	$pages[] = new UpgradeWizardNoviceAdminAssistance();
-
-	require_once('lib/wizard/pages/upgrade_trackers.php');
-	$pages[] = new UpgradeWizardTrackers();
-
-    require_once('lib/wizard/pages/upgrade_permissions_and_logs.php');
-    $pages[] = new UpgradeWizardPermissionsAndLogs();
-
-    require_once('lib/wizard/pages/upgrade_others.php');
-    $pages[] = new UpgradeWizardOthers();
-
-    require_once('lib/wizard/pages/upgrade_new_in_13.php');
-    $pages[] = new UpgradeWizardNewIn13();
-
-    require_once('lib/wizard/pages/upgrade_doc_page_iframe.php');
-    $pages[] = new UpgradeWizardDocPageIframe();
-
-    require_once('lib/wizard/pages/upgrade_send_feedback.php');
-    $pages[] = new UpgradeWizardSendFeedback();
-
-	require_once('lib/wizard/pages/upgrade_wizard_completed.php');
-	$pages[] = new UpgradeWizardCompleted();
+    require_once('lib/wizard/pages/profiles_completed.php');
+    $pages[] = new AdminWizardProfilesCompleted();
 
 } else {
-	
 	require_once('lib/wizard/pages/admin_language.php');
 	$pages[] = new AdminWizardLanguage();
 
@@ -196,9 +161,6 @@ foreach ($pages as $page) {
 	if ($useDefaultPrefs) {
 		$url .= '&amp;use-default-prefs=1';
 	}
-	if ($useUpgradeWizard) {
-		$url .= '&amp;use-upgrade-wizard=1';
-	}
 	$cnt = 	$stepNr+1;
 	if ($cnt <= 9) {
 		$cnt = '&nbsp;&nbsp;'.$cnt;
@@ -237,4 +199,5 @@ if ($reqStepNr > 0) {
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 
-$smarty->display('tiki-wizard_admin.tpl');
+$smarty->assign('mid', 'tiki-wizard_admin.tpl');
+$smarty->display("tiki.tpl");

@@ -7,7 +7,7 @@
 
 $section = 'cms';
 require_once('tiki-setup.php');
-$artlib = TikiLib::lib('art');
+include_once('lib/articles/artlib.php');
 
 $access->check_feature('feature_articles');
 $access->check_permission('tiki_p_admin_cms');

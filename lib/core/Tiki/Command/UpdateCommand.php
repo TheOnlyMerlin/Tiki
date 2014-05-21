@@ -63,7 +63,7 @@ class UpdateCommand extends Command
 				}
 			}
 
-			$cachelib = \TikiLib::lib('cache');
+			global $cachelib; require_once 'lib/cache/cachelib.php';
 			$cachelib->empty_cache();
 		} else {
 			$output->writeln('<error>Database not found.</error>');

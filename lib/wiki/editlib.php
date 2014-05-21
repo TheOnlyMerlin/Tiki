@@ -29,11 +29,8 @@ class EditLib
 
 	function make_sure_page_to_be_created_is_not_an_alias($page, $page_info)
 	{
-		$access = TikiLib::lib('access');
-		$tikilib = TikiLib::lib('tiki');
-		$wikilib = TikiLib::lib('wiki');
-		$semanticlib = TikiLib::lib('semantic');
-
+		global $_REQUEST, $semanticlib, $access, $wikilib, $tikilib;
+		require_once 'lib/wiki/semanticlib.php';
 		$aliases = $semanticlib->getAliasContaining($page, true);
 		if (!$page_info && count($aliases) > 0) {
 			$error_title = tra("Cannot create aliased page");
@@ -53,7 +50,7 @@ class EditLib
 
 	function user_needs_to_specify_language_of_page_to_be_created($page, $page_info, $new_page_inherited_attributes = null)
 	{
-		global $prefs;
+		global $_REQUEST, $multilinguallib, $prefs, $tikilib;
 		if (isset($_REQUEST['need_lang']) && $_REQUEST['need_lang'] == 'n') {
 			return false;
 		}
@@ -683,7 +680,7 @@ class EditLib
 
 	function saveCompleteTranslation()
 	{
-		$multilinguallib = TikiLib::lib('multilingual');
+		global $multilinguallib, $tikilib;
 
 		$sourceInfo = $tikilib->get_page_info($this->sourcePageName);
 		$targetInfo = $tikilib->get_page_info($this->targetPageName);
@@ -700,7 +697,7 @@ class EditLib
 
 	function savePartialTranslation()
 	{
-		$multilinguallib = TikiLib::lib('multilingual');
+		global $multilinguallib, $tikilib;
 
 		$sourceInfo = $tikilib->get_page_info($this->sourcePageName);
 		$targetInfo = $tikilib->get_page_info($this->targetPageName);
@@ -769,7 +766,7 @@ class EditLib
 	 * @return string			html to send to ckeditor
 	 */
 
-	function parseToWysiwyg( $inData, $fromWiki = false, $isHtml = false, $options = array() )
+	function parseToWysiwyg( $inData, $fromWiki = false, $isHtml = false )
 	{
 		global $tikilib, $tikiroot, $prefs;
 		// Parsing page data for wysiwyg editor
@@ -779,7 +776,7 @@ class EditLib
 
 		$parsed = $tikilib->parse_data(
 			$parsed,
-			array_merge( array(
+			array(
 				'absolute_links'=>true,
 				'noheaderinc'=>true,
 				'suppress_icons' => true,
@@ -787,7 +784,7 @@ class EditLib
 				'is_html' => ($isHtml && !$fromWiki),
 				'process_wiki_paragraphs' => (!$isHtml || $fromWiki),
 				'process_double_brackets' => 'n'
-			), $options )
+			)
 		);
 
 		if ($fromWiki) {
@@ -1223,9 +1220,7 @@ class EditLib
 
 	function get_new_page_attributes_from_parent_pages($page, $page_info)
 	{
-		$tikilib = TikiLib::lib('tiki');
-		$wikilib = TikiLib::lib('wiki');
-
+		global $wikilib, $tikilib;
 		$new_page_attrs = array();
 		$parent_pages = $wikilib->get_parent_pages($page);
 		$parent_pages_info = array();

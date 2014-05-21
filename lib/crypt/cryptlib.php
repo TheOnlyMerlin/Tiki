@@ -6,7 +6,7 @@
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Id: cryptlib.php 49559 2014-01-24 13:55:17Z arildb $
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
@@ -73,7 +73,7 @@ class CryptLib extends TikiLib
 	function init()
 	{
 		if (!isset($_SESSION['cryptphrase'])) {
-			throw new Exception(tra('Unable to locate cryptphrase'));
+			throw new Exception('Unable to locate cryptphrase');
 		}
 		$phraseMD5 = $_SESSION['cryptphrase'];
 		$this->initSeed($phraseMD5);
@@ -333,7 +333,7 @@ class CryptLib extends TikiLib
 		global $user;
 
 		// Encode the phrase
-		$phraseMD5 = $this->makeCryptPhrase($user, $cleartextPwd);
+		$phraseMD5 = $this->makeCryptPhrase($user,$cleartextPwd);
 
 		// Store the pass phrase in a session variable
 		$_SESSION['cryptphrase'] = $phraseMD5;

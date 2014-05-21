@@ -16,32 +16,30 @@ class ProfilesWizardUsefulAdminConfs extends Wizard
     {
         return tra('Useful Administration Configurations');
     }
-	function isEditable ()
-	{
-		return false;
-	}
-	
-	function onSetupPage ($homepageUrl) 
-	{
-		global	$smarty, $prefs, $TWV;
+    function isEditable ()
+    {
+        return false;
+    }
 
-		// Run the parent first
-		parent::onSetupPage($homepageUrl);
+    function onSetupPage ($homepageUrl)
+    {
+        global	$smarty, $prefs, $TWV;
 
-		$smarty->assign('tikiMajorVersion', substr($TWV->version, 0, 2));
-		
-		return true;		
-	}
+        // Run the parent first
+        parent::onSetupPage($homepageUrl);
 
-	function getTemplate()
-	{
-		$wizardTemplate = 'wizard/profiles_useful_admin_confs.tpl';
-		return $wizardTemplate;
-	}
+        $smarty->assign('tikiMajorVersion', substr($TWV->version, 0, 2));
 
-	function onContinue ($homepageUrl) 
-	{
-		// Run the parent first
-		parent::onContinue($homepageUrl);
-	}
+        // Assign the page template
+        $wizardTemplate = 'wizard/profiles_useful_admin_confs.tpl';
+        $smarty->assign('wizardBody', $wizardTemplate);
+
+        return true;
+    }
+
+    function onContinue ($homepageUrl)
+    {
+        // Run the parent first
+        parent::onContinue($homepageUrl);
+    }
 }

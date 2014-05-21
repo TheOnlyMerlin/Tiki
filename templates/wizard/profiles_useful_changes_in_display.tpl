@@ -1,4 +1,4 @@
-{* $Id$ *}
+{* $Id: profiles_useful_changes_in_display.tpl 51152 2014-05-05 08:27:09Z xavidp $ *}
 
 <div class="adminWizardIconleft"><img src="img/icons/large/wizard_profiles48x48.png" alt="{tr}Configuration Profiles Wizard{/tr}" title="{tr}Configuration Profiles Wizard{/tr}" /></div>
 {tr}Check out some useful profiles that involve changing the display mode of content in your site{/tr}. </br></br>

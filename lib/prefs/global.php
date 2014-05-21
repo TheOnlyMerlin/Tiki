@@ -31,7 +31,7 @@ function prefs_global_list($partial = false)
 
 	return array(
 		'style' => array(
-			'name' => tra('Style'),
+			'name' => tra('Theme'),
             'description' => tra('Style of the site, sometimes called a skin or CSS. See http://themes.tiki.org for more Tiki themes.'),
             'type' => 'list',
 			'help' => 'Themes',
@@ -442,8 +442,7 @@ function prefs_global_list($partial = false)
  */
 function feature_home_pages($partial = false)
 {
-	global $prefs;
-	$tikilib = TikiLib::lib('tiki');
+	global $prefs, $tikilib;
 	$tikiIndex = array();
 
 	//wiki
@@ -456,7 +455,7 @@ function feature_home_pages($partial = false)
 	// Blog
 	if (! $partial && $prefs['feature_blogs'] == 'y') {
 		if ( $prefs['home_blog'] != '0' ) {
-			$bloglib = TikiLib::lib('blog');
+			global $bloglib; require_once('lib/blogs/bloglib.php');
 			$hbloginfo = $bloglib->get_blog($prefs['home_blog']);
 			$home_blog_name = substr($hbloginfo['title'], 0, 20);
 		} else {
@@ -499,5 +498,5 @@ function feature_home_pages($partial = false)
 	// Custom home
 	$tikiIndex['tiki-custom_home.php'] = tra('Custom home');
 
-	return $tikiIndex;
+		return $tikiIndex;
 }

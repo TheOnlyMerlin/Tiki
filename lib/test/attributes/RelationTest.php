@@ -5,7 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-$relationlib = TikiLib::lib('relation');
+require_once 'lib/attributes/relationlib.php';
 
 class RelationTest extends TikiTestCase
 {

@@ -9,7 +9,7 @@
 // $Id$
 
 require_once ('tiki-setup.php');
-$adminlib = TikiLib::lib('admin');
+include_once ('lib/admin/adminlib.php');
 
 $access->check_permission('tiki_p_admin');
 

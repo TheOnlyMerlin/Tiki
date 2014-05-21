@@ -14,7 +14,7 @@ class TikiWebdav_PathFactories_File implements ezcWebdavPathFactory
 	public function parseUriToPath($uri)
 	{
 		global $base_url;
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; require_once('lib/filegals/filegallib.php');
 
 		$requestPath = preg_replace('#.*tiki-webdav\.php#', '', rawurldecode(trim($uri)));
 
@@ -43,7 +43,7 @@ class TikiWebdav_PathFactories_File implements ezcWebdavPathFactory
 	public function generateUriFromPath($path)
 	{
 		global $base_url;
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; require_once('lib/filegals/filegallib.php');
 
 		$result = $base_url . 'tiki-webdav.php' . implode('/', array_map('rawurlencode', explode('/', $path)));
 

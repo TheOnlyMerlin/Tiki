@@ -9,7 +9,7 @@
 // $Id$
 
 require_once 'tiki-setup.php';
-$wikilib = TikiLib::lib('wiki');
+require_once 'lib/wiki/wikilib.php';
 $access->check_feature('feature_wiki_mindmap');
 if (!file_exists('files/visorFreemind.swf')) {
 	$smarty->assign('missing', 'files/visorFreemind.swf');
@@ -30,7 +30,7 @@ if (isset($_REQUEST['export'])) { // {{{
      */
     function create_node($dom, $text, $link = true)
 	{
-		$wikilib = TikiLib::lib('wiki');
+		global $wikilib;
 		$node = $dom->createElement('node');
 		$node->setAttribute('TEXT', $text);
 		$node->setAttribute('STYLE', 'bubble');
@@ -49,9 +49,7 @@ if (isset($_REQUEST['export'])) { // {{{
      */
     function populate_node($node, $pageName, $remainingLevels = 3, $pages = array())
 	{
-		global $user;
-		$wikilib = TikiLib::lib('wiki');
-		$tikilib = TikiLib::lib('tiki');
+		global $wikilib, $tikilib, $user;
 		$child = $wikilib->wiki_get_neighbours($pageName);
 		$child = array_diff($child, $pages);
 		foreach ($child as $page) {

@@ -9,7 +9,8 @@
 // $Id$
 
 include_once ('tiki-setup.php');
-$categlib = TikiLib::lib('categ');
+global $categlib;
+include_once ('lib/categories/categlib.php');
 $access->check_feature('feature_group_watches');
 $access->check_permission(array('tiki_p_admin_users'));
 if (!isset($_REQUEST['objectId']) || !isset($_REQUEST['watch_event'])) {

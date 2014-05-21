@@ -1,4 +1,4 @@
-{* $Id$ *}
+{* $Id: profiles_demo_common_confs.tpl 51152 2014-05-05 08:27:09Z xavidp $ *}
 
 <div class="adminWizardIconleft"><img src="img/icons/large/wizard_profiles48x48.png" alt="{tr}Configuration Profiles Wizard{/tr}" title="{tr}Configuration Profiles Wizard{/tr}" /></div>
 {tr}Check out some commonly used configurations in Tiki sites{/tr}. </br></br>
@@ -64,7 +64,6 @@
             <b>{tr}Dynamic Items List{/tr}</b> (<a href="tiki-admin.php?profile=Dynamic_items_list_demo&show_details_for=Dynamic_items_list_demo&categories%5B%5D={$tikiMajorVersion}.x&repository=http%3a%2f%2fprofiles.tiki.org%2fprofiles&page=profiles&preloadlist=y&list=List#step2" target="_blank">{tr}apply profile now{/tr}</a>)
             <br>
             {tr}This profile creates two linked trackers. One that allow pre-selecting the items in a drop down list based on the items in a previous drop down field. And a second tracker that holds the options displayed in the drop down fields.{/tr}
-            <br/>
             <a href="https://doc.tiki.org/Dynamic+items+list" target="tikihelp" class="tikihelp" title="{tr}Dynamic Items List{/tr}:
            	{tr}More details{/tr}:
         	<ul>
@@ -112,7 +111,7 @@
                 </div>
             </div>
         </td>
-    </tr>
+	</tr>
 	</table>
 </fieldset>
 <br>

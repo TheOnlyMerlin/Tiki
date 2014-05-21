@@ -27,7 +27,7 @@
 			<img src="img/icons/help.png" alt="" width="16" height="16" class="icon" />
 		</a> :
 		<a href="tiki-admin.php?profile=User_Trackers&show_details_for=User_Trackers&repository=http%3a%2f%2fprofiles.tiki.org%2fprofiles&page=profiles&preloadlist=y&list=List#step2" target="_blank">{tr}apply profile now{/tr}</a> ({tr}new window{/tr})</em>
-		<br/><br/>
+		<br/><br/>		
 		<em>{tr}To set up the <strong>User Watches</strong> and their associated settings, visit the page to {/tr} <a href="tiki-wizard_admin.php?&stepNr=15&url={$homepageUrl}">{tr}Set up Main features{/tr}</a></em>
 </fieldset>
 <fieldset>

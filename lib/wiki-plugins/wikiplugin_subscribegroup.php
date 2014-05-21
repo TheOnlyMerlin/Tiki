@@ -105,10 +105,7 @@ function wikiplugin_subscribegroup_info()
 
 function wikiplugin_subscribegroup($data, $params)
 {
-	global $tiki_p_subscribe_groups, $user;
-	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
-
+	global $tiki_p_subscribe_groups, $userlib, $user, $smarty;
 	static $iSubscribeGroup = 0;
 	++$iSubscribeGroup;
 	if (empty($user)) {

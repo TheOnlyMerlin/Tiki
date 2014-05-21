@@ -6,7 +6,7 @@
 // $Id$
 
 require_once('tiki-setup.php');
-$userlib = TikiLib::lib('user');
+require_once('lib/userslib.php');
 
 /*
 if ($tiki_p_admin != 'y') {

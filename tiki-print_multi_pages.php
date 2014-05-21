@@ -9,7 +9,7 @@
 // $Id$
 
 require_once ('tiki-setup.php');
-$structlib = TikiLib::lib('struct');
+include_once ('lib/structures/structlib.php');
 
 $access->check_feature('feature_wiki_multiprint');
 

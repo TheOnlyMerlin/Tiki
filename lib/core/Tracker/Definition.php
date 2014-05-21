@@ -197,15 +197,6 @@ class Tracker_Definition
 		}
 	}
 
-	function getArticleField()
- 	{
- 		foreach ($this->getFields() as $field) {
- 			if ($field['type'] == 'articles') { 
- 				return $field['fieldId'];
- 			}
- 		}
- 	}
-
 	function getGeolocationField()
 	{
 		foreach ($this->getFields() as $field) {
@@ -287,7 +278,7 @@ class Tracker_Definition
 	 */
 	function getItemUser($itemId)
 	{
-		$trklib = TikiLib::lib('trk');
+		global $trklib;
 		return $trklib->get_item_creator($this->trackerInfo['trackerId'], $itemId);
 	}
 

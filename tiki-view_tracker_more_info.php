@@ -9,7 +9,7 @@
 // $Id$
 
 require_once ('tiki-setup.php');
-$trklib = TikiLib::lib('trk');
+include_once ('lib/trackers/trackerlib.php');
 
 $access->check_feature('feature_trackers');
 

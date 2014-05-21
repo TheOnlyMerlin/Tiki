@@ -3,7 +3,7 @@
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Id: profiles_completed.php 51026 2014-04-27 17:18:07Z xavidp $
 
 require_once('lib/wizard/wizard.php');
 
@@ -27,17 +27,15 @@ class AdminWizardProfilesCompleted extends Wizard
 
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
-		
-		return true;
+
+        // Assign the page template
+        $wizardTemplate = 'wizard/profiles_completed.tpl';
+        $smarty->assign('wizardBody', $wizardTemplate);
+
+        return true;
 	}
 
-	function getTemplate()
-	{
-		$wizardTemplate = 'wizard/profiles_completed.tpl';
-		return $wizardTemplate;
-	}
-
-	function onContinue ($homepageUrl) 
+	function onContinue ($homepageUrl)
 	{
 		global $tikilib; 
 

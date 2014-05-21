@@ -367,9 +367,7 @@ function wikiplugin_img_info()
 
 function wikiplugin_img( $data, $params )
 {
-	global $tikidomain, $prefs, $user;
-	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
+	global $tikidomain, $prefs, $smarty, $userlib, $user;
 
 	$imgdata = array();
 
@@ -556,7 +554,8 @@ function wikiplugin_img( $data, $params )
 		) {
 			//Try to get image from database
 			if (!empty($imgdata['id'])) {
-				$imagegallib = TikiLib::lib('imagegal');
+				global $imagegallib;
+				include_once('lib/imagegals/imagegallib.php');
 				$dbinfo = $imagegallib->get_image_info($imgdata['id'], 'o');
 				$dbinfo2 = $imagegallib->get_image($imgdata['id'], 'o');
 				$dbinfo = isset($dbinfo) && isset($dbinfo2) ? array_merge($dbinfo, $dbinfo2) : array();
@@ -570,7 +569,8 @@ function wikiplugin_img( $data, $params )
 				$basepath = $prefs['fgal_use_dir'];
 			} else {					//only attachments left
 				global $atts;
-				$wikilib = TikiLib::lib('wiki');
+				global $wikilib;
+				include_once('lib/wiki/wikilib.php');
 				$dbinfo = $wikilib->get_item_attachment($imgdata['attId']);
 				$basepath = $prefs['w_use_dir'];
 			}

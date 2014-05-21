@@ -61,9 +61,9 @@ class TikiMail
 		$this->mail->setFrom($email);
 	}
 
-	function setReplyTo($email, $name = null)
+	function setReplyTo($email)
 	{
-		$this->mail->setReplyTo($email, $name);
+		$this->mail->setReplyTo($email);
 	}
 
 	function setSubject($subject)
@@ -120,7 +120,7 @@ class TikiMail
 			$tikilib->query($query, $bindvars, -1, 0);
             $title = 'mail';
         } else {
-    		try {
+        	try {
     			$this->mail->send();
 
     			$title = 'mail';

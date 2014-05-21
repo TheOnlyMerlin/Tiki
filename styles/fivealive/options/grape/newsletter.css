@@ -60,7 +60,8 @@ input[type="submit"],
 button:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover,
-.button input:hover
+.button input:hover,
+.calbuttonBox a:hover,
 #genPass .button a:hover,
 .daterow:hover {
 	background: #9b286f;

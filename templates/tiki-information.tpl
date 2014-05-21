@@ -1,12 +1,12 @@
 {* $Id$ *}
 <div id="tiki-center">
 <br>
-<div class="panel panel-default">
-	 <div class="panel-heading">
+<div class="cbox">
+	 <div class="cbox-title">
 	 {tr}Information{/tr}
 	 </div>
 
-	<div class="alert alert-warning">
+	<div class="simplebox highlight">
 	{if is_array($msg)}
 		{foreach from=$msg item=line}
 	 		{$line|escape}<br>

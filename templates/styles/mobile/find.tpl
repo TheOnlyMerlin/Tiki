@@ -161,15 +161,15 @@
 		  		<div class="multiselect"> 
 		  			{if count($categories) gt 0}
 						{$cat_tree}
-						<div class="clearfix">
+						<div class="clear">
 						{if $tiki_p_admin_categories eq 'y'}
-		    				<div class="pull-right"><a href="tiki-admin_categories.php" class="link">{tr}Admin Categories{/tr} {icon _id='wrench'}</a></div>
+		    				<div class="floatright"><a href="tiki-admin_categories.php" class="link">{tr}Admin Categories{/tr} {icon _id='wrench'}</a></div>
 						{/if}
 						{select_all checkbox_names='cat_categories[]' label="{tr}Select/deselect all categories{/tr}"}
 					{else}
-						<div class="clearfix">
+						<div class="clear">
 		 				{if $tiki_p_admin_categories eq 'y'}
-		    				<div class="pull-right"><a href="tiki-admin_categories.php" class="link">{tr}Admin Categories{/tr} {icon _id='wrench'}</a></div>
+		    				<div class="floatright"><a href="tiki-admin_categories.php" class="link">{tr}Admin Categories{/tr} {icon _id='wrench'}</a></div>
 		 				{/if}
 		    			{tr}No categories defined{/tr}
 		  			{/if}
@@ -243,7 +243,7 @@
 	</div> {*mobile *}
 {/if} {*mobile *}
 <label class="findsubmit">
-	<input type="submit" class="btn btn-default btn-sm" data-theme="a" name="search" value="{tr}Go{/tr}">
+	<input type="submit" class="btn btn-default" data-theme="a" name="search" value="{tr}Go{/tr}">
 	{if !empty($find) or !empty($find_type) or !empty($find_topic) or !empty($find_lang) or !empty($find_langOrphan) or !empty($find_categId) or !empty($find_orphans) or !empty($find_other_val) or $maxRecords ne $prefs.maxRecords}
 		{*  $find_date_from & $find_date_to get set usually *}
 		<span class="button">
@@ -254,7 +254,7 @@
 		<input class="btn btn-default" type="submit" name="searchlist" value="{tr}List View{/tr}">
 		<input type="hidden" name="mapview" value="y">
 	{elseif (isset($gmapbuttons) && $gmapbuttons)}
-		<input type="submit" class="btn btn-default btn-sm" name="searchmap" value="{tr}Map View{/tr}">
+		<input type="submit" class="btn btn-default" name="searchmap" value="{tr}Map View{/tr}">
 		<input type="hidden" name="mapview" value="n">
 	{/if}
 </label>

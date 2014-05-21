@@ -175,7 +175,7 @@ function smarty_function_treetable($params, $smarty)
 		$_sortColumn = $_groupColumn;
 	}
 
-	$class = empty($class) ? 'table table-striped' : $class;	// treetable
+	$class = empty($class) ? 'treetable' : $class;	// treetable
 
 /*
 	if ($prefs['feature_jquery_tablesorter'] == 'y' && strpos($class, 'sortable') === false) {
@@ -209,7 +209,7 @@ function smarty_function_treetable($params, $smarty)
 		$headerlib->add_jq_onready(
 			'
 $("#'.$id.'_openall").click( function () {
-	$this = $(this).tikiModal(" ");
+	$this = $(this).modal(" ");
 	var img = $("img:first", this)[0];
 	if (img.src.indexOf("ofolder.png") > -1) {
 
@@ -220,7 +220,7 @@ $("#'.$id.'_openall").click( function () {
 				$(this).click();
 			},
 			end: function ()  {
-				$this.tikiModal();
+				$this.modal();
 			}
 		});
 		img.src = img.src.replace("ofolder", "folder");
@@ -232,7 +232,7 @@ $("#'.$id.'_openall").click( function () {
 				$(this).click();
 			},
 			end: function ()  {
-				$this.tikiModal();
+				$this.modal();
 			}
 		});
 		img.src = img.src.replace("folder", "ofolder");

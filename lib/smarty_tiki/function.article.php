@@ -14,8 +14,9 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 /* inserts the content of an rss feed into a module */
 function smarty_function_article($params, $smarty)
 {
-	$tikilib = TikiLib::lib('tiki');
-	$artlib = TikiLib::lib('art');
+	global $tikilib;
+	global $artlib; require_once 'lib/articles/artlib.php';
+	global $dbTiki;
 	extract($params);
 
 	if (empty($max)) {

@@ -29,11 +29,6 @@ abstract class Wizard
 		return 'Page title not set';
 	}
 
-	function getTemplate()
-	{
-		return null;
-	}
-
 	/**
 	* isVisible
 	*	Answer if the page should be displayed or not.

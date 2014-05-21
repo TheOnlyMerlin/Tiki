@@ -24,13 +24,11 @@ class UserWizardDummy3 extends Wizard
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
 		
-		return true;		
-	}
-
-	function getTemplate()
-	{
+		// Assign the page temaplte
 		$wizardTemplate = 'wizard/user_dummy3.tpl';
-		return $wizardTemplate;
+		$smarty->assign('wizardBody', $wizardTemplate);
+		
+		return true;		
 	}
 
 	function onContinue ($homepageUrl) 

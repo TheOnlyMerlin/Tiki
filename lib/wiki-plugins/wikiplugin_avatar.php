@@ -45,9 +45,7 @@ function wikiplugin_avatar_info()
 
 function wikiplugin_avatar($data, $params)
 {
-	global $prefs, $user;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $userlib, $prefs, $user;
 
 	extract($params, EXTR_SKIP);
 

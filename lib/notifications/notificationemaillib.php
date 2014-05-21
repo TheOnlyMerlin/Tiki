@@ -29,10 +29,7 @@ function sendForumEmailNotification(
 				$contributions='',
 				$postId = '')
 {
-	global $prefs;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $tikilib, $prefs, $smarty, $userlib;
 
 	// Per-forum From address overrides global default.
 	if ( $forum_info['outbound_from'] ) {
@@ -76,7 +73,7 @@ function sendForumEmailNotification(
 			$mail->setHeader("In-Reply-To", "<" . $inReplyTo . ">");
 		}
 
-		$commentslib = TikiLib::lib('comments');
+		global $commentslib;
 		$attachments = $commentslib->get_thread_attachments($event == 'forum_post_topic'? $threadId: $object, 0);
 
 		if ( count($attachments) > 0) {
@@ -151,7 +148,7 @@ function sendForumEmailNotification(
 		$smarty->assign('mail_message', $data);
 		$smarty->assign('mail_author', $author);
 		if ($prefs['feature_contribution'] == 'y' && !empty($contributions)) {
-			$contributionlib = TikiLib::lib('contribution');
+			global $contributionlib; include_once('lib/contribution/contributionlib.php');
 			$smarty->assign('mail_contributions', $contributionlib->print_contributions($contributions));
 		}
 		$foo = parse_url($_SERVER["REQUEST_URI"]);
@@ -212,11 +209,8 @@ function sendWikiEmailNotification(
 				$lang = ''
 	)
 {
-	global $prefs;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
-	$notificationlib = TikiLib::lib('notification');
+	global $tikilib, $prefs, $smarty, $userlib;
+	global $notificationlib; include_once('lib/notifications/notificationlib.php');
 	$nots = array();
 	$defaultLanguage = $prefs['site_language'];
 	if ($wikiEvent == 'wiki_file_attached') {
@@ -230,7 +224,7 @@ function sendWikiEmailNotification(
 	}
 
 	if ($prefs['feature_user_watches'] == 'y' && $event == 'wiki_page_changed') {
-		$structlib = TikiLib::lib('struct');
+		global $structlib; include_once('lib/structures/structlib.php');
 		$nots2 = $structlib->get_watches($pageName);
 		if (!empty($nots2)) {
 			$nots = array_merge($nots, $nots2);
@@ -250,7 +244,7 @@ function sendWikiEmailNotification(
 	}
 
 	if ($prefs['feature_user_watches'] == 'y' && $event == 'wiki_page_created' && $structure_parent_id) {
-		$structlib = TikiLib::lib('struct');
+		global $structlib; include_once('lib/structures/structlib.php');
 		$nots = array_merge($nots, $structlib->get_watches('', $structure_parent_id));
 	}
 
@@ -326,7 +320,7 @@ function sendWikiEmailNotification(
 		$smarty->assign('mail_machine', $machine);
 
 		if ($prefs['feature_contribution'] == 'y' && !empty($contributions)) {
-			$contributionlib = TikiLib::lib('contribution');
+			global $contributionlib; include_once('lib/contribution/contributionlib.php');
 			$smarty->assign('mail_contributions', $contributionlib->print_contributions($contributions));
 		}
 
@@ -498,10 +492,7 @@ function sendErrorEmailNotification($errno, $errstr, $errfile='?', $errline= '?'
 
 function sendFileGalleryEmailNotification($event, $galleryId, $galleryName, $name, $filename, $description, $action, $user, $fileId)
 {
-	global $prefs;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $tikilib, $prefs, $smarty, $userlib;
 
 	$nots = array();
 	$defaultLanguage = $prefs['site_language'];
@@ -590,10 +581,7 @@ function sendCategoryEmailNotification($values)
 		$objectUrl = $values['objectUrl'];
 	}
 
-	global $prefs, $user;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $tikilib, $prefs, $smarty, $userlib, $user;
 
 	$nots = array();
 	$defaultLanguage = $prefs['site_language'];
@@ -690,10 +678,8 @@ function sendCategoryEmailNotification($values)
 
 function sendStructureEmailNotification($params)
 {
-	global $prefs;
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
-	$structlib = TikiLib::lib('struct');
+	global $tikilib, $smarty, $prefs;
+	global $structlib; include_once('lib/structures/structlib.php');
 
 	$params['event'] = 'structure_' . $params['action'];
 
@@ -787,7 +773,7 @@ function sendCommentNotification($type, $id, $title, $content, $commentId=null)
 		if ($type == 'wiki') {
 			$smarty->assign('mail_objectname', $id);
 		} elseif ($type == 'article') {
-			$artlib = TikiLib::lib('art');
+			global $artlib;	include_once ('lib/articles/artlib.php');
 			$smarty->assign('mail_objectname', $artlib->get_title($id));
 			$smarty->assign('mail_objectid', $id);
 		} elseif ($type == 'trackeritem') {

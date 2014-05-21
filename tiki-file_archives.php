@@ -10,7 +10,7 @@
 
 $section = 'file_galleries';
 require_once ('tiki-setup.php');
-$filegallib = TikiLib::lib('filegal');
+include_once ('lib/filegals/filegallib.php');
 
 $access->check_feature('feature_file_galleries');
 

@@ -5,14 +5,14 @@
   {if $prefs.feature_forum_topics_archiving eq 'y' && $thread_info.archived eq 'y'}({tr}Archived{/tr}){/if}
 {/title}
 
-<div class="t_navbar btn-group form-group">
+<div class="navbar">
 	{if $tiki_p_admin_forum eq "y"}
-		{button href="tiki-admin_forums.php?forumId=$forumId" class="btn btn-default" _text="{tr}Edit Forum{/tr}"}
+		{button href="tiki-admin_forums.php?forumId=$forumId" _text="{tr}Edit Forum{/tr}"} 
 	{/if}
 	{if $tiki_p_admin_forum eq 'y' or !isset($all_forums) or $all_forums|@count > 1}
-		{button href="tiki-forums.php" class="btn btn-default" _text="{tr}Forum List{/tr}"}
+		{button href="tiki-forums.php" _text="{tr}Forum List{/tr}"}
 	{/if}
-	{button href="tiki-view_forum.php?forumId=$forumId" class="btn btn-default" _text="{tr}Topic List{/tr}"}
+	{button href="tiki-view_forum.php?forumId=$forumId" _text="{tr}Topic List{/tr}"}
 </div>
 
 {if $post_reported eq 'y'}
@@ -22,15 +22,15 @@
 	</div>
 	<br>
 {/if}
-<div class="breadcrumb">
-	<a class="link" href="tiki-forums.php">{tr}Forums{/tr}</a>
-	{$prefs.site_crumb_seper} 
-	<a class="link" href="tiki-view_forum.php?forumId={$forumId}">{$forum_info.name|escape}</a>{if isset($thread_info.topic.threadId) and $thread_info.topic.threadId}
-	{$prefs.site_crumb_seper} 
-	<a class="link" href="tiki-view_forum_thread.php?comments_parentId={$thread_info.topic.threadId}{if $smarty.request.topics_offset}&amp;topics_offset={$smarty.request.topics_offset}{/if}{$topics_sort_mode_param}{$topics_threshold_param}{$topics_find_param}">{$thread_info.topic.title}</a>{/if}
-	{$prefs.site_crumb_seper} 
-	{$thread_info.title|escape}
-</div>
+
+<a class="link" href="tiki-forums.php">{tr}Forums{/tr}</a> 
+{$prefs.site_crumb_seper} 
+<a class="link" href="tiki-view_forum.php?forumId={$forumId}">{$forum_info.name|escape}</a>{if isset($thread_info.topic.threadId) and $thread_info.topic.threadId}
+{$prefs.site_crumb_seper} 
+<a class="link" href="tiki-view_forum_thread.php?comments_parentId={$thread_info.topic.threadId}{if $smarty.request.topics_offset}&amp;topics_offset={$smarty.request.topics_offset}{/if}{$topics_sort_mode_param}{$topics_threshold_param}{$topics_find_param}">{$thread_info.topic.title}</a>{/if}
+{$prefs.site_crumb_seper} 
+{$thread_info.title|escape}
+
 <div style="text-align: right; margin-bottom: 15px;">
 {if empty($thread_info.topic.threadId)}
 	<span>
@@ -129,7 +129,6 @@
 
 {if isset($view_atts) and $view_atts eq 'y'}
 <h2 id="attachments">{tr}Attachments{/tr}</h2>
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		<th>{tr}Type{/tr}</th>
@@ -138,9 +137,9 @@
 		<th>{tr}Created{/tr}</th>
 		<th>{tr}Action{/tr}</th>
 	</tr>
-
+	{cycle values="odd,even" print=false}
 	{foreach from=$atts.data item=att}
-	<tr>
+	<tr class="{cycle}">
 		<td class="icon">{$att.filename|iconify}</td>
 		<td class="text"><a href="tiki-download_forum_attachment.php?attId={$att.attId}" title="{tr}Download{/tr}">{$att.filename|escape}</a></td>
 		<td class="integer">{$att.filesize|kbsize}</td>
@@ -149,6 +148,5 @@
 	</tr>
 	{/foreach} 
 </table>
-</div>
 {pagination_links cant=$atts.cant offset=$atts.offset offset_arg='fa_offset' step=$atts.maxRecords _anchor='attachments'}{/pagination_links}
 {/if}

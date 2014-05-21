@@ -20,7 +20,7 @@
 // If image_type has no value, we default to "article" to preserve previous behaviour
 
 require_once ('tiki-setup.php');
-$artlib = TikiLib::lib('art');
+require_once 'lib/articles/artlib.php';
 
 $access->check_feature('feature_articles');
 

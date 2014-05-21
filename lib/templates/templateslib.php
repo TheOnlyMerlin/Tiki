@@ -144,7 +144,7 @@ class TemplatesLib extends TikiLib
 		$info = $this->get_page_info($page);
 
 		if ( $prefs['feature_multilingual'] == 'y' ) {
-			$multilinguallib = TikiLib::lib('multilingual');
+			global $multilinguallib; require_once 'lib/multilingual/multilinguallib.php';
 
 			if ( $lang && $info['lang'] && $lang != $info['lang'] ) {
 				$bestLangPageId = $multilinguallib->selectLangObj('wiki page', $info['page_id'], $lang);

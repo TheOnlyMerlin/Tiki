@@ -6,6 +6,8 @@
 // $Id$
 
 require_once('lib/wizard/wizard.php');
+require_once('lib/notifications/notificationlib.php');
+include_once ('lib/userprefs/userprefslib.php');
 
 /**
  * Set up the wysiwyg editor, including inline editing
@@ -30,10 +32,7 @@ class UserWizardPreferencesNotifications extends Wizard
 
 	function onSetupPage ($homepageUrl) 
 	{
-		global	$user, $prefs; 
-
-		$tikilib = TikiLib::lib('tiki');
-		$smarty = TikiLib::lib('smarty');
+		global	$user, $smarty, $tikilib, $prefs; 
 
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
@@ -52,21 +51,17 @@ class UserWizardPreferencesNotifications extends Wizard
 		$smarty->assign('user_blog_watch_editor', $tikilib->get_user_preference($user, 'user_blog_watch_editor'));
 		$smarty->assign('user_tracker_watch_editor', $tikilib->get_user_preference($user, 'user_tracker_watch_editor'));
 		$smarty->assign('user_comment_watch_editor', $tikilib->get_user_preference($user, 'user_comment_watch_editor'));
+
+		// Assign the page template
+		$wizardTemplate = 'wizard/user_preferences_notifications.tpl';
+		$smarty->assign('wizardBody', $wizardTemplate);
 		
 		return $showPage;		
 	}
 
-	function getTemplate()
-	{
-		$wizardTemplate = 'wizard/user_preferences_notifications.tpl';
-		return $wizardTemplate;
-	}
-
 	function onContinue ($homepageUrl) 
 	{
-		global $user, $prefs;
-
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib, $user, $prefs;
 		
 		// Run the parent first
 		parent::onContinue($homepageUrl);

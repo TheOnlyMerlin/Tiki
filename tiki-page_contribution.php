@@ -7,7 +7,7 @@
 $section = 'wiki page';
 $section_class = "tiki_wiki_page manage";	// This will be body class instead of $section
 require_once ('tiki-setup.php');
-$histlib = TikiLib::lib('hist');
+include_once ('lib/wiki/histlib.php');
 require_once("lib/diff/difflib.php");
 
 $access->check_feature('feature_wiki');

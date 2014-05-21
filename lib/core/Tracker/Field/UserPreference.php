@@ -42,8 +42,7 @@ class Tracker_Field_UserPreference extends Tracker_Field_Abstract
 		if (isset($requestData[$ins_id])) {
 			$value = $requestData[$ins_id];
 		} else {
-			$userlib = TikiLib::lib('user');
-			$trklib = TikiLib::lib('trk');
+			global $trklib, $userlib;
 	
 			$value = '';
 			$itemId = $this->getItemId();

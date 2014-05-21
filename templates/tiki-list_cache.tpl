@@ -6,8 +6,7 @@
 
 {include file='find.tpl'}
 
-
-<div class="table-responsive">
+{cycle values="odd,even" print=false}
 <table class="table normal">
 	<tr>
 		<th>
@@ -19,7 +18,7 @@
 		<th>{tr}Action{/tr}</th>
 	</tr>
 	{section name=changes loop=$listpages}
-		<tr>
+		<tr class="{cycle}">
 			<td class="text">
 				<a class="link" href="{$listpages[changes].url}">{$listpages[changes].url}</a>
 			</td>
@@ -36,6 +35,5 @@
 		{norecords _colspan=3}
 	{/section}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}

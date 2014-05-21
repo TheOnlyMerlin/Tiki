@@ -118,7 +118,7 @@ $headerlib = TikiLib::lib("header")
 	});
 
 	$('#timeSheetCommit').click(function() {
-		$('#timeSheetTabs').tikiModal(tr('Committing...'));
+		$('#timeSheetTabs').modal(tr('Committing...'));
 		var stack = [];
 		$.getJSON('tiki-timesheet.php?save', function(inputs) {
 			for (var namespace in $.DOMCached.getStorage()) {
@@ -143,7 +143,7 @@ $headerlib = TikiLib::lib("header")
 						}
 					})
 					.error(function() {
-						$('#timeSheetTabs').tikiModal();
+						$('#timeSheetTabs').modal();
 						alert(tr('Could not save'));
 					});
 					return false;

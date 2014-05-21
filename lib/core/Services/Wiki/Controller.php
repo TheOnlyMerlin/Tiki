@@ -18,7 +18,7 @@ class Services_Wiki_Controller
 
 		$data = json_decode($input->data->text());
 		if ($data) {
-			$structlib = TikiLib::lib('struct');
+			global $structlib; include_once('lib/structures/structlib.php');
 			$structlib->reorder_structure($data);
 			$params = json_decode($input->params->text());
 

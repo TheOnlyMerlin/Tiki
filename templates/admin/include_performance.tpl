@@ -1,20 +1,15 @@
 {* $Id$ *}
 
-{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Please see the <a class='alert-link' target='tikihelp' href='http://dev.tiki.org/Performance'>Performance page</a> on Tiki's developer site.{/tr}{/remarksbox}
+{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Please see the <a class='rbox-link' target='tikihelp' href='http://dev.tiki.org/Performance'>Performance page</a> on Tiki's developer site.{/tr}{/remarksbox}
 
 <form class="admin" id="performance" name="performance" action="tiki-admin.php?page=performance" method="post">
-	<div class="row">
-        <div class="form-group col-lg-12 clearfix">
-			<div class="pull-right">
-				<input type="reset" class="btn btn-link btn-sm" name="performancereset" value="{tr}Reset{/tr}" />
-                <input type="submit" class="btn btn-primary btn-sm" name="performance" value="{tr}Apply{/tr}" />
-            </div>
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" class="btn btn-default" name="performance" value="{tr}Apply{/tr}" />
+		<input type="reset" class="btn btn-warning" name="performancereset" value="{tr}Reset{/tr}" />
+	</div>
 {tabset}
 
 		{tab name="{tr}Performance{/tr}"}
-            <h2>{tr}Performance{/tr}</h2>
 			{preference name=tiki_minify_javascript}
 			<div class="adminoptionboxchild" id="tiki_minify_javascript_childcontainer">
 				{preference name=tiki_minify_late_js_files}
@@ -58,7 +53,6 @@
 		{/tab}
 		
 		{tab name="{tr}Bytecode Cache{/tr}"}
-            <h2>{tr}Bytecode Cache{/tr}</h2>
 			{if $opcode_cache}
 				<p>{tr _0=$opcode_cache}Using <strong>%0</strong>.These stats affect all PHP applications running on the server.{/tr}</p>
 
@@ -93,11 +87,11 @@
 				{/if}
 
 				{if $opcode_stats.warning_starve}
-					<p>{tr}Little memory available. Thrashing likely to occur.{/tr} {tr}The values to increase are apc.shm_size (for APC), xcache.size (for XCache) or opcache.memory_consumption (for OPcache).{/tr}</p>
+					<p>{tr}Little memory available. Thrashing likely to occur.{/tr} {tr}The values to increase are apc.shm_size (for APC) or xcache.size (for XCache).{/tr}</p>
 				{/if}
 
 				{if $opcode_stats.warning_low}
-					<p>{tr _0=$opcode_cache}Small amount of memory allocated to %0. Verify the configuration.{/tr} {tr}The values to increase are apc.shm_size (for APC), xcache.size (for XCache) or opcache.memory_consumption (for OPcache).{/tr}</p>
+					<p>{tr _0=$opcode_cache}Small amount of memory allocated to %0. Verify the configuration.{/tr} {tr}The values to increase are apc.shm_size (for APC) or xcache.size (for XCache).{/tr}</p>
 				{/if}
 
 				{if $opcode_stats.warning_check}
@@ -112,27 +106,24 @@
 					<p>{tr}Clear all APC caches:{/tr} {self_link apc_clear=true}{tr}Clear Caches{/tr}{/self_link}</p>
 				{/if}
 			{else}
-				{tr}Bytecode cache is not used. Using a bytecode cache (OPcache, APC, XCache, WinCache) is highly recommended for production environments.{/tr}
+				{tr}Bytecode cache is not used. Using a bytecode cache (APC, XCache, WinCache) is highly recommended for production environments.{/tr}
 			{/if}
 		{/tab}
 		
 		{tab name="{tr}Wiki{/tr}"}
-            <h2>{tr}Wiki{/tr}</h2>
 			{preference name=wiki_cache}
 			{preference name=feature_wiki_icache}
 			{preference name=wiki_ranking_reload_probability}
 		{/tab}
 
 		{tab name="{tr}Database{/tr}"}
-            <h2>{tr}Database{/tr}</h2>
-			{preference name=log_sql}
-			<div class="adminoptionboxchild" id="log_sql_childcontainer">
-				{preference name=log_sql_perf_min}
-			</div>
-		{/tab}
+				{preference name=log_sql}
+				<div class="adminoptionboxchild" id="log_sql_childcontainer">
+					{preference name=log_sql_perf_min}
+				</div>
+			{/tab}
 		
 		{tab name="{tr}Memcache{/tr}"}
-            <h2>{tr}Memcache{/tr}</h2>
 			{preference name=memcache_enabled}
 			<div class="adminoptionboxchild" id="memcache_enabled_childcontainer">
 				{preference name=memcache_compress}
@@ -146,13 +137,11 @@
 		{/tab}
 
 		{tab name="{tr}Plugins{/tr}"}
-            <h2>{tr}Plugins{/tr}</h2>
 			{preference name=wikiplugin_snarf_cache}
 		{/tab}
 
-		{tab name="{tr}Major slowdown{/tr}"}
-            <h2>{tr}Major slowdown{/tr}</h2>
-			{remarksbox type="note" title="{tr}Major slowdown{/tr}"}{tr}These are reported to slow down Tiki. If you have a high-volume site, you may want to deactivate them{/tr}
+		{tab name="{tr}Major slow down{/tr}"}
+			{remarksbox type="note" title="{tr}Major slow down{/tr}"}{tr}These are reported to slow down Tiki. If you have a high-volume site, you may want to deactivate them{/tr}
 			{/remarksbox}
 			{preference name=wikiplugin_sharethis}
 			{preference name=log_sql}
@@ -166,13 +155,11 @@
 		{/tab}
 
 		{tab name="{tr}Sessions{/tr}"}
-            <h2>{tr}Sessions{/tr}</h2>
 				{preference name=session_silent}
 				{preference name=tiki_cachecontrol_nosession}
 		{/tab}
 
 		{tab name="{tr}Newsletter{/tr}"}
-            <h2>{tr}Newsletter{/tr}</h2>
 			{preference name=newsletter_throttle}
 			<div class="adminoptionboxchild" id="newsletter_throttle_childcontainer">
 				{preference name=newsletter_pause_length}
@@ -180,8 +167,7 @@
 			</div>
 		{/tab}
 		
-		{tab name="{tr}Time and memory limits{/tr}"}
-            <h2>{tr}Time and memory limits{/tr}</h2>
+		{tab name="{tr}Time and Memory limits{/tr}"}
 				{preference name=allocate_memory_tracker_export_items}
 				{preference name=allocate_time_tracker_export_items}
 				{preference name="allocate_memory_unified_rebuild"}
@@ -189,11 +175,8 @@
 		{/tab}		
 		
 {/tabset}
-	<div class="row">
-        <div class="form-group col-lg-12 clearfix">
-			<div class="text-center">
-                <input type="submit" class="btn btn-primary btn-sm" name="performance" value="{tr}Apply{/tr}" />
-            </div>
-        </div>
-    </div>
+		
+	<div class="input_submit_container" style="margin-top: 5px; text-align: center">
+		<input type="submit" class="btn btn-default" name="performance" value="{tr}Apply{/tr}" />
+	</div>
 </form>

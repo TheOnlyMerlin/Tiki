@@ -41,13 +41,11 @@ class AdminWizardNamespace extends Wizard
 		$isStructures = isset($prefs['feature_wiki_structure']) && $prefs['feature_wiki_structure'] === 'y' ? true : false;
 		$smarty->assign('isStructures', $isStructures);
 		
-		return true;
-	}
-
-	function getTemplate()
-	{
+		// Assign the page tempalte
 		$wizardTemplate = 'wizard/admin_namespace.tpl';
-		return $wizardTemplate;
+		$smarty->assign('wizardBody', $wizardTemplate);
+		
+		return true;
 	}
 
 	function onContinue ($homepageUrl) 

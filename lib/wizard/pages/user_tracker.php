@@ -30,11 +30,7 @@ class UserWizardUserTracker extends Wizard
 
 	function onSetupPage ($homepageUrl) 
 	{
-		global $user, $prefs;
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
-		$smarty = TikiLib::lib('smarty');
-		$registrationlib = TikiLib::lib('registration');
+		global	$user, $smarty, $tikilib, $prefs, $registrationlib, $userlib; 
 
 		$trklib = TikiLib::lib('trk');
 
@@ -124,26 +120,25 @@ class UserWizardUserTracker extends Wizard
 			}
 			
 		}
+
+		// Assign the page template
+		$wizardTemplate = 'wizard/user_tracker.tpl';
+		$smarty->assign('wizardBody', $wizardTemplate);
 		
 		return $showPage;		
 	}
 
-	function getTemplate()
-	{
-		$wizardTemplate = 'wizard/user_tracker.tpl';
-		return $wizardTemplate;
-	}
-
 	function onContinue ($homepageUrl) 
 	{
-		global $user, $prefs;
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
-		$registrationlib = TikiLib::lib('registration');
+		global $tikilib, $user, $prefs, $registrationlib, $userlib; 
+
 		$trklib = TikiLib::lib('trk');
 
 		// Run the parent first
 		parent::onContinue($homepageUrl);
+		
+		include_once('lib/registration/registrationlib.php');
+		
 		
 		//get custom fields
 		$customfields = $registrationlib->get_customfields();

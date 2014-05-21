@@ -1,4 +1,4 @@
-{* $Id$ *}
+{* $Id: profiles_demo_highly_specialized_confs.tpl 51152 2014-05-05 08:27:09Z xavidp $ *}
 
 <div class="adminWizardIconleft"><img src="img/icons/large/wizard_profiles48x48.png" alt="{tr}Configuration Profiles Wizard{/tr}" title="{tr}Configuration Profiles Wizard{/tr}" /></div>
 {tr}Some profiles are highly customized for very specialized use cases, and they are listed in this special category.{/tr} </br></br>

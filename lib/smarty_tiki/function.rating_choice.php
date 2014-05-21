@@ -7,8 +7,8 @@
 
 function smarty_function_rating_choice( $params, $smarty )
 {
-	global $prefs, $user;
-	$ratinglib = TikiLib::lib('rating');
+	global $prefs, $ratinglib, $user;
+	require_once 'lib/rating/ratinglib.php';
 
 	if ( ! isset($params['comment_author'], $params['type'], $params['id']) ) {
 		return tra('No object information provided for rating.');

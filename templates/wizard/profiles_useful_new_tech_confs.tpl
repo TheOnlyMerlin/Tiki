@@ -1,4 +1,4 @@
-{* $Id$ *}
+{* $Id: profiles_useful_new_tech_confs.tpl 51152 2014-05-05 08:27:09Z xavidp $ *}
 
 <div class="adminWizardIconleft"><img src="img/icons/large/wizard_profiles48x48.png" alt="{tr}Configuration Profiles Wizard{/tr}" title="{tr}Configuration Profiles Wizard{/tr}" /></div>
 {tr}Check out this set of useful configurations that involve using some new technology for your site{/tr}. </br></br>

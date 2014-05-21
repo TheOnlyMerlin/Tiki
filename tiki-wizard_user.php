@@ -32,9 +32,7 @@ $accesslib->check_user($user);
 $pages = array();
 
 /// fetch the itemId for the user tracker ------------------------------------
-global $user, $prefs;
-$userlib = TikiLib::lib('user');
-$tikilib = TikiLib::lib('tiki');
+global	$user, $tikilib, $prefs, $userlib; 
 if ($prefs['userTracker'] === 'y') {
 	
 	$trklib = TikiLib::lib('trk');
@@ -131,4 +129,5 @@ if ($reqStepNr > 0) {
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 
-$smarty->display('tiki-wizard_user.tpl');
+$smarty->assign('mid', 'tiki-wizard_user.tpl');
+$smarty->display("tiki.tpl");

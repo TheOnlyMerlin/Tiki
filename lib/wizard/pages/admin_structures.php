@@ -40,13 +40,12 @@ class AdminWizardStructures extends Wizard
 		$isCategories = isset($prefs['feature_categories']) && $prefs['feature_categories'] === 'y' ? true : false;
 		$smarty->assign('isCategories', $isCategories);
 		
-		return true;
-	}
-
-	function getTemplate()
-	{
+		
+		// Assign the page tempalte
 		$wizardTemplate = 'wizard/admin_structures.tpl';
-		return $wizardTemplate;
+		$smarty->assign('wizardBody', $wizardTemplate);
+		
+		return true;
 	}
 
 	function onContinue ($homepageUrl) 

@@ -1,14 +1,10 @@
 {* $Id$ *}
 
 <form class="admin" id="performance" name="performance" action="tiki-admin.php?page=rating" method="post">
-	<div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-            	<input type="reset" class="btn btn-link btn-sm" value="{tr}Reset{/tr}" />
-				<input type="submit" class="btn btn-primary btn-sm" value="{tr}Apply{/tr}" />
-            </div>
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" class="btn btn-default" value="{tr}Apply{/tr}" />
+		<input type="reset" class="btn btn-warning" value="{tr}Reset{/tr}" />
+	</div>
 
 	<fieldset>
 		<legend>{tr}Global configuration{/tr}</legend>
@@ -104,7 +100,7 @@
 				<td style="width:49%">{tr}You need to:{/tr} 
 				<ul>
 					<li>{tr}Create or Edit a forum and enable:{/tr} "<strong>{tr}Posts can be rated{/tr}</strong>"</li>
-					<li>{tr}While editing the forum, choose whether to show the "User information display > <strong>Topic Rating</strong>" by each user{/tr}</li>					
+					<li>{tr}While editing the forum, choose whether to show the "User information display > <strong>Topic Rating</strong>" by each user{/tr}</li>	{* committed in a previous revision earlier than the expected backport *}
 					<li>{tr}Set the rating options at{/tr} "{tr}Admin Home{/tr}" > {tr}Ratings{/tr}" > "{tr}Comments{/tr}" > "{tr}Simple wiki comment ratings{/tr}" > "<strong>{tr}Wiki rating options:{/tr}</strong>" ({tr}see above{/tr})</li>
 				</ul>
 				</td>
@@ -150,7 +146,6 @@
 			{preference name=rating_results_detailed_percent}
 		</div>
 		{preference name=rating_smileys}
-        {preference name=rating_options_reversed}
 	</fieldset>
 
 	<fieldset>
@@ -158,13 +153,9 @@
 		{preference name=rating_advanced}
 	</fieldset>
 	
-	<div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="text-center">
-				<input type="submit" class="btn btn-primary btn-sm" value="{tr}Apply{/tr}" />
-            </div>
-        </div>
-    </div>
+	<div class="input_submit_container" style="margin-top: 5px; text-align: center">
+		<input type="submit" class="btn btn-default" value="{tr}Apply{/tr}" />
+	</div>
 </form>
 <div id="rating_advanced_childcontainer">
 	{foreach from=$configurations item=config}
@@ -183,8 +174,8 @@
 				<div>
 					<textarea name="formula" rows="5" style="width: 100%;">{$config.formula|escape}</textarea>
 				</div>
-				<div class="alert alert-danger"></div>
-				<input type="submit" class="btn btn-default btn-sm" name="edit" value="{tr}Save{/tr}"/>
+				<div class="error"></div>
+				<input type="submit" class="btn btn-default" name="edit" value="{tr}Save{/tr}"/>
 			</fieldset>
 		</form>
 	{/foreach}
@@ -193,7 +184,7 @@
 			<legend>{tr}Create New{/tr}</legend>
 			<label for="rating_config_new">{tr}Name{/tr}</label>
 			<input type="text" name="name" id="rating_config_new"/>
-			<input type="submit" class="btn btn-default btn-sm" name="create" value="{tr}Create{/tr}"/>
+			<input type="submit" class="btn btn-default" name="create" value="{tr}Create{/tr}"/>
 		</fieldset>
 	</form>
 </div>

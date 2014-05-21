@@ -62,8 +62,7 @@ function getAccountsMatchingIdentifier($identifier) // {{{
  */
 function loginUser($identifier) // {{{
 {
-	global $user_cookie_site;
-	$userlib = TikiLib::lib('user');
+	global $user_cookie_site, $userlib;
 	$userlib->update_lastlogin($identifier);
 	$userlib->update_expired_groups();
 	$_SESSION[$user_cookie_site] = $identifier;
@@ -91,10 +90,8 @@ function filterExistingInformation(&$data, &$messages) // {{{
  */
 function displayRegisatrationForms($data, $messages) // {{{
 {
-	global $prefs;
-	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
-	$registrationlib = TikiLib::lib('registration');
+	global $smarty, $userlib, $prefs;
+	global $registrationlib; require_once('lib/registration/registrationlib.php');
 
 	if (is_a($registrationlib->merged_prefs, "RegistrationError")) {
 		register_error($registrationlib->merged_prefs->msg);

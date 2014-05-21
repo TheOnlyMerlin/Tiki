@@ -21,9 +21,9 @@
 			<th>{tr}Errors{/tr}</th>
 			<th>{tr}Action{/tr}</th>
 		</tr>
-
+		{cycle values="odd,even" print=false}
 		{section name=user loop=$channels}
-			<tr>
+			<tr class="{cycle}">
 				<td class="text">{$channels[user].name|escape}</td>
 				<td class="text">
 					{if $view_editions eq 'y'}
@@ -66,7 +66,7 @@
 		{/section}
 	</table>
 
-	<div class="center-block">
+	<div class="mini">
 		{if $prev_offset >= 0}
 			[<a class="prevnext" href="{$url}?nlId={$nlId}&amp;{$cur}_offset={$prev_offset}&amp;{$bak}_offset={$offset_bak}&amp;{$cur}_sort_mode={$sort_mode}&amp;{$bak}_sort_mode={$sort_mode_bak}&amp;cookietab={$tab}">{tr}Prev{/tr}</a>]&nbsp;
 			{/if}

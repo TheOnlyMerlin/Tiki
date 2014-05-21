@@ -105,7 +105,6 @@ abstract class Toolbar
 					'h2',
 					'h3',
 					'titlebar',
-					'pastlink',
 					'toc',
 					'list',
 					'numlist',
@@ -254,10 +253,13 @@ abstract class Toolbar
 
 	public static function deleteAllCustomTools()
 	{
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 
 		$tikilib->query('DELETE FROM `tiki_preferences` WHERE `name` LIKE \'toolbar_tool_%\'');
 		$tikilib->delete_preference('toolbar_custom_list');
+
+		//global $cachelib; require_once("lib/cache/cachelib.php");
+		//$cachelib->invalidate('tiki_preferences_cache');
 	}
 
 
@@ -416,7 +418,7 @@ abstract class Toolbar
 
 		$params = array();
 		$params['_onclick'] = $click . (substr($click, strlen($click)-1) != ';' ? ';' : '') . 'return false;';
-		$params['_class'] = 'toolbar btn btn-xs btn-link' . (!empty($class) ? ' '.$class : '');
+		$params['_class'] = 'toolbar ' . (!empty($class) ? ' '.$class : '');
 		$params['_ajax'] = 'n';
 		$content = $title;
 		$params['_icon'] = $this->icon;
@@ -746,16 +748,6 @@ class ToolbarBlock extends ToolbarInline // Will change in the future
 	public static function fromName( $tagName ) // {{{
 	{
 		global $prefs;
-
-        $isWikiLingo = false;
-        if ($prefs['feature_wikilingo'] === 'y') {
-            $isWikiLingo = true;
-        }
-        $isFutureLinkProtocol = false;
-        if ($prefs['feature_futurelinkprotocol'] === 'y') {
-            $isFutureLinkProtocol = true;
-        }
-
 		switch( $tagName ) {
 		case 'center':
 			$label = tra('Align Center');
@@ -773,32 +765,13 @@ class ToolbarBlock extends ToolbarInline // Will change in the future
 			$wysiwyg = 'HorizontalRule';
 			$syntax = '---';
 			break;
-        case 'pastlink':
-            if ($isWikiLingo && $isFutureLinkProtocol) {
-                $label = tra('PastLink');
-                $icon = tra('img/icons/PastLink.svg');
-                $wysiwyg = 'PastLink';
-                $syntax = '@FLP(clipboarddata)text@)';
-                break;
-            }
-            else{
-                break;
-            }
 		case 'pagebreak':
-            if ($isWikiLingo) {
-                return;
-            }
-
 			$label = tra('Page Break');
 			$icon = tra('img/icons/page_break.png');
 			$wysiwyg = 'PageBreak';
 			$syntax = '...page...';
 			break;
 		case 'box':
-            if ($isWikiLingo) {
-                return;
-            }
-
 			$label = tra('Box');
 			$icon = tra('img/icons/box.png');
 			$wysiwyg = 'Box';
@@ -825,9 +798,6 @@ class ToolbarBlock extends ToolbarInline // Will change in the future
 			$syntax = '-=text=-';
 			break;
 		case 'toc':
-            if ($isWikiLingo) {
-                return;
-            }
 			$label = tra('Table of contents');
 			$icon = tra('img/icons/book.png');
 			$wysiwyg = 'TOC';
@@ -886,7 +856,14 @@ class ToolbarLineBased extends ToolbarInline // Will change in the future
 			break;
 		case 'indent':
 			global $prefs;
-            return null;
+			if ($prefs['feature_jison_wiki_parser'] === 'y') {	// leading spaces does nothing in the current parser, maybe it was for jison?
+				$label = tra('Indent');
+				$icon = tra('img/icons/arrow_right.png');
+				$wysiwyg = null;
+				$syntax = '  text';
+			} else {
+				return null;
+			}
 			break;
 		default:
 			return null;
@@ -922,11 +899,6 @@ class ToolbarPicker extends Toolbar
 	{
 		global $headerlib, $section, $prefs;
 
-        $isWikiLingo = false;
-        if ($prefs['feature_wikilingo'] === 'y') {
-            $isWikiLingo = true;
-        }
-
 		if ($prefs['mobile_mode'] === 'y') {
 			return '';
 		}
@@ -944,23 +916,18 @@ class ToolbarPicker extends Toolbar
 			$list = array_combine($list, $list);
 			break;
 		case 'smiley':
-            if ($isWikiLingo) {
-                return;
-            }
+			$wysiwyg = 'Smiley';
+			$label = tra('Smileys');
+			$icon = tra('img/smiles/icon_smile.gif');
+			$rawList = array( 'biggrin', 'confused', 'cool', 'cry', 'eek', 'evil', 'exclaim', 'frown', 'idea', 'lol', 'mad', 'mrgreen', 'neutral', 'question', 'razz', 'redface', 'rolleyes', 'sad', 'smile', 'surprised', 'twisted', 'wink', 'arrow', 'santa' );
+			$tool_prefs[] = 'feature_smileys';
 
-            $wysiwyg = 'Smiley';
-            $label = tra('Smileys');
-            $icon = tra('img/smiles/icon_smile.gif');
-            $rawList = array( 'biggrin', 'confused', 'cool', 'cry', 'eek', 'evil', 'exclaim', 'frown', 'idea', 'lol', 'mad', 'mrgreen', 'neutral', 'question', 'razz', 'redface', 'rolleyes', 'sad', 'smile', 'surprised', 'twisted', 'wink', 'arrow', 'santa' );
-            $tool_prefs[] = 'feature_smileys';
-
-            $list = array();
-            global $headerlib;
-            foreach ( $rawList as $smiley ) {
-                $tra = htmlentities(tra($smiley), ENT_QUOTES, 'UTF-8');
-                $list["(:$smiley:)"] = '<img src="' . $headerlib->convert_cdn('img/smiles/icon_' .$smiley . '.gif') . '" alt="' . $tra . '" title="' . $tra . '" width="15" height="15" />';
-            }
-
+			$list = array();
+			global $headerlib;
+			foreach ( $rawList as $smiley ) {
+				$tra = htmlentities(tra($smiley), ENT_QUOTES, 'UTF-8');
+				$list["(:$smiley:)"] = '<img src="' . $headerlib->convert_cdn('img/smiles/icon_' .$smiley . '.gif') . '" alt="' . $tra . '" title="' . $tra . '" width="15" height="15" />';
+			}
 			break;
 		case 'color':
 			$wysiwyg = 'TextColor';
@@ -1389,45 +1356,44 @@ class ToolbarHelptool extends Toolbar
 
 	function getWikiHtml( $areaId ) // {{{
 	{
-		$smarty = TikiLib::lib('smarty');
-		$servicelib = TikiLib::lib('service');
-
-		$params = ['controller' => 'edit', 'action' => 'help', 'modal' => 1];
-		$params['wiki'] = 1;
-		$params['plugins'] = 1;
-		$params['areaId'] = $areaId;
-
-		if ($section == 'sheet') {
-			$params['sheet'] = 1;
+		global $wikilib, $smarty, $plugins, $section;
+		if (!isset($plugins)) {
+			include_once ('lib/wiki/wikilib.php');
+			$plugins = $wikilib->list_plugins(true, $areaId);
 		}
 
-		$smarty->loadPlugin('smarty_function_icon');
-		$icon = smarty_function_icon(array('_id' => 'help'), $smarty);
-		$url = $servicelib->getUrl($params);
+		$sheethelp = '';
 
-		return "<a href=\"$url\" data-toggle=\"modal\" data-target=\"#bootstrap-modal\">$icon</a>";
+		if ($section == 'sheet') {
+			$sheethelp .= $smarty->fetch('tiki-edit_help_sheet.tpl');
+			$sheethelp .= $smarty->fetch('tiki-edit_help_sheet_interface.tpl');
+		}
+
+		$smarty->assign_by_ref('plugins', $plugins);
+		return  $smarty->fetch('tiki-edit_help.tpl') .
+				$smarty->fetch('tiki-edit_help_plugins.tpl') .
+				$sheethelp;
+
 	} // }}}
 
 	function getWysiwygToken( $areaId ) // {{{
 	{
 
-		$smarty = TikiLib::lib('smarty');
-		$servicelib = TikiLib::lib('service');
+		global $wikilib, $smarty, $plugins;
 
-		$params = ['controller' => 'edit', 'action' => 'help', 'modal' => 1];
-		$params['wysiwyg'] = 1;
-		$params['plugins'] = 1;
-		$params['areaId'] = $areaId;
+		include_once ('lib/wiki/wikilib.php');
+		$plugins = $wikilib->list_plugins(true, $areaId);
 
-		if ($section == 'sheet') {
-			$params['sheet'] = 1;
-		}
+		$smarty->assign_by_ref('plugins', $plugins);
 
-		$smarty->loadPlugin('smarty_function_icon');
-		$icon = smarty_function_icon(array('_id' => 'help'), $smarty);
-		$url = $servicelib->getUrl($params);
+		$unused = $smarty->fetch('tiki-edit_help_wysiwyg.tpl') . $smarty->fetch('tiki-edit_help_plugins.tpl');
+		$this->setLabel(tra('Wysiwyg Help'));
 
-		return "<a href=\"$url\" data-toggle=\"modal\" data-target=\"#bootstrap-modal\">$icon</a>";
+		$name = 'tikihelp';
+
+		$this->setupCKEditorTool('$.openEditHelp();', $name, $this->label, $this->icon);
+
+		return $name;
 	}
 
 	function getWysiwygWikiToken( $areaId ) // {{{ // wysiwyg_htmltowiki
@@ -2111,7 +2077,7 @@ class ToolbarsList
 						if (!empty($right)) {
 							$right = '<span class="toolbar-list">' . $right . '</span>';
 						}
-						$lineHtml = "<div class='helptool-admin pull-right'>$lineBit $right</div>" . $lineHtml;
+						$lineHtml = "<div class='helptool-admin'>$lineBit $right</div>" . $lineHtml;
 					} else {
 						$lineHtml = $lineBit;
 					}
@@ -2119,7 +2085,7 @@ class ToolbarsList
 
 				// adding admin icon if no right part - messy - TODO better
 				if ($c == 0 && empty($lineBit) && !empty($right)) {
-					$lineHtml .= "<div class='helptool-admin pull-right'>$right</div>";
+					$lineHtml .= "<div class='helptool-admin'>$right</div>";
 				}
 			}
 			if ( !empty($lineHtml) ) {

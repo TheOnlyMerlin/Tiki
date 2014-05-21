@@ -1,30 +1,26 @@
 {* $Id$ *}
 
-<div class="t_navbar btn-group form-group">
-	{button href="tiki-admingroups.php" class="btn btn-default" _text="{tr}Admin Groups{/tr}"}
-	{button href="tiki-adminusers.php" class="btn btn-default" _text="{tr}Admin Users{/tr}"}
-	{permission_link mode=button label="{tr}Manage permissions{/tr}"}
+<div class="navbar">
+	{button href="tiki-admingroups.php" _text="{tr}Admin Groups{/tr}"}
+	{button href="tiki-adminusers.php" _text="{tr}Admin Users{/tr}"}
+	{button href="tiki-objectpermissions.php" _text="{tr}Manage permissions{/tr}"}
 </div>
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}
-	{tr}Please see the <a class='alert-link' target='tikihelp' href='http://dev.tiki.org/Security'>Security page</a> on Tiki's developer site.{/tr}
-	{tr}See <a class="alert-link" href="tiki-admin_security.php" title="Security"><strong>Security Admin</strong></a> for additional security settings{/tr}.
+	{tr}Please see the <a class='rbox-link' target='tikihelp' href='http://dev.tiki.org/Security'>Security page</a> on Tiki's developer site.{/tr}
+	{tr}See <a href="tiki-admin_security.php" title="Security"><strong>Admin &gt; Security Admin</strong></a> for additional security settings{/tr}.
 {/remarksbox}
 
 <form class="admin" id="security" name="security" action="tiki-admin.php?page=security" method="post">
-	<div class="row">
-        <div class="form-group col-lg-12 clearfix">
-			<div class="pull-right">
-				<input type="reset" class="btn btn-link btn-sm" name="securityreset" value="{tr}Reset{/tr}" />
-				<input type="submit" class="btn btn-primary btn-sm" name="security" value="{tr}Apply{/tr}" />
-			</div>
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" class="btn btn-default" name="security" value="{tr}Apply{/tr}" />
+		<input type="reset" class="btn btn-warning" name="securityreset" value="{tr}Reset{/tr}" />
+	</div>
 
 {tabset}
 
 		{tab name="{tr}General Security{/tr}"}
-			<h2>{tr}General Security{/tr}</h2>
+			
 			<div class="adminoptionboxchild" id="smarty_security_childcontainer">
 			{if $haveMySQLSSL}
 				{if $mysqlSSL === true}
@@ -99,7 +95,6 @@
 		{/tab}
 
 		{tab name="{tr}Spam protection{/tr}"}
-            <h2>{tr}Spam protection{/tr}</h2>
 			<fieldset>
 			<legend>{tr}Captcha{/tr}</legend>
 			{preference name=feature_antibot}
@@ -133,13 +128,11 @@
 		{/tab}
 	
 		{tab name="{tr}Search results{/tr}"}
-            <h2>{tr}Search results{/tr}</h2>
 				{preference name=feature_search_show_forbidden_cat}
 				{preference name=feature_search_show_forbidden_obj}
 		{/tab}
 
 		{tab name="{tr}Site Access{/tr}"}
-            <h2>{tr}Site Access{/tr}</h2>
 				{preference name=site_closed}
 				<div class="adminoptionboxchild" id="site_closed_childcontainer">
 					{preference name=site_closed_msg}
@@ -153,7 +146,6 @@
 		{/tab}
 
 		{tab name="{tr}Tokens{/tr}"}
-            <h2>{tr}Tokens{/tr}</h2>
 				{remarksbox type="tip" title="{tr}Tip{/tr}"}
 					{tr}To manage tokens go to <a href="tiki-admin_tokens.php">Admin Tokens</a> page{/tr}
 				{/remarksbox}
@@ -165,7 +157,6 @@
 		{/tab}
 
 		{tab name="{tr}OpenPGP{/tr}"}
-            <h2>{tr}OpenPGP{/tr}</h2>
 			<fieldset>
 				<legend>{tr}OpenPGP fuctionality for PGP/MIME encrypted email messaging{/tr}</legend>
 				{remarksbox type="tip" title="{tr}Note{/tr}"}
@@ -194,11 +185,8 @@
 		{/tab}
 				
 {/tabset}	
-	<div class="row">
-        <div class="form-group col-lg-12 clearfix">
-			<div class="text-center">
-				<input type="submit" class="btn btn-primary btn-sm" name="security" value="{tr}Apply{/tr}" />
-			</div>
-        </div>
-    </div>
+	
+	<div class="input_submit_container" style="margin-top: 5px; text-align: center">
+		<input type="submit" class="btn btn-default" name="security" value="{tr}Apply{/tr}" />
+	</div>
 </form>

@@ -144,7 +144,7 @@
 						<form action="{query _type='relative'}" method="post">
 							<input type="hidden" name="invoice" value="{$payment_info.paymentRequestId|escape}">
 							<input type="hidden" name="cookietab" value="1">
-							<input type="submit" class="btn btn-default btn-sm" value="{tr}Refresh page{/tr}">
+							<input type="submit" class="btn btn-default" value="{tr}Refresh page{/tr}">
 						</form>
 						{remarksbox title="{tr}Payment info{/tr}" type="info"}
 							{$ccresult}<br>
@@ -154,7 +154,7 @@
 						<form action="{query _type='relative'}" method="post">
 							<input type="hidden" name="invoice" value="{$payment_info.paymentRequestId|escape}">
 							<input type="hidden" name="cclite_payment_amount" value="{$payment_info.amount_remaining|escape}">
-							<input type="submit" class="btn btn-default btn-sm" value="{tr}Trade with Cclite{/tr}">
+							<input type="submit" class="btn btn-default" value="{tr}Trade with Cclite{/tr}">
 						</form>
 						{if (!empty($ccresult) or !empty($ccresult2))}
 							{remarksbox title="{tr}Payment problem{/tr}" type="info"}
@@ -167,7 +167,6 @@
 					<legend style="font-style: italic">{tr}Pay With Tiki Credits{/tr}</legend>
 					<form action="{query _type='relative'}" method="post">
 						{tr}Pay with Tiki User Credits:{/tr}
-                        <div class="table-responsive">
 						<table class="table normal">
 							<tr>
 								<th>{tr}Credit type{/tr}</th>
@@ -187,11 +186,10 @@
 								<td colspan="4">
 									<input type="hidden" name="invoice" value="{$payment_info.paymentRequestId|escape}">
 									<input type="hidden" name="tiki_credit_amount" value="{$payment_info.amount_remaining|escape}">
-									<input type="submit" class="btn btn-default btn-sm" name="tiki_credit_pay" value="{tr}Pay with Tiki User Credits{/tr}">
+									<input type="submit" class="btn btn-default" name="tiki_credit_pay" value="{tr}Pay with Tiki User Credits{/tr}">
 								</td>
 							</tr>
 						</table>
-                        </div>
 					</form>
 				{/if}
 			</fieldset>
@@ -232,7 +230,7 @@
 						<legend style="font-style: italic">{tr}Enter a Manual Payment{/tr}</legend>
 
 						<p>
-							<input type="text" name="manual_amount" class="text-right">&nbsp;<span style="font-style: italic">{$payment_info.currency|escape}</span>
+							<input type="text" name="manual_amount" class="right">&nbsp;<span style="font-style: italic">{$payment_info.currency|escape}</span>
 						</p>
 						<p>
 							<label for="payment-note" style="font-style: italic">{tr}Note{/tr}</label>
@@ -240,7 +238,7 @@
                         </p>
 						<p>
 							<input type="hidden" name="returnurl" value="{$payment_info.returnurl|escape}">
-							<input type="submit" class="btn btn-default btn-sm" value="{tr}Enter payment{/tr}">
+							<input type="submit" class="btn btn-default" value="{tr}Enter payment{/tr}">
 							<input type="hidden" name="invoice" value="{$payment_info.paymentRequestId|escape}">
 						</p>
 					</fieldset>

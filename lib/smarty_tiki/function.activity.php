@@ -21,11 +21,20 @@ function smarty_function_activity($params)
 			return tr('Not found.');
 		}
 
-		$activity = TikiLib::lib('unifiedsearch')->getRawArray($activity);
+		$activity = array_map(function ($entry) {
+			if (is_object($entry)) {
+				if (method_exists($entry, 'getRawValue')) {
+					return $entry->getRawValue();
+				} else {
+					return $entry->getValue();
+				}
+			} else {
+				return $entry;
+			}
+		}, $activity);
 	}
 
 	$smarty->assign('activity', $activity);
-	$smarty->assign('activity_format', !empty($params['format']) ? $params['format'] : 'default');
 	return $smarty->fetch('activity/' . $activity['event_type'] . '.tpl');
 }
 

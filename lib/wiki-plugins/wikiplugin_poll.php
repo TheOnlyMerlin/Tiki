@@ -54,13 +54,7 @@ function wikiplugin_poll_info()
 
 function wikiplugin_poll($data, $params)
 {
-	global $tiki_p_admin, $prefs, $user;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$polllib = TikiLib::lib('poll');
-	$smarty = TikiLib::lib('smarty');
-	$trklib = TikiLib::lib('trk');
-
+	global $smarty, $polllib, $trklib, $tikilib, $dbTiki, $userlib, $tiki_p_admin, $prefs, $_REQUEST, $user;
 	$default = array('showtitle' => 'y', 'showresult' => 'link', 'showtotal' => 'y');
 	$params = array_merge($default, $params);
 

@@ -45,7 +45,7 @@ $inputConfiguration = array(
 );
 
 require_once 'tiki-setup.php';
-$categlib = TikiLib::lib('categ');
+require_once 'lib/categories/categlib.php';
 require_once 'lib/payment/paymentlib.php';
 $access->check_feature('payment_feature');
 

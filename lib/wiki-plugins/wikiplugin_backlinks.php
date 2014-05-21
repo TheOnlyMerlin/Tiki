@@ -36,7 +36,7 @@ class WikiPluginBackLinks extends PluginsLib
 
 	function run ($data, $params)
 	{
-		$wikilib = TikiLib::lib('wiki');
+		global $wikilib; include_once('lib/wiki/wikilib.php');
 		$params = $this->getParams($params, true);
 		$aInfoPreset = array_keys($this->aInfoPresetNames);
 		extract($params, EXTR_SKIP);

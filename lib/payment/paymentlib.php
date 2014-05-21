@@ -11,8 +11,7 @@ class PaymentLib extends TikiDb_Bridge
 
 	function request_payment( $description, $amount, $paymentWithin, $detail = null, $currency = null )
 	{
-		global $prefs, $user;
-		$userlib = TikiLib::lib('user');
+		global $prefs, $userlib, $user;
 
 		$description = substr($description, 0, 100);
 		if (empty($currency)) {
@@ -251,8 +250,7 @@ class PaymentLib extends TikiDb_Bridge
 
 	function enter_payment( $invoice, $amount, $type, array $data )
 	{
-		global $user;
-		$userlib = TikiLib::lib('user');
+		global $user, $userlib;
 		if ( $info = $this->get_payment($invoice) ) {
 			if ( $info['state'] != 'past' && $info['amount_remaining_raw'] - $amount <= 0 ) {
 				$results = $this->run_behaviors($info, 'complete');
@@ -285,8 +283,7 @@ class PaymentLib extends TikiDb_Bridge
 
 	function enter_authorization( $invoice, $type, $validForDays, array $data )
 	{
-		global $user;
-		$userlib = TikiLib::lib('user');
+		global $user, $userlib;
 		if ( $info = $this->get_payment($invoice) ) {
 			if ( $info['state'] != 'past' ) {
 				$results = $this->run_behaviors($info, 'authorize');

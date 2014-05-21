@@ -9,7 +9,7 @@
 // $Id$
 
 include('tiki-setup.php');
-$todolib = TikiLib::lib('todo');
+include_once('lib/todolib.php');
 
 $access->check_feature('feature_trackers');	// TODO add more features as the lib does more
 

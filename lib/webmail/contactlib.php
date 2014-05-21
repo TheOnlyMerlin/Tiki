@@ -392,3 +392,4 @@ class ContactLib extends TikiLib
 		}
 	}
 }
+$contactlib = new ContactLib;

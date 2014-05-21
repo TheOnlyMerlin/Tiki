@@ -129,7 +129,7 @@ class LogsLib extends TikiLib
 		}
 
 		if ($logCateg) {
-			$categlib = TikiLib::lib('categ');
+			global $categlib; include_once('lib/categories/categlib.php');
 			if ($objectType == 'comment') {
 				preg_match('/type=([^&]*)/', $param, $matches);
 				$categs = $categlib->get_object_categories($matches[1], $object);
@@ -185,7 +185,7 @@ class LogsLib extends TikiLib
 		}
 
 		if ($logCateg) {
-			$categlib = TikiLib::lib('categ');
+			global $categlib; include_once('lib/categories/categlib.php');
 			if ($objectType == 'comment') {
 				preg_match('/type=([^&]*)/', $param, $matches);
 				$categs = $categlib->get_object_categories($matches[1], $object);
@@ -383,9 +383,8 @@ class LogsLib extends TikiLib
 			, $end=0, $categId='', $all=false
 			)
 	{
-		global $prefs, $section;
-		$tikilib = TikiLib::lib('tiki');
-		$contributionlib = TikiLib::lib('contribution');
+		global $prefs, $section, $tikilib, $contributionlib;
+		include_once('lib/contribution/contributionlib.php');
 
 		$bindvars = array();
 		$bindvarsU = array();
@@ -502,7 +501,7 @@ class LogsLib extends TikiLib
 			}
 
 			if ($res['objectType'] == 'comment' && empty($res['categId'])) {
-				$categlib = TikiLib::lib('categ');
+				global $categlib; include_once('lib/categories/categlib.php');
 				preg_match('/type=([^&]*)/', $res['comment'], $matches);
 				$categs = $categlib->get_object_categories($matches[1], $res['object']);
 				$i = 0;
@@ -684,7 +683,7 @@ class LogsLib extends TikiLib
 
 	function get_stat_contributions_per_group($actions, $selectedGroups)
 	{
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 		$statGroups = array();
 		foreach ($actions as $action) {
 			if (!empty($previousAction) &&
@@ -1450,7 +1449,7 @@ class LogsLib extends TikiLib
 	function insert_image($galleryId, $graph, $ext, $title, $period)
 	{
 		global $prefs, $user;
-		$imagegallib = TikiLib::lib('imagegal');
+		global $imagegallib; include_once('lib/imagegals/imagegallib.php');
 
 		$filename = $prefs['tmpDir'] . '/' . md5(rand() . time()) . '.' . $ext;
 		$graph->Stroke($filename);
@@ -1507,10 +1506,10 @@ class LogsLib extends TikiLib
 					break;
 
 				case 'article':
+					global $artlib; require_once 'lib/articles/artlib.php';
 					$action['link'] = 'tiki-read_article.php?articleId='.$action['object'];
 
 					if (!isset($articleNames)) {
-						$artlib = TikiLib::lib('art');
 						$objects = $artlib->list_articles(0, -1, 'title_asc', '', 0, 0, '');
 						$articleNames = array();
 						foreach ($objects['data'] as $object) {
@@ -1556,7 +1555,7 @@ class LogsLib extends TikiLib
 					}
 
 					if (!isset($imageGalleryNames)) {
-						$imagegallib = TikiLib::lib('imagegal');
+						global $imagegallib; include_once('lib/imagegals/imagegallib.php');
 						$objects = $imagegallib->list_galleries(0, -1, 'name_asc', 'admin');
 						foreach ($objects['data'] as $object) {
 							$imageGalleryNames[$object['galleryId']] = $object['name'];
@@ -1576,7 +1575,7 @@ class LogsLib extends TikiLib
 					}
 
 					if (!isset($fileGalleryNames)) {
-						$filegallib = TikiLib::lib('filegal');
+						global $filegallib; include_once('lib/filegals/filegallib.php');
 						$objects = $filegallib->list_file_galleries(0, -1, 'name_asc', 'admin', '', $prefs['fgal_root_id']);
 						foreach ($objects['data'] as $object) {
 							$fileGalleryNames[$object['galleryId']] = $object['name'];
@@ -1613,7 +1612,7 @@ class LogsLib extends TikiLib
 
 				case 'sheet':
 					if (!isset($sheetNames)) {
-						$sheetlib = TikiLib::lib('sheet');
+						global $sheetlib; include_once('lib/sheet/grid.php');
 						$objects = $sheetlib->list_sheets();
 						foreach ($objects['data'] as $object) {
 							$sheetNames[$object['sheetId']] = $object['title'];
@@ -1630,7 +1629,7 @@ class LogsLib extends TikiLib
 				case 'blog':
 
 					if (!isset($blogNames)) {
-						$bloglib = TikiLib::lib('blog');
+						global $bloglib; require_once('lib/blogs/bloglib.php');
 						$objects = $bloglib->list_blogs();
 						foreach ($objects['data'] as $object) {
 							$blogNames[$object['blogId']] = $object['title'];
@@ -1798,3 +1797,4 @@ class LogsLib extends TikiLib
 	}
 }
 
+$logslib = new LogsLib;

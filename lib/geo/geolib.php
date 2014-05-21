@@ -170,8 +170,10 @@ class GeoLib
      */
     function setTrackerGeo($itemId, $geo)
 	{
-		global $prefs;
-		$trklib = TikiLib::lib('trk');
+		global $prefs, $trklib;
+		if (!is_object($trklib)) {
+			include_once('lib/trackers/trackerlib.php');
+		}
 		$item = $trklib->get_tracker_item($itemId);
 		$fields = $trklib->list_tracker_fields($item['trackerId']);
 		foreach ($fields["data"] as $f) {

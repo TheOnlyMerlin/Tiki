@@ -29,8 +29,15 @@
 				and (!isset($gal_info.show_action) or $gal_info.show_action neq 'n')}
 				{capture name=over_actions}
 					{strip}
-						{include file='fgal_context_menu.tpl' menu_icon=$prefs.use_context_menu_icon menu_text=$prefs.use_context_menu_text changes=$smarty.section.changes.index}
-					{/strip}
+						<div class='opaque'>
+							<div class='box-title'>
+								{tr}Actions{/tr}
+							</div>
+							<div class='box-data'>
+								{include file='fgal_context_menu.tpl' menu_icon=$prefs.use_context_menu_icon menu_text=$prefs.use_context_menu_text changes=$smarty.section.changes.index}
+							</div>
+						</div>
+					  {/strip}
 				{/capture}
 			{/if}
 
@@ -57,8 +64,7 @@
 										{assign var=propkey value="show_$propname"}
 									{/if}
 									{if isset($files[changes].$propname)}
-                    					{if $propname == 'share' && isset($files[changes].share.data)}
-											{$email = []}
+                    {if $propname == 'share' && isset($files[changes].share.data)}
 											{foreach item=tmp_prop key=tmp_propname from=$files[changes].share.data}
 												{$email[]=$tmp_prop.email}
 											{/foreach}
@@ -151,7 +157,7 @@
 				{if !isset($gal_info.show_action) or $gal_info.show_action neq 'n'}
 					{if ( $prefs.use_context_menu_icon eq 'y' or $prefs.use_context_menu_text eq 'y' )
 					and $prefs.javascript_enabled eq 'y'}
-						<a class="fgalname tips" title="{tr}Actions{/tr}" href="#" {popup trigger="onclick" sticky=1 mouseoff=1 fullhtml="1" text=$smarty.capture.over_actions|escape:"javascript"|escape:"html"}>
+						<a class="fgalname" title="{tr}Actions{/tr}" href="#" {popup trigger="onclick" sticky=1 mouseoff=1 fullhtml="1" text=$smarty.capture.over_actions|escape:"javascript"|escape:"html"}>
 							{icon _id='wrench' alt="{tr}Actions{/tr}"}
 						</a>
 						{else}

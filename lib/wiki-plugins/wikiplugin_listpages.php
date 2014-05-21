@@ -203,9 +203,7 @@ function wikiplugin_listpages_info()
 
 function wikiplugin_listpages($data, $params)
 {
-	global $prefs, $tiki_p_view;
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $prefs, $tiki_p_view, $tikilib, $smarty;
 
 	if ( isset($prefs) ) {
 		// Handle 1.10.x prefs
@@ -261,7 +259,8 @@ function wikiplugin_listpages($data, $params)
 		$filter['structHead'] = $structHead;
 	}
 	if (!empty($translations) && $prefs['feature_multilingual'] == 'y') {
-		$multilinguallib = TikiLib::lib('multilingual');
+		global $multilinguallib;
+		require_once 'lib/multilingual/multilinguallib.php';
 		if ($translations == 'user') {
 			$translations = $multilinguallib->preferredLangs();
 		} else {
@@ -297,7 +296,8 @@ function wikiplugin_listpages($data, $params)
 		} else {
 			$aExcludetag[] = $excludetag;
 		}
-		$freetaglib = TikiLib::lib('freetag');
+		global $freetaglib;
+		require_once 'lib/freetag/freetaglib.php';
 		$i = 0;
 
 		foreach ( $listpages['data'] as $page ) {

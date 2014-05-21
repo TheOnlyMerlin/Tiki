@@ -59,52 +59,32 @@ $isInstalled = $installer->isInstalled();
 if ($isInstalled) {
 	$bypass_siteclose_check = true;
 	require_once 'tiki-setup.php';
-
-	if (! $asUser = $input->getParameterOption(array('--as-user'))) {
-		$asUser = 'admin';
-	}
-
-	if (TikiLib::lib('user')->user_exists($asUser)) {
-		$permissionContext = new Perms_Context($asUser);
-	}
-}
-
-if ($isInstalled) {
 	$console->add(new Tiki\Command\CacheClearCommand);
 	$console->add(new Tiki\Command\BackupDBCommand);
 	$console->add(new Tiki\Command\BackupFilesCommand);
-	$console->add(new Tiki\Command\ProfileBaselineCommand);
 } else {
 	$console->add(new Tiki\Command\UnavailableCommand('cache:clear'));
 	$console->add(new Tiki\Command\UnavailableCommand('database:backup'));
 	$console->add(new Tiki\Command\UnavailableCommand('backup:files'));
-	$console->add(new Tiki\Command\UnavailableCommand('profile:baseline'));
 }
 
 if ($isInstalled && ! $installer->requiresUpdate()) {
-	$console->add(new Tiki\Command\GoalCheckCommand);
+	require_once 'tiki-setup.php';
 	$console->add(new Tiki\Command\IndexRebuildCommand);
 	$console->add(new Tiki\Command\IndexOptimizeCommand);
 	$console->add(new Tiki\Command\IndexCatchUpCommand);
-	$console->add(new Tiki\Command\MailInPollCommand);
     $console->add(new Tiki\Command\MailQueueSendCommand);
-	$console->add(new Tiki\Command\NotificationDigestCommand);
 	$console->add(new Tiki\Command\ProfileForgetCommand);
 	$console->add(new Tiki\Command\ProfileInstallCommand);
 	$console->add(new Tiki\Command\ProfileExport\Init);
-	$console->add(new Tiki\Command\RefreshRssCommand);
 } else {
-	$console->add(new Tiki\Command\UnavailableCommand('goal:check'));
 	$console->add(new Tiki\Command\UnavailableCommand('index:rebuild'));
 	$console->add(new Tiki\Command\UnavailableCommand('index:optimize'));
 	$console->add(new Tiki\Command\UnavailableCommand('index:catch-up'));
-	$console->add(new Tiki\Command\UnavailableCommand('mail-in:poll'));
 	$console->add(new Tiki\Command\UnavailableCommand('mail-queue:send'));
-	$console->add(new Tiki\Command\UnavailableCommand('notification:digest'));
 	$console->add(new Tiki\Command\UnavailableCommand('profile:forget'));
 	$console->add(new Tiki\Command\UnavailableCommand('profile:apply'));
 	$console->add(new Tiki\Command\UnavailableCommand('profile:export:init'));
-	$console->add(new Tiki\Command\UnavailableCommand('rss:refresh'));
 }
 
 if (file_exists('profiles/info.ini')) {
@@ -117,9 +97,6 @@ if (file_exists('profiles/info.ini')) {
 	$console->add(new Tiki\Command\ProfileExport\Category);
 	$console->add(new Tiki\Command\ProfileExport\FileGallery);
 	$console->add(new Tiki\Command\ProfileExport\Forum);
-	$console->add(new Tiki\Command\ProfileExport\Goal);
-	$console->add(new Tiki\Command\ProfileExport\GoalSet);
-	$console->add(new Tiki\Command\ProfileExport\Group);
 	$console->add(new Tiki\Command\ProfileExport\IncludeProfile);
 	$console->add(new Tiki\Command\ProfileExport\Menu);
 	$console->add(new Tiki\Command\ProfileExport\Module);

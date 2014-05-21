@@ -47,10 +47,9 @@ function module_last_actions_info()
  */
 function module_last_actions($mod_reference, $module_params)
 {
-	global $tiki_p_admin, $user;
-	$smarty = TikiLib::lib('smarty');
+	global $tiki_p_admin, $user, $smarty;
 	if ($user) {
-		$logslib = TikiLib::lib('logs');
+		global $logslib; require_once('lib/logs/logslib.php');
 		
 		$results = $logslib->list_actions('', '', $tiki_p_admin == 'y' ? '' : $user, 0, $mod_reference["rows"]);
 		$actions = $results['data'];

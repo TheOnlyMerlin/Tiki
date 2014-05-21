@@ -37,10 +37,7 @@ class Tiki_Security
 			return null;
 		}
 
-		if (! $decoded = json_decode($string, true)) {
-			return null;
-		}
-
+		$decoded = json_decode($string, true);
 		$hash = $this->getHash($decoded['data']);
 
 		if ($hash === $decoded['hash']) {

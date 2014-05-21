@@ -10,7 +10,7 @@
 
 $section = 'blogs';
 require_once ('tiki-setup.php');
-$bloglib = TikiLib::lib('blog');
+include_once ('lib/blogs/bloglib.php');
 
 $auto_query_args = array(
 	'postId',
@@ -92,7 +92,7 @@ if (isset($post_info['priv']) && ($post_info['priv'] == 'y')) {
 
 if ($prefs['feature_freetags'] == 'y') {
 	// Get Tags
-	$freetaglib = TikiLib::lib('freetag');
+	include_once ('lib/freetag/freetaglib.php');
 	$post_info['freetags'] = $freetaglib->get_tags_on_object($postId, "blog post");
 
 	if ($blog_data['show_related'] == 'y' && !empty($post_info['freetags'])) {

@@ -28,13 +28,11 @@ class AdminWizardAdvanced extends Wizard
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
 
-		return true;		
-	}
-
-	function getTemplate()
-	{
+		// Assign the page temaplte
 		$wizardTemplate = 'wizard/admin_advanced.tpl';
-		return $wizardTemplate;
+		$smarty->assign('wizardBody', $wizardTemplate);
+		
+		return true;		
 	}
 
 	public function onContinue ($homepageUrl) 

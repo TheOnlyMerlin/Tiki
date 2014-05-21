@@ -30,7 +30,7 @@ function module_file_galleries_info()
  */
 function module_file_galleries($mod_reference, $module_params)
 {
-	$filegallib = TikiLib::lib('filegal');
+	global $filegallib; include_once ('lib/filegals/filegallib.php');
 	global $smarty;
 	
 	$smarty->assign('tree', $filegallib->getTreeHTML());

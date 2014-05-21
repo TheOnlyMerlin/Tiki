@@ -1598,17 +1598,13 @@ class TrackerLib extends TikiLib
 			}
 		}
 
-		// get permnames
-		$permNames = array();
-		foreach ($fil as $fieldId => $value) {
-			$field = $tracker_definition->getField($fieldId);
-			$permNames[$fieldId] = $field['permName'];
-		}
-
 		if (count($final)) {
 			$data = array();
 			foreach ($fil as $fieldId => $value) {
-				$data[$permNames[$fieldId]] = $value;
+				$field = $tracker_definition->getField($fieldId);
+				$permName = $field['permName'];
+
+				$data[$permName] = $value;
 			}
 
 			foreach ($final as $job) {
@@ -1616,15 +1612,6 @@ class TrackerLib extends TikiLib
 				$data[$job['field']['permName']] = $value;
 				$this->modify_field($currentItemId, $job['field']['fieldId'], $value);
 			}
-		}
-
-		$values_by_permname = array();
-		$old_values_by_permname = array();
-		foreach ($fil as $fieldId => $value) {
-			$values_by_permname[$permNames[$fieldId]] = $value;
-		}
-		foreach ($old_values as $fieldId => $value) {
-			$old_values_by_permname[$permNames[$fieldId]] = $value;
 		}
 
 		TikiLib::events()->trigger(
@@ -1637,8 +1624,6 @@ class TrackerLib extends TikiLib
 				'trackerId' => $trackerId,
 				'values' => $fil,
 				'old_values' => $old_values,
-				'values_by_permname' => $values_by_permname,
-				'old_values_by_permname' => $old_values_by_permname,
 				'bulk_import' => $bulk_import,
 				'aggregate' => sha1("trackeritem/$currentItemId"),
 			)
@@ -2856,9 +2841,9 @@ class TrackerLib extends TikiLib
 		}
 	}
 
-	public function get_field_id($trackerId, $name, $lookup = 'name')
+	public function get_field_id($trackerId,$name)
 	{
-		return $this->fields()->fetchOne('fieldId', array('trackerId' => (int) $trackerId, $lookup => $name));
+		return $this->fields()->fetchOne('fieldId', array('trackerId' => (int) $trackerId, 'name' => $name));
 	}
 
 	/**
@@ -3563,51 +3548,6 @@ class TrackerLib extends TikiLib
 	{
 		$query = "update `tiki_tracker_item_fields` ttif left join `tiki_tracker_fields` ttf on (ttif.fieldId = ttf.fieldId) set ttif.`value`=? where ttif.`value`=? and ttf.`type` = ?";
 		$this->query($query, array($new, $old, 'k'));
-
-		if ($prefs['tracker_wikirelation_synctitle'] == 'y') {
-			$relationlib = TikiLib::lib('relation');
-			$wikilib = TikiLib::lib('wiki');
-			$relatedfields = $relationlib->get_object_ids_with_relations_from( 'wiki page', $new, 'tiki.wiki.linkedfield' ); // $new because attributes have been changed 
-			$relateditems = $relationlib->get_object_ids_with_relations_from( 'wiki page', $new, 'tiki.wiki.linkeditem' );
-			foreach ($relateditems as $itemId) {
-				foreach ($relatedfields as $fieldId) {
-					$value = $this->get_item_value(0, $itemId, $fieldId);
-					if ($wikilib->get_namespace($value) && $value != $new) {
-						$this->modify_field($itemId, $fieldId, $new);
-					} elseif (!$wikilib->get_namespace($value) && $value != $wikilib->get_without_namespace($new)) {
-						$this->modify_field($itemId, $fieldId, $wikilib->get_without_namespace($new));
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Note that this is different from function rename_page 
-	 */
-	public function rename_linked_page( $args )
-	{
-		global $prefs;
-		$relationlib = TikiLib::lib('relation');
-		$wikilib = TikiLib::lib('wiki');
-		$wikipages = $relationlib->get_object_ids_with_relations_to( 'trackeritem', $args['object'], 'tiki.wiki.linkeditem' );
-		foreach ($wikipages as $pageName) {
-			// determine if field has changed
-			$relatedfields = $relationlib->get_object_ids_with_relations_from( 'wiki page', $pageName, 'tiki.wiki.linkedfield' );
-			foreach ($relatedfields as $fieldId) {
-				if ( isset($args['values'][$fieldId]) and isset($args['old_values'][$fieldId])
-					&& $args['values'][$fieldId] != $args['old_values'][$fieldId] ) {
-					if ($wikilib->get_namespace($args['values'][$fieldId])) {
-						$newname = $args['values'][$fieldId];
-					} elseif ($namespace = $wikilib->get_namespace($pageName)) {
-						$newname = $namespace . $prefs['namespace_separator'] . $wikilib->get_without_namespace($args['values'][$fieldId]);
-					} else {
-						$newname = $args['values'][$fieldId];
-					}
-					$wikilib->wiki_rename_page($pageName, $newname, false);
-				}
-			}
-		}
 	}
 
 	public function build_date($input, $format, $ins_id)
@@ -3661,7 +3601,7 @@ class TrackerLib extends TikiLib
 	/* get the fields from the pretty tracker template
 	 * return a list of fieldIds
 	 */
-	public function get_pretty_fieldIds($resource, $type='wiki', &$outputPretty, $trackerId = 0)
+	public function get_pretty_fieldIds($resource, $type='wiki', &$outputPretty)
 	{
 		$tikilib = TikiLib::lib('tiki');
 		$smarty = TikiLib::lib('smarty');
@@ -3678,25 +3618,13 @@ class TrackerLib extends TikiLib
 			$f = file_get_contents($resource_name);
 		}
 		if (!empty($f)) {
-			preg_match_all('/\$f_(\w+)(\|output)?/', $f, $matches);
-			$ret = array();
-			foreach ($matches[1] as $i => $val) {
-				if (ctype_digit($val)) {
-					$ret[] = $val;
-				} elseif ($fieldId = $this->table('tiki_tracker_fields')->fetchOne('fieldId', array('permName' => $val, 'trackerId' => $trackerId))) {
-					$ret[] = $fieldId;
-				}
-			}
+			preg_match_all('/\$f_([0-9]+)(\|output)?/', $f, $matches);
 			foreach ($matches[2] as $i => $val) {
 				if (!empty($val)) {
-					if (ctype_digit($val)) {
-						$outputPretty[] = $matches[1][$i];
-					} elseif ($fieldId = $this->table('tiki_tracker_fields')->fetchOne('fieldId', array('permName' => $matches[1][$i], 'trackerId' => $trackerId))) {
-						$outputPretty[] = $fieldId;
-					}
+					$outputPretty[] = $matches[1][$i];
 				}
 			}
-			return $ret;
+			return $matches[1];
 		}
 		return array();
 	}
@@ -3714,7 +3642,7 @@ class TrackerLib extends TikiLib
 			}
 		} else {
 			// array syntax for callback function needed for some versions of PHP (5.2.0?) - thanks to mariush on http://php.net/preg_replace_callback
-			$value = preg_replace_callback('/\{\$(f_\w+)\}/', array( &$this, '_pretty_tracker_replace_value'), $value);
+			$value = preg_replace_callback('/\{\$(f_\d+)\}/', array( &$this, '_pretty_tracker_replace_value'), $value);
 		}
 	}
 
@@ -4785,15 +4713,7 @@ class TrackerLib extends TikiLib
 
 	public function field_render_value( $params )
 	{
-		if (isset($params['field'])) {
-			$field = $params['field'];
-		} elseif (isset($params['trackerId'], $params['permName'])) {
-			$definition = Tracker_Definition::get($params['trackerId']);
-			$field = $definition->getFieldFromPermName($params['permName']);
-		} else {
-			return tr('Field not specified');
-		}
-
+		$field = $params['field'];
 		$item = isset($params['item']) ? $params['item'] : array();
 
 		if (isset($field['value'])) {
@@ -4850,8 +4770,6 @@ class TrackerLib extends TikiLib
 			}
 
 			TikiLib::lib('smarty')->assign("f_$fieldId", $r);
-			$fieldPermName = $field['permName'];
-			TikiLib::lib('smarty')->assign("f_$fieldPermName", $r);
 			return $r;
 		}
 	}
@@ -4965,3 +4883,5 @@ class TrackerLib extends TikiLib
 	}
 }
 
+global $trklib;
+$trklib = new TrackerLib;

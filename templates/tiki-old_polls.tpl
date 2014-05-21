@@ -1,7 +1,7 @@
 {title help="polls" admpage="polls"}{tr}Polls{/tr}{/title}
 
 {include file='find.tpl'}
-<div class="table-responsive">
+
 <table class="table normal">
 <tr>
 <th>{self_link _sort_arg='sort_mode' _sort_field='title' title="{tr}Title{/tr}"}{tr}Title{/tr}{/self_link}</th>
@@ -9,9 +9,9 @@
 <th>{self_link _sort_arg='sort_mode' _sort_field='votes' title="{tr}Votes{/tr}"}{tr}Votes{/tr}{/self_link}</th>
 <th>{tr}Action{/tr}</th>
 </tr>
-
+{cycle values="odd,even" print=false}
 {section name=changes loop=$listpages}
-<tr>
+<tr class="{cycle}">
 <td class="text">{$listpages[changes].title|escape}</td>
 <td class="date">{$listpages[changes].publishDate|tiki_short_datetime}</td>
 <td class="text">{$listpages[changes].votes}</td>
@@ -26,5 +26,5 @@
 	{norecords _colspan=4}
 {/section}
 </table>
-</div>
+
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}

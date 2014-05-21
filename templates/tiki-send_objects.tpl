@@ -3,11 +3,11 @@
 {title help="Communication+Center"}{tr}Send objects{/tr}{/title}
 
 {if $msg}
-	<div class="panel panel-default">
-		<div class="panel-heading">
+	<div class="cbox">
+		<div class="cbox-title">
 			{tr}Transmission results{/tr}
 		</div>
-		<div class="panel-body">
+		<div class="cbox-data">
 			{$msg}
 		</div>
 	</div>
@@ -17,12 +17,12 @@
 <br>
 
 <form method="post" action="tiki-send_objects.php">
-	<div class="panel panel-default">
-		<div class="panel-heading">
+	<div class="cbox">
+		<div class="cbox-title">
 			{tr}Filter{/tr}
 		</div>
-		<div class="panel-body">
-			{tr}Filter:{/tr}<input type="text" name="find" value="{$find|escape}"><input type="submit" class="btn btn-default btn-sm" name="filter" value="{tr}Filter{/tr}"><br>
+		<div class="cbox-data">
+			{tr}Filter:{/tr}<input type="text" name="find" value="{$find|escape}"><input type="submit" class="btn btn-default" name="filter" value="{tr}Filter{/tr}"><br>
 		</div>
 	</div>
 	
@@ -30,24 +30,24 @@
 	<br>
 
 	{if $tiki_p_send_pages eq 'y'}
-		<div class="panel panel-default">
-			<div class="panel-heading">
+		<div class="cbox">
+			<div class="cbox-title">
 				{tr}Send Wiki Pages{/tr}
 			</div>
-			<div class="panel-body">
-				<div class="panel panel-default"><div class="panel-body">
+			<div class="cbox-data">
+				<div class="simplebox">
 					<b>{tr}Pages{/tr}</b>:
 					{section name=ix loop=$sendpages}
 						{$sendpages[ix]}&nbsp;
 					{/section}
-				</div></div>
+				</div>
 				<select name="pageName">
 					{section name=ix loop=$pages}
 						<option value="{$pages[ix].pageName|escape}">{$pages[ix].pageName|escape}</option>
 					{/section}
 				</select>
-				<input type="submit" class="btn btn-default btn-sm" name="addpage" value="{tr}Add Page{/tr}">
-				<input type="submit" class="btn btn-default btn-sm" name="clearpages" value="{tr}Clear{/tr}">
+				<input type="submit" class="btn btn-default" name="addpage" value="{tr}Add Page{/tr}">
+				<input type="submit" class="btn btn-default" name="clearpages" value="{tr}Clear{/tr}">
 			</div>
 		</div>
 
@@ -55,23 +55,24 @@
 	<br>
 
 		{if count($structures)}
-			<div class="panel panel-default">
-				<div class="panel-heading">
+			<div class="cbox">
+				<div class="cbox-title">
 					{tr}Send a structure{/tr}
 				</div>
-					<div class="panel panel-default"><div class="panel-body">
+				<div class="cbox-data">
+					<div class="simplebox">
 						<b>{tr}Structures{/tr}</b>:
 						{section name=ix loop=$sendstructures_names}
 							{$sendstructures_names[ix]}&nbsp;
 						{/section}
-					</div></div>
+					</div>
 					<select name="structure">
 						{foreach item=struct from=$structures}
 							<option value="{$struct.page_ref_id|escape}">{$struct.pageName|escape}{if $struct.page_alias} (alias: {$struct.page_alias}){/if}</option>
 						{/foreach}
 					</select>
-					<input type="submit" class="btn btn-default btn-sm" name="addstructure" value="{tr}Add Structure{/tr}">
-					<input type="submit" class="btn btn-default btn-sm" name="clearstructures" value="{tr}Clear{/tr}">
+					<input type="submit" class="btn btn-default" name="addstructure" value="{tr}Add Structure{/tr}">
+					<input type="submit" class="btn btn-default" name="clearstructures" value="{tr}Clear{/tr}">
 				</div>
 			</div>
 		{/if}
@@ -81,25 +82,24 @@
 	<br>
 
 	{if $tiki_p_send_articles eq 'y'}
-		<div class="panel panel-default">
-			<div class="panel-heading">
+		<div class="cbox">
+			<div class="cbox-title">
 				{tr}Send Articles{/tr}
 			</div>
-			<div class="panel panel-default">
-                <div class="panel-body">
-				    <b>{tr}Articles{/tr}</b>:
-				    {section name=ix loop=$sendarticles}
-				    {$sendarticles[ix]}&nbsp;
+			<div class="cbox-data">
+				<div class="simplebox">
+					<b>{tr}Articles{/tr}</b>:
+					{section name=ix loop=$sendarticles}
+						{$sendarticles[ix]}&nbsp;
 					{/section}
 				</div>
-            </div>
 				<select name="articleId">
 					{section name=ix loop=$articles}
 						<option value="{$articles[ix].articleId|escape}">{$articles[ix].articleId}: {$articles[ix].title|escape}</option>
 					{/section}
 				</select>
-				<input type="submit" class="btn btn-default btn-sm" name="addarticle" value="{tr}Add Article{/tr}">
-				<input type="submit" class="btn btn-default btn-sm" name="cleararticles" value="{tr}Clear{/tr}">
+				<input type="submit" class="btn btn-default" name="addarticle" value="{tr}Add Article{/tr}">
+				<input type="submit" class="btn btn-default" name="cleararticles" value="{tr}Clear{/tr}">
 			</div>
 		</div>
 	{/if}
@@ -107,11 +107,11 @@
 	<br>
 	<br>
 
-	<div class="panel panel-default">
-		<div class="panel-heading">
+	<div class="cbox">
+		<div class="cbox-title">
 			{tr}Send objects to this site{/tr}
 		</div>
-		<div class="panel-body">
+		<div class="cbox-data">
 			<input type="hidden" name="sendpages" value="{$form_sendpages|escape}">
 			<input type="hidden" name="sendstructures" value="{$form_sendstructures|escape}">
 			<input type="hidden" name="sendarticles" value="{$form_sendarticles|escape}">
@@ -145,7 +145,7 @@
 					<td><input type="checkbox" name="dbg"{if $dbg eq 'on'} checked="checked"{/if}></td>
 				</tr>
 				<tr>
-					<td align="center" colspan="2"><input type="submit" class="btn btn-default btn-sm" name="send" value="{tr}Send{/tr}"></td>
+					<td align="center" colspan="2"><input type="submit" class="btn btn-default" name="send" value="{tr}Send{/tr}"></td>
 				</tr>
 			</table>
 		</div>

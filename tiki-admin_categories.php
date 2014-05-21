@@ -9,7 +9,7 @@
 // $Id$
 
 require_once ('tiki-setup.php');
-$categlib = TikiLib::lib('categ');
+include_once ('lib/categories/categlib.php');
 
 @ini_set('max_execution_time', 0);	// as pagination is broken and almost every object gets fully loaded on this page
 @ini_set('memory_limit', -1);		// at least try and avoid WSoD on large sites (TODO better still - see r30064)
@@ -388,7 +388,7 @@ if ($prefs['feature_search'] !== 'y' || $prefs['unified_add_to_categ_search'] !=
 	}
 
 	if ( $prefs['feature_file_galleries'] == 'y' ) {
-		$filegallib = TikiLib::lib('filegal');
+		include_once ('lib/filegals/filegallib.php');
 		$file_galleries = $filegallib->list_file_galleries($offset, -1, 'name_desc', 'admin', $find_objects, $prefs['fgal_root_id']);
 	}
 
@@ -403,7 +403,7 @@ if ($prefs['feature_search'] !== 'y' || $prefs['unified_add_to_categ_search'] !=
 	}
 
 	if ( $prefs['feature_blogs'] == 'y' ) {
-		$bloglib = TikiLib::lib('blog');
+		require_once('lib/blogs/bloglib.php');
 		$blogs = $bloglib->list_blogs($offset, -1, 'title_asc', $find_objects);
 	}
 
@@ -437,12 +437,12 @@ if ($prefs['feature_search'] !== 'y' || $prefs['unified_add_to_categ_search'] !=
 	}
 
 	if ( $prefs['feature_trackers'] == 'y' ) {
-		$trklib = TikiLib::lib('trk');
+		include_once ('lib/trackers/trackerlib.php');
 		$trackers = $trklib->list_trackers($offset, -1, 'name_asc', $find_objects);
 	}
 
 	if ( $prefs['feature_articles'] == 'y' ) {
-		$artlib = TikiLib::lib('art');
+		global $artlib; require_once 'lib/articles/artlib.php';
 		$articles = $artlib->list_articles($offset, -1, 'title_asc', $find_objects, '', '', $user, '', '', 'n');
 	}
 

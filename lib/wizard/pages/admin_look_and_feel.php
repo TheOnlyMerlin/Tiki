@@ -52,13 +52,11 @@ class AdminWizardLookAndFeel extends Wizard
 
 		$this->setupThumbnailScript($styles);
 		
-		return true;
-	}
-
-	function getTemplate()
-	{
+		// Assign the page tempalte
 		$wizardTemplate = 'wizard/admin_look_and_feel.tpl';
-		return $wizardTemplate;
+		$smarty->assign('wizardBody', $wizardTemplate);
+		
+		return true;
 	}
 
 	function onContinue ($homepageUrl) 
