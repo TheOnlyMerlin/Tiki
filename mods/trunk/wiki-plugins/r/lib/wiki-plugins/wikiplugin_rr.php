@@ -266,19 +266,19 @@ function wikiplugin_rr_info() {
 				'advanced' => true,
 			),
 			'customoutput' => array(
-		        'required' => false,
-		        'safe' => true,
-		        'name' => tra('Custom output'),
-		        'description' => tra('Write your custom png creation R command. Use tikiRRfilename for value of output. RR does not produce an output file.'),
-		        'filter' => 'int',
-		        'default' => '0',
-		        'options' => array(
+				'required' => false,
+				'safe' => true,
+				'name' => tra('Custom output'),
+				'description' => tra('Write your custom png creation R command. Use tikiRRfilename for value of output. RR does not produce an output file.'),
+				'filter' => 'int',
+				'default' => '0',
+				'options' => array(
 					array('text' => '', 'value' => ''),
 					array('text' => tra('No'), 'value' => '0'),
 					array('text' => tra('Yes'), 'value' => '1'),
 				),
-		        'advanced' => true,
-		    ),
+				'advanced' => true,
+			),
 			'security' => array(
 				'required' => false,
 				'safe' => false,
@@ -411,9 +411,9 @@ function wikiplugin_rr($data, $params) {
 		
 		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
 		$r_dir = getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash. 'R__itemid_' . sprintf ("%06u", $_REQUEST['itemId']);
-                if (!file_exists ( $r_dir )) {
-                        mkdir($r_dir, 0700);
-                }
+		if (!file_exists ( $r_dir )) {
+			mkdir($r_dir, 0700);
+		}
 		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
 		$graph_dir = '.' . DIRECTORY_SEPARATOR . 'temp/cache/' . $tikidomainslash . 'R__itemid_' . sprintf ("%06u", $_REQUEST['itemId']);
 	}elseif ($loadandsave==1) {
@@ -433,9 +433,9 @@ function wikiplugin_rr($data, $params) {
 
 		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
 		$r_dir = getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' . $tikidomainslash . 'R_' . $wikipage;
-                if (!file_exists ( $r_dir )) {
-                        mkdir($r_dir, 0777);
-                }
+		if (!file_exists ( $r_dir )) {
+			mkdir($r_dir, 0777);
+		}
 
 		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
 		$graph_dir = '.' . DIRECTORY_SEPARATOR . 'temp/cache/' . $tikidomainslash . 'R_' . $wikipage;
@@ -708,11 +708,11 @@ function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $
 
 
 				// Check if the user wants to handle the creation of his custom png
-		        if ( isset($params["customoutput"]) && $params["customoutput"]=="1" ) {
-		          $image_number = 1;
-		          $content .= 'tikiRRfilename <- "' . $rgo . "_$image_number.png" . '"' . "\n";
-		          // Add the user input code at the end
-		          $content .= $input . "\n";
+				if ( isset($params["customoutput"]) && $params["customoutput"]=="1" ) {
+				  $image_number = 1;
+				  $content .= 'tikiRRfilename <- "' . $rgo . "_$image_number.png" . '"' . "\n";
+				  // Add the user input code at the end
+				  $content .= $input . "\n";
 		
 				// Check if the user requested an svg file or pdf file to be generated instead of the standard png in the wiki page
 				} elseif (isset($_REQUEST['gtype']) && $_REQUEST['gtype']=="svg") {
@@ -921,19 +921,19 @@ function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $
 }
 
 function runRinShell ($cmd, $chmf, &$r_exitcode) { // NEEDS REWRITING
-   $stdout = ""; // NEEDS REWRITING
-   $msg = "";
-     exec ($cmd, $stdout, $r_exitcode); // NEEDS REWRITING
+	$stdout = ""; // NEEDS REWRITING
+	$msg = "";
+	exec ($cmd, $stdout, $r_exitcode); // NEEDS REWRITING
 
-// Alex, got error message here if no output // NEEDS REWRITING
-   if (is_array($stdout)) {  // NEEDS REWRITING
-     foreach($stdout as $row) $msg .= $row . "\n"; // NEEDS REWRITING
-   } // NEEDS REWRITING
-   if (is_string($stdout)) { // NEEDS REWRITING
-     $msg .= $row . "\n"; // NEEDS REWRITING
-   } // NEEDS REWRITING
+	// Alex, got error message here if no output // NEEDS REWRITING
+	if (is_array($stdout)) {	// NEEDS REWRITING
+		foreach($stdout as $row) $msg .= $row . "\n"; // NEEDS REWRITING
+	} // NEEDS REWRITING
+	if (is_string($stdout)) { // NEEDS REWRITING
+		$msg .= $row . "\n"; // NEEDS REWRITING
+	} // NEEDS REWRITING
 
-   return ($msg); // NEEDS REWRITING
+	return ($msg); // NEEDS REWRITING
 } // NEEDS REWRITING
 
 function curPageURL() {
@@ -951,46 +951,46 @@ function curPageURL() {
 function checkCommands ($input) { // NEEDS REWRITING?
 	// Thanks to the R-php & R-MediaWiki people. We understand that the list of commands is not licensed since it's not PHP code as such)
 	$banned = array('.C', '.Call', '.Call.graphics', '.External', '.External.graphics',
-        	'.Fortran', '.readRDS', '.saveRDS', '.Script', '.Tcl',
-        	'.Tcl.args', '.Tcl.callback', '.Tk.ID', '.Tk.newwin', '.Tk.subwin',
-        	'.Tkroot', '.Tkwin', 'basename', 'browseURL', 'bzfile',
-        	'capture.output', 'close', 'close.screen', 'closeAllConnection', 'data.entry',
-        	'data.restore', 'dataentry', 'de', 'dev.control', 'dev.copy2eps',
-        	'dev.cur', 'dev.list', 'dev.next', 'dev.prev', 'dev.print',
-        	'dev.set', 'dev2bitmap', 'dget', 'dir', 'dir.create',
-        	'dirname', 'do.call', 'download.file', 'dput', 'dump',
-        	'dyn.load', 'edit', 'edit.data.frame', 'emacs', 'erase.screen',
-        	'example', 'fifo', 'file', 'file.access', 'file.append',
-        	'file.choose', 'file.copy', 'file.create', 'file.exists', 'file.info',
-        	'file.path', 'file.remove', 'file.rename', 'file.show', 'file.symlink',
-        	'fix', 'getConnection', 'getwd', 'graphics.off', 'gzcon',
-        	'gzfile', 'INSTALL', 'install.packages', 'library.dynam',
-        	'list.files','loadhistory', 'locator', 'lookup.xport', 'make.packages.html',
-        	'make.socket', 'menu', 'open', 'parent.frame', 'path.expand',
-        	'pico', 'pictex', 'pipe',
-        	'postscript', 'print.socket', 'prompt', 'promptData', 'quartz',
-        	'R.home', 'R.version', 'read.00Index', 'read.dta', 'read.epiinfo',
-        	'read.fwf', 'read.mtp', 'read.socket', 'read.spss', 'read.ssd',
-        	'read.xport', 'readBin', 'readline', 'readLines', 'remove.packages',
-        	'Rprof', 'save', 'savehistory', 'scan', 'screen',
-        	'seek', 'setwd', 'showConnection', 'sink', 'sink.number',
-        	'socketConnection', 'source', 'split.screen', 'stderr', 'stdin',
-        	'stdout', 'sys.call', 'sys.calls', 'sys.frame', 'sys.frames',
-        	'sys.function', 'Sys.getenv', 'Sys.getlocale', 'Sys.info', 'sys.nframe',
-        	'sys.on.exit', 'sys.parent', 'sys.parents', 'Sys.putenv', 'Sys.sleep',
-        	'Sys.source', 'sys.source', 'sys.status', 'Sys.time', 'system',
-        	'system.file', 'tempfile', 'textConnection', 'tkpager', 'tkStartGUI',
-        	'unlink', 'unz', 'update.packages', 'url', 'url.show',
-        	'vi', 'write', 'write.dta', 'write.ftable', 'write.socket',
-        	'write.table', 'writeBin', 'writeLines', 'x11', 
-        	'xedit', 'xemacs', 'xfig', 'zip.file.extract',
-        	'readdataSK', 'biocLite',
-        	'runApp', 'runExample', 'runGist', 'runGitHub', 'runUrl', # from Shiny
-        	'png', 'jpeg', 'pdf',
-        	'get', 'rgl.init', # Suggested by Carlos J. Gil Bellosta , and Miguel Angel Rodriguez Muinos from list r-help-es
-        	'call', 'eval',     # added by suggestion of M. Cassin 
-        	'paste',     # added by suggestion of Philippe Grosjean from Numerical Ecology of Aquatic Systems, Mons University, Belgium 
-        	'ggsave' );     # from ggplot: http://rgm2.lab.nig.ac.jp/RGM2/R_man-2.9.0/library/ggplot2/man/ggsave-ao.html
+			'.Fortran', '.readRDS', '.saveRDS', '.Script', '.Tcl',
+			'.Tcl.args', '.Tcl.callback', '.Tk.ID', '.Tk.newwin', '.Tk.subwin',
+			'.Tkroot', '.Tkwin', 'basename', 'browseURL', 'bzfile',
+			'capture.output', 'close', 'close.screen', 'closeAllConnection', 'data.entry',
+			'data.restore', 'dataentry', 'de', 'dev.control', 'dev.copy2eps',
+			'dev.cur', 'dev.list', 'dev.next', 'dev.prev', 'dev.print',
+			'dev.set', 'dev2bitmap', 'dget', 'dir', 'dir.create',
+			'dirname', 'do.call', 'download.file', 'dput', 'dump',
+			'dyn.load', 'edit', 'edit.data.frame', 'emacs', 'erase.screen',
+			'example', 'fifo', 'file', 'file.access', 'file.append',
+			'file.choose', 'file.copy', 'file.create', 'file.exists', 'file.info',
+			'file.path', 'file.remove', 'file.rename', 'file.show', 'file.symlink',
+			'fix', 'getConnection', 'getwd', 'graphics.off', 'gzcon',
+			'gzfile', 'INSTALL', 'install.packages', 'library.dynam',
+			'list.files','loadhistory', 'locator', 'lookup.xport', 'make.packages.html',
+			'make.socket', 'menu', 'open', 'parent.frame', 'path.expand',
+			'pico', 'pictex', 'pipe',
+			'postscript', 'print.socket', 'prompt', 'promptData', 'quartz',
+			'R.home', 'R.version', 'read.00Index', 'read.dta', 'read.epiinfo',
+			'read.fwf', 'read.mtp', 'read.socket', 'read.spss', 'read.ssd',
+			'read.xport', 'readBin', 'readline', 'readLines', 'remove.packages',
+			'Rprof', 'save', 'savehistory', 'scan', 'screen',
+			'seek', 'setwd', 'showConnection', 'sink', 'sink.number',
+			'socketConnection', 'source', 'split.screen', 'stderr', 'stdin',
+			'stdout', 'sys.call', 'sys.calls', 'sys.frame', 'sys.frames',
+			'sys.function', 'Sys.getenv', 'Sys.getlocale', 'Sys.info', 'sys.nframe',
+			'sys.on.exit', 'sys.parent', 'sys.parents', 'Sys.putenv', 'Sys.sleep',
+			'Sys.source', 'sys.source', 'sys.status', 'Sys.time', 'system',
+			'system.file', 'tempfile', 'textConnection', 'tkpager', 'tkStartGUI',
+			'unlink', 'unz', 'update.packages', 'url', 'url.show',
+			'vi', 'write', 'write.dta', 'write.ftable', 'write.socket',
+			'write.table', 'writeBin', 'writeLines', 'x11', 
+			'xedit', 'xemacs', 'xfig', 'zip.file.extract',
+			'readdataSK', 'biocLite',
+			'runApp', 'runExample', 'runGist', 'runGitHub', 'runUrl', # from Shiny
+			'png', 'jpeg', 'pdf',
+			'get', 'rgl.init', # Suggested by Carlos J. Gil Bellosta , and Miguel Angel Rodriguez Muinos from list r-help-es
+			'call', 'eval',	 # added by suggestion of M. Cassin 
+			'paste',	 # added by suggestion of Philippe Grosjean from Numerical Ecology of Aquatic Systems, Mons University, Belgium 
+			'ggsave' );	 # from ggplot: http://rgm2.lab.nig.ac.jp/RGM2/R_man-2.9.0/library/ggplot2/man/ggsave-ao.html
 	# 'pdf',
 	$found = array();
 
