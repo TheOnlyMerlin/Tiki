@@ -308,7 +308,7 @@ function wikiplugin_rr($data, $params) {
 	$data = str_replace(array("<br />", "<p>", "</p>"), "", $data);
 
 	if ($dbversion_tiki>=7.0) {
-	  // quick fix for 7.1RC1 - might find a better one soon... (jb).  Thanks jonnyb!
+		// quick fix for 7.1RC1 - might find a better one soon... (jb).  Thanks jonnyb!
 		if (stripos($data, '&lt;') !== false ||
 					stripos($data, '&gt;') !== false ||
 					stripos($data, '&quot;') !== false
@@ -316,7 +316,7 @@ function wikiplugin_rr($data, $params) {
 			$data =$tikilib->htmldecode($data);
 		}
 	}
-	
+
 	if ($params["security"]==0) {
 		/* do nothing: i.e. don't check for security in the command sent to R*/
 	}else{ 		/* default: check for security in the commands sent to R*/
@@ -349,7 +349,7 @@ function wikiplugin_rr($data, $params) {
 		// This $item_info['lastModif'] displays just the lastModification of the item.
 		// create the md5 hash for that value
 		$md5lastModif = md5($item_info['lastModif']);
-	
+
 	}	
 
 	if(isset($_REQUEST['itemId']) ) {
@@ -360,7 +360,7 @@ function wikiplugin_rr($data, $params) {
 	} else {
 		$sha1 = md5($data . $params . $output . $style);
 	}
-		
+
 	if (isset($params["echo"])) {
 		$r_echo = $params["echo"];
 		if ($r_echo=="1" OR $r_echo=="y" OR $r_echo=="yes") { $r_echo = 1; }
@@ -379,7 +379,7 @@ function wikiplugin_rr($data, $params) {
 	}else{
 		$rrefresh = "n";
 	}
-	
+
 	defined('r_ext') || define('r_ext', getcwd() . DIRECTORY_SEPARATOR . 'lib/r' ); // NEEDS REWRITING
 	defined('security')  || define('security',  0); // NEEDS REWRITING
 	defined('sudouser')  || define('sudouser', 'rd'); // NEEDS REWRITING
@@ -387,7 +387,7 @@ function wikiplugin_rr($data, $params) {
 	defined('convert')   || define('convert',   getCmd('', 'convert', '')); // NEEDS REWRITING
 	defined('sudo')      || define('sudo',      getCmd('', 'sudo', ' -u ' . sudouser . ' ')); // NEEDS REWRITING
 	defined('chmod')     || define('chmod',     getCmd('', 'chmod', ' 664 ')); // NEEDS REWRITING
-	
+
 	if (isset($params["loadandsave"])) {
 		$loadandsave = $params["loadandsave"];
 		if ($loadandsave=="TRUE" OR $loadandsave=="1") { $loadandsave = 1; }
@@ -403,12 +403,12 @@ function wikiplugin_rr($data, $params) {
 	}else{
 		$cacheby = "pageid";
 	}
-		
+
 	if ($loadandsave==1 && isset($_REQUEST['itemId'])  && $_REQUEST['itemId'] > 0) {
 		// --save : data sets are saved at the end of the R session
 		// --quiet : Do not print out the initial copyright and welcome messages from R
 		$r_cmd =  getCmd('', 'R', ' --save --quiet');
-		
+
 		// added ' .$tikidomainslash. ' in path to consider the case of multitikis
 		$r_dir = getcwd() . DIRECTORY_SEPARATOR . 'temp/cache/' .$tikidomainslash. 'R__itemid_' . sprintf ("%06u", $_REQUEST['itemId']);
 		if (!file_exists ( $r_dir )) {
@@ -450,12 +450,12 @@ function wikiplugin_rr($data, $params) {
 	}
 
 	$r_html = $r_dir . DIRECTORY_SEPARATOR . $user . "_" . $sha1 . ".html";
-	
+
 	if(isset($params["attId"]) ) {
 		global $trklib; require_once('lib/trackers/trackerlib.php');
 
 		$info = $trklib->get_item_attachment($params["attId"]);
-		
+
 		if( $info['data'] ) {
 			#$filepath = tempnam( '/tmp', 'r' );
 			$filepath = "/tmp/" . $user . "_" . $sha1;
@@ -476,7 +476,7 @@ function wikiplugin_rr($data, $params) {
 		$type = $info["filetype"];			
 		$file = $info["filename"];
 	} else {
-		
+
 	}
 
 	if (isset($params["type"])) {
@@ -503,8 +503,8 @@ function wikiplugin_rr($data, $params) {
 		// do nothing
 	}
 	if ($dbversion_tiki>=7.0) {
-	  # Clean the <br /> , <p> and </p> tags added by the Tiki or smarty parsers on smarty templates in tiki7
-	  $data = str_replace(array("<br />", "<p>", "</p>"), "", $data);
+		# Clean the <br /> , <p> and </p> tags added by the Tiki or smarty parsers on smarty templates in tiki7
+		$data = str_replace(array("<br />", "<p>", "</p>"), "", $data);
 	}
 
 	// Check if new run is needed or cached results (from the same plugin r calls) can be shown
@@ -533,7 +533,7 @@ function wikiplugin_rr($data, $params) {
 	}
 
 	$ret = file_get_contents ($fn);
-	
+
 	if ( preg_match('/tiki-index.php/', curPageURL() ) == 1) {
 		$concat_char = '&'; // Presumably, question mark present in the url, so new params go after &
 	} else {
@@ -544,7 +544,7 @@ function wikiplugin_rr($data, $params) {
 	if ( !empty($user) && $cached_script == "y" && $rrefresh =="n") {
 			$ret .= ' <a href="' . curPageURL() . $concat_char . 'rrefresh=y' . '" target="_self">' . '<img src=img/icons/arrow_refresh.png alt=Refresh Title="' . tr("Cached R output. If you click, you will re-run all R scripts in this page") . '"></a>';
  	}
-	
+
 	// Check for Tiki version, to apply parsing of content or not (behavior changed in Tiki7, it seems)
 	// Right now, the behavior seems the almost the same one on 7+ and <7, but just in case, I leave this version check in place, 
 	// since some changes are expected sooner or later..., so I leave this as an easy place holder (and proof-of-concept of working version check 
@@ -568,7 +568,7 @@ function wikiplugin_rr($data, $params) {
 
 function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $r_cmd, $r_dir, $graph_dir, $loadandsave, $cached_script) {
 	static $r_count = 0;
-	
+
 	//Convert spaces and @ into some character to avoid R complaining because it can't create such file on disk in the server
 	$user = str_replace(array(" ", "@"), "_", $user);
 	// Make one .Rdata per user
@@ -653,7 +653,7 @@ function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $
 		$pre_style = 'overflow:auto;';
 		echo $wrap;
 	} 
-	
+
 		if (isset($params["caption"])) {
 		$caption = $params["caption"];
 	}else{
@@ -681,7 +681,7 @@ function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $
 	}else{
 		$customoutput = 0; // Default value
 	}
-	
+
 	if (!file_exists($rst) or onsave) {
 		$content = '';
 		$content .= 'rfiles<-"' . $r_dir . '"' . "\n";
@@ -700,7 +700,7 @@ function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $
 
 				// Set R echo to false and Change the working directory to the current subfolder in the temp/cache folder
 				$content = 'options(echo=FALSE)'."\n". 'cat(" -->")'."\n". 'setwd("'. $r_dir .'/")'."\n";
-				
+
 				// Load .Rdata if requested and only if it exists in that folder
 				if ($loadandsave==1 && file_exists($r_dir . '/' . $rdata)) {
 					$content .= 'load("' . $rdata . '")' . "\n";
@@ -709,11 +709,11 @@ function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $
 
 				// Check if the user wants to handle the creation of his custom png
 				if ( isset($params["customoutput"]) && $params["customoutput"]=="1" ) {
-				  $image_number = 1;
-				  $content .= 'tikiRRfilename <- "' . $rgo . "_$image_number.png" . '"' . "\n";
-				  // Add the user input code at the end
-				  $content .= $input . "\n";
-		
+					$image_number = 1;
+					$content .= 'tikiRRfilename <- "' . $rgo . "_$image_number.png" . '"' . "\n";
+					// Add the user input code at the end
+					$content .= $input . "\n";
+
 				// Check if the user requested an svg file or pdf file to be generated instead of the standard png in the wiki page
 				} elseif (isset($_REQUEST['gtype']) && $_REQUEST['gtype']=="svg") {
 					// Prepare the graphic device to create the svg file 
@@ -762,12 +762,12 @@ function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $
 	}
 	file_exists($rst) or error ('R', 'Text file does not exist: ' . $rst, $input . $err);
 	$cont = file_get_contents ($rst);
-	
+
 	if (strpos ($cont, '<html>') === false) {
 		$fd = fopen ($rst, 'w') or error ('R', 'can not open file: ' . $rst, $input . $err);
-		
+
 		if ($r_exitcode == 0) { // case when no error occurred
-		
+
 			// Start of Preprocessing HTML before sending it to the user's browser: cleanup, etc.
 			// ----------------------------------
 			//remove empty lines produced by some R packages such as googleVis that were inserting too much white space for granted before the graphs produced by the Google Visualization API 
@@ -777,7 +777,7 @@ function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $
 			// Optionally, remove extra \n if requested explicitly, to keep the output cleaner with fewer non wanted \n, as in the case with graphs created through calls to googleVis R package
 			if ( isset($params["removen"]) && $params["removen"]=="1") {
 				// remove spaces at the start and end of new lines
-				$cont = join("\n", array_map("trim", explode("\n", $cont)));  
+				$cont = join("\n", array_map("trim", explode("\n", $cont)));
 				// remove empty new lines
 				$cont = preg_replace('/[ \t]+/', ' ', preg_replace('/\s*$^\s*/m', "\n", $cont));
 			}
@@ -793,19 +793,18 @@ function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $
 				$echo_content = implode("\n", array_slice(explode("\n", $content), 5));
 				//Remove the last 2 lines of R code which come from other pluginr params
 				$echo_content = implode("\n", array_slice(explode("\n", $echo_content), 0, -2));
-				
-				
+
 				// -------- Start of code borrowed from PluginCode
 					global $prefs;
 					static $code_count;
-	
+
 					$code_defaults = array(
 						'wrap' => '1',
 						'mediawiki' => '0'
 					);
-	
+
 					$code_params = array_merge($code_defaults, $params);
-	
+
 					extract($code_params, EXTR_SKIP);
 					$code = trim($echo_content);
 
@@ -814,13 +813,13 @@ function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $
 
 					$id = 'codebox'.++$code_count;
 					$boxid = " id=\"$id\" ";
-	
+
 					$out = $code;
-	
+
 					if (isset($colors) && $colors == '1') {	// remove old geshi setting as it upsets codemirror
 						unset( $colors );
 					}
-	
+
 					//respect wrap setting when Codemirror is off and set to wrap when Codemirror is on to avoid broken view while
 					//javascript loads
 					if ((isset($prefs['feature_syntax_highlighter']) && $prefs['feature_syntax_highlighter'] == 'y') || $wrap == 1) {
@@ -842,7 +841,7 @@ function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $
 						. (($options['ck_editor'] || $ishtml) ? $out : htmlentities($out, ENT_QUOTES, 'UTF-8'))
 						. '</pre>';
 				 // -------- End of code borrowed from PluginCode
-				
+
 				fwrite ($fd, $prg . '<pre>' . $out . '</pre>');
 			}// Else: no echo requested
 
@@ -878,9 +877,9 @@ function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $
 	 	}
 		fclose ($fd);
 	}
-	
+
 	$r_count++;
-	
+
 	// Check if the user requested an svg file to be generated instead of the standard png in the wiki page
 	if ( !empty($user) && isset($_REQUEST['gtype']) && $_REQUEST['gtype']=="svg") {
 		// return an svg file to be downloaded
@@ -1008,32 +1007,32 @@ function checkCommands ($input) { // NEEDS REWRITING?
 }
 
 function error ($cmd, $msg, $input) { // NEEDS REWRITING
-  $txt = '<pre>ERROR: &lt;' . $cmd . '...&gt; ' . $msg . ' <em>in</em></pre><p>'; // NEEDS REWRITING
-  $txt = $txt . '<pre>' . $input . '</pre>'; // NEEDS REWRITING
-  die ($txt); // NEEDS REWRITING
-  return 0; // NEEDS REWRITING
+	$txt = '<pre>ERROR: &lt;' . $cmd . '...&gt; ' . $msg . ' <em>in</em></pre><p>'; // NEEDS REWRITING
+	$txt = $txt . '<pre>' . $input . '</pre>'; // NEEDS REWRITING
+	die ($txt); // NEEDS REWRITING
+	return 0; // NEEDS REWRITING
 } // NEEDS REWRITING
 
 # The callback function for converting the input text to HTML output
 function renderFilename ($input) { // NEEDS REWRITING
-  if (strncmp(PHP_OS, 'WIN', 3)==0) { // NEEDS REWRITING
-    return str_replace('/', '\\', $input); // NEEDS REWRITING
-  }  // NEEDS REWRITING
-  return ($input); // NEEDS REWRITING
+	if (strncmp(PHP_OS, 'WIN', 3)==0) { // NEEDS REWRITING
+		return str_replace('/', '\\', $input); // NEEDS REWRITING
+	}  // NEEDS REWRITING
+	return ($input); // NEEDS REWRITING
 } // NEEDS REWRITING
 
 /* need some rework for windows, SK 9 Jul 06 */
 function getCmd ($pre, $cmd, $post) { // NEEDS REWRITING
-  $path = array('/usr/bin/', '/usr/local/bin/', '/bin/'); // NEEDS REWRITING
-  $n    = count($path);   // NEEDS REWRITING
-  for ($i = 0; $i < $n; $i++) { // NEEDS REWRITING
-    $cmdf = $path[$i] . $cmd; // NEEDS REWRITING
-    if (file_exists($cmdf)) { return ($pre . $cmdf . $post); } // NEEDS REWRITING
-  } // NEEDS REWRITING
-  $cmdf = `which $cmd`; // NEEDS REWRITING
-  if ($cmdf!='') { // NEEDS REWRITING
-    $cmdf = $pre . trim($cmdf) . $post; // NEEDS REWRITING
-    return $cmdf; // NEEDS REWRITING
-  } // NEEDS REWRITING
-  error ($cmd, 'command not found', ''); // NEEDS REWRITING
+	$path = array('/usr/bin/', '/usr/local/bin/', '/bin/'); // NEEDS REWRITING
+	$n    = count($path);   // NEEDS REWRITING
+	for ($i = 0; $i < $n; $i++) { // NEEDS REWRITING
+		$cmdf = $path[$i] . $cmd; // NEEDS REWRITING
+		if (file_exists($cmdf)) { return ($pre . $cmdf . $post); } // NEEDS REWRITING
+	} // NEEDS REWRITING
+	$cmdf = `which $cmd`; // NEEDS REWRITING
+	if ($cmdf!='') { // NEEDS REWRITING
+		$cmdf = $pre . trim($cmdf) . $post; // NEEDS REWRITING
+		return $cmdf; // NEEDS REWRITING
+	} // NEEDS REWRITING
+	error ($cmd, 'command not found', ''); // NEEDS REWRITING
 } // NEEDS REWRITING
