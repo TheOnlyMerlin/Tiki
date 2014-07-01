@@ -648,9 +648,26 @@ function wikiplugin_rr($data, $params) {
 		$ret .= '</div>';
 	}
 
-	// Show the cached message for loged user and button to click on refresh if cached content exists and no refresh R is requested
-	if ( !empty($user) && $use_cached_script == "y" && $rrefresh =="n") {
-			$ret .= ' <a href="' . curPageURL() . $concat_char . 'rrefresh=y' . '" target="_self">' . '<img src=img/icons/arrow_refresh.png alt=Refresh Title="' . tr("Cached R output from %0. If you click, you will re-run all R scripts in this page",$cache_last_modif_readable) . '"></a>';
+	// Show the cached message for loged user and button to click on refresh 
+	// TODO: create a group permission for allowing refreshing
+	if ( !empty($user) ) {
+			$url_params = parse_url($_SERVER['REQUEST_URI']);
+			$ret .= '<form method="post"  action="' . curPageURL() . $concat_char . '">';
+			if (isset($url_params['query'])) {
+				$url_params_array = explode('&',$url_params['query']);
+				$found_rrefresh = 0;
+				foreach( $url_params_array as $parameter) {
+					list($key,$value) = explode('=',$parameter,2);
+					if ( $key == "rrefresh" ) {
+						$value = 'y';
+						$found_rrefresh = 1;
+					}
+					$ret .= ' <input type="hidden" name="' .htmlspecialchars($key). '" value="' .htmlspecialchars(urldecode($value)). '" >';
+				}
+				if ( $found_rrefresh == 0 ) $ret .= ' <input type="hidden" name="rrefresh" value="y" >';
+			}
+			// Maybe this should be an input tag with maybe still the image
+			$ret .= ' <a href="#" onclick="parentNode.submit();return false;" >' . '<img src=img/icons/arrow_refresh.png alt=Refresh Title="' . tr("Cached R output from %0. If you click, you will re-run all R scripts in this page",$cache_last_modif_readable) . '"></a> </form>';
  	}
 
 	// Surround plugin with actual div and class, for styling purpose
