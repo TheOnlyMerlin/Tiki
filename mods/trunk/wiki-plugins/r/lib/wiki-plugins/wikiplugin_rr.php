@@ -40,6 +40,20 @@ function wikiplugin_rr_info() {
 				),
 				'advanced' => false,
 			),
+			'echodebug' => array(
+				'required' => false,
+				'safe' => true,
+				'name' => tra('echo debug'),
+				'description' => tra('Show a code block with the R commands to be run even if the R program fails to execute'),
+				'filter' => 'int',
+				'default' => '0',
+				'options' => array(
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('No'), 'value' => '0'),
+					array('text' => tra('Yes'), 'value' => '1'),
+				),
+				'advanced' => true,
+			),
 			'caption' => array(
 				'required' => false,
 				'name' => tra('Caption'),
@@ -612,6 +626,11 @@ function wikiplugin_rr($data, $params) {
 	}
 
 	$ret = file_get_contents ($fn);
+
+	// Allow debug echo which shows the code even when the script fails (the most useful case for looking at the code)
+	if (isset($params["echodebug"]) && $params["echodebug"] == '1' ) {
+		$ret .= "<div >DEBUG ECHO<pre>" . htmlspecialchars($data) . "</pre></div>";
+	}
 
 	if ( preg_match('/tiki-index.php/', curPageURL() ) == 1) {
 		$concat_char = '&'; // Presumably, question mark present in the url, so new params go after &
