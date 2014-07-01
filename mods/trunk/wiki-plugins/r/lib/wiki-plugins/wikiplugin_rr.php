@@ -439,14 +439,14 @@ function wikiplugin_rr($data, $params) {
 		$rrefresh = "n";
 	}
 
-	if (isset($_REQUEST['cachestrategy'])) {
-		$cachestrategy = $_REQUEST['cachestrategy'];
+	if (isset($params['cachestrategy'])) {
+		$cachestrategy = $params['cachestrategy'];
 	}else{
 		$cachestrategy = "one";
 	}
 
-	if (isset($_REQUEST['cacheduration'])) {
-		$cacheduration = $_REQUEST['cacheduration'];
+	if (isset($params['cacheduration'])) {
+		$cacheduration = $params['cacheduration'];
 	}else{
 		$cacheduration = 0;
 	}
@@ -581,7 +581,7 @@ function wikiplugin_rr($data, $params) {
 		$data = str_replace(array("<br />", "<p>", "</p>"), "", $data);
 	}
 
-	// Find age of cache
+	// Find age of previous cache
 	$cache_last_modif = @filemtime($r_html);
 	if ( $cache_last_modif == FALSE ) {
 		$cache_last_modif_readable = 'No cache';
@@ -600,7 +600,7 @@ function wikiplugin_rr($data, $params) {
 	}
 	if ( $rrefresh=="y" ) $use_cached_script = "n";
 	if ( $cachestrategy == "nocache") $use_cached_script = "n";
-// cacheduration
+	// cacheduration
 	if ( $cacheduration > 0 && $cache_age > $cacheduration ) $use_cached_script = "n";
 	
 	if ( $use_cached_script=="y" ) {
@@ -623,6 +623,9 @@ function wikiplugin_rr($data, $params) {
 
 		// execute R program
 		$fn   = runR ($output, convert, $sha1, $data, $r_echo, $ws, $params, $user, $r_cmd, $r_dir, $graph_dir, $loadandsave, $use_cached_script, $cachestrategy);
+
+		// age of new cache
+		$cache_last_modif_readable = $tikilib->get_long_datetime(time());
 	}
 
 	$ret = file_get_contents ($fn);
