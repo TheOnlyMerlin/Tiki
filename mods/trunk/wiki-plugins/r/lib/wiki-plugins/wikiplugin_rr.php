@@ -195,7 +195,7 @@ function wikiplugin_rr_info() {
 			'loadandsave' => array(
 				'required' => false,
 				'name' => tra('LoadAndSave'),
-				'description' => tra('Load a previous R user session (.RData, if any) for the same wiki page so that R object will be used while you work within the same page. For pretty trackers are used (wiki pages with itemId), the R session data (.RData) will be shared for the same itemId across wiki pages'),
+				'description' => tra('Load a previous R session (.RData, if any) for the same wiki page so that R object will be used while you work within the same page. For pretty trackers are used (wiki pages with itemId), the R session data (.RData) will be shared for the same itemId across wiki pages'),
 				'filter' => 'int',
 				'default' => '0',
 				'since' => 'PluginR 0.61 (multiuser at 0.86)',
@@ -203,6 +203,37 @@ function wikiplugin_rr_info() {
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('No'), 'value' => '0'),
 					array('text' => tra('Yes'), 'value' => '1'),
+				),
+				'advanced' => true,
+			),
+			'cachestrategy' => array(
+				'required' => false,
+				'safe' => true,
+				'name' => tra('Caching strategy'),
+				'description' => tra('Define caching strategy, including LoadAndSave session. Default: One cache and one LoadAndSave session per plugin'),
+				'filter' => 'word',
+				'default' => 'one',
+				'options' => array(
+					array('text' => tra("One cache per plugin"), 'value' => 'one'),
+					array('text' => tra("One cache per plugin per user"), 'value' => 'peruser'),
+					array('text' => tra("No caching: Ignore and replace existing cache, if any"), 'value' => 'nocache'),
+				),
+				'advanced' => true,
+			),
+			'cacheduration' => array(
+				'required' => false,
+				'safe' => true,
+				'name' => tra('Limit cache duration'),
+				'description' => tra('Force cache recalculation after time limit. Default: No limit'),
+				'filter' => 'int',
+				'default' => '0',
+				'options' => array(
+					array('text' => tra("No limit"), 'value' => '0'),
+					array('text' => tra("1 hour"), 'value' => '3600'),
+					array('text' => tra("1 day"), 'value' => '86400'),
+					array('text' => tra("7 days"), 'value' => '604800'),
+					array('text' => tra("30 days"), 'value' => '2592000'),
+					array('text' => tra("365 days"), 'value' => '31536000'),
 				),
 				'advanced' => true,
 			),
@@ -217,6 +248,20 @@ function wikiplugin_rr_info() {
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Page Name (pagename)'), 'value' => 'pagename'),
 					array('text' => tra('Page Id (pageid)'), 'value' => 'pageid'),
+				),
+				'advanced' => true,
+			),
+			'cacheagedisplay' => array(
+				'required' => false,
+				'safe' => true,
+				'name' => tra('Cache age'),
+				'description' => tra('Display cache last modification date below the graph (default option: do not display)'),
+				'filter' => 'int',
+				'default' => '0',
+				'options' => array(
+					array('text' => '', 'value' => ''), 
+					array('text' => tra("Don't display cache creation date"), 'value' => '0'),
+					array('text' => tra("Display cache creation date"), 'value' => '1'),
 				),
 				'advanced' => true,
 			),
@@ -380,6 +425,21 @@ function wikiplugin_rr($data, $params) {
 		$rrefresh = "n";
 	}
 
+	if (isset($_REQUEST['cachestrategy'])) {
+		$cachestrategy = $_REQUEST['cachestrategy'];
+	}else{
+		$cachestrategy = "one";
+	}
+
+	if (isset($_REQUEST['cacheduration'])) {
+		$cacheduration = $_REQUEST['cacheduration'];
+	}else{
+		$cacheduration = 0;
+	}
+
+	// Only insert user identification in filenames when "per user" caching strategy is chosen
+	$userinfilename = userInFilename($user,$cachestrategy);
+
 	defined('r_ext') || define('r_ext', getcwd() . DIRECTORY_SEPARATOR . 'lib/r' ); // NEEDS REWRITING
 	defined('security')  || define('security',  0); // NEEDS REWRITING
 	defined('sudouser')  || define('sudouser', 'rd'); // NEEDS REWRITING
@@ -449,7 +509,7 @@ function wikiplugin_rr($data, $params) {
 		$graph_dir = '.' . DIRECTORY_SEPARATOR . 'temp/cache/' . $tikidomainslash;
 	}
 
-	$r_html = $r_dir . DIRECTORY_SEPARATOR . $user . "_" . $sha1 . ".html";
+	$r_html = $r_dir . DIRECTORY_SEPARATOR . $userinfilename . $sha1 . ".html";
 
 	if(isset($params["attId"]) ) {
 		global $trklib; require_once('lib/trackers/trackerlib.php');
@@ -458,7 +518,7 @@ function wikiplugin_rr($data, $params) {
 
 		if( $info['data'] ) {
 			#$filepath = tempnam( '/tmp', 'r' );
-			$filepath = "/tmp/" . $user . "_" . $sha1;
+			$filepath = "/tmp/" . $userinfilename . $sha1;
 			file_put_contents( $filepath, $info['data'] );
 		} else {
 			$filepath = $prefs['t_use_dir'].$info['path'];
@@ -507,16 +567,35 @@ function wikiplugin_rr($data, $params) {
 		$data = str_replace(array("<br />", "<p>", "</p>"), "", $data);
 	}
 
+	// Find age of cache
+	$cache_last_modif = @filemtime($r_html);
+	if ( $cache_last_modif == FALSE ) {
+		$cache_last_modif_readable = 'No cache';
+		$cache_age = 0;
+	} else {
+		$cache_last_modif_readable = $tikilib->get_long_datetime($cache_last_modif);
+		$cache_age = time() - $cache_last_modif;
+	}
+	$now = time();
+
 	// Check if new run is needed or cached results (from the same plugin r calls) can be shown
-	if ( file_exists($r_html) && $rrefresh=="n") {
+	if ( file_exists($r_html) ) {
+		$use_cached_script = "y";
+	} else {
+		$use_cached_script = "n";
+	}
+	if ( $rrefresh=="y" ) $use_cached_script = "n";
+	if ( $cachestrategy == "nocache") $use_cached_script = "n";
+// cacheduration
+	if ( $cacheduration > 0 && $cache_age > $cacheduration ) $use_cached_script = "n";
+	
+	if ( $use_cached_script=="y" ) {
 		// do not execute R program to generate html but reuse the html previously generated 
-		$cached_script = 'y';
 		$fn   = $r_html;
 	} else {
-		// execute R program without using the cached output files in case they exist
-		$cached_script = 'n';
-		$r_R = $r_dir . DIRECTORY_SEPARATOR . $user . "_" . $sha1 . '.R';
-		$r_png = $r_dir . DIRECTORY_SEPARATOR . $user . "_" . $sha1 . '_1.png';
+		// execute R program without using the cached output files even if they exist
+		$r_R = $r_dir . DIRECTORY_SEPARATOR . $userinfilename . $sha1 . '.R';
+		$r_png = $r_dir . DIRECTORY_SEPARATOR . $userinfilename . $sha1 . '_1.png';
 
 		// Delete cached files .R & .html for this hash $sha1 if they exist
 		if ( file_exists($r_html) ) {
@@ -528,8 +607,8 @@ function wikiplugin_rr($data, $params) {
 			unlink($r_png);
 		}
 
-		// RunR again
-		$fn   = runR ($output, convert, $sha1, $data, $r_echo, $ws, $params, $user, $r_cmd, $r_dir, $graph_dir, $loadandsave, $cached_script);
+		// execute R program
+		$fn   = runR ($output, convert, $sha1, $data, $r_echo, $ws, $params, $user, $r_cmd, $r_dir, $graph_dir, $loadandsave, $use_cached_script, $cachestrategy);
 	}
 
 	$ret = file_get_contents ($fn);
@@ -540,10 +619,20 @@ function wikiplugin_rr($data, $params) {
 		$concat_char = '?'; // Presumably, no previous question mark in the url, so params go after ?
 	}
 
-		// Show the cached message for loged user and button to click on refresh if cached content exists and no refresh R is requested
-	if ( !empty($user) && $cached_script == "y" && $rrefresh =="n") {
-			$ret .= ' <a href="' . curPageURL() . $concat_char . 'rrefresh=y' . '" target="_self">' . '<img src=img/icons/arrow_refresh.png alt=Refresh Title="' . tr("Cached R output. If you click, you will re-run all R scripts in this page") . '"></a>';
+	// Display age of cache
+	if ( isset($params["cacheagedisplay"]) && $params["cacheagedisplay"] == "1" ) {
+		$ret .= ' <div class="rcacheage">';
+		$ret .= tr('Cache was last modified: %0', $cache_last_modif_readable);
+		$ret .= '</div>';
+	}
+
+	// Show the cached message for loged user and button to click on refresh if cached content exists and no refresh R is requested
+	if ( !empty($user) && $use_cached_script == "y" && $rrefresh =="n") {
+			$ret .= ' <a href="' . curPageURL() . $concat_char . 'rrefresh=y' . '" target="_self">' . '<img src=img/icons/arrow_refresh.png alt=Refresh Title="' . tr("Cached R output from %0. If you click, you will re-run all R scripts in this page",$cache_last_modif_readable) . '"></a>';
  	}
+
+	// Surround plugin with actual div and class, for styling purpose
+	$ret = '<div class="wikiplugin_r">' . $ret . '</div>';
 
 	// Check for Tiki version, to apply parsing of content or not (behavior changed in Tiki7, it seems)
 	// Right now, the behavior seems the almost the same one on 7+ and <7, but just in case, I leave this version check in place, 
@@ -566,23 +655,22 @@ function wikiplugin_rr($data, $params) {
 }
 
 
-function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $r_cmd, $r_dir, $graph_dir, $loadandsave, $cached_script) {
+function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $r_cmd, $r_dir, $graph_dir, $loadandsave, $use_cached_script, $cachestrategy) {
 	static $r_count = 0;
 
-	//Convert spaces and @ into some character to avoid R complaining because it can't create such file on disk in the server
-	$user = str_replace(array(" ", "@"), "_", $user);
-	// Make one .Rdata per user
-	$rdata = '.' . $user . '_RData';
+	$userinfilename = userInFilename($user,$cachestrategy);
+	// Make one .Rdata per user or a global one depending on cachestrategy
+	$rdata = '.' . $userinfilename . 'RData';
 
 	// Generate a graphics
 	$prg = ''; # This variable is not being used. ToDo: Remove or reuse for something.
 	$err = "\n";
 	$rws = $r_dir . DIRECTORY_SEPARATOR;
-	$rst  = $r_dir . DIRECTORY_SEPARATOR . $user . "_" . $sha1 . '.html';
+	$rst  = $r_dir . DIRECTORY_SEPARATOR . $userinfilename . $sha1 . '.html';
 	// Since pluginR 0.7, graphic file type is not hardcoded here into png; 
 	//  file extensions will be set later for png and svg and/or pdf
-	$rgo  = $r_dir . DIRECTORY_SEPARATOR . $user . "_" . $sha1 ;
-	$rgo_rel  = $graph_dir . DIRECTORY_SEPARATOR . $user . "_" . $sha1 ;
+	$rgo  = $r_dir . DIRECTORY_SEPARATOR . $userinfilename . $sha1 ;
+	$rgo_rel  = $graph_dir . DIRECTORY_SEPARATOR . $userinfilename . $sha1 ;
 
 	if (isset($params["wikisyntax"])) {
 		$wikisyntax = $params["wikisyntax"];
@@ -702,10 +790,9 @@ function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $
 				$content = 'options(echo=FALSE)'."\n". 'cat(" -->")'."\n". 'setwd("'. $r_dir .'/")'."\n";
 
 				// Load .Rdata if requested and only if it exists in that folder
-				if ($loadandsave==1 && file_exists($r_dir . '/' . $rdata)) {
+				if ($loadandsave==1 && file_exists($r_dir . DIRECTORY_SEPARATOR . $rdata)) {
 					$content .= 'load("' . $rdata . '")' . "\n";
 				} // Else, case with no caching of r objects (loadandsave=0, therefore no .RData will be loaded at the beginning)
-
 
 				// Check if the user wants to handle the creation of his custom png
 				if ( isset($params["customoutput"]) && $params["customoutput"]=="1" ) {
@@ -752,7 +839,7 @@ function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $
 
 		} // end of section where png can be used because R was compiled with support for X11
 		$content .= 'q()';
-		$fn = $r_dir . '/' . $user . "_" . $sha1 . '.R';
+		$fn = $r_dir . DIRECTORY_SEPARATOR . $userinfilename . $sha1 . '.R';
 		$fd = fopen ($fn, 'w') or error('R', 'Can not open file: ' . $fn, $input . $err);
 		fwrite ($fd, $content);
 		fclose ($fd);
@@ -782,7 +869,6 @@ function runR ($output, $convert, $sha1, $input, $r_echo, $ws, $params, $user, $
 				$cont = preg_replace('/[ \t]+/', ' ', preg_replace('/\s*$^\s*/m', "\n", $cont));
 			}
 			// Write the start tag of an html comment to comment out the tag to remove echo from R console. The closing html comment tag is added inside $cont after the "option(echo=FALSE)"
-
 
 			// End of HTML preprocessing
 
@@ -1036,3 +1122,16 @@ function getCmd ($pre, $cmd, $post) { // NEEDS REWRITING
 	} // NEEDS REWRITING
 	error ($cmd, 'command not found', ''); // NEEDS REWRITING
 } // NEEDS REWRITING
+
+function userInFilename($user,$cachestrategy) {
+	// Only insert user identification in filenames when "per user" caching strategy is chosen
+	if ( $cachestrategy == "peruser" ) {
+		//Convert spaces and @ into some character to avoid R complaining because it can't create such file on disk in the server
+		// Also prefix with user id to ensure uniqueness
+		$userid = UsersLib::get_user_id($user);
+		$userinfilename = "user$userid_" . preg_replace('/[^a-zA-Z0-9]/', "_", $user) . '_';
+	} else {
+		$userinfilename = '';
+	}
+	return $userinfilename;
+}
