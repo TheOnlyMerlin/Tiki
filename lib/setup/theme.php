@@ -43,7 +43,7 @@ if (empty($prefs['theme_active']) || $prefs['theme_active'] == 'default') {
 	} else {
 		$headerlib->add_cssfile($custom_theme);
 	}
-} elseif ($prefs['theme_active'] == 'legacy') {
+}   elseif ($prefs['theme_active'] == 'legacy') {
     // use legacy styles
 	if ( $prefs['useGroupTheme'] == 'y' && $group_style = $userlib->get_user_group_theme()) {
 		$prefs['style'] = $group_style;
@@ -71,11 +71,9 @@ if (empty($prefs['theme_active']) || $prefs['theme_active'] == 'default') {
 	}
 	// End legacy
 } else {
-	$headerlib->add_cssfile("themes/{$prefs['theme_active']}/css/tiki.css");
+//	$headerlib->add_cssfile("themes/{$prefs['theme_active']}/css/tiki.css");
 	$prefs['jquery_ui_chosen_css'] = 'n';
 }
-//Add font-awesome
-$headerlib->add_cssfile('vendor/fortawesome/font-awesome/css/font-awesome.min.css');
 
 // Allow to have a IE specific CSS files for the theme's specific hacks
 $style_ie6_css = $tikilib->get_style_path($prefs['style'], $prefs['style_option'], 'ie6.css');

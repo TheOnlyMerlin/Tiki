@@ -2424,7 +2424,6 @@ class TrackerLib extends TikiLib
 
 		$logOption = 'Updated';
 		if ($trackerId) {
-			$finalEvent = 'tiki.tracker.update';
 			$conditions = array('trackerId' => (int) $trackerId);
 			if ($trackers->fetchCount($conditions)) {
 				$trackers->update($data, $conditions);
@@ -2436,7 +2435,6 @@ class TrackerLib extends TikiLib
 				$logOption = 'Created';
 			}
 		} else {
-			$finalEvent = 'tiki.tracker.create';
 			$data['created'] = $this->now;
 			$trackerId = $trackers->insert($data);
 		}
@@ -2475,11 +2473,13 @@ class TrackerLib extends TikiLib
 			);
 		}
 
-		TikiLib::events()->trigger($finalEvent, [
-			'type' => 'tracker',
-			'object' => $trackerId,
-			'user' => $GLOBALS['user'],
-		]);
+		require_once('lib/search/refresh-functions.php');
+		refresh_index('trackers', $trackerId);
+
+		if ($descriptionIsParsed == 'y') {
+			$tikilib = TikiLib::lib('tiki');
+			$tikilib->object_post_save(array('type'=>'tracker', 'object'=>$trackerId, 'href'=>"tiki-view_tracker.php?trackerId=$trackerId", 'description'=>$description), array('content' => $description));
+		}
 
 		return $trackerId;
 	}
@@ -2737,13 +2737,6 @@ class TrackerLib extends TikiLib
 		$logslib->add_action('Removed', $trackerId, 'tracker');
 
 		$this->clear_tracker_cache($trackerId);
-
-		TikiLib::events()->trigger('tiki.tracker.delete', [
-			'type' => 'tracker',
-			'object' => $trackerId,
-			'user' => $GLOBALS['user'],
-		]);
-
 		$transaction->commit();
 
 		return true;
@@ -4816,7 +4809,6 @@ class TrackerLib extends TikiLib
 				$requestData = $field;
 			}
 			$field = array_merge($field, $handler->getFieldData($requestData));
-			$field['ins_id'] = 'ins_' . $field['fieldId'];
 			$handler = $this->get_field_handler($field, $item);
 		}
 
@@ -4828,40 +4820,33 @@ class TrackerLib extends TikiLib
 			if (empty($context['list_mode'])) {
 				$context['list_mode'] = 'n';
 			}
+			$r = $handler->renderOutput($context);
 
 			if (! empty($params['editable'])) {
-				if ($params['editable'] == 'direct') {
-					$r = $handler->renderInput($context);
-					$params['editable'] = 'block';
-					$fetchUrl = null;
-				} else {
-					$r = $handler->renderOutput($context);
-					$fetchUrl = array(
-						'controller' => 'tracker',
-						'action' => 'fetch_item_field',
-						'trackerId' => $field['trackerId'],
-						'itemId' => $item['itemId'],
-						'fieldId' => $field['fieldId'],
-					);
-				}
-
+				$servicelib = TikiLib::lib('service');
 				$r = new Tiki_Render_Editable(
 					$r,
 					array(
 						'layout' => $params['editable'],
-						'label' => $field['name'],
-						'group' => ! empty($params['editgroup']) ? $params['editgroup'] : false,
-						'object_store_url' => array(
-							'controller' => 'tracker',
-							'action' => 'update_item',
-							'trackerId' => $field['trackerId'],
-							'itemId' => $item['itemId'],
+						'object_store_url' => $servicelib->getUrl(
+							array(
+								'controller' => 'tracker',
+								'action' => 'update_item',
+								'trackerId' => $field['trackerId'],
+								'itemId' => $item['itemId'],
+							)
 						),
-						'field_fetch_url' => $fetchUrl,
+						'field_fetch_url' => $servicelib->getUrl(
+							array(
+								'controller' => 'tracker',
+								'action' => 'fetch_item_field',
+								'trackerId' => $field['trackerId'],
+								'itemId' => $item['itemId'],
+								'fieldId' => $field['fieldId'],
+							)
+						),
 					)
 				);
-			} else {
-				$r = $handler->renderOutput($context);
 			}
 
 			TikiLib::lib('smarty')->assign("f_$fieldId", $r);

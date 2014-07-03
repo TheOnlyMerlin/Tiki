@@ -1652,15 +1652,6 @@ class UsersLib extends TikiLib
 		return ($ret);
 	}
 
-	function get_members($group)
-	{
-		$users = $this->fetchAll('SELECT login FROM `users_usergroups` ug INNER JOIN `users_users` u ON u.userId = ug.userId WHERE ug.groupName = ?', [$group]);
-
-		return array_map(function ($row) {
-			return $row['login'];
-		}, $users);
-	}
-
 	function get_users($offset = 0, $maxRecords = -1, $sort_mode = 'login_asc', $find = '', $initial = '', $inclusion=false,
 					   $group='', $email='', $notconfirmed = false, $notvalidated = false, $neverloggedin = false)
 	{
@@ -6019,7 +6010,7 @@ class UsersLib extends TikiLib
 		}
 		$new_email_confirm = $this->now;
 		$userTable = $this->table('users_users');
-		$userId = $userTable->insert(
+		$userTable->insert(
 			array(
 				'login' => $user,
 				'password' => $pass,
@@ -6056,11 +6047,7 @@ class UsersLib extends TikiLib
 
 		$cachelib->invalidate('userslist');
 
-		TikiLib::events()->trigger('tiki.user.create', array(
-			'type' => 'user',
-			'object' => $user,
-			'userId' => $userId,
-		));
+		TikiLib::events()->trigger('tiki.user.create', array('type' => 'user', 'object' => $user));
 
 		return true;
 	}

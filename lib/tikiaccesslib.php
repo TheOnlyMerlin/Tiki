@@ -472,8 +472,6 @@ class TikiAccessLib extends TikiLib
 			}
 		}
 
-		TikiLib::events()->trigger('tiki.process.redirect');
-
 		session_write_close();
 		if (headers_sent()) {
 			echo "<script>document.location.href='$url';</script>\n";

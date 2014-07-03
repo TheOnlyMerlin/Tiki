@@ -150,7 +150,6 @@
 			{preference name=rating_results_detailed_percent}
 		</div>
 		{preference name=rating_smileys}
-        {*{preference name=rating_options_reversed}*}
 	</fieldset>
 
 	<fieldset>

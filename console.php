@@ -82,7 +82,7 @@ if ($isInstalled) {
 }
 
 if ($isInstalled && ! $installer->requiresUpdate()) {
-	$console->add(new Tiki\Command\DailyReportSendCommand);
+    $console->add(new Tiki\Command\DailyReportSendCommand);
 	$console->add(new Tiki\Command\GoalCheckCommand);
 	$console->add(new Tiki\Command\IndexRebuildCommand);
 	$console->add(new Tiki\Command\IndexOptimizeCommand);
@@ -95,7 +95,7 @@ if ($isInstalled && ! $installer->requiresUpdate()) {
 	$console->add(new Tiki\Command\ProfileExport\Init);
 	$console->add(new Tiki\Command\RefreshRssCommand);
 } else {
-	$console->add(new Tiki\Command\UnavailableCommand('daily-report:send'));
+    $console->add(new Tiki\Command\UnavailableCommand('daily-report:send'));
 	$console->add(new Tiki\Command\UnavailableCommand('goal:check'));
 	$console->add(new Tiki\Command\UnavailableCommand('index:rebuild'));
 	$console->add(new Tiki\Command\UnavailableCommand('index:optimize'));

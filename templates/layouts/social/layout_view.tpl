@@ -16,7 +16,6 @@
 			<div class="row">
 				{if zone_is_empty('left') and zone_is_empty('right')}
 					<div class="col-md-12" id="col1">
-						<div class="pull-right">{block name=quicknav}{/block}</div>
 						{block name=title}{/block}
 						{block name=navigation}{/block}
 						{error_report}
@@ -27,7 +26,6 @@
 					</div>
 				{elseif zone_is_empty('left')}
 					<div class="col-md-9" id="col1">
-						<div class="pull-right">{block name=quicknav}{/block}</div>
 						{block name=title}{/block}
 						{block name=navigation}{/block}
 						{error_report}
@@ -41,7 +39,6 @@
 					</div>
 				{elseif zone_is_empty('right')}
 					<div class="col-md-9 col-md-push-3" id="col1">
-						<div class="pull-right">{block name=quicknav}{/block}</div>
 						{block name=title}{/block}
 						{block name=navigation}{/block}
 						{error_report}
@@ -55,7 +52,6 @@
 					</div>
 				{else}
 					<div class="col-md-8 col-md-push-2" id="col1">
-						<div class="pull-right">{block name=quicknav}{/block}</div>
 						{block name=title}{/block}
 						{block name=navigation}{/block}
 						{error_report}
@@ -72,15 +68,12 @@
 					</div>
 				{/if}
 			</div>
-		</div>
 
-		<div class="">
-			<footer class="main-footer">
-				<div class="container">
-					<!-- content modules col-md-3 -->
+			<div class="row">
+				<div class="col-md-12 well">
 					{modulelist zone=bottom}
 				</div>
-			</footer>
+			</div>
 		</div>
 
 		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -102,29 +95,15 @@
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					{if $prefs.feature_search eq 'y'}
 						<form class="navbar-form navbar-left" role="search" action="tiki-searchindex.php">
-							<div class="input-group">
-								<input name="filter~content" type="search" class="form-control" placeholder="{tr}Search{/tr}">
-								<span class="input-group-btn">
-									<button type="submit" class="btn btn-default">{glyph name=search}</button>
-								</span>
+							<div class="form-group">
+								<input name="filter~content" type="search" class="form-control" placeholder="Search">
 							</div>
+							<button type="submit" class="btn btn-default">{glyph name=search}</button>
 						</form>
 					{/if}
 					<ul class="nav navbar-nav navbar-right">
 						{if $user}
 							<li>{notification_link}</li>
-							<li class="dropdown">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown">{tr}Navigation{/tr} <b class="caret"></b></a>
-								<ul class="dropdown-menu">
-									{* TODO : Add more links here *}
-									{if $prefs.feature_wiki eq 'y'}<li><a href="tiki-listpages.php">{tr}List Pages{/tr}</a></li>{/if}
-									{if $prefs.feature_trackers eq 'y'}<li><a href="tiki-list_trackers.php">{tr}List Trackers{/tr}</a></li>{/if}
-									{if $prefs.feature_blogs eq 'y'}<li><a href="tiki-list_blogs.php">{tr}List Blogs{/tr}</a></li>{/if}
-									{if $prefs.feature_file_gallery eq 'y'}<li><a href="tiki-list_file_gallery.php">{tr}List galleries{/tr}</a></li>{/if}
-									{if $prefs.feature_forums eq 'y'}<li><a href="tiki-forums.php">{tr}List forums{/tr}</a></li>{/if}
-								</ul>
-							</li>
-
 							<li class="dropdown">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown">{tr}Account{/tr} <b class="caret"></b></a>
 								<ul class="dropdown-menu">
@@ -147,13 +126,6 @@
 
 		{include file='footer.tpl'}
 	</body>
-	<script type="text/javascript">
-		$(document).ready(function() {
-			$('.tooltips').tooltip({
-				'container': 'body'
-			});
-		});
-	</script>
 </html>
 {if !empty($smarty.request.show_smarty_debug)}
 	{debug}

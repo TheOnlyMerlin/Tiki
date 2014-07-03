@@ -403,7 +403,15 @@ class UnifiedSearchLib
 			$types['comment'] = tra('comment');
 		}
 
-		$types['user'] = tra('user');
+		if (in_array($prefs['user_in_search_result'], array('all', 'public'))) {
+			$types['user'] = tra('user');
+		} else {
+			// Check for fresh install in which case index admin user otherwise initial indexing will not work with no content
+			if (TikiLib::lib('tiki')->getOne("select count(*) from users_users") === '1' && !TikiLib::lib('tiki')->page_exists('HomePage')) {
+				$prefs['user_in_search_result'] = 'all';
+				$types['user'] = tra('user');
+			}
+		}
 
 		return $types;
 	}
@@ -445,13 +453,7 @@ class UnifiedSearchLib
 	{
 		global $prefs;
 
-		$isRepository = $index instanceof Search_Index_QueryRepository;
-		
-		if (! $isRepository && method_exists($index, 'getRealIndex')) {
-			$isRepository = $index->getRealIndex() instanceof Search_Index_QueryRepository;
-		}
-
-		if (! $this->isRebuildingNow && $isRepository && $prefs['storedsearch_enabled'] == 'y') {
+		if (! $this->isRebuildingNow && $index->getRealIndex() instanceof Search_Index_QueryRepository && $prefs['storedsearch_enabled'] == 'y') {
 			$index = new Search_Index_QueryAlertDecorator($index);
 		}
 
@@ -520,7 +522,6 @@ class UnifiedSearchLib
 
 		if (isset ($types['trackeritem'])) {
 			$aggregator->addContentSource('trackeritem', new Search_ContentSource_TrackerItemSource);
-			$aggregator->addContentSource('tracker', new Search_ContentSource_TrackerSource);
 		}
 
 		if (isset ($types['sheet'])) {
@@ -564,7 +565,6 @@ class UnifiedSearchLib
 		// Global Sources
 		if ($prefs['feature_categories'] == 'y') {
 			$aggregator->addGlobalSource(new Search_GlobalSource_CategorySource);
-			$aggregator->addContentSource('category', new Search_ContentSource_CategorySource);
 		}
 
 		if ($prefs['feature_freetags'] == 'y') {
@@ -591,7 +591,6 @@ class UnifiedSearchLib
 		}
 
 		$aggregator->addGlobalSource(new Search_GlobalSource_TitleInitialSource);
-		$aggregator->addGlobalSource(new Search_GlobalSource_SearchableSource);
 	}
 
     /**
@@ -700,16 +699,9 @@ class UnifiedSearchLib
 
 	private function getElasticConnection()
 	{
-		static $connection;
-
-		if ($connection) {
-			return $connection;
-		}
-
 		global $prefs;
 		$connection = new Search_Elastic_Connection($prefs['unified_elastic_url']);
 		$connection->startBulk();
-		$connection->persistDirty(TikiLib::events());
 
 		return $connection;
 	}

@@ -609,7 +609,9 @@ if ($prefs['feature_sefurl'] != 'y') {
 			query.action = action;
 		}
 
-		return "tiki-ajax_services.php?" + $.buildParams(query);
+		return "tiki-ajax_services.php?" + $.map(query, function (v, k) {
+			return k + "=" + tiki_encodeURIComponent(v);
+		}).join("&");
 	};'
 	);
 }
@@ -620,10 +622,6 @@ if ($prefs['feature_friends'] == 'y' || $prefs['monitor_enabled'] == 'y') {
 
 if ($prefs['ajax_inline_edit'] == 'y') {
 	$headerlib->add_jsfile('lib/jquery_tiki/inline_edit.js');
-}
-
-if ($prefs['mustread_enabled'] == 'y') {
-	$headerlib->add_jsfile('lib/jquery_tiki/mustread.js');
 }
 
 if (true) {

@@ -305,11 +305,6 @@ class Tracker_Item
 		}
 	}
 
-	public function getId()
-	{
-		return $this->info['itemId'];
-	}
-
 	private function isNew()
 	{
 		return $this->isNew;
@@ -328,18 +323,6 @@ class Tracker_Item
 		return array_filter($output);
 	}
 
-	public function prepareOutput()
-	{
-		$fields = $this->definition->getFields();
-		$output = array();
-
-		foreach ($fields as $field) {
-			$output[] = $this->prepareFieldOutput($field);
-		}
-
-		return array_filter($output);
-	}
-
 	public function prepareFieldInput($field, $input)
 	{
 		$fid = $field['fieldId'];
@@ -350,19 +333,6 @@ class Tracker_Item
 			$factory = $this->definition->getFieldFactory();
 			$handler = $factory->getHandler($field, $this->info);
 			return array_merge($field, $handler->getFieldData($input));
-		}
-	}
-
-	public function prepareFieldOutput($field)
-	{
-		$fid = $field['fieldId'];
-
-		if ($this->canViewField($fid)) {
-			$field['ins_id'] = "ins_$fid";
-
-			$factory = $this->definition->getFieldFactory();
-			$handler = $factory->getHandler($field, $this->info);
-			return array_merge($field, $handler->getFieldData([]));
 		}
 	}
 
@@ -445,8 +415,7 @@ class Tracker_Item
 
 		return array(
 			'itemId' => $this->isNew() ? null : $this->info['itemId'],
-			'status' => $this->isNew() ? 'o' : $this->info['status'],
-			'creation_date' => $this->info['created'],
+			'status' => $this->isNew() ? 'o' : $this->data['status'],
 			'fields' => $out,
 		);
 	}

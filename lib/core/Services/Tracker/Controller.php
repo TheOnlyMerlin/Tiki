@@ -17,31 +17,6 @@ class Services_Tracker_Controller
 		Services_Exception_Disabled::check('feature_trackers');
 	}
 
-	function action_view($input)
-	{
-		$item = Tracker_Item::fromId($input->id->int());
-			
-		if (! $item) {
-			throw new Services_Exception_NotFound('Item not found');
-		}
-
-		if (! $item->canView()) {
-			throw new Services_Exception_Denied('Permission denied');
-		}
-
-		$defintion = $item->getDefinition();
-
-		$fields = $item->prepareOutput(new JitFilter([]));
-
-		return [
-			'title' => TikiLib::lib('object')->get_title('trackeritem', $item->getId()),
-			'itemId' => $item->getId(),
-			'trackerId' => $defintion->getConfiguration('trackerId'),
-			'fields' => $fields,
-			'canModify' => $item->canModify(),
-		];
-	}
-
 	function action_add_field($input)
 	{
 		$modal = $input->modal->int();

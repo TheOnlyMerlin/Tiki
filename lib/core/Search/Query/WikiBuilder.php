@@ -133,17 +133,6 @@ class Search_Query_WikiBuilder
 		$query->filterContent($value, $fields);
 	}
 
-	function wpquery_filter_exact($query, $value, array $arguments)
-	{
-		if (isset($arguments['field'])) {
-			$fields = explode(',', $arguments['field']);
-		} else {
-			$fields = TikiLib::lib('tiki')->get_preference('unified_default_content', array('contents'), true);
-		}
-
-		$query->filterIdentifier($value, $fields);
-	}
-
 	function wpquery_filter_language($query, $value)
 	{
 		$query->filterLanguage($value);

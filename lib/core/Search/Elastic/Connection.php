@@ -9,6 +9,7 @@ class Search_Elastic_Connection
 {
 	private $dsn;
 	private $dirty = array();
+	private $dirtyPercolator = false;
 
 	private $indices = array();
 
@@ -309,24 +310,6 @@ class Search_Elastic_Connection
 	private function simplifyType($type)
 	{
 		return preg_replace('/[^a-z]/', '', $type);
-	}
-
-	/**
-	 * Store the dirty flags at the end of the request and restore them when opening the
-	 * connection within a single user session so that if a modification requires re-indexing,
-	 * the next page load will wait until indexing is done to show the results.
-	 */
-	function persistDirty(Tiki_Event_Manager $events)
-	{
-		if (isset($_SESSION['elastic_search_dirty'])) {
-			$this->dirty = $_SESSION['elastic_search_dirty'];
-			unset($_SESSION['elastic_search_dirty']);
-		}
-
-		// Before the HTTP request is closed
-		$events->bind('tiki.process.redirect', function () {
-			$_SESSION['elastic_search_dirty'] = $this->dirty;
-		});
 	}
 }
 

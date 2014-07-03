@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-use Tiki\FileGallery\FileWrapper\WrapperInterface as FileWrapper;
-use Tiki\FileGallery\Definition as GalleryDefinition;
-
 class FileGalLib extends TikiLib
 {
 	function isPodCastGallery($galleryId, $gal_info=null)
@@ -224,14 +221,17 @@ class FileGalLib extends TikiLib
 
 		}
 
-		$definition = $this->getGalleryDefinition($fileInfo['galleryId']);
+		$savedir = $this->get_gallery_save_dir($fileInfo['galleryId'], $galInfo);
 
 		$this->deleteBacklinks(null, $fileId);
-		$definition->delete($fileInfo['data'], $fileInfo['path']);
-
+		if ($fileInfo['path']) {
+			unlink($savedir . $fileInfo['path']);
+		}
 		$archives = $this->get_archives($fileId);
 		foreach ($archives['data'] as $archive) {
-			$definition->delete($archive['data'], $archive['path']);
+			if ($archive['path']) {
+				unlink($savedir . $archive['path']);
+			}
 			$this->remove_object('file', $archive['fileId']);
 		}
 
@@ -243,9 +243,7 @@ class FileGalLib extends TikiLib
 		$this->remove_object('file', $fileId);
 
 		//Watches
-		if ( ! $disable_notifications ) {
-			$this->notify($fileInfo['galleryId'], $fileInfo['name'], $fileInfo['filename'], '', 'remove file', $user);
-		}
+		if ( ! $disable_notifications ) $this->notify($fileInfo['galleryId'], $fileInfo['name'], $fileInfo['filename'], '', 'remove file', $user);
 
 		if ($prefs['feature_actionlog'] == 'y') {
 			$logslib = TikiLib::lib('logs');
@@ -1181,8 +1179,9 @@ class FileGalLib extends TikiLib
 			}
 
 			if ( $didFileReplace && !empty($oldPath) ) {
-				$definition = $this->getGalleryDefinition($gal_info['galleryId']);
-				$definition->delete(null, $oldPath);
+				$savedir = $this->get_gallery_save_dir($gal_info['galleryId'], $gal_info);
+
+				unlink($savedir . $oldPath);
 			}
 
 			TikiLib::events()->trigger(
@@ -1266,21 +1265,21 @@ class FileGalLib extends TikiLib
 	{
 		switch ($type) {
 		case 'text/plain':
-			return function (FileWrapper $wrapper) {
+			return function (FileGallery_Wrapper $wrapper) {
 				return $wrapper->getContents();
 			};
 		case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-			return function (FileWrapper $wrapper) {
+			return function (FileGallery_Wrapper $wrapper) {
 				$document = Zend_Search_Lucene_Document_Docx::loadDocxFile($wrapper->getReadableFile(), true);
 				return $document->getField('body')->getUtf8Value();
 			};
 		case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
-			return function (FileWrapper $wrapper) {
+			return function (FileGallery_Wrapper $wrapper) {
 				$document = Zend_Search_Lucene_Document_Pptx::loadPptxFile($wrapper->getReadableFile(), true);
 				return $document->getField('body')->getUtf8Value();
 			};
 		case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
-			return function (FileWrapper $wrapper) {
+			return function (FileGallery_Wrapper $wrapper) {
 				$document = Zend_Search_Lucene_Document_Xlsx::loadXlsxFile($wrapper->getReadableFile(), true);
 				return $document->getField('body')->getUtf8Value();
 			};
@@ -1352,10 +1351,8 @@ class FileGalLib extends TikiLib
 
 		for ($offset = 0, $maxRecords = 10; ; $offset += $maxRecords) {
 			$rows = $files->fetchAll(array('fileId', 'filename', 'filesize', 'filetype', 'data', 'path', 'galleryId'), array('archiveId' => 0), $maxRecords, $offset);
-			if (empty($rows)) {
+			if (empty($rows))
 				break;
-			}
-
 			foreach ($rows as $row) {
 				$search_text = $this->get_search_text_for_data($row['data'], $row['path'], $row['filetype'], $row['galleryId']);
 				if ($search_text!==false) {
@@ -1406,7 +1403,7 @@ class FileGalLib extends TikiLib
 			};
 		}
 
-		return function (FileWrapper $wrapper) use ($command) {
+		return function (FileGallery_Wrapper $wrapper) use ($command) {
 			$tmpfname = $wrapper->getReadableFile();
 
 			$cmd = str_replace('%1', escapeshellarg($tmpfname), $command);
@@ -1423,9 +1420,8 @@ class FileGalLib extends TikiLib
 		};
 	}
 
-	private function get_search_text_for_data($data, $path, $type, $galleryId)
+	function get_search_text_for_data($data,$path,$type, $galleryId)
 	{
-		$definition = $this->getGalleryDefinition($galleryId);
 
 		if (!isset($data) && !isset($path)) {
 			return false;
@@ -1436,20 +1432,7 @@ class FileGalLib extends TikiLib
 		if (empty($parseApp))
 			return '';
 
-		$wrapper = $definition->getFileWrapper($data, $path);
-		return $parseApp($wrapper);
-	}
-
-	private function getGalleryDefinition($galleryId)
-	{
-		static $loaded = [];
-
-		if (! isset($loaded[$galleryId])) {
-			$info = $this->get_file_gallery_info($galleryId);
-			$loaded[$galleryId] = new GalleryDefinition($info);
-		}
-
-		return $loaded[$galleryId];
+		return $parseApp(new FileGallery_Wrapper($data, $path, $galleryId));
 	}
 
 	function notify ($galleryId, $name, $filename, $description, $action, $user, $fileId=false)
@@ -2379,19 +2362,20 @@ class FileGalLib extends TikiLib
 	{
 		global $prefs, $smarty;
 		include_once('lib/webmail/tikimaillib.php');
-		$query = 'select * from `tiki_files` where `deleteAfter` < ? - `lastModif` and `deleteAfter` is not NULL and `deleteAfter` != \'\' order by galleryId asc';
-		$files = $this->fetchAll($query, array($this->now));
+		$query = 'select * from `tiki_files` where `deleteAfter` < '.$this->now.' - `lastModif` and `deleteAfter` is not NULL and `deleteAfter` != \'\' order by galleryId asc';
+		$files = $this->fetchAll($query, array());
 		foreach ($files as $fileInfo) {
-			$definition = $this->getGalleryDefinition($fileInfo['galleryId']);
-			$galInfo = $definition->getInfo();
-
+			if (empty($galInfo) || $galInfo['galleryId'] != $fileInfo['galleryId']) {
+				$galInfo = $this->get_file_gallery_info($fileInfo['galleryId']);
+				if (!empty($prefs['fgal_delete_after_email'])) {
+					$smarty->assign_by_ref('galInfo', $galInfo);
+				}
+			}
 			if (!empty($prefs['fgal_delete_after_email'])) {
-				$wrapper = $definition->getFileWrapper($fileInfo['data'], $fileInfo['path']);
+				$savedir = $this->get_gallery_save_dir($galInfo['galleryId'], $galInfo);
+				$fileInfo['data'] = file_get_contents($savedir.$fileInfo['path']);
 
-				$fileInfo['data'] = $wrapper->getContent();
-
-				$smarty->assign('fileInfo', $fileInfo);
-				$smarty->assign('galInfo', $galInfo);
+				$smarty->assign_by_ref('fileInfo', $fileInfo);
 				$mail = new TikiMail();
 				$mail->setSubject(tra('Old File deleted:', $prefs['site_language']).' '.$fileInfo['filename']);
 				$mail->setText($smarty->fetchLang($prefs['site_language'], 'mail/fgal_old_file_deleted.tpl'));

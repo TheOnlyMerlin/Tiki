@@ -28,11 +28,11 @@ class MailQueueSendCommand extends Command
     {
       require_once ('lib/mail/maillib.php');
       global $prefs;
-      $logslib = TikiLib::lib('logs');
+      $logslib = TikiLib::lib('logs'); 
       tiki_mail_setup();
       $output->writeln('Mail queue processor starting...');
 
-      $messages = \TikiDb::get()->fetchAll('SELECT messageId, message FROM tiki_mail_queue');
+        $messages = \TikiDb::get()->fetchAll('SELECT messageId, message FROM tiki_mail_queue');
 
       foreach ( $messages as $message ) {
 
