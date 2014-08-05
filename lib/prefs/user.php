@@ -22,8 +22,7 @@ function prefs_user_list($partial = false)
 			$catree[$categ['categId']] = $categ['categpath'];
 		}
 	}
-
-	$fieldFormat = '{title} ({tracker_name})';
+	
 	return array(
 		'user_show_realnames' => array(
 			'name' => tra('Show user\'s real name instead of login (when possible)'),
@@ -182,7 +181,6 @@ function prefs_user_list($partial = false)
 				'user_register_prettytracker_output',
 			),
 			'profile_reference' => 'tracker_field',
-			'format' => $fieldFormat,
 		),
 		'user_trackersync_trackers' => array(
 			'name' => tra('User tracker IDs to sync prefs from'),
@@ -207,7 +205,6 @@ function prefs_user_list($partial = false)
 			),
 			'default' => '',
 			'profile_reference' => 'tracker_field',
-			'format' => $fieldFormat,
 		),
 		'user_trackersync_geo' => array(
 			'name' => tra('Synchronize long/lat/zoom to location field'),
@@ -260,7 +257,6 @@ function prefs_user_list($partial = false)
 			),
 			'default' => '',
 			'profile_reference' => 'tracker_field',
-			'format' => $fieldFormat,
 		),
 		'user_selector_threshold' => array(
 			'name' => tra('Maximum number of users to show in drop down lists'),

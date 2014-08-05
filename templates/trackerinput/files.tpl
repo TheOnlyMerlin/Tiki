@@ -259,21 +259,7 @@ $url.keypress(function (e) {
 
 				$field.input_csv('add', ',', fileId);
 
-				if(data.type.substring(0,6) == 'image/') {
-					li.prepend($('<img src="tiki-download_file.php?fileId=' + fileId + '&display&height=24" height="24">'));
-				} else if(data.type == 'application/pdf') {
-					li.prepend($('<img height="16" width="16" title="application/pdf" alt="application/pdf" src="img/icons/mime/pdf.png">'));
-				} else if(data.type.indexOf("sheet") != -1) {
-					li.prepend($('<img height="16" width="16" title="'+ data.type +'" alt="'+ data.type +'" src="img/icons/mime/xls.png">'));
-				} else if(data.type.indexOf("zip") != -1) {
-					li.prepend($('<img height="16" width="16" title="'+ data.type +'" alt="'+ data.type +'" src="img/icons/mime/zip.png">'));
-				} else if (data.type.substring(0,6) == 'video/') {
-					li.prepend($('<img height="16" width="16" title="'+ data.type +'" alt="'+ data.type +'" src="img/icons/mime/flv.png">'));
-				} else if (data.type.indexOf("word") != -1) {
-					li.prepend($('<img height="16" width="16" title="'+ data.type +'" alt="'+ data.type +'" src="img/icons/mime/doc.png">'));
-				} else {
-					li.prepend($('<img height="16" width="16" title="'+ data.type +'" alt="'+ data.type +'" src="img/icons/mime/default.png">'));
-				}
+				li.prepend($('<img src="tiki-download_file.php?fileId=' + fileId + '&display&height=24" height="24">'));
 				li.append($('<label>{{icon _id=cross alt="{tr}Remove{/tr}"}}</label>'));
 				li.find('img.icon').click(function () {
 					$field.input_csv('delete', ',', fileId);
@@ -307,7 +293,7 @@ $search.keypress(function (e) {
 			"filter~gallery_id": $self.data('galleryid')
 		}, function (data) {
 			$search.removeAttr('disabled').clearError();
-			$.each(data.result, function () {
+			$.each(data, function () {
 				var item = $('<li/>').append(this.link), icon = $('<label>{{icon _id=add}}</label>'), data = this;
 				item.append(icon);
 				icon.click(function () {

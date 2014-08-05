@@ -39,7 +39,6 @@
                                 {modulelist zone=pagetop}
                             {/if}
 							{error_report}
-							<div class="pull-right">{block name=quicknav}{/block}</div>
 					        {block name=title}{/block}
                             {block name=navigation}{/block}
 					        {block name=content}{/block}
@@ -55,7 +54,6 @@
                                 {modulelist zone=pagetop}
                             {/if}
 							{error_report}
-							<div class="pull-right">{block name=quicknav}{/block}</div>
 					        {block name=title}{/block}
                             {block name=navigation}{/block}
 					        {block name=content}{/block}
@@ -74,7 +72,6 @@
                                 {modulelist zone=pagetop}
                             {/if}
 							{error_report}
-							<div class="pull-right">{block name=quicknav}{/block}</div>
 					        {block name=title}{/block}
                             {block name=navigation}{/block}
 					        {block name=content}{/block}
@@ -92,8 +89,7 @@
                         {if $prefs.module_zones_pagetop eq 'fixed' or ($prefs.module_zones_pagetop ne 'n' && ! zone_is_empty('pagetop'))}
                             {modulelist zone=pagetop}
                         {/if}
-							{error_report}
-							<div class="pull-right">{block name=quicknav}{/block}</div>
+						{error_report}
 					        {block name=title}{/block}
                             {block name=navigation}{/block}
 					        {block name=content}{/block}
@@ -125,6 +121,24 @@
 		        </footer>
 
 		{include file='footer.tpl'}
+		{if isset($prefs.socialnetworks_user_firstlogin) && $prefs.socialnetworks_user_firstlogin == 'y'}
+			{include file='tiki-socialnetworks_firstlogin_launcher.tpl'}
+		{/if}
+
+		{if $prefs.site_google_analytics_account}
+			{wikiplugin _name=googleanalytics account=$prefs.site_google_analytics_account}{/wikiplugin}
+		{/if}
+
+		{interactivetranslation}
+		<!-- Put JS at the end -->
+		{if $headerlib}
+			{$headerlib->output_js_config()}
+			{$headerlib->output_js_files()}
+			{$headerlib->output_js()}
+		{/if}
+        {if $prefs.feature_endbody_code}
+            {eval var=$prefs.feature_endbody_code}
+        {/if}
 	</body>
 </html>
 {if !empty($smarty.request.show_smarty_debug)}

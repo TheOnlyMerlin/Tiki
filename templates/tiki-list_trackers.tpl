@@ -8,10 +8,10 @@
 {block name="navigation"}
 	{if $tiki_p_admin_trackers eq 'y'}
 		<div class="form-group">{* Class provides 15px bottom margin. *}
-			<a class="btn btn-default" href="{bootstrap_modal controller=tracker action=replace}">
+			<a class="btn btn-default" href="{service controller=tracker action=replace modal=true}" data-toggle="modal" data-target="#bootstrap-modal">
 				{glyph name="plus"} {tr}Create{/tr}
 			</a>
-			<a class="btn btn-default" href="{bootstrap_modal controller=tracker action=duplicate}">
+			<a class="btn btn-default" href="{service controller=tracker action=duplicate modal=true}" data-toggle="modal" data-target="#bootstrap-modal">
 				{glyph name="flash"} {tr}Duplicate{/tr}
 			</a>
 			<div class="btn-group">
@@ -21,12 +21,12 @@
 				</button>
 				<ul class="dropdown-menu">
 					<li>
-						<a href="{bootstrap_modal controller=tracker action=import}">
+						<a href="{service controller=tracker action=import modal=1}" data-toggle="modal" data-target="#bootstrap-modal">
 							{tr}Import Structure{/tr}
 						</a>
 					</li>
 					<li>
-						<a href="{bootstrap_modal controller=tracker action=import_profile}">
+						<a href="{service controller=tracker action=import_profile modal=1}" data-toggle="modal" data-target="#bootstrap-modal">
 							{tr}Import From Profile/YAML{/tr}
 						</a>
 					</li>
@@ -51,7 +51,7 @@
 	{/if}
 	<div class="table-responsive">
     <div>
-	<table class="table table-striped table-condensed table-hover">
+	<table class="table table-condensed table-hover">
 		<tr>
 			<th>{self_link _sort_arg='sort_mode' _sort_field='trackerId'}{tr}Id{/tr}{/self_link}</th>
 			<th>{self_link _sort_arg='sort_mode' _sort_field='name'}{tr}Name{/tr}{/self_link}</th>

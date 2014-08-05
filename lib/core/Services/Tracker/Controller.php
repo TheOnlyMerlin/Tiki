@@ -17,31 +17,6 @@ class Services_Tracker_Controller
 		Services_Exception_Disabled::check('feature_trackers');
 	}
 
-	function action_view($input)
-	{
-		$item = Tracker_Item::fromId($input->id->int());
-			
-		if (! $item) {
-			throw new Services_Exception_NotFound('Item not found');
-		}
-
-		if (! $item->canView()) {
-			throw new Services_Exception_Denied('Permission denied');
-		}
-
-		$defintion = $item->getDefinition();
-
-		$fields = $item->prepareOutput(new JitFilter([]));
-
-		return [
-			'title' => TikiLib::lib('object')->get_title('trackeritem', $item->getId()),
-			'itemId' => $item->getId(),
-			'trackerId' => $defintion->getConfiguration('trackerId'),
-			'fields' => $fields,
-			'canModify' => $item->canModify(),
-		];
-	}
-
 	function action_add_field($input)
 	{
 		$modal = $input->modal->int();
@@ -187,8 +162,6 @@ class Services_Tracker_Controller
 		$hasList = false;
 		$hasLink = false;
 
-		$tx = TikiDb::get()->begin();
-
 		$fields = array();
 		foreach ($input->field as $key => $value) {
 			$fieldId = (int) $key;
@@ -220,7 +193,6 @@ class Services_Tracker_Controller
 		}
 
 		$errorreport->send_headers();
-		$tx->commit();
 
 		return array(
 			'fields' => $fields,
@@ -304,17 +276,6 @@ class Services_Tracker_Controller
 			);
 		}
 
-		array_walk($typeInfo['params'], function (& $param) {
-			if (isset($param['profile_reference'])) {
-				$lib = TikiLib::lib('object');
-				$param['selector_type'] = $lib->getSelectorType($param['profile_reference']);
-				$param['parent'] = isset($param['parent']) ? "#option-{$param['parent']}" : null;
-				$param['parentkey'] = isset($param['parentkey']) ? $param['parentkey'] : null;
-			} else {
-				$param['selector_type'] = null;
-			}
-		});
-
 		return array(
 			'title' => tr('Edit %0', $field['name']),
 			'field' => $field,
@@ -358,11 +319,9 @@ class Services_Tracker_Controller
 
 		if ($input->confirm->int()) {
 			$trklib = TikiLib::lib('trk');
-			$tx = TikiDb::get()->begin();
 			foreach ($fields as $fieldId) {
 				$trklib->remove_tracker_field($fieldId, $trackerId);
 			}
-			$tx->commit();
 
 			return array(
 				'status' => 'DONE',
@@ -702,19 +661,13 @@ class Services_Tracker_Controller
 
 			if ($itemId) {
 				TikiLib::lib('unifiedsearch')->processUpdateQueue();
-				if ($input->waitforindex->int()) {
-					TikiLib::events()->trigger('tiki.process.redirect');
-				}
 
 				if ($next = $input->next->url()) {
 					$access = TikiLib::lib('access');
 					$access->redirect($next, tr('Item created'));
 				}
 
-				$item = $this->utilities->getItem($trackerId, $itemId);
-				$item['itemTitle'] = $this->utilities->getTitle($definition, $item);
-
-				return $item;
+				return $this->utilities->getItem($trackerId, $itemId);
 			} else {
 				throw new Services_Exception(tr('Item could not be created.'), 400);
 			}
@@ -796,9 +749,6 @@ class Services_Tracker_Controller
 			}
 
 			TikiLib::lib('unifiedsearch')->processUpdateQueue();
-			if ($input->waitforindex->int()) {
-				TikiLib::events()->trigger('tiki.process.redirect');
-			}
 		}
 
 		return array(
@@ -885,9 +835,6 @@ class Services_Tracker_Controller
 				)
 			);
 			TikiLib::lib('unifiedsearch')->processUpdateQueue();
-			if ($input->waitforindex->int()) {
-				TikiLib::events()->trigger('tiki.process.redirect');
-			}
 		}
 
 		return array(
@@ -910,9 +857,7 @@ class Services_Tracker_Controller
 			throw new Services_Exception_MissingValue('itemId');
 		}
 
-		$trklib = TikiLib::lib('trk');
-
-		$itemInfo = $trklib->get_tracker_item($itemId);
+		$itemInfo = TikiLib::lib('trk')->get_tracker_item($itemId);
 		if (! $itemInfo || $itemInfo['trackerId'] != $trackerId) {
 			throw new Services_Exception_NotFound;
 		}
@@ -922,11 +867,7 @@ class Services_Tracker_Controller
 			throw new Services_Exception_Denied;
 		}
 
-		$uncascaded = $trklib->findUncascadedDeletes($itemId, $trackerId);
-
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
-			$tx = TikiDb::get()->begin();
 
 			foreach ($definition->getFields() as $field) {
 				$itemData = $itemObject->getData();
@@ -936,18 +877,14 @@ class Services_Tracker_Controller
 				}
 			}
 
-			$trklib->replaceItemReferences($input->replacement->int() ?: '', $uncascaded['itemIds'], $uncascaded['fieldIds']);
-
 			$this->utilities->removeItem($itemId);
-
-			$tx->commit();
+			TikiLib::lib('unifiedsearch')->processUpdateQueue();
 		}
 
 		return array(
 			'title' => tr('Remove'),
 			'trackerId' => $trackerId,
 			'itemId' => $itemId,
-			'affectedCount' => count($uncascaded['itemIds']),
 		);
 	}
 

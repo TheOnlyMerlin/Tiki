@@ -14,7 +14,7 @@
 
 <div class="table-responsive">
 <div>
-<table class="table table-striped normal">
+<table class="table normal">
 {assign var=numbercol value=0}
 <tr>
 {if $prefs.blog_list_title eq 'y' or $prefs.blog_list_description eq 'y'}

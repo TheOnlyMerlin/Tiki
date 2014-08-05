@@ -9,6 +9,7 @@ class Search_Elastic_Connection
 {
 	private $dsn;
 	private $dirty = array();
+	private $dirtyPercolator = false;
 
 	private $indices = array();
 
@@ -112,54 +113,6 @@ class Search_Elastic_Connection
 		$type = $this->simplifyType($type);
 
 		$this->rawIndex($index, $type, $id, $data);
-	}
-
-	function assignAlias($alias, $targetIndex)
-	{
-		$this->flush();
-
-		$active = [];
-		$toRemove = [];
-		$current = $this->rawApi('/_aliases');
-		foreach ($current as $indexName => $info) {
-			if (array_key_exists($alias, $info->aliases)) {
-				$active[] = $indexName;
-				$toRemove[] = $indexName;
-			} elseif (0 === strpos($indexName, $alias . '_') && $indexName != $targetIndex) {
-				$toRemove[] = $indexName;
-			}
-		}
-		$actions = [
-			['add' => ['index' => $targetIndex, 'alias' => $alias]],
-		];
-
-		foreach ($active as $index) {
-			$actions[] = ['remove' => ['index' => $index, 'alias' => $alias]];
-		}
-
-		$this->post('/_aliases', json_encode([
-			'actions' => $actions,
-		]));
-
-		// Make sure the new index is fully active, then clean-up
-		$this->refresh($alias);
-
-		foreach ($toRemove as $old) {
-			$this->deleteIndex($old);
-		}
-	}
-
-	function isRebuilding($aliasName)
-	{
-		$current = $this->rawApi('/_aliases');
-		foreach ($current as $indexName => $info) {
-			if (0 === strpos($indexName, $aliasName . '_') && 0 === count((array) $info->aliases)) {
-				// Matching name, no alias, means currently rebuilding
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	private function rawIndex($index, $type, $id, $data)
@@ -357,24 +310,6 @@ class Search_Elastic_Connection
 	private function simplifyType($type)
 	{
 		return preg_replace('/[^a-z]/', '', $type);
-	}
-
-	/**
-	 * Store the dirty flags at the end of the request and restore them when opening the
-	 * connection within a single user session so that if a modification requires re-indexing,
-	 * the next page load will wait until indexing is done to show the results.
-	 */
-	function persistDirty(Tiki_Event_Manager $events)
-	{
-		if (isset($_SESSION['elastic_search_dirty'])) {
-			$this->dirty = $_SESSION['elastic_search_dirty'];
-			unset($_SESSION['elastic_search_dirty']);
-		}
-
-		// Before the HTTP request is closed
-		$events->bind('tiki.process.redirect', function () {
-			$_SESSION['elastic_search_dirty'] = $this->dirty;
-		});
 	}
 }
 

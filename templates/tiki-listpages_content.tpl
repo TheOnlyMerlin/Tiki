@@ -27,7 +27,7 @@
 
 <div class="table-responsive">
 <div>
-<table class="table table-striped normal">
+<table class="table normal">
 	<tr>
 		{if isset($checkboxes_on) and $checkboxes_on eq 'y' && count($listpages) > 0}
 			<th>

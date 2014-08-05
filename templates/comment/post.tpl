@@ -6,14 +6,12 @@
 
 {block name="content"}
 {if $threadId}
-	<div class="alert alert-success">
-		{if $prefs.feature_comments_moderation eq 'y'}
-		   <p>{tr}Your message has been queued for approval and will be posted after a moderator approves it.{/tr}</p>
-		{else}
-			<p>{tr}Your comment was posted.{/tr}</p>
-		{/if}
-		<p>{tr}Go back to:{/tr} {object_link type=$type objectId=$objectId}</p>
-	</div>
+    {if $prefs.feature_comments_moderation eq 'y'}
+       <p>{tr}Your message has been queued for approval and will be posted after a moderator approves it.{/tr}</p>
+    {else}
+        <p>{tr}Your comment was posted.{/tr}</p>
+    {/if}
+	<p>{tr}Go back to:{/tr} {object_link type=$type objectId=$objectId}</p>
 {else}
 	<form method="post" action="{service controller=comment action=post}" role="form">
 		<div class="panel panel-default">
@@ -59,7 +57,6 @@
 						{assign var='showmandatory' value='y'}
 						{include file='antibot.tpl'}
 					{/if}
-					<input type="hidden" name="return_url" value="{$return_url|escape}">
 					<input type="submit" class="comment-post btn btn-primary btn-sm" value="{tr}Post{/tr}"/>
 					<div class="btn btn-link btn-sm">
 						<a href="#" onclick="$(this).closest('.comment-container, .ui-dialog-content').reload(); return false;">{tr}Cancel{/tr}</a>

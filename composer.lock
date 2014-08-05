@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "daa2ec0691d56c2ef6525639a7e74a64",
+    "hash": "416dfc12a3f3beeb8017fadb8e4fe81d",
     "packages": [
         {
             "name": "adodb/adodb",
@@ -383,54 +383,6 @@
             "description": "FutureLink-Protocol implementation in PHP",
             "homepage": "https://github.com/FutureLink-Protocol",
             "time": "2014-06-24 17:15:33"
-        },
-        {
-            "name": "fortawesome/font-awesome",
-            "version": "4.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/FortAwesome/Font-Awesome.git",
-                "reference": "2649d91d18629bab071449b3bc4cb02761037a57"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/FortAwesome/Font-Awesome/zipball/2649d91d18629bab071449b3bc4cb02761037a57",
-                "reference": "2649d91d18629bab071449b3bc4cb02761037a57",
-                "shasum": ""
-            },
-            "require-dev": {
-                "jekyll": "1.0.2",
-                "lessc": "1.4.2"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "4.0.x-dev"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "OFL-1.1",
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Dave Gandy",
-                    "email": "dave@fontawesome.io",
-                    "homepage": "http://twitter.com/davegandy",
-                    "role": "Developer"
-                }
-            ],
-            "description": "The iconic font and CSS framework",
-            "homepage": "http://fontawesome.io/",
-            "keywords": [
-                "FontAwesome",
-                "awesome",
-                "bootstrap",
-                "font",
-                "icon"
-            ],
-            "time": "2014-05-14 20:37:30"
         },
         {
             "name": "gabordemooij/redbean",
@@ -871,12 +823,12 @@
         },
         {
             "name": "jquery/plugins/tablesorter",
-            "version": "2.17.5",
+            "version": "2.17.2",
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/jquery-plugins-tablesorter-2.17.5.zip",
-                "reference": "2.17.5",
-                "shasum": "49c508d5cd410b4b6b46780e4be917838cfe508c"
+                "url": "https://composer.tiki.org/dist/jquery-plugins-tablesorter-2.17.2.zip",
+                "reference": "2.17.2",
+                "shasum": "ce879e329393e8238a031f46382e9772d1d3b46c"
             },
             "type": "library"
         },
@@ -1615,25 +1567,22 @@
         },
         {
             "name": "twitter/bootstrap",
-            "version": "v3.2.0",
+            "version": "v3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twbs/bootstrap.git",
-                "reference": "c068162161154a4b85110ea1e7dd3d7897ce2b72"
+                "reference": "a365d8689c3f3cee7f1acf86b61270ecca8e106d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/c068162161154a4b85110ea1e7dd3d7897ce2b72",
-                "reference": "c068162161154a4b85110ea1e7dd3d7897ce2b72",
+                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/a365d8689c3f3cee7f1acf86b61270ecca8e106d",
+                "reference": "a365d8689c3f3cee7f1acf86b61270ecca8e106d",
                 "shasum": ""
-            },
-            "replace": {
-                "twitter/bootstrap": "self.version"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.2.x-dev"
+                    "dev-master": "3.0.x-dev"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1650,19 +1599,13 @@
                     "email": "markdotto@gmail.com"
                 }
             ],
-            "description": "The most popular front-end framework for developing responsive, mobile first projects on the web.",
+            "description": "Sleek, intuitive, and powerful mobile first front-end framework for faster and easier web development.",
             "homepage": "http://getbootstrap.com",
             "keywords": [
-                "JS",
-                "css",
-                "framework",
-                "front-end",
-                "less",
-                "mobile-first",
-                "responsive",
-                "web"
+                "bootstrap",
+                "css"
             ],
-            "time": "2014-06-26 16:36:48"
+            "time": "2014-02-13 17:24:59"
         },
         {
             "name": "undojs/undojs",

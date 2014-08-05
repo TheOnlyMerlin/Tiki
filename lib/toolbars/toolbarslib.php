@@ -1403,7 +1403,7 @@ class ToolbarHelptool extends Toolbar
 		$params['plugins'] = 1;
 		$params['areaId'] = $areaId;
 
-		if ($GLOBALS['section'] == 'sheet') {
+		if ($section == 'sheet') {
 			$params['sheet'] = 1;
 		}
 

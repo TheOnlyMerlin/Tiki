@@ -90,11 +90,9 @@
 							{/foreach}
 						</select>
 					</div>
-					<div class="col-sm-5">
-						<label for="filter-language-unspecified-checkbox" class="checkbox-inline">
-							<input type="checkbox" id="filter-language-unspecified-checkbox" name="filter~language_unspecified"{if $filter_language_unspecified} checked="checked"{/if}>
-							{tr}Include objects without a specified language{/tr}
-						</label>
+					<div class="col-sm-5 checkbox-inline">
+						<input type="checkbox" name="filter~language_unspecified"{if $filter_language_unspecified} checked="checked"{/if}>
+						{tr}Include objects without a specified language{/tr}
 					</div>
 				</div>
 			{else}
@@ -121,7 +119,7 @@
 				});
 			{/jq}
 		{/if}
-		<a href="{bootstrap_modal controller=search action=help}">{tr}Search Help{/tr} {icon _id=help}</a>
+		<a href="{service controller=search action=help modal=1}" data-toggle="modal" data-target="#bootstrap-modal">{tr}Search Help{/tr} {icon _id=help}</a>
 	</div>
 </form>
 {jq}

@@ -42,7 +42,7 @@ class Services_Comment_Controller
 			'cant' => $comments['cant'],
 			'offset' => $offset,
 			'per_page' => $per_page,
-			'allow_post' => $this->canPost($type, $objectId) && ! $input->hidepost->int(),
+			'allow_post' => $this->canPost($type, $objectId),
 			'allow_remove' => $this->canRemove($type, $objectId),
 			'allow_lock' => $this->canLock($type, $objectId),
 			'allow_unlock' => $this->canUnlock($type, $objectId),
@@ -58,7 +58,6 @@ class Services_Comment_Controller
 		$type = $input->type->text();
 		$objectId = $input->objectId->pagename();
 		$parentId = $input->parentId->int();
-		$return_url = $input->return_url->url();
 
 		// Check general permissions
 
@@ -177,11 +176,6 @@ class Services_Comment_Controller
 						sendCommentNotification('trackeritem', $objectId, $title, $data, $threadId);
 					}
 
-					$access = TikiLib::lib('access');
-					if ($return_url && ! $access->is_xml_http_request()) {
-						$access->redirect($return_url, tr('Your comment was posted.'));
-					}
-
 					return array(
 						'threadId' => $threadId,
 						'parentId' => $parentId,
@@ -204,7 +198,6 @@ class Services_Comment_Controller
 			'anonymous_email' => $anonymous_email,
 			'anonymous_website' => $anonymous_website,
 			'errors' => $errors,
-			'return_url' => $return_url,
 		);
 	}
 

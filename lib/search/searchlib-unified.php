@@ -129,10 +129,6 @@ class UnifiedSearchLib
 			$old = $this->getIndex('data-old');
 
 			return $new->exists() || $old->exists();
-		} elseif ($prefs['unified_engine'] == 'elastic') {
-			$name = $this->getIndexLocation('data');
-			$connection = $this->getElasticConnection();
-			return $connection->isRebuilding($name);
 		}
 
 		return false;
@@ -183,8 +179,7 @@ class UnifiedSearchLib
 			break;
 		case 'elastic':
 			$connection = $this->getElasticConnection();
-			$aliasName = $prefs['unified_elastic_index_prefix'] . 'main';
-			$indexName = $aliasName . '_' . uniqid();
+			$indexName = $prefs['unified_elastic_index_prefix'] . uniqid();
 			$index = new Search_Elastic_Index($connection, $indexName);
 
 			TikiLib::events()->bind(
@@ -270,9 +265,10 @@ class UnifiedSearchLib
 			$oldIndex = new Search_Lucene_Index($swapName);
 			break;
 		case 'elastic':
-			$oldIndex = null; // assignAlias will handle the clean-up
+			// Obtain the old index and destroy it after permanently replacing it.
+			$oldIndex = $this->getIndex();
+
 			$tikilib->set_preference('unified_elastic_index_current', $indexName);
-			$connection->assignAlias($aliasName, $indexName);
 
 			break;
 		case 'mysql':
@@ -320,7 +316,7 @@ class UnifiedSearchLib
 				'preference' => $prefs['tmpDir'] . '/unified-preference-index-' . $prefs['language'],
 			),
 			'elastic' => array(
-				'data' => $prefs['unified_elastic_index_prefix'] . 'main',
+				'data' => $prefs['unified_elastic_index_current'],
 				'preference' => $prefs['unified_elastic_index_prefix'] . 'pref_' . $prefs['language'],
 			),
 			'mysql' => array(
@@ -407,8 +403,15 @@ class UnifiedSearchLib
 			$types['comment'] = tra('comment');
 		}
 
-		$types['user'] = tra('user');
-		$types['group'] = tra('group');
+		if (in_array($prefs['user_in_search_result'], array('all', 'public'))) {
+			$types['user'] = tra('user');
+		} else {
+			// Check for fresh install in which case index admin user otherwise initial indexing will not work with no content
+			if (TikiLib::lib('tiki')->getOne("select count(*) from users_users") === '1' && !TikiLib::lib('tiki')->page_exists('HomePage')) {
+				$prefs['user_in_search_result'] = 'all';
+				$types['user'] = tra('user');
+			}
+		}
 
 		return $types;
 	}
@@ -450,13 +453,7 @@ class UnifiedSearchLib
 	{
 		global $prefs;
 
-		$isRepository = $index instanceof Search_Index_QueryRepository;
-		
-		if (! $isRepository && method_exists($index, 'getRealIndex')) {
-			$isRepository = $index->getRealIndex() instanceof Search_Index_QueryRepository;
-		}
-
-		if (! $this->isRebuildingNow && $isRepository && $prefs['storedsearch_enabled'] == 'y') {
+		if (! $this->isRebuildingNow && $index->getRealIndex() instanceof Search_Index_QueryRepository && $prefs['storedsearch_enabled'] == 'y') {
 			$index = new Search_Index_QueryAlertDecorator($index);
 		}
 
@@ -525,8 +522,6 @@ class UnifiedSearchLib
 
 		if (isset ($types['trackeritem'])) {
 			$aggregator->addContentSource('trackeritem', new Search_ContentSource_TrackerItemSource);
-			$aggregator->addContentSource('tracker', new Search_ContentSource_TrackerSource);
-			$aggregator->addContentSource('trackerfield', new Search_ContentSource_TrackerFieldSource);
 		}
 
 		if (isset ($types['sheet'])) {
@@ -559,10 +554,6 @@ class UnifiedSearchLib
 			$aggregator->addContentSource('user', new Search_ContentSource_UserSource($prefs['user_in_search_result']));
 		}
 
-		if (isset($types['group'])) {
-			$aggregator->addContentSource('group', new Search_ContentSource_GroupSource);
-		}
-
 		if ($prefs['activity_custom_events'] == 'y' || $prefs['activity_basic_events'] == 'y' || $prefs['monitor_enabled'] == 'y') {
 			$aggregator->addContentSource('activity', new Search_ContentSource_ActivityStreamSource($aggregator instanceof Search_Indexer ? $aggregator : null));
 		}
@@ -574,7 +565,6 @@ class UnifiedSearchLib
 		// Global Sources
 		if ($prefs['feature_categories'] == 'y') {
 			$aggregator->addGlobalSource(new Search_GlobalSource_CategorySource);
-			$aggregator->addContentSource('category', new Search_ContentSource_CategorySource);
 		}
 
 		if ($prefs['feature_freetags'] == 'y') {
@@ -601,7 +591,6 @@ class UnifiedSearchLib
 		}
 
 		$aggregator->addGlobalSource(new Search_GlobalSource_TitleInitialSource);
-		$aggregator->addGlobalSource(new Search_GlobalSource_SearchableSource);
 	}
 
     /**
@@ -710,16 +699,9 @@ class UnifiedSearchLib
 
 	private function getElasticConnection()
 	{
-		static $connection;
-
-		if ($connection) {
-			return $connection;
-		}
-
 		global $prefs;
 		$connection = new Search_Elastic_Connection($prefs['unified_elastic_url']);
 		$connection->startBulk();
-		$connection->persistDirty(TikiLib::events());
 
 		return $connection;
 	}
@@ -873,10 +855,6 @@ class UnifiedSearchLib
 			$query->filterLanguage($q);
 		}
 
-		if (isset($filter['groups'])) {
-			$query->filterMultivalue($filter['groups'], 'groups');
-		}
-
 		unset($filter['type']);
 		unset($filter['categories']);
 		unset($filter['deep']);
@@ -885,7 +863,6 @@ class UnifiedSearchLib
 		unset($filter['language']);
 		unset($filter['language_unspecified']);
 		unset($filter['autocomplete']);
-		unset($filter['groups']);
 
 		foreach ($filter as $key => $value) {
 			if ($value) {

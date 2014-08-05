@@ -3,7 +3,7 @@
 
 {if $tiki_p_admin eq 'y'}
 	<div class="navbar">
-		<a class="btn btn-primary" href="{bootstrap_modal controller=menu action=manage}">
+		<a class="btn btn-primary" href="{service controller=menu action=manage modal=true}" data-toggle="modal" data-target="#bootstrap-modal">
 			{glyph name="plus"} {tr}Create Menu{/tr}
 		</a>
 		{button href="tiki-admin_modules.php" _text="{glyph name="cog"} {tr}Admin Modules{/tr}"}
@@ -38,7 +38,7 @@
 				<td class="action">
 					{if $channels[user].menuId neq 42}
 						{if $tiki_p_edit_menu eq 'y'}
-							<a class="btn btn-default btn-sm" href="{bootstrap_modal controller=menu action=manage menuId=$channels[user].menuId}" title="{tr}Edit Menu{/tr}">
+							<a class="btn btn-default btn-sm" href="{service controller=menu action=manage menuId={$channels[user].menuId} modal=true}" data-toggle="modal" data-target="#bootstrap-modal" title="{tr}Edit Menu{/tr}">
 								{glyph name="edit"}
 							</a>
 						{/if}
@@ -54,9 +54,9 @@
 						{/if}
 					{/if}
 					{if $tiki_p_edit_menu eq 'y'}
-						<a class="btn btn-default btn-sm" href="{bootstrap_modal controller=menu action=clone menuId=$channels[user].menuId}" title="{tr}Clone Menu{/tr}">
-							{glyph name="flash"}
-						</a>
+						<a class="btn btn-default btn-sm" href="{service controller=menu action=clone menuId={$channels[user].menuId} modal=true}" data-toggle="modal" data-target="#bootstrap-modal" title="{tr}Clone Menu{/tr}">
+								{glyph name="flash"}
+							</a>
 					{/if}
 				</td>
 			</tr>

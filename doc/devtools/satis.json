@@ -141,39 +141,6 @@
 		{
 			"type": "package",
 			"package": {
-				"name": "ckeditor/ckeditor",
-				"version": "4.4.2",
-				"dist": {
-					"url": "https://github.com/ckeditor/ckeditor-releases/archive/full/4.4.2.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "ckeditor/ckeditor/skins/kama",
-				"version": "4.4.2",
-				"dist": {
-					"url": "http://download.ckeditor.com/kama/releases/kama_4.4.2.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "ckeditor/ckeditor/plugins/divarea",
-				"version": "4.4.2",
-				"dist": {
-					"url": "http://download.ckeditor.com/divarea/releases/divarea_4.4.2.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
 				"name": "codemirror/codemirror",
 				"version": "2.25",
 				"dist": {
@@ -182,9 +149,9 @@
 				}
 			}
 		},
-		{
-			"type": "package",
-			"package": {
+ 		{
+ 			"type": "package",
+ 			"package": {
 				"name": "codemirror/codemirror",
 				"version": "3.19.0",
 				"dist": {
@@ -204,9 +171,9 @@
 				}
 			}
 		},
-		{
-			"type": "package",
-			"package": {
+ 		{
+ 			"type": "package",
+ 			"package": {
 				"name": "dompdf/dompdf",
 				"version": "0.6.1",
 				"dist": {
@@ -846,31 +813,9 @@
 			"type": "package",
 			"package": {
 				"name": "jquery/plugins/tablesorter",
-				"version": "2.17.2",
+				"version": "2.16.2",
 				"dist": {
-					"url": "https://github.com/Mottie/tablesorter/archive/v2.17.2.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "jquery/plugins/tablesorter",
-				"version": "2.17.5",
-				"dist": {
-					"url": "https://github.com/Mottie/tablesorter/archive/v2.17.5.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "jquery/plugins/tablesorter",
-				"version": "2.17.6",
-				"dist": {
-					"url": "https://github.com/Mottie/tablesorter/archive/v2.17.6.zip",
+					"url": "https://github.com/Mottie/tablesorter/archive/v2.16.2.zip",
 					"type": "zip"
 				}
 			}
@@ -985,7 +930,7 @@
 				}
 			}
 		},
-		{
+ 		{
 			"type": "package",
 			"package": {
 				"name": "player/mp3",
@@ -1026,9 +971,9 @@
 			"type": "package",
 			"package": {
 				"name": "jquery/jquery-s5",
-				"version": "dev-master",
+				"version": "1.0.1",
 				"dist": {
-					"url": "https://github.com/robertleeplummerjr/jQuery.s5/archive/master.zip",
+					"url": "https://github.com/robertleeplummerjr/jQuery.s5/archive/1.0.1.zip",
 					"type": "zip"
 				}
 			}
@@ -1049,7 +994,7 @@
 		"jcapture-applet/jcapture-applet": "dev-master",
 		"jquery/jquery": "*",
 		"jquery/jquery-min": "*",
-		"jquery/jquery-s5": "dev-master",
+		"jquery/jquery-s5": "1.0.1",
 		"jquery/jquery-sheet": "3.1",
 		"jquery/jquery-ui": "*",
 		"jquery/jquery-mobile": "*",

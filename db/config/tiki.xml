@@ -77,17 +77,11 @@
 		<service id="tiki.lib.object" class="ObjectLib">
 			<file>%kernel.root_dir%/lib/objectlib.php</file>
 		</service>
-		<service id="tiki.lib.objectselector" class="Tiki\Object\Selector">
-			<argument type="service" id="tiki.lib.object"/>
-		</service>
 		<service id="tiki.lib.quantify" class="QuantifyLib">
 			<file>%kernel.root_dir%/lib/wiki/quantifylib.php</file>
 		</service>
 		<service id="tiki.lib.rating" class="RatingLib">
 			<file>%kernel.root_dir%/lib/rating/ratinglib.php</file>
-		</service>
-		<service id="tiki.lib.ratingconfig" class="RatingConfigLib">
-			<file>%kernel.root_dir%/lib/rating/configlib.php</file>
 		</service>
 		<service id="tiki.lib.relation" class="RelationLib">
 			<file>%kernel.root_dir%/lib/attributes/relationlib.php</file>
@@ -100,10 +94,6 @@
 		</service>
 		<service id="tiki.lib.service" class="ServiceLib">
 			<file>%kernel.root_dir%/lib/servicelib.php</file>
-		</service>
-		<service id="tiki.lib.slugmanager" class="Tiki\Wiki\SlugManager"/>
-		<service id="tiki.lib.sheet" class="SheetLib">
-			<file>%kernel.root_dir%/lib/sheet/sheetlib.php</file>
 		</service>
 		<service id="tiki.lib.struct" class="StructLib">
 			<file>%kernel.root_dir%/lib/structures/structlib.php</file>
@@ -123,13 +113,6 @@
 		</service>
 		<service id="tiki.lib.wiki" class="WikiLib">
 			<file>%kernel.root_dir%/lib/wiki/wikilib.php</file>
-		</service>
-
-		<service id="tiki.wiki.slug.underscore" class="Tiki\Wiki\SlugManager\UnderscoreGenerator">
-			<tag name="tiki.wiki.slug.generator"/>
-		</service>
-		<service id="tiki.wiki.slug.urlencode" class="Tiki\Wiki\SlugManager\UrlencodeGenerator">
-			<tag name="tiki.wiki.slug.generator"/>
 		</service>
 	</services>
 </container>

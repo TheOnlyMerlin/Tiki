@@ -55,7 +55,6 @@
 			<fieldset class="table">
 				<legend>{tr}Activate the feature{/tr}</legend>
 				{preference name=feature_wiki visible="always"}
-				{preference name=wiki_url_scheme}
 			</fieldset>
 
 			<fieldset class="table">
@@ -257,7 +256,6 @@
 		<div class="adminoptionboxchild" id="feature_wiki_discuss_childcontainer">
 			{preference name=wiki_forum_id}
 			{permission_link mode=button permType=forums}
-			{preference name=wiki_discuss_visibility}
 		</div>
 
 		{preference name=feature_source}
