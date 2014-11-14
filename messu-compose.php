@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -153,61 +150,19 @@ if (isset($_REQUEST['send'])) {
 		$smarty->display("tiki.tpl");
 		die;
 	}
-
-	////////////////////////////////////////////////////////////////////////
-	//                                                                    //
-	// hollmeer 2012-11-03: ADDED PGP/MIME ENCRYPTION PREPARATION      //
-	// USING lib/openpgp/opepgplib.php                                    //
-	//                                                                    //
-	// get publickey armor block for email                                //
-	//                                                                    //
-	if ($prefs['openpgp_gpg_pgpmimemail'] == 'y') {
-		global $openpgplib;
-		$aux_pgpmime_content = $openpgplib->getPublickeyArmorBlock($_REQUEST['priority'], $_REQUEST['to'], $_REQUEST['cc']);
-		$prepend_email_body = $aux_pgpmime_content[0];
-		$user_armor = $aux_pgpmime_content[1];
-	}
-	//                                                                    //
-	////////////////////////////////////////////////////////////////////////
-
 	// Insert the message in the inboxes of each user
 	foreach ($users as $a_user) {
-		//////////////////////////////////////////////////////////////////////////////////
-		// hollmeer: send with gpg-armor block etc included				//
-		// A changed encryption-related version was copied from lib/messu/messulib.pgp  //
-		// into lib/openpgp/openpgplib.php for prepending/appending content into	//
-		// message body									//
-		if ($prefs['openpgp_gpg_pgpmimemail'] == 'y') {
-			// USE PGP/MIME MAIL VERSION
-			$result = $openpgplib->post_message_with_pgparmor_attachment(
-				$a_user,
-				$user,
-				$_REQUEST['to'],
-				$_REQUEST['cc'],
-				$_REQUEST['subject'],
-				$_REQUEST['body'],
-				$prepend_email_body, // NOTE THIS!
-				$user_armor, // NOTE THIS!
-				$_REQUEST['priority'],
-				$_REQUEST['replyto_hash'],
-				isset($_REQUEST['replytome']) ? 'y' : '', isset($_REQUEST['bccme']) ? 'y' : ''
-			);
-		} else {
-			// USE ORIGINAL TIKI MAIL VERSION
-			$result = $messulib->post_message(
-				$a_user,
-				$user,
-				$_REQUEST['to'],
-				$_REQUEST['cc'],
-				$_REQUEST['subject'],
-				$_REQUEST['body'],
-				$_REQUEST['priority'],
-				$_REQUEST['replyto_hash'],
-				isset($_REQUEST['replytome']) ? 'y' : '', isset($_REQUEST['bccme']) ? 'y' : ''
-			);
-		}
-		// 										//
-		//////////////////////////////////////////////////////////////////////////////////
+		$result = $messulib->post_message(
+						$a_user,
+						$user,
+						$_REQUEST['to'],
+						$_REQUEST['cc'],
+						$_REQUEST['subject'],
+						$_REQUEST['body'],
+						$_REQUEST['priority'],
+						$_REQUEST['replyto_hash'],
+						isset($_REQUEST['replytome']) ? 'y' : '', isset($_REQUEST['bccme']) ? 'y' : ''
+		);
 		if ($result) {
 			if ($prefs['feature_score'] == 'y') {
 				$tikilib->score_event($user, 'message_send');

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,12 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @param $object_type
- * @param null $object_id
- * @param bool $process
- * @return bool
- */
 function refresh_index($object_type, $object_id = null, $process = true)
 {
 	global $prefs;
@@ -27,7 +21,7 @@ function refresh_index($object_type, $object_id = null, $process = true)
 		$unified_type = refresh_index_convert_type($object_type);
 
 		try {
-			$unifiedsearchlib = TikiLib::lib('unifiedsearch');
+			global $unifiedsearchlib; require_once 'lib/search/searchlib-unified.php';
 			$unifiedsearchlib->invalidateObject($unified_type, $object_id);
 
 			if ($process) {
@@ -48,10 +42,6 @@ function refresh_index($object_type, $object_id = null, $process = true)
 	return true;
 }
 
-/**
- * @param $object_type
- * @return string
- */
 function refresh_index_convert_type($object_type)
 {
 	switch ( $object_type ) {
@@ -140,10 +130,6 @@ function random_refresh_index_blogs()
 {
 	refresh_index('blogs', -1);
 }
-
-/**
- * @param int $times
- */
 function random_refresh_index_comments( $times = 1 )
 {
 	for( $i = 1; $i <= $times; $i ++ )
@@ -223,25 +209,14 @@ function refresh_index_wiki_all()
 	refresh_index('pages');
 }
 
-/**
- * @param $threadId
- */
 function refresh_index_comments($threadId)
 {
 	refresh_index('comments', $threadId);
 }
-
-/**
- * @param $page
- */
 function refresh_index_forum($page)
 {
 	refresh_index('forums', $page);
 }
-
-/**
- * @param $page
- */
 function refresh_index_wiki($page)
 {
 	refresh_index('pages', $page);

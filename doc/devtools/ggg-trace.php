@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -25,17 +25,11 @@
 // YOUR PHP!
 //
 
-/**
- *
- */
 class ggg_trace
 {
 	var $fp;
 
-    /**
-     * @param string $nameStr
-     */
-    function ggg_trace($nameStr = 'ggg-trace.out')
+	function ggg_trace($nameStr = 'ggg-trace.out')
 	{
 		register_shutdown_function(array(&$this, '_ggg_trace')); // the & is important
 		$this->fp = fopen($nameStr, 'a');
@@ -46,27 +40,17 @@ class ggg_trace
 		// print date("Ymd G:i:s<br>",time()); // e.g. 20031231 17:00:20
 	}
 
-    /**
-     * @param string $outStr
-     */
-    function out($outStr = '')
+	function out($outStr = '')
 	{
 		fwrite($this->fp, "$outStr");
 	}
 
-    /**
-     * @param string $outStr
-     */
-    function outln($outStr = '')
+	function outln($outStr = '')
 	{
 		fwrite($this->fp, "$outStr\n");
 	}
 
-    /**
-     * @param $var
-     * @param int $indent
-     */
-    function outvar($var, $indent = 0)
+	function outvar($var, $indent = 0)
 	{
 		if ($indent > 8) {
 			fwrite($this->fp, "Too many levels of recursion! \n");

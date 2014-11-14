@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -17,14 +17,12 @@ if (isset($_REQUEST['looksetup'])) {
 	if (isset($_REQUEST['style'])) {
 		check_ticket('admin-inc-general');
 
-		if (!isset($_REQUEST['style_option']) || $_REQUEST['style_option'] == tra('None')) {
-			// style has no options
+		if (!isset($_REQUEST['style_option']) || $_REQUEST['style_option'] == tra('None')) { // style has no options
 			$_REQUEST['style_option'] = '';
 		}
 		check_ticket('admin-inc-general');
 	}
-} else {
-	// just changed theme menu, so refill options
+} else { // just changed theme menu, so refill options
 	if (isset($_REQUEST['style']) && $_REQUEST['style'] != '') {
 		$a_style = $_REQUEST['style'];
 	}
@@ -64,7 +62,7 @@ if (!empty($thumbfile)) {
 	$smarty->assign('thumbfile', $thumbfile);
 }
 
-if ($prefs['feature_jquery'] == 'y' && $prefs['theme_active'] === 'legacy') {
+if ($prefs['feature_jquery'] == 'y') {
 	// hash of themes and their options and their thumbnail images
 	$js = 'var style_options = {';
 	foreach ($styles as $s) {
@@ -85,56 +83,45 @@ if ($prefs['feature_jquery'] == 'y' && $prefs['theme_active'] === 'legacy') {
 	// JS to handle theme/option changes client-side
 	// the var (style_options) has to be declared in the same block for AJAX call scope
 	$none = json_encode(tr('None'));
-	$headerlib->add_js(
-<<<JS
+	$headerlib->add_js(<<<JS
 $js
 
 \$(document).ready( function() {
-
-	var setupStyleSelects = function (styleDropDown, optionDropDown, showPreview) {
-		// pick up theme drop-down change
-		styleDropDown.change( function() {
-			var ops = style_options[styleDropDown.val()];
-			var none = true;
-			var current = optionDropDown.val();
-			optionDropDown.empty().attr('disabled',false)
-					.append(\$('<option/>').attr('value',$none).text($none));
-			if (styleDropDown.val()) {
-				\$.each(ops[1], function(i, val) {
-					optionDropDown.append(\$('<option/>').attr('value',i).text(i.replace(/\.css\$/, '')));
-					none = false;
-				});
-			}
-			optionDropDown.val(current);
-			if (none) {
-				optionDropDown.attr('disabled',true);
-			}
-			optionDropDown.change();
-			if (jqueryTiki.chosen) {
-				optionDropDown.trigger("chosen:updated");
-			}
-		}).change();
-		optionDropDown.change( function() {
-			if (showPreview !== undefined) {
-				var t = styleDropDown.val();
-				var o = optionDropDown.val();
-				var f = style_options[t][1][o];
-
-				if ( ! f ) {
-					f = style_options[t][0];
-				}
-
-				if (f) {
-					\$('#style_thumb').fadeOut('fast').attr('src', f).fadeIn('fast').animate({'opacity': 1}, 'fast');
-				} else {
-					\$('#style_thumb').animate({'opacity': 0.3}, 'fast');
-				}
-			}
+	var optionDropDown = \$('select[name=style_option]');
+	var styleDropDown = \$('select[name=style]');
+	// pick up theme drop-down change
+	styleDropDown.change( function() {
+		var ops = style_options[styleDropDown.val()];
+		var none = true;
+		var current = optionDropDown.val();
+		optionDropDown.empty().attr('disabled',false)
+			.append(\$('<option/>').attr('value',$none).text($none));
+		\$.each(ops[1], function(i, val) {
+			optionDropDown.append(\$('<option/>').attr('value',i).text(i.replace(/\.css\$/, '')));
+			none = false;
 		});
-	};
+		optionDropDown.val(current);
+		if (none) {
+			optionDropDown.attr('disabled',true);
+		}
 
-	setupStyleSelects(\$('select[name=style]'), \$('select[name=style_option]'), true);
-	setupStyleSelects(\$('select[name=style_admin]'), \$('select[name=style_admin_option]'));
+		optionDropDown.change();
+	}).change();
+	optionDropDown.change( function() {
+		var t = styleDropDown.val();
+		var o = optionDropDown.val();
+		var f = style_options[t][1][o];
+
+		if ( ! f ) {
+			f = style_options[t][0];
+		}
+
+		if (f) {
+			\$('#style_thumb').fadeOut('fast').attr('src', f).fadeIn('fast').animate({'opacity': 1}, 'fast');
+		} else {
+			\$('#style_thumb').animate({'opacity': 0.3}, 'fast');
+		}
+	});
 });
 JS
 	);
@@ -172,8 +159,7 @@ if (isset($_REQUEST['looksetup'])) {
 	for ($i = 0, $count_feedback = count($tikifeedback); $i < $count_feedback; $i++) {
 		if (substr($tikifeedback[$i]['name'], 0, 5) == 'style' ||			// if style or style_option
 				$tikifeedback[$i]['name'] === 'themegenerator_theme' ||		// or themegen theme changed
-				$tikifeedback[$i]['name'] === 'feature_jquery_ui_theme'	   // or jquery-ui theme
-			) {
+				$tikifeedback[$i]['name'] === 'feature_jquery_ui_theme') {	// or jquery-ui theme
 			// If the theme has changed, reload the page to use the new theme
 			$reload = true;
 		}

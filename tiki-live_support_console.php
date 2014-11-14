@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -26,15 +23,13 @@ $smarty->assign('isOperator', $lsadminlib->is_operator($user));
 
 $max_active_request = $lslib->get_max_active_request();
 $smarty->assign('new_requests', 'n');
-if (isset($max_active_request)) {
-	if (!isset($_SESSION['max_request'])) {
+if (!isset($_SESSION['max_request'])) {
+	$_SESSION['max_request'] = $max_active_request;
+	$smarty->assign('new_requests', 'y');
+} else {
+	if ($max_active_request > $_SESSION['max_request']) {
 		$_SESSION['max_request'] = $max_active_request;
 		$smarty->assign('new_requests', 'y');
-	} else {
-		if ($max_active_request != $_SESSION['max_request']) {
-			$_SESSION['max_request'] = $max_active_request;
-			$smarty->assign('new_requests', 'y');
-		}
 	}
 }
 $requests = $lslib->get_requests('active');

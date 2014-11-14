@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -20,12 +20,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
  */
 class TikiAccessLib extends TikiLib
 {
-	private $noRedirect = false;
-
-	function preventRedirect($prevent)
-	{
-		$this->noRedirect = (bool) $prevent;
-	}
 
 	/**
 	 * check that the user is admin or has admin permissions
@@ -47,10 +41,7 @@ class TikiAccessLib extends TikiLib
 		}
 	}
 
-    /**
-     * @param $user
-     */
-    function check_user($user)
+	function check_user($user)
 	{
 		global $prefs;
 		require_once ('tiki-setup.php');
@@ -61,13 +52,7 @@ class TikiAccessLib extends TikiLib
 		}
 	}
 
-    /**
-     * @param string $user
-     * @param array $features
-     * @param array $permissions
-     * @param string $permission_name
-     */
-    function check_page($user = 'y', $features = array(), $permissions = array(), $permission_name = '')
+	function check_page($user = 'y', $features = array(), $permissions = array(), $permission_name = '')
 	{
 		require_once ('tiki-setup.php');
 
@@ -99,7 +84,8 @@ class TikiAccessLib extends TikiLib
 		$perms = Perms::get();
 
 		if ( $perms->admin && isset($_REQUEST['check_feature']) && isset($_REQUEST['lm_preference']) ) {
-			$prefslib = TikiLib::lib('prefs');
+			global $prefslib; require_once 'lib/prefslib.php';
+
 			$prefslib->applyChanges((array) $_REQUEST['lm_preference'], $_REQUEST);
 		}
 
@@ -116,7 +102,7 @@ class TikiAccessLib extends TikiLib
 		}
 
 		foreach ($features as $feature) {
-			if (!$either && $prefs[$feature] != 'y') {
+			if ($prefs[$feature] != 'y') {
 				if ($feature_name != '') {
 					$feature = $feature_name;
 				}
@@ -130,31 +116,22 @@ class TikiAccessLib extends TikiLib
 		}
 
 		if ( !$allowed ) {
-			$smarty = TikiLib::lib('smarty');
+			global $smarty;
 
 			if ( $perms->admin ) {
 				$smarty->assign('required_preferences', $features);
 			}
 
 			$msg = tr(
-				'Required features: <b>%0</b>. If you do not have the privileges to activate these features, ask the site administrator.',
-				implode(', ', $features)
+							'Required features: <b>%0</b>. If you do not have the privileges to activate these features, ask the site administrator.',
+							implode(', ', $features)
 			);
 
 			$this->display_error('', $msg, 'no_redirect_login');
 		}
 	}
 
-	/**
-	 * Check permissions for current user and display an error if not granted
-	 * Multiple perms can be checked at once using an array and all those perms need to be granted to continue
-	 *
-	 * @param string|array $permissions		permission name or names (can be old style e.g. 'tiki_p_view' or just 'view')
-	 * @param string $permission_name		text used in warning if perm not granted
-	 * @param bool|string $objectType		optional object type (e.g. 'wiki page')
-	 * @param bool|string $objectId			optional object id (e.g. 'HomePage' or '42' depending on object type)
-	 */
-    function check_permission($permissions, $permission_name = '', $objectType = false, $objectId = false)
+	function check_permission($permissions, $permission_name = '', $objectType = false, $objectId = false)
 	{
 		require_once ('tiki-setup.php');
 
@@ -177,24 +154,18 @@ class TikiAccessLib extends TikiLib
 				$permission = $permission_name;
 			}
 			$this->display_error('', tra("You do not have permission to use this feature:")." ". $permission, '403', false);
-			if (empty($GLOBALS['user'])) {
+			if (!$user) {
 				$_SESSION['loginfrom'] = $_SERVER['REQUEST_URI'];
 			}
 		}
 	}
 
 	/**
-	 * Check permissions for current user and display an error if not granted
-	 * Multiple perms can be checked at once using an array and ANY ONE OF those perms only needs to be granted to continue
-	 *
+	 * check for any one of the permission will be enough
 	 * NOTE that you do NOT have to use this to include admin perms, as admin perms automatically inherit the perms they are admin of
 	 *
-	 * @param string|array $permissions		permission name or names (can be old style e.g. 'tiki_p_view' or just 'view')
-	 * @param string $permission_name		text used in warning if perm not granted
-	 * @param bool|string $objectType		optional object type (e.g. 'wiki page')
-	 * @param bool|string $objectId			optional object id (e.g. 'HomePage' or '42' depending on object type)
 	 */
-	function check_permission_either($permissions, $permission_name = '', $objectType = false, $objectId = false)
+	function check_permission_either($permissions, $permission_name = '')
 	{
 		require_once ('tiki-setup.php');
 		$allowed = false;
@@ -204,15 +175,9 @@ class TikiAccessLib extends TikiLib
 		}
 
 		foreach ($permissions as $permission) {
-			if (false !== $objectType) {
-				$applicable = Perms::get($objectType, $objectId);
-			} else {
-				$applicable = Perms::get();
-			}
-
-			if ($applicable->$permission) {
+			global $$permission;
+			if ($$permission == 'y') {
 				$allowed = true;
-				break;
 			}
 		}
 
@@ -303,13 +268,9 @@ class TikiAccessLib extends TikiLib
 		}
 	}
 
-    /**
-     * @return bool
-     */
-    function check_ticket()
+	function check_ticket()
 	{
-		global $prefs, $user;
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $prefs, $user;
 
 		if ($prefs['feature_ticketlib2'] == 'y') {
 			if (empty($user) || (isset($_REQUEST['ticket']) && isset($_SESSION['ticket']) && $_SESSION['ticket'] == $_REQUEST['ticket'])) {
@@ -322,19 +283,10 @@ class TikiAccessLib extends TikiLib
 		}
 	}
 
-    /**
-     * @param $page
-     * @param string $errortitle
-     * @param string $errortype
-     * @param bool $enableRedirect
-     * @param string $message
-     */
-    function display_error($page, $errortitle = "", $errortype = "", $enableRedirect = true, $message = '')
+	function display_error($page, $errortitle = "", $errortype = "", $enableRedirect = true, $message = '')
 	{
-		global $prefs, $tikiroot, $user;
+		global $smarty, $prefs, $tikiroot, $userlib, $user;
 		require_once ('tiki-setup.php');
-		$userlib = TikiLib::lib('user');
-		$smarty = TikiLib::lib('smarty');
 
 		// Don't redirect when calls are made for web services
 		if ( $enableRedirect && $prefs['feature_redirect_on_error'] == 'y' && ! $this->is_machine_request()
@@ -356,21 +308,21 @@ class TikiAccessLib extends TikiLib
 			$detail['message'] = $detail['errortitle'];
 		}
 
-		// Display the template
+		// Display the template	
 		switch ( $errortype ) {
 			case '404':
 				header("HTTP/1.0 404 Not Found");
 				$detail['page'] = $page;
 				$detail['message'] .= ' (404)';
-				break;
+							break;
 
 			case '403':
 				header("HTTP/1.0 403 Forbidden");
-				break;
+							break;
 
 			case '503':
 				header("HTTP/1.0 503 Service Unavailable");
-				break;
+							break;
 
 			default:
 				$errortype = (int) $errortype;
@@ -381,7 +333,7 @@ class TikiAccessLib extends TikiLib
 					$title = 'Forbidden';
 				}
 				header("HTTP/1.0 $errortype $title");
-				break;
+							break;
 		}
 
 		if ( $this->is_serializable_request() ) {
@@ -390,9 +342,6 @@ class TikiAccessLib extends TikiLib
 			$errorreport->send_headers();
 
 			$this->output_serialized($detail);
-		} elseif ($this->is_xml_http_request()) {
-			$smarty->assign('detail', $detail);
-			$smarty->display('error-ajax.tpl');
 		} else {
 			if (($errortype == 401 || $errortype == 403) &&
 						empty($user) &&
@@ -404,23 +353,16 @@ class TikiAccessLib extends TikiLib
 			$smarty->assign('errortitle', $detail['errortitle']);
 			$smarty->assign('msg', $detail['message']);
 			$smarty->assign('errortype', $detail['code']);
-			if ( isset( $detail['page'] ) ) {
+			if ( isset( $detail['page'] ) )
 				$smarty->assign('page', $page);
-			}
 			$smarty->display("error.tpl");
 		}
 		die;
 	}
 
-    /**
-     * @param string $page
-     * @return string
-     */
-    function get_home_page($page = '')
+	function get_home_page($page = '')
 	{
-		global $prefs, $use_best_language, $user;
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
+		global $prefs, $tikilib, $use_best_language, $userlib, $user;
 
 		if (!isset($page) || $page == '') {
 			if ($prefs['useGroupHome'] == 'y') {
@@ -453,10 +395,6 @@ class TikiAccessLib extends TikiLib
 	{
 		global $prefs;
 
-		if ($this->noRedirect) {
-			return;
-		}
-
 		if ( $url == '' )
 			$url = $prefs['tikiIndex'];
 
@@ -473,9 +411,6 @@ class TikiAccessLib extends TikiLib
 			}
 		}
 
-		TikiLib::events()->trigger('tiki.process.redirect');
-
-		session_write_close();
 		if (headers_sent()) {
 			echo "<script>document.location.href='$url';</script>\n";
 		} else {
@@ -489,10 +424,7 @@ class TikiAccessLib extends TikiLib
 		exit();
 	}
 
-    /**
-     * @param $message
-     */
-    function flash( $message )
+	function flash( $message )
 	{
 		$this->redirect($_SERVER['REQUEST_URI'], $message);
 	}
@@ -511,10 +443,7 @@ class TikiAccessLib extends TikiLib
 
 	function authorize_rss($rssrights)
 	{
-		global $user, $prefs;
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
-		$smarty = TikiLib::lib('smarty');
+		global $tikilib, $userlib, $user, $smarty, $prefs;
 		$perms = Perms::get();
 		$result = array('msg' => tra("You do not have permission to view this section"), 'header' => 'n');
 
@@ -552,14 +481,9 @@ class TikiAccessLib extends TikiLib
 		return $result;
 	}
 
-    /**
-     * @return bool
-     */
-    function http_auth()
+	function http_auth()
 	{
-		global $tikidomain, $user;
-		$userlib = TikiLib::lib('user');
-		$smarty = TikiLib::lib('smarty');
+		global $tikidomain, $userlib, $user, $smarty;
 
 		if ( ! $tikidomain ) {
 			$tikidomain = "Default";
@@ -576,10 +500,14 @@ class TikiAccessLib extends TikiLib
 		list($res, $rest) = $userlib->validate_user_tiki($attempt, $pass, false, false);
 
 		if ($res == USER_VALID) {
-			global $_permissionContext;
+			global $permissionList;
+			$user = $attempt;
+			$groups = $userlib->get_user_groups($user);
+			$perms = Perms::getInstance();
+			$perms->setGroups($groups);
 
-			$_permissionContext = new Perms_Context($attempt, false);
-			$_permissionContext->activate(true);
+			$perms = Perms::get();
+			$perms->globalize($permissionList, $smarty);
 
 			return true;
 		} else {
@@ -589,11 +517,7 @@ class TikiAccessLib extends TikiLib
 		}
 	}
 
-    /**
-     * @param bool $acceptFeed
-     * @return array
-     */
-    function get_accept_types($acceptFeed = false)
+	function get_accept_types($acceptFeed = false)
 	{
 		$accept = explode(',', $_SERVER['HTTP_ACCEPT']);
 
@@ -627,10 +551,7 @@ class TikiAccessLib extends TikiLib
 		return $types;
 	}
 
-    /**
-     * @return bool
-     */
-    function is_machine_request()
+	function is_machine_request()
 	{
 		foreach ( $this->get_accept_types() as $name => $full ) {
 			switch ( $name ) {
@@ -645,11 +566,7 @@ class TikiAccessLib extends TikiLib
 		return false;
 	}
 
-    /**
-     * @param bool $acceptFeed
-     * @return bool
-     */
-    function is_serializable_request($acceptFeed = false)
+	function is_serializable_request($acceptFeed = false)
 	{
 		foreach ( $this->get_accept_types($acceptFeed) as $name => $full ) {
 			switch ( $name ) {
@@ -667,10 +584,7 @@ class TikiAccessLib extends TikiLib
 		return false;
 	}
 
-    /**
-     * @return bool
-     */
-    function is_xml_http_request()
+	function is_xml_http_request()
 	{
 		return ! empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
 	}
@@ -693,33 +607,6 @@ class TikiAccessLib extends TikiLib
 				case 'json':
 					header("Content-Type: $full");
 					$data = json_encode($data);
-					if ($data === false) {
-						$error = '';
-						switch (json_last_error()) {
-							case JSON_ERROR_NONE:
-								$error = 'json_encode - No errors';
-								break;
-							case JSON_ERROR_DEPTH:
-								$error = 'json_encode - Maximum stack depth exceeded';
-								break;
-							case JSON_ERROR_STATE_MISMATCH:
-								$error = 'json_encode - Underflow or the modes mismatch';
-								break;
-							case JSON_ERROR_CTRL_CHAR:
-								$error = 'json_encode - Unexpected control character found';
-								break;
-							case JSON_ERROR_SYNTAX:
-								$error = 'json_encode - Syntax error, malformed JSON';
-								break;
-							case JSON_ERROR_UTF8:
-								$error = 'json_encode - Malformed UTF-8 characters, possibly incorrectly encoded';
-								break;
-							default:
-								$error = 'json_encode - Unknown error';
-								break;
-						}
-						throw new Exception ($error);
-					}
 					if (isset($_REQUEST['callback'])) {
 						$data = $_REQUEST['callback'] . '(' . $data . ')';
 					}
@@ -757,3 +644,4 @@ class TikiAccessLib extends TikiLib
 		}
 	}
 }
+$access = new TikiAccessLib;

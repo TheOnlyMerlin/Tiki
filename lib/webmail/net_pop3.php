@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -38,6 +38,8 @@
 // | Author: Richard Heyes <richard@phpguru.org>                           |
 // | Co-Author: Damian Fernandez Sosa <damlists@cnba.uba.ar>               |
 // +-----------------------------------------------------------------------+
+
+require_once('lib/pear/Net/Socket.php');
 
 /**
  *  +----------------------------- IMPORTANT ------------------------------+
@@ -181,7 +183,8 @@ class Net_POP3
 
 	function _raiseError($msg, $code =-1)
 	{
-		return $this->_socket->raiseError($msg, $code);
+		include_once 'lib/pear/PEAR.php';
+		return PEAR::raiseError($msg, $code);
 	}
 
 
@@ -241,17 +244,17 @@ class Net_POP3
 	 * @param  string $user Username to use
 	 * @param  string $pass Password to use
 	 * @param  mixed $apop Whether to try APOP first, if used as string you can select the auth methd to use ( $pop3->login('validlogin', 'validpass', "CRAM-MD5");
-	 *          Valid methods are: 'DIGEST-MD5','CRAM-MD5','LOGIN','PLAIN','APOP','USER'
+	 *          Valid methods are: 'DIGEST-MD5','CRAM-MD5','LOGIN','PLAIN','APOP','USER' 
 	 * @return mixed  true on Success/ PEAR_ERROR on error
 	 */
 	function login($user, $pass, $apop = true)
 	{
 		if ($this->_state == NET_POP3_STATE_AUTHORISATION) {
 
-			if ($this->_socket->isError($ret = $this->_cmdAuthenticate($user, $pass, $apop))) {
+			if (PEAR::isError($ret = $this->_cmdAuthenticate($user, $pass, $apop))) {
 				return $ret;
 			}
-			if (!$this->_socket->isError($ret)) {
+			if (! PEAR::isError($ret)) {
 				$this->_state = NET_POP3_STATE_TRANSACTION;
 				return true;
 			}
@@ -270,7 +273,7 @@ class Net_POP3
 	function _parseCapability()
 	{
 
-		if (!$this->_socket->isError($data = $this->_sendCmd('CAPA'))) {
+		if (!PEAR::isError($data = $this->_sendCmd('CAPA'))) {
 			$data = $this->_getMultiline();
 		} else {
 			// CAPA command not supported, reset data var
@@ -288,7 +291,7 @@ class Net_POP3
 				switch ($capa) {
 					case 'implementation':
 						$this->_capability['implementation'] = $matches[1];
-						break;
+									break;
 
 					case 'sasl':
 						if (isset($matches[3])) {
@@ -296,11 +299,11 @@ class Net_POP3
 						} else {
 							$this->_capability['sasl'] = $matches[1];
 						}
-						break;
+									break;
 
 					default :
 						$this->_capability[$capa] = $matches[1];
-						break;
+									break;
 				}
 			}
 		}
@@ -366,8 +369,8 @@ class Net_POP3
 			$myMethods = implode(',', $this->supportedAuthMethods);
 
 			return $this->_raiseError(
-				"$method NOT supported authentication method!. This server " .
-				"supports these methods: $serverMethods, but I support $myMethods"
+							"$method NOT supported authentication method!. This server " .
+							"supports these methods: $serverMethods, but I support $myMethods"
 			);
 		} else {
 			return $this->_raiseError("This server don't support any Auth methods");
@@ -391,43 +394,43 @@ class Net_POP3
 	{
 
 
-		if ($this->_socket->isError($method = $this->_getBestAuthMethod($userMethod))) {
+		if (PEAR::isError($method = $this->_getBestAuthMethod($userMethod))) {
 			return $method;
 		}
 
 		switch ($method) {
 			case 'DIGEST-MD5':
 				$result = $this->_authDigest_MD5($uid, $pwd);
-				break;
+							break;
 
 			case 'CRAM-MD5':
 				$result = $this->_authCRAM_MD5($uid, $pwd);
-				break;
+							break;
 
 			case 'LOGIN':
 				$result = $this->_authLOGIN($uid, $pwd);
-				break;
+							break;
 
 			case 'PLAIN':
 				$result = $this->_authPLAIN($uid, $pwd);
-				break;
+							break;
 
 			case 'APOP':
 				$result = $this->_cmdApop($uid, $pwd);
 				// if APOP fails fallback to USER auth
-				if ($this->_socket->isError($result)) {
+				if (PEAR::isError($result)) {
 					//echo "APOP FAILED!!!\n";
 					$result=$this->_authUSER($uid, $pwd);
 				}
-				break;
+							break;
 
 			case 'USER':
 				$result = $this->_authUSER($uid, $pwd);
-				break;
+							break;
 
 			default :
 				$result = $this->_raiseError("$method is not a supported authentication method");
-				break;
+							break;
 		}
 		return $result;
 	}
@@ -446,10 +449,10 @@ class Net_POP3
 	 */
 	function _authUSER($user, $pass)
 	{
-		if ($this->_socket->isError($ret = $this->_cmdUser($user))) {
+		if (PEAR::isError($ret = $this->_cmdUser($user))) {
 			return $ret;
 		}
-		if ($this->_socket->isError($ret = $this->_cmdPass($pass))) {
+		if (PEAR::isError($ret = $this->_cmdPass($pass))) {
 			return $ret;
 		}
 		return true;
@@ -471,13 +474,13 @@ class Net_POP3
 	{
 		$cmd = sprintf('AUTH PLAIN %s', base64_encode(chr(0) . $user . chr(0) . $pass));
 
-		if ($this->_socket->isError($ret = $this->_send($cmd))) {
+		if (PEAR::isError($ret = $this->_send($cmd))) {
 			return $ret;
 		}
-		if ($this->_socket->isError($challenge = $this->_recvLn())) {
+		if (PEAR::isError($challenge = $this->_recvLn())) {
 			return $challenge;
 		}
-		if ($this->_socket->isError($ret = $this->_checkResponse($challenge))) {
+		if (PEAR::isError($ret = $this->_checkResponse($challenge))) {
 			return $ret;
 		}
 
@@ -500,31 +503,31 @@ class Net_POP3
 	{
 		$this->_send('AUTH LOGIN');
 
-		if ($this->_socket->isError($challenge = $this->_recvLn())) {
+		if (PEAR::isError($challenge = $this->_recvLn())) {
 			return $challenge;
 		}
-		if ($this->_socket->isError($ret = $this->_checkResponse($challenge))) {
+		if (PEAR::isError($ret = $this->_checkResponse($challenge))) {
 			return $ret;
 		}
 
 
-		if ($this->_socket->isError($ret = $this->_send(sprintf('%s', base64_encode($user))))) {
+		if (PEAR::isError($ret = $this->_send(sprintf('%s', base64_encode($user))))) {
 			return $ret;
 		}
 
-		if ($this->_socket->isError($challenge = $this->_recvLn())) {
+		if (PEAR::isError($challenge = $this->_recvLn())) {
 			return $challenge;
 		}
 
-		if ($this->_socket->isError($ret = $this->_checkResponse($challenge))) {
+		if (PEAR::isError($ret = $this->_checkResponse($challenge))) {
 			return $ret;
 		}
 
-		if ($this->_socket->isError($ret = $this->_send(sprintf('%s', base64_encode($pass))))) {
+		if (PEAR::isError($ret = $this->_send(sprintf('%s', base64_encode($pass))))) {
 			return $ret;
 		}
 
-		if ($this->_socket->isError($challenge = $this->_recvLn())) {
+		if (PEAR::isError($challenge = $this->_recvLn())) {
 			return $challenge;
 		}
 		return $this->_checkResponse($challenge);
@@ -544,15 +547,15 @@ class Net_POP3
 	 */
 	function _authCRAM_MD5($uid, $pwd)
 	{
-		if ($this->_socket->isError($ret = $this->_send('AUTH CRAM-MD5'))) {
+		if (PEAR::isError($ret = $this->_send('AUTH CRAM-MD5'))) {
 			return $ret;
 		}
 
-		if ($this->_socket->isError($challenge = $this->_recvLn())) {
+		if (PEAR::isError($challenge = $this->_recvLn())) {
 			return $challenge;
 		}
 
-		if ($this->_socket->isError($ret = $this->_checkResponse($challenge))) {
+		if (PEAR::isError($ret = $this->_checkResponse($challenge))) {
 			return $ret;
 		}
 
@@ -566,10 +569,10 @@ class Net_POP3
 		$auth_str = base64_encode($cram->getResponse($uid, $pwd, $challenge));
 
 
-		if ($this->_socket->isError($error = $this->_send($auth_str))) {
+		if (PEAR::isError($error = $this->_send($auth_str))) {
 			return $error;
 		}
-		if ($this->_socket->isError($ret = $this->_recvLn())) {
+		if (PEAR::isError($ret = $this->_recvLn())) {
 			return $ret;
 		}
 		//echo "RET:$ret\n";
@@ -591,14 +594,14 @@ class Net_POP3
 	 */
 	function _authDigest_MD5($uid, $pwd)
 	{
-		if ($this->_socket->isError($ret = $this->_send('AUTH DIGEST-MD5'))) {
+		if (PEAR::isError($ret = $this->_send('AUTH DIGEST-MD5'))) {
 			return $ret;
 		}
 
-		if ($this->_socket->isError($challenge = $this->_recvLn())) {
+		if (PEAR::isError($challenge = $this->_recvLn())) {
 			return $challenge;
 		}
-		if ($this->_socket->isError($ret = $this->_checkResponse($challenge))) {
+		if (PEAR::isError($ret = $this->_checkResponse($challenge))) {
 			return $ret;
 		}
 
@@ -609,15 +612,15 @@ class Net_POP3
 		$digest = &Auth_SASL::factory('digestmd5');
 		$auth_str = base64_encode($digest->getResponse($uid, $pwd, $challenge, "localhost", "pop3"));
 
-		if ($this->_socket->isError($error = $this->_send($auth_str))) {
+		if ( PEAR::isError($error = $this->_send($auth_str))) {
 			return $error;
 		}
 
-		if ($this->_socket->isError($challenge = $this->_recvLn())) {
+		if (PEAR::isError($challenge = $this->_recvLn())) {
 			return $challenge;
 		}
 
-		if ($this->_socket->isError($ret = $this->_checkResponse($challenge))) {
+		if (PEAR::isError($ret = $this->_checkResponse($challenge))) {
 			return $ret;
 		}
 		/*
@@ -625,11 +628,11 @@ class Net_POP3
 		 * subsequent authentication, so we just silently ignore it.
 		 */
 
-		if ($this->_socket->isError($challenge = $this->_send("\r\n"))) {
+		if (PEAR::isError($challenge = $this->_send("\r\n"))) {
 			return $challenge;
 		}
 
-		if ($this->_socket->isError($challenge = $this->_recvLn())) {
+		if (PEAR::isError($challenge = $this->_recvLn())) {
 			return $challenge;
 		}
 
@@ -650,7 +653,7 @@ class Net_POP3
 		if ($this->_state == NET_POP3_STATE_AUTHORISATION) {
 
 			if (!empty($this->_timestamp)) {
-				if ($this->_socket->isError($data = $this->_sendCmd('APOP ' . $user . ' ' . md5($this->_timestamp . $pass)))) {
+				if (PEAR::isError($data = $this->_sendCmd('APOP ' . $user . ' ' . md5($this->_timestamp . $pass)))) {
 					return $data;
 				}
 				$this->_state = NET_POP3_STATE_TRANSACTION;
@@ -700,16 +703,9 @@ class Net_POP3
 				$value = ltrim(substr($value, $pos + 1));
 
 				// 21/09/08 MatWho Prevent capitalisation problems with Message-ID mail header
-				if (preg_match('/message-id/i', $name)) {
+				if (preg_match('/message-id/i', $name)) { 
 					$name  = "Message-ID";
-				}
-				
-				// Fix Subject encoding
-				if ($name == 'Subject') {
-					$subject = str_replace("_"," ", mb_decode_mimeheader($value));
-					$value = $subject;
-				}
-				
+				} 
 				if (isset($headers[$name]) AND is_array($headers[$name])) {
 					$headers[$name][] = $value;
 				} elseif (isset($headers[$name])) {
@@ -889,7 +885,7 @@ class Net_POP3
 	function _cmdStat()
 	{
 		if ($this->_state == NET_POP3_STATE_TRANSACTION) {
-			if (!$this->_socket->isError($data = $this->_sendCmd('STAT'))) {
+			if (!PEAR::isError($data = $this->_sendCmd('STAT'))) {
 				sscanf($data, '+OK %d %d', $msg_num, $size);
 				$this->_maildrop['num_msg'] = $msg_num;
 				$this->_maildrop['size']    = $size;
@@ -913,9 +909,9 @@ class Net_POP3
 		$return = array();
 		if ($this->_state == NET_POP3_STATE_TRANSACTION) {
 			if (!isset($msg_id)) {
-				if (!$this->_socket->isError($data = $this->_sendCmd('LIST'))) {
+				if (!PEAR::isError($data = $this->_sendCmd('LIST'))) {
 					$data = $this->_getMultiline();
-					$data = explode("\r\n", $data);
+					$data = explode("\r\n", $data);                    
 					foreach ($data as $line) {
 						if ($line != '') {
 							sscanf($line, '%s %s', $msg_id, $size);
@@ -925,7 +921,7 @@ class Net_POP3
 					return $return;
 				}
 			} else {
-				if (!$this->_socket->isError($data = $this->_sendCmd('LIST ' . $msg_id))) {
+				if (!PEAR::isError($data = $this->_sendCmd('LIST ' . $msg_id))) {
 					if ($data!='') {
 						sscanf($data, '+OK %d %d', $msg_id, $size);
 						return array('msg_id' => $msg_id, 'size' => $size);
@@ -949,7 +945,7 @@ class Net_POP3
 	function _cmdRetr($msg_id)
 	{
 		if ($this->_state == NET_POP3_STATE_TRANSACTION) {
-			if (!$this->_socket->isError($data = $this->_sendCmd('RETR ' . $msg_id))) {
+			if (!PEAR::isError($data = $this->_sendCmd('RETR ' . $msg_id))) {
 				$data = $this->_getMultiline();
 				return $data;
 			}
@@ -983,7 +979,7 @@ class Net_POP3
 	function _cmdNoop()
 	{
 		if ($this->_state == NET_POP3_STATE_TRANSACTION) {
-			if (!$this->_socket->isError($data = $this->_sendCmd('NOOP'))) {
+			if (!PEAR::isError($data = $this->_sendCmd('NOOP'))) {
 				return true;
 			}
 		}
@@ -1000,7 +996,7 @@ class Net_POP3
 	function _cmdRset()
 	{
 		if ($this->_state == NET_POP3_STATE_TRANSACTION) {
-			if (!$this->_socket->isError($data = $this->_sendCmd('RSET'))) {
+			if (!PEAR::isError($data = $this->_sendCmd('RSET'))) {
 				return true;
 			}
 		}
@@ -1035,7 +1031,7 @@ class Net_POP3
 	{
 		if ($this->_state == NET_POP3_STATE_TRANSACTION) {
 
-			if (!$this->_socket->isError($data = $this->_sendCmd('TOP ' . $msg_id . ' ' . $num_lines))) {
+			if (!PEAR::isError($data = $this->_sendCmd('TOP ' . $msg_id . ' ' . $num_lines))) {
 				return $this->_getMultiline();
 			}
 		}
@@ -1055,7 +1051,7 @@ class Net_POP3
 		if ($this->_state == NET_POP3_STATE_TRANSACTION) {
 
 			if (!isset($msg_id)) {
-				if (!$this->_socket->isError($data = $this->_sendCmd('UIDL'))) {
+				if (!PEAR::isError($data = $this->_sendCmd('UIDL'))) {
 					$data = $this->_getMultiline();
 					$data = explode("\r\n", $data);
 					foreach ($data as $line) {
@@ -1087,11 +1083,11 @@ class Net_POP3
 	 */
 	function _sendCmd($cmd)
 	{
-		if ($this->_socket->isError($result = $this->_send($cmd))) {
+		if (PEAR::isError($result = $this->_send($cmd))) {
 			return $result ;
 		}
 
-		if ($this->_socket->isError($data = $this->_recvLn())) {
+		if (PEAR::isError($data = $this->_recvLn())) {
 			return $data;
 		}
 
@@ -1111,7 +1107,7 @@ class Net_POP3
 	function _getMultiline()
 	{
 		$data = '';
-		while (!is_a($tmp = $this->_recvLn(), 'PEAR_Error')) {
+		while (!is_a($tmp = $this->_recvLn(),'PEAR_Error')) {
 			if ($tmp == '.') {
 				return substr($data, 0, -2);
 			}
@@ -1127,7 +1123,7 @@ class Net_POP3
 	/**
 	 * Sets the bebug state
 	 *
-	 * @param  bool $debug
+	 * @param  bool $debug 
 	 * @access public
 	 * @return void
 	 */
@@ -1153,7 +1149,7 @@ class Net_POP3
 			echo "C: $data\n";
 		}
 
-		if ($this->_socket->isError($error = $this->_socket->writeLine($data))) {
+		if (PEAR::isError($error = $this->_socket->writeLine($data))) {
 			return $this->_raiseError('Failed to write to socket: ' . $error->getMessage());
 		}
 		return true;

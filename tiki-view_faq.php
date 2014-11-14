@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,15 +7,18 @@
 
 $section = 'faqs';
 require_once ('tiki-setup.php');
-$faqlib = TikiLib::lib('faq');
+include_once ('lib/faqs/faqlib.php');
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	global $categlib;
+	if (!is_object($categlib)) {
+		include_once ('lib/categories/categlib.php');
+	}
 }
 
 $access->check_feature('feature_faqs');
 
 if (!isset($_REQUEST["faqId"])) {
-	$smarty->assign('msg', tra("No FAQ indicated"));
+	$smarty->assign('msg', tra("No faq indicated"));
 	$smarty->display("error.tpl");
 	die;
 }

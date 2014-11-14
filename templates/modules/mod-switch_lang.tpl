@@ -13,25 +13,19 @@
 			{button _text="$langname" href="tiki-switch_lang.php?language=$val" _title="$langname" _class="$class"}
 		{/if}
 	{/section}
-{elseif $mode eq 'words' || $mode eq 'abrv'}
+{elseif $mode eq 'words'}
 	<ul>
 	{section name=ix loop=$languages}
 	  <li>
-      {if $mode eq 'words'}
 	    <a title="{$languages[ix].name|escape}" class="linkmodule {$languages[ix].class}" href="tiki-switch_lang.php?language={$languages[ix].value|escape}">
 	      {$languages[ix].name|escape}
 	    </a>
-      {else}
-	    <a title="{$languages[ix].name|escape}" class="linkmodule {$languages[ix].class}" href="tiki-switch_lang.php?language={$languages[ix].value|escape}">
-	      {$languages[ix].value|escape}
-      </a>
-      {/if}
 	  </li>
 	{/section}
 	</ul>
 {else}{* do menu as before is not flags or words *}
 <form method="get" action="tiki-switch_lang.php" target="_self">
-       <select name="language" size="1" onchange="this.form.submit();" class="form-control">
+       <select name="language" size="1" onchange="this.form.submit();">
         {section name=ix loop=$languages}
         <option value="{$languages[ix].value|escape}"
           {if $prefs.language eq $languages[ix].value} selected="selected"{/if}>

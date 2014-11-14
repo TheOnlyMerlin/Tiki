@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -43,9 +43,6 @@ class DbgPermissions extends DebuggerCommand
 	/// Execute command with given set of arguments.
 	function execute($params)
 	{
-		$userlib = TikiLib::lib('user');
-		$smarty = TikiLib::lib('smarty');
-
 		$this->set_result_type(TPL_RESULT);
 
 		$this->set_result_tpl('debug/tiki-debug_permissions.tpl');
@@ -53,8 +50,10 @@ class DbgPermissions extends DebuggerCommand
 		$p = explode(' ', trim($params));
 		$mask = count($p) > 0 ? str_replace('$', '', trim($p[0])) : '';
 		// Get list of all vars
+		global $smarty;
 		$tpl_vars = $smarty->getTemplateVars();
 		// Get descriptions for all permissions
+		global $userlib;
 		$pd = $userlib->get_permissions();
 		$descriptions = array();
 

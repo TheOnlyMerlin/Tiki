@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -21,14 +18,11 @@
 
 //this script may only be included - so its better to err & die if called directly.
 //smarty is not there - we need setup
-require_once('tiki-setup.php');
-$access = TikiLib::lib('access');
-$tikilib = TikiLib::lib('tiki');
-$headerlib = TikiLib::lib('header');
-
+require_once('tiki-setup.php');  
+global $access, $tikilib, $headerlib;
 $access->check_script($_SERVER["SCRIPT_NAME"], basename(__FILE__));
 
-/*
+/* 
  * Determine the settings used to display the thread
  */
 
@@ -44,13 +38,11 @@ if ( $prefs['forum_thread_user_settings'] == 'y' && $prefs['forum_thread_user_se
 	// ... we check session vars
 	//  !! Session var is not used when there is an explicit user request !!
 
-	foreach ($handled_requests as $request_name) {
-		if ( isset($_SESSION['forums_'.$request_name]) && ! isset($_REQUEST[$request_name]) ) {
+	foreach ( $handled_requests as $request_name )
+		if ( isset($_SESSION['forums_'.$request_name]) && ! isset($_REQUEST[$request_name]) )
 			$$request_name = $_SESSION['forums_'.$request_name];
-		}
-	}
 }
-foreach ($handled_requests as $request_name) {
+foreach ( $handled_requests as $request_name ) {
 	if ( empty($$request_name) && empty($_REQUEST[$request_name]) ) {
 		$$request_name = $prefs['forum_'.$request_name];
 	} elseif ( empty($$request_name) && !empty($_REQUEST[$request_name]) ) {
@@ -65,13 +57,9 @@ if ( $forum_info['is_flat'] == 'y' ) {
 }
 
 // Assign final values to smarty vars in order
-foreach ($handled_requests as $request_name) {
-	$smarty->assign($request_name, $$request_name);
-}
+foreach ( $handled_requests as $request_name ) $smarty->assign($request_name, $$request_name);
 
-if ( ! isset($_REQUEST["comment_rating"]) ) {
-	$_REQUEST["comment_rating"] = '';
-}
+if ( ! isset($_REQUEST["comment_rating"]) ) $_REQUEST["comment_rating"] = '';
 $comments_aux = array();
 
 // show/hide comments zone on request and store the status in a cookie (also works with javascript off)
@@ -80,14 +68,10 @@ if (isset($_REQUEST['comzone'])) {
 	$comzone_state = $_REQUEST['comzone'];
 	if ($comzone_state=='show'||$comzone_state=='o') {
 		$comments_show = 'y';
-		if (!isset($_COOKIE['comzone'])||$_COOKIE['comzone']=='c') {
-			setcookie('comzone', 'o');
-		}
-	}
+		if (!isset($_COOKIE['comzone'])||$_COOKIE['comzone']=='c') setcookie('comzone', 'o');	
+	} 
 	if ($comzone_state=='hide'||$comzone_state=='c') {
-		if (!isset($_COOKIE['comzone'])||$_COOKIE['comzone']=='o') {
-			setcookie('comzone', 'c');
-		}
+		if (!isset($_COOKIE['comzone'])||$_COOKIE['comzone']=='o') setcookie('comzone', 'c');
 	}
 } else {
 	$comments_show = 'n';
@@ -97,7 +81,7 @@ $comments_first = 1;
 
 foreach ($comments_vars as $c_name) {
 	$comments_avar["name"] = $c_name;
-
+	
 	if (isset($_REQUEST[$c_name])) {
 		$comments_avar["value"] = $_REQUEST[$c_name];
 		$comments_aux[] = $comments_avar;
@@ -156,7 +140,8 @@ if (!isset($_REQUEST["comments_reply_threadId"])) {
 $smarty->assign("comments_reply_threadId", $_REQUEST["comments_reply_threadId"]);
 
 // Include the library for comments (if not included)
-$commentslib = TikiLib::lib('comments');
+include_once ("lib/comments/commentslib.php");global $dbTiki;
+$commentslib = new Comments($dbTiki);
 
 if (!isset($comments_prefix_var)) {
 	$comments_prefix_var = '';
@@ -177,21 +162,16 @@ if ( isset($_REQUEST['comments_objectId']) && $_REQUEST['comments_objectId'] == 
 	$threadId = $commentslib->post_in_forum($forum_info, $_REQUEST, $feedbacks, $errors);
 	if (!empty($threadId) && empty($errors)) {
 		$url = "tiki-view_forum_thread.php?forumId=" . $_REQUEST['forumId'] . "&comments_parentId=" . $_REQUEST['comments_parentId'];
-		if (!empty($_REQUEST['comments_threshold'])) {
+		if (!empty($_REQUEST['comments_threshold'])) 
 			$url .= "&amp;comments_threshold=".$_REQUEST['comments_threshold'];
-		}
-		if (!empty($_REQUEST['comments_offset'])) {
+		if (!empty($_REQUEST['comments_offset'])) 
 			$url .= "&amp;comments_offset=".$_REQUEST['comments_offset'];
-		}
-		if (!empty($_REQUEST['comments_per_page'])) {
+		if (!empty($_REQUEST['comments_per_page'])) 
 			$url .= "&amp;comments_per_page=".$_REQUEST['comments_per_page'];
-		}
-		if (!empty($_REQUEST['thread_style'])) {
+		if (!empty($_REQUEST['thread_style'])) 
 			$url .= "&amp;thread_style=".$_REQUEST['thread_style'];
-		}
-		if (!empty($_REQUEST['thread_sort_mode'])) {
-			$url .= "&amp;thread_sort_mode=".$_REQUEST['thread_sort_mode'];
-		}
+		if (!empty($_REQUEST['thread_sort_mode'])) 
+			$url .= "&amp;thread_sort_mode=".$_REQUEST['thread_sort_mode'];			
 		if (!empty($feedbacks)) {
 			$_SESSION['feedbacks'] = $feedbacks;
 		}
@@ -221,7 +201,7 @@ global $tiki_p_admin_comments;
 
 if ($tiki_p_admin_forum == 'y') {
 	if (isset($_REQUEST["comments_remove"]) && isset($_REQUEST["comments_threadId"])) {
-		$access->check_authenticity(tra('Are you sure you want to remove that post?'));
+		$access->check_authenticity();
 		$comments_show = 'y';
 		$commentslib->remove_comment($_REQUEST["comments_threadId"]);
 		$_REQUEST["comments_threadId"] = 0;
@@ -233,7 +213,7 @@ if ($_REQUEST["comments_threadId"] > 0) {
 	$comment_info = $commentslib->get_comment($_REQUEST["comments_threadId"]);
 
 	$smarty->assign('comment_title', $comment_info["title"]);
-	$smarty->assign('comment_rating', $comment_info["comment_rating"]);
+	$smarty->assign('comment_rating', $comment_info["comment_rating"]);	
 	$smarty->assign('comment_data', $comment_info["data"]);
 } elseif ($_REQUEST["comments_reply_threadId"] > 0) {
 	// Replies to comments.
@@ -277,7 +257,7 @@ if ($_REQUEST["comments_threadId"] > 0) {
 	$smarty->assign('comments_reply_threadId', $_REQUEST["comments_reply_threadId"]);
 } else {
 	$smarty->assign('comment_title', '');
-	$smarty->assign('comment_rating', '');
+	$smarty->assign('comment_rating', '');	
 	$smarty->assign('comment_data', '');
 }
 
@@ -317,11 +297,7 @@ if ( isset($_REQUEST['comments_per_page']) || isset($_REQUEST['thread_style']) |
 	$comments_show = 'y';
 }
 
-if (!isset($_REQUEST["comments_commentFind"])) {
-	$_REQUEST["comments_commentFind"] = '';
-} else {
-	$comments_show = 'y';
-}
+if (!isset($_REQUEST["comments_commentFind"])) $_REQUEST["comments_commentFind"] = ''; else $comments_show = 'y';
 
 // Offset setting for the list of comments
 if (!isset($_REQUEST["comments_offset"])) {
@@ -344,17 +320,14 @@ if ($forum_check[0] == 'forum' ) {
 	$smarty->assign('forumId', $forum_check[1]);
 }
 
-$smarty->assign(
-	'comments_grandParentId',
-	isset($_REQUEST['comments_grandParentId'])
-	? $_REQUEST['comments_grandParentId'] : ''
-);
-
-if (isset($_REQUEST["post_reply"]) && isset($_REQUEST["comments_reply_threadId"])) {
-	$threadId_if_reply = $_REQUEST["comments_reply_threadId"];
-} else {
-	$threadId_if_reply = 0;
+if ( isset( $_REQUEST["comments_grandParentId"] ) ) {
+	$smarty->assign('comments_grandParentId', $_REQUEST["comments_grandParentId"]);
 }
+
+if (isset($_REQUEST["post_reply"]) && isset($_REQUEST["comments_reply_threadId"]))
+	$threadId_if_reply = $_REQUEST["comments_reply_threadId"];
+else
+	$threadId_if_reply = 0;
 
 if (empty($thread_sort_mode)) {
 	if ( !empty($_REQUEST['thread_sort_mode'])) {
@@ -365,10 +338,10 @@ if (empty($thread_sort_mode)) {
 }
 
 $comments_coms = $commentslib->get_comments(
-	$comments_objectId,
-	$_REQUEST["comments_parentId"],
-	$comments_offset, $comments_per_page, $thread_sort_mode, $_REQUEST["comments_commentFind"],
-	$_REQUEST['comments_threshold'], $thread_style, $threadId_if_reply
+				$comments_objectId,
+				$_REQUEST["comments_parentId"],
+				$comments_offset, $comments_per_page, $thread_sort_mode, $_REQUEST["comments_commentFind"],
+				$_REQUEST['comments_threshold'], $thread_style, $threadId_if_reply
 );
 
 if ($comments_prefix_var == 'forum:') {
@@ -409,14 +382,13 @@ if ($comments_offset > 0) {
 $smarty->assign('comments_coms', $comments_coms["data"]);
 
 // Grab the parent comment to show.  -rlpowell
-$parent_com = '';
 if (isset($_REQUEST["comments_parentId"])
 		&& $_REQUEST["comments_parentId"] > 0
 		&& $tiki_p_forum_post == 'y'
 		&& (isset($_REQUEST['comments_previewComment']) || isset($_REQUEST['post_reply']))) {
-	$parent_com = $commentslib->get_comment($_REQUEST['comments_parentId']);
+	$parent_com = $commentslib->get_comment($_REQUEST["comments_parentId"]);
+	$smarty->assign_by_ref('parent_com', $parent_com);
 }
-$smarty->assign_by_ref('parent_com', $parent_com);
 
 // Get comments / forum lock status
 $thread_is_locked = ( ! empty($comments_objectId) && $commentslib->is_object_locked($comments_objectId) ) ? 'y' : 'n';
@@ -425,8 +397,11 @@ $thread_is_locked = $comment_info['locked'];
 $smarty->assign('forum_is_locked', $forum_is_locked);
 $smarty->assign('thread_is_locked', $thread_is_locked);
 
-$smarty->assign('post_reply', !empty($_REQUEST['post_reply']) ? $_REQUEST['post_reply'] : '');
-$smarty->assign('edit_reply', !empty($_REQUEST['edit_reply']) ? $_REQUEST['edit_reply'] : '');
+if (!empty($_REQUEST['post_reply'])) {
+	$smarty->assign('post_reply', $_REQUEST['post_reply']);
+} elseif (!empty($_REQUEST['edit_reply'])) {
+	$smarty->assign('edit_reply', $_REQUEST['edit_reply']);
+}
 
 if ($prefs['feature_contribution'] == 'y') {
 	$contributionItemId = $_REQUEST["comments_threadId"];

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,18 +11,12 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- *
- */
 class ThemeGenLib
 {
 	private $currentTheme;	// ThemeGenTheme
 	private $tg_data;
 
-    /**
-     *
-     */
-    public function __construct()
+	public function __construct()
 	{
 		global $prefs;
 
@@ -166,10 +160,7 @@ class ThemeGenLib
 
 	public function setupEditor()
 	{
-		global $prefs;
-		$headerlib = TikiLib::lib('header');
-		$smarty = TikiLib::lib('smarty');
-		$tikilib = TikiLib::lib('tiki');
+		global $headerlib, $smarty, $prefs, $tikilib;
 
 		if ($this->currentTheme->initDone ||	// filter out unnecessay setups
 				strpos($_SERVER['SCRIPT_NAME'], 'tiki-download_file.php') !== false ||
@@ -180,16 +171,18 @@ class ThemeGenLib
 
 		// tiki themegen include
 		$headerlib->add_jsfile('lib/jquery_tiki/tiki-themegenerator.js');
-		$headerlib->add_cssfile('themes/base_files/feature_css/admin.css');
+		$headerlib->add_cssfile('css/admin.css');
 
 		// set up colorpicker
-		$headerlib->add_cssfile('vendor/jquery/plugins/colorpicker/css/colorpicker.css');
+		$headerlib->add_cssfile('lib/jquery/colorpicker/css/colorpicker.css');
 		$headerlib->add_cssfile('lib/jquery_tiki/colorpicker/layout.css');
 
-		$headerlib->add_jsfile('vendor/jquery/plugins/colorpicker/js/colorpicker.js');
+		$headerlib->add_jsfile('lib/jquery/colorpicker/js/colorpicker.js');
 
+		// colour lib
+		$headerlib->add_jsfile('lib/jquery/jquery.color.js');
 		// units converter
-		$headerlib->add_jsfile('vendor/jquery/plugins/pxem/pxem.jQuery.js');
+		$headerlib->add_jsfile('lib/jquery/pxem.jQuery.js');
 
 		if (!empty($_COOKIE['themegen'])) {
 			if (strpos($_COOKIE['themegen'], 'state:open') !== false) {
@@ -258,15 +251,10 @@ class ThemeGenLib
 			die;
 		}
 
-		$this->currentTheme->initDone = true;
+		$this->currentTheme->initDone = true;		
 	}
 
-    /**
-     * @param $items
-     * @param $haystack
-     * @param $regexp
-     */
-    private function findContexts( &$items, $haystack, $regexp)
+	private function findContexts( &$items, $haystack, $regexp)
 	{
 		$m = null;
 		foreach ($items as &$item) {
@@ -279,10 +267,7 @@ class ThemeGenLib
 		}
 	}
 
-    /**
-     * @return array
-     */
-    public function setupCSSFiles ()
+	public function setupCSSFiles ()
 	{
 		global $tikilib, $prefs, $style_base;
 
@@ -305,14 +290,9 @@ class ThemeGenLib
 
 	}
 
-    /**
-     * @param $file
-     * @param $swaps
-     * @return mixed|string
-     */
-    public function processCSSFile($file, $swaps)
+	public function processCSSFile($file, $swaps)
 	{
-		$headerlib = TikiLib::lib('header');
+		global $headerlib;
 
 		$css = $headerlib->minify_css($file);
 
@@ -344,22 +324,15 @@ class ThemeGenLib
 		return $css;
 	}
 
-    /**
-     * @param $matches
-     * @return mixed
-     */
-    private function processCSSMultiVars($matches)
+	private function processCSSMultiVars($matches)
 	{
 		$out = str_replace($GLOBALS['tg_old'], $GLOBALS['tg_new'], $matches[0]);
 		return $out;
 	}
 
-    /**
-     * @param $name
-     */
-    public function saveNewTheme($name)
+	public function saveNewTheme($name)
 	{
-		$headerlib = TikiLib::lib('header');
+		global $headerlib;
 
 		$headerlib->remove_themegen_files();
 
@@ -370,13 +343,9 @@ class ThemeGenLib
 		}
 	}
 
-    /**
-     * @param $css_file
-     * @param $swaps
-     */
-    public function updateCurrentTheme($css_file, $swaps)
+	public function updateCurrentTheme($css_file, $swaps)
 	{
-		$headerlib = TikiLib::lib('header');
+		global $headerlib;
 
 		$headerlib->remove_themegen_files();
 
@@ -387,11 +356,7 @@ class ThemeGenLib
 		}
 	}
 
-    /**
-     * @param $css_file
-     * @param $swaps
-     */
-    public function previewCurrentTheme($css_file, $swaps)
+	public function previewCurrentTheme($css_file, $swaps)
 	{
 		$this->currentTheme->setData(array($swaps, $css_file));
 		$_SESSION['tg_preview'] = serialize($this->currentTheme->getData());
@@ -409,10 +374,7 @@ class ThemeGenLib
 		}
 	}
 
-    /**
-     * @return ThemeGenTheme
-     */
-    public function getCurrentTheme()
+	public function getCurrentTheme()
 	{
 		return $this->currentTheme;
 	}
@@ -420,18 +382,13 @@ class ThemeGenLib
 
 require_once 'lib/serializedlist.php';
 
-/**
- *
- */
 class ThemeGenTheme extends SerializedList
 {
-	public $initDone;
+	var $initDone;
 
-    /**
-     * @param string $name
-     */
 	public function __construct($name)
 	{
+
 		parent::__construct($name);
 	}
 
@@ -453,10 +410,7 @@ class ThemeGenTheme extends SerializedList
 		$this->prefPrefix = 'themegenerator_theme_';
 	}
 
-    /**
-     * @param $params
-     */
-    public function setData($params)
+	public function setData($params)
 	{
 		global $prefs;
 
@@ -489,16 +443,7 @@ class ThemeGenTheme extends SerializedList
 		}
 	}
 
-    /**
-     * @param $regexp
-     * @param $haystack
-     * @param $filename
-     * @param $type
-     * @param bool $lower
-     * @param int $matchNumber
-     * @return array|null
-     */
-    public function findMatches( $regexp, $haystack, $filename, $type, $lower = true, $matchNumber = 1)
+	public function findMatches( $regexp, $haystack, $filename, $type, $lower = true, $matchNumber = 1)
 	{
 		$items = null;
 		preg_match_all($regexp, $haystack, $matches);
@@ -509,14 +454,7 @@ class ThemeGenTheme extends SerializedList
 	}
 
 
-    /**
-     * @param $matches
-     * @param $css_file
-     * @param $type
-     * @param $lower
-     * @return array
-     */
-    private function processMatches($matches, $css_file, $type, $lower)
+	private function processMatches($matches, $css_file, $type, $lower)
 	{
 		$processed = array();
 		if (is_array($matches)) {

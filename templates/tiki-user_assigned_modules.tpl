@@ -2,8 +2,8 @@
 
 {include file='tiki-mytiki_bar.tpl'}
 
-<div class="t_navbar">
-	{button href="tiki-user_assigned_modules.php?recreate=1" class="btn btn-default" _text="{tr}Restore defaults{/tr}"}
+<div class="navbar">
+	{button href="tiki-user_assigned_modules.php?recreate=1" _text="{tr}Restore defaults{/tr}"}
 </div>
 
 <h2>{tr}User assigned modules{/tr}</h2>
@@ -12,13 +12,13 @@
 		{if $prefs.feature_left_column ne 'n' || count($modules_l) > 0}
 			<td >
 				<b>{tr}Left column{/tr}</b>
-				{if $prefs.feature_left_column eq 'n' and count($modules_l) > 0}<br><span class="highlight">{tr}The column is disabled{/tr}</span>{/if}
+				{if $prefs.feature_left_column eq 'n' and count($modules_l) > 0}<br /><span class="highlight">{tr}The column is disabled{/tr}</span>{/if}
 			</td>
 		{/if}
 		{if $prefs.feature_right_column ne 'n' || count($modules_r) > 0}
 			<td >
 				<b>{tr}Right column{/tr}</b>
-				{if $prefs.feature_right_column eq 'n' and count($modules_r) > 0}<br><span class="highlight">{tr}The column is disabled{/tr}</span>{/if}
+				{if $prefs.feature_right_column eq 'n' and count($modules_r) > 0}<br /><span class="highlight">{tr}The column is disabled{/tr}</span>{/if}
 			</td>
 		{/if}
 	</tr>
@@ -26,15 +26,15 @@
 		<!-- left column -->
 		{if $prefs.feature_left_column ne 'n' || count($modules_l) > 0}
 			<td>
-				<table  class="table normal">
+				<table  class="normal">
 					<tr>
 						<th>{tr}#{/tr}</th>
 						<th>{tr}Name{/tr}</th>
 						<th>{tr}act{/tr}</th>
 					</tr>
-
+					{cycle values="odd,even" print=false}
 					{section name=ix loop=$modules_l}
-						<tr>
+						<tr class="{cycle}">
 							<td>{$modules_l[ix].ord}</td>
 							<td>{$modules_l[ix].name}</td>
 							<td>
@@ -57,15 +57,15 @@
 		<!-- right column -->
 		{if $prefs.feature_right_column ne 'n' || count($modules_r) > 0}
 			<td >
-				<table  class="table normal">
+				<table  class="normal">
 					<tr>
 						<th>{tr}#{/tr}</th>
 						<th>{tr}Name{/tr}</th>
 						<th>{tr}act{/tr}</th>
 					</tr>
-
+					{cycle values="odd,even" print=false}
 					{section name=ix loop=$modules_r}
-						<tr>
+						<tr class="{cycle}">
 							<td>{$modules_r[ix].ord}</td>
 							<td>{$modules_r[ix].name}</td>
 							<td>
@@ -89,7 +89,7 @@
 </table>
 
 {if $canassign eq 'y'}
-<br>
+<br />
 	<form action="tiki-user_assigned_modules.php" method="post">
 		<h2>{tr}Assign module{/tr}</h2>
 		<table class="formcolor">
@@ -124,7 +124,7 @@
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
-				<td><input type="submit" class="btn btn-default btn-sm" name="assign" value="{tr}Assign{/tr}"></td>
+				<td><input type="submit" name="assign" value="{tr}Assign{/tr}" /></td>
 			</tr>
 		</table>
 	</form>

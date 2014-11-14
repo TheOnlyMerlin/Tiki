@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -21,7 +21,6 @@ function wikiplugin_regex_info()
 				'name' => tra('Page name'),
 				'description' => tra('Name of page containing search and replace expressions separated by two colons. Example of syntax on that page: /search pattern/::replacement text'),
 				'default' => 'pageName',
-				'profile_reference' => 'wiki_page',
 			),
 		),
 	);

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_webmail_inbox_info()
 {
 	return array(
@@ -39,50 +36,42 @@ function module_webmail_inbox_info()
 			'trackerId' => array(
 				'name' => tra('Tracker Id'),
 				'description' => tra('GroupMail: Tracker Id (to store GroupMail activity)'),
-				'filter' => 'int',
-				'profile_reference' => 'tracker',
+				'filter' => 'int'
 			),
 			'fromFId' => array(
 				'name' => tra('From Field Id'),
 				'description' => tra('GroupMail: From Field (Id of field in tracker to store email From header)'),
-				'filter' => 'int',
-				'profile_reference' => 'tracker_field',
+				'filter' => 'int'
 			),
 			'subjectFId' => array(
 				'name' => tra('Subject Field Id'),
 				'description' => tra('GroupMail: Subject Field (Id of field in tracker to store email Subject header)'),
-				'filter' => 'int',
-				'profile_reference' => 'tracker_field',
+				'filter' => 'int'
 			),
 			'messageFId' => array(
 				'name' => tra('Message Field Id'),
 				'description' => tra('GroupMail: Message Field (Id of field in tracker to store email message identifier)'),
-				'filter' => 'int',
-				'profile_reference' => 'tracker_field',
+				'filter' => 'int'
 			),
 			'contentFId' => array(
 				'name' => tra('Content Field Id'),
 				'description' => tra('GroupMail: Content Field (Id of field in tracker to store email message body content)'),
-				'filter' => 'int',
-				'profile_reference' => 'tracker_field',
+				'filter' => 'int'
 			),
 			'accountFId' => array(
 				'name' => tra('Account Field Id'),
 				'description' => tra('GroupMail: Account Field (Id of field in tracker to store Webmail account name)'),
-				'filter' => 'int',
-				'profile_reference' => 'tracker_field',
+				'filter' => 'int'
 			),
 			'datetimeFId' => array(
 				'name' => tra('DateTime Field Id'),
 				'description' => tra('GroupMail: Date Time Field (Id of field in tracker to store email sent timestamp)'),
-				'filter' => 'int',
-				'profile_reference' => 'tracker_field',
+				'filter' => 'int'
 			),
 			'operatorFId' => array(
 				'name' => tra('Operator Field Id'),
 				'description' => tra('GroupMail: Operator Field (Id of field in tracker to store operator name (username))'),
-				'filter' => 'int',
-				'profile_reference' => 'tracker_field',
+				'filter' => 'int'
 			),
 			'maxlen' => array(
 				'name' => tra('Maximum length'),
@@ -97,15 +86,9 @@ function module_webmail_inbox_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_webmail_inbox($mod_reference, $module_params)
 {
-	global $prefs, $webmaillib, $user, $webmail_reload, $webmail_start, $webmail_list_page;
-	$headerlib = TikiLib::lib('header');
-	$smarty = TikiLib::lib('smarty');
+	global $prefs, $webmaillib, $headerlib, $user, $webmail_reload, $webmail_start, $webmail_list_page, $smarty;
 	if (!$user) {
 		$smarty->assign('tpl_module_title', tra('Webmail error'));
 		$smarty->assign('error', 'You are not logged in');
@@ -158,10 +141,9 @@ function module_webmail_inbox($mod_reference, $module_params)
 
 function webmail_refresh() 	// called in ajax mode
 {
-	global $webmaillib, $user, $webmail_list_page, $webmail_account, $webmail_reload, $webmail_start, $module_params;
-	$trklib = TikiLib::lib('trk');
-	$contactlib = TikiLib::lib('contact');
-	$smarty = TikiLib::lib('smarty');
+	global $webmaillib, $user, $smarty, $webmail_list_page, $webmail_account, $webmail_reload, $webmail_start, $module_params, $trklib, $contactlib;
+	include_once('lib/trackers/trackerlib.php');
+	include_once ('lib/webmail/contactlib.php');
 
 	$accountid = isset($module_params['accountid']) ? $module_params['accountid'] : 0;
 	$webmail_account = $webmaillib->get_webmail_account($user, $accountid);
@@ -179,10 +161,10 @@ function webmail_refresh() 	// called in ajax mode
 		$smarty->loadPlugin('smarty_function_icon');
 		$smarty->assign('tpl_module_title', tra('Webmail error'));
 		$smarty->assign(
-			'error',
-			tra('No accounts set up (or no current account set)') . '&nbsp;' .
-			'<a href="tiki-webmail.php?locSection=settings">' .
-			smarty_function_icon(array('_id'=>'arrow_right'), $smarty)
+						'error',
+						tra('No accounts set up (or no current account set)') . '&nbsp;' .
+						'<a href="tiki-webmail.php?locSection=settings">' .
+						smarty_function_icon(array('_id'=>'arrow_right'), $smarty)
 		) . '</a>';
 		return;
 	}

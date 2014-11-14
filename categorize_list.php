@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -24,8 +21,7 @@ if ($prefs['feature_categories'] == 'y' && isset($cat_type) && isset($cat_objid)
 	$categlib = TikiLib::lib('categ');
 
 	if ( ! isset( $cat_object_exists ) ) {
-		// article generator uses 'null' for type and id and puts the category id's in $_REQUEST
-		$cat_object_exists = ($cat_objid === 'null') ? false : (bool) $cat_objid;
+		$cat_object_exists = (bool) $cat_objid;
 	}
 
 	if ( $cat_object_exists ) {
@@ -48,8 +44,6 @@ if ($prefs['feature_categories'] == 'y' && isset($cat_type) && isset($cat_objid)
 	}
 
  	$can = $catobjperms->modify_object_categories;
-
-	$categories = Perms::filter(array('type' => 'category'), 'object', $categories, array( 'object' => 'categId' ), array('view_category'));
 
 	foreach ($categories as &$category) {
 		$catperms = Perms::get(array( 'type' => 'category', 'object' => $category['categId'] ));

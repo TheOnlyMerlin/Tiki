@@ -1,16 +1,15 @@
-<form action="#" method="get">
-	<input type="hidden" name="trackerId" value="{$trackerId|escape}">
-	{if $status}<input type="hidden" name="status" value="{$status}">{/if}
-	{if $sort_mode}<input type="hidden" name="sort_mode" value="{$sort_mode}">{/if}
-	<div class="table-responsive">
-    <table class="table">
+<form action="{$smarty.server.PHP_SELF}" method="get">
+	<input type="hidden" name="trackerId" value="{$trackerId|escape}" />
+	{if $status}<input type="hidden" name="status" value="{$status}" />{/if}
+	{if $sort_mode}<input type="hidden" name="sort_mode" value="{$sort_mode}" />{/if}
+	<table class="formcolor">
 		<tr>
 			{if ($tracker_info.showStatus eq 'y' or ($tracker_info.showStatusAdminOnly eq 'y' and $tiki_p_admin_trackers eq 'y')) and $showstatus ne 'n'}
 				{foreach key=st item=stdata from=$status_types}
 					<td>
 						<div class="{$stdata.class}">
-							<a href="tiki-view_tracker.php?trackerId={$trackerId}{if $filtervalue and !$filtervalue|is_array}&amp;filtervalue={$filtervalue|escape:"url"}{/if}{if $filtervalue|is_array}{$filtervalueencoded}{/if}{if $filterfield}&amp;filterfield={$filterfield|escape:"url"}{/if}{if $sort_mode}&amp;sort_mode={$sort_mode}{/if}&amp;status={$stdata.statuslink}" class="statusimg">
-								<img src="{$stdata.image}" title="{$stdata.label}" alt="{$stdata.label}" align="top" width="12px" height="12px">
+							<a href="tiki-view_tracker.php?trackerId={$trackerId}{if $filtervalue}&amp;filtervalue={$filtervalue|escape:"url"}{/if}{if $filterfield}&amp;filterfield={$filterfield|escape:"url"}{/if}{if $sort_mode}&amp;sort_mode={$sort_mode}{/if}&amp;status={$stdata.statuslink}" class="statusimg">
+								<img src="{$stdata.image}" title="{$stdata.label}" alt="{$stdata.label}" align="top" width="12" height="12" />
 							</a>
 						</div>
 					</td>
@@ -62,14 +61,14 @@
 									{/section}
 								</select>
 								{if $field.type eq 'D'}
-									<input type="text" name="filtervalue_other"{if $gotit ne 'y'} value="{if $fid == $filterfield}{$filtervalue}{/if}"{/if}>
+									<input type="text" name="filtervalue_other"{if $gotit ne 'y'} value="{if $fid == $filterfield}{$filtervalue}{/if}"{/if} />
 								{/if}
 							</div>
 
 						{elseif $field.type eq 'R'}
 							<div style="display:{if $filterfield eq $fid}block{else}none{/if};" id="fid{$fid}">
 								{section name=jx loop=$field.options_array}
-									<input type="radio" name="filtervalue[{$fid}]" value="{$field.options_array[jx]|escape}" {if $fid == $filterfield}{if $filtervalue eq $field.options_array[jx]}checked="checked"{/if}{/if}>{$field.options_array[jx]|escape}
+									<input type="radio" name="filtervalue[{$fid}]" value="{$field.options_array[jx]|escape}" {if $fid == $filterfield}{if $filtervalue eq $field.options_array[jx]}checked="checked"{/if}{/if} />{$field.options_array[jx]|escape}
 								{/section}
 							</div>
 
@@ -78,11 +77,10 @@
 								<table>
 									<tr>
 										{cycle name=rows values=",</tr><tr>" advance=false print=false}
-										{foreach key=ku item=iu from=$field.list name=eforeach}
+										{foreach key=ku item=iu from=$field.categories name=eforeach}
 											<td width="50%" nowrap="nowrap">
-												<input type="checkbox" name="filtervalue[{$fid}][]" value="{$iu.categId}" id="cat{$iu.categId}"
-														{if $fid == $filterfield && is_array($filtervalue) && in_array($iu.categId,$filtervalue)} checked="checked"{/if}>
-												<label for="cat{$iu.categId}">{$iu.name|escape}</label>
+												<input type="checkbox" name="filtervalue[{$fid}][]" value="{$iu.categId}" id="cat{$iu.categId}" {if $fid == $filterfield && is_array($filtervalue) && in_array($iu.categId,$filtervalue)} checked="checked"{/if} />
+												<label for="cat{$i.categId}">{$iu.name|escape}</label>
 											</td>
 											{if !$smarty.foreach.eforeach.last}
 												{cycle name=rows}
@@ -98,12 +96,12 @@
 							</div>
 						{elseif $field.type eq 'u'}{* user with autocomplete *}
 							<div style="display:{if $filterfield eq $fid}block{else}none{/if};" id="fid{$fid}">
-								<input type="text" name="filtervalue[{$fid}]" value="{if $fid == $filterfield}{$filtervalue}{/if}" id="filter-username">
+								<input type="text" name="filtervalue[{$fid}]" value="{if $fid == $filterfield}{$filtervalue}{/if}" id="filter-username" />
 							</div>
 							{autocomplete element='#filter-username' type='username'}
 						{else}
 							<div style="display:{if $filterfield eq $fid}block{else}none{/if};" id="fid{$fid}">
-								<input type="text" name="filtervalue[{$fid}]" value="{if $fid == $filterfield}{$filtervalue}{/if}">
+								<input type="text" name="filtervalue[{$fid}]" value="{if $fid == $filterfield}{$filtervalue}{/if}" />
 							</div>
 						{/if}
 						{assign var=cnt value=$cnt+1}
@@ -112,10 +110,9 @@
 			</td>
 			{if isset($filter_button) && $filter_button eq 'y'}
 				<td>
-					<input id="filterbutton" type="submit" class="btn btn-default" name="filter" value="{tr}Filter{/tr}" style="display:{if $filterfield}inline{else}none{/if}">
+					<input id="filterbutton" type="submit" name="filter" value="{tr}Filter{/tr}" style="display:{if $filterfield}inline{else}none{/if}" />
 				</td>
 			{/if}
 		</tr>
 	</table>
-    </div>
 </form>

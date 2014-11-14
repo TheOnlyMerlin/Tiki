@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,7 +9,6 @@ class Search_Formatter_ValueFormatter
 {
 	private $valueSet;
 	static private $pageTitle = '';
-	static private $pageDescription = '';
 
 	function __construct($valueSet)
 	{
@@ -31,11 +30,6 @@ class Search_Formatter_ValueFormatter
 		if (isset($arguments['pagetitle']) && $arguments['pagetitle'] !== 'n' && empty(self::$pageTitle)) {
 			self::$pageTitle = $this->valueSet[$name];
 			TikiLib::lib('smarty')->assign('title', self::$pageTitle);
-		}
-
-		if (isset($arguments['pagedescription']) && $arguments['pagedescription'] !== 'n' && empty(self::$pageDescription)) {
-			self::$pageDescription = $this->valueSet[$name];
-			TikiLib::lib('smarty')->assign('description', self::$pageDescription);
 		}
 
 		// ugly exception for wikiplugin - TODO better?

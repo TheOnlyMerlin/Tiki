@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_directory_top_sites_info()
 {
 	return array(
@@ -24,26 +21,22 @@ function module_directory_top_sites_info()
 			'desc' => array(
 				'name' => tra('Show description'),
 				'description' => tra('If set to "y", the description of the directory site appears.') . " " . tr('Default: "n".'),
-				'filter' => 'word',
+				'filter' => 'word'
 			),
 			'maxdesc' => array (
 				'name' => tra('Maximum length of description'),
 				'description' => tra('If desc = "y", use maxdesc to set the maximum length of the directory site (in characters). Leave blank to set no maximum (show the entire description).') . " " . tr('Default: blank.'),
-				'filter' => 'int',
+				'filter' => 'int'
 			)
 		),
 		'common_params' => array('nonums')
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_directory_top_sites($mod_reference, $module_params)
 {
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $tikilib, $smarty;
+	
 	$ranking = $tikilib->dir_list_all_valid_sites2(0, $mod_reference["rows"], 'hits_desc', '');
 
 	$smarty->assign('desc', isset($module_params['desc']) ? $module_params['desc'] : 'n');	

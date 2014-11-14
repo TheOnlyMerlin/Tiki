@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -17,7 +14,8 @@ $access->check_feature('feature_forums');
 $access->check_permission('tiki_p_forum_read');
 
 // This shows a list of forums everybody can use this listing
-$commentslib = TikiLib::lib('comments');
+include_once ("lib/comments/commentslib.php");
+$commentslib = new Comments($dbTiki);
 
 if (!isset($_REQUEST["sort_mode"])) {
 	$sort_mode = $prefs['forums_ordering'];

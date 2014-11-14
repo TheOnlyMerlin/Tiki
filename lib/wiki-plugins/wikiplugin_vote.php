@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -21,15 +21,12 @@ function wikiplugin_vote_info()
 				'description' => tra('Numeric value representing the tracker ID'),
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'tracker',
 			),
 			'fields' => array(
 				'required' => true,
 				'name' => tra('Fields'),
 				'description' => tra('Colon-separated list of field IDs to be displayed. Example: 2:4:5'),
 				'default' => '',
-				'separator' => ':',
-				'profile_reference' => 'tracker_field',
 			),
 			'show_percent' => array(
 				'required' => false,
@@ -40,8 +37,8 @@ function wikiplugin_vote_info()
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n'),
-				),
+					array('text' => tra('No'), 'value' => 'n')
+				)
 			),
 			'show_bar' => array(
 				'required' => false,
@@ -52,8 +49,8 @@ function wikiplugin_vote_info()
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n'),
-				),
+					array('text' => tra('No'), 'value' => 'n')
+				)
 			),
 			'show_stat' => array(
 				'required' => false,
@@ -64,8 +61,8 @@ function wikiplugin_vote_info()
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n'),
-				),
+					array('text' => tra('No'), 'value' => 'n')
+				)
 			),
 			'show_stat_only_after' => array(
 				'required' => false,
@@ -76,8 +73,8 @@ function wikiplugin_vote_info()
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n'),
-				),
+					array('text' => tra('No'), 'value' => 'n')
+				)
 			),
 			'show_creator' => array(
 				'required' => false,
@@ -88,8 +85,8 @@ function wikiplugin_vote_info()
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n'),
-				),
+					array('text' => tra('No'), 'value' => 'n')
+				)
 			),
 			'status' => array(
 				'required' => false,
@@ -105,8 +102,8 @@ function wikiplugin_vote_info()
 					array('text' => tra('Open & Pending'), 'value' => 'op'), 
 					array('text' => tra('Open & Closed'), 'value' => 'oc'), 
 					array('text' => tra('Pending & Closed'), 'value' => 'pc'), 
-					array('text' => tra('Open, Pending & Closed'), 'value' => 'opc'),
-				),
+					array('text' => tra('Open, Pending & Closed'), 'value' => 'opc')
+				)
 			),
 			'float' => array(
 				'required' => false,
@@ -119,19 +116,7 @@ function wikiplugin_vote_info()
 					array('text' => tra('Left'), 'value' => 'left'), 
 					array('text' => tra('Right'), 'value' => 'right'),
 					array('text' => tra('None'), 'value' => 'none'),
-				),
-			),
-			'show_toggle' => array(
-				'required' => false,
-				'name' => tra('Show Toggle'),
-				'description' => tra('Show toggle or not to display the form and the results'),
-				'filter' => 'alpha',
-				'default' => '',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n'),
-				),
+				)
 			),
 		),
 	);
@@ -139,10 +124,8 @@ function wikiplugin_vote_info()
 
 function wikiplugin_vote($data, $params)
 {
-	global $user, $prefs, $tiki_p_admin_trackers, $tiki_p_view_trackers;
-	$trklib = TikiLib::lib('trk');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $smarty, $tikilib, $user, $prefs, $tiki_p_admin_trackers, $tiki_p_view_trackers, $trklib;
+	include_once('lib/trackers/trackerlib.php');
 	extract($params, EXTR_SKIP);
 
 	if ($prefs['feature_trackers'] != 'y' || !isset($trackerId) || !($tracker = $trklib->get_tracker($trackerId))) {
@@ -170,7 +153,7 @@ function wikiplugin_vote($data, $params)
 			}
 		}
 		if (!empty($ff)) {
-			$params['fields'] = $ff;
+			$params['fields'] = implode(':', $ff);
 		}
 	}
 	if (isset($show_creator) && $show_creator == 'y') {
@@ -193,9 +176,6 @@ function wikiplugin_vote($data, $params)
 		}
 	} else {
 		$smarty->assign('p_create_tracker_items', 'n');
-	}
-	if (isset($show_toggle) && $show_toggle == 'n') {
-		$smarty->assign('show_toggle', 'n');
 	}
 	if (!isset($show_stat) || $show_stat == 'y') {
 		$show_stat = 'y';

@@ -5,7 +5,6 @@
 	font: 1em Arial,Helvetica,sans-serif ! important;
 	font-size: 1em ! important;
 	clear: both;
-    height: auto !important;
 }
 
 /*from the codemirror website*/
@@ -30,6 +29,8 @@
 	top: 0px ! important;
 	left: 0px ! important;
 	position: fixed;
+	top: expression(eval(document.body.scrollTop + 15) + "px");
+	/*left: expression(eval(document.body.scrollLeft) + "px");*/
 	background-color: gray;
 }
 
@@ -58,8 +59,4 @@
 	z-index: -99999999;
 	opacity:0.01;
 	filter:alpha(opacity=1);
-}
-
-.CodeMirror-scroll.cm-s-default {
-	height: auto !important;
 }

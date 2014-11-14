@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,9 +12,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 }
 
 
-/**
- * @return array
- */
 function module_user_blogs_info()
 {
 	return array(
@@ -26,16 +23,11 @@ function module_user_blogs_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_user_blogs($mod_reference, $module_params)
 {
-	global $user;
+	global $user, $tikilib, $smarty;
 	if ($user) {
-		$smarty = TikiLib::lib('smarty');
-		$bloglib = TikiLib::lib('blog');
+		global $bloglib; require_once('lib/blogs/bloglib.php');
 		$ranking = $bloglib->list_user_blogs($user, false);
 		
 		$smarty->assign('modUserBlogs', $ranking);

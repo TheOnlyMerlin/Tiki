@@ -1,22 +1,23 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
 
-$tikilib = TikiLib::lib('tiki');
-$bannerlib = TikiLib::lib('banner');
+require_once ('lib/tikilib.php'); # httpScheme()
+include_once ('lib/banners/bannerlib.php');
+
+if (!isset($bannerlib)) {
+	$bannerlib = new BannerLib;
+}
 
 $access->check_feature('feature_banners');
 $access->check_permission('tiki_p_admin_banners');
 //Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 $smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
 
 if (isset($_REQUEST["bannerId"]) && $_REQUEST["bannerId"] > 0) {
@@ -307,44 +308,46 @@ if (isset($_REQUEST["save"]) || isset($_REQUEST["create_zone"])) {
 			$_REQUEST['HTMLData'] = serialize($params);
 		}
 		$bannerId = $bannerlib->replace_banner(
-			$_REQUEST["bannerId"],
-			$_REQUEST["client"],
-			$_REQUEST["url"], '',
-			'',
-			$_REQUEST["use"],
-			$_REQUEST["imageData"],
-			$_REQUEST["imageType"],
-			$_REQUEST["imageName"],
-			$_REQUEST["HTMLData"],
-			$_REQUEST["fixedURLData"],
-			$_REQUEST["textData"],
-			$fromDate,
-			$toDate,
-			$useDates,
-			$Dmon,
-			$Dtue,
-			$Dwed,
-			$Dthu,
-			$Dfri,
-			$Dsat,
-			$Dsun,
-			$fromTime,
-			$toTime,
-			$_REQUEST["maxImpressions"],
-			$_REQUEST["maxClicks"],
-			$_REQUEST["zone"],
-			$_REQUEST["maxUserImpressions"],
-			$_REQUEST['onlyInURIs'],
-			$_REQUEST['exceptInURIs']
+						$_REQUEST["bannerId"], 
+						$_REQUEST["client"], 
+						$_REQUEST["url"], '',
+						'', 
+						$_REQUEST["use"], 
+						$_REQUEST["imageData"], 
+						$_REQUEST["imageType"], 
+						$_REQUEST["imageName"], 
+						$_REQUEST["HTMLData"],
+						$_REQUEST["fixedURLData"], 
+						$_REQUEST["textData"], 
+						$fromDate, 
+						$toDate, 
+						$useDates, 
+						$Dmon, 
+						$Dtue, 
+						$Dwed, 
+						$Dthu, 
+						$Dfri,
+						$Dsat, 
+						$Dsun, 
+						$fromTime, 
+						$toTime, 
+						$_REQUEST["maxImpressions"], 
+						$_REQUEST["maxClicks"], 
+						$_REQUEST["zone"], 
+						$_REQUEST["maxUserImpressions"],
+						$_REQUEST['onlyInURIs'], 
+						$_REQUEST['exceptInURIs']
 		);
 
 		header("location:tiki-list_banners.php");
-
+		
 	}
 }
 
 $zones = $bannerlib->banner_get_zones();
 $smarty->assign_by_ref('zones', $zones);
+$clients = $userlib->get_users(0, -1, 'login_asc', '');
+$smarty->assign_by_ref('clients', $clients["data"]);
 
 ask_ticket('edit-banner');
 

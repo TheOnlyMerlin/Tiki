@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -45,7 +42,6 @@ if (isset($_REQUEST["user"])) {
 
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
-$userAutoLoggedIn = FALSE;
 if ($isvalid) {
 	$wasAdminValidation = false;
 	$info = $userlib->get_user_info($_REQUEST['user']);
@@ -80,29 +76,17 @@ if ($isvalid) {
 			}
 			$smarty->assign('new_user_validation', 'y');
 			$smarty->assign('userlogin', $_REQUEST['user']);
-			if ($prefs['login_is_email'] === 'y') {
-				$smarty->assign('email', $_REQUEST['user']);
-			}
 			$smarty->assign('mid', 'tiki-change_password.tpl');
 			$smarty->display("tiki.tpl");
 			die;
 		} else {
 			$user = $_REQUEST['user'];
-			$userAutoLoggedIn = TRUE;
 			$_SESSION["$user_cookie_site"] = $user;
 			TikiLib::lib('menu')->empty_menu_cache();
 		}
 	}
-
-	if ($language = $tikilib->get_user_preference($user, 'language')) {
-		setLanguage($language);
-	}
-
 	if (!empty($prefs['url_after_validation']) && !$wasAdminValidation) {
-		$target = $prefs['url_after_validation'];
-		$access->redirect($target);
-	} elseif ($userAutoLoggedIn == TRUE) {
-		$access->redirect($prefs['tikiIndex'], tra("Account validated successfully."));
+		header('Location: '.$prefs['url_after_validation']);
 	} else {
 		$smarty->assign('msg', tra("Account validated successfully."));
 		$smarty->assign('mid', 'tiki-information.tpl');
@@ -112,7 +96,7 @@ if ($isvalid) {
 } else {
 	if ($error == PASSWORD_INCORRECT) $error = tra("Invalid username or password");
 	else if ($error == USER_NOT_FOUND) $error = tra("Invalid username or password");
-	else if ($error == ACCOUNT_DISABLED) $error = tra("Account requires administrator approval");
+	else if ($error == ACCOUNT_DISABLED) $error = tra("Account disabled");
 	else if ($error == USER_AMBIGOUS) $error = tra("You must use the right case for your user name");
 	else if ($error == USER_PREVIOUSLY_VALIDATED) $error = tra('You have already validated your account. Please log in.');
 	else $error = tra('Invalid username or password');

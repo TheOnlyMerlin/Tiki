@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -16,7 +13,7 @@ $inputConfiguration = array(
 							'pref' => 'striptags',
 							'section' => 'striptags',
 					),
-				)
+				) 
 );
 
 $auto_query_args = array('section', 'comments', 'autoreload', 'view_mode');
@@ -25,7 +22,7 @@ require_once 'tiki-setup.php';
 require_once 'lib/toolbars/toolbarslib.php';
 
 $access->check_permission('tiki_p_admin');
-$access->check_feature(array('javascript_enabled', 'feature_jquery_ui'));
+$access->check_feature('javascript_enabled');
 
 $sections = array( 'global' => tra('Global'), 'admin' => tra('Admin'));
 $sections2 = array();
@@ -58,7 +55,7 @@ if ( isset($_REQUEST['comments']) && $_REQUEST['comments'] == 'on') {
 }
 
 foreach ($sections as $skey => $sval) {
-	if ($prefs['toolbar_' . $skey . ($comments ? '_comments' : '') . 'modified'] == 'y') {
+	if (!empty($prefs['toolbar_' . $skey . ($comments ? '_comments' : '')])) {
 		$sections[$skey] = $sval . ' *';
 	}
 }
@@ -79,26 +76,31 @@ if (!empty($_REQUEST['reset_all_custom_tools'])) {
 if ( isset($_REQUEST['save'], $_REQUEST['pref']) ) {
 	$prefName = 'toolbar_' . $section . ($comments ? '_comments' : '');
 	$tikilib->set_preference($prefName, $_REQUEST['pref']);
-	$tikilib->set_preference($prefName . 'modified', 'y');
 }
 
-if ( (isset($_REQUEST['reset']) && $section != 'global') || (isset($_REQUEST['reset_global']) && $section == 'global') ) {
+if ( isset($_REQUEST['reset']) && $section != 'global' ) {
 	$prefName = 'toolbar_' . $section . ($comments ? '_comments' : '');
 	$tikilib->delete_preference($prefName);
-	$tikilib->set_preference($prefName . 'modified', 'n');
+	$smarty->loadPlugin('smarty_function_query');
+	header('location: ?'. smarty_function_query(array('_urlencode'=>'n'), $smarty));
+}
+
+if ( isset($_REQUEST['reset_global']) && $section == 'global' ) {
+	$prefName = 'toolbar_' . $section . ($comments ? '_comments' : '');
+	$tikilib->delete_preference($prefName);
 	$smarty->loadPlugin('smarty_function_query');
 	header('location: ?'. smarty_function_query(array('_urlencode'=>'n'), $smarty));
 }
 
 if ( !empty($_REQUEST['save_tool']) && !empty($_REQUEST['tool_name'])) {	// input from the tool edit form
 	Toolbar::saveTool(
-		$_REQUEST['tool_name'],
-		$_REQUEST['tool_label'],
-		$_REQUEST['tool_icon'],
-		$_REQUEST['tool_token'],
-		$_REQUEST['tool_syntax'],
-		$_REQUEST['tool_type'],
-		$_REQUEST['tool_plugin']
+					$_REQUEST['tool_name'], 
+					$_REQUEST['tool_label'], 
+					$_REQUEST['tool_icon'], 
+					$_REQUEST['tool_token'], 
+					$_REQUEST['tool_syntax'], 
+					$_REQUEST['tool_type'], 
+					$_REQUEST['tool_plugin']
 	);
 
 	$smarty->loadPlugin('smarty_function_query');
@@ -114,7 +116,7 @@ if (empty($current)) {
 }
 $smarty->assign('not_default', false);
 if ($section == 'global') {
-	$cachelib = TikiLib::lib('cache');
+	global $cachelib;
 	if ( $defprefs = $cachelib->getSerialized("tiki_default_preferences_cache") ) {
 		if ($defprefs['toolbar_global' . ($comments ? '_comments' : '')] != $current) {
 			$smarty->assign('not_default', true);
@@ -172,11 +174,7 @@ foreach ( $qtlist as $name ) {
 
 	$tag = Toolbar::getTag($name);
 	if ( ! $tag ) {
-		$tag = Toolbar::getTag($name, true);
-		if ( ! $tag ) {
-			$tag = Toolbar::getTag($name, true, true);
-			continue;
-		}
+		continue;
 	}
 
 	$wys = strlen($tag->getWysiwygToken('dummy', false)) ? 'qt-wys' : '';
@@ -223,7 +221,7 @@ foreach ( $qtlist as $name ) {
 	}
 
 	$qtelement[$name] = array(
-					'name' => $name,
+					'name' => $name, 
 					'class' => "toolbar qt-$name $wys $wiki $wyswik $plug $cust $avail",
 					'html' => "$icon<span>$label</span>",
 					'visible' => $visible,
@@ -231,9 +229,9 @@ foreach ( $qtlist as $name ) {
 }
 
 $headerlib->add_js(
-	"var toolbarsadmin_rowStr = '" . substr(implode(",#row-", range(0, $rowCount)), 2) . "';" .
-	"var toolbarsadmin_fullStr = '#full-list-w,#full-list-p,#full-list-c';" .
-	"var toolbarsadmin_delete_text = '" . tra('Are you sure you want to delete this custom tool?') . "'\n"
+				"var toolbarsadmin_rowStr = '" . substr(implode(",#row-", range(0, $rowCount)), 2) . "';" .
+				"var toolbarsadmin_fullStr = '#full-list-w,#full-list-p,#full-list-c';" .
+				"var toolbarsadmin_delete_text = '" . tra('Are you sure you want to delete this custom tool?') . "'\n"
 );
 
 $headerlib->add_jsfile('lib/toolbars/tiki-admin_toolbars.js');
@@ -251,7 +249,7 @@ sort($display_c);
 sort($display_p);
 sort($display_w);
 
-$headerlib->add_cssfile('themes/base_files/feature_css/admin.css');
+$headerlib->add_cssfile('css/admin.css');
 
 if (count($_REQUEST) == 0) {
 	$smarty->assign('autoreload', 'on');

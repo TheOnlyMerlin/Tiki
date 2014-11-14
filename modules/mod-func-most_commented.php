@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_most_commented_info()
 {
 	return array(
@@ -34,14 +31,15 @@ function module_most_commented_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_most_commented($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
+	global $commentslib;
 
+	if (!isset($commentslib)) {
+		include_once ('lib/comments/commentslib.php');
+		$commentslib = new Comments();
+	}
 	$type = 'wiki';
 	if (isset($module_params['objectType'])) {
 		$type = $module_params['objectType'];
@@ -51,7 +49,7 @@ function module_most_commented($mod_reference, $module_params)
 		}
 	}
 	
-	$result = TikiLib::lib('comments')->order_comments_by_count($type, isset($module_params['objectLanguageFilter']) ? $module_params['objectLanguageFilter'] : '', $mod_reference['rows']);
+	$result = $commentslib->order_comments_by_count($type, isset($module_params['objectLanguageFilter']) ? $module_params['objectLanguageFilter'] : '', $mod_reference['rows']);
 	if ($result === false) {
 		$smarty->assign('module_error', tra('Feature disabled'));
 		return;

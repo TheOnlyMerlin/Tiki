@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -11,13 +8,15 @@
 $section = 'cms';
 //get_strings tra('Articles Home');
 require_once ('tiki-setup.php');
-$artlib = TikiLib::lib('art');
+include_once ('lib/articles/artlib.php');
+include_once ("lib/comments/commentslib.php");
 if ($prefs['feature_freetags'] == 'y') {
-	$freetaglib = TikiLib::lib('freetag');
+	include_once ('lib/freetag/freetaglib.php');
 }
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	include_once ('lib/categories/categlib.php');
 }
+$commentslib = new Comments($dbTiki);
 
 $access->check_feature('feature_articles');
 $access->check_permission_either(array('tiki_p_read_article', 'tiki_p_articles_read_heading'));
@@ -27,7 +26,7 @@ if (isset($_REQUEST["remove"])) {
 	$access->check_authenticity();
 	$artlib->remove_article($_REQUEST["remove"]);
 }
-// This script can receive the threshold
+// This script can receive the thresold
 // for the information as the number of
 // days to get in the log 1,3,4,etc
 // it will default to 1 recovering information for today
@@ -101,7 +100,7 @@ if (!isset($_REQUEST['lang'])) {
 // Get a list of last changes to the Wiki database
 $listpages = $artlib->list_articles($offset, $prefs['maxArticles'], $sort_mode, $find, $date_min, $date_max, $user, $type, $topic, 'y', $topicName, $categId, '', '', $_REQUEST['lang'], $min_rating, $max_rating, false, 'y');
 if ($prefs['feature_multilingual'] == 'y') {
-	$multilinguallib = TikiLib::lib('multilingual');
+	include_once ("lib/multilingual/multilinguallib.php");
 	$listpages['data'] = $multilinguallib->selectLangList('article', $listpages['data']);
 	foreach ($listpages['data'] as &$article) {
 		$article['translations'] = $multilinguallib->getTranslations('article', $article['articleId'], $article["title"], $article['lang']);
@@ -111,17 +110,11 @@ $topics = $artlib->list_topics();
 $smarty->assign_by_ref('topics', $topics);
 $temp_max = count($listpages["data"]);
 for ($i = 0; $i < $temp_max; $i++) {
-	$listpages["data"][$i]["parsed_heading"] = $tikilib->parse_data(
-		$listpages["data"][$i]["heading"],
-		array(
-			'min_one_paragraph' => true,
-			'is_html' => $artlib->is_html($listpages["data"][$i], true),
-		)
-	);
+	$listpages["data"][$i]["parsed_heading"] = $tikilib->parse_data($listpages["data"][$i]["heading"]);
 	$comments_prefix_var = 'article:';
 	$comments_object_var = $listpages["data"][$i]["articleId"];
 	$comments_objectId = $comments_prefix_var . $comments_object_var;
-	$listpages["data"][$i]["comments_cant"] = TikiLib::lib('comments')->count_comments($comments_objectId);
+	$listpages["data"][$i]["comments_cant"] = $commentslib->count_comments($comments_objectId);
 	if ($prefs['feature_freetags'] == 'y') { // And get the Tags for the posts
 		$listpages["data"][$i]["freetags"] = $freetaglib->get_tags_on_object($listpages["data"][$i]["articleId"], "article");
 	}
@@ -153,8 +146,6 @@ if ($prefs['feature_user_watches'] == 'y') {
 	}
 	$smarty->assign('user_watching_articles', ($user && $tikilib->user_watches($user, 'article_*', '*')) ? 'y' : 'n');
 }
-$headerLinks = 'y';
-$smarty->assign('headerLinks', $headerLinks);
 include_once ('tiki-section_options.php');
 ask_ticket('view_article');
 // Display the template

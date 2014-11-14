@@ -1,16 +1,13 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 $section = 'file_galleries';
 require_once ('tiki-setup.php');
-$filegallib = TikiLib::lib('filegal');
+include_once ('lib/filegals/filegallib.php');
 $access->check_feature(array('feature_file_galleries', 'feature_file_galleries_batch'));
 //get_strings tra('Directory batch')
 // Now check permissions to access this page
@@ -22,7 +19,7 @@ $auto_query_args = array( 'galleryId' );
 if (!isset($prefs['fgal_batch_dir']) or !is_dir($prefs['fgal_batch_dir'])) {
 	$msg = tra("Incorrect directory chosen for batch upload of files.") . "<br />";
 	if ($tiki_p_admin == 'y') {
-		$msg.= tra("Please setup that dir on ") . '<a href="tiki-admin.php?page=fgal">' . tra('File Galleries Configuration Panel') . '</a>.';
+		$msg.= tra("Please setup that dir on ") . '<a href="tiki-admin.php?page=fgal">' . tra('File Galleries Admin Panel') . '</a>.';
 	} else {
 		$msg.= tra("Please contact the website administrator.");
 	}
@@ -55,16 +52,13 @@ $disallowed_types = array(
 	'php~'
 ); // list of filetypes you DO NOT want to show
 // recursively get all files from all subdirectories
-/**
- * @param $sub
- */
-function getDirContent($sub)
+function getDirContent($sub) 
 {
 	global $disallowed_types;
 	global $a_file;
 	global $a_path;
-	global $filedir;
-	$smarty = TikiLib::lib('smarty');
+	global $filedir, $smarty;
+
 	$tmp = rtrim($filedir . '/' . $sub, '/');
 
 	if (false === $allfile = scandir($tmp)) {
@@ -91,12 +85,12 @@ function getDirContent($sub)
 	}
 }
 // build a complete list of all files on filesystem including all necessary file info
-function buildFileList()
+function buildFileList() 
 {
 
 	global $a_file;
 	global $a_path;
-	global $filedir;
+	global $filedir, $smarty;
 	global $filestring;
 	getDirContent('');
 	$totfile = count($a_file); // total file number
@@ -125,7 +119,6 @@ function buildFileList()
 		$filestring[$x][2] = $tmp;
 		$totalsize+= $filesize;
 	}
-	$smarty = TikiLib::lib('smarty');
 	$smarty->assign('totfile', $totfile);
 	$smarty->assign('totalsize', $totalsize);
 	$smarty->assign('filestring', $filestring);
@@ -171,9 +164,6 @@ if (isset($_REQUEST["batch_upload"]) and isset($_REQUEST['files']) and is_array(
 		$filepath = $filedir . $path . $file;
 		$filesize = @filesize($filepath);
 
-		//add meadata
-		$metadata = $filegallib->extractMetadataJson($filepath);
-
 		$path_parts = pathinfo($filepath);
 		$ext = strtolower($path_parts["extension"]);
 		include_once ('lib/mime/mimetypes.php');
@@ -181,14 +171,14 @@ if (isset($_REQUEST["batch_upload"]) and isset($_REQUEST['files']) and is_array(
 		$type = $mimetypes["$ext"];
 
 		$result = $filegallib->handle_batch_upload(
-			$_REQUEST['galleryId'],
-			array(
-				'source' => $filepath,
-				'size' => $filesize,
-				'type' => $type,
-				'name' => $path_parts['basename'],
-			),
-			$ext
+						$_REQUEST['galleryId'],
+						array(
+							'source' => $filepath,
+							'size' => $filesize,
+							'type' => $type,
+							'name' => $path_parts['basename'],
+						),
+						$ext
 		);
 
 		if (isset($result['error'])) {
@@ -210,10 +200,7 @@ if (isset($_REQUEST["batch_upload"]) and isset($_REQUEST['files']) and is_array(
 			if (isset($_REQUEST["removeExt"])) {
 				$name = substr($name, 0, strrpos($name, "."));
 			}
-			$fileId = $filegallib->insert_file(
-				$tmpGalId, $name, $tmpDesc, $file, $result['data'], $filesize, $type,
-				$user, $result['fhash'], null, null, null, null, null, null, $metadata
-			);
+			$fileId = $filegallib->insert_file($tmpGalId, $name, $tmpDesc, $file, $result['data'], $filesize, $type, $user, $result['fhash']);
 			if ($fileId) {
 				$feedback[] = tra('Upload was successful') . ': ' . $name;
 				@unlink($filepath);	// seems to return false sometimes even if the file was deleted
@@ -254,7 +241,6 @@ for ($i = 0; $i < $temp_max; $i++) {
 	}
 }
 $smarty->assign_by_ref('galleries', $galleries["data"]);
-$smarty->assign('treeRootId', $prefs['fgal_root_id']);
 include_once ('tiki-section_options.php');
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');

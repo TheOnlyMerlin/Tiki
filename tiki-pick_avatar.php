@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,8 +7,8 @@
 
 $section = 'mytiki';
 require_once ('tiki-setup.php');
-$userprefslib = TikiLib::lib('userprefs');
-$imagegallib = TikiLib::lib('imagegal');
+include_once ('lib/userprefs/userprefslib.php');
+include_once ('lib/imagegals/imagegallib.php');
 $access->check_feature('feature_userPreferences');
 $access->check_user($user);
 $auto_query_args = array('view_user');
@@ -85,19 +82,8 @@ if (isset($_FILES['userfile1']) && is_uploaded_file($_FILES['userfile1']['tmp_na
 			$userprefslib->set_user_avatar($userwatch, 'u', '', $name, $size, $type, $data);
 		}
 	}
-	
-	if ($prefs['feature_score'] == 'y') {
-		global $tikilib ,$user;
-		$userid = $tikilib->get_user_id($user);
-		$tikilib->score_event($user, 'avatar_added', "avatar:$userid");
-	}
-	
 	/* redirect to prevent re-submit on page reload */
-	if ($tiki_p_admin == 'y' && $user !== $userwatch) {
-		header('Location: tiki-pick_avatar.php?view_user=' . $userwatch);
-	} else {
-		header('Location: tiki-pick_avatar.php');
-	}
+	header('Location: tiki-pick_avatar.php');
 	exit;
 }
 

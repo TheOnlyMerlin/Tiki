@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -16,7 +16,7 @@ class Search_GlobalSource_PermissionSource implements Search_GlobalSource_Interf
 
 	function getProvidedFields()
 	{
-		return array('allowed_groups', 'allowed_users');
+		return array('allowed_groups');
 	}
 
 	function getGlobalFields()
@@ -26,72 +26,48 @@ class Search_GlobalSource_PermissionSource implements Search_GlobalSource_Interf
 
 	function getData($objectType, $objectId, Search_Type_Factory_Interface $typeFactory, array $data = array())
 	{
-
-		if (!empty($data['_extra_users'])) {
-			$allowed_users = $data['_extra_users'];
-		} else {
-			$allowed_users = array();
-		}
-
-		if (isset($data['allowed_groups'])) {
-			return array('allowed_users' => $typeFactory->multivalue(array_unique($allowed_users)));
-		}
-
 		$groups = array();
 
 		if (isset($data['view_permission'])) {
 			$viewPermission = is_object($data['view_permission']) ? $data['view_permission']->getValue() : $data['view_permission'];
 
-			if (isset($data['_permission_accessor'])) {
-				$accessor = $data['_permission_accessor'];
-			} else {
-				$accessor = $this->perms->getAccessor(
-					array(
-						'type' => $objectType,
-						'object' => $objectId,
-					)
-				);
-			}
-
-			$groups = array_merge($groups, $this->getAllowedGroups($accessor, $viewPermission));
+			$groups = array_merge($groups, $this->getAllowedGroups($objectType, $objectId, $viewPermission));
 		}
-
+		
 		if (isset($data['parent_view_permission'], $data['parent_object_id'], $data['parent_object_type'])) {
 			$viewPermission = is_object($data['parent_view_permission']) ? $data['parent_view_permission']->getValue() : $data['parent_view_permission'];
-			$accessor = $this->perms->getAccessor(
-				array(
-					'type' => $data['parent_object_type']->getValue(),
-					'object' => $data['parent_object_id']->getValue(),
-				)
-			);
+			$objectType = is_object($data['parent_object_type']) ? $data['parent_object_type']->getValue() : $data['parent_object_type'];
+			$objectId = is_object($data['parent_object_id']) ? $data['parent_object_id']->getValue() : $data['parent_object_id'];
 
-			$groups = array_merge($groups, $this->getAllowedGroups($accessor, $viewPermission));
+			$groups = array_merge($groups, $this->getAllowedGroups($objectType, $objectId, $viewPermission));
 		}
 
 		// Used for comments - must see the parent view permission in addition to a global permission to view comments
 		if (isset($data['global_view_permission'])) {
 			$globalPermission = $data['global_view_permission'];
-			$globalPermission = $globalPermission->getValue();
+			$globalPermission = is_object($globalPermission) ? $globalPermission->getValue() : $globalPermission;
 			$groups = $this->getGroupExpansion($groups);
 			$groups = $this->filterWithGlobalPermission($groups, $globalPermission);
 		}
 
-		if (! empty($data['_extra_groups'])) {
-			$groups = array_merge($groups, $data['_extra_groups']);
-		}
-
 		return array(
 			'allowed_groups' => $typeFactory->multivalue(array_unique($groups)),
-			'allowed_users' => $typeFactory->multivalue(array_unique($allowed_users)),
 		);
 	}
-
-	private function getAllowedGroups($accessor, $viewPermission)
+	
+	private function getAllowedGroups($objectType, $objectId, $viewPermission)
 	{
+		$accessor = $this->perms->getAccessor(
+						array(
+							'type' => $objectType,
+							'object' => $objectId,
+						)
+		);
+
 		$groups = array();
 		foreach ($this->getCheckList($accessor) as $groupName) {
 			$accessor->setGroups(array($groupName));
-
+			
 			if ($accessor->$viewPermission) {
 				$groups[] = $groupName;
 			}

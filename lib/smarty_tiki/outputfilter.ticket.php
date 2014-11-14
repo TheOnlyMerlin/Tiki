@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -36,15 +36,15 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
  {
 		global $ticket;
 		$source = preg_replace(
-			"~((<form[^>]*action=(\"|')[^\"']*tiki-[^\"']*(\"|')[^>]*>(\s*))<)~si",
-			'$2<input type="hidden" name="ticket" value="' . $ticket . '" /><',
-			$source
+						"~((<form[^>]*action=(\"|')[^\"']*tiki-[^\"']*(\"|')[^>]*>(\s*))<)~si",
+						'$2<input type="hidden" name="ticket" value="' . $ticket . '" /><', 
+						$source
 		);
 
 		$source = preg_replace(
-			"~((href=(\"|')[^\"']*tiki-[^\?\"']*)\?(ticket=[0-9a-z]*&)?([^\"']*(\"|')))~si",
-			'$2?ticket=' . $ticket . '&$5',
-			$source
+						"~((href=(\"|')[^\"']*tiki-[^\?\"']*)\?(ticket=[0-9a-z]*&)?([^\"']*(\"|')))~si",
+						'$2?ticket=' . $ticket . '&$5',
+						$source
 		);
 		return $source;
  }

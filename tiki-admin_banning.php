@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -99,7 +96,8 @@ if (!empty($_REQUEST['banId'])) {
 // Handle case when coming from tiki-list_comments with a list of IPs to ban
 if (!empty($_REQUEST['mass_ban_ip'])) {
 	check_ticket('admin-banning');
-	$commentslib = TikiLib::lib('comments');
+	include_once ('lib/comments/commentslib.php');
+	$commentslib = new Comments;
 	$smarty->assign('mass_ban_ip', $_REQUEST['mass_ban_ip']);
 	$info['mode'] = 'mass_ban_ip';
 	$info['title'] = tr('Multiple IP Banning');
@@ -124,7 +122,8 @@ if (!empty($_REQUEST['mass_ban_ip'])) {
 // Handle case when coming from tiki-admin_actionlog with a list of IPs to ban
 if (!empty($_REQUEST['mass_ban_ip_actionlog'])) {
 	check_ticket('admin-banning');
-	$logslib = TikiLib::lib('logs');
+	include_once ('lib/logs/logslib.php');
+	$actionslib = new LogsLib;
 	$smarty->assign('mass_ban_ip', $_REQUEST['mass_ban_ip_actionlog']);
 	$info['mode'] = 'mass_ban_ip';
 	$info['title'] = tr('Multiple IP Banning');
@@ -132,25 +131,8 @@ if (!empty($_REQUEST['mass_ban_ip_actionlog'])) {
 	$info['date_to'] = $tikilib->now + 365 * 24 * 3600;
 	$banId_list = explode('|', $_REQUEST['mass_ban_ip_actionlog']);
 	foreach ($banId_list as $id) {
-		$ban_actions=$logslib->get_info_action($id);
+		$ban_actions=$actionslib->get_info_action($id);
 		$ban_comments_list[$ban_actions['ip']][$id]['userName'] = $ban_actions['user'];
-	}
-	$smarty->assign_by_ref('ban_comments_list', $ban_comments_list);
-}
-
-// Handle case when coming from tiki-adminusers with a list of IPs to ban
-if (!empty($_REQUEST['mass_ban_ip_users'])) {
-	check_ticket('admin-banning');
-	$logslib = TikiLib::lib('logs');
-	$smarty->assign('mass_ban_ip', $_REQUEST['mass_ban_ip_users']);
-	$info['mode'] = 'mass_ban_ip';
-	$info['title'] = tr('Multiple IP Banning');
-	$info['message'] = tr('Access from your localization was forbidden due to excessive spamming.');
-	$info['date_to'] = $tikilib->now + 365 * 24 * 3600;
-	$banUsers_list = explode('|', $_REQUEST['mass_ban_ip_users']);
-	foreach ($banUsers_list as $banUser) {
-		$ban_actions=$logslib->get_user_registration_action($banUser);
-		$ban_comments_list[$ban_actions['ip']][$banUser]['userName'] = $banUser;
 	}
 	$smarty->assign_by_ref('ban_comments_list', $ban_comments_list);
 }

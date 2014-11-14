@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -55,9 +55,8 @@ class Tracker_Field_UserGroups extends Tracker_Field_Abstract
 		return $this->renderTemplate('trackeroutput/usergroups.tpl', $context);
 	}
 
-	function getDocumentPart(Search_Type_Factory_Interface $typeFactory)
+	function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
 	{
-		$baseKey = $this->getBaseKey();
 		$data = $this->getFieldData();
 		$listtext = implode(' ', $data['value']);
 
@@ -67,15 +66,13 @@ class Tracker_Field_UserGroups extends Tracker_Field_Abstract
 		);
 	}
 
-	function getProvidedFields()
+	function getProvidedFields($baseKey)
 	{
-		$baseKey = $this->getBaseKey();
 		return array($baseKey);
 	}
 
-	function getGlobalFields()
+	function getGlobalFields($baseKey)
 	{
-		$baseKey = $this->getBaseKey();
 		return array($baseKey => true);
 	}
 }

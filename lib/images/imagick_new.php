@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,18 +7,10 @@
 
 require_once('lib/images/abstract.php');
 
-/**
- *
- */
 class Image extends ImageAbstract
 {
 
-    /**
-     * @param $image
-     * @param bool $isfile
-     * @param string $format
-     */
-    function __construct($image, $isfile = false, $format = 'jpeg')
+	function __construct($image, $isfile = false, $format = 'jpeg')
 	{
 		if ( $isfile ) {
 			$this->filename = $image;
@@ -55,12 +47,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-    /**
-     * @param $x
-     * @param $y
-     * @return mixed
-     */
-    function _resize($x, $y)
+	function _resize($x, $y)
 	{
 		if ($this->data) {
 			return $this->data->scaleImage($x, $y);
@@ -87,10 +74,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-    /**
-     * @param $format
-     */
-    function set_format($format)
+	function set_format($format)
 	{
 		$this->_load_data();
 		if ($this->data) {
@@ -99,18 +83,12 @@ class Image extends ImageAbstract
 		}
 	}
 
-    /**
-     * @return string
-     */
-    function get_format()
+	function get_format()
 	{
 		return $this->format;
 	}
 
-    /**
-     * @return mixed
-     */
-    function display()
+	function display()
 	{
 		$this->_load_data();
 		if ($this->data) {
@@ -118,11 +96,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-    /**
-     * @param $angle
-     * @return bool
-     */
-    function rotate($angle)
+	function rotate($angle)
 	{
 		$this->_load_data();
 		if ($this->data) {
@@ -133,11 +107,7 @@ class Image extends ImageAbstract
 		}
 	}
 
-    /**
-     * @param $format
-     * @return bool
-     */
-    function is_supported($format)
+	function is_supported($format)
 	{
 		$image = new Imagick();
 		$format = strtoupper(trim($format));
@@ -152,20 +122,14 @@ class Image extends ImageAbstract
 		return in_array($format, $image->queryFormats());
 	}
 
-    /**
-     * @return mixed
-     */
-    function get_height()
+	function get_height()
 	{
 		$this->_load_data();
 		if ($this->data)
 			return $this->data->getImageHeight();
 	}
 
-    /**
-     * @return mixed
-     */
-    function get_width()
+	function get_width()
 	{
 		$this->_load_data();
 		if ($this->data)

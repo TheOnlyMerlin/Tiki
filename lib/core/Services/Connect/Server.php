@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -141,7 +141,7 @@ class Services_Connect_Server
 	
 	private function getCaptcha()
 	{
-		$captchalib = TikiLib::lib('captcha');
+		require_once('lib/captcha/captchalib.php');
 		$caplib = new Captcha('dumb');
 		$caplib->captcha->setKeepSession(true)->setUseNumbers(false)->setWordlen(5);
 		return $caplib;

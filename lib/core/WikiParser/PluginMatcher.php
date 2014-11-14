@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -26,24 +26,6 @@ class WikiParser_PluginMatcher implements Iterator, Countable
 		$matcher->findMatches(0, strlen($text));
 
 		return $matcher;
-	}
-
-	public function __clone()
-	{
-		$new = $this;
-		$this->starts = array_map(
-			function ($match) use ($new) {
-				$match->changeMatcher($new);
-				return clone $match;
-			}, $this->starts
-		);
-
-		$this->ends = array_map(
-			function ($match) use ($new) {
-				$match->changeMatcher($new);
-				return clone $match;
-			}, $this->ends
-		);
 	}
 
 	private function getSubMatcher($start, $end)
@@ -253,7 +235,7 @@ class WikiParser_PluginMatcher implements Iterator, Countable
 		$end = $match->getEnd();
 
 		$sizeDiff = - ($end - $start - strlen($string));
-		$this->text = substr_replace($this->text, $string, $start, $end - $start);
+		$this->text = substr_replace($this->text, $string, $start, $end - $start); 
 
 		$this->removeRanges($start, $end);
 		$this->offsetRanges($end, $sizeDiff);
@@ -266,8 +248,6 @@ class WikiParser_PluginMatcher implements Iterator, Countable
 		foreach ($matches as $key => $m) {
 			if ($m->inside($match)) {
 				$toRemove[] = $m;
-			} elseif ($match->inside($m)) {
-				// Boundaries should not be extended for wrapping plugins
 			} elseif ($key > $end) {
 				unset($this->ends[$m->getEnd()]);
 				unset($this->starts[$m->getStart()]);
@@ -313,7 +293,7 @@ class WikiParser_PluginMatcher implements Iterator, Countable
 			unset($this->ranges[$key]);
 		}
 	}
-
+	
 	private function offsetRanges($end, $sizeDiff)
 	{
 		foreach ($this->ranges as & $range) {
@@ -355,7 +335,7 @@ class WikiParser_PluginMatcher_Match
 		$candidate = $this->matcher->getChunkFrom($this->start + 1, self::NAME_MAX_LENGTH);
 		$name = strtok($candidate, " (}\n\r,");
 
-		if (empty($name) || !ctype_alnum($name)) {
+		if (empty($name) || !ctype_alpha($name)) {
 			$this->invalidate();
 			return false;
 		}
@@ -426,10 +406,7 @@ class WikiParser_PluginMatcher_Match
 			return false;
 		}
 
-		// $arguments =    trim($this->matcher->getChunkFrom($this->nameEnd, $pos - $this->nameEnd), '() ');
-		$rawarguments = trim($this->matcher->getChunkFrom($this->nameEnd, $pos - $this->nameEnd), '() ');
-		// arguments can be html encoded. So, decode first
-		$arguments = html_entity_decode($rawarguments);
+		$arguments = trim($this->matcher->getChunkFrom($this->nameEnd, $pos - $this->nameEnd), '() ');
 		$this->arguments = trim($arguments);
 
 		if ($this->matchType == self::LEGACY) {
@@ -478,33 +455,6 @@ class WikiParser_PluginMatcher_Match
 	function replaceWith($string)
 	{
 		$this->matcher->performReplace($this, $string);
-	}
-
-	function replaceWithPlugin($name, $params, $content)
-	{
-		$hasBody = !empty($content) && !ctype_space($content);
-
-		if (is_array($params)) {
-			$parts = array();
-			foreach ( $params as $key => $value ) {
-				if ($value || $value === '0') {
-					$parts[] = "$key=\"" . str_replace('"', "\\\"", $value) . '"';
-				}
-			}
-
-			$params = implode(' ', $parts);
-		}
-
-		// Replace the content
-		if ($hasBody) {
-			$type = strtoupper($name);
-			$replacement = "{{$type}($params)}$content{{$type}}";
-		} else {
-			$plugin = strtolower($name);
-			$replacement = "{{$plugin} $params}";
-		}
-
-		$this->replaceWith($replacement);
 	}
 
 	function getName()

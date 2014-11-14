@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- *
- */
 class RefererLib extends TikiLib
 {
 
@@ -24,14 +21,7 @@ class RefererLib extends TikiLib
 		$result = $this->query($query);
 	}
 
-    /**
-     * @param $offset
-     * @param $maxRecords
-     * @param $sort_mode
-     * @param $find
-     * @return array
-     */
-    function list_referer_stats($offset, $maxRecords, $sort_mode, $find)
+	function list_referer_stats($offset, $maxRecords, $sort_mode, $find) 
 	{
 		$bindvars = array();
 		if ($find) {

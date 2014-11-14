@@ -1,10 +1,3 @@
-{extends 'layout_view.tpl'}
-
-{block name="title"}
-	{title}{$title|escape}{/title}
-{/block}
-
-{block name="content"}
 <form method="post" action="{service controller=translation action=detach}">
 	<p>{tr}Are you sure you want to detach these translations?{/tr}</p>
 	<ul>
@@ -14,11 +7,10 @@
 		{/if}
 	</ul>
 	<p>
-		<input type="hidden" name="type" value="{$type|escape}">
-		<input type="hidden" name="source" value="{$source|escape}">
-		<input type="hidden" name="target" value="{$target|escape}">
-		<input type="hidden" name="confirm" value="1">
-		<input type="submit" class="btn btn-default btn-sm" value="{tr}Confirm{/tr}">
+		<input type="hidden" name="type" value="{$type|escape}"/>
+		<input type="hidden" name="source" value="{$source|escape}"/>
+		<input type="hidden" name="target" value="{$target|escape}"/>
+		<input type="hidden" name="confirm" value="1"/>
+		<input type="submit" value="{tr}Confirm{/tr}"/>
 	</p>
 </form>
-{/block}

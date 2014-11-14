@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -50,45 +50,15 @@ class TikiFilter_PrepareInput
 	function flatten($values, &$newValues = array(), $prefix = '')
 	{
 		foreach ($values as $key => $value) {
-			if (is_array($value) || is_object($value)) {
+			if (is_array($value)) {
 				$newPrefix = $prefix.$key.$this->delimiter;
-				$newValue = $this->flatten($value, $newValues, $newPrefix, $this->delimiter);
-				$newValues =& $newValue;
+				$newValues =& $this->flatten($value, $newValues, $newPrefix, $this->delimiter);
 			} else {
 				$newValues[$prefix.$key] = $value;
 			}
 		}
 
 		return $newValues;
-	}
-
-	function toString($values, &$newValues = array(), $prefex = '')
-	{
-		$flatArray = self::flatten($values, $newValues, $prefex);
-
-		$output = '';
-
-		foreach ($flatArray as $key => $value) {
-			$output .= urlencode($key) . ':' . urlencode($value) . "\n";
-		}
-
-		return $output;
-	}
-
-	function prepareFromString($input = '')
-	{
-		$stringArray = explode("\n", $input);
-
-		$flatArray = array();
-
-		foreach ($stringArray as $string) {
-			$string = explode(":", $string);
-			if (isset($string[0], $string[1])) {
-				$flatArray[urldecode($string[0])] = urldecode($string[1]);
-			}
-		}
-
-		return self::prepare($flatArray);
 	}
 }
 

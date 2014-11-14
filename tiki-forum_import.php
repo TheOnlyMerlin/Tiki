@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -12,13 +9,13 @@
  ** TikiWiki Forum Import Tool v1.00                            12/01/2007 **
  ****************************************************************************
  ** Written by Mike Kerr (kerrnel22)
- **
+ ** 
  ** This script is for importing the contents of a TikiWiki forum:
  **    - from the same database
  **    - from a different database
  **    - from a different server
  **    - from an SQL dump
- **
+ **   
  ** You must have 'tiki_forum_admin' permissions to run this script, due to
  ** the sensitive and invasive nature of this activity.  Forum moderators do
  ** not count.

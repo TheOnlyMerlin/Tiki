@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -22,7 +22,7 @@ function wikiplugin_attributes_info()
 
 function wikiplugin_attributes_save( $context, $data, $params ) 
 {
-	$attributelib = TikiLib::lib('attribute');
+	global $attributelib; require_once 'lib/attributes/attributelib.php';
 
 	foreach ( $params as $key => $value ) {
 		$key = str_replace('_', '.', $key);

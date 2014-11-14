@@ -1,15 +1,14 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
+include_once ('lib/quizzes/quizlib.php');
 
 $access->check_feature('feature_quizzes');
-
-$quizlib = TikiLib::lib('quiz');
 
 if (!isset($_REQUEST["quizId"])) {
 	$_REQUEST["quizId"] = 0;
@@ -32,7 +31,7 @@ $auto_query_args = array(
 
 $_REQUEST["questionsPerPage"] = 999;
 //Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 $smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
 
 
@@ -102,7 +101,7 @@ if (isset($_REQUEST["save"])) {
 	} else {
 		$_REQUEST["shuffleAnswers"] = 'n';
 	}*/
-
+	
 	if (isset($_REQUEST["timeLimited"]) && $_REQUEST["timeLimited"] == 'on') {
 		$_REQUEST["timeLimited"] = 'y';
 	} else {
@@ -111,21 +110,21 @@ if (isset($_REQUEST["save"])) {
 
 	// Pass dummy "n" for immediateFeedback, showAnswers, shuffleQuestions and shuffleAnswers, which are not implemented.
 	$qid = $quizlib->replace_quiz(
-		$_REQUEST["quizId"],
-		$_REQUEST["name"],
-		$_REQUEST["description"],
-		$_REQUEST["canRepeat"],
-		$_REQUEST["storeResults"],
-		'n',
-		'n',
-		'n',
-		'n',
-		$_REQUEST["questionsPerPage"],
-		$_REQUEST["timeLimited"],
-		$_REQUEST["timeLimit"],
-		$publishDate,
-		$expireDate,
-		$_REQUEST["passingperct"]
+					$_REQUEST["quizId"], 
+					$_REQUEST["name"],
+					$_REQUEST["description"],	
+					$_REQUEST["canRepeat"],
+					$_REQUEST["storeResults"],
+					'n',
+					'n', 
+					'n',
+					'n', 
+					$_REQUEST["questionsPerPage"],
+					$_REQUEST["timeLimited"], 
+					$_REQUEST["timeLimit"],
+					$publishDate, 
+					$expireDate, 
+					$_REQUEST["passingperct"]
 	);
 	$cat_type = 'quiz';
 	$cat_objid = $qid;

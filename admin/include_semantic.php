@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -10,7 +10,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	header("location: index.php");
 	exit;
 }
-$semanticlib = TikiLib::lib('semantic');
+require_once 'lib/wiki/semanticlib.php';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	check_ticket('admin-inc-semantic');
 	if (isset($_POST['save'])) {
@@ -23,30 +23,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 	if (isset($_POST['remove'])) {
 		$list = array();
-		if (isset($_POST['select'])) {
-			$list = (array) $_POST['select'];
-		}
-		foreach ($list as $token) {
-			$semanticlib->removeToken($token);
-		}
+		if (isset($_POST['select'])) $list = (array)$_POST['select'];
+		foreach ($list as $token) $semanticlib->removeToken($token);
 	}
 	if (isset($_POST['removeclean'])) {
 		$list = array();
-		if (isset($_POST['select'])) {
-			$list = (array) $_POST['select'];
-		}
-		foreach ($list as $token) {
-			$semanticlib->removeToken($token, true);
-		}
+		if (isset($_POST['select'])) $list = (array)$_POST['select'];
+		foreach ($list as $token) $semanticlib->removeToken($token, true);
 	}
 	if (isset($_POST['clean'])) {
 		$list = array();
-		if (isset($_POST['select'])) {
-			$list = (array) $_POST['select'];
-		}
-		foreach ($list as $token) {
-			$semanticlib->cleanToken($token);
-		}
+		if (isset($_POST['select'])) $list = (array)$_POST['select'];
+		foreach ($list as $token) $semanticlib->cleanToken($token);
 	}
 	if (isset($_POST['oldName'])) {
 		$semanticlib->renameToken($_POST['oldName'], $_POST['token']);
@@ -67,9 +55,7 @@ if (isset($_REQUEST['rename'])) {
 if (isset($_POST['list'])) {
 	$lists = array();
 	$list = array();
-	if (isset($_POST['select'])) {
-		$list = (array) $_POST['select'];
-	}
+	if (isset($_POST['select'])) $list = (array)$_POST['select'];
 	foreach ($list as $token) {
 		$lists[$token] = $semanticlib->getLinksUsing($token);
 	}

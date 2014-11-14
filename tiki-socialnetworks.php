@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,8 +10,6 @@ require_once ('tiki-setup.php');
 require_once ('lib/socialnetworkslib.php');
 $access->check_feature('feature_socialnetworks');
 $access->check_permission('tiki_p_socialnetworks', tra('Social networks'));
-
-$auto_query_args = array();
 
 if (isset($_REQUEST['request_twitter'])) {
 	$access->check_user($user);
@@ -64,7 +59,6 @@ if (isset($_REQUEST['remove_facebook'])) {
 	$access->check_user($user);
 	// remove user token from tiki
 	$tikilib->set_user_preference($user, 'facebook_token', '');
-	$tikilib->set_user_preference($user, 'facebook_id', '');
 	$smarty->assign('show_removal', true);
 }
 

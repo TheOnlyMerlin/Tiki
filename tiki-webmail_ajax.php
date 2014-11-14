@@ -1,15 +1,12 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+global $headerlib, $access;
 require_once ('tiki-setup.php');
-$headerlib = TikiLib::lib('header');
 
 $access->check_feature(array('feature_webmail', 'feature_ajax' ));	// AJAX_TODO
 $access->check_permission_either(array('tiki_p_use_webmail', 'tiki_p_use_group_webmail'));
@@ -18,19 +15,19 @@ if (!isset($_REQUEST['callback'])) {	// "normal" (non-AJAX) page load
 
 	$divId = 'mod-webmail_inbox'.$module_params['module_position'].$module_params['module_ord'];
 	$module_params['module_id'] = $divId;
-
+	
 	//$ajaxlib->registerTemplate('modules/mod-webmail_inbox.tpl');
-
+	
 	$_SESSION['webmailinbox'][$divId]['module_params'] = $module_params;
-
+	
 	// set up xajax javascript
 	$headerlib->add_js(
-		"
+					"
 function doTakeWebmail(messageID) {
-
+	
 	showWebmailMessage('".tra('Taking')."...');
 	\$('#$divId .webmail_refresh_message').show();
-
+	
 	\$.getJSON('tiki-webmail_ajax.php',
 		{ destDiv: '$divId', action: 'take', messageID: messageID },
 		function (data) {
@@ -41,14 +38,14 @@ function doTakeWebmail(messageID) {
 			}
 		}
 	);
-
+	
 }
 
 function doPutBackWebmail(messageID) {
-
+	
 	showWebmailMessage('".tra('Putting back')."...');
 	\$('#$divId .webmail_refresh_message').show();
-
+	
 	\$.getJSON('tiki-webmail_ajax.php',
 		{ destDiv: '$divId', action: 'putBack', messageID: messageID },
 		function (data) {
@@ -68,7 +65,7 @@ function doRefreshWebmail(start, reload) {
 	if (\$('.box-webmail_inbox .box-data').css('display') != 'none') {
 		if (\$('#$divId .webmail_refresh_busy').css('display') == 'none') {
 			showWebmailMessage('".tra('Checking')."...');
-
+			
 			\$.getJSON('tiki-webmail_ajax.php',
 				{ destDiv: '$divId', action: 'refresh' },
 				function (data) {
@@ -81,7 +78,7 @@ function doRefreshWebmail(start, reload) {
 					}
 				}
 			);
-
+			
 		} else {
 			cancelRefreshWebmail();
 		}
@@ -101,6 +98,11 @@ function cancelRefreshWebmail() {
 function initWebmail() {
 	clearWebmailMessage();
 	\$('#$divId .mod_webmail_list').show('slow');
+	if (jqueryTiki.tooltips) {
+		//\$('a.tips').cluetip({splitTitle: '|', showTitle: false, width: '150px', cluezIndex: 400});
+		\$('a.tips300').cluetip({splitTitle: '|', showTitle: false, width: '300px', cluezIndex: 400});
+		//\$('a.titletips').cluetip({splitTitle: '|', cluezIndex: 400});
+	}
 }
 
 function clearWebmailMessage() {
@@ -128,7 +130,7 @@ function showWebmailMessage(inMsg) {
 });
 "
 );
-
+	
 }
 if (!empty($_REQUEST['action'])) {
 	switch ($_REQUEST['action']) {	// placeholder: more to do
@@ -139,15 +141,10 @@ if (!empty($_REQUEST['action'])) {
 }
 
 
-/**
- * @param string $destDiv
- * @param int $inStart
- * @param bool $inReload
- */
 function refreshWebmail($destDiv = 'mod-webmail_inbox', $inStart = 0, $inReload = false)
 {
-	global $user, $prefs, $module_params;
-	$smarty = TikiLib::lib('smarty');
+	global $user, $smarty, $prefs, $module_params;
+	
 	if (isset($_SESSION['webmailinbox'][$destDiv]['module_params'])) {
 		$module_params = $_SESSION['webmailinbox'][$destDiv]['module_params'];
 	} else {
@@ -164,31 +161,25 @@ function refreshWebmail($destDiv = 'mod-webmail_inbox', $inStart = 0, $inReload 
 	if ($inStart > 0) {
 		$_SESSION['webmailinbox'][$destDiv]['start'] = $inStart;
 	}
-
+	
 	include('lib/wiki-plugins/wikiplugin_module.php');
 	$data = wikiplugin_module('', $module_params);
 //	$objResponse = new xajaxResponse();
 //	$objResponse->script('setTimeout("initWebmail()",1000)');
-//
+//	
 //	$objResponse->assign($destDiv,"innerHTML",$data);
 //	return $objResponse;
 }
 
-/**
- * @param string $destDiv
- * @param int $msgId
- * @return xajaxResponse
- */
 function takeGroupMail($destDiv = 'mod-webmail_inbox', $msgId = 1)
 {
-	global $prefs, $user, $webmaillib, $module_params;
-
+	global $prefs, $trklib, $user, $webmaillib, $contactlib, $dbTiki, $tikilib, $categlib, $module_params;
+	
 	include_once ('lib/webmail/webmaillib.php');
-	$contactlib = TikiLib::lib('contact');
-	$categlib = TikiLib::lib('categ');
-	$tikilib = TikiLib::lib('tiki');
-	$trklib = TikiLib::lib('trk');
-
+	include_once ('lib/webmail/contactlib.php');
+	include_once('lib/trackers/trackerlib.php');
+	include_once('lib/categories/categlib.php');
+	
 	if (isset($_SESSION['webmailinbox'][$destDiv]['module_params'])) {
 		$module_params = $_SESSION['webmailinbox'][$destDiv]['module_params'];
 	} else {
@@ -198,7 +189,7 @@ function takeGroupMail($destDiv = 'mod-webmail_inbox', $msgId = 1)
 	$ls = $webmaillib->refresh_mailbox($user, $accountid, false);
 	$cont = $webmaillib->get_mail_content($user, $accountid, $msgId);
 	$acc = $webmaillib->get_webmail_account($user, $accountid);
-
+	
 	// make tracker item
 	$m = $ls[$msgId - 1];
 	$from		= $m['from'];
@@ -206,20 +197,20 @@ function takeGroupMail($destDiv = 'mod-webmail_inbox', $msgId = 1)
 	$realmsgid	= $m['realmsgid'];
 	$maildate	= $m['date'];
 	$maildate	= strtotime($maildate);
-
+	
 	$objResponse = new xajaxResponse();
-
+	
 	// check if already taken
 	$itemid = $trklib->get_item_id($module_params['trackerId'], $module_params['messageFId'], $realmsgid);
 	if ($itemid > 0) {
 		$objResponse->script('doRefreshWebmail();alert("Sorry, that mail has been taken by another operator. Refreshing list...");');
-
+		
 	} else {
 		$charset = $prefs['default_mail_charset'];
-		if (empty($charset)) {
+		if(empty($charset)) {
 			$charset = 'UTF-8';
 		}
-
+		
 		$items['data'][0]['fieldId'] = $module_params['fromFId'];
 		$items['data'][0]['type'] = 't';
 		$items['data'][0]['value'] = $from;
@@ -242,20 +233,20 @@ function takeGroupMail($destDiv = 'mod-webmail_inbox', $msgId = 1)
 		$items['data'][6]['type'] = 'f';	// f?
 		$items['data'][6]['value'] = $maildate;
 		$trklib->replace_item($module_params['trackerId'], 0, $items);
-
+		
 	}
-
+	
 	// make name for wiki page
 	$pageName = str_replace('@', '_AT_', $m['sender']['email']);
 	$contId = $contactlib->get_contactId_email($m['sender']['email'], $user);
-
+	
 	// add or update (?) contact
 	$ext = $contactlib->get_ext_by_name($user, tra('Wiki Page'), $contId);
 	if (!$ext) {
 		$contactlib->add_ext($user, tra('Wiki Page'), true);	// a public field
 		$ext = $contactlib->get_ext_by_name($user, tra('Wiki Page'), $contId);
 	}
-
+	
 	$arr = explode(" ", trim(html_entity_decode($m['sender']['name']), '"\' '), 2);
 	if (count($arr) < 2) {
 		$arr[] = '';
@@ -264,10 +255,10 @@ function takeGroupMail($destDiv = 'mod-webmail_inbox', $msgId = 1)
 	if (!$contId) {
 		$contId = $contactlib->get_contactId_email($m['sender']['email'], $user);
 	}
-
+	
 	// make or update wiki page
-	$wikilib = TikiLib::lib('wiki');
-
+	global $wikilib; include_once('lib/wiki/wikilib.php');
+	
 	if (!$wikilib->page_exists($pageName)) {
 		$comment = 'Generated by GroupMail on '.date(DATE_RFC822);
 		$description = "Page $comment for ".$m['sender']['email'];
@@ -281,29 +272,26 @@ function takeGroupMail($destDiv = 'mod-webmail_inbox', $msgId = 1)
 					'popup="'.$module_params['fromFId'].':'.$module_params['contentFId'].'" stickypopup="n" showlinks="y" shownbitems="n" showinitials="n"'.
 					'showstatus="n" showcreated="n" showlastmodif="n" filterfield="'.$module_params['fromFId'].'" filtervalue="'.$m['sender']['email'].'"}';
 		$data .= "\n\n";
-
+				
 		$tikilib->create_page($pageName, 0, $data, $tikilib->now, $comment, $user, $tikilib->get_ip_address(), $description);
 		$categlib->update_object_categories(array($categlib->get_category_id('Help Team Pages')), $pageName, 'wiki page');		// TODO remove hard-coded cat name
 	}
-
+	
 	$objResponse->redirect($wikilib->sefurl($pageName));
-
+	
 	return $objResponse;
 }
 
-/**
- * @param string $destDiv
- * @param int $msgId
- * @return xajaxResponse
- */
 function putBackGroupMail($destDiv = 'mod-webmail_inbox', $msgId = 1)
 {
-	global $prefs, $user, $webmaillib, $module_params;
-
+	global $prefs, $trklib, $user, $webmaillib, $dbTiki, $module_params;
+	
 	if (!isset($webmaillib)) {
 		include_once ('lib/webmail/webmaillib.php');
 	}
-	$trklib = TikiLib::lib('trk');
+	if (!isset($trklib)) {
+		include_once('lib/trackers/trackerlib.php');
+	}
 
 	if (isset($_SESSION['webmailinbox'][$destDiv]['module_params'])) {
 		$module_params = $_SESSION['webmailinbox'][$destDiv]['module_params'];
@@ -312,14 +300,14 @@ function putBackGroupMail($destDiv = 'mod-webmail_inbox', $msgId = 1)
 	}
 	$accountid = isset($module_params["accountid"]) ? $module_params['accountid'] : 0;
 	$ls = $webmaillib->refresh_mailbox($user, $accountid, false);
-
+	
 	$m = $ls[$msgId - 1];
-
+	
 	$itemid = $trklib->get_item_id($module_params['trackerId'], $module_params['messageFId'], $m['realmsgid']);
 	if ($itemid > 0 && $user == $trklib->get_item_value($module_params['trackerId'], $itemid, $module_params['operatorFId'])) {	// simple security check
 		$trklib->remove_tracker_item($itemid);
 	}
-
+	
 	$objResponse = new xajaxResponse();
 	$objResponse->script('clearWebmailMessage(); doRefreshWebmail();');
 	return $objResponse;

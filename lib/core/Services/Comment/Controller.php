@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -34,7 +34,6 @@ class Services_Comment_Controller
 		$this->markEditable($comments['data']);
 
 		return array(
-			'title' => tr('Comments'),
 			'comments' => $comments['data'],
 			'type' => $type,
 			'objectId' => $objectId,
@@ -42,7 +41,7 @@ class Services_Comment_Controller
 			'cant' => $comments['cant'],
 			'offset' => $offset,
 			'per_page' => $per_page,
-			'allow_post' => $this->canPost($type, $objectId) && ! $input->hidepost->int(),
+			'allow_post' => $this->canPost($type, $objectId),
 			'allow_remove' => $this->canRemove($type, $objectId),
 			'allow_lock' => $this->canLock($type, $objectId),
 			'allow_unlock' => $this->canUnlock($type, $objectId),
@@ -58,7 +57,6 @@ class Services_Comment_Controller
 		$type = $input->type->text();
 		$objectId = $input->objectId->pagename();
 		$parentId = $input->parentId->int();
-		$return_url = $input->return_url->url();
 
 		// Check general permissions
 
@@ -95,7 +93,7 @@ class Services_Comment_Controller
 		}
 
 		if ($input->post->int()) {
-			// Validate
+			// Validate 
 
 			if (empty($user)) {
 				if (empty($anonymous_name)) {
@@ -119,11 +117,11 @@ class Services_Comment_Controller
 				$captchalib = TikiLib::lib('captcha');
 
 				if (! $captchalib->validate(
-					array(
-						'recaptcha_challenge_field' => $input->recaptcha_challenge_field->none(),
-						'recaptcha_response_field' => $input->recaptcha_response_field->none(),
-						'captcha' => $input->captcha->none(),
-					)
+								array(
+									'recaptcha_challenge_field' => $input->recaptcha_challenge_field->none(),
+									'recaptcha_response_field' => $input->recaptcha_response_field->none(),
+									'captcha' => $input->captcha->none(),
+								)
 				)
 				) {
 					$errors[] = $captchalib->getErrors();
@@ -131,34 +129,28 @@ class Services_Comment_Controller
 			}
 
 			if ($prefs['comments_notitle'] == 'y') {
-				$title = 'Untitled ' . TikiLib::lib('tiki')->get_long_datetime(TikiLib::lib('tikidate')->getTime());
+				$title = 'Untitled ' . TikiLib::lib('tiki')->get_long_datetime(TikiLib::lib('tikidate')->getTime()); 
 			}
 
 			if (count($errors) === 0) {
 				$message_id = ''; // By ref
 				$threadId = $commentslib->post_new_comment(
-					"$type:$objectId",
-					$parentId,
-					$user,
-					$title,
-					$data,
-					$message_id,
-					isset($parent['message_id']) ? $parent['message_id'] : '',
-					'n',
-					'',
-					'',
-					$contributions,
-					$anonymous_name,
-					'',
-					$anonymous_email,
-					$anonymous_website
+								"$type:$objectId", 
+								$parentId, 
+								$user, 
+								$title, 
+								$data, 
+								$message_id, 
+								$parent ? $parent['message_id'] : '', 
+								'n', 
+								'', 
+								'', 
+								$contributions, 
+								$anonymous_name, 
+								'', 
+								$anonymous_email, 
+								$anonymous_website
 				);
-
-				$feedback = array();
-
-				if ($prefs['feature_comments_moderation'] === 'y' && ! $this->canModerate($type, $objectId)) {
-					$feedback[] = tr('Your message has been queued for approval and will be posted after a moderator approves it.');
-				}
 
 				if ($threadId) {
 					$this->rememberCreatedComment($threadId);
@@ -169,17 +161,9 @@ class Services_Comment_Controller
 					} else if ($type == 'article') {
 						require_once('lib/notifications/notificationemaillib.php');
 						sendCommentNotification('article', $objectId, $title, $data);
-					} elseif ($prefs['feature_blogs'] == 'y' && $type == 'blog post') { // Blog comment mail
-						require_once('lib/notifications/notificationemaillib.php');
-						 sendCommentNotification('blog', $objectId, $title, $data);
 					} elseif ($type == 'trackeritem') {
 						require_once('lib/notifications/notificationemaillib.php');
 						sendCommentNotification('trackeritem', $objectId, $title, $data, $threadId);
-					}
-
-					$access = TikiLib::lib('access');
-					if ($return_url && ! $access->is_xml_http_request()) {
-						$access->redirect($return_url, tr('Your comment was posted.'));
 					}
 
 					return array(
@@ -187,7 +171,6 @@ class Services_Comment_Controller
 						'parentId' => $parentId,
 						'type' => $type,
 						'objectId' => $objectId,
-						'feedback' => $feedback,
 					);
 				}
 			}
@@ -204,7 +187,6 @@ class Services_Comment_Controller
 			'anonymous_email' => $anonymous_email,
 			'anonymous_website' => $anonymous_website,
 			'errors' => $errors,
-			'return_url' => $return_url,
 		);
 	}
 
@@ -396,11 +378,6 @@ class Services_Comment_Controller
 		);
 	}
 
-	function action_deliberation_item($input)
-	{
-		return array();
-	}
-
 	private function canView($type, $objectId)
 	{
 		$perms = $this->getApplicablePermissions($type, $objectId);
@@ -417,7 +394,7 @@ class Services_Comment_Controller
 		return true;
 	}
 
-	public function canPost($type, $objectId)
+	private function canPost($type, $objectId)
 	{
 		global $prefs;
 
@@ -433,7 +410,7 @@ class Services_Comment_Controller
 		return true;
 	}
 
-	public function isEnabled($type, $objectId)
+	private function isEnabled($type, $objectId)
 	{
 		global $prefs;
 
@@ -465,8 +442,6 @@ class Services_Comment_Controller
 			return true;
 		case 'article':
 			return $prefs['feature_article_comments'] == 'y';
-		case 'activity':
-			return $prefs['activity_basic_events'] == 'y' || $prefs['activity_custom_events'] == 'y' || $prefs['monitor_enabled'] == 'y';
 		default:
 			return false;
 		}

@@ -1,13 +1,13 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 /**
  * Handler class for ItemsList
- *
+ * 
  * Letter key: ~l~
  *
  */
@@ -29,30 +29,22 @@ class Tracker_Field_ItemsList extends Tracker_Field_Abstract
 						'name' => tr('Tracker ID'),
 						'description' => tr('Tracker to list items from'),
 						'filter' => 'int',
-						'legacy_index' => 0,
-						'profile_reference' => 'tracker',
 					),
 					'fieldIdThere' => array(
 						'name' => tr('Link Field ID'),
 						'description' => tr('Field ID from the other tracker containing an item link pointing to the item in this tracker or some other value to be matched.'),
 						'filter' => 'int',
-						'legacy_index' => 1,
-						'profile_reference' => 'tracker_field',
 					),
 					'fieldIdHere' => array(
 						'name' => tr('Value Field ID'),
 						'description' => tr('Field ID from this tracker matching the value in the link field ID from the other tracker if the field above is not an item link.'),
 						'filter' => 'int',
-						'legacy_index' => 2,
-						'profile_reference' => 'tracker_field',
 					),
 					'displayFieldIdThere' => array(
 						'name' => tr('Fields to display'),
 						'description' => tr('Display alternate fields from the other tracker instead of the item title'),
 						'filter' => 'int',
 						'separator' => '|',
-						'legacy_index' => 3,
-						'profile_reference' => 'tracker_field',
 					),
 					'linkToItems' => array(
 						'name' => tr('Display'),
@@ -62,7 +54,6 @@ class Tracker_Field_ItemsList extends Tracker_Field_Abstract
 							0 => tr('Value'),
 							1 => tr('Link'),
 						),
-						'legacy_index' => 4,
 					),
 					'status' => array(
 						'name' => tr('Status Filter'),
@@ -76,7 +67,6 @@ class Tracker_Field_ItemsList extends Tracker_Field_Abstract
 							'op' => tr('open, pending'),
 							'pc' => tr('pending, closed'),
 						),
-						'legacy_index' => 5,
 					),
 				),
 			),
@@ -92,84 +82,40 @@ class Tracker_Field_ItemsList extends Tracker_Field_Abstract
 			'items' => $list,
 		);
 	}
-
+	
 	function renderInput($context = array())
 	{
-		TikiLib::lib('header')->add_jq_onready(
-			'
-$("input[name=ins_' . $this->getOption('fieldIdHere') . '], select[name=ins_' . $this->getOption('fieldIdHere') . ']").change(function(e, val) {
-  $.getJSON(
-    "tiki-tracker_http_request_itemslist.php",
-    {
-      trackerIdList: ' . $this->getOption('trackerId') . ',
-      fieldlist: "' . implode('|',$this->getOption('displayFieldIdThere')) . '",
-      filterfield: ' . $this->getOption('fieldIdThere') . ',
-      filtervalue: $(this).find("option:selected").val() ,
-			status: "' . $this->getOption('status') . '",
-			mandatory: "' . $this->getConfiguration('isMandatory') . '"
-    },
-    function(data, status) {
-			$ddl = $("div[name=' . $this->getInsertId() . ']");
-      $ddl.empty();
-      var v, l;
-      if (data) {
-        $.each( data, function (i,data) {
-          if (data && data.length > 1) {
-            v = data[0];
-            label = data[1];
-          } else {
-            v = ""
-            label = "";
-          }
-          $ddl.append(
-            $("<div/>")
-            .text(label)
-          );
-        });
-      }
-      if (jqueryTiki.chosen) {	// I only left this because I have no clue what it does
-        $ddl.trigger("chosen:updated");
-      }
-      $ddl.trigger("change");
-    }
-  );
-}).trigger("change", [""]);
-		'
-		);
-
-		return '<div name="' . $this->getInsertId() . '"></div>';
+		return tr('Read Only');
 	}
 
-	function renderOutput( $context = array() )
+	function renderOutput( $context = array() ) 
 	{
-		if (isset($context['search_render']) && $context['search_render'] == 'y') {
-			$items = $this->getData($this->getConfiguration('fieldId'));
-		} else {
-			$items = $this->getItemIds();
-		}
-
-		$list = $this->getItemLabels($items, $context);
-
 		if ($context['list_mode'] === 'csv') {
-			return implode('%%%', $list);
+			return $this->getConfiguration('value');
 		} else {
+			if (isset($context['search_render']) && $context['search_render'] == 'y') {
+				$items = $this->getData($this->getConfiguration('fieldId'));
+			} else {
+				$items = $this->getItemIds();
+			}
+
+			$list = $this->getItemLabels($items);
 			return $this->renderTemplate(
-				'trackeroutput/itemslist.tpl',
-				$context,
-				array(
-					'links' => (bool) $this->getOption('linkToItems'),
-					'raw' => (bool) $this->getOption('displayFieldIdThere'),
-					'itemIds' => implode(',', $items),
-					'items' => $list,
-					'num' => count($list),
-				)
+							'trackeroutput/itemslist.tpl', 
+							$context, 
+							array(
+								'links' => (bool) $this->getOption(4),
+								'raw' => (bool) $this->getOption(3),
+								'itemIds' => implode(',', $items),
+								'items' => $list,
+								'num' => count($list),
+							)
 			);
 		}
 	}
 
-	function getDocumentPart(Search_Type_Factory_Interface $typeFactory)
+	function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
 	{
-		$baseKey = $this->getBaseKey();
 		$items = $this->getItemIds();
 
 		$list = $this->getItemLabels($items);
@@ -177,54 +123,50 @@ $("input[name=ins_' . $this->getOption('fieldIdHere') . '], select[name=ins_' . 
 
 		return array(
 			$baseKey => $typeFactory->multivalue($items),
-			"{$baseKey}_text" => $typeFactory->sortable($listtext),
+			"{$baseKey}_text" => $typeFactory->plaintext($listtext),
 		);
 	}
 
-	function getProvidedFields()
+	function getProvidedFields($baseKey)
 	{
-		$baseKey = $this->getBaseKey();
 		return array(
 			$baseKey,
 			"{$baseKey}_text",
 		);
 	}
 
-	function getGlobalFields()
+	function getGlobalFields($baseKey)
 	{
 		return array();
 	}
 
 	private function getItemIds()
 	{
-		$trackerId = (int) $this->getOption('trackerId');
-		$remoteField = (int) $this->getOption('fieldIdThere');
-		$localField = (int) $this->getOption('fieldIdHere');
-		$localFieldDef = $this->getTrackerDefinition()->getField($localField);
-		$displayFields = $this->getOption('displayFieldIdThere');
-		$status = $this->getOption('status', 'opc');
+		$trackerId = (int) $this->getOption(0);
+		$remoteField = (int) $this->getOption(1);
+		$displayFields = $this->getOption(3);
+		$status = $this->getOption(5, 'opc');
 
 		$tracker = Tracker_Definition::get($trackerId);
 		$technique = 'value';
 
-		if ($tracker && ($field = $tracker->getField($remoteField)) && (!$localField || $field['type'] === 'r')) {
-			if ($field['type'] == 'r') {
+		if ($tracker && ($field = $tracker->getField($remoteField)) && !$this->getOption(2)) {
+			if ($field['type'] == 'r' || $field['type'] == 'q' && $field['options_array'][3] == 'itemId') {
 				$technique = 'id';
 			}
-		}
-		if ($localFieldDef['type'] == 'q' && isset($localFieldDef['options_array'][3]) && $localFieldDef['options_array'][3] == 'itemId') {		
-			$technique = 'id';
 		}
 
 		$trklib = TikiLib::lib('trk');
 		if ($technique == 'id') {
 			$items = $trklib->get_items_list($trackerId, $remoteField, $this->getItemId(), $status);
 		} else {
+			$localField = (int) $this->getOption(2);
 			$localValue = $this->getData($localField);
 			if (!$localValue) {
 				// in some cases e.g. pretty tracker $this->getData($localField) is not reliable as the info is not there
 				$localValue = $trklib->get_item_value($trackerId, $this->getItemId(), $localField);
 			}
+			$localFieldDef = $this->getTrackerDefinition()->getField($localField);
 			if ($localFieldDef['type'] == 'r' && isset($localFieldDef['options_array'][0]) && isset($localFieldDef['options_array'][1])) {
 				$localValue = $trklib->get_item_value($localFieldDef['options_array'][0], $localValue, $localFieldDef['options_array'][1]);
 			}
@@ -239,11 +181,11 @@ $("input[name=ins_' . $this->getOption('fieldIdHere') . '], select[name=ins_' . 
 		return $items;
 	}
 
-	private function getItemLabels($items, $context = array('list_mode' => ''))
+	private function getItemLabels($items)
 	{
-		$displayFields = $this->getOption('displayFieldIdThere');
-		$trackerId = (int) $this->getOption('trackerId');
-		$status = $this->getOption('status', 'opc');
+		$displayFields = $this->getOption(3);
+		$trackerId = (int) $this->getOption(0);
+		$status = $this->getOption(5, 'opc');
 
 		$definition = Tracker_Definition::get($trackerId);
 		if (! $definition) {
@@ -254,7 +196,7 @@ $("input[name=ins_' . $this->getOption('fieldIdHere') . '], select[name=ins_' . 
 		$trklib = TikiLib::lib('trk');
 		foreach ($items as $itemId) {
 			if ($displayFields) {
-				$list[$itemId] = $trklib->concat_item_from_fieldslist($trackerId, $itemId, $displayFields, $status, ' ', $context['list_mode'], $this->getOption('linkToItems'));
+				$list[$itemId] = $trklib->concat_item_from_fieldslist($trackerId, $itemId, $displayFields, $status, ' ');
 			} else {
 				$list[$itemId] = $trklib->get_isMain_value($trackerId, $itemId);
 			}

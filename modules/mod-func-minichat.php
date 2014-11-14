@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_minichat_info()
 {
 	return array(
@@ -31,14 +28,9 @@ function module_minichat_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_minichat($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
-	global $prefs;
+	global $smarty, $prefs;
 	if (isset($module_params["channels"])) {
 		$channels = explode(',', $module_params["channels"]);
 	} else

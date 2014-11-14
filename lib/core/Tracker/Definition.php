@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -101,7 +101,7 @@ class Tracker_Definition
 		$trackerId = $this->trackerInfo['trackerId'];
 
 		if ($trackerId) {
-			$fields = $trklib->list_tracker_fields($trackerId, 0, -1, 'position_asc', '', false /* Translation must be done from the views to avoid translating the sources on edit. */);
+			$fields = $trklib->list_tracker_fields($trackerId, 0, -1, 'position_asc', '', true);
 		
 			return $this->fields = $fields['data'];
 		} else {
@@ -157,19 +157,8 @@ class Tracker_Definition
 	{
 		foreach ($this->getFields() as $field) {
 			if ($field['type'] == 'u'
-				&& $field['options_map']['autoassign'] == 1
-				&& ($this->isEnabled('userCanSeeOwn') or $this->isEnabled('writerCanModify'))) {
-
-				return $field['fieldId'];
-			}
-		}
-	}
-
-	function getAuthorIpField()
-	{
-		foreach ($this->getFields() as $field) {
-			if ($field['type'] == 'I'
-				&& $field['options_map']['autoassign'] == 1) {
+				&& isset($field['options'][0]) && $field['options'][0] == 1
+				&& isset($this->trackerInfo["writerCanModify"]) && $this->trackerInfo["writerCanModify"] == 'y') {
 
 				return $field['fieldId'];
 			}
@@ -180,7 +169,7 @@ class Tracker_Definition
 	{
 		foreach ($this->getFields() as $field) {
 			if (in_array($field['type'], array('u', 'I'))
-				&& $field['options_map']['autoassign'] == 1) {
+				&& isset($field['options'][0]) && $field['options'][0] == 1) {
 				return $field['fieldId'];
 			}
 		}
@@ -190,26 +179,17 @@ class Tracker_Definition
 	{
 		foreach ($this->getFields() as $field) {
 			if ($field['type'] == 'u'
-				&& $field['options_map']['autoassign'] == 1) {
+				&& isset($field['options'][0]) && $field['options'][0] == 1) {
 
 				return $field['fieldId'];
 			}
 		}
 	}
 
-	function getArticleField()
- 	{
- 		foreach ($this->getFields() as $field) {
- 			if ($field['type'] == 'articles') { 
- 				return $field['fieldId'];
- 			}
- 		}
- 	}
-
 	function getGeolocationField()
 	{
 		foreach ($this->getFields() as $field) {
-			if ($field['type'] == 'G' && in_array($field['options_map']['use_as_item_location'], array(1, 'y'))) {
+			if ($field['type'] == 'G' && isset($field['options_array'][0]) && ($field['options_array'][0] == 1 || $field['options_array'][0] == 'y')) {
 				return $field['fieldId'];
 			}
 		}
@@ -228,7 +208,7 @@ class Tracker_Definition
 	{
 		foreach ($this->getFields() as $field) {
 			if ($field['type'] == 'g'
-				&& $field['options_map']['autoassign'] == 1) {
+				&& isset($field['options'][0]) && $field['options'][0] == 1) {
 				return $field['fieldId'];
 			}
 		}
@@ -238,8 +218,7 @@ class Tracker_Definition
 	{
 		// This is here to support some legacy code for the deprecated 's' type rating field. It is not meant to be generically apply to the newer stars rating field
 		foreach ($this->getFields() as $field) {
-//			if ($field['type'] == 's' && $field['name'] == 'Rating') { // Do not force the name to be exactly the non-l10n string "Rating" to allow fetching the fieldID !!!
-			if ($field['type'] == 's') {
+			if ($field['type'] == 's' && $field['name'] == 'Rating') {
 				return $field['fieldId'];
 			}
 		}
@@ -258,7 +237,7 @@ class Tracker_Definition
 	{
 		foreach ($this->getFields() as $field) {
 			if ($field['type'] == 'LANG'
-				&& $field['options_map']['autoassign'] == 1) {
+				&& isset($field['options'][0]) && $field['options'][0] == 1) {
 				return $field['fieldId'];
 			}
 		}
@@ -287,7 +266,7 @@ class Tracker_Definition
 	 */
 	function getItemUser($itemId)
 	{
-		$trklib = TikiLib::lib('trk');
+		global $trklib;
 		return $trklib->get_item_creator($this->trackerInfo['trackerId'], $itemId);
 	}
 
@@ -312,17 +291,6 @@ class Tracker_Definition
 			'last' => $attributes['tiki.sync.last'],
 			'modified' => $this->getConfiguration('lastModif') > $attributes['tiki.sync.last'],
 		);
-	}
-
-	function canInsert(array $keyList)
-	{
-		foreach ($keyList as $key) {
-			if (! $this->getFieldFromPermName($key)) {
-				return false;
-			}
-		}
-
-		return true;
 	}
 }
 

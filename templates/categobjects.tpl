@@ -13,17 +13,14 @@
 		</div>
 	{/if}
   <div class="catlists">
-    <ul class="{if $params.showtype ne 'n'}catfeatures{elseif $params.one eq 'y'}catitemsone{else}list-inline{/if}">
+    <ul class="{if $params.showtype ne 'n'}catfeatures{elseif $params.one eq 'y'}catitemsone{else}catitems{/if}">
    {foreach key=t item=i from=$listcat}
    	{if $params.showtype ne 'n'}
       <li>
       {$t}:
-      <ul class="{if $params.one eq 'y'}catitemsone{else}list-inline{/if}">
+      <ul class="{if $params.one eq 'y'}catitemsone{else}catitems{/if}">
 	{/if}
         {section name=o loop=$i}
-			{if isset($params.maxRecords) && $smarty.section.o.index >= $params.maxRecords}
-				{break}
-			{/if}
         <li>
 			{if $params.showlinks ne 'n'}
 				{if $prefs.feature_sefurl eq 'y'}

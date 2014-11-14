@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,7 +12,7 @@ $access->check_permission('tiki_p_view_stats');
 
 require_once ('lib/graph-engine/gd.php');
 require_once ('lib/graph-engine/graph.bar.php');
-$statslib = TikiLib::lib('stats');
+include_once ('lib/stats/statslib.php');
 
 //Define the object
 if (isset($_REQUEST["type"])) {

@@ -2,20 +2,19 @@
 {if $errors}
 	{remarksbox type="feedback"}
 		{foreach from=$errors item=error}
-			{$error|escape}<br>
+			{$error|escape}<br />
 		{/foreach}
 	{/remarksbox}
 {/if}
 
 <form method="post">
-<div class="table-responsive">
-<table class="table normal invite">
+<table class="normal invite">
 <tr>
 	<td>
 		<label for="email">{tr}Email address the person you want to invite{/tr}</label>
 	</td>
 	<td>
-		<input name="email" id="email" type="text" value="{$email}">
+		<input name="email" id="email" type="text" value="{$email}" />
 	</td>
 </tr>
 <tr>
@@ -40,8 +39,7 @@
 </tr>
 <tr>
 	<td>&nbsp;</td>
-	<td><input type="submit" class="btn btn-default btn-sm" name="invite" value="{tr}Invite{/tr}"></td>
+	<td><input type="submit" name="invite" value="{tr}Invite{/tr}" /></td>
 </tr>
 </table>
-</div>
 </form>

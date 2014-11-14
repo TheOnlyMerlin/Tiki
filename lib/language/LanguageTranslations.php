@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -144,7 +144,7 @@ class LanguageTranslations extends TikiDb_Bridge
 			if ($lastStr === FALSE) {
 				// file has no line with "###end###\"=>\"###end###\") marking the end of the array
 				throw new Language_Exception(
-					tr("The file lang/%0/language.php is not well formated. Run get_strings.php?lang=%0 and then try to export the translations again.", $this->lang)
+								tr("The file lang/%0/language.php is not well formated. Run get_strings.php?lang=%0 and then try to export the translations again.", $this->lang)
 				);
 			}
 

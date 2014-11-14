@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_last_modif_pages_info()
 {
 	return array(
@@ -33,30 +30,20 @@ function module_last_modif_pages_info()
 				'name' => tra('Maximum Length'),
 				'description' => tra('Maximum number of characters in page names allowed before truncating.'),
 				'filter' => 'int'
-			),
-			'show_namespace' => array(
-					'name' => tra('Show Namespace'),
-					'description' => tra('Show namespace prefix in page names.').' ( y / n )',	// Do not translate y/n
-					'default' => 'y'
 			)
 		),
 		'common_params' => array('nonums', 'rows')
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_last_modif_pages($mod_reference, $module_params)
 {
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $tikilib, $smarty;
+	
 	$ranking = $tikilib->list_pages(0, $mod_reference['rows'], 'lastModif_desc', '', '', true, false, false, false, '', false, 'y');
-
+	
 	$smarty->assign('modLastModif', $ranking["data"]);
 	$smarty->assign('maxlen', isset($module_params["maxlen"]) ? $module_params["maxlen"] : 0);
 	$smarty->assign('absurl', isset($module_params["absurl"]) ? $module_params["absurl"] : 'n');
 	$smarty->assign('url', isset($module_params["url"]) ? $module_params["url"] : 'tiki-lastchanges.php');
-	$smarty->assign('namespaceoption', isset($module_params['show_namespace']) ? $module_params['show_namespace'] : 'n');
 }

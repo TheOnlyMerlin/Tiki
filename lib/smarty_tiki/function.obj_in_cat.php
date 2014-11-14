@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -26,7 +26,8 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 
 function smarty_function_obj_in_cat($params, $smarty)
 {					
-	$categlib = TikiLib::lib('categ');
+	global $categlib;
+	include_once ('lib/categories/categlib.php');
 	extract($params, EXTR_SKIP);
 	if ( !isset($object) ) {
 		return ('<b>missing object parameter for Smarty function testing whether object is in a category</b><br/>');

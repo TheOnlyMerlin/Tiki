@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -21,12 +21,7 @@ class TikiDb_Transaction
 
 	function commit()
 	{
-		$done = TikiLib::lib('unifiedsearch')->endBatch($this->token);
-
-		if ($done) {
-			$events = TikiLib::events();
-			$events->trigger('tiki.commit.after');
-		}
+		TikiLib::lib('unifiedsearch')->endBatch($this->token);
 	}
 }
 

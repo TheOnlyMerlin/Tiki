@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,17 +13,17 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 
 function smarty_function_poll($params, $smarty)
 {
-	global $prefs;
+	global $polllib, $dbTiki, $commentslib, $prefs;
 	global $tiki_p_view_poll_results, $tiki_p_vote_poll;
-	$polllib = TikiLib::lib('poll');
 	extract($params);
 	// Param = zone
 	if (!is_object($polllib)) {
 		include_once('lib/polls/polllib_shared.php');
 	}
+	include_once('lib/comments/commentslib.php');
 
 	if (isset($rate)) {
-		if (!TikiLib::lib('tiki')->page_exists($rate)) {
+		if (!$tikilib->page_exists($rate)) {
 			return false;
 		}
 	}
@@ -43,7 +43,8 @@ function smarty_function_poll($params, $smarty)
 		if ($menu_info) {
 			$channels = $polllib->list_poll_options($id);
 			if ($prefs['feature_poll_comments'] == 'y') {
-				$comments_count = TikiLib::lib('comments')->count_comments("poll:" . $menu_info["pollId"]);
+				$commentslib = new Comments($dbTiki);
+				$comments_count = $commentslib->count_comments("poll:" . $menu_info["pollId"]);
 			} else
 				$comments_count = 0;
 			$smarty->assign('comments_cant', $comments_count);

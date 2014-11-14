@@ -1,15 +1,14 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
-$rsslib = TikiLib::lib('rss');
+require_once ('lib/tikilib.php');
+require_once ('lib/articles/artlib.php');
+require_once ('lib/rss/rsslib.php');
 
 $access->check_feature('feature_articles');
 
@@ -20,12 +19,12 @@ if ($prefs['feed_articles'] != 'y') {
 
 $res=$access->authorize_rss(array('tiki_p_read_article','tiki_p_admin_cms', 'tiki_p_articles_read_heading'));
 if ($res) {
-	if ($res['header'] == 'y') {
-		header('WWW-Authenticate: Basic realm="'.$tikidomain.'"');
-		header('HTTP/1.0 401 Unauthorized');
-	}
-	$errmsg=$res['msg'];
-	require_once ('tiki-rss_error.php');
+   if ($res['header'] == 'y') {
+      header('WWW-Authenticate: Basic realm="'.$tikidomain.'"');
+      header('HTTP/1.0 401 Unauthorized');
+   }
+   $errmsg=$res['msg'];
+   require_once ('tiki-rss_error.php');
 }
 
 $feed = "articles";
@@ -34,7 +33,7 @@ if (isset($_REQUEST["topic"])) {
     $uniqueid = $feed.".".$topic;
     $topic = (int) preg_replace('/[^0-9]/', '', $topic);
 } elseif (isset($_REQUEST['topicname'])) {
-	$artlib = TikiLib::lib('art');
+	global $artlib; require_once 'lib/articles/artlib.php';
 	$topic = $artlib->fetchtopicId($_REQUEST['topicname']);
 	$uniqueid = $feed.".".$topic;
 } else {
@@ -57,34 +56,6 @@ if (isset($_REQUEST['lang'])) {
 }
 $uniqueid .= '/'.$articleLang;
 
-$categId = '';
-if (isset($_REQUEST["category"])) {
-	$categlib = TikiLib::lib('categ');
-	if (is_array($_REQUEST["category"]) ) {
-		foreach ( $_REQUEST["category"] as $categname ) {
-			$categIds[] = $categlib->get_category_id($categname);
-		}
-		sort($categIds);
-		$categId = array('AND'=>$categIds);
-		$uniqueid .= '-' . implode('-', $categIds);;
-	} else {
-		$categId = $categlib->get_category_id($_REQUEST["category"]);
-		$uniqueid .= '-'.$categId;
-	}
-}
-// Specifying categories by ID takes precedence, as it is more reliable
-if (isset($_REQUEST["categId"])) {
-	if (is_array($_REQUEST["categId"]) ) {
-		sort($_REQUEST["categId"]);
-		$categId = (int) $_REQUEST["categId"];
-		$categId = array('AND'=>$_REQUEST["categId"]);
-		$uniqueid .= '-' . implode('-', $_REQUEST["categId"]);;
-	} else {
-		$categId = (int) $_REQUEST["categId"];
-		$uniqueid .= '-'.$categId;
-	}
-}
-
 if ($topic and !$tikilib->user_has_perm_on_object($user, $topic, 'topic', 'tiki_p_topic_read')) {
 	$smarty->assign('errortype', 401);
 	$errmsg=tra("You do not have permission to view this section");
@@ -104,16 +75,11 @@ if ($output["data"]=="EMPTY") {
 	$readrepl = "tiki-read_article.php?$id=%s";
 
 	$tmp = $prefs['feed__'.$feed.'_title'];
-	if ($tmp<>'') {
-		$title = $tmp;
-	}
+	if ($tmp<>'') $title = $tmp;
 	$tmp = $prefs['feed_'.$feed.'_desc'];
-	if ($desc<>'') {
-		$desc = $tmp;
-	}
+	if ($desc<>'') $desc = $tmp;
 
-	$artlib = TikiLib::lib('art');
-	$changes = $artlib->list_articles(0, $prefs['feed_articles_max'], $dateId.'_desc', '', 0, $tikilib->now, $user, $type, $topic, 'y', '', $categId, '', '', $articleLang, '', '', false, 'y');
+	$changes = $artlib -> list_articles(0, $prefs['feed_articles_max'], $dateId.'_desc', '', 0, $tikilib->now, $user, $type, $topic, 'y', '', '', '', '', $articleLang, '', '', false, 'y');
 	$tmp = array();
 	include_once('tiki-sefurl.php');
 	foreach ($changes["data"] as $data) {

@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -46,15 +43,15 @@ $smarty->assign('accounts', $accounts);
 if (isset($_REQUEST['book'])) {
 	check_ticket('accounting');
 	$result = $accountinglib->book(
-		$bookId,
-		$_REQUEST['journalDate'],
-		$_REQUEST['journalDescription'],
-		$_REQUEST['debitAccount'],
-		$_REQUEST['creditAccount'],
-		$_REQUEST['debitAmount'],
-		$_REQUEST['creditAmount'],
-		$_REQUEST['debitText'],
-		$_REQUEST['creditText']
+					$bookId,
+					$_REQUEST['journalDate'],
+					$_REQUEST['journalDescription'],
+					$_REQUEST['debitAccount'],
+					$_REQUEST['creditAccount'],
+					$_REQUEST['debitAmount'],
+					$_REQUEST['creditAmount'],
+					$_REQUEST['debitText'],
+					$_REQUEST['creditText']
 	);
 	if (is_numeric($result)) {
 		if (isset($_REQUEST['statementId'])) {

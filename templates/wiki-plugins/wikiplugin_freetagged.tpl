@@ -9,9 +9,9 @@
 				<em>{$row.description}</em>
 				{$row.img}
 			</p>{/if}
-			{if !empty($row.date)}<footer class="help-block editdate">
+			{if !empty($row.date)}<p class="editdate">
 				{$row.date|tiki_short_datetime}
-			</footer>{/if}
+			</p>{/if}
 		</li>
 	{/foreach}
 </ul>

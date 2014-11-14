@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -24,10 +24,6 @@ $smarty->assign('tidy', extension_loaded('tidy'));
 $smarty->assign('http', extension_loaded('http'));
 $smarty->assign('curl', extension_loaded('curl'));
 
-/**
- * @param $element
- * @return array|null
- */
 function get_from_dom($element)
 {
 	if ($element === NULL) return NULL;
@@ -39,17 +35,11 @@ function get_from_dom($element)
 	return $a;
 }
 
-/**
- * @param $url
- * @param $xpath
- * @return mixed|string
- */
 function enlight_xpath($url, $xpath)
 {
-	global $cookies, $base_url;
+	global $smarty, $cookies,$base_url;
 	static $purifier;
 	static $loaded = false;
-	$smarty = TikiLib::lib('smarty');
 
 	$result = array();
 	$data = $url->getElementsByTagName('data')->item(0)->textContent;

@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,7 +9,8 @@ $section = 'poll';
 require_once ('tiki-setup.php');
 $access->check_feature('feature_polls');
 $access->check_permission('tiki_p_view_poll_results');
-$polllib = TikiLib::lib('poll');
+global $pollib;
+include_once ('lib/polls/polllib.php');
 $auto_query_args = array('offset', 'pollId', 'maxRecords', 'scoresort_desc', 'scoresort_asc', 'sort_mode', 'list', 'vote_from_date', 'vote_to_date', 'which_date', 'from_Day', 'from_Month', 'from_Year', 'to_Day', 'to_Month', 'to_Year');
 $smarty->assign('auto_args', implode(',', $auto_query_args));
 if (!empty($_REQUEST['maxRecords'])) {
@@ -83,11 +81,6 @@ foreach ($pollIds as $pK => $pId) { // iterate each poll
 	$poll_info_arr[$pK]['options'] = $options;
 } // end iterate each poll
 
-/**
- * @param $a
- * @param $b
- * @return int
- */
 function scoresort($a, $b)
 {
 	if (isset($_REQUEST['scoresort_asc'])) {

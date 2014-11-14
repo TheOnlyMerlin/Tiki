@@ -1,33 +1,26 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 /**
- * PerspectiveLib
- *
+ * PerspectiveLib 
+ * 
  */
 class PerspectiveLib
 {
 	private $perspectives;
 	private $perspectivePreferences;
 
-    /**
-     *
-     */
-    function __construct()
+	function __construct()
 	{
 		$this->perspectives = TikiDb::get()->table('tiki_perspectives');
 		$this->perspectivePreferences = TikiDb::get()->table('tiki_perspective_preferences');
 	}
 
-    /**
-     * @param $prefs
-     * @return int
-     */
-    function get_current_perspective( $prefs )
+	function get_current_perspective( $prefs )
 	{
 		if ( isset( $_REQUEST['perspectiveId'] ) ) {
 			return (int) $_REQUEST['perspectiveId'];
@@ -55,13 +48,7 @@ class PerspectiveLib
 		}
 	}
 
-    /**
-     * @param $prefs
-     * @param $active_pref
-     * @param $config_pref
-     * @return array
-     */
-    private function get_map( $prefs, $active_pref, $config_pref )
+	private function get_map( $prefs, $active_pref, $config_pref )
 	{
 		if ( ! $prefs ) {
 			global $prefs;
@@ -83,30 +70,17 @@ class PerspectiveLib
 		return $out;
 	}
 
-    /**
-     * @param null $prefs
-     * @return array
-     */
-    function get_subnet_map( $prefs = null )
+	function get_subnet_map( $prefs = null )
 	{
 		return $this->get_map($prefs, 'site_terminal_active', 'site_terminal_config');
 	}
 
-    /**
-     * @param null $prefs
-     * @return array
-     */
-    function get_domain_map( $prefs = null )
+	function get_domain_map( $prefs = null )
 	{
 		return $this->get_map($prefs, 'multidomain_active', 'multidomain_config');
 	}
 
-    /**
-     * @param $ip
-     * @param $subnet
-     * @return bool
-     */
-    private function is_in_subnet( $ip, $subnet )
+	private function is_in_subnet( $ip, $subnet )
 	{
 		list($subnet, $size) = explode('/', $subnet);
 
@@ -136,17 +110,13 @@ class PerspectiveLib
 		return $out;
 	}
 
-    /**
-     * @param $perspectiveId
-     * @return mixed
-     */
-    function get_perspective( $perspectiveId )
+	function get_perspective( $perspectiveId )
 	{
 		$result = TikiDb::get()->query("SELECT perspectiveId, name FROM tiki_perspectives WHERE perspectiveId = ?", array( $perspectiveId ));
 
 		if ( $info = $result->fetchRow() ) {
 			$perms = Perms::get(array( 'type' => 'perspective', 'object' => $perspectiveId ));
-			if ( $perms->perspective_view ) {
+			if ( $perms->view_perspective ) {
 				$info['preferences'] = $this->get_preferences($perspectiveId);
 				$this->write_permissions($info, $perms);
 
@@ -156,30 +126,16 @@ class PerspectiveLib
 	}
 
 
-    /**
-     * @param $perspective
-     */
-    function set_perspective($perspective)
+	function set_perspective($perspective)
 	{
-		global $prefs, $url_scheme, $tikiroot;
+		global $prefs;
 
-		if ( $this->get_perspective($perspective) || ($prefs['feature_areas'] === 'y' && $perspective === 0)) {
+		if ( $this->perspective_exists($perspective) ) {
 			if ($prefs['multidomain_switchdomain'] == 'y') {
 				foreach ( $this->get_domain_map() as $domain => $persp ) {
 					if ( $persp == $perspective && isset($_SERVER['HTTP_HOST']) && $domain != $_SERVER['HTTP_HOST'] ) {
-						$path = '';
-						if ($prefs['feature_areas'] === 'y') {
-							if (!empty($_SERVER['REQUEST_URI'])) {
-								$path = $_SERVER['REQUEST_URI'];
-							} else {
-								$path = $tikiroot;
-							}
-						}
-						$targetUrl = $url_scheme . '://' . $domain . $path;
+						$targetUrl = 'http://' . $domain;
 
-						if ($prefs['feature_areas'] === 'y') {
-							header('HTTP/1.0 301 Found');
-						}
 						header('Location: ' . $targetUrl);
 						exit;
 					}
@@ -187,17 +143,13 @@ class PerspectiveLib
 			}
 			$_SESSION['current_perspective'] = $perspective;
 		} else {
-			$_SESSION['current_perspective'] = 0;
+			$_SESSION['current_perspective'] = 0;	
 		}
 
 	}
 
 
-    /**
-     * @param $info
-     * @param $perms
-     */
-    private function write_permissions( & $info, $perms )
+	private function write_permissions( & $info, $perms )
 	{
 		$info['can_edit'] = $perms->perspective_edit;
 		$info['can_remove'] = $perms->perspective_admin;
@@ -214,8 +166,8 @@ class PerspectiveLib
 	{
 		if ( $perspectiveId ) {
 			$this->perspectives->update(
-				array('name' => $name,),
-				array('perspectiveId' => $perspectiveId,)
+							array('name' => $name,),
+							array('perspectiveId' => $perspectiveId,)
 			);
 
 			return $perspectiveId;
@@ -245,7 +197,7 @@ class PerspectiveLib
 	{
 		$this->perspectivePreferences->deleteMultiple(array('perspectiveId' => $perspectiveId));
 
-		$prefslib = TikiLib::lib('prefs');
+		global $prefslib; require_once 'lib/prefslib.php';
 		foreach ( $preferences as $pref => $value ) {
 			$value = $prefslib->formatPreference($pref, array($pref => $value));
 			$this->set_preference($perspectiveId, $pref, $value);
@@ -259,11 +211,11 @@ class PerspectiveLib
 	function replace_preference ( $preference, $value, $newValue )
 	{
 		$this->perspectivePreferences->update(
-			array('value' => serialize($newValue),),
-			array(
-				'pref' => $preference,
-				'value' => serialize($value),
-			)
+						array('value' => serialize($newValue),),
+						array(
+							'pref' => $preference,
+							'value' => serialize($value),
+						)
 		);
 	}
 
@@ -274,18 +226,18 @@ class PerspectiveLib
 	function set_preference( $perspectiveId, $preference, $value )
 	{
 		$this->perspectivePreferences->delete(
-			array(
-				'perspectiveId' => $perspectiveId,
-				'pref' => $preference,
-			)
+						array(
+							'perspectiveId' => $perspectiveId,
+							'pref' => $preference,
+						)
 		);
 
 		$this->perspectivePreferences->insert(
-			array(
-				'perspectiveId' => $perspectiveId,
-				'pref' => $preference,
-				'value' => serialize($value),
-			)
+						array(
+							'perspectiveId' => $perspectiveId,
+							'pref' => $preference,
+							'value' => serialize($value),
+						)
 		);
 	}
 
@@ -298,25 +250,26 @@ class PerspectiveLib
 		$db = TikiDb::get();
 
 		$id = $db->getOne(
-			'SELECT perspectiveId FROM tiki_perspectives WHERE perspectiveId = ?',
-			array( $perspectiveId )
+						'SELECT perspectiveId FROM tiki_perspectives WHERE perspectiveId = ?',
+						array( $perspectiveId )
 		);
 
 		return ! empty( $id );
 	}
 
-    /**
-     * @param int $offset
-     * @param $maxRecords
-     * @return array
-     */
-    function list_perspectives( $offset = 0, $maxRecords = -1 )
+	function list_perspectives( $offset = 0, $maxRecords = -1 )
 	{
 		$db = TikiDb::get();
 
 		$list = $db->fetchAll("SELECT perspectiveId, name FROM tiki_perspectives", array(), $maxRecords, $offset);
 
-		$list = Perms::simpleFilter('perspective', 'perspectiveId', 'perspective_view', $list);
+		$list = Perms::filter(
+						array( 'type' => 'perspective' ),
+						'object',
+						$list,
+						array( 'object' => 'perspectiveId' ),
+						'perspective_view'
+		);
 
 		foreach ( $list as & $info ) {
 			$perms = Perms::get(array( 'type' => 'perspective', 'object' => $info['perspectiveId'] ));
@@ -338,3 +291,5 @@ class PerspectiveLib
 	}
 }
 
+global $perspectivelib;
+$perspectivelib = new PerspectiveLib;

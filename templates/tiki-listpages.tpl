@@ -5,24 +5,23 @@
 
 {tabset name='tabs_wikipages'}
 	{tab name="{tr}List Wiki Pages{/tr}"}
-        <h2>{tr}List Wiki Pages{/tr}</h2>
 
-		{include autocomplete='pagename' file='find.tpl' find_show_languages='y' find_show_languages_excluded='y' find_show_categories_multi='y' find_show_num_rows='y' find_in="<ul><li>{tr}Page name{/tr}</li></ul>" }
+		{include file='find.tpl' find_show_languages='y' find_show_languages_excluded='y' find_show_categories_multi='y' find_show_num_rows='y' find_in="<ul><li>{tr}Page name{/tr}</li></ul>" }
 
 <form name="checkform" method="get" action="{$smarty.server.PHP_SELF}">
-	<input type="hidden" name="offset" value="{$offset|escape}">
-	<input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
-	<input type="hidden" name="find" value="{$find|escape}">
-	<input type="hidden" name="maxRecords" value="{$maxRecords|escape}">
+	<input type="hidden" name="offset" value="{$offset|escape}" />
+	<input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
+	<input type="hidden" name="find" value="{$find|escape}" />
+	<input type="hidden" name="maxRecords" value="{$maxRecords|escape}" />
 </form>
-		{if isset($error) and $error}
-<div class="alert alert-warning">
+		{if $error}
+<div class="simplebox highlight">
 			{$error}
 </div>
 		{/if}
 
-{if isset($mapview) and $mapview}
-{wikiplugin _name="map" scope=".listpagesmap .geolocated" width="400" height="400"}{/wikiplugin}
+{if $mapview}
+{wikiplugin _name="googlemap" type="objectlist" width="400" height="400"}{/wikiplugin}
 {/if}
 
 <div id="tiki-listpages-content">
@@ -41,24 +40,11 @@
 	{/tab}
 	{if $tiki_p_edit == 'y'}
 		{tab name="{tr}Create a Wiki Page{/tr}"}
-            <h2>{tr}Create a Wiki Page{/tr}</h2>
-<div class="text-center">
+<div class="center" style="text-align: center">
 	<strong>{tr}Insert name of the page you wish to create{/tr}</strong>
 	<form method="get" action="tiki-editpage.php">
-        <div class="form-group clearfix">
-            <div class="col-md-8 col-md-push-2">
-		        <input class="form-control" id="pagename" type="text" name="page">
-            </div>
-        </div>
-		{if $prefs.namespace_enabled == 'y' && $prefs.namespace_default}
-			<div>
-				<label>
-					<input type="checkbox" name="namespace" value="{$prefs.namespace_default|escape}" checked="checked">
-					{tr _0=$prefs.namespace_default}Create page within %0{/tr}
-				</label>
-			</div>
-		{/if}
-		<input class="btn btn-primary" type="submit" name="quickedit" value="{tr}Create Page{/tr}">
+		<input id="pagename" type="text" size="30" name="page" /><br />
+		<input class="submit button" type="submit" name="quickedit" value="{tr}Create Page{/tr}" />
 	</form>
 </div>
 		{/tab}

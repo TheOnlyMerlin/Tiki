@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,13 +13,6 @@ class Search_Expr_Or implements Search_Expr_Interface
 	function __construct(array $parts)
 	{
 		$this->parts = $parts;
-	}
-
-	function __clone()
-	{
-		$this->parts = array_map(function ($part) {
-			return clone $part;
-		}, $this->parts);
 	}
 
 	function addPart(Search_Expr_Interface $part)
@@ -59,11 +52,6 @@ class Search_Expr_Or implements Search_Expr_Interface
 		}
 
 		return call_user_func($callback, $this, $results);
-	}
-
-	function traverse($callback)
-	{
-		return call_user_func($callback, $callback, $this, $this->parts);
 	}
 }
 

@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -13,8 +13,6 @@ class Tracker_Item
 	private $owner;
 	private $ownerGroup;
 	private $perms;
-
-	private $isNew = false;
 
 	public static function fromId($itemId)
 	{
@@ -43,7 +41,6 @@ class Tracker_Item
 		$obj = new self;
 		$obj->info = array();
 		$obj->definition = Tracker_Definition::get($trackerId);
-		$obj->asNew();
 		$obj->initialize();
 
 		return $obj;
@@ -51,12 +48,6 @@ class Tracker_Item
 
 	private function __construct()
 	{
-	}
-
-	function asNew()
-	{
-		$this->isNew = true;
-		$this->info['itemId'] = null;
 	}
 
 	function canView()
@@ -69,13 +60,15 @@ class Tracker_Item
 			return true;
 		}
 
-		if ($this->canSeeOwn()) {
-			return true;
+		$status = $this->info['status'];
+
+		if ($status == 'c') {
+			return $this->perms->view_trackers_closed;
+		} elseif ($status == 'p') {
+			return $this->perms->view_trackers_pending;
+		} else {
+			return $this->perms->view_trackers;
 		}
-
-		$permName = $this->getViewPermission();
-
-		return $this->perms->$permName;
 	}
 
 	function canModify()
@@ -119,44 +112,16 @@ class Tracker_Item
 			return $this->perms->remove_tracker_items;
 		}
 	}
-	public function getSpecialPermissionUsers($itemId, $operation)
-	{
-		$users = array();
-
-		if ($this->definition->getConfiguration('writerCan' . $operation, 'n') == 'y') {
-			$users[] = $this->owner;
-		}
-
-		if ($this->definition->getConfiguration('writerGroupCan' . $operation, 'n') == 'y' && $this->ownerGroup && in_array($this->ownerGroup, $this->perms->getGroups())) {
-			$users = array_unique(array_merge($users, TikiLib::lib('user')->get_group_users($this->ownerGroup)));
-		}
-
-		return $users;
-	}
 
 	private function canFromSpecialPermissions($operation)
 	{
 		global $user;
-		if (! $this->definition) {
-			return false;
-		}
-
 		if ($this->definition->getConfiguration('writerCan' . $operation, 'n') == 'y' && $user && $this->owner && $user === $this->owner) {
 			return true;
 		}
 
 		if ($this->definition->getConfiguration('writerGroupCan' . $operation, 'n') == 'y' && $this->ownerGroup && in_array($this->ownerGroup, $this->perms->getGroups())) {
 			return true;
-		}
-
-		return false;
-	}
-
-	private function canSeeOwn()
-	{
-		global $user;
-		if ($this->definition->getConfiguration('userCanSeeOwn') == 'y') {
-			return !empty($user) && $user === $this->owner;
 		}
 
 		return false;
@@ -207,17 +172,11 @@ class Tracker_Item
 			return; // TODO: This is a temporary fix, we should be able to getItemOwner always
 		}
 
-		if ($this->isNew()) {
-			global $user;
-			return $user;
-		}
-
-
 		if (isset($this->info['itemUser'])) {
 			// Used by TRACKERLIST - not all data is loaded, but this is loaded separately
 			return $this->info['itemUser'];
 		}
-
+                
 		$userField = $this->definition->getUserField();
 		if ($userField) {
 			return $this->getValue($userField);
@@ -229,7 +188,7 @@ class Tracker_Item
 		if (!is_object($this->definition)) {
 			return; // TODO: This is a temporary fix, we should be able to getItemOwner always
 		}
-
+		
 		$groupField = $this->definition->getWriterGroupField();
 		if ($groupField) {
 			return $this->getValue($groupField);
@@ -251,7 +210,7 @@ class Tracker_Item
 		}
 
 		$field = $this->definition->getField($fieldId);
-
+		
 		if (! $field) {
 			return false;
 		}
@@ -292,7 +251,7 @@ class Tracker_Item
 		}
 
 		$field = $this->definition->getField($fieldId);
-
+		
 		if (! $field) {
 			return false;
 		}
@@ -300,10 +259,7 @@ class Tracker_Item
 		$isHidden = $field['isHidden'];
 		$editableBy = $field['editableBy'];
 
-		if ($isHidden == 'i') {
-			// Immutable after creation
-			return $this->isNew();
-		} elseif ($isHidden == 'c') {
+		if ($isHidden == 'c') {
 			// Creator or creator group check when field can be modified by creator only
 			return $this->canFromSpecialPermissions('Modify');
 		} elseif ($isHidden == 'p') {
@@ -333,14 +289,9 @@ class Tracker_Item
 		}
 	}
 
-	public function getId()
-	{
-		return $this->info['itemId'];
-	}
-
 	private function isNew()
 	{
-		return $this->isNew;
+		return empty($this->info);
 	}
 
 	public function prepareInput($input)
@@ -349,57 +300,23 @@ class Tracker_Item
 		$fields = $this->definition->getFields();
 		$output = array();
 
+		$factory = $this->definition->getFieldFactory();
 		foreach ($fields as $field) {
-			$output[] = $this->prepareFieldInput($field, $input);
+			$fid = $field['fieldId'];
+
+			if ($this->canModifyField($fid)) {
+				$field['ins_id'] = "ins_$fid";
+
+				$handler = $factory->getHandler($field, $this->info);
+				$output[] = array_merge($field, $handler->getFieldData($input));
+			}
 		}
-
-		return array_filter($output);
-	}
-
-	public function prepareOutput()
-	{
-		$fields = $this->definition->getFields();
-		$output = array();
-
-		foreach ($fields as $field) {
-			$output[] = $this->prepareFieldOutput($field);
-		}
-
-		return array_filter($output);
-	}
-
-	public function prepareFieldInput($field, $input)
-	{
-		$fid = $field['fieldId'];
-
-		if ($this->canModifyField($fid)) {
-			$field['ins_id'] = "ins_$fid";
-
-			$factory = $this->definition->getFieldFactory();
-			$handler = $factory->getHandler($field, $this->info);
-			return array_merge($field, $handler->getFieldData($input));
-		}
-	}
-
-	public function prepareFieldOutput($field)
-	{
-		$fid = $field['fieldId'];
-
-		if ($this->canViewField($fid)) {
-			$field['ins_id'] = "ins_$fid";
-
-			$factory = $this->definition->getFieldFactory();
-			$handler = $factory->getHandler($field, $this->info);
-			return array_merge($field, $handler->getFieldData([]));
-		}
+		
+		return $output;
 	}
 
 	private function prepareFieldId($fieldId)
 	{
-		if (TikiLib::startsWith($fieldId, 'ins_') == true) {
-			$fieldId = str_replace('ins_', '', $fieldId);
-		}
-
 		if (! is_numeric($fieldId)) {
 			if ($field = $this->definition->getFieldFromPermName($fieldId)) {
 				$fieldId = $field['fieldId'];
@@ -408,11 +325,11 @@ class Tracker_Item
 
 		return $fieldId;
 	}
-
+	
 	/**
 	 * Getter method for the permissions of this
 	 * item.
-	 *
+	 * 
 	 * @param string $permName
 	 * @return bool|null
 	 */
@@ -424,84 +341,6 @@ class Tracker_Item
 	public function getPerms()
 	{
 		return $this->perms;
-	}
-
-	public function getOwnerGroup()
-	{
-		return $this->ownerGroup;
-	}
-
-	public function getViewPermission()
-	{
-		$status = isset($this->info['status']) ? $this->info['status'] : 'o';
-
-		if ($status == 'c') {
-			return 'view_trackers_closed';
-		} elseif ($status == 'p') {
-			return 'view_trackers_pending';
-		} else {
-			return 'view_trackers';
-		}
-	}
-
-	public function getData($input = null)
-	{
-		$out = array();
-		if ($input) {
-			$fields = $this->prepareInput($input);
-
-			foreach ($fields as $field) {
-				$permName = $field['permName'];
-				$out[$permName] = $field['value'];
-
-				if (isset($input->fields[$permName])) {
-					$out[$permName] = $input->fields->$permName->none();
-				}
-			}
-		} else {
-			$factory = $this->definition->getFieldFactory();
-			$info = $this->info;
-
-			foreach ($this->definition->getFields() as $field) {
-				$handler = $factory->getHandler($field, $info);
-				$data = $handler->getFieldData();
-
-				$permName = $field['permName'];
-				$out[$permName] = $data['value'];
-			}
-		}
-
-		return array(
-			'itemId' => $this->isNew() ? null : $this->info['itemId'],
-			'status' => $this->isNew() ? 'o' : $this->info['status'],
-			'creation_date' => $this->info['created'],
-			'fields' => $out,
-		);
-	}
-
-	public function getDefinition()
-	{
-		return $this->definition;
-	}
-
-	function getDisplayedStatus()
-	{
-		if ($this->definition->getConfiguration('showStatus', 'n') == 'y'
-			|| ($this->definition->getConfiguration('showStatusAdminOnly', 'n') == 'y' && $this->perms->admin_trackers)) {
-
-			$status = $this->isNew()
-				? $this->definition->getConfiguration('newItemStatus', 'o')
-				: $this->info['status'];
-
-			switch ($status) {
-				case 'o':
-					return 'open';
-				case 'p':
-					return 'pending';
-				case 'c':
-					return 'closed';
-			}
-		}
 	}
 }
 

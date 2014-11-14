@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,6 +11,7 @@
 // Mediawiki authentication plugin for phpBB3 with mysql4
 // By Steve Streeting 26 Dec 2008
 
+require_once('lib/adodb/adodb.inc.php');
 require_once ('lib/auth/PasswordHash.php');
 
 // some definitions for helping with authentication
@@ -56,12 +57,6 @@ class TikiPhpBBLib
 		$dbpasswd = $prefs['auth_phpbb_dbpasswd'];
 		$dbname = $prefs['auth_phpbb_dbname'];
 		$dbtype = 'mysql';//$prefs['auth_phpbb_dbtype'];
-
-		// Force autoloading
-		if (! class_exists('ADOConnection')) {
-			return false;
-		}
-
 
 		$dbconnection = NewADOConnection($dbtype);
 		$dbconnection->Connect($dbhost, $dbuser, $dbpasswd, $dbname);

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +10,7 @@ function wikiplugin_exercise_info()
 	return array(
 		'name' => tra('Exercise'),
 		'documentation' => tra('PluginExercise'),
-		'description' => tra('Creates exercises within a wiki page for students to test their new skills. Inline questions and optional answers selections can be defined. A score is given for multiple exercises within a page.'),
+		'description' => tra('Creates exercises within a wiki page for students to test their new skills. The plugin allows to define inline questions and optional answers to be selected from. A score is given for multiple exercises within a page.'),
 		'prefs' => array('wikiplugin_exercise'),
 		'filter' => 'text',
 		'format' => 'html',
@@ -32,7 +32,7 @@ function wikiplugin_exercise_info()
 	);
 }
 
-function wikiplugin_exercise($data, $params)
+function wikiplugin_exercise($data, $params, $offset, $options)
 {
 	static $nextId = 1;
 	$smarty = TikiLib::lib('smarty');
@@ -41,7 +41,7 @@ function wikiplugin_exercise($data, $params)
 	$params = new JitFilter($params);
 	$answer = $params->answer->text();
 
-	if (isset(TikiLib::lib('parser')->option['indexing']) && TikiLib::lib('parser')->option['indexing']) {
+	if (isset($options['indexing']) && $options['indexing']) {
 		return "{$params->answer->text()} {$params->incorrect->text()}";
 	}
 
@@ -200,7 +200,7 @@ JS;
 	return <<<HTML
 <form class="exercise-form" method="get" action="#">
 	<p>$yourScoreIs</p>
-	<input type="submit" class="btn btn-default btn-sm" value="$checkYourScore"/>
+	<input type="submit" value="$checkYourScore"/>
 </form>
 HTML;
 }

@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -27,16 +27,16 @@ class Search_ContentSource_SheetSource implements Search_ContentSource_Interface
 
 		$values = $this->db->table('tiki_sheet_values');
 		$contributors = $values->fetchColumn(
-			$values->expr('DISTINCT `user`'),
-			array(
-				'sheetId' => $objectId,
-			)
+						$values->expr('DISTINCT `user`'), 
+						array(
+							'sheetId' => $objectId,
+						)
 		);
 		$lastModif = $values->fetchOne(
-			$values->max('begin'),
-			array(
-				'sheetId' => $objectId,
-			)
+						$values->max('begin'), 
+						array(
+							'sheetId' => $objectId,
+						)
 		);
 
 		$loader = new TikiSheetDatabaseHandler($objectId);
@@ -45,9 +45,11 @@ class Search_ContentSource_SheetSource implements Search_ContentSource_Interface
 		$grid = new TikiSheet;
 		$grid->import($loader);
 
+		ob_start();
 		$grid->export($writer);
-		$text = $writer->output;
-
+		$text = ob_get_contents();
+		ob_end_clean();
+		
 		$data = array(
 			'title' => $typeFactory->sortable($info['title']),
 			'description' => $typeFactory->sortable($info['description']),

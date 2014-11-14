@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,9 +10,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_last_youtube_playlist_videos_info()
 {
 	return array(
@@ -104,16 +101,14 @@ function module_last_youtube_playlist_videos_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_last_youtube_playlist_videos($mod_reference, $module_params)
 {
-	global $prefs; 
+	global $smarty, $prefs; 
 	$tikilib = TikiLib::lib('tiki');
+	require_once 'Zend/Loader.php';
+	Zend_Loader::loadClass('Zend_Gdata_YouTube');
 	$data = array();
-	$smarty = TikiLib::lib('smarty');
+	
 	if (!empty($module_params['id'])) {
 		$id = $module_params['id'];
 		// Catch common error on param values and convert into the right ones

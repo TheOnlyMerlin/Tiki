@@ -11,7 +11,7 @@
 			<input type="hidden" name="trackerId" value="{$tracker_input.trackerId|escape}"/>
 			<input type="hidden" name="controller" value="tracker"/>
 			<input type="hidden" name="action" value="insert_item"/>
-			<input type="submit" name="create" value="{$tracker_input.submit|escape}" class="btn btn-default btn-sm" />
+			<input type="submit" name="create" value="{$tracker_input.submit|escape}"/>
 			{foreach from=$tracker_input.hiddenInput key=f item=v}
 				<input id="{$f|escape}" type="hidden" name="forced~{$f|escape}" value="{$v|escape}"/>
 			{/foreach}
@@ -41,15 +41,9 @@
 			data: $(form).serialize(),
 			success: function (data) {
 				$(form).trigger('insert', [ data ]);
-				{{if $tracker_input.insertMode}}
-					$(form).closest('.tab, #appframe, body').find('.map-container')[0].modeManager.switchTo("{{$tracker_input.insertMode|escape}}");
-				{{/if}}
 			},
 			close: function () {
 				$(form).trigger('cancel');
-				{{if $tracker_input.insertMode}}
-					$(form).closest('.tab, #appframe, body').find('.map-container')[0].modeManager.switchTo("{{$tracker_input.insertMode|escape}}");
-				{{/if}}
 			}
 		});
 		return false;
@@ -94,7 +88,7 @@
 					modeManager.addMode({name: newMode = "{{$tpl_module_title}}", controls: [control, new OpenLayers.Control.NavToolbar()]});
 				}
 
-				button = $('<input type="submit" class="btn btn-default btn-sm" />')
+				button = $('<input type="submit"/>')
 					.val($(':submit', form).val())
 					.button()
 					.click(function () {

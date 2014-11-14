@@ -1,13 +1,13 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 /**
  * Handler class for DynamicList
- *
+ * 
  * Letter key: ~w~
  *
  */
@@ -20,7 +20,7 @@ class Tracker_Field_DynamicList extends Tracker_Field_Abstract
 			'w' => array(
 				'name' => tra('Dynamic Items List'),
 				'description' => tra('Dynamically updates a selection list based on linked data from another tracker.'),
-				'help' => 'Dynamic items list',
+				'help' => 'Dynamic items list',				
 				'prefs' => array('trackerfield_dynamiclist'),
 				'tags' => array('advanced'),
 				'default' => 'n',
@@ -29,29 +29,21 @@ class Tracker_Field_DynamicList extends Tracker_Field_Abstract
 						'name' => tr('Tracker ID'),
 						'description' => tr('Tracker to link with'),
 						'filter' => 'int',
-						'legacy_index' => 0,
-						'profile_reference' => 'tracker',
 					),
 					'filterFieldIdThere' => array(
 						'name' => tr('Field ID (Other tracker)'),
 						'description' => tr('Field ID to link with in the other tracker'),
 						'filter' => 'int',
-						'legacy_index' => 1,
-						'profile_reference' => 'tracker_field',
 					),
 					'filterFieldIdHere' => array(
 						'name' => tr('Field ID (This tracker)'),
 						'description' => tr('Field ID to link with in the current tracker'),
 						'filter' => 'int',
-						'legacy_index' => 2,
-						'profile_reference' => 'tracker_field',
 					),
 					'listFieldIdThere' => array(
 						'name' => tr('Listed Field'),
 						'description' => tr('Field ID to be displayed in the drop list.'),
 						'filter' => 'int',
-						'legacy_index' => 3,
-						'profile_reference' => 'tracker_field',
 					),
 					'statusThere' => array(
 						'name' => tr('Status Filter'),
@@ -65,7 +57,6 @@ class Tracker_Field_DynamicList extends Tracker_Field_Abstract
 							'op' => tr('open, pending'),
 							'pc' => tr('pending, closed'),
 						),
-						'legacy_index' => 4,
 					),
 				),
 			),
@@ -86,78 +77,41 @@ class Tracker_Field_DynamicList extends Tracker_Field_Abstract
 	function renderInput($context = array())
 	{
 		// REFACTOR: can't use list-tracker_field_values_ajax.php yet as it doesn't seem to filter
-
-		TikiLib::lib('header')->add_jq_onready(
-			'
-$("input[name=ins_' . $this->getOption('filterFieldIdHere') . '], select[name=ins_' . $this->getOption('filterFieldIdHere') . ']").change(function(e, val) {
+		
+		TikiLib::lib('header')->add_jq_onready('
+$("select[name=ins_' . $this->getOption(2) . ']").change(function(e, val) {
 	$.getJSON(
 		"tiki-tracker_http_request.php",
 		{
-			trackerIdList: ' . $this->getOption('trackerId') . ',
-			fieldlist: ' . $this->getOption('listFieldIdThere') . ',
-			filterfield: ' . $this->getOption('filterFieldIdThere') . ',
-			status: "' . $this->getOption('statusThere') . '",
+			trackerIdList: ' . $this->getOption(0) . ',
+			fieldlist: ' . $this->getOption(3) . ',
+			filterfield: ' . $this->getOption(1) . ',
+			status: "' . $this->getOption(4) . '",
 			mandatory: "' . $this->getConfiguration('isMandatory') . '",
 			item: $(this).val() // We need the field value for the fieldId filterfield for the item $(this).val
 		},
 		function(data, status) {
 			$ddl = $("select[name=' . $this->getInsertId() . ']");
 			$ddl.empty();
-			var v, l;
 			if (data) {
-				$.each( data, function (i,data) {
-					if (data && data.length > 1) {
-						v = data[0];
-						l = data[1];
-					} else {
-						v = ""
-						l = "";
-					}
+				$.each( data, function (i,v) {
 					$ddl.append(
 						$("<option/>")
-							.val(v)
-							.text(l)
+							.attr("value", v)
+							.text(v)
 					);
 				});
 				if (val) {
 					$ddl.val(val);
 				}
 			}
-			if (jqueryTiki.chosen) {
-				$ddl.trigger("chosen:updated");
-			}
-			$ddl.trigger("change");
 		}
 	);
 }).trigger("change", ["' . $this->getConfiguration('value') . '"]);
-		'
-		);
-
+		');
+		
 		return '<select name="' . $this->getInsertId() . '"></select>';
-
+	
 	}
-
-	public function renderInnerOutput($context = array())
-	{
-
-		$definition = Tracker_Definition::get($this->getOption('trackerId'));
-		$field = $definition->getField($this->getOption('listFieldIdThere'));
-
-		if ($field['type'] == 'e' || $field['type'] == 'r') {
-			$item = $this->getItemData();
-			$item['ins_' . $this->getOption('listFieldIdThere')] = array($this->getValue());
-			$field['value'] = $this->getValue();
-
-			$handler = TikiLib::lib('trk')->get_field_handler($field, $item);
-
-			$field = array_merge($field, $handler->getFieldData($item));	// get category field to build it's data arrays
-			$handler = TikiLib::lib('trk')->get_field_handler($field, $item);
-
-			return $handler->renderOutput($context);
-		} else {
-			return parent::renderInnerOutput($context);
-		}
-	}
-
 }
 

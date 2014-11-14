@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_num_submissions_info()
 {
 	return array(
@@ -24,14 +21,10 @@ function module_num_submissions_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_num_submissions($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
-	$artlib = TikiLib::lib('art');
+	global $artlib, $smarty; require_once 'lib/articles/artlib.php';
 	$ranking = $artlib->list_submissions(0, -1, 'created_desc', '', '');
+	
 	$smarty->assign('modNumSubmissions', $ranking["cant"]);
 }

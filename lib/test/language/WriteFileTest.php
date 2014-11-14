@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,9 +7,7 @@
 
 require_once('lib/language/Exception.php');
 require_once('lib/language/WriteFile.php');
-
-use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\vfsStreamFile;
+require_once('vfsStream/vfsStream.php');
 
 class Language_WriteFileTest extends TikiTestCase
 {
@@ -81,13 +79,13 @@ class Language_WriteFileTest extends TikiTestCase
 	public function testWriteStringsToFile_shouldKeepTranslationsEvenIfTheyAreEqualToEnglishString($strings)
 	{
 		$this->parseFile->expects($this->exactly(1))->method('getTranslations')->will(
-			$this->returnValue(
-				array(
-					'Unused string' => 'Some translation',
-					'Used string' => 'Another translation',
-					'Translation is the same as English string' => 'Translation is the same as English string',
-				)
-			)
+						$this->returnValue(
+										array(
+											'Unused string' => 'Some translation',
+											'Used string' => 'Another translation',
+											'Translation is the same as English string' => 'Translation is the same as English string',
+										)
+						)
 		);
 
 		$obj = $this->getMock('Language_WriteFile', array('fileHeader'), array($this->parseFile));
@@ -104,13 +102,13 @@ class Language_WriteFileTest extends TikiTestCase
 	public function testWriteStringsToFile_shouldIgnoreUnusedStrings($strings)
 	{
 		$this->parseFile->expects($this->exactly(1))->method('getTranslations')->will(
-			$this->returnValue(
-				array(
-					'Unused string' => 'Some translation',
-					'Used string' => 'Another translation',
-					'Translation is the same as English string' => 'Translation is the same as English string',
-				)
-			)
+						$this->returnValue(
+										array(
+											'Unused string' => 'Some translation',
+											'Used string' => 'Another translation',
+											'Translation is the same as English string' => 'Translation is the same as English string',
+										)
+						)
 		);
 
 		$obj = $this->getMock('Language_WriteFile', array('fileHeader'), array($this->parseFile));
@@ -127,13 +125,13 @@ class Language_WriteFileTest extends TikiTestCase
 	public function testWriteStringsToFile_shouldOutputFileWhereStringsWasFound($strings)
 	{
 		$this->parseFile->expects($this->exactly(1))->method('getTranslations')->will(
-			$this->returnValue(
-				array(
-					'Unused string' => 'Some translation',
-					'Used string' => 'Another translation',
-					'Translation is the same as English string' => 'Translation is the same as English string',
-				)
-			)
+						$this->returnValue(
+										array(
+											'Unused string' => 'Some translation',
+											'Used string' => 'Another translation',
+											'Translation is the same as English string' => 'Translation is the same as English string',
+										)
+						)
 		);
 
 		$obj = $this->getMock('Language_WriteFile', array('fileHeader'), array($this->parseFile));
@@ -150,15 +148,15 @@ class Language_WriteFileTest extends TikiTestCase
 	public function testWriteStringsToFile_shouldConsiderStringsWithPunctuationInEndASpecialCase($strings)
 	{
 		$this->parseFile->expects($this->exactly(1))->method('getTranslations')->will(
-			$this->returnValue(
-				array(
-					'Unused string' => 'Some translation',
-					'Used string' => 'Another translation',
-					'Translation is the same as English string' => 'Translation is the same as English string',
-					'Login' => 'Another translation',
-					'Add user:' => 'Translation',
-				)
-			)
+						$this->returnValue(
+										array(
+											'Unused string' => 'Some translation',
+											'Used string' => 'Another translation',
+											'Translation is the same as English string' => 'Translation is the same as English string',
+											'Login' => 'Another translation',
+											'Add user:' => 'Translation',
+										)
+						)
 		);
 
 		$obj = $this->getMock('Language_WriteFile', array('fileHeader'), array($this->parseFile));
@@ -179,14 +177,14 @@ class Language_WriteFileTest extends TikiTestCase
 	public function testWriteStringsToFile_shouldProperlyHandleSpecialCharactersInsideStrings($strings)
 	{
 		$this->parseFile->expects($this->exactly(1))->method('getTranslations')->will(
-			$this->returnValue(
-				array(
-					'Unused string' => 'Some translation',
-					'Used string' => 'Another translation',
-					'Translation is the same as English string' => 'Translation is the same as English string',
-					"Congratulations!\n\nYour server can send emails.\n\n" => "Gratulation!\n\nDein Server kann Emails senden.\n\n",
-				)
-			)
+						$this->returnValue(
+										array(
+											'Unused string' => 'Some translation',
+											'Used string' => 'Another translation',
+											'Translation is the same as English string' => 'Translation is the same as English string',
+											"Congratulations!\n\nYour server can send emails.\n\n" => "Gratulation!\n\nDein Server kann Emails senden.\n\n",
+										)
+						)
 		);
 
 		$obj = $this->getMock('Language_WriteFile', array('fileHeader'), array($this->parseFile));

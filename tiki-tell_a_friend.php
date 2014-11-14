@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -58,7 +58,7 @@ if (isset($_REQUEST['send'])) {
 		$emails[] = $email;
 	}
 	foreach ($emails as $email) {
-		$registrationlib = TikiLib::lib('registration');
+		include_once ('lib/registration/registrationlib.php');
 		if (function_exists('validate_email')) {
 			$ok = validate_email($email, $prefs['validateEmail']);
 		} else {
@@ -85,39 +85,33 @@ if (isset($_REQUEST['send'])) {
 	if (!empty($_REQUEST['comment'])) $smarty->assign('comment', $_REQUEST['comment']);
 	if (empty($errors)) {
 		include_once ('lib/webmail/tikimaillib.php');
+		$mail = new TikiMail();
 		$smarty->assign_by_ref('mail_site', $_SERVER['SERVER_NAME']);
+		$mail->setFrom($from);
+		$mail->setHeader("Return-Path", "<$from>");
+		$mail->setHeader("Reply-To", "<$from>");
 		if (isset($_REQUEST['report']) && $_REQUEST['report'] == 'y') {
 			$subject = tra('Report to the webmaster', $prefs['site_language']);
 		} else {
 			$subject = $smarty->fetch('mail/tellAFriend_subject.tpl');
 		}
 
-		// Generate once, unless token is required, in which case, regenrate per-message
-		if ( $prefs['auth_token_tellafriend'] != 'y' || $prefs['auth_token_access'] != 'y' || ! isset($_POST['share_access']) ) {
-			$txt = $smarty->fetch('mail/tellAFriend.tpl');
+		if ( $prefs['auth_token_tellafriend'] == 'y' && $prefs['auth_token_access'] == 'y' && isset($_POST['share_access']) ) {
+			require_once 'lib/auth/tokens.php';
+			$tokenlib = AuthTokens::build($prefs);
+
+			$url_for_friend = $tokenlib->includeToken($url_for_friend, $globalperms->getGroups());
 		}
 
+		$smarty->assign('url_for_friend', $url_for_friend);
+		$txt = $smarty->fetch('mail/tellAFriend.tpl');
+		$mail->setSubject($subject);
+		$mail->setText($txt);
+		$mail->buildMessage();
 		$ok = true;
 		foreach ($emails as $email) {
-			$mail = new TikiMail();
-			$mail->setFrom($from);
-			$mail->setReplyTo($from);
-			$mail->setSubject($subject);
-
-			if ( $prefs['auth_token_tellafriend'] == 'y' && $prefs['auth_token_access'] == 'y' && isset($_POST['share_access']) ) {
-				require_once 'lib/auth/tokens.php';
-				$tokenlib = AuthTokens::build($prefs);
-
-				$url_for_friend = $tokenlib->includeToken($url_for_friend, $globalperms->getGroups());
-				$smarty->assign('url_for_friend', $url_for_friend);
-				$txt = $smarty->fetch('mail/tellAFriend.tpl');
-			}
-
-			$mail->setText($txt);
-
 			$ok = $ok && $mail->send(array($email));
 		}
-
 		if ($ok) {
 			$access->redirect($_REQUEST['url'], tra('Your link was sent.'));
 		} else {

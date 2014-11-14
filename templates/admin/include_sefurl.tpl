@@ -1,26 +1,22 @@
 {* $Id$ *}
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}
-	{tr}See also{/tr} <a class="alert-link" class="rbox-link" href="tiki-admin.php?page=metatags">{tr}Meta tags{/tr}</a>.
+	{tr}See also{/tr} <a class="rbox-link" href="tiki-admin.php?page=metatags">{tr}Meta-tags{/tr}</a>.
 {/remarksbox}
 
 <form class="admin" method="post" action="tiki-admin.php?page=sefurl">
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-                <input type="submit" class="btn btn-primary btn-sm" name="save" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-            </div>
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: right;">
+		<input type="submit" name="save" value="{tr}Change preferences{/tr}" />
+	</div>
 	
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Activate the feature{/tr}</legend>
 		{preference name=feature_sefurl visible="always"}
 
 		{if $httpd eq 'IIS' and !$IIS_UrlRewriteModule}
 			{remarksbox type="warning" title="{tr}Warning{/tr}"}
 			{tr}SEFURL requires the <strong>URL Rewrite module</strong> for IIS. You do not seem to have this module installed.{/tr}
-			{tr}Please see <a class="alert-link" href="http://doc.tiki.org/Windows+Server+Install">Windows Server Install</a> on tiki.org for more information.{/tr}
+			{tr}Please see <a href="http://doc.tiki.org/Windows+Server+Install">Windows Server Install</a> on tiki.org for more information.{/tr}
 			{/remarksbox}
 		{else}
 			{if $configurationFile eq 'missing'}
@@ -36,7 +32,7 @@
 				{/remarksbox}
 			{elseif $configurationFile eq 'unexpected reference' or $configurationFile eq 'unexpected enabled'}
 				{remarksbox type="warning" title="{tr}Warning{/tr}"}
-				{tr _0=$enabledFileName}%0 is not in the expected format.{/tr} {tr}Unable to verify that your URL rewriting configuration is up to date.{/tr} {tr}SEFURL may not work completely or correctly if Tiki URL rewriting configuration is not current.{/tr}<br>
+				{tr _0=$enabledFileName}%0 is not in the expected format.{/tr} {tr}Unable to verify that your URL rewriting configuration is up to date.{/tr} {tr}SEFURL may not work completely or correctly if Tiki URL rewriting configuration is not current.{/tr}<br />
 				{tr _0=$enabledFileName}%0 may simply be outdated.{/tr}
 				{tr _0="<strong>$referenceFileName</strong>" _1="<strong>$enabledFileName</strong>"}To update this file, if it was not customized, copy the %0 file (located in the main directory of your Tiki installation) to %1, overwriting the latter.{/tr}
 				{/remarksbox}
@@ -53,16 +49,9 @@
 				{/remarksbox}
 			{/if}
 		{/if}
-
-		{preference name=feature_canonical_url}
-		<div id="feature_canonical_url_childcontainer">
-			{preference name=feature_canonical_domain}
-			<em>{tr}For example, if the field is left blank, the canonical URL domain is:{/tr}</em> {$base_url_canonical_default}
-		</div>
-
 	</fieldset>		
 	
-	<fieldset class="table">
+	<fieldset class="admin">
 		
 		<legend>{tr}Settings{/tr}</legend>
 		{preference name=feature_sefurl_filter}
@@ -85,14 +74,9 @@
 		{preference name=feature_sefurl_title_article}
 		{preference name=feature_sefurl_title_blog}
 		{preference name=feature_sefurl_tracker_prefixalias}
+		{preference name=feature_canonical_url}
 	</fieldset>
-    <br>{* I cheated. *}
-    
-	<div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="text-center">
-                <input type="submit" class="btn btn-primary btn-sm" name="save" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-            </div>
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: center;padding:1em;">
+		<input type="submit" name="save" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>

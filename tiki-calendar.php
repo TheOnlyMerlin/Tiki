@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,11 +8,11 @@
 $section = 'calendar';
 require_once ('tiki-setup.php');
 
-$calendarlib = TikiLib::lib('calendar');
-$categlib = TikiLib::lib('categ');
+include_once ('lib/calendar/calendarlib.php');
+include_once ('lib/categories/categlib.php');
 include_once ('lib/newsletters/nllib.php');
 
-$headerlib->add_cssfile('themes/base_files/feature_css/calendar.css', 20);
+$headerlib->add_cssfile('css/calendar.css', 20);
 # perms are
 # 	$tiki_p_view_calendar
 # 	$tiki_p_admin_calendar
@@ -422,7 +419,7 @@ foreach ($cell as $w=>$weeks) {
 	}
 }
 //Use 12- or 24-hour clock for times listed in day or week view based on admin and user preferences
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 $user_24hr_clock = $userprefslib->get_user_clock_pref($user);
 
 $hrows = array();
@@ -546,8 +543,7 @@ if ($calendarViewMode['casedefault'] == 'day') {
 	foreach (array_keys($hrows) as $anHour) {
 		for ($i=0, $tmp_count = count($hrows[$anHour]); $i < $tmp_count; $i++) {
 			// setting number of simulaneous events foreach event, so that we can figure out its width without overwriting
-			$hrows[$anHour][$i]['concurrences'] = isset($concurrencies[$hrows[$anHour][$i]['calitemId']]['value']) ?
-				$concurrencies[$hrows[$anHour][$i]['calitemId']]['value'] : null;
+			$hrows[$anHour][$i]['concurrences'] = $concurrencies[$hrows[$anHour][$i]['calitemId']]['value'];
 			// setting duration of the event within the day
 			$hrows[$anHour][$i]['duree'] = $eventHoraires[$eventIndexes[$hrows[$anHour][$i]['calitemId']]]['duree'] * 24;
 			$hrows[$anHour][$i]['left'] = .9 * $tmpVals[$hrows[$anHour][$i]['calitemId']]['offset'] + 10;
@@ -596,7 +592,7 @@ if ($calendarViewMode['casedefault'] == 'day') {
 
 				$dayitems['mins'] = substr($dayitems['time'], 2);
 				$dayitems['top'] = 24 * (($rawhour - $minHourOfDay) + $dayitems['mins'] / 60) + 35;
-				$dayitems['left'] = $zoom * ( 9 + 13 * $wd) ; // [BUG FIX] hollmeer 2012-11-01: a bug here in original with searcing for day's index; original code was: " $zoom * ( 9 + 13 * array_search($wd,$viewdays2) ); " which does not fuction properly if week starting on monday; just take direct $wd index here in all cases as this is just setting the day-columns directly from left to right in all cases
+				$dayitems['left'] = $zoom * ( 9 + 13 * array_search($wd, $viewdays2) );
 				$dayitems['width'] = 12 * $zoom;
 				$hrows[$wd]["$rawhour"][] = $dayitems;
 				$eventHoraires[$wd][$dayitems['calitemId']]['start'] = ($dayitems['time'] < $minHourOfDay . "00") ? str_pad($minHourOfDay . "00", 4, '0', STR_PAD_LEFT) : $dayitems['time'];
@@ -628,7 +624,7 @@ if ($calendarViewMode['casedefault'] == 'day') {
 		foreach ($tmpRes as $val) {
 			foreach ($val as $index=>$evtId) {
 				$concurrencies[$wd][$evtId]['value'] = $maxConcurrency;
-				$startNew = isset($eventHoraires[$wd])? $eventHoraires[$wd][$evtId]['start'] : null;
+				$startNew = $eventHoraires[$wd][$evtId]['start'];
 				foreach ($slots as $index=>$oldEvtId) {
 					if ($oldEvtId != $evtId) {
 						if ($oldEvtId > 0) {
@@ -656,7 +652,7 @@ if ($calendarViewMode['casedefault'] == 'day') {
 	foreach (array_keys($hrows) as $aDay) {
 		foreach (array_keys($hrows[$aDay]) as $anHour) {
 			for ($i=0, $tmp_count = count($hrows[$aDay][$anHour]); $i < $tmp_count; $i++) {
-				if (empty($manyEvents[$aDay]['tooMany']) && $concurrencies[$aDay][$hrows[$aDay][$anHour][$i]['calitemId']]['value'] <= $maxSimultaneousWeekViewEvents) {
+				if (!$manyEvents[$aDay]['tooMany'] && $concurrencies[$aDay][$hrows[$aDay][$anHour][$i]['calitemId']]['value'] <= $maxSimultaneousWeekViewEvents) {
 					$hrows[$aDay][$anHour][$i]['concurrences'] = $concurrencies[$aDay][$hrows[$aDay][$anHour][$i]['calitemId']]['value'];
 					$hrows[$aDay][$anHour][$i]['duree'] = $eventHoraires[$aDay][$hrows[$aDay][$anHour][$i]['calitemId']]['duree'] * 24;
 					$hrows[$aDay][$anHour][$i]['left'] = $hrows[$aDay][$anHour][$i]['left'] + $concurrencies[$aDay][$hrows[$aDay][$anHour][$i]['calitemId']]['offset'];
@@ -798,13 +794,16 @@ $smarty->assign('cookietab', $cookietab);
 
 ask_ticket('calendar');
 
+include_once('tiki-jscalendar.php');
+
 if (!empty($prefs['calendar_fullcalendar']) && $prefs['calendar_fullcalendar'] === 'y') {
-	$headerlib->add_cssfile('vendor_extra/fullcalendar-resourceviews/fullcalendar/fullcalendar.css');
-	$headerlib->add_jsfile('vendor_extra/fullcalendar-resourceviews/fullcalendar/fullcalendar.min.js');
+	$headerlib->add_cssfile('lib/fullcalendar/fullcalendar.css');
+	$headerlib->add_jsfile('lib/fullcalendar/fullcalendar.min.js');
 	$smarty->assign('minHourOfDay', $minHourOfDay);
 	$smarty->assign('maxHourOfDay', $maxHourOfDay);
 	if ($prefs['feature_wysiwyg'] == 'y' && $prefs['wysiwyg_default'] == 'y') {
-		TikiLib::lib('wysiwyg')->setUpEditor(false, 'editwiki');		// init ckeditor if default editor
+		include_once('lib/ckeditor_tiki/wysiwyglib.php');
+		$wysiwyglib->setUpEditor(false, 'editwiki');		// init ckeditor if default editor
 	}
 }
 

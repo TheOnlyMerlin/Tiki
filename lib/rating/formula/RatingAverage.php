@@ -1,9 +1,11 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
+
+require_once 'Math/Formula/Function.php';
 
 class Tiki_Formula_Function_RatingAverage extends Math_Formula_Function
 {
@@ -56,7 +58,7 @@ class Tiki_Formula_Function_RatingAverage extends Math_Formula_Function
 			}
 		}
 
-		$ratinglib = TikiLib::lib('rating');
+		global $ratinglib; require_once 'lib/rating/ratinglib.php';
 		return $ratinglib->collect($type, $object, $this->mode, $params);
 	}
 }

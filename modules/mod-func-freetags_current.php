@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,28 +11,22 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_freetags_current_info()
 {
 	return array(
 		'name' => tra('Wiki Page Tags'),
-		'description' => tra('Displays current tags on wiki pages and enables adding tags if permissions allow.'),
+		'description' => tra('Displays current freetags on wiki pages and enables to add tags if permissions allow.'),
 		'prefs' => array('feature_freetags'),
 		'params' => array()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_freetags_current($mod_reference, $module_params)
 {
-	global $user, $page;
-	$smarty = TikiLib::lib('smarty');
-	$freetaglib = TikiLib::lib('freetag');
+	global $user, $page, $smarty;
+	global $freetaglib;
+
+	include_once 'lib/freetag/freetaglib.php';
 
 	$objectperms = Perms::get(array('type' => 'wiki page', 'object' => $page));
 	if (! empty($page) && $objectperms->view) {

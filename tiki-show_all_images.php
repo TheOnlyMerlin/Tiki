@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -43,7 +40,7 @@ if (!isset($_REQUEST['view'])) {
 	die;
 } elseif ($_REQUEST['view'] == 'image') {
 	include_once ("tiki-setup.php");
-	$imagegallib = TikiLib::lib('imagegal');
+	include_once ("lib/imagegals/imagegallib.php");
 	if ($prefs['feature_galleries'] != 'y') {
 		header("HTTP/1.0 404 Not Found");
 		die;

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,7 +13,7 @@ class WikiParser_PluginArgumentParser
 		$data = TikiLib::lib("parser")->unprotectSpecialChars($data, true);	// need to get &quot; converted back to " etc
 
 		// Handle parameters one by one
-		while (is_string($data) && false !== $pos = strpos($data, '=') ) {
+		while ( false !== $pos = strpos($data, '=') ) {
 			$name = substr($data, 0, $pos);
 			$name = ltrim($name, ', ');
 			$name = trim($name);

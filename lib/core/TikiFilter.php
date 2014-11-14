@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -30,10 +30,6 @@ class TikiFilter
 			return new Zend_Filter_Digits;
 		case 'int':
 			return new Zend_Filter_Int;
-		case 'isodate':
-			return new TikiFilter_IsoDate;
-		case 'isodatetime':
-			return new TikiFilter_IsoDate('Y-m-d H:i:s');
 		case 'username':
 		case 'groupname':
 		case 'pagename':
@@ -55,7 +51,6 @@ class TikiFilter
 		case 'purifier':
 			return new TikiFilter_HtmlPurifier('temp/cache');
 		case 'wikicontent':
-			return new TikiFilter_WikiContent;
 		case 'rawhtml_unsafe':
 		case 'none':
 			return new TikiFilter_RawUnsafe;

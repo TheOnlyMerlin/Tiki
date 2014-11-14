@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -23,11 +23,6 @@ class Search_Expr_Token implements Search_Expr_Interface
 	function setType($type)
 	{
 		$this->type = $type;
-	}
-
-	function getType()
-	{
-		return $this->type;
 	}
 
 	function setField($field = 'global')
@@ -59,11 +54,6 @@ class Search_Expr_Token implements Search_Expr_Interface
 	function getField()
 	{
 		return $this->field;
-	}
-
-	function traverse($callback)
-	{
-		return call_user_func($callback, $callback, $this, array());
 	}
 }
 

@@ -1,58 +1,27 @@
+{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}To configure your trackers, select "Trackers" in the application menu, or{/tr} <a class="rbox-link" href="tiki-list_trackers.php">{tr}Click Here{/tr}</a>.{/remarksbox}
+
 <form action="tiki-admin.php?page=trackers" method="post">
-
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">            
-			<a role="button" class="btn btn-default btn-sm" href="tiki-list_trackers.php" title="{tr}List{/tr}">
-				{icon name="list"} {tr}Trackers{/tr}
-			</a>
-			<div class="pull-right">
-                <input type="submit" class="btn btn-primary btn-sm" name="trkset" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-            </div>
-        </div>
-    </div>
-
-    {tabset}
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" name="trkset" value="{tr}Change preferences{/tr}" />
+	</div>
+{tabset}
 	{tab name="{tr}Settings{/tr}"}
-        <h2>{tr}Settings{/tr}</h2>
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Activate the feature{/tr}</legend>
 		{preference name=feature_trackers visible="always"}
 	</fieldset>
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Tracker settings{/tr}</legend>
 		{preference name=user_selector_threshold}
 		{preference name=user_selector_realnames_tracker}
 		{preference name=feature_reports}
 		{preference name="tracker_remote_sync"}
 		{preference name="tracker_refresh_itemlink_detail"}
-		{preference name="tracker_clone_item"}
-		{preference name="wikiplugin_insert"}
-		<div class="adminoptionboxchild" id="wikiplugin_insert_childcontainer">
-			{preference name=tracker_insert_allowed}
-		</div>
-		{preference name=allocate_memory_tracker_export_items}
-		{preference name=allocate_time_tracker_export_items}
-		{preference name=allocate_time_tracker_clear_items}
-
-		{preference name=ajax_inline_edit}
-		<div class="adminoptionboxchild" id="ajax_inline_edit_childcontainer">
-			{preference name=ajax_inline_edit_trackerlist}
-		</div>
-		{preference name=tracker_change_field_type}
-		{preference name=tracker_show_comments_below}
-		{preference name=tracker_legacy_insert}
 	</fieldset>
 
 	<fieldset class="admin">
-		<legend>{tr}Linked wiki pages{/tr}</legend>
-		{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Wiki pages are linked to tracker items, and their page names to tracker fields, via the tiki.wiki.linkeditem and tiki.wiki.linkedfield relations. You need to be familiar with the Relations tracker field or use the outputwiki option in the TRACKER plugin to make use of these features.{/tr}{/remarksbox}
-		{preference name=tracker_wikirelation_synctitle}
-		{preference name=tracker_wikirelation_redirectpage}
-	</fieldset>
-
-	<fieldset class="table">
 	  <legend>{tr}Tracker attachment preferences{/tr}</legend>
-		  <table class="table">
+		  <table class="admin">
 			<tr>
 			  <td>
 				{tr}Use database to store files:{/tr}
@@ -67,7 +36,7 @@
 				{tr}Use a directory to store files:{/tr}</td>
 			  <td>
 				<input type="radio" name="t_use_db" value="n" {if $prefs.t_use_db eq 'n'}checked="checked"{/if}/> {tr}Path:{/tr}
-				<br>
+				<br />
 				<input type="text" name="t_use_dir" value="{$prefs.t_use_dir|escape}" size="50" />
 			  </td>
 			</tr>
@@ -77,8 +46,7 @@
 
 	{/tab}
 	{tab name="{tr}Plugins{/tr}"}
-        <h2>{tr}Plugins{/tr}</h2>
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Plugins{/tr}</legend>
 		{preference name=wikiplugin_tracker}
 		{preference name=wikiplugin_trackerlist}
@@ -95,12 +63,10 @@
 		{preference name=wikiplugin_prettytrackerviews}
 		{preference name=wikiplugin_trackerpasscode}
 		{preference name=wikiplugin_trackeritemcopy}
-		{preference name=wikiplugin_trackerquerytemplate}
 	</fieldset>
 	{/tab}
 	{tab name="{tr}Field Types{/tr}"}
-        <h2>{tr}Field Types{/tr}</h2>
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Field Types{/tr}</legend>
 		{foreach from=$fieldPreferences item=name}
 			{preference name=$name}
@@ -109,28 +75,23 @@
 	
 	{/tab}
 {/tabset}
-	<div class="row">
-        <div class="form-group col-lg-12 clearfix">            
-			<div class="text-center">
-                <input type="submit" class="btn btn-primary btn-sm" name="trkset" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-            </div>
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: center">
+		<input type="submit" name="trkset" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>
 
 
-<fieldset class="table">
+<fieldset class="admin">
   <legend>{tr}Tracker attachments{/tr}</legend>
-    <div class="table">
+    <div class="admin">
 {if $attachements}
       <form action="tiki-admin.php?page=trackers" method="post">
         <input type="text" name="find" value="{$find|escape}" />
-        <input type="submit" class="btn btn-default btn-sm" name="action" value="{tr}Find{/tr}" />
+        <input type="submit" name="action" value="{tr}Find{/tr}" />
       </form>
 {/if}
-
-      <div class="table-responsive">
-      <table class="table normal">
+      {cycle values="odd,even" print=false}
+      <table class="normal">
         <tr>
           <th>
             <a href="tiki-admin.php?page=trackers&amp;sort_mode=user_{if $sort_mode eq 'attId'}asc{else}desc{/if}">{tr}ID{/tr}</a>
@@ -181,7 +142,6 @@
 			{norecords _colspan=10}
         {/section}
       </table>
-      </div>
       
 		{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
     </div>
@@ -191,13 +151,13 @@
         <td>
           <form action="tiki-admin.php?page=trackers" method="post">
             <input type="hidden" name="all2db" value="1" />
-            <input type="submit" class="btn btn-default btn-sm" name="action" value="{tr}Change all to db{/tr}" />
+            <input type="submit" name="action" value="{tr}Change all to db{/tr}" />
           </form>
         </td>
         <td>
           <form action="tiki-admin.php?page=trackers" method="post">
             <input type="hidden" name="all2file" value="1" />
-            <input type="submit" class="btn btn-default btn-sm" name="action" value="{tr}Change all to file{/tr}" />
+            <input type="submit" name="action" value="{tr}Change all to file{/tr}" />
           </form>
         </td>
       </tr>

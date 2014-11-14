@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -21,11 +21,8 @@
  *       HTMLPurifier_Config::create()
  */
 
-/**
- * @param $html
- * @param null $config
- * @return mixed
- */
+require_once('lib/htmlpurifier/HTMLPurifier.auto.php');
+
 function HTMLPurifier($html, $config = null)
 {
 	static $purifier = false;
@@ -38,9 +35,6 @@ function HTMLPurifier($html, $config = null)
 	return $purifier->purify($html, $config);
 }
 
-/**
- * @return mixed
- */
 function getHTMLPurifierTikiConfig()
 {
 	global $tikipath, $prefs;
@@ -69,36 +63,36 @@ function getHTMLPurifierTikiConfig()
 
 			// Add map tag
 			$map = $def->addElement(
-				'map', // name
-				'Block', // content set
-				'Flow', // allowed children
-				'Common', // attribute collection
-				array( // attributes
-					'name' => 'CDATA',
-					'id' => 'ID',
-					'title' => 'CDATA',
-				)
+							'map', // name
+							'Block', // content set
+							'Flow', // allowed children
+							'Common', // attribute collection
+							array( // attributes
+								'name' => 'CDATA',
+								'id' => 'ID',
+								'title' => 'CDATA',
+							)
 			);
 			$map->excludes = array('map' => true);
 
 			// Add area tag
 			$area = $def->addElement(
-				'area', // name
-				'Block', // content set
-				'Empty', // don't allow children
-				'Common', // attribute collection
-				array( // attributes
-					'name' => 'CDATA',
-					'id' => 'ID',
-					'alt' => 'Text',
-					'coords' => 'CDATA',
-					'accesskey' => 'Character',
-					'nohref' => new HTMLPurifier_AttrDef_Enum(array('nohref')),
-					'href' => 'URI',
-					'shape' => new HTMLPurifier_AttrDef_Enum(array('rect','circle','poly','default')),
-					'tabindex' => 'Number',
-					'target' => new HTMLPurifier_AttrDef_Enum(array('_blank','_self','_target','_top'))
-				)
+							'area',	// name
+							'Block', // content set
+							'Empty', // don't allow children
+							'Common', // attribute collection
+							array( // attributes
+								'name' => 'CDATA',
+								'id' => 'ID',
+								'alt' => 'Text',
+								'coords' => 'CDATA',
+								'accesskey' => 'Character',
+								'nohref' => new HTMLPurifier_AttrDef_Enum(array('nohref')),
+								'href' => 'URI',
+								'shape' => new HTMLPurifier_AttrDef_Enum(array('rect','circle','poly','default')),
+								'tabindex' => 'Number',
+								'target' => new HTMLPurifier_AttrDef_Enum(array('_blank','_self','_target','_top'))
+							)
 			);
 			$area->excludes = array('area' => true);
 		}

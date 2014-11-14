@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,12 +9,10 @@ class Search_GlobalSource_AdvancedRatingSource implements Search_GlobalSource_In
 {
 	private $ratinglib;
 	private $fields = null;
-	private $recalculate = false;
 
-	function __construct($recalculate = false)
+	function __construct()
 	{
 		$this->ratinglib = TikiLib::lib('rating');
-		$this->recalculate = $recalculate;
 	}
 
 	function getProvidedFields()
@@ -38,7 +36,7 @@ class Search_GlobalSource_AdvancedRatingSource implements Search_GlobalSource_In
 
 	function getData($objectType, $objectId, Search_Type_Factory_Interface $typeFactory, array $data = array())
 	{
-		$ratings = $this->ratinglib->obtain_ratings($objectType, $objectId, $this->recalculate);
+		$ratings = $this->ratinglib->obtain_ratings($objectType, $objectId);
 
 		$data = array();
 

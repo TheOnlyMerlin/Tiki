@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,10 +15,8 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 
 function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_langs='', $with_title='y', $title='' )
 {
-	global $prefs;
-	$wikilib = TikiLib::lib('wiki');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $prefs, $tikilib, $wikilib, $smarty;
+	require_once('lib/wiki/wikilib.php');
 
 	$sefurl = $prefs['feature_sefurl'] == 'y';
 
@@ -33,30 +31,30 @@ function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_lan
 	}
 	switch ($type) {
 		case 'wiki':
-			return TikiLib::tikiUrlOpt($wikilib->sefurl($source, $with_next, $all_langs));
+			return $wikilib->sefurl($source, $with_next, $all_langs);
 
 		case 'blog':
 			$href = $sefurl ? "blog$source" : "tiki-view_blog.php?blogId=$source";
-			break;
+						break;
 
 		case 'blogpost':
 			$href = $sefurl ? "blogpost$source" : "tiki-view_blog_post.php?postId=$source";
-			break;
+						break;
 		case 'calendar':
 			$href = $sefurl ? "cal$source" : "tiki-calendar.php?calIds[]=$source";
-			break;
+						break;
 
 		case 'gallery':
 			$href = 'tiki-browse_gallery.php?galleryId='. $source;
-			break;
+						break;
+
+		case 'videogallery':
+			$href = 'tiki-browse_video_gallery.php?galleryId='. $source;
+						break;
 
 		case 'article':
 			$href = $sefurl ? "article$source" : "tiki-read_article.php?articleId=$source";
-			break;
-
-		case 'topic':
-			$href = "tiki-view_articles.php?topic=$source";
-			break;
+						break;
 
 		case 'file':
 		case 'thumbnail':
@@ -79,11 +77,11 @@ function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_lan
 				$href = $sefurl ? "$prefix$source" : "tiki-download_file.php?fileId=$source$suffix";
 			}
 
-			break;
+						break;
 
 		case 'draft':
 			$href = 'tiki-download_file.php?fileId='. $source.'&amp;draft';
-			break;
+						break;
 
 		case 'tracker item':
 			$type = 'trackeritem';
@@ -95,71 +93,60 @@ function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_lan
 				$replacementpage = $trklib->get_trackeritem_pagealias($source);
 			}
 			if ($replacementpage) {
-				return TikiLib::tikiUrlOpt($wikilib->sefurl($replacementpage, $with_next, $all_langs));
+				return $wikilib->sefurl($replacementpage, $with_next, $all_langs);
 			} else {
 				$href = 'tiki-view_tracker_item.php?itemId='. $source;
 			}
-			break;
+						break;
 
 		case 'tracker':
-			if ($source) {
-				$href = 'tiki-view_tracker.php?trackerId=' . $source;
-			} else {
-				$href = 'tiki-list_trackers.php';
-			}
-			break;
+			$href = 'tiki-view_tracker.php?trackerId='.$source;
+						break;
 
 		case 'filegallery':
 		case 'file gallery':
 			$href = 'tiki-list_file_gallery.php?galleryId='.$source;
-			break;
+						break;
 
 		case 'forum':
 			$href = $sefurl ? "forum$source" : 'tiki-view_forum.php?forumId='.$source;
-			break;
+						break;
 
 		case 'forumthread':
-		case 'forum post':	// used in unified search getSupportedTypes()
+		case 'forum post':	// unused?
 			$href = $sefurl ? "forumthread$source" : 'tiki-view_forum_thread.php?comments_parentId='.$source;
-			break;
+						break;
 
 		case 'image':
 			$href = 'tiki-browse_image.php?imageId='.$source;
-			break;
+						break;
 
 		case 'sheet':
 			$href = $sefurl ? "sheet$source" : "tiki-view_sheets.php?sheetId=$source";
-			break;
+						break;
 
 		case 'category':
 			$href = $sefurl ? "cat$source": "tiki-browse_categories.php?parentId=$source";
-			break;
+			$with_title='n';
+						break;
 
 		case 'freetag':
 			$href = "tiki-browse_freetags.php?tag=" . urlencode($source);
-			break;
-
-		case 'newsletter':
-			$href = "tiki-newsletters.php?nlId=" . urlencode($source);
-			break;
-
-		case 'survey':
-			$href = "tiki-take_survey.php?surveyId=" . urlencode($source);
-			break;
+						break;
 
 		default:
 			$href = $source;
-			break;
+						break;
 	}
 
-	if ($with_next && $with_title != 'y') {
+	if ($with_next) {
 		$href .= '&amp;';
 	}
 
 	if ($prefs['feature_sefurl'] == 'y' && $smarty) {
 		include_once('tiki-sefurl.php');
-		return TikiLib::tikiUrlOpt(filter_out_sefurl($href, $type, $title, $with_next, $with_title));
+		return filter_out_sefurl($href, $type, $title, $with_next, $with_title);
 	} else {
-		return TikiLib::tikiUrlOpt($href);
+		return $href;
 	}
 }

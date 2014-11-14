@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -115,16 +112,16 @@ if (((isset($_REQUEST["addbatch"]) && isset($_FILES['batch_subscription'])) || (
 			die;
 		}
 	} else if (isset($_REQUEST["importPage"])) {
-
+		
 		$emails = $nllib->get_emails_from_page($_REQUEST['wikiPageName']);
-
+		
 		if (!$emails) {
 			$smarty->assign('msg', tra('Error importing from wiki page: ') . $_REQUEST['wikiPageName']);
 			$smarty->display('error.tpl');
 			die;
 		}
 	}
-
+	
 	foreach ($emails as $email) {
 		$email = trim($email);
 		if (empty($email)) continue;
@@ -149,11 +146,6 @@ if (isset($_REQUEST["addincluded"]) && isset($_REQUEST['included']) && $_REQUEST
 if (isset($_REQUEST["addPage"]) && !empty($_REQUEST['wikiPageName'])) {
 	check_ticket('admin-nl-subsriptions');
 	$nllib->add_page($_REQUEST["nlId"], $_REQUEST['wikiPageName'], empty($_REQUEST['noConfirmEmail']) ? 'y' : 'n', empty($_REQUEST['noSubscribeEmail']) ? 'y' : 'n');
-}
-
-if (isset($_REQUEST["addPage"]) || isset($_REQUEST["addPage"]) || isset($_REQUEST["addincluded"]) ||
-		isset($_REQUEST["addgroup"]) || isset($_REQUEST["addbatch"]) || isset($_REQUEST["add"])) {
-	$cookietab = 1;
 }
 
 if (isset($_REQUEST['export'])) {
@@ -232,13 +224,6 @@ $smarty->assign('nb_pages', $pages['cant']);
 $groups = $userlib->list_all_groups();
 $smarty->assign_by_ref('groups', $groups);
 $users = $userlib->list_all_users();
-foreach ($channels['data'] as $aUser) {
-	foreach ($users as $iId => $sEmail) {
-		if ($aUser['email'] === $sEmail) {
-			unset($users[$iId]);
-		}
-	}
-}
 $smarty->assign_by_ref('users', $users);
 $newsletters = $nllib->list_newsletters(0, -1, "created_desc", false, '', '', 'n');
 $smarty->assign_by_ref('newsletters', $newsletters['data']);

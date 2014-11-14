@@ -1,21 +1,8 @@
 {* $Id$ *}
-<div class="t_navbar">
-	{if $tiki_p_edit_article eq 'y' or $tiki_p_admin eq 'y' or $tiki_p_admin_cms eq 'y'}
-		{button href="tiki-edit_article.php" _text="{tr}New Article{/tr}"}
-	{/if}
-	{if $prefs.feature_submissions == 'y' && $tiki_p_edit_submission == "y" && $tiki_p_edit_article neq 'y' && $tiki_p_admin neq 'y' && $tiki_p_admin_cms neq 'y'}
-		{button href="tiki-edit_submission.php" _text="{tr}New Submission{/tr}"}
-	{/if}		
-	{if $tiki_p_read_article eq 'y' or $tiki_p_articles_read_heading eq 'y' or $tiki_p_admin eq 'y' or $tiki_p_admin_cms eq 'y'}
-	{button href="tiki-view_articles.php" _text="{tr}View Articles{/tr}"}
-	{/if}
-	{if $prefs.feature_submissions == 'y' && ($tiki_p_approve_submission == "y" || $tiki_p_remove_submission == "y" || $tiki_p_edit_submission == "y")}
-		{button href="tiki-list_submissions.php" _text="{tr}View Submissions{/tr}"}
-	{/if}
-</div>
+
 {if $ispublished eq 'n' && $tiki_p_edit_article eq 'y'}
 	{remarksbox type='errors' title='{tr}Not Published{/tr}'}
-	{tr}This article is currently unpublished and visible only to editors.{/tr}
+	{tr}This Article is currently not published and only visible by Editors{/tr}
 	{/remarksbox}
 {/if}
 

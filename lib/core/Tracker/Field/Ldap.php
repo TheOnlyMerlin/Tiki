@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -30,19 +30,16 @@ class Tracker_Field_Ldap extends Tracker_Field_Abstract
 						'description' => tr('LDAP filter, can contain the %field_name% placeholder to be replaced with the current field\'s name'),
 						'example' => '(&(mail=%field_name%)(objectclass=posixaccount))',
 						'filter' => 'none',
-						'legacy_index' => 0,
 					),
 					'field' => array(
 						'name' => tr('Field'),
 						'description' => tr('Field name returned by LDAP'),
 						'filter' => 'text',
-						'legacy_index' => 1,
 					),
 					'dsn' => array(
 						'name' => tr('DSN'),
 						'description' => tr('Data source name registered in Tiki'),
 						'filter' => 'text',
-						'legacy_index' => 2,
 					),
 				),
 			),
@@ -51,15 +48,15 @@ class Tracker_Field_Ldap extends Tracker_Field_Abstract
 
 	function getFieldData(array $requestData = array())
 	{
-		if ($this->getOption('dsn')) {
+		if ($this->getOption(2)) {
 			$adminlib = TikiLib::lib('admin');
 			$ldaplib = TikiLib::lib('ldap');
 
 			// Retrieve DSN
-			$info_ldap = $adminlib->get_dsn_from_name($this->getOption('dsn'));
+			$info_ldap = $adminlib->get_dsn_from_name($this->getOption(2));
 
 			if ($info_ldap) {
-				$ldap_filter = $this->getOption('filter');
+				$ldap_filter = $this->getOption(0);
 
 				// Replace %field_name% by real value
 				preg_match('/%([^%]+)%/', $ldap_filter, $ldap_filter_field_names);
@@ -74,7 +71,7 @@ class Tracker_Field_Ldap extends Tracker_Field_Abstract
 
 						// Get LDAP field value
 						return array(
-							'value' => $ldaplib->get_field($info_ldap['dsn'], $ldap_filter, $this->getOption('field')),
+							'value' => $ldaplib->get_field($info_ldap['dsn'], $ldap_filter, $this->getOption(1)),
 						);
 					}
 				}

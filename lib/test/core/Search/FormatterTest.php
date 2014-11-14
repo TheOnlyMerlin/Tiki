@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -14,10 +14,10 @@ class Search_FormatterTest extends PHPUnit_Framework_TestCase
 		$formatter = new Search_Formatter($plugin);
 
 		$output = $formatter->format(
-			array(
-				array('object_type' => 'wiki page', 'object_id' => 'HomePage'),
-				array('object_type' => 'wiki page', 'object_id' => 'SomePage'),
-			)
+						array(
+							array('object_type' => 'wiki page', 'object_id' => 'HomePage'),
+							array('object_type' => 'wiki page', 'object_id' => 'SomePage'),
+						)
 		);
 
 		$expect = <<<OUT
@@ -38,18 +38,18 @@ OUT;
 		$formatter = new Search_Formatter($plugin);
 
 		$output = $formatter->format(
-			array(
-				array(
-					'object_type' => 'wiki page',
-					'object_id' => 'HomePage',
-					'modification_date' => strtotime('2010-10-10 10:10:10')
-				),
-				array(
-					'object_type' => 'wiki page',
-					'object_id' => 'SomePage',
-					'modification_date' => strtotime('2011-11-11 11:11:11')
-				),
-			)
+						array(
+							array(
+								'object_type' => 'wiki page', 
+								'object_id' => 'HomePage', 
+								'modification_date' => strtotime('2010-10-10 10:10:10')
+							),
+							array(
+								'object_type' => 'wiki page', 
+								'object_id' => 'SomePage', 
+								'modification_date' => strtotime('2011-11-11 11:11:11')
+							),
+						)
 		);
 
 		$expect = <<<OUT
@@ -67,10 +67,10 @@ OUT;
 		$formatter = new Search_Formatter($plugin);
 
 		$output = $formatter->format(
-			array(
-				array('object_type' => 'wiki page', 'object_id' => 'HomePage'),
-				array('object_type' => 'wiki page', 'object_id' => 'SomePage'),
-			)
+						array(
+							array('object_type' => 'wiki page', 'object_id' => 'HomePage'),
+							array('object_type' => 'wiki page', 'object_id' => 'SomePage'),
+						)
 		);
 
 		$expect = <<<OUT
@@ -104,10 +104,10 @@ OUT;
 		$formatter = new Search_Formatter($plugin);
 
 		$output = $formatter->format(
-			array(
-				array('object_type' => 'wiki page', 'object_id' => 'HomePage'),
-				array('object_type' => 'wiki page', 'object_id' => 'SomePage'),
-			)
+						array(
+							array('object_type' => 'wiki page', 'object_id' => 'HomePage'),
+							array('object_type' => 'wiki page', 'object_id' => 'SomePage'),
+						)
 		);
 
 		$expect = <<<OUT
@@ -129,10 +129,10 @@ OUT;
 		$formatter = new Search_Formatter($plugin);
 
 		$output = $formatter->format(
-			array(
-				array('object_type' => 'wiki page', 'object_id' => 'HomePage'),
-				array('object_type' => 'wiki page', 'object_id' => 'SomePage'),
-			)
+						array(
+							array('object_type' => 'wiki page', 'object_id' => 'HomePage'),
+							array('object_type' => 'wiki page', 'object_id' => 'SomePage'),
+						)
 		);
 
 		$expect = <<<OUT
@@ -155,10 +155,10 @@ OUT;
 		$formatter->addSubFormatter('object_id', new Search_Formatter_Plugin_WikiTemplate("{display name=object_id}\n{display name=description default=None}"));
 
 		$output = $formatter->format(
-			array(
-				array('object_type' => 'wiki page', 'object_id' => 'HomePage'),
-				array('object_type' => 'wiki page', 'object_id' => 'SomePage', 'description' => 'About'),
-			)
+						array(
+							array('object_type' => 'wiki page', 'object_id' => 'HomePage'),
+							array('object_type' => 'wiki page', 'object_id' => 'SomePage', 'description' => 'About'),
+						)
 		);
 
 		$expect = <<<OUT
@@ -177,20 +177,19 @@ OUT;
 
 	function testPaginationInformationProvided()
 	{
-		$this->markTestSkipped('Template issues in this context.');
 		$plugin = new Search_Formatter_Plugin_SmartyTemplate(dirname(__FILE__).'/paginate.tpl');
 
 		$formatter = new Search_Formatter($plugin);
 		$output = $formatter->format(
-			new Search_ResultSet(
-				array(
-					array('object_type' => 'wiki page', 'object_id' => 'HomePage'),
-					array('object_type' => 'wiki page', 'object_id' => 'SomePage', 'description' => 'About'),
-				),
-				22,
-				20,
-				10
-			)
+						new Search_ResultSet(
+										array(
+											array('object_type' => 'wiki page', 'object_id' => 'HomePage'),
+											array('object_type' => 'wiki page', 'object_id' => 'SomePage', 'description' => 'About'),
+										), 
+										22, 
+										20, 
+										10
+						)
 		);
 
 		$this->assertContains('>1<', $output);
@@ -201,27 +200,25 @@ OUT;
 
 	function testSpecifyDataSource()
 	{
-		$searchResult = Search_ResultSet::create(array(
+		$searchResult = array(
 			array('object_type' => 'wiki page', 'object_id' => 'HomePage'),
 			array('object_type' => 'wiki page', 'object_id' => 'SomePage'),
-		));
+		);
 		$withData = array(
 			array('object_type' => 'wiki page', 'object_id' => 'HomePage', 'description' => 'ABC'),
 			array('object_type' => 'wiki page', 'object_id' => 'SomePage', 'description' => 'DEF'),
 		);
 
 		$source = $this->getMock('Search_Formatter_DataSource_Interface');
-		$source->expects($this->any())
-			->method('getData')
-			->will($this->returnCallback(function ($entry, $field) use (& $withData) {
-				$this->assertEquals('description', $field);
-				return array_shift($withData);
-			}));
+		$source->expects($this->once())
+			->method('getInformation')
+			->with($this->equalTo(Search_ResultSet::create($searchResult)), $this->equalTo(array('object_id', 'description')))
+			->will($this->returnValue(Search_ResultSet::create($withData)));
 
 		$plugin = new Search_Formatter_Plugin_WikiTemplate("* {display name=object_id} ({display name=description})\n");
 
 		$formatter = new Search_Formatter($plugin);
-		$searchResult->applyTransform(new Search_Formatter_Transform_DynamicLoader($source));
+		$formatter->setDataSource($source);
 
 		$output = $formatter->format($searchResult);
 
@@ -243,23 +240,23 @@ OUT;
 		$formatter = new Search_Formatter($plugin);
 
 		$output = $formatter->format(
-			array(
-				array(
-					'object_type' => 'wiki page',
-					'object_id' => 'HomePage',
-					'title' => 'Home'
-				),
-				array(
-					'object_type' => 'wiki page',
-					'object_id' => 'Some Page',
-					'title' => 'Test'
-				),
-			)
+						array(
+							array(
+								'object_type' => 'wiki page', 
+								'object_id' => 'HomePage', 
+								'title' => 'Home'
+							),
+							array(
+								'object_type' => 'wiki page', 
+								'object_id' => 'Some Page', 
+								'title' => 'Test'
+							),
+						)
 		);
 
 		$expect = <<<OUT
-* ~np~<a href="HomePage" class="" title="Home" data-type="wiki page" data-object="HomePage">Home</a>~/np~
-* ~np~<a href="Some+Page" class="" title="Test" data-type="wiki page" data-object="Some Page">Test</a>~/np~
+* ~np~<a href="HomePage" class="" data-type="wiki page" data-object="HomePage">Home</a>~/np~
+* ~np~<a href="Some+Page" class="" data-type="wiki page" data-object="Some Page">Test</a>~/np~
 
 OUT;
 		$this->assertEquals($expect, $output);
@@ -276,45 +273,45 @@ OUT;
 		$formatter->addSubFormatter('object_id', new Search_Formatter_Plugin_WikiTemplate("{display name=object_id format=objectlink}"));
 
 		$output = $formatter->format(
-			array(
-				array(
-					'object_type' => 'wiki page',
-					'object_id' => 'HomePage'
-				),
-			)
+						array(
+							array(
+								'object_type' => 'wiki page', 
+								'object_id' => 'HomePage'
+							),
+						)
 		);
 
 		$expect = <<<OUT
 <div>~np~<table>
 	<caption>Count: 1</caption>
 	<tr><th>Object</th><th>Type</th></tr>
-	<tr><td><a href="HomePage" class="" title="HomePage" data-type="wiki page" data-object="HomePage">HomePage</a></td><td>wiki page</td></tr>
+	<tr><td><a href="HomePage" class="" data-type="wiki page" data-object="HomePage">HomePage</a></td><td>wiki page</td></tr>
 </table>
 ~/np~</div>
 OUT;
 		$this->assertXmlStringEqualsXmlString($expect, "<div>$output</div>");
 	}
-
+	
 	function testHighlightRequested()
 	{
 		$plugin = new Search_Formatter_Plugin_WikiTemplate('{display name=highlight}');
 
 		$resultSet = new Search_ResultSet(
-			array(
-				array(
-					'object_type' => 'wiki page',
-					'object_id' => 'HomePage',
-					'content' => 'Hello World'
-				),
-				array(
-					'object_type' => 'wiki page',
-					'object_id' => 'SomePage',
-					'content' => 'Test'
-				),
-			),
-			22,
-			20,
-			10
+						array(
+							array(
+								'object_type' => 'wiki page', 
+								'object_id' => 'HomePage', 
+								'content' => 'Hello World'
+							),
+							array(
+								'object_type' => 'wiki page', 
+								'object_id' => 'SomePage', 
+								'content' => 'Test'
+							),
+						), 
+						22, 
+						20, 
+						10
 		);
 		$resultSet->setHighlightHelper(new Search_FormatterTest_HighlightHelper);
 

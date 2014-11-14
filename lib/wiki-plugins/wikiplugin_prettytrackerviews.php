@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -10,7 +10,7 @@ function wikiplugin_prettytrackerviews_info()
 {
 	return array(
 		'name' => tra('Pretty Tracker View Tracking'),
-		'documentation' => tra('PluginPrettyTrackerViews'),
+		'documentation' => tra('PluginPrettyTrackerViews'),			
 		'description' => tra('Stores tiki.tracker.pretty.views attribute for trackeritem'),
 		'prefs' => array('wikiplugin_prettytrackerviews', 'feature_trackers'),
 		'defaultfilter' => 'text',
@@ -42,8 +42,7 @@ function wikiplugin_prettytrackerviews_info()
 				'required' => true,
 				'name' => tra('Item ID'),
 				'description' => tra('Set to ID of tracker item'),
-				'default' => '',
-				'profile_reference' => 'tracker_item',
+				'default' => ''
 			),
 		),
 	);
@@ -51,7 +50,7 @@ function wikiplugin_prettytrackerviews_info()
 
 function wikiplugin_prettytrackerviews( $data, $params )
 {
-	$attributelib = TikiLib::lib('attribute');
+	global $attributelib; require_once 'lib/attributes/attributelib.php'; 
 	if (empty($params['itemId']) && !is_int($params['itemId'])) {
 		return '';
 	}
@@ -61,7 +60,7 @@ function wikiplugin_prettytrackerviews( $data, $params )
 			$value = $attributes['tiki.tracker.pretty.views'] + 1;
 		} else {
 			$value = 1;
-		}
+		}	
 		$attributelib->set_attribute('trackeritem', $params['itemId'], 'tiki.tracker.pretty.views', $value);
 	}
 	if (empty($params['show']) || $params['show'] == 'y') {

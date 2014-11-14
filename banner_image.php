@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -43,7 +40,10 @@ if (is_file($bannercachefile) and (!isset($_REQUEST["reload"]))) {
 	$size = getimagesize($bannercachefile);
 	$type = $size['mime'];
 } else {
-	$bannerlib = TikiLib::lib('banner');
+	include_once ('lib/banners/bannerlib.php');
+	if (!isset($bannerlib)) {
+		$bannerlib = new BannerLib;
+	}
 	$data = $bannerlib->get_banner($_REQUEST["id"]);
 	if (!$data) {
 		die;

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -43,7 +43,6 @@ function wikiplugin_stat_info()
 				'required' => false,
 				'name' => tra('Parent ID'),
 				'description' => tra('Enter a tracker ID to restrict stats to that tracker (for use with trackeritems only).'),
-				'profile_reference' => 'tracker',
 			),
 			'lastday' => array(
 				'required' => false,
@@ -171,8 +170,8 @@ function wikiplugin_stat_info()
 
 function wikiplugin_stat($data, $params) 
 {
-	$smarty = TikiLib::lib('smarty');
-	$statslib = TikiLib::lib('stats');
+	global $smarty;
+	global $statslib; include_once('lib/stats/statslib.php');
 	$stat = array();
 	foreach ($params as $when=>$whats) {
 		if ($when == 'type' || $when == 'parentId') {

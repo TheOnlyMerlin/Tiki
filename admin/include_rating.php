@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -10,18 +10,17 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-$ratingconfiglib = TikiLib::lib('ratingconfig');
-$ratinglib = TikiLib::lib('rating');
-$access = TikiLib::lib('access');
+global $ratingconfiglib; require_once 'lib/rating/configlib.php';
+global $ratinglib; require_once 'lib/rating/ratinglib.php';
 
 if ( isset($_REQUEST['test']) && $access->is_machine_request() ) {
 	$message = $ratinglib->test_formula($_REQUEST['test'], array( 'type', 'object-id' ));
 
 	$access->output_serialized(
-		array(
-			'valid' => empty($message),
-			'message' => $message,
-		)
+					array(
+						'valid' => empty($message),
+						'message' => $message,
+					)
 	);
 	exit;
 }

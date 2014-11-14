@@ -1,17 +1,14 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
-$usermoduleslib = TikiLib::lib('usermodules');
-$smarty = TikiLib::lib('smarty');
-global $tiki_p_configure_modules, $prefs, $user;
+global $usermoduleslib;
+include_once ('lib/usermodules/usermoduleslib.php');
+global $smarty, $tiki_p_configure_modules, $prefs, $user;
 $check_req = (isset($_REQUEST["mc_unassign"]) || isset($_REQUEST["mc_up"]) || isset($_REQUEST["mc_down"]) || isset($_REQUEST["mc_move"]));
 if ($tiki_p_configure_modules != 'y' && $check_req) {
 	$smarty->assign('errortype', 401);
@@ -29,7 +26,7 @@ if (!$user && $check_req) {
 	$smarty->display("error.tpl");
 	die;
 }
-$request_uri = $url = isset($_SERVER["REQUEST_URI"]) ? $_SERVER['REQUEST_URI'] : '';
+$url = $_SERVER["REQUEST_URI"];
 if ($check_req) {
 	//    global $debugger;
 	//    $debugger->msg('Module control clicked: '.$check_req);
@@ -46,9 +43,6 @@ if ($check_req) {
 	$url = preg_replace('/(.*)(\?|&){1}(mc_up|mc_down|mc_move|mc_unassign)=[^&]*/', '\1', $url);
 }
 // Fix locaton if parameter was removed...
-if ($url != $request_uri) {
-	$access = TikiLib::lib('access');
-	$access->redirect($url);
-}
+if ($url != $_SERVER["REQUEST_URI"]) header('location: ' . $url);
 $smarty->assign('current_location', $url);
 $smarty->assign('mpchar', (strpos($url, '?') ? '&' : '?'));

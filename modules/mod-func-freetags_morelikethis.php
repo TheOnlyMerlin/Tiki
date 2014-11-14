@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,14 +11,11 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_freetags_morelikethis_info()
 {
 	return array(
 		'name' => tra('Similar-Tag Items'),
-		'description' => tra('Shows content with multiple tags in common.'),
+		'description' => tra('Shows content with multiple freetags in common.'),
 		'prefs' => array('feature_freetags'),
 		'params' => array(
 			'type' => array(
@@ -32,14 +29,10 @@ function module_freetags_morelikethis_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_freetags_morelikethis($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
-	$freetaglib = TikiLib::lib('freetag');
+	global $smarty;
+	global $freetaglib; include_once 'lib/freetag/freetaglib.php';
 
 	$out = null;
 	if (isset($module_params['type'])) {

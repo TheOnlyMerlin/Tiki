@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,7 +12,6 @@ function prefs_metrics_list()
 			'name' => tra('Show past metrics results'),
 			'description' => tra('In the metrics dashboard, identify if the previously collected metrics should be displayed.'),
 			'type' => 'flag',
-			'default' => 'n',
 		),
 		'metrics_pastresults_count' => array(
 			'name' => tra('Past metrics count'),
@@ -45,7 +44,6 @@ function prefs_metrics_list()
 		),
 		'metrics_metric_name_length' => array(
 			'name' => tra('Metric name length'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 4,
 			'filter' => 'digits',
@@ -53,7 +51,6 @@ function prefs_metrics_list()
 		),
 		'metrics_tab_name_length' => array(
 			'name' => tra('Metric tab name length'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 4,
 			'filter' => 'digits',

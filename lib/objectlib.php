@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -23,7 +23,6 @@ class ObjectLib extends TikiLib
 	 * Handled object types: "article", "blog", "calendar", "directory", "faq",
 	 * "file", "file gallery", "forum", "image gallery", "poll", "quiz", "tracker", "trackeritem" and "wiki page".
 	 *
-	 * Remember to update get_supported_types if this changes
 	 */
 	function add_object($type, $itemId, $checkHandled = TRUE, $description = NULL, $name = NULL, $href = NULL)
 	{
@@ -38,31 +37,31 @@ class ObjectLib extends TikiLib
 			if (is_null($description)) {
 				switch ($type) {
 					case 'article':
-						$artlib = TikiLib::lib('art');
+						global $artlib; require_once 'lib/articles/artlib.php';
 						$info = $artlib->get_article($itemId);
 
 						$description = $info['heading'];
 						$name = $info['title'];
 						$href = 'tiki-read_article.php?articleId=' . $itemId;
-						break;
+									break;
 
 					case 'blog':
-						$bloglib = TikiLib::lib('blog');
+						global $bloglib; require_once('lib/blogs/bloglib.php');
 						$info = $bloglib->get_blog($itemId);
 
 						$description = $info['description'];
 						$name = $info['title'];
 						$href = 'tiki-view_blog.php?blogId=' . $itemId;
-						break;
+									break;
 
 					case 'calendar':
-						$calendarlib = TikiLib::lib('calendar');
+						global $calendarlib; require_once('lib/calendar/calendarlib.php');
 						$info = $calendarlib->get_calendar($itemId);
 
 						$description = $info['description'];
 						$name = $info['name'];
 						$href = 'tiki-calendar.php?calId=' . $itemId;
-						break;
+									break;
 
 					case 'directory':
 						$info = $this->get_directory($itemId);
@@ -70,17 +69,18 @@ class ObjectLib extends TikiLib
 						$description = $info['description'];
 						$name = $info['name'];
 						$href = 'tiki-directory_browse.php?parent=' . $itemId;
-						break;
+									break;
 
 					case 'faq':
 						{
-							$info = TikiLib::lib('faq')->get_faq($itemId);
+							require_once ('lib/faqs/faqlib.php');
+							$info = $faqlib->get_faq($itemId);
 
 							$description = $info['description'];
 							$name = $info['title'];
 							$href = 'tiki-view_faq.php?faqId=' . $itemId;
 						}
-						break;
+									break;
 
 					case 'file':
 						$filegallib = TikiLib::lib('filegal');
@@ -89,7 +89,7 @@ class ObjectLib extends TikiLib
 						$description = $info['description'];
 						$name = $info['name'];
 						$href = 'tiki-upload_file.php?fileId=' . $itemId;
-						break;
+									break;
 
 					case 'file gallery':
 						$filegallib = TikiLib::lib('filegal');
@@ -98,7 +98,7 @@ class ObjectLib extends TikiLib
 						$description = $info['description'];
 						$name = $info['name'];
 						$href = 'tiki-list_file_gallery.php?galleryId=' . $itemId;
-						break;
+									break;
 
 					case 'forum':
 						$commentslib = TikiLib::lib('comments');
@@ -107,7 +107,7 @@ class ObjectLib extends TikiLib
 						$description = $info['description'];
 						$name = $info['name'];
 						$href = 'tiki-view_forum.php?forumId=' . $itemId;
-						break;
+									break;
 
 					case 'image gallery':
 						$info = $this->get_gallery($itemId);
@@ -115,22 +115,16 @@ class ObjectLib extends TikiLib
 						$description = $info['description'];
 						$name = $info['name'];
 						$href = 'tiki-browse_gallery.php?galleryId=' . $itemId;
-						break;
-
-					case 'perspective':
-						$info = TikiLib::lib('perspective')->get_perspective($itemId);
-						$name = $info['name'];
-						$href = 'tiki-switch_perspective.php?perspective=' . $itemId;
-						break;
+									break;
 
 					case 'poll':
-						$polllib = TikiLib::lib('poll');
+						global $polllib; require_once('lib/polls/polllib_shared.php');
 						$info = $polllib->get_poll($itemId);
 
 						$description = $info['title'];
 						$name = $info['title'];
 						$href = 'tiki-poll_form.php?pollId=' . $itemId;
-						break;
+									break;
 
 					case 'quiz':
 						$info = TikiLib::lib('quiz')->get_quiz($itemId);
@@ -138,25 +132,25 @@ class ObjectLib extends TikiLib
 						$description = $info['description'];
 						$name = $info['name'];
 						$href = 'tiki-take_quiz.php?quizId=' . $itemId;
-						break;
+									break;
 
 					case 'tracker':
-						$trklib = TikiLib::lib('trk');
+						global $trklib; include_once('lib/trackers/trackerlib.php');
 						$info = $trklib->get_tracker($itemId);
 
 						$description = $info['description'];
 						$name = $info['name'];
 						$href = 'tiki-view_tracker.php?trackerId=' . $itemId;
-						break;
+									break;
 
 					case 'trackeritem':
-						$trklib = TikiLib::lib('trk');
+						global $trklib; include_once('lib/trackers/trackerlib.php');
 						$info = $trklib->get_tracker_item($itemId);
 
 						$description = '';
 						$name = $trklib->get_isMain_value($info['trackerId'], $itemId);
 						$href = "tiki-view_tracker_item.php?itemId=$itemId&trackerId=" . $info['trackerId'];
-						break;
+									break;
 
 					case 'wiki page':
 						if (!($info = $this->get_page_info($itemId))) {
@@ -165,7 +159,7 @@ class ObjectLib extends TikiLib
 						$description = $info["description"];
 						$name = $itemId;
 						$href = 'tiki-index.php?page=' . urlencode($itemId);
-						break;
+									break;
 
 					default:
 						if ($checkHandled) {
@@ -183,52 +177,6 @@ class ObjectLib extends TikiLib
 		return $objectId;
 	}
 
-	/**
-	 * Returns an array of object types supported (and therefore can be categorised etc)
-	 *
-	 * @return array
-	 */
-	static function get_supported_types() {
-		return array(
-			'article',
-			'blog',
-			'calendar',
-			'directory',
-			'faq',
-			'file',
-			'file gallery',
-			'forum',
-			'image gallery',
-			'perspective',
-			'poll',
-			'quiz',
-			'tracker',
-			'trackeritem',
-			'wiki page',
-		);
-	}
-
-	function getSelectorType($type)
-	{
-		$supported = [
-			'category' => 'category',
-			'file_gallery' => 'file gallery',
-			'forum' => 'forum',
-			'group' => 'group',
-			'tracker' => 'tracker',
-			'tracker_field' => 'trackerfield',
-			'trackerfield' => 'trackerfield',
-			'wiki_page' => 'wiki page',
-			'wiki page' => 'wiki page',
-		];
-
-		if (isset($supported[$type])) {
-			return $supported[$type];
-		} else {
-			return false;
-		}
-	}
-
 	function insert_object($type, $itemId, $description = '', $name = '', $href = '')
 	{
 		if (! $itemId) {
@@ -238,18 +186,16 @@ class ObjectLib extends TikiLib
 
 		$tikilib = TikiLib::lib('tiki');
 		$table = $this->table('tiki_objects');
-		return $table->insert(
-			array(
-				'type' => $type,
-				'itemId' => (string) $itemId,
-				'description' => $description,
-				'name' => $name,
-				'href' => $href,
-				'created' => (int) $tikilib->now,
-				'hits' => 0,
-				'comments_locked' => 'n',
-			)
-		);
+		return $table->insert(array(
+			'type' => $type,
+			'itemId' => (string) $itemId,
+			'description' => $description,
+			'name' => $name,
+			'href' => $href,
+			'created' => (int) $tikilib->now,
+			'hits' => 0,
+			'comments_locked' => 'n',
+		));
 	}
 
 	function get_object_id($type, $itemId)
@@ -262,10 +208,6 @@ class ObjectLib extends TikiLib
 	// Each entry uses the item id as key and the object id as key. Items with no object id are ignored.
 	function get_object_ids($type, $itemIds)
 	{
-		if (empty($itemIds)) {
-			return array();
-		}
-
 		$query = 'select `objectId`, `itemId` from `tiki_objects` where `type`=? and `itemId` IN (' .
 						implode(',', array_fill(0, count($itemIds), '?')) . ')';
 
@@ -409,8 +351,7 @@ class ObjectLib extends TikiLib
 					case 'edit':
 						return 'tiki_p_admin_trackers';
 				}
-			default :
-				return '';
+			default : return '';
 		}
 	}
 
@@ -419,41 +360,30 @@ class ObjectLib extends TikiLib
 		switch ($objectType) {
 			case 'wiki':
 			case 'wiki page':
-				$tikilib = TikiLib::lib('tiki');
+				global $tikilib; include_once('lib/tikilib.php');
 				$info = $tikilib->get_page_info($object);
-				return array('title'=>$object, 'data'=>$info['data'], 'is_html'=>$info['is_html']);
+				return (array('title'=>$object, 'data'=>$info['data'], 'is_html'=>$info['is_html']));
 
 			case 'article':
-				$artlib = TikiLib::lib('art');
+				global $artlib; require_once 'lib/articles/artlib.php';
 				$info = $artlib->get_article($object);
-				return array('title'=>$info['title'], 'data'=>$info['body']);
+				return (array('title'=>$info['title'], 'data'=>$info['body']));
 
 			case 'file gallery':
 				$info = TikiLib::lib('filegal')->get_file_gallery_info($object);
-				return array('title' => $info['name']);
+				return (array('title' => $info['name']));
 
 			case 'blog':
 				$info = TikiLib::lib('blog')->get_blog($object);
-				return array('title' => $info['title']);
+				return (array('title' => $info['title']));
 
 			case 'forum':
 				$info = TikiLib::lib('comments')->get_forum($object);
-				return array('title' => $info['name']);
-
-			case 'forum post':
-				$info = TikiLib::lib('comments')->get_comment($object);
-				return array('title' => $info['title']);
+				return (array('title' => $info['name']));
 
 			case 'tracker':
 				$info = TikiLib::lib('trk')->get_tracker($object);
-				return array('title' => $info['name']);
-
-			case 'trackerfield':
-				$info = TikiLib::lib('trk')->get_tracker_field($object);
-				return array('title' => $info['name']);
-
-			case 'goal':
-				return TikiLib::lib('goal')->fetchGoal($object);
+				return (array('title' => $info['name']));
 		}
 		return (array('error'=>'true'));
 	}
@@ -463,10 +393,10 @@ class ObjectLib extends TikiLib
 		switch ($objectType) {
 			case 'wiki':
 			case 'wiki page':
+				global $tikilib; include_once('lib/tikilib.php');
 				global $user;
-				$tikilib = TikiLib::lib('tiki');
 				$tikilib->update_page($object, $data, tra('section edit'), $user, $tikilib->get_ip_address());
-				break;
+							break;
 		}
 	}
 
@@ -490,11 +420,6 @@ class ObjectLib extends TikiLib
 		return $result->fetchRow();
 	}
 
-	/**
-	 * @param string $type
-	 * @param $id
-	 * @return void|string
-	 */
 	function get_title($type, $id)
 	{
 		switch ($type) {
@@ -502,26 +427,14 @@ class ObjectLib extends TikiLib
 				return TikiLib::lib('trk')->get_isMain_value(null, $id);
 			case 'category':
 				return TikiLib::lib('categ')->get_category_name($id);
-			case 'file':
-				return TikiLib::lib('filegal')->get_file_label($id);
-			case 'topic':
-				$meta=TikiLib::lib('art')->get_topic($id);
-				return $meta['name'];
-			case 'group':
-				return $id;
-			case 'user':
-				if (is_int($id)) {
-					$id = TikiLib::lib('tiki')->get_user_login($id);
-				}
-				return TikiLib::lib('user')->clean_user($id);
 		}
 
 		$title = $this->table('tiki_objects')->fetchOne(
-			'name',
-			array(
-				'type' => $type,
-				'itemId' => $id,
-			)
+						'name',
+						array(
+							'type' => $type,
+							'itemId' => $id,
+						)
 		);
 
 		if ($title) {
@@ -532,10 +445,6 @@ class ObjectLib extends TikiLib
 
 		if (isset($info['title'])) {
 			return $info['title'];
-		}
-
-		if (isset($info['name'])) {
-			return $info['name'];
 		}
 	}
 
@@ -584,7 +493,7 @@ class ObjectLib extends TikiLib
 
 	function get_metadata($type, $object, & $classList)
 	{
-		$smarty = TikiLib::lib('smarty');
+		global $smarty;
 		$smarty->loadPlugin('smarty_modifier_escape');
 
 		$escapedType = smarty_modifier_escape($type);
@@ -593,7 +502,7 @@ class ObjectLib extends TikiLib
 
 		if ($coordinates = TikiLib::lib('geo')->get_coordinates($type, $object)) {
 			$classList[] = 'geolocated';
-			$metadata .= " data-geo-lat=\"{$coordinates['lat']}\" data-geo-lon=\"{$coordinates['lon']}\"";
+			$metadata = " data-geo-lat=\"{$coordinates['lat']}\" data-geo-lon=\"{$coordinates['lon']}\"";
 
 			if (isset($coordinates['zoom'])) {
 				$metadata .= " data-geo-zoom=\"{$coordinates['zoom']}\"";
@@ -611,4 +520,5 @@ class ObjectLib extends TikiLib
 		return $metadata;
 	}
 }
-
+global $objectlib;
+$objectlib = new ObjectLib;

@@ -1,15 +1,13 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
-$rsslib = TikiLib::lib('rss');
+require_once ('lib/tikilib.php');
+require_once ('lib/rss/rsslib.php');
 if ($prefs['feed_directories'] != 'y') {
 	$errmsg = tra("rss feed disabled");
 	require_once ('tiki-rss_error.php');
@@ -19,10 +17,10 @@ if ($prefs['feature_directory'] != 'y') {
 	require_once ('tiki-rss_error.php');
 }
 $res = $access->authorize_rss(
-	array(
-		'tiki_p_view_directory',
-		'tiki_p_admin_directory'
-	)
+				array(
+					'tiki_p_view_directory',
+					'tiki_p_admin_directory'
+				)
 );
 if ($res) {
 	if ($res['header'] == 'y') {
@@ -44,13 +42,9 @@ if ($output["data"] == "EMPTY") {
 	$dateId = "created";
 	$readrepl = "tiki-directory_redirect.php?$id=%s";
 	$tmp = $prefs['feed_' . $feed . '_title'];
-	if ($tmp <> '') {
-		$title = $tmp;
-	}
+	if ($tmp <> '') $title = $tmp;
 	$tmp = $prefs['feed_' . $feed . '_desc'];
-	if ($desc <> '') {
-		$desc = $tmp;
-	}
+	if ($desc <> '') $desc = $tmp;
 	$changes = $tikilib->dir_list_all_valid_sites2(0, $prefs['feed_directories_max'], $dateId . '_desc', '');
 	$output = $rsslib->generate_feed($feed, $uniqueid, '', $changes, $readrepl, '', $id, $title, $titleId, $desc, $descId, $dateId, '');
 }

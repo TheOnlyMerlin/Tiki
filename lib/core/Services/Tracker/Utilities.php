@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,65 +9,31 @@ class Services_Tracker_Utilities
 {
 	function insertItem($definition, $item)
 	{
-		$newItem = $this->replaceItem($definition, 0, $item['status'], $item['fields'], [
-			'validate' => true,
-			'skip_categories' => false,
-		]);
+		$newItem = $this->replaceItem($definition, 0, $item['status'], $item['fields']);
 
 		return $newItem;
 	}
 
 	function updateItem($definition, $item)
 	{
-		return $this->replaceItem($definition, $item['itemId'], $item['status'], $item['fields'], [
-			'validate' => true,
-			'skip_categories' => false,
-		]);
+		$this->replaceItem($definition, $item['itemId'], $item['status'], $item['fields']);
 	}
 
-	function resaveItem($itemId)
-	{
-		$tracker = TikiLib::lib('trk')->get_item_info($itemId);
-		$definition = Tracker_Definition::get($tracker['trackerId']);
-		$this->replaceItem($definition, $itemId, null, array(), [
-			'validate' => false,
-			'skip_categories' => true,
-		]);
-	}
-
-	private function replaceItem($definition, $itemId, $status, $fieldMap, array $options)
+	private function replaceItem($definition, $itemId, $status, $fieldMap)
 	{
 		$trackerId = $definition->getConfiguration('trackerId');
 		$fields = array();
 
 		$factory = $definition->getFieldFactory();
 		foreach ($fieldMap as $key => $value) {
-			if (preg_match('/ins_/', $key)) { //make compatible with the 'ins_' keys
+			if (preg_match('/ins_/',$key)) { //make compatible with the 'ins_' keys
 				$id = (int)str_replace('ins_', '', $key);
-				if ($field = $definition->getField($id)) {
-					$field['value'] = $value;
-					$fields[$field['fieldId']] = $field;
-				}
+				$field = $definition->getField($id);
+				$field['value'] = $value;
+				$fields[$field['fieldId']] = $field;
 			} else if ($field = $definition->getFieldFromPermName($key)) {
 				$field['value'] = $value;
 				$fields[$field['fieldId']] = $field;
-			}
-		}
-
-		if ($itemId) {
-			$item = $this->getItem($definition->getConfiguration('trackerId'), $itemId);
-			$initialData = new JitFilter($item['fields']);
-		} else {
-			$initialData = new JitFilter(array());
-		}
-
-		// Add unspecified fields for the validation to work correctly
-		foreach ($definition->getFields() as $field) {
-			$fieldId = $field['fieldId'];
-			if (! isset($fields[$fieldId])) {
-				$permName = $field['permName'];
-				$field['value'] = $initialData->$permName->none();
-				$fields[$fieldId] = $field;
 			}
 		}
 
@@ -75,22 +41,13 @@ class Services_Tracker_Utilities
 		$categorizedFields = $definition->getCategorizedFields();
 		$errors = $trklib->check_field_values(array('data' => $fields), $categorizedFields, $trackerId, $itemId ? $itemId : '');
 
-		if ($options['skip_categories']) {
-			foreach ($categorizedFields as $fieldId) {
-				unset($fields[$fieldId]);
-			}
-		}
-
 		if (count($errors['err_mandatory']) == 0 && count($errors['err_value']) == 0) {
-			$newItem = $trklib->replace_item($trackerId, $itemId, array('data' => $fields), $status, 0, true);
-			return $newItem;
-		} elseif (! $options['validate']) {
 			$newItem = $trklib->replace_item($trackerId, $itemId, array('data' => $fields), $status, 0, true);
 			return $newItem;
 		}
 
 		$errorreportlib = TikiLib::lib('errorreport');
-		if (count($errors['err_mandatory']) > 0) {
+		if ($errors['err_mandatory'] > 0) {
 			$names = array();
 			foreach ($errors['err_mandatory'] as $f) {
 				$names[] = $f['name'];
@@ -118,29 +75,29 @@ class Services_Tracker_Utilities
 
 		$trklib = TikiLib::lib('trk');
 		return $trklib->replace_tracker_field(
-			$data['trackerId'],
-			0,
-			$data['name'],
-			$data['type'],
-			($isFirst ? 'y' : 'n'),
-			'n',
-			($isFirst ? 'y' : 'n'),
-			'y',
-			isset($data['isHidden']) ? $data['isHidden'] : 'n',
-			isset($data['isMandatory']) ? ($data['isMandatory'] ? 'y' : 'n') : ($isFirst ? 'y' : 'n'),
-			$trklib->get_last_position($data['trackerId']) + 10,
-			isset($data['options']) ? $data['options'] : '',
-			$data['description'],
-			'',
-			null,
-			'',
-			null,
-			null,
-			$data['descriptionIsParsed'] ? 'y' : 'n',
-			'',
-			'',
-			'',
-			$data['permName']
+						$data['trackerId'],
+						0,
+						$data['name'],
+						$data['type'],
+						($isFirst ? 'y' : 'n'),
+						'n',
+						($isFirst ? 'y' : 'n'),
+						'y',
+						isset($data['isHidden']) ? $data['isHidden'] : 'n',
+						isset($data['isMandatory']) ? ($data['isMandatory'] ? 'y' : 'n') : ($isFirst ? 'y' : 'n'),
+						$trklib->get_last_position($data['trackerId']) + 10,
+						isset($data['options']) ? $data['options'] : '',
+						$data['description'],
+						'',
+						null,
+						'',
+						null,
+						null,
+						$data['descriptionIsParsed'] ? 'y' : 'n',
+						'',
+						'',
+						'',
+						$data['permName']
 		);
 	}
 
@@ -151,29 +108,29 @@ class Services_Tracker_Utilities
 		$field = $definition->getField($fieldId);
 		$trklib = TikiLib::lib('trk');
 		$trklib->replace_tracker_field(
-			$trackerId,
-			$fieldId,
-			isset($properties['name']) ? $properties['name'] : $field['name'],
-			isset($properties['type']) ? $properties['type'] : $field['type'],
-			isset($properties['isMain']) ? $properties['isMain'] : $field['isMain'],
-			isset($properties['isSearchable']) ? $properties['isSearchable'] : $field['isSearchable'],
-			isset($properties['isTblVisible']) ? $properties['isTblVisible'] : $field['isTblVisible'],
-			isset($properties['isPublic']) ? $properties['isPublic'] : $field['isPublic'],
-			isset($properties['isHidden']) ? $properties['isHidden'] : $field['isHidden'],
-			isset($properties['isMandatory']) ? $properties['isMandatory'] : $field['isMandatory'],
-			isset($properties['position']) ? $properties['position'] : $field['position'],
-			isset($properties['options']) ? $properties['options'] : $field['options'],
-			isset($properties['description']) ? $properties['description'] : $field['description'],
-			isset($properties['isMultilingual']) ? $properties['isMultilingual'] : $field['isMultilingual'],
-			'', // itemChoices
-			isset($properties['errorMsg']) ? $properties['errorMsg'] : $field['errorMsg'],
-			isset($properties['visibleBy']) ? $properties['visibleBy'] : $field['visibleBy'],
-			isset($properties['editableBy']) ? $properties['editableBy'] : $field['editableBy'],
-			isset($properties['descriptionIsParsed']) ? $properties['descriptionIsParsed'] : $field['descriptionIsParsed'],
-			isset($properties['validation']) ? $properties['validation'] : $field['validation'],
-			isset($properties['validationParam']) ? $properties['validationParam'] : $field['validationParam'],
-			isset($properties['validationMessage']) ? $properties['validationMessage'] : $field['validationMessage'],
-			isset($properties['permName']) ? $properties['permName'] : $field['permName']
+						$trackerId,
+						$fieldId,
+						isset($properties['name']) ? $properties['name'] : $field['name'],
+						isset($properties['type']) ? $properties['type'] : $field['type'],
+						isset($properties['isMain']) ? $properties['isMain'] : $field['isMain'],
+						isset($properties['isSearchable']) ? $properties['isSearchable'] : $field['isSearchable'],
+						isset($properties['isTblVisible']) ? $properties['isTblVisible'] : $field['isTblVisible'],
+						isset($properties['isPublic']) ? $properties['isPublic'] : $field['isPublic'],
+						isset($properties['isHidden']) ? $properties['isHidden'] : $field['isHidden'],
+						isset($properties['isMandatory']) ? $properties['isMandatory'] : $field['isMandatory'],
+						isset($properties['position']) ? $properties['position'] : $field['position'],
+						isset($properties['options']) ? $properties['options'] : $field['options'],
+						isset($properties['description']) ? $properties['description'] : $field['description'],
+						isset($properties['isMultilingual']) ? $properties['isMultilingual'] : $field['isMultilingual'],
+						'', // itemChoices
+						isset($properties['errorMsg']) ? $properties['errorMsg'] : $field['errorMsg'],
+						isset($properties['visibleBy']) ? $properties['visibleBy'] : $field['visibleBy'],
+						isset($properties['editableBy']) ? $properties['editableBy'] : $field['editableBy'],
+						isset($properties['descriptionIsParsed']) ? $properties['descriptionIsParsed'] : $field['descriptionIsParsed'],
+						isset($properties['validation']) ? $properties['validation'] : $field['validation'],
+						isset($properties['validationParam']) ? $properties['validationParam'] : $field['validationParam'],
+						isset($properties['validationMessage']) ? $properties['validationMessage'] : $field['validationMessage'],
+						isset($properties['permName']) ? $properties['permName'] : $field['permName']
 		);
 	}
 
@@ -224,31 +181,13 @@ class Services_Tracker_Utilities
 
 	function getItem($trackerId, $itemId)
 	{
-		$items = $this->getItems(
-			array(
-				'trackerId' => $trackerId,
-				'itemId' => $itemId,
-			),
-			1,
-			0
-		);
+		$items = $this->getItems(array(
+			'trackerId' => $trackerId,
+			'itemId' => $itemId,
+		), 1, 0);
 		$item = reset($items);
 
 		return $item;
-	}
-	
-	function getTitle($definition, $item)
-	{
-		$parts = [];
-
-		foreach ($definition->getFields() as $field) {
-			if ($field['isMain'] == 'y') {
-				$permName = $field['permName'];
-				$parts[] = $item['fields'][$permName];
-			}
-		}
-
-		return implode(' ', $parts);
 	}
 
 	function processValues($definition, $item)
@@ -259,10 +198,10 @@ class Services_Tracker_Utilities
 			$field = $definition->getFieldFromPermName($permName);
 			$field['value'] = $rawValue;
 			$item['fields'][$permName] = $trklib->field_render_value(
-				array(
-					'field' => $field,
-					'process' => 'y',
-				)
+							array(
+								'field' => $field,
+								'process' => 'y',
+							)
 			);
 		}
 
@@ -273,12 +212,12 @@ class Services_Tracker_Utilities
 	{
 		$table = TikiDb::get()->table('tiki_tracker_item_fields');
 		$dataMap = $table->fetchMap(
-			'fieldId',
-			'value',
-			array(
-				'fieldId' => $table->in(array_keys($keyMap)),
-				'itemId' => $itemId,
-			)
+						'fieldId',
+						'value',
+						array(
+							'fieldId' => $table->in(array_keys($keyMap)),
+							'itemId' => $itemId,
+						)
 		);
 
 		$out = array();
@@ -297,11 +236,11 @@ class Services_Tracker_Utilities
 	{
 		$trklib = TikiLib::lib('trk');
 		return $trklib->replace_tracker(
-			0,
-			$data['name'],
-			$data['description'],
-			array(),
-			$data['descriptionIsParsed']
+						0,
+						$data['name'],
+						$data['description'],
+						array(),
+						$data['descriptionIsParsed']
 		);
 	}
 
@@ -316,6 +255,8 @@ class Services_Tracker_Utilities
 		unset($data['description']);
 		unset($data['descriptionIsParsed']);
 
+		$logslib = TikiLib::lib('logs');
+		$logslib->add_log('admintrackers', 'changed or created tracker ' . $name);
 		return $trklib->replace_tracker($trackerId, $name, $description, $data, $descriptionIsParsed);
 	}
 
@@ -324,8 +265,8 @@ class Services_Tracker_Utilities
 		$table = TikiDb::get()->table('tiki_tracker_items');
 
 		$items = $table->fetchColumn(
-			'itemId',
-			array('trackerId' => $trackerId,)
+						'itemId',
+						array('trackerId' => $trackerId,)
 		);
 
 		foreach ($items as $itemId) {
@@ -403,7 +344,7 @@ isTblVisible = {$field['isTblVisible']}
 isSearchable = {$field['isSearchable']}
 isPublic = {$field['isPublic']}
 isHidden = {$field['isHidden']}
-isMandatory = {$field['isMandatory']}
+sMandatory = {$field['isMandatory']}
 description = {$field['description']}
 descriptionIsParsed = {$field['descriptionIsParsed']}
 
@@ -421,32 +362,60 @@ EXPORT;
 			$input = new JitFilter($input);
 		}
 
-		$options = Tracker_Options::fromInput($input, $typeInfo);
-		return $options->serialize();
+		$parts = array();
+
+		foreach ($typeInfo['params'] as $key => $info) {
+			$filter = $info['filter'];
+
+			if (isset($info['count']) && $info['count'] === '*') {
+				$values = explode(',', $input->$key->none());
+				$filter = TikiFilter::get($filter);
+				$values = array_map(array($filter, 'filter'), $values);
+			} elseif (isset($info['separator'])) {
+				$input->setFilter($key, $filter);
+				$values = $input->asArray($key, $info['separator']);
+				$values = array(implode($info['separator'], $values));
+			} else {
+				$values = array($input->$key->$filter());
+			}
+
+			foreach ($values as $value) {
+				if (isset($info['options']) && ! isset($info['options'][$value])) {
+					$value = null;
+				}
+
+				$parts[] = $value;
+			}
+		}
+
+		$rawOptions = implode(',', $parts);
+		return rtrim($rawOptions, ',');
 	}
 
 	function parseOptions($raw, $typeInfo)
 	{
-		$options = Tracker_Options::fromSerialized($raw, $typeInfo);
+		$out = array();
 
-		return $options->getAllParameters();
-	}
-
-	function getFieldTypesDisabled()
-	{
-		$factory = new Tracker_Field_Factory(false);
-		$completeList = $factory->getFieldTypes();
-
-		$list = array();
-
-		foreach ($completeList as $code => $info) {
-
-			if ($this->isEnabled($info) == false) {
-				$list[$code] = $info;
+		foreach ($typeInfo['params'] as $key => $info) {
+			if (isset($info['count']) && $info['count'] === '*') {
+				// There is a possibility that * does not mean all of the remaining, to apply reasonable heuristic
+				$filter = TikiFilter::get($info['filter']);
+				$outarray = array();
+				foreach ($raw as $r) {
+					$filtered = $filter->filter($r);
+					if (strcmp($filtered, $r) == 0) {
+						$outarray[] = array_shift($raw);
+					} else {
+						break;
+					}
+				}
+				$out[$key] = implode(',', $outarray);
+			} else {
+				$out[$key] = array_shift($raw);
 			}
 		}
 
-		return $list;
+		return $out;
 	}
 
 	function getFieldTypes()
@@ -504,6 +473,9 @@ EXPORT;
 	{
 		$trklib = TikiLib::lib('trk');
 		$trklib->remove_tracker($trackerId);
+
+		$logslib = TikiLib::lib('logs');
+		$logslib->add_log('admintrackers', 'removed tracker ' . $trackerId);
 	}
 
 	function duplicateTracker($trackerId, $name, $duplicateCategories, $duplicatePermissions)

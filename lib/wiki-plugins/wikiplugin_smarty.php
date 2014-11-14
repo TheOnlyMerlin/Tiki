@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -30,23 +30,19 @@ function wikiplugin_smarty_info()
 
 function wikiplugin_smarty($data, $params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	if (empty($params['name'])) {
 		return tra('Incorrect parameter');
 	}
-	if($params['name'] == 'eval') {
-		$content = $smarty->fetch('string:'.$params['var']);
-	} else {
-		$path = 'lib/smarty_tiki/function.'.$params['name'].'.php';
+	$path = 'lib/smarty_tiki/function.'.$params['name'].'.php';
+	if (!file_exists($path)) {
+		$path = 'lib/smarty/libs/plugins/function.'.$params['name'].'.php';
 		if (!file_exists($path)) {
-			$path = 'lib/smarty/libs/plugins/function.'.$params['name'].'.php';
-			if (!file_exists($path)) {
-				return tra('Incorrect parameter');
-			}
+			return tra('Incorrect parameter');
 		}
-		include_once($path);
-		$func = 'smarty_function_'.$params['name'];
-		$content = $func($params, $smarty);
 	}
+	include_once($path);
+	$func = 'smarty_function_'.$params['name'];
+	$content = $func($params, $smarty);
 	return '~np~'.$content.'~/np~';
 }

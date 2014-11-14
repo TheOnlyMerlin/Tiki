@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -48,8 +45,7 @@ if ($_REQUEST['objectType'] == 'wiki page') {
 } else {
 	$tikilib->get_perm_object($_REQUEST['objectId'], $_REQUEST['objectType']);
 	if ($_REQUEST['objectType'] == 'tracker') {
-		$definition = Tracker_Definition::get($_REQUEST['objectId']);
-		if ($groupCreatorFieldId = $definition->getWriterGroupField()) {
+		if ($groupCreatorFieldId = TikiLib::lib('trk')->get_field_id_from_type($_REQUEST['objectId'], 'g', '1%')) {
 			$smarty->assign('group_tracker', 'y');
 		}
 	}
@@ -88,6 +84,9 @@ if ( $_REQUEST['objectType'] == 'wiki' ) {
 	$_REQUEST['objectType'] = 'wiki page';
 }
 
+require_once 'lib/core/Perms/Applier.php';
+require_once 'lib/core/Perms/Reflection/Factory.php';
+
 $objectFactory = Perms_Reflection_Factory::getDefaultFactory();
 $currentObject = $objectFactory->get($_REQUEST['objectType'], $_REQUEST['objectId']);
 
@@ -99,7 +98,8 @@ if ( $restrictions = perms_get_restrictions() ) {
 }
 
 if ($_REQUEST['objectType'] == 'wiki page') {
-	$structlib = TikiLib::lib('struct');
+	global $structlib;
+	include_once ('lib/structures/structlib.php');
 	$pageInfoTree = $structlib->s_get_structure_pages($structlib->get_struct_ref_id($_REQUEST['objectId']));
 	if (count($pageInfoTree) > 1) {
 		$smarty->assign('inStructure', 'y');
@@ -112,12 +112,12 @@ if ($_REQUEST['objectType'] == 'wiki page') {
 			$permissionApplier->addObject($sub);
 		}
 	}
-	$cachelib = TikiLib::lib('cache');
+	global $cachelib; include_once('lib/cache/cachelib.php');
 	$cachelib->empty_type_cache('menu_'); $cachelib->empty_type_cache('structure_');
 }
 
 if ( $_REQUEST['objectType'] == 'category' && isset($_REQUEST['propagate_category']) ) {
-	$categlib = TikiLib::lib('categ');
+	global $categlib; require_once 'lib/categories/categlib.php';
 	$descendants = $categlib->get_category_descendants($_REQUEST['objectId']);
 
 	foreach ( $descendants as $child ) {
@@ -197,7 +197,7 @@ if (isset($_REQUEST['assign']) && !isset($_REQUEST['quick_perms'])) {
 			}
 		}
 	}
-
+	
 	$newPermissions = get_assign_permissions();
 	$permissionApplier->apply($newPermissions);
 	if (isset($_REQUEST['group'])) {
@@ -226,16 +226,16 @@ if (isset($_REQUEST['copy'])) {
 if (!empty($_SESSION['perms_clipboard'])) {
 	$perms_clipboard = $_SESSION['perms_clipboard'];
 	$smarty->assign(
-		'perms_clipboard_source',
-		$perms_clipboard['type'] . (empty($perms_clipboard['object']) ? '' : ' : ') . $perms_clipboard['object']
+					'perms_clipboard_source',
+					$perms_clipboard['type'] . (empty($perms_clipboard['object']) ? '' : ' : ') . $perms_clipboard['object']
 	);
 
 	if (isset($_REQUEST['paste'])) {
 		$access->check_authenticity(tra('Are you sure you want paste the copied permissions onto this object?'));
 		unset($_SESSION['perms_clipboard']);
-
+		
 		$set = new Perms_Reflection_PermissionSet;
-
+	
 		if ( isset( $perms_clipboard['perms'] ) ) {
 			foreach ( $perms_clipboard['perms'] as $group => $gperms ) {
 				foreach ( $gperms as $perm ) {
@@ -252,6 +252,8 @@ if (!empty($_SESSION['perms_clipboard'])) {
 //Quickperms apply {{{
 //Test to map permissions of ile galleries into read write admin admin levels.
 if ( $prefs['feature_quick_object_perms'] == 'y' ) {
+	require_once 'lib/core/Perms/Reflection/Quick.php';
+
 	$qperms = quickperms_get_data();
 	$smarty->assign('quickperms', $qperms);
 	$quickperms = new Perms_Reflection_Quick;
@@ -262,9 +264,9 @@ if ( $prefs['feature_quick_object_perms'] == 'y' ) {
 
 	if (isset($_REQUEST['assign']) && isset($_REQUEST['quick_perms'])) {
 		check_ticket('object-perms');
-
+	
 		$groups = $userlib->get_groups(0, -1, 'groupName_asc', '', '', 'n');
-
+	
 		$userInput = array();
 		foreach ($groups['data'] as $group) {
 			if (isset($_REQUEST['perm_' . $group['groupName']])) {
@@ -321,7 +323,7 @@ if ( $prefs['feature_quick_object_perms'] == 'y' ) {
 
 	$displayedPermissions = get_displayed_permissions();
 	$map = $quickperms->getAppliedPermissions($displayedPermissions, $groupNames);
-
+		
 	foreach ($groups['data'] as $key=>$group) {
 		$groups['data'][$key]['groupSumm'] = $map[ $group['groupName'] ];
 	}
@@ -342,9 +344,9 @@ foreach ($groups['data'] as &$row) {
 		$permGroups[] = 'perm['.$row['groupName'].']';
 		$groupInheritance[] = $userlib->get_included_groups($row['groupName']);
 		$inh = $userlib->get_included_groups($row['groupName']);
-
+	
 		$groupIndices[] = $row['groupName'] . '_hasPerm';
-
+		
 		$row['in_group_filter'] = 'y';
 	} else {
 		$row['in_group_filter'] = 'n';
@@ -400,7 +402,7 @@ foreach ($candidates['data'] as $perm) {
 		$perm[$groupName . '_hasPerm'] = $p;
 		$perm[$groupIndices[$index]] = $p;
 	}
-
+	
 	// work out if specific feature is on
 	$pref_feature = false;
 	if (isset($perm['feature_check'])) {
@@ -455,72 +457,50 @@ foreach ( $groupNames as $groupName ) {
 		}
 	}
 
-	$js .= "\$('input[name=\"perm[$groupName][]\"]').eachAsync({
-	delay: 10,
-	bulk: 0,
-";
+	$js .= <<< JS
+\$('input[name="perm[$groupName][]"]').eachAsync({
+			delay: 10,
+			bulk: 0,
+JS;
 	if ($i == count($groupNames)-1) {
-		$js .= "end: function () {
+		$js .= <<< JS
+
+			end: function () {
 				\$('#perms_busy').hide();
 			},
-";
+JS;
 	}
-	$js .= "loop: function() { 		// each one of this group
+	$js .= <<< JS
+
+			loop: function() { 		// each one of this group
 
 	if (\$(this).is(':checked')) {
-		\$('input[value=\"'+\$(this).val()+'\"]').					// other checkboxes of same value (perm)
-			filter('$beneficiaries').								// which inherit from this
-			prop('checked',\$(this).is(':checked')).				// check and disable
-			prop('disabled',\$(this).is(':checked'));
+		\$('input[value="'+\$(this).val()+'"]').					// other checkboxes of same value (perm)
+			filter('$beneficiaries').									// which inherit from this
+			attr('checked',\$(this).is(':checked')).					// check and disable
+			attr('disabled',\$(this).is(':checked'));
 	}
-
-	\$(this).on( 'change', function(e, parent) {	// bind click event
-
+		
+	\$(this).change( function() {									// bind click event
+	
 		if (\$(this).is(':checked')) {
-			\$('input[value=\"'+\$(this).val()+'\"]').			// same...
-				filter('$beneficiaries').each(function() {
-					$(this).
-						prop('checked',true).					// check?
-						prop('disabled',true).					// disable
-						trigger('change', [this]);
-				});
+			\$('input[value="'+\$(this).val()+'"]').			// same...
+				filter('$beneficiaries').
+				attr('checked',true).							// check?
+				attr('disabled',true);						// disable
 		} else {
-			\$('input[value=\"'+\$(this).val()+'\"]').			// same...
-				filter('$beneficiaries').each(function() {
-					$(this).
-						prop('checked',false).					// check?
-						prop('disabled',false).					// disable
-						trigger('change', [this]);
-				});
-		}
-	});
+			\$('input[value="'+\$(this).val()+'"]').			// same...
+				filter('$beneficiaries').
+				attr('checked',false).									// check?
+				attr('disabled',false);								// disable
 }
+	});
+			}
 });
 
-";
+JS;
 	$i++;
 }	// end of for $groupNames loop
-
-	// add cell colouring helpers
-	$js .= '
-$("table.objectperms input[type=checkbox]").change(function () {
-	var $this = $(this);
-	var $parent = $this.parent();
-	if ($this.is(":checked")) {
-		if ($parent.hasClass("removed")) {
-			$parent.removeClass("removed");
-		} else {
-			$parent.addClass("added");
-		}
-	} else {
-		if ($parent.hasClass("added")) {
-			$parent.removeClass("added");
-		} else {
-			$parent.addClass("removed");
-		}
-	}
-});
-';
 
 $headerlib->add_jq_onready($js);
 
@@ -538,9 +518,6 @@ if (isset($_REQUEST['filegals_manager']) && $_REQUEST['filegals_manager'] != '')
 }
 
 
-/**
- * @return mixed
- */
 function get_assign_permissions()
 {
 	global $objectFactory;
@@ -576,9 +553,6 @@ function get_assign_permissions()
 	return $currentPermissions;
 }
 
-/**
- * @return array
- */
 function quickperms_get_data()
 {
 	if ($_REQUEST['permType']=='file galleries') {
@@ -588,9 +562,6 @@ function quickperms_get_data()
 	}
 }
 
-/**
- * @return array
- */
 function quickperms_get_filegal()
 {
 	return array(
@@ -646,12 +617,9 @@ function quickperms_get_filegal()
 	);
 }
 
-/**
- * @return array
- */
 function quickperms_get_generic()
 {
-	$userlib = TikiLib::lib('user');
+	global $userlib;
 
 	$databaseperms = $userlib->get_permissions(0, -1, 'permName_asc', '', $_REQUEST['permType'], '', true);
 	foreach ($databaseperms['data'] as $perm) {
@@ -682,18 +650,18 @@ function quickperms_get_generic()
 	$perms['editors']['name'] = 'editors';
 
 	$perms['editors']['data'] = array_merge(
-		$quickperms_['basic'],
-		$quickperms_['registered'],
-		$quickperms_['editors']
+					$quickperms_['basic'], 
+					$quickperms_['registered'], 
+					$quickperms_['editors']
 	);
 
 	$perms['admin']['name'] = 'admin';
 
 	$perms['admin']['data'] = array_merge(
-		$quickperms_['basic'],
-		$quickperms_['registered'],
-		$quickperms_['editors'],
-		$quickperms_['admin']
+					$quickperms_['basic'], 
+					$quickperms_['registered'], 
+					$quickperms_['editors'], 
+					$quickperms_['admin']
 	);
 	$perms['none']['name'] = 'none';
 	$perms['none']['data'] = array();
@@ -701,12 +669,9 @@ function quickperms_get_generic()
 	return $perms;
 }
 
-/**
- * @return array|bool
- */
 function perms_get_restrictions()
 {
-	$userlib = TikiLib::lib('user');
+	global $userlib;
 	$perms = Perms::get();
 
 	if ( $perms->admin_objects ) {
@@ -729,18 +694,14 @@ function perms_get_restrictions()
 	return $allowed;
 }
 
-/**
- * @return mixed
- */
 function get_displayed_permissions()
 {
-	global $objectFactory;
-	$smarty = TikiLib::lib('smarty');
+	global $objectFactory, $smarty;
 
 	$currentObject = $objectFactory->get($_REQUEST['objectType'], $_REQUEST['objectId']);
 	$displayedPermissions = $currentObject->getDirectPermissions();
 	$globPerms = $objectFactory->get('global', null)->getDirectPermissions();	// global perms
-
+	
 	$comparator = new Perms_Reflection_PermissionComparator($displayedPermissions, new Perms_Reflection_PermissionSet);
 
 	$smarty->assign('permissions_displayed', 'direct');
@@ -780,25 +741,6 @@ function get_displayed_permissions()
 		}
 		$smarty->assign('permissions_added', $added);
 		$smarty->assign('permissions_removed', $removed);
-
-		TikiLib::lib('header')->add_jq_onready('
-var permsAdded = ' . json_encode($permissions_added) . ';
-var permsRemoved = ' . json_encode($permissions_removed) . ';
-for (var group in permsAdded) {
-	if (permsAdded.hasOwnProperty(group)) {
-		for (var i = 0; i < permsAdded[group].length; i++) {
-			 $("input[name=\'perm[" + group + "][]\'][value=\'tiki_p_" + permsAdded[group][i] + "\']").parent().addClass("added");
-		}
-	}
-}
-for (var group in permsRemoved) {
-	if (permsRemoved.hasOwnProperty(group)) {
-		for (var i = 0; i < permsRemoved[group].length; i++) {
-			 $("input[name=\'perm[" + group + "][]\'][value=\'tiki_p_" + permsRemoved[group][i] + "\']").parent().addClass("removed");
-		}
-	}
-}
-');
 	}
 
 	return $displayedPermissions;

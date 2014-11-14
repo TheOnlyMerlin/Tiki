@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,8 +8,8 @@
 $section = 'galleries';
 require_once ('tiki-setup.php');
 
-$imagegallib = TikiLib::lib('imagegal');
-$categlib = TikiLib::lib('categ');
+global $imagegallib; include_once ('lib/imagegals/imagegallib.php');
+global $categlib; include_once ('lib/categories/categlib.php');
 include_once ('lib/map/usermap.php');
 $access->check_feature('feature_galleries');
 
@@ -167,9 +167,9 @@ if (isset($_REQUEST['edit_mode']) && $_REQUEST['edit_mode']) {
 
 // Process the insertion or modification of a gallery here
 $category_needed = 'n';
-if (isset($_REQUEST['edit'])
-		&& $prefs['feature_categories'] == 'y'
-		&& $prefs['feature_image_gallery_mandatory_category'] >= 0
+if (isset($_REQUEST['edit']) 
+		&& $prefs['feature_categories'] == 'y' 
+		&& $prefs['feature_image_gallery_mandatory_category'] >= 0 
 		&& (empty($_REQUEST['cat_categories']) || count($_REQUEST['cat_categories']) <= 0)
 	 ) {
 	$category_needed = 'y';
@@ -256,33 +256,33 @@ if (isset($_REQUEST['edit'])
 	}
 
 	$gid = $imagegallib->replace_gallery(
-		$_REQUEST['galleryId'],
-		$_REQUEST['name'],
-		$_REQUEST['description'],
-		'',
-		$_REQUEST['owner'],
-		$_REQUEST['maxRows'],
-		$_REQUEST['rowImages'],
-		$_REQUEST['thumbSizeX'],
-		$_REQUEST['thumbSizeY'],
-		$public,
-		$visible,
-		$_REQUEST['sortorder'],
-		$_REQUEST['sortdirection'],
-		$_REQUEST['galleryimage'],
-		$_REQUEST['parentgallery'],
-		$_REQUEST['showname'],
-		$_REQUEST['showimageid'],
-		$_REQUEST['showdescription'],
-		$_REQUEST['showcreated'],
-		$_REQUEST['showuser'],
-		$_REQUEST['showhits'],
-		$_REQUEST['showxysize'],
-		$_REQUEST['showfilesize'],
-		$_REQUEST['showfilename'],
-		$_REQUEST['defaultscale'],
-		$geographic,
-		$_REQUEST['showcategories']
+					$_REQUEST['galleryId'],
+					$_REQUEST['name'],
+					$_REQUEST['description'],
+					'',
+					$_REQUEST['owner'],
+					$_REQUEST['maxRows'],
+					$_REQUEST['rowImages'],
+					$_REQUEST['thumbSizeX'],
+					$_REQUEST['thumbSizeY'],
+					$public,
+					$visible,
+					$_REQUEST['sortorder'],
+					$_REQUEST['sortdirection'],
+					$_REQUEST['galleryimage'],
+					$_REQUEST['parentgallery'],
+					$_REQUEST['showname'],
+					$_REQUEST['showimageid'],
+					$_REQUEST['showdescription'],
+					$_REQUEST['showcreated'],
+					$_REQUEST['showuser'],
+					$_REQUEST['showhits'],
+					$_REQUEST['showxysize'],
+					$_REQUEST['showfilesize'],
+					$_REQUEST['showfilename'],
+					$_REQUEST['defaultscale'],
+					$geographic,
+					$_REQUEST['showcategories']
 	);
 
 	#add scales
@@ -438,7 +438,10 @@ if (!isset($_REQUEST['offset'])) {
 $smarty->assign_by_ref('offset', $offset);
 
 // Get the list of libraries available for this user (or public galleries)
-$imagegallib = TikiLib::lib('imagegal');
+global $imagegallib;
+if (!is_object($imagegallib)) {
+	require_once('lib/imagegals/imagegallib.php');
+}
 
 $galleries = $imagegallib->list_galleries($offset, $maxRecords, $sort_mode, 'admin', $find);
 Perms::bulk(array( 'type' => 'image gallery' ), 'object', $galleries, 'galleryId');
@@ -451,10 +454,10 @@ $smarty->assign('filter', $_REQUEST['filter']);
 $temp_max = count($galleries['data']);
 for ($i = 0; $i < $temp_max; $i++) {
 	$galperms = Perms::get(
-		array(
-			'type' => 'image gallery',
-			'object' => $galleries['data'][$i]['galleryId']
-		)
+					array(
+						'type' => 'image gallery',
+						'object' => $galleries['data'][$i]['galleryId']
+					)
 	);
 
 	// check if top gallery (has no parents)
@@ -469,11 +472,11 @@ for ($i = 0; $i < $temp_max; $i++) {
 	$maxImages = 1;
 
 	$subgals = $imagegallib->get_subgalleries(
-		$offset,
-		$maxImages,
-		$sort_mode,
-		'',
-		$galleries['data'][$i]['galleryId']
+					$offset,
+					$maxImages,
+					$sort_mode,
+					'',
+					$galleries['data'][$i]['galleryId']
 	);
 
 	if (count($subgals['data']) > 0) {

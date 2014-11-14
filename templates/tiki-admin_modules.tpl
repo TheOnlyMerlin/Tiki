@@ -3,18 +3,18 @@
 {strip}
 {title help="Modules" admpage="module"}{tr}Admin Modules{/tr}{/title}
 
-<div class="t_navbar form-group spacer-bottom-15px">
-	{button href="tiki-admin_modules.php?clear_cache=1" class="btn btn-default" _text="{tr}Clear Cache{/tr}"}
+<div class="navbar">
+	{button href="tiki-admin_modules.php?clear_cache=1" _text="{tr}Clear Cache{/tr}"}
 	{if $tiki_p_edit_menu eq 'y'}
-		{button href="tiki-admin_menus.php" class="btn btn-default" _text="{tr}Admin Menus{/tr}"}
+		{button href="tiki-admin_menus.php" _text="{tr}Admin Menus{/tr}"}
 	{/if}
 	{if empty($smarty.request.show_hidden_modules)}
-		{button show_hidden_modules="y" class="btn btn-default" _text="{tr}Show hidden modules{/tr}"}
+		{button show_hidden_modules="y" _text="{tr}Show hidden modules{/tr}"}
 	{else}
-		{button show_hidden_modules="" class="btn btn-default" _text="{tr}Hide hidden modules{/tr}"}
+		{button show_hidden_modules="" _text="{tr}Hide hidden modules{/tr}"}
 	{/if}
-	{button href="./" _class="btn btn-warning" _text="{tr}Exit Modules{/tr}"}
-	{button _text="{tr}Save{/tr}" _type="primary" class="btn btn-default" _id="save_modules" _ajax="n"}
+	{button href="./" _text="{tr}Exit Modules{/tr}"}
+	{button save_modules="y" _text="{tr}Save{/tr}" _style="display:none;" _id="save_modules" _ajax="n"}
 </div>
 
 {if !empty($missing_params)}
@@ -35,7 +35,7 @@
 		<li>{tr}New modules can be dragged from the "All Modules" tab{/tr}</li>
 	</ul>
 	<p>
-		<strong>{tr}Note:{/tr}</strong> {tr}Links and buttons in modules, apart from the Application Menu, have been deliberately disabled on this page to make drag and drop more reliable. Click here to return <a href="./">HOME</a>{/tr}<br>
+		<strong>{tr}Note:{/tr}</strong> {tr}Links and buttons in modules, apart from the Application Menu, have been deliberately disabled on this page to make drag and drop more reliable. Click here to return <a href="./">HOME</a>{/tr}<br />
 		<strong><em>{tr}More info here{/tr}</em></strong> {icon _id="help" link="http://dev.tiki.org/Modules+Revamp"}
 	</p>
 	
@@ -52,17 +52,14 @@
 		</legend>
 	{/if}
 	<h2>{tr}Assigned Modules{/tr}</h2>
-    <div class="form-group spacer-bottom-15px">
-    	{button edit_assign=0 cookietab=2 _auto_args="edit_assign,cookietab" _text="{tr}Add module{/tr}"}
-    </div>
+	{button edit_assign=0 cookietab=2 _auto_args="edit_assign,cookietab" _text="{tr}Add module{/tr}"}
 
 	<div id="assigned_modules">
 		{tabset}
-		{foreach from=$module_zone_list key=zone_initial item=zone_info}
+		{foreach from=$module_zones key=zone_initial item=zone_info}
 			{tab name=$zone_info.name|capitalize}
-				<div id="{$zone_info.id}_modules" class="table-responsive">
-                <div>
-					<table class="table normal" id="assigned_zone_{$zone_initial}">
+				<div id="{$zone_info.id}_modules">
+					<table class="normal" id="assigned_zone_{$zone_initial}">
 						<tr>
 							<th>{tr}Name{/tr}</th>
 							<th>{tr}Order{/tr}</th>
@@ -72,17 +69,17 @@
 							<th>{tr}Groups{/tr}</th>
 							<th>{tr}Action{/tr}</th>
 						</tr>
-
+						{cycle print=false values="even,odd"}
 						{foreach from=$assigned_modules[$zone_initial] item=module name=assigned_foreach}
-							<tr>
+							<tr class="{cycle}">
 								<td>{$module.name|escape}</td>
 								<td>{$module.ord}</td>
 								<td>{$module.cache_time}</td>
 								<td>{$module.rows}</td>
-								<td style="font-size:smaller;">{$module.params_presentable}</td>
+								<td style="font-size:smaller;">{$module.params|escape:unescape|replace:"+":" "|replace:"&":"<br />"}</td>
 								<td style="font-size:smaller;">{$module.module_groups}</td>
 								<td>
-									<a class="link" href="tiki-admin_modules.php?edit_assign={$module.moduleId}&cookietab=2#content_admin_modules1-2" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
+									<a class="link" href="tiki-admin_modules.php?edit_assign={$module.moduleId}&cookietab=2" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
 									{if !$smarty.foreach.assigned_foreach.first}
 										<a class="link" href="tiki-admin_modules.php?modup={$module.moduleId}" title="{tr}Move Up{/tr}">{icon _id='resultset_up'}</a>
 									{/if}
@@ -97,13 +94,12 @@
 						{/foreach}
 					</table>
 				</div>
-                </div>
 			{/tab}
 		{/foreach}
 		{/tabset}
 	</div>
 	<form method="post" action="#">
-		<input id="module-order" type="hidden" name="module-order" value="">
+		<input id="module-order" type="hidden" name="module-order" value=""/>
 	</form>
 {/tab}
 {if isset($smarty.request.edit_assign) or $preview eq "y"}
@@ -119,22 +115,20 @@
 			<h3>{tr}Preview{/tr}</h3>
 			{$preview_data}
 		{/if}
-		<form method="post" action="tiki-admin_modules.php{if empty($assign_name)}?cookietab=2#assign{/if}">
+		<form method="post" action="tiki-admin_modules.php{if empty($assign_name)}#assign{/if}">
 			{* on the initial selection of a new module, reload the page to the #assign anchor *}
 			{if !empty($info.moduleId)}
-				<input type="hidden" name="moduleId" value="{$info.moduleId}">
+				<input type="hidden" name="moduleId" value="{$info.moduleId}" />
 			{elseif !empty($moduleId)}
-				<input type="hidden" name="moduleId" value="{$moduleId}">
+				<input type="hidden" name="moduleId" value="{$moduleId}" />
 			{/if}
 			<fieldset>
 					{* because changing the module name will auto-submit the form, no reason to display these fields until a module is selected *}
 					{include file='admin_modules_form.tpl'}
 				{if empty($assign_name)}
 					<div class="input_submit_container">
-						<input type="submit" class="btn btn-default btn-sm" name="preview" value="{tr}Module Options{/tr}" onclick="needToConfirm=false;">
+						<input type="submit" name="preview" value="{tr}Module Options{/tr}" onclick="needToConfirm=false;" />
 					</div>
-				{else}
-					{jq}$("#module_params").tabs();{/jq}
 				{/if}
 			</fieldset>
 		</form>
@@ -148,17 +142,16 @@
 		</legend>
 	{/if}
 	<h2>{tr}Custom Modules{/tr}</h2>
-    <div class="table-responsive">
-    <table class="table normal">
+	<table class="normal">
 		<tr>
 			<th>{tr}Name{/tr}</th>
 			<th>{tr}Title{/tr}</th>
 			<th>{tr}Action{/tr}</th>
 		</tr>
-
+		{cycle print=false values="even,odd"}
 		{section name=user loop=$user_modules}
-			<tr>
-				<td class="text"><a class="link" href="tiki-admin_modules.php?um_edit={$user_modules[user].name|escape:'url'}&amp;cookietab=2#editcreate" title="{tr}Edit{/tr}">{$user_modules[user].name|escape}</a></td>
+			<tr class="{cycle}">
+				<td class="text">{$user_modules[user].name|escape}</td>
 				<td class="text">{$user_modules[user].title|escape}</td>
 				<td class="action">
 					<a class="link" href="tiki-admin_modules.php?um_edit={$user_modules[user].name|escape:'url'}&amp;cookietab=2#editcreate" title="{tr}Edit{/tr}">{icon _id='page_edit'}</a>
@@ -170,8 +163,7 @@
          {norecords _colspan=3}
 		{/section}
 	</table>
-    </div>
-	<br>
+	<br />
 	{if $um_name eq ''}
 		<h2>{tr}Create new custom module{/tr}</h2>
 	{else}
@@ -191,22 +183,16 @@
 					<table>
 						<tr>
 							<td><label for="um_name">{tr}Name{/tr}</label></td>
-							<td><input type="text" id="um_name" name="um_name" value="{$um_name|escape}"></td>
+							<td><input type="text" id="um_name" name="um_name" value="{$um_name|escape}" /></td>
 						</tr>
 						<tr>
 							<td><label for="um_title">{tr}Title{/tr}</label></td>
-							<td><input type="text" id="um_title" name="um_title" value="{$um_title|escape}"></td>
+							<td><input type="text" id="um_title" name="um_title" value="{$um_title|escape}" /></td>
 						</tr>
 						<tr>
-							<td><label for="um_parse">{tr}Parse using{/tr}</label></td>
+							<td></td>
 							<td>
-                                <select name="um_parse" id="um_parse">
-                                    <option value=""{if $um_parse eq "" and $um_wikiLingo eq ""} selected="selected"{/if}>{tr}None{/tr}</option>
-                                    <option value="y"{if $um_parse eq "y" and $um_wikiLingo eq ""} selected="selected"{/if}>{tr}Wiki Markup{/tr}</option>
-                                    {if $prefs.feature_wikilingo eq 'y'}
-                                        <option value="wikiLingo"{if $um_wikiLingo eq "y" and $um_parse eq "y"} selected="selected"{/if}>{tr}wikiLingo{/tr}</option>
-                                    {/if}
-                                </select>
+								<label><input type="checkbox" name="um_parse" value="y" {if $um_parse eq "y"}checked="checked"{/if} /> {tr}Must be wiki parsed{/tr}.</label>
 							</td>
 						</tr>
 					</table>
@@ -233,7 +219,7 @@
 									<a class="link" href="javascript:setUserModuleFromCombo('list_polls', 'um_data');" title="{tr}Use Poll{/tr}">{icon _id='add' alt="{tr}Use{/tr}"}</a>
 								</td>
 								<td>
-									<a title="{tr}Help{/tr}" {popup text="Params: id= rate=" width=100 center=true}>{icon _id='help'}</a>
+									<a {popup text="Params: id= rate=" width=100 center=true}>{icon _id='help'}</a>
 								</td>
 							</tr>
 						{/if}
@@ -254,7 +240,7 @@
 									<a class="link" href="javascript:setUserModuleFromCombo('list_galleries', 'um_data');" title="{tr}Use Gallery{/tr}">{icon _id='add' alt="{tr}Use{/tr}"}</a>
 								</td>
 								<td>
-									<a title="{tr}Help{/tr}" {popup text="Params: id= showgalleryname=1 hideimgname=1 hidelink=1" width=100 center=true}>{icon _id='help'}</a>
+									<a {popup text="Params: id= showgalleryname=1 hideimgname=1 hidelink=1" width=100 center=true}>{icon _id='help'}</a>
 								</td>
 							</tr>
 						{/if}
@@ -274,7 +260,7 @@
 									<a class="link" href="javascript:setUserModuleFromCombo('list_contents', 'um_data');" title="{tr}Use Dynamic Content{/tr}">{icon _id='add' alt="{tr}Use{/tr}"}</a>
 								</td>
 								<td>
-									<a title="{tr}Help{/tr}" {popup text="Params: id=" width=100 center=true}>{icon _id='help'}</a>
+									<a {popup text="Params: id=" width=100 center=true}>{icon _id='help'}</a>
 								</td>
 							</tr>
 						{/if}
@@ -294,11 +280,51 @@
 									<a class="link" href="javascript:setUserModuleFromCombo('list_rsss', 'um_data');" title="{tr}Use RSS Module{/tr}">{icon _id='add' alt="{tr}Use{/tr}"}</a>
 								</td>
 								<td>
-									<a title="{tr}Help{/tr}" {popup text="Params: id= max= skip=x,y " width=100 center=true}>{icon _id='help'}</a>
+									<a {popup text="Params: id= max= skip=x,y " width=100 center=true}>{icon _id='help'}</a>
 								</td>
 							</tr>
 						{/if}
 
+						{if $menus}
+							<tr>
+								<td>
+									<label for="list_menus">{tr}Default Tiki menus:{/tr}</label>
+								</td>
+								<td>
+									<select name="menus" id='list_menus'>
+										{section name=ix loop=$menus}
+											<option value="{literal}{{/literal}menu id={$menus[ix].menuId} css=n{literal}}{/literal}">{$menus[ix].name|escape}</option>
+										{/section}
+									</select>
+								</td>
+								<td>
+									<a class="link" href="javascript:setUserModuleFromCombo('list_menus', 'um_data');" title="{tr}Use Menu{/tr}">{icon _id='add' alt="{tr}Use{/tr}"}</a>
+								</td>
+								<td>
+									<a {popup text="Params:<br />id=<br />structureId=<br />css=<br />link_on_section=y <i>or</i> n<br />type=vert <i>or</i> horiz<br />translate=y <i>or</i> n<br />menu_cookie=y <i>or</i> n" width=120 center=true}>{icon _id='help'}</a>
+								</td>
+							</tr>
+							{if $prefs.feature_cssmenus eq "y"}
+								<tr>
+									<td>
+										<label for="list_cssmenus">{tr}CSS menus:{/tr}</label>
+									</td>
+									<td>
+										<select name="cssmenus" id='list_cssmenus'>
+											{section name=ix loop=$menus}
+												<option value="{literal}{{/literal}menu id={$menus[ix].menuId} type= {literal}}{/literal}">{$menus[ix].name|escape}</option>
+											{/section}
+										</select>
+									</td>
+									<td>
+										<a class="link" href="javascript:setUserModuleFromCombo('list_cssmenus', 'um_data');" title="{tr}Use CSS menu{/tr}">{icon _id='add' alt="{tr}Use{/tr}"}</a>
+									</td>
+									<td>
+										<a {popup text="Params:<br />id=<br />type=horiz <i>or</i> vert<br />sectionLevel=<br />toLevel= " width=100 center=true}>{icon _id='help'}</a>
+									</td>
+								</tr>
+							{/if}							
+						{/if}
 						{if $banners}
 							<tr>
 								<td>
@@ -315,11 +341,10 @@
 									<a class="link" href="javascript:setUserModuleFromCombo('list_banners', 'um_data');" title="{tr}Use Banner Zone{/tr}">{icon _id='add' alt="{tr}Use{/tr}"}</a>
 								</td>
 								<td>
-									<a title="{tr}Help{/tr}" {popup text="Params: zone= target=_blank|_self|" width=100 center=true}>{icon _id='help'}</a>
+									<a {popup text="Params: zone= target=_blank|_self|" width=100 center=true}>{icon _id='help'}</a>
 								</td>
 							</tr>
 						{/if}
-
 						{if $wikistructures}
 							<tr>
 								<td>
@@ -336,7 +361,7 @@
 									<a class="link" href="javascript:setUserModuleFromCombo('list_wikistructures', 'um_data');" title="{tr}Use Wiki Structure{/tr}">{icon _id='add' alt="{tr}Use{/tr}"}</a>
 								</td>
 								<td>
-									<a title="{tr}Help{/tr}" {popup text="Params: id=" width=100 center=true}>{icon _id='help'}</a>
+									<a {popup text="Params: id=" width=100 center=true}>{icon _id='help'}</a>
 								</td>
 							</tr>
 						{/if}
@@ -358,11 +383,11 @@
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2" class="odd">{tr}Data{/tr}<br>
+				<td colspan="2" class="odd">{tr}Data{/tr}<br />
 					<a name="editcreate"></a>
-					{textarea name='um_data' id='um_data' _class=form-color _toolbars='y' _previewConfirmExit='n' _wysiwyg="n"}{$um_data}{/textarea}
-					<br>
-					<input type="submit" class="btn btn-primary btn-sm" name="um_update" value="{if empty($um_name)}{tr}Create{/tr}{else}{tr}Save{/tr}{/if}" onclick="needToConfirm=false">
+					{textarea name='um_data' id='um_data' rows="6" cols="80" _toolbars='y' _previewConfirmExit='n' _wysiwyg="n"}{$um_data}{/textarea}
+					<br />
+					<input type="submit" name="um_update" value="{if empty($um_name)}{tr}Create{/tr}{else}{tr}Save{/tr}{/if}" onclick="needToConfirm=false" />
 				</td>
 			</tr>
 		</table>
@@ -370,18 +395,18 @@
 {/tab}
 
 {tab name="{tr}All Modules{/tr}"}
-    <h2>{tr}All Modules{/tr}</h2>
+
 	<form method="post" action="tiki-admin_modules.php">
 		<div style="height:400px;overflow:auto;">
 			<div class="navbar">
 				{listfilter selectors='#module_list li'}
-				<input type="checkbox" name="module_list_show_all" id="module_list_show_all"{if $module_list_show_all} checked="checked"{/if}>
+				<input type="checkbox" name="module_list_show_all" id="module_list_show_all"{if $module_list_show_all} checked="checked"{/if} />
 				<label for="module_list_show_all">{tr}Show all modules{/tr}</label>
 			</div>
 			<ul id="module_list">
 				{foreach key=name item=info from=$all_modules_info}
 					<li class="{if $info.enabled}enabled{else}disabled{/if} clearfix">
-						<input type="hidden" value="{$name}">
+						<input type="hidden" value="{$name}" />
 						<div class="q1 tips"
 								title="{$info.name} &lt;em&gt;({$name})&lt;/em&gt;|{$info.description}
 								{if not $info.enabled}&lt;br /&gt;&lt;small&gt;&lt;em&gt;({tr}Requires{/tr} {' &amp; '|implode:$info.prefs})&lt;/em&gt;&lt;/small&gt;{/if}">
@@ -397,7 +422,7 @@
 	</form>
 	{jq}
 $("#module_list_show_all").click(function(){
-	$("#module_list li.disabled").toggle($(this).prop("checked"));
+	$("#module_list li.disabled").toggle($(this).attr("checked"));
 });
 {/jq}
 {/tab}

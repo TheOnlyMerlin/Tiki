@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +8,7 @@
 $section = 'faqs';
 require_once ('tiki-setup.php');
 
-$faqlib = TikiLib::lib('faq');
+include_once ('lib/faqs/faqlib.php');
 
 $access->check_feature('feature_faqs');
 $access->check_permission('tiki_p_admin_faqs');
@@ -122,7 +119,7 @@ include_once ('tiki-section_options.php');
 ask_ticket('faq-questions');
 
 
-$wikilib = TikiLib::lib('wiki');
+global $wikilib; include_once('lib/wiki/wikilib.php');
 $plugins = $wikilib->list_plugins(true, 'faqans');
 $smarty->assign_by_ref('plugins', $plugins);
 

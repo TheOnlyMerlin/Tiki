@@ -1,5 +1,6 @@
 {* $Id$ *}<!DOCTYPE html>
-<html lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}" lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}">
 	<head>
 {include file='header.tpl'}
 	</head>
@@ -16,6 +17,7 @@
 	<div id="tiki-center">
 		<div id="role_main">
 			{$mid_data}
+			{show_help}
 		</div>
 	</div>
 </div>
@@ -24,5 +26,10 @@
 </div>
 {/if}
 {include file='footer.tpl'}
+<!-- Put JS at the end -->
+{if $headerlib}
+	{$headerlib->output_js_files()}
+	{$headerlib->output_js()}
+{/if}
 	</body>
 </html>

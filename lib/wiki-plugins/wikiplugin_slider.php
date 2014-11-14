@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -33,7 +33,7 @@ function wikiplugin_slider_info()
 			'height' => array(
 				'required' => false,
 				'name' => tra('Height'),
-				'description' => tra('Height in pixels or percentage. Default value is complete slider height. if expand parameter set to y, then don\'t use percent only use pixels '),
+				'description' => tra('Height in pixels or percentage. Default value is complete slider height.'),
 				'filter' => 'striptags',
 				'accepted' => 'Number of pixels followed by \'px\' or percent followed by % (e.g. "200px" or "100%").',
 				'default' => 'Slider height',
@@ -43,38 +43,27 @@ function wikiplugin_slider_info()
 				'name' => tra('Theme'),
 				'description' => tra('The theme to use in slider.'),
 				'filter' => 'striptags',
-				'accepted' => 'Name of the theme you want to use',
+				'accepted' => 'name of the theme you want to use',
 				'default' => 'default',
 				'options' => array(
-					array('text' => 'default', 'value' => ''),
-					array('text' => 'construction', 'value' => 'construction'),
-					array('text' => 'cs-portfolio', 'value' => 'cs-portfolio'),
-					array('text' => 'default1', 'value' => 'default1'),
-					array('text' => 'default2', 'value' => 'default2'),
-					array('text' => 'metallic', 'value' => 'metallic'),
-					array('text' => 'mini-dark', 'value' => 'mini-dark'),
-					array('text' => 'mini-light', 'value' => 'mini-light'),
+					array('text' => 'default', 'value' => ''), 
+					array('text' => 'construction', 'value' => 'construction'), 
+					array('text' => 'portfolio', 'value' => 'portfolio'), 
+					array('text' => 'metallic', 'value' => 'metallic'), 
 					array('text' => 'minimalist-round', 'value' => 'minimalist-round'),
-					array('text' => 'minimalist-square', 'value' => 'minimalist-square'),
-					array('text' => 'office', 'value' => 'office'),
-					array('text' => 'polished', 'value' => 'polished'),
-					array('text' => 'ribbon', 'value' => 'ribbon'),
-					array('text' => 'shiny', 'value' => 'shiny'),
-					array('text' => 'simple', 'value' => 'simple'),
-					array('text' => 'tabs-dark', 'value' => 'tabs-dark'),
-					array('text' => 'tabs-light', 'value' => 'tabs-light')
+					array('text' => 'minimalist-square', 'value' => 'minimalist-square')
 				)
 			),
 			'expand' => array(
 				'required' => false,
 				'name' => tra('Expand'),
-				'description' => tra('if y, the entire slider will expand to fit the parent element and height parameter should not be empty'),
+				'description' => tra('if y, the entire slider will expand to fit the parent element'),
 				'filter' => 'alpha',
 				'accepted' => 'y or n',
 				'default' => 'n',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
@@ -86,8 +75,8 @@ function wikiplugin_slider_info()
 				'accepted' => 'y or n',
 				'default' => 'y',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
@@ -107,8 +96,8 @@ function wikiplugin_slider_info()
 				'accepted' => 'y or n',
 				'default' => 'y',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
@@ -120,8 +109,8 @@ function wikiplugin_slider_info()
 				'accepted' => 'y or n',
 				'default' => 'y',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
@@ -133,8 +122,8 @@ function wikiplugin_slider_info()
 				'accepted' => 'y or n',
 				'default' => 'y',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
@@ -146,8 +135,8 @@ function wikiplugin_slider_info()
 				'accepted' => 'y or n',
 				'default' => 'n',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
@@ -159,8 +148,8 @@ function wikiplugin_slider_info()
 				'accepted' => 'y or n',
 				'default' => 'n',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
@@ -172,8 +161,8 @@ function wikiplugin_slider_info()
 				'accepted' => 'y or n',
 				'default' => 'y',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
@@ -185,8 +174,8 @@ function wikiplugin_slider_info()
 				'accepted' => 'y or n',
 				'default' => 'y',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
@@ -198,8 +187,8 @@ function wikiplugin_slider_info()
 				'accepted' => 'y or n',
 				'default' => 'y',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
@@ -211,8 +200,8 @@ function wikiplugin_slider_info()
 				'accepted' => 'y or n',
 				'default' => 'y',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
@@ -224,8 +213,8 @@ function wikiplugin_slider_info()
 				'accepted' => 'y or n',
 				'default' => 'f',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
@@ -237,8 +226,8 @@ function wikiplugin_slider_info()
 				'accepted' => 'y or n',
 				'default' => 'n',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
@@ -250,8 +239,8 @@ function wikiplugin_slider_info()
 				'accepted' => 'y or n',
 				'default' => 'n',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
@@ -263,8 +252,8 @@ function wikiplugin_slider_info()
 				'accepted' => 'y or n',
 				'default' => 'y',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
@@ -276,18 +265,10 @@ function wikiplugin_slider_info()
 				'accepted' => 'y or n',
 				'default' => 'n',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
-			),
-			'delay' => array(
-				'required' => false,
-				'name' => tra('Delay between slides'),
-				'description' => tra('Time in milliseconds between slideshow transitions (in AutoPlay mode).'),
-				'filter' => 'striptags',
-				'accepted' => 'a number',
-				'default' => '3000',
 			),
 			'playrtl' => array(
 				'required' => false,
@@ -297,8 +278,8 @@ function wikiplugin_slider_info()
 				'accepted' => 'y or n',
 				'default' => 'n',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
@@ -310,83 +291,38 @@ function wikiplugin_slider_info()
 				'accepted' => 'y or n',
 				'default' => 'y',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
-			'animationtime' => array(
-				'required' => false,
-				'name' => tra('Animation Time'),
-				'description' => tra('Milliseconds between slides'),
-				'filter' => 'striptags',
-				'accepted' => 'a number',
-				'default' => '600',
-			),
-			'hashtags' => array(
-				'required' => false,
-				'name' => tra('Display panel hashtag'),
-				'description' => tra('if y, each panel has a hashtag that will appear in the page URL, allowing you to link to a specific panel.'),
-				'filter' => 'alpha',
-				'accepted' => 'y or n',
-				'default' => 'y',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				)
-			),
-
 		),
 	);
 }
 
 function wikiplugin_slider($data, $params)
 {
-	$tikilib = TikiLib::lib('tiki');
-	$headerlib = TikiLib::lib('header');
+	global $tikilib, $headerlib;
 	extract($params, EXTR_SKIP);
-
-	$headerlib->add_jsfile('vendor/jquery/plugins/anythingslider/js/swfobject.js');
-	$headerlib->add_jsfile('vendor/jquery/plugins/anythingslider/js/jquery.anythingslider.js');
-	$headerlib->add_jsfile('vendor/jquery/plugins/anythingslider/js/jquery.anythingslider.fx.js');
-	$headerlib->add_jsfile('vendor/jquery/plugins/anythingslider/js/jquery.anythingslider.video.js');
-	$headerlib->add_cssfile('vendor/jquery/plugins/anythingslider/css/anythingslider.css');
-	$headerlib->add_cssfile('vendor/jquery/plugins/anythingslider/css/theme-construction.css');
-	$headerlib->add_cssfile('vendor/jquery/plugins/anythingslider/css/theme-cs-portfolio.css');
-	$headerlib->add_cssfile('vendor/jquery/plugins/anythingslider/css/theme-metallic.css');
-	$headerlib->add_cssfile('vendor/jquery/plugins/anythingslider/css/theme-minimalist-round.css');
-	$headerlib->add_cssfile('vendor/jquery/plugins/anythingslider/css/theme-minimalist-square.css');
-	$headerlib->add_cssfile('vendor_extra/anythingslider-themes/css/theme-default1.css');
-	$headerlib->add_cssfile('vendor_extra/anythingslider-themes/css/theme-default2.css');
-	$headerlib->add_cssfile('vendor_extra/anythingslider-themes/css/theme-mini-dark.css');
-	$headerlib->add_cssfile('vendor_extra/anythingslider-themes/css/theme-mini-light.css');
-	$headerlib->add_cssfile('vendor_extra/anythingslider-themes/css/theme-office.css');
-	$headerlib->add_cssfile('vendor_extra/anythingslider-themes/css/theme-polished.css');
-	$headerlib->add_cssfile('vendor_extra/anythingslider-themes/css/theme-ribbon.css');
-	$headerlib->add_cssfile('vendor_extra/anythingslider-themes/css/theme-shiny.css');
-	$headerlib->add_cssfile('vendor_extra/anythingslider-themes/css/theme-simple.css');
-	$headerlib->add_cssfile('vendor_extra/anythingslider-themes/css/theme-tabs-dark.css');
-	$headerlib->add_cssfile('vendor_extra/anythingslider-themes/css/theme-tabs-light.css');
+	
+	$headerlib->add_jsfile('lib/jquery/anythingslider/js/swfobject.js');
+	$headerlib->add_jsfile('lib/jquery/anythingslider/js/jquery.anythingslider.js');
+	$headerlib->add_jsfile('lib/jquery/anythingslider/js/jquery.anythingslider.fx.js');
+	$headerlib->add_jsfile('lib/jquery/anythingslider/js/jquery.anythingslider.video.js');
+	$headerlib->add_cssfile('lib/jquery/anythingslider/css/anythingslider.css');
+	$headerlib->add_cssfile('lib/jquery/anythingslider/css/theme-construction.css');
+	$headerlib->add_cssfile('lib/jquery/anythingslider/css/theme-cs-portfolio.css');
+	$headerlib->add_cssfile('lib/jquery/anythingslider/css/theme-metallic.css');
+	$headerlib->add_cssfile('lib/jquery/anythingslider/css/theme-minimalist-round.css');
+	$headerlib->add_cssfile('lib/jquery/anythingslider/css/theme-minimalist-square.css');
 	
 	if (isset($theme) && !empty($theme)) {
 		switch (strtolower($theme)) {
 			case 'construction':
-			case 'cs-portfolio':
-			case 'default1':
-			case 'default2':
+			case 'portfolio':
 			case 'metallic':
-			case 'mini-dark':
-			case 'mini-light':
 			case 'minimalist-round':
 			case 'minimalist-square':
-			case 'office':
-			case 'polished':
-			case 'ribbon':
-			case 'shiny':
-			case 'simple':
-			case 'tabs-dark':
-			case 'tabs-light':
 				$theme = $theme;
     			break;
 			default:
@@ -396,19 +332,15 @@ function wikiplugin_slider($data, $params)
 		$theme = 'default';
 	}
 
-	$animationtime = (int) $animationtime;
-	$animationtime = (empty($animationtime) === false ? $animationtime : 600);
-	$delay = (int) $delay;
-	$delay = (empty($delay) === false ? $delay : 3000);
 	$showmultiple = (int) $showmultiple;
 	$showmultiple = (empty($showmultiple) === false ? $showmultiple : 1);
 
 	$headerlib->add_jq_onready(
-		"function formatText(i, p) {
+					"function formatText(i, p) {
 			var possibleText = $('.tiki-slider-title').eq(i - 1).text();
-			return (possibleText ? possibleText : 'slide_' + i);
+			return (possibleText ? possibleText : i);
 		}
-
+		
 		$('.tiki-slider').anythingSlider({
 			theme               : '$theme',
 			expand              : ".makeBool($expand, false).",
@@ -438,7 +370,6 @@ function wikiplugin_slider($data, $params)
 			// Navigation
 			startPanel          : 1,
 			changeBy            : 1,
-			hashTags            : ".makeBool($hashtags, true).",
 
 			// Slideshow options
 			autoPlay            : ".makeBool($autoplay, false).",
@@ -449,30 +380,30 @@ function wikiplugin_slider($data, $params)
 			playRtl             : ".makeBool($playrtl, false).",
 
 			// Times
-			delay               : $delay,
+			delay               : 3000,
 			resumeDelay         : 15000,
-			animationTime       : $animationtime,
+			animationTime       : 600,
 
 			// Video
 			resumeOnVideoEnd    : ".makeBool($resumeonvideoend, true).",
 			addWmodeToObject    : 'opaque',
-
+			
 			navigationFormatter: formatText
 		});"
 	);
-
+	
+	$titles = array();
 	if (!empty($titles)) {
 		$titles = $tikilib->parse_data($titles, array('suppress_icons' => true));
 		$titles = explode('|', $titles);
 	}
-
+	
 	$sliderData = array();
 	if (!empty($data)) {
 		$data = $tikilib->parse_data($data, array('suppress_icons' => true));
-		$data = preg_replace('/<p>\/\/\/\/\/\s*<\/p>/', '/////', $data);	// remove surrounding <p> tags on slide boundaries
 		$sliderData = explode('/////', $data);
 	}
-
+	
 	$ret = '';
 	foreach ($sliderData as $i => $slide) {
 		$ret .= "<div>
@@ -480,17 +411,8 @@ function wikiplugin_slider($data, $params)
 			$slide
 		</div>";
 	}
-
-	if($expand == 'y') {
-		/** if expand eq 'y', "100%" height not working **/
-		/** Temp fix: if $height is empty**/
-		$height = (empty($height) === false ? $height : '300px');
-		$result = "<div style='width: $width; height: $height;'><div class='tiki-slider'>$ret</div></div>";
-	} else {
-		$result = "<div class='tiki-slider' style='width: $width; height: $height;'>$ret</div>";
-	}
 	
 	return <<<EOF
-	~np~$result~/np~
+	~np~<div class='tiki-slider' style='width: $width; height: $height;'>$ret</div>~/np~
 EOF;
 }

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -30,7 +30,6 @@ function wikiplugin_module_info()
 		'description' => tra('Display a module'),
 		'prefs' => array( 'wikiplugin_module' ),
 		'validate' => 'all',
-		'format' => 'html',
 		'icon' => 'img/icons/module.png',
 		'extraparams' =>true,
 		'tags' => array( 'basic' ),
@@ -297,8 +296,8 @@ function wikiplugin_module($data, $params)
 			'name' => $module,
 			'params' => $params,
 			'rows' => $max,
-			'position' => '_wp_',
-			'ord' => $instance,
+			'position' => null,
+			'ord' => null,
 			'cache_time'=> 0,
 		);
 
@@ -306,24 +305,25 @@ function wikiplugin_module($data, $params)
 			$module_reference['module_style'] = $module_style;
 		}
 
-		$modlib = TikiLib::lib('mod');
+		global $modlib; require_once 'lib/modules/modlib.php';
 		$out = $modlib->execute_module($module_reference);
 	}
 
 	if ($out) {
 		if ($float != 'nofloat') {
-			$data = "<div style='float: $float;'>$out</div>";
+			$data = "<div style='float: $float;'>";
 		} else {
-			$data = "<div>$out</div>";
+			$data = "<div>";
+		}	
+		if ($np) {
+  		$data.= "~np~$out~/np~</div>";
+		} else {
+			$data.= "$out</div>";
 		}
 	} else {
-		// Display error message
+        // Display error message
 		$data = "<div class=\"highlight\">" . tra("Sorry, no such module"). "<br /><b>$module</b></div>" . $data;
 	}
 
-	if ($module == 'register') {
-        // module register (maybe others too?) adds ~np~ to plugin output so remove them
-        $data = preg_replace('/~[\/]?np~/ms', '', $data);
-	}
 	return $data;
 }

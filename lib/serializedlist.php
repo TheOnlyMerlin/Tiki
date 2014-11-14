@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -47,45 +47,29 @@ abstract class SerializedList
 
 	abstract public function initPrefPrefix();	// to be declared to set $this->prefPrefix = 'your_pref_prefix_'
 	abstract public function initData();		// func to set $this->data as you need it
-    /**
-     * @param $params
-     * @return mixed
-     */
-    abstract public function setData($params);	// func to set the date
+	abstract public function setData($params);	// func to set the date
 
 	public function getData()
 	{
 		return $this->data;
 	}
 
-    /**
-     * @return string
-     */
-    public function getName()
+	public function getName()
 	{
 		return $this->name;
 	}
 
-    /**
-     * @return string
-     */
-    public function getPrefName()
+	public function getPrefName()
 	{
 		return $this->prefPrefix . $this->name;
 	}
 
-    /**
-     * @return string
-     */
-    public function getListName()
+	public function getListName()
 	{
 		return $this->prefPrefix . 'list';
 	}
 
-    /**
-     * @return array|mixed
-     */
-    public function getPrefList()
+	public function getPrefList()
 	{
 		global $prefs;
 
@@ -99,10 +83,7 @@ abstract class SerializedList
 		return $custom;
 	}
 
-    /**
-     * @return mixed
-     */
-    public function loadPref()
+	public function loadPref()
 	{
 		global $prefs, $tikilib;
 

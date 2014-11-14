@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -23,23 +23,23 @@ function smarty_function_initials_filter_links($params, $smarty)
 	if ( ! isset($params['_class']) ) $params['_class'] = 'prevnext';
 
 	// Include smarty functions used below
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	$smarty->loadPlugin('smarty_block_ajax_href');
 	$smarty->loadPlugin('smarty_function_query');
 
 	$tag_start = "\n" . '<a class="' . $params['_class'] . '" ' . smarty_block_ajax_href(
-		array('template' => $params['_template'], 'htmlelement' => $params['_htmlelement']),
-		smarty_function_query(
-			array(
-				'_type' => $default_type,
-				$params['_initial'] => 'X',
-				'offset' => 'NULL',
-				'reloff' => 'NULL'
-			),
-			$smarty
-		),
-		$smarty,
-		false
+					array('template' => $params['_template'], 'htmlelement' => $params['_htmlelement']),
+					smarty_function_query(
+									array(
+										'_type' => $default_type, 
+										$params['_initial'] => 'X', 
+										'offset' => 'NULL', 
+										'reloff' => 'NULL'
+									),
+									$smarty
+					),
+					$smarty,
+					false
 	) . '>';
 
 	$alpha = explode(',', tra('a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z'));
@@ -51,6 +51,6 @@ function smarty_function_initials_filter_links($params, $smarty)
 		}
 	}
 	$html .= "\n" . str_replace($params['_initial'] . '=X', $params['_initial'] . '=', $tag_start) . tra('All') . '</a>';
-
+	
 	return '<div class="alphafilter">'.$html.'</div>';
 }

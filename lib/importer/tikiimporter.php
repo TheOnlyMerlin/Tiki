@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -80,7 +80,7 @@ class TikiImporter
 	 *
 	 * @return array $importFeedback array with the number of pages imported etc
 	 */
-	function import($filePath = null)
+	function import()
 	{
 
 	}
@@ -117,7 +117,7 @@ class TikiImporter
 	 *
 	 * @param array $parsedData data ready to be inserted into Tiki
 	 */
-	function insertData($parsedData = null)
+	function insertData($parsedData)
 	{
 
 	}
@@ -235,9 +235,6 @@ class TikiImporter
 	}
 }
 
-/**
- *
- */
 class ImporterParserException extends Exception
 {
 }

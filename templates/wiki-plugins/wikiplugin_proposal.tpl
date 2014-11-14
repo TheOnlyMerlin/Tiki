@@ -1,5 +1,4 @@
-<div class="table-responsive">
-<table class="table table-bordered">
+<table class="normal">
 	{if $params.caption}
 		<caption>{$params.caption|escape}</caption>
 	{/if}
@@ -32,11 +31,11 @@
 			<td>
 				<form method="post" action="tiki-wikiplugin_edit.php">
 					<div>
-						<input type="hidden" name="page" value="{$page|escape}">
-						<input type="hidden" name="content" value="{$body|escape}">
-						<input type="hidden" name="index" value="{$passes|escape}">
-						<input type="hidden" name="type" value="proposal">
-						<input type="submit" class="btn btn-default btn-sm" value="{$label|escape}">
+						<input type="hidden" name="page" value="{$page|escape}"/>
+						<input type="hidden" name="content" value="{$body|escape}"/>
+						<input type="hidden" name="index" value="{$passes|escape}"/>
+						<input type="hidden" name="type" value="proposal"/>
+						<input type="submit" value="{$label|escape}"/>
 					</div>
 				</form>
 			</td>
@@ -44,4 +43,3 @@
 		</tr>
 	{/if}
 </table>
-</div>

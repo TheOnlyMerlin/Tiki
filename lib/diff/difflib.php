@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -26,7 +26,6 @@ class Tiki_Text_Diff_Renderer extends Text_Diff_Renderer
 	}
 	function render($diff)
 	{
-		$x0 = $y0 = 0;
 		$xi = $yi = 1;
 		$block = false;
 		$context = array();
@@ -110,7 +109,7 @@ function diff2($page1, $page2, $type='sidediff')
 				$words=0;
 			}
 		}
-
+//echo "<pre>";print_r($z);echo "</pre>";
 		if ($type == 'unidiff') {
 			require_once('renderer_unified.php');
 			$renderer = new Text_Diff_Renderer_unified($context);
@@ -125,7 +124,7 @@ function diff2($page1, $page2, $type='sidediff')
 			$renderer = new Text_Diff_Renderer_bytes();
 		} else if ($type == 'htmldiff') {
 			require_once('renderer_htmldiff.php');
-			$renderer = new Text_Diff_Renderer_htmldiff($context, $words);
+			$renderer = new Text_Diff_Renderer_htmldiff(count($page1));
 		} else {
 			return "";
 		}
@@ -133,61 +132,27 @@ function diff2($page1, $page2, $type='sidediff')
 	}
 	return $html;
 }
-
 /* @brief compute the characters differences between a list of lines
  * @param $orig array list lines in the original version
  * @param $final array the same lines in the final version
- * @param int $words
- * @param string $function
- * @return array
  */
 function diffChar($orig, $final, $words=0, $function='character')
 {
-	$glue = strpos($function, 'inline') !== false ? "<br />" : "\n";
 	if ($words) {
-		preg_match_all("/\w+\s+(?=\w)|\w+|\W/u", implode($glue, $orig), $matches);
+		preg_match_all("/\w+\s+(?=\w)|\w+|\W/", implode("<br />", $orig), $matches);
 		$line1 = $matches[0];
-		preg_match_all("/\w+\s+(?=\w)|\w+|\W/u", implode($glue, $final), $matches);
+		preg_match_all("/\w+\s+(?=\w)|\w+|\W/", implode("<br />", $final), $matches);
 		$line2 = $matches[0];
 	} else {
-		$line1 = preg_split('//u', implode($glue, $orig), -1, PREG_SPLIT_NO_EMPTY);
-		$line2 = preg_split('//u', implode($glue, $final), -1, PREG_SPLIT_NO_EMPTY);
+		$line1 = preg_split('//', implode("<br />", $orig), -1, PREG_SPLIT_NO_EMPTY);
+		$line2 = preg_split('//', implode("<br />", $final), -1, PREG_SPLIT_NO_EMPTY);
 	}
 	$z = new Text_Diff($line1, $line2);
 	if ($z->isEmpty())
 		return array($orig[0], $final[0]);
 //echo "<pre>";print_r($z);echo "</pre>";
-
-    compileRendererClass($function);
+	require_once("renderer_$function.php");
       $new = "Text_Diff_Renderer_$function";
 	$renderer = new $new(count($line1));
 	return $renderer->render($z);
-}
-
-function compileRendererClass($function)
-{
-    /*
-     * The various subclasses of Text_Diff_Renderer have methods whose signatures are incompatible
-     * with those of their parents. This raises some warnings which don't matter in production settings.
-     *
-     * But when running phpunit tests, this causes some failures, because we have configured phpunit
-     * to report warnings as failures.
-     *
-     * Making the methods compatible with each other would be very involved, and might introduce some
-     * actual bugs. So instead, temporarily disable warning reporting, just for the compilation of
-     * this file.
-     */
-    $old_error_reporting_level;
-    if (defined('TIKI_IN_TEST'))
-    {
-        $old_error_reporting_level = error_reporting(E_ERROR | E_PARSE);
-    }
-
-    require_once("renderer_$function.php");
-
-    if (defined('TIKI_IN_TEST'))
-    {
-        error_reporting($old_error_reporting_level);
-    }
-
 }

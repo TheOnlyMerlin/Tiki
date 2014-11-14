@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -99,23 +99,13 @@ function wikiplugin_subscribegroup_info()
 				'filter' => 'alpha',
 				'default' => 'y',
 			),
-			'allowLeaveNonUserChoice' => array(
-				'required' => false,
-				'name' => tra('Allows leaving a non-userChoice group'),
-				'description' => tra('Always allow leaving non-userChoice group even if userChoice for group is set to n'),
-				'filter' => 'alpha',
-				'default' => 'n',
-			),
 		),
 	);
 }
 
 function wikiplugin_subscribegroup($data, $params)
 {
-	global $tiki_p_subscribe_groups, $user;
-	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
-
+	global $tiki_p_subscribe_groups, $userlib, $user, $smarty;
 	static $iSubscribeGroup = 0;
 	++$iSubscribeGroup;
 	if (empty($user)) {
@@ -139,19 +129,12 @@ function wikiplugin_subscribegroup($data, $params)
 	if (!($info = $userlib->get_group_info($group)) || $info['groupName'] != $group) { // must have the right case
 		return tra('Incorrect param');
 	}
-	if (!isset($params['allowLeaveNonUserChoice']) || $params['allowLeaveNonUserChoice'] != 'y') {
-		if ($info['userChoice'] != 'y') {
-			return tra('Permission denied');
-		}
+	if ($info['userChoice'] != 'y') {
+		return tra('Permission denied');
 	}
 
 	$groups = $userlib->get_user_groups_inclusion($user);
 	$current_defgroup = $userlib->get_user_default_group($user);
-
-	if (!$groups[$group] && $params['allowLeaveNonUserChoice'] == 'y') {
-		// Deny anyway if user is not in group even if allowLeaveNonUserChoice is y
-		return tra('Permission denied');
-	}
 
 	if (!empty($_REQUEST['subscribeGroup']) && !empty($_REQUEST['iSubscribeGroup']) && $_REQUEST['iSubscribeGroup'] == $iSubscribeGroup && $_REQUEST['group'] == $group) {
 		if (isset($defgroup) || isset($defgroup_action) || isset($undefgroup) || isset($undefgroup_action)) {
@@ -164,6 +147,7 @@ function wikiplugin_subscribegroup($data, $params)
 				}
 				$userlib->set_default_group($user, $group);
 			}
+			include_once('lib/core/Zend/OpenId.php');	// contains useful redirect selfUrl functions
 			if (!empty($params['defgroup_url']) && $params['defgroup_url'] === 'n') {
 				Zend_OpenId::redirect(Zend_OpenId::selfUrl());
 			} else {

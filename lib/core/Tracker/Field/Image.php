@@ -1,13 +1,13 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 /**
  * Handler class for Image
- *
+ * 
  * Letter key: ~i~
  *
  */
@@ -32,35 +32,30 @@ class Tracker_field_Image extends Tracker_Field_File
 						'description' => tr('Display size in pixels'),
 						'filter' => 'int',
 						'default' => 30,
-						'legacy_index' => 0,
 					),
 					'yListSize' => array(
 						'name' => tr('List image height'),
 						'description' => tr('Display size in pixels'),
 						'filter' => 'int',
 						'default' => 30,
-						'legacy_index' => 1,
 					),
 					'xDetailSize' => array(
 						'name' => tr('Detail image width'),
 						'description' => tr('Display size in pixels'),
 						'filter' => 'int',
 						'default' => 300,
-						'legacy_index' => 2,
 					),
-					'yDetailSize' => array(
+					'yDefailSize' => array(
 						'name' => tr('Detail image height'),
 						'description' => tr('Display size in pixels'),
 						'filter' => 'int',
 						'default' => 300,
-						'legacy_index' => 3,
 					),
 					'uploadLimitScale' => array(
 						'name' => tr('Maximum image size'),
 						'description' => tr('Maximum image width or height in pixels.'),
 						'filter' => 'int',
 						'default' => '1000',
-						'legacy_index' => 4,
 					),
 					'shadowbox' => array(
 						'name' => tr('Shadowbox'),
@@ -71,13 +66,11 @@ class Tracker_field_Image extends Tracker_Field_File
 							'individual' => tr('One box per item'),
 							'group' => tr('Use the same box for all images'),
 						),
-						'legacy_index' => 5,
 					),
 					'imageMissingIcon' => array(
 						'name' => tr('Missing Icon'),
 						'description' => tr('Icon to use when no images have been uploaded.'),
 						'filter' => 'url',
-						'legacy_index' => 6,
 					),
 				),
 			),
@@ -93,8 +86,8 @@ class Tracker_field_Image extends Tracker_Field_File
 
 	function getFieldData(array $requestData = array())
 	{
-		global $prefs;
-		$smarty = TikiLib::lib('smarty');
+		global $prefs, $smarty;
+		
 		$ins_id = $this->getInsertId();
 
 		if (!empty($prefs['fgal_match_regex']) && !empty($_FILES[$ins_id]['name'])) {
@@ -131,7 +124,7 @@ class Tracker_field_Image extends Tracker_Field_File
 		$pre = '';
 		if ( !empty($val) && file_exists($val) ) {
 			$params['file'] = $val;
-			$shadowtype = $this->getOption('shadowbox');
+			$shadowtype = $this->getOption(5);
 			if ($prefs['feature_shadowbox'] == 'y' && !empty($shadowtype)) {
 				switch ($shadowtype) {
 				case 'item':
@@ -146,31 +139,31 @@ class Tracker_field_Image extends Tracker_Field_File
 				}
 				$pre = "<a href=\"$val\" rel=\"shadowbox$rel;type=img\">";
 			}
-			if ( $this->getOption('xListSize') || $this->getOption('yListSize') || $this->getOption('xDetailSize') || $this->getOption('yDetailSize')) {
+			if ( $this->getOption(0) || $this->getOption(1) || $this->getOption(2) || $this->getOption(3)) {
 				$image_size_info = getimagesize($val);
 			}
 			if ($list_mode != 'n') {
-				if ($this->getOption('xListSize') || $this->getOption('yListSize')) {
+				if ($this->getOption(0) || $this->getOption(1)) {
 					list( $params['width'], $params['height']) = $this->get_resize_dimensions(
-						$image_size_info[0],
-						$image_size_info[1],
-						$this->getOption('xListSize'),
-						$this->getOption('yListSize')
+									$image_size_info[0],
+									$image_size_info[1],
+									$this->getOption(0),
+									$this->getOption(1)
 					);
 				}
 			} else {
-				if ($this->getOption('xDetailSize') || $this->getOption('yDetailSize')) {
+				if ($this->getOption(2) || $this->getOption(3)) {
 					list( $params['width'], $params['height']) = $this->get_resize_dimensions(
-						$image_size_info[0],
-						$image_size_info[1],
-						$this->getOption('xDetailSize'),
-						$this->getOption('yDetailSize')
+									$image_size_info[0],
+									$image_size_info[1],
+									$this->getOption(2),
+									$this->getOption(3)
 					);
 				}
 			}
 		} else {
-			if ($this->getOption('imageMissingIcon')) {
-				$params['file'] = $this->getOption('imageMissingIcon');
+			if ($this->getOption(6)) {
+				$params['file'] = $this->getOption(6);
 				$params['alt'] = 'n/a';
 			} else {
 				return '';
@@ -186,11 +179,11 @@ class Tracker_field_Image extends Tracker_Field_File
 	function renderInput($context = array())
 	{
 		return $this->renderTemplate(
-			'trackerinput/image.tpl',
-			$context,
-			array(
-				'image_tag' => $this->renderInnerOutput($context),
-			)
+						'trackerinput/image.tpl',
+						$context,
+						array(
+							'image_tag' => $this->renderInnerOutput($context),
+						)
 		);
 	}
 
@@ -212,7 +205,7 @@ class Tracker_field_Image extends Tracker_Field_File
 			$type = $this->getConfiguration('file_type');
 
 			if ($this->isImageType($type)) {
-				if ($maxSize = $this->getOption('uploadLimitScale')) {
+				if ($maxSize = $this->getOption(4)) {
 					$imagegallib = TikiLib::lib('imagegal');	// TODO: refactor to use Image class directly and remove dependency on imagegals
 					$imagegallib->image = $value;
 					$imagegallib->readimagefromstring();
@@ -248,15 +241,15 @@ class Tracker_field_Image extends Tracker_Field_File
 
 	/**
 	 * Calculate the size of a resized image
-	 *
+	 * 
 	 * TODO move to a lib (Images depends on Imagick or GD which this doesn't need)
-	 *
+	 * 
 	 * @param int $image_width (existing image width)
 	 * @param int $image_height	(existing image height)
 	 * @param int $max_width (max width to scale to)
 	 * @param int $max_height (optional max height)
 	 * @param bool $upscale (whether to make images larger - default = false)
-	 *
+	 * 
 	 * @return array(int $resized_width, int $resized_height)
 	 */
 	private function get_resize_dimensions( $image_width, $image_height, $max_width = null, $max_height = null, $upscale = false)
@@ -277,14 +270,8 @@ class Tracker_field_Image extends Tracker_Field_File
 
 	function getImageFilename($name, $itemId, $fieldId)
 	{
-		$ext = pathinfo($name, PATHINFO_EXTENSION);
-		if (! in_array($ext, array('png', 'gif', 'jpg', 'jpeg'))) {
-			$ext = 'jpg';
-		}
-
 		do {
 			$name = md5(uniqid("$name.$itemId.$fieldId"));
-			$name .= '.'.$ext;
 		} while (file_exists("img/trackers/$name"));
 
 		return "img/trackers/$name";
@@ -295,14 +282,5 @@ class Tracker_field_Image extends Tracker_Field_File
 		return in_array($mimeType, $this->imgMimeTypes);
 	}
 
-	function getDocumentPart(Search_Type_Factory_Interface $typeFactory)
-	{
-		$value = $this->getValue();
-		$baseKey = $this->getBaseKey();
-
-		return array(
-			$baseKey => $typeFactory->plaintext($value),
-		);
-	}
 }
 

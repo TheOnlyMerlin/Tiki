@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,42 +10,36 @@ function prefs_cas_list()
 	return array(
 		'cas_create_user_tiki' => array(
 			'name' => tra('Create user if not in Tiki'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'perspective' => false,
 			'default' => 'n',
 			),
 		'cas_autologin' => array(
 			'name' => tra('Try automatically to connect SSO'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'perspective' => false,
 			'default' => 'n',
 			),
 		'cas_skip_admin' => array(
 			'name' => tra('Use Tiki authentication for Admin login'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'perspective' => false,
 			'default' => 'n',
 			),
 		'cas_force_logout' => array(
 			'name' => tra('Force CAS log-out when the user logs out from Tiki.'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'perspective' => false,
 			'default' => 'n',
 			),
 		'cas_show_alternate_login' => array(
 			'name' => tra('Show Alternate Login Method in Header'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'perspective' => false,
 			'default' => 'y',
 			),
 		'cas_version' => array(
 			'name' => tra('CAS server version'),
-            'description' => tra(''),
 			'type' => 'list',
 			'perspective' => false,
 			'options' => array(
@@ -58,7 +52,6 @@ function prefs_cas_list()
 		'cas_hostname' => array(
 			'name' => tra('Hostname'),
 			'description' => tra('Hostname of the CAS server.'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 50,
 			'filter' => 'striptags',

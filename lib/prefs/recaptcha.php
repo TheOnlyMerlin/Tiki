@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -19,28 +19,16 @@ function prefs_recaptcha_list()
 		'recaptcha_pubkey' => array(
 			'name' => tra('Public Key'),
             'type' => 'text',
-            'description' => tra('ReCaptcha public key obtained after registering.'),
+            'description' => tra('ReCaptcha public key.'),
         	'size' => 60,
 			'default' => '',
 		),
 		'recaptcha_privkey' => array(
 			'name' => tra('Private Key'),
 			'type' => 'text',
-            'description' => tra('ReCaptcha private key obtained after registering.'),
+            'description' => tra('ReCaptcha private key.'),
 			'size' => 60,
 			'default' => '',
-		),
-		'recaptcha_theme' => array(
-			'name' => tra('ReCaptcha theme'),
-			'type' => 'list',
-			'description' => tra('Choose a theme for the ReCaptcha widget.'),
-			'options' => array(
-				'clean' => tra('Clean'),
-				'blackglass' => tra('Black Glass'),
-				'red' => tra('Red'),
-				'white' => tra('White'),
-			),
-			'default' => 'clean',
 		),
 	);
 }

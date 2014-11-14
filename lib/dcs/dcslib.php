@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -12,18 +12,13 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 }
 
 /**
- * DCSLib
- *
+ * DCSLib 
+ * 
  * @uses TikiLib
  */
 class DCSLib extends TikiLib
 {
-    /**
-     * @param $result
-     * @param null $lang
-     * @return mixed
-     */
-    private function convert_results( $result, $lang = null )
+	private function convert_results( $result, $lang = null )
 	{
 		foreach ( $result as &$row ) {
 			$row['page_name'] = '';
@@ -37,18 +32,13 @@ class DCSLib extends TikiLib
 		return $result;
 	}
 
-    /**
-     * @param $page
-     * @param null $lang
-     * @return string
-     */
-    private function get_content_from_page( $page, $lang = null )
+	private function get_content_from_page( $page, $lang = null )
 	{
 		global $prefs;
 		$info = $this->get_page_info($page);
 
 		if ( $prefs['feature_multilingual'] == 'y' ) {
-			$multilinguallib = TikiLib::lib('multilingual');
+			global $multilinguallib; require_once 'lib/multilingual/multilinguallib.php';
 
 			if ( $lang && $info['lang'] && $lang != $info['lang'] ) {
 				$bestLangPageId = $multilinguallib->selectLangObj('wiki page', $info['page_id'], $lang);
@@ -64,12 +54,7 @@ class DCSLib extends TikiLib
 		}
 	}
 
-    /**
-     * @param $result
-     * @param null $lang
-     * @return mixed
-     */
-    private function first_data( $result, $lang = null )
+	private function first_data( $result, $lang = null )
 	{
 		$result = $this->convert_results($result, $lang);
 		if ( $first = reset($result) ) {
@@ -77,24 +62,14 @@ class DCSLib extends TikiLib
 		}
 	}
 
-    /**
-     * @param $fieldvalue
-     * @param null $lang
-     * @return mixed
-     */
-    function get_actual_content($fieldvalue, $lang = null)
+	function get_actual_content($fieldvalue, $lang = null)
 	{
 		$query = 'SELECT * FROM `tiki_programmed_content` WHERE `contentId`=? AND `publishDate`<=? ORDER BY `publishDate` DESC';
 		$result = $this->fetchAll($query, array((int)$fieldvalue, $this->now));
 		return $this->first_data($result, $lang);
 	}
 
-    /**
-     * @param $fieldvalue
-     * @param null $lang
-     * @return mixed
-     */
-    function get_actual_content_by_label($fieldvalue, $lang = null)
+	function get_actual_content_by_label($fieldvalue, $lang = null)
 	{
 		$query = 'SELECT tpc.*'
 			.' FROM `tiki_programmed_content` AS tpc, `tiki_content` AS tc'
@@ -103,10 +78,7 @@ class DCSLib extends TikiLib
 		return $this->first_data($result, $lang);
 	}
 
-    /**
-     * @param $contentId
-     */
-    function remove_contents($contentId)
+	function remove_contents($contentId)
 	{
 		$query = "delete from `tiki_programmed_content` where `contentId`=?";
 
@@ -115,14 +87,7 @@ class DCSLib extends TikiLib
 		$result = $this->query($query, array($contentId));
 	}
 
-    /**
-     * @param int $offset
-     * @param $maxRecords
-     * @param string $sort_mode
-     * @param string $find
-     * @return array
-     */
-    function list_content($offset = 0, $maxRecords = -1, $sort_mode = 'contentId_desc', $find = '')
+	function list_content($offset = 0, $maxRecords = -1, $sort_mode = 'contentId_desc', $find = '')
 	{
 		if ($find) {
 			$findesc = '%'.$find.'%';
@@ -149,20 +114,20 @@ class DCSLib extends TikiLib
 		$query_cant = "select count(*) from `tiki_content` $mid";
 
 		$result = $this->query(
-			$query,
-			array_merge(
-				array(
-					$this->now,
-					$this->now,
-					$this->now,
-					$this->now,
-					$this->now,
-					$this->now
-				),
-				$bindvars
-			),
-			$maxRecords,
-			$offset
+						$query, 
+						array_merge(
+										array(
+											$this->now,
+											$this->now, 
+											$this->now, 
+											$this->now, 
+											$this->now, 
+											$this->now
+										), 
+										$bindvars
+						), 
+						$maxRecords, 
+						$offset
 		);
 
 		$cant = $this->getOne($query_cant, $bindvars);
@@ -178,23 +143,14 @@ class DCSLib extends TikiLib
 		return $retval;
 	}
 
-    /**
-     * @param $contentId
-     * @return mixed
-     */
-    function get_actual_content_date($contentId)
+	function get_actual_content_date($contentId)
 	{
 		$query = "select max(`publishDate`) from `tiki_programmed_content` where `contentId`=? and `publishDate`<=?";
 		$res = $this->getOne($query, array($contentId, $this->now));
 		return $res;
 	}
 
-    /**
-     * @param int $contentId
-     * @param null $lang
-     * @return string
-     */
-    function get_random_content($contentId = 0, $lang = null)
+	function get_random_content($contentId = 0, $lang = null)
 	{
 
 		$where = ' WHERE `publishDate`<=?';
@@ -219,26 +175,14 @@ class DCSLib extends TikiLib
 		return $this->first_data($result, $lang);
 	}
 
-    /**
-     * @param $contentId
-     * @return mixed
-     */
-    function get_next_content($contentId)
+	function get_next_content($contentId)
 	{
 		$query = "select min(`publishDate`) from `tiki_programmed_content` where `contentId`=? and `publishDate`>?";
 		$res = $this->getOne($query, array($contentId, $this->now));
 		return $res;
 	}
 
-    /**
-     * @param $contentId
-     * @param int $offset
-     * @param $maxRecords
-     * @param string $sort_mode
-     * @param string $find
-     * @return array
-     */
-    function list_programmed_content($contentId, $offset = 0, $maxRecords = -1, $sort_mode = 'publishDate_desc', $find = '')
+	function list_programmed_content($contentId, $offset = 0, $maxRecords = -1, $sort_mode = 'publishDate_desc', $find = '')
 	{
 		if ($find) {
 			$findesc = '%' . $find . '%';
@@ -262,15 +206,7 @@ class DCSLib extends TikiLib
 		return $retval;
 	}
 
-    /**
-     * @param $pId
-     * @param $contentId
-     * @param $publishDate
-     * @param $data
-     * @param string $content_type
-     * @return mixed
-     */
-    function replace_programmed_content($pId, $contentId, $publishDate, $data, $content_type = 'static')
+	function replace_programmed_content($pId, $contentId, $publishDate, $data, $content_type = 'static')
 	{
 		if (!$pId) {
 			// was replace into ...
@@ -290,11 +226,7 @@ class DCSLib extends TikiLib
 		return $id;
 	}
 
-    /**
-     * @param $id
-     * @return bool
-     */
-    function remove_programmed_content($id)
+	function remove_programmed_content($id)
 	{
 		$query = "delete from `tiki_programmed_content` where `pId`=?";
 
@@ -302,12 +234,7 @@ class DCSLib extends TikiLib
 		return true;
 	}
 
-    /**
-     * @param $fieldvalue
-     * @param string $fieldname
-     * @return bool|mixed
-     */
-    function get_content($fieldvalue, $fieldname = 'contentId')
+	function get_content($fieldvalue, $fieldname = 'contentId')
 	{
 		if ( $fieldname != 'contentId' && $fieldname != 'contentLabel' )
 			return false;
@@ -319,11 +246,7 @@ class DCSLib extends TikiLib
 		return reset($result);
 	}
 
-    /**
-     * @param $id
-     * @return mixed
-     */
-    function get_programmed_content($id)
+	function get_programmed_content($id)
 	{
 		$query = "select * from `tiki_programmed_content` where `pId`=?";
 
@@ -332,13 +255,7 @@ class DCSLib extends TikiLib
 		return reset($result);
 	}
 
-    /**
-     * @param $contentId
-     * @param $description
-     * @param null $label
-     * @return mixed
-     */
-    function replace_content($contentId, $description, $label = null)
+	function replace_content($contentId, $description, $label = null)
 	{
 		$bindvars = array($description);
 		if ( $label !== null ) {
@@ -361,11 +278,12 @@ class DCSLib extends TikiLib
 
 			$result = $this->query($query, $bindvars);
 			$contentId = $this->getOne(
-				'select max(`contentId`) from `tiki_content` where `description` = ? and `contentLabel` = ?',
-				$bindvars
+							'select max(`contentId`) from `tiki_content` where `description` = ? and `contentLabel` = ?',
+							$bindvars
 			);
 		}
 
 		return $contentId;
 	}
 }
+$dcslib = new DCSLib;

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -105,26 +105,26 @@ $shippinglib = new ShippingLib;
 if ( !empty($prefs['shipping_fedex_enable']) && $prefs['shipping_fedex_enable'] === 'y' ) {
 	require_once 'lib/shipping/provider_fedex.php';
 	$shippinglib->addProvider(
-		new ShippingProvider_FedEx(
-			array(
-				'key' => $prefs['shipping_fedex_key'],
-				'password' => $prefs['shipping_fedex_password'],
-				'meter' => $prefs['shipping_fedex_meter'],
-			)
-		)
+					new ShippingProvider_FedEx(
+									array(
+										'key' => $prefs['shipping_fedex_key'],
+										'password' => $prefs['shipping_fedex_password'],
+										'meter' => $prefs['shipping_fedex_meter'],
+									)
+					)
 	);
 }
 
 if ( !empty($prefs['shipping_ups_enable']) && $prefs['shipping_ups_enable'] === 'y' ) {
 	require_once 'lib/shipping/provider_ups.php';
 	$shippinglib->addProvider(
-		new ShippingProvider_Ups(
-			array(
-				'username' => $prefs['shipping_ups_username'],
-				'password' => $prefs['shipping_ups_password'],
-				'license' => $prefs['shipping_ups_license'],
-			)
-		)
+					new ShippingProvider_Ups(
+									array(
+										'username' => $prefs['shipping_ups_username'],
+										'password' => $prefs['shipping_ups_password'],
+										'license' => $prefs['shipping_ups_license'],
+									)
+					)
 	);
 }
 

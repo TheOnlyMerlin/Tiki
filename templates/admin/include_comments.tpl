@@ -1,18 +1,17 @@
-{* $Id: include_comments.tpl 44059 2012-11-22 16:13:24Z lphuberdeau $ *}
+{* $Id$ *}
+
+<div class="navbar">
+	{button href="tiki-list_comments.php" _text="{tr}List comments{/tr}"}
+</div>
+
 
 <form action="tiki-admin.php?page=comments" method="post">
-    <div class="row">
-        <div class="form-group col-lg-12">
-			<a href="tiki-list_comments.php" class="btn btn-default btn-sm" title="{tr}List{/tr}">{icon name="list"} {tr}Comments{/tr}</a>
-            <div class="pull-right">
-                <input type="submit" class="btn btn-primary btn-sm" name="commentssetprefs" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-            </div>
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" name="commentssetprefs" value="{tr}Change preferences{/tr}" />
+	</div>
 
 	{tabset name="admin_wiki"}
 		{tab name="{tr}General Preferences{/tr}"}
-            <h2>{tr}General Preferences{/tr}</h2>
 
 			<fieldset>
 				<legend>{tr}Site-wide features{/tr}</legend>
@@ -39,7 +38,6 @@
 
 				<div class="admin featurelist">
 					{preference name=comments_notitle}
-					{preference name=section_comments_parse}
 					{preference name=comments_field_email}
 					{preference name=comments_field_website}
 					{preference name=default_rows_textarea_comment}
@@ -48,12 +46,12 @@
 
 			<fieldset>
 				<legend>{tr}Permissions{/tr}</legend>
-					{permission_link mode=button textFilter=comment showDisabled=y}
+					<a class="link" href="tiki-objectpermissions.php?textFilter=comment&amp;show_disabled_features=y" title="{tr}Permission{/tr}">{tr}Permissions{/tr} {icon _id="key" alt="{tr}Permission{/tr}"}</a>
 			</fieldset>
 
 			<fieldset>
 				<legend>{tr}Inline comments{/tr}</legend>
-				{preference name=feature_inline_comments}
+					<a class="link" href="{$prefs.helpurl}Inline+comments">{tr}Inline comments{/tr}</a>
 
 				{tr}The feature below must be activated for this feature to work.{/tr}
 				{preference name=feature_wiki_paragraph_formatting}
@@ -62,12 +60,11 @@
 			<fieldset>
 				<legend>{tr}Using comments in various features{/tr}</legend>
 
-				<div class="table">
+				<div class="admin">
 					{preference name=feature_article_comments}
 					{preference name=feature_wiki_comments}
 					<div class="adminoptionboxchild" id="feature_wiki_comments_childcontainer">
 						{preference name=wiki_comments_displayed_default}
-						{preference name=wiki_comments_form_displayed_default}
 						{preference name=wiki_comments_per_page}
 						{preference name=wiki_comments_default_ordering}
 						{preference name=wiki_comments_allow_per_page}
@@ -88,12 +85,7 @@
 		{/tab}
 {/tabset}
 
-    <br>{* I cheated. *}
-    <div class="row">
-        <div class="form-group col-lg-12">
-            <div class="text-center">
-                <input type="submit" class="btn btn-primary btn-sm" name="commentssetprefs" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-            </div>
-        </div>
-    </div>
+<div class="heading input_submit_container" style="text-align: center">
+	<input type="submit" name="commentssetprefs" value="{tr}Change preferences{/tr}" />
+</div>
 </form>

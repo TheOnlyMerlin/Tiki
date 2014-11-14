@@ -1,23 +1,22 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
+include_once ('lib/polls/polllib.php');
+if (!isset($polllib)) {
+	$polllib = new PollLib;
+}
 $access->check_feature('feature_polls');
 $access->check_permission('tiki_p_admin_polls');
-
-$polllib = TikiLib::lib('poll');
 
 $auto_query_args = array('pollId', 'sort_mode', 'offset', 'find');
 
 //Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 $smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
 
 if (!isset($_REQUEST["pollId"])) {
@@ -71,8 +70,10 @@ if (isset($_REQUEST["save"])) {
 	include_once ("categorize.php");
 }
 if (isset($_REQUEST['addPoll']) && !empty($_REQUEST['poll_template']) && !empty($_REQUEST['pages'])) {
-	$wikilib = TikiLib::lib('wiki');
-	$categlib = TikiLib::lib('categ');
+	global $wikilib;
+	include_once ('lib/wiki/wikilib.php');
+	global $categlib;
+	include_once ('lib/categories/categlib.php');
 	$cat_type = 'wiki page';
 	foreach ($_REQUEST['pages'] as $cat_objid) {
 		if (!$catObjectId = $categlib->is_categorized($cat_type, $cat_objid)) {

@@ -2,8 +2,8 @@
 
 	{include file='tiki-mytiki_bar.tpl'}
 
-<div class="t_navbar">
-	{button href="tiki-notepad_write.php" _class="btn btn-default" _text="{tr}Write a note{/tr}"}
+<div class="navbar">
+	{button href="tiki-notepad_write.php" _text="{tr}Write a note{/tr}"}
 </div>
 
 <div style="text-align:center;">
@@ -16,11 +16,10 @@
 {if count($channels) > 0 or $find ne ''}
 	{include file='find.tpl'}
 	<form action="tiki-notepad_list.php" method="post">
-        <div class="table-responsive">
-		<table class="table normal">
+		<table class="normal">
 			<tr>
 				<th style="text-align:center;">
-					<input type="submit" class="btn btn-default btn-sm" name="delete" value="{tr}x{/tr} ">
+					<input type="submit" name="delete" value="{tr}x{/tr} " />
 				</th>
 				<th>
 					<a href="tiki-notepad_list.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a>
@@ -39,11 +38,11 @@
 				</th>
 				<th style="text-align:center;">{tr}Actions{/tr}</th>
 			</tr>
-
+			{cycle values="odd,even" print=false}
 			{section name=user loop=$channels}
-				<tr>
+				<tr class="{cycle}">
 					<td class="id">
-						<input type="checkbox" name="note[{$channels[user].noteId}]">
+						<input type="checkbox" name="note[{$channels[user].noteId}]" />
 					</td>
 					<td class="text">
 						<a class="link" href="tiki-notepad_read.php?noteId={$channels[user].noteId}">{$channels[user].name|escape}</a>
@@ -66,12 +65,11 @@
 			{/section}
 			<tr>
 				<td colspan="4">
-					<input type="submit" class="btn btn-default btn-sm" name="merge" value="{tr}Merge selected notes into{/tr}">
-					<input type="text" name="merge_name" size="20">
+					<input type="submit" name="merge" value="{tr}Merge selected notes into{/tr}" />
+					<input type="text" name="merge_name" size="20" />
 				</td>
 			</tr>
 		</table>
-        </div>
 	</form>
 
 	{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
@@ -83,9 +81,9 @@
 		<tr>
 			<td>{tr}Upload file:{/tr}</td>
 			<td>
-				<input type="hidden" name="MAX_FILE_SIZE" value="10000000000000">
-				<input size="16" name="userfile1" type="file">
-				<input type="submit" class="btn btn-primary btn-sm" name="upload" value="{tr}Upload{/tr}">
+				<input type="hidden" name="MAX_FILE_SIZE" value="10000000000000" />
+				<input size="16" name="userfile1" type="file" />
+				<input style="font-size:9px;" type="submit" name="upload" value="{tr}Upload{/tr}" />
 			</td>
 		</tr>
 	</table>

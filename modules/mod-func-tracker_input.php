@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,21 +10,17 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_tracker_input_info()
 {
 	return array(
 		'name' => tra('Tracker Input'),
-		'description' => tra('Allows a dialog to be opened to create new tracker items.'),
+		'description' => tra('Allows to open a dialog to create new tracker items.'),
 		'prefs' => array('feature_trackers'),
 		'params' => array(
 			'trackerId' => array(
 				'name' => tr('Tracker'),
 				'description' => tr('Tracker ID to render'),
 				'filter' => 'int',
-				'profile_reference' => 'tracker',
 			),
 			'textinput' => array(
 				'name' => tr('Text Input'),
@@ -56,20 +52,10 @@ function module_tracker_input_info()
 				'description' => tr('Operation to perform in the following format: operationName(argument). Current operations are redirect with the URL template as the argument. @valueName@ will be replaced by the appropriate value where valueName is itemId, status or a permanent name'),
 				'filter' => 'text',
 			),
-			'insertmode' => array(
-				'name' => tr('Mode change on complete'),
-				'description' => tr('Target mode to enter after dialog closes'),
-				'filter' => 'text',
-				'default' => '',
-			),
 		),
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_tracker_input($mod_reference, $module_params)
 {
 	global $prefs;
@@ -80,13 +66,13 @@ function module_tracker_input($mod_reference, $module_params)
 
 	if (! $itemObject->canModify()) {
 		$smarty->assign(
-			'tracker_input',
-			array(
-				'trackerId' => 0,
-				'textInput' => array(),
-				'hiddenInput' => array(),
-				'location' => null,
-			)
+						'tracker_input',
+						array(
+							'trackerId' => 0,
+							'textInput' => array(),
+							'hiddenInput' => array(),
+							'location' => null,
+						)
 		);
 		return;
 	}
@@ -96,7 +82,6 @@ function module_tracker_input($mod_reference, $module_params)
 	$streetview = isset($module_params['streetview']) ? $module_params['streetview'] : '';
 	$streetViewField = $definition->getFieldFromPermName($streetview);
 	$success = isset($module_params['success']) ? $module_params['success'] : '';
-	$insertmode = isset($module_params['insertmode']) ? $module_params['insertmode'] : '';
 
 	if (! $streetview || $prefs['fgal_upload_from_source'] != 'y' || ! $streetViewField) {
 		$streetview = '';
@@ -129,7 +114,7 @@ function module_tracker_input($mod_reference, $module_params)
 
 	$galleryId = null;
 	if ($streetview) {
-		$galleryId = TikiLib::lib('filegal')->check_user_file_gallery($streetViewField['options_array'][0]);
+		$galleryId = $streetViewField['options_array'][0];
 	}
 
 	$operation = null;
@@ -140,22 +125,21 @@ function module_tracker_input($mod_reference, $module_params)
 	}
 
 	$smarty->assign(
-		'tracker_input',
-		array(
-			'trackerId' => $trackerId,
-			'textInput' => $text,
-			'hiddenInput' => $hidden,
-			'location' => $location,
-			'locationMode' => $locationMode,
-			'streetview' => $streetview,
-			'galleryId' => $galleryId,
-			'submit' => isset($module_params['submit']) ? $module_params['submit'] : tr('Create'),
-			'success' => array(
-				'operation' => $operation,
-				'argument' => $operationArgument,
-			),
-			'insertMode' => $insertmode,
-		)
+					'tracker_input',
+					array(
+						'trackerId' => $trackerId,
+						'textInput' => $text,
+						'hiddenInput' => $hidden,
+						'location' => $location,
+						'locationMode' => $locationMode,
+						'streetview' => $streetview,
+						'galleryId' => $galleryId,
+						'submit' => isset($module_params['submit']) ? $module_params['submit'] : tr('Create'),
+						'success' => array(
+							'operation' => $operation,
+							'argument' => $operationArgument,
+						),
+					)
 	);
 }
 

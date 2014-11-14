@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -26,11 +23,11 @@ If you leave the data field blank, the default is to use all the questions from 
 You can also set the same option under the Generl Options section.
 */
 require_once ('tiki-setup.php');
+include_once ('lib/quizzes/quizlib.php');
 
 $access->check_feature('feature_quizzes');
 //Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-$quizlib = TikiLib::lib('quiz');
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 $smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
 
 // quizId of 0 is used as a placeholder; There should NEVER be a row in the
@@ -53,14 +50,9 @@ if (isset($_REQUEST["preview"]) || isset($_REQUEST["xmlview"]) || isset($_REQUES
 }
 $quiz = $quizlib->quiz_fetch($_REQUEST["quizId"]);
 
-/**
- * @param $quiz
- * @param $_REQUEST
- * @param $option
- */
-function fetchYNOption(&$quiz, $request, $option)
+function fetchYNOption(&$quiz, $_REQUEST, $option)
 {
-	if (isset($request[$option]) && $request[$option] == 'on') {
+	if (isset($_REQUEST[$option]) && $_REQUEST[$option] == 'on') {
 		$quiz[$option] = 'y';
 	} else {
 		$quiz[$option] = 'n';
@@ -68,9 +60,6 @@ function fetchYNOption(&$quiz, $request, $option)
 }
 
 // Load the data from the
-/**
- * @return array
- */
 function quiz_data_load()
 {
 	global $_REQUEST;
@@ -93,22 +82,22 @@ function quiz_data_load()
 	if (!empty($_REQUEST['expire_Meridian'])) {
 		$_REQUEST['expire_Hour'] = date('H', strtotime($_REQUEST['expire_Hour'] . ':00 ' . $_REQUEST['expire_Meridian']));
 	}
-
+	
 	$quiz_data["datePub"] = TikiLib::make_time(
-		$quiz_data["publish_Hour"],
-		$quiz_data["publish_Minute"],
-		0,
-		$quiz_data["publish_Month"],
-		$quiz_data["publish_Day"],
-		$quiz_data["publish_Year"]
+					$quiz_data["publish_Hour"],
+					$quiz_data["publish_Minute"],
+					0,
+					$quiz_data["publish_Month"],
+					$quiz_data["publish_Day"],
+					$quiz_data["publish_Year"]
 	);
 	$quiz_data["dateExp"] = TikiLib::make_time(
-		$quiz_data["expire_Hour"],
-		$quiz_data["expire_Minute"],
-		0,
-		$quiz_data["expire_Month"],
-		$quiz_data["expire_Day"],
-		$quiz_data["expire_Year"]
+					$quiz_data["expire_Hour"],
+					$quiz_data["expire_Minute"],
+					0,
+					$quiz_data["expire_Month"],
+					$quiz_data["expire_Day"],
+					$quiz_data["expire_Year"]
 	);
 	$fields = array('nQuestion'
 								, 'shuffleAnswers'
@@ -123,7 +112,7 @@ function quiz_data_load()
 								);
 	foreach ($fields as $field) {
 		fetchYNOption($quiz_data, $quiz_data, $field);
-
+		
 	}
 	return $quiz_data;
 }
@@ -138,8 +127,8 @@ if (isset($_REQUEST["save"])) {
 	if ($quiz->id == 0 || ($quizNew != $quiz)) {
 		$quizlib->quiz_store($quizNew);
 		// tell user changes were stored (new quiz stored with id of x or quiz x modified), return to list of admin quizzes
-
-	}
+		
+	} 
 	die;
 	echo "line: " . __LINE__ . "<br>";
 	echo "Sorry, this is only a prototype at present.<br>";
@@ -155,12 +144,10 @@ if (isset($_REQUEST["save"])) {
 
 $smarty->assign('quiz', $quiz);
 
-/**
- * @param $tpl
- */
 function setup_options(&$tpl)
 {
-	global $prefs;
+	global $tikilib;
+	global $user;
 	$tpl['online_choices'] = array('online' => 'Online', 'offline' => 'Offline');
 	$optionsGrading = array();
 	$optionsGrading[] = "machine";

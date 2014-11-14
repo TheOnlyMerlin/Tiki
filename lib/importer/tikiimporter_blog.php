@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,6 +15,7 @@
  */
 
 require_once('tikiimporter.php');
+require_once('lib/blogs/bloglib.php');
 
 /**
  * Class to provide basic functionalities to blog importers. So far
@@ -76,7 +77,7 @@ class TikiImporter_Blog extends TikiImporter
 	 *
 	 * @return null
 	 */
-	function import($filePath = null)
+	function import()
 	{
 		$this->setupTiki();
 
@@ -105,7 +106,7 @@ class TikiImporter_Blog extends TikiImporter
 	 */
 	function setupTiki()
 	{
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 
 		$tikilib->set_preference('feature_blogs', 'y');
 	}
@@ -117,7 +118,7 @@ class TikiImporter_Blog extends TikiImporter
 	 *
 	 * @return array $countData stats about the content that has been imported
 	 */
-	function insertData($parsedData = null)
+	function insertData()
 	{
 		$countData = array();
 
@@ -127,13 +128,13 @@ class TikiImporter_Blog extends TikiImporter
 		$countCategories = count($this->parsedData['categories']);
 
 		$this->saveAndDisplayLog(
-			"\n" . tr(
-				'Found %0 posts, %1 pages, %2 tags and %3 categories. Inserting them into Tiki:',
-				$countPosts,
-				$countPages,
-				$countTags,
-				$countCategories
-			) . "\n"
+						"\n" . tr(
+										'Found %0 posts, %1 pages, %2 tags and %3 categories. Inserting them into Tiki:',
+										$countPosts,
+										$countPages,
+										$countTags,
+										$countCategories
+						) . "\n"
 		);
 
 		if (!empty($this->parsedData['posts'])) {
@@ -225,9 +226,7 @@ class TikiImporter_Blog extends TikiImporter
 	 */
 	function createBlog()
 	{
-		global $user;
-		$bloglib = TikiLib::lib('blog');
-		$tikilib = TikiLib::lib('tiki');
+		global $bloglib, $user, $tikilib;
 
 		//TODO: refactor replace_blog() to have default values
 		//TODO: blog user can be different that the user logged in the system
@@ -239,29 +238,29 @@ class TikiImporter_Blog extends TikiImporter
 		}
 
 		$this->blogId = $bloglib->replace_blog(
-			$this->blogInfo['title'],
-			$this->blogInfo['desc'],
-			$user,
-			'y',
-			10,
-			false,
-			'',
-			'y',
-			'n',
-			'y',
-			'n',
-			'y',
-			'y',
-			'y',
-			'y',
-			'y',
-			'n',
-			'',
-			'y',
-			5,
-			'n',
-			$created,
-			$this->blogInfo['lastModif']
+						$this->blogInfo['title'],
+						$this->blogInfo['desc'],
+						$user,
+						'y',
+						10,
+						false,
+						'',
+						'y',
+						'n',
+						'y',
+						'n',
+						'y',
+						'y',
+						'y',
+						'y',
+						'y',
+						'n',
+						'',
+						'y',
+						5,
+						'n',
+						$created,
+						$this->blogInfo['lastModif']
 		);
 
 		if (isset($_REQUEST['setAsHomePage']) && $_REQUEST['setAsHomePage'] == 'on') {
@@ -279,7 +278,7 @@ class TikiImporter_Blog extends TikiImporter
 	 */
 	function createTags($tags)
 	{
-		$freetaglib = TikiLib::lib('freetag');
+		global $freetaglib; require_once('lib/freetag/freetaglib.php');
 		foreach ($tags as $tag) {
 			$freetaglib->find_or_create_tag($tag);
 		}
@@ -295,7 +294,7 @@ class TikiImporter_Blog extends TikiImporter
 	 */
 	function linkObjectWithTags($objId, $type, $tags)
 	{
-		$freetaglib = TikiLib::lib('freetag');
+		global $freetaglib; require_once('lib/freetag/freetaglib.php');
 		global $user;
 
 		$freetaglib->_tag_object_array($user, $objId, $type, $tags);
@@ -309,7 +308,7 @@ class TikiImporter_Blog extends TikiImporter
 	 */
 	function createCategories($categories)
 	{
-		$categlib = TikiLib::lib('categ');
+		global $categlib; require_once('lib/categories/categlib.php');
 
 		foreach ($categories as $categ) {
 			if (!empty($categ['parent'])) {
@@ -332,7 +331,7 @@ class TikiImporter_Blog extends TikiImporter
 	 */
 	function linkObjectWithCategories($objId, $type, $categories)
 	{
-		$categlib = TikiLib::lib('categ');
+		global $categlib; require_once('lib/categories/categlib.php');
 
 		foreach ($categories as $categName) {
 			$categId = $categlib->get_category_id($categName);
@@ -355,7 +354,7 @@ class TikiImporter_Blog extends TikiImporter
 	 */
 	function insertPage($page)
 	{
-		$objectlib = TikiLib::lib('object');
+		global $objectlib; require_once('lib/objectlib.php');
 
 		$this->instantiateImporterWiki();
 		$pageName = $this->importerWiki->insertPage($page);
@@ -376,29 +375,29 @@ class TikiImporter_Blog extends TikiImporter
 	 */
 	function insertPost($post)
 	{
-		$bloglib = TikiLib::lib('blog');
-		$objectlib = TikiLib::lib('object');
+		global $bloglib;
+		global $objectlib; require_once('lib/objectlib.php');
 
 		$post = array_merge(array('content' => '', 'excerpt' => '', 'author' => '', 'name' => '', 'created' => 0), $post);	// set defaults
 
 		$postId = $bloglib->blog_post(
-			$this->blogId,
-			$post['content'],
-			$post['excerpt'],
-			$post['author'],
-			$post['name'],
-			'',
-			'n',
-			$post['created']
+						$this->blogId,
+						$post['content'],
+						$post['excerpt'],
+						$post['author'],
+						$post['name'],
+						'',
+						'n',
+						$post['created']
 		);
 
 		if ($postId) {
 			$objectlib->insert_object(
-				'blog post',
-				$postId,
-				'',
-				$post['name'],
-				'tiki-view_blog_post.php?postId=' . urlencode($postId)
+							'blog post',
+							$postId,
+							'',
+							$post['name'],
+							'tiki-view_blog_post.php?postId=' . urlencode($postId)
 			);
 		}
 
@@ -415,7 +414,11 @@ class TikiImporter_Blog extends TikiImporter
 	 */
 	function insertComments($objId, $objType, $comments)
 	{
-		$commentslib = TikiLib::lib('comments');
+		global $commentslib; require_once('lib/comments/commentslib.php');
+
+		if (!is_object($commentslib)) {
+			$commentslib = new Comments();
+		}
 
 		$objRef = $objType . ':' . $objId;
 
@@ -435,21 +438,21 @@ class TikiImporter_Blog extends TikiImporter
 			}
 
 			$commentId = $commentslib->post_new_comment(
-				$objRef,
-				0,
-				null,
-				'',
-				$comment['data'],
-				$message_id,
-				'',
-				'n',
-				'',
-				'',
-				'',
-				$comment['author'],
-				$comment['created'],
-				$comment['author_email'],
-				$comment['author_url']
+							$objRef,
+							0,
+							null,
+							'',
+							$comment['data'],
+							$message_id,
+							'',
+							'n',
+							'',
+							'',
+							'',
+							$comment['author'],
+							$comment['created'],
+							$comment['author_email'],
+							$comment['author_url']
 			);
 
 			if ($comment['approved'] == 0) {

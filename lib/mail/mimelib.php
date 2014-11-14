@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- *
- */
 class mime
 {
 	function mime()
@@ -21,13 +18,7 @@ class mime
 
 	}
 
-    /**
-     * @param $input
-     * @param string $default_ctype
-     * @param string $crlf
-     * @return array|bool
-     */
-    function decode($input,$default_ctype = 'text/plain', $crlf = "\r\n")
+	function decode($input,$default_ctype = 'text/plain', $crlf = "\r\n")
 	{
 		$back = array();
 
@@ -66,7 +57,7 @@ class mime
 					case 'B':
 					case 'b':
 						$text = base64_decode($text);
-						break;
+									break;
 
 					case 'Q':
 					case 'q':
@@ -75,7 +66,7 @@ class mime
 						foreach ($matches[1] as $value) {
 							$text = str_replace('=' . $value, chr(hexdec($value)), $text);
 						}
-						break;
+									break;
 				}
 
 				if ($charset == 'iso-8859-1') {
@@ -126,7 +117,7 @@ class mime
 							$back['ctype_parameters'][$p_name] = $p_value;
 						}
 					}
-					break;
+								break;
 
 				case 'content-disposition':
 					$content_disposition = $it;
@@ -137,11 +128,11 @@ class mime
 							$back['d_parameters'][$p_name] = $p_value;
 						}
 					}
-					break;
+								break;
 
 				case 'content-transfer-encoding':
 					$content_transfer_encoding = $it;
-					break;
+								break;
 			}
 		}
 
@@ -156,7 +147,7 @@ class mime
 						$back['attachments'][] = $back['d_parameters'];
 					}
 					$encoding = isset($content_transfer_encoding) ? $content_transfer_encoding['value'] : '7bit';
-					$back['body'] = $this->decodeBody($body, $encoding);
+					$back['body'] = mime::decodeBody($body, $encoding);
 					if ( array_key_exists('ctype_parameters', $back)
 							and isset($back['ctype_parameters'])
 							and $back['ctype_parameters']
@@ -174,7 +165,7 @@ class mime
 					} else {
 						$back[$type][] = $back['body'];
 					}
-					break;
+								break;
 
 				case 'multipart/signed':
 				case 'multipart/digest':
@@ -188,23 +179,23 @@ class mime
 					}
 
 					for ($i = 0, $icount_parts = count($parts); $i < $icount_parts; $i++) {
-						$back['parts'][] = $this->decode($parts[$i], $default_ctype);
+						$back['parts'][] = mime::decode($parts[$i], $default_ctype);
 					}
-					break;
+								break;
 
 				case 'message/rfc822':
-					$back['parts'][] = $this->decode($body);
-					break;
+					$back['parts'][] = mime::decode($body);
+								break;
 
 				default:
 					if (!isset($content_transfer_encoding['value'])) {
 						$content_transfer_encoding['value'] = '7bit';
 					}
-					$back['body'] = $this->decodeBody($body, $content_transfer_encoding['value']);
-					break;
+					$back['body'] = mime::decodeBody($body, $content_transfer_encoding['value']);
+								break;
 			}
 		} else {
-			$back['body'] = $this->decodeBody($body);
+			$back['body'] = mime::decodeBody($body);
 		}
 		$ctype = explode('/', $default_ctype);
 		$back['ctype_primary'] = $ctype[0];
@@ -213,12 +204,7 @@ class mime
 		return $back;
 	}
 
-    /**
-     * @param $input
-     * @param string $encoding
-     * @return mixed|string
-     */
-    function decodeBody($input, $encoding = '7bit')
+	function decodeBody($input, $encoding = '7bit')
 	{
 		switch ($encoding) {
 			case '7bit':
@@ -246,68 +232,7 @@ class mime
 		}
 	}
 
-
-
-	/**
-	 * @param $decodedMail array	output from \mime::decode
-	 * @param $type string			text or html
-	 * @return string
-	 */
-	function getPartBody($decodedMail, $type)
-	{
-		$body = '';
-
-		if (!empty($decodedMail['parts'])) {
-			foreach ($decodedMail['parts'] as $part) {
-				if (isset($part['parts'])) {
-					return $this->getPartBody($part, $type);
-				}
-				if (empty($body) && isset($part[$type])) {
-					$body = $part[$type];
-					break;
-				}
-			}
-		} else if (isset($decodedMail[$type])) {
-			$body = $decodedMail[$type];
-		} else if ($type === 'text' && isset($decodedMail['body'])) {
-			$body = $decodedMail['body'];
-		}
-		if (is_array($body)) {
-			$body = reset($body);
-		}
-		return $body;
-	}
-
-
-	/** replace MS "smart quotes" with dumb ones
-	 * @param $body string
-	 * @return string
-	 */
-	public function cleanQuotes($body)
-	{
-		$quotes = array(        // thanks to http://stackoverflow.com/a/1262210/2459703
-			"\xC2\xAB" => '"', // « (U+00AB) in UTF-8
-			"\xC2\xBB" => '"', // » (U+00BB) in UTF-8
-			"\xE2\x80\x98" => "'", // ‘ (U+2018) in UTF-8
-			"\xE2\x80\x99" => "'", // ’ (U+2019) in UTF-8
-			"\xE2\x80\x9A" => "'", // ‚ (U+201A) in UTF-8
-			"\xE2\x80\x9B" => "'", // ‛ (U+201B) in UTF-8
-			"\xE2\x80\x9C" => '"', // “ (U+201C) in UTF-8
-			"\xE2\x80\x9D" => '"', // ” (U+201D) in UTF-8
-			"\xE2\x80\x9E" => '"', // „ (U+201E) in UTF-8
-			"\xE2\x80\x9F" => '"', // ‟ (U+201F) in UTF-8
-			"\xE2\x80\xB9" => "'", // ‹ (U+2039) in UTF-8
-			"\xE2\x80\xBA" => "'", // › (U+203A) in UTF-8
-		);
-		$body = strtr($body, $quotes);
-		return $body;
-	}
-
-    /**
-     * @param $output
-     * @return array
-     */
-    function get_bodies($output)
+	function get_bodies($output)
 	{
 			$bodies = array();	/* BUG: only one body for the moment */
 			if (isset($output['text'][0]))
@@ -322,11 +247,7 @@ class mime
 			return $bodies;
 	}
 
-    /**
-     * @param $output
-     * @return array
-     */
-    function get_attachments($output)
+	function get_attachments($output)
 	{
 		$cnt = 0;
 		$attachments = array();

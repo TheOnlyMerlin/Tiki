@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -49,7 +49,7 @@ class NotificationLib extends TikiLib
 	function get_mail_events($event, $object)
 	{
 		global $tikilib;
-		$objectlib = TikiLib::lib('object');
+		require_once('lib/objectlib.php');
 		$query = "select * from `tiki_user_watches` where `event`=? and (`object`=? or `object`='*')";
 		$result = $this->query($query, array($event, $object));
 		$ret = array();
@@ -68,7 +68,7 @@ class NotificationLib extends TikiLib
 	 * @param boolean $checkPermission If enabled, only return types for which the user has the permission needed so that they are effective.
 	 * @return A string-indexed bidimensional array of watch types. The first index is the watch event name.
 	 *   Second-level array are also string-indexed with elements label (description of the event),
-	 *   type (usually the type of watched objects) and url (a relevant script to access when an event happens, if any).
+	 *   type (usually the type of watched objects) and url (a relevant script to access when an event happens, if any).   
 	 */
 	function get_global_watch_types($checkPermission = false)
 	{
@@ -115,13 +115,6 @@ class NotificationLib extends TikiLib
 				'url' => '',
 				'available' => $prefs['feature_blogs'] == 'y',
 				'object' => '*'
-		);// Blog comment mail
-		$watches['blog_comment_changes'] = array(
-			'label' => tra('A comment in a blog page is posted or edited') ,
-			'type' => 'blog',
-			'url' => '',
-			'available' => $prefs['feature_blogs'] == 'y',
-			'object' => '*'
 		);
 
 		$watches['wiki_page_changes'] = array(
@@ -190,3 +183,4 @@ class NotificationLib extends TikiLib
 
 }
 
+$GLOBALS['notificationlib'] = new NotificationLib;

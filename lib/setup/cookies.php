@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -21,42 +21,32 @@ if ( isset($_SESSION['tiki_cookie_jar']) ) {
 	if ( count($cookielist) ) {		
 		$headerlib->add_js('tiki_cookie_jar={'. implode(',', $cookielist).'};');
 	}
-	$_COOKIE = array_merge($_SESSION['tiki_cookie_jar'], $_COOKIE);
 } else {
 	$headerlib->add_js('tiki_cookie_jar=new Object();');
 }
 
-$smarty->assign_by_ref('cookie', $_COOKIE);
+$smarty->assign_by_ref('cookie', $_SESSION['tiki_cookie_jar']);
 
 // fix margins for hidden columns - css (still) doesn't work as it needs to know the "normal" margins FIXME
-if (getCookie('show_col2') == 'n') {
-	if (getCookie('rtl') == 'y') { // check if we are in RTL language mode
-		$headerlib->add_css('#c1c2 #wrapper #col1.marginright { margin-right: 0; }', 100);
-	} else {
-		$headerlib->add_css('#c1c2 #wrapper #col1.marginleft { margin-left: 0; }', 100);
-	}
+if (isset($_SESSION['tiki_cookie_jar']['show_col2']) and $_SESSION['tiki_cookie_jar']['show_col2'] == 'n') {
+	$headerlib->add_css('#c1c2 #wrapper #col1.marginleft { margin-left: 0; }', 100);
 }
-if (getCookie('show_col3') == 'n') {
-	if (getCookie('rtl') == 'y') {
-		$headerlib->add_css('#c1c2 #wrapper #col1.marginleft { margin-left: 0; }', 100);
-	} else {
-		$headerlib->add_css('#c1c2 #wrapper #col1.marginright { margin-right: 0; }', 100);
-	}
+if (isset($_SESSION['tiki_cookie_jar']['show_col3']) and $_SESSION['tiki_cookie_jar']['show_col3'] == 'n') {
+	$headerlib->add_css('#c1c2 #wrapper #col1.marginright { margin-right: 0; }', 100);
 }
 
 function getCookie($name, $section = null, $default = null)
 {
-	global $feature_no_cookie;
-
-	if ($feature_no_cookie || (empty($section) && !isset($_COOKIE[$name]) && isset($_SESSION['tiki_cookie_jar'][$name]))) {
-		if (isset($_SESSION['tiki_cookie_jar'][$name])) {
-			return $_SESSION['tiki_cookie_jar'][$name];
-		} else {
-			return $default;
+	if (isset($feature_no_cookie) && $feature_no_cookie == 'y') {
+		if (isset($_SESSION['tiki_cookie_jar'])) {// if cookie jar doesn't work
+			if (isset($_SESSION['tiki_cookie_jar'][$name]))
+				return $_SESSION['tiki_cookie_jar'][$name];
+			else
+				return $default;
 		}
 	} else if ($section) {
 		if (isset($_COOKIE[$section])) {
-			if (preg_match("/@" . preg_quote($name, '/') . "\:([^@;]*)/", $_COOKIE[$section], $matches))
+			if (preg_match("/@" . $name . "\:([^@;]*)/", $_COOKIE[$section], $matches))
 				return $matches[1];
 			else
 				return $default;
@@ -72,8 +62,6 @@ function getCookie($name, $section = null, $default = null)
 
 function setCookieSection($name, $value, $section = '', $expire = null, $path = '', $domain = '', $secure = '')
 {
-	global $feature_no_cookie;
-
 	if ($section) {
 		$valSection = getCookie($section);
 		$name2 = '@' . $name . ':';
@@ -89,11 +77,7 @@ function setCookieSection($name, $value, $section = '', $expire = null, $path = 
 			setCookieSection($section, $valSection, '', $expire, $path, $domain, $secure);
 		}
 	} else {
-		if ($feature_no_cookie) {
-			$_SESSION['tiki_cookie_jar'][$name] = $value;
-		} else {
-			setcookie($name, $value, $expire, $path, $domain, $secure);
-		}
+		setcookie($name, $value, $expire, $path, $domain, $secure);
 	}
 }
 

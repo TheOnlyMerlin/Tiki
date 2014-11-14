@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -32,7 +32,7 @@ function wikiplugin_tabs_info()
 			'toggle' => array(
 				'required' => false,
 				'name' => tra('Toggle Tabs'),
-				'description' => tra('Allow toggling from tabs to no tabs view'),
+				'description' => tra('Allows to toggle from tabs to no tabs view'),
 				'default' => 'y',
 				'options' => array (
 					array('value' => 'y' , 'text' => tra('Yes')),
@@ -55,7 +55,7 @@ function wikiplugin_tabs_info()
 
 function wikiplugin_tabs($data, $params)
 {
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $smarty;
 	if (!empty($params['name'])) {
 		$tabsetname = $params['name'];
 	} else {
@@ -84,7 +84,7 @@ function wikiplugin_tabs($data, $params)
 		$data = $tikilib->parse_data($data, array('suppress_icons' => true, 'inside_pretty' => $inside_pretty));
 		$tabData = explode('/////', $data);
 	}
-	$smarty = TikiLib::lib('smarty');
+	
 	$smarty->assign('tabsetname', $tabsetname);
 	$smarty->assign_by_ref('tabs', $tabs);
 	$smarty->assign('toggle', $toggle);

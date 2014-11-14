@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +10,6 @@ function prefs_gmap_list()
 	return array(
 		'gmap_key' => array(
 			'name' => tra('Google Maps API Key'),
-			'description' => tra('Needed for Street View or other advanced features'),
 			'type' => 'text',
 			'size' => 87,
 			'help' => 'http://code.google.com/apis/maps/signup.html',
@@ -19,7 +18,6 @@ function prefs_gmap_list()
 		),
 		'gmap_defaultx' => array(
 			'name' => tra('Default x for map center'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 20,
 			'filter' => 'striptags',
@@ -27,7 +25,6 @@ function prefs_gmap_list()
 		),
 		'gmap_defaulty' => array(
 			'name' => tra('Default y for map center'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 20,
 			'filter' => 'striptags',
@@ -35,7 +32,6 @@ function prefs_gmap_list()
 		),
 		'gmap_defaultz' => array(
 			'name' => tra('Default zoom level'),
-            'description' => tra(''),
 			'type' => 'list',
 			'options' => array(
 				1 => tra('whole earth'),
@@ -53,27 +49,27 @@ function prefs_gmap_list()
 				13 => 13,
 				14 => 14,
 				15 => 15,
-				16 => 16, 
+				16 => tra('village size'),
 				17 => 17,
-				18 => tra('max zoom'),
+				18 => 18,
+				19 => 19,
+				20 => tra('max zoom'),
 			),
 			'default' => '1',
 		),
 		'gmap_article_list' => array(
 			'name' => tra('Show map mode buttons in articles list'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'dependencies' => array(
-				'geo_locate_article',
+				'feature_gmap',
 			),
 			'default' => 'n',
 		),
 		'gmap_page_list' => array(
 			'name' => tra('Show map mode buttons in page list'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'dependencies' => array(
-				'geo_locate_wiki',
+				'feature_gmap',
 			),
 			'default' => 'n',
 		),

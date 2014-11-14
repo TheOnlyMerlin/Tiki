@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,9 +14,7 @@
  */
 function simple_set_toggle($feature)
 {
-	global $prefs;
-	$tikilib = TikiLib::lib('tiki');
-	$logslib = TikiLib::lib('logs');
+	global $_REQUEST, $tikilib, $prefs, $logslib;
 	if (isset($_REQUEST[$feature]) && $_REQUEST[$feature] == 'on') {
 		if ((!isset($prefs[$feature]) || $prefs[$feature] != 'y')) {
 			// not yet set at all or not set to y
@@ -34,8 +32,8 @@ function simple_set_toggle($feature)
 			}
 		}
 	}
-
-	$cachelib = TikiLib::lib('cache');
+	global $cachelib;
+	require_once ('lib/cache/cachelib.php');
 	$cachelib->invalidate('allperms');
 }
 
@@ -71,7 +69,7 @@ if (isset($_REQUEST['page'])) {
 	$helpDescription = "Help on $admintitle Config"; //get_strings tra("Help on $admintitle Config")
 
 } else {
-	$smarty->assign('admintitle', 'Configuration Panels');
+	$smarty->assign('admintitle', 'Admin Home');
 	$smarty->assign('description', 'Home Page for Administrators');
 	$smarty->assign('headtitle', breadcrumb_buildHeadTitle($crumbs));
 	$smarty->assign('description', $crumbs[0]->description);

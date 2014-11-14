@@ -10,11 +10,11 @@
 		{jq}
 $("#preview_diff_style").change(function(){
 	ajaxLoadingShow($("#autosave_preview .wikitext"));
-	setCookie("preview_diff_style", $(this).val(), "preview", "session");
-	$.get($.service("edit", "preview"), {
+	setCookie("preview_diff_style", $(this).val(), "", "session");
+	$.get("tiki-auto_save.php", {
 		editor_id: 'editwiki',
 		autoSaveId: autoSaveId,
-		inPage: 1,
+		inPage: true,
 		{{if isset($smarty.request.hdr)}hdr: {$smarty.request.hdr},{/if}}
 		diff_style: $(this).val()
 	}, function(data) {
@@ -32,7 +32,7 @@ $('#autosave_preview').resizable({
 	handles:{'s':'#autosave_preview_grippy'},
 	alsoResize:'#autosave_preview>div',
 	resize: function(event, ui) {
-		setCookie("wiki", $('#autosave_preview').height(), "preview", "session");
+		setCookie("wiki", $('#autosave_preview').height(), "preview");
 	}
 }).height(getCookie("wiki", "preview", ""));
 $("#autosave_preview>div").height(getCookie("wiki", "preview", ""));
@@ -42,13 +42,12 @@ $("#autosave_preview>div").height(getCookie("wiki", "preview", ""));
 <small>{$description}</small>
 {/if}
 <div align="center" class="attention" style="font-weight:bold">{tr}Note: Remember that this is only a preview, and has not yet been saved!{/tr}</div>
-<div class="preview_contents"><div  class="wikitext">
+<div  class="wikitext">
 {$parsed}
 </div>
 {if $has_footnote and isset($parsed_footnote)}
 <div  class="wikitext">{$parsed_footnote}</div>
 {/if}
-</div>
 {if $prefs.ajax_autosave eq "y"}
 </div><span id="autosave_preview_grippy" class="ui-resizable-handle ui-resizable-s"> </span>
 {/if}

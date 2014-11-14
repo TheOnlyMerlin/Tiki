@@ -1,17 +1,17 @@
 {title help="Theme+Control"}{tr}Theme Control Center: Sections{/tr}{/title}
 
 {remarksbox type="notice" title="{tr}Notice{/tr}"}
-<b>{tr}Theme is selected as follows:{/tr}</b><br>
-1. {tr}If a theme is assigned to the individual object that theme is used.{/tr}<br>
-2. {tr}If not then if a theme is assigned to the object's category that theme is used{/tr}<br>
-3. {tr}If not then a theme for the section is used{/tr}<br>
-4. {tr}If none of the above was selected the user theme is used{/tr}<br>
+<b>{tr}Theme is selected as follows:{/tr}</b><br />
+1. {tr}If a theme is assigned to the individual object that theme is used.{/tr}<br />
+2. {tr}If not then if a theme is assigned to the object's category that theme is used{/tr}<br />
+3. {tr}If not then a theme for the section is used{/tr}<br />
+4. {tr}If none of the above was selected the user theme is used{/tr}<br />
 5. {tr}Finally if the user didn't select a theme the default theme is used{/tr}
 {/remarksbox}
 
-<div class="navbar btn-group">
-	{button href="tiki-theme_control.php" class="btn btn-default" _text="{tr}Control by Categories{/tr}"}
-	{button href="tiki-theme_control_objects.php" class="btn btn-default" _text="{tr}Control by Objects{/tr}"}
+<div class="navbar">
+	{button href="tiki-theme_control.php" _text="{tr}Control by Categories{/tr}"}
+	{button href="tiki-theme_control_objects.php" _text="{tr}Control by Objects{/tr}"}
 </div>
 
 <h2>{tr}Assign themes to sections{/tr}</h2>
@@ -47,7 +47,7 @@
 				</select>
 			</td>
 			<td>
-				<input type="submit" class="btn btn-default btn-sm" name="assign" value="{tr}Assign{/tr}">
+				<input type="submit" name="assign" value="{tr}Assign{/tr}" />
 			</td>
 		</tr>
 	</table>
@@ -55,10 +55,9 @@
 
 <h2>{tr}Assigned sections{/tr}</h2>
 <form action="tiki-theme_control_sections.php" method="post">
-    <div class="table-responsive">
-	<table class="table normal">
+	<table class="normal">
 		<tr>
-			<th><input type="submit" class="btn btn-warning btn-sm" name="delete" value="{tr}Del{/tr}"></th>
+			<th><input type="submit" name="delete" value="{tr}Del{/tr}" /></th>
 			<th>
 				<a href="tiki-theme_control_sections.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'section_desc'}section_asc{else}section_desc{/if}">
 					{tr}Section{/tr}
@@ -70,17 +69,16 @@
 				</a>
 			</th>
 		</tr>
-
+		{cycle values="odd,even" print=false}
 		{section name=user loop=$channels}
-			<tr>
-				<td class="checkbox-cell">
-					<input type="checkbox" name="sec[{$channels[user].section}]">
+			<tr class="{cycle}">
+				<td class="checkbox">
+					<input type="checkbox" name="sec[{$channels[user].section}]" />
 				</td>
 				<td class="text">{$channels[user].section}</td>
 				<td class="text">{$channels[user].theme}</td>
 			</tr>
 		{/section}
 	</table>
-    </div>
 </form>
-<br> <br> <br> 
+<br /> <br /> <br /> 

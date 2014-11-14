@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -17,7 +14,7 @@ if (!isset($_REQUEST['trackerId'])) {
 	$smarty->display('error.tpl');
 	die;
 }
-$trklib = TikiLib::lib('trk');
+include_once('lib/trackers/trackerlib.php');
 @ini_set('max_execution_time', 0); //will not work in safe_mode is on
 
 $tracker_info = $trklib->get_tracker($_REQUEST['trackerId']);
@@ -142,8 +139,6 @@ if (empty($_REQUEST['CR'])) {
 	$_REQUEST['CR'] = '%%%';
 }
 $smarty->assign_by_ref('CR', $_REQUEST['CR']);
-
-$fp = null;
 
 if (!empty($_REQUEST['debug'])) {
 	$fp = fopen($prefs['tmpDir'].'/'.tra('tracker')."_".$_REQUEST['trackerId'].".csv", 'w');

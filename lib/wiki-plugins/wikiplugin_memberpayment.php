@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -45,71 +45,20 @@ function wikiplugin_memberpayment_info()
 			'inputtitle' => array(
 				'required' => false,
 				'name' => tra('Input Title'),
-				'description' => tra('Title of the initial input form.').' '. tra('Use %0 for the group name, %1 for the price, %2 for the currency, %4 for the number of days and %5 for the number of years.') . ' ' .
-					tra('Supports wiki syntax.'),
+				'description' => tra('Title of the input form.').' '. tra('Use %0 for the group name.').' '.tra('Supports wiki syntax'),
 				'filter' => 'text',
 				'default' => 'Membership to %0 for %1 (x%2)',
-			),
-			'inputtitleonly' => array(
-				'required' => false,
-				'name' => tra('Input Title Only'),
-				'description' => tra('Select Yes (y) to just show the title of the input form and not the period and cost information. Input Title must be set as well.'),
-				'filter' => 'alpha',
-				'default' => 'n',
-				'advanced' => true,
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n'),
-				)
 			),
 			'howtitle' => array(
 				'required' => false,
-				'name' => tra('Initial Payment Form Title'),
-				'description' => tra('Add a title to the payment form when initially shown after clicking "Continue".') . ' ' .
-					tra('Use %0 for the group name, %1 for the price, %2 for the currency, %4 for the number of days and %5 for the number of years.') . ' ' .
-					tra('Supports wiki syntax'),
+				'name' => tra('Tiki Payments Invoice Title'),
+				'description' => tra('Title of the input form.').' '. tra('Use %0 for the group name, %4 for the number of days or %5 for the number of years').' '.tra('Supports wiki syntax'),
 				'filter' => 'text',
 				'default' => 'Membership to %0 for %1 (x%2)',
-			),
-			'howtitleonly' => array(
-				'required' => false,
-				'name' => tra('Payment Form Title Only'),
-				'description' => tra('Select Yes (y) to just show the title of the payment form. Initial Payment Form Title must be set as well.'),
-				'filter' => 'alpha',
-				'default' => 'n',
-				'advanced' => true,
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n'),
-				)
-			),
-			'paytitle' => array(
-				'required' => false,
-				'name' => tra('Subsequent Payment Form Title'),
-				'description' => tra('Title of the payment form after the initial showing.') . ' ' .
-					tra('Use %0 for the group name, %1 for the price, %2 for the currency, %4 for the number of days and %5 for the number of years.') . ' ' .
-					tra('Supports wiki syntax'),
-				'filter' => 'text',
-				'default' => 'Membership to %0 for %1 (x%2)',
-			),
-			'paytitleonly' => array(
-				'required' => false,
-				'name' => tra('Subsequent Payment Form Title Only'),
-				'description' => tra('Select Yes (y) to just show the title of the payment form that shows after the initial viewing. Subsequent Payment Form Title must be set as well.'),
-				'filter' => 'alpha',
-				'default' => 'n',
-				'advanced' => true,
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n'),
-				)
 			),
 			'preventdoublerequest' => array(
 				'required' => false,
-				'name' => tra('Prevent Double Request'),
+				'name' => tra('Prevent double request'),
 				'description' => tra('Prevent user from extended if there is already a pending request'),
 				'filter' => 'alpha',
 				'default' => 'n',
@@ -126,33 +75,12 @@ function wikiplugin_memberpayment_info()
 				'filter' => 'int',
 				'default' => 0,
 			),
-			'hideperiod' => array(
-				'required' => false,
-				'name' => tra('Hide Period'),
-				'description' => tra('Do not allow user to set period - use default of 1.'),
-				'filter' => 'alpha',
-				'default' => 'n',
-				'advanced' => true,
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				)
-			),
 			'periodslabel' => array(
 				'required' => false,
 				'name' => tra('Periods Label'),
-				'description' => tra('Customize the label for the periods input. No effect if Hide Period is set to Yes (y).'),
+				'description' => tra('Give the period a label'),
 				'filter' => 'text',
 				'default' => 'Number of periods:',
-			),
-			'returnurl' => array(
-				'required' => false,
-				'name' => tra('Return URL'),
-				'description' => tra('Page that payment service returns to after processing.'),
-				'filter' => 'url',
-				'default' => '',
-				'advanced' => true,
 			),
 		),
 	);
@@ -160,23 +88,16 @@ function wikiplugin_memberpayment_info()
 
 function wikiplugin_memberpayment( $data, $params, $offset )
 {
-	global $prefs, $user;
+	global $smarty, $userlib, $prefs, $user, $headerlib;
+	global $paymentlib; require_once 'lib/payment/paymentlib.php';
 	static $iPluginMemberpayment = 0;
 	$attributelib = TikiLib::lib('attribute');
-	$userlib = TikiLib::lib('user');
-	$headerlib = TikiLib::lib('header');
-	$smarty = TikiLib::lib('smarty');
-	$paymentlib = TikiLib::lib('payment');
 
 	$iPluginMemberpayment++;
 	$smarty->assign('iPluginMemberpayment', $iPluginMemberpayment);
-	$smarty->assign('returnurl', !empty($params['returnurl']) ? $params['returnurl'] : '');
 	$params['price'] = floatval($params['price']);
-	$default = array( 'currentuser'=>'n', 'inputtitle'=>'', 'inputtitleonly'=>'n', 'howtitle' => '',
-					'howtitleonly' => 'n', 'paytitle' => '', 'paytitleonly' => 'n', 'hideperiod' => 'n',
-					'periodslabel' => 'Number of periods:');
+	$default = array( 'currentuser'=>'n', 'inputtitle'=>'', 'howtitle' => '', 'periodslabel' => 'Number of periods:');
 	$params = array_merge($default, $params);
-	$smarty->assign('hideperiod', $params['hideperiod']);
 	$smarty->assign('periodslabel', $params['periodslabel']);
 	if ( ( $info = $userlib->get_group_info($params['group']) ) && ( $info['expireAfter'] > 0 || $info['anniversary'] > '') ) {
 		$smarty->assign('wp_member_offset', $offset);
@@ -221,8 +142,6 @@ function wikiplugin_memberpayment( $data, $params, $offset )
 		}
 		
 		$smarty->assign('wp_member_requestpending', 'n');
-		$smarty->assign('wp_member_title', $params['inputtitle']);
-		$smarty->assign('wp_member_titleonly', $params['inputtitleonly']);
         $smarty->assign('wp_member_paymentid', 0);
 		if (isset($params['currentuser']) && $params['currentuser'] == 'y' && !empty($params['preventdoublerequest']) && $params['preventdoublerequest'] == 'y') {
 			$attname = 'tiki.memberextend.' . $info['id'];
@@ -230,10 +149,6 @@ function wikiplugin_memberpayment( $data, $params, $offset )
 			if (isset($attributes[$attname])) {
 				$smarty->assign('wp_member_requestpending', 'y');
 				$smarty->assign('wp_member_paymentid', $attributes[$attname]);
-				if (!empty ($params['paytitle'])) {
-					$smarty->assign('wp_member_title', $params['paytitle']);
-					$smarty->assign('wp_member_titleonly', $params['paytitleonly']);
-				}
 			}
 		}
 		
@@ -281,8 +196,8 @@ function wikiplugin_memberpayment( $data, $params, $offset )
 				$attributelib->set_attribute('user', $u, 'tiki.memberextend.' . $info['id'], $id);
 			}
 			$paymentlib->register_behavior($id, 'cancel', 'cancel_membership_extension', array( $users, $info['id'] ));
-				$smarty->assign('wp_member_title', $params['howtitle']);
-				$smarty->assign('wp_member_titleonly', $params['howtitleonly']);
+
+			$smarty->assign('wp_member_title', $params['howtitle']);
 			require_once 'lib/smarty_tiki/function.payment.php';
 			return '^~np~' . smarty_function_payment(array( 'id' => $id ), $smarty) . '~/np~^';
 		} else if ($prefs['payment_system'] == 'cclite' && isset($_POST['cclite_payment_amount']) && isset($_POST['invoice'])) {
@@ -290,6 +205,7 @@ function wikiplugin_memberpayment( $data, $params, $offset )
 			return '^~np~' . smarty_function_payment(array( 'id' => $_POST['invoice'] ), $smarty) . '~/np~^';
 		}
 
+		$smarty->assign('wp_member_title', $params['inputtitle']);
 		return '~np~' . $smarty->fetch('wiki-plugins/wikiplugin_memberpayment.tpl') . '~/np~';
 	} elseif ($info['expireAfter'] == 0 && $params['group'] == $info['groupName']) {
 		return '{REMARKSBOX(type=warning, title=Plugin Memberpayment Error)}' . tra('The group ') . '<em>' . $info['groupName'] 

@@ -3,20 +3,20 @@
 {title help="MyTiki"}{tr}My Tiki{/tr}{/title}
 
   {include file='tiki-mytiki_bar.tpl'}
-  <br>
+  <br />
 
   {capture name=my}
   {if $prefs.feature_wiki eq 'y' and $mytiki_pages eq 'y'}
     <div id="content1" class="content">
-      <div class="panel panel-default">
-        <div class="panel-heading">
+      <div class="cbox">
+        <div class="cbox-title">
           {if $userwatch eq $user}
             {tr}My pages{/tr}{else}{tr}User Pages{/tr}
           {/if}
         </div>
-        <div class="panel-body">
-            <div class="table-responsive">
-            <table class="table normal">
+        <div class="cbox-data">
+          
+          <table class="normal">
             <tr>
               <th>
                 <a href="tiki-my_tiki.php?sort_mode={if $sort_mode eq 'pageName_desc'}pageName_asc{else}pageName_desc{/if}">{tr}Page{/tr}</a>
@@ -28,9 +28,9 @@
               </th>
               <th style="width:50px">{tr}Actions{/tr}</th>
             </tr>
-
+            {cycle values="even,odd" print=false}
             {section name=ix loop=$user_pages}
-              <tr>
+              <tr class="{cycle}">
                 <td class="text">
                   <a class="link" title="{tr}View:{/tr} {$user_pages[ix].pageName}" href="tiki-index.php?page={$user_pages[ix].pageName|escape:"url"}">{$user_pages[ix].pageName|truncate:40:"(...)"}</a>
                 </td>
@@ -52,7 +52,6 @@
               </tr>
             {/section}
           </table>
-          </div>
 		  <div style="text-align:right;">{tr}Records:{/tr} {$user_pages|@count}</div>
         </div>
       </div>
@@ -61,20 +60,19 @@
 
   {if $prefs.feature_galleries eq 'y' and $mytiki_gals eq 'y'}
     <div id="content2" class="content">
-      <div class="panel panel-default">
-        <div class="panel-heading">
+      <div class="cbox">
+        <div class="cbox-title">
           {if $userwatch eq $user}{tr}My galleries{/tr}{else}{tr}User Galleries{/tr}{/if}
         </div>
-        <div class="panel-body">
-          <div class="table-responsive">
-          <table class="table normal">
+        <div class="cbox-data">
+          <table class="normal">
             <tr>
               <th>{tr}Gallery{/tr}</th>
               <th style="width:50px">{tr}Actions{/tr}</th>
             </tr>
-
+            {cycle values="even,odd" print=false}
             {section name=ix loop=$user_galleries}
-              <tr>
+              <tr class="{cycle}">
                 <td class="text">
                   <a class="link" href="{$user_galleries[ix].galleryId|sefurl:gallery}">{$user_galleries[ix].name}</a>
                 </td>
@@ -86,7 +84,6 @@
               </tr>
             {/section}
           </table>
-          </div>
 		  <div style="text-align:right;">{tr}Records:{/tr} {$user_galleries|@count}</div>
         </div>
       </div>
@@ -95,20 +92,19 @@
 
   {if $prefs.feature_articles eq 'y' and $mytiki_articles eq 'y'}
     <div id="content2" class="content">
-      <div class="panel panel-default">
-        <div class="panel-heading">
+      <div class="cbox">
+        <div class="cbox-title">
           {if $userwatch eq $user}{tr}My Articles{/tr}{else}{tr}User Articles{/tr}{/if}
         </div>
-        <div class="panel-body">
-          <div class="table-responsive">
-          <table class="table normal">
+        <div class="cbox-data">
+          <table class="normal">
             <tr>
               <th>{tr}Article{/tr}</th>
               <th style="width:50px">{tr}Actions{/tr}</th>
             </tr>
-
+            {cycle values="even,odd" print=false}
             {section name=ix loop=$user_articles}
-              <tr>
+              <tr class="{cycle}">
                 <td class="text">
                   <a class="link" href="{$user_articles[ix].articleId|sefurl:article}">{$user_articles[ix].title}</a>
                 </td>
@@ -120,7 +116,6 @@
               </tr>
             {/section}
           </table>
-          </div>
 		  <div style="text-align:right;">{tr}Records:{/tr} {$user_articles|@count}</div>
         </div>
       </div>
@@ -129,20 +124,19 @@
 
   {if $prefs.feature_trackers eq 'y' and $mytiki_user_items eq 'y'}
     <div id="content3" class="content">
-      <div class="panel panel-default">
-        <div class="panel-heading">
+      <div class="cbox">
+        <div class="cbox-title">
           {if $userwatch eq $user}{tr}My User Items{/tr}{else}{tr}User Items{/tr}{/if}
         </div>
-        <div class="panel-body">
-          <div class="table-responsive">
-          <table class="table normal">
+        <div class="cbox-data">
+          <table class="normal">
             <tr>
               <th>{tr}Item{/tr}</th>
               <th>{tr}Tracker{/tr}</th>
             </tr>
-
+            {cycle values="even,odd" print=false}
             {section name=ix loop=$user_items}
-              <tr>
+              <tr class="{cycle}">
                 <td class="text">
                   <a class="link" title="{tr}View{/tr}" href="tiki-view_tracker_item.php?trackerId={$user_items[ix].trackerId}&amp;itemId={$user_items[ix].itemId}">{$user_items[ix].value}</a>
                 </td>
@@ -152,10 +146,9 @@
               </tr>
             {/section}
           </table>
-          </div>
 		  <div style="text-align:right;">
 		  	   {tr}Records:{/tr} {$user_items|@count}
-			   {if !empty($nb_item_comments)}<br>{tr}Comments:{/tr} {$nb_item_comments}{/if}
+			   {if !empty($nb_item_comments)}<br />{tr}Comments:{/tr} {$nb_item_comments}{/if}
 		  </div>
         </div>
       </div>
@@ -164,19 +157,18 @@
 
   {if $prefs.feature_messages eq 'y' and $mytiki_msgs eq 'y'}
     <div id="content4" class="content">
-      <div class="panel panel-default">
-        <div class="panel-heading">{tr}Unread Messages{/tr}</div>
-        <div class="panel-body">
-          <div class="table-responsive">
-          <table class="table normal">
+      <div class="cbox">
+        <div class="cbox-title">{tr}Unread Messages{/tr}</div>
+        <div class="cbox-data">
+          <table class="normal">
             <tr>
               <th>{tr}Subject{/tr}</th>
               <th>{tr}From{/tr}</th>
               <th>{tr}Date{/tr}</th>
             </tr>
-
+            {cycle values="even,odd" print=false}
             {section name=ix loop=$msgs}
-              <tr>
+              <tr class="{cycle}">
                 <td class="text">
                   <a class="link" title="{tr}View{/tr}" href="messu-read.php?offset=0&amp;flag=&amp;flagval=&amp;find=&amp;sort_mode=date_desc&amp;priority=&amp;msgId={$msgs[ix].msgId}">{$msgs[ix].subject}</a>
                 </td>
@@ -189,7 +181,6 @@
               </tr>
             {/section}
           </table>
-          </div>
 		  <div style="text-align:right;">{tr}Records:{/tr} {$msgs|@count}</div>
         </div>
       </div>
@@ -198,26 +189,24 @@
 
   {if $prefs.feature_tasks eq 'y' and $mytiki_tasks eq 'y'}
     <div id="content5" class="content">
-      <div class="panel panel-default">
-        <div class="panel-heading">
+      <div class="cbox">
+        <div class="cbox-title">
           {if $userwatch eq $user}{tr}My tasks{/tr}{else}{tr}My Tasks{/tr}{/if}
         </div>
-        <div class="panel-body">
-          <div class="table-responsive">
-          <table class="table normal">
+        <div class="cbox-data">
+          <table class="normal">
             <tr>
               <th>{tr}Tasks{/tr}</th>
             </tr>
-
+            {cycle values="even,odd" print=false}
             {section name=ix loop=$tasks}
-              <tr>
+              <tr class="{cycle}">
                 <td class="text">
                   <a class="link" href="tiki-user_tasks.php?taskId={$tasks[ix].taskId}">{$tasks[ix].title}</a>
                 </td>
               </tr>
             {/section}
           </table>
-          </div>
 		  <div style="text-align:right;">{tr}Records:{/tr} {$tasks|@count}</div>
         </div>
       </div>
@@ -226,20 +215,19 @@
 
   {if $prefs.feature_forums eq 'y' && $mytiki_forum_topics eq 'y'}
     <div id="content8" class="content">
-      <div class="panel panel-default">
-        <div class="panel-heading">
+      <div class="cbox">
+        <div class="cbox-title">
           {if $userwatch eq $user}{tr}My forum topics{/tr}{else}{tr}User forum topics{/tr}{/if}
         </div>
-        <div class="panel-body">
-          <div class="table-responsive">
-          <table class="table normal">
+        <div class="cbox-data">
+          <table class="normal">
             <tr>
               <th>{tr}Forum topics{/tr}</th>              
               <th>{tr}Date of post{/tr}</th>              
             </tr>
-
+            {cycle values="even,odd" print=false}
             {section name=ix loop=$user_forum_topics}
-              <tr>
+              <tr class="{cycle}">
                 <td class="text">
                   <a class="link" title="{tr}View{/tr}" href="tiki-view_forum_thread.php?comments_parentId={$user_forum_topics[ix].threadId}&amp;forumId={$user_forum_topics[ix].object}">{$user_forum_topics[ix].title}</a>
                 </td>                
@@ -249,7 +237,6 @@
               </tr>
             {/section}
           </table>
-          </div>
 		  <div style="text-align:right;">{tr}Records:{/tr} {$user_forum_topics|@count}</div>
         </div>
       </div>
@@ -258,20 +245,19 @@
   
     {if $prefs.feature_forums eq 'y' && $mytiki_forum_replies eq 'y'}
     <div id="content9" class="content">
-      <div class="panel panel-default">
-        <div class="panel-heading">
+      <div class="cbox">
+        <div class="cbox-title">
           {if $userwatch eq $user}{tr}My forum replies{/tr}{else}{tr}User forum replies{/tr}{/if}
         </div>
-        <div class="panel-body">
-          <div class="table-responsive">
-          <table class="table normal">
+        <div class="cbox-data">
+          <table class="normal">
             <tr>
               <th>{tr}Forum replies{/tr}</th>              
               <th>{tr}Date of post{/tr}</th>              
             </tr>
-
+            {cycle values="even,odd" print=false}
             {section name=ix loop=$user_forum_replies}
-              <tr>
+              <tr class="{cycle}">
                 <td class="text">
                   <a class="link" title="{tr}View{/tr}" href="tiki-view_forum_thread.php?comments_parentId={$user_forum_replies[ix].threadId}&amp;forumId={$user_forum_replies[ix].object}">{$user_forum_replies[ix].title}</a>
                 </td>
@@ -281,7 +267,6 @@
               </tr>
             {/section}
           </table>
-          </div>
 		  <div style="text-align:right;">{tr}Records:{/tr} {$user_forum_replies|@count}</div>
         </div>
       </div>
@@ -290,20 +275,19 @@
   
   {if $prefs.feature_blogs eq 'y' && $mytiki_blogs eq 'y'}
     <div id="content6" class="content">
-      <div class="panel panel-default">
-        <div class="panel-heading">
+      <div class="cbox">
+        <div class="cbox-title">
           {if $userwatch eq $user}{tr}My blogs{/tr}{else}{tr}User Blogs{/tr}{/if}
         </div>
-        <div class="panel-body">
-          <div class="table-responsive">
-          <table class="table normal">
+        <div class="cbox-data">
+          <table class="normal">
             <tr>
               <th>{tr}Blogs{/tr}</th>
               <th style="width:50px">{tr}Actions{/tr}</th>
             </tr>
-
+            {cycle values="even,odd" print=false}
             {section name=ix loop=$user_blogs}
-              <tr>
+              <tr class="{cycle}">
                 <td class="text">
                   <a class="link" title="{tr}View{/tr}" href="{$user_blogs[ix].blogId|sefurl:blog}">{$user_blogs[ix].title}</a>
                 </td>
@@ -315,37 +299,7 @@
               </tr>
             {/section}
           </table>
-          </div>
 		  <div style="text-align:right;">{tr}Records:{/tr} {$user_blogs|@count}</div>
-        </div>
-      </div>
- <div class="panel panel-default">
-        <div class="panel-heading">
-          {if $userwatch eq $user}{tr}My blog Posts{/tr}{else}{tr}User Blog Posts{/tr}{/if}
-        </div>
-        <div class="panel-body">
-          <div class="table-responsive">
-          <table class="table normal">
-            <tr>
-              <th>{tr}Blog Posts{/tr}</th>
-              <th style="width:50px">{tr}Actions{/tr}</th>
-            </tr>
-
-            {section name=ix loop=$user_blog_posts}
-              <tr>
-                <td class="text">
-                  <a class="link" title="{tr}View{/tr}" href="{$user_blog_posts[ix].postId|sefurl:blogpost}">{$user_blog_posts[ix].title|escape}</a>
-                </td>
-                <td class="action">
-                  <a class="link" href="tiki-blog_post.php?postId={$user_blog_posts[ix].postId}">
-                    {icon _id='page_edit'}
-                  </a>
-                </td>
-              </tr>
-            {/section}
-          </table>
-          </div>
-		  <div style="text-align:right;">{tr}Records:{/tr} {$user_blog_posts|@count}</div>
         </div>
       </div>
     </div>

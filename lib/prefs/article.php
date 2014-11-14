@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,7 +13,7 @@ function prefs_article_list()
 		'points_desc' => tra('Points'),
 	);
 
-	$prefslib = TikiLib::lib('prefs');
+	global $prefslib;
 	$advanced_columns = $prefslib->getExtraSortColumns();
 
 	foreach ( $advanced_columns as $key => $label ) {
@@ -24,7 +24,6 @@ function prefs_article_list()
 	return array(
 		'article_comments_per_page' => array(
 			'name' => tra('Default number per page'),
-            'description' => tra('set the number of comments per page (default = 10)'),
 			'type' => 'text',
 			'size' => '5',
 			'filter' => 'digits',
@@ -32,7 +31,6 @@ function prefs_article_list()
 		),
 		'article_comments_default_ordering' => array(
 			'name' => tra('Default Ordering'),
-            'description' => tra('sets the default ordering filter for comments (default = points_desc)'),
 			'type' => 'list',
 			'options' => $comment_sort_orders,
 			'default' => 'points_desc',
@@ -40,12 +38,6 @@ function prefs_article_list()
 		'article_paginate' => array(
 			'name' => tra('Paginate articles'),
 			'description' => tra('Divide articles into multiple pages with pagebreak markers.'),
-			'type' => 'flag',
-			'default' => 'n',
-		),
-		'article_remembers_creator' => array(
-			'name' => tra('Article creator remains article owner.'),
-			'description' => tra('Last article editor does not automatically become author (owner).'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
@@ -61,11 +53,10 @@ function prefs_article_list()
 			'type' => 'text',
 			'separator' => ',',
 			'filter' => 'int',
-			'default' => "0,1,2,3,4,5",
+			'default' => range(1, 5),
 		),
 		'article_image_size_x' => array(
 			'name' => tra('Default maximum width for custom article images'),
-            'description' => tra('sets the maximum width for article images'),
 			'type' => 'text',
 			'size' => 3,
 			'filter' => 'int',
@@ -74,7 +65,6 @@ function prefs_article_list()
 		),
 		'article_image_size_y' => array(
 			'name' => tra('Default maximum height for custom article images'),
-            'description' => tra('sets the maximum height for article images'),
 			'type' => 'text',
 			'size' => 3,
 			'filter' => 'int',
@@ -83,7 +73,6 @@ function prefs_article_list()
 		),
 		'article_default_list_image_size_x' => array(
 			'name' => tra('Default maximum width for custom article images in list mode (on View Articles)'),
-            'description' => tra('sets the default maximum width for custom article images in list mode (on View Articles)'),
 			'type' => 'text',
 			'size' => 3,
 			'filter' => 'int',
@@ -92,7 +81,6 @@ function prefs_article_list()
 		),
 		'article_default_list_image_size_y' => array(
 			'name' => tra('Default maximum height for custom article images in list mode (on View Articles)'),
-            'description' => tra('sets the default maximum height for custom article images in list mode (on View Articles)'),
 			'type' => 'text',
 			'size' => 3,
 			'filter' => 'int',
@@ -107,10 +95,8 @@ function prefs_article_list()
 		),
 		'article_sharethis_publisher' => array(
 			'name' => tra('Your ShareThis publisher identifier (optional)'),
-            'description' => tra('set to define your ShareThis publisher identifier'),
 			'type' => 'text',
 			'size' => '40',
-            'hint' => tra('record your ShareThis publisher ID'),
 			'default' => '',
 		),
 		'article_related_articles' => array(

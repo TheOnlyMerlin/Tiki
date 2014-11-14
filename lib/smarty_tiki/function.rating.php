@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,8 +7,8 @@
 
 function smarty_function_rating( $params, $smarty )
 {
-	global $prefs, $user;
-	$ratinglib = TikiLib::lib('rating');
+	global $ratinglib;
+	require_once 'lib/rating/ratinglib.php';
 
 	if ( ! isset($params['type'], $params['id']) ) {
 		return tra('No object information provided for rating.');
@@ -29,29 +29,10 @@ function smarty_function_rating( $params, $smarty )
 
 			// Handle type-specific actions
 			if ( $type == 'comment' ) {
+				global $commentslib, $user; require_once 'lib/comments/commentslib.php';
 
 				if ( $user ) {
-					$commentslib = TikiLib::lib('comments');
 					$commentslib->vote_comment($id, $user, $value);
-				}
-	        }
-
-			if ($prefs['feature_score'] == 'y' && $id) {
-				$tikilib = TikiLib::lib('tiki');
-				if ($type == 'comment') {
-				  $forum_id = $commentslib->get_comment_forum_id($id);
-				  $forum_info = $commentslib->get_forum($forum_id);
-				  $thread_info = $commentslib->get_comment($id, null, $forum_info);
-				  $item_user = $thread_info['userName'];
-				} elseif ($type == 'article') {
-				  $artlib = TikiLib::lib('art');
-				  $res = $artlib->get_article($id);
-				  $item_user = $res['author'];
-				}
-				if ($value == '1') {
-				  $tikilib->score_event($item_user, 'item_is_rated', "$user:$type:$id");
-				} elseif ($value == '2') {
-				  $tikilib->score_event($item_user, 'item_is_unrated', "$user:$type:$id");
 				}
 			}
 		} elseif ( $value != $prev ) {
@@ -60,18 +41,11 @@ function smarty_function_rating( $params, $smarty )
 	}
 
 	$vote = $ratinglib->get_vote($type, $id);
-	$options = $ratinglib->get_options($type, $id, false, $hasLabels);
-
-	if ($prefs['rating_smileys'] == 'y') {
-		$smiles = $ratinglib->get_options_smiles($type, $id);
-		$smarty->assign('rating_smiles', $smiles);
-	}
 
 	$smarty->assign('rating_type', $type);
 	$smarty->assign('rating_id', $id);
-	$smarty->assign('rating_options', $options);
+	$smarty->assign('rating_options', $ratinglib->get_options($type));
 	$smarty->assign('current_rating', $vote);
-	$smarty->assign('rating_has_labels', $hasLabels);
 	return $smarty->fetch('rating.tpl');
 }
 

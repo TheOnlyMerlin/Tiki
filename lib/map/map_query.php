@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,7 +13,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 
 function map_query($map, $corx, $cory)
 {
-	$map_querymsg = '<table class="table-bordered">';
+	$map_querymsg = '<table class="normal">';
 	$map_querymsg .= '<tr><td class="heading" colspan="2">' . tra('Query point:') . ' <b>' . $corx . ' / ' . $cory . '</b></td><tr>';
 	$query_point = ms_newpointObj();
 	$query_point->setXY($corx, $cory);

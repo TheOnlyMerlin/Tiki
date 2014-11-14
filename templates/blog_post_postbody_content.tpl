@@ -1,13 +1,11 @@
 {* $Id$ *}
 {if $blog_post_context eq 'view_blog' && $use_excerpt eq 'y' && !empty($post_info.excerpt)}
-	<div class="postbody-content postbody-excerpt panel-body">
-        {include file='blog_post_author_info.tpl'}
-    	{$post_info.parsed_excerpt}
+	<div class="postbody-content postbody-excerpt">
+	{$post_info.excerpt}
 	</div>
 	{self_link _script=$post_info.postId|sefurl:blogpost _noauto='y'}{tr}Read more{/tr}{/self_link}
 {else}
-	<div class="postbody-content panel-body">
-        {include file='blog_post_author_info.tpl'}
+	<div class="postbody-content">
 		{$post_info.parsed_data}
 	</div>
 {/if}
@@ -26,5 +24,15 @@
 				<a href="tiki-view_blog_post.php?blogId={$smarty.request.blogId}&amp;postId={$smarty.request.postId}&amp;page={$post_info.last_page}">{icon _id='resultset_last' alt="{tr}Last page{/tr}"}</a>
 			</div>
 		{/if}
+	</div>
+{/if}
+
+{capture name='copyright_section'}
+	{include file='show_copyright.tpl'}
+{/capture}
+{* When copyright section is not empty show it *}
+{if $smarty.capture.copyright_section neq ''}
+	<div class="editdate">
+		{$smarty.capture.copyright_section}
 	</div>
 {/if}

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,15 +11,14 @@ class Search_Expr_Range implements Search_Expr_Interface
 	private $to;
 	private $type;
 	private $field;
-	private $weight;
+	private $weight = 1.0;
 
-	function __construct($from, $to, $type = null, $field = null, $weight = 1.0)
+	function __construct($from, $to, $type = null, $field = null)
 	{
 		$this->from = $from;
 		$this->to = $to;
 		$this->type = $type;
 		$this->field = $field;
-		$this->weight = (float) $weight;
 	}
 
 	function getToken($which)
@@ -65,11 +64,6 @@ class Search_Expr_Range implements Search_Expr_Interface
 	function getField()
 	{
 		return $this->field;
-	}
-
-	function traverse($callback)
-	{
-		return call_user_func($callback, $callback, $this, array());
 	}
 }
 

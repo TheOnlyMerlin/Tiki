@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +11,7 @@
  * Letter key: ~d~ ~D~
  *
  */
-class Tracker_Field_Dropdown extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable, Search_FacetProvider_Interface, Tracker_Field_Exportable
+class Tracker_Field_Dropdown extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
 {
 	public static function getTypes()
 	{
@@ -29,7 +29,6 @@ class Tracker_Field_Dropdown extends Tracker_Field_Abstract implements Tracker_F
 						'description' => tr('An option, if containing an equal sign, the prior part will be used as the value while the later as the label'),
 						'filter' => 'text',
 						'count' => '*',
-						'legacy_index' => 0,
 					),
 				),
 			),
@@ -46,7 +45,6 @@ class Tracker_Field_Dropdown extends Tracker_Field_Abstract implements Tracker_F
 						'description' => tr('An option, if containing an equal sign, the prior part will be used as the value while the later as the label. It is recommended to add an "other" option.'),
 						'filter' => 'text',
 						'count' => '*',
-						'legacy_index' => 0,
 					),
 				),
 			),
@@ -63,7 +61,6 @@ class Tracker_Field_Dropdown extends Tracker_Field_Abstract implements Tracker_F
 						'description' => tr('An option, if containing an equal sign, the prior part will be used as the value while the later as the label'),
 						'filter' => 'text',
 						'count' => '*',
-						'legacy_index' => 0,
 					),
 				),
 			),
@@ -80,17 +77,6 @@ class Tracker_Field_Dropdown extends Tracker_Field_Abstract implements Tracker_F
 						'description' => tr('An option, if containing an equal sign, the prior part will be used as the value while the later as the label'),
 						'filter' => 'text',
 						'count' => '*',
-						'legacy_index' => 0,
-					),
-					'inputtype' => array(
-						'name' => tr('Input Type'),
-						'description' => tr('User interface control to be used.'),
-						'default' => '',
-						'filter' => 'alpha',
-						'options' => array(
-							'' => tr('Multiple-selection check-boxes'),
-							'm' => tr('List box'),
-						),
 					),
 				),
 			),
@@ -107,12 +93,10 @@ class Tracker_Field_Dropdown extends Tracker_Field_Abstract implements Tracker_F
 		
 		$ins_id = $this->getInsertId();
 
-		if (!empty($requestData['other_'.$ins_id])) {
-			$value = $requestData['other_'.$ins_id];
-		} elseif (isset($requestData[$ins_id])) {
-			$value = implode(',', (array) $requestData[$ins_id]);
-		} elseif (isset($requestData[$ins_id . '_old'])) {
-			$value = '';
+		if (!empty($requestData['other_'.$this->getInsertId()])) {
+			$value = $requestData['other_'.$this->getInsertId()];
+		} elseif (isset($requestData[$this->getInsertId()])) {
+			$value = implode(',', (array) $requestData[$this->getInsertId()]);
 		} else {
 			$value = $this->getValue($this->getDefaultValue());
 		}
@@ -166,30 +150,18 @@ class Tracker_Field_Dropdown extends Tracker_Field_Abstract implements Tracker_F
 
 	private function getPossibilities()
 	{
-		static $localCache = array();
-
-		$string = $this->getConfiguration('options');
-		if (! isset($localCache[$string])) {
-			$options = $this->getOption('options');
-
-			if (empty($options)) {
-				return array();
-			}
-
-			$out = array();
-			foreach ($options as $value) {
-				$out[$this->getValuePortion($value)] = $this->getLabelPortion($value);
-			}
-
-			$localCache[$string] = $out;
+		$options = $this->getConfiguration('options_array');
+		$out = array();
+		foreach ($options as $value) {
+			$out[$this->getValuePortion($value)] = $this->getLabelPortion($value);
 		}
 
-		return $localCache[$string];
+		return $out;
 	}
 	
 	private function getDefaultValue()
 	{
-		$options = $this->getOption('options');
+		$options = $this->getConfiguration('options_array');
 		
 		$parts = array();
 		$last = false;
@@ -220,79 +192,6 @@ class Tracker_Field_Dropdown extends Tracker_Field_Abstract implements Tracker_F
 		} else {
 			return substr($value, $pos + 1);
 		}
-	}
-
-	function getDocumentPart(Search_Type_Factory_Interface $typeFactory)
-	{
-		$value = $this->getValue();
-		$label = $this->getValueLabel($value);
-		$baseKey = $this->getBaseKey();
-
-		return array(
-			$baseKey => $typeFactory->identifier($value),
-			"{$baseKey}_text" => $typeFactory->sortable($label),
-		);
-	}
-
-	function getProvidedFields()
-	{
-		$baseKey = $this->getBaseKey();
-		return array($baseKey, $baseKey . '_text');
-	}
-
-	function getGlobalFields()
-	{
-		$baseKey = $this->getBaseKey();
-		return array("{$baseKey}_text" => true);
-	}
-
-	function getFacets()
-	{
-		$baseKey = $this->getBaseKey();
-		return array(
-			Search_Query_Facet_Term::fromField($baseKey)
-				->setLabel($this->getConfiguration('name'))
-				->setRenderMap($this->getPossibilities())
-		);
-	}
-
-	function getTabularSchema()
-	{
-		$schema = new Tracker\Tabular\Schema($this->getTrackerDefinition());
-
-		$permName = $this->getConfiguration('permName');
-		$name = $this->getConfiguration('name');
-
-		$possibilities = $this->getPossibilities();
-		$invert = array_flip($possibilities);
-
-		$schema->addNew($permName, 'code')
-			->setLabel($name)
-			->setRenderTransform(function ($value) {
-				return $value;
-			})
-			->setParseIntoTransform(function (& $info, $value) use ($permName) {
-				$info['fields'][$permName] = $value;
-			})
-			;
-
-		$schema->addNew($permName, 'text')
-			->setLabel($name)
-			->addIncompatibility($permName, 'code')
-			->addQuerySource('text', "tracker_field_{$permName}_text")
-			->setRenderTransform(function ($value, $extra) use ($possibilities) {
-				if (isset($possibilities[$value])) {
-					return $possibilities[$value];
-				}
-			})
-			->setParseIntoTransform(function (& $info, $value) use ($permName, $invert) {
-				if (isset($invert[$value])) {
-					$info['fields'][$permName] = $value;
-				}
-			})
-			;
-
-		return $schema;
 	}
 }
 

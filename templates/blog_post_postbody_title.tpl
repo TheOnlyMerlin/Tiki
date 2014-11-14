@@ -1,12 +1,10 @@
 {* $Id$ *}
-<header class="clearfix postbody-title panel-heading">
+<div class="clearfix postbody-title">
 	<div class="title">
 		{if $blog_post_context eq 'view_blog'}
-			<h2 class="panel-title">{object_link type="blog post" id=$post_info.postId title=$post_info.title}{if $post_info.priv eq 'y'} ({tr}private{/tr}){/if}</h2>
-		{elseif $blog_post_context eq 'excerpt'}
-			<bold>{object_link type="blog post" id=$post_info.postId title=$post_info.title}</bold>
+			<h2>{object_link type="blog post" id=$post_info.postId title=$post_info.title}</h2>
 		{else}
-			<h2 class="panel-title">{$post_info.title|escape} {if $post_info.priv eq 'y'} ({tr}private{/tr}){/if}</h2>
+			<h2>{$post_info.title|escape}</h2>
 		{/if}
 	</div>
 	{if $blog_post_context eq 'preview'}
@@ -14,4 +12,4 @@
 	{else}
 		{include file='freetag_list.tpl' freetags=$post_info.freetags}
 	{/if}
-</header>
+</div>

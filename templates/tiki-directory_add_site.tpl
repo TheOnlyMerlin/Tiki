@@ -3,7 +3,7 @@
 {include file='tiki-directory_bar.tpl'}
 
 {if $categs[0] eq ''}
-	{icon _id=exclamation style="vertical-align:middle" alt="{tr}Error{/tr}"} {tr}You cannot add sites until Directory Categories are setup.{/tr} <br>
+	{icon _id=exclamation style="vertical-align:middle" alt="{tr}Error{/tr}"} {tr}You cannot add sites until Directory Categories are setup.{/tr} <br />
 	{if $tiki_p_admin_directory_cats ne 'y'}
 		{tr}Please contact the Site Administrator{/tr}{else}{tr}<a href="tiki-directory_admin_categories.php">Add a directory category now</a>.{/tr}
 	{/if}
@@ -33,18 +33,18 @@
 		</table>
 	{else}
 		{if $msg}
-			<div class="alert alert-warning">{icon _id=exclamation alt="{tr}Error{/tr}" style="vertical-align:middle"} {tr}{$msg}{/tr}</div>
+			<div class="simplebox highlight">{icon _id=exclamation alt="{tr}Error{/tr}" style="vertical-align:middle"} {tr}{$msg}{/tr}</div>
 		{/if}
 
 		{* Display a form to add or edit a site *}
 		<h2>{if $siteId}{tr}Edit a site{/tr}{else}{tr}Add a Site{/tr}{/if}</h2>
 		<form action="tiki-directory_add_site.php" method="post">
-			<input type="hidden" name="parent" value="{$parent|escape}">
-			<input type="hidden" name="siteId" value="{$siteId|escape}">
+			<input type="hidden" name="parent" value="{$parent|escape}" />
+			<input type="hidden" name="siteId" value="{$siteId|escape}" />
 			<table class="formcolor">
 				<tr>
 					<td><label for="name">{tr}Name:{/tr}</label></td>
-					<td><input type="text" id="name" name="name" value="{$info.name|escape}"></td>
+					<td><input type="text" id="name" name="name" value="{$info.name|escape}" /></td>
 				</tr>
 				<tr>
 					<td><label for="description">{tr}Description:{/tr}</label></td>
@@ -52,7 +52,7 @@
 				</tr>
 				<tr>
 					<td><label for="url">{tr}URL:{/tr}</label></td>
-					<td><input type="text" size="60" id="url" name="url" value="{if $info.url ne ""}{$info.url|escape}{else}http://{/if}"></td>
+					<td><input type="text" size="60" id="url" name="url" value="{if $info.url ne ""}{$info.url|escape}{else}http://{/if}" /></td>
 				</tr>
 				<tr>
 					<td><label for="siteCats">{tr}Directory Categories:{/tr}</label></td>
@@ -83,13 +83,13 @@
 				{else}
 					<input type="hidden" name="country" value="None">
 				{/if}
-				<input name="isValid" type="hidden" value="">
+				<input name="isValid" type="hidden" value="" />
       	   {if $prefs.feature_antibot eq 'y' && $user eq ''}
 					{include file='antibot.tpl' td_style="formcolor"}
 				{/if}
       	   <tr>
 					<td>&nbsp;</td>
-					<td><input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}"></td>
+					<td><input type="submit" name="save" value="{tr}Save{/tr}" /></td>
 				</tr>
 			</table>
 		</form>

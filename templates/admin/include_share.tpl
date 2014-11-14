@@ -1,21 +1,16 @@
 {* $Id$ *}
 
 <form action="tiki-admin.php?page=share" method="post">
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" name="commentssetprefs" value="{tr}Change preferences{/tr}" />
+	</div>
 
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-                <input type="submit" class="btn btn-primary btn-sm" name="sharesetprefs" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}" />
-            </div>
-        </div>
-    </div>
-
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Activate the feature{/tr}</legend>
 		{preference name=feature_share visible="always"}
 	</fieldset>		
 	
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Site-wide features{/tr}</legend>
 
 				<div class="admin featurelist">
@@ -34,12 +29,7 @@
 			</fieldset>
 
 
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="text-center">
-                <input type="submit" class="btn btn-primary btn-sm" name="sharesetprefs" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}" />
-            </div>
-        </div>
-    </div>
-
+<div class="heading input_submit_container" style="text-align: center">
+	<input type="submit" name="sharesetprefs" value="{tr}Change preferences{/tr}" />
+</div>
 </form>

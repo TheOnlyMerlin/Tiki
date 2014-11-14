@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -22,7 +19,7 @@ if ($trklib->get_tracker_by_name("Invoice Items") < 1) {
 }
 
 $headerlib->add_jq_onready(
-	"$('.ClientName').each(function(i) {
+				"$('.ClientName').each(function(i) {
 					$(this)
 						.click(function() {
 							$('.ClientDetails').eq(i).toggle('fast');

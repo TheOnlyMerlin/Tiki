@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -19,9 +19,7 @@ class Messu extends TikiLib
 	 */
 	function save_sent_message($user, $from, $to, $cc, $subject, $body, $priority, $replyto_hash = '')
 	{
-		global $prefs;
-		$userlib = TikiLib::lib('user');
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $userlib, $prefs;
 
 		$subject = strip_tags($subject);
 		$body = strip_tags($body, '<a><b><img><i>');
@@ -29,8 +27,8 @@ class Messu extends TikiLib
 		$hash = md5($subject . $body);
 
 		if ($this->getOne(
-			'select count(*) from `messu_sent` where `user`=? and `user_from`=? and `hash`=?',
-			array($user, $from, $hash)
+						'select count(*) from `messu_sent` where `user`=? and `user_from`=? and `hash`=?',
+						array($user, $from, $hash)
 		)
 		) {
 			return false;
@@ -41,22 +39,22 @@ class Messu extends TikiLib
 						' `isRead`, `isReplied`, `isFlagged`, `priority`, `hash`, `replyto_hash`)' .
 						' values(?,?,?,?,?,?,?,?,?,?,?,?,?)';
 		$this->query(
-			$query,
-			array(
-				$user,
-				$from,
-				$to,
-				$cc,
-				$subject,
-				$body,
-				(int) $this->now,
-				'n',
-				'n',
-				'n',
-				(int) $priority,
-				$hash,
-				$replyto_hash
-			)
+						$query,
+						array(
+							$user, 
+							$from, 
+							$to, 
+							$cc, 
+							$subject, 
+							$body, 
+							(int) $this->now, 
+							'n', 
+							'n', 
+							'n', 
+							(int) $priority, 
+							$hash, 
+							$replyto_hash
+						)
 		);
 
 		return true;
@@ -64,24 +62,10 @@ class Messu extends TikiLib
 
 	/**
 	 * Send a message to a user
-	 *
-	 * @param string $user		username
-	 * @param string $from		from username
-	 * @param string $to		to username (again?)
-	 * @param string $cc		cc username
-	 * @param string $subject
-	 * @param string $body
-	 * @param int    $priority
-	 * @param string $replyto_hash
-	 * @param string $replyto_email y/n
-	 * @param string $bcc_sender	y/n send blind copy email to from user's
-	 * @return bool				success
 	 */
 	function post_message($user, $from, $to, $cc, $subject, $body, $priority, $replyto_hash = '', $replyto_email = '', $bcc_sender = '')
 	{
-		global $prefs;
-		$userlib = TikiLib::lib('user');
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $userlib, $prefs;
 
 		$subject = strip_tags($subject);
 		$body = strip_tags($body, '<a><b><img><i>');
@@ -89,8 +73,8 @@ class Messu extends TikiLib
 		$hash = md5($subject . $body);
 
 		if ($this->getOne(
-			'select count(*) from `messu_messages` where `user`=? and `user_from`=? and `hash`=?',
-			array($user, $from, $hash)
+						'select count(*) from `messu_messages` where `user`=? and `user_from`=? and `hash`=?', 
+						array($user, $from, $hash)
 		)
 		) {
 			return false;
@@ -102,26 +86,25 @@ class Messu extends TikiLib
 					' values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
 		$this->query(
-			$query,
-			array(
-				$user,
-				$from,
-				$to,
-				$cc,
-				$subject,
-				$body,
-				(int) $this->now,
-				'n',
-				'n',
-				'n',
-				(int) $priority,
-				$hash,
-				$replyto_hash
-			)
+						$query, 
+						array(
+							$user, 
+							$from, 
+							$to, 
+							$cc, 
+							$subject, 
+							$body, 
+							(int) $this->now, 
+							'n', 
+							'n', 
+							'n', 
+							(int) $priority, 
+							$hash, 
+							$replyto_hash
+						)
 		);
 
 		// Now check if the user should be notified by email
-		$magId = $this->getOne('select LAST_INSERT_ID() from `messu_messages`', array());
 		$foo = parse_url($_SERVER['REQUEST_URI']);
 		$machine = $this->httpPrefix(true) . $foo['path'];
 		$machine = str_replace('messu-compose', 'messu-mailbox', $machine);
@@ -132,13 +115,6 @@ class Messu extends TikiLib
 				$_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'];
 			}
 			$email = $userlib->get_user_email($user);
-			if ($userlib->user_exists($from)) {
-				$from_email = $userlib->get_user_email($from);		// $from_email required for TikiMail constructor
-			} elseif ($from == 'tiki-contact.php' && !empty($prefs['sender_email'])) {
-				$from_email = $prefs['sender_email'];
-			} else {
-				return false;										// non-existent users can't send messages (etc)
-			}
 			if ($email) {
 				include_once('lib/webmail/tikimaillib.php');
 				$smarty->assign('mail_site', $_SERVER['SERVER_NAME']);
@@ -148,45 +124,43 @@ class Messu extends TikiLib
 				$smarty->assign('mail_from', stripslashes($from));
 				$smarty->assign('mail_subject', stripslashes($subject));
 				$smarty->assign('mail_body', stripslashes($body));
-				$smarty->assign('mail_truncate', $prefs['messu_truncate_internal_message']);
-				$smarty->assign('messageid', $magId);
+				$mail = new TikiMail($user);
+				$lg = $this->get_user_preference($user, 'language', $prefs['site_language']);
 
-				try {
-					$mail = new TikiMail($user, $from_email);
-					$lg = $this->get_user_preference($user, 'language', $prefs['site_language']);
+				if (empty($subject)) {
+					$s = $smarty->fetchLang($lg, 'mail/messu_message_notification_subject.tpl');
+					$mail->setSubject(sprintf($s, $_SERVER['SERVER_NAME']));
+				} else {
+					$mail->setSubject($subject);
+				}
 
-					if (empty($subject)) {
-						$s = $smarty->fetchLang($lg, 'mail/messu_message_notification_subject.tpl');
-						$mail->setSubject(sprintf($s, $_SERVER['SERVER_NAME']));
-					} else {
-						$mail->setSubject($subject);
+				$mail_data = $smarty->fetchLang($lg, 'mail/messu_message_notification.tpl');
+				$mail->setText($mail_data);
+
+				if ($userlib->user_exists($from)) {
+					$from_email = $userlib->get_user_email($from);
+
+					if ($bcc_sender === 'y' && !empty($from_email)) {
+						$mail->setHeader('Bcc', $from_email);
 					}
 
-					$mail_data = $smarty->fetchLang($lg, 'mail/messu_message_notification.tpl');
-					$mail->setText($mail_data);
-
-					if ($from_email) {
-
-						if ($bcc_sender === 'y' && !empty($from_email)) {
-							$mail->setBcc($from_email);
-						}
-
-						if ($replyto_email !== 'y' && $userlib->get_user_preference($from, 'email is public', 'n') == 'n') {
-							$from_email = '';	// empty $from_email if not to be used - saves getting it twice
-						}
-
-						if (!empty($from_email)) {
-							$mail->setReplyTo($from_email);
-						}
+					if ($replyto_email !== 'y' && $userlib->get_user_preference($from, 'email is public', 'n') == 'n') {
+						$from_email = '';	// empty $from_email if not to be used - saves getting it twice
 					}
 
-					if (!$mail->send(array($email), 'mail')) {
-						return false; //TODO echo $mail->errors;
+					if (!empty($from_email)) {
+						$mail->setHeader('Reply-To', $from_email);
 					}
+				}
 
-				} catch (Zend_Mail_Exception $e) {
-					TikiLib::lib('errorreport')->report($e->getMessage());
-					return false;
+				if (!empty($prefs['sender_email'])) {
+					$mail->setHeader('From', $prefs['sender_email']);
+				} else if (!empty($from_email)) {
+					$mail->setHeader('From', $from_email);
+				}
+
+				if (!$mail->send(array($email), 'mail')) {
+					return false; //TODO echo $mail->errors;
 				}
 			}
 		}

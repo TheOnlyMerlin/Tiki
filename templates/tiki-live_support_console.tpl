@@ -2,8 +2,8 @@
 
 <html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"> 
-    <link rel="StyleSheet"  href="styles/{$prefs.style}" type="text/css">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+    <link rel="StyleSheet"  href="styles/{$prefs.style}" type="text/css" />
     <title>{tr}Live support:Console{/tr}</title>
     {literal}
 	<script type="text/javascript" src="lib/live_support/live-support.js">
@@ -16,8 +16,7 @@
   <body style="background-color: white">
   {/literal}
   	{if $isOperator}
-    <div class="table-responsive">
-	<table class="table normal" >
+	<table class="normal" >
 		<tr>
 			<th>{tr}Operator:{/tr} {$user}</th>
 			<th>{tr}Status:{/tr} <b>{tr}{$status}{/tr}</b></th>
@@ -30,7 +29,6 @@
 		</th>
 		</tr>
 	</table>
-    </div>
 	{else}
 		{tr}You are not an operator.{/tr} <a href="tiki-live_support_admin.php">{tr}Live support system{/tr}</a>
 	{/if}
@@ -42,16 +40,16 @@
 			sound();
 		</script>
     {/if}
-	<table id='reqs' class="table normal">
+	<table id='reqs' class="normal">
 		<tr>
 			<th>{tr}User{/tr}</th>
 			<th>{tr}Reason{/tr}</th>
 			<th>{tr}Requested{/tr}</th>
 			<th>&nbsp;</th>
 		</tr>
-
+		{cycle values="odd,even" print=false}
 		{section loop=$requests name=ix}
-		<tr>
+		<tr class="{cycle}">
 			<td>{$requests[ix].user}</td>
 			<td>{$requests[ix].reason}</td>
 			<td>{$requests[ix].timestamp|tiki_short_time}</td>
@@ -71,7 +69,7 @@
 	<h3>{tr}No support requests{/tr}</h3>
 	{/if}
     <script type='text/javascript'>
-        var last_support_req={$last};
+        var last_req={$last};
     	console_poll();
     </script>
 

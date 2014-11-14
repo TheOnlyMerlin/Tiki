@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -17,7 +17,4 @@ unset($user_tiki);
 unset($pass_tiki);
 unset($dbs_tiki);
 ini_set('session.save_handler', 'user');
-// Force autoload
-if (! class_exists('ADODB_Session')) {
-	die('AdoDb Session missing');
-}
+include_once('lib/adodb/session/adodb-session.php');

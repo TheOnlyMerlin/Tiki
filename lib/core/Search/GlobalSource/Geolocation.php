@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,10 +9,6 @@ class Search_GlobalSource_Geolocation implements Search_GlobalSource_Interface
 {
 	function getData($objectType, $objectId, Search_Type_Factory_Interface $typeFactory, array $data = array())
 	{
-		if (isset($data['geo_location'])) {
-			return false;
-		}
-
 		$geolib = TikiLib::lib('geo');
 		$coordinates = $geolib->get_coordinates_string($objectType, $objectId);
 		$alreadyLocated = isset($data['geo_located']) && $data['geo_located'] == 'y';

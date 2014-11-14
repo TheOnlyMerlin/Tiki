@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,28 +15,6 @@ class JisonParser_Phraser_Handler extends JisonParser_Phraser
 	var $parsed = '';
 	var $cache = array();
 
-	var $cssClassStart = '';
-	var $cssClassMiddle = '';
-	var $cssClassEnd = '';
-
-	function setCssWordClasses($classes = array())
-	{
-		$classes = array_merge(
-			array(
-				'start' => '',
-				'middle' => '',
-				'end' => ''
-			),
-			$classes
-		);
-
-		$this->cssClassStart = $classes['start'];
-		$this->cssClassMiddle = $classes['middle'];
-		$this->cssClassEnd = $classes['end'];
-
-		return $this;
-	}
-
 	function tagHandler($tag)
 	{
 		return $tag;
@@ -47,25 +25,22 @@ class JisonParser_Phraser_Handler extends JisonParser_Phraser
 		$this->currentWord++;
 		$this->words[] = $word;
 
-		for ($i = 0, $end = count($this->indexes); $i < $end; $i++) {
-			if (empty($this->indexes[$i]['ended'])) {
-				if ($this->currentWord >= $this->indexes[$i]['start']
-						&& $this->currentWord <= $this->indexes[$i]['end']
-				) {
-					$word = '<span class="phrase phrase' . $i . (!empty($this->cssClassMiddle) ? ' '  . $this->cssClassMiddle . ' ' . $this->cssClassMiddle . $i : '') . '" style="border: none;">' . $word . '</span>';
-				}
+		foreach ($this->indexes as $i => $index) {
+			if ($this->currentWord >= $index['start'] 
+					&& $this->currentWord <= $index['end']
+			) {
+				$word = '<span class="phrase phrase' . $i . '" style="border: none;">' . $word . '</span>';
+			}
 
-				if ($this->currentWord == $this->indexes[$i]['start']) {
-					$word = '<span class="phraseStart phraseStart' . $i . (!empty($this->cssClassStart) ? ' '  . $this->cssClassStart . ' ' . $this->cssClassStart . $i : '') . '" style="border: none; font-weight: bold;"></span>' . $word;
-				}
+			if ($this->currentWord == $index['start']) {
+				$word = '<span class="phraseStart phraseStart' . $i . '" style="border: none; font-weight: cold;"></span>' . $word;
+			}
 
-				if ($this->currentWord == $this->indexes[$i]['end']) {
-					if (empty($this->wordsChars[$this->currentWord])) {
-						$this->indexes[$i]['ended'] = true;
-						$word .= '<span class="phraseEnd phraseEnd' . $i . (!empty($this->cssClassEnd) ? ' '  . $this->cssClassEnd . ' ' . $this->cssClassEnd . $i : '') . '" style="border: none;"></span>';
-					} else {
-						$word = '<span class="phrase phrase' . $i . (!empty($this->cssClassMiddle) ? ' '  . $this->cssClassMiddle . ' ' . $this->cssClassMiddle . $i : '') . '" style="border: none;">' . $word . '</span>';
-					}
+			if ($this->currentWord == $index['end']) {
+				if (empty($this->wordsChars[$this->currentWord])) {
+					$word = $word . '<span class="phraseEnd phraseEnd' . $i . '" style="border: none;"></span>';
+				} else {
+					$word = '<span class="phrase phrase' . $i . '" style="border: none;">' . $word . '</span>';
 				}
 			}
 		}
@@ -78,21 +53,18 @@ class JisonParser_Phraser_Handler extends JisonParser_Phraser
 		if (empty($this->wordsChars[$this->currentWord])) $this->wordsChars[$this->currentWord] = "";
 
 		//this line attempts to solve some character translation problems
-		$char = iconv('UTF-8', 'ISO-8859-1', utf8_encode($char));
+		$char = iconv('UTF-8', 'ISO-8859-1', $char);
 
 		$this->wordsChars[$this->currentWord] .= $char;
 		$this->chars[] = $char;
 
-		for ($i = 0, $end = count($this->indexes); $i < $end; $i++) {
-			if (empty($this->indexes[$i]['ended'])) {
-				if ($this->currentWord >= $this->indexes[$i]['start']) {
-					$char = '<span class="phrases phrase' . $i . (!empty($this->cssClassMiddle) ? ' '  . $this->cssClassMiddle . ' ' . $this->cssClassMiddle . $i : '') . '" style="border: none;">' . $char . '</span>';
+		foreach ($this->indexes as $i => $index) {
+			if ($this->currentWord >= $index['start'] && $this->currentWord <= $index['end']) {
+				$char = '<span class="phrases phrase' . $i . '" style="border: none;">' . $char . '</span>';
 
-					if ($this->currentWord == $this->indexes[$i]['end']) {
-						if (!empty($this->wordsChars[$this->currentWord])) {
-							$this->indexes[$i]['ended'] = true;
-							$char = $char . '<span class="phraseEnd phraseEnd' . $i . (!empty($this->cssClassEnd) ? ' '  . $this->cssClassEnd . ' ' . $this->cssClassEnd . $i : '') . '" style="border: none;"></span>';
-						}
+				if ($this->currentWord == $index['end']) {
+					if (!empty($this->wordsChars[$this->currentWord])) {
+						$char = $char . '<span class="phraseEnd phraseEnd' . $i . '" style="border: none;"></span>';
 					}
 				}
 			}
@@ -109,7 +81,7 @@ class JisonParser_Phraser_Handler extends JisonParser_Phraser
 
 		$this->clearIndexes();
 
-		$this->addIndexes($parentWords, $phraseWords);
+		$this->addIndexes($parentWords, $phraseWords, true);
 
 		if (count($this->indexes) > 1) {
 			return false;
@@ -127,6 +99,7 @@ class JisonParser_Phraser_Handler extends JisonParser_Phraser
 
 		foreach ($phrases as $phrase) {
 			$phraseWords = $this->sanitizeToWords($phrase);
+
 			$this->addIndexes($parentWords, $phraseWords);
 			$phrasesWords[] = $phraseWords;
 		}
@@ -143,7 +116,7 @@ class JisonParser_Phraser_Handler extends JisonParser_Phraser
 		$this->indexes = array();
 	}
 
-	function addIndexes($parentWords, $phraseWords)
+	function addIndexes($parentWords, $phraseWords, $allMatches = false)
 	{
 		$phraseLength = count($phraseWords) - 1;
 		$phraseConcat = implode($phraseWords, '|');
@@ -170,27 +143,21 @@ class JisonParser_Phraser_Handler extends JisonParser_Phraser
 
 	static function hasPhrase($parent, $phrase)
 	{
-		$parent = self::sanitizeToWords(utf8_encode($parent));
-		$phrase = self::sanitizeToWords(utf8_encode($phrase));
+		$parent = self::sanitizeToWords($parent);
+		$phrase = self::sanitizeToWords($phrase);
 
 		$parent = implode('|', $parent);
 		$phrase = implode('|', $phrase);
 
-		return (strpos($parent, $phrase) !== false);
+		return (strpos($parent, $phrase) !== false ? true : false);
 	}
-
-	static $sanitizedWords;
 
 	static function sanitizeToWords($html)
 	{
-		if (isset(self::$sanitizedWords[$html])) return self::$sanitizedWords[$html];
-
 		$sanitized = preg_replace('/<(.|\n)*?>/', ' ', $html);
 		$sanitized = preg_replace('/\W/', ' ', $sanitized);
 		$sanitized = explode(" ", $sanitized);
 		$sanitized = array_values(array_filter($sanitized, 'strlen'));
-
-		self::$sanitizedWords[$html] = $sanitized;
 
 		return $sanitized;
 	}

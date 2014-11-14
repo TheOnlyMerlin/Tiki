@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,13 +10,13 @@ require_once ('tiki-setup.php');
 
 $access->check_feature('feature_trackers');
 
-$trklib = TikiLib::lib('trk');
+global $trklib; include_once ('lib/trackers/trackerlib.php');
 if ($prefs['feature_groupalert'] == 'y') {
-	$groupalertlib = TikiLib::lib('groupalert');
+	include_once ('lib/groupalert/groupalertlib.php');
 }
-$notificationlib = TikiLib::lib('notification');
+include_once ('lib/notifications/notificationlib.php');
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	include_once ('lib/categories/categlib.php');
 }
 $auto_query_args = array(
 	'offset',
@@ -56,8 +53,7 @@ if (!empty($_REQUEST['show']) && $_REQUEST['show'] == 'view') {
 } elseif (!empty($_REQUEST['show']) && $_REQUEST['show'] == 'mod') {
 	$cookietab = '2';
 } elseif (empty($_REQUEST['cookietab'])) {
-	if ((isset($tracker_info['writerCanModify']) && $tracker_info['writerCanModify'] == 'y' && $user) or
-		(isset($tracker_info['userCanSeeOwn']) && $tracker_info['userCanSeeOwn'] == 'y' && $user)) $cookietab = '1';
+	if (isset($tracker_info['writerCanModify']) && $tracker_info['writerCanModify'] == 'y' && $user) $cookietab = '1';
 	elseif (!($tiki_p_view_trackers == 'y' || $tiki_p_admin == 'y' || $tiki_p_admin_trackers == 'y') && $tiki_p_create_tracker_items == 'y') $cookietab = "2";
 	else if (!isset($cookietab)) {
 		$cookietab = '1';
@@ -101,19 +97,12 @@ if ($tiki_p_create_tracker_items == 'y' && !empty($t['end'])) {
 	}
 }
 
-$access->check_permission_either(array('tiki_p_view_trackers', 'tiki_p_create_tracker_items'), tra('Create or view tracker'), 'tracker', $_REQUEST["trackerId"]);
-$tikilib->get_perm_object($_REQUEST['trackerId'], 'tracker', $tracker_info);
-
-if ($tracker_info['adminOnlyViewEditItem'] === 'y') {
-	$access->check_permission('tiki_p_admin_trackers', tra('Admin this tracker'), 'tracker', $tracker_info['trackerId']);
-}
+$access->check_permission_either(array('tiki_p_view_trackers', 'tiki_p_create_tracker_items'));
 
 if ($tiki_p_view_trackers != 'y') {
-	$userCreatorFieldId = $writerfield;
-	$groupCreatorFieldId = $writergroupfield;
-	if ($user && !$my and ( (isset($tracker_info['writerCanModify']) and $tracker_info['writerCanModify'] == 'y') or
-							(isset($tracker_info['userCanSeeOwn']) and $tracker_info['userCanSeeOwn'] == 'y'))
-							 and !empty($userCreatorFieldId)) {
+	$userCreatorFieldId = $trklib->get_field_id_from_type($_REQUEST['trackerId'], 'u', '1%');
+	$groupCreatorFieldId = $trklib->get_field_id_from_type($_REQUEST['trackerId'], 'g', '1%');
+	if ($user && !$my and isset($tracker_info['writerCanModify']) and $tracker_info['writerCanModify'] == 'y' and !empty($userCreatorFieldId)) {
 		$my = $user;
 	} elseif ($user && !$ours and isset($tracker_info['writerGroupCanModify']) and $tracker_info['writerGroupCanModify'] == 'y' and !empty($groupCreatorFieldId)) {
 		$ours = $group;
@@ -206,8 +195,6 @@ $fieldFactory = $trackerDefinition->getFieldFactory();
 
 $itemObject = Tracker_Item::newItem($_REQUEST['trackerId']);
 
-$ins_fields = array('data' => array());
-
 foreach ($xfields['data'] as $i => $current_field) {
 	$current_field_ins = null;
 
@@ -224,22 +211,17 @@ foreach ($xfields['data'] as $i => $current_field) {
 	$fieldIsVisible = $itemObject->canViewField($fid);
 	$fieldIsEditable = $itemObject->canModifyField($fid);
 
+	//exclude fields that should not be listed
+	if ($fieldIsVisible && ($current_field['isTblVisible'] == 'y' or in_array($fid, $popupFields))) {
+		$listfields[$fid] = $current_field;
+	}
+
 	if ($fieldIsVisible || $fieldIsEditable) {
 		$handler = $fieldFactory->getHandler($current_field);
 
 		if ($handler) {
 			$field_values = $insert_values = $handler->getFieldData($_REQUEST);
 			$current_field_ins = array_merge($current_field, $insert_values);
-		}
-	}
-
-	//exclude fields that should not be listed
-	if ($fieldIsVisible && ($current_field_ins['isTblVisible'] == 'y' or in_array($fid, $popupFields))) {
-		$listfields[$fid] = $current_field_ins;
-		if ($fieldIsEditable) {
-			$listfields[$fid]['editable'] = true;
-		} else {
-			$listfields[$fid]['editable'] = false;
 		}
 	}
 
@@ -255,13 +237,10 @@ foreach ($xfields['data'] as $i => $current_field) {
 
 // Collect information from the provided fields
 $newItemRateField = null;
-$newItemRate = null;
-if (!empty($ins_fields['data'])) {
-	foreach ($ins_fields['data'] as $current_field) {
-		if ($current_field['type'] == 's' && $current_field['name'] == 'Rating') {
-			$newItemRateField = $current_field;
-			$newItemRate = $current_field['request_rate'];
-		}
+foreach ($ins_fields['data'] as $current_field) {
+	if ($current_field['type'] == 's' && $current_field['name'] == 'Rating') {
+		$newItemRateField = $current_field;
+		$newItemRate = $current_field['request_rate'];
 	}
 }
 
@@ -342,7 +321,7 @@ if ($prefs['feature_user_watches'] == 'y' and $tiki_p_watch_trackers == 'y') {
 
 if (isset($_REQUEST["save"])) {
 	if ($itemObject->canModify()) {
-		$captchalib = TikiLib::lib('captcha');
+		global $captchalib; include_once 'lib/captcha/captchalib.php';
 		if (empty($user) && $prefs['feature_antibot'] == 'y' && !$captchalib->validate()) {
 			$smarty->assign('msg', $captchalib->getErrors());
 			$smarty->assign('errortype', 'no_redirect_login');
@@ -372,6 +351,13 @@ if (isset($_REQUEST["save"])) {
 			}
 			$cookietab = "1";
 			$smarty->assign('itemId', '');
+			$mainfield = '';
+			foreach ($ins_fields as $f) {
+				if ($f['isMain'] == 'y' && ! empty($f['value'])) {
+					$mainfield = $f['value'];
+					break;
+				}
+			}
 			if (isset($newItemRate)) {
 				$trackerId = $_REQUEST["trackerId"];
 				$trklib->replace_rating($trackerId, $itemid, $newItemRateField, $user, $newItemRate);
@@ -449,12 +435,6 @@ if ($my and $writerfield) {
 	$exactvalue = '';
 }
 $smarty->assign('filtervalue', $filtervalue);
-if (is_array($filtervalue)) {
-	foreach ($filtervalue as $fil) {
-		$filtervalueencoded = "&amp;filtervalue[" . rawurlencode($filterfield) . "][]=" . rawurlencode($fil);
-	}
-	$smarty->assign('filtervalueencoded', $filtervalueencoded);
-}
 $smarty->assign('status', $_REQUEST["status"]);
 if (isset($_REQUEST["trackerId"])) {
 	$trackerId = $_REQUEST["trackerId"];
@@ -495,10 +475,21 @@ if ($tracker_info['useAttachments'] == 'y' && $tracker_info['showAttachments'] =
 		$items["data"][$itkey]['hits'] = $res['hits'];
 	}
 }
-foreach ($fields['data'] as $fd) {	// add field info for searchable fields not shown in the list
-	$fid = $fd["fieldId"];
-	if ($fd['isSearchable'] == 'y' and !isset($listfields[$fid]) and $itemObject->canViewField($fid)) {
-		$listfields[$fid] = $fd;
+foreach ($xfields['data'] as $xfd) {
+	$fid = $xfd["fieldId"];
+	if ($xfd['isSearchable'] == 'y' and !isset($listfields[$fid]) and $itemObject->canViewField($fid)) {
+		$listfields[$fid]['type'] = $xfd["type"];
+		$listfields[$fid]['name'] = $xfd["name"];
+		$listfields[$fid]['options'] = $xfd["options"];
+		$listfields[$fid]['options_array'] = $xfd['options_array'];
+		$listfields[$fid]['isMain'] = $xfd["isMain"];
+		$listfields[$fid]['isTblVisible'] = $xfd["isTblVisible"];
+		$listfields[$fid]['isHidden'] = $xfd["isHidden"];
+		$listfields[$fid]['isSearchable'] = $xfd["isSearchable"];
+		$listfields[$fid]['isMandatory'] = $xfd["isMandatory"];
+		$listfields[$fid]['description'] = $xfd["description"];
+		$listfields[$fid]['visibleBy'] = $xfd['visibleBy'];
+		$listfields[$fid]['editableBy'] = $xfd['editableBy'];
 	}
 }
 
@@ -550,12 +541,13 @@ ask_ticket('view-trackers');
 
 // Generate validation js
 if ($prefs['feature_jquery'] == 'y' && $prefs['feature_jquery_validation'] == 'y') {
-	$validatorslib = TikiLib::lib('validators');
+	global $validatorslib;
+	include_once('lib/validatorslib.php');
 	$validationjs = $validatorslib->generateTrackerValidateJS($fields['data']);
 	$smarty->assign('validationjs', $validationjs);
 }
 //Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 $smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
 
 // Display the template

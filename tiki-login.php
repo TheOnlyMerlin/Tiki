@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,7 +9,7 @@ $inputConfiguration = array(
 	array( 'staticKeyFilters' => array(
 		'user' => 'text',
 		'username' => 'text',
-		'pass' => 'none',
+		'pass' => 'text',
 	) )
 );
 
@@ -69,23 +66,21 @@ if (!isset($_SESSION['loginfrom']) && isset($_SERVER['HTTP_REFERER']) && !preg_m
 		else $_SESSION['loginfrom'] = $base_url . $_SESSION['loginfrom'];
 	}
 }
-if (isset($_REQUEST['su'])) {
-	$loginlib = TikiLib::lib('login');
-
-	if ($loginlib->isSwitched() && $_REQUEST['su'] == 'revert') {
-		$loginlib->revertSwitch();
-		$access->redirect($_SESSION['loginfrom']);
-	} elseif ($tiki_p_admin == 'y') {
+if ($tiki_p_admin == 'y') {
+	if (isset($_REQUEST['su'])) {
 		if ( empty( $_REQUEST['username'] ) ) {
 			$smarty->assign('msg', tra('Username field cannot be empty. Please go back and try again.'));
 			$smarty->display('error.tpl');
 			exit;
 		}
 		if ($userlib->user_exists($_REQUEST['username'])) {
-			$loginlib->switchUser($_REQUEST['username']);
+			$username = $userlib->get_user_real_case($_REQUEST['username']);
+			$_SESSION[$user_cookie_site] = $username;
 		}
-		
-		$access->redirect($_SESSION['loginfrom']);
+		header('location: ' . $_SESSION['loginfrom']);
+		// Unset session variable for the next su
+		unset($_SESSION['loginfrom']);
+		exit;
 	}
 }
 $requestedUser = isset($_REQUEST['user']) ? $_REQUEST['user'] : false;
@@ -161,7 +156,8 @@ if (isset($_REQUEST['intertiki']) and in_array($_REQUEST['intertiki'], array_key
 				$userlib->set_user_fields($user_details['info']);
 				$user = $requestedUser;
 				if ($prefs['feature_userPreferences'] == 'y' && $prefs['feature_intertiki_import_preferences'] == 'y') {
-					$userprefslib = TikiLib::lib('userprefs');
+					global $userprefslib;
+					include_once ('lib/userprefs/userprefslib.php');
 					$userprefslib->set_user_avatar($user, 'u', '', $user_details['avatarName'], $user_details['avatarSize'], $user_details['avatarFileType'], $avatarData);
 					$userlib->set_user_preferences($user, $user_details['preferences']);
 				}
@@ -220,7 +216,7 @@ if (isset($_REQUEST['intertiki']) and in_array($_REQUEST['intertiki'], array_key
 	}
 }
 if ($isvalid) {
-        $userlib->set_unsuccessful_logins($requestedUser, 0);
+
 	if ($prefs['feature_invite'] == 'y') {
 		// tiki-invite, this part is just here to add groups to users which just registered after received an
 		// invitation via tiki-invite.php and set the redirect to wiki page if required by the invitation
@@ -251,46 +247,16 @@ if ($isvalid) {
 	} else {
 		// User is valid and not due to change pass.. start session
 		$userlib->update_expired_groups();
-		TikiLib::lib('login')->activateSession($user);
+		$_SESSION[$user_cookie_site] = $user;
 		if (isset($_SESSION['openid_url'])) $userlib->assign_openid($user, $_SESSION['openid_url']);
 		$url = $_SESSION['loginfrom'];
-
-		// When logging into a multi-lingual Tiki, $_SESSION['loginfrom'] contains the main-language page, and not the translated one
-		//	This only applies if feature_best_language and only seems to affect SEFURL
-		if (($prefs['feature_best_language'] == 'y')&&($prefs['feature_sefurl'] == 'y')) {
-			// If the URL contains the 'main' home page, remove the page name and let Tiki choose the correct home page upon reload
-			$homePageUrl = urlencode($prefs['wikiHomePage']);
-			if (strpos($url, 'page='. $homePageUrl) !== false) {
-				$url = str_replace('page='. $homePageUrl, '', $url);
-			} else if (strpos($url, $homePageUrl) !== false) {
-				// Strip away the page name from the URL
-				$parts = parse_url($url);
-				$url = '';
-				if (!empty($parts['scheme'])) {
-					$url = $parts['scheme'].'://';
-				}
-				if (!empty($parts['host'])) {
-					$url .= $parts['host'];
-				}
-				if (!empty($parts['path'])) {
-					$pathParts = explode('/', $parts['path']);
-					$cnt = count($pathParts);
-					if ($cnt > 0) {
-						$pathParts[$cnt-1] = null;	// Drop the page name
-					}
-					$newPath .= implode('/', $pathParts);
-					$url .= $newPath;
-				}
-			}
-		}
-
 		$logslib->add_log('login', 'logged from ' . $url);
 		// Special '?page=...' case. Accept only some values to avoid security problems
 		if ( isset($_REQUEST['page']) and $_REQUEST['page'] === 'tikiIndex') {
 			$url = ${$_REQUEST['page']};
 		} else {
 			if (!empty($_REQUEST['url'])) {
-				$cachelib = TikiLib::lib('cache');
+				global $cachelib; include_once('lib/cache/cachelib.php');
 				preg_match('/(.*)\?cache=(.*)/', $_REQUEST['url'], $matches);
 				if (!empty($matches[2]) && $cdata = $cachelib->getCached($matches[2], 'edit')) {
 					if (!empty($matches[1])) {
@@ -376,42 +342,34 @@ if ($isvalid) {
 	$smarty->assign('module_params', $module_params);
 	if ($error == PASSWORD_INCORRECT && ($prefs['unsuccessful_logins'] >= 0 || $prefs['unsuccessful_logins_invalid'] >= 0)) {
 		$nb_bad_logins = $userlib->unsuccessful_logins($requestedUser);
-		$nb_bad_logins++ ; 
-		$userlib->set_unsuccessful_logins($requestedUser, $nb_bad_logins);
-		if ($prefs['unsuccessful_logins_invalid'] > 0 && ($nb_bad_logins >= $prefs['unsuccessful_logins_invalid'])) {
+		if ($prefs['unsuccessful_logins_invalid'] > 0 && ($nb_bad_logins >= $prefs['unsuccessful_logins_invalid'] - 1)) {
 			$info = $userlib->get_user_info($requestedUser);
 			$userlib->change_user_waiting($requestedUser, 'a');
-			$msg = sprintf(tra('%d or more unsuccessful login attempts have been made.'), $prefs['unsuccessful_logins_invalid']);
-			$msg .= ' '.tra('Your account has been suspended.').' '.tra('Contact your site administrator to reactivate it.');
+			$msg = sprintf(tra('More than %d unsuccessful login attempts have been made.'), $prefs['unsuccessful_logins_invalid']);
+			$msg .= ' '.tra('Your account has been suspended.').' '.tra('A site administrator will reactivate it');
+			include_once ('lib/webmail/tikimaillib.php');
+			$mail = new TikiMail();
 			$smarty->assign('msg', $msg);
-			if ($nb_bad_logins % $prefs['unsuccessful_logins_invalid'] == 0) {
-				//don't send an email after every failed login
-			        include_once ('lib/webmail/tikimaillib.php');
-			        $mail = new TikiMail();
-			        $smarty->assign('mail_user', $requestedUser);
-			        $foo = parse_url($_SERVER['REQUEST_URI']);
-			        $mail_machine = $tikilib->httpPrefix(true).str_replace('tiki-login.php', '', $foo['path']);
-			        $smarty->assign('mail_machine', $mail_machine);
-			        $mail->setText($smarty->fetch('mail/unsuccessful_logins_suspend.tpl'));
-			        $mail->setSubject($smarty->fetch('mail/unsuccessful_logins_suspend_subject.tpl'));
-			        $emails = !empty($prefs['validator_emails'])?preg_split('/,/', $prefs['validator_emails']): (!empty($prefs['sender_email'])? array($prefs['sender_email']): '');
-			        if (!$mail->send(array($info['email'])) || !$mail->send($emails)) {
-				        $smarty->assign('msg', tra("The mail can't be sent. Contact the administrator"));
-				        $smarty->display("error.tpl");
-				        die;
-			        }
+			$smarty->assign('mail_user', $requestedUser);
+			$foo = parse_url($_SERVER['REQUEST_URI']);
+			$mail_machine = $tikilib->httpPrefix(true).str_replace('tiki-login.php', '', $foo['path']);
+			$smarty->assign('mail_machine', $mail_machine);
+			$mail->setText($smarty->fetch('mail/unsuccessful_logins_suspend.tpl'));
+			$mail->setSubject($smarty->fetch('mail/unsuccessful_logins_suspend_subject.tpl'));
+			$emails = !empty($prefs['validator_emails'])?preg_split('/,/', $prefs['validator_emails']): (!empty($prefs['sender_email'])? array($prefs['sender_email']): '');
+			if (!$mail->send(array($info['email'])) || !$mail->send($emails)) {
+				$smarty->assign('msg', tra("The mail can't be sent. Contact the administrator"));
+				$smarty->display("error.tpl");
+				die;
 			}
 			$smarty->assign('mid', 'tiki-information.tpl');
 			$smarty->display('tiki.tpl');
 			die;
-		} elseif ($prefs['unsuccessful_logins'] > 0 && ($nb_bad_logins >= $prefs['unsuccessful_logins'])) {
-			$msg = sprintf(tra('%d or more unsuccessful login attempts have been made.'), $prefs['unsuccessful_logins']);
+		} elseif ($prefs['unsuccessful_logins'] > 0 && ($nb_bad_logins >= $prefs['unsuccessful_logins'] - 1)) {
+			$msg = sprintf(tra('More than %d unsuccessful login attempts have been made.'), $prefs['unsuccessful_logins']);
 			$smarty->assign('msg', $msg);
-			if ($nb_bad_logins % $prefs['unsuccessful_logins'] == 0) {
-				//don't send an email after every failed login
-			        if ($userlib->send_confirm_email($requestedUser, 'unsuccessful_logins')) {
-				        $smarty->assign('msg', $msg . ' ' . tra('An email has been sent to you with the instructions to follow.'));
-			        }
+			if ($userlib->send_confirm_email($requestedUser, 'unsuccessful_logins')) {
+				$smarty->assign('msg', $msg . ' ' . tra('An email has been sent to you with the instructions to follow.'));
 			}
 			$show_history_back_link = 'y';
 			$smarty->assign_by_ref('show_history_back_link', $show_history_back_link);
@@ -419,12 +377,10 @@ if ($isvalid) {
 			$smarty->display("tiki.tpl");
 			die;
 		}
+		$userlib->set_unsuccessful_logins($requestedUser, $nb_bad_logins + 1);
 	}
 	switch ($error) {
 		case PASSWORD_INCORRECT:
-			$error = tra('Invalid username or password');
-        		break;
-
 		case USER_NOT_FOUND:
 			$smarty->assign('error_login', $error);
 			$smarty->assign('mid', 'tiki-login.tpl');
@@ -433,35 +389,28 @@ if ($isvalid) {
 			exit;
 
 		case ACCOUNT_DISABLED:
-			$error = tra('Account requires administrator approval.');
-        		break;
+			$error = tra('Account disabled');
+    		break;
 
 		case ACCOUNT_WAITING_USER:
-			$error = tra('You did not validate your account.');
+			$error = tra('You did not validate your account');
 			$extraButton = array('href'=>'tiki-send_mail.php?user='. urlencode($_REQUEST['user']), 'text'=>tra('Resend'), 'comment'=>tra('You should have received an email. Check your mailbox and your spam box. Otherwise click on the button to resend the email'));
-        		break;
+    		break;
  
 		case USER_AMBIGOUS:
-			$error = tra('You must use the right case for your user name.');
-        		break;
+			$error = tra('You must use the right case for your user name');
+    		break;
 
 		case USER_NOT_VALIDATED:
-			$error = tra('You are not yet validated.');
-        		break;
-
-		case USER_ALREADY_LOGGED:
-			$error = tra('You are already logged in.');
-        		break;
+			$error = tra('You are not yet validated');
+    		break;
 
 		default:
 			$error = tra('Invalid username or password');
 	}
 	if (isset($extraButton)) $smarty->assign_by_ref('extraButton', $extraButton);
-
-	//	Report error "inline" with the login module
-	$smarty->assign('error_login', $error);
-	$smarty->assign('mid', 'tiki-login.tpl');
-	$smarty->display('tiki.tpl');
+	$smarty->assign('msg', $error);
+	$smarty->display('error.tpl');
 	exit;
 }
 
@@ -482,22 +431,6 @@ if ($stay_in_ssl_mode == 'y' && $https_mode) {
 }
 if (defined('SID') && SID != '')
 $url.= ((strpos($url, '?') === false) ? '?' : '&') . SID;
-
-// Check if a wizard should be run.
-// If a wizard is run, it will return to the $url location when it has completed. Thus no code after $wizardlib->onLogin will be executed
-// The user must be actually logged in before onLogin is called. If $isdue is set, then: "Note that the user is not logged in he's just validated to change his password"
-if (!$isdue) {
-
-	if ($prefs['feature_user_encryption'] === 'y') {
-		// Notify CryptLib about the login
-		$cryptlib = TikiLib::lib('crypt');
-		$cryptlib->onUserLogin($pass);
-	}
-
-	// Process wizard
-	$wizardlib = TikiLib::lib('wizard');
-	$wizardlib->onLogin($user, $url);
-}
 
 header('Location: ' . $url);
 exit;

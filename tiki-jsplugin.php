@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -15,12 +12,13 @@
  * The java script generated defines tiki_plugins["pluginname"] with meta data for the parameters of the plugin.
  * This is then used to allow a nice way for the editor of the page to use a form to edit the plug-in when they
  * click the little edit icon next to the plug-ins generated html.
- *
+ * 
  * Cached by language to allow translations (tiki 5)
  */
 
 header('content-type: application/x-javascript');
-header('Expires: ' . gmdate('D, d M Y H:i:s', time()+3600*24*30) . ' GMT');
+header('Cache-Control: no-cache, pre-check=0, post-check=0');
+header('Expires: ' . gmdate('D, d M Y H:i:s', time()+3600*24*365*10) . ' GMT');
 
 require_once 'tiki-filter-base.php';
 
@@ -42,7 +40,7 @@ if ( $all ) {
 	}
 
 	include 'tiki-setup.php';
-
+	
 	$parserlib = TikiLib::lib('parser');
 	$plugins = $parserlib->plugin_get_list();
 } else {
@@ -65,13 +63,12 @@ ob_start();
 $parserlib = TikiLib::lib('parser');
 ?>
 if ( typeof tiki_plugins == 'undefined' ) { var tiki_plugins = {}; }
-<?php foreach ( $plugins as $plugin ) {
+<?php foreach ( $plugins as $plugin ):
 	if ( ! $info = $parserlib->plugin_info($plugin) )
 		continue;
 ?>
 tiki_plugins.<?php echo $plugin ?> = <?php echo json_encode($info) ?>;
-<?php
-}
+<?php endforeach;
 
 $content = ob_get_contents();
 file_put_contents($cache, $content);

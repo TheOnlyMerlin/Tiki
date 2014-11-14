@@ -2,30 +2,30 @@
 {title}{tr}Advanced parameters for iCal export{/tr}{/title}
 
 {if $tiki_p_view_calendar eq 'y'}
-	<div class="t_navbar">
-		{button href="tiki-calendar.php" _text="{tr}Calendar{/tr}"}
+	<div class="navbar">
+		{button  href="tiki-calendar.php" _text="{tr}Calendar{/tr}"}
 	</div>
 {/if}
 
 <div class="wikitext">
 
 <form action="tiki-calendar_export_ical.php" method="post" name="f" id="editcalitem">
-<input type="hidden" name="export" value="y">
+<input type="hidden" name="export" value="y"/>
 <table class="formcolor">
   <tr><td colspan="2">{tr}Calendars to be exported{/tr}</td></tr>
   <tr>
     <td>{tr}Calendars{/tr}</td>
     <td>
 {foreach item=k from=$listcals}
-	  <input type="checkbox" name="calendarIds[]" value="{$k.calendarId|escape}" id="groupcal_{$k}" {if $k}checked="checked"{/if}>
-	  <label for="groupcal_{$k}" class="calId{$k}">{$k.name|escape}</label><br>
+	  <input type="checkbox" name="calendarIds[]" value="{$k.calendarId|escape}" id="groupcal_{$k}" {if $k}checked="checked"{/if} />
+	  <label for="groupcal_{$k}" class="calId{$k}">{$k.name|escape}</label><br />
 {/foreach}
 	</td>
   </tr>
   <tr>
     <td>{tr}Start{/tr}</td>
 	<td>
-	  <input type="hidden" name="tstart">
+	  <input type="hidden" name="tstart" />
       <table cellpadding="0" cellspacing="0" border="0">
 	    <tr>
 		  <td style="border:0;padding-top:2px;vertical-align:middle">
@@ -66,8 +66,8 @@
 </td>
 </tr>
 <tr>
-	<td><input type="submit" class="btn btn-default btn-sm" name="ical" value="{tr}Export calendars iCal{/tr}"></td>
-	<td><input type="submit" class="btn btn-default btn-sm" name="csv" value="{tr}Export calendars CSV{/tr}"></td>
+	<td><input type="submit" name="ical" value="{tr}Export calendars iCal{/tr}"/></td>
+	<td><input type="submit" name="csv" value="{tr}Export calendars CSV{/tr}"/></td>
 </tr>
 </table>
 </form>

@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,7 +9,7 @@ $section = 'wiki page';
 $section_class = "tiki_wiki_page manage";	// This will be body class instead of $section
 
 require_once ('tiki-setup.php');
-$wikilib = TikiLib::lib('wiki');
+include_once ('lib/wiki/wikilib.php');
 
 $access->check_feature('feature_wiki');
 
@@ -32,7 +29,8 @@ if (!($info = $tikilib->get_page_info($page))) {
 	die;
 }
 // Now check permissions to rename this page
-$access->check_permission(array('view', 'rename'), tr('Rename wiki page'), 'wiki page', $page);
+$tikilib->get_perm_object($page, 'wiki page', $info);
+$access->check_permission(array('tiki_p_view', 'tiki_p_rename'));
 
 if (isset($_REQUEST["rename"]) || isset($_REQUEST["confirm"])) {
 	check_ticket('rename-page');
@@ -66,9 +64,14 @@ if (isset($_REQUEST["rename"]) || isset($_REQUEST["confirm"])) {
 	}
 
 	if ($result) {
-		$perspectivelib = TikiLib::lib('perspective');
+		global $perspectivelib; require_once 'lib/perspectivelib.php';
 		$perspectivelib->replace_preference('wsHomepage', $page, $newName);
-		$access->redirect($wikilib->sefurl($newName));
+		if ($prefs['feature_sefurl'] == 'y') {
+			include_once('tiki-sefurl.php');
+			header('location: '. urlencode(filter_out_sefurl("tiki-index.php?page=$newName", 'wiki')));
+		} else {
+			header('location: tiki-index.php?page=' . urlencode($newName));
+		}
 	}
 }
 ask_ticket('rename-page');

@@ -1,15 +1,15 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 /*
- * A problem with having to maintain translations of several versions of Tiki is
+ *  A problem with having to maintain translations of several versions of Tiki is
  * that the same strings have the same translations, but is not desirable to change
  * them for each branch. This utility takes the translations from a source version
- * and add to a target version if the string exists in the target language files. 
+ * and add to a target version if the string exists in the targe language files. 
  */
 
 if ($argc < 3) {

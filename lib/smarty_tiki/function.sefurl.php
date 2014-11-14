@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,7 +15,7 @@ if (!function_exists('smarty_function_sefurl')) {
 	function smarty_function_sefurl($params, $smarty)
 	{
 		global $prefs;
-		$wikilib = TikiLib::lib('wiki');
+		global $wikilib; include_once('lib/wiki/wikilib.php');
 	
 		// structure only yet
 		if (isset($params['structure'])) {
@@ -23,14 +23,14 @@ if (!function_exists('smarty_function_sefurl')) {
 				$url = 'tiki-index.php?page=' . urlencode($params['page']) . '&amp;structure=' . urlencode($params['structure']);
 			} else {
 				$url = $wikilib->sefurl($params['page']);
-				$url .= (strpos($url, '?') === false ? '?' : '&amp;') . 'structure=' . urlencode($params['structure']);
+				$url .= '&amp;structure=' . urlencode($params['structure']);
 			}
 			if (isset($_REQUEST['no_bl']) && $_REQUEST['no_bl'] === 'y') {
-				$url .= (strpos($url, '?') === false ? '?' : '&amp;') . 'latest=1';
+				$url .= '&amp;no_bl=y';
 			}
 		}
 		if ($prefs['page_n_times_in_a_structure'] == 'y') {
-			$url .= (strpos($url, '?') === false ? '?' : '&amp;') . 'page_ref_id=' . $params['page_ref_id'];
+			$url .= '&amp;page_ref_id=' . $params['page_ref_id'];
 		}
 		return $url;
 	}

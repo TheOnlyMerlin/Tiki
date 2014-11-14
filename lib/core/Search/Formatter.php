@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -9,16 +9,16 @@ class Search_Formatter
 {
 	private $plugin;
 	private $subFormatters = array();
-	private $alternateOutput;
+	private $dataSource;
 
 	function __construct(Search_Formatter_Plugin_Interface $plugin)
 	{
 		$this->plugin = $plugin;
 	}
 
-	function setAlternateOutput($output)
+	function setDataSource(Search_Formatter_DataSource_Interface $dataSource)
 	{
-		$this->alternateOutput = $output;
+		$this->dataSource = $dataSource;
 	}
 
 	function addSubFormatter($name, $formatter)
@@ -27,16 +27,6 @@ class Search_Formatter
 	}
 
 	function format($list)
-	{
-		if (0 == count($list) && $this->alternateOutput) {
-			return $this->alternateOutput;
-		}
-
-		$list = $this->getPopulatedList($list);
-		return $this->render($this->plugin, $list, Search_Formatter_Plugin_Interface::FORMAT_WIKI);
-	}
-
-	function getPopulatedList($list)
 	{
 		$list = Search_ResultSet::create($list);
 		$defaultValues = $this->plugin->getFields();
@@ -48,26 +38,22 @@ class Search_Formatter
 			$fields = array_merge($fields, array_keys($subDefault[$key]));
 		}
 
+		if ($this->dataSource) {
+			$list = $this->dataSource->getInformation($list, $fields);
+		}
+
+		if (in_array('highlight', $fields)) {
+			foreach ($list as & $entry) {
+				$entry['highlight'] = $list->highlight($entry);
+			}
+		}
+
 		$data = array();
 
-		$enableHighlight = in_array('highlight', $fields);
-		foreach ($list as $pre) {
-			foreach ($fields as $f) {
-				if (isset($pre[$f])) {
-					$pre[$f]; // Dynamic loading if applicable
-				}
-			}
-
-			$row = array_filter($defaultValues, 'strlen');
+		foreach ($list as $row) {
 			// Clear blank values so the defaults prevail
-			foreach ($pre as $k => $value) {
-				if ($value !== '' && $value !== null) {
-					$row[$k] = $value;
-				}
-			}
-			if ($enableHighlight) {
-				$row['highlight'] = $list->highlight($row);
-			}
+			$row = array_filter($row, array($this, 'is_empty_string'));
+			$row = array_merge($defaultValues, $row);
 
 			$subEntries = array();
 			foreach ($this->subFormatters as $key => $plugin) {
@@ -80,7 +66,13 @@ class Search_Formatter
 			$data[] = $this->plugin->prepareEntry(new Search_Formatter_ValueFormatter($row));
 		}
 
-		return $list->replaceEntries($data);
+		$list = $list->replaceEntries($data);
+
+		return $this->render($this->plugin, $list, Search_Formatter_Plugin_Interface::FORMAT_WIKI);
+	}
+	
+	private function is_empty_string($v) {
+		return $v !== '';
 	}
 
 	private function render($plugin, $resultSet, $target)

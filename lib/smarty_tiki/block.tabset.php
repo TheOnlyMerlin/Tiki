@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -17,7 +17,7 @@
  *
  * usage:
  * \code
- *	{tabset name='tabs' skipsingle=1}
+ *	{tabset name='tabs}
  * 		{tab name='tab1'}tab content{/tab}
  * 		{tab name='tab2'}tab content{/tab}
  * 		{tab name='tab3'}tab content{/tab}
@@ -33,8 +33,8 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 
 function smarty_block_tabset($params, $content, $smarty, &$repeat)
 {
-	global $prefs, $smarty_tabset_name, $smarty_tabset, $smarty_tabset_i_tab, $cookietab, $tabset_index;
-	$headerlib = TikiLib::lib('header');
+	global $prefs, $smarty_tabset_name, $smarty_tabset, $smarty_tabset_i_tab, $cookietab, $headerlib, $tabset_index;
+
 	if ($smarty->getTemplateVars('print_page') == 'y' || $prefs['layout_tabs_optional'] === 'n') {
 		$params['toggle'] = 'n';
 	}
@@ -44,11 +44,11 @@ function smarty_block_tabset($params, $content, $smarty, &$repeat)
 			$smarty_tabset = array();
 		}
 		$tabset_index = count($smarty_tabset) + 1;
-		if ( ! empty($params['name']) ) {
+		if ( isset($params['name']) and !empty($params['name']) ) {
 			$smarty_tabset_name = $params['name'];	// names have to be unique
 		} else {
 			$short_name = str_replace(array('tiki-', '.php'), '', basename($_SERVER['SCRIPT_NAME']));
-			$smarty_tabset_name = '_' . $short_name . $tabset_index;
+			$smarty_tabset_name = 't_' . $short_name . $tabset_index;
 		}
 		$smarty_tabset_name = TikiLib::remove_non_word_characters_and_accents($smarty_tabset_name);
 		$smarty_tabset[$tabset_index] = array( 'name' => $smarty_tabset_name, 'tabs' => array());
@@ -59,19 +59,14 @@ function smarty_block_tabset($params, $content, $smarty, &$repeat)
 		if (!isset($cookietab) || $tabset_index > 1) {
 			$cookietab = getCookie($smarty_tabset_name, 'tabs', 1);
 		}
-		if (!isset($_REQUEST['cookietab']) && $tabset_index > 1){
-			$cookietab="1";
-			setCookieSection($smarty_tabset_name, $cookietab, 'tabs');
-		}
-		
 		// work out cookie value if there
-		if ( isset($_REQUEST['cookietab']) && $tabset_index) {	// overrides cookie if added to request as in tiki-admin.php?page=look&cookietab=6
+		if ( isset($_REQUEST['cookietab']) && $tabset_index === 1) {	// overrides cookie if added to request as in tiki-admin.php?page=look&cookietab=6
 			$cookietab = empty($_REQUEST['cookietab']) ? 1 : $_REQUEST['cookietab'];
 			setCookieSection($smarty_tabset_name, $cookietab, 'tabs');	// too late to set it here as output has started
 		}
 
-		// If the tabset specifies the tab, override any kind of memory but only if not doing "no tabs" mode
-		if (isset($params['cookietab']) && $cookietab !== 'n') {
+		// If the tabset specifies the tab, override any kind of memory
+		if (isset($params['cookietab'])) {
 			$cookietab = $params['cookietab'];
 		}
 
@@ -83,11 +78,6 @@ function smarty_block_tabset($params, $content, $smarty, &$repeat)
 		if (empty($content)) {
 			return '';
 		}
-
-		if (! empty($params['skipsingle']) && count($smarty_tabset[$tabset_index]['tabs']) == 1) {
-			return $content;
-		}
-
 		$ret = ''; $notabs = '';
 		//closing
 		if ( $prefs['feature_tabs'] == 'y') {
@@ -98,12 +88,10 @@ function smarty_block_tabset($params, $content, $smarty, &$repeat)
 				} else {
 					$button_params['_text'] = tra('No Tabs');
 				}
-				$button_params['_size'] = 'mini';
 				$button_params['_auto_args']='*';
 				$button_params['_onclick'] = "setCookie('$smarty_tabset_name','".($cookietab == 'n' ? 1 : 'n' )."', 'tabs') ;";
-				$button_params['_class'] = 'btn-xs';
 				$notabs = smarty_function_button($button_params, $smarty);
-				$notabs = "<div class='pull-right'>$notabs</div>";
+				$notabs = "<div class='tabstoggle floatright'>$notabs</div>";
 				$content_class = '';
 			} else {
 				$content_class = ' full_width';	// no no-tabs button
@@ -130,26 +118,42 @@ function smarty_block_tabset($params, $content, $smarty, &$repeat)
 			$ret .= '</ul></div>';
 
 		} else {	// notmal non-mobile rendering
-
-			$ret .= '<ul class="nav nav-tabs">';
+			
+			$ret .= '<div class="container' . $content_class . '">';
 			foreach ($smarty_tabset[$tabset_index]['tabs'] as $value) {
-				$ret .= '<li class="'. $value['active'] .'"><a href="#' . $value['id'] . '" data-toggle="tab">'.$value['label'].'</a></li>';
+				$ret .= '<span class="tabmark tab'.$count.' '.($count == $cookietab ? 'tabactive' : '').'">'.
+					'<a href="#content'.$count.'"' .
+					' onclick="tikitabs('.$count.',this); return false;">'.$value.'</a></span>';
 				++$count;
 			}
-			$ret .= '</ul>';
+			$ret .= '</div>';
 		}
-		$ret .= "</div>";
-		if ($tabset_index === 1) {
-            // override cookie with query cookietab
-            $headerlib->add_jq_onready(
-            'var ctab = location.search.match(/cookietab=(\d+)/);
-            if (ctab) {
-                setCookie("'.$smarty_tabset_name.'", ctab[1],"tabs");
-            }'
-            );
-		}
-		$tabset_index--;
+		$ret .= "</div>$content";
 
-		return $ret . '<div class="tab-content">' . $content . '</div>';
+		// add some jq to initialize the tab, needed when page is cached
+		if ($tabset_index === 1) {		// override cookie with query cookietab
+			$headerlib->add_jq_onready(
+							'
+var ctab = location.search.match(/cookietab=(\d+)/);
+if (ctab) {
+	setCookie("'.$smarty_tabset_name.'", ctab[1],"tabs");
+}'
+			);
+		}
+		if ($cookietab != getCookie($smarty_tabset_name, 'tabs', 1)) {	// has been changed by code but now too late to reset
+			$headerlib->add_jq_onready('setCookie("'.$smarty_tabset_name.'",'.$cookietab.',"tabs");');
+		} else {
+			$headerlib->add_jq_onready('tikitabs(getCookie("'.$smarty_tabset_name.'","tabs",1), $("div[data-name='.$smarty_tabset_name.'] .tabmark:first"));');
+		}
+
+		$div_id = $smarty_tabset_name;
+		// work arounds for nested plugins
+		$tabset_index--;
+		array_pop($smarty_tabset);
+		if ($tabset_index > 0) {
+			$smarty_tabset_name = $smarty_tabset[$tabset_index]['name'];
+			$cookietab = getCookie($smarty_tabset_name, 'tabs', 1);
+		}
+		return '<div class="tabset" id="'.$div_id.'">' . $ret . '</div>';
 	}
 }

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,7 +15,7 @@ function isValidLocale($localeIdentifier = '')
 {
 	global $prefs;
 	return preg_match("/[a-zA-Z-_]+$/", $localeIdentifier) && file_exists('lang/'. $localeIdentifier .'/language.php')
-		&& ($prefs['restrict_language'] === 'n' || empty($prefs['available_languages']) || in_array($localeIdentifier, $prefs['available_languages']));
+		&& (empty($prefs['available_languages']) || in_array($localeIdentifier, $prefs['available_languages']));
 }
 
 // Sets the language
@@ -23,12 +23,8 @@ function isValidLocale($localeIdentifier = '')
 // Returns true on success, false on failure (if $localeIdentifier is not a valid and allowed locale identifier) 
 function setLanguage($localeIdentifier = '')
 {
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
-	global $prefs, $user;
+	global $prefs, $tikilib, $user;
 	if (isValidLocale($localeIdentifier)) {
-		$prefs['language'] = $localeIdentifier;
-		$smarty->refreshLanguage();
 		return $tikilib->set_user_preference($user, 'language', $localeIdentifier);
 	} else {
 		return false;
@@ -52,8 +48,6 @@ if ( $prefs['change_language'] == 'y') {
 			$prefs['language'] = $browser_language;
 		}
 	}
-} else {
-	$prefs['language'] = $prefs['site_language'];
 }
 
 if (!isValidLocale($prefs['language'])) {
@@ -61,4 +55,5 @@ if (!isValidLocale($prefs['language'])) {
 	setLanguage($prefs['site_language']);
 }
 
-TikiLib::lib('multilingual')->setupBiDi();
+// Some languages need BiDi support. Add their code names here ...
+$prefs['feature_bidi'] = in_array($prefs['language'], array('ar', 'he', 'fa')) ? 'y' : 'n';

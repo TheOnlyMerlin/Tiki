@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -48,10 +45,6 @@ $valid = array(
 	'tanh'
 );
 
-/**
- * @param $formula
- * @return string
- */
 function convert_formula( $formula )
 {
 	global $valid;
@@ -65,7 +58,7 @@ function convert_formula( $formula )
 	foreach ( $out[0] as $match )
 		if ( !is_numeric($match) && !in_array(strtolower($match), $valid) && $match !== 'x' )
 			die( "Invalid function call {$match}" );
-
+	
 	// Replace spaces for commas
 	$formula = preg_replace('/\s+/', ', ', $formula);
 
@@ -92,10 +85,10 @@ if ( !( is_numeric($_GET['w'])
 switch ( $_GET['t'] ) {
 	case 'png':
 		$renderer = new GD_GRenderer($_GET['w'], $_GET['h']);
-		break;
+					break;
 	case 'pdf':
 		$renderer = new PDFLib_GRenderer($_GET['p'], $_GET['o']);
-		break;
+					break;
 	default:
 		die;
 }
@@ -108,10 +101,10 @@ $size = ($_GET['max'] - $_GET['min']) / $_GET['s'];
 $data = array();
 foreach ( array_values($_GET['f']) as $key=>$formula) {
 	$formula = convert_formula($formula);
-
+	
 	$data['x'] = array();
 	$data['y'.$key] = array();
-
+	
 	for ( $x = $_GET['min']; $_GET['max'] > $x; $x += $size ) {
 		$data['x'][] = $x;
 		$data['y'.$key][] = $formula($x);

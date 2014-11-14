@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -195,7 +192,7 @@ ask_ticket('edit-languages');
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 
-$headerlib->add_cssfile('themes/base_files/feature_css/admin.css');
+$headerlib->add_cssfile('css/admin.css');
 $headerlib->add_jsfile('lib/language/js/tiki-edit_languages.js');
 
 $headtitle = tra('Edit languages');

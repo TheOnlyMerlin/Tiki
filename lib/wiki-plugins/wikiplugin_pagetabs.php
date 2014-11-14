@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -29,9 +29,7 @@ function wikiplugin_pagetabs_info()
 				'name' => tra('Wiki page names'),
 				'description' => tra('The wiki pages you would like to use in this plugin, optional, separate with pipe "|".  Or a table with the class of "pagetabs" on the main page. On child pages use as a way to redirect to the parent.'),
 				'default' => '',
-				'separator' => '|',
-				'filter' => 'pagename',
-				'profile_reference' => 'wiki_page',
+				'filter' => 'striptags',
 			),
 		),
 	);
@@ -39,19 +37,15 @@ function wikiplugin_pagetabs_info()
 
 function wikiplugin_pagetabs($data, $params)
 {
-	global $user;
-	$headerlib = TikiLib::lib('header');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
-
+	global $tikilib, $smarty, $headerlib, $user;
 	static $pagetabsindex = 0;
 	++$pagetabsindex;
 	extract($params, EXTR_SKIP);
 
-	$pages = json_encode($pages);
+	$pages = json_encode(explode('|', $pages));
 
 	$pageTabs = true;
-
+	
 	foreach ($tikilib->get_user_groups($user) as $group) {
 		if ($group == "NoPageTabs") {
 			$pageTabs = false;
@@ -62,8 +56,7 @@ function wikiplugin_pagetabs($data, $params)
 
 	if ($pageTabs == true) {
 		$headerlib
-			->add_jq_onready(
-				'
+			->add_jq_onready('
 				var tabPages = '.$pages.';
 
 				var tabsTable = $("table.pagetabs")
@@ -164,10 +157,8 @@ function wikiplugin_pagetabs($data, $params)
 						});
 					});
 				}
-		'
-			)
-		->add_css(
-			'
+		')
+		->add_css('
 			#tabMenu {
 				width: 100% ! important;
 			}
@@ -180,8 +171,7 @@ function wikiplugin_pagetabs($data, $params)
 			.ui-tabs-panel {
 				padding: 0px ! important;
 			}
-		'
-		);
+		');
 	}
 
 	return "<span id='pagetabs$pagetabsindex' />";

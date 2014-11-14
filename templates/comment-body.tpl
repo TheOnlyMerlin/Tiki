@@ -1,25 +1,20 @@
 {* $Id$ *}
-<div class="postbody-content panel-body">
+<div class="clearfix content">
 
 	<div class="clearfix author">
 
 	{if $thread_style != 'commentStyle_headers'}
-		{if $forum_info.ui_avatar eq 'y' and isset($comment.userName) and $comment.userName|avatarize}
-			<span class="avatar">
-				{$comment.userName|avatarize}
-			</span>
+		{if $forum_info.ui_avatar eq 'y' and $comment.userName|avatarize}
+		<span class="avatar">{$comment.userName|avatarize}</span>
 		{/if}
 	{/if}
 
 		<span class="author_info">
 
 			<span class="author_post_info">
-				{if $first neq 'y' and $forum_info.ui_rating_choice_topic eq 'y' }
-					{rating_choice comment_author=$comment.userName type=comment id=$comments_parentId }
-				{/if}
-				{if isset($comment.anonymous_name) and $comment.anonymous_name}
+				{if $comment.anonymous_name}
 					{tr}Posted by{/tr} <span class="author_post_info_by">{if $comment.website}<a href="{$comment.website}" target="_blank">{/if}{$comment.anonymous_name}{if $comment.website}</a>{/if}</span>
-				{elseif isset($comment.userName)}
+				{elseif $comment.userName}
 					{tr}Posted by{/tr} <span class="author_post_info_by">{$comment.userName|userlink}</span>
 				{/if}
 				{if $comment.commentDate > 0}
@@ -34,11 +29,11 @@
 			{/if}
 			{if $forum_info.ui_level eq 'y' and $comment.user_level}
 			<span class="author_stars">
-				<img src="img/icons/{$comment.user_level}stars.gif" alt="{$comment.user_level} {tr}stars{/tr}" title="{tr}User Level{/tr}">
+				<img src="img/icons/{$comment.user_level}stars.gif" alt="{$comment.user_level} {tr}stars{/tr}" title="{tr}User Level{/tr}" />
 			</span>
 			{/if}
 
-			{if isset($comment.userName) and not empty($comment.user_exists)}
+			{if $comment.userName}
 			<span class="icons">
 			<span class="actions">
 			{if $prefs.feature_messages eq 'y' and $tiki_p_messages eq 'y'}   
@@ -67,15 +62,15 @@
 	</div>
 
 {if $thread_style != 'commentStyle_headers'}
-
+<div class="postbody-content">
 	{$comment.parsed}
 	{* <span class="signature"><!-- SIGNATURE --></span> *}
-
+</div>
 {/if}
 
 </div>
 
-{if $thread_style != 'commentStyle_headers' and isset($comment.attachments) and count($comment.attachments) > 0}
+{if $thread_style != 'commentStyle_headers' and count($comment.attachments) > 0}
 <div class="attachments">
 	{section name=ix loop=$comment.attachments}
 	<a class="link" href="tiki-download_forum_attachment.php?attId={$comment.attachments[ix].attId}">
@@ -90,38 +85,7 @@
 		{/if}
 	>{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 	{/if}
-	<br>
+	<br />
 	{/section}
 </div>
-{/if}
-
-{if !empty($comment.deliberations) and $tiki_p_forum_vote eq 'y' and $comment.type eq 'd'}
-	<div>
-		<div class="ui-widget-header">{tr}Deliberation Items{/tr}</div>
-		{foreach from=$comment.deliberations item=deliberation}
-			<div class="ui-widget-content">
-				{$deliberation.data}
-				<form class="forumDeliberationRatingForm" method="post" action="" style="float: right;">
-					{rating type="comment" id=$deliberation.threadId}
-					<input type="hidden" name="id" value="{$deliberation.threadId}">
-					<input type="hidden" name="type" value="comment">
-				</form>
-				{if $tiki_p_ratings_view_results eq 'y' or $tiki_p_admin eq 'y'}
-					{rating_result type="comment" id=$deliberation.threadId}
-				{/if}
-			</div>
-		{/foreach}
-		{jq}
-			var crf = $('form.forumDeliberationRatingForm').submit(function() {
-				var vals = $(this).serialize();
-				$.tikiModal(tr('Loading...'));
-				$.get('tiki-ajax_services.php?controller=rating&action=vote&' + vals, function() {
-					$.tikiModal();
-					$.notify(tr('Thanks for deliberating!'));
-					if ($('div.ratingDeliberationResultTable').length) document.location = document.location + '';
-				});
-				return false;
-			});
-		{/jq}
-	</div>
 {/if}

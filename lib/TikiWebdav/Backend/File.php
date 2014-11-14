@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -45,12 +45,12 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 			$this->root = realpath('temp/');
 		}
 		$this->options = new ezcWebdavFileBackendOptions(
-			array(
-				'lockFileName' => $this->root.'/.webdav_lock',
-				'waitForLock' => 200000,
-				'propertyStoragePath' => $this->root,
-				'noLock' => false
-			)
+						array(
+							'lockFileName' => $this->root.'/.webdav_lock',
+							'waitForLock' => 200000,
+							'propertyStoragePath' => $this->root,
+							'noLock' => false
+						)
 		);
 		$this->propertyStorage = new ezcWebdavBasicPropertyStorage();
 	}
@@ -165,7 +165,7 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 	protected function createCollection($path)
 	{
 		global $user ;
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; require_once('lib/filegals/filegallib.php');
 
 		if (empty($path))
 			return false;
@@ -196,7 +196,7 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 	protected function _createResource($path, $content = null)
 	{
 		global $user, $prefs;
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; require_once('lib/filegals/filegallib.php');
 
 		print_debug("createResource: $path\n");
 		if (empty($path)
@@ -204,7 +204,7 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 				|| ($objectId = $filegallib->get_objectid_from_virtual_path(dirname($path))) === false
 				|| $objectId['type'] != 'filegal'
 			) {
-			print_debug("createResource: failed\n");
+			print_debug("createResource: failed\n");	
 			return false;
 		}
 
@@ -219,7 +219,7 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 			} while (file_exists($this->root . '/' . $fhash));
 
 			if (@file_put_contents($this->root . '/' . $fhash, $content) === false) {
-				print_debug("createResource: ". $this->root . '/' . $fhash ." failed\n");
+				print_debug("createResource: ". $this->root . '/' . $fhash ." failed\n");	
 				return false;
 			}
 			$mime = TikiLib::lib('mime')->from_path($name, $this->root . '/' . $fhash);
@@ -230,26 +230,26 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 		}
 
 		$fileId = $filegallib->insert_file(
-			$objectId['id'],
-			$name,
-			'',
-			$name,
-			$content,
-			$filesize,
-			$mime,
-			$user,
-			$fhash,
-			'',
-			$user
+						$objectId['id'],
+						$name,
+						'',
+						$name,
+						$content,
+						$filesize,
+						$mime,
+						$user,
+						$fhash,
+						'',
+						$user
 		);
-		print_debug("createResource: end fileID=$fileId\n");
+		print_debug("createResource: end fileID=$fileId\n");	
 		return $fileId != 0;
 	}
 
 	protected function setResourceContents($path, $content)
 	{
 		global $user, $prefs;
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; require_once('lib/filegals/filegallib.php');
 
 		if (empty($path) || substr($path, -1, 1) == '/') {
 			print_debug("\nsetResourceContents failed empty path or directory\n");
@@ -291,27 +291,27 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 		}
 
 		$fileId = $filegallib->replace_file(
-			$objectId['id'],
-			$fileInfo['name'],
-			$fileInfo['description'],
-			$fileInfo['filename'],
-			$content,
-			@strlen($content),
-			$mime,
-			$user,
-			$fhash,
-			'',
-			$filegalInfo,
-			true
+						$objectId['id'],
+						$fileInfo['name'],
+						$fileInfo['description'],
+						$fileInfo['filename'],
+						$content,
+						@strlen($content),
+						$mime,
+						$user,
+						$fhash,
+						'',
+						$filegalInfo,
+						true
 		);
-		print_debug("setResourceContents: fileId = $fileId end \n");
+		print_debug("setResourceContents: fileId = $fileId end \n");	
 		return $fileId;
 	}
 
 	protected function getResourceContents($path)
 	{
 		global $prefs;
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; require_once('lib/filegals/filegallib.php');
 
 		$result = false;
 		$objectId = $filegallib->get_objectid_from_virtual_path($path);
@@ -348,7 +348,7 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 
 		// Create handler structure to read properties
 		$handler = new ezcWebdavPropertyHandler(
-			$xml = new ezcWebdavXmlTool()
+						$xml = new ezcWebdavXmlTool()
 		);
 		$storage = new ezcWebdavBasicPropertyStorage();
 
@@ -358,7 +358,7 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 		}
 		catch (ezcWebdavInvalidXmlException $e) {
 			throw new ezcWebdavFileBackendBrokenStorageException(
-				"Could not open XML as DOMDocument: '{$storage}'."
+							"Could not open XML as DOMDocument: '{$storage}'."
 			);
 		}
 
@@ -367,8 +367,8 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 
 		// Extract and return properties
 		$handler->extractProperties(
-			$properties,
-			$storage
+						$properties,
+						$storage
 		);
 
 
@@ -383,7 +383,7 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 
 		// Create handler structure to read properties
 		$handler = new ezcWebdavPropertyHandler(
-			$xml = new ezcWebdavXmlTool()
+						$xml = new ezcWebdavXmlTool()
 		);
 
 		// Create new dom document with property storage for one namespace
@@ -393,8 +393,8 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 		$doc->appendChild($properties);
 
 		$handler->serializeProperties(
-			$storage,
-			$properties
+						$storage,
+						$properties
 		);
 
 		print_debug("storeProperties method end\n");
@@ -456,7 +456,7 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 	public function getProperty($path, $propertyName, $namespace = 'DAV:')
 	{
 		global $prefs;
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; include_once('lib/filegals/filegallib.php');
 
 		print_debug("GetProperty($path, $propertyName, $namespace)\n");
 		if ($path == '/Wiki Pages/') {
@@ -503,9 +503,9 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 		switch ($propertyName) {
 			case 'getcontentlength':
 				$property = new ezcWebdavGetContentLengthProperty(
-					$isCollection ?
-					ezcWebdavGetContentLengthProperty::COLLECTION :
-					$tikiInfo['filesize']
+								$isCollection ?
+								ezcWebdavGetContentLengthProperty::COLLECTION :
+								$tikiInfo['filesize']
 				);
 				return $property;
 
@@ -521,16 +521,16 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 
 			case 'displayname':
 				$property = new ezcWebdavDisplayNameProperty(
-					$isCollection ? $tikiInfo['name'] : $tikiInfo['filename']
+								$isCollection ? $tikiInfo['name'] : $tikiInfo['filename']
 				);
 				print_debug("-> " . ($isCollection ? $tikiInfo['name'] : $tikiInfo['filename']) ."\n");
 				return $property;
 
 			case 'getcontenttype':
 				$property = new ezcWebdavGetContentTypeProperty(
-					$isCollection ?
-					'httpd/unix-directory' :
-					(empty($tikiInfo['filetype']) ? 'application/octet-stream' : $tikiInfo['filetype'])
+								$isCollection ?
+								'httpd/unix-directory' :
+								(empty($tikiInfo['filetype']) ? 'application/octet-stream' : $tikiInfo['filetype'])
 				);
 				print_debug("-> " . ($isCollection ? 'httpd/unix-directory' : (empty($tikiInfo['filetype']) ? 'application/octet-stream' : $tikiInfo['filetype'])) ."\n" . print_r($property, true) . "\n");
 				return $property;
@@ -543,9 +543,9 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 
 			case 'resourcetype':
 				$property = new ezcWebdavResourceTypeProperty(
-					$isCollection ?
-					ezcWebdavResourceTypeProperty::TYPE_COLLECTION :
-					ezcWebdavResourceTypeProperty::TYPE_RESOURCE
+								$isCollection ?
+								ezcWebdavResourceTypeProperty::TYPE_COLLECTION :
+								ezcWebdavResourceTypeProperty::TYPE_RESOURCE
 				);
 				print_debug("-> " . ($isCollection ? 'TYPE_COLLECTION' : 'TYPE_RESOURCE') ."\n");
 				return $property;
@@ -578,8 +578,8 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 	private function getContentLength($path)
 	{
 		$contentlength = $this->getProperty($path, 'getcontentlength');
-		print_debug("getContentLength $path". $contentlength->contentlength . "\n");
-		return $contentlength->contentlength;
+		print_debug("getContentLength $path". $getcontentlength->contentlength . "\n");
+		return $getcontentlength->contentlength;
 	}
 
 	protected function getETag($path)
@@ -606,8 +606,7 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 
 	protected function performCopy($fromPath, $toPath, $depth = ezcWebdavRequest::DEPTH_INFINITY)
 	{
-		global $prefs, $user;
-		$filegallib = TikiLib::lib('filegal');
+		global $prefs, $filegallib, $user;
 
 		$infos = array('source' => array(), 'dest' => array());
 		$infos['dest']['name'] = basename($toPath);
@@ -678,8 +677,8 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 				if ($doMove) {
 					// Move in an other gallery
 					return (bool) $filegallib->move_file_gallery(
-						$newId,
-						$infos['dest']['parentId']
+									$newId,
+									$infos['dest']['parentId']
 					);
 				}
 
@@ -700,19 +699,19 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 				}
 
 				$newId = $filegallib->insert_file(
-					$infos['source']['parentId'],
-					$infos['dest']['name'],
-					$infos['source']['infos']['description'],
-					$infos['dest']['name'],
-					$infos['source']['infos']['data'],
-					$infos['source']['infos']['filesize'],
-					$infos['source']['infos']['filetype'],
-					$user,
-					$newPath,
-					'',
-					$infos['source']['infos']['author'],
-					$infos['source']['infos']['created'],
-					$infos['source']['infos']['lockedby']
+								$infos['source']['parentId'],
+								$infos['dest']['name'],
+								$infos['source']['infos']['description'],
+								$infos['dest']['name'],
+								$infos['source']['infos']['data'],
+								$infos['source']['infos']['filesize'],
+								$infos['source']['infos']['filetype'],
+								$user,
+								$newPath,
+								'',
+								$infos['source']['infos']['author'],
+								$infos['source']['infos']['created'],
+								$infos['source']['infos']['lockedby']
 				);
 
 				if (((bool) $newId) !== true) {
@@ -721,8 +720,8 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 
 				if ($doMove) {
 					return (bool) $filegallib->set_file_gallery(
-						$newId,
-						$infos['dest']['parentId']
+									$newId,
+									$infos['dest']['parentId']
 					);
 				}
 
@@ -734,25 +733,25 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 
 	protected function performDelete($path)
 	{
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; include_once('lib/filegals/filegallib.php');
 
 		if (($objectId = $filegallib->get_objectid_from_virtual_path($path)) === false)
 			return false;
 
 		switch ($objectId['type']) {
 			case 'file':
-				$filegallib->remove_file($filegallib->get_file($objectId['id']));
+					return (bool) $filegallib->remove_file($filegallib->get_file($objectId['id']));
 
 			case 'filegal':
-				$filegallib->remove_file_gallery($objectId['id']);
+					return (bool) $filegallib->remove_file_gallery($objectId['id']);
 		}
 
-		return;
+		return false;
 	}
 
 	protected function nodeExists($path)
 	{
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; include_once('lib/filegals/filegallib.php');
 		if ($path == '/Wiki Pages/') {
 			return true;
 		}
@@ -761,7 +760,7 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 
 	protected function isCollection($path)
 	{
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; include_once('lib/filegals/filegallib.php');
 		if ($path == '/Wiki Pages/') {
 			return true;
 		}
@@ -771,7 +770,7 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 	protected function getCollectionMembers($path)
 	{
 		global $tikilib;
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; include_once('lib/filegals/filegallib.php');
 
 		$contents = array();
 		$errors = array();
@@ -786,25 +785,25 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 			}
 
 			$files = $filegallib->get_files(
-				0,
-				-1,
-				'name_desc',
-				'',
-				(int)$galleryId,
-				true,
-				true,
-				false,
-				true,
-				false,
-				false,
-				false,
-				false,
-				'',
-				true,
-				false,
-				($gal_info['show_backlinks']!='n'),
-				'',
-				''
+							0,
+							-1,
+							'name_desc',
+							'',
+							(int)$galleryId,
+							true,
+							true,
+							false,
+							true,
+							false,
+							false,
+							false,
+							false,
+							'',
+							true,
+							false,
+							($gal_info['show_backlinks']!='n'),
+							'',
+							''
 			);
 
 
@@ -894,7 +893,7 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 	public function move(ezcWebdavMoveRequest $request)
 	{
 		global $prefs;
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; include_once('lib/filegals/filegallib.php');
 
 		print_debug("-- HTTP method: MOVE --\n");
 
@@ -915,8 +914,8 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 		if (!ezcWebdavServer::getInstance()->isAuthorized($dest, $request->getHeader('Authorization'), ezcWebdavAuthorizer::ACCESS_WRITE)) {
 			$this->freeLock();
 			return $this->createUnauthorizedResponse(
-				$dest,
-				$request->getHeader('Authorization')
+							$dest,
+							$request->getHeader('Authorization')
 			);
 		}
 
@@ -924,8 +923,8 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 		if (!$this->nodeExists($source)) {
 			$this->freeLock();
 			return new ezcWebdavErrorResponse(
-				ezcWebdavResponse::STATUS_404,
-				$source
+							ezcWebdavResponse::STATUS_404,
+							$source
 			);
 		}
 
@@ -933,8 +932,8 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 		if ($source === $dest) {
 			$this->freeLock();
 			return new ezcWebdavErrorResponse(
-				ezcWebdavResponse::STATUS_403,
-				$source
+							ezcWebdavResponse::STATUS_403,
+							$source
 			);
 		}
 
@@ -944,8 +943,8 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 				$this->nodeExists($dest)) {
 			$this->freeLock();
 			return new ezcWebdavErrorResponse(
-				ezcWebdavResponse::STATUS_412,
-				$dest
+							ezcWebdavResponse::STATUS_412,
+							$dest
 			);
 		}
 
@@ -954,8 +953,8 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 		if (!$this->nodeExists($destDir = dirname($dest))) {
 			$this->freeLock();
 			return new ezcWebdavErrorResponse(
-				ezcWebdavResponse::STATUS_409,
-				$dest
+							ezcWebdavResponse::STATUS_409,
+							$dest
 			);
 		}
 
@@ -978,10 +977,10 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 				$this->nodeExists($dest)) {
 			// Check sub-sequent authorization on destination
 			$authState = $this->recursiveAuthCheck(
-				$request,
-				$dest,
-				ezcWebdavAuthorizer::ACCESS_WRITE,
-				true
+							$request,
+							$dest,
+							ezcWebdavAuthorizer::ACCESS_WRITE,
+							true
 			);
 			if (count($authState['errors']) !== 0) {
 				// Permission denied on deleting destination
@@ -1065,13 +1064,13 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 
 				if ($doRename) {
 					$noErrors = (bool) $filegallib->replace_file_gallery(
-						$infos['dest']['infos']
+									$infos['dest']['infos']
 					);
 				} elseif ($doMove) {
 				// Move is not needed if the rename occurred, since filegal renaming function handle the move already
 					$noErrors = (bool) $filegallib->move_file_gallery(
-						$infos['source']['id'],
-						$infos['dest']['parentId']
+									$infos['source']['id'],
+									$infos['dest']['parentId']
 					);
 				}
 
@@ -1095,31 +1094,30 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 					} else {
 						$newPath = '';
 					}
-					global $user;
 
 					$noErrors = (bool) $filegallib->replace_file(
-						$infos['source']['id'],
-						$infos['dest']['name'],
-						$infos['source']['infos']['description'],
-						$infos['dest']['name'],
-						$infos['source']['infos']['data'],
-						$infos['source']['infos']['filesize'],
-						$infos['source']['infos']['filetype'],
-						$user,
-						$newPath,
-						'',
-						$filegallib->get_file_gallery_info($infos['source']['parentId']),
-						false,
-						$infos['source']['infos']['author'],
-						$infos['source']['infos']['created'],
-						$infos['source']['infos']['lockedby']
+									$infos['source']['id'],
+									$infos['dest']['name'],
+									$infos['source']['infos']['description'],
+									$infos['dest']['name'],
+									$infos['source']['infos']['data'],
+									$infos['source']['infos']['filesize'],
+									$infos['source']['infos']['filetype'],
+									$user,
+									$newPath,
+									'',
+									$filegallib->get_file_gallery_info($infos['source']['parentId']),
+									false,
+									$infos['source']['infos']['author'],
+									$infos['source']['infos']['created'],
+									$infos['source']['infos']['lockedby']
 					);
 				}
 
 				if ($doMove && $noErrors) {
 					$noErrors = (bool) $filegallib->set_file_gallery(
-						$infos['source']['id'],
-						$infos['dest']['parentId']
+									$infos['source']['id'],
+									$infos['dest']['parentId']
 					);
 				}
 
@@ -1130,11 +1128,11 @@ class TikiWebdav_Backends_File extends ezcWebdavSimpleBackend implements ezcWebd
 		// Send proper response on success
 		if ($noErrors) {
 			$return = new ezcWebdavMoveResponse(
-				$replaced
+							$replaced
 			);
 		} else {
 			$return = new ezcWebdavErrorResponse(
-				ezcWebdavResponse::STATUS_500
+							ezcWebdavResponse::STATUS_500
 			);
 		}
 

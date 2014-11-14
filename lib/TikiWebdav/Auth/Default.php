@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -53,7 +53,7 @@ class TikiWebdav_Auth_Default extends ezcWebdavBasicAuth implements ezcWebdavAut
 				print_debug("Login Anonymous User=".$data->username." Already logged\n");
 				return true;
 			}
-			$userlib = TikiLib::lib('user');
+			global $userlib; include_once('lib/userslib.php');
 			if ($prefs['auth_method'] == 'cas') {
 				// Workaround : Webdav doesn't work with cas
 				$prefs['auth_method'] = 'ldap';
@@ -82,7 +82,7 @@ class TikiWebdav_Auth_Default extends ezcWebdavBasicAuth implements ezcWebdavAut
 				$user = $_SESSION['webdav_user'] = 'Anonymous';
 				return true;
 			}
-			$userlib = TikiLib::lib('user');
+			global $userlib; include_once('lib/userslib.php');
 			list($isvalid, $user, $error) = $userlib->validate_user($data->username, 'tototi');
 			print_debug("Login Digest User=" . $data->username . " " . ($isvalid ? 'OK' : 'FAILED') . " " . print_r($data, true) . "\n");
 			if ($isvalid) {
@@ -102,7 +102,7 @@ class TikiWebdav_Auth_Default extends ezcWebdavBasicAuth implements ezcWebdavAut
 	public function authorize($user, $path, $access = self::ACCESS_READ)
 	{
 		global $tikilib;
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; include_once('lib/filegals/filegallib.php');
 		print_debug("Authorize...PATH=$path ACCESS=" . ($access == self::ACCESS_READ?'READ':'WRITE') . "\n");
 		$dir_path = dirname(urldecode($path));
 		if ($dir_path === '/' && $access === self::ACCESS_READ) return true;

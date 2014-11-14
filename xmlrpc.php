@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,7 +7,7 @@
 
 include_once('tiki-setup.php');
 require_once('XML/Server.php');
-$bloglib = TikiLib::lib('blog');
+include_once('lib/blogs/bloglib.php');
 
 if ($prefs['feature_xmlrpc'] != 'y') {
 	die;
@@ -26,15 +26,9 @@ $map = array (
 
 $s = new XML_RPC_Server($map);
 
-/**
- * @param $user
- * @param $blogid
- * @param $permName
- * @return bool
- */
 function check_individual($user,$blogid,$permName)
 {
-	$userlib = TikiLib::lib('user');
+	global $userlib;
 
 	// If the user is admin he can do everything
 	if ($userlib->user_has_permission($user, 'tiki_p_blog_admin')) return true;
@@ -51,14 +45,9 @@ function check_individual($user,$blogid,$permName)
 }
 
 /* Validates the user and returns user information */
-/**
- * @param $params
- * @return XML_RPC_Response
- */
 function getUserInfo($params)
 {
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $userlib;
 
 	$appkeyp = $params->getParam(0);
 	$appkey = $appkeyp->scalarval();
@@ -73,15 +62,15 @@ function getUserInfo($params)
 
 	if ($ok) {
 		$myStruct = new XML_RPC_Value(
-			array(
-				'nickname' => new XML_RPC_Value($username),
-				'firstname' => new XML_RPC_Value('none'),
-				'lastname' => new XML_RPC_Value('none'),
-				'email' => new XML_RPC_Value('none'),
-				'userid' => new XML_RPC_Value('$username'),
-				'url' => new XML_RPC_Value('none')
-			),
-			'struct'
+						array(
+							'nickname' => new XML_RPC_Value($username),
+							'firstname' => new XML_RPC_Value('none'),
+							'lastname' => new XML_RPC_Value('none'),
+							'email' => new XML_RPC_Value('none'),
+							'userid' => new XML_RPC_Value('$username'),
+							'url' => new XML_RPC_Value('none')
+						),
+						'struct'
 		);
 		return new XML_RPC_Response($myStruct);
 	} else {
@@ -90,15 +79,9 @@ function getUserInfo($params)
 }
 
 /* Posts a new submission to the CMS */
-/**
- * @param $params
- * @return XML_RPC_Response
- */
 function newPost($params)
 {
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$bloglib = TikiLib::lib('blog');
+	global $tikilib, $userlib, $bloglib;
 
 	$appkeyp = $params->getParam(0);
 	$appkey = $appkeyp->scalarval();
@@ -141,7 +124,7 @@ function newPost($params)
 			return new XML_RPC_Response(0, 101, 'User is not allowed to post');
 		}
 
-		$bloglib = TikiLib::lib('blog');
+		global $bloglib; require_once('lib/blogs/bloglib.php');
 		$blog_info = $bloglib->get_blog($blogid);
 
 		if ($blog_info['public']!='y') {
@@ -158,15 +141,9 @@ function newPost($params)
 }
 
 // :TODO: editPost
-/**
- * @param $params
- * @return XML_RPC_Response
- */
 function editPost($params)
 {
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$bloglib = TikiLib::lib('blog');
+	global $tikilib, $userlib, $bloglib;
 
 	$appkeyp = $params->getParam(0);
 	$appkey = $appkeyp->scalarval();
@@ -223,15 +200,9 @@ function editPost($params)
 }
 
 // :TODO: deletePost
-/**
- * @param $params
- * @return XML_RPC_Response
- */
 function deletePost($params)
 {
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$bloglib = TikiLib::lib('blog');
+	global $tikilib, $userlib, $bloglib;
 
 	$appkeyp = $params->getParam(0);
 	$appkey = $appkeyp->scalarval();
@@ -274,15 +245,9 @@ function deletePost($params)
 // :TODO: getTemplate
 // :TODO: setTemplate
 // :TODO: getPost
-/**
- * @param $params
- * @return XML_RPC_Response
- */
 function getPost($params)
 {
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$bloglib = TikiLib::lib('blog');
+	global $tikilib, $userlib, $bloglib;
 
 	$appkeyp = $params->getParam(0);
 	$appkey = $appkeyp->scalarval();
@@ -325,14 +290,14 @@ function getPost($params)
 
 	// added dateTime type for blogger compliant xml tag Joerg Knobloch <joerg@happypenguins.net>
 	$myStruct=new XML_RPC_Value(
-		array(
-			'userid' => new XML_RPC_Value($username),
-			'dateCreated' => new XML_RPC_Value($dateCreated, 'dateTime.iso8601'),
-			// Fix for w.Bloggar
-			'content' => new XML_RPC_Value('<title>' . $post_data['title'] . '</title>' . $post_data['data']),
-			'postid' => new XML_RPC_Value($post_data['postId'])
-		),
-		'struct'
+					array(
+						'userid' => new XML_RPC_Value($username),
+						'dateCreated' => new XML_RPC_Value($dateCreated, 'dateTime.iso8601'),
+						// Fix for w.Bloggar
+						'content' => new XML_RPC_Value('<title>' . $post_data['title'] . '</title>' . $post_data['data']),
+						'postid' => new XML_RPC_Value($post_data['postId'])
+					),
+					'struct'
 	);
 
 	// User ok and can submit then submit an article
@@ -341,15 +306,9 @@ function getPost($params)
 }
 
 // :TODO: getRecentPosts
-/**
- * @param $params
- * @return XML_RPC_Response
- */
 function getRecentPosts($params)
 {
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$bloglib = TikiLib::lib('blog');
+	global $tikilib, $userlib, $bloglib;
 
 	$appkeyp = $params->getParam(0);
 	$appkey = $appkeyp->scalarval();
@@ -394,14 +353,14 @@ function getRecentPosts($params)
 		$dateCreated = $tikilib->get_iso8601_datetime($post['created']);
 
 		$myStruct = new XML_RPC_Value(
-			array(
-				'userid' => new XML_RPC_Value($username),
-				'dateCreated' => new XML_RPC_Value($dateCreated, 'dateTime.iso8601'),
-				// Fix for w.Bloggar
-				'content' => new XML_RPC_Value('<title>' . $post['title'] . '</title>' . $post['data']),
-				'postid' => new XML_RPC_Value($post['postId'])
-			),
-			'struct'
+						array(
+							'userid' => new XML_RPC_Value($username),
+							'dateCreated' => new XML_RPC_Value($dateCreated, 'dateTime.iso8601'),
+							// Fix for w.Bloggar
+							'content' => new XML_RPC_Value('<title>' . $post['title'] . '</title>' . $post['data']),
+							'postid' => new XML_RPC_Value($post['postId'])
+						),
+						'struct'
 		);
 
 		$arrayval[] = $myStruct;
@@ -415,15 +374,9 @@ function getRecentPosts($params)
 
 // :TODO: tiki.tikiPost
 /* Get the topics where the user can post a new */
-/**
- * @param $params
- * @return XML_RPC_Response
- */
 function getUserBlogs($params)
 {
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$bloglib = TikiLib::lib('blog');
+	global $tikilib, $userlib, $bloglib;
 
 	$appkeyp = $params->getParam(0);
 	$appkey=$appkeyp->scalarval();
@@ -436,19 +389,19 @@ function getUserBlogs($params)
 
 	$arrayVal = Array();
 
-	$bloglib = TikiLib::lib('blog');
+	require_once('lib/blogs/bloglib.php');
 	$blogs = $bloglib->list_user_blogs($username, true);
 	$foo = parse_url($_SERVER['REQUEST_URI']);
 	$foo1 = $tikilib->httpPrefix() . str_replace('xmlrpc', 'tiki-view_blog', $foo['path']);
 
 	foreach ($blogs as $blog) {
 		$myStruct = new XML_RPC_Value(
-			array(
-				'blogName' => new XML_RPC_Value($blog['title']),
-				'url' => new XML_RPC_Value($foo1 . '?blogId=' . $blog['blogId']),
-				'blogid' => new XML_RPC_Value($blog['blogId'])
-			),
-			'struct'
+						array(
+							'blogName' => new XML_RPC_Value($blog['title']),
+							'url' => new XML_RPC_Value($foo1 . '?blogId=' . $blog['blogId']),
+							'blogid' => new XML_RPC_Value($blog['blogId'])
+						),
+						'struct'
 		);
 		$arrayVal[] = $myStruct;
 	}

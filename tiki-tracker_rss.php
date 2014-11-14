@@ -1,17 +1,15 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
-$trklib = TikiLib::lib('trk');
-$rsslib = TikiLib::lib('rss');
-$smarty->loadPlugin('smarty_modifier_sefurl');
+require_once ('lib/tikilib.php');
+require_once ('lib/trackers/trackerlib.php');
+require_once ('lib/rss/rsslib.php');
+require_once ('lib/smarty_tiki/modifier.sefurl.php');
 
 if ($prefs['feed_tracker'] != 'y') {
 	$errmsg = tra("rss feed disabled");
@@ -51,13 +49,9 @@ if ($output["data"] == "EMPTY") {
 	$desc = $prefs['feed_tracker_desc'] . $tmp["description"];
 	$tmp = null;
 	$tmp = $prefs['feed_' . $feed . '_title'];
-	if ($tmp <> '') {
-		$title = $tmp;
-	}
+	if ($tmp <> '') $title = $tmp;
 	$tmp = $prefs['feed_' . $feed . '_desc'];
-	if ($desc <> '') {
-		$desc = $tmp;
-	}
+	if ($desc <> '') $desc = $tmp;
 	$titleId = "rss_subject";
 	$descId = "rss_description";
 	$authorId = ""; // "user";
@@ -67,9 +61,7 @@ if ($output["data"] == "EMPTY") {
 	$listfields = $trklib->list_tracker_fields($_REQUEST[$id]);
 	$fields = array();
 	foreach ($listfields['data'] as $f) {
-		if ($f['isHidden'] == 'y' || $f['isHidden'] == 'c' || $f['isHidden'] == 'r') {
-			continue;
-		}
+		if ($f['isHidden'] == 'y' || $f['isHidden'] == 'c') continue;
 		$fields[$f['fieldId']] = $f;
 	}
 	if (isset($_REQUEST['filterfield'])) {
@@ -111,46 +103,27 @@ if ($output["data"] == "EMPTY") {
 		$errmsg = tra("You do not have permission to view this section");
 		require_once ('tiki-rss_error.php');
 	}
-	// try to deal with two mutually exclusive params added pre-tiki 11 to hide the "Tracker item: #123456" title
-	// showitemId and noId (showitemId will take precedence)
-	$showItemId = false;									// default to looking nice
-
-	if (isset($_REQUEST['showitemId'])) {
-		$showItemId = $_REQUEST['showitemId'] === 'y';
-	} else if (isset($_REQUEST['noId'])) {
-		$showItemId = $_REQUEST['noId'] === 'n';
-	}
-
 	$tmp = $trklib->list_items($_REQUEST[$id], 0, $prefs['feed_tracker_max'], $sort_mode, $fields, $filterfield, $filtervalue, $status, null, $exactvalue);
 	foreach ($tmp["data"] as $data) {
-		$data[$titleId] = $showItemId ? tra('Tracker item:') . ' #' . $data[$urlparam] : '';
+		$data[$titleId] = (isset($_REQUEST['showitemId']) && $_REQUEST['showitemId'] == 'n')? '': tra('Tracker item:') . ' #' . $data[$urlparam];
 		$data[$descId] = '';
 		$first_text_field = null;
 		$aux_subject = null;
 		foreach ($data["field_values"] as $data2) {
-			$showEvenIfEmpty = array('s', 'STARS', 'h', 'l', 'W');	// this duplicates the logic in tiki-view_tracker_item.tpl
-			if (isset($data2["name"]) && !empty($data2['value']) || !$doNotShowEmptyField || in_array($data2['type'], $showEvenIfEmpty)) {
-				if (!isset($data[$data2['fieldId']])) {
-					$data[$data2['fieldId']] = $data2['value'];
-				}
+			if (isset($data2["name"]) && !empty($data2['value']) || !$doNotShowEmptyField) {
 				$data2['value'] = $trklib->field_render_value(
-					array(
-						'field' => $data2,
-						'item' => $data,
-						'process' => 'y',
-					)
+								array(
+									'field' => $data2,
+									'item' => $data,
+									'process' => 'y',
+								)
 				);
-				if (empty($data2['value'])) {
+				if ($data2['value'] == '') {
 					$data2['value'] = '(' . tra('empty') . ')';
 				} else {
 					$data2['value'] = htmlspecialchars_decode($data2['value']);
 				}
-				if ($prefs['feed_tracker_labels'] === 'y') {
-					$data[$descId] .= $data2["name"] . ": ";
-				} else if (preg_match_all('/(<img[^>]*>)/', $data2['value'], $m)) {
-					$data2['value'] = implode('', $m[1]);
-				}
-				$data[$descId] .= $data2["value"] . "<br />";
+				$data[$descId].= $data2["name"] . ": " . $data2["value"] . "<br />";
 				$field_name_check = strtolower($data2["name"]);
 				if ($field_name_check == "subject") {
 					$aux_subject = " - " . $data2["value"];
@@ -164,14 +137,13 @@ if ($output["data"] == "EMPTY") {
 				}
 			}
 		}
-		if (!$showItemId) {
+		if (isset($_REQUEST['noId']) && $_REQUEST['noId'] == 'y') {
 			$data[$titleId] = empty($aux_subject) ? $first_text_field : $aux_subject;
 		} elseif (!isset($aux_subject) && isset($first_text_field)) {
 			$data[$titleId] .= (empty($data[$titleId])?'': ' - ') . $first_text_field;
 		} elseif (isset($aux_subject)) {
 			$data[$titleId] .= (empty($data[$titleId])?'': ' - ') . $aux_subject;
 		}
-		$data[$titleId] = strip_tags($data[$titleId]);
 		$data["id"] = $_REQUEST["$id"];
 		$data["field_values"] = null;
 		$data['sefurl'] = smarty_modifier_sefurl($data['itemId'], 'trackeritem');

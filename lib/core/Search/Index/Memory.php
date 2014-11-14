@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -18,41 +18,27 @@ class Search_Index_Memory implements Search_Index_Interface
 		$this->data[] = $data;
 	}
 
-	function endUpdate()
+	function invalidateMultiple(Search_Expr_Interface $query)
 	{
+		return array();
 	}
 
-	function invalidateMultiple(array $objectList)
+	function find(Search_Expr_Interface $query, Search_Query_Order $sortOrder, $resultStart, $resultCount)
 	{
-	}
-
-	function find(Search_Query_Interface $query, $resultStart, $resultCount)
-	{
-		$this->lastQuery = $query->getExpr();
-		$this->lastOrder = $query->getSortOrder();
+		$this->lastQuery = $query;
+		$this->lastOrder = $sortOrder;
 		$this->lastStart = $resultStart;
 		$this->lastCount = $resultCount;
-		return new Search_ResultSet(array(), 0, $resultStart, $resultCount);
+		return array();
 	}
 
 	function getTypeFactory()
 	{
-		return new Search_Lucene_TypeFactory;
+		return new Search_Type_Factory_Lucene;
 	}
 
 	function optimize()
 	{
-	}
-
-	function destroy()
-	{
-		$this->data = array();
-		return true;
-	}
-	
-	function exists()
-	{
-		return count($this->data) > 0;
 	}
 
 	/**

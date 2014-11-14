@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -13,47 +13,27 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 
 /**
  * Simple central point for configuring and using memcache support.
- *
- * This utility library is not a complete wrapper for PHP memcache functions,
+ * 
+ * This utility library is not a complete wrapper for PHP memcache functions, 
  * and only provides a minimal set currently in use in SUMO.
  */
 class Memcachelib
 {
 
-	public $memcache;
-	public $options;
+	var $memcache;
+	var $options;
 
 	/**
 	 * Initialize this thing.
 	 */
 	function Memcachelib($memcached_servers=FALSE, $memcached_options=FALSE)
 	{
-		global $prefs, $tikidomainslash;
-
-		if ($memcached_servers === false && $memcached_options === false) {
-			if ( is_array($prefs['memcache_servers']) ) {
-				$memcached_servers = $prefs['memcache_servers'];
-			} else {
-				$memcached_servers = unserialize($prefs['memcache_servers']);
-			}
-
-			$memcached_options = array(
-				'enabled' => true,
-				'expiration' => (int) $prefs['memcache_expiration'],
-				'key_prefix' => $prefs['memcache_prefix'],
-				'compress' => $prefs['memcache_compress'],
-			);
-		}
-
-		$localphp = "db/{$tikidomainslash}local.php";
-
-		if (is_readable($localphp)) {
-			// Should be defined by unserializing $prefs['memcache_options']
-			// and $prefs['memcache_servers']. Currently happens in
-			// /webroot/tiki-setup_base.php
-			// preferences are overwritten in local.php (if defined)
-			require($localphp);
-		}
+		global $tikidomainslash;
+		// Should be defined by unserializing $prefs['memcache_options']
+		// and $prefs['memcache_servers']. Currently happens in
+		// /webroot/tiki-setup_base.php
+		// preferences are overwritten in local.php (if defined)
+		require("db/{$tikidomainslash}local.php");
 
 		if (!$memcached_servers || (!empty($memcached_options) && !$memcached_options['enabled']) || ! class_exists('Memcache') ) {
 			$this->memcache = FALSE;
@@ -74,9 +54,9 @@ class Memcachelib
 				}
 
 				$this->memcache->addServer(
-					$server['host'], (int) $server['port'],
-					isset($server['persistent']) ? $server['persistent'] : FALSE,
-					isset($server['weight']) ? (int)$server['weight'] : 1
+								$server['host'], (int) $server['port'], 
+								isset($server['persistent']) ? $server['persistent'] : FALSE, 
+								isset($server['weight']) ? (int)$server['weight'] : 1
 				);
 			}
 		}
@@ -113,7 +93,7 @@ class Memcachelib
 	function isEnabled()
 	{
 		global $prefs;
-		if ( isset($prefs['memcache_enabled']) && $prefs['memcache_enabled'] == 'y' ) {
+		if ( $prefs['memcache_enabled'] == 'y' ) {
 			return $this->memcache && $this->getOption('enabled', FALSE);
 		} else {
 			return false;
@@ -137,7 +117,7 @@ class Memcachelib
 	/**
 	 * Get multiple keys from memcache at once.
 	 *
-	 * This differs from native memcache get() behavior in that all keys
+	 * This differs from native memcache get() behavior in that all keys 
 	 * passed in will result in a corresponding value returned.  If the
 	 * key was not found in the cache, the returned value will be NULL.
 	 *
@@ -176,9 +156,9 @@ class Memcachelib
 	function set($key, $value, $flags=FALSE, $expiration=FALSE)
 	{
 		$key = $this->buildKey($key);
-		$flags = ($flags) ?
+		$flags = ($flags) ? 
 			$flags : $this->getOption('flags', 0);
-		$expiration = ($expiration) ?
+		$expiration = ($expiration) ? 
 			$expiration : $this->getOption('expiration', 0);
 
 		if (isset($this->memcache) && method_exists($this->memcache, "set")) {
@@ -227,15 +207,31 @@ class Memcachelib
 			$parts = array();
 			foreach ($keys as $name) {
 				$val = $key[$name];
-				if ($val !== NULL)
+				if ($val !== NULL) 
 					$parts[] = $name . '=' . $val;
 			}
 
 			$str_key = join(':', $parts);
-			return $this->key_prefix .
+			return $this->key_prefix . 
 				( $use_md5 ? md5($str_key) : '['.$str_key.']' );
 
 		}
-	}
+	} 
 }
 
+global $prefs, $memcachelib;
+
+if ( is_array($prefs['memcache_servers']) ) {
+	$servers = $prefs['memcache_servers'];
+} else {
+	$servers = unserialize($prefs['memcache_servers']);
+}
+
+$memcachelib = new Memcachelib(
+	$servers, array(
+		'enabled' => true,
+		'expiration' => (int) $prefs['memcache_expiration'],
+		'key_prefix' => $prefs['memcache_prefix'],
+		'compress' => $prefs['memcache_compress'],
+	)
+);

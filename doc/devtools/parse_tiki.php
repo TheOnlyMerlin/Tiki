@@ -1,5 +1,5 @@
 <?php 
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -22,9 +22,6 @@ if ($tiki_p_admin != 'y') {
 $logfile = 'temp/tiki_parsed.txt';
 $logfilehtml = 'temp/tiki_parsed.html';
 
-/**
- * @param $dir
- */
 function collect($dir)
 {
 	global $dirs;
@@ -60,14 +57,6 @@ function collect($dir)
 	}
 }
 
-/**
- * @param $fd
- * @param $fx
- * @param $outstring
- * @param string $style
- * @param string $mod
- * @param bool $br
- */
 function echoline($fd, $fx, $outstring, $style = '', $mod = '', $br = true)
 {
 	if ($br) {
@@ -114,7 +103,7 @@ pre { padding : 10px; border: 1px solid #666666; background-color: #efefef; }
 .atime, .ctime, .mtime, .date { background-color: #dedede; } 
 .size, .rev, .tag { background-color: #ededed; } 
 </style><script type="text/javascript" src="lib/tiki-js.js"></script></head>
-<body><form action="parse_tiki.php" method="post"><input type="submit" name="action" class="btn btn-default" value="process" /></form>
+<body><form action="parse_tiki.php" method="post"><input type="submit" name="action" value="process" /></form>
 <a href="<?php echo $logfile; ?>">raw report</a>
 <pre>
 <?php

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +10,6 @@ function prefs_feed_list()
 	return array(
 		'feed_default_version' => array(
 			'name' => tra('Default feed format'),
-            'description' => tra(''),
 			'type' => 'list',
 			'options' => array(
 				'5' => tra('ATOM 1.0'),
@@ -25,22 +24,19 @@ function prefs_feed_list()
 		// atom specific preferences
 		'feed_atom_author_name' => array(
 			'name' => tra('Feed author name'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '40',
 			'hint' => tra('This field is mandatory unless both feed author email and homepage are empty.'),
 			'default' => '',
 		),
 		'feed_atom_author_email' => array(
-			'name' => tra('Feed author email'),
-            'description' => tra(''),
+			'name' => tra('Feeed author email'),
 			'type' => 'text',
 			'size' => '40',
 			'default' => '',
 		),
 		'feed_atom_author_url' => array(
 			'name' => tra('Feed author homepage'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '40',
 			'default' => '',
@@ -71,7 +67,6 @@ function prefs_feed_list()
 		),
 		'feed_language' => array(
 			'name' => tra('Feed Language'),
-            'description' => tra('the default language for this feed'),
 			'type' => 'text',
 			'size' => '10',
 			'default' =>  'en-us',
@@ -79,13 +74,12 @@ function prefs_feed_list()
 		),
 		'feed_basic_auth' => array(
 			'name' => tra('RSS basic Authentication'),
-			'description' => tra('Propose basic HTTP authentication if the user has no permission to see the feed'),
+			'description' => tra('Propose basic http authentication if the user has no permission to see the feed'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'feed_cache_time' => array(
 			'name' => tra('Feed Caching time'),
-            'description' => tra('number of seconds to cache the feed for'),
 			'type' => 'text',
 			'size' => '5',
 			'filter' => 'digits',
@@ -228,7 +222,6 @@ function prefs_feed_list()
 		),
 		'feed_articles_max' => array(
 			'name' => tra('Maximum number of items to display'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 5,
 			'filter' => 'digits',
@@ -236,7 +229,6 @@ function prefs_feed_list()
 		),
 		'feed_blogs_max' => array(
 			'name' => tra('Maximum number of items to display'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 5,
 			'filter' => 'digits',
@@ -244,7 +236,6 @@ function prefs_feed_list()
 		),
 		'feed_blog_max' => array(
 			'name' => tra('Maximum number of items to display'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 5,
 			'filter' => 'digits',
@@ -252,7 +243,6 @@ function prefs_feed_list()
 		),
 		'feed_image_galleries_max' => array(
 			'name' => tra('Maximum number of items to display'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 5,
 			'filter' => 'digits',
@@ -260,7 +250,6 @@ function prefs_feed_list()
 		),
 		'feed_image_gallery_max' => array(
 			'name' => tra('Maximum number of items to display'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 5,
 			'filter' => 'digits',
@@ -268,7 +257,6 @@ function prefs_feed_list()
 		),
 		'feed_file_galleries_max' => array(
 			'name' => tra('Maximum number of items to display'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 5,
 			'filter' => 'digits',
@@ -276,7 +264,6 @@ function prefs_feed_list()
 		),
 		'feed_file_gallery_max' => array(
 			'name' => tra('Maximum number of items to display'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 5,
 			'filter' => 'digits',
@@ -284,7 +271,6 @@ function prefs_feed_list()
 		),
 		'feed_wiki_max' => array(
 			'name' => tra('Maximum number of items to display'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 5,
 			'filter' => 'digits',
@@ -292,7 +278,6 @@ function prefs_feed_list()
 		),
 		'feed_forums_max' => array(
 			'name' => tra('Maximum number of items to display'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 5,
 			'filter' => 'digits',
@@ -300,7 +285,6 @@ function prefs_feed_list()
 		),
 		'feed_forum_max' => array(
 			'name' => tra('Maximum number of items to display'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 5,
 			'filter' => 'digits',
@@ -308,7 +292,6 @@ function prefs_feed_list()
 		),
 		'feed_tracker_max' => array(
 			'name' => tra('Maximum number of items to display'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 5,
 			'filter' => 'digits',
@@ -316,7 +299,6 @@ function prefs_feed_list()
 		),
 		'feed_calendar_max' => array(
 			'name' => tra('Maximum number of items to display'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 5,
 			'filter' => 'digits',
@@ -324,7 +306,6 @@ function prefs_feed_list()
 		),
 		'feed_directories_max' => array(
 			'name' => tra('Maximum number of items to display'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 5,
 			'filter' => 'digits',
@@ -332,7 +313,6 @@ function prefs_feed_list()
 		),
 		'feed_shoutbox_max' => array(
 			'name' => tra('Maximum number of items to display'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 5,
 			'filter' => 'digits',
@@ -340,13 +320,11 @@ function prefs_feed_list()
 		),
 		'feed_articles_showAuthor' => array(
 			'name' => tra('Show Author'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'feed_blogs_showAuthor' => array(
 			'name' => tra('Show Author'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' => 'n',
 		),
@@ -357,255 +335,218 @@ function prefs_feed_list()
 		),
 		'feed_image_galleries_showAuthor' => array(
 			'name' => tra('Show Author'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'feed_image_gallery_showAuthor' => array(
 			'name' => tra('Show Author'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'feed_file_galleries_showAuthor' => array(
 			'name' => tra('Show Author'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'feed_file_gallery_showAuthor' => array(
 			'name' => tra('Show Author'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'feed_wiki_showAuthor' => array(
 			'name' => tra('Show Author'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' => 'n',		
 		),
 		'feed_forums_showAuthor' => array(
 			'name' => tra('Show Author'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'feed_forum_showAuthor' => array(
 			'name' => tra('Show Author'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'feed_tracker_showAuthor' => array(
 			'name' => tra('Show Author'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'feed_calendar_showAuthor' => array(
 			'name' => tra('Show Author'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'feed_directories_showAuthor' => array(
 			'name' => tra('Show Author'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'feed_shoutbox_showAuthor' => array(
 			'name' => tra('Show Author'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'feed_articles_homepage' => array(
 			'name' => tra('Homepage URL'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '60',
 			'default' => '',
 		),
 		'feed_blogs_homepage' => array(
 			'name' => tra('Homepage URL'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '60',
 			'default' => '',
 		),
 		'feed_blog_homepage' => array(
 			'name' => tra('Homepage URL'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '60',
 			'default' => '',
 		),
 		'feed_image_galleries_homepage' => array(
 			'name' => tra('Homepage URL'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '60',
 			'default' => '',
 		),
 		'feed_image_gallery_homepage' => array(
 			'name' => tra('Homepage URL'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '60',
 			'default' => '',
 		),
 		'feed_file_galleries_homepage' => array(
 			'name' => tra('Homepage URL'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '60',
 			'default' => '',
 		),
 		'feed_file_gallery_homepage' => array(
 			'name' => tra('Homepage URL'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '60',
 			'default' => '',
 		),
 		'feed_wiki_homepage' => array(
 			'name' => tra('Homepage URL'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '60',
 			'default' => '',
 		),
 		'feed_forum_homepage' => array(
 			'name' => tra('Homepage URL'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '60',
 			'default' => '',
 		),
 		'feed_tracker_homepage' => array(
 			'name' => tra('Homepage URL'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '60',
 			'default' => '',
 		),
 		'feed_calendar_homepage' => array(
 			'name' => tra('Homepage URL'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '60',
 			'default' => '',
 		),
 		'feed_directories_homepage' => array(
 			'name' => tra('Homepage URL'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '60',
 			'default' => '',
 		),
 		'feed_shoutbox_homepage' => array(
 			'name' => tra('Homepage URL'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '60',
 			'default' => '',
 		),
 		'feed_articles_title' => array(
 			'name' => tra('Title'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '80',
 			'default' => tra('Tiki RSS feed for articles'),
 		),
 		'feed_blogs_title' => array(
 			'name' => tra('Title'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '80',
 			'default' => tra('Tiki RSS feed for weblogs'),
 		),
 		'feed_blog_title' => array(
 			'name' => tra('Title'),
-            'description' => tra('Title to be prepended to the blog title for all blogs. If this field is empty only the blog title will be used.'),
+			'desc' => tra('Title to be prepended to the blog title for all blogs. If this field is empty only the blog title will be used.'),
 			'type' => 'text',
 			'size' => '80',
 			'default' => '',
 		),
 		'feed_image_galleries_title' => array(
 			'name' => tra('Title'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '80',
 			'default' => tra('Tiki RSS feed for image galleries'),
 		),
 		'feed_image_gallery_title' => array(
 			'name' => tra('Title'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '80',
 			'default' => tra('Tiki RSS feed for the image gallery: '),
 		),
 		'feed_file_galleries_title' => array(
 			'name' => tra('Title'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '80',
 			'default' => tra('Tiki RSS feed for file galleries'),
 		),
 		'feed_file_gallery_title' => array(
 			'name' => tra('Title'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '80',
 			'default' => tra('Tiki RSS feed for the file gallery: '),
 		),
 		'feed_wiki_title' => array(
 			'name' => tra('Title'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '80',
 			'default' => tra('Tiki RSS feed for the wiki pages'),
 		),
 		'feed_forums_title' => array(
 			'name' => tra('Title'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '80',
 			'default' => tra('Tiki RSS feed for forums'),
 		),
 		'feed_forum_title' => array(
 			'name' => tra('Title'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '80',
 			'default' => tra('Tiki RSS feed for forum: '),
 		),
 		'feed_tracker_title' => array(
 			'name' => tra('Title'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '80',
 			'default' => tra('Tiki RSS feed for individual trackers: '),
 		),
 		'feed_calendar_title' => array(
 			'name' => tra('Title'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '80',
 			'default' => tra('Tiki RSS feed for calendars'),
 		),
 		'feed_directories_title' => array(
 			'name' => tra('Title'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '80',
 			'default' => tra('Tiki RSS feed for directory sites'),
 		),
 		'feed_shoutbox_title' => array(
 			'name' => tra('Title'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '80',
 			'default' => tra('Tiki RSS feed for shoutbox messages'),
@@ -707,15 +648,6 @@ function prefs_feed_list()
 			'type' => 'textarea',
 			'size' => 2,
 			'default' => tra('Last shoutbox messages.'),
-		),
-		'feed_tracker_labels' => array(
-			'name' => tra('Tracker labels'),
-			'description' => tra('Include tracker field labels in the RSS output'),
-			'type' => 'flag',
-			'dependencies' => array(
-				'feature_trackers',
-			),
-			'default' => 'y',
 		),
 	);
 }

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_category_transition_info()
 {
 	return array(
@@ -25,19 +22,11 @@ function module_category_transition_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_category_transition($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
-	$modlib = TikiLib::lib('mod');
+	global $smarty, $cat_type, $cat_objid, $modlib;
 
-	if ($object = current_object()) {
-		$cat_type = $object['type'];
-		$cat_objid = $object['object'];
-
+	if ($cat_type && $cat_objid) {
 		$smarty->assign('objType', $cat_type);
 		$smarty->assign('objId', $cat_objid);
 
@@ -56,14 +45,12 @@ function module_category_transition($mod_reference, $module_params)
 	} else if ($modlib->is_admin_mode(true)) {	// add a dummy transition to display on the module admin page
 
 		$smarty->assign(
-			'mod_transitions',
-			array(
-				array(
-					'enabled' => true,
-					'transitionId' => 0,
-					'name' => tra('Example Transition')
-				)
-			)
+						'mod_transitions',
+						array(array(
+								'enabled' => true,
+								'transitionId' => 0,
+								'name' => tra('Example Transition')
+						))
 		);
 	}
 }

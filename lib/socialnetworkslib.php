@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +10,9 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	header('location: index.php');
 	exit;
 }
-$logslib = TikiLib::lib('logs');
+require_once ('lib/core/Zend/Oauth/Consumer.php');
+require_once ('lib/core/Zend/Service/Twitter.php');
+require_once ('lib/logs/logslib.php');
 
 
 /**
@@ -78,7 +80,6 @@ class SocialNetworksLib extends LogsLib
 
 
 		$this->options['callbackUrl'] = $this->getURL();
-		$this->options['siteUrl'] = 'https://api.twitter.com/oauth';
 		$this->options['consumerKey'] = $prefs['socialnetworks_twitter_consumer_key'];
 		$this->options['consumerSecret'] = $prefs['socialnetworks_twitter_consumer_secret'];
 
@@ -87,7 +88,7 @@ class SocialNetworksLib extends LogsLib
 			$token = $consumer->getRequestToken();
 			$_SESSION['TWITTER_REQUEST_TOKEN'] = serialize($token);
 			$consumer->redirect();
-		} catch (Zend_Oauth_Exception $e) {
+		} catch (Zend_Http_Client_Exception $e) {
 			return false;
 		}
 	}
@@ -104,8 +105,8 @@ class SocialNetworksLib extends LogsLib
 	{
 		global $prefs;
 
-		if ($prefs['socialnetworks_twitter_consumer_key'] == ''
-				or $prefs['socialnetworks_twitter_consumer_secret'] == ''
+		if ($prefs['socialnetworks_twitter_consumer_key'] == '' 
+				or $prefs['socialnetworks_twitter_consumer_secret'] == '' 
 				or !isset($_SESSION['TWITTER_REQUEST_TOKEN'])
 		) {
 			return false;
@@ -159,9 +160,6 @@ class SocialNetworksLib extends LogsLib
 		if ($prefs['socialnetworks_facebook_manage_pages'] == 'y') {
 			$scopes[] = 'manage_pages';
 		}
-		if ($prefs['socialnetworks_facebook_email'] === 'y') {
-			$scopes[] = 'email';
-		}
 		$scope = implode(',', $scopes);
 		$url = $this->getURL();
 		if (strpos($url, '?') != 0) {
@@ -184,8 +182,7 @@ class SocialNetworksLib extends LogsLib
 	 */
 	function getFacebookAccessToken()
 	{
-		global $prefs, $user;
-		$userlib = TikiLib::lib('user');
+		global $prefs, $user, $userlib;
 		if ($prefs['socialnetworks_facebook_application_id'] == '' or $prefs['socialnetworks_facebook_application_secr'] == '') {
 			return false;
 		}
@@ -225,7 +222,6 @@ class SocialNetworksLib extends LogsLib
 			if (empty($fb_profile->id)) {
 				return false;
 			}
-			// echo '<!-- $ret=' . var_export($fb_profile, true) . '-->';
 			if (!$user) {
 				if ($prefs['socialnetworks_facebook_login'] != 'y') {
 					return false;
@@ -235,19 +231,14 @@ class SocialNetworksLib extends LogsLib
 					$user = $local_user;
 				} elseif ($prefs['socialnetworks_facebook_autocreateuser'] == 'y') {
 					$randompass = $userlib->genPass();
-					$email = $prefs['socialnetworks_facebook_email'] === 'y' ? $fb_profile->email : '';
-					if ($prefs['login_is_email'] == 'y' && $email) {
-						$user = $email;
-					} else {
-						$user = 'fb_' . $fb_profile->id;
-					}
-					$userlib->add_user($user, $randompass, $email);
+					$user = 'fb_' . $fb_profile->id;
+					$userlib->add_user($user, $randompass, '');
 					$this->set_user_preference($user, 'realName', $fb_profile->name);
 					if ($prefs['socialnetworks_facebook_firstloginpopup'] == 'y') {
 						$this->set_user_preference($user, 'socialnetworks_user_firstlogin', 'y');
 					}
 				} else {
-					$smarty = TikiLib::lib('smarty');
+					global $smarty;
 					$smarty->assign('errortype', 'login');
 					$smarty->assign('msg', tra('You need to link your local account to Facebook before you can login using it'));
 					$smarty->display('error.tpl');
@@ -258,11 +249,10 @@ class SocialNetworksLib extends LogsLib
 				$userlib->update_expired_groups();
 				$this->set_user_preference($user, 'facebook_id', $fb_profile->id);
 				$this->set_user_preference($user, 'facebook_token', $access_token);
-				$userlib->update_lastlogin($user);
 				header('Location: tiki-index.php');
 				die;
 			} else {
-				$this->set_user_preference($user, 'facebook_id', $fb_profile->id);
+				$this->set_user_preference($user, 'facebook_id', $fb_profile->id);			
 				$this->set_user_preference($user, 'facebook_token', $access_token);
 			}
 			return true;
@@ -276,12 +266,12 @@ class SocialNetworksLib extends LogsLib
 	 *
 	 * @param string	$message	Message to send
 	 * @param string	$user		UserId of the user to send the message for
-	 * @param bool		$cutMessage	Should the message be cut if it is longer than 140 characters,
+	 * @param bool		$cutMessage	Should the message be cut if it is longer than 140 characters, 
 	 *								if set to false, an error will be returned if the message is longer than 140 characters
 	 *
-	 * @return int	-1 if the user did not authorize the site with twitter,
-	 *							-2, if the message is longer than 140 characters,
-	 *							a negative number corresponding to the HTTP response codes from twitter
+	 * @return int	-1 if the user did not authorize the site with twitter, 
+	 *							-2, if the message is longer than 140 characters, 
+	 *							a negative number corresponding to the HTTP response codes from twitter 
 	 *							(http://dev.twitter.com/pages/streaming_api_response_codes)
 	 *  							or a positive tweet id of the message
 	 */
@@ -302,34 +292,33 @@ class SocialNetworksLib extends LogsLib
 			}
 		}
 		$token = unserialize($token);
+		$token = (object)$token;
 
 		$this->options['callbackUrl'] = $this->getURL();
 		$this->options['consumerKey'] = $prefs['socialnetworks_twitter_consumer_key'];
 		$this->options['consumerSecret'] = $prefs['socialnetworks_twitter_consumer_secret'];
-		$twitter = new Zend_Service_Twitter(
-			array(
-				'oauthOptions' => array(
-					'consumerKey' => $prefs['socialnetworks_twitter_consumer_key'],
-					'consumerSecret' => $prefs['socialnetworks_twitter_consumer_secret'],
-				),
-				'accessToken' => $token
-			)
-		);
+		$client = $token->getHttpClient($this->options);
+		$clientconfig['timeout'] = 60; // allow a longer timeout for twitter makes sense
+		$client->setConfig($clientconfig);		
+		$twitter = new Zend_Service_Twitter();
+		$twitter->setLocalHttpClient($client);
 
 		try {
-			$response = $twitter->statusesUpdate($message);
-		} catch (Zend_Service_Twitter_Exception $e) {
+			$response = $twitter->status->update($message);
+		} catch (Zend_Http_Client_Exception $e) {
 			$this->add_log('tweet', 'twitter error ' . $e->getMessage());
 			return -($e->getCode());
 		}
 
-		if (!$response->isSuccess()) {
-			$errors = $response->getErrors();
-			$this->add_log('tweet', 'twitter response: ' . $errors[0]->message . ' - Code: ' . $errors[0]->code);
-			return -$errors['code'];
+		$status = $response->getStatus();
+
+		if ($status != 200) {
+			$this->add_log('tweet', 'twitter response ' . $status);
+			return -$status;
 		} else {
-			$id = $response->toValue();
-			return $id->id_str;
+			$id = (string)$response->id;
+			$this->add_log('tweet', 'id: ' . $id);
+			return $id;
 		}
 	}
 
@@ -349,21 +338,16 @@ class SocialNetworksLib extends LogsLib
 			return false;
 		}
 		$token = unserialize($token);
+		$token = (object)$token;
 		$this->options['callbackUrl'] = $this->getURL();
 		$this->options['consumerKey'] = $prefs['socialnetworks_twitter_consumer_key'];
 		$this->options['consumerSecret'] = $prefs['socialnetworks_twitter_consumer_secret'];
-		$twitter = new Zend_Service_Twitter(
-			array(
-				'oauthOptions' => array(
-					'consumerKey' => $prefs['socialnetworks_twitter_consumer_key'],
-					'consumerSecret' => $prefs['socialnetworks_twitter_consumer_secret'],
-				),
-				'accessToken' => $token
-			)
-		);
+		$client = $token->getHttpClient($this->options);
+		$twitter = new Zend_Service_Twitter();
+		$twitter->setLocalHttpClient($client);
 		try {
-			$response = $twitter->statusesDestroy($id);
-		} catch(Zend_Http_Client_Exception $e)	{
+			$response = $twitter->status->destroy($id);
+		} catch(Zend_Http_Client_Adapter_Exception $e)	{
 			return false;
 		}
 		return true;
@@ -455,7 +439,7 @@ class SocialNetworksLib extends LogsLib
 				$params['name'] = $text;
 			}
 			if ($caption != '') {
-				$params['caption'] = $caption;
+				$params['caption'] = $caption;	
 			}
 			$params['description'] = $message;
 		} else {
@@ -527,7 +511,7 @@ class SocialNetworksLib extends LogsLib
 			return false;
 		}
 		return $response->getBody();
-	}
+	}	
 
 	/**
 	 * Asks bit.ly to shorten an url for us
@@ -545,7 +529,7 @@ class SocialNetworksLib extends LogsLib
 			if ($url == $data['longurl']) {
 				return $data['shorturl'];
 			}
-		}
+		}		
 
 		$params = array(
 				'version' => '2.0.1',
@@ -568,117 +552,6 @@ class SocialNetworksLib extends LogsLib
 		$this->query($query, array($user, $url, $url, 'bit.ly', $shorturl));
 
 		return $shorturl;
-	}
-
-	/**
-	 * Get Timeline off Twitter
-	 * @param  string	$user		Tiki username to get timeline for
-	 * @param  string	$timelineType	Timeline to get: public/friends - Default: public
-	 * @return string|int			-1 if the user did not authorize the site with twitter, a negative number corresponding to the HTTP response codes from twitter (https://dev.twitter.com/docs/streaming-api/response-codes) or the requested timeline (json encoded object)
-	 */
-	function getTwitterTimeline($user, $timelineType = 'public' )
-	{
-		global $prefs;
-		$token=$this->get_user_preference($user, 'twitter_token', '');
-		if ($token=='') {
-			$this->add_log('tweet', 'user not registered with twitter');
-			return -1;
-		}
-
-		$token = unserialize($token);
-
-		$twitter = new Zend_Service_Twitter(
-			array(
-				'oauthOptions' => array(
-					'consumerKey' => $prefs['socialnetworks_twitter_consumer_key'],
-					'consumerSecret' => $prefs['socialnetworks_twitter_consumer_secret'],
-				),
-				'accessToken' => $token
-			)
-		);
-
-		if ($timelineType=='friends') {
-			$response = $twitter->statusesHomeTimeline();
-		} else {
-			$response = $twitter->statusesUserTimeline();
-		}
-
-		if (!$response->isSuccess()) {
-			$errors = $response->getErrors();
-			$this->add_log('tweet', 'twitter response: ' . $errors[0]->message . ' - Code: ' . $errors[0]->code);
-			return -$errors['code'];
-		} else {
-			return $response->toValue();
-		}
-	}
-
-	/**
-	 *
-	 * get the public Facebook timeline of a user
-	 *
-	 * @param string	$user		Tiki username to get facebook wall for
-	 * @param bool		$addtoken	should the access token be added to the parameters if the calling function did not pass this parameter
-	 *
-	 * @return		string|bool	false on error, JSON encoded Facebook response on success
-	 */
-	function facebookGetWall($user, $addtoken=true)
-	{
-		global $prefs;
-		if (!$this->facebookRegistered()) {
-			$this->add_log('facebookGraph', 'application not set up');
-			return false;
-		}
-		if ($addtoken) {
-			$token=$this->get_user_preference($user, 'facebook_token', '');
-			// expires will make the token fail
-			$token = preg_replace('/&expires=(\d)*/', '', $token);
-			$token=urlencode($token);
-			$getdata='?'.urlencode('access_token').'='.$token;
-			if ($token=='') {
-				$this->add_log('facebookGraph', 'user not registered with facebook');
-				return -1;
-			}
-
-		}
-
-			$request="GET /me/feed".$getdata." HTTP/1.1\r\n".
-			 "Host: graph.facebook.com\r\n".
-			 "Accept:*/*\r\n".
-			 "Accept-Charset:ISO-8859-1,utf-8;q=0.7,*;q=0.3\r\n".
-			 "Expect: 100-continue\r\n".
-			 "Connection: close\r\n\r\n";
-
-  		$fp = fsockopen("ssl://graph.facebook.com", 443);
-  		if ($fp===false) {
-			$this->add_log('facebookGraph', "can't connect");
-			return false;
-  		} else {
-			//stream_set_timeout($fp, 0, 5000);
-	  		fputs($fp, $request);
-	  		$ret='';
-			while (!feof($fp)) {
-				$ret .= fgets($fp, 128);
-	  		}
-			fclose($fp);
-  		}
-		$ret=preg_split('/(\r\n\r\n|\r\r|\n\n)/', $ret, 2);
-		$result=json_decode($ret[1]);
-		foreach ($result->data as $key=>$value) {
-			if (isset($result->data[$key]->message)) {
-				$feed[$key]["message"]=$result->data[$key]->message;
-				$feed[$key]["type"]="message";
-			} else {
-				$feed[$key]["message"]=$result->data[$key]->story;
-				$feed[$key]["type"]="story";
-			}
-			$feed[$key]["fromName"]=$result->data[$key]->from->name;
-			$feed[$key]["fromId"]=$result->data[$key]->from->id;
-			$feed[$key]["created_time"]=$result->data[$key]->created_time;
-			$id=$result->data[$key]->id;
-			$id=str_replace("_", "/posts/", $id);
-			$feed[$key]["link"]="https://www.facebook.com/".$id;
-		}
-		return $feed;
 	}
 }
 

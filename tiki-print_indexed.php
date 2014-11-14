@@ -1,15 +1,12 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once 'tiki-setup.php';
-$categlib = TikiLib::lib('categ');
+require_once 'lib/categories/categlib.php';
 
 $access->check_feature('feature_print_indexed');
 
@@ -31,34 +28,23 @@ if (! isset($_GET['list']) || ! in_array($_GET['list'], array('categorylist', 'g
 
 
 // Classes to be extracted at some later point {{{
-/**
- *
- */
 class ObjectList // {{{
 {
 	private $lastIndex = 0;
 	private $customIndexes = array();
 	private $renderers = array();
 
-    /**
-     * @param $indexKey
-     */
-    function addCustomIndex($indexKey)
+	function addCustomIndex($indexKey)
 	{
 		$this->customIndexes[ $indexKey ] = array();
 	}
 
-    /**
-     * @param $type
-     * @param $object
-     * @param $options
-     */
-    function add( $type, $object, $options )
+	function add( $type, $object, $options )
 	{
 		if (! isset($dataIndex[$type])) {
 			$this->dataIndex[$type] = array();
 		}
-
+		
 		switch($type) {
 			case 'wiki page':
 				if (array_key_exists('languages', $options)) {
@@ -66,7 +52,7 @@ class ObjectList // {{{
 				} else {
 					$renderer = new ObjectRenderer_Wiki($type, $object, $options);
 				}
-
+			
 			    break;
 
 			default:
@@ -77,7 +63,7 @@ class ObjectList // {{{
 		if ($renderer && $renderer->isValid()) {
 			$index = ++$this->lastIndex;
 			$this->renderers[$index] = $renderer;
-
+			
 			foreach ($this->customIndexes as $key => & $data) {
 				if ($prop = $renderer->getIndexValue($key)) {
 					$prop = strtolower($prop);
@@ -99,12 +85,7 @@ class ObjectList // {{{
 		}
 	}
 
-    /**
-     * @param $smarty
-     * @param $key
-     * @param $options
-     */
-    function render($smarty, $key, $options)
+	function render($smarty, $key, $options)
 	{
 		if (is_null($key)) {
 			foreach ($this->renderers as $index => $renderer) {
@@ -125,60 +106,34 @@ class ObjectList // {{{
 	}
 } // }}}
 
-/**
- *
- */
 abstract class ObjectRenderer // {{{
 {
 	protected $objectType;
 	protected $objectId;
 
-    /**
-     * @param $objectType
-     * @param $objectId
-     */
-    function __construct($objectType, $objectId)
+	function __construct($objectType, $objectId)
 	{
 		$this->objectType = $objectType;
 		$this->objectId = $objectId;
 	}
 
-    /**
-     * @param $smarty
-     * @param $options
-     */
-    function render($smarty, $options)
+	function render($smarty, $options)
 	{
 		$options['decorator_template'] = 'print/print-decorator_' . $options['decorator'] . '.tpl';
 		$smarty->assign('body', $this->_render($smarty, $options));
 		$smarty->display($options['decorator_template']);
 	}
 
-    /**
-     * @return bool
-     */
-    function isValid()
+	function isValid()
 	{
 		return true;
 	}
 
-    /**
-     * @param $smarty
-     * @param $template
-     * @return mixed
-     */
-    abstract function _render($smarty, $template);
+	abstract function _render($smarty, $template);
 
-    /**
-     * @param $key
-     * @return mixed
-     */
-    abstract function getIndexValue($key);
+	abstract function getIndexValue($key);
 } // }}}
 
-/**
- *
- */
 class ObjectRenderer_TrackerItem extends ObjectRenderer // {{{
 {
 	private static $trackers = array();
@@ -186,16 +141,12 @@ class ObjectRenderer_TrackerItem extends ObjectRenderer // {{{
 	private $tracker;
 	private $info;
 
-    /**
-     * @param $type
-     * @param $object
-     * @param array $options
-     */
-    function __construct($type, $object, $options = array())
+	function __construct($type, $object, $options = array())
 	{
 		parent::__construct($type, $object, $options);
+		global $trklib;
 
-		$trklib = TikiLib::lib('trk');
+		require_once 'lib/trackers/trackerlib.php';
 
 		$info = $trklib->get_tracker_item($object);
 		$trackerId = $info['trackerId'];
@@ -203,7 +154,7 @@ class ObjectRenderer_TrackerItem extends ObjectRenderer // {{{
 		if (! isset(self::$trackers[$trackerId])) {
 			if (self::$trackers[$trackerId] = $trklib->get_tracker($trackerId)) {
 				$fields = $trklib->list_tracker_fields($trackerId);
-
+				
 				self::$trackers[$trackerId]['fields'] = $fields['data'];
 			} else {
 				$this->valid = false;
@@ -220,20 +171,12 @@ class ObjectRenderer_TrackerItem extends ObjectRenderer // {{{
 		}
 	}
 
-    /**
-     * @return bool
-     */
-    function isValid()
+	function isValid()
 	{
 		return $this->valid;
 	}
 
-    /**
-     * @param $smarty
-     * @param $options
-     * @return mixed
-     */
-    function _render($smarty, $options)
+	function _render($smarty, $options)
 	{
 		$smarty->assign('title', $this->getTitle());
 		$smarty->assign('tracker', $this->tracker);
@@ -243,11 +186,7 @@ class ObjectRenderer_TrackerItem extends ObjectRenderer // {{{
 		return $smarty->fetch($options['display_template']);
 	}
 
-    /**
-     * @param $key
-     * @return mixed
-     */
-    function getIndexValue($key)
+	function getIndexValue($key)
 	{
 		switch( $key ) {
 			case 'title':
@@ -255,10 +194,7 @@ class ObjectRenderer_TrackerItem extends ObjectRenderer // {{{
 		}
 	}
 
-    /**
-     * @return mixed
-     */
-    function getTitle()
+	function getTitle()
 	{
 		foreach ($this->tracker['fields'] as $field) {
 			if ($field['isMain'] == 'y') {
@@ -268,18 +204,11 @@ class ObjectRenderer_TrackerItem extends ObjectRenderer // {{{
 	}
 } // }}}
 
-/**
- *
- */
 class ObjectRenderer_Wiki extends ObjectRenderer // {{{
 {
 	private $info;
 
-    /**
-     * @param $objectType
-     * @param $objectId
-     */
-    function __construct($objectType, $objectId)
+	function __construct($objectType, $objectId)
 	{
 		parent::__construct($objectType, $objectId);
 		global $tikilib;
@@ -287,22 +216,17 @@ class ObjectRenderer_Wiki extends ObjectRenderer // {{{
 		$info = $tikilib->get_page_info($objectId);
 
 		$info['parsed'] = $tikilib->parse_data(
-			$info['data'],
-			array(
-				'is_html' => $info['is_html'],
-				'print' => 'y',
-			)
+						$info['data'], 
+						array(
+							'is_html' => $info['is_html'],
+							'print' => 'y',
+						)
 		);
 
 		$this->info = $info;
 	}
 
-    /**
-     * @param $smarty
-     * @param $options
-     * @return mixed
-     */
-    function _render($smarty, $options)
+	function _render($smarty, $options)
 	{
 		$options['display_template'] = 'print/print-' . $options['display'] . '_wiki.tpl';
 		$smarty->assign('info', $this->info);
@@ -310,11 +234,7 @@ class ObjectRenderer_Wiki extends ObjectRenderer // {{{
 		return $smarty->fetch($options['display_template']);
 	}
 
-    /**
-     * @param $key
-     * @return mixed
-     */
-    function getIndexValue($key)
+	function getIndexValue($key)
 	{
 		switch ($key) {
 			case 'title':
@@ -323,23 +243,14 @@ class ObjectRenderer_Wiki extends ObjectRenderer // {{{
 	}
 } // }}}
 
-/**
- *
- */
 class ObjectRenderer_MultilingualWiki extends ObjectRenderer // {{{
 {
 	private $renderers = array();
 
-    /**
-     * @param $type
-     * @param $object
-     * @param array $options
-     */
-    function __construct($type, $object, $options = array())
+	function __construct($type, $object, $options = array())
 	{
 		parent::__construct($type, $object, $options);
-		$multilinguallib = TikiLib::lib('multilingual');
-		$tikilib = TikiLib::lib('tiki');
+		global $multilinguallib, $tikilib; require_once 'lib/multilingual/multilinguallib.php';
 
 		$languages = $options['languages'];
 		$this->renderers = array_fill_keys($languages, null);
@@ -355,12 +266,7 @@ class ObjectRenderer_MultilingualWiki extends ObjectRenderer // {{{
 		}
 	}
 
-    /**
-     * @param $smarty
-     * @param $options
-     * @return string
-     */
-    function _render($smarty, $options)
+	function _render($smarty, $options)
 	{
 		$out = '';
 
@@ -378,11 +284,7 @@ class ObjectRenderer_MultilingualWiki extends ObjectRenderer // {{{
 		return $out;
 	}
 
-    /**
-     * @param $key
-     * @return mixed
-     */
-    function getIndexValue($key)
+	function getIndexValue($key)
 	{
 		if (strpos($key, 'lang_') === 0) {
 			list( $key, $lang ) = explode('_', substr($key, 5), 2);
@@ -427,7 +329,7 @@ switch ($_GET['list']) {
 				$objectList->add($type, $item, array());
 			}
 		}
-		break;
+					break;
 
 	case 'glossary':
 		if ( isset( $_REQUEST['languages'] ) ) {
@@ -470,7 +372,7 @@ switch ($_GET['list']) {
 			$objectList->add('wiki page', $info['pageName'], array('languages' => $languages));
 		}
 
-		break;
+					break;
 }
 
 $objectList->finalize();
@@ -487,15 +389,15 @@ foreach ($indexPages as $page) {
 
 // Display all data
 $objectList->render(
-	$smarty,
-	null,
-	array(
-		'decorator' => 'indexed',
-		'display' => 'object',
-		'comments' => $_REQUEST['comments'] == 'y',
-	)
+				$smarty, 
+				null, 
+				array(
+					'decorator' => 'indexed',
+					'display' => 'object',
+					'comments' => $_REQUEST['comments'] == 'y',
+				) 
 );
-
+ 
 $smarty->display('print/print-page_footer.tpl');
 $smarty->display('footer.tpl');
 

@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -49,24 +46,35 @@ foreach ( $matches as $match ) {
 	if ( $_POST['index'] == $count ) {
 		//by using content of "~same~", it will not replace the body that is there
 		$content = ($content == "~same~" ? $match->getBody() : $content);
+		$hasBody = !empty($content) && !ctype_space($content);
 		$params = $match->getArguments();
 
 		// If parameters are provided, rebuild the parameter line
 		if ( isset( $_POST['params'] ) && is_array($_POST['params']) ) {
 			// $values was relaxed to accept any argument rather than those defined up front 
 			// in the plugin's parameter list. This facilitates the use of modules as plugins.
-			$params = $_POST['params'];
+			$values = $_POST['params'];
+
+			$parts = array();
+			foreach ( $values as $key => $value ) {
+				if ($value || $value === '0') {
+					$parts[] = "$key=\"" . str_replace('"', "\\\"", $value) . '"';
+				}
+			}
+
+			$params = implode(' ', $parts);
 		}
 
-		$match->replaceWithPlugin($plugin, $params, $content);
-
-		if ($prefs['wysiwyg_htmltowiki'] == 'y' && $plugin === 'wysiwyg') {
-			$parsed = TikiLib::lib('edit')->parseToWiki($matches->getText());
+		// Replace the content
+		if ( $hasBody ) {
+			$content = "{{$type}($params)}$content{{$type}}";
 		} else {
-			$parsed = $matches->getText();
+			$content = "{{$plugin} $params}";
 		}
 
-		$tikilib->update_page($page, $parsed, $_POST['message'], $user, $tikilib->get_ip_address());
+		$match->replaceWith($content);
+
+		$tikilib->update_page($page, $matches->getText(), $_POST['message'], $user, $tikilib->get_ip_address());
 		break;
 	}
 }

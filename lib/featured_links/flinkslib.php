@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,20 +11,10 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- *
- */
 class FlinksLib extends TikiLib
 {
 
-    /**
-     * @param $url
-     * @param $title
-     * @param string $description
-     * @param int $position
-     * @param string $type
-     */
-    function add_featured_link($url, $title, $description = '', $position = 0, $type = 'f')
+	function add_featured_link($url, $title, $description = '', $position = 0, $type = 'f')
 	{
 		$query = "delete from `tiki_featured_links` where `url`=?";
 		$result = $this->query($query, array($url), -1, -1, false);
@@ -32,33 +22,20 @@ class FlinksLib extends TikiLib
 		$result = $this->query($query, array($url,$title,$description,$position,0,$type));
 	}
 
-    /**
-     * @param $url
-     */
-    function remove_featured_link($url)
+	function remove_featured_link($url)
 	{
 		$query = "delete from `tiki_featured_links` where `url`=?";
 		$result = $this->query($query, array($url));
 	}
 
-    /**
-     * @param $url
-     * @param $title
-     * @param $description
-     * @param int $position
-     * @param string $type
-     */
-    function update_featured_link($url, $title, $description, $position = 0, $type = 'f')
+	function update_featured_link($url, $title, $description, $position = 0, $type = 'f')
 	{
 		$query = "update `tiki_featured_links` set `title`=?, `type`=?, `description`=?, `position`=? where `url`=?";
 
 		$result = $this->query($query, array($title,$type,$description,$position,$url));
 	}
 
-    /**
-     * @param $url
-     */
-    function add_featured_link_hit($url)
+	function add_featured_link_hit($url)
 	{
 		global $prefs, $user;
 
@@ -68,11 +45,7 @@ class FlinksLib extends TikiLib
 		}
 	}
 
-    /**
-     * @param $url
-     * @return bool
-     */
-    function get_featured_link($url)
+	function get_featured_link($url)
 	{
 		$query = "select * from `tiki_featured_links` where `url`=?";
 
@@ -85,10 +58,7 @@ class FlinksLib extends TikiLib
 		return $res;
 	}
 
-    /**
-     * @return bool
-     */
-    function generate_featured_links_positions()
+	function generate_featured_links_positions()
 	{
 		$query = "select `url` from `tiki_featured_links` order by `hits` desc";
 		$result = $this->query($query, array());

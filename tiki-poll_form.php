@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +7,11 @@
 
 $section = 'poll';
 require_once ('tiki-setup.php');
-$polllib = TikiLib::lib('poll');
+require_once ('lib/tikilib.php'); // httpScheme()
+include_once ('lib/polls/polllib.php');
+if (!isset($polllib)) {
+	$polllib = new PollLib;
+}
 $access->check_feature('feature_polls');
 $access->check_permission('tiki_p_vote_poll');
 if (empty($_REQUEST["pollId"])) {

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,6 +9,9 @@
  *  Class that adds LDAP Authentication to Tiki and aids Tiki to get User/Group Information
  *  from a LDAP directory
  */
+
+// class uses Pears Net_LDAP2
+require_once ('Net/LDAP2.php');
 
 
 class TikiLdapLib
@@ -59,10 +62,10 @@ class TikiLdapLib
 	public function __construct($options)
 	{
 		// debug setting
-		$logslib = TikiLib::lib('logs');
+		global $logslib;
 		if (isset($options['debug']) && ($options['debug']===true || $options['debug']=='y' )&& ($logslib instanceof LogsLib)) {
 			$this->options['debug'] = true;
-			$this->logslib = $logslib;
+			$this->logslib = &$logslib;
 		}
 		// Configure the connection
 
@@ -129,10 +132,10 @@ class TikiLdapLib
 				case 'one':
 				case 'base':
 					$this->options['scope'] = $options['scope'];
-					break;
+								break;
 
 				default:
-					break;
+								break;
 			}
 		}
 
@@ -144,10 +147,10 @@ class TikiLdapLib
 				case 'plain':
 				case 'explicit':
 					$this->options['bind_type'] = $options['bind_type'];
-					break;
+								break;
 
 				default:
-					break;
+								break;
 			}
 		}
 	}
@@ -192,28 +195,28 @@ class TikiLdapLib
 				}
 				// set referrals to 0 to avoid LDAP_OPERATIONS_ERROR
 				$this->options['options']['LDAP_OPT_REFERRALS'] = 0;
-				break;
+							break;
 
 			case 'plain': // plain username
 				$this->options['binddn'] = $user;
-				break;
+							break;
 
 			case 'full':
 				$this->options['binddn'] = $this->user_dn($user);
-				break;
+							break;
 
 			case 'ol': // openldap
 				$this->options['binddn'] = 'cn=' . $user . ',' . $prefs['auth_ldap_basedn'];
-				break;
+							break;
 
 			case 'default':
 				// Anonymous binding
 				$this->options['binddn'] = '';
 				$this->options['bindpw'] = '';
-				break;
+							break;
 
 			case 'explicit':
-				break;
+							break;
 
 			default:
 				$this->add_log('ldap', 'Error: Invalid "bind_type" value "' . $this->options['bind_type'] . '".');
@@ -221,8 +224,8 @@ class TikiLdapLib
 		}
 
 		$this->add_log(
-			'ldap',
-			'Connect Host: ' . implode($this->options['host']) . '. Binddn: '. $this->options['binddn'] . ' at line ' . __LINE__ . ' in ' . __FILE__
+						'ldap',
+						'Connect Host: ' . implode($this->options['host']) . '. Binddn: '. $this->options['binddn'] . ' at line ' . __LINE__ . ' in ' . __FILE__
 		);
 
 		//create options array to handle it to Net_LDAP2
@@ -406,9 +409,9 @@ class TikiLdapLib
 		}
 
 		$this->add_log(
-			'ldap',
-			'Searching for group entries with filter: ' . $filter->asString() . ' base ' .
-			$this->groupbase_dn() . ' at line ' . __LINE__ . ' in ' . __FILE__
+						'ldap', 
+						'Searching for group entries with filter: ' . $filter->asString() . ' base ' . 
+						$this->groupbase_dn() . ' at line ' . __LINE__ . ' in ' . __FILE__
 		);
 
 		$searchoptions = array('scope' => $this->options['scope']);
@@ -489,7 +492,7 @@ class TikiLdapLib
 	}
 
 	/**
-	 * Return the value of the attribute past in param
+	 * Return the value of the attribue past in param
 	 * @param string $name The name of the attribute
 	 * @return mixed
 	 * @throw Exception

@@ -6,18 +6,17 @@
 			{foreach key=k item=i from=$modcatlist}{* Smarty hack to access $modcatlist's first key. This should only access one element. *}
 				{if $modcatlist[$k].incat eq 'n'}
 					{capture name='title'}{tr}Assign into category:{/tr} {tr}{$modcatlist[$k].name|escape}{/tr}{/capture}
-					{self_link modcatid=$modcatid modcatchange=$k _title=$smarty.capture.title}<img src="{$module_params.imgUrlNotIn}">{/self_link}
+					{self_link modcatid=$modcatid modcatchange=$k _title=$smarty.capture.title}<img src="{$module_params.imgUrlNotIn}" />{/self_link}
 				{else}
 					{capture name='title'}{tr}Unassign category:{/tr} {tr}{$modcatlist[$k].name|escape}{/tr}{/capture}
-					{self_link remove=$k _title=$smarty.capture.title}<img src="{$module_params.imgUrlIn}">{/self_link}
+					{self_link remove=$k _title=$smarty.capture.title}<img src="{$module_params.imgUrlIn}" />{/self_link}
 				{/if}
 			{/foreach}
 		{else}
 
 		{if $detailed eq 'y'}
-
-            <div class="table-responsive">
-			<table class="table normal">
+			{cycle values="odd,even" print=false}
+			<table class="normal">
 				{foreach key=k item=i from=$modcatlist}
 					{if $i.incat eq 'y'}
 						<tr>
@@ -29,7 +28,7 @@
 								{/if}
 							</td>
 							{if !isset($module_params.del) or $module_params.del eq 'y'}
-								<td>
+								<td class="{cycle}">
 									{self_link remove=$i.categId}{icon _id=cross alt="{tr}Delete{/tr}"}{/self_link}
 								</td>
 							{/if}
@@ -37,7 +36,6 @@
 					{/if}
 				{/foreach}
 			</table>
-            </div>
 		{/if}
 
 		{if $detailed eq 'n' or ($add eq 'y' and not $isInAllManagedCategories)}
@@ -71,7 +69,7 @@
 					</select>
 					{if $multiple eq 'y' and $add eq 'y'}
 						<div align="center">
-							<input type="submit" class="btn btn-default btn-sm" name="categorize" value="{if isset($module_params.categorize)}{tr}{$module_params.categorize}{/tr}{else}{tr}Categorize{/tr}{/if}" />
+							<input type="submit" name="categorize" value="{if isset($module_params.categorize)}{tr}{$module_params.categorize}{/tr}{else}{tr}Categorize{/tr}{/if}" />
 						</div>
 					{/if}
 				</form>

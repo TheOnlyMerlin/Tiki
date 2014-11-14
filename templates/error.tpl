@@ -10,7 +10,6 @@ close();
  * no_redirect_login: error antibot, system...
  * login: error login
  * Usually available variables : $errortitle, $msg, $errortype
- * If $commenttype is 'note' and $msg is set, the $msg will be shown in a nicer non-treatening remarksbox
  *}
 {if !isset($errortype)}{assign var='errortype' value=''}{/if}
 {capture assign=mid_data}
@@ -33,7 +32,7 @@ close();
 			{/remarksbox}
 		{elseif $errortype eq "404" and isset($page)}
 			{remarksbox type='errors' title=$errortitle}
-				{tr}Page not found{/tr}<br>{$page|escape}
+				{tr}Page not found{/tr}<br />{$page|escape}
 			{/remarksbox}
 			{if $prefs.feature_likePages eq 'y'}
 				{if $likepages}
@@ -50,17 +49,15 @@ close();
 		 		{/if}
 			{/if}
 
-			{if ($prefs.feature_search eq 'y' or $prefs.feature_search_fulltext eq 'y') && $tiki_p_search eq 'y'}
+			{if $prefs.feature_search eq 'y' && $tiki_p_search eq 'y'}
+				{if $prefs.feature_likePages ne 'y'}
+				{/if}
 				{if $prefs.feature_search_fulltext eq 'y'}
 					{include file='tiki-searchresults.tpl' searchNoResults="false" searchStyle="menu" searchOrientation="horiz" words="$page"}
 				{else}
-					{include file='tiki-searchindex_form.tpl' searchNoResults="true" searchStyle="menu" searchOrientation="horiz" words="$page" filter=$filter}
+					{include file='tiki-searchindex.tpl' searchNoResults="true" searchStyle="menu" searchOrientation="horiz" words="$page" filter=$filter}
 				{/if}
 			{/if}
-		{elseif $commenttype eq "note" and isset($msg)}
-			{remarksbox type='note' title=$title}
-				{$msg}
-			{/remarksbox}
 		{else}
 			{if isset($token_error)}
 				{remarksbox type='errors' title="{tr}Token Error{/tr}"}
@@ -71,7 +68,7 @@ close();
 					{tr}Permission denied{/tr}
 				{/remarksbox}
 				{include file='tiki-login.tpl'}
-			{elseif !isset($user) and $errortype != 'no_redirect_login' and $errortype != 'login' and empty($msg)}
+			{elseif !isset($user) and $errortype != 'no_redirect_login' and $errortype != 'login'}
 				{remarksbox type='errors' title=$errortitle}
 					{tr}You are not logged in.{/tr} <a href="tiki-login_scr.php">{tr}Go to Log in Page{/tr}</a>
 				{/remarksbox}
@@ -84,7 +81,7 @@ close();
 							{foreach from=$required_preferences item=pref}
 								{preference name=$pref}
 							{/foreach}
-							<input type="submit" class="btn btn-default btn-sm" value="{tr}Set{/tr}">
+							<input type="submit" value="{tr}Set{/tr}"/>
 						</form>
 						{/remarksbox}
 					{/if}
@@ -99,20 +96,17 @@ close();
 			{/remarksbox}
 		{/if}
 
-		{if isset($page) and $page and $create eq 'y' and ($tiki_p_admin eq 'y' or $tiki_p_admin_wiki eq 'y' or $tiki_p_edit eq 'y')}
+		{if $page and $create eq 'y' and ($tiki_p_admin eq 'y' or $tiki_p_admin_wiki eq 'y' or $tiki_p_edit eq 'y')}
 			{button href="tiki-editpage.php?page=$page" _text="{tr}Create this page{/tr}"} {tr}(page will be orphaned){/tr}
-			<br><br>
+			<br /><br />
 		{/if}
 
-		{* Hide the error navigation on the homepage *}
-		{if !isset($page) or $prefs.site_wikiHomePage neq $page}
-			{if $prefs.javascript_enabled eq 'y'}
-				{button _onclick="javascript:history.back();return false;" _text="{tr}Go back{/tr}" _ajax="n"}
-				<br><br>
-			{/if}
-
-			{button href=$prefs.tikiIndex _text="{tr}Return to home page{/tr}"}
+		{if $prefs.javascript_enabled eq 'y'}
+			{button _onclick="javascript:history.back();return false;" _text="{tr}Go back{/tr}" _ajax="n"}
+			<br /><br />
 		{/if}
+
+		{button href=$prefs.tikiIndex _text="{tr}Return to home page{/tr}"}
 	{/if}
 {/capture}
 

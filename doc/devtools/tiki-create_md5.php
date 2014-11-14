@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -28,10 +28,6 @@ if ($tiki_p_admin != 'y') {
 }
 
 
-/**
- * @param $dir
- * @param $result
- */
 function md5_check_dir($dir, &$result) // save all files in $result
 {
 	echo "opening $dir <br />\n";

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -92,9 +92,7 @@ function wikiplugin_userlist_info()
 
 function wikiplugin_userlist($data, $params)
 {
-	global $prefs, $tiki_p_admin, $tiki_p_admin_users, $user;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $userlib, $prefs, $tiki_p_admin, $tiki_p_admin_users, $user;
 
 	extract($params, EXTR_SKIP);
 
@@ -143,7 +141,7 @@ function wikiplugin_userlist($data, $params)
 		if (isset($link)) {
 			if ($link == 'userpage') {
 				if ($prefs['feature_wiki_userpage'] == 'y') {
-					$wikilib = TikiLib::lib('wiki');
+					global $wikilib; include_once('lib/wiki/wikilib.php');
 					$page = $prefs['feature_wiki_userpage_prefix'].$row['login'];
 					if ($tikilib->page_exists($page)) {
 						$res = '<a href="'.$wikilib->sefurl($page).'" title="'.tra('Page').'">';

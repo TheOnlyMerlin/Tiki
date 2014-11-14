@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -21,14 +21,12 @@ function wikiplugin_survey_info()
 				'description' => tra('Id'),
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'survey',
 			),
 			'page' => array(
 				'required' => false,
 				'name' => tra('Page'),
 				'description' => tra('Wiki Page to redirect the user after his vote'),
 				'default' => 'tiki-list_surveys.php',
-				'profile_reference' => 'wiki_page',
 			),
 			'lang' => array(
 				'required' => false,
@@ -55,8 +53,8 @@ function wikiplugin_survey($data, $params)
 		if ( $tikilib->user_has_voted($user, 'survey'.$params['id']) ) {
 			include_once('lib/wiki-plugins/wikiplugin_remarksbox.php');
 			return wikiplugin_remarksbox(
-				'You cannot take this survey twice',
-				array('type' => 'comment')
+							'You cannot take this survey twice',
+							array('type' => 'comment')
 			);
 		}
 	}
@@ -82,7 +80,7 @@ function wikiplugin_survey($data, $params)
 
 	$survey_info = $srvlib->get_survey($params['id']);
 
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	$smarty->assign('surveyId', $params['id']);
 	$smarty->assign('survey_info', $survey_info);
 	$smarty->assign('questions', $questions['data']);

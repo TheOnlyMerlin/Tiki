@@ -1,14 +1,12 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once 'lib/language/CollectFiles.php';
-use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\vfsStreamFile;
-use org\bovigo\vfs\vfsStreamDirectory;
+require_once('vfsStream/vfsStream.php');
 
 class Language_CollectFilesTest extends TikiTestCase
 {
@@ -16,7 +14,7 @@ class Language_CollectFilesTest extends TikiTestCase
 	{
 		$this->obj = new Language_CollectFiles;
 
-		// setup a mock filesystem with directories and files
+		// setup a mock filesystem with directories and files 
 		$root = vfsStream::setup('root');
 		$dir1 = new vfsStreamDirectory('dir1');
 		$dir2 = new vfsStreamDirectory('dir2');
@@ -60,7 +58,7 @@ class Language_CollectFilesTest extends TikiTestCase
 	}
 
 	public function testRun_shouldMergeArrays()
-	{
+	{	
 		$obj = $this->getMock('Language_CollectFiles', array('scanDir', 'getIncludeFiles'));
 		$obj->expects($this->once())->method('scanDir')->will($this->returnValue(array('lib/test.php', 'tiki-test.php')));
 		$obj->expects($this->once())->method('getIncludeFiles')->will($this->returnValue(array('tiki-test.php', 'tiki-index.php')));

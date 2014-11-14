@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -18,21 +18,17 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 // tiki-setup_base.php does.
 
 
-/**
- * @param $installer
- */
 function upgrade_99999999_image_plugins_kill_tiki($installer)
 {
-	global $prefs, $tikiroot, $user_overrider_prefs, $tiki_p_trust_input, $local_php;	// globals are required here for tiki-setup_base.php
-	require_once ('lib/tikilib.php');
-
-	$access = TikiLib::lib('access');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $tikilib, $prefs, $tikiroot, $user_overrider_prefs, $tiki_p_trust_input, $smarty, $access, $local_php;	// globals are required here for tiki-setup_base.php
 
 	require_once ('db/tiki-db.php');
+	require_once ('lib/tikilib.php');
 
 	$tikilib = new TikiLib;
+
+	include_once ('lib/profilelib/profilelib.php');
+	include_once ('lib/profilelib/installlib.php');
 
 	// ******************************** THUMB plugin
 	$plugstring = <<<PLUGINTEXT

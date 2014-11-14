@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -35,22 +32,9 @@ if (isset($_REQUEST['clearone'])) {
 
 if (isset($_REQUEST['refresh'])) {
 	$pages = $tikilib->list_pages();
-
-	$temp = serialize($headerlib);	// cache headerlib so we can remove all js etc added by plugins
-
-	foreach ($pages['data'] as $apage) {
-		$page = $apage['pageName'];
-		$parserlib->setOptions(
-			array(
-				'page' => $page,
-				'is_html' => $apage['is_html'],
-			)
-		);
-		$parserlib->parse_first($apage['data'], $pre, $no);
+	foreach ($pages['data'] as $page) {
+		$parserlib->parse_first($page['data'], $pre, $no);
 	}
-
-	$headerlib = unserialize($temp);
-	unset($temp);
 }
 
 if (isset($_POST['approveall'])) {

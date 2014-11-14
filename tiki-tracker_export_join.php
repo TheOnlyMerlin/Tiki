@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -23,11 +20,6 @@ if ($tiki_p_admin_trackers != 'y') {
 $trklib = TikiLib::lib("trk");
 
 //TODO: This needs rewritten to match tiki
-/**
- * @param $fieldIds
- * @param $tracker
- * @return mixed
- */
 function dateFormat($fieldIds, $tracker)
 {
 	foreach ($tracker as $key => $item) {
@@ -41,16 +33,12 @@ function dateFormat($fieldIds, $tracker)
 }
 
 //TODO: Find alternative for obtaining querystring/form data
-/**
- * @param $name
- * @param null $default
- */
 function defVal($name, $default = null)
-{
+{		
 	if (isset($_GET[$name]) == true) {
 		$_REQUEST[$name] = $_GET[$name];
 	}
-
+	
 	if (isset($default) == true) {
 		if (isset($_REQUEST[$name]) == false) {
 			$_REQUEST[$name] = $default;
@@ -78,15 +66,12 @@ defVal('start');
 defVal('end');
 
 //TODO: integrate into tracker query lib
-/**
- * @param $param
- */
 function splitToTracker($param)
 {
 	if (isset($_REQUEST[$param])) {
 		$_REQUEST[$param] = explode("|", $_REQUEST[$param]);
 		foreach ($_REQUEST[$param] as $key => $field) {
-			$_REQUEST[$param][$key] = explode(',', $_REQUEST[$param][$key]);
+			$_REQUEST[$param][$key] = explode(',', $_REQUEST[$param][$key]); 
 		}
 	}
 }
@@ -123,19 +108,19 @@ if (isset($_REQUEST['trackerIds']) == true) {
 		} else {
 			$joinVars = $_REQUEST['itemIdFields'][$key - 1];
 			$joinVars = explode('|', $joinVars);
-
+			
 			$trackerPrimary = Tracker_Query::join_trackers(
-				$trackerPrimary,
-				Tracker_Query::tracker($trackerId)
-				->start($_REQUEST['start'][$key])
-				->end($_REQUEST['end'][$key])
-				->equals($_REQUEST['q'][$key])
-				->search($_REQUEST['search'][$key])
-				->fields($_REQUEST['fields'][$key])
-				->status($_REQUEST['status'][$key])
-				->query(),
-				$joinVars[0],
-				$joinVars[1]
+							$trackerPrimary, 
+							Tracker_Query::tracker($trackerId)
+							->start($_REQUEST['start'][$key])
+							->end($_REQUEST['end'][$key])
+							->equals($_REQUEST['q'][$key])
+							->search($_REQUEST['search'][$key])
+							->fields($_REQUEST['fields'][$key])
+							->status($_REQUEST['status'][$key])
+							->query(),
+							$joinVars[0],
+							$joinVars[1]
 			);
 		}
 		$i++;
@@ -147,7 +132,7 @@ if (isset($_REQUEST['sortFieldIds']) == true) {
 }
 
 if (
-		isset($_REQUEST['removeFieldIds']) == true ||
+		isset($_REQUEST['removeFieldIds']) == true || 
 		isset($_REQUEST['showFieldIds']) == true
 	) {
 	$trackerPrimary = Tracker_Query::filter_fields_from_tracker_query($trackerPrimary, $_REQUEST['removeFieldIds'], $_REQUEST['showFieldIds']);
@@ -163,7 +148,7 @@ if (isset($_REQUEST['time']) == true) {
 	$endtime = microtime();
 	$endarray = explode(" ", $endtime);
 	$endtime = $endarray[1] + $endarray[0];
-	$totaltime = $endtime - $starttime;
+	$totaltime = $endtime - $starttime; 
 	$totaltime = round($totaltime, 5);
 	echo "This page loaded in $totaltime seconds.\n\n\n";
 }

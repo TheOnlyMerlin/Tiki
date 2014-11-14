@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,7 +8,7 @@
 //this script may only be included - so its better to die if called directly.
 $access->check_script($_SERVER['SCRIPT_NAME'], basename(__FILE__));
 
-$groupList = null;
+$groupList = $tikilib->get_user_groups($user);
 $is_token_access = false;
 if ( $prefs['auth_token_access'] == 'y' && isset($_REQUEST['TOKEN']) ) {
 	require_once 'lib/auth/tokens.php';
@@ -62,6 +62,9 @@ if ( $prefs['auth_token_access'] == 'y' && isset($_REQUEST['TOKEN']) ) {
 				include_once ('lib/webmail/tikimaillib.php');
 				$mail = new TikiMail();
 
+				$mail->setFrom($prefs['sender_email']);
+				$mail->setHeader('Return-Path', '<' . $prefs['sender_email'] . '>');
+				$mail->setHeader('Reply-To', '<' . $prefs['sender_email'] . '>');
 				$mail->setSubject($detailtoken['email'] . ' ' . tra(' has accessed your temporary shared content'));
 
 				foreach ($nots as $i=>$not) {
@@ -73,7 +76,7 @@ if ( $prefs['auth_token_access'] == 'y' && isset($_REQUEST['TOKEN']) ) {
 					// If file Gallery
 					$smarty->assign('filegallery', 'n');
 					if (preg_match("/\btiki-download_file.php\b/i", $notificationPage)) {
-						$filegallib = TikiLib::lib('filegal');
+						include_once 'lib/filegals/filegallib.php';
 						$smarty->assign('filegallery', 'y');
 						$aParams = (array) json_decode($detailtoken['parameters']);
 						$smarty->assign('fileId', $aParams['fileId']);
@@ -92,9 +95,6 @@ if ( $prefs['auth_token_access'] == 'y' && isset($_REQUEST['TOKEN']) ) {
 
 		}
 
-		if ( empty($notificationPage) ) {
-				$notificationPage = preg_replace('/[\?&]TOKEN='.$token.'/','',$_SERVER['REQUEST_URI']);
-		}
 		// Log each token access
 		$logslib->add_log('token', $detailtoken['email'] . ' ' . tra('has accessed the following shared content:') . ' ' . $notificationPage);
 	} else {
@@ -104,8 +104,7 @@ if ( $prefs['auth_token_access'] == 'y' && isset($_REQUEST['TOKEN']) ) {
 }
 
 $allperms = $userlib->get_enabled_permissions();
-
-Perms_Context::setPermissionList($allperms);
+$permissionList = array_keys($allperms);
 
 $builder = new Perms_Builder;
 $perms = $builder
@@ -113,15 +112,23 @@ $perms = $builder
 	->withDefinitions($allperms)
 	->build();
 
+$perms->setGroups($groupList);
 Perms::set($perms);
 
-$_permissionContext = new Perms_Context($user, false);
-
-if ($groupList) {
-	$_permissionContext->overrideGroups($groupList);
+if (! function_exists('remove_tiki_p_prefix')) {
+	function remove_tiki_p_prefix($name)
+	{
+		return substr($name, 7);
+	}
 }
 
-$_permissionContext->activate(true);
+$shortPermList = array_map('remove_tiki_p_prefix', $permissionList);
+
+$globalperms = Perms::get();
+$globalperms->globalize($shortPermList, $smarty, false);
+if (is_object($smarty)) {
+	$smarty->assign('globalperms', $globalperms);
+}
 
 unset($allperms);
 unset($tokenParams);

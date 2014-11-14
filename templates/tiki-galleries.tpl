@@ -2,10 +2,10 @@
 {title help="Image+Galleries" admpage="gal"}{tr}Galleries{/tr}{/title}
 {if $tiki_p_create_galleries eq 'y'}
 	{if $edit_mode ne 'y' or $galleryId ne 0}
-		<div class="t_navbar">
-			{button href="?edit_mode=1&amp;galleryId=0" class="btn btn-default" _text="{tr}Create New Gallery{/tr}"}
+		<div class="navbar">
+			{button href="?edit_mode=1&amp;galleryId=0" _text="{tr}Create New Gallery{/tr}"}
 			{if $galleryId ne 0}
-				{button href="tiki-browse_gallery.php?galleryId=$galleryId" class="btn btn-default" _text="{tr}Browse Gallery{/tr}"}
+				{button href="tiki-browse_gallery.php?galleryId=$galleryId" _text="{tr}Browse Gallery{/tr}"}
 			{/if}
 		</div>
 	{/if}
@@ -24,48 +24,48 @@
 
 		<div{* style="text-align: center"*}>
 			{if $individual eq 'y'}
-				{permission_link mode=link type="image gallery" permType="image galleries" id=$galleryId title=$name label="{tr}There are individual permissions set for this gallery{/tr}"}
+				<a class="gallink" href="tiki-objectpermissions.php?objectName={$name|escape:"url"}&amp;objectType=image+gallery&amp;permType=image+galleries&amp;objectId={$galleryId}">{tr}There are individual permissions set for this gallery{/tr}</a>
 			{/if}
 			<form action="tiki-galleries.php" method="post" id="gal-edit-form">
-				<input type="hidden" name="galleryId" value="{$galleryId|escape}">
+				<input type="hidden" name="galleryId" value="{$galleryId|escape}" />
 				<table class="formcolor">
-					<tr><td>{tr}Name:{/tr}</td><td><input type="text" name="name" value="{$name|escape}"></td></tr>
+					<tr><td>{tr}Name:{/tr}</td><td><input type="text" name="name" value="{$name|escape}"/></td></tr>
 					<tr><td>{tr}Description:{/tr}</td><td><textarea   rows="20" cols="80" name="description" id="gal-desc">{$description|escape}</textarea></td></tr>
 					{if $tiki_p_admin_galleries eq 'y'}
-						<tr><td>{tr}Gallery is visible to non-admin users?{/tr}</td><td><input type="checkbox" name="visible" {if $visible eq 'y'}checked="checked"{/if}></td></tr>
+						<tr><td>{tr}Gallery is visible to non-admin users?{/tr}</td><td><input type="checkbox" name="visible" {if $visible eq 'y'}checked="checked"{/if} /></td></tr>
 						{* If a user can create a gallery, but doesn't have tiki_p_admin_galleries the new gallery needs to be visible. *}
 					{else}
-						<input type="hidden" name="visible" value="on">
+						<input type="hidden" name="visible" value="on" />
 					{/if}
 					{if $prefs.feature_maps eq 'y'}
-						<tr><td>{tr}Geographic:{/tr}</td><td><input type="checkbox" name="geographic" {if $geographic eq 'y'}checked="checked"{/if}></td></tr>
+						<tr><td>{tr}Geographic:{/tr}</td><td><input type="checkbox" name="geographic" {if $geographic eq 'y'}checked="checked"{/if} /></td></tr>
 					{/if}
 					{if $prefs.preset_galleries_info ne 'y'}
 						<tr>
 							<td>{tr}Max Rows per page:{/tr}</td>
 							<td>
-								<input type="text" name="maxRows"{if !empty($maxRows)} value="{$maxRows|escape}"{/if}>
+								<input type="text" name="maxRows"{if !empty($maxRows)} value="{$maxRows|escape}"{/if} />
 								<i>{tr}Default:{/tr} {if !empty($prefs.maxRowsGalleries)}{$prefs.maxRowsGalleries}{else}10{/if}</i>
 							</td>
 						</tr>
 						<tr>
 							<td>{tr}Images per row:{/tr}</td>
 							<td>
-								<input type="text" name="rowImages"{if !empty($rowImages)} value="{$rowImages|escape}"{/if}>
+								<input type="text" name="rowImages"{if !empty($rowImages)} value="{$rowImages|escape}"{/if} />
 								<i>{tr}Default:{/tr} {if !empty($prefs.rowImagesGalleries)}{$prefs.rowImagesGalleries}{else}6{/if}</i>
 							</td>
 						</tr>
 						<tr>
 							<td>{tr}Thumbnails size X:{/tr}</td>
 							<td>
-								<input type="text" name="thumbSizeX"{if !empty($thumbSizeX)} value="{$thumbSizeX|escape}"{/if}>
+								<input type="text" name="thumbSizeX"{if !empty($thumbSizeX)} value="{$thumbSizeX|escape}"{/if} />
 								<i>{tr}Default:{/tr} {if !empty($prefs.thumbSizeXGalleries)}{$prefs.thumbSizeXGalleries}{else}80{/if}</i>
 							</td>
 						</tr>
 						<tr>
 							<td>{tr}Thumbnails size Y:{/tr}</td>
 							<td>
-								<input type="text" name="thumbSizeY"{if !empty($thumbSizeY)} value="{$thumbSizeY|escape}"{/if}>
+								<input type="text" name="thumbSizeY"{if !empty($thumbSizeY)} value="{$thumbSizeY|escape}"{/if} />
 								<i>{tr}Default:{/tr} {if !empty($prefs.thumbSizeYGalleries)}{$prefs.thumbSizeYGalleries}{else}80{/if}</i>
 							</td>
 						</tr>
@@ -78,23 +78,23 @@
 									<option value="{$item}" {if $sortorder == $item} selected="selected"{/if}>{$key}</option>
 								{/foreach}
 							</select>
-							<input type="radio" name="sortdirection" value="desc" {if $sortdirection == 'desc'}checked="checked"{/if}>{tr}descending{/tr}
-							<input type="radio" name="sortdirection" value="asc" {if $sortdirection == 'asc'}checked="checked"{/if}>{tr}ascending{/tr}
+							<input type="radio" name="sortdirection" value="desc" {if $sortdirection == 'desc'}checked="checked"{/if} />{tr}descending{/tr}
+							<input type="radio" name="sortdirection" value="asc" {if $sortdirection == 'asc'}checked="checked"{/if} />{tr}ascending{/tr}
 						</td>
 					</tr>
 					<tr>
 						<td>{tr}Fields to show during browsing the gallery:{/tr}</td>
 						<td>
-							<input type="checkbox" name="showname" value="y" {if $showname=='y'}checked="checked"{/if}>{tr}Name{/tr}<br>
-							<input type="checkbox" name="showimageid" value="y" {if $showimageid=='y'}checked="checked"{/if}>{tr}Image ID{/tr}<br>
-							<input type="checkbox" name="showdescription" value="y" {if $showdescription=='y'}checked="checked"{/if}>{tr}Description{/tr}<br>
-							<input type="checkbox" name="showcreated" value="y" {if $showcreated=='y'}checked="checked"{/if}>{tr}Creation Date{/tr}<br>
-							<input type="checkbox" name="showuser" value="y" {if $showuser=='y'}checked="checked"{/if}>{tr}User{/tr}<br>
-							<input type="checkbox" name="showhits" value="y" {if $showhits=='y'}checked="checked"{/if}>{tr}Hits{/tr}<br>
-							<input type="checkbox" name="showxysize" value="y" {if $showxysize=='y'}checked="checked"{/if}>{tr}XY-Size{/tr}<br>
-							<input type="checkbox" name="showfilesize" value="y" {if $showfilesize=='y'}checked="checked"{/if}>{tr}Filesize{/tr}<br>
-							<input type="checkbox" name="showfilename" value="y" {if $showfilename=='y'}checked="checked"{/if}>{tr}Filename{/tr}<br>
-							<input type="checkbox" name="showcategories" value="y" {if $showcategories=='y'}checked="checked"{/if}>{tr}Categories{/tr}<br>
+							<input type="checkbox" name="showname" value="y" {if $showname=='y'}checked="checked"{/if} />{tr}Name{/tr}<br />
+							<input type="checkbox" name="showimageid" value="y" {if $showimageid=='y'}checked="checked"{/if} />{tr}Image ID{/tr}<br />
+							<input type="checkbox" name="showdescription" value="y" {if $showdescription=='y'}checked="checked"{/if} />{tr}Description{/tr}<br />
+							<input type="checkbox" name="showcreated" value="y" {if $showcreated=='y'}checked="checked"{/if} />{tr}Creation Date{/tr}<br />
+							<input type="checkbox" name="showuser" value="y" {if $showuser=='y'}checked="checked"{/if} />{tr}User{/tr}<br />
+							<input type="checkbox" name="showhits" value="y" {if $showhits=='y'}checked="checked"{/if} />{tr}Hits{/tr}<br />
+							<input type="checkbox" name="showxysize" value="y" {if $showxysize=='y'}checked="checked"{/if} />{tr}XY-Size{/tr}<br />
+							<input type="checkbox" name="showfilesize" value="y" {if $showfilesize=='y'}checked="checked"{/if} />{tr}Filesize{/tr}<br />
+							<input type="checkbox" name="showfilename" value="y" {if $showfilename=='y'}checked="checked"{/if} />{tr}Filename{/tr}<br />
+							<input type="checkbox" name="showcategories" value="y" {if $showcategories=='y'}checked="checked"{/if} />{tr}Categories{/tr}<br />
 						</td>
 					</tr>
 					<tr>
@@ -123,32 +123,32 @@
 							<td>{tr}Available scales:{/tr}</td>
 							<td>
 								{tr}Global default{/tr} {$prefs.scaleSizeGalleries}x{$prefs.scaleSizeGalleries} ({tr}Bounding box{/tr}) 
-								<input type="radio" name="defaultscale" value="{$prefs.scaleSizeGalleries}" {if $defaultscale==$prefs.scaleSizeGalleries}checked="checked"{/if}>
-								{tr}default scale{/tr}<br>
+								<input type="radio" name="defaultscale" value="{$prefs.scaleSizeGalleries}" {if $defaultscale==$prefs.scaleSizeGalleries}checked="checked"{/if} />
+								{tr}default scale{/tr}<br />
 								{section  name=scales loop=$scaleinfo}
 									{if $scaleinfo[scales].scale ne $prefs.scaleSizeGalleries}
-										{tr}Remove:{/tr}<input type="checkbox" name="removescale_{$scaleinfo[scales].scale|escape}">
+										{tr}Remove:{/tr}<input type="checkbox" name="removescale_{$scaleinfo[scales].scale|escape}" />
 										{$scaleinfo[scales].scale}x{$scaleinfo[scales].scale} ({tr}Bounding box{/tr}) 
-										<input type="radio" name="defaultscale" value="{$scaleinfo[scales].scale}" {if $defaultscale==$scaleinfo[scales].scale}checked="checked"{/if}>
-										{tr}default scale{/tr}<br>
+										<input type="radio" name="defaultscale" value="{$scaleinfo[scales].scale}" {if $defaultscale==$scaleinfo[scales].scale}checked="checked"{/if} />
+										{tr}default scale{/tr}<br />
 									{/if}
 								{sectionelse}
 									{tr}No scales available{/tr}
-								{/section}<br>
-								{tr}Original image is default scale{/tr}<input type="radio" name="defaultscale" value="o" {if $defaultscale=='o'}checked="checked"{/if}>
+								{/section}<br />
+								{tr}Original image is default scale{/tr}<input type="radio" name="defaultscale" value="o" {if $defaultscale=='o'}checked="checked"{/if} />
 							</td>
 						</tr>
-						<tr><td>{tr}Add scaled images with bounding box of square size:{/tr}</td><td><input type="text" name="scaleSize">{tr}pixels{/tr}</td></tr>
+						<tr><td>{tr}Add scaled images with bounding box of square size:{/tr}</td><td><input type="text" name="scaleSize" />{tr}pixels{/tr}</td></tr>
 					{/if}
-					<tr><td>{tr}Owner of the gallery:{/tr}</td><td><input type="text" name="owner" value="{$owner|escape}"></td></tr>
+					<tr><td>{tr}Owner of the gallery:{/tr}</td><td><input type="text" name="owner" value="{$owner|escape}"/></td></tr>
 					{include file='categorize.tpl'}
 					{include file='freetag.tpl'}
-					<tr><td>{tr}Other users can upload images to this gallery:{/tr}</td><td><input type="checkbox" name="public" {if $public eq 'y'}checked="checked"{/if}></td></tr>
-					<tr><td>&nbsp;</td><td><input type="submit" class="btn btn-default btn-sm" value="{tr}Save{/tr}" name="edit"></td></tr>
+					<tr><td>{tr}Other users can upload images to this gallery:{/tr}</td><td><input type="checkbox" name="public" {if $public eq 'y'}checked="checked"{/if}/></td></tr>
+					<tr><td>&nbsp;</td><td><input type="submit" value="{tr}Save{/tr}" name="edit" /></td></tr>
 				</table>
 			</form>
 		</div>
-		<br>
+		<br />
 	{/if}
 {/if}
 {if $galleryId > 0}
@@ -159,7 +159,7 @@
 	{/if}
 {/if}
 {if $tiki_p_create_galleries eq 'y' && $galleryId ne 0}
-	<div class="t_navbar"><a href="tiki-galleries.php?edit_mode=1&amp;galleryId=0" class="btn btn-default">{tr}Create New Gallery{/tr}</a></div>
+	<div class="navbar"><a href="tiki-galleries.php?edit_mode=1&amp;galleryId=0">{tr}Create New Gallery{/tr}</a></div>
 {/if}
 <h2>{tr}Available Galleries{/tr}</h2>
 <div align="center">
@@ -177,13 +177,12 @@
 						{/if}
 					{/foreach*}
 				</select>
-				<input type="submit" class="btn btn-default btn-sm" value="{tr}Filter{/tr}">
+				<input type="submit" value="{tr}Filter{/tr}" />
 			</form>
 		</div>
 	{/if}
-
-    <div class="table-responsive">
-	<table class="table normal">
+	<br  />
+	<table class="normal">
 		<tr>
 			{if $prefs.gal_list_name eq 'y'}
 				<th><a href="tiki-galleries.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></th>
@@ -227,11 +226,11 @@
 			{/if}
 			<th>{tr}Actions{/tr}</th>
 		</tr>
-
+		{cycle values="odd,even" print=false}
 		{section name=changes loop=$galleries}
 			{if ($filter eq 'topgal' and $galleries[changes].parentgallery eq -1) or ($filter eq 'parentgal' and $galleries[changes].parentgal eq 'y') or ($filter eq '')}
 				{if $galleries[changes].visible eq 'y' or $tiki_p_admin_galleries eq 'y'}
-					<tr>
+					<tr class="{cycle}">
 						{if $prefs.gal_list_name eq 'y'}
 							<td><a class="galname" href="{$galleries[changes].galleryId|sefurl:gallery}">{$galleries[changes].name}</a></td>
 						{/if}
@@ -281,7 +280,11 @@
 								{/if}
 							{/if}
 							{if ($tiki_p_admin eq 'y') or  ($galleries[changes].perms.tiki_p_assign_perm_image_gallery eq 'y' )}
-								{permission_link mode=icon type="image gallery" permType="image galleries" id=$galleries[changes].galleryId title=$galleries[changes].name}
+								{if $galleries[changes].perms.has_special_perm eq 'y'}
+									<a class="gallink" href="tiki-objectpermissions.php?objectName={$galleries[changes].name|escape:"url"}&amp;objectType=image+gallery&amp;permType=image+galleries&amp;objectId={$galleries[changes].galleryId}">{icon _id='key_active' alt="{tr}Active Perms{/tr}"}</a>
+								{else}
+									<a class="gallink" href="tiki-objectpermissions.php?objectName={$galleries[changes].name|escape:"url"}&amp;objectType=image+gallery&amp;permType=image+galleries&amp;objectId={$galleries[changes].galleryId}">{icon _id='key' alt="{tr}Perms{/tr}"}</a>
+								{/if}
 							{/if}
 							{if $tiki_p_admin_galleries eq 'y' or ($user and $galleries[changes].user eq $user)}
 								{if ($tiki_p_admin eq 'y') or ($galleries[changes].perms.has_special_perms eq 'n') or ($galleries[changes].perms.tiki_p_create_galleries eq 'y' )}
@@ -296,7 +299,6 @@
 			{norecords _colspan=9}
 		{/section}
 	</table>
-    </div>
 	{if $prefs.feature_maps eq 'y'}{$map_error}{/if}
 	{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
 </div>

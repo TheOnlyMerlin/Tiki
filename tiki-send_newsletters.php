@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -65,9 +62,6 @@ if ($_REQUEST["nlId"]) {
 }
 if ($_REQUEST["editionId"]) {
 	$info = $nllib->get_edition($_REQUEST["editionId"]);
-	if (!empty($_REQUEST['resend'])) {
-		$info['editionId'] = 0;
-	}
 } else {
 	$info = array();
 	$info["data"] = '';
@@ -134,7 +128,7 @@ if (isset($_REQUEST["remove"])) {
 	$nllib->remove_edition($_REQUEST["nlId"], $_REQUEST["remove"]);
 }
 
-$editlib = TikiLib::lib('edit');
+include_once ('lib/wiki/editlib.php');
 // wysiwyg decision
 include_once ('lib/setup/editmode.php');
 
@@ -293,12 +287,6 @@ if (isset($_REQUEST["preview"])) {
 	}
 	$smarty->assign_by_ref('info', $info);
 	$smarty->assign('previewdata', $previewdata);
-
-	$tikilib = TikiLib::lib('tiki');
-	$news_cssfile = $tikilib->get_style_path($prefs['style'], '', 'newsletter.css');
-	$news_cssfile_option = $tikilib->get_style_path($prefs['style'], $prefs['style_option'], 'newsletter.css');
-
-	TikiLib::lib('header')->add_cssfile($news_cssfile)->add_cssfile($news_cssfile_option);
 }
 $smarty->assign('presend', 'n');
 if (isset($_REQUEST["save"])) {
@@ -543,7 +531,8 @@ include_once ('tiki-section_options.php');
 setcookie('tab', $cookietab);
 $smarty->assign('cookietab', $_REQUEST['cookietab']);
 ask_ticket('send-newsletter');
-$wikilib = TikiLib::lib('wiki');
+global $wikilib;
+include_once ('lib/wiki/wikilib.php');
 $plugins = $wikilib->list_plugins(true, 'editwiki');
 $smarty->assign_by_ref('plugins', $plugins);
 // disallow robots to index page:

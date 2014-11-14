@@ -1,3 +1,5 @@
+{remarksbox type="tip" title="{tr}Tip{/tr}"}<a class="rbox-link" href="http://doc.tiki.org/i18n">{tr}Internationalization{/tr}</a>{/remarksbox}
+
 {jq}
 	function updateList( active )
 	{
@@ -11,18 +13,12 @@
 {/jq}
 
 <form action="tiki-admin.php?page=i18n" method="post">
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-                <input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-            </div>
-        </div>
-    </div>
-
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" value="{tr}Change preferences{/tr}" />
+	</div>
 <input type="hidden" name="i18nsetup" />
 {tabset name="admin_i18n"}
 	{tab name="{tr}Internationalization{/tr}"}
-        <h2>{tr}Internationalization{/tr}</h2>
 
 {preference name=language}
 {preference name=wiki_page_regex}
@@ -50,11 +46,6 @@
 	{preference name=feature_translation_incomplete_notice}
 	{preference name=feature_multilingual_one_page}
 	{preference name=quantify_changes}
-	
-	{preference name=wiki_edit_minor}
-	
-	{preference name=feature_user_watches_translations}
-	
 	{preference name=feature_multilingual_structures}
 	{preference name=freetags_multilingual}
 	{preference name=category_i18n_sync}
@@ -72,27 +63,11 @@
 {preference name=record_untranslated}
 	
 {preference name=feature_machine_translation}
-<div class="adminoptionboxchild" id="feature_machine_translation_childcontainer">
-	{preference name=lang_machine_translate_implementation}
-	<div class="adminoptionboxchild lang_machine_translate_implementation_childcontainer google">
-		{preference name=lang_google_api_key}
-	</div>
-	<div class="adminoptionboxchild lang_machine_translate_implementation_childcontainer bing">
-		{preference name=lang_bing_api_client_id}
-		{preference name=lang_bing_api_client_secret}
-	</div>
-	{preference name=lang_machine_translate_wiki}
-</div>
-	{preference name=feature_lang_nonswitchingpages}
-	<div class="adminoptionboxchild" id="feature_lang_nonswitchingpages_childcontainer">
-		{preference name=feature_lang_nonswitchingpages_names}
-	</div>
 </div>
 {/tab}
 
 {tab name="{tr}Babelfish links{/tr}"}
 {*------------------------------- Babelfish ----------------------------- *}
-    <h2>{tr}Babelfish links{/tr}</h2>
 
 {preference name=feature_babelfish}
 {preference name=feature_babelfish_logo}
@@ -100,7 +75,6 @@
 {/tab}
 {tab name="{tr}Customized String Translation{/tr}"}
 {*----------------------------------- Custom translation --------------------*}
-    <h2>{tr}Customized String Translation{/tr}</h2>
 <div class="adminoptionbox">
 	{if empty($custom_lang)}
 		<select name="custom_lang" id="custom_lang_select">
@@ -111,7 +85,7 @@
 				</option>
 			{/section}
 		</select>
-		<input type="submit" class="btn btn-default btn-sm" name="custom" value="{tr}Edit{/tr}" />
+		<input type="submit" name="custom" value="{tr}Edit{/tr}" />
 	{else}
 		{if !empty($custom_error)}
 			{remarksbox title="{tr}Error{/tr}" type="error"}
@@ -135,8 +109,7 @@
 		{/section}
 		</h2>
 		<input type="hidden" name="custom_lang" value="{$custom_lang|escape}" />
-        <div class="table-responsive">
-		<table class="table normal">
+		<table class="normal">
 		<tr><th>{tr}English{/tr}</th><th>{tr}Translation{/tr}</th></tr>
 		{if !empty($custom_translation)}
 			{foreach from=$custom_translation key=cfrom item=cto}
@@ -147,18 +120,12 @@
 			<tr><td><input type="text" name="from[]" value="{$fr|escape}"/></td><td><input type="text" name="to[]" value="{$to.$i|escape}"/></td></tr>
 		{/foreach}
 		</table>
-        </div>
-		<input type="submit" class="btn btn-default btn-sm" name="custom_save" value="{tr}Save{/tr}" />
+		<input type="submit" name="custom_save" value="{tr}Save{/tr}" />
 	{/if}
 </div>
 {/tab}
 {/tabset}
-    <br>{* I cheated. *}
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="text-center">
-                <input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-            </div>
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: center">
+		<input type="submit" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -62,7 +62,6 @@ function wikiplugin_getaccesstoken( $data, $params )
 		$values = $params['values'];
 	}
 	$bindvars = array();
-	$bindvars[] = "%$entry%";
 	$querystringvars = array();
 	for ($i = 0, $count_keys = count($keys); $i < $count_keys; $i++) {
 		$querystringvars[$keys[$i]] = $values[$i];
@@ -72,7 +71,7 @@ function wikiplugin_getaccesstoken( $data, $params )
 		$mid = " and `parameters` = ?";
 		$bindvars[] = $encoded; 
 	}	
-	$query = "select `token` from `tiki_auth_tokens` where `entry` like ? $mid";
+	$query = "select `token` from `tiki_auth_tokens` where `entry` like '%$entry%' $mid";
 	if ($ret = $tikilib->getOne($query, $bindvars)) {
 		return $ret;
 	} else {

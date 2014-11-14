@@ -9,7 +9,7 @@
 			{foreach from=$edit_features.hiddenInput key=f item=v}
 				<input id="{$f|escape}" type="hidden" name="forced~{$f|escape}" value="{$v|escape}"/>
 			{/foreach}
-			<input type="submit" class="btn btn-default btn-sm" name="create" value="{tr}Create{/tr}"/>
+			<input type="submit" name="create" value="{tr}Create{/tr}"/>
 		</div>
 	</form>
 	{jq}
@@ -23,16 +23,16 @@
 				}
 
 				var form = this;
-				$.post($(form).attr('action'), $(form).serialize(), null, 'json')
-					.success(function (data) {
-						$(form).trigger('insert', [data]);
+				$.post($(form).attr('action'), $(form).serialize())
+					.success(function () {
+						$(form).trigger('insert');
 					})
 					.error(function () {
 						$(this).serviceDialog({
 							title: $(':submit', form).val(),
 							data: $(form).serialize(),
 							success: function () {
-								$(form).trigger('insert', [{}]);
+								$(form).trigger('insert');
 							},
 							close: function () {
 								$(form).trigger('cancel');
@@ -95,31 +95,10 @@
 				});
 			{{/if}}
 
-			form.bind('insert', function (e, data) {
-				var form = this;
-
+			form.bind('insert', function () {
 				$(map).trigger('changed');
 				map.vectors.removeFeatures([activeFeature]);
 				activeFeature = null;
-
-				{{if $edit_features.editDetails}}
-				if (data.itemId) {
-					$('<a>').attr('href', $.service('tracker', 'update_item'))
-						.serviceDialog({
-							data: {
-								trackerId: $(form.trackerId).val(),
-								itemId: data.itemId
-							},
-							success: function () {
-								$(map).trigger('changed');
-							}
-						});
-				}
-				{{/if}}
-
-				{{if $edit_features.insertMode}}
-					map.modeManager.switchTo({{$edit_features.insertMode|json_encode}});
-				{{/if}}
 			});
 		});
 	});

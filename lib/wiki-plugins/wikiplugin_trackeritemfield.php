@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -21,16 +21,14 @@ function wikiplugin_trackeritemfield_info()
 				'name' => tra('Tracker ID'),
 				'description' => tra('Numeric value representing the tracker ID.'),
 				'filter' => 'digits',
-				'default' => '',
-				'profile_reference' => 'tracker',
+				'default' => ''
 			),
 			'itemId' => array(
 				'required' => false,
 				'name' => tra('Item ID'),
 				'description' => tra('Numeric value representing the item ID. Default is the user tracker item for the current user.'),
 				'filter' => 'digits',
-				'default' => '',
-				'profile_reference' => 'tracker_item',
+				'default' => ''
 			),
 			'fieldId' => array(
 				'required' => false,
@@ -38,7 +36,6 @@ function wikiplugin_trackeritemfield_info()
 				'description' => tra('Numeric value representing the field ID displayed or tested'),
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'tracker_field',
 			),
 			'fields' => array(
 				'required' => false,
@@ -46,8 +43,6 @@ function wikiplugin_trackeritemfield_info()
 				'description' => tra('Colon separated list of field IDs. Default is all fields'),
 				'default' => '',
 				'filter' => 'text',
-				'separator' => ':',
-				'profile_reference' => 'tracker_field',
 			),
 			'status' => array(
 				'required' => false,
@@ -63,7 +58,7 @@ function wikiplugin_trackeritemfield_info()
 					array('text' => tra('Open & Pending'), 'value' => 'op'), 
 					array('text' => tra('Open & Closed'), 'value' => 'oc'), 
 					array('text' => tra('Pending & Closed'), 'value' => 'pc'), 
-					array('text' => tra('Open, Pending & Closed'), 'value' => 'opc'),
+					array('text' => tra('Open, Pending & Closed'), 'value' => 'opc')
 				)
 			),
 			'test' => array(
@@ -75,8 +70,8 @@ function wikiplugin_trackeritemfield_info()
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0),
-				),
+					array('text' => tra('No'), 'value' => 0)
+				)
 			),
 			'value' => array(
 				'required' => true,
@@ -91,18 +86,13 @@ function wikiplugin_trackeritemfield_info()
 
 function wikiplugin_trackeritemfield($data, $params)
 {
-	global $userTracker, $group, $user, $tiki_p_admin_trackers, $prefs;
-
+	global $userTracker, $group, $user, $userlib, $tiki_p_admin_trackers, $prefs, $smarty, $tikilib;
+	global $trklib; include_once('lib/trackers/trackerlib.php');
 	static $memoItemId = 0;
 	static $memoTrackerId = 0;
 	static $memoStatus = 0;
 	static $memoUserTracker = false;
 	static $memoItemObject = null;
-
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
-	$trklib = TikiLib::lib('trk');
 
 	extract($params, EXTR_SKIP);
 
@@ -156,25 +146,6 @@ function wikiplugin_trackeritemfield($data, $params)
 			$trackerId = $info['trackerId'];
 		}
 
-		if (empty($info) && !empty($test) && $test == 1) {
-			// item not found, should still test if that is the function (as documented)
-			if (!isset($data)) {
-				$data = $dataelse = '';
-			} elseif (!empty($data) && strpos($data, '{ELSE}')) {
-				$dataelse = substr($data, strpos($data, '{ELSE}')+6);
-				$data = substr($data, 0, strpos($data, '{ELSE}'));
-			} else {
-				$dataelse = '';	
-			}
-			if (empty($value)) {
-				// testing if empty
-				return $data;
-			} else {
-				// testing for something
-				return $dataelse;
-			}
-		} 
-
 		$itemObject = Tracker_Item::fromInfo($info);
 		if (! $itemObject->canView()) {
 			return WikiParser_PluginOutput::error(tr('Permission denied'), tr('You are not allowed to view this item.'));
@@ -185,7 +156,7 @@ function wikiplugin_trackeritemfield($data, $params)
 		$memoTrackerId = $info['trackerId'];
 		$memoItemObject = $itemObject;
 		if (isset($_REQUEST['itemId']) && $_REQUEST['itemId'] != $itemId) {
-			$logslib = TikiLib::lib('logs');
+			global $logslib; include_once('lib/logs/logslib.php');
 			$logslib->add_action('Viewed', $itemId, 'trackeritem', $_SERVER['REQUEST_URI'].'&trackeritemfield');
 		}
 	}
@@ -210,6 +181,7 @@ function wikiplugin_trackeritemfield($data, $params)
 		$all_fields = $trklib->list_tracker_fields($trackerId, 0, -1);
 		$all_fields = $all_fields['data'];
 		if (!empty($fields)) {
+			$fields = explode(':', $fields);
 			foreach ($all_fields as $i=>$fopt) {
 				if (!in_array($fopt['fieldId'], $fields)) {
 					unset($all_fields[$i]);

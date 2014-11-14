@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -35,11 +35,6 @@ class TikiDb_Bridge extends TikiDb
 	function queryError( $query, &$error, $values = null, $numrows = -1, $offset = -1 ) // {{{
 	{
 		return self::get()->queryError($query, $error, $values, $numrows, $offset);
-	} // }}}
-
-	function queryException( $query, $values = null, $numrows = -1, $offset = -1 ) // {{{
-	{
-		return self::get()->queryException($query, $values, $numrows, $offset);
 	} // }}}
 
 	function getOne( $query, $values = null, $reporterrors = true, $offset = 0 ) // {{{
@@ -82,9 +77,9 @@ class TikiDb_Bridge extends TikiDb
 		self::get()->setErrorMessage($message);
 	} // }}}
 
-	protected function handleQueryError( $query, $values, $result, $mode ) // {{{
+	protected function handleQueryError( $query, $values, $result ) // {{{
 	{
-		self::get()->handleQueryError($query, $values, $result, $mode);
+		self::get()->handleQueryError($query, $values, $result);
 	} // }}}
 
 	protected function convertQueryTablePrefixes( &$query ) // {{{
@@ -92,9 +87,9 @@ class TikiDb_Bridge extends TikiDb
 		self::get()->convertQueryTablePrefixes($query);
 	} // }}}
 
-	function convertSortMode( $sort_mode, $fields = null ) // {{{
+	function convertSortMode( $sort_mode ) // {{{
 	{
-		return self::get()->convertSortMode($sort_mode, $fields);
+		return self::get()->convertSortMode($sort_mode);
 	} // }}}
 
 	function getQuery() // {{{
@@ -123,8 +118,8 @@ class TikiDb_Bridge extends TikiDb
 		return call_user_func_array(array( self::get(), 'concat' ), $arr);
 	} // }}}
 
-	function table($tableName, $autoIncrement = true) // {{{
+	function table($tableName) // {{{
 	{
-		return self::get()->table($tableName, $autoIncrement);
+		return self::get()->table($tableName);
 	} // }}}
 }

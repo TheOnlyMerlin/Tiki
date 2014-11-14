@@ -1,15 +1,12 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once 'tiki-setup.php';
-$categlib = TikiLib::lib('categ');
+require_once 'lib/categories/categlib.php';
 require_once 'lib/transitionlib.php';
 
 $auto_query_args = array();
@@ -33,13 +30,13 @@ $to_add = array();
 switch( $jitRequest->action->alpha() ) {
 	case 'subset':
 		$transition_mode = $_REQUEST['transition_mode'];
-
+	
 		if ( $transition_mode == 'category' ) {
 			$jitPost->replaceFilter('cat_categories', 'int');
 			if ( $selection = $jitPost->cat_categories->asArray() ) {
 				$available_states = array_combine(
-					$selection,
-					array_map(array( $categlib, 'get_category_name' ), $selection)
+								$selection,
+								array_map(array( $categlib, 'get_category_name' ), $selection)
 				);
 			} else {
 				$available_states = array();
@@ -52,58 +49,58 @@ switch( $jitRequest->action->alpha() ) {
 				$available_states = array();
 			}
 		}
-		break;
-	case 'new':
-		$transitionlib = new TransitionLib($transition_mode);
-		$transitionlib->addTransition(
-			$_REQUEST['from'],
-			$_REQUEST['to'],
-			$_REQUEST['label'],
-			isset($_REQUEST['preserve'])
-		);
-		break;
-	case 'edit':
-		$transitionlib = new TransitionLib($transition_mode);
-
-		if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
-			$transitionlib->updateTransition(
-				$_REQUEST['transitionId'],
-				$_REQUEST['from'],
-				$_REQUEST['to'],
-				$_REQUEST['label'],
-				isset($_REQUEST['preserve'])
+					break;
+		case 'new':
+			$transitionlib = new TransitionLib($transition_mode);
+			$transitionlib->addTransition(
+							$_REQUEST['from'],
+							$_REQUEST['to'],
+							$_REQUEST['label'],
+							isset($_REQUEST['preserve'])
 			);
-		} else {
+						break;
+		case 'edit':
+			$transitionlib = new TransitionLib($transition_mode);
+
+			if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
+				$transitionlib->updateTransition(
+								$_REQUEST['transitionId'],
+								$_REQUEST['from'],
+								$_REQUEST['to'],
+								$_REQUEST['label'],
+								isset($_REQUEST['preserve'])
+				);
+			} else {
+				$selected_transition = $transitionlib->getTransition((int) $_REQUEST['transitionId']);
+			}
+						break;
+		case 'addguard':
+			$transitionlib = new TransitionLib($transition_mode);
 			$selected_transition = $transitionlib->getTransition((int) $_REQUEST['transitionId']);
-		}
-		break;
-	case 'addguard':
-		$transitionlib = new TransitionLib($transition_mode);
-		$selected_transition = $transitionlib->getTransition((int) $_REQUEST['transitionId']);
 
-		if ( $selection = $jitPost->states->asArray() ) {
-			$selected_transition['guards'][] = array(
-						$_REQUEST['type'],
-						(int) $_REQUEST['count'],
-						$selection,
-			);
+			if ( $selection = $jitPost->states->asArray() ) {
+				$selected_transition['guards'][] = array(
+							$_REQUEST['type'],
+							(int) $_REQUEST['count'],
+							$selection,
+				);
+				$transitionlib->updateGuards((int) $selected_transition['transitionId'], $selected_transition['guards']);
+			}
+						break;
+		case 'removeguard':
+			$transitionlib = new TransitionLib($transition_mode);
+			$selected_transition = $transitionlib->getTransition((int) $_REQUEST['transitionId']);
+
+			unset( $selected_transition['guards'][ (int) $_REQUEST['guard'] ] );
+			$selected_transition['guards'] = array_values($selected_transition['guards']);
 			$transitionlib->updateGuards((int) $selected_transition['transitionId'], $selected_transition['guards']);
-		}
-		break;
-	case 'removeguard':
-		$transitionlib = new TransitionLib($transition_mode);
-		$selected_transition = $transitionlib->getTransition((int) $_REQUEST['transitionId']);
+						break;
+		case 'remove':
+			$transitionlib = new TransitionLib($transition_mode);
+			check_ticket('remove_transition');
 
-		unset( $selected_transition['guards'][ (int) $_REQUEST['guard'] ] );
-		$selected_transition['guards'] = array_values($selected_transition['guards']);
-		$transitionlib->updateGuards((int) $selected_transition['transitionId'], $selected_transition['guards']);
-		break;
-	case 'remove':
-		$transitionlib = new TransitionLib($transition_mode);
-		check_ticket('remove_transition');
-
-		$transitionlib->removeTransition($_REQUEST['transitionId']);
-		break;
+			$transitionlib->removeTransition($_REQUEST['transitionId']);
+						break;
 }
 
 // Obtain data
@@ -175,14 +172,9 @@ if ( count($available_states) > 0 ) {
 $smarty->assign('mid', 'tiki-admin_transitions.tpl');
 $smarty->display('tiki.tpl');
 
-/**
- * @param $state
- * @return mixed|string
- */
 function transition_label_finder( $state )
 {
-	global $available_states, $transition_mode;
-	$categlib = TikiLib::lib('categ');
+	global $available_states, $transition_mode, $categlib;
 
 	if ( isset($available_states[$state]) ) {
 		return $available_states[$state];

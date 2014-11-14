@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -47,7 +47,7 @@ class Text_Diff_Renderer_character extends Tiki_Text_Diff_Renderer
     {
     }
 
-	function _lines($lines, $prefix = '', $suffix = '', $type = '')
+	function _lines($type, $lines, $prefix = '')
 	{
 		if ($type == 'context') {
 	        foreach ($lines as $line) {
@@ -72,24 +72,24 @@ class Text_Diff_Renderer_character extends Tiki_Text_Diff_Renderer
 
     function _context($lines)
     {
-        $this->_lines($lines, '', '', 'context');
+        $this->_lines('context', $lines);
     }
 
     function _added($lines, $changemode = FALSE)
     {
         if ($changemode) {
-        	$this->_lines($lines, '+', '', 'change-added');
+        	$this->_lines('change-added', $lines, '+');
         } else {
-        	$this->_lines($lines, '+', '', 'added');
+        	$this->_lines('added', $lines, '+');
         }
     }
 
     function _deleted($lines, $changemode = FALSE)
     {
         if ($changemode) {
-        	$this->_lines($lines, '-', '', 'change-deleted');
+        	$this->_lines('change-deleted', $lines, '-');
         } else {
-	        $this->_lines($lines, '-', '', 'deleted');
+	        $this->_lines('deleted', $lines, '-');
         }
     }
 

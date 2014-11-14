@@ -1,17 +1,13 @@
 {* $Id$ *}
-{extends 'layout_view.tpl'}
-
-{* Separate the content display from the display of the whole page. 
-Used to support printing, which use the tiki-show_content.tpl directly.
-Note: The show content block must be defined at root level to use the include. AB *}
-{block name=title}
-	{if !isset($pageLang)}
-		{if isset($info.lang)}
-			{assign var='pageLang' value=$info.lang}
-		{else}
-			{assign var='pageLang' value=''}
-		{/if}
-	{/if}{if !isset($hide_page_header) or !$hide_page_header}
+{if !isset($pageLang)}
+	{if isset($info.lang)}
+		{assign var='pageLang' value=$info.lang}
+	{else}
+		{assign var='pageLang' value=''}
+	{/if}
+{/if}
+		
+{if !isset($hide_page_header) or !$hide_page_header}
 	{if $prefs.feature_siteloc eq 'page' and $prefs.feature_breadcrumbs eq 'y'}
 		{if $prefs.feature_siteloclabel eq 'y'}{tr}Location : {/tr}{/if}
 		{breadcrumbs type="trail" loc="page" crumbs=$crumbs}
@@ -20,22 +16,12 @@ Note: The show content block must be defined at root level to use the include. A
 		{/if}
 	{/if}
 
-	{if $prefs.feature_page_title eq 'y'}
-		<h1 class="pagetitle">{breadcrumbs type="pagetitle" loc="page" crumbs=$crumbs machine_translate=$machine_translate_to_lang source_lang=$pageLang target_lang=$machine_translate_to_lang}</h1>
-	{/if}
+{include file='tiki-flaggedrev_approval_header.tpl'}
 
-{/if}
-{/block}
+{/if} {*hide_page_header*}
 
-{block name="quicknav"}
-	{if !$prefs.wiki_topline_position or $prefs.wiki_topline_position eq 'top' or $prefs.wiki_topline_position eq 'both'}
-		{include file='tiki-wiki_topline.tpl'}
-	{/if}
-{/block}
-
-{block name=content}
-{if !isset($hide_page_header) or !$hide_page_header}
-	{include file='tiki-flaggedrev_approval_header.tpl'}
+{if !$prefs.wiki_topline_position or $prefs.wiki_topline_position eq 'top' or $prefs.wiki_topline_position eq 'both'}
+	{include file='tiki-wiki_topline.tpl'}
 {/if}
 
 {if $print_page ne 'y'}
@@ -48,7 +34,7 @@ Note: The show content block must be defined at root level to use the include. A
 	{remarksbox type="note" title="{tr}Note{/tr}"}{$saved_msg}{/remarksbox}
 {/if}
 
-{if $user and $prefs.feature_user_watches eq 'y' and (isset($category_watched) and $category_watched eq 'y')}
+{if $user and $prefs.feature_user_watches eq 'y' and $category_watched eq 'y'}
 	<div class="categbar" style="clear: both; text-align: right">
 		{tr}Watched by categories:{/tr}
 		{section name=i loop=$watching_categories}
@@ -59,12 +45,14 @@ Note: The show content block must be defined at root level to use the include. A
 
 {if $prefs.feature_urgent_translation eq 'y'}
 	{section name=i loop=$translation_alert}
-		<div class="panel panel-warning">
-			<div class="panel-heading">
-				{tr}Content may be out of date{/tr}
+		<div class="cbox">
+			<div class="cbox-title">
+				{icon _id=information style="vertical-align:middle"} {tr}Content may be out of date{/tr}
 			</div>
-			<div class="panel-body">
-				{tr}An urgent request for translation has been sent. Until this page is updated, you can see a corrected version in the following pages:{/tr}
+			<div class="cbox-data">
+				<p>
+					{tr}An urgent request for translation has been sent. Until this page is updated, you can see a corrected version in the following pages:{/tr}
+				</p>
 				<ul>
 					{section name=j loop=$translation_alert[i]}
 						<li>
@@ -92,7 +80,7 @@ Note: The show content block must be defined at root level to use the include. A
 		{/if}
 
 		{if $pages > 1 and $prefs.wiki_page_navigation_bar neq 'bottom'}
-			<div class="text-center navigation_bar pagination position_top">
+			<div class="center navigation_bar pagination position_top">
 				<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$first_page}">{icon _id='resultset_first' alt="{tr}First page{/tr}"}</a>
 
 				<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$prev_page}">{icon _id='resultset_previous' alt="{tr}Previous page{/tr}"}</a>
@@ -105,12 +93,22 @@ Note: The show content block must be defined at root level to use the include. A
 			</div>
 		{/if}
 
+		{if $prefs.feature_page_title eq 'y'}
+			<h1 class="pagetitle">{breadcrumbs type="pagetitle" loc="page" crumbs=$crumbs machine_translate=$machine_translate_to_lang source_lang=$pageLang target_lang=$machine_translate_to_lang}</h1>
+		{/if}
+
 		{if $structure eq 'y' and ($prefs.wiki_structure_bar_position ne 'bottom')}
 			{include file='tiki-wiki_structure_bar.tpl'}
 		{/if}
 
 		{if $prefs.feature_wiki_ratings eq 'y'}
 			{include file='poll.tpl'}
+		{/if}
+
+		{if $prefs.wiki_simple_ratings eq 'y' && $tiki_p_assign_perm_wiki_page eq 'y'}
+			<form method="post" action="">
+				{rating type="wiki page" id=$page_id}
+			</form>
 		{/if}
 	{/if} {*hide_page_header*}
 
@@ -120,7 +118,7 @@ Note: The show content block must be defined at root level to use the include. A
 		{/remarksbox}
 	{/if}
 	
-	<div id="page-data" class="clearfix">
+	<div id="page-data">
 		{if isset($pageLang) and ($pageLang eq 'ar' or $pageLang eq 'he')}
 			<div style="direction:RTL; unicode-bidi:embed; text-align: right; {if $pageLang eq 'ar'}font-size: large;{/if}">
 				{$parsed}
@@ -129,14 +127,17 @@ Note: The show content block must be defined at root level to use the include. A
 			{$parsed}
 		{/if}
 	</div>
+	
+	{* Information below the wiki content must not overlap the wiki content that could contain floated elements *}
+	<hr class="hrwikibottom" /> 
 
 	{if $structure eq 'y' and (($prefs.wiki_structure_bar_position eq 'bottom') or ($prefs.wiki_structure_bar_position eq 'both'))}
 		{include file='tiki-wiki_structure_bar.tpl'}
 	{/if}
 
 	{if $pages > 1 and $prefs.wiki_page_navigation_bar neq 'top'}
-		<br>
-		<div class="text-center navigation_bar pagination position_bottom">
+		<br />
+		<div class="center navigation_bar pagination position_bottom">
 			<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$first_page}">{icon _id='resultset_first' alt="{tr}First page{/tr}"}</a>
 
 			<a href="tiki-index.php?{if $page_info}page_ref_id={$page_info.page_ref_id}{else}page={$page|escape:"url"}{/if}&amp;pagenum={$prev_page}">{icon _id='resultset_previous' alt="{tr}Previous page{/tr}"}</a>
@@ -154,14 +155,7 @@ Note: The show content block must be defined at root level to use the include. A
 	<div class="wikitext" id="wikifootnote">{$footnote}</div>
 {/if}
 
-<footer class="help-block editdate">
-	{if $prefs.wiki_simple_ratings eq 'y' && $tiki_p_assign_perm_wiki_page eq 'y'}
-		{tr}Rate this page:{/tr}
-	    <form method="post" action="">
-			{rating type="wiki page" id=$page_id}
-	    </form>
-	{/if}
-
+<p class="editdate">
 	{if isset($wiki_authors_style) && $wiki_authors_style neq 'none'}
 		{include file='wiki_authors.tpl'}
 	{/if}
@@ -169,11 +163,11 @@ Note: The show content block must be defined at root level to use the include. A
 	{include file='show_copyright.tpl'}
 
 	{if $print_page eq 'y'}
-		<br>
-		{capture name=url}{query _script='tiki-index.php' _type='absolute_uri'}{/capture}
+		<br />
+		{capture name=url}{$base_url}{$page|sefurl}{if !empty($smarty.request.itemId)}&amp;itemId={$smarty.request.itemId}{/if}{/capture}
 		{tr}The original document is available at{/tr} <a href="{$smarty.capture.url}">{$smarty.capture.url}</a>
 	{/if}
-</footer>
+</p>
 
 {if $is_categorized eq 'y' and $prefs.feature_categories eq 'y' and $prefs.feature_categoryobjects eq 'y'}
 	{$display_catobjects}
@@ -191,4 +185,3 @@ Note: The show content block must be defined at root level to use the include. A
 		{include file='tiki-page_bar.tpl'}
 	{/if}
 {/if}
-{/block}

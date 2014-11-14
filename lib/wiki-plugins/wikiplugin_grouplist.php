@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -49,10 +49,7 @@ function wikiplugin_grouplist_info()
 
 function wikiplugin_grouplist( $data, $params )
 {
-	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
-	$access = TikiLib::lib('access');
-
+	global $smarty, $userlib, $access;
 	$default = array('recur' => 'n', 'linkhome' => 'n');
 	$params = array_merge($default, $params);
 	if ($params['linkhome'] == 'y') {

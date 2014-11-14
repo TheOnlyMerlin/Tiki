@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,174 +9,99 @@
 
 //this script may only be included - so its better to die if called  directly.
 if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
-	header("location: index.php");
-	exit;
+  header("location: index.php");
+  exit;
 }
 
-$categlib = TikiLib::lib('categ');
+
+require_once('lib/perspectivelib.php');
+require_once('lib/categories/categlib.php');
 
 class AreasLib extends CategLib
 {
-	private $areas;
-	private $areasArray;
-
-	function __construct()
-	{
-		$this->areas = $this->table('tiki_areas');
-		$this->cacheAreas();
-	}
 
 	function HandleObjectCategories($objectCategoryIds)
 	{
-		global $prefs;
-		$perspectivelib = TikiLib::lib('perspective');
+    	global $prefs, $perspectivelib, $_SESSION;  
+		$descendants = $this->get_category_descendants($prefs['areas_root']);  
 
-		$current_object = current_object();
-
-		if (!$current_object) {	// only used on tiki objects
-			return;
-		}
-
-		$descendants = $this->get_category_descendants($prefs['areas_root']);
-
-		$objectPerspective = 0;
 		if (!empty($objectCategoryIds)) {
-			if (!isset($_SESSION['current_perspective'])) $_SESSION['current_perspective'] = 0;
+			if (!isset($_SESSION['current_perspective'])) $_SESSION['current_perspective'] = 0; 
 			foreach ($objectCategoryIds as $categId) {
 				// If category is inside $prefs['areas_root']
+				$foundPerspective = NULL;
 				if (in_array($categId, $descendants)) {
-					$area = $this->getAreaByCategId($categId);
-
-					if ($area) {
-						$objectPerspective = $area['perspectives'][0]; // use 1st persp
+					if ($foundPerspective = $this->get_perspective_by_categid($categId)) {
 						break;
 					}
 				}
 			}
-			if ($objectPerspective && $objectPerspective != $_SESSION['current_perspective']) {
-
-				$area = $this->getAreaByPerspId($_SESSION['current_perspective']);
-				$objectArea = $this->getAreaByPerspId($objectPerspective);
-
-				if (($area && !$area['share_common']) || ($objectArea && $objectArea['exclusive'])) {
-					$perspectivelib->set_perspective($objectPerspective);
-					Zend_OpenId::redirect(Zend_OpenId::selfUrl());
-				}
-			}
-		}
-		if ($objectPerspective < 1 && !empty($_SESSION['current_perspective'])) { // uncategorised objects
-
-			$area = $this->getAreaByPerspId($_SESSION['current_perspective']);
-			if ($area) {
-				if ( !$area['share_common']) {
-					$perspectivelib->set_perspective($objectPerspective);
-					Zend_OpenId::redirect(Zend_OpenId::selfUrl());
-				}
+			if ($foundPerspective && $foundPerspective != $_SESSION['current_perspective']) {
+				$perspectivelib->set_perspective($foundPerspective);
+				header("Location: ". $_SERVER['REQUEST_URI']);
+				die;
+			} elseif (!$foundPerspective && $_SESSION['current_perspective']) {
+				$perspectivelib->set_perspective(0);
+				header("Location: ". $_SERVER['REQUEST_URI']);
+				die;			
 			}
 		}
 	}
 
-	public function getAreaByCategId($categId, $enabled = true)
+/*
+ for the difference between should and is, first retrieve all perspectives given for any reason
+ and then choose one in the function below, namely the first.
+*/
+	function get_perspectives_by_categid($categId)
 	{
-		foreach ($this->areasArray as $area) {
-			if ($area['enabled'] == $enabled && $categId == $area['categId']) {
-				return $area;
-			}
-		}
-		return array();
+		$result = $this->query("SELECT `categId`, `perspectives` FROM tiki_areas WHERE categId = ?", array($categId));
+		while($row = $result->fetchRow()) return unserialize($row['perspectives']);
+		return false;
 	}
-
-	public function getAreaByPerspId($perspid, $enabled = true)
+/*
+ pick up the first or only perspective assigned to category with id categId
+ returns false if there is no entry for this category and returns 0 if it has no perspective
+*/
+	function get_perspective_by_categid($categId)
 	{
-		foreach ($this->areasArray as $area) {
-			if ($area['enabled'] == $enabled && in_array($perspid, $area['perspectives'])) {
-				return $area;
-			}
-		}
-		return array();
-	}
-
-	/**
-	 * @param bool $reload	force reload from database
-	 *
-	 * Sets up a cached version of the table with proper arrays and bools
-	 */
-
-	private function cacheAreas($reload = false)
-	{
-		if ($reload || empty($this->areasArray)) {
-			$this->areasArray = array();
-			$res = $this->areas->fetchAll($this->areas->all());
-			foreach ($res as & $row) {
-				$row['perspectives'] = unserialize($row['perspectives']);
-				$row['enabled'] = ($row['enabled'] === 'y');
-				$row['exclusive'] = ($row['exclusive'] === 'y');
-				$row['share_common'] = ($row['share_common'] === 'y');
-			}
-			$this->areasArray = $res;
-		}
+		$persp = $this->get_perspectives_by_categid($categId);
+		if ($persp===false) return false;
+		if (count($persp)==0) return 0;
+		return $persp[0];
 	}
 
 	function update_areas()
 	{
 		global $prefs;
-		$this->areas->deleteMultiple();	// empty areas table before rebuilding
 		$areas = array();
 		$descendants = $this->get_category_descendants($prefs['areas_root']);
-		if (is_array($descendants)) {
-			foreach ($descendants as $item) { // it only should be just one perspective assigned
-				$areas[$item] = array();
+		if ( is_array($descendants) ) {
+		foreach ($descendants as $item)
+			$areas[$item] = array();	// it only should be just one perspective assigned
+		$result = $this->fetchAll("SELECT `perspectiveId`, `pref`, `value` FROM tiki_perspective_preferences WHERE pref = 'category_jail'", array());
+		if (count($result)!=0) {
+			foreach ( $result as $row ) {
+				$categs = unserialize($row['value']);
+				foreach ($categs as $item) if (array_key_exists($item, $areas)) $areas[$item][] = $row['perspectiveId'];
 			}
-			$result = $this->fetchAll("SELECT `perspectiveId`, `pref`, `value` FROM tiki_perspective_preferences WHERE pref = 'category_jail'", array());
-			if (count($result) != 0) {
-				foreach ($result as $row) {
-					$categs = unserialize($row['value']);
-					foreach ($categs as $item) {
-						if (array_key_exists($item, $areas)) {
-							$areas[$item][] = $row['perspectiveId'];
-						}
-					}
-				}
 
-				foreach (array_filter($areas) as $key => $item) { // don't bother with categs with no perspectives
-					$data = array();
-					// update checkboxes from form
-					$data['enabled'] = !empty($_REQUEST['enabled'][$key]) ? 'y' : 'n';
-					$data['exclusive'] = !empty($_REQUEST['exclusive'][$key]) ? 'y' : 'n';
-					$data['share_common'] = !empty($_REQUEST['share_common'][$key]) ? 'y' : 'n';
+			// to get rid off probably old data
+			$this->query("DELETE FROM tiki_areas");
 
-					$this->bind_area($key, $item, $data);
-				}
-			} else {
-				return tra("No category jail set in any perspective.");
+			foreach ($areas as $key=>$item) {
+				$result = $this->query("INSERT INTO tiki_areas (categId, perspectives) VALUES(?,?)", array($key, serialize($item)));
 			}
-			$this->cacheAreas(true); // recache the whole table
-			return true;
-		} else {
-			return tra("Areas root category id") . " " . tra("is invalid.");
-		}
-	}
-
-	function bind_area($categId, $perspectiveIds, $data = array())
-	{
-		$perspectiveIds = (array)$perspectiveIds;
-		$conditions = array('categId' => $categId);
-		$data['perspectives'] = serialize($perspectiveIds);
-
-		if ($this->areas->fetchCount($conditions)) {
-
-			$this->areas->update($data, $conditions);
-		} else {
-			$this->areas->insert(array_merge($data, $conditions));
-		}
+		} else return tra("No category jail set in any perspective.");
+		return true;
+		} else return tra("Areas root category id")." ".tra("is invalid.");
 	}
 } // class end
+$areaslib = new AreasLib();
+global $areaslib;
 
 /*-----------------------------------------------
 +++ Description of Perspective Binder / Areas +++ 
 -------------------------------------------------
-
-Much of this will become out of date for tiki 10 (jb)
 
 ----------------------
 +++ Configurations +++

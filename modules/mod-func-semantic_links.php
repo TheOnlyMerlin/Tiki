@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,6 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_semantic_links_info()
 {
 	return array(
@@ -24,18 +21,14 @@ function module_semantic_links_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_semantic_links($mod_reference, $module_params)
 {
-	global $page;
-	$smarty = TikiLib::lib('smarty');
+	global $page, $smarty;
 	$smarty->assign('show_semantic_links_module', false);
 
 	if (isset($page) && !empty($page)) {
-		$semanticlib = TikiLib::lib('semantic');
+		global $semanticlib;
+		require_once('lib/wiki/semanticlib.php');
 	
 		$msl_page = $page;
 		$relations = $semanticlib->getRelationList($msl_page);

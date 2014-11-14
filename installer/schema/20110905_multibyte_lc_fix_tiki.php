@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -10,9 +10,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @param $installer
- */
 function upgrade_20110905_multibyte_lc_fix_tiki($installer)
 {
 	if (function_exists('mb_strtolower')) {
@@ -28,13 +25,13 @@ function upgrade_20110905_multibyte_lc_fix_tiki($installer)
 				$new = md5('wiki page' . $mblowercase);
 
 				$objectperms->updateMultiple(
-					array(
-						'objectId' => $new,
-					),
-					array(
-						'objectType' => 'wiki page',
-						'objectId' => $old,
-					)
+								array(
+									'objectId' => $new,
+								), 
+								array(
+									'objectType' => 'wiki page',
+									'objectId' => $old,
+								)
 				);
 			}
 		}

@@ -1,48 +1,34 @@
 <?php
-/**
- * Tiki translation functions
- *
- * @package TikiWiki
- * @subpackage lib\init
- * @copyright (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project. All Rights Reserved. See copyright.txt for details and a complete list of authors.
- * @licence Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
- */
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
+// All Rights Reserved. See copyright.txt for details and a complete list of authors.
+// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
+
+/** translate a English string
+ * @param $content - English string
+ * @param $lg - language - if not specify = global current language
+ */
 
 global $interactive_collected_strings;
 $interactive_collected_strings = array();
 
-/**
- * needs a description
- * @param $content
- * @return mixed|string
- */function tr($content)
+function tr($content)
 {
 	$args = func_get_args();
 	return tra($content, '', false, array_slice($args, 1));
 }
 
-/**
- * translate an English string
- * @param        $content English string
- * @param string $lg      language - if not specify = global current language
- * @param bool   $unused
- * @param array  $args
- *
- * @return mixed|string
- */
 function tra($content, $lg = '', $unused = false, $args = array())
 {
 	global $prefs;
 	static $languages = array();
 
 	if ($lg == '') {
-		if (! empty($prefs['language'])) {
+		if ( $prefs['language'] ) {
 			$lang = $prefs['language'];
-		} elseif(! empty($prefs['site_language'])) {
-			$lang = $prefs['site_language'];
 		} else {
-			$lang = 'en';
+			$lang = $prefs['site_language'];
 		}
 	} else {
 		$lang = $lg;
@@ -60,10 +46,6 @@ function tra($content, $lg = '', $unused = false, $args = array())
 	return $out;
 }
 
-/**
- * initialize language $lg
- * @param string $lg
- */
 function init_language( $lg )
 {
 	global $tikidomain, $prefs;
@@ -72,38 +54,22 @@ function init_language( $lg )
 
 		$lang = array();
 		include("lang/$lg/language.php");
-
+		
 		// include mods language files if any
 		$files = glob("lang/$lg/language_*.php");
 		if (is_array($files)) {
-			global $lang_mod;
 			foreach ($files as $file) {
 				require($file);
 				$lang = array_merge($lang, $lang_mod);
 			}
 		}
 
-		$customfile = "lang/$lg/custom.php";
-		if (is_file($customfile)) {
-			if (! check_file_BOM($customfile)) {
-				include_once($customfile);
-			}
+		if (is_file("lang/$lg/custom.php")) {
+			include_once("lang/$lg/custom.php");
 		}
-
-		$customfile = "lang/$lg/$tikidomain/custom.php";
-		if (!empty($tikidomain) && is_file($customfile)) {
-			if (! check_file_BOM($customfile)) {
-				include_once($customfile);
-			}
-		}
-
-		$files = glob("addons/*/lang/$lg/addon.php");
-		if (is_array($files)) {
-			global $lang_addon;
-			foreach ($files as $file) {
-				require($file);
-				$lang = array_merge($lang, $lang_addon);
-			}
+		
+		if (!empty($tikidomain) && is_file("lang/$lg/$tikidomain/custom.php")) {
+			include_once("lang/$lg/$tikidomain/custom.php");
 		}
 
 		if ( isset( $prefs['lang_use_db'] ) && $prefs['lang_use_db'] == 'y' ) {
@@ -123,14 +89,6 @@ function init_language( $lg )
 	}
 }
 
-/**
- * needs description
- * @param        $content
- * @param string $lg
- * @param array  $args
- *
- * @return mixed|string
- */
 function tra_impl($content, $lg = '', $args = array())
 {
 	global $prefs, $tikilib;
@@ -138,9 +96,9 @@ function tra_impl($content, $lg = '', $args = array())
 	if (empty($content)) {
 		return '';
 	}
-
+	
 	global ${"lang_$lg"};
-
+	
 	if ($lg and isset(${"lang_$lg"}[$content])) {
 		return tr_replace(${"lang_$lg"}[$content], $args);
 	} else {
@@ -154,9 +112,9 @@ function tra_impl($content, $lg = '', $args = array())
 			$new_content = substr($content, 0, -1);
 			if ( isset(${"lang_$lg"}[$new_content]) ) {
 				return tr_replace(
-					${"lang_$lg"}[$new_content] . ( isset(${"lang_$lg"}[$lastCharacter])
-					? ${"lang_$lg"}[$lastCharacter]
-					: $lastCharacter ), $args
+								${"lang_$lg"}[$new_content] . ( isset(${"lang_$lg"}[$lastCharacter]) 
+								? ${"lang_$lg"}[$lastCharacter] 
+								: $lastCharacter ), $args 
 				);
 			}
 		}
@@ -174,13 +132,6 @@ function tra_impl($content, $lg = '', $args = array())
 	return tr_replace($content, $args);
 }
 
-/**
- * needs description
- * @param $content
- * @param $args
- *
- * @return mixed
- */
 function tr_replace( $content, $args )
 {
 	if ( ! count($args) ) {
@@ -191,18 +142,13 @@ function tr_replace( $content, $args )
 
 		foreach ( array_keys($args) as $num )
 			$needles[] = "%$num";
-
+		
 		$out = str_replace($needles, $replacements, $content);
 	}
 
 	return $out;
 }
 
-/**
- * needs a proper description
- * @param $original
- * @param $printed
- */
 function record_string( $original, $printed )
 {
 	global $interactive_collected_strings;
@@ -211,58 +157,14 @@ function record_string( $original, $printed )
 	}
 }
 
-/**
- * needs a proper description
- * @return bool
- */
 function interactive_enabled()
 {
 	return isset( $_SESSION['interactive_translation_mode'] ) && $_SESSION['interactive_translation_mode'] != 'off';
 }
 
-/**
- * needs a proper description
- * @return array
- */
 function get_collected_strings()
 {
 	global $interactive_collected_strings;
 	return $interactive_collected_strings;
-}
-
-/**
- * Checks a php file for a Byte Order Mark (BOM) and trigger error (and report error for admin)
- *
- * @param string $filename		full path of file to check
- * @param bool $try_to_fix		if file perms allow remove BOM if found
- *
- * @return bool					true if file still has a BOM
- */
-function check_file_BOM($filename, $try_to_fix = true) {
-	$BOM_found = false;
-
-	if (is_readable($filename)) {
-		$file = @fopen($filename, "r");
-		$BOM_found = (fread($file, 3) === "\xEF\xBB\xBF");
-
-		if ($try_to_fix && $BOM_found && is_writable($filename)) {
-			$content = fread($file, filesize($filename));
-			fclose($file);
-			file_put_contents($filename, $content);
-			trigger_error('File "' . $filename . '" contained a BOM which has been fixed.');
-			$BOM_found = false;
-		} else {
-			fclose($file);
-		}
-	}
-	if ($BOM_found) {
-		$message = 'Warning: File "' . $filename . '" contains a BOM which cannot be fixed. Please re-edit and save as "UTF-8 without BOM"';
-		if (Perms::get()->admin) {
-			TikiLib::lib('errorreport')->report($message);
-		}
-		trigger_error($message);
-	}
-
-	return $BOM_found;
 }
 

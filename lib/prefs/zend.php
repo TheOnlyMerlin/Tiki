@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -59,7 +59,6 @@ function prefs_zend_list()
 			'options' => array(
 				'sendmail' => tra('Sendmail'),
 				'smtp' => tra('SMTP'),
-				'file' => tra('File (debug)'),
 			),
 			'default' => 'sendmail',
 		),
@@ -72,24 +71,6 @@ function prefs_zend_list()
 				'login' => tra('LOGIN'),
 				'plain' => tra('PLAIN'),
 				'crammd5' => tra('CRAM-MD5'),
-			),
-			'default' => '',
-		),
-		'zend_mail_smtp_helo' => array(
-			'name' => tra('Local server name'),
-			'description' => tra('Name of the local server. Will be reported to SMTP relay on the HELO/EHLO line.'),
-			'type' => 'text',
-			'size' => '20',
-			'perspective' => false,
-			'default' => 'localhost',
-		),
-		'zend_mail_queue' => array(
-			'name' => tra('Mail Delivery'),
-			'description' => tra('When set to Queue will store messages in the database. Requires to use the shell script ./sendmail.php to be run for actual delivery. Only works with SMTP mail.'),
-			'type' => 'list',
-			'options' => array(
-				'' => tra('Send immediately'),
-				'y' => tra('Queue'),
 			),
 			'default' => '',
 		),

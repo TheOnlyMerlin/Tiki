@@ -5,28 +5,32 @@
 {/remarksbox}
 
 <h2>{tr}Create/edit DSN{/tr}</h2>
-<form action="tiki-admin_dsn.php" method="post" class="form-horizontal" role="form">
-	<input type="hidden" name="dsnId" value="{$dsnId|escape}">
-    <div class="form-group">
-        <label class="col-sm-3 control-label" for="name">{tr}Name{/tr}</label>
-        <div class="col-sm-9">
-			<input type="text" maxlength="255" name="name" id="name" class="form-control" value="{$info.name|escape}">
-		</div>
-	</div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label" for="dsn">{tr}DSN{/tr}</label>
-        <div class="col-sm-9">
-			<input type="text" maxlength="255" class="form-control" name="dsn" id="dsn" value="{$info.dsn|escape}">
-		</div>
-	</div>
-	<div class="form-group text-center">
-		<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
-	</div>
+<form action="tiki-admin_dsn.php" method="post">
+	<input type="hidden" name="dsnId" value="{$dsnId|escape}" />
+	<table class="formcolor">
+		<tr>
+		<td>{tr}Name:{/tr}</td>
+		 <td>
+			<input type="text" maxlength="255" size="10" name="name" value="{$info.name|escape}" />
+			</td>
+		</tr>
+		<tr>
+			<td>{tr}DSN:{/tr}</td>
+			<td>
+				<input type="text" maxlength="255" size="40" name="dsn" value="{$info.dsn|escape}" />
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td>
+				<input type="submit" name="save" value="{tr}Save{/tr}" />
+			</td>
+		</tr>
+	</table>
 </form>
 
 <h2>{tr}DSN{/tr}</h2>
-<div class="table-responsive">
-<table class="table normal">
+<table class="normal">
 	<tr>
 		<th>
 			<a href="tiki-admin_dsn.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a>
@@ -36,91 +40,69 @@
 		</th>
 		<th>{tr}Action{/tr}</th>
 	</tr>
-
-	<tr>
+	{cycle values="odd,even" print=false}
+	<tr class="{cycle}">
 		<td class="text">{tr}Local (Tiki database){/tr}</td>
 		<td class="text">{tr}See db/local.php{/tr}</td>
 		<td class="action">
 			&nbsp;&nbsp;
-			{permission_link mode=icon type=dsn id=local title=local}
+			<a class="link" href="tiki-objectpermissions.php?objectName=local&amp;objectType=dsn&amp;permType=dsn&amp;objectId=local">{icon _id='key' alt="{tr}Perms{/tr}"}</a>
 		</td>
 	</tr>
 	{section name=user loop=$channels}
-		<tr>
+		<tr class="{cycle}">
 			<td class="text">{$channels[user].name}</td>
 			<td class="text">{$channels[user].dsn}</td>
 			<td class="action">
 				&nbsp;&nbsp;
 				<a title="{tr}Edit{/tr}" class="link" href="tiki-admin_dsn.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;dsnId={$channels[user].dsnId}">{icon _id='page_edit'}</a> &nbsp;
 				<a title="{tr}Delete{/tr}" class="link" href="tiki-admin_dsn.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].dsnId}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>
-				{permission_link mode=icon type=dsn id=$channels[user].name title=$channels[user].name}
+				<a class="link" href="tiki-objectpermissions.php?objectName={$channels[user].name|escape:"url"}&amp;objectType=dsn&amp;permType=dsn&amp;objectId={$channels[user].name|escape:"url"}">{icon _id='key' alt="{tr}Perms{/tr}"}</a>
 			</td>
 		</tr>
 	{/section}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
 
 <h2>{tr}Content Authentication{/tr}</h2>
-<form id="source-form" method="post" action="{service controller=auth_source}" class="form-horizontal" role="form">
+<form id="source-form" method="post" action="{service controller=auth_source}">
 	<fieldset>
 		<legend>{tr}Identification{/tr}</legend>
-        <div class="form-group">
-		    <label class="col-sm-3 control-label">{tr}Identifier{/tr}</label>
-            <div class="col-sm-3">
-    			<select name="existing" class="form-control">
-	    			<option value="">{tr}New{/tr}</option>
-		    	</select>
-            </div>
-            <div class="col-sm-4">
-        		<input type="text" name="identifier" class="form-control">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="url">{tr}URL{/tr}</label>
-            <div class="col-sm-4">
-                <input type="url" name="url" id="url" class="form-control" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="method">{tr}Type{/tr}</label>
-            <div class="col-sm-4">
-    			<select name="method" id="method">
-	    			<option value="basic">{tr}HTTP Basic{/tr}</option>
-		    		<option value="post">{tr}HTTP Session / Login{/tr}</option>
-			    	<option value="get">{tr}HTTP Session / Visit{/tr}</option>
-		    	</select>
-		    </div>
-        </div>
+		<label>
+			{tr}Identifier:{/tr}
+			<select name="existing">
+				<option value="">{tr}New{/tr}</option>
+			</select>
+		</label>
+		<input type="text" name="identifier"/>
+		<label>{tr}URL:{/tr} <input type="url" name="url"/></label>
+		<label>
+			{tr}Type:{/tr}
+			<select name="method">
+				<option value="basic">{tr}HTTP Basic{/tr}</option>
+				<option value="post">{tr}HTTP Session / Login{/tr}</option>
+				<option value="get">{tr}HTTP Session / Visit{/tr}</option>
+			</select>
+		</label>
 	</fieldset>
 	<fieldset class="method basic">
 		<legend>{tr}HTTP Basic{/tr}</legend>
-        <div class="form-group">
-		    <label class="col-sm-3 control-label" for="basic_username">{tr}Username{/tr}</label>
-            <div class="col-sm-9">
-                <input type="text" name="basic_username" id="basic_username" class="form-control">
-            </div>
-        </div>
-        <div class="form-group">
-		    <label class="col-sm-3 control-label" for="basic_password">{tr}Password{/tr}</label>
-            <div class="col-sm-9">
-                <input type="password" name="basic_password" id="basic_password" class="form-control">
-            </div>
-        </div>
+		<label>{tr}Username:{/tr} <input type="text" name="basic_username"/></label>
+		<label>{tr}Password:{/tr} <input type="password" name="basic_password"/></label>
 	</fieldset>
 	<fieldset class="method post">
 		<legend>{tr}HTTP Session / Login{/tr}</legend>
-		<label>{tr}URL{/tr} <input type="url" name="post_url"></label>
+		<label>{tr}URL:{/tr} <input type="url" name="post_url"/></label>
 		<table>
 			<thead>
 				<tr><th>{tr}Name{/tr}</th><th>{tr}Value{/tr}</th></tr>
 			</thead>
 			<tfoot>
 				<tr>
-					<td><input type="text" name="post_new_field"></td>
-					<td><input type="text" name="post_new_value"></td>
-					<td><input type="submit" class="btn btn-default btn-sm" name="post_new_add" value="{tr}Add{/tr}"></td>
+					<td><input type="text" name="post_new_field"/></td>
+					<td><input type="text" name="post_new_value"/></td>
+					<td><input type="submit" name="post_new_add" value="{tr}Add{/tr}"/></td>
 				</tr>
 			</tfoot>
 			<tbody>
@@ -129,13 +111,11 @@
 	</fieldset>
 	<fieldset class="method get">
 		<legend>{tr}HTTP Session / Visit{/tr}</legend>
-		<label>{tr}URL{/tr} <input type="url" name="get_url"></label>
+		<label>{tr}URL:{/tr} <input type="url" name="get_url"/></label>
 	</fieldset>
 	<fieldset>
-        <div class="form-group text-center">
-    		<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
-	    	<input type="submit" class="btn btn-default btn-sm" name="delete" value="{tr}Delete{/tr}">
-        </div>
+		<input type="submit" name="save" value="{tr}Save{/tr}"/>
+		<input type="submit" name="delete" value="{tr}Delete{/tr}"/>
 	</fieldset>
 </form>
 {jq}
@@ -147,8 +127,6 @@ $('#source-form').each(function () {
 				$.each(entries, function (k, v) {
 					$(form.existing).append($('<option class="added"/>').text(v));
 				});
-
-				$(form.existing).trigger('chosen:updated');
 			});
 		},
 		addPostRow = function (name, value) {
@@ -243,7 +221,6 @@ $('#source-form').each(function () {
 			}
 
 			$(form.existing).val(data.identifier).change();
-			$(form.existing).trigger('chosen:updated');
 		});
 		return false;
 	});

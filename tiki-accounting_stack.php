@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -26,7 +23,7 @@ $objectperms = Perms::get(array( 'type' => 'accounting book', 'object' => $bookI
 if (!($globalperms->acct_book or $objectperms->acct_book_stack)) {
 	$smarty->assign('msg', tra('You do not have the right to book into the stack'));
 	$smarty->display('error.tpl');
-	die;
+	die;		
 }
 
 if (!isset($_REQUEST['bookId'])) {
@@ -61,29 +58,29 @@ if (isset($_REQUEST['action'])) {
 		if ($stackId == 0) {
 			// new entry
 			$result = $accountinglib->stackBook(
-				$bookId,
-				$_REQUEST['stackDate'],
-				$_REQUEST['stackDescription'],
-				$_REQUEST['debitAccount'],
-				$_REQUEST['creditAccount'],
-				$_REQUEST['debitAmount'],
-				$_REQUEST['creditAmount'],
-				$_REQUEST['debitText'],
-				$_REQUEST['creditText']
+							$bookId,
+							$_REQUEST['stackDate'],
+							$_REQUEST['stackDescription'],
+							$_REQUEST['debitAccount'],
+							$_REQUEST['creditAccount'],
+							$_REQUEST['debitAmount'],
+							$_REQUEST['creditAmount'],
+							$_REQUEST['debitText'],
+							$_REQUEST['creditText']
 			);
 		} else {
 			// modify old entry
 			$result = $accountinglib->stackUpdate(
-				$bookId,
-				$stackId,
-				$_REQUEST['stackDate'],
-				$_REQUEST['stackDescription'],
-				$_REQUEST['debitAccount'],
-				$_REQUEST['creditAccount'],
-				$_REQUEST['debitAmount'],
-				$_REQUEST['creditAmount'],
-				$_REQUEST['debitText'],
-				$_REQUEST['creditText']
+							$bookId,
+							$stackId,
+							$_REQUEST['stackDate'],
+							$_REQUEST['stackDescription'],
+							$_REQUEST['debitAccount'],
+							$_REQUEST['creditAccount'],
+							$_REQUEST['debitAmount'],
+							$_REQUEST['creditAmount'],
+							$_REQUEST['debitText'],
+							$_REQUEST['creditText']
 			);
 		}
 		if (is_numeric($result)) {
@@ -125,7 +122,7 @@ if (is_array($result)) {
 } else {
 	if ($stackId!=0) {
 		$stackEntry = $accountinglib->getStackTransaction($bookId, $_REQUEST['stackId']);
-		$smarty->assign('stackId', $stackId);
+		$smarty->assign('stackId', $stackId);	
 		$smarty->assign('stackDate', $stackEntry['stackDate']);
 		$smarty->assign('stackDescription', $stackEntry['stackDescription']);
 		$debitAccount = array();

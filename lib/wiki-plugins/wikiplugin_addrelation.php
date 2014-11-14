@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -32,7 +32,6 @@ function wikiplugin_addrelation_info()
 				'filter' => 'text',
 				'default' => null,
 				'since' => '8.0',
-				'profile_reference' => 'type_colon_object',
 			),
 			'target_object' => array(
 				'required' => false,
@@ -41,7 +40,6 @@ function wikiplugin_addrelation_info()
 				'filter' => 'text',
 				'default' => null,
 				'since' => '8.0',
-				'profile_reference' => 'type_colon_object',
 			),
 			'label_add' => array(
 				'required' => false,
@@ -81,7 +79,6 @@ function wikiplugin_addrelation_info()
 
 function wikiplugin_addrelation($data, $params)
 {
-	global $user;
 	if (isset($params['source_object']) && false !== strpos($params['source_object'], ':')) {
 		list($source_object['type'], $source_object['object']) = explode(':', $params['source_object'], 2);
 	} else {
@@ -125,22 +122,10 @@ function wikiplugin_addrelation($data, $params)
 	if (isset($_POST[$id])) {
 		if ($_POST[$id] == 'y') {
 			$relationlib->add_relation($qualifier, $source_object['type'], $source_object['object'], $target_object['type'], $target_object['object']);	
-			$finalEvent = 'tiki.social.relation.add';
 		} elseif ($_POST[$id] == 'n') {
 			$relation_id = $relationlib->add_relation($qualifier, $source_object['type'], $source_object['object'], $target_object['type'], $target_object['object']);
 			$relationlib->remove_relation($relation_id);
-			$finalEvent = 'tiki.social.relation.remove';
 		}
-		TikiLib::events()->trigger($finalEvent,
-			array(
-				'type' => $target_object['type'],
-				'object' => $target_object['object'],
-				'sourcetype' => $source_object['type'],
-				'sourceobject' => $source_object['object'],
-				'relation' => $qualifier,
-				'user' => $user,
-                        )
-		);
 		require_once 'lib/search/refresh-functions.php';
 		refresh_index($source_object['type'], $source_object['object']);
 		refresh_index($target_object['type'], $target_object['object']);

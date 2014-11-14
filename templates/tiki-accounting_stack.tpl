@@ -34,11 +34,11 @@ var account='';
 	{$book.bookName}: {tr}Book a transaction into the stack{/tr}
 {/title}
 {if !empty($errors)}
-	<div class="alert alert-warning">
+	<div class="simplebox highlight">
 		{icon _id=exclamation alt="{tr}Error{/tr}" style="vertical-align:middle" align="left"}
 		{foreach from=$errors item=m name=errors}
 			{$m}
-			{if !$smarty.foreach.errors.last}<br>{/if}
+			{if !$smarty.foreach.errors.last}<br />{/if}
 		{/foreach}
 	</div>
 {/if}
@@ -50,11 +50,11 @@ var account='';
  		{if $tiki_p_account_manage=='y'}
  		<tr><td colspan="2"><a href="tiki-accounting_account.php?bookId={$bookId}&action=new">{tr}Create account{/tr}</a></td></tr>{/if}
 {foreach from=$accounts item=a}
-		<tr class="{cycle values="odd,even"} tips"  {popup caption='{tr}Notes{/tr}' text=$a.accountNotes}>
+		<tr class="{cycle values="odd,even"}"  {popup caption='{tr}Notes{/tr}' text=$a.accountNotes}>
  			<td class="accompactlist">
  				{if $tiki_p_account_manage=='y'}
- 				<a href="tiki-accounting_account.php?bookId={$bookId}&action=edit&accountId={$a.accountId}"><img src="img/icons/edit.gif" alt="edit" border="0"></a>
-				<a href="tiki-accounting_account.php?bookId={$bookId}&action=delete&accountId={$a.accountId}"><img src="img/icons/del.gif" alt="delete" border="0"></a>
+ 				<a href="tiki-accounting_account.php?bookId={$bookId}&action=edit&accountId={$a.accountId}"><img src="img/icons/edit.gif" alt="edit" border="0" /></a>
+				<a href="tiki-accounting_account.php?bookId={$bookId}&action=delete&accountId={$a.accountId}"><img src="img/icons/del.gif" alt="delete" border="0" /></a>
 				{/if}
    				<a href="javascript:setAccount({$a.accountId})">{$a.accountId}</a>
   			</td>
@@ -67,16 +67,16 @@ var account='';
 </div>
 <div id="mask" style="float:left;{if $hideform==1} display: none;{/if}">
 	<form method="post" action="tiki-accounting_stack.php">
-		{if $firstid}<input type="hidden" name="firstid" value="{$firstid}">{/if}
-		{if $statementId}<input type="hidden" name="statementId" value="{$statementId}">{/if}
-		<input type="hidden" name="bookId" value="{$bookId}">
-		<input type="hidden" name="stackId" value="{$stackId}">
-		<input type="hidden" name="action" value="book">
+		{if $firstid}<input type="hidden" name="firstid" value="{$firstid}" />{/if}
+		{if $statementId}<input type="hidden" name="statementId" value="{$statementId}" />{/if}
+		<input type="hidden" name="bookId" value="{$bookId}" />
+		<input type="hidden" name="stackId" value="{$stackId}" />
+		<input type="hidden" name="action" value="book" />
 		<fieldset>
 			<legend>{tr}Post{/tr}</legend>
 			<div>
 				<label class="aclabel">{tr}booking date{/tr}</label>
-				<input name="stackDate" id="stackDate" value="{$stackDate|default:$smarty.now|date_format:"%Y-%m-%d"}">
+				<input name="stackDate" id="stackDate" value="{$stackDate|default:$smarty.now|date_format:"%Y-%m-%d"}" />
 			</div>
 			<div>
 				<label class="aclabel">{tr}Description{/tr}</label>
@@ -84,7 +84,7 @@ var account='';
 			</div>
 			<div>
 				<label class="aclabel">{tr}Amount{/tr}</label>
-				<input name="totalAmount" id="totalAmount" value="{$totalAmount}" onchange="javascript:setAmount()">		
+				<input name="totalAmount" id="totalAmount" value="{$totalAmount}" onchange="javascript:setAmount()"/>		
 			</div>
 		</fieldset>	
 		<fieldset>
@@ -94,7 +94,7 @@ var account='';
 	 			<tr {if $i==0}id="Row_StartDebit" {/if}>
 	   				<td>
 	   					<label>{tr}Text{/tr}</label>
-	   					<input type="text" name="debitText[]" value="{$debitText[$i]}">
+	   					<input type="text" name="debitText[]" value="{$debitText[$i]}" />
 	   				</td>
 	   				<td>
 	   					<label>{tr}Account{/tr}</label>
@@ -106,13 +106,13 @@ var account='';
 					</td>
 					<td>
 						<label>{tr}Amount{/tr}</label>
-						<input name="debitAmount[]" {if $i==0}id="debitAmount" {/if}size="10" value="{$debitAmount[$i]}">
+						<input name="debitAmount[]" {if $i==0}id="debitAmount" {/if}size="10" value="{$debitAmount[$i]}"/>
 					</td>
 	 			</tr>
 {/section}
 				<tr id="Row_SplitDebit"{if count($creditAccount)>1} style="display:none;"{/if}>
 					<td colspan="3">
-						<input type="button" value="{tr}Add entry{/tr}" id="SplitDebit" onclick="javascript:splitDebit()">
+						<input type="button" value="{tr}Add entry{/tr}" id="SplitDebit" onclick="javascript:splitDebit()" />
 					</td>
 				</tr>
         	</table>	
@@ -124,7 +124,7 @@ var account='';
 				<tr {if $i==0}id="Row_StartCredit" {/if}>
 					<td>
 						<label>{tr}Text{/tr}</label>
-						<input type="text" name="creditText[]" value="{$creditText[$i]}">
+						<input type="text" name="creditText[]" value="{$creditText[$i]}" />
 					</td>
 	   				<td>
 	   					<label>{tr}Account{/tr}</label>
@@ -136,18 +136,18 @@ var account='';
 	   				</td>
 	   				<td>
 	   					<label>{tr}Amount{/tr}</label>
-						<input name="creditAmount[]" {if $i==0}id="creditAmount" {/if}size="10" value="{$creditAmount[$i]}">
+						<input name="creditAmount[]" {if $i==0}id="creditAmount" {/if}size="10" value="{$creditAmount[$i]}"/>
 					</td>
 	 			</tr>
 {/section}
 	 			<tr id="Row_SplitCredit"{if count($creditAccount)>1} style="display:none;"{/if}>
 	 				<td colspan="3">
-	 					<input type="button" value="{tr}Add entry{/tr}" id="SplitCredit" onclick="javascript:splitCredit()">
+	 					<input type="button" value="{tr}Add entry{/tr}" id="SplitCredit" onclick="javascript:splitCredit()" />
 	 				</td>
 	 			</tr>
         	</table>
 		</fieldset>
-		<input type="submit" class="btn btn-default btn-sm" name="bookstack" id="bookstack" value="{tr}Book{/tr}">
+		<input type="submit" name="bookstack" id="bookstack" value="{tr}Book{/tr}" />
 		{button href="tiki-accounting.php?bookId=$bookId" _text="{tr}Back to book page{/tr}"}
 	</form>
 </div>

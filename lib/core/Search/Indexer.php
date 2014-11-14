@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -18,34 +18,31 @@ class Search_Indexer
 
 	public $log = null;
 
-	public function __construct(Search_Index_Interface $searchIndex, $logWriter = null)
+	function __construct(Search_Index_Interface $searchIndex, $loggit = false)
 	{
-		if (! $logWriter instanceof Zend_Log_Writer_Abstract) {
-			$logWriter = new Zend_Log_Writer_Null();
+		if ($loggit) {	// unused externally, set this to true here to enable logging
+			include_once 'lib/core/Zend/Log/Writer/Syslog.php';
+			global $prefs;
+			$writer = new Zend_Log_Writer_Stream($prefs['tmpDir'] . '/Search_Indexer.log', 'w');
+		} else {
+			$writer = new Zend_Log_Writer_Null();
 		}
-		$logWriter->setFormatter(new Zend_Log_Formatter_Simple(Zend_Log_Formatter_Simple::DEFAULT_FORMAT . ' [%memoryUsage% bytes]' . PHP_EOL));
-		$this->log = new Zend_Log($logWriter);
+		$this->log = new Zend_Log($writer);
 
 		$this->searchIndex = $searchIndex;
 	}
 
-	public function addContentSource($objectType, Search_ContentSource_Interface $contentSource)
+	function addContentSource($objectType, Search_ContentSource_Interface $contentSource)
 	{
 		$this->contentSources[$objectType] = $contentSource;
 	}
 
-	public function addGlobalSource(Search_GlobalSource_Interface $globalSource)
+	function addGlobalSource(Search_GlobalSource_Interface $globalSource)
 	{
 		$this->globalSources[] = $globalSource;
 	}
 
-	public function clearSources()
-	{
-		$this->contentSources = array();
-		$this->globalSources = array();
-	}
-
-	public function addContentFilter(Zend_Filter_Interface $filter)
+	function addContentFilter(Zend_Filter_Interface $filter)
 	{
 		$this->contentFilters[] = $filter;
 	}
@@ -54,9 +51,9 @@ class Search_Indexer
 	 * Rebuild the entire index.
 	 * @return array
 	 */
-	public function rebuild()
+	function rebuild()
 	{
-		$this->log('Starting rebuild');
+		$this->log->info('Starting rebuild');
 		$stat = array_fill_keys(array_keys($this->contentSources), 0);
 
 		foreach ($this->contentSources as $objectType => $contentSource) {
@@ -64,46 +61,47 @@ class Search_Indexer
 				$stat[$objectType] += $this->addDocument($objectType, $objectId);
 			}
 		}
-
-		$this->log('Starting optimization');
+		
+		$this->log->info('Starting optimization');
 		$this->searchIndex->optimize();
-		$this->log('Finished optimization');
-		$this->log('Finished rebuild');
+		$this->log->info('Finished optimization');
+		$this->log->info('Finished rebuild');
 		return $stat;
 	}
 
-	public function update(array $objectList)
+	function update($searchArgument)
 	{
-		$this->searchIndex->invalidateMultiple($objectList);
+		if (is_array($searchArgument)) {
+			$query = new Search_Query;
+			foreach ($searchArgument as $object) {
+				$obj2array=(array)$object;
+				$query->addObject($obj2array['object_type'], $obj2array['object_id']);
+			}
 
-		foreach ($objectList as $object) {
-			$this->addDocument($object['object_type'], $object['object_id']);
+			$result = $query->invalidate($this->searchIndex);
+			$objectList = $searchArgument;
+		} elseif ($searchArgument instanceof Search_Query) {
+			$objectList = $searchArgument->invalidate($this->searchIndex);
 		}
 
-		$this->searchIndex->endUpdate();
+		foreach ($objectList as $object) {
+			$obj2array=(array)$object;
+			$this->addDocument($obj2array['object_type'], $obj2array['object_id']);
+		}
 	}
 
 	private function addDocument($objectType, $objectId)
 	{
-		$this->log("addDocument $objectType $objectId");
-
-		$data = $this->getDocuments($objectType, $objectId);
-		foreach ($data as $entry) {
-			try {
-				$this->searchIndex->addDocument($entry);
-			} catch (Exception $e) {
-				$msg = tr('Indexing failed while processing "%0" (type %1) with the error "%2"', $objectId, $objectType, $e->getMessage());
-				TikiLib::lib('errorreport')->report($msg);
-				$this->log->err($msg);
+		global $prefs;
+		if (!empty( $prefs['unified_excluded_categories'] )) {
+			$categs = TikiLib::lib('categ')->get_object_categories( $objectType, $objectId );
+			if (array_intersect($prefs['unified_excluded_categories'], $categs)) {
+				$this->log->info("addDocument skipped $objectType $objectId");
+				return 0;
 			}
 		}
 
-		return count($data);
-	}
-
-	public function getDocuments($objectType, $objectId)
-	{
-		$out = array();
+		$this->log->info("addDocument $objectType $objectId");
 
 		$typeFactory = $this->searchIndex->getTypeFactory();
 
@@ -118,24 +116,28 @@ class Search_Indexer
 				}
 
 				foreach ($data as $entry) {
-					$out[] = $this->augmentDocument($objectType, $objectId, $entry, $typeFactory, $globalFields);
+					try {
+						$this->addDocumentFromContentData($objectType, $objectId, $entry, $typeFactory, $globalFields);
+					} catch(Exception $e) {
+						$msg = tr('Indexing failed while processing "%0" (type %1) with the error "%2"', $objectId, $objectType, $e->getMessage());
+						TikiLib::lib('errorreport')->report($msg);
+						$this->log->err($msg);
+					}
 				}
+
+				return count($data);
 			}
 		}
 
-		return $out;
+		return 0;
 	}
 
-	private function augmentDocument($objectType, $objectId, $data, $typeFactory, $globalFields)
+	private function addDocumentFromContentData($objectType, $objectId, $data, $typeFactory, $globalFields)
 	{
 		$initialData = $data;
 
 		foreach ($this->globalSources as $globalSource) {
-			$local = $globalSource->getData($objectType, $objectId, $typeFactory, $initialData);
-
-			if (false !== $local) {
-				$data = array_merge($data, $local);
-			}
+			$data = array_merge($data, $globalSource->getData($objectType, $objectId, $typeFactory, $initialData));
 		}
 
 		$base = array(
@@ -147,9 +149,7 @@ class Search_Indexer
 		$data = array_merge(array_filter($data), $base);
 		$data = $this->applyFilters($data);
 
-		$data = $this->removeTemporaryKeys($data);
-
-		return $data;
+		$this->searchIndex->addDocument($data);
 	}
 
 	private function applyFilters($data)
@@ -161,25 +161,6 @@ class Search_Indexer
 
 			if (is_callable(array($value, 'filter'))) {
 				$data[$key] = $value->filter($this->contentFilters);
-			}
-		}
-
-		return $data;
-	}
-
-	private function removeTemporaryKeys($data)
-	{
-		$keys = array_keys($data);
-		$toRemove = array_filter(
-			$keys,
-			function ($key) {
-				return $key{0} === '_';
-			}
-		);
-
-		foreach ($keys as $key) {
-			if ($key{0} === '_') {
-				unset($data[$key]);
 			}
 		}
 
@@ -220,12 +201,6 @@ class Search_Indexer
 		}
 
 		return $this->cacheTypes[$objectType];
-	}
-
-	private function log($message)
-	{
-		$this->log->setEventItem('memoryUsage', memory_get_usage());
-		$this->log->info($message);
 	}
 }
 

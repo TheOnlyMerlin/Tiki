@@ -1,17 +1,8 @@
 <?php
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
-
-/**
- * Tiki initialization functions and classes
- *
- * @package TikiWiki
- * @subpackage lib\init
- * @copyright (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project. All Rights Reserved. See copyright.txt for details and a complete list of authors.
- * @licence Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
- */
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
+// All Rights Reserved. See copyright.txt for details and a complete list of authors.
+// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 //this script may only be included - so its better to die if called directly.
@@ -20,85 +11,17 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
   exit;
 }
 
-if (! file_exists(__DIR__ . '/../../vendor/autoload.php')) {
-	echo "Your Tiki is not completely installed because Composer has not been run to fetch package dependencies.\n";
-	echo "You need to run 'sh setup.sh' from the command line.\n";
-	echo "See https://dev.tiki.org/Composer for details.\n";
-	exit;
-}
-
-require_once __DIR__ . '/../../vendor/autoload.php';
-
-/**
- * performs some checks on the underlying system, before initializing Tiki.
- * @package TikiWiki\lib\init
- */
 class TikiInit
 {
-	/**
-	 * dummy constructor
-	 */
-	function __construct()
+
+	function TikiInit()
 	{
 	}
 
-	static function getContainer()
-	{
-		static $container;
-
-		if ($container) {
-			return $container;
-		}
-
-		$cache = TIKI_PATH . '/temp/cache/container.php';
-		if (is_readable($cache)) {
-			require_once $cache;
-			$container = new TikiCachedContainer;
-			return $container;
-		}
-
-		$path = TIKI_PATH . '/db/config';
-		$container = new ContainerBuilder;
-		$container->addCompilerPass(new \Tiki\MailIn\Provider\CompilerPass);
-		$container->addCompilerPass(new \Tiki\Recommendation\Engine\CompilerPass);
-		$container->addCompilerPass(new \Tiki\Wiki\SlugManager\CompilerPass);
-		$container->addCompilerPass(new \Search\Federated\CompilerPass);
-		$container->addCompilerPass(new \Tracker\CompilerPass);
-
-		$container->setParameter('kernel.root_dir', TIKI_PATH);
-		$loader = new XmlFileLoader($container, new FileLocator($path));
-
-		$loader->load('tiki.xml');
-		$loader->load('controllers.xml');
-		$loader->load('mailin.xml');
-
-		try {
-			$loader->load('custom.xml');
-		} catch (InvalidArgumentException $e) {
-			// Do nothing, absence of custom.xml file is expected
-		}
-
-		foreach ( glob( TIKI_PATH . '/addons/*/lib/libs.xml' ) as $file ) {
-			try {
-				$loader->load($file);
-			} catch (InvalidArgumentException $e) {
-				// Do nothing, absence of libs.xml file is expected
-			}
-		}
-
-		$container->compile();
-
-		$dumper = new PhpDumper($container);
-		file_put_contents($cache, $dumper->dump([
-			'class' => 'TikiCachedContainer',
-		]));
-
-		return $container;
-	}
 
 /** Return 'windows' if windows, otherwise 'unix'
- * \static
- */
+  * \static
+  */
 	function os()
 	{
 		static $os;
@@ -114,7 +37,7 @@ class TikiInit
 
 
 /** Return true if windows, otherwise false
-  * @static
+  * \static
   */
 	static function isWindows()
 	{
@@ -124,13 +47,13 @@ class TikiInit
 		}
 		return $windows;
 	}
-
-	/**
-	 * Copes with Windows permissions
-	 *
-	 * @param string $path directory to test
-	 *
+	
+	/*
+	 * @param string $path	directory to test
+	 * @param bool $is_file	default false for a dir
 	 * @return bool
+	 *
+	 * Copes with Windows premissions
 	 */
 	static function is_writeable($path)
 	{
@@ -141,20 +64,20 @@ class TikiInit
 		}
 	}
 
-	/**
-	 * From the php is_writable manual (thanks legolas558 d0t users dot sf dot net)
-	 * Note the two underscores and no "e".
-	 * 
-	 * will work in despite of Windows ACLs bug
-	 * NOTE: use a trailing slash for folders!!!
-	 * {@see http://bugs.php.net/bug.php?id=27609}
-	 * {@see http://bugs.php.net/bug.php?id=30931}
-	 * 
+	/*
 	 * @param string $path	directory to test	NOTE: use a trailing slash for folders!!!
 	 * @return bool
+	 * 
+	 * From the php is_writable manual (thanks legolas558 d0t users dot sf dot net)
+	 * Note the two underscores and no "e"
 	 */
 	static function is__writable($path)
 	{
+		//will work in despite of Windows ACLs bug
+		//NOTE: use a trailing slash for folders!!!
+		//see http://bugs.php.net/bug.php?id=27609
+		//see http://bugs.php.net/bug.php?id=30931
+
 		if ($path{strlen($path)-1}=='/') { // recursively return a temporary file path
 			return self::is__writable($path.uniqid(mt_rand()).'.tmp');
 		} else if (is_dir($path)) {
@@ -172,11 +95,9 @@ class TikiInit
 	}
 
 
-    /** Prepend $path to the include path
-     * @static          
-     * @param string $path the path to prepend
-     * @return string
-     */
+/** Prepend $path to the include path
+  * \static
+  */
 	static function prependIncludePath($path)
 	{
 		$include_path = ini_get('include_path');
@@ -186,16 +107,15 @@ class TikiInit
 			$include_path = $path . PATH_SEPARATOR . $include_path;
 		} else if (!$include_path) {
 			$include_path = $path;
-		}
+		} 
 
 		return set_include_path($include_path);
 	}
 
 
-    /** Append $path to the include path
-     * @static 
-     * @param mixed $path
-     */
+/** Append $path to the include path
+  * \static
+  */
 	static function appendIncludePath($path)
 	{
 		$include_path = ini_get('include_path');
@@ -205,17 +125,17 @@ class TikiInit
 			$include_path .= PATH_SEPARATOR . $path;
 		} else if (!$include_path) {
 			$include_path = $path;
-		}
+		} 
 
 		return set_include_path($include_path);
 	}
 
 
-    /** Return system defined temporary directory.
-     * In Unix, this is usually /tmp
-     * In Windows, this is usually c:\windows\temp or c:\winnt\temp
-     * @static
-     */
+/** Return system defined temporary directory.
+  * In Unix, this is usually /tmp
+  * In Windows, this is usually c:\windows\temp or c:\winnt\temp
+  * \static
+  */
 	static function tempdir()
 	{
 		static $tempdir;
@@ -228,39 +148,35 @@ class TikiInit
 	}
 
 	/**
-	 * Convert a string to UTF-8. Fixes a bug in PHP decode
-	 * From http://w3.org/International/questions/qa-forms-utf-8.html
-	 * @static
-	 * @param string String to be converted
-	 * @return UTF-8 representation of the string
-	 */
+	* Convert a string to UTF-8. Fixes a bug in PHP decode
+	* From http://w3.org/International/questions/qa-forms-utf-8.html
+	* @param string String to be converted
+	* @return UTF-8 representation of the string
+	*/
 	static function to_utf8( $string )
 	{
-		if ( preg_match(
-			'%^(?:
-	  		   [\x09\x0A\x0D\x20-\x7E]            # ASCII
-   		 | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
-		    | \xE0[\xA0-\xBF][\x80-\xBF]         # excluding overlongs
-   		 | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
-		    | \xED[\x80-\x9F][\x80-\xBF]         # excluding surrogates
-			 | \xF0[\x90-\xBF][\x80-\xBF]{2}      # planes 1-3
-			 | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
-		    | \xF4[\x80-\x8F][\x80-\xBF]{2}      # plane 16
-			)*$%xs',
-			$string
-		)
-		) {
+			// 
+		if ( preg_match('%^(?:
+      [\x09\x0A\x0D\x20-\x7E]            # ASCII
+    | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
+    | \xE0[\xA0-\xBF][\x80-\xBF]         # excluding overlongs
+    | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
+    | \xED[\x80-\x9F][\x80-\xBF]         # excluding surrogates
+    | \xF0[\x90-\xBF][\x80-\xBF]{2}      # planes 1-3
+    | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
+    | \xF4[\x80-\x8F][\x80-\xBF]{2}      # plane 16
+)*$%xs', $string) ) {
 			return $string;
 		} else {
 			return iconv('CP1252', 'UTF-8', $string);
 		}
-	}
-
+	} 
+	
 	/**
-	 * Determine if the web server is an IIS server
-	 * @return true if IIS server, else false
-  	 * @static
-	 */
+	*	Determine if the web server is an IIS server
+	*	@return true if IIS server, else false
+  	* \static
+	*/
 	static function isIIS()
 	{
 		static $IIS;
@@ -271,128 +187,19 @@ class TikiInit
 		}
 
 		return $IIS;
-	}
+	}	
 
 	/**
-	 * Determine if the web server is an IIS server
-	 * @return true if IIS server, else false
-  	 * \static
-	 */
+	*	Determine if the web server is an IIS server
+	*	@return true if IIS server, else false
+  	* \static
+	*/
 	static function hasIIS_UrlRewriteModule()
 	{
-		return isset($_SERVER['IIS_UrlRewriteModule']) == true;
-	}
-
-	static function getCredentialsFile()
-	{
-		global $default_api_tiki, $api_tiki, $db_tiki, $dbversion_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $tikidomain, $tikidomainslash;
-		// Please use the local.php file instead containing these variables
-		// If you set sessions to store in the database, you will need a local.php file
-		// Otherwise you will be ok.
-		//$api_tiki		= 'pear';
-		//$api_tiki			= 'pdo';
-		$api_tiki			= 'pdo';
-		$db_tiki			= 'mysql';
-		$dbversion_tiki = '2.0';
-		$host_tiki		= 'localhost';
-		$user_tiki		= 'root';
-		$pass_tiki		= '';
-		$dbs_tiki			= 'tiki';
-		$tikidomain		= '';
-
-		/*
-		SVN Developers: Do not change any of the above.
-		Instead, create a file, called db/local.php, containing any of
-		the variables listed above that are different for your
-		development environment.  This will protect you from
-		accidentally committing your username/password to SVN!
-
-		example of db/local.php
-		<?php
-		$host_tiki   = 'myhost';
-		$user_tiki   = 'myuser';
-		$pass_tiki   = 'mypass';
-		$dbs_tiki    = 'mytiki';
-		$api_tiki    = 'adodb';
-
-		** Multi-tiki
-		**************************************
-		see http://tikiwiki.org/MultiTiki19
-
-		Setup of virtual tikis is done using setup.sh script
-		-----------------------------------------------------------
-		-> Multi-tiki trick for virtualhosting
-
-		$tikidomain variable is set to :
-		or TIKI_VIRTUAL
-			That is set in apache virtual conf : SetEnv TIKI_VIRTUAL myvirtual
-		or SERVER_NAME
-			From apache directive ServerName set for that virtualhost block
-		or HTTP_HOST
-			From the real domain name called in the browser
-			(can be ServerAlias from apache conf)
-
-		*/
-
-		if (!isset($local_php) or !is_file($local_php)) {
-			$local_php = 'db/local.php';
-		} else {
-			$local_php = preg_replace(array('/\.\./', '/^db\//'), array('',''), $local_php);
-		}
-		$tikidomain = '';
-		if (is_file('db/virtuals.inc')) {
-			if (isset($_SERVER['TIKI_VIRTUAL']) and is_file('db/'.$_SERVER['TIKI_VIRTUAL'].'/local.php')) {
-				$tikidomain = $_SERVER['TIKI_VIRTUAL'];
-			} elseif (isset($_SERVER['SERVER_NAME']) and is_file('db/'.$_SERVER['SERVER_NAME'].'/local.php')) {
-				$tikidomain = $_SERVER['SERVER_NAME'];
-			} else if (isset($_REQUEST['multi']) && is_file('db/'.$_REQUEST['multi'].'/local.php')) {
-				$tikidomain = $_REQUEST['multi'];
-			} elseif (isset($_SERVER['HTTP_HOST'])) {
-				if (is_file('db/'.$_SERVER['HTTP_HOST'].'/local.php')) {
-					$tikidomain = $_SERVER['HTTP_HOST'];
-				} else if (is_file('db/'.preg_replace('/^www\./', '', $_SERVER['HTTP_HOST']).'/local.php')) {
-					$tikidomain = preg_replace('/^www\./', '', $_SERVER['HTTP_HOST']);
-				}
-			}
-			if (!empty($tikidomain)) {
-				$local_php = "db/$tikidomain/local.php";
-			}
-		}
-		$tikidomainslash = (!empty($tikidomain) ? $tikidomain . '/' : '');
-
-		$default_api_tiki = $api_tiki;
-		$api_tiki = '';
-
-		return $local_php;
-	}
-
-	static function getEnvironmentCredentials()
-	{
-		// Load connection strings from environment variables, as used by Azure and possibly other hosts
-		$connectionString = null;
-		foreach (array('MYSQLCONNSTR_Tiki', 'MYSQLCONNSTR_DefaultConnection') as $envVar) {
-			if (isset($_SERVER[$envVar])) {
-				$connectionString = $_SERVER[$envVar];
-				continue;
-			}
-		}
-
-		if ($connectionString && preg_match('/^Database=(?P<dbs>.+);Data Source=(?P<host>.+);User Id=(?P<user>.+);Password=(?P<pass>.+)$/', $connectionString, $parts)) {
-			$parts['charset'] = 'utf8';
-			$parts['socket'] = null;
-			return $parts;
-		}
-		return null;
-	}
+			return isset($_SERVER['IIS_UrlRewriteModule']) == true;
+	}	
 }
 
-/**
- * set how Tiki will report Errors
- * @param $errno
- * @param $errstr
- * @param $errfile
- * @param $errline
- */
 function tiki_error_handling($errno, $errstr, $errfile, $errline)
 {
 	global $prefs, $phpErrors;
@@ -473,4 +280,3 @@ if (empty($_SERVER['REQUEST_URI'])) {
 		$_SERVER['REQUEST_URI'] = $_SERVER['SCRIPT_NAME'];
 	}
 }
-

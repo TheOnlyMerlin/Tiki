@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -45,8 +45,8 @@ class TikiLib_WikiParserTest extends PHPUnit_Framework_TestCase
 			array('-=foo=-', '<div class="titlebar">foo</div>' . "\n"),	// title bar
 			array('-= foo =-', '<div class="titlebar"> foo </div>' . "\n"),	// title bar
 
-			array('^foo^', '<div class="panel panel-default"><div class="panel-body">foo</div></div><br />' . "\n"),	// box
-			array('^ foo ^', '<div class="panel panel-default"><div class="panel-body"> foo </div></div><br />' . "\n"),	// box
+			array('^foo^', '<div class="simplebox">foo</div><br />' . "\n"),	// box
+			array('^ foo ^', '<div class="simplebox"> foo </div><br />' . "\n"),	// box
 
 			array('::foo::', '<div style="text-align: center;">foo</div><br />' . "\n"),	// center align
 			array(':: foo ::', '<div style="text-align: center;"> foo </div><br />' . "\n"),	// center align

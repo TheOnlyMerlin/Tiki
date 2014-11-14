@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,7 +9,6 @@ class Search_Formatter_DataSource_Declarative implements Search_Formatter_DataSo
 {
 	private $contentSources = array();
 	private $globalSources = array();
-	private $prefilter;
 
 	function addContentSource($type, Search_ContentSource_Interface $contentSource)
 	{
@@ -21,32 +20,23 @@ class Search_Formatter_DataSource_Declarative implements Search_Formatter_DataSo
 		$this->globalSources[] = $globalSource;
 	}
 
-	function getData($entry, $requestedField)
+	function getInformation(Search_ResultSet $list, array $fields)
 	{
-		$type = $entry['object_type'];
-		$object = $entry['object_id'];
-		$hash = isset($entry['hash']) ? $entry['hash'] : null;
-		$missingFields = $this->handlePrefilter([$requestedField], $entry);
+		foreach ($list as & $entry) {
+			$type = $entry['object_type'];
+			$object = $entry['object_id'];
+			$hash = isset($entry['hash']) ? $entry['hash'] : null;
+			$missingFields = $fields;
+			
+			$entry = array_merge($entry, $this->obtainFromContentSource($type, $object, $hash, $missingFields));
 
-		$primaryFields = $this->obtainFromContentSource($type, $object, $hash, $missingFields);
-
-		if (! empty($primaryFields)) {
-			return $primaryFields;
-		} else {
-			// Do not use array merge as the entry may be an object
-			foreach ($primaryFields as $key => $value) {
-				$entry[$key] = $value;
-			}
-
+			$initial = $entry;
 			foreach ($this->globalSources as $globalSource) {
-				$local = $this->obtainFromGlobalSource($globalSource, $type, $object, $missingFields, $entry);
-				if (! empty($local)) {
-					return $local;
-				}
+				$entry = array_merge($entry, $this->obtainFromGlobalSource($globalSource, $type, $object, $missingFields, $initial));
 			}
 		}
 
-		return [];
+		return $list;
 	}
 
 	private function obtainFromContentSource($type, $object, $hash, & $missingFields)
@@ -89,11 +79,6 @@ class Search_Formatter_DataSource_Declarative implements Search_Formatter_DataSo
 		}
 
 		if ($this->sourceProvidesValue($globalSource, $missingFields)) {
-			// The field may exist, but contain mangled data
-			foreach ($globalSource->getProvidedFields() as $field) {
-				unset($data[$field]);
-			}
-
 			$data = $globalSource->getData($type, $object, new Search_Type_Factory_Direct, $data);
 
 			return $this->getRaw($data, $missingFields);
@@ -104,7 +89,7 @@ class Search_Formatter_DataSource_Declarative implements Search_Formatter_DataSo
 
 	private function sourceProvidesValue($contentSource, $missingFields)
 	{
-		return ! empty($missingFields) && count(array_intersect($missingFields, $contentSource->getProvidedFields())) > 0;
+		return count(array_intersect($missingFields, $contentSource->getProvidedFields())) > 0;
 	}
 
 	private function getRaw($data, & $missingFields)
@@ -122,25 +107,6 @@ class Search_Formatter_DataSource_Declarative implements Search_Formatter_DataSo
 		}
 
 		return $raw;
-	}
-
-	/**
-	 * Set a filter function to determine the fields to select.
-	 * First parameter, field list
-	 * Second parameter, the entry
-	 */
-	function setPrefilter($callback)
-	{
-		$this->prefilter = $callback;
-	}
-
-	private function handlePrefilter(array $fields, $entry)
-	{
-		if ($callback = $this->prefilter) {
-			return $callback($fields, $entry);
-		} else {
-			return $fields;
-		}
 	}
 }
 

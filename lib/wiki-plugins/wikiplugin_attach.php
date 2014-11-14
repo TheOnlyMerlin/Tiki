@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -19,20 +19,19 @@ function wikiplugin_attach_info()
 				'required' => false,
 				'name' => tra('Name'),
 				'description' => tra('File name of the attached file to link to. Either name, file, id or num can be used to identify a single attachment'),
-				'default' => '',
+				'default' => ''
 			),
 			'file' =>array(
 				'required' => false,
 				'name' => tra('File'),
 				'description' => tra('Same as name'),
-				'default' => '',
+				'default' => ''
 			),
 			'page' => array(
 				'required' => false,
 				'name' => tra('Page'),
 				'description' => tra('Name of the wiki page the file is attached to. If left empty when the plugin is used on a wiki page, this defaults to that wiki page.'),
-				'default' => '',
-				'profile_reference' => 'wiki_page',
+				'default' => ''
 			),
 			'showdesc' => array(
 				'required' => false,
@@ -42,7 +41,7 @@ function wikiplugin_attach_info()
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0),
+					array('text' => tra('No'), 'value' => 0)
 				),
 			),
 			'bullets' => array(
@@ -53,7 +52,7 @@ function wikiplugin_attach_info()
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0),
+					array('text' => tra('No'), 'value' => 0)
 				),
 			),
 			'image' =>array(
@@ -64,7 +63,7 @@ function wikiplugin_attach_info()
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0),
+					array('text' => tra('No'), 'value' => 0)
 				),
 			),
 			'inline' =>array(
@@ -75,7 +74,7 @@ function wikiplugin_attach_info()
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0),
+					array('text' => tra('No'), 'value' => 0)
 				),
 			),
 			'all' => array(
@@ -86,14 +85,14 @@ function wikiplugin_attach_info()
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0),
+					array('text' => tra('No'), 'value' => 0)
 				),
 			),
 			'num' => array(
 				'required' => false,
 				'name' => tra('Order Number'),
 				'description' => tra('Identifies the attachment to link to by the order of the attachment in the list of attachments to a page instead of by file name or ID. Either name, file, id or num can be used to identify a single attachment.'),
-				'default' => '',
+				'default' => ''
 			),
 			'id' => array(
 				'required' => false,
@@ -108,7 +107,7 @@ function wikiplugin_attach_info()
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0),
+					array('text' => tra('No'), 'value' => 0)
 				),
 			),
 			'icon' =>array(
@@ -119,7 +118,7 @@ function wikiplugin_attach_info()
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0),
+					array('text' => tra('No'), 'value' => 0)
 				),
 			),
 
@@ -131,10 +130,9 @@ function wikiplugin_attach($data, $params)
 {
 	global $atts;
 	global $mimeextensions;
+	global $wikilib; include_once('lib/wiki/wikilib.php');
+	global $tikilib;
 	global $user, $section, $section_class;
-
-	$wikilib = TikiLib::lib('wiki');
-	$tikilib = TikiLib::lib('tiki');
 
 	extract($params, EXTR_SKIP);
 
@@ -147,7 +145,7 @@ function wikiplugin_attach($data, $params)
 
 		// See if we're being called from a tracker page.
 		if ( $section == 'trackers' ) {
-			$trklib = TikiLib::lib('trk');
+			global $trklib; include_once('lib/trackers/trackerlib.php');
 			$atts_item_name = $_REQUEST["itemId"];
 			$tracker_info = $trklib->get_tracker($atts_item_name);
 			$tracker_info = array_merge($tracker_info, $trklib->get_tracker_options($atts_item_name));

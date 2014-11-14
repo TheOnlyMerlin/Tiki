@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -27,49 +27,42 @@ class Tracker_Field_Currency extends Tracker_Field_Abstract implements Tracker_F
 					'samerow' => array(
 						'name' => tr('Same Row'),
 						'description' => tr('Displays the next field on the same line.'),
-						'deprecated' => false,
+						'deprecated' => true,
 						'filter' => 'int',
-						'default' => 1,
 						'options' => array(
 							0 => tr('No'),
 							1 => tr('Yes'),
 						),
-						'legacy_index' => 0,
 					),
 					'size' => array(
 						'name' => tr('Display Size'),
 						'description' => tr('Visible size of the field in characters. Does not affect the numeric length.'),
 						'filter' => 'int',
 						'default' => 7,
-						'legacy_index' => 1,
 					),
 					'prepend' => array(
 						'name' => tr('Prepend'),
 						'description' => tr('Text to be displayed prior to the currency amount.'),
 						'filter' => 'text',
 						'default' => '',
-						'legacy_index' => 2,
 					),
 					'append' => array(
 						'name' => tr('Append'),
 						'description' => tr('Text to be displayed after the numeric value.'),
 						'filter' => 'text',
 						'default' => '',
-						'legacy_index' => 3,
 					),
 					'locale' => array(
 						'name' => tr('Locale'),
 						'description' => tr('Set locale for currency formatting, for example en_US or en_US.UTF-8 or en_US.ISO-8559-1. Default is en_US.'),
 						'filter' => 'text',
 						'default' => 'en_US',
-						'legacy_index' => 4,
 					),
 					'currency' => array(
 						'name' => tr('Currency'),
 						'description' => tr('A custom alphanumeric currency code. Not needed if locale is set and a standard code is desired. Default is USD.'),
 						'filter' => 'alpha',
 						'default' => 'USD',
-						'legacy_index' => 5,
 					),
 					'symbol' => array(
 						'name' => tr('Symbol'),
@@ -80,7 +73,6 @@ class Tracker_Field_Currency extends Tracker_Field_Abstract implements Tracker_F
 							'i' => tr('Currency code'),
 							'n' => tr('Currency symbol'),
 						),
-						'legacy_index' => 6,
 					),
 					'all_symbol' => array(
 						'name' => tr('First or all'),
@@ -91,7 +83,6 @@ class Tracker_Field_Currency extends Tracker_Field_Abstract implements Tracker_F
 							0 => tr('First item only'),
 							1 => tr('All'),
 						),
-						'legacy_index' => 7,
 					),
 				),
 			),

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -33,13 +33,11 @@ class Tracker_Field_StaticText extends Tracker_Field_Abstract implements Tracker
 							0 => tr('Handle line breaks as new lines only'),
 							1 => tr('Wiki Parse'),
 						),
-						'legacy_index' => 0,
 					),
 					'max' => array(
 						'name' => tr('Maximum Length (List)'),
 						'description' => tr('Maximum amount of characters to be displayed in list mode'),
 						'filter' => 'int',
-						'legacy_index' => 1,
 					),
 				),
 			),
@@ -52,7 +50,7 @@ class Tracker_Field_StaticText extends Tracker_Field_Abstract implements Tracker
 		
 		$value = $this->getConfiguration('description');
 
-		if ($this->getOption('wikiparse') == 1) {
+		if ($this->getOption(0) == 1) {
 			$value = $tikilib->parse_data($value);
 		}
 		

@@ -2,7 +2,7 @@
 <div align="center">
 	{include file='find.tpl'}
 	
-	<table class="table normal">
+	<table class="normal">
 		<tr>
 			<th>
 				<a href="{$url}?nlId={$nlId}&amp;{$cur}_offset={$offset}&amp;{$bak}_offset={$offset_bak}&amp;{$cur}_sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}&amp;{$bak}_sort_mode={$sort_mode_bak}&amp;cookietab={$tab}">{tr}Newsletter{/tr}</a>
@@ -21,17 +21,11 @@
 			<th>{tr}Errors{/tr}</th>
 			<th>{tr}Action{/tr}</th>
 		</tr>
-
+		{cycle values="odd,even" print=false}
 		{section name=user loop=$channels}
-			<tr>
+			<tr class="{cycle}">
 				<td class="text">{$channels[user].name|escape}</td>
-				<td class="text">
-					{if $view_editions eq 'y'}
-						<a class="link" href="{$url}?{if $nl_info}nlId={$channels[user].nlId}&amp;{/if}offset={$offset}&amp;sort_mode={$sort_mode}&amp;editionId={$channels[user].editionId}&amp;resend=1">{$channels[user].subject|escape}</a>
-					{else}
-						<a class="link" href="{$url}?{if $nl_info}nlId={$channels[user].nlId}&amp;{/if}offset={$offset}&amp;sort_mode={$sort_mode}&amp;editionId={$channels[user].editionId}">{$channels[user].subject|escape}</a>
-					{/if}
-				</td>
+				<td class="text"><a class="link" href="{$url}?{if $nl_info}nlId={$channels[user].nlId}&amp;{/if}offset={$offset}&amp;sort_mode={$sort_mode}&amp;editionId={$channels[user].editionId}">{$channels[user].subject|escape}</a></td>
 				{if $view_editions eq 'y'}
 					<td>{$channels[user].users}</td>
 					<td>{$channels[user].sent|tiki_short_datetime}</td>
@@ -48,11 +42,7 @@
 						<a class="link" href="{$url}?{if $nl_info}nlId={$channels[user].nlId}&amp;{/if}offset={$offset}&amp;sort_mode={$sort_mode}&amp;editionId={$channels[user].editionId}">{icon _id='magnifier' alt="{tr}View{/tr}"}</a>
 					{/if}
 					{if ($channels[user].tiki_p_send_newsletters eq 'y') or ($channels[user].tiki_p_admin_newsletters eq 'y')}
-						{if $view_editions eq 'y'}
-							<a class="link" href="tiki-send_newsletters.php?nlId={$channels[user].nlId}&amp;editionId={$channels[user].editionId}&amp;resend=1">{icon _id='email_edit' alt="{tr}Resend Newsletter{/tr}"}</a>
-						{else}
-							<a class="link" href="tiki-send_newsletters.php?nlId={$channels[user].nlId}&amp;editionId={$channels[user].editionId}">{icon _id='email' alt="{tr}Send Newsletter{/tr}"}</a>
-						{/if}
+						<a class="link" href="tiki-send_newsletters.php?nlId={$channels[user].nlId}&amp;editionId={$channels[user].editionId}">{icon _id='email' alt="{tr}Send Newsletter{/tr}"}</a>
 					{else}
 						&nbsp;
 					{/if}
@@ -66,7 +56,7 @@
 		{/section}
 	</table>
 
-	<div class="center-block">
+	<div class="mini">
 		{if $prev_offset >= 0}
 			[<a class="prevnext" href="{$url}?nlId={$nlId}&amp;{$cur}_offset={$prev_offset}&amp;{$bak}_offset={$offset_bak}&amp;{$cur}_sort_mode={$sort_mode}&amp;{$bak}_sort_mode={$sort_mode_bak}&amp;cookietab={$tab}">{tr}Prev{/tr}</a>]&nbsp;
 			{/if}
@@ -75,7 +65,7 @@
 			&nbsp;[<a class="prevnext" href="{$url}?nlId={$nlId}&amp;{$cur}_offset={$next_offset}&amp;{$bak}_offset={$offset_bak}&amp;{$cur}_sort_mode={$sort_mode}&amp;{$bak}_sort_mode={$sort_mode_bak}&amp;cookietab={$tab}">{tr}Next{/tr}</a>]
 	{/if}
 		{if $prefs.direct_pagination eq 'y'}
-			<br>
+			<br />
 			{section loop=$cant_pages name=foo}
 				{assign var=selector_offset value=$smarty.section.foo.index|times:$prefs.maxRecords}
 					<a class="prevnext" href="{$url}?nlId={$nlId}&amp;{$cur}_offset={$selector_offset}&amp;{$bak}_offset={$offset_bak}&amp;{$cur}_sort_mode={$sort_mode}&amp;{$bak}_sort_mode={$sort_mode_bak}&amp;cookietab={$tab}">

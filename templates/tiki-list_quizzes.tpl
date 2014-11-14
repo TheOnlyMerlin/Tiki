@@ -1,12 +1,12 @@
 {* $Id$ *}
 {title help="Quiz"}{tr}Quizzes{/tr}{/title}
 
-<div class="t_navbar form-group spacer-bottom-15px">
+<div class="navbar">
 	{if $tiki_p_admin_quizzes eq 'y'}
-			{button href="tiki-edit_quiz.php" class="btn btn-default" _text="{tr}Admin Quizzes{/tr}"}
+			{button href="tiki-edit_quiz.php" _text="{tr}Admin Quizzes{/tr}"}
 	{/if}
 	{if $tiki_p_view_quiz_stats eq 'y'}
-		{button href="tiki-quiz_stats.php" class="btn btn-default" _text="{tr}Quiz Stats{/tr}"}
+		{button href="tiki-quiz_stats.php" _text="{tr}Quiz Stats{/tr}"}
 	{/if}
 </div>
 
@@ -14,8 +14,7 @@
 	{include file='find.tpl'}
 {/if}
 
-<div class="table-responsive">
-<table class="table normal">
+<table class="normal">
 	<tr>
 		{assign var=numbercol value=1}
 		<th>
@@ -36,10 +35,10 @@
 			</th>
 		{/if}
 	</tr>
-
+	{cycle values="odd,even" print=false}
 	{section name=user loop=$channels}
 		{if ($tiki_p_admin eq 'y') or ($channels[user].individual eq 'n' and $tiki_p_take_quiz eq 'y') or ($channels[user].individual_tiki_p_take_quiz eq 'y')}
-			<tr>
+			<tr class="{cycle}">
 				<td class="text">
 					<a class="tablename" href="tiki-take_quiz.php?quizId={$channels[user].quizId}">{$channels[user].name|escape}</a>
 					<div class="subcomment">
@@ -68,6 +67,5 @@
 		{norecords _colspan=$numbercol}
 	{/section}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}

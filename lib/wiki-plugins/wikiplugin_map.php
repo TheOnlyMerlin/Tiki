@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -12,7 +12,7 @@ function wikiplugin_map_info()
 		'format' => 'html',
 		'documentation' => 'PluginMap',
 		'description' => tra('Display a map'),
-		'prefs' => array( 'wikiplugin_map', 'feature_search' ),
+		'prefs' => array( 'wikiplugin_map' ),
 		'icon' => 'img/icons/map.png',
 		'tags' => array( 'basic' ),
 		'filter' => 'wikicontent',
@@ -48,19 +48,8 @@ function wikiplugin_map_info()
 			'center' => array(
 				'requied' => false,
 				'name' => tra('Center'),
-				'description' => tr('Format: x,y,zoom where x is the longitude, and y is the latitude. Zoom is between 0 (view Earth) and 19.'),
+				'description' => tr('Format: x,y,zoom where x is the longitude, and y is the latitude. Zoom is between 0(view Earth) and 19.'),
 				'filter' => 'text',
-			),
-			'popupstyle' => array(
-				'required' => false,
-				'name' => tr('Popup style'),
-				'description' => tr('Alter the way the information is displayed when objects are loaded on the map.'),
-				'filter' => 'alpha',
-				'default' => 'bubble',
-				'options' => array(
-					array('text' => tr('Bubble'), 'value' => 'bubble'),
-					array('text' => tr('Dialog'), 'value' => 'dialog'),
-				),
 			),
 			'mapfile' => array(
 				'required' => false,
@@ -81,14 +70,6 @@ function wikiplugin_map_info()
 				'name' => tra('Size'),
 				'description' => tra('Size of the map'),
 				'filter' => 'int',
-				'advanced' => true,
-			),
-			'tooltips' => array(
-				'required' => false,
-				'name' => tra('Tooltips'),
-				'description' => tra('Show item name in a tooltip on hover (n/y).'),
-				'default' => 'n',
-				'filter' => 'alpha',
 				'advanced' => true,
 			),
 		),
@@ -124,36 +105,21 @@ function wikiplugin_map($data, $params)
 		$params['controls'] = explode(',', $params['controls']);
 	}
 
-	if (! isset($params['popupstyle'])) {
-		$params['popupstyle'] = 'bubble';
-	}
-
-	if (! empty($params['tooltips']) && $params['tooltips'] === 'y') {
-		$tooltips = ' data-tooltips="1"';
-	} else {
-		$tooltips = '';
-	}
-
-	$popupStyle = smarty_modifier_escape($params['popupstyle']);
-
-	$controls = array_intersect($params['controls'], wp_map_available_controls());
 	$controls = array_intersect($params['controls'], wp_map_available_controls());
 	$controls = implode(',', $controls);
 
 	$center = null;
-	$geolib = TikiLib::lib('geo');
 	if (isset($params['center'])) {
+		$geolib = TikiLib::lib('geo');
 		if ($coords = $geolib->parse_coordinates($params['center'])) {
 			$center = ' data-geo-center="' . smarty_modifier_escape($geolib->build_location_string($coords)) . '" ';
 		}
-	} else {
-		$center = $geolib->get_default_center();
 	}
 
 	TikiLib::lib('header')->add_map();
 	$scope = smarty_modifier_escape(wp_map_getscope($params));
 
-	$output = "<div class=\"map-container\" data-marker-filter=\"$scope\" data-map-controls=\"{$controls}\" data-popup-style=\"$popupStyle\" style=\"width: {$width}; height: {$height};\" $center{$tooltips}>";
+	$output = "<div class=\"map-container\" data-marker-filter=\"$scope\" data-map-controls=\"{$controls}\" style=\"width: {$width}; height: {$height};\" $center>";
 
 	$argumentParser = new WikiParser_PluginArgumentParser;
 	$matches = WikiParser_PluginMatcher::match($data);
@@ -181,7 +147,7 @@ function wp_map_getscope($params)
 
 	switch ($scope) {
 		case 'center':
-			return '#col1 .geolocated';
+			return '#tiki-center .geolocated';
 		case 'all':
 			return '.geolocated';
 		default:
@@ -214,7 +180,7 @@ function wp_map_mapserver($params)
 			$extdata="minx=".$minx."&maxx=".$maxx."&miny=".$miny."&maxy=".$maxy."&zoom=1&";
 		}
 	}
-
+	
 	$sizedata="";
 	if (isset($size)) {
 		$sizedata="size=".intval($size)."&";
@@ -226,7 +192,7 @@ function wp_map_mapserver($params)
 	$heightdata="";
 	if (isset($height)) {
 		$heightdata='height="'.intval($height).'"';
-	}
+	}	
 	if (@$prefs['feature_maps'] != 'y') {
 		$map=tra("Feature disabled");
 	} else {
@@ -263,10 +229,6 @@ function wp_map_plugin_searchlayer($body, $args)
 	$refresh = $args->refresh->int();
 	$suffix = $args->suffix->word();
 	$maxRecords = $args->maxRecords->digits();
-	$sort_mode = $args->sort_mode->word();
-	$load_delay = $args->load_delay->int();
-	$popup_width = $args->popup_width->text();	// plain numeric xx for pixels or xx% for percentage (only on dialog popups)
-	$popup_height = $args->popup_height->text();
 
 	$args->replaceFilter('fields', 'word');
 	$fields = $args->asArray('fields', ',');
@@ -276,9 +238,6 @@ function wp_map_plugin_searchlayer($body, $args)
 	unset($args['suffix']);
 	unset($args['maxRecords']);
 	unset($args['fields']);
-	unset($args['sort_mode']);
-	unset($args['load_delay']);
-	unset($args['popup_width'], $args['popup_height']);
 
 	$args->setDefaultFilter('text');
 
@@ -293,33 +252,16 @@ function wp_map_plugin_searchlayer($body, $args)
 		$maxRecords = '<input type="hidden" name="maxRecords" value="' . intval($maxRecords) . '"/>';
 	}
 
-	if ($sort_mode) {
-		$sort_mode = '<input type="hidden" name="sort_mode" value="' . $sort_mode . '"/>';
-	}
-
 	$fieldList = '';
 	if (! empty($fields)) {
 		$fieldList = '<input type="hidden" name="fields" value="' . smarty_modifier_escape(implode(',', $fields)) . '"/>';
 	}
 
-	$popup_config = array();
-	if ($popup_width && preg_match('/\d+[%]?/', $popup_width)) {
-		$popup_config['width'] = $popup_width;
-	}
-	if ($popup_height && preg_match('/\d+[%]?/', $popup_height)) {
-		$popup_config['height'] = $popup_height;
-	}
-	if ($popup_config) {
-		$popup_config = 'data-popup-config=\'' . json_encode($popup_config) . '\'';
-	} else {
-		$popup_config = '';
-	}
-
 	$escapedLayer = smarty_modifier_escape($layer);
 	$escapedSuffix = smarty_modifier_escape($suffix);
 	return <<<OUT
-<form method="post" action="tiki-searchindex.php" class="search-box onload" style="display: none" data-result-refresh="$refresh" data-result-layer="$escapedLayer" data-result-suffix="$escapedSuffix" data-load-delay="$load_delay"{$popup_config}>
-	<p>$maxRecords$sort_mode$fieldList$filters<input type="submit" class="btn btn-default btn-sm" /></p>
+<form method="post" action="tiki-searchindex.php" class="search-box onload" style="display: none" data-result-refresh="$refresh" data-result-layer="$escapedLayer" data-result-suffix="$escapedSuffix">
+	<p>$maxRecords$fieldList$filters<input type="submit"/></p>
 
 </form>
 OUT;
@@ -347,22 +289,10 @@ function init() {
 		.dialog({
 			autoOpen: false,
 			width: 200,
-			title: $(dialog).data('title'),
-			close: function (e) {
-				$.each(container.map.getControlsByClass('OpenLayers.Control.ModifyFeature'), function (k, control) {
-					if (feature && control) {
-						control.unselectFeature(feature);
-					}
-				});
-				$.each(container.map.getControlsByClass('OpenLayers.Control.SelectFeature'), function (k, control) {
-					if (feature && control) {
-						control.unselect(feature);
-					}
-				});
-			}
+			title: $(dialog).data('title')
 		})
 		.append($('<div class="current" style="height: $size;"/>'));
-
+	
 	$.each($json, function (k, color) {
 		$(dialog).append(
 			$('<div style="float: left; width: $size; height: $size;"/>')
@@ -379,8 +309,8 @@ function init() {
 }
 METHOD;
 	} else {
-		$headerlib->add_jsfile('vendor/jquery/plugins/colorpicker/js/colorpicker.js');
-		$headerlib->add_cssfile('vendor/jquery/plugins/colorpicker/css/colorpicker.css');
+		$headerlib->add_jsfile('lib/jquery/colorpicker/js/colorpicker.js');
+		$headerlib->add_cssfile('lib/jquery/colorpicker/css/colorpicker.css');
 		$methods = <<<METHOD
 function setColor(color) {
 	$(dialog).ColorPickerSetColor(color);
@@ -390,19 +320,7 @@ function init() {
 		.dialog({
 			autoOpen: false,
 			width: 400,
-			title: $(dialog).data('title'),
-			close: function (e) {
-				$.each(container.map.getControlsByClass('OpenLayers.Control.ModifyFeature'), function (k, control) {
-					if (feature && control) {
-						control.unselectFeature(feature);
-					}
-				});
-				$.each(container.map.getControlsByClass('OpenLayers.Control.SelectFeature'), function (k, control) {
-					if (feature && control) {
-						control.unselect(feature);
-					}
-				});
-			}
+			title: $(dialog).data('title')
 		})
 		.ColorPicker({
 			flat: true,
@@ -426,7 +344,6 @@ $("#$target").closest('.map-container').bind('initialized', function () {
 		, vlayer
 		, feature
 		, dialog = '#$target'
-		, defaultRules
 		;
 
 	$methods
@@ -439,37 +356,22 @@ $("#$target").closest('.map-container').bind('initialized', function () {
 
 			feature = ev.feature;
 
+			if (feature.attributes.intent === 'marker') {
+				return false;
+			}
+
 			$.each(container.map.getControlsByClass('OpenLayers.Control.ModifyFeature'), function (k, control) {
 				active = active || control.active;
-				if (active) {
-					control.selectFeature(feature);
-				}
 			});
 
-			if (active && feature.attributes.intent !== 'marker') {
+			if (active) {
 				setColor(feature.attributes.color);
-				vlayer.redraw();
 				$(dialog).dialog('open');
 			}
 		},
 		featureunselected: function (ev) {
 			feature = null;
 			$(dialog).dialog('close');
-
-			vlayer.styleMap = container.defaultStyleMap;
-			$.each(container.map.getControlsByClass('OpenLayers.Control.ModifyFeature'), function (k, control) {
-				if (ev.feature && control.active) {
-					control.unselectFeature(ev.feature);
-				}
-			});
-		},
-		beforefeaturemodified: function (ev) {
-			defaultRules = this.styleMap.styles["default"].rules;
-			this.styleMap.styles["default"].rules = [];
-		},
-		afterfeaturemodified: function (ev) {
-			this.styleMap.styles["default"].rules = defaultRules;
-			this.redraw();
 		}
 	});
 
@@ -483,8 +385,7 @@ FULL;
 	return "<div id=\"$target\" data-title=\"$title\"></div>";
 }
 
-function wp_map_color_filter ($color)
-{
+function wp_map_color_filter ($color) {
 	$color = strtolower($color);
 	if (preg_match('/^[0-9a-f]{3}([0-9a-f]{3})?$/', $color)) {
 		return "#$color";

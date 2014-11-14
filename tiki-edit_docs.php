@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +7,7 @@
 $section = 'docs';
 
 require_once ('tiki-setup.php');
-$filegallib = TikiLib::lib('filegal');
+include_once ('lib/filegals/filegallib.php');
 include_once ('lib/mime/mimetypes.php');
 global $mimetypes;
 
@@ -47,18 +44,8 @@ include_once ('tiki-section_options.php');
 
 $gal_info = $filegallib->get_file_gallery($_REQUEST['galleryId']);
 
-$fileType = reset(explode(';', $fileInfo['filetype']));
-$extension = end(explode('.', $fileInfo['filename']));
-$supportedExtensions = array('odt', 'ods', 'odp');
-$supportedTypes = array_map(
-	function ($type) use ($mimetypes) {
-		return $mimetypes[$type];
-	},
-	$supportedExtensions
-);
-
-if (! in_array($extension, $supportedExtensions) && ! in_array($fileType, $supportedTypes)) {
-	$smarty->assign('msg', tr('Wrong file type, expected one of %0', implode(', ', $supportedTypes)));
+if ( substr($fileInfo['filetype'], 0, strlen($mimetypes['odt'])) != $mimetypes['odt'] || end(explode('.', $fileInfo['filename'])) != 'odt') {
+	$smarty->assign('msg', tr('Wrong file type, expected %0', $mimetypes['odt']));
 	$smarty->display('error.tpl');
 	die;
 }
@@ -85,44 +72,44 @@ $_REQUEST['name'] = htmlspecialchars(str_replace('.odt', '', $_REQUEST['name']))
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_REQUEST['data'])) {
 	$_REQUEST['galleryId'] = (int)$_REQUEST['galleryId'];
 	$_REQUEST['description'] = htmlspecialchars(isset($_REQUEST['description']) ? $_REQUEST['description'] : $_REQUEST['name']);
-
+	
 	//webodf has to send an encoded string so that all browsers can handle the post-back
 	$_REQUEST['data'] = base64_decode($_REQUEST['data']);
-
+	
 	$type = $mimetypes['odt'];
 	if (! empty($fileId)) {
 		//existing file
 		$fileId = $filegallib->save_archive(
-			$fileId,
-			$fileInfo['galleryId'],
-			0,
-			$_REQUEST['name'],
-			$fileInfo['description'],
-			$_REQUEST['name'] . '.odt',
-			$_REQUEST['data'],
-			strlen($_REQUEST['data']),
-			$type,
-			$fileInfo['user'],
-			null,
-			null,
-			$user,
-			date()
+						$fileId,
+						$fileInfo['galleryId'],
+						0,
+						$_REQUEST['name'],
+						$fileInfo['description'],
+						$_REQUEST['name'] . '.odt',
+						$_REQUEST['data'],
+						strlen($_REQUEST['data']),
+						$type,
+						$fileInfo['user'],
+						null,
+						null,
+						$user,
+						date()
 		);
 	} else {
 		//new file
 		$fileId = $filegallib->insert_file(
-			$_REQUEST['galleryId'],
-			$_REQUEST['name'],
-			$_REQUEST['description'],
-			$_REQUEST['name'] . '.odt',
-			$_REQUEST['data'],
-			strlen($_REQUEST['data']),
-			$type,
-			$user,
-			date()
+						$_REQUEST['galleryId'],
+						$_REQUEST['name'],
+						$_REQUEST['description'],
+						$_REQUEST['name'] . '.odt',
+						$_REQUEST['data'],
+						strlen($_REQUEST['data']),
+						$type,
+						$user,
+						date()
 		);
 	}
-
+	
 	echo $fileId;
 	die;
 }
@@ -132,36 +119,37 @@ $smarty->assign('page', $page);
 $smarty->assign('isFromPage', isset($page));
 $smarty->assign('fileId', $fileId);
 
-$headerlib->add_jsfile('vendor_extra/webodf/webodf.js');
+$headerlib->add_jsfile('lib/webodf/webodf.js');
+$headerlib->add_cssfile('lib/webodf/webodf.css');
 
-$savingText = json_encode(tr('Saving...'));
+$savingText = tr('Saving...');
 
 $headerlib->add_jq_onready(
     "window.odfcanvas = new odf.OdfCanvas($('#tiki_doc')[0]);
 	odfcanvas.load('tiki-download_file.php?fileId=' + $('#fileId').val());
-
+	
 	//make editable
 	$('.editButton').click(function() {
-		odfcanvas.setEditable(true);
-
+		odfcanvas.setEditable();
+		
 		$('.editState,.viewState').toggle();
-
+		
 		return false;
 	});
-
+	
 	runtime.writeFile = function(path, data) {
-		$.tikiModal($savingText);
+		$.modal('$savingText');
 		var base64 = new core.Base64();
 		data = base64.convertUTF8ArrayToBase64(data);
 		$.post('tiki-edit_docs.php', {
 			fileId: $('#fileId').val(),
 			data: data
 		}, function(id) {
-				$.tikiModal();
+				$.modal();
 				$('#fileId').val(id);
 		});
 	};
-
+	
 	$('.saveButton').click(function() {
 		odfcanvas.save();
 		return false;
@@ -170,7 +158,7 @@ $headerlib->add_jq_onready(
 
 if (isset($_REQUEST['edit'])) {
 	$smarty->assign('edit', 'true');
-	$headerlib->add_jq_onready('odfcanvas.setEditable(true);');
+	$headerlib->add_jq_onready('odfcanvas.setEditable();');
 } else {
 	$smarty->assign('edit', 'false');
 }

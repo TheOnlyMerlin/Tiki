@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -25,17 +22,17 @@ if ( ($id = (int)$_GET['id']) > 0 ) {
 		&& $prefs['search_refresh_index_mode'] == 'normal'
 		&& $prefs['fgal_asynchronous_indexing'] == 'y'
 	) {
-		$filegallib = TikiLib::lib('filegal');
+		require_once('lib/filegals/filegallib.php');
 		require_once('lib/search/refresh-functions.php');
 
 		$info = $filegallib->get_file_info($id);
 
 		if ( $info['galleryId'] > 0 ) {
 			$gal_info = $filegallib->get_file_gallery($info['galleryId']);
-
+		
 			// Check perms
 			$tikilib->get_perm_object($info['galleryId'], 'file gallery', $gal_info, true);
-
+	
 			if ( $tiki_p_admin_file_galleries == 'y'
 				|| ( ( empty($fileInfo['lockedby']) || $fileInfo['lockedby'] == $user ) && $tiki_p_edit_gallery_file == 'y' )
 			) { // must be the owner or the locker or have the perms
@@ -53,10 +50,10 @@ header('Cache-Control: no-cache');
 header('Content-type: image/gif');
 header('Content-length: 85');
 print base64_decode(
-	'R0lGODlhAQABALMAAAAAAIAAAACAA'.
-	'ICAAAAAgIAAgACAgMDAwICAgP8AAA'.
-	'D/AP//AAAA//8A/wD//wBiZCH5BAE'.
-	'AAA8ALAAAAAABAAEAAAQC8EUAOw=='
+				'R0lGODlhAQABALMAAAAAAIAAAACAA'.
+				'ICAAAAAgIAAgACAgMDAwICAgP8AAA'.
+				'D/AP//AAAA//8A/wD//wBiZCH5BAE'.
+				'AAA8ALAAAAAABAAEAAAQC8EUAOw=='
 );
 flush();
 exit;

@@ -25,6 +25,4 @@ lang = {
 //	"Do not match" : "Do not match",
 //	"Advanced options" : "Advanced options",
 //	"Pick a file." : "Pick a file.",
-        "Editable" : "Editovatelné",
-        "Blank" : "Prázdné"
 };

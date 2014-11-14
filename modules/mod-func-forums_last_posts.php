@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_forums_last_posts_info()
 {
 	return array(
@@ -23,13 +20,12 @@ function module_forums_last_posts_info()
 		'params' => array(
 			'topics' => array(
 				'name' => tra('Topics only'),
-				'description' => tra('If set to "y", only displays topics.') . " " . tr('Not set by default.'),
+				'description' => tra('If set to "y", only displays topics.') . " " . tr('Not set by default.')
 				),
 			'forumId' => array(
 				'name' => tra('List of forum identifiers'),
 				'description' => tra('If set to a list of forum identifiers, restricts the posts to those in the identified forums. Identifiers are separated by colons (":").') . " " . tra('Example values:') . '"13", "31:49". ' . tra('Not set by default.'),
-				'separator' => ':',
-				'profile_reference' => 'forum',
+				'separator' => ':'
 			),
 			'date' => array(
 				'name' => tra('Show date'),
@@ -48,13 +44,9 @@ function module_forums_last_posts_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_forums_last_posts($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	global $ranklib; include_once ('lib/rankings/ranklib.php');
 	$default = array('forumId'=>'', 'topics' => false);
 	$module_params = array_merge($default, $module_params);

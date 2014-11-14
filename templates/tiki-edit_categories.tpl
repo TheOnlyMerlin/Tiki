@@ -1,10 +1,10 @@
 {* $Id$ *}
 {title}{tr}Organizer{/tr}{/title}
 
-<div class="form-group">
-	{button href="tiki-browse_categories.php?parentId=$parentId" _text="{tr}Browse Categories{/tr}" _title="{tr}Browse the category system{/tr}"}
+<div class="categbar">
+	{button href="tiki-browse_categories.php?parentId=$parentId" _text="{tr}Browse Category{/tr}" _title="{tr}Browse the category system{/tr}"}
 	{if $tiki_p_admin_categories eq 'y'}
-		{button href="tiki-admin_categories.php?parentId=$parentId" _text="{tr}Admin Categories{/tr}" _title="{tr}Admin the Category System{/tr}"}
+		{button href="tiki-admin_categories.php?parentId=$parentId" _text="{tr}Admin Category{/tr}" _title="{tr}Admin the Category System{/tr}"}
 	{/if}
 </div>
 
@@ -25,7 +25,7 @@
 		<ol>
 			{foreach from=$result item=object}
 				<li{permission type=$object.type object=$object.object_id name="modify_object_categories"} class="available"{/permission}>
-					<input type="checkbox" name="object[]" value="{$object.object_type|escape}:{$object.object_id|escape}">
+					<input type="checkbox" name="object[]" value="{$object.object_type|escape}:{$object.object_id|escape}"/>
 					{object_link type=$object.object_type id=$object.object_id}
 				</li>
 			{/foreach}
@@ -94,11 +94,11 @@ $('.object-list :checkbox').change(function () {
 $('.object-list li:not(.available) :checkbox').attr('disabled', true);
 
 $('.select-all').click(function () {
-	$('.object-list :unchecked').prop('checked', true).change();
+	$('.object-list :unchecked').attr('checked', true).change();
 	return false;
 });
 $('.unselect-all').click(function () {
-	$('.object-list :checked').prop('checked', false).change();
+	$('.object-list :checked').attr('checked', false).change();
 	return false;
 });
 {/jq}

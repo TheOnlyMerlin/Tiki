@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,8 @@ require_once('lib/language/GetStrings.php');
 require_once('lib/language/FileType.php');
 require_once('lib/language/FileType/Php.php');
 require_once('lib/language/FileType/Tpl.php');
-use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\vfsStreamFile;
-use org\bovigo\vfs\vfsStreamDirectory;
+
+require_once('vfsStream/vfsStream.php');
 
 class Language_GetStringsEndToEndTest extends TikiTestCase
 {
@@ -48,22 +47,22 @@ class Language_GetStringsEndToEndTest extends TikiTestCase
 	public function testGetStrings_endToEnd()
 	{
 		$obj = new Language_GetStrings(
-			new Language_CollectFiles,
-			new Language_WriteFile_Factory,
-			array('baseDir' => vfsStream::url('root'))
+						new Language_CollectFiles,
+						new Language_WriteFile_Factory,
+						array('baseDir' => vfsStream::url('root'))
 		);
 		$obj->addFileType(new Language_FileType_Php);
 		$obj->addFileType(new Language_FileType_Tpl);
 		$obj->run();
 
 		$this->assertEquals(
-			file_get_contents(__DIR__ . '/fixtures/language_end_to_end_test_modified.php'),
-			file_get_contents(vfsStream::url('root/lang/es/language.php'))
+						file_get_contents(__DIR__ . '/fixtures/language_end_to_end_test_modified.php'),
+						file_get_contents(vfsStream::url('root/lang/es/language.php'))
 		);
 
 		$this->assertEquals(
-			file_get_contents(__DIR__ . '/fixtures/language_end_to_end_test_original.php'),
-			file_get_contents(vfsStream::url('root/lang/es/language.php.old'))
+						file_get_contents(__DIR__ . '/fixtures/language_end_to_end_test_original.php'),
+						file_get_contents(vfsStream::url('root/lang/es/language.php.old'))
 		);
 	}
 
@@ -76,9 +75,9 @@ class Language_GetStringsEndToEndTest extends TikiTestCase
 		$this->esDir->addChild($langFile);
 
 		$obj = new Language_GetStrings(
-			new Language_CollectFiles,
-			new Language_WriteFile_Factory,
-			array('baseDir' => vfsStream::url('root'), 'fileName' => 'language_r.php')
+						new Language_CollectFiles,
+						new Language_WriteFile_Factory,
+						array('baseDir' => vfsStream::url('root'), 'fileName' => 'language_r.php')
 		);
 
 		$obj->addFileType(new Language_FileType_Php);
@@ -86,13 +85,13 @@ class Language_GetStringsEndToEndTest extends TikiTestCase
 		$obj->run();
 
 		$this->assertEquals(
-			file_get_contents(__DIR__ . '/fixtures/language_end_to_end_test_modified.php'),
-			file_get_contents(vfsStream::url("root/lang/es/$fileName"))
+						file_get_contents(__DIR__ . '/fixtures/language_end_to_end_test_modified.php'),
+						file_get_contents(vfsStream::url("root/lang/es/$fileName"))
 		);
 
 		$this->assertEquals(
-			file_get_contents(__DIR__ . '/fixtures/language_end_to_end_test_original.php'),
-			file_get_contents(vfsStream::url("root/lang/es/$fileName.old"))
+						file_get_contents(__DIR__ . '/fixtures/language_end_to_end_test_original.php'),
+						file_get_contents(vfsStream::url("root/lang/es/$fileName.old"))
 		);
 	}
 
@@ -113,22 +112,22 @@ class Language_GetStringsEndToEndTest extends TikiTestCase
 		$this->langDir->addChild($faDir);
 
 		$obj = new Language_GetStrings(
-			new Language_CollectFiles,
-			new Language_WriteFile_Factory,
-			array('baseDir' => vfsStream::url('root'))
+						new Language_CollectFiles,
+						new Language_WriteFile_Factory,
+						array('baseDir' => vfsStream::url('root'))
 		);
 		$obj->addFileType(new Language_FileType_Php);
 		$obj->addFileType(new Language_FileType_Tpl);
 		$obj->run();
 
 		$this->assertEquals(
-			file_get_contents(__DIR__ . '/fixtures/language_ru_modified.php'),
-			file_get_contents(vfsStream::url('root/lang/ru/language.php'))
+						file_get_contents(__DIR__ . '/fixtures/language_ru_modified.php'),
+						file_get_contents(vfsStream::url('root/lang/ru/language.php'))
 		);
 
 		$this->assertEquals(
-			file_get_contents(__DIR__ . '/fixtures/language_fa_modified.php'),
-			file_get_contents(vfsStream::url('root/lang/fa/language.php'))
+						file_get_contents(__DIR__ . '/fixtures/language_fa_modified.php'),
+						file_get_contents(vfsStream::url('root/lang/fa/language.php'))
 		);
 	}
 }

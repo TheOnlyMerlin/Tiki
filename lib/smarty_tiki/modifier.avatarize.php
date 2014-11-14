@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -19,24 +19,23 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
  * Purpose:  capitalize words in the string
  * -------------------------------------------------------------
  */
-function smarty_modifier_avatarize($user, $float = '', $default = '')
+function smarty_modifier_avatarize($user)
 {
-	if (! $user) {
-		return;
-	}
-
-	$avatar = TikiLib::lib('tiki')->get_user_avatar($user, $float);
-
-	if (! $avatar && $default) {
-		$smarty = TikiLib::lib('smarty');
-		$smarty->loadPlugin('smarty_function_icon');
-		$name = TikiLib::lib('user')->clean_user($user);
-		$avatar = smarty_function_icon(['_id' => $default, 'title' => $name], $smarty);
-	}
-
-	if ( $avatar != '') {
-		$avatar = TikiLib::lib('user')->build_userinfo_tag($user, $avatar);
+	global $tikilib;
+	global $userlib;
+	global $prefs;
+	$avatar = $tikilib->get_user_avatar($user);
+	if ( $avatar != '' && $tikilib->get_user_preference($user, 'user_information', 'public') == 'public' ) {
+		$id = $userlib->get_user_id($user);
+		$realn = $userlib->clean_user($user);
+		include_once('tiki-sefurl.php');
+		$url = "tiki-user_information.php?userId=$id";
+		$url = filter_out_sefurl($url);	
+		if ( $prefs['user_show_realnames'] == 'y' ) {
+			$avatar = "<a title=\"" . htmlspecialchars($realn, ENT_QUOTES) . "\" href=\"$url\">".$avatar.'</a>';
+		} else {
+			$avatar = "<a title=\"" . htmlspecialchars($user, ENT_QUOTES) . "\" href=\"$url\">".$avatar.'</a>';
+		}
 	}
 	return $avatar;	
 }
-

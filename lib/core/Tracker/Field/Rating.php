@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -23,8 +23,7 @@ class Tracker_Field_Rating extends Tracker_Field_Abstract
 						'name' => tr('Option'),
 						'description' => tr('The possible options (comma separated integers) for the rating.'),
 						'filter' => 'int',
-						'count' => '*',
-						'legacy_index' => 0,
+						'count' => '*', 
 					),
 					'mode' => array(
 						'name' => tr('Mode'),
@@ -34,18 +33,16 @@ class Tracker_Field_Rating extends Tracker_Field_Abstract
 							'stars' => tr('Stars'),
 							'radio' => tr('Radio Buttons'),
 							'like' => tr('Single Option: e.g. Like'),
-						),
-						'legacy_index' => 1,
+						), 
 					),
 					'labels' => array(
 						'name' => tr('Labels'),
 						'description' => tr('The text labels (comma separated) for the possible options.'),
 						'filter' => 'text',
 						'count' => '*',
-						'legacy_index' => 2,
-					),
+					),	
 				),
-			),
+			), 
 			'*' => array(
 				'name' => tr('Stars (deprecated)'),
 				'description' => tr('Displays a star rating'),
@@ -60,12 +57,11 @@ class Tracker_Field_Rating extends Tracker_Field_Abstract
 						'description' => tr('A possible option for the rating.'),
 						'filter' => 'int',
 						'count' => '*',
-						'legacy_index' => 0,
 					),
 				),
 			),
 			's' => array(
-				'name' => tr('Stars (system - deprecated)'),
+				'name' => tr('Stars (system)'),
 				'description' => tr('Displays a star rating'),
 				'readonly' => true,
 				'deprecated' => true,
@@ -78,7 +74,6 @@ class Tracker_Field_Rating extends Tracker_Field_Abstract
 						'description' => tr('A possible option for the rating.'),
 						'filter' => 'int',
 						'count' => '*',
-						'legacy_index' => 0,
 					),
 				),
 			),
@@ -89,7 +84,6 @@ class Tracker_Field_Rating extends Tracker_Field_Abstract
 	{
 		$ins_id = $this->getInsertId();
 
-		$result = null;
 		if (isset($requestData['vote']) && isset($requestData['itemId'])) {
 			$trklib = TikiLib::lib('trk');
 			$data = $this->getBaseFieldData();
@@ -108,7 +102,7 @@ class Tracker_Field_Rating extends Tracker_Field_Abstract
 				: null,
 			'value' => $data['value'],
 			'mode' => $data['mode'],
-			'labels' => $data['labels_array'],
+			'labels' => $data['labels_array'],      
 			'rating_options' => $data['rating_options'],
 			'result' => $result,
 		);
@@ -133,21 +127,19 @@ class Tracker_Field_Rating extends Tracker_Field_Abstract
 		}
 	}
 
-	function getDocumentPart(Search_Type_Factory_Interface $typeFactory)
+	function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
 	{
 		$data = $this->gatherVoteData();
-		$baseKey = $this->getBaseKey();
 
 		return array(
-			$baseKey => $typeFactory->numeric($data['voteavg']),
-			"{$baseKey}_count" => $typeFactory->numeric($data['numvotes']),
-			"{$baseKey}_sum" => $typeFactory->numeric($data['total']),
+			$baseKey => $typeFactory->sortable($data['voteavg']),
+			"{$baseKey}_count" => $typeFactory->sortable($data['numvotes']),
+			"{$baseKey}_sum" => $typeFactory->sortable($data['total']),
 		);
 	}
 
-	function getProvidedFields()
+	function getProvidedFields($baseKey)
 	{
-		$baseKey = $this->getBaseKey();
 		return array(
 			$baseKey,
 			"{$baseKey}_count",
@@ -155,7 +147,7 @@ class Tracker_Field_Rating extends Tracker_Field_Abstract
 		);
 	}
 
-	function getGlobalFields()
+	function getGlobalFields($baseKey)
 	{
 		return array();
 	}
@@ -164,16 +156,28 @@ class Tracker_Field_Rating extends Tracker_Field_Abstract
 	{
 		global $user;
 
-		$mode = $this->getOption('mode', 'stars');
+		$mode = 'stars'; // default is stars for legacy reasons
 
-		$options_array = $this->getOption('option', array(1, 2, 3, 4, 5));
-		$labels_array = $this->getOption('labels', $options_array);
+		$options_array = $this->getConfiguration('options_array');
+		foreach ($options_array as $k => $v) {
+			if (!is_numeric($v)) {
+				$mode = $v;
+				$labelstartkey = $k + 1;
+				$rating_option_num = $k;
+				break;
+			}
+		}
 		if ($mode == 'stars') {
 			$labels_array = array();
+		} else { 
+			for ($i = $labelstartkey, $count_options_array = count($options_array); $i < $count_options_array; $i++) {
+				$labels_array[] = $options_array[$i]; 
+			} 
 		}
-
 		if ($mode == 'like') {
 			$rating_options = array(0,1);
+		} elseif (isset($rating_option_num)) {
+			$rating_options = array_slice($options_array, 0, $rating_option_num);
 		} else {
 			$rating_options = $options_array;
 		}
@@ -182,7 +186,7 @@ class Tracker_Field_Rating extends Tracker_Field_Abstract
 			'fieldId' => $this->getConfiguration('fieldId'),
 			'type' => $this->getConfiguration('type'),
 			'name' => $this->getConfiguration('name'),
-			'value' => $this->getValue(),
+			'value' => $this->getValue(), 
 			'options_array' => $options_array,
 			'rating_options' => $rating_options,
 			'labels_array' => $labels_array,
@@ -199,23 +203,22 @@ class Tracker_Field_Rating extends Tracker_Field_Abstract
 
 		$votings = TikiDb::get()->table('tiki_user_votings');
 
-//		if ($field['type'] == 's' && $field['name'] == tra('Rating')) { // global rating to an item - value is the sum of the votes
-		if ($field['type'] == 's') { // global rating to an item - value is the sum of the votes. No need for hardcoded value Rating, internationalized or not: admins can replace for a more suited word for their use case.
-			$key = 'tracker.'.$trackerId.'.'.$itemId;
+		if ($field['type'] == 's' && $field['name'] == tra('Rating')) { // global rating to an item - value is the sum of the votes
+			$key = 'tracker.'.$trackerId.'.'.$itemId; 
 		} elseif ($field['type'] == '*' || $field['type'] == 'STARS') { // field rating - value is the average of the votes
-			$key = "tracker.$trackerId.$itemId.".$field['fieldId'];
+			$key = "tracker.$trackerId.$itemId.".$field['fieldId']; 
 		}
 
 		$data = $votings->fetchRow(
-			array(
-				'count' => $votings->count(),
-				'total' => $votings->sum('optionId'),
-			),
-			array('id' => $key)
+						array(
+							'count' => $votings->count(),
+							'total' => $votings->sum('optionId'),
+						), 
+						array('id' => $key)
 		);
 
 		$field['numvotes'] = $data['count'];
-		$field['total'] = $data['total'];
+		$field['total'] = $data['total']; 
 		if ($field['numvotes']) {
 			$field['voteavg'] = round($field['total'] / $field['numvotes'], 2);
 		} else {

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -81,10 +81,7 @@
  * instances allow to reconfigure the accessors depending on the
  * environment in which they are used. For example, the accessors are
  * configured with the global groups by default. However, they can be
- * replaced to evaluate the permissions for a different user
- * by creating a new Perms_Context object before accessing the perms,
- * e.g.
- * 		$permissionContext = new Perms_Context($aUserName);
+ * replaced to evaluate the permissions for a different user.
  *
  * Each ResolverFactory will generate a hash from the context which
  * represents a unique key to the matching resolver it would provide.
@@ -229,17 +226,6 @@ class Perms
 		return $valid;
 	}
 
-	public static function simpleFilter($type, $key, $permission, array $data)
-	{
-		return self::filter(
-			array('type' => $type),
-			'object',
-			$data,
-			array('object' => $key),
-			$permission
-		);
-	}
-
 	private static function hasPerm($baseContext, $contextMap, $entry, $permission)
 	{
 		$context = $baseContext;
@@ -300,11 +286,6 @@ class Perms
 		$this->groups = $groups;
 	}
 
-	function getGroups()
-	{
-		return $this->groups;
-	}
-
 	function setPrefix($prefix)
 	{
 		$this->prefix = $prefix;
@@ -360,16 +341,6 @@ class Perms
 	{
 		foreach ($this->factories as $factory) {
 			$data = $factory->bulk($baseContext, $bulkKey, $data);
-		}
-	}
-
-	public function clear()
-	{
-		$this->hashes = array();
-		foreach ($this->factories as $factory) {
-			if (method_exists($factory, 'clear')) {
-				$factory->clear();
-			}
 		}
 	}
 }

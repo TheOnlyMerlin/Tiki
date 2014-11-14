@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,7 +13,7 @@
 //
 
 require_once 'tiki-setup.php';
-$prefslib = TikiLib::lib('prefs');
+require_once 'lib/prefslib.php';
 
 $defaultValues = get_default_prefs();
 
@@ -51,7 +51,6 @@ $fields = array(
 $stopWords = array('', 'in', 'and', 'a', 'to', 'be', 'of', 'on', 'the', 'for', 'as', 'it', 'or', 'with', 'by', 'is', 'an');
 
 $data = array();
-error_reporting(E_ALL);ini_set('display_errors', 'on');
 
 $data = collect_raw_data($fields);
 remove_fake_descriptions($data);
@@ -70,10 +69,6 @@ foreach ($data as $values) {
 	fputcsv(STDOUT, array_values($values));
 }
 
-/**
- * @param $fields
- * @return array
- */
 function collect_raw_data($fields)
 {
 	$data = array();
@@ -81,10 +76,6 @@ function collect_raw_data($fields)
 	foreach (glob('lib/prefs/*.php') as $file) {
 		$name = substr(basename($file), 0, -4);
 		$function = "prefs_{$name}_list";
-
-		if ($name == 'index') {
-			continue;
-		}
 
 		include $file;
 		$list = $function();
@@ -97,7 +88,7 @@ function collect_raw_data($fields)
 			$entry['description'] = isset($raw['description']) ? $raw['description'] : '';
 			$entry['filter'] = isset($raw['filter']) ? $raw['filter'] : '';
 			$entry['help'] = isset($raw['help']) ? $raw['help'] : '';
-			$entry['dependencies'] = !empty($raw['dependencies']) ? implode(',', (array) $raw['dependencies']) : '';
+			$entry['dependencies'] = isset($raw['dependencies']) ? implode(',', $raw['dependencies']) : '';
 			$entry['type'] = isset($raw['type']) ? $raw['type'] : '';
 			$entry['options'] = isset($raw['options']) ? implode(',', $raw['options']) : '';
 			$entry['admin'] = isset($raw['admin']) ? $raw['admin'] : '';
@@ -113,7 +104,7 @@ function collect_raw_data($fields)
 			$entry['hint'] = isset($raw['hint']) ? $raw['hint'] : '';
 			$entry['shorthint'] = isset($raw['shorthint']) ? $raw['shorthint'] : '';
 			$entry['perspective'] = isset($raw['perspective']) ? $raw['perspective'] ? 'true' : 'false' : '';
-			$entry['separator'] = isset($raw['separator']) ? $raw['separator'] : '';
+                        $entry['separator'] = isset($raw['separator']) ? $raw['separator'] : '';
 			$data[] = $entry;
 		}
 	}
@@ -121,9 +112,6 @@ function collect_raw_data($fields)
 	return $data;
 }
 
-/**
- * @param $data
- */
 function remove_fake_descriptions(& $data)
 {
 	foreach ($data as & $row) {
@@ -133,26 +121,13 @@ function remove_fake_descriptions(& $data)
 	}
 }
 
-/**
- * @param $data
- * @param $prefs
- */
 function set_default_values(& $data, $prefs)
 {
 	foreach ($data as & $row) {
-		$row['default'] = isset($prefs[$row['preference']]) ? $prefs[$row['preference']] : '';
-
-		if (is_array($row['default'])) {
-			$row['default'] = implode($row['separator'], $row['default']);
-		}
+		$row['default'] = $prefs[$row['preference']];
 	}
 }
 
-/**
- * @param $data
- * @param $field
- * @return array
- */
 function index_data($data, $field)
 {
 	$index = array();
@@ -170,12 +145,9 @@ function index_data($data, $field)
 	return $index;
 }
 
-/**
- * @param $data
- */
 function collect_locations(& $data)
 {
-	$prefslib = TikiLib::lib('prefs');
+	global $prefslib; require_once 'lib/prefslib.php';
 
 	foreach ($data as & $row) {
 		$pages = $prefslib->getPreferenceLocations($row['preference']);
@@ -186,11 +158,6 @@ function collect_locations(& $data)
 	}
 }
 
-/**
- * @param $data
- * @param $index
- * @param $stopWords
- */
 function update_search_flag(& $data, $index, $stopWords)
 {
 	foreach ($data as & $row) {

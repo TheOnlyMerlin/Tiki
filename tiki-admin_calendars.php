@@ -1,19 +1,16 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 $section = 'calendar';
 require_once ('tiki-setup.php');
-$categlib = TikiLib::lib('categ');
-$calendarlib = TikiLib::lib('calendar');
+require_once ('lib/categories/categlib.php');
+include_once ('lib/calendar/calendarlib.php');
 if ($prefs['feature_groupalert'] == 'y') {
-	$groupalertlib = TikiLib::lib('groupalert');
+	include_once ('lib/groupalert/groupalertlib.php');
 }
 $auto_query_args = array('calendarId', 'sort_mode', 'find', 'offset');
 if (!isset($_REQUEST["calendarId"])) {
@@ -163,7 +160,7 @@ if ($_REQUEST['calendarId'] != 0) {
 		$cookietab = 2;
 	} else {
 		if (!isset($cookietab)) {
-			$cookietab = 1;
+			$cookietab = 1; 
 		}
 	}
 }
@@ -208,17 +205,17 @@ $smarty->assign('personal', $info["personal"]);
 $smarty->assign('startday', $info["startday"] < 0 ? 0 : $info['startday']);
 $smarty->assign('endday', $info["endday"] < 0 ? 0 : $info['endday']);
 //Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 $smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
 
 $smarty->assign('defaulteventstatus', $info['defaulteventstatus']);
 $smarty->assign(
-	'eventstatus',
-	array(
-		0 => tra('Tentative') ,
-		1 => tra('Confirmed') ,
-		2 => tra('Cancelled')
-	)
+				'eventstatus', 
+				array(
+					0 => tra('Tentative') ,
+					1 => tra('Confirmed') ,
+					2 => tra('Cancelled')
+				)
 );
 $smarty->assign_by_ref('info', $info);
 if (!isset($_REQUEST["sort_mode"])) {

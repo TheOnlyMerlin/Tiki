@@ -8,15 +8,14 @@
 <script src="lib/map/map.js"></script>
 {$xajax_javascript}
 
-<h1 class="pagetitle">{$pagelink}</h1>
+<h1>{$pagelink}</h1>
 <div align="center">
   <form name="frmmap" id="frmmap" action="tiki-map.php" method="get">
-   <input type="hidden" name="mapfile" value="{$mapfile}">
+   <input type="hidden" name="mapfile" value="{$mapfile}" />
 	<table border="0" cellpadding="0" cellspacing="0" >
 	  <tr>
 	     <td align="center" valign="middle">
-        <div class="table-responsive">
-		<table class="table normal">
+		<table class="normal">
 		  <tr><td align="center"> 
 		  <div id="mapWindow" style="z-index:50;overflow:hidden;
 		  	{if $xsize != ""}width:{$xsize}px;{/if} 
@@ -31,7 +30,7 @@
 						{if $ysize != ""}height="{$ysize}"{/if}
 					alt="{tr}click on the map to zoom or pan, do not drag{/tr}" 
 					  title="{tr}click on the map to zoom or pan, do not drag{/tr}"
-					  style="z-index:20;position:relative"> 
+					  style="z-index:20;position:relative" /> 
 			</div>		  
 		  <script type="text/javascript">	
 		    var minx={$minx};
@@ -86,11 +85,11 @@
 					</div>
 					</div>
 					<img id="queryClose" src="img/icons/close.gif" height="13" width="13" alt="{tr}Scroll Up{/tr}"
-						style="position:absolute; top:0px; left:257px">
+						style="position:absolute; top:0px; left:257px" />
 					<img id="queryUp" src="img/icons/up.gif" height="8" width="10" alt="{tr}Scroll Up{/tr}"
-						style="position:absolute; top:15px; left:257px">
+						style="position:absolute; top:15px; left:257px" />
 					<img id="queryDown" src="img/icons/down.gif" height="8" width="10" alt="{tr}Scroll Down{/tr}"
-						style="position:absolute; top:188px; left:257px">
+						style="position:absolute; top:188px; left:257px" />
 				  <script type="text/javascript">
 				  	var scrollActive = false, scrollStop = true, scrollIncrement = 10, scrollInterval = 60;
 				  	xAddEventListener(xGetElementById('queryClose'),'click',query_close,false);
@@ -105,39 +104,39 @@
 				
 		  </td></tr>
 		  <tr><td align="center">
-		 	<img id="scale" src="{$image_scale_url}" alt="{tr}Scale{/tr}" title="{tr}Scale{/tr}">
+		 	<img id="scale" src="{$image_scale_url}" alt="{tr}Scale{/tr}" title="{tr}Scale{/tr}" />
 		 	<div align="center">
-		 	<input type="text" id="xx"><input type="text" id="yy">
+		 	<input type="text" id="xx"/><input type="text" id="yy"/>
 			</div>
 		  </td></tr>
 		  <tr><td align="center">	
 			{if $zoom eq -2}
-			<img id="imgzoom2" src="img/icons/zoom-2.gif" onclick="zoomin(0)" alt="-x2" title="{tr}Zoom out{/tr}" border="1">
+			<img id="imgzoom2" src="img/icons/zoom-2.gif" onclick="zoomin(0)" alt="-x2" title="{tr}Zoom out{/tr}" border="1" />
 			{else}
-			<img id="imgzoom2" src="img/icons/zoom-2.gif" onclick="zoomin(0)" alt="-x2" title="{tr}Zoom out{/tr}">
+			<img id="imgzoom2" src="img/icons/zoom-2.gif" onclick="zoomin(0)" alt="-x2" title="{tr}Zoom out{/tr}" />
 			{/if}
 			{if $zoom eq 0}
-			<img id="imgzoom3" src="img/icons/info.gif" onclick="zoomin(1)" alt="Q" title="{tr}Query{/tr}" border="1">
+			<img id="imgzoom3" src="img/icons/info.gif" onclick="zoomin(1)" alt="Q" title="{tr}Query{/tr}" border="1" />
 			<script type="text/javascript">
   			var map=xGetElementById('map');
   			map.style.cursor='help';
 			</script>
 			{else}
-			<img id="imgzoom3" src="img/icons/info.gif" onclick="zoomin(1)" alt="Q" title="{tr}Query{/tr}">
+			<img id="imgzoom3" src="img/icons/info.gif" onclick="zoomin(1)" alt="Q" title="{tr}Query{/tr}" />
 			{/if}
 			{if $zoom eq 1}
-			<img id="imgzoom4" src="img/icons/move.gif" onclick="zoomin(2)" alt="P" title="{tr}Pan{/tr}" border="1">
+			<img id="imgzoom4" src="img/icons/move.gif" onclick="zoomin(2)" alt="P" title="{tr}Pan{/tr}" border="1" />
 			<script type="text/javascript">
   			var map=xGetElementById('map');
   			map.style.cursor='move';
 			</script>
 			{else}
-			<img id="imgzoom4" src="img/icons/move.gif" onclick="zoomin(2)" alt="P" title="{tr}Pan{/tr}">
+			<img id="imgzoom4" src="img/icons/move.gif" onclick="zoomin(2)" alt="P" title="{tr}Pan{/tr}" />
 			{/if}
 			{if $zoom eq 2}
-			<img id="imgzoom5" src="img/icons/zoom+2.gif" onclick="zoomin(3)" alt="x2" title="{tr}Zoom in{/tr}" border="1">
+			<img id="imgzoom5" src="img/icons/zoom+2.gif" onclick="zoomin(3)" alt="x2" title="{tr}Zoom in{/tr}" border="1" />
 			{else}
-			<img id="imgzoom5" src="img/icons/zoom+2.gif" onclick="zoomin(3)" alt="x2" title="{tr}Zoom in{/tr}">
+			<img id="imgzoom5" src="img/icons/zoom+2.gif" onclick="zoomin(3)" alt="x2" title="{tr}Zoom in{/tr}" />
 			{/if}
 			&nbsp;
 			<select id="zoom" name="zoom" size="1" onchange="cbzoomchange()">
@@ -145,8 +144,8 @@
 			</select>
 			<select name="size" size="1">
 				{html_options values=$possiblesizes selected=$size output=$displaysizes}
-			</select><br>
-			<input name="Redraw" value="{tr}Redraw{/tr}" type="Submit" class="btn btn-default"><br>
+			</select><br />
+			<input name="Redraw" value="{tr}Redraw{/tr}" type="Submit" /><br />
 			<small>{tr}select zoom/pan/query and image size{/tr}</small>
 		</td></tr>
 			<tr><td align="center"> 
@@ -157,58 +156,56 @@
 			<option selected value="#">Select Location and Go!
 				{html_options values=$view_name name=$view output=$view_name}
 			</select>
-				<input type="submit" class="btn btn-default btn-sm" name="Go" value="{tr}Go{/tr}">&nbsp;
+				<input type="submit" name="Go" value="{tr}Go{/tr}" />&nbsp;
 			{/if}
-			 <input type="image" name="maponly" value="yes" src="img/icons/image.png" alt="{tr}View the Map Only{/tr}" title="{tr}View the Map Only{/tr}">
+			 <input type="image" name="maponly" value="yes" src="img/icons/image.png" alt="{tr}View the Map Only{/tr}" title="{tr}View the Map Only{/tr}" />
 			{if $tiki_p_map_edit eq 'y'}
 				&nbsp; 
 				<a class="link" href="tiki-map_edit.php?mapfile={$mapfile}&amp;mode=editing">
-				<img src="img/icons/wrench.png" alt="{tr}Edit{/tr}" title="{tr}Edit{/tr}" width="16" height="16"></a>
+				<img src="img/icons/wrench.png" alt="{tr}Edit{/tr}" title="{tr}Edit{/tr}" width="16" height="16" /></a>
 			{/if}
 			&nbsp;
-			<a href="tiki-map.php?mapfile={$mapfile}" ><small>{tr}Reset Map{/tr}</small></a><br> 
+			<a href="tiki-map.php?mapfile={$mapfile}" ><small>{tr}Reset Map{/tr}</small></a><br /> 
 			<small>{tr}Click on the map or click redraw{/tr}</small>
-			<input id="minx" type="hidden" name="minx" value="{$minx}">
-			<input id="miny" type="hidden" name="miny" value="{$miny}">
-			<input id="maxx" type="hidden" name="maxx" value="{$maxx}">
-			<input id="maxy" type="hidden" name="maxy" value="{$maxy}">
-			<input id="size" type="hidden" name="oldsize" value="{$size}">
+			<input id="minx" type="hidden" name="minx" value="{$minx}" />
+			<input id="miny" type="hidden" name="miny" value="{$miny}" />
+			<input id="maxx" type="hidden" name="maxx" value="{$maxx}" />
+			<input id="maxy" type="hidden" name="maxy" value="{$maxy}" />
+			<input id="size" type="hidden" name="oldsize" value="{$size}" />
 			<a href="tiki-index.php?page={$prefs.map_help}"><small>{tr}Help{/tr}</small></a>&nbsp;
-			<a href="tiki-index.php?page={$prefs.map_comments}"><small>{tr}Comments{/tr}</small></a><br>
+			<a href="tiki-index.php?page={$prefs.map_comments}"><small>{tr}Comments{/tr}</small></a><br />
 		</td></tr>
 	<tr><td><div id="resultBox">{$map_querymsg}</div></td></tr>	
 		</table>
-        </div>
-		<footer class="editdate">{tr}Last modification date:{/tr} {$lastModif|tiki_long_datetime} {tr}by{/tr} <a class="link" href="tiki-user_information.php?view_user={$lastUser}">{$lastUser}</a> ({$ip})-{tr}Hits:{/tr}{$mapstats}({$mapstats7days})</footer>
+		<p class="editdate">{tr}Last modification date:{/tr} {$lastModif|tiki_long_datetime} {tr}by{/tr} <a class="link" href="tiki-user_information.php?view_user={$lastUser}">{$lastUser}</a> ({$ip})-{tr}Hits:{/tr}{$mapstats}({$mapstats7days})</p>
 	     
 	     </td>
 		<td valign="top">
-		<table class="table normal">
+		<table class="normal">
 		   <tr><th align="center"><b>{tr}Overview{/tr}</b></th></tr>
 		   <tr><td align="center" valign="middle" bgcolor="FFFFFF">
-		   <img id="ref" src="{$image_ref_url}" border="1" alt="{tr}Overview{/tr}" title="{tr}Overview{/tr}"></td ></tr>
+		   <img id="ref" src="{$image_ref_url}" border="1" alt="{tr}Overview{/tr}" title="{tr}Overview{/tr}" /></td ></tr>
 		   <tr><th align="center"><b>{tr}Legend{/tr}</b></th></tr>
-		   <tr><td align="center" bgcolor="FFFFFF"><img id="leg" src="{$image_leg_url}" alt="{tr}Legend{/tr}" title="{tr}Legend{/tr}"></td></tr>
+		   <tr><td align="center" bgcolor="FFFFFF"><img id="leg" src="{$image_leg_url}" alt="{tr}Legend{/tr}" title="{tr}Legend{/tr}" /></td></tr>
 		   <tr><td>
     			<div class="separator">
 			{if $prefs.feature_menusfolderstyle eq 'y'}
-				<a class="separator" href="javascript:toggle('layermenu');"><img src="img/icons/fo.gif" name="layermenuicn" alt="">&nbsp;</a>
+				<a class="separator" href="javascript:toggle('layermenu');"><img src="img/icons/fo.gif" name="layermenuicn" alt=""/>&nbsp;</a>
 			{else}
 			<a class="separator" href="javascript:toggle('layermenu');"><b>[+/-]</b></a>
 			{/if}
 			{tr}Layer Manager{/tr}
 			</div>
 			<div id='layermenu' style="{$mnu_layermenu}">
-                <div class="table-responsive">
-    			<table class="table normal">
+    			<table class="normal">
 			<tr>
 				<th><b>{tr}Layer{/tr}</b></th>
 		  		<th><b>{tr}On{/tr}</b></th>
 		  		<th>
-				<img src="img/icons/edit.gif" alt="{tr}Label{/tr}" title="{tr}Label{/tr}"></th>
+				<img src="img/icons/edit.gif" alt="{tr}Label{/tr}" title="{tr}Label{/tr}" /></th>
 		  		<th>
 				<img src="img/icons/question.gif" alt="{tr}Query{/tr}" title="{tr}Query{/tr}" /></th>
-		  		<th><img src="img/icons/disk.png" width="16" height="16" alt="{tr}Download{/tr}" title="{tr}Download{/tr}"></th>
+		  		<th><img src="img/icons/disk.png" width="16" height="16" alt="{tr}Download{/tr}" title="{tr}Download{/tr}" /></th>
 			</tr>
 			{section name=j loop=$my_layers}
 			{if $my_layers[j]->group neq ""}
@@ -221,16 +218,15 @@
 				{/if}
 				<div class="separator">
 					{if $prefs.feature_menusfolderstyle eq 'y'}
-					<a class="separator" href="javascript:icntoggle('submenu{$unique_layer_group[j]}');"><img src="img/icons/fo.gif" name="layermenuicn" alt="">&nbsp;</a>
+					<a class="separator" href="javascript:icntoggle('submenu{$unique_layer_group[j]}');"><img src="img/icons/fo.gif" name="layermenuicn" alt=""/>&nbsp;</a>
 					{else}
 					
 					&nbsp;&nbsp;<a class="separator" href="javascript:toggle('submenu{$unique_layer_group[j]}');">[+/-]</a>
 					{/if}
 					{tr}{$my_layers[j]->group}{/tr}		
 				</div>
-				<div id='submenu{$unique_layer_group[j]}' style="{$mnu_submenu}">
-                    <div class="table-responsive">
-					<table class="table normal">
+				<div id='submenu{$unique_layer_group[j]}' style="{$mnu_submenu}"> 
+					<table class="normal">
 					{section name=i loop=$my_layers}
 					{if $my_layers[i]->group neq ""}
 					{if $my_layers[i]->group == $my_layers[j]->group}
@@ -248,7 +244,7 @@
 						{else}
 						<td class="even" width=20px>
 						{/if}
-						<input type="checkbox" onclick="changelayer({$smarty.section.i.index})" name="{$my_layers[i]->name}" value="1" {$my_layers_checked[i]}>
+						<input type="checkbox" onclick="changelayer({$smarty.section.i.index})" name="{$my_layers[i]->name}" value="1" {$my_layers_checked[i]} />
 						</td>
 						{if $smarty.section.i.index % 2}
 						<td class="odd" width=20px>
@@ -256,7 +252,7 @@
 						<td class="even" width=20px>
 						{/if}
 						{if $layer_label[i] eq "On"}
-						<input type="checkbox" onclick="changelabel({$smarty.section.i.index})" name="{$my_layers[i]->name}_label" value="1" {$my_layers_label_checked[i]}>
+						<input type="checkbox" onclick="changelabel({$smarty.section.i.index})" name="{$my_layers[i]->name}_label" value="1" {$my_layers_label_checked[i]} />
 						{else}
 						&nbsp;
 						{/if}
@@ -267,7 +263,7 @@
 						<td class="even" width=20px>
 						{/if}
 						{if $layer_query[i] eq "On"}
-						<img src="img/icons/question.gif" alt="{tr}Query{/tr}" title="{tr}Query{/tr}">
+						<img src="img/icons/question.gif" alt="{tr}Query{/tr}" title="{tr}Query{/tr}" />
 						{else}
 						&nbsp;
 						{/if}
@@ -280,7 +276,7 @@
 						{if $layer_download[i] eq "T"}
 						<small>
 						<a href="tiki-map_download.phtml?mapfile={$mapfile}&amp;layer={$my_layers[i]->name}">
-						<img src="img/icons/disk.png" alt="{tr}Download{/tr}" title="{tr}Download{/tr}" width="16" height="16"></a>
+						<img src="img/icons/disk.png" alt="{tr}Download{/tr}" title="{tr}Download{/tr}" width="16" height="16" /></a>
 						</small>
 						{/if}
 						</td>
@@ -289,7 +285,6 @@
 					{/if}
 					{/section}
 					</table>
-                    </div>
 				</div>
 				</td>
 			    </tr>
@@ -308,7 +303,7 @@
 				{else}
 				<td class="even">
 				{/if}
-				<input type="checkbox" onclick="changelayer({$smarty.section.j.index})" name="{$my_layers[j]->name}" value="1" {$my_layers_checked[j]}>
+				<input type="checkbox" onclick="changelayer({$smarty.section.j.index})" name="{$my_layers[j]->name}" value="1" {$my_layers_checked[j]} />
 				</td>
 				{if $smarty.section.j.index % 2}
 				<td class="odd">
@@ -316,7 +311,7 @@
 				<td class="even">
 				{/if}
 				{if $layer_label[j] eq "On"}
-				<input type="checkbox" onclick="changelabel({$smarty.section.j.index})" name="{$my_layers[j]->name}_label" value="1" {$my_layers_label_checked[j]}>
+				<input type="checkbox" onclick="changelabel({$smarty.section.j.index})" name="{$my_layers[j]->name}_label" value="1" {$my_layers_label_checked[j]} />
 				{else}
 				&nbsp;
 				{/if}
@@ -327,7 +322,7 @@
 				<td class="even">
 				{/if}
 				{if $layer_query[j] eq "On"}
-				<img src="img/icons/question.gif" alt="{tr}Query{/tr}" title="{tr}Query{/tr}">
+				<img src="img/icons/question.gif" alt="{tr}Query{/tr}" title="{tr}Query{/tr}" />
 				{else}
 				&nbsp;
 				{/if}
@@ -340,7 +335,7 @@
 				{if $layer_download[j] eq "T"}
 				<small>
 				<a href="tiki-map_download.phtml?mapfile={$mapfile}&amp;layer={$my_layers[j]->name}">
-				<img src="img/icons/disk.png" alt="{tr}Download{/tr}" title="{tr}Download{/tr}" width="16" height="16"></a>
+				<img src="img/icons/disk.png" alt="{tr}Download{/tr}" title="{tr}Download{/tr}" width="16" height="16" /></a>
 				</small>
 				{/if}
 				</td>
@@ -348,7 +343,6 @@
 			{/if}	
 			{/section}
 			</table>
-            </div>
 			</div>
 		</td>
 		</tr>

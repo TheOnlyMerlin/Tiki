@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -20,7 +20,6 @@ function wikiplugin_miniquiz_info()
 				'name' => tra('Tracker ID'),
 				'description' => tra('Numeric value representing the miniquiz tracker ID'),
 				'default' => '',
-				'profile_reference' => 'tracker',
 			),
 		),
 	);
@@ -37,12 +36,11 @@ function shuf(&$ar)
 
 function wikiplugin_miniquiz($data, $params)
 {
-	global $user, $group, $prefs;
-	$trklib = TikiLib::lib('trk');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $user, $group, $prefs, $smarty;
+	global $trklib; include_once('lib/trackers/trackerlib.php');
 	extract($params, EXTR_SKIP);
+
 	if ($prefs['feature_trackers'] != 'y' || !isset($trackerId) || !($tracker = $trklib->get_tracker($trackerId))) {
-		$smarty = TikiLib::lib('smarty');
 		return $smarty->fetch("wiki-plugins/error_tracker.tpl");
 	}
 

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -20,14 +20,12 @@ function prefs_default_list()
 		),
 		'default_map' => array(
 			'name' => tra('default mapfile'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '50',
 			'default' => '',
 		),
 		'default_wiki_diff_style' => array(
 			'name' => tra('Default diff style'),
-            'description' => tra(''),
 			'type' => 'list',
 			'options' => array(
 				'old' => tra('Only with last version'),
@@ -47,7 +45,6 @@ function prefs_default_list()
 		),
 		'default_rows_textarea_wiki' => array(
 			'name' => tra('Wiki'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '3',
 			'shorthint' => tra('rows'),
@@ -56,7 +53,6 @@ function prefs_default_list()
 		),
 		'default_rows_textarea_comment' => array(
 			'name' => tra('Default number of rows for comment box'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '3',
 			'shorthint' => tra('rows'),
@@ -65,7 +61,6 @@ function prefs_default_list()
 		),
 		'default_rows_textarea_forum' => array(
 			'name' => tra('Forum'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '3',
 			'shorthint' => tra('rows'),
@@ -74,12 +69,20 @@ function prefs_default_list()
 		),
 		'default_rows_textarea_forumthread' => array(
 			'name' => tra('Forum reply'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => '3',
 			'shorthint' => tra('rows'),
 			'filter' => 'digits',
 			'default' => '10',
+		),
+		'default_kaltura_editor' => array(
+			'name' => tra('Default Editor'),
+			'type' => 'list',
+			'options' => array(
+				'kse' => tra('Simple'),
+				'kae' => tra('Advanced'),
+			),
+			'default' => 'kse',
 		),
 	);
 }

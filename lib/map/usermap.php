@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -21,8 +21,7 @@ class MapsLib extends TikiLib
 
 	function makeusermap()
 	{
-		global $prefs, $tikidomain;
-		$smarty = TikiLib::lib('smarty');
+		global $prefs, $tikidomain, $smarty;
 
 		if (!isset($prefs['ogr2ogr']) || !is_executable($prefs['ogr2ogr'])) {
 			return (tra("No valid ogr2ogr executable"));
@@ -170,8 +169,8 @@ class MapsLib extends TikiLib
 
 	function makeimagemap($tdo, $galleryId)
 	{
-		global $prefs, $tikidomain;
-		$smarty = TikiLib::lib('smarty');
+		global $prefs, $tikidomain, $smarty;
+
 		if (!isset($prefs['ogr2ogr']) || !is_executable($prefs['ogr2ogr'])) {
 			return (tra("No valid ogr2ogr executable"));
 		} 

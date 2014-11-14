@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -27,7 +24,7 @@ $auto_query_args = array( 'offset', 'id', 'cookietab' );
 $section='admin';
 
 require_once('tiki-setup.php');
-$perspectivelib = TikiLib::lib('perspective');
+require_once('lib/perspectivelib.php');
 
 $access->check_feature(array('feature_perspective', 'feature_jquery_ui'));
 
@@ -49,7 +46,7 @@ if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'remove' && $selecte
 
 // Edit perspective
 if ( isset( $_REQUEST['name'] ) && $selectedId && $objectperms->perspective_edit ) {
-	$prefslib = TikiLib::lib('prefs');
+	global $prefslib; require_once 'lib/prefslib.php';
 	$perspectivelib->replace_perspective($selectedId, $_REQUEST['name']);
 
 	$preferences = $_REQUEST['lm_preference'];
@@ -82,7 +79,7 @@ if ( $selectedId ) {
 	$smarty->assign('perspective_info', $info);
 
 	if ( isset( $_REQUEST['criteria'] ) ) {
-		$prefslib = TikiLib::lib('prefs');
+		global $prefslib; require_once 'lib/prefslib.php';
 		require_once 'lib/smarty_tiki/function.preference.php';
 
 		$criteria = $_REQUEST['criteria'];
@@ -97,7 +94,7 @@ if ( $selectedId ) {
 	}
 }
 
-$headerlib->add_cssfile('themes/base_files/feature_css/admin.css');		// to display the prefs properly
+$headerlib->add_cssfile('css/admin.css');		// to display the prefs properly
 
 $headtitle = tra('Perspectives');
 $description = tra('Edit Perspectives');

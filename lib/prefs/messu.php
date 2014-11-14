@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -41,16 +41,5 @@ function prefs_messu_list()
 			),
 			'default' => '200',
 		),
-		'messu_truncate_internal_message' => array(
-			'name' => tra('Truncate internal message notification to number of characters'),
-			'description' => tra('Number of characters to show in the message notification sent through e-mail, with a link to read the full message in the Internal Messaging feature in Tiki'),
-			'type' => 'text',
-			'size' => '10',
-			'filter' => 'digits',
-			'dependencies' => array(
-				'feature_messages',
-			),
-			'default' => '2500',
-		),		
 	);
 }

@@ -3,8 +3,8 @@
 {title help="Shoutbox"}{tr}Shoutbox{/tr}{/title}
 
 {if $tiki_p_admin_shoutbox eq 'y'}
-  <div class="t_navbar">
-		{button href="tiki-admin_shoutbox_words.php" class="btn btn-default" _text="{tr}Banned Words{/tr}"}
+  <div class="navbar">
+		{button href="tiki-admin_shoutbox_words.php" _text="{tr}Banned Words{/tr}"}
   </div>
 
 	<h2>{tr}Change shoutbox general settings{/tr}</h2>
@@ -13,13 +13,13 @@
 			<tr>
 				<td class="odd">{tr}auto-link urls{/tr}</td>
 				<td class="odd">
-					<input type="checkbox" name="shoutbox_autolink" value="on"{if $prefs.shoutbox_autolink eq 'y'} checked="checked"{/if}>
+					<input type="checkbox" name="shoutbox_autolink" value="on"{if $prefs.shoutbox_autolink eq 'y'} checked="checked"{/if} />
 				</td>
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" class="btn btn-default btn-sm" name="shoutbox_admin" value="{tr}Save{/tr}">
+					<input type="submit" name="shoutbox_admin" value="{tr}Save{/tr}" />
 				</td>
 			</tr>
 		</table>
@@ -33,7 +33,7 @@
 	{/if}
 	{js_maxlength textarea=message maxlength=255}
 	<form action="tiki-shoutbox.php" method="post" onsubmit="return verifyForm(this);">
-		<input type="hidden" name="msgId" value="{$msgId|escape}">
+		<input type="hidden" name="msgId" value="{$msgId|escape}" />
 		<table class="formcolor">
 			<tr>
 				<td>{tr}Message:{/tr}</td>
@@ -41,10 +41,10 @@
 					<textarea rows="4" cols="60" name="message">{$message|escape}</textarea>
 					{if $prefs.feature_socialnetworks eq 'y' && $user neq ''}
 						{if $prefs.socialnetworks_twitter_consumer_key neq ''}
-							<div><input type="checkbox" name="tweet" id="tweet" value='1'> {tr}Tweet with Twitter{/tr}<br></div>
+							<div><input type="checkbox" name="tweet" id="tweet" value='1' /> {tr}Tweet with Twitter{/tr}<br /></div>
 						{/if}
 						{if $prefs.socialnetworks_facebook_application_id neq ''}
-							<div><input type="checkbox" name="facebook" id="facebook" value='1'> {tr}Post on my Facebook wall{/tr}</div>
+							<div><input type="checkbox" name="facebook" id="facebook" value='1' /> {tr}Post on my Facebook wall{/tr}</div>
 						{/if}
 					{/if}
 				</td>
@@ -55,7 +55,7 @@
 			<tr>
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
+					<input type="submit" name="save" value="{tr}Save{/tr}" />
 				</td>
 			</tr>
 		</table>
@@ -78,7 +78,7 @@
 				{icon _id='page_edit' alt="{tr}Edit{/tr}"}
 			</a>
 		{/if}
-		<br>
+		<br />
 		{$channels[user].message}
 	</div>
 {/section}

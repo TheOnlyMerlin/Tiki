@@ -1,12 +1,13 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
-$structlib = TikiLib::lib('struct');
+include_once ('lib/pear/XML/Server.php');
+include_once ('lib/structures/structlib.php');
 
 //get_strings tra("Send Pages");
 $access->check_feature('feature_comm');
@@ -116,20 +117,20 @@ if (isset($_REQUEST['send'])) {
 			$page_info = $tikilib->get_page_info($spage['pageName']);
 			$pos++;
 			$searchMsg = new XML_RPC_Message(
-				'sendStructurePage',
-				array(
-					new XML_RPC_Value($_SERVER['SERVER_NAME'], 'string'),
-					new XML_RPC_Value($_REQUEST['username'], 'string'),
-					new XML_RPC_Value($_REQUEST['password'], 'string'),
-					new XML_RPC_Value($spages[0]['pageName'], 'string'),
-					new XML_RPC_Value($spage['parent_id'] ? $listPageNames[$spage['parent_id']] : $spage['pageName'], 'string'),
-					new XML_RPC_Value($spage['pageName'], 'string'),
-					new XML_RPC_Value(base64_encode($page_info['data']), 'string'),
-					new XML_RPC_Value($page_info['comment'], 'string'),
-					new XML_RPC_Value($page_info['description'], 'string'),
-					new XML_RPC_Value($pos, 'string'),
-					new XML_RPC_Value($spage['page_alias'], 'string')
-				)
+							'sendStructurePage',
+							array(
+								new XML_RPC_Value($_SERVER['SERVER_NAME'], 'string'),
+								new XML_RPC_Value($_REQUEST['username'], 'string'),
+								new XML_RPC_Value($_REQUEST['password'], 'string'),
+								new XML_RPC_Value($spages[0]['pageName'], 'string'),
+								new XML_RPC_Value($spage['parent_id'] ? $listPageNames[$spage['parent_id']] : $spage['pageName'], 'string'),
+								new XML_RPC_Value($spage['pageName'], 'string'),
+								new XML_RPC_Value(base64_encode($page_info['data']), 'string'),
+								new XML_RPC_Value($page_info['comment'], 'string'),
+								new XML_RPC_Value($page_info['description'], 'string'),
+								new XML_RPC_Value($pos, 'string'),
+								new XML_RPC_Value($spage['page_alias'], 'string')
+							)
 			);
 			$result = $client->send($searchMsg);
 			if (!$result) {
@@ -151,16 +152,16 @@ if (isset($_REQUEST['send'])) {
 		$page_info = $tikilib->get_page_info($page);
 		if ($page_info) {
 			$searchMsg = new XML_RPC_Message(
-				'sendPage',
-				array(
-					new XML_RPC_Value($_SERVER['SERVER_NAME'], 'string'),
-					new XML_RPC_Value($_REQUEST['username'], 'string'),
-					new XML_RPC_Value($_REQUEST['password'], 'string'),
-					new XML_RPC_Value($page, 'string'),
-					new XML_RPC_Value(base64_encode($page_info['data']), 'string'),
-					new XML_RPC_Value($page_info['comment'], 'string'),
-					new XML_RPC_Value($page_info['description'], 'string'),
-				)
+							'sendPage',
+							array(
+								new XML_RPC_Value($_SERVER['SERVER_NAME'], 'string'),
+								new XML_RPC_Value($_REQUEST['username'], 'string'),
+								new XML_RPC_Value($_REQUEST['password'], 'string'),
+								new XML_RPC_Value($page, 'string'),
+								new XML_RPC_Value(base64_encode($page_info['data']), 'string'),
+								new XML_RPC_Value($page_info['comment'], 'string'),
+								new XML_RPC_Value($page_info['description'], 'string'),
+							)
 			);
 			$result = $client->send($searchMsg);
 			if (!$result) {
@@ -177,36 +178,36 @@ if (isset($_REQUEST['send'])) {
 			}
 		}
 	}
-	$artlib = TikiLib::lib('art');
+	global $artlib; require_once 'lib/articles/artlib.php';
 	foreach ($sendarticles as $article) {
 		$page_info = $artlib->get_article($article);
 		if ($page_info) {
 			$searchMsg = new XML_RPC_Message(
-				'sendArticle',
-				array(
-					new XML_RPC_Value($_SERVER['SERVER_NAME'], 'string'),
-					new XML_RPC_Value($_REQUEST['username'], 'string'),
-					new XML_RPC_Value($_REQUEST['password'], 'string'),
-					new XML_RPC_Value(base64_encode($page_info['title']), 'string'),
-					new XML_RPC_Value(base64_encode($page_info['authorName']), 'string'),
-					new XML_RPC_Value($page_info['size'], 'int'),
-					new XML_RPC_Value($page_info['useImage'], 'string'),
-					new XML_RPC_Value($page_info['image_name'], 'string'),
-					new XML_RPC_Value($page_info['image_type'], 'string'),
-					new XML_RPC_Value($page_info['image_size'], 'int'),
-					new XML_RPC_Value($page_info['image_x'], 'int'),
-					new XML_RPC_Value($page_info['image_y'], 'int'),
-					new XML_RPC_Value(base64_encode($page_info['image_data']), 'string'),
-					new XML_RPC_Value($page_info['publishDate'], 'int'),
-					new XML_RPC_Value($page_info['expireDate'], 'int'),
-					new XML_RPC_Value($page_info['created'], 'int'),
-					new XML_RPC_Value(base64_encode($page_info['heading']), 'string'),
-					new XML_RPC_Value(base64_encode($page_info['body']), 'string'),
-					new XML_RPC_Value($page_info['hash'], 'string'),
-					new XML_RPC_Value($page_info['author'], 'string'),
-					new XML_RPC_Value($page_info['type'], 'string'),
-					new XML_RPC_Value($page_info['rating'], 'string')
-				)
+							'sendArticle',
+							array(
+								new XML_RPC_Value($_SERVER['SERVER_NAME'], 'string'),
+								new XML_RPC_Value($_REQUEST['username'], 'string'),
+								new XML_RPC_Value($_REQUEST['password'], 'string'),
+								new XML_RPC_Value(base64_encode($page_info['title']), 'string'),
+								new XML_RPC_Value(base64_encode($page_info['authorName']), 'string'),
+								new XML_RPC_Value($page_info['size'], 'int'),
+								new XML_RPC_Value($page_info['useImage'], 'string'),
+								new XML_RPC_Value($page_info['image_name'], 'string'),
+								new XML_RPC_Value($page_info['image_type'], 'string'),
+								new XML_RPC_Value($page_info['image_size'], 'int'),
+								new XML_RPC_Value($page_info['image_x'], 'int'),
+								new XML_RPC_Value($page_info['image_y'], 'int'),
+								new XML_RPC_Value(base64_encode($page_info['image_data']), 'string'),
+								new XML_RPC_Value($page_info['publishDate'], 'int'),
+								new XML_RPC_Value($page_info['expireDate'], 'int'),
+								new XML_RPC_Value($page_info['created'], 'int'),
+								new XML_RPC_Value(base64_encode($page_info['heading']), 'string'),
+								new XML_RPC_Value(base64_encode($page_info['body']), 'string'),
+								new XML_RPC_Value($page_info['hash'], 'string'),
+								new XML_RPC_Value($page_info['author'], 'string'),
+								new XML_RPC_Value($page_info['type'], 'string'),
+								new XML_RPC_Value($page_info['rating'], 'string')
+							)
 			);
 			$result = $client->send($searchMsg);
 			if (!$result) {
@@ -246,7 +247,7 @@ $pages = $tikilib->list_pageNames(0, -1, 'pageName_asc', $find);
 $smarty->assign('pages', $pages['data']);
 
 if ( $prefs['feature_articles'] == 'y' ) {
-	$artlib = TikiLib::lib('art');
+	global $artlib; require_once 'lib/articles/artlib.php';
 	$articles = $artlib->list_articles(0, -1, 'publishDate_desc', $find, 0, $tikilib->now, $user);
 	$smarty->assign('articles', $articles['data']);
 }

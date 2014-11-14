@@ -1,42 +1,41 @@
 {title}{tr}Edit Image{/tr}{/title}
 
-<div class="t_navbar">
-	{button href="tiki-browse_gallery.php" _auto_args='galleryId' class="btn btn-default" _text="{tr}Return to Gallery{/tr}"}
-	{button href="tiki-browse_image.php?imageId=$imageId" class="btn btn-default" _text="{tr}Browse Images{/tr}"}
+<div class="navbar">
+	{button href="tiki-browse_gallery.php" _auto_args='galleryId' _text="{tr}Return to Gallery{/tr}"}
+	{button href="tiki-browse_image.php?imageId=$imageId" _text="{tr}Browse Images{/tr}"}
 </div>
 
 <div align="center">
 {if $show eq 'y'}
-<br>
+<br />
 <hr/>
 <h2>{tr}Edit successful!{/tr}</h2>
 <h3>{tr}The following image was successfully edited:{/tr}</h3>
 <hr/>
-<br>
+<br />
 {/if}
-<img src="show_image.php?id={$imageId}" alt="{tr}Image{/tr}"><br><br>
+<img src="show_image.php?id={$imageId}" alt="{tr}Image{/tr}" /><br /><br />
 <form enctype="multipart/form-data" action="tiki-edit_image.php" method="post">
-<input type="hidden" name="edit" value="{$imageId|escape}">
-<input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
-<input type="hidden" name="galleryId" value="{$galleryId|escape}">
+<input type="hidden" name="edit" value="{$imageId|escape}" />
+<input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
+<input type="hidden" name="galleryId" value="{$galleryId|escape}" />
 <table class="formcolor">
-<tr><td>{tr}Image Name:{/tr}</td><td><input type="text" name="name" value="{$name|escape}"></td></tr>
+<tr><td>{tr}Image Name:{/tr}</td><td><input type="text" name="name" value="{$name|escape}" /></td></tr>
 <tr><td>{tr}Image Description:{/tr}</td><td><textarea rows="5" cols="40" name="description">{$description|escape}</textarea></td></tr>
 {if $prefs.feature_maps eq 'y' and $gal_info.geographic eq 'y'}
-<tr><td>{tr}Latitude (WGS84/decimal degrees):{/tr}</td><td><input type="text" name="lat" value="{$lat|escape}"></td></tr>
-<tr><td>{tr}Longitude (WGS84/decimal degrees):{/tr}</td><td><input type="text" name="lon" value="{$lon|escape}"></td></tr>
+<tr><td>{tr}Latitude (WGS84/decimal degrees):{/tr}</td><td><input type="text" name="lat" value="{$lat|escape}" /></td></tr>
+<tr><td>{tr}Longitude (WGS84/decimal degrees):{/tr}</td><td><input type="text" name="lon" value="{$lon|escape}" /></td></tr>
 {/if}
 {include file='categorize.tpl'}
-<tr><td>{tr}Upload from disk to change the image:{/tr}</td><td>{$filename}<br><input name="userfile" type="file">
+<tr><td>{tr}Upload from disk to change the image:{/tr}</td><td>{$filename}<br /><input name="userfile" type="file" />
 </td></tr>
-<tr><td>&nbsp;</td><td><input type="submit" class="btn btn-default btn-sm" name="editimage" value="{tr}Save{/tr}">&nbsp;&nbsp;<input type="submit" name="editimage_andgonext" value="{tr}Save and Go Next{/tr}">&nbsp;&nbsp;<a class="link" href="tiki-browse_image.php?imageId={$imageId}">{tr}Cancel Edit{/tr}</a></td></tr>
+<tr><td>&nbsp;</td><td><input type="submit" name="editimage" value="{tr}Save{/tr}" />&nbsp;&nbsp;<input type="submit" name="editimage_andgonext" value="{tr}Save and Go Next{/tr}" />&nbsp;&nbsp;<a class="link" href="tiki-browse_image.php?imageId={$imageId}">{tr}Cancel Edit{/tr}</a></td></tr>
 </table>
 </form>
-<br>
-<br><br>   
-	<!--this table is a duplicate of the one in tiki-browse_image.tpl-->
-    <div class="table-responsive">
-	<table class="table normal noslideshow">
+<br />
+<br /><br />   
+	<!--this table is a duplicate of the one in tiki-browse_image.tpl-->  
+	<table class="normal noslideshow">
 		<tr><td class="odd">{tr}Image Name:{/tr}</td><td class="odd">{$name}</td></tr>
 		<tr><td class="even">{tr}Created:{/tr}</td><td class="even">{$created|tiki_long_datetime}</td></tr>
 		<tr><td class="odd">{tr}Image size:{/tr}</td><td class="odd">{$xsize}x{$ysize}</td></tr>
@@ -55,26 +54,24 @@
 			</td>
 			<td class="odd">
 				<form action="tiki-browse_image.php" method="post">
-					<input type="hidden" name="scalesize" value="{$scalesize|escape}">
-					<input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
-					<input type="hidden" name="imageId" value="{$imageId|escape}">
-					<input type="hidden" name="galleryId" value="{$galleryId|escape}">
-					<input type="text" name="newname" value="{$name}">
+					<input type="hidden" name="scalesize" value="{$scalesize|escape}" />
+					<input type="hidden" name="sort_mode" value="{$sort_mode|escape}"/>
+					<input type="hidden" name="imageId" value="{$imageId|escape}"/>
+					<input type="hidden" name="galleryId" value="{$galleryId|escape}"/>
+					<input type="text" name="newname" value="{$name}" />
 					<select name="newgalleryId">
 				    {section name=idx loop=$galleries}
 				      <option value="{$galleries[idx].id|escape}" {if $galleries[idx].id eq $galleryId}selected="selected"{/if}>{$galleries[idx].name}</option>
 				    {/section}
 					</select>
-					<input type="submit" class="btn btn-default btn-sm" name="move_image" value="{tr}Move{/tr}">
+					<input type="submit" name="move_image" value="{tr}Move{/tr}" />
 			  </form>
 			</td>
 		</tr>
 		{/if}
 	</table>
-    </div>
-	<br><br>
-    <div class="table-responsive">
-	<table class="table normal noslideshow" style="font-size:small">
+	<br /><br />    
+	<table class="normal noslideshow" style="font-size:small">
 		<tr>
 			<td class="even" style="border-bottom:0px" colspan="2">
 				{tr}Include the image in a tiki page using the following syntax:{/tr}
@@ -130,5 +127,4 @@
 			</td>
 		</tr>
 	</table>
-    </div>
 </div>

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -73,42 +73,35 @@ function prefs_socialnetworks_list()
 			'description' => tra('Even when user is not logged onto Facebook, Tiki can access it.'),
 			'keywords' => 'social networks',
 			'type' => 'flag',
-			'default' => 'n',
+			'default' => 'y',
 		),
 		'socialnetworks_facebook_publish_stream' => array(
 			'name' => tra('Tiki can post to Wall'),
 			'description' => tra('Tiki may post status messages, notes, photos, and videos to Facebook Wall'),
 			'keywords' => 'social networks',
 			'type' => 'flag',
-			'default' => 'n',
+			'default' => 'y',
 		),
 		'socialnetworks_facebook_manage_events' => array(
 			'name' => tra('Tiki can manage events'),
 			'description' => tra('Tiki may create and RSVP to Facebook events'),
 			'keywords' => 'social networks',
 			'type' => 'flag',
-			'default' => 'n',
+			'default' => 'y',
 		),
 		'socialnetworks_facebook_manage_pages' => array(
 			'name' => tra('Tiki can manage pages'),
 			'description' => tra('Tiki may manage user pages'),
 			'keywords' => 'social networks',
 			'type' => 'flag',
-			'default' => 'n',
+			'default' => 'y',
 		),
 		'socialnetworks_facebook_sms' => array(
 			'name' => tra('Tiki can SMS'),
 			'description' => tra('Tiki may SMS via Facebook'),
 			'keywords' => 'social networks',
 			'type' => 'flag',
-			'default' => 'n',
-		),
-		'socialnetworks_facebook_email' => array(
-			'name' => tra('Tiki can get email'),
-			'description' => tra("Tiki can request the user's email"),
-			'keywords' => 'social networks',
-			'type' => 'flag',
-			'default' => 'n',
+			'default' => 'y',
 		),
 		'socialnetworks_bitly_login' => array(
 			'name' => tra('bit.ly Login'),

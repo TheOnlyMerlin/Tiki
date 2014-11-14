@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,8 +8,8 @@
 require_once ('tiki-setup.php');
 include_once ('lib/messu/messulib.php');
 include_once ('lib/userprefs/scrambleEmail.php');
-$registrationlib = TikiLib::lib('registration');
-$trklib = TikiLib::lib('trk');
+include_once ('lib/registration/registrationlib.php');
+include_once ('lib/trackers/trackerlib.php');
 if (isset($_REQUEST['userId'])) {
 	$userwatch = $tikilib->get_user_login($_REQUEST['userId']);
 	if ($userwatch === false) {
@@ -39,6 +36,11 @@ $smarty->assign('userwatch', $userwatch);
 $customfields = array();
 $customfields = $registrationlib->get_customfields($userwatch);
 $smarty->assign_by_ref('customfields', $customfields);
+if ($prefs['feature_friends'] == 'y') {
+	$smarty->assign('friend', $tikilib->verify_friendship($userwatch, $user));
+	$smarty->assign('friend_pending', $tikilib->verify_friendship_request($userwatch, $user));
+	$smarty->assign('friend_waiting', $tikilib->verify_friendship_request($user, $userwatch));
+}
 $smarty->assign('infoPublic', 'y');
 if ($tiki_p_admin != 'y') {
 	$user_information = $tikilib->get_user_preference($userwatch, 'user_information', 'public');
@@ -111,16 +113,14 @@ $exist = $tikilib->page_exists($userPage);
 $smarty->assign("userPage_exists", $exist);
 if ($prefs['feature_display_my_to_others'] == 'y') {
 	if ($prefs['feature_wiki'] == 'y') {
-		$wikilib = TikiLib::lib('wiki');
+		include_once ('lib/wiki/wikilib.php');
 		$user_pages = $wikilib->get_user_all_pages($userwatch, 'pageName_asc');
 		$smarty->assign_by_ref('user_pages', $user_pages);
 	}
 	if ($prefs['feature_blogs'] == 'y') {
-		$bloglib = TikiLib::lib('blog');
+		require_once('lib/blogs/bloglib.php');
 		$user_blogs = $bloglib->list_user_blogs($userwatch, false);
 		$smarty->assign_by_ref('user_blogs', $user_blogs);
-		$user_blog_posts = $bloglib->list_posts(0, -1, 'created_desc', '', -1, $userwatch);
-		$smarty->assign_by_ref('user_blog_posts', $user_blog_posts['data']);
 	}
 	if ($prefs['feature_galleries'] == 'y') {
 		$user_galleries = $tikilib->get_user_galleries($userwatch, -1);
@@ -132,12 +132,13 @@ if ($prefs['feature_display_my_to_others'] == 'y') {
 		$smarty->assign_by_ref('user_items', $user_items);
 	}
 	if ($prefs['feature_articles'] == 'y') {
-		$artlib = TikiLib::lib('art');
+		include_once ('lib/articles/artlib.php');
 		$user_articles = $artlib->get_user_articles($userwatch, -1);
 		$smarty->assign_by_ref('user_articles', $user_articles);
 	}
 	if ($prefs['feature_forums'] == 'y') {
-		$commentslib = TikiLib::lib('comments');
+		include_once ("lib/comments/commentslib.php");
+		$commentslib = new Comments($dbTiki);
 		$user_forum_comments = $commentslib->get_user_forum_comments($userwatch, -1);
 		$smarty->assign_by_ref('user_forum_comments', $user_forum_comments);
 		$user_forum_topics = $commentslib->get_user_forum_comments($userwatch, -1, 'topics');
@@ -170,7 +171,10 @@ if ($prefs['feature_display_my_to_others'] == 'y') {
 				$mystuff[] = array( 'object' => $obj["object"], 'objectType' => $stuffType, 'comment' => $forum_comment );
 			}
 		}
-		$logslib = TikiLib::lib('logs');
+		global $logslib;
+		if (!is_object($logslib)) {
+			require_once("lib/logs/logslib.php");		
+		}
 		$whoviewed = $logslib->get_who_viewed($mystuff, false);
 		$smarty->assign('whoviewed', $whoviewed);
 	}
@@ -184,14 +188,13 @@ if ($prefs['user_tracker_infos']) {
 	foreach ($fields['data'] as $field) {
 		$lll[$field['fieldId']] = $field;
 	}
-	$definition = Tracker_Definition::get($userTrackerId);
-	$items = $trklib->list_items($userTrackerId, 0, 1, '', $lll, $definition->getUserField(), '', '', '', $userwatch);
+	$items = $trklib->list_items($userTrackerId, 0, 1, '', $lll, $trklib->get_field_id_from_type($userTrackerId, 'u', '1%'), '', '', '', $userwatch);
 	$smarty->assign_by_ref('userItem', $items['data'][0]);
 }
 ask_ticket('user-information');
 // Get full user picture if it is set
 if ($prefs["user_store_file_gallery_picture"] == 'y') {
-	$userprefslib = TikiLib::lib('userprefs');
+	require_once ('lib/userprefs/userprefslib.php');
 	if ($user_picture_id = $userprefslib->get_user_picture_id($userwatch)) {	
 		$smarty->assign('user_picture_id', $user_picture_id);
 	}	

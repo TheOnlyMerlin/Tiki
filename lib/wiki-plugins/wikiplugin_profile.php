@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -35,6 +35,9 @@ function wikiplugin_profile_info()
 
 function wikiplugin_profile( $data, $params )
 {
+	require_once 'lib/profilelib/profilelib.php';
+	require_once 'lib/profilelib/installlib.php';
+
 	global $tiki_p_admin;
 
 	if ( $tiki_p_admin != 'y' ) {
@@ -73,7 +76,7 @@ function wikiplugin_profile( $data, $params )
 			return '__' . $e->getMessage() . '__';
 		}
 
-		$smarty = TikiLib::lib('smarty');
+		global $smarty;
 		$smarty->assign('profile_is_installed', $installer->isInstalled($profile));
 		$smarty->assign('profile_key', "{$params['domain']}/{$params['name']}");
 		return '~np~' . $smarty->fetch('wiki-plugins/wikiplugin_profile.tpl') . '~/np~';

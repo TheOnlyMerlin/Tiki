@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,13 +11,15 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	die;
 }
 
+require_once('lib/core/Zend/Soap/Client.php');
+require_once('lib/core/Zend/Soap/Wsdl.php');
+
 class Tiki_Soap
 {
 	private $cookies;
 	public $allowCookies;	// boolean. If true, (session) cookies are handled
 
-	function __construct() 
-	{
+	function __construct() {
 		$this->cookies = array();
 		$this->allowCookies = false;
 	}
@@ -55,9 +57,9 @@ class Tiki_Soap
 
 		try {
 			// Set (Session) cookies before the call
-			if ($this->allowCookies) {
-				if (is_array($this->cookies)) {
-					foreach ($this->cookies as $cookieName => $cookieValue) { 
+			if($this->allowCookies) {
+				if(is_array($this->cookies)){
+					foreach($this->cookies as $cookieName => $cookieValue) { 
 						$client->setCookie($cookieName, $cookieValue[0]);
 					}
 				}
@@ -67,10 +69,10 @@ class Tiki_Soap
 			$result = call_user_func_array(array($client, $operation), $soap_params);
 
 			// Pick up any new cookies from the server
-			if ($this->allowCookies) {
+			if($this->allowCookies) {
 				$last_response = $client->getLastResponseHeaders();
 				$soapClt = $client->getSoapClient();
-				$this->cookies = array_merge($soapClt->_cookies, $this->cookies);
+				$this->cookies = array_merge($soapClt->_cookies,$this->cookies);
 			}
 			
 		} catch (SoapFault $e) {

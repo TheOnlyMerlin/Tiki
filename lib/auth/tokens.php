@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -18,11 +18,11 @@ class AuthTokens
 	public static function build( $prefs )
 	{
 		return new AuthTokens(
-			TikiDb::get(),
-			array(
-				'maxTimeout' => $prefs['auth_token_access_maxtimeout'],
-				'maxHits' => $prefs['auth_token_access_maxhits'],
-			)
+						TikiDb::get(),
+						array(
+							'maxTimeout' => $prefs['auth_token_access_maxtimeout'],
+							'maxHits' => $prefs['auth_token_access_maxhits'],
+						)
 		);
 	}
 
@@ -49,8 +49,8 @@ class AuthTokens
 	function getToken( $token )
 	{
 		$data = $this->db->query(
-			'SELECT * FROM tiki_auth_tokens WHERE token = ? AND token = ' . self::SCHEME,
-			array( $token )
+						'SELECT * FROM tiki_auth_tokens WHERE token = ? AND token = ' . self::SCHEME,
+						array( $token )
 		)->fetchRow();
 
 		return $data;
@@ -64,13 +64,13 @@ class AuthTokens
 	function getGroups( $token, $entry, $parameters )
 	{
 		$this->db->query(
-			'DELETE FROM tiki_auth_tokens
-			 WHERE (timeout != -1 AND UNIX_TIMESTAMP(creation) + timeout < UNIX_TIMESTAMP()) OR `hits` = 0'
+						'DELETE FROM tiki_auth_tokens 
+						 WHERE (timeout != -1 AND UNIX_TIMESTAMP(creation) + timeout < UNIX_TIMESTAMP()) OR `hits` = 0'
 		);
 
 		$data = $this->db->query(
-			'SELECT tokenId, entry, parameters, groups FROM tiki_auth_tokens WHERE token = ? AND token = ' . self::SCHEME,
-			array( $token )
+						'SELECT tokenId, entry, parameters, groups FROM tiki_auth_tokens WHERE token = ? AND token = ' . self::SCHEME,
+						array( $token )
 		)->fetchRow();
 
 		if ( $data['entry'] != $entry ) {
@@ -85,8 +85,8 @@ class AuthTokens
 		}
 
 		$this->db->query(
-			'UPDATE `tiki_auth_tokens` SET `hits` = `hits` - 1 WHERE `tokenId` = ? AND hits != -1',
-			array( $data['tokenId'] )
+						'UPDATE `tiki_auth_tokens` SET `hits` = `hits` - 1 WHERE `tokenId` = ? AND hits != -1',
+						array( $data['tokenId'] )
 		);
 
 		$this->ok = true;
@@ -125,16 +125,16 @@ class AuthTokens
 		}
 
 		$this->db->query(
-			'INSERT INTO tiki_auth_tokens ( timeout, maxhits, hits, entry, parameters, groups, email ) VALUES( ?, ?, ?, ?, ?, ?, ? )',
-			array(
-				(int) $timeout,
-				(int) $hits,
-				(int) $hits,
-				$entry,
-				json_encode($parameters),
-				json_encode($groups),
-				$email
-			)
+						'INSERT INTO tiki_auth_tokens ( timeout, maxhits, hits, entry, parameters, groups, email ) VALUES( ?, ?, ?, ?, ?, ?, ? )',
+						array(
+							(int) $timeout,
+							(int) $hits,
+							(int) $hits,
+							$entry,
+							json_encode($parameters),
+							json_encode($groups),
+							$email
+						)
 		);
 
 		$max = $this->db->getOne('SELECT MAX(tokenId) FROM tiki_auth_tokens');
@@ -167,6 +167,32 @@ class AuthTokens
 		}
 
 		return "{$data['scheme']}://{$data['host']}{$data['path']}$query$anchor";
+	}
+
+	function includeTokenReturn( $url, array $groups = array(), $email = '' )
+	{
+		$data = parse_url($url);
+		if ( isset($data['query']) ) {
+			parse_str($data['query'], $args);
+			unset($args['TOKEN']);
+		} else {
+			$args = array();
+		}
+
+		$token = $this->createToken($data['path'], $args, $groups, array('email'=>$email));
+		$args['TOKEN'] = $token;
+
+		$query = '?' . http_build_query($args, '', '&');
+
+		if ( ! isset($data['fragment']) ) {
+			$anchor = '';
+		} else {
+			$anchor = "#{$data['fragment']}";
+		}
+
+		$token['url'] = "{$data['scheme']}://{$data['host']}{$data['path']}$query$anchor";
+
+		return $token;
 	}
 
 	function deleteToken($tokenId)

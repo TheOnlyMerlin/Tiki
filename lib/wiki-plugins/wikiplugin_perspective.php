@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -19,19 +19,15 @@ function wikiplugin_perspective_info()
 				'required' => false,
 				'name' => tra('Allowed Perspectives'),
 				'description' => tra('Pipe-separated list of identifiers of perspectives in which the block is shown.') . tra('Example value:') . '2|3|5',
-				'filter' => 'digits',
-				'separator' => '|',
-				'default' => '',
-				'profile_reference' => 'perspective',
+				'filter' => 'text',
+				'default' => ''
 			),
 			'notperspectives' => array(
 				'required' => false,
 				'name' => tra('Denied Perspectives'),
 				'description' => tra('Pipe-separated list of identifiers of perspectives in which the block is not shown.') . tra('Example value:') . '3|5|8',
-				'filter' => 'digits',
-				'separator' => '|',
-				'default' => '',
-				'profile_reference' => 'perspective',
+				'filter' => 'text',
+				'default' => ''
 			),
 		),
 	);
@@ -39,7 +35,7 @@ function wikiplugin_perspective_info()
 
 function wikiplugin_perspective($data, $params)
 {
-	global $prefs;
+	global $prefs, $perspectivelib;
 
 	$dataelse = '';
 	if (strpos($data, '{ELSE}')) {
@@ -48,16 +44,16 @@ function wikiplugin_perspective($data, $params)
 	}
 
 	if (!empty($params['perspectives'])) {
-		$perspectives = $params['perspectives'];
+		$perspectives = explode('|', $params['perspectives']);
 	}
 	if (!empty($params['notperspectives'])) {
-		$notperspectives = $params['notperspectives'];
+		$notperspectives = explode('|', $params['notperspectives']);
 	}
 	if (empty($perspectives) && empty($notperspectives)) {
 		return '';
 	}
 
-	$perspectivelib = TikiLib::lib('perspective');
+	require_once 'lib/perspectivelib.php';
 	$currentPerspective = $perspectivelib->get_current_perspective($prefs);
 
 	// if the current perspective is not an allowed perspective, return the content after the "{ELSE}"

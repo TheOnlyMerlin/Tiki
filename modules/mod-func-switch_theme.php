@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_switch_theme_info()
 {
 	return array(
@@ -24,19 +21,9 @@ function module_switch_theme_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
-function module_switch_theme($mod_reference, &$module_params)
+function module_switch_theme($mod_reference, $module_params)
 {
-	global $prefs, $tc_theme, $tc_theme_option;
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
-	if ($prefs['theme_active'] !== 'legacy') {
-		$module_params['error'] = tr('Switching themes requires the "Theme selection" setting to be: %0',
-				'<em>' . tr('Bootstrap themes in the "styles" directory') . '</em>');
-	}
+	global $prefs, $user, $tikilib, $smarty, $tc_theme, $tc_theme_option;
 
 	$current_style = empty($tc_theme) ? $prefs['style'] : $tc_theme;
 	$current_style_option = empty($tc_theme_option) ? !empty($tc_theme) ? $prefs['style_option'] : '' : $tc_theme_option;

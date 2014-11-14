@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_upcoming_events_info()
 {
 	return array(
@@ -23,8 +20,7 @@ function module_upcoming_events_info()
 		'params' => array(
 			'calendarId' => array(
 				'name' => tra('Calendars filter'),
-				'description' => tra('If set to a list of calendar identifiers, restricts the events to those in the identified calendars. Identifiers are separated by vertical bars ("|"), commas (",") or colons (":").') . " " . tra('Example values:') . '"13", "4,7", "31:49". ' . tra('Not set by default.'),
-				'profile_reference' => 'calendar',
+				'description' => tra('If set to a list of calendar identifiers, restricts the events to those in the identified calendars. Identifiers are separated by vertical bars ("|"), commas (",") or colons (":").') . " " . tra('Example values:') . '"13", "4,7", "31:49". ' . tra('Not set by default.')
 			),
 			'maxDays' => array(
 				'name' => tra('Maximum days in the future'),
@@ -68,8 +64,8 @@ function module_upcoming_events_info()
 			),
 			'date_format' => array(
 				'name' => tra('Date format'),
-				'description' => tra('Format to use for most dates. See <a href="http://www.php.net/manual/en/function.strftime.php">strftime() documentation</a>.') .
-								" ". tra('Example value:') . ' %m/%e/%y %H:%M %Z. ' . tra('Default:') . ' ' .
+				'description' => tra('Format to use for most dates. See <a href="http://www.php.net/manual/en/function.strftime.php">strftime() documentation</a>.') . 
+								" ". tra('Example value:') . ' %m/%e/%y %H:%M %Z. ' . tra('Default:') . ' ' . 
 								tra('site preference for short date format followed by site preference for short time format')
 			),
 			'maxlen' => array(
@@ -87,15 +83,10 @@ function module_upcoming_events_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_upcoming_events($mod_reference, $module_params)
 {
-	global $user, $globalperms;
-	$smarty = TikiLib::lib('smarty');
-	$calendarlib = TikiLib::lib('calendar');
+	global $calendarlib, $user, $globalperms, $smarty;
+	include_once ('lib/calendar/calendarlib.php');
 
 	$rawcals = $calendarlib->list_calendars();
 	$calIds = array();
@@ -126,18 +117,17 @@ function module_upcoming_events($mod_reference, $module_params)
 		$calIds = preg_split('/[\|:\&,]/', $module_params['calendarId']);
 	}
 
-	if (!empty($viewable)) {
+	if (!empty($viewable))
 		$events = $calendarlib->upcoming_events(
-			$mod_reference['rows'],
-			array_intersect($calIds, $viewable),
-			-1,
-			'start_asc',
-			isset($module_params['priorDays']) ? (int) $module_params['priorDays'] : 0,
-			isset($module_params['maxDays']) ? (int) $module_params['maxDays'] : 365
+						$mod_reference['rows'],
+						array_intersect($calIds, $viewable),
+						-1,
+						'start_asc',
+						isset($module_params['priorDays']) ? (int) $module_params['priorDays'] : 0,
+						isset($module_params['maxDays']) ? (int) $module_params['maxDays'] : 365
 		);
-	}
 
-	$smarty->assign('modUpcomingEvents', $events['data']);
+	$smarty->assign('modUpcomingEvents', $events);
 	$smarty->assign('maxlen', isset($module_params["maxlen"]) ? $module_params["maxlen"] : 0);
 	$smarty->assign('showDescription', isset($module_params['showDescription']) ? $module_params['showDescription'] : 'n');
 	$smarty->assign('showEnd', isset($module_params['showEnd']) ? $module_params['showEnd'] : 'n');

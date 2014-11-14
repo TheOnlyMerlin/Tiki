@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -37,7 +34,6 @@ $inputConfiguration = array(
 				'update' => 'word',
 				'daconfirm' => 'word',				// ticketlib
 				'ticket' => 'word',
-				'returnurl' => 'url',
 			),
 			'staticKeyFiltersForArrays' => array('cart' => 'digits',),	// params for cart module
 			'catchAllUnset' => null,
@@ -45,8 +41,8 @@ $inputConfiguration = array(
 );
 
 require_once 'tiki-setup.php';
-$categlib = TikiLib::lib('categ');
-$paymentlib = TikiLib::lib('payment');
+require_once 'lib/categories/categlib.php';
+require_once 'lib/payment/paymentlib.php';
 $access->check_feature('payment_feature');
 
 $auto_query_args = array(
@@ -78,7 +74,7 @@ if ( isset($ipn_data) ) {
 	$info = $paymentlib->get_payment($invoice);
 
 	// Important to check with paypal first
-	if (isset($info) && $paypallib->is_valid($ipn_data, $info)) {
+	if ( $paypallib->is_valid($ipn_data, $info) && $info ) {
 		$amount = $paypallib->get_amount($ipn_data);
 		$paymentlib->enter_payment($invoice, $amount, 'paypal', $ipn_data);
 	} else {
@@ -89,36 +85,19 @@ if ( isset($ipn_data) ) {
 	exit;
 }
 
-if ($prefs['payment_system'] == 'israelpost' && isset($_GET['invoice']) && $jitGet->OKauthentication->word()) {
-	$gateway = $paymentlib->gateway('israelpost');
-	// Return URL - check payment right away through APIs
-	$id = $_GET['invoice'];
-	$verified = $gateway->check_payment($id, $jitGet, $jitPost);
-
-	if ($verified) {
-		$access->redirect('tiki-payment.php?invoice=' . $id, tra('Payment has been confirmed.'));
-	} else {
-		$access->redirect('tiki-payment.php?invoice=' . $id, tra('Payment confirmation has not been received yet.'));
-	}
-}
-
 if ( isset( $_POST['manual_amount'], $_POST['invoice'] ) && preg_match('/^\d+(\.\d{2})?$/', $_POST['manual_amount']) ) {
 	$objectperms = Perms::get('payment', $_REQUEST['invoice']);
 
 	if ( $objectperms->payment_manual ) {
 		$paymentlib->enter_payment(
-			$_POST['invoice'],
-			$_POST['manual_amount'],
-			'user',
-			array(
-				'user' => $user,
-				'note' => $_POST['note'],
-			)
+						$_POST['invoice'],
+						$_POST['manual_amount'],
+						'user',
+						array(
+							'user' => $user,
+							'note' => $_POST['note'],
+						)
 		);
-		if (isset($_POST['returnurl'])) {
-			header('Location: ' . $_POST['returnurl']);
-			exit;
-		}
 
 		$access->redirect('tiki-payment.php?invoice=' . $_POST['invoice'], tra('Manual payment entered.'));
 	} else {
@@ -157,16 +136,12 @@ if ( isset($_REQUEST['cancel']) ) {
 }
 
 // Obtain information
-/**
- * @param $type
- */
 function fetch_payment_list($type)
 {
-	global $globalperms, $user, $prefs;
-	$smarty = TikiLib::lib('smarty');
-	$paymentlib = TikiLib::lib('payment');
+	global $paymentlib, $globalperms, $user, $prefs, $smarty;
 	$offsetKey = 'offset_' . $type;
 	$method = 'get_' . $type;
+
 	$offset = isset($_REQUEST[$offsetKey]) ? intval($_REQUEST[$offsetKey]) : 0;
 	$max = intval($prefs['maxRecords']);
 
@@ -206,7 +181,6 @@ fetch_payment_list('outstanding');
 fetch_payment_list('overdue');
 fetch_payment_list('past');
 fetch_payment_list('canceled');
-fetch_payment_list('authorized');
 
 $smarty->assign('mid', 'tiki-payment.tpl');
 $smarty->display('tiki.tpl');

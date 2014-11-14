@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,15 +9,13 @@ class Services_Report_Controller
 {
 	function setUp()
 	{
+		global $prefs;
+		
 	}
 
 	function action_edit($input)
 	{
-		global $reportFullscreen, $index, $values;
-		$headerlib = TikiLib::lib('header');
-		$tikilib = TikiLib::lib('tiki');
-		$access = TikiLib::lib('access');
-
+		global $tikilib, $access, $headerlib, $reportFullscreen, $index, $values;
 		$reportFullscreen = true;
 		$index = $input->index->int();
 		$values = $input->values->string();
@@ -35,7 +33,7 @@ class Services_Report_Controller
 		echo Report_Builder::load($input->type->string())
 			->setValuesFromRequest($input->value->array())
 			->outputSheet();
-		exit;
+		die;
 	}
 
 	function action_exportcsv($input)
@@ -43,7 +41,7 @@ class Services_Report_Controller
 		echo Report_Builder::load($input->type->string())
 			->setValuesFromRequest(json_decode(urldecode($input->value->string())))
 			->outputCSV(true);
-		exit;
+		die;
 	}
 
 	function action_wikidata($input)
@@ -51,7 +49,7 @@ class Services_Report_Controller
 		echo Report_Builder::load($input->type->string())
 			->setValuesFromRequest($input->value->string())
 			->outputWikiData();
-		exit;
+		die;
 	}
 }
 

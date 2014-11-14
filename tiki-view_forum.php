@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -11,10 +8,13 @@
 $section = 'forums';
 require_once ('tiki-setup.php');
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	global $categlib;
+	if (!is_object($categlib)) {
+		include_once ('lib/categories/categlib.php');
+	}
 }
 if ($prefs['feature_freetags'] == 'y') {
-	$freetaglib = TikiLib::lib('freetag');
+	include_once ('lib/freetag/freetaglib.php');
 }
 
 $access->check_feature('feature_forums');
@@ -32,7 +32,9 @@ $auto_query_args = array(
 	'reply_state'
 );
 
-$commentslib = TikiLib::lib('comments');
+include_once ('lib/comments/commentslib.php');
+
+$commentslib = new Comments($dbTiki);
 
 if (!isset($_REQUEST['forumId']) || !($forum_info = $commentslib->get_forum($_REQUEST['forumId']))) {
 	$smarty->assign('errortype', 'no_redirect_login');
@@ -62,7 +64,7 @@ if ($tiki_p_admin_forum != 'y' && $user) {
 	} elseif (in_array($forum_info['moderator_group'], $userlib->get_user_groups($user))) {
 		$tiki_p_admin_forum = 'y';
 	}
-
+	
 	if ($tiki_p_admin_forum == 'y') {
 		$smarty->assign('tiki_p_admin_forum', 'y');
 		$tiki_p_forum_post = 'y';
@@ -87,7 +89,7 @@ if (isset($_REQUEST['report']) && $tiki_p_forums_report == 'y') {
 
 if ($tiki_p_admin_forum == 'y') {
 	if (isset($_REQUEST['remove_attachment'])) {
-		$access->check_authenticity(tra('Are you sure you want to remove that attachment?'));
+		$access->check_authenticity();
 		$commentslib->remove_thread_attachment($_REQUEST['remove_attachment']);
 	}
 
@@ -154,9 +156,9 @@ if ($tiki_p_admin_forum == 'y') {
 			$commentslib->unarchive_thread($_REQUEST['comments_parentId']);
 		}
 	}
-
+	
 	if (isset($_REQUEST['delsel_x']) && isset($_REQUEST['forumtopic']) && is_array($_REQUEST['forumtopic'])) {
-		$access->check_authenticity(tra('Are you sure you want to remove these posts?'));
+		$access->check_authenticity();
 		foreach ($_REQUEST['forumtopic'] as $topicId) {
 			if (is_numeric($topicId)) {
 				$commentslib->remove_comment($topicId);
@@ -202,15 +204,14 @@ $comments_objectId = $comments_prefix_var . $_REQUEST["$comments_object_var"];
 // Process a post form here
 $smarty->assign('warning', 'n');
 
-if ($tiki_p_forum_post_topic == 'n'
-			&& isset($_REQUEST['comments_postComment'])
-			&& isset($_REQUEST['comments_title'])
-			&& $_REQUEST['forumId'] == $prefs['wiki_forum_id']
+if ($tiki_p_forum_post_topic == 'n' 
+			&& isset($_REQUEST['comments_postComment']) 
+			&& isset($_REQUEST['comments_title']) 
+			&& $_REQUEST['forumId'] == $prefs['wiki_forum_id'] 
 			&& $tikilib->page_exists($_REQUEST['comments_title'])) {
 	$tiki_p_forum_post_topic = 'y';
 }
 
-//Here we either post to a forum or create a new thread
 if (isset($_REQUEST['comments_postComment'])) {
 	check_ticket('view-forum');
 	$errors = array();
@@ -219,7 +220,7 @@ if (isset($_REQUEST['comments_postComment'])) {
 	if ($threadId && $prefs['feature_freetags'] == 'y') {
 		$cat_type = 'forum post';
 		$cat_objid = $threadId;
-		include_once ('freetag_apply.php');
+		include_once ('freetag_apply.php');	
 	}
 	$smarty->assign_by_ref('errors', $errors);
 	$smarty->assign_by_ref('feedbacks', $feedbacks);
@@ -232,7 +233,7 @@ if (isset($_REQUEST['comments_postComment'])) {
 	// Check if the thread/topic already existis
 	$threadId = $commentslib->check_for_topic($_REQUEST['comments_title'], $_REQUEST['comments_data']);
 	// If it does, send the user there with no delay.
-	if ($threadId && count($errors) === 0) {
+	if ($threadId) {
 		// If the samely titled comment already
 		// exists, go straight to it.
 		$url = 'tiki-view_forum_thread.php?comments_parentId=' . urlencode($threadId) . '&forumId=' . urlencode($_REQUEST["forumId"]);
@@ -260,10 +261,10 @@ if ($user) {
 }
 
 if (isset($_REQUEST['comments_remove']) && isset($_REQUEST['comments_threadId'])) {
-	if ($tiki_p_admin_forum == 'y'
+	if ($tiki_p_admin_forum == 'y' 
 			|| ($commentslib->user_can_edit_post($user, $_REQUEST['comments_threadId']) && $tiki_p_forum_post_topic == 'y')
 	) {
-		$access->check_authenticity(tra('Are you sure you want to remove that topic?'));
+		$access->check_authenticity();
 		$comments_show = 'y';
 		$commentslib->remove_comment($_REQUEST['comments_threadId']);
 		$commentslib->register_remove_post($_REQUEST['forumId'], 0);
@@ -274,7 +275,6 @@ if (isset($_REQUEST['comments_remove']) && isset($_REQUEST['comments_threadId'])
 		die;
 	}
 	unset($_REQUEST['comments_threadId']);
-	$smarty->assign('comments_threadId', 0);
 }
 
 if ($_REQUEST['comments_threadId'] > 0) {
@@ -282,12 +282,12 @@ if ($_REQUEST['comments_threadId'] > 0) {
 	$smarty->assign('comment_title', isset($_REQUEST['comments_title']) ? $_REQUEST['comments_title'] : $comment_info['title']);
 	$smarty->assign('comment_data', isset($_REQUEST['comments_data']) ? $_REQUEST['comments_data'] : $comment_info['data']);
 	$smarty->assign(
-		'comment_topictype',
-		isset($_REQUEST['comment_topictype']) ? $_REQUEST['comment_topictype'] : $comment_info['type']
+					'comment_topictype', 
+					isset($_REQUEST['comment_topictype']) ? $_REQUEST['comment_topictype'] : $comment_info['type']
 	);
 	$smarty->assign(
-		'comment_topicsummary',
-		isset($_REQUEST['comment_topicsummary']) ? $_REQUEST['comment_topicsummary'] : $comment_info['summary']
+					'comment_topicsummary', 
+					isset($_REQUEST['comment_topicsummary']) ? $_REQUEST['comment_topicsummary'] : $comment_info['summary']
 	);
 	$smarty->assign('comment_topicsmiley', $comment_info['smiley']);
 } else {
@@ -375,26 +375,26 @@ else
 	$reply_state = $_REQUEST['reply_state'];
 
 $comments_coms = $commentslib->get_forum_topics(
-	$_REQUEST['forumId'],
-	$comments_offset,
-	$_REQUEST['comments_per_page'],
-	$_REQUEST['thread_sort_mode'],
-	$view_archived_topics,
-	$user_param,
-	$type_param,
-	$reply_state,
-	$forum_info
+				$_REQUEST['forumId'], 
+				$comments_offset, 
+				$_REQUEST['comments_per_page'], 
+				$_REQUEST['thread_sort_mode'], 
+				$view_archived_topics, 
+				$user_param, 
+				$type_param, 
+				$reply_state, 
+				$forum_info
 );
 
 $comments_cant = $commentslib->count_forum_topics(
-	$_REQUEST['forumId'],
-	$comments_offset,
-	$_REQUEST['comments_per_page'],
-	$_REQUEST['thread_sort_mode'],
-	$view_archived_topics,
-	$user_param,
-	$type_param,
-	$reply_state
+				$_REQUEST['forumId'], 
+				$comments_offset, 
+				$_REQUEST['comments_per_page'], 
+				$_REQUEST['thread_sort_mode'], 
+				$view_archived_topics, 
+				$user_param, 
+				$type_param, 
+				$reply_state
 );
 
 $last_comments = $commentslib->get_last_forum_posts($_REQUEST['forumId'], $forum_info['forum_last_n']);
@@ -413,12 +413,12 @@ if ($prefs['feature_user_watches'] == 'y') {
 		check_ticket('view-forum');
 		if ($_REQUEST['watch_action'] == 'add') {
 			$tikilib->add_user_watch(
-				$user,
-				$_REQUEST['watch_event'],
-				$_REQUEST['watch_object'],
-				'forum',
-				$forum_info['name'],
-				'tiki-view_forum.php?forumId=' . $_REQUEST['forumId']
+							$user, 
+							$_REQUEST['watch_event'], 
+							$_REQUEST['watch_object'], 
+							'forum', 
+							$forum_info['name'], 
+							'tiki-view_forum.php?forumId=' . $_REQUEST['forumId']
 			);
 		} else {
 			$tikilib->remove_user_watch($user, $_REQUEST['watch_event'], $_REQUEST['watch_object'], 'forum');
@@ -460,8 +460,8 @@ if ($tiki_p_admin_forum == 'y' || $prefs['feature_forum_quickjump'] == 'y') {
 	$temp_max = count($all_forums['data']);
 	for ($i = 0; $i < $temp_max; $i++) {
 		if ($userlib->object_has_one_permission($all_forums['data'][$i]['forumId'], 'forum')) {
-			if ($tiki_p_admin == 'y'
-						|| $userlib->object_has_permission($user, $all_forums['data'][$i]['forumId'], 'forum', 'tiki_p_admin_forum')
+			if ($tiki_p_admin == 'y' 
+						|| $userlib->object_has_permission($user, $all_forums['data'][$i]['forumId'], 'forum', 'tiki_p_admin_forum') 
 						|| $userlib->object_has_permission($user, $all_forums['data'][$i]['forumId'], 'forum', 'tiki_p_forum_read')) {
 				$all_forums['data'][$i]['can_read'] = 'y';
 			} else {
@@ -504,7 +504,8 @@ if ($prefs['feature_contribution'] == 'y') {
 }
 
 if ($prefs['feature_forum_parse'] == 'y') {
-	$wikilib = TikiLib::lib('wiki');
+	global $wikilib;
+	include_once ('lib/wiki/wikilib.php');
 	$plugins = $wikilib->list_plugins(true, 'editpost');
 	$smarty->assign_by_ref('plugins', $plugins);
 }

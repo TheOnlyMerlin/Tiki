@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -16,35 +16,30 @@ if (isset($_REQUEST['connectprefs'])) {
 }
 
 ask_ticket('admin-inc-connect');
-global $prefs, $base_url;
-$userlib = TikiLib::lib('user');
-$headerlib = TikiLib::lib('header');
-$smarty = TikiLib::lib('smarty');
+global $userlib, $prefs, $base_url, $headerlib, $smarty;
 
 $headerlib->add_jsfile('lib/jquery_tiki/tiki-connect.js');
 
 if (empty($prefs['connect_site_title'])) {
 	$defaults = json_encode(
-		array(
-			'connect_site_title' => $prefs['browsertitle'],
-			'connect_site_email' => $userlib->get_admin_email(),
-			'connect_site_url' => $base_url,
-			'connect_site_keywords' => $prefs['metatag_keywords'],
-			'connect_site_location' => $prefs['gmap_defaultx'] . ',' . $prefs['gmap_defaulty'] . ',' . $prefs['gmap_defaultz'],
-		)
+					array(
+						'connect_site_title' => $prefs['browsertitle'],
+						'connect_site_email' => $userlib->get_admin_email(),
+						'connect_site_url' => $base_url,
+						'connect_site_keywords' => $prefs['metatag_keywords'],
+						'connect_site_location' => $prefs['gmap_defaultx'] . ',' . $prefs['gmap_defaulty'] . ',' . $prefs['gmap_defaultz'],
+					)
 	);
 
 	$headerlib->add_jq_onready(
-<<<JQ
-		$("#connect_defaults_btn a").click(function(){
-			var connect_defaults = $defaults;
-			for (var el in connect_defaults) {
-				$("input[name=" + el + "]").val(connect_defaults[el]);
-			}
-			return false;
-		});
-JQ
-	);
+     '$("#connect_defaults_btn a").click(function(){
+	var connect_defaults = ' . $defaults . ';
+	for (el in connect_defaults) {
+		$("input[name=" + el + "]").val(connect_defaults[el]);
+	}
+	return false;
+});'
+);
 }
 
 if ($prefs['connect_server_mode'] === 'y') {
@@ -66,5 +61,3 @@ if ($prefs['connect_server_mode'] === 'y') {
 	$smarty->assign('connect_stats', null);
 	$smarty->assign('connect_recent', null);
 }
-
-$smarty->assign('jitsi_url', Services_Suite_Controller::getJitsiUrl());

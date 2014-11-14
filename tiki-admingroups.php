@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -159,13 +156,6 @@ if (isset($_REQUEST["action"])) {
 		unset($_REQUEST['group']);
 	}
 }
-// Unassign a list of members
-if (isset($_REQUEST['unassign_members']) && isset($_REQUEST['submit_mult_members']) && $_REQUEST['submit_mult_members'] == 'unassign' && isset($_REQUEST['group']) && !in_array($_REQUEST['group'], array('Registered', 'Anonymous'))) {
-	$access->check_authenticity(tra('Are you sure you want to unassign these users?'));
-	foreach ($_REQUEST['members'] as $m) {
-		$userlib->remove_user_from_group($userlib->get_user_login($m), $_REQUEST['group']);
-	}
-}
 if (!empty($_REQUEST['submit_mult']) && !empty($_REQUEST['checked'])) {
 	$access->check_authenticity(tra('Are you sure you want to delete these groups?'));
 	foreach ($_REQUEST['checked'] as $delete) {
@@ -176,7 +166,8 @@ if (!empty($_REQUEST['submit_mult']) && !empty($_REQUEST['checked'])) {
 	}
 }
 if (isset($_REQUEST['clean'])) {
-	$cachelib = TikiLib::lib('cache');
+	global $cachelib;
+	require_once ("lib/cache/cachelib.php");
 	check_ticket('admin-groups');
 	$cachelib->invalidate('grouplist');
 	$cachelib->invalidate('groupIdlist');
@@ -231,7 +222,7 @@ if (!empty($_REQUEST["group"])) {
 	if (isset($re['prorateInterval'])) $prorateInterval = $re['prorateInterval'];
 	if ($prefs['userTracker'] == 'y') {
 		if (isset($re["usersTrackerId"]) and $re["usersTrackerId"]) {
-			$trklib = TikiLib::lib('trk');
+			include_once ('lib/trackers/trackerlib.php');
 			$userstrackerid = $re["usersTrackerId"];
 			$smarty->assign('userstrackerid', $userstrackerid);
 			$usersFields = $trklib->list_tracker_fields($userstrackerid, 0, -1, 'position_asc', '');
@@ -246,7 +237,7 @@ if (!empty($_REQUEST["group"])) {
 	if ($prefs['groupTracker'] == 'y') {
 		$groupFields = array();
 		if (isset($re["groupTrackerId"]) and $re["groupTrackerId"]) {
-			$trklib = TikiLib::lib('trk');
+			include_once ('lib/trackers/trackerlib.php');
 			$grouptrackerid = $re["groupTrackerId"];
 			$smarty->assign('grouptrackerid', $grouptrackerid);
 			$groupFields = $trklib->list_tracker_fields($grouptrackerid, 0, -1, 'position_asc', '');
@@ -362,7 +353,8 @@ if (!empty($_REQUEST['group']) && isset($_REQUEST['import'])) {
 	$cookietab = 4;
 }
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	global $categlib;
+	include_once ('lib/categories/categlib.php');
 	$categories = $categlib->getCategories();
 	$smarty->assign_by_ref('categories', $categories);
 }
@@ -379,7 +371,6 @@ $smarty->assign('bannedlist', $bannedlist);
 
 $userslist=$userlib->list_all_users();
 if (!empty($memberslist)) {
-	if ($cookietab == 1 && !isset($_REQUEST["save"])) $cookietab = 3;
 	foreach ($memberslist as $key => $values) {
 		if ( in_array($values["login"], $userslist) ) {
 			unset($userslist[array_search($values["login"], $userslist, true)]);
@@ -415,13 +406,9 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 $smarty->assign('mid', 'tiki-admingroups.tpl');
 $smarty->display("tiki.tpl");
 
-/**
- * @param $direct_groups
- * @return array
- */
 function indirectly_inherited_groups($direct_groups)
 {
-	$userlib = TikiLib::lib('user');
+	global $userlib;
 	$indirect_groups = array();
 	foreach ($direct_groups as $a_direct_group => $does_inherit) {
 		if ($does_inherit === 'y') {

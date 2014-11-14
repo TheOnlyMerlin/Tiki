@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,8 +7,6 @@
 
 function prefs_site_list()
 {
-    $available_layouts = TikiLib::lib('css')->list_user_selectable_layouts();
-
 	return array (
 		'site_closed' => array(
 			'name' => tra('Close site (except for those with permission)'),
@@ -97,7 +95,7 @@ function prefs_site_list()
 		),
 		'site_terminal_active' => array(
 			'name' => tra('Site Terminal'),
-			'description' => tra('Allows users to be directed to a specific perspective depending on the origin IP address. Can be used inside intranets to use different configurations for users depending on their departements or discriminate people in web contexts. Unspecified IPs will fall back to default behavior, including multi-domain handling. Manually selected perspectives take precedence over this.'),
+			'description' => tra('Allows to direct users to a specific perspective depending on the origin IP address. Can be used inside intranets to use different configurations for users depending on their departements or discriminate people in web contexts. Unspecified IPs will fall back to default behavior, including multi-domain handling. Manually selected perspectives take precedence over this.'),
 			'type' => 'flag',
 			'dependencies' => array(
 				'feature_perspective',
@@ -112,32 +110,6 @@ function prefs_site_list()
 			'size' => 10,
 			'hint' => tra('One per line. Network prefix in CIDR notation (address/mask size), separated by comma with the perspective ID.') . ' ' . tra('Example:') . ' 192.168.12.0/24,12',
 			'default' => '',
-		),
-		'site_google_analytics_account' => array(
-			'name' => tr('Google Analytics account number'),
-			'description' => tra('The account number for the site. Your account number from Google looks like UA-XXXXXXX-YY. All you need to enter is XXXXXXX-YY'),
-			'type' => 'text',
-			'size' => 15,
-			'default' => '',
-			'hint' => 'XXXXXXX-YY',
-			'dependencies' => array(
-				'wikiplugin_googleanalytics',
-			),
-		),
-		'site_layout' => array(
-			'name' => tr('Site layout'),
-			'description' => tr('Changes the overall site layout templates'),
-			'type' => 'list',
-			'default' => 'classic',
-			'tags' => array('advanced'),
-			'options' => $available_layouts,
-		),  
-		'site_layout_per_object' => array(
-			'name' => tr('Allow per-object layout'),
-			'description' => tr('Allows objects to define an alternate layout for their rendering.'),
-			'tags' => array('experimental'),
-			'type' => 'flag',
-			'default' => 'n',
 		),
 	);
 }

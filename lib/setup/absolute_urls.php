@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,15 +7,6 @@
 
 //this script may only be included - so its better to die if called directly.
 $access->check_script($_SERVER['SCRIPT_NAME'], basename(__FILE__));
-
-// Check if behind a Frontend-Proxy/Load-Balancer which rewrites ports
-if (isset($prefs['feature_port_rewriting']) && $prefs['feature_port_rewriting'] == 'y' && isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
-	if ($_SERVER['HTTP_X_FORWARDED_PROTO'] == "http") {
-		$_SERVER['SERVER_PORT'] = 80;
-	} else if($_SERVER['HTTP_X_FORWARDED_PROTO'] == "https") {
-		$_SERVER['SERVER_PORT'] = 443;
-	}
-}
 
 // check if the current port is not 80 or 443
 if (isset($_SERVER['SERVER_PORT'])) {
@@ -42,7 +33,7 @@ if ( $prefs['http_port'] == 80 )
 //    This is useful in certain cases.
 //    For example, this allow to have full HTTPS when using an entrance proxy that will use HTTPS connection with the client browser, but use an HTTP only connection to the server that hosts tikiwiki.
 //
-global $https_mode,$url_scheme,$url_host,$url_port,$url_path,$base_host,$base_url,$base_url_http,$base_url_https,$tikiroot;
+global $https_mode,$url_scheme,$url_host,$url_port,$url_path,$base_host,$base_url,$base_url_http,$base_url_https;
 
 $https_mode = false;
 if ( ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' )
@@ -72,11 +63,9 @@ if (!empty($_SERVER['SCRIPT_NAME'])) {
 	$base_uri = $base_host;	// maybe better than nothing
 }
 
-if (strpos($base_uri, $tikiroot . 'route.php') !== false && !empty($inclusion)) {
-	$base_uri = $base_url . $inclusion;
-	if (!empty($_GET)) {
-		$base_uri .= '?' . http_build_query($_GET, '', '&');
-	}
+global $smarty;
+if (!empty($base_uri) && is_object($smarty)) {
+	$smarty->assign('base_uri', $base_uri);
 }
 
 // SSL options

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -34,9 +34,6 @@ function smarty_modifier_escape($string, $esc_type = 'html', $char_set = 'UTF-8'
 {
 	switch ($esc_type) {
 		case 'html':
-			if (is_array($string)) {
-				$string = implode(',', $string);
-			}
 			$return = htmlspecialchars($string, ENT_QUOTES, $char_set);
 			// Convert back sanitization tags into real tags to avoid them to be displayed
 			$return = str_replace('&lt;x&gt;', '<x>', $return);

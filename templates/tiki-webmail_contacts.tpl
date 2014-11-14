@@ -3,8 +3,8 @@
 
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<link rel="StyleSheet" href="styles/{$prefs.style}" type="text/css">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link rel="StyleSheet" href="styles/{$prefs.style}" type="text/css" />
 	<title>{tr}Address book{/tr}</title>
 </head>
 <body>
@@ -14,8 +14,7 @@
 	<div align="center">
 		{include file='find.tpl'}
 		{initials_filter_links}
-        <div class="table-responsive">
-		<table class="table normal">
+		<table class="normal">
 			<tr>
 				<th>
 					<a href="tiki-webmail_contacts.php?element={$element}&amp;section=contacts&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'firstName_desc'}firstName_asc{else}firstName_desc{/if}">
@@ -38,13 +37,13 @@
 					</a>
 				</th>
 			</tr>
-
+			{cycle values="odd,even" print=false}
 			{section name=user loop=$channels}
-				<tr>
+				<tr class="{cycle}">
 					<td class="text">{$channels[user].firstName}</td>
 					<td class="text">{$channels[user].lastName}</td>
 					<td class="email">
-						<a class="link" href="#" onClick="javascript:window.opener.document.getElementById('{$element}').value=window.opener.document.getElementById('{$element}').value + '{$channels[user].email}' + ' ';">
+						<a class="link" href="#" onclick="javascript:window.opener.document.getElementById('{$element}').value=window.opener.document.getElementById('{$element}').value + '{$channels[user].email}' + ' ';">
 							{$channels[user].email}
 						</a>
 						[&nbsp;&nbsp;
@@ -57,8 +56,7 @@
 				</tr>
 			{/section}
 		</table>
-        </div>
-		<div class="center-block">
+		<div class="mini">
 			{if $prev_offset >= 0}
 				[<a class="prevnext" href="tiki-webmail_contacts.php?element={$element}&amp;section=contacts&amp;find={$find}&amp;offset={$prev_offset}&amp;sort_mode={$sort_mode}">
 					{tr}Prev{/tr}
@@ -73,7 +71,7 @@
 				</a>]
 			{/if}
 			{if $prefs.direct_pagination eq 'y'}
-				<br>
+				<br />
 				{section loop=$cant_pages name=foo}
 					{assign var=selector_offset value=$smarty.section.foo.index|times:$prefs.maxRecords}
 					<a class="prevnext" href="tiki-webmail_contacts.php?element={$element}&amp;section=contacts&amp;find={$find}&amp;offset={$selector_offset}&amp;sort_mode={$sort_mode}">

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +11,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	die;
 }
 
-require_once 'lib/soap/nusoap/nusoap.php';
+require_once 'nusoap/nusoap.php';
 
 class Tiki_Wsdl
 {
@@ -29,12 +29,11 @@ class Tiki_Wsdl
 		if ( $prefs['use_proxy'] == 'y' && !strpos($wsdlUri, 'localhost') ) {
 			// Use proxy
 			$context = stream_context_create(
-				array(
-					'http' => array(
-							'proxy' => $prefs['proxy_host'] .':'. $prefs['proxy_port'],
-							'request_fulluri' => true
-					)
-				)
+							array(
+								'http' => array(
+										'proxy' => $prefs['proxy_host'] .':'. $prefs['proxy_port'], 
+										'request_fulluri' => true)
+							)
 			);
 		}
 

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,14 +10,12 @@ function prefs_header_list()
 	return array(
 		'header_shadow_start' => array(
 			'name' => tra('Header shadow start'),
-            'description' => tra(''),
 			'type' => 'textarea',
 			'size' => '2',
 			'default' => '',
 		),
 		'header_shadow_end' => array(
 			'name' => tra('Header shadow end'),
-            'description' => tra(''),
 			'type' => 'textarea',
 			'size' => '2',
 			'default' => '',

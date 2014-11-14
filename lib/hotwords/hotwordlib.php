@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -11,20 +11,10 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- *
- */
 class HotwordsLib extends TikiLib
 {
 
-    /**
-     * @param int $offset
-     * @param $maxRecords
-     * @param string $sort_mode
-     * @param string $find
-     * @return array
-     */
-    function list_hotwords($offset = 0, $maxRecords = -1, $sort_mode = 'word_desc', $find = '')
+	function list_hotwords($offset = 0, $maxRecords = -1, $sort_mode = 'word_desc', $find = '') 
 	{
 
 		if ($find) {
@@ -52,12 +42,7 @@ class HotwordsLib extends TikiLib
 		return $retval;
 	}
 
-    /**
-     * @param $word
-     * @param $url
-     * @return bool
-     */
-    function add_hotword($word, $url)
+	function add_hotword($word, $url) 
 	{
 //		$word = addslashes($word);
 
@@ -69,10 +54,7 @@ class HotwordsLib extends TikiLib
 		return true;
 	}
 
-    /**
-     * @param $word
-     */
-    function remove_hotword($word)
+	function remove_hotword($word) 
 	{
 		$query = "delete from `tiki_hotwords` where `word`=?";
 		$result = $this->query($query, array($word));

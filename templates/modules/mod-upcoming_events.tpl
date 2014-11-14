@@ -23,12 +23,8 @@
 						<abbr class="dtend" title="{$modUpcomingEvents[ix].end|isodate}">{if $module_params.date_format}{$modUpcomingEvents[ix].end|tiki_date_format:$date_format}{elseif $modUpcomingEvents[ix].start|tiki_short_date ne $modUpcomingEvents[ix].end|tiki_short_date}{$modUpcomingEvents[ix].end|tiki_short_datetime}{else}{$modUpcomingEvents[ix].end|tiki_short_time}{/if}</abbr>
 					{/if}
 				{/if}
-				<br>
-				<a class="linkmodule summary" href="{if $prefs.feature_sefurl eq 'y'}
-                                   event{$modUpcomingEvents[ix].calitemId}
-                                 {else}
-                                   tiki-calendar_edit_item.php?viewcalitemId={$modUpcomingEvents[ix].calitemId}
-                                 {/if}" title="{if $tooltip_infos neq 'n'}{$modUpcomingEvents[ix].lastModif|tiki_short_datetime}, {tr}by{/tr} {if $modUpcomingEvents[ix].user ne ''}{$modUpcomingEvents[ix].user|username}{else}{tr}Anonymous{/tr}{/if}{else}{tr}click to view{/tr}{/if}"{if $modUpcomingEvents[ix].status eq '2'} style="text-decoration: line-through;"{/if}>
+				<br />
+				<a class="linkmodule summary" href="tiki-calendar_edit_item.php?viewcalitemId={$modUpcomingEvents[ix].calitemId}" title="{if $tooltip_infos neq 'n'}{$modUpcomingEvents[ix].lastModif|tiki_short_datetime}, {tr}by{/tr} {if $modUpcomingEvents[ix].user ne ''}{$modUpcomingEvents[ix].user|username}{else}{tr}Anonymous{/tr}{/if}{else}{tr}click to view{/tr}{/if}"{if $modUpcomingEvents[ix].status eq '2'} style="text-decoration: line-through;"{/if}>
 					{if $maxlen > 0}{* 0 is default value for maxlen eq to 'no truncate' *}
 						{$modUpcomingEvents[ix].name|truncate:$maxlen:"...":true|escape}
 					{else}
@@ -36,7 +32,7 @@
 					{/if}
 				</a>
 				{if $showDescription eq 'y'}
-					<div class="description help-block">{$modUpcomingEvents[ix].parsed}</div>
+					<div class="description">{$modUpcomingEvents[ix].parsed}</div>
 				{/if}
 		{if $smarty.section.ix.last}
 			</td>
@@ -49,6 +45,6 @@
 {/if}
 
 {if $tiki_p_add_events eq 'y' && (empty($module_params.showaction) || $module_params.showaction ne 'n')}
-	<p><a href="tiki-calendar_edit_item.php"><img src="img/icons/add.png" alt=""> {tr}Add Event{/tr}</a></p>
+	<p><a href="tiki-calendar_edit_item.php"><img src="img/icons/add.png" alt="" /> {tr}Add Event{/tr}</a></p>
 {/if}
 {/tikimodule}

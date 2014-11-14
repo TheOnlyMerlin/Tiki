@@ -2,7 +2,7 @@
 {title help="Structures"}{tr}Structures{/tr}{/title}
 
 {if $tiki_p_admin eq 'y'}
-	<div class="t_navbar">
+	<div class="navbar">
 		{button href='tiki-import_xml_zip.php' _text="{tr}XML Zip Import{/tr}"}
 	</div>
 {/if}
@@ -15,7 +15,7 @@
 
 {if $askremove eq 'y'}
 	{remarksbox type='confirm' title="{tr}Please Confirm{/tr}"}
-		{tr}You will remove structure:{/tr} {$removename|escape}<br>
+		{tr}You will remove structure:{/tr} {$removename|escape}<br />
 		{button href="?rremove=$remove&amp;page=$removename" _text="{tr}Destroy the structure leaving the wiki pages{/tr}"}
 		{if $tiki_p_remove == 'y'}
 			{button href="?rremovex=$remove&amp;page=$removename" _text="{tr}Destroy the structure and remove the pages{/tr}"}
@@ -67,25 +67,23 @@
 
 {tabset}
 	{tab name="{tr}Structures{/tr}"}
-        <h2>{tr}Structures{/tr}</h2>
 		{if $channels or ($find ne '')}
 			{include file='find.tpl' find_show_languages='y' find_show_categories='y' find_show_num_rows='y'}
 		{/if}
-		<br>
+		<br />
 		<form>
-            <div class="table-responsive">
-            <table class="table normal">
+			<table class="normal">
 				<tr>
 					{if $tiki_p_admin eq 'y'}<th width="15">{select_all checkbox_names='action[]'}</th>{/if}
 					<th>{tr}Structure ID{/tr}</th>
 					<th>{tr}Action{/tr}</th>
 				</tr>
-
+				{cycle values="odd,even" print=false}
 				{section loop=$channels name=ix}
-					<tr>
+					<tr class="{cycle}">
 						{if $tiki_p_admin eq 'y'}
-							<td class="checkbox-cell">
-								<input type="checkbox" name="action[]" value='{$channels[ix].page_ref_id}' style="border:1px;font-size:80%;">
+							<td class="checkbox">
+								<input type="checkbox" name="action[]" value='{$channels[ix].page_ref_id}' style="border:1px;font-size:80%;" />
 							</td>
 						{/if}
 						<td class="text">
@@ -126,7 +124,6 @@
 					{if $tiki_p_admin eq 'y'}{norecords _colspan=3}{else}{norecords _colspan=2}{/if}
 				{/section}
 			</table>
-            </div>
 
 			{if $tiki_p_admin eq 'y'}
 				<div style="text-align:left">
@@ -136,7 +133,7 @@
 						<option value="delete">{tr}Delete{/tr}</option>
 						<option value="delete_with_page">{tr}Delete with the pages{/tr}</option>
 					</select>
-					<input type="submit" class="btn btn-default btn-sm" name="act" value="{tr}OK{/tr}">
+					<input type="submit" name="act" value="{tr}OK{/tr}" />
 				</form>
 			</div>
 		{/if}
@@ -146,33 +143,31 @@
 
 	{if $tiki_p_edit_structures == 'y'}
 		{tab name="{tr}Create New Structure{/tr}"}
-            <h2>{tr}Create New Structure{/tr}</h2>
-			<form class="form-horizontal" action="tiki-admin_structures.php" method="post">
-				<div class="form-group">
-					<label class="control-label col-md-3">{tr}Structure ID{/tr}</label>
-					<div class="col-md-9">
-						<input type="text" name="name" id="name" class="form-control">
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-3">{tr}Alias{/tr}</label>
-					<div class="col-md-9">
-						<input type="text" name="alias" id="alias" class="form-control">
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-3">{tr}Tree{/tr}</label>
-					<div class="col-md-9">
-						<textarea rows="5" cols="60" id="tree" name="tree" class="form-control"></textarea>
-						<div class="help-block">{tr}Use single spaces to indent structure levels{/tr}</div>
-					</div>
-				</div>
-				{include file='categorize.tpl'}
-				<div class="form-group">
-					<div class="submit col-md-9 col-md-push-3">
-						<input type="submit" class="btn btn-primary" value="{tr}Create New Structure{/tr}" name="create">
-					</div>
-				</div>
+			<form action="tiki-admin_structures.php" method="post">
+				<table class="formcolor">
+					<tr>
+						<td><label for="name">{tr}Structure ID:{/tr}</label></td>
+						<td><input type="text" name="name" id="name" /></td>
+					</tr>
+					<tr>
+						<td><label for="alias">{tr}Alias:{/tr}</label></td>
+						<td><input type="text" name="alias" id="alias" /></td>
+					</tr>
+					<tr>
+						<td><label for="tree">{tr}Tree:{/tr}</label><br />(optional)</td>
+						<td colspan="2">
+							<textarea rows="5" cols="60" id="tree" name="tree" style="width:95%"></textarea>
+							{remarksbox type="tip" title="{tr}Note{/tr}"}{tr}Use single spaces to indent structure levels{/tr}{/remarksbox}
+						</td>
+					</tr>
+					{include file='categorize.tpl'}
+					<tr>
+						<td>&nbsp;</td>
+						<td colspan="2">
+							<input type="submit" value="{tr}Create New Structure{/tr}" name="create" />
+						</td>
+					</tr>
+				</table>
 			</form>
 		{/tab}
 	{/if}

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -33,13 +33,13 @@ function wikiplugin_votings_info()
 }
 function wikiplugin_votings($data, $params)
 {
-	global $user;
+	global $smarty, $user;
 	if (!isset($params['objectkey'])) {
 		return '';
 	} else {
 		$key = $params['objectkey'];
 	}
-	$smarty = TikiLib::lib('smarty');
+
 	$votings = TikiDb::get()->table('tiki_user_votings');
 
 	$data = $votings->fetchRow(array('count' => $votings->count(), 'total' => $votings->sum('optionId')), array('id' => $key));

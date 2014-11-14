@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -209,24 +209,10 @@ function current_object()
 		);
 	}
 
-	if ($section == 'forums' && ! empty($_REQUEST['comments_parentId'])) {
-		return array(
-			'type' => 'forum post',
-			'object' => $_REQUEST['comments_parentId'],
-		);
-	}
-
 	if ( $cat_type && $cat_objid ) {
 		return array(
 			'type' => $cat_type,
 			'object' => $cat_objid,
-		);
-	}
-
-	if ($section == 'trackers' && ! empty($_REQUEST['itemId'])) {
-		return array(
-			'type' => 'trackeritem',
-			'object' => $_REQUEST['itemId'],
 		);
 	}
 

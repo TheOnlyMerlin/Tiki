@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,15 +11,12 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- * @return array
- */
 function module_translation_info()
 {
 	return array(
 		'name' => tra('Translate Updates'),
 		'description' => tra('Links to versions of the wiki page being viewed in other languages, distinguishing between better, equivalent or worse translations. Optionally displays the up-to-dateness of the translation being viewed.'),
-		'prefs' => array('feature_multilingual'),
+		'prefs' => array('feature_translation'),
 		'params' => array(
 			'pivot_language' => array(
 				'name' => tra('Reference language'),
@@ -34,10 +31,6 @@ function module_translation_info()
 }
 
 // Filter localized pages according to the reference language
-/**
- * @param $langInfo
- * @return bool
- */
 function filter_languages_from_pivot($langInfo)
 {
 	global $pivotLanguage;
@@ -48,22 +41,17 @@ function filter_languages_from_pivot($langInfo)
 		|| $langInfo['lang'] == $pivotLanguage;
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_translation($mod_reference, $module_params)
 {
-	global $pivotLanguage, $prefs, $page;
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
+	global $pivotLanguage, $tikilib, $smarty, $prefs, $page, $_REQUEST;
 
-	//are we arriving from the edit page?
-	if (isset($module_params['from_edit_page']) && $module_params['from_edit_page'] == 'y') {
-		$smarty->assign('from_edit_page', 'y');
-	} else {
-		$smarty->assign('from_edit_page', 'n');
-	}
+
+//are we arriving from the edit page?
+		if (isset($module_params['from_edit_page']) && $module_params['from_edit_page'] == 'y') {
+			$smarty->assign('from_edit_page', 'y');
+		} else {
+			$smarty->assign('from_edit_page', 'n');
+		}
 
 	if ((!$page or $page == '') and isset($_REQUEST['page'])) {
 		$page = $_REQUEST['page'];
@@ -73,7 +61,8 @@ function module_translation($mod_reference, $module_params)
 
 	if (! empty($page) && is_string($page)) {
 
-		$multilinguallib = TikiLib::lib('multilingual');
+		global $multilinguallib;
+		include_once('lib/multilingual/multilinguallib.php');
 
 		if (isset($module_params['show_language']) && $module_params['show_language'] == 'n') {
 			$smarty->assign('show_language', 'n');
@@ -89,9 +78,6 @@ function module_translation($mod_reference, $module_params)
 			$pageLang = '';
 
 		$transinfo = $tikilib->get_page_info($page);
-		if (empty($transinfo)) {
-			return;
-		}
 
 		$tempList = $multilinguallib->getTranslations('wiki page', $transinfo['page_id']);
 		$completeList = array();
@@ -168,18 +154,18 @@ function module_translation($mod_reference, $module_params)
 			$numeric = $quantifylib->getCompleteness($transinfo['page_id']);
 			$smarty->assign('mod_translation_quantification', $numeric);
 			$smarty->assign(
-				'mod_translation_gauge',
-				wikiplugin_gauge(
-					'',
-					array(
-							'value' => $numeric,
-							'max' => 100,
-							'size' => '100%',
-							'color' => 'green',
-							'bgcolor' => 'gray',
-							'showvalue' => false,
-					)
-				)
+							'mod_translation_gauge',
+							wikiplugin_gauge(
+											'',
+											array(
+													'value' => $numeric,
+													'max' => 100,
+													'size' => '100%',
+													'color' => 'green',
+													'bgcolor' => 'gray',
+													'showvalue' => false,
+											)
+							)
 			);
 		}
 	}

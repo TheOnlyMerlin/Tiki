@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -20,7 +20,6 @@ function wikiplugin_galleriffic_info()
 				'filter' => 'digits',
 				'accepted' => 'ID',
 				'default' => '',
-				'profile_reference' => 'file_gallery',
 			),
 			'sort_mode' => array(
 				'required' => false,
@@ -107,7 +106,7 @@ function wikiplugin_galleriffic_info()
 
 function wikiplugin_galleriffic($data, $params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	static $igalleriffic = 0;
 	$smarty->assign('igalleriffic', $igalleriffic++);
 	$plugininfo = wikiplugin_galleriffic_info();
@@ -123,18 +122,18 @@ function wikiplugin_galleriffic($data, $params)
 		return '';
 	}
 	$headerlib = TikiLib::lib('header');
-	$headerlib->add_cssfile('lib/jquery_tiki/galleriffic/css/galleriffic-2.css');		// tiki needs modified css otherwise .content gets hidden
-	$headerlib->add_jsfile('vendor/jquery/plugins/galleriffic/js/jquery.galleriffic.js');
-	$headerlib->add_jsfile('vendor/jquery/plugins/galleriffic/js/jquery.opacityrollover.js');
+	$headerlib->add_cssfile('lib/jquery/galleriffic/css/galleriffic-2.css');
+	$headerlib->add_jsfile('lib/jquery/galleriffic/js/jquery.galleriffic.js');
+	$headerlib->add_jsfile('lib/jquery/galleriffic/js/jquery.opacityrollover.js');
 	$playLinkText = tra('Play Slideshow');
 	$pauseLinkText = tra('Pause SlideShow');
 	$prevLinkText = '&lsaquo; '.tra('Previous Photo');
 	$nextLinkText = tra('Next Photo').' &rsaquo;';
 	$nextPageLinkText = tra('Next').' &rsaquo;';
 	$prevPageLinkText = '&lsaquo; '.tra('Prev');
-	$autoStart = $autoStart === 'n' ? 'false' : 'true';
-	$topPager = $topPager === 'n' ? 'false' : 'true';
-	$bottomPager = $bottomPager === 'n' ? 'false' : 'true';
+	$autoStart = $autoStart === n ? 'false' : 'true';
+	$topPager = $topPager === n ? 'false' : 'true';
+	$bottomPager = $bottomPager === n ? 'false' : 'true';
 
 $jq = <<<JQ
 	// We only want these styles applied when javascript is enabled
@@ -171,10 +170,10 @@ $jq = <<<JQ
 		nextPageLinkText:          '$nextPageLinkText',
 		prevPageLinkText:          '$prevPageLinkText',
         enableHistory:             false, // Specifies whether the url's hash and the browser's history cache should update when the current slideshow image changes
-        enableKeyboardNavigation:  false, // Specifies whether keyboard navigation is enabled
+        enableKeyboardNavigation:  true, // Specifies whether keyboard navigation is enabled
         autoStart:                 $autoStart, // Specifies whether the slideshow should be playing or paused when the page first loads
         syncTransitions:           false, // Specifies whether the out and in transitions occur simultaneously or distinctly
-        defaultTransitionDuration: 1000   // If using the default transitions, specifies the duration of the transitions
+        defaultTransitionDuration: 1000, // If using the default transitions, specifies the duration of the transitions
     });
 \$('div.gcontent').css({'width' : '$imgWidth'});
 \$('div.loader').css({'width' : '$imgWidth', 'height' : '$imgHeight'});

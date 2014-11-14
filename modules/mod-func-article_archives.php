@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_article_archives_info()
 {
 	return array(
@@ -24,13 +21,12 @@ function module_article_archives_info()
 			'more' => array(
 				'name' => tra('More'),
 				'description' => tra('If set to "y", displays a button labelled "More..." that links to a paginated view of the selected articles.') . " " . tr('Default: "n".'),
-				'filter' => 'word',
+				'filter' => 'word'
 			),
 			'categId' => array(
 				'name' => tra('Category filter'),
 				'description' => tra('If set to a category identifier, only consider the articles in the specified category.') . " " . tra('Example value: 13.') . " " . tr('Not set by default.'),
-				'filter' => 'int',
-				'profile_reference' => 'category',
+				'filter' => 'int'
 			),
 			'topic' => array(
 				'name' => tra('Topic filter (by names)'),
@@ -38,31 +34,25 @@ function module_article_archives_info()
 			),
 			'topicId' => array(
 				'name' => tra('Topic filter (by identifiers)'),
-				'description' => tra('If set to a list of article topic identifiers separated by plus signs, only consider the articles in the specified article topics. If the string is preceded by an exclamation mark ("!"), the effect is reversed, i.e. articles in the specified article topics are not considered.') . " " . tra('Example values: 13, !13, 1+3, !1+5+7.') . " " . tr('Not set by default.'),
-				'profile_reference' => 'article_topic',
+				'description' => tra('If set to a list of article topic identifiers separated by plus signs, only consider the articles in the specified article topics. If the string is preceded by an exclamation mark ("!"), the effect is reversed, i.e. articles in the specified article topics are not considered.') . " " . tra('Example values: 13, !13, 1+3, !1+5+7.') . " " . tr('Not set by default.')
 			),
 			'type' => array(
 				'name' => tra('Types filter'),
-				'description' => tra('If set to a list of article type names separated by plus signs, only consider the articles of the specified types. If the string is preceded by an exclamation mark ("!"), the effect is reversed, i.e. articles of the specified article types are not considered.') . " " . tra('Example values: Event, !Event, Event+Review, !Event+Classified+Article.') . " " . tr('Not set by default.'),
+				'description' => tra('If set to a list of article type names separated by plus signs, only consider the articles of the specified types. If the string is preceded by an exclamation mark ("!"), the effect is reversed, i.e. articles of the specified article types are not considered.') . " " . tra('Example values: Event, !Event, Event+Review, !Event+Classified+Article.') . " " . tr('Not set by default.')
 			),
 			'langfilter' => array(
 				'name' => tra('Language filter'),
-				'description' => tra('If set to a language code, only consider the articles in the specified language.') . " " . tra('Example values:') . ' en, fr.' . " " . tr('Not set by default.'),
-			),
+				'description' => tra('If set to a language code, only consider the articles in the specified language.') . " " . tra('Example values:') . ' en, fr.' . " " . tr('Not set by default.')
+			)
 		),
 		'common_params' => array('nonums')
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_article_archives($mod_reference, $module_params)
 {
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
-	$artlib = TikiLib::lib('art');
+	global $tikilib, $smarty;
+	global $artlib; require_once 'lib/articles/artlib.php';
 	
 	$urlParams = array(
 		'topicId' => 'topic',

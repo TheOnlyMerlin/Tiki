@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -78,63 +78,19 @@ class Services_Category_Controller
 		}
 	}
 
-	function action_select($input)
-	{
-		$categlib = TikiLib::lib('categ');
-		$objectlib = TikiLib::lib('object');
-		$smarty = TikiLib::lib('smarty');
-
-		$type = $input->type->text();
-		$object = $input->object->text();
-
-		$perms = Perms::get($type, $object);
-		if (! $perms->modify_object_categories) {
-			throw new Services_Exception_Denied('Not allowed to modify categories');
-		}
-
-		$input->replaceFilter('subset', 'int');
-		$subset = $input->asArray('subset', ',');
-
-		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-			$smarty->loadPlugin('smarty_modifier_sefurl');
-			$name = $objectlib->get_title($type, $object);
-			$url = smarty_modifier_sefurl($object, $type);
-			$targetCategories = (array) $input->categories->int();
-			$count = $categlib->update_object_categories($targetCategories, $object, $type, '', $name, $url, $subset, false);
-		}
-
-		$categories = $categlib->get_object_categories($type, $object);
-		return array(
-			'subset' => implode(',', $subset),
-			'categories' => array_combine(
-				$subset,
-				array_map(
-					function ($categId) use ($categories) {
-						return array(
-							'name' => TikiLib::lib('object')->get_title('category', $categId),
-							'selected' => in_array($categId, $categories),
-						);
-					},
-					$subset
-				)
-			),
-		);
-	}
-
 	private function processObjects($function, $categId, $objects)
 	{
 		$unifiedsearchlib = TikiLib::lib('unifiedsearch');
 
-		$tx = TikiDb::get()->begin();
-
-		foreach ($objects as & $object) {
+		foreach ($objects as $object) {
 			$type = $object['type'];
 			$id = $object['id'];
 
-			$object['catObjectId'] = $this->$function($categId, $type, $id);
+			$this->$function($categId, $type, $id);
+			$unifiedsearchlib->invalidateObject($type, $id);
 		}
 
-		$tx->commit();
+		$unifiedsearchlib->processUpdateQueue(count($objects) * 2);
 
 		$query = new Search_Query;
 		$query->filterCategory((string) $categId);
@@ -153,7 +109,7 @@ class Services_Category_Controller
 	private function doCategorize($categId, $type, $id)
 	{
 		$categlib = TikiLib::lib('categ');
-		return $categlib->categorize_any($type, $id, $categId);
+		$categlib->categorize_any($type, $id, $categId);
 	}
 
 	private function doUncategorize($categId, $type, $id)
@@ -161,9 +117,7 @@ class Services_Category_Controller
 		$categlib = TikiLib::lib('categ');
 		if ($oId = $categlib->is_categorized($type, $id)) {
 			$categlib->uncategorize($oId, $categId);
-			return $oId;
 		}
-		return 0;
 	}
 
 	private function convertObjects($objects)

@@ -1,15 +1,13 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
-$rsslib = TikiLib::lib('rss');
+require_once ('lib/tikilib.php');
+require_once ('lib/rss/rsslib.php');
 $access->check_feature('feature_maps');
 if ($prefs['rss_mapfiles'] != 'y') {
 	$errmsg = tra("rss feed disabled");
@@ -38,13 +36,9 @@ if ($output["data"] == "EMPTY") {
 	$authorId = "";
 	$readrepl = "tiki-map.php?mapfile=";
 	$tmp = $prefs['title_rss_' . $feed];
-	if ($tmp <> '') {
-		$title = $tmp;
-	}
+	if ($tmp <> '') $title = $tmp;
 	$tmp = $prefs['desc_rss_' . $feed];
-	if ($desc <> '') {
-		$desc = $tmp;
-	}
+	if ($desc <> '') $desc = $tmp;
 	// Get mapfiles from the mapfiles directory
 	$tmp = array();
 	$h = @opendir($prefs['map_path']);
@@ -58,9 +52,7 @@ if ($output["data"] == "EMPTY") {
 	$i = 0;
 	if (is_array($filetlist)) {
 		while (list($key, $val) = each($filetlist)) {
-			if ($i >= $prefs['max_rss_mapfiles']) {
-				break;
-			}
+			if ($i >= $prefs['max_rss_mapfiles']) break;
 
 			$i++;
 			$aux["name"] = $key;

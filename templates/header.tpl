@@ -1,60 +1,60 @@
 {* $Id$ *}
 {if $base_uri and ($dir_level gt 0 or $prefs.feature_html_head_base_tag eq 'y')}
-	<base href="{$base_uri|escape}">
+	<base href="{$base_uri|escape}" />
 {/if}
 
 <!--Latest IE Compatibility-->
-<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
 
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="generator" content="Tiki Wiki CMS Groupware - http://tiki.org">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Tiki Wiki CMS Groupware - http://tiki.org" />
 
 {* --- Canonical URL --- *}
 {include file="canonical.tpl"}	
 
 {if !empty($forum_info.name) & $prefs.metatag_threadtitle eq 'y'}
-	<meta name="keywords" content="{tr}Forum{/tr} {$forum_info.name|escape} {$thread_info.title|escape} {if $prefs.feature_freetags eq 'y'}{foreach from=$freetags.data item=taginfo}{$taginfo.tag|escape} {/foreach}{/if}">
+	<meta name="keywords" content="{tr}Forum{/tr} {$forum_info.name|escape} {$thread_info.title|escape} {if $prefs.feature_freetags eq 'y'}{foreach from=$freetags.data item=taginfo}{$taginfo.tag|escape} {/foreach}{/if}" />
 {elseif isset($galleryId) && $galleryId neq '' && $prefs.metatag_imagetitle neq 'n'}
-	<meta name="keywords" content="{tr}Images Galleries{/tr} {$title|escape} {if $prefs.feature_freetags eq 'y'}{foreach from=$freetags.data item=taginfo}{$taginfo.tag|escape} {/foreach}{/if}">
+	<meta name="keywords" content="{tr}Images Galleries{/tr} {$title|escape} {if $prefs.feature_freetags eq 'y'}{foreach from=$freetags.data item=taginfo}{$taginfo.tag|escape} {/foreach}{/if}" />
 {elseif $prefs.metatag_keywords neq '' or !empty($metatag_local_keywords)}
-	<meta name="keywords" content="{$prefs.metatag_keywords|escape} {if $prefs.feature_freetags eq 'y'}{foreach from=$freetags.data item="taginfo"}{$taginfo.tag|escape} {/foreach}{/if} {$metatag_local_keywords|escape}">
+	<meta name="keywords" content="{$prefs.metatag_keywords|escape} {if $prefs.feature_freetags eq 'y'}{foreach from=$freetags.data item="taginfo"}{$taginfo.tag|escape} {/foreach}{/if} {$metatag_local_keywords|escape}" />
 {/if}
 {if $prefs.metatag_author neq ''}
-	<meta name="author" content="{$prefs.metatag_author|escape}">
+	<meta name="author" content="{$prefs.metatag_author|escape}" />
 {/if}
-{if isset($section) and $section eq "blogs"}
-	{if empty($blog_data.title)}
-	<meta name="description" content="Blog listing">
-	{elseif empty($postId)}
-	<meta name="description" content="{$blog_data.title|escape}">
+{if $section eq "blogs"}
+	{if $blog_data.title eq ''}
+	<meta name="description" content="Blog listing" />
+	{elseif $postId eq ''}
+	<meta name="description" content="{$blog_data.title|escape}" />
 	{else} 
-	<meta name="description" content="{$post_info.title|escape} - {$blog_data.title|escape}">
+	<meta name="description" content="{$post_info.title|escape} - {$blog_data.title|escape}" />
 	{/if}
 {elseif $prefs.metatag_pagedesc eq 'y' and $description ne ''}
-	<meta name="description" content="{$description|escape}">
+	<meta name="description" content="{$description|escape}" />
 {elseif $prefs.metatag_description ne '' or (isset($description) and $description eq '')}
-	<meta name="description" content="{$prefs.metatag_description|escape}">
+	<meta name="description" content="{$prefs.metatag_description|escape}" />
 {/if}
 {if $prefs.metatag_geoposition neq ''}
-	<meta name="geo.position" content="{$prefs.metatag_geoposition|escape}">
+	<meta name="geo.position" content="{$prefs.metatag_geoposition|escape}" />
 {/if}
 {if $prefs.metatag_georegion neq ''}
-	<meta name="geo.region" content="{$prefs.metatag_georegion|escape}">
+	<meta name="geo.region" content="{$prefs.metatag_georegion|escape}" />
 {/if}
 {if $prefs.metatag_geoplacename neq ''}
-	<meta name="geo.placename" content="{$prefs.metatag_geoplacename|escape}">
+	<meta name="geo.placename" content="{$prefs.metatag_geoplacename|escape}" />
 {/if}
 {if (isset($prefs.metatag_robots) and $prefs.metatag_robots neq '') and (!isset($metatag_robots) or $metatag_robots eq '')}
-        <meta name="robots" content="{$prefs.metatag_robots|escape}">
+        <meta name="robots" content="{$prefs.metatag_robots|escape}" />
 {/if}
 {if (!isset($prefs.metatag_robots) or $prefs.metatag_robots eq '') and (isset($metatag_robots) and $metatag_robots neq '')}
-        <meta name="robots" content="{$metatag_robots|escape}">
+        <meta name="robots" content="{$metatag_robots|escape}" />
 {/if}
 {if (isset($prefs.metatag_robots) and $prefs.metatag_robots neq '') and (isset($metatag_robots) and $metatag_robots neq '')}
-        <meta name="robots" content="{$prefs.metatag_robots|escape}, {$metatag_robots|escape}">
+        <meta name="robots" content="{$prefs.metatag_robots|escape}, {$metatag_robots|escape}" />
 {/if}
 {if $prefs.metatag_revisitafter neq ''}
-	<meta name="revisit-after" content="{$prefs.metatag_revisitafter|escape}">
+	<meta name="revisit-after" content="{$prefs.metatag_revisitafter|escape}" />
 {/if}
 
 {* --- tiki block --- *}
@@ -111,49 +111,49 @@
 {/strip}</title>
 
 {if $prefs.site_favicon}
-	<link rel="icon" href="{$prefs.site_favicon|escape}">
+	<link rel="icon" href="{$prefs.site_favicon|escape}" />
 {/if}
 
 {* --- universaleditbutton.org --- *}
 {if (isset($editable) and $editable) and ($tiki_p_edit eq 'y' or $page|lower eq 'sandbox' or $tiki_p_admin_wiki eq 'y')}
-	<link rel="alternate" type="application/x-wiki" title="{tr}Edit this page!{/tr}" href="tiki-editpage.php?page={$page|escape:url}">
+	<link rel="alternate" type="application/x-wiki" title="{tr}Edit this page!{/tr}" href="tiki-editpage.php?page={$page|escape:url}" />
 {/if}
 
 {* --- Firefox RSS icons --- *}
 {if $prefs.feature_wiki eq 'y' and $prefs.feed_wiki eq 'y' and $tiki_p_view eq 'y'}
-	<link rel="alternate" type="application/rss+xml" title='{$prefs.feed_wiki_title|escape|default:"{tr}RSS Wiki{/tr}"}' href="tiki-wiki_rss.php?ver={$prefs.feed_default_version|escape:'url'}">
+	<link rel="alternate" type="application/rss+xml" title='{$prefs.feed_wiki_title|escape|default:"{tr}RSS Wiki{/tr}"}' href="tiki-wiki_rss.php?ver={$prefs.feed_default_version|escape:'url'}" />
 {/if}
 {if $prefs.feature_blogs eq 'y' and $prefs.feed_blogs eq 'y' and $tiki_p_read_blog eq 'y'}
-	<link rel="alternate" type="application/rss+xml" title='{$prefs.feed_blogs_title|escape|default:"{tr}RSS Blogs{/tr}"}' href="tiki-blogs_rss.php?ver={$prefs.feed_default_version|escape:'url'}">
+	<link rel="alternate" type="application/rss+xml" title='{$prefs.feed_blogs_title|escape|default:"{tr}RSS Blogs{/tr}"}' href="tiki-blogs_rss.php?ver={$prefs.feed_default_version|escape:'url'}" />
 {/if}
 {if $prefs.feature_articles eq 'y' and $prefs.feed_articles eq 'y' and $tiki_p_read_article eq 'y'}
-	<link rel="alternate" type="application/rss+xml" title='{$prefs.feed_articles_title|escape|default:"{tr}RSS Articles{/tr}"}' href="tiki-articles_rss.php?ver={$prefs.feed_default_version|escape:'url'}">
+	<link rel="alternate" type="application/rss+xml" title='{$prefs.feed_articles_title|escape|default:"{tr}RSS Articles{/tr}"}' href="tiki-articles_rss.php?ver={$prefs.feed_default_version|escape:'url'}" />
 {/if}
 {if $prefs.feature_galleries eq 'y' and $prefs.feed_image_galleries eq 'y' and $tiki_p_view_image_gallery eq 'y'}
-	<link rel="alternate" type="application/rss+xml" title='{$prefs.feed_image_galleries_title|escape|default:"{tr}RSS Image Galleries{/tr}"}' href="tiki-image_galleries_rss.php?ver={$prefs.feed_default_version}">
+	<link rel="alternate" type="application/rss+xml" title='{$prefs.feed_image_galleries_title|escape|default:"{tr}RSS Image Galleries{/tr}"}' href="tiki-image_galleries_rss.php?ver={$prefs.feed_default_version}" />
 {/if}
 {if $prefs.feature_file_galleries eq 'y' and $prefs.feed_file_galleries eq 'y' and $tiki_p_view_file_gallery eq 'y'}
-	<link rel="alternate" type="application/rss+xml" title='{$prefs.feed_file_galleries_title|escape|default:"{tr}RSS File Galleries{/tr}"}' href="tiki-file_galleries_rss.php?ver={$prefs.feed_default_version|escape:'url'}">
+	<link rel="alternate" type="application/rss+xml" title='{$prefs.feed_file_galleries_title|escape|default:"{tr}RSS File Galleries{/tr}"}' href="tiki-file_galleries_rss.php?ver={$prefs.feed_default_version|escape:'url'}" />
 {/if}
 {if $prefs.feature_forums eq 'y' and $prefs.feed_forums eq 'y' and $tiki_p_forum_read eq 'y'}
-	<link rel="alternate" type="application/rss+xml" title='{$prefs.feed_forums_title|escape|default:"{tr}RSS Forums{/tr}"}' href="tiki-forums_rss.php?ver={$prefs.feed_default_version|escape:'url'}">
+	<link rel="alternate" type="application/rss+xml" title='{$prefs.feed_forums_title|escape|default:"{tr}RSS Forums{/tr}"}' href="tiki-forums_rss.php?ver={$prefs.feed_default_version|escape:'url'}" />
 {/if}
 {if $prefs.feature_maps eq 'y' and $prefs.rss_mapfiles eq 'y' and $tiki_p_map_view eq 'y'}
-	<link rel="alternate" type="application/rss+xml" title='{$prefs.title_rss_mapfiles|escape|default:"{tr}RSS Maps{/tr}"}' href="tiki-map_rss.php?ver={$prefs.feed_default_version|escape:'url'}">
+	<link rel="alternate" type="application/rss+xml" title='{$prefs.title_rss_mapfiles|escape|default:"{tr}RSS Maps{/tr}"}' href="tiki-map_rss.php?ver={$prefs.feed_default_version|escape:'url'}" />
 {/if}
 {if $prefs.feature_directory eq 'y' and $prefs.feed_directories eq 'y' and $tiki_p_view_directory eq 'y'}
-	<link rel="alternate" type="application/rss+xml" title='{$prefs.feed_directories_title|escape|default:"{tr}RSS Directories{/tr}"}' href="tiki-directories_rss.php?ver={$prefs.feed_default_version|escape:'url'}">
+	<link rel="alternate" type="application/rss+xml" title='{$prefs.feed_directories_title|escape|default:"{tr}RSS Directories{/tr}"}' href="tiki-directories_rss.php?ver={$prefs.feed_default_version|escape:'url'}" />
 {/if}
 
 {if $prefs.feature_calendar eq 'y' and $prefs.feed_calendar eq 'y' and $tiki_p_view_calendar eq 'y'}
-	<link rel="alternate" type="application/rss+xml" title='{$prefs.feed_calendar_title|escape|default:"{tr}RSS Calendars{/tr}"}' href="tiki-calendars_rss.php?ver={$prefs.feed_default_version|escape:'url'}">
+	<link rel="alternate" type="application/rss+xml" title='{$prefs.feed_calendar_title|escape|default:"{tr}RSS Calendars{/tr}"}' href="tiki-calendars_rss.php?ver={$prefs.feed_default_version|escape:'url'}" />
 {/if}
 
 {if $prefs.feature_trackers eq 'y' and $prefs.feed_tracker eq 'y'}
 	{foreach from=$rsslist_trackers item="tracker"}
 		<link rel="alternate" type="application/rss+xml"
 			  title='{$prefs.feed_tracker_title|cat:" - "|cat:$tracker.name|escape|default:"{tr}RSS Tracker{/tr}"}'
-			  href="tiki-tracker_rss.php?ver={$prefs.feed_default_version|escape:'url'}&trackerId={$tracker.trackerId}">
+			  href="tiki-tracker_rss.php?ver={$prefs.feed_default_version|escape:'url'}&trackerId={$tracker.trackerId}" />
 	{/foreach}
 {/if}
 
@@ -170,7 +170,7 @@
 {/if}
 
 <!--[if lt IE 9]>{* according to http://remysharp.com/2009/01/07/html5-enabling-script/ *}
-	<script src="vendor/afarkas/html5shiv/dist/html5shiv.min.js" type="text/javascript"></script>
+	<script src="lib/html5shim/html5.js" type="text/javascript"></script>
 <![endif]-->
 
 {if $headerlib}		{$headerlib->output_headers()}{/if}

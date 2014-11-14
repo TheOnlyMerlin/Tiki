@@ -1,11 +1,8 @@
 <?php
-/**
- * Used by Tiki's InterTiki feature
- *
- * @package Tiki
- * @copyright (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project. All Rights Reserved. See copyright.txt for details and a complete list of authors.
- * @licence LGPL-2.1. See license.txt for details.
- */
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
+// All Rights Reserved. See copyright.txt for details and a complete list of authors.
+// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 $version = '0.2';
@@ -20,10 +17,6 @@ if ($prefs['feature_intertiki'] != 'y' || $prefs['feature_intertiki_server'] != 
 	exit;
 }
 
-/**
- * @param $file
- * @param $line
- */
 function lograw($file, $line)
 {
 	$fp = fopen($file, 'a+');
@@ -31,16 +24,9 @@ function lograw($file, $line)
 	fclose($fp);
 }
 
-/**
- * @param $file
- * @param $txt
- * @param $user
- * @param $code
- * @param $from
- */
 function logit($file, $txt, $user, $code, $from)
 {
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib;
 	$line = $tikilib->get_ip_address() . " - $user - " . date('[m/d/Y:H:i:s]') . " \"$txt\" $code \"$from\"";
 	lograw($file, $line);
 }
@@ -62,16 +48,9 @@ $map = array(
 
 $s = new XML_RPC_Server($map);
 
-/**
- * @param $params
- * @return XML_RPC_Response
- */
 function validate($params)
 {
-	global $prefs;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$logslib = TikiLib::lib('logs');
+	global $tikilib, $userlib, $prefs, $logslib;
 
 	$key = $params->getParam(0);
 	$key = $key->scalarval(); 
@@ -126,6 +105,7 @@ function validate($params)
 
 	if ($slave) {
 		$logslib->add_log('intertiki', 'auth granted from ' . $prefs['known_hosts'][$key]['name'], $login);
+		global $userlib;
 
 		$user_details = $userlib->get_user_details($login);
 		$user_info = $userlib->get_user_info($login);
@@ -139,15 +119,9 @@ function validate($params)
 	}
 }
 
-/**
- * @param $params
- * @return XML_RPC_Response
- */
 function set_user_info($params)
 {
-	global $prefs;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $userlib, $prefs;
 
 	if ($prefs['feature_userPreferences'] != 'y') {
 		return new XML_RPC_Response(new XML_RPC_Value(1, 'boolean'));
@@ -171,16 +145,9 @@ function set_user_info($params)
 	return new XML_RPC_Response(new XML_RPC_Value(1, 'boolean'));
 }
 
-/**
- * @param $params
- * @return XML_RPC_Response
- */
 function logout($params)
 {
-	global $prefs;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$logslib = TikiLib::lib('logs');
+	global $tikilib, $userlib,$logslib,$prefs;
 
 	$key = $params->getParam(0); 
 	$key = $key->scalarval();
@@ -210,15 +177,9 @@ function logout($params)
 	return new XML_RPC_Response(new XML_RPC_Value(1, 'boolean'));
 }
 
-/**
- * @param $params
- * @return XML_RPC_Response
- */
 function cookie_check($params)
 {
-	global $prefs;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $userlib,$prefs;
 
 	$key = $params->getParam(0); 
 	$key = $key->scalarval();
@@ -244,25 +205,15 @@ function cookie_check($params)
 	return new XML_RPC_Response(0, 101, $msg);
 }
 
-/**
- * @param $params
- * @return XML_RPC_Response
- */
 function get_version($params)
 {
 	global $version;
 	return new XML_RPC_Response(new XML_RPC_Value($version, 'int'));
 }
 
-/**
- * @param $params
- * @return XML_RPC_Response
- */
 function get_user_info($params)
 {
-	global $prefs;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $prefs, $userlib;
 
 	$key = $params->getParam(0);
 	$key = $key->scalarval(); 
@@ -297,16 +248,9 @@ function get_user_info($params)
 	return new XML_RPC_Response(new XML_RPC_Value($ret, 'struct'));
 }
 
-/**
- * @param $params
- * @return XML_RPC_Response
- */
 function get_registration_prefs($params)
 {
-	global $prefs;
-	$logslib = TikiLib::lib('logs');
-	$tikilib = TikiLib::lib('tiki');
-	$registrationlib = TikiLib::lib('registration');
+	global $tikilib, $prefs, $registrationlib, $logslib;
 
 	$key = $params->getParam(0);
 	$key = $key->scalarval();
@@ -326,19 +270,14 @@ function get_registration_prefs($params)
 	)
 		return new XML_RPC_Response(0, 101, 'Users are not allowed to register via intertiki on this master.');
 
+	require_once 'lib/registration/registrationlib.php';
+
 	return new XML_RPC_Response(XML_RPC_encode($registrationlib->merged_prefs));
 }
 
-/**
- * @param $params
- * @return XML_RPC_Response
- */
 function register_user($params)
 {
-	global $prefs;
-	$logslib = TikiLib::lib('logs');
-	$tikilib = TikiLib::lib('tiki');
-	$registrationlib = TikiLib::lib('registration');
+	global $tikilib, $prefs, $registrationlib, $logslib;
 
 	$key = $params->getParam(0);
 	$key = $key->scalarval(); 
@@ -357,6 +296,8 @@ function register_user($params)
 			|| ($prefs['known_hosts'][$key]['allowusersregister'] != 'y')
 	)
 		return new XML_RPC_Response(0, 101, 'Users are not allowed to register via intertiki on this master.');
+
+	require_once 'lib/registration/registrationlib.php';
 
 	$result=$registrationlib->register_new_user_from_intertiki(XML_RPC_decode($params->getParam(1)));
 

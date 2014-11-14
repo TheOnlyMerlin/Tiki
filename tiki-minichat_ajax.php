@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -22,21 +19,13 @@ $timeout_inc = 1000;
 $lasttimeout = (int)$_REQUEST['lasttimeout'];
 if ($lasttimeout < $timeout_min) $lasttimeout = $timeout_min;
 $chans = explode(',', $_REQUEST['chans']);
-/**
- * @param $channel
- * @return string
- */
-function escapechannel($channel)
+function escapechannel($channel) 
 {
 	$channel = preg_replace('/[^a-zA-Z0-9\-\_]/i', '', $channel);
 	$channel = substr($channel, 0, 30);
 	return '#' . $channel;
 }
-
-/**
- * @param $chans
- */
-function initchannelssession($chans)
+function initchannelssession($chans) 
 {
 	$_SESSION['minichat_channels'] = array();
 	foreach ($chans as $chan) {

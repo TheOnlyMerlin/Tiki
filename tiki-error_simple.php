@@ -1,38 +1,28 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-if (!empty($_REQUEST['error'])) {
-	$error = substr($_REQUEST["error"], 0, 256);
-} else {
-	$error = 'There was an unspecified error.  Please go back and try again.';
-}
-if (!empty($_REQUEST['title'])) {
-	$title = $_REQUEST['title'];
-} else {
-	$title = 'Maintenance';
-}
+echo '<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
 
-$login = '<form name="loginbox" action="tiki-login.php?page=tikiIndex" method="post"><table><tr><td>' .
-	'User:</td><td><input type="text" name="user"  size="20" /></td></tr><tr><td>' .
-	'Pass:</td><td><input type="password" name="pass" size="20" /></td></tr><tr><td align="center"><input type="submit" name="login" value="login" class="btn btn-default" /></td></tr></table></form>';
+echo '<html><head><title>maintenance</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head><body><pre><p>';
+if (isset($_REQUEST['error']) and !is_null($_REQUEST['error'])) {
 
-$back = '<p><a href="javascript:history.back()">Go back</a></p>';
+	$_REQUEST["error"] = substr($_REQUEST["error"], 0, 256);
+	echo htmlentities(strip_tags($_REQUEST["error"]), ENT_QUOTES, 'UTF-8');	
 
-if (file_exists('templates/styles/site_closed_local.html')) {
-	$html = file_get_contents('templates/styles/site_closed_local.html');
 } else {
-	$html = file_get_contents('templates/styles/site_closed.html');
+	echo 'There was an unspecified error.  Please go back and try again.';
 }
 
-$html = str_replace('{error}', $error, $html);
-$html = str_replace('{title}', $title, $html);
-$html = str_replace('{login}', $login, $html);
-$html = str_replace('{back}', $back, $html);
+echo '</p>
+<form name="loginbox" action="tiki-login.php?page=tikiIndex" method="post">
+User: <input type="text" name="user"  size="20" /><br />
+Pass: <input type="password" name="pass" size="20" /><br />
+<input type="submit" name="login" value="login" /></form>';
 
-header("HTTP/1.0 503 Service Unavailable");
-
-echo $html;
+echo '<p><a href="javascript:history.back()">Go back</a></p></pre></body></html>';

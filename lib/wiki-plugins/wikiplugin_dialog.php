@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -28,7 +28,7 @@ function wikiplugin_dialog_info()
 				'description' => tra('Button labels separated by commas.'),
 				'filter' => 'text',
 				'separator' => ',',
-				'default' => array(tra('Ok')),
+				'default' => tra('Ok') . ',' . tra('Cancel'),
 			),
 			'actions' => array(
 				'required' => false,
@@ -86,7 +86,6 @@ function wikiplugin_dialog_info()
 				'description' => tra('Wiki page to use as dialog body.'),
 				'filter' => 'pagename',
 				'default' => '',
-				'profile_reference' => 'wiki_page',
 			),
 			'openAction' => array(
 				'required' => false,

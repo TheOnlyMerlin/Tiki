@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -23,19 +23,6 @@ function prefs_tiki_list()
 			'default' => 604800,
 			'tags' => array('basic'),
 		),
-		'tiki_release_cycle' => array(
-			'name' => tr('Upgrade cycle'),
-			'type' => 'list',
-			'default' => 'regular',
-			'dependencies' => array(
-				'feature_version_checks',
-			),
-			'options' => array(
-				'regular' => tr('Regular (6 months)'),
-				'longterm' => tr('Long Term Support'),
-			),
-			'help' => 'Version+Lifecycle',
-		),
 		'tiki_minify_javascript' => array(
 			'name' => tra('Minify JavaScript'),
 			'description' => tra('Compress JavaScript files used in the page into a single file to be distributed statically. Changes to JavaScript files will require cache to be cleared. Uses http://code.google.com/p/minify/'),
@@ -43,13 +30,6 @@ function prefs_tiki_list()
 			'perspective' => false,
 			'default' => 'n',
 			'tags' => array('basic'),
-		),
-		'tiki_minify_late_js_files' => array(
-			'name' => tra('Minify Late JavaScript'),
-			'description' => tra('Compress extra JavaScript files used in the page after tiki-setup into a separate file which may vary from page to page.'),
-			'type' => 'flag',
-			'perspective' => false,
-			'default' => 'n',
 		),
 		'tiki_minify_css' => array(
 			'name' => tra('Minify CSS'),
@@ -92,22 +72,22 @@ function prefs_tiki_list()
 			'default' => '',
 		),
 		'tiki_cdn' => array(
-			'name' => tra('Content Delivery Networks'),
-			'description' => tra('Use alternate domain names to serve static files from tiki to avoid sending cookies, improve local caching and generally improve user experience performance.'),
-			'hint' => tra('List of URI Prefixes to include before static files (One per line), for example: http://cdn1.example.com'),
+			'name' => tra('Content Delivery Network'),
+			'description' => tra('Use an alternate domain name to serve static files from tiki to avoid sending cookies, improve local caching and generally improve user experience performance.'),
+			'hint' => tra('Prefix to include before the static files, for example: http://cdn.example.com'),
 			'help' => 'Content+Delivery+Network',
-			'type' => 'textarea',
-			'size' => 4,
+			'type' => 'text',
+			'size' => 40,
 			'filter' => 'url',
 			'default' => '',
 		),
 		'tiki_cdn_ssl' => array(
-			'name' => tra('Content Delivery Networks (in SSL)'),
-			'description' => tra('Use alternate domain names to serve static files from tiki to avoid sending cookies, improve local caching and generally improve user experience performance. Leave empty to disable CDN in SSL mode.'),
-			'hint' => tra('List of URI Prefixes to include before static files (One per line), for example: https://sslcdn1.example.com'),
+			'name' => tra('Content Delivery Network (in SSL)'),
+			'description' => tra('Use an alternate domain name to serve static files from tiki to avoid sending cookies, improve local caching and generally improve user experience performance. Leave empty to disable CDN in SSL mode.'),
+			'hint' => tra('Prefix to include before the static files, for example: https://cdn.example.com'),
 			'help' => 'Content+Delivery+Network',
-			'type' => 'textarea',
-			'size' => 4,
+			'type' => 'text',
+			'size' => 40,
 			'filter' => 'url',
 			'default' => '',
 		),
@@ -144,14 +124,6 @@ function prefs_tiki_list()
 			'warning' => tra('Note, all permissions are granted to the Admins group including this one, so if you enable this you may expose your site to XSS (Cross Site Scripting) attacks for admin users.'),
 			'type' => 'flag',
 			'default' => 'n',
-		),
-		'tiki_object_selector_threshold' => array(
-			'name' => tr('Object selector threshold'),
-			'description' => tr('Amount of records after which the object selectors will request searching instead of selecting from a list.'),
-			'type' => 'text',
-			'size' => 6,
-			'default' => 250,
-			'filter' => 'int',
 		),
 	);
 }

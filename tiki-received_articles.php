@@ -1,20 +1,17 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
 include_once ('lib/commcenter/commlib.php');
+include_once ('lib/articles/artlib.php');
 $access->check_feature('feature_comm');
 $access->check_permission('tiki_p_admin_received_articles');
 //Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-$artlib = TikiLib::lib('art');
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 $smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
 
 if (!isset($_REQUEST["receivedArticleId"])) {
@@ -114,17 +111,8 @@ $smarty->assign('body', $info["body"]);
 $smarty->assign('type', $info["type"]);
 $smarty->assign('rating', $info["rating"]);
 // Assign parsed
-$smarty->assign(
-	'parsed_heading',
-	$tikilib->parse_data(
-		$info["heading"],
-		array(
-			'min_one_paragraph' => true,
-			'is_html' => $artlib->is_html($info, true),
-		)
-	)
-);
-$smarty->assign('parsed_body', $tikilib->parse_data($info["body"], array('is_html' => $artlib->is_html($info))));
+$smarty->assign('parsed_heading', $tikilib->parse_data($info["heading"]));
+$smarty->assign('parsed_body', $tikilib->parse_data($info["body"], array('is_html' => $prefs['feature_wysiwyg'] === 'y' && $prefs['wysiwyg_htmltowiki'] !== 'y')));
 if (isset($_REQUEST["remove"])) {
 	$access->check_authenticity();
 	$commlib->remove_received_article($_REQUEST["remove"]);

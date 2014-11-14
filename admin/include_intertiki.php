@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -10,12 +10,8 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	header('location: index.php');
 	exit;
 }
-if (!isset($_REQUEST['interlist'])) {
-	$_REQUEST['interlist'] = array();
-}
-if (!isset($_REQUEST['known_hosts'])) {
-	$_REQUEST['known_hosts'] = array();
-}
+if (!isset($_REQUEST['interlist'])) $_REQUEST['interlist'] = array();
+if (!isset($_REQUEST['known_hosts'])) $_REQUEST['known_hosts'] = array();
 if (isset($_REQUEST['del'])) {
 	check_ticket('admin-inc-intertiki');
 	$_REQUEST["intertikiclient"] = true;
@@ -60,13 +56,7 @@ if (isset($_REQUEST["intertikiserver"])) {
 	}
 	if (!empty($_REQUEST['known_hosts'])) {
 		foreach ($_REQUEST['known_hosts'] as $k => $v) {
-			if (isset($_REQUEST['known_hosts'][$k]['allowusersregister'])) $_REQUEST['known_hosts'][$k]['allowusersregister'] = 'y';
-			if (empty($_REQUEST['known_hosts'][$k]['name'])
-				&& empty($_REQUEST['known_hosts'][$k]['key'])
-				&& empty($_REQUEST['known_hosts'][$k]['ip'])
-				&& empty($_REQUEST['known_hosts'][$k]['contact'])) {
-				unset($_REQUEST['known_hosts'][$k]);
-			}
+			if (empty($_REQUEST['known_hosts'][$k]['name']) && empty($_REQUEST['known_hosts'][$k]['key']) && empty($_REQUEST['known_hosts'][$k]['ip']) && empty($_REQUEST['known_hosts'][$k]['contact'])) unset($_REQUEST['known_hosts'][$k]);
 		}
 	}
 	simple_set_value('known_hosts');

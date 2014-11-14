@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -21,7 +21,6 @@ function wikiplugin_transclude_info()
 				'name' => tra('Page Name'),
 				'description' => tra('Name of the wiki page to use as a template for the values.'),
 				'default' => '',
-				'profile_reference' => 'wiki_page',
 			),
 		),
 	);
@@ -49,7 +48,7 @@ function wikiplugin_transclude( $data, $params )
 	if ( ! isset( $params['page'] ) ) {
 		return WikiParser_PluginOutput::argumentError(array( 'page' ));
 	}
-
+	
 	$page = $params['page'];
 	unset($params['page']);
 
@@ -64,9 +63,9 @@ function wikiplugin_transclude( $data, $params )
 		$data = $tikilib->parse_data($data);
                 $pass = $parts[0] . $data . $parts[1];
 		return preg_replace_callback(
-			'/%%%([A-z0-9]+)%%%/',
-			array( new WikiPlugin_Transclude_Replacer($params), 'callback' ),
-			$pass
+						'/%%%([A-z0-9]+)%%%/',
+						array( new WikiPlugin_Transclude_Replacer($params), 'callback' ),
+						$pass
 		);
 	} else {
 		return WikiParser_PluginOutput::error(tr('Page not found'), tr('Page named "%0" does not exist at this time.', $page));

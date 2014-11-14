@@ -1,15 +1,13 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 include_once ('tiki-setup.php');
-$categlib = TikiLib::lib('categ');
+global $categlib;
+include_once ('lib/categories/categlib.php');
 $access->check_feature('feature_group_watches');
 $access->check_permission(array('tiki_p_admin_users'));
 if (!isset($_REQUEST['objectId']) || !isset($_REQUEST['watch_event'])) {

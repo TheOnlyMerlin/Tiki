@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -50,9 +50,8 @@ if (isset($_REQUEST['name']) && $webservice = Tiki_Webservice::getService($_REQU
 	$storedTemplates = array();
 }
 
-if (!isset($_REQUEST['params'])) {
+if (!isset($_REQUEST['params']))
 	$_REQUEST['params'] = array();
-}
 
 if (!isset($_REQUEST['parse']) && $response = $webservice->performRequest($_REQUEST['params'])) {
 	$data = $response->data;
@@ -61,11 +60,11 @@ if (!isset($_REQUEST['parse']) && $response = $webservice->performRequest($_REQU
 		unset($data['_version']);
 	}
 	$templates = $response->getTemplates(
-		array(
-			'smarty/tikiwiki',
-			'smarty/html',
-			'javascript/html',
-		)
+					array(
+						'smarty/tikiwiki',
+						'smarty/html',
+						'javascript/html',
+					)
 	);
 
 	$smarty->assign('data', print_r($data, true));

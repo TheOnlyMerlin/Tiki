@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,16 +11,10 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- *
- */
 class UserMenuLib extends TikiLib
 {
 
-    /**
-     * @param $user
-     */
-    function add_bk($user)
+	function add_bk($user)
 	{
 		$query = 'select tubu.`name`,`url`' .
 						' from `tiki_user_bookmarks_urls` tubu, `tiki_user_bookmarks_folders` tubf' .
@@ -52,15 +46,7 @@ class UserMenuLib extends TikiLib
 		}
 	}
 
-    /**
-     * @param $user
-     * @param $offset
-     * @param $maxRecords
-     * @param $sort_mode
-     * @param $find
-     * @return array
-     */
-    function list_usermenus($user, $offset, $maxRecords, $sort_mode, $find)
+	function list_usermenus($user, $offset, $maxRecords, $sort_mode, $find)
 	{
 
 		if ($find) {
@@ -89,12 +75,7 @@ class UserMenuLib extends TikiLib
 		return $retval;
 	}
 
-    /**
-     * @param $user
-     * @param $menuId
-     * @return mixed
-     */
-    function get_usermenu($user, $menuId)
+	function get_usermenu($user, $menuId)
 	{
 		$query = 'select * from `tiki_user_menus` where `user`=? and `menuId`=?';
 
@@ -103,25 +84,12 @@ class UserMenuLib extends TikiLib
 		return $res;
 	}
 
-    /**
-     * @param $user
-     * @return mixed
-     */
-    function get_max_position($user)
+	function get_max_position($user)
 	{
 		return $this->getOne('select max(position) from `tiki_user_menus` where `user`=?', array($user));
 	}
 
-    /**
-     * @param $user
-     * @param $menuId
-     * @param $name
-     * @param $url
-     * @param $position
-     * @param $mode
-     * @return mixed
-     */
-    function replace_usermenu($user, $menuId, $name, $url, $position, $mode)
+	function replace_usermenu($user, $menuId, $name, $url, $position, $mode)
 	{
 
 		if ($menuId) {
@@ -138,11 +106,7 @@ class UserMenuLib extends TikiLib
 		}
 	}
 
-    /**
-     * @param $user
-     * @param $menuId
-     */
-    function remove_usermenu($user, $menuId)
+	function remove_usermenu($user, $menuId)
 	{
 		$query = 'delete from `tiki_user_menus` where `user`=? and `menuId`=?';
 

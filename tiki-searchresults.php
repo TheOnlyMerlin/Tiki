@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,17 +9,17 @@ $inputConfiguration = array(
 	array( 'staticKeyFilters' => array(
 				'date' => 'digits',
 				'maxRecords' => 'digits',
-				'highlight' => 'text',
+				'highlight' => 'xss',
 				'where' => 'word',
-				'find' => 'text',
+				'find' => 'xss',
 				'searchLang' => 'word',
-				'words' =>'text',
+				'words' =>'xss',
 				'boolean' =>'word',
 				'forumId' => 'digits',
 				'name' => 'word',
 				'galleryId' => 'digits',
 				'categId' => 'digits',
-				'offset' => 'digits',								
+				'offset' => 'digits',
 		)
 	)
 );
@@ -51,7 +48,7 @@ if (empty($_REQUEST["where"])) {
 $find_where = 'find_' . $where;
 $smarty->assign('where', $where);
 if ($where == 'wikis') {
-	$where_label = 'wiki pages';
+	$where_label = 'wiki pages';	
 } else {
 	$where_label = $where;
 }
@@ -77,7 +74,9 @@ if ($where == 'forums') {
 	$access->check_permission('tiki_p_forum_read');
 	if (!empty($_REQUEST['forumId'])) {
 		$filter['forumId'] = $_REQUEST['forumId'];
-		$commentslib = TikiLib::lib('comments');
+		global $commentslib;
+		include ('lib/comments/commentslib.php');
+		if (!isset($commentslib)) $commentslib = new Comments($dbTiki);
 		$forum_info = $commentslib->get_forum($_REQUEST['forumId']);
 		$where = 'forum';
 		$smarty->assign_by_ref('where_forum', $forum_info['name']);
@@ -128,8 +127,9 @@ if ($prefs['feature_categories'] == 'y') {
 		$selectedCategories = array((int) $categId);
 		$smarty->assign('find_categId', $_REQUEST['categId']);
 	}
-
-	$categlib = TikiLib::lib('categ');
+	
+	global $categlib;
+	include_once ('lib/categories/categlib.php');
 	$categories = $categlib->getCategories();
 	$smarty->assign_by_ref('categories', $categories);
 	$smarty->assign('cat_tree', $categlib->generate_cat_tree($categories, true, $selectedCategories));
@@ -213,19 +213,6 @@ if (($where == 'wikis' || $where == 'articles') && $prefs['feature_multilingual'
 	$languages = array();
 	$languages = $tikilib->list_languages(false, 'y');
 	$smarty->assign_by_ref('languages', $languages);
-}
-
-if (isset($results['data']) && is_array($results['data'])) {
-	array_walk(
-		$results['data'],
-		function (& $entry) {
-			if (strpos($entry['href'], '?') !== false) {
-				$entry['href'] .= '&highlight=' . rawurlencode($_REQUEST['words']);
-			} else {
-				$entry['href'] .= '?highlight=' . rawurlencode($_REQUEST['words']);
-			}
-		}
-	);
 }
 
 $smarty->assign_by_ref('where_list', $where_list);

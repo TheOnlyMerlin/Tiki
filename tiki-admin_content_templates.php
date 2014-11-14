@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -233,7 +230,7 @@ include 'lib/setup/editmode.php';
 $info['section_wiki_html'] = $_SESSION['wysiwyg'];	//$info['is_html'] ? 'y' : 'n';
 
 // Handles switching editor modes
-$editlib = TikiLib::lib('edit');
+global $editlib; include_once ('lib/wiki/editlib.php');
 if (isset($_REQUEST['mode_normal']) && $_REQUEST['mode_normal']=='y') {
 	// Parsing page data as first time seeing html page in normal editor
 	$smarty->assign('msg', "Parsing html to wiki");
@@ -248,7 +245,8 @@ if (isset($_REQUEST['mode_normal']) && $_REQUEST['mode_normal']=='y') {
 
 $smarty->assign_by_ref('channels', $channels["data"]);
 ask_ticket('admin-content-templates');
-$wikilib = TikiLib::lib('wiki');
+global $wikilib;
+include_once ('lib/wiki/wikilib.php');
 $plugins = $wikilib->list_plugins(true, 'editwiki');
 $smarty->assign_by_ref('plugins', $plugins);
 // disallow robots to index page:

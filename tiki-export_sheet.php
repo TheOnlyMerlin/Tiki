@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -64,13 +61,6 @@ if ( isset($_REQUEST['encoding']) ) {
 
 	$handler = new $handler("php://stdout" , 'UTF-8', $_REQUEST['encoding']);
 	$grid->export($handler);
-
-	header("Content-type: text/comma-separated-values");
-	header("Content-Disposition: attachment; filename=export.csv");
-	header("Expires: 0");
-	header("Cache-Control: must-revalidate, post-check=0,pre-check=0");
-	header("Pragma: public");
-
 	echo $handler->output;
 	exit;
 } else {

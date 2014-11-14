@@ -1,19 +1,16 @@
 {title admpage="articles" help="Articles"}{tr}Submissions{/tr}{/title}
 
-<div class="t_navbar">
-	{button href="tiki-edit_submission.php" class="btn btn-default" _text="{tr}New Submission{/tr}"}
+<div class="navbar">
+	{button href="tiki-edit_submission.php" _text="{tr}New Submission{/tr}"}
 	{if $tiki_p_read_article eq 'y'}
-		{button href="tiki-list_articles.php" class="btn btn-default" _text="{tr}List Articles{/tr}"}
+		{button href="tiki-list_articles.php" _text="{tr}List Articles{/tr}"}
 	{/if}
 </div>
 
-{if $listpages or ($find ne '') or ($types ne '') or ($topics ne '') or ($lang ne '') or ($categId ne '')}
-	{include file='find.tpl' find_show_languages='y' find_show_num_rows='y'}
-{/if}
-<form name="checkform" method="post" action="{$smarty.server.PHP_SELF}">
-	<input type="hidden" name="maxRecords" value="{$maxRecords|escape}">
-    <div class="table-responsive">
-	<table class="table normal">
+{include file='find.tpl' find_show_num_rows='y'}
+<form name="checkform" method="get" action="{$smarty.server.PHP_SELF}">
+	<input type="hidden" name="maxRecords" value="{$maxRecords|escape}" />
+	<table class="normal">
 		{assign var=numbercol value=0}
 		<tr>
 			{if $tiki_p_remove_submission eq 'y' or $tiki_p_approve_submission eq 'y'}
@@ -41,12 +38,6 @@
 					<a href="tiki-list_submissions.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'publishDate_desc'}publishDate_asc{else}publishDate_desc{/if}">{tr}Publish Date{/tr}</a>
 				</th>
 			{/if}
-			{if $prefs.art_list_expire eq 'y'}
-				{assign var=numbercol value=$numbercol+1}
-				<th>
-					<a href="tiki-list_submissions.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'expireDate_desc'}expireDate_asc{else}expireDate_desc{/if}">{tr}Expiry Date{/tr}</a>
-				</th>
-			{/if}
 			{if $prefs.art_list_size eq 'y'}
 				{assign var=numbercol value=$numbercol+1}
 				<th style="text-align:right;">
@@ -72,12 +63,12 @@
 			{assign var=numbercol value=$numbercol+1}
 			<th>{tr}Actions{/tr}</th>
 		</tr>
-
+		{cycle values="odd,even" print=false}
 		{section name=changes loop=$listpages}
-			<tr>
+			<tr class="{cycle}">
 				{if $tiki_p_remove_submission eq 'y' or $tiki_p_approve_submission eq 'y'}
-					<td class="checkbox-cell">
-						<input type="checkbox" name="checked[]" value="{$listpages[changes].subId|escape}" {if $listpages[changes].checked eq 'y'}checked="checked" {/if}>
+					<td class="checkbox">
+						<input type="checkbox" name="checked[]" value="{$listpages[changes].subId|escape}" {if $listpages[changes].checked eq 'y'}checked="checked" {/if}/>
 					</td>
 				{/if}
 				{if $prefs.art_list_title eq 'y'}
@@ -89,10 +80,7 @@
 					<td class="text">{$listpages[changes].topicName|escape}</td>
 				{/if}
 				{if $prefs.art_list_date eq 'y'}
-					<td class="date" title="{$listpages[changes].publishDate|tiki_short_datetime}">{$listpages[changes].publishDate|tiki_short_date}</td>
-				{/if}
-				{if $prefs.art_list_expire eq 'y'}
-					<td class="date" title="{$listpages[changes].expireDate|tiki_short_datetime}">{$listpages[changes].expireDate|tiki_short_date}</td>
+					<td class="date">{$listpages[changes].publishDate|tiki_short_datetime}</td>
 				{/if}
 				{if $prefs.art_list_size eq 'y'}
 					<td class="integer">{$listpages[changes].size|kbsize}</td>
@@ -111,10 +99,10 @@
 						<a class="link" href="tiki-edit_submission.php?subId={$listpages[changes].subId}">{icon _id='page_edit'}</a>
 					{/if}
 					{if $tiki_p_approve_submission eq 'y'}
-						{self_link approve=$listpages[changes].subId}{icon _id='accept' alt="{tr}Approve{/tr}"}{/self_link}
+						<a class="link" href="tiki-list_submissions.php?approve={$listpages[changes].subId}">{icon _id='accept' alt="{tr}Approve{/tr}"}</a>
 					{/if}
 					{if $tiki_p_remove_submission eq 'y'}
-						{self_link remove=$listpages[changes].subId}{icon _id='cross' alt="{tr}Remove{/tr}"}{/self_link}
+						<a class="link" href="tiki-list_submissions.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$listpages[changes].subId}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 					{/if}
 				</td>
 			</tr>
@@ -128,7 +116,7 @@
 					{if $listpages}
 						<p align="left"> {*on the left to have it close to the checkboxes*}
 							{if $tiki_p_remove_submission eq 'y'}
-								{button _text="{tr}Select Duplicates{/tr}" _onclick="checkDuplicateRows(this,'td:not(:eq(2))'); return false;"}
+								{button _text="{tr}Select Duplicates{/tr}" _onclick="checkDuplicateRows(this); return false;"}
 							{/if}
 							<label>{tr}Perform action with checked:{/tr}
 								<select name="submit_mult">
@@ -137,13 +125,12 @@
 									{if $tiki_p_approve_submission eq 'y'}<option value="approve_subs" >{tr}Approve{/tr}</option>{/if}
 								</select>
 							</label>
-							<input type="submit" class="btn btn-default btn-sm" value="{tr}Ok{/tr}">
+							<input type="submit" value="{tr}Ok{/tr}" />
 						</p>
 					{/if}
 				</td>
 			</tr>
 		{/if}
 	</table>
-    </div>
 	{pagination_links cant=$cant_pages step=$maxRecords offset=$offset}{/pagination_links}
-</form>
+<form>

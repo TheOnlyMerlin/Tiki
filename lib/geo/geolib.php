@@ -1,21 +1,13 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-/**
- *
- */
 class GeoLib
 {
-    /**
-     * @param $type
-     * @param $itemId
-     * @return array
-     */
-    function get_coordinates($type, $itemId)
+	function get_coordinates($type, $itemId) 
 	{
 		$attributelib = TikiLib::lib('attribute');
 
@@ -27,10 +19,6 @@ class GeoLib
 				'lon' => $attributes['tiki.geo.lon'],
 			);
 
-			if ($coords['lat'] == 0 && $coords['lon'] == 0) {
-				return;
-			}
-
 			if (! empty($attributes['tiki.geo.google.zoom'])) {
 				$coords['zoom'] = $attributes['tiki.geo.google.zoom'];
 			}
@@ -39,29 +27,16 @@ class GeoLib
 		}
 	}
 
-    /**
-     * @param $type
-     * @param $itemId
-     * @return string
-     */
-    function get_coordinates_string($type, $itemId)
+	function get_coordinates_string($type, $itemId) 
 	{
 		if ($coords = $this->get_coordinates($type, $itemId)) {
 			return $this->build_location_string($coords);
 		}
 	}
-
-    /**
-     * @param $coords
-     * @return string
-     */
-    function build_location_string($coords)
+	
+	function build_location_string($coords) 
 	{
 		if (! empty($coords['lat']) && ! empty($coords['lon'])) {
-			if ($coords['lat'] == 0 && $coords['lon'] == 0) {
-				return;
-			}
-
 			$string = "{$coords['lon']},{$coords['lat']}";
 
 			if (! empty($coords['zoom'])) {
@@ -72,12 +47,7 @@ class GeoLib
 		}
 	}
 
-    /**
-     * @param $type
-     * @param $itemId
-     * @param $coordinates
-     */
-    function set_coordinates($type, $itemId, $coordinates)
+	function set_coordinates($type, $itemId, $coordinates) 
 	{
 		if (is_string($coordinates)) {
 			$coordinates = $this->parse_coordinates($coordinates);
@@ -94,11 +64,7 @@ class GeoLib
 		}
 	}
 
-    /**
-     * @param $string
-     * @return array
-     */
-    function parse_coordinates($string)
+	function parse_coordinates($string) 
 	{
 		if (preg_match("/^(-?\d*(\.\d+)?),(-?\d*(\.\d+)?)(,(\d+))?$/", $string, $parts)) {
 			$coords = array(
@@ -113,20 +79,16 @@ class GeoLib
 			return $coords;
 		}
 	}
-
-    /**
-     * @param $where
-     * @return array|bool
-     */
-    function geocode($where)
+	
+	function geocode($where) 
 	{
 		$url = 'http://maps.googleapis.com/maps/api/geocode/json?' . http_build_query(
-			array(
-				'address' => $where,
-				'sensor' => 'false',
-			),
-			'',
-			'&'
+						array(
+							'address' => $where,
+							'sensor' => 'false',
+						),
+						'',
+						'&'
 		);
 
 		$response = TikiLib::lib('tiki')->httprequest($url);
@@ -144,15 +106,10 @@ class GeoLib
 			'label' => $first->formatted_address,
 			'lat' => $first->geometry->location->lat,
 			'lon' => $first->geometry->location->lng,
-			'address_components' => $first->address_components,
 		);
 	}
-
-    /**
-     * @param $geo
-     * @return array|bool
-     */
-    function geofudge($geo)
+	
+	function geofudge($geo) 
 	{
 		if (!$geo) {
 			return false;
@@ -164,15 +121,13 @@ class GeoLib
 		$geo["lat"] = $geo["lat"] + rand(0, 10000) / 10000;
 		return $geo;
 	}
-
-    /**
-     * @param $itemId
-     * @param $geo
-     */
-    function setTrackerGeo($itemId, $geo)
+	
+	function setTrackerGeo($itemId, $geo) 
 	{
-		global $prefs;
-		$trklib = TikiLib::lib('trk');
+		global $prefs, $trklib;
+		if (!is_object($trklib)) {
+			include_once('lib/trackers/trackerlib.php');
+		}
 		$item = $trklib->get_tracker_item($itemId);
 		$fields = $trklib->list_tracker_fields($item['trackerId']);
 		foreach ($fields["data"] as $f) {
@@ -191,11 +146,6 @@ class GeoLib
 		}
 	}
 
-	function get_default_center() {
-		global $prefs;
-		$coords = $this->parse_coordinates($prefs['gmap_defaultx'] . ',' . $prefs['gmap_defaulty'] . ',' . $prefs['gmap_defaultz']);
-                $center = ' data-geo-center="' . smarty_modifier_escape($this->build_location_string($coords)) . '" ';
-		return $center;
-        }
 }
 
+$geolib = new GeoLib;

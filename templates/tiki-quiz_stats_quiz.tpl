@@ -1,12 +1,12 @@
 {title help="Quiz"}{tr}Stats for quiz:{/tr} {$quiz_info.name}{/title}
 
-<div class="t_navbar form-group">
-	{button href="tiki-list_quizzes.php" class="btn btn-default" _text="{tr}List Quizzes{/tr}"}
-	{button href="tiki-quiz_stats.php" class="btn btn-default" _text="{tr}Quiz Stats{/tr}"}
-	{button href="tiki-quiz_stats_quiz.php?quizId=$quizId" class="btn btn-default" _text="{tr}This Quiz Stats{/tr}"}
-	{button href="tiki-edit_quiz.php?quizId=$quizId" class="btn btn-default" _text="{tr}Edit this Quiz{/tr}"}
+<div class="navbar">
+	{button href="tiki-list_quizzes.php" _text="{tr}List Quizzes{/tr}"} 
+	{button href="tiki-quiz_stats.php" _text="{tr}Quiz Stats{/tr}"}
+	{button href="tiki-quiz_stats_quiz.php?quizId=$quizId" _text="{tr}This Quiz Stats{/tr}"}
+	{button href="tiki-edit_quiz.php?quizId=$quizId" _text="{tr}Edit this Quiz{/tr}"} 
 	{if $tiki_p_admin_quizzes eq 'y'}
-		{button href="tiki-quiz_stats_quiz.php?quizId=$quizId&clear=$quizId" class="btn btn-default" _text="{tr}Clear Stats{/tr}"}
+		{button href="tiki-quiz_stats_quiz.php?quizId=$quizId&clear=$quizId" _text="{tr}Clear Stats{/tr}"}
 	{/if}
 	{button href="tiki-edit_quiz.php" _text="{tr}Admin Quizzes{/tr}"}
 </div>
@@ -16,8 +16,8 @@
 <h2>{tr}Quiz stats{/tr}</h2>
 
 <!-- begin table for stats data -->
-<div class="table-responsive">
-<table class="table normal">
+
+<table class="normal">
 <tr>
 <th>
 <!-- sort user -->
@@ -39,9 +39,9 @@ Set the names of the table headings to reflect the names of the db
 <a href="tiki-quiz_stats_quiz.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'resultId_desc'}resultId_asc{else}resultId_desc{/if}">{tr}Result{/tr}</a></th>
 <th>{tr}P/F{/tr}</th>
 </tr>
-
+{cycle values="odd,even" print=false}
 {section name=user loop=$channels}
-<tr>
+<tr class="{cycle}">
   <td class="username">{$channels[user].user|userlink}</td>
   <td class="date">{$channels[user].timestamp|tiki_short_datetime}</td>
   <td class="date">{$channels[user].timeTaken} secs</td>
@@ -60,7 +60,6 @@ Set the names of the table headings to reflect the names of the db
 </tr>
 {/section}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
 
@@ -70,10 +69,9 @@ Set the names of the table headings to reflect the names of the db
 {*first section beginning *}
 {section name=ix loop=$questions}
 {tr}Question:{/tr}
-<a class="link" href="tiki-edit_quiz_questions.php?quizId={$quizId.questionId}">{$questions[ix].question|escape}<br></a>
+<a class="link" href="tiki-edit_quiz_questions.php?quizId={$quizId.questionId}">{$questions[ix].question|escape}<br /></a>
 
-<div class="table-responsive">
-<table class="table normal">
+<table class="normal">
 <!-- begin header data for table -->
 
 {* I'd like to have every table heading sorted for immediate analysis
@@ -100,7 +98,7 @@ Set the names of the table headings to reflect the names of the db
 {*second section end *}
   {/section}
 </table>
-</div>
-<br>
+
+<br />
 {*first section end *}
 {/section}

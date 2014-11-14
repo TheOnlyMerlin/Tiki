@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -38,78 +38,34 @@ function wikiplugin_group_info()
 				'filter' => 'groupname',
 				'default' => ''
 			),
-			'pending' => array(
-				'required' => false,
-				'name' => tra('Allowed Groups Pending Membership'),
-				'description' => tra('User allowed to view block if membership payment to join group (or pipe-separated list of groups) is outstanding.'),
-				'filter' => 'groupname',
-				'default' => ''
-			),
-			'notpending' => array(
-				'required' => false,
-				'name' => tra('Allowed Groups Full Membership'),
-				'description' => tra('User allowed to view block if membership in the group (or pipe-separated list of groups) is not pending.'),
-				'filter' => 'groupname',
-				'default' => ''
-			),
 		),
 	);
 }
 
 function wikiplugin_group($data, $params)
 {
-	// TODO : Re-implement friend filter
-	global $user, $groupPluginReturnAll;
-	$tikilib = TikiLib::lib('tiki');
+	global $user, $prefs, $tikilib, $smarty;
 	$dataelse = '';
 	if (strrpos($data, '{ELSE}')) {
 		$dataelse = substr($data, strrpos($data, '{ELSE}')+6);
 		$data = substr($data, 0, strrpos($data, '{ELSE}'));
 	}
 
-	if (isset($groupPluginReturnAll) && $groupPluginReturnAll == true) {
-		return $data.$dataelse;
+	if (!empty($params['friends']) && $prefs['feature_friends'] == 'y') {
+		$friends = explode('|', $params['friends']);
 	}
-
 	if (!empty($params['groups'])) {
 		$groups = explode('|', $params['groups']);
 	}
 	if (!empty($params['notgroups'])) {
 		$notgroups = explode('|', $params['notgroups']);
 	}
-	$userPending = array();
-	if (!empty($params['pending']) || !empty($params['notpending'])) {
-		$attributelib = TikiLib::lib('attribute');
-		$attributes = $attributelib->get_attributes('user', $user);
-		$userlib = TikiLib::lib('user');
-		if (!empty($params['pending'])) {
-			$pending = explode('|', $params['pending']);
-			foreach ($pending as $pgrp) {
-				$grpinfo = $userlib->get_group_info($pgrp);
-				$attname = 'tiki.memberextend.' . $grpinfo['id'];
-				if (isset($attributes[$attname])) {
-					$userPending[] = $pgrp;
-				}
-			}
-		}
-		if (!empty($params['notpending'])) {
-			$notpending = explode('|', $params['notpending']);
-			foreach ($notpending as $npgrp) {
-				$grpinfo = $userlib->get_group_info($npgrp);
-				$attname = 'tiki.memberextend.' . $grpinfo['id'];
-				if (!isset($attributes[$attname])) {
-					$userNotPending[] = $npgrp;
-				}
-			}
-		}
-	}
-
-	if (empty($groups) && empty($notgroups) && empty($pending) && empty($notpending)) {
+	if (empty($friends) && empty($groups) && empty($notgroups)) {
 		return '';
 	}
 
 	$userGroups = $tikilib->get_user_groups($user);
-	$smarty = TikiLib::lib('smarty');
+
 	if (count($userGroups) > 1) { //take away the anonymous as everybody who is registered is anonymous
 		foreach ($userGroups as $key=>$grp) {
 			if ($grp == 'Anonymous') {
@@ -118,39 +74,42 @@ function wikiplugin_group($data, $params)
 			}
 		}
 	}
-	if (!empty($groups) || !empty($pending)) {
+
+	if (!empty($friends)) {
 		$ok = false;
-		if (!empty($groups)) {
-			foreach ($userGroups as $grp) {
-				if (in_array($grp, $groups)) {
-					$ok = true;
-					$smarty->assign('groupValid', 'y');
-					break;
-				}
-				$smarty->assign('groupValid', 'n');
-			}
-		}
-		if (count($userPending) > 0) {
-			$ok = true;
+
+		foreach ($friends as $key=>$friend) {
+		    if ($tikilib->verify_friendship($user, $friend)) {
+			    $ok = true;
+			    break;
+		    }
 		}
 		if (!$ok)
 			return $dataelse;
 	}
+	if (!empty($groups)) {
+		$ok = false;
 
-	if (!empty($notgroups) || !empty($notpending)) {
-		$ok = true;
-		if (!empty($notgroups)) {
-			foreach ($userGroups as $grp) {
-				if (in_array($grp, $notgroups)) {
-					$ok = false;
-					$smarty->assign('notgroupValid', 'y');
-					break;
-				}
-				$smarty->assign('notgroupValid', 'n');
+		foreach ($userGroups as $grp) {
+			if (in_array($grp, $groups)) {
+				$ok = true;
+				$smarty->assign('groupValid', 'y');
+				break;
 			}
+			$smarty->assign('groupValid', 'n');
 		}
-		if (count($userNotPending) < count($notpending)) {
-			$ok = false;
+		if (!$ok)
+			return $dataelse;
+	}
+	if (!empty($notgroups)) {
+		$ok = true;
+		foreach ($userGroups as $grp) {
+			if (in_array($grp, $notgroups)) {
+				$ok = false;
+				$smarty->assign('notgroupValid', 'y');
+				break;
+			}
+			$smarty->assign('notgroupValid', 'n');
 		}
 		if (!$ok)
 			return $dataelse;

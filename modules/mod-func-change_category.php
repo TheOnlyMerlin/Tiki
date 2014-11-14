@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,13 +7,10 @@
 
 //this script may only be included - so its better to die if called directly.
 if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
-	header("location: index.php");
-	exit;
+  header("location: index.php");
+  exit;
 }
 
-/**
- * @return array
- */
 function module_change_category_info()
 {
 	return array(
@@ -25,12 +22,11 @@ function module_change_category_info()
 			'id' => array(
 				'name' => tra('Category identifier'),
 				'description' => tra('Changes the root of the displayed categories from default "TOP" to the category with the given identifier.') . " " . tra('Note that the root category is not displayed.') . " " . tra('Example value: 13.') . " " . tra('Defaults to 0 (root).'),
-				'filter' => 'int',
-				'profile_reference' => 'category',
+				'filter' => 'int'
 			),
 			'notop' => array(
 				'name' => tra('No top'),
-				'description' => tra('In non-detailed view, disallow uncategorizing. Example value: 1.') . " " . tra('Not set by default.'),
+				'description' => tra('In non-detailed view, disallow uncategorizing. Example value: 1.') . " " . tra('Not set by default.')
 			),
 			'path' => array(
 				'name' => tra('Display path'),
@@ -77,23 +73,20 @@ function module_change_category_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_change_category($mod_reference, $module_params)
 {
-	global $prefs;
-	$smarty = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
-	$modlib = TikiLib::lib('mod');
-
+	global $prefs, $tikilib, $smarty, $modlib;
+	
 	$smarty->assign('showmodule', false);
-
-	$object = current_object();
-	if ($object || $modlib->is_admin_mode(true)) {
-		$categlib = TikiLib::lib('categ');
-
+	// temporary limitation to wiki pages
+	if (($GLOBALS['section'] == 'wiki page' && (!empty($_REQUEST['page']) || !empty($_REQUEST['page_ref_if']))) || $modlib->is_admin_mode(true)) {
+		global $categlib; require_once('lib/categories/categlib.php');
+		
+		if (empty($_REQUEST['page'])) {
+			global $structlib; include_once('lib/structures/structlib.php');
+			$page_info = $structlib->s_get_page_info($_REQUEST['page_ref_id']);
+			$_REQUEST['page'] = $page_info['page'];
+		}
 		if (!empty($module_params['id'])) {
 			$id = $module_params['id'];
 			$cat_parent = $categlib->get_category_name($id);
@@ -101,36 +94,35 @@ function module_change_category($mod_reference, $module_params)
 			$id = 0;
 			$cat_parent = '';
 		}
-
+	
 		if (!empty($module_params['shy']) && !$modlib->is_admin_mode(true)) {
 			$shy = $module_params['shy'] === 'y';
 		} else {
 			$shy = false;
 		}
-
+	
 		$detailed = isset($module_params['detail']) ? $module_params['detail'] : "n";
 		$smarty->assign('detailed', $detailed);
-
+	
 		$add = isset($module_params['add']) ? $module_params['add'] : "y";
 		$smarty->assign('add', $add);
-
+	
 		$multiple = isset($module_params['multiple']) ? $module_params['multiple'] : "y";
 		$smarty->assign('multiple', $multiple);
-
-
-		$cat_type = $object['type'];
-		$cat_objid = $object['object'];
-
-		$categories = $categlib->getCategories($id ? array('identifier'=>$id, 'type'=>'descendants') : null);
-
+	
+	
+		$cat_type = 'wiki page';
+		$cat_objid = $_REQUEST['page'];
+		
+		$categories = $categlib->getCategories($id ? array('identifier'=>$id, 'type'=>'descendants') : NULL);
+	
 		if (!empty($module_params['group']) && $module_params['group'] == 'y') {
-			global $user;
-			$userlib = TikiLib::lib('user');
+			global $userlib, $user;
 			if (!$user) {
 				return;
 			}
 			$userGroups = $userlib->get_user_groups_inclusion($user);
-			foreach ($categories as $i => $cat) {
+			foreach ($categories as $i=>$cat) {
 				if (isset($userGroups[$cat['name']])) {
 					continue;
 				}
@@ -146,14 +138,13 @@ function module_change_category($mod_reference, $module_params)
 				}
 			}
 		}
-
+	
 		$managedCategories = array_keys($categories);
 		if (isset($_REQUEST['remove']) && (!isset($module_params['del']) || $module_params['del'] != 'n')) {
 			$originalCategories = $categlib->get_object_categories($cat_type, $cat_objid);
-			// Check if the object is in the category to prevent infinite redirection.
-			if (in_array($_REQUEST['remove'], $originalCategories) && in_array($_REQUEST['remove'], $managedCategories)) {
+			if (in_array($_REQUEST['remove'], $originalCategories) && in_array($_REQUEST['remove'], $managedCategories)) { // Check if the object is in the category to prevent infinite redirection.
 				$selectedCategories = array();
-				$managedCategories = array_intersect(array((int) $_REQUEST['remove']), $managedCategories);
+				$managedCategories = array_intersect(array((int)$_REQUEST['remove']), $managedCategories);
 			}
 		} elseif (isset($_REQUEST["modcatid"]) and $_REQUEST["modcatid"] == $id) {
 			if (!isset($_REQUEST['modcatchange'])) {
@@ -174,7 +165,7 @@ function module_change_category($mod_reference, $module_params)
 		if (isset($selectedCategories)) {
 			$objectperms = Perms::get(array('type' => $cat_type, 'object' => $cat_objid));
 			if ($objectperms->modify_object_categories) {
-				$categlib->update_object_categories($selectedCategories, $cat_objid, $cat_type, null, null, null, $managedCategories);
+				$categlib->update_object_categories($selectedCategories, $cat_objid, $cat_type, NULL, NULL, NULL, $managedCategories);
 			}
 			header('Location: '.$_SERVER['REQUEST_URI']);
 			die;
@@ -196,15 +187,13 @@ function module_change_category($mod_reference, $module_params)
 			unset($module_params['imgUrlNotIn']);
 			unset($module_params['imgUrlIn']);
 		}
-
+	
 		$smarty->assign('isInAllManagedCategories', $isInAllManagedCategories);
 		$smarty->assign('showmodule', !$shy);
-		$objectlib = TikiLib::lib('object');
-		$title = $objectlib->get_title($cat_type, $cat_objid);
 		if (empty($cat_parent)) {
-			$smarty->assign('tpl_module_title', sprintf(tra('Categorize %s'), htmlspecialchars($title)));
+			$smarty->assign('tpl_module_title', sprintf(tra('Categorize %s'), htmlspecialchars($_REQUEST['page'])));
 		} else {
-			$smarty->assign('tpl_module_title', sprintf(tra('Categorize %s in %s'), htmlspecialchars($title), htmlspecialchars($cat_parent)));
+			$smarty->assign('tpl_module_title', sprintf(tra('Categorize %s in %s'), htmlspecialchars($_REQUEST['page']), htmlspecialchars($cat_parent)));
 		}
 		$smarty->assign('modcatlist', $categories);
 		$smarty->assign('modcatid', $id);

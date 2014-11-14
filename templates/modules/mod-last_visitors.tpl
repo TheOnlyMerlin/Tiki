@@ -5,15 +5,15 @@
 		{if !$user}
 			<li>
 				{if $showavatars eq 'y'}
-					<table class="table">
+					<table class="admin">
 						<tr class="odd">
 							<td width="50">
-								<img src="img/icons/gradient.gif" width="48" height="48" alt="{tr}No avatar{/tr}">
+								<img src="img/icons/gradient.gif" width="48" height="48" alt="{tr}No avatar{/tr}" />
 							</td>
 							<td>
 				{/if}
 				{if $prefs.allowRegister eq 'y'}
-							<a class="linkmodule" href="tiki-register.php{if !empty($prefs.registerKey)}?key={$prefs.registerKey|escape:'url'}{/if}" title="{tr}Register{/tr}">{/if}{tr}You{/tr}{if $prefs.allowRegister eq 'y'}</a>
+							<a class="linkmodule" href="tiki-register.php" title="{tr}Register{/tr}">{/if}{tr}You{/tr}{if $prefs.allowRegister eq 'y'}</a>
 				{/if}
 							<div align="right">{$currentLogin|tiki_short_datetime}</div>
 				{if $showavatars eq 'y'}
@@ -23,12 +23,12 @@
 				{/if}
 			</li>
 		{/if}
-
-		{capture assign='noAvatar'}<img src="img/icons/gradient.gif" width="48" height="48" alt="{tr}No avatar{/tr}">{/capture}
+		{cycle values="even,odd" print=false}
+		{capture assign='noAvatar'}<img src="img/icons/gradient.gif" width="48" height="48" alt="{tr}No avatar{/tr}" />{/capture}
 		{foreach from=$modLastVisitors key=key item=item}
 			<li>
 				{if $showavatars eq 'y'}
-					<table class="table">
+					<table class="admin">
 						<tr class="{cycle advance=true}">
 							<td width="50">
 								{$item.user|avatarize|default:$noAvatar}
@@ -37,7 +37,7 @@
 				{/if}
 				<a class="linkmodule" href="tiki-user_information.php?view_user={$item.user|escape:"url"}">
 					{if $maxlen > 0}{* 0 is default value for maxlen eq to 'no truncate' *}
-						{$item.user|userlink:'userlink':'not_set':'':$maxlen}
+						{$item.user|userlink:'link':'not_set':'':$maxlen}
 					{else}
 						{$item.user|userlink}
 					{/if}

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -20,15 +20,14 @@ function wikiplugin_article_info()
 				'name' => tra('Field'),
 				'description' => tra('The article field to display. Default field is Heading.'),
 				'filter' => 'word',
-				'default' => 'heading',
+				'default' => 'heading'
 			),
 			'Id' => array(
 				'required' => false,
 				'name' => tra('Article ID'),
 				'description' => tra('The article to display. If no value is provided, most recent article will be used.'),
 				'filter' => 'digits',
-				'default' => '',
-				'profile_reference' => 'article',
+				'default' => ''
 			),
 		),
 	);
@@ -36,15 +35,13 @@ function wikiplugin_article_info()
 
 function wikiplugin_article($data, $params)
 {
-	global $user, $tiki_p_admin_cms;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$statslib = TikiLib::lib('stats');
-	$artlib = TikiLib::lib('art');
+	global $tikilib,$user,$userlib,$tiki_p_admin_cms;
+	global $statslib; include_once('lib/stats/statslib.php');
 
 	extract($params, EXTR_SKIP);
 
 	if (empty($Id)) {
+		global $artlib;	include_once('lib/articles/artlib.php');
 
 		$Id = $artlib->get_most_recent_article_id();
 	}
@@ -58,6 +55,7 @@ function wikiplugin_article($data, $params)
 		$add="";
 	}
 
+	global $artlib; require_once 'lib/articles/artlib.php';
 	$article_data = $artlib->get_article($Id);
 	if (isset($article_data[$Field])) {
 		return $tikilib->parse_data($article_data[$Field]) . $add;

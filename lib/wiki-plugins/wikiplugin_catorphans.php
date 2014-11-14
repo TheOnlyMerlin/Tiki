@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -42,12 +42,9 @@ function wikiplugin_catorphans_info()
 
 function wikiplugin_catorphans($data, $params)
 {
-	global $prefs;
-	$access = TikiLib::lib('access');
+	global $dbTiki, $smarty, $tikilib, $prefs, $access;
 	$access->check_feature('feature_categories');
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
-	$categlib = TikiLib::lib('categ');
+	global $categlib; require_once ('lib/categories/categlib.php');
 
 	$default = array('offset'=>0, 'max'=>$prefs['maxRecords'], 'objects'=>'wiki');
 	$params = array_merge($default, $params);
@@ -92,11 +89,9 @@ function wikiplugin_catorphans($data, $params)
 	// currently only supports display of wiki pages
 	if ($objects == 'wiki') {
 		$listpages = $tikilib->list_pages($offset, $max, 'pageName_asc', '', '', true, true, false, false, array('noCateg' => true));
-		$smarty->assign_by_ref('orphans', $listpages['data']);
+		$smarty->assign_by_ref('pages', $listpages['data']);
 		$smarty->assign('pagination', array('cant'=>$listpages['cant'], 'step'=>$max, 'offset'=>$offset));
-		$out = '~np~' . $smarty->fetch('wiki-plugins/wikiplugin_catorphans.tpl') . '~/np~';
-		$smarty->assign('pagination', null);
-		return $out;
+		return '~np~'.$smarty->fetch('wiki-plugins/wikiplugin_catorphans.tpl').'~/np~';		
 	}
 	return '';
 

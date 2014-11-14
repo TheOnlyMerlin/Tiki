@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -46,6 +46,7 @@ function wikiplugin_ftp_info()
 
 function wikiplugin_ftp($data, $params)
 {
+	global $smarty;
 	extract($params, EXTR_SKIP);
 	if (empty($server) || empty($user) || empty($password)) {
 		return tra('missing parameters');
@@ -77,7 +78,6 @@ function wikiplugin_ftp($data, $params)
 		die;
 
 	} else {
-		$smarty = TikiLib::lib('smarty');
 		if (isset($title)) {
 			$smarty->assign('ftptitle', $title);
 		}

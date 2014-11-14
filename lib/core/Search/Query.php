@@ -1,11 +1,11 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-class Search_Query implements Search_Query_Interface
+class Search_Query
 {
 	private $objectList;
 	private $expr;
@@ -13,12 +13,6 @@ class Search_Query implements Search_Query_Interface
 	private $start = 0;
 	private $count = 50;
 	private $weightCalculator = null;
-	private $identifierFields = null;
-
-	private $subQueries = array();
-	private $facets = [];
-	private $foreignQueries = [];
-	private $transformations = [];
 
 	function __construct($query = null)
 	{
@@ -27,16 +21,6 @@ class Search_Query implements Search_Query_Interface
 		if ($query) {
 			$this->filterContent($query);
 		}
-	}
-
-	function __clone()
-	{
-		$this->expr = clone $this->expr;
-	}
-
-	function setIdentifierFields(array $fields)
-	{
-		$this->identifierFields = $fields;
 	}
 
 	function addObject($type, $objectId)
@@ -57,11 +41,6 @@ class Search_Query implements Search_Query_Interface
 		$this->addPart($query, 'plaintext', $field);
 	}
 
-	function filterIdentifier($query, $field)
-	{
-		$this->addPart(new Search_Expr_Token($query), 'identifier', $field);
-	}
-
 	function filterType($types)
 	{
 		if (is_array($types)) {
@@ -76,24 +55,19 @@ class Search_Query implements Search_Query_Interface
 		}
 	}
 
-	function filterMultivalue($query, $field)
-	{
-		$this->addPart($query, 'multivalue', $field);
-	}
-
 	function filterContributors($query)
 	{
-		$this->filterMultivalue($query, 'contributors');
+		$this->addPart($query, 'multivalue', 'contributors');
 	}
 
 	function filterCategory($query, $deep = false)
 	{
-		$this->filterMultivalue($query, $deep ? 'deep_categories' : 'categories');
+		$this->addPart($query, 'multivalue', $deep ? 'deep_categories' : 'categories');
 	}
 
 	function filterTags($query)
 	{
-		$this->filterMultivalue($query, 'freetags');
+		$this->addPart($query, 'multivalue', 'freetags');
 	}
 
 	function filterLanguage($query)
@@ -103,8 +77,6 @@ class Search_Query implements Search_Query_Interface
 
 	function filterPermissions(array $groups)
 	{
-		global $user;
-
 		$tokens = array();
 		foreach ($groups as $group) {
 			$tokens[] = new Search_Expr_Token($group);
@@ -112,13 +84,7 @@ class Search_Query implements Search_Query_Interface
 
 		$or = new Search_Expr_Or($tokens);
 
-		if ($user) {
-			$sub = $this->getSubQuery('permissions');
-			$sub->filterMultivalue($or, 'allowed_groups');
-			$sub->filterMultivalue($user, 'allowed_users');
-		} else {
-			$this->addPart($or, 'multivalue', 'allowed_groups');
-		}
+		$this->addPart($or, 'multivalue', 'allowed_groups');
 	}
 
 	/**
@@ -150,17 +116,17 @@ class Search_Query implements Search_Query_Interface
 			}
 		}
 
-		$this->addPart(new Search_Expr_Range($from, $to), 'timestamp', $field);
+		$this->expr->addPart(new Search_Expr_Range($from, $to, 'timestamp', $field));
 	}
 
 	function filterTextRange($from, $to, $field = 'title')
 	{
-		$this->addPart(new Search_Expr_Range($from, $to), 'plaintext', $field);
+		$this->expr->addPart(new Search_Expr_Range($from, $to, 'plaintext', $field));
 	}
 
 	function filterInitial($initial, $field = 'title')
 	{
-		$this->addPart(new Search_Expr_Initial($initial), 'plaintext', $field);
+		$this->expr->addPart(new Search_Expr_Range($initial, substr($initial, 0, -1) . chr(ord(substr($initial, -1)) + 1), 'plaintext', $field));
 	}
 
 	function filterRelation($query, array $invertable = array())
@@ -171,55 +137,8 @@ class Search_Query implements Search_Query_Interface
 		$this->addPart($query, 'multivalue', 'relations');
 	}
 
-	function filterSimilar($type, $object, $field = 'contents')
-	{
-		$part = new Search_Expr_And(
-			array(
-				new Search_Expr_Not(
-					new Search_Expr_And(
-						array(
-							new Search_Expr_Token($type, 'identifier', 'object_type'),
-							new Search_Expr_Token($object, 'identifier', 'object_id'),
-						)
-					)
-				),
-				$mlt = new Search_Expr_MoreLikeThis($type, $object),
-			)
-		);
-		$mlt->setField($field);
-		$this->expr->addPart($part);
-	}
-
-	function filterSimilarToThese($objects, $content, $field = 'contents')
-	{
-		$excluded = [];
-		foreach ($objects as $object) {
-			$excluded[] = new Search_Expr_And(
-				array(
-					new Search_Expr_Token($object['object_type'], 'identifier', 'object_type'),
-					new Search_Expr_Token($object['object_id'], 'identifier', 'object_id'),
-				)
-			);
-		}
-
-		$mlt = new Search_Expr_MoreLikeThis($content);
-		$mlt->setField($field);
-
-		$part = new Search_Expr_And(
-			array(
-				$mlt,
-				new Search_Expr_Not(new Search_Expr_Or($excluded)),
-			)
-		);
-		$this->expr->addPart($part);
-	}
-
 	private function addPart($query, $type, $field)
 	{
-		if (is_string($field)) {
-			$field = explode(',', $field);
-		}
-
 		$parts = array();
 		foreach ((array) $field as $f) {
 			$part = $this->parse($query);
@@ -227,7 +146,7 @@ class Search_Query implements Search_Query_Interface
 			$part->setField($f);
 			$parts[] = $part;
 		}
-
+		
 		if (count($parts) === 1) {
 			$this->expr->addPart($parts[0]);
 		} else {
@@ -253,189 +172,38 @@ class Search_Query implements Search_Query_Interface
 		}
 	}
 
-	/**
-	 * Affects the range from a numeric value
-	 * @param $pageNumber int Page number from 1 to n
-	 */
-	function setPage($pageNumber)
-	{
-		$pageNumber = max(1, (int) $pageNumber);
-		$this->setRange(($pageNumber - 1) * $this->count);
-	}
-
 	function setWeightCalculator(Search_Query_WeightCalculator_Interface $calculator)
 	{
 		$this->weightCalculator = $calculator;
 	}
 
-	function getSortOrder()
-	{
-		if ($this->sortOrder) {
-			return $this->sortOrder;
-		} else {
-			return Search_Query_Order::getDefault();
-		}
-	}
-
 	function search(Search_Index_Interface $index)
 	{
-		$this->finalize();
-		$resultset = $index->find($this, $this->start, $this->count);
-		$resultset->applyTransform(function ($entry) {
-			if (! isset($entry['_index']) || ! isset($this->foreignQueries[$entry['_index']])) {
-				foreach ($this->transformations as $trans) {
-					$entry = $trans($entry);
-				}
-			}
-
-			return $entry;
-		});
-
-		foreach ($this->foreignQueries as $indexName => $query) {
-			$resultset->applyTransform(function ($entry) use ($query, $indexName) {
-				if (isset($entry['_index']) && $entry['_index'] == $indexName) {
-					foreach ($query->transformations as $trans) {
-						$entry = $trans($entry);
-					}
-				}
-
-				return $entry;
-			});
+		if ($this->sortOrder) {
+			$sortOrder = $this->sortOrder;
+		} else {
+			$sortOrder = Search_Query_Order::getDefault();
 		}
 
-		return $resultset;
-	}
-
-	function scroll($index)
-	{
-		$this->finalize();
-		$res = $index->scroll($this);
-
-		foreach ($res as $row) {
-			foreach ($this->transformations as $trans) {
-				$row = $trans($row);
-			}
-
-			yield $row;
-		}
-	}
-
-	function applyTransform(callable $transform)
-	{
-		$this->transformations[] = $transform;
-	}
-
-	function store($name, $index)
-	{
-		if ($index instanceof Search_Index_QueryRepository) {
-			$this->finalize();
-			$index->store($name, $this->expr);
-			return true;
-		}
-
-		return false;
-	}
-
-	private function finalize()
-	{
 		if ($this->weightCalculator) {
 			$this->expr->walk(array($this->weightCalculator, 'calculate'));
-
-			foreach ($this->foreignQueries as $query) {
-				$query->expr->walk(array($this->weightCalculator, 'calculate'));
-			}
 		}
 
-		if ($this->identifierFields) {
-			$fields = $this->identifierFields;
-			$this->expr->walk(
-				function (Search_Expr_Interface $expr) use ($fields) {
-					if (method_exists($expr, 'getField') && in_array($expr->getField(), $fields)) {
-						$expr->setType('identifier');
-					}
-				}
-			);
-
-			foreach ($this->foreignQueries as $query) {
-				$query->expr->walk(
-					function (Search_Expr_Interface $expr) use ($fields) {
-						if (method_exists($expr, 'getField') && in_array($expr->getField(), $fields)) {
-							$expr->setType('identifier');
-						}
-					}
-				);
-			}
-		}
+		return $index->find($this->expr, $sortOrder, $this->start, $this->count);
 	}
 
-	function getExpr()
+	function invalidate(Search_Index_Interface $index)
 	{
-		return $this->expr;
+		return $index->invalidateMultiple($this->expr);
 	}
-
+	
 	private function parse($query)
 	{
 		if (is_string($query)) {
 			$parser = new Search_Expr_Parser;
 			$query = $parser->parse($query);
-		} elseif ($query instanceof Search_Expr_Interface) {
-			$query = clone $query;
 		}
 
 		return $query;
-	}
-
-	function getTerms()
-	{
-		$terms = array();
-
-		$extractor = new Search_Type_Factory_Direct;
-
-		$this->expr->walk(
-			function ($expr) use (& $terms, $extractor) {
-				if ($expr instanceof Search_Expr_Token && $expr->getField() == 'contents') {
-					$terms[] = $expr->getValue($extractor)->getValue();
-				}
-			}
-		);
-
-		return $terms;
-	}
-
-	function getSubQuery($name)
-	{
-		if (empty($name)) {
-			return $this;
-		}
-
-		if (! isset($this->subQueries[$name])) {
-			$subquery = new self;
-			$subquery->expr = new Search_Expr_Or(array());
-			$this->expr->addPart($subquery->expr);
-
-			$this->subQueries[$name] = $subquery;
-		}
-
-		return $this->subQueries[$name];
-	}
-
-	function requestFacet(Search_Query_Facet_Interface $facet)
-	{
-		$this->facets[] = $facet;
-	}
-
-	function getFacets()
-	{
-		return $this->facets;
-	}
-
-	function includeForeign($indexName, Search_Query $query)
-	{
-		$this->foreignQueries[$indexName] = $query;
-	}
-
-	function getForeignQueries()
-	{
-		return $this->foreignQueries;
 	}
 }

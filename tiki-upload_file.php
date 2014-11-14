@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -23,14 +20,14 @@ if ( isset($_POST['PHPSESSID']) && $_POST['PHPSESSID'] != '' ) {
 
 require_once ('tiki-setup.php');
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	include_once ('lib/categories/categlib.php');
 }
 
 $access->check_feature('feature_file_galleries');
 
-$filegallib = TikiLib::lib('filegal');
+include_once ('lib/filegals/filegallib.php');
 if ($prefs['feature_groupalert'] == 'y') {
-	$groupalertlib = TikiLib::lib('groupalert');
+	include_once ('lib/groupalert/groupalertlib.php');
 }
 @ini_set('max_execution_time', 0); //will not work in safe_mode is on
 $auto_query_args = array('galleryId', 'fileId', 'filegals_manager', 'view', 'simpleMode', 'insertion_syntax');
@@ -110,7 +107,7 @@ if ( ! empty( $fileId ) ) {
 		$smarty->assign('msg', tra("You do not have permission to edit this file"));
 		$smarty->display('error.tpl');
 		die;
-	}
+	}		
 	if (isset($_REQUEST['lockedby']) && $fileInfo['lockedby'] != $_REQUEST['lockedby']) {
 		if (empty($fileInfo['lockedby'])) {
 			$smarty->assign('msg', tra(sprintf('The file has been unlocked meanwhile')));
@@ -187,11 +184,7 @@ $smarty->assign('editFileId', (int) $fileId);
 $smarty->assign('galleryId', empty( $_REQUEST['galleryId'][0] ) ? '' : $_REQUEST['galleryId'][0]);
 
 if ( empty( $fileId ) ) {
-	if ($gal_info['type'] == 'user') {
-		$galleries = $filegallib->getSubGalleries($requestGalleryId, true, 'userfiles');
-	} else {
-		$galleries = $filegallib->getSubGalleries($requestGalleryId, true, 'upload_files');
-	}
+	$galleries = $filegallib->getSubGalleries($requestGalleryId, true, 'upload_files');
 	$smarty->assign_by_ref('galleries', $galleries["data"]);
 	$smarty->assign('treeRootId', $galleries['parentId']);
 
@@ -200,7 +193,7 @@ if ( empty( $fileId ) ) {
 		$headerlib->add_jsfile('lib/swfupload/js/swfupload.swfobject.js');
 		$headerlib->add_jsfile('lib/swfupload/js/swfupload.queue.js');
 		$headerlib->add_jsfile('lib/swfupload/js/fileprogress.js');
-		$headerlib->add_jsfile('lib/swfupload/js/handlers.js');
+		$headerlib->add_jsfile('lib/swfupload/js/handlers.js');								
 		$smarty->assign('PHPSESSID', session_id());
 	}
 }
@@ -208,13 +201,6 @@ if ( empty( $fileId ) ) {
 if ( $prefs['fgal_limit_hits_per_file'] == 'y' ) {
 	$smarty->assign('hit_limit', $filegallib->get_download_limit($fileId));
 }
-
-if (!empty($fileInfo['fileId'])) {
-	$smarty->assign('metarray', $filegallib->metadataAction($fileInfo['fileId']), 'get_array');
-}
-
-$is_iis = TikiInit::isIIS();
-$smarty->assign('is_iis', $is_iis);
 
 $cat_type = 'file';
 $cat_objid = (int) $fileId;
@@ -229,11 +215,11 @@ $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 
 // Display the template
 if ( $prefs['javascript_enabled'] != 'y' or ! $isUpload ) {
-	$headerlib->add_jsfile('vendor/jquery/plugins/form/jquery.form.js');
+	$headerlib->add_jsfile('lib/jquery/jquery.form.js');
 	$smarty->assign('mid', 'tiki-upload_file.tpl');
 	if ( ! empty( $_REQUEST['filegals_manager'] ) ) {
 		$smarty->assign('filegals_manager', $_REQUEST['filegals_manager']);
-		$smarty->assign('insertion_syntax', isset($_REQUEST['insertion_syntax']) ? $_REQUEST['insertion_syntax'] : '');
+		$smarty->assign('insertion_syntax', $_REQUEST['insertion_syntax']);
 		$smarty->display("tiki_full.tpl");
 	} else {
 		$smarty->display("tiki.tpl");

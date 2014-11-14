@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -20,7 +17,7 @@ if (isset($_REQUEST["clean"])) {
 }
 
 if (!isset($_REQUEST["sort_mode"])) {
-	$sort_mode = 'actionid_desc';
+	$sort_mode = 'lastModif_desc';
 } else {
 	$sort_mode = $_REQUEST["sort_mode"];
 }

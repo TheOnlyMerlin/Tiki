@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title>{tr}System error.{/tr}</title>
 	<link rel="stylesheet" href="styles/fivealive.css" type="text/css"/>
 	<style type="text/css" media="screen">
@@ -17,8 +17,8 @@
 <div id="fixedwidth"> {* enables fixed-width layouts *}
 	<div id="main">
 	<div id="siteheader" style="margin: 1em auto; max-width: 800px">
-			<div class="sitelogo">
-				<img style="border: medium none ;" alt="Site Logo" src="img/tiki/Tiki_WCG.png">
+			<div id="sitelogo">
+				<img style="border: medium none ;" alt="Site Logo" src="img/tiki/Tiki_WCG.png" />
 			</div>
 	</div>
 
@@ -27,7 +27,7 @@
 			<div style="margin:10px 30px;">
 				{if $prefs.error_reporting_level and ( $tiki_p_admin eq 'y' or $prefs.error_reporting_adminonly ne 'y' )}
 					<h1>{tr}System error.{/tr}</h1>
-					<div class="text-left">
+					<div class="left">
 						<p>{tr}The following error message was returned:{/tr}</p>
 						<strong>
 							<pre>{$msg|escape|nl2br}</pre>
@@ -36,7 +36,7 @@
 						{if $requires_update}
 							<p>
 								{tr}Database is not currently up to date! Visit <a href="tiki-install.php">Tiki Installer</a> to resolve this issue.{/tr}
-								{tr}If you have shell (SSH) access, you can also use the following, on the command line, from the root of your Tiki installation:{/tr} php console.php database:update
+								{tr}If you have shell (SSH) access, you can also use the following, on the command line, from the root of your Tiki installation:{/tr} php installer/shell.php
 							</p>
 						{/if}
 
@@ -104,7 +104,7 @@
 {* Can be restored when we'll have a new http://branding.tiki.org/Badge
 			<p align="center">
 				<a target="_blank" href="http://tiki.org" title="Tiki Wiki CMS Groupware">
-				<img src="img/tiki/tikibutton2.png" alt="Tiki Wiki CMS Groupware" height="31" width="80">
+				<img src="img/tiki/tikibutton2.png" alt="Tiki Wiki CMS Groupware" height="31" width="80"/>
 				</a>
 			</p>
 *}

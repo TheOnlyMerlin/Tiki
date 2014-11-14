@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,7 +7,7 @@
 
 class Math_Formula_Runner
 {
-	private $sources = array();
+	private $sources;
 	private $collected = array();
 	private $element;
 	private $known = array();
@@ -15,21 +15,13 @@ class Math_Formula_Runner
 
 	function __construct( array $sources )
 	{
-		foreach ($sources as $prefix => $factory) {
-			if (empty($factory)) {
-				$factory = $this->getPrefixFactory($prefix);
-			}
-
-			$this->sources[] = $factory;
-		}
+		$this->sources = $sources;
 	}
 
 	function setFormula( $element )
 	{
 		$this->element = $this->getElement($element);
 		$this->collected = array();
-
-		return $this->element;
 	}
 
 	function setVariables( array $variables )
@@ -52,44 +44,17 @@ class Math_Formula_Runner
 		return $this->evaluateData($this->element);
 	}
 
-	function evaluateData( $data, array $variables = array() )
+	function evaluateData( $data )
 	{
-		if ( $data instanceof Math_Formula_InternalString) {
-			return $data->getContent();
-		} elseif ( $data instanceof Math_Formula_Element ) {
+		if ( $data instanceof Math_Formula_Element ) {
 			$op = $this->getOperation($data);
-			
-			$current = $this->variables;
-			if ( ! empty($variables) ) {
-				$this->variables = array_merge($this->variables, $variables);
-			}
-			$out = $op->evaluateTemplate($data, array( $this, 'evaluateData' ));
-			$this->variables = $current;
-
-			return $out;
+			return $op->evaluateTemplate($data, array( $this, 'evaluateData' ));
 		} elseif ( is_numeric($data) ) {
 			return (double) $data;
 		} elseif ( isset($this->variables[$data]) ) {
 			return $this->variables[$data];
-		} elseif (false !== $value = $this->findVariable(explode('.', $data), $this->variables)) {
-			return $value;
 		} else {
 			throw new Math_Formula_Exception(tr('Variable not found "%0".', $data));
-		}
-	}
-
-	private function findVariable($path, $variables)
-	{
-		if (!count($path)) {
-			return $variables;
-		}
-
-		$first = array_shift($path);
-
-		if (isset($variables[$first])) {
-			return $this->findVariable($path, $variables[$first]);
-		} else {
-			return false;
 		}
 	}
 
@@ -125,36 +90,26 @@ class Math_Formula_Runner
 	{
 		$name = $element->getType();
 
-		if (isset($this->known[$name])) {
+		if ( isset($this->known[$name]) ) {
 			return $this->known[$name];
 		}
 
-		foreach ( $this->sources as $factory ) {
-			if ($function = $factory($name)) {
-				return $this->known[$name] = $function;
+		$filter = new Zend_Filter_Word_DashToCamelCase;
+		$ucname = $filter->filter(ucfirst($name));
+
+		foreach ( $this->sources as $prefix => $path ) {
+			$class = $prefix . $ucname;
+			$file = "$path/$ucname.php";
+
+			if ( file_exists($file) ) {
+				require_once $file;
+				if ( class_exists($class) ) {
+					return $this->known[$name] = new $class;
+				}
 			}
 		}
 
 		throw new Math_Formula_Runner_Exception(tr('Unknown operation "%0".', $element->getType()));
-	}
-
-	private function getPrefixFactory($prefix)
-	{
-		return function ($functionName) use ($prefix) {
-			$filter = new Zend_Filter_Word_DashToCamelCase;
-			$ucname = $filter->filter(ucfirst($functionName));
-
-			$class = $prefix . $ucname;
-
-			if (class_exists($class)) {
-				return new $class;
-			}
-		};
-	}
-
-	function mockFunction($functionName, $function)
-	{
-		$this->known[$functionName] = $function;
 	}
 }
 

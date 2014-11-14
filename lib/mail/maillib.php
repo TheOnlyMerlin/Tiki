@@ -1,15 +1,15 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 /* Common shared mail functions */
-/*
+/* 
  * function encode_headers()
  *
- * Encode non-ASCII email headers for mail() function to display
+ * Encode non-ASCII email headers for mail() function to display 
  * them properly in email clients.
  * Original code by <gordon at kanazawa-gu dot ac dot jp>.
  * See 'User Contributed Notes' at
@@ -23,36 +23,31 @@
 $charset = 'utf-8'; // What charset we do use in Tiki
 $in_str = '';
 
-/**
- * @param $in_str
- * @param $charset
- * @return string
- */
 function encode_headers($in_str, $charset)
 {
    $out_str = $in_str;
    if ($out_str && $charset) {
 
-	   // define start delimimter, end delimiter and spacer
-	   $end = "?=";
-	   $start = "=?" . $charset . "?b?";
-	   $spacer = $end . "\r\n" . $start;
+       // define start delimimter, end delimiter and spacer
+       $end = "?=";
+       $start = "=?" . $charset . "?b?";
+       $spacer = $end . "\r\n" . $start;
 
-	   // determine length of encoded text within chunks
-	   // and ensure length is even
-	   $length = 71 - strlen($spacer); // no idea why 71 but 75 didn't work
-	   $length = floor($length/2) * 2;
+       // determine length of encoded text within chunks
+       // and ensure length is even
+       $length = 71 - strlen($spacer); // no idea why 71 but 75 didn't work
+       $length = floor($length/2) * 2;
 
-	   // encode the string and split it into chunks
-	   // with spacers after each chunk
-	   $out_str = base64_encode($out_str);
-	   $out_str = chunk_split($out_str, $length, $spacer);
+       // encode the string and split it into chunks
+       // with spacers after each chunk
+       $out_str = base64_encode($out_str);
+       $out_str = chunk_split($out_str, $length, $spacer);
 
-	   // remove trailing spacer and
-	   // add start and end delimiters
-	   $spacer = preg_quote($spacer);
-	   $out_str = preg_replace("/" . $spacer . "$/", "", $out_str);
-	   $out_str = $start . $out_str . $end;
+       // remove trailing spacer and
+       // add start and end delimiters
+       $spacer = preg_quote($spacer);
+       $out_str = preg_replace("/" . $spacer . "$/", "", $out_str);
+       $out_str = $start . $out_str . $end;
    }
    return $out_str;
 }// end function encode_headers
@@ -82,86 +77,29 @@ function tiki_mail_setup()
 			$options['ssl'] = $prefs['zend_mail_smtp_security'];
 		}
 
-		// hollmeer 2012-11-03: ADDED PGP/MIME ENCRYPTION PREPARATION
-		if ($prefs['openpgp_gpg_pgpmimemail'] == 'y') {
-			// USE PGP/MIME MAIL VERSION
-			$transport = new OpenPGP_Zend_Mail_Transport_Smtp($prefs['zend_mail_smtp_server'], $options);
-			OpenPGP_Zend_Mail::setDefaultTransport($transport);
-		} else {
-			// USE ORIGINAL TIKI MAIL VERSION
-			$transport = new Zend_Mail_Transport_Smtp($prefs['zend_mail_smtp_server'], $options);
-			Zend_Mail::setDefaultTransport($transport);
-		}
-	} elseif ($prefs['zend_mail_handler'] == 'file') {
-		$transport = new Zend_Mail_Transport_File(
-			array(
-				'path' => TIKI_PATH . '/temp',
-				'callback' => function ($transport) {
-					return 'Mail_' . date('YmdHis') . '_' . mt_rand() . '.tmp';
-				},
-			)
-		);
-		Zend_Mail::setDefaultTransport($transport);
-	} elseif ($prefs['zend_mail_handler'] == 'sendmail' && ! empty($prefs['sender_email'])) {
-		// from http://framework.zend.com/manual/1.12/en/zend.mail.introduction.html#zend.mail.introduction.sendmail
-		$transport = new Zend_Mail_Transport_Sendmail('-f' . $prefs['sender_email']);
+		$transport = new Zend_Mail_Transport_Smtp($prefs['zend_mail_smtp_server'], $options);
 		Zend_Mail::setDefaultTransport($transport);
 	}
 
 	$done = true;
 }
 
-/**
- * @return Zend_Mail
- */
 function tiki_get_basic_mail()
 {
 	tiki_mail_setup();
-	// hollmeer 2012-11-03: ADDED PGP/MIME ENCRYPTION PREPARATION
-	// USING lib/openpgp/opepgplib.php
-	global $prefs;
-	if ($prefs['openpgp_gpg_pgpmimemail'] == 'y') {
-		// USE PGP/MIME MAIL VERSION
-		$mail = new OpenPGP_Zend_Mail('UTF-8');
-	} else {
-		// USE ORIGINAL TIKI MAIL VERSION
-		$mail = new Zend_Mail('UTF-8');
-	}
-
-	$mail->addHeader('X-Tiki', 'yes');
-	return $mail;
+	return new Zend_Mail('UTF-8');
 }
 
-/**
- * @return Zend_Mail
- */
 function tiki_get_admin_mail()
 {
 	global $prefs;
 
 	$mail = tiki_get_basic_mail();
-
-	if (! empty($prefs['sender_email'])) {
-		// [BUG FIX] hollmeer 2012-11-04:
-		// Added returnpath for Sendmail; does not send without;
-		// catch/ignore error, if already set
-		try {
-			$mail->setFrom($prefs['sender_email']);
-			$mail->setReturnPath($prefs['sender_email']);
-		} catch (Exception $e) {
-			// was already set, then do nothing
-		}
-	}
+	$mail->setFrom($prefs['sender_email'], $prefs['browsertitle']);
 
 	return $mail;
 }
 
-/**
- * @param $email
- * @param $recipientName
- * @param $subject
- * @param $textBody
- */
 function tiki_send_admin_mail( $email, $recipientName, $subject, $textBody )
 {
 	$mail = tiki_get_admin_mail();

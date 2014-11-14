@@ -1,19 +1,19 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 function payment_behavior_cart_gift_certificate_purchase(
-		$productId = 0,
-		$giftcertemail = '',
-		$quantity = 1,
-		$orderId = 0,
+		$productId = 0, 
+		$giftcertemail = '', 
+		$quantity = 1, 
+		$orderId = 0, 
 		$orderItemId = 0
 		)
 {
-	$trklib = TikiLib::lib('trk');
+	global $trklib; require_once("lib/trackers/trackerlib.php");
 	global $prefs;
 	$params['trackerId'] = $prefs['payment_cart_giftcert_tracker'];
 
@@ -40,12 +40,12 @@ function payment_behavior_cart_gift_certificate_purchase(
 	$params['updateFieldIds'][] = $trklib->get_field_id($params['trackerId'], 'Order Item ID');
 	$balancefield = 'f_' .  $origbalanceFieldId;
 	$params['updateFieldValues'] = array(
-					'',
-					'Order',
-					'-randomstring-',
-					$balancefield,
-					"Purchased by $giftcertemail",
-					$orderId,
+					'', 
+					'Order', 
+					'-randomstring-', 
+					$balancefield, 
+					"Purchased by $giftcertemail", 
+					$orderId, 
 					$orderItemId
 	);
 
@@ -80,10 +80,10 @@ function payment_behavior_cart_gift_certificate_purchase(
 		}
 		$giftcerts[] = $newGiftcert;
 	}
+
 	// Send email to user with gift cert
 	require_once('lib/webmail/tikimaillib.php');
-	global $prefs;
-	$smarty = TikiLib::lib('smarty');
+	global $smarty, $prefs;
 	$smarty->assign('giftcerts', $giftcerts);
 	$smarty->assign('numberCodes', count($return_array['items']));
 	$mail_subject = $smarty->fetch('mail/cart_gift_cert_subject.tpl');
@@ -91,7 +91,8 @@ function payment_behavior_cart_gift_certificate_purchase(
 	$mail = new TikiMail();
 	$mail->setSubject($mail_subject);
 	$mail->setText($mail_data);
-	$mail->send($giftcertemail);
+	$mail->setHeader("From", $prefs['sender_email']);
+	$mail->send($giftcertemail); 
 
-	return true;
+	return true;	
 }

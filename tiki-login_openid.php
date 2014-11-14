@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -45,10 +42,6 @@ function setupFromAddress() // {{{
 	}
 	if (strpos($_SESSION['loginfrom'], 'openid') !== false) $_SESSION['loginfrom'] = $base_url;
 } // }}}
-/**
- * @param $identifier
- * @return array
- */
 function getAccountsMatchingIdentifier($identifier) // {{{
 {
 	global $tikilib;
@@ -57,13 +50,9 @@ function getAccountsMatchingIdentifier($identifier) // {{{
 	while ($row = $result->fetchRow()) $userlist[] = $row['login'];
 	return $userlist;
 } // }}}
-/**
- * @param $identifier
- */
 function loginUser($identifier) // {{{
 {
-	global $user_cookie_site;
-	$userlib = TikiLib::lib('user');
+	global $user_cookie_site, $userlib;
 	$userlib->update_lastlogin($identifier);
 	$userlib->update_expired_groups();
 	$_SESSION[$user_cookie_site] = $identifier;
@@ -71,10 +60,6 @@ function loginUser($identifier) // {{{
 	unset($_SESSION['loginfrom']);
 	exit;
 } // }}}
-/**
- * @param $data
- * @param $messages
- */
 function filterExistingInformation(&$data, &$messages) // {{{
 {
 	global $tikilib;
@@ -85,23 +70,17 @@ function filterExistingInformation(&$data, &$messages) // {{{
 		$messages[] = tra('Your default nickname is already in use. A new one has to be selected.');
 	}
 } // }}}
-/**
- * @param $data
- * @param $messages
- */
 function displayRegisatrationForms($data, $messages) // {{{
 {
-	global $prefs;
-	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
-	$registrationlib = TikiLib::lib('registration');
+	global $smarty, $userlib, $prefs;
+	global $registrationlib; require_once('lib/registration/registrationlib.php');
 
 	if (is_a($registrationlib->merged_prefs, "RegistrationError")) {
 		register_error($registrationlib->merged_prefs->msg);
 	}
 	$smarty->assign_by_ref('merged_prefs', $registrationlib->merged_prefs);
-
-
+	
+	
 	// Default values for the registration form
 	$smarty->assign('username', $data['nickname']);
 	$smarty->assign('email', $data['email']);
@@ -137,32 +116,22 @@ function displayRegisatrationForms($data, $messages) // {{{
 	$smarty->display('tiki.tpl');
 	exit;
 } // }}}
-/**
- * @param $data
- * @param $messages
- */
 function displaySelectionList($data, $messages) // {{{
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	// Display
 	$smarty->assign('mid', 'tiki-openid_select.tpl');
 	$smarty->display('tiki.tpl');
 	exit;
 } // }}}
-/**
- * @param $message
- */
 function displayError($message)
 { // {{{
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	$smarty->assign('msg', tra("Failure:") . " " . $message);
 	$smarty->assign('errortype', 'login');
 	$smarty->display("error.tpl");
 	die;
 } // }}}
-/**
- * @return Auth_OpenID_FileStore
- */
 function getStore()
 { // {{{
 	$store_path = "temp/openid_consumer";
@@ -172,12 +141,9 @@ function getStore()
 	}
 	return new Auth_OpenID_FileStore($store_path);
 } // }}}
-/**
- * @return Auth_OpenID_Consumer
- */
 function getConsumer()
 { // {{{
-
+	
 	/**
 	 * Create a consumer object using the store object created
 	 * earlier.
@@ -194,9 +160,6 @@ function getOpenIDURL()
 	}
 	return $_GET['openid_url'];
 } // }}}
-/**
- * @return string
- */
 function getScheme()
 { // {{{
 	$scheme = 'http';
@@ -205,9 +168,6 @@ function getScheme()
 	}
 	return $scheme;
 } // }}}
-/**
- * @return string
- */
 function getReturnTo()
 { // {{{
 	$path = str_replace('\\', '/', dirname($_SERVER['PHP_SELF']));
@@ -215,9 +175,6 @@ function getReturnTo()
 	if (isset($_GET['action']) && $_GET['action'] == 'force') $string.= '&force=true';
 	return $string;
 } // }}}
-/**
- * @return string
- */
 function getTrustRoot()
 { // {{{
 	return sprintf("%s://%s:%s%s", getScheme(), $_SERVER['SERVER_NAME'], $_SERVER['SERVER_PORT'], str_replace('\\', '/', dirname($_SERVER['PHP_SELF'])));
@@ -234,10 +191,10 @@ function runAuth()
 		displayError(tra("Authentication error; probably not a valid OpenID."));
 	}
 	$sreg_request = Auth_OpenID_SRegRequest::build(
-		// Required
-		array(),
-		// Optional
-		array('nickname', 'email')
+					// Required
+					array(),
+					// Optional
+					array('nickname', 'email')
 	);
 	if ($sreg_request) {
 		$auth_request->addExtension($sreg_request);
@@ -272,7 +229,7 @@ function runAuth()
 } // }}}
 function runFinish()
 { // {{{
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	$consumer = getConsumer();
 	// Complete the authentication process using the server's
 	// response.

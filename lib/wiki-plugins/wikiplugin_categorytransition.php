@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -25,7 +25,6 @@ function wikiplugin_categorytransition_info()
 				'description' => tra('Object ID'),
 				'filter' => 'text',
 				'default' => '',
-				'profile_reference' => 'type_in_param',
 			),
 			'redirect' => array(
 				'required' => false,
@@ -40,7 +39,7 @@ function wikiplugin_categorytransition_info()
 
 function wikiplugin_categorytransition( $data, $params )
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 
 	extract($params, EXTR_SKIP);	
 

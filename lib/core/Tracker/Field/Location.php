@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -18,7 +18,7 @@ class Tracker_Field_Location extends Tracker_Field_Abstract implements Tracker_F
 		return array(
 			'G' => array(
 				'name' => tr('Location'),
-				'description' => tr('Allow a geolocation to be selected for the item and displays it on a map.'),
+				'description' => tr('Allows to select a geolocation for the item and displays it on a map.'),
 				'help' => 'Location Tracker Field',				
 				'prefs' => array('trackerfield_location'),
 				'tags' => array('basic'),
@@ -32,35 +32,6 @@ class Tracker_Field_Location extends Tracker_Field_Abstract implements Tracker_F
 							0 => tr('No'),
 							1 => tr('Yes'),
 						),
-						'legacy_index' => 0,
-					),
-					'list_width' => array(
-						'name' => tr('List View Width'),
-						'description' => tr('Width of map in pixels when tracker items is shown in list view'),
-						'filter' => 'int',
-						'default' => 200,
-						'legacy_index' => 1,
-					),
-					'list_height' => array(
-						'name' => tr('List View Height'),
-						'description' => tr('Height of map in pixels when tracker items is shown in list view'),
-						'filter' => 'int',
-						'default' => 200,
-						'legacy_index' => 2,
-					),
-					'item_width' => array(
-						'name' => tr('Item View Width'),
-						'description' => tr('Width of map in pixels when single tracker items is shown'),
-						'filter' => 'int',
-						'default' => 500,
-						'legacy_index' => 3,
-					),
-					'item_height' => array(
-						'name' => tr('Item View Height'),
-						'description' => tr('Height of map in pixels when single tracker items is shown'),
-						'filter' => 'int',
-						'default' => 400,
-						'legacy_index' => 4,
 					),
 				),
 			),

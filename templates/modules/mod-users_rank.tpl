@@ -12,5 +12,8 @@
 	{/section}
 	{/modules_list}
 {/if}
+{if $prefs.feature_friends eq 'y'}
+<a style="margin-left: 20px" href="tiki-list_users.php" class="more">{tr}More...{/tr}</a>
+{/if}
 
 {/tikimodule}

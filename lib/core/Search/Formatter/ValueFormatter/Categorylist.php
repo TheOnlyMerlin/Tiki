@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -35,12 +35,11 @@ class Search_Formatter_ValueFormatter_Categorylist extends Search_Formatter_Valu
 
 	function render($name, $value, array $entry)
 	{
-		$smarty = TikiLib::lib('smarty');
+		global $smarty;
 		$smarty->loadPlugin('smarty_function_object_link');
 
 		$arr = TikiLib::lib('categ')->getCategories();
-		$list = '';
-		
+
 		foreach ($arr as $arx) {
 			$myArr[$arx['categId']] = Array('parentId' => $arx['parentId'],'name' => $arx['name']);
 		}

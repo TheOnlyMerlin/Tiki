@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -182,7 +182,7 @@ function wikiplugin_gauge($data, $params)
 	$html .='</td>' . ($showvalue ? $perc_td : '') . '<td>&nbsp;</td></tr>';
 
 	if (!empty($data)) {
-		$html .= '<tr><td colspan="3"><small>' . $data . '</small></td></tr>';
+		$html .= '<tr><td><small>' . $data . '</small></td></tr>';
 	}
 
 	$html .= "</table>";

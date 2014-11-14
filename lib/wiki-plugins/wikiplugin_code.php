@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -77,15 +77,14 @@ function wikiplugin_code_info()
 	);
 }
 
-function wikiplugin_code($data, $params)
+function wikiplugin_code($data, $params, $offset, $options)
 {
 	global $prefs;
 	static $code_count;
 	
 	$defaults = array(
 		'wrap' => '1',
-		'mediawiki' => '0',
-		'ishtml' => false
+		'mediawiki' => '0'
 	);
 	
 	$params = array_merge($defaults, $params);
@@ -126,7 +125,7 @@ function wikiplugin_code($data, $params)
 		. ' dir="'.( (isset($rtl) && $rtl == 1) ? 'rtl' : 'ltr') . '" '
 		. (isset($pre_style) ? ' style="'.$pre_style.'"' : '')
 		. $boxid.'>'
-		. (TikiLib::lib('parser')->option['ck_editor'] || $ishtml ? $out : htmlentities($out, ENT_QUOTES, 'UTF-8'))
+		. (($options['ck_editor'] || $ishtml) ? $out : htmlentities($out, ENT_QUOTES, 'UTF-8'))
 		. '</pre>';
 
 	return $out;

@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -19,11 +16,6 @@ require_once ('lib/graph-engine/graph.pie.php');
 require_once ('lib/graph-engine/graph.bar.php');
 require_once ('lib/graph-engine/graph.multiline.php');
 
-/**
- * @param $serie
- * @param $sheet
- * @return array
- */
 function handle_series( $serie, &$sheet )
 {
 	if ( !$range = $sheet->getRange($serie) )
@@ -96,22 +88,22 @@ if ( isset($_REQUEST['title']) ) {
 		case 'PNG':
 			$renderer = new GD_GRenderer($_REQUEST['width'], $_REQUEST['height'], 'png');
 			$ext = 'png';
-			break;
+						break;
 
 		case 'JPEG':
 			$renderer = new GD_GRenderer($_REQUEST['width'], $_REQUEST['height'], 'jpg');
 			$ext = 'jpg';
-			break;
+						break;
 
 		case 'PDF':
 			$renderer = new PDFLib_GRenderer($_REQUEST['format'], $_REQUEST['orientation']);
 			$ext = 'pdf';
-			break;
+						break;
 
 		case 'PS':
 			$renderer = new PS_GRenderer($_REQUEST['format'], $_REQUEST['orientation']);
 			$ext = 'ps';
-			break;
+						break;
 		default:
 			$smarty->assign('msg', tra('You must select a renderer.'));
 
@@ -196,7 +188,7 @@ if ( isset($_REQUEST['title']) ) {
 		require_once ('lib/sheet/grid.php');
 		$sheetlib->setup_jquery_sheet();
 		$headerlib->add_jq_onready(
-			'$("div.tiki_sheet").sheet($.extend($.sheet.tikiOptions, {editable: false}));'
+						'$("div.tiki_sheet").sheet($.extend($.sheet.tikiOptions, {editable: false}));'
 		);
 
 		$smarty->assign('dataGrid', $dataGrid);

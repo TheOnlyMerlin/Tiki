@@ -1,16 +1,12 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once('tiki-setup.php');
-global $monitor_filename, $stat_array;
-$access = TikiLib::lib('access');
+global $monitor_filename, $stat_array, $access;
 
 if ($prefs['feature_trackers'] != 'y') {
 	$access->output_serialized(array('msg' => tra('This feature is disabled').': feature_trackers'));
@@ -25,9 +21,6 @@ if (!isset($_REQUEST['trackerId'])) {
 	die();
 }
 
-/**
- * @param array $in_vals
- */
 function saveStatus($in_vals = array())
 {
 	global $stat_array, $monitor_filename;

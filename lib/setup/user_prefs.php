@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -79,7 +79,6 @@ if ($prefs['users_prefs_display_timezone'] == 'Site'
 		//   ... we try to use the timezone detected by javascript and stored in cookies
 		if (TikiDate::TimezoneIsValidId($_COOKIE['local_tz'])) {
 			$prefs['display_timezone'] = $_COOKIE['local_tz'];
-            $prefs['timezone_offset'] = isset($_COOKIE['local_tzoffset']) ? $_COOKIE['local_tzoffset'] : '';
 		} elseif ( $_COOKIE['local_tz'] == 'HAEC' ) {
 			// HAEC, returned by Safari on Mac, is not recognized as a DST timezone (with daylightsavings)
 			//  ... So use one equivalent timezone name
@@ -92,5 +91,3 @@ if ($prefs['users_prefs_display_timezone'] == 'Site'
 		$prefs['display_timezone'] = $prefs['server_timezone'];
 	}
 }
-
-$smarty->refreshLanguage();

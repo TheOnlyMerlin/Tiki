@@ -1,5 +1,5 @@
 #!/bin/bash
-# (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+# (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 # 
 # All Rights Reserved. See copyright.txt for details and a complete list of authors.
 # Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -22,12 +22,8 @@ MYSQL='/usr/bin/mysql'
 PHP='/usr/bin/php'
 
 if [ ! -x $PHP ]; then
-	# It seems "which" tends to behave in unpredictable and "user-friendly" ways, so use type
-	PHP=$(type -P php)
-	if [ ! -x $PHP ]; then
-		echo "You need PHP command line interpreter."
-		exit 1
-	fi
+	echo "You need PHP command line interpreter."
+	exit 1
 fi
 
 if [ ! -d 'db' ]; then

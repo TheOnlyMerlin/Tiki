@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +11,7 @@
  * Letter key: ~q~
  *
  */
-class Tracker_Field_AutoIncrement extends Tracker_Field_Abstract implements Tracker_Field_Exportable
+class Tracker_Field_AutoIncrement extends Tracker_Field_Abstract
 {
 	public static function getTypes()
 	{
@@ -30,19 +30,16 @@ class Tracker_Field_AutoIncrement extends Tracker_Field_Abstract implements Trac
 						'description' => tr('The starting value for the field'),
 						'default' => 1,
 						'filter' => 'int',
-						'legacy_index' => 0,
 					),
 					'prepend' => array(
 						'name' => tr('Prepend'),
 						'description' => tr('Text that will be displayed before the field'),
 						'filter' => 'text',
-						'legacy_index' => 1,
 					),
 					'append' => array(
 						'name' => tr('Append'),
 						'description' => tr('Text that will be displayed after the field'),
 						'filter' => 'text',
-						'legacy_index' => 2,
 					),
 					'itemId' => array(
 						'name' => tr('Item ID'),
@@ -52,7 +49,6 @@ class Tracker_Field_AutoIncrement extends Tracker_Field_Abstract implements Trac
 							'' => '',
 							'itemId' => 'itemId',
 						),
-						'legacy_index' => 3,
 					),
 				),
 			),
@@ -64,6 +60,16 @@ class Tracker_Field_AutoIncrement extends Tracker_Field_Abstract implements Trac
 		$ins_id = $this->getInsertId();
 		$value = isset($requestData[$ins_id]) ? $requestData[$ins_id] : $this->getValue();
 
+		$append = $this->getOption(1);
+		if (!empty($append)) {
+			$value = "<span class='formunit'>$append</span>" . $value;
+		}
+	
+		$prepend = $this->getOption(2);
+		if (!empty($prepend)) {
+			$value .= "<span class='formunit'>$prepend</span>";
+		}
+			
 		return array('value' => $value);
 	}
 	
@@ -72,31 +78,15 @@ class Tracker_Field_AutoIncrement extends Tracker_Field_Abstract implements Trac
 		return $this->renderTemplate('trackerinput/autoincrement.tpl', $context);
 	}
 
-	protected function renderInnerOutput($context = array())
-	{
-		$value = $this->getValue();
-		$append = $this->getOption('prepend');
-		if (!empty($append)) {
-			$value = "<span class='formunit'>$append</span>" . $value;
-		}
-	
-		$prepend = $this->getOption('append');
-		if (!empty($prepend)) {
-			$value .= "<span class='formunit'>$prepend</span>";
-		}
-
-		return $value;
-	}
-
 	function handleSave($value, $oldValue)
 	{
 		$value = false;
-		if ($this->getOption('itemId') == 'itemId') {
+		if ($this->getOption(3) == 'itemId') {
 			$value = $this->getItemId();
 		} elseif (is_null($oldValue)) {
 			$value = TikiLib::lib('trk')->get_maximum_value($this->getConfiguration('fieldId'));
 			if (! $value) {
-				$value = $this->getOption('start', 1);
+				$value = $this->getOption(0, 1);
 			} else {
 				$value += 1;
 			}
@@ -105,31 +95,6 @@ class Tracker_Field_AutoIncrement extends Tracker_Field_Abstract implements Trac
 		return array(
 			'value' => $value,
 		);
-	}
-
-	function getTabularSchema()
-	{
-		$schema = new Tracker\Tabular\Schema($this->getTrackerDefinition());
-
-		$permName = $this->getConfiguration('permName');
-		$prepend = $this->getOption('prepend');
-		$append = $this->getOption('append');
-
-		$schema->addNew($permName, 'default')
-			->setLabel($this->getConfiguration('name'))
-			->setRenderTransform(function ($value) {
-				return $value;
-			})
-			;
-		$schema->addNew($permName, 'formatted')
-			->setLabel($this->getConfiguration('name'))
-			->addIncompatibility($permName, 'default')
-			->setRenderTransform(function ($value) use ($prepend, $append) {
-				return $prepend . $value . $append;
-			})
-			;
-
-		return $schema;
 	}
 }
 

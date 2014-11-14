@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -30,20 +30,14 @@
  */
 
 /**
- * Perms_ResolverFactory_CategoryFactory
- *
+ * Perms_ResolverFactory_CategoryFactory 
+ * 
  * @uses Perms_ResolverFactory
  */
 class Perms_ResolverFactory_CategoryFactory implements Perms_ResolverFactory
 {
 	private $knownObjects = array();
 	private $knownCategories = array();
-
-	function clear()
-	{
-		$this->knownObjects = array();
-		$this->knownCategories = array();
-	}
 
 	/**
 	 * Provides a hash matching the full list of ordered categories
@@ -52,11 +46,6 @@ class Perms_ResolverFactory_CategoryFactory implements Perms_ResolverFactory
 	function getHash( array $context )
 	{
 		if ( ! isset($context['type'], $context['object']) ) {
-			return '';
-		}
-
-		if ($context['type'] == 'category') {
-			// Categories cannot be categorized
 			return '';
 		}
 
@@ -84,7 +73,7 @@ class Perms_ResolverFactory_CategoryFactory implements Perms_ResolverFactory
 
 		foreach ( $values as $v ) {
 			$key = $this->objectKey(array_merge($baseContext, array( 'object' => $v )));
-			if ( ! isset($this->knownObjects[$key]) || count($this->knownObjects[$key]) == 0 ) {
+			if ( count($this->knownObjects[$key]) == 0 ) {
 				$remaining[] = $v;
 			} else {
 				$add = true;
@@ -118,7 +107,7 @@ class Perms_ResolverFactory_CategoryFactory implements Perms_ResolverFactory
 		foreach ( $values as $v ) {
 			$key = $this->objectKey(array_merge($baseContext, array('object' => $v)));
 
-			if ( ! isset($this->knownObjects[$key]) && $baseContext['type'] != 'category' ) {
+			if ( ! isset($this->knownObjects[$key]) ) {
 				$objects[$this->cleanObject($v)] = $key;
 				$this->knownObjects[$key] = array();
 			}
@@ -131,9 +120,9 @@ class Perms_ResolverFactory_CategoryFactory implements Perms_ResolverFactory
 		$db = TikiDb::get();
 		$bindvars = array($baseContext['type']);
 		$result = $db->fetchAll(
-			'SELECT `categId`, `itemId` FROM `tiki_category_objects` INNER JOIN `tiki_objects` ON `catObjectId` = `objectId` WHERE `type` = ? AND ' .
-			$db->in('itemId', array_keys($objects), $bindvars) . ' ORDER BY `catObjectId`, `categId`',
-			$bindvars
+						'SELECT `categId`, `itemId` FROM `tiki_category_objects` INNER JOIN `tiki_objects` ON `catObjectId` = `objectId` WHERE `type` = ? AND ' . 
+						$db->in('itemId', array_keys($objects), $bindvars) . ' ORDER BY `catObjectId`, `categId`', 
+						$bindvars
 		);
 
 		$categories = array();
@@ -141,12 +130,8 @@ class Perms_ResolverFactory_CategoryFactory implements Perms_ResolverFactory
 		foreach ( $result as $row ) {
 			$category = (int) $row['categId'];
 			$object = $this->cleanObject($row['itemId']);
-
-			if (! isset($objects[$object])) {
-				continue; // Some DB corruption combined with MySQL strange casting causes notices
-			}
-
 			$key = $objects[$object];
+			
 			$this->knownObjects[$key][] = $category;
 
 			if ( ! isset($this->knownCategories[$category]) ) {
@@ -170,9 +155,9 @@ class Perms_ResolverFactory_CategoryFactory implements Perms_ResolverFactory
 
 		$bindvars = array();
 		$result = $db->fetchAll(
-			'SELECT `objectId`, `groupName`, `permName` FROM `users_objectpermissions` WHERE `objectType` = \'category\' AND ' .
-			$db->in('objectId', array_keys($objects), $bindvars),
-			$bindvars
+						'SELECT `objectId`, `groupName`, `permName` FROM `users_objectpermissions` WHERE `objectType` = \'category\' AND ' . 
+						$db->in('objectId', array_keys($objects), $bindvars),
+						$bindvars
 		);
 
 		foreach ( $result as $row ) {
@@ -190,9 +175,9 @@ class Perms_ResolverFactory_CategoryFactory implements Perms_ResolverFactory
 		}
 	}
 
-	/**
+	/** 
 	 * Merges the permissions available on groups from all categories
-	 * that apply to the context. A permission granted on any of the
+	 * that apply to the context. A permission granted on any of the 
 	 * categories will be added to the pool.
 	 */
 	function getResolver( array $context )
@@ -205,11 +190,7 @@ class Perms_ResolverFactory_CategoryFactory implements Perms_ResolverFactory
 
 		$key = $this->objectKey($context);
 
-		if (isset($this->knownObjects[$key])) {
-			$categories = $this->knownObjects[$key];
-		} else {
-			$categories = array();
-		}
+		$categories = $this->knownObjects[$key];
 
 		$perms = array();
 

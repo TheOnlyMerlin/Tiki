@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,8 +7,8 @@
 
 $section = 'galleries';
 require_once ('tiki-setup.php');
-$categlib = TikiLib::lib('categ');
-$imagegallib = TikiLib::lib('imagegal');
+include_once ('lib/categories/categlib.php');
+include_once ('lib/imagegals/imagegallib.php');
 $access->check_feature(array('feature_galleries', 'feature_gal_batch'));
 
 // Now check permissions to access this page
@@ -18,7 +18,7 @@ $access->check_permission('tiki_p_batch_upload_image_dir');
 if (!isset($prefs['gal_batch_dir']) or !is_dir($prefs['gal_batch_dir'])) {
 	$msg = tra("Incorrect directory chosen for batch upload of images.") . "<br />";
 	if ($tiki_p_admin == 'y') {
-		$msg.= tra("Please setup that dir on ") . '<a href="tiki-admin.php?page=gal">' . tra('Image Galleries Configuration Panel') . '</a>.';
+		$msg.= tra("Please setup that dir on ") . '<a href="tiki-admin.php?page=gal">' . tra('Image Galleries Admin Panel') . '</a>.';
 	} else {
 		$msg.= tra("Please contact the website administrator.");
 	}
@@ -38,16 +38,12 @@ $allowed_types = array(
 	'.gif'
 ); // list of filetypes you want to show
 // recursively get all images from all subdirectories
-/**
- * @param $sub
- */
-function getDirContent($sub)
+function getDirContent($sub) 
 {
-	$smarty = TikiLib::lib('smarty');
 	global $allowed_types;
 	global $a_img;
 	global $a_path;
-	global $imgdir;
+	global $imgdir, $smarty;
 	$allimg = array();
 	$tmp = $imgdir;
 	if ($sub <> "") $tmp.= '/' . $sub;
@@ -81,7 +77,7 @@ function buildImageList()
 {
 	global $a_img;
 	global $a_path;
-	global $imgdir;
+	global $imgdir, $smarty;
 	global $imgstring;
 	getDirContent('');
 	$totimg = count($a_img); // total image number
@@ -109,7 +105,6 @@ function buildImageList()
 		$imgstring[$x][4] = $tmp;
 		$totalsize+= $filesize;
 	}
-	$smarty = TikiLib::lib('smarty');
 	$smarty->assign('totimg', $totimg);
 	$smarty->assign('totalsize', $totalsize);
 	$smarty->assign('imgstring', $imgstring);

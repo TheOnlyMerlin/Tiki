@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -24,7 +24,6 @@ class EditLib_ParseToWysiwyg_ListTest extends TikiTestCase
 	function setUp()
 	{
 
-		TikiLib::lib('edit');
 		$_SERVER['HTTP_HOST'] = ''; // editlib expects that HTTP_HOST is defined
 
 		$this->el = new EditLib();
@@ -47,7 +46,6 @@ class EditLib_ParseToWysiwyg_ListTest extends TikiTestCase
 	function testBulletList()
 	{
 
-        $this->markTestSkipped("As of 2013-10-02, this test is broken, and nobody knows how to fix it. Mark as Skipped for now.");
 		/*
 		 * *Item 1
 		 * *Item 2 
@@ -85,7 +83,6 @@ class EditLib_ParseToWysiwyg_ListTest extends TikiTestCase
 	function testBulletListContinuation()
 	{
 
-        $this->markTestSkipped("As of 2013-10-02, this test is broken, and nobody knows how to fix it. Mark as Skipped for now.");
 
 		/*
 		 * *Item 1
@@ -126,7 +123,6 @@ class EditLib_ParseToWysiwyg_ListTest extends TikiTestCase
 	function testNumberedList()
 	{
 
-        $this->markTestSkipped("As of 2013-10-02, this test is broken, and nobody knows how to fix it. Mark as Skipped for now.");
 		/*
 		 * #Item 1
 		 * #Item 2 
@@ -164,7 +160,6 @@ class EditLib_ParseToWysiwyg_ListTest extends TikiTestCase
 	function testNumberedListContinuation()
 	{
 
-        $this->markTestSkipped("As of 2013-10-02, this test is broken, and nobody knows how to fix it. Mark as Skipped for now.");
 
 		/*
 		 * #Item 1

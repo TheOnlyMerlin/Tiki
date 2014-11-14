@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,11 +8,31 @@
 // To contain data services for ajax calls
 //
 // If controller and action are specified in the request, the controller class matching the
-// controller key in the $contollerMap registry will be instantiated. The method matching the
+// controller key in the $contollerMap registry will be instanciated. The method matching the
 // action name will be called. The input to the method is a JitFilter. The output of the method
 // will be serialized and sent to the browser.
 //
 // Otherwise, the procedural script remains
+
+$controllerMap = array(
+	'comment' => 'Services_Comment_Controller',
+	'draw' => 'Services_Draw_Controller',
+	'file' => 'Services_File_Controller',
+	'auth_source' => 'Services_AuthSource_Controller',
+	'report' => 'Services_Report_Controller',
+	'tracker' => 'Services_Tracker_Controller',
+	'tracker_sync' => 'Services_Tracker_SyncController',
+	'tracker_todo' => 'Services_Tracker_TodoController',
+	'tracker_search' => 'Services_Tracker_SearchController',
+	'favorite' => 'Services_Favorite_Controller',
+	'translation' => 'Services_Language_TranslationController',
+	'user' => 'Services_User_Controller',
+	'category' => 'Services_Category_Controller',
+	'connect' => 'Services_Connect_Client',
+	'connect_server' => 'Services_Connect_Server',
+	'object' => 'Services_Object_Controller',
+	'wiki' => 'Services_Wiki_Controller',
+);
 
 $inputConfiguration = array(array(
 	'staticKeyFilters' => array(
@@ -35,16 +52,13 @@ if (isset($_REQUEST['controller'], $_REQUEST['action'])) {
 	$inputConfiguration[] = array('catchAllUnset' => null);
 }
 
-//Some times the filters spit out some errors, here we get the error into a var, so the ajax still works.
-ob_start();
 require_once ('tiki-setup.php');
-$errMsg = ob_get_clean();
 
 if (isset($_REQUEST['controller'], $_REQUEST['action'])) {
 	$controller = $_REQUEST['controller'];
 	$action = $_REQUEST['action'];
 
-	$broker = TikiLib::lib('service')->getBroker();
+	$broker = new Services_Broker($controllerMap);
 	$broker->process($controller, $action, $jitRequest);
 	exit;
 }
@@ -148,7 +162,7 @@ if ($access->is_serializable_request() && isset($_REQUEST['listonly'])) {
 				
 		$access->output_serialized($finalusers);
 	} elseif ( $_REQUEST['listonly'] == 'tags' ) {
-		$freetaglib = TikiLib::lib('freetag');
+		global $freetaglib; require_once 'lib/freetag/freetaglib.php';
 
 		$tags = $freetaglib->get_tags_containing($_REQUEST['q']);
 		$access->output_serialized($tags);
@@ -168,8 +182,12 @@ if ($access->is_serializable_request() && isset($_REQUEST['listonly'])) {
 
 		$access->output_serialized($shippinglib->getRates($_REQUEST['from'], $_REQUEST['to'], $_REQUEST['packages']));
 	} elseif (  $_REQUEST['listonly'] == 'trackername' ) {
-		$trackers = TikiLib::lib('trk')->get_trackers_containing($_REQUEST['q']);
-		$access->output_serialized($trackers);
+		$trackers = TikiLib::lib('trk')->list_trackers();
+		$ret = array();
+		foreach ($trackers['data'] as $tracker) {
+			$ret[] = $tracker['name'];
+		}
+		$access->output_serialized($ret);
 	}
 } elseif ($access->is_serializable_request() && isset($_REQUEST['zotero_tags'])) { // Handle Zotero Requests
 	$access->check_feature(array( 'zotero_enabled' ));
@@ -182,17 +200,22 @@ if ($access->is_serializable_request() && isset($_REQUEST['listonly'])) {
 	} else {
 		$access->output_serialized(array('type' => 'success', 'results' => $references));
 	}
+} elseif (isset($_REQUEST['oauth_request'])) {
+	$oauthlib = TikiLib::lib('oauth');
+
+	$oauthlib->request_token($_REQUEST['oauth_request']);
+	die('Provider not supported.');
+} elseif (isset($_REQUEST['oauth_callback'])) {
+	$oauthlib = TikiLib::lib('oauth');
+
+	$oauthlib->request_access($_REQUEST['oauth_callback']);
+	$access->redirect('');
 } elseif (isset($_REQUEST['geocode']) && $access->is_serializable_request()) {
 	$access->output_serialized(TikiLib::lib('geo')->geocode($_REQUEST['geocode']));
 } else {
 	$access->display_error(NULL, 'No AJAX service matches request parameters', 404);
 }
 
-/**
- * @param $dir
- * @param $icons
- * @param $max
- */
 function read_icon_dir($dir, &$icons, $max)
 {
 	$fp = opendir($dir);

@@ -1,15 +1,12 @@
 {* $Id$ *}
 
-{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Please see the <a class='alert-link' target='tikihelp' href='http://doc.tiki.org/Features'>evaluation of each feature</a> on Tiki's developer site.{/tr}{/remarksbox}
+{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Please see the <a class='rbox-link' target='tikihelp' href='http://doc.tiki.org/Features'>evaluation of each feature</a> on Tiki's developer site.{/tr}{/remarksbox}
 
-<form class="admin" id="features" name="features" action="tiki-admin.php?page=features" method="post">
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-			    <input type="submit" class="btn btn-primary btn-sm" name="features" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}" />
-		    </div>
-        </div>
-    </div>
+	<form class="admin" id="features" name="features" action="tiki-admin.php?page=features" method="post">
+		<div class="heading input_submit_container" style="text-align: right">
+			<input type="submit" name="features" value="{tr}Apply{/tr}" />
+			<input type="reset" name="featuresreset" value="{tr}Reset{/tr}" />
+		</div>
 
 
 {tabset name="admin_features"}
@@ -18,8 +15,7 @@
  * sections and add a configuration icon to the sections list
  *}
 {* ---------- Main features ------------ *}
-{tab name="{tr}Global features{/tr}" key=global}
-    <h2>{tr}Global features{/tr}</h2>
+{tab name="{tr}Global features{/tr}"}
 
 		<fieldset>
 			<legend>{tr}Main feature{/tr}</legend>
@@ -38,7 +34,7 @@
 				{preference name=feature_banners}
 				{preference name=feature_categories}
 				{preference name=feature_freetags}
-				{preference name=feature_search}
+				{preference name=feature_search_fulltext}
 			</div>
 
 		</fieldset>
@@ -63,10 +59,6 @@
 				{preference name=feature_draw}
 				<div class="adminoptionboxchild" id="feature_draw_childcontainer">
 					{preference name=feature_draw_hide_buttons}
-					{preference name=feature_draw_separate_base_image}
-					<div class="adminoptionboxchild" id="feature_draw_separate_base_image_childcontainer">
-						{preference name=feature_draw_in_userfiles}
-					</div>
 				</div>
 
 				{preference name=feature_docs}
@@ -89,12 +81,8 @@
 				{preference name=feature_html_pages}	
 				
 				{preference name=feature_htmlfeed}
-				{preference name=feature_futurelinkprotocol}
+				{preference name=feature_forwardlinkprotocol}
 
-				{preference name=feature_jcapture}
-				<div class="adminoptionboxchild" id="feature_jcapture_childcontainer">
-					{preference name=fgal_for_jcapture}
-				</div>
 				{preference name=feature_reports}
 			</div>
 		</fieldset>
@@ -104,6 +92,7 @@
 			<div class="admin clearfix featurelist">		
 				{preference name=connect_feature}
 				{preference name=feature_maps}
+				{preference name=feature_gmap}
 				{preference name=feature_socialnetworks}
 				
 				{preference name=feature_watershed}				
@@ -112,7 +101,7 @@
 				{preference name=zotero_enabled}
 				<div class="adminoptionboxchild" id="zotero_enabled_childcontainer">
 					{if $prefs.zotero_client_key and $prefs.zotero_client_secret and $prefs.zotero_group_id}
-						{remarksbox type=info title="{tr}Configuration completed{/tr}"}<a href="{service controller=oauth action=request provider=zotero}">{tr}Authenticate with Zotero{/tr}</a>{/remarksbox}
+						{remarksbox type=info title="{tr}Configuration completed{/tr}"}<a href="tiki-ajax_services.php?oauth_request=zotero">{tr}Authenticate with Zotero{/tr}</a>{/remarksbox}
 					{/if}
 					{preference name=zotero_client_key}
 					{preference name=zotero_client_secret}
@@ -142,16 +131,15 @@
 		
 {/tab}
 			
-{tab name="{tr}Interface{/tr}" key=interface}
-    <h2>{tr}Interface{/tr}</h2>
-			<fieldset class="table clearfix featurelist">
+{tab name="{tr}Interface{/tr}"}
+			<fieldset class="admin clearfix featurelist">
 				<legend> {tr}Ajax{/tr} </legend>	
 				{preference name=feature_ajax}
 				<div class="adminoptionboxchild half_width" id="feature_ajax_childcontainer">
 					{preference name=ajax_autosave}
 				</div>
 			</fieldset>
-			<fieldset class="table clearfix featurelist">
+			<fieldset class="admin clearfix featurelist">
 				<legend> {tr}jQuery plugins and add-ons{/tr} </legend>
 				{preference name=feature_jquery_autocomplete}
 				{preference name=feature_jquery_media}
@@ -161,13 +149,11 @@
 				{preference name=feature_jquery_ui_theme}
 				{preference name=feature_jquery_ui}
 				{preference name=feature_jquery_validation}
-				{preference name=feature_jquery_zoom}
 				<div class="adminoptionboxchild">
 				<fieldset>
 					<legend> {tr}Experimental:{/tr} {icon _id=bug_error}</legend>
 					{preference name=feature_jquery_carousel}
 					{preference name=feature_jquery_tablesorter}
-					{preference name=jquery_ui_chosen}
 					{preference name=jquery_ui_selectmenu}
 					<div class="adminoptionboxchild" id="jquery_ui_selectmenu_childcontainer">
 						{preference name=jquery_ui_selectmenu_all}
@@ -176,7 +162,7 @@
 				</div>
 			</fieldset>
 
-			<fieldset class="table clearfix featurelist">
+			<fieldset class="admin clearfix featurelist">
 				<legend> {tr}Mobile{/tr} </legend>
 					{preference name=mobile_feature}
 
@@ -196,8 +182,7 @@
 
 {/tab}
 
-{tab name="{tr}Programmer{/tr}" key=programmer}
-    <h2>{tr}Programmer{/tr}</h2>
+{tab name="{tr}Programmer{/tr}"}
 			<div class="admin clearfix featurelist">
 				{preference name=feature_integrator}
 				{preference name=feature_xmlrpc}
@@ -229,35 +214,37 @@
 				</fieldset>
 			</div>
 
-			<div class="table">
+			<div class="admin">
 				<fieldset>
 					<legend>{tr}Custom Code{/tr}</legend>
 					{preference name="header_custom_js"}
 					{preference name=smarty_security}
 				</fieldset>
 			</div>
+			
+			<fieldset>
+				<legend>{tr}Event Hooks{/tr}</legend>
+				{remarksbox type=note title="{tr}New Feature{/tr}"}
+					{tr}Please note that this is a relatively new feature that still needs to be deployed all around. Expect more events to be added over time.{/tr}
+				{/remarksbox}
+				<p>{tr}If you need to add behaviors to Tiki, there are several event hooks you can attach to. Here are the events and the inheritance.{/tr}</p>
+				{$headerlib->add_dracula()}
+				<div id="graph-canvas" class="graph-canvas" data-graph-nodes="{$event_graph.nodes|@json_encode|escape}" data-graph-edges="{$event_graph.edges|@json_encode|escape}"></div>
+				<a href="#" id="graph-draw" class="button">{tr}Draw Event Diagram{/tr}</a>
+				{jq}
+				$('#graph-draw').click( function( e ) {
+					$(this).hide();
+					$('#graph-canvas').drawGraph();
+					return false;
+				} );
+				{/jq}
+			</fieldset>
 {/tab}
-{tab name="{tr}Addons{/tr}" key=addons}
-	<h2>{tr}Tiki Addons{/tr}</h2>
-	<fieldset>
-		<legend>{tr}Activate Addons{/tr}</legend>
-		{foreach $addonprefs as $addon}
-			{preference name="{$addon|escape}"}
-		{/foreach}
-	</fieldset>
-	<fieldset>
-		<legend>{tr}Addon Groups API{/tr}</legend>
-		{preference name=feature_community_send_mail_join}
-		{preference name=feature_community_send_mail_leave}
-	</fieldset>
-{/tab}
+
 {/tabset}
 
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="text-center">
-			    <input type="submit" class="btn btn-primary btn-sm" name="features" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}" />
-		    </div>
-        </div>
-    </div>
+
+	<div class="input_submit_container" style="margin-top: 5px; text-align: center">
+		<input type="submit" name="features" value="{tr}Apply{/tr}" />
+	</div>
 </form>

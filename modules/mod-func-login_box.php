@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_login_box_info()
 {
 	return array(
@@ -50,31 +47,19 @@ function module_login_box_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_login_box($mod_reference, &$module_params)
 {
-	global $prefs, $base_url_https;
-	$smarty = TikiLib::lib('smarty');
+	global $smarty, $prefs;
+	
 	static $module_logo_instance = 0;
-
+	
 	$module_logo_instance++;
-
+	
 	$smarty->assign('module_logo_instance', $module_logo_instance);
 	$smarty->assign('mode', isset($module_params['mode']) ? $module_params['mode'] : 'module');
-
-	$urlPrefix = in_array($prefs['https_login'], array('encouraged', 'required', 'force_nocheck')) ? $base_url_https : '';
+	
 	$smarty->assign('registration', 'n');	// stops the openid form appearing in the module, only on tiki-login_scr.php
-	$smarty->assign(
-		'login_module',
-		array(
-			'login_url' => $urlPrefix . $prefs['login_url'],
-			'can_revert' => TikiLib::lib('login')->isSwitched(),
-		)
-	);
-
+	
 	if ($prefs['allowRegister'] === 'y' && (empty($module_params['register']) || $module_params['register'] === 'y')) {
 		$module_params['show_register'] = 'y';
 	} else {

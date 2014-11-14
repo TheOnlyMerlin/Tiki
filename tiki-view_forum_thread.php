@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -13,7 +10,8 @@ require_once ('tiki-setup.php');
 
 $access->check_feature('feature_forums');
 
-$commentslib = TikiLib::lib('comments');
+include_once ("lib/comments/commentslib.php");
+$commentslib = new Comments($dbTiki);
 if (!isset($_REQUEST['comments_parentId']) && isset($_REQUEST['threadId'])) {
 	$_REQUEST['comments_parentId'] = $_REQUEST['threadId'];
 }
@@ -39,6 +37,7 @@ if (empty($forum_info)) {
 		die;
 }
 
+require_once 'lib/cache/pagecache.php';
 $pageCache = Tiki_PageCache::create()
 	->disableForRegistered()
 	->onlyForGet()
@@ -47,15 +46,15 @@ $pageCache = Tiki_PageCache::create()
 	->addValue('role', 'forum-page-output')
 	->addKeys($_REQUEST, array( 'locale', 'forumId', 'comments_parentId' ))
 	->checkMeta(
-		'forum-page-output-meta-time', array(
-			'forumId'           => $jitRequest->forumId->int(),
-			'comments_parentId' => $jitRequest->comments_parentId->int(),
-		)
+					'forum-page-output-meta-time', array(
+						'forumId'           => @$_REQUEST['forumId'],
+						'comments_parentId' => @$_REQUEST['comments_parentId']
+					)
 	)
 	->applyCache();
 
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	global $categlib; include_once ('lib/categories/categlib.php');
 }
 if (!isset($_REQUEST['topics_offset'])) {
 	$_REQUEST['topics_offset'] = 0;
@@ -127,13 +126,13 @@ if ($tiki_p_admin_forum == 'y') {
 	$smarty->assign('tiki_p_forum_post_topic', 'y');
 }
 
-$access->check_permission(array('tiki_p_forum_read'), '', 'forum', $forum_info['forumId']);
+$access->check_permission(array('tiki_p_forum_read'));
 
 $smarty->assign('topics_next_offset', $_REQUEST['topics_offset'] + 1);
 $smarty->assign('topics_prev_offset', $_REQUEST['topics_offset'] - 1);
 
 $threads = $commentslib->get_forum_topics($_REQUEST['forumId'], max(0, $_REQUEST['topics_offset'] - 1), 3, $_REQUEST["topics_sort_mode"]);
-if ($threads[0]['threadId'] == $_REQUEST['comments_parentId'] && count($threads) >= 1 && isset($threads[1])) {
+if ($threads[0]['threadId'] == $_REQUEST['comments_parentId'] && count($threads) >= 1) {
 	$next_thread = $threads[1];
 	$smarty->assign('next_topic', $next_thread['threadId']);
 } elseif (count($threads) >= 2 && $threads[1]['threadId'] == $_REQUEST['comments_parentId']) {
@@ -160,7 +159,7 @@ if ($tiki_p_admin_forum == 'y') {
 		}
 	}
 	if (isset($_REQUEST['remove_attachment'])) {
-		$access->check_authenticity(tra('Are you sure you want to remove that attachment?'));
+		$access->check_authenticity();
 		$commentslib->remove_thread_attachment($_REQUEST['remove_attachment']);
 	}
 	if (isset($_REQUEST['movesel'])) {
@@ -191,21 +190,11 @@ if ($tiki_p_forums_report == 'y' && isset($_REQUEST['report'])) {
 	die;
 }
 //shows a "thanks for reporting" message
-if (isset($_REQUEST['post_reported'])) {
-	$smarty->assign('post_reported', $_REQUEST['post_reported']);
-} else {
-	$smarty->assign('post_reported', '');
+if (isset($_REQUEST["post_reported"]) && $_REQUEST["post_reported"] == 'y') {
+	$smarty->assign('post_reported', 'y');
 }
 $smarty->assign_by_ref('forum_info', $forum_info);
 $thread_info = $commentslib->get_comment($_REQUEST["comments_parentId"], null, $forum_info);
-
-if ($prefs['feature_score'] == 'y' && $user != $thread_info['userName']) {
-	$score_user = $_SESSION['u_info']['login'];
-	$score_id = $thread_info["threadId"];
-	$tikilib->score_event($score_user, 'forum_post_read', $_REQUEST["comments_parentId"]);
-	$tikilib->score_event($thread_info['userName'], 'forum_post_is_read', "$score_user:$score_id");
-}
-
 if (empty($thread_info)) {
 	$smarty->assign('msg', tra("Incorrect thread"));
 	$smarty->display("error.tpl");
@@ -233,7 +222,7 @@ if (isset($forum_info["inbound_pop_server"]) && !empty($forum_info["inbound_pop_
 
 if (isset($_REQUEST['display']) && $_REQUEST['display'] == 'print_all') {
 	$_REQUEST['comments_per_page'] = 0; // unlimited
-
+	
 }
 $forum_mode = 'y';
 include_once ("comments.php");
@@ -325,7 +314,8 @@ if ($prefs['feature_actionlog'] == 'y') {
 }
 ask_ticket('view-forum');
 if ($prefs['feature_forum_parse'] == 'y') {
-	$wikilib = TikiLib::lib('wiki');
+	global $wikilib;
+	include_once ('lib/wiki/wikilib.php');
 	$plugins = $wikilib->list_plugins(true, 'editpost2');
 	$smarty->assign_by_ref('plugins', $plugins);
 }

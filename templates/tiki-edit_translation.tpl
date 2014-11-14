@@ -10,7 +10,7 @@
 </div>
 
 {if $error}
-	<div class="alert alert-warning">
+	<div class="simplebox highlight">
 	{if $error == "traLang"}
 		{tr}You must specify the object language{/tr}
 	{elseif $error == "srcExists"}
@@ -23,7 +23,7 @@
 		{tr}The object is already in the set of translations{/tr}
 	{/if}
 	</div>
-	<br>
+	<br />
 {/if}
 
 {if $langpage}
@@ -33,11 +33,11 @@
 <ul>
 	<li><a href="#translate_updates">{tr}Translate updates made on this page or one of its translations{/tr}</a></li>
 	<li><a href="#new_translation">{tr}Translate this page to a new language{/tr}</a></li>
-	<li><a href="{service controller=translation action=manage type='wiki page' source=$page}" class="attach_detach_translation" data-object_type="wiki page" data-object_id="{$page|escape:'quotes'}">{tr}Attach or detach existing translations of this page{/tr}</a></li>
+	<li><a href="#" onclick="attach_detach_translation('wiki page', '{$page|escape:"quotes"}')">{tr}Attach or detach existing translations of this page{/tr}</a></li>
 	<li><a href="#change_language">{tr}Change language for this page{/tr}</a></li>
 </ul>
 
-<hr>
+<hr />
 
 <a name="translate_updates"></a>
 <h3>{tr}Translate updates made on this page or one of its translations{/tr}</h3>
@@ -46,9 +46,9 @@
 	{$content_of_update_translation_section}
 </div>
 
-<br>
-<hr>
-<br>
+<br />
+<hr />
+<br />
 
 <a name="new_translation"></a>
 <h3>{tr}Translate this page to a new language{/tr}</h3>
@@ -58,22 +58,25 @@
 			<select name="lang" id="language_list" size="1">
 			   <option value="unspecified">{tr}Unspecified{/tr}</option>
 				{section name=ix loop=$languages}
-				<option value="{$languages[ix].value|escape}"{if $default_target_lang eq $languages[ix].value} selected="selected"{/if}>{$languages[ix].name|escape}</option>
+				{if in_array($languages[ix].value, $prefs.available_languages) or $prefs.available_languages|@count eq 0 or !is_array($prefs.available_languages)}
+				<option value="{$languages[ix].value|escape}"{if $only_one_language_left eq "y"} selected="selected"{/if}>{$languages[ix].name|escape}</option>
+				{/if}
 				{/section}
 			</select>
 		</p>
 		<p>{tr}Enter the page title:{/tr}
-			<input type="text" size="40" name="page" id="translation_name" value="{$translation_name|escape}">
-			<input type="hidden" name="source_page" value="{$name|escape}">
-			<input type="hidden" name="oldver" value="-1">
-			<input type="hidden" name="is_new_translation" value="y">
+			<input type="text" size="40" name="page" id="translation_name"/>
+			<input type="hidden" name="source_page" value="{$name|escape}"/>
+			<input type="hidden" name="oldver" value="-1"/>
+			<input type="hidden" name="is_new_translation" value="y"/>
 		</p>
 		{if $prefs.feature_categories eq 'y'}
 			{tr}Below, assign categories to this new translation (Note: they should probably be the same as the categories of the page being translate){/tr}
-			<br>
+			<br />
 			{include file="categorize.tpl" notable=y}
 		{/if}
-		<p align="center"><input type="submit" class="btn btn-default btn-sm" value="{tr}Create translation{/tr}"></p>
+		<p align="center"><input type="submit" value="{tr}Create translation{/tr}"/></p>
+		<textarea name="edit" style="display:none">{$translate_message}{$pagedata|escape:'htmlall':'UTF-8'}</textarea>
 	</fieldset>
 </form>
 {/if}
@@ -114,59 +117,54 @@ function validate_translation_request() {
 {/jq}
 {/if}
 
-<hr>
+<hr />
 
 <a name="change_language"></a>
 <h3>{tr}Change language for this page{/tr}</h3>
-<form method="post" action="tiki-edit_translation.php" class="form">
-	<div class="input-group">
-		<select name="langpage" class="form-control">
-			<option value="">{tr}Unspecified{/tr}</option>
-			{foreach item=lang from=$languages}
-				<option value="{$lang.value|escape}">{$lang.name}</option>
-			{/foreach}
-		</select>
-		<div class="input-group-btn">
-			<input type="hidden" name="id" value="{$id}">
-			<input type="hidden" name="type" value="{$type}">
-			<input type="submit" class="btn btn-primary" name="switch" value="{tr}Change Language{/tr}">
-		</div>
-	</div>
+<form method="post" action="tiki-edit_translation.php">
+<div>
+	<select name="langpage">
+		<option value="">{tr}Unspecified{/tr}</option>
+		{foreach item=lang from=$languages}
+		<option value="{$lang.value|escape}">{$lang.name}</option>
+		{/foreach}
+	</select>
+	<input type="hidden" name="id" value="{$id}"/>
+	<input type="hidden" name="type" value="{$type}" />
+	<input type="submit" name="switch" value="{tr}Change Language{/tr}"/>
+</div>
 </form>
 
 {else}
-	{remarksbox type="error" title="{tr}Error{/tr}"}
+	<div class="simplebox">
+		{icon _id=delete alt="{tr}Alert{/tr}" style="vertical-align:middle"} 
 		{tr}No language is assigned to this page.{/tr}
-	{/remarksbox}
-	<strong>{tr}Please select a language before performing translation.{/tr}</strong>
-	<form method="post" action="tiki-edit_translation.php" class="form">
-		<div class="input-group">
-			<select name="langpage" class="form-control">
+	</div>
+	<p>{tr}Please select a language before performing translation.{/tr}</p>
+	<form method="post" action="tiki-edit_translation.php">
+		<p>
+			<select name="langpage">
 				{foreach item=lang from=$languages}
-					<option value="{$lang.value|escape}">{$lang.name}</option>
+				<option value="{$lang.value|escape}">{$lang.name}</option>
 				{/foreach}
 			</select>
-			<div class="input-group-btn">
-				<input type="hidden" name="id" value="{$id}">
-				<input type="hidden" name="type" value="{$type|escape}">
-				<input type="submit" class="btn btn-primary" value="{tr}Set Page Language{/tr}">
-			</div>
-		</div>
+			<input type="hidden" name="id" value="{$id}" />
+			<input type="hidden" name="type" value="{$type|escape}" />
+			<input type="submit" value="{tr}Set Current Page's Language{/tr}"/>
+		</p>
 	</form>
 {/if}
-{jq}
-$('a.attach_detach_translation').click(function() {
-    var object_type = $(this).data('object_type');
-    var object_to_translate = $(this).data('object_id');
-    $(this).serviceDialog({
-        title: '{tr}Manage translations{/tr}',
-        data: {
-        controller: 'translation',
-        action: 'manage',
-        type: object_type,
-        source: object_to_translate
-        }
-    });
-    return false;
-});
+{jq notonready=true}
+function attach_detach_translation( object_type, object_to_translate ) {
+	$(document).serviceDialog({
+		title: '{tr}Manage translations{/tr}', 
+		data: {
+			controller: 'translation',
+			action: 'manage',
+			type: object_type,
+			source: object_to_translate
+		}
+	});
+	return;
+}
 {/jq}

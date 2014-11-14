@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +10,6 @@ function prefs_fgal_list()
 	return array(
 		'fgal_podcast_dir' => array(
 			'name' => tra('Podcast directory'),
-            'description' => tra(''),
 			'type' => 'text',
 			'help' => 'File+Gallery+Config',
 			'size' => 50,
@@ -20,7 +19,6 @@ function prefs_fgal_list()
 		),
 		'fgal_batch_dir' => array(
 			'name' => tra('Path'),
-            'description' => tra(''),
 			'type' => 'text',
 			'help' => 'File+Gallery+config',
 			'size' => 50,
@@ -30,7 +28,6 @@ function prefs_fgal_list()
 		),
 		'fgal_prevent_negative_score' => array(
 			'name' => tra('Prevent download if score becomes negative'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'help' => 'File+Gallery+config',
 			'default' => 'n',
@@ -38,14 +35,12 @@ function prefs_fgal_list()
 		),
 		'fgal_limit_hits_per_file' => array(
 			'name' => tra('Allow download limit per file'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'help' => 'File+Gallery+config',
 			'default' => 'n',
 		),
 		'fgal_allow_duplicates' => array(
 			'name' => tra('Allow same file to be uploaded more than once'),
-            'description' => tra(''),
 			'type' => 'list',
 			'help' => 'File+Gallery+config',
 			'perspective' => false,
@@ -58,14 +53,13 @@ function prefs_fgal_list()
 		),
 		'fgal_display_zip_option' => array(
 			'name' => tra('Display zip option in gallery'),
-            'description' => tra('Display in the gallery the zip option (in upload and gallery file)'),
 			'type' => 'flag',
+			'description' => tra('Display in the gallery the zip option (in upload and gallery file)'),
 			'help' => 'File+Gallery+config',
 			'default' => 'n',
 		),
 		'fgal_upload_progressbar' => array(
 			'name' => tra('Upload progressbar'),
-            'description' => tra(''),
 			'type' => 'list',
 			'options'=> array(
 				'n'	=>	tra('None'),
@@ -76,21 +70,18 @@ function prefs_fgal_list()
 		),
 		'fgal_match_regex' => array(
 			'name' => tra('Must match'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 50,
 			'default' => '',
 		),
 		'fgal_nmatch_regex' => array(
 			'name' => tra('Cannot match'),
-            'description' => tra(''),
 			'type' => 'text',
 			'size' => 50,
 			'default' => '',
 		),
 		'fgal_quota' => array (
 			'name' => tra('Quota for all the files and archives'),
-            'description' => tra(''),
 			'shorthint' => tra('Mb').' '.tra('(0 for unlimited)'),
 			'type' => 'text',
 			'size' => 7,
@@ -98,13 +89,11 @@ function prefs_fgal_list()
 		),
 		'fgal_quota_per_fgal' => array (
 			'name' => tra('Quota can be defined for each file gallery'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'fgal_quota_default' => array (
 			'name' => tra('Default quota for each new gallery'),
-            'description' => tra(''),
 			'shorthint' => tra('Mb').' '.tra('(0 for unlimited)'),
 			'type' => 'text',
 			'size' => 7,
@@ -112,7 +101,6 @@ function prefs_fgal_list()
 		),
 		'fgal_quota_show' => array (
 			'name' => tra('Show quota bar in the list page'),
-            'description' => tra(''),
 			'type' => 'list',
 			'options' => array(
 							  'n' 				=> tra('Never'),
@@ -124,7 +112,6 @@ function prefs_fgal_list()
 		),
 		'fgal_use_db' => array(
 			'name' => tra('Storage'),
-            'description' => tra(''),
 			'type' => 'list',
 			'perspective' => false,
 			'options' => array(
@@ -136,40 +123,35 @@ function prefs_fgal_list()
 		),
 		'fgal_use_dir' => array(
 			'name' => tra('Path to store files in the file gallery'),
+			'type' => 'text',
+			'size' => 50,
+			'perspective' => false,
+			'default' => '',
+			'tags' => array('basic'),
 			'description' => tra("Set a directory on your server. Ex.: /var/www/  It's recommended that this directory not be web accessible. PHP must be able to read/write to the directory."),
-            'type' => 'text',
-            'size' => 50,
-            'perspective' => false,
-            'default' => '',
-            'tags' => array('basic'),
 		),
 		'fgal_search_in_content' => array(
-			'name' => tra('File Gallery - Searchable content'),
-            'description' => tra('Include the search box on the current gallery files just after the find div'),
+			'name' => tra('Include the search box on the current gallery files just after the find div'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'fgal_search' => array(
 			'name' => tra('Include a search box on file galleries'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' => 'y',
 		),
 		'fgal_list_ratio_hits' => array(
 			'name' => tra('Display hits with a ratio between hits / maxhits'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'fgal_display_properties' => array(
 			'name' => tra('Display properties in the context menu'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' => 'y',
 		),
 		'fgal_display_replace' => array(
 			'name' => tra('Display replace menu in context menu'),
-            'description' => tra(''),
 			'type' => 'flag',
 			'default' => 'y',
 		),
@@ -229,7 +211,7 @@ function prefs_fgal_list()
 		),
 		'fgal_source_refresh_frequency' => array(
 			'name' => tra('Remote source refresh frequency limit'),
-			'description' => tra('Minimum amount of seconds to be elapsed between source checks to prevent flooding servers.'),
+			'description' => tra('Minimum amount of seconds to be ellapsed between source checks to prevent flooding servers.'),
 			'type' => 'text',
 			'filter' => 'int',
 			'size' => 5,
@@ -246,7 +228,7 @@ function prefs_fgal_list()
 			'name' => tra('Allow searching for existing files in the tracker files field'),
 			'description' => tra('Search files using the search index.'),
 			'type' => 'flag',
-			'default' => 'n',
+			'default' => 'y',
 			'dependencies' => array('feature_search'),
 		),
 		'fgal_fix_mime_type' => array(
@@ -264,42 +246,6 @@ function prefs_fgal_list()
 			'filter' => 'int',
 			'size' => 5,
 			'default' => 40,
-		),
-		'fgal_image_max_size_x' => array(
-			'name' => tra('Maximum width for images'),
-			'description' => tra('Default maximum width for images in gallery.') . ' ' . tra('(Default: 0=unlimited)'),
-			'type' => 'text',
-			'filter' => 'int',
-			'size' => 5,
-			'default' => 0,
-		),
-		'fgal_image_max_size_y' => array(
-			'name' => tra('Maximum height for images'),
-			'description' => tra('Default maximum height for images in gallery.') . ' ' . tra('(Default: 0=unlimited)'),
-			'type' => 'text',
-			'filter' => 'int',
-			'size' => 5,
-			'default' => 0,
-		),
-		'fgal_for_jcapture' => array(
-			'name' => tra('File Gallery for jCapture'),
-			'description' => tra('Id of gallery to store files captured by jCapture. Default:0 uses the default "root" gallery.'),
-			'type' => 'text',
-			'filter' => 'int',
-			'size' => 5,
-			'default' => 0,
-			'dependencies' => 'feature_jcapture',
-			'tags' => array('experimental'),
-		),
-		'fgal_elfinder_feature' => array(
-			'name' => tra('Use elFinder UI'),
-			'description' => tra('Modern file manager, with drag and drop capability'),
-			'type' => 'flag',
-			'default' => 'n',
-			'help' => 'elFinder',
-			'warning' => tra('Experimental'),
-			'tags' => array('experimental'),
-			'dependencies' => array('feature_jquery_ui'),
 		),
 	);
 }

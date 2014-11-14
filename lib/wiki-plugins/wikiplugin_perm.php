@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,6 +14,7 @@ function wikiplugin_perm_info()
 		'body' => tra('Wiki text to display if conditions are met. The body may contain {ELSE}. Text after the marker will be displayed to users not matching the conditions.'),
 		'prefs' => array('wikiplugin_perm'),
 		'filter' => 'wikicontent',
+		'icon' => 'img/icons/.png',
 		'icon' => 'img/icons/page_white_key.png',
 		'params' => array(
 			'perms' => array(
@@ -34,8 +35,7 @@ function wikiplugin_perm_info()
 
 function wikiplugin_perm($data, $params)
 {
-	global $user;
-	$userlib = TikiLib::lib('user');
+	global $user, $userlib;
 	if (!empty($params['perms']))
 		$perms = explode('|', $params['perms']);
 	if (!empty($params['notperms']))

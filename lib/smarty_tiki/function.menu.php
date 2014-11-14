@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -20,15 +20,10 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
  * - menu_cookie=y|n (default y) n, it will automatically open the submenu the url is in
  * - sectionLevel: displays from this level only
  * - toLevel : displays to this level only
- * - drilldown ??
- * - bootstrap : navbar|basic (equates to horiz or vert in old menus)
- * - setSelected=y|n (default=y) processes all menu items to show currently selected item, also sets open states, sectionLevel, toLevel etc
- * 								so menu_cookie, sectionLevel and toLevel will be ignored if this is set to n
  */
 function smarty_function_menu($params, $smarty)
 {
-	global $prefs;
-	$headerlib = TikiLib::lib('header');
+	global $headerlib, $prefs;
 
 	$default = array('css' => 'y');
 	if (isset($params['params'])) {
@@ -54,9 +49,6 @@ function smarty_function_menu($params, $smarty)
 	if (empty($drilldown)) {
 		$drilldown = 'n';
 	}
-	if (!isset($css)) {
-		$css = 'y';
-	}
 	if ($css !== 'n' && $prefs['feature_cssmenus'] == 'y' && $drilldown != 'y') {
 		static $idCssmenu = 0;
 		if (empty($type)) {
@@ -67,7 +59,7 @@ function smarty_function_menu($params, $smarty)
 		$tpl = 'tiki-user_cssmenu.tpl';
 		$smarty->assign('menu_type', $type);
 		if (! isset($css_id)) {//adding $css_id parameter to customize menu id and prevent automatic id renaming when a menu is removed
-			$smarty->assign('idCssmenu', $idCssmenu++);
+			$smarty->assign('idCssmenu', $idCssmenu++);	
 		} else {
 			$smarty->assign('idCssmenu', $css_id);
 		}
@@ -78,46 +70,21 @@ function smarty_function_menu($params, $smarty)
 	}
 
 	list($menu_info, $channels) = get_menu_with_selections($params);
+
 	$smarty->assign('menu_channels', $channels['data']);
 	$smarty->assign('menu_info', $menu_info);
 	$smarty->assign('escape_menu_labels', ($prefs['menus_item_names_raw'] === 'n' && isset($menu_info['parse']) && $menu_info['parse'] === 'n'));
-
-	if (isset($params['bootstrap']) && $params['bootstrap'] !== 'n') {
-		$structured = array();
-		$activeSection = null;
-		foreach ($channels['data'] as $element) {
-			if ($element['type'] == 's') {
-				if ($activeSection) {
-					$structured[] = $activeSection;
-				}
-
-				$activeSection = $element;
-				$activeSection['children'] = array();
-			} elseif ($element['type'] == 'o') {
-				if ($activeSection) {
-					$activeSection['children'][] = $element;
-				} else {
-					$structured[] = $element;
-				}
-			}
-		}
-
-		if ($activeSection) {
-			$structured[] = $activeSection;
-		}
-
-		$smarty->assign('list', $structured);
-		switch ($params['bootstrap']) {
-		case 'navbar':
-			return $smarty->fetch('bootstrap_menu_navbar.tpl');
-		default:
-			return $smarty->fetch('bootstrap_menu.tpl');
-		}
-	}
-
 	$data = $smarty->fetch($tpl);
-	$menulib = TikiLib::lib('menu');
-	return $menulib->clean_menu_html($data);
+	$data = preg_replace('/<ul>\s*<\/ul>/', '', $data);
+	$data = preg_replace('/<ol>\s*<\/ol>/', '', $data);
+	if ($prefs['mobile_feature'] !== 'y' || $prefs['mobile_mode'] !== 'y') {
+		return '<nav class="role_navigation">' . $data . '</nav>';
+	} else {
+		$data = preg_replace('/<ul ([^>]*)>/Umi', '<ul $1 data-role="listview" data-theme="'.$prefs['mobile_theme_menus'].'">', $data, 1);
+		// crude but effective hack for loading menu items via ajax - hopefully to be replaced by something more elegant soon
+		$data = preg_replace('/<a ([^>]*)>/Umi', '<a $1 rel="external">', $data);
+		return $data;
+	}
 }
 
 function compare_menu_options($a, $b)
@@ -125,12 +92,10 @@ function compare_menu_options($a, $b)
 	return strcmp(tra($a['name']), tra($b['name']));
 }
 
-function get_menu_with_selections($params)
-{
-	global $user, $prefs;
-	$tikilib = TikiLib::lib('tiki');
-	$menulib = TikiLib::lib('menu');
-	$cachelib = TikiLib::lib('cache');
+function get_menu_with_selections($params) {
+	global $tikilib, $user, $prefs;
+	global $menulib; include_once('lib/menubuilder/menulib.php');
+	global $cachelib; include_once('lib/cache/cachelib.php');
 	$cacheName = isset($prefs['mylevel']) ? $prefs['mylevel'] : 0;
 	$cacheName .= '_'.$prefs['language'].'_'.md5(implode("\n", $tikilib->get_user_groups($user)));
 
@@ -145,7 +110,7 @@ function get_menu_with_selections($params)
 	if ( $cdata = $cachelib->getSerialized($cacheName, $cacheType) ) {
 		list($menu_info, $channels) = $cdata;
 	} elseif (!empty($structureId)) {
-		$structlib = TikiLib::lib('struct');
+		global $structlib; include_once('lib/structures/structlib.php');
 
 		if (!is_numeric($structureId)) {
 			$structureId = $structlib->get_struct_ref_id($structureId);
@@ -153,32 +118,20 @@ function get_menu_with_selections($params)
 
 		$channels = $structlib->build_subtree_toc($structureId);
 		$structure_info =  $structlib->s_get_page_info($structureId);
-		$channels = $structlib->to_menu($channels, $structure_info['pageName'], 0, 0, $params);
+		$channels = $structlib->to_menu($channels, $structure_info['pageName']);
 		$menu_info = array('type'=>'d', 'menuId'=> "s_$structureId", 'structure' => 'y');
+		//echo '<pre>'; print_r($channels); echo '</pre>';
 	} else if (!empty($id)) {
 		$menu_info = $menulib->get_menu($id);
 		$channels = $menulib->list_menu_options($id, 0, -1, 'position_asc', '', '', isset($prefs['mylevel'])?$prefs['mylevel']:0);
 		$channels = $menulib->sort_menu_options($channels);
-	} else {
-		return '<span class="alert-warning">menu function: Menu or Structure ID not set</span>';
-	}
-	if (strpos($_SERVER['SCRIPT_NAME'], 'tiki-register') === false) {
-		$cachelib->cacheItem($cacheName, serialize(array($menu_info, $channels)), $cacheType);
-	}
-	if (!isset($setSelected) || $setSelected !== 'n') {
-		$channels = $menulib->setSelected($channels, isset($sectionLevel) ? $sectionLevel : '', isset($toLevel) ? $toLevel : '', $params);
-	}
-
-	foreach ($channels['data'] as & $item) {
-		if (!empty($menu_info['parse']) && $menu_info['parse'] === 'y') {
-			if (TikiLib::lib('parser')->contains_html_block($item['name'])) {
-				$item['block'] = true;
-			} else {
-				$item['block'] = false;
-			}
-			$item['name'] = preg_replace('/(.*)\n$/', '$1', $item['name']);	// parser adds a newline to everything
+		if (strpos($_SERVER['SCRIPT_NAME'], 'tiki-register') === false) {
+			$cachelib->cacheItem($cacheName, serialize(array($menu_info, $channels)), $cacheType);
 		}
+	} else {
+		return '<span class="error">menu function: Menu or Structure ID not set</span>';
 	}
+	$channels = $menulib->setSelected($channels, isset($sectionLevel)?$sectionLevel:'', isset($toLevel)?$toLevel: '', $params);
 
 	return array($menu_info, $channels);
 }

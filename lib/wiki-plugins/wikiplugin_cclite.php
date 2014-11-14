@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -41,12 +41,10 @@ function wikiplugin_cclite_info()
 	);
 }
 
-function wikiplugin_cclite( $data, $params )
+function wikiplugin_cclite( $data, $params, $offset )
 {
-	global $prefs, $user;
-	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
-	$headerlib = TikiLib::lib('header');
+	global $smarty, $userlib, $prefs, $user, $headerlib;
+	//global $paymentlib; require_once 'lib/payment/paymentlib.php';
 	global $cclitelib;  require_once 'lib/payment/cclitelib.php';
 	
 	if (empty($user)) {

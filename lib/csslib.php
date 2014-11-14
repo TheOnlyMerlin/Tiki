@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,55 +13,6 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 
 class cssLib extends TikiLib
 {
-	function list_layouts()
-	{
-		$available_layouts = array();
-		foreach (scandir(TIKI_PATH . '/templates/layouts/') as $layoutName) {
-			if ($layoutName[0] != '.' && $layoutName != 'index.php') {
-				$available_layouts[$layoutName] = ucfirst($layoutName);
-			}   
-		}   
-		foreach (TikiAddons::getPaths() as $path) {
-			if (file_exists($path . '/templates/layouts/')) {
-				foreach (scandir($path . '/templates/layouts/') as $layoutName) {
-					if ($layoutName[0] != '.' && $layoutName != 'index.php') {
-						 $available_layouts[$layoutName] = ucfirst($layoutName);
-					}
-				}
-			}
-                }
-		return $available_layouts;
-	}
-
-	function list_user_selectable_layouts()
-	{
-		$selectable_layouts = array();
-		$available_layouts = $this->list_layouts();
-		foreach ($available_layouts as $layoutName => $layoutLabel) {
-			if ($layoutName == 'mobile'
-				|| $layoutName == 'layout_plain.tpl'
-				|| $layoutName == 'internal'
-			) {
-				// hide layouts that are for internal use only
-				continue;
-			} elseif ($layoutName == 'basic') {
-				$selectable_layouts[$layoutName] = tra('Standard Bootstrap');
-			} elseif ($layoutName == 'classic') {
-				$selectable_layouts[$layoutName] = tra('Classic Tiki with shadows');
-			} elseif ($layoutName == 'header_middle_footer_containers') {
-				$selectable_layouts[$layoutName] = tra('3 separate header, middle, footer containers');
-			} elseif ($layoutName == 'header_middle_footer_containers_3-6-3') {
-				$selectable_layouts[$layoutName] = tra('3 separate header, middle, footer containers with 3-6-3 columns');
-			} elseif ($layoutName == 'social') {
-				$selectable_layouts[$layoutName] = tra('Social networking style');
-			} else {
-				$selectable_layouts[$layoutName] = $layoutLabel;
-			} 
-		}
-
-		return $selectable_layouts;		
-	}
-
 	function list_css($path, $recursive = false)
 	{
 		$files = $this->list_files($path, '.css', $recursive);
@@ -236,3 +187,4 @@ class cssLib extends TikiLib
 		return $version;
 	}
 }
+$csslib = new cssLib;

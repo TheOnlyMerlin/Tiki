@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_switch_lang_info()
 {
 	return array(
@@ -30,15 +27,9 @@ function module_switch_lang_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_switch_lang($mod_reference, $module_params)
 {
-	global $prefs;
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $smarty, $prefs;
 
 	// tiki-setup has already set the $language variable
 	//Create a list of languages
@@ -46,7 +37,7 @@ function module_switch_lang($mod_reference, $module_params)
 	$languages = $tikilib->list_languages(false, 'y');
 	$mode = isset($module_params["mode"]) ? $module_params["mode"] : "droplist";
 	$smarty->assign('mode', $mode);
-	if ($mode == 'flags' || $mode == 'words' || $mode == 'abrv') {
+	if ($mode == 'flags' || $mode == 'words') {
 		include('lang/flagmapping.php');
 		global $pageRenderer;
 		//$trads = $multilinguallib->getTranslations('wiki page', $page_id, $page, $prefs['language']);

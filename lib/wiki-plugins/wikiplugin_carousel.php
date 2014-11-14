@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -14,7 +14,7 @@ function wikiplugin_carousel_info()
 		'introduced' => 8.0,
 		'prefs' => array('wikiplugin_carousel', 'feature_file_galleries', 'feature_jquery_carousel'),
 		'icon' => 'img/icons/wand.png',
-		'tags' => array( 'basic' ),
+		'tags' => array( 'basic' ),		
 		'params' => array(
 			'fgalId' => array(
 				'required' => true,
@@ -23,7 +23,6 @@ function wikiplugin_carousel_info()
 				'filter' => 'digits',
 				'accepted' => 'ID',
 				'default' => '',
-				'profile_reference' => 'file_gallery',
 			),
 			'sort_mode' => array(
 				'required' => false,
@@ -56,7 +55,6 @@ function wikiplugin_carousel_info()
 				'filter' => 'text',
 				'accepted' => tra('real between 0 and 1'),
 				'default' => '.2',
-				'advanced' => true,
 			),
 			'displayProgressBar' => array(
 				'required' => false,
@@ -67,7 +65,6 @@ function wikiplugin_carousel_info()
 					array('text' => tra('No'), 'value' => '0'),
 				),
 				'default' => '1',
-				'advanced' => true,
 			),
 			'thumbnailType' => array(
 				'required' => false,
@@ -89,7 +86,6 @@ function wikiplugin_carousel_info()
 				'description' => tra('Width of thumbnail box in CSS units (default "20px")'),
 				'filter' => 'text',
 				'default' => '20px',
-				'advanced' => true,
 			),
 			'thumbnailHeight' => array(
 				'required' => false,
@@ -97,7 +93,6 @@ function wikiplugin_carousel_info()
 				'description' => tra('Height of thumbnail box in CSS units (default "20px")'),
 				'filter' => 'text',
 				'default' => '20px',
-				'advanced' => true,
 			),
 			'autoPilot' => array(
 				'required' => false,
@@ -151,17 +146,17 @@ function wikiplugin_carousel_info()
 				'name' => tra('Thumbnail box font size'),
 				'description' => tra('Legacy v2 param:') . ' ' . tra('Font size of thumbnail box in CSS units (default ".7em").'),
 				'filter' => 'text',
-				'accepted' => tra('CSS units'),
+				'accepted' => tra('real between 0 and 1'),
 				'default' => '.7em',
 				'advanced' => true,
 			),
 			'displaySize' => array(
 				'required' => false,
 				'name' => tra('Size of picture'),
-				'description' => tra('In case your picture is too large, you can specify a scale between 0 and 1 to reduce it, or a maximum size in pixels'),
+				'description' => tra('In case your picture is too large, you can specify a scale between 0 and 1 to reduce it'),
 				'filter' => 'text',
 				'default' => '1',
-				'accepted' => tra('Real between 0 and 1, or integer over 10'),
+				'accepted' => tra('real between 0 and 1'),
 				'advanced' => true,
 			),
 		),
@@ -178,7 +173,7 @@ function wikiplugin_carousel( $body, $params )
 	$params = array_merge($default, $params);
 
 	$unique = 'wpcarousel-' . ++$id;
-
+		
 	$filegallib = TikiLib::lib('filegal');
 	$files = $filegallib->get_files(0, -1, $params['sort_mode'], '', $params['fgalId']);
 	if (empty($files['cant'])) {
@@ -221,27 +216,16 @@ function wikiplugin_carousel( $body, $params )
 		$params['thumbnailHeight'],
 		$params['thumbnailFontSize']
 	);
-
+	
 	TikiLib::lib('header')->add_jq_onready('setTimeout( function() { $("#' . $unique . '").tiki("carousel", "", '. json_encode($params).'); }, 1000);');
 
-	if (empty($params['displaySize'])) {
-		$size = 'width: 1px; height: 1px;';
-	} else if ($params['displaySize'] > 10) {
-		$size = "width: {$params['displaySize']}px; height: {$params['displaySize']}px;";
-	}
-	$html = '<div id="'.$unique. '" class="clearfix carousel" style="' . $size . ' overflow: hidden"><ul>';
+	$html = '<div id="'.$unique.'" class="clearfix carousel" style="width: 1px; height: 1px; overflow: hidden"><ul>';
 	foreach ($files['data'] as $file) {
 		$html .= '<li><img src="tiki-download_file.php?fileId='.$file['fileId'].'&amp;display';
-		if (!empty($params['displaySize'])) {
-			if ($params['displaySize'] > 10) {
-				$html .= '&amp;max='.$params['displaySize'];
-			} elseif ( $params['displaySize'] <= 1) {
-				$html .= '&amp;scale='.$params['displaySize'];
-			}
-		}
-
-		$html .= '" alt="'.htmlentities($file['description']).'" />';
-
+		if (!empty($params['displaySize']) && $params['displaySize'] != 1)
+			$html .= '&amp;scale='.$params['displaySize'];
+		$html .= ' alt="'.htmlentities($file['description']).'" />';
+			
 		$caption = '';
 		if (!empty($file['name'])) {
 			$caption .= '<strong>'.htmlentities($file['name']).'</strong>';
@@ -253,7 +237,7 @@ function wikiplugin_carousel( $body, $params )
 			$caption .= htmlentities($file['description']);
 		}
 		if (!empty($caption)) {
-			$caption = '<p style="display:none;">' . $caption . '</p>';
+			$caption = '<p>' . $caption . '</p>';
 			TikiLib::lib('header')->add_css('.textholder { padding: .5em .8em; }');
 		}
 		$html .= $caption . '</li>';

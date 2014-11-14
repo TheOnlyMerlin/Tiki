@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,6 +12,9 @@ $inputConfiguration = array(
 );
 
 require_once 'tiki-setup.php';
+require_once 'lib/profilelib/profilelib.php';
+require_once 'lib/profilelib/installlib.php';
+require_once 'lib/profilelib/channellib.php';
 
 // This file will handle a second mode of authentication, don't limit it to permissions.
 // Only channels registered through the admin panel can be executed.
@@ -55,8 +55,8 @@ if ( ! $user && ! $config->canExecuteChannels($channels, $groups) ) {
 
 if ( ! $config->canExecuteChannels($channels, $groups) ) {
 	$access->display_error(
-		'tiki-channel.php',
-		tra('One of the requested channels cannot be requested. It does not exist or permission is denied.')
+					'tiki-channel.php',
+					tra('One of the requested channels cannot be requested. It does not exist or permission is denied.')
 	);
 }
 

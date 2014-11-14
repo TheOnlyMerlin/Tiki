@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +7,7 @@
 
 $section = 'faqs';
 require_once ('tiki-setup.php');
-$faqlib = TikiLib::lib('faq');
+include_once ('lib/faqs/faqlib.php');
 $auto_query_args = array('offset', 'find', 'sort_mode', 'faqId');
 $access->check_feature('feature_faqs');
 $access->check_permission('tiki_p_view_faqs');
@@ -20,7 +17,7 @@ if (!isset($_REQUEST["faqId"])) {
 }
 $smarty->assign('faqId', $_REQUEST["faqId"]);
 if ($_REQUEST["faqId"]) {
-	$info = $faqlib->get_faq($_REQUEST["faqId"]);
+	$info = $faqlib->get_faq($_REQUEST["faqId"]);	
 } else {
 	$info = array();
 	$info["title"] = '';

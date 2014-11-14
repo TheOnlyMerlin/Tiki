@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -31,9 +28,8 @@ $inputConfiguration = array(
 );
 // Initialization
 require_once ('tiki-setup.php');
+include_once ('lib/notifications/notificationlib.php');
 $access->check_permission(array('tiki_p_admin_notifications'));
-
-$notificationlib = TikiLib::lib('notification');
 
 $auto_query_args = array(
 	'offset',
@@ -128,12 +124,14 @@ $channels = $tikilib->list_watches($offset, $maxRecords, $sort_mode, $find);
 $smarty->assign_by_ref('cant', $channels['cant']);
 $smarty->assign_by_ref('channels', $channels["data"]);
 if ($prefs['feature_trackers'] == 'y') {
-	$trklib = TikiLib::lib('trk');
+	global $trklib;
+	include_once ('lib/trackers/trackerlib.php');
 	$trackers = $trklib->get_trackers_options(0, 'outboundemail', $find, 'empty');
 	$smarty->assign_by_ref('trackers', $trackers);
 }
 if ($prefs['feature_forums'] == 'y') {
-	$commentslib = TikiLib::lib('comments');
+	include_once ('lib/comments/commentslib.php');
+	$commentslib = new Comments($dbTiki);
 	$forums = $commentslib->get_outbound_emails();
 	$smarty->assign_by_ref('forums', $forums);
 }

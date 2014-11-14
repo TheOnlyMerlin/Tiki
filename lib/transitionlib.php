@@ -1,46 +1,40 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
+require_once 'Transition.php';
+
 /**
- * TransitionLib
- *
+ * TransitionLib 
+ * 
  */
 class TransitionLib
 {
 	private $transitionType;
 
-    /**
-     * @param $transitionType
-     */
-    function __construct( $transitionType )
+	function __construct( $transitionType )
 	{
 		$this->transitionType = $transitionType;
 	}
 
-    /**
-     * @param $object
-     * @param null $type
-     * @return array
-     */
-    function getAvailableTransitions( $object, $type = null )
+	function getAvailableTransitions( $object, $type = null )
 	{
 		$states = $this->getCurrentStates($object, $type);
 
 		$transitions = $this->getTransitionsFromStates($states);
 		$transitions = Perms::filter(
-			array('type' => 'transition'),
-			'object',
-			$transitions,
-			array('object' => 'transitionId'),
-			'trigger_transition'
+						array('type' => 'transition'), 
+						'object', 
+						$transitions, 
+						array('object' => 'transitionId'),
+						'trigger_transition'
 		);
 
 		foreach ( $transitions as & $tr ) {
-			$object = new Tiki_Transition($tr['from'], $tr['to']);
+			$object = new Transition($tr['from'], $tr['to']);
 			$object->setStates($states);
 			foreach ( $tr['guards'] as $guard ) {
 				call_user_func_array(array($object, 'addGuard' ), $guard);
@@ -53,13 +47,7 @@ class TransitionLib
 		return $transitions;
 	}
 
-    /**
-     * @param $state
-     * @param $object
-     * @param null $type
-     * @return array
-     */
-    function getAvailableTransitionsFromState( $state, $object, $type = null )
+	function getAvailableTransitionsFromState( $state, $object, $type = null )
 	{
 		$transitions = $this->getAvailableTransitions($object, $type);
 
@@ -73,13 +61,7 @@ class TransitionLib
 		return $out;
 	}
 
-    /**
-     * @param $transitionId
-     * @param $object
-     * @param null $type
-     * @return bool
-     */
-    function triggerTransition( $transitionId, $object, $type = null )
+	function triggerTransition( $transitionId, $object, $type = null )
 	{
 		// Make sure the transition exists
 		if ( ! $transition = $this->getTransition($transitionId) ) {
@@ -95,7 +77,7 @@ class TransitionLib
 		// Verify that the states are consistent
 		$states = $this->getCurrentStates($object, $type);
 
-		$tr = new Tiki_Transition($transition['from'], $transition['to']);
+		$tr = new Transition($transition['from'], $transition['to']);
 		$tr->setStates($states);
 
 		foreach ( $transition['guards'] as $guard ) {
@@ -114,11 +96,7 @@ class TransitionLib
 		return true;
 	}
 
-    /**
-     * @param $states
-     * @return array
-     */
-    function listTransitions( $states )
+	function listTransitions( $states )
 	{
 		$db = TikiDb::get();
 
@@ -127,8 +105,8 @@ class TransitionLib
 		}
 
 		$bindvars = array($this->transitionType);
-		$query = "SELECT `transitionId`, `preserve`, `name`, `from`, `to`, `guards` FROM `tiki_transitions` WHERE `type` = ? AND ( " .
-						$db->in('from', $states, $bindvars) .
+		$query = "SELECT `transitionId`, `preserve`, `name`, `from`, `to`, `guards` FROM `tiki_transitions` WHERE `type` = ? AND ( " . 
+						$db->in('from', $states, $bindvars) . 
 						' OR ' . $db->in('to', $states, $bindvars) . ')';
 
 		$result = $db->fetchAll($query, $bindvars);
@@ -138,70 +116,44 @@ class TransitionLib
 
 	// Database interaction
 
-    /**
-     * @param $from
-     * @param $to
-     * @param $name
-     * @param bool $preserve
-     * @param array $guards
-     * @return mixed
-     */
-    function addTransition( $from, $to, $name, $preserve = false, array $guards = array() )
+	function addTransition( $from, $to, $name, $preserve = false, array $guards = array() )
 	{
 		$db = TikiDb::get();
 
 		$db->query(
-			"INSERT INTO `tiki_transitions` ( `type`, `from`, `to`, `name`, `preserve`, `guards`) VALUES( ?, ?, ?, ?, ?, ? )",
-			array($this->transitionType, $from, $to, $name, (int) $preserve, json_encode($guards))
+						"INSERT INTO `tiki_transitions` ( `type`, `from`, `to`, `name`, `preserve`, `guards`) VALUES( ?, ?, ?, ?, ?, ? )", 
+						array($this->transitionType, $from, $to, $name, (int) $preserve, json_encode($guards)) 
 		);
 
 		return $db->getOne('SELECT MAX(`transitionId`) FROM `tiki_transitions`');
 	}
 
-    /**
-     * @param $transitionId
-     * @param $from
-     * @param $to
-     * @param $label
-     * @param $preserve
-     */
-    function updateTransition( $transitionId, $from, $to, $label, $preserve )
+	function updateTransition( $transitionId, $from, $to, $label, $preserve )
 	{
 		$db = TikiDb::get();
 		$db->query(
-			'UPDATE `tiki_transitions` SET `name` = ?, `from` = ?, `to` = ?, `preserve` = ? WHERE `transitionId` = ?',
-			array($label, $from, $to, (int) $preserve, (int) $transitionId)
+						'UPDATE `tiki_transitions` SET `name` = ?, `from` = ?, `to` = ?, `preserve` = ? WHERE `transitionId` = ?',
+						array($label, $from, $to, (int) $preserve, (int) $transitionId)
 		);
 	}
 
-    /**
-     * @param $transitionId
-     * @param array $guards
-     */
-    function updateGuards( $transitionId, array $guards )
+	function updateGuards( $transitionId, array $guards )
 	{
 		$db = TikiDb::get();
 		$db->query(
-			'UPDATE `tiki_transitions` SET `guards` = ? WHERE `transitionId` = ?',
-			array(json_encode($guards), (int) $transitionId)
+						'UPDATE `tiki_transitions` SET `guards` = ? WHERE `transitionId` = ?',
+						array(json_encode($guards), (int) $transitionId)
 		);
 	}
 
-    /**
-     * @param $transitionId
-     */
-    function removeTransition( $transitionId )
+	function removeTransition( $transitionId )
 	{
 		$db = TikiDb::get();
 
 		$db->query('DELETE FROM `tiki_transitions` WHERE `transitionId` = ?', array($transitionId));
 	}
 
-    /**
-     * @param $states
-     * @return array
-     */
-    private function getTransitionsFromStates( $states )
+	private function getTransitionsFromStates( $states )
 	{
 		$db = TikiDb::get();
 
@@ -210,8 +162,8 @@ class TransitionLib
 		}
 
 		$bindvars = array($this->transitionType);
-		$query = "SELECT `transitionId`, `preserve`, `name`, `from`, `to`, `guards` FROM `tiki_transitions` WHERE `type` = ? AND " .
-						$db->in('from', $states, $bindvars) . ' AND NOT (' .
+		$query = "SELECT `transitionId`, `preserve`, `name`, `from`, `to`, `guards` FROM `tiki_transitions` WHERE `type` = ? AND " . 
+						$db->in('from', $states, $bindvars) . ' AND NOT (' . 
 						$db->in('to', $states, $bindvars) . ')';
 
 		$result = $db->fetchAll($query, $bindvars);
@@ -219,11 +171,7 @@ class TransitionLib
 		return array_map(array($this, 'expandGuards'), $result);
 	}
 
-    /**
-     * @param $transitionId
-     * @return mixed
-     */
-    function getTransition( $transitionId )
+	function getTransition( $transitionId )
 	{
 		$db = TikiDb::get();
 
@@ -235,11 +183,7 @@ class TransitionLib
 		return $this->expandGuards(reset($result));
 	}
 
-    /**
-     * @param $transition
-     * @return mixed
-     */
-    private function expandGuards( $transition )
+	private function expandGuards( $transition )
 	{
 		$transition['guards'] = json_decode($transition['guards'], true);
 		if ( ! $transition['guards'] ) {
@@ -251,56 +195,41 @@ class TransitionLib
 
 	// The following functions vary depending on the transition type
 
-    /**
-     * @param $object
-     * @param $type
-     * @return array
-     */
-    private function getCurrentStates( $object, $type )
+	private function getCurrentStates( $object, $type )
 	{
 		switch( $this->transitionType ) {
 			case 'group':
-				$userlib = TikiLib::lib('user');
+				global $userlib;
 				return $userlib->get_user_groups($object);
 			case 'category':
-				$categlib = TikiLib::lib('categ');
+				global $categlib; require_once 'lib/categories/categlib.php';
 				return $categlib->get_object_categories($type, $object);
 		}
 	}
 
-    /**
-     * @param $state
-     * @param $object
-     * @param $type
-     */
-    private function addState( $state, $object, $type )
+	private function addState( $state, $object, $type )
 	{
 		switch ( $this->transitionType ) {
 		case 'group':
-			$userlib = TikiLib::lib('user');
+			global $userlib;
 			$userlib->assign_user_to_group($object, $state);
 			return;
 		case 'category':
-			$categlib = TikiLib::lib('categ');
+			global $categlib; require_once 'lib/categories/categlib.php';
 			$categlib->categorize_any($type, $object, $state);
 			return;
 		}
 	}
 
-    /**
-     * @param $state
-     * @param $object
-     * @param $type
-     */
-    private function removeState( $state, $object, $type )
+	private function removeState( $state, $object, $type )
 	{
 		switch ( $this->transitionType ) {
 		case 'group':
-			$userlib = TikiLib::lib('user');
+			global $userlib;
 			$userlib->remove_user_from_group($object, $state);
 			return;
 		case 'category':
-			$categlib = TikiLib::lib('categ');
+			global $categlib; require_once 'lib/categories/categlib.php';
 			if ( $catobj = $categlib->is_categorized($type, $object) ) {
 				$categlib->uncategorize($catobj, $state);
 			}

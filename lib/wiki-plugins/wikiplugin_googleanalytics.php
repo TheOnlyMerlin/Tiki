@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,7 +13,6 @@ function wikiplugin_googleanalytics_info()
 		'description' => tra('Add the tracking code for Google Analytics'),
 		'prefs' => array( 'wikiplugin_googleanalytics' ),
 		'icon' => 'img/icons/chart_line.png',
-		'format' => 'html',
 		'params' => array(
 			'account' => array(
 				'required' => true,
@@ -27,14 +26,9 @@ function wikiplugin_googleanalytics_info()
 
 function wikiplugin_googleanalytics($data, $params)
 {
-	global $feature_no_cookie;	// set according to cookie_consent_feature pref in tiki-setup.php
-
 	extract($params, EXTR_SKIP);
 	if (empty($account)) {
 		return tra('Missing parameter');
-	}
-	if ($feature_no_cookie) {
-		return '';
 	}
 	$ret = <<<JS
 <script type="text/javascript">
@@ -49,5 +43,5 @@ function wikiplugin_googleanalytics($data, $params)
 </script>
 JS
 ;
-	return $ret;
+	return "~np~" . $ret . "~/np~";
 }

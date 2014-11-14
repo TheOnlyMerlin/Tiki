@@ -1,6 +1,6 @@
 {title url="tiki-edit_structure.php?page_ref_id=$page_ref_id"}{if $editable == 'y'}{tr}Modify Structure{/tr}{else}{tr}Structure{/tr}{/if}: {$structure_name}{/title}
 
-<div class="t_navbar">
+<div class="navbar">
 {button href="tiki-admin_structures.php" _text="{tr}Structures{/tr}"}
 </div>
 
@@ -66,7 +66,7 @@
 {/if}
 
 <h2>{tr}Structure Layout{/tr}</h2>
-{button _text="{tr}Save{/tr}" _style="display:none;" _class="save_structure" _type="primary" _ajax="n" _auto_args="save_structure,page_ref_id"}
+{button _text="{tr}Save{/tr}" _style="display:none;" _class="save_structure" _ajax="n" _auto_args="save_structure,page_ref_id"}
 {self_link page_ref_id=$structure_id}
 	{if $structure_id eq $page_ref_id}<strong>{/if}
 	<big>{tr}Top{/tr}</big>
@@ -74,20 +74,20 @@
 	{/if}
 {/self_link}
 <form action="tiki-edit_structure.php" method="post" style="display: inline-block; margin-left: 1em;">
-	<input type="hidden" name="page_ref_id" value="{$structure_id}">
-	<label for="pageAlias">{tr}Alias:{/tr}</label>
-	<input type="text" name="pageAlias" id="pageAlias" value="{$topPageAlias}">
-	<small><input type="submit" class="btn btn-default btn-sm" name="create" value="{tr}Update{/tr}"></small>
+	<input type="hidden" name="page_ref_id" value="{$structure_id}" />
+	<label for="pageAlias">{tr}Alias:{/tr}</label></td>
+	<input type="text" name="pageAlias" id="pageAlias" value="{$topPageAlias}" />
+	<small><input type="submit" name="create" value="{tr}Update{/tr}" /></small>
 </form>
 <div class="structure-container">
 	{$nodelist}
 </div>
-{button _text="{tr}Save{/tr}" _style="display:none;" _class="save_structure" _type="primary" _ajax="n" _auto_args="save_structure,page_ref_id"}
+{button _text="{tr}Save{/tr}" _style="display:none;" _class="save_structure" _ajax="n" _auto_args="save_structure,page_ref_id"}
 
 {if $editable == 'y'}
 	<form action="tiki-edit_structure.php" method="post">
 		<h3>{tr}Add pages{/tr}</h3>
-		<input type="hidden" name="page_ref_id" value="{$page_ref_id}">
+		<input type="hidden" name="page_ref_id" value="{$page_ref_id}"/>
 
 		<table class="formcolor">
 			<tr>
@@ -101,8 +101,8 @@
 						{/section}
 					</ul>
 					<label for="find_objects" style="display: inline-block;">{tr}Find:{/tr}</label>
-					<input type="text" name="find_objects" id="find_objects" value="{$find_objects|escape}">
-					<input type="submit" class="btn btn-default btn-sm" value="{tr}Filter{/tr}" name="search_objects">
+					<input type="text" name="find_objects" id="find_objects" value="{$find_objects|escape}"/>
+					<input type="submit" value="{tr}Filter{/tr}" name="search_objects"/>
 					{autocomplete element='#find_objects' type='pagename'}
 
 					{if $prefs.feature_categories eq 'y'}
@@ -120,22 +120,20 @@
 	</form>
 	{if $prefs.feature_wiki_categorize_structure == 'y' && $all_editable == 'y'}
 		<form action="tiki-edit_structure.php" method="post">
-			<input type="hidden" name="page_ref_id" value="{$page_ref_id}">
+			<input type="hidden" name="page_ref_id" value="{$page_ref_id}"/>
 
 			<h3>{tr}Categorize all pages in structure together:{/tr}</h3>
-            <div class="table-responsive">
-			<table class="table normal">
+			<table class="normal">
 			{include file='categorize.tpl'}
 			</table>
-            </div>
-			<input type="submit" class="btn btn-default btn-sm" name="recategorize" value="{tr}Update{/tr}">
+			<input type="submit" name="recategorize" value="{tr}Update{/tr}"/>
 			&nbsp;&nbsp;{tr}Remove existing categories from ALL pages before recategorizing:{/tr} <input type="checkbox"
-																										 name="cat_override">
+																										 name="cat_override"/>
 		</form>
 	{/if}
 	<div id="move_dialog" style="display: none;">
 		<form action="tiki-edit_structure.php" method="post">
-			<input type="hidden" name="page_ref_id" value="{$page_ref_id}">
+			<input type="hidden" name="page_ref_id" value="{$page_ref_id}"/>
 			<div class="clearfix" style="margin-bottom: 1em;">
 				<label for="structure_id">{tr}Move to another structure:{/tr}</label>
 				<select name="structure_id" id="structure_id"{if $structures|@count eq '1'} disabled="disabled"{/if}>
@@ -149,26 +147,26 @@
 					{/section}
 				</select>
 			</div>
-			<label class="pull-left" for="begin1">{tr}at the beginning{/tr}</label>
-			<div class="pull-left"><input type="radio" id="begin1" name="begin" value="1" checked="checked" {if $structures|@count eq '1'} disabled="disabled"{/if}></div>
-			<label class="pull-left" for="begin2">{tr}at the end{/tr}</label>
-			<div class="pull-left"><input type="radio" id="begin2" name="begin" value="0" {if $structures|@count eq '1'}disabled="disabled"{/if}></div>
-			<hr>
-			<div class="pull-left input_submit_container">
-				<input type="submit" class="btn btn-default btn-sm" name="move_to" value="{tr}Move{/tr}" {if $structures|@count eq '1'} disabled="disabled"{/if}>
+			<label class="floatleft" for="begin1">{tr}at the beginning{/tr}</label>
+			<div class="floatleft"><input type="radio" id="begin1" name="begin" value="1" checked="checked" {if $structures|@count eq '1'} disabled="disabled"{/if} /></div>
+			<label class="floatleft" for="begin2">{tr}at the end{/tr}</label>
+			<div class="floatleft"><input type="radio" id="begin2" name="begin" value="0" {if $structures|@count eq '1'}disabled="disabled"{/if} /></div>
+			<hr />
+			<div class="floatleft input_submit_container">
+				<input type="submit" name="move_to" value="{tr}Move{/tr}" {if $structures|@count eq '1'} disabled="disabled"{/if} />
 			</div>
 		</form>
 	</div>
 	<div id="newpage_dialog" style="display: none;">
 		<form action="tiki-edit_structure.php" method="post">
-			<input type="hidden" name="page_ref_id" value="{$page_ref_id}">
+			<input type="hidden" name="page_ref_id" value="{$page_ref_id}"/>
 			<table class="formcolor">
 				<tr>
 					<td>
 						<label for="name">{tr}Create Page:{/tr}</label>
-						<input type="text" name="name" id="name">
+						<input type="text" name="name" id="name"/>
 						{autocomplete element='#name' type='pagename'}
-						<input type="submit" class="btn btn-default btn-sm" name="create" value="{tr}Update{/tr}">
+						<input type="submit" name="create" value="{tr}Update{/tr}"/>
 					</td>
 				</tr>
 			</table>

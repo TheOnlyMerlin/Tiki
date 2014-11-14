@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -20,7 +20,6 @@ function wikiplugin_trackercomments_info()
 				'description' => tra('Numeric value representing the tracker ID'),
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'tracker',
 			),
 			'shownbitems' => array(
 				'required' => false,
@@ -28,7 +27,7 @@ function wikiplugin_trackercomments_info()
 				'description' => tra('Determines whether the number of items will be shown (not shown by default)'),
 				'filter' => 'alpha',
 				'default' => '',
-				'options' => array(
+			'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
@@ -47,7 +46,7 @@ function wikiplugin_trackercomments_info()
 }
 function wikiplugin_trackercomments($data, $params)
 {
-	$trklib = TikiLib::lib('trk');
+	global $trklib; include_once('lib/trackers/trackerlib.php');
 	global $user;
 	extract($params, EXTR_SKIP);
 	$ret = '';

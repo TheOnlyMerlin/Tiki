@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -31,15 +31,14 @@ if (!empty($_REQUEST['custom_save'])) {
 	} else {
 		$smarty->assign_by_ref('custom_lang', $_REQUEST['custom_lang']);
 		$custom_file = 'lang/' . $_REQUEST['custom_lang'] . '/';
-		if (!empty($tikidomain)) {
+		if (!empty($tikidomain))
 			$custom_file.= "$tikidomain/";
-		}
 
 		$custom_file.= 'custom.php';
 		$smarty->assign('custom_file', $custom_file);
 		$custom_code = "<?php\r\n\$lang_custom = array(\r\n";
 
-		foreach ($_REQUEST['from'] as $i => $from) {
+		foreach ($_REQUEST['from'] as $i=>$from) {
 			if (!empty($from)) {
 				$custom_code .= '"' . str_replace('"', '\\"', $from) . '" => "' . str_replace('"', '\\"', $_REQUEST['to'][$i]) . "\",\r\n";
 			}
@@ -55,7 +54,7 @@ if (!empty($_REQUEST['custom_save'])) {
 				$smarty->assign('custom_error', 'file');
 			}
 			fclose($fp);
-			$cachelib = TikiLib::lib('cache');
+			global $cachelib; include_once ('lib/cache/cachelib.php');
 			$cachelib->empty_cache('templates_c');
 			$smarty->assign('custom_ok', 'y');
 		}
@@ -69,9 +68,8 @@ if (!empty($_REQUEST['custom_save'])) {
 if (!empty($_REQUEST['custom_lang'])) {
 	ask_ticket('admin-inc-i18n');
 	$custom_file = 'lang/' . $_REQUEST['custom_lang'] . '/';
-	if (!empty($tikidomain)) {
+	if (!empty($tikidomain))
 		$custom_file .= "$tikidomain/";
-	}
 
 	$custom_file .= 'custom.php';
 
@@ -89,12 +87,3 @@ if (!empty($_REQUEST['custom_lang'])) {
 	}
 }
 
-global $tikifeedback;
-if (!empty($tikifeedback)) {
-	foreach ($tikifeedback as $item) {
-		if ($item['name'] === 'available_languages' || $item['name'] === 'restrict_language') {
-			TikiLib::lib('cache')->empty_cache('temp_cache');
-			break;
-		}
-	}
-}

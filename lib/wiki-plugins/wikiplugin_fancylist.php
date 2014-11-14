@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -60,7 +60,7 @@ function wikiplugin_fancylist($data, $params)
 			$result .= '<div><span class='.count.'>'.$count.'</span><p>' . $part . '</p></div>';
 			$count++;
 		} else {
-			$result .= '<li><p>' . $part . '</p></li>';
+			$result .= '<li><p>' . $part . '</p></li>';				
 		}
 	}
 	if (isset($div)) {

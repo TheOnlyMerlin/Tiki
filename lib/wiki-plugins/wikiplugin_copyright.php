@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,7 +14,7 @@ function wikiplugin_copyright_info()
 		'documentation' => 'PluginCopyright',
 		'description' => tra('Insert copyright notices'),
 		'prefs' => array( 'wiki_feature_copyrights', 'wikiplugin_copyright' ),
-		'body' => tra('Pattern to display the copyright in. May contain ~title~, ~year~, ~authors~ and ~holder~.'),
+		'body' => tra('Pattern to display the copyright in. May contain ~title~, ~year~ and ~authors~.'),
 		'icon' => 'img/icons/shield.png',
 		'params' => array(
 		),
@@ -40,7 +40,6 @@ function wikiplugin_copyright($data, $params)
 
 		$notice = str_replace("~year~", $copyrights['data'][$i]['year'], $notice);
 		$notice = str_replace("~authors~", $copyrights['data'][$i]['authors'], $notice);
-		$notice = str_replace("~holder~", $copyrights['data'][$i]['holder'], $notice);
 		$result = $result . $notice;
 	}
 

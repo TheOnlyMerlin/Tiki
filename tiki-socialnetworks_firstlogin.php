@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -19,11 +16,16 @@ $inputConfiguration = array(
 
 require_once ('tiki-setup.php');
 $access->check_user($user);
+	
+//if (0 and $prefs['feature_ajax'] == 'y') {	// AJAX_TODO
+//	include_once ('register_ajax.php');
+//	$ajaxlib->registerFunction('chkRegName');
+//	$ajaxlib->registerFunction('chkRegEmail');
+//	$ajaxlib->registerTemplate('tiki-register.tpl');
+//}
 
 $smarty->assign('msg', '');
 $smarty->assign('alldone', false);
-
-$smarty->assign('userinfo', $userlib->get_user_info($user));
 
 //groups choice
 if (count($registrationlib->merged_prefs['choosable_groups'])) {
@@ -34,14 +36,11 @@ if (count($registrationlib->merged_prefs['choosable_groups'])) {
 }
 
 if (isset($_REQUEST["localinfosubmit"])) {
-	if ($prefs['login_is_email'] === 'y' && empty($_REQUEST["name"])) {
-		$smarty->assign('msg', tra('Email is mandatory'));
-	} else if (empty($_REQUEST["name"]) || (empty($_REQUEST["email"]) && $prefs['login_is_email'] !== 'y')) {
+	if (empty($_REQUEST["name"]) || empty($_REQUEST["email"])) {
 		$smarty->assign('msg', tra('Username and email are mandatory'));
-	} elseif ($user !== $_REQUEST['name'] && $userlib->user_exists($_REQUEST['name'])) {
+	} elseif ($userlib->user_exists($_REQUEST["name"])) {
 		$smarty->assign('msg', tra('User already exists'));
-	} elseif (!preg_match('/^[_a-z0-9\.\-]+@[_a-z0-9\.\-]+\.[a-z]{2,4}$/i',
-				($prefs['login_is_email'] !== 'y') ? $_REQUEST['email'] : $_REQUEST['name'])) {
+	} elseif (!preg_match('/^[_a-z0-9\.\-]+@[_a-z0-9\.\-]+\.[a-z]{2,4}$/i', $_REQUEST["email"])) {
 		$smarty->assign('msg', tra('Email is invalid'));
 	} else {
 		$tikilib->set_user_preference($user, 'socialnetworks_user_firstlogin', 'n');
@@ -73,7 +72,5 @@ if (isset($_REQUEST["linkaccount"])) {
 	}
 }
 
-TikiLib::lib('registration')->addRegistrationFormValidationJs();
-
-$smarty->assign('mid_data', $smarty->fetch('tiki-socialnetworks_firstlogin.tpl'));
-$smarty->display('tiki_full.tpl');
+$smarty->assign('mid', 'tiki-socialnetworks_firstlogin.tpl');
+$smarty->display('tiki.tpl');

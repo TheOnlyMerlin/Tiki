@@ -1,19 +1,16 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 $section = 'blogs';
 require_once ('tiki-setup.php');
-$bloglib = TikiLib::lib('blog');
+include_once ('lib/blogs/bloglib.php');
 //get_strings tra('List Blog Posts')
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	include_once ('lib/categories/categlib.php');
 }
 $access->check_feature('feature_blogs');
 $access->check_permission('tiki_p_read_blog');
@@ -31,7 +28,7 @@ if (isset($_REQUEST["remove"])) {
 	$access->check_authenticity();
 	$bloglib->remove_blog($_REQUEST["remove"]);
 }
-// This script can receive the threshold
+// This script can receive the thresold
 // for the information as the number of
 // days to get in the log 1,3,4,etc
 // it will default to 1 recovering information for today

@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -23,8 +23,7 @@ function wikiplugin_sheet_info()
 				'filter' => 'digits',
 				'accepted' => 'Sheet ID number',
 				'default' => '',
-				'since' => '',
-				'profile_reference' => 'sheet',
+				'since' => ''
 			),
 			'url' => array(
 				'required' => false,
@@ -44,8 +43,8 @@ function wikiplugin_sheet_info()
 				'default' => 'n',
 				'since' => '5.0',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
@@ -76,8 +75,8 @@ function wikiplugin_sheet_info()
 				'default' => 'y',
 				'since' => '6.0',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
@@ -90,8 +89,8 @@ function wikiplugin_sheet_info()
 				'default' => 'y',
 				'since' => '6.0',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
@@ -119,21 +118,19 @@ function wikiplugin_sheet_info()
 
 function wikiplugin_sheet($data, $params)
 {
-	global $tiki_p_edit_sheet, $tiki_p_edit, $tiki_p_admin_sheet, $tiki_p_admin, $prefs, $user, $page;
+	global $dbTiki, $tiki_p_edit_sheet, $tiki_p_edit, $tiki_p_admin_sheet, $tiki_p_admin, $prefs, $user, $sheetlib, $page, $tikilib, $smarty;
 	extract($params, EXTR_SKIP);
 	$style = (isset($height)) ? "height: $height !important;" : '';
 	$style .= (isset($width)) ? "width: $width;" : '';
-//	$urlHeight = (isset($height)) ? "&height=$height" : '';
+//	$urlHeight = (isset($height)) ? "&height=$height" : ''; 
 //	$urlHeight .= (isset($width)) ? "&width=$width" : '';
 	$urlHeight = (isset($height)) ? "&height=100" : ''; // not setting any height or width in the sheet params created for me the literal '...&height=100%&...' or '...&width=100%&...' in the url with a 400 error (bad request). Hardcoding to 100 (instead of 100%) to avoid this error until a better fix is found
 	$urlHeight .= (isset($width)) ? "&width=100" : ''; // not setting any height or width in the sheet params created for me the literal '...&height=100%&...' or '...&width=100%&...' in the url with a 400 error (bad request). Hardcoding to 100 (instead of 100%) to avoid this error until a better fix is found
 	$editable = isset($editable) && $editable == 'n' ? false : true;
 	$subsheets = isset($subsheets) && $subsheets == 'n' ? false : true;
 	$class = (isset($class)) ? " $class"  : '';
-
+	
 	$sheetlib = TikiLib::lib("sheet");
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
 
 	static $index = 0;
 	++$index;
@@ -170,7 +167,7 @@ EOF;
 ~np~
 <form method="post" action="">
 	<p>
-		<input type="submit" name="create_sheet" class="btn btn-default" value="$label"/>
+		<input type="submit" name="create_sheet" value="$label"/>
 		<input type="hidden" name="index" value="$index"/>
 	</p>
 </form>
@@ -179,31 +176,31 @@ EOF;
 			}
 		}
 	}
-
+	
 	$sheet = new TikiSheet();
-
+	
 	if (empty($url)) {
 		$info;
 		if (!empty($id)) {
 			$info = $sheetlib->get_sheet_info($id);
 		}
-
+	
 		if (empty($info)) {
 			return tra("Error loading spreadsheet");
 		}
-
+		
 		$objectperms = Perms::get('sheet', $id);
 		if (!$objectperms->view_sheet  && !($user && $info['author'] == $user)) {
 			return (tra('Permission denied'));
 		}
-
+	
 		// Build required objects
 		$db = new TikiSheetDatabaseHandler($id);
 		//$out = new TikiSheetOutputHandler($data);
-
+	
 		// Fetch sheet from database
 		$sheet->import($db);
-
+	
 	} else {
 		if (!isset($simple)) {
 			$simple = 'y';
@@ -215,7 +212,7 @@ EOF;
 		$sheet->setRange($range);
 		$calcOff = ',calcOff: true';
 	}
-
+	
 	// Grab sheet output
 	if (isset($url)) {
 		$file = file_get_contents($url);
@@ -236,31 +233,31 @@ EOF;
 	if (strpos($ret, '<table ') === false) {
 		return '~np~' . $ret . '~/np~';	// return a single cell raw
 	}
-
+	
 	if (!isset($simple) || $simple != 'y') {
-		$headerlib = TikiLib::lib('header');
+		global $headerlib;
 		$sheetlib->setup_jquery_sheet();
 		$headerlib->add_jq_onready(
-			'$("div.tiki_sheet").each(function() {
-				$(this).sheet($.extend($.sheet.tikiOptions,{
-				editable:false'
-			. $calcOff .
-			'}));
-			});'
+						'$("div.tiki_sheet").each(function() {
+							$(this).sheet($.extend($.sheet.tikiOptions,{
+							editable:false'
+							. $calcOff .
+							'}));
+						});'
 		);
 
 	}
 
 	$ret = '<div id="tiki_sheet' . $sheet->instance . '" class="tiki_sheet' . $class . '" style="overflow:hidden;' . $style . '">' . $ret . '</div>';
-
+	
 	if ( $editable && ($objectperms->edit_sheet  || $objectperms->admin_sheet || $tiki_p_admin == 'y')) {
 		$smarty->loadPlugin('smarty_function_button');
-
+		
 		//If you've given the sheet a url, you can't edit it, disable if not possible
 		if (!isset($url)) {
 			$button_params = array('_text' => tra("Edit Sheet"), '_script' => "tiki-view_sheets.php?sheetId=$id&parse=edit$urlHeight&page=$page");
 		}
-
+		
 		$ret .= smarty_function_button($button_params, $smarty);
 	}
 	return '~np~' . $ret . '~/np~';

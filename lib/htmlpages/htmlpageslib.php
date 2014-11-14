@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,16 +11,9 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-/**
- *
- */
 class HtmlPagesLib extends TikiLib
 {
-    /**
-     * @param $pageName
-     * @return bool
-     */
-    function remove_html_page($pageName)
+	function remove_html_page($pageName)
 	{
 		$query = 'delete from `tiki_html_pages` where binary `pageName`=?';
 		$result = $this->query($query, array($pageName));
@@ -28,14 +21,7 @@ class HtmlPagesLib extends TikiLib
 		return true;
 	}
 
-    /**
-     * @param $offset
-     * @param $maxRecords
-     * @param $sort_mode
-     * @param $find
-     * @return array
-     */
-    function list_html_pages($offset, $maxRecords, $sort_mode, $find)
+	function list_html_pages($offset, $maxRecords, $sort_mode, $find)
 	{
 		$bindvars = array();
 
@@ -64,15 +50,7 @@ class HtmlPagesLib extends TikiLib
 		return $retval;
 	}
 
-    /**
-     * @param $pageName
-     * @param $offset
-     * @param $maxRecords
-     * @param $sort_mode
-     * @param $find
-     * @return array
-     */
-    function list_html_page_content($pageName, $offset, $maxRecords, $sort_mode, $find)
+	function list_html_page_content($pageName, $offset, $maxRecords, $sort_mode, $find)
 	{
 		$bindvars = array($pageName);
 		$mid = ' where binary `pageName`=? ';
@@ -100,12 +78,7 @@ class HtmlPagesLib extends TikiLib
 		return $retval;
 	}
 
-    /**
-     * @param $pageName
-     * @param $data
-     * @return mixed
-     */
-    function parse_html_page($pageName, $data)
+	function parse_html_page($pageName, $data)
 	{
 		global $tikilib; // only required for parsing <wiki>...</wiki> tags
 
@@ -128,14 +101,7 @@ class HtmlPagesLib extends TikiLib
 		return $data;
 	}
 
-    /**
-     * @param $pageName
-     * @param $type
-     * @param $content
-     * @param $refresh
-     * @return mixed
-     */
-    function replace_html_page($pageName, $type, $content, $refresh)
+	function replace_html_page($pageName, $type, $content, $refresh)
 	{
 		$query = 'delete from `tiki_html_pages` where binary `pageName`=?';
 		$this->query($query, array($pageName), -1, -1, false);
@@ -175,13 +141,7 @@ class HtmlPagesLib extends TikiLib
 		return $pageName;
 	}
 
-    /**
-     * @param $pageName
-     * @param $zone
-     * @param $content
-     * @return mixed
-     */
-    function replace_html_page_content($pageName, $zone, $content)
+	function replace_html_page_content($pageName, $zone, $content)
 	{
 		$query = 'update `tiki_html_pages_dynamic_zones` set `content`=? where binary `pageName`=? and `zone`=?';
 		$result = $this->query($query, array($content, $pageName, $zone));
@@ -189,12 +149,7 @@ class HtmlPagesLib extends TikiLib
 		return $zone;
 	}
 
-    /**
-     * @param $pageName
-     * @param $zone
-     * @return bool
-     */
-    function remove_html_page_content($pageName, $zone)
+	function remove_html_page_content($pageName, $zone)
 	{
 		$query = 'delete from `tiki_html_pages_dynamic_zones` where binary `pageName`=? and `zone`=?';
 		$result = $this->query($query, array($pageName, $zone));
@@ -202,11 +157,7 @@ class HtmlPagesLib extends TikiLib
 		return true;
 	}
 
-    /**
-     * @param $pageName
-     * @return bool
-     */
-    function get_html_page($pageName)
+	function get_html_page($pageName)
 	{
 		$query = 'select * from `tiki_html_pages` where binary `pageName`=?';
 		$result = $this->query($query, array($pageName));
@@ -218,12 +169,7 @@ class HtmlPagesLib extends TikiLib
 		return $res;
 	}
 
-    /**
-     * @param $pageName
-     * @param $zone
-     * @return bool
-     */
-    function get_html_page_content($pageName, $zone)
+	function get_html_page_content($pageName, $zone)
 	{
 		$query = 'select * from `tiki_html_pages_dynamic_zones` where binary `pageName`=? and `zone`=?';
 		$result = $this->query($query, array($pageName, $zone));

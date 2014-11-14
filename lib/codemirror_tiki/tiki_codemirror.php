@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -17,28 +17,25 @@ function codemirrorModes($minify = true)
 
 	if (!file_exists($jsModes) || !file_exists($cssModes)) {
 		//codemirror theme
-		$js .= 'window.codeMirrorTheme = "' . $prefs['feature_syntax_highlighter_theme'] .'";
-test = { mode: function () {}, indentation: function() {} }
-';	// test is a dummy line to supress exceptions from mode tests in cm 3
-
+		$js .= 'window.codeMirrorTheme = "' . $prefs['feature_syntax_highlighter_theme'] .'";';
 		//load modes first
 		//tiki first, where are our priorities!
 		$js .= @file_get_contents("lib/codemirror_tiki/mode/tiki/tiki.js");
- 		$css .= @file_get_contents("lib/codemirror_tiki/mode/tiki/tiki.css");
+		$css .= @file_get_contents("lib/codemirror_tiki/mode/tiki/tiki.css");
 
-		foreach (glob('vendor/codemirror/codemirror/mode/*', GLOB_ONLYDIR) as $dir) {
-			foreach (glob($dir.'/*.js') as $jsFile) {
+		foreach(glob('lib/codemirror/mode/*', GLOB_ONLYDIR) as $dir) {
+			foreach(glob($dir.'/*.js') as $jsFile) {
 				$js .= "//" . $jsFile . "\n";
-				$js .= "try {\n" . @file_get_contents($jsFile) . "\n} catch (e) { };\n";
+				$js .= "try{" . @file_get_contents($jsFile) . "}catch(e){}";
 			}
-			foreach (glob($dir.'/*.css') as $cssFile) {
+			foreach(glob($dir.'/*.css') as $cssFile) {
 				$css .= "/*" . $cssFile . "*/\n";
 				$css .= @file_get_contents($cssFile);
 			}
 		}
 
 		//load themes
-		foreach (glob('vendor/codemirror/codemirror/theme/*.css') as $cssFile) {
+		foreach(glob('lib/codemirror/theme/*.css') as $cssFile) {
 			$css .= @file_get_contents($cssFile);
 		}
 
@@ -50,6 +47,6 @@ test = { mode: function () {}, indentation: function() {} }
 	}
 
 	TikiLib::lib("header")
-		->add_jsfile($jsModes)
+		->add_jsfile_dependancy($jsModes)
 		->add_cssfile($cssModes);
 }

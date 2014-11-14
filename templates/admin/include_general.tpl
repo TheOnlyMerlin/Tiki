@@ -2,13 +2,9 @@
 
 <form action="tiki-admin.php?page=general" class="admin" method="post">
 	<input type="hidden" name="new_prefs" />
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-				<input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}" />
-	        </div>
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: right;">
+		<input type="submit" value="{tr}Change preferences{/tr}" />
+	</div>
 	{if !empty($error_msg)}
 		{remarksbox type='warning' title="{tr}Warning{/tr}" icon='error'}
 			{$error_msg}
@@ -17,10 +13,9 @@
 
 	{tabset name="admin_general"}
 		{tab name="{tr}General Preferences{/tr}"}
-            <h2>{tr}General Preferences{/tr}</h2>
 			<fieldset>
 				<legend>{tr}Server Fitness{/tr}</legend>
-				{tr}To check if your server meets the requirements for running Tiki please visit <a href="tiki-check.php">Tiki Server Compatibility Check</a>{/tr}.
+				To check if your server meets the requirements for running Tiki please visit <a href="tiki-check.php">Tiki Server Compatibility Check</a>.
 			</fieldset>
 
 			<fieldset>
@@ -42,7 +37,6 @@
 
 				<div class="adminoptionbox">
 					{preference name=feature_version_checks}
-					{preference name=tiki_release_cycle}
 					<div id="feature_version_checks_childcontainer">
 						{preference name=tiki_version_check_frequency}
 					</div>
@@ -79,8 +73,6 @@
 
 					{preference name=zend_mail_smtp_port}
 					{preference name=zend_mail_smtp_security}
-					{preference name=zend_mail_smtp_helo}
-					{preference name=zend_mail_queue}
 				</div>
 				<div class="adminoptionbox">
 					<label for="testMail">{tr}Email to send a test mail{/tr}</label>
@@ -119,7 +111,6 @@
 		{/tab}
 
 		{tab name="{tr}General Settings{/tr}"}
-            <h2>{tr}General Settings{/tr}</h2>
 			<fieldset>
 				<legend>{tr}Server{/tr}</legend>
 				{preference name=tmpDir}
@@ -134,7 +125,6 @@
 
 				{preference name=http_skip_frameset}
 				{preference name=feature_loadbalancer}
-				{preference name=feature_port_rewriting}
 			</fieldset>
 
 			<fieldset>
@@ -151,7 +141,7 @@
 				{remarksbox type="note" title="{tr}Advanced configuration warning{/tr}"}
 					{tr}Note that storing session data in the database is an advanced systems administration option, and is for admins who have comprehensive access and understanding of the database, in order to deal with any unexpected effects.{/tr}
 				{/remarksbox}
-				<div style="padding:.5em; text-align:left;">
+				<div style="padding:.5em;" align="left">
 					{icon _id=information style="vertical-align:middle"} {tr}Changing this feature will immediately log you out when you save this preference.{/tr} {if $prefs.forgotPass ne 'y'}If there is a chance you have forgotten your password, enable "Forget password" feature.<a href="tiki-admin.php?page=features" title="{tr}Features{/tr}">{tr}Enable now{/tr}</a>.{/if}
 				</div>
 				{preference name=session_storage}
@@ -172,7 +162,6 @@
 				{preference name=feature_contact}
 				<div class="adminoptionboxchild" id="feature_contact_childcontainer">
 					{preference name=contact_anon}
-					{preference name=contact_priority_onoff}
 					{preference name=contact_user}
 				</div>
 			</fieldset>
@@ -194,16 +183,6 @@
 					{preference name=print_pdf_webservice_url}
 				</div>
 			</fieldset>
-			
-			<fieldset>
-				<legend>{tr}Terms and Conditions{/tr}</legend>
-
-				{preference name=conditions_enabled}
-				<div class="adminoptionboxchild" id="conditions_enabled_childcontainer">
-					{preference name=conditions_page_name}
-					{preference name=conditions_minimum_age}
-				</div>
-			</fieldset>
 
 			<fieldset>
 				<legend>{tr}Miscellaneous{/tr}</legend>
@@ -215,14 +194,13 @@
 		{/tab}
 
 		{tab name="{tr}Navigation{/tr}"}
-            <h2>{tr}Navigation{/tr}</h2>
 			<fieldset>
 				<legend>{tr}Menus{/tr}</legend>
 				<em>{tr}Create and edit menus {/tr}</em><a href="tiki-admin_menus.php"><em>{tr}here{/tr}</em></a>
 				<div class="adminoptionbox">
 					{preference name=feature_cssmenus}
 					{preference name=menus_item_names_raw_teaser}
-					<div class="adminoptionboxchild" id="menus_item_names_raw_teaser_childcontainer">
+					<div class="adminoptionboxchild" id="menus_item_names_raw_teaser_childcontainer">	
 						{preference name=menus_item_names_raw}
 					</div>
 					{preference name=feature_userlevels}
@@ -250,14 +228,6 @@
 				<div class="adminoptionboxchild" id="useUrlIndex_childcontainer">
 					{preference name=urlIndex}
 				</div>
-
-				{preference name=wikiHomePage}
-				{preference name=home_blog}
-				{preference name=home_forum}
-				{preference name=home_file_gallery}
-				{preference name=home_gallery}
-				{preference name=feature_custom_home}
-
 			</fieldset>
 
 			<fieldset>
@@ -269,7 +239,7 @@
 				{preference name='permission_denied_login_box' mode='invert'}
 				<div class="adminoptionboxchild" id="permission_denied_login_box_childcontainer">
 					{tr}or{/tr}
-					<br>
+					<br />
 					{preference name=permission_denied_url}
 				</div>
 				{preference name='url_anonymous_page_not_found'}
@@ -308,35 +278,10 @@
 				</div>
 			</fieldset>
 
-			<fieldset>
-				<legend class="heading">{tr}Namespace{/tr}</legend>
-
-				{preference name=namespace_enabled}
-				<div class="adminoptionboxchild" id="namespace_enabled_childcontainer">
-					{tr}The namespace separator should not{/tr}
-					<ul>
-					<li>{tr}contain any of the characters not allowed in wiki page names, typically{/tr} /?#[]@$&amp;+;=&lt;&gt;</li>
-					<li>{tr}conflict with wiki syntax tagging{/tr}</li>
-					</ul>
-					{preference name=namespace_separator}
-					{preference name=namespace_indicator_in_structure}
-					<fieldset>
-						<legend>{tr}Settings that may be affected by the namespace separator{/tr}{help url="Watch"}</legend>
-
-						{tr}To use :: as a separator, you should also use ::: as the wiki center tag syntax{/tr}.<br/>
-						{tr}Note: a conversion of :: to ::: for existing pages must be done manually{/tr}
-						{preference name=feature_use_three_colon_centertag}
-
-						{tr}If the page name display stripper conflicts with the namespace separator, the namespace is used and the page name display is not stripped.{/tr}
-						{preference name=wiki_pagename_strip}
-					</fieldset>
-				</div>
-			</fieldset>
 
 		{/tab}
 
 		{tab name="{tr}Date and Time{/tr}"}
-            <h2>{tr}Date and Time{/tr}</h2>
 			{preference name=server_timezone}
 			{preference name=users_prefs_display_timezone}
 			{preference name=long_date_format}
@@ -351,13 +296,8 @@
 			{preference name=short_time_format}
 			<em>{tr}Sample:{/tr} {$now|tiki_short_time}</em>
 
-			<fieldset>
-				<legend>{tr}Date/time selectors{/tr}</legend>
-				{preference name=display_field_order}
-				{preference name=display_start_year}
-				{preference name=display_end_year}
-				{preference name=users_prefs_display_12hr_clock}
-			</fieldset>
+			{preference name=display_field_order}
+			{preference name=users_prefs_display_12hr_clock}
 			{preference name=tiki_same_day_time_only}
 			{preference name=wikiplugin_now}
 			{preference name=wikiplugin_countdown}
@@ -371,19 +311,13 @@
 		{/tab}
 
 		{tab name="{tr}Change admin password{/tr}"}
-            <h2>{tr}Change admin password{/tr}</h2>
-			<div style="padding:1em; text-align:left;">
+			<div style="padding:1em;" align="left">
 				<p>{tr}Change the <strong>Admin</strong> password:{/tr} <a href="tiki-adminusers.php?find=admin">{tr}User administration{/tr}</a></p>
 			</div>
 		{/tab}
 	{/tabset}
 
-    <br>{* I cheated. *}
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="text-center">
-				<input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}" />
-	        </div>
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: center;">
+		<input type="submit" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>

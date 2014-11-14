@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -19,21 +16,21 @@ if ($prefs['feature_user_watches_translations']) {
 	$smarty->assign_by_ref('languages', $languages);
 }
 
-$notificationlib = TikiLib::lib('notification');
+require_once('lib/notifications/notificationlib.php');
 
 $notification_types = $notificationlib->get_global_watch_types(true);
 if ($prefs['feature_user_watches_translations'] == 'y') {
 	$notification_types['wiki_page_in_lang_created'] = array(
 		'label' => tra('A new page is created in a language') ,
 		'type' => 'wiki page',
-		'url' => ''
+		'url' => '' 
 	);
 }
 if ( $prefs['feature_user_watches_languages'] == 'y') {
 	$notification_types['category_changed_in_lang'] = array(
 		'label' => tra('Category change in a language') ,
 		'type' => '',
-		'url' => ''
+		'url' => '' 
 	);
 }
 
@@ -48,7 +45,7 @@ if (isset($_POST['langwatch'])) {
 }
 
 if ($prefs['feature_categories']) {
-	$categlib = TikiLib::lib('categ');
+	include_once ('lib/categories/categlib.php');
 	$categories = $categlib->getCategories(NULL, true, false);
 } else {
 	$categories = array();
@@ -99,7 +96,7 @@ if (isset($_REQUEST["add"])) {
 				if (!isset($notification_types[$_REQUEST['event']])) {
 					$smarty->assign('msg', "Unknown watch type");
 					$smarty->display("error.tpl");
-					die;
+					die;					
 				}
 				$watch_object = '*';
 				$watch_type = $notification_types[$_REQUEST['event']]['type'];
@@ -132,14 +129,14 @@ if ($prefs['feature_user_watches_translations'] == 'y') {
 	$notification_types['wiki_page_in_lang_created'] = array(
 		'label' => tra('A new page is created in a language') ,
 		'type' => 'wiki page',
-		'url' => ''
+		'url' => '' 
 	);
 }
 if ( $prefs['feature_user_watches_languages'] == 'y') {
 	$notification_types['category_changed_in_lang'] = array(
 		'label' => tra('Category change in a language') ,
 		'type' => '',
-		'url' => ''
+		'url' => '' 
 	);
 }
 $rawEvents = $tikilib->get_watches_events();
@@ -189,16 +186,6 @@ $eok = $userlib->get_user_email($user);
 $smarty->assign('email_ok', empty($eok) ? 'n' : 'y');
 ask_ticket('user-watches');
 $reportsUsers = Reports_Factory::build('Reports_Users');
-$reportsUsersUser = $reportsUsers->get($user);
-$smarty->assign_by_ref('report_preferences', $reportsUsersUser);
-
-$smarty->assign('user_calendar_watch_editor', $tikilib->get_user_preference($user, 'user_calendar_watch_editor'));
-$smarty->assign('user_article_watch_editor', $tikilib->get_user_preference($user, 'user_article_watch_editor'));
-$smarty->assign('user_wiki_watch_editor', $tikilib->get_user_preference($user, 'user_wiki_watch_editor'));
-$smarty->assign('user_blog_watch_editor', $tikilib->get_user_preference($user, 'user_blog_watch_editor'));
-$smarty->assign('user_tracker_watch_editor', $tikilib->get_user_preference($user, 'user_tracker_watch_editor'));
-$smarty->assign('user_comment_watch_editor', $tikilib->get_user_preference($user, 'user_comment_watch_editor'));
-
-
+$smarty->assign_by_ref('report_preferences', $reportsUsers->get($user));
 $smarty->assign('mid', 'tiki-user_watches.tpl');
 $smarty->display("tiki.tpl");

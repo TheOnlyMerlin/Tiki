@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -11,13 +8,12 @@
 $inputConfiguration = array(array(
 	'staticKeyFiltersForArrays' => array(
 		'filter' => 'text',
-		'sort_mode' => 'text',
 	),
 	'catchAllUnset' => null,
 ));
 
 require_once 'tiki-setup.php';
-$categlib = TikiLib::lib('categ');
+require_once 'lib/categories/categlib.php';
 require_once 'lib/tree/BrowseTreeMaker.php';
 
 $access->check_feature('feature_categories');
@@ -28,13 +24,13 @@ $ctall = $categlib->getCategories();
 $tree_nodes = array();
 foreach ($ctall as $c) {
 	$url = htmlentities(
-		'tiki-edit_categories.php?' . http_build_query(
-			array(
-				'filter~categories' => $c['categId'],
-			)
-		),
-		ENT_QUOTES,
-		'UTF-8'
+					'tiki-edit_categories.php?' . http_build_query(
+									array(
+										'filter~categories' => $c['categId'],
+									)
+					),
+					ENT_QUOTES,
+					'UTF-8'
 	);
 	$name = htmlentities($c['name'], ENT_QUOTES, 'UTF-8');
 	$perms = Perms::get('category', $c['categId']);
@@ -73,9 +69,6 @@ $smarty->assign('filter', $filter);
 if (count($filter)) {
 	$unifiedsearchlib = TikiLib::lib('unifiedsearch');
 	$query = $unifiedsearchlib->buildQuery($filter);
-	if (isset($_REQUEST['sort_mode']) && $order = Search_Query_Order::parse($_REQUEST['sort_mode'])) {
-		$query->setOrder($order);
-	}
 	$result = $query->search($unifiedsearchlib->getIndex());
 	$smarty->assign('result', $result);
 }

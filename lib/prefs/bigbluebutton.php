@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -16,8 +16,8 @@ function prefs_bigbluebutton_list()
 			'help' => 'BigBlueButton',
 			'tags' => array('basic'),
 			'default' => 'n',
-			'extensions' => array(
-				'dom',
+			'dependencies' => array(
+				'php_libxml',
 			),			
 		),
 		'bigbluebutton_server_location' => array(
@@ -51,14 +51,6 @@ function prefs_bigbluebutton_list()
 			'size' => 6,
 			'default' => 5*60,
 			'tags' => array('basic'),
-		),
-		'bigbluebutton_dynamic_configuration' => array(
-			'name' => tr('BigBlueButton Dynamic Configuration'),
-			'description' => tr('Uses the advanced options of BigBlueButton to configure the XML per room.'),
-			'keywords' => 'big blue button',
-			'type' => 'flag',
-			'default' => 'n',
-			'tags' => array('advanced', 'experimental'),
 		),
 	);
 }

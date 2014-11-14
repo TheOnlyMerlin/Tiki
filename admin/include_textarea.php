@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,35 +11,28 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-// The plugins tab of tiki-admin.php?page=textarea tends to take a lot of memory, so this will avoid errors (will only work on hosts that accept ini_set of memory_limit)
-@ini_set('memory_limit', -1);
-
 $parserlib = TikiLib::lib('parser');
 
 $plugins = array();
 foreach ($parserlib->plugin_get_list() as $name) {
 	$info = $parserlib->plugin_info($name);
-	if (isset($info['prefs']) && is_array($info['prefs']) && count($info['prefs']) > 0) {
-		$plugins[$name] = $info;
-	}
+	if (isset($info['prefs']) && is_array($info['prefs']) && count($info['prefs']) > 0) $plugins[$name] = $info;
 }
 $smarty->assign('plugins', $plugins);
-if (isset($_REQUEST['textareasetup']) && (getCookie('admin_textarea', 'tabs') != 3)) {
-	// tab=3 is plugins alias tab (TODO improve)
+if (isset($_REQUEST['textareasetup']) && (getCookie('admin_textarea', 'tabs') != 3)) { // tab=3 is plugins alias tab (TODO improve)
 	ask_ticket('admin-inc-textarea');
-	foreach (glob('temp/cache/wikiplugin_*') as $file) {
-		unlink($file);
-	}
+	foreach (glob('temp/cache/wikiplugin_*') as $file) unlink($file);
 }
 
 $cookietab = 1;
 
 // from tiki-admin_include_textarea.php
 global $tikilib;
-$pluginsAlias = WikiPlugin_Negotiator_Wiki_Alias::getList();
+$pluginsAlias = $parserlib->plugin_get_list(false, true);
 $pluginsReal = $parserlib->plugin_get_list(true, false);
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$cachelib = TikiLib::lib('cache');
+	global $cachelib;
+	require_once ('lib/cache/cachelib.php');
 	$areanames = array(
 		'editwiki',
 		'editpost',
@@ -57,31 +50,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		}
 	}
 	if (isset($_POST['enable'])) {
-		if (!is_array($_POST['enabled'])) {
-			$_POST['enabled'] = array();
-		}
+		if (!is_array($_POST['enabled'])) $_POST['enabled'] = array();
 		foreach ($pluginsAlias as $name) {
 			$tikilib->set_preference("wikiplugin_$name", in_array($name, $_POST['enabled']) ? 'y' : 'n');
 		}
-		foreach (glob('temp/cache/wikiplugin_*') as $file) {
-			unlink($file);
-		}
+		foreach (glob('temp/cache/wikiplugin_*') as $file) unlink($file);
 	}
 	if (isset($_POST['delete'])) {
-		if (!is_array($_POST['enabled'])) {
-			$_POST['enabled'] = array();
-		}
+		if (!is_array($_POST['enabled'])) $_POST['enabled'] = array();
 		foreach ($pluginsAlias as $name) {
-			WikiPlugin_Negotiator_Wiki_Alias::delete($name);
+			$parserlib->plugin_alias_delete($name);
 		}
-		$pluginsAlias = WikiPlugin_Negotiator_Wiki_Alias::getList();
+		$pluginsAlias = $parserlib->plugin_get_list(false, true);
 	}
 	if (isset($_POST['textareasetup'])
 			&& !in_array($_POST['plugin_alias'], $pluginsReal)
 			&& isset($_REQUEST['plugin_alias'])
 			&& (getCookie('admin_textarea', 'tabs') == 3)
-	) {
-		// tab=3 is plugins alias tab (TODO improve)
+	) { // tab=3 is plugins alias tab (TODO improve)
 		$info = array(
 			'implementation' => $_POST['implementation'],
 			'description' => array(
@@ -109,11 +95,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			unset($info['description']['validate']);
 		}
 
-		if (empty($_POST['prefs'])) {
+		if (empty($_POST['prefs']))
 			$temp = array("wikiplugin_{$_POST['plugin_alias']}");
-		} else {
-			$temp = explode(',', $_POST['prefs']);
-		}
+
+		else $temp = explode(',', $_POST['prefs']);
 		$info['description']['prefs'] = $temp;
 
 		if (isset($_POST['input'])) {
@@ -170,21 +155,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			}
 		}
 
-		WikiPlugin_Negotiator_Wiki_Alias::store($_POST['plugin_alias'], $info);
+		$parserlib->plugin_alias_store($_POST['plugin_alias'], $info);
 
-		if (!in_array($_POST['plugin_alias'], $pluginsAlias)) {
+		if (!in_array($_POST['plugin_alias'], $pluginsAlias))
 			$pluginAlias[] = $_POST['plugins'];
-		}
 
-		foreach (glob('temp/cache/wikiplugin_*') as $file) {
+		foreach (glob('temp/cache/wikiplugin_*') as $file)
 			unlink($file);
-		}
 
-		$pluginsAlias = WikiPlugin_Negotiator_Wiki_Alias::getList();
+		$pluginsAlias = $parserlib->plugin_get_list(false, true);
 	}
 }
 
-if (isset($_REQUEST['plugin_alias']) && $pluginInfo = WikiPlugin_Negotiator_Wiki_Alias::info($_REQUEST['plugin_alias'])) {
+if (isset($_REQUEST['plugin_alias']) && $pluginInfo = $parserlib->plugin_alias_info($_REQUEST['plugin_alias'])) {
 	// Add an extra empty parameter to create new ones
 	$pluginInfo['description']['params']['__NEW__'] = array(
 		'name' => '',
@@ -204,15 +187,13 @@ if (isset($_REQUEST['plugin_alias']) && $pluginInfo = WikiPlugin_Negotiator_Wiki
 		'params' => array() ,
 	);
 
-	foreach ($pluginInfo['params'] as & $p) {
-		if (is_array($p)) {
+	foreach ($pluginInfo['params'] as & $p)
+		if (is_array($p))
 			$p['params']['__NEW__'] = array(
 				'encoding' => '',
 				'input' => '',
 				'default' => '',
 			);
-		}
-	}
 
 	$smarty->assign('plugin_admin', $pluginInfo);
 	$cookietab = 3;

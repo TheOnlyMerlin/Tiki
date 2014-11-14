@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -28,7 +28,7 @@ function prefs_webmail_list()
 			'default' => 1500000,
 		),
 		'webmail_quick_flags' => array(
-			'name' => tra('Include a flag by each email to quickly flag/un-flag them?'),
+			'name' => tra('Include a flag by each e-mail to quickly flag/un-flag them?'),
 			'type' => 'flag',
 			'default' => 'n',
 		),

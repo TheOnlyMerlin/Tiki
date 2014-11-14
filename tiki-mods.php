@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -35,10 +32,6 @@ if (!is_dir($prefs['mods_dir'] . "/Cache")) {
 	mkdir($prefs['mods_dir'] . "/Cache", 02777);
 }
 $feedback = array();
-/**
- * @param $num
- * @param $err
- */
 function tikimods_feedback_listener($num, $err)
 {
 	global $feedback;
@@ -232,27 +225,6 @@ if (!empty($version)) { // filter out other versions
 					$mv = 8.0; // e.g. version= "Compatible with Tiki 8 releases." or "8+"
 					
 				}				
-
-				if (strpos($m->version[0], ' 9 ') !== false || strpos($m->version[0], ' 9+') !== false) {
-					$mv = 9.0; // e.g. version= "Compatible with Tiki 9 releases." or "9+"
-
-				}
-
-				if (strpos($m->version[0], ' 10 ') !== false || strpos($m->version[0], ' 10+') !== false) {
-					$mv = 10.0; // e.g. version= "Compatible with Tiki 10 releases." or "10+"
-
-				}
-
-				if (strpos($m->version[0], ' 11 ') !== false || strpos($m->version[0], ' 11+') !== false) {
-					$mv = 11.0; // e.g. version= "Compatible with Tiki 11 releases." or "11+"
-
-				}
-
-				if (strpos($m->version[0], ' 12 ') !== false || strpos($m->version[0], ' 12+') !== false) {
-					$mv = 12.0; // e.g. version= "Compatible with Tiki 12 releases." or "12+"
-
-				}
-
 				if ($mv >= $v) {
 					$filtmod[$k] = $m;
 				}

@@ -8,7 +8,7 @@
 <ul>
     {section name=ix loop=$modb_folders}
 	<li>
-        <a href="{$ownurl}{$modb_sep}bookmarks_directory={$modb_folders[ix].folderId}"><img src="img/icons/folderin.gif"></a>&nbsp;{$modb_folders[ix].name|escape}
+        <a href="{$ownurl}{$modb_sep}bookmarks_directory={$modb_folders[ix].folderId}"><img src="img/icons/folderin.gif" /></a>&nbsp;{$modb_folders[ix].name|escape}
 	</li>
     {/section}
 </ul>
@@ -25,8 +25,8 @@
 </ul>
     <form name="bookmarks" action="{$ownurl}" method="post">
     <input style="font-size: 9px;" type="text" size="8" name="modb_name" />
-    <input style="font-size: 9px;" type="submit" class="btn btn-default" name="bookmark_mark" value="{tr}Create Bookmark{/tr}" />
-    <input style="font-size: 9px;" type="submit" class="btn btn-default btn-sm" name="bookmark_create_folder" value="{tr}New Folder{/tr}" />
+    <input style="font-size: 9px;" type="submit" name="bookmark_mark" value="{tr}Create Bookmark{/tr}" />
+    <input style="font-size: 9px;" type="submit" name="bookmark_create_folder" value="{tr}New Folder{/tr}" />
     </form>
     {/tikimodule}
 {/if}

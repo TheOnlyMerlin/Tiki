@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,11 +8,11 @@
 $section = 'calendar';
 require_once ('tiki-setup.php');
 
-$calendarlib = TikiLib::lib('calendar');
-$categlib = TikiLib::lib('categ');
+include_once ('lib/calendar/calendarlib.php');
+include_once ('lib/categories/categlib.php');
 include_once ('lib/newsletters/nllib.php');
 
-$headerlib->add_cssfile('themes/base_files/feature_css/calendar.css', 20);
+$headerlib->add_cssfile('css/calendar.css', 20);
 # perms are
 # 	$tiki_p_view_calendar
 # 	$tiki_p_admin_calendar
@@ -30,7 +27,7 @@ $exportUrl = 'tiki-calendar_export_ical.php';
 $iCalAdvParamsUrl = 'tiki-calendar_params_ical.php';
 $bufid = array();
 $bufdata = array();
-$editable = array();
+$modifiable = array();
 if (!isset($cookietab)) { 
 	$cookietab = '1';
 }
@@ -85,7 +82,7 @@ foreach ($rawcals["data"] as $cal_data) {
 	}
 	if ($cal_data["tiki_p_change_events"] == 'y') {
 		$modifTab = 1;
-		$editable[] = $cal_id;
+		$modifiable[] = $cal_id;
 		$visible[] = $cal_id;
 	}
 }
@@ -172,7 +169,7 @@ $viewend = $_REQUEST['end'];
 if ($_SESSION['CalendarViewGroups']) {
 	$listevents = $calendarlib->list_raw_items($_SESSION['CalendarViewGroups'], $user, $viewstart, $viewend, 0, -1);
 	for ($i = count($listevents) - 1; $i >= 0; --$i) {
-		$listevents[$i]['editable'] = in_array($listevents[$i]['calendarId'], $editable)? "y": "n";
+		$listevents[$i]['modifiable'] = in_array($listevents[$i]['calendarId'], $modifiable)? "y": "n";
 		$listevents[$i]['visible'] = in_array($listevents[$i]['calendarId'], $visible)? "y": "n";
 	}
 } else {
@@ -187,7 +184,7 @@ if ($prefs['feature_theme_control'] == 'y'	and isset($_REQUEST['calIds'])) {
 
 $events = array();
 foreach ($listevents as $event) {
-	if ($event['editable'] === 'y' and $cal_data["tiki_p_change_events"] == 'y') {
+	if ($event['modifiable'] === 'y' and $cal_data["tiki_p_change_events"] == 'y') {
 		$url = 'tiki-calendar_edit_item.php?fullcalendar=y&calitemId='.$event['calitemId']; 
 	} else {
 		$url = 'tiki-calendar_edit_item.php?viewcalitemId='.$event['calitemId']; // removed fullcalendar=y param to prevent display without tpl for anons in some setups
@@ -199,7 +196,7 @@ foreach ($listevents as $event) {
 											'allDay' => $event['allday'] != 0 ,
 											'start' => $event['date_start'],
 											'end' => $event['date_end'],
-											'editable' => $event['editable'] === 'y',
+											'modifiable' => $event['modifiable'] === 'y',
 											'color' => '#'.$cals_info['data'][$event['calendarId']]['custombgcolor'],
 											'textColor' => '#'.$cals_info['data'][$event['calendarId']]['customfgcolor']);
 }

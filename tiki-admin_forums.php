@@ -1,9 +1,6 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -28,7 +25,8 @@ $auto_query_args = array(
 			'find',
 );
 
-$commentslib = TikiLib::lib('comments');
+include_once ("lib/comments/commentslib.php");
+$commentslib = new Comments($dbTiki);
 if (isset($_REQUEST["remove"])) {
 	$access->check_authenticity();
 	$commentslib->remove_forum($_REQUEST["remove"]);
@@ -75,7 +73,6 @@ if (isset($_REQUEST["save"])) {
 	$_REQUEST['topic_summary'] = isset($_REQUEST['topic_summary']) ? 'y' : 'n';
 	$_REQUEST['topic_smileys'] = isset($_REQUEST['topic_smileys']) ? 'y' : 'n';
 	$_REQUEST['ui_avatar'] = isset($_REQUEST['ui_avatar']) ? 'y' : 'n';
-	$_REQUEST['ui_rating_choice_topic'] = isset($_REQUEST['ui_rating_choice_topic']) ? 'y' : 'n';
 	$_REQUEST['ui_flag'] = isset($_REQUEST['ui_flag']) ? 'y' : 'n';
 	$_REQUEST['ui_email'] = isset($_REQUEST['ui_email']) ? 'y' : 'n';
 	$_REQUEST['ui_posts'] = isset($_REQUEST['ui_posts']) ? 'y' : 'n';
@@ -91,42 +88,36 @@ if (isset($_REQUEST["save"])) {
 	if (empty($_REQUEST['threadOrdering'])) $_REQUEST['threadOrdering'] = '';
 	if (empty($_REQUEST['threadStyle'])) $_REQUEST['threadStyle'] = '';
 	if (empty($_REQUEST['commentsPerPage'])) $_REQUEST['commentsPerPage'] = '';
-	if (empty($_REQUEST['image'])) $_REQUEST['image'] = '';
 	if ($_REQUEST["section"] == '__new__') $_REQUEST["section"] = $_REQUEST["new_section"];
 	// Check for last character being a / or a \
 	if (substr($_REQUEST["att_store_dir"], -1) != "\\" && substr($_REQUEST["att_store_dir"], -1) != "/" && $_REQUEST["att_store_dir"] != "") {
 		$_REQUEST["att_store_dir"].= "/";
 	}
-
+	
 	$_REQUEST['forumLanguage'] = htmlspecialchars(isset($_REQUEST["forumLanguage"]) ? $_REQUEST["forumLanguage"] : '');
-
-	$tx = TikiDb::get()->begin();
+	
 	$fid = $commentslib->replace_forum(
-		$_REQUEST["forumId"], $_REQUEST["name"], $_REQUEST["description"],
-		$controlFlood, $_REQUEST["floodInterval"], $_REQUEST["moderator"],
-		$_REQUEST["mail"], $useMail, $usePruneUnreplied,
-		$_REQUEST["pruneUnrepliedAge"], $usePruneOld, $_REQUEST["pruneMaxAge"],
-		$_REQUEST["topicsPerPage"], $_REQUEST["topicOrdering"], $_REQUEST["threadOrdering"],
-		$_REQUEST["section"], $_REQUEST['topics_list_reads'], $_REQUEST['topics_list_replies'],
-		$_REQUEST['topics_list_pts'], $_REQUEST['topics_list_lastpost'],
-		$_REQUEST['topics_list_author'], $_REQUEST['vote_threads'], $_REQUEST['show_description'],
-		$_REQUEST['inbound_pop_server'], 110, $_REQUEST['inbound_pop_user'],
-		$_REQUEST['inbound_pop_password'], trim($_REQUEST['outbound_address']),
-		$_REQUEST['outbound_mails_for_inbound_mails'], $_REQUEST['outbound_mails_reply_link'],
-		$_REQUEST['outbound_from'], $_REQUEST['topic_smileys'], $_REQUEST['topic_summary'],
-		$_REQUEST['ui_avatar'], $_REQUEST['ui_rating_choice_topic'], $_REQUEST['ui_flag'], $_REQUEST['ui_posts'],
-		$_REQUEST['ui_level'], $_REQUEST['ui_email'], $_REQUEST['ui_online'],
-		$_REQUEST['approval_type'], $_REQUEST['moderator_group'], $_REQUEST['forum_password'],
-		$_REQUEST['forum_use_password'], $_REQUEST['att'], $_REQUEST['att_store'],
-		$_REQUEST['att_store_dir'], $_REQUEST['att_max_size'], $_REQUEST['forum_last_n'],
-		$_REQUEST['commentsPerPage'], $_REQUEST['threadStyle'], $_REQUEST['is_flat'],
-		$_REQUEST['att_list_nb'], $_REQUEST['topics_list_lastpost_title'],
-		$_REQUEST['topics_list_lastpost_avatar'], $_REQUEST['topics_list_author_avatar'], $_REQUEST['forumLanguage']
+					$_REQUEST["forumId"], $_REQUEST["name"], $_REQUEST["description"],
+					$controlFlood, $_REQUEST["floodInterval"], $_REQUEST["moderator"],
+					$_REQUEST["mail"], $useMail, $usePruneUnreplied,
+					$_REQUEST["pruneUnrepliedAge"], $usePruneOld, $_REQUEST["pruneMaxAge"],
+					$_REQUEST["topicsPerPage"], $_REQUEST["topicOrdering"], $_REQUEST["threadOrdering"],
+					$_REQUEST["section"], $_REQUEST['topics_list_reads'], $_REQUEST['topics_list_replies'],
+					$_REQUEST['topics_list_pts'], $_REQUEST['topics_list_lastpost'],
+					$_REQUEST['topics_list_author'], $_REQUEST['vote_threads'], $_REQUEST['show_description'],
+					$_REQUEST['inbound_pop_server'], 110, $_REQUEST['inbound_pop_user'],
+					$_REQUEST['inbound_pop_password'], trim($_REQUEST['outbound_address']),
+					$_REQUEST['outbound_mails_for_inbound_mails'], $_REQUEST['outbound_mails_reply_link'],
+					$_REQUEST['outbound_from'], $_REQUEST['topic_smileys'], $_REQUEST['topic_summary'],
+					$_REQUEST['ui_avatar'], $_REQUEST['ui_flag'], $_REQUEST['ui_posts'],
+					$_REQUEST['ui_level'], $_REQUEST['ui_email'], $_REQUEST['ui_online'],
+					$_REQUEST['approval_type'], $_REQUEST['moderator_group'], $_REQUEST['forum_password'],
+					$_REQUEST['forum_use_password'], $_REQUEST['att'], $_REQUEST['att_store'],
+					$_REQUEST['att_store_dir'], $_REQUEST['att_max_size'], $_REQUEST['forum_last_n'],
+					$_REQUEST['commentsPerPage'], $_REQUEST['threadStyle'], $_REQUEST['is_flat'],
+					$_REQUEST['att_list_nb'], $_REQUEST['topics_list_lastpost_title'],
+					$_REQUEST['topics_list_lastpost_avatar'], $_REQUEST['topics_list_author_avatar'], $_REQUEST['forumLanguage']
 	);
-
-	$attributelib = TikiLib::lib('attribute');
-	$attributelib->set_attribute('forum', $fid, 'tiki.object.image', (int) $_REQUEST['image']);
-
 	$cat_type = 'forum';
 	$cat_objid = $fid;
 	$cat_desc = substr($_REQUEST["description"], 0, 200);
@@ -134,15 +125,12 @@ if (isset($_REQUEST["save"])) {
 	$cat_href = "tiki-view_forum.php?forumId=" . $cat_objid;
 	include_once ("categorize.php");
 	$_REQUEST["forumId"] = $fid;
-
-	$tx->commit();
-
-	$cookietab = 1;
 }
 if (!empty($_REQUEST['duplicate']) && !empty($_REQUEST['name']) && !empty($_REQUEST['forumId'])) {
 	$newForumId = $commentslib->duplicate_forum($_REQUEST['forumId'], $_REQUEST['name'], isset($_REQUEST['description']) ? $_REQUEST['description'] : '');
 	if (isset($_REQUEST['dupCateg']) && $_REQUEST['dupCateg'] == 'on' && $prefs['feature_categories'] == 'y') {
-		$categlib = TikiLib::lib('categ');
+		global $categlib;
+		include_once ('lib/categories/categlib.php');
 		$cats = $categlib->get_object_categories('forum', $_REQUEST['forumId']);
 		$catObjectId = $categlib->add_categorized_object('forum', $newForumId, isset($_REQUEST['description']) ? $_REQUEST['description'] : '', $_REQUEST['name'], "tiki-view_forum.php?forumId=$newForumId");
 		foreach ($cats as $cat) {
@@ -150,17 +138,14 @@ if (!empty($_REQUEST['duplicate']) && !empty($_REQUEST['name']) && !empty($_REQU
 		}
 	}
 	if (isset($_REQUEST['dupPerms']) && $_REQUEST['dupPerms'] == 'on') {
-		$userlib = TikiLib::lib('user');
+		global $userlib;
+		include_once ('lib/userslib.php');
 		$userlib->copy_object_permissions($_REQUEST['forumId'], $newForumId, 'forum');
 	}
 	$_REQUEST['forumId'] = $newForumId;
 }
 if ($_REQUEST["forumId"]) {
 	$info = $commentslib->get_forum($_REQUEST["forumId"]);
-
-	$attributelib = TikiLib::lib('attribute');
-	$attributes = $attributelib->get_attributes('forum', $_REQUEST['forumId']);
-	$info['image'] = isset($attributes['tiki.object.image']) ? $attributes['tiki.object.image'] : '';
 } else {
 	$info = array();
 	$info["name"] = '';
@@ -193,7 +178,6 @@ if ($_REQUEST["forumId"]) {
 	$info["topic_summary"] = 'n';
 	$info["topic_smileys"] = 'n';
 	$info["ui_avatar"] = 'y';
-	$info["ui_rating_choice_topic"] = 'n';
 	$info["ui_flag"] = 'y';
 	$info["ui_posts"] = 'n';
 	$info['ui_level'] = 'n';
@@ -219,16 +203,12 @@ if ($_REQUEST["forumId"]) {
 	$info["forum_last_n"] = 0;
 	$info["is_flat"] = 'n';
 	$info["forumLanguage"] = '';
-	$info['image'] = '';
 }
 $smarty->assign('forumId', $_REQUEST["forumId"]);
 foreach ($info as $key => $value) {
-	if ($key == "section") {
-		// conflict with section management
-		$smarty->assign("forumSection", $value);
-	} else {
-		$smarty->assign($key, $value);
-	}
+	if ($key == "section") // conflict with section management
+	$smarty->assign("forumSection", $value);
+	else $smarty->assign($key, $value);
 }
 if (!isset($_REQUEST["sort_mode"])) {
 	$sort_mode = 'name_asc';
@@ -319,98 +299,98 @@ $flood_values = array(
 );
 
 $smarty->assign(
-	'flood_options',
-	array(
-		15 => '15' . ' ' . tra('secs'),
-		30 => '30' . ' ' . tra('secs'),
-		60 => '1' . ' ' . tra('min'),
-		120=> '2' . ' ' . tra('mins')
-	)
+				'flood_options',
+				array(
+					15 => '15' . ' ' . tra('secs'),
+					30 => '30' . ' ' . tra('secs'),
+					60 => '1' . ' ' . tra('min'),
+					120=> '2' . ' ' . tra('mins')
+				)
 );
 
 $smarty->assign(
-	'approval_options',
-	array(
-		'all_posted' => tra('All posted'),
-		'queue_anon' => tra('Queue anonymous posts'),
-		'queue_all' => tra('Queue all posts')
-	)
+				'approval_options',
+				array(
+					'all_posted' => tra('All posted'),
+					'queue_anon' => tra('Queue anonymous posts'),
+					'queue_all' => tra('Queue all posts')
+				)
 );
 
 $smarty->assign(
-	'attachment_options',
-	array(
-		'att_no' => tra('No attachments'),
-		'att_all' => tra('Everybody can attach'),
-		'att_perm' => tra('Only users with attach permission'),
-		'att_admin' => tra('Moderators and admin can attach')
-	)
+				'attachment_options',
+				array(
+					'att_no' => tra('No attachments'),
+					'att_all' => tra('Everybody can attach'),
+					'att_perm' => tra('Only users with attach permission'),
+					'att_admin' => tra('Moderators and admin can attach')
+				)
 );
 
 $smarty->assign(
-	'forum_use_password_options',
-	array(
-		'n' => tra('No'),
-		't' => tra('Topics only'),
-		'a' => tra('All posts')
-	)
+				'forum_use_password_options',
+				array(
+					'n' => tra('No'),
+					't' => tra('Topics only'),
+					'a' => tra('All posts')
+				)
 );
 
 $smarty->assign(
-	'forum_last_n_options',
-	array(
-		0 => tra('No display'),
-		5 => '5',
-		10 => '10',
-		20 => '20'
-	)
+				'forum_last_n_options',
+				array(
+					0 => tra('No display'),
+					5 => '5',
+					10 => '10',
+					20 => '20'
+				)
 );
 
 $smarty->assign(
-	'topicOrdering_options',
-	array(
-		'commentDate_desc' => tra('Date (desc)'),
-		'commentDate_asc' => tra('Date (asc)'),
-		'average_desc' => tra('Score (desc)'),
-		'replies_desc' => tra('Replies (desc)'),
-		'hits_desc' => tra('Reads (desc)'),
-		'lastPost_desc' => tra('Last post (desc)'),
-		'title_desc' => tra('Title (desc)'),
-		'title_asc' => tra('Title (asc)')
-	)
+				'topicOrdering_options',
+				array(
+					'commentDate_desc' => tra('Date (desc)'),
+					'commentDate_asc' => tra('Date (asc)'),
+					'average_desc' => tra('Score (desc)'),
+					'replies_desc' => tra('Replies (desc)'),
+					'hits_desc' => tra('Reads (desc)'),
+					'lastPost_desc' => tra('Last post (desc)'),
+					'title_desc' => tra('Title (desc)'),
+					'title_asc' => tra('Title (asc)')
+				)
 );
 
 $smarty->assign(
-	'threadOrdering_options',
-	array(
-		'' => tra('Default'),
-		'commentDate_desc' => tra('Newest first'),
-		'commentDate_asc' => tra('Oldest first'),
-		'points_desc' => tra('Score'),
-		'title_desc' => tra('Title (desc)'),
-		'title_asc' => tra('Title (asc)')
-	)
+				'threadOrdering_options',
+				array(
+					'' => tra('Default'),
+					'commentDate_desc' => tra('Newest first'),
+					'commentDate_asc' => tra('Oldest first'),
+					'points_desc' => tra('Score'),
+					'title_desc' => tra('Title (desc)'),
+					'title_asc' => tra('Title (asc)')
+				)
 );
 
 $smarty->assign(
-	'threadStyle_options',
-	array(
-		'' => tra('Default'),
-		'commentStyle_plain' => tra('Plain'),
-		'commentStyle_threaded' => tra('Threaded'),
-		'commentStyle_headers' => tra('Headers Only')
-	)
+				'threadStyle_options',
+				array(
+					'' => tra('Default'),
+					'commentStyle_plain' => tra('Plain'),
+					'commentStyle_threaded' => tra('Threaded'),
+					'commentStyle_headers' => tra('Headers Only')
+				)
 );
 
 $smarty->assign(
-	'commentsPerPage_options',
-	array(
-		'' => tra('Default'),
-		10 => '10',
-		20 => '20',
-		30 => '30',
-		999999 => tra('All')
-	)
+				'commentsPerPage_options',
+				array(
+					'' => tra('Default'),
+					10 => '10',
+					20 => '20',
+					30 => '30',
+					999999 => tra('All')
+				)
 );
 
 $sections = $tikilib->get_forum_sections();

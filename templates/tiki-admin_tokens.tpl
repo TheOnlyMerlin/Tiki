@@ -4,8 +4,7 @@
 {tabset name="tabs_admtokens"}
 	{tab name="{tr}List tokens{/tr}"}
 		<h2>{tr}List tokens{/tr}</h2>
-        <div class="table-responsive">
-		<table class="table normal">
+		<table class="normal">
 			<tr>
 				<th>{tr}Id{/tr}</th>
 				<th>{tr}Entry{/tr}</th>
@@ -14,13 +13,13 @@
 				<th>{tr}Timeout{/tr}</th>
 				<th>{tr}Hits{/tr}</th>
 				<th>{tr}Max hits{/tr}</th>
-				<th>{tr}Email{/tr}</th>
+				<th>{tr}E-mail{/tr}</th>
 				<th>{tr}Parameters{/tr}</th>
 				<th>{tr}Groups{/tr}</th>
 				<th>{tr}Actions{/tr}</th>
 			</tr>
 			
-
+			{cycle values="even,odd" print=false}
 			{foreach $tokens as $token}
 				<tr>
 					<td>{$token.tokenId}</td>
@@ -33,7 +32,7 @@
 					<td>{$token.email}</td>
 					<td>
 						{foreach $token.parameters as $key => $value}
-							{$key}={$value}<br>
+							{$key}={$value}<br />
 						{/foreach}
 					</td>
 					<td>{$token.groups}</td>
@@ -43,7 +42,6 @@
 				{norecords _colspan=10}
 			{/foreach}
 		</table>
-        </div>
 	{/tab}
 	{tab name="{tr}Add new token{/tr}"}
 		<h2>{tr}Add new token{/tr}</h2>
@@ -55,27 +53,27 @@
 		{/if}
 		
 		<form action="tiki-admin_tokens.php" method="post">
-			<input type="hidden" name="action" value="add">
+			<input type="hidden" name="action" value="add" />
 			<table class="formcolor">
 				<tr>
 					<td><label for='entry'>{tr}Full URL{/tr}</label></td>
-					<td><input type="text" id='entry' name='entry'></td>
+					<td><input type="text" id='entry' name='entry' /></td>
 				</tr>
 				<tr>
 					<td><label for='timeout'>{tr}Timeout in seconds (-1 for unlimited){/tr}</label></td>
-					<td><input type="text" id='timeout' name='timeout'></td>
+					<td><input type="text" id='timeout' name='timeout' /></td>
 				</tr>			
 				<tr>
 					<td><label for='maxhits'>{tr}Maximum number of hits (-1 for unlimited){/tr}</label></td>
-					<td><input type="text" id='maxhits' name='maxhits'></td>
+					<td><input type="text" id='maxhits' name='maxhits' /></td>
 				</tr>
 				<tr>
 					<td><label for='groups'>{tr}Groups (separated by comma){/tr}</label></td>
-					<td><input type="text" id='groups' name='groups'></td>
+					<td><input type="text" id='groups' name='groups' /></td>
 				</tr>
 				<tr>
 					<td></td>
-					<td><input type="submit" class="btn btn-default btn-sm" value="{tr}Add{/tr}"></td>
+					<td><input type="submit" value="{tr}Add{/tr}" /></td>
 				</tr>
 			</table>
 		</form>

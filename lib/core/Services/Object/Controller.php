@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 
@@ -10,13 +10,9 @@ class Services_Object_Controller
 	{
 		global $prefs;
 		$supported = array();
-
+		
 		if ($prefs['feature_trackers'] == 'y') {
 			$supported[] = 'trackeritem';
-		}
-
-		if ($prefs['activity_basic_events'] == 'y' || $prefs['activity_custom_events'] == 'y' || $prefs['monitor_enabled']) {
-			$supported[] = 'activity';
 		}
 
 		return $supported;
@@ -33,8 +29,6 @@ class Services_Object_Controller
 			'type' => $type,
 			'object' => $input->object->none(),
 			'content' => $this->{'infobox_' . $type}($input),
-			'plain' => $input->plain->int(),
-			'format' => $input->format->word(),
 		);
 	}
 
@@ -69,24 +63,7 @@ class Services_Object_Controller
 		$smarty->assign('item', $item);
 		$smarty->assign('can_modify', $itemObject->canModify());
 		$smarty->assign('can_remove', $itemObject->canRemove());
-		$smarty->assign('mode', $input->mode->text() ? $input->mode->text() : '');	// default divs mode
 		return $smarty->fetch('object/infobox/trackeritem.tpl');
-	}
-
-	private function infobox_activity($input)
-	{
-		$itemId = $input->object->int();
-		$lib = TikiLib::lib('activity');
-		$info = $lib->getActivity($itemId);
-
-		if (! $info) {
-			throw new Services_Exception_NotFound;
-		}
-
-		$smarty = TikiLib::lib('smarty');
-		$smarty->assign('activity', $itemId);
-		$smarty->assign('format', $input->format->word());
-		return $smarty->fetch('object/infobox/activity.tpl');
 	}
 
 	/**
@@ -94,10 +71,10 @@ class Services_Object_Controller
 	 *
 	 * @param $input jit filtered input object
 	 */
-	function action_report_error($input)
-	{
+	function action_report_error($input) {
 		TikiLib::lib('errorreport')->report($input->message->text());
 		TikiLib::lib('errorreport')->send_headers();
 	}
+
 }
 

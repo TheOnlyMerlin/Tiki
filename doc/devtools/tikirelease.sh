@@ -1,5 +1,5 @@
 #!/bin/sh -x
-# (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+# (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 #
 # All Rights Reserved. See copyright.txt for details and a complete list of authors.
 # Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -54,13 +54,6 @@ cd $VER
 echo "Exporting $SVNROOT/$RELTAG $MODULE-$VER"
 svn export $SVNROOT/$RELTAG $MODULE-$VER
 
-if [ -f $MODULE-$VER/composer.json ]; then
-	wget -N http://getcomposer.org/composer.phar
-	cd $MODULE-$VER
-	php ../composer.phar install
-	cd ..
-fi
-
 echo "Cleaning up"
 find $MODULE-$VER -name .cvsignore -type f -exec rm -f {} \;
 find $MODULE-$VER -name .svnignore -type f -exec rm -f {} \;
@@ -79,7 +72,6 @@ echo "Creating tarballs"
 tar -czf $MODULE-$VER.tar.gz $MODULE-$VER
 tar -cjf $MODULE-$VER.tar.bz2 $MODULE-$VER
 zip -r -q $MODULE-$VER.zip $MODULE-$VER
-7za a $MODULE-$VER.7z $MODULE-$VER
 
 ls $WORKDIR/$VER
 
