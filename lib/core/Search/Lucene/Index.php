@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -159,16 +159,6 @@ class Search_Lucene_Index implements Search_Index_Interface
 		return $resultSet;
 	}
 
-	function scroll(Search_Query_Interface $query)
-	{
-		$expr = $query->getExpr();
-		$data = $this->internalFind($expr, $query->getSortOrder());
-		$resultCount = count($data['result']);
-		$resultSet = new Search_ResultSet($data['result'], $resultCount, 0, $resultCount);
-
-		return $resultSet;
-	}
-
 	function setCache($cache)
 	{
 		$this->cache = $cache;
@@ -257,9 +247,7 @@ class Search_Lucene_Index implements Search_Index_Interface
 	{
 		$data = array();
 		foreach ($document->getFieldNames() as $field) {
-			if (! $document->getField($field)->isTokenized) {
-				$data[$field] = $document->$field;
-			}
+			$data[$field] = $document->$field;
 		}
 
 		return $data;
@@ -302,7 +290,6 @@ class Search_Lucene_Index implements Search_Index_Interface
 			'Search_Type_WikiText' => 'UnStored',
 			'Search_Type_PlainText' => 'UnStored',
 			'Search_Type_Whole' => 'Keyword',
-			'Search_Type_Numeric' => 'Keyword',
 			'Search_Type_Timestamp' => 'Keyword',
 			'Search_Type_MultivalueText' => 'UnStored',
 			'Search_Type_ShortText' => 'Text',
@@ -419,7 +406,6 @@ class Search_Lucene_Index implements Search_Index_Interface
 			$parts = explode(' ', $value->getValue());
 			return new Zend_Search_Lucene_Search_Query_Term(new Zend_Search_Lucene_Index_Term($parts[0], $field), true);
 		case 'Search_Type_Whole':
-		case 'Search_Type_Numeric':
 			$parts = explode(' ', $value->getValue());
 			return new Zend_Search_Lucene_Search_Query_Phrase($parts, array_keys($parts), $field);
 		}

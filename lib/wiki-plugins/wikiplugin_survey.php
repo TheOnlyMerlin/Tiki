@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -82,7 +82,7 @@ function wikiplugin_survey($data, $params)
 
 	$survey_info = $srvlib->get_survey($params['id']);
 
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	$smarty->assign('surveyId', $params['id']);
 	$smarty->assign('survey_info', $survey_info);
 	$smarty->assign('questions', $questions['data']);

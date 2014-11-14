@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -38,12 +38,12 @@ if ( isset($_GET['fileId']) && isset($_GET['thumbnail']) && isset($_COOKIE[ sess
 
 if (!$skip) {
 	require_once('tiki-setup.php');
-	$filegallib = TikiLib::lib('filegal');
+	include_once('lib/filegals/filegallib.php');
 	$access->check_feature('feature_file_galleries');
 }
 
 if ($prefs["user_store_file_gallery_picture"] == 'y' && isset($_REQUEST["avatar"])) {
-	$userprefslib = TikiLib::lib('userprefs');
+	require_once ('lib/userprefs/userprefslib.php');
 	if ($user_picture_id = $userprefslib->get_user_picture_id($_REQUEST["avatar"])) {
 		$_REQUEST['fileId'] = $user_picture_id;
 	} elseif (!empty($prefs['user_default_picture_id'])) {
@@ -121,7 +121,7 @@ if (isset($attributes['tiki.content.url'])) {
 // Add hits ( if download or display only ) + lock if set
 if ( ! isset($_GET['thumbnail']) && ! isset($_GET['icon']) ) {
 
-	$statslib = TikiLib::lib('stats');
+	require_once('lib/stats/statslib.php');
 	$filegallib = TikiLib::lib('filegal');
 	if ( ! $filegallib->add_file_hit($info['fileId']) ) {
 		$access->display_error('', tra('You cannot download this file right now. Your score is low or file limit was reached.'), 401);
@@ -129,7 +129,7 @@ if ( ! isset($_GET['thumbnail']) && ! isset($_GET['icon']) ) {
 	$statslib->stats_hit($info['filename'], 'file', $info['fileId']);
 
 	if ( $prefs['feature_actionlog'] == 'y' ) {
-		$logslib = TikiLib::lib('logs');
+		global $logslib; require_once('lib/logs/logslib.php');
 		$logslib->add_action('Downloaded', $info['galleryId'], 'file gallery', 'fileId='.$info['fileId']);
 	}
 
@@ -226,7 +226,7 @@ if ( isset($_GET['preview']) || isset($_GET['thumbnail']) || isset($_GET['displa
 	$cacheName = '';
 	$cacheType = '';
 	if ( ( isset($_GET['thumbnail']) || isset($_GET['preview']) ) && ! isset($_GET['display']) && ! isset($_GET['icon']) && ! isset($_GET['scale']) && ! isset($_GET['x']) && ! isset($_GET['y']) && ! isset($_GET['format']) && ! isset($_GET['max']) ) {
-		$cachelib = TikiLib::lib('cache');
+		global $cachelib; include_once('lib/cache/cachelib.php');
 		$cacheName = $md5;
 		$cacheType = ( isset($_GET['thumbnail']) ? 'thumbnail_' : 'preview_' ) . ((int)$_REQUEST['fileId']).'_';
 		$use_cache = true;

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -32,11 +32,9 @@ function module_user_tasks_info()
  */
 function module_user_tasks($mod_reference, $module_params)
 {
-	global $user, $tiki_p_tasks;
-	global $tasklib; include_once('lib/tasks/tasklib.php');
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
-
+	global $user, $tasklib, $tikilib, $smarty, $tiki_p_tasks;
+	include_once('lib/tasks/tasklib.php');
+	
 	if ($user && isset($tiki_p_tasks) && $tiki_p_tasks == 'y') {
 		if (isset($_REQUEST["modTasksDel"])) {
 			foreach (array_keys($_REQUEST["modTasks"]) as $task) {

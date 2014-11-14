@@ -1,43 +1,34 @@
 {title help="External+Wikis" admpage="textarea"}{tr}Admin External Wikis{/tr}{/title}
 
 <h2>{tr}Create/Edit External Wiki{/tr}</h2>
-<form action="tiki-admin_external_wikis.php" method="post" class="form-horizontal" role="form">
+<form action="tiki-admin_external_wikis.php" method="post">
 	<input type="hidden" name="extwikiId" value="{$extwikiId|escape}">
-	<div class="form-group">
-        <label for="name" class="col-sm-3 control-label">{tr}Name{/tr}</label>
-        <div class="col-sm-9">
-            <input type="text" maxlength="255" class="form-control" name="name" value="{$info.name|escape}">
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="extwiki" class="col-sm-3 control-label">{tr}URL{/tr}</label>
-    	<div class="col-sm-9">
-			<input type="text" maxlength="255" class="form-control" name="extwiki" id="extwiki" value="{$info.extwiki|escape}">
-            <p class="help-block">{tr}URL (use $page to be replaced by the page name in the URL example: http://www.example.com/tiki-index.php?page=$page):{/tr}</p>
-        </div>
-	</div>
-	<div class="form-group">
-		<label for="indexname" class="col-sm-3 control-label">{tr}Index{/tr}</label>
-		<div class="col-sm-9">
-			<input type="text" maxlength="20" class="form-control" name="indexname" id="indexname" value="{$info.indexname|escape}">
-			<p class="help-block">{tr}<em>[prefix]</em>main, such as tiki_main{/tr}</p>
-		</div>
-	</div>
-	<div class="form-group">
-		<label for="groups" class="col-sm-3 control-label">{tr}Search as{/tr}</label>
-		<div class="col-sm-9">
-			{object_selector_multi _simplename=groups _simpleid=groups _simplevalue=$info.groups type="group" _separator=";"}
-			<p class="help-block">{tr}Leave blank to search using currently active groups.{/tr}</p>
-		</div>
-	</div>
-    <div class="form-group text-center">
-		<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
-    </div>
+	<table class="formcolor">
+		<tr>
+			<td>{tr}Name:{/tr}</td>
+			<td>
+				<input type="text" maxlength="255" size="10" name="name" value="{$info.name|escape}">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{tr}URL (use $page to be replaced by the page name in the URL example: http://www.example.com/tiki-index.php?page=$page):{/tr}
+			</td>
+			<td>
+				<input type="text" maxlength="255" size="40" name="extwiki" value="{$info.extwiki|escape}">
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td>
+				<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
+			</td>
+		</tr>
+	</table>
 </form>
 
 <h2>{tr}External Wiki{/tr}</h2>
 
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		<th>
@@ -48,9 +39,9 @@
 		</th>
 		<th>{tr}Action{/tr}</th>
 	</tr>
-
+	{cycle values="odd,even" print=false}
 	{section name=user loop=$channels}
-		<tr>
+		<tr class="{cycle}">
 			<td class="text">{$channels[user].name}</td>
 			<td class="text">{$channels[user].extwiki}</td>
 			<td class="action">
@@ -64,6 +55,5 @@
 		{norecords _colspan=3}
 	{/section}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}

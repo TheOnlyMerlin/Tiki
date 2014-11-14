@@ -2,15 +2,15 @@
 
 {title help="Permission"}{if $objectType eq 'global'}{tr}Assign global permissions{/tr}{else}{tr}Assign permissions to {/tr}{$objectType}: {$objectName}{/if}{/title}
 
-<div class="t_navbar form-group">
-	{if !empty($referer)}{button href="$referer" _class="btn btn-warning" _text="{tr}Back{/tr}"}{/if}
+<div class="navbar">
+	{if !empty($referer)}{button href="$referer" _text="{tr}Back{/tr}"}{/if}
 	{if $tiki_p_admin eq 'y'} {* only full admins can manage groups, not tiki_p_admin_users *}
-		{button href="tiki-admingroups.php" class="btn btn-default" _text="{tr}Admin Groups{/tr}"}
+		{button href="tiki-admingroups.php" _text="{tr}Admin Groups{/tr}"}
 	{/if}
 	{if $tiki_p_admin_users eq 'y'}
-	{button href="tiki-adminusers.php" class="btn btn-default" _text="{tr}Admin users{/tr}"}
+	{button href="tiki-adminusers.php" _text="{tr}Admin users{/tr}"}
 	{/if}
-	{button href="tiki-list_object_permissions.php" class="btn btn-default" _text="{tr}Object Permissions List{/tr}"}
+	{button href="tiki-list_object_permissions.php" _text="{tr}Object Permissions List{/tr}"}
 </div>
 
 {tabset name='tabs_objectpermissions'}
@@ -65,12 +65,12 @@
 		<input type="hidden" name="show_disabled_features" value="{$show_disabled_features}">
 		
 		<div class="input_submit_container" style="text-align: center">
-			<input type="submit" class="btn btn-primary btn-sm" name="assign" value="{tr}Assign{/tr}">
+			<input type="submit" class="btn btn-default" name="assign" value="{tr}Assign{/tr}">
 			{if $permissions_displayed eq 'direct' and $objectType neq 'global'}
-				<input type="submit" class="btn btn-warning btn-sm" name="remove" value="{if $objectType eq 'category'}{tr}Delete category permissions{/tr}{else}{tr}Delete object permissions{/tr}{/if}" class="tips" title="{tr}Reset Perms{/tr}|{if $objectType neq 'category'}{tr}This will remove all the settings here and permissions will be reset to inherit any category permissions that are set, or the global sitewide permissions.{/tr}{else}{tr}This will remove all the settings here and permissions will be reset to inherit the global sitewide permissions.{/tr}{/if}">
+				<input type="submit" class="btn btn-warning" name="remove" value="{if $objectType eq 'category'}{tr}Delete category permissions{/tr}{else}{tr}Delete object permissions{/tr}{/if}" class="tips" title="{tr}Reset Perms{/tr}|{if $objectType neq 'category'}{tr}This will remove all the settings here and permissions will be reset to inherit any category permissions that are set, or the global sitewide permissions.{/tr}{else}{tr}This will remove all the settings here and permissions will be reset to inherit the global sitewide permissions.{/tr}{/if}">
 			{/if}
-			<input type="submit" class="btn btn-default btn-sm" name="copy" value="{tr}Copy{/tr}" class="tips" title="{tr}Permissions Clipboard{/tr}|{tr}Copy the permissions set here{/tr}">
-			{if !empty($perms_clipboard_source)}<input type="submit" class="btn btn-default btn-sm" name="paste" value="{tr}Paste{/tr}" class="tips" title="{tr}Permissions Clipboard{/tr}|{tr}Paste copied permissions from {/tr}<em>{$perms_clipboard_source}</em>" />{/if}
+			<input type="submit" class="btn btn-default" name="copy" value="{tr}Copy{/tr}" class="tips" title="{tr}Permissions Clipboard{/tr}|{tr}Copy the permissions set here{/tr}">
+			{if !empty($perms_clipboard_source)}<input type="submit" class="btn btn-default" name="paste" value="{tr}Paste{/tr}" class="tips" title="{tr}Permissions Clipboard{/tr}|{tr}Paste copied permissions from {/tr}<em>{$perms_clipboard_source}</em>" />{/if}
 		</div>
 		
 		{if $objectType eq 'category'}
@@ -96,21 +96,19 @@ if ($("#assignstructure").prop("checked")) {
 		</div>
 		<h3>{tr}Permissions{/tr}</h3>
 
-		<div class="table-responsive">
-        <div class="permission_table">
+		<div>
 		{treetable _data=$perms _checkbox=$permGroups _checkboxTitles=$groupNames
 				_checkboxColumnIndex=$permGroupCols _valueColumnIndex="permName"
 				_columns="\"label\"=\"{tr}Permission{/tr}\"" _groupColumn='type' _openall='y'
-				_showSelected='y' _columnsContainHtml='y' class='table table-striped objectperms'}
+				_showSelected='y' _columnsContainHtml='y' class='objectperms'}
 		</div>
-        </div>
 
 		{if ($perms|@count) eq '0'}{remarksbox type="warning" title="{tr}Warning{/tr}"}{tr}You must select at least one feature{/tr}.{/remarksbox}{/if}
 
 		<div class="input_submit_container" style="text-align: center">
-			<input type="submit" class="btn btn-primary btn-sm" name="assign" value="{tr}Assign{/tr}">
+			<input type="submit" class="btn btn-default" name="assign" value="{tr}Assign{/tr}">
 			{if $permissions_displayed eq 'direct' and $objectType neq 'global'}
-				<input type="submit" class="btn btn-default btn-sm" name="remove" value="{if $objectType eq 'category'}{tr}Delete category permissions{/tr}{else}{tr}Delete object permissions{/tr}{/if}" class="tips" title="{tr}Reset Perms{/tr}|{tr}This will remove all the settings here and permissions will be reset to inherit the global sitewide permissions.{/tr}">
+				<input type="submit" class="btn btn-default" name="remove" value="{if $objectType eq 'category'}{tr}Delete category permissions{/tr}{else}{tr}Delete object permissions{/tr}{/if}" class="tips" title="{tr}Reset Perms{/tr}|{tr}This will remove all the settings here and permissions will be reset to inherit the global sitewide permissions.{/tr}">
 			{/if}
 		</div>
 	</form>
@@ -145,8 +143,8 @@ if ($("#assignstructure").prop("checked")) {
 				{/remarksbox}
 			{/if}
 			{if $objectId}
-			<div class="t_navbar">
-				 <input type="submit" class="btn btn-default btn-sm" name="used_groups" value="{tr}Select only groups that have a perm with the object{/tr}">
+			<div class="navbar">
+				 <input type="submit" class="btn btn-default" name="used_groups" value="{tr}Select only groups that have a perm with the object{/tr}">
 			</div>
 			{/if}
 
@@ -160,7 +158,7 @@ if ($("#assignstructure").prop("checked")) {
 			</div>
 			
 			<div class="input_submit_container" style="text-align: center">
-				<input type="submit" class="btn btn-default btn-sm" name="group_select" value="{tr}Select{/tr}">
+				<input type="submit" class="btn btn-default" name="group_select" value="{tr}Select{/tr}">
 			</div>
 		</div>
 		</form>
@@ -186,7 +184,7 @@ if ($("#assignstructure").prop("checked")) {
 			</div>
 			
 			<div class="input_submit_container" style="text-align: center">
-				<input type="submit" class="btn btn-default btn-sm" name="feature_select" value="{tr}Select{/tr}">
+				<input type="submit" class="btn btn-default" name="feature_select" value="{tr}Select{/tr}">
 			</div>
 		</div>
 		</form>
@@ -218,9 +216,9 @@ if ($("#assignstructure").prop("checked")) {
 			{/foreach}
 				<th class="tips" title="{tr}A couple of userdefined permissions are currently assigned (See tab Assign Permissions){/tr}">Advanced</th>
 			</tr>
-			
+			{cycle print=false values="even,odd"}
 			{section name=grp loop=$groups}
-			<tr>
+			<tr class="{cycle}">
 				<td>
 				{$groups[grp].groupName|escape}
 				</td>
@@ -243,7 +241,7 @@ if ($("#assignstructure").prop("checked")) {
 		<input type="hidden" name="permType" value="{$permType|escape}">
 		<input type="hidden" name="show_disabled_features" value="{$show_disabled_features}">
 		<div class="input_submit_container" style="text-align: center">
-			<input type="submit" class="btn btn-primary btn-sm" name="assign" value="{tr}Assign{/tr}">
+			<input type="submit" class="btn btn-default" name="assign" value="{tr}Assign{/tr}">
 		</div>
 		
 		{if empty($filegals_manager)}

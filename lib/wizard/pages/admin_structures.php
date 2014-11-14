@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -28,8 +28,8 @@ class AdminWizardStructures extends Wizard
 
 	function onSetupPage ($homepageUrl) 
 	{
-		global $prefs;
-		$smarty = TikiLib::lib('smarty');
+		global	$smarty, $prefs;
+
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
 
@@ -40,13 +40,12 @@ class AdminWizardStructures extends Wizard
 		$isCategories = isset($prefs['feature_categories']) && $prefs['feature_categories'] === 'y' ? true : false;
 		$smarty->assign('isCategories', $isCategories);
 		
-		return true;
-	}
-
-	function getTemplate()
-	{
+		
+		// Assign the page tempalte
 		$wizardTemplate = 'wizard/admin_structures.tpl';
-		return $wizardTemplate;
+		$smarty->assign('wizardBody', $wizardTemplate);
+		
+		return true;
 	}
 
 	function onContinue ($homepageUrl) 

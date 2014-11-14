@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -22,13 +22,11 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
  */
 class Table_Code_Abstract
 {
-	protected static $s;
 	public static $id;
 	public static $tid;
-	protected static $sorts;
-	protected static $sortcol;
+	protected static $s;
 	protected static $filters;
-	protected static $filtercol;
+	protected static $sort;
 	protected static $group;
 	protected static $pager;
 	protected static $ajax;
@@ -54,21 +52,19 @@ class Table_Code_Abstract
 		$class = get_class($this);
 		if ($class == 'Table_Code_Manager') {
 			self::$s = $settings;
-			self::$id = $settings['id'] . '-div';
-			self::$tid = 'table#' . $settings['id'];
+			self::$id = $settings['id'];
+			self::$tid = 'table#' . $settings['id'] . '_table';
 			//overall sort on unless sort type set to false
-			self::$sorts = isset($settings['sorts']['type']) && $settings['sorts']['type'] === false ? false : true;
-			self::$sortcol = isset(self::$s['columns']) && count(array_column(self::$s['columns'], 'sort')) > 0 ? true : false;
+			self::$sort = isset($settings['sort']['type']) && $settings['sort']['type'] === false ? false : true;
 
 			//filter, group, pager and ajax off unless type is set and is not false
 			self::$filters = empty($settings['filters']['type']) ? false : true;
-			self::$filtercol = isset(self::$s['columns']) && count(array_column(self::$s['columns'], 'filter')) > 0 ? true : false;
 			self::$pager = empty($settings['pager']['type']) ? false : true;
 			global $prefs;
 			self::$ajax = $settings['ajax']['type'] === true && $prefs['feature_ajax'] === 'y'? true : false;
 			//TODO allow for use of group headers with ajax when tablesorter bug 437 is fixed
-			self::$group = self::$sorts && !self::$ajax && isset($settings['sorts']['group'])
-			&& $settings['sorts']['group'] === true ? true : false;
+			self::$group = self::$sort && !self::$ajax && isset($settings['sort']['group'])
+			&& $settings['sort']['group'] === true ? true : false;
 		}
 	}
 
@@ -78,14 +74,6 @@ class Table_Code_Abstract
 	public function setCode()
 	{
 	}
-
-	/**
-	 * Used by some sub-classes to generate array of code to add to the parent class
-	 */
-	protected function getOptionArray()
-	{
-	}
-
 
 	/**
 	 * Utility to generate lines of code within a section

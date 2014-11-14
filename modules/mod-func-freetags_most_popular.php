@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -18,7 +18,7 @@ function module_freetags_most_popular_info()
 {
 	return array(
 		'name' => tra('Most Popular Tags'),
-		'description' => tra('Shows the most popular tags. More popularity is indicated by a larger font.'),
+		'description' => tra('Shows the most popular freetags. More popularity is indicated by a larger font.'),
 		'prefs' => array('feature_freetags'),
 		'params' => array(
 			'type' => array(
@@ -71,10 +71,10 @@ function module_freetags_most_popular_info()
  */
 function module_freetags_most_popular($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	$globalperms = Perms::get();
 	if ($globalperms->view_freetags) {
-		$freetaglib = TikiLib::lib('freetag');
+		global $freetaglib; require_once 'lib/freetag/freetaglib.php';
 		$most_popular_tags = $freetaglib->get_most_popular_tags('', 0, empty($module_params['max']) ? $mod_reference["rows"] : $module_params['max'], empty($module_params['where'])?'': $module_params['where'], empty($module_params['objectId'])?'': $module_params['objectId']);
 		$smarty->assign_by_ref('most_popular_tags', $most_popular_tags);
 		$smarty->assign('type', (isset($module_params['type']) && $module_params['type'] == 'cloud') ? 'cloud' : 'list');

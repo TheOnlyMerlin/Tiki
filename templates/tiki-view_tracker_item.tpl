@@ -1,29 +1,23 @@
 {* $Id$ *}
-{title help="trackers"}{$tracker_item_main_value}{/title}
+{title help="trackers"}{$tracker_info.name}{/title}
 
 {if ! isset($print_page) || $print_page ne 'y'}
 
 	{* --------- navigation ------ *}
-	<div class="t_navbar">
-		<div class="pull-right btn-group">
-			{self_link print='y' _class="btn btn-default"}{icon name="print"}{/self_link}
-			{if $item_info.logs.cant}
-				<a class="btn btn-default" class="link" href="tiki-tracker_view_history.php?itemId={$itemId}" title="{tr}History{/tr}">{icon name="history"}</a>
+	<div class="navbar">
+		{if $prefs.feature_group_watches eq 'y' and ( $tiki_p_admin_users eq 'y' or $tiki_p_admin eq 'y' )}
+			<a href="tiki-object_watches.php?objectId={$itemId|escape:"url"}&amp;watch_event=tracker_item_modified&amp;objectType=tracker+{$trackerId}&amp;objectName={$tracker_info.name|escape:"url"}&amp;objectHref={'tiki-view_tracker_item.php?trackerId='|cat:$trackerId|cat:'&itemId='|cat:$itemId|escape:"url"}" class="icon">{icon _id='eye_group' alt="{tr}Group Monitor{/tr}" align='right' hspace='1'}</a>
+		{/if}
+		{if $prefs.feature_user_watches eq 'y' and $tiki_p_watch_trackers eq 'y'}
+			{if $user_watching_tracker ne 'y'}
+				<a href="tiki-view_tracker_item.php?trackerId={$trackerId}&amp;itemId={$itemId}&amp;watch=add" title="{tr}Monitor{/tr}">{icon _id='eye' align="right" hspace="1" alt="{tr}Monitor{/tr}"}</a>
+			{else}
+				<a href="tiki-view_tracker_item.php?trackerId={$trackerId}&amp;itemId={$itemId}&amp;watch=stop" title="{tr}Stop Monitor{/tr}">{icon _id='no_eye' align="right" hspace="1" alt="{tr}Stop Monitor{/tr}"}</a>
 			{/if}
-			{monitor_link type=trackeritem object=$itemId}
-			{if $prefs.feature_user_watches eq 'y' and $tiki_p_watch_trackers eq 'y'}
-				{if $user_watching_tracker ne 'y'}
-					<a class="btn btn-default" href="tiki-view_tracker_item.php?trackerId={$trackerId}&amp;itemId={$itemId}&amp;watch=add" title="{tr}Monitor{/tr}">{icon name="watch"}</a>
-				{else}
-					<a class="btn btn-default" href="tiki-view_tracker_item.php?trackerId={$trackerId}&amp;itemId={$itemId}&amp;watch=stop" title="{tr}Stop Monitor{/tr}">{icon name="stop-watching"}</a>
-				{/if}
-			{/if}
-			{if $prefs.feature_group_watches eq 'y' and ( $tiki_p_admin_users eq 'y' or $tiki_p_admin eq 'y' )}
-				<a class="btn btn-default" href="tiki-object_watches.php?objectId={$itemId|escape:"url"}&amp;watch_event=tracker_item_modified&amp;objectType=tracker+{$trackerId}&amp;objectName={$tracker_info.name|escape:"url"}&amp;objectHref={'tiki-view_tracker_item.php?trackerId='|cat:$trackerId|cat:'&itemId='|cat:$itemId|escape:"url"}" title="{tr}Group Monitor{/tr}">{icon name="watch-group"}</a>
-			{/if}
-		</div>
-		{if $canModify && $prefs.tracker_legacy_insert neq 'y'}
-			<a class="btn btn-default" href="{bootstrap_modal controller=tracker action=update_item trackerId=$trackerId itemId=$itemId}">{icon name="edit"} {tr}Edit{/tr}</a>
+		{/if}
+		{self_link print='y'}{icon _id='printer' align='right' hspace='1' alt="{tr}Print{/tr}"}{/self_link}
+		{if $item_info.logs.cant}
+			<a class="link" href="tiki-tracker_view_history.php?itemId={$itemId}" title="{tr}History{/tr}">{icon _id='database' align='right' alt="{tr}History{/tr}"}</a>
 		{/if}
 		{include file="tracker_actions.tpl"}
 	</div>
@@ -50,38 +44,95 @@
 	{include file='tracker_error.tpl'}
 {/if}{*print_page*}
 
-{tabset name='tabs_view_tracker_item' skipsingle=1 toggle=n}
+{tabset name='tabs_view_tracker_item'}
 
 	{tab name="{tr}View{/tr}"}
 		{* --- tab with view ------------------------------------------------------------------------- *}
-		<h2>{$tracker_info.name|escape}</h2>
-		{if $tracker_is_multilingual}
-			<div class="translations">
-				<a href="{service controller=translation action=manage type=trackeritem source=$itemId}">{tr}Translations{/tr}</a>
-			</div>
-			{jq}
-				$('.translations a').click(function () {
-					var link = this;
-					$(this).serviceDialog({
-						title: $(link).text(),
-						data: {
-							controller: 'translation',
-							action: 'manage',
-							type: 'trackeritem',
-							source: "{{$itemId|escape}}"
-						}
+		{if empty($tracker_info.viewItemPretty)}
+			<h2>{tr}View Item{/tr}</h2>
+			{if $tracker_is_multilingual}
+				<div class="translations">
+					<a href="{service controller=translation action=manage type=trackeritem source=$itemId}">{tr}Translations{/tr}</a>
+				</div>
+				{jq}
+					$('.translations a').click(function () {
+						var link = this;
+						$(this).serviceDialog({
+							title: $(link).text(),
+							data: {
+								controller: 'translation',
+								action: 'manage',
+								type: 'trackeritem',
+								source: "{{$itemId|escape}}"
+							}
+						});
+						return false;
 					});
-					return false;
-				});
-			{/jq}
-		{/if}
+				{/jq}
+			{/if}
+			<table class="formcolor">
+				{if $tracker_info.showStatus eq 'y' or ($tracker_info.showStatusAdminOnly eq 'y' and $tiki_p_admin_trackers eq 'y')}
+					{assign var=ustatus value=$info.status|default:"p"}
+					<tr>
+						<td class="formlabel">{tr}Status{/tr}</td><td>{$status_types.$ustatus.label}</td>
+						<td colspan="2">{html_image file=$status_types.$ustatus.image title=$status_types.$ustatus.label alt=$status_types.$ustatus.label}</td>
+					</tr>
+				{/if}
+				{assign var=stick value="n"}
 
-		{trackerfields mode=view trackerId=$trackerId fields=$fields itemId=$itemId}
+				{foreach from=$fields key=ix item=cur_field}
+					{if !($tracker_info.doNotShowEmptyField eq 'y' and empty($cur_field.value) and empty($cur_field.cat) and empty($cur_field.links) and
+							$cur_field.type ne 's' and $cur_field.type ne 'STARS' and $cur_field.type ne 'h' and $cur_field.type ne 'l' and $cur_field.type ne 'W') and
+							!($cur_field.options_array[0] eq 'password' and $cur_field.type eq 'p')}
+					
+						<tr class="field{$cur_field.fieldId}">
+							{* Make adjustments for line breaks *}
+							{if ($cur_field.type eq 't' and $cur_field.options_array[0] eq '0') or
+								($cur_field.type eq 'a' and $cur_field.options_array[8] eq '0') or
+								($cur_field.type eq 'n' and $cur_field.options_array[0] eq '0') or
+								($cur_field.type eq 'b' and $cur_field.options_array[0] eq '0')
+							} 
+								<td colspan="2">
+									<span class="formlabel">{$cur_field.name|tra|escape}</span><br/>
+									<span class="formcontent">{trackeroutput field=$cur_field item=$item_info showlinks=n list_mode=n inTable=y}</span>
+								</td>
+							{else}
+								<td class="formlabel" >
+									{$cur_field.name|tra|escape}
+								</td>
+								<td class="formcontent">
+									{trackeroutput field=$cur_field item=$item_info showlinks=n list_mode=n inTable=y}
+								</td>
+							{/if}
+						</tr>
+					{/if}
+				{/foreach}
+				{if $tracker_info.showCreatedView eq 'y'}
+					<tr>
+						<td class="formlabel">{tr}Created{/tr}</td>
+						<td colspan="3" class="formcontent">{$info.created|tiki_long_datetime}{if $tracker_info.showCreatedBy eq 'y'}<br>by {if $prefs.user_show_realnames eq 'y'}{if empty($info.createdBy)}Unknown{else}{$info.createdBy|username}{/if}{else}{if empty($info.createdBy)}Unknown{else}{$info.createdBy}{/if}{/if}{/if}</td>
+					</tr>
+				{/if}
+				{if $tracker_info.showLastModifView eq 'y'}
+					<tr>
+						<td class="formlabel">{tr}LastModif{/tr}</td>
+						<td colspan="3" class="formcontent">{$info.lastModif|tiki_long_datetime}{if $tracker_info.showLastModifBy eq 'y'}<br>by {if $prefs.user_show_realnames eq 'y'}{if empty($info.lastModifBy)}Unknown{else}{$info.lastModifBy|username}{/if}{else}{if empty($info.lastModifBy)}Unknown{else}{$info.lastModifBy}{/if}{/if}{/if}</td>
+					</tr>
+				{/if}
+			</table>
+
+		{else}
+			{if $canModify}
+				{include file='tracker_pretty_item.tpl' item=$item_info fields=$ins_fields wiki=$tracker_info.viewItemPretty}
+			{elseif $canView}
+				{include file='tracker_pretty_item.tpl' item=$item_info fields=$fields wiki=$tracker_info.viewItemPretty}
+			{/if}
+		{/if}
 
 		{* -------------------------------------------------- section with comments --- *}
 		{if $tracker_info.useComments eq 'y' and ($tiki_p_tracker_view_comments ne 'n' or $tiki_p_comment_tracker_items ne 'n') and $prefs.tracker_show_comments_below eq 'y'}
             <a id="Comments"></a>
-			<div id="comment-container-below" class="well well-sm" data-target="{service controller=comment action=list type=trackeritem objectId=$itemId}"></div>
+			<div id="comment-container-below" data-target="{service controller=comment action=list type=trackeritem objectId=$itemId}"></div>
 			{jq}
 				var id = '#comment-container-below';
 				$(id).comment_load($(id).data('target'));
@@ -94,7 +145,8 @@
 	{* -------------------------------------------------- tab with comments --- *}
 	{if $tracker_info.useComments eq 'y' and ($tiki_p_tracker_view_comments ne 'n' or $tiki_p_comment_tracker_items ne 'n') and $prefs.tracker_show_comments_below ne 'y'}
 
-		{tab name="{tr}Comments{/tr} (`$comCount`)"}
+		{tab name="{tr}Comments{/tr}"}
+
 			<div id="comment-container" data-target="{service controller=comment action=list type=trackeritem objectId=$itemId}"></div>
 			{jq}
 				var id = '#comment-container';
@@ -112,7 +164,7 @@
 {/if}
 
 {* --------------------------------------------------------------- tab with edit --- *}
-{if (! isset($print_page) || $print_page ne 'y') && $canModify && $prefs.tracker_legacy_insert eq 'y'}
+{if (! isset($print_page) || $print_page ne 'y') && $canModify}
 	{tab name=$editTitle}
 		<h2>{tr}Edit Item{/tr}</h2>
 
@@ -129,7 +181,7 @@
 							{/if}
 						{/foreach}
 					</select>
-					<input type="submit" class="btn btn-default btn-sm" name="go" value="{tr}Move to another tracker{/tr}">
+					<input type="submit" class="btn btn-default" name="go" value="{tr}Move to another tracker{/tr}">
 				</form>
 			{/if}
 
@@ -152,16 +204,16 @@
 					<input type="hidden" name="cant" value="{$cant}">
 				{/if}
 
-				{remarksbox type="warning" title="{tr}Warning{/tr}"}<em class='mandatory_note'>{tr}Fields marked with an * are mandatory.{/tr}</em>{/remarksbox}
+				{remarksbox type="note"}<em class='mandatory_note'>{tr}Fields marked with an * are mandatory.{/tr}</em>{/remarksbox}
 
 				<table class="formcolor">
 					<tr>
 						<td colspan="2">
 							{if count($fields) >= 5}
-								<input type="submit" class="btn btn-default btn-sm" name="save" value="{tr}Save{/tr}" onclick="needToConfirm=false">
+								<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}" onclick="needToConfirm=false">
 								{* --------------------------- to return to tracker list after saving --------- *}
 								{if $canView}
-									<input type="submit" class="btn btn-default btn-sm" name="save_return" value="{tr}Save{/tr} &amp; {tr}Back to Items list{/tr}" onclick="needToConfirm=false">
+									<input type="submit" class="btn btn-default" name="save_return" value="{tr}Save{/tr} &amp; {tr}Back to Items list{/tr}" onclick="needToConfirm=false">
 									{if $canRemove}
 										<a class="link" href="tiki-view_tracker.php?trackerId={$trackerId}&amp;remove={$itemId}" title="{tr}Delete{/tr}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>
 									{/if}
@@ -228,10 +280,10 @@
 				{/if}
 				<tr>
 					<td colspan="2">
-						<input type="submit" class="btn btn-default btn-sm" name="save" value="{tr}Save{/tr}" onclick="needToConfirm=false">
+						<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}" onclick="needToConfirm=false">
 						{* --------------------------- to return to tracker list after saving --------- *}
 						{if $canView}
-							<input type="submit" class="btn btn-default btn-sm" name="save_return" value="{tr}Save{/tr} &amp; {tr}Back to Items List{/tr}" onclick="needToConfirm=false">
+							<input type="submit" class="btn btn-default" name="save_return" value="{tr}Save{/tr} &amp; {tr}Back to Items List{/tr}" onclick="needToConfirm=false">
 						{/if}
 						{if $canRemove}
 							<a class="link" href="tiki-view_tracker.php?trackerId={$trackerId}&amp;remove={$itemId}" title="{tr}Delete{/tr}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>
@@ -269,7 +321,7 @@
 					<table class="formcolor">
 						<tr>
 							<td>{$cur_field.name|tra}</td>
-							<td><input type="submit" class="btn btn-default btn-sm" name="trck_act" value="{$cur_field.options_array[0]|escape}" ></td>
+							<td><input type="submit" class="btn btn-default" name="trck_act" value="{$cur_field.options_array[0]|escape}" ></td>
 						<tr>
 					</table>
 					</form>

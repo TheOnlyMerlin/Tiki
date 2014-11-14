@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +10,6 @@ class Tiki_Event_Manager
 	private $eventRegistry = array();
 	private $priorities = array();
 	private $currentPriority = false;
-	private $counter = 0;
 
 	function reset()
 	{
@@ -55,8 +54,6 @@ class Tiki_Event_Manager
 
 	function trigger($eventName, array $arguments = array())
 	{
-		$arguments['EVENT_ID'] = ++$this->counter;
-
 		$priorities = array_unique($this->priorities);
 		sort($priorities);
 		$this->priorities = $priorities;

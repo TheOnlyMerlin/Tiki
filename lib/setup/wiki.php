@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -45,7 +45,7 @@ if (strstr($_SERVER['SCRIPT_NAME'], 'tiki-index.php')
 			&& (isset($_REQUEST['page']) || isset($_REQUEST['page_ref_id']) || isset($_REQUEST['page_id']))
 	) { // perhaps we have to go to an another page
 
-		$multilinguallib = TikiLib::lib('multilingual');
+		global $multilinguallib; include_once('lib/multilingual/multilinguallib.php');
 		if ( $multilinguallib->useBestLanguage()) {
 
 			if (empty($_REQUEST['page_id'])) {
@@ -53,7 +53,7 @@ if (strstr($_SERVER['SCRIPT_NAME'], 'tiki-index.php')
 					$info = $tikilib->get_page_info($_REQUEST['page']);
 					$_REQUEST['page_id'] = $info['page_id'];
 				} elseif (!empty($_REQUEST['page_ref_id'])) {
-					$structlib = TikiLib::lib('struct');
+					global $structlib; include_once('lib/structures/structlib.php');
 					$info = $structlib->s_get_page_info($_REQUEST['page_ref_id']);
 					$_REQUEST['page_id'] = $info['page_id'];
 				}
@@ -75,7 +75,7 @@ if (strstr($_SERVER['SCRIPT_NAME'], 'tiki-index.php')
 	if ($check && !$tikilib->page_exists($_REQUEST['page'])) {
 
 		$homePageLang = $prefs['language'];
-		$profilesLink = 'tiki-admin.php?profile=&categories%5B%5D=13.x&categories%5B%5D=Featured+profiles' .
+		$profilesLink = 'tiki-admin.php?profile=&categories%5B%5D=12.x&categories%5B%5D=Featured+profiles' .
 										'&repository=http%3a%2f%2fprofiles.tiki.org%2fprofiles&page=profiles&preloadlist=y&list=List#step2';
 
 		// Default HomePage content

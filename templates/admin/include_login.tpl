@@ -7,10 +7,10 @@
 	});
 {/jq}
 
-<div class="t_navbar btn-group form-group">
-	{button href="tiki-admingroups.php" class="btn btn-default" _text="{tr}Admin Groups{/tr}"}
-	{button href="tiki-adminusers.php" class="btn btn-default" _text="{tr}Admin Users{/tr}"}
-	{permission_link mode=button label="{tr}Manage permissions{/tr}"}
+<div class="navbar">
+	{button href="tiki-admingroups.php" _text="{tr}Admin Groups{/tr}"}
+	{button href="tiki-adminusers.php" _text="{tr}Admin Users{/tr}"}
+	{button href="tiki-objectpermissions.php" _text="{tr}Manage permissions{/tr}"}	
 </div>
 {if !empty($feedback)}
 	{remarksbox title="{tr}Feedback{/tr}" type=note}
@@ -20,17 +20,12 @@
 
 <form action="tiki-admin.php?page=login" class="admin" method="post" name="LogForm">
 	<input type="hidden" name="loginprefs" />
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-		        <input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}" />
-	        </div>
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+	</div>
 
 	{tabset name="admin_login"}
 		{tab name="{tr}General Preferences{/tr}"}
-            <h2>{tr}General Preferences{/tr}</h2>
 			{preference name=auth_method}
 			{preference name=feature_intertiki}
 			
@@ -86,7 +81,7 @@
 				{preference name=feature_userWizardDifferentUsersFieldIds}
 					<div class="adminoptionboxchild" id="feature_userWizardDifferentUsersFieldIds_childcontainer">
 							{preference name=feature_userWizardUsersFieldIds}
-					</div>				
+					</div>					
 				{preference name=user_register_prettytracker}
 					<div class="adminoptionboxchild" id="user_register_prettytracker_childcontainer">
 					{preference name=user_register_prettytracker_tpl}
@@ -188,12 +183,11 @@
 		{/tab}
 
 		{tab name="{tr}LDAP{/tr}"}
-            <h2>{tr}LDAP{/tr}</h2>
 			<input type="hidden" name="auth_ldap" />
 			<fieldset>
 				<legend>LDAP {help url="Login+Authentication+Methods"}</legend>
 				{if $prefs.auth_method ne 'ldap'}
-					<div class="alert alert-warning">
+					<div style="padding:0.5em;clear:both" class="simplebox">
 						<div>{icon _id=information} {tr}You must change the Authentication Method to LDAP for these changes to take effect{/tr}.</div>
 					</div>
 				{/if}
@@ -235,7 +229,6 @@
 		{/tab}
 
 		{tab name="{tr}LDAP external groups{/tr}"}
-            <h2>{tr}LDAP external groups{/tr}</h2>
 			<fieldset>
 				<legend>{tr}LDAP external groups{/tr}</legend>
 
@@ -293,13 +286,12 @@
 		{/tab}
 
 		{tab name="{tr}PAM{/tr}"}
-            <h2>{tr}PAM{/tr}</h2>
 			<input type="hidden" name="auth_pam" />
 			<fieldset>
 				<legend>{tr}PAM{/tr} {help url="AuthPAM" desc="{tr}PAM{/tr}"}</legend>
 	
 				{if $prefs.auth_method ne 'pam'}
-					<div class="alert alert-warning">
+					<div style="padding:0.5em;clear:both" class="simplebox">
 						<div>
 							{icon _id=information} {tr}You must change the Authentication Method to PAM for these changes to take effect{/tr}.
 						</div>
@@ -313,12 +305,11 @@
 		{/tab}
 
 		{tab name="{tr}Shibboleth{/tr}"}
-            <h2>{tr}Shibboleth{/tr}</h2>
 			<fieldset>
 				<legend>{tr}Shibboleth{/tr}{help url="AuthShib" desc="{tr}Shibboleth Authentication {/tr}"}</legend>
 				<input type="hidden" name="auth_shib" />
 				{if $prefs.auth_method ne 'shib'}
-					<div class="alert alert-warning">
+					<div style="padding:0.5em;clear:both" class="simplebox">
 						<div>{icon _id=information} {tr}You must change the Authentication Method to Shibboleth for these changes to take effect{/tr}.</div>
 					</div>
 				{/if}
@@ -335,12 +326,11 @@
 		{/tab}
 
 		{tab name="{tr}CAS{/tr}"}
-            <h2>{tr}CAS{/tr}</h2>
 			<input type="hidden" name="auth_cas" />
 			<fieldset>
 				<legend>{tr}CAS (Central Authentication Service){/tr}{help url="CAS+Authentication"}</legend>
 				{if $prefs.auth_method ne 'cas'}
-					<div class="alert alert-warning">
+					<div style="padding:0.5em;clear:both" class="simplebox">
 						<div>
 							{icon _id=information} {tr}You must change the Authentication Method to CAS for these changes to take effect{/tr}.
 						</div>
@@ -365,17 +355,16 @@
 			</fieldset>
 		{/tab}
 		{tab name="{tr}phpBB{/tr}"}
-            <h2>{tr}phpBB{/tr}</h2>
 			<fieldset>
 				<legend>{tr}phpBB{/tr}{help url="phpBB+Authentication" desc="{tr}phpBB User Database Authentication {/tr}"}</legend>
 				<input type="hidden" name="auth_phpbb" />
 				{if $prefs.auth_method ne 'phpbb'}
-					<div class="alert alert-warning">
+					<div style="padding:0.5em;clear:both" class="simplebox">
 						<div>{icon _id=information} {tr}You must change the Authentication Method to phpBB for these changes to take effect{/tr}.</div>
 					</div>
 				{/if}
 				{if $prefs.allowRegister ne 'n'}
-					<div class="alert alert-warning">
+					<div style="padding:0.5em;clear:both" class="simplebox">
 						<div>{icon _id=information} {tr}You must turn Users can register off for phpBB Authentication to function properly{/tr}.</div>
 					</div>
 				{/if}
@@ -384,7 +373,7 @@
 				{preference name=auth_phpbb_disable_tikionly}
 				{preference name=auth_phpbb_version}
 
-				<div class="alert alert-warning">
+				<div style="padding:0.5em;clear:both" class="simplebox">
 					<div>{icon _id=information} {tr}MySql only (for now){/tr}.</div>
 				</div>
 				{preference name=auth_phpbb_dbhost}
@@ -400,7 +389,7 @@
 				<legend>{tr}Web Server{/tr}{help url="External+Authentication#Web_Server_HTTP_" desc="{tr}Web Server Authentication {/tr}"}</legend>
 				<input type="hidden" name="auth_ws" />
 				{if $prefs.auth_method ne 'ws'}
-					<div class="alert alert-warning">
+					<div style="padding:0.5em;clear:both" class="simplebox">
 						<div>
 							{icon _id=information} {tr}You must change the Authentication Method to Web Server for these changes to take effect{/tr}.
 						</div>
@@ -409,12 +398,8 @@
 				{preference name='auth_ws_create_tiki'}
 			</fieldset>
 		{/tab}
-	{/tabset}<br>{* I cheated. *}
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="text-center">
-		        <input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}" />
-	        </div>
-        </div>
-    </div>
+	{/tabset}
+	<div class="heading input_submit_container" style="text-align: center">
+		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>

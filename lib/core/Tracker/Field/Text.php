@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +11,7 @@
  * Letter key: ~t~
  *
  */
-class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable, Tracker_Field_Exportable
+class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
 {
 	public static function getTypes()
 	{
@@ -307,6 +307,8 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 
 	function isValid()
 	{
+		global $prefs;
+
 		$value = $this->getValue();
 
 		$validation = $this->getConfiguration('validation');
@@ -317,49 +319,16 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 			return true;
 		}
 
+		if ($prefs['feature_jquery_validation'] === 'y' && $validation === 'regex' &&
+				(strpos($param, '\\') !== false || strpos($param, '\"') !== false)) {	// work around for legacy patterns pre r52254
+
+			$param = stripslashes($param);
+		}
+
 		$validators = TikiLib::lib('validators');
 		$validators->setInput($value);
 		$ret = $validators->validateInput($validation, $param);
 		return $ret;
-	}
-
-	function getTabularSchema()
-	{
-		global $prefs;
-		$schema = new Tracker\Tabular\Schema($this->getTrackerDefinition());
-		$permName = $this->getConfiguration('permName');
-		$name = $this->getConfiguration('name');
-
-		if ('y' !== $this->getConfiguration('isMultilingual', 'n')) {
-			$schema->addNew($permName, 'default')
-				->setLabel($name)
-				->setRenderTransform(function ($value) {
-					return $value;
-				})
-				->setParseIntoTransform(function (& $info, $value) use ($permName) {
-					$info['fields'][$permName] = $value;
-				})
-				;
-		} else {
-			foreach ($prefs['available_languages'] as $lang) {
-				$schema->addNew($permName, $lang)
-					->setLabel(tr('%0 (%1)', $name, $lang))
-					->addQuerySource('text', "tracker_field_{$permName}_{$lang}")
-					->setRenderTransform(function ($value, $extra) use ($lang) {
-						if (isset($extra['text'])) {
-							return $extra['text'];
-						} elseif (isset($value[$lang])) {
-							return $value[$lang];
-						}
-					})
-					->setParseIntoTransform(function (& $info, $value) use ($permName, $lang) {
-						$info['fields'][$permName][$lang] = $value;
-					})
-					;
-			}
-		}
-
-		return $schema;
 	}
 }
 

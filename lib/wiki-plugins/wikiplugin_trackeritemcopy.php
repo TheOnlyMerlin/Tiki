@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -90,8 +90,8 @@ function wikiplugin_trackeritemcopy_info()
 
 function wikiplugin_trackeritemcopy( $data, $params )
 {
+	global $smarty;
 	$trklib = TikiLib::lib("trk");
-	$smarty = TikiLib::lib('smarty');
 
 	if (!isset($params["trackerId"]) || !isset($params["copyFieldIds"])) {
 		return tra('Missing mandatory parameters');
@@ -113,8 +113,9 @@ function wikiplugin_trackeritemcopy( $data, $params )
 
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-		$items_copy = function ($trackerId, $updateFieldIds, $updateFieldValues, $copyFieldIds, $itemIds, $linkFieldId, $itemLinkId, $copies) {
-			$trklib = TikiLib::lib('trk');
+		function items_copy($trackerId, $updateFieldIds, $updateFieldValues, $copyFieldIds, $itemIds, $linkFieldId, $itemLinkId, $copies)
+		{
+			global $trklib, $_POST;
 
 			if (is_array($itemIds) == false) $itemIds = array($itemIds);
 
@@ -185,7 +186,7 @@ function wikiplugin_trackeritemcopy( $data, $params )
 				"data" => $newitemsdata,
 				"list" => $newitemslist
 			);
-		};
+		}
 
 		$return_array = array();
 		$itemIds = array();
@@ -226,7 +227,7 @@ function wikiplugin_trackeritemcopy( $data, $params )
 					}
 				}
 
-				$return_array[] = $items_copy(
+				$return_array[] = items_copy(
 					$trackerId[$key],
 					$updateFieldIds[$key],
 					$updateFieldValues[$key],

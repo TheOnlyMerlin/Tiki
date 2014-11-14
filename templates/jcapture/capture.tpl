@@ -1,10 +1,3 @@
-{extends 'layout_view.tpl'}
-
-{block name="title"}
-	{title}{$title|escape}{/title}
-{/block}
-
-{block name="content"}
 
 <applet type="application/x-java-applet"
 		archive="vendor/jcapture-applet/jcapture-applet/lib/jcapture.jar"
@@ -17,4 +10,3 @@
 	<param name = "uploadUrl"	value = "{$uploader}">
 	{tr}Applet failed to run.  No Java plug-in was found.{/tr}
 </applet>
-{/block}

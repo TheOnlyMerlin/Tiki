@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -22,7 +22,7 @@ class HistLib extends TikiLib
 	{
 		global $prefs;
 		if ($prefs['feature_contribution'] == 'y') {
-			$contributionlib = TikiLib::lib('contribution');
+			global $contributionlib; include_once('lib/contribution/contributionlib.php');
 			if ($historyId == '') {
 				$query = 'select `historyId` from `tiki_history` where `pageName`=? and `version`=?';
 				$historyId = $this->getOne($query, array($page, $version));
@@ -31,7 +31,7 @@ class HistLib extends TikiLib
 		}
 		$query = "delete from `tiki_history` where `pageName`=? and `version`=?";
 		$result = $this->query($query, array($page,$version));
-		$logslib = TikiLib::lib('logs');
+		global $logslib; include_once('lib/logs/logslib.php');
 		$logslib->add_action("Removed version", $page, 'wiki page', "version=$version");
 		//get_strings tra("Removed version $version")
 		return true;
@@ -101,7 +101,7 @@ class HistLib extends TikiLib
 
 		global $prefs;
 		if ($prefs['feature_actionlog'] == 'y') {
-			$logslib = TikiLib::lib('logs');
+			global $logslib; include_once('lib/logs/logslib.php');
 			$logslib->add_action("Rollback", $page, 'wiki page', "version=$version");
 		}
 		//get_strings tra("Changed actual version to $version");
@@ -155,7 +155,7 @@ class HistLib extends TikiLib
 	function get_version($page, $version)
 	{
 		//fix for encoded slowly without doing it all at once in the installer upgrade script
-		$wikilib = TikiLib::lib('wiki');
+		require_once("lib/wiki/wikilib.php");
 		$converter = new convertToTiki9();
 		$converter->convertPageHistoryFromPageAndVersion($page, $version);
 
@@ -231,9 +231,9 @@ class HistLib extends TikiLib
 			$aux["is_html"] = $res["is_html"];
 			//$aux["percent"] = levenshtein($res["data"],$actual);
 			if ($prefs['feature_contribution'] == 'y') {
-				$contributionlib = TikiLib::lib('contribution');
+				global $contributionlib; include_once('lib/contribution/contributionlib.php');
 				$aux['contributions'] = $contributionlib->get_assigned_contributions($res['historyId'], 'history');
-				$logslib = TikiLib::lib('logs');
+				global $logslib; include_once('lib/logs/logslib.php');
 				$aux['contributors'] = $logslib->get_wiki_contributors($aux);
 			}
 			$ret[] = $aux;
@@ -246,7 +246,7 @@ class HistLib extends TikiLib
 	// without the data itself (version = 0 now returns data from current version)
 	function get_page_from_history($page,$version,$fetchdata=false)
 	{
-		$wikilib = TikiLib::lib('wiki');
+		require_once("lib/wiki/wikilib.php");
 		$converter = new convertToTiki9();
 		$converter->convertPageHistoryFromPageAndVersion($page, $version);
 
@@ -496,7 +496,7 @@ class Document
 	 */
 	function __construct($page, $lastversion=0, $process=1, $showpopups=true, $startmarker='', $endmarker='')
 	{
-		$histlib = TikiLib::lib('hist');
+		global $histlib;		
 
 		$this->_document=array();
 		$this->_history=false;
@@ -1012,7 +1012,7 @@ class Document
 	 */
 	function mergeDiff($newpage, $newauthor)
 	{
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 		$this->_history=false;
 		$author=$newauthor;
 		$deleted=false;
@@ -1131,13 +1131,11 @@ class Document
 	}
 }
 
+$histlib = new HistLib;
 
 function histlib_helper_setup_diff( $page, $oldver, $newver )
 {
-	global $prefs;
-	$smarty = TikiLib::lib('smarty');
-	$histlib = TikiLib::lib('hist');
-	$tikilib = TikiLib::lib('tiki');
+	global $smarty, $histlib, $tikilib, $prefs;
 	$prefs['wiki_edit_section'] = 'n';
 	
 	$info = $tikilib->get_page_info($page);
@@ -1240,11 +1238,7 @@ function histlib_strip_irrelevant( $data )
 
 function rollback_page_to_version($page, $version, $check_key = true, $keep_lastModif = false)
 {
-	global $prefs;
-	$histlib = TikiLib::lib('hist');
-	$tikilib = TikiLib::lib('tiki');
-	$access = TikiLib::lib('access');
-
+	global $prefs, $histlib, $tikilib, $categlib, $access;
 	if ($check_key) {
 		$access->check_authenticity();
 	}		

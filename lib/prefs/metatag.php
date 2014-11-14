@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -17,8 +17,8 @@ function prefs_metatag_list()
 			'tags' => array('basic'),
 		),
 		'metatag_freetags' => array(
-			'name' => tra('Include tags'),
-			'description' => tra('If the tags feature is enabled, use the tags in the meta keywords for each page with tags set. This allows individual pages at the site to have different meta tags.'),
+			'name' => tra('Include freetags'),
+			'description' => tra('If the freetags feature is enabled, use the freetags in the meta keywords for each page with freetags set. This allows individual pages on the site to carry different meta tags.'),
 			'type' => 'flag',
 			'dependencies' => array(
 				'feature_freetags',

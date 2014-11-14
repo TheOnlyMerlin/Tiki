@@ -3,19 +3,27 @@
 		<input type="hidden" name="params" value="{$bbb_params|escape}">
 		<input type="image" name="join" src="{$bbb_image|escape}" title="{tr}Join{/tr}">
 	</div>
+
 	{tr}Meeting ID:{/tr} {$bbb_meeting|escape}
+	
 	{permission type=bigbluebutton object=$bbb_meeting name=tiki_p_assign_perm_bigbluebutton}
-		{permission_link mode=button type=bigbluebutton id=$bbb_meeting title=$bbb_meeting}
+		{button href="tiki-objectpermissions.php?objectId=`$bbb_meeting|escape:'url'`&amp;objectName=`$bbb_meeting|escape:'url'`&amp;objectType=bigbluebutton&amp;permType=bigbluebutton" _text="{tr}Permissions{/tr}"}
 	{/permission}
-    <div class="clearfix">
-    	{if ! $user}
-	    	{tr}Name:{/tr}
-		    <input type="text" name="bbb_name">
-		    <input type="submit" class="btn btn-default btn-sm" value="{tr}Join{/tr}">
-	    {else}
-		    <input type="submit" class="button btn btn-default" value="{tr}Join{/tr}">
-	    {/if}
-	</div>
+
+	{if ! $user}
+		<div>
+			{tr}Name:{/tr} 
+			<input type="text" name="bbb_name">
+			<input type="submit" class="btn btn-default" value="{tr}Join{/tr}">
+		</div>
+	{else}
+		<div>
+			<input type="submit" class="button btn btn-default" value="{tr}Join{/tr}">
+		</div>
+	{/if}
+
+	<div class="clear"></div>
+
 	{if $bbb_attendees}
 		<div>
 			<p>{tr}Current attendees:{/tr}</p>
@@ -28,5 +36,7 @@
 	{else}
 		<p>{tr}No attendees at this time.{/tr}</p>
 	{/if}
+
 	{include file="wiki-plugins/wikiplugin_bigbluebutton_view_recordings.tpl"}
+
 </form>

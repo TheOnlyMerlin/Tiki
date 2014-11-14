@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -216,7 +216,7 @@ class StatsLib extends TikiLib
      */
     public function site_stats()
 	{
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 		$stats = array();
 		$rows = $this->getOne("select count(*) from `tiki_pageviews`", array());
 
@@ -449,8 +449,7 @@ class StatsLib extends TikiLib
 	 */
 	public function period2dates($when)
 	{
-		global $prefs;
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib, $prefs;
 		$now = $tikilib->now;
 		$sec = TikiLib::date_format("%s", $now);
 		$min = TikiLib::date_format("%i", $now);
@@ -473,7 +472,7 @@ class StatsLib extends TikiLib
 
 			case 'week':
 				$iweek = TikiLib::date_format("%w", $now);// 0 for Sunday...
-				$calendarlib = TikiLib::lib('calendar');
+				global $calendarlib; include_once('lib/calendar/calendarlib.php');
 				$firstDayofWeek = $calendarlib->firstDayofWeek();
 				$iweek -= $firstDayofWeek;
 				if ($iweek < 0) {
@@ -598,3 +597,5 @@ class StatsLib extends TikiLib
 		return $ret;
 	}
 }
+global $dbTiki;
+$statslib = new StatsLib;

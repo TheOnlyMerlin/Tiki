@@ -14,7 +14,7 @@
 {if $prefs.feature_webmail eq 'y'}
 <form action="javascript:void(null);" onsubmit="return submitWebmail();" name="webmail_form">
 	<div class="mod_webmail_heading">
-		<div class="pull-right">
+		<div class="floatright">
 			{*icon _id='resultset_first' class=''*}
 			{if isset($prevstart) and $prevstart}
 				<a href="#" onclick="doRefreshWebmail({$prevstart});return false;">{icon _id='resultset_previous' class=''}</a>
@@ -39,7 +39,7 @@
 		{/if}
 	</div>
 	<div class="webmail_list">
-		{if isset($error)}<span class="alert-warning">{$error}</span>{/if}
+		{if isset($error)}<span class="error">{$error}</span>{/if}
 		{if isset($module_params.date_format)}
 			{assign var=date_format value=$module_params.date_format}
 		{else}
@@ -112,7 +112,7 @@
 	</div>
 </form>
 {else}
-	<span class="alert-warning">{$error}</span>
+	<span class="error">{$error}</span>
 {/if}
 {/tikimodule}
 {/strip}

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -19,8 +19,8 @@ class CommLib extends TikiLib
 		$info = $this->get_received_page($receivedPageId);
 
 		if ($info['structureName'] == $info['pageName']) {
-			$tikilib = TikiLib::lib('tiki');
-			$structlib = TikiLib::lib('struct');
+			global $tikilib;
+			global $structlib; include_once('lib/structures/structlib.php');
 			$pages = $tikilib->list_received_pages(0, -1, 'pageName_asc', '', 's', $info['structureName']);
 
 			foreach ($pages['data'] as $page) {
@@ -101,7 +101,7 @@ class CommLib extends TikiLib
 
 	function accept_article($receivedArticleId, $topic)
 	{
-		$artlib = TikiLib::lib('art');
+		global $artlib; require_once 'lib/articles/artlib.php';
 		$info = $this->get_received_article($receivedArticleId);
 
 		$artlib->replace_article(

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,8 +7,8 @@
 
 class TikiDb_Pdo_Result
 {
-	public $result;
-	public $numrows;
+	var $result;
+	var $numrows;
 
 	function __construct ($result)
 	{
@@ -101,21 +101,25 @@ class TikiDb_Pdo extends TikiDb
 		}
 	} // }}}
 
-	function fetchAll($query = null, $values = null, $numrows = -1, $offset = -1, $reporterrors = parent::ERR_DIRECT ) // {{{
+	function fetchAll($query = null, $values = null, $numrows = -1, $offset = -1, $reporterrors = true ) // {{{
 	{
 		$result = $this->_query($query, $values, $numrows, $offset);
 		if (! is_array($result) ) {
-			$this->handleQueryError($query, $values, $result, $reporterrors);
+			if ($reporterrors) {
+				$this->handleQueryError($query, $values, $result);
+			}
 		}
 
 		return $result;
 	} // }}}
 
-	function query($query = null, $values = null, $numrows = -1, $offset = -1, $reporterrors = self::ERR_DIRECT ) // {{{
+	function query($query = null, $values = null, $numrows = -1, $offset = -1, $reporterrors = true ) // {{{
 	{
 		$result = $this->_query($query, $values, $numrows, $offset);
 		if ( $result === false ) {
-			$this->handleQueryError($query, $values, $result, $reporterrors);
+			if ($reporterrors) {
+				$this->handleQueryError($query, $values, $result);
+			}
 		}
 
 		return new TikiDb_Pdo_Result($result);

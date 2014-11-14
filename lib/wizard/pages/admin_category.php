@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -28,7 +28,8 @@ class AdminWizardCategory extends Wizard
 
 	function onSetupPage ($homepageUrl) 
 	{
-		global $prefs;
+		global	$smarty, $prefs;
+
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
 		
@@ -36,13 +37,11 @@ class AdminWizardCategory extends Wizard
 			return false;
 		}
 
-		return true;
-	}
-
-	function getTemplate()
-	{
+		// Assign the page tempalte
 		$wizardTemplate = 'wizard/admin_category.tpl';
-		return $wizardTemplate;
+		$smarty->assign('wizardBody', $wizardTemplate);
+		
+		return true;
 	}
 
 	function onContinue ($homepageUrl) 

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,10 +7,6 @@
 
 abstract class TikiDb
 {
-	const ERR_DIRECT = true;
-	const ERR_NONE = false;
-	const ERR_EXCEPTION = 'exception';
-
 	private static $instance;
 
 	private $errorHandler;
@@ -48,7 +44,7 @@ abstract class TikiDb
 
 	abstract function qstr($str);
 
-	abstract function query($query = null, $values = null, $numrows = -1, $offset = -1, $reporterrors = self::ERR_DIRECT);
+	abstract function query($query = null, $values = null, $numrows = -1, $offset = -1, $reporterrors = true);
 
 	function lastInsertId() // {{{
 	{
@@ -58,18 +54,13 @@ abstract class TikiDb
 	function queryError($query, &$error, $values = null, $numrows = -1, $offset = -1) // {{{
 	{
 		$this->errorMessage = '';
-		$result = $this->query($query, $values, $numrows, $offset, self::ERR_NONE);
+		$result = $this->query($query, $values, $numrows, $offset, false);
 		$error = $this->errorMessage;
 
 		return $result;
 	} // }}}
 
-	function queryException($query, $values = null, $numrows = -1, $offset = -1) // {{{
-	{
-		return $this->query($query, $values, $numrows, $offset, self::ERR_EXCEPTION);
-	} // }}}
-
-	function getOne($query, $values = null, $reporterrors = self::ERR_DIRECT, $offset = 0) // {{{
+	function getOne($query, $values = null, $reporterrors = true, $offset = 0) // {{{
 	{
 		$result = $this->query($query, $values, 1, $offset, $reporterrors);
 
@@ -86,7 +77,7 @@ abstract class TikiDb
 		return false;
 	} // }}}
 
-	function fetchAll($query = null, $values = null, $numrows = -1, $offset = -1, $reporterrors = self::ERR_DIRECT) // {{{
+	function fetchAll($query = null, $values = null, $numrows = -1, $offset = -1, $reporterrors = true) // {{{
 	{
 		$result = $this->query($query, $values, $numrows, $offset, $reporterrors);
 
@@ -100,7 +91,7 @@ abstract class TikiDb
 		return $rows;
 	} // }}}
 
-	function fetchMap($query = null, $values = null, $numrows = -1, $offset = -1, $reporterrors = self::ERR_DIRECT) // {{{
+	function fetchMap($query = null, $values = null, $numrows = -1, $offset = -1, $reporterrors = true) // {{{
 	{
 		$result = $this->fetchAll($query, $values, $numrows, $offset, $reporterrors);
 
@@ -151,14 +142,12 @@ abstract class TikiDb
 		$this->errorMessage = $message;
 	} // }}}
 
-	protected function handleQueryError($query, $values, $result, $mode) // {{{
+	protected function handleQueryError($query, $values, $result) // {{{
 	{
-		if ($mode === self::ERR_NONE) {
-			return null;
-		} elseif ($mode === self::ERR_DIRECT && $this->errorHandler) {
+		if ( $this->errorHandler )
 			$this->errorHandler->handle($this, $query, $values, $result);
-		} elseif ($mode === self::ERR_EXCEPTION || ! $this->errorHandler) {
-			TikiDb_Exception::classify($this->errorMessage);
+		else {
+			throw new TikiDb_Exception($this->getErrorMessage());
 		}
 	} // }}}
 

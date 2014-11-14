@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -166,10 +166,6 @@ class Tiki_Profile_InstallHandler_TrackerField extends Tiki_Profile_InstallHandl
 		$trklib = TikiLib::lib('trk');
 
 		$fieldId = $trklib->get_field_id($data['tracker'], $data['name']);
-
-		if (! $fieldId && isset($data['permname'])) {
-			$fieldId = $trklib->get_field_id($data['tracker'], $data['name'], 'permName');
-		}
 
 		$factory = new Tracker_Field_Factory;
 		$fieldInfo = $factory->getFieldInfo($data['type']);

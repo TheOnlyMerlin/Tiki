@@ -76,10 +76,7 @@ function wikiplugin_playscorm_info() {
 
 function wikiplugin_playscorm($data, $params) {
 
-	global $base_url, $tikiroot, $tikipath, $user, $prefs;
-	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
+	global $smarty, $tikilib, $base_url, $tikiroot, $tikipath, $userlib, $user, $prefs;
 
 	extract ($params, EXTR_SKIP);
 

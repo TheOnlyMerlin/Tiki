@@ -1,13 +1,13 @@
 {* $Id$ *}
 {title help="Banners"}{tr}Edit or create banners{/tr}{/title}
 
-<div class="t_navbar form-group">
+<div class="navbar">
 	{button href="tiki-list_banners.php" _text="{tr}List banners{/tr}"}
 </div>
 
 <form action="tiki-edit_banner.php" method="post" enctype="multipart/form-data">
 	<input type="hidden" name="bannerId" value="{$bannerId|escape}">
-	<div class="panel panel-default"><div class="panel-body">
+	<div class="simplebox">
 		<table class="formcolor">
 			<tr>
 				<td>{tr}URL to link the banner{/tr}</td>
@@ -61,13 +61,13 @@
 					{tr}Or, create a new zone:{/tr}
 					<br>
 					<input type="text" name="zoneName" size="10">
-					<input type="submit" class="btn btn-default btn-sm" name="create_zone" value="{tr}Create{/tr}">
+					<input type="submit" class="btn btn-default" name="create_zone" value="{tr}Create{/tr}">
 				</td>
 			</tr>
 		</table>
-	</div></div>
+	</div>
 
-	<div class="panel panel-default"><div class="panel-body">
+	<div class="simplebox">
 		<table class="formcolor">
 			<tr>
 				<td colspan="2">{tr}Show the banner only between these dates:{/tr}</td>
@@ -91,9 +91,9 @@
 				</td>
 			</tr>
 		</table>
-	</div></div>
+	</div>
 
-	<div class="panel panel-default"><div class="panel-body">
+	<div class="simplebox">
 		<table class="formcolor">
 			<tr>
 				<td colspan="2">{tr}Show the banner only in this hours:{/tr}</td>
@@ -107,9 +107,9 @@
 				<td>{html_select_time time=$toTime display_seconds=false prefix='toTime' use_24_hours=$use_24hr_clock}</td>
 			</tr>
 		</table>
-	</div></div>
+	</div>
 
-	<div class="panel panel-default"><div class="panel-body">
+	<div class="simplebox">
 		<table class="formcolor">
 			<tr>
 				<td colspan="7">{tr}Show the banner only on:{/tr}</td>
@@ -138,9 +138,9 @@
 				</td>
 			</tr>
 		</table>
-	</div></div>
+	</div>
 
-	<div class="panel panel-default"><div class="panel-body">
+	<div class="simplebox">
 		{tr}Select ONE method for the banner{/tr}
 		<table class="formcolor">
 			<tr>
@@ -248,23 +248,22 @@
 				</td>
 			</tr>
 		</table>
-	</div></div>
+	</div>
 
-	<input type="submit" class="btn btn-default btn-sm" name="save" value="{tr}Save the Banner{/tr}">
+	<input type="submit" class="btn btn-default" name="save" value="{tr}Save the Banner{/tr}">
 </form>
 
 {if $zones}
-	<div align="left" class="panel panel-default"><div class="panel-body">
+	<div align="left" class="simplebox">
 		<h2>{tr}Remove Zones (you lose entered info for the banner){/tr}</h2>
-        <div class="table-responsive">
 		<table class="table normal">
 			<tr>
 				<th>{tr}Name{/tr}</th>
 				<th>{tr}Action{/tr}</th>
 			</tr>
-
+			{cycle print=false values="even,odd"}
 			{section name=ix loop=$zones}
-				<tr>
+				<tr class="{cycle}">
 					<td class="text">{$zones[ix].zone|escape}</td>
 					<td class="action">
 						<a class="link" href="tiki-edit_banner.php?removeZone={$zones[ix].zone|escape:url}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
@@ -272,7 +271,5 @@
 				</tr>
 			{/section}
 		</table>
-        </div>
 	</div>
-    </div>
 {/if}

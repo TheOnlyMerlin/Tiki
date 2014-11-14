@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -60,10 +60,8 @@ function wikiplugin_include_info()
 
 function wikiplugin_include($dataIn, $params)
 {
-	global $user, $killtoc;
+	global $tikilib,$userlib,$user, $killtoc;
     static $included_pages, $data;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
 
 	$killtoc = true;
 	$max_times = 5;
@@ -72,11 +70,6 @@ function wikiplugin_include($dataIn, $params)
 	if (!isset($page)) {
 		return ("<b>missing page for plugin INCLUDE</b><br />");
 	}
-
-	// This variable is for accessing included page name within plugins in that page
-	global $wikiplugin_included_page;
-	$wikiplugin_included_page = $page;
-
 	$memo = $page;
 	if (isset($start)) $memo .= "/$start";
 	if (isset($end)) $memo .= "/$end";
@@ -169,7 +162,7 @@ function wikiplugin_include($dataIn, $params)
 	// append an edit button if page_edit_icon does not equal 'n'
 	if ($page_edit_icon != 'n') {
 	if (isset($perms) && $perms['tiki_p_edit'] === 'y' && strpos($_SERVER['PHP_SELF'], 'tiki-send_newsletters.php') === false) {
-		$smarty = TikiLib::lib('smarty');
+		global $smarty;
 		$smarty->loadPlugin('smarty_block_ajax_href');
 		$smarty->loadPlugin('smarty_function_icon');
 		$tip = tra('Include Plugin'). ' | ' . tra('Edit the included page:').' &quot;' . $page . '&quot;';

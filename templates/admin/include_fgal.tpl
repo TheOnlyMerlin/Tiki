@@ -25,23 +25,15 @@
 {/remarksbox}
 
 <form action="tiki-admin.php?page=fgal" method="post">
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" class="btn btn-default" name="filegalhandlers" value="{tr}Change preferences{/tr}" />
+	</div>
 
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-			<a role="button" class="btn btn-default btn-sm" href="tiki-list_file_gallery.php" title="{tr}List{/tr}">
-				{icon name="list"} {tr}Files{/tr}
-			</a>
-            <div class="pull-right">
-                <input type="submit" class="btn btn-primary btn-sm" name="filegalhandlers" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-            </div>
-        </div>
-    </div>
 	{tabset name="fgal_admin"}
 	
 		{tab name="{tr}General Settings{/tr}"}
-            <h2>{tr}General Settings{/tr}</h2>
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Activate the feature{/tr}</legend>
 				{preference name=feature_file_galleries visible="always"}
 			</fieldset>
@@ -98,7 +90,7 @@
 
 				{preference name='fgal_fix_mime_type'}
 				<div class="adminoptionboxchild" id="fgal_fix_mime_type_childcontainer">
-				<input type="submit" class="btn btn-default btn-sm" name="updateMime" id="updateMime" value="{tr}Update mime of all non archived octet-stream files{/tr}" />
+				<input type="submit" class="btn btn-default" name="updateMime" id="updateMime" value="{tr}Update mime of all non archived octet-stream files{/tr}" />
 				</div>
 
 				{preference name='fgal_upload_from_source'}
@@ -132,8 +124,7 @@
 		{/tab}
 
 		{tab name="{tr}Plugins{/tr}"}
-            <h2>{tr}Plugins{/tr}</h2>
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Plugins{/tr}</legend>
 				{preference name=wikiplugin_files}
 				{preference name=wikiplugin_file}
@@ -148,7 +139,6 @@
 		{/tab}
 
 		{tab name="{tr}Listings{/tr}"}
-            <h2>{tr}Listings{/tr}</h2>
 			{remarksbox title="Note"}
 				{tr}Changing these settings will <em>not</em> affect existing file galleries. These changes will apply <em>only</em> to new file galleries{/tr}.
 			{/remarksbox}
@@ -189,7 +179,7 @@
 
 			<fieldset>
 				<legend>{tr}Select which items to display when listing galleries: {/tr}</legend>
-				<table class="table">
+				<table class="admin">
 					{include file='fgal_listing_conf.tpl'}
 				</table>
 			</fieldset>
@@ -197,10 +187,9 @@
 
 		{if $section eq 'admin'}
 			{tab name="{tr}Admin Listings{/tr}"}
-                <h2>{tr}Admin Listings{/tr}</h2>
 				<fieldset>
 					<legend>{tr}Select which items to display when admin galleries: {/tr}</legend>
-					<table class="table">
+					<table class="admin">
 						{include file='fgal_listing_conf.tpl' fgal_options='' fgal_listing_conf=$fgal_listing_conf_admin}
 					</table>
 				</fieldset>
@@ -245,9 +234,9 @@
 									<th>{tr}MIME Type{/tr}</th>
 									<th>{tr}System Command{/tr}</th>
 								</tr>
-
+								{cycle values="odd,even" print=false}
 								{foreach key=mime item=cmd from=$fgal_handlers}
-									<tr>
+									<tr class="{cycle}">
 										<td>{$mime}</td>
 										<td>
 											<input name="mimes[{$mime}]" type="text" value="{$cmd|escape:html}" size="30"/>
@@ -270,14 +259,13 @@
 				<div class="adminoptionbox">
 					<div class="adminoptionlabel">
 						<div align="center">
-							<input type="submit" class="btn btn-default btn-sm" name="filegalredosearch" value="{tr}Reindex all files for search{/tr}"/>
+							<input type="submit" class="btn btn-default" name="filegalredosearch" value="{tr}Reindex all files for search{/tr}"/>
 						</div>
 					</div>
 				</div>
 			</div>
 		{/tab}
 		{tab name="{tr}Enhancements{/tr}"}
-            <h2>{tr}Enhancements{/tr}</h2>
 
 			<fieldset>
 				<legend>{tr}Access{/tr}</legend>
@@ -330,12 +318,7 @@
 		{/tab}
 	{/tabset}
 
-    <br>{* I cheated. *}
-     <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="text-center">
-                <input type="submit" class="btn btn-primary btn-sm" name="filegalhandlers" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-            </div>
-        </div>
-    </div>
+	<div class="input_submit_container clear" style="text-align: center">
+		<input type="submit" class="btn btn-default" name="filegalhandlers" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>

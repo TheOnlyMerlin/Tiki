@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -104,8 +104,8 @@ function wikiplugin_toc( $data, $params )
 	$params = array_merge($defaults, $params);
 	extract($params, EXTR_SKIP);
 
-	global $page_ref_id;
-	$structlib = TikiLib::lib('struct');
+	global $structlib, $page_ref_id;
+	include_once ("lib/structures/structlib.php");
 
 	global $prefs;
 	if ($prefs['feature_jquery_ui'] === 'y' && $type === 'admin') {

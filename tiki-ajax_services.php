@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -35,10 +35,7 @@ if (isset($_REQUEST['controller'], $_REQUEST['action'])) {
 	$inputConfiguration[] = array('catchAllUnset' => null);
 }
 
-//Some times the filters spit out some errors, here we get the error into a var, so the ajax still works.
-ob_start();
 require_once ('tiki-setup.php');
-$errMsg = ob_get_clean();
 
 if (isset($_REQUEST['controller'], $_REQUEST['action'])) {
 	$controller = $_REQUEST['controller'];
@@ -148,7 +145,8 @@ if ($access->is_serializable_request() && isset($_REQUEST['listonly'])) {
 				
 		$access->output_serialized($finalusers);
 	} elseif ( $_REQUEST['listonly'] == 'tags' ) {
-		$freetaglib = TikiLib::lib('freetag');
+		global $freetaglib; require_once 'lib/freetag/freetaglib.php';
+		//$freetaglib = TikiLib::lib('freetag');
 
 		$tags = $freetaglib->get_tags_containing($_REQUEST['q']);
 		$access->output_serialized($tags);
@@ -169,7 +167,7 @@ if ($access->is_serializable_request() && isset($_REQUEST['listonly'])) {
 		$access->output_serialized($shippinglib->getRates($_REQUEST['from'], $_REQUEST['to'], $_REQUEST['packages']));
 	} elseif (  $_REQUEST['listonly'] == 'trackername' ) {
 		$trackers = TikiLib::lib('trk')->get_trackers_containing($_REQUEST['q']);
-		$access->output_serialized($trackers);
+                $access->output_serialized($trackers);
 	}
 } elseif ($access->is_serializable_request() && isset($_REQUEST['zotero_tags'])) { // Handle Zotero Requests
 	$access->check_feature(array( 'zotero_enabled' ));

@@ -8,7 +8,7 @@
 		{if $listpages or $find neq ''}
 		  {include file='find.tpl'}
 		{/if}
-        <div class="table-responsive">
+
 		<table class="table normal">
 		  <tr>
 		    <th>{self_link _sort_arg='sort_mode' _sort_field='contentId'}{tr}Id{/tr}{/self_link}</th>
@@ -19,9 +19,9 @@
 		    <th>{self_link _sort_arg='sort_mode' _sort_field='future'}{tr}Future vers{/tr}{/self_link}</th>
 		    <th>{tr}Action{/tr}</th>
 		  </tr>
-
+			{cycle values="odd,even" print=false}
 			{section name=changes loop=$listpages}
-			  <tr>
+			  <tr class="{cycle}">
 			    <td class="id">{$listpages[changes].contentId}</td>
 			    <td class="text">
 			      {if $listpages[changes].contentLabel neq ''}
@@ -45,7 +45,6 @@
 				{norecords _colspan=7}
 			{/section}
 		</table>
-        </div>
 		{pagination_links cant=$cant step=$prefs.maxRecords offset=$offset}{/pagination_links}
 	{/tab}
 	{tab name="{tr}Create/Edit content block{/tr}"}
@@ -58,7 +57,7 @@
 		</h2>
 	
 		{if $contentId ne ''}
-			<div class="t_navbar">{button href="tiki-list_contents.php" class="btn btn-default" _text="{tr}Create New Block{/tr}"}</div>
+			<div class="navbar">{button href="tiki-list_contents.php" _text="{tr}Create New Block{/tr}"}</div>
 		{/if}
 		<form action="tiki-list_contents.php" method="post">
 		  {query _type='form_input'}
@@ -79,7 +78,7 @@
 		    <tr>
 		      <td>&nbsp;</td>
 		      <td>
-		        <input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
+		        <input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 		      </td>
 		    </tr>
 		  </table>

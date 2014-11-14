@@ -1,16 +1,16 @@
 {title}{tr}Contacts{/tr}{/title}
 
-<div class="t_navbar btn-group form-group">
+<div class="navbar">
 	<div style="float:right;margin:5px;">
 		{if $view eq 'list'}
-			{button href="?view=group" _class="btn btn-default" _text="{tr}Group View{/tr}"}
+			{button href="?view=group" _text="{tr}Group View{/tr}"}
 		{else}
-			{button href="?view=list" _class="btn btn-default" _text="{tr}List View{/tr}"}
+			{button href="?view=list" _text="{tr}List View{/tr}"}
 		{/if}
 	</div>
 	<div style="float:left;margin:5px;">
-		{button href="#" _onclick="flip('editform');return false;" _class="btn btn-default" _text="{tr}Create/edit contacts{/tr}"}
-		{button href="tiki-user_contacts_prefs.php" _class="btn btn-default" _text="{tr}Preferences{/tr}"}
+		{button href="#" _onclick="flip('editform');return false;" _text="{tr}Create/edit contacts{/tr}"}
+		{button href="tiki-user_contacts_prefs.php" _text="{tr}Preferences{/tr}"}
 	</div>
 </div>
 
@@ -66,7 +66,7 @@
 				<td>
 				</td>
 				<td>
-					<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
+					<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 				</td>
 			</tr>
 		</tbody>
@@ -76,7 +76,7 @@
 {include file='find.tpl'}
 
 {initials_filter_links}
-<div class="table-responsive">
+
 <table class="table normal">
 	<tr>
 		{assign var=numbercol value=4}
@@ -110,7 +110,7 @@
 		<th>{tr}Action{/tr}</th>
 	</tr>
 	
-
+	{cycle values="odd,even" print=false}
 	{foreach key=k item=channels from=$all}
 		{if count($channels)}
 			{if $view neq 'list'}
@@ -121,7 +121,7 @@
 				</tr>
 			{/if}
 			{section name=user loop=$channels}
-				<tr>
+				<tr class="{cycle}">
 					<td class="text">
 						<a class="link" href="tiki-contacts.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;find={$find}&amp;contactId={$channels[user].contactId}">
 							{$channels[user].firstName}
@@ -177,9 +177,8 @@
 		{/if}
 	{/foreach}
 </table>
-</div>
-
-<div class="center-block">
+	
+<div class="mini">
 	{if $prev_offset >= 0}
 		[<a class="prevnext" href="tiki-contacts.php?find={$find}&amp;offset={$prev_offset}&amp;sort_mode={$sort_mode}">{tr}Prev{/tr}</a>]
 		&nbsp;

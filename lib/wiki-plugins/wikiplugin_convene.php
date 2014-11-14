@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -56,9 +56,7 @@ function wikiplugin_convene_info()
 
 function wikiplugin_convene($data, $params)
 {
-	global $page, $tiki_p_edit;
-	$headerlib = TikiLib::lib('header');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $headerlib, $page, $tiki_p_edit;
 
 	static $conveneI = 0;
 	++$conveneI;
@@ -233,9 +231,7 @@ function wikiplugin_convene($data, $params)
 
 	$result = <<<FORM
 			<form id='pluginConvene$i'>
-			    <div class="table-responsive">
-    				<table class="table table-bordered">$result</table>
-    		    </div>
+				<table cellpadding="2" cellspacing="2" border="0" style="width: 100%;">$result</table>
 			</form>
 FORM;
 
@@ -344,7 +340,7 @@ FORM;
 				this.save();
 			},
 			save: function(reload) {
-				$("#page-data").tikiModal(tr("Loading..."));
+				$("#page-data").modal(tr("Loading..."));
 
 				var needReload = reload != undefined;
 				var params = {
@@ -368,7 +364,7 @@ FORM;
 								$("#pluginConvene$i", "#page-data").replaceWith(newForm);
 							}
 							initConvene$i();
-							$("#page-data").tikiModal();
+							$("#page-data").modal();
 						}
 					});
 

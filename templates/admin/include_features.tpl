@@ -1,15 +1,12 @@
 {* $Id$ *}
 
-{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Please see the <a class='alert-link' target='tikihelp' href='http://doc.tiki.org/Features'>evaluation of each feature</a> on Tiki's developer site.{/tr}{/remarksbox}
+{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Please see the <a class='rbox-link' target='tikihelp' href='http://doc.tiki.org/Features'>evaluation of each feature</a> on Tiki's developer site.{/tr}{/remarksbox}
 
-<form class="admin" id="features" name="features" action="tiki-admin.php?page=features" method="post">
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-			    <input type="submit" class="btn btn-primary btn-sm" name="features" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}" />
-		    </div>
-        </div>
-    </div>
+	<form class="admin" id="features" name="features" action="tiki-admin.php?page=features" method="post">
+		<div class="heading input_submit_container" style="text-align: right">
+			<input type="submit" class="btn btn-default" name="features" value="{tr}Apply{/tr}" />
+			<input type="reset" class="btn btn-warning" name="featuresreset" value="{tr}Reset{/tr}" />
+		</div>
 
 
 {tabset name="admin_features"}
@@ -18,8 +15,7 @@
  * sections and add a configuration icon to the sections list
  *}
 {* ---------- Main features ------------ *}
-{tab name="{tr}Global features{/tr}" key=global}
-    <h2>{tr}Global features{/tr}</h2>
+{tab name="{tr}Global features{/tr}"}
 
 		<fieldset>
 			<legend>{tr}Main feature{/tr}</legend>
@@ -38,7 +34,7 @@
 				{preference name=feature_banners}
 				{preference name=feature_categories}
 				{preference name=feature_freetags}
-				{preference name=feature_search}
+				{preference name=feature_search_fulltext}
 			</div>
 
 		</fieldset>
@@ -89,7 +85,7 @@
 				{preference name=feature_html_pages}	
 				
 				{preference name=feature_htmlfeed}
-				{preference name=feature_futurelinkprotocol}
+				{preference name=feature_forwardlinkprotocol}
 
 				{preference name=feature_jcapture}
 				<div class="adminoptionboxchild" id="feature_jcapture_childcontainer">
@@ -142,16 +138,15 @@
 		
 {/tab}
 			
-{tab name="{tr}Interface{/tr}" key=interface}
-    <h2>{tr}Interface{/tr}</h2>
-			<fieldset class="table clearfix featurelist">
+{tab name="{tr}Interface{/tr}"}
+			<fieldset class="admin clearfix featurelist">
 				<legend> {tr}Ajax{/tr} </legend>	
 				{preference name=feature_ajax}
 				<div class="adminoptionboxchild half_width" id="feature_ajax_childcontainer">
 					{preference name=ajax_autosave}
 				</div>
 			</fieldset>
-			<fieldset class="table clearfix featurelist">
+			<fieldset class="admin clearfix featurelist">
 				<legend> {tr}jQuery plugins and add-ons{/tr} </legend>
 				{preference name=feature_jquery_autocomplete}
 				{preference name=feature_jquery_media}
@@ -176,7 +171,7 @@
 				</div>
 			</fieldset>
 
-			<fieldset class="table clearfix featurelist">
+			<fieldset class="admin clearfix featurelist">
 				<legend> {tr}Mobile{/tr} </legend>
 					{preference name=mobile_feature}
 
@@ -196,8 +191,7 @@
 
 {/tab}
 
-{tab name="{tr}Programmer{/tr}" key=programmer}
-    <h2>{tr}Programmer{/tr}</h2>
+{tab name="{tr}Programmer{/tr}"}
 			<div class="admin clearfix featurelist">
 				{preference name=feature_integrator}
 				{preference name=feature_xmlrpc}
@@ -229,7 +223,7 @@
 				</fieldset>
 			</div>
 
-			<div class="table">
+			<div class="admin">
 				<fieldset>
 					<legend>{tr}Custom Code{/tr}</legend>
 					{preference name="header_custom_js"}
@@ -237,27 +231,11 @@
 				</fieldset>
 			</div>
 {/tab}
-{tab name="{tr}Addons{/tr}" key=addons}
-	<h2>{tr}Tiki Addons{/tr}</h2>
-	<fieldset>
-		<legend>{tr}Activate Addons{/tr}</legend>
-		{foreach $addonprefs as $addon}
-			{preference name="{$addon|escape}"}
-		{/foreach}
-	</fieldset>
-	<fieldset>
-		<legend>{tr}Addon Groups API{/tr}</legend>
-		{preference name=feature_community_send_mail_join}
-		{preference name=feature_community_send_mail_leave}
-	</fieldset>
-{/tab}
+
 {/tabset}
 
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="text-center">
-			    <input type="submit" class="btn btn-primary btn-sm" name="features" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}" />
-		    </div>
-        </div>
-    </div>
+
+	<div class="input_submit_container" style="margin-top: 5px; text-align: center">
+		<input type="submit" class="btn btn-default" name="features" value="{tr}Apply{/tr}" />
+	</div>
 </form>

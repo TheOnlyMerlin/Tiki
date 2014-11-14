@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -38,55 +38,73 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 function smarty_block_remarksbox($params, $content, $smarty, &$repeat)
 {
 	global $prefs;
-	
-	if ( $repeat ) return;
+	static $instance = 0;
 
-	extract($params);
-	if (!isset($type))  $type = 'tip';
-	if (!isset($title)) $title = '';
-	if (!isset($close)) $close = 'y';
-	if (!isset($width)) $width = '';
-	
-	if (isset($highlight) && $highlight == 'y') {
-		$highlightClass = ' highlight';
+	if ( $repeat ) return '';
+	$instance++;
+
+	$params = array_merge(
+		array(
+			'type' => 'tip',
+			'title' => '',
+			'close' => 'y',
+			'width' => '',
+			'highlight' => 'n',
+			'icon' => '',
+		),
+		$params
+	);
+
+	if ($params['highlight'] === 'y') {
+		$params['highlight'] = ' highlight';
 	} else {
-		$highlightClass = '';
+		$params['highlight'] = '';
 	}
 
-	switch ($type) {
-	case 'warning':
-		$class = 'alert-warning';
-		$icon = 'warning';
-		break;
-	case 'error':
-	case 'errors':
-		$class = 'alert-danger';
-		$icon = 'error';
-		break;
-	case 'confirm':
-	case 'feedback':
-		$class = 'alert-success';
-		$icon = 'success';
-		break;
-	default:
-		$class = 'alert-info';
-		$icon = 'information';
-		break;
+	if ($params['icon'] ==='') {
+		if ($params['type']=='tip') {//get_strings tra('tip')
+			$params['icon']='book_open';
+		} else if ($params['type']=='comment') {//get_strings tra('comment')
+			$params['icon']='comments';
+		} else if ($params['type']=='warning' || $params['type'] == 'confirm') {//get_strings tra('warning') tra('confirm')
+			$params['icon']='exclamation';
+		} else if ($params['type']=='note') {//get_strings tra('note')
+			$params['icon']='information';
+		} else if ($params['type'] == 'errors') {//get_strings tra('errors')
+			$params['icon'] = 'delete';
+		} else {//get_strings tra('information')
+			$params['icon'] = 'information';
+		}
 	}
-	
-	if ($prefs['javascript_enabled'] != 'y') {
-		$close = false;
+
+	if ($prefs['javascript_enabled'] != 'y' || $params['type'] === 'errors' || $params['type'] === 'confirm') {
+		$params['close'] = false;
 	} else {
-		$close = $close != 'n';
+		$params['close'] = $params['close'] === 'y';
 	}
-	
-	$smarty->assign('remarksbox_title', $title);
-	$smarty->assign('remarksbox_type', $type);
-	$smarty->assign('remarksbox_icon', $icon);
-	$smarty->assign('remarksbox_class', $class);
-	$smarty->assign('remarksbox_highlight', $highlightClass);
-	$smarty->assign('remarksbox_close', $close);
-	$smarty->assign('remarksbox_width', $width);
-	$smarty->assignByRef('remarksbox_content', $content);
+	$md5 = 'rbox-' . md5(serialize(array($params, $instance,  $_SERVER['REQUEST_URI'])));
+
+	if (function_exists('getCookie') && getCookie($md5, 'rbox')) {
+		return '';
+	}
+
+	if ($params['close']) {
+		TikiLib::lib('header')->add_jq_onready(
+			'
+		$("#' . $md5 . ' .rbox-close").click( function () {
+			if (/*getCookie("rbox") ||*/ confirm("' . tra('Do you want to permanently hide this remarks box? (can actually be reset on User Preferences screen (tiki-user_preferences.php))') . '")) {
+				$("#' . $md5 . '").fadeOut();
+				setCookie("'. $md5 . '", "y", "rbox");		// advisory alert on first use
+			}
+			return false;
+		});
+		'
+		);
+	}
+
+	$smarty->assign('rbox_guid', $md5);
+	$smarty->assign('rbox_params', $params);
+	$smarty->assign('rbox_instance', $instance);
+	$smarty->assign('remarksbox_content', $content);
 	return $smarty->fetch('remarksbox.tpl');
 }

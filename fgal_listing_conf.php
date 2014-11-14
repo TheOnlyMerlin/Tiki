@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -64,7 +64,6 @@ if ( isset($gal_info) && isset($gal_info['galleryId']) && isset($gal_info['locka
 	$fgal_listing_conf['lockedby']['value'] = 'n';
 }
 
-$smarty = TikiLib::lib('smarty');
 $smarty->assign_by_ref('fgal_listing_conf', $fgal_listing_conf);
 
 if (isset($section) && $section == 'admin') {
@@ -101,10 +100,10 @@ if (isset($_REQUEST['view']) && $_REQUEST['view'] == 'admin') {
 
 		if ( isset($_REQUEST['page']) && $_REQUEST['page'] === 'fgal' ) {
 			// We are in the file gallery admin panel
-			$fgal_options[$k_gal]['value'] = isset($prefs[$k_prefs]) ? $prefs[$k_prefs] : null;
+			$fgal_options[$k_gal]['value'] = $prefs[$k_prefs];
 		} elseif ( isset($_REQUEST['edit_mode']) ) {
 			// We are in the edit file gallery page
-			$fgal_options[$k_gal]['value'] = isset($gal_info[$k_gal]) ? $gal_info[$k_gal] : null;
+			$fgal_options[$k_gal]['value'] = $gal_info[$k_gal];
 		} else {
 			// normal gallery view
 			$fgal_options[$k_gal]['value'] = ( isset($gal_info) && isset($gal_info[$k_gal]) ) ? $gal_info[$k_gal] : isset($prefs[$k_prefs]) ? $prefs[$k_prefs] : null;

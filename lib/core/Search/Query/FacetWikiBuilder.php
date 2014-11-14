@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -17,13 +17,11 @@ class Search_Query_FacetWikiBuilder
 			if ($match->getName() === 'facet') {
 				$arguments = $argumentParser->parse($match->getArguments());
 				$operator = isset($arguments['operator']) ? $arguments['operator'] : 'or';
-				$count = isset($arguments['count']) ? $arguments['count'] : null;
 
 				if (isset($arguments['name'])) {
 					$this->facets[] = array(
 						'name' => $arguments['name'],
 						'operator' => $operator,
-						'count' => $count,
 					);
 				}
 			}
@@ -35,11 +33,6 @@ class Search_Query_FacetWikiBuilder
 		foreach ($this->facets as $facet) {
 			if ($real = $provider->getFacet($facet['name'])) {
 				$real->setOperator($facet['operator']);
-
-				if ($facet['count']) {
-					$real->setCount($facet['count']);
-				}
-
 				$query->requestFacet($real);
 			}
 		}

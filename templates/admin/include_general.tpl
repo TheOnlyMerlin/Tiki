@@ -2,13 +2,9 @@
 
 <form action="tiki-admin.php?page=general" class="admin" method="post">
 	<input type="hidden" name="new_prefs" />
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-				<input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}" />
-	        </div>
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: right;">
+		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+	</div>
 	{if !empty($error_msg)}
 		{remarksbox type='warning' title="{tr}Warning{/tr}" icon='error'}
 			{$error_msg}
@@ -17,7 +13,6 @@
 
 	{tabset name="admin_general"}
 		{tab name="{tr}General Preferences{/tr}"}
-            <h2>{tr}General Preferences{/tr}</h2>
 			<fieldset>
 				<legend>{tr}Server Fitness{/tr}</legend>
 				{tr}To check if your server meets the requirements for running Tiki please visit <a href="tiki-check.php">Tiki Server Compatibility Check</a>{/tr}.
@@ -119,7 +114,6 @@
 		{/tab}
 
 		{tab name="{tr}General Settings{/tr}"}
-            <h2>{tr}General Settings{/tr}</h2>
 			<fieldset>
 				<legend>{tr}Server{/tr}</legend>
 				{preference name=tmpDir}
@@ -151,7 +145,7 @@
 				{remarksbox type="note" title="{tr}Advanced configuration warning{/tr}"}
 					{tr}Note that storing session data in the database is an advanced systems administration option, and is for admins who have comprehensive access and understanding of the database, in order to deal with any unexpected effects.{/tr}
 				{/remarksbox}
-				<div style="padding:.5em; text-align:left;">
+				<div style="padding:.5em;" align="left">
 					{icon _id=information style="vertical-align:middle"} {tr}Changing this feature will immediately log you out when you save this preference.{/tr} {if $prefs.forgotPass ne 'y'}If there is a chance you have forgotten your password, enable "Forget password" feature.<a href="tiki-admin.php?page=features" title="{tr}Features{/tr}">{tr}Enable now{/tr}</a>.{/if}
 				</div>
 				{preference name=session_storage}
@@ -215,7 +209,6 @@
 		{/tab}
 
 		{tab name="{tr}Navigation{/tr}"}
-            <h2>{tr}Navigation{/tr}</h2>
 			<fieldset>
 				<legend>{tr}Menus{/tr}</legend>
 				<em>{tr}Create and edit menus {/tr}</em><a href="tiki-admin_menus.php"><em>{tr}here{/tr}</em></a>
@@ -336,7 +329,6 @@
 		{/tab}
 
 		{tab name="{tr}Date and Time{/tr}"}
-            <h2>{tr}Date and Time{/tr}</h2>
 			{preference name=server_timezone}
 			{preference name=users_prefs_display_timezone}
 			{preference name=long_date_format}
@@ -371,19 +363,13 @@
 		{/tab}
 
 		{tab name="{tr}Change admin password{/tr}"}
-            <h2>{tr}Change admin password{/tr}</h2>
-			<div style="padding:1em; text-align:left;">
+			<div style="padding:1em;" align="left">
 				<p>{tr}Change the <strong>Admin</strong> password:{/tr} <a href="tiki-adminusers.php?find=admin">{tr}User administration{/tr}</a></p>
 			</div>
 		{/tab}
 	{/tabset}
 
-    <br>{* I cheated. *}
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="text-center">
-				<input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}" />
-	        </div>
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: center;">
+		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>

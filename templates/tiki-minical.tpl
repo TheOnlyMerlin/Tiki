@@ -2,17 +2,16 @@
 
 {include file='tiki-mytiki_bar.tpl'}
 
-<div class="t_navbar form-group">
-	{button href="tiki-minical.php#add" class="btn btn-default" _text="{tr}Add{/tr} "}
-	{button href="tiki-minical_prefs.php" class="btn btn-default" _text="{tr}Prefs{/tr}"}
-	{button href="tiki-minical.php?view=daily" class="btn btn-default" _text="{tr}Daily{/tr}"}
-	{button href="tiki-minical.php?view=weekly" class="btn btn-default" _text="{tr}Weekly{/tr}"}
-	{button href="tiki-minical.php?view=list" class="btn btn-default" _text="{tr}List{/tr}"}
-	{button href="tiki-minical_export.php" class="btn btn-default" _text="{tr}Export{/tr}"}
-	{button href="tiki-minical_prefs.php#import" class="btn btn-default" _text="{tr}Import{/tr}"}
+<div class="navbar">
+	{button href="tiki-minical.php#add" _text="{tr}Add{/tr} "}
+	{button href="tiki-minical_prefs.php" _text="{tr}Prefs{/tr}"}
+	{button href="tiki-minical.php?view=daily" _text="{tr}Daily{/tr}"}
+	{button href="tiki-minical.php?view=weekly" _text="{tr}Weekly{/tr}"}
+	{button href="tiki-minical.php?view=list" _text="{tr}List{/tr}"}
+	{button href="tiki-minical_export.php" _text="{tr}Export{/tr}"}
+	{button href="tiki-minical_prefs.php#import" _text="{tr}Import{/tr}"}
 </div>
 
-<div class="table-responsive">
 <table class="table normal" >
 	<tr>
 		<td>
@@ -43,10 +42,9 @@
 		</td>
 	</tr>
 </table>
-</div>
 <br>
 
-
+{cycle values="odd,even" print=false}
 {if $view eq 'daily'}
 	<b>
 		<a class="link" href="tiki-minical.php?view={$view}&amp;day={$yesterday|tiki_date_format:"%d"}&amp;mon={$yesterday|tiki_date_format:"%m"}&amp;year={$yesterday|tiki_date_format:"%Y"}">{icon _id='resultset_previous' style="vertical-align:middle"}</a>
@@ -56,7 +54,7 @@
 
 	<table clas="normal" width="100%">
 		{section name=ix loop=$slots}
-			<tr>
+			<tr class="{cycle}">
 				<td>
 					<table>
 						<tr>
@@ -93,7 +91,7 @@
 	<a class="link" href="tiki-minical.php?view={$view}&amp;day={$next_week_start|tiki_date_format:"%d"}&amp;mon={$next_week_start|tiki_date_format:"%m"}&amp;year={$next_week_start|tiki_date_format:"%Y"}">{icon _id='resultset_next'}</a>
 	<table class="table normal">
 		{section name=ix loop=$slots}
-			<tr>
+			<tr class="{cycle}">
 				<td>
 					<table >
 						<tr>
@@ -130,10 +128,9 @@
 	<a class="link" href="tiki-minical.php?view={$view}&amp;removeold=1">{tr}Remove old events{/tr}</a>
 	<form action="tiki-minical.php" method="post">
 		<input type="hidden" name="view" value="{$view|escape}">
-        <div class="table-responsive">
 		<table class="table normal">
 			<tr>
-				<th><input type="submit" class="btn btn-default btn-sm" name="delete" value="x "></th>
+				<th><input type="submit" class="btn btn-default" name="delete" value="x "></th>
 				<th>
 					<a href="tiki-minical.php?view={$view}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'title_desc'}title_asc{else}title_desc{/if}">{tr}Title{/tr}</a>
 				</th>
@@ -147,9 +144,9 @@
 					<a href="tiki-minical.php?view={$view}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'topicId_desc'}topicId_asc{else}topicId_desc{/if}">{tr}Topic{/tr}</a>
 				</th>
 			</tr>
-
+			{cycle values="odd,even" print=false}
 			{section name=user loop=$channels}
-				<tr>
+				<tr class="{cycle}">
 					<td style="text-align:center;">
 						<input type="checkbox" name="event[{$channels[user].eventId}]">
 					</td>
@@ -172,7 +169,6 @@
 				</tr>
 			{/section}
 		</table>
-        </div>
 	</form>
 
 	{pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
@@ -229,9 +225,9 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
+				<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 				{if $eventId}
-					<input type="submit" class="btn btn-warning btn-sm" name="remove2" value="{tr}Delete{/tr}">
+					<input type="submit" class="btn btn-warning" name="remove2" value="{tr}Delete{/tr}">
 				{/if}
 			</td>
 		</tr>

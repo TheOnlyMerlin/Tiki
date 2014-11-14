@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,10 +11,13 @@
 $section = 'forums';
 require_once ('tiki-setup.php');
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	global $categlib;
+	if (!is_object($categlib)) {
+		include_once ('lib/categories/categlib.php');
+	}
 }
 if ($prefs['feature_freetags'] == 'y') {
-	$freetaglib = TikiLib::lib('freetag');
+	include_once ('lib/freetag/freetaglib.php');
 }
 
 $access->check_feature('feature_forums');
@@ -504,7 +507,8 @@ if ($prefs['feature_contribution'] == 'y') {
 }
 
 if ($prefs['feature_forum_parse'] == 'y') {
-	$wikilib = TikiLib::lib('wiki');
+	global $wikilib;
+	include_once ('lib/wiki/wikilib.php');
 	$plugins = $wikilib->list_plugins(true, 'editpost');
 	$smarty->assign_by_ref('plugins', $plugins);
 }

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,7 +14,7 @@ class AdminWizardCompleted extends Wizard
 {
     function pageTitle ()
     {
-        return tra('Configuration Wizard Completed!');
+        return tra('Admin Wizard Completed!');
     }
     function isEditable ()
 	{
@@ -23,16 +23,16 @@ class AdminWizardCompleted extends Wizard
 	
 	public function onSetupPage ($homepageUrl) 
 	{
+		global	$smarty;
+
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
 		
-		return true;
-	}
-
-	function getTemplate()
-	{
+		// Assign the page template
 		$wizardTemplate = 'wizard/admin_wizard_completed.tpl';
-		return $wizardTemplate;
+		$smarty->assign('wizardBody', $wizardTemplate);
+		
+		return true;
 	}
 
 	function onContinue ($homepageUrl) 

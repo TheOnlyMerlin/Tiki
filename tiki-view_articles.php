@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,12 +11,12 @@
 $section = 'cms';
 //get_strings tra('Articles Home');
 require_once ('tiki-setup.php');
-$artlib = TikiLib::lib('art');
+include_once ('lib/articles/artlib.php');
 if ($prefs['feature_freetags'] == 'y') {
-	$freetaglib = TikiLib::lib('freetag');
+	include_once ('lib/freetag/freetaglib.php');
 }
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	include_once ('lib/categories/categlib.php');
 }
 
 $access->check_feature('feature_articles');
@@ -101,7 +101,7 @@ if (!isset($_REQUEST['lang'])) {
 // Get a list of last changes to the Wiki database
 $listpages = $artlib->list_articles($offset, $prefs['maxArticles'], $sort_mode, $find, $date_min, $date_max, $user, $type, $topic, 'y', $topicName, $categId, '', '', $_REQUEST['lang'], $min_rating, $max_rating, false, 'y');
 if ($prefs['feature_multilingual'] == 'y') {
-	$multilinguallib = TikiLib::lib('multilingual');
+	include_once ("lib/multilingual/multilinguallib.php");
 	$listpages['data'] = $multilinguallib->selectLangList('article', $listpages['data']);
 	foreach ($listpages['data'] as &$article) {
 		$article['translations'] = $multilinguallib->getTranslations('article', $article['articleId'], $article["title"], $article['lang']);

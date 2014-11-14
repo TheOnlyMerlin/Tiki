@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -107,13 +107,11 @@ function wikiplugin_flash_info()
 
 function wikiplugin_flash($data, $params)
 {
-	global $prefs, $user;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $prefs, $userlib, $user;
 	
 	// Handle file from a podcast file gallery
 	if (isset($params['fileId']) && !isset($params['movie'])) {
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; include_once ('lib/filegals/filegallib.php');
 		$file_info = $filegallib->get_file_info($params['fileId']);
 		if (!$userlib->user_has_perm_on_object($user, $file_info['galleryId'], 'file gallery', 'tiki_p_view_file_gallery')) {
 			return tra('Permission denied');
@@ -123,12 +121,12 @@ function wikiplugin_flash($data, $params)
 	
 	// Handle Youtube video
 	if (isset($params['youtube']) && preg_match('|http(s)?://(\w+\.)?youtube\.com/watch\?v=([\w-]+)|', $params['youtube'], $matches)) {
-		$params['movie'] = "//www.youtube.com/v/" . $matches[3];
+		$params['movie'] = "http://www.youtube.com/v/" . $matches[3];
 	}
 
 	// Handle Vimeo video
 	if (isset($params['vimeo']) && preg_match('|http(s)?://(www\.)?vimeo\.com/(clip:)?(\d+)|', $params['vimeo'], $matches)) {
-		$params['movie'] = '//vimeo.com/moogaloop.swf?clip_id=' . $matches[4];
+		$params['movie'] = 'http://vimeo.com/moogaloop.swf?clip_id=' . $matches[4];
 	}
 	
 	// Handle Blip.tv video

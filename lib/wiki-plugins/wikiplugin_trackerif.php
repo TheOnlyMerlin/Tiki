@@ -1,11 +1,12 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once('lib/ldap/filter.php');
+require_once('lib/trackers/trackerlib.php');
 
 function wikiplugin_trackerif_info()
 {
@@ -34,7 +35,7 @@ function wikiplugin_trackerif_info()
 
 function wikiplugin_trackerif ($data, $params)
 {
-	$trklib = TikiLib::lib('trk');
+	global $trklib;
 	$test = null;
 	$values = array();
 	$dataelse = '';

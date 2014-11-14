@@ -2,8 +2,8 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-// 
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+//
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -30,10 +30,6 @@ if (empty($_REQUEST['user']) || !$userlib->user_exists($_REQUEST['user'])) {
 
 if (!isset($_REQUEST["oldpass"]))
 	$_REQUEST["oldpass"] = '';
-
-if (isset($_REQUEST["newuser"]) && $_REQUEST["newuser"] == 'y') {
-	$smarty->assign('new_user_validation', 'y');
-}
 
 $smarty->assign('userlogin', $_REQUEST["user"]);
 $smarty->assign('oldpass', $_REQUEST["oldpass"]);
@@ -86,7 +82,7 @@ if (isset($_REQUEST["change"])) {
 			$smarty->assign('msg', tra('Your email could not be validated; make sure you email is correct'));
 			$smarty->assign('errortype', 'no_redirect_login');
 			$smarty->display("error.tpl");
-			die;			
+			die;
 		}
 		$userlib->change_user_email_only($_REQUEST['user'], $_REQUEST['email']);
 	}
@@ -107,7 +103,7 @@ if (isset($_REQUEST["change"])) {
 	$wizardlib = TikiLib::lib('wizard');
 	$force = $_REQUEST["user"] == 'admin';
 	$wizardlib->onLogin($user, $prefs['tikiIndex'], $force);
-	
+
 	// Go to homepage
 	$accesslib = TikiLib::lib('access');
 	$accesslib->redirect($prefs['tikiIndex']);

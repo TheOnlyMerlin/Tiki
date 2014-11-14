@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -55,12 +55,10 @@ abstract class Tracker_Field_Abstract implements Tracker_Field_Interface, Tracke
 				'href' => $href,
 			);
 			if (!empty($context['url'])) {
-				if ($context['url'] == 'sefurl') {
-					$context['url'] = 'item' . $itemId;
-				} elseif (strpos($context['url'], 'itemId') !== false) {
+				if (strpos($context['url'], 'itemId') !== false) {
 					$context['url'] = preg_replace('/([&|\?])itemId=?[^&]*/', '\\1itemId=' . $itemId, $context['url']);
 				} elseif (isset($context['reloff']) && strpos($context['url'], 'offset') !== false) {
-					$smarty = TikiLib::lib('smarty');
+					global $smarty;
 					$context['url'] = preg_replace('/([&|\?])tr_offset=?[^&]*/', '\\1tr_offset' . $smarty->tpl_vars['iTRACKERLIST']
 						. '=' . $context['reloff'], $context['url']);
 				}
@@ -259,17 +257,6 @@ abstract class Tracker_Field_Abstract implements Tracker_Field_Interface, Tracke
 	protected function getData($key, $default = false)
 	{
 		return isset($this->itemData[$key]) ? $this->itemData[$key] : $default;
-	}
-
-	protected function getItemField($permName)
-	{
-		$field = $this->trackerDefinition->getFieldFromPermName($permName);
-
-		if ($field) {
-			$id = $field['fieldId'];
-
-			return $this->getData($id);
-		}
 	}
 
 	/**

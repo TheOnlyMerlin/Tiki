@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,7 +13,9 @@ function prefs_user_list($partial = false)
 	$catree = array('-1' => tra('None'));
 
 	if (! $partial && $prefs['feature_categories'] == 'y') {
-		$categlib = TikiLib::lib('categ');
+		global $categlib;
+
+		include_once ('lib/categories/categlib.php');
 		$all_categs = $categlib->getCategories(NULL, true, false);
 
 		$catree['0'] = tra('All');
@@ -22,8 +24,7 @@ function prefs_user_list($partial = false)
 			$catree[$categ['categId']] = $categ['categpath'];
 		}
 	}
-
-	$fieldFormat = '{title} ({tracker_name})';
+	
 	return array(
 		'user_show_realnames' => array(
 			'name' => tra('Show user\'s real name instead of login (when possible)'),
@@ -182,7 +183,6 @@ function prefs_user_list($partial = false)
 				'user_register_prettytracker_output',
 			),
 			'profile_reference' => 'tracker_field',
-			'format' => $fieldFormat,
 		),
 		'user_trackersync_trackers' => array(
 			'name' => tra('User tracker IDs to sync prefs from'),
@@ -207,7 +207,6 @@ function prefs_user_list($partial = false)
 			),
 			'default' => '',
 			'profile_reference' => 'tracker_field',
-			'format' => $fieldFormat,
 		),
 		'user_trackersync_geo' => array(
 			'name' => tra('Synchronize long/lat/zoom to location field'),
@@ -260,7 +259,6 @@ function prefs_user_list($partial = false)
 			),
 			'default' => '',
 			'profile_reference' => 'tracker_field',
-			'format' => $fieldFormat,
 		),
 		'user_selector_threshold' => array(
 			'name' => tra('Maximum number of users to show in drop down lists'),

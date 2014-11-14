@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -36,10 +36,7 @@ function wikiplugin_invite_info()
 }
 function wikiplugin_invite( $data, $params)
 {
-	global $prefs, $user, $tiki_p_invite_to_my_groups;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $prefs, $tikilib, $userlib, $user, $smarty, $tiki_p_invite_to_my_groups;
 
 	if ($tiki_p_invite_to_my_groups != 'y') {
 		return;

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -259,10 +259,8 @@ function wikiplugin_articles_info()
 
 function wikiplugin_articles($data, $params)
 {
-	global $prefs, $tiki_p_read_article, $tiki_p_articles_read_heading, $pageLang;
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
-	$artlib = TikiLib::lib('art');
+	global $smarty, $tikilib, $prefs, $tiki_p_read_article, $tiki_p_articles_read_heading, $dbTiki, $pageLang;
+	global $artlib; require_once 'lib/articles/artlib.php';
 	$default = array('max' => $prefs['maxRecords'], 'start' => 0, 'usePagination' => 'n', 'topicId' => '', 'topic' => '', 'sort' => 'publishDate_desc', 'type' => '', 'lang' => '', 'quiet' => 'n', 'categId' => '', 'largefirstimage' => 'n', 'urlparam' => '', 'actions' => 'n', 'translationOrphan' => '', 'headerLinks' => 'n', 'showtable' => 'n', 'useLinktoURL' => 'n');
 	$auto_args = array('lang', 'topicId', 'topic', 'sort', 'type', 'lang', 'categId');
 	$params = array_merge($default, $params);
@@ -370,7 +368,8 @@ function wikiplugin_articles($data, $params)
 
 	$listpages = $artlib->list_articles($start, $max, $sort, '', $dateStartTS, $dateEndTS, 'admin', $type, $topicId, 'y', $topic, $categIds, '', '', $lang, '', '', ($overrideDates == 'y'), 'y', $filter);
 	if ($prefs['feature_multilingual'] == 'y' && empty($translationOrphan)) {
-		$multilinguallib = TikiLib::lib('multilingual');
+		global $multilinguallib;
+		include_once("lib/multilingual/multilinguallib.php");
 		$listpages['data'] = $multilinguallib->selectLangList('article', $listpages['data'], $pageLang);
 		foreach ($listpages['data'] as &$article) {
 			$article['translations'] = $multilinguallib->getTranslations('article', $article['articleId'], $article["title"], $article['lang']);
@@ -400,6 +399,7 @@ function wikiplugin_articles($data, $params)
 		$listpages["data"][$i]["comments_cant"] = TikiLib::lib('comments')->count_comments($comments_objectId);
 		//print_r($listpages["data"][$i]['title']);
 	}
+	global $artlib; require_once ('lib/articles/artlib.php');
 
 	$topics = $artlib->list_topics();
 	$smarty->assign_by_ref('topics', $topics);

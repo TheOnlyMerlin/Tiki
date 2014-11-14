@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,15 +7,15 @@
 
 function smarty_function_user_registration($params, $smarty)
 {
-	global $prefs, $https_mode, $base_url_https, $user;
-	$registrationlib = TikiLib::lib('registration');
-	$userlib = TikiLib::lib('user');
+	global $prefs, $userlib, $https_mode, $base_url_https, $registrationlib, $user;
 
 	if ($prefs['allowRegister'] != 'y') {
 		return;
 	}
 
 	$errorreportlib = TikiLib::lib('errorreport');
+
+	include_once('lib/registration/registrationlib.php');
 
 	$_VALID = tra("Please enter a valid %s.  No spaces, more than %d characters and contain %s");
 	$smarty->assign('_PROMPT_UNAME', sprintf($_VALID, tra("username"), $registrationlib->merged_prefs['min_username_length'], "0-9,a-z,A-Z"));

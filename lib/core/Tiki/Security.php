@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -37,10 +37,7 @@ class Tiki_Security
 			return null;
 		}
 
-		if (! $decoded = json_decode($string, true)) {
-			return null;
-		}
-
+		$decoded = json_decode($string, true);
 		$hash = $this->getHash($decoded['data']);
 
 		if ($hash === $decoded['hash']) {

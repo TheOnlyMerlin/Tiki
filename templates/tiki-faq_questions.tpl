@@ -1,10 +1,10 @@
 {title}{tr}Admin FAQ:{/tr} {$faq_info.title}{/title}
 
-<div class="t_navbar form-group">
-	{button href="tiki-list_faqs.php" class="btn btn-default" _text="{tr}List FAQs{/tr}"}
-	{button href="tiki-view_faq.php?faqId=$faqId" class="btn btn-default" _text="{tr}View FAQ{/tr}"}
-	{button href="tiki-list_faqs.php?faqId=$faqId" class="btn btn-default" _text="{tr}Edit this FAQ{/tr}"}
-	{button href="tiki-faq_questions.php?faqId=$faqId" class="btn btn-default" _text="{tr}New Question{/tr}"}
+<div class="navbar">
+	{button href="tiki-list_faqs.php" _text="{tr}List FAQs{/tr}"}
+	{button href="tiki-view_faq.php?faqId=$faqId" _text="{tr}View FAQ{/tr}"}
+	{button href="tiki-list_faqs.php?faqId=$faqId" _text="{tr}Edit this FAQ{/tr}"}
+	{button href="tiki-faq_questions.php?faqId=$faqId" _text="{tr}New Question{/tr}"}
 </div>
 
 <h2>{if $questionId}{tr}Edit FAQ question{/tr}{else}{tr}Add FAQ question{/tr}{/if}</h2>
@@ -34,7 +34,7 @@
   <tr>
     <td >&nbsp;</td>
     <td >
-      <input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
+      <input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
       {* set your changes and save 'em *}
     </td>
   </tr>
@@ -53,7 +53,7 @@
 <td>{tr}Filter{/tr}</td>
 <td>
 <input type="text" name="filter" value="{$filter|escape}">
-<input type="submit" class="btn btn-default btn-sm" name="filteruseq" value="{tr}Filter{/tr}">
+<input type="submit" class="btn btn-default" name="filteruseq" value="{tr}Filter{/tr}">
 </td>
 </tr>
 <tr>
@@ -70,7 +70,7 @@
 <tr>
 <td>&nbsp;</td>
 <td>
-<input type="submit" class="btn btn-default btn-sm" name="useq" value="{tr}Use{/tr}">
+<input type="submit" class="btn btn-default" name="useq" value="{tr}Use{/tr}">
 </td>
 </tr>
 </table>
@@ -85,7 +85,6 @@
   {include file='find.tpl'}
 {/if}
 
-<div class="table-responsive">
 <table class="table normal">
 <tr>
 <th>
@@ -95,9 +94,9 @@
 </th>
 <th>{tr}Action{/tr}</th>
 </tr>
-
+{cycle values="odd,even" print=false}
 {section name=user loop=$channels}
-<tr>
+<tr class="{cycle}">
 <td class="id">{$channels[user].questionId}</td>
 <td class="text">{$channels[user].question|escape}</td>
 <td class="action">
@@ -109,23 +108,21 @@
 	{norecords _colspan=3}
 {/section}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
 
 {if count($suggested) > 0}
 
 <h2>{tr}Suggested questions{/tr}</h2>
-<div class="table-responsive">
 <table class="table normal">
 <tr>
   <th>{tr}Question{/tr}</th>
   <th>{tr}Answer{/tr}</th>
   <th>{tr}Action{/tr}</th>
 </tr>
-
+{cycle values="odd,even" print=false}
 {section name=ix loop=$suggested}
-<tr>
+<tr class="{cycle}">
   <td class="text">{$suggested[ix].question|escape} </td>
   <td class="text">{$suggested[ix].answer|escape}</td>
   <td class="action">
@@ -135,7 +132,6 @@
 </tr>
 {/section}
 </table>
-</div>
 {else}
 <h2>{tr}No suggested questions{/tr}</h2>
 {/if}

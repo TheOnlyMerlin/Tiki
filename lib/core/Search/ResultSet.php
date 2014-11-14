@@ -1,11 +1,11 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-class Search_ResultSet extends ArrayObject implements JsonSerializable
+class Search_ResultSet extends ArrayObject
 {
 	private $count;
 	private $estimate;
@@ -156,23 +156,6 @@ class Search_ResultSet extends ArrayObject implements JsonSerializable
 		}
 
 		$this->exchangeArray($out);
-	}
-
-	function applyTransform(callable $transform)
-	{
-		foreach ($this as & $entry) {
-			$entry = $transform($entry);
-		}
-	}
-
-	function jsonSerialize()
-	{
-		return [
-			'count' => $this->count,
-			'offset' => $this->offset,
-			'maxRecords' => $this->maxRecords,
-			'result' => array_values($this->getArrayCopy()),
-		];
 	}
 }
 

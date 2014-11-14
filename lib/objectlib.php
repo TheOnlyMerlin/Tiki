@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -38,7 +38,7 @@ class ObjectLib extends TikiLib
 			if (is_null($description)) {
 				switch ($type) {
 					case 'article':
-						$artlib = TikiLib::lib('art');
+						global $artlib; require_once 'lib/articles/artlib.php';
 						$info = $artlib->get_article($itemId);
 
 						$description = $info['heading'];
@@ -47,7 +47,7 @@ class ObjectLib extends TikiLib
 						break;
 
 					case 'blog':
-						$bloglib = TikiLib::lib('blog');
+						global $bloglib; require_once('lib/blogs/bloglib.php');
 						$info = $bloglib->get_blog($itemId);
 
 						$description = $info['description'];
@@ -56,7 +56,7 @@ class ObjectLib extends TikiLib
 						break;
 
 					case 'calendar':
-						$calendarlib = TikiLib::lib('calendar');
+						global $calendarlib; require_once('lib/calendar/calendarlib.php');
 						$info = $calendarlib->get_calendar($itemId);
 
 						$description = $info['description'];
@@ -124,7 +124,7 @@ class ObjectLib extends TikiLib
 						break;
 
 					case 'poll':
-						$polllib = TikiLib::lib('poll');
+						global $polllib; require_once('lib/polls/polllib_shared.php');
 						$info = $polllib->get_poll($itemId);
 
 						$description = $info['title'];
@@ -141,7 +141,7 @@ class ObjectLib extends TikiLib
 						break;
 
 					case 'tracker':
-						$trklib = TikiLib::lib('trk');
+						global $trklib; include_once('lib/trackers/trackerlib.php');
 						$info = $trklib->get_tracker($itemId);
 
 						$description = $info['description'];
@@ -150,7 +150,7 @@ class ObjectLib extends TikiLib
 						break;
 
 					case 'trackeritem':
-						$trklib = TikiLib::lib('trk');
+						global $trklib; include_once('lib/trackers/trackerlib.php');
 						$info = $trklib->get_tracker_item($itemId);
 
 						$description = '';
@@ -208,27 +208,6 @@ class ObjectLib extends TikiLib
 		);
 	}
 
-	function getSelectorType($type)
-	{
-		$supported = [
-			'category' => 'category',
-			'file_gallery' => 'file gallery',
-			'forum' => 'forum',
-			'group' => 'group',
-			'tracker' => 'tracker',
-			'tracker_field' => 'trackerfield',
-			'trackerfield' => 'trackerfield',
-			'wiki_page' => 'wiki page',
-			'wiki page' => 'wiki page',
-		];
-
-		if (isset($supported[$type])) {
-			return $supported[$type];
-		} else {
-			return false;
-		}
-	}
-
 	function insert_object($type, $itemId, $description = '', $name = '', $href = '')
 	{
 		if (! $itemId) {
@@ -262,10 +241,6 @@ class ObjectLib extends TikiLib
 	// Each entry uses the item id as key and the object id as key. Items with no object id are ignored.
 	function get_object_ids($type, $itemIds)
 	{
-		if (empty($itemIds)) {
-			return array();
-		}
-
 		$query = 'select `objectId`, `itemId` from `tiki_objects` where `type`=? and `itemId` IN (' .
 						implode(',', array_fill(0, count($itemIds), '?')) . ')';
 
@@ -419,41 +394,34 @@ class ObjectLib extends TikiLib
 		switch ($objectType) {
 			case 'wiki':
 			case 'wiki page':
-				$tikilib = TikiLib::lib('tiki');
+				global $tikilib; include_once('lib/tikilib.php');
 				$info = $tikilib->get_page_info($object);
-				return array('title'=>$object, 'data'=>$info['data'], 'is_html'=>$info['is_html']);
+				return (array('title'=>$object, 'data'=>$info['data'], 'is_html'=>$info['is_html']));
 
 			case 'article':
-				$artlib = TikiLib::lib('art');
+				global $artlib; require_once 'lib/articles/artlib.php';
 				$info = $artlib->get_article($object);
-				return array('title'=>$info['title'], 'data'=>$info['body']);
+				return (array('title'=>$info['title'], 'data'=>$info['body']));
 
 			case 'file gallery':
 				$info = TikiLib::lib('filegal')->get_file_gallery_info($object);
-				return array('title' => $info['name']);
+				return (array('title' => $info['name']));
 
 			case 'blog':
 				$info = TikiLib::lib('blog')->get_blog($object);
-				return array('title' => $info['title']);
+				return (array('title' => $info['title']));
 
 			case 'forum':
 				$info = TikiLib::lib('comments')->get_forum($object);
-				return array('title' => $info['name']);
+				return (array('title' => $info['name']));
 
 			case 'forum post':
 				$info = TikiLib::lib('comments')->get_comment($object);
-				return array('title' => $info['title']);
+				return (array('title' => $info['title']));
 
 			case 'tracker':
 				$info = TikiLib::lib('trk')->get_tracker($object);
-				return array('title' => $info['name']);
-
-			case 'trackerfield':
-				$info = TikiLib::lib('trk')->get_tracker_field($object);
-				return array('title' => $info['name']);
-
-			case 'goal':
-				return TikiLib::lib('goal')->fetchGoal($object);
+				return (array('title' => $info['name']));
 		}
 		return (array('error'=>'true'));
 	}
@@ -463,8 +431,8 @@ class ObjectLib extends TikiLib
 		switch ($objectType) {
 			case 'wiki':
 			case 'wiki page':
+				global $tikilib; include_once('lib/tikilib.php');
 				global $user;
-				$tikilib = TikiLib::lib('tiki');
 				$tikilib->update_page($object, $data, tra('section edit'), $user, $tikilib->get_ip_address());
 				break;
 		}
@@ -507,13 +475,6 @@ class ObjectLib extends TikiLib
 			case 'topic':
 				$meta=TikiLib::lib('art')->get_topic($id);
 				return $meta['name'];
-			case 'group':
-				return $id;
-			case 'user':
-				if (is_int($id)) {
-					$id = TikiLib::lib('tiki')->get_user_login($id);
-				}
-				return TikiLib::lib('user')->clean_user($id);
 		}
 
 		$title = $this->table('tiki_objects')->fetchOne(
@@ -532,10 +493,6 @@ class ObjectLib extends TikiLib
 
 		if (isset($info['title'])) {
 			return $info['title'];
-		}
-
-		if (isset($info['name'])) {
-			return $info['name'];
 		}
 	}
 
@@ -584,7 +541,7 @@ class ObjectLib extends TikiLib
 
 	function get_metadata($type, $object, & $classList)
 	{
-		$smarty = TikiLib::lib('smarty');
+		global $smarty;
 		$smarty->loadPlugin('smarty_modifier_escape');
 
 		$escapedType = smarty_modifier_escape($type);
@@ -611,4 +568,5 @@ class ObjectLib extends TikiLib
 		return $metadata;
 	}
 }
-
+global $objectlib;
+$objectlib = new ObjectLib;

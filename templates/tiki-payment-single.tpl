@@ -118,7 +118,7 @@
 						<br><input type="image" name="submit" border="0" src="https://www.paypal.com/en_US/i/bnr/horizontal_solution_PPeCheck.gif" border="0" alt="PayPal">
 					</form>
 				{elseif $prefs.payment_system eq 'israelpost' && $prefs.payment_israelpost_business_id neq ''}
-					<form id="israelpost_form" method="post" action="{$prefs.payment_israelpost_environment|escape}genericInit?OpenAgent{if $prefs.language neq 'he'}&amp;L=EN{/if}">
+					<form id="israelpost_form" method="post" target="israelpost_iframe" action="{$prefs.payment_israelpost_environment|escape}genericInit?OpenAgent{if $prefs.language neq 'he'}&amp;L=EN{/if}">
 						<input type="hidden" name="business" value="{$prefs.payment_israelpost_business_id|escape}">
 						<input type="hidden" name="PreOrderID" value="{$payment_info.paymentRequestId|escape}">
 						<input type="hidden" name="item_number_1" value="{$payment_info.paymentRequestId|escape}">
@@ -127,15 +127,24 @@
 						<input type="hidden" name="quantity_1" value="1">
 						<input type="hidden" name="return" value="{$payment_info.returnurl|escape}">
 						<input type="hidden" name="currency_code" value="{$prefs.payment_currency|escape}">
-						<input class="btn btn-default" type="submit" value="{tr}Proceed to Israel Post{/tr}">
+						<input type="submit" value="{tr}Proceed to Israel Post{/tr}">
 					</form>
+					{* Note: width specified by specifications, not height *}
+					<iframe id="israelpost_iframe" name="israelpost_iframe" src="" style="width: 445px; height: 700px; display: none; border: none;">
+					</iframe>
+					{jq}
+						$('#israelpost_form').submit(function () {
+							$(this).hide();
+							$('#israelpost_iframe').show();
+						});
+					{/jq}
 				{elseif $prefs.payment_system eq 'cclite' && $prefs.payment_cclite_gateway neq ''}
 					<legend style="font-style: italic">{tr}Pay With Cclite{/tr}</legend>
 					{if (!empty($ccresult) or !empty($ccresult2)) and $ccresult_ok}
 						<form action="{query _type='relative'}" method="post">
 							<input type="hidden" name="invoice" value="{$payment_info.paymentRequestId|escape}">
 							<input type="hidden" name="cookietab" value="1">
-							<input type="submit" class="btn btn-default btn-sm" value="{tr}Refresh page{/tr}">
+							<input type="submit" class="btn btn-default" value="{tr}Refresh page{/tr}">
 						</form>
 						{remarksbox title="{tr}Payment info{/tr}" type="info"}
 							{$ccresult}<br>
@@ -145,7 +154,7 @@
 						<form action="{query _type='relative'}" method="post">
 							<input type="hidden" name="invoice" value="{$payment_info.paymentRequestId|escape}">
 							<input type="hidden" name="cclite_payment_amount" value="{$payment_info.amount_remaining|escape}">
-							<input type="submit" class="btn btn-default btn-sm" value="{tr}Trade with Cclite{/tr}">
+							<input type="submit" class="btn btn-default" value="{tr}Trade with Cclite{/tr}">
 						</form>
 						{if (!empty($ccresult) or !empty($ccresult2))}
 							{remarksbox title="{tr}Payment problem{/tr}" type="info"}
@@ -158,7 +167,6 @@
 					<legend style="font-style: italic">{tr}Pay With Tiki Credits{/tr}</legend>
 					<form action="{query _type='relative'}" method="post">
 						{tr}Pay with Tiki User Credits:{/tr}
-                        <div class="table-responsive">
 						<table class="table normal">
 							<tr>
 								<th>{tr}Credit type{/tr}</th>
@@ -178,11 +186,10 @@
 								<td colspan="4">
 									<input type="hidden" name="invoice" value="{$payment_info.paymentRequestId|escape}">
 									<input type="hidden" name="tiki_credit_amount" value="{$payment_info.amount_remaining|escape}">
-									<input type="submit" class="btn btn-default btn-sm" name="tiki_credit_pay" value="{tr}Pay with Tiki User Credits{/tr}">
+									<input type="submit" class="btn btn-default" name="tiki_credit_pay" value="{tr}Pay with Tiki User Credits{/tr}">
 								</td>
 							</tr>
 						</table>
-                        </div>
 					</form>
 				{/if}
 			</fieldset>
@@ -223,7 +230,7 @@
 						<legend style="font-style: italic">{tr}Enter a Manual Payment{/tr}</legend>
 
 						<p>
-							<input type="text" name="manual_amount" class="text-right">&nbsp;<span style="font-style: italic">{$payment_info.currency|escape}</span>
+							<input type="text" name="manual_amount" class="right">&nbsp;<span style="font-style: italic">{$payment_info.currency|escape}</span>
 						</p>
 						<p>
 							<label for="payment-note" style="font-style: italic">{tr}Note{/tr}</label>
@@ -231,7 +238,7 @@
                         </p>
 						<p>
 							<input type="hidden" name="returnurl" value="{$payment_info.returnurl|escape}">
-							<input type="submit" class="btn btn-default btn-sm" value="{tr}Enter payment{/tr}">
+							<input type="submit" class="btn btn-default" value="{tr}Enter payment{/tr}">
 							<input type="hidden" name="invoice" value="{$payment_info.paymentRequestId|escape}">
 						</p>
 					</fieldset>

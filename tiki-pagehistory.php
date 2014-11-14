@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,7 +8,7 @@
 $section = 'wiki page';
 $section_class = "tiki_wiki_page manage";	// This will be body class instead of $section
 require_once ('tiki-setup.php');
-$histlib = TikiLib::lib('hist');
+include_once ('lib/wiki/histlib.php');
 require_once ('lib/wiki/renderlib.php');
 
 $access->check_feature('feature_wiki');
@@ -28,15 +28,7 @@ if (!isset($_REQUEST["page"])) {
 	$smarty->assign_by_ref('page', $_REQUEST["page"]);
 }
 
-$auto_query_args = array('page', 'oldver', 'newver', 'show_all_versions');
-foreach ($auto_query_args as $key => $value ) {
-	if(isset($_GET[$value])){
-		if($value != 'page'){
-			$_REQUEST["compare"]="Compare";
-			$_REQUEST["diff_style"]=(isset($_REQUEST["diff_style"]))?$_REQUEST["diff_style"]:"sidediff";
-		}
-	}
-}
+$auto_query_args = array('page', 'oldver', 'newver', 'compare', 'diff_style', 'show_translation_history', 'show_all_versions', 'history_offset', 'paginate', 'history_pagesize');
 
 // Now check permissions to access this page
 if (!isset($_REQUEST["source"])) {
@@ -65,7 +57,7 @@ if (isset($_REQUEST['preview'], $_REQUEST['flaggedrev'], $_REQUEST['page']) && $
 	}
 
 	if ($targetFlag) {
-		$flaggedrevisionlib = TikiLib::lib('flaggedrevision');
+		global $flaggedrevisionlib; require_once 'lib/wiki/flaggedrevisionlib.php';
 
 		$flaggedrevisionlib->flag_revision($info['pageName'], $targetVersion, 'moderation', $targetFlag);
 	}
@@ -81,7 +73,8 @@ if (isset($_REQUEST["delete"]) && isset($_REQUEST["hist"]) && $info["flag"] != '
 	}
 }
 if ($prefs['feature_contribution'] == 'y') {
-	$contributionlib = TikiLib::lib('contribution');
+	global $contributionlib;
+	include_once ('lib/contribution/contributionlib.php');
 	$contributions = $contributionlib->get_assigned_contributions($page, 'wiki page');
 	$smarty->assign_by_ref('contributions', $contributions);
 	if ($prefs['feature_contributor_wiki'] == 'y') {
@@ -109,14 +102,10 @@ $smarty->assign('history_pagesize', $history_pagesize);
 
 // fetch page history, but omit the actual page content (to save memory)
 $history = $histlib->get_page_history($page, false, $history_offset, $paginate ? $history_pagesize : -1);
-// To avoid duplicate current version
-if(!$paginate) {
-	unset($history[0]);
-}
 $smarty->assign('history_cant', $histlib->get_nb_history($page) - 1);
 
 if ($prefs['flaggedrev_approval'] == 'y') {
-	$flaggedrevisionlib = TikiLib::lib('flaggedrevision');
+	global $flaggedrevisionlib; require_once 'lib/wiki/flaggedrevisionlib.php';
 
 	if ($flaggedrevisionlib->page_requires_approval($page)) {
 		$approved_versions = $flaggedrevisionlib->get_versions_with($page, 'moderation', 'OK');
@@ -313,14 +302,14 @@ if (isset($preview)) {
 	if ($preview == '' && isset($rversion)) {
 		$preview = $rversion;
 	}
-	if ($preview == $info['version'] || $preview == 0) {
-        $previewd = (new WikiLibOutput($info, $info['data'], array('preview_mode' => true, 'is_html' => $info['is_html'])))->parsedValue;
+	if ($preview == $info["version"] || $preview == 0) {
+		$previewd = $tikilib->parse_data($info["data"], array('preview_mode' => true, 'is_html' => $info['is_html']));
 		$smarty->assign('previewd', $previewd);
 		$smarty->assign('preview', $info['version']);
 	} else {
 		$version = $histlib->get_version($page, $preview);
 		if ($version) {
-            $previewd = (new WikiLibOutput($version, $version['data'], array('preview_mode' => true, 'is_html' => $version['is_html'])))->parsedValue;
+			$previewd = $tikilib->parse_data($version["data"], array('preview_mode' => true, 'is_html' => $version['is_html']));
 			$smarty->assign('previewd', $previewd);
 			$smarty->assign('preview', $preview);
 		}
@@ -340,7 +329,7 @@ if (isset($preview)) {
 	$smarty->assign('current', 0);
 }
 if ($prefs['feature_multilingual'] == 'y' && isset($_REQUEST['show_translation_history'])) {
-	$multilinguallib = TikiLib::lib('multilingual');
+	include_once ("lib/multilingual/multilinguallib.php");
 	$smarty->assign('show_translation_history', 1);
 	$sources = $multilinguallib->getSourceHistory($info['page_id']);
 	$targets = $multilinguallib->getTargetHistory($info['page_id']);
@@ -361,7 +350,7 @@ if (!isset($newver)) {
 	$newver = 0;
 }
 if ($prefs['feature_multilingual'] == 'y') {
-	$multilinguallib = TikiLib::lib('multilingual');
+	include_once ("lib/multilingual/multilinguallib.php");
 	$languages = $tikilib->list_languages();
 	$smarty->assign_by_ref('languages', $languages);
 	if (isset($_REQUEST["update_translation"])) {

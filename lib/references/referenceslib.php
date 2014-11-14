@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -398,8 +398,7 @@ class ReferencesLib extends TikiLib
 
 	public function get_permission($perm)
 	{
-		global $user, $tiki_p_admin;
-		$userlib = TikiLib::lib('user');
+		global $user, $userlib, $tiki_p_admin;
 
 		if (isset($tiki_p_admin) && $tiki_p_admin == 'y') {
 			return 'y';
@@ -424,3 +423,5 @@ class ReferencesLib extends TikiLib
 	}
 
 }
+global $referenceslib;
+$referenceslib = new ReferencesLib();

@@ -1,8 +1,8 @@
 {title}{tr}Tag translation{/tr}{if isset($data)}: {$data.pageName}{/if}{/title}
 
 {if isset($data)}
-	<div class="t_navbar">
-		{button  href="tiki-index.php?page=$objId" class="btn btn-default" _text="{tr}View page{/tr}"}
+	<div class="navbar">
+		{button  href="tiki-index.php?page=$objId" _text="{tr}View page{/tr}"}
 	</div>
 {/if}
 
@@ -87,7 +87,7 @@
 	{/foreach}
 		<tr>
 			<td colspan="{if in_array('',$languageList)}{($languageList|@count) - 1}{else}{$languageList|@count}{/if}">
-				<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
+				<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 			</td>
 		</tr>
 	</tbody>
@@ -99,7 +99,7 @@
 	<option value="{$lang.value}"{if in_array($lang.value, $languageList)} selected="selected"{/if}>{$lang.name}</option>
 {/foreach}
 </select>
-<input type="submit" class="btn btn-default btn-sm" value="{tr}Select{/tr}">
+<input type="submit" class="btn btn-default" value="{tr}Select{/tr}">
 </div>
 </form>
 

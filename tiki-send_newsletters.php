@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -134,7 +134,7 @@ if (isset($_REQUEST["remove"])) {
 	$nllib->remove_edition($_REQUEST["nlId"], $_REQUEST["remove"]);
 }
 
-$editlib = TikiLib::lib('edit');
+include_once ('lib/wiki/editlib.php');
 // wysiwyg decision
 include_once ('lib/setup/editmode.php');
 
@@ -543,7 +543,8 @@ include_once ('tiki-section_options.php');
 setcookie('tab', $cookietab);
 $smarty->assign('cookietab', $_REQUEST['cookietab']);
 ask_ticket('send-newsletter');
-$wikilib = TikiLib::lib('wiki');
+global $wikilib;
+include_once ('lib/wiki/wikilib.php');
 $plugins = $wikilib->list_plugins(true, 'editwiki');
 $smarty->assign_by_ref('plugins', $plugins);
 // disallow robots to index page:

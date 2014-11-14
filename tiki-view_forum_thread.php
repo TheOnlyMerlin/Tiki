@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -48,14 +48,14 @@ $pageCache = Tiki_PageCache::create()
 	->addKeys($_REQUEST, array( 'locale', 'forumId', 'comments_parentId' ))
 	->checkMeta(
 		'forum-page-output-meta-time', array(
-			'forumId'           => $jitRequest->forumId->int(),
-			'comments_parentId' => $jitRequest->comments_parentId->int(),
+			'forumId'           => @$_REQUEST['forumId'],
+			'comments_parentId' => @$_REQUEST['comments_parentId']
 		)
 	)
 	->applyCache();
 
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	global $categlib; include_once ('lib/categories/categlib.php');
 }
 if (!isset($_REQUEST['topics_offset'])) {
 	$_REQUEST['topics_offset'] = 0;
@@ -325,7 +325,8 @@ if ($prefs['feature_actionlog'] == 'y') {
 }
 ask_ticket('view-forum');
 if ($prefs['feature_forum_parse'] == 'y') {
-	$wikilib = TikiLib::lib('wiki');
+	global $wikilib;
+	include_once ('lib/wiki/wikilib.php');
 	$plugins = $wikilib->list_plugins(true, 'editpost2');
 	$smarty->assign_by_ref('plugins', $plugins);
 }

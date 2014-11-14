@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -18,8 +18,8 @@ if ($prefs['feature_wizard_user'] != 'y') {
 }
 $access->check_user($user);
 
-$headerlib = TikiLib::lib('header');
-$headerlib->add_cssfile('themes/base_files/feature_css/wizards.css');
+require_once('lib/headerlib.php');
+$headerlib->add_cssfile('css/wizards.css');
 
 // Hide the display of the preference dependencies in the wizard
 $headerlib->add_css('.pref_dependency{display:none !important;}');
@@ -32,9 +32,7 @@ $accesslib->check_user($user);
 $pages = array();
 
 /// fetch the itemId for the user tracker ------------------------------------
-global $user, $prefs;
-$userlib = TikiLib::lib('user');
-$tikilib = TikiLib::lib('tiki');
+global	$user, $tikilib, $prefs, $userlib; 
 if ($prefs['userTracker'] === 'y') {
 	
 	$trklib = TikiLib::lib('trk');
@@ -131,4 +129,5 @@ if ($reqStepNr > 0) {
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 
-$smarty->display('tiki-wizard_user.tpl');
+$smarty->assign('mid', 'tiki-wizard_user.tpl');
+$smarty->display("tiki.tpl");

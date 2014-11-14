@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+# (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 #
 # All Rights Reserved. See copyright.txt for details and a complete list of authors.
 # Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -153,13 +153,11 @@ usage: $0 [<switches>] ${POSSIBLE_COMMANDS}
 -u user      owner of files (default: $AUSER)
 -g group     group of files (default: $AGROUP)
 -v virtuals  list of virtuals (for multitiki, example: "www1 www2")
--n           not prompt for user and group, assume current
+-n           not interactive mode
 -d off|on    disable|enable debugging mode (override script default)
 
 There are some other commands recommended for advanced users only.
 More documentation about this: https://doc.tiki.org/Permission+Check
-
-Example: sh `basename $0` -n fix
 EOF
 }
 
@@ -175,7 +173,7 @@ set_debug() {
 OPT_AUSER=
 OPT_AGROUP=
 OPT_VIRTUALS=
-OPT_USE_CURRENT_USER_GROUP=
+OPT_NOTINTERACTIVE=
 
 while getopts "hu:g:v:nd:" OPTION; do
 	case $OPTION in
@@ -183,7 +181,7 @@ while getopts "hu:g:v:nd:" OPTION; do
 		u) OPT_AUSER=$OPTARG ;;
 		g) OPT_AGROUP=$OPTARG ;;
 		v) OPT_VIRTUALS=$OPTARG ;;
-		n) OPT_USE_CURRENT_USER_GROUP=1 ;;
+		n) OPT_NOTINTERACTIVE=1 ;;
 		d) set_debug ;;
 		?) usage ; exit 1 ;;
 	esac
@@ -262,8 +260,8 @@ check_distribution
 # part 3 - default and writable subdirs
 # -------------------------------------
 
-DIR_LIST_DEFAULT="admin css db doc dump files img installer lang lib maps modules permissioncheck temp templates templates_c tests themes tiki_tests vendor vendor_extra whelp"
-DIR_LIST_WRITABLE="db dump img/wiki img/wiki_up img/trackers modules/cache temp temp/cache temp/public templates_c templates themes maps whelp mods files tiki_tests/tests temp/unified-index"
+DIR_LIST_DEFAULT="admin css db doc dump files img installer lang lib maps modules permissioncheck styles temp templates templates_c tests tiki_tests vendor vendor_extra whelp"
+DIR_LIST_WRITABLE="db dump img/wiki img/wiki_up img/trackers modules/cache temp temp/cache temp/public templates_c templates styles maps whelp mods files tiki_tests/tests temp/unified-index"
 DIRS=${DIR_LIST_WRITABLE}
 
 # part 4 - several functions
@@ -373,8 +371,8 @@ set_permission_dirs_special_write() {
 		if [ -d ${WRITABLE} ] ; then
 			if [ ${DEBUG} = '1' ] ; then
 				echo ${DEBUG_PREFIX}
-				echo ${DEBUG_PREFIX} "${FIND} ${WRITABLE} -type d -exec ${CHMOD} ${MODEL_PERMS_WRITE_SUBDIRS} {} \;"
-				echo ${DEBUG_PREFIX} "${FIND} ${WRITABLE} -type f -exec ${CHMOD} ${MODEL_PERMS_WRITE_FILES} {} \;"
+				echo ${DEBUG_PREFIX} ${FIND} ${WRITABLE} -type d -exec ${CHMOD} ${MODEL_PERMS_WRITE_SUBDIRS} {} \;
+				echo ${DEBUG_PREFIX} ${FIND} ${WRITABLE} -type f -exec ${CHMOD} ${MODEL_PERMS_WRITE_FILES} {} \;
 			fi
 			${FIND} ${WRITABLE} -type d -exec ${CHMOD} ${MODEL_PERMS_WRITE_SUBDIRS} {} \;
 			${FIND} ${WRITABLE} -type f -exec ${CHMOD} ${MODEL_PERMS_WRITE_FILES} {} \;
@@ -538,7 +536,7 @@ composer()
 	# insert php cli version check here
 	# http://dev.tiki.org/item4721
 	PHP_OPTION="--version"
-	REQUIRED_PHP_VERSION=55 # minimal version PHP 5.5 but no decimal seperator, no floating point data
+	REQUIRED_PHP_VERSION=53 # minimal version PHP 5.3 but no decimal seperator, no floating point data
 	#${PHPCLI} ${PHP_OPTION}
 	LOCAL_PHP_VERSION=`${PHPCLI} ${PHP_OPTION} | ${GREP} ^PHP | ${CUT} -c5,7`
 	#echo ${LOCAL_PHP_VERSION}
@@ -558,14 +556,14 @@ command_fix() {
 	if [ "$USER" = 'root' ]; then
 		if [ -n "$OPT_AUSER" ]; then
 			AUSER=$OPT_AUSER
-		elif [ -z "$OPT_USE_CURRENT_USER_GROUP" ]; then
+		elif [ -z "$OPT_NOTINTERACTIVE" ]; then
 			read -p "User [$AUSER]: " REPLY
 			if [ -n "$REPLY" ]; then
 				AUSER=$REPLY
 			fi
 		fi
 	else
-		if [ -z "$OPT_USE_CURRENT_USER_GROUP" ]; then
+		if [ -z "$OPT_NOTINTERACTIVE" ]; then
 			echo "You are not root or you are on a shared hosting account. You can now:
 
 1- ctrl-c to break now.
@@ -584,7 +582,7 @@ what to answer, just press enter to each question (to use default value)"
 
 	if [ -n "$OPT_AGROUP" ]; then
 		AGROUP=$OPT_AGROUP
-	elif [ -z "$OPT_USE_CURRENT_USER_GROUP" ]; then
+	elif [ -z "$OPT_NOTINTERACTIVE" ]; then
 		read -p "> Group [$AGROUP]: " REPLY
 		if [ -n "$REPLY" ]; then
 			AGROUP=$REPLY
@@ -594,7 +592,7 @@ what to answer, just press enter to each question (to use default value)"
 	touch db/virtuals.inc
 	if [ -n "$OPT_VIRTUALS" ]; then
 		VIRTUALS=$OPT_VIRTUALS
-	elif [ -n "$OPT_USE_CURRENT_USER_GROUP" ]; then
+	elif [ -n "$OPT_NOTINTERACTIVE" ]; then
 		VIRTUALS=$(cat db/virtuals.inc)
 	else
 		read -p "> Multi [$(cat -s db/virtuals.inc | tr '\n' ' ')]: " VIRTUALS
@@ -677,7 +675,7 @@ what to answer, just press enter to each question (to use default value)"
 
 	echo " done."
 
-	if [ -n "$OPT_USE_CURRENT_USER_GROUP" ]; then
+	if [ -n "$OPT_NOTINTERACTIVE" ]; then
 		composer
 	fi
 }
@@ -691,7 +689,7 @@ command_open() {
 	if [ "$USER" = 'root' ]; then
 		if [ -n "$OPT_AUSER" ]; then
 			AUSER=$OPT_AUSER
-		elif [ -z "$OPT_USE_CURRENT_USER_GROUP" ]; then
+		elif [ -z "$OPT_NOTINTERACTIVE" ]; then
 			read -p "User [$AUSER]: " REPLY
 			if [ -n "$REPLY" ]; then
 				AUSER=$REPLY
@@ -706,7 +704,7 @@ command_open() {
 
 	echo " done"
 
-	if [ -n "$OPT_USE_CURRENT_USER_GROUP" ]; then
+	if [ -n "$OPT_NOTINTERACTIVE" ]; then
 		composer
 	fi
 }
@@ -780,7 +778,7 @@ special_dirs_set_permissions_files() {
 		if [ -d ${WRITABLE} ] ; then
 			if [ ${DEBUG} = '1' ] ; then
 				echo ${DEBUG_PREFIX}
-				echo ${DEBUG_PREFIX} "${FIND} ${WRITABLE} -type f -exec ${CHMOD} ${MODEL_PERMS_WRITE_FILES} {} \;"
+				echo ${DEBUG_PREFIX} ${FIND} ${WRITABLE} -type f -exec ${CHMOD} ${MODEL_PERMS_WRITE_FILES} {} \;
 			fi
 			${FIND} ${WRITABLE} -type f -exec ${CHMOD} ${MODEL_PERMS_WRITE_FILES} {} \;
 		fi
@@ -792,7 +790,7 @@ special_dirs_set_permissions_subdirs() {
 		if [ -d ${WRITABLE} ] ; then
 			if [ ${DEBUG} = '1' ] ; then
 				echo ${DEBUG_PREFIX}
-				echo ${DEBUG_PREFIX} "${FIND} ${WRITABLE} -type d -exec ${CHMOD} ${MODEL_PERMS_WRITE_SUBDIRS} {} \;"
+				echo ${DEBUG_PREFIX} ${FIND} ${WRITABLE} -type d -exec ${CHMOD} ${MODEL_PERMS_WRITE_SUBDIRS} {} \;
 			fi
 			${FIND} ${WRITABLE} -type d -exec ${CHMOD} ${MODEL_PERMS_WRITE_SUBDIRS} {} \;
 		fi

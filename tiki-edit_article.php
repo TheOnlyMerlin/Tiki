@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,12 +14,13 @@ $inputConfiguration = array(
 );
 
 require_once ('tiki-setup.php');
-$categlib = TikiLib::lib('categ');
-$artlib = TikiLib::lib('art');
+include_once ('lib/categories/categlib.php');
+include_once ('lib/articles/artlib.php');
 
 //get_strings tra('New Article')
 if ($prefs['feature_freetags'] == 'y') {
-	$freetaglib = TikiLib::lib('freetag');
+	global $freetaglib;
+	include_once('lib/freetag/freetaglib.php');
 }
 $access->check_feature('feature_articles');
 
@@ -107,7 +108,7 @@ $expireDate = $tikilib->make_time(
 );
 
 //Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 $smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
 
 $smarty->assign('arttitle', '');
@@ -447,7 +448,7 @@ if (isset($_REQUEST['preview']) or !empty($errors)) {
 
 if (isset($_REQUEST['save']) && empty($errors)) {
 	check_ticket('edit-article');
-	$imagegallib = TikiLib::lib('imagegal');
+	include_once ('lib/imagegals/imagegallib.php');
 
 	# convert from the displayed 'site' time to 'server' time
 	if (isset($_REQUEST['publish_Hour'])) {
@@ -578,7 +579,7 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 				&& isset($_REQUEST['lang'])
 				&& $article_data['lang'] != $_REQUEST['lang']
 	) {
-		$multilinguallib = TikiLib::lib('multilingual');
+		include_once('lib/multilingual/multilinguallib.php');
 		if ($multilinguallib->updateObjectLang('article', $article_data['articleId'], $_REQUEST['lang'], true)) {
 			$_REQUEST['lang'] = $article_data['lang'];
 			$smarty->assign('msg', tra("The language can't be changed as its set of translations has already this language"));
@@ -652,7 +653,7 @@ if (isset($_REQUEST['save']) && empty($errors)) {
 		$translatedArticle = $artlib->get_article($translationOf);
 		// Quietly fail if translated article does not exist.
 		if (!empty($translatedArticle) && $translatedArticle['lang'] && $_REQUEST['lang'] != $translatedArticle['lang']) {
-			$multilinguallib = TikiLib::lib('multilingual');
+			include_once('lib/multilingual/multilinguallib.php');
 			$multilinguallib->insertTranslation('article', $translatedArticle['articleId'], $translatedArticle['lang'], $artid, $_REQUEST["lang"]);
 		}
 	}
@@ -739,7 +740,7 @@ if ($prefs['feature_multilingual'] == 'y') {
 	$smarty->assign_by_ref('languages', $languages);
 	// get translations
 	if ($articleId) {
-		$multilinguallib = TikiLib::lib('multilingual');
+		include_once('lib/multilingual/multilinguallib.php');
 		$translations = $multilinguallib->getTranslations('article', $articleId);
 	} else {
 		$translations = array();
@@ -768,7 +769,7 @@ $smarty->assign('siteTimeZone', $prefs['display_timezone']);
 
 include_once ('tiki-section_options.php');
 
-$wikilib = TikiLib::lib('wiki');
+global $wikilib; include_once('lib/wiki/wikilib.php');
 $plugins = $wikilib->list_plugins(true, 'body');
 $smarty->assign_by_ref('plugins', $plugins);
 

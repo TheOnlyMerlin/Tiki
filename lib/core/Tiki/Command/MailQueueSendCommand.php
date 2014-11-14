@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -28,11 +28,11 @@ class MailQueueSendCommand extends Command
     {
       require_once ('lib/mail/maillib.php');
       global $prefs;
-      $logslib = TikiLib::lib('logs');
+      $logslib = TikiLib::lib('logs'); 
       tiki_mail_setup();
       $output->writeln('Mail queue processor starting...');
 
-      $messages = \TikiDb::get()->fetchAll('SELECT messageId, message FROM tiki_mail_queue');
+        $messages = \TikiDb::get()->fetchAll('SELECT messageId, message FROM tiki_mail_queue');
 
       foreach ( $messages as $message ) {
 

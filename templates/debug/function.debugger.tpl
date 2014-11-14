@@ -6,20 +6,20 @@
 {* Command prompt form *}
 <form method="post" action="{$console_father|escape}">
 <b>{tr}Debugger Console{/tr}</b>
-<span style="float: right">{icon _id='img/icons/close.gif' onclick="toggle('debugconsole');" _title="{tr}Close{/tr}" width=13 height=13}</span>
-<table class="table">
+<span style="float: right">{icon _id='img/icons/close.gif' onclick='toggle("debugconsole");' _title="{tr}Close{/tr}" width=13 height=13}</span>
+<table>
   <tr>
-    <td><small>{tr}Current URL:{/tr}</small></td>
-    <td>{$console_father|escape}</td>
+    <td class="formcolor"><small>{tr}Current URL:{/tr}</small></td>
+    <td class="formcolor">{$console_father|escape}</td>
   </tr>
   <tr>
-    <td>{tr}Command:{/tr}</td>
-    <td><input type="text" name="command" class="form-control" value='{$command|escape:"html"}'></td>
+    <td class="formcolor">{tr}Command:{/tr}</td>
+    <td class="formcolor"><input type="text" name="command" size="70" value='{$command|escape:"html"}'></td>
   </tr>
   <tr>
-    <td></td>
-    <td>
-      <input type="submit" class="btn btn-default btn-sm" name="exec" value="{tr}exec{/tr}"> &nbsp;&nbsp;&nbsp;&nbsp;
+    <td class="formcolor"></td>
+    <td class="formcolor">
+      <input type="submit" class="btn btn-default" name="exec" value="{tr}exec{/tr}"> &nbsp;&nbsp;&nbsp;&nbsp;
       <small>{tr}Type <code>help</code> to get list of available commands{/tr}</small>
     </td>
   </tr>

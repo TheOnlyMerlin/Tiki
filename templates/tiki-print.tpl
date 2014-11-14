@@ -12,5 +12,10 @@
 		</div>
 
 {include file='footer.tpl'}
+<!-- Put JS at the end -->
+{if $headerlib}
+	{$headerlib->output_js_files()}
+	{$headerlib->output_js()}
+{/if}
 	</body>
 </html>

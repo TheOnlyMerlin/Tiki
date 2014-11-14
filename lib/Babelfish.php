@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -29,7 +29,7 @@ class Babelfish
     /**
      * @return bool|string
      */
-    static function host()
+    function host()
 	{
 		if (isset($_SERVER['HTTP_HOST'])) {
 			// HTTP_HOST already includes a ':port' if it is used
@@ -69,7 +69,7 @@ class Babelfish
      * @param $lang_to
      * @return string
      */
-    static function url($lang_from, $lang_to)
+    function url($lang_from, $lang_to)
 	{
 		$lang_from = substr($lang_from, 0, 2);
 		$lang_to = substr($lang_to, 0, 2);
@@ -110,7 +110,7 @@ class Babelfish
      * @param string $lang_from
      * @return array
      */
-    static function links($lang_from = 'en')
+    function links($lang_from = 'en')
 	{
 		$lang_from = substr($lang_from, 0, 2);
 
@@ -179,7 +179,7 @@ class Babelfish
      * @param string $lang
      * @return string
      */
-    static function logo($lang = 'en')
+    function logo($lang = 'en')
 	{
  		$lang = substr($lang, 0, 2);
 

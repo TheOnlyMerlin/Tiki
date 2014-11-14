@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -118,7 +118,7 @@ $headerlib = TikiLib::lib("header")
 	});
 
 	$('#timeSheetCommit').click(function() {
-		$('#timeSheetTabs').tikiModal(tr('Committing...'));
+		$('#timeSheetTabs').modal(tr('Committing...'));
 		var stack = [];
 		$.getJSON('tiki-timesheet.php?save', function(inputs) {
 			for (var namespace in $.DOMCached.getStorage()) {
@@ -143,7 +143,7 @@ $headerlib = TikiLib::lib("header")
 						}
 					})
 					.error(function() {
-						$('#timeSheetTabs').tikiModal();
+						$('#timeSheetTabs').modal();
 						alert(tr('Could not save'));
 					});
 					return false;

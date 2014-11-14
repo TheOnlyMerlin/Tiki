@@ -97,7 +97,7 @@
 </div>
 
 {if $smarty.capture.editdate_section neq ''}
-  <footer class="help-block editdate">{tr}Last modification date:{/tr} {$lastModif|tiki_long_datetime} {tr}by{/tr} <a class="link" href="tiki-user_information.php?view_user={$lastUser}">{$lastUser}</a></footer>
+  <footer class="editdate">{tr}Last modification date:{/tr} {$lastModif|tiki_long_datetime} {tr}by{/tr} <a class="link" href="tiki-user_information.php?view_user={$lastUser}">{$lastUser}</a></footer>
 {/if}
       
       </div>
@@ -108,5 +108,10 @@
   </div>
 </div>
 {include file='footer.tpl'}
+{if $headerlib}
+	{$headerlib->output_js_config()}
+	{$headerlib->output_js_files()}
+	{$headerlib->output_js()}
+{/if}
 	</body>
 </html>

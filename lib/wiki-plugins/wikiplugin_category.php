@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -191,13 +191,13 @@ function wikiplugin_category_info()
 
 function wikiplugin_category($data, $params)
 {
-	global $prefs;
+	global $prefs, $categlib;
 
 	if ($prefs['feature_categories'] != 'y') {
 		return "<span class='warn'>" . tra("Categories are disabled"). "</span>";
 	}
 	
-	$categlib = TikiLib::lib('categ');
+	require_once ("lib/categories/categlib.php");
 
 	$default = array('maxRecords' => 50);
 	$params = array_merge($default, $params);
@@ -249,8 +249,7 @@ function wikiplugin_category($data, $params)
 			$id = array();
 		}
 	}
-
-	// We pass maxRecords because get_categoryobjects ignores it when $and is set so we need to do an additional check in the template
-	$displayParameters = array_intersect_key($params, array_flip(array('showTitle', 'categoryshowlink', 'showtype', 'one', 'showlinks', 'showname', 'showdescription', 'maxRecords')));
+	
+	$displayParameters = array_intersect_key($params, array_flip(array('showTitle', 'categoryshowlink', 'showtype', 'one', 'showlinks', 'showname', 'showdescription')));
 	return "~np~". $categlib->get_categoryobjects($id, $types, $sort, $split, $sub, $and, $maxRecords, $filter, $displayParameters)."~/np~";
 }

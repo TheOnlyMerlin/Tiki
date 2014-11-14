@@ -2,10 +2,10 @@
 {title help="Image+Galleries" admpage="gal"}{tr}Galleries{/tr}{/title}
 {if $tiki_p_create_galleries eq 'y'}
 	{if $edit_mode ne 'y' or $galleryId ne 0}
-		<div class="t_navbar">
-			{button href="?edit_mode=1&amp;galleryId=0" class="btn btn-default" _text="{tr}Create New Gallery{/tr}"}
+		<div class="navbar">
+			{button href="?edit_mode=1&amp;galleryId=0" _text="{tr}Create New Gallery{/tr}"}
 			{if $galleryId ne 0}
-				{button href="tiki-browse_gallery.php?galleryId=$galleryId" class="btn btn-default" _text="{tr}Browse Gallery{/tr}"}
+				{button href="tiki-browse_gallery.php?galleryId=$galleryId" _text="{tr}Browse Gallery{/tr}"}
 			{/if}
 		</div>
 	{/if}
@@ -24,7 +24,7 @@
 
 		<div{* style="text-align: center"*}>
 			{if $individual eq 'y'}
-				{permission_link mode=link type="image gallery" permType="image galleries" id=$galleryId title=$name label="{tr}There are individual permissions set for this gallery{/tr}"}
+				<a class="gallink" href="tiki-objectpermissions.php?objectName={$name|escape:"url"}&amp;objectType=image+gallery&amp;permType=image+galleries&amp;objectId={$galleryId}">{tr}There are individual permissions set for this gallery{/tr}</a>
 			{/if}
 			<form action="tiki-galleries.php" method="post" id="gal-edit-form">
 				<input type="hidden" name="galleryId" value="{$galleryId|escape}">
@@ -144,7 +144,7 @@
 					{include file='categorize.tpl'}
 					{include file='freetag.tpl'}
 					<tr><td>{tr}Other users can upload images to this gallery:{/tr}</td><td><input type="checkbox" name="public" {if $public eq 'y'}checked="checked"{/if}></td></tr>
-					<tr><td>&nbsp;</td><td><input type="submit" class="btn btn-default btn-sm" value="{tr}Save{/tr}" name="edit"></td></tr>
+					<tr><td>&nbsp;</td><td><input type="submit" class="btn btn-default" value="{tr}Save{/tr}" name="edit"></td></tr>
 				</table>
 			</form>
 		</div>
@@ -159,7 +159,7 @@
 	{/if}
 {/if}
 {if $tiki_p_create_galleries eq 'y' && $galleryId ne 0}
-	<div class="t_navbar"><a href="tiki-galleries.php?edit_mode=1&amp;galleryId=0" class="btn btn-default">{tr}Create New Gallery{/tr}</a></div>
+	<div class="navbar"><a href="tiki-galleries.php?edit_mode=1&amp;galleryId=0">{tr}Create New Gallery{/tr}</a></div>
 {/if}
 <h2>{tr}Available Galleries{/tr}</h2>
 <div align="center">
@@ -177,12 +177,11 @@
 						{/if}
 					{/foreach*}
 				</select>
-				<input type="submit" class="btn btn-default btn-sm" value="{tr}Filter{/tr}">
+				<input type="submit" class="btn btn-default" value="{tr}Filter{/tr}">
 			</form>
 		</div>
 	{/if}
-
-    <div class="table-responsive">
+	<br  />
 	<table class="table normal">
 		<tr>
 			{if $prefs.gal_list_name eq 'y'}
@@ -227,11 +226,11 @@
 			{/if}
 			<th>{tr}Actions{/tr}</th>
 		</tr>
-
+		{cycle values="odd,even" print=false}
 		{section name=changes loop=$galleries}
 			{if ($filter eq 'topgal' and $galleries[changes].parentgallery eq -1) or ($filter eq 'parentgal' and $galleries[changes].parentgal eq 'y') or ($filter eq '')}
 				{if $galleries[changes].visible eq 'y' or $tiki_p_admin_galleries eq 'y'}
-					<tr>
+					<tr class="{cycle}">
 						{if $prefs.gal_list_name eq 'y'}
 							<td><a class="galname" href="{$galleries[changes].galleryId|sefurl:gallery}">{$galleries[changes].name}</a></td>
 						{/if}
@@ -281,7 +280,11 @@
 								{/if}
 							{/if}
 							{if ($tiki_p_admin eq 'y') or  ($galleries[changes].perms.tiki_p_assign_perm_image_gallery eq 'y' )}
-								{permission_link mode=icon type="image gallery" permType="image galleries" id=$galleries[changes].galleryId title=$galleries[changes].name}
+								{if $galleries[changes].perms.has_special_perm eq 'y'}
+									<a class="gallink" href="tiki-objectpermissions.php?objectName={$galleries[changes].name|escape:"url"}&amp;objectType=image+gallery&amp;permType=image+galleries&amp;objectId={$galleries[changes].galleryId}">{icon _id='key_active' alt="{tr}Active Perms{/tr}"}</a>
+								{else}
+									<a class="gallink" href="tiki-objectpermissions.php?objectName={$galleries[changes].name|escape:"url"}&amp;objectType=image+gallery&amp;permType=image+galleries&amp;objectId={$galleries[changes].galleryId}">{icon _id='key' alt="{tr}Perms{/tr}"}</a>
+								{/if}
 							{/if}
 							{if $tiki_p_admin_galleries eq 'y' or ($user and $galleries[changes].user eq $user)}
 								{if ($tiki_p_admin eq 'y') or ($galleries[changes].perms.has_special_perms eq 'n') or ($galleries[changes].perms.tiki_p_create_galleries eq 'y' )}
@@ -296,7 +299,6 @@
 			{norecords _colspan=9}
 		{/section}
 	</table>
-    </div>
 	{if $prefs.feature_maps eq 'y'}{$map_error}{/if}
 	{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
 </div>

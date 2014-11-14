@@ -1,34 +1,25 @@
-{* $ID:$ *}
-<form method="post" action="tiki-admin.php?page=webservices" class="form-horizontal">
-	
-	<div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-                <input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-            </div>
-        </div>
-    </div>
-	
-	<fieldset>
+<form method="post" action="tiki-admin.php?page=webservices">
+
+	<fieldset class="admin">
 		<legend>{tr}Activate the feature{/tr}</legend>
 		{preference name=feature_webservices visible="always"}
 	</fieldset>		
 
-	<div class="t_navbar form-group">
+	<div class="navbar">
 		{foreach from=$webservices item=name}
-			{button href="tiki-admin.php?page=webservices&amp;name=$name" class="btn btn-default" _text=$name}
+			{button href="tiki-admin.php?page=webservices&amp;name=$name" _text=$name}
 		{/foreach}
 		{if $storedName}
-			{button href="tiki-admin.php?page=webservices" class="btn btn-default" _text="{tr}Create New{/tr}"}
+			{button href="tiki-admin.php?page=webservices" _text="{tr}Create New{/tr}"}
 		{/if}
 	</div>
 
 	{if $storedName}
 		<p><strong>{$storedName|escape}</strong>: {$url|escape}<input type="hidden" name="name" value="{$storedName|escape}"/> <a href="tiki-admin.php?page=webservices&amp;name={$storedName|escape}&amp;delete">{icon _id='cross'}</a></p>
 	{else}
-		{remarksbox type="tip" title="{tr}Tip{/tr}"}
+		<p>
 			{tr}Enter the URL of a web services returning either JSON or YAML. Parameters can be specified by enclosing a name between percentage signs. For example: %name%. %service% and %template% are reserved keywords and cannot be used.{/tr}
-		{/remarksbox}
+		</p>
 		<p>{tr}URL:{/tr}<input type="text" name="url" size="75" value="{$url|escape}" /></p>
 		<p>{tr}Type:{/tr}<select name="wstype">
 		{foreach from=$webservicesTypes item=_type}
@@ -37,28 +28,33 @@
 		</select></p>
 		<p id="ws_postbody">{tr}Parameters (%name%):{/tr}<textarea name="postbody">{$postbody|escape}</textarea></p>
 		<p id="ws_operation" style="display: none;">{tr}Operation:{/tr}<input type="text" name="operation" size="30" value="{$operation|escape}" /></p>
- 		<p><input type="submit" class="btn btn-default btn-sm" name="parse" value="{tr}Lookup{/tr}"/></p>
+ 		<p><input type="submit" class="btn btn-default" name="parse" value="{tr}Lookup{/tr}"/></p>
 	{/if}
 	{if $url}
 		<h3>{tr}Parameters{/tr}</h3>
+		<table class="formcolor">
 			{if $params|@count}
 				{foreach from=$params key=name item=value}
-					<div class="form-group">
-						<label>{$name|escape}
-						<input type="text" name="params[{$name|escape}]" value="{$value|escape}" /></label>
-					</div>
+					<tr>
+						<td>{$name|escape}</td>
+						<td><input type="text" name="params[{$name|escape}]" value="{$value|escape}" /></td>
+					</tr>
 				{/foreach}
 			{else}
-					<div>{tr}{$url} requires no parameter.{/tr}</div>
+				<tr>
+					<td colspan="2">{tr}{$url} requires no parameter.{/tr}</td>
+				</tr>
 			{/if}
-			<div class="form-group">
-					<input type="submit" class="btn btn-default btn-sm" name="test" value="{tr}Test Input{/tr}" />
-			</div>
+			<tr>
+				<td colspan="2">
+					<input type="submit" class="btn btn-default" name="test" value="{tr}Test Input{/tr}" />
+				</td>
+			</tr>
+		</table>
 	{/if}
 	{if $data}
 		<h3>{tr}Response Information{/tr}</h3>
-        <div class="table-responsive">
-		<table class="table normal">
+		<table class="normal">
 			<tr>
 				<th>{tr}OIntegrate Version{/tr}</th>
 				<td>{if $response->version}{$response->version|escape}{else}<em>{tr}Not supported{/tr}</em>{/if}
@@ -92,7 +88,7 @@
 				<tr>
 					<th>
 						{$template.engine|escape}/{$template.output|escape}
-						<input type="submit" class="btn btn-default btn-sm" name="add[{$number}]" value="{tr}Add{/tr}"/>
+						<input type="submit" class="btn btn-default" name="add[{$number}]" value="{tr}Add{/tr}"/>
 					</th>
 					<td><pre>{$template.content|escape}</pre></td>
 				</tr>
@@ -102,17 +98,15 @@
 				</tr>
 			{/foreach}
 		</table>
-        </div>
 		{if ! $storedName}
 			<p>{tr}Register this web service. It will be possible to register the templates afterwards. Service name must only contain letters.{/tr}</p>
 			<p>
 				<input type="text" name="new_name" />
-				<input type="submit" class="btn btn-default btn-sm" name="register" value="{tr}Register Service{/tr}" />
+				<input type="submit" class="btn btn-default" name="register" value="{tr}Register Service{/tr}" />
 			</p>
 		{else}
 			<h3>{tr}Registered Templates{/tr}</h3>
-        <div class="table-responsive">
-			<table>
+			<table class="formcolor">
 				<tr>
 					<th>{tr}Name{/tr}</th>
 					<th>{tr}Engine{/tr}</th>
@@ -122,12 +116,12 @@
 				{foreach from=$storedTemplates item=template}
 					<tr>
 						<td>
-							<input type="submit" class="btn btn-default btn-sm" name="loadtemplate" value="{$template->name|escape}"/>
+							<input type="submit" class="btn btn-default" name="loadtemplate" value="{$template->name|escape}"/>
 							<a href="tiki-admin.php?page=webservices&amp;name={$storedName|escape}&amp;delete={$template->name|escape}">{icon _id='cross'}</a>
 						</td>
 						<td>{$template->engine|escape}</td>
 						<td>{$template->output|escape}</td>
-						<td><input type="submit" class="btn btn-default btn-sm" name="preview" value="{$template->name|escape}"/></td>
+						<td><input type="submit" class="btn btn-default" name="preview" value="{$template->name|escape}"/></td>
 					</tr>
 					<tr><td colspan="4"><pre>{$template->content|escape}</pre></td></tr>
 					{if $preview eq $template->name}
@@ -140,17 +134,8 @@
 					<td><input type="text" name="nt_output" value="{$nt_output|escape}"/></td>
 				</tr>
 				<tr><td colspan="4"><textarea name="nt_content" rows="10">{$nt_content|escape}</textarea></td></tr>
-				<tr><td colspan="4"><input type="submit" class="btn btn-default btn-sm" name="create_template" value="{tr}Register Template{/tr}"/></td></tr>
+				<tr><td colspan="4"><input type="submit" class="btn btn-default" name="create_template" value="{tr}Register Template{/tr}"/></td></tr>
 			</table>
-        </div>
 		{/if}
 	{/if}
-	
-	<div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="text-center">
-                <input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-            </div>
-        </div>
-    </div>
 </form>

@@ -1,10 +1,3 @@
-{extends 'layout_view.tpl'}
-
-{block name="title"}
-	{title}{$title|escape}{/title}
-{/block}
-
-{block name="content"}
 <h3>{tr}Rule List{/tr}</h3>
 <ol>
 	{foreach from=$rules item=rule}
@@ -25,4 +18,3 @@
 {foreach from=$ruleTypes key=rule item=label}
 	<button class="rule-add" data-rule-type="{$rule|escape}">{$label|escape}</button>
 {/foreach}
-{/block}

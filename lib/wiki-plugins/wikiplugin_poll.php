@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -54,13 +54,7 @@ function wikiplugin_poll_info()
 
 function wikiplugin_poll($data, $params)
 {
-	global $tiki_p_admin, $prefs, $user;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$polllib = TikiLib::lib('poll');
-	$smarty = TikiLib::lib('smarty');
-	$trklib = TikiLib::lib('trk');
-
+	global $smarty, $polllib, $trklib, $tikilib, $dbTiki, $userlib, $tiki_p_admin, $prefs, $_REQUEST, $user;
 	$default = array('showtitle' => 'y', 'showresult' => 'link', 'showtotal' => 'y');
 	$params = array_merge($default, $params);
 
@@ -69,7 +63,7 @@ function wikiplugin_poll($data, $params)
 	if (!isset($pollId)) {
 	    return WikiParser_PluginOutput::argumentError(array('pollId'));
 	}
-	$polllib = TikiLib::lib('poll');
+	global $polllib;include_once ('lib/polls/polllib.php');
 
 
     $poll_info = $polllib->get_poll($pollId);

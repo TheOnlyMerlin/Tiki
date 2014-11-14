@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -25,6 +25,11 @@ class  AcceptanceTests_MultilinguallibTest extends TikiSeleniumTestCase
 	/**
 	 * @group gui
 	 */ 
-
+	public function test_remember_to_reactivate_all_tests_in_MultilinguallibTest()
+	{
+		global $multilinguallib;
+		print "-- test_remember_to_reactivate_all_tests_in_MultilinguallibTest: upon entry, \$multilinguallib=$multilinguallib\n";
+		$this->fail("Don't forget!!!");
+	}
 
 }

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -31,11 +31,8 @@ function module_old_articles_info()
  */
 function module_old_articles($mod_reference, $module_params)
 {
-	global $user, $prefs;
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
-	$artlib = TikiLib::lib('art');
-
+	global $user, $prefs, $tikilib, $smarty;
+	global $artlib; require_once 'lib/articles/artlib.php';
 	if (!isset($prefs['maxArticles']))
 		$prefs['maxArticles'] = 0;
 	

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -39,11 +39,7 @@ function wikiplugin_pagetabs_info()
 
 function wikiplugin_pagetabs($data, $params)
 {
-	global $user;
-	$headerlib = TikiLib::lib('header');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
-
+	global $tikilib, $smarty, $headerlib, $user;
 	static $pagetabsindex = 0;
 	++$pagetabsindex;
 	extract($params, EXTR_SKIP);

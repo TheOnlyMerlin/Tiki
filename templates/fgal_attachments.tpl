@@ -29,26 +29,21 @@
 
 	{if ($tiki_p_wiki_attach_files eq 'y' or $tiki_p_wiki_admin_attachments eq 'y')
 		and (empty($attach_box) or $attach_box ne 'n')}
-		<form class="form-horizontal" role="form" enctype="multipart/form-data" action="tiki-index.php?page={$page|escape:"url"}" method="post">
+		<form enctype="multipart/form-data" action="tiki-index.php?page={$page|escape:"url"}" method="post">
 			{if $page_ref_id}
 				<input type="hidden" name="page_ref_id" value="{$page_ref_id}">
 			{/if}
-            <div class="form-group">
-				<label  class="col-sm-2 control-label" for="attach-upload">{tr}Upload file{/tr}</label>
-                <div class="col-sm-10">
-					<input size="16" name="userfile[0]" type="file" id="attach-upload">
-                </div>
-            </div>
-            <div class="form-group">
-                <label  class="col-sm-2 control-label" for="attach-comment">{tr}Comment{/tr}</label>
-                <div class="col-sm-10">
-                    <input type="text" name="s_f_attachments-comment" maxlength="250" id="attach-comment">
-                </div>
-            </div>
-            <div class="form-group pull-right">
-                <input type="submit" class="btn btn-default btn-sm" name="s_f_attachments-upload" value="{tr}Attach{/tr}">
-				<input type="hidden" name="s_f_attachments-page" value="{$page|escape}">
-			</div>
+			<table class="formcolor">
+				<tr>
+					<td>
+						<label for="attach-upload">{tr}Upload file:{/tr}</label>
+						<input size="16" name="userfile[0]" type="file" id="attach-upload">
+						<label for="attach-comment">{tr}Comment:{/tr}</label><input type="text" name="s_f_attachments-comment" maxlength="250" id="attach-comment">
+						<input type="submit" class="btn btn-default" name="s_f_attachments-upload" value="{tr}Attach{/tr}">
+						<input type="hidden" name="s_f_attachments-page" value="{$page|escape}">
+					</td>
+				</tr>
+			</table>
 		</form>
 	{/if}
 </div>

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -131,10 +131,9 @@ function wikiplugin_attach($data, $params)
 {
 	global $atts;
 	global $mimeextensions;
+	global $wikilib; include_once('lib/wiki/wikilib.php');
+	global $tikilib;
 	global $user, $section, $section_class;
-
-	$wikilib = TikiLib::lib('wiki');
-	$tikilib = TikiLib::lib('tiki');
 
 	extract($params, EXTR_SKIP);
 
@@ -147,7 +146,7 @@ function wikiplugin_attach($data, $params)
 
 		// See if we're being called from a tracker page.
 		if ( $section == 'trackers' ) {
-			$trklib = TikiLib::lib('trk');
+			global $trklib; include_once('lib/trackers/trackerlib.php');
 			$atts_item_name = $_REQUEST["itemId"];
 			$tracker_info = $trklib->get_tracker($atts_item_name);
 			$tracker_info = array_merge($tracker_info, $trklib->get_tracker_options($atts_item_name));

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -19,21 +19,9 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
  * Purpose:  capitalize words in the string
  * -------------------------------------------------------------
  */
-function smarty_modifier_avatarize($user, $float = '', $default = '')
+function smarty_modifier_avatarize($user, $float = '')
 {
-	if (! $user) {
-		return;
-	}
-
 	$avatar = TikiLib::lib('tiki')->get_user_avatar($user, $float);
-
-	if (! $avatar && $default) {
-		$smarty = TikiLib::lib('smarty');
-		$smarty->loadPlugin('smarty_function_icon');
-		$name = TikiLib::lib('user')->clean_user($user);
-		$avatar = smarty_function_icon(['_id' => $default, 'title' => $name], $smarty);
-	}
-
 	if ( $avatar != '') {
 		$avatar = TikiLib::lib('user')->build_userinfo_tag($user, $avatar);
 	}

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,22 +8,13 @@
 class Search_Expr_MoreLikeThis implements Search_Expr_Interface
 {
 	private $type;
-	private $object;
 	private $field;
 	private $weight;
-	private $content;
 
-	/**
-	 * If a single argument is provided, it will be assumed to be the direct content.
-	 */
-	function __construct($type, $object = null)
+	function __construct($type, $object)
 	{
-		if (is_null($object)) {
-			$this->content = $type;
-		} else {
-			$this->type = $type;
-			$this->object = $object;
-		}
+		$this->type = $type;
+		$this->object = $object;
 	}
 
 	function setType($type)
@@ -35,14 +26,8 @@ class Search_Expr_MoreLikeThis implements Search_Expr_Interface
 		return 'plaintext';
 	}
 
-	function getContent()
+	function setField($field = 'global')
 	{
-		return $this->content;
-	}
-
-	function setField($field = 'contents')
-	{
-		$this->field = $field;
 	}
 
 	function setWeight($weight)

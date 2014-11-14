@@ -1,22 +1,20 @@
 {* $Id$ *}
 {title help="Newsletters"}{tr}Admin newsletters{/tr}{/title}
 
-<div class="t_navbar btn-group form-group">
-	{button href="tiki-admin_newsletters.php?cookietab=2" _class="btn btn-default" _text="{tr}Create Newsletter{/tr}"}
-	{button href="tiki-newsletters.php" _class="btn btn-default" _text="{tr}List Newsletters{/tr}"}
-	{button href="tiki-send_newsletters.php" _class="btn btn-default" _text="{tr}Send Newsletters{/tr}"}
+<div class="navbar">
+	{button href="tiki-admin_newsletters.php?cookietab=2" _text="{tr}Create Newsletter{/tr}"}
+	{button href="tiki-newsletters.php" _text="{tr}List Newsletters{/tr}"}
+	{button href="tiki-send_newsletters.php" _text="{tr}Send Newsletters{/tr}"}
 </div>
 
 {tabset}
 
 {tab name="{tr}Newsletters{/tr}"}
-    <h2>{tr}Newsletters{/tr}</h2>
 
 {if $channels or ($find ne '')}
   {include file='find.tpl'}
 {/if}
 
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		<th>{self_link _sort_arg='sort_mode' _sort_field='nlId'}{tr}ID{/tr}{/self_link}</th>
@@ -29,9 +27,9 @@
 		<th>{tr}Action{/tr}</th>
 	</tr>
 	
-
+	{cycle values="odd,even" print=false}
 	{section name=user loop=$channels}
-		<tr>
+		<tr class="{cycle}">
 			<td class="id">{self_link cookietab='2' _anchor='anchor2' nlId=$channels[user].nlId _title="{tr}Edit{/tr}"}{$channels[user].nlId}{/self_link}</td>
 			<td class="text">
 				{self_link cookietab='2' _anchor='anchor2' nlId=$channels[user].nlId _title="{tr}Edit{/tr}"}{$channels[user].name|escape}{/self_link}
@@ -43,7 +41,13 @@
 			<td class="integer">{$channels[user].drafts}</td>
 			<td class="date">{$channels[user].lastSent|tiki_short_datetime}</td>
 			<td class="action">
-				{permission_link mode=icon type=newsletter permType=newsletters id=$channels[user].nlId title=$channels[user].name}
+				<a class="link" href="tiki-objectpermissions.php?objectName={$channels[user].name|escape:"url"}&amp;objectType=newsletter&amp;permType=newsletters&amp;objectId={$channels[user].nlId}" title="{tr}Assign Permissions{/tr}">
+					{if $channels[user].individual eq 'y'}
+						{icon _id='key_active' alt="{tr}Assign Permissions{/tr}"}
+					{else}
+						{icon _id='key' alt="{tr}Assign Permissions{/tr}"}
+					{/if}
+				</a>
 				{self_link _icon='page_edit' cookietab='2' _anchor='anchor2' nlId=$channels[user].nlId}{tr}Edit{/tr}{/self_link}
 				<a class="link" href="tiki-admin_newsletter_subscriptions.php?nlId={$channels[user].nlId}" title="{tr}Subscriptions{/tr}">{icon _id='group' alt="{tr}Subscriptions{/tr}"}</a>
 				<a class="link" href="tiki-send_newsletters.php?nlId={$channels[user].nlId}" title="{tr}Send Newsletter{/tr}">{icon _id='email' alt="{tr}Send Newsletter{/tr}"}</a>
@@ -55,15 +59,13 @@
          {norecords _colspan=8}
 	{/section}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
 {/tab}
 
 {tab name="{tr}Create/Edit Newsletters{/tr}"}
-    <h2>{tr}Create/Edit Newsletters{/tr}</h2>
 {if isset($individual) && $individual eq 'y'}
-	{permission_link mode=link type=newsletter permType=newsletters id=$info.nlId title=$info.name label="{tr}There are individual permissions set for this newsletter{/tr}"}
+	<a class="link" href="tiki-objectpermissions.php?objectName={$info.name|escape:"url"}&amp;objectType=newsletter&amp;permType=newsletters&amp;objectId={$info.nlId}">{tr}There are individual permissions set for this newsletter{/tr}</a><br><br>
 {/if}
 
 <form action="tiki-admin_newsletters.php" method="post">
@@ -149,7 +151,7 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
+				<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 			</td>
 		</tr>
 	</table>

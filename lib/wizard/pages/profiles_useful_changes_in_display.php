@@ -1,9 +1,9 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Id: profiles_useful_changes_in_display.php 51026 2014-04-27 17:18:07Z xavidp $
 
 require_once('lib/wizard/wizard.php');
 
@@ -23,21 +23,19 @@ class ProfilesWizardUsefulChangesInDisplay extends Wizard
 	
 	function onSetupPage ($homepageUrl) 
 	{
-		global $prefs, $TWV;
-		$smarty = TikiLib::lib('smarty');
+		global	$smarty, $prefs, $TWV;
+
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
 
 		$smarty->assign('tikiMajorVersion', substr($TWV->version, 0, 2));
-		
-		return true;		
-	}
 
-	function getTemplate()
-	{
-		$wizardTemplate = 'wizard/profiles_useful_changes_in_display.tpl';
-		return $wizardTemplate;
-	}
+        // Assign the page template
+        $wizardTemplate = 'wizard/profiles_useful_changes_in_display.tpl';
+        $smarty->assign('wizardBody', $wizardTemplate);
+
+        return true;
+    }
 
 	function onContinue ($homepageUrl) 
 	{

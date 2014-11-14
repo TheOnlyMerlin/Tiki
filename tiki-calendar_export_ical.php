@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -18,7 +18,7 @@ TikiInit::appendIncludePath("lib/ical/");
 include_once ('lib/ical/iCal.php');
 
 // list calendars //
-$calendarlib = TikiLib::lib('calendar');
+include_once ('lib/calendar/calendarlib.php');
 
 // ###trebly:B10111:[FIX-ADD-ENH]->  there are several meaning for the same var $calendarViewMode
 if ( ! isset($calendarViewMode) ) {

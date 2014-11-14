@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -49,8 +49,6 @@ class Search_MySql_Index implements Search_Index_Interface
 	private function handleField($name, $value)
 	{
 		if ($value instanceof Search_Type_Whole) {
-			$this->table->ensureHasField($name, 'TEXT');
-		} elseif ($value instanceof Search_Type_Numeric) {
 			$this->table->ensureHasField($name, 'TEXT');
 		} elseif ($value instanceof Search_Type_PlainShortText) {
 			$this->table->ensureHasField($name, 'TEXT');
@@ -124,21 +122,6 @@ class Search_MySql_Index implements Search_Index_Interface
 		} catch (Search_MySql_QueryException $e) {
 			$resultSet = new Search_ResultSet(array(), 0, $resultStart, $resultCount);
 			return $resultSet;
-		}
-	}
-
-	function scroll(Search_Query_Interface $query)
-	{
-		$perPage = 100;
-		$hasMore = true;
-
-		for ($from = 0; $hasMore; $from += $perPage) {
-			$result = $this->find($query, $from, $perPage);
-			foreach ($result as $row) {
-				yield $row;
-			}
-			
-			$hasMore = $result->hasMore();
 		}
 	}
 

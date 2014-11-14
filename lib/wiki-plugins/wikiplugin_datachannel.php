@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -124,9 +124,7 @@ function wikiplugin_datachannel_info()
 function wikiplugin_datachannel( $data, $params )
 {
 	static $execution = 0;
-	global $prefs;
-	$smarty = TikiLib::lib('smarty');
-	$headerlib = TikiLib::lib('header');
+	global $prefs, $smarty, $headerlib;
 	$executionId = 'datachannel-exec-' . ++$execution;
 
 	if (isset($params['price']) && $params['price'] == 0) {
@@ -243,7 +241,7 @@ function wikiplugin_datachannel( $data, $params )
 			}
 			
 			if (!empty($params['price'])) {
-				$paymentlib = TikiLib::lib('payment');
+				global $paymentlib; require_once 'lib/payment/paymentlib.php';
 				$desc = empty($params['paymentlabel'])? tr('Datachannel:', $prefs['site_language']) . ' ' . $params['channel'] : $params['paymentlabel'];
 				$posts = array();
 				foreach ($input as $key => $post) {
@@ -278,9 +276,6 @@ function wikiplugin_datachannel( $data, $params )
 				if (!empty($params['debug']) && $params['debug'] === 'y') {
 					$installer->setDebug();
 				}
-
-				$installer->disablePrefixDependencies();
-
 				$params['emptyCache'] = isset($params['emptyCache']) ? $params['emptyCache'] : 'all';
 				$success = $installer->install($profile, $params['emptyCache']) && $success;
 

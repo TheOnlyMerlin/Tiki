@@ -1,5 +1,5 @@
 #!/bin/bash
-# (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+# (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 #
 # All Rights Reserved. See copyright.txt for details and a complete list of authors.
 # Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -17,24 +17,26 @@ DOGFOODMYSQLDB="changi_9x"
 #Be careful, this user need to have the right to drop the database.
 MYSQLUSER="changi"
 MYSQLPASS="changi"
-MYSQLCOMMAND="mysql -u $MYSQLUSER -p$MYSQLPASS"
-MYSQLDUMPCOMMAND="mysqldump -u $MYSQLUSER -p$MYSQLPASS"
+MYSQLCOMMAND="mysql -u $MYSQLUSER -p $MYSQLPASS"
+MYSQLDUMPCOMMAND="mysqldump -u $MYSQLUSER -p $MYSQLPASS"
 
 pushd $DOCROOTDOGFOODVERSION
-echo "Clear cache"
-php console.php -n cache:clear
 echo "Update checkout"
+rm -rf templates_c/*.tpl.php
+rm -rf temp/cache/*
+rm -rf temp/public/minified*
+
 bash doc/devtools/svnup.sh
 echo "Fix permission"
-bash setup.sh mixed
+bash setup.sh -n
 echo "Drop and recreate database"
 $MYSQLCOMMAND -e "drop database $DOGFOODMYSQLDB;create database $DOGFOODMYSQLDB"
 echo "Populate $DOGFOODMYSQLDB with $OLDMYSQLDB data"
 $MYSQLDUMPCOMMAND --single-transaction $OLDMYSQLDB | $MYSQLCOMMAND $DOGFOODMYSQLDB
 echo "Upgrade schema"
-php console.php -n database:update
+php installer/shell.php
 echo "Update search index"
-php console.php -n index:rebuild
+php lib/search/shell.php rebuild log 1>/dev/null 2>/dev/null
 echo "Update memcache prefix"
 $MYSQLCOMMAND $DOGFOODMYSQLDB -e "update tiki_preferences set value = \"DOGFOODtiki_\" where name = \"memcache_prefix\";"
 echo "Remove cdn"

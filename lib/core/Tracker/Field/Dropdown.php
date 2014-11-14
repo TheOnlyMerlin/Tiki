@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +11,7 @@
  * Letter key: ~d~ ~D~
  *
  */
-class Tracker_Field_Dropdown extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable, Search_FacetProvider_Interface, Tracker_Field_Exportable
+class Tracker_Field_Dropdown extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable, Search_FacetProvider_Interface
 {
 	public static function getTypes()
 	{
@@ -254,45 +254,6 @@ class Tracker_Field_Dropdown extends Tracker_Field_Abstract implements Tracker_F
 				->setLabel($this->getConfiguration('name'))
 				->setRenderMap($this->getPossibilities())
 		);
-	}
-
-	function getTabularSchema()
-	{
-		$schema = new Tracker\Tabular\Schema($this->getTrackerDefinition());
-
-		$permName = $this->getConfiguration('permName');
-		$name = $this->getConfiguration('name');
-
-		$possibilities = $this->getPossibilities();
-		$invert = array_flip($possibilities);
-
-		$schema->addNew($permName, 'code')
-			->setLabel($name)
-			->setRenderTransform(function ($value) {
-				return $value;
-			})
-			->setParseIntoTransform(function (& $info, $value) use ($permName) {
-				$info['fields'][$permName] = $value;
-			})
-			;
-
-		$schema->addNew($permName, 'text')
-			->setLabel($name)
-			->addIncompatibility($permName, 'code')
-			->addQuerySource('text', "tracker_field_{$permName}_text")
-			->setRenderTransform(function ($value, $extra) use ($possibilities) {
-				if (isset($possibilities[$value])) {
-					return $possibilities[$value];
-				}
-			})
-			->setParseIntoTransform(function (& $info, $value) use ($permName, $invert) {
-				if (isset($invert[$value])) {
-					$info['fields'][$permName] = $value;
-				}
-			})
-			;
-
-		return $schema;
 	}
 }
 

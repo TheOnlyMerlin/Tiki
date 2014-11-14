@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -18,16 +18,15 @@ $inputConfiguration = array(
     'searchLang' => 'word',
     'words' =>'text',
     'boolean' =>'word',
-	'storeAs' => 'int',
     )
   )
 );
 
 $section = 'search';
 require_once ('tiki-setup.php');
+require_once 'lib/search/searchlib-unified.php';
 $access->check_feature('feature_search');
 $access->check_permission('tiki_p_search');
-
 //get_strings tra("Searchindex")
 //ini_set('display_errors', true);
 //error_reporting(E_ALL);
@@ -52,15 +51,12 @@ if (count($filter)) {
 		$fetchFields = array_merge(array('title', 'modification_date', 'url'), $jitRequest->asArray('fields', ','));;
 
 		$results = tiki_searchindex_get_results($filter, $offset, $maxRecords);
+		$dataSource = $unifiedsearchlib->getDataSource('formatting');
+		$results = $dataSource->getInformation($results, $fetchFields);
 
 		$smarty->loadPlugin('smarty_function_object_link');
 		$smarty->loadPlugin('smarty_modifier_sefurl');
 		foreach ($results as &$res) {
-			foreach ($fetchFields as $f) {
-				if (isset($res[$f])) {
-					$res[$f]; // Dynamic load if applicable
-				}
-			}
 			$res['link'] = smarty_function_object_link(
 				array(
 					'type' => $res['object_type'],
@@ -69,6 +65,10 @@ if (count($filter)) {
 				),
 				$smarty
 			);
+			if (empty($res['url'])) {
+				$appendTitle = $res['object_type'] === 'article' || $res['object_type'] === 'blog' || $res['object_type'] === 'bogpost';
+				$res['url'] = smarty_modifier_sefurl($res['object_id'], $res['object_type'], '', '', $appendTitle ? 'y' : 'n', $res['title']);
+			}
 			$res = array_filter(
 				$res,
 				function ($v) {
@@ -106,6 +106,7 @@ if (count($filter)) {
 					return $facet->getName();
 				}, $results->getFacets()
 			);
+			$dataSource = $unifiedsearchlib->getDataSource('formatting');
 
 			$plugin = new Search_Formatter_Plugin_SmartyTemplate(realpath('templates/searchresults-plain.tpl'));
 			$plugin->setData(
@@ -125,6 +126,7 @@ if (count($filter)) {
 			$plugin->setFields($fields);
 
 			$formatter = new Search_Formatter($plugin);
+			$formatter->setDataSource($dataSource);
 
 			$wiki = $formatter->format($results);
 			$html = $tikilib->parse_data(
@@ -164,25 +166,12 @@ function tiki_searchindex_get_results($filter, $offset, $maxRecords)
 	global $prefs;
 
 	$unifiedsearchlib = TikiLib::lib('unifiedsearch');
-
-	$query = new Search_Query;
-	$unifiedsearchlib->initQueryBase($query);
-	$query = $unifiedsearchlib->buildQuery($filter, $query);
-	$query->filterContent('y', 'searchable');
+	$query = $unifiedsearchlib->buildQuery($filter);
+	$query->setRange($offset, $maxRecords);
 
 	if (isset($_REQUEST['sort_mode']) && $order = Search_Query_Order::parse($_REQUEST['sort_mode'])) {
 		$query->setOrder($order);
 	}
-
-	if ($prefs['storedsearch_enabled'] == 'y' && ! empty($_POST['storeAs'])) {
-		$storedsearch = TikiLib::lib('storedsearch');
-		$storedsearch->storeUserQuery($_POST['storeAs'], $query);
-		TikiLib::lib('smarty')->assign('display_msg', tr('Your query was stored.'));
-	}
-
-	$unifiedsearchlib->initQueryPermissions($query);
-
-	$query->setRange($offset, $maxRecords);
 
 	if ($prefs['feature_search_stats'] == 'y') {
 		$stats = TikiLib::lib('searchstats');
@@ -200,14 +189,7 @@ function tiki_searchindex_get_results($filter, $offset, $maxRecords)
 	}
 
 	try {
-		if ($prefs['federated_enabled'] == 'y' && ! empty($filter['content'])) {
-			$fed = TikiLib::lib('federatedsearch');
-			$fed->augmentSimpleQuery($query, $filter['content']);
-		}
-
-		$resultset = $query->search($unifiedsearchlib->getIndex());
-
-		return $resultset;
+		return $query->search($unifiedsearchlib->getIndex());
 	} catch (Search_Elastic_TransportException $e) {
 		TikiLib::lib('errorreport')->report('Search functionality currently unavailable.');
 	} catch (Exception $e) {

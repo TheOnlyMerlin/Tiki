@@ -1,18 +1,18 @@
 {* $Id$ *}
-{$forum_info.name|addonnavbar}
+
 {title help="forums" admpage="forums"}
-  {$forum_info.name|addongroupname}
+  {$forum_info.name}
   {if $prefs.feature_forum_topics_archiving eq 'y' && $thread_info.archived eq 'y'}({tr}Archived{/tr}){/if}
 {/title}
 
-<div class="t_navbar btn-group form-group">
+<div class="navbar">
 	{if $tiki_p_admin_forum eq "y"}
-		{button href="tiki-admin_forums.php?forumId=$forumId" class="btn btn-default" _text="{tr}Edit Forum{/tr}"}
+		{button href="tiki-admin_forums.php?forumId=$forumId" _text="{tr}Edit Forum{/tr}"} 
 	{/if}
 	{if $tiki_p_admin_forum eq 'y' or !isset($all_forums) or $all_forums|@count > 1}
-		{button href="tiki-forums.php" class="btn btn-default" _text="{tr}Forum List{/tr}"}
+		{button href="tiki-forums.php" _text="{tr}Forum List{/tr}"}
 	{/if}
-	{button href="tiki-view_forum.php?forumId=$forumId" class="btn btn-default" _text="{tr}Topic List{/tr}"}
+	{button href="tiki-view_forum.php?forumId=$forumId" _text="{tr}Topic List{/tr}"}
 </div>
 
 {if $post_reported eq 'y'}
@@ -22,15 +22,15 @@
 	</div>
 	<br>
 {/if}
-<div class="breadcrumb">
-	<a class="link" href="tiki-forums.php">{tr}Forums{/tr}</a>
-	{$prefs.site_crumb_seper} 
-	<a class="link" href="tiki-view_forum.php?forumId={$forumId}">{$forum_info.name|addongroupname|escape}</a>{if isset($thread_info.topic.threadId) and $thread_info.topic.threadId}
-	{$prefs.site_crumb_seper} 
-	<a class="link" href="tiki-view_forum_thread.php?comments_parentId={$thread_info.topic.threadId}{if $smarty.request.topics_offset}&amp;topics_offset={$smarty.request.topics_offset}{/if}{$topics_sort_mode_param}{$topics_threshold_param}{$topics_find_param}">{$thread_info.topic.title}</a>{/if}
-	{$prefs.site_crumb_seper} 
-	{$thread_info.title|escape}
-</div>
+
+<a class="link" href="tiki-forums.php">{tr}Forums{/tr}</a> 
+{$prefs.site_crumb_seper} 
+<a class="link" href="tiki-view_forum.php?forumId={$forumId}">{$forum_info.name|escape}</a>{if isset($thread_info.topic.threadId) and $thread_info.topic.threadId}
+{$prefs.site_crumb_seper} 
+<a class="link" href="tiki-view_forum_thread.php?comments_parentId={$thread_info.topic.threadId}{if $smarty.request.topics_offset}&amp;topics_offset={$smarty.request.topics_offset}{/if}{$topics_sort_mode_param}{$topics_threshold_param}{$topics_find_param}">{$thread_info.topic.title}</a>{/if}
+{$prefs.site_crumb_seper} 
+{$thread_info.title|escape}
+
 <div style="text-align: right; margin-bottom: 15px;">
 {if empty($thread_info.topic.threadId)}
 	<span>
@@ -85,8 +85,11 @@
 
 {include file='comments.tpl'}
 
-    <div class="form-group">
-		<form class="form-horizontal" role="form" id='time_control' method="get" action="tiki-view_forum_thread.php">
+<table id="forumjumpto" style="clear:both;" ><tr>
+
+	<td style="text-align:left;">
+		<form id='time_control' method="get" action="tiki-view_forum_thread.php">
+
 			<input type="hidden" name="comments_offset" value="{$comments_offset|escape}">
 			<input type="hidden" name="comments_threadId" value="{$comments_threadId|escape}">
 			<input type="hidden" name="comments_parentId" value="{$comments_parentId|escape}">
@@ -98,38 +101,34 @@
 			<input type="hidden" name="topics_threshold" value="{$smarty.request.topics_threshold|escape}">    
 			<input type="hidden" name="forumId" value="{$forumId|escape}">
 
-            <label class="col-sm-2 control-label" for="userfile1">{tr}Show posts:{/tr}</label>
-            <div class="col-sm-3">
-			    <select class="form-control" name="time_control" onchange="javascript:document.getElementById('time_control').submit();">
-			    	<option value="" {if empty($smarty.request.time_control)}selected="selected"{/if}>{tr}All posts{/tr}</option>
-				    <option value="3600" {if isset($smarty.request.time_control) and $smarty.request.time_control eq 3600}selected="selected"{/if}>{tr}Last hour{/tr}</option>
-				    <option value="86400" {if isset($smarty.request.time_control) and $smarty.request.time_control eq 86400}selected="selected"{/if}>{tr}Last 24 hours{/tr}</option>
-				    <option value="172800" {if isset($smarty.request.time_control) and $smarty.request.time_control eq 172800}selected="selected"{/if}>{tr}Last 48 hours{/tr}</option>
-			    </select>
-            </div>
+			<small>{tr}Show posts:{/tr}</small>
+			<select name="time_control" onchange="javascript:document.getElementById('time_control').submit();">
+				<option value="" {if empty($smarty.request.time_control)}selected="selected"{/if}>{tr}All posts{/tr}</option>
+				<option value="3600" {if isset($smarty.request.time_control) and $smarty.request.time_control eq 3600}selected="selected"{/if}>{tr}Last hour{/tr}</option>
+				<option value="86400" {if isset($smarty.request.time_control) and $smarty.request.time_control eq 86400}selected="selected"{/if}>{tr}Last 24 hours{/tr}</option>
+				<option value="172800" {if isset($smarty.request.time_control) and $smarty.request.time_control eq 172800}selected="selected"{/if}>{tr}Last 48 hours{/tr}</option>
+			</select>
 		</form>
-	</div>
+	</td>
 
-    <div class="form-group pull-right">
-        {if $prefs.feature_forum_quickjump eq 'y' && $all_forums|@count > 1}
-		<form class="form-horizontal" role="form" id='quick' method="get" action="tiki-view_forum.php">
-			<label class="col-sm-6 control-label" for="forumId">{tr}Jump to forum:{/tr}</label>
-            <div class="col-sm-6">
-    			<select id="forumId" class="form-control" name="forumId" onchange="javascript:document.getElementById('quick').submit();">
-	    			{section name=ix loop=$all_forums}
-		    	    	<option value="{$all_forums[ix].forumId|escape}" {if $all_forums[ix].forumId eq $forumId}selected="selected"{/if}>{$all_forums[ix].name}</option>
-			    	{/section}
-			    </select>
-            </div>
+	<td style="text-align:right;">
+		{if $prefs.feature_forum_quickjump eq 'y' && $all_forums|@count > 1}
+		<form id='quick' method="get" action="tiki-view_forum.php">
+			<small>{tr}Jump to forum:{/tr}</small>
+			<select name="forumId" onchange="javascript:document.getElementById('quick').submit();">
+				{section name=ix loop=$all_forums}
+				<option value="{$all_forums[ix].forumId|escape}" {if $all_forums[ix].forumId eq $forumId}selected="selected"{/if}>{$all_forums[ix].name}</option>
+				{/section}
+			</select>
 		</form>
 		{else}
 		&nbsp;
 		{/if}
-</div>
+		</td>
+</tr></table>
 
 {if isset($view_atts) and $view_atts eq 'y'}
 <h2 id="attachments">{tr}Attachments{/tr}</h2>
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		<th>{tr}Type{/tr}</th>
@@ -138,9 +137,9 @@
 		<th>{tr}Created{/tr}</th>
 		<th>{tr}Action{/tr}</th>
 	</tr>
-
+	{cycle values="odd,even" print=false}
 	{foreach from=$atts.data item=att}
-	<tr>
+	<tr class="{cycle}">
 		<td class="icon">{$att.filename|iconify}</td>
 		<td class="text"><a href="tiki-download_forum_attachment.php?attId={$att.attId}" title="{tr}Download{/tr}">{$att.filename|escape}</a></td>
 		<td class="integer">{$att.filesize|kbsize}</td>
@@ -149,6 +148,5 @@
 	</tr>
 	{/foreach} 
 </table>
-</div>
 {pagination_links cant=$atts.cant offset=$atts.offset offset_arg='fa_offset' step=$atts.maxRecords _anchor='attachments'}{/pagination_links}
 {/if}

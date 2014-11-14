@@ -1,11 +1,13 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once('lib/wizard/wizard.php');
+require_once('lib/notifications/notificationlib.php');
+include_once ('lib/userprefs/userprefslib.php');
 
 /**
  * Set up the wysiwyg editor, including inline editing
@@ -37,9 +39,7 @@ class UserWizardPreferencesReports extends Wizard
 
 	function onSetupPage ($homepageUrl) 
 	{
-		global$user, $prefs;
-
-		$smarty = TikiLib::lib('smarty');
+		global	$user, $smarty, $prefs;
 
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
@@ -55,19 +55,17 @@ class UserWizardPreferencesReports extends Wizard
 		$reportsUsers = Reports_Factory::build('Reports_Users');
 		$reportsUsersUser = $reportsUsers->get($user);
 		$smarty->assign_by_ref('report_preferences', $reportsUsersUser);
+
+		// Assign the page template
+		$wizardTemplate = 'wizard/user_preferences_reports.tpl';
+		$smarty->assign('wizardBody', $wizardTemplate);
 		
 		return $showPage;
 	}
 
-	function getTemplate()
-	{
-		$wizardTemplate = 'wizard/user_preferences_reports.tpl';
-		return $wizardTemplate;
-	}
-
 	function onContinue ($homepageUrl) 
 	{
-		global $user, $prefs;
+		global $tikilib, $user, $prefs;
 
 		// Run the parent first
 		parent::onContinue($homepageUrl);

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -62,34 +62,27 @@ if ($_SESSION['wysiwyg'] == 'y') {
 		}
 	}
 }
-if (
-    $prefs['feature_wikilingo'] == 'n'
-    || (
-        $prefs['feature_wikilingo'] == 'y'
-        && isset($_REQUEST['prevent_wikilingo'])
-    )
-) {
-    if (isset($jitRequest['edit'])) {
-        // Restore the property for the rest of the script
-        if ($is_html) {
-            $data = $jitRequest->edit->none();
-            $parserlib = TikiLib::lib('parser');
-            $noparsed = array();
-            $parserlib->plugins_remove($data, $noparsed);
+if (isset($jitRequest['edit'])) {
+	// Restore the property for the rest of the script
+	if ($is_html) {
+		$data = $jitRequest->edit->none();
 
-            $data = TikiFilter::get('xss')->filter($data);
+		$parserlib = TikiLib::lib('parser');
+		$noparsed = array();
+		$parserlib->plugins_remove($data, $noparsed);
 
-            $parserlib->isEditMode = true;
-            $parserlib->plugins_replace($data, $noparsed, true);
-            $parserlib->isEditMode = false;
-            $_REQUEST['edit'] = $data;
-        } else {
-            $_REQUEST['edit'] = $jitRequest->edit->wikicontent();
-        }
+		$data = TikiFilter::get('xss')->filter($data);
 
-        //html is stored encoded in wysiwyg
-        if (isset($jitRequest['wysiwyg']) && $jitRequest['wysiwyg'] == 'y') {
-            $_REQUEST['edit'] = html_entity_decode($_REQUEST['edit'], ENT_QUOTES, 'UTF-8');
-        }
-    }
+		$parserlib->isEditMode = true;
+		$parserlib->plugins_replace($data, $noparsed, true);
+		$parserlib->isEditMode = false;
+		$_REQUEST['edit'] = $data;
+	} else {
+		$_REQUEST['edit'] = $jitRequest->edit->wikicontent();
+	}
+
+	//html is stored encoded in wysiwyg
+	if (isset($jitRequest['wysiwyg']) && $jitRequest['wysiwyg'] == 'y') {
+		$_REQUEST['edit'] = html_entity_decode($_REQUEST['edit'], ENT_QUOTES, 'UTF-8');
+	}
 }

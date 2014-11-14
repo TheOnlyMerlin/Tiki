@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -166,10 +166,7 @@ class ThemeGenLib
 
 	public function setupEditor()
 	{
-		global $prefs;
-		$headerlib = TikiLib::lib('header');
-		$smarty = TikiLib::lib('smarty');
-		$tikilib = TikiLib::lib('tiki');
+		global $headerlib, $smarty, $prefs, $tikilib;
 
 		if ($this->currentTheme->initDone ||	// filter out unnecessay setups
 				strpos($_SERVER['SCRIPT_NAME'], 'tiki-download_file.php') !== false ||
@@ -180,7 +177,7 @@ class ThemeGenLib
 
 		// tiki themegen include
 		$headerlib->add_jsfile('lib/jquery_tiki/tiki-themegenerator.js');
-		$headerlib->add_cssfile('themes/base_files/feature_css/admin.css');
+		$headerlib->add_cssfile('css/admin.css');
 
 		// set up colorpicker
 		$headerlib->add_cssfile('vendor/jquery/plugins/colorpicker/css/colorpicker.css');
@@ -312,7 +309,7 @@ class ThemeGenLib
      */
     public function processCSSFile($file, $swaps)
 	{
-		$headerlib = TikiLib::lib('header');
+		global $headerlib;
 
 		$css = $headerlib->minify_css($file);
 
@@ -359,7 +356,7 @@ class ThemeGenLib
      */
     public function saveNewTheme($name)
 	{
-		$headerlib = TikiLib::lib('header');
+		global $headerlib;
 
 		$headerlib->remove_themegen_files();
 
@@ -376,7 +373,7 @@ class ThemeGenLib
      */
     public function updateCurrentTheme($css_file, $swaps)
 	{
-		$headerlib = TikiLib::lib('header');
+		global $headerlib;
 
 		$headerlib->remove_themegen_files();
 

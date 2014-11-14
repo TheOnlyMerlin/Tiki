@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,11 +11,11 @@
 $section = 'calendar';
 require_once ('tiki-setup.php');
 
-$calendarlib = TikiLib::lib('calendar');
-$categlib = TikiLib::lib('categ');
+include_once ('lib/calendar/calendarlib.php');
+include_once ('lib/categories/categlib.php');
 include_once ('lib/newsletters/nllib.php');
 
-$headerlib->add_cssfile('themes/base_files/feature_css/calendar.css', 20);
+$headerlib->add_cssfile('css/calendar.css', 20);
 # perms are
 # 	$tiki_p_view_calendar
 # 	$tiki_p_admin_calendar
@@ -422,7 +422,7 @@ foreach ($cell as $w=>$weeks) {
 	}
 }
 //Use 12- or 24-hour clock for times listed in day or week view based on admin and user preferences
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 $user_24hr_clock = $userprefslib->get_user_clock_pref($user);
 
 $hrows = array();

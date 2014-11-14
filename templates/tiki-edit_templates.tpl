@@ -11,7 +11,7 @@
 	{title help="Edit+Templates"}{tr}Edit templates{/tr}{/title}
 {/if}
 
-<div class="t_navbar form-group">
+<div class="navbar">
 	{if $prefs.feature_editcss eq 'y'}
 		{button href="tiki-edit_css.php" _text="{tr}Edit CSS{/tr}"}
 	{/if}
@@ -28,9 +28,9 @@
 		<tr>
 			<th>{tr}Template{/tr}</th>
 		</tr>
-
+		{cycle values="odd,even" print=false}
 		{section name=user loop=$files}
-		<tr>
+		<tr class="{cycle}">
 			<td>
 				<a class="link" href="tiki-edit_templates.php?template={$files[user]}">
 					{$files[user]}
@@ -51,12 +51,12 @@
 					or SSH, or FTP edit commands--and only if you know what you are doing! ;-){/tr}
 			</li>
 			<li>
-				{tr}Extensive customizations can be made safely through the <a href="tiki-admin.php?page=look" class="tips" 
+				{tr}Extensive customizations can be made safely through the <a href="tiki-admin.php?page=look" class="titletips" 
 					title="Look & Feel">Look & Feel</a> admin panel custom code or general layout areas.{/tr}
 			</li>
 			<li>
 				{tr}To be safe and to make upgrades easier, it is recommended that you create a custom theme before modifying tpl files.
-					See <a href="http://doc.tiki.org/Customizing+Themes" class="tips" title="Customizing Themes help page">
+					See <a href="http://doc.tiki.org/Customizing+Themes" class="titletips" title="Customizing Themes help page">
 					doc.tiki.org/Customizing+Themes</a> for how to do that.{/tr}
 			</li>
 		</ul>
@@ -73,9 +73,9 @@
 			<input type="hidden" name="template" value="{$template|escape}">
 			{if $prefs.feature_edit_templates eq 'y' and $tiki_p_edit_templates eq 'y'}
 				{if $style_local eq 'n'}
-					<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
+					<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 				{/if}
-				<input type="submit" class="btn btn-default btn-sm" name="saveTheme" value="{tr}Save Only in the Theme:{/tr} {$prefs.style|replace:'.css':''}">
+				<input type="submit" class="btn btn-default" name="saveTheme" value="{tr}Save Only in the Theme:{/tr} {$prefs.style|replace:'.css':''}">
 				{if $style_local eq 'y'}
 					<a href="tiki-edit_templates.php?template={$template|escape}&amp;delete=y">
 						<img src="img/icons/cross.png" alt="{tr}Delete the copy in the theme:{/tr} {$prefs.style|replace:'.css':''}" 

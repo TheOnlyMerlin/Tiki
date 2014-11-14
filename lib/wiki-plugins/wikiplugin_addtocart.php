@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -181,6 +181,8 @@ function wikiplugin_addtocart( $data, $params )
 	$headerlib = TikiLib::lib('header');
 	$cartlib = TikiLib::lib('cart');
 
+	$headerlib->add_jsfile('lib/payment/cartlib.js');
+
 	if ( ! session_id() ) {
 		session_start();
 	}
@@ -207,14 +209,13 @@ function wikiplugin_addtocart( $data, $params )
 
 	$smarty->assign('params', $params);
 
+	if (!isset($cartuserlist)) {
+		$cartuserlist = $userlib->get_users_light();
+	}
+	$smarty->assign('cartuserlist', $cartuserlist);
+
 	if ($params['onbehalf'] == 'y' && $globalperms->payment_admin) {
 		$smarty->assign('onbehalf', 'y');
-
-		// Do not load the user list unless it is needed, this light function is not as light as one would expect
-		if (!isset($cartuserlist)) {
-			$cartuserlist = $userlib->get_users_light();
-		}
-		$smarty->assign('cartuserlist', $cartuserlist);
 	}
 
 	if (!empty($params['exchangeorderitemid']) && !empty($params['exchangetoproductid'])) {
@@ -254,10 +255,7 @@ function wikiplugin_addtocart( $data, $params )
 
 			$addedOk = $cartlib->add_to_cart($params, $jitPost);
 
-			global $tikiroot, $prefs;
-			$access = TikiLib::lib('access');
-			$tikilib = TikiLib::lib('tiki');
-
+			global $access, $tikilib, $tikiroot, $prefs;
 			if ($addedOk && $params['autocheckout'] == 'y' && empty($previous_cart_content)) {
 				$invoice = $cartlib->request_payment();
 				if ( $invoice ) {

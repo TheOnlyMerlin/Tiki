@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -260,10 +260,10 @@ class TransitionLib
 	{
 		switch( $this->transitionType ) {
 			case 'group':
-				$userlib = TikiLib::lib('user');
+				global $userlib;
 				return $userlib->get_user_groups($object);
 			case 'category':
-				$categlib = TikiLib::lib('categ');
+				global $categlib; require_once 'lib/categories/categlib.php';
 				return $categlib->get_object_categories($type, $object);
 		}
 	}
@@ -277,11 +277,11 @@ class TransitionLib
 	{
 		switch ( $this->transitionType ) {
 		case 'group':
-			$userlib = TikiLib::lib('user');
+			global $userlib;
 			$userlib->assign_user_to_group($object, $state);
 			return;
 		case 'category':
-			$categlib = TikiLib::lib('categ');
+			global $categlib; require_once 'lib/categories/categlib.php';
 			$categlib->categorize_any($type, $object, $state);
 			return;
 		}
@@ -296,11 +296,11 @@ class TransitionLib
 	{
 		switch ( $this->transitionType ) {
 		case 'group':
-			$userlib = TikiLib::lib('user');
+			global $userlib;
 			$userlib->remove_user_from_group($object, $state);
 			return;
 		case 'category':
-			$categlib = TikiLib::lib('categ');
+			global $categlib; require_once 'lib/categories/categlib.php';
 			if ( $catobj = $categlib->is_categorized($type, $object) ) {
 				$categlib->uncategorize($catobj, $state);
 			}

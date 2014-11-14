@@ -3,52 +3,41 @@
 {title help="forums" admpage="forums"}{tr}Forums{/tr}{/title}
 
 {if $tiki_p_admin_forum eq 'y'}
-  <div class="t_navbar form-group">
-		{button href="tiki-admin_forums.php" class="btn btn-default" _text="{tr}Admin forums{/tr}"}
+  <div class="navbar">
+		{button href="tiki-admin_forums.php" _text="{tr}Admin forums{/tr}"}
   </div>
 {/if}
 
 {if $channels or ($find ne '')}
 	{if $prefs.feature_forums_search eq 'y' or $prefs.feature_forums_name_search eq 'y'}
-
+		<table class="findtable">
+			<tr>
+				<td class="findtable">{tr}Find{/tr}</td>
 				{if $prefs.feature_forums_name_search eq 'y'}
-                    <div class="row form-group">
-					    <form method="get" class="col-md-12 form-inline form-horizontal" role="form" action="tiki-forums.php">
-                            <label class="control-label col-sm-2">{tr}Find{/tr}</label>
-                            <div class="input-group col-sm-6">
-                                <input type="text" name="find" class="form-control" value="{$find|escape}">
-                            </div>
-                            <div class="col-sm-2">
-				    		    <input type="submit" class="btn btn-default" value="{tr}Search by name{/tr}" name="search">
-					    	    <input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
-                            </div>
-                        </form>
-                    </div>
+					<td class="findtable">
+						<form method="get" action="tiki-forums.php">
+							<input type="text" name="find" value="{$find|escape}">
+							<input type="submit" class="btn btn-default" value="{tr}Search by name{/tr}" name="search">
+							<input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
+						</form>
+					</td>
 				{/if}
 
 				{if $prefs.feature_forums_search eq 'y' and $prefs.feature_search eq 'y'}
-                    <div class="row form-group">
-					    <form class="col-md-12 form-inline form-horizontal" method="get" role="form" action="{if $prefs.feature_search_fulltext neq 'y'}tiki-searchindex.php{else}tiki-searchresults.php{/if}">
-                            {if $prefs.feature_forums_name_search neq 'y'}
-                                <label class="control-label col-sm-2">{tr}Find{/tr}</label>
-                            {else}
-                                <div class="col-sm-2">&nbsp;</div>
-                            {/if}
-                            <div class="input-group col-sm-6">
-                                <input name="highlight" type="text" class="form-control">
-                            </div>
-                            <div class="col-sm-2">
-						        <input type="hidden" name="where" value="forums">
-							    <input type="hidden" name="filter~type" value="forum post">
-							    <input type="submit" class="wikiaction btn btn-default" name="search" value="{tr}Search in content{/tr}">
-                            </div>
-                        </form>
-                    </div>
+					<td>
+						<form class="forms" method="get" action="{if $prefs.feature_search_fulltext neq 'y'}tiki-searchindex.php{else}tiki-searchresults.php{/if}">
+							<input name="highlight" size="30" type="text">
+							<input type="hidden" name="where" value="forums">
+							<input type="hidden" name="filter~type" value="forum post">
+							<input type="submit" class="wikiaction btn btn-default" name="search" value="{tr}Search in content{/tr}">
+						</form>
+					</td>
 				{/if}
-		{/if}
+			</tr>
+		</table>
+	{/if}
 {/if}
-<div class="table-responsive">
-<table class="table table-striped normal">
+<table class="table normal">
 	<tr>
 		{assign var=numbercol value=1}
 		<th>{self_link _sort_arg='sort_mode' _sort_field='name'}{tr}Name{/tr}{/self_link}</th>
@@ -84,7 +73,7 @@
 
 	{assign var=section_old value=""}
 	{section name=user loop=$channels}
-
+		{cycle values="odd,even" print=false}
 		{assign var=section value=$channels[user].section}
 		{if $section ne $section_old}
 			{assign var=section_old value=$section}
@@ -99,14 +88,14 @@
 			{/if}
 		{/if}
 
-		<tr>
+		<tr class="{cycle}">
 			<td class="text">
 				<span style="float:left">
 					{if (isset($channels[user].individual) and $channels[user].individual eq 'n')
 						or ($tiki_p_admin eq 'y') or ($channels[user].individual_tiki_p_forum_read eq 'y')}
-						<a class="forumname" href="{$channels[user].forumId|sefurl:'forum'}">{$channels[user].name|addongroupname|escape}</a>
+						<a class="forumname" href="{$channels[user].forumId|sefurl:'forum'}">{$channels[user].name|escape}</a>
 					{else}
-						{$channels[user].name|addongroupname|escape}
+						{$channels[user].name|escape}
 					{/if}
 				</span>
 				{if $prefs.forum_list_desc eq 'y'}
@@ -156,6 +145,5 @@
 		{norecords _colspan=$numbercol}
 	{/section}
 </table>
-</div>
 
 {pagination_links cant=$cant step=$prefs.maxRecords offset=$offset}{/pagination_links}

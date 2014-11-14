@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -25,7 +25,8 @@ class AdminWizard extends Wizard
 	
 	function onSetupPage ($homepageUrl) 
 	{
-		$smarty = TikiLib::lib('smarty');
+		global	$smarty, $prefs;
+
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
 
@@ -35,22 +36,18 @@ class AdminWizard extends Wizard
 			$smarty->clear_assign('useDefaultPrefs');
 		}
 
-		// If the user steps back after having selected, "Use Upgrade Wizard",
-		//	then starts the wizard steps (presses "Start"), the Upgrade Wizard should no longer be used.
-		if (isset($_REQUEST['use-upgrade-wizard'])) {
-			$smarty->clear_assign('useUpgradeWizard');
-		}
+        // If the user steps back after having selected, "Use Upgrade Wizard",
+        //	then starts the wizard steps (presses "Start"), the Upgrade Wizard should no longer be used.
+        if (isset($_REQUEST['use-upgrade-wizard'])) {
+            $smarty->clear_assign('useUpgradeWizard');
+        }
 
 		// Assign the page template
         $smarty->assign('pageTitle', $this->pageTitle());
+		$wizardTemplate = 'wizard/admin_wizard.tpl';
+		$smarty->assign('wizardBody', $wizardTemplate);
 		
 		return true;
-	}
-
-	function getTemplate()
-	{
-		$wizardTemplate = 'wizard/admin_wizard.tpl';
-		return $wizardTemplate;
 	}
 
 	function onContinue ($homepageUrl) 

@@ -1,16 +1,11 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-
 tiki_setup_events();
-
-register_shutdown_function(function () {
-	TikiLib::events()->trigger('tiki.process.shutdown', []);
-});
 
 function tiki_setup_events()
 {
@@ -104,10 +99,6 @@ function tiki_setup_events()
 		if ($prefs['tracker_refresh_itemlink_detail'] == 'y') {
 			$events->bind('tiki.trackeritem.update', $defer('trk', 'refresh_index_on_master_update'));
 		}
-
-		if ($prefs['tracker_wikirelation_synctitle'] == 'y') {
-			$events->bind('tiki.trackeritem.save', $defer('trk', 'rename_linked_page'));
-		}
 	}
 
 	if ($prefs['feature_search'] == 'y' && $prefs['unified_incremental_update'] == 'y') {
@@ -130,18 +121,9 @@ function tiki_setup_events()
 		$events->bind('tiki.file.update', $defer('scorm', 'handle_file_update'));
 	}
 
-	if ($prefs['feature_futurelinkprotocol'] == 'y') {
-		if ($prefs['feature_wikilingo'] == 'y') {
-			$events->bind("tiki.wiki.view", $defer('wlte', 'wikilingo_flp_view'));
-			$events->bind("tiki.wiki.save", $defer('wlte', 'wikilingo_flp_save'));
-		} else {
-			$events->bind("tiki.wiki.view", $defer('wlte', 'tiki_wiki_view_pastlink'));
-			$events->bind("tiki.wiki.save", $defer('wlte', 'tiki_wiki_save_pastlink'));
-		}
-	}
-
-	if ($prefs['goal_enabled'] == 'y') {
-		TikiLib::lib('goalevent')->bindEvents($events);
+	if ($prefs['feature_forwardlinkprotocol'] == 'y') {
+		$events->bind("tiki.wiki.view", 'tiki_wiki_view_forwardlink');
+		$events->bind("tiki.wiki.save", 'tiki_wiki_save_forwardlink');
 	}
 
 	$events->bind('tiki.save', $defer('tiki', 'object_post_save'));
@@ -158,38 +140,6 @@ function tiki_setup_events()
 		}
 	}
 
-	if ($prefs['storedsearch_enabled'] == 'y' && $prefs['monitor_enabled'] == 'y') {
-		$events->bind('tiki.query.hit', $defer('storedsearch', 'handleQueryNotification'));
-	}
-
-	if ($prefs['monitor_enabled'] == 'y') {
-		TikiLib::lib('monitor')->bindEvents($events);
-	}
-
-	if ($prefs['mustread_enabled'] == 'y') {
-		$events->bind('tiki.trackeritem.create', ['Services_MustRead_Controller', 'handleItemCreation']);
-		$events->bind('tiki.user.create', ['Services_MustRead_Controller', 'handleUserCreation']);
-	}
-
-	// If the parameter is supplied by the web server, Tiki will expose the username as a response header
-	if (! empty($_SERVER['TIKI_HEADER_REPORT_USER'])) {
-		$events->bind('tiki.process.render', function () {
-			global $user;
-			if ($user) {
-				header('X-Remote-User: ' . $user);
-			}
-		});
-	}
-
-	// If the parameter is supplied by the web server, Tiki will expose the object type and id as a response header
-	if (! empty($_SERVER['TIKI_HEADER_REPORT_OBJECT'])) {
-		$events->bind('tiki.process.render', function () {
-			if (function_exists('current_object') && $object = current_object()) {
-				header("X-Current-Object: {$object['type']}:{$object['object']}");
-			}
-		});
-	}
-
 	// Chain events
 	$events->bind('tiki.wiki.update', 'tiki.wiki.save');
 	$events->bind('tiki.wiki.create', 'tiki.wiki.save');
@@ -202,53 +152,21 @@ function tiki_setup_events()
 	$events->bind('tiki.trackeritem.delete', 'tiki.save');
 	$events->bind('tiki.trackeritem.rating', 'tiki.rating');
 
-	$events->bind('tiki.trackerfield.update', 'tiki.trackerfield.save');
-	$events->bind('tiki.trackerfield.create', 'tiki.trackerfield.save');
-	$events->bind('tiki.trackerfield.delete', 'tiki.save');
-	$events->bind('tiki.trackerfield.save', 'tiki.save');
-
-	$events->bind('tiki.tracker.update', 'tiki.tracker.save');
-	$events->bind('tiki.tracker.create', 'tiki.tracker.save');
-	$events->bind('tiki.tracker.delete', 'tiki.save');
-	$events->bind('tiki.tracker.save', 'tiki.save');
-
-	$events->bind('tiki.category.update', 'tiki.category.save');
-	$events->bind('tiki.category.create', 'tiki.category.save');
-	$events->bind('tiki.category.delete', 'tiki.category.save');
-	$events->bind('tiki.category.save', 'tiki.save');
-
 	$events->bind('tiki.file.update', 'tiki.file.save');
 	$events->bind('tiki.file.create', 'tiki.file.save');
 	$events->bind('tiki.file.delete', 'tiki.file.save');
 	$events->bind('tiki.file.save', 'tiki.save');
-
-	$events->bind('tiki.filegallery.update', 'tiki.filegallery.save');
-	$events->bind('tiki.filegallery.create', 'tiki.filegallery.save');
-	$events->bind('tiki.filegallery.delete', 'tiki.filegallery.save');
-	$events->bind('tiki.filegallery.save', 'tiki.save');
-
-	$events->bind('tiki.forum.update', 'tiki.forum.save');
-	$events->bind('tiki.forum.create', 'tiki.forum.save');
-	$events->bind('tiki.forum.delete', 'tiki.forum.save');
-	$events->bind('tiki.forum.save', 'tiki.save');
 
 	$events->bind('tiki.forumpost.create', 'tiki.forumpost.save');
 	$events->bind('tiki.forumpost.reply', 'tiki.forumpost.save');
 	$events->bind('tiki.forumpost.update', 'tiki.forumpost.save');
 	$events->bind('tiki.forumpost.save', 'tiki.save');
 
-	$events->bind('tiki.group.update', 'tiki.group.save');
-	$events->bind('tiki.group.create', 'tiki.group.save');
-	$events->bind('tiki.group.delete', 'tiki.save');
-	$events->bind('tiki.group.save', 'tiki.save');
-
 	$events->bind('tiki.comment.post', 'tiki.comment.save');
 	$events->bind('tiki.comment.reply', 'tiki.comment.save');
 	$events->bind('tiki.comment.update', 'tiki.comment.save');
 	$events->bind('tiki.comment.save', 'tiki.save');
 
-	$events->bind('tiki.user.groupjoin', 'tiki.user.update');
-	$events->bind('tiki.user.groupleave', 'tiki.user.update');
 	$events->bind('tiki.user.update', 'tiki.user.save');
 	$events->bind('tiki.user.create', 'tiki.user.save');
 
@@ -262,22 +180,6 @@ function tiki_setup_events()
 	$events->bind('tiki.social.favorite.remove', 'tiki.social.save');
 	$events->bind('tiki.social.relation.add', 'tiki.social.save');
 	$events->bind('tiki.social.relation.remove', 'tiki.social.save');
-
-	$events->bind('tiki.query.critical', 'tiki.query.hit');
-	$events->bind('tiki.query.high', 'tiki.query.hit');
-	$events->bind('tiki.query.low', 'tiki.query.hit');
-
-	$events->bind('tiki.mustread.addgroup', 'tiki.save');
-	$events->bind('tiki.mustread.adduser', 'tiki.save');
-	$events->bind('tiki.mustread.complete', 'tiki.save');
-
-	$events->bind('tiki.mustread.completed', 'tiki.save');
-	$events->bind('tiki.mustread.required', 'tiki.save');
-
-	if (function_exists('fastcgi_finish_request')) {
-		// If available, try to send everything to the user at this point
-		$events->bindPriority(-10, 'tiki.process.shutdown', 'fastcgi_finish_request');
-	}
 }
 
 function tiki_save_refresh_index($args)
@@ -287,4 +189,19 @@ function tiki_save_refresh_index($args)
 		$isBulk = isset($args['bulk_import']) && $args['bulk_import'];
 		refresh_index($args['type'], $args['object'], ! $isBulk);
 	}
+}
+
+
+function tiki_wiki_view_forwardlink($args)
+{
+	Feed_ForwardLink_Receive::wikiView($args);
+	Feed_ForwardLink_PageLookup::wikiView($args);
+	Feed_ForwardLink::wikiView($args);
+	Feed_TextLink::wikiView($args);
+}
+
+function tiki_wiki_save_forwardlink($args)
+{
+	Feed_ForwardLink::wikiSave($args);
+	Feed_TextLink::wikiSave($args);
 }

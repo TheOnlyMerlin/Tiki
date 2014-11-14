@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -1173,7 +1173,7 @@ class ModsLib
 		if (is_array($info->configuration) and count($info->configuration)) {
 			$conf = $info->readconf($path);
 			if ($conf === false) {
-				$smarty = TikiLib::lib('smarty');
+				global $smarty;
 				$conf=array('_SERVER' => $_SERVER);
 				if (is_array($info->configuration_help) and count($info->configuration_help)) {
 					$smarty->assign('help', implode("<br />\n", $info->configuration_help));

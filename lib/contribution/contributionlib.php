@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -105,7 +105,7 @@ class ContributionLib extends TikiLib
      */
     function assign_contributions($contributions, $itemId, $objectType, $description='', $name='', $href='')
 	{
-		$objectlib = TikiLib::lib('object');
+		global $objectlib; include_once('lib/objectlib.php');
 
 		if (($objectId = $objectlib->get_object_id($objectType, $itemId)) == 0) {
 			$objectId = $objectlib->insert_object($objectType, $itemId, $description, $name, $href);
@@ -156,7 +156,7 @@ class ContributionLib extends TikiLib
     function change_assigned_contributions($itemIdOld, $objectTypeOld, $itemIdNew, $objectTypeNew, $description, $name, $href)
 	{
 		if ($this->get_assigned_contributions($itemIdOld, $objectTypeOld)) {
-			$objectlib = TikiLib::lib('object');
+			global $objectlib; include_once('lib/objectlib.php');
 			if (($objectId = $objectlib->get_object_id($objectTypeNew, $itemIdNew)) == 0)// create object
 				$objectId = $objectlib->insert_object($objectTypeNew, $itemIdNew, $description, $name, $href);
 
@@ -177,7 +177,7 @@ class ContributionLib extends TikiLib
 		// works only if mysql> 4
 		// $query = 'delete tca from `tiki_contributions_assigned` tca left join `tiki_objects`tob on tob.`objectId`=tca.`objectId` where tob.`itemId`= ? and tob.`type`= ?';
 
-		$objectlib = TikiLib::lib('object');
+		global $objectlib; include_once('lib/objectlib.php');
 		$objectId = $objectlib->get_object_id($objectType, $itemId);
 		$query = 'delete from `tiki_contributions_assigned` where `objectId`= ?';
 		$this->query($query, array($objectId));
@@ -188,7 +188,7 @@ class ContributionLib extends TikiLib
      */
     function remove_page($page)
 	{
-		$objectlib = TikiLib::lib('object');
+		global $objectlib; include_once('lib/objectlib.php');
 		$query = 'select * from `tiki_history` where `pageName` = ?';
 		$result = $this->query($query, array($page));
 
@@ -205,7 +205,7 @@ class ContributionLib extends TikiLib
     function remove_history($historyId)
 	{
 			//history object only created for contribution yet. You can remove object
-		$objectlib = TikiLib::lib('object');
+		global $objectlib; include_once('lib/objectlib.php');
 
 		$this->remove_assigned_contributions($historyId, 'history');
 		$objectlib->delete_object('history', $historyId);
@@ -217,7 +217,7 @@ class ContributionLib extends TikiLib
     function remove_comment($commentId)
 	{
 			//history object only created for contribution yet. You can remove object
-		$objectlib = TikiLib::lib('object');
+		global $objectlib; include_once('lib/objectlib.php');
 
 		$this->remove_assigned_contributions($commentId, 'comment');
 		$objectlib->delete_object('comment', $commentId);
@@ -251,8 +251,8 @@ class ContributionLib extends TikiLib
      */
     function update($action, $contributions, $delay=15)
 	{
-		$tikilib = TikiLib::lib('tiki');
-		$logslib = TikiLib::lib('logs');
+		global $tikilib;
+		global $logslib; include_once('lib/logs/logslib.php');
 
 		if ($action['objectType'] == 'wiki page' && $action['action'] != 'Removed') {
 			// try to find an history
@@ -288,3 +288,4 @@ class ContributionLib extends TikiLib
 		return true;
 	}
 }
+$contributionlib = new ContributionLib;

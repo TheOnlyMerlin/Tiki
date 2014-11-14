@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -19,9 +19,7 @@ class Messu extends TikiLib
 	 */
 	function save_sent_message($user, $from, $to, $cc, $subject, $body, $priority, $replyto_hash = '')
 	{
-		global $prefs;
-		$userlib = TikiLib::lib('user');
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $userlib, $prefs;
 
 		$subject = strip_tags($subject);
 		$body = strip_tags($body, '<a><b><img><i>');
@@ -79,9 +77,7 @@ class Messu extends TikiLib
 	 */
 	function post_message($user, $from, $to, $cc, $subject, $body, $priority, $replyto_hash = '', $replyto_email = '', $bcc_sender = '')
 	{
-		global $prefs;
-		$userlib = TikiLib::lib('user');
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $userlib, $prefs;
 
 		$subject = strip_tags($subject);
 		$body = strip_tags($body, '<a><b><img><i>');

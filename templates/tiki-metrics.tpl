@@ -1,4 +1,4 @@
-<div class="page_header">
+<div class="page-header">
 	<div class="metrics-range-update">
 		<form method="GET">
 		<span class="metrics-range-text">{tr}Change to:{/tr}</span>
@@ -8,7 +8,7 @@
 			<option value="monthof" {if $smarty.request.range eq 'monthof'}selected="selected"{/if}>month of...</option>
 			<option value="custom" {if $smarty.request.range eq 'custom'}selected="selected"{/if}>custom range...</option>
 		</select>
-		<input type="submit" class="btn btn-default btn-sm" name="update" value="Update"><br>
+		<input type="submit" class="btn btn-default" name="update" value="Update"><br>
 		<div id="range-inputs">
 			<span class="range-weekof-text">{tr}Week containing:{/tr}</span>
 			<span class="range-monthof-text">{tr}Month containing:{/tr}</span>

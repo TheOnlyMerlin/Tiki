@@ -2,14 +2,14 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once 'tiki-setup.php';
-$categlib = TikiLib::lib('categ');
+require_once 'lib/categories/categlib.php';
 
 $access->check_feature('feature_print_indexed');
 
@@ -194,8 +194,9 @@ class ObjectRenderer_TrackerItem extends ObjectRenderer // {{{
     function __construct($type, $object, $options = array())
 	{
 		parent::__construct($type, $object, $options);
+		global $trklib;
 
-		$trklib = TikiLib::lib('trk');
+		require_once 'lib/trackers/trackerlib.php';
 
 		$info = $trklib->get_tracker_item($object);
 		$trackerId = $info['trackerId'];
@@ -338,8 +339,7 @@ class ObjectRenderer_MultilingualWiki extends ObjectRenderer // {{{
     function __construct($type, $object, $options = array())
 	{
 		parent::__construct($type, $object, $options);
-		$multilinguallib = TikiLib::lib('multilingual');
-		$tikilib = TikiLib::lib('tiki');
+		global $multilinguallib, $tikilib; require_once 'lib/multilingual/multilinguallib.php';
 
 		$languages = $options['languages'];
 		$this->renderers = array_fill_keys($languages, null);

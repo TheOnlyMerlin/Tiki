@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -16,9 +16,10 @@ $tikidomain2 = "cc.tikiwiki.org";
 
 require_once("db/tiki-db.php");
 require_once("lib/tikilib.php");
-$userlib = TikiLib::lib('user');
+require_once("lib/userslib.php");
 
 $tikilib = new TikiLib;
+$userlib = new UsersLib;
 
 $users = $userlib->get_group_users('CC');
 

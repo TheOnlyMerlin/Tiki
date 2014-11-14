@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -35,13 +35,13 @@ function module_action_calendar_info()
  */
 function module_action_calendar($mod_reference, &$module_params)
 {
-	global $prefs, $tiki_p_view_tiki_calendar;
+	global $prefs, $tiki_p_view_tiki_calendar, $tikilib, $smarty;
 	$smarty->assign('show_calendar_module', 'n');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
 	if ($tiki_p_view_tiki_calendar == 'y') {
 		$smarty->assign('show_calendar_module', 'y');	
-		$tikicalendarlib = TikiLib::lib('tikicalendar');
+		global $tikicalendarlib; include_once('lib/calendar/tikicalendarlib.php');
+//		Note: calendar css file now loaded in tiki-modules.php
+//		global $headerlib; $headerlib->add_cssfile('css/calendar.css', 20);
 		global $calendarViewMode;
 	
 		$calendarViewMode['casedefault'] = 'month';

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -30,15 +30,16 @@ function module_live_support_info()
  */
 function module_live_support($mod_reference, $module_params)
 {
+	global $access;
 	global $user;
+	global $smarty;
 	global $lslib; include_once ('lib/live_support/lslib.php');
 	global $lsadminlib ; include_once ('lib/live_support/lsadminlib.php');
-	$smarty = TikiLib::lib('smarty');
 
 	$smarty->assign('modsupport', $lslib->operators_online());
 	if ($lsadminlib->is_operator($user)) {
-		$smarty->assign('user_is_operator', 'y');
+				$smarty->assign('user_is_operator', 'y');
 	} else {
-		$smarty->assign('user_is_operator', 'n');
+				$smarty->assign('user_is_operator', 'n');
 	}
 }

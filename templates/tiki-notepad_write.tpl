@@ -2,8 +2,8 @@
 
 {include file='tiki-mytiki_bar.tpl'}
 
-<div class="t_navbar">
-	{button href="tiki-notepad_list.php" class="btn btn-default" _text="{tr}Notes{/tr}"}
+<div class="navbar">
+	{button href="tiki-notepad_list.php" _text="{tr}Notes{/tr}"} 
 </div>
 
 <form action="tiki-notepad_write.php" method="post">
@@ -25,7 +25,7 @@
     <tr>
       <td>&nbsp;</td>
       <td>
-        <input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
+        <input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
       </td>
     </tr>
   </table>

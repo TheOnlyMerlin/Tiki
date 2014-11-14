@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +10,7 @@
 
 $section = 'mytiki';
 require_once ('tiki-setup.php');
-$wikilib = TikiLib::lib('wiki');
+include_once ('lib/wiki/wikilib.php');
 include_once ('lib/tasks/tasklib.php');
 //get_strings tra('MyTiki Home');
 $access->check_user($user);
@@ -46,7 +46,7 @@ if ($prefs['feature_wiki'] == 'y') {
 if ($prefs['feature_blogs'] == 'y') {
 	$mytiki_blogs = $tikilib->get_user_preference($user, 'mytiki_blogs', 'y');
 	if ($mytiki_blogs == 'y') {
-		$bloglib = TikiLib::lib('blog');
+		require_once('lib/blogs/bloglib.php');
 		$user_blogs = $bloglib->list_user_blogs($userwatch, false);
 		$smarty->assign_by_ref('user_blogs', $user_blogs);
 		$smarty->assign('mytiki_blogs', 'y');
@@ -111,7 +111,7 @@ if ($prefs['feature_messages'] == 'y' && $tiki_p_messages == 'y') {
 if ($prefs['feature_articles'] == 'y') {
 	$mytiki_articles = $tikilib->get_user_preference($user, 'mytiki_articles', 'y');
 	if ($mytiki_articles == 'y') {
-		$artlib = TikiLib::lib('art');
+		include_once ('lib/articles/artlib.php');
 		$user_articles = $artlib->get_user_articles($userwatch, -1);
 		$smarty->assign_by_ref('user_articles', $user_articles);
 		$smarty->assign('mytiki_articles', 'y');

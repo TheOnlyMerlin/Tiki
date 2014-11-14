@@ -1,22 +1,22 @@
 {title help="Newsletters"}{tr}Newsletters{/tr}{/title}
 
 {if $tiki_p_admin_newsletters eq "y"}
-	<div class="t_navbar">
-		{button href="tiki-admin_newsletters.php" class="btn btn-default" _text="{tr}Admin Newsletters{/tr}"}
+	<div class="navbar">
+		{button href="tiki-admin_newsletters.php" _text="{tr}Admin Newsletters{/tr}"}
 	</div>
 {/if}
 
 {if $subscribed eq 'y'}
-	<div class="alert alert-warning">
+	<div class="simplebox highlight">
 		{tr}Thanks for your subscription. You will receive an email soon to confirm your subscription. No newsletters will be sent to you until the subscription is confirmed.{/tr}
 	</div>
 {/if}
 
 {if $unsub eq 'y'}
-	<div class="alert alert-warning">
+	<div class="highlight">
 		{tr}Your email address was removed from the list of subscriptors.{/tr}</div>
 {elseif $unsub eq 'f'}
-	<div class="alert alert-danger">{tr}Removal of your email address failed.{/tr}</div>
+	<div class="simplebox error">{tr}Removal of your email address failed.{/tr}</div>
 {/if}
 
 {if $confirm eq 'y'}
@@ -69,7 +69,7 @@
 				<tr>
 					<td class="even">&nbsp;</td>
 					<td class="even">
-						<input type="submit" class="btn btn-primary btn-sm" name="subscribe" value="{tr}Subscribe to this Newsletter{/tr}">
+						<input type="submit" class="btn btn-default" name="subscribe" value="{tr}Subscribe to this Newsletter{/tr}">
 					</td>
 				</tr>
 			{/if}
@@ -84,16 +84,15 @@
 		{include file='find.tpl'}
 	{/if}
 
-        <div class="table-responsive">
-        <table class="table normal">
+	<table class="table normal">
 		<tr>
 			<th>{self_link _sort_arg='sort_mode' _sort_field='name'}{tr}Newsletter{/tr}{/self_link}</th>
 			<th style="width:100px">{tr}Action{/tr}</th>
 		</tr>
-
+		{cycle values="odd,even" print=false}
 		{section name=user loop=$channels}
 			{if $channels[user].tiki_p_subscribe_newsletters eq 'y' or $channels[user].tiki_p_list_newsletters eq 'y'}
-				<tr>
+				<tr class="{cycle}">
 					<td class="text">
 						<a class="tablename" href="tiki-newsletters.php?nlId={$channels[user].nlId}&amp;info=1" title="{tr}Subscribe to Newsletter{/tr}">{$channels[user].name|escape}</a>
 						<div class="subcomment">{$channels[user].description|escape|nl2br}</div>
@@ -121,6 +120,6 @@
 			{norecords _colspan=2}
 		{/section}
 	</table>
-    </div>
+
 	{pagination_links cant=$cant offset=$offset step=$maxRecords}{/pagination_links}
 {/if}

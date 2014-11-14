@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -124,13 +124,13 @@ function wikiplugin_trackercalendar_info()
 				'filter' => 'alpha',
 				'default' => 'month',
 				'options' => array(
-                    array('text' => '', 'value' => ''),
-                    array('text' => tra('Agenda by Months'), 'value' => 'month'),
-                    array('text' => tra('Agenda by Weeks'), 'value' => 'agendaWeek'),
-                    array('text' => tra('Agenda by Days'), 'value' => 'agendaDay'),
-                    array('text' => tra('Resources by Months'), 'value' => 'resourceMonth'),
-                    array('text' => tra('Resources by Weeks'), 'value' => 'resourceWeek'),
-                    array('text' => tra('Resources by Days'), 'value' => 'resourceDay')
+					array('text' => '', 'value' => ''),
+					array('text' => tra('Agenda by Months'), 'value' => 'month'),
+					array('text' => tra('Agenda by Weeks'), 'value' => 'agendaWeek'),
+					array('text' => tra('Agenda by Days'), 'value' => 'agendaDay'),
+					array('text' => tra('Resources by Months'), 'value' => 'resourceMonth'),
+					array('text' => tra('Resources by Weeks'), 'value' => 'resourceWeek'),
+					array('text' => tra('Resources by Days'), 'value' => 'resourceDay')
 				)
 			),
 			'dYear' => array(
@@ -295,6 +295,6 @@ function wikiplugin_trackercalendar_get_resources($field)
 {
 	$db = TikiDb::get();
 
-	return $db->fetchAll('SELECT DISTINCT value as id, value as name FROM tiki_tracker_item_fields WHERE fieldId = ? ORDER BY  value', $field['fieldId']);
+	return $db->fetchAll('SELECT DISTINCT LOWER(value) as id, value as name FROM tiki_tracker_item_fields WHERE fieldId = ? ORDER BY  value', $field['fieldId']);
 }
 

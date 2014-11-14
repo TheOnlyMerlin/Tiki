@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -59,10 +59,10 @@ class TikiLdapLib
 	public function __construct($options)
 	{
 		// debug setting
-		$logslib = TikiLib::lib('logs');
+		global $logslib;
 		if (isset($options['debug']) && ($options['debug']===true || $options['debug']=='y' )&& ($logslib instanceof LogsLib)) {
 			$this->options['debug'] = true;
-			$this->logslib = $logslib;
+			$this->logslib = &$logslib;
 		}
 		// Configure the connection
 
@@ -489,7 +489,7 @@ class TikiLdapLib
 	}
 
 	/**
-	 * Return the value of the attribute past in param
+	 * Return the value of the attribue past in param
 	 * @param string $name The name of the attribute
 	 * @return mixed
 	 * @throw Exception

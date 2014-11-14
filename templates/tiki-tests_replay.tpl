@@ -19,14 +19,13 @@
 <input type="checkbox" name="show_post" value="y" {if $show_post eq 'y'} checked="checked"{/if}>{tr}Show POST Data{/tr}<br>
 <input type="checkbox" name="current_session" value="y" {if $current_session eq 'y'} checked="checked"{/if}>{tr}Use Current Session/Log out{/tr}<br>
 <input type="hidden" name="filename" value="{$filename}">
-<center><input type="submit" class="btn btn-default btn-sm" name="action" value="{tr}Replay{/tr}"></center>
+<center><input type="submit" class="btn btn-default" name="action" value="{tr}Replay{/tr}"></center>
 </form>
 </fieldset>
 {if is_array($result) and sizeof($result) gt 0}
 <fieldset>
 <legend>{tr}Results{/tr}</legend>
-<div class="table-responsive">
-<table class="table normal">
+<table class="table normal" width="100%">
 {foreach from=$result item=r}
 	<tr>
 		<th style="width:10%">{tr}Request:{/tr}&nbsp;{$r.method}</th><td>{$r.url}</td>
@@ -42,8 +41,7 @@
 		{/foreach}
 	{/if}
 	<tr><td colspan="4">
-    <div class="table-responsive">
-	<table class="table normal">
+	<table class="table normal" width="100%">
 	{if $show_tidy}
 		<tr><th colspan="2">{tr}Tidy Results{/tr}&nbsp;{tr}Reference{/tr}</th><th colspan="2">{tr}Tidy Results{/tr}&nbsp;{tr}Replay{/tr}</th></tr>
  		<tr><td colspan="2" style="width:50%"><pre>{$r.ref_error_msg|escape:"html"}</pre></td>
@@ -67,12 +65,10 @@
 	</tr>
 {/if}
 	</table>
-    </div>
 	</td>
 	</tr>
 {/foreach}
 </table>
-</div>
 </fieldset>
 {/if}
 {/if}

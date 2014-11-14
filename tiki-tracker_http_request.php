@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,12 @@
 // TODO - refactor to ajax-services then KILME
 
 require_once ('tiki-setup.php');
-$trklib = TikiLib::lib('trk');
+include_once ('lib/trackers/trackerlib.php');
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	global $categlib;
+	if (!is_object($categlib)) {
+		include_once ('lib/categories/categlib.php');
+	}
 }
 if ($prefs['feature_trackers'] != 'y') {
 	die;
@@ -101,7 +104,6 @@ for ($index = 0, $count_arrayTrackerId = count($arrayTrackerId); $index < $count
 		}
 	}
 }
-
-$access = TikiLib::lib('access');
+global $access; include_once 'lib/tikiaccesslib.php';
 $access->output_serialized($json_return);
 

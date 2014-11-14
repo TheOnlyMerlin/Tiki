@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -23,8 +23,8 @@ if ($cat_type != 'wiki page' && $cat_type != 'article') {
 	die;
 }
 
-$freetaglib = TikiLib::lib('freetag');
-$multilinguallib = TikiLib::lib('multilingual');
+include_once "lib/freetag/freetaglib.php";
+include_once "lib/multilingual/multilinguallib.php";
 
 if ( $cat_objId ) {
 	$info = $tikilib->get_page_info($cat_objId);

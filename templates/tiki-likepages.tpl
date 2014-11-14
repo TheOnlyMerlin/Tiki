@@ -13,11 +13,11 @@
 <li><a href="tiki-index.php?page={$likepages[back]|escape:"url"}" class="wiki">{$likepages[back]|escape}</a></li>
 {/if}
 {sectionelse}
-{remarksbox type="info" title="{tr}Information{/tr}"}{tr}No pages found{/tr}{/remarksbox}
+{tr}No pages found{/tr}
 {/section}
 </ul>
 {else}
-{remarksbox type="info" title="{tr}Information{/tr}"}{tr}No pages found{/tr}{/remarksbox}
+{tr}No pages found{/tr}
 {/if}
 <br>
 

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -22,25 +22,11 @@ class Services_Payment_Controller
 		return $cartlib->add_to_cart($params, $input);
 	}
 
-	function action_addalltocart($input)
-	{
-		$cartlib = TikiLib::lib('cart');
-
-		$items = $input->items->asArray();
-		$ret = array();
-
-		foreach ($items as $item) {
-			$ret[] = $cartlib->add_to_cart($item['params'], new jitFilter($item));
-		}
-
-		return $ret;
-	}
-
 	function action_capture($input)
 	{
 		$perms = Perms::get();
 		if (! $perms->payment_admin) {
-			throw new Services_Exception_Denied(tr('Reserved to payment administrators'));
+			throw new Services_Exception_Denied(tr('Reserved to payment admnistrators'));
 		}
 
 		$paymentlib = TikiLib::lib('payment');

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -58,17 +58,16 @@ function wikiplugin_trackerpasscode_info()
 
 function wikiplugin_trackerpasscode( $data, $params )
 {
-	global $user;
-	$smarty = TikiLib::lib('smarty');
-
+	global $smarty, $user, $access;
 	if (empty($params['key']) || empty($params['trackerId']) || empty($params['itemId']) || empty($params['fieldId'])) {
 		return '';
 	}
 	$key = $params['key'];
 	if ( $_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['trackerpasscode'])) {
+		global $access;
+
 		// Check all filled in
 		if (empty($_POST['trackerpasscode'])) {
-			$access = TikiLib::lib('access');
 			$access->redirect($_SERVER['REQUEST_URI'], tr('Please fill in all fields')); 
 			die;
 		}
@@ -80,7 +79,7 @@ function wikiplugin_trackerpasscode( $data, $params )
 		$data = substr($data, 0, strpos($data, '{ELSE}'));
 	}
 	// check code
-	$trklib = TikiLib::lib('trk');
+	global $trklib; require_once("lib/trackers/trackerlib.php");
 	$correctcode = $trklib->get_item_value($params['trackerId'], $params['itemId'], $params['fieldId']);
 	if ($_SESSION['wikiplugin_trackerpasscode'][$key] == $correctcode) {
 		return $data;

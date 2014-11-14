@@ -26,39 +26,23 @@
 {/if}
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}
-	{tr}Use the 'Quick Edit' module to easily create or edit wiki pages.{/tr} {tr}Select <a class="alert-link" href="tiki-admin_modules.php">Admin &gt; Modules</a> to add this (or other) modules.{/tr}
+	{tr}Use the 'Quick Edit' module to easily create or edit wiki pages.{/tr} {tr}Select <a class="rbox-link" href="tiki-admin_modules.php">Admin &gt; Modules</a> to add this (or other) modules.{/tr}
 {/remarksbox}
 
 <form action="tiki-admin.php?page=wiki" method="post">
 	<div class="heading input_submit_container" style="text-align: right">
-
+		<input type="submit" class="btn btn-default" name="wikisetprefs" value="{tr}Change preferences{/tr}" />
 	</div>
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-			<a role="button" class="btn btn-default btn-sm" href="tiki-listpages.php" title="{tr}List{/tr}">
-				{icon name="list"} {tr}Wiki Pages{/tr}
-			</a>
-			{if $prefs.feature_wiki_structure eq "y" and $tiki_p_view eq "y"}
-				<a role="button" class="btn btn-default btn-sm" href="tiki-admin_structures.php" title="{tr}List{/tr}">
-					{icon name="admin"} {tr}Wiki Structures{/tr}
-				</a>
-			{/if}
-            <div class="pull-right">
-				<input type="submit" class="btn btn-primary btn-sm" name="wikisetprefs" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}" />
-            </div>
-        </div>
-    </div>
+
 	{tabset name="admin_wiki"}
 		{tab name="{tr}General Preferences{/tr}"}
-            <h2>{tr}General Preferences{/tr}</h2>
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Activate the feature{/tr}</legend>
 				{preference name=feature_wiki visible="always"}
-				{preference name=wiki_url_scheme}
 			</fieldset>
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Plugins{/tr}</legend>
 				{preference name=wikiplugin_author}
 				{preference name=wikiplugin_include}
@@ -142,7 +126,6 @@
 		{/tab}
 
 		{tab name="{tr}Features{/tr}"}
-            <h2>{tr}Features{/tr}</h2>
 			<input type="hidden" name="wikifeatures" />
 
 			{preference name=feature_sandbox}
@@ -182,7 +165,7 @@
 					<div class="adminoptionlabel">
 						<label for="tagname">{tr}Tag for current wiki:{/tr}</label>
 						<input maxlength="20" size="20" type="text" name="tagname" id="tagname" />
-						<input type="submit" class="btn btn-default btn-sm" name="createtag" value="{tr}Create{/tr}" />
+						<input type="submit" class="btn btn-default" name="createtag" value="{tr}Create{/tr}" />
 					</div>
 				</div>
 				<div class="adminoptionbox clearfix">
@@ -195,7 +178,7 @@
 								<option value=''>{tr}None{/tr}</option>
 							{/section}
 						</select>
-						<input type="submit" class="btn btn-default btn-sm" name="restoretag" value="{tr}Restore{/tr}"{if $tags|@count eq '0'} disabled="disabled"{/if} />
+						<input type="submit" class="btn btn-default" name="restoretag" value="{tr}Restore{/tr}"{if $tags|@count eq '0'} disabled="disabled"{/if} />
 					</div>
 				</div>
 				<div class="adminoptionbox clearfix">
@@ -208,7 +191,7 @@
 								<option value=''>{tr}None{/tr}</option>
 							{/section}
 						</select>
-						<input type="submit" class="btn btn-default btn-sm" name="removetag" value="{tr}Remove{/tr}"{if $tags|@count eq '0'} disabled="disabled"{/if} />
+						<input type="submit" class="btn btn-default" name="removetag" value="{tr}Remove{/tr}"{if $tags|@count eq '0'} disabled="disabled"{/if} />
 					</div>
 				</div>
 
@@ -222,7 +205,7 @@
 
 		{preference name=feature_wiki_pictures}
 		<div class="adminoptionboxchild" id="feature_wiki_pictures_childcontainer">
-			{permission_link mode=button permType=wiki textFilter=picture showDisabled=y}
+			<a class="link" href="tiki-objectpermissions.php?permType=wiki&amp;textFilter=picture&amp;show_disabled_features=y" title="{tr}Permission{/tr}">{icon _id="key" alt="{tr}Permission{/tr}"}</a>
 			{preference name=feature_filegals_manager}
 			{button href="tiki-admin.php?page=wiki&amp;rmvunusedpic=1" _text="{tr}Remove unused pictures{/tr}"}
 			{button href="tiki-admin.php?page=wiki&amp;moveWikiUp=1" _text="{tr}Move images from wiki_up to the home file gallery{/tr}"}
@@ -231,8 +214,7 @@
 
 		{preference name=feature_wiki_export}
 		<div class="adminoptionboxchild" id="feature_wiki_export_childcontainer">
-			{permission_link mode=button permType=wiki textFilter=export showDisabled=y}
-			{permission_link mode=icon permType=wiki textFilter=picture showDisabled=y}
+			<a class="link" href="tiki-objectpermissions.php?permType=wiki&amp;textFilter=export&amp;show_disabled_features=y" title="{tr}Permission{/tr}">{icon _id="key" alt="{tr}Permission{/tr}"}</a>
 			{button href="tiki-export_wiki_pages.php" _text="{tr}Export Wiki Pages{/tr}"}
 		</div>
 
@@ -244,7 +226,7 @@
 
 		{preference name=feature_history}
 		<div class="adminoptionboxchild" id="feature_history_childcontainer">
-			{permission_link mode=button permType=wiki textFilter=history showDisabled=y}
+			<a class="link" href="tiki-objectpermissions.php?permType=wiki&amp;textFilter=history&amp;show_disabled_features=y" title="{tr}Permission{/tr}">{icon _id="key" alt="{tr}Permission{/tr}"}</a>
 			{preference name=maxVersions}
 			{preference name=keep_versions}
 			{preference name=feature_wiki_history_ip}
@@ -256,18 +238,17 @@
 		{preference name=feature_wiki_discuss}
 		<div class="adminoptionboxchild" id="feature_wiki_discuss_childcontainer">
 			{preference name=wiki_forum_id}
-			{permission_link mode=button permType=forums}
-			{preference name=wiki_discuss_visibility}
+			<a class="link" href="tiki-objectpermissions.php?permType=forums" title="{tr}Permission{/tr}">{icon _id="key" alt="{tr}Permission{/tr}"}</a>
 		</div>
 
 		{preference name=feature_source}
 		<div class="adminoptionboxchild" id="feature_source_childcontainer">
-			{permission_link mode=button permType=wiki textFilter=source showDisabled=y}
+			<a class="link" href="tiki-objectpermissions.php?permType=wiki&amp;textFilter=source&amp;show_disabled_features=y" title="{tr}Permission{/tr}">{icon _id="key" alt="{tr}Permission{/tr}"}</a>
 		</div>
 
 		{preference name=feature_wiki_ratings}
 		<div class="adminoptionboxchild" id="feature_wiki_ratings_childcontainer">
-			{permission_link mode=button permType=wiki textFilter=ratings showDisabled=y}
+			<a class="link" href="tiki-objectpermissions.php?permType=wiki&amp;textFilter=ratings&amp;show_disabled_features=y" title="{tr}Permission{/tr}">{icon _id="key" alt="{tr}Permission{/tr}"}</a>
 		</div>
 		{preference name=wiki_simple_ratings}
 		<div class="adminoptionboxchild" id="wiki_simple_ratings_childcontainer">
@@ -277,7 +258,7 @@
 		{preference name=feature_backlinks}
 		<div class="adminoptionboxchild" id="feature_backlinks_childcontainer">
 			{preference name=wiki_backlinks_name_len}
-			{permission_link mode=button permType=wiki textFilter=backlinks showDisabled=y}
+			<a class="link" href="tiki-objectpermissions.php?permType=wiki&amp;textFilter=backlinks&amp;show_disabled_features=y" title="{tr}Permission{/tr}">{icon _id="key" alt="{tr}Permission{/tr}"}</a>
 		</div>
 
 		{preference name=feature_semantic}
@@ -320,7 +301,7 @@
 
 		{preference name=feature_wiki_usrlock}
 		<div class="adminoptionboxchild" id="feature_wiki_usrlock_childcontainer">
-			{permission_link mode=button permType=wiki textFilter=lock showDisabled=y}
+			<a class="link" href="tiki-objectpermissions.php?permType=wiki&amp;textFilter=lock&amp;show_disabled_features=y" title="{tr}Permission{/tr}">{icon _id="key" alt="{tr}Permission{/tr}"}</a>
 		</div>
 
 		{preference name=wiki_creator_admin}
@@ -364,12 +345,10 @@
 				{tr}If the page name display stripper conflicts with the namespace separator, the namespace is used and the page name display is not stripped.{/tr}
 				{preference name=wiki_pagename_strip}
 			</fieldset>
-			{preference name=namespace_force_links}
 		</div>
 	{/tab}
 
 	{tab name="{tr}Flagged Revision{/tr}"}
-        <h2>{tr}Flagged Revision{/tr}</h2>
 		<fieldset>
 			<legend>{tr}Revision Approval{/tr}</legend>
 
@@ -381,7 +360,6 @@
 	{/tab}
 
 	{tab name="{tr}Page Listings{/tr}"}
-        <h2>{tr}Page Listings{/tr}</h2>
 		<input type="hidden" name="wikilistprefs" />
 		{preference name=feature_listPages}
 		{preference name=feature_lastChanges}
@@ -435,7 +413,6 @@
 
 	{if $prefs.feature_morcego eq 'y'}
 		{tab name="{tr}Wiki 3D Browser Configuration{/tr}"}
-            <h2>{tr}Wiki 3D Browser Configuration{/tr}</h2>
 			<fieldset>
 				<legend>{tr}General{/tr}</legend>
 				{preference name=wiki_feature_3d}
@@ -471,16 +448,12 @@
 	{/if}
 
 	{tab name="{tr}Tools{/tr}"}
-        <h2>{tr}Tools{/tr}</h2>
 		<a href="tiki-search_replace.php">{tr}Mass search and replace{/tr}</a><br>
 		<a href="tiki-report_direct_object_perms.php">{tr}Report wiki pages with direct object permissions{/tr}</a><br>
 	{/tab}
 {/tabset}
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="text-center">
-				<input type="submit" class="btn btn-primary btn-sm" name="wikisetprefs" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}" />
-            </div>
-        </div>
-    </div>
+
+<div class="heading input_submit_container" style="text-align: center">
+	<input type="submit" class="btn btn-default" name="wikisetprefs" value="{tr}Change preferences{/tr}" />
+</div>
 </form>

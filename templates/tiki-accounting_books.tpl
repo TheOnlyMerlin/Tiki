@@ -1,6 +1,6 @@
 {* $Id$ *}
 {if !empty($errors)}
-	<div class="alert alert-warning">
+	<div class="simplebox highlight">
 		{icon _id=exclamation alt="{tr}Error{/tr}" style="vertical-align:middle" align="left"}
 		{foreach from=$errors item=m name=errors}
 			{$m}
@@ -10,8 +10,7 @@
 {/if}
 {tabset}
 {tab name="{tr}My books{/tr}"}
-    <h2>{tr}My books{/tr}</h2>
-<div id="booklist" class="table-responsive">
+<div id="booklist">
 	<table class="table normal">
 		<tr>
 			<th>{tr}Id{/tr}</th>
@@ -22,8 +21,8 @@
 			<th>{tr}Tax automation{/tr}</th>
 			<th>{tr}Status{/tr}</th>
 		</tr>
-{foreach item=element from=$books}
-				<tr>
+{cycle values="odd,even" print=false}{foreach item=element from=$books}
+				<tr class="{cycle}">
 					<td><a href="tiki-accounting.php?bookId={$element.bookId}">{$element.bookId}</a></td>
 					<td><a href="tiki-accounting.php?bookId={$element.bookId}">{$element.bookName}</a></td>
 					<td>{$element.bookStartDate|tiki_short_datetime}</td>
@@ -45,7 +44,6 @@
 {/tab}
 {if $canCreate}
 {tab name="{tr}Create a book{/tr}"}
-    <h2>{tr}Create a book{/tr}</h2>
 <div id="createbookform">
  <form action="tiki-accounting_books.php" method="post">
  	<input type="hidden" name="action" value="create">
@@ -110,7 +108,7 @@
 			</div>
 		</div>
 	</fieldset>
-	<input type="submit" class="btn btn-default btn-sm" name="create" value="{tr}Create a new book{/tr}">
+	<input type="submit" class="btn btn-default" name="create" value="{tr}Create a new book{/tr}">
  </form>
 </div>
 {/tab}

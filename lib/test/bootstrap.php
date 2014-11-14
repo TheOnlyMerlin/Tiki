@@ -1,12 +1,11 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 define('TIKI_IN_TEST', 1);
-define('TIKI_PATH', realpath(__DIR__ . '/../../'));
 define('CUSTOM_ERROR_LEVEL', defined('E_DEPRECATED') ? E_ALL ^ E_DEPRECATED : E_ALL);
 
 ini_set('display_errors', 'on');
@@ -83,16 +82,17 @@ if (!$installer->tableExists('tiki_preferences')) {
 
 $pwd = getcwd();
 chdir(dirname(__FILE__) . '/../..');
-$smarty = TikiLib::lib('smarty');
+global $smarty;
 require_once 'lib/init/smarty.php';
 $smarty->addPluginsDir('../smarty_tiki/');
-$cachelib = TikiLib::lib('cache');
-$wikilib = TikiLib::lib('wiki');
-$userlib = TikiLib::lib('user');
-$headerlib = TikiLib::lib('header');
+require_once 'lib/cache/cachelib.php';
+require_once 'lib/wiki/wikilib.php';
+require_once 'lib/userslib.php';
+require_once 'lib/headerlib.php';
 require_once 'lib/init/tra.php';
-$access = TikiLib::lib('access');
+require_once 'lib/tikiaccesslib.php';
 
+$userlib = new UsersLib;
 $_SESSION = array(
 		'u_info' => array(
 			'login' => null

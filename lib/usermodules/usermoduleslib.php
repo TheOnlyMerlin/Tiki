@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -159,8 +159,7 @@ class UserModulesLib extends TikiLib
 	// Return the list of modules that can be assigned by the user
 	function get_user_assignable_modules($user)
 	{
-		global $prefs;
-		$userlib = TikiLib::lib('user');
+		global $prefs,$userlib;
 
 		$query = "select * from `tiki_modules`";
 		$result = $this->query($query, array());
@@ -250,3 +249,4 @@ class UserModulesLib extends TikiLib
 		}
 	} 
 }
+global $usermoduleslib; $usermoduleslib = new UserModulesLib;

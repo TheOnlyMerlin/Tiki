@@ -2,18 +2,18 @@
 
 {title help="Articles" admpage="articles"}{tr}Articles{/tr}{/title}
 
-<div class="t_navbar form-group">
+<div class="navbar">
 	{if $tiki_p_edit_article eq 'y' or $tiki_p_admin eq 'y' or $tiki_p_admin_cms eq 'y'}
-		{button href="tiki-edit_article.php" class="btn btn-default" _text="{tr}New Article{/tr}"}
+		{button href="tiki-edit_article.php" _text="{tr}New Article{/tr}"}
 	{/if}
 	{if $prefs.feature_submissions == 'y' && $tiki_p_edit_submission == "y" && $tiki_p_edit_article neq 'y' && $tiki_p_admin neq 'y' && $tiki_p_admin_cms neq 'y'}
-		{button href="tiki-edit_submission.php" class="btn btn-default" _text="{tr}New Submission{/tr}"}
+		{button href="tiki-edit_submission.php" _text="{tr}New Submission{/tr}"}
 	{/if}
 	{if $tiki_p_read_article eq 'y' or $tiki_p_articles_read_heading eq 'y' or $tiki_p_admin eq 'y' or $tiki_p_admin_cms eq 'y'}
-		{button href="tiki-view_articles.php" class="btn btn-default" _text="{tr}View Articles{/tr}"}
+		{button href="tiki-view_articles.php" _text="{tr}View Articles{/tr}"}
 	{/if}
 	{if $prefs.feature_submissions == 'y' && ($tiki_p_approve_submission == "y" || $tiki_p_remove_submission == "y" || $tiki_p_edit_submission == "y")}
-		{button href="tiki-list_submissions.php" class="btn btn-default" _text="{tr}View Submissions{/tr}"}
+		{button href="tiki-list_submissions.php" _text="{tr}View Submissions{/tr}"}
 	{/if}
 </div>
 
@@ -28,8 +28,7 @@
 <form name="checkform" method="get" action="{$smarty.server.PHP_SELF}">
 	<input type="hidden" name="maxRecords" value="{$maxRecords|escape}">
 	{assign var=numbercol value=1}
-    <div class="table-responsive">
-    <table class="table normal">
+	<table class="table normal">
 		<tr>
 			<th class="auto">
 				{if $listpages}
@@ -108,15 +107,15 @@
 				<th>{tr}Actions{/tr}</th>
 			{/if}
 		</tr>
-
+		{cycle values="odd,even" print=false}
 		{section name=changes loop=$listpages}
 	
 			{if isset($mapview) and $mapview}
 				<div class="listarticlesmap" style="display:none;">{object_link type="article" id="`$listpages[changes].articleId|escape`"}</div>
 			{/if}
 
-			<tr>
-				<td class="checkbox-cell">
+			<tr class="{cycle}">
+				<td class="checkbox">
 					<input type="checkbox" name="checked[]" value="{$listpages[changes].articleId|escape}" {if $listpages[changes].checked eq 'y'}checked="checked" {/if}>
 				</td>
 				{if $prefs.art_list_title eq 'y'}
@@ -179,7 +178,7 @@
 						<a class="link" href="tiki-edit_article.php?articleId={$listpages[changes].articleId}">{icon _id='page_edit'}</a>
 					{/if}
 					{if $tiki_p_admin_cms eq 'y' or $tiki_p_assign_perm_cms eq 'y'}
-						{permission_link mode=icon type=article permType=articles id=$listpages[changes].articleId title=$listpages[changes].title}
+						<a class="link" href="tiki-objectpermissions.php?objectName={$listpages[changes].title|escape:'url'}&amp;objectType=article&amp;permType=articles&amp;objectId={$listpages[changes].articleId}">{icon _id='key' alt="{tr}Permissons{/tr}"}</a>
 					{/if}
 					{if $tiki_p_remove_article eq 'y'}
 						&nbsp;
@@ -202,13 +201,12 @@
 								<option value="remove_articles" >{tr}Remove{/tr}</option>
 							</select>
 						</label>
-						<input type="submit" class="btn btn-default btn-sm" value="{tr}OK{/tr}">
+						<input type="submit" class="btn btn-default" value="{tr}OK{/tr}">
 					</p>
 				{/if}
 			</td>
 		</tr>
 	</table>
-    </div>
 
 	{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
 </form>

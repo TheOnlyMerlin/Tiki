@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -28,23 +28,7 @@ class Memcachelib
 	 */
 	function Memcachelib($memcached_servers=FALSE, $memcached_options=FALSE)
 	{
-		global $prefs, $tikidomainslash;
-
-		if ($memcached_servers === false && $memcached_options === false) {
-			if ( is_array($prefs['memcache_servers']) ) {
-				$memcached_servers = $prefs['memcache_servers'];
-			} else {
-				$memcached_servers = unserialize($prefs['memcache_servers']);
-			}
-
-			$memcached_options = array(
-				'enabled' => true,
-				'expiration' => (int) $prefs['memcache_expiration'],
-				'key_prefix' => $prefs['memcache_prefix'],
-				'compress' => $prefs['memcache_compress'],
-			);
-		}
-
+		global $tikidomainslash;
 		$localphp = "db/{$tikidomainslash}local.php";
 
 		if (is_readable($localphp)) {
@@ -239,3 +223,19 @@ class Memcachelib
 	}
 }
 
+global $prefs, $memcachelib;
+
+if ( is_array($prefs['memcache_servers']) ) {
+	$servers = $prefs['memcache_servers'];
+} else {
+	$servers = unserialize($prefs['memcache_servers']);
+}
+
+$memcachelib = new Memcachelib(
+	$servers, array(
+		'enabled' => true,
+		'expiration' => (int) $prefs['memcache_expiration'],
+		'key_prefix' => $prefs['memcache_prefix'],
+		'compress' => $prefs['memcache_compress'],
+	)
+);

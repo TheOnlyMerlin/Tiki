@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +11,7 @@
  * Letter key: ~r~
  *
  */
-class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable, Tracker_Field_Exportable, Search_FacetProvider_Interface
+class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable, Search_FacetProvider_Interface
 {
 	const CASCADE_NONE = 0;
 	const CASCADE_CATEG = 1;
@@ -42,8 +42,6 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 						'filter' => 'int',
 						'legacy_index' => 1,
 						'profile_reference' => 'tracker_field',
-						'parent' => 'trackerId',
-						'parentkey' => 'tracker_id',
 					),
 					'linkToItem' => array(
 						'name' => tr('Display'),
@@ -57,13 +55,11 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 					),
 					'displayFieldsList' => array(
 						'name' => tr('Multiple Fields'),
-						'description' => tr('Display the values from multiple fields instead of a single one.'),
+						'description' => tr('Display the values from multiple fields instead of a single one, separated by |'),
 						'separator' => '|',
 						'filter' => 'int',
 						'legacy_index' => 3,
 						'profile_reference' => 'tracker_field',
-						'parent' => 'trackerId',
-						'parentkey' => 'tracker_id',
 					),
 					'status' => array(
 						'name' => tr('Status Filter'),
@@ -151,8 +147,6 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 						'filter' => 'int',
 						'legacy_index' => 13,
 						'profile_reference' => 'tracker_field',
-						'parent' => 'trackerId',
-						'parentkey' => 'tracker_id',
 					),
 					'cascade' => array(
 						'name' => tr('Cascade actions'),
@@ -189,38 +183,106 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 		return $data;
 	}
 
-	function useSelector()
-	{
-		global $prefs;
-		if ($this->getOption('selectMultipleValues')) {
-			return false;
-		}
-
-		if ($prefs['feature_search'] != 'y') {
-			return false;
-		}
-
-		if ('crossSelect' == $this->getOption('preSelectFieldMethod')) {
-			return false;
-		}
-
-		return true;
-	}
-
 	function renderInput($context = array())
 	{
-		if ($this->useSelector()) {
-			$value = $this->getValue();
-			return $this->renderTemplate('trackerinput/itemlink_selector.tpl', $context, [
-				'placeholder' => tr(TikiLib::lib('object')->get_title('tracker', $this->getOption('trackerId'))),
-				'status' => implode(' OR ', str_split($this->getOption('status', 'opc'), 1)),
-				'selector_value' => $value ? "trackeritem:$value" : null,
-			]);
-		}
-
 		$data = array(
 			'list' => $this->getItemList(),
 		);
+
+		if ($this->getOption('addItems') && empty($context['in_ajax_form'])) {
+
+			$context['in_ajax_form'] = true;
+
+			require_once 'lib/wiki-plugins/wikiplugin_tracker.php';
+
+			$params = array(
+				'trackerId' => $this->getOption('trackerId'),
+				'ignoreRequestItemId' => 'y',
+				'_ajax_form_ins_id' => $this->getInsertId(),
+			);
+
+			if ($this->getOption('addItemsWikiTpl')) {
+				$params['wiki'] = $this->getOption('addItemsWikiTpl');
+			}
+			$form = wikiplugin_tracker('', $params);
+
+			$form = preg_replace(array('/<!--.*?-->/', '/\s+/', '/^~np~/', '/~\/np~/'), array('', ' ', '', ''), $form);	// remove comments etc
+
+			if ($displayFieldsList = $this->getDisplayFieldsListArray()) {
+				$displayFieldId = $displayFieldsList[0];
+				if (is_string($displayFieldId) && strpos($displayFieldId, '|') !== false) {
+					$displayFieldId = substr($displayFieldId, 0, strpos($displayFieldId, '|'));
+				}
+			} else {
+				$displayFieldId = $this->getOption('fieldId');
+			}
+
+			TikiLib::lib('header')->add_jq_onready(
+				'$("select[name=' . $this->getInsertId() . ']").change(function(e, val) {
+	var $select = $(this);
+	if ($select.val() == -1) {
+		var $d = $("<div id=\'add_dialog_' . $this->getInsertId() . '\' style=\'display:none\'/>")
+			.html(' . json_encode($form) . ')
+			.appendTo(document.body);
+
+		var w = $d.width() * 1.4;
+		var h = $d.height() * 2.0;
+		if ($(document.body).width() < w) {
+			w = $(document.body).width() * 0.8;
+		}
+		if ($(document.body).height() < h) {
+			h = $(document.body).height() * 0.8;
+		}
+
+		$d.dialog({
+				width: w,
+				height: h,
+				title: '.json_encode($this->getOption('addItems')).',
+				modal: true,
+				buttons: {
+					"Add": function() {
+						var $f = $("form", this).append($("<input type=\'hidden\' name=\'ajax_add\' value=\'1\' />"));
+						if (typeof $f.valid === "function" && $f.valid()) {
+							ajaxLoadingShow($f);
+							$.post( $f.attr("action"), $f.serialize(), function(data, status) {
+								if (data && data.data) {
+									$.each(data.data, function (i, a) {
+										if ( a && a.fieldId == '. intval($displayFieldId) .' ) {
+											if ("string" !== typeof a.value && a.pvalue) {
+												a.value = a.pvalue;
+											}
+
+											var $o = $("<option/>")
+												.val(data.itemId)
+												.text(a.value);
+											$select
+												.append($o)
+												.val(data.itemId);
+										}
+									});
+								}
+								ajaxLoadingHide();
+								$d.dialog( "close" );
+								$select.trigger("chosen:updated");
+								return;
+							}, "json");
+						}
+					},
+					Cancel: function() {
+						$select.val("");
+						$( this ).dialog( "close" );
+					}
+				},
+				create: function(event, ui) {
+					 ajaxTrackerFormInit_' . $this->getInsertId() . '();
+				}
+			}).find(".input_submit_container").remove();
+	}
+});
+'
+);
+
+		}
 
 		$data['selectMultipleValues'] = (bool) $this->getOption('selectMultipleValues');
 
@@ -342,20 +404,16 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 		$indexRemote = array_filter($this->getOption('indexRemote'));
 
 		if (count($indexRemote) && is_numeric($item)) {
-			$trklib = TikiLib::lib('trk');
+			$utilities = new Services_Tracker_Utilities;
 			$trackerId = $this->getOption('trackerId');
-			$item = $trklib->get_tracker_item($item);
+			$itemData = $utilities->getItem($trackerId, $item);
 
 			$definition = Tracker_Definition::get($trackerId);
-			$factory = $definition->getFieldFactory();
 			foreach ($indexRemote as $fieldId) {
 				$field = $definition->getField($fieldId);
-				$handler = $factory->getHandler($field, $item);
+				$permName = $field['permName'];
 
-				foreach ($handler->getDocumentPart($typeFactory) as $key => $field) {
-					$key = $baseKey . substr($key, strlen('tracker_field'));
-					$out[$key] = $field;
-				}
+				$out["{$baseKey}_{$permName}"] = $typeFactory->sortable($itemData['fields'][$permName]);
 			}
 		}
 
@@ -368,19 +426,15 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 		$fields = array($baseKey, "{$baseKey}_text");
 
 		$trackerId = $this->getOption('trackerId');
-		$indexRemote = array_filter((array) $this->getOption('indexRemote'));
+		$indexRemote = array_filter($this->getOption('indexRemote'));
 
 		if (count($indexRemote)) {
 			if ($definition = Tracker_Definition::get($trackerId)) {
-				$factory = $definition->getFieldFactory();
-
 				foreach ($indexRemote as $fieldId) {
 					$field = $definition->getField($fieldId);
-					$handler = $factory->getHandler($field);
+					$permName = $field['permName'];
 
-					foreach ($handler->getProvidedFields() as $key) {
-						$fields[] = $baseKey . substr($key, strlen('tracker_field'));
-					}
+					$fields[] = "{$baseKey}_{$permName}";
 				}
 			}
 		}
@@ -390,82 +444,43 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 
 	function getGlobalFields()
 	{
-		$baseKey = $this->getBaseKey();
-		$fields = array("{$baseKey}_text" => true);
-
-		$trackerId = $this->getOption('trackerId');
-		$indexRemote = array_filter($this->getOption('indexRemote') ?: []);
-
-		if (count($indexRemote)) {
-			if ($definition = Tracker_Definition::get($trackerId)) {
-				$factory = $definition->getFieldFactory();
-
-				foreach ($indexRemote as $fieldId) {
-					$field = $definition->getField($fieldId);
-					$handler = $factory->getHandler($field);
-
-					foreach ($handler->getGlobalFields() as $key => $flag) {
-						$fields[$baseKey . substr($key, strlen('tracker_field'))] = $flag;
-					}
-				}
-			}
-		}
-
-		return $fields;
+		return array();
 	}
 
-	function getItemLabel($itemIds, $context = array('list_mode' => ''))
+	function getItemLabel($itemId, $context = array('list_mode' => ''))
 	{
-		$items = explode(',', $itemIds);
-
 		$trklib = TikiLib::lib('trk');
+		$item = $trklib->get_tracker_item($itemId);
 
-		$fulllabel = '';
+		if (! $item) {
+			return '';
+		}
 
-		foreach ($items as $itemId) {
+		$trackerId = (int) $this->getOption('trackerId');
+		$status = $this->getOption('status', 'opc');
 
-			if (!empty($fulllabel)) {
-				$fulllabel .= ', ';
-			}
+		$parts = array();
 
-			$item = $trklib->get_tracker_item($itemId);
-
-			if (! $item) {
-				continue;
-			}
-
-			$trackerId = (int) $this->getOption('trackerId');
-			$status = $this->getOption('status', 'opc');
-
-			$parts = array();
-
-			if ($fields = $this->getDisplayFieldsListArray()) {
-				foreach ($fields as $fieldId) {
-					if (isset($item[$fieldId])) {
-						$parts[] = $fieldId;
-					}
-				}
-			} else {
-				$fieldId = $this->getOption('fieldId');
-	
+		if ($fields = $this->getDisplayFieldsListArray()) {
+			foreach ($fields as $fieldId) {
 				if (isset($item[$fieldId])) {
 					$parts[] = $fieldId;
 				}
 			}
+		} else {
+			$fieldId = $this->getOption('fieldId');
 
-
-			if (count($parts)) {
-				$label = $trklib->concat_item_from_fieldslist($trackerId, $itemId, $parts, $status, ' ', $context['list_mode'], $this->getOption('linkToItem'));
-			} else {
-				$label = TikiLib::lib('object')->get_title('trackeritem', $itemId);
-			}
-
-			if ($label) {
-				$fulllabel .= $label;
+			if (isset($item[$fieldId])) {
+				$parts[] = $fieldId;
 			}
 		}
 
-		return $fulllabel;
+
+		if (count($parts)) {
+			return $trklib->concat_item_from_fieldslist($trackerId, $itemId, $parts, $status, ' ', $context['list_mode'], $this->getOption('linkToItem'));
+		} else {
+			return TikiLib::lib('object')->get_title('trackeritem', $itemId);
+		}
 	}
 
 	function getItemList()
@@ -475,7 +490,7 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 				$this->getOption('trackerId'),
 				$displayFieldsList,
 				$this->getOption('status', 'opc'),
-				' ',
+                ' ',
 				true
 			);
 		} else {
@@ -488,6 +503,10 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 		}
 
 		$list = $this->handleDuplicates($list);
+
+		if ($this->getOption('addItems')) {
+			$list['-1'] = $this->getOption('addItems');
+		}
 
 		return $list;
 	}
@@ -692,66 +711,5 @@ class Tracker_Field_ItemLink extends Tracker_Field_Abstract implements Tracker_F
 		);
 	}
 
-	function getTabularSchema()
-	{
-		$schema = new Tracker\Tabular\Schema($this->getTrackerDefinition());
-		$permName = $this->getConfiguration('permName');
-		$name = $this->getConfiguration('name');
-
-		if (! $this->getOption('selectMultipleValues')) {
-			// Cannot handle multiple values when exporting
-
-			$schema->addNew($permName, 'id')
-				->setLabel($name)
-				->setRenderTransform(function ($value) {
-					return $value;
-				})
-				->setParseIntoTransform(function (& $info, $value) use ($permName) {
-					$info['fields'][$permName] = $value;
-				})
-				;
-
-			$fullLookup = new Tracker\Tabular\Schema\CachedLookupHelper;
-			$fullLookup->setLookup(function ($value) {
-				return $this->getItemLabel($value);
-			});
-			$schema->addNew($permName, 'lookup')
-				->setLabel($name)
-				->setReadOnly(true)
-				->addQuerySource('text', "tracker_field_{$permName}_text")
-				->setRenderTransform(function ($value, $extra) use ($fullLookup) {
-					if (isset($extra['text'])) {
-						return $extra['text'];
-					} else {
-						return $fullLookup->get($value);
-					}
-				})
-				;
-
-			if ($fieldId = $this->getOption('fieldId')) {
-				$simpleField = Tracker\Tabular\Schema\CachedLookupHelper::fieldLookup($fieldId);
-				$invertField = Tracker\Tabular\Schema\CachedLookupHelper::fieldInvert($fieldId);
-				$schema->addNew($permName, 'lookup-simple')
-					->setLabel($name)
-					->addIncompatibility($permName, 'id')
-					->addQuerySource('text', "tracker_field_{$permName}_text")
-					->setRenderTransform(function ($value, $extra) use ($simpleField) {
-						if (isset($extra['text'])) {
-							return $extra['text'];
-						} else {
-							return $simpleField->get($value);
-						}
-					})
-					->setParseIntoTransform(function (& $info, $value) use ($permName, $invertField) {
-						if ($id = $invertField->get($value)) {
-							$info['fields'][$permName] = $id;
-						}
-					})
-					;
-			}
-		}
-
-		return $schema;
-	}
 }
 

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -72,7 +72,13 @@ unset($host_map, $db_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $shado
 global $systemConfiguration;
 $systemConfiguration = new Zend_Config(
 	array(
-		'preference' => array(),
+		'preference' => array(
+			'feature_jison_wiki_parser' => 'n',		// hard code json parser off, as it's more than just "experimental"
+													// Developer Notice:
+													// if you want to help improve this feature then either comment out the line above
+													// or add 'feature_jison_wiki_parser' = 'y' to your tiki.ini file
+													// and enable that in your db/local.php
+		),
 		'rules' => array(),
 	),
 	array('readOnly' => false)
@@ -124,8 +130,8 @@ class TikiDb_LegacyErrorHandler implements TikiDb_ErrorHandler
      */
     function handle( TikiDb $db, $query, $values, $result ) // {{{
 	{
-		global $prefs;
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $prefs;
+
 		$msg = $db->getErrorMessage();
 		$q=$query;
 		if (is_array($values)) {
@@ -143,6 +149,18 @@ class TikiDb_LegacyErrorHandler implements TikiDb_ErrorHandler
 		}
 
 		if (function_exists('xdebug_get_function_stack')) {
+            /**
+             * @param $stack
+             * @return string
+             */
+            function mydumpstack($stack)
+			{
+				$o='';
+				foreach ($stack as $line) {
+					$o.='* '.$line['file']." : ".$line['line']." -> ".$line['function']."(".var_export($line['params'], true).")<br />";
+				}
+				return $o;
+			}
 			$stacktrace = mydumpstack(xdebug_get_function_stack());
 		} else {
 			$stacktrace = false;
@@ -224,16 +242,3 @@ if ($credentials['shadow']) {
 }
 
 unset($credentials);
-
-/**
- * @param $stack
- * @return string
- */
-function mydumpstack($stack)
-{
-	$o='';
-	foreach ($stack as $line) {
-		$o.='* '.$line['file']." : ".$line['line']." -> ".$line['function']."(".var_export($line['params'], true).")<br />";
-	}
-	return $o;
-}

@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,7 +13,7 @@ if (!isset($_REQUEST["nocache"]))
 
 //include_once ("tiki-setup_base.php");
 include_once ("tiki-setup.php");
-$imagegallib = TikiLib::lib('imagegal');
+include_once ("lib/imagegals/imagegallib.php");
 
 // show_image.php
 // application to display an image from the database with 

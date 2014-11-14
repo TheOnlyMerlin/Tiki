@@ -15,7 +15,7 @@
 		{/section}
 	
   </select>
-  <input type="submit" class="btn btn-default btn-sm" name="go" value="{tr}Go{/tr}">
+  <input type="submit" class="btn btn-default" name="go" value="{tr}Go{/tr}">
 </form>
 {* Dislay a form to add or edit a site *}
 <h2>{if $siteId}{tr}Edit a site{/tr}{else}{tr}Add a Site{/tr}{/if}</h2>
@@ -71,7 +71,7 @@
     </tr>
     <tr>
       <td>&nbsp;</td>
-      <td><input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}"></td>
+      <td><input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}"></td>
     </tr>
   </table>
 </form>
@@ -79,7 +79,6 @@
 {* Display the list of categories (items) using pagination *}
 {* Links to edit, remove, browse the categories *}
 <form action="tiki-directory_admin_sites.php" method="post">
-  <div class="table-responsive">
   <table class="table normal">
     <tr>
       <th> </th>
@@ -92,10 +91,10 @@
       <th> <a href="tiki-directory_admin_sites.php?parent={$parent}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'isValid_desc'}isValid_asc{else}isValid_desc{/if}">{tr}Valid{/tr}</a> </th>
       <th>{tr}Action{/tr}</th>
     </tr>
-
+    {cycle values="odd,even" print=false}
     {section name=user loop=$items}
     <tr class="{cycle advance=false}">
-      <td class="checkbox-cell"><input type="checkbox" name="remove[]" value="{$items[user].siteId}"></td>
+      <td class="checkbox"><input type="checkbox" name="remove[]" value="{$items[user].siteId}"></td>
       <td class="text">{$items[user].name|escape}</td>
       <td class="text"><a href="{$items[user].url}" target="_new">{$items[user].url}</a></td>
       {if $prefs.directory_country_flag eq 'y'}
@@ -105,7 +104,7 @@
       <td class="text">{$items[user].isValid}</td>
       <td class="action"><a class="link" href="tiki-directory_admin_sites.php?parent={$parent}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;siteId={$items[user].siteId}">{icon _id='page_edit'}</a> <a class="link" href="tiki-directory_admin_sites.php?parent={$parent}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$items[user].siteId}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a> </td>
     </tr>
-    <tr>
+    <tr class="{cycle}">
       <td>&nbsp;</td>
       <td class="text" colspan="6"><i> {tr}Directory Categories:{/tr}{assign var=fsfs value=1}
         {section name=ii loop=$items[user].cats}
@@ -121,10 +120,9 @@
 		{/if}
     {/section}
   </table>
-  </div>
   {if $items}
   {tr}Perform action with selected:{/tr}
-  <input type="submit" class="btn btn-default btn-sm" name="groupdel" value=" {tr}Delete{/tr} ">
+  <input type="submit" class="btn btn-default" name="groupdel" value=" {tr}Delete{/tr} ">
   {/if}
 </form>
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links} 

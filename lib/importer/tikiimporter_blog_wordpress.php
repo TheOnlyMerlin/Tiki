@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -115,12 +115,8 @@ class TikiImporter_Blog_Wordpress extends TikiImporter_Blog
 	 * @return null
 	 * @throws UnexpectedValueException if invalid file mime type
 	 */
-	function import($filePath = null)
+	function import($filePath)
 	{
-        if ($filePath == null)
-        {
-            die("This particular implementation of the method requires an explicity file path.");
-        }
 		if (isset($_FILES['importFile']) && !in_array($_FILES['importFile']['type'], $this->validTypes)) {
 			throw new UnexpectedValueException(tra('Invalid file mime type'));
 		}
@@ -365,7 +361,7 @@ class TikiImporter_Blog_Wordpress extends TikiImporter_Blog
 	 */
 	function downloadAttachments()
 	{
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; require_once('lib/filegals/filegallib.php');
 
 		$attachments = $this->extractAttachmentsInfo();
 
@@ -455,7 +451,7 @@ class TikiImporter_Blog_Wordpress extends TikiImporter_Blog
 	 */
 	function createFileGallery()
 	{
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; require_once('lib/filegals/filegallib.php');
 		global $user;
 
 		$gal_info = array(
@@ -637,7 +633,7 @@ class TikiImporter_Blog_Wordpress extends TikiImporter_Blog
 	 */
 	function parseContentAttachmentsUrl($content)
 	{
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib;
 
 		if (!empty($this->newFiles)) {
 			foreach ($this->newFiles as $file) {
@@ -941,12 +937,9 @@ class TikiImporter_Blog_Wordpress extends TikiImporter_Blog
 	 * Call $this->replaceInternalLinks() and leave the
 	 * rest with the parent method.
 	 *
-     * Note: The $parsedData argument is not used. It's just there to make the signatures
-     *       of insertData() uniform across implementations.
-     *
 	 * @see lib/importer/TikiImporter_Blog#insertData()
 	 */
-	function insertData($parsedData = null)
+	function insertData()
 	{
 		$countData = parent::insertData();
 
@@ -967,8 +960,7 @@ class TikiImporter_Blog_Wordpress extends TikiImporter_Blog
 	 */
 	function replaceInternalLinks($items)
 	{
-		$bloglib = TikiLib::lib('blog');
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib, $bloglib;
 
 		foreach ($items as $item) {
 			if ($item['hasInternalLinks']) {

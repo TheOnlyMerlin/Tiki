@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -62,8 +62,7 @@ function getAccountsMatchingIdentifier($identifier) // {{{
  */
 function loginUser($identifier) // {{{
 {
-	global $user_cookie_site;
-	$userlib = TikiLib::lib('user');
+	global $user_cookie_site, $userlib;
 	$userlib->update_lastlogin($identifier);
 	$userlib->update_expired_groups();
 	$_SESSION[$user_cookie_site] = $identifier;
@@ -91,10 +90,8 @@ function filterExistingInformation(&$data, &$messages) // {{{
  */
 function displayRegisatrationForms($data, $messages) // {{{
 {
-	global $prefs;
-	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
-	$registrationlib = TikiLib::lib('registration');
+	global $smarty, $userlib, $prefs;
+	global $registrationlib; require_once('lib/registration/registrationlib.php');
 
 	if (is_a($registrationlib->merged_prefs, "RegistrationError")) {
 		register_error($registrationlib->merged_prefs->msg);
@@ -143,7 +140,7 @@ function displayRegisatrationForms($data, $messages) // {{{
  */
 function displaySelectionList($data, $messages) // {{{
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	// Display
 	$smarty->assign('mid', 'tiki-openid_select.tpl');
 	$smarty->display('tiki.tpl');
@@ -154,7 +151,7 @@ function displaySelectionList($data, $messages) // {{{
  */
 function displayError($message)
 { // {{{
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	$smarty->assign('msg', tra("Failure:") . " " . $message);
 	$smarty->assign('errortype', 'login');
 	$smarty->display("error.tpl");
@@ -272,7 +269,7 @@ function runAuth()
 } // }}}
 function runFinish()
 { // {{{
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	$consumer = getConsumer();
 	// Complete the authentication process using the server's
 	// response.

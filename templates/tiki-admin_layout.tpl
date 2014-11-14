@@ -1,6 +1,6 @@
 {title}{tr}Admin layout{/tr}{/title}
 
-<div class="t_navbar">
+<div class="navbar">
 	{button href="tiki-theme_control.php" _text="{tr}Theme control{/tr}"}
 </div>
 
@@ -12,10 +12,10 @@
 		<a href="#{$sections[ij].name}" class="link">{$sections[ij].name}</a>
 	{/section}]
 
-	<div class="panel panel-default">
-		<div class="panel-heading">{tr}layout options:{/tr} {tr}{$sections[ix].name}{/tr}</div>
-		<div class="panel panel-default">
-            <div class="panel-body">
+	<div class="cbox">
+		<div class="cbox-title">{tr}layout options:{/tr} {tr}{$sections[ix].name}{/tr}</div>
+		<div class="cbox-data">
+			<div class="simplebox">
 				{$sections[ix].name} {tr}layout options{/tr}
 				<form method="post" action="tiki-admin_layout.php">
 					<table class="formcolor">
@@ -45,7 +45,7 @@
 						</tr>
 						<tr>
 							<td align="center" colspan="2">
-								<input type="submit" class="btn btn-default btn-sm" name="{$sections[ix].name|escape}_layout" value="{tr}Set features{/tr}">
+								<input type="submit" class="btn btn-default" name="{$sections[ix].name|escape}_layout" value="{tr}Set features{/tr}">
 							</td>
 						</tr>
 					</table>

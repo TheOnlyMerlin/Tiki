@@ -2,23 +2,23 @@
 
 {title admpage="wiki" help="Using+Wiki+Pages#Last_Changes" url="tiki-lastchanges.php?days=$days"}{tr}Last Changes{/tr}{/title}
 
-<div class="t_navbar btn-group form-group spacer-bottom-15px">
-	{if $days eq '1'}{assign var=thisclass value='active'}{else}{assign var=thisclass value=''}{/if}
-	{button href="tiki-lastchanges.php?days=1" class="btn btn-default" _text="{tr}Today{/tr}" _class=$thisclass}
-	{if $days eq '2'}{assign var=thisclass value='active'}{else}{assign var=thisclass value=''}{/if}
-	{button href="tiki-lastchanges.php?days=2" class="btn btn-default" _text="{tr}Last 2 days{/tr}" _class=$thisclass}
-	{if $days eq '3'}{assign var=thisclass value='active'}{else}{assign var=thisclass value=''}{/if}
-	{button href="tiki-lastchanges.php?days=3" class="btn btn-default" _text="{tr}Last 3 days{/tr}" _class=$thisclass}
-	{if $days eq '5'}{assign var=thisclass value='active'}{else}{assign var=thisclass value=''}{/if}
-	{button href="tiki-lastchanges.php?days=5" class="btn btn-default" _text="{tr}Last 5 days{/tr}" _class=$thisclass}
-	{if $days eq '7'}{assign var=thisclass value='active'}{else}{assign var=thisclass value=''}{/if}
-	{button href="tiki-lastchanges.php?days=7" class="btn btn-default" _text="{tr}Last week{/tr}" _class=$thisclass}
-	{if $days eq '14'}{assign var=thisclass value='active'}{else}{assign var=thisclass value=''}{/if}
-	{button href="tiki-lastchanges.php?days=14" class="btn btn-default" _text="{tr}Last 2 weeks{/tr}" _class=$thisclass}
-	{if $days eq '31'}{assign var=thisclass value='active'}{else}{assign var=thisclass value=''}{/if}
-	{button href="tiki-lastchanges.php?days=31" class="btn btn-default" _text="{tr}Last month{/tr}" _class=$thisclass}
-	{if $days eq '0'}{assign var=thisclass value='active'}{else}{assign var=thisclass value=''}{/if}
-	{button href="tiki-lastchanges.php?days=0" class="btn btn-default" _text="{tr}All{/tr}" _class=$thisclass}
+<div class="navbar">
+	{if $days eq '1'}{assign var=thisclass value='highlight'}{else}{assign var=thisclass value=''}{/if}
+	{button href="tiki-lastchanges.php?days=1" _text="{tr}Today{/tr}" _class=$thisclass}
+	{if $days eq '2'}{assign var=thisclass value='highlight'}{else}{assign var=thisclass value=''}{/if}
+	{button href="tiki-lastchanges.php?days=2" _text="{tr}Last 2 days{/tr}" _class=$thisclass}
+	{if $days eq '3'}{assign var=thisclass value='highlight'}{else}{assign var=thisclass value=''}{/if}
+	{button href="tiki-lastchanges.php?days=3" _text="{tr}Last 3 days{/tr}" _class=$thisclass}
+	{if $days eq '5'}{assign var=thisclass value='highlight'}{else}{assign var=thisclass value=''}{/if}
+	{button href="tiki-lastchanges.php?days=5" _text="{tr}Last 5 days{/tr}" _class=$thisclass}
+	{if $days eq '7'}{assign var=thisclass value='highlight'}{else}{assign var=thisclass value=''}{/if}
+	{button href="tiki-lastchanges.php?days=7" _text="{tr}Last week{/tr}" _class=$thisclass}
+	{if $days eq '14'}{assign var=thisclass value='highlight'}{else}{assign var=thisclass value=''}{/if}
+	{button href="tiki-lastchanges.php?days=14" _text="{tr}Last 2 weeks{/tr}" _class=$thisclass}
+	{if $days eq '31'}{assign var=thisclass value='highlight'}{else}{assign var=thisclass value=''}{/if}
+	{button href="tiki-lastchanges.php?days=31" _text="{tr}Last month{/tr}" _class=$thisclass}
+	{if $days eq '0'}{assign var=thisclass value='highlight'}{else}{assign var=thisclass value=''}{/if}
+	{button href="tiki-lastchanges.php?days=0" _text="{tr}All{/tr}" _class=$thisclass}
 </div>
 
 {if $lastchanges or ($find ne '')}
@@ -28,10 +28,11 @@
 	{/if}
 {/if}
 
+<br>
+
 {if $findwhat!=""}
 	{tr}Found{/tr} "<b>{$findwhat|escape}</b>" {tr}in{/tr} {$cant_records|escape} {tr}LastChanges{/tr} 
 {/if}
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		<th>{self_link _sort_arg='sort_mode' _sort_field='lastModif'}{tr}Date{/tr}{/self_link}</th>
@@ -44,9 +45,9 @@
 		<th>{self_link _sort_arg='sort_mode' _sort_field='comment'}{tr}Comment{/tr}{/self_link}</th>
 		<th>{tr}Action{/tr}</th>
 	</tr>
-
+	{cycle values="odd,even" print=false}
 	{section name=changes loop=$lastchanges}
-		<tr>
+		<tr class="{cycle}">
 			<td class="date">{$lastchanges[changes].lastModif|tiki_short_datetime}</td>
 			<td class="text">
 				<a href="{$lastchanges[changes].pageName|sefurl}" class="tablename" title="{$lastchanges[changes].pageName|escape}">
@@ -82,5 +83,5 @@
 		{norecords _colspan=7}
 	{/section}
 </table>
-</div>
+
 {pagination_links cant=$cant_records step=$prefs.maxRecords offset=$offset}{/pagination_links}

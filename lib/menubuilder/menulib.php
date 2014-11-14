@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -16,7 +16,7 @@ class MenuLib extends TikiLib
 
 	public function empty_menu_cache($menuId = 0)
 	{
-		$cachelib = TikiLib::lib('cache');
+		global $cachelib; include_once('lib/cache/cachelib.php');
 		if ( $menuId > 0 ) {
 			$cachelib->empty_type_cache('menu_'.$menuId.'_');
 		} else {
@@ -292,12 +292,12 @@ class MenuLib extends TikiLib
 			$option['url'] = preg_replace('/&structure=.*/', '', $option['url']);
 		}
 		if (preg_match('/.*tiki.index.php$/', $url)) {
-			$wikilib = TikiLib::lib('wiki');
+			global $wikilib; include_once('lib/wiki/wikilib.php');
 			$homePage = $wikilib->get_default_wiki_page();
 			$url .= "?page=$homePage";
 		}
 		if (preg_match('/.*tiki.index.php$/', $option['url'])) {
-			$wikilib = TikiLib::lib('wiki');
+			global $wikilib; include_once('lib/wiki/wikilib.php');
 			$homePage = $wikilib->get_default_wiki_page();
 			$option['url'] .= "?page=$homePage";
 		}
@@ -504,8 +504,7 @@ class MenuLib extends TikiLib
 
 	public function import_menu_options()
 	{
-		$smarty = TikiLib::lib('smarty');
-
+		global $smarty;
 		$options = array();
 		$fname = $_FILES['csvfile']['tmp_name'];
 		$fhandle = fopen($fname, "r");
@@ -762,3 +761,4 @@ class MenuLib extends TikiLib
 		}
 	}
 }
+$menulib = new MenuLib;

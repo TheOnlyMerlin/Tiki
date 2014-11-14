@@ -9,5 +9,5 @@
 		{/foreach}		
 	{/if}
 {else}
-	{tr}Tags is not enabled.{/tr}
+	{tr}Freetags is not enabled.{/tr}
 {/if}

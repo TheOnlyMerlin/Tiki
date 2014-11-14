@@ -16,13 +16,12 @@
 </tr>
 <tr>
   <td>&nbsp;</td>
-  <td><input type="submit" class="btn btn-default btn-sm" name="import" value="{tr}import{/tr}"></td>
+  <td><input type="submit" class="btn btn-default" name="import" value="{tr}import{/tr}"></td>
 </tr>
 </table>
 </form>
 <br><br>
 {if $result eq 'y'}
-<div class="table-responsive">
 <table class="table normal">
 <tr>
   <th>{tr}page{/tr}</th>
@@ -30,9 +29,9 @@
   <th>{tr}Result{/tr}</th>
   <th>{tr}body{/tr}</th>
 </tr>
-
+{cycle values="odd,even" print=false}
 {section name=ix loop=$lines}
-<tr>
+<tr class="{cycle}">
   <td class="text">{$lines[ix].page}</td>
   <td class="text">{$lines[ix].ex}</td>
   <td class="text">{$lines[ix].msg}</td>
@@ -40,5 +39,4 @@
 </tr>
 {/section}
 </table>
-</div>
 {/if}

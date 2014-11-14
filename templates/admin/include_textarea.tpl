@@ -3,18 +3,12 @@
 {/remarksbox}
 
 <form action="tiki-admin.php?page=textarea" method="post">
-
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-                <input type="submit" class="btn btn-primary btn-sm" name="textareasetup" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-            </div>
-        </div>
-    </div>
-
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" class="btn btn-default" name="textareasetup" value="{tr}Change preferences{/tr}" />
+	</div>
+	
 	{tabset name="admin_textarea"}
 		{tab name="{tr}General Settings{/tr}"}
-            <h2>{tr}General Settings{/tr}</h2>
 			<fieldset>
 				<legend>{tr}Features{/tr}{help url="Text+Area"}</legend>
 				{preference name=feature_fullscreen}				
@@ -40,10 +34,9 @@
 				{preference name=feature_wiki_argvariable}
 				{preference name=wiki_dynvar_style}
 				{preference name=wiki_dynvar_multilingual}
-				{preference name=feature_wikilingo}
 			</fieldset>
 
-			<fieldset class="table featurelist">
+			<fieldset class="admin featurelist">
 				<legend>{tr}Plugins{/tr}</legend>
 				{preference name=wikiplugin_showreference}
 				{preference name=wikiplugin_addreference}
@@ -82,7 +75,6 @@
 				{preference name=wikiplugin_tag}
 				{preference name=wikiplugin_toc}
 				{preference name=wikiplugin_versions}
-				{preference name=wikiplugin_showpref}
 			</fieldset>			
 			
 			<fieldset>
@@ -97,7 +89,6 @@
 				{preference name=feature_use_quoteplugin}
 				{preference name=feature_use_three_colon_centertag}
 				{preference name=feature_simplebox_delim}
-				{preference name=wiki_plugindiv_approvable}
 			</fieldset>
 
 			<fieldset>
@@ -116,13 +107,12 @@
 				{preference name=feature_wiki_ext_rel_nofollow}
 				{preference name=popupLinks}
 				{remarksbox type='tip' title="{tr}Tip{/tr}"}
-					{tr}External links will be identified with:{/tr} {icon name="link-external"}
+					<em>{tr}External links will be identified with:{/tr} </em><img class="externallink" src="img/icons/external_link.gif" alt=" (external link)">.
 				{/remarksbox}
 			</fieldset>
 		{/tab}
 
 		{tab name="{tr}Plugins{/tr}"}
-            <h2>{tr}Plugins{/tr}</h2>
 			{remarksbox type="note" title="{tr}About plugins{/tr}"}{tr}Tiki plugins add functionality to wiki pages, articles, blogs, and so on. You can enable and disable them below.{/tr}
 			{tr}You can approve plugin use at <a href="tiki-plugins.php">tiki-plugins.php</a>.{/tr}		
 			{tr}The edit-plugin icon is an easy way for users to edit the parameters of each plugin in wiki pages. It can be disabled for individual plugins below.{/tr}
@@ -144,27 +134,27 @@
 				{/remarksbox}
 			{/if}
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Plugin preferences{/tr}</legend>
 				{preference name=wikipluginprefs_pending_notification}
 			</fieldset>
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Edit plugin icons{/tr}</legend>
 				{preference name=wiki_edit_plugin}
 				{preference name=wiki_edit_icons_toggle}
 			</fieldset>
 			
-			<fieldset class="table" id="plugins">
+			<fieldset class="admin" id="plugins">
 				<legend>{tr}Plugins{/tr}</legend>
-				<fieldset class="table donthide">
-					{listfilter selectors='#plugins > fieldset' exclude=".donthide"}
+				<fieldset class="admin donthide">
+					{listfilter selectors='#plugins fieldset.admin' exclude=".donthide"}
 				</fieldset>
 				{foreach from=$plugins key=plugin item=info}
-					<fieldset class="table">
+					<fieldset class="admin">
 						<legend>{$info.name|escape}</legend>
 						<div class="adminoptionbox">
-							<strong>{$plugin|escape}</strong>: {$info.description|default:''|escape}{assign var=pref value="wikiplugin_$plugin"}{help url="Plugin$plugin"}
+							<strong>{$plugin|escape}</strong>: {$info.description|escape}{assign var=pref value="wikiplugin_$plugin"}{help url="Plugin$plugin"}
 						</div>
 						{if in_array( $pref, $info.prefs)}
 							{assign var=pref value="wikiplugin_$plugin"}
@@ -178,7 +168,6 @@
 		{/tab}
 
 		{tab name="{tr}Plugin Aliases{/tr}"}
-            <h2>{tr}Plugin Aliases{/tr}</h2>
 			{remarksbox type="note" title="{tr}About plugin aliases{/tr}"}
 				{tr}Tiki plugin aliases allow you to define your own custom configurations of existing plugins.<br>Find out more here: {help url="Plugin+Alias"}{/tr}
 			{/remarksbox}
@@ -259,8 +248,8 @@ if (window.location.href.indexOf('plugin_alias_new=true') > -1) {
 						<a href="tiki-admin.php?page=textarea&amp;plugin_alias={$name|escape}">{$name|escape}</a>
 					{/foreach}
 					<div align="center">
-						<input type="submit" class="btn btn-default btn-sm" name="enable" value="{tr}Enable Plugins{/tr}"/>
-						<input type="submit" class="btn btn-warning btn-sm" name="delete" value="{tr}Delete Plugins{/tr}"/>
+						<input type="submit" class="btn btn-default" name="enable" value="{tr}Enable Plugins{/tr}"/>
+						<input type="submit" class="btn btn-warning" name="delete" value="{tr}Delete Plugins{/tr}"/>
 					</div>
 					{remarksbox type="tip" title="{tr}Tip{/tr}"}
 						{tr}Click on the plugin name to edit it.{/tr} {tr}Click on the + icon to add a new one.{/tr}
@@ -294,13 +283,13 @@ if (window.location.href.indexOf('plugin_alias_new=true') > -1) {
 				</div>
 			</div>
 			<div class="adminoptionbox"><div class="adminoptionlabel">
-					<label for="plugin_name">{tr}Name:{/tr}</label> <input type="text" name="name" id="plugin_name" value="{$plugin_admin.description.name|default:''|escape}"/>
+					<label for="plugin_name">{tr}Name:{/tr}</label> <input type="text" name="name" id="plugin_name" value="{$plugin_admin.description.name|escape}"/>
 			</div></div>
 			<div class="adminoptionbox"><div class="adminoptionlabel">
-					<label for="plugin_description">{tr}Description:{/tr}</label> <input type="text" name="description" id="plugin_description" value="{$plugin_admin.description.description|default:''|escape}" class="width_40em"/>
+					<label for="plugin_description">{tr}Description:{/tr}</label> <input type="text" name="description" id="plugin_description" value="{$plugin_admin.description.description|escape}" class="width_40em"/>
 			</div></div>
 			<div class="adminoptionbox"><div class="adminoptionlabel">
-					<label for="plugin_body">{tr}Body Label:{/tr}</label> <input type="text" name="body" id="plugin_body" value="{$plugin_admin.description.body|default:''|escape}"/>
+					<label for="plugin_body">{tr}Body Label:{/tr}</label> <input type="text" name="body" id="plugin_body" value="{$plugin_admin.description.body|escape}"/>
 			</div></div>
 			<div class="adminoptionbox"><div class="adminoptionlabel">
 					<label for="plugin_deps">{tr}Dependencies:{/tr}</label> <input type="text" name="prefs" id="plugin_deps" value="{if !empty($plugin_admin.description.prefs)}{','|implode:$plugin_admin.description.prefs}{/if}"/>
@@ -312,12 +301,12 @@ if (window.location.href.indexOf('plugin_alias_new=true') > -1) {
 					<label for="validate">{tr}Validation:{/tr}</label>
 					<select name="validate" id="validate">
 						{foreach from=','|explode:'none,all,body,arguments' item=val}
-							<option value="{$val|escape}" {if !empty($plugin_admin.description.validate) and $plugin_admin.description.validate eq $val}selected="selected"{/if}>{$val|escape}</option>
+							<option value="{$val|escape}" {if $plugin_admin.description.validate eq $val}selected="selected"{/if}>{$val|escape}</option>
 						{/foreach}
 					</select>
 			</div></div>
 			<div class="adminoptionbox"><div class="adminoptionlabel">
-					<label for="inline">{tr}Inline (No Plugin Edit UI):{/tr}</label> <input type="checkbox" id="inline" name="inline" value="1" {if !empty($plugin_admin.description.inline)}checked="checked"{/if}/>
+					<label for="inline">{tr}Inline (No Plugin Edit UI):{/tr}</label> <input type="checkbox" id="inline" name="inline" value="1" {if $plugin_admin.description.inline}checked="checked"{/if}/>
 			</div></div>
 		</fieldset>
 		<fieldset id="pluginalias_simple_args">
@@ -339,12 +328,11 @@ $('#pluginalias_simple_add').click(function() {
 
 	return false;
 });
-{{if !empty($plugin_admin.params)}}
+{{if $plugin_admin.params}}
 $('#pluginalias_doc legend').trigger('click'{{if isset($plugin_admin.description.params)}, true{/if}});
 $('#pluginalias_simple_new').hide();
 {{/if}}
 			{/jq}
-      {if !empty($plugin_admin.params)}
 			{foreach from=$plugin_admin.params key=token item=value}
 				{if ! $value|is_array}
 					<div class="admingroup adminoptionbox">
@@ -355,7 +343,6 @@ $('#pluginalias_simple_new').hide();
 					</div>
 				{/if}
 			{/foreach}
-      {/if}
 			<div class="admingroup adminoptionbox hidefirst" id="pluginalias_simple_new">
 				<div class="adminoptionlabel">
 					<label for="sparams__NEW__token">{tr}New Argument:{/tr}</label>
@@ -369,7 +356,6 @@ $('#pluginalias_simple_new').hide();
 			<legend>{tr}Plugin Parameter Documentation{/tr}{icon _id="omodule"} {icon _id="add" id="pluginalias_doc_add"}</legend>
 			{jq}$('#pluginalias_doc_add').click(function() { $('#pluginalias_doc_new').toggle(); return false; });{/jq}
 			
-      {if !empty($plugin_admin.description.params)}
 			{foreach from=$plugin_admin.description.params key=token item=detail}
 				<div class="clearfix admingroup adminoptionbox{if $token eq '__NEW__'} hidefirst" id="pluginalias_doc_new{/if}">
 					<div class="adminoptionlabel q1">
@@ -394,20 +380,19 @@ $('#pluginalias_simple_new').hide();
 					</div>
 				</div>
 			{/foreach}
-      {/if}
 		</fieldset>
 		<fieldset id="pluginalias_body">
 			<legend>{tr}Plugin Body{/tr}{icon _id="omodule"}</legend>
 
 			<div class="adminoptionbox">
 				<div class="adminoptionlabel">
-					<label for="ignorebody">{tr}Ignore User Input:{/tr}</label> <input type="checkbox" name="ignorebody" id="ignorebody" value="y" {if !empty($plugin_admin.body.input) and $plugin_admin.body.input eq 'ignore'}checked="checked"{/if}/>
+					<label for="ignorebody">{tr}Ignore User Input:{/tr}</label> <input type="checkbox" name="ignorebody" id="ignorebody" value="y" {if $plugin_admin.body.input eq 'ignore'}checked="checked"{/if}/>
 				</div>
 			</div>
 			<div class="adminoptionbox">
 				<div class="adminoptionlabel">
 					<label for="defaultbody">{tr}Default Content:{/tr}</label>
-					<textarea cols="60" rows="12" id="defaultbody" name="defaultbody">{$plugin_admin.body.default|default:''|escape}</textarea>
+					<textarea cols="60" rows="12" id="defaultbody" name="defaultbody">{$plugin_admin.body.default|escape}</textarea>
 				</div>
 				<div class="q1">&nbsp;</div>
 				<div class="q234">
@@ -415,7 +400,6 @@ $('#pluginalias_simple_new').hide();
 						<legend>{tr}Parameters{/tr}{icon _id="omodule"}{icon _id="add" id="pluginalias_body_add"}</legend>
 						{jq}$('#pluginalias_body_add').click(function() { $('#pluginalias_body_new').toggle("fast"); return false; });{/jq}
 						
-            {if !empty($plugin_admin.body.params)}
 						{foreach from=$plugin_admin.body.params key=token item=detail}
 							<div class="clearfix admingroup adminoptionbox{if $token eq '__NEW__'} hidefirst" id="pluginalias_body_new{/if}">
 								<div class="q1">
@@ -439,7 +423,6 @@ $('#pluginalias_simple_new').hide();
 								</div>
 							</div>
 						{/foreach}
-            {/if}
 					</fieldset>
 				</div>
 			</div>
@@ -448,7 +431,6 @@ $('#pluginalias_simple_new').hide();
 			<legend>{tr}Composed Plugin Arguments{/tr}{icon _id="omodule"} {icon _id="add" id="pluginalias_composed_add"}</legend>
 			{jq}$('#pluginalias_composed_add').click(function() { $('#pluginalias_composed_new').toggle("fast"); return false; });{/jq}
 
-      {if !empty($plugin_admin.params)}
 			{foreach from=$plugin_admin.params key=token item=detail}
 				{if $detail|is_array}
 					{if !isset($composed_args)}{assign var=composed_args value=true}{/if}
@@ -463,7 +445,6 @@ $('#pluginalias_simple_new').hide();
 							<fieldset class="stayopen">
 								<legend>{tr}Parameters{/tr}{icon _id="omodule"} {icon _id="add" id="pluginalias_composed_addparam"}</legend>
 								{jq}$('#pluginalias_composed_addparam').click(function() { $('#pluginalias_composed_newparam').toggle("fast"); return false; });{/jq}
-                {if !empty($detail.params)}
 								{foreach from=$detail.params key=t item=d}
 									<div class="clearfix admingroup adminoptionbox{if $t eq '__NEW__'} hidefirst" id="pluginalias_composed_newparam{/if}">
 										<div class="q1">
@@ -487,24 +468,18 @@ $('#pluginalias_simple_new').hide();
 										</div>
 									</div>
 								{/foreach}
-                {/if}
 							</fieldset>
 						</div>
 					</div>
 				{/if}
 			{/foreach}
-      {/if}
 			{if $plugin_admin}{jq}$('#pluginalias_composed_args legend').trigger('click'{{if isset($composed_args)}, true{/if}});{/jq}{/if}
 		</fieldset>
 		{/tab}
 	{/tabset}
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="text-center">
-                <input type="submit" class="btn btn-primary btn-sm" name="textareasetup" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-            </div>
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" class="btn btn-default" name="textareasetup" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>
 
 

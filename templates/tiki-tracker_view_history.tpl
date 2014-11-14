@@ -1,6 +1,6 @@
 {title help="trackers"}{tr}Tracker Item History{/tr}{/title}
-<div class="t_navbar">
-	 {button _keepall='y' href="tiki-view_tracker_item.php" itemId=$item_info.itemId class="btn btn-default" _text="{tr}View Tracker Item{/tr}"}
+<div class="navbar">
+	 {button _keepall='y' href="tiki-view_tracker_item.php" itemId=$item_info.itemId _text="{tr}View Tracker Item{/tr}"}
 </div>
 
 {if $logging eq 0}
@@ -10,18 +10,13 @@
 {/if}
 
 <div class="clearfix">
-	 <form method="post" class="form-inline">
-        <div class="form-group">
-	        <label class="control-label">{tr}Version{/tr} <input type="text" name="version" value="{if !empty($filter.version)}{$filter.version|escape}{/if}"></label>
-        </div>
-        <div class="form-group">
-	        <label class="control-label">{tr}Field ID{/tr} <input type="text" name="fieldId" value="{if !empty($fieldId)}{$fieldId|escape}{/if}"></label>
-        </div>
-	    <input type="submit" class="btn btn-default btn-sm" name="Filter" value="{tr}Filter{/tr}">
+	 <form method="post">
+	 <label class="findtitle">{tr}Version{/tr}<input type="text" name="version" value="{if !empty($filter.version)}{$filter.version|escape}{/if}"></label>
+	 <label class="findtitle">{tr}Field ID{/tr}<input type="text" name="fieldId" value="{if !empty($fieldId)}{$fieldId|escape}{/if}"></label>
+	 <input type="submit" class="btn btn-default" name="Filter" value="{tr}Filter{/tr}">
 	 </form>
 </div>
 <br/>
-<div class="table-responsive">
 <table class="table normal">
 <tr>
 	<th>{tr}Version{/tr}</th>
@@ -32,12 +27,12 @@
 	<th>{tr}Old{/tr}</th>
 	<th>{tr}New{/tr}</th>
 </tr> 
-
+{cycle values="odd,even" print=false}
 {foreach from=$history item=hist}
 	{if $hist.value neq $hist.new}
 		{assign var='fieldId' value=$hist.fieldId}
 		{assign var='field_value' value=$field_option[$fieldId]}
-		<tr>
+		<tr class="{cycle}">
 			<td class="id">{$hist.version|escape}</td>
 			<td class="date">{$hist.lastModif|tiki_short_datetime}</td>
 			<td class="username">{$hist.user|username}</td>
@@ -58,6 +53,5 @@
 	{/if}
 {/foreach}
 </table>
-</div>
 {pagination_links cant=$cant offset=$offset step=$prefs.maxRecords}
 {/pagination_links}

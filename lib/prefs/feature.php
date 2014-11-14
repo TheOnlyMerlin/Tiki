@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,16 +10,17 @@ function prefs_feature_list($partial = false)
 
 	global $prefs;
 
-	$catree = $catlist = array('-1' => tra('None'));
+	$catree = array('-1' => tra('None'));
 
 	if (! $partial && isset($prefs['feature_categories']) && $prefs['feature_categories'] == 'y') {
-		$categlib = TikiLib::lib('categ');
+		global $categlib;
+
+		include_once ('lib/categories/categlib.php');
 		$all_categs = $categlib->getCategories(NULL, true, false);
 
 		$catree['0'] = tra('All');
 
 		foreach ($all_categs as $categ) {
-			$catlist[$categ['categId']] = $categ['name'] . " (" .$categ['categId'] . ")";
 			$catree[$categ['categId']] = $categ['categpath'];
 		}
 	}
@@ -407,6 +408,14 @@ function prefs_feature_list($partial = false)
 			'default' => 'n',
 			'tags' => array('experimental'),
 		),
+		'feature_gmap' => array(
+			'name' => tra('Google Maps'),
+			'description' => tra('Interactive use of Google Maps'),
+			'help' => 'GMap',
+			'type' => 'flag',
+			'default' => 'n',
+			'admin' => 'gmap',
+		),
 		'feature_live_support' => array(
 			'name' => tra('Live support system'),
 			'description' => tra('One-on-one chatting with customer'),
@@ -426,7 +435,7 @@ function prefs_feature_list($partial = false)
 		),
 		'feature_share' => array(
 			'name' => tra('Share'),
-			'description' => tra('Add a "Share" link in all pages to send it via email, Twitter, Facebook, message or forums'),
+			'description' => tra('Add a "Share" link in all pages to send it via e-mail, Twitter, Facebook, message or forums'),
 			'warning' => tra('be careful when allowing to anonymous to activate the antibot feature.'),
 			'help' => 'Share',
 			'type' => 'flag',
@@ -1151,7 +1160,7 @@ function prefs_feature_list($partial = false)
 		'feature_wiki_ext_icon' => array(
 			'name' => tra('External link icon'),
 			'type' => 'flag',
-			'description' => tra('External links will be identified with an icon. To customize the icon change the "link-external" icon in the icon set.'),
+			'description' => tra('External links will be identifed with an icon. Use the ../img/icons/external_link.gif image to customize the icon.'),
 			'default' => 'y',
 			'tags' => array('basic'),
 		),
@@ -1736,9 +1745,6 @@ function prefs_feature_list($partial = false)
 			'description' => tra('Assign different themes to different sections, categories, and objects'),
 			'keywords' => tra('design themes'),
 			'type' => 'flag',
-			'dependencies' => array(
-				'feature_categories',
-			),
 			'default' => 'n',
 			'view' => 'tiki-theme_control.php',
 		),
@@ -1877,7 +1883,7 @@ function prefs_feature_list($partial = false)
 			'default' => 'n',
 		),
 		'feature_site_report_email' => array(
-			'name' => tra('Webmaster email'),
+			'name' => tra('Webmaster Email'),
             'description' => tra(''),
 			'hint' => tra('Leave blank to use the default sender email'),
 			'type' => 'text',
@@ -1942,8 +1948,8 @@ function prefs_feature_list($partial = false)
 			'default' => 'y',				// include UI lib for more effects
 		),
 		'feature_jquery_ui_theme' => array(
-			'name' => tra('jQuery UI theme'),
-            'description' => tra('jQuery UI theme. Used in spreadsheet, for example.'),
+			'name' => tra('jQuery UI Theme'),
+            'description' => tra('jQuery UI Theme. Used in spreadsheet, for example.'),
 			'help' => 'JQuery#UI',
 			'type' => 'list',
 			'options' => array(
@@ -2002,14 +2008,14 @@ function prefs_feature_list($partial = false)
             'description' => tra('It provides a Media Player which can be used in wiki pages or any other wiki-syntax enabled feature to play a FLV or MP3 file, or any other type of media file, like MP4, SWF, AVI, WMV, RAM, MOV, MPEG, PDF, ... It calls on a flash based open source media player to play them. Used in Plugin MediaPlayer'),
 			'type' => 'flag',
 			'help' => 'PluginMediaPlayer',
-			'default' => 'n',
+            'default' => 'n',
 		),
 		'feature_jquery_zoom' => array(
 			'name' => tra('jQuery Zoom'),
             'description' => tra('Provides the capability to zoom in images on mouseover or mousedown. Used inside the Plugin Img with the parameter thumb=zoombox'),
 			'type' => 'flag',
 			'help' => 'PluginImg#Zoombox',
-			'default' => 'n',
+            'default' => 'n',
 		),
 		'feature_tabs' => array(
 			'name' => tra('Use Tabs'),
@@ -2363,6 +2369,18 @@ function prefs_feature_list($partial = false)
 			'type' => 'flag',
 			'default' => 'n',
 		),
+		'feature_metrics_dashboard' => array(
+			'name' => tra('Metrics Dashboard'),
+			'description' => tra('Generate automated statistics from configured database queries.'),
+			'type' => 'flag',
+			'dependencies' => array(
+				'feature_jquery_ui',
+			),
+			'default' => 'n',
+			'tags' => array('experimental'),
+			'view' => 'tiki-admin_metrics.php',
+			'admin' => 'metrics',
+		),
 		'feature_wiki_argvariable' => array(
 			'name' => tra('Wiki argument variables'),
 			'description' => tra('Allow to write request variables inside wiki content using {{paramname}} or {{paramname|default}} - special case {{page}} {{user}}'),
@@ -2698,7 +2716,6 @@ function prefs_feature_list($partial = false)
             'description' => tra('Code Mirror Themes (clear cache when you change)'),
 			'help' => 'Syntax+Highlighter',
 			'type' => 'list',
-			'tags' => array('experimental'),
 			'dependencies' => array(
 				'feature_syntax_highlighter',
 			),
@@ -2735,16 +2752,16 @@ function prefs_feature_list($partial = false)
 			),
 			'default' => 'off',
 		),
-        'feature_wikilingo' => array(
-            'name' => tra('wikiLingo'),
-            'description' => tra('A wiki content platform'),
-            'type' => 'flag',
-            'help' => 'wikiLingo',
-            'keywords' => 'parser',
-            'default' => 'n',
-            'warning' => tra('Experimental'),
-            'tags' => array('experimental'),
-        ),
+		'feature_jison_wiki_parser' => array(
+			'name' => tra('Jison Wiki Parser'),
+            'description' => tra('Is a new strategy for parsing wiki pages more like a programming language'),
+			'type' => 'flag',
+			'help' => 'Jison+Wiki+Parser',
+			'keywords' => 'parser',
+			'default' => 'n',
+			'warning' => tra('Experimental'),
+			'tags' => array('experimental'),
+		),
 		'feature_dummy' => array(
 			'name' => tra('Dummy preference'),
             'description' => tra('This is useful for developers to learn how to create a new preference.'),
@@ -2796,12 +2813,12 @@ function prefs_feature_list($partial = false)
 			'warning' => tra('Experimental'),
 			'tags' => array('experimental'),
 		),
-		'feature_futurelinkprotocol' => array(
-			'name' => tra('FutureLink-Protocol'),
+		'feature_forwardlinkprotocol' => array(
+			'name' => tra('ForwardLink-Protocol'),
             'description' => tra('A Dynamic Compendia'),
 			'type' => 'flag',
-			'help' => 'FutureLinkProtocol',
-			'keywords' => 'future link futurelink share feed',
+			'help' => 'ForwardLinkProtocol',
+			'keywords' => 'forward link forwardlink share feed',
 			'default' => 'n',
 			'warning' => tra('Experimental'),
 			'tags' => array('experimental'),
@@ -2829,6 +2846,16 @@ function prefs_feature_list($partial = false)
 			'help' => 'User+Preferences',
 			'default' => 'n',
 		),
+		'feature_community_Strings_to_ignore' => array(
+			'name' => tra('Strings to ignore to get group basename'),
+			'type' => 'text',
+			'default' => '',
+		),
+		'feature_community_String_to_append' => array(
+			'name' => tra('String to append to the group name to get Group Leaders group'),
+			'type' => 'text',
+			'default' => '',
+		),
 		'feature_inline_comments' => array(
 			'name' => tra('Inline Comments'),
 			'description' => tra('Enable/disable inline comments.'),
@@ -2836,49 +2863,6 @@ function prefs_feature_list($partial = false)
 				'feature_wiki_comments',
 			),
 			'type' => 'flag',
-			'default' => 'n',
-			'help' => 'Inline+comments',
-		),
-		'feature_hidden_links' => array(
-			'name' => tra('Hidden anchors/links shown on mouseover of headers'),
-			'description' => tra('This is useful to share a URL to exact location on the page.'),
-			'type' => 'flag',
-			'default' => 'y',
-			'tags' => array('advanced'),
-		),
-		'feature_theme_control_savesession' => array(
-			'name' => tra('Store session variable for current theme'),
-			'description' => tra('Store a session variable for current theme so that it can  be used for auto-selecting a category when categorizing'),
-			'type' => 'flag',
-			'default' => 'n',
-		),
-		'feature_theme_control_parentcategory' => array(
-			'name' => tra('Parent category of theme control categories'),
-			'description' => tra('Choose the parent category that contains categories used in theme control'),
-			'type' => 'list',
-			'options' => $catlist,
-			'dependencies' => array(
-				'feature_categories',
-			),
-			'default' => 'n',
-		),
-		'feature_theme_control_autocategorize' => array(
-			'name' => tra('Automatically select theme control category of current theme when categorizing'),
-			'description' => tra('When creating or editing object, automatically check the category that matches the theme control category of the current theme'),
-			'type' => 'flag',
-			'dependencies' => array('feature_theme_control_savesession', 'feature_theme_control_parentcategory'),
-			'default' => 'n',
-		),
-		'feature_lang_nonswitchingpages' => array(
-			'name' => tra('List of page names that always redirect to home page on language switching'),
-			'description' => tra('List of page names that always redirect to home page on language switching'),
-			'type' => 'flag',
-			'default' => 'n',
-		),
-		'feature_lang_nonswitchingpages_names' => array(
-			'name' => tra('Enter the multiple page names with comma separated'),
-			'description' => tra('List of page names that always redirect to home page on language switching'),
-			'type' => 'textarea',
 			'default' => 'n',
 		),
 		'feature_wizard_user' => array(
@@ -2906,6 +2890,6 @@ function prefs_feature_list($partial = false)
 				'feature_wizard_user',
 			),
 			'default' => '',
-		),						
+		),
 	);
 }

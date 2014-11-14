@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -24,16 +24,16 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
  */
 class TikiDate
 {
-	public $trad = array(
+	var $trad = array(
 					'January','February','March','April','May','June','July','August','September','October','November','December',
 					'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec',
 					'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday',
 					'Mon','Tue','Wed','Thu','Fri','Sat','Sun','of'
 	);
 
-	public $translated_trad = array();
-	public $date;
-	public $translation_array = array (
+	var $translated_trad = array();
+	var $date;
+	var	$translation_array = array (
 				'%a' => 'D',
 				'%A' => 'l',
 				'%b' => 'M',
@@ -69,7 +69,7 @@ class TikiDate
 				'%W' => 'W',
 				'%y' => 'y',
 				'%Y' => 'Y',
-				'%Z' => 'T',
+				'%Z' => 'T'
 	);
 
 	public static $deprecated_tz = array(
@@ -90,8 +90,6 @@ class TikiDate
 		'Japan',
 		'Kwajalein',
 		'Libya',
-		'localtime',	// because PHP Fatal error was observed in Apache2 logfile
-				// not mentioned here: https://bugs.php.net/bug.php?id=66985
 		'MST7MDT',
 		'Navajo',
 		'NZ-CHAT',
@@ -108,19 +106,22 @@ class TikiDate
 	/**
 	 * Default constructor
 	 */
-	function __construct()
+	function TikiDate()
 	{
 
-		if (isset($_SERVER['TZ']) && !empty($_SERVER['TZ'])) {	// apache - can be set in .htaccess
-			$tz = $_SERVER['TZ'];
-		} else if (ini_get('date.timezone')) {					// set in php.ini
-			$tz = ini_get('date.timezone');
-		} else if (getenv('TZ')) {								// system env setting
-			$tz = getenv('TZ');
-		} else {
-			$tz = 'UTC';
+		if (function_exists('date_default_timezone_set')) {			// function not available < PHP 5.1
+
+			if (isset($_SERVER['TZ']) && !empty($_SERVER['TZ'])) {	// apache - can be set in .htaccess
+				$tz = $_SERVER['TZ'];
+			} else if (ini_get('date.timezone')) {					// set in php.ini
+				$tz = ini_get('date.timezone');
+			} else if (getenv('TZ')) {								// system env setting
+				$tz = getenv('TZ');
+			} else {
+				$tz = 'UTC';
+			}
+			date_default_timezone_set($tz);
 		}
-		date_default_timezone_set($tz);
 
 		$this->date = new DateTime();	// was: DateTime(date("Y-m-d H:i:s Z"))
 										// the Z (timezone) param was causing an error
@@ -193,7 +194,7 @@ class TikiDate
 		// replace POSIX GMT relative tz with ISO signs
 		if (strpos($return, 'GMT+') !== false) {
 			$return = str_replace('GMT+', 'GMT-', $return);
-		} else {
+		} else if (strpos($return, 'GMT-') !== false) {
 			$return = str_replace('GMT-', 'GMT+', $return);
 		}
 

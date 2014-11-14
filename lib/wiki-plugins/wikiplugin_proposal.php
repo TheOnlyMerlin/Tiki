@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -35,7 +35,7 @@ function wikiplugin_proposal_info()
 
 function wikiplugin_proposal_save( $context, $data, $params )
 {
-	$attributelib = TikiLib::lib('attribute');
+	global $attributelib; require_once 'lib/attributes/attributelib.php';
 
 	static $objects = array();
 	$key = $context['type'] . ':' . $context['object'];
@@ -59,8 +59,8 @@ function wikiplugin_proposal($data, $params)
 {
 	$counts = wikiplugin_proposal_get_counts($data);
 	unset($counts['weights']);
-	global $user, $tiki_p_edit;
-	$smarty = TikiLib::lib('smarty');
+
+	global $smarty, $user, $tiki_p_edit;
 	$smarty->assign('counts', $counts);
 
 	if ( $user && $tiki_p_edit == 'y' ) {

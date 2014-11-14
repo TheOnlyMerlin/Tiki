@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,21 +13,13 @@ class Math_Formula_Tokenizer
 
 		$len = strlen($string);
 		$current = '';
-		$inString = false;
-
 		for ( $i = 0; $len > $i; ++$i ) {
 			$chr = $string{$i};
 
 			$end = false;
 			$extra = null;
 
-			if ( $chr == '"' ) {
-				$current .= $chr;
-				$inString = ! $inString;
-				$end = ! $inString;
-			} elseif ( $inString ) {
-				$current .= $chr;
-			} elseif ( ctype_space($chr) ) {
+			if ( ctype_space($chr) ) {
 				$end = true;
 			} elseif ( $chr == '(' || $chr == ')' ) {
 				$extra = $chr;

@@ -2,15 +2,15 @@
 
 {title help="polls" admpage="polls"}{tr}Poll Results{/tr}{/title}
 
-<div class="t_navbar form-group">
-	{button href="tiki-old_polls.php" class="btn btn-default" _text="{tr}Polls{/tr}"}
-	{button href="tiki-poll_results.php" class="btn btn-default" _text="{tr}Top Voted Polls{/tr}"}
+<div class="navbar">
+	{button href="tiki-old_polls.php" _text="{tr}Polls{/tr}"}
+	{button href="tiki-poll_results.php" _text="{tr}Top Voted Polls{/tr}"}
 	{if $tiki_p_admin_polls eq 'y'}
 		{if empty($pollId)}{button href="tiki-admin_polls.php" _text="{tr}Admin Polls{/tr}"}{else}{button href="tiki-admin_polls.php?pollId=$pollId" _text="{tr}Edit Poll{/tr}"}{/if}
 	{/if}
 </div>
 
-<form method="post" action="{$smarty.server.PHP_SELF}"  class="text-center">
+<form method="post" action="{$smarty.server.PHP_SELF}"  class="findtable">
 {if !empty($sort_mode)}<input type="hidden" name="sort_mode" value="{$sort_mode|escape}">{/if}
 {if !empty($pollId)}<input type="hidden" name="pollId" value="{$pollId|escape}">{/if}
 {if !empty($list)}<input type="hidden" name="list" value="{$list|escape}">{/if}
@@ -53,7 +53,7 @@
 	</label>		
 {/if}
 <br>
-<input type="submit" class="btn btn-default btn-sm" name="search" value="{tr}Find{/tr}">
+<input type="submit" class="btn btn-default" name="search" value="{tr}Find{/tr}">
 </form>
 
 {section name=x loop=$poll_info_arr}
@@ -64,15 +64,15 @@
         {/remarksbox}
 {/if}
 {if $poll_info_arr[x].from or $poll_info_arr[x].to}
-	<div class="description help-block">
+	<div class="description">
 	{if $poll_info_arr[x].from}{$poll_info_arr[x].from|tiki_short_date}{else}{$poll_info_arr[x].publishDate|tiki_short_date}{/if}
 	- {if $poll_info_arr[x].to}{$poll_info_arr[x].to|tiki_short_date}{else}{tr}Today{/tr}{/if}
 	</div>
 {/if}
 {if $tiki_p_view_poll_voters eq 'y' && $poll_info_arr[x].votes > 0}
-	<div class="t_navbar">
+	<div class="navbar">
 		{assign var=thispoll_info_arr value=$poll_info_arr[x].pollId}
-		{button href="?list=y&amp;pollId=$thispoll_info_arr" class="btn btn-default" _text="{tr}List Votes{/tr}" _auto_args="$auto_args"}
+		{button href="?list=y&amp;pollId=$thispoll_info_arr" _text="{tr}List Votes{/tr}" _auto_args="$auto_args"}
 	</div>
 {/if}
 
@@ -85,12 +85,12 @@
 {if isset($list_votes)}
 <h2>{tr}List Votes{/tr}</h2>
 <div align="center">
-<table class="text-center">
-<tr><td class="text-center">{tr}Find{/tr}</td>
-   <td class="text-center">
+<table class="findtable">
+<tr><td class="findtable">{tr}Find{/tr}</td>
+   <td class="findtable">
    <form method="get" action="tiki-poll_results.php">
      <input type="text" name="find" value="{$find|escape}">
-     <input type="submit" class="btn btn-default btn-sm" value="{tr}Find{/tr}" name="search">
+     <input type="submit" class="btn btn-default" value="{tr}Find{/tr}" name="search">
      <input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
 	 <input type="hidden" name="pollId" value="{$pollId|escape}">
 	 <input type="hidden" name="list" value="y">
@@ -103,7 +103,6 @@
 </tr>
 </table>
 </div>
-<div class="table-responsive">
 <table class="table normal">
 <tr>
 	<th>{self_link _sort_arg='sort_mode' _sort_field='user'}{tr}User{/tr}{/self_link}</th>
@@ -112,9 +111,9 @@
 	<th>{self_link _sort_arg='sort_mode' _sort_field='time'}{tr}Date{/tr}{/self_link}</th>
 	{if $tiki_p_admin eq 'y'}<th>{tr}Actions{/tr}</th>{/if}
 </tr>
-
+{cycle values="odd,even" print=false}
 {section name=ix loop=$list_votes}
-<tr>
+<tr class="{cycle}">
 	<td class="username">{$list_votes[ix].user|userlink}</td>
 	<td class="text">{$list_votes[ix].ip|escape}</td>
 	{if $tiki_p_view_poll_choices eq 'y'}<td class="text">{$list_votes[ix].title|escape}</td>{/if}
@@ -125,7 +124,6 @@
 	{norecords _colspan=4}
 {/section}
 </table>
-</div>
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
 {/if}
 
@@ -134,7 +132,7 @@
   && ($tiki_p_read_comments  == 'y'
   ||  $tiki_p_post_comments  == 'y'
   ||  $tiki_p_edit_comments  == 'y')}
-  <div id="page-bar" class="btn-group">
+  <div id="page-bar" class="clearfix">
 		<span class="button btn-default"><a id="comment-toggle" href="{service controller=comment action=list type=poll objectId=$pollId}#comment-container">{tr}Comments{/tr}</a></span>
 		{jq}
 			$('#comment-toggle').comment_toggle();

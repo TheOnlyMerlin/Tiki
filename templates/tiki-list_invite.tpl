@@ -1,13 +1,13 @@
 {* $Id$ *}
 {title}{tr}Invitations list{/tr}{/title}
 
-<div class="t_avbar">
-	{button href="tiki-invite.php" class="btn btn-default" _text="{tr}Invite{/tr}"}
+<div class="navbar">
+	{button href="tiki-invite.php" _text="{tr}Invite{/tr}"}
 	{if $tiki_p_admin eq 'y'}{button href="tiki-adminusers.php" _text="{tr}Admin users{/tr}"}{/if}
 </div>
 
 <div class="clearfix">
-	<form class="text-center" action="tiki-list_invite.php" method="post">
+	<form class="findtable" action="tiki-list_invite.php" method="post">
 	{if $tiki_p_admin eq 'y'}
 		<label>
 			{tr}Inviter:{/tr}
@@ -23,13 +23,12 @@
 		<input type="checkbox" name="only_pending"{if $only_pending eq 'y'} checked="checked"{/if}>
 	</label>
 	<br>
-	<input type="submit" class="btn btn-default btn-sm" name="filter" value="{tr}Filter{/tr}">
+	<input type="submit" class="btn btn-default" name="filter" value="{tr}Filter{/tr}">
 	</form>
 </div>
 
 {tr}Number of invitations:{/tr} {$cant}
 {if $cant > 0}
-<div class="table-responsive">
 <table class="table normal">
 <tr>
 {if $tiki_p_admin eq 'y'}
@@ -39,9 +38,9 @@
 <th>{self_link _sort_arg='sort_mode' _sort_field='email'}{tr}Email{/tr}{/self_link}</th>
 <th>{self_link _sort_arg='sort_mode' _sort_field='status'}{tr}Status{/tr}{/self_link}</th>
 </tr>
-
+{cycle values="odd,even" print=false}
 {foreach item=invited from=$inviteds}
-	<tr>
+	<tr class="{cycle}">
 	{if $tiki_p_admin eq 'y'}
 		<td class="text">{$invited.inviter|userlink}</td>
 	{/if}
@@ -51,7 +50,6 @@
 	</tr>
 {/foreach}
 </table>
-</div>
 {/if}
 
 {pagination_links cant=$cant step=$max offset=$offset}{/pagination_links}

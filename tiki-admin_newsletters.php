@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,7 +12,8 @@ $section = 'newsletters';
 require_once ('tiki-setup.php');
 $access->check_feature('feature_newsletters');
 
-global $nllib; include_once ('lib/newsletters/nllib.php');
+global $nllib;
+include_once ('lib/newsletters/nllib.php');
 $auto_query_args = array(
 	'nlId',
 	'offset',
@@ -183,7 +184,7 @@ $channels = $nllib->list_newsletters(
 // get Article types for clippings feature
 $articleTypes = array();
 if ($prefs["feature_articles"] == 'y') {
-	$artlib = TikiLib::lib('art');
+	include_once ('lib/articles/artlib.php');
 	$allTypes = $artlib->list_types();
 	foreach ($allTypes as $t) {
 		$articleTypes[] = $t["type"];

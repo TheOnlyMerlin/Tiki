@@ -32,7 +32,7 @@
 	<div class="trackerlistsort">
 		<form method="post">
 			{include file='tracker_sort_input.tpl'}
-			<input type="submit" class="btn btn-default btn-sm" name="sort" value="{tr}Sort{/tr}">
+			<input type="submit" class="btn btn-default" name="sort" value="{tr}Sort{/tr}">
 		</form>
 	</div>
 {/if}
@@ -56,11 +56,10 @@
 {if isset($displaysheet) && $displaysheet eq 'true'}
 <div class='trackercontainer' style='height: 250px ! important;'>
 {/if}
-		<div id="wptrackerlist{$listTrackerId}-{$iTRACKERLIST}-div" {if $tsOn}style="visibility:hidden"{/if}>
+		<div id="wptrackerlist{$listTrackerId}-{$iTRACKERLIST}" {if $tsOn}style="visibility:hidden"{/if}>
 			<input type="hidden" {if $tsOn}id="{$ts_offsetid|escape}" {/if}name="offset" value="{$tr_offset{$iTRACKERLIST}}">
 			<input type="hidden" {if $tsOn}id="{$ts_countid|escape}" {/if}name="count" value="{$count_item}">
-			<div class="table-responsive">
-			<table class="table table-striped table-hover normal wikiplugin_trackerlist" id="wptrackerlist{$listTrackerId}-{$iTRACKERLIST}"
+			<table class="table normal wikiplugin_trackerlist" id="wptrackerlist{$listTrackerId}-{$iTRACKERLIST}_table"
 	{if isset($displaysheet) && $displaysheet eq 'true'}title="{$tracker_info.name}" readonly="true"{/if}
 	{if isset($tableassheet) && $tableassheet eq 'true'}title="{tr}Tracker - {/tr}{$tracker_info.name}" readonly="true"{/if}
 	>
@@ -113,7 +112,6 @@
 		{/if}
 	{/if}
 
-
 {* All this that is supposed to be at the end needs to be processed before
 the section loop so that the vars are not replaced by nested pretty tracker execution *}
 {capture name="trackerlist_bottomstuff"}
@@ -148,7 +146,6 @@ the section loop so that the vars are not replaced by nested pretty tracker exec
 		{/if}
 </tbody>
 </table>
-</div>
 
 </div> {* end: div id="trackerlist_{$iTRACKERLIST}" *}
 {if isset($displaysheet) && $displaysheet eq 'true'}
@@ -161,7 +158,7 @@ the section loop so that the vars are not replaced by nested pretty tracker exec
 			{if $checkbox.tpl}{include file="$checkbox.tpl"}{/if}
 			{if !empty($checkbox.submit) and !empty($checkbox.title)}
 				<br>
-				<input type="submit" class="btn btn-default btn-sm" name="{$checkbox.submit}" value="{tr}{$checkbox.title}{/tr}">
+				<input type="submit" class="btn btn-default" name="{$checkbox.submit}" value="{tr}{$checkbox.title}{/tr}">
 			{/if}
 			</form>
 		{/if}
@@ -193,7 +190,7 @@ $('.exportButton a').click(function() {
 	{/if}
 {/capture}
 
-
+	{cycle values="odd,even" print=false}
 	{assign var=itemoff value=0}
 	{if empty($tpl)}
 		<tbody>
@@ -209,14 +206,14 @@ $('.exportButton a').click(function() {
 {* ------- popup ---- *}
 		{if !empty($popupfields)}
 			{capture name=popup}
-<div class="panel panel-default">
+<div class="cbox">
 	<table style="width:100%">
-
+				{cycle values="odd,even" print=false}
 				{foreach from=$items[user].field_values item=f}
 					{if in_array($f.fieldId, $popupfields)}
 						{capture name=popupl}{trackeroutput field=$f item=$items[user] url=$url editable=in_array($f.fieldId, $editableFields)}{/capture}
 						{if !empty($smarty.capture.popupl)}
-							<tr>{if count($popupfields) > 1}<th class="{cycle advance=false}">{$f.name}</th>{/if}<td>{$smarty.capture.popupl}</td></tr>
+							<tr>{if count($popupfields) > 1}<th class="{cycle advance=false}">{$f.name}</th>{/if}<td class="{cycle}">{$smarty.capture.popupl}</td></tr>
 						{/if}
 					{/if}
 				{/foreach}
@@ -231,7 +228,7 @@ $('.exportButton a').click(function() {
 
 		{if empty($tpl)}
 
-	<tr>
+	<tr class="{cycle}">
 			{if $checkbox}
 		<td><input type="{$checkbox.type}" name="{$checkbox.name}[]" value="{if $checkbox.ix > -1}{$items[user].field_values[$checkbox.ix].value|escape}{else}{$items[user].itemId}{/if}"></td>
 			{/if}

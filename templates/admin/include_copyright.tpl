@@ -3,17 +3,12 @@
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Copyright allows a copyright to be determined for all the objects of tiki{/tr}.{/remarksbox}
 
 <form action="tiki-admin.php?page=copyright" method="post">
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-                <input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-            </div>
-        </div>
-    </div>
-
-    <input type="hidden" name="setcopyright" />
+	<div class="input_submit_container clear" style="text-align: right;">
+		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+	</div>
+	<input type="hidden" name="setcopyright" />
 	
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Activate the feature{/tr}</legend>
 		{preference name=feature_copyright visible="always"}
 	</fieldset>
@@ -34,12 +29,7 @@
 		</div>
 	</fieldset>
 
-    <br>{* I cheated. *}
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="text-center">
-                <input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-            </div>
-        </div>
-    </div>
+	<div class="input_submit_container clear" style="text-align: center;">
+		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>

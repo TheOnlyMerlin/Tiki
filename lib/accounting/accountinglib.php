@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +11,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	exit;
 }
 
-$logslib = TikiLib::lib('logs');
+require_once ('lib/logs/logslib.php');
 
 /**
  * Basic functions used by the accounting feature
@@ -78,8 +78,7 @@ class AccountingLib extends LogsLib
 			, $bookAutoTax = 'y'
 			)
 	{
-		global $user;
-		$userlib = TikiLib::lib('user');
+		global $userlib, $user;
 		if (strlen($bookName) == 0) {
 			return "The book must have a name";
 		}

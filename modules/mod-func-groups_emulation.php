@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -20,30 +20,7 @@ function module_groups_emulation_info()
 		'name' => tra('Groups Emulation'),
 		'description' => tra('Enables temporarily changing one\'s group memberships to see how users in fewer groups experience the site.'),
 		'prefs' => array(),
-		'params' => array(
-			'showallgroups' => array(
-				'name' => tra('Show All Groups'),
-				'description' => tra('Show All Groups') . '. ' . tra('If set to "n", the list is not shown.'),
-				'filter' => 'alpha',
-				'default' => 'y',
-				'since' => '13.1',
-				'options' => array(
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				),
-			),
-			'showyourgroups' => array(
-				'name' => tra('Show Your Groups'),
-				'description' => tra('Show Your Groups') . '. ' . tra('If set to "n", the list is not shown.'),
-				'filter' => 'alpha',
-				'default' => 'y',
-				'since' => '13.1',
-				'options' => array(
-					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n')
-				),
-			),
-		),
+		'params' => array(),
 		'common_params' => array('rows')
 		
 	);
@@ -55,9 +32,7 @@ function module_groups_emulation_info()
  */
 function module_groups_emulation($mod_reference, $module_params)
 {
-	global $user, $tiki_p_admin;
-	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
+	global $smarty, $user, $tiki_p_admin, $userlib;
 	
 	$smarty->assign('groups_are_emulated', isset($_SESSION['groups_are_emulated']) ? $_SESSION['groups_are_emulated'] : 'n');
 	if (isset($_SESSION['groups_emulated']))
@@ -82,7 +57,5 @@ function module_groups_emulation($mod_reference, $module_params)
 	}
 	$smarty->assign_by_ref('userGroups', $userGroups);
 	$smarty->assign_by_ref('chooseGroups', $chooseGroups);
-	$smarty->assign('showallgroups', isset($module_params['showallgroups']) ? $module_params['showallgroups'] : 'y');
-	$smarty->assign('showyourgroups', isset($module_params['showyourgroups']) ? $module_params['showyourgroups'] : 'y');
 	$smarty->assign('tpl_module_title', tra("Emulate Groups"));
 }

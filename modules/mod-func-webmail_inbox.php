@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -103,9 +103,7 @@ function module_webmail_inbox_info()
  */
 function module_webmail_inbox($mod_reference, $module_params)
 {
-	global $prefs, $webmaillib, $user, $webmail_reload, $webmail_start, $webmail_list_page;
-	$headerlib = TikiLib::lib('header');
-	$smarty = TikiLib::lib('smarty');
+	global $prefs, $webmaillib, $headerlib, $user, $webmail_reload, $webmail_start, $webmail_list_page, $smarty;
 	if (!$user) {
 		$smarty->assign('tpl_module_title', tra('Webmail error'));
 		$smarty->assign('error', 'You are not logged in');
@@ -158,10 +156,9 @@ function module_webmail_inbox($mod_reference, $module_params)
 
 function webmail_refresh() 	// called in ajax mode
 {
-	global $webmaillib, $user, $webmail_list_page, $webmail_account, $webmail_reload, $webmail_start, $module_params;
-	$trklib = TikiLib::lib('trk');
-	$contactlib = TikiLib::lib('contact');
-	$smarty = TikiLib::lib('smarty');
+	global $webmaillib, $user, $smarty, $webmail_list_page, $webmail_account, $webmail_reload, $webmail_start, $module_params, $trklib, $contactlib;
+	include_once('lib/trackers/trackerlib.php');
+	include_once ('lib/webmail/contactlib.php');
 
 	$accountid = isset($module_params['accountid']) ? $module_params['accountid'] : 0;
 	$webmail_account = $webmaillib->get_webmail_account($user, $accountid);

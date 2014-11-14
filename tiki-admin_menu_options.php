@@ -2,14 +2,14 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
-$menulib = TikiLib::lib('menu');
+include_once ('lib/menubuilder/menulib.php');
 $access->check_permission(array('tiki_p_edit_menu_option'));
 if (!isset($_REQUEST["menuId"])) {
 	$smarty->assign('msg', tra("No menu indicated"));
@@ -90,7 +90,7 @@ if (isset($_REQUEST["save"])) {
 	if (!isset($_REQUEST['groupname'])) $_REQUEST['groupname'] = '';
 	elseif (is_array($_REQUEST['groupname'])) $_REQUEST['groupname'] = implode(',', $_REQUEST['groupname']);
 	if (!isset($_REQUEST['level'])) $_REQUEST['level'] = 0;
-	$modlib = TikiLib::lib('mod');
+	include_once ('lib/modules/modlib.php');
 	check_ticket('admin-menu-options');
 	$menulib->replace_menu_option($_REQUEST["menuId"], $_REQUEST["optionId"], $_REQUEST["name"], $_REQUEST["url"], $_REQUEST["type"], $_REQUEST["position"], $_REQUEST["section"], $_REQUEST["perm"], $_REQUEST["groupname"], $_REQUEST['level'], $_REQUEST['icon']);
 	$modlib->clear_cache();

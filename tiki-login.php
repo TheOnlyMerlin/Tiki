@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -84,7 +84,7 @@ if (isset($_REQUEST['su'])) {
 		if ($userlib->user_exists($_REQUEST['username'])) {
 			$loginlib->switchUser($_REQUEST['username']);
 		}
-		
+
 		$access->redirect($_SESSION['loginfrom']);
 	}
 }
@@ -161,7 +161,8 @@ if (isset($_REQUEST['intertiki']) and in_array($_REQUEST['intertiki'], array_key
 				$userlib->set_user_fields($user_details['info']);
 				$user = $requestedUser;
 				if ($prefs['feature_userPreferences'] == 'y' && $prefs['feature_intertiki_import_preferences'] == 'y') {
-					$userprefslib = TikiLib::lib('userprefs');
+					global $userprefslib;
+					include_once ('lib/userprefs/userprefslib.php');
 					$userprefslib->set_user_avatar($user, 'u', '', $user_details['avatarName'], $user_details['avatarSize'], $user_details['avatarFileType'], $avatarData);
 					$userlib->set_user_preferences($user, $user_details['preferences']);
 				}
@@ -263,6 +264,7 @@ if ($isvalid) {
 			if (strpos($url, 'page='. $homePageUrl) !== false) {
 				$url = str_replace('page='. $homePageUrl, '', $url);
 			} else if (strpos($url, $homePageUrl) !== false) {
+				$url = str_replace($homePageUrl, '', $url);
 				// Strip away the page name from the URL
 				$parts = parse_url($url);
 				$url = '';
@@ -290,7 +292,7 @@ if ($isvalid) {
 			$url = ${$_REQUEST['page']};
 		} else {
 			if (!empty($_REQUEST['url'])) {
-				$cachelib = TikiLib::lib('cache');
+				global $cachelib; include_once('lib/cache/cachelib.php');
 				preg_match('/(.*)\?cache=(.*)/', $_REQUEST['url'], $matches);
 				if (!empty($matches[2]) && $cdata = $cachelib->getCached($matches[2], 'edit')) {
 					if (!empty($matches[1])) {
@@ -376,7 +378,7 @@ if ($isvalid) {
 	$smarty->assign('module_params', $module_params);
 	if ($error == PASSWORD_INCORRECT && ($prefs['unsuccessful_logins'] >= 0 || $prefs['unsuccessful_logins_invalid'] >= 0)) {
 		$nb_bad_logins = $userlib->unsuccessful_logins($requestedUser);
-		$nb_bad_logins++ ; 
+		$nb_bad_logins++ ;
 		$userlib->set_unsuccessful_logins($requestedUser, $nb_bad_logins);
 		if ($prefs['unsuccessful_logins_invalid'] > 0 && ($nb_bad_logins >= $prefs['unsuccessful_logins_invalid'])) {
 			$info = $userlib->get_user_info($requestedUser);
@@ -440,7 +442,7 @@ if ($isvalid) {
 			$error = tra('You did not validate your account.');
 			$extraButton = array('href'=>'tiki-send_mail.php?user='. urlencode($_REQUEST['user']), 'text'=>tra('Resend'), 'comment'=>tra('You should have received an email. Check your mailbox and your spam box. Otherwise click on the button to resend the email'));
         		break;
- 
+
 		case USER_AMBIGOUS:
 			$error = tra('You must use the right case for your user name.');
         		break;

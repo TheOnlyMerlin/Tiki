@@ -1,6 +1,6 @@
 #!/usr/bin/php4 
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,11 +9,10 @@
 // See http://doc.tiki.org/Restore+Help+Pages
 
 include_once("lib/init/initlib.php");
-include_once("lib/tikilib.php");
 require_once("db/tiki-db.php");
-$tikilib = TikiLib::lib('tiki');
-$categlib = TikiLib::lib('categ');
-$structlib = TikiLib::lib('struct');
+require_once("lib/tikilib.php");
+require_once("lib/categories/categlib.php");
+require_once("lib/structures/structlib.php");
 
 /**
  * @param $s

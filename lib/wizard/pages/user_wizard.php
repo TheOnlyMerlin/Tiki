@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -24,23 +24,17 @@ class UserWizard extends Wizard
 
 	function onSetupPage ($homepageUrl) 
 	{
-		global $TWV;
-		$smarty = TikiLib::lib('smarty');
+		global	$smarty;
+
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
 		
-		$smarty->assign('tikiMajorVersion', substr($TWV->version, 0, 2));
-				
 		// Assign the page template
         $smarty->assign('pageTitle', $this->pageTitle());
+		$wizardTemplate = 'wizard/user_wizard.tpl';
+		$smarty->assign('wizardBody', $wizardTemplate);
 		
 		return true;		
-	}
-
-	function getTemplate()
-	{
-		$wizardTemplate = 'wizard/user_wizard.tpl';
-		return $wizardTemplate;
 	}
 
 	function onContinue ($homepageUrl) 

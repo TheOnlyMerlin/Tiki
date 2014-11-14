@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,8 +11,8 @@
 $section = 'wiki page';
 require_once ('tiki-setup.php');
 
-$structlib = TikiLib::lib('struct');
-$wikilib = TikiLib::lib('wiki');
+include_once ('lib/structures/structlib.php');
+include_once ('lib/wiki/wikilib.php');
 
 if ($prefs['feature_wiki'] != 'y') {
 	$smarty->assign('msg', tra("This feature is disabled").": feature_wiki");

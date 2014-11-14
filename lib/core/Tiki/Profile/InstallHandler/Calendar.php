@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -17,7 +17,7 @@ class Tiki_Profile_InstallHandler_Calendar extends Tiki_Profile_InstallHandler
 		$this->replaceReferences($data);
 
 		if (!empty($data['name'])) {
-			$calendarlib = TikiLib::lib('calendar');
+			global $calendarlib; include_once('lib/calendar/calendarlib.php');
 			$data['calendarId'] = $calendarlib->get_calendarId_from_name($data['name']);
 		}
 
@@ -54,7 +54,7 @@ class Tiki_Profile_InstallHandler_Calendar extends Tiki_Profile_InstallHandler
 	function _install()
 	{
 		if ($this->canInstall()) {
-			$calendarlib = TikiLib::lib('calendar');
+			global $calendarlib; if (!$calendarlib) require_once 'lib/calendar/calendarlib.php';
 			
 			$calendar = $this->getData();
 			

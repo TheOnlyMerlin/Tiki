@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -66,16 +66,6 @@ function prefs_rating_list()
 			),
 			'default' => ''
 		),
-        'rating_options_reversed' => array(
-            'name' => tr('Reversed Rating Options'),
-            'description' => tr('Displays the ratings options in reverse.'),
-            'type' => 'flag',
-            'options' => array(
-                '' => tr('Disabled'),
-                'y' => tr('Enabled'),
-            ),
-            'default' => ''
-        ),
 		'rating_results_detailed_percent' => array(
 			'name' => tr('Include percentages in the detailed rating results'),
 			'description' => tr('Include percentages in the detailed rating results. Otherwise, only count numbers and bars are shown.'),

@@ -1,8 +1,7 @@
 {* $Id$ *}
-<div class="table-responsive">
-<table class="table normal table-condensed table-bordered">
+<table class="table normal">
 <tr><th colspan="2">{tr}Upcoming Events{/tr}</th></tr>
-
+{cycle values="odd,even" print=false}
 {foreach from=$events item=event}
 	<tr class="{cycle advance=false}">
 		<td>
@@ -16,14 +15,13 @@
 				{$smarty.capture.start}{if $smarty.capture.start ne $smarty.capture.end}<br>{$smarty.capture.end}{/if}
 			{/if}
 		</td>
-		<td style=white-space:normal;">
+		<td width="100%">
 			<a class="linkmodule" href="tiki-calendar_edit_item.php?viewcalitemId={$event.calitemId}">{$event.name|escape}</a>
 			{if $desc}<br>{$event.parsed}{/if}
 		</td>
 	</tr><!-- {cycle} -->
 {/foreach}
 </table>
-</div>
 {*Pagination *}
 {if !empty($events) && $usePagination ne 'n'}
 	{pagination_links cant=$cant step=$maxEvents offset=$offset}{/pagination_links}

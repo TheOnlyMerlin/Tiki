@@ -1,11 +1,11 @@
 {* $Id$ *}
 {title help="mods"}{tr}Tiki Mods Configuration{/tr}{/title}
 
-<div class="t_navbar">
-	{button href="tiki-mods.php" class="btn btn-default" _text="{tr}Mods Install/uninstall{/tr}"}
+<div class="navbar">
+	{button href="tiki-mods.php" _text="{tr}Mods Install/uninstall{/tr}"}
 </div>
 
-{section name=n loop=$tikifeedback}<div class="alert{if $tikifeedback[n].num > 0} alert-warning{/if}">{$tikifeedback[n].mes}</div>{/section}
+{section name=n loop=$tikifeedback}<div class="simplebox{if $tikifeedback[n].num > 0} highlight{/if}">{$tikifeedback[n].mes}</div>{/section}
 
 <form method="post" action="tiki-mods_admin.php">
 	<table class="formcolor">
@@ -25,7 +25,7 @@
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
-			<td><input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}"></td>
+			<td><input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}"></td>
 		</tr>
 	</table>
 </form>

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -69,12 +69,10 @@ function wikiplugin_calendar_info()
 
 function wikiplugin_calendar($data, $params)
 {
-	global $prefs, $tiki_p_admin, $tiki_p_view_calendar;
-	global $dc, $user;
+	global $smarty, $tikilib, $prefs, $tiki_p_admin, $tiki_p_view_calendar;
+	global $dbTiki, $dc, $user, $calendarlib;
 
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
-	$calendarlib = TikiLib::lib('calendar');
+	require_once("lib/calendar/calendarlib.php");
 
 	if ( empty($params['calIds']) ) {
 		$params['calIds'] = array(1);
@@ -101,7 +99,7 @@ function wikiplugin_calendar($data, $params)
 		'ord' => null,
 	);
 
-	$modlib = TikiLib::lib('mod');
+	global $modlib; require_once 'lib/modules/modlib.php';
 	$out = '';
 	if ($params['viewlist'] == 'table' || $params['viewlist'] == 'both') {
 		$out .= $modlib->execute_module($module_reference);

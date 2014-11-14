@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -64,7 +64,7 @@ if (!empty($thumbfile)) {
 	$smarty->assign('thumbfile', $thumbfile);
 }
 
-if ($prefs['feature_jquery'] == 'y' && $prefs['theme_active'] === 'legacy') {
+if ($prefs['feature_jquery'] == 'y') {
 	// hash of themes and their options and their thumbnail images
 	$js = 'var style_options = {';
 	foreach ($styles as $s) {

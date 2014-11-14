@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -133,7 +133,7 @@ abstract class Tiki_Connect_Abstract
 	{
 
 		if (is_array($data) || is_object($data)) {
-			$data = json_encode( $data );
+			$data = serialize($data);
 		}
 		$insertId = $this->connectTable->insert(
 			array(
@@ -180,9 +180,9 @@ abstract class Tiki_Connect_Abstract
 		}
 
 		if (!empty($res[0])) {
-			return json_decode($res[0]['data']);
+			return unserialize($res[0]['data']);
 		} else {
-			return new stdClass();
+			return array();
 		}
 	}
 

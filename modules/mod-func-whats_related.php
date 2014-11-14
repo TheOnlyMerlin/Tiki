@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -30,8 +30,8 @@ function module_whats_related_info()
  */
 function module_whats_related($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
-	$categlib = TikiLib::lib('categ');
+	global $smarty;
+	global $categlib; require_once ('lib/categories/categlib.php');
 	
 	$WhatsRelated=$categlib->get_link_related($_SERVER["REQUEST_URI"]);
 	$smarty->assign_by_ref('WhatsRelated', $WhatsRelated);

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -367,9 +367,7 @@ function wikiplugin_img_info()
 
 function wikiplugin_img( $data, $params )
 {
-	global $tikidomain, $prefs, $user;
-	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
+	global $tikidomain, $prefs, $smarty, $userlib, $user;
 
 	$imgdata = array();
 
@@ -556,7 +554,8 @@ function wikiplugin_img( $data, $params )
 		) {
 			//Try to get image from database
 			if (!empty($imgdata['id'])) {
-				$imagegallib = TikiLib::lib('imagegal');
+				global $imagegallib;
+				include_once('lib/imagegals/imagegallib.php');
 				$dbinfo = $imagegallib->get_image_info($imgdata['id'], 'o');
 				$dbinfo2 = $imagegallib->get_image($imgdata['id'], 'o');
 				$dbinfo = isset($dbinfo) && isset($dbinfo2) ? array_merge($dbinfo, $dbinfo2) : array();
@@ -570,7 +569,8 @@ function wikiplugin_img( $data, $params )
 				$basepath = $prefs['fgal_use_dir'];
 			} else {					//only attachments left
 				global $atts;
-				$wikilib = TikiLib::lib('wiki');
+				global $wikilib;
+				include_once('lib/wiki/wikilib.php');
 				$dbinfo = $wikilib->get_item_attachment($imgdata['attId']);
 				$basepath = $prefs['w_use_dir'];
 			}
@@ -865,7 +865,7 @@ function wikiplugin_img( $data, $params )
 			$repldata = preg_replace('/width="'.$fwidth.'" height="'.$fheight.'"/', $svgAttributes, $repldata);
 		}
 		$replimg = '<div type="image/svg+xml" ';
-		$imgdata['class'] .= ' table-responsive svgImage pluginImg' . $imgdata['fileId'];
+		$imgdata['class'] .= ' svgImage pluginImg' . $imgdata['fileId'];
 		$imgdata['class'] = trim($imgdata['class']);
 	} else {
 		$tagName = 'img';
@@ -1074,45 +1074,6 @@ function wikiplugin_img( $data, $params )
 		//Final link string
 		$replimg = "\r\t" . '<a href="' . $link . '" class="internal"' . $linkrel . $imgtarget . $linktitle
 					. $mouseover . '>' ."\r\t\t" . $replimg . "\r\t" . '</a>';
-		if ($imgdata['thumb'] == 'mouseover') {
-			$mouseevent = "$('.internal').popover({ 
-						  html : true,
-						  placement :wheretoplace
-						  });
-							function wheretoplace(pop, dom_el) {
-						      var width = window.innerWidth;
-						      if (width<500) return 'bottom';
-						      var left_pos = $(dom_el).offset().left;
-						      if (width - left_pos > 400) return 'right';
-						      return 'left';
-						    }
-							";
-			TikiLib::lib('header')->add_jq_onready($mouseevent);
-		} else {
-			$mousefocus = "$('.internal').popover({ 
-						  html : true,
-						  placement :wheretoplace,
-						  trigger: 'click',
-						  title: function(){
-								return '<span class=close>&times;</span>';
-							}
-						  }).on('shown.bs.popover', function(e){
-							var popover = $(this);
-							$(this).parent().find('div.popover .close').on('click', function(e){
-								popover.popover('hide');
-							});
-							});
-							function wheretoplace(pop, dom_el) {
-							      var width = window.innerWidth;
-							      if (width<500) return 'bottom';
-							      var left_pos = $(dom_el).offset().left;
-							      if (width - left_pos > 400) return 'right';
-							      return 'left';
-							}
-							";
-			TikiLib::lib('header')->add_jq_onready($mousefocus);
-		}
-		
 	}
 
 	//Add link string to rest of string

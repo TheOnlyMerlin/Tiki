@@ -1,18 +1,27 @@
 {* $Id$ *}
 {title help="Kaltura" admpage="video"}{if $entryType eq "mix"}{tr}Remix Entries{/tr}{else}{if $view ne "browse"}{tr}List Media{/tr}{else}{tr}Browse Media{/tr}{/if}{/if}{/title}
 
-<div class="row form-group">
-    <form method="post" action="{$smarty.server.PHP_SELF}" class="col-md-12 form-inline form-horizontal" role="form">
-        <label class="control-label col-sm-2" for="find">{tr}Find{/tr}</label>
-        <div class="input-group col-sm-8">
-    		<input type="text" name="find"  class="form-control" id="find" value="{$find|escape}">
-	    	<input type="hidden" name="list" value="{$entryType}">
-        </div>
-        <div class="col-sm-2">
-            <input type="submit" class="btn btn-default btn-sm" name="search" value="{tr}Go{/tr}">
-	    </div>
-    </form>
-</div>
+{capture name=other_sorts}{strip}
+	<div class='opaque'>
+		<div class='box-title'><strong>{tr}Other Sorts{/tr}</strong></div>
+		<div class='box-data'>
+ 			<a href="tiki-list_kaltura_entries.php?list={$entryType}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq '-views'}asc_views{else}desc_views{/if}">{tr}Loads{/tr}</a>
+			<br>
+ 			<a href="tiki-list_kaltura_entries.php?list={$entryType}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq '-plays'}asc_plays{else}desc_plays{/if}">{tr}Plays{/tr}</a>
+		</div>
+	</div>
+{/strip}{/capture}
+    
+<form method="post" action="{$smarty.server.PHP_SELF}" class="findtable">
+	<label class="findtitle">
+	{tr}Find{/tr}
+		<input type="text" name="find" value="{$find|escape}">
+	</label>
+	<input type="hidden" name="list" value="{$entryType}">
+	<label class="findsubmit">
+		<input type="submit" class="btn btn-default" name="search" value="{tr}Go{/tr}">
+	</label>
+</form>
 
 {if $view ne "browse"}
 <form action='tiki-list_kaltura_entries.php?list={if $entryType eq "mix"}mix{else}media{/if}' method="post"{if $entryType ne "mix"} id="videoAction"{/if}>	

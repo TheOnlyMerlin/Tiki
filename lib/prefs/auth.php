@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -161,7 +161,6 @@ function prefs_auth_list()
 			'size' => 20,
 			'perspective' => false,
 			'default' => '',
-			'extensions' => ['ldap'],
 		),
 		'auth_ldap_port' => array(
 			'name' => tra('Port'),
@@ -171,7 +170,6 @@ function prefs_auth_list()
 			'filter' => 'digits',
 			'perspective' => false,
 			'default' => '',
-			'extensions' => ['ldap'],
 		),
 		'auth_ldap_debug' => array(
 			'name' => tra('Write LDAP debug Information in Tiki Logs'),
@@ -179,7 +177,7 @@ function prefs_auth_list()
 			'type' => 'flag',
 			'perspective' => false,
 			'default' => 'n',
-			'view' => 'tiki-syslog.php'			
+			'view' => 'tiki-syslog.php'
 		),
 		'auth_ldap_ssl' => array(
 			'name' => tra('Use SSL (ldaps)'),
@@ -233,7 +231,7 @@ function prefs_auth_list()
 			'name' => tra('Base DN'),
             'description' => tra(''),
 			'type' => 'text',
-			'size' => 15,
+			'size' => 35,
 			'perspective' => false,
 			'default' => '',
 		),
@@ -241,7 +239,7 @@ function prefs_auth_list()
 			'name' => tra('User DN'),
             'description' => tra(''),
 			'type' => 'text',
-			'size' => 20,
+			'size' => 25,
 			'perspective' => false,
 			'default' => '',
 		),
@@ -353,7 +351,7 @@ function prefs_auth_list()
 			'name' => tra('Admin user'),
             'description' => tra(''),
 			'type' => 'text',
-			'size' => 15,
+			'size' => 50,
 			'autocomplete' => 'off',
 			'perspective' => false,
 			'default' => '',
@@ -362,7 +360,7 @@ function prefs_auth_list()
 			'name' => tra('Admin password'),
             'description' => tra(''),
 			'type' => 'password',
-			'size' => 15,
+			'size' => 25,
 			'autocomplete' => 'off',
 			'perspective' => false,
 			'default' => '',
@@ -450,7 +448,7 @@ function prefs_auth_list()
 			'name' => tra('Base DN'),
             'description' => tra(''),
 			'type' => 'text',
-			'size' => 15,
+			'size' => 35,
 			'perspective' => false,
 			'default' => '',
 		),
@@ -458,7 +456,7 @@ function prefs_auth_list()
 			'name' => tra('User DN'),
             'description' => tra(''),
 			'type' => 'text',
-			'size' => 20,
+			'size' => 25,
 			'perspective' => false,
 			'default' => '',
 		),
@@ -490,7 +488,7 @@ function prefs_auth_list()
 			'name' => tra('Admin user'),
             'description' => tra(''),
 			'type' => 'text',
-			'size' => 15,
+			'size' => 55,
 			'perspective' => false,
 			'default' => '',
 		),
@@ -498,7 +496,7 @@ function prefs_auth_list()
 			'name' => tra('Admin password'),
             'description' => tra(''),
 			'type' => 'password',
-			'size' => 15,
+			'size' => 25,
 			'perspective' => false,
 			'default' => '',
 		),

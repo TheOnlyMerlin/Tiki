@@ -8,15 +8,14 @@
 <script src="lib/map/map.js"></script>
 {$xajax_javascript}
 
-<h1 class="pagetitle">{$pagelink}</h1>
+<h1>{$pagelink}</h1>
 <div align="center">
   <form name="frmmap" id="frmmap" action="tiki-map.php" method="get">
    <input type="hidden" name="mapfile" value="{$mapfile}">
 	<table border="0" cellpadding="0" cellspacing="0" >
 	  <tr>
 	     <td align="center" valign="middle">
-        <div class="table-responsive">
-		<table class="table normal">
+		<table class="normal">
 		  <tr><td align="center"> 
 		  <div id="mapWindow" style="z-index:50;overflow:hidden;
 		  	{if $xsize != ""}width:{$xsize}px;{/if} 
@@ -146,7 +145,7 @@
 			<select name="size" size="1">
 				{html_options values=$possiblesizes selected=$size output=$displaysizes}
 			</select><br>
-			<input name="Redraw" value="{tr}Redraw{/tr}" type="Submit" class="btn btn-default"><br>
+			<input name="Redraw" value="{tr}Redraw{/tr}" type="Submit"><br>
 			<small>{tr}select zoom/pan/query and image size{/tr}</small>
 		</td></tr>
 			<tr><td align="center"> 
@@ -157,7 +156,7 @@
 			<option selected value="#">Select Location and Go!
 				{html_options values=$view_name name=$view output=$view_name}
 			</select>
-				<input type="submit" class="btn btn-default btn-sm" name="Go" value="{tr}Go{/tr}">&nbsp;
+				<input type="submit" class="btn btn-default" name="Go" value="{tr}Go{/tr}">&nbsp;
 			{/if}
 			 <input type="image" name="maponly" value="yes" src="img/icons/image.png" alt="{tr}View the Map Only{/tr}" title="{tr}View the Map Only{/tr}">
 			{if $tiki_p_map_edit eq 'y'}
@@ -178,12 +177,11 @@
 		</td></tr>
 	<tr><td><div id="resultBox">{$map_querymsg}</div></td></tr>	
 		</table>
-        </div>
 		<footer class="editdate">{tr}Last modification date:{/tr} {$lastModif|tiki_long_datetime} {tr}by{/tr} <a class="link" href="tiki-user_information.php?view_user={$lastUser}">{$lastUser}</a> ({$ip})-{tr}Hits:{/tr}{$mapstats}({$mapstats7days})</footer>
 	     
 	     </td>
 		<td valign="top">
-		<table class="table normal">
+		<table class="normal">
 		   <tr><th align="center"><b>{tr}Overview{/tr}</b></th></tr>
 		   <tr><td align="center" valign="middle" bgcolor="FFFFFF">
 		   <img id="ref" src="{$image_ref_url}" border="1" alt="{tr}Overview{/tr}" title="{tr}Overview{/tr}"></td ></tr>
@@ -199,8 +197,7 @@
 			{tr}Layer Manager{/tr}
 			</div>
 			<div id='layermenu' style="{$mnu_layermenu}">
-                <div class="table-responsive">
-    			<table class="table normal">
+    			<table class="normal">
 			<tr>
 				<th><b>{tr}Layer{/tr}</b></th>
 		  		<th><b>{tr}On{/tr}</b></th>
@@ -228,9 +225,8 @@
 					{/if}
 					{tr}{$my_layers[j]->group}{/tr}		
 				</div>
-				<div id='submenu{$unique_layer_group[j]}' style="{$mnu_submenu}">
-                    <div class="table-responsive">
-					<table class="table normal">
+				<div id='submenu{$unique_layer_group[j]}' style="{$mnu_submenu}"> 
+					<table class="normal">
 					{section name=i loop=$my_layers}
 					{if $my_layers[i]->group neq ""}
 					{if $my_layers[i]->group == $my_layers[j]->group}
@@ -289,7 +285,6 @@
 					{/if}
 					{/section}
 					</table>
-                    </div>
 				</div>
 				</td>
 			    </tr>
@@ -348,7 +343,6 @@
 			{/if}	
 			{/section}
 			</table>
-            </div>
 			</div>
 		</td>
 		</tr>

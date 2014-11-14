@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -145,9 +145,8 @@ function wikiplugin_trackerfilter_info()
 
 function wikiplugin_trackerfilter($data, $params)
 {
-	global $prefs;
-	$trklib = TikiLib::lib('trk');
-	$smarty = TikiLib::lib('smarty');
+	global $smarty, $prefs;
+	global $trklib;	include_once('lib/trackers/trackerlib.php');
 	static $iTrackerFilter = 0;
 	if ($prefs['feature_trackers'] != 'y') {
 		return $smarty->fetch("wiki-plugins/error_tracker.tpl");
@@ -177,7 +176,7 @@ function wikiplugin_trackerfilter($data, $params)
 		$smarty->assign('msgTrackerFilter', $_REQUEST['msgTrackerFilter']);
 	}
 
-	$headerlib = TikiLib::lib('header');
+	global $headerlib; include_once 'lib/headerlib.php';
 	$headerlib->add_jq_onready(
 		'/* Maintain state of other trackerfilter plugin forms */
 					$(".trackerfilter form").submit( function () {
@@ -191,9 +190,6 @@ function wikiplugin_trackerfilter($data, $params)
 						return true;
 					});'
 	);
-	if ($prefs['jquery_ui_chosen'] === 'y') {
-		$headerlib->add_css('.trackerfilter form .table-responsive { overflow-y: auto; }');
-	}
 
 	if (!empty($_REQUEST['tracker_filters']) && count($_REQUEST['tracker_filters']) > 0) {
 		foreach ($_REQUEST['tracker_filters'] as $tf_vals) {
@@ -364,6 +360,7 @@ function wikiplugin_trackerfilter($data, $params)
 
 	if ( $first ) {
 		$first = false;
+		global $headerlib;
 		$headerlib->add_jq_onready(
 			'$("a.prevnext", "#trackerFilter' . $iTrackerFilter . ' + .trackerfilter-result").click( function( e ) {
 				e.preventDefault();
@@ -379,7 +376,7 @@ function wikiplugin_trackerfilter($data, $params)
 
 function wikiplugin_trackerfilter_build_trackerlist_filter($input, $formats, &$ffs, &$values, &$exactValues, Tracker_Definition $tracker_definition)
 {
-	$trklib = TikiLib::lib('trk');
+	global $trklib;
 
 	foreach ($input as $key =>$val) {
 		if (substr($key, 0, 2) == 'f_' && !empty($val) && (!is_array($val) || !empty($val[0]))) {
@@ -498,10 +495,8 @@ function wikiplugin_trackerFilter_split_filters($filters)
 
 function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', &$formats, $status='opc')
 {
-	global $tiki_p_admin_trackers;
-	$trklib = TikiLib::lib('trk');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $tiki_p_admin_trackers, $smarty, $tikilib;
+	global $trklib;	include_once('lib/trackers/trackerlib.php');
 	$filters = array();
 	if (empty($trackerId) && !empty($listfields[0])) {
 		$field = $trklib->get_tracker_field($listfields[0]);
@@ -545,7 +540,7 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', &$fo
 		if (empty($formats[$fieldId])) { // default format depends on field type
 			switch ($field['type']){
 			case 'e':// category
-				$categlib = TikiLib::lib('categ');
+				global $categlib; include_once('lib/categories/categlib.php');
 				if (ctype_digit($field['options_array'][0]) && $field['options_array'][0] > 0) {
 					if (isset($field['options_array'][3]) && $field['options_array'][3] == 1) {
 						$type = 'descendants';
@@ -581,7 +576,7 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', &$fo
 		}
 		if ($field['type'] == 'e' && ($formats[$fieldId] == 't' || $formats[$fieldId] == 'T' || $formats[$fieldId] == 'i')) { // do not accept a format text for a categ for the moment
 			if (empty($res)) {
-				$categlib = TikiLib::lib('categ');
+				global $categlib; include_once('lib/categories/categlib.php');
 				if (ctype_digit($field['options_array'][0]) && $field['options_array'][0] > 0) {
 					$filter = array('identifier'=>$field['options_array'][0], 'type'=>'children');
 					$res = $categlib->getCategories($filter, true, false);
@@ -599,7 +594,7 @@ function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', &$fo
 			switch ($field['type']){
 			case 'e': // category
 				if (empty($res)) {
-					$categlib = TikiLib::lib('categ');
+					global $categlib; include_once('lib/categories/categlib.php');
 					if (ctype_digit($field['options_array'][0]) && $field['options_array'][0] > 0) {
 						$filter = array('identifier'=>$field['options_array'][0], 'type'=>'children');
 						$res = $categlib->getCategories($filter, true, false);

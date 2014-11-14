@@ -1,7 +1,7 @@
 {* $Id$ *}
 {title help="Spreadsheet"}{$title}{/title}
 
-<div class="description help-block">
+<div class="description">
 	{$description|escape}
 </div>
 <div class="msg">
@@ -16,13 +16,13 @@
 {/foreach}
 <div id="feedback" style="height: 1.5em; margin-left: .2em"><span></span></div>
 
-<div class="t_navbar btn-group form-group">
+<div class="navbar">
 	{if $page}
-		{button href="tiki-index.php" page="$page" class="btn btn-default" _text="{tr}Back to Page{/tr}"}
+		{button href="tiki-index.php" page="$page" _text="{tr}Back to Page{/tr}"}
 	{/if}
 	
 	{if $tiki_p_view_sheet eq 'y' || $tiki_p_admin eq 'y'}
-		{button href="tiki-sheets.php" class="btn btn-default" _text="{tr}List Spreadsheets{/tr}"}
+		{button href="tiki-sheets.php" _text="{tr}List Spreadsheets{/tr}"}
 	{/if}
 	
 	{if $objectperms->edit_sheet}
@@ -41,7 +41,7 @@
 	
 	<span id="saveState">
 		{if $objectperms->edit_sheet}
-			{button _id="save_button" _text="{tr}Save{/tr}" _htmlelement="role_main" _template="tiki-view_sheets.tpl" sheetId="$sheetId" _class="" _title="{tr}Tiki Sheet{/tr} | {tr}Save current spreadsheet{/tr}" _onclick="\$.sheet.saveSheet(\$.sheet.view);return false;"}
+			{button _id="save_button" _text="{tr}Save{/tr}" _htmlelement="role_main" _template="tiki-view_sheets.tpl" sheetId="$sheetId" _class="" _title="{tr}Tiki Sheet{/tr} | {tr}Save current spreadsheet{/tr}"}
 			{button _id="cancel_button" _text="{tr}Cancel{/tr}" _htmlelement="role_main" _template="tiki-view_sheets.tpl" sheetId="$sheetId" _class="" _title="{tr}Tiki Sheet{/tr} | {tr}Cancel editing current spreadsheet{/tr}"}
 		{/if}
 	</span>

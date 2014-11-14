@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -27,7 +27,7 @@ function s_f_attachments_actionshandler( $params )
 		$objectperms = $pageRenderer->applyPermissions();
 	}
 
-	$filegallib = TikiLib::lib('filegal');
+	global $filegallib; include_once('lib/filegals/filegallib.php');
 
 	foreach ( $params as $k => $v ) {
 		switch ( $k ) {
@@ -49,7 +49,7 @@ function s_f_attachments_actionshandler( $params )
 				if ( isset($objectperms) && ( $objectperms->wiki_admin_attachments || $objectperms->wiki_attach_files ) ) {
 					/* check_ticket('index'); */
 
-					$smarty = TikiLib::lib('smarty');
+					global $smarty;
 					$smarty->loadPlugin('smarty_function_query');
 
 					$galleryId = $filegallib->get_attachment_gallery($params['page'], 'wiki page', true);
@@ -88,9 +88,9 @@ function smarty_function_attachments($params, $template)
 {
 	if ( ! is_array($params) || ! isset($params['_id']) || ! isset($params['_type']) ) return tra('Missing _id or _type params');
 
-	global $prefs, $page;
-	$filegallib = TikiLib::lib('filegal');
-	$smarty = TikiLib::lib('smarty');
+	global $smarty, $prefs, $page;
+	global $filegallib; include_once('lib/filegals/filegallib.php');
+
 	/*** For the moment, only wiki attachments are handled through file galleries ***/
 	if ( $prefs['feature_wiki_attachments'] != 'y' ) return;
 

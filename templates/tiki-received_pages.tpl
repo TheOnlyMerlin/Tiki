@@ -3,7 +3,7 @@
 {title help="Communication+Center"}{tr}Received Pages{/tr}{/title}
 
 {if !empty($errors)}
-	<div class="alert alert-warning">
+	<div class="simplebox highlight">
 		{foreach item=error from=$errors}
 			{tr}{$error.error}{/tr} {$error.param}
 			<br>
@@ -42,9 +42,9 @@
 			<tr>
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" class="btn btn-default btn-sm" name="preview" value="{tr}Preview{/tr}">
+					<input type="submit" class="btn btn-default" name="preview" value="{tr}Preview{/tr}">
 					&nbsp;
-					<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
+					<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 				</td>
 			</tr>
 		</table>
@@ -59,7 +59,6 @@
 			<span class="highlight">{tr}The highlight pages already exist.{/tr}</span> {tr}Please, change the name if you want the page to be uploaded.{/tr}
 		</p>
 	{/if}
-    <div class="table-responsive">
 	<table class="table normal">
 		<tr>
 			<th>
@@ -79,9 +78,9 @@
 			</th>
 			<th>{tr}Action{/tr}</th>
 		</tr>
-
+		{cycle values="even,odd" print=false}
 		{section name=user loop=$channels}
-			<tr>
+			<tr class="{cycle}">
 				<td class="id">{$channels[user].receivedPageId}</td>
 				{if $channels[user].pageExists ne ''}
 					<td class="text">
@@ -104,7 +103,6 @@
 			{norecords _colspan=6}
 		{/section}
 	</table>
-    </div>
 	{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
 </div>
 
@@ -115,7 +113,6 @@
 	</p>
 {/if}
 <form action="tiki-received_pages.php" method="post">
-    <div class="table-responsive">
 	<table class="table normal">
 		<tr>
 			<th>&nbsp;</th>
@@ -137,10 +134,10 @@
 			</th>
 			<th>{tr}Action{/tr}</th>
 		</tr>
-
+		{cycle values="even,odd" print=false}
 		{section name=user loop=$structures}
 			{if $structures[user].structureName eq $structures[user].pageName}
-				<tr>
+				<tr class="{cycle}">
 					<td class="text">&nbsp;</td>
 					<td class="id">{$structures[user].receivedPageId}</td>
 					<td class="text">{$structures[user].pageName}</td>
@@ -156,8 +153,8 @@
 				</tr>
 				{section name=ix loop=$structures}
 					{if $structures[ix].structureName eq $structures[user].structureName}
-						<tr>
-							<td class="checkbox-cell">
+						<tr class="{cycle}">
+							<td class="checkbox">
 								<input type="checkbox" name="checked[]" value="{$structures[ix].pageName|escape}" >
 							</td>
 							<td class="id">{$structures[ix].receivedPageId}</td>
@@ -185,7 +182,6 @@
 		{/section}
 		{select_all checkbox_names='checked[]' label="{tr}Select All{/tr}"}
 	</table>
-    </div>
 	{tr}Prefix the checked:{/tr}<input type="text" name="prefix">
-	{tr}Postfix the checked:{/tr}<input type="text" name="postfix">&nbsp;<input type="submit" class="btn btn-default btn-sm" value="{tr}OK{/tr}">
+	{tr}Postfix the checked:{/tr}<input type="text" name="postfix">&nbsp;<input type="submit" class="btn btn-default" value="{tr}OK{/tr}">
 </form>

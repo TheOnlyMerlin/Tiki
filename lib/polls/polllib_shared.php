@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -362,7 +362,7 @@ class PollLibShared extends TikiLib
      */
     function get_poll_categories($pollId)
 	{
-		$categlib = TikiLib::lib('categ');
+		global $categlib; include_once('lib/categories/categlib.php');
 
 		$query = "select tco.`categId`, tc.`name`" .
 							" from `tiki_poll_objects` tpo, `tiki_category_objects` tco, `tiki_categories` tc" .

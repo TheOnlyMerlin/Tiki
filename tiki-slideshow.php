@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,9 +10,9 @@
 
 $section = 'wiki page';
 require_once ('tiki-setup.php');
-$tikilib = TikiLib::lib('tiki');
-$structlib = TikiLib::lib('struct');
-$wikilib = TikiLib::lib('wiki');
+global $tikilib;
+include_once ('lib/structures/structlib.php');
+include_once ('lib/wiki/wikilib.php');
 include_once ('lib/wiki-plugins/wikiplugin_slideshow.php');
 
 $access->check_feature('feature_wiki');
@@ -40,9 +40,8 @@ if (isset($_REQUEST['pdf'])) {
 	$_POST["html"] = urldecode($_POST["html"]);
 	
 	define("DOMPDF_ENABLE_REMOTE", true);
-	define('DOMPDF_ENABLE_AUTOLOAD', false);
 	
-	require_once("vendor/dompdf/dompdf/dompdf_config.inc.php");
+	require_once("vendor/jquery/jquery-s5/lib/dompdf/dompdf_config.inc.php");
 	
 	if ( isset( $_POST["html"] ) ) {
 		$dompdf = new DOMPDF();
@@ -144,7 +143,7 @@ $headerlib->add_cssfile('vendor/jquery/jquery-s5/jquery.s5.css');
 $headerlib->add_jsfile('vendor/jquery/jquery-s5/jquery.s5.js');
 $headerlib->add_jq_onready(
     '
-	$("#toc").remove();
+	$("#toc,.cluetip-title").remove();
 	
 	window.s5Settings = (window.s5Settings ? window.s5Settings : {});
 	
@@ -198,7 +197,7 @@ $headerlib->add_jq_onready(
 						});
 					}
 
-					$.tikiModal(tr("Updating Theme..."));
+					$.modal(tr("Updating Theme..."));
 					$.get("tiki-slideshow.php", {theme: theme}, function(o) {
 						$.s5.makeTheme($.parseJSON(o));
 						
@@ -213,11 +212,11 @@ $headerlib->add_jq_onready(
 								content: "~same~",
 								params: (window.slideshowSettings ? window.slideshowSettings : {})
 							}, function() {
-								$.tikiModal();
+								$.modal();
 								window.s5Busy = false;
 							});
 						} else {*/
-							$.tikiModal();
+							$.modal();
 							window.s5Busy = false;
 /*						}*/
 					}); 

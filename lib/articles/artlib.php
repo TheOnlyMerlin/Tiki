@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -102,9 +102,7 @@ class ArtLib extends TikiLib
 
 	function remove_article($articleId, $article_data ='')
 	{
-		global $user, $prefs;
-		$smarty = TikiLib::lib('smarty');
-		$tikilib = TikiLib::lib('tiki');
+		global $smarty, $tikilib, $user, $prefs;
 
 		if ($articleId) {
 			if (empty($article_data)) $article_data = $this->get_article($articleId);
@@ -215,9 +213,7 @@ class ArtLib extends TikiLib
 														, $isfloat = 'n'
 														)
 	{
-		global $tiki_p_autoapprove_submission, $prefs;
-		$smarty = TikiLib::lib('smarty');
-		$tikilib = TikiLib::lib('tiki');
+		global $smarty, $tiki_p_autoapprove_submission, $tikilib, $dbTiki, $prefs;
 
 		if ($expireDate < $publishDate) {
 			$expireDate = $publishDate;
@@ -226,49 +222,126 @@ class ArtLib extends TikiLib
 		if (empty($imgdata))
 			$imgdata = '';
 
-		$notificationlib = TikiLib::lib('notification');
+		global $notificationlib;
+		if (!is_object($notificationlib)) {
+			require_once('lib/notifications/notificationlib.php');
+		}
 		$hash = md5($title . $heading . $body);
 		$query = 'select `name` from `tiki_topics` where `topicId` = ?';
 		$topicName = $this->getOne($query, array((int) $topicId));
 		$size = strlen($body);
 
-		$info = array(
-			'title' => $title,
-			'authorName' => $authorName,
-			'topicId' => (int) $topicId,
-			'topicName' => $topicName,
-			'size' => (int) $size,
-			'useImage' => $useImage,
-			'image_name' => $imgname,
-			'image_type' => $imgtype,
-			'image_size' => (int) $imgsize,
-			'image_data' => $imgdata,
-			'isfloat' => $isfloat,
-			'image_x' => (int) $image_x,
-			'image_y' => (int) $image_y,
-			'heading' => $heading,
-			'body' => $body,
-			'publishDate' => (int) $publishDate,
-			'expireDate' => (int) $expireDate,
-			'created' => (int) $this->now,
-			'author' => $user,
-			'type' => $type,
-			'rating' => (float) $rating,
-			'topline' => $topline,
-			'subtitle' => $subtitle,
-			'linkto' => $linkto,
-			'image_caption' => $image_caption,
-			'lang' => $lang,
-			//'ispublished' => $ispublished, // Does not exist
-		);
-
-		$article_table = $this->table('tiki_submissions');
 		if ($subId) {
-			$article_table->update($info, array(
-				'subId' => (int) $subId,
-			));
+			// Update the article
+			$query = 'update `tiki_submissions` set
+									`title` = ?,
+									`authorName` = ?,
+									`topicId` = ?,
+									`topicName` = ?,
+									`size` = ?,
+									`useImage` = ?,
+									`isfloat` = ?,
+									`image_name` = ?,
+									`image_type` = ?,
+									`image_size` = ?,
+									`image_data` = ?,
+									`image_x` = ?,
+									`image_y` = ?,
+									`heading` = ?,
+									`body` = ?,
+									`publishDate` = ?,
+									`expireDate` = ?,
+									`created` = ?,
+									`author` = ? ,
+									`type` = ?,
+									`rating` = ?,
+									`topline`=?,
+									`subtitle`=?,
+									`linkto`=?,
+									`image_caption`=?,
+									`lang`=?
+							where `subId` = ?';
+
+			$result = $this->query(
+				$query,
+				array(
+					$title,
+					$authorName,
+					(int) $topicId,
+					$topicName,
+					(int) $size,
+					$useImage,
+					$isfloat,
+					$imgname,
+					$imgtype,
+					(int) $imgsize,
+					$imgdata,
+					(int) $image_x,
+					(int) $image_y,
+					$heading,
+					$body,
+					(int) $publishDate,
+					(int) $expireDate,
+					(int) $this->now,
+					$user,
+					$type,
+					(float) $rating,
+					$topline,
+					$subtitle,
+					$linkto,
+					$image_caption,
+					$lang,
+					(int) $subId,
+				)
+			);
+			$id = $subId;
 		} else {
-			$id = $article_table->insert($info);
+			// Insert the article
+			$query = 'insert into `tiki_submissions`(`title`,`authorName`,`topicId`,`useImage`'
+								. ',`image_name`,`image_size`,`image_type`,`image_data`,`publishDate`,`expireDate`'
+								.	',`created`,`heading`,`body`,`hash`,`author`,`nbreads`,`votes`,`points`'
+								.	',`size`,`topicName`,`image_x`,`image_y`,`type`,`rating`,`isfloat`,`topline`'
+								.	', `subtitle`, `linkto`,`image_caption`, `lang`)'
+							.	' values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+							;
+
+			$result = $this->query(
+				$query,
+				array(
+					$title,
+					$authorName,
+					(int) $topicId,
+					$useImage,
+					$imgname,
+					(int) $imgsize,
+					$imgtype,
+					$imgdata,
+					(int) $publishDate,
+					(int) $expireDate,
+					(int) $this->now,
+					$heading,
+					$body,
+					$hash,
+					$user,
+					0,
+					0,
+					0,
+					(int) $size,
+					$topicName,
+					(int) $image_x,
+					(int) $image_y,
+					$type,
+					(float) $rating,
+					$isfloat,
+					$topline,
+					$subtitle,
+					$linkto,
+					$image_caption,
+					$lang
+				)
+			);
+			// Fixed query. -edgar
+			$id = $this->lastInsertId();
 		}
 
 		if ($tiki_p_autoapprove_submission != 'y') {
@@ -305,7 +378,7 @@ class ArtLib extends TikiLib
 				sendEmailNotification($nots, 'watch', 'submission_notification_subject.tpl', $_SERVER['SERVER_NAME'], 'submission_notification.tpl');
 			}
 		}
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 		$tikilib->object_post_save(
 			array(
 				'type' => 'submission',
@@ -349,12 +422,10 @@ class ArtLib extends TikiLib
 													, $list_image_x = ''
 													, $list_image_y = ''
 													, $ispublished='y'
-													, $fromurl = false
 												)
 	{
 
-		$tikilib = TikiLib::lib('tiki');
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $tikilib;
 
 		if ($expireDate < $publishDate) {
 			$expireDate = $publishDate;
@@ -368,44 +439,48 @@ class ArtLib extends TikiLib
 		$topicName = $this->getOne($query, array($topicId));
 		$size = $body ? mb_strlen($body) : mb_strlen($heading);
 
-		$info = array(
-			'title' => $title,
-			'authorName' => $authorName,
-			'topicId' => (int) $topicId,
-			'topicName' => $topicName,
-			'size' => (int) $size,
-			'useImage' => $useImage,
-			'image_name' => $imgname,
-			'image_type' => $imgtype,
-			'image_size' => (int) $imgsize,
-			'image_data' => $imgdata,
-			'isfloat' => $isfloat,
-			'image_x' => (int) $image_x,
-			'image_y' => (int) $image_y,
-			'list_image_x' => (int) $list_image_x,
-			'list_image_y' => (int) $list_image_y,
-			'heading' => $heading,
-			'body' => $body,
-			'publishDate' => (int) $publishDate,
-			'expireDate' => (int) $expireDate,
-			'created' => (int) $this->now,
-			'author' => $user,
-			'type' => $type,
-			'rating' => (float) $rating,
-			'topline' => $topline,
-			'subtitle' => $subtitle,
-			'linkto' => $linkto,
-			'image_caption' => $image_caption,
-			'lang' => $lang,
-			'ispublished' => $ispublished,
-		);
-
-		$article_table = $this->table('tiki_articles');
 		if ($articleId) {
 			$oldArticle = $this->get_article($articleId);
-			$article_table->update($info, array(
-				'articleId' => (int) $articleId,
-			));
+			$query	= 'update `tiki_articles` set `title` = ?, `authorName` = ?, `topicId` = ?, `topicName` = ?, `size` = ?, `useImage` = ?, `image_name` = ?, ';
+			$query .= ' `image_type` = ?, `image_size` = ?, `image_data` = ?, `isfloat` = ?, `image_x` = ?, `image_y` = ?, `list_image_x` = ?, `list_image_y` = ?, `heading` = ?, `body` = ?, ';
+			$query .= ' `publishDate` = ?, `expireDate` = ?, `created` = ?, `author` = ?, `type` = ?, `rating` = ?, `topline`=?, `subtitle`=?, `linkto`=?, ';
+			$query .= ' `image_caption`=?, `lang`=?, `ispublished`=? where `articleId` = ?';
+
+			$result = $this->query(
+				$query,
+				array(
+					$title,
+					$authorName,
+					(int) $topicId,
+					$topicName,
+					(int) $size,
+					$useImage,
+					$imgname,
+					$imgtype,
+					(int) $imgsize,
+					$imgdata,
+					$isfloat,
+					(int) $image_x,
+					(int) $image_y,
+					(int) $list_image_x,
+					(int) $list_image_y,
+					$heading,
+					$body,
+					(int) $publishDate,
+					(int) $expireDate,
+					(int) $this->now,
+					$user,
+					$type,
+					(float) $rating,
+					$topline,
+					$subtitle,
+					$linkto,
+					$image_caption,
+					$lang,
+					$ispublished,
+					(int) $articleId
+				)
+			);
 			// Clear article image cache because image may just have been changed
 			$this->delete_image_cache('article', $articleId);
 
@@ -419,7 +494,53 @@ class ArtLib extends TikiLib
 			$smarty->assign('mail_old_data', $oldArticle['heading'] . "\n----------------------\n" . $oldArticle['body']);
 
 		} else {
-			$articleId = $article_table->insert($info);
+			// Insert the article
+			$query	= 'insert into `tiki_articles` (`title`, `authorName`, `topicId`, `useImage`, `image_name`, `image_size`, `image_type`, `image_data`, ';
+			$query .= ' `publishDate`, `expireDate`, `created`, `heading`, `body`, `hash`, `author`, `nbreads`, `votes`, `points`, `size`, `topicName`, ';
+			$query .= ' `image_x`, `image_y`, `list_image_x`, `list_image_y`, `type`, `rating`, `isfloat`,`topline`, `subtitle`, `linkto`,`image_caption`, `lang`, `ispublished`) ';
+			$query .= ' values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+
+			$result = $this->query(
+				$query,
+				array(
+						$title,
+						$authorName,
+						(int) $topicId,
+						$useImage,
+						$imgname,
+						(int) $imgsize,
+						$imgtype,
+						$imgdata,
+						(int) $publishDate,
+						(int) $expireDate,
+						(int) $this->now,
+						$heading,
+						$body,
+						$hash,
+						$user,
+						0,
+						0,
+						0,
+						(int) $size,
+						$topicName,
+						(int) $image_x,
+						(int) $image_y,
+						(int) $list_image_x,
+						(int) $list_image_y,
+						$type,
+						(float) $rating,
+						$isfloat,
+						$topline,
+						$subtitle,
+						$linkto,
+						$image_caption,
+						$lang,
+						$ispublished
+					)
+			);
+
+			$query2 = 'select max(`articleId`) from `tiki_articles` where `created` = ? and `title`=? and `hash`=?';
+			$articleId = $this->getOne($query2, array( (int) $this->now, $title, $hash ));
 
 			global $prefs;
 			if ($prefs['feature_score'] == 'y') {
@@ -429,22 +550,6 @@ class ArtLib extends TikiLib
 			$nots = $tikilib->get_event_watches('article_submitted', '*');
 			$nots2 = $tikilib->get_event_watches('topic_article_created', $topicId);
 			$smarty->assign('mail_action', 'New');
-
-			// Create tracker item as well if feature is enabled 
- 			if (!$fromurl && $prefs['tracker_article_tracker'] == 'y' && $trackerId = $prefs['tracker_article_trackerId']) {
- 				$trklib = TikiLib::lib('trk');
- 				$definition = Tracker_Definition::get($trackerId);
- 				if ($fieldId = $definition->getArticleField()) {
-					$addit = array();
- 					$addit[] = array(
- 						'fieldId' => $fieldId,
- 						'type' => 'articles',
- 						'value' => $articleId,
- 					);
- 					$itemId = $trklib->replace_item($trackerId, 0, array('data' => $addit));
-					TikiLib::lib('relation')->add_relation('tiki.article.attach', 'trackeritem', $itemId, 'article', $articleId);
-				}
- 			}
 		}
 
 		$nots3 = array();
@@ -515,7 +620,7 @@ class ArtLib extends TikiLib
 		require_once('lib/search/refresh-functions.php');
 		refresh_index('articles', $articleId);
 
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 		$tikilib->object_post_save(
 			array(
 				'type' => 'article',
@@ -1064,8 +1169,7 @@ class ArtLib extends TikiLib
 												)
 	{
 
-		global $user, $prefs;
-		$userlib = TikiLib::lib('user');
+		global $userlib, $user, $prefs;
 
 		$mid = $join = '';
 		$bindvars = array();
@@ -1074,7 +1178,7 @@ class ArtLib extends TikiLib
 		if (!empty($filter)) {
 			foreach ($filter as $typeF=>$val) {
 				if ($typeF == 'translationOrphan') {
-					$multilinguallib = TikiLib::lib('multilingual');
+					global $multilinguallib; include_once('lib/multilingual/multilinguallib.php');
 					$multilinguallib->sqlTranslationOrphan('article', '`tiki_articles`', 'articleId', $val, $join, $mid, $bindvars);
 					$mid = ' where '.$mid;
 				}
@@ -1223,7 +1327,7 @@ class ArtLib extends TikiLib
 			$bindvars[] = $max_rating;
 		}
 
-		$categlib = TikiLib::lib('categ');
+		global $categlib; require_once('lib/categories/categlib.php');
 		if ( $categId ) {
 			$jail = $categId;
 		} else {
@@ -1238,7 +1342,7 @@ class ArtLib extends TikiLib
 		}
 
 		if ( $prefs['rating_advanced'] == 'y' ) {
-			$ratinglib = TikiLib::lib('rating');
+			global $ratinglib; require_once 'lib/rating/ratinglib.php';
 			$fromSql .= $ratinglib->convert_rating_sort($sort_mode, 'article', '`articleId`');
 		}
 
@@ -1342,8 +1446,8 @@ class ArtLib extends TikiLib
 		$text = $check_heading ? $article['heading'] : $article['body'];
 
 		return $prefs['feature_wysiwyg'] === 'y' &&
-				$prefs['wysiwyg_htmltowiki'] !== 'y' ||
-						preg_match('/(<\/p>|<\/span>|<\/div>|<\/?br>)/', $text);
+				($prefs['wysiwyg_htmltowiki'] !== 'y' ||
+						preg_match('/(<\/p>|<\/span>|<\/div>|<\/?br>)/', $text));
 	}
 
 	function list_submissions($offset = 0, $maxRecords = -1, $sort_mode = 'publishDate_desc', $find = '', $date = '', $type = '', $topicId = '', $lang = '')
@@ -1438,7 +1542,7 @@ class ArtLib extends TikiLib
 								`tiki_article_types`.`show_image_caption`,
 								`tiki_article_types`.`creator_edit`
 						from `tiki_articles`
-						left join `tiki_article_types` ON `tiki_articles`.`type` = `tiki_article_types`.`type`
+						inner join `tiki_article_types` ON `tiki_articles`.`type` = `tiki_article_types`.`type`
 						left join `users_users` on `tiki_articles`.`author` = `users_users`.`login` 
 						where `tiki_articles`.`articleId`=?"
 						;
@@ -1502,9 +1606,13 @@ class ArtLib extends TikiLib
 
 	function add_article_type_attribute($artType, $attributeName)
 	{
-		$relationlib = TikiLib::lib('relation');
-		$attributelib = TikiLib::lib('attribute');
-
+		global $relationlib, $attributelib;
+		if (!is_object($relationlib)) {
+			include_once('lib/attributes/relationlib.php');
+		}
+		if (!is_object($attributelib)) {
+			include_once('lib/attributes/attributelib.php');
+		}
 		$fullAttributeName = TikiFilter::get('attribute_type')->filter(trim('tiki.article.' . $attributeName));
 		$relationId = $relationlib->add_relation('tiki.article.attribute', 'articletype', $artType, 'attribute', $fullAttributeName);
 		if (!$relationId) {
@@ -1517,7 +1625,10 @@ class ArtLib extends TikiLib
 
 	function delete_article_type_attribute($artType, $relationId)
 	{
-		$relationlib = TikiLib::lib('relation');
+		global $relationlib;
+		if (!is_object($relationlib)) {
+			include_once('lib/attributes/relationlib.php');
+		}
 		// double check relation is associated with article type before deleting
 		$currentAttributes = $relationlib->get_relations_from('articletype', $artType, 'tiki.article.attribute');
 		foreach ($currentAttributes as $att) {
@@ -1530,8 +1641,14 @@ class ArtLib extends TikiLib
 
 	function get_article_type_attributes($artType, $orderby = '')
 	{
-		$relationlib = TikiLib::lib('relation');
-		$attributelib = TikiLib::lib('attribute');
+		global $relationlib, $attributelib;
+
+		if (!is_object($relationlib)) {
+			include_once('lib/attributes/relationlib.php');
+		}
+		if (!is_object($attributelib)) {
+			include_once('lib/attributes/attributelib.php');
+		}
 
 		$attributes = $relationlib->get_relations_from('articletype', $artType, 'tiki.article.attribute', $orderby);
 		$ret = array();
@@ -1547,7 +1664,10 @@ class ArtLib extends TikiLib
 	function set_article_attributes($articleId, $attributeArray, $isSubmission = false)
 	{
 		// expects attributeArray in the form of $key=>$val where $key is tiki.article.xxxx and $val is value
-		$attributelib = TikiLib::lib('attribute');
+		global $attributelib;
+		if (!is_object($attributelib)) {
+			include_once('lib/attributes/attributelib.php');
+		}
 		if ($isSubmission) {
 			$type = 'submission';
 		} else {
@@ -1555,16 +1675,19 @@ class ArtLib extends TikiLib
 		}
 		$currentAtt = $this->get_article_attributes($articleId);
 		foreach ($attributeArray as $name => $value) {
-			if ( !in_array($name, array_keys($currentAtt)) || $value != $currentAtt[$name]['value'] ) {
-				$attributelib->set_attribute($type, $articleId, $name, $value);
-			}
+				if ( !in_array($name, array_keys($currentAtt)) || $value != $currentAtt[$name]['value'] ) {
+					$attributelib->set_attribute($type, $articleId, $name, $value);
+				}
 		}
 		return true;
 	}
 
 	function get_article_attributes($articleId, $isSubmission = false)
 	{
-		$attributelib = TikiLib::lib('attribute');
+		global $attributelib;
+		if (!is_object($attributelib)) {
+			include_once('lib/attributes/attributelib.php');
+		}
 
 		if ($isSubmission) {
 			$type = 'submission';
@@ -1599,7 +1722,7 @@ class ArtLib extends TikiLib
 	 */
 	function get_related_articles($articleId, $maxResults = 5)
 	{
-		$freetaglib = TikiLib::lib('freetag');
+		global $freetaglib;
 		$relatedArticles = $freetaglib->get_similar('article', $articleId);
 
 		foreach ($relatedArticles as $key => $article) {

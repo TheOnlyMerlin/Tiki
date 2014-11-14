@@ -12,13 +12,13 @@
 {/title}
 
 {if $edit_mode neq 'y' and $gal_info.description neq ''}
-	<div class="description help-block">
+	<div class="description">
 		{$gal_info.description|escape|nl2br}
 	</div>
 {/if}
 
 {* admin icons on the right side of the top navigation bar under the title *}
-<div class="t_navbar form-group"{if $prefs.mobile_mode eq 'y'} data-role="controlgroup" data-type="horizontal"{/if}>
+<div class="navbar"{if $prefs.mobile_mode eq 'y'} data-role="controlgroup" data-type="horizontal"{/if}>
 	{if $galleryId gt 0}
 		{if $prefs.mobile_mode eq 'y'}<div class="navbar" align="right" data-role="controlgroup" data-type="horizontal">{/if} {* mobile *}
 			{if $prefs.feature_group_watches eq 'y' and ( $tiki_p_admin_users eq 'y' or $tiki_p_admin eq 'y' )}
@@ -73,7 +73,7 @@
 		{/if}
 		{if $edit_mode neq 'y' and $dup_mode neq 'y'}
 			{if $prefs.javascript_enabled eq 'y'}
-				<div style="float:right;margin-top:0;width: 120px;"><select id="viewSwitcher" class="form-control">
+				<select style="float:right;margin-top:0;" id="viewSwitcher">
 					<option value="list"{if $view eq 'list'} selected="selected"{/if}>
 						{tr}List Gallery{/tr}
 					</option>
@@ -95,16 +95,16 @@
 							{tr}Finder View{/tr}
 						</option>
 					{/if}
-				</select></div>
+				</select>
 				{jq}
 $("#viewSwitcher").change(function() {
-	var loc = location.href.replace(location.hash, "");
-	if (loc.indexOf("view=") > -1) {
-		loc = loc.replace(/view=([^&])+/, "view=" + $(this).find(':selected').val());
-	} else {
-		loc += loc.indexOf("?") > -1 ? "&" : "?";
-		loc += "view=" + $(this).find(':selected').val();
-	}
+				var loc = location.href;
+				if (loc.indexOf("view=") > -1) {
+					loc = loc.replace(/view=([^&])+/, "view=" + $(this).find(':selected').val());
+				} else {
+					loc += loc.indexOf("?") > -1 ? "&" : "?";
+					loc += "view=" + $(this).find(':selected').val();
+				}
 	location.replace(loc);
 });
 				{/jq}
@@ -124,7 +124,7 @@ $("#viewSwitcher").change(function() {
 			{/if}
 		{/if}
 		{if $tiki_p_assign_perm_file_gallery eq 'y'}
-			{permission_link mode=button type="file gallery" permType="file galleries" id=$galleryId title=$name}
+			{button _keepall='y' _text="{tr}Permissions{/tr}" href="tiki-objectpermissions.php" objectName=$name objectType='file+gallery' permType='file+galleries' objectId=$galleryId}
 		{/if}
 		{if $tiki_p_admin_file_galleries eq 'y' or $user eq $gal_info.user or $gal_info.public eq 'y'}
 			{if $tiki_p_upload_files eq 'y'}
@@ -202,7 +202,7 @@ $("#viewSwitcher").change(function() {
 		{/if}
 		{if $prefs.fgal_search_in_content eq 'y' and $galleryId > 0}
 			{if $view neq 'page'}
-				<div class="text-center">
+				<div class="findtable">
 					<form id="search-form" class="forms" method="get" action="tiki-search{if $prefs.feature_forum_local_tiki_search eq 'y'}index{else}results{/if}.php">
 						<input type="hidden" name="where" value="files">
 						<input type="hidden" name="galleryId" value="{$galleryId}">
@@ -303,7 +303,7 @@ window.handleFinderFile = function (file, elfinder) {
 		|| $tiki_p_post_comments == 'y'
 		|| $tiki_p_edit_comments == 'y')}
 
-		<div id="page-bar" class="btn-group">
+		<div id="page-bar" class="clearfix">
 			<span class="button btn-default">
 				<a id="comment-toggle" href="{service controller=comment action=list type="file gallery" objectId=$galleryId}#comment-container">
 					{tr}Comments{/tr}

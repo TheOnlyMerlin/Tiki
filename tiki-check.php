@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -1036,22 +1036,6 @@ if ( $s ) {
 		'setting' => 'Not Available',
 		'message' => tra('The DateTime class is needed for the WebDAV feature.')
 		);
-}
-
-// Xdebug
-$has_xdebug = function_exists('xdebug_get_code_coverage') && is_array(xdebug_get_code_coverage());
-if ($has_xdebug) {
-    $php_properties['Xdebug'] = array(
-        'fitness' => tra('info'),
-		'setting' => 'Loaded',
-        'message' => tra('Xdebug can be very handy for a development server, but it might be better to disable it when on a production server.')
-    );
-} else {
-    $php_properties['Xdebug'] = array(
-		'fitness' => tra('info'),
-        'setting' => 'Not Available',
-        'message' => tra('Xdebug can be very handy for a development server, but it might be better to disable it when on a production server.')
-    );
 }
 
 // Get MySQL properties and check them

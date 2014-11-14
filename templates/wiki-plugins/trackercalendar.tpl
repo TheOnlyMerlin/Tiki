@@ -1,4 +1,4 @@
-<div id="{$trackercalendar.id|escape}" class="table-responsive"></div>
+<div id="{$trackercalendar.id|escape}"></div>
 {jq}
 	var data = {{$trackercalendar|json_encode}};
 	$('#' + data.id).each(function () {
@@ -55,9 +55,8 @@
 			slotMinutes: {{$prefs.calendar_timespan}},
 			defaultView: data.dView,
 			eventAfterRender : function( event, element, view ) {
-				element.attr('title',event.title);
-				element.data('content', event.description);
-				element.popover({ trigger: 'hover', html: true,'container': 'body' });
+				element.attr('title',event.title +'|'+event.description);
+				element.cluetip({arrows: true, splitTitle: '|', clickThrough: true});
 			},
 			eventClick: function(event) {
 				if (event.editable && event.trackerId) {

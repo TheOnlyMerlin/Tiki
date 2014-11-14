@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -372,16 +372,6 @@ class Search_QueryTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals($expr, $index->getLastQuery());
 		$this->assertEquals(array('hello'), $query->getTerms());
-	}
-
-	function testQueryCloning()
-	{
-		$query = new Search_Query('Hello World');
-		$clone = clone $query;
-
-		$query->filterCategory('1 OR 2');
-
-		$this->assertNotEquals($query, $clone);
 	}
 }
 

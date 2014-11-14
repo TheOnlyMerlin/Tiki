@@ -149,9 +149,9 @@
 			<tr>
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" class="btn btn-default btn-sm" name="preview" value="{tr}Preview{/tr}">
+					<input type="submit" class="btn btn-default" name="preview" value="{tr}Preview{/tr}">
 					&nbsp;
-					<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
+					<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 				</td>
 			</tr>
 			<tr>
@@ -163,7 +163,7 @@
 							<option value="{$topics[t].topicId|escape}" {if $topic eq $topics[t].topicId}selected="selected"{/if}>{$topics[t].name}</option>
 						{/section}
 					</select>
-					<input type="submit" class="btn btn-default btn-sm" name="accept" value="{tr}Accept{/tr}">
+					<input type="submit" class="btn btn-default" name="accept" value="{tr}Accept{/tr}">
 				</td>
 			</tr>
 		</table>
@@ -174,7 +174,7 @@
 	{if $channels or $find ne ''}
 		{include file='find.tpl'}
 	{/if}
-    <div class="table-responsive">
+
 	<table class="table normal">
 		<tr>
 			<th>
@@ -194,9 +194,9 @@
 			</th>
 			<th>{tr}Action{/tr}</th>
 		</tr>
-
+		{cycle values="even,odd" print=false}
 		{section name=user loop=$channels}
-			<tr>
+			<tr class="{cycle}">
 				<td class="id">{$channels[user].receivedArticleId}</td>
 				<td class="text">{$channels[user].title|escape}
 					{if $channels[user].type eq 'Review'}(r){/if}
@@ -214,6 +214,5 @@
 			{norecords _colspan=6}
 		{/section}
 	</table>
-    </div>
 	{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
 </div>

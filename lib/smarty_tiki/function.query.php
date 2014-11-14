@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -140,8 +140,6 @@ function smarty_function_query($params, $smarty)
 
 		// If specified, use _script argument to determine the php script to link to
 		// ... else, use PHP_SELF server var
-		$php_self = '';
-
 		if ( isset($params['_script']) && $params['_script'] != '' ) {
 			$php_self = $params['_script'];
 
@@ -165,18 +163,7 @@ function smarty_function_query($params, $smarty)
 					$smarty
 				);
 			} else {
-				if ($_SERVER['PHP_SELF'] == 'tiki-ajax_services.php' && isset($_GET['controller'], $_GET['action'])) {
-					$smarty->loadPlugin('smarty_function_service');
-					$php_self = smarty_function_service(
-						array(
-							'controller' => $_GET['controller'],
-							'action' => $_GET['action'],
-						),
-						$smarty
-					);
-				} else {
-					$php_self = htmlspecialchars($_SERVER['PHP_SELF']);
-				}
+				$php_self = htmlspecialchars($_SERVER['PHP_SELF']);
 			}
 
 		} else {
@@ -198,9 +185,6 @@ function smarty_function_query($params, $smarty)
 			}
 		}
 
-		if (strpos($php_self, '/') === 0) {
-			$php_self = "/" . ltrim($php_self, "/");
-		}
 		switch ( $params['_type'] ) {
 			case 'absolute_uri':
 				$ret = $base_host.$php_self.( $ret == '' ? '' : '?'.$ret );

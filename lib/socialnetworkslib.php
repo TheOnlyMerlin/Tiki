@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +10,7 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	header('location: index.php');
 	exit;
 }
-$logslib = TikiLib::lib('logs');
+require_once ('lib/logs/logslib.php');
 
 
 /**
@@ -184,8 +184,7 @@ class SocialNetworksLib extends LogsLib
 	 */
 	function getFacebookAccessToken()
 	{
-		global $prefs, $user;
-		$userlib = TikiLib::lib('user');
+		global $prefs, $user, $userlib;
 		if ($prefs['socialnetworks_facebook_application_id'] == '' or $prefs['socialnetworks_facebook_application_secr'] == '') {
 			return false;
 		}
@@ -247,7 +246,7 @@ class SocialNetworksLib extends LogsLib
 						$this->set_user_preference($user, 'socialnetworks_user_firstlogin', 'y');
 					}
 				} else {
-					$smarty = TikiLib::lib('smarty');
+					global $smarty;
 					$smarty->assign('errortype', 'login');
 					$smarty->assign('msg', tra('You need to link your local account to Facebook before you can login using it'));
 					$smarty->display('error.tpl');

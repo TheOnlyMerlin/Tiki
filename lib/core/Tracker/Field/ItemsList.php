@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -95,49 +95,7 @@ class Tracker_Field_ItemsList extends Tracker_Field_Abstract
 
 	function renderInput($context = array())
 	{
-		TikiLib::lib('header')->add_jq_onready(
-			'
-$("input[name=ins_' . $this->getOption('fieldIdHere') . '], select[name=ins_' . $this->getOption('fieldIdHere') . ']").change(function(e, val) {
-  $.getJSON(
-    "tiki-tracker_http_request_itemslist.php",
-    {
-      trackerIdList: ' . $this->getOption('trackerId') . ',
-      fieldlist: "' . implode('|',$this->getOption('displayFieldIdThere')) . '",
-      filterfield: ' . $this->getOption('fieldIdThere') . ',
-      filtervalue: $(this).find("option:selected").val() ,
-			status: "' . $this->getOption('status') . '",
-			mandatory: "' . $this->getConfiguration('isMandatory') . '"
-    },
-    function(data, status) {
-			$ddl = $("div[name=' . $this->getInsertId() . ']");
-      $ddl.empty();
-      var v, l;
-      if (data) {
-        $.each( data, function (i,data) {
-          if (data && data.length > 1) {
-            v = data[0];
-            label = data[1];
-          } else {
-            v = ""
-            label = "";
-          }
-          $ddl.append(
-            $("<div/>")
-            .text(label)
-          );
-        });
-      }
-      if (jqueryTiki.chosen) {	// I only left this because I have no clue what it does
-        $ddl.trigger("chosen:updated");
-      }
-      $ddl.trigger("change");
-    }
-  );
-}).trigger("change", [""]);
-		'
-		);
-
-		return '<div name="' . $this->getInsertId() . '"></div>';
+		return tr('Read Only');
 	}
 
 	function renderOutput( $context = array() )

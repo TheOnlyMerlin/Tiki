@@ -38,8 +38,9 @@
 					<th>{self_link _sort_arg='sort_mode' _sort_field='showPubDate'}{tr}Show Date?{/tr}{/self_link}</th>
 					<th>{tr}Action{/tr}</th>
 				</tr>
+				{cycle values="even,odd" print=false}
 				{section name=chan loop=$channels}
-					<tr>
+					<tr class="{cycle}">
 						<td class="id">{$channels[chan].rssId|escape}</td>
 						<td class="text">
 							<strong>{$channels[chan].name|escape}</strong><br>
@@ -87,61 +88,54 @@
 		{else}
 			</h2>
 		{/if}
-		<form action="tiki-admin_rssmodules.php" method="post" class="form-horizontal">
+		<form action="tiki-admin_rssmodules.php" method="post">
 			<input type="hidden" name="rssId" value="{$rssId|escape}">
-			<div class="form-group">
-				<label for="name" class="control-label col-sm-3">{tr}Name{/tr}</label>
-				<div class="col-sm-9">
-					<input type="text" name="name" value="{$name|escape}" class="form-control">
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="url" class="control-label col-sm-3">{tr}URL{/tr}</label>
-				<div class="col-sm-9">
-					<input type="url" name="url" value="{$url|escape}" class="form-control">
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="description" class="control-label col-sm-3">{tr}Description{/tr}</label>
-				<div class="col-sm-9">
-					<textarea name="description" rows="4" class="form-control">{$description|escape}</textarea>
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="refresh" class="control-label col-sm-3">{tr}Refresh rate{/tr}</label>
-				<div class="col-sm-9">
-					<select name="refresh">
-						{foreach [1, 5, 10, 15, 20, 30, 45, 60, 90, 120, 360, 720, 1440] as $min}
-							<option value="{$min|escape}" {if $refresh eq ($min*60)}selected="selected"{/if}>{($min*60)|duration}</option>
-						{/foreach}
-					</select>
-				</div>
-			</div>
-			<div class="form-group">
-				<div class="col-sm-9 col-sm-offset-3">
-					<div class="checkbox">
-						<label>
-							<input type="checkbox" name="showTitle" {if $showTitle eq 'y'}checked="checked"{/if}>
-							{tr}Show feed title{/tr}
-						</label>
-					</div>
-				</div>
-			</div>
-			<div class="form-group">
-				<div class="col-sm-9 col-sm-offset-3">
-					<div class="checkbox">
-						<label>
-							<input type="checkbox" name="showPubDate" {if $showPubDate eq 'y'}checked="checked"{/if}>
-							{tr}Show publish date{/tr}
-						</label>
-					</div>
-				</div>
-			</div>
-			<div class="form-group">
-				<div class="col-sm-9 col-sm-offset-3">
-					<input type="submit" class="btn btn-primary" name="save" value="{tr}Save{/tr}">
-				</div>
-			</div>
+			<table class="formcolor">
+				<tr>
+					<td>{tr}Name:{/tr}</td>
+					<td><input type="text" name="name" value="{$name|escape}"></td>
+				</tr>
+				<tr>
+					<td>{tr}Description:{/tr}</td>
+					<td><textarea name="description" rows="4" cols="40" style="width:95%">{$description|escape}</textarea></td>
+				</tr>
+				<tr>
+					<td>{tr}URL:{/tr}</td>
+					<td><input size="47" type="text" name="url" value="{$url|escape}"></td>
+				</tr>
+				<tr>
+					<td>{tr}Refresh rate:{/tr}</td>
+					<td>
+						<select name="refresh">
+							<option value="1" {if $refresh eq 60}selected="selected"{/if}>{60|duration}</option>
+							<option value="5" {if $refresh eq 300}selected="selected"{/if}>{300|duration}</option>
+							<option value="10" {if $refresh eq 600}selected="selected"{/if}>{600|duration}</option>
+							<option value="15" {if $refresh eq 900}selected="selected"{/if}>{900|duration}</option>
+							<option value="20" {if $refresh eq 1200}selected="selected"{/if}>{1200|duration}</option>
+							<option value="30" {if $refresh eq 1800}selected="selected"{/if}>{1800|duration}</option>
+							<option value="45" {if $refresh eq 2700}selected="selected"{/if}>{2700|duration}</option>
+							<option value="60" {if $refresh eq 3600}selected="selected"{/if}>{3600|duration}</option>
+							<option value="90" {if $refresh eq 5400}selected="selected"{/if}>{5400|duration}</option>
+							<option value="120" {if $refresh eq 7200}selected="selected"{/if}>{7200|duration}</option>
+							<option value="360" {if $refresh eq 21600}selected="selected"{/if}>{21600|duration}</option>
+							<option value="720" {if $refresh eq 43200}selected="selected"{/if}>{43200|duration}</option>
+							<option value="1440" {if $refresh eq 86400}selected="selected"{/if}>{86400|duration}</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>{tr}show feed title:{/tr}</td>
+					<td><input type="checkbox" name="showTitle" {if $showTitle eq 'y'}checked="checked"{/if}></td>
+				</tr>
+				<tr>
+					<td>{tr}show publish date:{/tr}</td>
+					<td><input type="checkbox" name="showPubDate" {if $showPubDate eq 'y'}checked="checked"{/if}></td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td><input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}"></td>
+				</tr>
+			</table>
 		</form>
 	{/tab}
 	{if $articleConfig}
@@ -150,13 +144,13 @@
 		        {remarksbox type="tip" title="{tr}Tips{/tr}"}
 					{tr}Once you have defined the settings below, each new item in this rss feed will generate a new article{/tr}.
 					<a target="tikihelp" href="https://doc.tiki.org/Article+generator" class="tikihelp" style="float:none" title="{tr}Article Generator:{/tr}
-						{tr}From the point when you defined the settings onwards, new items in the feed become articles each time the feed is refreshed. But only new ones.{/tr}">
+						{tr}After the point when you defined these settings, new rss items in the feed will become articles each time the feed is refreshed. But only new ones.{/tr}">
 						<img src="img/icons/help.png" alt="" width="16" height="16" class="icon" />
 					</a>
 			        <hr>
-			        {tr}You can enable <strong>Show source</strong> for the <a href="tiki-article_types.php" target="_blank">article type</a> (hidden by default), to allow users to read the full content{/tr}.
+			        {tr}You can enable "Show source" for the <a href="tiki-article_types.php" target="_blank">article type</a> (hidden by default), to allow users to read the full content{/tr}.
 		        {/remarksbox}
-
+		        
 			<form method="post" action="">
 				<p>
 					<input id="article_active" type="checkbox" name="enable" value="1"{if $articleConfig.active} checked="checked"{/if}>
@@ -176,7 +170,6 @@
 					<label for="article_future_publish">{tr}Publish in the future{/tr}</label>
 					<input type="text" name="future_publish" id="article_future_publish" value="{$articleConfig.future_publish|escape}" size="4"> {tr}minutes{/tr} ({tr}-1 to use original publishing date from the feed{/tr})
 				</p>
-				<h3>{tr}Default Settings{/tr}</h3>
 				<p>
 					<label for="article_type">{tr}Type{/tr}</label>
 					<select name="type" id="article_type">
@@ -202,64 +195,11 @@
 						{/foreach}
 					</select>
 				</p>
-				<h3>{tr}Custom Settings for Source Categories{/tr}</h3>
-				{if !$sourcecats}
-				<p>{tr}No source categories detected for this feed{/tr}</p>
-				{/if}
-				<table>
-				<tr>
-				<th>{tr}Source Category{/tr}
-				<th>{tr}Type{/tr}</th>
-				<th>{tr}Topic{/tr}</th>
-				<th>{tr}Rating{/tr}</th>
-				<th>{tr}Priority (10 is highest){/tr}</th>
-				</tr>
-				{foreach $sourcecats as $sourcecat => $settings}
-				<tr>
-				<td>
-					{$sourcecat|escape}
-				</td>
-				<td>
-					<select name="custom_atype[{$sourcecat|escape}]">
-						<option value="">{tr}Default{/tr}</option>
-						{foreach from=$types item=t}
-						<option value="{$t.type|escape}"{if $t.type eq $article_custom_info[$sourcecat].atype} selected="selected"{/if}>{$t.type|escape}</option>
-						{/foreach}
-					</select>
-				</td>
-				<td>
-					<select name="custom_topic[{$sourcecat|escape}]">
-						<option value="">{tr}Default{/tr}</option>
-						<option value="0" {if $article_custom_info[$sourcecat].topic === "0"} selected="selected"{/if}>{tr}None{/tr}</option>
-						{foreach from=$topics item=t}
-						<option value="{$t.topicId|escape}"{if $t.topicId eq $article_custom_info[$sourcecat].topic} selected="selected"{/if}>{$t.name|escape}</option>
-						{/foreach}
-					</select>
-				</td>
-				<td>
-					<select name="custom_rating[{$sourcecat|escape}]">
-						<option value="">{tr}Default{/tr}</option>
-						{foreach from=$ratingOptions item=v}
-						<option value="{$v|escape}"{if $v === $article_custom_info[$sourcecat].rating} selected="selected"{/if}>{$v|escape}</option>			
-						{/foreach}
-					</select>
-				</td>
-				<td>
-                                        <select name="custom_priority[{$sourcecat|escape}]">
-                                                {foreach from=$ratingOptions item=v}
-                                                <option value="{$v|escape}"{if $v === $article_custom_info[$sourcecat].priority} selected="selected"{/if}>{$v|escape}</option>
-                                                {/foreach}
-                                        </select>
-				</td>
-				</tr>
-				{/foreach}
-				</table>
-				<h3>{tr}Categorize Created Articles{/tr}</h3>
 				<p>
 					{include file='categorize.tpl'}
 				</p>
 				<p>
-					<input type="submit" class="btn btn-default btn-sm" value="{tr}Configure{/tr}">
+					<input type="submit" class="btn btn-default" value="{tr}Configure{/tr}">
 				</p>
 			</form>
 		{/tab}

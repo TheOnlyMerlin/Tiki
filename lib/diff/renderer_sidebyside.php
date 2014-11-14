@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -24,7 +24,7 @@ class Text_Diff_Renderer_sidebyside extends Tiki_Text_Diff_Renderer
     function _startDiff()
     {
         ob_start();
-        //echo '<table class="table-bordered diff">';
+        //echo '<table class="normal diff">';
     }
 
     function _endDiff()

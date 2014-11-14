@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -18,7 +18,7 @@ if (!empty($_REQUEST['title'])) {
 
 $login = '<form name="loginbox" action="tiki-login.php?page=tikiIndex" method="post"><table><tr><td>' .
 	'User:</td><td><input type="text" name="user"  size="20" /></td></tr><tr><td>' .
-	'Pass:</td><td><input type="password" name="pass" size="20" /></td></tr><tr><td align="center"><input type="submit" name="login" value="login" class="btn btn-default" /></td></tr></table></form>';
+	'Pass:</td><td><input type="password" name="pass" size="20" /></td></tr><tr><td align="center"><input type="submit" name="login" value="login" /></td></tr></table></form>';
 
 $back = '<p><a href="javascript:history.back()">Go back</a></p>';
 

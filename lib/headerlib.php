@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -26,16 +26,13 @@ class HeaderLib
 	public $wysiwyg_parsing;
 	public $lockMinifiedJs;
 
-	public $jquery_version = '1.11.0';
-	public $jqueryui_version = '1.10.4';
+	public $jquery_version = '1.10.2';
+	public $jqueryui_version = '1.10.3';
 	public $jquerymobile_version = '1.3.2';
 
 
 	function __construct()
 	{
-		$smarty = TikiLib::lib('smarty');
-		$smarty->assign('headerlib', $this);
-
 		$this->title = '';
 		$this->jsfiles = array();
 		$this->js = array();
@@ -134,7 +131,7 @@ class HeaderLib
 		return $this;
 	}
 
-	function add_cssfile($file, $rank=0)
+	function add_cssfile($file,$rank=0)
 	{
 		if (empty($this->cssfiles[$rank]) or !in_array($file, $this->cssfiles[$rank])) {
 			$this->cssfiles[$rank][] = $file;
@@ -192,9 +189,9 @@ class HeaderLib
 
 	function output_headers()
 	{
-		global $style_ie6_css, $style_ie7_css, $style_ie8_css, $style_ie9_css;
-		$smarty = TikiLib::lib('smarty');
-		$smarty->loadPlugin('smarty_modifier_escape');
+		global $style_ie6_css, $style_ie7_css, $style_ie8_css, $style_ie9_css, $smarty;
+
+    $smarty->loadPlugin('smarty_modifier_escape');
 
 		ksort($this->cssfiles);
 		ksort($this->css);
@@ -227,25 +224,25 @@ class HeaderLib
 
 		// Handle theme's special CSS file for IE6 hacks
 		$back .= "<!--[if lt IE 7]>\n"
-				.'<link rel="stylesheet" href="' . $this->convert_cdn('themes/base_files/feature_css/ie6.css') . '" type="text/css" />'."\n";
+				.'<link rel="stylesheet" href="' . $this->convert_cdn('css/ie6.css') . '" type="text/css" />'."\n";
 		if ( $style_ie6_css != '' ) {
 			$back .= '<link rel="stylesheet" href="'.smarty_modifier_escape($this->convert_cdn($style_ie6_css)).'" type="text/css" />'."\n";
 		}
 		$back .= "<![endif]-->\n";
 		$back .= "<!--[if IE 7]>\n"
-				.'<link rel="stylesheet" href="themes/base_files/feature_css/ie7.css" type="text/css" />'."\n";
+				.'<link rel="stylesheet" href="css/ie7.css" type="text/css" />'."\n";
 		if ( $style_ie7_css != '' ) {
 			$back .= '<link rel="stylesheet" href="'.smarty_modifier_escape($this->convert_cdn($style_ie7_css)).'" type="text/css" />'."\n";
 		}
 		$back .= "<![endif]-->\n";
 		$back .= "<!--[if IE 8]>\n"
-				.'<link rel="stylesheet" href="themes/base_files/feature_css/ie8.css" type="text/css" />'."\n";
+				.'<link rel="stylesheet" href="css/ie8.css" type="text/css" />'."\n";
 		if ( $style_ie8_css != '' ) {
 			$back .= '<link rel="stylesheet" href="'.smarty_modifier_escape($this->convert_cdn($style_ie8_css)).'" type="text/css" />'."\n";
 		}
 		$back .= "<![endif]-->\n";
 		$back .= "<!--[if IE 9]>\n"
-				.'<link rel="stylesheet" href="themes/base_files/feature_css/ie9.css" type="text/css" />'."\n";
+				.'<link rel="stylesheet" href="css/ie9.css" type="text/css" />'."\n";
 		if ( $style_ie9_css != '' ) {
 			$back .= '<link rel="stylesheet" href="'.smarty_modifier_escape($this->convert_cdn($style_ie9_css)).'" type="text/css" />'."\n";
 		}
@@ -265,12 +262,12 @@ class HeaderLib
 
 	function output_js_files()
 	{
-		global $prefs;
+		global $prefs, $smarty;
+
 		if ($prefs['javascript_enabled'] == 'n') {
 			return;
 		}
 
-		$smarty = TikiLib::lib('smarty');
 		$smarty->loadPlugin('smarty_modifier_escape');
 		ksort($this->jsfiles);
 
@@ -537,7 +534,7 @@ class HeaderLib
 	 */
 	function getJsfiles()
 	{
-		$smarty = TikiLib::lib('smarty');
+		global $smarty;
 		$smarty->loadPlugin('smarty_modifier_escape');
 
 		ksort($this->jsfiles);
@@ -606,7 +603,7 @@ class HeaderLib
 		// the one below should work afaics but just doesn't! :(
 		// preg_match_all('/<script.*type=[\'"]?text\/javascript[\'"]?.*>(\s*<\!--\/\/--><\!\[CDATA\[\/\/><\!--)?\s*?(.*)(\s*\/\/--><\!\]\]>\s*)?<\/script>/imsU', $html, $js);
 
-		return array_filter($js_script);
+		return $js_script;
 	}
 
 	function removeJsFromHTML( $html )
@@ -639,8 +636,7 @@ class HeaderLib
 
 	private function output_css_files_list( $files, $media = '' )
 	{
-		global $prefs;
-		$smarty = TikiLib::lib('smarty');
+		global $prefs, $smarty;
 		$smarty->loadPlugin('smarty_modifier_escape');
 
 		$back = '';
@@ -714,23 +710,17 @@ class HeaderLib
 		global $tikiroot;
 
 		preg_match_all('/@import\s+url\("([^;]*)"\);/', $minified, $parts);
-		$top = [];
+		$imports = array_unique($parts[0]);
 
 		$pre = '';
-		foreach ( $parts[1] as $k => $f ) {
-			if (substr($f, 0, 2) == '//' || substr($f, 0, 7) == 'http://' || substr($f, 0, 8) == 'https://') {
-				$top[] = $parts[0][$k];
-				unset($parts[0][$k]); // Exclude import removal, external file
-			} else {
-				$pre .= $this->minify_css($f);
-			}
+		foreach ( $parts[1] as $f ) {
+			$pre .= $this->minify_css($f);
 		}
 
-		$imports = array_unique($parts[0]);
 		$minified = $pre . $minified;
 		$minified = str_replace($imports, '', $minified);
 
-		return implode("\n", $top) . "\n" . $minified;
+		return $minified;
 	}
 
 	public function minify_css( $file )
@@ -793,13 +783,6 @@ class HeaderLib
 		$files = $this->process_themegen_files($files);
 
 		return $files;
-	}
-
-	function get_css_files()
-	{
-		$files = $this->collect_css_files();
-
-		return array_merge($files['default'], $files['screen']);
 	}
 
 	private function process_themegen_files($files)
@@ -902,3 +885,6 @@ class HeaderLib
 	}
 }
 
+global $headerlib; $headerlib = new HeaderLib;
+global $smarty;
+$smarty->assignByRef('headerlib', $headerlib);

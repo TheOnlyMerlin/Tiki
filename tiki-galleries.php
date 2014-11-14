@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,8 +8,8 @@
 $section = 'galleries';
 require_once ('tiki-setup.php');
 
-$imagegallib = TikiLib::lib('imagegal');
-$categlib = TikiLib::lib('categ');
+global $imagegallib; include_once ('lib/imagegals/imagegallib.php');
+global $categlib; include_once ('lib/categories/categlib.php');
 include_once ('lib/map/usermap.php');
 $access->check_feature('feature_galleries');
 
@@ -438,7 +438,10 @@ if (!isset($_REQUEST['offset'])) {
 $smarty->assign_by_ref('offset', $offset);
 
 // Get the list of libraries available for this user (or public galleries)
-$imagegallib = TikiLib::lib('imagegal');
+global $imagegallib;
+if (!is_object($imagegallib)) {
+	require_once('lib/imagegals/imagegallib.php');
+}
 
 $galleries = $imagegallib->list_galleries($offset, $maxRecords, $sort_mode, 'admin', $find);
 Perms::bulk(array( 'type' => 'image gallery' ), 'object', $galleries, 'galleryId');

@@ -8,7 +8,6 @@
 {/if}
 {tabset}
 {tab name="{tr}List{/tr}"}
-    <div class="table-responsive">
 	<table class="table normal">
 	<tr>
 		<th>{tr}Code{/tr}</th>
@@ -18,24 +17,23 @@
 		<th>{tr}Comment{/tr}</th>
 		<th>{tr}Actions{/tr}</th>
 	</tr>
-
+	{cycle values="odd,even" print=false}
 	{foreach from=$discounts.data item=discount}
-	<tr>
+	<tr class="{cycle}">
 		<td class="text">{$discount.code|escape}</td>
 		<td class="text">{$discount.value|escape}{if !strstr($discount.value, '%')} {$prefs.payment_currency|escape}{/if}</td>
 		<td class="date">{$discount.created|tiki_short_date}</td>
 		<td class="integer">{$discount.max|escape}</td>
 		<td class="text">{$discount.comment|escape}</td>
 		<td class="action">
-			{self_link id=$discount.id cookietab=2}{icon _id=page_edit class=tips title="{tr}Edit{/tr}" alt="{tr}Edit{/tr}"}{/self_link}
-			{self_link del=$discount.id}{icon _id=cross class=tips title="{tr}Delete{/tr}" alt="{tr}Delete{/tr}"}{/self_link}
+			{self_link id=$discount.id cookietab=2}{icon _id=page_edit class=titletips title="{tr}Edit{/tr}" alt="{tr}Edit{/tr}"}{/self_link}
+			{self_link del=$discount.id}{icon _id=cross class=titletips title="{tr}Delete{/tr}" alt="{tr}Delete{/tr}"}{/self_link}
 		</td>
 	</tr>
 	{foreachelse}
 		{norecords _colspan=6}
 	{/foreach}
 	</table>
-    </div>
 	{pagination_links cant=$discounts.cant step=$discounts.max offset=$discounts.offset}{/pagination_links}
 {/tab}
 {capture name=tabtitle}{if empty($info.id)}{tr}Create{/tr}{else}{tr}Edit{/tr}{/if}{/capture}
@@ -64,7 +62,7 @@
 	</tr>
 	<tr>
 		<td></td>
-		<td><input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}"></td>
+		<td><input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}"></td>
 	</tr>
 	</table>
 	</form>

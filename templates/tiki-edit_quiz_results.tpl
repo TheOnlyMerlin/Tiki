@@ -1,11 +1,11 @@
 {title url="tiki-edit_quiz_results.php?quizId=$quizId"}{tr}Edit quiz results{/tr}{/title}
 
-<div class="t_navbar form-group">
-	{button href="tiki-list_quizzes.php" class="btn btn-default" _text="{tr}List Quizzes{/tr}"}
-	{button href="tiki-quiz_stats.php" class="btn btn-default" _text="{tr}Quiz Stats{/tr}"}
-	{button href="tiki-quiz_stats_quiz.php?quizId=$quizId" class="btn btn-default" _text="{tr}This Quiz Stats{/tr}"}
-	{button href="tiki-edit_quiz.php?quizId=$quizId" class="btn btn-default" _text="{tr}Edit this Quiz{/tr}"}
-	{button href="tiki-edit_quiz.php" class="btn btn-default" _text="{tr}Admin Quizzes{/tr}"}
+<div class="navbar">
+	{button href="tiki-list_quizzes.php" _text="{tr}List Quizzes{/tr}"} 
+	{button href="tiki-quiz_stats.php" _text="{tr}Quiz Stats{/tr}"}
+	{button href="tiki-quiz_stats_quiz.php?quizId=$quizId" _text="{tr}This Quiz Stats{/tr}"}
+	{button href="tiki-edit_quiz.php?quizId=$quizId" _text="{tr}Edit this Quiz{/tr}"} 
+	{button href="tiki-edit_quiz.php" _text="{tr}Admin Quizzes{/tr}"}
 </div>
 
 <h2>
@@ -43,7 +43,7 @@
 				
 			</td>
 			<td>
-				<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
+				<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 			</td>
 		</tr>
 	</table>
@@ -53,7 +53,6 @@
 
 {include file='find.tpl'}
 
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		<th>
@@ -67,9 +66,9 @@
 		</th>
 		<th>{tr}Action{/tr}</th>
 	</tr>
-
+	{cycle values="odd,even" print=false}
 	{section name=user loop=$channels}
-		<tr>
+		<tr class="{cycle}">
 			<td class="integer">{$channels[user].fromPoints}</td>
 			<td class="integer">{$channels[user].toPoints}</td>
 			<td class="text">{$channels[user].answer|truncate:230:"(...)":true|escape|nl2br}</td>
@@ -82,6 +81,5 @@
 		{norecords _colspan=4}
 	{/section}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}

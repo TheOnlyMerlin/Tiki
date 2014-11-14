@@ -10,10 +10,8 @@
 			{trackeroutput item=$item field=$field list_mode=$list_mode showlinks=$context.showlinks url=$context.url}
 		{/capture}
 		{set var="f_"|cat:$field.fieldId value=$smarty.capture.value}
-		{set var="f_"|cat:$field.permName value=$smarty.capture.value}
 	{else}
 		{set var="f_"|cat:$field.fieldId value=''}
-		{set var="f_"|cat:$field.permName value=''}
 	{/if}
 {/foreach}
 {set var=f_created value=$item.created}
@@ -22,9 +20,5 @@
 {set var=f_status value=$item.status}
 {set var=f_itemUser value=$item.itemUser}
 {* ------------------------------------ *}
-{if $force_separate_compile eq 'y'}
-	{include file="$wiki" item=$item compile_id=$f_itemId}
-{else}
-    {include file="$wiki" item=$item}
-{/if}
+{include file="$wiki" item=$item}
 {/strip}

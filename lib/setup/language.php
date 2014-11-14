@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -23,9 +23,7 @@ function isValidLocale($localeIdentifier = '')
 // Returns true on success, false on failure (if $localeIdentifier is not a valid and allowed locale identifier) 
 function setLanguage($localeIdentifier = '')
 {
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
-	global $prefs, $user;
+	global $prefs, $tikilib, $user, $smarty;
 	if (isValidLocale($localeIdentifier)) {
 		$prefs['language'] = $localeIdentifier;
 		$smarty->refreshLanguage();

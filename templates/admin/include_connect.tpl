@@ -1,7 +1,6 @@
 <div>&nbsp;</div>
 {tabset}
 	{tab name="{tr}Tiki Connect{/tr}"}
-        <h2>{tr}Tiki Connect{/tr}</h2>
 		<fieldset>
 			<legend><strong>{tr}Join the community!{/tr}</strong></legend>
 			<p>{tr}Tiki Wiki CMS Groupware is Free and Open Source Software (FOSS). It is a community-driven project which exists and improves thanks to the participation of people just like YOU.{/tr}</p>
@@ -21,7 +20,7 @@
 		<fieldset>
 			<legend><strong>{tr}Promote your site{/tr}</strong></legend>
 			<p>
-				{tr}Add your site to the Tiki directory.{/tr}
+				{tr}Add your site to the Tiki diretory.{/tr}
 				{button href="tiki-register_site.php" _text="{tr}Submit your site{/tr}"}
 			</p>
 		</fieldset>
@@ -35,7 +34,8 @@
 		<fieldset>
 			<legend><strong>{tr}Help improve Tiki{/tr}</strong></legend>
 			<p>
-				{tr}Submit a feature request or bug report.{/tr} {button _text="{tr}Visit Tiki development site{/tr}" href="http://dev.tiki.org/Report+a+Bug"}
+				{tr}Submit a feature request or bug report.{/tr}
+				<a href="http://dev.tiki.org/Report+a+Bug">{tr}Click here to go to our development site{/tr}</a>
 			</p>
 		</fieldset>
 		<fieldset>
@@ -48,7 +48,6 @@
 		</fieldset>
 	{/tab}
 	{tab name="{tr}Settings{/tr}"}
-        <h2>{tr}Settings{/tr}</h2>
 		<form class="admin" id="connect" name="connect" action="tiki-admin.php?page=connect" method="post">
 			<fieldset>
 				<legend>{tr}Tiki Connect{/tr}</legend>
@@ -63,11 +62,11 @@
 				{/remarksbox}
 				{preference name="connect_feature"}
 				<div class="adminoptionboxchild" id="connect_feature_childcontainer">
-					<div class="t_navbar btn-group form-group">
-						{button _script="#" class="btn btn-default" _text="{tr}Send Info{/tr}" _title="{tr}Send the data{/tr}" _id="connect_send_btn"}
-						{button _script="#" class="btn btn-default" _text="{tr}Preview info{/tr}" _title="{tr}See what is going to be sent{/tr}" _id="connect_list_btn"}
+					<div class="navbar">
+						{button _script="#" _text="{tr}Send Info{/tr}" _title="{tr}Send the data{/tr}" _id="connect_send_btn"}
+						{button _script="#" _text="{tr}Preview info{/tr}" _title="{tr}See what is going to be sent{/tr}" _id="connect_list_btn"}
 						{if empty($prefs.connect_site_title)}
-							{button _text="{tr}Fill form{/tr}" class="btn btn-default" _title="{tr}Fill this form in based on other preferences{/tr}" _id="connect_defaults_btn" _script="#"}
+							{button _text="{tr}Fill form{/tr}" _title="{tr}Fill this form in based on other preferences{/tr}" _id="connect_defaults_btn" _script="#"}
 						{/if}
 					</div>
 					{preference name="connect_send_info"}
@@ -103,12 +102,8 @@
 
 			</fieldset>
 
-			<div class="row">
-				<div class="form-group col-lg-12 clearfix">
-					<div class="text-center">
-						<input type="submit" class="btn btn-primary btn-sm" name="connectprefs" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}" />
-					</div>
-				</div>
+			<div class="heading input_submit_container" style="text-align: center;">
+				<input type="submit" class="btn btn-default" name="connectprefs" value="{tr}Change preferences{/tr}" />
 			</div>
 		</form>
 	{/tab}
@@ -124,17 +119,16 @@
 				{/if}
 			</form>
 
-                <div class="table-responsive">
-                <table class="table normal">
+			<table class="normal">
 				<tr>
 					<th>{tr}Created{/tr}</th>
 					<th>{tr}Title{/tr}</th>
 					<th>{tr}Language{/tr}</th>
 					<th>{tr}Keywords{/tr}</th>
 				</tr>
-
+				{cycle values="odd,even" print=false}
 				{section name=connection loop=$connect_recent}
-					<tr>
+					<tr class="{cycle}">
 						<td>
 							{$connect_recent[connection].created}
 						</td>
@@ -152,7 +146,6 @@
 					{norecords _colspan=4}
 				{/section}
 			</table>
-            </div>
 
 		{/tab}
 	{/if}
@@ -169,12 +162,8 @@
 				{preference name=suite_jitsi_configuration}
 			</fieldset>
 
-			<div class="row">
-				<div class="form-group col-lg-12 clearfix">
-					<div class="text-center">
-						<input type="submit" class="btn btn-primary btn-sm" name="connectprefs" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}" />
-					</div>
-				</div>
+			<div class="heading input_submit_container" style="text-align: center;">
+				<input type="submit" class="btn btn-default btn-sm" name="connectprefs" value="{tr}Change preferences{/tr}" />
 			</div>
 		</form>
 	{/tab}

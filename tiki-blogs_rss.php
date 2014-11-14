@@ -2,15 +2,16 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
-$bloglib = TikiLib::lib('blog');
-$rsslib = TikiLib::lib('rss');
+require_once ('lib/tikilib.php');
+require_once ('lib/blogs/bloglib.php');
+require_once ('lib/rss/rsslib.php');
 $access->check_feature('feature_blogs');
 
 if ($prefs['feed_blogs'] != 'y') {
@@ -57,6 +58,7 @@ if ($output["data"] == "EMPTY") {
 	$tmp = array();
 	include_once ('tiki-sefurl.php');
 	foreach ($changes["data"] as $data) {
+		global $bloglib;
 		$data["$descId"] = $tikilib->parse_data(
 			$data[$descId],
 			array(

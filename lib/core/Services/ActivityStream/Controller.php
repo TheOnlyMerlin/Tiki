@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -60,6 +60,7 @@ class Services_ActivityStream_Controller
 				'contributors' => true,
 			));
 			$formatter = new Search_Formatter($plugin);
+			$formatter->setDataSource($this->lib->getDataSource());
 			$out = $formatter->format($result);
 		} catch (SmartyException $e) {
 			throw new Services_Exception_NotAvailable($e->getMessage());
@@ -70,7 +71,7 @@ class Services_ActivityStream_Controller
 			'pageNumber' => $page,
 			'nextPossible' => $builder->isNextPossible(),
 			'stream' => $encoded,
-			'body' => TikiLib::lib('parser')->parse_data($out, array('is_html' => true)),
+			'body' => TikiLib::lib('parser')->parse_data($out),
 		);
 	}
 }

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -1034,7 +1034,7 @@ class ImageGalsLib extends TikiLib
 		}
 
 		if ($prefs['feature_actionlog'] == 'y') {
-			$logslib = TikiLib::lib('logs');
+			global $logslib; include_once('lib/logs/logslib.php');
 			$logslib->add_action('Uploaded', $galleryId, 'image gallery', 'imageId=' . $imageId);
 		}
 
@@ -1058,7 +1058,7 @@ class ImageGalsLib extends TikiLib
 	 */
 	function notify($imageId, $galleryId, $name, $filename, $description, $galleryName, $action, $user)
 	{
-		global $prefs;
+		global $prefs, $smarty, $tikilib;
 		if ($prefs['feature_user_watches'] == 'y') {
 			$event = 'image_gallery_changed';
 			$nots = $this->get_event_watches($event, $galleryId);
@@ -1068,7 +1068,6 @@ class ImageGalsLib extends TikiLib
 				$reportsManager->addToCache($nots, array("event"=>$event, "imageId"=>$imageId, "imageName"=>$name, "fileName"=>$filename, "galleryId"=>$galleryId, "galleryName"=>$galleryName, "action"=>$action, "user"=>$user));
 			}
 
-			$smarty = TikiLib::lib('smarty');
 			include_once('lib/notifications/notificationemaillib.php');
 			$smarty->assign_by_ref('galleryId', $galleryId);
 			$smarty->assign_by_ref('galleryName', $galleryName);
@@ -1601,8 +1600,7 @@ class ImageGalsLib extends TikiLib
 		$cant = $this->getOne($query_cant, $bindvars);
 		$ret = array();
 
-		global $prefs, $user, $tiki_p_admin;
-		$userlib = TikiLib::lib('user');
+		global $prefs, $userlib, $user, $tiki_p_admin;
 		while ($res = $result->fetchRow()) {
 			$res['perms'] = $this->get_perm_object($res['galleryId'], 'image gallery', $res, false);
 			if ($res['perms']['tiki_p_view_image_gallery'] == 'y') {
@@ -2713,3 +2711,5 @@ class ImageGalsLib extends TikiLib
 		}
 	}
 }
+global $imagegallib;
+$imagegallib = new ImageGalsLib;

@@ -36,7 +36,7 @@
 				</a>
 			</th>
 		</tr>
-
+		{cycle values="odd,even" print=false}
 		{section name=task_i loop=$tasklist}
 			<tr>
 				<td class="prio{$tasklist[task_i].priority}">
@@ -97,12 +97,12 @@
 					<a {if $tasklist[task_i].status eq 'c'}style="text-decoration:line-through;"{/if} class="link" href="tiki-user_tasks.php?taskId={$tasklist[task_i].taskId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;tiki_view_mode=view&amp;find={$find}">{$tasklist[task_i].title|escape}</a>
 				</td>
 				<td {if $tasklist[task_i].status eq 'c'}style="text-decoration:line-through;"{/if} class="prio{$tasklist[task_i].priority}">
-					<div class="center-block">
+					<div class="mini">
 						{$tasklist[task_i].start|tiki_short_date}&nbsp;[{$tasklist[task_i].start|tiki_short_time}]
 					</div>
 				</td>
 				<td {if $tasklist[task_i].status eq 'c'}style="text-decoration:line-through;"{/if} class="prio{$tasklist[task_i].priority}">
-					<div class="center-block">
+					<div class="mini">
 						{$tasklist[task_i].end|tiki_short_date}&nbsp;[{$tasklist[task_i].end|tiki_short_time}]
 					</div>
 				</td>
@@ -136,10 +136,10 @@
 					<option value="move_marked_to_trash">{tr}Trash{/tr}</option>
 					<option value="remove_marked_from_trash">{tr}Undo Trash{/tr}</option>
 				</select>
-				<input type="submit" class="btn btn-primary btn-sm" name="update_tasks" value="{tr}Go{/tr}" style="vertical-align:bottom;">
+				<input type="submit" class="btn btn-default" name="update_tasks" value="{tr}Go{/tr}" style="vertical-align:bottom;">
 			</td>
 			<td colspan="3" style="text-align:right;">
-				<input type="submit" class="btn btn-primary btn-sm" name="update_percentage" value="{tr}Go{/tr}" style="vertical-align:bottom;">
+				<input type="submit" class="btn btn-default" name="update_percentage" value="{tr}Go{/tr}" style="vertical-align:bottom;">
 				{icon _id='arrow_turn_down_left' title="{tr}Go{/tr}" alt="{tr}Go{/tr}" style="margin-bottom:8px; margin-right:8px"}
 			</td>
 		</tr>
@@ -162,7 +162,7 @@
 		</tr>
 		<tr>
 			<td colspan="6" style="text-align:center;">
-				<input type="submit" class="btn btn-info btn-sm" name="reload" value="{tr}Reload{/tr}">
+				<input type="submit" class="btn btn-default" name="reload" value="{tr}Reload{/tr}">
 			</td>
 		</tr>
 	</table>

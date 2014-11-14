@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -45,16 +45,16 @@ function wikiplugin_shopperinfo_info()
 
 function wikiplugin_shopperinfo( $data, $params )
 {
-	global $user;
-	$smarty = TikiLib::lib('smarty');
+	global $smarty, $user, $access;
 	if ($user && $params['showifloggedin'] != 'y' || empty($params['values'])) {
 		return '';
 	}
 	if ( $_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['shopperinfo'])) {
+		global $access;
+
 		foreach ($params['values'] as $v) {
 			// Check all filled in
 			if (empty($_POST[$v])) {
-				$access = TikiLib::lib('access');
 				$access->redirect($_SERVER['REQUEST_URI'], tr('Please fill in all fields')); 
 				die;
 			}

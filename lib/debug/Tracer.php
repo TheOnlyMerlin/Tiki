@@ -34,24 +34,12 @@ class Tracer
 
 	public $traces_are_on = false;
 	public $trace_file_path = NULL;
-	public $tiki_trace_active_ids = array();
+	public $tiki_trace_active_ids = NULL;
 
-	public function __construct($trace_file_path, $traces_are_on=false, $traces_active_ids = null)
+	public function __construct($trace_file_path, $traces_are_on=false, $traces_active_ids)
 	{
-        if ($traces_active_ids == null)
-        {
-            $traces_active_ids = array();
-        }
 		$this->trace_file_path = $trace_file_path;
 		$this->traces_are_on = $traces_are_on;
-        if (isset($traces_active_ids))
-        {
-            $this->tiki_trace_active_ids = array_merge($traces_active_ids, array());
-        }
-        else
-        {
-            $this->tiki_trace_active_ids = array();
-        }
 		$this->tiki_trace_active_ids = array_merge($traces_active_ids, array());
 		if ($trace_file_path != NULL) {
 			file_put_contents($this->trace_file_path, '');
@@ -65,11 +53,6 @@ class Tracer
 			file_put_contents($this->trace_file_path, "-- $trace_id: $message\n", FILE_APPEND);
 		}
 	}
-
-    public function clear_trace_file()
-    {
-        file_put_contents($this->trace_file_path, "");
-    }
 
 	//
 	// Method for pretty printing a data structure as a "human readable"

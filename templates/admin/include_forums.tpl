@@ -1,27 +1,23 @@
 {* $Id$ *}
+{remarksbox type="tip" title="{tr}Tip{/tr}"}
+	{tr}To add/remove forums, look for "Admin forums" under "Forums" on the application menu, or{/tr} <a class="rbox-link" href="tiki-admin_forums.php">{tr}Click Here{/tr}</a>.
+{/remarksbox}
+
 <form method="post" action="tiki-admin.php?page=forums">
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-			<a role="button" class="btn btn-default btn-sm" href="tiki-admin_forums.php" title="{tr}List{/tr}">
-				{icon name="list"} {tr}Forums{/tr}
-			</a>
-            <div class="pull-right">
-                <input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-            </div>
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+	</div>
 
 	{tabset name="admin_forums"}
 		{tab name="{tr}General Settings{/tr}"}
-            <h2>{tr}General Settings{/tr}</h2>
 		
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Activate the feature{/tr}</legend>
 				{preference name=feature_forums visible="always"}
-				{preference name=home_forum}
-				{preference name=forum_image_file_gallery}
 			</fieldset>
 			
+			{preference name=home_forum}
+
 			<fieldset>
 				<legend>
 					{tr}Features{/tr}{help url="Forum"}
@@ -44,7 +40,6 @@
 				{preference name=forum_comments_no_title_prefix}
 				{preference name=forum_reply_forcetitle}
 				{preference name=feature_forums_allow_thread_titles}
-				{preference name=forum_inbound_mail_ignores_perms}
 				{preference name=forum_inbound_mail_parse_html}
 				{preference name=forum_match_regex}
 			</fieldset>
@@ -76,7 +71,6 @@
 		{/tab}
 
 		{tab name="{tr}Forums Listing{/tr}"}
-            <h2>{tr}Forums Listing{/tr}</h2>
 			<input type="hidden" name="forumlistprefs" />
 			{preference name=forums_ordering}
 			{tr}Select which items to display when listing forums:{/tr}
@@ -96,12 +90,7 @@
 			</div>
 		{/tab}
 	{/tabset}
-    <br>{* I cheated. *}
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="text-center">
-                <input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-            </div>
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: center">
+		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>

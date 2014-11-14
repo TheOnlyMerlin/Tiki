@@ -4,7 +4,7 @@
  *
  * @package TikiWiki
  * @subpackage lib\init
- * @copyright (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project. All Rights Reserved. See copyright.txt for details and a complete list of authors.
+ * @copyright (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project. All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * @licence Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
  */
 // $Id$
@@ -94,15 +94,6 @@ function init_language( $lg )
 		if (!empty($tikidomain) && is_file($customfile)) {
 			if (! check_file_BOM($customfile)) {
 				include_once($customfile);
-			}
-		}
-
-		$files = glob("addons/*/lang/$lg/addon.php");
-		if (is_array($files)) {
-			global $lang_addon;
-			foreach ($files as $file) {
-				require($file);
-				$lang = array_merge($lang, $lang_addon);
 			}
 		}
 

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,7 +13,7 @@ function payment_behavior_cart_gift_certificate_purchase(
 		$orderItemId = 0
 		)
 {
-	$trklib = TikiLib::lib('trk');
+	global $trklib; require_once("lib/trackers/trackerlib.php");
 	global $prefs;
 	$params['trackerId'] = $prefs['payment_cart_giftcert_tracker'];
 
@@ -80,10 +80,10 @@ function payment_behavior_cart_gift_certificate_purchase(
 		}
 		$giftcerts[] = $newGiftcert;
 	}
+
 	// Send email to user with gift cert
 	require_once('lib/webmail/tikimaillib.php');
-	global $prefs;
-	$smarty = TikiLib::lib('smarty');
+	global $smarty, $prefs;
 	$smarty->assign('giftcerts', $giftcerts);
 	$smarty->assign('numberCodes', count($return_array['items']));
 	$mail_subject = $smarty->fetch('mail/cart_gift_cert_subject.tpl');

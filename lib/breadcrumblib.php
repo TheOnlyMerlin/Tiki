@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -314,14 +314,13 @@ function breadcrumb_getTitle($crumbs, $loc)
 /* static */
 function _breadcrumb_getTitle($crumbs, $loc)
 {
-	global $prefs, $print_page, $info, $structure, $structure_path;
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
+	global $prefs, $print_page, $info, $structure, $structure_path, $tikilib, $smarty;
+
 	$len = count($crumbs);
 
 	if ( $prefs['feature_breadcrumbs'] == 'n' || $prefs['feature_sitetitle'] == 'title' ) {
-		$smarty->loadPlugin('smarty_modifier_sefurl');
-		$smarty->loadPlugin('smarty_modifier_escape');
+    $smarty->loadPlugin('smarty_modifier_sefurl');
+    $smarty->loadPlugin('smarty_modifier_escape');
 
 		$class = "pagetitle";
 		$metadata = '';
@@ -338,7 +337,7 @@ function _breadcrumb_getTitle($crumbs, $loc)
 			}
 		}
 
-		$ret = '<a class="'.$class.'"' . $metadata . ' title="'.tra("refresh").'" href="' . $escapedHref . '">';
+		$ret = '<strong><a class="'.$class.'"' . $metadata . ' title="'.tra("refresh").'" href="' . $escapedHref . '">';
 	} else {
 		$class = "crumblink";
 		$ret = '<a class="'.$class.'" title="';

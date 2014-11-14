@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -393,14 +393,14 @@ function wikiplugin_trackerlist_info()
 			 ),
 			 'ldelim' => array(
 				 'required' => false,
-				 'name' => tra('Left Delimiter'),
+				 'name' => tra('Left Deliminator'),
 				 'description' => tra('Smarty left delimiter for Latex generation'),
 				 'advanced' => true,
 				 'default' => '',
 			 ),
 			 'rdelim' => array(
 				 'required' => false,
-				 'name' => tra('Right Delimiter'),
+				 'name' => tra('Right Deliminator'),
 				 'description' => tra('Smarty right delimiter for Latex generation'),
 				 'advanced' => true,
 				 'default' => '',
@@ -721,18 +721,6 @@ function wikiplugin_trackerlist_info()
 					 array('text' => tra('No'), 'value' => 'n')
 				 )
 			 ),
-			 'force_separate_compile' => array(
-				'required' => false,
-				'name' => tra('Force separate compiles for each itemId'),
-				'description' => tra('Instead of forcing a complete smarty tpl(recompile), it simply compiles separately for each itemId'),
-				'filter' => 'alpha',
-				'default' => 'y',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				)
-			 ),
 		), $tsparams
 	);
 	return array(
@@ -751,16 +739,12 @@ function wikiplugin_trackerlist_info()
 
 function wikiplugin_trackerlist($data, $params)
 {
-	global $tiki_p_admin_trackers, $prefs, $tiki_p_view_trackers, $user,
-		   $page, $tiki_p_tracker_vote_ratings, $tiki_p_tracker_view_ratings,
+	global $smarty, $tikilib, $dbTiki, $userlib, $tiki_p_admin_trackers, $prefs, $_REQUEST, $tiki_p_view_trackers, $user,
+		   $page, $tiki_p_tracker_vote_ratings, $tiki_p_tracker_view_ratings, $trklib,
 		   $tiki_p_export_tracker, $tiki_p_watch_trackers, $tiki_p_edit;
 
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$trklib = TikiLib::lib('trk');
-	$smarty = TikiLib::lib('smarty');
-	$notificationlib = TikiLib::lib('notification');
-
+	require_once("lib/trackers/trackerlib.php");
+	global $notificationlib;  include_once('lib/notifications/notificationlib.php');//needed if plugin tracker after plugin trackerlist
 	static $iTRACKERLIST = 0;
 	++$iTRACKERLIST;
 	$smarty->assign('iTRACKERLIST', $iTRACKERLIST);
@@ -784,10 +768,6 @@ function wikiplugin_trackerlist($data, $params)
 	extract($params, EXTR_SKIP);
 
 	$skip_status_perm_check = false;
-
-	if($force_separate_compile == 'y') {
-		$smarty->assign('force_separate_compile', 'y');
-	}
 
 	if ($prefs['feature_trackers'] != 'y' || !isset($trackerId) || !($tracker_info = $trklib->get_tracker($trackerId))) {
 		return $smarty->fetch("wiki-plugins/error_tracker.tpl");
@@ -852,11 +832,11 @@ function wikiplugin_trackerlist($data, $params)
 			}
 		} elseif (!empty($wiki) || !empty($tpl) || !empty($tplwiki)) {
 				if (!empty($wiki)) {
-					$listfields = $trklib->get_pretty_fieldIds($wiki, 'wiki', $outputPretty, $trackerId);
+					$listfields = $trklib->get_pretty_fieldIds($wiki, 'wiki', $outputPretty);
 				} elseif (!empty($tplwiki)) {
-					$listfields = $trklib->get_pretty_fieldIds($tplwiki, 'wiki', $outputPretty, $trackerId);
+					$listfields = $trklib->get_pretty_fieldIds($tplwiki, 'wiki', $outputPretty);
 				} else {
-					$listfields = $trklib->get_pretty_fieldIds($tpl, 'tpl', $outputPretty, $trackerId);
+					$listfields = $trklib->get_pretty_fieldIds($tpl, 'tpl', $outputPretty);
 				}
 		} else {
 			$listfields = '';
@@ -873,11 +853,12 @@ function wikiplugin_trackerlist($data, $params)
 		//note whether tablesorter will be used
 		$tsServer = isset($params['server']) && $params['server'] === 'y' ? true : false;
 
-		$tsOn	= (Table_Check::isEnabled(true) || $tsServer === false) && isset($sortable) && $sortable !== 'n' ? true : false;
+		$tsOn	= $prefs['disableJavascript'] === 'n' && $prefs['feature_jquery_tablesorter'] === 'y'
+		&& ($prefs['feature_ajax'] === 'y' || $tsServer === false) && isset($sortable) && $sortable !== 'n' ? true : false;
 		$smarty->assign('tsOn', $tsOn);
 
 		//note whether this is the initial tablesorter ajax call or a subsequent ajax call
-		$tsAjax = Table_Check::isAjaxCall();
+		$tsAjax = $tsOn && isset($_REQUEST['tsAjax']) && $_REQUEST['tsAjax'] ? true : false;
 		$smarty->assign('tsAjax', $tsAjax);
 
 		if ($tsAjax) {
@@ -1337,7 +1318,7 @@ function wikiplugin_trackerlist($data, $params)
 							if (is_array($evs[$i])) { // already processed
 								$exactvalue[] = $evs[$i];
 							} elseif (preg_match('/(not)?categories\(([0-9]+)\)/', $evs[$i], $matches)) {
-								$categlib = TikiLib::lib('categ');
+								global $categlib; include_once('lib/categories/categlib.php');
 								if (ctype_digit($matches[2]) && $matches[2] > 0) {
 									$cfilter = array('identifier'=>$matches[2], 'type'=>'descendants');
 								} else {
@@ -1368,6 +1349,7 @@ function wikiplugin_trackerlist($data, $params)
 										$t_i = $trklib->get_tracker($matches[6]);
 										$matches[4] = $trklib->get_user_item($matches[6], $t_i, $user);
 									} elseif ($prefs['userTracker'] == 'y') { //pick the generic user tracker
+										global $userlib;
 										$utid = $userlib->get_tracker_usergroup($user);
 										$matches[4] = $trklib->get_item_id($utid['usersTrackerId'], $utid['usersFieldId'], $user);
 									}
@@ -1556,7 +1538,7 @@ function wikiplugin_trackerlist($data, $params)
 			}
 		}
 		if (!empty($calendarfielddate)) {
-			$calendarlib = TikiLib::lib('calendar');
+			global $calendarlib; include_once('lib/calendar/calendarlib.php');
 			$focusDate = empty($_REQUEST['todate'])? $tikilib->now: $_REQUEST['todate'];
 			$focus = $calendarlib->infoDate($focusDate);
 			if (!empty($calendardelta)) {
@@ -1795,8 +1777,8 @@ function wikiplugin_trackerlist($data, $params)
 				$smarty->assign('sticky_popup', $calendarstickypopup);
 				$smarty->assign('calendar_popup', $calendarpopup);
 				$smarty->assign('showpopup', 'n');
-				$headerlib = TikiLib::lib('header');
-				$headerlib->add_cssfile('themes/base_files/feature_css/calendar.css', 20);
+				global $headerlib; include_once('lib/headerlib.php');
+				$headerlib->add_cssfile('css/calendar.css', 20);
 				return $smarty->fetch('modules/mod-calendar_new.tpl');
 			}
 			if (!empty($wiki)) {

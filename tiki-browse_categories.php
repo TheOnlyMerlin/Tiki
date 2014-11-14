@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +10,7 @@
 
 $section = 'categories';
 require_once ('tiki-setup.php');
-$categlib = TikiLib::lib('categ');
+include_once ('lib/categories/categlib.php');
 include_once ('lib/tree/BrowseTreeMaker.php');
 $access->check_feature('feature_categories');
 $access->check_permission('tiki_p_view_category');
@@ -229,9 +229,7 @@ function add_watch_icons($descendants, $usercatwatches, $requestid, $categid, $d
 	if (!$user || $prefs["feature_user_watches"] != 'y') {
 		 return false;
 	}
-	global $prefsgroups, $tiki_p_admin_users, $tiki_p_admin;
-	$categlib = TikiLib::lib('categ');
-
+	global $prefsgroups, $tiki_p_admin_users, $tiki_p_admin, $categlib;
 	$section = 'categories';
 	$nodesc = count($descendants);
 	$watch_desc = 'n';

@@ -1,8 +1,8 @@
 {title}{tr}Edit Image{/tr}{/title}
 
-<div class="t_navbar">
-	{button href="tiki-browse_gallery.php" _auto_args='galleryId' class="btn btn-default" _text="{tr}Return to Gallery{/tr}"}
-	{button href="tiki-browse_image.php?imageId=$imageId" class="btn btn-default" _text="{tr}Browse Images{/tr}"}
+<div class="navbar">
+	{button href="tiki-browse_gallery.php" _auto_args='galleryId' _text="{tr}Return to Gallery{/tr}"}
+	{button href="tiki-browse_image.php?imageId=$imageId" _text="{tr}Browse Images{/tr}"}
 </div>
 
 <div align="center">
@@ -29,13 +29,12 @@
 {include file='categorize.tpl'}
 <tr><td>{tr}Upload from disk to change the image:{/tr}</td><td>{$filename}<br><input name="userfile" type="file">
 </td></tr>
-<tr><td>&nbsp;</td><td><input type="submit" class="btn btn-default btn-sm" name="editimage" value="{tr}Save{/tr}">&nbsp;&nbsp;<input type="submit" name="editimage_andgonext" value="{tr}Save and Go Next{/tr}">&nbsp;&nbsp;<a class="link" href="tiki-browse_image.php?imageId={$imageId}">{tr}Cancel Edit{/tr}</a></td></tr>
+<tr><td>&nbsp;</td><td><input type="submit" class="btn btn-default" name="editimage" value="{tr}Save{/tr}">&nbsp;&nbsp;<input type="submit" name="editimage_andgonext" value="{tr}Save and Go Next{/tr}">&nbsp;&nbsp;<a class="link" href="tiki-browse_image.php?imageId={$imageId}">{tr}Cancel Edit{/tr}</a></td></tr>
 </table>
 </form>
 <br>
 <br><br>   
-	<!--this table is a duplicate of the one in tiki-browse_image.tpl-->
-    <div class="table-responsive">
+	<!--this table is a duplicate of the one in tiki-browse_image.tpl-->  
 	<table class="table normal noslideshow">
 		<tr><td class="odd">{tr}Image Name:{/tr}</td><td class="odd">{$name}</td></tr>
 		<tr><td class="even">{tr}Created:{/tr}</td><td class="even">{$created|tiki_long_datetime}</td></tr>
@@ -65,15 +64,13 @@
 				      <option value="{$galleries[idx].id|escape}" {if $galleries[idx].id eq $galleryId}selected="selected"{/if}>{$galleries[idx].name}</option>
 				    {/section}
 					</select>
-					<input type="submit" class="btn btn-default btn-sm" name="move_image" value="{tr}Move{/tr}">
+					<input type="submit" class="btn btn-default" name="move_image" value="{tr}Move{/tr}">
 			  </form>
 			</td>
 		</tr>
 		{/if}
 	</table>
-    </div>
-	<br><br>
-    <div class="table-responsive">
+	<br><br>    
 	<table class="table normal noslideshow" style="font-size:small">
 		<tr>
 			<td class="even" style="border-bottom:0px" colspan="2">
@@ -130,5 +127,4 @@
 			</td>
 		</tr>
 	</table>
-    </div>
 </div>

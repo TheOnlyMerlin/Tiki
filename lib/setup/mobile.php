@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -73,21 +73,27 @@ if ( !isset($_REQUEST['mobile_mode']) || $_REQUEST['mobile_mode'] === 'y' ) {
 				$prefs['site_style'] = 'mobile.css'; // set in perspectives but seems to need a nudge here
 				$prefs['style'] = $prefs['site_style'];
 
-				global $base_url;
-				$perspectivelib = TikiLib::lib('perspective');
+				global $perspectivelib, $base_url; require_once 'lib/perspectivelib.php';
 				if (!in_array($perspectivelib->get_current_perspective($prefs), $prefs['mobile_perspectives'])) {	// change perspective
 
-					$hp = $prefs['wikiHomePage'];							// get default non mobile homepage
+					$wikiHomePage = $prefs['wikiHomePage'];							// get default non mobile homepage
+					$tikiIndex = $prefs['tikiIndex'];
 
 					$_SESSION['current_perspective'] = $persp;
 
-					if ($prefs['tikiIndex'] === 'tiki-index.php' && isset($_REQUEST['page'])) {
+					$isWikiPage = $tikiIndex === 'tiki-index.php' && strpos($_SERVER['PHP_SELF'], 'tiki-index.php') !== false;
+
+					$wantsHomePage = empty($_REQUEST['page']) ||
+						($_REQUEST['page'] === $wikiHomePage && strpos($_SERVER['HTTP_REFERER'], $base_url) === false);
+
+					if ($isWikiPage && $wantsHomePage) {
 
 						$pprefs = $perspectivelib->get_preferences($_SESSION['current_perspective']);
+
 						if (in_array('wikiHomePage', array_keys($pprefs))) {				// mobile persp has home page set (often the case)
-							if ($hp == $_REQUEST['page']) {
-								header('Location: ' . $base_url);							// so redirect to site root and try again
-							}
+							header('Location: ' . $base_url);							// so redirect to site root and try again
+						} else {
+							$prefs = array_merge($prefs, $pprefs);
 						}
 					}
 				}
@@ -105,4 +111,6 @@ if ( !isset($_REQUEST['mobile_mode']) || $_REQUEST['mobile_mode'] === 'y' ) {
 	$prefs['mobile_mode'] = 'n';
 }
 
-setCookieSection('mobile_mode', $prefs['mobile_mode']);
+if ($prefs['mobile_mode'] === 'y') {
+	setCookieSection('mobile_mode', $prefs['mobile_mode']);
+}

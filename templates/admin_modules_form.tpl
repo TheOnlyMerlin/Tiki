@@ -10,7 +10,7 @@
 			<option value="{$name|escape}" {if $assign_name eq $name || $assign_selected eq $name}selected="selected"{/if}>{$info.name}</option>
 		{/foreach}
 	</select>
-	{if isset($assign_info)}<div class="description help-block">{$assign_info.description}{if isset($assign_info.documentation)} {help url=$assign_info.documentation}{/if}</div>{/if}
+	{if isset($assign_info)}<div class="description">{$assign_info.description}{if isset($assign_info.documentation)} {help url=$assign_info.documentation}{/if}</div>{/if}
 </div>
 <div id="module_params">
 	{if !empty($assign_name)}
@@ -66,9 +66,9 @@
 						{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Use Ctrl+Click to select multiple options{/tr}{/remarksbox}
 					{/if}
 					{if $prefs.modallgroups eq 'y'}
-						<div class="panel panel-default"><div class="panel-body">
+						<div class="simplebox">
 							{icon _id=information style="vertical-align:middle;float:left"} {tr}The{/tr} <a class="rbox-link" href="tiki-admin.php?page=module">{tr}Display Modules to All Groups{/tr}</a> {tr}setting will override your selection of specific groups.{/tr}
-						</div></div>
+						</div>
 						<br>
 					{/if}
 				</div>
@@ -90,9 +90,9 @@
 								{tr}Not displayed until a user chooses it{/tr}
 							</option>
 						</select>
-						<div class="panel panel-default"><div class="panel-body">
+						<div class="simplebox">
 							{icon _id=information style="vertical-align:middle;float:left;"}{tr}Because <a class="rbox-link" href="tiki-admin.php?page=module">Users can Configure Modules</a>, select either{/tr} &quot;{tr}Displayed now for all eligible users even with personal assigned modules{/tr}&quot; {tr}or{/tr} &quot;{tr}Displayed now, can't be unassigned{/tr}&quot; {tr}to make sure users will notice any newly assigned modules.{/tr}
-						</div></div>
+						</div>
 					</div>
 				{/if}
 			</fieldset>
@@ -118,7 +118,7 @@
 			{else}
 				<div class="admin2cols adminoptionbox clearfix">
 					<div class="q1">
-						<a title="{tr}Parameters{/tr}" {popup text="{tr}Params: specific params to the module and/or general params ('lang', 'flip', 'title', 'decorations', 'section', 'overflow', 'page', 'nobox', 'bgcolor', 'color', 'theme', 'notitle', 'nopage'). Separator between params:'&amp;'. E.g. maxlen=15&amp;nonums=y.{/tr}" width=200 center=true}>
+						<a {popup text="{tr}Params: specific params to the module and/or general params ('lang', 'flip', 'title', 'decorations', 'section', 'overflow', 'page', 'nobox', 'bgcolor', 'color', 'theme', 'notitle', 'nopage'). Separator between params:'&amp;'. E.g. maxlen=15&amp;nonums=y.{/tr}" width=200 center=true}>
 							<label for="assign_params">{tr}Parameters{/tr}</label>
 						</a>
 						&nbsp;{help url="Module+Parameters" desc="{tr}Enter the parameters in URL format, e.g. 'nobox=y&class=rbox-data'{/tr}"}
@@ -129,11 +129,9 @@
 					</div>
 				</div>
 			{/if}
-                <div class="form-group clearfix">
-                    <div class="pull-right">
-			            <input type="submit" class="btn btn-default btn-sm" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;">
-			            <input type="submit" class="btn btn-default btn-sm" name="assign" value="{tr}Assign{/tr}" onclick="needToConfirm=false;">
-		            </div>
-                </div>
+		<div class="input_submit_container">
+			<input type="submit" class="btn btn-default" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;">
+			<input type="submit" class="btn btn-default" name="assign" value="{tr}Assign{/tr}" onclick="needToConfirm=false;">
+		</div>
 	{/if}
 </div>

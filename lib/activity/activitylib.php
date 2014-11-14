@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,9 +11,7 @@ class ActivityLib
 
 	function getRules()
 	{
-		$table = $this->rulesTable();
-		$table->useExceptions();
-		return $table->fetchAll(
+		return $this->rulesTable()->fetchAll(
 			array(
 				'ruleId',
 				'eventType',
@@ -135,15 +133,11 @@ class ActivityLib
 		$runner = $this->getRunner($manager);
 		$customizer = new Tiki_Event_Customizer;
 
-		try {
-			foreach ($this->getRules() as $rule) {
-				$customizer->addRule($rule['eventType'], $rule['rule']);
-			}
-
-			$customizer->bind($manager, $runner);
-		} catch (TikiDb_Exception $e) {
-			// Prevent failure while binding events to avoid locking out users
+		foreach ($this->getRules() as $rule) {
+			$customizer->addRule($rule['eventType'], $rule['rule']);
 		}
+
+		$customizer->bind($manager, $runner);
 	}
 
 	private function getRunner($manager)

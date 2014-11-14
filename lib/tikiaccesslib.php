@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -99,7 +99,8 @@ class TikiAccessLib extends TikiLib
 		$perms = Perms::get();
 
 		if ( $perms->admin && isset($_REQUEST['check_feature']) && isset($_REQUEST['lm_preference']) ) {
-			$prefslib = TikiLib::lib('prefs');
+			global $prefslib; require_once 'lib/prefslib.php';
+
 			$prefslib->applyChanges((array) $_REQUEST['lm_preference'], $_REQUEST);
 		}
 
@@ -130,7 +131,7 @@ class TikiAccessLib extends TikiLib
 		}
 
 		if ( !$allowed ) {
-			$smarty = TikiLib::lib('smarty');
+			global $smarty;
 
 			if ( $perms->admin ) {
 				$smarty->assign('required_preferences', $features);
@@ -308,8 +309,7 @@ class TikiAccessLib extends TikiLib
      */
     function check_ticket()
 	{
-		global $prefs, $user;
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $prefs, $user;
 
 		if ($prefs['feature_ticketlib2'] == 'y') {
 			if (empty($user) || (isset($_REQUEST['ticket']) && isset($_SESSION['ticket']) && $_SESSION['ticket'] == $_REQUEST['ticket'])) {
@@ -331,10 +331,8 @@ class TikiAccessLib extends TikiLib
      */
     function display_error($page, $errortitle = "", $errortype = "", $enableRedirect = true, $message = '')
 	{
-		global $prefs, $tikiroot, $user;
+		global $smarty, $prefs, $tikiroot, $userlib, $user;
 		require_once ('tiki-setup.php');
-		$userlib = TikiLib::lib('user');
-		$smarty = TikiLib::lib('smarty');
 
 		// Don't redirect when calls are made for web services
 		if ( $enableRedirect && $prefs['feature_redirect_on_error'] == 'y' && ! $this->is_machine_request()
@@ -404,9 +402,8 @@ class TikiAccessLib extends TikiLib
 			$smarty->assign('errortitle', $detail['errortitle']);
 			$smarty->assign('msg', $detail['message']);
 			$smarty->assign('errortype', $detail['code']);
-			if ( isset( $detail['page'] ) ) {
+			if ( isset( $detail['page'] ) )
 				$smarty->assign('page', $page);
-			}
 			$smarty->display("error.tpl");
 		}
 		die;
@@ -418,9 +415,7 @@ class TikiAccessLib extends TikiLib
      */
     function get_home_page($page = '')
 	{
-		global $prefs, $use_best_language, $user;
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
+		global $prefs, $tikilib, $use_best_language, $userlib, $user;
 
 		if (!isset($page) || $page == '') {
 			if ($prefs['useGroupHome'] == 'y') {
@@ -473,8 +468,6 @@ class TikiAccessLib extends TikiLib
 			}
 		}
 
-		TikiLib::events()->trigger('tiki.process.redirect');
-
 		session_write_close();
 		if (headers_sent()) {
 			echo "<script>document.location.href='$url';</script>\n";
@@ -511,10 +504,7 @@ class TikiAccessLib extends TikiLib
 
 	function authorize_rss($rssrights)
 	{
-		global $user, $prefs;
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
-		$smarty = TikiLib::lib('smarty');
+		global $tikilib, $userlib, $user, $smarty, $prefs;
 		$perms = Perms::get();
 		$result = array('msg' => tra("You do not have permission to view this section"), 'header' => 'n');
 
@@ -557,9 +547,7 @@ class TikiAccessLib extends TikiLib
      */
     function http_auth()
 	{
-		global $tikidomain, $user;
-		$userlib = TikiLib::lib('user');
-		$smarty = TikiLib::lib('smarty');
+		global $tikidomain, $userlib, $user, $smarty;
 
 		if ( ! $tikidomain ) {
 			$tikidomain = "Default";
@@ -576,10 +564,14 @@ class TikiAccessLib extends TikiLib
 		list($res, $rest) = $userlib->validate_user_tiki($attempt, $pass, false, false);
 
 		if ($res == USER_VALID) {
-			global $_permissionContext;
+			global $permissionList;
+			$user = $attempt;
+			$groups = $userlib->get_user_groups($user);
+			$perms = Perms::getInstance();
+			$perms->setGroups($groups);
 
-			$_permissionContext = new Perms_Context($attempt, false);
-			$_permissionContext->activate(true);
+			$perms = Perms::get();
+			$perms->globalize($permissionList, $smarty);
 
 			return true;
 		} else {
@@ -757,3 +749,4 @@ class TikiAccessLib extends TikiLib
 		}
 	}
 }
+global $access; $access = new TikiAccessLib;

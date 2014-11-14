@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -50,7 +50,7 @@ class CalendarLib extends TikiLib
 			$bindvars[] = '%'.$find.'%';
 		}
 
-		$categlib = TikiLib::lib('categ');
+		global $categlib; require_once( 'lib/categories/categlib.php' );
 
 		$join = '';
 		if ( $jail = $categlib->get_jail() ) {
@@ -207,7 +207,7 @@ class CalendarLib extends TikiLib
 		$query = "delete from `tiki_calendar_locations` where `calendarId`=?";
 		$this->query($query, array($calendarId));
 		// uncategorize calendar
-		$categlib = TikiLib::lib('categ');
+		global $categlib; require_once('lib/categories/categlib.php');
 		$categlib->uncategorize_object('calendar', $calendarId);
 		// now remove the calendar itself:
 		$query = "delete from `tiki_calendars` where `calendarId`=?";
@@ -621,9 +621,8 @@ class CalendarLib extends TikiLib
      */
     function watch($calitemId, $data)
 	{
-		global $prefs, $user;
-		$smarty = TikiLib::lib('smarty');
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib, $smarty, $prefs, $user;
+
 		$nots = $tikilib->get_event_watches('calendar_changed', $data['calendarId']);
 
 		if ($prefs['calendar_watch_editor'] != "y" || $prefs['user_calendar_watch_editor'] != "y") {
@@ -1258,16 +1257,13 @@ class CalendarLib extends TikiLib
 	 */
 	function getCalendar($calIds, &$viewstart, &$viewend, $group_by = '', $item_name = 'events', $listmode = false)
 	{
-		global $user, $prefs;
+		global $user, $prefs, $smarty;
 
 		// Global vars used by tiki-calendar_setup.php (this has to be changed)
-		global $calendarViewMode, $request_day, $request_month;
+		global $tikilib, $calendarViewMode, $request_day, $request_month;
 		global $request_year, $dayend, $myurl;
 		global $weekdays, $daysnames, $daysnames_abr;
 		include('tiki-calendar_setup.php');
-
-		$smarty = TikiLib::lib('smarty');
-		$tikilib = TikiLib::lib('tiki');
 
 		//FIXME : maxrecords = 50
 		$listtikievents = $this->list_items_by_day($calIds, $user, $viewstart, $viewend, 0, 50);
@@ -1452,3 +1448,4 @@ class CalendarLib extends TikiLib
 		}
 	}
 }
+$calendarlib = new CalendarLib;

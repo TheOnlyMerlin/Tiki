@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -113,7 +113,8 @@ function wikiplugin_rss_info()
 
 function wikiplugin_rss($data,$params)
 {
-	$rsslib = TikiLib::lib('rss');
+	global $smarty;
+	global $rsslib; require_once 'lib/rss/rsslib.php';
 
 	$params = array_merge(
 		array(
@@ -155,7 +156,7 @@ function wikiplugin_rss($data,$params)
 		}
 	}
 
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	$smarty->assign('rsstitle', $title);
 	$smarty->assign('items', $items);
 	$smarty->assign('showdate', $params['date'] > 0);

@@ -4,7 +4,6 @@
 {tabset name="tabs_admtokens"}
 	{tab name="{tr}List tokens{/tr}"}
 		<h2>{tr}List tokens{/tr}</h2>
-        <div class="table-responsive">
 		<table class="table normal">
 			<tr>
 				<th>{tr}Id{/tr}</th>
@@ -20,7 +19,7 @@
 				<th>{tr}Actions{/tr}</th>
 			</tr>
 			
-
+			{cycle values="even,odd" print=false}
 			{foreach $tokens as $token}
 				<tr>
 					<td>{$token.tokenId}</td>
@@ -43,7 +42,6 @@
 				{norecords _colspan=10}
 			{/foreach}
 		</table>
-        </div>
 	{/tab}
 	{tab name="{tr}Add new token{/tr}"}
 		<h2>{tr}Add new token{/tr}</h2>
@@ -75,7 +73,7 @@
 				</tr>
 				<tr>
 					<td></td>
-					<td><input type="submit" class="btn btn-default btn-sm" value="{tr}Add{/tr}"></td>
+					<td><input type="submit" class="btn btn-default" value="{tr}Add{/tr}"></td>
 				</tr>
 			</table>
 		</form>

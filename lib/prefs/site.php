@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,7 +7,12 @@
 
 function prefs_site_list()
 {
-    $available_layouts = TikiLib::lib('css')->list_user_selectable_layouts();
+    $available_layouts = array();
+	foreach (scandir('templates/layouts/') as $layoutName) {
+		if ($layoutName[0] != '.' && $layoutName != 'index.php') {
+			$available_layouts[$layoutName] = ucfirst($layoutName);
+		}   
+	}   
 
 	return array (
 		'site_closed' => array(
@@ -114,7 +119,7 @@ function prefs_site_list()
 			'default' => '',
 		),
 		'site_google_analytics_account' => array(
-			'name' => tr('Google Analytics account number'),
+			'name' => tr('Google Analytics Account Number'),
 			'description' => tra('The account number for the site. Your account number from Google looks like UA-XXXXXXX-YY. All you need to enter is XXXXXXX-YY'),
 			'type' => 'text',
 			'size' => 15,
@@ -125,19 +130,11 @@ function prefs_site_list()
 			),
 		),
 		'site_layout' => array(
-			'name' => tr('Site layout'),
+			'name' => tr('Site Layout'),
 			'description' => tr('Changes the overall site layout templates'),
 			'type' => 'list',
 			'default' => 'classic',
-			'tags' => array('advanced'),
 			'options' => $available_layouts,
 		),  
-		'site_layout_per_object' => array(
-			'name' => tr('Allow per-object layout'),
-			'description' => tr('Allows objects to define an alternate layout for their rendering.'),
-			'tags' => array('experimental'),
-			'type' => 'flag',
-			'default' => 'n',
-		),
 	);
 }

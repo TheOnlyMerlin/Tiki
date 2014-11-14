@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -32,8 +32,7 @@ class WizardLib extends TikiLib
 	 */
 	public function onLogin($user, $homePageUrl, $force = false)
 	{
-		global $base_url;
-		$userlib = TikiLib::lib('user');
+		global $base_url, $userlib;
 		
 		// Check the user status
 		$isAdmin = $userlib->user_has_permission($user, 'tiki_p_admin');
@@ -42,7 +41,7 @@ class WizardLib extends TikiLib
 		$activeLoginWizard = $this->get_preference('wizard_admin_hide_on_login') !== 'y';
 		if ($force || ($isAdmin && $activeLoginWizard)) {
 
-			// User is an admin. Show Setup Wizards
+			// User is an admin. Show Admin Wizard
 			$this->startAdminWizard($homePageUrl,0);
 			
 		} else {
@@ -102,8 +101,8 @@ class WizardLib extends TikiLib
 	*/
 	public function showPages($pages, $adminWizard=false)
 	{
-		global $base_url;
-		$smarty = TikiLib::lib('smarty');
+		global	$smarty, $base_url;
+		
 		try {
 			if (!isset($_REQUEST['url'])) {
 				// User the base url as the return URL
@@ -179,8 +178,6 @@ class WizardLib extends TikiLib
 					
 						// Do not show page, if it doesn't return a boolean
 						if ($show === true) {
-							$template = $pages[$stepNr]->getTemplate();
-							$smarty->assign('wizardBody', $smarty->fetch($template));
 							$next = false;
 							break;
 						}
@@ -202,8 +199,6 @@ class WizardLib extends TikiLib
 
 					// Do not show page, if it doesn't return a boolean
 					if ($show === true) {
-						$template = $pages[$stepNr]->getTemplate();
-						$smarty->assign('wizardBody', $smarty->fetch($template));
 						$next = false;
 					}
 

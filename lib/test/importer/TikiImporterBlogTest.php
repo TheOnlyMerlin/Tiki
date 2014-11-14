@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -187,7 +187,7 @@ class TikiImporter_Blog_Test extends TikiImporter_TestCase
 	{
         $this->markTestSkipped("As of 2013-09-30, this test is broken. Skipping it for now.");
 
-        $commentslib = TikiLib::lib('comments');
+        global $commentslib; require_once('lib/comments/commentslib.php');
 		
 		$commentslib = $this->getMock('Comments', array('post_new_comment'));
 		$commentslib->expects($this->exactly(2))
@@ -206,7 +206,7 @@ class TikiImporter_Blog_Test extends TikiImporter_TestCase
 	{
         $this->markTestSkipped("As of 2013-09-30, this test is broken. Skipping it for now.");
 
-        $commentslib = TikiLib::lib('comments');
+        global $commentslib; require_once('lib/comments/commentslib.php');
 		
 		$commentslib = $this->getMock('Comments', array('post_new_comment', 'approve_comment'));
 		$commentslib->expects($this->exactly(2))
@@ -224,7 +224,7 @@ class TikiImporter_Blog_Test extends TikiImporter_TestCase
 	
 	public function testInsertPage()
 	{
-		$objectlib = TikiLib::lib('object');
+		global $objectlib; require_once('lib/objectlib.php');
 		
 		$objectlib = $this->getMock('ObjectLib', array('insert_object'));
 		$objectlib->expects($this->once())->method('insert_object');
@@ -242,8 +242,8 @@ class TikiImporter_Blog_Test extends TikiImporter_TestCase
 	
 	public function testInsertPost()
 	{
-		$objectlib = TikiLib::lib('object');
-		$bloglib = TikiLib::lib('blog');
+		global $objectlib; require_once('lib/objectlib.php');
+		global $bloglib; require_once('lib/blogs/bloglib.php');
 		
 		$bloglib = $this->getMock('BlogLib', array('blog_post'));
 		$bloglib->expects($this->once())->method('blog_post')->will($this->returnValue(1));
@@ -258,7 +258,7 @@ class TikiImporter_Blog_Test extends TikiImporter_TestCase
 	
 	public function testCreateTags()
 	{
-		$freetaglib = TikiLib::lib('freetag');
+		global $freetaglib; require_once('lib/freetag/freetaglib.php');
 		$freetaglib = $this->getMock('FreetagLib', array('find_or_create_tag'));
 		$freetaglib->expects($this->exactly(4))->method('find_or_create_tag');
 		
@@ -269,7 +269,7 @@ class TikiImporter_Blog_Test extends TikiImporter_TestCase
 	
 	public function testCreateCategories()
 	{
-		$categlib = TikiLib::lib('categ');
+		global $categlib; require_once('lib/categories/categlib.php');
 		$categlib = $this->getMock('CategLib', array('add_category', 'get_category_id'));
 		$categlib->expects($this->exactly(3))->method('add_category');
 		$categlib->expects($this->exactly(1))->method('get_category_id');
@@ -285,7 +285,7 @@ class TikiImporter_Blog_Test extends TikiImporter_TestCase
 
 	public function testLinkObjectWithTags()
 	{
-		$freetaglib = TikiLib::lib('freetag');
+		global $freetaglib; require_once('lib/freetag/freetaglib.php');
 		$freetaglib = $this->getMock('FreetagLib', array('_tag_object_array'));
 		$freetaglib->expects($this->once())->method('_tag_object_array');
 		
@@ -296,7 +296,7 @@ class TikiImporter_Blog_Test extends TikiImporter_TestCase
 	
 	public function testLinkObjectWithCategories()
 	{
-		$categlib = TikiLib::lib('categ');
+		global $categlib; require_once('lib/categories/categlib.php');
 		$categlib = $this->getMock('CategLib', array('get_category_id', 'get_object_id', 'categorize', 'add_categorized_object'));
 		$categlib->expects($this->exactly(4))->method('get_category_id');
 		$categlib->expects($this->exactly(4))->method('get_category_id');
@@ -310,7 +310,8 @@ class TikiImporter_Blog_Test extends TikiImporter_TestCase
 	
 	public function testCreateBlog()
 	{
-		$bloglib = TikiLib::lib('blog');
+		global $bloglib;
+		
 		$bloglib = $this->getMock('BlogLib', array('replace_blog'));
 		$bloglib->expects($this->once())->method('replace_blog');
 
@@ -321,7 +322,8 @@ class TikiImporter_Blog_Test extends TikiImporter_TestCase
 	
 	public function testCreateBlogShouldSetBlogAsHomepage()
 	{
-		$bloglib = TikiLib::lib('blog');
+		global $bloglib, $tikilib;
+		
 		$bloglib = $this->getMock('BlogLib', array('replace_blog'));
 		$bloglib->expects($this->once())->method('replace_blog');
 		

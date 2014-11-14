@@ -15,8 +15,7 @@
 		{else}
 
 		{if $detailed eq 'y'}
-
-            <div class="table-responsive">
+			{cycle values="odd,even" print=false}
 			<table class="table normal">
 				{foreach key=k item=i from=$modcatlist}
 					{if $i.incat eq 'y'}
@@ -29,7 +28,7 @@
 								{/if}
 							</td>
 							{if !isset($module_params.del) or $module_params.del eq 'y'}
-								<td>
+								<td class="{cycle}">
 									{self_link remove=$i.categId}{icon _id=cross alt="{tr}Delete{/tr}"}{/self_link}
 								</td>
 							{/if}
@@ -37,7 +36,6 @@
 					{/if}
 				{/foreach}
 			</table>
-            </div>
 		{/if}
 
 		{if $detailed eq 'n' or ($add eq 'y' and not $isInAllManagedCategories)}
@@ -71,7 +69,7 @@
 					</select>
 					{if $multiple eq 'y' and $add eq 'y'}
 						<div align="center">
-							<input type="submit" class="btn btn-default btn-sm" name="categorize" value="{if isset($module_params.categorize)}{tr}{$module_params.categorize}{/tr}{else}{tr}Categorize{/tr}{/if}" />
+							<input type="submit" class="btn btn-default" name="categorize" value="{if isset($module_params.categorize)}{tr}{$module_params.categorize}{/tr}{else}{tr}Categorize{/tr}{/if}" />
 						</div>
 					{/if}
 				</form>

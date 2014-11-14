@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,6 +15,7 @@
  */
 
 require_once('tikiimporter.php');
+require_once('lib/blogs/bloglib.php');
 
 /**
  * Class to provide basic functionalities to blog importers. So far
@@ -76,7 +77,7 @@ class TikiImporter_Blog extends TikiImporter
 	 *
 	 * @return null
 	 */
-	function import($filePath = null)
+	function import()
 	{
 		$this->setupTiki();
 
@@ -105,7 +106,7 @@ class TikiImporter_Blog extends TikiImporter
 	 */
 	function setupTiki()
 	{
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 
 		$tikilib->set_preference('feature_blogs', 'y');
 	}
@@ -117,7 +118,7 @@ class TikiImporter_Blog extends TikiImporter
 	 *
 	 * @return array $countData stats about the content that has been imported
 	 */
-	function insertData($parsedData = null)
+	function insertData()
 	{
 		$countData = array();
 
@@ -225,9 +226,7 @@ class TikiImporter_Blog extends TikiImporter
 	 */
 	function createBlog()
 	{
-		global $user;
-		$bloglib = TikiLib::lib('blog');
-		$tikilib = TikiLib::lib('tiki');
+		global $bloglib, $user, $tikilib;
 
 		//TODO: refactor replace_blog() to have default values
 		//TODO: blog user can be different that the user logged in the system
@@ -279,7 +278,7 @@ class TikiImporter_Blog extends TikiImporter
 	 */
 	function createTags($tags)
 	{
-		$freetaglib = TikiLib::lib('freetag');
+		global $freetaglib; require_once('lib/freetag/freetaglib.php');
 		foreach ($tags as $tag) {
 			$freetaglib->find_or_create_tag($tag);
 		}
@@ -295,7 +294,7 @@ class TikiImporter_Blog extends TikiImporter
 	 */
 	function linkObjectWithTags($objId, $type, $tags)
 	{
-		$freetaglib = TikiLib::lib('freetag');
+		global $freetaglib; require_once('lib/freetag/freetaglib.php');
 		global $user;
 
 		$freetaglib->_tag_object_array($user, $objId, $type, $tags);
@@ -309,7 +308,7 @@ class TikiImporter_Blog extends TikiImporter
 	 */
 	function createCategories($categories)
 	{
-		$categlib = TikiLib::lib('categ');
+		global $categlib; require_once('lib/categories/categlib.php');
 
 		foreach ($categories as $categ) {
 			if (!empty($categ['parent'])) {
@@ -332,7 +331,7 @@ class TikiImporter_Blog extends TikiImporter
 	 */
 	function linkObjectWithCategories($objId, $type, $categories)
 	{
-		$categlib = TikiLib::lib('categ');
+		global $categlib; require_once('lib/categories/categlib.php');
 
 		foreach ($categories as $categName) {
 			$categId = $categlib->get_category_id($categName);
@@ -355,7 +354,7 @@ class TikiImporter_Blog extends TikiImporter
 	 */
 	function insertPage($page)
 	{
-		$objectlib = TikiLib::lib('object');
+		global $objectlib; require_once('lib/objectlib.php');
 
 		$this->instantiateImporterWiki();
 		$pageName = $this->importerWiki->insertPage($page);
@@ -376,8 +375,8 @@ class TikiImporter_Blog extends TikiImporter
 	 */
 	function insertPost($post)
 	{
-		$bloglib = TikiLib::lib('blog');
-		$objectlib = TikiLib::lib('object');
+		global $bloglib;
+		global $objectlib; require_once('lib/objectlib.php');
 
 		$post = array_merge(array('content' => '', 'excerpt' => '', 'author' => '', 'name' => '', 'created' => 0), $post);	// set defaults
 

@@ -2,13 +2,13 @@
 
 {title help="Integrator"}{tr}Edit Rules for Repository:{/tr} {$name}{/title}
 
-<div class="t_navbar form-group">
-	{button href="tiki-admin_integrator.php" class="btn btn-default" _text="{tr}Configure Repositories{/tr}"}
-  {button href="tiki-list_integrator_repositories.php" class="btn btn-default" _text="{tr}List Repositories{/tr}</a>"}
+<div class="navbar">
+	{button href="tiki-admin_integrator.php" _text="{tr}Configure Repositories{/tr}"}
+  {button href="tiki-list_integrator_repositories.php" _text="{tr}List Repositories{/tr}</a>"}
 	{assign var=thisrepID value=$repID|escape} 
-	{button href="tiki-admin_integrator.php?action=edit&amp;repID=$thisrepID" class="btn btn-default" _text="{tr}Configure this Repository{/tr}"}
-	{button href="tiki-integrator.php?repID=$thisrepID" _text="{tr}View this Repository{/tr}" class="btn btn-default"}
-	{button href="tiki-admin_integrator_rules.php?repID=$thisrepID" _text="{tr}New Rule{/tr}" class="btn btn-default"}
+	{button href="tiki-admin_integrator.php?action=edit&amp;repID=$thisrepID" _text="{tr}Configure this Repository{/tr}"}
+	{button href="tiki-integrator.php?repID=$thisrepID" _text="{tr}View this Repository{/tr}"}
+	{button href="tiki-admin_integrator_rules.php?repID=$thisrepID" _text="{tr}New Rule{/tr}"}
 	{if count($reps) gt 0}
 		{button _onclick="javascript:flip('rules-copy-panel');" _text="{tr}Copy Rules{/tr}" _title="{tr}view/hide copy rules dialog{/tr}"}
   {/if}
@@ -21,7 +21,7 @@
   <td>{tr}Source repository{/tr}</td>
   <td>
     <select name="srcrep">{html_options options=$reps}</select> &nbsp; &nbsp;
-    <input type="submit" class="btn btn-default btn-sm" name="copy" value="{tr}Copy{/tr}">
+    <input type="submit" class="btn btn-default" name="copy" value="{tr}Copy{/tr}">
   </td>
 </tr> </table>
 </form>
@@ -66,7 +66,7 @@
   </tr><tr>
     <td>&nbsp;</td>
     <td>
-      <input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">&nbsp;&nbsp;
+      <input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">&nbsp;&nbsp;
       <input type="checkbox" name="enabled" {if $enabled eq 'y'}checked="checked"{/if} title="{tr}Check to enable this rule{/tr}">&nbsp;
       {tr}Enabled{/tr}
     </td>
@@ -88,7 +88,7 @@
     </td>
   </tr><tr>
     <td>&nbsp;</td>
-    <td><input type="submit" class="btn btn-default btn-sm" name="preview" value="{tr}Preview{/tr}"></td>
+    <td><input type="submit" class="btn btn-default" name="preview" value="{tr}Preview{/tr}"></td>
   </tr>
 </table>
 </form>
@@ -111,7 +111,6 @@
 <h2>{tr}Rules List{/tr}</h2>
 
 {* Table with list of repositories *}
-<div class="table-responsive">
 <table class="table normal" id="integrator_rules">
   <tr>
     <th rowspan="2"><span title="{tr}Rule order{/tr}">#</span></th>
@@ -123,9 +122,9 @@
   </tr><tr>
     <th colspan="5">{tr}Description{/tr}</th>
   </tr>
-
+  {cycle values="odd,even" print=false}
   {section name=rule loop=$rules}
-    <tr>
+    <tr class="{cycle}">
       <td{if (strlen($rules[rule].description) > 0)} rowspan="2"{/if}>
         {if $rules[rule].enabled ne 'y'}<s>{$rules[rule].ord|escape}</s>
         {else}{$rules[rule].ord|escape}
@@ -143,10 +142,9 @@
 
     {* Show description as colspaned row if it is not an empty *}
     {if (strlen($rules[rule].description) > 0)}
-    </tr><tr>
+    </tr><tr class="{cycle}">
       <td colspan="5" class="text">{$rules[rule].description|escape}</td>
     {/if}
     </tr>
   {/section}
 </table>
-</div>

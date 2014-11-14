@@ -1,11 +1,13 @@
 {* $Id$ *}
 
-{remarksbox type="tip" title="{tr}Tip{/tr}"}
+{remarksbox type="tip" title="{tr}Tips{/tr}"}
+	{tr}Look under "Articles" on the application menu for links to{/tr} "<a class="rbox-link" href="tiki-admin_topics.php">{tr}Admin topics{/tr}</a>" {tr}and{/tr} "<a class="rbox-link" href="tiki-article_types.php">{tr}Admin types{/tr}</a>".
+	<hr>
 	{tr}Look under "<a href="tiki-admin_rssmodules.php" target="_blank">External Feeds</a>" on the application menu if you are searching for the <a href="https://doc.tiki.org/Article+generator" target="_blank">"Article Generator" on RSS feeds</a>{/tr}.
 {/remarksbox}
 
 {if !empty($msgs)}
-	<div class="alert alert-warning">
+	<div class="simplebox highlight">
 	{foreach from=$msgs item=msg}
 	{$msg}			 
 	{/foreach}
@@ -13,34 +15,20 @@
 {/if}
 
 <form method="post" action="tiki-admin.php?page=articles">
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-			<a role="button" class="btn btn-default btn-sm" href="tiki-list_articles.php" title="{tr}List{/tr}">
-				{icon name="list"} {tr}Articles{/tr}
-			</a>
-			<a role="button" class="btn btn-default btn-sm" href="tiki-article_types.php" title="{tr}List{/tr}">
-				{icon name="list"} {tr}Article Types{/tr}
-			</a>
-			<a role="button" class="btn btn-default btn-sm" href="tiki-admin_topics.php" title="{tr}List{/tr}">
-				{icon name="list"} {tr}Article Topics{/tr}
-			</a>
-            <div class="pull-right">
-                <input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-            </div>
-        </div>
-    </div>
+	<div class="input_submit_container clear" style="text-align: right;">
+		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+	</div>
 
 	{tabset name="admin_articles"}
 		{tab name="{tr}General Settings{/tr}"}
-            <h2>{tr}General Settings{/tr}</h2>
 			<input type="hidden" name="articlesprefs" />
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Activate the feature{/tr}</legend>
 				{preference name=feature_articles visible="always"}
 			</fieldset>
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Plugins{/tr}</legend>
 				{preference name=wikiplugin_articles}
 				{preference name=wikiplugin_article}
@@ -79,11 +67,6 @@
 				{preference name=feature_sefurl_title_article}
 				
 				{preference name=article_related_articles}
-
-				{preference name=tracker_article_tracker}
- 				<div class="adminoptionboxchild" id="tracker_article_tracker_container">
- 					{preference name=tracker_article_trackerId}
- 				</div>
 
 				<input type="hidden" name="articlesfeatures" />
 			</fieldset>
@@ -126,7 +109,7 @@
 						<br>
 						<em>{tr}File format: title,authorName,heading,body,lang,user{/tr}....</em>
 						<div align="center">
-							<input type="submit" class="btn btn-default btn-sm" name="import" value="{tr}Import{/tr}" />
+							<input type="submit" class="btn btn-default" name="import" value="{tr}Import{/tr}" />
 						</div>
 					</div>
 				</div>
@@ -134,7 +117,6 @@
 		{/tab}
 
 		{tab name="{tr}Articles Listing{/tr}"}
-            <h2>{tr}Articles Listing{/tr}</h2>
 			<fieldset>
 				<legend>{tr}List Articles{/tr}</legend>
 				<div class="adminoptionbox">
@@ -173,13 +155,8 @@
 			</fieldset>
 		{/tab}
 	{/tabset}
-    <br>{* I cheated. *}
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-			<div class="text-center">
-                <input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-            </div>
-        </div>
-    </div>
+	<div class="input_submit_container clear" style="text-align: center;">
+		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>
 

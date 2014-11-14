@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,99 +7,6 @@
 
 class Tiki_Profile_Installer
 {
-	public static function exportGroup(Tiki_Profile_Writer $writer, $group, $categories = false, $objects = false) // {{{
-	{
-		$userlib = \TikiLib::lib('user');
-		$info = $userlib->get_group_info($group);
-
-		if (empty($info['id'])) {
-			return false;
-		}
-
-		$data = array(
-			'description' => $info['groupDesc'],
-			'home' => $info['groupHome'],
-			'user_tracker' => $writer->getReference('tracker', $info['userTrackerId']),
-			'group_tracker' => $writer->getReference('tracker', $info['groupTrackerId']),
-			'user_tracker_field' => $writer->getReference('tracker_field', $info['userTrackerFieldId']),
-			'group_tracker_field' => $writer->getReference('tracker_field', $info['groupTrackerFieldId']),
-			'registration_fields' => $writer->getReference('tracker_field', array_filter(explode(':', $info['registrationUsersFieldIds']))),
-			'user_signup' => $info['userChoice'],
-			'default_category' => $writer->getReference('category', $info['groupDefCat']),
-			'theme' => $info['groupTheme'],
-			'allow' => [],
-			'objects' => [],
-		);
-
-		foreach ($info['perms'] as $perm) {
-			// Skip tiki_p_
-			$data['allow'][] = substr($perm, 7);
-		}
-
-		if ($categories) {
-			$data['objects'] = self::getPermissionList($writer, 'category', $group);
-		}
-
-		if ($objects) {
-			$data['objects'] = array_merge(
-				$data['objects'],
-				self::getPermissionList($writer, 'wiki page', $group),
-				self::getPermissionList($writer, 'tracker', $group),
-				self::getPermissionList($writer, 'forum', $group)
-			);
-		}
-
-		// Clean and store
-		$data = array_filter($data);
-		$writer->addPermissions($group, $data);
-
-		return true;
-	} // }}}
-
-	private static function getPermissionList($writer, $objectType, $group) // {{{
-	{
-		switch ($objectType) {
-		case 'category':
-			$sub = "SELECT MD5(CONCAT('category', categId)) hash, categId objectId FROM tiki_categories";
-			break;
-		case 'forum':
-			$sub = "SELECT MD5(CONCAT('forum', forumId)) hash, forumId objectId FROM tiki_forums";
-			break;
-		case 'tracker':
-			$sub = "SELECT MD5(CONCAT('tracker', trackerId)) hash, trackerId objectId FROM tiki_trackers";
-			break;
-		case 'wiki page':
-			$sub = "SELECT MD5(CONCAT('wiki page', LOWER(pageName))) hash, pageName objectId FROM tiki_pages";
-			break;
-		default:
-			return array();
-		}
-
-		$db = TikiDb::get();
-		$result = $db->fetchAll("
-		SELECT i.objectId, permName
-		FROM users_objectpermissions p
-			INNER JOIN ($sub) i ON i.hash = p.objectId
-		WHERE p.objectType = ? AND p.groupName = ?
-		", array($objectType, $group));
-
-		$map = [];
-		foreach ($result as $row) {
-			$id = $row['objectId'];
-			if (! isset($map[$id])) {
-				$map[$id] = array(
-					'type' => $objectType,
-					'id' => $writer->getReference($objectType, $id),
-					'allow' => [],
-				);
-			}
-
-			// Strip tiki_p_
-			$map[$id]['allow'][] = substr($row['permName'], 7);
-		}
-		return array_values($map);
-	} // }}}
-
 	private $installed = array();
 	private $handlers = array(
 		'tracker' => 'Tiki_Profile_InstallHandler_Tracker',
@@ -140,8 +47,6 @@ class Tiki_Profile_Installer
 		'area_binding' => 'Tiki_Profile_InstallHandler_AreaBinding',
 		'activity_stream_rule' => 'Tiki_Profile_InstallHandler_ActivityStreamRule',
 		'activity_rule_set' => 'Tiki_Profile_InstallHandler_ActivityRuleSet',
-		'goal' => 'Tiki_Profile_InstallHandler_Goal',
-		'goal_set' => 'Tiki_Profile_InstallHandler_GoalSet',
 	);
 
 	private static $typeMap = array(
@@ -161,8 +66,7 @@ class Tiki_Profile_Installer
 
 	private $userData = false;
 	private $debug = false;
-	private $prefixDependencies = true;
-
+	
 	private $feedback = array();	// Let users know what's happened
 
 	private $allowedGlobalPreferences = false;
@@ -254,16 +158,6 @@ class Tiki_Profile_Installer
 		$this->debug = true;
 	} // }}}
 
-	function disablePrefixDependencies( ) // {{{
-	{
-		$this->prefixDependencies = false;
-	} // }}}
-
-	function enablePrefixDependencies( ) // {{{
-	{
-		$this->prefixDependencies = true;
-	} // }}}
-
 	function getInstallOrder( Tiki_Profile $profile ) // {{{
 	{
 		if ($profile == null) {
@@ -281,17 +175,17 @@ class Tiki_Profile_Installer
 
 		// Build the list of dependencies for each profile
 		$short = array();
-		foreach ( $dependencies as $key => $prf ) {
+		foreach ( $dependencies as $key => $profile ) {
 			$short[$key] = array();
-			foreach ( $prf->getRequiredProfiles() as $k => $p )
+			foreach ( $profile->getRequiredProfiles() as $k => $p )
 				$short[$key][] = $k;
 
-			foreach ( $prf->getNamedObjects() as $o )
+			foreach ( $profile->getNamedObjects() as $o )
 				$knownObjects[] = Tiki_Profile_Object::serializeNamedObject($o);
-			foreach ( $prf->getReferences() as $o )
+			foreach ( $profile->getReferences() as $o )
 				$referenced[] = Tiki_Profile_Object::serializeNamedObject($o);
 
-			if ( ! $this->isInstallable($prf) )
+			if ( ! $this->isInstallable($profile) )
 				return false;
 		}
 
@@ -302,8 +196,8 @@ class Tiki_Profile_Installer
 
 		// Build the list of packages that need to be installed
 		$toSequence = array();
-		foreach ( $dependencies as $key => $prf )
-			if ( ! $this->isInstalled($prf, $key == $profile->getProfileKey() || $this->prefixDependencies) )
+		foreach ( $dependencies as $key => $profile )
+			if ( ! $this->isInstalled($profile) )
 				$toSequence[] = $key;
 
 		// Order the packages to make sure all dependencies are met
@@ -346,9 +240,8 @@ class Tiki_Profile_Installer
 	 */
 	function install( Tiki_Profile $profile, $empty_cache = 'all' ) // {{{
 	{
-		global $tikidomain;
-		$cachelib = TikiLib::lib('cache');
-		$tikilib = TikiLib::lib('tiki');
+		global $cachelib, $tikidomain, $tikilib;
+		require_once 'lib/cache/cachelib.php';
 
 		try {
 			if ( ! $profiles = $this->getInstallOrder($profile) ) {
@@ -372,9 +265,9 @@ class Tiki_Profile_Installer
 
 	} // }}}
 
-	function isInstalled( Tiki_Profile $profile, $prefix = true ) // {{{
+	function isInstalled( Tiki_Profile $profile ) // {{{
 	{
-		return array_key_exists($profile->getProfileKey($prefix), $this->installed);
+		return array_key_exists($profile->getProfileKey(), $this->installed);
 	} // }}}
 
 	function isKeyInstalled( $domain, $profile ) // {{{
@@ -442,8 +335,7 @@ class Tiki_Profile_Installer
 
 	private function applyPreferences($profile, $preferences, $leaveUnknown = false)
 	{
-		global $prefs;
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib, $prefs;
 
 		$profile->replaceReferences($preferences, $this->userData, $leaveUnknown);
 		$leftovers = array();
@@ -455,7 +347,7 @@ class Tiki_Profile_Installer
 			}
 
 			if ($this->allowedGlobalPreferences === false || in_array($pref, $this->allowedGlobalPreferences)) {
-				$prefslib = TikiLib::lib('prefs');
+				global $prefslib; include_once('lib/prefslib.php');
 				$pinfo = $prefslib->getPreference($pref);
 				if (!empty($pinfo['separator']) && !is_array($value)) {
 					$value = explode($pinfo['separator'], $value);
@@ -473,7 +365,7 @@ class Tiki_Profile_Installer
 
 	private function setupGroup( $groupName, $info, $permissions, $objects, $groupMap ) // {{{
 	{
-		$userlib = TikiLib::lib('user');
+		global $userlib;
 
 		if ( ! $userlib->group_exists($groupName) ) {
 			$userlib->add_group($groupName, $info['description'], $info['home'], $info['user_tracker'], $info['group_tracker'], implode(':', $info['registration_fields']), $info['user_signup'], $info['default_category'], $info['theme'], $info['user_tracker_field'], $info['group_tracker_field']);

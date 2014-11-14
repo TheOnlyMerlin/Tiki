@@ -1,16 +1,16 @@
 {* $Id$ *}
 {title}{tr}Directory batch upload{/tr}{/title}
 
-<div class="t_navbar btn-group form-group">
+<div class="navbar">
 	{if $galleryId ne ''}
-		{button href="tiki-browse_gallery.php?galleryId=$galleryId" class="btn btn-default" _text="{tr}Browse Gallery{/tr}"}
+		{button href="tiki-browse_gallery.php?galleryId=$galleryId" _text="{tr}Browse Gallery{/tr}"}
 	{else}
-		{button href="tiki-galleries.php" class="btn btn-default" _text="{tr}Browse Gallery{/tr}"}
+		{button href="tiki-galleries.php" _text="{tr}Browse Gallery{/tr}"}
 	{/if}
-	{button href="tiki-upload_image.php" class="btn btn-default" _text="{tr}Upload From Disk{/tr}"}
+	{button href="tiki-upload_image.php" _text="{tr}Upload From Disk{/tr}"}
 </div>
 
-{if count($feedback)}<div class="alert alert-warning">{section name=i loop=$feedback}{$feedback[i]}<br>{/section}</div>{/if}
+{if count($feedback)}<div class="simplebox highlight">{section name=i loop=$feedback}{$feedback[i]}<br>{/section}</div>{/if}
 
 {$totimg} {tr}available images{/tr} {$dirsize} <br><br>
 <form method="post" action="tiki-batch_upload.php" name="f">
@@ -23,9 +23,9 @@
 			<th style="width:80px"><a href="javascript:void(0);">{tr}Filesize{/tr}</a></th>
 			<th style="width:80px"><a href="javascript:void(0);">{tr}Filetype{/tr}</a></th>
 		</tr>
-
+		{cycle print=false values="even,odd"}
 		{foreach key=k item=it from=$imgstring}
-			<tr>
+			<tr class="{cycle}">
 				<td><input type="checkbox" name="imgs[]" value="{$it[0]}" id="box_{$k}"></td>
 				<td><label for="box_{$k}">{$it[0]}</label></td>
 				<td>{$it[1]}</td>
@@ -55,7 +55,7 @@
 {/if}
 {/section}
 </select>
-&nbsp;&nbsp;&nbsp;&nbsp; <input type="submit" class="btn btn-default btn-sm" name="batch_upload" value="{tr}Process{/tr}">
+&nbsp;&nbsp;&nbsp;&nbsp; <input type="submit" class="btn btn-default" name="batch_upload" value="{tr}Process{/tr}">
 </form>
 <br>
 

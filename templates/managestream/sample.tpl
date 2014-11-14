@@ -1,10 +1,3 @@
-{extends 'layout_view.tpl'}
-
-{block name="title"}
-	{title}{$title|escape}{/title}
-{/block}
-
-{block name="content"}
 <form class="simple" method="post" action="{service controller=managestream action=sample}">
 	<label>
 		{tr}Event{/tr}
@@ -26,7 +19,6 @@
 	{/if}
 	<div class="submit">
 		<input type="hidden" name="ruleId" value="{$rule.ruleId|escape}"/>
-		<input type="submit" class="btn btn-default btn-sm" value="{tr}Record Event{/tr}"/>
+		<input type="submit" class="btn btn-default" value="{tr}Record Event{/tr}"/>
 	</div>
 </form>
-{/block}

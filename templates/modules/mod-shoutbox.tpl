@@ -5,8 +5,8 @@
       {js_maxlength textarea=shout_msg maxlength=255}
       <form action="#" method="post" onsubmit="return verifyForm(this);" id="shout_form">
 	  {if !empty($shout_error)}<div class="highlight">{$shout_error}</div>{/if}
-      <div class="text-center">
-        <textarea rows="3" class="form-control form-group tshoutbox" id="shout_msg" name="shout_msg"></textarea>
+      <div align="center">
+        <textarea rows="3" cols="16" class="tshoutbox" id="shout_msg" name="shout_msg"></textarea>
 		{if $prefs.feature_antibot eq 'y' && $user eq ''}
 			<table>{include file="antibot.tpl"}</table>
 		{/if}
@@ -18,7 +18,7 @@
 			<div><input type="hidden" name="facebook" value="-1" /><input type="checkbox" name="shout_facebook" value='1' /> {tr}Post on my Facebook wall{/tr}</div>
             {/if}
         {/if}
-	    <input type="submit" class="btn btn-default btn-sm" id="shout_send" name="shout_send" value="{$buttontext}" />
+	    <input type="submit" class="btn btn-default" id="shout_send" name="shout_send" value="{$buttontext}" />
       </div>
       </form>
     {/if}

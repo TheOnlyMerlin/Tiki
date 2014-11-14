@@ -24,7 +24,7 @@ function confirm_delete()
 </script>
 {if $tikifeedback}
 <br>
-{section name=n loop=$tikifeedback}<div class="alert alert-info {if $tikifeedback[n].num > 0} alert-warning{/if}">{$tikifeedback[n].mes}</div>{/section}
+{section name=n loop=$tikifeedback}<div class="simplebox {if $tikifeedback[n].num > 0} highlight{/if}">{$tikifeedback[n].mes}</div>{/section}
 <br>
 {/if}
 <p>
@@ -32,7 +32,6 @@ Configure how your mailed-in wiki pages are to be linked / organized.
 </p>
 {tabset name="user_mailin"}
 {tab name="{tr}Structure Routing{/tr}"}
-    <h2>{tr}Structure Routing{/tr}</h2>
 <p>
 {tr}Structure routing will link mailed-in pages as a child to the specified structure node. Only email matching the filters are linked.{/tr}<br/>
 {tr}Only newly created pages, using the mail-in wiki-put function, are affected.{/tr}
@@ -88,7 +87,7 @@ Configure how your mailed-in wiki pages are to be linked / organized.
 		</tr>
 	{/if}
 	</table>
-	<input type="submit" class="btn btn-default btn-sm" value="Save" />
+	<input type="submit" class="btn btn-default" value="Save" />
 	</form>
 {else}
 	<p>

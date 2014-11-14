@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -45,8 +45,7 @@ function wikiplugin_redirect_info()
 
 function wikiplugin_redirect($data, $params)
 {
-	global $just_saved;
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $just_saved;
 	extract($params, EXTR_SKIP);
 	$areturn = '';
 
@@ -81,9 +80,8 @@ function wikiplugin_redirect($data, $params)
 	} else {
 
 		if (isset($perspective)) {
-			global $base_host;
-			$access = TikiLib::lib('access');
-			$perspectivelib = TikiLib::lib('perspective');
+			global $access, $perspectivelib, $base_host;
+			require_once 'lib/perspectivelib.php';
 			$access->check_feature('feature_perspective');
 
 			if ($_SESSION['current_perspective'] !== $perspective) {

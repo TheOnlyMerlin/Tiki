@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,8 +11,7 @@ class PaymentLib extends TikiDb_Bridge
 
 	function request_payment( $description, $amount, $paymentWithin, $detail = null, $currency = null )
 	{
-		global $prefs, $user;
-		$userlib = TikiLib::lib('user');
+		global $prefs, $userlib, $user;
 
 		$description = substr($description, 0, 100);
 		if (empty($currency)) {
@@ -251,10 +250,7 @@ class PaymentLib extends TikiDb_Bridge
 
 	function enter_payment( $invoice, $amount, $type, array $data )
 	{
-		$tx = TikiDb::get()->begin();
-
-		global $user;
-		$userlib = TikiLib::lib('user');
+		global $user, $userlib;
 		if ( $info = $this->get_payment($invoice) ) {
 			if ( $info['state'] != 'past' && $info['amount_remaining_raw'] - $amount <= 0 ) {
 				$results = $this->run_behaviors($info, 'complete');
@@ -283,14 +279,11 @@ class PaymentLib extends TikiDb_Bridge
 				array( $amount, $invoice )
 			);
 		}
-
-		$tx->commit();
 	}
 
 	function enter_authorization( $invoice, $type, $validForDays, array $data )
 	{
-		global $user;
-		$userlib = TikiLib::lib('user');
+		global $user, $userlib;
 		if ( $info = $this->get_payment($invoice) ) {
 			if ( $info['state'] != 'past' ) {
 				$results = $this->run_behaviors($info, 'authorize');
@@ -327,12 +320,6 @@ class PaymentLib extends TikiDb_Bridge
 			foreach ($info['payments'] as $received) {
 				if ($received['status'] != 'auth_pending') {
 					continue;
-				}
-
-				if ($amount) {
-					// When electing to capture a specific amount, assume that amount is the total to be paid.
-					$table = $this->table('tiki_payment_requests');
-					$table->update(['amount' => (float) $amount], ['paymentRequestId' => $paymentId]);
 				}
 
 				if ($gateway = $this->gateway($received['type'])) {
@@ -410,4 +397,6 @@ class PaymentLib extends TikiDb_Bridge
 		}
 	}
 }
+
+global $paymentlib; $paymentlib = new PaymentLib;
 

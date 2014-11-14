@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -17,7 +17,8 @@ if (isset($_REQUEST["workspace"])) {
 ask_ticket('admin-inc-workspace');
 
 if ($prefs['feature_areas'] === 'y') {
-	$areaslib = TikiLib::lib('areas');
+	global $areaslib;
+	require_once('lib/perspective/binderlib.php');
 
 	// updating table tiki_areas
 	if (isset($_REQUEST['update_areas'])) {

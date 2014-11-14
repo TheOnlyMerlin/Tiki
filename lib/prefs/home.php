@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -20,7 +20,8 @@ function prefs_home_list($partial = false)
 		'home_forum' => array(
 			'name' => tra('Home Forum (main forum)'),
             'description' => tra(''),
-			'type' => 'text',
+			'type' => 'list',
+			'options' => $partial ? array() : listforum_pref(),
 			'default' => 0,
 			'profile_reference' => 'forum',
 		),
@@ -51,7 +52,8 @@ function prefs_home_list($partial = false)
  */
 function listimgal_pref()
 {
-	$imagegallib = TikiLib::lib('imagegal');
+	include_once ('lib/imagegals/imagegallib.php');
+	global $imagegallib;
 
 	$allimgals = $imagegallib->list_visible_galleries(0, -1, 'name_desc', 'admin', '');
 
@@ -97,6 +99,29 @@ function listfgal_pref()
 }
 
 /**
+ * listforum_pref: retrieve the list of forums for the home_forum preference
+ *
+ * @access public
+ * @return array: forumId => name(truncated)
+ */
+function listforum_pref()
+{
+	$allforums = TikiLib::lib('comments')->list_forums(0, -1, 'name_desc', '');
+
+	$listforums = array('' => 'None');
+
+	if ($allforums['cant'] > 0) {
+		foreach ($allforums['data'] as $oneforum) {
+			$listforums[ $oneforum['forumId'] ] = substr($oneforum['name'], 0, 30);
+		}
+	} else {
+		$listforums[''] = tra('No forum available (create one first)');
+	}
+
+	return $listforums;
+}
+
+/**
  * listblog_pref: retrieve the list of blogs for the home_blog preference
  *
  * @access public
@@ -104,7 +129,7 @@ function listfgal_pref()
  */
 function listblog_pref()
 {
-	$bloglib = TikiLib::lib('blog');
+	global $bloglib; require_once('lib/blogs/bloglib.php');
 
 	$allblogs = $bloglib->list_blogs(0, -1, 'created_desc', '');
 	$listblogs = array('' => 'None');

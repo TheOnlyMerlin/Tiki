@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -36,9 +36,7 @@ class WikiPluginPluginManager extends PluginsLib
 	}
 	function run($data, $params)
 	{
-		global $helpurl;
-		$wikilib = TikiLib::lib('wiki');
-		$tikilib = TikiLib::lib('tiki');
+		global $wikilib, $helpurl, $tikilib;
 		if (!is_dir(PLUGINS_DIR)) {
 			return $this->error('No plugin directory defined');
 		}
@@ -55,8 +53,8 @@ class WikiPluginPluginManager extends PluginsLib
 			$aPrincipalField = array('field' => 'plugin', 'name' => 'Module');
 			$helppath = $helpurl . $aPrincipalField['name'] . ' ';
 			$filepath = 'mod-func-';
-
-			$modlib = TikiLib::lib('mod');
+			global $modlib;
+			include_once 'lib/modules/modlib.php';
 			$aPlugins = $modlib->list_module_files();
 			$mod = true;
 			$type = ' module';
@@ -224,20 +222,21 @@ class WikiPluginPluginManager extends PluginsLib
 			} else {
 				$title = '';
 			}
-			$headbegin = "\n\t\t" . '<th class="heading">';
+			$headbegin = "\n\t\t" . '<td class="heading">';
 			$cellbegin = "\n\t\t" . '<td>';
 			$header =  "\n\t" . '<tr class="heading">' . $headbegin . 'Parameters</td>';
 			$rows = '';
 			if (isset($numparams) && $numparams > 0) {
-				$header .= $headbegin . tra('Accepted Values') . '</th>';
- 			   	$header .= $headbegin . tra('Description') . '</th>';
+				$header .= $headbegin . tra('Accepted Values') . '</td>';
+ 			   	$header .= $headbegin . tra('Description') . '</td>';
 				$rowCounter = 1;
 				if (!empty($infoPlugin['body'])) {
 					$body = array('(body of plugin)' => array('description' => $infoPlugin['body']));
 					$infoPlugin['params'] = array_merge($body, $infoPlugin['params']);
 				}
 				foreach ($infoPlugin['params'] as $paramname => $paraminfo) {
-					$rows .= "\n\t" . '<tr>' . $cellbegin;
+					$class = ($rowCounter%2) ? 'odd' : 'even';
+					$rows .= "\n\t" . '<tr class="' . $class . '">' . $cellbegin;
 					//Parameters column
 					if (isset($paraminfo['required']) && $paraminfo['required'] == true) {
 						$rows .= '<b><em>' . $paramname . '</em></b>';
@@ -280,7 +279,7 @@ class WikiPluginPluginManager extends PluginsLib
 					$rows .= $cellbegin . $paraminfo['description'] . '</td>';
 					//Default column
 					if ($rowCounter == 1) {
-						$header .= $headbegin . tra('Default') . '</th>';
+						$header .= $headbegin . tra('Default') . '</td>';
 					}
 					if (!isset($paraminfo['default'])) {
 						$paraminfo['default'] = '';
@@ -288,14 +287,14 @@ class WikiPluginPluginManager extends PluginsLib
 					$rows .= $cellbegin . $paraminfo['default'] . '</td>';
 					//Since column
 					if ($rowCounter == 1) {
-						$header .= $headbegin . tra('Since') . '</th>';
+						$header .= $headbegin . tra('Since') . '</td>';
 					}
 					$rows .= $cellbegin . $paraminfo['since'] . '</td>';
  			   		$rows .= "\n\t" . '</tr>';
  			   		$rowCounter++;
 				}
 			} else {
-				$rows .= "\n\t" . '<tr>' . $cellbegin . '<em>' . tra('no parameters') . '</em></td>';
+				$rows .= "\n\t" . '<tr class="odd">' . $cellbegin . '<em>' . tra('no parameters') . '</em></td>';
 			}
 			$header .= "\n\t" . '</tr>';
 			if (!empty($infoPlugin['prefs'])) {
@@ -304,7 +303,7 @@ class WikiPluginPluginManager extends PluginsLib
 				$pluginprefs = '';
 			}
 			$sOutput = $title . '<em>' . tr('Required parameters are in%0 %1bold%2', '</em>', '<b>', '</b>') . '<br />' . 
-						$pluginprefs . '<table class="table table-striped table-hover normal">' . $header . $rows . '</table>' . "\n";
+						$pluginprefs . '<table class="normal">' . $header . $rows . '</table>' . "\n";
 			return $sOutput;
 		}
 	}

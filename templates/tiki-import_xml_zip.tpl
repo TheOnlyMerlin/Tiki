@@ -2,8 +2,8 @@
 
 {title}{tr}XML Zip Import{/tr}{/title}
 
-<div class="t_navbar">
-	 {button href='tiki-admin_structures.php' class="btn btn-default" _text="{tr}Structures{/tr}"}
+<div class="navbar">
+	 {button href='tiki-admin_structures.php' _text="{tr}Structures{/tr}"}
 </div>
 
 {if $error}
@@ -20,5 +20,5 @@
 	  <div><input type="file" name="zip"></div>
 	  <div>{tr}Or{/tr}</div>
 	  <div><label>{tr}Name of the zip file on the server{/tr}<input type="text" name="local"></label></div>
-	  <input type="submit" class="btn btn-default btn-sm" name="import" value="{tr}Import{/tr}">
+	  <input type="submit" class="btn btn-default" name="import" value="{tr}Import{/tr}">
 </form>

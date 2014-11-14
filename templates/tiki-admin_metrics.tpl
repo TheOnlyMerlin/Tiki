@@ -2,17 +2,16 @@
 
 {title help="Metrics" admpage="metrics"}{tr}Admin Metrics{/tr}{/title}
 
-<div class="t_navbar form-group">
-	{button href="#metrics" class="btn btn-default" _text="{tr}Metrics{/tr}"}
-	{button href="#tabs" class="btn btn-default" _text="{tr}Tabs{/tr}"}
-	{button href="#assign" class="btn btn-default" _text="{tr}Assign Metrics{/tr}"}
-	{button href="#assigned" class="btn btn-default" _text="{tr}Assigned Metrics{/tr}"}
-	{button href="#editcreate" class="btn btn-default" _text="{tr}Edit/Create Metrics{/tr}"}
-	{button href="#editcreatetab" class="btn btn-default" _text="{tr}Edit/Create Tab{/tr}"}
+<div class="navbar">
+	{button href="#metrics" _text="{tr}Metrics{/tr}"}
+	{button href="#tabs" _text="{tr}Tabs{/tr}"}
+	{button href="#assign" _text="{tr}Assign Metrics{/tr}"}
+	{button href="#assigned" _text="{tr}Assigned Metrics{/tr}"}
+	{button href="#editcreate" _text="{tr}Edit/Create Metrics{/tr}"}
+	{button href="#editcreatetab" _text="{tr}Edit/Create Tab{/tr}"}
 </div>
 
 <h2>{tr}Metrics{/tr}</h2>
-<div class="table-responsive">
 <table class="table normal" id="metrics">
 	<tr class="first">
 		<th>{tr}Name{/tr}</th>
@@ -24,7 +23,7 @@
 	{if !empty($metrics_list)}
 		{cycle print=false values="odd,even"}
 		{foreach from=$metrics_list key=i item=metric}
-			<tr>
+			<tr class="{cycle}">
 				<td class="text">{$metric.metric_name|escape}</td>
 				<td class="text">{$metric.metric_range|escape}</td>
 				<td class="text">{$metric.metric_datatype|escape}</td>
@@ -40,10 +39,8 @@
 		{norecords _colspan=5}
 	{/if}
 </table>
-</div>
 
 <h2>{tr}Tabs{/tr}</h2>
-<div class="table-responsive">
 <table class="table normal" id="tabs">
 	<tr class="first">
 		<th>{tr}Name{/tr}</th>
@@ -53,7 +50,7 @@
 	{if !empty($tabs_list)}
 		{cycle print=false values="odd,even"}
 		{foreach from=$tabs_list key=i item=tab}
-			<tr>
+			<tr class="{cycle}">
 				<td class="text">{$tab.tab_name|escape}</td>
 				<td class="integer">{$tab.tab_order|escape}</td>
 				<td class="action">
@@ -66,9 +63,8 @@
 		{norecords _colspan=3}
 	{/if}
 </table>
-</div>
+
 <h2>{tr}Assigned Metrics{/tr}</h2>
-<div class="table-responsive">
 <table class="table normal" id="assigned_metrics">
 	<tr class="first">
 		<th>{tr}Metric Name{/tr}</th>
@@ -78,7 +74,7 @@
 	{if !empty($metrics_assigned_list)}
 		{cycle print=false values="odd,even"}
 		{foreach from=$metrics_assigned_list key=i item=assigned_item}
-			<tr>
+			<tr class="{cycle}">
 				<td class="text">{$metrics_list[$assigned_item.metric_id].metric_name|escape}</td>
 				<td class="text">{$tabs_list[$assigned_item.tab_id].tab_name|escape}</td>
 				<td class="action">
@@ -91,7 +87,6 @@
 		{norecords _colspan=3}
 	{/if}
 </table>
-</div>
 
 <h2 id="assign">
 	{if $assign_metric eq ''}
@@ -130,7 +125,7 @@
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
-			<td><input type="submit" class="btn btn-default btn-sm" name="assign" value="{tr}Assign{/tr}"></td>
+			<td><input type="submit" class="btn btn-default" name="assign" value="{tr}Assign{/tr}"></td>
 		</tr>
 	</table>
 </form>
@@ -197,7 +192,7 @@
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
-			<td><input type="submit" class="btn btn-default btn-sm" name="metric_submit" value="{if !isset($metric_id)}{tr}Create Metric{/tr}{else}{tr}Edit Metric{/tr}{/if}"></td>
+			<td><input type="submit" class="btn btn-default" name="metric_submit" value="{if !isset($metric_id)}{tr}Create Metric{/tr}{else}{tr}Edit Metric{/tr}{/if}"></td>
 		</tr>
 	</table>
 	<input type="hidden" name="metric_id" value="{$metric_id|escape}">
@@ -229,7 +224,7 @@
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
-			<td><input type="submit" class="btn btn-default btn-sm" name="tab_submit" value="{if !isset($tab_id)}{tr}Create Tab{/tr}{else}{tr}Edit Tab{/tr}{/if}"></td>
+			<td><input type="submit" class="btn btn-default" name="tab_submit" value="{if !isset($tab_id)}{tr}Create Tab{/tr}{else}{tr}Edit Tab{/tr}{/if}"></td>
 		</tr>
 	</table>
 	<input type="hidden" name="tab_id" value="{$tab_id|escape}">

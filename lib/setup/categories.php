@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,7 +9,7 @@
 $access->check_script($_SERVER['SCRIPT_NAME'], basename(__FILE__));
 
 if ($prefs['feature_categories'] == 'y' && $prefs['categories_used_in_tpl'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	global $categlib; include_once('lib/categories/categlib.php');
 	// pick up the objectType from cat_type is set or from section
 	if (!empty($section) && !empty($sections) && !empty($sections[$section])) {
 		$here = $sections[$section];

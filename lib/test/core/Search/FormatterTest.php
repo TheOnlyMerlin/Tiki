@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -201,27 +201,25 @@ OUT;
 
 	function testSpecifyDataSource()
 	{
-		$searchResult = Search_ResultSet::create(array(
+		$searchResult = array(
 			array('object_type' => 'wiki page', 'object_id' => 'HomePage'),
 			array('object_type' => 'wiki page', 'object_id' => 'SomePage'),
-		));
+		);
 		$withData = array(
 			array('object_type' => 'wiki page', 'object_id' => 'HomePage', 'description' => 'ABC'),
 			array('object_type' => 'wiki page', 'object_id' => 'SomePage', 'description' => 'DEF'),
 		);
 
 		$source = $this->getMock('Search_Formatter_DataSource_Interface');
-		$source->expects($this->any())
-			->method('getData')
-			->will($this->returnCallback(function ($entry, $field) use (& $withData) {
-				$this->assertEquals('description', $field);
-				return array_shift($withData);
-			}));
+		$source->expects($this->once())
+			->method('getInformation')
+			->with($this->equalTo(Search_ResultSet::create($searchResult)), $this->equalTo(array('object_id', 'description')))
+			->will($this->returnValue(Search_ResultSet::create($withData)));
 
 		$plugin = new Search_Formatter_Plugin_WikiTemplate("* {display name=object_id} ({display name=description})\n");
 
 		$formatter = new Search_Formatter($plugin);
-		$searchResult->applyTransform(new Search_Formatter_Transform_DynamicLoader($source));
+		$formatter->setDataSource($source);
 
 		$output = $formatter->format($searchResult);
 

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -323,28 +323,13 @@ function wikiplugin_slider_info()
 				'accepted' => 'a number',
 				'default' => '600',
 			),
-			'hashtags' => array(
-				'required' => false,
-				'name' => tra('Display panel hashtag'),
-				'description' => tra('if y, each panel has a hashtag that will appear in the page URL, allowing you to link to a specific panel.'),
-				'filter' => 'alpha',
-				'accepted' => 'y or n',
-				'default' => 'y',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				)
-			),
-
 		),
 	);
 }
 
 function wikiplugin_slider($data, $params)
 {
-	$tikilib = TikiLib::lib('tiki');
-	$headerlib = TikiLib::lib('header');
+	global $tikilib, $headerlib;
 	extract($params, EXTR_SKIP);
 
 	$headerlib->add_jsfile('vendor/jquery/plugins/anythingslider/js/swfobject.js');
@@ -438,7 +423,6 @@ function wikiplugin_slider($data, $params)
 			// Navigation
 			startPanel          : 1,
 			changeBy            : 1,
-			hashTags            : ".makeBool($hashtags, true).",
 
 			// Slideshow options
 			autoPlay            : ".makeBool($autoplay, false).",

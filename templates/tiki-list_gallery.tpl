@@ -4,25 +4,24 @@
   {$description}
 </div>
 
-<div class="t_navbar form-group">
+<div class="navbar">
 	{if $system eq 'n'}
 		{if $tiki_p_admin_galleries eq 'y' or ($user and $user eq $owner)}
-			{button href="tiki-galleries.php?edit_mode=1&galleryId=$galleryId" class="btn btn-default" _text="{tr}Edit Gallery{/tr}"}
-			{button href="tiki-list_gallery.php?galleryId=$galleryId&rebuild=$galleryId" class="btn btn-default" _text="{tr}Rebuild Thumbnails{/tr}"}
+			{button href="tiki-galleries.php?edit_mode=1&galleryId=$galleryId" _text="{tr}Edit Gallery{/tr}"}
+			{button href="tiki-list_gallery.php?galleryId=$galleryId&rebuild=$galleryId" _text="{tr}Rebuild Thumbnails{/tr}"}
 		{/if}
 		{if $tiki_p_upload_images eq 'y'}
 			{if $tiki_p_admin_galleries eq 'y' or ($user and $user eq $owner) or $public eq 'y'}
-					{button href="tiki-upload_image.php?galleryId=$galleryId" class="btn btn-default" _text="{tr}Upload Image{/tr}"}
+					{button href="tiki-upload_image.php?galleryId=$galleryId" _text="{tr}Upload Image{/tr}"}
 			{/if}
 		{/if}
 	{/if}
-	{button href="tiki-browse_gallery.php?galleryId=$galleryId" class="btn btn-default" _text="{tr}Browse Gallery{/tr}"}
+	{button href="tiki-browse_gallery.php?galleryId=$galleryId" _text="{tr}Browse Gallery{/tr}"}
 </div>
 
 <h2>{tr}Gallery Images{/tr}</h2>
-<div class="text-center">
-<div class="table-responsive">
-<table class="table table-striped normal">
+<div align="center">
+<table class="table normal">
 <tr>
 <th><a href="tiki-list_gallery.php?galleryId={$galleryId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'imageId_desc'}imageId_asc{else}imageId_desc{/if}">{tr}ID{/tr}</a></th>
 <th><a href="tiki-list_gallery.php?galleryId={$galleryId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></th>
@@ -31,9 +30,9 @@
 <th><a href="tiki-list_gallery.php?galleryId={$galleryId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'user_desc'}user_asc{else}user_desc{/if}">{tr}User{/tr}</a></th>
 <th><a href="tiki-list_gallery.php?galleryId={$galleryId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'filesize_desc'}filesize_asc{else}filesize_desc{/if}">{tr}Filesize{/tr}</a></th>
 </tr>
-
+{cycle print=false values="even,odd"}
 {section name=changes loop=$images}
-<tr>
+<tr class="{cycle}">
 <td>{$images[changes].imageId}&nbsp;</td>
 <td><a class="imagename" href="tiki-browse_image.php?{if $images[changes].galleryId}galleryId={$images[changes].galleryId}&amp;{/if}imageId={$images[changes].imageId}">{$images[changes].name|truncate:22:"..."}</a>&nbsp;
 {if $tiki_p_admin_galleries eq 'y' or ($user and $user eq $owner)}
@@ -49,7 +48,6 @@
 	{norecords _colspan=6}
 {/section}
 </table>
-</div>
 
 {pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
 

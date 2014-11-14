@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,7 +7,7 @@
 
 require_once('lib/wizard/wizard.php');
 include_once('lib/userprefs/scrambleEmail.php');
-$userprefslib = TikiLib::lib('userprefs');
+include_once('lib/userprefs/userprefslib.php');
 
 /**
  * Set up the wysiwyg editor, including inline editing
@@ -32,10 +32,7 @@ class UserWizardPreferencesParams extends Wizard
 
 	function onSetupPage ($homepageUrl) 
 	{
-		global	$user, $prefs, $tiki_p_messages;
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
-		$smarty = TikiLib::lib('smarty');
+		global	$smarty, $userlib, $tikilib, $user, $prefs, $tiki_p_messages;
 
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
@@ -163,14 +160,12 @@ class UserWizardPreferencesParams extends Wizard
 			if ($tikilib->page_exists($prefs['feature_wiki_userpage_prefix'] . $user)) $smarty->assign('userPageExists', 'y');
 		}
 		$smarty->assign_by_ref('tikifeedback', $tikifeedback);
+
+		// Assign the page template
+		$wizardTemplate = 'wizard/user_preferences_params.tpl';
+		$smarty->assign('wizardBody', $wizardTemplate);
 		
 		return true;		
-	}
-
-	function getTemplate()
-	{
-		$wizardTemplate = 'wizard/user_preferences_params.tpl';
-		return $wizardTemplate;
 	}
 
 	function onContinue ($homepageUrl) 

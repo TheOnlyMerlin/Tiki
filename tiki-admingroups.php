@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -176,7 +176,8 @@ if (!empty($_REQUEST['submit_mult']) && !empty($_REQUEST['checked'])) {
 	}
 }
 if (isset($_REQUEST['clean'])) {
-	$cachelib = TikiLib::lib('cache');
+	global $cachelib;
+	require_once ("lib/cache/cachelib.php");
 	check_ticket('admin-groups');
 	$cachelib->invalidate('grouplist');
 	$cachelib->invalidate('groupIdlist');
@@ -231,7 +232,7 @@ if (!empty($_REQUEST["group"])) {
 	if (isset($re['prorateInterval'])) $prorateInterval = $re['prorateInterval'];
 	if ($prefs['userTracker'] == 'y') {
 		if (isset($re["usersTrackerId"]) and $re["usersTrackerId"]) {
-			$trklib = TikiLib::lib('trk');
+			include_once ('lib/trackers/trackerlib.php');
 			$userstrackerid = $re["usersTrackerId"];
 			$smarty->assign('userstrackerid', $userstrackerid);
 			$usersFields = $trklib->list_tracker_fields($userstrackerid, 0, -1, 'position_asc', '');
@@ -246,7 +247,7 @@ if (!empty($_REQUEST["group"])) {
 	if ($prefs['groupTracker'] == 'y') {
 		$groupFields = array();
 		if (isset($re["groupTrackerId"]) and $re["groupTrackerId"]) {
-			$trklib = TikiLib::lib('trk');
+			include_once ('lib/trackers/trackerlib.php');
 			$grouptrackerid = $re["groupTrackerId"];
 			$smarty->assign('grouptrackerid', $grouptrackerid);
 			$groupFields = $trklib->list_tracker_fields($grouptrackerid, 0, -1, 'position_asc', '');
@@ -362,7 +363,8 @@ if (!empty($_REQUEST['group']) && isset($_REQUEST['import'])) {
 	$cookietab = 4;
 }
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	global $categlib;
+	include_once ('lib/categories/categlib.php');
 	$categories = $categlib->getCategories();
 	$smarty->assign_by_ref('categories', $categories);
 }
@@ -421,7 +423,7 @@ $smarty->display("tiki.tpl");
  */
 function indirectly_inherited_groups($direct_groups)
 {
-	$userlib = TikiLib::lib('user');
+	global $userlib;
 	$indirect_groups = array();
 	foreach ($direct_groups as $a_direct_group => $does_inherit) {
 		if ($does_inherit === 'y') {

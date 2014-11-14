@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -203,9 +203,7 @@ function wikiplugin_listpages_info()
 
 function wikiplugin_listpages($data, $params)
 {
-	global $prefs, $tiki_p_view;
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $prefs, $tiki_p_view, $tikilib, $smarty;
 
 	if ( isset($prefs) ) {
 		// Handle 1.10.x prefs
@@ -261,7 +259,8 @@ function wikiplugin_listpages($data, $params)
 		$filter['structHead'] = $structHead;
 	}
 	if (!empty($translations) && $prefs['feature_multilingual'] == 'y') {
-		$multilinguallib = TikiLib::lib('multilingual');
+		global $multilinguallib;
+		require_once 'lib/multilingual/multilinguallib.php';
 		if ($translations == 'user') {
 			$translations = $multilinguallib->preferredLangs();
 		} else {
@@ -297,7 +296,8 @@ function wikiplugin_listpages($data, $params)
 		} else {
 			$aExcludetag[] = $excludetag;
 		}
-		$freetaglib = TikiLib::lib('freetag');
+		global $freetaglib;
+		require_once 'lib/freetag/freetaglib.php';
 		$i = 0;
 
 		foreach ( $listpages['data'] as $page ) {
@@ -352,7 +352,7 @@ function wikiplugin_listpages($data, $params)
 	} else {
 		if (!empty($start) || !empty($end) || $length > 0) {
 			foreach ($listpages['data'] as $i=>$page) {
-				$listpages['data'][$i]['snippet'] = $tikilib->get_snippet($page['data'], $page['outputType'], $page['is_html'], '', $length, $start, $end);
+				$listpages['data'][$i]['snippet'] = $tikilib->get_snippet($page['data'], $page['is_html'], '', $length, $start, $end);
 			}
 		}
 		$ret = $smarty->fetch('tiki-listpages_content.tpl');

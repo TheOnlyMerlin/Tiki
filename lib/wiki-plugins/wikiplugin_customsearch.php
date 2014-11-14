@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -58,8 +58,8 @@ function wikiplugin_customsearch_info()
 				'name' => tra('Return users to same search parameters on coming back to the search page after leaving'),
 				'description' => tra('In the same session, return users to same search parameters on coming back to the search page after leaving'),
 				'options' => array(
-					array('text' => tra('No'), 'value' => '0'),
 					array('text' => tra('Yes'), 'value' => '1'),
+					array('text' => tra('No'), 'value' => '0'),
 				),
 				'filter' => 'digits',
 				'default' => '0',
@@ -83,8 +83,8 @@ function wikiplugin_customsearch_info()
 				'name' => tra('Search On Load'),
 				'description' => tra('Execute the search when the page loads (default: Yes)'),
 				'options' => array(
-					array('text' => tra('No'), 'value' => '0'),
 					array('text' => tra('Yes'), 'value' => '1'),
+					array('text' => tra('No'), 'value' => '0'),
 				),
 				'filter' => 'digits',
 				'default' => '1',
@@ -94,19 +94,8 @@ function wikiplugin_customsearch_info()
 				'name' => tra('Require non-empty search text'),
 				'description' => tra('Require first input field to be filled for search to trigger'),
 				'options' => array(
-					array('text' => tra('No'), 'value' => '0'),
 					array('text' => tra('Yes'), 'value' => '1'),
-				),
-				'filter' => 'digits',
-				'default' => '0',
-			),
-			'forcesortmode' => array(
-				'required' => false,
-				'name' => tra('Force sort mode overriding result relevance'),
-				'description' => tra('Force the use of specified sort mode in place of search relevance even when there is a text search query'),
-				'options' => array(
 					array('text' => tra('No'), 'value' => '0'),
-					array('text' => tra('Yes'), 'value' => '1'),
 				),
 				'filter' => 'digits',
 				'default' => '0',
@@ -141,9 +130,6 @@ function wikiplugin_customsearch($data, $params)
 	if (!isset($params['requireinput'])) {
 		$params['requireinput'] = 0;
 	}
-	if (!isset($params['forcesortmode'])) {
-		$params['forcesortmode'] = 0;
-	}
 	if (!isset($_REQUEST["offset"])) {
 		$offset = 0;
 	} else {
@@ -167,14 +153,10 @@ function wikiplugin_customsearch($data, $params)
 	if (!isset($params['searchonload'])) {
 		$params['searchonload'] = 1;
 	}
-	if (!isset($params['requireinput'])) {
-		$params['requireinput'] = false;
-	}
 
 	$definitionKey = md5($data);
 	$matches = WikiParser_PluginMatcher::match($data);
 	$query = new Search_Query;
-	$query->filterIdentifier('y', 'searchable');
 	$builder = new Search_Query_WikiBuilder($query);
 	$builder->apply($matches);
 
@@ -236,7 +218,6 @@ function wikiplugin_customsearch($data, $params)
 		'searchonload' => (int) $params['searchonload'],
 		'requireinput' => (bool) $params['requireinput'],
 		'origrequireinput' => (bool) $params['requireinput'],
-		'forcesortmode' => (bool) $params['forcesortmode'],
 	);
 
 	/**
@@ -275,14 +256,13 @@ var customsearch = {
 			selector = '#customsearch_' + cs.id;
 		}
 
-		$(selector).tikiModal(cs.options.searchfadetext);
+		$(selector).modal(cs.options.searchfadetext);
 
 		cs._load(function (data) {
-			$(selector).tikiModal();
+			$(selector).modal();
 			$(cs.options.results).html(data);
 			$(document).trigger('pageSearchReady');
 		});
-		cs.store_query = '';
 	}),
 	init: function () {
 		var that = this;
@@ -388,13 +368,9 @@ customsearch._load = function (receive) {
 		searchid: this.id,
 		offset: customsearch.offset,
 		maxRecords: this.maxRecords,
-		store_query: this.store_query,
 		page: " . json_encode($page) . ",
 		recalllastsearch: $recalllastsearch
 	};
-	if (!customsearch.options.forcesortmode && $('#customsearch_$id').find(':text').val() && $('#customsearch_$id').find(':text').val().indexOf('...') <= 0) {
-		customsearch.sort_mode = 'score_desc';
-	}
 	if (customsearch.sort_mode) {
 		// blank sort_mode is not allowed by Tiki input filter
 		datamap.sort_mode = customsearch.sort_mode;
@@ -413,7 +389,6 @@ customsearch._load = function (receive) {
 customsearch.sort_mode = " . json_encode($sort_mode) . ";
 customsearch.offset = $offset;
 customsearch.maxRecords = $maxRecords;
-customsearch.store_query ='';
 customsearch.init();
 ";
 
@@ -763,36 +738,4 @@ $('#{$fieldid_from}_dptxt,#{$fieldid_to}_dptxt').change(function() {
 ";
 
 	return $picker;
-}
-
-function cs_design_store($id, $fieldname, $fieldid, $arguments, $default, &$script)
-{
-	global $prefs;
-	if ($prefs['storedsearch_enabled'] != 'y') {
-		return;
-	}
-
-	$document = new DOMDocument;
-	$element = $document->createElement('input');
-	$element->setAttribute('type', 'submit');
-	cs_design_setbasic($element, $fieldid, $fieldname, $arguments);
-	$document->appendChild($element);
-
-	$script .= "
-
-$('#$fieldid').click(function() {
-	$(this).serviceDialog({
-		title: $(this).val(),
-		controller: 'search_stored',
-		action: 'select',
-		success: function (data) {
-			customsearch.store_query = data.queryId;
-			customsearch.load();
-		}
-	});
-	return false;
-});
-";
-
-	return $document->saveHTML();
 }

@@ -2,8 +2,8 @@
 {title}{tr}Advanced parameters for iCal export{/tr}{/title}
 
 {if $tiki_p_view_calendar eq 'y'}
-	<div class="t_navbar">
-		{button href="tiki-calendar.php" _text="{tr}Calendar{/tr}"}
+	<div class="navbar">
+		{button  href="tiki-calendar.php" _text="{tr}Calendar{/tr}"}
 	</div>
 {/if}
 
@@ -66,8 +66,8 @@
 </td>
 </tr>
 <tr>
-	<td><input type="submit" class="btn btn-default btn-sm" name="ical" value="{tr}Export calendars iCal{/tr}"></td>
-	<td><input type="submit" class="btn btn-default btn-sm" name="csv" value="{tr}Export calendars CSV{/tr}"></td>
+	<td><input type="submit" class="btn btn-default" name="ical" value="{tr}Export calendars iCal{/tr}"></td>
+	<td><input type="submit" class="btn btn-default" name="csv" value="{tr}Export calendars CSV{/tr}"></td>
 </tr>
 </table>
 </form>

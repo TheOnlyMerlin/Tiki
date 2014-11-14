@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +11,7 @@
  * Letter key: ~GF~
  *
  */
-class Tracker_Field_Math extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable, Tracker_Field_Indexable, Tracker_Field_Exportable
+class Tracker_Field_Math extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable, Tracker_Field_Indexable
 {
 	private static $runner;
 
@@ -32,16 +32,6 @@ class Tracker_Field_Math extends Tracker_Field_Abstract implements Tracker_Field
 						'description' => tr('Calculation in the Rating Language'),
 						'filter' => 'text',
 						'legacy_index' => 0,
-					),
-					'recalculate' => array(
-						'name' => tr('Re-calculation event'),
-						'type' => 'list',
-						'description' => tr('Allow to specify special calculation handling. Selecting indexing is useful for dynamic score fields that will not be displayed.'),
-						'filter' => 'word',
-						'options' => array(
-							'save' => tr('Save'),
-							'index' => tr('Indexing'),
-						),
 					),
 				),
 			),
@@ -88,24 +78,9 @@ class Tracker_Field_Math extends Tracker_Field_Abstract implements Tracker_Field
 
 	function getDocumentPart(Search_Type_Factory_Interface $typeFactory)
 	{
-		$value = $this->getValue();
-
-		if ('index' == $this->getOption('recalculate')) {
-			$runner = $this->getFormulaRunner();
-			$data = [];
-
-			foreach ($runner->inspect() as $fieldName) {
-				$data[$fieldName] = $this->getItemField($fieldName);
-			}
-
-			$runner->setVariables($data);
-
-			$value = $runner->evaluate();
-		}
-
 		$baseKey = $this->getBaseKey();
 		return array(
-			$baseKey => $typeFactory->sortable($value),
+			$baseKey => $typeFactory->identifier($this->getValue()),
 		);
 	}
 
@@ -122,44 +97,22 @@ class Tracker_Field_Math extends Tracker_Field_Abstract implements Tracker_Field
 
 	function handleFinalSave(array $data)
 	{
-		try {
-			$runner = $this->getFormulaRunner();
-			$runner->setVariables($data);
-
-			return $runner->evaluate();
-		} catch (Math_Formula_Exception $e) {
-			return $e->getMessage();
-		}
-	}
-
-	function getTabularSchema()
-	{
-		$schema = new Tracker\Tabular\Schema($this->getTrackerDefinition());
-
-		$permName = $this->getConfiguration('permName');
-		$schema->addNew($permName, 'default')
-			->setLabel($this->getConfiguration('name'))
-			->setRenderTransform(function ($value) {
-				return $value;
-			})
-			;
-
-		return $schema;
-	}
-
-	private function getFormulaRunner()
-	{
 		static $cache = array();
 		$fieldId = $this->getConfiguration('fieldId');
 		if (! isset($cache[$fieldId])) {
 			$cache[$fieldId] = $this->getOption('calculation');
 		}
 
-		$runner = self::getRunner();
+		try {
+			$runner = self::getRunner();
 
-		$cache[$fieldId] = $runner->setFormula($cache[$fieldId]);
+			$cache[$fieldId] = $runner->setFormula($cache[$fieldId]);
+			$runner->setVariables($data);
 
-		return $runner;
+			return $runner->evaluate();
+		} catch (Math_Formula_Exception $e) {
+			return $e->getMessage();
+		}
 	}
 
 	public static function getRunner()

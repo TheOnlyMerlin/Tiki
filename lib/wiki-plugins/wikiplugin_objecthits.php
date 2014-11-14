@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -46,16 +46,20 @@ function wikiplugin_objecthits_info()
 
 function wikiplugin_objecthits($data, $params)
 {
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib;
 	$default = array('days' => 0, 'since' => '', 'type' => 'wiki');
 	$params = array_merge($default, $params);
 
-	$statslib = TikiLib::lib('stats');
+	global $statslib;
+	if (!is_object($statslib)) {
+		global $dbTiki;
+		include "lib/stats/statslib.php";
+	}
  
 	extract($params, EXTR_SKIP);
 
 	if (!isset($object)) {
-		global $page;
+	  global $page;
 		$object = $page;
 		$type= "wiki";
 	}

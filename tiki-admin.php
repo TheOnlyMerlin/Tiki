@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,13 +11,13 @@
 $section = 'admin';
 
 require_once ('tiki-setup.php');
-$adminlib = TikiLib::lib('admin');
+include_once ('lib/admin/adminlib.php');
 
 $tikifeedback = array();
 $auto_query_args = array('page');
 
 $access->check_permission('tiki_p_admin');
-$logslib = TikiLib::lib('logs');
+global $logslib; include_once('lib/logs/logslib.php');
 
 /**
  * Display feedback on prefs changed
@@ -51,10 +51,7 @@ function add_feedback( $name, $message, $st, $num = null )
  */
 function simple_set_toggle($feature)
 {
-	global $prefs;
-	$logslib = TikiLib::lib('logs');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $_REQUEST, $tikilib, $smarty, $prefs, $logslib;
 	if (isset($_REQUEST[$feature]) && $_REQUEST[$feature] == 'on') {
 		if ((!isset($prefs[$feature]) || $prefs[$feature] != 'y')) {
 			// not yet set at all or not set to y
@@ -72,7 +69,8 @@ function simple_set_toggle($feature)
 			}
 		}
 	}
-	$cachelib = TikiLib::lib('cache');
+	global $cachelib;
+	require_once ('lib/cache/cachelib.php');
 	$cachelib->invalidate('allperms');
 }
 
@@ -87,10 +85,7 @@ function simple_set_toggle($feature)
  */
 function simple_set_value($feature, $pref = '', $isMultiple = false)
 {
-	global $prefs;
-	$logslib = TikiLib::lib('logs');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $_REQUEST, $tikilib, $prefs, $logslib;
 	$old = $prefs[$feature];
 	if (isset($_REQUEST[$feature])) {
 		if ($pref != '') {
@@ -115,7 +110,8 @@ function simple_set_value($feature, $pref = '', $isMultiple = false)
 		add_feedback($feature, ($_REQUEST[$feature]) ? tr('%0 set', $feature) : tr('%0 unset', $feature), 2);
 		$logslib->add_action('feature', $feature, 'system', $old .'=>'.isset($_REQUEST['feature'])?$_REQUEST['feature']:'');
 	}
-	$cachelib = TikiLib::lib('cache');
+	global $cachelib;
+	require_once ('lib/cache/cachelib.php');
 	$cachelib->invalidate('allperms');
 }
 
@@ -128,10 +124,7 @@ function simple_set_value($feature, $pref = '', $isMultiple = false)
  */
 function simple_set_int($feature)
 {
-	global $prefs;
-	$logslib = TikiLib::lib('logs');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $_REQUEST, $tikilib, $prefs, $logslib;
 	if (isset($_REQUEST[$feature]) && is_numeric($_REQUEST[$feature])) {
 		$old = $prefs[$feature];
 		if ($old != $_REQUEST[$feature]) {
@@ -152,18 +145,19 @@ function simple_set_int($feature)
  */
 function byref_set_value($feature, $pref = '')
 {
+	global $_REQUEST, $tikilib, $smarty, $logslib;
 	simple_set_value($feature, $pref);
 }
 
-$crumbs[] = new Breadcrumb(tra('Configuration Panels'), tra('Sections'), 'tiki-admin.php', 'Admin+Home', tra('Help on Configuration Sections', '', true));
+$crumbs[] = new Breadcrumb(tra('Administration'), tra('Sections'), 'tiki-admin.php', 'Admin+Home', tra('Help on Configuration Sections', '', true));
 // Default values for AdminHome
-$admintitle = tra('Configuration Panels');
+$admintitle = tra('Administration');
 $helpUrl = 'Admin+Home';
 $helpDescription = $description = '';
 $url = 'tiki-admin.php';
 $adminPage = '';
 
-$prefslib = TikiLib::lib('prefs');
+global $prefslib; require_once 'lib/prefslib.php';
 
 if ( isset ($_REQUEST['pref_filters']) ) {
 	$prefslib->setFilters($_REQUEST['pref_filters']);
@@ -469,9 +463,9 @@ $icons = array(
 	"freetags" => array(
 		'icon' => 'img/icons/large/vcard.png',
 		'position' => '-300px -415px;',
-		'title' => tr('Tags'),
+		'title' => tr('Freetags'),
 		'disabled' => $prefs['feature_freetags'] != 'y',
-		'description' => tr('Settings and features for tags'),
+		'description' => tr('Settings and features for freetags'),
 		'help' => 'Tags',
 	),
 	"faqs" => array(
@@ -609,9 +603,6 @@ if (isset($_REQUEST['page'])) {
 		include_once ("admin/include_$adminPage.php");
 		$url = 'tiki-admin.php' . '?page=' . $adminPage;
 	}
-	if (substr($adminPage, 0, 3) == 'ta_') {
-		$smarty->assign('addonadmin', 'y');
-	}
 	if (isset($icons[$adminPage])) {
 		$icon = $icons[$adminPage];
 
@@ -622,12 +613,12 @@ if (isset($_REQUEST['page'])) {
 	$helpDescription = tr("Help on %0 Config", $admintitle);
 
 } else {
-	$smarty->assign('admintitle', 'Configuration Panels');
+	$smarty->assign('admintitle', 'Admin Home');
 	$smarty->assign('description', 'Home Page for Administrators');
 	$smarty->assign('headtitle', breadcrumb_buildHeadTitle($crumbs));
 	$smarty->assign('description', $crumbs[0]->description);
 }
-$headerlib->add_cssfile('themes/base_files/feature_css/admin.css');
+$headerlib->add_cssfile('css/admin.css');
 if (isset($admintitle) && isset($description)) {
 	$crumbs[] = new Breadcrumb($admintitle, $description, $url, $helpUrl, $helpDescription);
 	$smarty->assign_by_ref('admintitle', $admintitle);
@@ -678,7 +669,7 @@ if ($prefs['feature_version_checks'] == 'y' || $forcecheck) {
 }
 
 if (isset($_REQUEST['lm_criteria']) && isset($_REQUEST['exact'])) {
-	$headerlib = TikiLib::lib('header');
+	global $headerlib;
 	$headerlib->add_jq_onready(
 		"$('body,html')
 			.animate({scrollTop: $('." . htmlspecialchars($_REQUEST['lm_criteria']). "')

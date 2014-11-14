@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -29,7 +29,6 @@ require_once ('tiki-setup.php');
 // temporary patch: tiki_p_admin includes tiki_p_admin_users but if you don't
 // clean the temp/cache each time you sqlupgrade the perms setting is not
 // synchronous with the cache
-$access = TikiLib::lib('access');
 $access->check_permission(array('tiki_p_admin_users'));
 
 if ($tiki_p_admin != 'y') {
@@ -52,11 +51,7 @@ function discardUser($u, $reason)
 
 function batchImportUsers()
 {
-	global $tiki_p_admin, $prefs, $userGroups;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
-	$logslib = TikiLib::lib('logs');
+	global $userlib, $smarty, $logslib, $tiki_p_admin, $prefs, $userGroups, $tikilib;
 
 	$fname = $_FILES['csvlist']['tmp_name'];
 	$fhandle = fopen($fname, 'r');
@@ -734,7 +729,7 @@ if (isset($_REQUEST['user']) and $_REQUEST['user']) {
 	if ($prefs['userTracker'] == 'y') {
 		$re = $userlib->get_usertracker($_REQUEST['user']);
 		if ($re['usersTrackerId']) {
-			$trklib = TikiLib::lib('trk');
+			include_once ('lib/trackers/trackerlib.php');
 			$userstrackerid = $re['usersTrackerId'];
 			$smarty->assign('userstrackerid', $userstrackerid);
 			$usersFields = $trklib->list_tracker_fields($usersTrackerId, 0, -1, 'position_asc', '');
@@ -779,18 +774,15 @@ if ($tiki_p_admin == 'y') {
 }
 
 //add tablesorter sorting and filtering
-$tsOn = Table_Check::isEnabled(true);
+$tsOn	= $prefs['disableJavascript'] == 'n' && $prefs['feature_jquery_tablesorter'] == 'y'
+		&& $prefs['feature_ajax'] == 'y' ? true : false;
 
 $smarty->assign('tsOn', $tsOn);
-$tsAjax = Table_Check::isAjaxCall();
-static $iid = 0;
-++$iid;
-$ts_tableid = 'adminusers' . $iid;
-$smarty->assign('ts_tableid', $ts_tableid);
+$tsAjax = isset($_REQUEST['tsAjax']) && $_REQUEST['tsAjax'] ? true : false;
 
 if ($tsOn) {
-	$ts_countid = $ts_tableid . '-count';
-	$ts_offsetid = $ts_tableid . '-offset';
+	$ts_countid = 'usertable-count';
+	$ts_offsetid = 'usertable-offset';
 	$smarty->assign('ts_countid', $ts_countid);
 	$smarty->assign('ts_offsetid', $ts_offsetid);
 }
@@ -818,13 +810,12 @@ if ($tsOn && !$tsAjax) {
 	$ts_groups = array_flip($ts_groups);
 	//set tablesorter code
 	Table_Factory::build(
-		'TikiAdminusers',
+		'adminusers',
 		array(
-			'id' => $ts_tableid,
-			'total' => $users['cant'],
-			'columns' => array(
-				 6 => array(
-					 'filter' => array(
+			 'total' => $users['cant'],
+			 'filters' => array(
+				 'columns' => array(
+					 6 => array(
 						 'options' => $ts_groups
 				 	)
 				)
@@ -871,7 +862,7 @@ $smarty->display('tiki.tpl');
  */
 function exit_with_error_messages($errors)
 {
-	$access = TikiLib::lib('access');
+	global $access;
 	$message = '';
 
 	foreach ($errors as $an_error) {

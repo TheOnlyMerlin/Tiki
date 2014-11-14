@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,11 +12,11 @@
 
 function smarty_function_html_body_attributes($params, $smarty)
 {
-	global $section, $prefs, $page, $tiki_p_edit, $section_class, $user;
-	$smarty = TikiLib::lib('smarty');
+	global $section, $prefs, $cookietab, $page, $smarty, $tiki_p_edit, $section_class, $user;
+	
 	$back = '';
 	$onload = '';
-	$class = isset($params['class']) ? $params['class'] : '';
+	$class = '';
 	
 	$dblclickedit = $smarty->getTemplateVars('dblclickedit');
 	
@@ -24,7 +24,7 @@ function smarty_function_html_body_attributes($params, $smarty)
 		$back .= ' ondblclick="location.href=\'tiki-editpage.php?page=' . rawurlencode($page) . '\';"';
 	}
 
-	$class .= ' tiki ';
+	$class .= 'tiki ';
 	
 	if (isset($section_class)) {
 		$class .= $section_class;
@@ -33,10 +33,6 @@ function smarty_function_html_body_attributes($params, $smarty)
 	if ($prefs['feature_fixed_width'] == 'y') {
 		$class .= ' fixed_width ';
 	}
-
-    if ($prefs['site_layout']) {
-        $class .= 'layout_' . $prefs['site_layout'];
-    }
 	
 	if (!empty($_REQUEST['filegals_manager'])) {
 		$class .= ' filegal_popup ';

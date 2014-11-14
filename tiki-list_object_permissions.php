@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -35,8 +35,7 @@ function is_perm($permName, $objectType)
  */
 function list_perms($objectId, $objectType, $objectName, $filterGroup='')
 {
-	global $prefs;
-	$userlib = TikiLib::lib('user');
+	global $userlib, $prefs;
 	$ret = array();
 	$cats = array();
 	$perms = $userlib->get_object_permissions($objectId, $objectType);
@@ -49,7 +48,8 @@ function list_perms($objectId, $objectType, $objectName, $filterGroup='')
 			}
 		}
 	} elseif ($prefs['feature_categories'] == 'y') {
-		$categlib = TikiLib::lib('categ');
+		global $categlib;
+		include_once ('lib/categories/categlib.php');
 		$categs = $categlib->get_object_categories($objectType, $objectId);
 		if (!empty($categs)) {
 			foreach ($categs as $categId) {

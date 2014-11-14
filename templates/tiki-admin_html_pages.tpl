@@ -1,7 +1,7 @@
 {title help="Html+Pages"}{tr}Admin HTML pages{/tr}{/title}
 
 {if $pageName ne ''}
-	<div class="navt_bar">
+	<div class="navbar">
 		{button _text="{tr}Create new HTML page{/tr}"}
 	</div>
 {/if}
@@ -70,8 +70,8 @@
 		<tr>
 			<td></td>
 			<td>
-				<input type="submit" class="btn btn-default btn-sm" name="preview" value="{tr}Preview{/tr}">
-				<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
+				<input type="submit" class="btn btn-default" name="preview" value="{tr}Preview{/tr}">
+				<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 			</td>
 		</tr>
 	</table>
@@ -82,7 +82,6 @@
 {if $channels}
 	{include file='find.tpl'}
 {/if}
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		<th>
@@ -97,9 +96,9 @@
 		<th style="width:100px;">{tr}Action{/tr}</th>
 	</tr>
 
-
+	{cycle values="odd,even" print=false}
 	{section name=user loop=$channels}
-		<tr>
+		<tr class="{cycle}">
 			<td class="text">{$channels[user].pageName}</td>
 			<td class="text">{$channels[user].type} {if $channels[user].type eq 'd'}({$channels[user].refresh} secs){/if}</td>
 			<td class="date">{$channels[user].created|tiki_short_datetime}</td>
@@ -117,6 +116,5 @@
 		{norecords _colspan=4}
 	{/section}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -16,7 +16,7 @@ class Search_GlobalSource_PermissionSource implements Search_GlobalSource_Interf
 
 	function getProvidedFields()
 	{
-		return array('allowed_groups', 'allowed_users');
+		return array('allowed_groups');
 	}
 
 	function getGlobalFields()
@@ -26,15 +26,8 @@ class Search_GlobalSource_PermissionSource implements Search_GlobalSource_Interf
 
 	function getData($objectType, $objectId, Search_Type_Factory_Interface $typeFactory, array $data = array())
 	{
-
-		if (!empty($data['_extra_users'])) {
-			$allowed_users = $data['_extra_users'];
-		} else {
-			$allowed_users = array();
-		}
-
 		if (isset($data['allowed_groups'])) {
-			return array('allowed_users' => $typeFactory->multivalue(array_unique($allowed_users)));
+			return array();
 		}
 
 		$groups = array();
@@ -82,7 +75,6 @@ class Search_GlobalSource_PermissionSource implements Search_GlobalSource_Interf
 
 		return array(
 			'allowed_groups' => $typeFactory->multivalue(array_unique($groups)),
-			'allowed_users' => $typeFactory->multivalue(array_unique($allowed_users)),
 		);
 	}
 

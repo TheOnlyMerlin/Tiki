@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -211,8 +211,8 @@ class Tiki_Profile
 
 	public static function fromDb( $pageName ) // {{{
 	{
-		$tikilib = TikiLib::lib('tiki');
-		$wikilib = TikiLib::lib('wiki');
+		global $tikilib, $wikilib;
+		require_once 'lib/wiki/wikilib.php';
 		$parserlib = TikiLib::lib('parser');
 
 		$profile = new self;
@@ -680,6 +680,7 @@ class Tiki_Profile
 			} else {
 				$groupInfo = array();
 			}
+
 			$defaultInfo = array(
 				'description' => !empty($groupInfo['groupDesc']) ? $groupInfo['groupDesc'] : '',
 				'home' => !empty($groupInfo['groupHome']) ? $groupInfo['groupHome'] : '',
@@ -815,40 +816,9 @@ class Tiki_Profile
 		);
 	} // }}}
 
-	function getProfileKey($prefix = true) // {{{
+	function getProfileKey() // {{{
 	{
-		if (!$prefix) {
-			return self::getProfileKeyfor($this->domain, $this->profile);
-		} else {
-			return self::getProfileKeyfor($this->domain, $this->withPrefix($this->profile));
-		}
+		return self::getProfileKeyfor($this->domain, $this->withPrefix($this->profile));
 	} // }}}
-	
-	function getObjectSymbolDetails($type, $value) // Based on an objectType (eg: menu) and an objectId (eg: Id of a menu) query tiki_profile_symbols table and return domain, profile and object information
-	{
-		global $tikilib;
-				
-		if (!$type) {
-			return false;
-		}
-		elseif (!$value) {
-			return false;
-		}
-		else {
-			$query = 'select * from `tiki_profile_symbols` where `type`=? and `value`=?';
-			$result = $tikilib->fetchAll($query, array($type, $value));
-		
-			if (empty ($result)) {
-				return null;
-			} else {
-				$symbolDetails = array (
-					'domain' => $result["0"]["domain"],
-					'profile' => $result["0"]["profile"],
-					'object' => $result["0"]["object"],
-					);
-				return $symbolDetails;
-			}
-		}
-	}
 }
 

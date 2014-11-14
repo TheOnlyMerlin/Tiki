@@ -1,24 +1,18 @@
 {* $Id$ *}
 
-<div class="t_navbar btn-group form-group">
-	{button href="tiki-admingroups.php" class="btn btn-default" _text="{tr}Admin Groups{/tr}"}
-	{button href="tiki-adminusers.php" class="btn btn-default" _text="{tr}Admin Users{/tr}"}
-	{permission_link mode=button label="{tr}Manage permissions{/tr}"}
+<div class="navbar">
+	{button href="tiki-admingroups.php" _text="{tr}Admin Groups{/tr}"}
+	{button href="tiki-adminusers.php" _text="{tr}Admin Users{/tr}"}
+	{button href="tiki-objectpermissions.php" _text="{tr}Manage permissions{/tr}"}	
 </div>
 
 <form action="tiki-admin.php?page=community" method="post">
-<div class="row">
-    <div class="form-group col-lg-12 clearfix">
-        <div class="pull-right">
-            <input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-        </div>
-    </div>
-</div>
+	<div class="input_submit_container clear" style="text-align: right;">
+		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+	</div>
 
-
-{tabset name="admin_community"}
+	{tabset name="admin_community"}
 		{tab name="{tr}User features{/tr}"}
-            <h2>{tr}User features{/tr}</h2>
 	
 			<div class="admin featurelist">
 				{preference name=feature_score}
@@ -28,21 +22,6 @@
 				{preference name=feature_notepad}
 				{preference name=feature_user_bookmarks}
 				{preference name=feature_contacts}
-				{preference name=monitor_enabled}
-				<div class="adminoptionboxchild" id="monitor_enabled_childcontainer">
-
-					{preference name=monitor_individual_clear}
-					{preference name=monitor_count_refresh_interval}
-					{preference name=monitor_reply_email_pattern}
-					{preference name=monitor_digest}
-					<div class="alert alert-warning">
-						<p>{tr}For the digest emails to be sent out, you will need to set-up a cron job.{/tr}</p>
-						<p>{tr}Adjust the command parameters for your digest frequency. Default frequency is 7 days.{/tr}</p>
-						<strong>{tr}Sample command:{/tr}</strong>
-						<code>/usr/bin/php {$monitor_command|escape}</code>
-					</div>
-				</div>
-				{preference name=feature_user_watches_translations}
 				{preference name=feature_user_watches}
 				{preference name=feature_group_watches}
 				{preference name=feature_daily_report_watches}
@@ -71,16 +50,10 @@
 				{preference name=user_favorites}
 				{preference name=feature_invite}
 				{preference name=feature_wizard_user}
-
-				{preference name=mustread_enabled}
-				<div class="adminoptionboxchild" id="mustread_enabled_childcontainer">
-					{preference name=mustread_tracker}
-				</div>
 			</div>
 		{/tab}
 		{tab name="{tr}Social Network{/tr}"}
-            <h2>{tr}Social Network{/tr}</h2>
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Friendship and Followers{/tr}</legend>
 				{preference name=feature_friends}
 				<div class="adminoptionboxchild" id="feature_friends_childcontainer">
@@ -96,7 +69,7 @@
 				</div>
 			</fieldset>
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Activity Stream{/tr}</legend>
 				{preference name=activity_basic_events}
 
@@ -133,17 +106,9 @@
 					{/jq}
 				</div>
 			</fieldset>
-
-			<fieldset>
-				<legend>{tr}Goal, Recognition and Rewards{/tr}</legend>
-				{preference name=goal_enabled}
-				{preference name=goal_badge_tracker}
-				{preference name=goal_group_blacklist}
-			</fieldset>
 		{/tab}
 		
 		{tab name="{tr}Plugins{/tr}"}
-            <h2>{tr}Plugins{/tr}</h2>
 			{preference name=wikiplugin_author}
 			{preference name=wikiplugin_avatar}
 			{preference name=wikiplugin_favorite}
@@ -168,7 +133,6 @@
 		
 
 		{tab name="{tr}General Settings{/tr}"}
-            <h2>{tr}General Settings{/tr}</h2>
 			{preference name=user_show_realnames}
 			{preference name=user_in_search_result}
 			{preference name=highlight_group}
@@ -200,7 +164,15 @@
 					{preference name=feature_community_mouseover_distance}
 				</div>
 			</fieldset>
-		
+			
+			<fieldset>
+				<legend>{tr}Email notifications to group leaders when users join/leave a group{/tr}{help url="Community"}</legend>
+				{preference name=feature_community_Strings_to_ignore}
+				{preference name=feature_community_String_to_append}
+				{preference name=feature_community_send_mail_join}
+				{preference name=feature_community_send_mail_leave}
+			</fieldset>
+
 			{* ************ Users Default Preferences *}
 			<fieldset>
 				<legend>
@@ -248,7 +220,6 @@
 			</fieldset>
 		{/tab}
 		{tab name="{tr}BigBlueButton{/tr}"}
-            <h2>{tr}BigBlueButton{/tr}</h2>
 			{preference name=bigbluebutton_feature}
 			<div class="adminoptionboxchild" id="bigbluebutton_feature_childcontainer">
 				{preference name=bigbluebutton_server_location}
@@ -258,12 +229,7 @@
 			</div>
 		{/tab}
 	{/tabset}
-<br>{* I cheated. *}
-<div class="row">
-    <div class="form-group col-lg-12 clearfix">
-        <div class="text-center">
-            <input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-        </div>
-    </div>
-</div>
+	<div class="input_submit_container clear" style="text-align: center;">
+		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>

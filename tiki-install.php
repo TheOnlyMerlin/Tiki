@@ -5,7 +5,7 @@
  * Used to install a fresh Tiki instance, to upgrade an existing Tiki to a newer version and to test sendmail.
  *
  * @package TikiWiki 
- * @copyright (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project. All Rights Reserved. See copyright.txt for details and a complete list of authors.
+ * @copyright (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project. All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * @licence Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
  */
 // $Id$
@@ -22,8 +22,8 @@ ini_set('display_errors', 1);
 
 // Check that PHP version is sufficient
 
-if (version_compare(PHP_VERSION, '5.5.0', '<')) {
-	$title = 'PHP 5.5 is required';
+if (version_compare(PHP_VERSION, '5.3.0', '<')) {
+	$title = 'PHP 5.3 is required';
 	$content = '<p>Please contact your system administrator ( if you are not the one ;) ). Your version: '.PHP_VERSION.' <br /> <br /> '.'Please also visit <a href="tiki-check.php">Server Check</a>'.'</p>';
 	createPage($title, $content);
 }
@@ -32,7 +32,7 @@ require_once('lib/init/initlib.php');
 $tikipath = dirname(__FILE__) . '/';
 TikiInit::appendIncludePath($tikipath);
 
-require_once('db/tiki-db.php');	// to set up multitiki etc if there
+include_once('db/tiki-db.php');	// to set up multitiki etc if there
 
 $lockFile = 'db/'.$tikidomainslash.'lock';
 
@@ -104,9 +104,9 @@ if (isset($_SESSION['accessible'])) {
 							<p>If you have forgotten your database credentials, find the directory where you have unpacked your Tiki and have a look inside the <strong><code>db</code></strong> folder into the <strong><code>local.php</code></strong> file.</p>
 							<form method="post" action="tiki-install.php">
 								<input type="hidden" name="enterinstall" value="1">
-								<p><label for="dbuser" class="sr-only">Database username</label> <input type="text" id="dbuser" name="dbuser" placeholder="Database username"/></p>
-								<p><label for="dbpass" class="sr-only">Database password</label> <input type="password" id="dbpass" name="dbpass" placeholder="Database password"/></p>
-								<p><input type="submit" class="btn btn-primary btn-sm" value=" Validate and Continue " /></p>
+								<p><label for="dbuser">Database username</label>: <input type="text" id="dbuser" name="dbuser" /></p>
+								<p><label for="dbpass">Database password</label>: <input type="password" id="dbpass" name="dbpass" /></p>
+								<p><input type="submit" value=" Validate and Continue " /></p>
 							</form>
 							<p>&nbsp;</p>';
 	createPage($title, $content);
@@ -130,26 +130,45 @@ function createPage($title, $content)
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<link type="text/css" rel="stylesheet" href="vendor/twitter/bootstrap/dist/css/bootstrap.css" />
+		<link type="text/css" rel="stylesheet" href="styles/fivealive.css" />
 		<title>$title</title>
 	</head>
-	<body class="container text-center">
-		<div class="row">
-			<img alt="Site Logo" src="img/tiki/Tiki_WCG.png" style="margin: 10px;" />
-		</div>
-		<div class="row">
-			<h1>
-				$title
-			</h1>
-		</div>
-		</div>
-			<div id="middle">
-				$content
+	<body class="tiki_wiki fixed_width">
+	<div id="fixedwidth" class="fixedwidth">
+		<div class="header_outer">
+			<div class="header_container">
+				<div class="clearfix fixedwidth header_fixedwidth">
+					<header id="header" class="header">
+						<div class="content clearfix modules" id="top_modules" style="display: table; width: 990px;">
+							<div class="sitelogo">
+								<img alt="Site Logo" src="img/tiki/Tiki_WCG.png" style="margin-bottom: 10px;" />
+							</div>
+						</div>
+					</header>
+				</div>	
 			</div>
 		</div>
-		<div class="row">
+		<div class="middle_outer">
+			<div id="middle" class="fixedwidth">
+				<div id="tiki-top" class="clearfix">
+								<h1 style="font-size: 30px; line-height: 30px; color: #fff; text-shadow: 3px 2px 0 #781437; margin: 8px 0 0 10px; padding: 0;">
+									$title
+								</h1>
+							</div>
+				</div>
+					<div id="middle" style="width: 990px; text-align: center;">
+						$content
+					</div>
+				</div>
+			</div><!--
+		<footer id="footer" class="footer" style="margin-top: 50px;">
+	<div class="footer_liner">
+		<div class="footerbgtrap fixedwidth" style="padding: 10px 0;">
 			<a href="http://tiki.org" target="_blank" title="Powered by Tiki Wiki CMS Groupware"><img src="img/tiki/tikibutton.png" alt="Powered by Tiki Wiki CMS Groupware" /></a>
 		</div>
+	</div>
+</footer>-->
+</div>
 	</body>
 </html>
 END;

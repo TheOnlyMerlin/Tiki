@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -24,11 +24,15 @@ class UpgradeWizardUI extends Wizard
 	
 	function onSetupPage ($homepageUrl) 
 	{
-		global $prefs;
-		$smarty = TikiLib::lib('smarty');
+		global	$smarty, $prefs;
+
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
-		
+
+        // Assign the page template
+        $wizardTemplate = 'wizard/upgrade_ui.tpl';
+        $smarty->assign('wizardBody', $wizardTemplate);
+
 		$showPage = true;
         // Show if any more specification is needed
 
@@ -50,15 +54,9 @@ class UpgradeWizardUI extends Wizard
         return $showPage;
 	}
 
-	function getTemplate()
-	{
-		$wizardTemplate = 'wizard/upgrade_ui.tpl';
-		return $wizardTemplate;
-	}
-
 	function onContinue ($homepageUrl) 
 	{
-        $tikilib = TikiLib::lib('tiki');
+        global $tikilib;
 
 		// Run the parent first
 		parent::onContinue($homepageUrl);

@@ -2,13 +2,11 @@
 
 {tabset name='tabs_list_faqs'}
 {tab name="{tr}Available FAQs{/tr}"}
-    <h2>{tr}Available FAQs{/tr}</h2>
 
 {if $channels or ($find ne '')}
   {include file='find.tpl'}
 {/if}
 
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		<th>
@@ -24,9 +22,9 @@
 			<th>{tr}Action{/tr}</th>
 		{/if}
 	</tr>
-
+	{cycle values="odd,even" print=false}
 	{section name=user loop=$channels}
-		<tr>
+		<tr class="{cycle}">
 			<td class="text">
 				<a class="tablename" href="tiki-view_faq.php?faqId={$channels[user].faqId}">{$channels[user].title|escape}</a>
 				<div class="subcomment">
@@ -51,7 +49,6 @@
 		{if $tiki_p_admin_faqs eq 'y'}{norecords _colspan=5}{else}{norecords _colspan=4}{/if}
 	{/section}
 </table>
-</div>
 
 {pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
 {/tab}
@@ -60,8 +57,8 @@
 {tab name="{tr}Edit/Create{/tr}"}
   {if $faqId > 0}
 		<h2>{tr}Edit this FAQ:{/tr} {$title}</h2>
-		<div class="t_navbar">
-			{button href="tiki-list_faqs.php" class="btn btn-default" _text="{tr}Create new FAQ{/tr}"}
+		<div class="navbar">
+			{button href="tiki-list_faqs.php" _text="{tr}Create new FAQ{/tr}"} 
 		</div>
   {else}
 		<h2>{tr}Create New FAQ:{/tr}</h2>
@@ -100,7 +97,7 @@
 					
 				</td>
 				<td>
-					<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
+					<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 				</td>
 			</tr>
 		</table>

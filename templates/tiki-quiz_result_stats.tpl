@@ -1,11 +1,11 @@
 {title help="Quiz"}{tr}Quiz result stats{/tr}{/title}
 
-<div class="t_navbar form-group">
-	{button href="tiki-list_quizzes.php" class="btn btn-default" _text="{tr}List Quizzes{/tr}"}
-	{button href="tiki-quiz_stats.php" class="btn btn-default" _text="{tr}Quiz Stats{/tr}"}
-	{button href="tiki-quiz_stats_quiz.php?quizId=$quizId" class="btn btn-default" _text="{tr}This Quiz Stats{/tr}"}
-	{button href="tiki-edit_quiz.php?quizId=$quizId" class="btn btn-default" _text="{tr}Edit this Quiz{/tr}"}
-	{button href="tiki-edit_quiz.php" class="btn btn-default" _text="{tr}Admin Quizzes{/tr}"}
+<div class="navbar">
+	{button href="tiki-list_quizzes.php" _text="{tr}List Quizzes{/tr}"}
+	{button href="tiki-quiz_stats.php" _text="{tr}Quiz Stats{/tr}"}
+	{button href="tiki-quiz_stats_quiz.php?quizId=$quizId" _text="{tr}This Quiz Stats{/tr}"}
+	{button href="tiki-edit_quiz.php?quizId=$quizId" _text="{tr}Edit this Quiz{/tr}"}
+	{button href="tiki-edit_quiz.php" _text="{tr}Admin Quizzes{/tr}"}
 </div>
 
 <table class="formcolor">
@@ -40,7 +40,6 @@
 <div class="quizanswer">{$result.answer}</div>
 
 <h2>{tr}User answers{/tr}</h2>
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		<th>
@@ -58,7 +57,7 @@
 	</tr>
 	{cycle print=false values="odd,even"}
 	{section name=ix loop=$questions}
-		<tr>
+		<tr class="{cycle}">
 			<td class="text">{$questions[ix].question}</td>
 			<td class="text">{$questions[ix].options[0].optionText}</td>
 			<td class="integer">{$questions[ix].options[0].points}</td>
@@ -70,5 +69,5 @@
 		</tr>
 	{/section}
 </table>
-</div>
+
 

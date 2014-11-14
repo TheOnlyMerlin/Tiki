@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -70,8 +70,8 @@ function module_quick_edit_info()
  */
 function module_quick_edit($mod_reference, $module_params)
 {
-	global $prefs;
-	$smarty = TikiLib::lib('smarty');
+	global $smarty, $prefs;
+
 	$smarty->assign('tpl_module_title', tra('Quick Edit a Wiki Page'));
 
 

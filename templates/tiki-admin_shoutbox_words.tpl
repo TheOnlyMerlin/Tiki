@@ -2,7 +2,7 @@
 
 <h2>{tr}Add Banned Word{/tr}</h2>
 
-<div class="t_navbar">
+<div class="navbar">
 	{button href="tiki-shoutbox.php" _text="{tr}Shoutbox{/tr}"}
 </div>
 
@@ -14,14 +14,13 @@
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
-			<td><input type="submit" class="btn btn-default btn-sm" name="add" value="{tr}Add{/tr}"></td>
+			<td><input type="submit" class="btn btn-default" name="add" value="{tr}Add{/tr}"></td>
 		</tr>
 	</table>
 </form>
 
 {include file='find.tpl'}
 
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		<th>
@@ -29,9 +28,9 @@
 		</th>
 		<th>{tr}Action{/tr}</th>
 	</tr>
-
+	{cycle values="odd,even" print=false}
 	{section name=user loop=$words}
-		<tr>
+		<tr class="{cycle}">
 			<td class="text">{$words[user].word|escape}</td>
 			<td class="action">
 				&nbsp;&nbsp;
@@ -43,6 +42,5 @@
 		{norecords _colspan=2}
 	{/section}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}

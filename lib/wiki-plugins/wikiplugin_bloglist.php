@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -126,9 +126,7 @@ function wikiplugin_bloglist_info()
 
 function wikiplugin_bloglist($data, $params)
 {
-	global $user;
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $tikilib, $smarty, $user;
 
 	if (!isset($params['Id'])) {
 		TikiLib::lib('errorreport')->report(tra('missing blog Id for BLOGLIST plugins'));
@@ -158,12 +156,12 @@ function wikiplugin_bloglist($data, $params)
 	$smarty->assign('container_class', $params['containerClass']);
 
 	if ($params['simpleList'] == 'y') {
-		$bloglib = TikiLib::lib('blog');
+		global $bloglib; require_once('lib/blogs/bloglib.php');
 		$blogItems = $bloglib->list_posts($params['offset'], $params['Items'], $params['sort_mode'], $params['find'], $params['Id'], $params['author'], '', $dateStartTS, $dateEndTS);
 		$smarty->assign_by_ref('blogItems', $blogItems['data']);
 		$template = 'wiki-plugins/wikiplugin_bloglist.tpl';
 	} else {
-		$bloglib = TikiLib::lib('blog');
+		global $bloglib; include_once('lib/blogs/bloglib.php');
 
 		$blogItems = $bloglib->list_blog_posts($params['Id'], false, $params['offset'], $params['Items'], $params['sort_mode'], $params['find'], $dateStartTS, $dateEndTS);
 

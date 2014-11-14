@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,7 +12,6 @@ class UnifiedSearchLib
 {
 	const INCREMENT_QUEUE = 'search-increment';
 	private $batchToken;
-	private $isRebuildingNow = false;
 
     /**
      * @return string
@@ -34,10 +33,7 @@ class UnifiedSearchLib
 		if ($token && $this->batchToken === $token) {
 			$this->batchToken = null;
 			$this->processUpdateQueue($count);
-			return true;
 		}
-
-		return false;
 	}
 
     /**
@@ -71,17 +67,11 @@ class UnifiedSearchLib
 				// make sure internal permission cache does not refer to the pre-update situation.
 				Perms::getInstance()->clear();
 
-				$index = $this->getIndex('data-write');
+				$index = $this->getIndex();
 				$index = new Search_Index_TypeAnalysisDecorator($index);
-				$indexer = $this->buildIndexer($index);
+				$indexer = $this->buildIndexer($index);				
 				$indexer->update($toProcess);
-
-				if ($prefs['storedsearch_enabled'] == 'y') {
-					// Stored search relation adding may cause residual index backlog
-					$toProcess = $queuelib->pull(self::INCREMENT_QUEUE, $count);
-					$indexer->update($toProcess);
-				}
-
+				
 				// Detect newly created identifier fields
 				$initial = array_flip($prefs['unified_identifier_fields']);
 				$collected = array_flip($index->getIdentifierFields());
@@ -91,7 +81,7 @@ class UnifiedSearchLib
 				if (count($combined) > count($initial)) {
 					$tikilib = TikiLib::lib('tiki');
 					$tikilib->set_preference('unified_identifier_fields', array_keys($combined));
-				}
+				}				
 			} catch (Exception $e) {
 				// Re-queue pulled messages for next update
 				foreach ($toProcess as $message) {
@@ -132,10 +122,6 @@ class UnifiedSearchLib
 			$old = $this->getIndex('data-old');
 
 			return $new->exists() || $old->exists();
-		} elseif ($prefs['unified_engine'] == 'elastic') {
-			$name = $this->getIndexLocation('data');
-			$connection = $this->getElasticConnection(true);
-			return $connection->isRebuilding($name);
 		}
 
 		return false;
@@ -174,8 +160,7 @@ class UnifiedSearchLib
 
 			$index = new Search_Lucene_Index($tempName);
 
-			TikiLib::events()->bind(
-				'tiki.process.shutdown',
+			register_shutdown_function(
 				function () use ($index) {
 					if ($index->exists()) {
 						$index->destroy();
@@ -185,13 +170,11 @@ class UnifiedSearchLib
 			);
 			break;
 		case 'elastic':
-			$connection = $this->getElasticConnection(true);
-			$aliasName = $prefs['unified_elastic_index_prefix'] . 'main';
-			$indexName = $aliasName . '_' . uniqid();
+			$connection = $this->getElasticConnection();
+			$indexName = $prefs['unified_elastic_index_prefix'] . uniqid();
 			$index = new Search_Elastic_Index($connection, $indexName);
 
-			TikiLib::events()->bind(
-				'tiki.process.shutdown',
+			register_shutdown_function(
 				function () use ($indexName, $index) {
 					global $prefs;
 					if ($prefs['unified_elastic_index_current'] !== $indexName) {
@@ -204,8 +187,7 @@ class UnifiedSearchLib
 			$indexName = 'index_' . uniqid();
 			$index = new Search_MySql_Index(TikiDb::get(), $indexName);
 
-			TikiLib::events()->bind(
-				'tiki.process.shutdown',
+			register_shutdown_function(
 				function () use ($indexName, $index) {
 					global $prefs;
 					if ($prefs['unified_mysql_index_current'] !== $indexName) {
@@ -224,8 +206,6 @@ class UnifiedSearchLib
 		$tikilib = TikiLib::lib('tiki');
 		$access = TikiLib::lib('access');
 		$access->preventRedirect(true);
-
-		$this->isRebuildingNow = true;
 
 		$stat = array();
 		$indexer = null;
@@ -246,6 +226,8 @@ class UnifiedSearchLib
 				'<br />' . $e->getMessage()
 			);
 		}
+
+		$access->preventRedirect(false);
 
 		// Force destruction to clear locks
 		if ($indexer) {
@@ -273,14 +255,15 @@ class UnifiedSearchLib
 			$oldIndex = new Search_Lucene_Index($swapName);
 			break;
 		case 'elastic':
-			$oldIndex = null; // assignAlias will handle the clean-up
+			// Obtain the old index and destroy it after permanently replacing it.
+			$oldIndex = $this->getIndex();
+
 			$tikilib->set_preference('unified_elastic_index_current', $indexName);
-			$connection->assignAlias($aliasName, $indexName);
 
 			break;
 		case 'mysql':
 			// Obtain the old index and destroy it after permanently replacing it.
-			$oldIndex = $this->getIndex('data');
+			$oldIndex = $this->getIndex();
 
 			$tikilib->set_preference('unified_mysql_index_current', $indexName);
 
@@ -296,14 +279,7 @@ class UnifiedSearchLib
 		// Process the documents updated while we were processing the update
 		$this->processUpdateQueue(1000);
 
-		if ($prefs['storedsearch_enabled'] == 'y') {
-			TikiLib::lib('storedsearch')->reloadAll();
-		}
-
 		$tikilib->set_preference('unified_last_rebuild', $tikilib->now);
-
-		$this->isRebuildingNow = false;
-		$access->preventRedirect(false);
 		return $stat;
 	}
 
@@ -323,7 +299,7 @@ class UnifiedSearchLib
 				'preference' => $prefs['tmpDir'] . '/unified-preference-index-' . $prefs['language'],
 			),
 			'elastic' => array(
-				'data' => $prefs['unified_elastic_index_prefix'] . 'main',
+				'data' => $prefs['unified_elastic_index_current'],
 				'preference' => $prefs['unified_elastic_index_prefix'] . 'pref_' . $prefs['language'],
 			),
 			'mysql' => array(
@@ -410,8 +386,15 @@ class UnifiedSearchLib
 			$types['comment'] = tra('comment');
 		}
 
-		$types['user'] = tra('user');
-		$types['group'] = tra('group');
+		if (in_array($prefs['user_in_search_result'], array('all', 'public'))) {
+			$types['user'] = tra('user');
+		} else {
+			// Check for fresh install in which case index admin user otherwise initial indexing will not work with no content
+			if (TikiLib::lib('tiki')->getOne("select count(*) from users_users") === '1' && !TikiLib::lib('tiki')->page_exists('HomePage')) {
+				$prefs['user_in_search_result'] = 'all';
+				$types['user'] = tra('user');
+			}
+		}
 
 		return $types;
 	}
@@ -452,16 +435,6 @@ class UnifiedSearchLib
     private function buildIndexer($index, $loggit = 0)
 	{
 		global $prefs;
-
-		$isRepository = $index instanceof Search_Index_QueryRepository;
-		
-		if (! $isRepository && method_exists($index, 'getRealIndex')) {
-			$isRepository = $index->getRealIndex() instanceof Search_Index_QueryRepository;
-		}
-
-		if (! $this->isRebuildingNow && $isRepository && $prefs['storedsearch_enabled'] == 'y') {
-			$index = new Search_Index_QueryAlertDecorator($index);
-		}
 
 		if (! empty($prefs['unified_excluded_categories'])) {
 			$index = new Search_Index_CategoryFilterDecorator($index, array_filter($prefs['unified_excluded_categories']));
@@ -508,7 +481,6 @@ class UnifiedSearchLib
 
 		if (isset ($types['forum post'])) {
 			$aggregator->addContentSource('forum post', new Search_ContentSource_ForumPostSource);
-			$aggregator->addContentSource('forum', new Search_ContentSource_ForumSource);
 		}
 
 		if (isset ($types['blog post'])) {
@@ -516,22 +488,16 @@ class UnifiedSearchLib
 		}
 
 		if (isset ($types['article'])) {
-			$articleSource = new Search_ContentSource_ArticleSource;
-			$aggregator->addContentSource('article', $articleSource);
-			$aggregator->addGlobalSource(new Search_GlobalSource_ArticleAttachmentSource($articleSource));
+			$aggregator->addContentSource('article', new Search_ContentSource_ArticleSource);
 		}
 
 		if (isset ($types['file'])) {
-			$fileSource = new Search_ContentSource_FileSource;
-			$aggregator->addContentSource('file', $fileSource);
-			$aggregator->addContentSource('file gallery', new Search_ContentSource_FileGallerySource);
-			$aggregator->addGlobalSource(new Search_GlobalSource_FileAttachmentSource($fileSource));
+			$aggregator->addContentSource('file', new Search_ContentSource_FileSource);
+			$aggregator->addGlobalSource(new Search_GlobalSource_FileAttachmentSource);
 		}
 
 		if (isset ($types['trackeritem'])) {
 			$aggregator->addContentSource('trackeritem', new Search_ContentSource_TrackerItemSource);
-			$aggregator->addContentSource('tracker', new Search_ContentSource_TrackerSource);
-			$aggregator->addContentSource('trackerfield', new Search_ContentSource_TrackerFieldSource);
 		}
 
 		if (isset ($types['sheet'])) {
@@ -564,22 +530,13 @@ class UnifiedSearchLib
 			$aggregator->addContentSource('user', new Search_ContentSource_UserSource($prefs['user_in_search_result']));
 		}
 
-		if (isset($types['group'])) {
-			$aggregator->addContentSource('group', new Search_ContentSource_GroupSource);
-		}
-
-		if ($prefs['activity_custom_events'] == 'y' || $prefs['activity_basic_events'] == 'y' || $prefs['monitor_enabled'] == 'y') {
+		if ($prefs['activity_custom_events'] == 'y' || $prefs['activity_basic_events'] == 'y') {
 			$aggregator->addContentSource('activity', new Search_ContentSource_ActivityStreamSource($aggregator instanceof Search_Indexer ? $aggregator : null));
-		}
-
-		if ($prefs['goal_enabled'] == 'y') {
-			$aggregator->addContentSource('goalevent', new Search_ContentSource_GoalEventSource);
 		}
 
 		// Global Sources
 		if ($prefs['feature_categories'] == 'y') {
 			$aggregator->addGlobalSource(new Search_GlobalSource_CategorySource);
-			$aggregator->addContentSource('category', new Search_ContentSource_CategorySource);
 		}
 
 		if ($prefs['feature_freetags'] == 'y') {
@@ -606,8 +563,6 @@ class UnifiedSearchLib
 		}
 
 		$aggregator->addGlobalSource(new Search_GlobalSource_TitleInitialSource);
-		$aggregator->addGlobalSource(new Search_GlobalSource_SearchableSource);
-		$aggregator->addGlobalSource(new Search_GlobalSource_UrlSource);
 	}
 
     /**
@@ -616,12 +571,6 @@ class UnifiedSearchLib
     function getIndex($indexType = 'data')
 	{
 		global $prefs, $tiki_p_admin;
-
-		$writeMode = false;
-		if ($indexType == 'data-write') {
-			$indexType = 'data';
-			$writeMode = true;
-		}
 
 		switch ($prefs['unified_engine']) {
 		case 'lucene':
@@ -638,9 +587,8 @@ class UnifiedSearchLib
 				break;
 			}
 
-			$connection = $this->getElasticConnection($writeMode);
+			$connection = $this->getElasticConnection();
 			$index = new Search_Elastic_Index($connection, $index);
-			$index->setFacetCount($prefs['search_facet_default_amount']);
 			return $index;
 		case 'mysql':
 			$index = $this->getIndexLocation($indexType);
@@ -673,7 +621,7 @@ class UnifiedSearchLib
 			$info = array();
 
 			try {
-				$connection = $this->getElasticConnection(true);
+				$connection = $this->getElasticConnection();
 				$root = $connection->rawApi('');
 				$info[tr('Client Node')] = $root->name;
 				$info[tr('ElasticSearch Version')] = $root->version->number;
@@ -684,32 +632,17 @@ class UnifiedSearchLib
 				$info[tr('Cluster Status')] = $cluster->status;
 				$info[tr('Cluster Node Count')] = $cluster->number_of_nodes;
 
-				if (version_compare($root->version->number, '1.0.0') === -1) {
-					$status = $connection->rawApi('/_status');
-					foreach ($status->indices as $indexName => $data) {
-						if (strpos($indexName, $prefs['unified_elastic_index_prefix']) === 0) {
-							$info[tr('Index %0', $indexName)] = tr('%0 documents, totaling %1', 
-								$data->docs->num_docs, $data->index->primary_size);
-						}
+				$status = $connection->rawApi('/_status');
+				foreach ($status->indices as $indexName => $data) {
+					if (strpos($indexName, $prefs['unified_elastic_index_prefix']) === 0) {
+						$info[tr('Index %0', $indexName)] = tr('%0 documents, totaling %1', 
+							$data->docs->num_docs, $data->index->primary_size);
 					}
+				}
 
-					$nodes = $connection->rawApi('/_nodes/jvm/stats');
-					foreach ($nodes->nodes as $node) {
-						$info[tr('Node %0', $node->name)] = tr('Using %0, since %1', $node->jvm->mem->heap_used, $node->jvm->uptime);
-					}
-				} else {
-					$status = $connection->rawApi('/_status');
-					foreach ($status->indices as $indexName => $data) {
-						if (strpos($indexName, $prefs['unified_elastic_index_prefix']) === 0) {
-							$info[tr('Index %0', $indexName)] = tr('%0 documents, totaling %1 bytes', 
-								$data->docs->num_docs, number_format($data->index->primary_size_in_bytes));
-						}
-					}
-
-					$nodes = $connection->rawApi('/_nodes/stats');
-					foreach ($nodes->nodes as $node) {
-						$info[tr('Node %0', $node->name)] = tr('Using %0 bytes, since %1', number_format($node->jvm->mem->heap_used_in_bytes), date('Y-m-d H:i:s', $node->jvm->timestamp / 1000));
-					}
+				$nodes = $connection->rawApi('/_nodes/jvm/stats');
+				foreach ($nodes->nodes as $node) {
+					$info[tr('Node %0', $node->name)] = tr('Using %0, since %1', $node->jvm->mem->heap_used, $node->jvm->uptime);
 				}
 			} catch (Search_Elastic_Exception $e) {
 				$info[tr('Information Missing')] = $e->getMessage();
@@ -721,39 +654,12 @@ class UnifiedSearchLib
 		}
 	}
 
-	public function getElasticIndexInfo($indexName)
-	{
-		$connection = $this->getElasticConnection(false);
-
-		try {
-			$mapping = $connection->rawApi("/$indexName/_mapping");
-
-			return $mapping;
-		} catch (Search_Elastic_Exception $e) {
-			return false;
-		}
-	}
-
-	private function getElasticConnection($useMasterOnly)
+	private function getElasticConnection()
 	{
 		global $prefs;
-		static $connections = [];
-
-		$target = $prefs['unified_elastic_url'];
-
-		if (! $useMasterOnly && $prefs['federated_elastic_url']) {
-			$target = $prefs['federated_elastic_url'];
-		}
-
-		if (! empty($connections[$target])) {
-			return $connections[$target];
-		}
-
-		$connection = new Search_Elastic_Connection($target);
+		$connection = new Search_Elastic_Connection($prefs['unified_elastic_url']);
 		$connection->startBulk();
-		$connection->persistDirty(TikiLib::events());
 
-		$connections[$target] = $connection;
 		return $connection;
 	}
 
@@ -779,7 +685,6 @@ class UnifiedSearchLib
 								if (! empty($entry[$field])) {
 									return preg_match('/token[a-z]{20,}/', $entry[$field]);
 								}
-								return true;
 							}
 						);
 					}
@@ -833,46 +738,29 @@ class UnifiedSearchLib
 
 	function initQuery(Search_Query $query)
 	{
-		$this->initQueryBase($query);
-		$this->initQueryPermissions($query);
-		$this->initQueryPresentation($query);
-	}
-
-	function initQueryBase($query, $applyJail = true)
-	{
 		global $prefs;
 
 		$query->setWeightCalculator($this->getWeightCalculator());
 		$query->setIdentifierFields($prefs['unified_identifier_fields']);
 
-		$categlib = TikiLib::lib('categ');
-		if ($applyJail && $jail = $categlib->get_jail()) {
-			$query->filterCategory(implode(' or ', $jail), true);
-		}
-	}
-	
-	function initQueryPermissions($query)
-	{
 		if (! Perms::get()->admin) {
 			$query->filterPermissions(Perms::get()->getGroups());
 		}
-	}
 
-	function initQueryPresentation($query)
-	{
-		$query->applyTransform(new Search_Formatter_Transform_DynamicLoader($this->getDataSource('formatting')));
+		$categlib = TikiLib::lib('categ');
+		if ($jail = $categlib->get_jail()) {
+			$query->filterCategory(implode(' or ', $jail), true);
+		}
 	}
 
     /**
      * @param array $filter
      * @return Search_Query
      */
-    function buildQuery(array $filter, $query = null)
+    function buildQuery(array $filter)
 	{
-		if (! $query) {
-			$query = new Search_Query;
-			$this->initQuery($query);
-		}
+		$query = new Search_Query;
+		$this->initQuery($query);
 
 		if (isset($filter['type']) && $filter['type']) {
 			$query->filterType($filter['type']);
@@ -913,10 +801,6 @@ class UnifiedSearchLib
 			$query->filterLanguage($q);
 		}
 
-		if (isset($filter['groups'])) {
-			$query->filterMultivalue($filter['groups'], 'groups');
-		}
-
 		unset($filter['type']);
 		unset($filter['categories']);
 		unset($filter['deep']);
@@ -925,7 +809,6 @@ class UnifiedSearchLib
 		unset($filter['language']);
 		unset($filter['language_unspecified']);
 		unset($filter['autocomplete']);
-		unset($filter['groups']);
 
 		foreach ($filter as $key => $value) {
 			if ($value) {
@@ -959,20 +842,7 @@ class UnifiedSearchLib
 
 		return $provider;
 	}
-
-	function getRawArray($document)
-	{
-		return array_map(function ($entry) {
-			if (is_object($entry)) {
-				if (method_exists($entry, 'getRawValue')) {
-					return $entry->getRawValue();
-				} else {
-					return $entry->getValue();
-				}
-			} else {
-				return $entry;
-			}
-		}, $document);
-	}
 }
 
+global $unifiedsearchlib;
+$unifiedsearchlib = new UnifiedSearchLib;

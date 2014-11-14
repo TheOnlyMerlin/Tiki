@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -31,11 +31,7 @@ function module_contributors_info()
  */
 function module_contributors($mod_reference, $module_params)
 {
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
-	$headerlib = TikiLib::lib('header');
-	$wikilib = TikiLib::lib('wiki');
+	global $smarty, $userlib, $wikilib, $tikilib, $headerlib;
 	$currentObject = current_object();
 	if ($currentObject['type'] == 'wiki page') {
 		$objectperms = Perms::get(array('type' => 'wiki page', 'object' => $currentObject['object']));

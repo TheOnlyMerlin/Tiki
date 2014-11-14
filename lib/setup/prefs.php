@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -38,11 +38,10 @@ initialize_prefs();
 function get_default_prefs()
 {
 	static $prefs;
-	if ( is_array($prefs) ) {
+	if ( is_array($prefs) )
 		return $prefs;
-	}
 
-	$cachelib = TikiLib::lib('cache');
+	global $cachelib; require_once 'lib/cache/cachelib.php';
 	if ( $prefs = $cachelib->getSerialized('tiki_default_preferences_cache') ) {
 		return $prefs;
 	}
@@ -258,7 +257,7 @@ function get_default_prefs()
 				bold, italic, underline, strike, sub, sup,-, color, -, tikiimage, tikilink, link, unlink, anchor, -,
 				undo, redo, -, find, replace, -, removeformat, specialchar, smiley | help, switcheditor, autosave, admintoolbar /
 				format, templates, cut, copy, paste, pastetext, pasteword, -, h1, h2, h3, left, center, -,
-				blockquote, list, numlist, -, pagebreak, rule, -, table, pastlink, -, source, showblocks, screencapture | fullscreen /
+				blockquote, list, numlist, -, pagebreak, rule, -, table, -, source, showblocks, screencapture | fullscreen /
 				style, fontname, fontsize, outdent, indent /
 			',
 			'toolbar_global_comments' => '
@@ -358,7 +357,7 @@ function initialize_prefs($force = false)
 		// Find which preferences need to be serialized/unserialized, based on the default
 		//  values (those with arrays as values) and preferences with special serializations
 		$serializedPreferences = array();
-		$prefslib = TikiLib::lib('prefs');
+		global $prefslib; require_once 'lib/prefslib.php';
 		foreach ( $defaults as $preference => $value ) {
 			if ( is_array($value) || in_array($preference, array('category_defaults', 'memcache_servers'))) {
 				$serializedPreferences[] = $preference;
@@ -395,7 +394,7 @@ function initialize_prefs($force = false)
 
 	if ( $prefs['feature_perspective'] == 'y') {
 		if ( ! isset( $section ) || $section != 'admin' ) {
-			$perspectivelib = TikiLib::lib('perspective');
+			global $perspectivelib; require_once 'lib/perspectivelib.php';
 			if ( $persp = $perspectivelib->get_current_perspective($prefs) ) {
 				$perspectivePreferences = $perspectivelib->get_preferences($persp);
 				$prefs = $perspectivePreferences + $prefs;
@@ -404,14 +403,7 @@ function initialize_prefs($force = false)
 	}
 
 	// Override preferences with system-configured preferences.
-	$system = $systemConfiguration->preference->toArray();
-	// Also include the site_ versions
-	foreach ( $user_overrider_prefs as $uop ) {
-		if (isset($system[$uop])) {
-			$system['site_' . $uop] = $system[$uop];
-		}
-	}
-	$prefs = $system + $prefs;
+	$prefs = $systemConfiguration->preference->toArray() + $prefs;
 
 	if ( !defined('TIKI_PREFS_DEFINED') ) define('TIKI_PREFS_DEFINED', 1);
 }

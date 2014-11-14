@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -50,7 +50,7 @@ if (!$sheetlib->user_can_view($_REQUEST['sheetId'])) {
 	die;
 }
 
-$smarty->assign('page', isset($_REQUEST['page']) ? $_REQUEST['page'] : '');
+$smarty->assign('page', $_REQUEST['page']);
 $smarty->assign('objectperms', $objectperms);
 
 if (isset($_REQUEST['height'])) {
@@ -155,7 +155,7 @@ if ( isset($_REQUEST['relate']) && isset($_REQUEST['trackerId']) ) {
 		$smarty->assign('msg', tra('File removed'));
 	}
 } elseif ( isset($_REQUEST['fileId']) ) {
-	$filegallib = TikiLib::lib('filegal');
+	include_once('lib/filegals/filegallib.php');
 	$access->check_feature('feature_file_galleries');
 	$fileInfo = $filegallib->get_file_info($_REQUEST['fileId']);
 	$handler = new TikiSheetCSVHandler($fileInfo);
@@ -187,10 +187,10 @@ if ( isset($_REQUEST['relate']) && isset($_REQUEST['trackerId']) ) {
 
 	$smarty->assign('parseValues', $grid->parseValues);
 
-	$tableHtml[0] = $grid->getTableHtml(true, isset($_REQUEST['readdate']) ? $_REQUEST['readdate'] : null);
+	$tableHtml[0] = $grid->getTableHtml(true, $_REQUEST['readdate']);
 
-	if (!empty($relatedTrackersAsHtml)) {
-		$tableHtml[0] .= $relatedTrackersAsHtml;
+	if (strlen($relatedTrackersAsHtml) > 0) {
+		$tableHtml[0] = $tableHtml[0] . $relatedTrackersAsHtml;
 	}
 }
 
@@ -213,15 +213,14 @@ if (!empty($_REQUEST['parse']) && $_REQUEST['parse'] == 'edit') {
 
 $headerlib->add_jq_onready(
 	'$.sheet.tikiOptions = $.extend($.sheet.tikiOptions, {
-					menuLeft: $("#sheetMenu").clone().html()
+					menu: $("#sheetMenu").clone().html()
 				});
 
 				jST = $("div.tiki_sheet")
-				    .height(window.innerHeight * 0.8)
 					.sheet($.sheet.tikiOptions);
 
-				jST.id = "' . ($_REQUEST['sheetId'] * 1) . '";
-				jST.file = "' . ( isset($fileInfo) ? 'true' : 'false' ) .'";
+				jST.id = "'.$_REQUEST['sheetId'].'";
+				jST.file = "'.$_REQUEST['file'].'";
 
 				$.sheet.link.setupUI();
 				$.sheet.readyState();

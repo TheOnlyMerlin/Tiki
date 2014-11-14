@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -79,12 +79,9 @@ function wikiplugin_trade_info()
 
 function wikiplugin_trade( $data, $params, $offset )
 {
-	global $prefs, $user;
-	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
-	$headerlib = TikiLib::lib('header');
-	$paymentlib = TikiLib::lib('payment');
+	global $smarty, $userlib, $prefs, $user, $headerlib;
 	global $cclitelib; require_once 'lib/payment/cclitelib.php';
+	global $paymentlib; require_once 'lib/payment/paymentlib.php';
 	static $iPluginTrade = 0;
 
 	$default = array( 'inputtitle'=>'', 'wanted' => 'n', 'action' => tra('Continue'), 'registry' => '', 'currency' => '' );

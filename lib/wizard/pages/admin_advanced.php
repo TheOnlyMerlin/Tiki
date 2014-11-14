@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -23,18 +23,16 @@ class AdminWizardAdvanced extends Wizard
 	
 	public function onSetupPage ($homepageUrl) 
 	{
-		global $prefs;
-		$smarty = TikiLib::lib('smarty');
+		global	$smarty, $prefs;
+
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
 
-		return true;		
-	}
-
-	function getTemplate()
-	{
+		// Assign the page temaplte
 		$wizardTemplate = 'wizard/admin_advanced.tpl';
-		return $wizardTemplate;
+		$smarty->assign('wizardBody', $wizardTemplate);
+		
+		return true;		
 	}
 
 	public function onContinue ($homepageUrl) 

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -25,7 +25,7 @@ function prefs_payment_list()
 			'type' => 'list',
 			'options' => array(
 				'paypal' => tra('PayPal'),
-				'israelpost' => tra('Israel Post Payment Module'),
+				'israelpost' => tra('Israel Post'),
 				'cclite' => tra('Cclite'),
 				'tikicredits' => tra('Tiki User Credits'),
 			),
@@ -35,36 +35,13 @@ function prefs_payment_list()
 		'payment_paypal_business' => array(
 			'name' => tra('Paypal Business ID'),
 			'description' => tra('Enable payments through paypal.'),
-			'hint' => tra('Primary email of your PayPal account'),
+			'hint' => tra('Email address'),
 			'type' => 'text',
 			'filter' => 'email',
 			'dependencies' => array( 'payment_feature' ),
 			'size' => 50,
 			'default' => '',
 		),
-
-        'payment_paypal_password' => array(
-            'name' => tra('Paypal Business Password'),
-            'description' => tra('The Paypal password associated with you PayPal Pro business account.'),
-            'hint' => tra('Primary password of your PayPal Pro business account'),
-            'type' => 'password',
-            'filter' => 'text',
-            'dependencies' => array( 'payment_feature' ),
-            'size' => 50,
-            'default' => '',
-            ''
-        ),
-
-        'payment_paypal_signature' => array(
-            'name' => tra('Paypal Business Signature'),
-            'description' => tra('Your API signature associated with your PayPal Pro business account'),
-            'hint' => tra('Your API signature associated with your PayPal Pro business account'),
-            'type' => 'text',
-            'filter' => 'text',
-            'dependencies' => array( 'payment_feature' ),
-            'size' => 50,
-            'default' => '',
-        ),
 		'payment_paypal_environment' => array(
 			'name' => tra('Paypal Environment'),
 			'description' => tra('Used to switch between the paypal sandbox, used for testing and development and the live environment.'),

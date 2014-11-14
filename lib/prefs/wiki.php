@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -21,7 +21,7 @@ function prefs_wiki_list($partial = false)
 		}
 	}
 
-	$prefslib = TikiLib::lib('prefs');
+	global $prefslib;
 	$advanced_columns = $prefslib->getExtraSortColumns();
 
 	$wiki_sort_columns = array_merge(
@@ -60,18 +60,6 @@ function prefs_wiki_list($partial = false)
 				'strict' => tra('Strict'),
 			),
 			'default' => 'complete',
-		),
-		'wiki_url_scheme' => array(
-			'name' => tr('Wiki URL Scheme'),
-			'description' => tr('Alter the SEFURL pattern for page names.'),
-			'hint' => tr('Use the action to regenerate your URLs after changing this setting.'),
-			'type' => 'list',
-			'default' => 'urlencode',
-			'options' => TikiLib::lib('slugmanager')->getOptions(),
-			'view' => $partial ? '' : TikiLib::lib('service')->getUrl([
-				'controller' => 'wiki',
-				'action' => 'regenerate_slugs',
-			]),
 		),
 		'wiki_show_version' => array(
 			'name' => tra('Display page version'),
@@ -217,14 +205,6 @@ function prefs_wiki_list($partial = false)
 			'default' => 'y',
 			'tags' => array('basic'),
 		),
-		'wiki_plugindiv_approvable' => array(
-			'name' => tra('DIV plugin accepts unsafe parameters such as "style"'),
-			'description' => tra('If set, more parameters are available but modifying them will require approval. If unset, DIV plugin is safe and never requires approval.'),
-			'hint' => tra('If changed, you need to clear caches.'),
-			'type' => 'flag',
-			'default' => 'n',
-			'tags' => array('advanced'),
-		),
 		'wiki_dynvar_style' => array(
 			'name' => tra('Dynamic variables'),
 			'description' => tra('Global snippets of text that can be included in wiki pages and edited in place.'),
@@ -281,12 +261,12 @@ function prefs_wiki_list($partial = false)
 			'default' => 'n',
 		),
 		'wiki_comments_displayed_default' => array(
-			'name' => tra('Display comment list by default'),
+			'name' => tra('Display by default'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'wiki_comments_form_displayed_default' => array(
-			'name' => tra('Display Post new comment form by default'),
+			'name' => tra('Display comments form by default'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
@@ -312,6 +292,8 @@ function prefs_wiki_list($partial = false)
 			'name' => tra('Wiki rating options'),
 			'description' => tra('List of options available for the rating of wiki comments.'),
 			'type' => 'text',
+			'separator' => ',',
+			'filter' => 'int',
 			'default' => "0,1,2,3,4,5",
 		),
 		'wiki_uses_slides' => array(
@@ -621,16 +603,6 @@ function prefs_wiki_list($partial = false)
 			'filter' => 'digits',
 			'default' => '1',
 		),
-		'wiki_discuss_visibility' => array(
-			'name' => tra('Visibility of discussion'),
-			'description' => tra('Just a button among others (default), or special section'),
-			'type' => 'list',
-			'options' => array(
-				'button' => tra('In the buttons row (default)'),
-				'above' => tra('Special section above buttons bar'),
-			),
-			'default' => 'button',
-		),
 		'wiki_forum_id' => array(
 			'name' => tra('Forum for discussion'),
 			'type' => 'list',
@@ -657,13 +629,13 @@ function prefs_wiki_list($partial = false)
 			'default' => 'n',
 		),
 		'wiki_freetags_edit_position' => array(
-			'name' => tra('Choose position of tags selection'),
-			'description' => tra('If you wish to place tags selection more prominently than in the properties tab.'),
+			'name' => tra('Choose position of freetags selection'),
+			'description' => tra('If you wish to place freetags selection more prominently than in the properties tab.'),
 			'type' => 'list',
 			'options' => array(
 				'properties' => tra('Properties tab'),
 				'edit' => tra('Edit tab'),
-				'freetagstab' => tra('Tags tab'),
+				'freetagstab' => tra('Freetags tab'),
 			),
 			'default' => 'properties',
 		),
@@ -697,6 +669,8 @@ function prefs_wiki_list($partial = false)
 			'name' => tra('Wiki rating options'),
 			'description' => tra('List of options available for the rating of wiki pages.'),
 			'type' => 'text',
+			'separator' => ',',
+			'filter' => 'int',
 			'default' => "0,1,2,3,4,5",
 		),
 		'wiki_pagealias_tokens' => array(

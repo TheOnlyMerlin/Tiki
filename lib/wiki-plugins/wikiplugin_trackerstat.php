@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -110,10 +110,8 @@ function wikiplugin_trackerstat_info()
 
 function wikiplugin_trackerstat($data, $params)
 {
-	global $prefs, $tiki_p_admin_trackers;
-	$trklib = TikiLib::lib('trk');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $smarty, $prefs, $tiki_p_admin_trackers, $trklib, $tikilib;
+	include_once('lib/trackers/trackerlib.php');
 	extract($params, EXTR_SKIP);
 
 	if ($prefs['feature_trackers'] != 'y' || !isset($trackerId) || !($tracker_info = $trklib->get_tracker($trackerId))) {
@@ -206,7 +204,7 @@ function wikiplugin_trackerstat($data, $params)
 			continue;
 		}
 		if ($allFields['data'][$i]['type'] == 'e') {
-			$categlib = TikiLib::lib('categ');
+			global $categlib; include_once('lib/categories/categlib.php');
 			$parent = (int) $allFields['data'][$i]['options']; // FIXME: Lazy access to the first option. Only works when a field only has its first option set.
 			if ($parent > 0) {
 				$filter = array('identifier'=>$parent, 'type'=>'children');

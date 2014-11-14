@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -98,7 +98,7 @@ class Validators
 						}
 						$validationjs .= 'parameter: "trackerId=' .$field_value['trackerId'].'&fieldId=' .$field_value['fieldId'] . '&itemId=' . $current_id . '", ';
 					} else {
-						$validationjs .= 'parameter: "' .addslashes($field_value['validationParam']).'", ';
+						$validationjs .= 'parameter: "' .$field_value['validationParam'].'", ';
 					}
 					$validationjs .= 'message: "' .tra($field_value['validationMessage']).'", ';
 					$validationjs .= 'input: function() { ';
@@ -146,3 +146,5 @@ class Validators
 	}
 }
 
+global $validatorslib;
+$validatorslib = new Validators;

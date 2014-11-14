@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -34,6 +34,7 @@ class Table_Code_Manager extends Table_Code_Abstract
 			'mainOptions' => '',
 			'widgetOptions' => '',
 		),
+		'pager' => '',
 	);
 
 	/**
@@ -62,8 +63,11 @@ class Table_Code_Manager extends Table_Code_Abstract
 		//put sections together into final overall code
 		self::$code['main'] = $this->iterate(
 			self::$code['main'], $this->nt . '$(\''. self::$tid
-			. '\').tablesorter({', $this->nt . '});', '', ''
+			. '\').tablesorter({', $this->nt . '})', '', ''
 		);
+		if (empty(self::$code['pager'])) {
+			self::$code['main'] .= ';';
+		}
 		$parts = '';
 		foreach (self::$code as $section) {
 			$parts .= $section;

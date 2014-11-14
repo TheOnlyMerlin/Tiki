@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -38,7 +38,7 @@ class Services_Workspace_Controller
 			if (! $perms->workspace_instantiate) {
 				throw new Services_Exception_Denied;
 			}
-			$workspaceName = $name;
+
 			$name = $templateInfo['name'] . $prefs['namespace_separator'] . $name;
 
 			$transaction = TikiDb::get()->begin();
@@ -64,7 +64,6 @@ class Services_Workspace_Controller
 		}
 
 		return array(
-			'title' => tr('Create Workspace'),
 			'templates' => $templates,
 		);
 	}
@@ -72,7 +71,6 @@ class Services_Workspace_Controller
 	function action_list_templates($input)
 	{
 		return array(
-			'title' => tr('Workspace Templates'),
 			'list' => $this->utilities->getTemplateList(),
 		);
 	}
@@ -143,7 +141,6 @@ class Services_Workspace_Controller
 		}
 
 		return array(
-			'title' => tr('Create Workspace Template'),
 			'id' => $id,
 		);
 	}
@@ -255,7 +252,6 @@ class Services_Workspace_Controller
 		$template = $this->utilities->getTemplate($input->id->int());
 
 		return array(
-			'title' => tr('Edit template %0', $template['name']),
 			'id' => $input->id->int(),
 			'name' => $template['name'],
 			'definition' => $template['definition'],
@@ -322,6 +318,5 @@ class Services_Workspace_Controller
 			'content' => $content,
 		);
 	}
-	
 }
 

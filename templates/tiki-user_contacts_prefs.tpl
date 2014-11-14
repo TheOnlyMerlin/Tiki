@@ -1,15 +1,14 @@
 {title help="User+Contacts+Prefs"}{tr}User Contacts Preferences{/tr}{/title}
 
 {include file='tiki-mytiki_bar.tpl'}
-<div class="t_navbar">
-	{button href="tiki-contacts.php" class="btn btn-default" _text="{tr}Contacts{/tr}"}
+<div class="navbar">
+	{button href="tiki-contacts.php" _text="{tr}Contacts{/tr}"}
 </div>
 
 {tabset name="contact_prefs"}
 	{tab name="{tr}Options{/tr}"}
-        <h2>{tr}Options{/tr}</h2>
-		<div class="panel panel-default">
-			<div class="panel-body">
+		<div class="cbox">
+			<div class="cbox-data">
 				<form method='post' action='tiki-user_contacts_prefs.php'>
 					<table class="formcolor">
 						<tr>
@@ -33,20 +32,18 @@
 	{/tab}
 
 	{tab name="{tr}Manage Fields{/tr}"}
-        <h2>{tr}Manage Fields{/tr}</h2>
-		<div class="panel panel-default">
-			<div class="panel-body">
+		<div class="cbox">
+			<div class="cbox-data">
 				<form method='post' action='tiki-user_contacts_prefs.php'>
-                    <div class="table-responsive">
 					<table class="table normal">
 						<tr>
 							<th colspan="2">{tr}Order{/tr}</th>
 							<th>{tr}Field{/tr}</th>
 							<th>{tr}Action{/tr}</th>
 						</tr>
-
+						{cycle values="odd,even" print=false}
 						{foreach from=$exts item=ext key=k name=e}
-							<tr>
+							<tr class="{cycle}">
 								<td width="2%">
 									{if not $smarty.foreach.e.first}
 										<a href="?ext_up={$ext.fieldId}" title="{tr}Up{/tr}">{icon _id='resultset_up'}</a>
@@ -74,7 +71,6 @@
 							</tr>
 						{/foreach}
 					</table>
-                    </div>
 					<div>{tr}Add:{/tr} <input type='text' name='ext_add' /> <input type='submit' name='add_fields' value="{tr}Add{/tr}"></div>
 				</form>
 			</div>

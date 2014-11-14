@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -94,7 +94,8 @@ class StructLib extends TikiLib
 			$page_info = $this->s_get_page_info($page_ref_id);
   			$query = 'select count(*) from `tiki_structures` where `page_id`=?';
 	  		$count = $this->getOne($query, array((int) $page_info['page_id']));
-			$wikilib = TikiLib::lib('wiki');
+			global $wikilib;
+			include_once('lib/wiki/wikilib.php');
 			if ($count == 1 && $wikilib->is_editable($page_info['pageName'], $user)) {
 				$this->remove_all_versions($page_info['pageName']);
 			}
@@ -365,7 +366,7 @@ class StructLib extends TikiLib
 
 	public function get_subtree($page_ref_id, $level = 0, $parent_pos = '')
 	{
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 		$ret = array();
 		$pos = 1;
 		//The structure page is used as a title
@@ -377,7 +378,7 @@ class StructLib extends TikiLib
 			$aux['page_ref_id'] = $struct_info['page_ref_id'];
 			$aux['pageName']    = $struct_info['pageName'];
 			$aux['page_alias']  = $struct_info['page_alias'];
-			$wikilib = TikiLib::lib('wiki');
+			global $wikilib; include_once('lib/wiki/wikilib.php');
 			$is_locked = $wikilib->is_locked($struct_info['pageName']);
 			if ($is_locked) {
 				$aux['flag'] = 'L';
@@ -532,7 +533,7 @@ class StructLib extends TikiLib
 
 	public function use_user_language_preferences( $langContext = null )
 	{
-		global $prefs;
+		global $prefs, $multilinguallib;
 		if ( $prefs['feature_multilingual'] != 'y' ) {
 			return;
 		}
@@ -540,7 +541,9 @@ class StructLib extends TikiLib
 			return;
 		}
 
-		$multilinguallib = TikiLib::lib('multilingual');
+		if ( !$multilinguallib ) {
+			include_once('lib/multilingual/multilinguallib.php');
+		}
 
 		$this->displayLanguageOrder = $multilinguallib->preferredLangs($langContext);
 	}
@@ -722,8 +725,7 @@ class StructLib extends TikiLib
 	}
 	public function fetch_toc($structure_tree,$showdesc,$numbering,$type='plain',$page='',$maxdepth=0,$cur_depth=0,$structurePageName='')
 	{
-		$smarty = TikiLib::lib('smarty');
-		global $user;
+		global $smarty, $user;
 		$ret='';
 		if ($structure_tree != '') {
 			if (($maxdepth <= 0) || ($cur_depth < $maxdepth)) {
@@ -1305,7 +1307,7 @@ class StructLib extends TikiLib
 	/* transform a structure into a menu */
 	public function to_menu($channels, $structure, $sectionLevel=0, $cumul=0, $params=array())
 	{
-		$smarty = TikiLib::lib('smarty');
+		global $smarty;
 		include_once('lib/smarty_tiki/function.sefurl.php');
 		$options = array();
 		$cant = 0;
@@ -1349,4 +1351,4 @@ class StructLib extends TikiLib
 		return array('data'=>$options, 'cant'=>$cant);
 	}
 }
-
+global $structlib; $structlib = new StructLib;

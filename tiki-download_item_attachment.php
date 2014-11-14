@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +11,7 @@
 $force_no_compression = true;
 require_once ('tiki-setup.php');
 
-$trklib = TikiLib::lib('trk');
+include_once ('lib/trackers/trackerlib.php');
 
 if (empty($_REQUEST['attId']) && !empty($_REQUEST['itemId']) && !empty($_REQUEST['fieldId'])) {
 	$_REQUEST['attId'] = $trklib->get_item_value(0, $_REQUEST['itemId'], $_REQUEST['fieldId']);

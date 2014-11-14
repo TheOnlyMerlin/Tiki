@@ -2,12 +2,15 @@
 {title help="Mail+Notifications"}{tr}Mail notifications{/tr}{/title}
 
 {if empty($prefs.sender_email)}
-	<div class="alert alert-info alert-dismissable">{icon _id=information style="vertical-align:middle"} {tr}You need to set <a href="tiki-admin.php?page=general">Sender Email</a> before creating email notifications{/tr}.</div>
+	<br>
+	<div class="highlight simplebox">{icon _id=information style="vertical-align:middle"} {tr}You need to set <a href="tiki-admin.php?page=general">Sender Email</a> before creating email notifications{/tr}.</div>
+	<br>
 {/if}
 
 <h2>{tr}Add notification{/tr}</h2>
 {if !empty($tikifeedback)}
-	<div class="alert alert-info alert-dismissable">{section name=ix loop=$tikifeedback}{icon _id=delete alt="{tr}Alert{/tr}" style="vertical-align:middle"} {$tikifeedback[ix].mes}.{/section}</div>
+	<div class="highlight simplebox">{section name=ix loop=$tikifeedback}{icon _id=delete alt="{tr}Alert{/tr}" style="vertical-align:middle"} {$tikifeedback[ix].mes}.{/section}</div>
+	<br>
 {/if}
 <form action="tiki-admin_notifications.php" method="post">
      <input type="hidden" name="find" value="{$find|escape}">
@@ -62,12 +65,12 @@
 		</tr>
 		<tr>
 			<td>
-				<div class="help-block">{tr}Note that a user is not notified for his own action{/tr}.</div>
+				<span class="simple_inlinehelp">{tr}Note that a user is not notified for his own action{/tr}.</span>
 			</td>
 		</tr> 
 		<tr>
 			<td>&nbsp;</td>
-			<td><input type="submit" class="btn btn-default btn-sm" name="add" value="{tr}Add{/tr}"></td>
+			<td><input type="submit" class="btn btn-default" name="add" value="{tr}Add{/tr}"></td>
 		</tr>
 	</table>
 </form>
@@ -77,8 +80,7 @@
   {include file='find.tpl' find_show_num_rows='y'}
 {/if}
 <form method="get" action="tiki-admin_notifications.php">
-    <div class="table-responsive notifications-table">
-    <table class="table normal">
+	<table class="table normal">
 		<tr>
 			<th>
 				{if $channels}
@@ -91,10 +93,10 @@
 			<th>{self_link _sort_arg="sort_mode" _sort_field="user"}{tr}User / Group{/tr}{/self_link}</th>
 			<th>{tr}Action{/tr}</th>
 		</tr>
-
+		{cycle print=false values="even,odd"}
 		{section name=user loop=$channels}
-			<tr>
-				<td class="checkbox-cell">
+			<tr class="{cycle}">
+				<td class="checkbox">
 					<input type="checkbox" name="checked[]" value="{$channels[user].watchtype}{$channels[user].watchId|escape}" {if $smarty.request.checked and in_array($channels[user].watchId,$smarty.request.checked)}checked="checked"{/if}>
 				</td>
 				<td class="text">{$channels[user].event}</td>
@@ -128,7 +130,6 @@
          {norecords _colspan=6}
 		{/section}
 	</table>
-    </div>
 	{if $channels}
 		<br>
 		{tr}Perform action with checked:{/tr}
@@ -140,27 +141,23 @@
 
 {if !empty($trackers)}
 	<h2>{tr}Trackers Outbound Emails{/tr}</h2>
-    <div class="table-responsive">
 	<table class="table normal">
 		{section name=ix loop=$trackers}
-			<tr>
+			<tr class="{cycle}">
 				<td><a href="tiki-list_trackers.php?trackerId={$trackers[ix].trackerId}">{$trackers[ix].value|escape}</a></td>
 			</tr>
 		{/section}
 	</table>
-    </div>
 {/if}
 
 {if !empty($forums)}
 	<h2>{tr}Forums Outbound Emails{/tr}</h2>
-    <div class="table-responsive">
 	<table class="table normal">
 		{section name=ix loop=$forums}
-			<tr>
+			<tr class="{cycle}">
 				<td><a href="tiki-admin_forums.php?forumId={$forums[ix].forumId}&amp;cookietab=2">{$forums[ix].outbound_address|escape}</a><br/></td>
 			</tr>
 		{/section}
 	</table>
-    </div>
 {/if}
 

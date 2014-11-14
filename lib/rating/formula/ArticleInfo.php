@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,7 +9,7 @@ class Tiki_Formula_Function_ArticleInfo extends Math_Formula_Function
 {
 	function evaluate( $element )
 	{
-		global $prefs;
+		global $prefs, $artlib;
 
 		if ( count($element) != 3 ) {
 			$this->error(tra('Expecting three arguments for article-info.'));
@@ -29,7 +29,7 @@ class Tiki_Formula_Function_ArticleInfo extends Math_Formula_Function
 		$property = $element[2];
 
 		if ( $type == 'article' ) {
-			$artlib = TikiLib::lib('art');
+			require_once 'lib/articles/artlib.php';
 			$article = $artlib->get_article($object, false);
 
 			if ( $property == 'rating' ) {

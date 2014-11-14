@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -26,11 +26,11 @@ If you leave the data field blank, the default is to use all the questions from 
 You can also set the same option under the Generl Options section.
 */
 require_once ('tiki-setup.php');
+include_once ('lib/quizzes/quizlib.php');
 
 $access->check_feature('feature_quizzes');
 //Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-$quizlib = TikiLib::lib('quiz');
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 $smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
 
 // quizId of 0 is used as a placeholder; There should NEVER be a row in the

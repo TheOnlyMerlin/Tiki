@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -28,8 +28,7 @@ class UserPrefsLib extends TikiLib
      */
     function set_user_avatar($user, $type, $avatarLibName, $avatarName, $avatarSize, $avatarType, $avatarData)
 	{
-		global $prefs, $tikidomainslash;
-		$userlib = TikiLib::lib('user');
+		global $prefs, $userlib, $tikidomainslash;
 		$query = "update `users_users` set `avatarType` = ?, `avatarLibName` = ?, `avatarName` = ?, `avatarSize` = ?, `avatarFileType` = ?, `avatarData` = ?  where `login`=?";
 		$result = $this->query($query, array($type, $avatarLibName, $avatarName, ($avatarSize ? $avatarSize : NULL), $avatarType, $avatarData, $user));
 		if ($prefs['feature_intertiki'] == 'y' && !empty($prefs['feature_intertiki_mymaster']) && $prefs['feature_intertiki_import_preferences'] == 'y') { //send to the master
@@ -124,8 +123,7 @@ class UserPrefsLib extends TikiLib
      */
 	function set_file_gallery_image($u, $filename, $size, $type, $data)
 	{
-		global $prefs;
-		$tikilib = TikiLib::lib('tiki');
+		global $prefs, $tikilib;
 		$filegallib = TikiLib::lib('filegal');
 		if (!$prefs["user_picture_gallery_id"]) {
 			return false;
@@ -147,8 +145,7 @@ class UserPrefsLib extends TikiLib
      */
     function remove_file_gallery_image($u)
 	{
-		global $prefs;
-		$tikilib = TikiLib::lib('tiki');
+		global $prefs, $tikilib;
 		$filegallib = TikiLib::lib('filegal');
 		if ($user_image_id = $tikilib->get_user_preference($u, 'user_fg_image_id')) {
 			$file_info = $filegallib->get_file_info($user_image_id, false, false);
@@ -166,7 +163,7 @@ class UserPrefsLib extends TikiLib
      */
     function get_user_picture_id($u)
 	{
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 		return $tikilib->get_user_preference($u, 'user_fg_image_id');		
 	}
 
@@ -221,8 +218,7 @@ class UserPrefsLib extends TikiLib
      */
     function get_user_clock_pref($user)
 	{
-		global $prefs;
-		$tikilib = TikiLib::lib('tiki');
+		global $prefs; global $tikilib;
 		$userclock = $tikilib->get_user_preference($user, 'display_12hr_clock');
 		$use_24hr_clock = true;
 		if ((isset($userclock) && $userclock == 'y') || (!isset($userclock) && $prefs['users_prefs_display_12hr_clock'] == 'y')) {
@@ -231,4 +227,4 @@ class UserPrefsLib extends TikiLib
 		return $use_24hr_clock;
 	}
 }
-
+$userprefslib = new UserPrefsLib;

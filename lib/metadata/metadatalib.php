@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -282,7 +282,7 @@ class FileMetadata
 	 */
 	function dialogTabs($metadata, $id, $id_link, $filename)
 	{
-		$smarty = TikiLib::lib('smarty');
+		global $smarty;
 		$smarty->assign('id', $id);
 		$smarty->assign('id_link', $id_link);
 		$smarty->assign('filename', $filename);
@@ -302,7 +302,7 @@ class FileMetadata
 
 	function pageTabs($metadata)
 	{
-		$smarty = TikiLib::lib('smarty');
+		global $smarty;
 		if (is_array($metadata) && count($metadata) > 0) {
 			$metarray = $metadata;
 		} elseif (!empty($metadata)) {

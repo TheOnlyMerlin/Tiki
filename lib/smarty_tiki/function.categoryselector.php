@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -28,12 +28,15 @@ function smarty_function_categoryselector($params, $smarty)
 		)
 	);
 
-	$url = array(
-		'controller' => 'category',
-		'action' => 'select',
-		'type' => $params['type'],
-		'object' => $params['object'],
-		'subset' => implode(',', $params['categories']),
+	$servicelib = TikiLib::lib('service');
+	$url = $servicelib->getUrl(
+		array(
+			'controller' => 'category',
+			'action' => 'select',
+			'type' => $params['type'],
+			'object' => $params['object'],
+			'subset' => implode(',', $params['categories']),
+		)
 	);
 	return new Tiki_Render_Editable(
 		$data,

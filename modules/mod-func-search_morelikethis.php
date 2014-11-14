@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -44,9 +44,7 @@ function module_search_morelikethis_info()
  */
 function module_search_morelikethis($mod_reference, $module_params)
 {
-	global $prefs;
-
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 
 	$textfilters = array();
 	$typefilters = array();
@@ -77,11 +75,6 @@ function module_search_morelikethis($mod_reference, $module_params)
 		}
 		if (!empty($typefilters)) {
 			$query->filterType($typefilters);
-		}
-
-		if ($prefs['federated_enabled'] == 'y') {
-			$fed = TikiLib::lib('federatedsearch');
-			$fed->augmentSimilarQuery($query, $object['type'], $object['object']);
 		}
 
 		try {

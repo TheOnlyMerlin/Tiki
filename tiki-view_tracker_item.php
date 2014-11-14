@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -304,7 +304,7 @@ if (! $itemObject->canView()) {
 	$smarty->display("error.tpl");
 	die;
 }
-if (isset($tracker_info['adminOnlyViewEditItem']) && $tracker_info['adminOnlyViewEditItem'] === 'y') {
+if ($tracker_info['adminOnlyViewEditItem'] === 'y') {
 	$access->check_permission('tiki_p_admin_trackers', tra('Admin this tracker'), 'tracker', $tracker_info['trackerId']);
 }
 
@@ -614,12 +614,6 @@ if ($prefs['feature_user_watches'] == 'y' and $tiki_p_watch_trackers == 'y') {
 		}
 	}
 }
-
-if ($tracker_info['useComments'] == 'y') {
-	$comCount = $trklib->get_item_nb_comments($_REQUEST["itemId"]);
-	$smarty->assign("comCount", $comCount);
-}
-
 if ($tracker_info["useAttachments"] == 'y') {
 	if (isset($_REQUEST["removeattach"])) {
 		$_REQUEST["show"] = "att";
@@ -748,6 +742,5 @@ try {
 	}
 } catch (SmartyException $e) {
 	$message = tr('This element cannot be displayed appropriately. Template not found (%0). Contact the administrator.', $tracker_info['viewItemPretty']);
-	$smarty->loadPlugin('smarty_modifier_sefurl');
 	$access->redirect(smarty_modifier_sefurl($info['trackerId'], 'tracker'), $message);
 }

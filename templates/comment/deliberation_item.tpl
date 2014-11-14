@@ -1,10 +1,3 @@
-{extends 'layout_view.tpl'}
-
-{block name="title"}
-	{title}{$title|escape}{/title}
-{/block}
-
-{block name="content"}
 {$headerlib->clear_js()}
 <div>
 	<div>{tr}Item{/tr}</div>
@@ -13,4 +6,3 @@
 	{$headerlib->output_js_files()}
 	<script>{$headerlib->output_js()}</script>
 </div>
-{/block}

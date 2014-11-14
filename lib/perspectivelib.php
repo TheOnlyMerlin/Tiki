@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -245,7 +245,7 @@ class PerspectiveLib
 	{
 		$this->perspectivePreferences->deleteMultiple(array('perspectiveId' => $perspectiveId));
 
-		$prefslib = TikiLib::lib('prefs');
+		global $prefslib; require_once 'lib/prefslib.php';
 		foreach ( $preferences as $pref => $value ) {
 			$value = $prefslib->formatPreference($pref, array($pref => $value));
 			$this->set_preference($perspectiveId, $pref, $value);
@@ -338,3 +338,5 @@ class PerspectiveLib
 	}
 }
 
+global $perspectivelib;
+$perspectivelib = new PerspectiveLib;

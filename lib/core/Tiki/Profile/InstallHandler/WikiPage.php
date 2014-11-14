@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -18,7 +18,6 @@ class Tiki_Profile_InstallHandler_WikiPage extends Tiki_Profile_InstallHandler
 	private $wysiwyg;
 	private $wiki_authors_style;
 	private $geolocation;
-	private $hide_title;
 
 	private $mode = 'create_or_update';
 	private $exists;
@@ -57,9 +56,6 @@ class Tiki_Profile_InstallHandler_WikiPage extends Tiki_Profile_InstallHandler
 			$this->wiki_authors_style = $data['wiki_authors_style'];
 		if ( array_key_exists('geolocation', $data) )
 			$this->geolocation = $data['geolocation'];
-		if ( array_key_exists('hide_title', $data) )
-			$this->hide_title = $data['hide_title'];
-
 	}
 
 	function canInstall()
@@ -122,7 +118,6 @@ class Tiki_Profile_InstallHandler_WikiPage extends Tiki_Profile_InstallHandler
 		$this->replaceReferences($this->wysiwyg);
 		$this->replaceReferences($this->wiki_authors_style);
 		$this->replaceReferences($this->geolocation);
-		$this->replaceReferences($this->hide_title);
 
 		$this->mode = $this->convertMode();
 
@@ -187,16 +182,8 @@ class Tiki_Profile_InstallHandler_WikiPage extends Tiki_Profile_InstallHandler
 			TikiLib::lib('geo')->set_coordinates('wiki page', $this->name, $this->geolocation);
 		}
 
-		if ($prefs['wiki_page_hide_title'] == 'y' && !empty($this->hide_title)) {
-			if ($this->hide_title == 'y') {
-				$isHideTitle = -1;
-			} elseif ($this->hide_title == 'n') {
-				$isHideTitle = 0;
-			}
-			TikiLib::lib('wiki')->set_page_hide_title($finalName, $isHideTitle);
-		}
-
-		$multilinguallib = TikiLib::lib('multilingual');
+		global $multilinguallib;
+		require_once 'lib/multilingual/multilinguallib.php';
 
 		$current = $tikilib->get_page_id_from_name($finalName);
 		foreach ( $this->translations as $targetName ) {
@@ -208,7 +195,7 @@ class Tiki_Profile_InstallHandler_WikiPage extends Tiki_Profile_InstallHandler
 		}
 
 		if (!empty($this->structure)) {
-			$structlib = TikiLib::lib('struct');
+			global $structlib; include_once 'lib/structures/structlib.php';
 			$structlib->s_create_page($this->structure, 0, $finalName, '', $this->structure);
 		}
 

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -40,7 +40,7 @@ function smarty_block_title($params, $content, $template, &$repeat)
 	// Set the variable for the HTML title tag
 	$template->smarty->assign('headtitle', $content);
 
-	$class = 'pagetitle-link';
+	$class = 'pagetitle';
 	$current = current_object();
 
 	if ( ! isset($params['url']) ) {
@@ -58,7 +58,7 @@ function smarty_block_title($params, $content, $template, &$repeat)
 		}
 	}
 
-	$html = '<h1 class="pagetitle">';
+	$html = '<h1>';
 	$html .= '<a class="' . $class . '"' . $metadata . ' href="' . $params['url'] . '">' . htmlspecialchars($content) . "</a>\n";
 
 	if ($template->getTemplateVars('print_page') != 'y') {
@@ -68,8 +68,8 @@ function smarty_block_title($params, $content, $template, &$repeat)
 			} else {
 				$html .= '<a href="' ;
 			}
-			$html .= $prefs['helpurl'] . rawurlencode($params['help']) . '" class="tips btn btn-link" title="' . htmlspecialchars($content) . '|' . tra('Help page') . '" target="tikihelp">'
-			. smarty_function_icon(array('name' => 'help'), $template)
+			$html .= $prefs['helpurl'] . rawurlencode($params['help']) . '" class="titletips" title="' . tra('Help page:') . ' ' . htmlspecialchars($content) . '" target="tikihelp">'
+			. smarty_function_icon(array('_id' => 'help'), $template)
 			. "</a>\n";
 		}
 
@@ -79,8 +79,8 @@ function smarty_block_title($params, $content, $template, &$repeat)
 			} else {
 				$html .= '<a href="tiki-edit_templates.php?template=' ;
 			}
-			$html .= $tpl . '" class="tips btn btn-link" title="' . tra('View or edit tpl') . '|' . htmlspecialchars($content) . '">'
-			. smarty_function_icon(array('name' => 'edit'), $template)
+			$html .= $tpl . '" class="titletips" title="' . tra('View or edit tpl:') . ' ' . htmlspecialchars($content) . '">'
+			. smarty_function_icon(array('_id' => 'shape_square_edit', 'alt' => tra('Edit Template')), $template)
 			. "</a>\n";
 		} elseif ($prefs['feature_view_tpl'] == 'y' &&  $tiki_p_view_templates == 'y' && ($tpl = $template->getTemplateVars('mid'))) {
 			if ($prefs['mobile_mode']== 'y') {
@@ -88,20 +88,20 @@ function smarty_block_title($params, $content, $template, &$repeat)
 			} else {
 				$html .= '<a href="tiki-edit_templates.php?template=' ;
 			}
-			$html .= $tpl . '" class="tips btn btn-link" title="' . tra('View tpl') . '|' . htmlspecialchars($content) . '">'
-			. smarty_function_icon(array('name' => 'view'), $template)
+			$html .= $tpl . '" class="titletips" title="' . tra('View tpl:') . ' ' . htmlspecialchars($content) . '">'
+			. smarty_function_icon(array('_id' => 'shape_square', 'alt' => tra('View Template')), $template)
 			. "</a>\n";
 			
 		}
 
 		if ( $tiki_p_admin == 'y' && $params['admpage'] != '' ) {
 			if ($prefs['mobile_mode']== 'y') {
-				$html .= '<a data-role="button" data-inline="true" class="tips" href="tiki-admin.php?page=' ;
+				$html .= '<a data-role="button" data-inline="true" class="titletips" href="tiki-admin.php?page=' ;
 			} else {
-				$html .= '<a class="tips btn btn-link" href="tiki-admin.php?page=' ;
+				$html .= '<a class="titletips" href="tiki-admin.php?page=' ;
 			}
-			$html .= $params['admpage'] . '" title="' . tra('Admin page') . '|' . htmlspecialchars($content) . '">'
-			. smarty_function_icon(array('name' => 'settings'), $template)
+			$html .= $params['admpage'] . '" title="' . tra('Admin page:') . ' ' . htmlspecialchars($content) . '">'
+			. smarty_function_icon(array('_id' => 'wrench', 'alt' => tra('Admin Feature')), $template)
 			. "</a>\n";
 		}
 	}

@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -17,11 +17,12 @@ $inputConfiguration = array(
 $section = 'file_galleries';
 require_once ('tiki-setup.php');
 $access->check_feature(array('feature_file_galleries', 'feature_jquery_tooltips'));
-$filegallib = TikiLib::lib('filegal');
-$statslib = TikiLib::lib('stats');
+include_once ('lib/filegals/filegallib.php');
+include_once ('lib/stats/statslib.php');
 
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	global $categlib;
+	include_once ('lib/categories/categlib.php');
 }
 
 if ($prefs['feature_file_galleries_templates'] == 'y') {
@@ -30,7 +31,7 @@ if ($prefs['feature_file_galleries_templates'] == 'y') {
 }
 
 if ($prefs['feature_groupalert'] == 'y') {
-	$groupalertlib = TikiLib::lib('groupalert');
+	include_once ('lib/groupalert/groupalertlib.php');
 }
 
 $auto_query_args = array( 'galleryId'
@@ -618,7 +619,8 @@ if (!empty($_REQUEST['duplicate']) && !empty($_REQUEST['name']) && !empty($_REQU
 	);
 
 	if (isset($_REQUEST['dupCateg']) && $_REQUEST['dupCateg'] == 'on' && $prefs['feature_categories'] == 'y') {
-		$categlib = TikiLib::lib('categ');
+		global $categlib;
+		include_once ('lib/categories/categlib.php');
 		$cats = $categlib->get_object_categories('file gallery', $galleryId);
 		$catObjectId = $categlib->add_categorized_object(
 			'file gallery',
@@ -815,7 +817,8 @@ if ($prefs['feature_categories'] == 'y') {
 
 	// load categories for find
 	if ($prefs['feature_categories'] == 'y' && !isset($_REQUEST['edit_mode'])) {
-		$categlib = TikiLib::lib('categ');
+		global $categlib;
+		include_once ('lib/categories/categlib.php');
 		$categories = $categlib->getCategories();
 		$smarty->assign_by_ref('categories', $categories);
 		$smarty->assign('cat_tree', $categlib->generate_cat_tree($categories, true, $selectedCategories));

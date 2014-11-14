@@ -1,23 +1,19 @@
 <form action="tiki-admin.php?page=socialnetworks" method="post">
-
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="pull-right">
-                <input type="submit" class="btn btn-primary btn-sm" name="socialnetworksset" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-            </div>
-        </div>
-    </div>
+	<div class="heading input_submit_container" style="text-align: right">
+		<input type="submit" class="btn btn-default" name="socialnetworksset" value="{tr}Change preferences{/tr}" />
+	</div>
 
 	{tabset}
 		{tab name="{tr}General{/tr}"}
-            <h2>{tr}Social Network Integration{/tr}</h2>
-			{preference name=feature_socialnetworks visible="always"}
+			<fieldset class="admin">
+				<legend>{tr}Social Network Integration{/tr}</legend>
+				{preference name=feature_socialnetworks visible="always"}
+			</fieldset>
 		{/tab}
 		{tab name="{tr}Twitter{/tr}"}
-            <h2>{tr}Twitter{/tr}</h2>
 			{remarksbox type="note" title="{tr}Note{/tr}"}
 			<p>{tr}To use Twitter integration, you must register this site as an application at{/tr}
-			 <a class="alert-link" href="http://twitter.com/oauth_clients/" target="_blank">http://twitter.com/oauth_clients/</a>
+			 <a href="http://twitter.com/oauth_clients/" target="_blank">http://twitter.com/oauth_clients/</a>
 			 {tr}and allow write access for the application{/tr}.<br>
 			 {tr}Enter &lt;your site URL&gt;tiki-socialnetworks.php as callback URL{/tr}.</p>
 			{/remarksbox}
@@ -27,10 +23,9 @@
 			</div>
 		{/tab}
 		{tab name="{tr}Facebook{/tr}"}
-            <h2>{tr}Facebook{/tr}</h2>
 			{remarksbox type="note" title="{tr}Note{/tr}"}
 			<p>{tr}To use Facebook integration, you must register this site as an application at{/tr}
-			 <a class="alert-link" href="http://developers.facebook.com/setup/" target="_blank">http://developers.facebook.com/setup/</a>
+			 <a href="http://developers.facebook.com/setup/" target="_blank">http://developers.facebook.com/setup/</a>
 			 {tr}and allow extended access for the application{/tr}.<br>
 			{tr}Enter &lt;your site URL&gt;tiki-socialnetworks.php?request_facebook as Site URL and &lt;your site&gt; as Site Domain{/tr}.</p>
 			{/remarksbox}
@@ -52,11 +47,10 @@
 			</div>
 		{/tab}
 		{tab name="{tr}bit.ly{/tr}"}
-            <h2>{tr}bit.ly{/tr}</h2>
 			{remarksbox type="note" title="{tr}Note{/tr}"}
 			<p>{tr}There is no need to set up a site-wide bit.ly account; every user can have his or her own, but this allows for site-wide statistics{/tr}<br>
-			{tr}Go to{/tr} <a class="alert-link" href="http://bit.ly/a/sign_up">http://bit.ly/a/sign_up</a> {tr}to sign up for an account{/tr}.<br>
-			{tr}Go to{/tr} <a class="alert-link" href="http://bit.ly/a/your_api_key">http://bit.ly/a/your_api_key</a> {tr}to retrieve the API key{/tr}.</p>
+			{tr}Go to{/tr} <a href="http://bit.ly/a/sign_up">http://bit.ly/a/sign_up</a> {tr}to sign up for an account{/tr}.<br>
+			{tr}Go to{/tr} <a href="http://bit.ly/a/your_api_key">http://bit.ly/a/your_api_key</a> {tr}to retrieve the API key{/tr}.</p>
 			{/remarksbox}
 			<div class="adminoptionbox">
 				{preference name=socialnetworks_bitly_login}
@@ -66,11 +60,8 @@
 		{/tab}
 	{/tabset}
 
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-            <div class="text-center">
-                <input type="submit" class="btn btn-primary btn-sm" name="socialnetworksset" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-            </div>
-        </div>
-    </div>
+
+	<div class="heading input_submit_container" style="text-align: center">
+		<input type="submit" class="btn btn-default" name="socialnetworksset" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>

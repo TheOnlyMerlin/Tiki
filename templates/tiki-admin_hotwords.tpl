@@ -17,7 +17,7 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" class="btn btn-default btn-sm" name="add" value="{tr}Add{/tr}">
+				<input type="submit" class="btn btn-default" name="add" value="{tr}Add{/tr}">
 			</td>
 		</tr>
 	</table>
@@ -27,7 +27,6 @@
 {if $words}
 	{include file='find.tpl'}
 {/if}
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		<th>
@@ -38,9 +37,9 @@
 		</th>
 		<th>{tr}Action{/tr}</th>
 	</tr>
-
+	{cycle values="odd,even" print=false}
 	{section name=user loop=$words}
-		<tr>
+		<tr class="{cycle}">
 			<td class="text">{$words[user].word}</td>
 			<td class="text">{$words[user].url}</td>
 			<td class="action">
@@ -51,6 +50,5 @@
 		{norecords _colspan=3}
 	{/section}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}

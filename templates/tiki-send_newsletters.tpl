@@ -9,12 +9,12 @@
 {title help="Newsletters" url=$titleurl}{tr}Send Newsletters{/tr}{/title}
 
 {if $tiki_p_admin_newsletters eq "y"}
-	<div class="t_navbar form-group">
-		{button href="tiki-newsletters.php" class="btn btn-default" _text="{tr}List Newsletters{/tr}"}
+	<div class="navbar">
+		{button href="tiki-newsletters.php" _text="{tr}List Newsletters{/tr}"}
 		{if $nlId}
-			{button href="tiki-admin_newsletters.php?nlId=$nlId" class="btn btn-default" _text="{tr}Admin Newsletters{/tr}"}
+			{button href="tiki-admin_newsletters.php?nlId=$nlId" _text="{tr}Admin Newsletters{/tr}"}
 		{else}
-			{button href="tiki-admin_newsletters.php" class="btn btn-default" _text="{tr}Admin Newsletters{/tr}"}
+			{button href="tiki-admin_newsletters.php" _text="{tr}Admin Newsletters{/tr}"}
 		{/if}
 	</div>
 {/if}
@@ -45,9 +45,9 @@
 				<th>{tr}Email{/tr}</th>
 				<th>{tr}Message{/tr}</th>
 			</tr>
-
+			{cycle values="odd,even" print=false}
 			{section loop=$errors name=ix}
-				<tr>
+				<tr class="{cycle}">
 					<td>{$errors[ix].user|escape}</td>
 					<td>{$errors[ix].email|escape}</td>
 					<td>{$errors[ix].msg|escape}</td>
@@ -78,8 +78,8 @@
 			<input type="hidden" name="replyto" value="{$replyto|escape}">
 			<input type="hidden" name="wysiwyg" value="{$info.wysiwyg|escape}">
 			<input type="hidden" name="is_html" value="{$info.is_html|escape}">
-			<input type="submit" class="btn btn-default btn-sm" name="send" value="{tr}Send{/tr}" onclick="document.getElementById('confirmArea').style.display = 'none'; document.getElementById('sendingArea').style.display = 'block';">
-			<input type="submit" class="btn btn-default btn-sm" name="cancel" value="{tr}Cancel{/tr}">
+			<input type="submit" class="btn btn-default" name="send" value="{tr}Send{/tr}" onclick="document.getElementById('confirmArea').style.display = 'none'; document.getElementById('sendingArea').style.display = 'block';">
+			<input type="submit" class="btn btn-default" name="cancel" value="{tr}Cancel{/tr}">
 			{foreach from=$info.files item=newsletterfile key=fileid}
 				<input type='hidden' name='newsletterfile[{$fileid}]' value='{$newsletterfile.id}'>
 			{/foreach}
@@ -94,9 +94,9 @@
 					<th>{tr}Validated{/tr}</th>
 					<th>{tr}Is user{/tr}</th>
 				</tr>
-
+				{cycle values="even,odd" print=false}
 				{foreach from=$subscribers_list item=sub key=ix}
-					<tr>
+					<tr class="{cycle}">
 						<td>{$sub.email|escape}</td>
 						<td>{$sub.valid}</td>
 						<td>{$sub.isUser}</td>
@@ -185,15 +185,13 @@
 	{tab name="{tr}Edit{/tr}"}
 	{* --- tab with editor --- *}
 		<h2>{tr}Prepare a newsletter to be sent{/tr}</h2>
-		<form class="form-horizontal" action="tiki-send_newsletters.php" method="post" id='editpageform' enctype='multipart/form-data'>
+		<form action="tiki-send_newsletters.php" method="post" id='editpageform' enctype='multipart/form-data'>
 			<input type="hidden" name="editionId" value="{$info.editionId}">
-            <div class="form-group">
-            <div class="col-sm-12">            
 			<table class="formcolor" id="newstable">
 				<tr>
 					<td><label for="subject">{tr}Subject:{/tr}</label></td>
 					<td>
-						<input type="text" maxlength="250" id="subject" name="subject" value="{$info.subject|escape}">
+						<input type="text" maxlength="250" size="80" id="subject" name="subject" value="{$info.subject|escape}">
 					</td>
 				</tr>
 				<tr>
@@ -315,11 +313,9 @@
 
 				<tr>
 					<td>&nbsp;</td>
-					<td>&nbsp;<input type="submit" name="save" value="{tr}Send Newsletter{/tr}" class="wikiaction tips btn btn-primary" title="{tr}Send Newsletters{/tr}|{tr}Save any changes and send to all subscribers.{/tr}" onclick="needToConfirm=false"></td>
+					<td>&nbsp;<input type="submit" name="save" value="{tr}Send Newsletter{/tr}" class="wikiaction tips btn btn-default" title="{tr}Send Newsletters{/tr}|{tr}Save any changes and send to all subscribers.{/tr}" onclick="needToConfirm=false"></td>
 				</tr>
 			</table>
-            </div>
-            </div>
 		</form>
 	{/tab}
 	

@@ -11,7 +11,6 @@
 var CHECKBOX_LIST = [{{section name=user loop=$items}'sites[{$items[user].siteId}]'{if not $smarty.section.user.last},{/if}{/section}}];
 {/jq}
   <br>
-  <div class="table-responsive">
   <table class="table normal">
     <tr>
       <th>{if $items}
@@ -25,10 +24,10 @@ var CHECKBOX_LIST = [{{section name=user loop=$items}'sites[{$items[user].siteId
       <th><a href="tiki-directory_validate_sites.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'hits_desc'}hits_asc{else}hits_desc{/if}">{tr}Hits{/tr}</a></th>
       <th>{tr}Action{/tr}</th>
     </tr>
-
+    {cycle values="odd,even" print=false}
     {section name=user loop=$items}
     <tr class="{cycle advance=false}">
-      <td class="checkbox-cell"><input type="checkbox" name="sites[{$items[user].siteId}]"></td>
+      <td class="checkbox"><input type="checkbox" name="sites[{$items[user].siteId}]"></td>
       <td class="text">{$items[user].name}</td>
       <td class="text"><a href="{$items[user].url}" target="_blank">{$items[user].url}</a></td>
       {if $prefs.directory_country_flag eq 'y'}
@@ -37,7 +36,7 @@ var CHECKBOX_LIST = [{{section name=user loop=$items}'sites[{$items[user].siteId
       <td class="integer">{$items[user].hits}</td>
       <td class="action"><a class="link" href="tiki-directory_admin_sites.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;siteId={$items[user].siteId}">{icon _id='page_edit'}</a> <a class="link" href="tiki-directory_validate_sites.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$items[user].siteId}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a> </td>
     </tr>
-    <tr>
+    <tr class="{cycle}">
       <td>&nbsp;</td>
       <td colspan="6"><i>{tr}Directory Categories:{/tr}{assign var=fsfs value=1}
         {section name=ii loop=$items[user].cats}
@@ -49,11 +48,10 @@ var CHECKBOX_LIST = [{{section name=user loop=$items}'sites[{$items[user].siteId
 		{norecords _colspan=6}
     {/section}
   </table>
-  </div>
   {if $items} <br>
   {tr}Perform action with selected:{/tr}
-  <input type="submit" class="btn btn-default btn-sm" name="del" value="{tr}Remove{/tr}">
-  <input type="submit" class="btn btn-default btn-sm" name="validate" value="{tr}Validate{/tr}">
+  <input type="submit" class="btn btn-default" name="del" value="{tr}Remove{/tr}">
+  <input type="submit" class="btn btn-default" name="validate" value="{tr}Validate{/tr}">
   {/if}
 </form>
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links} 

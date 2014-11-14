@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,8 +14,8 @@ if (empty($prefs['feature_jpgraph'])) {
 	$prefs['feature_jpgraph'] = 'n'; //optional package does not go througp prefs
 }
 
-$categlib = TikiLib::lib('categ');
-$contributionlib = TikiLib::lib('contribution');
+include_once ('lib/categories/categlib.php');
+include_once ('lib/contribution/contributionlib.php');
 
 $commentslib = TikiLib::lib('comments');
 $access->check_user($user);
@@ -450,7 +450,8 @@ if (isset($_REQUEST['graph'])) {
 		require_once ('lib/jpgraph/src/jpgraph.php');
 		require_once ('lib/jpgraph/src/jpgraph_bar.php');
 		require_once ('lib/jpgraph/src/jpgraph_mgraph.php');
-		$imagegallib = TikiLib::lib('imagegal');
+		global $imagegallib;
+		include_once ('lib/imagegals/imagegallib.php');
 		$ext = 'jpeg';
 		$background = new MGraph();
 		$background->SetImgFormat($ext);
@@ -748,7 +749,7 @@ if (isset($_REQUEST['graph'])) {
 	//get_strings tra('white'), tra('gray'), tra('silver'), tra('ivory'), tra('whitesmoke'), tra('beige'),tra('darkgrey')
 	$smarty->assign('defaultBgcolor', 'whitesmoke');
 	$smarty->assign('defaultLegendBgcolor', 'white');
-	$imagegallib = TikiLib::lib('imagegal');
+	global $imagegallib; include_once ('lib/imagegals/imagegallib.php');
 	$galleries = $imagegallib->list_galleries(0, -1, 'name_asc', $user, '');
 	$smarty->assign('galleries', $galleries['data']);
 }

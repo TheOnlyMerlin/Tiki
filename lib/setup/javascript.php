@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -189,7 +189,7 @@ jqueryTiki.tablesorter = false;
 	}
 
 	if ($prefs['feature_calendar'] === 'y') {
-		$calendarlib = TikiLib::lib('calendar');
+		global $calendarlib; include_once('lib/calendar/calendarlib.php');
 		$firstDayofWeek = $calendarlib->firstDayofWeek();
 		$js .= "jqueryTiki.firstDayofWeek = $firstDayofWeek;\n";
 	}
@@ -214,7 +214,7 @@ var syntaxHighlighter = {
 
 	$headerlib->add_js($js);
 
-	if (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6') !== false) {
+	if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6') !== false) {
 
 		$smarty->assign('ie6', true);
 

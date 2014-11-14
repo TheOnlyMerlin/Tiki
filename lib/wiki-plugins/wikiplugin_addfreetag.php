@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,8 +8,8 @@
 function wikiplugin_addfreetag_info()
 {
 	return array(
-		'name' => tra('Add Tag'),
-		'description' => tra('Add a single tag to specified object'),
+		'name' => tra('Add Freetag'),
+		'description' => tra('Add a single freetag to specified object'),
 		'format' => 'html',
 		'prefs' => array('feature_freetags', 'wikiplugin_addfreetag'),
 		'introduced' => 8,

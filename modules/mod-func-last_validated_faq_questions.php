@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -44,9 +44,8 @@ function module_last_validated_faq_questions_info()
  */
 function module_last_validated_faq_questions($mod_reference, $module_params)
 {
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
-	$faqlib = TikiLib::lib('faq');
+	global $tikilib, $smarty;
+	global $faqlib; include_once('lib/faqs/faqlib.php');
 	$def = array('faqId'=>0, 'truncate'=>20);
 	$module_params = array_merge($def, $module_params);
 	$ranking = $faqlib->list_faq_questions($module_params['faqId'], 0, $mod_reference['rows'], 'created_desc', '');

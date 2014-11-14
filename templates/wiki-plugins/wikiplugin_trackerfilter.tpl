@@ -1,7 +1,7 @@
 {*param :  $msgTrackerFilter, $line, $open, $iTrackerFilter, $trackerId, $filters(array(name, format, fieldId, selected, opts)), $showFieldId *}
 {strip}
 {if isset($msgTrackerFilter) && $msgTrackerFilter}
-<div class="alert alert-danger">{$msgTrackerFilter|escape}</div>
+<div class="simplebox highlight">{$msgTrackerFilter|escape}</div>
 {/if}
 {if (!isset($line) || $line ne 'y') and $prefs.javascript_enabled eq 'y' and $noflipflop ne 'y'}
 {button _text="{tr}Filters{/tr}" _flip_id="trackerFilter$iTrackerFilter"}
@@ -32,12 +32,11 @@ function tf_export_submit(fm) {
 <input type="hidden" name="trackerId" value="{$trackerId}">
 <input type="hidden" name="iTrackerFilter" value="{$iTrackerFilter}">
 {if !empty($count_item)}<input type="hidden" name="count_item" value="{$count_item}">{/if}
-<div class="table-responsive">
 <table class="table normal">
 {if isset($line) && $line eq 'y'}<tr>{/if}
-
+{cycle values="even,odd" print=false}
 {foreach from=$filters item=filter}
-	{if !isset($line) || $line ne 'y'}<tr>{/if}
+	{if !isset($line) || $line ne 'y'}<tr class="{cycle}">{/if}
 		<td class="tracker_filter_label">
 		{if $indrop ne 'y' or ($filter.format ne 'd' and  $filter.format ne 'm')}<label for="f_{$filter.fieldId}">{$filter.name|tr_if}</label>{/if}
 		{if $showFieldId eq 'y'} -- {$filter.fieldId}{/if}
@@ -77,7 +76,13 @@ function tf_export_submit(fm) {
 			<input id="f_{$filter.fieldId}" type="text" name="f_{$filter.fieldId}" value="{$filter.selected}">
 {*------sqlsearch *}
 		{elseif $filter.format eq 'sqlsearch'}
-			<a href="{bootstrap_modal controller=tracker action=search_help}">{icon _id=help}</a>
+			{capture name=tpl_advanced_search_help}
+				{include file='advanced_search_help.tpl'}
+			{/capture}
+			<input id="f_{$filter.fieldId}" type="text" name="f_{$filter.fieldId}" value="{$filter.selected}">
+			{add_help show='y' title="{tr}Help{/tr}" id="advanced_search_help_filter"}
+				{$smarty.capture.tpl_advanced_search_help}
+			{/add_help}
 {*------rating *}
 		{elseif $filter.format eq '*'}
 			<select id="f_{$filter.fieldId}" name="f_{$filter.fieldId}">
@@ -134,7 +139,6 @@ function tf_export_submit(fm) {
 {/if}
 {if (!isset($line) || $line ne 'y' ) and $action}</tr>{/if}
 </table>
-</div>
 {if empty($inForm)}</form>{/if}
 </div>
 {if !empty($dataRes)}<div class="trackerfilter-result">{$dataRes}</div>{/if}

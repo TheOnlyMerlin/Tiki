@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -31,8 +31,8 @@ class AdminWizardFileStorage extends Wizard
 
 	function onSetupPage ($homepageUrl) 
 	{
-		global $prefs;
-		$smarty = TikiLib::lib('smarty');
+		global	$smarty, $prefs;
+
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
 		
@@ -67,14 +67,13 @@ class AdminWizardFileStorage extends Wizard
 			$showPage = true;
 			$smarty->assign('promptAttachmentStorage', 'y');
 		}
+
+		
+		// Assign the page template
+		$wizardTemplate = 'wizard/admin_files_storage.tpl';
+		$smarty->assign('wizardBody', $wizardTemplate);
 		
 		return $showPage;
-	}
-
-	function getTemplate()
-	{
-		$wizardTemplate = 'wizard/admin_files_storage.tpl';
-		return $wizardTemplate;
 	}
 
 	function onContinue ($homepageUrl) 

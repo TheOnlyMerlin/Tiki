@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -25,11 +25,9 @@ class Rating_AggregationTest extends TikiTestCase
 
 	function tearDown()
 	{
-		global $testhelpers, $user; $user = null;
+		global $user; $user = null;
 		parent::tearDown();
 		TikiDb::get()->query('DELETE FROM `tiki_user_votings` WHERE `id` LIKE ?', array('test.%'));
-
-        $testhelpers->reset_all();
 	}
 
 	function testGetGlobalSum()

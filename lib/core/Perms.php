@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -81,10 +81,7 @@
  * instances allow to reconfigure the accessors depending on the
  * environment in which they are used. For example, the accessors are
  * configured with the global groups by default. However, they can be
- * replaced to evaluate the permissions for a different user
- * by creating a new Perms_Context object before accessing the perms,
- * e.g.
- * 		$permissionContext = new Perms_Context($aUserName);
+ * replaced to evaluate the permissions for a different user.
  *
  * Each ResolverFactory will generate a hash from the context which
  * represents a unique key to the matching resolver it would provide.
@@ -298,11 +295,6 @@ class Perms
 	function setGroups(array $groups)
 	{
 		$this->groups = $groups;
-	}
-
-	function getGroups()
-	{
-		return $this->groups;
 	}
 
 	function setPrefix($prefix)

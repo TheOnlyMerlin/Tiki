@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -17,7 +17,7 @@ class watershedLib
 {
 	function storeSessionId( $u, $sessionId )
 	{
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 		$tikilib->set_user_preference($u, 'watershed_sessionId', $sessionId);
 		$tikilib->set_user_preference($u, 'watershed_sessionId_time', $tikilib->now);
 		return true;
@@ -25,8 +25,7 @@ class watershedLib
 
 	function getSessionId( $u )
 	{
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib, $userlib;
 		$userinfo = $userlib->get_user_info($u);
 		if ($tikilib->get_user_preference($u, 'watershed_sessionId_time', 0) > $userinfo['lastLogin']) {
 			$sessionId = $tikilib->get_user_preference($u, 'watershed_sessionId', '');
@@ -39,7 +38,7 @@ class watershedLib
 	function getAllViewableChannels( $channelName = '', $brandId = '')
 	{
 		global $prefs;
-		$trklib = TikiLib::lib('trk');
+		global $trklib; include_once ('lib/trackers/trackerlib.php');
 		$channels = array();
 
 		if ($channelName && $brandId) {
@@ -88,7 +87,7 @@ class watershedLib
 	function filterChannels( $channels, $mode = 'viewer' )
 	{
 		global $prefs, $tikilib;
-		$trklib = TikiLib::lib('trk');
+		global $trklib; include_once ('lib/trackers/trackerlib.php');
 		$tracker_info = $trklib->get_tracker($prefs['watershed_channel_trackerId']);
 
 		if ($t = $trklib->get_tracker_options($prefs['watershed_channel_trackerId'])) {
@@ -121,7 +120,7 @@ class watershedLib
 	function checkArchiveViewable( $videoId, $channels )
 	{
 		global $prefs, $tikilib;
-		$trklib = TikiLib::lib('trk');
+		global $trklib; include_once ('lib/trackers/trackerlib.php');
 
 		$archive = $trklib->get_item($prefs['watershed_archive_trackerId'], $prefs['watershed_archive_fieldId'], $videoId);
 		$archiveChannelCode = $archive[$prefs['watershed_archive_channel_fieldId']];
@@ -156,7 +155,7 @@ class watershedLib
 	function storeArchive( $recording )
 	{
 		global $prefs;
-		$trklib = TikiLib::lib('trk');
+		global $trklib; include_once ('lib/trackers/trackerlib.php');
 		$fields = array();
 		if (empty($prefs['watershed_archive_trackerId'])) {
 			return false;
@@ -465,10 +464,17 @@ class Watershed_SoapServer
 
 	private function loginBySession( $sessionId )
 	{
-		$db = TikiDb::get();
-		$table = $db->table('tiki_user_preferences');
-		$u = $this->fetchOne('user', array('prefName' => 'watershed_sessionId', 'value' => $sessionId));
-		if ($u) {
+		require ('db/local.php');
+		$watersheddb = mysql_connect($host_tiki, $user_tiki, $pass_tiki);
+		mysql_select_db($dbs_tiki, $watersheddb);
+		$query = "SELECT `user` FROM `tiki_user_preferences` WHERE prefName = 'watershed_sessionId' AND value = '$sessionId'";
+		$result = mysql_query($query, $watersheddb);
+		if (is_resource($result)) {
+			while ($res = mysql_fetch_assoc($result)) {
+				$u = $res['user'];
+			}
+		}
+		if (isset($u)) {
 			$this->user = $this->loginUser($u);
 		} else {
 			$this->user = '';
@@ -478,8 +484,26 @@ class Watershed_SoapServer
 
 	private function loginUser( $u )
 	{
-		TikiLib::lib('login')->activateSession($u);
+		require ('db/local.php');
+		$watersheddb = mysql_connect($host_tiki, $user_tiki, $pass_tiki);
+		mysql_select_db($dbs_tiki, $watersheddb);
+		$query = "SELECT `value` FROM `tiki_preferences` WHERE name = 'cookie_name'";
+		$result = mysql_query($query, $watersheddb);
+
+		if (is_resource($result)) {
+			while ($res = mysql_fetch_assoc($result)) {
+				$cookie_name = $res['value'];
+			}
+		}
+
+		if (empty($cookie_name)) {
+			$cookie_name = 'tikiwiki';
+		}
+
+		$cookie_site = preg_replace('/[^a-zA-Z0-9]/', '', $cookie_name);
+		$user_cookie_site = 'tiki-user-' . $cookie_site;
 		session_start();
+		$_SESSION[$user_cookie_site] = $u;
 		global $user;
 		$user = $u;
 		return $u;
@@ -487,7 +511,7 @@ class Watershed_SoapServer
 
 	function initiateEnv()
 	{
-		global $prefs;
+		global $prefs, $watershedlib, $tikilib, $smarty;
 		require_once ('lib/setup/third_party.php');
 		require_once ('tiki-setup_base.php');
 		require_once ('lib/setup/sections.php');
@@ -537,7 +561,7 @@ class Watershed_SoapServer
 			$ret->authMessage = tra('No permission to broadcast to any channel');
 		}
 		if ($prefs['watershed_log_errors'] == 'y') {
-			$logslib = TikiLib::lib('logs');
+			global $logslib;
 			$logslib->add_log('watershed', $ret->authMessage);
 		}
 		return $ret;
@@ -549,7 +573,7 @@ class Watershed_SoapServer
 		global $prefs;
 
 		if ($prefs['watershed_log_errors'] == 'y') {
-			$logslib = TikiLib::lib('logs');
+			global $logslib;
 			$error = $message->brandId . ': ' . $message->message . ' (' . $message->priority . ')';
 			$logslib->add_log('watershed', $error);
 		}
@@ -588,7 +612,7 @@ class Watershed_SoapServer
 			$ret->authMessage = tra('Failed to log in mobile broadcaster');
 		}
 		if ($prefs['watershed_log_errors'] == 'y') {
-			$logslib = TikiLib::lib('logs');
+			global $logslib;
 			$logslib->add_log('watershed', $ret->authMessage);
 		}
 		return $ret;
@@ -598,8 +622,7 @@ class Watershed_SoapServer
 	{
 		// This is used for Flash Media Encoder shared secret authentication only
 		$this->initiateEnv();
-		global $prefs, $watershedlib;
-		$tikilib = TikiLib::lib('tiki');
+		global $prefs, $watershedlib, $tikilib;
 		$ret = new Watershed_SoapServer_loginBroadcasterByChannelTokenResponse;
 		if (isset($prefs['watershed_fme_key']) && $token->channelToken == $prefs['watershed_fme_key']) {
 			$ret->sessionId = md5('watershedfmeuser' . $tikilib->now . rand(100000, 999999));
@@ -609,7 +632,7 @@ class Watershed_SoapServer
 			$ret->authMessage = tra('Failed to log in FME');
 		}
 		if ($prefs['watershed_log_errors'] == 'y') {
-			$logslib = TikiLib::lib('logs');
+			global $logslib;
 			$logslib->add_log('watershed', $ret->authMessage);
 		}
 		return $ret;
@@ -620,7 +643,7 @@ class Watershed_SoapServer
 		$this->initiateEnv();
 		global $prefs;
 		if ($prefs['watershed_log_errors'] == 'y') {
-			$logslib = TikiLib::lib('logs');
+			global $logslib;
 			$error = $status->brandId . ': ' . $status->channelCode . ': ' . $status->status;
 			$logslib->add_log('watershed', $error);
 		}
@@ -660,7 +683,7 @@ class Watershed_SoapServer
 			$ret->authMessage = tra('No permission to view any channel');
 		}
 		if ($prefs['watershed_log_errors'] == 'y') {
-			$logslib = TikiLib::lib('logs');
+			global $logslib;
 			$logslib->add_log('watershed', $ret->authMessage);
 		}
 		return $ret;
@@ -678,7 +701,7 @@ class Watershed_SoapServer
 		}
 
 		if ($prefs['watershed_log_errors'] == 'y') {
-			$logslib = TikiLib::lib('logs');
+			global $logslib;
 			$logslib->add_log('watershed', $error);
 		}
 		return new Watershed_SoapServer_AcknowledgeResponse;

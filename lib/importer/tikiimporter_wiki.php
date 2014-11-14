@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -65,7 +65,7 @@ class TikiImporter_Wiki extends TikiImporter
 	 *
 	 * @return void
 	 */
-	function import($filePath = null)
+	function import()
 	{
 		// how many revisions to import for each page
 		if (!empty($_POST['wikiRevisions']) && $_POST['wikiRevisions'] > 0)
@@ -102,7 +102,7 @@ class TikiImporter_Wiki extends TikiImporter
 	 *
 	 * @return array $countData stats about the content that has been imported
 	 */
-	function insertData($parsedData = null)
+	function insertData($parsedData)
 	{
 		$countData = array();
 		$countPages = 0;
@@ -209,7 +209,7 @@ class TikiImporter_Wiki extends TikiImporter
 				$first = false;
 			}
 			if (!empty($rev['categories'])) {
-				$categlib = TikiLib::lib('categ');
+				global $categlib; include_once('lib/categories/categlib.php');
 				foreach ($rev['categories'] as $cat) {
 					$categId = $categlib->get_category_id($cat);
 					if (empty($categId)) {

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -18,8 +18,7 @@ whether mobile mode is set, etc.*/
 if (!function_exists('apply_default_and_mandatory')) {
 	function apply_default_and_mandatory($imgdata, $default)
 	{
-		$smarty = TikiLib::lib('smarty');
-		global $section;
+		global $section, $smarty;
 		$imgdata[$default] = trim($imgdata[$default]) . ';'; // trim whitespace and ensure at least one semicolon
 		$img_conditions_array = explode(';', $imgdata[$default]); // conditions separated by semicolons
 		if ( !empty($img_conditions_array) ) {

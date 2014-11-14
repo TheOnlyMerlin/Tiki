@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -164,13 +164,13 @@ class BanLib extends TikiLib
      */
     function importCSV($fname, $import_as_new)
 	{
+		global $smarty;
+
 		$fields = false;
 		if ($fhandle = fopen($fname, 'r')) {
 			$fields = fgetcsv($fhandle, 1000);
 		}
 		if ($fields === false) {
-			$smarty = TikiLib::lib('smarty');
-
 			$smarty->assign('msg', tra("The file is not a CSV file or has not a correct syntax"));
 			$smarty->display("error.tpl");
 			die;

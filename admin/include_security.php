@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
-// 
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
+//
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -15,7 +15,7 @@ if (isset($_REQUEST["security"])) {
 }
 
 if (!extension_loaded('mcrypt')) {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	$smarty->assign('no_mcrypt', 'y');
 }
 

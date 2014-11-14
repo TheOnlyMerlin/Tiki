@@ -7,7 +7,7 @@
 		{if $prefs.feature_bidi eq 'y'}
 			<table dir="rtl" ><tr><td>
 		{/if}
-		<div id="tiki-main" class="alert alert-info">
+		<div id="tiki-main" class="simplebox">
 			<h3>{tr}Details{/tr}</h3>
 			<table class="formcolor">
 				{if $info.name}
@@ -23,7 +23,7 @@
 					<tr><td>{tr}Downloads{/tr}</td><td>{$info.hits}</td></tr>
 				{/if}
 			</table>
-			<div class="panel panel-default">
+			<div class="cbox">
 				<a href="#" onclick="javascript:window.close();" class="link">{tr}close{/tr}</a>
 			</div>
 		</div>

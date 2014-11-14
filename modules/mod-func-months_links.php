@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -41,8 +41,7 @@ function module_months_links_info()
  */
 function module_months_links($mod_reference, $module_params)
 {
-	global $prefs, $sections;
-	$smarty = TikiLib::lib('smarty');
+	global $prefs, $sections, $smarty;
 
 	if (isset($module_params['feature'])
 		&& isset($sections[$module_params['feature']])
@@ -68,11 +67,13 @@ function module_months_links($mod_reference, $module_params)
 	}
 
 	if (isset($link)) {
-		$tikilib = TIkiLib::lib('tiki');
+		global $tikilib;
 		if ($module_params['feature'] == 'blogs') {
-			$bloglib = TikiLib::lib('blog');
+			global $bloglib;
+			include_once ('lib/blogs/bloglib.php');
 		} elseif ($module_params['feature'] == 'cms') {
-			$artlib = TikiLib::lib('art');
+			global $artlib;
+			include_once ('lib/articles/artlib.php');
 		}
 
 		$month_names = array(

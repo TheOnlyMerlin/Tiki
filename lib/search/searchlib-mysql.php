@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -68,14 +68,15 @@ class SearchLib extends TikiLib
 					$searchDate = 0,
 					$categId = 0)
 	{
-		global $tiki_p_admin, $prefs, $user;
-		$userlib = TikiLib::lib('user');
+		global $tiki_p_admin, $prefs, $userlib, $user, $categlib;
 
 		if (!is_int($searchDate) && !ctype_digit($searchDate)) {
 			exit("Error: searchDate not an integer");
 		}
 
-		$categlib = TikiLib::lib('categ');
+		if (!is_object($categlib)) {
+			require_once('lib/categories/categlib.php');
+		}
 
 		$words = trim($words);
 
@@ -100,13 +101,7 @@ class SearchLib extends TikiLib
 		}
 
 		$sqlFields = sprintf(
-			'SELECT DISTINCT
-				%s AS name,
-				' . (isset($h['parsed']) ? '%s' : 'LEFT(%s, 240) AS data') . ',
-				%s AS hits,
-				%s AS lastModif,
-				%s AS pageName'
-				. ($h['objectType'] == 'wiki page' ? ',outputType ' : ''),
+			'SELECT DISTINCT %s AS name, ' . (isset($h['parsed']) ? '%s' : 'LEFT(%s, 240) AS data') . ', %s AS hits, %s AS lastModif, %s AS pageName',
 			$h['name'],
 			$h['data'],
 			$h['hits'],
@@ -173,9 +168,6 @@ class SearchLib extends TikiLib
 		if (!empty($h['parentJoin']))
 			$sqlJoin .= ' '.$h['parentJoin'];
 
-		if ($h['objectType'] == 'wiki page') {
-			$sqlJoin .= ' left join `tiki_output` on `tiki_output`.`entityId` = p.`pageName` ';
-		}
 
 		$sqlWhere = ' WHERE ';
 		$sqlWhere .= (isset($h['filter']))? $h['filter'] : '1';
@@ -270,18 +262,14 @@ class SearchLib extends TikiLib
 			$r = array(
 				'name' => $res['name'],
 				'pageName' => $res["pageName"],
-				'data' => $tikilib->get_snippet($res['data'], $res['outputType'], isset($res['is_html'])? $res['is_html']:'n'),
+				'data' => $tikilib->get_snippet($res['data'], isset($res['is_html'])? $res['is_html']:'n'),
 				'hits' => $res["hits"],
 				'lastModif' => $res["lastModif"],
 				'href' => $href,
 				'relevance' => round($res["relevance"], 3),
 				'type' => $type,
-				'location' => $type
+				'location' => $type,
 			);
-
-			if ($h['objectType'] == 'wiki page') {
-				$r['outputType'] = $res['outputType'];
-			}
 
 			if (!empty($h['parent'])) {
 				$r['parentName'] = $res['parentName'];
@@ -724,7 +712,7 @@ class SearchLib extends TikiLib
 			'objectKey' => '`blogId`',
 		);
 		$res = $this->_find($search_blogs, $words, $offset, $maxRecords, $fulltext, $filter, $boolean, tra('Blog'), $searchDate, $categId);
-		global $user;
+		global $user, $smarty;
 		include_once('tiki-sefurl.php');
 		foreach ($res['data'] as $i=>$r) {
 			$res['data'][$i]['href'] = filter_out_sefurl($r['href'], 'blog', $r['pageName']);
@@ -781,7 +769,7 @@ class SearchLib extends TikiLib
 		);
 
 		$ret = array('cant'=>$res['cant'], 'data'=>array());
-		global $user;
+		global $user, $smarty;
 		include_once('tiki-sefurl.php');
 
 		foreach ($res['data'] as $r) {
@@ -852,7 +840,7 @@ class SearchLib extends TikiLib
      */
     function find_trackers($words = '', $offset = 0, $maxRecords = -1, $fulltext = false, $filter='', $boolean='n', $searchDate = 0, $categId = 0)
 	{
-		$trklib = TikiLib::lib('trk');
+		global $trklib; require_once('lib/trackers/trackerlib.php');
 		global $tiki_p_view_trackers_pending; global $tiki_p_view_trackers_closed;
 
 		static $search_trackers = array(
@@ -885,6 +873,7 @@ class SearchLib extends TikiLib
 		$itemFinal = array();
 
 		foreach ($ret['data'] as $i=>$res) {
+			global $smarty;
 			include_once('tiki-sefurl.php');
 			$res['href'] = filter_out_sefurl($res['href'], 'trackeritem', $res['name']);
 			if (($j = array_search($res['name'], $itemFinal)) === false) {

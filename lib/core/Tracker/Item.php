@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -118,20 +118,6 @@ class Tracker_Item
 		} else {
 			return $this->perms->remove_tracker_items;
 		}
-	}
-	public function getSpecialPermissionUsers($itemId, $operation)
-	{
-		$users = array();
-
-		if ($this->definition->getConfiguration('writerCan' . $operation, 'n') == 'y') {
-			$users[] = $this->owner;
-		}
-
-		if ($this->definition->getConfiguration('writerGroupCan' . $operation, 'n') == 'y' && $this->ownerGroup && in_array($this->ownerGroup, $this->perms->getGroups())) {
-			$users = array_unique(array_merge($users, TikiLib::lib('user')->get_group_users($this->ownerGroup)));
-		}
-
-		return $users;
 	}
 
 	private function canFromSpecialPermissions($operation)
@@ -333,11 +319,6 @@ class Tracker_Item
 		}
 	}
 
-	public function getId()
-	{
-		return $this->info['itemId'];
-	}
-
 	private function isNew()
 	{
 		return $this->isNew;
@@ -356,18 +337,6 @@ class Tracker_Item
 		return array_filter($output);
 	}
 
-	public function prepareOutput()
-	{
-		$fields = $this->definition->getFields();
-		$output = array();
-
-		foreach ($fields as $field) {
-			$output[] = $this->prepareFieldOutput($field);
-		}
-
-		return array_filter($output);
-	}
-
 	public function prepareFieldInput($field, $input)
 	{
 		$fid = $field['fieldId'];
@@ -378,19 +347,6 @@ class Tracker_Item
 			$factory = $this->definition->getFieldFactory();
 			$handler = $factory->getHandler($field, $this->info);
 			return array_merge($field, $handler->getFieldData($input));
-		}
-	}
-
-	public function prepareFieldOutput($field)
-	{
-		$fid = $field['fieldId'];
-
-		if ($this->canViewField($fid)) {
-			$field['ins_id'] = "ins_$fid";
-
-			$factory = $this->definition->getFieldFactory();
-			$handler = $factory->getHandler($field, $this->info);
-			return array_merge($field, $handler->getFieldData([]));
 		}
 	}
 
@@ -433,7 +389,7 @@ class Tracker_Item
 
 	public function getViewPermission()
 	{
-		$status = isset($this->info['status']) ? $this->info['status'] : 'o';
+		$status = $this->info['status'];
 
 		if ($status == 'c') {
 			return 'view_trackers_closed';
@@ -474,7 +430,6 @@ class Tracker_Item
 		return array(
 			'itemId' => $this->isNew() ? null : $this->info['itemId'],
 			'status' => $this->isNew() ? 'o' : $this->info['status'],
-			'creation_date' => $this->info['created'],
 			'fields' => $out,
 		);
 	}
@@ -489,11 +444,7 @@ class Tracker_Item
 		if ($this->definition->getConfiguration('showStatus', 'n') == 'y'
 			|| ($this->definition->getConfiguration('showStatusAdminOnly', 'n') == 'y' && $this->perms->admin_trackers)) {
 
-			$status = $this->isNew()
-				? $this->definition->getConfiguration('newItemStatus', 'o')
-				: $this->info['status'];
-
-			switch ($status) {
+			switch ($this->info['status']) {
 				case 'o':
 					return 'open';
 				case 'p':

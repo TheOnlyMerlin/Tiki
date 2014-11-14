@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -38,10 +38,7 @@ function wikiplugin_report_info()
 
 function wikiplugin_report( $data, $params )
 {
-	global $prefs, $page, $tiki_p_edit;
-	$headerlib = TikiLib::lib('header');
-	$tikilib = TikiLib::lib('tiki');
-
+	global $tikilib,$headerlib,$prefs,$page,$tiki_p_edit;
 	static $reportI = 0;
 	++$reportI;
 

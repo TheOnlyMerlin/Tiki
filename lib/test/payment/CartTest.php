@@ -1,11 +1,11 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-TikiLib::lib('cart');
+require_once 'lib/payment/cartlib.php';
 
 class Payment_CartTest extends TikiTestCase
 {
@@ -254,7 +254,7 @@ T-456|Foobar|1|120.50
 
 	function testWithItemsRegistersPayment()
 	{
-		$paymentlib = TikiLib::lib('payment');
+		global $paymentlib; require_once 'lib/payment/paymentlib.php';
 
 		$this->obj->add_product(
 			'123',
@@ -281,7 +281,7 @@ T-456|Foobar|1|120.50
 
 	function testRegisteredBehaviorsOnItems()
 	{
-		$paymentlib = TikiLib::lib('payment');
+		global $paymentlib; require_once 'lib/payment/paymentlib.php';
 
 		$this->obj->add_product(
 			'123',
@@ -359,7 +359,6 @@ T-456|Foobar|1|120.50
 
 	function testGetGiftCertificateCode_shouldReturnCodeIfNotNull()
 	{
-        $this->markTestSkipped("As of 2013-10-02, this test is broken, and nobody knows how to fix it. Mark as Skipped for now.");
 		$obj = new CartLib;
 		$code = 123;
 		$this->assertEquals($code, $obj->get_gift_certificate_code($code));

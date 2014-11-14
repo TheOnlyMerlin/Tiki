@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,13 +7,6 @@
 
 class Search_Elastic_FacetBuilder
 {
-	private $count;
-
-	function __construct($count = 10)
-	{
-		$this->count = $count;
-	}
-
 	function build(array $facets)
 	{
 		if (empty($facets)) {
@@ -34,7 +27,6 @@ class Search_Elastic_FacetBuilder
 	{
 		return array('terms' => array(
 			'field' => $facet->getField(),
-			'size' => $facet->getCount() ?: $this->count,
 		));
 	}
 }

@@ -2,14 +2,14 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once 'tiki-setup.php';
-$categlib = TikiLib::lib('categ');
+require_once 'lib/categories/categlib.php';
 require_once 'lib/transitionlib.php';
 
 $auto_query_args = array();
@@ -181,8 +181,7 @@ $smarty->display('tiki.tpl');
  */
 function transition_label_finder( $state )
 {
-	global $available_states, $transition_mode;
-	$categlib = TikiLib::lib('categ');
+	global $available_states, $transition_mode, $categlib;
 
 	if ( isset($available_states[$state]) ) {
 		return $available_states[$state];

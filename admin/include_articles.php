@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -18,7 +18,8 @@ if (isset($_REQUEST["articlecomprefs"])) {
 	check_ticket('admin-inc-cms');
 }
 if (isset($_REQUEST['import'])) {
-	$artlib = TikiLib::lib('art');
+	global $artlib;
+	include_once ('lib/articles/artlib.php');
 	check_ticket('admin-inc-cms');
 	$fname = $_FILES['csvlist']['tmp_name'];
 	$msgs = array();

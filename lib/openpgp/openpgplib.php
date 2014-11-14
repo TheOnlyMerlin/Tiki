@@ -1,7 +1,7 @@
 <?php
 
 /////////////////////////////////////////////////////////////////////////////
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -581,8 +581,8 @@ class OpenPGPLib
 	function getPublickeyArmorBlock($req_priority,$req_to,$req_cc)
 	{
 
-		global $user;
-		$userlib = TikiLib::lib('user');
+		global $user, $userlib;
+		include_once('lib/userslib.php');
 
 		// get user email for publickey armor block retrieval
 		$user_email = '';
@@ -699,10 +699,7 @@ class OpenPGPLib
 							$user_pubkeyarmor,   // NOTE this
 							$priority, $replyto_hash='', $replyto_email='', $bcc_sender = '')
 	{
-		global $prefs;
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $tikilib, $userlib, $prefs;
 
 		$subject = strip_tags($subject);
 		$body = strip_tags($body, '<a><b><img><i>');

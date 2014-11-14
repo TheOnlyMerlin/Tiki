@@ -1,13 +1,14 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
-$rsslib = TikiLib::lib('rss');
-$calendarlib = TikiLib::lib('calendar');
+require_once ('lib/tikilib.php');
+require_once ('lib/rss/rsslib.php');
+require_once ('lib/calendar/calendarlib.php');
 
 if (!isset($prefs['feed_calendar']) || $prefs['feed_calendar'] != 'y') {
 	$errmsg=tra("rss feed disabled");

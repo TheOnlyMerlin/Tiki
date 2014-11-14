@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -37,8 +37,8 @@ function wikiplugin_cartmissinguserinfo_info()
 
 function wikiplugin_cartmissinguserinfo($data, $params)
 {
-	$smarty = TikiLib::lib('smarty');
-	$cartlib = TikiLib::lib('cart');
+	global $smarty;
+	global $cartlib; require_once 'lib/payment/cartlib.php';
 	if (empty($params['product_class_id']) || empty($params['info_type'])) {
 		return tra('Missing parameters');
 	}

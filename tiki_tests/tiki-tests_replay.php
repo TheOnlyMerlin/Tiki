@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -52,10 +52,9 @@ function get_from_dom($element)
  */
 function verif_url($url, $use_tidy = TRUE)
 {
-	global $cookies;
+	global $smarty, $cookies;
 	static $purifier;
 	static $loaded = false;
-	$smarty = TikiLib::lib('smarty');
 
 	$result = array();
 	$get = get_from_dom($url->getElementsByTagName('get')->item(0));

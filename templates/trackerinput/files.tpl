@@ -1,4 +1,4 @@
-<div class="files-field uninitialized {if $data.replaceFile}replace{/if}" data-galleryid="{$field.galleryId|escape}" data-firstfile="{$field.firstfile|escape}" data-filter="{$field.filter|escape}" data-limit="{$field.limit|escape}">
+<div class="files-field uninitialized {if $data.replaceFile}replace{/if}" data-galleryid="{$field.galleryId|escape}" data-firstfile="{$field.firstfile|escape}" data-filter="{$field.filter|escape}">
 {if $field.limit}
 	{remarksbox _type=info title="{tr}Attached files limitation{/tr}"}
 		{tr _0=$field.limit}The amount of files that can be attached is limited to <strong>%0</strong>. The latest files will be preserved.{/tr}
@@ -29,17 +29,25 @@
 			{wikiplugin _name='vimeo' fromFieldId=$field.fieldId|escape fromItemId=$item.itemId|escape galleryId=$field.galleryId|escape}{/wikiplugin}
 		</fieldset>
 	{else}
-		<a href="{service controller=file action=uploader galleryId=$galleryId limit=$limit|default:100 type=$field.filter}" class="btn btn-default upload-files">{tr}Upload Files{/tr}</a>
+		<fieldset id="{$field.ins_id|escape}-drop" class="file-drop">
+			<legend>{tr}Upload files{/tr}</legend>
+			<p style="display:none;">{tr}Drop files from your desktop here or browse for them{/tr}</p>
+			<input class="ignore" type="file" name="{$field.ins_id|escape}[]" accept="{$field.filter|escape}" multiple="multiple">
+		</fieldset>
 	{/if}
 {/if}
 {if $prefs.fgal_tracker_existing_search eq 'y'}
-	{if $prefs.fgal_elfinder_feature eq 'y'}
-		{button href='tiki-list_file_gallery.php' _text="{tr}Browse files{/tr}"
-			_onclick="return openElFinderDialog(this, {ldelim}defaultGalleryId:{if !isset($field.options_array[8]) or $field.options_array[8] eq ''}{if empty($field.options_array[0])}0{else}{$field.options_array[0]|escape}{/if}{else}{$field.options_array[8]|escape}{/if},deepGallerySearch:{if empty($field.options_array[6])}0{else}{$field.options_array[6]|escape}{/if},getFileCallback:function(file,elfinder){ldelim}window.handleFinderFile(file,elfinder){rdelim},eventOrigin:this{rdelim});"
-			title="{tr}Browse files{/tr}"}
-	{else}
-		<a href="{service controller=file action=browse galleryId=$galleryId limit=$limit|default:100 type=$field.filter}" class="btn btn-default browse-files">{tr}Browse Files{/tr}</a>
-	{/if}
+	<fieldset>
+		<legend>{tr}Existing files{/tr}</legend>
+		<input type="text" class="search" placeholder="{tr}Search query{/tr}">
+		{if $prefs.fgal_elfinder_feature eq 'y'}
+			{button href='tiki-list_file_gallery.php' _text="{tr}Browse files{/tr}"
+				_onclick="return openElFinderDialog(this, {ldelim}defaultGalleryId:{if !isset($field.options_array[8]) or $field.options_array[8] eq ''}{if empty($field.options_array[0])}0{else}{$field.options_array[0]|escape}{/if}{else}{$field.options_array[8]|escape}{/if},deepGallerySearch:{if empty($field.options_array[6])}0{else}{$field.options_array[6]|escape}{/if},getFileCallback:function(file,elfinder){ldelim}window.handleFinderFile(file,elfinder){rdelim},eventOrigin:this{rdelim});"
+				title="{tr}Browse files{/tr}"}
+		{/if}
+		<ol class="results tracker-item-files">
+		</ol>
+	</fieldset>
 {/if}
 {if $prefs.fgal_upload_from_source eq 'y' and $field.canUpload}
 	<fieldset>
@@ -63,94 +71,160 @@
 {jq}
 $('.files-field.uninitialized').removeClass('uninitialized').each(function () {
 var $self = $(this);
+var $drop = $('.file-drop', this);
 var $files = $('.current-list', this);
-var $warning = $('.alert', this);
 var $field = $('.input', this);
+var $search = $('.search', this);
 var $url = $('.url', this);
+var $fileinput = $drop.find('input');
 var replaceFile = $(this).is('.replace');
 
-function toggleWarning() {
-	var limit = $self.data('limit');
-	if (limit) {
-		if ($files.children().length > limit) {
-			$warning.show();
-			$files.children().css('text-decoration', 'line-through');
-			$files.children().slice(-5).css('text-decoration', '');
-		} else {
-			$files.children().css('text-decoration', '');
-			$warning.hide();
-		}
-	}
-}
-
-function addFile(fileId, type, name) {
-	var li = $('<li>').appendTo($files);
-	li.text(name);
-
-	$field.input_csv('add', ',', fileId);
-
-	li.prepend($.fileTypeIcon(fileId, { type: type, name: name }));
-	li.append($('<label>{{icon _id=cross alt="{tr}Remove{/tr}"}}</label>'));
-	li.find('img.icon').click(function () {
-		$field.input_csv('delete', ',', fileId);
-		$(this).closest('li').remove();
-		toggleWarning();
-	});
-				
-	if (replaceFile && $self.data('firstfile') > 0) {	
-		li.prev('li').remove();
-	}
-
-	if (! $self.data('firstfile')) {
-		$self.data('firstfile', fileId);
-	}
-
-	toggleWarning();
-}
-
 $field.hide();
-toggleWarning();
 
-$self.find('.btn.upload-files').clickModal({
-	success: function (data) {
-		$.each(data.files, function (k, file) {
-			addFile(file.fileId, file.type, file.name);
+var handleFiles = function (files) {
+	$fileinput.clearError();
+	var uploadUrl = $.service('file', 'upload');
+	$.each(files, function (k, file) {
+		var reader = new FileReader();
+		var li = $('<li/>').appendTo($files);
+
+		li.text(file.name + ' (...)');
+
+		$(window).queue('process-upload', function () {
+			reader.onloadend = function (e) {
+				var xhr, provider;
+
+				xhr = jQuery.ajaxSettings.xhr();
+				if (xhr.upload) {
+					xhr.upload.addEventListener('progress', function (e) {
+						if (e.lengthComputable) {
+							li.text(file.name + ' (' + Math.round(e.loaded / e.total * 100) + '%)');
+						}
+					}, false);
+				}
+				provider = function () {
+					return xhr;
+				};
+
+				var data = e.target.result;
+				data = data.substr(data.indexOf('base64') + 7);
+
+				$.ajax({
+					type: 'POST',
+					url: uploadUrl,
+					xhr: provider,
+					dataType: 'json',
+					success: function (data) {
+						var fileId = data.fileId;
+						li.text(data.name);
+
+						$field.input_csv('add', ',', fileId);
+
+						if(data.type.substring(0,6) == 'image/') {
+							li.prepend($('<img src="tiki-download_file.php?fileId=' + fileId + '&display&height=24" height="24">'));
+						} else if(data.type == 'application/pdf') {
+							li.prepend($('<img height="16" width="16" title="application/pdf" alt="application/pdf" src="img/icons/mime/pdf.png">'));
+						} else if(data.type.indexOf("sheet") != -1) {
+							li.prepend($('<img height="16" width="16" title="'+ data.type +'" alt="'+ data.type +'" src="img/icons/mime/xls.png">'));
+						} else if(data.type.indexOf("zip") != -1) {
+							li.prepend($('<img height="16" width="16" title="'+ data.type +'" alt="'+ data.type +'" src="img/icons/mime/zip.png">'));
+						} else if (data.type.substring(0,6) == 'video/') {
+							li.prepend($('<img height="16" width="16" title="'+ data.type +'" alt="'+ data.type +'" src="img/icons/mime/flv.png">'));
+						} else if (data.type.indexOf("word") != -1) {
+							li.prepend($('<img height="16" width="16" title="'+ data.type +'" alt="'+ data.type +'" src="img/icons/mime/doc.png">'));
+						} else {
+							li.prepend($('<img height="16" width="16" title="'+ data.type +'" alt="'+ data.type +'" src="img/icons/mime/default.png">'));
+						}
+						li.append($('<label>{{icon _id=cross alt="{tr}Remove{/tr}"}}</label>'));
+						li.find('img.icon').click(function () {
+							$field.input_csv('delete', ',', fileId);
+							$(this).closest('li').remove();
+						});
+									
+						if (replaceFile && $self.data('firstfile') > 0) {	
+							li.prev('li').remove();
+						}
+
+						if (! $self.data('firstfile')) {
+							$self.data('firstfile', fileId);
+						}
+					},
+					error: function (jqxhr) {
+						$fileinput.showError(jqxhr);
+						li.remove();
+					},
+					complete: function () {
+						$(window).dequeue('process-upload');
+					},
+					data: {
+						name: file.name,
+						size: file.size,
+						type: file.type,
+						data: data,
+						fileId: replaceFile ? $self.data('firstfile') : null,
+						galleryId: $self.data('galleryid') 
+					}
+				});
+			};
+			reader.readAsDataURL(file);
 		});
+	});
+	$(window).dequeue('process-upload');
+};
 
-		$.closeModal({});
-	}
-});
-
-$self.find('.btn.browse-files').on('click', function () {
-	if (! $(this).data('initial-href')) {
-		$(this).data('initial-href', $(this).attr('href'));
-	}
-
-	// Before the dialog handler triggers, replace the href with one including current files
-	$(this).attr('href', $(this).data('initial-href') + '&file=' + $field.val());
-});
-$self.find('.btn.browse-files').clickModal({
-	size: 'modal-lg',
-	success: function (data) {
-		$files.empty();
-		$field.val('');
-
-		$.each(data.files, function (k, file) {
-			addFile(file.fileId, file.type, file.name);
-		});
-
-		$.closeModal({});
-	}
-});
-
-// Delete for previously existing files
 $files.find('input').hide();
 $files.find('img.icon').click(function () {
 	var fileId = $(this).closest('li').data('file-id');
 	$field.input_csv('delete', ',', fileId);
 	$(this).closest('li').remove();
-	toggleWarning();
 });
+
+if (typeof FileReader !== 'undefined') {
+	$drop.find('> p').show();
+	$drop.bind('dragenter', function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		$drop.addClass('highlight');
+		return false;
+	});
+	$drop.bind('dragexit', function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		$drop.removeClass('highlight');
+		return false;
+	});
+	$drop.bind('dragover', function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		return false;
+	});
+	$drop.bind('drop', function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		$drop.removeClass('highlight');
+
+		var dataTransfer = e.dataTransfer;
+		if (! dataTransfer) {
+			dataTransfer = e.originalEvent.dataTransfer;
+		}
+
+		if (dataTransfer && dataTransfer.files) {
+			handleFiles(dataTransfer.files);
+		}
+		return false;
+	});
+	$fileinput.change(function () {
+		var $clone;
+		if (this.files) {
+			handleFiles(this.files);
+			$fileinput.val('');
+			$clone = $fileinput.clone(true);
+			$fileinput.replaceWith($clone);
+
+			$fileinput = $clone;
+		}
+	});
+}
 
 $url.keypress(function (e) {
 	if (e.which === 13) {
@@ -168,7 +242,18 @@ $url.keypress(function (e) {
 				reference: $this.next('.reference').val()
 			},
 			success: function (data) {
-				addFile(data.fileId, data.type, data.name);
+				var fileId = data.fileId, li = $('<li/>');
+				li.text(data.name);
+
+				$field.input_csv('add', ',', fileId);
+
+				li.prepend($('<img src="tiki-download_file.php?fileId=' + fileId + '&display&height=24" height="24">'));
+				li.append($('<label>{{icon _id=cross alt="{tr}Remove{/tr}"}}</label>'));
+				li.find('img.icon').click(function () {
+					$field.input_csv('delete', ',', fileId);
+					$this.closest('li').remove();
+				});
+				$files.append(li);
 				$this.val('');
 			},
 			error: function (jqxhr) {
@@ -183,6 +268,46 @@ $url.keypress(function (e) {
 	}
 });
 
+$search.keypress(function (e) {
+	if (e.which === 13) {
+		var results = $(this).parent().find('.results');
+		$search.attr('disabled', true);
+		results.empty();
+
+		$.getJSON('tiki-searchindex.php', {
+			"filter~type": "file",
+			"filter~content": $(this).val(),
+			"filter~filetype": $self.data('filter'),
+			"filter~gallery_id": $self.data('galleryid')
+		}, function (data) {
+			$search.removeAttr('disabled').clearError();
+			$.each(data, function () {
+				var item = $('<li/>').append(this.link), icon = $('<label>{{icon _id=add}}</label>'), data = this;
+				item.append(icon);
+				icon.click(function () {
+					var li = $('<li/>');
+					li.text(item.text());
+					li.prepend($('<img src="tiki-download_file.php?fileId=' + data.object_id + '&display&height=24" height="24">'));
+					li.append($('<label>{{icon _id=cross alt="{tr}Remove{/tr}"}}</label>'));
+					li.find('img.icon').click(function () {
+						$field.input_csv('delete', ',', data.object_id);
+						$(this).closest('li').remove();
+					});
+
+					$files.append(li);
+					$field.input_csv('add', ',', data.object_id);
+				});
+
+				results.append(item);
+			});
+
+			if (results.is(':empty')) {
+				$search.showError(tr('No results'));
+			}
+		});
+		return false;
+	}
+});
 window.handleFinderFile = function (file, elfinder) {
 	var hash = "";
 	if (typeof file === "string") {
@@ -203,6 +328,8 @@ window.handleFinderFile = function (file, elfinder) {
 			hash: hash
 		},
 		success: function (data) {
+			var fileId = data.fileId, li = $('<li/>');
+
 			var eventOrigin = $("body").data("eventOrigin");
 			if (eventOrigin) {
 				var $ff = $(eventOrigin).parents(".files-field");
@@ -210,7 +337,18 @@ window.handleFinderFile = function (file, elfinder) {
 				$files = $(".current-list", $ff);
 			}
 
-			addFile(data.fileId, data.type, data.name);
+			li.text(data.name);
+
+			$field.input_csv('add', ',', fileId);
+
+			li.prepend($('<img src="tiki-download_file.php?fileId=' + fileId + '&display&height=24" height="24">'));
+			li.append($('<label>{{icon _id=cross alt="{tr}Remove{/tr}"}}</label>'));
+			li.find('img.icon').click(function () {
+				$field.input_csv('delete', ',', fileId);
+				$(this).closest('li').remove();
+			});
+
+			$files.append(li);
 		},
 		error: function (jqxhr) {
 		},
@@ -223,6 +361,8 @@ window.handleFinderFile = function (file, elfinder) {
 	});
 };
 handleVimeoFile = function (link, data) {
+	var fileId = data.fileId, li = $('<li/>');
+
 	var eventOrigin = link;
 	if (eventOrigin) {
 		var $ff = $(eventOrigin).parents(".files-field");
@@ -230,7 +370,18 @@ handleVimeoFile = function (link, data) {
 		$files = $(".current-list", $ff);
 	}
 
-	addFile(data.fileId, data.type, data.name);
+	li.text(data.file);
+
+	$field.input_csv('add', ',', fileId);
+
+	li.prepend($('<img src="img/icons/vimeo.png" height="16">'));
+	li.append($('<label>{{icon _id=cross alt="{tr}Remove{/tr}"}}</label>'));
+	li.find('img.icon').click(function () {
+		$field.input_csv('delete', ',', fileId);
+		$(this).closest('li').remove();
+	});
+
+	$files.append(li);
 };
 });
 {/jq}

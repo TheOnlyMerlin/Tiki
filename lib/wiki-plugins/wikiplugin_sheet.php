@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -119,7 +119,7 @@ function wikiplugin_sheet_info()
 
 function wikiplugin_sheet($data, $params)
 {
-	global $tiki_p_edit_sheet, $tiki_p_edit, $tiki_p_admin_sheet, $tiki_p_admin, $prefs, $user, $page;
+	global $dbTiki, $tiki_p_edit_sheet, $tiki_p_edit, $tiki_p_admin_sheet, $tiki_p_admin, $prefs, $user, $sheetlib, $page, $tikilib, $smarty;
 	extract($params, EXTR_SKIP);
 	$style = (isset($height)) ? "height: $height !important;" : '';
 	$style .= (isset($width)) ? "width: $width;" : '';
@@ -132,8 +132,6 @@ function wikiplugin_sheet($data, $params)
 	$class = (isset($class)) ? " $class"  : '';
 
 	$sheetlib = TikiLib::lib("sheet");
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
 
 	static $index = 0;
 	++$index;
@@ -170,7 +168,7 @@ EOF;
 ~np~
 <form method="post" action="">
 	<p>
-		<input type="submit" name="create_sheet" class="btn btn-default" value="$label"/>
+		<input type="submit" name="create_sheet" value="$label"/>
 		<input type="hidden" name="index" value="$index"/>
 	</p>
 </form>
@@ -238,7 +236,7 @@ EOF;
 	}
 
 	if (!isset($simple) || $simple != 'y') {
-		$headerlib = TikiLib::lib('header');
+		global $headerlib;
 		$sheetlib->setup_jquery_sheet();
 		$headerlib->add_jq_onready(
 			'$("div.tiki_sheet").each(function() {

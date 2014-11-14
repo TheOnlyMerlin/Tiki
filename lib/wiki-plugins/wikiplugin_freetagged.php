@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,7 +8,7 @@
 function wikiplugin_freetagged_info()
 {
 	return array(
-		'name' => tra('Tagged'),
+		'name' => tra('Freetagged'),
 		'documentation' => 'PluginFreetagged',
 		'description' => tra('List similarly tagged objects'),
 		'prefs' => array('feature_freetags','wikiplugin_freetagged'),
@@ -135,10 +135,8 @@ function wikiplugin_freetagged_info()
 
 function wikiplugin_freetagged($data, $params)
 {
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
-	$headerlib = TikiLib::lib('header');
-	$freetaglib = TikiLib::lib('freetag');
+	global $freetaglib, $smarty, $tikilib, $headerlib;
+	include_once('lib/freetag/freetaglib.php');
 
 	$defaults =  array(
         'tags' => '',
@@ -185,7 +183,7 @@ function wikiplugin_freetagged($data, $params)
 		if ($titles_only == 'n') {
 			switch ($obj['type']) {
 				case  'article':
-					$artlib = TikiLib::lib('art');
+					global $artlib; include_once('lib/articles/artlib.php');
 					$info = $artlib->get_article($obj['itemId']);
 					$obj['date'] = $info['publishDate'];
 					$obj['description'] = $tikilib->parse_data($info['heading']);
@@ -219,7 +217,7 @@ function wikiplugin_freetagged($data, $params)
 					}
     				break;
 				case 'file':
-					$filegallib = TikiLib::lib('filegal');
+					global $filegallib; include_once('lib/filegals/filegallib.php');
 					$info = $filegallib->get_file($obj['itemId']);
 					$obj['description'] = $info['description'];
 					$obj['date'] = $info['lastModif'];

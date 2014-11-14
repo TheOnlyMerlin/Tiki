@@ -6,18 +6,17 @@
 
 {title help="Quiz"}{tr}Admin Quizzes{/tr}{/title}
 
-<div class="t_navbar form-group spacer-bottom-15px">
-	{button href="tiki-list_quizzes.php" class="btn btn-default" _text="{tr}List Quizzes{/tr}"}
-	{button href="tiki-quiz_stats.php" class="btn btn-default" _text="{tr}Quiz Stats{/tr}"}
+<div class="navbar">
+	{button href="tiki-list_quizzes.php" _text="{tr}List Quizzes{/tr}"}
+	{button href="tiki-quiz_stats.php" _text="{tr}Quiz Stats{/tr}"}
 </div>
 
 {tabset}
 
 {tab name="{tr}Quizzes{/tr}"}
-    <h2>{tr}Quizzes{/tr}</h2>
+
 {include file='find.tpl'}
 
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		<th>
@@ -37,9 +36,9 @@
 		<th>{tr}Actions{/tr}</th>
 	</tr>
 
-
+	{cycle values="odd,even" print=false}
 	{section name=user loop=$channels}
-		<tr>
+		<tr class="{cycle}">
 			<td class="id">{$channels[user].quizId}</td>
 			<td class="text">
 				{$channels[user].name|escape}
@@ -56,7 +55,13 @@
 			{self_link _icon='page_edit' cookietab='2' _anchor='anchor2' quizId=$channels[user].quizId}{tr}Edit{/tr}{/self_link}
 				<a class="link" href="tiki-edit_quiz_questions.php?quizId={$channels[user].quizId}">{icon _id='help' alt="{tr}Questions{/tr}" title="{tr}Questions{/tr}"}</a>
 				<a class="link" href="tiki-edit_quiz_results.php?quizId={$channels[user].quizId}">{icon _id='application_form_magnify' alt="{tr}Results{/tr}" title="{tr}Results{/tr}"}</a>
-				{permission_link mode=icon type=quiz permType=quizzes id=$channels[user].quizId title=$channels[user].name}
+				<a class="link" href="tiki-objectpermissions.php?objectName={$channels[user].name|escape:"url"}&amp;objectType=quiz&amp;permType=quizzes&amp;objectId={$channels[user].quizId}">
+					{if $channels[user].individual eq 'y'}
+						{icon _id='key_active' alt="{tr}Active Perms{/tr}"}
+					{else}
+						{icon _id='key' alt="{tr}Perms{/tr}"}
+					{/if}
+				</a>
 				<a class="link" href="tiki-edit_quiz.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].quizId}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 			</td>
 		</tr>
@@ -64,16 +69,15 @@
 		{norecords _colspan=7}
 	{/section}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}
 
 {/tab}
 
 {tab name="{tr}Create/edit quizzes{/tr}"}
-    <h2>{tr}Create/edit quizzes{/tr}</h2>
+
 {if $individual eq 'y'}
-	{permission_link mode=link type=quiz permType=quizzes id=$quizId title=$name label="{tr}There are individual permissions set for this quiz{/tr}"}
+	<a class="link" href="tiki-objectpermissions.php?objectName={$name|escape:"url"}&amp;objectType=quiz&amp;permType=quizzes&amp;objectId={$quizId}">{tr}There are individual permissions set for this quiz{/tr}</a>
 	<br>
 	<br>
 {/if}
@@ -198,7 +202,7 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
+				<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 			</td>
 		</tr>
 	</table>

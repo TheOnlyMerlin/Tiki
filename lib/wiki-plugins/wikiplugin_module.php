@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -306,7 +306,7 @@ function wikiplugin_module($data, $params)
 			$module_reference['module_style'] = $module_style;
 		}
 
-		$modlib = TikiLib::lib('mod');
+		global $modlib; require_once 'lib/modules/modlib.php';
 		$out = $modlib->execute_module($module_reference);
 	}
 

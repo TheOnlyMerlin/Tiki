@@ -1,20 +1,18 @@
+{remarksbox type="tip" title="{tr}Tip{/tr}"}
+	{tr}To add/remove calendars, look for "Calendar" under "Admin" on the application menu, or{/tr} <a class="rbox-link" href="tiki-admin_calendars.php">{tr}Click Here{/tr}</a>.
+{/remarksbox}
+
 <form action="tiki-admin.php?page=calendar" method="post">
-	<div class="row">
-        <div class="form-group col-lg-12 clearfix">
-			<a role="button" class="btn btn-default btn-sm" href="tiki-admin_calendars.php" title="{tr}List{/tr}">
-				{icon name="list"} {tr}Calendars{/tr}
-			</a>
-			<div class="pull-right">
-                <input type="submit" class="btn btn-primary btn-sm" name="calprefs" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}" />
-            </div>
-        </div>
-    </div>
-	<fieldset class="table">
+	<div class="input_submit_container clear" style="text-align: right;">
+		<input type="submit" class="btn btn-default" name="calprefs" value="{tr}Change settings{/tr}" />
+	</div>
+
+	<fieldset class="admin">
 		<legend>{tr}Activate the feature{/tr}</legend>
 		{preference name=feature_calendar visible="always"}
 	</fieldset>
 	
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Plugins{/tr}</legend>
 		{preference name=wikiplugin_calendar}
 		{preference name=wikiplugin_events}
@@ -86,12 +84,8 @@
 		{preference name=calendar_description_is_html}
 		{preference name=calendar_watch_editor}
 	</fieldset>
-	<div class="row">
-        <div class="form-group col-lg-12 clearfix">
-			<div class="text-center">
-                <input type="submit" class="btn btn-primary btn-sm" name="calprefs" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}" />
-            </div>
-        </div>
-    </div>
+	<div class="input_submit_container clear" style="text-align: center;">
+		<input type="submit" class="btn btn-default" name="calprefs" value="{tr}Change settings{/tr}" />
+	</div>
 </form>
 

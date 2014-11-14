@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -91,7 +91,7 @@ function wikiplugin_timeline_info()
 
 function wikiplugin_timeline($data, $params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	$smarty->loadPlugin('smarty_modifier_escape');
 
 	$default = array('scale1' => 'month', 'width' => '100%', 'height' => '400px');

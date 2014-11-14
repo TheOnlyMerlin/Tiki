@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,7 +15,7 @@ function prefs_layout_list()
 			'default' => 'n',
 		),
 		'layout_fixed_width' => array(
-			'name' => tra('Layout width'),
+			'name' => tra('Layout Width'),
             'description' => tra('Constrains the site display width (default: 990px).'),
 			'type' => 'text',
 			'hint' => tra('ex.: 800px'),

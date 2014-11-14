@@ -58,6 +58,7 @@ Version: <select name="svntag">
 <option selected="selected">trunk</option>
 <option>13.x</option>
 <option>12.x</option>
+<option>9.8</option>
 </select>
 {button href="#showtikiorg{$field.fieldId}_{$item.itemId}{if isset($context.list_mode)}_view{/if}" _onclick="showtikiorg_process{$field.fieldId}_{$item.itemId}('create');"  _text="{tr}Create show.tiki.org instance{/tr}"}
 </div>
@@ -113,21 +114,21 @@ function showtikiorg_process{{$field.fieldId}}_{{$item.itemId}}(action) {
 				$('.showfail{{$field.fieldId}}_{{$item.itemId}}').hide();
 				$('.showsnapshot{{$field.fieldId}}_{{$item.itemId}}').hide();
 				$('.showdestroy{{$field.fieldId}}_{{$item.itemId}}').hide();	
-				$.tikiModal();
+				$.modal();
 			} else if (data.status == 'MAINT') {
 				$('.showmaint{{$field.fieldId}}_{{$item.itemId}}').show();
 				$('.showdisconnected{{$field.fieldId}}_{{$item.itemId}}').hide();
 				$('.showfail{{$field.fieldId}}_{{$item.itemId}}').hide();
 				$('.showsnapshot{{$field.fieldId}}_{{$item.itemId}}').hide();
 				$('.showdestroy{{$field.fieldId}}_{{$item.itemId}}').hide();
-				$.tikiModal();
+				$.modal();
 			} else if (data.status == 'FAIL') {
 				$('.showfail{{$field.fieldId}}_{{$item.itemId}}').show();
 				$('.showmaint{{$field.fieldId}}_{{$item.itemId}}').hide();
 				$('.showdisconnected{{$field.fieldId}}_{{$item.itemId}}').hide();
 				$('.showsnapshot{{$field.fieldId}}_{{$item.itemId}}').hide();
 				$('.showdestroy{{$field.fieldId}}_{{$item.itemId}}').hide();
-				$.tikiModal();
+				$.modal();
 			} else if (data.status == 'BUILD') {
 				$('.showbuilding{{$field.fieldId}}_{{$item.itemId}}').show();
 				$('.shownone{{$field.fieldId}}_{{$item.itemId}}').hide();
@@ -138,7 +139,7 @@ function showtikiorg_process{{$field.fieldId}}_{{$item.itemId}}(action) {
 				$('.showsnapshot{{$field.fieldId}}_{{$item.itemId}}').hide();
 				$('.showdestroy{{$field.fieldId}}_{{$item.itemId}}').hide();
 				setTimeout("showtikiorg_process{{$field.fieldId}}_{{$item.itemId}}('info')",5000);
-				$.tikiModal(tr('Instance is being created... Please wait... This might take a minute or two.'));
+				$.modal(tr('Instance is being created... Please wait... This might take a minute or two.'));
 			} else if (data.status == 'NONE') {
 				$('.shownone{{$field.fieldId}}_{{$item.itemId}}').show();
 				$('.showactive{{$field.fieldId}}_{{$item.itemId}}').hide();
@@ -148,7 +149,7 @@ function showtikiorg_process{{$field.fieldId}}_{{$item.itemId}}(action) {
 				$('.showmaint{{$field.fieldId}}_{{$item.itemId}}').hide();
 				$('.showsnapshot{{$field.fieldId}}_{{$item.itemId}}').hide();
 				$('.showdestroy{{$field.fieldId}}_{{$item.itemId}}').hide();
-				$.tikiModal();
+				$.modal();
 			} else if (data.status == 'ACTIV') {
 				$('.showactive{{$field.fieldId}}_{{$item.itemId}}').show();
 				$('.showbuilding{{$field.fieldId}}_{{$item.itemId}}').hide();
@@ -161,7 +162,7 @@ function showtikiorg_process{{$field.fieldId}}_{{$item.itemId}}(action) {
 				$('.showurl{{$field.fieldId}}_{{$item.itemId}}').attr("href", "http://" + data.showurl).html("http://" + data.showurl);
 				$('.showlogurl{{$field.fieldId}}_{{$item.itemId}}').attr("href", "http://" + data.showlogurl).html("http://" + data.showlogurl);
 				$('.snapshoturl{{$field.fieldId}}_{{$item.itemId}}').attr("href", "http://" + data.snapshoturl).html("http://" + data.snapshoturl);
-				$.tikiModal();
+				$.modal();
 			} else if (data.status == 'SNAPS') {
 				$('.showactive{{$field.fieldId}}_{{$item.itemId}}').show();
 				$('.showbuilding{{$field.fieldId}}_{{$item.itemId}}').hide();
@@ -191,7 +192,7 @@ function showtikiorg_process{{$field.fieldId}}_{{$item.itemId}}(action) {
 				$('.showresetok{{$field.fieldId}}_{{$item.itemId}}').hide();
 				$('.showdestroy{{$field.fieldId}}_{{$item.itemId}}').show();
 				setTimeout("showtikiorg_process{{$field.fieldId}}_{{$item.itemId}}('info')",5000);
-				$.tikiModal(tr('Instance is being destroyed... Please wait...'));
+				$.modal(tr('Instance is being destroyed... Please wait...'));
 			}
 		}
 	});

@@ -1,11 +1,4 @@
-{extends 'layout_view.tpl'}
-
-{block name="title"}
-	{title}{$title|escape}{/title}
-{/block}
-
-{block name="content"}
-<div class="table-responsive">
+<h4>{tr}Events{/tr}</h4>
 <table class="table normal">
 	<tr>
 		<th>{tr}From{/tr}</th>
@@ -43,61 +36,56 @@
 		</tr>
 	{/foreach}
 </table>
-</div>
-<form class="add-event no-ajax" method="post" action="{service controller=tracker_todo action=add trackerId=$trackerId}">
+<form class="simple add-event no-ajax" method="post" action="{service controller=tracker_todo action=add trackerId=$trackerId}">
 	<h4>{tr}New event{/tr}</h4>
-	<div class="form-group">
-		<label for="from">{tr}From{/tr}</label>
-		<select name="from" class="form-control">
+	<label>
+		{tr}From{/tr}
+		<select name="from">
 			{foreach key=st item=stdata from=$statusTypes}
 				<option value="{$st|escape}">{$stdata.label|escape}</option>
 			{/foreach}
 		</select>
-	</div>
-	<div class="form-group">
-		<label for="to">{tr}To{/tr}</label>
-		<select name="to" class="form-control">
+	</label>
+	<label>
+		{tr}To{/tr}
+		<select name="to">
 			{foreach key=st item=stdata from=$statusTypes}
 				<option value="{$st|escape}">{$stdata.label|escape}</option>
 			{/foreach}
 		</select>
-	</div>
-	<div class="form-group">
-		<label for="event">{tr}Reference date{/tr}</label>
-		<select name="event" class="form-control">
+	</label>
+	<label>
+		{tr}Reference date{/tr}
+		<select name="event">
 			<option value="creation">{tr}After creation{/tr}</option>
 			<option value="modification">{tr}After last modification{/tr}</option>
 		</select>
-	</div>
-	<div class="form-group">
-		<label>{tr}Delay{/tr}</label>
-		<div class="form-control">
-			{html_select_duration prefix='after'}
-		</div>
-	</div>
+	</label>
+	<label>
+		{tr}Delay{/tr}
+		{html_select_duration prefix='after'}
+	</label>
 	<fieldset>
 		<legend>{tr}Notification{/tr}</legend>
 
-		<div class="form-group">
-			<label>{tr}Delay prior to status change{/tr}</label>
-			<div class="form-control">
-				{html_select_duration prefix='notif'}
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="subject">{tr}Mail subject text{/tr}</label>
-			<input type="text" name="subject" class="form-control">
-		</div>
-		<div class="form-group">
-			<label for="body">{tr}Mail body ressource{/tr}</label>
-			<input type="text" name="body" class="form-control">
-			<div class="help-block">
+		<label>
+			{tr}Delay prior to status change{/tr}
+			{html_select_duration prefix='notif'}
+		</label>
+		<label>
+			{tr}Mail subject text{/tr}
+			<input type="text" name="subject">
+		</label>
+		<label>
+			{tr}Mail body ressource{/tr}
+			<input type="text" name="body">
+			<div class="description">
 				{tr}wiki:pageName for a wiki page or tplName.tpl for a template{/tr}
 			</div>
-		</div>
+		</label>
 	</fieldset>
 	<div class="submit">
-		<input type="submit" class="btn btn-primary" value="{tr}Create{/tr}">
+		<input type="submit" class="btn btn-default" value="{tr}Create{/tr}">
 	</div>
 </form>
 {jq}
@@ -119,4 +107,3 @@ $('.add-event').removeClass('add-event').submit(function () {
 	return false;
 });
 {/jq}
-{/block}

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -18,7 +18,7 @@ function module_freetag_info()
 {
 	return array(
 		'name' => tra('Tags Editor'),
-		'description' => tra('Shows current tags and enables adding and removing some if permissions allow.'),
+		'description' => tra('Shows current freetags and enables to add and remove some if permissions allow.'),
 		'prefs' => array('feature_freetags'),
 		'params' => array()
 	);
@@ -30,9 +30,8 @@ function module_freetag_info()
  */
 function module_freetag($mod_reference, $module_params)
 {
-	global $sections, $section;
-	$smarty = TikiLib::lib('smarty');
-	$modlib = TikiLib::lib('mod');
+	global $sections, $section, $modlib;
+	global $smarty;
 	
 	$globalperms = Perms::get();
 	if ($globalperms->view_freetags && isset($sections[$section])) {

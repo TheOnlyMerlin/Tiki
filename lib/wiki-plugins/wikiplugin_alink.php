@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -36,10 +36,12 @@ function wikiplugin_alink_info()
 
 function wikiplugin_alink($data, $params)
 {
-	global $prefs;
-	$multilinguallib = TikiLib::lib('multilingual');
-	$tikilib = TikiLib::lib('tiki');
-	extract($params, EXTR_SKIP);
+	global $multilinguallib, $tikilib, $prefs;
+
+	if ( ! isset( $multilinguallib ) || !is_object($multilinguallib) ) {
+		include_once('lib/multilingual/multilinguallib.php');// must be done even in feature_multilingual not set
+	}
+        extract($params, EXTR_SKIP);
 
 	if (!isset($aname)) {
 		return ("<b>missing parameter for aname</b><br />");

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,7 +15,7 @@ class SemanticLib
 		if ( is_array($this->knownTokens) )
 			return;
 
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 
 		$this->knownTokens = array();
 
@@ -154,7 +154,7 @@ class SemanticLib
 		if ( false === $this->getToken($invert) || $invert == $newName )
 			$invert = null;
 
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 
 		if ( $exists ) {
 			$tikilib->query("DELETE FROM tiki_semantic_tokens WHERE token = ?", array( $oldName ));
@@ -185,7 +185,7 @@ class SemanticLib
 
 	private function replaceReferences( $oldName, $newName = null ) // {{{
 	{
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 
 		if ( ! $this->isValid($oldName) )
 			return tra('Invalid semantic token name') . ": $oldName";
@@ -227,7 +227,7 @@ class SemanticLib
 
 	function removeToken( $token, $removeReferences = false ) // {{{
 	{
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 
 		if ( false === $this->getToken($token) )
 			return tra("Semantic token not found") . ": $token";
@@ -260,8 +260,7 @@ class SemanticLib
 
 	function getRelationList( $page ) // {{{
 	{
-		$wikilib = TikiLib::lib('wiki');
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib, $wikilib;
 		$relations = array();
 
 		$result = $tikilib->fetchAll("SELECT `target_itemId` `toPage`, SUBSTR(`relation` FROM 11) `reltype` FROM tiki_object_relations WHERE `source_itemId` = ? AND `source_type` = 'wiki page' AND `target_type` = 'wiki page' AND `relation` LIKE 'tiki.link.%'", array($page));
@@ -302,9 +301,7 @@ class SemanticLib
 
 	function getAliasContaining( $query, $exact_match = false, $in_lang = NULL ) // {{{
 	{
-		global $prefs;
-		$tikilib = TikiLib::lib('tiki');
-
+		global $tikilib, $prefs;
 		$orig_query = $query;
 		if (!$exact_match) {
 			$query = "%$query%";
@@ -340,7 +337,7 @@ class SemanticLib
 
 	function onlyKeepAliasesFromPageInLanguage($language, $aliases)
 	{
-		$multilinguallib = TikiLib::lib('multilingual');
+		global $multilinguallib;
 		if (!$language) {
 			return $aliases;
 		}
@@ -362,7 +359,7 @@ class SemanticLib
 		$f_links = $this->getLinksUsing('titlefieldid', array( 'fromPage' => $page ));
 		$ret = array();
 		if (count($t_links) && count($f_links) && ctype_digit($t_links[0]['toPage']) && ctype_digit($f_links[0]['toPage'])) {
-			$trklib = TikiLib::lib('trk');
+			global $trklib; include_once ('lib/trackers/trackerlib.php');
 			$items = $trklib->list_items($t_links[0]['toPage'], 0, -1, '', '', $f_links[0]['toPage'], '', '', '', $suffix);
 			foreach ($items["data"] as $i) {
 				$ret[] = $i["itemId"];
@@ -372,3 +369,5 @@ class SemanticLib
 	}
 }
 
+global $semanticlib;
+$semanticlib = new SemanticLib;

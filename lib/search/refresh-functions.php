@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -27,7 +27,7 @@ function refresh_index($object_type, $object_id = null, $process = true)
 		$unified_type = refresh_index_convert_type($object_type);
 
 		try {
-			$unifiedsearchlib = TikiLib::lib('unifiedsearch');
+			global $unifiedsearchlib; require_once 'lib/search/searchlib-unified.php';
 			$unifiedsearchlib->invalidateObject($unified_type, $object_id);
 
 			if ($process) {

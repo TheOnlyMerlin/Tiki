@@ -2,16 +2,17 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
-$trklib = TikiLib::lib('trk');
-$rsslib = TikiLib::lib('rss');
-$smarty->loadPlugin('smarty_modifier_sefurl');
+require_once ('lib/tikilib.php');
+require_once ('lib/trackers/trackerlib.php');
+require_once ('lib/rss/rsslib.php');
+require_once ('lib/smarty_tiki/modifier.sefurl.php');
 
 if ($prefs['feed_tracker'] != 'y') {
 	$errmsg = tra("rss feed disabled");

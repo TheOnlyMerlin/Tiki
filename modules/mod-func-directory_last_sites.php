@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -56,9 +56,8 @@ function module_directory_last_sites_info()
  */
 function module_directory_last_sites($mod_reference, $module_params)
 {
-	global $prefs;
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
+	global $prefs, $tikilib, $smarty;
+	
 	if (isset($module_params['categoryId'])) {
 		global $dirlib; include_once('lib/directory/dirlib.php');
 		$ranking = $dirlib->dir_list_sites($module_params['categoryId'], 0, $mod_reference["rows"]);

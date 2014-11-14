@@ -1,8 +1,8 @@
 {title url="tiki-edit_programmed_content.php?contentId=$contentId"}{tr}Program dynamic content for block:{/tr} {$contentId}{/title}
 
-<div class="t_navbar">
-	{button href="?contentId=$contentId" class="btn btn-default" _text="{tr}Create New Block{/tr}"}
-	{button href="tiki-list_contents.php" class="btn btn-default" _text="{tr}Return to block listing{/tr}"}
+<div class="navbar">
+	{button href="?contentId=$contentId" _text="{tr}Create New Block{/tr}"}
+	{button href="tiki-list_contents.php" _text="{tr}Return to block listing{/tr}"}
 </div>
 
 <h2>{tr}Block description: {/tr}{$description}</h2>
@@ -57,7 +57,7 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
+				<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 			</td>
 		</tr>
 	</table>
@@ -76,7 +76,6 @@
 	{include file='find.tpl'}
 {/if}
 
-<div class="table-responsive">
 <table class="table normal">
   <tr>
     <th>{self_link _sort_arg='sort_mode' _sort_field='pId'}{tr}Id{/tr}{/self_link}</th>
@@ -107,6 +106,5 @@
 		{norecords _colspan=4}
 	{/section}
 </table>
-</div>
 
 {pagination_links cant=$cant step=$prefs.maxRecords offset=$offset}{/pagination_links}

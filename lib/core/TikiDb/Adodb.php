@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -30,7 +30,7 @@ class TikiDb_Adodb extends TikiDb
 		return $this->db->quote($str);
 	} // }}}
 
-	function query( $query = null, $values = null, $numrows = -1, $offset = -1, $reporterrors = parent::ERR_DIRECT ) // {{{
+	function query( $query = null, $values = null, $numrows = -1, $offset = -1, $reporterrors = true ) // {{{
 	{
 		global $num_queries;
 		$num_queries++;
@@ -53,7 +53,9 @@ class TikiDb_Adodb extends TikiDb
 		if (!$result ) {
 			$this->setErrorMessage($this->db->ErrorMsg());
 
-			$this->handleQueryError($query, $values, $result, $reporterrors);
+			if ($reporterrors) {
+				$this->handleQueryError($query, $values, $result);
+			}
 		}
 
 		global $num_queries;

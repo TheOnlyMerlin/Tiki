@@ -33,7 +33,7 @@
 		</table>
 	{else}
 		{if $msg}
-			<div class="alert alert-warning">{icon _id=exclamation alt="{tr}Error{/tr}" style="vertical-align:middle"} {tr}{$msg}{/tr}</div>
+			<div class="simplebox highlight">{icon _id=exclamation alt="{tr}Error{/tr}" style="vertical-align:middle"} {tr}{$msg}{/tr}</div>
 		{/if}
 
 		{* Display a form to add or edit a site *}
@@ -89,7 +89,7 @@
 				{/if}
       	   <tr>
 					<td>&nbsp;</td>
-					<td><input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}"></td>
+					<td><input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}"></td>
 				</tr>
 			</table>
 		</form>

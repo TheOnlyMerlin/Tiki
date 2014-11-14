@@ -2,12 +2,11 @@
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}To use these links, you must assign the featured_links <a class="rbox-link" href="tiki-admin_modules.php">module</a>.{/tr}{/remarksbox}
 
-<div class="t_navbar">
+<div class="navbar">
 	{button href="tiki-admin_links.php?generate=1" _text="{tr}Generate positions by hits{/tr}"}
 </div>
 
 <h2>{tr}List of featured links{/tr}</h2>
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		<th>{tr}URL{/tr}</th>
@@ -17,9 +16,9 @@
 		<th>{tr}Type{/tr}</th>
 		<th>{tr}Action{/tr}</th>
 	</tr>
-
+	{cycle values="odd,even" print=false}
 	{section name=user loop=$links}
-		<tr>
+		<tr class="{cycle}">
 			<td class="text">{$links[user].url}</td>
 			<td class="text">{$links[user].title|escape}</td>
 			<td class="integer">{$links[user].hits}</td>
@@ -34,8 +33,7 @@
 		{norecords _colspan=6}
 	{/section}
 </table>
-</div>
-
+<br>
 {if $editurl eq 'n'}
 	<h2>{tr}Add Featured Link{/tr}</h2>
 {else}
@@ -61,6 +59,6 @@
 			</select>
 			</td>
 		</tr>
-		<tr><td>&nbsp;</td><td><input type="submit" class="btn btn-default btn-sm" name="add" value="{tr}Save{/tr}"></td></tr>
+		<tr><td>&nbsp;</td><td><input type="submit" class="btn btn-default" name="add" value="{tr}Save{/tr}"></td></tr>
 	</table>
 </form>

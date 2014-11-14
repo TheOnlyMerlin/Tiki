@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -16,10 +16,9 @@ $inputConfiguration = array(
 
 $section = "draw";
 require_once ('tiki-setup.php');
-global $drawFullscreen, $prefs;
-$headerlib = TikiLib::lib('header');
+global $drawFullscreen, $prefs, $headerlib;
 
-$filegallib = TikiLib::lib('filegal');
+include_once ('lib/filegals/filegallib.php');
 
 $access->check_feature('feature_draw');
 $access->check_feature('feature_file_galleries');

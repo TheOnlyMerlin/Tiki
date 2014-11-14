@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -67,8 +67,8 @@ function module_since_last_visit_new_info()
  */
 function module_since_last_visit_new($mod_reference, $params = null)
 {
-	global $user;
-	$smarty = TikiLib::lib('smarty');
+	global $smarty, $user;
+
 	include_once('tiki-sefurl.php');
 
 	if (!$user) {
@@ -101,9 +101,7 @@ function module_since_last_visit_new($mod_reference, $params = null)
 
 	$resultCount = $mod_reference['rows'];
 
-	global $prefs;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $userlib, $prefs;
 	$ret = array();
 	if ($params == null) {
 		$params = array();
@@ -490,7 +488,8 @@ function module_since_last_visit_new($mod_reference, $params = null)
 		$count = 0;
 		$counta = array();
 		$tracker_name = array();
-		$cachelib = TikiLib::lib('cache');
+		global $cachelib;
+		require_once('lib/cache/cachelib.php');
 		while ($res = $result->fetchRow()) {
 			if ($userlib->user_has_perm_on_object($user, $res['trackerId'], 'tracker', 'tiki_p_view_trackers')) {
 				// Initialize tracker counter if needed.
@@ -548,7 +547,8 @@ function module_since_last_visit_new($mod_reference, $params = null)
 
 		$count = 0;
 		$countb = array();
-		$cachelib = TikiLib::lib('cache');
+		global $cachelib;
+		require_once('lib/cache/cachelib.php');
 
 		while ($res = $result->fetchRow()) {
 			if ($userlib->user_has_perm_on_object($user, $res['trackerId'], 'tracker', 'tiki_p_view_trackers')) {

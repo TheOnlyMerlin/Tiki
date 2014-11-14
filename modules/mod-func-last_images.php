@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -42,8 +42,8 @@ function module_last_images_info()
  */
 function module_last_images($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
-	$imagegallib = TikiLib::lib('imagegal');
+	global $smarty;
+	global $imagegallib; include_once ("lib/imagegals/imagegallib.php");
 	
 	$smarty->assign("content", isset($module_params["content"]) ? $module_params["content"] : "names");
 	$galleryId = isset($module_params["galleryId"]) ? $module_params["galleryId"] : -1;

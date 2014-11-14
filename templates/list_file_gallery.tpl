@@ -8,7 +8,7 @@
 	or ( !empty($gallery_path) && $fgal_options.show_path.value eq 'y' && $tiki_p_view_fgal_path eq 'y' )
 }
 
-	<div class="fgal_top_bar form-group">
+	<div class="fgal_top_bar" style="height:16px; vertical-align:middle">
 
 		{if isset($tree) and count($tree) gt 0 && $tiki_p_list_file_galleries != 'n'
 			&& $fgal_options.show_explorer.value eq 'y' && $tiki_p_view_fgal_explorer eq 'y'}
@@ -39,19 +39,22 @@
 	</div>
 {/if}
 
-<div class="row">
+<table border="0" cellpadding="3" cellspacing="3" width="100%" style="clear: both">
+	<tr>
 		{if isset($tree) && count($tree) gt 0 && $tiki_p_list_file_galleries != 'n'
 			&& $fgal_options.show_explorer.value eq 'y' && $tiki_p_view_fgal_explorer eq 'y' && $view neq 'page'}
-			<div class="col-sm-3 fgalexplorer" id="fgalexplorer" style="{if ( isset($smarty.session.tiki_cookie_jar.show_fgalexplorer) and $smarty.session.tiki_cookie_jar.show_fgalexplorer neq 'y') and ( ! isset($smarty.request.show_fgalexplorer) or $smarty.request.show_fgalexplorer neq 'y' )}display:none;{/if}">
-				{$tree}
-			</div>
+			<td width="25%" class="fgalexplorer" id="fgalexplorer" style="{if ( isset($smarty.session.tiki_cookie_jar.show_fgalexplorer) and $smarty.session.tiki_cookie_jar.show_fgalexplorer neq 'y') and ( ! isset($smarty.request.show_fgalexplorer) or $smarty.request.show_fgalexplorer neq 'y' )}display:none;{/if} width: 25%">
+				<div>
+					{$tree}
+				</div>
+			</td>
 
-			<div class="col-sm-9 fgallisting explorerHidden">
+			<td width="75%" class="fgallisting">
 		{else}
-			<div class="col-sm-12 fgallisting explorerDisplayed">
+			<td width="100%" class="fgallisting">
 		{/if}
 
-		<div>
+		<div style="padding:1px;">
 			{if $maxRecords > 20 and $cant > $maxRecords}
 				<div class="clearboth" style="margin-bottom: 3px;">
 					{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
@@ -174,6 +177,6 @@
 				{/if}
 			{/pagination_links}
 			</div>
-		</div>
-
-</div>
+		</td>
+	</tr>
+</table>

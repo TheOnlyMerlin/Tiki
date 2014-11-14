@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -69,10 +69,7 @@ function wikiplugin_htmlfeedlink_info()
 
 function wikiplugin_htmlfeedlink($data, $params)
 {
-	global $page, $caching;
-	$headerlib = TikiLib::lib('header');
-	$tikilib = TikiLib::lib('tiki');
-
+	global $tikilib, $headerlib, $page, $caching;
 	static $htmlFeedLinkI = 0;
 	++$htmlFeedLinkI;
 

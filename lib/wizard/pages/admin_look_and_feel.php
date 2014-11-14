@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -23,9 +23,8 @@ class AdminWizardLookAndFeel extends Wizard
 	
 	function onSetupPage ($homepageUrl) 
 	{
-		global $prefs;
-		$smarty = TikiLib::lib('smarty');
-		$tikilib = TikiLib::lib('tiki');
+		global	$smarty, $prefs, $tikilib;
+
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
 
@@ -53,13 +52,11 @@ class AdminWizardLookAndFeel extends Wizard
 
 		$this->setupThumbnailScript($styles);
 		
-		return true;
-	}
-
-	function getTemplate()
-	{
+		// Assign the page tempalte
 		$wizardTemplate = 'wizard/admin_look_and_feel.tpl';
-		return $wizardTemplate;
+		$smarty->assign('wizardBody', $wizardTemplate);
+		
+		return true;
 	}
 
 	function onContinue ($homepageUrl) 
@@ -79,7 +76,7 @@ class AdminWizardLookAndFeel extends Wizard
 	 */
 	function get_thumbnail_file($stl, $opt = '') // find thumbnail if there is one
 	{
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 		if (!empty($opt) && $opt != tr('None')) {
 			$filename = preg_replace('/\.css$/i', '.png', $opt); // change .css to .png
 
@@ -92,9 +89,7 @@ class AdminWizardLookAndFeel extends Wizard
 
 	function setupThumbnailScript($styles)
 	{
-		global	$prefs;
-		$headerlib = TikiLib::lib('header');
-		$tikilib = TikiLib::lib('tiki');
+		global	$prefs, $tikilib, $headerlib;
 		
 		if ($prefs['feature_jquery'] == 'y') {
 			// hash of themes and their options and their thumbnail images

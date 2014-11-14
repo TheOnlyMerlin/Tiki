@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -44,13 +44,14 @@ function module_last_tracker_comments_info()
  */
 function module_last_tracker_comments($mod_reference, $module_params)
 {
-	global $prefs;
-	$smarty = TikiLib::lib('smarty');
+	global $prefs, $smarty;
+	
 	$trackerId = isset($module_params["trackerId"]) ? $module_params["trackerId"] : 0;
 	
 	$itemId = isset($module_params["itemId"]) ? $module_params["itemId"] : 0;
 
-	$trklib = TikiLib::lib('trk');
+	global $trklib;
+	require_once ('lib/trackers/trackerlib.php');
 		
 	$ranking = $trklib->list_last_comments($trackerId, $itemId, 0, $mod_reference["rows"]);
 	$smarty->assign('modLastModifComments', isset($ranking['data']) ? $ranking["data"] : array());

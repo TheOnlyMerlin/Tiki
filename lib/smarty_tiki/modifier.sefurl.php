@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,10 +15,8 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 
 function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_langs='', $with_title='y', $title='' )
 {
-	global $prefs;
-	$wikilib = TikiLib::lib('wiki');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $prefs, $tikilib, $wikilib, $smarty;
+	require_once('lib/wiki/wikilib.php');
 
 	$sefurl = $prefs['feature_sefurl'] == 'y';
 
@@ -33,7 +31,7 @@ function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_lan
 	}
 	switch ($type) {
 		case 'wiki':
-			return TikiLib::tikiUrlOpt($wikilib->sefurl($source, $with_next, $all_langs));
+			return $wikilib->sefurl($source, $with_next, $all_langs);
 
 		case 'blog':
 			$href = $sefurl ? "blog$source" : "tiki-view_blog.php?blogId=$source";
@@ -95,7 +93,7 @@ function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_lan
 				$replacementpage = $trklib->get_trackeritem_pagealias($source);
 			}
 			if ($replacementpage) {
-				return TikiLib::tikiUrlOpt($wikilib->sefurl($replacementpage, $with_next, $all_langs));
+				return $wikilib->sefurl($replacementpage, $with_next, $all_langs);
 			} else {
 				$href = 'tiki-view_tracker_item.php?itemId='. $source;
 			}
@@ -143,10 +141,6 @@ function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_lan
 			$href = "tiki-newsletters.php?nlId=" . urlencode($source);
 			break;
 
-		case 'survey':
-			$href = "tiki-take_survey.php?surveyId=" . urlencode($source);
-			break;
-
 		default:
 			$href = $source;
 			break;
@@ -158,8 +152,8 @@ function smarty_modifier_sefurl($source, $type='wiki', $with_next = '', $all_lan
 
 	if ($prefs['feature_sefurl'] == 'y' && $smarty) {
 		include_once('tiki-sefurl.php');
-		return TikiLib::tikiUrlOpt(filter_out_sefurl($href, $type, $title, $with_next, $with_title));
+		return filter_out_sefurl($href, $type, $title, $with_next, $with_title);
 	} else {
-		return TikiLib::tikiUrlOpt($href);
+		return $href;
 	}
 }

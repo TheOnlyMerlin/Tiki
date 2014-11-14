@@ -1,14 +1,12 @@
 {* $Id$ *}
 {title help="Menus" url="tiki-admin_menu_options.php?menuId=$menuId" admpage="general&amp;cookietab=3"}{tr}Admin Menu:{/tr} {$editable_menu_info.name}{/title}
 
-<div class="t_navbar btn-group form-group">
-	{button href="tiki-admin_menus.php" class="btn btn-default" _text="<span class=\"fa fa-list\"></span> {tr}List menus{/tr}"}
-	<a class="btn btn-default" href="{bootstrap_modal controller=menu action=manage menuId=$menuId}">
-		{icon name="edit"} {tr}Edit This Menu{/tr}
-	</a>
+<div class="navbar">
+	{button href="tiki-admin_menus.php" _text="{tr}List menus{/tr}"}
+	{button href="tiki-admin_menus.php?menuId=$menuId&cookietab=2" _text="{tr}Edit this menu{/tr}"}
 	{if $prefs.feature_tabs neq 'y'}
-		{button href="#export" class="btn btn-default" _text="{tr}Export{/tr}"}
-		{button href="#import" class="btn btn-default" _text="{tr}Import{/tr}"}
+		{button href="#export" _text="{tr}Export{/tr}"}
+		{button href="#import" _text="{tr}Import{/tr}"}
 	{/if}
 </div>
 
@@ -28,8 +26,7 @@
 					<input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
 					<input type="hidden" name="menuId" value="{$menuId}">
 					<input type="hidden" name="offset" value="{$offset}">
-                    <div class="table-responsive">
-                    <table class="table normal">
+					<table class="table normal">
 						{assign var=numbercol value=0}
 						<tr>
 							<th>
@@ -53,10 +50,10 @@
 							{assign var=numbercol value=$numbercol+1}
 							<th>{tr}Action{/tr}</th>
 						</tr>
-
+						{cycle values="odd,even" print=false}
 						{section name=user loop=$channels}
-							<tr>
-								<td class="checkbox-cell">
+							<tr class="{cycle}">
+								<td class="checkbox">
 									<input type="checkbox" name="checked[]" value="{$channels[user].optionId|escape}"  {if $smarty.request.checked and in_array($channels[user].optionId,$smarty.request.checked)}checked="checked"{/if}>
 								</td>
 								<td class="id">{$channels[user].optionId}</td>
@@ -94,7 +91,6 @@
 							{norecords _colspan=$numbercol}
 						{/section}
 					</table>
-                    </div>
 
 					{if $channels}
 						<div align="left">
@@ -116,7 +112,6 @@
 	{$editname = "{tr}Edit menu option{/tr}"}
 {/if}
 {tab name=$editname}
-<div class="table-responsive">
 	<table class="table normal">
 		<tr>
 			<td valign="top" class="odd">
@@ -372,7 +367,7 @@
 						<tr>
 							<td>&nbsp;</td>
 							<td colspan="3">
-								<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
+								<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 							</td>
 						</tr>
 					</table>
@@ -380,7 +375,6 @@
 			</td>
 		</tr>
 	</table>
-</div>
 
 {/tab}
 {tab name="{tr}Preview{/tr}"}
@@ -415,7 +409,7 @@
 <h2>{tr}Export CSV data{/tr}</h2>
 <form action="tiki-admin_menu_options.php" method="post">
 	<input type="hidden" name="menuId" value="{$menuId}">
-	<input type="submit" class="btn btn-default btn-sm" name="export" value="{tr}Export{/tr}">
+	<input type="submit" class="btn btn-default" name="export" value="{tr}Export{/tr}">
 </form>
 
 <br>
@@ -425,7 +419,7 @@
 <form action="tiki-admin_menu_options.php" method="post" enctype="multipart/form-data">
 	<input type="hidden" name="menuId" value="{$menuId}">
 	{tr}File:{/tr} <input name="csvfile" type="file">
-	<input type="submit" class="btn btn-default btn-sm" name="import" value="{tr}Import{/tr}">
+	<input type="submit" class="btn btn-default" name="import" value="{tr}Import{/tr}">
 </form>
 {/tab}
 {/tabset}

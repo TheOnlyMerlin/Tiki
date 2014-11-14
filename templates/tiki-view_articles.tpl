@@ -7,32 +7,32 @@
 		{/title}
 	{/if}
 	{if $headerLinks eq "y"}
-	<div class="t_navbar">
+	<div class="navbar">
 		{if $tiki_p_edit_article eq 'y' or $tiki_p_admin eq 'y' or $tiki_p_admin_cms eq 'y'}
-			{button href="tiki-edit_article.php" class="btn btn-default" _text="{tr}New Article{/tr}"}
+			{button href="tiki-edit_article.php" _text="{tr}New Article{/tr}"}
 		{/if}
 		{if $prefs.feature_submissions == 'y' && $tiki_p_edit_submission == "y" && $tiki_p_edit_article neq 'y' && $tiki_p_admin neq 'y' && $tiki_p_admin_cms neq 'y'}
-			{button href="tiki-edit_submission.php" class="btn btn-default" _text="{tr}New Submission{/tr}"}
+			{button href="tiki-edit_submission.php" _text="{tr}New Submission{/tr}"}
 		{/if}		
 		{if $tiki_p_read_article eq 'y' or $tiki_p_articles_read_heading eq 'y' or $tiki_p_admin eq 'y' or $tiki_p_admin_cms eq 'y'}
-		{button href="tiki-list_articles.php" class="btn btn-default" _text="{tr}List Articles{/tr}"}
+		{button href="tiki-list_articles.php" _text="{tr}List Articles{/tr}"}
 		{/if}
 	
 		{if $prefs.feature_submissions == 'y' && ($tiki_p_approve_submission == "y" || $tiki_p_remove_submission == "y" || $tiki_p_edit_submission == "y")}
-			{button href="tiki-list_submissions.php" class="btn btn-default" _text="{tr}View Submissions{/tr}"}
+			{button href="tiki-list_submissions.php" _text="{tr}View Submissions{/tr}"}
 		{/if}
 	</div>
 	<div class="clearfix" style="clear: both;">
 		<div style="float: right; padding-left:10px; white-space: nowrap">
 		{if $user and $prefs.feature_user_watches eq 'y'}
 			{if $user_watching_articles eq 'n'}
-				{self_link watch_event='article_*' watch_object='*' watch_action='add' _icon='eye' _alt="{tr}Monitor Articles{/tr}" _title="{tr}Monitor Articles{/tr}" _class="btn btn-default"}{/self_link}
+					{self_link watch_event='article_*' watch_object='*' watch_action='add' _icon='eye' _alt="{tr}Monitor Articles{/tr}" _title="{tr}Monitor Articles{/tr}"}{/self_link}
 			{else}
-				{self_link watch_event='article_*' watch_object='*' watch_action='remove' _icon='no_eye' _alt="{tr}Stop Monitoring Articles{/tr}" _title="{tr}Stop Monitoring Articles{/tr}" _class="btn btn-default"}{/self_link}
+					{self_link watch_event='article_*' watch_object='*' watch_action='remove' _icon='no_eye' _alt="{tr}Stop Monitoring Articles{/tr}" _title="{tr}Stop Monitoring Articles{/tr}"}{/self_link}
 			{/if}
 		{/if}
 		{if $prefs.feature_group_watches eq 'y' and $tiki_p_admin_users eq 'y'}
-			<a href="tiki-object_watches.php?watch_event=article_*&amp;objectId=*" class="btn btn-default">{icon _id='eye_group' alt="{tr}Group Monitor{/tr}"}</a>
+			<a href="tiki-object_watches.php?watch_event=article_*&amp;objectId=*" class="icon">{icon _id='eye_group' alt="{tr}Group Monitor{/tr}"}</a>
 		{/if}
 		</div>
 	</div>
@@ -59,7 +59,7 @@
 				{/foreach}
 			</div>
 		{/if} 
-		<article class="article media{if !empty($container_class)} {$container_class}{/if} article{$smarty.section.ix.index}">
+		<article class="article{if !empty($container_class)} {$container_class}{/if} article{$smarty.section.ix.index}">
 			{if ($listpages[ix].show_avatar eq 'y')}
 				<div class="avatar">
 					{$listpages[ix].author|avatarize}
@@ -121,14 +121,16 @@
 				</div>
 			{/if}
 			<div class="articleheading">
-						<div {if $listpages[ix].isfloat eq 'n'}style="display:table-cell"{/if}>
+				<table  cellpadding="0" cellspacing="0">
+					<tr>
+						<td valign="top">
 							{if $listpages[ix].show_image eq 'y'}
 								{if $listpages[ix].useImage eq 'y'}
 									{if $listpages[ix].hasImage eq 'y'}
-										<a href="{$smarty.capture.href}" class="thumbnail" {if $listpages[ix].isfloat eq 'y'}{$style="margin-right:4px;float:left;"}{/if}
+										<a href="{$smarty.capture.href}"
 												title="{if $listpages[ix].show_image_caption and $listpages[ix].image_caption}{$listpages[ix].image_caption|escape}{elseif $listpages[ix].topicName}{tr}{$listpages[ix].topicName}{/tr}{else}{tr}Read More{/tr}{/if}">
 											{$style=''}
-											<img {*{if $listpages[ix].isfloat eq 'y'}{$style="margin-right:4px;float:left;"}{else}*}class="articleimage"{*{/if}*}
+											<img {if $listpages[ix].isfloat eq 'y'}{$style="margin-right:4px;float:left;"}{else}class="articleimage"{/if} 
 													alt="{if $listpages[ix].show_image_caption and $listpages[ix].image_caption}{$listpages[ix].image_caption|escape}{elseif $listpages[ix].topicName}{tr}{$listpages[ix].topicName}{/tr}{/if}"
 													{strip}src="article_image.php?image_type=article&amp;id={$listpages[ix].articleId}
 													{if $listpages[ix].list_image_x > 0 and ($largefirstimage neq 'y' or not $smarty.section.ix.first)}
@@ -150,9 +152,9 @@
 									{/if}
 								{else}
 									{if isset($topics[$listpages[ix].topicId].image_size) and $topics[$listpages[ix].topicId].image_size > 0}
-										<a href="{$smarty.capture.href}" class="thumbnail" {if $listpages[ix].isfloat eq 'y'} style="margin-right:4px;float:left;"{/if}
+										<a href="{$smarty.capture.href}"
 												title="{if $listpages[ix].show_image_caption and $listpages[ix].image_caption}{$listpages[ix].image_caption|escape}{else}{tr}{$listpages[ix].topicName}{/tr}{/if}">
-											<img {if $listpages[ix].isfloat eq 'y'}{*style="margin-right:4px;float:left;*}"{else}class="articleimage"{/if}
+											<img {if $listpages[ix].isfloat eq 'y'}style="margin-right:4px;float:left;"{else}class="articleimage"{/if} 
 													alt="{if $listpages[ix].show_image_caption and $listpages[ix].image_caption}{$listpages[ix].image_caption|escape}{else}{tr}{$listpages[ix].topicName}{/tr}{/if}"
 													src="article_image.php?image_type=topic&amp;id={$listpages[ix].topicId}">
 										</a>
@@ -160,20 +162,21 @@
 								{/if}
 							{/if}
 							{if $listpages[ix].isfloat eq 'n'}
-						</div>
-                        <div style="display:table-cell; vertical-align: top">
+								</td><td  valign="top">
 							{/if}
 							<div class="articleheadingtext">{$listpages[ix].parsed_heading}</div>
 							{if isset($fullbody) and $fullbody eq "y"}
 								<div class="articlebody">{$listpages[ix].parsed_body}</div>
 							{/if}
-						</div>
+						</td>
+					</tr>
+				</table>
 			</div>
 			<div class="articletrailer">
 				{if ($listpages[ix].size > 0) or (($prefs.feature_article_comments eq 'y') and ($tiki_p_read_comments eq 'y'))}
 					{if ($tiki_p_read_article eq 'y' and $listpages[ix].heading_only ne 'y' and (!isset($fullbody) or $fullbody ne "y"))}
 						{if ($listpages[ix].size > 0 and !empty($listpages[ix].body))}
-							<div class="pull-left status"> {* named to be similar to forum/blog item *}
+							<div class="status"> {* named to be similar to forum/blog item *}
 								<a href="{$smarty.capture.href}" class="more">{tr}Read More{/tr}</a>
 							</div>
 							{if ($listpages[ix].show_size eq 'y')}
@@ -202,20 +205,20 @@
 					{/if}
 				{/if}
 				{if !isset($actions) or $actions eq "y"}
-					<div class="pull-right actions">
+					<div class="actions">
 						{if $tiki_p_edit_article eq 'y' or (!empty($user) and $listpages[ix].author eq $user and $listpages[ix].creator_edit eq 'y')}
-							<a class="btn btn-default" href="tiki-edit_article.php?articleId={$listpages[ix].articleId}">{icon _id='page_edit'}</a>
+							<a class="icon" href="tiki-edit_article.php?articleId={$listpages[ix].articleId}">{icon _id='page_edit'}</a>
 						{/if}
 						{if $prefs.feature_cms_print eq 'y'}
-							<a class="btn btn-default" href="tiki-print_article.php?articleId={$listpages[ix].articleId}">{icon _id='printer' alt="{tr}Print{/tr}"}</a>
+							<a class="icon" href="tiki-print_article.php?articleId={$listpages[ix].articleId}">{icon _id='printer' alt="{tr}Print{/tr}"}</a>
 						{/if}
 						{if $prefs.feature_multilingual eq 'y' and $tiki_p_edit_article eq 'y'}
-							<span class="btn-i18n">
+							<div class="lang_select">
 								{include file='translated-lang.tpl' object_type='article' trads=$listpages[ix].translations articleId=$listpages[ix].articleId}
-							</span>
+							</div>
 						{/if}
 						{if $tiki_p_remove_article eq 'y'}
-							<a class="btn btn-default" href="tiki-list_articles.php?remove={$listpages[ix].articleId}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
+							<a class="icon" href="tiki-list_articles.php?remove={$listpages[ix].articleId}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
 						{/if}
 					</div>
 				{/if}
@@ -223,19 +226,18 @@
 		</article>
 	{/if}
 {sectionelse}
-	{if $quiet ne 'y'}
-		{remarksbox type=info title="{tr}No articles yet.{/tr}" close="n"}
-		{/remarksbox}
+	{if $quiet ne 'y'}{tr}No articles yet.{/tr}
 	{/if}
 {/section}
 {if !isset($actions) or $actions eq "y"}
 	{if $tiki_p_edit_article eq 'y' or $tiki_p_admin eq 'y' or $tiki_p_admin_cms eq 'y'}
-		<br/><img src="img/icons/add.png" alt="{tr}Add an article{/tr}"> <a href="tiki-edit_article.php{if (isset($topicId) && !empty($topicId)) or (isset($type) && !empty($type))}?{/if}{if isset($topicId) && !empty($topicId) and is_numeric($topicId)}topicId={$topicId|escape}{/if}{if isset($type) && !empty($type)}&type={$type|escape}{/if}" class="alert-link">{tr}New article{/tr}</a>
+		<br/><img src="img/icons/add.png" alt="{tr}Add an article{/tr}"> <a href="tiki-edit_article.php{if (isset($topicId) && !empty($topicId)) or (isset($type) && !empty($type))}?{/if}{if isset($topicId) && !empty($topicId) and is_numeric($topicId)}topicId={$topicId|escape}{/if}{if isset($type) && !empty($type)}&type={$type|escape}{/if}">{tr}New article{/tr}</a>
 	{/if}
 	{if $prefs.feature_submissions == 'y' && $tiki_p_edit_submission == "y" && $tiki_p_edit_article neq 'y' && $tiki_p_admin neq 'y' && $tiki_p_admin_cms neq 'y'}
-		<br/><img src="img/icons/add.png" alt="{tr}New Submission{/tr}"> <a href="tiki-edit_submission.php{if (isset($topicId) && !empty($topicId)) or (isset($type) && !empty($type))}?{/if}{if isset($topicId) && !empty($topicId) and is_numeric($topicId)}topicId={$topicId|escape}{/if}{if isset($type) && !empty($type)}&type={$type|escape}{/if}" class="alert-link">{tr}New Submission{/tr}</a>
+		<br/><img src="img/icons/add.png" alt="{tr}New Submission{/tr}"> <a href="tiki-edit_submission.php{if (isset($topicId) && !empty($topicId)) or (isset($type) && !empty($type))}?{/if}{if isset($topicId) && !empty($topicId) and is_numeric($topicId)}topicId={$topicId|escape}{/if}{if isset($type) && !empty($type)}&type={$type|escape}{/if}">{tr}New Submission{/tr}</a>
 	{/if}
 {/if}
 {if !empty($listpages) && (!isset($usePagination) or $usePagination ne 'n')}
 	{pagination_links cant=$cant step=$maxArticles offset=$offset}{if isset($urlnext)}{$urlnext}{/if}{/pagination_links}
 {/if}
+

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -35,7 +35,7 @@ foreach ( $plugins_actions as $plugin_type => $v ) {
 				@include_once('lib/smarty_tiki/function.' . $plugin_name . '.php');
 				$func = 's_f_' . $plugin_name . '_actionshandler';
 				if ( ! function_exists($func) || ! call_user_func($func, $params) ) {
-					$smarty = TikiLib::lib('smarty');
+					global $smarty;
 					$smarty->assign('msg', sprintf(tra('Handling actions of plugin "%s" failed.'), $plugin_name));
 					$smarty->display('error.tpl');
 					die;

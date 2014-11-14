@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -60,13 +60,7 @@ foreach ( $matches as $match ) {
 
 		$match->replaceWithPlugin($plugin, $params, $content);
 
-		if ($prefs['wysiwyg_htmltowiki'] == 'y' && $plugin === 'wysiwyg') {
-			$parsed = TikiLib::lib('edit')->parseToWiki($matches->getText());
-		} else {
-			$parsed = $matches->getText();
-		}
-
-		$tikilib->update_page($page, $parsed, $_POST['message'], $user, $tikilib->get_ip_address());
+		$tikilib->update_page($page, $matches->getText(), $_POST['message'], $user, $tikilib->get_ip_address());
 		break;
 	}
 }

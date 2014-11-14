@@ -1,12 +1,5 @@
-{extends 'layout_view.tpl'}
-
-{block name="title"}
-	{title}{$title|escape}{/title}
-{/block}
-
-{block name="content"}
 {if $yaml}
-	<div class="t_navbar form-group">
+	<div class="navbar">
 		{include file="tracker_actions.tpl"}
 	</div>
 	{remarksbox type="note" title="{tr}YAML Export{/tr}"}
@@ -16,4 +9,3 @@
 	{$yaml}
 	
 {/if}
-{/block}

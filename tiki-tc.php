@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,8 +15,8 @@ if ($prefs['feature_theme_control'] == 'y') {
 	// defined: $cat_type and cat_objid
 	// search for theme for $cat_type
 	// then search for theme for md5($cat_type.cat_objid)
-	$tcontrollib = TikiLib::lib('tcontrol');
-	$categlib = TikiLib::lib('categ');
+	include_once ('lib/themecontrol/tcontrol.php');
+	include_once ('lib/categories/categlib.php');
 	global $tc_theme, $tc_theme_option;
 	
 	if (isset($tc_theme)) {
@@ -45,9 +45,6 @@ if ($prefs['feature_theme_control'] == 'y') {
 	}
 	
 	if ($tc_theme) {
-		if ($prefs['feature_theme_control_savesession'] == 'y' && !empty($tc_theme_option)) {
-			$_SESSION['tc_theme'] = $tc_theme_option;
-		}
 		if ($old_tc_theme) {
 			$headerlib->drop_cssfile($tikilib->get_style_path('', '', $old_tc_theme));
 			$headerlib->drop_cssfile($tikilib->get_style_path($old_tc_theme, $old_tc_theme_option, $old_tc_theme_option));
@@ -60,7 +57,9 @@ if ($prefs['feature_theme_control'] == 'y') {
 			$headerlib->add_cssfile($tikilib->get_style_path($tc_theme, $tc_theme_option, $tc_theme_option), 52);
 		}
 		// Reset IE specific CSS
-		global $style_ie8_css, $style_ie9_css, $style_base;
+		global $style_ie6_css, $style_ie7_css, $style_ie8_css, $style_ie9_css, $style_base;
+		$style_ie6_css = $tikilib->get_style_path($tc_theme, $tc_theme_option, 'ie6.css');
+		$style_ie7_css = $tikilib->get_style_path($tc_theme, $tc_theme_option, 'ie7.css');
 		$style_ie8_css = $tikilib->get_style_path($tc_theme, $tc_theme_option, 'ie8.css');
 		$style_ie9_css = $tikilib->get_style_path($tc_theme, $tc_theme_option, 'ie9.css');
 

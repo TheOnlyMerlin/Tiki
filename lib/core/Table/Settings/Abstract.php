@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -29,133 +29,70 @@ abstract class Table_Settings_Abstract
 	protected $default = array(
 		//this is the id of the table
 		'id' => 'tsTable',
+		//TODO choosing themes is not yet implemented
+		'theme' => 'tiki',
+		'total' => '',
 //		'selflinks' => true,				//if smarty self_links need to be removed
-		//overall sort settings for the table - individual column settings are under columns below
-		'sorts' => array(
+		'sort' => array(
+			'group' => true,
 			'type' => 'reset',				//choices: boolean true, boolean false, save, reset, savereset.
-			'group' => true,				//overall switch to allow or disallow group headings
-//			'multisort' => false,				//multisort on by default - set to false to disable
-		),
-		//overall filter settings for the table or external filters - individual column settings are under columns below
-		'filters' => array(
-			'type' => 'reset',						//choices: boolean true, boolean false, reset
-			'external' => false,
-/*
-			'hide' => false,					//to hide filters. choices: true, false (default)
-			//for filters external to the table
-			'external' => array(
+/*			'columns' => array(				//zero-based column index, used only if column-specific settings
 				0 => array(
-					'type' => 'dropdown',
-					'options' => array(
-						//label => url parameter value
-						'Email not confirmed' => 'filterEmailNotConfirmed=on',
-						'User not validated' => 'filterNotValidated=on',
-						'Never logged in' => 'filterNeverLoggedIn=on',
-					),
-				),
-			),
-*/
-		),
-/*
-		//to add pagination controls
-		'pager' => array(
-			'type' => true,					//choices: boolean true, boolean false
-			'max' => 25,
-			'expand' => array(50, 100, 250, 500),
-		),
-*/
-		//set whether filtering and sorting will be done server-side or client side
-		'ajax' => array(
-			'type' => false,
-/*
-			'url' => 'tiki-adminusers.php?{sort:sort}&{filter:filter}',
-			'offset' => 'offset'
-			//url sort and filter params manipulated on the server side if set to false
-			'custom' => false,
-			//total count of all records - needs to be a hidden input returned by ajax in order for pager to work
-			'servercount' => array(
-				'id' => $ts_countid,
-			),
-			//record offset - needs to be a hidden input returned by ajax in order for pager to work properly
-			'serveroffset' => array(
-				'id' => $ts_offsetid,
-			),
-*/
-		),
-/*
-		//Set individual sort and filter settings for each column
-		//No need to set if overall sorts and filters settings for the table are set to false above
-		'columns' => array(				//zero-based column index, used only if column-specific settings
-			0 => array(
-				//sort settings for the 1st column
-				'sort' => array(
 					'type' => true,			//choices: boolean true, boolean false, text, digit, currency, percent,
 											//usLongDate, shortDate, isoDate, dateFormat-ddmmyyyy, ipAddress, url, time
 											//also string-min (sort strings in a numeric column as large negative number)
 											//empty-top (sorts empty cells to the top)
 					'dir' => 'asc',			//asc for ascending and desc for descending
-					'ajax' =>'email',		//parameter name that is used when querying the database for this field value
-											//when ajax is used
+					'ajax' => 'login',
 					'group' => 'letter'		//choices: letter (first letter), word (first word), number, date, date-year,
 											//date-month, date-day, date-week, date-time. letter and word can be
 											//extended, e.g., word-2 shows first 2 words. number-10 will group rows
 											//in blocks of ten.
 				),
-				//filter settings for the 1st column
-				'filter' => array(
-					//for a text input box where user can type to filter
-					'type' => 'text',							//choices: text, dropdown, date, range, non
-					'placeholder' => 'Enter valid email...',	//override default placeholder text
-					'ajax' => 'filterEmail',
-				),
 			),
-			1 => array(
-				//sort settings for the 2nd column
-				'sort' => array(
-					'type' => false,
+			'multisort' => false,				//multisort on by default - set to false to disable
+*/
+		),
+		'filters' => array(
+			'type' => 'reset',						//choices: boolean true, boolean false, reset
+			'external' => false,
+/*			'hide' => false,					//to hide filters. choices: true, false (default)
+			'columns' => array(
+				0 => array(
+					'type' => 'text',					//choices: text, dropdown, date, range, none
+					'placeholder' => 'Enter a value'	//override default placeholder text
 				),
-				//filter settings for the 2nd column
-				'filter' => array(
-					//for a dropdown list for filtering
+				4 => array(
 					'type' => 'dropdown',
-					//options are optional -  automatically generated from column values if not set
-					//but automatic values will only reflect rows returned from server if ajax is used
-					'options' => array(
+					'options' => array(		//options optional; automatically generated from column values if not set
 						'first filter',
 						'second filter'
 					)
 				),
-			),
-			2 => array(
-				//sort settings for the 3rd column
-				'sort' => array(
-					'type' => false,
-				),
-				//filter settings for the 3rd column
-				'filter' => array(
-					//a sliding range filter for numeric fields
+				2 => array(
 					'type' => 'range',
 					'from' => 10,
 					'to' => 100,
-					'style' => 'popup'				//choices: popup or inline
+					'style' => popup				//choices: popup or inline
 				),
-			),
-			3 => array(
-				//sort settings for the 4th column
-				'sort' => array(
-					'type' => false,
-				),
-				//filter settings for the 4th column
-				'filter' => array(
-					//produces from and to date fields for filtering
+				3 => array(
 					'type' => 'date',
 					'from' => '2013-12-15',
 					'to' => '2013-12-16',
 					'format' => 'yy-mm-dd'
-				),
+				)
 			),
-		),
 */
+		),
+/*		'pager' => array(
+			'type' => true,					//choices: true, false
+			'max' => 25,
+			'expand' => array(50, 100, 250, 500),
+		),*/
+		'ajax' => array(
+			'type' => false,
+//			'url' => 'tiki-adminusers.php?{sort:sort}&{filter:filter}',
+		)
 	);
 
 	/**
@@ -165,12 +102,14 @@ abstract class Table_Settings_Abstract
 	protected $defaultFilters = array(
 		'text' => array(
 			'type' => 'text',
-			'placeholder' => ''
+			//tra('Type to filter...')
+			'placeholder' => 'Type to filter...'
 		),
 		//tra('Select a value')
 		'dropdown' => array(
 			'type' => 'dropdown',
-			'placeholder' => ''
+			//tra('Select a value')
+			'placeholder' => 'Select a value'
 		),
 		'date'	=> array(
 			'type' => 'date',
@@ -189,7 +128,7 @@ abstract class Table_Settings_Abstract
 	 * @var array
 	 */
 	protected $ids = array(
-		'sorts' => array(
+		'sort' => array(
 			'reset' => array(
 				'id' => '-sortreset',
 				//tra('Unsort')
@@ -263,8 +202,11 @@ abstract class Table_Settings_Abstract
 
 		//get table-specific settings
 		$ts = $this->getTableSettings();
-		if (isset($ts['columns'])) {
-			$ts['columns'] = array_values($ts['columns']);
+		if (isset($ts['sort']['columns'])) {
+			$ts['sort']['columns'] = array_values($ts['sort']['columns']);
+		}
+		if (isset($ts['filters']['columns'])) {
+			$ts['filters']['columns'] = array_values($ts['filters']['columns']);
 		}
 
 		//override generic defaults with any table-specific defaults
@@ -354,16 +296,13 @@ abstract class Table_Settings_Abstract
 	 * Set placeholders for filters
 	 */
 	private function setPlaceholders() {
-		//TODO try array_column here
-		if (isset($this->s['columns'])) {
-			foreach ($this->s['columns'] as $col => $colinfo) {
-				if (isset($colinfo['filter'])) {
-					$ft = $colinfo['filter']['type'];
-					//add default placeholder text
-					if (isset($this->defaultFilters[$ft])) {
-						$this->s['columns'][$col]['filter'] =
-							array_replace_recursive($this->defaultFilters[$ft], $colinfo['filter']);
-					}
+		if (isset($this->s['filters']['columns'])) {
+			foreach ($this->s['filters']['columns'] as $col => $filterinfo) {
+				$ft = $filterinfo['type'];
+				//add default placeholder text
+				if (isset($this->defaultFilters[$ft])) {
+					$this->s['filters']['columns'][$col] =
+						array_replace_recursive($this->defaultFilters[$ft], $filterinfo);
 				}
 			}
 		}
@@ -425,26 +364,30 @@ abstract class Table_Settings_Abstract
 	}
 
 	/**
-	 * Correlate Tablesorter sort and filter url parameters to those used in Tiki for database calls
-	 * This information will be passed to the jQuery code so that the url parameters generated by
+	 * Correlate Tablesorter sort and filter params to those used in Tiki for the table
+	 * This information will be passed to the jQuery code so that the url paramters generated by
 	 * Tablesorter can be changed to their Tiki equivalents for the specific table
 	 */
 	private function setAjax()
 	{
 		if (!empty($this->s['ajax'])) {
-			//sort and filter url parameters
-			//TODO try array_column
-			if (isset($this->s['columns']) && is_array($this->s['columns'])) {
-				foreach ($this->s['columns'] as $col => $colinfo) {
-					if (isset($colinfo['sort']['ajax'])) {
+			//sort params
+			if (isset($this->s['sort']['columns']) && is_array($this->s['sort']['columns'])) {
+				foreach ($this->s['sort']['columns'] as $col => $info) {
+					if (isset($info['ajax'])) {
 						//tablesorter url param pattern is sort[0]=0 for ascending sort of first column
-						$this->s['ajax']['sort']['sort[' . $col . ']'] = $colinfo['sort']['ajax'];
+						$this->s['ajax']['sort']['sort[' . $col . ']'] = $info['ajax'];
 					}
-					if (isset($colinfo['filter']['ajax'])) {
+				}
+			}
+			//column filter params
+			if (isset($this->s['filters']['columns']) && is_array($this->s['filters']['columns'])) {
+				foreach ($this->s['filters']['columns'] as $col => $info) {
+					if (isset($info['ajax'])) {
 						//tablesorter url param pattern is filter[0]=text for filter on first column
-						$this->s['ajax']['colfilters']['filter[' . $col . ']'] = $colinfo['filter']['ajax'];
-					}  elseif (isset($colinfo['filter']['options'])) {
-						foreach ($colinfo['filter']['options'] as $label => $value) {
+						$this->s['ajax']['colfilters']['filter[' . $col . ']'] = $info['ajax'];
+					} elseif (isset($info['options'])) {
+						foreach ($info['options'] as $label => $value) {
 							$label = rawurlencode($label);
 							$this->s['ajax']['colfilters']['filter[' . $col . ']'][$label] = $value;
 						}

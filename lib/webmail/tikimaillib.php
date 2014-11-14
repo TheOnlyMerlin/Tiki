@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,7 +8,7 @@
 /**
  * set some default params (mainly utf8 as tiki is utf8) + use the mailCharset pref from a user
  */
-$access = TikiLib::lib('access');
+global $access;
 $access->check_script($_SERVER["SCRIPT_NAME"], basename(__FILE__));
 
 class TikiMail
@@ -61,9 +61,9 @@ class TikiMail
 		$this->mail->setFrom($email, $name);
 	}
 
-	function setReplyTo($email, $name = null)
+	function setReplyTo($email)
 	{
-		$this->mail->setReplyTo($email, $name);
+		$this->mail->setReplyTo($email);
 	}
 
 	function setSubject($subject)
@@ -124,7 +124,7 @@ class TikiMail
 			$tikilib->query($query, $bindvars, -1, 0);
             $title = 'mail';
         } else {
-    		try {
+        	try {
     			$this->mail->send();
 
     			$title = 'mail';

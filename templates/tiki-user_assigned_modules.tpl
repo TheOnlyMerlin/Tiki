@@ -2,8 +2,8 @@
 
 {include file='tiki-mytiki_bar.tpl'}
 
-<div class="t_navbar">
-	{button href="tiki-user_assigned_modules.php?recreate=1" class="btn btn-default" _text="{tr}Restore defaults{/tr}"}
+<div class="navbar">
+	{button href="tiki-user_assigned_modules.php?recreate=1" _text="{tr}Restore defaults{/tr}"}
 </div>
 
 <h2>{tr}User assigned modules{/tr}</h2>
@@ -32,9 +32,9 @@
 						<th>{tr}Name{/tr}</th>
 						<th>{tr}act{/tr}</th>
 					</tr>
-
+					{cycle values="odd,even" print=false}
 					{section name=ix loop=$modules_l}
-						<tr>
+						<tr class="{cycle}">
 							<td>{$modules_l[ix].ord}</td>
 							<td>{$modules_l[ix].name}</td>
 							<td>
@@ -63,9 +63,9 @@
 						<th>{tr}Name{/tr}</th>
 						<th>{tr}act{/tr}</th>
 					</tr>
-
+					{cycle values="odd,even" print=false}
 					{section name=ix loop=$modules_r}
-						<tr>
+						<tr class="{cycle}">
 							<td>{$modules_r[ix].ord}</td>
 							<td>{$modules_r[ix].name}</td>
 							<td>
@@ -124,7 +124,7 @@
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
-				<td><input type="submit" class="btn btn-default btn-sm" name="assign" value="{tr}Assign{/tr}"></td>
+				<td><input type="submit" class="btn btn-default" name="assign" value="{tr}Assign{/tr}"></td>
 			</tr>
 		</table>
 	</form>

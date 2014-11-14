@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -257,9 +257,8 @@ class ThemeControlLib extends TikiLib
 	
 	function setup_theme_menus()
 	{
-		global $prefs;
-		$smarty = TikiLib::lib('smarty');
-		$tikilib = TikiLib::lib('tiki');
+		global $prefs, $tikilib, $smarty;
+		
 		$list_styles = $tikilib->list_styles();
 		$smarty->assign_by_ref('styles', $list_styles);
 		if (!empty($_REQUEST['theme'])) {
@@ -312,7 +311,6 @@ class ThemeControlLib extends TikiLib
 	}
 	function get_theme($type, $objectId, &$tc_theme, &$tc_theme_option)
 	{
-		global $prefs;
 		$categlib = TikiLib::lib('categ');
 		// CATEGORIES
 		$tc_categs = $categlib->get_object_categories($type, $objectId);
@@ -322,10 +320,7 @@ class ThemeControlLib extends TikiLib
 				$ct = $this->tc_get_theme_by_categ($cat);
 				if (!empty($ct) && !in_array($ct, $cat_themes)) {
 					$cat_themes[] = $ct;
-					if ($prefs['feature_theme_control_autocategorize'] == 'y' && !empty($cat)) {
-						$_SESSION['tc_theme_cat'] = $cat;
-						$_SESSION['tc_theme_cattheme'] = $ct;
-					}
+				
 //					$catt = $categlib->get_category($cat);
 //					$smarty->assign_by_ref('category', $catt["name"]);
 //					break;
@@ -343,9 +338,6 @@ class ThemeControlLib extends TikiLib
 		if ($obj_theme = $this->tc_get_theme_by_object($type, $objectId)) {
 			list($tc_theme, $tc_theme_option) = $this->parse_theme_option_string($obj_theme);
 		}
-		
-		if ($prefs['feature_theme_control_autocategorize'] == 'y') {
-			list($tc_theme, $tc_theme_option) = $this->parse_theme_option_string($_SESSION['tc_theme_cattheme']);
-		}
 	}
 }
+$tcontrollib = new ThemeControlLib;

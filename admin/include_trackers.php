@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +11,7 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	exit;
 }
 
-$trklib = TikiLib::lib('trk');
+include_once ('lib/trackers/trackerlib.php');
 
 if (isset($_REQUEST['trkset'])) {
 	check_ticket('admin-inc-trackers');
@@ -73,7 +73,7 @@ if (isset($_REQUEST['all2db'])) {
 
 $attachements = $trklib->list_all_attachements($offset, $maxRecords, $sort_mode, $find);
 $smarty->assign_by_ref('cant_pages', $attachements['cant']);
-$headerlib->add_cssfile('themes/base_files/feature_css/admin.css');
+$headerlib->add_cssfile('css/admin.css');
 $smarty->assign_by_ref('attachements', $attachements['data']);
 $urlquery['find'] = $find;
 $urlquery['page'] = 'trackers';

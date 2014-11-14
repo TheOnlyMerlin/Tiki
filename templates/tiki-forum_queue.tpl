@@ -1,8 +1,8 @@
 
 {title help="forums" admpage="forums"}{tr}Message queue for forum{/tr} {$forum_info.name}{/title}
 
-<div class="t_navbar">
-	{button href="tiki-view_forum.php?forumId=$forumId" class="btn btn-default" _text="{tr}Back to forum{/tr}"}
+<div class="navbar">
+	{button href="tiki-view_forum.php?forumId=$forumId" _text="{tr}Back to forum{/tr}"}
 </div>
 
 {if $smarty.request.qId and $form eq 'y'}
@@ -87,10 +87,10 @@
 <tr>
 	<td>&nbsp;</td>
 	<td>
-		<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
-		<input type="submit" class="btn btn-default btn-sm" name="saveapp" value="{tr}Save and Approve{/tr}">
-		<input type="submit" class="btn btn-warning btn-sm" name="remove" value="{tr}Remove{/tr}">
-		<input type="submit" class="btn btn-default btn-sm" name="topicize" value="{tr}convert to topic{/tr}">
+		<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
+		<input type="submit" class="btn btn-default" name="saveapp" value="{tr}Save and Approve{/tr}">
+		<input type="submit" class="btn btn-warning" name="remove" value="{tr}Remove{/tr}">
+		<input type="submit" class="btn btn-default" name="topicize" value="{tr}convert to topic{/tr}">
 	</td>
 </tr>
 </table>
@@ -110,7 +110,7 @@
 <td>
 	<small>{tr}Find{/tr}</small>
 	<input size="8" type="text" name="find" value="{$find|escape}">
-	<input type="submit" class="btn btn-default btn-sm" name="filter" value="{tr}Filter{/tr}">
+	<input type="submit" class="btn btn-default" name="filter" value="{tr}Filter{/tr}">
 </td>
 </tr>
 </table>	
@@ -124,18 +124,16 @@
 <input type="hidden" name="offset" value="{$offset|escape}">
 <input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
 <input type="hidden" name="find" value="{$find|escape}">
-
-<div class="table-responsive">
 <table class="table normal">
 <tr>
 {if $items}<th>&nbsp;</th>
 {/if}
 <th>{tr}Message{/tr}</th>
 </tr>
-
+{cycle values="odd,even" print=false}
 {section name=ix loop=$items}
-<tr>
-	<td class="checkbox-cell">
+<tr class="{cycle}">
+	<td class="checkbox">
 	  <input type="checkbox" name="msg[{$items[ix].qId}]">
 	</td>
   
@@ -173,12 +171,11 @@
 	{norecords _colspan=2 _text="{tr}No messages queued yet{/tr}"}
 {/section}
 </table>
-</div>
 {if $items}
 <br>
 {tr}Perform action with checked:{/tr} 
-		<input type="submit" class="btn btn-default btn-sm" name="rej" value="{tr}Reject{/tr}">
-		<input type="submit" class="btn btn-default btn-sm" name="app" value="{tr}Approve{/tr}">
+		<input type="submit" class="btn btn-default" name="rej" value="{tr}Reject{/tr}">
+		<input type="submit" class="btn btn-default" name="app" value="{tr}Approve{/tr}">
 {/if}
 </form>
 {* END OF LISTING *}

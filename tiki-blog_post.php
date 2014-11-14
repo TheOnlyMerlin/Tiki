@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,9 +10,9 @@
 
 $section = 'blogs';
 require_once ('tiki-setup.php');
-$categlib = TikiLib::lib('categ');
-$bloglib = TikiLib::lib('blog');
-$editlib = TikiLib::lib('edit');
+include_once ('lib/categories/categlib.php');
+include_once ('lib/blogs/bloglib.php');
+include_once ('lib/wiki/editlib.php');
 
 $access->check_feature('feature_blogs');
 
@@ -66,7 +66,7 @@ $smarty->assign('blogId', $blogId);
 $smarty->assign('postId', $postId);
 
 //Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 $smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
 
 if (isset($_REQUEST["publish_Hour"])) {
@@ -80,7 +80,7 @@ if (isset($_REQUEST["publish_Hour"])) {
 }
 
 if ($prefs['feature_freetags'] == 'y') {
-	$freetaglib = TikiLib::lib('freetag');
+	include_once ('lib/freetag/freetaglib.php');
 
 	if ($prefs['feature_multilingual'] == 'y') {
 		$languages = array();
@@ -209,7 +209,7 @@ if (isset($_REQUEST['save']) && $prefs['feature_contribution'] == 'y' && $prefs[
 }
 
 if (isset($_REQUEST['save']) && !$contribution_needed) {
-	$imagegallib = TikiLib::lib('imagegal');
+	include_once ("lib/imagegals/imagegallib.php");
 	$smarty->assign('individual', 'n');
 
 	$edit_data = $imagegallib->capture_images($edit_data);

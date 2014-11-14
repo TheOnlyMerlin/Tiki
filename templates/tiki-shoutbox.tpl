@@ -3,8 +3,8 @@
 {title help="Shoutbox"}{tr}Shoutbox{/tr}{/title}
 
 {if $tiki_p_admin_shoutbox eq 'y'}
-  <div class="t_navbar">
-		{button href="tiki-admin_shoutbox_words.php" class="btn btn-default" _text="{tr}Banned Words{/tr}"}
+  <div class="navbar">
+		{button href="tiki-admin_shoutbox_words.php" _text="{tr}Banned Words{/tr}"}
   </div>
 
 	<h2>{tr}Change shoutbox general settings{/tr}</h2>
@@ -19,7 +19,7 @@
 			<tr>
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" class="btn btn-default btn-sm" name="shoutbox_admin" value="{tr}Save{/tr}">
+					<input type="submit" class="btn btn-default" name="shoutbox_admin" value="{tr}Save{/tr}">
 				</td>
 			</tr>
 		</table>
@@ -55,7 +55,7 @@
 			<tr>
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
+					<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 				</td>
 			</tr>
 		</table>

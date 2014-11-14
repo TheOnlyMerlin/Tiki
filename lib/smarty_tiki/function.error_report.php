@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,17 +12,6 @@ function smarty_function_error_report($params, $smarty)
 
 	$pre = '<div id="error_report">';
 	$post = '</div>';
-
-	$repeat = false;
-	$legacy = $smarty->getTemplateVars('display_msg');
-	if ($legacy) {
-		// Handle reporting ofthe display_msg smarty variable
-		$smarty->loadPlugin('smarty_block_remarksbox');
-		$post .= smarty_block_remarksbox(array(
-			'type' => 'note',
-			'title' => tr('Notice'),
-		), $legacy, $smarty, $repeat);
-	}
 
 	TikiLib::lib('header')->add_js(
 		'

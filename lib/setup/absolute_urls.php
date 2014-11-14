@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -77,6 +77,11 @@ if (strpos($base_uri, $tikiroot . 'route.php') !== false && !empty($inclusion)) 
 	if (!empty($_GET)) {
 		$base_uri .= '?' . http_build_query($_GET, '', '&');
 	}
+}
+
+global $smarty;
+if (!empty($base_uri) && is_object($smarty)) {
+	$smarty->assign('base_uri', $base_uri);
 }
 
 // SSL options

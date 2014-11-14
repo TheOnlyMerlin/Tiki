@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +10,7 @@
 
 $section = 'blogs';
 require_once ('tiki-setup.php');
-$bloglib = TikiLib::lib('blog');
+include_once ('lib/blogs/bloglib.php');
 
 $auto_query_args = array(
 	'postId',
@@ -92,7 +92,7 @@ if (isset($post_info['priv']) && ($post_info['priv'] == 'y')) {
 
 if ($prefs['feature_freetags'] == 'y') {
 	// Get Tags
-	$freetaglib = TikiLib::lib('freetag');
+	include_once ('lib/freetag/freetaglib.php');
 	$post_info['freetags'] = $freetaglib->get_tags_on_object($postId, "blog post");
 
 	if ($blog_data['show_related'] == 'y' && !empty($post_info['freetags'])) {

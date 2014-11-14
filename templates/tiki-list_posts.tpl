@@ -2,10 +2,10 @@
 
 {title help="Blogs"}{if isset($blogTitle)}{tr _0=$blogTitle}Blog: %0{/tr}{else}{tr}Blog{/tr}{/if}{/title}
 
-<div class="t_navbar form-group">
-	{button href="tiki-edit_blog.php" class="btn btn-default" _text="{tr}Create Blog{/tr}"}
-	{button href="tiki-blog_post.php" class="btn btn-default" _text="{tr}New Blog Post{/tr}"}
-	{button href="tiki-list_blogs.php" class="btn btn-default" _text="{tr}List Blogs{/tr}"}
+<div class="navbar">
+	{button href="tiki-edit_blog.php" _text="{tr}Create Blog{/tr}"}
+	{button href="tiki-blog_post.php" _text="{tr}New Blog Post{/tr}"}
+	{button href="tiki-list_blogs.php" _text="{tr}List Blogs{/tr}"}
 </div>
 
 {if $posts or ($find ne '')}
@@ -16,7 +16,7 @@
 	<form name="checkboxes_on" method="post" action="tiki-list_posts.php">
 	{query _type='form_input'}
 {/if}
-<div class="table-responsive">
+
 <table class="table normal">
 	<tr>
 		{if $posts and  $tiki_p_blog_admin eq 'y'}
@@ -42,10 +42,10 @@
 		<th>{tr}Actions{/tr}</th>
 	</tr>
 
-
+	{cycle values="odd,even" print=false}
 	{section name=changes loop=$posts}{assign var=id value=$posts[changes].postId}
-		<tr>
-			<td class="checkbox-cell"><input type="checkbox" name="checked[]" value="{$id}"></td>
+		<tr class="{cycle}">
+			<td class="checkbox"><input type="checkbox" name="checked[]" value="{$id}"></td>
 			<td class="text">{object_link type="blog post" id=$posts[changes].postId title=$posts[changes].title}</td>
 			{if !isset($blogId)}
 				<td class="text">
@@ -64,7 +64,6 @@
 		{norecords _colspan=7}
 	{/section}
 </table>
-</div>
 
 {if $posts and  $tiki_p_blog_admin eq 'y'}
 	<div class="formcolor">

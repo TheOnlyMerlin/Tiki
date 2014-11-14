@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,36 +15,32 @@
 //    doesn't already exist), and tie it to the source language page.
 //
 
-require_once('lib/debug/Tracer.php');
-
 function wikiplugin_translationof_info()
 {
-    $description =
-        tra('Assist in the translation of a link from one language to another.');
-
     return array(
         'name' => tra('TranslationOf'),
         'documentation' => 'PluginTranslationOf',
-        'description' => $description,
+        'description' => tra('Assist in the translation of a link from one language to another.'),
         'prefs' => array( 'feature_multilingual', 'wikiplugin_translationof' ),
+        'body' => tra('[url] or ((wikiname)) or ((inter:interwiki)) (use wiki syntax)'),
         'icon' => 'img/icons/world_link.png',
         'params' => array(
-            'orig_page' => array(
+            'target_lang' => array(
                 'required' => true,
-                'name' => tra('Original Page'),
-                'description' => tra('Name of the page from which this link will be translate.'),
-                'default' => '',
-            ),
-            'translation_lang' => array(
-                'required' => true,
-                'name' => tra('Translation Language'),
+                'name' => tra('Target Language'),
                 'description' => tra('Two letter language code of the language in which you want to translate this link, ex: fr'),
                 'default' => '',
             ),
-            'translation_page' => array(
+            'source_page' => array(
+                'required' => true,
+                'name' => tra('Source Page'),
+                'description' => tra('Name of the page from which this link will be translate.'),
+                'default' => '',
+            ),
+            'translated_anchor_text' => array(
                 'required' => false,
-                'name' => tra('Translation Name'),
-                'description' => tra('Name of the page that will become the translation of the "Original Page".'),
+                'name' => tra('Anchor Text'),
+                'description' => tra('Anchor for the link, translated to the target language.'),
                 'default' => '',
             ),
         ),
@@ -53,43 +49,15 @@ function wikiplugin_translationof_info()
 
 function wikiplugin_translationof($data, $params)
 {
-    global $tracer;
-	$smarty = TikiLib::lib('smarty');
     extract($params, EXTR_SKIP);
 
-    $anchor_text = $orig_page;
-    if (isset($translation_page) && $translation_page != '')
+    $anchor_text = $source_page;
+    if (isset($translated_anchor_text) && $translated_anchor_text != '')
     {
-        $anchor_text = $translation_page;
+        $anchor_text = $translated_anchor_text;
     }
 
-    if (isset($orig_page))
-    {
-        $orig_page = urlencode($orig_page);
-    }
-
-    $translation_name_arg = '';
-    if (isset($translation_page))
-    {
-        $translation_page = urlencode($translation_page);
-        $translation_name_arg = "&translation_name=$translation_page";
-    }
-
-    $translation_lang_arg = '';
-    if (isset($translation_lang))
-    {
-        $translation_lang_arg = "&target_lang=$translation_lang";
-    }
-
-    $tracer->trace('wikiplugin_translationof', "** \$translation_lang=$translation_lang");
-
-
-    $link = 'javascript:void(0)';
-    $popup_html = "<a href=\"tiki-edit_translation.php?page=$orig_page$translation_lang_arg$translation_name_arg#new_translation\">".tr("Translate this link")."</a>";
-    $popup_params = array( 'text'=> $popup_html, 'sticky' => true, 'trigger' => 'mouseover');
-    $smarty->loadPlugin('smarty_function_popup');
-    $mouseover = ' ' . smarty_function_popup($popup_params, $smarty);
-    $html = "<a href=\"tiki-index.php?page=$orig_page\" $mouseover>$anchor_text</a>";
+    $html = "<a href=\"tiki-index.php?page=$source_page\">$anchor_text</a>";
 
     return $html;
 }

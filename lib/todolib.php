@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -84,7 +84,7 @@ class TodoLib
 		$db = TikiDb::get();
 		$query = 'DELETE FROM `tiki_todo` WHERE `todoId`=? OR (`objectId`=? AND `objectType`=?)';
 		$db->query($query, array($id, $id, 'todo'));
-		self::cleanNotif();
+		TodoLib::cleanNotif();
 	}
 
     /**
@@ -98,7 +98,7 @@ class TodoLib
 		$db->query($query, array($objectType, $objectId));
 		$query = 'DELETE FROM `tiki_todo` WHERE `objectType`=? AND `objectId`=?';
 		$db->query($query, array($objectType, $objectId));
-		self::cleanNotif();
+		TodoLib::cleanNotif();
 	}
 
 	// apply a todo
@@ -204,10 +204,7 @@ class TodoLib
      */
     function mailTodo($todo, $to, $default_subject='Change notification', $default_body='')
 	{
-		global $prefs;
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
-		$smarty = TikiLib::lib('smarty');
+		global $userlib, $tikilib, $prefs, $smarty;
 		if (empty($to['email']) && !empty($to['user'])) {
 			$to['email'] = $userlib->get_user_email($to['user']);
 		}
@@ -239,7 +236,7 @@ class TodoLib
     function listObjectsTodo_tracker($todo, $except=null)
 	{
 		global $tikilib;
-		$trklib = TikiLib::lib('trk');
+		global $trklib; include_once('lib/trackers/trackerlib.php');
 
 		switch ($todo['event']) {
 			case 'creation':
@@ -287,7 +284,7 @@ class TodoLib
      */
     function applyTodo_tracker($todo, $objects)
 	{
-		$trklib = TikiLib::lib('trk');
+		global $trklib; include_once('lib/trackers/trackerlib.php');
 		$trklib->change_status($objects, $todo['to']['status']);
 	}
 
@@ -297,10 +294,8 @@ class TodoLib
      */
     function notifyTodo_tracker($todo, $objects)
 	{
-		global $prefs;
-		$smarty = TikiLib::lib('smarty');
-		$trklib = TikiLib::lib('trk');
-		$tikilib = TikiLib::lib('tiki');
+		global $smarty, $tikilib, $prefs;
+		global $trklib; include_once('lib/trackers/trackerlib.php');
 		foreach ($objects as $object) {
 			// get the creator
 			$u = $object['field_values'][0]['value'];
@@ -322,3 +317,5 @@ class TodoLib
 		}
 	}
 }
+global $todolib;
+$todolib = new TodoLib;

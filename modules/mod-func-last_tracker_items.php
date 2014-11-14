@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -60,11 +60,9 @@ function module_last_tracker_items_info()
  */
 function module_last_tracker_items($mod_reference, $module_params)
 {
-	global $prefs, $user;
-
-	$tikilib = TikiLib::lib('tiki');
-	$trklib = TikiLib::lib('trk');
-	$smarty = TikiLib::lib('smarty');
+	global $prefs, $tikilib, $smarty, $user;
+	global $trklib; include_once('lib/trackers/trackerlib.php');
+	
 	$smarty->assign('module_error', '');
 	if ($tikilib->user_has_perm_on_object($user, $module_params['trackerId'], 'tracker', 'tiki_p_view_trackers')) {
 		if (isset($module_params['name'])) {

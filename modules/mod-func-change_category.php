@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -83,10 +83,7 @@ function module_change_category_info()
  */
 function module_change_category($mod_reference, $module_params)
 {
-	global $prefs;
-	$smarty = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
-	$modlib = TikiLib::lib('mod');
+	global $prefs, $tikilib, $smarty, $modlib;
 
 	$smarty->assign('showmodule', false);
 
@@ -124,8 +121,7 @@ function module_change_category($mod_reference, $module_params)
 		$categories = $categlib->getCategories($id ? array('identifier'=>$id, 'type'=>'descendants') : null);
 
 		if (!empty($module_params['group']) && $module_params['group'] == 'y') {
-			global $user;
-			$userlib = TikiLib::lib('user');
+			global $userlib, $user;
 			if (!$user) {
 				return;
 			}

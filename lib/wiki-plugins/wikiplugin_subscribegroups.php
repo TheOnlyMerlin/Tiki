@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -127,9 +127,7 @@ function wikiplugin_subscribegroups_info()
 
 function wikiplugin_subscribegroups($data, $params)
 {
-	global $tiki_p_subscribe_groups, $user;
-	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
+	global $tiki_p_subscribe_groups, $userlib, $user, $smarty;
 	if ($tiki_p_subscribe_groups != 'y' || empty($user)) {
 		return tra('You do not have permission to subscribe to groups.');
 	}

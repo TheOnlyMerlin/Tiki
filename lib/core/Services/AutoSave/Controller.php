@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -27,6 +27,7 @@ class Services_AutoSave_Controller
 		$res = '';
 
 		if ($this->checkReferrer($referer)) {
+			include_once 'lib/ajax/autosave.php';
 			$res = TikiLib::lib('autosave')->get_autosave($input->editor_id->text(), $referer);
 		}
 
@@ -48,6 +49,7 @@ class Services_AutoSave_Controller
 		$res = '';
 
 		if ($this->checkReferrer($referer)) {
+			include_once 'lib/ajax/autosave.php';
 			$data = $input->data->none();
 			$res = TikiLib::lib('autosave')->auto_save($input->editor_id->text(), $data, $referer);
 		}
@@ -69,6 +71,7 @@ class Services_AutoSave_Controller
 		$referer = $input->referer->text();
 
 		if ($this->checkReferrer($referer)) {
+			include_once 'lib/ajax/autosave.php';
 			TikiLib::lib('autosave')->remove_save($input->editor_id->text(), $referer);
 		}
 

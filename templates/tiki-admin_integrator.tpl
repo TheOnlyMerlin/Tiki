@@ -12,12 +12,12 @@
     <h2>{tr}Create New Repository{/tr}</h2>
 {/if}
 
-<div class="t_navbar btn-group form-group">
-	{button href="tiki-list_integrator_repositories.php" class="btn btn-default" _text="{tr}List Repositories{/tr}"}
-	{button href="tiki-admin_integrator.php" class="btn btn-default" _text="{tr}New Repository{/tr}"}
+<div class="navbar">
+	{button href="tiki-list_integrator_repositories.php" _text="{tr}List Repositories{/tr}"}
+	{button href="tiki-admin_integrator.php" _text="{tr}New Repository{/tr}"}
 	{if isset($repID) and $repID ne '0'}
 		{assign var=thisrepID value=$repID|escape}
-		{button href="tiki-integrator.php?repID=$thisrepID" class="btn btn-default" _text="{tr}View Repository{/tr}"}
+		{button href="tiki-integrator.php?repID=$thisrepID" _text="{tr}View Repository{/tr}"}
   {/if}
 </div>
 
@@ -59,7 +59,7 @@
     <td><textarea name="description" rows="4" title="{tr}Human-readable text description of repository{/tr}">{$description|escape}</textarea></td>
   </tr><tr>
     <td></td>
-    <td><input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}"></td>
+    <td><input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}"></td>
   </tr>
 </table>
 </form>
@@ -67,8 +67,7 @@
 <h2>{tr}Available Repositories{/tr}</h2>
 
 {* Table with list of repositories *}
-<div class="table-responsive">
-<table class="table normal" id="integrator-repositories">
+<table class="table normal" border=1 id="integrator-repositories">
   <tr>
     <th rowspan="2">{tr}Name{/tr}</th>
     <th>{tr}Path{/tr}</th>
@@ -78,9 +77,9 @@
   </tr><tr>
     <th colspan="4">{tr}Description{/tr}</th>
   </tr>
-
+  {cycle values="odd,even" print=false}
   {section name=rep loop=$repositories}
-    <tr>
+    <tr class="{cycle}">
       <td class="text"{if (strlen($repositories[rep].description) > 0)} rowspan="2"{/if}>
         <a href="tiki-admin_integrator_rules.php?repID={$repositories[rep].repID|escape}" title="{tr}Edit rules{/tr}">
           {$repositories[rep].name}
@@ -99,10 +98,9 @@
 
     {* Show description as colspaned row if it is not an empty *}
     {if (strlen($repositories[rep].description) > 0)}
-    </tr><tr>
+    </tr><tr class="{cycle}">
       <td class="text" colspan="4">{$repositories[rep].description}</td>
     {/if}
     </tr>
   {/section}
 </table>
-</div>

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -29,59 +29,32 @@ function smarty_function_object_selector( $params, $smarty )
 {
 	static $uniqid = 0;
 
-	$arguments = [
-		'simpleid' => null,
-		'simplename' => null,
-		'simplevalue' => null,
-		'simpleclass' => 'hidden',
-		'name' => null,
-		'class' => null,
-		'id' => null,
-		'value' => null,
-		'filter' => [],
-		'title' => null,
-		'threshold' => null,
-		'parent' => null,
-		'parentkey' => null,
-		'format' => null,
-		'placeholder' => tr('Title'),
-	];
-
 	// Handle reserved parameters
-	foreach (array_keys($arguments) as $var) {
+	foreach (array('name', 'class', 'id', 'value', 'filter') as $var) {
+		$$var = '';
 		if (isset($params["_$var"])) {
-			$arguments[$var] = $params["_$var"];
+			$$var = $params["_$var"];
 		}
 		unset($params["_$var"]);
 	}
 
-	if (empty($arguments['id'])) {
-		$arguments['id'] = 'object_selector_' . ++$uniqid;
-	}
-	if (empty($arguments['simpleid'])) {
-		$arguments['simpleid'] = 'object_selector_' . ++$uniqid;
+	if (empty($id)) {
+		$id = 'object_selector_' . ++$uniqid;
 	}
 
-	if ($arguments['filter']) {
-		$arguments['filter'] = array_merge($arguments['filter'], $params);
-	} else {
-		$arguments['filter'] = $params;
+	if ($filter) {
+		$params = array_merge($filter, $params);
 	}
-
-	if ($arguments['simplevalue'] && ! $arguments['value'] && isset($arguments['filter']['type'])) {
-		$arguments['value'] = "{$arguments['filter']['type']}:{$arguments['simplevalue']}";
-		$arguments['simpleclass'] = null;
-		$arguments['class'] .= ' hidden';
-	}
-
-	$selector = TikiLib::lib('objectselector');
-	$arguments['current_selection'] = $selector->read($arguments['value']);
-
-	$arguments['filter'] = json_encode($arguments['filter']);
 
 	$smarty->assign(
 		'object_selector',
-		$arguments
+		array(
+			'filter' => json_encode($params),
+			'id' => $id,
+			'name' => $name,
+			'class' => $class,
+			'value' => $value,
+		)
 	);
 
 	return $smarty->fetch('object_selector.tpl');

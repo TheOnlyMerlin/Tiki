@@ -31,10 +31,10 @@
 		{
 			"type": "package",
 			"package": {
-				"name": "aFarkas/html5shiv",
-				"version": "3.7.2",
+				"name": "ckeditor/ckeditor",
+				"version": "4.1.1",
 				"dist": {
-					"url": "https://github.com/aFarkas/html5shiv/archive/3.7.2.zip",
+					"url": "https://github.com/ckeditor/ckeditor-releases/archive/4.1.1/full.zip",
 					"type": "zip"
 				}
 			}
@@ -43,9 +43,20 @@
 			"type": "package",
 			"package": {
 				"name": "ckeditor/ckeditor",
-				"version": "4.1.1",
+				"version": "4.2.1",
 				"dist": {
-					"url": "https://github.com/ckeditor/ckeditor-releases/archive/4.1.1/full.zip",
+					"url": "https://github.com/ckeditor/ckeditor-releases/archive/4.2.1/full.zip",
+					"type": "zip"
+				}
+			}
+		},
+		{
+			"type": "package",
+			"package": {
+				"name": "ckeditor/ckeditor",
+				"version": "4.3.0",
+				"dist": {
+					"url": "https://github.com/ckeditor/ckeditor-releases/archive/4.3.0/full.zip",
 					"type": "zip"
 				}
 			}
@@ -64,6 +75,28 @@
 		{
 			"type": "package",
 			"package": {
+				"name": "ckeditor/ckeditor/skins/kama",
+				"version": "4.2.1",
+				"dist": {
+					"url": "http://download.ckeditor.com/kama/releases/kama_4.2.1.zip",
+					"type": "zip"
+				}
+			}
+		},
+		{
+			"type": "package",
+			"package": {
+				"name": "ckeditor/ckeditor/skins/kama",
+				"version": "4.3.0",
+				"dist": {
+					"url": "http://download.ckeditor.com/kama/releases/kama_4.3.zip",
+					"type": "zip"
+				}
+			}
+		},
+		{
+			"type": "package",
+			"package": {
 				"name": "ckeditor/ckeditor/plugins/divarea",
 				"version": "4.1.1",
 				"dist": {
@@ -75,21 +108,10 @@
 		{
 			"type": "package",
 			"package": {
-				"name": "ckeditor/ckeditor/skins/kama",
-				"version": "4.2.3",
+				"name": "ckeditor/ckeditor/plugins/divarea",
+				"version": "4.2.1",
 				"dist": {
-					"url": "http://download.ckeditor.com/kama/releases/kama_4.2.3.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "ckeditor/ckeditor",
-				"version": "4.2.3",
-				"dist": {
-					"url": "https://github.com/ckeditor/ckeditor-releases/archive/4.2.3/full.zip",
+					"url": "http://download.ckeditor.com/divarea/releases/divarea_4.2.1.zip",
 					"type": "zip"
 				}
 			}
@@ -98,75 +120,9 @@
 			"type": "package",
 			"package": {
 				"name": "ckeditor/ckeditor/plugins/divarea",
-				"version": "4.2.3",
+				"version": "4.3.0",
 				"dist": {
-					"url": "http://download.ckeditor.com/divarea/releases/divarea_4.2.3.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "ckeditor/ckeditor",
-				"version": "4.3.4",
-				"dist": {
-					"url": "https://github.com/ckeditor/ckeditor-releases/archive/4.3.4/full.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "ckeditor/ckeditor/skins/kama",
-				"version": "4.3.4",
-				"dist": {
-					"url": "http://download.ckeditor.com/kama/releases/kama_4.3.4.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "ckeditor/ckeditor/plugins/divarea",
-				"version": "4.3.4",
-				"dist": {
-					"url": "http://download.ckeditor.com/divarea/releases/divarea_4.3.4.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "ckeditor/ckeditor",
-				"version": "4.4.2",
-				"dist": {
-					"url": "https://github.com/ckeditor/ckeditor-releases/archive/full/4.4.2.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "ckeditor/ckeditor/skins/kama",
-				"version": "4.4.2",
-				"dist": {
-					"url": "http://download.ckeditor.com/kama/releases/kama_4.4.2.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "ckeditor/ckeditor/plugins/divarea",
-				"version": "4.4.2",
-				"dist": {
-					"url": "http://download.ckeditor.com/divarea/releases/divarea_4.4.2.zip",
+					"url": "http://download.ckeditor.com/divarea/releases/divarea_4.3.zip",
 					"type": "zip"
 				}
 			}
@@ -182,35 +138,13 @@
 				}
 			}
 		},
-		{
-			"type": "package",
-			"package": {
+ 		{
+ 			"type": "package",
+ 			"package": {
 				"name": "codemirror/codemirror",
 				"version": "3.19.0",
 				"dist": {
 					"url": "https://github.com/marijnh/CodeMirror/archive/3.19.0.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "codemirror/codemirror",
-				"version": "3.24.0",
-				"dist": {
-					"url": "https://github.com/marijnh/CodeMirror/archive/3.24.0.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "dompdf/dompdf",
-				"version": "0.6.1",
-				"dist": {
-					"url": "https://github.com/dompdf/dompdf/archive/v0.6.1.zip",
 					"type": "zip"
 				}
 			}
@@ -306,32 +240,10 @@
 		{
 			"type": "package",
 			"package": {
-				"name": "jquery/jquery",
-				"version": "1.11.0",
-				"dist": {
-					"url": "http://code.jquery.com/jquery-1.11.0.js",
-					"type": "file"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "jquery/jquery-min",
-				"version": "1.11.0",
-				"dist": {
-					"url": "http://code.jquery.com/jquery-1.11.0.min.js",
-					"type": "file"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
 				"name": "jquery/jquery-sheet",
-				"version": "3.1-rc-5",
+				"version": "3.0",
 				"dist": {
-					"url": "https://github.com/Spreadsheets/jQuery.sheet/archive/3.1-rc-5.zip",
+					"url": "http://jquerysheet.googlecode.com/files/jquery.sheet-3.0.zip",
 					"type": "zip"
 				}
 			}
@@ -405,21 +317,10 @@
 		{
 			"type": "package",
 			"package": {
-				"name": "jquery/jquery-ui",
-				"version": "1.10.4",
+				"name": "jquery/jquery-timepicker-addon",
+				"version": "1.2.2",
 				"dist": {
-					"url": "http://jqueryui.com/resources/download/jquery-ui-1.10.4.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "jquery/jquery-ui-themes",
-				"version": "1.10.4",
-				"dist": {
-					"url": "http://jqueryui.com/resources/download/jquery-ui-themes-1.10.4.zip",
+					"url": "http://github.com/trentrichardson/jQuery-Timepicker-Addon/archive/v1.2.2.zip",
 					"type": "zip"
 				}
 			}
@@ -431,17 +332,6 @@
 				"version": "1.4",
 				"dist": {
 					"url": "http://github.com/trentrichardson/jQuery-Timepicker-Addon/archive/v1.4.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "jquery/jquery-timepicker-addon",
-				"version": "1.4.4",
-				"dist": {
-					"url": "http://github.com/trentrichardson/jQuery-Timepicker-Addon/archive/v1.4.4.zip",
 					"type": "zip"
 				}
 			}
@@ -530,17 +420,6 @@
 				"version": "2.6",
 				"dist": {
 					"url": "http://svg-edit.googlecode.com/files/svg-edit-2.6.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "svg-edit/svg-edit",
-				"version": "2.7.1",
-				"dist": {
-					"url": "http://svg-edit.googlecode.com/svn/branches/2.7/build/svg-edit-2.7.1.zip",
 					"type": "zip"
 				}
 			}
@@ -662,17 +541,6 @@
 				"version": "1.4.31",
 				"dist": {
 					"url": "https://github.com/jackmoore/colorbox/archive/1.4.31.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "jquery/plugins/colorbox",
-				"version": "1.5.8",
-				"dist": {
-					"url": "https://github.com/jackmoore/colorbox/archive/1.5.8.zip",
 					"type": "zip"
 				}
 			}
@@ -835,42 +703,31 @@
 			"type": "package",
 			"package": {
 				"name": "jquery/plugins/tablesorter",
+				"version": "2.10.8",
+				"dist": {
+					"url": "https://github.com/Mottie/tablesorter/archive/v2.10.8.zip",
+					"type": "zip"
+				}
+			}
+		},
+		{
+			"type": "package",
+			"package": {
+				"name": "jquery/plugins/tablesorter",
+				"version": "2.13.3",
+				"dist": {
+					"url": "https://github.com/Mottie/tablesorter/archive/v2.13.3.zip",
+					"type": "zip"
+				}
+			}
+		},
+		{
+			"type": "package",
+			"package": {
+				"name": "jquery/plugins/tablesorter",
 				"version": "2.14.1",
 				"dist": {
 					"url": "https://github.com/Mottie/tablesorter/archive/v2.14.1.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "jquery/plugins/tablesorter",
-				"version": "2.14.4",
-				"dist": {
-					"url": "https://github.com/Mottie/tablesorter/archive/v2.14.4.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "jquery/plugins/tablesorter",
-				"version": "2.17.2",
-				"dist": {
-					"url": "https://github.com/Mottie/tablesorter/archive/v2.17.2.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "jquery/plugins/tablesorter",
-				"version": "2.17.8",
-				"dist": {
-					"url": "https://github.com/Mottie/tablesorter/archive/v2.17.8.zip",
 					"type": "zip"
 				}
 			}
@@ -900,17 +757,6 @@
 		{
 			"type": "package",
 			"package": {
-				"name": "jquery/plugins/treetable",
-				"version": "3.1.0",
-				"dist": {
-					"url": "https://github.com/ludo/jquery-treetable/archive/3.1.0.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
 				"name": "jquery/plugins/sparkline",
 				"version": "2.1.1",
 				"dist": {
@@ -926,17 +772,6 @@
 				"version": "2.6",
 				"dist": {
 					"url": "https://github.com/jeffharrell/MiniCart/archive/2.6.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "jquery/minicart",
-				"version": "2.6.1",
-				"dist": {
-					"url": "https://github.com/jeffharrell/MiniCart/archive/2.6.1.zip",
 					"type": "zip"
 				}
 			}
@@ -966,17 +801,6 @@
 		{
 			"type": "package",
 			"package": {
-				"name": "jquery/plugins/zoom",
-				"version": "1.7.13",
-				"dist": {
-					"url": "https://github.com/jackmoore/zoom/archive/1.7.13.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
 				"name": "simile_timeline/simile_timeline",
 				"version": "2.3.0",
 				"dist": {
@@ -985,7 +809,7 @@
 				}
 			}
 		},
-		{
+ 		{
 			"type": "package",
 			"package": {
 				"name": "player/mp3",
@@ -1020,44 +844,35 @@
 		},
 		{
 			"type": "svn",
-			"url": "http://svn.code.sf.net/p/jcapture-applet/code/trunk@47"
+			"url": "http://svn.code.sf.net/p/jcapture-applet/code/trunk@46"
 		},
 		{
-			"type": "package",
-			"package": {
-				"name": "jquery/jquery-s5",
-				"version": "1.0.1",
-				"dist": {
-					"url": "https://github.com/robertleeplummerjr/jQuery.s5/archive/1.0.1.zip",
-					"type": "zip"
-				}
-			}
+			"type": "svn",
+			"url": "http://jquerys5.googlecode.com/svn/trunk@65"
 		}
 	],
 	"require": {
 		"adodb/adodb": "5.18",
-		"aFarkas/html5shiv": "*",
+		"aFarkas/html5shiv": "3.6.2",
 		"bombayworks/zendframework1": "1.12.3",
 		"ckeditor/ckeditor": "*",
 		"ckeditor/ckeditor/skins/kama": "*",
 		"ckeditor/ckeditor/plugins/divarea": "*",
 		"codemirror/codemirror": "*",
-		"dompdf/dompdf": "0.6.1",
-		"ezyang/htmlpurifier": ">=4.5.0",
-		"fivefilters/php-readability": "1.0",
+		"ezyang/htmlpurifier": "4.5.0",
 		"jarnokurlin/fullcalendar": "*",
 		"jcapture-applet/jcapture-applet": "dev-master",
 		"jquery/jquery": "*",
 		"jquery/jquery-min": "*",
-		"jquery/jquery-s5": "1.0.1",
-		"jquery/jquery-sheet": "3.1",
+		"jquery/jquery-s5": "dev-master",
+		"jquery/jquery-sheet": "3.0",
 		"jquery/jquery-ui": "*",
 		"jquery/jquery-mobile": "*",
 		"jquery/jquery-ui-themes": "*",
 		"jquery/jquery-timepicker-addon": "*",
 		"jquery/jquery-ui-selectmenu": "1.3.999",
 		"jquery/jtrack": "1.0",
-		"jquery/minicart": "*",
+		"jquery/minicart": "2.6",
 		"jquery/photoswipe": "3.0.5",
 		"jquery/md5": "1.1",
 		"jquery/plugins/anythingslider": "*",
@@ -1082,19 +897,16 @@
 		"jquery/plugins/tablesorter": "*",
 		"jquery/plugins/treetable": "*",
 		"jquery/plugins/sparkline": "2.1.1",
-		"jquery/plugins/zoom": "*",
+		"jquery/plugins/zoom": "1.7.10",
 		"phpcas/phpcas": "1.3.2",
-		"phpseclib/phpseclib": ">=0.3.1",
+		"phpseclib/phpseclib": "0.3.1",
 		"player/flv": "1.0",
 		"player/mp3": "1.0",
 		"rangy/rangy": "1.2.3",
 		"simile_timeline/simile_timeline": "2.3.0",
 		"smarty/smarty": ">=3.1.14",
-		"svg-edit/svg-edit": ">=2.6",
-		"symfony/console": ">=2.4.1",
-		"symfony/dependency-injection": "2.4.3",
-		"symfony/config": "2.4.3",
-		"tijsverkoyen/css-to-inline-styles": "1.2.1",
+		"svg-edit/svg-edit": "2.6",
+		"symfony/console": "2.2.0",
 		"zetacomponents/base": "1.8"
 	},
 	"archive": {

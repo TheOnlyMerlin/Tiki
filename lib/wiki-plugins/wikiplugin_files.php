@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -402,14 +402,11 @@ function wikiplugin_files_info()
 }
 function wikiplugin_files($data, $params)
 {
-	global $prefs, $tiki_p_admin, $tiki_p_admin_files_galleries, $user;
+	global $prefs, $tikilib, $smarty, $tiki_p_admin, $tiki_p_admin_files_galleries, $user;
 	if ($prefs['feature_file_galleries'] != 'y') {
 		return('');
 	}
-	$filegallib = TikiLib::lib('filegal');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
-
+	global $filegallib; include_once('lib/filegals/filegallib.php');
 	$default = array('showfind'=>'n', 'showtitle'=>'y', 'showupload' => 'n', 'showgallery' => 'n', 'max' => -1, 'showthumb' => 'n', 'recursive' => 'n', 'withsubgals'=>'y');
 	$params = array_merge($default, $params);
 	$filter = '';
@@ -419,7 +416,7 @@ function wikiplugin_files($data, $params)
 		if (isset($categId))
 			unset($categId);
 	} else {
-		$categlib = TikiLib::lib('categ');
+		global $categlib; include_once('lib/categories/categlib.php');
 	}
 
 	$files = array();
@@ -616,10 +613,7 @@ function wikiplugin_files($data, $params)
 }
 function  wikiplugin_files_check_perm_file($fileId)
 {
-		global $tiki_p_admin, $user, $tiki_p_admin_files_galleries;
-		$tikilib = TikiLib::lib('tiki');
-		$filegallib = TikiLib::lib('filegal');
-
+		global $filegallib, $tikilib, $tiki_p_admin, $user, $tiki_p_admin_files_galleries;
 		$info = $filegallib->get_file_info($fileId, false, false);
 		$gal_info = $filegallib->get_file_gallery($info['galleryId']);
 		if ($tiki_p_admin != 'y' && $tiki_p_admin_files_galleries != 'y' && $gal_info['user'] != $user) {

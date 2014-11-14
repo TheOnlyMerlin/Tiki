@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +11,7 @@
 $section = 'webmail';
 require_once ('tiki-setup.php');
 include_once ('lib/webmail/webmaillib.php');
-$contactlib = TikiLib::lib('contact');
+include_once ('lib/webmail/contactlib.php');
 
 $access->check_feature('feature_webmail');
 $access->check_permission_either(array('tiki_p_use_webmail', 'tiki_p_use_group_webmail'));

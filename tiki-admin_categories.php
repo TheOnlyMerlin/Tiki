@@ -2,14 +2,14 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
-$categlib = TikiLib::lib('categ');
+include_once ('lib/categories/categlib.php');
 
 @ini_set('max_execution_time', 0);	// as pagination is broken and almost every object gets fully loaded on this page
 @ini_set('memory_limit', -1);		// at least try and avoid WSoD on large sites (TODO better still - see r30064)
@@ -362,7 +362,7 @@ if ($prefs['feature_search'] !== 'y' || $prefs['unified_add_to_categ_search'] !=
 	 */
 	function admin_categ_assign( &$max, $data_key, $data = null )
 	{
-		$smarty = TikiLib::lib('smarty');
+		global $smarty;
 
 		if ( is_null($data) ) {
 			$data = array( 'data' => array(), 'cant' => 0 );
@@ -389,7 +389,7 @@ if ($prefs['feature_search'] !== 'y' || $prefs['unified_add_to_categ_search'] !=
 	}
 
 	if ( $prefs['feature_file_galleries'] == 'y' ) {
-		$filegallib = TikiLib::lib('filegal');
+		include_once ('lib/filegals/filegallib.php');
 		$file_galleries = $filegallib->list_file_galleries($offset, -1, 'name_desc', 'admin', $find_objects, $prefs['fgal_root_id']);
 	}
 
@@ -399,12 +399,12 @@ if ($prefs['feature_search'] !== 'y' || $prefs['unified_add_to_categ_search'] !=
 	}
 
 	if ( $prefs['feature_polls'] == 'y' ) {
-		$polllib = TikiLib::lib('poll');
+		include_once ('lib/polls/polllib.php');
 		$polls = $polllib->list_polls($offset, $maxRecords, 'title_asc', $find_objects);
 	}
 
 	if ( $prefs['feature_blogs'] == 'y' ) {
-		$bloglib = TikiLib::lib('blog');
+		require_once('lib/blogs/bloglib.php');
 		$blogs = $bloglib->list_blogs($offset, -1, 'title_asc', $find_objects);
 	}
 
@@ -438,12 +438,12 @@ if ($prefs['feature_search'] !== 'y' || $prefs['unified_add_to_categ_search'] !=
 	}
 
 	if ( $prefs['feature_trackers'] == 'y' ) {
-		$trklib = TikiLib::lib('trk');
+		include_once ('lib/trackers/trackerlib.php');
 		$trackers = $trklib->list_trackers($offset, -1, 'name_asc', $find_objects);
 	}
 
 	if ( $prefs['feature_articles'] == 'y' ) {
-		$artlib = TikiLib::lib('art');
+		global $artlib; require_once 'lib/articles/artlib.php';
 		$articles = $artlib->list_articles($offset, -1, 'title_asc', $find_objects, '', '', $user, '', '', 'n');
 	}
 

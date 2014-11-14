@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -21,7 +21,7 @@ function wikiplugin_slideshow_info()
 				'name' => tra('Theme'),
 				'description' => tra('The theme you want to use for the slideshow, default will be what you choose from the admin panel under Look and Feel for jQuery UI'),
 				'filter' => 'text',
-				'default' => tra('Tiki jQuery UI theme'),
+				'default' => tra('Tiki jQuery UI Theme'),
 				'since' => '7.0',
 				'options' => array(
 					array('text' => tra('None') . ' (' . tra('styled by current theme') . ')', 'value' => 'none'),
@@ -148,10 +148,9 @@ function wikiplugin_slideshow_info()
 
 function wikiplugin_slideshow($data, $params)
 {
-	global $tiki_p_admin, $prefs, $user, $page;
+	global $dbTiki, $tiki_p_admin, $prefs, $user, $page, $tikilib, $smarty;
 	extract($params, EXTR_SKIP);
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
+
 	$theme = (isset($theme) ? $theme : 'default');
 	$themeName = '';
 
@@ -186,7 +185,7 @@ function wikiplugin_slideshow($data, $params)
 		$notesHtml .= '<span class="s5-note">'.$note.'</span>';
 	}
 
-	$headerlib = TikiLib::lib('header');
+	global $headerlib;
 
 	$headerlib->add_js(
 		"window.slideshowSettings = {

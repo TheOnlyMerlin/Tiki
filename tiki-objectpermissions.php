@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -99,7 +99,8 @@ if ( $restrictions = perms_get_restrictions() ) {
 }
 
 if ($_REQUEST['objectType'] == 'wiki page') {
-	$structlib = TikiLib::lib('struct');
+	global $structlib;
+	include_once ('lib/structures/structlib.php');
 	$pageInfoTree = $structlib->s_get_structure_pages($structlib->get_struct_ref_id($_REQUEST['objectId']));
 	if (count($pageInfoTree) > 1) {
 		$smarty->assign('inStructure', 'y');
@@ -112,12 +113,12 @@ if ($_REQUEST['objectType'] == 'wiki page') {
 			$permissionApplier->addObject($sub);
 		}
 	}
-	$cachelib = TikiLib::lib('cache');
+	global $cachelib; include_once('lib/cache/cachelib.php');
 	$cachelib->empty_type_cache('menu_'); $cachelib->empty_type_cache('structure_');
 }
 
 if ( $_REQUEST['objectType'] == 'category' && isset($_REQUEST['propagate_category']) ) {
-	$categlib = TikiLib::lib('categ');
+	global $categlib; require_once 'lib/categories/categlib.php';
 	$descendants = $categlib->get_category_descendants($_REQUEST['objectId']);
 
 	foreach ( $descendants as $child ) {
@@ -651,7 +652,7 @@ function quickperms_get_filegal()
  */
 function quickperms_get_generic()
 {
-	$userlib = TikiLib::lib('user');
+	global $userlib;
 
 	$databaseperms = $userlib->get_permissions(0, -1, 'permName_asc', '', $_REQUEST['permType'], '', true);
 	foreach ($databaseperms['data'] as $perm) {
@@ -706,7 +707,7 @@ function quickperms_get_generic()
  */
 function perms_get_restrictions()
 {
-	$userlib = TikiLib::lib('user');
+	global $userlib;
 	$perms = Perms::get();
 
 	if ( $perms->admin_objects ) {
@@ -734,8 +735,7 @@ function perms_get_restrictions()
  */
 function get_displayed_permissions()
 {
-	global $objectFactory;
-	$smarty = TikiLib::lib('smarty');
+	global $objectFactory, $smarty;
 
 	$currentObject = $objectFactory->get($_REQUEST['objectType'], $_REQUEST['objectId']);
 	$displayedPermissions = $currentObject->getDirectPermissions();

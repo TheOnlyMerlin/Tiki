@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,10 +9,8 @@
 // @params url $returnurl: optional return url
 function smarty_function_payment( $params, $smarty )
 {
-	global $prefs, $user, $globalperms;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$paymentlib = TikiLib::lib('payment');
+	global $tikilib, $prefs, $userlib, $user, $globalperms;
+	global $paymentlib; require_once 'lib/payment/paymentlib.php';
 	$invoice = (int) $params['id'];
 
 	$objectperms = Perms::get('payment', $invoice);
@@ -45,9 +43,9 @@ function smarty_function_payment( $params, $smarty )
 		)
 	) {
 		if ($prefs['payment_system'] == 'cclite' && isset($_POST['cclite_payment_amount']) && $_POST['cclite_payment_amount'] == $info['amount_remaining']) {
-			global $cclitelib; require_once 'lib/payment/cclitelib.php';
-			$access = TikiLib::lib('access');
-			$cartlib = TikiLib::lib('cart');
+			global $access, $cclitelib, $cartlib;
+			require_once 'lib/payment/cclitelib.php';
+			require_once 'lib/payment/cartlib.php';
 
 			//$access->check_authenticity( tr('Transfer currency? %0 %1?', $info['amount'], $info['currency'] ));
 
@@ -89,11 +87,11 @@ function smarty_function_payment( $params, $smarty )
 
 		if (!empty($smarty->tpl_vars['returnurl']->value)) {
 			$returl = $smarty->tpl_vars['returnurl'];
-			$info['returnurl'] = TikiLib::tikiUrl($returl);
+			$info['returnurl'] = preg_match('|^https?://|', $returl) ? $returl : $tikilib->tikiUrl($returl);
 		}
 
 		if (!empty($params['returnurl']) && empty($result)) {
-			$info['url'] = TikiLib::tikiUrl($params['returnurl']);
+			$info['url'] = preg_match('|^https?://|', $params['returnurl']) ? $params['returnurl'] : $tikilib->tikiUrl($params['returnurl']);
 			$info['url'] .= (strstr($params['returnurl'], '.php?') || !strstr($params['returnurl'], '.php')? '&':'?') . "invoice=$invoice";
 		}
 		$smarty->assign('payment_info', $info);

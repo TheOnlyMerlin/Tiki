@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -18,6 +18,8 @@ function smarty_function_debugger($params, $smarty)
 		global $debugger;
 
 		require_once ('lib/debug/debugger.php');
+
+		//global $smarty;
 
 		// Get current URL
 		$smarty->assign('console_father', $_SERVER["REQUEST_URI"]);
@@ -80,7 +82,8 @@ function smarty_function_debugger($params, $smarty)
 
 		$js = '';
 		if ($prefs['feature_jquery_ui'] == 'y') {
-			$headerlib = TikiLib::lib('header');
+			global $headerlib;
+			require_once('lib/headerlib.php');
 			$headerlib->add_jq_onready(
 				"
 \$('#debugconsole').draggable({

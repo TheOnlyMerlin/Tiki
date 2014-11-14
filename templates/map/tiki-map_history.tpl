@@ -6,8 +6,7 @@
 
 {if $diff_style}
 <h2><a href="tiki-map_history.php?mapfile={$mapfile}" title="{tr}Compare{/tr}">{tr}Comparing version {$old.version} with version {$new.version}{/tr}</a></h2>
-<div class="table-responsive">
-<table class="table normal diff">
+<table class="normal diff">
 <tr>
   <th colspan="2"><b>{tr}Version:{/tr} {$old.version}{if $old.version == $info.version} ({tr}Current{/tr}){/if}</b></th>
   <th colspan="2"><b>{tr}Version:{/tr} {$new.version}{if $new.version == $info.version} ({tr}Current{/tr}){/if}</b></th>
@@ -36,7 +35,6 @@
   <td colspan="2" valign="top" ><div class="wikitext">{$new.data}</div></td>
 </tr>
 </table>
-</div>
 {/if}
 
 {if $diff_style eq 'unidiff'}
@@ -87,7 +85,7 @@
 <input type="hidden" name="page" value="{$page|escape}">
 <input type="hidden" name="mapfile" value="{$mapfile}">
 <div style="text-align:center;">
-<div class="panel panel-default"><div class="panel-body"><b>{tr}Legend:{/tr}</b> {tr}v=view{/tr} {if $prefs.default_wiki_diff_style eq "old"}, {tr}c=compare{/tr}, {tr}d=diff{/tr}{/if}</div></div>
+<div class="simplebox"><b>{tr}Legend:{/tr}</b> {tr}v=view{/tr} {if $prefs.default_wiki_diff_style eq "old"}, {tr}c=compare{/tr}, {tr}d=diff{/tr}{/if}</div>
 {if $prefs.default_wiki_diff_style ne "old" and $history}
 <div style=" text-align:right;"><select name="diff_style">
 	<option value="sidediff" {if $diff_style == "sidediff"}selected="selected"{/if}>{tr}Full side-by-side diff{/tr}</option>
@@ -107,11 +105,11 @@
 <th>{tr}Action{/tr}</th>
 {if $prefs.default_wiki_diff_style != "old" and $history}
 <th colspan="2">
-<input type="submit" class="btn btn-default btn-sm" name="compare" value="{tr}Compare{/tr}"><br>
+<input type="submit" class="btn btn-default" name="compare" value="{tr}Compare{/tr}"><br>
 </th>
 {/if}
 </tr>
-
+{cycle values="odd,even" print=false}
 {section name=hist loop=$history step=-1}
 <tr>
 <td class="{cycle advance=false}">{$history[hist].lastModif|tiki_short_datetime}</td>

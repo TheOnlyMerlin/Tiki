@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -52,9 +52,8 @@ class UserPayCredits extends CreditsLib
 
 	function payAmount($creditType, $amount, $invoice)
 	{
-		global $user;
-		$tikilib = TikiLib::lib('tiki');
-		$paymentlib = TikiLib::lib('payment');
+		global $user, $tikilib, $paymentlib;
+		require_once 'lib/payment/paymentlib.php';
 		$userId = $this->get_user_id($user);
 		$uc = $this->getCredits($userId);
 		if ($amount > $uc[$creditType]['remain']) {

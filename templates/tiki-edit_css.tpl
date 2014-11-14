@@ -1,8 +1,8 @@
 {title help="Edit+CSS"}{tr}Edit Style Sheet{/tr}{/title}
 
-<div class="t_navbar">
+<div class="navbar">
 {if ($prefs.feature_view_tpl eq 'y' || $prefs.feature_edit_templates eq 'y') && $tiki_p_edit_templates == 'y'}
-	{button href="tiki-edit_templates.php" class="btn btn-default" _text="{tr}View Templates{/tr}"}
+	{button href="tiki-edit_templates.php" _text="{tr}View Templates{/tr}"}
 {/if}
 </div>
 
@@ -10,8 +10,8 @@
 	{tr}Style Sheet{/tr} : 
 {if $action eq "edit"}
 	<input type="text" name="editstyle" value="{$editstyle}">
-	<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
-	<input type="submit" class="btn btn-default btn-sm" name="save2" value="{tr}Save{/tr} &amp; {tr}Display{/tr}">
+	<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
+	<input type="submit" class="btn btn-default" name="save2" value="{tr}Save{/tr} &amp; {tr}Display{/tr}">
 	{button  href="tiki-edit_css.php?editstyle=$editstyle" _text="{tr}Cancel{/tr}"}
 	{if $tikidomain}
 		{tr}The file will be saved in:{/tr} styles/{$tikidomain}
@@ -32,9 +32,9 @@
 		<option value="{$list[t]|escape}"{if $list[t] eq $editstyle or (empty($editstyle) and $list[t] eq $shortStyle)} selected="selected"{/if}>{$list[t]|escape}</option>
 	{/section}
 	</select>
-	<input type="submit" class="btn btn-default btn-sm" name="try" value="{tr}Try{/tr}">
-	<input type="submit" class="btn btn-default btn-sm" name="display" value="{tr}Display{/tr}">
-	<input type="submit" class="btn btn-default btn-sm" name="edit" value="{tr}Edit{/tr}">
+	<input type="submit" class="btn btn-default" name="try" value="{tr}Try{/tr}">
+	<input type="submit" class="btn btn-default" name="display" value="{tr}Display{/tr}">
+	<input type="submit" class="btn btn-default" name="edit" value="{tr}Edit{/tr}">
 
 	{section name=l loop=$css}
 	<div style="padding:4px;text-align:left">

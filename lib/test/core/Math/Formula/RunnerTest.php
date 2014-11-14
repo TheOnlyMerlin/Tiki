@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -310,8 +310,6 @@ class Math_Formula_RunnerTest extends TikiTestCase
 			array('(str a b)', 'a b'),
 			array('(str (mul 3 2)b)', '6 b'),
 			array('(str Say: (eval a b) !)', 'Say: hello world !'),
-			array('(concat "Say: " a " " b " !")', 'Say: hello world !'),
-			array('(str "Say:" a b "!")', 'Say: a b !'),
 		);
 	}
 }

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -64,10 +64,9 @@ function module_categories_info()
  */
 function module_categories($mod_reference, &$module_params)
 {
-	global $prefs;
+	global $smarty, $prefs;
 	global $user;
-	$smarty = TikiLib::lib('smarty');
-	$categlib = TikiLib::lib('categ');
+	global $categlib; include_once ('lib/categories/categlib.php');
 	if (isset($module_params['type'])) {
 		$type = $module_params['type'];
 		$urlEnd = 'type='.urlencode($type);
@@ -126,7 +125,7 @@ function module_categories($mod_reference, &$module_params)
 		if (!empty($module_params['hideEmpty']) && $module_params['hideEmpty'] === 'y' && $cat['objects'] == 0) {
 			$has_children = false;
 			foreach ($cat['children'] as $child) {
-				if (!empty($categories[$child]['objects'])) {
+				if ($categories[$child]['objects'] != 0) {
 					$has_children = true;
 					break;
 				}

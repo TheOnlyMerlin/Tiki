@@ -8,7 +8,6 @@
 	{tabset}
 		{if not $grid_content eq ''}
 			{tab name="{tr}View{/tr}"}
-                <h2>{tr}View{/tr}</h2>
 				<div id="tiki_sheets_container">
 					<table style="width: 100%;" id="tiki_sheet_container">
 						<tr>
@@ -56,7 +55,6 @@
 		{/if}
 	
 		{tab name="{tr}Date Selection{/tr}"}
-            <h2>{tr}Date Selection{/tr}</h2>
 			<table style="width: 100%;">
 				<tr>
 					<th>{tr}Edit Date{/tr}</th>

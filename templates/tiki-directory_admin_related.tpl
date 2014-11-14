@@ -15,7 +15,7 @@
 {/section}
 
   </select>
-  <input type="submit" class="btn btn-default btn-sm" name="go" value="{tr}Go{/tr}">
+  <input type="submit" class="btn btn-default" name="go" value="{tr}Go{/tr}">
 </form>
 <br>
 <h2>{tr}Add a related directory category{/tr}</h2>
@@ -41,7 +41,7 @@
     </tr>
     <tr>
       <td>&nbsp;</td>
-      <td><input type="submit" class="btn btn-default btn-sm" name="add" value="{tr}Save{/tr}"></td>
+      <td><input type="submit" class="btn btn-default" name="add" value="{tr}Save{/tr}"></td>
     </tr>
   </table>
 </form>
@@ -57,9 +57,9 @@
       <th>{tr}Directory Category{/tr}</th>
       <th>{tr}Action{/tr}</th>
     </tr>
-
+    {cycle values="odd,even" print=false}
     {section name=user loop=$items}
-    <tr>
+    <tr class="{cycle}">
       <td>
 			<select name="categId">
 				{section name=ix loop=$categs}
@@ -67,7 +67,7 @@
 				{/section}
 			</select>
       </td>
-      <td><input type="submit" class="btn btn-default btn-sm" name="remove" value="{tr}Remove{/tr}" /><input type="submit" name="update" value="{tr}Update{/tr}"></td>
+      <td><input type="submit" class="btn btn-default" name="remove" value="{tr}Remove{/tr}" /><input type="submit" name="update" value="{tr}Update{/tr}"></td>
     </tr>
     {sectionelse}
 		{norecords _colspan=2}

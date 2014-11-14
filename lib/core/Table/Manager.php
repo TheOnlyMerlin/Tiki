@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -50,10 +50,10 @@ class Table_Manager
 	/**
 	 * Adds code to header
 	 */
-	private function addToHeader()
+	public function addToHeader()
 	{
 		if (!empty(Table_Code_Manager::$code)) {
-			$headerlib = TikiLib::lib('header');
+			global $headerlib;
 			$headerlib->add_jq_onready(Table_Code_Manager::$code);
 			//need to empty static $code in case there are multiple tables on a page
 			Table_Code_Manager::$code = '';

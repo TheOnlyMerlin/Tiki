@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,8 +12,8 @@ require 'tiki-setup.php';
 
 $access->check_feature('feature_userPreferences');
 
-global $tikidomain;
-$userprefslib = TikiLib::lib('userprefs');
+global $userprefslib, $tikidomain;
+include_once ('lib/userprefs/userprefslib.php');
 // application to display an image from the database with
 // option to resize the image dynamically creating a thumbnail on the fly.
 // you have to check if the user has permission to see this gallery
@@ -30,12 +30,7 @@ $info = $userprefslib->get_user_avatar_img($_REQUEST["user"]);
 $type = $info["avatarFileType"];
 $content = $info["avatarData"];
 if (empty($content)) {
-	if($prefs['user_default_picture_id']){
-		header('Location: tiki-download_file.php?fileId=' . $prefs['user_default_picture_id'] . '&amp;display=y');
-	die;
-	} else {
-		$content = file_get_contents('img/noavatar.png');
-	}
+	$content = file_get_contents('img/noavatar.png');
 }
 header("Content-type: $type");
 echo $content;

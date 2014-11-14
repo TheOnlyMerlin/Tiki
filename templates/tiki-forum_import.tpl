@@ -2,9 +2,9 @@
 
 {title help="Forums" admpage="forums"}{tr}Forum Importer{/tr}{/title}
 
-<div class="t_navbar form-group form-group">
-	{button href="tiki-admin_forums.php" class="btn btn-default" _text="{tr}Admin forums{/tr}"}
-	{button href="tiki-forums.php" class="btn btn-default" _text="{tr}List forums{/tr}"}
+<div class="navbar">
+	{button href="tiki-admin_forums.php" _text="{tr}Admin forums{/tr}"}
+	{button href="tiki-forums.php" _text="{tr}List forums{/tr}"}
 </div>
 {*
  * If this is a new import, start by selecting the import method and we'll
@@ -13,9 +13,9 @@
 {if $step eq 'new'}
 {* This part of the tool is not ready yet, so let's hide it for now...
 
-<div class="panel panel-default">
-<div class="panel-heading">{tr}Import Forum Contents from Tiki's DB and Server{/tr}</div>
-<div class="panel-body">
+<div class="cbox">
+<div class="cbox-title">{tr}Import Forum Contents from Tiki's DB and Server{/tr}</div>
+<div class="cbox-data">
 	<form action="tiki-forum_import.php" method="post">
 	<input type="hidden" name="step1" value="true">
 	<input type="hidden" name="import" value="same">
@@ -23,7 +23,7 @@
 		<tr><td>{tr}Forum Type:{/tr}</td><td>
 		<select name="forum">
 		
-
+		{cycle values="odd,even" print=false}
 		{section name=ftype loop=$fi_types}
 		<option value="{$fi_types[ftype]}">{$fi_types[ftype]}</option>
 		{/section}
@@ -36,7 +36,7 @@
 	</table>
 	<br>
 	<div align="center">
-		<input type="submit" class="btn btn-default btn-sm" value="{tr}Get Forum List{/tr}">
+		<input type="submit" class="btn btn-default" value="{tr}Get Forum List{/tr}">
 	</div>
 	<br>
 	</form>
@@ -44,8 +44,8 @@
 </div>
 <br>
 <div class="cbox">
-<div class="panel-heading">{tr}Import from Another DB or Server{/tr}</div>
-<div class="panel-body">
+<div class="cbox-title">{tr}Import from Another DB or Server{/tr}</div>
+<div class="cbox-data">
 	<form action="tiki-forum_import.php" method="post">
 	<input type="hidden" name="step1" value="true">
 	<input type="hidden" name="import" value="other">
@@ -70,7 +70,7 @@
 	</table>
 	<br>
 	<div align="center">
-		<input type="submit" class="btn btn-default btn-sm" value="Test Connection">
+		<input type="submit" class="btn btn-default" value="Test Connection">
 	</div>
 	<br>
 	</form>
@@ -82,9 +82,9 @@
 <br>
 
 End hiding of unfinished section... *}
-<div class="panel panel-default">
-<div class="panel-heading">{tr}Import from a Local SQL File{/tr}</div>
-<div class="panel-body">
+<div class="cbox">
+<div class="cbox-title">{tr}Import from a Local SQL File{/tr}</div>
+<div class="cbox-data">
 	<form action="tiki-forum_import.php" method="post">
 	<input type="hidden" name="step1" value="true">
 	<input type="hidden" name="import" value="sql">
@@ -93,7 +93,7 @@ End hiding of unfinished section... *}
 		<select name="ftype">
 		
 		{* List all forums that are supported. *}
-
+		{cycle values="odd,even" print=false}
 		{section name=ftype loop=$fi_types}
 		<option value="{$fi_types[ftype]}">{$fi_types[ftype]}</option>
 		{/section}
@@ -109,7 +109,7 @@ End hiding of unfinished section... *}
 	</td></tr>
 	</table>
 	<div align="center">
-		<input type="submit" class="btn btn-default btn-sm" value="{tr}Get Forum List{/tr}">
+		<input type="submit" class="btn btn-default" value="{tr}Get Forum List{/tr}">
 	</div>
 	<br>
 	</form>
@@ -118,9 +118,9 @@ End hiding of unfinished section... *}
 
 {elseif $step eq 'test'}
 
-<div class="panel panel-default">
-<div class="panel-heading">{tr}Verification{/tr}</div>
-<div class="panel-body">
+<div class="cbox">
+<div class="cbox-title">{tr}Verification{/tr}</div>
+<div class="cbox-data">
 	<form action="tiki-forum_import.php" method="post">
 	{if $passed eq 'true'}
 	  <input type="hidden" name="step2" value="true">
@@ -143,9 +143,9 @@ End hiding of unfinished section... *}
 	<p> </p>
 	<div align="center">
 		{if $passed eq 'true'}
-		  <input type="submit" class="btn btn-default btn-sm" value="{tr}Proceed{/tr}">
+		  <input type="submit" class="btn btn-default" value="{tr}Proceed{/tr}">
 		{else}
-		  <input type="submit" class="btn btn-default btn-sm" value="{tr}Go Back{/tr}">
+		  <input type="submit" class="btn btn-default" value="{tr}Go Back{/tr}">
 		{/if}
 	</div>
 	<br>
@@ -156,26 +156,25 @@ End hiding of unfinished section... *}
 {elseif $step eq 'select'}
 
 <form action="tiki-forum_import.php" method="post">
-<div class="panel panel-default">
-<div class="panel-heading">{tr}Select a Forum You Wish to Move (ONE at a time!){/tr}</div>
-<div class="panel-body">
+<div class="cbox">
+<div class="cbox-title">{tr}Select a Forum You Wish to Move (ONE at a time!){/tr}</div>
+<div class="cbox-data">
 	<input type="hidden" name="step3" value="true">
 	<input type="hidden" name="import" value="{$iMethod}">
 	<input type="hidden" name="ftype" value="{$fi_type}">
 	<input type="hidden" name="prefix" value="{$fi_prefix}">
 	<input type="hidden" name="server" value="{$server}">
 
-    <div class="table-responsive">
-    <table class="table normal">
+	<table class="table normal">
 	<tr>
 	<th>Select</th>
 	<th>Forum Name</th>
 	<th>Posts</th>
 	</tr>
 
-
+	{cycle values="odd,even" print=false}
 	{section name=fforum loop=$fromForums}
-	<tr>
+	<tr class="{cycle}">
 	<td>
           <input type="radio" name="fForumid" value="{$fromForums[fforum].id}">
         </td>
@@ -184,14 +183,12 @@ End hiding of unfinished section... *}
 	</tr>
 	{/section}
 	</table>
-    </div>
 </div>
 </div>
 <p> </p>
-<div class="panel panel-default">
-<div class="panel-heading">{tr}Which Forum Do You Wish to Import this Into?{/tr}</div>
-<div class="panel-body">
-    <div class="table-responsive">
+<div class="cbox">
+<div class="cbox-title">{tr}Which Forum Do You Wish to Import this Into?{/tr}</div>
+<div class="cbox-data">
 	<table class="table normal">
 	<tr>
 	<th>Select</th>
@@ -199,9 +196,9 @@ End hiding of unfinished section... *}
 	<th>Posts</th>
 	</tr>
 
-
+	{cycle values="odd,even" print=false}
 	{section name=tforum loop=$toForums}
-	<tr>
+	<tr class="{cycle}">
 	<td>
           <input type="radio" name="tForumid" value="{$toForums[tforum].forumId}">
         </td>
@@ -210,7 +207,6 @@ End hiding of unfinished section... *}
 	</tr>
 	{/section}
 	</table>
-    </div>
 	<br>
 	<div align="center">
 		{if $noforumsF eq 'true'}
@@ -218,7 +214,7 @@ End hiding of unfinished section... *}
 		{elseif $noforumsT eq 'true'}
 			<b><i>There are no forums to migrate into!  Create one first.</i></b>
 		{else}
-			<input type="submit" class="btn btn-default btn-sm" value="Import Forum">
+			<input type="submit" class="btn btn-default" value="Import Forum">
 			<p> </p>
 			<b><i>Please note that by clicking on Import Forum, depending on the size of your SQL file, import may take several minutes.  Please be patient.</i></b>
 		{/if}
@@ -239,7 +235,7 @@ End hiding of unfinished section... *}
 
 		You must select both a source forum and a destination forum!
 		<div align="center">
-			<input type="submit" class="btn btn-default btn-sm" value="{tr}Go Back{/tr}">
+			<input type="submit" class="btn btn-default" value="{tr}Go Back{/tr}">
 		</div>
 		<br>
 		</form>

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,23 +14,27 @@ class Services_Suite_Controller
 
 	public static function getJitsiUrl()
 	{
-		$url = TikiLib::lib('service')->getUrl([
-			'controller' => 'suite',
-			'action' => 'jitsi',
-		]);
-		return TikiLib::tikiUrl($url) . '&username=${username}&password=${password}';
+		$url = TikiLib::lib('service')->getUrl(
+			array(
+				'controller' => 'suite',
+				'action' => 'jitsi'
+			));
+		return TikiLib::tikiUrl($url) . '?username=${username}&password=${password}';
 	}
 
 	function action_jitsi($input)
 	{
 		global $prefs;
 		$config = $prefs['suite_jitsi_configuration'];
-		$config = str_replace(['${username}', '${password}'], [
-			$input->username->none(),
-			$input->password->none(),
-		], $config);
+		$config = str_replace(array('${username}', '${password}'),
+			array(
+				$input->username->none(),
+				$input->password->none()
+			),
+			$config);
+		die($config); // FIXME: we need to do this or in order to omit tiki.tpl
 		return array(
-			'configuration' => $config,
+			'configuration' => $config
 		);
 	}
 }

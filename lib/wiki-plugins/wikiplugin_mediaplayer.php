@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -129,8 +129,7 @@ function wikiplugin_mediaplayer_info()
 }
 function wikiplugin_mediaplayer($data, $params)
 {
-	global $prefs;
-	$access = TikiLib::lib('access');
+	global $prefs, $access;
 	static $iMEDIAPLAYER = 0;
 	$id = 'mediaplayer'.++$iMEDIAPLAYER;
 
@@ -164,7 +163,7 @@ function wikiplugin_mediaplayer($data, $params)
 		$params = array_merge($defaults, $params);
 	}
 	if (!empty($params['src'])) {
-		$headerlib = TikiLib::lib('header');
+		global $headerlib; include_once('lib/headerlib.php');
 		$js = "\n var media_$id = $('#$id').media( {";
 		foreach ($params as $param => $value) {
 			if ($param == 'src') {

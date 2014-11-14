@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -32,8 +32,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 function smarty_block_textarea($params, $content, $smarty, $repeat)
 {
     static $included=false;
-	global $prefs, $is_html, $tiki_p_admin;
-	$headerlib = TikiLib::lib('header');
+	global $prefs, $headerlib, $smarty, $is_html, $tiki_p_admin;
 
 	if ( $repeat ) {
 		return;
@@ -81,7 +80,7 @@ JS
 	$params['name'] = isset($params['name']) ? $params['name'] : 'edit';
 	$params['id'] = isset($params['id']) ? $params['id'] : 'editwiki';
 	$params['area_id'] = isset($params['area_id']) ? $params['area_id'] : $params['id'];	// legacy param for toolbars?
-	$params['class'] = isset($params['class']) ? $params['class'] : 'wikiedit form-control';
+	$params['class'] = isset($params['class']) ? $params['class'] : 'wikiedit';
 	$params['comments'] = isset($params['comments']) ? $params['comments'] : 'n';
 	$params['autosave'] = isset($params['autosave']) ? $params['autosave'] : 'y';
 
@@ -101,6 +100,9 @@ JS
 		global $section;
 		$params['section'] = $section ? $section: 'wiki page';
 	}
+	if ( ! isset($params['style']) && ! isset($params['cols']) ) {
+		$params['style'] = 'width:99%';
+	}
 	$html = '';
     if (!$included) $html .= '<input type="hidden" name="mode_wysiwyg" value="" /><input type="hidden" name="mode_normal" value="" />';
 
@@ -114,7 +116,7 @@ JS
 	if ($params['_simple'] === 'n' && $editWarning) {
 		$remrepeat = false;
 		$html .= smarty_block_remarksbox(
-			array( 'type'=>'warning', 'title'=>tra('Warning')),
+			array( 'type'=>'tip', 'title'=>tra('Tip')),
 			tra('This edit session will expire in') .
 			' <span id="edittimeout">' . (ini_get('session.gc_maxlifetime') / 60) .'</span> '. tra('minutes') . '. ' .
 			tra('<strong>Preview</strong> (if available) or <strong>Save</strong> your work to restart the edit session timer'),
@@ -122,7 +124,7 @@ JS
 			$remrepeat
 		)."\n";
 		if ($prefs['javascript_enabled'] === 'y') {
-			$html = str_replace('<div class="alert alert-warning alert-dismissable">', '<div class="alert alert-warning alert-dismissable" style="display:none;">', $html);	// quickfix to stop this box appearing before doc.ready
+			$html = str_replace('<div class="clearfix rbox tip">', '<div class="clearfix rbox tip" style="display:none;">', $html);	// quickfix to stop this box appearing before doc.ready
 		}
 	}
 
@@ -133,6 +135,7 @@ JS
 
 	if ($prefs['feature_ajax'] == 'y' && $prefs['ajax_autosave'] == 'y' && $params['_simple'] == 'n' && $params['autosave'] == 'y') {
 		// retrieve autosaved content
+		require_once("lib/ajax/autosave.php");
 		$smarty->loadPlugin('smarty_block_self_link');
 		$auto_save_referrer = TikiLib::lib('autosave')->ensureReferrer();
 		if (empty($_REQUEST['autosave'])) {
@@ -164,132 +167,52 @@ JS
 
 		$wysiwyglib = TikiLib::lib('wysiwyg');
 
-        // set up wikiLingo wysiwyg
-        if ($prefs['feature_wikilingo'] != 'y' || $params['useWikiLingo'] != true) {
-            if (!isset($params['name'])) {
-                $params['name'] = 'edit';
-            }
+		if ($prefs['feature_jison_wiki_parser'] == 'y') {
+			$html .= $wysiwyglib->setUpJisonEditor($params['_is_html'], $as_id, $params, $auto_save_referrer);
+            if (!$included) $html .= '<input name="jisonWyisywg" type="hidden" value="true" />';
+			$html .= '<div class="wikiedit ui-widget-content" name="'.$params['name'].'" id="'.$as_id.'">' . ($content) . '</div>';
+		} else {
+			// set up ckeditor
+			if (!isset($params['name'])) {
+				$params['name'] = 'edit';
+			}
 
-            $ckoptions = $wysiwyglib->setUpEditor($params['_is_html'], $as_id, $params, $auto_save_referrer);
+			$ckoptions = $wysiwyglib->setUpEditor($params['_is_html'], $as_id, $params, $auto_save_referrer);
 
-            if (!$included) {
-                $html .= '<input type="hidden" name="wysiwyg" value="y" />';
-            }
-            $html .= '<textarea class="wikiedit" name="'.$params['name'].'" id="'.$as_id.'" style="visibility:hidden;';	// missing closing quotes, closed in condition
+			if (!$included) {
+				$html .= '<input type="hidden" name="wysiwyg" value="y" />';
+			}
+			$html .= '<textarea class="wikiedit" name="'.$params['name'].'" id="'.$as_id.'" style="visibility:hidden;';	// missing closing quotes, closed in condition
 
-            if (empty($params['cols'])) {
-                $html .= 'width:100%;'. (empty($params['rows']) ? 'height:500px;' : '') .'"';
-            } else {
-                $html .= '" cols="'.$params['cols'].'"';
-            }
-            if (!empty($params['rows'])) {
-                $html .= ' rows="'.$params['rows'].'"';
-            }
-            $html .= '>'.htmlspecialchars($content).'</textarea>';
+			if (empty($params['cols'])) {
+				$html .= 'width:100%;'. (empty($params['rows']) ? 'height:500px;' : '') .'"';
+			} else {
+				$html .= '" cols="'.$params['cols'].'"';
+			}
+			if (!empty($params['rows'])) {
+				$html .= ' rows="'.$params['rows'].'"';
+			}
+			$html .= '>'.htmlspecialchars($content).'</textarea>';
 
-            $headerlib->add_jq_onready(
-                '
+			$headerlib->add_jq_onready(
+				'
 CKEDITOR.replace( "'.$as_id.'",' . $ckoptions . ');
 CKEDITOR.on("instanceReady", function(event) {
-if (typeof ajaxLoadingHide == "function") { ajaxLoadingHide(); }
-this.instances.'.$as_id.'.resetDirty();
+	if (typeof ajaxLoadingHide == "function") { ajaxLoadingHide(); }
+	this.instances.'.$as_id.'.resetDirty();
 });
 ',
-                20
-            );	// after dialog tools init (10)
+				20
+			);	// after dialog tools init (10)
+		}
 
-        }
-        //setup wikiLingo without wysiwyg
-        else
-        {
-            $scripts = new WikiLingo\Utilities\Scripts("vendor/wikilingo/wikilingo/editor/");
-            $parserWYSIWYG = new WikiLingoWYSIWYG\Parser($scripts);
-	        require_once('lib/wikiLingo_tiki/WikiLingoWYSIWYGEvents.php');
-	        (new WikiLingoWYIWYGEvents($parserWYSIWYG));
-
-            $contentSafe = $parserWYSIWYG->parse($content);
-            $expressionSyntaxes = new WikiLingoWYSIWYG\ExpressionSyntaxes($scripts);
-
-            //register expression types so that they can be turned into json and sent to browser
-            $expressionSyntaxes->registerExpressionTypes();
-
-            $expressionSyntaxesJson = json_encode($expressionSyntaxes->parsedExpressionSyntaxes);
-            $wLPlugins = json_encode($parserWYSIWYG->plugins);
-            $name = $params['name'];
-            $parserWYSIWYG->scripts
-                ->addCssLocation("vendor/mediumjs/mediumjs/medium.css")
-                ->addCssLocation("vendor/wikilingo/wikilingo/editor/bubble.css")
-                ->addCssLocation("vendor/wikilingo/wikilingo/editor/pastLink.css")
-                ->addCssLocation("vendor/wikilingo/wikilingo/editor/IcoMoon/sprites/sprites.css")
-                ->addCss(".wikiedit.wikilingo{min-height:500px;}");
-            $css = $parserWYSIWYG->scripts->renderCss();
-            $html .= <<<HTML
-$css
-<div
-    id="$as_id-ui"
-    class="wikiedit wikilingo ui-widget-content"
-    contenteditable="true"
-    onchange="this.input.value = this.innerHTML">$contentSafe</div>
-<input type="hidden" name="$name" id="$as_id"/>
-<script>
-var ui = document.getElementById('$as_id-ui'),
-    input = document.getElementById('$as_id');
-
-ui.input = input;
-input.value = ui.innerHTML;
-
-window.expressionSyntaxes = $expressionSyntaxesJson;
-window.wLPlugins = $wLPlugins;
-</script>
-HTML
-;
-            $headerlib
-                //->add_jsfile("vendor/wikilingo/wikilingo/editor/editor.js")
-                //add some javascript
-                ->add_jsfile("vendor/undojs/undojs/undo.js")
-                ->add_jsfile("vendor/rangy/rangy/uncompressed/rangy-core.js")
-                ->add_jsfile("vendor/rangy/rangy/uncompressed/rangy-cssclassapplier.js")
-                ->add_jsfile("vendor/mediumjs/mediumjs/medium.js")
-
-
-                ->add_jsfile("vendor/wikilingo/wikilingo/editor/WLExpressionUI.js")
-                ->add_jsfile("vendor/wikilingo/wikilingo/editor/WLPluginEditor.js")
-                ->add_jsfile("vendor/wikilingo/wikilingo/editor/WLPluginAssistant.js")
-                ->add_jsfile("vendor/wikilingo/wikilingo/editor/bubble.js")
-                ->add_jsfile("lib/wikiLingo_tiki/tiki_wikiLingo_edit.js")
-
-                ->add_js(<<<JS
-(new WikiLingoEdit(document.getElementById('$as_id-ui'), document.getElementById('$as_id')));
-$(function() {
-    $('#$as_id-ui').after(
-        $('<a class="ui-button" style="float:right;" href="' + document.location + '&wysiwyg=n">' + tr('Edit Source') + '</a>')
-            .button()
-    );
-});
-JS
-);
-
-            //join wikiLingo's scripts with tiki's
-            foreach($scripts->scriptLocations as $scriptLocation) {
-                $headerlib->add_jsfile($scriptLocation);
-            }
-
-            foreach($scripts->scripts as $script) {
-                $headerlib->add_js($script);
-            }
-        }
 	} else {
 		// end of if ( $params['_wysiwyg'] == 'y' && $params['_simple'] == 'n')
 
 		// setup for wiki editor
 
-        //when wikiLingo enabled
-        if ($prefs['feature_wikilingo'] === 'y') {
-            $headerlib->add_jsfile("lib/wikiLingo_tiki/tiki_wikiLingo_edit.js");
-        }
-
 		$params['rows'] = !empty($params['rows']) ? $params['rows'] : 20;
-//		$params['cols'] = !empty($params['cols']) ? $params['cols'] : 80;
+		$params['cols'] = !empty($params['cols']) ? $params['cols'] : 80;
 
 		$textarea_attributes = '';
 		foreach ($params as $k => $v) {
@@ -335,7 +258,7 @@ function editTimerTick() {
 
 	if ( edittimeout && seconds <= 300 ) {
 		if ( ! editTimeoutTipIsDisplayed ) {
-			edittimeout.parents('.alert:first').fadeIn();
+			edittimeout.parents('.rbox:first').fadeIn();
 			editTimeoutTipIsDisplayed = true;
 		}
 		if ( seconds > 0 && seconds % 60 == 0 ) {
@@ -361,7 +284,7 @@ function editTimerTick() {
 
 \$('document').ready( function() {
 	editTimeoutIntervalId = setInterval(editTimerTick, 1000);
-	\$('#edittimeout').parents('.alert:first').hide();
+	\$('#edittimeout').parents('.rbox:first').hide();
 } );
 
 // end edit timeout warnings
@@ -430,6 +353,28 @@ function admintoolbar() {
 	window.needToConfirm=false;
 	window.location="tiki-admin_toolbars.php";
 }';
+		}
+
+		if ( $prefs['feature_jquery_ui'] == 'y' && $params['_wysiwyg'] != 'y') {
+			// show hidden parent before applying resizable
+			$js_editconfirm .= "
+	var hiddenParents = \$('#$as_id').parents('fieldset:hidden:last');
+
+	if (hiddenParents.length) { hiddenParents.show(); }";
+
+			if (!isset($_REQUEST['fullcalendar'])) {
+				$js_editconfirm .= "
+	if (typeof CodeMirror === 'undefined') { //so as not to conflict with CodeMirror resize
+		\$('#$as_id')
+			.resizable( {
+				minWidth: \$('#$as_id').width(),
+				minHeight: 50
+		});
+	}";
+			}
+			$js_editconfirm .= "
+	if (hiddenParents.length) { hiddenParents.hide(); }
+";
 		}
 
 		if ( $editWarning ) {

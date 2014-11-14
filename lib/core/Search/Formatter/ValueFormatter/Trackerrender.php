@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +10,6 @@ class Search_Formatter_ValueFormatter_Trackerrender extends Search_Formatter_Val
 	private $list_mode = 'n';
 	private $cancache = null;
 	private $editable = false;
-	private $group = false;
 
 	function __construct($arguments)
 	{
@@ -22,15 +21,8 @@ class Search_Formatter_ValueFormatter_Trackerrender extends Search_Formatter_Val
 			}
 		}
 
-		if (isset($arguments['editable'])) {
-			$parts = explode(' ', $arguments['editable']);
-			$editable = array_shift($parts);
-			$group = array_shift($parts);
-
-			if (in_array($editable, array('block', 'inline', 'dialog'))) {
-				$this->editable = $editable;
-				$this->group = $group;
-			}
+		if (isset($arguments['editable']) && in_array($arguments['editable'], array('block', 'inline'))) {
+			$this->editable = $arguments['editable'];
 		}
 	}
 
@@ -65,11 +57,6 @@ class Search_Formatter_ValueFormatter_Trackerrender extends Search_Formatter_Val
 
 		$this->cancache = ! in_array($field['type'], array('STARS', 's'));	// don't cache ratings fields
 
-		if ($this->editable) {
-			// Caching breaks inline editing
-			$this->cancache = false;
-		}
-
 		$item = array();
 		if ($entry['object_type'] == 'trackeritem') {
 			$item['itemId'] = $entry['object_id'];
@@ -84,7 +71,6 @@ class Search_Formatter_ValueFormatter_Trackerrender extends Search_Formatter_Val
 				'search_render' => 'y',
 				'list_mode' => $this->list_mode,
 				'editable' => $this->editable,
-				'editgroup' => $this->group,
 			)
 		);
 		return '~np~' . $rendered . '~/np~';

@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -121,7 +121,7 @@ if ( $_SERVER['REQUEST_METHOD'] === 'GET' && $_SERVER['REQUEST_URI'] === $_SERVE
 	}
 
 	print_debug("\n=== handle() ===\n");
-	$filegallib = TikiLib::lib('filegal');
+	global $filegallib; require_once('lib/filegals/filegallib.php');
 	$server->handle($backend, $path); 
 	print_debug("\n=== end handle() ===\n");
 }

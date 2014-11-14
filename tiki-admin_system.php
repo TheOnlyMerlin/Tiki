@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,15 +14,16 @@ $access->check_permission(array('tiki_p_clean_cache'));
 $done = '';
 $output = '';
 $buf = '';
-$cachelib = TikiLib::lib('cache');
+global $cachelib;
+include_once ('lib/cache/cachelib.php');
 if (isset($_GET['do'])) {
 	$cachelib->empty_cache($_GET['do']);
 	if ($_GET['do'] === 'all') {
 		// seems combination of clearing prefs and public now messes up the page, so reload (tiki 11)
 		include_once('lib/setup/prefs.php');
 		initialize_prefs();
-		include('lib/setup/mobile.php');
 		include('lib/setup/javascript.php');
+		include('lib/setup/mobile.php');
 	}
 }
 if (isset($_GET['compiletemplates'])) {

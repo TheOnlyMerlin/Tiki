@@ -1,4 +1,9 @@
 {* $Id$ *}
+<div class="navbar">
+	{button href="tiki-browse_categories.php" _text="{tr}Browse categories{/tr}"}
+	{button href="tiki-admin_categories.php" _text="{tr}Administer categories{/tr}"}
+	{button href="tiki-edit_categories.php" _text="{tr}Organize Objects{/tr}" _title="{tr}Organize Objects{/tr}"}	
+</div>
 {if !empty($feedbacks) || !empty($assignWikiCategories)}
 	{remarksbox type="feedback" title="{tr}Feedback{/tr}"}
 		{tr}Ok{/tr}
@@ -7,29 +12,16 @@
 
 <form action="tiki-admin.php?page=category" method="post">
 	<input type="hidden" name="categorysetup" />
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-			<a role="button" class="btn btn-default btn-sm" href="tiki-browse_categories.php" title="{tr}List{/tr}">
-				{icon name="list"} {tr}Browse Categories{/tr}
-			</a>
-			<a role="button" class="btn btn-default btn-sm" href="tiki-admin_categories.php" title="{tr}Administration{/tr}">
-				{icon name="administer"} {tr}Administer Categories{/tr}
-			</a>
-			<a role="button" class="btn btn-default btn-sm" href="tiki-edit_categories.php" title="{tr}Organize Objects{/tr}">
-				{icon name="sort"} {tr}Organize Objects{/tr}
-			</a>
-			<div class="pull-right">
-                <input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-            </div>
-        </div>
-    </div>
+	<div class="input_submit_container clear" style="text-align: right;">
+		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+	</div>
 
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Activate the feature{/tr}</legend>
 		{preference name=feature_categories visible="always"}
 	</fieldset>	
 
-	<fieldset class="table">
+	<fieldset class="admin">
 		<legend>{tr}Plugins{/tr}</legend>
 		{preference name=wikiplugin_category}
 		{preference name=wikiplugin_catpath}
@@ -99,12 +91,7 @@
 		{preference name=category_browse_count_objects}
 	</fieldset>
 
-    <br>{* I cheated. *}
-    <div class="row">
-        <div class="form-group col-lg-12 clearfix">
-			<div class="text-center">
-                <input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-            </div>
-        </div>
-    </div>
+	<div class="input_submit_container clear" style="text-align: center;">
+		<input type="submit" class="btn btn-default" value="{tr}Change preferences{/tr}" />
+	</div>
 </form>

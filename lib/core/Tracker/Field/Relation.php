@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -86,9 +86,13 @@ class Tracker_Field_Relation extends Tracker_Field_Abstract
 
 		$data = array();
 		if (! $this->getOption(self::OPT_READONLY) && isset($requestData[$insertId])) {
-			$selector = TikiLib::lib('objectselector');
-			$entries = $selector->readMultiple($requestData[$insertId]);
-			$data = array_map('strval', $entries);
+			if (is_string($requestData[$insertId])) {
+				$data = explode("\n", $requestData[$insertId]);
+				$data = array_filter($data);
+			} else {
+				$data = (array) $requestData[$insertId];
+			}
+			$data = array_unique(array_filter($data));
 		} else {
 			$data = $this->getRelations($this->getOption(self::OPT_RELATION));
 		}

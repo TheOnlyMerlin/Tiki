@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,18 +10,12 @@ class TikiDb_Table
 	protected $db;
 	protected $tableName;
 	protected $autoIncrement;
-	protected $errorMode = TikiDb::ERR_DIRECT;
 
 	function __construct($db, $tableName, $autoIncrement = true)
 	{
 		$this->db = $db;
 		$this->tableName = $tableName;
 		$this->autoIncrement = $autoIncrement;
-	}
-
-	function useExceptions()
-	{
-		$this->errorMode = TikiDb::ERR_EXCEPTION;
 	}
 
 	/**
@@ -37,7 +31,7 @@ class TikiDb_Table
 		$bindvars = array();
 		$query = $this->buildInsert($values, $ignore, $bindvars);
 
-		$this->db->queryException($query, $bindvars);
+		$this->db->query($query, $bindvars);
 
 		if ($this->autoIncrement) {
 			return $this->db->lastInsertId();
@@ -53,7 +47,7 @@ class TikiDb_Table
 		$query .= ' ON DUPLICATE KEY UPDATE ';
 		$query .= $this->buildUpdateList($data, $bindvars);
 
-		$this->db->queryException($query, $bindvars);
+		$this->db->query($query, $bindvars);
 
 		if ($this->autoIncrement) {
 			return $this->db->lastInsertId();
@@ -69,7 +63,7 @@ class TikiDb_Table
 		$bindvars = array();
 		$query = $this->buildDelete($conditions, $bindvars) . ' LIMIT 1';
 
-		return $this->db->queryException($query, $bindvars);
+		return $this->db->query($query, $bindvars);
 	}
 
 	/**
@@ -90,7 +84,7 @@ class TikiDb_Table
 			$query .= ' LIMIT ' . intval($limit);
 		}
 
-		return $this->db->queryException($query, $bindvars);
+		return $this->db->query($query, $bindvars);
 	}
 
 
@@ -106,7 +100,7 @@ class TikiDb_Table
 		$bindvars = array();
 		$query = $this->buildDelete($conditions, $bindvars);
 
-		return $this->db->queryException($query, $bindvars);
+		return $this->db->query($query, $bindvars);
 	}
 
 	function fetchOne($field, array $conditions, $orderClause = null)
@@ -195,7 +189,7 @@ class TikiDb_Table
 		$query .= $this->buildConditions($conditions, $bindvars);
 		$query .= $this->buildOrderClause($orderClause);
 
-		return $this->db->fetchAll($query, $bindvars, $numrows, $offset, $this->errorMode);
+		return $this->db->fetchAll($query, $bindvars, $numrows, $offset);
 	}
 
 	function expr($string, $arguments = array())

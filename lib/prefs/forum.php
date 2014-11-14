@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,14 +8,6 @@
 function prefs_forum_list()
 {
 	return array(
-		'forum_image_file_gallery' => array(
-			'name' => tr('Forum image file gallery'),
-			'description' => tr('File gallery used to store images for forums'),
-			'type' => 'text',
-			'default' => 0,
-			'profile_reference' => 'file_gallery',
-			'dependencies' => ['feature_file_galleries'],
-		),
 		'forum_comments_no_title_prefix' => array(
 			'name' => tra("Do not prefix messages titles by 'Re: '"),
             'description' => tra(''),
@@ -160,12 +152,6 @@ function prefs_forum_list()
 			'type' => 'flag',
 			'default' => 'n',
 			'dependencies' => array('feature_categories'),
-		),
-		'forum_inbound_mail_ignores_perms' => array(
-			'name' => tr('Allow inbound email posts from anyone'),
-			'description' => tr('Allow posts from non-users in forums using inbound posts from a specified email address.'),
-			'type' => 'flag',
-			'default' => 'n',
 		),
 		'forum_inbound_mail_parse_html' => array(
 			'name' => tr('Parse HTML in inbound email posts'),

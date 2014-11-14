@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -107,7 +107,7 @@ function wikiplugin_galleriffic_info()
 
 function wikiplugin_galleriffic($data, $params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	static $igalleriffic = 0;
 	$smarty->assign('igalleriffic', $igalleriffic++);
 	$plugininfo = wikiplugin_galleriffic_info();
@@ -174,7 +174,7 @@ $jq = <<<JQ
         enableKeyboardNavigation:  false, // Specifies whether keyboard navigation is enabled
         autoStart:                 $autoStart, // Specifies whether the slideshow should be playing or paused when the page first loads
         syncTransitions:           false, // Specifies whether the out and in transitions occur simultaneously or distinctly
-        defaultTransitionDuration: 1000   // If using the default transitions, specifies the duration of the transitions
+        defaultTransitionDuration: 1000, // If using the default transitions, specifies the duration of the transitions
     });
 \$('div.gcontent').css({'width' : '$imgWidth'});
 \$('div.loader').css({'width' : '$imgWidth', 'height' : '$imgHeight'});

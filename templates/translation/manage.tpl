@@ -1,10 +1,3 @@
-{extends 'layout_view.tpl'}
-
-{block name="title"}
-	{title}{$title|escape}{/title}
-{/block}
-
-{block name="content"}
 {if $translations|@count}
 	<p>{tr}Current translation set:{/tr}</p>
 	<ul>
@@ -31,11 +24,10 @@
 			<div>
 				<input type="hidden" name="type" value="{$type|escape}">
 				<input type="hidden" name="source" value="{$source|escape}">
-				<input type="submit" class="btn btn-default btn-sm" value="{tr}Add{/tr}">
+				<input type="submit" class="btn btn-default" value="{tr}Add{/tr}">
 			</div>
 		</form>
 	{else}
 		<p>{tr}All possible translations exist.{/tr}</p>
 	{/if}
 {/if}
-{/block}

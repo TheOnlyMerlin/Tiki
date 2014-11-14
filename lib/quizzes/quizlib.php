@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -1063,6 +1063,8 @@ class QuizLib extends TikiLib
 		return "quiz_uploads/";
 	}
 }
+$quizlib = new QuizLib;
+
 
 // Find the next non-blank or return -1
 /**
@@ -1103,7 +1105,7 @@ function NextBlank($text)
  */
 function quizlib_error_exit($s)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	$smarty->assign('msg', $s);
 
 	$smarty->display("error.tpl");
@@ -1398,7 +1400,7 @@ class Quiz
 	public function Quiz()
 	{
 		global $user;
-		$userlib = TikiLib::lib('user');
+		global $userlib;
 		$this->dbFields = array(
 				"id",
 				"bDeleted",
@@ -1472,7 +1474,7 @@ class Quiz
      */
     public function show_html()
 	{
-		$userlib = TikiLib::lib('user');
+		global $userlib;
 		$lines = array();
 		$lines[] = "id = " . $this->id . "<br />";
 		$lines[] = "deleted = " . $this->deleted . "<br />";

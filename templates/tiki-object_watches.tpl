@@ -3,8 +3,8 @@
 {title help="Mail notifications"}{$smarty.capture.default}{/title}
 
 {if isset($referer)}
-	<div class="t_navbar">
-		{button href="$referer" class="btn btn-default" _text="{tr}Back{/tr}"}
+	<div class="navbar">
+		{button href="$referer" _text="{tr}Back{/tr}"}
 	</div>
 {/if}
 
@@ -49,13 +49,12 @@
 
 <form method="post" action="{$smarty.server.REQUEST_URI|escape}">
 <input type="hidden" name="referer" value="{$referer|escape}">
-<div style="float: left; margin-right: 10px;"><input type="submit" class="btn btn-default btn-sm" name="assign" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}"></div>
+<div style="float: left; margin-right: 10px;"><input type="submit" class="btn btn-default" name="assign" value="{tr}Apply{/tr}"></div>
 {if $isTop ne 'y'}
 	<p>{tr}Groups watching:{/tr} {$group_watches|@count}</p>
 {else}
 	<p>&nbsp;</p>
 {/if}
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
 		{if !empty($cat) && !empty($desc)}
@@ -71,14 +70,14 @@
 		<th style="width:100%">{tr}Groups{/tr}</th>
 		{/if}
 	</tr>
-
+	{cycle values="odd,even" print=false}
 	{foreach from=$all_groups item=g key=i}
 		{if $g ne 'Anonymous'}
-			<tr>
+			<tr class="{cycle}">
 				{if !empty($cat) && !empty($desc)}
 					<td class="text"><label for="group_watch{$i}">{$g|escape}</label></td>
 					{if $isTop ne 'y'}
-						<td class="checkbox-cell"><input id="group_watch{$i}"type="checkbox" name="checked[]"
+						<td class="checkbox"><input id="group_watch{$i}"type="checkbox" name="checked[]" 
 						value="{$g|escape}"{if in_array($g, $group_watches)} checked="checked"{/if}></td>
 					{/if}
 					<td class="text">
@@ -91,7 +90,7 @@
 					</td>
 					
 				{else}
-				<td class="checkbox-cell"><input id="group_watch{$i}" type="checkbox" name="checked[]" value="{$g|escape}"
+				<td class="checkbox"><input id="group_watch{$i}" type="checkbox" name="checked[]" value="{$g|escape}"
 					{if in_array($g, $group_watches)} checked="checked"{/if}></td>
 				<td class="text"><label for="group_watch{$i}">{$g|escape}</label></td>
 				{/if}
@@ -99,6 +98,5 @@
 		{/if}
 	{/foreach}
 </table>
-</div>
-	<p><div style="float: left; margin-right: 10px;"><input type="submit" class="btn btn-default btn-sm" name="assign" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}"></div></p>
+	<p><div style="float: left; margin-right: 10px;"><input type="submit" class="btn btn-default" name="assign" value="{tr}Apply{/tr}"></div></p>
 </form>

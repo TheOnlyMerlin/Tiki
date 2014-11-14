@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -63,13 +63,8 @@ function wikiplugin_draw_info()
 
 function wikiplugin_draw($data, $params)
 {
-	global $tiki_p_edit, $tiki_p_admin, $tiki_p_upload_files, $prefs, $user, $page;
-	$headerlib = TikiLib::lib('header');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
-	$filegallib = TikiLib::lib('filegal');
-	$globalperms = Perms::get();
-
+	global $dbTiki, $tiki_p_edit, $tiki_p_admin,$tiki_p_upload_files, $prefs, $user, $page, $tikilib, $smarty, $headerlib, $globalperms;
+	global $filegallib; include_once ('lib/filegals/filegallib.php');
 	extract(array_merge($params, array()), EXTR_SKIP);
 
 	static $drawIndex = 0;
@@ -131,7 +126,7 @@ JQ
 		~np~
 		<form id="newDraw$drawIndex" method="get" action="tiki-edit_draw.php">
 			<p>
-				<input type="submit" class="btn btn-default btn-sm" name="label" value="$label" class="newSvgButton" />$in
+				<input type="submit" name="label" value="$label" class="newSvgButton" />$in
 				<select name="galleryId">
 					$galHtml
 				</select>
@@ -162,7 +157,7 @@ EOF;
 		if ($globalperms->view_file_gallery != 'y') return "";
 
 		$label = tra('Edit SVG Image');
-		$ret = '<div type="image/svg+xml" class="svgImage pluginImg table-responsive' . $fileInfo['fileId'] . '" style="' .
+		$ret = '<div type="image/svg+xml" class="svgImage pluginImg' . $fileInfo['fileId'] . '" style="' .
 			(isset($height) ? "height: $height;" : "" ).
 			(isset($width) ? "width: $width;" : "" )
 		. '">' . $fileInfo['data'] . '</div>';

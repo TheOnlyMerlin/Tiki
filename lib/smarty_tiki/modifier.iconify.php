@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -20,23 +20,14 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
  * -------------------------------------------------------------
  */
 
-function smarty_modifier_iconify($string, $filetype = null, $fileId = null)
+function smarty_modifier_iconify($string, $filetype = null)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 
 	$smarty->loadPlugin('smarty_function_icon');
 	$icon = '';
 	$ext = strtolower(substr($string, strrpos($string, '.') + 1));
-	if ($fileId && substr($filetype, 0, 6) == 'image/') {
-		// Special handling for file gallery images,
-		// display thumbnail
-		$smarty->loadPlugin('smarty_modifier_sefurl');
-		$smarty->loadPlugin('smarty_modifier_escape');
-		$icon = smarty_modifier_sefurl($fileId, 'thumbnail');
-		$icon = smarty_modifier_escape($icon);
-
-		return "<img src=\"$icon\" width=\"16\"/>";
-	} elseif (file_exists("img/icons/mime/$ext.png")) {
+	if (file_exists("img/icons/mime/$ext.png")) {
 		$icon = $ext;
 	} elseif (file_exists('img/icons/mime/' . substr($ext, 0, 3) . '.png')) {
 		$icon = substr($ext, 0, 3);
@@ -59,7 +50,6 @@ function smarty_modifier_iconify($string, $filetype = null, $fileId = null)
 		array(
 			'_id' => 'img/icons/mime/'.$icon.'.png',
 			'alt' => ( $filetype === null ? $icon : $filetype ),
-			'width' => $width,
 			'class' => ''
 		),
 		$smarty
