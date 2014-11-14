@@ -110,10 +110,7 @@ JQ
 	static function restoreFutureLinkPhrasesInWikiPage($items, $phrase = "")
 	{
         //TODO: abstract
-		$headerlib = TikiLib::lib('header');
-		$tikilib = TikiLib::lib('tiki');
-		$smarty = TikiLib::lib('smarty');
-
+		global $tikilib, $headerlib, $smarty;
 		$phrase = JisonParser_Phraser_Handler::superSanitize($phrase);
 		$phrases = array();
 		$phraseMatchIndex = -1;
@@ -179,10 +176,7 @@ JQ
 
 	static function restorePastLinkPhrasesInWikiPage($items, $phrase = "")
 	{
-		$headerlib = TikiLib::lib('header');
-		$tikilib = TikiLib::lib('tiki');
-		$smarty = TikiLib::lib('smarty');
-
+		global $tikilib, $headerlib, $smarty;
 		$phrase = JisonParser_Phraser_Handler::superSanitize($phrase);
 		$phrases = array();
 		$phraseMatchIndex = -1;
@@ -249,8 +243,7 @@ JQ
 
 	static function restorePhrasesInWikiPage(JisonParser_Phraser_Handler $phraser, $phrases)
 	{
-		$headerlib = TikiLib::lib('header');
-		$smarty = TikiLib::lib('smarty');
+		global $headerlib, $smarty;
 		//TODO - not sure the tablesorter js and css files need to be loaded since they are loaded in tiki-setup
 		$headerlib
 			->add_jsfile('vendor/jquery/plugins/tablesorter/js/jquery.tablesorter.js')

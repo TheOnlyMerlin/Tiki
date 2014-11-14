@@ -38,8 +38,7 @@ function wikiplugin_jq_info()
 	
 function wikiplugin_jq($data, $params)
 {
-	global $prefs;
-	$headerlib = TikiLib::lib('header');
+	global $headerlib, $prefs;
 	extract($params, EXTR_SKIP);
 	
 	$nojquery = isset($nojquery) ? $nojquery : tr('<!-- jq plugin inactive: JavaScript off -->');

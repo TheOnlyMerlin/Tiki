@@ -56,21 +56,21 @@ function smarty_block_remarksbox($params, $content, $smarty, &$repeat)
 	switch ($type) {
 	case 'warning':
 		$class = 'alert-warning';
-		$icon = 'warning';
+		$icon = 'flash';
 		break;
 	case 'error':
 	case 'errors':
 		$class = 'alert-danger';
-		$icon = 'error';
+		$icon = 'fire';
 		break;
 	case 'confirm':
 	case 'feedback':
 		$class = 'alert-success';
-		$icon = 'success';
+		$icon = 'ok';
 		break;
 	default:
 		$class = 'alert-info';
-		$icon = 'information';
+		$icon = 'info-sign';
 		break;
 	}
 	

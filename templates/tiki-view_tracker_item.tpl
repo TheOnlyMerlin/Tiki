@@ -6,24 +6,24 @@
 	{* --------- navigation ------ *}
 	<div class="t_navbar">
 		<div class="pull-right btn-group">
-			{self_link print='y' _class="btn btn-default"}{icon name="print"}{/self_link}
+			{self_link print='y' _class="btn btn-default"}{icon _id='printer' hspace='1' alt="{tr}Print{/tr}"}{/self_link}
 			{if $item_info.logs.cant}
-				<a class="btn btn-default" class="link" href="tiki-tracker_view_history.php?itemId={$itemId}" title="{tr}History{/tr}">{icon name="history"}</a>
+				<a class="btn btn-default" class="link" href="tiki-tracker_view_history.php?itemId={$itemId}" title="{tr}History{/tr}">{glyph name=book}</a>
 			{/if}
 			{monitor_link type=trackeritem object=$itemId}
 			{if $prefs.feature_user_watches eq 'y' and $tiki_p_watch_trackers eq 'y'}
 				{if $user_watching_tracker ne 'y'}
-					<a class="btn btn-default" href="tiki-view_tracker_item.php?trackerId={$trackerId}&amp;itemId={$itemId}&amp;watch=add" title="{tr}Monitor{/tr}">{icon name="watch"}</a>
+					<a class="btn btn-default" href="tiki-view_tracker_item.php?trackerId={$trackerId}&amp;itemId={$itemId}&amp;watch=add" title="{tr}Monitor{/tr}">{icon _id='eye' align="right" hspace="1" alt="{tr}Monitor{/tr}"}</a>
 				{else}
-					<a class="btn btn-default" href="tiki-view_tracker_item.php?trackerId={$trackerId}&amp;itemId={$itemId}&amp;watch=stop" title="{tr}Stop Monitor{/tr}">{icon name="stop-watching"}</a>
+					<a class="btn btn-default" href="tiki-view_tracker_item.php?trackerId={$trackerId}&amp;itemId={$itemId}&amp;watch=stop" title="{tr}Stop Monitor{/tr}">{icon _id='no_eye' align="right" hspace="1" alt="{tr}Stop Monitor{/tr}"}</a>
 				{/if}
 			{/if}
 			{if $prefs.feature_group_watches eq 'y' and ( $tiki_p_admin_users eq 'y' or $tiki_p_admin eq 'y' )}
-				<a class="btn btn-default" href="tiki-object_watches.php?objectId={$itemId|escape:"url"}&amp;watch_event=tracker_item_modified&amp;objectType=tracker+{$trackerId}&amp;objectName={$tracker_info.name|escape:"url"}&amp;objectHref={'tiki-view_tracker_item.php?trackerId='|cat:$trackerId|cat:'&itemId='|cat:$itemId|escape:"url"}" title="{tr}Group Monitor{/tr}">{icon name="watch-group"}</a>
+				<a class="btn btn-default" href="tiki-object_watches.php?objectId={$itemId|escape:"url"}&amp;watch_event=tracker_item_modified&amp;objectType=tracker+{$trackerId}&amp;objectName={$tracker_info.name|escape:"url"}&amp;objectHref={'tiki-view_tracker_item.php?trackerId='|cat:$trackerId|cat:'&itemId='|cat:$itemId|escape:"url"}" class="icon">{icon _id='eye_group' alt="{tr}Group Monitor{/tr}" align='right' hspace='1'}</a>
 			{/if}
 		</div>
 		{if $canModify && $prefs.tracker_legacy_insert neq 'y'}
-			<a class="btn btn-default" href="{bootstrap_modal controller=tracker action=update_item trackerId=$trackerId itemId=$itemId}">{icon name="edit"} {tr}Edit{/tr}</a>
+			<a class="btn btn-default" href="{service controller=tracker action=update_item trackerId=$trackerId itemId=$itemId modal=1}" data-toggle="modal" data-target="#bootstrap-modal">{glyph name=pencil} {tr}Edit{/tr}</a>
 		{/if}
 		{include file="tracker_actions.tpl"}
 	</div>
@@ -54,29 +54,37 @@
 
 	{tab name="{tr}View{/tr}"}
 		{* --- tab with view ------------------------------------------------------------------------- *}
-		<h2>{$tracker_info.name|escape}</h2>
-		{if $tracker_is_multilingual}
-			<div class="translations">
-				<a href="{service controller=translation action=manage type=trackeritem source=$itemId}">{tr}Translations{/tr}</a>
-			</div>
-			{jq}
-				$('.translations a').click(function () {
-					var link = this;
-					$(this).serviceDialog({
-						title: $(link).text(),
-						data: {
-							controller: 'translation',
-							action: 'manage',
-							type: 'trackeritem',
-							source: "{{$itemId|escape}}"
-						}
+		{if empty($tracker_info.viewItemPretty)}
+			<h2>{$tracker_info.name|escape}</h2>
+			{if $tracker_is_multilingual}
+				<div class="translations">
+					<a href="{service controller=translation action=manage type=trackeritem source=$itemId}">{tr}Translations{/tr}</a>
+				</div>
+				{jq}
+					$('.translations a').click(function () {
+						var link = this;
+						$(this).serviceDialog({
+							title: $(link).text(),
+							data: {
+								controller: 'translation',
+								action: 'manage',
+								type: 'trackeritem',
+								source: "{{$itemId|escape}}"
+							}
+						});
+						return false;
 					});
-					return false;
-				});
-			{/jq}
-		{/if}
+				{/jq}
+			{/if}
 
-		{trackerfields mode=view trackerId=$trackerId fields=$fields itemId=$itemId}
+			{trackerfields mode=view trackerId=$trackerId fields=$fields}
+		{else}
+			{if $canModify}
+				{include file='tracker_pretty_item.tpl' item=$item_info fields=$ins_fields wiki=$tracker_info.viewItemPretty}
+			{elseif $canView}
+				{include file='tracker_pretty_item.tpl' item=$item_info fields=$fields wiki=$tracker_info.viewItemPretty}
+			{/if}
+		{/if}
 
 		{* -------------------------------------------------- section with comments --- *}
 		{if $tracker_info.useComments eq 'y' and ($tiki_p_tracker_view_comments ne 'n' or $tiki_p_comment_tracker_items ne 'n') and $prefs.tracker_show_comments_below eq 'y'}

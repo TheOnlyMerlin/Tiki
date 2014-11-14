@@ -9,7 +9,7 @@
 // $Id$
 
 require_once 'tiki-setup.php';
-$perspectivelib = TikiLib::lib('perspective');
+require_once 'lib/perspectivelib.php';
 
 $access->check_feature('feature_perspective');
 

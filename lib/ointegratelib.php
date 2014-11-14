@@ -271,7 +271,7 @@ class OIntegrate_Response
 		$data = $this->data;
 		$data['_version'] = $this->schemaVersion;
 
-		$access = TikiLib::lib('access');
+		global $access;
 		$access->output_serialized($data);
 		exit;
 	} // }}}

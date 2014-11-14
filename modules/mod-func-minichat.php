@@ -37,8 +37,7 @@ function module_minichat_info()
  */
 function module_minichat($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
-	global $prefs;
+	global $smarty, $prefs;
 	if (isset($module_params["channels"])) {
 		$channels = explode(',', $module_params["channels"]);
 	} else

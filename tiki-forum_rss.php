@@ -9,7 +9,8 @@
 // $Id$
 
 require_once('tiki-setup.php');
-$rsslib = TikiLib::lib('rss');
+require_once('lib/tikilib.php');
+require_once ('lib/rss/rsslib.php');
 
 if ($prefs['feed_forum'] != 'y') {
         $errmsg=tra("rss feed disabled");

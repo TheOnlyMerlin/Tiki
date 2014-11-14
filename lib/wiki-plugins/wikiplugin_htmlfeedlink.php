@@ -69,10 +69,7 @@ function wikiplugin_htmlfeedlink_info()
 
 function wikiplugin_htmlfeedlink($data, $params)
 {
-	global $page, $caching;
-	$headerlib = TikiLib::lib('header');
-	$tikilib = TikiLib::lib('tiki');
-
+	global $tikilib, $headerlib, $page, $caching;
 	static $htmlFeedLinkI = 0;
 	++$htmlFeedLinkI;
 

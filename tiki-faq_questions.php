@@ -11,7 +11,7 @@
 $section = 'faqs';
 require_once ('tiki-setup.php');
 
-$faqlib = TikiLib::lib('faq');
+include_once ('lib/faqs/faqlib.php');
 
 $access->check_feature('feature_faqs');
 $access->check_permission('tiki_p_admin_faqs');

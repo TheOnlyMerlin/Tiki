@@ -6,8 +6,9 @@
 // $Id$
 
 require_once ('tiki-setup.php');
-$rsslib = TikiLib::lib('rss');
-$calendarlib = TikiLib::lib('calendar');
+require_once ('lib/tikilib.php');
+require_once ('lib/rss/rsslib.php');
+require_once ('lib/calendar/calendarlib.php');
 
 if (!isset($prefs['feed_calendar']) || $prefs['feed_calendar'] != 'y') {
 	$errmsg=tra("rss feed disabled");

@@ -9,7 +9,7 @@ function prefs_theme_list()
 {
 	$themes = [
 		'default' => tr('Bootstrap default'),
-//		'legacy' => tr('Bootstrap themes in the "styles" directory'),
+		'legacy' => tr('Bootstrap themes in the "styles" directory'),
 		'custom' => tr('Custom bootstrap theme by specifying URL'),
 	];
 
@@ -18,16 +18,7 @@ function prefs_theme_list()
 		$theme = basename($css);
 		$themes[$theme] = tr($theme);
 	}
-	
-	//get list of base iconsets
-	$iconsets = array();
-	foreach (scandir('themes/base_files/iconsets') as $iconset_file) {
-		if ($iconset_file[0] != '.' && $iconset_file != 'index.php') {
-			include('themes/base_files/iconsets/'. $iconset_file);
-			$iconsets[substr($iconset_file,0,-4)] = $settings['iconset_name'];
-		}
-	}
-	
+
 	// TODO : Include pre-defined themes
 	return array(
 		'theme_active' => array(
@@ -47,14 +38,6 @@ function prefs_theme_list()
 			'default' => '',
 			'tags' => array('basic'),
 		),
-		'theme_iconset' => array(
-			'name' => tr('Icons'),
-			'description' => tr('Icon set used by the site.'),
-			'type' => 'list',
-			'options' => $iconsets,
-			'default' => 'default',
-			'help' => 'Icons',
-			'tags' => array('basic'),
-		),
 	);
 }
+

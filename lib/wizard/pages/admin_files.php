@@ -23,6 +23,8 @@ class AdminWizardFiles extends Wizard
 	
 	function onSetupPage ($homepageUrl) 
 	{
+		global	$smarty, $prefs;
+
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
 		
@@ -37,8 +39,7 @@ class AdminWizardFiles extends Wizard
 
 	function onContinue ($homepageUrl) 
 	{
-		$tikilib = TikiLib::lib('tiki');
-		global $prefs;
+		global $tikilib, $prefs;
 		
 		// Run the parent first
 		parent::onContinue($homepageUrl);

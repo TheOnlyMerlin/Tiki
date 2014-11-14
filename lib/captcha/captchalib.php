@@ -63,8 +63,6 @@ class Captcha
 				)
 			);
 
-			$this->captcha->setOption('ssl', true);
-
 			$this->type = 'recaptcha';
 
 			$this->recaptchaCustomTranslations();
@@ -128,7 +126,7 @@ class Captcha
 	 */
 	function render()
 	{
-		$access = TikiLib::lib('access');
+		global $access;
 		if ($access->is_xml_http_request()) {
 			$params = json_encode($this->captcha->getService()->getOptions());
 			$id = 1;
@@ -232,4 +230,6 @@ Recaptcha.create("' . $this->captcha->getPubKey() . '",
 	}
 }
 
+global $captchalib;
+$captchalib = new Captcha;
 

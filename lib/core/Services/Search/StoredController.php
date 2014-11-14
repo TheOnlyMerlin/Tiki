@@ -11,7 +11,7 @@ class Services_Search_StoredController
 	{
 		Services_Exception_Disabled::check('feature_search');
 		Services_Exception_Disabled::check('storedsearch_enabled');
-		Services_Exception_Denied::checkAuth();
+		Services_Exception_Denied::checkAuth('feature_search');
 	}
 
 	function action_select($input)
@@ -188,6 +188,7 @@ class Services_Search_StoredController
 		$plugin->setFields($fields);
 
 		$formatter = new Search_Formatter($plugin);
+		$formatter->setDataSource($dataSource);
 
 		$wiki = $formatter->format($resultset);
 		$tikilib = TikiLib::lib('tiki');

@@ -23,6 +23,8 @@ class AdminWizardProfilesCompleted extends Wizard
 	
 	public function onSetupPage ($homepageUrl) 
 	{
+		global	$smarty;
+
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
 		
@@ -37,6 +39,8 @@ class AdminWizardProfilesCompleted extends Wizard
 
 	function onContinue ($homepageUrl) 
 	{
+		global $tikilib; 
+
 		// Run the parent first
 		parent::onContinue($homepageUrl);
 	}

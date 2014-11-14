@@ -5,7 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-TikiLib::lib('cart');
+require_once 'lib/payment/cartlib.php';
 
 class Payment_CartTest extends TikiTestCase
 {
@@ -254,7 +254,7 @@ T-456|Foobar|1|120.50
 
 	function testWithItemsRegistersPayment()
 	{
-		$paymentlib = TikiLib::lib('payment');
+		global $paymentlib; require_once 'lib/payment/paymentlib.php';
 
 		$this->obj->add_product(
 			'123',
@@ -281,7 +281,7 @@ T-456|Foobar|1|120.50
 
 	function testRegisteredBehaviorsOnItems()
 	{
-		$paymentlib = TikiLib::lib('payment');
+		global $paymentlib; require_once 'lib/payment/paymentlib.php';
 
 		$this->obj->add_product(
 			'123',

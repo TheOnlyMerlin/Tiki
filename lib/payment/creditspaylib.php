@@ -52,9 +52,8 @@ class UserPayCredits extends CreditsLib
 
 	function payAmount($creditType, $amount, $invoice)
 	{
-		global $user;
-		$tikilib = TikiLib::lib('tiki');
-		$paymentlib = TikiLib::lib('payment');
+		global $user, $tikilib, $paymentlib;
+		require_once 'lib/payment/paymentlib.php';
 		$userId = $this->get_user_id($user);
 		$uc = $this->getCredits($userId);
 		if ($amount > $uc[$creditType]['remain']) {

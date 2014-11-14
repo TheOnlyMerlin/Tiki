@@ -46,6 +46,7 @@ function wikiplugin_ftp_info()
 
 function wikiplugin_ftp($data, $params)
 {
+	global $smarty;
 	extract($params, EXTR_SKIP);
 	if (empty($server) || empty($user) || empty($password)) {
 		return tra('missing parameters');
@@ -77,7 +78,6 @@ function wikiplugin_ftp($data, $params)
 		die;
 
 	} else {
-		$smarty = TikiLib::lib('smarty');
 		if (isset($title)) {
 			$smarty->assign('ftptitle', $title);
 		}

@@ -30,7 +30,7 @@ function wikiplugin_addreference($data,$params)
 
 	if ($prefs['wikiplugin_addreference'] == 'y') {
 
-		$referenceslib = TikiLib::lib('references');
+		include_once ("lib/references/referenceslib.php");
 
 		if (! isset($GLOBALS['referencesData'])) {
 			$GLOBALS['referencesData'] = array();

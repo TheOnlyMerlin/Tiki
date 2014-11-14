@@ -28,8 +28,7 @@ class AdminWizardWysiwyg extends Wizard
 
 	function onSetupPage ($homepageUrl) 
 	{
-		global $prefs;
-		$smarty = TikiLib::lib('smarty');
+		global	$smarty, $prefs;
 
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
@@ -56,7 +55,7 @@ class AdminWizardWysiwyg extends Wizard
 
 	function onContinue ($homepageUrl) 
 	{
-		$tikilib = TikiLib::lib('tiki');
+		global $wizardlib, $tikilib;
 
 		// Run the parent first
 		parent::onContinue($homepageUrl);

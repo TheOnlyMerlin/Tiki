@@ -25,11 +25,11 @@
 <div class="wikiactions_wrapper clearfix">
 	<div class="wikiactions icons btn-group pull-right">
 			{if $pdf_export eq 'y'}
-				<a class="btn btn-default" href="tiki-print.php?{query display="pdf" page=$page}" title="{tr}PDF{/tr}">{icon name="pdf"}</a>
+				<a class="btn btn-default" href="tiki-print.php?{query display="pdf" page=$page}" title="{tr}PDF{/tr}">{icon _id='page_white_acrobat' alt="{tr}PDF{/tr}"}</a>
 			{/if}
 			{if $prefs.flaggedrev_approval neq 'y' or ! $revision_approval or $lastVersion eq $revision_displayed}
 				{if $editable and ($tiki_p_edit eq 'y' or $page|lower eq 'sandbox') and $beingEdited ne 'y' and $machine_translate_to_lang eq ''}
-					<a class="btn btn-default" title="{tr}Edit this page{/tr}" {ajax_href template="tiki-editpage.tpl"}tiki-editpage.php?page={$page|escape:"url"}{if !empty($page_ref_id) and $needsStaging neq 'y'}&amp;page_ref_id={$page_ref_id}{/if}{/ajax_href}>{icon name="edit"}</a>
+					<a class="btn btn-default" title="{tr}Edit this page{/tr}" {ajax_href template="tiki-editpage.tpl"}tiki-editpage.php?page={$page|escape:"url"}{if !empty($page_ref_id) and $needsStaging neq 'y'}&amp;page_ref_id={$page_ref_id}{/if}{/ajax_href}>{icon _id='page_edit' alt="{tr}Edit this page{/tr}"}</a>
 					{if $prefs.wiki_edit_icons_toggle eq 'y' and ($prefs.wiki_edit_plugin eq 'y' or $prefs.wiki_edit_section eq 'y')}
 						{jq}
 							$("#wiki_plugin_edit_view").click( function () {
@@ -68,35 +68,35 @@
 							});
 							if (getCookie("wysiwyg_inline_edit", "preview")) { $("#wysiwyg_inline_edit").click(); }
 						{/jq}
-						<a class="btn btn-default" title="{tr}Inline Edit{/tr}" href="#" id="wysiwyg_inline_edit">{icon name='edit'}</a>
+						<a class="btn btn-default" title="{tr}Inline Edit{/tr}" href="#" id="wysiwyg_inline_edit">{icon _id='page' title="{tr}Inline Edit{/tr}"}</a>
 					{/if}
 				{/if}
 			{/if}
 			{if $prefs.feature_morcego eq 'y' && $prefs.wiki_feature_3d eq 'y'}
-				<a class="btn btn-default" title="{tr}3d browser{/tr}" href="javascript:wiki3d_open('{$page|escape}',{$prefs.wiki_3d_width}, {$prefs.wiki_3d_height})">{icon name="wiki3d"}</a>
+				<a class="btn btn-default" title="{tr}3d browser{/tr}" href="javascript:wiki3d_open('{$page|escape}',{$prefs.wiki_3d_width}, {$prefs.wiki_3d_height})">{icon _id='wiki3d' alt="{tr}3d browser{/tr}"}</a>
 			{/if}
 			{if $cached_page eq 'y'}
-				<a class="btn btn-default" title="{tr}Refresh{/tr}" href="{$page|sefurl:'wiki':'with_next'}refresh=1">{icon name="refresh"  title="{tr}Refresh{/tr}"}</a>
+				<a class="btn btn-default" title="{tr}Refresh{/tr}" href="{$page|sefurl:'wiki':'with_next'}refresh=1">{icon _id='arrow_refresh'}</a>
 			{/if}
 			{if $prefs.feature_wiki_print eq 'y'}
-				<a class="btn btn-default" title="{tr}Print{/tr}" href="tiki-print.php?{query _keepall='y'}">{icon name="print"}</a>
+				<a class="btn btn-default" title="{tr}Print{/tr}" href="tiki-print.php?{query _keepall='y'}">{icon _id='printer' alt="{tr}Print{/tr}"}</a>
 			{/if}
 	
 			{if $prefs.feature_share eq 'y' && $tiki_p_share eq 'y'}
-				<a class="btn btn-default" title="{tr}Share this page{/tr}" href="tiki-share.php?url={$smarty.server.REQUEST_URI|escape:'url'}">{icon name="share"}</a>
+				<a class="btn btn-default" title="{tr}Share this page{/tr}" href="tiki-share.php?url={$smarty.server.REQUEST_URI|escape:'url'}">{icon _id='share_link' alt="{tr}Share this page{/tr}"}</a>
 			{/if}
 			{if $prefs.feature_tell_a_friend eq 'y' && $tiki_p_tell_a_friend eq 'y'}
-				<a class="btn btn-default" title="{tr}Send a link{/tr}" href="tiki-tell_a_friend.php?url={$smarty.server.REQUEST_URI|escape:'url'}">{icon name="envelope"}</a>
+				<a class="btn btn-default" title="{tr}Send a link{/tr}" href="tiki-tell_a_friend.php?url={$smarty.server.REQUEST_URI|escape:'url'}">{icon _id='email_link' alt="{tr}Send a link{/tr}"}</a>
 			{/if}
 			{if !empty($user) and $prefs.feature_notepad eq 'y' and $tiki_p_notepad eq 'y'}
-				<a class="btn btn-default" title="{tr}Save to notepad{/tr}" href="tiki-index.php?page={$page|escape:"url"}&amp;savenotepad=1{if !empty($page_ref_id)}&amp;page_ref_id={$page_ref_id}{/if}">{icon name="notepad"}</a>
+				<a class="btn btn-default" title="{tr}Save to notepad{/tr}" href="tiki-index.php?page={$page|escape:"url"}&amp;savenotepad=1{if !empty($page_ref_id)}&amp;page_ref_id={$page_ref_id}{/if}">{icon _id='disk' alt="{tr}Save to notepad{/tr}"}</a>
 			{/if}
 			{monitor_link type="wiki page" object=$page}
 			{if !empty($user) and $prefs.feature_user_watches eq 'y'}
 				{if $user_watching_page eq 'n'}
-					<a class="btn btn-default" href="tiki-index.php?page={$page|escape:"url"}&amp;watch_event=wiki_page_changed&amp;watch_object={$page|escape:"url"}&amp;watch_action=add{if $structure eq 'y'}&amp;structure={$home_info.pageName|escape:'url'}{/if}" class="icon" title="{tr}Page is NOT being monitored. Click icon to START monitoring.{/tr}">{icon name="watch"}</a>
+					<a class="btn btn-default" href="tiki-index.php?page={$page|escape:"url"}&amp;watch_event=wiki_page_changed&amp;watch_object={$page|escape:"url"}&amp;watch_action=add{if $structure eq 'y'}&amp;structure={$home_info.pageName|escape:'url'}{/if}" class="icon">{icon _id='eye' alt="{tr}Page is NOT being monitored. Click icon to START monitoring.{/tr}"}</a>
 				{else}
-					<a class="btn btn-default" href="tiki-index.php?page={$page|escape:"url"}&amp;watch_event=wiki_page_changed&amp;watch_object={$page|escape:"url"}&amp;watch_action=remove{if $structure eq 'y'}&amp;structure={$home_info.pageName|escape:'url'}{/if}" class="icon" title="{tr}Page IS being monitored. Click icon to STOP monitoring.{/tr}">{icon name="stop-watching"}</a>
+					<a class="btn btn-default" href="tiki-index.php?page={$page|escape:"url"}&amp;watch_event=wiki_page_changed&amp;watch_object={$page|escape:"url"}&amp;watch_action=remove{if $structure eq 'y'}&amp;structure={$home_info.pageName|escape:'url'}{/if}" class="icon">{icon _id='no_eye' alt="{tr}Page IS being monitored. Click icon to STOP monitoring.{/tr}"}</a>
 				{/if}
 				{if $structure eq 'y' and $tiki_p_watch_structure eq 'y'}
 					{if $user_watching_structure ne 'y'}
@@ -107,7 +107,7 @@
 				{/if}
 			{/if}
 			{if $prefs.feature_group_watches eq 'y' and ( $tiki_p_admin_users eq 'y' or $tiki_p_admin eq 'y' )}
-				<a class="btn btn-default" href="tiki-object_watches.php?objectId={$page|escape:"url"}&amp;watch_event=wiki_page_changed&amp;objectType=wiki+page&amp;objectName={$page|escape:"url"}&amp;objectHref={'tiki-index.php?page='|cat:$page|escape:"url"}" class="icon" title="{tr}Group Monitor{/tr}">{icon name="watch-group"}</a>
+				<a class="btn btn-default" href="tiki-object_watches.php?objectId={$page|escape:"url"}&amp;watch_event=wiki_page_changed&amp;objectType=wiki+page&amp;objectName={$page|escape:"url"}&amp;objectHref={'tiki-index.php?page='|cat:$page|escape:"url"}" class="icon">{icon _id='eye_group' alt="{tr}Group Monitor{/tr}"}</a>
 	
 				{if $structure eq 'y'}
 					<a class="btn btn-default" href="tiki-object_watches.php?objectId={$page_info.page_ref_id|escape:"url"}&amp;watch_event=structure_changed&amp;objectType=structure&amp;objectName={$page|escape:"url"}&amp;objectHref={'tiki-index.php?page_ref_id='|cat:$page_ref_id|escape:"url"}" class="icon">{icon _id=eye_group_arrow_down alt="{tr}Group Monitor on Structure{/tr}"}</a>
@@ -124,9 +124,9 @@
 			
 			{if $prefs.feature_backlinks eq 'y' and $backlinks and $tiki_p_view_backlink eq 'y'}
 				<div class="btn-group backlinks">
-					<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="{tr}Backlinks{/tr}">
-						{icon name="backlink"}
-					</a>
+					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+						{icon _id=arrow_turn_left title="{tr}Backlinks{/tr}" class="icon"}
+					</button>
 					<ul class="dropdown-menu" role="menu">
 						<li role="presentation">
 							{section name=back loop=$backlinks}

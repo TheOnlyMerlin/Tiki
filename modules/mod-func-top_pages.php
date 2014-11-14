@@ -31,7 +31,7 @@ function module_top_pages_info()
  */
 function module_top_pages($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	global $ranklib; include_once ('lib/rankings/ranklib.php');
 	$categs = $ranklib->get_jail();
 	$ranking = $ranklib->wiki_ranking_top_pages($mod_reference["rows"], $categs ? $categs : array());

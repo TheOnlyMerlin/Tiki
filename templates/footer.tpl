@@ -6,18 +6,6 @@
 		</div>
 	</div>
 </div>
-<div id="bootstrap-modal-2" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-		</div>
-	</div>
-</div>
-<div id="bootstrap-modal-3" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-		</div>
-	</div>
-</div>
 {if $module_pref_errors}
 	<div class="container modules">
 		{remarksbox type="warning" title="{tr}Module errors{/tr}"}

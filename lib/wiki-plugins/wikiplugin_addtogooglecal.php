@@ -47,9 +47,11 @@ function wikiplugin_addtogooglecal_info()
 
 function wikiplugin_addtogooglecal($data, $params)
 {
-	$access = TikiLib::lib('access');
+	global $access, $calendarlib;
 	$access->check_feature('feature_calendar');
-	$calendarlib = TikiLib::lib('calendar');
+	if (!is_object($calendarlib)) {
+		include ('lib/calendar/calendarlib.php');
+	}
 	
 	$cal_item_id = $params['calitemid'];
 	$cal_id = $calendarlib->get_calendarid($cal_item_id);

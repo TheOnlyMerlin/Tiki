@@ -457,3 +457,4 @@ class CreditsLib extends TikiLib
 	}
 
 }
+$creditslib = new CreditsLib;

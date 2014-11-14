@@ -5,7 +5,8 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-$calendarlib = TikiLib::lib('calendar');
+global $calendarlib;
+require_once('calendarlib.php');
 
 /**
  *

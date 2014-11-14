@@ -193,8 +193,8 @@ function wikiplugin_mouseover_info()
 
 function wikiplugin_mouseover( $data, $params )
 {
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $smarty, $tikilib;
+
 	$default = array('parse'=>'y', 'parselabel'=>'y');
 	$params = array_merge($default, $params);
 	if ( ! isset($params['url']) ) {
@@ -248,7 +248,7 @@ function wikiplugin_mouseover( $data, $params )
 
 	$url = htmlentities($url, ENT_QUOTES, 'UTF-8');
 
-	$headerlib = TikiLib::lib('header');
+	global $headerlib;
 
 	if ($closeDelay && $sticky) {
 		$closeDelayStr = "setTimeout(function() {hideJQ('#$id', '$effect', '$speed')}, ".($closeDelay * 1000).");";

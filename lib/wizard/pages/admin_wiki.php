@@ -23,7 +23,8 @@ class AdminWizardWiki extends Wizard
 	
 	public function onSetupPage ($homepageUrl) 
 	{
-		global $prefs;
+		global	$smarty, $prefs;
+
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
 		

@@ -3,7 +3,7 @@
     <div class="row">
         <div class="form-group col-lg-12 clearfix">
 			<a role="button" class="btn btn-default btn-sm" href="tiki-admin_forums.php" title="{tr}List{/tr}">
-				{icon name="list"} {tr}Forums{/tr}
+				{glyph name="list"} {tr}Forums{/tr}
 			</a>
             <div class="pull-right">
                 <input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
@@ -18,10 +18,10 @@
 			<fieldset class="table">
 				<legend>{tr}Activate the feature{/tr}</legend>
 				{preference name=feature_forums visible="always"}
-				{preference name=home_forum}
-				{preference name=forum_image_file_gallery}
 			</fieldset>
 			
+			{preference name=home_forum}
+
 			<fieldset>
 				<legend>
 					{tr}Features{/tr}{help url="Forum"}

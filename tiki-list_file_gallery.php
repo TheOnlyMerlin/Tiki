@@ -18,7 +18,7 @@ $section = 'file_galleries';
 require_once ('tiki-setup.php');
 $access->check_feature(array('feature_file_galleries', 'feature_jquery_tooltips'));
 $filegallib = TikiLib::lib('filegal');
-$statslib = TikiLib::lib('stats');
+include_once ('lib/stats/statslib.php');
 
 if ($prefs['feature_categories'] == 'y') {
 	$categlib = TikiLib::lib('categ');
@@ -30,7 +30,7 @@ if ($prefs['feature_file_galleries_templates'] == 'y') {
 }
 
 if ($prefs['feature_groupalert'] == 'y') {
-	$groupalertlib = TikiLib::lib('groupalert');
+	include_once ('lib/groupalert/groupalertlib.php');
 }
 
 $auto_query_args = array( 'galleryId'

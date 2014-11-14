@@ -250,3 +250,4 @@ class UserModulesLib extends TikiLib
 		}
 	} 
 }
+global $usermoduleslib; $usermoduleslib = new UserModulesLib;

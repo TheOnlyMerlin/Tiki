@@ -107,7 +107,7 @@ function wikiplugin_galleriffic_info()
 
 function wikiplugin_galleriffic($data, $params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	static $igalleriffic = 0;
 	$smarty->assign('igalleriffic', $igalleriffic++);
 	$plugininfo = wikiplugin_galleriffic_info();

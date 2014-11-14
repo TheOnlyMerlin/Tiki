@@ -39,7 +39,7 @@ function wikiplugin_perspective_info()
 
 function wikiplugin_perspective($data, $params)
 {
-	global $prefs;
+	global $prefs, $perspectivelib;
 
 	$dataelse = '';
 	if (strpos($data, '{ELSE}')) {
@@ -57,7 +57,7 @@ function wikiplugin_perspective($data, $params)
 		return '';
 	}
 
-	$perspectivelib = TikiLib::lib('perspective');
+	require_once 'lib/perspectivelib.php';
 	$currentPerspective = $perspectivelib->get_current_perspective($prefs);
 
 	// if the current perspective is not an allowed perspective, return the content after the "{ELSE}"

@@ -27,7 +27,7 @@ function wikiplugin_payment_info()
 
 function wikiplugin_payment( $data, $params )
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 
 	require_once 'lib/smarty_tiki/function.payment.php';
 	return '^~np~' . smarty_function_payment($params, $smarty) . '~/np~^';

@@ -151,7 +151,7 @@ function wikiplugin_trackerprefill_info()
 
 function wikiplugin_trackerprefill($data, $params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	$prefills = array();
 	foreach ($params as $param=>$value) {
 		if (strstr($param, 'field')) {

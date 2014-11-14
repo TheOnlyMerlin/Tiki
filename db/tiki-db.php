@@ -124,8 +124,8 @@ class TikiDb_LegacyErrorHandler implements TikiDb_ErrorHandler
      */
     function handle( TikiDb $db, $query, $values, $result ) // {{{
 	{
-		global $prefs;
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $prefs;
+
 		$msg = $db->getErrorMessage();
 		$q=$query;
 		if (is_array($values)) {
@@ -143,6 +143,18 @@ class TikiDb_LegacyErrorHandler implements TikiDb_ErrorHandler
 		}
 
 		if (function_exists('xdebug_get_function_stack')) {
+            /**
+             * @param $stack
+             * @return string
+             */
+            function mydumpstack($stack)
+			{
+				$o='';
+				foreach ($stack as $line) {
+					$o.='* '.$line['file']." : ".$line['line']." -> ".$line['function']."(".var_export($line['params'], true).")<br />";
+				}
+				return $o;
+			}
 			$stacktrace = mydumpstack(xdebug_get_function_stack());
 		} else {
 			$stacktrace = false;
@@ -224,16 +236,3 @@ if ($credentials['shadow']) {
 }
 
 unset($credentials);
-
-/**
- * @param $stack
- * @return string
- */
-function mydumpstack($stack)
-{
-	$o='';
-	foreach ($stack as $line) {
-		$o.='* '.$line['file']." : ".$line['line']." -> ".$line['function']."(".var_export($line['params'], true).")<br />";
-	}
-	return $o;
-}

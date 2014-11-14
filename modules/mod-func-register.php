@@ -31,7 +31,7 @@ function module_register_info()
  */
 function module_register($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	include_once('lib/smarty_tiki/function.user_registration.php');
 	return smarty_function_user_registration($module_params, $smarty);
 }

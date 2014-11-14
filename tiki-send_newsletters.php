@@ -134,7 +134,7 @@ if (isset($_REQUEST["remove"])) {
 	$nllib->remove_edition($_REQUEST["nlId"], $_REQUEST["remove"]);
 }
 
-$editlib = TikiLib::lib('edit');
+include_once ('lib/wiki/editlib.php');
 // wysiwyg decision
 include_once ('lib/setup/editmode.php');
 

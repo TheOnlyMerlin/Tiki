@@ -71,10 +71,9 @@ function wikiplugin_watershed_info()
 
 function wikiplugin_watershed( $data, $params )
 {
-	global $prefs, $user;
+	global $smarty, $prefs, $user, $tikilib;
 	global $watershedlib; require_once 'lib/videogals/watershedlib.php';
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
+	
 	if (!empty($params['locale'])) {
 		$locale = $params['locale'];
 	} else {

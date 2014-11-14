@@ -28,9 +28,9 @@ class AdminWizardJCapture extends Wizard
 
 	function onSetupPage ($homepageUrl) 
 	{
-		global $prefs;
+		global	$smarty, $prefs;
 		$filegalib = TikiLib::lib('filegal');
-		$smarty = TikiLib::lib('smarty');
+
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
 

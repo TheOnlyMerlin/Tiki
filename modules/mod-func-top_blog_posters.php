@@ -37,11 +37,10 @@ function module_top_blog_posters_info()
  */
 function module_top_blog_posters($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	$cond = null;
-	if (!empty($module_params['blogId'])) {
+	if (!empty($module_params['blogId']))
 		$cond = $module_params['blogId'];
-	}
 	$bloggers =  TikiLib::lib('blog')->top_bloggers($mod_reference['rows'], $cond);
 
 	$smarty->assign_by_ref('modTopBloggers', $bloggers['data']);

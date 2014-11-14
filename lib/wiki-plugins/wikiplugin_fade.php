@@ -108,7 +108,7 @@ function wikiplugin_fade( $body, $params )
 					);
 					return false;
 				});';
-	$headerlib = TikiLib::lib('header');
+	global $headerlib;
 	$headerlib->add_jq_onready($jq);
 	//wrapping in an extra div makes animation smoother	
 	return '~np~<div>' . "\r\t" . '<span class="' . $span_class . '">' . "\r\t\t" 

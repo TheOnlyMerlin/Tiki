@@ -10,9 +10,9 @@
 
 require 'tiki-setup.php';
 
-$headerlib = TikiLib::lib('header');
-$headerlib->add_cssfile('themes/base_files/feature_css/admin.css');
-$headerlib->add_cssfile('themes/base_files/feature_css/wizards.css');
+require_once('lib/headerlib.php');
+$headerlib->add_cssfile('css/admin.css');
+$headerlib->add_cssfile('css/wizards.css');
 
 // Hide the display of the preference dependencies in the wizard
 $headerlib->add_css('.pref_dependency{display:none !important;}');
@@ -95,9 +95,6 @@ if ($useDefaultPrefs) {
 
     require_once('lib/wizard/pages/upgrade_new_in_13.php');
     $pages[] = new UpgradeWizardNewIn13();
-
-    require_once('lib/wizard/pages/upgrade_new_in_14.php');
-    $pages[] = new UpgradeWizardNewIn14();
 
     require_once('lib/wizard/pages/upgrade_doc_page_iframe.php');
     $pages[] = new UpgradeWizardDocPageIframe();

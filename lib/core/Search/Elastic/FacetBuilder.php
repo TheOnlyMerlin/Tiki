@@ -7,13 +7,6 @@
 
 class Search_Elastic_FacetBuilder
 {
-	private $count;
-
-	function __construct($count = 10)
-	{
-		$this->count = $count;
-	}
-
 	function build(array $facets)
 	{
 		if (empty($facets)) {
@@ -34,7 +27,6 @@ class Search_Elastic_FacetBuilder
 	{
 		return array('terms' => array(
 			'field' => $facet->getField(),
-			'size' => $facet->getCount() ?: $this->count,
 		));
 	}
 }

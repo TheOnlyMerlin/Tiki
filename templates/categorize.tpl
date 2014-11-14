@@ -10,7 +10,7 @@
         <!--/div-->
     {/if}
     {if $mandatory_category >= 0 or $prefs.javascript_enabled neq 'y' or (isset($auto) and $auto eq 'y')}
-        <div id="categorizator">
+        <div id="categorizator " class="col-sm-9">
     {else}
         {if !isset($notable) || $notable neq 'y'} <div class="col-sm-9">{button href="#" _flip_id='categorizator' _class='link' _text="{tr}Select Categories{/tr}" _flip_default_open='n'}</div>{/if}
         <div id="categorizator" class="col-sm-9 col-sm-offset-3" style="display:{if isset($smarty.session.tiki_cookie_jar.show_categorizator) and $smarty.session.tiki_cookie_jar.show_categorizator eq 'y' or (isset($notable) && $notable eq 'y')}block{else}none{/if};">
@@ -21,7 +21,7 @@
             <input type="hidden" name="cat_categorize" value="on">
 	        <div class="clearfix">
 	            {if $tiki_p_admin_categories eq 'y'}
-    	            <div class="pull-right"><a class="btn btn-default btn-sm" href="tiki-admin_categories.php">{icon name="administer"} {tr}Admin Categories{/tr}</a></div>
+    	            <div class="pull-right"><a class="btn btn-default btn-sm" href="tiki-admin_categories.php">{glyph name="wrench"} {tr}Admin Categories{/tr}</a></div>
 	            {/if}
 	
             	{select_all checkbox_names='cat_categories[]' label="{tr}Select/deselect all categories{/tr}"}
@@ -30,7 +30,7 @@
 	    {else}
 	        <div class="clearfix">
  	            {if $tiki_p_admin_categories eq 'y'}
-                    <div class="pull-right"><a class="btn btn-default btn-sm" href="tiki-admin_categories.php">{icon name="administer"} {tr}Admin Categories{/tr}</a></div>
+                    <div class="pull-right"><a class="btn btn-default btn-sm" href="tiki-admin_categories.php">{glyph name="wrench"} {tr}Admin Categories{/tr}</a></div>
             </div> {* end .clear *}
  	    {/if}
         {tr}No categories defined{/tr}

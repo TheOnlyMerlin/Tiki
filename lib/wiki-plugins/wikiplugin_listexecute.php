@@ -79,8 +79,9 @@ function wikiplugin_listexecute($data, $params)
 	$builder->setFormatterPlugin($plugin);
 
 	$formatter = $builder->getFormatter();
+	$formatter->setDataSource($dataSource);
 
-	$reportSource = new Search_Action_ReportingTransform;
+	$reportSource = new Search_GlobalSource_Reporting;
 
 	if (isset($_POST['list_action'], $_POST['objects'])) {
 		$action = $_POST['list_action'];
@@ -113,9 +114,11 @@ function wikiplugin_listexecute($data, $params)
 			'actions' => array_keys($actions),
 		)
 	);
+	$dataSource = new Search_Formatter_DataSource_Declarative;
+	$dataSource->addGlobalSource($reportSource);
 
 	$formatter = new Search_Formatter($plugin);
-	$result->applyTransform($reportSource);
+	$formatter->setDataSource($dataSource);
 	return $formatter->format($result);
 }
 

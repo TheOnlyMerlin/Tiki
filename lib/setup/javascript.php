@@ -189,7 +189,7 @@ jqueryTiki.tablesorter = false;
 	}
 
 	if ($prefs['feature_calendar'] === 'y') {
-		$calendarlib = TikiLib::lib('calendar');
+		global $calendarlib; include_once('lib/calendar/calendarlib.php');
 		$firstDayofWeek = $calendarlib->firstDayofWeek();
 		$js .= "jqueryTiki.firstDayofWeek = $firstDayofWeek;\n";
 	}

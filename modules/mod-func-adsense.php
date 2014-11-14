@@ -86,7 +86,7 @@ function module_adsense_info()
  */
 function module_adsense($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 
 	$smarty->assign(
 		array(

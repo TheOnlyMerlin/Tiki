@@ -21,7 +21,7 @@ function prefs_wiki_list($partial = false)
 		}
 	}
 
-	$prefslib = TikiLib::lib('prefs');
+	global $prefslib;
 	$advanced_columns = $prefslib->getExtraSortColumns();
 
 	$wiki_sort_columns = array_merge(
@@ -60,18 +60,6 @@ function prefs_wiki_list($partial = false)
 				'strict' => tra('Strict'),
 			),
 			'default' => 'complete',
-		),
-		'wiki_url_scheme' => array(
-			'name' => tr('Wiki URL Scheme'),
-			'description' => tr('Alter the SEFURL pattern for page names.'),
-			'hint' => tr('Use the action to regenerate your URLs after changing this setting.'),
-			'type' => 'list',
-			'default' => 'urlencode',
-			'options' => TikiLib::lib('slugmanager')->getOptions(),
-			'view' => $partial ? '' : TikiLib::lib('service')->getUrl([
-				'controller' => 'wiki',
-				'action' => 'regenerate_slugs',
-			]),
 		),
 		'wiki_show_version' => array(
 			'name' => tra('Display page version'),
@@ -620,16 +608,6 @@ function prefs_wiki_list($partial = false)
 			'size' => '3',
 			'filter' => 'digits',
 			'default' => '1',
-		),
-		'wiki_discuss_visibility' => array(
-			'name' => tra('Visibility of discussion'),
-			'description' => tra('Just a button among others (default), or special section'),
-			'type' => 'list',
-			'options' => array(
-				'button' => tra('In the buttons row (default)'),
-				'above' => tra('Special section above buttons bar'),
-			),
-			'default' => 'button',
 		),
 		'wiki_forum_id' => array(
 			'name' => tra('Forum for discussion'),

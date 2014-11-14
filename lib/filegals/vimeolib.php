@@ -9,9 +9,9 @@ class VimeoLib
 {
 	private $oauth;
 
-	function __construct($oauthlib)
+	function __construct()
 	{
-		$this->oauth = $oauthlib;
+		$this->oauth = TikiLib::lib('oauth');
 	}
 
 	function isAuthorized()

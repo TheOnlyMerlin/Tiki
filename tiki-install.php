@@ -32,7 +32,7 @@ require_once('lib/init/initlib.php');
 $tikipath = dirname(__FILE__) . '/';
 TikiInit::appendIncludePath($tikipath);
 
-require_once('db/tiki-db.php');	// to set up multitiki etc if there
+include_once('db/tiki-db.php');	// to set up multitiki etc if there
 
 $lockFile = 'db/'.$tikidomainslash.'lock';
 

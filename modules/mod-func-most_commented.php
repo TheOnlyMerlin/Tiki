@@ -40,7 +40,7 @@ function module_most_commented_info()
  */
 function module_most_commented($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 
 	$type = 'wiki';
 	if (isset($module_params['objectType'])) {

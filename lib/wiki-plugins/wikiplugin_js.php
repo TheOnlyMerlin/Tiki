@@ -42,7 +42,7 @@ function wikiplugin_js_info()
 }
 function wikiplugin_js($data, $params)
 {
-	$headerlib = TikiLib::lib('header');
+	global $headerlib;
 	extract($params, EXTR_SKIP);
 
 	if (isset($lateload) && $lateload == 'y') {

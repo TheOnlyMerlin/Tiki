@@ -362,7 +362,7 @@ if ($prefs['feature_search'] !== 'y' || $prefs['unified_add_to_categ_search'] !=
 	 */
 	function admin_categ_assign( &$max, $data_key, $data = null )
 	{
-		$smarty = TikiLib::lib('smarty');
+		global $smarty;
 
 		if ( is_null($data) ) {
 			$data = array( 'data' => array(), 'cant' => 0 );
@@ -399,7 +399,7 @@ if ($prefs['feature_search'] !== 'y' || $prefs['unified_add_to_categ_search'] !=
 	}
 
 	if ( $prefs['feature_polls'] == 'y' ) {
-		$polllib = TikiLib::lib('poll');
+		include_once ('lib/polls/polllib.php');
 		$polls = $polllib->list_polls($offset, $maxRecords, 'title_asc', $find_objects);
 	}
 

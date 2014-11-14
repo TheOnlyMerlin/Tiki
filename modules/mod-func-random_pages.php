@@ -32,8 +32,8 @@ function module_random_pages_info()
  */
 function module_random_pages($mod_reference, $module_params)
 {
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $smarty;
 	$pages=$tikilib->list_pages(0, $mod_reference["rows"], "random", '', '', true, true);
-	$smarty = TikiLib::lib('smarty');
+	
 	$smarty->assign('modRandomPages', $pages["data"]);
 }

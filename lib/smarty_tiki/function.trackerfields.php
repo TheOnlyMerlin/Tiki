@@ -25,89 +25,45 @@ function smarty_function_trackerfields($params, $smarty)
 		$params['mode'] = 'edit';
 	}
 
-	$smarty->loadPlugin('smarty_function_trackeroutput');
-	$smarty->loadPlugin('smarty_function_trackerinput');
-
 	$sectionFormat = $definition->getConfiguration('sectionFormat', 'flat');
-
-	if (! empty($params['format'])) {
-		$sectionFormat = $params['format'];
-	}
-
-	$trackerInfo = $definition->getInformation();
-	$smarty->assign('tracker_info', $trackerInfo);
+	$smarty->assign('tracker_info', $definition->getInformation());
 	$smarty->assign('status_types', TikiLib::lib('trk')->status_types());
 
-	$title = tr('General');
-	$sections = [];
-	$auto = ['input' => [], 'output' => [], 'inline' => []];
+	switch ($sectionFormat) {
+	case 'tab':
+		$title = tr('General');
+		$sections = array();
 
-	foreach ($params['fields'] as $field) {
-		if ($field['type'] == 'h') {
-			$title = tr($field['name']);
+		foreach ($params['fields'] as $field) {
+			if ($field['type'] == 'h') {
+				$title = tr($field['name']);
+			} else {
+				$sections[$title][] = $field;
+			}
+		}
+
+		$out = array();
+		foreach ($sections as $title => $fields) {
+			$out[md5($title)] = array(
+				'heading' => $title,
+				'fields' => $fields,
+			);
+		}
+
+		$smarty->assign('sections', array_values($out));
+		if ($params['mode'] == 'view') {
+			return $smarty->fetch('trackeroutput/layout_tab.tpl');
 		} else {
-			$sections[$title][] = $field;
+			return $smarty->fetch('trackerinput/layout_tab.tpl');
 		}
-		$permName = $field['permName'];
-		$auto['input'][$permName] = new Tiki_Render_Lazy(function () use ($field, $smarty) {
-			return smarty_function_trackerinput([
-				'field' => $field,
-				'showlinks' => 'n',
-				'list_mode' => 'n',
-			], $smarty);
-		});
-		$auto['output'][$permName] = new Tiki_Render_Lazy(function () use ($field, $smarty) {
-			return smarty_function_trackeroutput([
-				'field' => $field,
-				'showlinks' => 'n',
-				'list_mode' => 'n',
-			], $smarty);
-		});
-		if (isset($params['itemId'])) {
-			$auto['inline'][$permName] = new Tiki_Render_Lazy(function () use ($field, $smarty, $params) {
-				return smarty_function_trackeroutput([
-					'field' => $field,
-					'showlinks' => 'n',
-					'list_mode' => 'n',
-					'editable' => 'inline',
-					'itemId' => $params['itemId'],
-				], $smarty);
-			});
+	case 'flat':
+	default:
+		$smarty->assign('fields', $params['fields']);
+		if ($params['mode'] == 'view') {
+			return $smarty->fetch('trackeroutput/layout_flat.tpl');
+		} else {
+			return $smarty->fetch('trackerinput/layout_flat.tpl');
 		}
 	}
-
-	$out = array();
-	foreach ($sections as $title => $fields) {
-		$out[md5($title)] = array(
-			'heading' => $title,
-			'fields' => $fields,
-		);
-	}
-
-	if ($params['mode'] == 'view') {
-		$auto['default'] = $auto['output'];
-	} else {
-		$auto['default'] = $auto['input'];
-	}
-	
-	// Compatibility attempt with the legacy $f_X format.
-	foreach ($fields as $field) {
-		$id = $field['fieldId'];
-		$permName = $field['permName'];
-		$smarty->assign('f_' . $id, $auto['default'][$permName]);
-	}
-
-	$smarty->assign('sections', array_values($out));
-	$smarty->assign('fields', $params['fields']);
-	$smarty->assign('auto', $auto);
-
-	$trklib = TikiLib::lib('trk');
-	$trklib->registerSectionFormat('config', 'edit', $trackerInfo['editItemPretty'], tr('Configured'));
-	$trklib->registerSectionFormat('config', 'view', $trackerInfo['viewItemPretty'], tr('Configured'));
-	$template = $trklib->getSectionFormatTemplate($sectionFormat, $params['mode']);
-
-	$trklib->unregisterSectionFormat('config');
-
-	return $smarty->fetch($template);
 }
 

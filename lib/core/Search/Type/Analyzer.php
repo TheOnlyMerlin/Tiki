@@ -28,8 +28,6 @@ class Search_Type_Analyzer
 				return 'identifier';
 			} elseif ($this->hasSuffix($key, 'Id')) {
 				return 'identifier';
-			} elseif ($this->hasSuffix($key, '_type')) {
-				return 'identifier';
 			} elseif ($this->hasSuffix($key, '_date')) {
 				return 'timestamp';
 			} elseif ($this->hasSuffix($key, '_wiki')) {

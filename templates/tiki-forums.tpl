@@ -48,7 +48,7 @@
 		{/if}
 {/if}
 <div class="table-responsive">
-<table class="table table-striped normal">
+<table class="table normal">
 	<tr>
 		{assign var=numbercol value=1}
 		<th>{self_link _sort_arg='sort_mode' _sort_field='name'}{tr}Name{/tr}{/self_link}</th>
@@ -104,9 +104,9 @@
 				<span style="float:left">
 					{if (isset($channels[user].individual) and $channels[user].individual eq 'n')
 						or ($tiki_p_admin eq 'y') or ($channels[user].individual_tiki_p_forum_read eq 'y')}
-						<a class="forumname" href="{$channels[user].forumId|sefurl:'forum'}">{$channels[user].name|addongroupname|escape}</a>
+						<a class="forumname" href="{$channels[user].forumId|sefurl:'forum'}">{$channels[user].name|escape}</a>
 					{else}
-						{$channels[user].name|addongroupname|escape}
+						{$channels[user].name|escape}
 					{/if}
 				</span>
 				{if $prefs.forum_list_desc eq 'y'}

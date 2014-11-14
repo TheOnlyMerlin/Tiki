@@ -30,7 +30,7 @@ function wikiplugin_smarty_info()
 
 function wikiplugin_smarty($data, $params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	if (empty($params['name'])) {
 		return tra('Incorrect parameter');
 	}

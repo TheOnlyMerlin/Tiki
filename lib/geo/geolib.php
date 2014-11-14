@@ -199,3 +199,4 @@ class GeoLib
         }
 }
 
+$geolib = new GeoLib;

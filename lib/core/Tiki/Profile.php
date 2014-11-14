@@ -815,13 +815,9 @@ class Tiki_Profile
 		);
 	} // }}}
 
-	function getProfileKey($prefix = true) // {{{
+	function getProfileKey() // {{{
 	{
-		if (!$prefix) {
-			return self::getProfileKeyfor($this->domain, $this->profile);
-		} else {
-			return self::getProfileKeyfor($this->domain, $this->withPrefix($this->profile));
-		}
+		return self::getProfileKeyfor($this->domain, $this->withPrefix($this->profile));
 	} // }}}
 	
 	function getObjectSymbolDetails($type, $value) // Based on an objectType (eg: menu) and an objectId (eg: Id of a menu) query tiki_profile_symbols table and return domain, profile and object information

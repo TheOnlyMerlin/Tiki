@@ -96,7 +96,7 @@ class BannerLib extends TikiLib
 				break;
 			case 'useFlash':
 				if ($prefs['javascript_enabled'] == 'y') {
-					$headerlib = TikiLib::lib('header');
+					global $headerlib; include_once('lib/headerlib.php');
 					$headerlib->add_jsfile('lib/swfobject/swfobject.js');
 				}
 				$raw = $tikilib->embed_flash(unserialize($res['HTMLData']));
@@ -420,3 +420,4 @@ class BannerLib extends TikiLib
 		return true;
 	}
 }
+global $bannerlib; $bannerlib = new BannerLib;

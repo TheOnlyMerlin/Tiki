@@ -38,7 +38,7 @@ function module_last_files_info()
  */
 function module_last_files($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	$filegallib = TikiLib::lib('filegal');
 	if (isset($module_params["galleryId"])) {
 		if (is_string($module_params['galleryId'])) {

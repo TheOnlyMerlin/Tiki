@@ -23,7 +23,7 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 if (! file_exists(__DIR__ . '/../../vendor/autoload.php')) {
 	echo "Your Tiki is not completely installed because Composer has not been run to fetch package dependencies.\n";
 	echo "You need to run 'sh setup.sh' from the command line.\n";
-	echo "See https://dev.tiki.org/Composer for details.\n";
+	echo "See http://dev.tiki.org/Composer for details.\n";
 	exit;
 }
 
@@ -60,10 +60,6 @@ class TikiInit
 		$path = TIKI_PATH . '/db/config';
 		$container = new ContainerBuilder;
 		$container->addCompilerPass(new \Tiki\MailIn\Provider\CompilerPass);
-		$container->addCompilerPass(new \Tiki\Recommendation\Engine\CompilerPass);
-		$container->addCompilerPass(new \Tiki\Wiki\SlugManager\CompilerPass);
-		$container->addCompilerPass(new \Search\Federated\CompilerPass);
-		$container->addCompilerPass(new \Tracker\CompilerPass);
 
 		$container->setParameter('kernel.root_dir', TIKI_PATH);
 		$loader = new XmlFileLoader($container, new FileLocator($path));
@@ -76,14 +72,6 @@ class TikiInit
 			$loader->load('custom.xml');
 		} catch (InvalidArgumentException $e) {
 			// Do nothing, absence of custom.xml file is expected
-		}
-
-		foreach ( glob( TIKI_PATH . '/addons/*/lib/libs.xml' ) as $file ) {
-			try {
-				$loader->load($file);
-			} catch (InvalidArgumentException $e) {
-				// Do nothing, absence of libs.xml file is expected
-			}
 		}
 
 		$container->compile();

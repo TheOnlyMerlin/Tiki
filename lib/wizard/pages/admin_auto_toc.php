@@ -29,6 +29,8 @@ class AdminWizardAutoTOC extends Wizard
 
 	function onSetupPage ($homepageUrl) 
 	{
+		global	$smarty;
+
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
 

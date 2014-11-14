@@ -53,8 +53,8 @@ function wikiplugin_translationof_info()
 
 function wikiplugin_translationof($data, $params)
 {
-    global $tracer;
-	$smarty = TikiLib::lib('smarty');
+    global $smarty, $tracer;
+
     extract($params, EXTR_SKIP);
 
     $anchor_text = $orig_page;

@@ -30,8 +30,7 @@ function module_babelfish_links_info()
  */
 function module_babelfish_links($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
-	global $prefs;
+	global $smarty, $prefs;
 	require_once('lib/Babelfish.php');
 	$smarty->assign('babelfish_logo', Babelfish::logo($prefs['language']));
 }

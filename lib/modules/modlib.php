@@ -476,14 +476,14 @@ class ModLib extends TikiLib
      */
     function filter_active_module( $module )
 	{
-		global $section, $page, $prefs, $user;
-		$tikilib = TikiLib::lib('tiki');
+		global $section, $page, $prefs, $user, $tikilib;
+
 		// Validate preferences
 		$module_info = $this->get_module_info($module['name']);
 		$params = $module['params'];
 
 		if ( $prefs['feature_perspective'] == 'y' ) {
-			$perspectivelib = TikiLib::lib('perspective');
+			global $perspectivelib; require_once 'lib/perspectivelib.php';
 			$persp = $perspectivelib->get_current_perspective($prefs);
 			if (empty($persp)) {
 				$persp = 0;
@@ -1007,9 +1007,7 @@ class ModLib extends TikiLib
      */
     function execute_module( $mod_reference )
 	{
-		global $user, $prefs, $tiki_p_admin;
-		$smarty = TikiLib::lib('smarty');
-		$tikilib = TikiLib::lib('tiki');
+		global $smarty, $tikilib, $user, $prefs, $tiki_p_admin;
 
 		try {
 			$defaults = array(
@@ -1168,8 +1166,8 @@ class ModLib extends TikiLib
      */
     function get_user_module_content( $name, $module_params )
 	{
-		$smarty = TikiLib::lib('smarty');
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib, $smarty;
+
 		$smarty->assign('module_type', 'module');
 		$info = $this->get_user_module($name);
 		if (!empty($info)) {
@@ -1192,8 +1190,8 @@ class ModLib extends TikiLib
 
     function parse($info)
     {
-        global $prefs;
-		$tikilib = TikiLib::lib('tiki');
+        global $tikilib, $prefs;
+
         //allow for wikiLingo parsing, will only return 'y' if turned on AND enabled for this particular module
         if (isset($info['wikiLingo']) && $info['wikiLingo'] == 'y' && $prefs['feature_wikilingo'] == 'y') {
             //TODO: corrent the paths for scripts and output them to the header
@@ -1245,7 +1243,7 @@ class ModLib extends TikiLib
      */
     function require_cache_build( $mod_reference, $cachefile )
 	{
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 		return ! file_exists($cachefile)
 			|| ( $tikilib->now - filemtime($cachefile) ) >= $mod_reference['cache_time'];
 	}
@@ -1525,3 +1523,5 @@ function zone_is_empty($zoneName)
 	return true;
 }
 
+global $modlib;
+$modlib = new ModLib;

@@ -13,8 +13,5 @@ interface Search_Query_Facet_Interface
 	function render($value);
 	function setOperator($operator);
 	function getOperator();
-
-	function getCount();
-	function setCount($count);
 }
 

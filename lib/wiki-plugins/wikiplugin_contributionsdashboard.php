@@ -45,9 +45,7 @@ function wikiplugin_contributionsdashboard_info()
 
 function wikiplugin_contributionsdashboard($data, $params)
 {
-	global $user;
-	$headerlib = TikiLib::lib('header');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $headerlib, $user;
 	$trklib = TikiLib::lib("trk");
 	$logsqrylib = TikiLib::lib("logsqry");
 	$smarty = TikiLib::lib("smarty");

@@ -31,7 +31,7 @@ function module_last_created_quizzes_info()
  */
 function module_last_created_quizzes($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $tikilib, $smarty;
 	$ranking = TikiLib::lib('quiz')->list_quizzes(0, $mod_reference["rows"], 'created_desc', '');
 	
 	$smarty->assign('modLastCreatedQuizzes', $ranking["data"]);

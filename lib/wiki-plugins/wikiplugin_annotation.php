@@ -59,8 +59,7 @@ function wikiplugin_annotation_info()
 function wikiplugin_annotation($data, $params)
 {
 	static $first = true;
-	global $page, $tiki_p_edit;
-	$headerlib = TikiLib::lib('header');
+	global $page, $tiki_p_edit, $headerlib;
 
 	$params = array_merge(array( 'align' => 'left' ), $params);
 
@@ -430,7 +429,7 @@ FORM;
 } );
 JS;
 	
-	$headerlib = TikiLib::lib('header');
+	global $headerlib;
 	$headerlib->add_js($js);
 
 	return <<<ANNOTATION

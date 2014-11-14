@@ -21,9 +21,6 @@
       <ul class="{if $params.one eq 'y'}catitemsone{else}list-inline{/if}">
 	{/if}
         {section name=o loop=$i}
-			{if isset($params.maxRecords) && $smarty.section.o.index >= $params.maxRecords}
-				{break}
-			{/if}
         <li>
 			{if $params.showlinks ne 'n'}
 				{if $prefs.feature_sefurl eq 'y'}

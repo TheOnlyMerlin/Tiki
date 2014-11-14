@@ -179,7 +179,6 @@ function prefs_auth_list()
 			'type' => 'flag',
 			'perspective' => false,
 			'default' => 'n',
-			'view' => 'tiki-syslog.php'			
 		),
 		'auth_ldap_ssl' => array(
 			'name' => tra('Use SSL (ldaps)'),

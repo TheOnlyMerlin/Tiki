@@ -56,9 +56,7 @@ function wikiplugin_convene_info()
 
 function wikiplugin_convene($data, $params)
 {
-	global $page, $tiki_p_edit;
-	$headerlib = TikiLib::lib('header');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $headerlib, $page, $tiki_p_edit;
 
 	static $conveneI = 0;
 	++$conveneI;

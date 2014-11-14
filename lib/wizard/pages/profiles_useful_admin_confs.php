@@ -23,11 +23,11 @@ class ProfilesWizardUsefulAdminConfs extends Wizard
 	
 	function onSetupPage ($homepageUrl) 
 	{
-		global $prefs, $TWV;
+		global	$smarty, $prefs, $TWV;
+
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
 
-		$smarty = TikiLib::lib('smarty');
 		$smarty->assign('tikiMajorVersion', substr($TWV->version, 0, 2));
 		
 		return true;		

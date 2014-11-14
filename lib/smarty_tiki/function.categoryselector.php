@@ -28,12 +28,15 @@ function smarty_function_categoryselector($params, $smarty)
 		)
 	);
 
-	$url = array(
-		'controller' => 'category',
-		'action' => 'select',
-		'type' => $params['type'],
-		'object' => $params['object'],
-		'subset' => implode(',', $params['categories']),
+	$servicelib = TikiLib::lib('service');
+	$url = $servicelib->getUrl(
+		array(
+			'controller' => 'category',
+			'action' => 'select',
+			'type' => $params['type'],
+			'object' => $params['object'],
+			'subset' => implode(',', $params['categories']),
+		)
 	);
 	return new Tiki_Render_Editable(
 		$data,

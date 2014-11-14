@@ -69,7 +69,7 @@ class Search_GlobalSource_CategorySource implements Search_GlobalSource_Interfac
 
 	function getData($objectType, $objectId, Search_Type_Factory_Interface $typeFactory, array $data = array())
 	{
-		if (isset($data['categories']) || isset($data['deep_categories']) || $objectType === 'category') {
+		if (isset($data['categories']) || isset($data['deep_categories'])) {
 			return array();
 		}
 

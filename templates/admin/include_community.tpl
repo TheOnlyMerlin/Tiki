@@ -71,11 +71,6 @@
 				{preference name=user_favorites}
 				{preference name=feature_invite}
 				{preference name=feature_wizard_user}
-
-				{preference name=mustread_enabled}
-				<div class="adminoptionboxchild" id="mustread_enabled_childcontainer">
-					{preference name=mustread_tracker}
-				</div>
 			</div>
 		{/tab}
 		{tab name="{tr}Social Network{/tr}"}
@@ -200,7 +195,15 @@
 					{preference name=feature_community_mouseover_distance}
 				</div>
 			</fieldset>
-		
+			
+			<fieldset>
+				<legend>{tr}Email notifications to group leaders when users join/leave a group{/tr}{help url="Community"}</legend>
+				{preference name=feature_community_Strings_to_ignore}
+				{preference name=feature_community_String_to_append}
+				{preference name=feature_community_send_mail_join}
+				{preference name=feature_community_send_mail_leave}
+			</fieldset>
+
 			{* ************ Users Default Preferences *}
 			<fieldset>
 				<legend>

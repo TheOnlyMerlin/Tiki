@@ -49,7 +49,6 @@ class Search_ContentSource_TrackerItemSource implements Search_ContentSource_Int
 
 		$itemObject = Tracker_Item::fromInfo($item);
 		$permNeeded = $itemObject->getViewPermission();
-		$specialUsers = $itemObject->getSpecialPermissionUsers($objectId, 'Modify');
 
 		$definition = Tracker_Definition::get($item['trackerId']);
 
@@ -76,7 +75,6 @@ class Search_ContentSource_TrackerItemSource implements Search_ContentSource_Int
 				'view_permission' => $typeFactory->identifier($permNeeded),
 
 				// Fake attributes, removed before indexing
-				'_extra_users' => $specialUsers,
 				'_permission_accessor' => $itemObject->getPerms(),
 				'_extra_groups' => $ownerGroup ? array($ownerGroup) : null,
 			)
@@ -178,15 +176,6 @@ class Search_ContentSource_TrackerItemSource implements Search_ContentSource_Int
 		}
 
 		$source = new Search_FacetProvider;
-		$source->addFacets([
-			Search_Query_Facet_Term::fromField('tracker_id')
-				->setLabel(tr('Tracker'))
-				->setRenderCallback(function ($id) {
-					$lib = TikiLib::lib('object');
-					return $lib->get_title('tracker', $id);
-				})
-		]);
-
 		foreach ($handlers as $handler) {
 			$source->addProvider($handler);
 		}

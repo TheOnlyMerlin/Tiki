@@ -9,7 +9,8 @@
 // $Id$
 
 require_once ('tiki-setup.php');
-$rsslib = TikiLib::lib('rss');
+require_once ('lib/tikilib.php');
+require_once ('lib/rss/rsslib.php');
 $access->check_feature('feature_maps');
 if ($prefs['rss_mapfiles'] != 'y') {
 	$errmsg = tra("rss feed disabled");

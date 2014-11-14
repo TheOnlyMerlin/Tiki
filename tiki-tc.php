@@ -15,7 +15,7 @@ if ($prefs['feature_theme_control'] == 'y') {
 	// defined: $cat_type and cat_objid
 	// search for theme for $cat_type
 	// then search for theme for md5($cat_type.cat_objid)
-	$tcontrollib = TikiLib::lib('tcontrol');
+	include_once ('lib/themecontrol/tcontrol.php');
 	$categlib = TikiLib::lib('categ');
 	global $tc_theme, $tc_theme_option;
 	
@@ -60,7 +60,9 @@ if ($prefs['feature_theme_control'] == 'y') {
 			$headerlib->add_cssfile($tikilib->get_style_path($tc_theme, $tc_theme_option, $tc_theme_option), 52);
 		}
 		// Reset IE specific CSS
-		global $style_ie8_css, $style_ie9_css, $style_base;
+		global $style_ie6_css, $style_ie7_css, $style_ie8_css, $style_ie9_css, $style_base;
+		$style_ie6_css = $tikilib->get_style_path($tc_theme, $tc_theme_option, 'ie6.css');
+		$style_ie7_css = $tikilib->get_style_path($tc_theme, $tc_theme_option, 'ie7.css');
 		$style_ie8_css = $tikilib->get_style_path($tc_theme, $tc_theme_option, 'ie8.css');
 		$style_ie9_css = $tikilib->get_style_path($tc_theme, $tc_theme_option, 'ie9.css');
 

@@ -32,7 +32,7 @@ function module_featured_links_info()
  */
 function module_featured_links($mod_reference, $module_params)
 {
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $tikilib, $smarty;
+	
 	$smarty->assign('featuredLinks', $tikilib->get_featured_links($mod_reference['rows']));
 }

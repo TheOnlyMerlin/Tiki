@@ -8,25 +8,25 @@
 {block name="navigation"}
 	{if $tiki_p_admin_trackers eq 'y'}
 		<div class="form-group">{* Class provides 15px bottom margin. *}
-			<a class="btn btn-default" href="{bootstrap_modal controller=tracker action=replace}">
-				{icon name="create"} {tr}Create{/tr}
+			<a class="btn btn-default" href="{service controller=tracker action=replace modal=true}" data-toggle="modal" data-target="#bootstrap-modal">
+				{glyph name="plus"} {tr}Create{/tr}
 			</a>
-			<a class="btn btn-default" href="{bootstrap_modal controller=tracker action=duplicate}">
-				{icon name="copy"} {tr}Duplicate{/tr}
+			<a class="btn btn-default" href="{service controller=tracker action=duplicate modal=true}" data-toggle="modal" data-target="#bootstrap-modal">
+				{glyph name="flash"} {tr}Duplicate{/tr}
 			</a>
 			<div class="btn-group">
 				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-					{icon name="import"} {tr}Import{/tr}
+					{glyph name="import"} {tr}Import{/tr}
 					<span class="caret"></span>
 				</button>
 				<ul class="dropdown-menu">
 					<li>
-						<a href="{bootstrap_modal controller=tracker action=import}">
+						<a href="{service controller=tracker action=import modal=1}" data-toggle="modal" data-target="#bootstrap-modal">
 							{tr}Import Structure{/tr}
 						</a>
 					</li>
 					<li>
-						<a href="{bootstrap_modal controller=tracker action=import_profile}">
+						<a href="{service controller=tracker action=import_profile modal=1}" data-toggle="modal" data-target="#bootstrap-modal">
 							{tr}Import From Profile/YAML{/tr}
 						</a>
 					</li>
@@ -34,7 +34,7 @@
 			</div>
 			{if $prefs.tracker_remote_sync eq 'y'}
 				<a class="btn btn-default" href="{service controller=tracker_sync action=clone_remote}">
-				{icon name="clone"} {tr}Clone remote{/tr}
+				{glyph name="download-alt"} {tr}Clone remote{/tr}
 				</a>
 			{/if}
 		</div>
@@ -55,7 +55,7 @@
 			<th>{self_link _sort_arg='sort_mode' _sort_field='trackerId'}{tr}Id{/tr}{/self_link}</th>
 			<th>{self_link _sort_arg='sort_mode' _sort_field='name'}{tr}Name{/tr}{/self_link}</th>
 			<th>{self_link _sort_arg='sort_mode' _sort_field='created'}{tr}Created{/tr}{/self_link}</th>
-			<th>{self_link _sort_arg='sort_mode' _sort_field='lastModif'}{tr}Last Modified{/tr}{/self_link}</th>
+			<th>{self_link _sort_arg='sort_mode' _sort_field='lastModif'}{tr}Last Modification{/tr}{/self_link}</th>
 			<th>{self_link _sort_arg='sort_mode' _sort_field='items'}{tr}Items{/tr}{/self_link}</th>
 			<th>{tr}Actions{/tr}</th>
 		</tr>

@@ -36,9 +36,7 @@ function module_switch_lang_info()
  */
 function module_switch_lang($mod_reference, $module_params)
 {
-	global $prefs;
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $smarty, $prefs;
 
 	// tiki-setup has already set the $language variable
 	//Create a list of languages

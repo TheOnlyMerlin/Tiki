@@ -16,13 +16,9 @@ function smarty_function_modulelist($params, $smarty)
 
 	$zone = $params['zone'];
 
-	$tag = "div";
 	$class = 'content clearfix modules';
 	if (! empty($params['class'])) {
-		$class .= ' ' . $params['class'];
-		if (strpos($class, 'navbar') !== false) {
-			$tag = 'nav';
-		}
+		$class = $params['class'];
 	}
 
 	$id = $zone . '_modules';
@@ -54,8 +50,8 @@ function smarty_function_modulelist($params, $smarty)
 		$mobile = '';
 	}
 	return <<<OUT
-<$tag class="$class" id="$id"$dir$mobile>
+<div class="$class" id="$id"$dir$mobile>
 	$content
-</$tag>
+</div>
 OUT;
 }

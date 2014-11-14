@@ -101,27 +101,11 @@
 			<div class="form-group">
 				<label for="sectionFormat">{tr}Section format{/tr}</label>
 				<select name="sectionFormat" class="form-control">
-					{foreach $sectionFormats as $format => $label}
-						<option value="{$format|escape}"{if $info.sectionFormat eq $format} selected="selected"{/if}>{$label|escape}</option>
-					{/foreach}
+					<option value="flat"{if $info.sectionFormat eq 'flat'} selected="selected"{/if}>{tr}Title{/tr}</option>
+					<option value="tab"{if $info.sectionFormat eq 'tab'} selected="selected"{/if}>{tr}Tabs{/tr}</option>
 				</select>
 				<div class="help-block">
-					<p>{tr}Determines how headers will be rendered when using header fields as form section dividers.{/tr}</p>
-					<p>{tr}Set to <em>Configured</em> to use the two following fields.{/tr}</p>
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="viewItemPretty">{tr}Template to display an item{/tr}</label>
-				<input class="form-control" type="text" name="viewItemPretty" value="{$info.viewItemPretty|escape}">
-				<div class="help-block">
-					{tr}wiki:pageName for a wiki page or tpl:tplName for a template{/tr}
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="editItemPretty">{tr}Template to edit an item{/tr}</label>
-				<input class="form-control" type="text" name="editItemPretty" value="{$info.editItemPretty|escape}">
-				<div class="help-block">
-					{tr}wiki:pageName for a wiki page or tpl:tplName for a template{/tr}
+					{tr}Determines how headers will be rendered when using header fields as form section dividers.{/tr}
 				</div>
 			</div>
 			<div class="checkbox">
@@ -218,7 +202,24 @@
 			</div>
 			<div class="form-group">
 				<label for="showPopup">{tr}List detail pop-up{/tr}</label>
-				{object_selector_multi type=trackerfield tracker_id=$info.trackerId _simplevalue=$info.showPopup _separator="," _simplename="showPopup"}
+				<input class="form-control" type="text" name="showPopup" value="{$info.showPopup|escape}">
+				<div class="help-block">
+					{tr}Comma-separated list of field IDs{/tr}
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="viewItemPretty">{tr}Template to display an item{/tr}</label>
+				<input class="form-control" type="text" name="viewItemPretty" value="{$info.viewItemPretty|escape}">
+				<div class="help-block">
+					{tr}wiki:pageName for a wiki page or tpl:tplName for a template{/tr}
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="editItemPretty">{tr}Template to edit an item{/tr}</label>
+				<input class="form-control" type="text" name="editItemPretty" value="{$info.editItemPretty|escape}">
+				<div class="help-block">
+					{tr}wiki:pageName for a wiki page or tpl:tplName for a template{/tr}
+				</div>
 			</div>
 			<div class="checkbox">
 				<label>

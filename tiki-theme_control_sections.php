@@ -9,7 +9,7 @@
 // $Id$
 
 require_once ('tiki-setup.php');
-$tcontrollib = TikiLib::lib('tcontrol');
+include_once ('lib/themecontrol/tcontrol.php');
 $categlib = TikiLib::lib('categ');
 
 $access->check_feature('feature_theme_control', '', 'look');

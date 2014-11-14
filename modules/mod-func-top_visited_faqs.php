@@ -31,7 +31,7 @@ function module_top_visited_faqs_info()
  */
 function module_top_visited_faqs($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	
 	$faqlib = TikiLib::lib('faq');
 	$ranking = $faqlib->list_faqs(0, $mod_reference["rows"], 'hits_desc', '');

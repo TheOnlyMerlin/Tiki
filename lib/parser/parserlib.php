@@ -403,7 +403,6 @@ class ParserLib extends TikiDb_Bridge
 	{
 		global $tikilib, $tiki_p_edit, $prefs, $pluginskiplist;
 		$smarty = TikiLib::lib('smarty');
-		$smarty->loadPlugin('smarty_function_icon');
 
 		if ( ! is_array($pluginskiplist) )
 			$pluginskiplist = array();
@@ -1352,7 +1351,7 @@ if ( \$('#$id') ) {
 		if ($prefs['feature_wiki_ext_icon'] == 'y') {
 			$attrib .= 'class="wiki external" ';
 			include_once('lib/smarty_tiki/function.icon.php');
-			$ext_icon = smarty_function_icon(array('name'=>'link-external'), $smarty);
+			$ext_icon = smarty_function_icon(array('_id'=>'external_link', 'alt'=>' ', '_class' => 'externallink', '_extension' => 'gif', '_defaultdir' => 'img/icons', 'width' => 15, 'height' => 14), $smarty);
 
 		} else {
 			$attrib .= 'class="wiki" ';
@@ -1821,7 +1820,7 @@ if ( \$('#$id') ) {
 				if ($prefs['feature_wiki_ext_icon'] == 'y' && !($this->option['suppress_icons'] || $suppress_icons)) {
 					$smarty = TikiLib::lib('smarty');
 					include_once('lib/smarty_tiki/function.icon.php');
-					$ext_icon = smarty_function_icon(array('name'=>'link-external'), $smarty);
+					$ext_icon = smarty_function_icon(array('_id'=>'external_link', 'alt'=>' ', '_class' => 'externallink', '_extension' => 'gif', '_defaultdir' => 'img/icons', 'width' => 15, 'height' => 14), $smarty);
 				}
 				$rel='external';
 				if ($prefs['feature_wiki_ext_rel_nofollow'] == 'y') {
@@ -1932,7 +1931,7 @@ if ( \$('#$id') ) {
 
 				$temp_max3 = count($tables[0]);
 				for ($i = 0; $i < $temp_max3; $i++) {
-					$repl = '<table class="wikitable table table-striped table-hover">';
+					$repl = '<table class="wikitable">';
 
 					$temp_max4 = count($cols[$i]);
 					for ($j = 0; $j < $temp_max4; $j++) {
@@ -1981,7 +1980,7 @@ if ( \$('#$id') ) {
 
 					$temp_max7 = count($tables[0]);
 					for ($i = 0; $i < $temp_max7; $i++) {
-						$repl = '<table class="wikitable table table-striped table-hover">';
+						$repl = '<table class="wikitable">';
 						$temp_max8 = count($cols[$i]);
 						for ($j = 0; $j < $temp_max8; $j++) {
 							$ncols = count($cols[$i][$j]);
@@ -2743,12 +2742,12 @@ if ( \$('#$id') ) {
 							if ($prefs['mobile_mode']== 'y') {
 								$button = '<div class="icon_edit_section"' . $iconDisplayStyle . '><a data-role="button" data-inline="true" href="tiki-editpage.php?';
 							} else {
-								$button = '<div class="icon_edit_section"' . $iconDisplayStyle . '><a title="' . tra('Edit Section') . '" href="tiki-editpage.php?';
+								$button = '<div class="icon_edit_section"' . $iconDisplayStyle . '><a href="tiki-editpage.php?';
 							}
 							if (!empty($this->option['page'])) {
 								$button .= 'page='.urlencode($this->option['page']).'&amp;';
 							}
-							$button .= 'hdr='.$nb_hdrs.'">' . smarty_function_icon(array('name' => 'edit'), $smarty).'</a></div>';
+							$button .= 'hdr='.$nb_hdrs.'">'.smarty_function_icon(array('_id'=>'page_edit_section', 'alt'=>tra('Edit Section')), $smarty).'</a></div>';
 						} else {
 							$button = '';
 						}
@@ -3012,26 +3011,6 @@ if ( \$('#$id') ) {
 							$maketoc = preg_replace("/'link'/", "'$link_class'", $maketoc);
 						}
 					}
-
-					//patch-ini - Patch taken from http://dev.tiki.org/item5405
-					global $TOC_newstring, $TOC_oldstring ;
-				
-					$TOC_newstring = $maketoc ; //===== get a copy of the newest TOC before we do anything to it
-        			if ( strpos($maketoc, $TOC_oldstring) ) // larryg - if this MAKETOC contains previous chapter's TOC entries, remove that portion of the string
-					{
-						$maketoc = substr($maketoc, 0 , strpos($maketoc, $TOC_oldstring)).substr($maketoc, strpos($maketoc, $TOC_oldstring)+ strlen($TOC_oldstring)) ; 
-					}
-  			  		
-					//prepare this chapter's TOC entry to be compared with the next chapter's string]
-					$head_string = '<li><a href='   ;
-					$tail_string = '<!--toc-->' ; 
-					if ( strpos($TOC_newstring, $head_string ) && strpos($TOC_newstring, $tail_string) ) { 
-						$TOC_newstring = substr($TOC_newstring, strpos($TOC_newstring, $head_string) ) ; // trim unwanted stuff from the beginning of the string
-						$TOC_newstring = substr($TOC_newstring, 0, (strpos($TOC_newstring, $tail_string) -5)) ; // trim the stuff from the tail of the string    </ul></li></ul>
-						$TOC_oldstring = $TOC_newstring ;
-					}
-					//patch-end - Patch taken from http://dev.tiki.org/item5405
-					
 					if (!empty($maketoc)) {
 						$maketoc = $maketoc_header.$maketoc.$maketoc_footer;
 					}
@@ -3053,12 +3032,12 @@ if ( \$('#$id') ) {
 			if ($prefs['mobile_mode']== 'y') {
 				$button = '<div class="icon_edit_section"><a data-role="button" data-inline="true" href="tiki-editpage.php?';
 			} else {
-				$button = '<div class="icon_edit_section"><a title="' . tra('Edit Section') . '" href="tiki-editpage.php?';
+				$button = '<div class="icon_edit_section"><a href="tiki-editpage.php?';
 			}
 			if (!empty($this->option['page'])) {
 				$button .= 'page='.urlencode($this->option['page']).'&amp;';
 			}
-			$button .= 'hdr=0">'.smarty_function_icon(array('name' => 'edit'), $smarty).'</a></div>';
+			$button .= 'hdr=0">'.smarty_function_icon(array('_id'=>'page_edit_section', 'alt'=>tra('Edit Section')), $smarty).'</a></div>';
 			$data = $button.$data;
 		}
 	}

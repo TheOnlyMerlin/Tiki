@@ -116,10 +116,11 @@ if (jqueryTiki.no_cookie) {
 		{if $mode eq "popup"}
 			<div class="siteloginbar_popup dropdown btn-group pull-right">
                 <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown">
-                    {tr}Log in{/tr}
-					<span class="caret"></span>
+				    <a href="tiki-login.php"></a>
+					    {tr}Log in{/tr}
+					    <span class="caret"></span>
                 </button>
-				<div class="siteloginbar_poppedup dropdown-menu pull-right modal-sm"><div class="panel-body">
+				<div class="siteloginbar_poppedup {*panel panel-body*} dropdown-menu pull-right">
 					{capture assign="close_tags"}</div></div>{$close_tags}{/capture}
 		{/if}
 		<form name="loginbox" class="form" id="loginbox-{$module_logo_instance}" action="{$login_module.login_url|escape}"
@@ -217,13 +218,13 @@ function doChallengeResponse() {
 			{/if}
 		{/if}
 		<div class="form-group text-center">
-			<button class="btn btn-primary button submit" type="submit" name="login">{tr}Log in{/tr} <!--i class="fa fa-arrow-circle-right"></i--></button>
+			<button class="btn btn-primary button submit" type="submit" name="login">{tr}Log in{/tr} <!--span class="glyphicon glyphicon-circle-arrow-right"></span--></button>
 		</div>
 		{if $module_params.show_forgot eq 'y' or $module_params.show_register eq 'y'}
 			<div {if $mode eq 'header'}class="text-right" style="display:inline;"{/if}>
 				{strip}
 				{if $module_params.show_forgot eq 'y' && $prefs.forgotPass eq 'y'}
-					<div><ul {if $mode eq 'popup'}class="list-unstyled"{/if}><li class="pass"><a href="tiki-remind_password.php" title="{tr}Click here if you've forgotten your password{/tr}">{tr}I forgot my password{/tr}</a></li>
+					<div class="navbar-default"><ul {if $mode eq 'popup'}class="navbar-nav"{/if}><li class="pass"><a {*class="linkmodule"*} href="tiki-remind_password.php" title="{tr}Click here if you've forgotten your password{/tr}">{tr}I forgot my password{/tr}</a></li>
 				{/if}
 				{if $module_params.show_register eq 'y' && $prefs.allowRegister eq 'y'}
 						{if $mode eq 'header' && $module_params.show_forgot eq 'y' && $prefs.forgotPass eq 'y'}

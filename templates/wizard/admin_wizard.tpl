@@ -12,12 +12,12 @@
 		<a href="http://doc.tiki.org/Wizards" target="tikihelp" class="tikihelp" style="float:right" title="{tr}Help icon:{/tr}
 			{tr}You will get more information about the features and preferences whenever this icon is available and you pass your mouse over it{/tr}. 
 			<br/><br/>{tr}Moreover, if you click on it, you'll be directed in a new window to the corresponding documentation page for further information on that feature or topic{/tr}.">
-			{icon name="help"}
+			<img src="img/icons/help.png" alt="" width="16" height="16" class="icon" />
 		</a>
         <a target="tikihelp" class="tikihelp" style="float:right" title="{tr}Information icon:{/tr}
         {tr}You will get more information about the features and preferences whenever this icon is available and you pass your mouse over it{/tr}.
         ">
-            {icon name="information"}
+            <img src="img/icons/information.png" alt="" width="16" height="16" class="icon" />
         </a>
 		{tr}Example: {/tr}
 		{/remarksbox}
@@ -32,7 +32,7 @@
              <p>{tr}If you are new to Tiki administration, we recommend that you start with this approach{/tr}.</p>
 
              <p>{tr}If the profile you selected does not quite meet your needs, you will still have the option of customizing it further with one of the approaches below{/tr}">
-                    {icon name="help"}
+					<img src="img/icons/help.png" alt="" width="16" height="16" class="icon" />
 				</a></p>
 
                 <input  type="submit" class="btn btn-primary" name="use-default-prefs" value="{tr}Start Configuration Profiles Wizard (Macros){/tr}" />
@@ -41,13 +41,13 @@
     <div class="media">
         <img class="pull-left" src="img/icons/large/wizard_admin48x48.png" alt="{tr}Configuration Walkthrough{/tr}" title="Configuration Walkthrough" />
         <div class="media-body">
-            <p>{tr}Alternatively, you may use the <b>Configuration Wizard</b>{/tr}.
+            <p>{tr}Alternatively, you may use the <b>Admin Wizard</b>{/tr}.
                 {tr}This will guide you through the most common preference settings in order to customize your site{/tr}.
-				<a href="http://doc.tiki.org/Admin+Wizard" target="tikihelp" class="tikihelp" title="{tr}Configuration Wizard:{/tr}
+				<a href="http://doc.tiki.org/Admin+Wizard" target="tikihelp" class="tikihelp" title="{tr}Admin Wizard:{/tr}
                 {tr}Use this wizard if none of the <b>Configuration Profiles</b> look like a good starting point, or if you need to customize your site further{/tr}">
-                    {icon name="help"}
+					<img src="img/icons/help.png" alt="" width="16" height="16" class="icon" />
 				</a></p>
-                <input type="submit" class="btn btn-primary" name="continue" value="{tr}Start Configuration Wizard{/tr}" />
+                <input type="submit" class="btn btn-primary" name="continue" value="{tr}Start Admin Wizard{/tr}" />
         </div>
     </div>
     <div class="media">
@@ -58,20 +58,20 @@
 				<a href="http://doc.tiki.org/Upgrade+Wizard" target="tikihelp" class="tikihelp" title="{tr}Upgrade Wizard:{/tr} 
                 {tr}Use this wizard if you are upgrading from previous versions of Tiki, specially if you come from the previous Long Term Support (LTS) version.{/tr}</p>
 
-            <p>{tr}Some of these settings are also available through the Configuration Wizard, and all of them are available through Configuration Panels{/tr}.
+            <p>{tr}Some of these settings are also available through the Admin Wizard, and all of them are available through Admin Panels{/tr}.
                 {tr}But this wizard will let you learn about them as well as enable/disable them easily according to your needs and interests for your site{/tr}.">
-                    {icon name="help"}
+					<img src="img/icons/help.png" alt="" width="16" height="16" class="icon" />
 				</a></p>
 
                 <input type="submit" class="btn btn-primary" name="use-upgrade-wizard" value="{tr}Start Upgrade Wizard{/tr}" />
         </div>
     </div>
     <div class="media">
-        <img class="pull-left" src="img/icons/large/admin_panel48x48.png" alt="{tr}Configuration Panels{/tr}" />
+        <img class="pull-left" src="img/icons/large/admin_panel48x48.png" alt="{tr}Admin Panel{/tr}" />
         <div class="media-body">
-            <p>{tr}Use the <b>Configuration Panels</b> to manually browse through the full list of preferences{/tr}.</p>
+            <p>{tr}Use the <b>Admin Panel</b> to manually browse through the full list of preferences{/tr}.</p>
 
-            {button href="tiki-admin.php" _text="{tr}Go to the Configuration Panels{/tr}"}
+            {button href="tiki-admin.php" _text="{tr}Go to the Admin Panel{/tr}"}
         </div>
     </div>
 </fieldset>

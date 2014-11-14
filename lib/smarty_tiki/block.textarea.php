@@ -32,8 +32,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 function smarty_block_textarea($params, $content, $smarty, $repeat)
 {
     static $included=false;
-	global $prefs, $is_html, $tiki_p_admin;
-	$headerlib = TikiLib::lib('header');
+	global $prefs, $headerlib, $smarty, $is_html, $tiki_p_admin;
 
 	if ( $repeat ) {
 		return;
@@ -133,6 +132,7 @@ JS
 
 	if ($prefs['feature_ajax'] == 'y' && $prefs['ajax_autosave'] == 'y' && $params['_simple'] == 'n' && $params['autosave'] == 'y') {
 		// retrieve autosaved content
+		require_once("lib/ajax/autosave.php");
 		$smarty->loadPlugin('smarty_block_self_link');
 		$auto_save_referrer = TikiLib::lib('autosave')->ensureReferrer();
 		if (empty($_REQUEST['autosave'])) {

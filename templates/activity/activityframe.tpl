@@ -1,5 +1,5 @@
 <div class="activity" data-id="{$activityframe.object.id|escape}">
-	{if $activity_format eq 'summary' and $activityframe.summary neq 'content'}
+	{if $activity_format eq 'summary'}
 		<div class="media" data-href="{service controller=object action=infobox type=$activityframe.object.type object=$activityframe.object.id format=extended}">
 			<div class="pull-left">
 				{$activityframe.activity.user|avatarize:'':'img/noavatar.png'}
@@ -11,23 +11,10 @@
 						{$activityframe.activity.modification_date|tiki_short_datetime}
 					</span>
 					<div>
-						{icon name="link"}
+						{glyph name=link}
 						{object_link type=$activityframe.activity.type id=$activityframe.activity.object backuptitle=$object.activity.title}
 					</div>
 				{/if}
-			</div>
-		</div>
-	{elseif $activity_format eq 'summary'}
-		<div class="media" data-href="{service controller=object action=infobox type=$activityframe.object.type object=$activityframe.object.id format=extended}">
-			<div class="pull-left">
-				{$activityframe.activity.user|avatarize:'':'img/noavatar.png'}
-			</div>
-			<div class="media-body">
-				<h4 class="media-heading">{$activityframe.heading}</h4>
-				<span class="pull-right">
-					{$activityframe.activity.modification_date|tiki_short_datetime}
-				</span>
-				<div class="content">{$activityframe.content}</div>
 			</div>
 		</div>
 	{else}

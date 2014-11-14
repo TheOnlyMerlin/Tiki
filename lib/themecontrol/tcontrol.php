@@ -257,9 +257,8 @@ class ThemeControlLib extends TikiLib
 	
 	function setup_theme_menus()
 	{
-		global $prefs;
-		$smarty = TikiLib::lib('smarty');
-		$tikilib = TikiLib::lib('tiki');
+		global $prefs, $tikilib, $smarty;
+		
 		$list_styles = $tikilib->list_styles();
 		$smarty->assign_by_ref('styles', $list_styles);
 		if (!empty($_REQUEST['theme'])) {
@@ -349,3 +348,4 @@ class ThemeControlLib extends TikiLib
 		}
 	}
 }
+$tcontrollib = new ThemeControlLib;

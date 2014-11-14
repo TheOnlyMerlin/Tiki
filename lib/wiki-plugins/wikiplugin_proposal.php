@@ -59,8 +59,8 @@ function wikiplugin_proposal($data, $params)
 {
 	$counts = wikiplugin_proposal_get_counts($data);
 	unset($counts['weights']);
-	global $user, $tiki_p_edit;
-	$smarty = TikiLib::lib('smarty');
+
+	global $smarty, $user, $tiki_p_edit;
 	$smarty->assign('counts', $counts);
 
 	if ( $user && $tiki_p_edit == 'y' ) {

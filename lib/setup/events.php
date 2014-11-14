@@ -166,30 +166,6 @@ function tiki_setup_events()
 		TikiLib::lib('monitor')->bindEvents($events);
 	}
 
-	if ($prefs['mustread_enabled'] == 'y') {
-		$events->bind('tiki.trackeritem.create', ['Services_MustRead_Controller', 'handleItemCreation']);
-		$events->bind('tiki.user.create', ['Services_MustRead_Controller', 'handleUserCreation']);
-	}
-
-	// If the parameter is supplied by the web server, Tiki will expose the username as a response header
-	if (! empty($_SERVER['TIKI_HEADER_REPORT_USER'])) {
-		$events->bind('tiki.process.render', function () {
-			global $user;
-			if ($user) {
-				header('X-Remote-User: ' . $user);
-			}
-		});
-	}
-
-	// If the parameter is supplied by the web server, Tiki will expose the object type and id as a response header
-	if (! empty($_SERVER['TIKI_HEADER_REPORT_OBJECT'])) {
-		$events->bind('tiki.process.render', function () {
-			if (function_exists('current_object') && $object = current_object()) {
-				header("X-Current-Object: {$object['type']}:{$object['object']}");
-			}
-		});
-	}
-
 	// Chain events
 	$events->bind('tiki.wiki.update', 'tiki.wiki.save');
 	$events->bind('tiki.wiki.create', 'tiki.wiki.save');
@@ -202,53 +178,21 @@ function tiki_setup_events()
 	$events->bind('tiki.trackeritem.delete', 'tiki.save');
 	$events->bind('tiki.trackeritem.rating', 'tiki.rating');
 
-	$events->bind('tiki.trackerfield.update', 'tiki.trackerfield.save');
-	$events->bind('tiki.trackerfield.create', 'tiki.trackerfield.save');
-	$events->bind('tiki.trackerfield.delete', 'tiki.save');
-	$events->bind('tiki.trackerfield.save', 'tiki.save');
-
-	$events->bind('tiki.tracker.update', 'tiki.tracker.save');
-	$events->bind('tiki.tracker.create', 'tiki.tracker.save');
-	$events->bind('tiki.tracker.delete', 'tiki.save');
-	$events->bind('tiki.tracker.save', 'tiki.save');
-
-	$events->bind('tiki.category.update', 'tiki.category.save');
-	$events->bind('tiki.category.create', 'tiki.category.save');
-	$events->bind('tiki.category.delete', 'tiki.category.save');
-	$events->bind('tiki.category.save', 'tiki.save');
-
 	$events->bind('tiki.file.update', 'tiki.file.save');
 	$events->bind('tiki.file.create', 'tiki.file.save');
 	$events->bind('tiki.file.delete', 'tiki.file.save');
 	$events->bind('tiki.file.save', 'tiki.save');
-
-	$events->bind('tiki.filegallery.update', 'tiki.filegallery.save');
-	$events->bind('tiki.filegallery.create', 'tiki.filegallery.save');
-	$events->bind('tiki.filegallery.delete', 'tiki.filegallery.save');
-	$events->bind('tiki.filegallery.save', 'tiki.save');
-
-	$events->bind('tiki.forum.update', 'tiki.forum.save');
-	$events->bind('tiki.forum.create', 'tiki.forum.save');
-	$events->bind('tiki.forum.delete', 'tiki.forum.save');
-	$events->bind('tiki.forum.save', 'tiki.save');
 
 	$events->bind('tiki.forumpost.create', 'tiki.forumpost.save');
 	$events->bind('tiki.forumpost.reply', 'tiki.forumpost.save');
 	$events->bind('tiki.forumpost.update', 'tiki.forumpost.save');
 	$events->bind('tiki.forumpost.save', 'tiki.save');
 
-	$events->bind('tiki.group.update', 'tiki.group.save');
-	$events->bind('tiki.group.create', 'tiki.group.save');
-	$events->bind('tiki.group.delete', 'tiki.save');
-	$events->bind('tiki.group.save', 'tiki.save');
-
 	$events->bind('tiki.comment.post', 'tiki.comment.save');
 	$events->bind('tiki.comment.reply', 'tiki.comment.save');
 	$events->bind('tiki.comment.update', 'tiki.comment.save');
 	$events->bind('tiki.comment.save', 'tiki.save');
 
-	$events->bind('tiki.user.groupjoin', 'tiki.user.update');
-	$events->bind('tiki.user.groupleave', 'tiki.user.update');
 	$events->bind('tiki.user.update', 'tiki.user.save');
 	$events->bind('tiki.user.create', 'tiki.user.save');
 
@@ -266,13 +210,6 @@ function tiki_setup_events()
 	$events->bind('tiki.query.critical', 'tiki.query.hit');
 	$events->bind('tiki.query.high', 'tiki.query.hit');
 	$events->bind('tiki.query.low', 'tiki.query.hit');
-
-	$events->bind('tiki.mustread.addgroup', 'tiki.save');
-	$events->bind('tiki.mustread.adduser', 'tiki.save');
-	$events->bind('tiki.mustread.complete', 'tiki.save');
-
-	$events->bind('tiki.mustread.completed', 'tiki.save');
-	$events->bind('tiki.mustread.required', 'tiki.save');
 
 	if (function_exists('fastcgi_finish_request')) {
 		// If available, try to send everything to the user at this point

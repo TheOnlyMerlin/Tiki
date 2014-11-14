@@ -118,9 +118,6 @@ class StoredSearchLib
 		} else {
 			$query = new Search_Query;
 		}
-
-		$unifiedsearchlib = TikiLib::lib('unifiedsearch');
-		$unifiedsearchlib->initQueryPresentation($query);
 		
 		return array(
 			'query' => $query,
@@ -136,7 +133,7 @@ class StoredSearchLib
 			'priority' => $table->in($this->getIndexedPriorities()),
 		]);
 		$unifiedsearchlib = TikiLib::lib('unifiedsearch');
-		$index = $unifiedsearchlib->getIndex('data-write');
+		$index = $unifiedsearchlib->getIndex();
 
 		$tikilib = TikiLib::lib('tiki');
 		foreach ($queries as $queryId) {
@@ -184,7 +181,7 @@ class StoredSearchLib
 	{
 		if (! $index) {
 			$unifiedsearchlib = TikiLib::lib('unifiedsearch');
-			$index = $unifiedsearchlib->getIndex('data-write');
+			$index = $unifiedsearchlib->getIndex();
 		}
 
 		if ($index) {
@@ -199,7 +196,7 @@ class StoredSearchLib
 	private function removeFromIndex($name)
 	{
 		$unifiedsearchlib = TikiLib::lib('unifiedsearch');
-		$index = $unifiedsearchlib->getIndex('data-write');
+		$index = $unifiedsearchlib->getIndex();
 
 		if ($index && $index instanceof Search_Index_QueryRepository) {
 			$index->unstore($name);

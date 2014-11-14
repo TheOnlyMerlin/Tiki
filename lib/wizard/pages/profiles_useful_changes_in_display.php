@@ -23,8 +23,8 @@ class ProfilesWizardUsefulChangesInDisplay extends Wizard
 	
 	function onSetupPage ($homepageUrl) 
 	{
-		global $prefs, $TWV;
-		$smarty = TikiLib::lib('smarty');
+		global	$smarty, $prefs, $TWV;
+
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
 

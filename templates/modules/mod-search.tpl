@@ -65,12 +65,12 @@
 				{/if}
 				<input type="hidden" name="boolean_last" value="{$smod_params.advanced_search}" />
 				{if $smod_params.advanced_search_help eq 'y'}
-					<a href="{bootstrap_modal controller=search action=help}">{tr}Search Help{/tr} {icon _id=help}</a>
+					<a href="{service controller=search action=help modal=1}" data-toggle="modal" data-target="#bootstrap-modal">{tr}Search Help{/tr} {icon _id=help}</a>
 				{/if}
 			{/if}
 			{if $smod_params.compact eq "y"}
                 <button type="submit" class="btn btn-default search_mod_magnifier" id="magnifier">
-                    {icon name="search"}
+                    <span class="glyphicon glyphicon-search"></span>
                 </button>
 			{*	{icon _id="magnifier" class="search_mod_magnifier icon"}*}
 				{if $prefs.mobile_mode neq "y"}<div class="btn-group search_mod_buttons box" style="display:none; position: absolute; right: 24px; top: 24px; padding: 0 1em; z-index: 2; white-space: nowrap;">{/if} {* mobile *}

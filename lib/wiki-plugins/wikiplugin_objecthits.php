@@ -46,16 +46,20 @@ function wikiplugin_objecthits_info()
 
 function wikiplugin_objecthits($data, $params)
 {
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib;
 	$default = array('days' => 0, 'since' => '', 'type' => 'wiki');
 	$params = array_merge($default, $params);
 
-	$statslib = TikiLib::lib('stats');
+	global $statslib;
+	if (!is_object($statslib)) {
+		global $dbTiki;
+		include "lib/stats/statslib.php";
+	}
  
 	extract($params, EXTR_SKIP);
 
 	if (!isset($object)) {
-		global $page;
+	  global $page;
 		$object = $page;
 		$type= "wiki";
 	}

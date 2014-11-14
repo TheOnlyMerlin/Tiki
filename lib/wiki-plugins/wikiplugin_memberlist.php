@@ -98,54 +98,15 @@ function wikiplugin_memberlist_info()
 				'name' => tra('Including Group'),
 				'description' => tra('Only groups including the group that you specify will be listed'),
 				'default' => '',
-			),
-			'email_to_added_user' => array(
-				'required' => false,
-				'name' => tra('Email notification to added user'),
-				'description' => tra(''),
-				'default' => 'n',
-				'filter' => 'alpha',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				),
-			),
-			'email_to_removed_user' => array(
-				'required' => false,
-				'name' => tra('Email notification to removed user'),
-				'description' => tra('Email notification to removed user'),
-				'default' => 'n',
-				'filter' => 'alpha',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				),
-			),
-			'addon_groups_approval_buttons' => array(
-				'required' => false,
-				'name' => tra('Need approval'),
-				'description' => tra('Add approve/reject user buttons for private addon groups'),
-				'default' => 'n',
-				'filter' => 'alpha',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				),
-			),
+                        )
 		),
 	);
 }
 
 function wikiplugin_memberlist( $data, $params )
 {
-	global $prefs, $user, $page;
-	$mail = false;
-	$tikilib = TikiLib::lib('tiki');
+	global $prefs, $user;
 	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
 	static $execution = 0;
 	$exec_key = 'memberlist-execution-' . ++ $execution;
 
@@ -164,6 +125,7 @@ function wikiplugin_memberlist( $data, $params )
 
 	if ($prefs['feature_user_watches'] == 'y') {
 		if (!empty($user)) {
+			$tikilib = TikiLib::lib('tiki');
 			if ( isset($_REQUEST['watch'] ) ) {
 				$tikilib->add_user_watch($user, 'user_joins_group', $_REQUEST['watch'], 'group');
 			} else if ( isset($_REQUEST['unwatch'] ) ) {
@@ -203,30 +165,6 @@ function wikiplugin_memberlist( $data, $params )
 		unset($in_group);
 	}
 
-	if ($params['addon_groups_approval_buttons'] == 'y') {
-		$pageInfo = $tikilib->get_page_info($page);
-		$pageLang = $pageInfo['lang'];
-		$api = new TikiAddons_Api_Group;
-		$group_base = $api->getOrganicGroupBaseName($params['groups'][0]);
-		$smarty->assign('mail_group', $group_base);
-		$itemId = $api->getItemIdFromToken($params['groups'][0]);
-		$smarty->assign('mail_organicgroup_id', $itemId);
-		$userid = "user" . $userlib->get_user_id($user);
-		$smarty->assign('mail_userid', $userid);
-		$smarty->assign('mail_url', $api->getGroupHomePage($params['groups'][0]) . '?itemId=' . $itemId);
-		$foo = parse_url($_SERVER["REQUEST_URI"]);
-		$machine = $tikilib->httpPrefix(true) . dirname($foo["path"]);
-		if (substr($machine, -1) == '/' ) { $machine = substr($machine, 0, -1);}
-		$smarty->assign('mail_machine', $machine);
-		$file_wel = $smarty->fetchLang($pageLang, "mail/admin_approval_user_joins_group_notification.tpl");
-		$file_rej = $smarty->fetchLang($pageLang, "mail/admin_rejection_user_group_notification.tpl");
-		$smarty->assign('welcome_content', $file_wel);
-		$smarty->assign('reject_content', $file_rej);
-		$smarty->assign('Need_app', $exec_key);
-	} else {
-		$smarty->assign('Need_app', '');
-	}
-
 	Perms::bulk(array( 'type' => 'group' ), 'object', $groups);
 
 	if ($params['readOnly'] == 'y') {
@@ -244,32 +182,10 @@ function wikiplugin_memberlist( $data, $params )
 			wikiplugin_memberlist_leave($validGroups, $_POST['leave']);
 		}
 		if ( isset( $_POST['remove'] ) ) {
-			if (isset($params['email_to_removed_user']) && $params['email_to_removed_user'] == 'y' || isset($_POST['text_area'])) {
-				$mail = 'true';
-			}
-			wikiplugin_memberlist_remove($validGroups, $_POST['remove'], $mail, $params);
+			wikiplugin_memberlist_remove($validGroups, $_POST['remove']);
 		}
 		if ( isset( $_POST['add'] ) ) {
-			$addit = array();
-			foreach ($_POST['add'] as $key => $value) {
-				if ($params['addon_groups_approval_buttons'] == 'y') {
-					$basegroup = $api->getOrganicGroupBaseToken($key);
-					$valgroup[] = $basegroup;
-					$addit['add'][$basegroup] = $value;
-					$removeit['add'][$api->getOrganicGroupPendingToken($key)][] = $value;
-				} else {
-					$valgroup[] = $key;
-					$addit['add'][$key] = $value;
-				}
-			}
-			if (isset($params['email_to_added_user']) && $params['email_to_added_user'] == 'y' || isset($_POST['text_area'])) {
-				$mail = 'true';
-			}
-			$validrem = wikiplugin_memberlist_get_group_details($valgroup, $params['max'], $params['sort_mode'], $readOnly);
-			if ($params['addon_groups_approval_buttons'] == 'y' && isset($removeit['add'])) {
-				wikiplugin_memberlist_remove($validGroups, $removeit['add'], 'false', $params);
-			}
-			wikiplugin_memberlist_add($validrem, $addit['add'], '', $mail, $params);
+			wikiplugin_memberlist_add($validGroups, $_POST['add']);
 		}
 		if ( isset( $_POST['defgroup'] ) ) {
 			wikiplugin_memberlist_add($validGroups, $_POST['defgroup'], true);
@@ -306,7 +222,7 @@ function wikiplugin_memberlist( $data, $params )
 		}
 	}
 
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	$smarty->assign('execution_key', $exec_key);
 	$smarty->assign('can_apply', $canApply);
 	$smarty->assign('defaultGroup', $params['defaultGroup']);
@@ -420,7 +336,7 @@ function wikiplugin_memberlist_leave( $groups, $leaves )
 	}
 }
 
-function wikiplugin_memberlist_add( $groups, $adds, $asdefault=false, $mail=false, $params=array())
+function wikiplugin_memberlist_add( $groups, $adds, $asdefault=false )
 {
 	$userlib = TikiLib::lib('user');
 
@@ -437,31 +353,15 @@ function wikiplugin_memberlist_add( $groups, $adds, $asdefault=false, $mail=fals
 							$userlib->set_default_group($name, $group);
 						} else {
 							$userlib->assign_user_to_group($name, $group);
-							if ($mail == 'true') {
-								$added_user[$name] = $_SESSION['u_info']['login'];
-								$par_data['gname'] = $group;
-								$par_data['app_data'] = isset($_POST['text_area']) ? $_POST['text_area'] : '';
-							}
 						}
 					}
-				}
-				if ($params['addon_groups_approval_buttons'] == 'y') {
-					$subject = "admin_approval_user_joins_group_notification_subject.tpl";
-					$body = "admin_approval_user_joins_group_notification.tpl";
-				} else {
-					$subject = "admin_add_user_joins_group_notification_subject.tpl";
-					$body = "admin_add_user_joins_group_notification.tpl";
-				}
-				if(!empty($added_user) && isset($par_data)) {
-					require_once ("lib/notifications/notificationemaillib.php");
-					sendEmailNotification($added_user, 'add_rem_mail', $subject, $par_data, $body);
 				}
 			}
 		}
 	}
 }
 
-function wikiplugin_memberlist_remove( $groups, $removes, $mail=false, $params=array())
+function wikiplugin_memberlist_remove( $groups, $removes )
 {
 	$userlib = TikiLib::lib('user');
 
@@ -470,22 +370,6 @@ function wikiplugin_memberlist_remove( $groups, $removes, $mail=false, $params=a
 			if ( $groups[$group]['can_remove'] ) {
 				foreach ( $members as $name ) {
 					$userlib->remove_user_from_group($name, $group);
-					if($mail == 'true') {
-						$removed_user[$name] = $_SESSION['u_info']['login'];
-						$par_data['gname'] = $group;
-						$par_data['app_data'] = isset($_POST['text_area']) ? $_POST['text_area'] : '';
-					}
-				}
-				if ($params['addon_groups_approval_buttons'] == 'y') {
-					$subject = "admin_rejection_user_group_notification_subject.tpl";
-					$body = "admin_rejection_user_group_notification.tpl";
-				} else {
-					$subject = "admin_remove_user_group_notification_subject.tpl";
-					$body = "admin_remove_user_group_notification.tpl";
-				}
-				if (!empty($removed_user) && isset($par_data)) {
-					require_once ("lib/notifications/notificationemaillib.php");
-					sendEmailNotification($removed_user, 'add_rem_mail', $subject, $par_data, $body);
 				}
 			}
 		}

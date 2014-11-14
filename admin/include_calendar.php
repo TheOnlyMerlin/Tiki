@@ -5,7 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-$calendarlib = TikiLib::lib('calendar');
+include_once ('lib/calendar/calendarlib.php');
 $rawcals = $calendarlib->list_calendars();
 if (array_key_exists('data', $rawcals)) {
 	$rawcals = $rawcals['data'];

@@ -13,7 +13,7 @@ function prefs_long_list()
             'description' => tra(''),
 			'type' => 'text',
 			'size' => '30',
-			'default' => '%A %B %e, %Y',
+			'default' => '%A %d of %B, %Y',
 			'tags' => array('basic'),
 			//get_strings tra("%A %d of %B, %Y");
 		),

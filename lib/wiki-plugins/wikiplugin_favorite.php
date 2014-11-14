@@ -34,7 +34,7 @@ function wikiplugin_favorite_info()
 }
 function wikiplugin_favorite($data, $params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	if ($params['objectType'] == 'usertracker') {
 		$objectType = 'trackeritem';
 		$objectId = 0;

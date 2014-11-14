@@ -22,7 +22,7 @@ $auto_query_args = array( 'galleryId' );
 if (!isset($prefs['fgal_batch_dir']) or !is_dir($prefs['fgal_batch_dir'])) {
 	$msg = tra("Incorrect directory chosen for batch upload of files.") . "<br />";
 	if ($tiki_p_admin == 'y') {
-		$msg.= tra("Please setup that dir on ") . '<a href="tiki-admin.php?page=fgal">' . tra('File Galleries Configuration Panel') . '</a>.';
+		$msg.= tra("Please setup that dir on ") . '<a href="tiki-admin.php?page=fgal">' . tra('File Galleries Admin Panel') . '</a>.';
 	} else {
 		$msg.= tra("Please contact the website administrator.");
 	}
@@ -63,8 +63,8 @@ function getDirContent($sub)
 	global $disallowed_types;
 	global $a_file;
 	global $a_path;
-	global $filedir;
-	$smarty = TikiLib::lib('smarty');
+	global $filedir, $smarty;
+
 	$tmp = rtrim($filedir . '/' . $sub, '/');
 
 	if (false === $allfile = scandir($tmp)) {
@@ -96,7 +96,7 @@ function buildFileList()
 
 	global $a_file;
 	global $a_path;
-	global $filedir;
+	global $filedir, $smarty;
 	global $filestring;
 	getDirContent('');
 	$totfile = count($a_file); // total file number
@@ -125,7 +125,6 @@ function buildFileList()
 		$filestring[$x][2] = $tmp;
 		$totalsize+= $filesize;
 	}
-	$smarty = TikiLib::lib('smarty');
 	$smarty->assign('totfile', $totfile);
 	$smarty->assign('totalsize', $totalsize);
 	$smarty->assign('filestring', $filestring);

@@ -18,8 +18,7 @@ class WikiLingoEvents
 
 	public function __construct(WikiLingo\Parser &$wikiLingoParser, $bindFLP = true)
 	{
-        global $prefs, $page;
-		$headerlib = TikiLib::lib('header');
+        global $prefs, $page, $headerlib;
 
         if ($page == null && $bindFLP) {
             throw new \Exception("Page undefined");

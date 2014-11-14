@@ -67,8 +67,8 @@ function module_since_last_visit_new_info()
  */
 function module_since_last_visit_new($mod_reference, $params = null)
 {
-	global $user;
-	$smarty = TikiLib::lib('smarty');
+	global $smarty, $user;
+
 	include_once('tiki-sefurl.php');
 
 	if (!$user) {

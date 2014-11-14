@@ -55,8 +55,8 @@ class WikiPluginPluginManager extends PluginsLib
 			$aPrincipalField = array('field' => 'plugin', 'name' => 'Module');
 			$helppath = $helpurl . $aPrincipalField['name'] . ' ';
 			$filepath = 'mod-func-';
-
-			$modlib = TikiLib::lib('mod');
+			global $modlib;
+			include_once 'lib/modules/modlib.php';
 			$aPlugins = $modlib->list_module_files();
 			$mod = true;
 			$type = ' module';

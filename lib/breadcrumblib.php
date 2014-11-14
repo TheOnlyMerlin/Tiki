@@ -314,14 +314,13 @@ function breadcrumb_getTitle($crumbs, $loc)
 /* static */
 function _breadcrumb_getTitle($crumbs, $loc)
 {
-	global $prefs, $print_page, $info, $structure, $structure_path;
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
+	global $prefs, $print_page, $info, $structure, $structure_path, $tikilib, $smarty;
+
 	$len = count($crumbs);
 
 	if ( $prefs['feature_breadcrumbs'] == 'n' || $prefs['feature_sitetitle'] == 'title' ) {
-		$smarty->loadPlugin('smarty_modifier_sefurl');
-		$smarty->loadPlugin('smarty_modifier_escape');
+    $smarty->loadPlugin('smarty_modifier_sefurl');
+    $smarty->loadPlugin('smarty_modifier_escape');
 
 		$class = "pagetitle";
 		$metadata = '';

@@ -83,9 +83,7 @@ if (isset($_REQUEST["get"])) {
  */
 function processShout($formValues, $destDiv = 'mod-shoutbox')
 {	// AJAX_TODO
-	global $user, $prefs, $tiki_p_admin_shoutbox;
-	global $shoutboxlib;
-	$smarty = TikiLib::lib('smarty');
+	global $shoutboxlib, $user, $smarty, $prefs, $tiki_p_admin_shoutbox;
 	$smarty->assign('tweet', $formValues['tweet']);
 	$smarty->assign('facebook', $formValues['facebook']);
 	if (array_key_exists('shout_msg', $formValues) && strlen($formValues['shout_msg']) > 2) {

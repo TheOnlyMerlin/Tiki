@@ -6,10 +6,7 @@
 // $Id$
 
 require_once('tiki-setup.php');
-global $reportFullscreen, $index, $values;
-$headerlib = TikiLib::lib('header');
-$smarty = TikiLib::lib('smarty');
-$access = TikiLib::lib('access');
+global $headerlib, $smarty, $reportFullscreen, $index, $values, $access;
 
 $access->check_feature('feature_reports');
 

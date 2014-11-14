@@ -17,7 +17,7 @@ $access->check_user($user);
 // Validate current user's permissions
 $access->check_permission(array('tiki_p_send_mailin'));
 
-$usermailinlib = TikiLib::lib('usermailin');
+require_once ('lib/mailin/usermailinlib.php');
 
 $tikifeedback = array();
 

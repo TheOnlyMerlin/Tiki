@@ -30,7 +30,7 @@ if ( ! ($prefs['feature_calendar'] == 'y' || $prefs['feature_action_calendar'] =
 	die;
 }
 
-$calendarlib = TikiLib::lib('calendar');
+global $calendarlib; include_once('lib/calendar/calendarlib.php');
 
 $trunc = '40'; // put in a pref, number of chars displayed in cal cells
 

@@ -40,7 +40,7 @@ function wikiplugin_categorytransition_info()
 
 function wikiplugin_categorytransition( $data, $params )
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 
 	extract($params, EXTR_SKIP);	
 

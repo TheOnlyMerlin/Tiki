@@ -249,8 +249,7 @@ function wikiplugin_category($data, $params)
 			$id = array();
 		}
 	}
-
-	// We pass maxRecords because get_categoryobjects ignores it when $and is set so we need to do an additional check in the template
-	$displayParameters = array_intersect_key($params, array_flip(array('showTitle', 'categoryshowlink', 'showtype', 'one', 'showlinks', 'showname', 'showdescription', 'maxRecords')));
+	
+	$displayParameters = array_intersect_key($params, array_flip(array('showTitle', 'categoryshowlink', 'showtype', 'one', 'showlinks', 'showname', 'showdescription')));
 	return "~np~". $categlib->get_categoryobjects($id, $types, $sort, $split, $sub, $and, $maxRecords, $filter, $displayParameters)."~/np~";
 }

@@ -26,7 +26,7 @@
 {assign var='pagefound' value='n'}
 
 <div class="table-responsive">
-<table class="table normal table-striped">
+<table class="table normal">
 	<tr>
 		{if isset($checkboxes_on) and $checkboxes_on eq 'y' && count($listpages) > 0}
 			<th>
@@ -340,7 +340,7 @@
 				{/if}
 
 				{if $listpages[changes].perms.tiki_p_assign_perm_wiki_page eq 'y'}
-					{permission_link {*mode=icon*} type="wiki page" permType=wiki id=$listpages[changes].pageName title=$listpages[changes].pageName}
+					{permission_link mode=icon type="wiki page" permType=wiki id=$listpages[changes].pageName title=$listpages[changes].pageName}
 				{/if}
 
 				{if $listpages[changes].perms.tiki_p_remove eq 'y'}

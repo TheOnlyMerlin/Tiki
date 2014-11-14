@@ -23,6 +23,8 @@ class AdminWizardCommunity extends Wizard
 	
 	public function onSetupPage ($homepageUrl) 
 	{
+		global	$smarty, $prefs;
+
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
 		
@@ -37,6 +39,8 @@ class AdminWizardCommunity extends Wizard
 
 	public function onContinue ($homepageUrl) 
 	{
+		global $tikilib; 
+
 		// Run the parent first
 		parent::onContinue($homepageUrl);
 		

@@ -27,8 +27,7 @@ function wikiplugin_userlink_info()
 
 function wikiplugin_userlink($data, $params)
 {
-	$smarty = TikiLib::lib('smarty');
-	global $user;
+	global $smarty, $user;
 	$path = 'lib/smarty_tiki/modifier.userlink.php';
 	include_once($path);
 	$func = 'smarty_modifier_userlink';

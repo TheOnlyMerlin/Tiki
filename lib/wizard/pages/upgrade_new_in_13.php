@@ -24,7 +24,8 @@ class UpgradeWizardNewIn13 extends Wizard
 	
 	function onSetupPage ($homepageUrl) 
 	{
-		global $prefs;
+		global	$smarty, $prefs;
+
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
 		

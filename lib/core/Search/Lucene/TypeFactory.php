@@ -34,7 +34,7 @@ class Search_Lucene_TypeFactory implements Search_Type_Factory_Interface
 
 	function numeric($value)
 	{
-		return new Search_Type_Numeric($value);
+		return new Search_Type_Whole((float) $value);
 	}
 
 	function multivalue($values)

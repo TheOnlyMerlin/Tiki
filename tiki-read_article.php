@@ -67,6 +67,7 @@ if ($prefs['feature_freetags'] == 'y') {
 		$tags = array();
 	}
 	$smarty->assign('freetags', $tags);
+	$headerlib->add_cssfile('css/freetags.css');
 }
 $artlib->add_article_hit($_REQUEST["articleId"]);
 $smarty->assign('articleId', $_REQUEST["articleId"]);

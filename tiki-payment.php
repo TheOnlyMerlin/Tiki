@@ -46,7 +46,7 @@ $inputConfiguration = array(
 
 require_once 'tiki-setup.php';
 $categlib = TikiLib::lib('categ');
-$paymentlib = TikiLib::lib('payment');
+require_once 'lib/payment/paymentlib.php';
 $access->check_feature('payment_feature');
 
 $auto_query_args = array(
@@ -162,11 +162,10 @@ if ( isset($_REQUEST['cancel']) ) {
  */
 function fetch_payment_list($type)
 {
-	global $globalperms, $user, $prefs;
-	$smarty = TikiLib::lib('smarty');
-	$paymentlib = TikiLib::lib('payment');
+	global $paymentlib, $globalperms, $user, $prefs, $smarty;
 	$offsetKey = 'offset_' . $type;
 	$method = 'get_' . $type;
+
 	$offset = isset($_REQUEST[$offsetKey]) ? intval($_REQUEST[$offsetKey]) : 0;
 	$max = intval($prefs['maxRecords']);
 

@@ -373,7 +373,7 @@ class SheetLib extends TikiLib
 
 	function setup_jquery_sheet()
 	{
-		$headerlib = TikiLib::lib('header');
+		global $headerlib;
 		if (!$this->setup_jQuery_sheet_files) {
 			$headerlib
                 //core
@@ -418,7 +418,7 @@ class SheetLib extends TikiLib
 
 	function rollback_sheet($id, $readdate=null)
 	{
-		global $user, $prefs;
+		global $user, $sheetlib, $prefs;
 
 		if ($readdate) {
 			$now = (int)time();
@@ -542,7 +542,7 @@ class SheetLib extends TikiLib
 
 	function save_sheet($sheets, $sheetId, $layout = array())
 	{
-		global $user;
+		global $user, $sheetlib;
 
 		$sheets = json_decode($sheets);
 
@@ -568,7 +568,7 @@ class SheetLib extends TikiLib
 								$title = $info['title'] . ' subsheet';
 							}
 
-							$newId = $this->replace_sheet( 0, $title, '', $user, $sheetId, $layout );
+							$newId = $sheetlib->replace_sheet( 0, $title, '', $user, $sheetId, $layout );
 							$rc .= tra('new') . " (sheetId=$newId) ";
 							$sheet->id = $newId;
 							$handler = new TikiSheetHTMLTableHandler( $sheet );
@@ -580,7 +580,7 @@ class SheetLib extends TikiLib
 							$rc .= $grid->getColumnCount() . ' x ' . $grid->getRowCount() . ' ' . tra('sheet') . " (sheetId=".$sheet->id.")";
 						}
 						if (!empty($sheet->title)) {
-							$this->set_sheet_title($sheet->id, $sheet->title);
+							$sheetlib->set_sheet_title($sheet->id, $sheet->title);
 						}
 					}
 				}
@@ -596,6 +596,7 @@ class SheetLib extends TikiLib
 	 */
 	function get_attr_from_css_string($style, $attr, $default)
 	{
+		global $sheetlib;
 		$style = strtolower($style);
 		$style = str_replace(' ', '', $style);
 
@@ -606,7 +607,7 @@ class SheetLib extends TikiLib
 			$v = explode(':', $v);
 		}
 
-		$key = $this->array_searchRecursive($attr, $cssAttrs);
+		$key = $sheetlib->array_searchRecursive($attr, $cssAttrs);
 		$result = '';
 		if ($key === false) {
 			$result = $default;
@@ -620,12 +621,14 @@ class SheetLib extends TikiLib
 	// array_search with recursive searching, optional partial matches and optional search by key
 	function array_searchRecursive( $needle, $haystack, $strict=false, $path=array() )
 	{
+		global $sheetlib;
+
 	    if ( !is_array($haystack) ) {
 	        return false;
 	    }
 
 	    foreach ( $haystack as $key => $val ) {
-	        if ( is_array($val) && $subPath = $this->array_searchRecursive($needle, $val, $strict, $path) ) {
+	        if ( is_array($val) && $subPath = $sheetlib->array_searchRecursive($needle, $val, $strict, $path) ) {
 	            $path = array_merge($path, array($key), $subPath);
 	            return $path;
 	        } elseif ( (!$strict && $val == $needle) || ($strict && $val === $needle) ) {
@@ -638,21 +641,23 @@ class SheetLib extends TikiLib
 
 	function diff_sheets_as_html( $id, $dates = null )
 	{
-		global $prefs;
+		global $prefs, $sheetlib;
 
-		$count_longest = function ( $array1, $array2 ) {
-			return max(count($array1), count($array2));
-		};
+		function count_longest( $array1, $array2 )
+		{
+			return (count($array1) > count($array2) ? count($array1) : count($array2));
+		}
 
-		$join_with_sub_grids = function ( $id, $date ) {
-			global $prefs;
+		function join_with_sub_grids( $id, $date )
+		{
+			global $prefs, $sheetlib;
 
 			$handler = new TikiSheetDatabaseHandler($id, $date);
 			$handler->setReadDate($date);
 			$grid = new TikiSheet();
 			$grid->import($handler);
 
-			$childSheetIds = $this->get_related_sheet_ids($grid->id);
+			$childSheetIds = $sheetlib->get_related_sheet_ids($grid->id);
 			$i = 0;
 			$grids = array($grid);
 			foreach ($childSheetIds as $childSheetId) {
@@ -665,9 +670,10 @@ class SheetLib extends TikiLib
 				$i++;
 			}
 			return $grids;
-		};
+		}
 
-		$sanitize_for_diff = function ($val) {
+		function sanitize_for_diff($val)
+		{
 			$val = str_replace("<br/>", 	"<br>", $val);
 			$val = str_replace("<br />",	"<br>", $val);
 			$val = str_replace("<br  />", 	"<br>", $val);
@@ -676,11 +682,12 @@ class SheetLib extends TikiLib
 			$val = str_replace("<BR  />",	"<br>", $val);
 
 			return explode("<br>", $val);
-		};
+		}
 
-		$diff_to_html = function ($changes) use ($count_longest) {
+		function diff_to_html($changes)
+		{
 			$result = array("", "");
-			for ( $i = 0; $i < $count_longest($changes->orig, $changes->final); $i++ )
+			for ( $i = 0; $i < count_longest($changes->orig, $changes->final); $i++ )
 			{
 				$class = array("", "");
 				$char = array("", "");
@@ -709,40 +716,40 @@ class SheetLib extends TikiLib
 				}
 			}
 			return $result;
-		};
+		}
 
-		$grids1 = $join_with_sub_grids($id, $dates[0]);
-		$grids2 = $join_with_sub_grids($id, $dates[1]);
+		$grids1 = join_with_sub_grids($id, $dates[0]);
+		$grids2 = join_with_sub_grids($id, $dates[1]);
 
 		$result1 = '';
 		$result2 = '';
 
-		for ( $i = 0; $i < $count_longest($grids1, $grids2); $i++ ) { //cycle through the sheets within a spreadsheet
+		for ( $i = 0; $i < count_longest($grids1, $grids2); $i++ ) { //cycle through the sheets within a spreadsheet
 			$result1 .= "<table title='".$grids1[$i]->name()."'>";
 			$result2 .= "<table title='".$grids2[$i]->name()."'>";
-			for ( $row = 0; $row < $count_longest($grids1[$i]->dataGrid, $grids2[$i]->dataGrid); $row++ ) { //cycle through rows
+			for ( $row = 0; $row < count_longest($grids1[$i]->dataGrid, $grids2[$i]->dataGrid); $row++ ) { //cycle through rows
 				$result1 .= "<tr>";
 				$result2 .= "<tr>";
-				for ( $col = 0; $col < $count_longest($grids1[$i]->dataGrid[$row], $grids2[$i]->dataGrid[$row]); $col++ ) { //cycle through columns
-					$diff = new Text_Diff($sanitize_for_diff(html_entity_decode($grids1[$i]->dataGrid[$row][$col])), $sanitize_for_diff(html_entity_decode($grids2[$i]->dataGrid[$row][$col])));
+				for ( $col = 0; $col < count_longest($grids1[$i]->dataGrid[$row], $grids2[$i]->dataGrid[$row]); $col++ ) { //cycle through columns
+					$diff = new Text_Diff(sanitize_for_diff(html_entity_decode($grids1[$i]->dataGrid[$row][$col])), sanitize_for_diff(html_entity_decode($grids2[$i]->dataGrid[$row][$col])));
 					$changes = $diff->getDiff();
 
 					//I left this diff switch, but it really isn't being used as of now, in the future we may though.
 					switch ( get_class($changes[0]) ) {
 						case 'Text_Diff_Op_copy':
-							$values = $diff_to_html($changes[0]);
+							$values = diff_to_html($changes[0]);
 							break;
 						case 'Text_Diff_Op_change':
-							$values = $diff_to_html($changes[0]);
+							$values = diff_to_html($changes[0]);
 							break;
 						case 'Text_Diff_Op_delete':
-							$values = $diff_to_html($changes[0]);
+							$values = diff_to_html($changes[0]);
 							break;
 						case 'Text_Diff_Op_add':
-							$values = $diff_to_html($changes[0]);
+							$values = diff_to_html($changes[0]);
 							break;
 						default:
-							$values = $diff_to_html($changes[0]);
+							$values = diff_to_html($changes[0]);
 					}
 					$result1 .= (empty($values[0]) ? '<td></td>' : $values[0]);
 					$result2 .= (empty($values[1]) ? '<td></td>' : $values[1]);
@@ -771,3 +778,4 @@ class SheetLib extends TikiLib
 		return ( $objectperms->edit_sheet || $objectperms->admin );
 	}
 } // }}}1
+$sheetlib = new SheetLib;

@@ -53,6 +53,7 @@ class UserWizardUserTracker extends Wizard
 			return;
 		}
 		
+		include_once('lib/registration/registrationlib.php');
 		$smarty->assignByRef('merged_prefs', $registrationlib->merged_prefs);
 		
 		

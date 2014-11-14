@@ -15,7 +15,7 @@ $access->check_permission('tiki_p_view_stats');
 
 require_once ('lib/graph-engine/gd.php');
 require_once ('lib/graph-engine/graph.bar.php');
-$statslib = TikiLib::lib('stats');
+include_once ('lib/stats/statslib.php');
 
 //Define the object
 if (isset($_REQUEST["type"])) {

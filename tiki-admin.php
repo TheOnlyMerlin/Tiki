@@ -155,9 +155,9 @@ function byref_set_value($feature, $pref = '')
 	simple_set_value($feature, $pref);
 }
 
-$crumbs[] = new Breadcrumb(tra('Configuration Panels'), tra('Sections'), 'tiki-admin.php', 'Admin+Home', tra('Help on Configuration Sections', '', true));
+$crumbs[] = new Breadcrumb(tra('Administration'), tra('Sections'), 'tiki-admin.php', 'Admin+Home', tra('Help on Configuration Sections', '', true));
 // Default values for AdminHome
-$admintitle = tra('Configuration Panels');
+$admintitle = tra('Administration');
 $helpUrl = 'Admin+Home';
 $helpDescription = $description = '';
 $url = 'tiki-admin.php';
@@ -609,9 +609,6 @@ if (isset($_REQUEST['page'])) {
 		include_once ("admin/include_$adminPage.php");
 		$url = 'tiki-admin.php' . '?page=' . $adminPage;
 	}
-	if (substr($adminPage, 0, 3) == 'ta_') {
-		$smarty->assign('addonadmin', 'y');
-	}
 	if (isset($icons[$adminPage])) {
 		$icon = $icons[$adminPage];
 
@@ -622,12 +619,12 @@ if (isset($_REQUEST['page'])) {
 	$helpDescription = tr("Help on %0 Config", $admintitle);
 
 } else {
-	$smarty->assign('admintitle', 'Configuration Panels');
+	$smarty->assign('admintitle', 'Admin Home');
 	$smarty->assign('description', 'Home Page for Administrators');
 	$smarty->assign('headtitle', breadcrumb_buildHeadTitle($crumbs));
 	$smarty->assign('description', $crumbs[0]->description);
 }
-$headerlib->add_cssfile('themes/base_files/feature_css/admin.css');
+$headerlib->add_cssfile('css/admin.css');
 if (isset($admintitle) && isset($description)) {
 	$crumbs[] = new Breadcrumb($admintitle, $description, $url, $helpUrl, $helpDescription);
 	$smarty->assign_by_ref('admintitle', $admintitle);

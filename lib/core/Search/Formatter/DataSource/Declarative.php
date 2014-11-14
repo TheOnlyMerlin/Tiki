@@ -21,32 +21,27 @@ class Search_Formatter_DataSource_Declarative implements Search_Formatter_DataSo
 		$this->globalSources[] = $globalSource;
 	}
 
-	function getData($entry, $requestedField)
+	function getInformation(Search_ResultSet $list, array $fields)
 	{
-		$type = $entry['object_type'];
-		$object = $entry['object_id'];
-		$hash = isset($entry['hash']) ? $entry['hash'] : null;
-		$missingFields = $this->handlePrefilter([$requestedField], $entry);
+		foreach ($list as & $entry) {
+			$type = $entry['object_type'];
+			$object = $entry['object_id'];
+			$hash = isset($entry['hash']) ? $entry['hash'] : null;
+			$missingFields = $this->handlePrefilter($fields, $entry);
+			
+			$entry = array_merge($entry, $this->obtainFromContentSource($type, $object, $hash, $missingFields));
 
-		$primaryFields = $this->obtainFromContentSource($type, $object, $hash, $missingFields);
-
-		if (! empty($primaryFields)) {
-			return $primaryFields;
-		} else {
-			// Do not use array merge as the entry may be an object
-			foreach ($primaryFields as $key => $value) {
-				$entry[$key] = $value;
-			}
-
+			$initial = $entry;
 			foreach ($this->globalSources as $globalSource) {
-				$local = $this->obtainFromGlobalSource($globalSource, $type, $object, $missingFields, $entry);
-				if (! empty($local)) {
-					return $local;
+				$local = $this->obtainFromGlobalSource($globalSource, $type, $object, $missingFields, $initial);
+
+				if (false !== $local) {
+					$entry = array_merge($entry, $local);
 				}
 			}
 		}
 
-		return [];
+		return $list;
 	}
 
 	private function obtainFromContentSource($type, $object, $hash, & $missingFields)
@@ -89,11 +84,6 @@ class Search_Formatter_DataSource_Declarative implements Search_Formatter_DataSo
 		}
 
 		if ($this->sourceProvidesValue($globalSource, $missingFields)) {
-			// The field may exist, but contain mangled data
-			foreach ($globalSource->getProvidedFields() as $field) {
-				unset($data[$field]);
-			}
-
 			$data = $globalSource->getData($type, $object, new Search_Type_Factory_Direct, $data);
 
 			return $this->getRaw($data, $missingFields);

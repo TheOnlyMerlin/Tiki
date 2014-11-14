@@ -75,7 +75,7 @@ function module_last_podcasts_info()
  */
 function module_last_podcasts($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 
 	$filegallib = TikiLib::lib('filegal');
 

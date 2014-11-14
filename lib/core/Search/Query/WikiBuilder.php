@@ -133,17 +133,6 @@ class Search_Query_WikiBuilder
 		$query->filterContent($value, $fields);
 	}
 
-	function wpquery_filter_exact($query, $value, array $arguments)
-	{
-		if (isset($arguments['field'])) {
-			$fields = explode(',', $arguments['field']);
-		} else {
-			$fields = TikiLib::lib('tiki')->get_preference('unified_default_content', array('contents'), true);
-		}
-
-		$query->filterIdentifier($value, $fields);
-	}
-
 	function wpquery_filter_language($query, $value)
 	{
 		$query->filterLanguage($value);
@@ -155,19 +144,7 @@ class Search_Query_WikiBuilder
 			TikiLib::lib('errorreport')->report(tr('Missing objectype or qualifier for relation filter.'));
 		}
 
-		/* custom mani for OR operation in relation filter */
-		$qualifiers = explode(' OR ', $arguments['qualifier']);
-		if(count($qualifiers) > 1) {
-			$token = '';
-			foreach ($qualifiers as $key => $qualifier) {
-				$token .= (string) new Search_Query_Relation($qualifier, $arguments['objecttype'], $value);
-				if(count($qualifiers) != ($key + 1)) {
-					$token .= " OR ";
-				}
-			}
-		} else {
-			$token = (string) new Search_Query_Relation($arguments['qualifier'], $arguments['objecttype'], $value);
-		}
+		$token = (string) new Search_Query_Relation($arguments['qualifier'], $arguments['objecttype'], $value);
 		$query->filterRelation($token);
 	}
 
@@ -241,16 +218,6 @@ class Search_Query_WikiBuilder
 					)
 				)
 			);
-		}
-
-		if (in_array('addongroups', $types)) {
-			$api = new TikiAddons_Api_Group;
-			$cats = $api->getOrganicGroupCatsForUser($targetUser);
-			if (empty($cats)) {
-				$subquery->filterCategory('impossible');
-			} else {
-				$subquery->filterCategory(implode(' ', $cats));
-			}
 		}
 
 		if (in_array('follow', $types)) {

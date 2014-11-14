@@ -369,3 +369,4 @@ class DCSLib extends TikiLib
 		return $contentId;
 	}
 }
+global $dcslib; $dcslib = new DCSLib;

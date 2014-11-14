@@ -36,11 +36,11 @@
     <div class="row">
         <div class="form-group col-lg-12 clearfix">
 			<a role="button" class="btn btn-default btn-sm" href="tiki-listpages.php" title="{tr}List{/tr}">
-				{icon name="list"} {tr}Wiki Pages{/tr}
+				{glyph name="list"} {tr}Wiki Pages{/tr}
 			</a>
 			{if $prefs.feature_wiki_structure eq "y" and $tiki_p_view eq "y"}
 				<a role="button" class="btn btn-default btn-sm" href="tiki-admin_structures.php" title="{tr}List{/tr}">
-					{icon name="admin"} {tr}Wiki Structures{/tr}
+					{glyph name="wrench"} {tr}Wiki Structures{/tr}
 				</a>
 			{/if}
             <div class="pull-right">
@@ -55,7 +55,6 @@
 			<fieldset class="table">
 				<legend>{tr}Activate the feature{/tr}</legend>
 				{preference name=feature_wiki visible="always"}
-				{preference name=wiki_url_scheme}
 			</fieldset>
 
 			<fieldset class="table">
@@ -257,7 +256,6 @@
 		<div class="adminoptionboxchild" id="feature_wiki_discuss_childcontainer">
 			{preference name=wiki_forum_id}
 			{permission_link mode=button permType=forums}
-			{preference name=wiki_discuss_visibility}
 		</div>
 
 		{preference name=feature_source}

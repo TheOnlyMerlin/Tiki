@@ -56,9 +56,8 @@ function module_directory_last_sites_info()
  */
 function module_directory_last_sites($mod_reference, $module_params)
 {
-	global $prefs;
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
+	global $prefs, $tikilib, $smarty;
+	
 	if (isset($module_params['categoryId'])) {
 		global $dirlib; include_once('lib/directory/dirlib.php');
 		$ranking = $dirlib->dir_list_sites($module_params['categoryId'], 0, $mod_reference["rows"]);

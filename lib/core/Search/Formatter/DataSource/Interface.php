@@ -7,10 +7,6 @@
 
 interface  Search_Formatter_DataSource_Interface
 {
-	/**
-	 * Provides all of the fields in the same group as the requested field for a
-	 * given entry.
-	 */
-	function getData($entry, $field);
+	function getInformation(Search_ResultSet $resultSet, array $fields);
 }
 

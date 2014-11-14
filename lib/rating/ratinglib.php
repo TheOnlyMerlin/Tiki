@@ -547,8 +547,7 @@ class RatingLib extends TikiDb_Bridge
 		$configurations = $this->get_initialized_configurations();
 		$runner = $this->get_runner();
 
-		$ratingconfiglib = TikiLib::lib('ratingconfig');
-		$list = $ratingconfiglib->get_expired_object_list($max);
+		$list = TikiLib::lib('ratingconfig')->get_expired_object_list($max);
 
 		foreach ( $list as $object ) {
 			$this->internal_refresh_rating($object['type'], $object['object'], $runner, $configurations);
@@ -557,7 +556,7 @@ class RatingLib extends TikiDb_Bridge
 
 	private function internal_refresh_rating( $type, $object, $runner, $configurations )
 	{
-		$ratingconfiglib = TikiLib::lib('ratingconfig');
+		global $ratingconfiglib; require_once 'lib/rating/configlib.php';
 		$runner->setVariables(array('type' => $type, 'object-id' => $object));
 
 		foreach ( $configurations as $config ) {

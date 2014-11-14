@@ -18,7 +18,6 @@ if ( isset($_SESSION['try_style']) ) {
 
 // Always include default bootstrap JS
 $headerlib->add_jsfile('vendor/twitter/bootstrap/dist/js/bootstrap.js');
-$headerlib->add_jsfile('lib/jquery_tiki/tiki-bootstrapmodalfix.js');
 
 $prefs['jquery_ui_chosen_css'] = 'y';
 
@@ -30,20 +29,13 @@ if ($prefs['feature_fixed_width'] === 'y') {
     );
 }
 
-// Always use tiki_base.css.
-// Add it first, so that it can be overriden in the custom themes
-$headerlib->add_cssfile("themes/base_files/css/tiki_base.css");
-
-// Then add Addon custom css first, so it can be overridden by themes
-foreach (TikiAddons::getPaths() as $path) {
-	foreach (glob('addons/' . basename($path) . '/css/*.css') as $filename) {
-		$headerlib->add_cssfile($filename);
-	}
-}
-
 if (empty($prefs['theme_active']) || $prefs['theme_active'] == 'default') {
+	$headerlib->add_cssfile('styles/layout/tiki.css');
+
 	$headerlib->add_cssfile('vendor/twitter/bootstrap/dist/css/bootstrap.min.css');
 } elseif ($prefs['theme_active'] == 'custom') {
+	$headerlib->add_cssfile('styles/layout/tiki.css');
+
 	$custom_theme = $prefs['theme_custom'];
 	// Use external link if url begins with http://, https://, or // (auto http/https)
 	if (preg_match('/^(http(s)?:)?\/\//', $custom_theme)) {
@@ -51,7 +43,7 @@ if (empty($prefs['theme_active']) || $prefs['theme_active'] == 'default') {
 	} else {
 		$headerlib->add_cssfile($custom_theme);
 	}
-} elseif ($prefs['theme_active'] == 'legacy') {
+}   elseif ($prefs['theme_active'] == 'legacy') {
     // use legacy styles
 	if ( $prefs['useGroupTheme'] == 'y' && $group_style = $userlib->get_user_group_theme()) {
 		$prefs['style'] = $group_style;
@@ -79,20 +71,22 @@ if (empty($prefs['theme_active']) || $prefs['theme_active'] == 'default') {
 	}
 	// End legacy
 } else {
-	$headerlib->add_cssfile("themes/{$prefs['theme_active']}/css/tiki.css");
+//	$headerlib->add_cssfile("themes/{$prefs['theme_active']}/css/tiki.css");
 	$prefs['jquery_ui_chosen_css'] = 'n';
 }
-//Add font-awesome
-$headerlib->add_cssfile('vendor/fortawesome/font-awesome/css/font-awesome.min.css');
 
 // Allow to have a IE specific CSS files for the theme's specific hacks
+$style_ie6_css = $tikilib->get_style_path($prefs['style'], $prefs['style_option'], 'ie6.css');
+$style_ie7_css = $tikilib->get_style_path($prefs['style'], $prefs['style_option'], 'ie7.css');
 $style_ie8_css = $tikilib->get_style_path($prefs['style'], $prefs['style_option'], 'ie8.css');
 $style_ie9_css = $tikilib->get_style_path($prefs['style'], $prefs['style_option'], 'ie9.css');
 
 // include optional "custom" cascading stylesheet if there
-$custom_css = "themes/{$prefs['theme_active']}/css/custom.css";
-if ( is_readable($custom_css)) {
+$custom_css = $tikilib->get_style_path($prefs['style'], $prefs['style_option'], 'custom.css');;
+if ( !empty($custom_css)) {
 	$headerlib->add_cssfile($custom_css, 53);
 }
+// Always use tiki.css.
+$headerlib->add_cssfile("styles/layout/tiki.css");
 $smarty->initializePaths();
 

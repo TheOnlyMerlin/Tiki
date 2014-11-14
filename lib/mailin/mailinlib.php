@@ -230,3 +230,4 @@ class MailinLib extends TikiDb_Bridge
 		return $plaintext;
 	}
 }
+global $mailinlib; $mailinlib = new MailinLib;

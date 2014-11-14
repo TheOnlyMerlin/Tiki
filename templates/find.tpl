@@ -37,7 +37,7 @@
 		<div class="find-text form-group">
 			<div class="input-group">
 				<span class="input-group-addon">
-					{icon name=search}
+					<span class="glyphicon glyphicon-search"></span>
 				</span>
 				<input class="form-control" type="text" name="find" id="find" value="{$find|escape}" placeholder="{if empty($whatlabel)}{tr}Find{/tr}...{else}{tr}{$whatlabel}{/tr}{/if}">
 				{if isset($autocomplete)}

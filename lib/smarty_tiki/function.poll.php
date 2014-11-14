@@ -13,9 +13,8 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 
 function smarty_function_poll($params, $smarty)
 {
-	global $prefs;
+	global $polllib, $prefs;
 	global $tiki_p_view_poll_results, $tiki_p_vote_poll;
-	$polllib = TikiLib::lib('poll');
 	extract($params);
 	// Param = zone
 	if (!is_object($polllib)) {

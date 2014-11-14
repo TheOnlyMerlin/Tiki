@@ -124,7 +124,7 @@ class ObjectLib extends TikiLib
 						break;
 
 					case 'poll':
-						$polllib = TikiLib::lib('poll');
+						global $polllib; require_once('lib/polls/polllib_shared.php');
 						$info = $polllib->get_poll($itemId);
 
 						$description = $info['title'];
@@ -206,27 +206,6 @@ class ObjectLib extends TikiLib
 			'trackeritem',
 			'wiki page',
 		);
-	}
-
-	function getSelectorType($type)
-	{
-		$supported = [
-			'category' => 'category',
-			'file_gallery' => 'file gallery',
-			'forum' => 'forum',
-			'group' => 'group',
-			'tracker' => 'tracker',
-			'tracker_field' => 'trackerfield',
-			'trackerfield' => 'trackerfield',
-			'wiki_page' => 'wiki page',
-			'wiki page' => 'wiki page',
-		];
-
-		if (isset($supported[$type])) {
-			return $supported[$type];
-		} else {
-			return false;
-		}
 	}
 
 	function insert_object($type, $itemId, $description = '', $name = '', $href = '')
@@ -448,10 +427,6 @@ class ObjectLib extends TikiLib
 				$info = TikiLib::lib('trk')->get_tracker($object);
 				return array('title' => $info['name']);
 
-			case 'trackerfield':
-				$info = TikiLib::lib('trk')->get_tracker_field($object);
-				return array('title' => $info['name']);
-
 			case 'goal':
 				return TikiLib::lib('goal')->fetchGoal($object);
 		}
@@ -509,11 +484,6 @@ class ObjectLib extends TikiLib
 				return $meta['name'];
 			case 'group':
 				return $id;
-			case 'user':
-				if (is_int($id)) {
-					$id = TikiLib::lib('tiki')->get_user_login($id);
-				}
-				return TikiLib::lib('user')->clean_user($id);
 		}
 
 		$title = $this->table('tiki_objects')->fetchOne(

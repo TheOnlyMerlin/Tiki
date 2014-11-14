@@ -7,4 +7,9 @@
 //
 // from http://dev.tiki.org/Unified+Search#Cron_job
 
-die('Deprecated, used console.php');
+include_once('tiki-setup.php');
+require_once 'lib/search/searchlib-unified.php';
+
+$loggit = (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] === 'loggit');
+
+$unifiedsearchlib->rebuild($loggit);

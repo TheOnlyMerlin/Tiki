@@ -572,8 +572,7 @@ class WikiPlugin_Negotiator_Wiki
 
 	function button($wrapInNp = true)
 	{
-		$headerlib = TikiLib::lib('header');
-		$smarty = TikiLib::lib('smarty');
+		global $headerlib, $smarty;
 
 		if (
 			$this->isEditable() &&
@@ -638,7 +637,7 @@ class WikiPlugin_Negotiator_Wiki
 
 	function blockFromExecution($status = '')
 	{
-		$smarty = TikiLib::lib('smarty');
+		global $smarty;
 		$smarty->assign('plugin_fingerprint', $status);
 		$smarty->assign('plugin_name', $this->name);
 		$smarty->assign('plugin_index', 0);

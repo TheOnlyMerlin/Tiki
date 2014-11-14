@@ -5,8 +5,7 @@
 	"homepage": "https://tiki.org",
 	"minimum-stability": "stable",
 	"require": {
-		"twitter/bootstrap": "3.3.0",
-		"fortawesome/font-awesome": "4.2.0",
+		"twitter/bootstrap": "3.1.1",
 		"adodb/adodb": "5.18",
 		"aFarkas/html5shiv": "3.7.2",
 		"bombayworks/zendframework1": "1.12.3",
@@ -49,7 +48,7 @@
 		"jquery/plugins/pxem": "0.1",
 		"jquery/plugins/reflection-jquery": "1.1",
 		"jquery/plugins/superfish": "1.7.4",
-		"jquery/plugins/tablesorter": "2.17.8",
+		"jquery/plugins/tablesorter": "2.17.2",
 		"jquery/plugins/treetable": "3.1.0",
 		"jquery/plugins/zoom": "1.7.13",
         "md5/md5": ">=1.1.0",
@@ -76,7 +75,7 @@
 		"symfony/config": "2.4.3"
 	},
 	"require-dev": {
-		"oyejorge/less.php": "1.7.0.2",
+		"oyejorge/less.php": "1.7.0.1",
 		"mikey179/vfsStream": "1.1.0",
         "bafs/testify": "dev-master"
 	},
@@ -98,6 +97,7 @@
             "WikiPlugin": "lib/core/",
 			"Multilingual": "lib/core/",
 			"Tracker": "lib/core/",
+			"Event": "lib/core/",
 			"Services": "lib/core/",
             "Table": "lib/core/",
 			"Tiki": "lib/core/",
@@ -105,7 +105,8 @@
             "Type": "lib/core/",
 			"Report": "lib/core/",
 			"Feed": "lib/core/",
-			"FutureLink": "lib/core/"
+			"FutureLink": "lib/core/",
+			"FileGallery": "lib/core/"
 		},
 		"classmap": [
 			"vendor_extra/pear/",
@@ -127,14 +128,12 @@
 			"Tiki\\Composer\\ThemeInstaller::setup"
 		],
 		"post-install-cmd": [
-			"Tiki\\Composer\\BootstrapCompiler::build",
 			"Tiki\\Composer\\CleanVendors::clean"
 		],
 		"pre-update-cmd": [
 			"Tiki\\Composer\\ThemeInstaller::setup"
 		],
 		"post-update-cmd": [
-			"Tiki\\Composer\\BootstrapCompiler::build",
 			"Tiki\\Composer\\CleanVendors::clean"
 		]
 	},

@@ -206,7 +206,7 @@ function smarty_block_pagination_links($params, $url, $smarty, &$repeat)
 
 	if ( $params['cant'] > 0 ) {
 		$make_prevnext_link = function ($url, $content, $params, $class = 'prevnext', $linkoffset) {
-			$smarty = TikiLib::lib('smarty');
+			global $smarty;
 
 			$link = '<a class="'.$class.'" ';
 			$url = TikiLib::tikiUrlOpt($url);
@@ -273,14 +273,14 @@ function smarty_block_pagination_links($params, $url, $smarty, &$repeat)
 						$html .= '<li>' . $make_prevnext_link($url.$url_k, $k+1, $params, 'prevnext', $url_k_val) . '</li>';
 						$last_dots = false;
 					} elseif ( ! $last_dots ) {
-						$html .= '<li class="disabled"><span>&hellip;</span>';
+						$html .= '<li class="disabled">&hellip;</span>';
 						$last_dots = true;
 					}
 				}
 			}
 
 			if ( $prefs['nextprev_pagination'] != 'n' ) {
-				if ($params['offset'] + $params['step'] >= $params['cant']) {
+				if ($next_offset_val >= $params['cant'] - 1) {
 					$html .= '<li class="disabled"><span>&raquo;</span></li>';
 				} else {
 					$html .= '<li>' . $make_prevnext_link($url . $next_offset, '&raquo;', $params, 'prevnext next', $next_offset_val) . '</li>';

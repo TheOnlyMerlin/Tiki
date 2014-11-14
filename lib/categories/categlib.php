@@ -54,7 +54,7 @@ class CategLib extends ObjectLib
 	function get_category($categId)
 	{
 		if (!is_numeric($categId)) {
-			throw new Exception('Invalid category identifier');
+			throw new Exception('Invalid category identier');
 		}
 		$categories = $this->getCategories(array('identifier' => (int) $categId), false, false);
 		return empty($categories) ? false : $categories[$categId];
@@ -149,12 +149,6 @@ class CategLib extends ObjectLib
 			)
 		);
 
-		TikiLib::events()->trigger('tiki.category.delete', [
-			'type' => 'category',
-			'object' => $id,
-			'user' => $GLOBALS['user'],
-		]);
-
 		return true;
 	}
 
@@ -209,12 +203,6 @@ class CategLib extends ObjectLib
 				'name' => $name,
 			)
 		);
-
-		TikiLib::events()->trigger('tiki.category.update', [
-			'type' => 'category',
-			'object' => $id,
-			'user' => $GLOBALS['user'],
-		]);
 	}
 
 	// Throws an Exception if the category name conflicts
@@ -259,12 +247,6 @@ class CategLib extends ObjectLib
 				'name' => $name,
 			)
 		);
-
-		TikiLib::events()->trigger('tiki.category.create', [
-			'type' => 'category',
-			'object' => $id,
-			'user' => $GLOBALS['user'],
-		]);
 
 		return $id;
 	}
@@ -963,8 +945,8 @@ class CategLib extends ObjectLib
    	// $cats: The OIDs of the categories of the object.
 	function get_categorypath($cats)
    	{
-		global $prefs;
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $prefs;
+
 		if (!isset($prefs['categorypath_excluded'])) {
 			return false;
 		}

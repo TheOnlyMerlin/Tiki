@@ -46,7 +46,7 @@ class EditLib
 			$error_msg .= "\n<p>\n";
 			$error_msg .= tra("If you want to create the page, you must first edit each the pages above, and remove the alias link it may contain. This link should look something like this");
 			$error_msg .= ": <b>(alias($page))</b>";
-
+			require_once('lib/tikiaccesslib.php');
 			$access->display_error(page, $error_title, "", true, $error_msg);
 		}
 	}
@@ -111,13 +111,14 @@ class EditLib
 
 	function prepareTranslationData()
 	{
+		global $_REQUEST, $tikilib, $smarty;
 		$this->setTranslationSourceAndTargetPageNames();
 		$this->setTranslationSourceAndTargetVersions();
 	}
 
 	private function setTranslationSourceAndTargetPageNames()
 	{
-		$smarty = TikiLib::lib('smarty');
+		global $_REQUEST, $smarty;
 
 		if (!$this->isTranslationMode()) {
 			return;
@@ -1164,7 +1165,7 @@ class EditLib
 
 	function parse_html(&$inHtml)
 	{
-		$smarty = TikiLib::lib('smarty');
+		global $smarty;
 
 		include ('lib/htmlparser/htmlparser.inc');
 
@@ -1266,3 +1267,6 @@ class EditLib
 	}
 }
 
+
+global $editlib;
+$editlib = new EditLib;

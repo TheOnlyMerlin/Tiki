@@ -59,10 +59,7 @@ function wikiplugin_author_info()
 
 function wikiplugin_author($data, $params)
 {
-	$headerlib = TikiLib::lib('header');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
-
+	global $smarty, $tikilib, $headerlib;
 	global $authors;
 	
 	static $style=0;

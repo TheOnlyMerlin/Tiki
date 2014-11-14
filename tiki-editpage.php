@@ -92,7 +92,7 @@ function translationsToThisPageAreInProgress($page_id)
 
 function execute_module_translation()
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 // will show the language of the available translations. Chnage to 'n' to show the page name
 	$params['show_language'] = 'y';
 // flag to indicate that the module is appearing within the notification area of the edit page
@@ -277,13 +277,13 @@ if (isset($_REQUEST['cancel_edit'])) {
 	$tikilib->semaphore_unset($page, $_SESSION[$editLockPageId]);
 	if (!empty($_REQUEST['returnto'])) {
 		if (isURL($_REQUEST['returnto'])) {
-			$url = $_REQUEST['returnto'];
+			$url = "location:".$_REQUEST['returnto'];
 		} else {
 			// came from wikiplugin_include.php edit button
-			$url = $wikilib->sefurl($_REQUEST['returnto']);
+			$url = "location:".$wikilib->sefurl($_REQUEST['returnto']);
 		}
 	} else {
-		$url = $wikilib->sefurl($page);
+		$url = "location:".$wikilib->sefurl($page);
 		if (!empty($_REQUEST['page_ref_id'])) {
 			$url .= (strpos($url, '?') === false ? '?' : '&') . 'page_ref_id='.$_REQUEST['page_ref_id'];
 		}
@@ -294,7 +294,8 @@ if (isset($_REQUEST['cancel_edit'])) {
 	}
 
 	if ($dieInsteadOfForwardingWithHeader) die ("-- tiki-editpage: Dying before first call to header(), so we can see traces. Forwarding to: \$url='$url'");
-	$access->redirect($url);
+	header($url);
+	die;
 }
 if (isset($_REQUEST['minor'])) {
 	$_REQUEST['isminor'] = 'on';
@@ -530,7 +531,8 @@ if (isset($_FILES['userfile1']) && is_uploaded_file($_FILES['userfile1']['tmp_na
 			}
 		}
 		if ($dieInsteadOfForwardingWithHeader) die ("-- tiki-editpage: Dying before second call to header(), so we can see traces. Forwarding to: '$url'");
-		$access->redirect($url);
+		header("location: $url");
+		die;
 	}
 }
 
@@ -1365,7 +1367,8 @@ if (
 	}
 
 	if ($dieInsteadOfForwardingWithHeader) die ("-- tiki-editpage: Dying before third call to header(), so we can see traces. Forwarding to: '$url'");
-	$access->redirect($url);
+	header("location: $url");
+	die;
 } //save
 $smarty->assign('pageAlias', $pageAlias);
 if ($prefs['feature_wiki_templates'] === 'y' && $tiki_p_use_content_templates === 'y') {

@@ -13,7 +13,7 @@ function prefs_article_list()
 		'points_desc' => tra('Points'),
 	);
 
-	$prefslib = TikiLib::lib('prefs');
+	global $prefslib;
 	$advanced_columns = $prefslib->getExtraSortColumns();
 
 	foreach ( $advanced_columns as $key => $label ) {

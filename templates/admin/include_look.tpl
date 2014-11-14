@@ -19,8 +19,6 @@
 				</div>
 				<div class="col-md-9 col-md-pull-3 adminoptionbox">
 					{preference name=theme_active}
-                </div>
-            </div>
 
 					<div class="adminoptionbox theme_active_childcontainer custom">
 						{preference name=theme_custom}
@@ -36,10 +34,12 @@
 
 					{preference name=site_layout}
 					{preference name=site_layout_per_object}
-					{preference name=theme_iconset}
+
 					{if $prefs.javascript_enabled eq 'n' or $prefs.feature_jquery eq 'n'}
 						<input type="submit" class="btn btn-default btn-sm" name="changestyle" value="{tr}Go{/tr}" />
 					{/if}
+				</div>
+			</div>
 			<div class="adminoptionbox">
 				{if $prefs.feature_jquery_ui eq 'y'}
 					{preference name=feature_jquery_ui_theme}
@@ -57,7 +57,7 @@
 
 			{preference name=change_theme}
 			<div class="adminoptionboxchild" id="change_theme_childcontainer">
-{tr}Restrict available themes{/tr}
+				{tr}Restrict available themes{/tr}
 				{preference name=available_styles}
 			</div>
 
@@ -91,10 +91,10 @@
 				<fieldset>
 					<legend>{tr}Logo{/tr}</legend>
 					{preference name=sitelogo_src}
-					{preference name=sitelogo_icon}
 					{preference name=sitelogo_bgcolor}
 					{preference name=sitelogo_title}
 					{preference name=sitelogo_alt}
+					{preference name=sitelogo_icon}
 				</fieldset>
 
 				<fieldset>

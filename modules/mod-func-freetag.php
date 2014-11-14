@@ -30,9 +30,8 @@ function module_freetag_info()
  */
 function module_freetag($mod_reference, $module_params)
 {
-	global $sections, $section;
-	$smarty = TikiLib::lib('smarty');
-	$modlib = TikiLib::lib('mod');
+	global $sections, $section, $modlib;
+	global $smarty;
 	
 	$globalperms = Perms::get();
 	if ($globalperms->view_freetags && isset($sections[$section])) {

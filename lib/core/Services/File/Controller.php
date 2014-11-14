@@ -21,19 +21,6 @@ class Services_File_Controller
 		$this->utilities = new Services_File_Utilities;
 	}
 
-	function action_uploader($input)
-	{
-		$gal_info = $this->checkTargetGallery($input);
-
-		return array(
-			'title' => tr('File Upload'),
-			'galleryId' => $gal_info['galleryId'],
-			'limit' => abs($input->limit->int()),
-			'typeFilter' => $input->type->text(),
-			'files' => $this->getFilesInfo((array) $input->file->int()),
-		);
-	}
-
 	function action_upload($input)
 	{
 		$gal_info = $this->checkTargetGallery($input);
@@ -82,65 +69,6 @@ class Services_File_Controller
 			'galleryId' => $gal_info['galleryId'],
 			'md5sum' => md5($data),
 		);
-	}
-
-	function action_browse($input)
-	{
-		try {
-			$gal_info = $this->checkTargetGallery($input);
-		} catch (Services_Exception $e) {
-			$gal_info = null;
-		}
-		$input->replaceFilter('file', 'int');
-		$type = $input->type->text();
-
-		return [
-			'title' => tr('Browse'),
-			'galleryId' => $input->galleryId->int(),
-			'limit' => $input->limit->int(),
-			'files' => $this->getFilesInfo($input->asArray('file', ',')),
-			'typeFilter' => $type,
-			'canUpload' => (bool) $gal_info,
-			'list_view' => (substr($type, 0, 6) == 'image/') ? 'thumbnail_gallery' : 'list_gallery',
-		];
-	}
-
-	function action_thumbnail_gallery($input)
-	{
-		// Same as list gallery, different template
-		return $this->action_list_gallery($input);
-	}
-
-	function action_list_gallery($input)
-	{
-		$galleryId = $input->galleryId->int();
-
-		$lib = TikiLib::lib('unifiedsearch');
-		$query = $lib->buildQuery([
-			'type' => 'file',
-			'gallery_id' => (string) $galleryId,
-		]);
-
-		if ($search = $input->search->text()) {
-			$query->filterContent($search);
-		}
-
-		if ($typeFilter = $input->type->text()) {
-			$query->filterContent($typeFilter, 'filetype');
-		}
-
-		$query->setRange($input->offset->int());
-		$query->setOrder('title_asc');
-		$result = $query->search($lib->getIndex());
-
-		return [
-			'title' => tr('Gallery List'),
-			'galleryId' => $galleryId,
-			'results' => $result,
-			'plain' => $input->plain->int(),
-			'search' => $search,
-			'typeFilter' => $typeFilter,
-		];
 	}
 
 	function action_remote($input)
@@ -250,13 +178,6 @@ class Services_File_Controller
 		}
 		
 		return $this->utilities->checkTargetGallery($galleryId);
-	}
-
-	private function getFilesInfo($files)
-	{
-		return array_map(function ($fileId) {
-			return TikiDb::get()->table('tiki_files')->fetchRow(['fileId', 'name' => 'filename', 'label' => 'name', 'type' => 'filetype'], ['fileId' => $fileId]);
-		}, array_filter($files));
 	}
 }
 

@@ -117,11 +117,11 @@ class Comments extends TikiLib
 	/* Add an attachment to a post in a forum */
 	function add_thread_attachment($forum_info, $threadId, &$errors, $name, $type, $size, $inbound_mail = 0, $qId=0, $fp = '', $data = '')
 	{
-		global $tiki_p_admin_forum, $tiki_p_forum_attach;
+		global $smarty, $tiki_p_admin_forum, $tiki_p_forum_attach, $smarty;
+
 		if (!($forum_info['att'] == 'att_all'
 				|| ($forum_info['att'] == 'att_admin' && $tiki_p_admin_forum == 'y')
 				|| ($forum_info['att'] == 'att_perm' && $tiki_p_forum_attach == 'y'))) {
-			$smarty = TikiLib::lib('smarty');
 			$smarty->assign('errortype', 401);
 			$smarty->assign('msg', tra('Permission denied'));
 			$smarty->display("error.tpl");
@@ -1047,10 +1047,6 @@ class Comments extends TikiLib
 			$forumLanguage = ''
 	)
 	{
-		if (!$forumId && empty($att_store_dir)) {
-			// Set new default location for forum attachments (only affect new forums for backward compatibility))
-			$att_store_dir = 'files/forums/';
-		}
 
 		$data = array(
 			'name' => $name,
@@ -1115,21 +1111,10 @@ class Comments extends TikiLib
 
 		if ($forumId) {
 			$forums->update($data, array('forumId' => (int) $forumId));
-			$event = 'tiki.forum.update';
 		} else {
 			$data['created'] = $this->now;
 			$forumId = $forums->insert($data);
-			$event = 'tiki.forum.create';
 		}
-
-		TikiLib::events()->trigger($event, [
-			'type' => 'forum',
-			'object' => $forumId,
-			'user' => $GLOBALS['user'],
-			'title' => $name,
-			'description' => $description,
-			'forum_section' => $section,
-		]);
 
 		return $forumId;
 	}
@@ -1154,21 +1139,9 @@ class Comments extends TikiLib
      */
     function remove_forum($forumId)
 	{
-		$forum = $this->get_forum($forumId);
-
 		$this->table('tiki_forums')->delete(array('forumId' => $forumId));
 		$this->remove_object("forum", $forumId);
 		$this->table('tiki_forum_attachments')->delete(array('forumId' => $forumId));
-
-		TikiLib::events()->trigger('tiki.forum.delete', [
-			'type' => 'forum',
-			'object' => $forumId,
-			'user' => $GLOBALS['user'],
-			'title' => $forum['name'],
-			'description' => $forum['description'],
-			'forum_section' => $forum['section'],
-		]);
-
 		return true;
 	}
 
@@ -3329,11 +3302,8 @@ class Comments extends TikiLib
      */
     function post_in_forum($forum_info, &$params, &$feedbacks, &$errors)
 	{
-		global $tiki_p_admin_forum, $tiki_p_forum_post_topic;
-		global $tiki_p_forum_post, $prefs, $user, $tiki_p_forum_autoapp;
-		$captchalib = TikiLib::lib('captcha');
-		$smarty = TikiLib::lib('smarty');
-		$tikilib = TikiLib::lib('tiki');
+		global $smarty, $tiki_p_admin_forum, $tiki_p_forum_post_topic, $tikilib;
+		global  $tiki_p_forum_post, $prefs, $user, $tiki_p_forum_autoapp, $captchalib;
 
 		if (!empty($params['comments_grandParentId'])) {
 			$parent_id = $params['comments_grandParentId'];
@@ -3717,7 +3687,7 @@ class Comments extends TikiLib
      * @param $threadId
      * @return mixed
      */
-    function find_root($threadId)
+    private function find_root($threadId)
 	{
 		$parent = $this->table('tiki_comments')->fetchOne('parentId', array('threadId' => $threadId));
 

@@ -13,6 +13,8 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	exit;
 }
 
+
+require_once('lib/perspectivelib.php');
 $categlib = TikiLib::lib('categ');
 
 class AreasLib extends CategLib
@@ -28,8 +30,7 @@ class AreasLib extends CategLib
 
 	function HandleObjectCategories($objectCategoryIds)
 	{
-		global $prefs;
-		$perspectivelib = TikiLib::lib('perspective');
+		global $prefs, $perspectivelib, $_SESSION;
 
 		$current_object = current_object();
 
@@ -171,6 +172,8 @@ class AreasLib extends CategLib
 		}
 	}
 } // class end
+$areaslib = new AreasLib();
+global $areaslib;
 
 /*-----------------------------------------------
 +++ Description of Perspective Binder / Areas +++ 

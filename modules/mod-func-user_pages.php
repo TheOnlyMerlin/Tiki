@@ -31,12 +31,10 @@ function module_user_pages_info()
  */
 function module_user_pages($mod_reference, $module_params)
 {
-	global $user;
+	global $tikilib, $smarty, $user;
 	if ($user) {
-		$tikilib = TikiLib::lib('tiki');
-		$smarty = TikiLib::lib('smarty');
-
 		$ranking = $tikilib->get_user_pages($user, $mod_reference["rows"]);
+		
 		$smarty->assign('modUserPages', $ranking);
 		$smarty->assign('tpl_module_title', tra("My Pages"));
 	}

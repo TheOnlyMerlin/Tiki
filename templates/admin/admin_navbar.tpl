@@ -8,8 +8,8 @@
 		</button>
 		<ul class="nav navbar-nav">
 			<li class="dropdown">	
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown" title="{tr}Settings{/tr}">
-					{icon name="filter"} <span class="caret"></span>
+				<a href="#" class="navbar-brand dropdown-toggle" data-toggle="dropdown" title="{tr}Settings{/tr}">
+					{glyph name="cog"} <span class="caret"></span>
 				</a>
 				<ul class="dropdown-menu" role="menu">
 					<li>
@@ -42,7 +42,7 @@
 										<br/><br/>
 										{tr}Click to read more{/tr}
 									">
-										{icon name="help"}
+										<img src="img/icons/help.png" alt="" width="16" height="16" class="icon" />
 									</a>
 								</label>
 								{$headerlib->add_jsfile("lib/jquery_tiki/tiki-connect.js")}
@@ -98,7 +98,7 @@
 					</li>
 					<li>
 						<a href="tiki-admin.php">
-							{tr}Configuration Panels{/tr}
+							{tr}Admin Home{/tr}
 						</a>
 					</li>
 				</ul>
@@ -117,34 +117,37 @@
 						<input type="hidden" name="filters">
 						<input type="text" name="lm_criteria" value="{$lm_criteria|escape}" class="form-control" placeholder="{tr}Search preferences{/tr}...">
 					</div>
-					<button type="submit" class="btn btn-default" {if $indexNeedsRebuilding} class="tips" title="{tr}Configuration search{/tr}|{tr}Note: The search index needs rebuilding, this will take a few minutes.{/tr}"{/if}>{icon name="search"}</button>
+					<button type="submit" class="btn btn-default" {if $indexNeedsRebuilding} class="tips" title="{tr}Configuration search{/tr}|{tr}Note: The search index needs rebuilding, this will take a few minutes.{/tr}"{/if}>{glyph name=search}</button>
 				</form>
 			</li>
 		</ul>
 	</div>
     {if $include != "list_sections"}
-        <div class="adminanchors panel-body clearfix"><ul class="nav navbar-nav">{include file='admin/include_anchors.tpl'}</ul></div>
+        <div class="adminanchors panel-body clearfix">{include file='admin/include_anchors.tpl'}</div>
     {/if}
 </nav>
 
 {if $tikifeedback}
-	{remarksbox type="feedback" title="{tr}The following list of changes has been applied{/tr}"}
-		<ul class="list-unstyled">
+	{remarksbox type="note" title="{tr}Note{/tr}"}
+		{tr}The following list of changes has been applied:{/tr}
+		<ul>
 		{section name=n loop=$tikifeedback}
 			<li>
+				<p>
 			{if $tikifeedback[n].st eq 0}
-				{icon name="disable"}
+				{icon _id=delete alt="{tr}Disabled{/tr}" style="vertical-align: middle"}
 			{elseif $tikifeedback[n].st eq 1}
-				{icon name="enable"}
+				{icon _id=accept alt="{tr}Enabled{/tr}" style="vertical-align: middle"}
 			{elseif $tikifeedback[n].st eq 2}
-				{icon name="change"}
+				{icon _id=accept alt="{tr}Changed{/tr}" style="vertical-align: middle"}
 			{elseif $tikifeedback[n].st eq 4}
-				{icon name="undo"}
+				{icon _id=arrow_undo alt="{tr}Reset{/tr}" style="vertical-align: middle"}
 			{else}
-				{icon name="information"}
+				{icon _id=information alt="{tr}Information{/tr}" style="vertical-align: middle"}
 			{/if}
-				{if $tikifeedback[n].st ne 3}{tr}Preference{/tr} {/if}<strong>{tr}{$tikifeedback[n].mes|stringfix}{/tr}</strong>
-				{if $tikifeedback[n].st ne 3}(<small>{tr}Preference name:{/tr} {$tikifeedback[n].name})</small>{/if}
+					{if $tikifeedback[n].st ne 3}{tr}Preference{/tr} {/if}<strong>{tr}{$tikifeedback[n].mes|stringfix}{/tr}</strong><br>
+					{if $tikifeedback[n].st ne 3}(<em>{tr}Preference name:{/tr}</em> {$tikifeedback[n].name}){/if}
+				</p>
 			</li>
 		{/section}
 		</ul>
@@ -178,6 +181,6 @@
 	{/jq}
 {elseif $lm_criteria}
 	{remarksbox type="note" title="{tr}No results{/tr}" icon="magnifier"}
-		{tr}No preferences were found for your search query with your current choice of Preference Filters ({icon name="filter"}).{/tr}{if $prefs.unified_engine eq 'lucene'}{tr} Not what you expected? Try {/tr}<a class="alert-link" href="tiki-admin.php?prefrebuild">{tr}rebuild{/tr}</a> {tr}the preferences search index.{/tr}{/if}
+		{tr}No preferences were found for your search query with your current choice of Preference Filters (<span class="glyphicon glyphicon-cog"></span>).{/tr}{if $prefs.unified_engine eq 'lucene'}{tr} Not what you expected? Try {/tr}<a class="alert-link" href="tiki-admin.php?prefrebuild">{tr}rebuild{/tr}</a> {tr}the preferences search index.{/tr}{/if}
 	{/remarksbox}
 {/if}

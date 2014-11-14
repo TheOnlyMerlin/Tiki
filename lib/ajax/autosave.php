@@ -15,7 +15,7 @@ class AutoSaveLib
 {
 	function __construct()
 	{
-		$access = TikiLib::lib('access');
+		global $access;
 
 		$access->check_feature(array('feature_ajax', 'ajax_autosave'));
 	}

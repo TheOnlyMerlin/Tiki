@@ -1013,6 +1013,7 @@ function wikiplugin_tracker($data, $params)
 					}
 					if (empty($url)) {
 						if (!empty($_REQUEST['ajax_add'])) {	// called by tracker ItemLink fields when adding new list items
+							global $access;
 							while ( ob_get_level() ) {
 								ob_end_clean();
 							}
@@ -1023,7 +1024,6 @@ function wikiplugin_tracker($data, $params)
 							}
 							// Need to add newly created itemId for item link selector
 							$ins_fields['itemId'] = $rid;
-							$access = TikiLib::lib('access');
 							$access->output_serialized($ins_fields);
 							ob_end_flush();
 							die;
@@ -1220,14 +1220,15 @@ function wikiplugin_tracker($data, $params)
 			$smarty->assign('trackerEditFormId', $iTRACKER);
 
 		if (!empty($params['_ajax_form_ins_id'])) {
-			$headerlib = TikiLib::lib('header');
+			global $headerlib;									// when called via AJAX take a copy of the JS so far to allow collection
 			$old_js['js'] = $headerlib->js;						// of tracker form JS into a function to initialise it when the dialog is created
 			$old_js['jq_onready'] = $headerlib->jq_onready;
 			$headerlib->clear_js();								// so store existing js for later and clear
 		}
 
 			if ($prefs['feature_jquery'] == 'y' && $prefs['feature_jquery_validation'] == 'y') {
-				$validatorslib = TikiLib::lib('validators');
+				global $validatorslib;
+				include_once('lib/validatorslib.php');
 				$customvalidation = '';
 				$customvalidation_m = '';
 				if ($registration == 'y') {
@@ -1486,7 +1487,7 @@ function wikiplugin_tracker($data, $params)
 
 					if ($f['type'] != 'S' && empty($tpl) && empty($wiki)) {
 						if ($showfieldsdesc == 'y') {
-							$back .= '<div class="form-group tracker-help-block"><div class="col-md-3 control-label sr-only">Label</div><div class="col-md-9 trackerplugindesc help-block">';
+							$back .= '<div class="trackerplugindesc">';
 
 							if ($f['descriptionIsParsed'] == 'y') {
 								$back .= $tikilib->parse_data($f['description']);
@@ -1494,7 +1495,7 @@ function wikiplugin_tracker($data, $params)
 								$back .= tra($f['description']);
 							}
 
-							$back .= '</div></div>';
+							$back .= '</div>';
 						}
 					}
 				}
@@ -1548,14 +1549,14 @@ FILL;
 				) {
 				// in_tracker session var checking is for tiki-register.php
 				$smarty->assign('antibot_table', empty($wiki) && empty($tpl)?'n': 'y');
-				$captchalib = TikiLib::lib('captcha');
+				include_once('lib/captcha/captchalib.php');
 				$smarty->assign('captchalib', $captchalib);
 				$back .= $smarty->fetch('antibot.tpl');
 			}
 			$back .= '</div>';
 
 			if ($params['formtag'] == 'y') {
-				$back .= '<div class="form-group"><div class="col-md-3"></div><div class="input_submit_container col-md-9 btn-bar">';
+				$back .= '<div class="input_submit_container text-center btn-bar">';
 
 				if (!empty($reset)) {
 					$back .= '<input class="button submit preview" type="reset" name="tr_reset" value="'.tra($reset).'" />';
@@ -1566,10 +1567,10 @@ FILL;
 				foreach ($action as $key=>$act) {
 					$back .= '<input class="btn btn-default button submit" type="submit" name="action'.$key.'" value="'.tra($act).'" onclick="needToConfirm=false" />';
 				}
-				$back .= '</div></div>';
+				$back .= '</div>';
 			}
 			if ($showmandatory == 'y' and $onemandatory) {
-				$back.= "<div class='form-group'><div class='col-md-3'></div><div class='col-md-9'><div class='text-center alert alert-danger'><em>".tra("Fields marked with an * are mandatory.")."</em></div></div></div>";
+				$back.= "<div class='text-center'><em class='mandatory_note'>".tra("Fields marked with an * are mandatory.")."</em></div>";
 			}
 			if ($params['formtag'] == 'y') {
 				$back.= '</form>';
@@ -1624,15 +1625,18 @@ function wikiplugin_tracker_render_input($f, $item, $dynamicSave)
 	$input = $handler->renderInput(array('inTable' => 'n', 'pluginTracker' => 'y'));
 
 	if ($dynamicSave && $item['itemId']) {
+		$servicelib = TikiLib::lib('service');
 		$input = new Tiki_Render_Editable(
 			$input,
 			array(
 				'layout' => 'block',
-				'object_store_url' => array(
-					'controller' => 'tracker',
-					'action' => 'update_item',
-					'trackerId' => $f['trackerId'],
-					'itemId' => $item['itemId'],
+				'object_store_url' => $servicelib->getUrl(
+					array(
+						'controller' => 'tracker',
+						'action' => 'update_item',
+						'trackerId' => $f['trackerId'],
+						'itemId' => $item['itemId'],
+					)
 				),
 			)
 		);

@@ -722,8 +722,7 @@ class StructLib extends TikiLib
 	}
 	public function fetch_toc($structure_tree,$showdesc,$numbering,$type='plain',$page='',$maxdepth=0,$cur_depth=0,$structurePageName='')
 	{
-		$smarty = TikiLib::lib('smarty');
-		global $user;
+		global $smarty, $user;
 		$ret='';
 		if ($structure_tree != '') {
 			if (($maxdepth <= 0) || ($cur_depth < $maxdepth)) {
@@ -1305,7 +1304,7 @@ class StructLib extends TikiLib
 	/* transform a structure into a menu */
 	public function to_menu($channels, $structure, $sectionLevel=0, $cumul=0, $params=array())
 	{
-		$smarty = TikiLib::lib('smarty');
+		global $smarty;
 		include_once('lib/smarty_tiki/function.sefurl.php');
 		$options = array();
 		$cant = 0;

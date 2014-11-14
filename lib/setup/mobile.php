@@ -73,8 +73,7 @@ if ( !isset($_REQUEST['mobile_mode']) || $_REQUEST['mobile_mode'] === 'y' ) {
 				$prefs['site_style'] = 'mobile.css'; // set in perspectives but seems to need a nudge here
 				$prefs['style'] = $prefs['site_style'];
 
-				global $base_url;
-				$perspectivelib = TikiLib::lib('perspective');
+				global $perspectivelib, $base_url; require_once 'lib/perspectivelib.php';
 				if (!in_array($perspectivelib->get_current_perspective($prefs), $prefs['mobile_perspectives'])) {	// change perspective
 
 					$hp = $prefs['wikiHomePage'];							// get default non mobile homepage

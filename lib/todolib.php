@@ -297,10 +297,8 @@ class TodoLib
      */
     function notifyTodo_tracker($todo, $objects)
 	{
-		global $prefs;
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $tikilib, $prefs;
 		$trklib = TikiLib::lib('trk');
-		$tikilib = TikiLib::lib('tiki');
 		foreach ($objects as $object) {
 			// get the creator
 			$u = $object['field_values'][0]['value'];

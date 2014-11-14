@@ -16,8 +16,7 @@ class CCLiteLib extends TikiDb_Bridge
 
 	function __construct()
 	{
-		global $prefs;
-		$access = TikiLib::lib('access');
+		global $prefs, $access;
 		$access->check_feature('payment_feature');
 
 		// need to add a check for empty, not just y/n - TODO one day
@@ -140,9 +139,8 @@ class CCLiteLib extends TikiDb_Bridge
 	 */
 	public function pay_invoice($invoice, $amount, $currency = '', $registry = '', $source_user = '')
 	{
-		global $user, $prefs;
-		$tikilib = TikiLib::lib('tiki');
-		$paymentlib = TikiLib::lib('payment');
+		global $user, $prefs, $paymentlib, $tikilib;
+		require_once 'lib/payment/paymentlib.php';
 
 		$msg = tr('Cclite payment initiated on %0', $tikilib->get_short_datetime($tikilib->now));
 
@@ -164,8 +162,8 @@ class CCLiteLib extends TikiDb_Bridge
 	 */
 	public function pay_user( $amount, $currency = '', $registry = '', $destination_user = '', $source_user = '')
 	{
-		global $user, $prefs;
-		$paymentlib = TikiLib::lib('payment');
+		global $user, $prefs, $paymentlib;
+		require_once 'lib/payment/paymentlib.php';
 		if (empty($source_user)) {
 			$source_user = $this->merchant_user;
 		}

@@ -46,7 +46,20 @@ class Search_Formatter_Plugin_SmartyTemplate implements Search_Formatter_Plugin_
 	function renderEntries(Search_ResultSet $entries)
 	{
 		global $tikipath;
-		$smarty = new Smarty_Tiki;
+		$smarty = new Smarty;
+		$smarty->setCompileDir($tikipath . 'templates_c');
+		$smarty->setTemplateDir(null);
+		$smarty->setTemplateDir(dirname($this->templateFile));
+		$smarty->setPluginsDir(
+			array(
+				$tikipath . TIKI_SMARTY_DIR,	// the directory order must be like this to overload a plugin
+				SMARTY_DIR . 'plugins',
+			)
+		);
+
+		$secpol = new Tiki_Security_Policy($smarty);
+		$secpol->secure_dir[] = dirname($this->templateFile);
+		$smarty->enableSecurity($secpol);
 
 		if ( $this->changeDelimiters ) {
 			$smarty->left_delimiter = '{{';
@@ -57,7 +70,6 @@ class Search_Formatter_Plugin_SmartyTemplate implements Search_Formatter_Plugin_
 			$smarty->assign($key, $value);
 		}
 
-		$smarty->assign('prefs', $GLOBALS['prefs']);
 		$smarty->assign('results', $entries);
 		$smarty->assign(
 			'facets',

@@ -30,7 +30,7 @@
         	            <li>{tr}Enables/Disables error and warning display to all users, not only admins{/tr} </li>
         	        </ul>
                     {tr}Click to read more{/tr}">
-                    {icon name="help"}
+                    <img src="img/icons/help.png" alt="" width="16" height="16" class="icon" />
                     </a>
                 </div>
                 {* <div class="col-md-6">

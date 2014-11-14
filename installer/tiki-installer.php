@@ -685,7 +685,6 @@ $_SESSION["install-logged-$multi"] = 'y';
 
 // Init smarty
 global $tikidomain;
-$smarty = TikiLib::lib('smarty');
 $smarty->assign('mid', 'tiki-install.tpl');
 $smarty->assign('virt', isset($virt) ? $virt : null);
 $smarty->assign('multi', isset($multi) ? $multi : null);
@@ -1144,7 +1143,7 @@ if ( isset($_POST['general_settings']) && $_POST['general_settings'] == 'y' ) {
 }
 
 
-$headerlib = TikiLib::lib('header');
+include_once "lib/headerlib.php";
 $headerlib->add_js("var tiki_cookie_jar=new Array();");
 $headerlib->add_cssfile('vendor/twitter/bootstrap/dist/css/bootstrap.css');
 $headerlib->add_jsfile('lib/tiki-js.js');

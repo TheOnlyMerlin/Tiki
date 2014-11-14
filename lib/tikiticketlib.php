@@ -29,14 +29,13 @@ function ask_ticket($area)
 // Deprecated in favor of key_check($area)
 function check_ticket($area)
 {
-	if (!isset($_SESSION['antisurf'])) {
+	if (!isset($_SESSION['antisurf']))
 		$_SESSION['antisurf'] = '';
-	}
+
 	if ($_SESSION['antisurf'] != $area) {
-		global $prefs;
+		global $smarty, $prefs;
 		$_SESSION['antisurf'] = $area;
 		if ($prefs['feature_ticketlib'] == 'y') {
-			$smarty = TikiLib::lib('smarty');
 			$smarty->assign('post', $_POST);
 			$smarty->assign('query', $_SERVER['QUERY_STRING']);
 			$smarty->assign('self', $_SERVER['PHP_SELF']);
@@ -53,9 +52,8 @@ function check_ticket($area)
 // * @param string $area No more used
 function key_get($area = null, $confirmation_text = '', $confirmaction = '')
 {
-	global $prefs;
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib,$smarty,$prefs;
+
 	if ($prefs['feature_ticketlib2'] == 'y') {
 		$ticket = md5(uniqid(rand()));
 		$_SESSION['tickets'][$ticket] = time();
@@ -82,7 +80,8 @@ function key_get($area = null, $confirmation_text = '', $confirmaction = '')
 // * @param string $area No more used
 function key_check($area = null)
 {
-	global $prefs;
+	global $smarty, $prefs;
+
 	if ($prefs['feature_ticketlib2'] == 'y') {
 		if (isset($_REQUEST['ticket']) && isset($_SESSION['tickets'][$_REQUEST['ticket']])) {
 			$time = $_SESSION['tickets'][$_REQUEST['ticket']];
@@ -91,7 +90,6 @@ function key_check($area = null)
 			}
 		}
 
-		$smarty = TikiLib::lib('smarty');
 		$smarty->assign('msg', tra('Sea Surfing (CSRF) detected. Operation blocked.'));
 		$smarty->display('error.tpl');
 		exit();

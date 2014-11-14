@@ -28,10 +28,9 @@ function module_payment_outstanding_info()
  */
 function module_payment_outstanding($mod_reference, $module_params)
 {
-	global $user, $prefs;
+	global $smarty, $user, $paymentlib, $prefs;
 
-	$paymentlib = TikiLib::lib('payment');
-	$smarty = TikiLib::lib('smarty');
+	require_once 'lib/payment/paymentlib.php';
 	if ($user) {
 		$data = $paymentlib->get_outstanding(0, $mod_reference['rows'], $user);
 		$smarty->assign('outstanding', $data);

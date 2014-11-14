@@ -216,19 +216,15 @@ if (isset($_SERVER["REQUEST_URI"])) {
 if (isset($prefs['feature_fullscreen']) && $prefs['feature_fullscreen'] == 'y') {
 	require_once ('lib/setup/fullscreen.php');
 }
-
-// Retrieve Tiki addons
-TikiAddons::refresh();
-
 // Retrieve all preferences
 require_once ('lib/setup/prefs.php');
 
-$access = TikiLib::lib('access');
+require_once ('lib/tikiaccesslib.php');
+$access = new TikiAccessLib;
 
 require_once ('lib/setup/absolute_urls.php');
 // Smarty needs session since 2.6.25
-global $smarty;
-$smarty = TikiLib::lib('smarty');
+global $smarty; require_once ('lib/init/smarty.php');
 
 // Define the special maxRecords global variable
 $maxRecords = $prefs['maxRecords'];

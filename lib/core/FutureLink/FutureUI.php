@@ -329,9 +329,7 @@ JQ
 
 	function createPastLinksInterface()
 	{
-		global $prefs, $user;
-		$headerlib = TikiLib::lib('header');
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib, $headerlib, $prefs, $user;
 
 		$answers = json_encode($this->metadata->raw->answers);
 
@@ -549,7 +547,7 @@ JQ
 
 	static function wikiView($args)
 	{
-		$headerlib = TikiLib::lib('header');
+		global $headerlib, $_REQUEST;
 
 		$page = $args['object'];
 		$version = $args['version'];

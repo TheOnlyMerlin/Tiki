@@ -413,7 +413,7 @@ class CartLib
 			}
 		}
 		// set refunding in the event of cancellation
-		$paymentlib = TikiLib::lib('payment');
+		global $paymentlib; require_once 'lib/payment/paymentlib.php';
 		$paymentlib->register_behavior($invoice, 'cancel', 'cart_gift_certificate_refund', array( $this->gift_certificate_id, $this->gift_certificate_mode, $this->gift_certificate_amount, $this->gift_certificate_discount));
 	}
 
@@ -749,6 +749,7 @@ class CartLib
 				if ($currentQuantity == 0) {
 					unset( $_SESSION['cart'][ $code ] );
 				}
+				global $access;
 
 				$this->handle_error(tra('There is not enough inventory left for your request'));
 			}
@@ -790,9 +791,13 @@ class CartLib
 
 	function request_payment()
 	{
-		global $prefs, $user;
-		$tikilib = TikiLib::lib('tiki');
-		$paymentlib = TikiLib::lib('payment');
+		global $prefs, $user, $tikilib;
+		global $paymentlib; require_once 'lib/payment/paymentlib.php';
+
+//		if (!$user && $prefs['payment_cart_anonymous'] != 'y') {
+//			$access = TikiLib::lib('access');
+//			$access->redirect( $_SERVER['REQUEST_URI'], tra('Anonymous shopping feature is not enabled. Please log in to shop.') );
+//		}
 
 		$total = $this->get_total();
 
@@ -931,7 +936,7 @@ class CartLib
 
 			if ( !empty($_SESSION['shopperinfo']['email']) ) {
 				require_once('lib/webmail/tikimaillib.php');
-				$smarty = TikiLib::lib('smarty');
+				global $smarty;
 				$smarty->assign('shopperurl', $shopperurl);
 				$smarty->assign('email_template_ids', $email_template_ids);
 				$mail_subject = $smarty->fetch('mail/cart_order_received_anon_subject.tpl');
@@ -1426,4 +1431,7 @@ class CartLib
 		}
 	}
 }
+
+global $cartlib;
+$cartlib = new CartLib;
 

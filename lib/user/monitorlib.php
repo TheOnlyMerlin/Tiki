@@ -105,9 +105,7 @@ class MonitorLib
 
 		// Global / Catch-all always applicable, except for tiki.save, which would
 		// cause too much noise.
-		$events = array_filter($events, function ($e) {
-			return ! $e['local'];
-		});
+		unset($events['tiki.save']); // Disallow global watch-all
 		$options[] = $this->gatherOptions($userId, $events, 'global', null);
 
 		return call_user_func_array('array_merge', $options);
@@ -410,11 +408,6 @@ class MonitorLib
 			$object = $tikilib->get_page_id_from_name($object);
 		}
 
-		if ($type == 'user') {
-			$tikilib = TikiLib::lib('tiki');
-			$object = $tikilib->get_user_id($object);
-		}
-
 		if (substr($type, -6) == ' trans') {
 			$type = substr($type, 0, -6);
 		}
@@ -455,39 +448,24 @@ class MonitorLib
 
 	private function getApplicableEvents($type)
 	{
-		/**
-		 * Global indicates that the event cannot apply to a direct object
-		 * Local indicates the event cannot apply on a global scale (to reduce noise)
-		 */
 		switch ($type) {
 		case 'wiki page':
 			return [
-				'tiki.save' => ['global' => false, 'local' => true, 'label' => tr('Any activity')],
-				'tiki.wiki.save' => ['global' => false, 'local' => false, 'label' => tr('Page modified')],
-				'tiki.wiki.create' => ['global' => true, 'local' => false, 'label' => tr('Page created')],
+				'tiki.save' => ['global' => false, 'label' => tr('Any activity')],
+				'tiki.wiki.save' => ['global' => false, 'label' => tr('Page modified')],
+				'tiki.wiki.create' => ['global' => true, 'label' => tr('Page created')],
 			];
 		case 'forum post':
 			return [
-				'tiki.save' => ['global' => false, 'local' => true, 'label' => tr('Any activity')],
-				'tiki.forumpost.save' => ['global' => false, 'local' => false, 'label' => tr('Any forum activity')],
-				'tiki.forumpost.create' => ['global' => true, 'local' => false, 'label' => tr('New topics')],
+				'tiki.save' => ['global' => false, 'label' => tr('Any activity')],
+				'tiki.forumpost.save' => ['global' => false, 'label' => tr('Any forum activity')],
+				'tiki.forumpost.create' => ['global' => true, 'label' => tr('New topics')],
 			];
 		case 'trackeritem':
 			return [
-				'tiki.save' => ['global' => false, 'local' => true, 'label' => tr('Any activity')],
-				'tiki.trackeritem.save' => ['global' => false, 'local' => false, 'label' => tr('Any item activity')],
-				'tiki.trackeritem.create' => ['global' => true, 'local' => false, 'label' => tr('New items')],
-			];
-		case 'trackeritem':
-			return [
-				'tiki.save' => ['global' => false, 'local' => true, 'label' => tr('Any activity')],
-				'tiki.trackeritem.save' => ['global' => false, 'local' => false, 'label' => tr('Any item activity')],
-				'tiki.trackeritem.create' => ['global' => true, 'local' => false, 'label' => tr('New items')],
-			];
-		case 'user':
-			return [
-				'tiki.mustread.required' => ['global' => false, 'local' => true, 'label' => tr('Action Required')],
-				'tiki.recommendation.incoming' => ['global' => false, 'local' => true, 'label' => tr('Recommendation Received')],
+				'tiki.save' => ['global' => false, 'label' => tr('Any activity')],
+				'tiki.trackeritem.save' => ['global' => false, 'label' => tr('Any item activity')],
+				'tiki.trackeritem.create' => ['global' => true, 'label' => tr('New items')],
 			];
 		default:
 			return [];

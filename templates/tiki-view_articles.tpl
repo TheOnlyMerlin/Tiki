@@ -7,7 +7,7 @@
 		{/title}
 	{/if}
 	{if $headerLinks eq "y"}
-	<div class="t_navbar">
+	<div class="navbar">
 		{if $tiki_p_edit_article eq 'y' or $tiki_p_admin eq 'y' or $tiki_p_admin_cms eq 'y'}
 			{button href="tiki-edit_article.php" class="btn btn-default" _text="{tr}New Article{/tr}"}
 		{/if}
@@ -59,7 +59,7 @@
 				{/foreach}
 			</div>
 		{/if} 
-		<article class="article media{if !empty($container_class)} {$container_class}{/if} article{$smarty.section.ix.index}">
+		<article class="article{if !empty($container_class)} {$container_class}{/if} article{$smarty.section.ix.index}">
 			{if ($listpages[ix].show_avatar eq 'y')}
 				<div class="avatar">
 					{$listpages[ix].author|avatarize}

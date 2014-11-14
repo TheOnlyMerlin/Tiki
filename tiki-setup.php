@@ -70,7 +70,7 @@ if ($prefs['use_load_threshold'] == 'y') {
 	require_once ('lib/setup/load_threshold.php');
 }
 require_once ('lib/setup/sections.php');
-$headerlib = TikiLib::lib('header');
+require_once ('lib/headerlib.php');
 
 $domain_map = array();
 if ( isset($_SERVER['HTTP_HOST']) ) {
@@ -169,7 +169,7 @@ if ($prefs['useGroupHome'] == 'y') {
 }
 
 // change $prefs['tikiIndex'] if feature_sefurl is enabled (e.g. tiki-index.php?page=HomePage becomes HomePage)
-if ($prefs['feature_sefurl'] == 'y' && ! defined('TIKI_CONSOLE')) {
+if ($prefs['feature_sefurl'] == 'y') {
 	//TODO: need a better way to know which is the type of the tikiIndex URL (wiki page, blog, file gallery etc)
 	//TODO: implement support for types other than wiki page and blog
 	if ($prefs['tikiIndex'] == 'tiki-index.php' && $prefs['wikiHomePage']) {
@@ -224,8 +224,8 @@ if ($prefs['feature_freetags'] == 'y') {
 	require_once ('lib/setup/freetags.php');
 }
 if ($prefs['feature_areas'] == 'y' && $prefs['feature_categories'] == 'y') {
+	global $areaslib; require_once('lib/perspective/binderlib.php');
 	require_once ('lib/setup/categories.php');
-	$areaslib = TikiLib::lib('areas');
 	$areaslib->HandleObjectCategories($objectCategoryIdsNoJail);
 } elseif ($prefs['feature_categories'] == 'y') {
 	require_once ('lib/setup/categories.php');
@@ -248,8 +248,8 @@ if ($prefs['feature_antibot'] == 'y' && empty($user)) {
 	if ($prefs['recaptcha_enabled'] === 'y') {
 		$headerlib->add_jsfile('https://www.google.com/recaptcha/api/js/recaptcha_ajax.js');
 	}
-	$captchalib = TikiLib::lib('captcha');
-	$smarty->assign('captchalib', $captchalib);
+	require_once('lib/captcha/captchalib.php');
+	$smarty->assign_by_ref('captchalib', $captchalib);
 }
 
 if ($prefs['feature_credits'] == 'y') {
@@ -320,6 +320,10 @@ if ( $prefs['rating_advanced'] == 'y' && $prefs['rating_recalculation'] == 'rand
 }
 
 $headerlib->add_jsfile('lib/tiki-js.js');
+
+if ( $prefs['feature_cssmenus'] == 'y' ) {
+	$headerlib->add_cssfile('css/cssmenus.css');
+}
 
 // using jquery-migrate-1.2.1.js plugin for tiki 11, still required in tiki 12 LTS to support some 3rd party plugins
 
@@ -426,6 +430,7 @@ if ($prefs['mobile_feature'] === 'y' && $prefs['mobile_mode'] === 'y') {
 		$headerlib->add_cssfile("vendor/jquery/jquery-mobile/jquery.mobile-$headerlib->jquerymobile_version$cssmin.css");
 	}
 
+	$headerlib->drop_cssfile('css/cssmenus.css');
 
 } else {	// js includes that don't work or aren't needed in mobile mode
 
@@ -564,10 +569,6 @@ if ( ! empty( $prefs['header_custom_js'] ) ) {
 	$headerlib->add_js($prefs['header_custom_js']);
 }
 
-if ($prefs['feature_file_galleries'] == 'y') {
-	$headerlib->add_jsfile('lib/jquery_tiki/files.js');
-}
-
 if ($prefs['feature_trackers'] == 'y') {
 	$headerlib->add_jsfile('lib/jquery_tiki/tiki-trackers.js');
 
@@ -619,7 +620,9 @@ if ($prefs['feature_sefurl'] != 'y') {
 			query.action = action;
 		}
 
-		return "tiki-ajax_services.php?" + $.buildParams(query);
+		return "tiki-ajax_services.php?" + $.map(query, function (v, k) {
+			return k + "=" + tiki_encodeURIComponent(v);
+		}).join("&");
 	};'
 	);
 }
@@ -630,10 +633,6 @@ if ($prefs['feature_friends'] == 'y' || $prefs['monitor_enabled'] == 'y') {
 
 if ($prefs['ajax_inline_edit'] == 'y') {
 	$headerlib->add_jsfile('lib/jquery_tiki/inline_edit.js');
-}
-
-if ($prefs['mustread_enabled'] == 'y') {
-	$headerlib->add_jsfile('lib/jquery_tiki/mustread.js');
 }
 
 if (true) {

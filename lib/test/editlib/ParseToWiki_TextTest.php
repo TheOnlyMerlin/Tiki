@@ -25,7 +25,7 @@ class EditLib_ParseToWiki_TextTest extends TikiTestCase
 
 	function setUp()
 	{
-		TikiLib::lib('edit');
+		require_once 'lib/wiki/editlib.php';
 		$this->el = new EditLib();
 		chdir($this->dir);
 		chdir('../../'); // the tiki installation directory

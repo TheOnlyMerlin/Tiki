@@ -18,7 +18,7 @@ TikiInit::appendIncludePath("lib/ical/");
 include_once ('lib/ical/iCal.php');
 
 // list calendars //
-$calendarlib = TikiLib::lib('calendar');
+include_once ('lib/calendar/calendarlib.php');
 
 // ###trebly:B10111:[FIX-ADD-ENH]->  there are several meaning for the same var $calendarViewMode
 if ( ! isset($calendarViewMode) ) {

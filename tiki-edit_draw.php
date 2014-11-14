@@ -16,8 +16,7 @@ $inputConfiguration = array(
 
 $section = "draw";
 require_once ('tiki-setup.php');
-global $drawFullscreen, $prefs;
-$headerlib = TikiLib::lib('header');
+global $drawFullscreen, $prefs, $headerlib;
 
 $filegallib = TikiLib::lib('filegal');
 

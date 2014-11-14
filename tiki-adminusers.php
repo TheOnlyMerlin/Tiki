@@ -29,7 +29,6 @@ require_once ('tiki-setup.php');
 // temporary patch: tiki_p_admin includes tiki_p_admin_users but if you don't
 // clean the temp/cache each time you sqlupgrade the perms setting is not
 // synchronous with the cache
-$access = TikiLib::lib('access');
 $access->check_permission(array('tiki_p_admin_users'));
 
 if ($tiki_p_admin != 'y') {
@@ -871,7 +870,7 @@ $smarty->display('tiki.tpl');
  */
 function exit_with_error_messages($errors)
 {
-	$access = TikiLib::lib('access');
+	global $access;
 	$message = '';
 
 	foreach ($errors as $an_error) {

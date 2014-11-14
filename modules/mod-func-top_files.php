@@ -31,7 +31,7 @@ function module_top_files_info()
  */
 function module_top_files($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	$filegallib = TikiLib::lib('filegal');
 	$ranking = $filegallib->list_files(0, $mod_reference["rows"], 'hits_desc', '');
 	

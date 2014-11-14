@@ -21,8 +21,7 @@ class MapsLib extends TikiLib
 
 	function makeusermap()
 	{
-		global $prefs, $tikidomain;
-		$smarty = TikiLib::lib('smarty');
+		global $prefs, $tikidomain, $smarty;
 
 		if (!isset($prefs['ogr2ogr']) || !is_executable($prefs['ogr2ogr'])) {
 			return (tra("No valid ogr2ogr executable"));
@@ -170,8 +169,8 @@ class MapsLib extends TikiLib
 
 	function makeimagemap($tdo, $galleryId)
 	{
-		global $prefs, $tikidomain;
-		$smarty = TikiLib::lib('smarty');
+		global $prefs, $tikidomain, $smarty;
+
 		if (!isset($prefs['ogr2ogr']) || !is_executable($prefs['ogr2ogr'])) {
 			return (tra("No valid ogr2ogr executable"));
 		} 

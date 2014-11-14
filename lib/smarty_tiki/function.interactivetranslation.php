@@ -14,7 +14,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 // Param: 'id' or 'label'
 function smarty_function_interactivetranslation($params, $smarty)
 {
-	$headerlib = TikiLib::lib('header');
+	global $headerlib, $smarty;
 
 	$strings = get_collected_strings();
 	if ( count($strings) == 0 ) {

@@ -96,22 +96,19 @@ class Search_Formatter_Builder
 
 		if (isset($arguments['template'])) {
 			if ($arguments['template'] == 'table') {
-				$arguments['template'] = dirname(__FILE__) . '/../../../../templates/search/list/table.tpl';
+				$arguments['template'] = dirname(__FILE__) . '/../../../../templates/table.tpl';
 			} elseif ($arguments['template'] == 'medialist') {
-				$arguments['template'] = dirname(__FILE__) . '/../../../../templates/search/list/medialist.tpl';
-			} elseif ($arguments['template'] == 'carousel') {
-				$arguments['template'] = dirname(__FILE__) . '/../../../../templates/search/list/carousel.tpl';
+				$arguments['template'] = dirname(__FILE__) . '/../../../../templates/medialist.tpl';
 			} elseif (!file_exists($arguments['template'])) {
 				TikiLib::lib('errorreport')->report(tr('Missing template "%0"', $arguments['template']));
 				return '';
 			}
 			$abuilder = new Search_Formatter_ArrayBuilder;
-			$outputData = $abuilder->getData($output->getBody());
-			$templateData = $templateData = file_get_contents($arguments['template']); 
+			$templateData = $abuilder->getData($output->getBody());
 
 			$plugin = new Search_Formatter_Plugin_SmartyTemplate($arguments['template']);
-			$plugin->setData($outputData);
-			$plugin->setFields($this->findFields($outputData, $templateData));
+			$plugin->setData($templateData);
+			$plugin->setFields($this->findFields($templateData));
 		} elseif (isset($arguments['wiki']) && TikiLib::lib('tiki')->page_exists($arguments['wiki'])) {	
 			$wikitpl = "tplwiki:" . $arguments['wiki'];
 			$wikicontent = TikiLib::lib('smarty')->fetch($wikitpl);
@@ -128,22 +125,17 @@ class Search_Formatter_Builder
 		$this->formatterPlugin = $plugin;
 	}
 
-	private function findFields($outputData, $templateData)
+	private function findFields($data)
 	{
-		$outputData = TikiLib::array_flat($outputData);
+		$data = TikiLib::array_flat($data);
 
-		// Heuristic based: only lowercase letters, digits and underscore
+		// Heuristic based: only lowecase letters, digits and underscore
 		$fields = array();
-		foreach ($outputData as $candidate) {
+		foreach ($data as $candidate) {
 			if (preg_match("/^[a-z0-9_]+$/", $candidate) || substr($candidate, 0, strlen('tracker_field_')) === 'tracker_field_') {
 				$fields[] = $candidate;
 			}
 		}
-
-		preg_match_all('/\$(result|row|res)\.([a-z0-9_]+)[\|\}\w]+/', $templateData, $matches);
-		$fields = array_merge($fields, $matches[2]);	
-
-		$fields = array_fill_keys(array_unique($fields), null);
 
 		return $fields;
 	}

@@ -25,7 +25,8 @@ class AdminWizard extends Wizard
 	
 	function onSetupPage ($homepageUrl) 
 	{
-		$smarty = TikiLib::lib('smarty');
+		global	$smarty, $prefs;
+
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
 

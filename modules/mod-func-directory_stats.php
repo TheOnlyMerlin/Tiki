@@ -31,9 +31,8 @@ function module_directory_stats_info()
  */
 function module_directory_stats($mod_reference, $module_params)
 {
-	global $prefs;
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
+	global $prefs, $tikilib, $smarty;
+	
 	$ranking = $tikilib->dir_stats();
 	$smarty->assign('modDirStats', $ranking);
 }

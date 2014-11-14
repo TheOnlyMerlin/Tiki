@@ -38,9 +38,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 
 function smarty_function_listfilter($params, $smarty)
 {
-	global $prefs, $listfilter_id;
-	$headerlib = TikiLib::lib('header');
-
+	global $headerlib, $prefs, $listfilter_id;
 	if ($prefs['feature_jquery'] != 'y' || $prefs['javascript_enabled'] != 'y') {
 		return '';
 	} else {

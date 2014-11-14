@@ -21,15 +21,7 @@ class cssLib extends TikiLib
 				$available_layouts[$layoutName] = ucfirst($layoutName);
 			}   
 		}   
-		foreach (TikiAddons::getPaths() as $path) {
-			if (file_exists($path . '/templates/layouts/')) {
-				foreach (scandir($path . '/templates/layouts/') as $layoutName) {
-					if ($layoutName[0] != '.' && $layoutName != 'index.php') {
-						 $available_layouts[$layoutName] = ucfirst($layoutName);
-					}
-				}
-			}
-                }
+
 		return $available_layouts;
 	}
 

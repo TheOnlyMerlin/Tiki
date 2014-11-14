@@ -11,7 +11,7 @@
  * Letter key: ~t~
  *
  */
-class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable, Tracker_Field_Exportable
+class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
 {
 	public static function getTypes()
 	{
@@ -321,45 +321,6 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 		$validators->setInput($value);
 		$ret = $validators->validateInput($validation, $param);
 		return $ret;
-	}
-
-	function getTabularSchema()
-	{
-		global $prefs;
-		$schema = new Tracker\Tabular\Schema($this->getTrackerDefinition());
-		$permName = $this->getConfiguration('permName');
-		$name = $this->getConfiguration('name');
-
-		if ('y' !== $this->getConfiguration('isMultilingual', 'n')) {
-			$schema->addNew($permName, 'default')
-				->setLabel($name)
-				->setRenderTransform(function ($value) {
-					return $value;
-				})
-				->setParseIntoTransform(function (& $info, $value) use ($permName) {
-					$info['fields'][$permName] = $value;
-				})
-				;
-		} else {
-			foreach ($prefs['available_languages'] as $lang) {
-				$schema->addNew($permName, $lang)
-					->setLabel(tr('%0 (%1)', $name, $lang))
-					->addQuerySource('text', "tracker_field_{$permName}_{$lang}")
-					->setRenderTransform(function ($value, $extra) use ($lang) {
-						if (isset($extra['text'])) {
-							return $extra['text'];
-						} elseif (isset($value[$lang])) {
-							return $value[$lang];
-						}
-					})
-					->setParseIntoTransform(function (& $info, $value) use ($permName, $lang) {
-						$info['fields'][$permName][$lang] = $value;
-					})
-					;
-			}
-		}
-
-		return $schema;
 	}
 }
 

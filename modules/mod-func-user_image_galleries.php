@@ -31,9 +31,7 @@ function module_user_image_galleries_info()
  */
 function module_user_image_galleries($mod_reference, $module_params)
 {
-	global $user;
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $smarty, $user;
 	if ($user) {
 		$ranking = $tikilib->get_user_galleries($user, $mod_reference["rows"]);
 		

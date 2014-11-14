@@ -9,7 +9,7 @@
 // $Id$
 
 require_once 'tiki-setup.php';
-$creditslib = TikiLib::lib('credits');
+require_once 'lib/credits/creditslib.php';
 //get_strings tra('Admin credits')
 
 if ($tiki_p_admin_users != 'y') {

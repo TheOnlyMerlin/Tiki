@@ -9,12 +9,12 @@
 // $Id$
 
 include 'tiki-setup.php';
-$tikicalendarlib = TikiLib::lib('tikicalendar');
+include 'lib/calendar/tikicalendarlib.php';
 $access->check_feature('feature_action_calendar');
 $access->check_permission('tiki_p_view_tiki_calendar');
 //get_strings tra('Tiki Calendar')
 
-$headerlib->add_cssfile('themes/base_files/feature_css/calendar.css', 20);
+$headerlib->add_cssfile('css/calendar.css', 20);
 
 $myurl = 'tiki-action_calendar.php';
 include_once("tiki-calendar_setup.php");

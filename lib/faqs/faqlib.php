@@ -372,3 +372,4 @@ class FaqLib extends TikiLib
 		return $res;
 	}
 }
+$faqlib = new FaqLib;

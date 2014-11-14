@@ -406,14 +406,14 @@ abstract class Toolbar
 
 	function getIconHtml() // {{{
 	{
-		$headerlib = TikiLib::lib('header');
+		global $headerlib;
 		return '<img src="' . htmlentities($headerlib->convert_cdn($this->icon), ENT_QUOTES, 'UTF-8') . '" alt="' . htmlentities($this->getLabel(), ENT_QUOTES, 'UTF-8') . '" title="' . htmlentities($this->getLabel(), ENT_QUOTES, 'UTF-8') . '" class="icon"/>';
 	} // }}}
 
 	function getSelfLink( $click, $title, $class )
 	{ // {{{
-		global $prefs;
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $prefs;
+
 		$params = array();
 		$params['_onclick'] = $click . (substr($click, strlen($click)-1) != ';' ? ';' : '') . 'return false;';
 		$params['_class'] = 'toolbar btn btn-xs btn-link' . (!empty($class) ? ' '.$class : '');
@@ -594,8 +594,7 @@ class ToolbarCkOnly extends Toolbar
 
 	function getWysiwygToken($areaId) {
 		if ($this->wysiwyg === 'Image') {	// cke's own image tool
-			global $prefs;
-			$headerlib = TikiLib::lib('header');
+			global $headerlib,  $smarty, $prefs;
 			// can't do upload the cke way yet
 			$url = 'tiki-list_file_gallery.php?galleryId='.$prefs['home_file_gallery'].'&filegals_manager=fgal_picker';
 			$headerlib->add_js('if (typeof window.CKEDITOR !== "undefined") {window.CKEDITOR.config.filebrowserBrowseUrl = "'.$url.'"}', 5);
@@ -632,8 +631,7 @@ class ToolbarCkOnly extends Toolbar
 
 	function getIconHtml() // {{{ for admin page
 	{
-		global $prefs;
-		$headerlib = TikiLib::lib('header');
+		global $headerlib, $prefs;
 
 		if ((!empty($this->icon) && $this->icon !== 'img/icons/shading.png') || in_array($this->label, array('Autosave'))) {
 			return parent::getIconHtml();
@@ -926,8 +924,7 @@ class ToolbarPicker extends Toolbar
 
 	public static function fromName( $tagName ) // {{{
 	{
-		global $section, $prefs;
-		$headerlib = TikiLib::lib('header');
+		global $headerlib, $section, $prefs;
 
         $isWikiLingo = false;
         if ($prefs['feature_wikilingo'] === 'y') {
@@ -962,6 +959,7 @@ class ToolbarPicker extends Toolbar
             $tool_prefs[] = 'feature_smileys';
 
             $list = array();
+            global $headerlib;
             foreach ( $rawList as $smiley ) {
                 $tra = htmlentities(tra($smiley), ENT_QUOTES, 'UTF-8');
                 $list["(:$smiley:)"] = '<img src="' . $headerlib->convert_cdn('img/smiles/icon_' .$smiley . '.gif') . '" alt="' . $tra . '" title="' . $tra . '" width="15" height="15" />';
@@ -1109,8 +1107,7 @@ class ToolbarPicker extends Toolbar
 
 	function getWikiHtml( $areaId ) // {{{
 	{
-		global $prefs;
-		$headerlib = TikiLib::lib('header');
+		global $headerlib, $prefs;
 		$headerlib->add_js("if (! window.pickerData) { window.pickerData = {}; } window.pickerData['$this->name'] = " . str_replace('\/', '/', json_encode($this->list)) . ";");
 
 		return $this->getSelfLink(
@@ -1310,7 +1307,7 @@ class ToolbarDialog extends Toolbar
 
 	function getWikiHtml( $areaId ) // {{{
 	{
-		$headerlib = TikiLib::lib('header');
+		global $headerlib;
 		$headerlib->add_js("if (! window.dialogData) { window.dialogData = {}; } window.dialogData[$this->index] = " . json_encode($this->list) . ";", 1 + $this->index);
 
 		return $this->getSelfLink(
@@ -1406,7 +1403,7 @@ class ToolbarHelptool extends Toolbar
 		$params['plugins'] = 1;
 		$params['areaId'] = $areaId;
 
-		if ($GLOBALS['section'] == 'sheet') {
+		if ($section == 'sheet') {
 			$params['sheet'] = 1;
 		}
 
@@ -1538,7 +1535,7 @@ class ToolbarFileGalleryFile extends ToolbarFileGallery
 
 	function getSyntax( $areaId )
 	{
-		$smarty = TikiLib::lib('smarty');
+		global $smarty;
 		$smarty->loadPlugin('smarty_function_filegal_manager_url');
 		return 'openFgalsWindow(\''.htmlentities(smarty_function_filegal_manager_url(array('area_id'=>$areaId), $smarty)).'&insertion_syntax=file\', true);';
 	}
@@ -2080,9 +2077,7 @@ class ToolbarsList
 
 	function getWikiHtml( $areaId, $comments='' ) // {{{
 	{
-		global $tiki_p_admin, $tiki_p_admin_toolbars, $section, $prefs;
-		$headerlib = TikiLib::lib('header');
-		$smarty = TikiLib::lib('smarty');
+		global $tiki_p_admin, $tiki_p_admin_toolbars, $smarty, $section, $prefs, $headerlib;
 		$html = '';
 
 		$c = 0;

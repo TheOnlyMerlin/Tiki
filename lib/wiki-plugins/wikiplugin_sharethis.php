@@ -127,7 +127,7 @@ function wikiplugin_sharethis_info()
 }
 function wikiplugin_sharethis($data, $params)
 {
-	$headerlib = TikiLib::lib('header');
+	global $headerlib; include_once('lib/headerlib.php');
 	extract($params, EXTR_SKIP);
 	$sharethis_options = array();
 	$iconcode = '';

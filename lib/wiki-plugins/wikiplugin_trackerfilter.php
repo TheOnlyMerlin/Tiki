@@ -177,7 +177,7 @@ function wikiplugin_trackerfilter($data, $params)
 		$smarty->assign('msgTrackerFilter', $_REQUEST['msgTrackerFilter']);
 	}
 
-	$headerlib = TikiLib::lib('header');
+	global $headerlib; include_once 'lib/headerlib.php';
 	$headerlib->add_jq_onready(
 		'/* Maintain state of other trackerfilter plugin forms */
 					$(".trackerfilter form").submit( function () {
@@ -364,6 +364,7 @@ function wikiplugin_trackerfilter($data, $params)
 
 	if ( $first ) {
 		$first = false;
+		global $headerlib;
 		$headerlib->add_jq_onready(
 			'$("a.prevnext", "#trackerFilter' . $iTrackerFilter . ' + .trackerfilter-result").click( function( e ) {
 				e.preventDefault();

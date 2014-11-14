@@ -35,10 +35,7 @@ function wikiplugin_registermemberpayment_info()
 
 function wikiplugin_registermemberpayment($data, $params, $offset)
 {
-	global $user, $tiki_p_payment_view;
-	$headerlib = TikiLib::lib('header');
-	$smarty = TikiLib::lib('smarty');
-
+	global $headerlib, $user, $smarty, $tiki_p_payment_view;
 	static $i;
 	$i++;
 

@@ -141,39 +141,6 @@
 		{
 			"type": "package",
 			"package": {
-				"name": "ckeditor/ckeditor",
-				"version": "4.4.2",
-				"dist": {
-					"url": "https://github.com/ckeditor/ckeditor-releases/archive/full/4.4.2.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "ckeditor/ckeditor/skins/kama",
-				"version": "4.4.2",
-				"dist": {
-					"url": "http://download.ckeditor.com/kama/releases/kama_4.4.2.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "ckeditor/ckeditor/plugins/divarea",
-				"version": "4.4.2",
-				"dist": {
-					"url": "http://download.ckeditor.com/divarea/releases/divarea_4.4.2.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
 				"name": "codemirror/codemirror",
 				"version": "2.25",
 				"dist": {
@@ -182,9 +149,9 @@
 				}
 			}
 		},
-		{
-			"type": "package",
-			"package": {
+ 		{
+ 			"type": "package",
+ 			"package": {
 				"name": "codemirror/codemirror",
 				"version": "3.19.0",
 				"dist": {
@@ -204,9 +171,9 @@
 				}
 			}
 		},
-		{
-			"type": "package",
-			"package": {
+ 		{
+ 			"type": "package",
+ 			"package": {
 				"name": "dompdf/dompdf",
 				"version": "0.6.1",
 				"dist": {
@@ -537,17 +504,6 @@
 		{
 			"type": "package",
 			"package": {
-				"name": "svg-edit/svg-edit",
-				"version": "2.7.1",
-				"dist": {
-					"url": "http://svg-edit.googlecode.com/svn/branches/2.7/build/svg-edit-2.7.1.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
 				"name": "jquery/md5",
 				"version": "1.1",
 				"dist": {
@@ -857,20 +813,9 @@
 			"type": "package",
 			"package": {
 				"name": "jquery/plugins/tablesorter",
-				"version": "2.17.2",
+				"version": "2.16.2",
 				"dist": {
-					"url": "https://github.com/Mottie/tablesorter/archive/v2.17.2.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "jquery/plugins/tablesorter",
-				"version": "2.17.8",
-				"dist": {
-					"url": "https://github.com/Mottie/tablesorter/archive/v2.17.8.zip",
+					"url": "https://github.com/Mottie/tablesorter/archive/v2.16.2.zip",
 					"type": "zip"
 				}
 			}
@@ -985,7 +930,7 @@
 				}
 			}
 		},
-		{
+ 		{
 			"type": "package",
 			"package": {
 				"name": "player/mp3",
@@ -1090,7 +1035,7 @@
 		"rangy/rangy": "1.2.3",
 		"simile_timeline/simile_timeline": "2.3.0",
 		"smarty/smarty": ">=3.1.14",
-		"svg-edit/svg-edit": ">=2.6",
+		"svg-edit/svg-edit": "2.6",
 		"symfony/console": ">=2.4.1",
 		"symfony/dependency-injection": "2.4.3",
 		"symfony/config": "2.4.3",

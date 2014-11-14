@@ -71,8 +71,7 @@ Class FutureLink_PastUI extends Feed_Abstract
 
 	static function wikiView()
 	{
-		global $page;
-		$headerlib = TikiLib::lib('header');
+		global $page, $headerlib;
 		$me = new self();
 		$phrase = (!empty($_REQUEST['phrase']) ? $_REQUEST['phrase'] : '');
 		FutureLink_Search::restorePastLinkPhrasesInWikiPage($me->getItems(), $phrase);

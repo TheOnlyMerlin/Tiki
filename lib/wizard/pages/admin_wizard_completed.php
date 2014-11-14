@@ -14,7 +14,7 @@ class AdminWizardCompleted extends Wizard
 {
     function pageTitle ()
     {
-        return tra('Configuration Wizard Completed!');
+        return tra('Admin Wizard Completed!');
     }
     function isEditable ()
 	{
@@ -23,6 +23,8 @@ class AdminWizardCompleted extends Wizard
 	
 	public function onSetupPage ($homepageUrl) 
 	{
+		global	$smarty;
+
 		// Run the parent first
 		parent::onSetupPage($homepageUrl);
 		

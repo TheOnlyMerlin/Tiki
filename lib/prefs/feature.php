@@ -1151,7 +1151,7 @@ function prefs_feature_list($partial = false)
 		'feature_wiki_ext_icon' => array(
 			'name' => tra('External link icon'),
 			'type' => 'flag',
-			'description' => tra('External links will be identified with an icon. To customize the icon change the "link-external" icon in the icon set.'),
+			'description' => tra('External links will be identifed with an icon. Use the ../img/icons/external_link.gif image to customize the icon.'),
 			'default' => 'y',
 			'tags' => array('basic'),
 		),
@@ -1877,7 +1877,7 @@ function prefs_feature_list($partial = false)
 			'default' => 'n',
 		),
 		'feature_site_report_email' => array(
-			'name' => tra('Webmaster email'),
+			'name' => tra('Webmaster Email'),
             'description' => tra(''),
 			'hint' => tra('Leave blank to use the default sender email'),
 			'type' => 'text',
@@ -1942,8 +1942,8 @@ function prefs_feature_list($partial = false)
 			'default' => 'y',				// include UI lib for more effects
 		),
 		'feature_jquery_ui_theme' => array(
-			'name' => tra('jQuery UI theme'),
-            'description' => tra('jQuery UI theme. Used in spreadsheet, for example.'),
+			'name' => tra('jQuery UI Theme'),
+            'description' => tra('jQuery UI Theme. Used in spreadsheet, for example.'),
 			'help' => 'JQuery#UI',
 			'type' => 'list',
 			'options' => array(
@@ -2828,6 +2828,16 @@ function prefs_feature_list($partial = false)
 			'type' => 'flag',
 			'help' => 'User+Preferences',
 			'default' => 'n',
+		),
+		'feature_community_Strings_to_ignore' => array(
+			'name' => tra('Strings to ignore to get group basename'),
+			'type' => 'text',
+			'default' => '',
+		),
+		'feature_community_String_to_append' => array(
+			'name' => tra('String to append to the group name to get Group Leaders group'),
+			'type' => 'text',
+			'default' => '',
 		),
 		'feature_inline_comments' => array(
 			'name' => tra('Inline Comments'),

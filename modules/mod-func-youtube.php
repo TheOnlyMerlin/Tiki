@@ -53,7 +53,7 @@ function module_youtube_info()
  */
 function module_youtube($mod_reference, $module_params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	
 	$data = array(
 		'urls' => array(),

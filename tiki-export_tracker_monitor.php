@@ -9,8 +9,7 @@
 // $Id$
 
 require_once('tiki-setup.php');
-global $monitor_filename, $stat_array;
-$access = TikiLib::lib('access');
+global $monitor_filename, $stat_array, $access;
 
 if ($prefs['feature_trackers'] != 'y') {
 	$access->output_serialized(array('msg' => tra('This feature is disabled').': feature_trackers'));

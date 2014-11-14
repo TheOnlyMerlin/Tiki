@@ -19,6 +19,8 @@ function smarty_function_debugger($params, $smarty)
 
 		require_once ('lib/debug/debugger.php');
 
+		//global $smarty;
+
 		// Get current URL
 		$smarty->assign('console_father', $_SERVER["REQUEST_URI"]);
 
@@ -80,7 +82,8 @@ function smarty_function_debugger($params, $smarty)
 
 		$js = '';
 		if ($prefs['feature_jquery_ui'] == 'y') {
-			$headerlib = TikiLib::lib('header');
+			global $headerlib;
+			require_once('lib/headerlib.php');
 			$headerlib->add_jq_onready(
 				"
 \$('#debugconsole').draggable({
