@@ -460,17 +460,6 @@
 		{
 			"type": "package",
 			"package": {
-				"name": "jquery/jquery-mobile",
-				"version": "1.4.5",
-				"dist": {
-					"url": "http://jquerymobile.com/resources/download/jquery.mobile-1.4.5.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
 				"name": "jquery/jquery-ui",
 				"version": "1.10.2",
 				"dist": {
@@ -889,17 +878,6 @@
 		{
 			"type": "package",
 			"package": {
-				"name": "jquery/plugins/fitvidjs",
-				"version": "1.1.0",
-				"dist": {
-					"url": "https://github.com/davatron5000/FitVids.js/archive/v1.1.0.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
 				"name": "jquery/plugins/form",
 				"version": "3.25.0",
 				"dist": {
@@ -1110,9 +1088,9 @@
 			"type": "package",
 			"package": {
 				"name": "jquery/plugins/tablesorter",
-				"version": "2.21.2",
+				"version": "2.20.1",
 				"dist": {
-					"url": "https://github.com/Mottie/tablesorter/archive/v2.21.2.zip",
+					"url": "https://github.com/Mottie/tablesorter/archive/v2.20.1.zip",
 					"type": "zip"
 				}
 			}
