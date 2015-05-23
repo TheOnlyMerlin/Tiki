@@ -83,7 +83,7 @@ class Tiki_Profile_InstallHandler_User extends Tiki_Profile_InstallHandler
 			
 			if (isset($user['defaultgroup'])) {
 				$userlib->set_default_group($user['name'], $user['defaultgroup']);
-			}			
+			}
 				
 			return $userlib->get_user_id($user['name']);
 		}

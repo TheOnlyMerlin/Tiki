@@ -748,12 +748,6 @@
 						</td>
 					</tr>
 				{/if}
-                <tr>
-					<td>{tr}Attach a File Gallery file{/tr}</td>
-					<td>
-						<input size="10" type="text" id="fattId" name="fattId" value="{$fattId|escape}"> :FileId
-					</td>
-				</tr>
 				<tr>
 					<td>{tr}Attach a File Gallery file{/tr}</td>
 					<td>

@@ -1679,12 +1679,6 @@ function prefs_feature_list($partial = false)
 				'feature_search_fulltext',
 			),
 		),
-		'feature_forum_post_index' => array(
-			'name' => tra('Index posts on forum section change.'),
-			'description' => tra('Re-indexes forum posts to match the parent section when the section is changed'),
-			'type' => 'flag',
-			'default' => 'y',
-		),
 		'feature_clear_passwords' => array(
 			'name' => tra('Store password as plain text'),
             'description' => tra(''),
@@ -2823,14 +2817,6 @@ function prefs_feature_list($partial = false)
 			'description' => tra('This is useful to share a URL to exact location on the page.'),
 			'type' => 'flag',
 			'default' => 'y',
-			'tags' => array('advanced'),
-		),
-		'feature_equal_height_rows_js' => array(
-			'name' => tra('Enable Equal Height Rows JS Pugin'),
-			'description' => tra('This allows responsive rows to be set so that each contained element has the same height '),
-			'type' => 'flag',
-			'default' => 'n',
-			'help' => "https://github.com/Sam152/Javascript-Equal-Height-Responsive-Rows",
 			'tags' => array('advanced'),
 		),
 		'feature_theme_control_savesession' => array(

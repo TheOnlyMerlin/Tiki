@@ -218,39 +218,6 @@
 		{
 			"type": "package",
 			"package": {
-				"name": "ckeditor/ckeditor/skins/office2013",
-				"version": "1.04",
-				"dist": {
-					"url": "http://download.ckeditor.com/office2013/releases/office2013_1.04.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "ckeditor/ckeditor/skins/bootstrapck",
-				"version": "1.0",
-				"dist": {
-					"url": "http://download.ckeditor.com/bootstrapck/releases/bootstrapck_1.0_0.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "ckeditor/ckeditor/skins/minimalist",
-				"version": "1.0",
-				"dist": {
-					"url": "http://download.ckeditor.com/minimalist/releases/minimalist_1.0.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
 				"name": "ckeditor/ckeditor/plugins/divarea",
 				"version": "4.4.7",
 				"dist": {
@@ -493,17 +460,6 @@
 		{
 			"type": "package",
 			"package": {
-				"name": "jquery/jquery-mobile",
-				"version": "1.4.5",
-				"dist": {
-					"url": "http://jquerymobile.com/resources/download/jquery.mobile-1.4.5.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
 				"name": "jquery/jquery-ui",
 				"version": "1.10.2",
 				"dist": {
@@ -695,17 +651,6 @@
 				"version": "3.0.5",
 				"dist": {
 					"url": "http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-3.0.5.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "morteza/bootstrap-rtl",
-				"version": "3.3.2",
-				"dist": {
-					"url": "https://github.com/morteza/bootstrap-rtl/archive/v3.3.2.zip",
 					"type": "zip"
 				}
 			}
@@ -933,17 +878,6 @@
 		{
 			"type": "package",
 			"package": {
-				"name": "jquery/plugins/fitvidjs",
-				"version": "1.1.0",
-				"dist": {
-					"url": "https://github.com/davatron5000/FitVids.js/archive/v1.1.0.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
 				"name": "jquery/plugins/form",
 				"version": "3.25.0",
 				"dist": {
@@ -1154,32 +1088,10 @@
 			"type": "package",
 			"package": {
 				"name": "jquery/plugins/tablesorter",
-				"version": "2.21.2",
+				"version": "2.20.1",
 				"dist": {
-					"url": "https://github.com/Mottie/tablesorter/archive/v2.21.2.zip",
+					"url": "https://github.com/Mottie/tablesorter/archive/v2.20.1.zip",
 					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "jquery/plugins/tablesorter",
-				"version": "2.21.5",
-				"dist": {
-					"url": "https://github.com/Mottie/tablesorter/archive/v2.21.5.zip",
-					"type": "zip"
-				}
-			}
-		},
-		{
-			"type": "package",
-			"package": {
-				"name": "jquery/plugins/tagcanvas",
-				"version": "2.6.1",
-				"dist": {
-					"url": "http://www.goat1000.com/jquery.tagcanvas.js?2.6.1.js",
-					"type": "file"
 				}
 			}
 		},
@@ -1351,17 +1263,6 @@
 					"type": "zip"
 				}
 			}
-		},
-	  	{
-		  	"type": "package",
-		  	"package": {
-		   		"name": "Sam152/Javascript-Equal-Height-Responsive-Rows",
-				"version": "1.0.0",
-				"dist": {
-					"url": "https://github.com/Sam152/Javascript-Equal-Height-Responsive-Rows/archive/master.zip",
-					"type": "zip"
-				}
-			}
 		}
 	],
 	"require": {
@@ -1371,9 +1272,6 @@
 		"bombayworks/zendframework1": ">=1.12.3",
 		"ckeditor/ckeditor": "*",
 		"ckeditor/ckeditor/skins/kama": "*",
-		"ckeditor/ckeditor/skins/bootstrapck": "*",
-		"ckeditor/ckeditor/skins/minimalist": "*",
-		"ckeditor/ckeditor/skins/office2013": "*",
 		"ckeditor/ckeditor/plugins/divarea": "*",
 		"codemirror/codemirror": "*",
 		"cwspear/bootstrap-hover-dropdown": ">=2.0.11",
@@ -1415,17 +1313,14 @@
 		"jquery/plugins/reflection-jquery": "1.1",
 		"jquery/plugins/superfish": "*",
 		"jquery/plugins/tablesorter": "*",
-		"jquery/plugins/tagcanvas": "*",
 		"jquery/plugins/treetable": "*",
 		"jquery/plugins/sparkline": "2.1.1",
 		"jquery/plugins/zoom": "*",
-		"morteza/bootstrap-rtl": ">=3.3.2",
 		"phpcas/phpcas": ">=1.3.2",
 		"phpseclib/phpseclib": ">=0.3.1",
 		"player/flv": "1.0",
 		"player/mp3": "1.0",
 		"rangy/rangy": "1.2.3",
-		"Sam152/Javascript-Equal-Height-Responsive-Rows" : "1.0.0",
 		"simile_timeline/simile_timeline": "2.3.0",
 		"smarty/smarty": ">=3.1.14",
 		"svg-edit/svg-edit": ">=2.6",

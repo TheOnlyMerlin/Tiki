@@ -6878,15 +6878,6 @@ class UsersLib extends TikiLib
 
 		return $rv[$group];
 	}
-	
-	function count_users_consolidated($groups)
-	{
-		$groupset = implode("','",$groups);
-		$query = "select userId from `users_usergroups` where `groupName` in ('".$groupset."')";
-		$result = $this->fetchAll($query, array());
-		$resultcons = array_unique(array_column($result, 'userId'));
-		return count($resultcons);
-	}	
 
 	function related_users($user, $max = 10, $type = 'wiki')
 	{
@@ -7778,28 +7769,7 @@ class UsersLib extends TikiLib
 		return $ret;
 	}
 
-	/**
-	 * This is a function to automatically login a user programatically
-	 * @param $uname The user account name to log the user in as
-	 * @return bool true means that successfully logged in or already logged in. false means no such user.
-	 */
-	function autologin_user($uname)
-	{
-		global $user;
-		if ($user) {
-			// already logged in
-			return true;
-		}
-		if (!$this->user_exists($uname)) {
-			// no such user
-			return false;
-		}
-		// Conduct login
-		global $user_cookie_site;
-		$_SESSION[$user_cookie_site] = $uname;
-		$this->update_expired_groups();
-		return true;
-	}
+
 }
 
 /* For the emacs weenies in the crowd.

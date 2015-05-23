@@ -246,7 +246,7 @@ if ($prefs['feature_wysiwyg'] == 'y') {
 
 if ($prefs['feature_antibot'] == 'y' && empty($user)) {
 	if ($prefs['recaptcha_enabled'] === 'y') {
-		$headerlib->add_jsfile_cdn("$url_scheme://www.google.com/recaptcha/api/js/recaptcha_ajax.js");
+		$headerlib->add_jsfile('https://www.google.com/recaptcha/api/js/recaptcha_ajax.js');
 	}
 	$captchalib = TikiLib::lib('captcha');
 	$smarty->assign('captchalib', $captchalib);
@@ -325,26 +325,24 @@ $headerlib->add_jsfile('lib/tiki-js.js');
 
 if ( isset($prefs['javascript_cdn']) && $prefs['javascript_cdn'] == 'google' ) {
 	$headerlib->add_jsfile_cdn("$url_scheme://ajax.googleapis.com/ajax/libs/jquery/$headerlib->jquery_version/jquery.min.js");
-	// goggle is not hosting migrate so load from local
-	$headerlib->add_jsfile_dependancy("vendor/jquery/plugins/migrate-min/jquery-migrate-1.2.1.min.js", true);
+	// Goggle does not provide this file via a cdn - load local
+	$headerlib->add_jsfile_dependancy("vendor/jquery/plugins/migrate-min/jquery-migrate-1.2.1.min.js");
 } else if ( isset($prefs['javascript_cdn']) && $prefs['javascript_cdn'] == 'jquery' ) {
 	$headerlib->add_jsfile_cdn("$url_scheme://code.jquery.com/jquery-$headerlib->jquery_version.min.js");
 	$headerlib->add_jsfile_cdn("$url_scheme://code.jquery.com/jquery-migrate-1.2.1.min.js");
 } else {
-	if ( isset($prefs['tiki_minify_javascript']) && $prefs['tiki_minify_javascript'] === 'y' ) {
-		$headerlib->add_jsfile_dependancy("vendor/jquery/jquery-min/jquery-$headerlib->jquery_version.min.js", true);
-		$headerlib->add_jsfile_dependancy("vendor/jquery/plugins/migrate-min/jquery-migrate-1.2.1.min.js", true);
+	if ( $prefs['tiki_minify_javascript'] === 'y' ) {
+		$headerlib->add_jsfile_dependancy("vendor/jquery/jquery-min/jquery-$headerlib->jquery_version.min.js");
+		$headerlib->add_jsfile_dependancy("vendor/jquery/plugins/migrate-min/jquery-migrate-1.2.1.min.js");
 	} else {
-		$headerlib->add_jsfile_dependancy("vendor/jquery/jquery/jquery-$headerlib->jquery_version.js", true);
-		$headerlib->add_jsfile_dependancy("vendor/jquery/plugins/migrate/jquery-migrate-1.2.1.js", true);
+		$headerlib->add_jsfile_dependancy("vendor/jquery/jquery/jquery-$headerlib->jquery_version.js");
+		$headerlib->add_jsfile_dependancy("vendor/jquery/plugins/migrate/jquery-migrate-1.2.1.js");
 	}
 }
 
-if ( isset($prefs['fgal_elfinder_feature']) && $prefs['fgal_elfinder_feature'] === 'y' ) {
+if ( $prefs['fgal_elfinder_feature'] === 'y' ) {
 	$str = $prefs['tiki_minify_javascript'] === 'y' ? 'min' : 'full';
-	// elfinder is sensible to js compression - problem is inside elfinder
-	// see http://stackoverflow.com/questions/11174170/js-invalid-left-hand-side-expression-in-postfix-operation for more general details
-	$headerlib->add_jsfile('vendor_extra/elfinder/js/elfinder.' . $str . '.js', true)
+	$headerlib->add_jsfile('vendor_extra/elfinder/js/elfinder.' . $str . '.js')
 			->add_cssfile('vendor_extra/elfinder/css/elfinder.' . $str . '.css')
 			->add_jsfile('lib/jquery_tiki/elfinder/tiki-elfinder.js');
 
@@ -394,11 +392,11 @@ if ($prefs['feature_syntax_highlighter'] == 'y') {
 	$headerlib
 		->add_cssfile('vendor/codemirror/codemirror/lib/codemirror.css')
 		->add_jsfile_dependancy('vendor/codemirror/codemirror/lib/codemirror.js')
-		->add_jsfile('vendor/codemirror/codemirror/addon/search/searchcursor.js')
+		->add_jsfile('vendor/codemirror/codemirror/addon/search/searchcursor.js', 3)
 		->add_jsfile('vendor/codemirror/codemirror/addon/mode/overlay.js')
 	//add tiki stuff
 		->add_cssfile('lib/codemirror_tiki/codemirror_tiki.css')
-		->add_jsfile('lib/codemirror_tiki/codemirror_tiki.js');
+		->add_jsfile('lib/codemirror_tiki/codemirror_tiki.js', 5);
 
 	require_once("lib/codemirror_tiki/tiki_codemirror.php");
 	createCodemirrorModes();
@@ -421,8 +419,6 @@ if ( $prefs['feature_ajax'] === 'y' ) {
 	}
 }
 
-// $url_scheme is 'http' or 'https' depending on request type condsidering already a reverse proxy
-// $https_mode is true / false depending on request type condsidering already a reverse proxy
 if ( $prefs['feature_jquery_ui'] == 'y' ) {
 	if ( isset($prefs['javascript_cdn']) && $prefs['javascript_cdn'] == 'google' ) {
 		$headerlib->add_jsfile_cdn("$url_scheme://ajax.googleapis.com/ajax/libs/jqueryui/$headerlib->jqueryui_version/jquery-ui.min.js");
@@ -430,7 +426,7 @@ if ( $prefs['feature_jquery_ui'] == 'y' ) {
 		$headerlib->add_jsfile_cdn("$url_scheme://code.jquery.com/ui/$headerlib->jqueryui_version/jquery-ui.min.js");
 	} else {
 		if ( $prefs['tiki_minify_javascript'] === 'y' ) {
-			$headerlib->add_jsfile_dependancy("vendor/jquery/jquery-ui/jquery-ui.min.js", true);
+			$headerlib->add_jsfile_dependancy("vendor/jquery/jquery-ui/jquery-ui.min.js");
 		} else {
 			$headerlib->add_jsfile_dependancy("vendor/jquery/jquery-ui/jquery-ui.js");
 		}
@@ -438,8 +434,8 @@ if ( $prefs['feature_jquery_ui'] == 'y' ) {
 
 	if ( $prefs['feature_jquery_ui_theme'] !== 'none' ) {
 		if ( isset($prefs['javascript_cdn']) && $prefs['javascript_cdn'] == 'jquery' ) {
-			// // cdn for css not working - this is the only css from a cdn anyway - so use local version 
-			// $headerlib->add_cssfile("$url_scheme://code.jquery.com/ui/$headerlib->jqueryui_version/themes/{$prefs['feature_jquery_ui_theme']}/jquery-ui.css");
+			// cdn for css not working - this is the only css from a cdn anyway - so use local version
+			//$headerlib->add_cssfile("//code.jquery.com/ui/$headerlib->jqueryui_version/themes/{$prefs['feature_jquery_ui_theme']}/jquery-ui.css");
 			$headerlib->add_cssfile('vendor/jquery/jquery-ui-themes/themes/' . $prefs['feature_jquery_ui_theme'] . '/jquery-ui.css');
 		} else {
 			$headerlib->add_cssfile('vendor/jquery/jquery-ui-themes/themes/' . $prefs['feature_jquery_ui_theme'] . '/jquery-ui.css');
@@ -505,19 +501,14 @@ if ( $prefs['feature_jquery_validation'] == 'y' ) {
 	$headerlib->add_jsfile('lib/validators/validator_tiki.js');
 }
 
-// note: jquery.async.js load a copy of jquery
-$headerlib->add_jsfile('vendor/jquery/plugins/async/jquery.async.js');
+$headerlib->add_jsfile('vendor/jquery/plugins/async/jquery.async.js', 10);
 $headerlib->add_jsfile('vendor/jquery/plugins/treetable/javascripts/src/jquery.treetable.js');
 $headerlib->add_cssfile('vendor/jquery/plugins/treetable/stylesheets/jquery.treetable.css');
 
 $headerlib->add_jsfile('vendor/cwspear/bootstrap-hover-dropdown/bootstrap-hover-dropdown.js');
 
-if ($prefs['feature_equal_height_rows_js'] == 'y'){
-	$headerlib->add_jsfile("vendor/Sam152/Javascript-Equal-Height-Responsive-Rows/grids.min.js");
-}
-
 if (empty($user) && $prefs['feature_antibot'] == 'y') {
-	$headerlib->add_jsfile_late('lib/captcha/captchalib.js');
+	$headerlib->add_jsfile('lib/captcha/captchalib.js');
 }
 
 if ( $prefs['feature_jcapture'] === 'y' ) {
@@ -607,11 +598,9 @@ if ($prefs['mustread_enabled'] == 'y') {
 if (true) {
 	// Before being clever and moving this close to where you think it's needed (again),
 	// consider there are more places that you think.
-	
-	// This is not a very helpful comment...
-	$headerlib->add_jsfile_dynamic('tiki-jsplugin.php?language='.$prefs['language']);
+	$headerlib->add_jsfile('tiki-jsplugin.php?language='.$prefs['language'], 'dynamic');
 	if ($prefs['wikiplugin_module'] === 'y' && $prefs['wikiplugininline_module'] === 'n') {
-		$headerlib->add_jsfile_dynamic('tiki-jsmodule.php?language='.$prefs['language']);
+		$headerlib->add_jsfile('tiki-jsmodule.php?language='.$prefs['language'], 'dynamic');
 	}
 }
 
@@ -642,7 +631,7 @@ if ( isset($token_error) ) {
 require_once( 'lib/setup/plugins_actions.php' );
 
 if ($tiki_p_admin == 'y') {
-	$headerlib->add_jsfile_late('lib/jquery_tiki/tiki-admin.js');
+	$headerlib->add_jsfile('lib/jquery_tiki/tiki-admin.js');
 }
 
 if ($prefs['wikiplugin_addtocart'] == 'y') {
@@ -703,9 +692,7 @@ if( $prefs['feature_hidden_links'] == 'y' && isset($jitRequest['wysiwyg']) && $j
 	});");
 }
 
-// any furher $headerlib->add_js() call not using rank = 'external' will be put into rank 'late'
-// this should separate the overall JS from page specific JS
-$headerlib->forceJsRankLate();
+$headerlib->lockMinifiedJs();
 
 if ( $prefs['conditions_enabled'] == 'y' ) {
 	if (! Services_User_ConditionsController::hasRequiredAge($user)) {

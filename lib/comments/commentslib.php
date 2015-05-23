@@ -1063,8 +1063,6 @@ class Comments extends TikiLib
 			$forumLanguage = ''
 	)
 	{
-		global $prefs;
-
 		if (!$forumId && empty($att_store_dir)) {
 			// Set new default location for forum attachments (only affect new forums for backward compatibility))
 			$att_store_dir = 'files/forums/';
@@ -1133,7 +1131,6 @@ class Comments extends TikiLib
 		$forums = $this->table('tiki_forums');
 
 		if ($forumId) {
-			$oldData = $forums->fetchRow(array(), array('forumId' => (int) $forumId));
 			$forums->update($data, array('forumId' => (int) $forumId));
 			$event = 'tiki.forum.update';
 		} else {
@@ -1150,11 +1147,6 @@ class Comments extends TikiLib
 			'description' => $description,
 			'forum_section' => $section,
 		]);
-
-		//if the section changes, re-index forum posts to change section there as well
-		if ($prefs['feature_forum_post_index'] == 'y' && $oldData && $oldData['section'] != $section){
-			$this->index_posts_by_forum($forumId);
-		}
 
 		return $forumId;
 	}
@@ -2965,8 +2957,6 @@ class Comments extends TikiLib
 				$parent_title = '';
 			}
 
-			$forum_info = $this->get_forum($object[1]);
-
 			TikiLib::events()->trigger(
 				$finalEvent,
 				array(
@@ -2974,7 +2964,6 @@ class Comments extends TikiLib
 					'object' => $threadId,
 					'parent_id' => $parentId,
 					'forum_id' => $object[1],
-					'forum_section' => $forum_info['section'],
 					'user' => $GLOBALS['user'],
 					'title' => $title,
 					'parent_title' => $parent_title,
@@ -3435,18 +3424,8 @@ class Comments extends TikiLib
 		if ($prefs['feature_contribution'] == 'y' && $prefs['feature_contribution_mandatory_forum'] == 'y' && empty($params['contributions'])) {
 			$errors[] = tra('A contribution is mandatory');
 		}
-		//if original post, comment title is necessary. Message is also necessary unless, pref says message is not.
-		if (empty($params['comments_reply_threadId'])){
-			if(empty($params['comments_title']) || (empty($params['comments_data']) && $prefs['feature_forums_allow_thread_titles'] != 'y')){
-				$errors[] = tra('Please enter a Title and Message for your new forum topic.');
-			}
-		}else{
-			//if comments require title and no title is given, or if message is empty
-			if ($prefs['comments_notitle'] != 'y' && (empty($params['comments_title']) || empty($params['comments_data']))){
-				$errors[] = tra('Please enter a Title and Message for your forum reply.');
-			}elseif (empty($params['comments_data'])){ //if comments do not require title but message is empty
-				$errors[] = tra('Please enter a Message for your forum reply.');
-			}
+		if (($prefs['comments_notitle'] != 'y' && empty($params['comments_title'])) || (empty($params['comments_data']) && $prefs['feature_forums_allow_thread_titles'] != 'y')) {
+			$errors[] = tra('You have to enter a title and text');
 		}
 		if (!empty($params['anonymous_email']) && !validate_email($params['anonymous_email'], $prefs['validateEmail'])) {
 			$errors[] = tra('Invalid Email');
@@ -3782,23 +3761,6 @@ class Comments extends TikiLib
 		} else {
 			refresh_index('comments', $threadId);
 			return $type.' comment';
-		}
-	}
-
-	/**
-	 * Re-indexes the forum posts within a specified forum
-	 * @param $forumId
-	 */
-	private function index_posts_by_forum($forumId)
-	{
-		$topics = $this->get_forum_topics($forumId);
-
-		foreach($topics as $topic) {
-			if ($element === end($array)){ //if element is the last in the array, then run the process.
-				refresh_index('forum post', $topic['threadId'], true);
-			}else{
-				refresh_index('forum post', $topic['threadId'], false); //don't run the process right away (re: false), wait until last element
-			}
 		}
 	}
 
