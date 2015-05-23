@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,9 +10,9 @@
 
 $section = 'mytiki';
 require_once ('tiki-setup.php');
-$modlib = TikiLib::lib('mod');
+include_once ('lib/modules/modlib.php');
 include_once ('lib/userprefs/scrambleEmail.php');
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 // User preferences screen
 if ($prefs['feature_userPreferences'] != 'y' && $prefs['change_password'] != 'y' && $tiki_p_admin_users != 'y') {
 	$smarty->assign('msg', tra("This feature is disabled") . ": feature_userPreferences");
@@ -57,9 +57,8 @@ if (isset($_REQUEST['userId']) || isset($_REQUEST['view_user'])) {
 } else {
 	$userwatch = $user;
 }
-
 // Custom fields
-$registrationlib = TikiLib::lib('registration');
+include_once ('lib/registration/registrationlib.php');
 $customfields = $registrationlib->get_customfields();
 foreach ($customfields as $i => $c) {
 	$customfields[$i]['value'] = $tikilib->get_user_preference($userwatch, $c['prefName']);
@@ -75,18 +74,23 @@ $smarty->assign('show_mouseover_user_info', isset($prefs['show_mouseover_user_in
 if ($prefs['feature_userPreferences'] == 'y' && isset($_REQUEST["new_prefs"])) {
 	check_ticket('user-prefs');
 	// setting preferences
-	if ($prefs['change_theme'] == 'y' && empty($group_theme)) {
-		if (isset($_REQUEST['mytheme'])) {
-			$themeandoption = $themelib->extract_theme_and_option($_REQUEST['mytheme']);
-			$theme = $themeandoption[0];
-			$themeOption = $themeandoption[1];
-			$tikilib->set_user_preference($userwatch, 'theme', $theme);
-			if (isset($themeOption)) {
-				$tikilib->set_user_preference($userwatch, 'theme_option', empty($themeOption) ? '' : $themeOption);
+	if ($prefs['change_theme'] == 'y' && empty($group_style)) {
+		if (isset($_REQUEST["mystyle"])) {
+			if ($user == $userwatch) {
+				$t = $tikidomain ? $tikidomain . '/' : '';
+				if ($_REQUEST["mystyle"] == "") {
+					//If mystyle is empty --> user has selected "Site Default" theme
+					$sitestyle = $tikilib->getOne("select `value` from `tiki_preferences` where `name`=?", 'style');
+					$headerlib->replace_cssfile('styles/' . $t . $prefs['style'], 'styles/' . $t . $sitestyle, 51);
+				} else {
+					$headerlib->replace_cssfile('styles/' . $t . $prefs['style'], 'styles/' . $t . $_REQUEST['mystyle'], 51);
+				}
 			}
-			//Something is needed for the theme change to be displayed without additional manual page refresh. Problem: when modifying another user's settings (not my user's) using any of the below ways the refreshed screen will show my user's preference screen instead of staying on the edited user's preference screen
-			//header("location: tiki-user_preferences.php?view_user=$userwatch");
-			//$access->redirect($_SERVER['REQUEST_URI'], '', 200); 
+			if ($_REQUEST["mystyle"] == "") {
+				$tikilib->set_user_preference($userwatch, 'theme', "");
+			} else {
+				$tikilib->set_user_preference($userwatch, 'theme', $_REQUEST["mystyle"]);
+			}
 		}
 	}
 	if (isset($_REQUEST["userbreadCrumb"])) $tikilib->set_user_preference($userwatch, 'userbreadCrumb', $_REQUEST["userbreadCrumb"]);
@@ -154,11 +158,11 @@ if ($prefs['feature_userPreferences'] == 'y' && isset($_REQUEST["new_prefs"])) {
 		if (isset($_REQUEST[$customfields[$custpref]['prefName']])) $tikilib->set_user_preference($userwatch, $customfields[$custpref]['prefName'], $_REQUEST[$customfields[$custpref]['prefName']]);
 	}
 	if (isset($_REQUEST["realName"]) && ($prefs['auth_ldap_nameattr'] == '' || $prefs['auth_method'] != 'ldap')) {
-		$tikilib->set_user_preference($userwatch, 'realName', $_REQUEST["realName"]);
-		if ( $prefs['user_show_realnames'] == 'y' ) {
-			$cachelib = TikiLib::lib('cache');
-			$cachelib->invalidate('userlink.'.$user.'0');
-		}
+     $tikilib->set_user_preference($userwatch, 'realName', $_REQUEST["realName"]);
+     if ( $prefs['user_show_realnames'] == 'y' ) {
+       global $cachelib;
+       $cachelib->invalidate('userlink.'.$user.'0');
+     }
 	}
 	if ($prefs['feature_community_gender'] == 'y') {
 		if (isset($_REQUEST["gender"])) $tikilib->set_user_preference($userwatch, 'gender', $_REQUEST["gender"]);
@@ -368,21 +372,15 @@ $tikilib->get_user_preference($userwatch, 'user_dbl', 'y');
 $tikilib->get_user_preference($userwatch, 'display_12hr_clock', 'n');
 $userinfo = $userlib->get_user_info($userwatch);
 $smarty->assign_by_ref('userinfo', $userinfo);
-//user theme
-$themelib = TikiLib::lib('theme');
-$available_themesandoptions = $themelib->get_available_themesandoptions();
-$smarty->assign_by_ref('available_themesandoptions', $available_themesandoptions);
-$userwatch_theme = $tikilib->get_user_preference($userwatch, 'theme', null);
-$userwatch_themeOption = $tikilib->get_user_preference($userwatch, 'theme_option', null);
-$smarty->assign_by_ref('userwatch_theme', $userwatch_theme);
-$smarty->assign_by_ref('userwatch_themeOption', $userwatch_themeOption);
-//user language
+$llist = array();
+$llist = $tikilib->list_styles();
+$smarty->assign_by_ref('styles', $llist);
 $languages = array();
 $languages = $tikilib->list_languages();
 $smarty->assign_by_ref('languages', $languages);
 $user_pages = $tikilib->get_user_pages($userwatch, -1);
 $smarty->assign_by_ref('user_pages', $user_pages);
-$bloglib = TikiLib::lib('blog');
+require_once('lib/blogs/bloglib.php');
 $user_blogs = $bloglib->list_user_blogs($userwatch, false);
 $smarty->assign_by_ref('user_blogs', $user_blogs);
 $user_galleries = $tikilib->get_user_galleries($userwatch, -1);
@@ -407,7 +405,7 @@ $useritemId = false;
 if ($prefs['userTracker'] == 'y') {
 	$re = $userlib->get_usertracker($userinfo["userId"]);
 	if (isset($re['usersTrackerId']) and $re['usersTrackerId']) {
-		$trklib = TikiLib::lib('trk');
+		include_once ('lib/trackers/trackerlib.php');
 		$info = $trklib->get_item_id($re['usersTrackerId'], $trklib->get_field_id($re['usersTrackerId'], 'Login'), $userwatch);
 		$usertrackerId = $re['usersTrackerId'];
 		$useritemId = $info;

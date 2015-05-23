@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -76,14 +76,14 @@ function prefs_unified_list()
 			'size' => 8,
 		),
 		'unified_lucene_default_operator' => array(
-			'name' => tra('Default Boolean Operator'),
+			'name' => tra('Lucene Default Boolean Operator'),
 			'description' => tra('Use OR (default) or AND as the default search operator.'),
 			'type' => 'list',
 			'filter' => 'int',
 			'default' => Zend_Search_Lucene_Search_QueryParser::B_OR,
 			'options' => array(
-				0 => tra('OR'),
-				1 => tra('AND'),
+				Zend_Search_Lucene_Search_QueryParser::B_OR => tra('OR'),
+				Zend_Search_Lucene_Search_QueryParser::B_AND => tra('AND'),
 			),
 		),
 		'unified_lucene_merge_factor' => array(
@@ -222,14 +222,6 @@ function prefs_unified_list()
 			'size' => '20',
 			'default' => '',
 		),
-		'unified_elastic_camel_case' => array(
-			'name' => tr('Tokenize CamelCase words'),
-			'description' => tr('Consider the different portions of camel case words as separate tokens, allowing to search them individually.'),
-			'warning' => tr('Conflicts with Tokenize Version Numbers.'),
-			'hint' => tr('ElasticSearch only'),
-			'type' => 'flag',
-			'default' => 'n',
-		),
 		'unified_mysql_index_current' => array(
 			'name' => tra('MySQL Full Text Search Current Index'),
 			'description' => tra('A new index is created upon rebuild and the old one is then destroyed. This setting allows you to see the currently active one.'),
@@ -256,14 +248,6 @@ function prefs_unified_list()
 			'dependencies' => array(
 				'feature_search',
 			),
-		),
-		'unified_stopwords' => array(
-			'name' => tr('Stop Word List'),
-			'description' => tr('Words excluded from the search index as they can be too frequent and cause noise.'),
-			'type' => 'text',
-			'default' => ["a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "if", "in", "into", "is", "it", "no", "not", "of", "on", "or", "s", "such", "t", "that", "the", "their", "then", "there", "these", "they", "this", "to", "was", "will", "with"],
-			'separator' => ',',
-			'hint' => tr('MySQL Full Text Search has its own list of stop words configured in the server.'),
 		),
 	);
 }

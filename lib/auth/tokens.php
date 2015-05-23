@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -81,7 +81,7 @@ class AuthTokens
 		$registered = (array) json_decode($data['parameters'], true);
 
 		if ($prefs['feature_sefurl'] === 'y') {    // filter out the usual sefurl parameters that would be missing from the URI
-			$usedInRequest = [
+			$usedInRequest = array(
 				'page',
 				'articleId',
 				'blogId', 'postId',
@@ -93,7 +93,7 @@ class AuthTokens
 				'sheetId',
 				'userId',
 				'calIds',
-			];
+			);
 
 			$usedInRequest = array_diff($usedInRequest, array_keys($registered));       // params that are actually used and need to be checked
 			$parameters = array_diff_key($parameters, array_flip($usedInRequest));					// remove params that aren't used
@@ -165,17 +165,7 @@ class AuthTokens
 		return $this->db->getOne('SELECT token FROM tiki_auth_tokens WHERE tokenId = ?', array( $max ));
 	}
 
-	/**
-	 * This is a function that includes a security token into a provided URL
-	 * @param $url The URL where the token is valid.
-	 * @param array $groups The groups from which the person using the token will have permissions for.
-	 * @param string $email The email that the token was sent to, for recording purpose. If there are multiple
-	 * emails, it currently saves as comma separated list but exploding will need to trim spaces.
-	 * @param int $timeout Timeout to set in seconds. If not included, will use default as set in prefs.
-	 * @param int $hits Number of hits allowed before token expires. If not included, will use default as set in prefs.
-	 * @return string A URL that has the security token included.
-	 */
-	function includeToken( $url, array $groups = array(), $email = '', $timeout = 0, $hits = 0)
+	function includeToken( $url, array $groups = array(), $email = '' )
 	{
 		$data = parse_url($url);
 
@@ -186,15 +176,7 @@ class AuthTokens
 			$args = array();
 		}
 
-		$settings = array('email'=>$email);
-		if (!empty($timeout)) {
-			$settings['timeout'] = $timeout;
-		}
-		if (!empty($hits)) {
-			$settings['hits'] = $hits;
-		}
-
-		$token = $this->createToken($data['path'], $args, $groups, $settings);
+		$token = $this->createToken($data['path'], $args, $groups, array('email'=>$email));
 		$args['TOKEN'] = $token;
 
 		$query = '?' . http_build_query($args, '', '&');

@@ -34,7 +34,7 @@ $("#email").val("{{$userinfo.email|escape}}");
 {if $msg}<p>{$msg|escape}</p>{/if}
 <tr>
 <td>&nbsp;</td>
-<td><input type="submit" class="btn btn-default btn-sm" name="localinfosubmit" value="{tr}Submit{/tr}"></td>
+<td><input type="submit" class="btn btn-default" name="localinfosubmit" value="{tr}Submit{/tr}"></td>
 </tr>
 </table>
 </form>
@@ -53,7 +53,7 @@ $("#email").val("{{$userinfo.email|escape}}");
 </tr>
 <tr>
 <td>&nbsp;</td>
-<td><input type="submit" class="btn btn-default btn-sm" name="linkaccount" value="{tr}Link to Existing Account{/tr}"></td>
+<td><input type="submit" class="btn btn-default" name="linkaccount" value="{tr}Link to Existing Account{/tr}"></td>
 </tr>
 </table>
 </form>

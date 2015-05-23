@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -581,13 +581,13 @@ if ( empty($s) ) {
 	$php_properties['date.timezone'] = array(
 		'fitness' => tra('ugly'),
 		'setting' => $s,
-		'message' => tra('You have no time zone set! While there are a lot of fallbacks in PHP to determine the time zone, the only reliable solution is to set it explicitly in php.ini! Please check the value of date.timezone in php.ini.')
+		'message' => tra('You have no timezone set! While there are a lot of fallbacks in PHP to determine the timezone, the only reliable solution is to set it explicitly in php.ini! Please check the value of date.timezone in php.ini.')
 	);
 } else {
 	$php_properties['date.timezone'] = array(
 		'fitness' => tra('good'),
 		'setting' => $s,
-		'message' => tra('Well done! Having a time zone set protects you from many weird errors.')
+		'message' => tra('Well done! Having a timezone set protects you from many weird errors.')
 	);
 }
 
@@ -1052,22 +1052,6 @@ if ( $s ) {
 		'setting' => 'Not Available',
 		'message' => tra('The DateTime class is needed for the WebDAV feature.')
 		);
-}
-
-// Xdebug
-$has_xdebug = function_exists('xdebug_get_code_coverage') && is_array(xdebug_get_code_coverage());
-if ($has_xdebug) {
-    $php_properties['Xdebug'] = array(
-        'fitness' => tra('info'),
-		'setting' => 'Loaded',
-        'message' => tra('Xdebug can be very handy for a development server, but it might be better to disable it when on a production server.')
-    );
-} else {
-    $php_properties['Xdebug'] = array(
-		'fitness' => tra('info'),
-        'setting' => 'Not Available',
-        'message' => tra('Xdebug can be very handy for a development server, but it might be better to disable it when on a production server.')
-    );
 }
 
 // Get MySQL properties and check them
@@ -1677,41 +1661,13 @@ if (!$standalone) {
 	}
 	$smarty->assign_by_ref('dirs', $dirs);
 	$smarty->assign_by_ref('dirsWritable', $dirsWritable);
-
-	// Prepare Monitoring acks
-	$query = "SELECT `value` FROM tiki_preferences WHERE `name`='tiki_check_status'";
-	$result = $tikilib->getOne($query);
-	$last_state = json_decode($result, true);
-	$smarty->assign_by_ref('last_state', $last_state);
-
-	function deack_on_state_change(&$check_group, $check_group_name) {
-		global $last_state;
-		foreach ( $check_group as $key => $value ) {
-			if ($last_state["$check_group_name"]["$key"] !== NULL) {
-				$check_group["$key"]['ack'] = $last_state["$check_group_name"]["$key"]['ack'];
-				if ($check_group["$key"]['setting'] != $last_state["$check_group_name"]["$key"]['setting']) {
-					$check_group["$key"]['ack'] = false;
 				}
-			}
-		}
-	}
-	deack_on_state_change($mysql_properties, 'MySQL');
-	deack_on_state_change($server_properties, 'Server');
-	if ($apache_properties) {
-		deack_on_state_change($apache_properties, 'Apache');
-	}
-	if ($iis_properties) {
-		deack_on_state_change($iis_properties, 'IIS');
-	}
-	deack_on_state_change($php_properties, 'PHP');
-	deack_on_state_change($security, 'PHP Security');
-}
 
 if ($standalone && !$nagios) {
 	$render .= '<style type="text/css">td, th { border: 1px solid #000000; vertical-align: baseline; padding: .5em; }</style>';
 //	$render .= '<h1>Tiki Server Compatibility</h1>';
 	if (!$locked) {
-		$render .= '<h2>MySQL or MariaDB Database Properties</h2>';
+		$render .= '<h2>MySQL or MariaBD Database Properties</h2>';
 		renderTable($mysql_properties);
 		$render .= '<h2>Test sending e-mails</h2>';
 		if (isset($_REQUEST['email_test_to'])) {
@@ -1827,28 +1783,20 @@ if ($standalone && !$nagios) {
 		$message = '';
 
 		foreach ($check_group as $property => $values) {
-			if ($values['ack'] != true) {
-				switch($values['fitness']) {
-					case 'ugly':
-						$state = max($state, 1);
-						$message .= "$property"."->ugly, ";
-						break;
-					case 'risky':
-						$state = max($state, 1);
-						$message .= "$property"."->risky, ";
-						break;
-					case 'bad':
-						$state = max($state, 2);
-						$message .= "$property"."->BAD, ";
-						break;
-					case 'info':
-						$state = max($state, 3);
-						$message .= "$property"."->info, ";
-						break;
-					case 'good':
-					case 'safe':
-						break;
-				}
+			switch($values['fitness']) {
+				case 'ugly':
+				case 'risky':
+					$state = max($state, 1);
+					$message .= "$property"."->ugly, ";
+					break;
+				case 'bad':
+					$state = max($state, 2);
+					$message .= "$property"."->BAD, ";
+					break;
+				case 'info':
+				case 'good':
+				case 'safe':
+					break;
 			}
 		}
 		$monitoring_info['state'] = max($monitoring_info['state'], $state);
@@ -1873,36 +1821,6 @@ if ($standalone && !$nagios) {
 	$return = json_encode($monitoring_info);
 	echo $return;
 } else {
-	if (isset($_REQUEST['acknowledge']) || empty($last_state)) {
-		$tiki_check_status = array();
-		function process_acks(&$check_group, $check_group_name) {
-			global $tiki_check_status;
-			foreach($check_group as $key => $value) {
-				$formkey = str_replace(array('.',' '), '_', $key);
-				if ($check_group["$key"]['fitness'] === 'good' || $check_group["$key"]['fitness'] === 'safe' || $_REQUEST["$formkey"] === "on")
-				{
-					$check_group["$key"]['ack'] = true;
-				} else {
-					$check_group["$key"]['ack'] = false;
-				}
-			}
-			$tiki_check_status["$check_group_name"] = $check_group;
-		}
-		process_acks($mysql_properties, 'MySQL');
-		process_acks($server_properties, 'Server');
-		if ($apache_properties) {
-			process_acks($apache_properties, "Apache");
-		}
-		if ($iis_properties) {
-			process_acks($iis_properties, "IIS");
-		}
-		process_acks($php_properties, "PHP");
-		process_acks($security, "PHP Security");
-		$json_tiki_check_status = json_encode($tiki_check_status);
-		$query = "INSERT INTO tiki_preferences (`name`, `value`) values('tiki_check_status', ? ) on duplicate key update `value`=values(`value`)";
-		$bindvars = array($json_tiki_check_status);
-		$result = $tikilib->query($query, $bindvars);
-	}
 	$smarty->assign_by_ref('server_information', $server_information);
 	$smarty->assign_by_ref('server_properties', $server_properties);
 	$smarty->assign_by_ref('mysql_properties', $mysql_properties);
@@ -1922,18 +1840,6 @@ if ($standalone && !$nagios) {
 	$smarty->assign_by_ref('mysql_crashed_tables', $mysql_crashed_tables);
 	$smarty->assign_by_ref('file_handlers', $file_handlers);
 	// disallow robots to index page:
-
-	$fmap = array(
-		'good' => array('icon' => 'ok', 'class' => 'success'),
-		'safe' => array('icon' => 'ok', 'class' => 'success'),
-		'bad' => array('icon' => 'ban', 'class' => 'danger'),
-		'unsafe' => array('icon' => 'ban', 'class' => 'danger'),
-		'risky' => array('icon' => 'warning', 'class' => 'warning'),
-		'ugly' => array('icon' => 'warning', 'class' => 'warning'),
-		'info' => array('icon' => 'information', 'class' => 'info'),
-		'unknown' => array('icon' => 'help', 'class' => 'muted'),
-	);
-	$smarty->assign('fmap', $fmap);
 	$smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 	$smarty->assign('mid', 'tiki-check.tpl');
 	$smarty->display('tiki.tpl');
@@ -2004,7 +1910,7 @@ echo tikiLogo();
 		</div>
 		<div class="middle_outer">
 			<div id="middle" class="fixedwidth">
-				<div class="topbar clearfix">
+				<div id="tiki-top" class="clearfix">
 					<h1 style="font-size: 30px; line-height: 30px; color: #fff; text-shadow: 3px 2px 0 #781437; margin: 8px 0 0 10px; padding: 0;">
 					</h1>
 				</div>

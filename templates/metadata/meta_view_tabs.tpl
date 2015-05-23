@@ -1,13 +1,11 @@
 {* $Id$ *}
 
-<div class="margin-bottom-md">
-    <em>{tr}Read-only metadata extracted from the file.{/tr}</em>
-    {if isset($metarray.basiconly) and $metarray.basiconly}
-        <span>
-	        {tr}<em>Only basic metadata processed for this file type.</em>{/tr}
-        </span>
-    {/if}
-</div>
+<em>{tr}Read-only metadata extracted from the file.{/tr}</em>
+{if isset($metarray.basiconly) and $metarray.basiconly}
+<span>
+	{tr}<em>Only basic metadata processed for this file type.</em>{/tr}
+</span>
+{/if}
 {tabset name="metadata"}
 	{foreach $metarray as $subtypes}
 		{if $subtypes ne 'basiconly'}
@@ -19,10 +17,10 @@
 			{tab name=$tabtitle}
 				{foreach $subtypes as $fields}
 					{if $fields|count gt 0}
-						<div class="text-center">
-							<h5>
+						<fieldset>
+							<legend>
 								{tr}{$fields@key|lower|capitalize|escape}{/tr}
-							</h5>
+							</legend>
 							<table>
 								{foreach $fields as $fieldarray}
 									<tr>
@@ -49,7 +47,7 @@
 									</tr>
 								{/foreach}
 							</table>
-						</div>
+						</fieldset>
 					{/if}
 				{/foreach}
 			{/tab}

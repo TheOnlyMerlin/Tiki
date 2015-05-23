@@ -1,29 +1,20 @@
 {* $Id$ *}
 {strip}
-{* Simple remarks box used by Smarty entity block.remarksbox.php & wikiplugin_remarksbox.php *}
-<div {if $remarksbox_id}id="{$remarksbox_id|escape}"{/if} class="alert {$remarksbox_class|escape} {if $remarksbox_close}alert-dismissable{/if} {if $remarksbox_cookie}hide{/if}">
-	{if $remarksbox_close}
-		<button {if $remarksbox_id}id="triggeralert-{$remarksbox_id|escape}" data-target="{$remarksbox_id|escape}"{/if} type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-	{/if}
-	<h4>
-		{icon name="$remarksbox_icon"}
-		&nbsp;
-		{$remarksbox_title|escape}
-	</h4>
-	{$remarksbox_content}
-</div>
+	{* Simple remarks box used by Smarty entity block.remarksbox.php & wikiplugin_remarksbox.php *}
+	<div class="clearfix rbox {$rbox_params.type} panel" id="{$rbox_guid}">
+		{if $rbox_params.close and $rbox_params.type ne 'errors' and $rbox_params.type ne 'confirm'}
+			{icon _id='close' class='rbox-close' onclick=$rbox_close_click|default:''}
+		{/if}
+		{if $rbox_params.title ne ''}
+			<div class="rbox-title panel-heading">
+				{if $rbox_params.icon ne 'none'}
+                    <img src="img/icons/{$rbox_params.icon}.png" alt="{tr}{$rbox_params.type}{/tr}" class="icon">
+				{/if}
+				<span>{$rbox_params.title|escape}</span>
+			</div>
+		{/if}
+		<div class="rbox-data {$rbox_params.highlight} panel-body"{if !empty($rbox_params.width)} style="width:{$rbox_params.width}"{/if}>
+			{$remarksbox_content}
+		</div>
+	</div>
 {/strip}
-
-{if $remarksbox_cookie}
-{jq}
-	if (! getCookie("{{$remarksbox_cookiehash}}")) {
-		$("#{{$remarksbox_id|escape}}").removeClass('hide');
-	}
-
-	$("#triggeralert-{{$remarksbox_id|escape}}").click(function() {
-		var targetalert = $(this).data("target");
-		$("#"+targetalert).addClass('hide');
-		document.cookie="{{$remarksbox_cookiehash}}=dismiss";
-	});
-{/jq}
-{/if}

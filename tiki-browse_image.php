@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,13 +10,16 @@
 
 $section = "galleries";
 require_once ('tiki-setup.php');
-$imagegallib = TikiLib::lib('imagegal');
-$statslib = TikiLib::lib('stats');
+include_once ("lib/imagegals/imagegallib.php");
+include_once ('lib/stats/statslib.php');
 
 $access->check_feature('feature_galleries');
 
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	global $categlib;
+	if (!is_object($categlib)) {
+		include_once ('lib/categories/categlib.php');
+	}
 }
 
 if (!isset($_REQUEST['imageId'])) {
@@ -93,7 +96,7 @@ $smarty->assign('offset', $maxgal ? $offset - ($offset % $maxgal) : 0);
 //$smarty->assign_by_ref('theme',$gal_info["theme"]);
 //$smarty->assign('use_theme','y');
 if ($prefs['feature_gal_slideshow'] != 'n') {
-	$headerlib->add_jsfile('lib/imagegals/imagegallib.js');
+	$headerlib->add_jsfile('lib/imagegals/imagegallib.js', 50);
 	$listImgId = implode(',', $listImgId);
 	$smarty->assign('listImgId', $listImgId);
 }

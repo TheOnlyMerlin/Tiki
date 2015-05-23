@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +11,7 @@ function prefs_art_list()
 		'publishDate_desc' => tra('Newest first'),
 	);
 
-	$prefslib = TikiLib::lib('prefs');
+	global $prefslib;
 	$advanced_columns = $prefslib->getExtraSortColumns();
 
 	foreach ( $advanced_columns as $key => $label ) {
@@ -117,11 +117,6 @@ function prefs_art_list()
 		),
 		'art_list_id' => array(
 			'name' => tra('Id'),
-			'type' => 'flag',
-			'default' => 'y',
-		),
-		'art_list_ispublished' => array(
-			'name' => tra('Is Published'),
 			'type' => 'flag',
 			'default' => 'y',
 		),

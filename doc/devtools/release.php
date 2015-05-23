@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -172,7 +172,7 @@ if (! $options['no-check-php'] && important_step("Check syntax of all PHP files"
 
 if (! $options['no-check-smarty'] && important_step("Check syntax of all Smarty templates")) {
 	$error_msg = '';
-	check_smarty_syntax($error_msg);
+	check_smarty_syntax($error_msg) or error($error_msg);
 	info('>> Current Smarty code successfully passed the syntax check.');
 }
 
@@ -213,7 +213,7 @@ if ($isPre) {
 
 	if (! $options['no-packaging'] && important_step("Build packages files (based on the '$tag' tag)")) {
 		build_packages($packageVersion, $tag);
-		echo color("\nUpload the files on SourceForge.\nInstructions can be found here: http://sourceforge.net/p/forge/documentation/Files/\n\n", 'cyan');
+		echo color("\nUpload the files on SourceForge.\nInstructions can be found here: https://sourceforge.net/apps/trac/sourceforge/wiki/Release%20files%20for%20download\n\n", 'cyan');
 	} else {
 		echo color("This was the last step.\n", 'cyan');
 	}
@@ -263,18 +263,6 @@ function write_secdb($file, $root, $version)
 function md5_check_dir($root, $dir, $version, &$queries)
 {
 	$d = dir($dir);
-	$link = mysqli_connect();
-
-	if (mysqli_connect_errno()) {
-		global $phpCommand, $phpCommandArguments;
-		error(
-			"SecDB step failed because some filenames need escaping but no MySQL connection has been found (" . mysqli_connect_error() . ")."
-			. "\nTry this command line instead (replace HOST, USER and PASS by a valid MySQL host, user and password) :"
-			. "\n\n\t" . $phpCommand
-			. " -d mysqli.default_host=HOST -d mysqli.default_user=USER -d mysqli.default_pw=PASS "
-			. $phpCommandArguments . "\n"
-		);
-	}
 	while (false !== ($e = $d->read())) {
 		$entry = $dir . '/' . $e;
 		if (is_dir($entry)) {
@@ -286,8 +274,17 @@ function md5_check_dir($root, $dir, $version, &$queries)
 			if (preg_match('/\.(sql|css|tpl|js|php)$/', $e) && realpath($entry) != __FILE__ && $entry != './db/local.php') {
 				$file = '.' . substr($entry, strlen($root));
 
-				if (! preg_match('/^[a-zA-Z0-9\/ _+.-]+$/', $file) ) {
-					$file = @mysqli_real_escape_string($link,$file);
+				if (! preg_match('/^[a-zA-Z0-9\/ _+.-]+$/', $file)
+					&& (! function_exists('mysql_real_escape_string') || ! ($file = @mysql_real_escape_string($file)))
+				) {
+					global $phpCommand, $phpCommandArguments;
+					error(
+						"SecDB step failed because some filenames need escaping but no MySQL connection has been found."
+						. "\nTry this command line instead (replace HOST, USER and PASS by a valid MySQL host, user and password) :"
+						. "\n\n\t" . $phpCommand
+						. " -d mysql.default_host=HOST -d mysql.default_user=USER -d mysql.default_password=PASS "
+						. $phpCommandArguments . "\n"
+					);
 				}
 
 				$hash = md5_file($entry);
@@ -332,7 +329,7 @@ function get_files_list($dir, &$entries, $regexp_pattern)
 		$entry = $dir . '/' . $e;
 		if (is_dir($entry)) {
 			// do not descend and no CVS/Subversion files
-			if ($e != '..' && $e != '.' && $e != 'CVS' && $e != '.svn' && $entry != './templates_c' && $entry != './vendor') {
+			if ($e != '..' && $e != '.' && $e != 'CVS' && $e != '.svn' && $entry != './templates_c') {
 				if (! get_files_list($entry, $entries, $regexp_pattern)) {
 					return false;
 				}
@@ -359,17 +356,15 @@ function display_progress_percentage($alreadyDone, $toDo, $message)
 	}
 }
 
-function zone_is_empty() {
-	// dummy function to keep smarty happy
-}
-
 /**
  * @param $error_msg
+ * @return bool
  */
 function check_smarty_syntax(&$error_msg)
 {
 	global $tikidomain, $prefs, $smarty;
 	$tikidomain = '';
+
 	// Initialize $prefs with some variables needed by the tra() function and smarty autosave plugin
 	$prefs = array(
 		'lang_use_db' => 'n',
@@ -379,55 +374,39 @@ function check_smarty_syntax(&$error_msg)
 	);
 
 	// Load Tiki Smarty
-	$prefs['smarty_compilation'] = 'always';
-	$prefs['smarty_security'] = 'y';
-	$prefs['maxRecords'] = 25;
-	$prefs['log_tpl'] = 'y';
-	$prefs['feature_sefurl_filter'] = 'y';
-	require_once 'vendor/smarty/smarty/libs/Smarty.class.php';
+	require_once 'vendor/smarty/smarty/distribution/libs/Smarty.class.php';
 	require_once 'lib/init/smarty.php';
-	// needed in Smarty_Tiki
-	define('TIKI_PATH', getcwd());
-	require_once 'lib/core/TikiAddons.php';
-	require_once 'lib/smarty_tiki/prefilter.tr.php';
-	require_once 'lib/smarty_tiki/prefilter.jq.php';
-	require_once 'lib/smarty_tiki/prefilter.log_tpl.php';
-	$smarty = new Smarty_Tiki();
 	set_error_handler('check_smarty_syntax_error_handler');
 
-	$templates_dir = TIKI_PATH . '/templates';
+	$templates_dir = $smarty->main_template_dir;
 
-	$errors_found = false;
 	$entries = array();
 	get_files_list($templates_dir, $entries, '/\.tpl$/');
+	echo "Checking {$templates_dir}\n";
 
 	$nbEntries = count($entries);
 	for ($i = 0; $i < $nbEntries; $i++) {
 		display_progress_percentage($i, $nbEntries, '%d%% of files passed the Smarty syntax check');
 
-		if (strpos($entries[$i], 'tiki-mods.tpl') === false) {
+		$template_file = substr($entries[$i], strlen($templates_dir) + 1);
 
-			$template_file = substr($entries[$i], strlen($templates_dir) + 1);
-
-			try {
-				$_tpl = $smarty->createTemplate($template_file, null, null, null, false);
-				$_tpl->compileTemplateSource();
-			} catch (Exception $e) {
-				echo color("\nError: " . $e->getMessage(), 'red') . "\n";
-				$errors_found = true;
+		try {
+			$_tpl = $smarty->createTemplate($template_file, null, null, null, false);
+			$_tpl->compileTemplateSource();
+			unlink($_tpl->compiled->filepath);
+		} catch (Exception $e) {
+			$msg = $e->getMessage();
+			if (strpos($msg, 'unknown function &quot;zone_is_empty&quot;') === false ) {
+				echo color("\nError: " . html_entity_decode($msg, ENT_COMPAT, 'utf-8'), 'red') . "\n";
+				flush();
 			}
-
 		}
 	}
 	restore_error_handler();
 
 	echo "\n";
-
-	if ($errors_found) {
-		die('Fix the Smarty errors and try again please.');
-	}
+	return true;
 }
-
 
 /**
  * @param $errno
@@ -438,9 +417,8 @@ function check_smarty_syntax(&$error_msg)
  */
 function check_smarty_syntax_error_handler($errno, $errstr, $errfile = '', $errline = 0, $errcontext = array())
 {
-	if (strpos($errstr, 'filemtime(): stat failed for') === false) {	// smarty seems to emit these for every file
-		echo "\n" . color($errstr, 'red') . "\n";
-	}
+	//	throw new Exception($errstr);
+	color("\n" . $errstr . "\n", 'red');
 }
 
 /**
@@ -811,7 +789,7 @@ EOS;
 	foreach ($contributors as $author => $infos) {
 		if (isset($oldContributors[$author])) {
 			if ($oldContributors[$author] != $infos) {
-				// Quickfix to keep old dates which may be different due to which time zone is used
+				// Quickfix to keep old dates which may be different due to which timezone is used
 				if (isset($oldContributors[$author]['First Commit'])) {
 					$infos['First Commit'] = $oldContributors[$author]['First Commit'];
 					if ($oldContributors[$author]['Number of Commits'] == $infos['Number of Commits']) {
@@ -1018,7 +996,6 @@ UPGRADES
 COPYRIGHT
 
 Copyright (c) 2002-$year, Luis Argerich, Garland Foster, Eduardo Polidor, et. al.
-Tiki was started under the name tikiwiki by Luis Argerich, Garland Foster, Eduardo Polidor, et. al. 
 All Rights Reserved. See $copyrights_file for details and a complete list of authors.
 Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See $license_file for details.
 

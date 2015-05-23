@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,10 +7,10 @@
 
 function prefs_themegenerator_list($partial = false)
 {
-	global $prefs;
+	global $prefs, $themegenlib;
 
 	if (! $partial) {
-		$themegenlib = TikiLib::lib('themegenerator');
+		include_once 'lib/themegenlib.php';
 		
 		$themes = array('' => tra('New...'));
 		
@@ -21,8 +21,8 @@ function prefs_themegenerator_list($partial = false)
 			foreach ( $list as $item ) {
 				$tm = new ThemeGenTheme($item);
 				$d = $tm->getData();
-				if ((empty($d['theme']) || $d['theme'] === $prefs['theme']) &&
-						(empty($d['theme_option']) || $d['theme_option'] === $prefs['theme_option'])) {
+				if ((empty($d['theme']) || $d['theme'] === $prefs['style']) &&
+						(empty($d['theme-option']) || $d['theme-option'] === $prefs['style_option'])) {
 					$themes[$item] = $item;
 				}
 			}

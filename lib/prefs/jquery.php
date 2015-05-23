@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -100,8 +100,30 @@ function prefs_jquery_list($partial = false)
 			'description' => tra('Styled replacement for dropdown select menus and multiple select inputs.'),
 			'type' => 'flag',
 			'default' => 'n',
+			'tags' => array('experimental'),
 			'dependencies' => array(
 				'feature_jquery_ui',
+			),
+		),
+		'jquery_ui_selectmenu' => array(
+			'name' => tra('jQuery-ui Select Menu'),
+			'description' => tra('Styled replacement for dropdown select menus.'),
+			'type' => 'flag',
+			'default' => 'n',
+			'warning' => tra('Experimental. This plugin is deprecated in favor of "Chosen".'),
+			'dependencies' => array(
+				'feature_jquery_ui',
+			),
+		),
+		'jquery_ui_selectmenu_all' => array(
+			'name' => tra('Use Select Menu on all select elements'),
+			'description' => tra('Applies jQuery-ui Select Menu to every select menu.'),
+			'type' => 'flag',
+			'default' => 'n',
+			'tags' => array('experimental'),
+			'warning' => tra('Experimental. This feature is under development.'),
+			'dependencies' => array(
+				'jquery_ui_selectmenu',
 			),
 		),
 		'jquery_colorbox_theme' => array(

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -71,32 +71,14 @@ function wikiplugin_remarksbox_info()
 				'name' => tra('Width'),
 				'description' => tra('Width (e.g. 100% or 250px - default "")'),
 				'default' => ''
-			),
-			'store_cookie' => array(
-				'name' => tr('Sets cookie to keep dismissed'),
-				'description' => tr('Should be y/n depending on whether we want to store a cookie after alert is dismissed. Default n. Requires id and version to be set.'),
-				'required' => false,
-				'filter' => 'text'
-			),
-			'id' => array(
-				'name' => tr('Sets the id for the alert'),
-				'description' => tr('Sets an HTML id for the account. This is used for cookie purposes as well.'),
-				'required' => false,
-				'filter' => 'text'
-			),
-			'version' => array(
-				'name' => tr('Sets a version for the alert for cookie purposes'),
-				'description' => tr('Sets a version for the alert. If new version, the alert should show up again even if it was previously dismissed'),
-				'required' => false,
-				'filter' => 'text'
-			),
+			)
 		)
 	);
 }
 
 function wikiplugin_remarksbox($data, $params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	require_once('lib/smarty_tiki/block.remarksbox.php');
 	
 	// there probably is a better way @todo this

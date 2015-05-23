@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -76,12 +76,13 @@ function wikiplugin_bigbluebutton_info()
 function wikiplugin_bigbluebutton( $data, $params )
 {
 	try {
-		global $prefs, $user;
+		global $smarty, $prefs, $user;
 		$bigbluebuttonlib = TikiLib::lib('bigbluebutton');
 		$meeting = $params['name']; // Meeting is more descriptive than name, but parameter name was already decided.
-		$smarty = TikiLib::lib('smarty');
+
 		$smarty->assign('bbb_meeting', $meeting);
-		
+		$smarty->assign('bbb_image', parse_url($prefs['bigbluebutton_server_location'], PHP_URL_SCHEME) . '://' . parse_url($prefs['bigbluebutton_server_location'], PHP_URL_HOST) . '/images/bbb_logo.png');
+
 		$perms = Perms::get('bigbluebutton', $meeting);
 
 		$params = array_merge(array('prefix' => '', 'recording' => 0), $params);

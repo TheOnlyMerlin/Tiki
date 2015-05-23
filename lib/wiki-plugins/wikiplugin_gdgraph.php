@@ -3,7 +3,7 @@
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Id: wikiplugin_gdgraph.php 53903 2015-02-12 15:02:56Z eromneg $
 
 // plugin that uses lib/graph-engine/ to produce simple graphs on screen
 // Usage

@@ -2,12 +2,12 @@
 
 {include file='tiki-mytiki_bar.tpl'}
 
-<div class="t_navbar margin-bottom-md">
-	{button href="tiki-minical.php#add" class="btn btn-default" _text="{tr}Add{/tr} "}
-	{button href="tiki-minical_prefs.php" class="btn btn-default" _text="{tr}Prefs{/tr}"}
-	{button href="tiki-minical.php?view=daily" class="btn btn-default" _text="{tr}Daily{/tr}"}
-	{button href="tiki-minical.php?view=weekly" class="btn btn-default" _text="{tr}Weekly{/tr}"}
-	{button href="tiki-minical.php?view=list" class="btn btn-default" _text="{tr}List{/tr}"}
+<div class="navbar">
+	{button href="tiki-minical.php#add" _text="{tr}Add{/tr} "}
+	{button href="tiki-minical_prefs.php" _text="{tr}Prefs{/tr}"}
+	{button href="tiki-minical.php?view=daily" _text="{tr}Daily{/tr}"}
+	{button href="tiki-minical.php?view=weekly" _text="{tr}Weekly{/tr}"}
+	{button href="tiki-minical.php?view=list" _text="{tr}List{/tr}"}
 </div>
 
 <h2>{tr}Preferences{/tr}</h2>
@@ -65,26 +65,26 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
+				<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 			</td>
-		</tr>
+		</tr>	
 	</table>
 </form>
 <a name="import"></a>
 <h2>{tr}Import CSV file{/tr}</h2>
-<form enctype="multipart/form-data" action="tiki-minical_prefs.php" method="post">
+<form  enctype="multipart/form-data"  action="tiki-minical_prefs.php" method="post">
 	<table class="formcolor">
 		<tr>
 			<td>{tr}Upload file:{/tr}</td>
 			<td><input type="hidden" name="MAX_FILE_SIZE" value="10000000000000">
-				<input size="16" name="userfile1" type="file"><input type="submit" class="btn btn-default btn-sm" name="import" value="{tr}import{/tr}">
+				<input size="16" name="userfile1" type="file"><input type="submit" class="btn btn-default" name="import" value="{tr}import{/tr}">
 			</td>
 		</tr>
 	</table>
 </form>
 
 <h2>{tr}Admin Topics{/tr}</h2>
-<form enctype="multipart/form-data" action="tiki-minical_prefs.php" method="post">
+<form  enctype="multipart/form-data"  action="tiki-minical_prefs.php" method="post">
 	<table class="formcolor">
 		<tr>
 			<td>{tr}Name:{/tr}</td><td><input type="text" name="name"></td>
@@ -98,13 +98,13 @@
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" class="btn btn-default btn-sm" name="addtopic" value="{tr}Add Topic{/tr}">
+				<input type="submit" class="btn btn-default" name="addtopic" value="{tr}Add Topic{/tr}">
 			</td>
 		</tr>
 	</table>
 </form>
 {if count($topics) > 0}
-	<div class="panel panel-default"><div class="panel-body">
+	<div class="simplebox">
 		<table>
 			<tr>
 				{section name=numloop loop=$topics}
@@ -135,7 +135,6 @@
 						</tr>
 					{/if}
 				{/section}
-			</table>
-		</div>
+		</table>
 	</div>
 {/if}

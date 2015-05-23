@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,11 +15,8 @@ class Search_Query implements Search_Query_Interface
 	private $weightCalculator = null;
 	private $identifierFields = null;
 
-	private $postFilter;
 	private $subQueries = array();
-	private $facets = [];
-	private $foreignQueries = [];
-	private $transformations = [];
+	private $facets = array();
 
 	function __construct($query = null)
 	{
@@ -28,11 +25,6 @@ class Search_Query implements Search_Query_Interface
 		if ($query) {
 			$this->filterContent($query);
 		}
-	}
-
-	function __clone()
-	{
-		$this->expr = clone $this->expr;
 	}
 
 	function setIdentifierFields(array $fields)
@@ -56,11 +48,6 @@ class Search_Query implements Search_Query_Interface
 	function filterContent($query, $field = 'contents')
 	{
 		$this->addPart($query, 'plaintext', $field);
-	}
-
-	function filterIdentifier($query, $field)
-	{
-		$this->addPart(new Search_Expr_Token($query), 'identifier', $field);
 	}
 
 	function filterType($types)
@@ -106,7 +93,7 @@ class Search_Query implements Search_Query_Interface
 		$this->addPart($query, 'identifier', 'language');
 	}
 
-	function filterPermissions(array $groups, $user = null)
+	function filterPermissions(array $groups)
 	{
 		$tokens = array();
 		foreach ($groups as $group) {
@@ -115,13 +102,7 @@ class Search_Query implements Search_Query_Interface
 
 		$or = new Search_Expr_Or($tokens);
 
-		if ($user) {
-			$sub = $this->getSubQuery('permissions');
-			$sub->filterMultivalue($or, 'allowed_groups');
-			$sub->filterMultivalue(new Search_Expr_Token($user), 'allowed_users');
-		} else {
-			$this->addPart($or, 'multivalue', 'allowed_groups');
-		}
+		$this->addPart($or, 'multivalue', 'allowed_groups');
 	}
 
 	/**
@@ -166,11 +147,6 @@ class Search_Query implements Search_Query_Interface
 		$this->addPart(new Search_Expr_Initial($initial), 'plaintext', $field);
 	}
 
-	function filterNotInitial($initial, $field = 'title')
-	{
-		$this->addPart(new Search_Expr_Not(new Search_Expr_Initial($initial)), 'plaintext', $field);
-	}
-
 	function filterRelation($query, array $invertable = array())
 	{
 		$query = $this->parse($query);
@@ -179,55 +155,27 @@ class Search_Query implements Search_Query_Interface
 		$this->addPart($query, 'multivalue', 'relations');
 	}
 
-	function filterSimilar($type, $object, $field = 'contents')
+	function filterSimilar($type, $object)
 	{
-		$part = new Search_Expr_And(
-			array(
-				new Search_Expr_Not(
-					new Search_Expr_And(
-						array(
-							new Search_Expr_Token($type, 'identifier', 'object_type'),
-							new Search_Expr_Token($object, 'identifier', 'object_id'),
-						)
-					)
-				),
-				$mlt = new Search_Expr_MoreLikeThis($type, $object),
-			)
-		);
-		$mlt->setField($field);
-		$this->expr->addPart($part);
-	}
-
-	function filterSimilarToThese($objects, $content, $field = 'contents')
-	{
-		$excluded = [];
-		foreach ($objects as $object) {
-			$excluded[] = new Search_Expr_And(
+		$this->expr->addPart(
+			new Search_Expr_And(
 				array(
-					new Search_Expr_Token($object['object_type'], 'identifier', 'object_type'),
-					new Search_Expr_Token($object['object_id'], 'identifier', 'object_id'),
+					new Search_Expr_Not(
+						new Search_Expr_And(
+							array(
+								new Search_Expr_Token($type, 'identifier', 'object_type'),
+								new Search_Expr_Token($object, 'identifier', 'object_id'),
+							)
+						)
+					),
+					new Search_Expr_MoreLikeThis($type, $object),
 				)
-			);
-		}
-
-		$mlt = new Search_Expr_MoreLikeThis($content);
-		$mlt->setField($field);
-
-		$part = new Search_Expr_And(
-			array(
-				$mlt,
-				new Search_Expr_Not(new Search_Expr_Or($excluded)),
 			)
 		);
-		$this->expr->addPart($part);
 	}
 
 	private function addPart($query, $type, $field)
 	{
-		if (is_string($field)) {
-			$field = explode(',', $field);
-		}
-
 		$parts = array();
 		foreach ((array) $field as $f) {
 			$part = $this->parse($query);
@@ -287,86 +235,8 @@ class Search_Query implements Search_Query_Interface
 
 	function search(Search_Index_Interface $index)
 	{
-		$this->finalize();
-
-		try {
-			$resultset = $index->find($this, $this->start, $this->count);
-		} catch(Search_Elastic_SortException $e) {
-			//on sort exception, try again without the sort field
-			$this->sortOrder = null;
-			$resultset = $index->find($this, $this->start, $this->count);
-		} catch(Exception $e) {
-			TikiLib::lib('errorreport')->report($e->getMessage());
-			return Search_ResultSet::create([]);
-		}
-
-		$resultset->applyTransform(function ($entry) {
-			if (! isset($entry['_index']) || ! isset($this->foreignQueries[$entry['_index']])) {
-				foreach ($this->transformations as $trans) {
-					$entry = $trans($entry);
-				}
-			}
-
-			return $entry;
-		});
-
-		foreach ($this->foreignQueries as $indexName => $query) {
-			$resultset->applyTransform(function ($entry) use ($query, $indexName) {
-				if (isset($entry['_index']) && $entry['_index'] == $indexName) {
-					foreach ($query->transformations as $trans) {
-						$entry = $trans($entry);
-					}
-				}
-
-				return $entry;
-			});
-		}
-
-		return $resultset;
-	}
-
-	function scroll($index)
-	{
-		$this->finalize();
-		$res = $index->scroll($this);
-
-		foreach ($res as $row) {
-			foreach ($this->transformations as $trans) {
-				$row = $trans($row);
-			}
-
-			yield $row;
-		}
-	}
-
-	function applyTransform(callable $transform)
-	{
-		$this->transformations[] = $transform;
-	}
-
-	function store($name, $index)
-	{
-		if ($index instanceof Search_Index_QueryRepository) {
-			$this->finalize();
-			$index->store($name, $this->expr);
-			return true;
-		}
-
-		return false;
-	}
-
-	private function finalize()
-	{
 		if ($this->weightCalculator) {
-			$this->expr->walk([$this->weightCalculator, 'calculate']);
-
-			if ($this->postFilter) {
-				$this->postFilter->expr->walk([$this->weightCalculator, 'calculate']);
-			}
-
-			foreach ($this->foreignQueries as $query) {
-				$query->expr->walk([$this->weightCalculator, 'calculate']);
-			}
+			$this->expr->walk(array($this->weightCalculator, 'calculate'));
 		}
 
 		if ($this->identifierFields) {
@@ -378,27 +248,17 @@ class Search_Query implements Search_Query_Interface
 					}
 				}
 			);
-
-			if ($this->postFilter) {
-				$this->postFilter->expr->walk(
-					function (Search_Expr_Interface $expr) use ($fields) {
-						if (method_exists($expr, 'getField') && in_array($expr->getField(), $fields)) {
-							$expr->setType('identifier');
-						}
-					}
-				);
-			}
-
-			foreach ($this->foreignQueries as $query) {
-				$query->expr->walk(
-					function (Search_Expr_Interface $expr) use ($fields) {
-						if (method_exists($expr, 'getField') && in_array($expr->getField(), $fields)) {
-							$expr->setType('identifier');
-						}
-					}
-				);
-			}
 		}
+
+		try {
+			$resultset = $index->find($this, $this->start, $this->count);
+		} catch(Search_Elastic_SortException $e) {
+			//on sort exception, try again without the sort field
+			$this->sortOrder = null;
+			$resultset = $index->find($this, $this->start, $this->count);
+		}
+
+		return $resultset;
 	}
 
 	function getExpr()
@@ -452,17 +312,6 @@ class Search_Query implements Search_Query_Interface
 		return $this->subQueries[$name];
 	}
 
-	function getPostFilter()
-	{
-		if (! $this->postFilter) {
-			$subquery = new self;
-			$this->postFilter = $subquery;
-			$subquery->postFilter = $subquery;
-		}
-
-		return $this->postFilter;
-	}
-
 	function requestFacet(Search_Query_Facet_Interface $facet)
 	{
 		$this->facets[] = $facet;
@@ -471,15 +320,5 @@ class Search_Query implements Search_Query_Interface
 	function getFacets()
 	{
 		return $this->facets;
-	}
-
-	function includeForeign($indexName, Search_Query $query)
-	{
-		$this->foreignQueries[$indexName] = $query;
-	}
-
-	function getForeignQueries()
-	{
-		return $this->foreignQueries;
 	}
 }

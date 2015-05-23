@@ -1,17 +1,17 @@
 {title}{tr}Directory batch upload{/tr}{/title}
 
-<div class="t_navbar btn-group form-group">
+<div class="navbar">
 	{if $galleryId ne ''}
-		{button href="tiki-list_file_gallery.php?galleryId=$galleryId" class="btn btn-default" _text="{tr}Browse File Gallery{/tr}"}
+		{button href="tiki-list_file_gallery.php?galleryId=$galleryId" _text="{tr}Browse File Gallery{/tr}"}
 	{else}
-		{button href="tiki-list_file_gallery.php" class="btn btn-default" _text="{tr}Browse File Gallery{/tr}"}
+		{button href="tiki-list_file_gallery.php" _text="{tr}Browse File Gallery{/tr}"}
 	{/if}
-	{button href="tiki-upload_file.php?galleryId=$galleryId" class="btn btn-default" _text="{tr}Upload From Disk{/tr}"}
+	{button href="tiki-upload_file.php?galleryId=$galleryId" _text="{tr}Upload From Disk{/tr}"}
 </div>
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}Please do not use this feature to upload data into the database.{/tr}{/remarksbox}
 
-{if count($feedback)}<div class="alert alert-warning">{section name=i loop=$feedback}{$feedback[i]}<br>{/section}</div>{/if}
+{if count($feedback)}<div class="simplebox highlight">{section name=i loop=$feedback}{$feedback[i]}<br>{/section}</div>{/if}
 
 <h2>{$totfile} {tr}Available Files{/tr} {$totalsize|kbsize}</h2>
 <form method="post" action="tiki-batch_upload_files.php" name="f">
@@ -24,10 +24,10 @@
 			<th width="80"><a href="javascript:void(0);">{tr}Filesize{/tr}</a></th>
 			<th width="80"><a href="javascript:void(0);">{tr}Filetype{/tr}</a></th>
 		</tr>
-
+		{cycle print=false values="even,odd"}
 		{foreach key=k item=it from=$filestring}
-			<tr>
-				<td class="checkbox-cell">
+			<tr class="{cycle}">
+				<td class="checkbox">
 					<input type="checkbox" name="files[]" value="{$it[0]}" id="box_{$k}">
 				</td>
 				<td><label for="box_{$k}">{$it[0]}</label></td>
@@ -64,7 +64,7 @@
 					{/section}
 				</select>
 			</td>
-			<td><input type="submit" class="btn btn-default btn-sm" name="batch_upload" value="{tr}Process files{/tr}"></td>
+			<td><input type="submit" class="btn btn-default" name="batch_upload" value="{tr}Process files{/tr}"></td>
 		</tr>
 	</table>
 </form>

@@ -35,9 +35,9 @@
 			</div>
 			<div class="adminoptionbox">
 				<input name="load" type="submit" class="btn btn-default" value="{tr}Load{/tr}">
-				<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
-				{if $loaded neq 'global' and $not_global}<input type="submit" class="btn btn-default btn-sm" name="reset" value="{tr}Reset to Global{/tr}">{/if}
-				{if $loaded eq 'global' and $not_default}<input type="submit" class="btn btn-default btn-sm" name="reset_global" value="{tr}Reset to defaults{/tr}">{/if}
+				<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
+				{if $loaded neq 'global' and $not_global}<input type="submit" class="btn btn-default" name="reset" value="{tr}Reset to Global{/tr}">{/if}
+				{if $loaded eq 'global' and $not_default}<input type="submit" class="btn btn-default" name="reset_global" value="{tr}Reset to defaults{/tr}">{/if}
 				<label for="autoreload">{tr}Auto Reloading{/tr}</label>
 				<input id="autoreload" name="autoreload" type="checkbox" {if $autoreload eq 'on'}checked="checked"{/if}>
 			</div>
@@ -125,7 +125,7 @@
 			</form>
 			{autocomplete element='#tool_icon' type='icon'}
 		</div>
-		<label for="full-list-c">{tr}Custom Tools:{/tr}</label>{icon name="add" title="{tr}Add a new custom tool{/tr}" id="toolbar_add_custom"}<br/>
+		<label for="full-list-c">{tr}Custom Tools:{/tr}</label>{icon _id="add" title="{tr}Add a new custom tool{/tr}" id="toolbar_add_custom"}<br/>
 		<ul id="full-list-c" class="full">
 		{foreach from=$display_c item=tool}
 			<li class="{$qtelement[$tool].class}">{$qtelement[$tool].html}</li>

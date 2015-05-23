@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -48,14 +48,14 @@ $pageCache = Tiki_PageCache::create()
 	->addKeys($_REQUEST, array( 'locale', 'forumId', 'comments_parentId' ))
 	->checkMeta(
 		'forum-page-output-meta-time', array(
-			'forumId'           => $jitRequest->forumId->int(),
-			'comments_parentId' => $jitRequest->comments_parentId->int(),
+			'forumId'           => @$_REQUEST['forumId'],
+			'comments_parentId' => @$_REQUEST['comments_parentId']
 		)
 	)
 	->applyCache();
 
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	global $categlib; include_once ('lib/categories/categlib.php');
 }
 if (!isset($_REQUEST['topics_offset'])) {
 	$_REQUEST['topics_offset'] = 0;
@@ -150,6 +150,27 @@ if ($threads[0]['threadId'] != $_REQUEST['comments_parentId']) {
 }
 
 if ($tiki_p_admin_forum == 'y') {
+	if (isset($_REQUEST['delsel'])) {
+		if (isset($_REQUEST['forumthread'])) {
+			check_ticket('view-forum');
+			foreach (array_values($_REQUEST['forumthread']) as $thread) {
+				$commentslib->remove_comment($thread);
+				$commentslib->register_remove_post($_REQUEST['forumId'], $_REQUEST['comments_parentId']);
+			}
+		}
+	}
+	if (isset($_REQUEST['remove_attachment'])) {
+		$access->check_authenticity(tra('Are you sure you want to remove that attachment?'));
+		$commentslib->remove_thread_attachment($_REQUEST['remove_attachment']);
+	}
+	if (isset($_REQUEST['movesel'])) {
+		if (isset($_REQUEST['forumthread'])) {
+			check_ticket('view-forum');
+			foreach (array_values($_REQUEST['forumthread']) as $thread) {
+				$commentslib->set_parent($thread, $_REQUEST['moveto']);
+			}
+		}
+	}
 	if ($prefs['feature_forum_topics_archiving'] == 'y' && isset($_REQUEST['archive']) && isset($_REQUEST['comments_parentId'])) {
 		check_ticket('view-forum');
 		if ($_REQUEST['archive'] == 'y') {
@@ -185,24 +206,11 @@ if ($prefs['feature_score'] == 'y' && $user != $thread_info['userName']) {
 	$tikilib->score_event($thread_info['userName'], 'forum_post_is_read', "$score_user:$score_id");
 }
 
-if (empty($thread_info) && empty($_POST['ajaxtype'])) {
+if (empty($thread_info)) {
 	$smarty->assign('msg', tra("Incorrect thread"));
 	$smarty->display("error.tpl");
 	die;
-} elseif (!empty($_POST['ajaxtype']) && empty($thread_info)) {
-	$ajaxpost = array_intersect_key($_POST, [
-		'ajaxtype' => '',
-		'ajaxheading' => '',
-		'ajaxitems' => '',
-		'ajaxmsg' => '',
-		'ajaxtoMsg' => '',
-		'ajaxtoList' => '',
-	]);
-	$keys = array_keys($_POST['ajaxitems']);
-	$_SESSION['ajaxpost' . $keys[0]] = $ajaxpost;
-	header('location: ' . 'tiki-view_forum.php?forumId=' . $_POST['forumId'] . '&deleted_parentId=' . $keys[0]);
 }
-
 if (!empty($thread_info['parentId'])) {
 	$thread_info['topic'] = $commentslib->get_comment($thread_info['parentId'], null, $forum_info);
 }
@@ -289,8 +297,6 @@ if ($tiki_p_admin_forum == 'y' || $prefs['feature_forum_quickjump'] == 'y') {
 if ($tiki_p_admin_forum == 'y') {
 	$topics = $commentslib->get_forum_topics($_REQUEST['forumId'], 0, 200, 'commentDate_desc');
 	$smarty->assign_by_ref('topics', $topics);
-	$comms = array_column($topics, 'title', 'threadId');
-	$smarty->assign('topics_encoded', json_encode($comms));
 }
 $smarty->assign('unread', 0);
 if ($user && $prefs['feature_messages'] == 'y' && $tiki_p_messages == 'y') {
@@ -319,7 +325,8 @@ if ($prefs['feature_actionlog'] == 'y') {
 }
 ask_ticket('view-forum');
 if ($prefs['feature_forum_parse'] == 'y') {
-	$wikilib = TikiLib::lib('wiki');
+	global $wikilib;
+	include_once ('lib/wiki/wikilib.php');
 	$plugins = $wikilib->list_plugins(true, 'editpost2');
 	$smarty->assign_by_ref('plugins', $plugins);
 }
@@ -331,19 +338,6 @@ if (!empty($_REQUEST['view_atts']) && $_REQUEST['view_atts'] == 'y') {
 	$atts['maxRecords'] = $fa_maxRecords;
 	$smarty->assign_by_ref('atts', $atts);
 	$smarty->assign_by_ref('view_atts', $_REQUEST['view_atts']);
-}
-
-if (isset($_POST['ajaxtype'])) {
-	$smarty->assign('ajaxfeedback', 'y');
-	$ajaxpost = array_intersect_key($_POST, [
-		'ajaxtype' => '',
-		'ajaxheading' => '',
-		'ajaxitems' => '',
-		'ajaxmsg' => '',
-		'ajaxtoMsg' => '',
-		'ajaxtoList' => '',
-	]);
-	$smarty->assign($ajaxpost);
 }
 
 // Display the template

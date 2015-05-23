@@ -1,4 +1,3 @@
-{title admpage="timesheets" help="Timesheets"}{tr}Timesheets{/tr}{/title}
 {if $timeSheetProfileLoaded neq true AND $tiki_p_admin eq 'y'}
 {tr}Apply the following profile for enhancements: {/tr}
 {button href="tiki-admin.php" profile="time_sheet" page="profiles" list="List" _text="Time_Sheet"}
@@ -92,11 +91,11 @@
 			{else}
 				{button _text="{tr}View My Items{/tr}" href="tiki-timesheet.php"}
 			{/if}
-
+			
 			{assign var=timeSheetI value=1}
 			{assign var=amountOfTimeSpent value="Amount of time spent"}
 			{assign var=doneBy value="Done by"}
-
+			
 			<div id="timeSheetSaved">
 				<table title="{tr}Saved (Committed){/tr}">
 					<tr>

@@ -12,7 +12,7 @@
 {/if}
 {if $preview}
 	<h2>{tr}Preview{/tr}</h2>
-
+	
 	{include file='article.tpl'}
 {/if}
 
@@ -22,8 +22,8 @@
 	{title help="Articles" admpage="articles"}{tr}Submit article{/tr}{/title}
 {/if}
 
-<div class="t_navbar">
-	{button href="tiki-list_submissions.php" _icon_name="list" _text="{tr}List Submissions{/tr}"}
+<div class="navbar">
+	{button href="tiki-list_submissions.php" _text="{tr}List Submissions{/tr}"}
 </div>
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}
@@ -39,12 +39,12 @@
 	<input type="hidden" name="image_type" value="{$image_type|escape}">
 	<input type="hidden" name="image_name" value="{$image_name|escape}">
 	<input type="hidden" name="image_size" value="{$image_size|escape}">
-	<div class="panel panel-default"><div class="panel-body">
+	<div class="simplebox">
 		{tr}<b>*</b>=optional{/tr}
-		{if $types.$type.show_topline eq 'y'}, {tr}<b>Topline</b>=small line above Title{/tr}{/if}
+		{if $types.$type.show_topline eq 'y'}, {tr}<b>Topline</b>=small line above Title{/tr}{/if} 
 		{if $types.$type.show_subtitle eq 'y'}, {tr}<b>Subtitle</b>=small line below Title{/tr}{/if}
 		{if $types.$type.show_linkto eq 'y'}, {tr}<b>Source</b>=URL to article source{/tr}{/if}
-	</div></div>
+	</div>
 	<br>
 	<table class="formcolor">
 		<tr id='show_topline' {if $types.$type.show_topline eq 'y'}style="display:;"{else}style="display:none;"{/if}>
@@ -141,7 +141,6 @@
 					<option value="1.5" {if $rating eq "1.5"}selected="selected"{/if}>1.5</option>
 					<option value="1" {if $rating eq 1}selected="selected"{/if}>1</option>
 					<option value="0.5" {if $rating eq "0.5"}selected="selected"{/if}>0.5</option>
-					<option value="0" {if $rating eq "0"}selected="selected"{/if}>0</option>
 				</select>
 			</td>
 		</tr>
@@ -263,7 +262,7 @@
 			<td>{tr}Expiration Date{/tr}</td>
 			<td>
 				{html_select_date prefix="expire_" time=$expireDate start_year="-10" end_year="+10" field_order=$prefs.display_field_order}
-				{tr}at{/tr}
+				{tr}at{/tr} 
 				<span dir="ltr">
 					{html_select_time prefix="expire_" time=$expireDate display_seconds=false use_24_hours=$use_24hr_clock}
 					&nbsp;
@@ -285,7 +284,7 @@
 				<input type="hidden" name="allowhtml" value="{if $allowhtml eq 'y'}on{/if}">
 			{/if}
 		{/if}
-
+		
 		{if $prefs.feature_cms_emails eq 'y' and $articleId eq 0}
 			<tr>
 				<td>
@@ -296,7 +295,7 @@
 					<br>
 					{if !empty($userEmail) and $userEmail ne $prefs.sender_email}
 						{tr}From:{/tr} {$userEmail|escape}
-						<input type="radio" name="from" value="{$userEmail|escape}"{if empty($from) or $from eq $userEmail} checked="checked"{/if}>
+						<input type="radio" name="from" value="{$userEmail|escape}"{if empty($from) or $from eq $userEmail} checked="checked"{/if}> 
 						{$prefs.sender_email|escape}
 						<input type="radio" name="from" value="{$prefs.sender_email|escape}"{if $from eq $prefs.sender_email} checked="checked"{/if}>
 					{/if}
@@ -315,7 +314,7 @@
 			{/foreach}
 		{/if}
 	</table>
-
+	
 	<div align="center">
 		{if $prefs.feature_antibot eq 'y'}<br><div align="center">{include file='antibot.tpl' antibot_table='y'}</div><br>{/if}
 		<input type="submit" class="wikiaction btn btn-default" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;">

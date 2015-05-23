@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -18,7 +18,7 @@ class Tracker_Field_File extends Tracker_Field_Abstract
 		return array(
 			'A' => array(
 				'name' => tr('Attachment'),
-				'description' => tr('Deprecated in favor of the Files field.'),
+				'description' => tr('Allows a file to be attached to the tracker item.'),
 				'help' => 'Attachment Field',
 				'prefs' => array('trackerfield_file'),
 				'tags' => array('basic'),

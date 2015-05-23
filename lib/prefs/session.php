@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -34,7 +34,6 @@ function prefs_session_list()
 			'name' => tra('Silent session'),
 			'description' => tra('Do not automatically start sessions.'),
 			'hint' => tra('Users will only have a session if they log in. So anonymous users will lose the capacity to have things like Switch Language or Switch Theme (a session is needed for this)'),
-			'warning' => tra('Can cause problems when combined with cookie consent and javascript disabled browsers.'),
 			'perspective' => false,
 			'type' => 'flag',
 			'default' => 'n',

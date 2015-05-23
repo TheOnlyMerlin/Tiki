@@ -1,15 +1,14 @@
 {* $Id$ *}
-<div class="table-responsive">
 <table class="table normal">
 <tr>
 <th>{tr}Group Name{/tr}</th>
 <th>{tr}Number of Users{/tr}</th>
 <th>{tr}Percentage of Total{/tr}</th>
 </tr>
-
+{cycle values="even,odd" print=false}
 {foreach from=$stats item=stat}
 	{if $stat.group ne 'Anonymous' and $stat.group ne 'Registered'}
-		<tr>
+		<tr class="{cycle}">
 		<td>{$stat.group|escape}</td>
 		<td>{$stat.nb}</td>
 		<td>
@@ -25,4 +24,3 @@
 	{/if}
 {/foreach}
 </table>
-</div>

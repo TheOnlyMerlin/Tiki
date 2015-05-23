@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -30,63 +30,48 @@ class Table_Code_MainOptions extends Table_Code_Manager
 	{
 		$mo = array();
 
-		$mo[] = 'showProcessing: true';
-
 		/***  onRenderHeader option - change html elements before table renders. Repeated for each column. ***/
 		$orh = array();
 		/* First handle column-specific code since the array index is used for the column number */
-		foreach (parent::$s['columns'] as $col => $info) {
-			//turn off column resizing per settings
-			if (isset($info['resizable']) && $info['resizable'] === false) {
-				$allcols[$col]['addClass'][] = 'resizable-false';
-			}
-			//row grouping and sorter settings
-			if (parent::$sorts && parent::$sortcol) {
+		//row grouping and sorter settings
+		if (parent::$sort && is_array(parent::$s['sort']['columns'])) {
+			foreach (parent::$s['sort']['columns'] as $col => $info) {
 				//row grouping setting
 				if (parent::$group) {
-					if (!empty($info['sort']['group'])) {
-						$allcols[$col]['addClass'][] = 'group-' . $info['sort']['group'];
+					if (!empty($info['group'])) {
+						$allcols[$col]['addClass'][] = 'group-' . $info['group'];
 					} else {
 						$allcols[$col]['addClass'][] = 'group-false';
 					}
 				}
-				if (!empty($info['sort']['group']) && parent::$group !== false) {
-					$allcols[$col]['addClass'][] = 'group-' . $info['sort']['group'];
+				if (!empty($info['group']) && parent::$group !== false) {
+					$allcols[$col]['addClass'][] = 'group-' . $info['group'];
 				}
-				if (isset($info['sort']['type']) && $info['sort']['type'] !== true) {
+				if (isset($info['type']) && $info['type'] !== true) {
 					//add class for sort data type or for no sort
-					$sclass = $info['sort']['type'] === false ? 'false' : $info['sort']['type'];
+					$sclass = $info['type'] === false ? 'false' : $info['type'];
 					$allcols[$col]['addClass'][] = 'sorter-' . $sclass;
 				}
 			}
-			//filters
-			if (parent::$filters && parent::$filtercol) {
+		}
+		//filters
+		if (parent::$filters && isset(parent::$s['filters']['columns']) && is_array(parent::$s['filters']['columns'])) {
+			foreach (parent::$s['filters']['columns'] as $col => $info) {
 				//set filter to false for no filter
-				if (isset($info['filter']['type']) && $info['filter']['type'] === false) {
+				if (isset($info['type']) && $info['type'] === false) {
 					$allcols[$col]['addClass'][] = 'filter-false';
 				} else {
 					//add placeholders
-					if (isset($info['filter']['placeholder'])) {
-						$allcols[$col]['data']['placeholder'] = $info['filter']['placeholder'];
+					if (isset($info['placeholder'])) {
+						$allcols[$col]['data']['placeholder'] = $info['placeholder'];
 					}
 				}
 			}
-			//column select
-			if (parent::$s['colselect']['type'] === true) {
-				if (isset($info['priority'])) {
-					$allcols[$col]['attr']['data-priority'] = $info['priority'];
-				}
-			}
 		}
-		unset($col, $info);
 		//process columns
 		if (count($allcols) > 0) {
 			foreach($allcols as $col => $info) {
-				if (parent::$usecolselector) {
-					$orh[$col] = 'if (id == \'' . substr($col,1) . '\'){';
-				} else {
-					$orh[$col] = 'if (index == ' . $col . '){';
-				}
+				$orh[$col] = 'if (index == ' . $col . '){';
 				$orh[$col] .= '$(this)';
 				foreach($info as $attr => $val) {
 					if ($attr == 'addClass') {
@@ -100,36 +85,32 @@ class Table_Code_MainOptions extends Table_Code_Manager
 				}
 				$orh[$col] .= ';}';
 			}
-			unset($col, $info);
 		}
 
 		/* Handle code that applies to all columns now that the array index is not important*/
 		//get rid of self-links
 		if (isset(parent::$s['selflinks']) && parent::$s['selflinks']) {
-			$orh[] = '$(this).find(\'a\').replaceWith(\'<span>\' + $(this).find(\'a\').text() + \'</span>\');';
+			$orh[] = '$(this).find(\'a\').replaceWith($(this).find(\'a\').text());';
 		}
 		//no sort on all columns
-		if (!parent::$sorts) {
+		if (!parent::$sort) {
 			$orh[] = '$(this).addClass(\'sorter-false\');';
 		}
 		if (count($orh) > 0) {
 			array_unshift($mo, 'headerTemplate: \'{content} {icon}\'');
-			if (parent::$usecolselector) {
-				array_unshift($orh, 'var id = $(this).attr(\'id\');');
-			}
 			$mo[] = $this->iterate($orh, 'onRenderHeader: function(index){', $this->nt2 . '}', $this->nt3, '', '');
 		}
 		/***  end onRenderHeader section ***/
 
 		/*** widgets ***/
 		//standard ones
+		$w[] = 'zebra';
 		$w[] = 'stickyHeaders';
-		$w[] = 'resizable';
 		if (parent::$group) {
 			$w[] = 'group';
 		}
 		//saveSort
-		if (isset(parent::$s['sorts']['type']) && strpos(parent::$s['sorts']['type'], 'save') !== false) {
+		if (isset(parent::$s['sort']['type']) && strpos(parent::$s['sort']['type'], 'save') !== false) {
 			$w[] = 'saveSort';
 		}
 		//filter
@@ -137,12 +118,8 @@ class Table_Code_MainOptions extends Table_Code_Manager
 			$w[] = 'filter';
 		}
 		//pager
-		if (parent::$pager) {
+		if (parent::$ajax) {
 			$w[] = 'pager';
-		}
-		//column selector
-		if (parent::$s['colselect']) {
-			$w[] = 'columnSelector';
 		}
 		if (count($w) > 0) {
 			$mo[] = $this->iterate($w, 'widgets : [', ']', '\'', '\'', ',');
@@ -150,44 +127,30 @@ class Table_Code_MainOptions extends Table_Code_Manager
 		/*** end widget section ***/
 
 		//server side sorting
-		if (parent::$sorts && parent::$ajax) {
+		if (parent::$sort && parent::$ajax) {
 			$mo[] = 'serverSideSorting: true';
 		}
 
 		//Turn multi-column sort off (on by default by shift-clicking column headers)
-		if (isset(parent::$s['sorts']['multisort']) && parent::$s['sorts']['multisort'] === false) {
+		if (isset(parent::$s['sort']['multisort']) && parent::$s['sort']['multisort'] === false) {
 			$mo[] =  'sortMultiSortKey : \'none\'';
 		}
 
 		//Sort list
-		if (parent::$sorts && parent::$sortcol) {
+		if (parent::$sort && is_array(parent::$s['sort']['columns'])) {
 			$sl = '';
-			$i = 0;
-			foreach (parent::$s['columns'] as $col => $info) {
-				$info = $info['sort'];
-				$colpointer =  parent::$usecolselector ? $i : $col;
+			foreach (parent::$s['sort']['columns'] as $col => $info) {
 				if (!empty($info['dir'])) {
 					if ($info['dir'] === 'asc') {
-						$sl[] = $colpointer . ',' . '0';
+						$sl[] = $col . ',' . '0';
 					} elseif ($info['dir'] === 'desc') {
-						$sl[] = $colpointer . ',' . '1';
+						$sl[] = $col . ',' . '1';
 					}
 				}
-				$i++;
 			}
-			unset($col, $info);
 			if (is_array($sl)) {
 				$mo[] = $this->iterate($sl, 'sortList : [', ']', '[', ']', ',');
 			}
-		}
-
-		//tiki popover needs to be re-applied due to late loading of tablesorter html
-		$p[] = $this->nt3 . '$(document).tiki_popover();';
-		$mo[] = $this->iterate($p, 'initialized: function(table){', $this->nt2 . '}', '', '', '');
-
-		//Sort image attribute
-		if (!empty(parent::$s['sorts']['imgattr'])) {
-			$mo[] = 'imgAttr: \'title\'';
 		}
 
 		//process main options and add to overall code

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -83,23 +83,14 @@ class Tracker_Field_ItemsList extends Tracker_Field_Abstract
 		);
 	}
 
-	
-	/**
-	 * Get field data
-	 * @see Tracker_Field_Interface::getFieldData()
-	 * 
-	 */
 	function getFieldData(array $requestData = array())
 	{
 		$items = $this->getItemIds();
 		$list = $this->getItemLabels($items);
-		
-		$ret = array(
+		return array(
 			'value' => '',
 			'items' => $list,
 		);
-		
-		return $ret;
 	}
 
 	function renderInput($context = array())
@@ -176,15 +167,6 @@ $("input[name=ins_' . $this->getOption('fieldIdHere') . '], select[name=ins_' . 
 		}
 	}
 
-	function watchCompare($old, $new)
-	{
-		$o = '';
-		$items = $this->getItemIds();
-		$n = $this->getItemLabels($items);
-
-		return parent::watchCompare($o, $n);	// then compare as text
-	}
-
 	function getDocumentPart(Search_Type_Factory_Interface $typeFactory)
 	{
 		$baseKey = $this->getBaseKey();
@@ -215,62 +197,40 @@ $("input[name=ins_' . $this->getOption('fieldIdHere') . '], select[name=ins_' . 
 
 	private function getItemIds()
 	{
-		$trklib = TikiLib::lib('trk');
 		$trackerId = (int) $this->getOption('trackerId');
-		
-		$filterFieldIdHere = (int) $this->getOption('fieldIdHere');
-		$filterFieldIdThere = (int) $this->getOption('fieldIdThere');
-		
-		$filterFieldHere = $this->getTrackerDefinition()->getField($filterFieldIdHere); 
-		$filterFieldThere = $trklib->get_tracker_field($filterFieldIdThere);
-		
-		$displayFieldIds = $this->getOption('displayFieldIdThere');
+		$remoteField = (int) $this->getOption('fieldIdThere');
+		$localField = (int) $this->getOption('fieldIdHere');
+		$localFieldDef = $this->getTrackerDefinition()->getField($localField);
+		$displayFields = $this->getOption('displayFieldIdThere');
 		$status = $this->getOption('status', 'opc');
+
 		$tracker = Tracker_Definition::get($trackerId);
-
-		// note: if itemlink or dynamic item list is used, than the final value to compare with must be calculated based on the current itemid
-
 		$technique = 'value';
 
-		// not sure this is working
-		// r = item link
-		if ($tracker && $filterFieldThere && (!$filterFieldIdHere || $filterFieldThere['type'] === 'r')) {
-			if ($filterFieldThere['type'] == 'r') {
+		if ($tracker && ($field = $tracker->getField($remoteField)) && (!$localField || $field['type'] === 'r')) {
+			if ($field['type'] == 'r') {
 				$technique = 'id';
 			}
 		}
-		
-		// not sure this is working
-		// q = Autoincrement
-		if ($filterFieldHere['type'] == 'q' && isset($filterFieldHere['options_array'][3]) && $filterFieldHere['options_array'][3] == 'itemId') {
+		if ($localFieldDef['type'] == 'q' && isset($localFieldDef['options_array'][3]) && $localFieldDef['options_array'][3] == 'itemId') {		
 			$technique = 'id';
 		}
 
+		$trklib = TikiLib::lib('trk');
 		if ($technique == 'id') {
-			$itemId = $this->getItemId(); 
-			$items = $trklib->get_items_list($trackerId, $filterFieldIdThere, $itemId, $status);
+			$items = $trklib->get_items_list($trackerId, $remoteField, $this->getItemId(), $status);
 		} else {
-			// when this is an item link or dynamic item list field, localvalue contains the target itemId
-			$localValue = $this->getData($filterFieldIdHere); 
+			$localValue = $this->getData($localField);
 			if (!$localValue) {
-				// in some cases e.g. pretty tracker $this->getData($filterFieldIdHere) is not reliable as the info is not there
-				// Note: this fix only works if the itemId is passed via the template
-				$itemId = $this->getItemId();
-				$localValue = $trklib->get_item_value($trackerId, $itemId, $filterFieldIdHere);
+				// in some cases e.g. pretty tracker $this->getData($localField) is not reliable as the info is not there
+				$localValue = $trklib->get_item_value($trackerId, $this->getItemId(), $localField);
 			}
-			
-			// r = item link - not sure this is working 
-			if ($filterFieldHere['type'] == 'r' && isset($filterFieldHere['options_array'][0]) && isset($filterFieldHere['options_array'][1])) {
-				$localValue = $trklib->get_item_value($filterFieldHere['options_array'][0], $localValue, $filterFieldHere['options_array'][1]);
-			}
-			
-			// w = dynamic item list - localvalue is the itemid of the target item. so rewrite.
-			if ($filterFieldHere['type'] == 'w') {
-				$localValue = $trklib->get_item_value($trackerId, $localValue, $filterFieldIdThere);
+			if ($localFieldDef['type'] == 'r' && isset($localFieldDef['options_array'][0]) && isset($localFieldDef['options_array'][1])) {
+				$localValue = $trklib->get_item_value($localFieldDef['options_array'][0], $localValue, $localFieldDef['options_array'][1]);
 			}
 			// Skip nulls
 			if ($localValue) {
-				$items = $trklib->get_items_list($trackerId, $filterFieldIdThere, $localValue, $status);
+				$items = $trklib->get_items_list($trackerId, $remoteField, $localValue, $status);
 			} else {
 				$items = array();
 			}
@@ -279,12 +239,6 @@ $("input[name=ins_' . $this->getOption('fieldIdHere') . '], select[name=ins_' . 
 		return $items;
 	}
 
-	/**
-	 * Get value of displayfields from given array of itemIds
-	 * @param array $items
-	 * @param array $context
-	 * @return array array of values by itemId
-	 */
 	private function getItemLabels($items, $context = array('list_mode' => ''))
 	{
 		$displayFields = $this->getOption('displayFieldIdThere');
@@ -299,7 +253,7 @@ $("input[name=ins_' . $this->getOption('fieldIdHere') . '], select[name=ins_' . 
 		$list = array();
 		$trklib = TikiLib::lib('trk');
 		foreach ($items as $itemId) {
-			if ($displayFields && $displayFields[0]) {
+			if ($displayFields) {
 				$list[$itemId] = $trklib->concat_item_from_fieldslist($trackerId, $itemId, $displayFields, $status, ' ', $context['list_mode'], $this->getOption('linkToItems'));
 			} else {
 				$list[$itemId] = $trklib->get_isMain_value($trackerId, $itemId);

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -50,19 +50,13 @@ class Search_ContentSource_UserSource implements Search_ContentSource_Interface
 
 		$loc = $this->geo->build_location_string($detail['preferences']);
 
-		$country = '';
-		if (isset($detail['preferences']['country'])) {
-			$country = $detail['preferences']['country'];
-		}
-
 		$data = array(
 			'title' => $typeFactory->sortable($name),
 			'wiki_content' => $typeFactory->wikitext($content),
-			'user_country' => $typeFactory->sortable($country),
+			'user_country' => $typeFactory->sortable($detail['preferences']['country']),
 			'geo_located' => $typeFactory->identifier(empty($loc) ? 'n' : 'y'),
 			'geo_location' => $typeFactory->identifier($loc),
 			'searchable' => $typeFactory->identifier($this->userIsIndexed($detail) ? 'y' : 'n'),
-			'groups' => $typeFactory->multivalue($detail['groups']),
 			'_extra_groups' => array('Registered'), // Add all registered to allowed groups
 		);
 

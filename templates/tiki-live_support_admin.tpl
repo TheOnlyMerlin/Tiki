@@ -1,10 +1,10 @@
 {title help="Live+Support"}{tr}Live support system{/tr}{/title}
 
-<div class="t_navbar margin-bottom-md">
-	{button href='#' _onclick="javascript:window.open('tiki-live_support_console.php','','menubar=no,scrollbars=yes,resizable=yes,height=400,width=600');" class="btn btn-default" _text="{tr}Open operator console{/tr}"}
-	{button href='#' _onclick="javascript:window.open('tiki-live_support_client.php','','menubar=no,scrollbars=yes,resizable=yes,height=450,width=300');" class="btn btn-default" _text="{tr}Open client window{/tr}"}
-	{button href="?show_html" class="btn btn-default" _text="{tr}Generate HTML{/tr}"}
-	{button href="tiki-live_support_transcripts.php" class="btn btn-default" _text="{tr}Transcripts{/tr}"}
+<div class="navbar">
+	{button href='#' _onclick="javascript:window.open('tiki-live_support_console.php','','menubar=no,scrollbars=yes,resizable=yes,height=400,width=600');" _text="{tr}Open operator console{/tr}"}
+	{button href='#' _onclick="javascript:window.open('tiki-live_support_client.php','','menubar=no,scrollbars=yes,resizable=yes,height=450,width=300');" _text="{tr}Open client window{/tr}"}
+	{button href="?show_html" _text="{tr}Generate HTML{/tr}"}
+	{button href="tiki-live_support_transcripts.php" _text="{tr}Transcripts{/tr}"}
 </div>
 
 {if $html}
@@ -13,7 +13,7 @@
 	<table>
 	<tr>
 		<td>
-		<small>HTML code</small><br>
+		<small>HTML code</small><br>	
 		<textarea rows="5" cols="60">{$html|escape}</textarea>
 		</td>
 		<td>
@@ -21,25 +21,24 @@
 		{$html}
 		</td>
 	</tr>
-	</table>
+	</table>	
 {/if}
 {if count($online_operators) > 0}
 <h2>{tr}Online operators{/tr}</h2>
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
-		<th style="text-align:center;">
+		<th style="text-align:center;">	
 		{tr}Operator{/tr}
 		</th>
 		<th colspan='2'>
 		{tr}Stats{/tr}
-		</th>
+		</th>		
 	</tr>
-{cycle values='odd,even' print=false}
+{cycle values='odd,even' print=false}	
 {section name=ix loop=$online_operators}
-<tr>
+<tr class="{cycle}">
 		<td style="text-align:center;">
-			{$online_operators[ix].user|avatarize}<br>
+			{$online_operators[ix].user|avatarize}<br>	
 			<b>{$online_operators[ix].user|escape}</b>
 		</td>
 		<td>
@@ -68,26 +67,24 @@
 	</tr>
 {/section}
 </table>
-</div>
 {/if}
 
 {if count($offline_operators) > 0}
 <h2>{tr}Offline operators{/tr}</h2>
 {cycle values='odd,even' print=false}
-<div class="table-responsive">
 <table class="table normal">
 	<tr>
-		<th style="text-align:center;">
+		<th style="text-align:center;">	
 		{tr}Operator{/tr}
 		</th>
 		<th colspan='2'>
 		{tr}Stats{/tr}
-		</th>
+		</th>		
 	</tr>
 {section name=ix loop=$offline_operators}
-	<tr>
+	<tr class="{cycle}">
 		<td style="text-align:center;">
-			{$offline_operators[ix].user|avatarize}<br>
+			{$offline_operators[ix].user|avatarize}<br>	
 			<b>{$offline_operators[ix].user|escape}</b>
 		</td>
 		<td>
@@ -112,7 +109,6 @@
 	</tr>
 {/section}
 </table>
-</div>
 {/if}
 
 {if $tiki_p_live_support_admin eq 'y'}
@@ -133,7 +129,7 @@
 	<tr>
 		<td>&nbsp;</td>
 		<td>
-			<input type="submit" class="btn btn-default btn-sm" name="adduser" value="{tr}Set as Operator{/tr}">
+			<input type="submit" class="btn btn-default" name="adduser" value="{tr}Set as Operator{/tr}">
 		</td>
 	</tr>
 </table>

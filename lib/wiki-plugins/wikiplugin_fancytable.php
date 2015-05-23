@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,15 +7,11 @@
 
 function wikiplugin_fancytable_info()
 {
-	$tsOn = Table_Check::isEnabled();
-	if ($tsOn === true) {
-		$ts = new Table_Plugin;
-		$ts->createParams();
-		$tsparams = $ts->params;
-		unset($tsparams['server']);
-	} else {
-		$tsparams = array();
-	}
+
+	$ts = new Table_Plugin;
+	$ts->createParams();
+	$tsparams = $ts->params;
+	unset($tsparams['server']);
 	$params = array_merge(
 		array(
 			 'head' => array(
@@ -86,25 +82,24 @@ function wikiplugin_fancytable($data, $params)
 	$msg = '';
 
 	if ((isset($sortable) && $sortable != 'n')) {
-		if (Table_Check::isEnabled()) {
-			$ts = new Table_Plugin;
+		$ts = new Table_Plugin;
+		if ($ts->perms !== false) {
 			$ts->setSettings(
-				'wpfancytable' . $iFancytable,
+				'fancytable_' . $iFancytable,
 				'n',
 				$sortable,
 				isset($sortList) ? $sortList : null,
 				isset($tsortcolumns) ? $tsortcolumns : null,
 				isset($tsfilters) ? $tsfilters : null,
 				isset($tsfilteroptions) ? $tsfilteroptions : null,
-				isset($tspaginate) ? $tspaginate : null,
-				isset($tscolselect) ? $tscolselect : null
+				isset($tspaginate) ? $tspaginate : null
 			);
-			if (is_array($ts->settings)) {
-				Table_Factory::build('plugin', $ts->settings);
-				$sort = true;
-			} else {
-				$sort = false;
-			}
+		} else {
+			$sort = false;
+		}
+		if (is_array($ts->settings)) {
+			Table_Factory::build('plugin', $ts->settings);
+			$sort = true;
 		} else {
 			$sort = false;
 		}
@@ -125,8 +120,8 @@ function wikiplugin_fancytable($data, $params)
 
 	//Start the table
 	$style = $sort === true ? ' style="visibility:hidden"' : '';
-	$wret = '<div id="wpfancytable' . $iFancytable . '-div"' . $style . ' class="ts-wrapperdiv">' . "\r\t";
-	$wret .= '<table class="table table-striped table-hover normal" id="wpfancytable' . $iFancytable . '">' . "\r\t";
+	$wret = '<div id="fancytable_' . $iFancytable . '"' . $style . '>' . "\r\t";
+	$wret .= '<table class="normal" id="fancytable_' . $iFancytable . '_table">' . "\r\t";
 
 	//Header
 	if (isset($head)) {

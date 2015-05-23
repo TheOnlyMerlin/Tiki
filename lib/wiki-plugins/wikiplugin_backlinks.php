@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -36,8 +36,8 @@ class WikiPluginBackLinks extends PluginsLib
 
 	function run ($data, $params)
 	{
-		$wikilib = TikiLib::lib('wiki');
-		$exclude = isset($params['exclude']) ? $params['exclude'] : '';
+		global $wikilib; include_once('lib/wiki/wikilib.php');
+		$exclude = $params['exclude'];
 		$params = $this->getParams($params, true);
 		$aInfoPreset = array_keys($this->aInfoPresetNames);
 		extract($params, EXTR_SKIP);
@@ -168,6 +168,6 @@ function wikiplugin_backlinks_info()
 
 function wikiplugin_backlinks($data, $params)
 {
-    $plugin = new wikipluginbacklinks();
-    return $plugin->run($data, $params);
+	$plugin = new wikipluginbacklinks();
+	return $plugin->run($data, $params);
 }

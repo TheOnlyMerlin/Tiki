@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -20,17 +20,19 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
  */
 class Table_Plugin
 {
-	/**
-	 * Standard tablesorter parameters for a plugin
-	 * @var array
-	 */
 	public $params = array();
-
-	/**
-	 * Holds the settings created by setSettings function below
-	 * @var
-	 */
 	public $settings;
+	public $perms = true;
+
+
+	public function __construct()
+	{
+		global $prefs;
+		if ($prefs['disableJavascript'] === 'y' || $prefs['feature_jquery_tablesorter'] === 'n') {
+			$this->perms = false;
+		}
+
+	}
 
 	/**
 	 * Creates parameters that can be appended to a plugin's native parameters so the user can
@@ -111,8 +113,7 @@ class Table_Plugin
 					. '<br> <b>Text - </b>type:text;placeholder:xxxx<br>' .
 					tra('(For PluginTrackerlist this will be an exact search, for other plugins partial values will work.)') . '<br>
 					<b>Dropdown - </b>type:dropdown;placeholder:****;option:****;option:****;option:**** <br>' .
-					tra('Options generated automatically if not set and the server parameter is not \'y\'.') . '<br>' .
-					tra('Use \'value=Display label\' to have the option value be different than the displayed label in the dropdown.') . '<br>
+					tra('(options generated automatically if not set and the server parameter is not \'y\')') . '<br>
 					<b>' . tra('Date range - ') . '</b>type:date;format:yy-mm-dd;from:2013-06-30;to:2020-12-31<br>' .
 					tra('(from and to values set defaults for these fields when user clicks on the input field)') . '<br>
 					<b>' . tra('Numeric range - ') . '</b>type:range;from:0;to:50<br>
@@ -150,19 +151,6 @@ class Table_Plugin
 				'filter' => 'striptags',
 				'advanced' => true,
 			),
-			'tscolselect' => array(
-				'required' => false,
-				'name' => tra('Column Select'),
-				'description' => tr(
-					'Add a button for hiding and re-showing columns. Also sets priority for dropping columns when
-				 	browser is too narrow. Set each column to a number between 1 and 6 (1 is highest priority and last
-				 	to be dropped) or to %0critical%1 to never hide or drop. An example with 4 columns:',
-						'<b>', '</b>') .
-					'tscolselect="critical|4|5|6"',
-				'default' => '',
-				'filter' => 'striptags',
-				'advanced' => true,
-			),
 		);
 	}
 
@@ -181,8 +169,7 @@ class Table_Plugin
 	 * @param null   $totalrows			//only needed if ajax will be used to pull partial record sets
 	 */
 	public function setSettings ($id = null, $server = 'n', $sortable = 'n', $sortList = null, $tsortcolumns = null,
-		$tsfilters = null, $tsfilteroptions = null, $tspaginate = null, $tscolselect = null, $ajaxurl = null,
-		$totalrows = null)
+		$tsfilters = null, $tsfilteroptions = null, $tspaginate = null, $ajaxurl = null, $totalrows = null)
 	{
 		$s = array();
 
@@ -195,20 +182,20 @@ class Table_Plugin
 		switch ($sortable) {
 			case 'y':
 			case 'server':
-				$s['sorts']['type'] = true;
+				$s['sort']['type'] = true;
 				break;
 			case 'n':
-				$s['sorts']['type'] = false;
+				$s['sort']['type'] = false;
 				break;
 			default:
 				$sp = $this->parseParam($sortable);
 				if (isset($sp[0]['type'])) {
-					$s['sorts']['type'] = $sp[0]['type'];
+					$s['sort']['type'] = $sp[0]['type'];
 				}
 		}
 
 		//sortlist
-		if (!empty($sortList) && (!isset($s['sorts']['type']) || $s['sorts']['type'] !== false)) {
+		if (!empty($sortList) && $s['sort']['type'] !== false) {
 			$crop = substr($sortList, 1);
 			$crop = substr($crop, 0, -1);
 			$slarray = explode('],[', $crop);
@@ -230,16 +217,16 @@ class Table_Plugin
 								$dir = false;
 								break;
 							default:
-								if($s['sorts']['type'] !== false) {
+								if($s['sort']['type'] !== false) {
 									$dir = true;
 								} else {
 									$dir = false;
 								}
 						}
 						if ($dir === false || $dir === true) {
-							$s['columns'][$lpieces[0]]['sort']['type'] = $dir;
+							$s['sort']['columns'][$lpieces[0]]['type'] = $dir;
 						} else {
-							$s['columns'][$lpieces[0]]['sort']['dir'] = $dir;
+							$s['sort']['columns'][$lpieces[0]]['dir'] = $dir;
 						}
 					}
 				}
@@ -249,17 +236,17 @@ class Table_Plugin
 		if (!empty($tsortcolumns)) {
 			$tsc = $this->parseParam($tsortcolumns);
 			if (is_array($tsc)) {
-				foreach ($tsc as $col => $sortinfo) {
-					if (isset($s['columns'][$col]['sort'])) {
-						$s['columns'][$col]['sort'] = $s['columns'][$col]['sort'] + $sortinfo;
+				foreach ($tsc as $col => $info) {
+					if (isset($s['sort']['columns'][$col])) {
+						$s['sort']['columns'][$col] = $s['sort']['columns'][$col] + $info;
 					} else {
-						$s['columns'][$col]['sort'] = $sortinfo;
+						$s['sort']['columns'][$col] = $info;
 					}
 				}
-				ksort($s['columns']);
+				ksort($s['sort']['columns']);
 			}
 		} else {
-			$s['sorts']['group'] = false;
+			$s['sort']['group'] = false;
 		}
 
 		//tsfilters
@@ -274,19 +261,7 @@ class Table_Plugin
 				default:
 					$tsf = $this->parseParam($tsfilters);
 					if (is_array($tsf)) {
-						foreach ($tsf as $col => $filterinfo) {
-							if (isset($filterinfo) && $filterinfo['type'] === 'dropdown'
-								&& !empty($filterinfo['options'])) {
-								foreach ($filterinfo['options'] as $key => $value) {
-									$filterinfo['options'][$key] = str_replace('=', '|', $value);
-								}
-							}
-							if (isset($s['columns'][$col]['filter'])) {
-								$s['columns'][$col]['filter'] = $s['columns'][$col]['filter'] + $filterinfo;
-							} else {
-								$s['columns'][$col]['filter'] = $filterinfo;
-							}
-						}
+						$s['filters']['columns'] = $this->parseParam($tsfilters);
 					}
 			}
 		}
@@ -311,7 +286,7 @@ class Table_Plugin
 			if (is_array($tsp[0]) || $tsp[0] !== 'n' || ($tsp[0] === 'n' && $server === 'y')) {
 				if (is_array($tsp[0])) {
 					$s['pager'] = $tsp[0];
-					if (isset($s['pager']['expand']) && is_array($s['pager']['expand'])) {
+					if (is_array($s['pager']['expand'])) {
 						if (isset($s['pager']['max']) && $s['pager']['max'] > 0) {
 							$s['pager']['expand'] = array_merge(array($s['pager']['max']), $s['pager']['expand']);
 						} else {
@@ -327,22 +302,9 @@ class Table_Plugin
 			}
 		}
 
-		//tscolselect
-		if (!empty($tscolselect)) {
-			$tscs = $this->parseParam($tscolselect);
-			if (is_array($tscs)) {
-				$s['colselect']['type'] = true;
-				foreach ($tscs as $col => $priority) {
-					$s['columns'][$col]['priority'] = $priority;
-				}
-			}
-		}
-
 		//ajaxurl
 		if (!empty($ajaxurl) && $server === 'y') {
-			$url = $this->getAjaxurl($ajaxurl);
-			$s['ajax']['url']['file'] = $url['path'];
-			$s['ajax']['url']['query'] = $url['query'];
+			$s['ajax']['url'] = $this->getAjaxurl($ajaxurl);
 			$s['ajax']['type'] = true;
 		} else {
 			$s['ajax']['type'] = false;
@@ -415,11 +377,11 @@ class Table_Plugin
 		$str = '{sort:sort}&{filter:filter}';
 		$url = parse_url($ajaxurl);
 		if (isset($url['query'])) {
-			$url['query'] = '?' .  $url['query'] . '&' . $str;
+			$query = $url['query'] . '&' . $str;
 		} else {
-			$url['query'] = '?' . $str;
+			$query = $str;
 		}
-		return $url;
+		return $url['path'] . '?' . $query;
 	}
 
 }

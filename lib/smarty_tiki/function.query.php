@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -165,18 +165,7 @@ function smarty_function_query($params, $smarty)
 					$smarty
 				);
 			} else {
-				if ($_SERVER['PHP_SELF'] == 'tiki-ajax_services.php' && isset($_GET['controller'], $_GET['action'])) {
-					$smarty->loadPlugin('smarty_function_service');
-					$php_self = smarty_function_service(
-						array(
-							'controller' => $_GET['controller'],
-							'action' => $_GET['action'],
-						),
-						$smarty
-					);
-				} else {
-					$php_self = htmlspecialchars($_SERVER['PHP_SELF']);
-				}
+				$php_self = htmlspecialchars($_SERVER['PHP_SELF']);
 			}
 
 		} else {

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,13 +15,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
  * smarty_function_icon: Display a Tiki icon, using theme icons if they exists
  *
  * params will be used as params for the HTML tag (e.g. border, class, ...), except special params starting with '_' :
- *  - _id: [deprecated] short name (i.e. 'page_edit') or relative file path (i.e. 'img/icons/page_edit.png').
- *          Will not work with iconsets.
- *  - name: name of icon from themes/base_files/iconsets file, which allows for choosing different iconsets.
- *          Use instead of _id.
- *  - class set custom class (otherwise default classes are applied). When using icon sets, this class will apply to
- *          anchor element
- *  - iclass set custom class for the icon itself (not the link)
+ *  - _id: short name (i.e. 'page_edit') or relative file path (i.e. 'img/icons/page_edit.png'). [required]
  *  - _type: type of URL to use (e.g. 'absolute_uri', 'absolute_path'). Defaults to a relative URL.
  *  - _tag: type of HTML tag to use (e.g. 'img', 'input_image'). Defaults to 'img' tag.
  *  - _notag: if set to 'y', will only return the URL (which also handles theme icons).
@@ -34,19 +28,17 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
  */
 function smarty_function_icon($params, $smarty)
 {
-	if ( ! is_array($params) ) {
+	if ( ! is_array($params) )
 		$params = array();
-	}
 
-	global $prefs, $tc_theme, $tc_theme_option, $url_path, $base_url, $tikipath, $iconset;
-	$cachelib = TikiLib::lib('cache');
+	global $prefs, $tc_theme, $tc_theme_option, $cachelib, $url_path, $base_url, $tikipath, $tikilib;
 
 	if (empty($tc_theme)) {
-		$current_theme = $prefs['theme'];
-		$current_theme_option = isset($prefs['theme_option']) ? $prefs['theme_option'] : '';
+		$current_style = $prefs['style'];
+		$current_style_option = isset($prefs['style_option']) ? $prefs['style_option'] : '';
 	} else {
-		$current_theme = $tc_theme;
-		$current_theme_option = !empty($tc_theme_option) ? $tc_theme_option : '';
+		$current_style = $tc_theme;
+		$current_style_option = !empty($tc_theme_option) ? $tc_theme_option : '';
 	}
 
 	if (isset($params['_type'])) {
@@ -57,8 +49,12 @@ function smarty_function_icon($params, $smarty)
 		}
 	}
 
-	$serialized_params = serialize(array_merge($params, array($current_theme, $current_theme_option, isset($_SERVER['HTTPS']))));
-	$cache_key = TikiLib::contextualizeKey('icons_' . '_' . md5($serialized_params), 'language', 'external');
+	$serialized_params = serialize(array_merge($params, array($current_style, $current_style_option, isset($_SERVER['HTTPS']))));
+	if ($prefs['mobile_feature'] === 'y') {
+		$serialized_params .=  $prefs['mobile_mode'];
+	}
+	$language = isset($prefs['language']) ? $prefs['language'] : 'en';
+	$cache_key = 'icons_' . $language . '_' . md5($serialized_params);
 	if ( $cached = $cachelib->getCached($cache_key) ) {
 		return $cached;
 	}
@@ -88,67 +84,6 @@ function smarty_function_icon($params, $smarty)
 			$default_width = $default_height = ( strpos($params['_id'], '48x48') !== false ) ? 48 : 32;
 		}
 	}
-	// ICONSET START, work-in-progress, more information: dev.tiki.org/icons. $iconset array is prepared by lib/setup/theme.php
-	// N.B. In some contexts such as the console $iconset may not be set up
-	if (!empty($params['name']) && empty($params['_tag']) && !empty($iconset)) {
-
-		$name = $params['name'];
-		$html = $iconset->getHtml($name, $params);
-		$menu_text = (isset($params['_menu_text']) && $params['_menu_text'] == 'y');
-		if (!empty($params['href']) || !empty($params['title']) || $menu_text) {
-			/* Generate a link for the icon if href or title (for tips) parameter is set.
-			 * This will produce a link element (<a>) around the icon.
-			 * If you want a button element (<button>), use the {button} smarty_tiki function */
-
-			//collect link components
-			if (!empty($params['title'])) { //add title if not empty
-				$a_title = $params['title'];
-			} elseif (!empty($params['alt'])) {
-				$a_title = $params['alt'];
-			} else {
-				$a_title = '';
-			}
-			if (!empty($a_title)) {
-				$title_attr = $menu_text ? '' : 'title="' . $a_title . '"';
-			} else {
-				$title_attr = '';
-			}
-			if (isset($params['class'])) { //if set, use these classes instead of the default bootstrap
-				$a_class = $params['class'];
-			} else {
-				$a_class = 'btn btn-link'; //the default classes to be used
-			}
-
-			if (!empty($params['href'])) { //use href if not empty
-				$a_href = 'href="' . $params['href'] . '"';
-			} else {
-				$a_href = '';
-			}
-	
-			if (isset($params['data-toggle'])) { //add data-toggle if set
-				$a_datatoggle = 'data-toggle="' . $params['data-toggle'] . '"';
-			} else {
-				$a_datatoggle = '';
-			}
-					
-			if (isset($params['onclick'])) { //add onclick if set
-				$a_onclick = 'onclick="' . $params['onclick'] . '"';
-			} else {
-				$a_onclick = '';
-			}
-
-			//assemble the link from the components
-			if ($menu_text) {
-				$icon = isset($params['_menu_icon']) && $params['_menu_icon'] === 'y' ? $html : '';
-				$html = '<div class="iconmenu">' . $icon . '<span class="iconmenutext"> ' . $a_title . '</span></div>';
-			} else {
-				$html = "<a class='$a_class' $title_attr $a_href $a_datatoggle $a_onclick>$html</a>";
-			}
-		}
-		//return the icon
-		return $html;
-		
-	} //ICONSET END 
 
 	// Handle _ids that contains the real filename and path
 	if ( strpos($params['_id'], '/') !== false || strpos($params['_id'], '.') !== false ) {
@@ -187,11 +122,10 @@ function smarty_function_icon($params, $smarty)
 		if ( $k[0] == '_' ) {
 			switch ( $k ) {
 				case '_id':
-					$img_file = $v.$icons_extension;
-					$v = $icons_basedir.$img_file;
-					$themelib = TikiLib::lib('theme');
-					$v2 = $themelib->get_theme_path($current_theme, $current_theme_option, $img_file, 'icons/');
-					
+					$v = $icons_basedir.$v.$icons_extension;
+					if ($tikilib != NULL)
+						$v2 = $tikilib->get_style_path($prefs['style'], $prefs['style_option'], $v);
+
 					if (!empty($v2)) {
 						$params['file'] = $v2;
 					} else {
@@ -261,27 +195,33 @@ function smarty_function_icon($params, $smarty)
 		}
 
 		if ( $tag != 'img' ) {
-			$params['src'] = TikiLib::tikiUrlOpt($params['file']);
+			$params['src'] = $params['file'];
 			unset($params['file']);
 			foreach ( $params as $k => $v ) {
 				$html .= ' ' . htmlspecialchars($k, ENT_QUOTES, 'UTF-8') . '="' . htmlspecialchars($v, ENT_QUOTES, 'UTF-8') . '"';
 			}
 		}
 
-		if (!empty($params['file'])) {
-			$headerlib = TikiLib::lib('header');
+		$headerlib = TikiLib::lib('header');
+		if (!empty($params['file']) && $headerlib) {
 			$params['file'] = $headerlib->convert_cdn($params['file']);
-			$params['file'] = TikiLib::tikiUrlOpt($params['file']);
 		}
 
 		switch ( $tag ) {
 			case 'input_image':
-				$html = '<input type="image"'.$html.' />';
+				if ($prefs['mobile_feature'] !== 'y' || $prefs['mobile_mode'] !== 'y') {
+					$html = '<input type="image"'.$html.' />';
+				} else {
+					$html = '<span data-role="button" data-inline="true"><input type="image"'.$html.' /></span>';
+				}
 				break;
 			case 'img':
 			default:
 				try {
 					$html = smarty_function_html_image($params, $smarty);
+					if ($prefs['mobile_feature'] === 'y' && $prefs['mobile_mode'] === 'y' && (!empty($params['link']) ||!empty($params['href']))) {
+						$html = str_replace('<a ', '<a  data-role="button" data-inline="true"', $html);
+					}
 				} catch (Exception $e) {
 					$html = '<span class="icon error" title="' . tra('Error:') . ' ' . $e->getMessage() . '">?</span>';
 				}

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -22,6 +22,7 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 require_once('lib/tikilib.php'); // httpScheme(), get_user_preference
 require_once('lib/webmail/tikimaillib.php');
 require_once('lib/db/tiki_registration_fields.php');
+require_once('lib/notifications/notificationlib.php');
 
 if (!isset($Debug)) {
 	$Debug = false;
@@ -204,9 +205,7 @@ class RegistrationLib extends TikiLib
 	 */
 	private function local_check_registration($registration, $from_intertiki = false)
 	{
-		global $prefs;
-		$userlib = TikiLib::lib('user');
-		$captchalib = TikiLib::lib('captcha');
+		global $_SESSION, $prefs, $userlib, $captchalib;
 
 		$errors = array();
 
@@ -313,12 +312,7 @@ class RegistrationLib extends TikiLib
 	 */
 	private function register_new_user_local($registration, $from_intertiki)
 	{
-		global $prefs;
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
-		$smarty = TikiLib::lib('smarty');
-		$logslib = TikiLib::lib('logs');
-		$notificationlib = TikiLib::lib('notification');
+		global $_SESSION, $tikilib, $logslib, $userlib, $notificationlib, $prefs, $smarty;
 
 		$result = '';
 
@@ -444,6 +438,7 @@ class RegistrationLib extends TikiLib
 	{
 		global $prefs;
 
+		include_once('XML/RPC.php');
 		$remote = $prefs['interlist'][$prefs['feature_intertiki_mymaster']];
 		$client = new XML_RPC_Client($remote['path'], $remote['host'], $remote['port']);
 		$client->setDebug(0);
@@ -483,8 +478,7 @@ class RegistrationLib extends TikiLib
 	 */
 	public function register_new_user($registration, $from_intertiki=false)
 	{
-		global $prefs;
-		$tikilib = TikiLib::lib('tiki');
+		global $prefs, $tikilib;
 
 		if ($prefs['login_is_email'] == 'y' && isset($registration['name'])) {
 			$registration['email'] = $registration['name'];
@@ -640,8 +634,7 @@ class RegistrationLib extends TikiLib
 
 	private function init_registration_prefs()
 	{
-		global $prefs;
-		$userlib = TikiLib::lib('user');
+		global $userlib, $prefs;
 
 		if (!is_array($this->merged_prefs)) {
 			// local tiki prefs
@@ -677,6 +670,7 @@ class RegistrationLib extends TikiLib
 			}
 
 			if ($prefs['feature_intertiki'] == 'y' && !empty($prefs['feature_intertiki_mymaster'])) {
+				include_once('XML/RPC.php');
 				$remote = $prefs['interlist'][$prefs['feature_intertiki_mymaster']];
 				$client = new XML_RPC_Client($remote['path'], $remote['host'], $remote['port']);
 				$client->setDebug(0);
@@ -766,3 +760,5 @@ class RegistrationError
 		$this->msg = $msg;
 	}
 }
+global $registrationlib;
+$registrationlib = new RegistrationLib();

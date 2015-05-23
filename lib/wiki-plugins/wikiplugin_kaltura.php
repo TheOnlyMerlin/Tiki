@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -177,9 +177,9 @@ REG
 			);
 
 		} else if (!empty($user)) {
-			$html = '<span class="alert-warning">' . tra('Media id or permission to upload video is required') . '</span>';
+			$html = '<span class="error">' . tra('Media id or permission to upload video is required') . '</span>';
 		} else {
-			$html = '<span class="alert-warning">' . tra('Log in to upload video') . '</span>';
+			$html = '<span class="error">' . tra('Log in to upload video') . '</span>';
 		}
 
 		return $html;
@@ -202,7 +202,7 @@ REG
 				$params['height'] = $player['height'];
 			}
 		} else {
-			return '<span class="alert-warning">' . tra('Player not found') . '</span>';
+			return '<span class="error">' . tra('Player not found') . '</span>';
 		}
 	}
 
@@ -238,7 +238,7 @@ REG
 		}
 
 		TikiLib::lib('header')
-			->add_jsfile_cdn("{$prefs['kaltura_kServiceUrl']}/p/{$prefs['kaltura_partnerId']}/sp/{$prefs['kaltura_partnerId']}00{$embedIframeJs}/uiconf_id/{$params['player_id']}/partner_id/{$prefs['kaltura_partnerId']}")
+			->add_jsfile("{$prefs['kaltura_kServiceUrl']}/p/{$prefs['kaltura_partnerId']}/sp/{$prefs['kaltura_partnerId']}00{$embedIframeJs}/uiconf_id/{$params['player_id']}/partner_id/{$prefs['kaltura_partnerId']}")
 			->add_jq_onready(
 				"
 mw.setConfig('Kaltura.LeadWithHTML5', $leadWithHTML5);

@@ -1,24 +1,60 @@
-{* $Id$ *}
 {if empty($user) || $user eq 'anonymous' || !empty($showantibot)}
-	<div class="form-group">
-		{if $captchalib->type eq 'recaptcha'}
-			{$captchalib->render()}
-		{else}
-			<input type="hidden" name="captcha[id]" id="captchaId" value="{$captchalib->generate()}">
-			<label class="control-label" for="antibotcode">{tr}Enter what you see{/tr}{if $showmandatory eq 'y'}<span class="attention"> *</span>{/if}</label>
-			<input class="form-control" type="text" maxlength="8" size="22" name="captcha[input]" id="antibotcode">
-			{if $captchalib->type eq 'default'}
-				<img id="captchaImg" src="{$captchalib->getPath()}" alt="{tr}Anti-Bot verification code image{/tr}" height="50">
-			{else}
-				{* dumb captcha *}
+	{if $antibot_table ne 'y'}
+		<tr{if !empty($tr_style)} class="{$tr_style}"{/if}>
+		<td{if !empty($td_style)} class="{$td_style}"{/if}>
+	{else}
+		<div class="antibot1">
+	{/if}
+	{if $antibot_table ne 'y'}
+		</td>
+		<td id="captcha" {if !empty($td_style)} class="{$td_style}"{/if}>
+	{else}
+		</div>
+		<div class="antibot2">
+	{/if}
+			{if $captchalib->type eq 'recaptcha'}
 				{$captchalib->render()}
+			{else}
+				<input type="hidden" name="captcha[id]" id="captchaId" value="{$captchalib->generate()}">
+				{if $captchalib->type eq 'default'}
+					<img id="captchaImg" src="{$captchalib->getPath()}" alt="{tr}Anti-Bot verification code image{/tr}" height="50">
+				{else}
+					{* dumb captcha *}
+					{$captchalib->render()}
+				{/if}
 			{/if}
+	{if $antibot_table ne 'y'}
+		</td>
+	</tr>
+	{else}
+		</div>
+	{/if}
+	{if $captchalib->type ne 'recaptcha'}
+		{if $antibot_table ne 'y'}
+		<tr{if !empty($tr_style)} class="{$tr_style}"{/if}>
+			<td{if !empty($td_style)} class="{$td_style}"{/if}>
+		{else}
+			<div class="antibot3">
 		{/if}
-
-		{if $captchalib->type eq 'default'}
-			{button _id='captchaRegenerate' _class='' href='#antibot' _text='{tr}Try another code{/tr}' _icon_name="refresh" _onclick="generateCaptcha()"}
+			<label for="antibotcode">{tr}Enter the code you see above{/tr}{if $showmandatory eq 'y'}<span class="attention"> *</span>{/if}</label>
+		{if $antibot_table ne 'y'}
+			</td>
+			<td{if !empty($td_style)} class="{$td_style}"{/if}>
+		{else}
+			</div>
+			<div class="antibot4">
 		{/if}
-	</div>
+				<input type="text" maxlength="8" size="22" name="captcha[input]" id="antibotcode">
+			{if $captchalib->type eq 'default'}
+				{button _id='captchaRegenerate' href='#antibot' _text="{tr}Try another code{/tr}" _onclick="generateCaptcha()"}
+			{/if}
+		{if $antibot_table ne 'y'}
+			</td>
+		</tr>
+		{else}
+			</div>
+		{/if}
+	{/if}
 {/if}
 {jq}
 if($("#antibotcode").parents('form').data("validator")) {
@@ -34,12 +70,12 @@ if($("#antibotcode").parents('form').data("validator")) {
 				},
 				input: function() {
 					return $("#antibotcode").val();
-				}
-			}
+				} 
+			} 
 		}
 	});
-} else if (jqueryTiki.validate) {
-	$("#antibotcode").parents('form').validate({
+} else {
+    $("#antibotcode").parents('form').validate({
 		rules: {
 			"captcha[input]": {
 				required: true,
@@ -53,8 +89,8 @@ if($("#antibotcode").parents('form').data("validator")) {
 						},
 						input: function() {
 							return $("#antibotcode").val();
-						}
-					}
+						} 
+					} 
 				}
 			}
 		},

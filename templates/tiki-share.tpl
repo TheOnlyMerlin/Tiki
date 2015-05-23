@@ -4,8 +4,8 @@
 {/title}
 
 {if isset($sent) && empty($errors)}
-	<div id="success" class="alert alert-warning">
-		{icon name='ok' alt="{tr}OK{/tr}" style="vertical-align:middle" align="left"}
+	<div class="simplebox highlight">
+		{icon _id=accept alt="{tr}OK{/tr}" style="vertical-align:middle" align="left"}
 		{tr}Page shared:{/tr}<br>
 		{if isset($emailSent)}
 			<div>
@@ -14,13 +14,13 @@
 		{/if}
 		{if isset($tweetId)}
 			<div>
-				<a href="http://www.twitter.com/">{icon name='twitter' size='2'}</a>
+				<a href="http://www.twitter.com/"><img src="img/icons/twitter_t_logo_32.png"></a>
 				{tr}The link was sent via Twitter{/tr}
 			</div>
 		{/if}
 		{if isset($facebookId) and $facebookId!=false}
 			<div>
-				{icon name='facebook' size='2'}{tr}The link was posted on your Facebook wall{/tr}
+				<img src="img/icons/facebook-logo_32.png">{tr}The link was posted on your Facebook wall{/tr}
 			</div>
 		{/if}
 		{if isset($messageSent)}
@@ -40,8 +40,8 @@
 {/if}
 
 {if !empty($errors)}
-	<div id="shareerror" class="alert alert-warning">
-		{icon name='error' alt="{tr}Error{/tr}" style="vertical-align:middle" align="left"}
+	<div class="simplebox highlight">
+		{icon _id=exclamation alt="{tr}Error{/tr}" style="vertical-align:middle" align="left"}
 		{foreach from=$errors item=m name=errors}
 			{$m}
 			{if !$smarty.foreach.errors.last}<br>{/if}
@@ -50,7 +50,6 @@
 {/if}
 
 {if !isset($sent) && empty($errors)}
-	<div id="ajaxmsg"></div>
 	<form method="post" action="tiki-share.php?url={$url|escape:url}" id="share-form">
 		<input type="hidden" name="url" value="{$url|escape:url}">
 		<input type="hidden" name="report" value="{$report}">
@@ -73,25 +72,25 @@
 					<input style="width:95%;" type="text" name="subject" value="{$subject|escape|default:"{tr}Have a look at this page{/tr}"}">
 				</td>
 			</tr>
-
+	
 			<tr>
 				<td>
 					{tr}Your message{/tr}
 				</td>
-
+	
 				<td>
 					<textarea name="comment" style="width:95%;" rows="10" id='comment'>{$comment|escape|@default:"{tr}I found an interesting page that I thought you would like.{/tr}"}</textarea>
 				</td>
 			</tr>
-
+	
 			<tr>
 				<td rowspan="2">
-					{icon name='envelope' size='3' alt="{tr}email{/tr}"}
+					<img src="img/icons/large/evolution48x48.png" alt="{tr}email{/tr}">
 					<br>
 					{tr}Send via email{/tr}
 				</td>
 				<td>
-					{if $report !='y'}
+					{if $report !='y' && !$twitterRegistered && !$facebookRegistered && !$prefs.feature_forums}
 						<input type="radio" name="do_email" value="1" checked="checked" {if $prefs.disableJavascript!='y'}onclick="toggleBlock('emailtable')" {/if}>
 						{tr}Yes{/tr}
 						<input type="radio" name="do_email" value="0" {if $prefs.disableJavascript!='y'}onclick="toggleBlock('emailtable')" {/if}>
@@ -145,47 +144,21 @@
 									</td>
 								</tr>
 						{/if}
-
-						{if $prefs.share_token_notification eq 'y'}
-							<tr><td colspan="2"><hr></td> </tr>
-							<tr>
-								<td>{tr}Subscribe notification{/tr}</td>
-								<td><input type="checkbox" value="y" name="share_token_notification" {if $share_token_notification eq 'y'}checked="checked" {/if}></td>
-							</tr>
-						{/if}
-
-						{if $prefs.share_can_choose_how_much_time_access eq 'y' && $prefs.auth_token_access eq 'y'}
-							<tr>
-								<td>{tr}How many times recipients can access this page{/tr}</td>
-								<td>
-									{if $prefs.share_max_access_time eq -1}
-										<input type="text" name="how_much_time_access" value="{$how_much_time_access|default:1}">
-									{else}
-										<select id="how_much_time_access" name="how_much_time_access">
-											{section name=share_max_access start=1 loop=$prefs.share_max_access_time+1}
-												{html_options values=$smarty.section.share_max_access.index output=$smarty.section.share_max_access.index}
-											{/section}
-										</select>
-									{/if}
-									&nbsp;{tr}time{/tr}
-								</td>
-							</tr>
-						{/if}
 					</table>
 				</td>
 			</tr>
 			{if $twitterRegistered}
 				<tr>
 					<td rowspan="2">
-						{icon name='twitter' size='2'}
+						<img src="img/icons/twitter_t_logo_32.png" alt="Twitter">
 						<br>
 						{tr}Tweet via Twitter{/tr}
 					</td>
 					<td>
 						{if $twitter}
-							<input type="radio" name="do_tweet" value="1" {if $prefs.disableJavascript!='y'}onclick="toggleBlock('twittertable')" {/if}>
-							{tr}Yes{/tr}
-							<input type="radio" name="do_tweet" value="0" checked="checked" {if $prefs.disableJavascript!='y'}onclick="toggleBlock('twittertable')" {/if}>
+							<input type="radio" name="do_tweet" value="1" checked="checked" {if $prefs.disableJavascript!='y'}onclick="toggleBlock('twittertable')" {/if}>
+							{tr}Yes{/tr} 	
+							<input type="radio" name="do_tweet" value="0" {if $prefs.disableJavascript!='y'}onclick="toggleBlock('twittertable')" {/if}>
 							{tr}No{/tr}
 						{else}
 							{remarksbox type="note" title="{tr}Note{/tr}"}
@@ -197,7 +170,7 @@
 				<tr id="twitterrow">
 					<td>
 						{if $twitter}
-							<table class="formcolor" id="twittertable" style="display: none;">
+							<table class="formcolor" id="twittertable">
 								<tr>
 									<td>{tr}Tweet{/tr}</td>
 									<td>
@@ -211,19 +184,19 @@
 					</td>
 				</tr>
 			{/if}
-
+	
 			{if $facebookRegistered}
 				<tr>
 					<td rowspan="2">
-						{icon name='facebook' size='2' alt="Facebook"}
+						<img src="img/icons/facebook-logo_32.png" alt="Facebook">
 						<br>
 							{tr}Put on my Facebook wall{/tr}
 					</td>
 					<td>
 						{if $facebook}
-							<input type="radio" name="do_fb" value="1" {if $prefs.disableJavascript!='y'}onclick="toggleBlock('fbtable')" {/if}>
+							<input type="radio" name="do_fb" value="1" checked="checked" {if $prefs.disableJavascript!='y'}onclick="toggleBlock('fbtable')" {/if}>
 							{tr}Yes{/tr}
-							<input type="radio" name="do_fb" value="0" checked="checked" {if $prefs.disableJavascript!='y'}onclick="toggleBlock('fbtable')" {/if}>
+							<input type="radio" name="do_fb" value="0" {if $prefs.disableJavascript!='y'}onclick="toggleBlock('fbtable')" {/if}>
 							{tr}No{/tr}
 						{else}
 							{remarksbox type="note" title="{tr}Note{/tr}"}
@@ -235,7 +208,7 @@
 				<tr id="fbrow">
 					<td>
 						{if $facebook}
-							<table class="formcolor" id="fbtable" style="display: none;">
+							<table class="formcolor" id="fbtable">
 								<tr>
 									<td>{tr}Link text{/tr}</td>
 									<td>
@@ -260,19 +233,44 @@
 					</td>
 				</tr>
 			{/if}
-
+			
+			{if $prefs.share_token_notification eq 'y'}
+				<tr>
+					<td>{tr}Subscribe notification{/tr}</td>
+					<td><input type="checkbox" value="y" name="share_token_notification" {if $share_token_notification eq 'y'}checked="checked" {/if}></td>
+				</tr>
+			{/if}
+			
+			{if $prefs.share_can_choose_how_much_time_access eq 'y' && $prefs.auth_token_access eq 'y'}
+				<tr>
+					<td>{tr}How much time recipients can access to this page{/tr}</td>
+					<td>
+						{if $prefs.share_max_access_time eq -1}
+							<input type="text" name="how_much_time_access" value="{$how_much_time_access|default:1}">
+						{else}
+							<select id="how_much_time_access" name="how_much_time_access">
+								{section name=share_max_access start=1 loop=$prefs.share_max_access_time+1}
+								   {html_options values=$smarty.section.share_max_access.index output=$smarty.section.share_max_access.index}
+							  {/section}
+							</select>
+						{/if}
+						&nbsp;{tr}time{/tr}
+					</td>
+				</tr>
+			{/if}
+			
 			{if $prefs.feature_messages eq 'y' && $report != 'y'}
 				<tr>
 					<td rowspan="2">
-						{icon name='send' size='3' alt="{tr}Messages{/tr}"}
+						<img src="img/icons/large/messages48x48.png" alt="{tr}Messages{/tr}">
 						<br>
 						{tr}Send message{/tr}
 					</td>
 					<td>
 						{if $send_msg=='y'}
-							<input type="radio" name="do_message" value="1" {if $prefs.disableJavascript!='y'}onclick="toggleBlock('messagetable')" {/if}>
+							<input type="radio" name="do_message" value="1" checked="checked" {if $prefs.disableJavascript!='y'}onclick="toggleBlock('messagetable')" {/if}>
 							{tr}Yes{/tr}
-							<input type="radio" name="do_message" value="0" checked="checked" {if $prefs.disableJavascript!='y'}onclick="toggleBlock('messagetable')" {/if}>
+							<input type="radio" name="do_message" value="0" {if $prefs.disableJavascript!='y'}onclick="toggleBlock('messagetable')" {/if}>
 							{tr}No{/tr}
 						{else}
 							{remarksbox type="note" title="{tr}Note{/tr}"}
@@ -284,7 +282,7 @@
 				<tr id="messagerow">
 					<td>
 						{if $send_msg}
-							<table class="formcolor" id="messagetable" style="display: none;">
+							<table class="formcolor" id="messagetable">
 								<tr>
 									<td>{tr}Recipient(s){/tr}</td>
 									<td>
@@ -319,15 +317,15 @@
 			{if $prefs.feature_forums eq 'y' && $report != 'y'}
 				<tr>
 					<td rowspan="2">
-						{icon name='comments' size='3' alt="{tr}Forums{/tr}"}
+						<img src="img/icons/large/stock_index48x48.png" alt="{tr}Forums{/tr}">
 						<br>
 						{tr}Post on forum{/tr}
 					</td>
 					<td>
 						{if count($forums)>0}
-							<input type="radio" name="do_forum" value="1" {if $prefs.disableJavascript!='y'}onclick="toggleBlock('forumtable')" {/if}>
+							<input type="radio" name="do_forum" value="1" checked="checked" {if $prefs.disableJavascript!='y'}onclick="toggleBlock('forumtable')" {/if}>
 							{tr}Yes{/tr}
-							<input type="radio" name="do_forum" value="0" checked="checked" {if $prefs.disableJavascript!='y'}onclick="toggleBlock('forumtable')" {/if}>
+							<input type="radio" name="do_forum" value="0" {if $prefs.disableJavascript!='y'}onclick="toggleBlock('forumtable')" {/if}>
 							{tr}No{/tr}
 						{else}
 							{remarksbox type="note" title="{tr}Note{/tr}"}
@@ -339,7 +337,7 @@
 				<tr id="forumrow">
 					<td>
 						{if count($forums)>0}
-							<table class="formcolor" id="forumtable" style="display: none;">
+							<table class="formcolor" id="forumtable">
 								<tr>
 									<td>{tr}Forum{/tr}</td>
 									<td>
@@ -368,7 +366,6 @@
 					</td>
 				</tr>
 			{/if}
-
 			{if $prefs.feature_antibot eq 'y' && $user eq ''}
 				{include file='antibot.tpl' td_style="formcolor"}
 			{/if}
@@ -385,41 +382,8 @@
 					{/if}
 				</td>
 			</tr>
-
 		</table>
 	</form>
 {else}
 	<p><a href="javascript:window.history.go(-2);">{tr}Return to previous page{/tr}</a></p>
 {/if}
-{jq}
-	$('#share-form').submit(function(e){
-			if($('#addresses').val() !='' || ! $('#emailtable:visible').length) {
-					$(this).tikiModal("Please wait....");
-					var postData = $(this).serializeArray();
-					var formURL = 'tiki-share.php?send=share';
-					$.ajax({
-							url : formURL,
-							type: "POST",
-							data : postData,
-							success:function(data, textStatus, jqXHR) {
-									var shrsuccess = $($.parseHTML(data)).find("#success").html();
-									var shrerror = $($.parseHTML(data)).find("#shareerror").html();
-									if(shrsuccess) {
-											$('#ajaxmsg').html("<div class='alert alert-warning'>"+shrsuccess+"</div>");
-									} else {
-											$('#ajaxmsg').html("<div class='alert alert-warning'>"+shrerror+"</div>");
-									}
-									$('#share-form').tikiModal("");
-									$('#addresses').val('');
-							},
-							error: function(jqXHR, textStatus, errorThrown) {
-									$('#share-form').tikiModal("");
-							}
-					});
-			} else {
-					alert("You must provide at least one recipient email address");
-			}
-			e.preventDefault();
-			return false;
-	});
-{/jq}

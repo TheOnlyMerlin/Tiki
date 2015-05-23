@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +11,7 @@
  * Letter key: ~u~
  *
  */
-class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable, Tracker_Field_Exportable
+class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
 {
 	public static function getTypes()
 	{
@@ -71,7 +71,7 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 
 	function getFieldData(array $requestData = array())
 	{
-		global $tiki_p_admin_trackers, $user, $prefs;
+		global $tiki_p_admin_trackers, $user;
 
 		$ins_id = $this->getInsertId();
 
@@ -82,20 +82,11 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 		if ( isset($requestData[$ins_id])) {
 			if ($autoassign == 0 || $tiki_p_admin_trackers === 'y') {
 				$auser = $requestData[$ins_id];
-				$userlib = TikiLib::lib('user');
-				if (! $auser || $userlib->user_exists($auser)) {
+				if (! $auser || TikiLib::lib('user')->user_exists($auser)) {
 					$data['value'] = $auser;
 				} else {
-					if ($prefs['user_selector_realnames_tracker'] == 'y' && $this->getOption('showRealname')) {
-						$finalusers = $userlib->find_best_user(array($auser), '', 'login');
-						if (!empty($finalusers[0])) {
-							$data['value'] = $finalusers[0];
-						}
-					}
-					if (empty($data['value'])) {
-						$data['value'] = $this->getValue();
-						TikiLib::lib('errorreport')->report(tr('User "%0" not found', $auser));
-					}
+					$data['value'] = $this->getValue();
+					TikiLib::lib('errorreport')->report(tr('User "%0" not found', $auser));
 				}
 			} else {
 				if ($autoassign == 2) {
@@ -120,7 +111,7 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 
 	function renderInput($context = array())
 	{
-		global $tiki_p_admin_trackers, $user, $prefs;
+		global $tiki_p_admin_trackers, $user;
 		$smarty = TikiLib::lib('smarty');
 
 		$value = $this->getConfiguration('value');
@@ -131,26 +122,16 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 		if ($autoassign == 0 || $tiki_p_admin_trackers === 'y') {
 			$groupIds = $this->getOption('groupIds', '');
 
-			if ($prefs['user_selector_realnames_tracker'] === 'y' && $this->getOption('showRealname')) {
-				$smarty->loadPlugin('smarty_modifier_username');
-				$name = smarty_modifier_username($value);
-				$realnames = 'y';
-			} else {
-				$name = $value;
-				$realnames = 'n';
-			}
-
 			$smarty->loadPlugin('smarty_function_user_selector');
 			return smarty_function_user_selector(
 				array(
-					'user' => $name,
+					'user' => $value,
 					'id'  => 'user_selector_' . $this->getConfiguration('fieldId'),
 					'select' => $value,
 					'name' => $this->getConfiguration('ins_id'),
 					'editable' => 'y',
 					'allowNone' => 'y',
 					'groupIds' => $groupIds,
-					'realnames' => $realnames,
 				),
 				$smarty
 			);
@@ -246,90 +227,6 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 			'value' => $value,
 		);
 
-	}
-
-	function getTabularSchema()
-	{
-		$permName = $this->getConfiguration('permName');
-		$baseKey = $this->getBaseKey();
-		$name = $this->getConfiguration('name');
-
-		$schema = new Tracker\Tabular\Schema($this->getTrackerDefinition());
-
-		$schema->addNew($permName, 'userlink')
-			->setLabel($name)
-			->setPlainReplacement('username')
-			->setRenderTransform(function ($value) {
-				$smarty = TikiLib::lib('smarty');
-				$smarty->loadPlugin('smarty_modifier_userlink');
-
-				if ($value) {
-					return smarty_modifier_userlink($value);
-				}
-			})
-			;
-
-		$schema->addNew($permName, 'realname')
-			->setLabel($name)
-			->setReadOnly(true)
-			->setRenderTransform(function ($value) {
-				$smarty = TikiLib::lib('smarty');
-				$smarty->loadPlugin('smarty_modifier_username');
-
-				if ($value) {
-					return smarty_modifier_username($value, true, false, false);
-				}
-			})
-			;
-
-		$schema->addNew($permName, 'username-itemlink')
-			->setLabel($name)
-			->setPlainReplacement('username')
-			->addQuerySource('itemId', 'object_id')
-			->setRenderTransform(function ($value, $extra) {
-				$smarty = TikiLib::lib('smarty');
-				$smarty->loadPlugin('smarty_function_object_link');
-
-				if ($value) {
-					return smarty_function_object_link([
-						'type' => 'trackeritem',
-						'id' => $extra['itemId'],
-						'title' => $value,
-					], $smarty);
-				}
-			})
-			;
-
-		$schema->addNew($permName, 'realname-itemlink')
-			->setLabel($name)
-			->setPlainReplacement('realname')
-			->addQuerySource('itemId', 'object_id')
-			->setRenderTransform(function ($value, $extra) {
-				$smarty = TikiLib::lib('smarty');
-				$smarty->loadPlugin('smarty_function_object_link');
-				$smarty->loadPlugin('smarty_modifier_username');
-
-				if ($value) {
-					return smarty_function_object_link([
-						'type' => 'trackeritem',
-						'id' => $extra['itemId'],
-						'title' => smarty_modifier_username($value, true, false, false),
-					], $smarty);
-				}
-			})
-			;
-
-		$schema->addNew($permName, 'username')
-			->setLabel($name)
-			->setRenderTransform(function ($value) {
-				return $value;
-			})
-			->setParseIntoTransform(function (& $info, $value) use ($permName) {
-				$info['fields'][$permName] = $value;
-			})
-			;
-
-		return $schema;
 	}
 }
 

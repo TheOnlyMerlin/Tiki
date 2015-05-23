@@ -5,10 +5,10 @@
 		{if !$user}
 			<li>
 				{if $showavatars eq 'y'}
-					<table class="table">
+					<table class="admin">
 						<tr class="odd">
 							<td width="50">
-								<img src="img/icons/gradient.gif" width="48" height="48" alt="{tr}No profile picture{/tr}">
+								<img src="img/icons/gradient.gif" width="48" height="48" alt="{tr}No avatar{/tr}">
 							</td>
 							<td>
 				{/if}
@@ -23,12 +23,12 @@
 				{/if}
 			</li>
 		{/if}
-
-		{capture assign='noAvatar'}<img src="img/icons/gradient.gif" width="48" height="48" alt="{tr}No profile picture{/tr}">{/capture}
+		{cycle values="even,odd" print=false}
+		{capture assign='noAvatar'}<img src="img/icons/gradient.gif" width="48" height="48" alt="{tr}No avatar{/tr}">{/capture}
 		{foreach from=$modLastVisitors key=key item=item}
 			<li>
 				{if $showavatars eq 'y'}
-					<table class="table">
+					<table class="admin">
 						<tr class="{cycle advance=true}">
 							<td width="50">
 								{$item.user|avatarize|default:$noAvatar}
@@ -43,11 +43,7 @@
 					{/if}
 				</a>
 				{if $nodate neq 'y'}
-					{if $item.currentLogin}
-						<div class="date">{$item.currentLogin|tiki_short_datetime}</div>
-					{else}
-						<div class="date">{tr}Never logged in{/tr}</div>
-					{/if}
+					<div class="date">{$item.currentLogin|tiki_short_datetime}</div>
 				{/if}
 				{if $showavatars eq 'y'}
 							</td>

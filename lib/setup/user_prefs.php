@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -34,19 +34,20 @@ if ( $user ) {
 
 	// Get all user prefs in one query
 	$tikilib->get_user_preferences($user);
-	
-	// Check pref for user theme
-	if ( $prefs['change_theme'] !== 'y') {
-		unset($user_preferences[$user]['theme']);
-		unset($user_preferences[$user]['theme_option']);
-	} else {
-		if (!empty($user_preferences[$user]['theme']) && empty($user_preferences[$user]['theme_option'])) {
-			$prefs['theme_option'] = '';
-		}
-	}
 
 	// Prefs overriding
 	$prefs = array_merge($prefs, $user_preferences[$user]);
+
+	// Copy some user prefs that doesn't have the same name as the related site pref
+	//   in order to symplify the overriding and the use
+	if ( $prefs['change_theme'] == 'y') {
+		if ( !empty($prefs['theme']) ) {
+			$prefs['style'] = $prefs['theme'];
+			if ( isset($prefs['theme-option']) ) {
+				$prefs['style_option'] = $prefs['theme-option'];
+			}
+		}
+	}
 
 	// Set the userPage name for this user since other scripts use this value.
 	$userPage = $prefs['feature_wiki_userpage_prefix'].$user;

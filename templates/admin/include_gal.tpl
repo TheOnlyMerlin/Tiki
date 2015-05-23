@@ -6,25 +6,25 @@
 {tr}You can upload images of a size of {/tr}{$max_img_upload_size|kbsize}. {tr}Alter the php.ini variables file_uploads, upload_max_filesize, post_max_size and database variables (max_allowed_packet for mysql) to change this value{/tr}.
 {/remarksbox}
 
-<fieldset class="table">
+<fieldset class="admin">
 	<legend>{tr}Activate the feature{/tr}</legend>
 	{preference name=feature_galleries visible="always"}
 </fieldset>
 
-<fieldset class="table">
+<fieldset class="admin">
 	<legend>{tr}Home Gallery{/tr}</legend>
 	<form action="tiki-admin.php?page=gal" method="post">
 		<input type="hidden" name="ticket" value="{$ticket|escape}">
 		{preference name=home_gallery}
-		<input type="submit" class="btn btn-default btn-sm" name="galset" value="{tr}OK{/tr}" />
+		<input type="submit" class="btn btn-default" name="galset" value="{tr}OK{/tr}" />
 	</form>
 </fieldset>
 
-<fieldset class="table">
+<fieldset class="admin">
 	<legend>{tr}Galleries features{/tr}</legend>
 	<form action="tiki-admin.php?page=gal" method="post">
 		<input type="hidden" name="ticket" value="{$ticket|escape}">
-		<table class="table">
+		<table class="admin">
 			<tr>
 				<td><label>{tr}Rankings:{/tr}</label></td>
 				<td>
@@ -168,36 +168,36 @@
 			</tr>
 			<tr>
 				<td colspan="2" class="input_submit_container">
-					<input type="submit" class="btn btn-default btn-sm" name="galfeatures" value="{tr}Set features{/tr}" />
+					<input type="submit" class="btn btn-default" name="galfeatures" value="{tr}Set features{/tr}" />
 				</td>
 			</tr>
 		</table>
 	</form>
 </fieldset>
 
-<fieldset class="table">
+<fieldset class="admin">
 	<legend>{tr}Exterminator{/tr}</legend>
 	<form action="tiki-admin.php?page=gal" method="post">
 		<input type="hidden" name="ticket" value="{$ticket|escape}">
-		<table class="table">
+		<table class="admin">
 			<tr>
 				<td>
 					<label>{tr}Remove images in the system gallery not being used in Wiki pages, articles or blog posts{/tr}</label>
 					<input type="hidden" name="rmvorphimg" value="1" />
 				</td>
 				<td>
-					<input type="submit" class="btn btn-default btn-sm" name="button" value="{tr}Remove{/tr}" />
+					<input type="submit" class="btn btn-default" name="button" value="{tr}Remove{/tr}" />
 				</td>
 			</tr>
 		</table>
 	</form>
 </fieldset>
 
-<fieldset class="table">
+<fieldset class="admin">
 	<legend>{tr}Mover{/tr}</legend>
 		<form action="tiki-admin.php?page=gal" method="post">
 		<input type="hidden" name="ticket" value="{$ticket|escape}">
-		<table class="table">
+		<table class="admin">
 			<tr>
 				<td>
 					{if $prefs.gal_use_db eq 'n'}
@@ -218,7 +218,7 @@
 					</select>
 				</td>
 				<td>
-					<input type="submit" class="btn btn-default btn-sm" name="button" value="{tr}Move{/tr}" />
+					<input type="submit" class="btn btn-default" name="button" value="{tr}Move{/tr}" />
 				</td>
 			</tr>
 			{if $prefs.gal_use_db eq 'n'}
@@ -228,7 +228,7 @@
 					<td>
 					<input type="text" name="gal_use_dir" value="{$prefs.gal_use_dir|escape}" size="50" />
 				<td>
-				<input type="submit" class="btn btn-default btn-sm" name="button" value="{tr}Move{/tr}" /></td></tr>
+				<input type="submit" class="btn btn-default" name="button" value="{tr}Move{/tr}" /></td></tr>
 			{/if}
 			{if isset($movedimgs) and $movedimgs}
 				<tr>
@@ -239,11 +239,11 @@
 	</form>
 </fieldset>
 
-<fieldset class="table">
+<fieldset class="admin">
 	<legend>{tr}Gallery listing configuration{/tr}</legend>
 	<form method="post" action="tiki-admin.php?page=gal">
 		<input type="hidden" name="ticket" value="{$ticket|escape}">
-		<table class="table">
+		<table class="admin">
 			<tr>
 				<td><label>{tr}Name{/tr}</label></td>
 				<td><input type="checkbox" name="gal_list_name" {if $prefs.gal_list_name eq 'y'}checked="checked"{/if} /></td>
@@ -277,17 +277,17 @@
 				<td><input type="checkbox" name="gal_list_visits" {if $prefs.gal_list_visits eq 'y'}checked="checked"{/if} /></td>
 			</tr>
 			<tr>
-				<td colspan="2" class="input_submit_container"><input type="submit" class="btn btn-default btn-sm" name="imagegallistprefs" value="{tr}Change configuration{/tr}" /></td>
+				<td colspan="2" class="input_submit_container"><input type="submit" class="btn btn-default" name="imagegallistprefs" value="{tr}Change configuration{/tr}" /></td>
 			</tr>
-		</table>
-	</form>
+		</table>	
+	</form>	
 </fieldset>
 
-<fieldset class="table">
+<fieldset class="admin">
 	<legend>{tr}Image galleries comments settings{/tr}</legend>
 	<form method="post" action="tiki-admin.php?page=gal">
 		<input type="hidden" name="ticket" value="{$ticket|escape}">
-		<table class="table">
+		<table class="admin">
 			<tr>
 				<td><label>{tr}Default number of comments per page:{/tr} </label></td>
 				<td>
@@ -305,7 +305,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2" class="input_submit_container"><input type="submit" class="btn btn-default btn-sm" name="imagegalcomprefs" value="{tr}Change settings{/tr}" /></td>
+				<td colspan="2" class="input_submit_container"><input type="submit" class="btn btn-default" name="imagegalcomprefs" value="{tr}Change settings{/tr}" /></td>
 			</tr>
 		</table>
 	</form>

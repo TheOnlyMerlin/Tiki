@@ -1,8 +1,8 @@
 {title url="tiki-edit_programmed_content.php?contentId=$contentId"}{tr}Program dynamic content for block:{/tr} {$contentId}{/title}
 
-<div class="t_navbar">
-	{button href="?contentId=$contentId" class="btn btn-default" _text="{tr}Create New Block{/tr}"}
-	{button href="tiki-list_contents.php" class="btn btn-default" _text="{tr}Return to block listing{/tr}"}
+<div class="navbar">
+	{button href="?contentId=$contentId" _text="{tr}Create New Block{/tr}"}
+	{button href="tiki-list_contents.php" _text="{tr}Return to block listing{/tr}"}
 </div>
 
 <h2>{tr}Block description: {/tr}{$description}</h2>
@@ -12,7 +12,7 @@
 		{tr}Edit{/tr}
 	{else}
 		{tr}Create{/tr}
-	{/if}
+	{/if} 
 	{tr}content{/tr}
 </h2>
 
@@ -33,7 +33,7 @@
 				</select>
 			</td>
 		</tr>
-
+		
 		<tr class="type-cond for-page">
 			<td>{tr}Page Name:{/tr}</td>
 			<td>
@@ -51,13 +51,13 @@
 		<tr>
 			<td>{tr}Publishing date:{/tr}</td>
 			<td>
-				{html_select_date time=$publishDate end_year="+1" field_order=$prefs.display_field_order}
+				{html_select_date time=$publishDate end_year="+1" field_order=$prefs.display_field_order} 
 				{tr}at{/tr} {html_select_time time=$publishDate display_seconds=false use_24_hours=$use_24hr_clock}</td>
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
 			<td>
-				<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
+				<input type="submit" class="btn btn-default" name="save" value="{tr}Save{/tr}">
 			</td>
 		</tr>
 	</table>
@@ -76,52 +76,35 @@
 	{include file='find.tpl'}
 {/if}
 
-<div class="table-responsive">
-	<table class="table normal">
-		<tr>
-			<th>{self_link _sort_arg='sort_mode' _sort_field='pId'}{tr}Id{/tr}{/self_link}</th>
-			<th>{self_link _sort_arg='sort_mode' _sort_field='publishDate'}{tr}Publishing Date{/tr}{/self_link}</th>
-			<th>{self_link _sort_arg='sort_mode' _sort_field='data'}{tr}Data{/tr}{/self_link}</th>
-			<th></th>
-		</tr>
-		{section name=changes loop=$listpages}
-			{if $actual eq $listpages[changes].publishDate}
-				{assign var=class value=third}
+<table class="table normal">
+  <tr>
+    <th>{self_link _sort_arg='sort_mode' _sort_field='pId'}{tr}Id{/tr}{/self_link}</th>
+    <th>{self_link _sort_arg='sort_mode' _sort_field='publishDate'}{tr}Publishing Date{/tr}{/self_link}</th>
+    <th>{self_link _sort_arg='sort_mode' _sort_field='data'}{tr}Data{/tr}{/self_link}</th>
+    <th>{tr}Action{/tr}</th>
+  </tr>
+	{section name=changes loop=$listpages}
+		{if $actual eq $listpages[changes].publishDate}
+			{assign var=class value=third}
+		{else}
+			{if $actual > $listpages[changes].publishDate}
+				{assign var=class value=odd}
 			{else}
-				{if $actual > $listpages[changes].publishDate}
-					{assign var=class value=odd}
-				{else}
-					{assign var=class value=even}
-				{/if}
+				{assign var=class value=even}
 			{/if}
-			<tr class="{$class}">
-				<td class="id">&nbsp;{$listpages[changes].pId}&nbsp;</td>
-				<td class="date">&nbsp;{$listpages[changes].publishDate|tiki_short_datetime}&nbsp;</td>
-				<td class="text">&nbsp;{$listpages[changes].data|escape:'html'|nl2br}&nbsp;</td>
-				<td class="action">
-					{capture name=program_actions}
-						{strip}
-							<a href="tiki-edit_programmed_content.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;contentId={$contentId}&amp;edit={$listpages[changes].pId}">
-								{icon name='edit' _menu_text='y' _menu_icon='y' alt="{tr}Edit{/tr}"}
-							</a>
-							<a href="tiki-edit_programmed_content.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;contentId={$contentId}&amp;remove={$listpages[changes].pId}">
-								{icon name='remove' _menu_text='y' _menu_icon='y' alt="{tr}Remove{/tr}"}
-							</a>
-						{/strip}
-					{/capture}
-					<a class="tips"
-					   title="{tr}Actions{/tr}"
-					   href="#" {popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.program_actions|escape:"javascript"|escape:"html"}
-					   style="padding:0; margin:0; border:0"
-							>
-						{icon name='wrench'}
-					</a>
-				</td>
-			</tr>
-		{sectionelse}
-			{norecords _colspan=4}
-		{/section}
-	</table>
-</div>
+		{/if}
+		<tr class="{$class}">
+			<td class="id">&nbsp;{$listpages[changes].pId}&nbsp;</td>
+			<td class="date">&nbsp;{$listpages[changes].publishDate|tiki_short_datetime}&nbsp;</td>
+			<td class="text">&nbsp;{$listpages[changes].data|escape:'html'|nl2br}&nbsp;</td>
+			<td class="action">
+				<a class="link" href="tiki-edit_programmed_content.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;contentId={$contentId}&amp;edit={$listpages[changes].pId}" title="{tr}Edit{/tr}">{icon _id=page_edit}</a>
+				<a class="link" href="tiki-edit_programmed_content.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;contentId={$contentId}&amp;remove={$listpages[changes].pId}" title="{tr}Remove{/tr}">{icon _id=cross alt="{tr}Remove{/tr}"}</a>
+			</td>
+		</tr>
+	{sectionelse}
+		{norecords _colspan=4}
+	{/section}
+</table>
 
 {pagination_links cant=$cant step=$prefs.maxRecords offset=$offset}{/pagination_links}

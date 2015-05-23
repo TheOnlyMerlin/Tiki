@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -59,13 +59,6 @@ function prefs_activity_list()
 			'name' => tr('Custom Activities'),
 			'description' => tr('Allows to define custom behaviors on top of internal events.'),
 			'help' => 'Activity+Stream',
-			'type' => 'flag',
-			'default' => 'n',
-		),
-		'activity_notifications' => array(
-			'name' => tr('Enable Notifications through Activities'),
-			'description' => tr('Allows to users to develop notifications using activities.'),
-			'help' => 'Activity+Notifications',
 			'type' => 'flag',
 			'default' => 'n',
 		),

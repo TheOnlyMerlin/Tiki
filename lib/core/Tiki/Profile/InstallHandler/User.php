@@ -25,7 +25,7 @@
 # add new user with email and initial password defaulting to username
 # doesn't need to change password on first login (defaults to y)
 # finally assigned to Test Group
-# and default Group set as Test Group (Tiki 15 addition and backported to 12 & 14)
+# and default Group set as Test Group (Tiki 15 addition backported to 12 & 14)
  -
   type: user 
   data: 
@@ -61,7 +61,7 @@ class Tiki_Profile_InstallHandler_User extends Tiki_Profile_InstallHandler
 	function _install()
 	{
 		if ($this->canInstall()) {
-			$userlib = TikiLib::lib('user');
+			global $userlib; if (!$userlib) require_once 'lib/userslib.php';
 
 			$user = $this->getData();
 				
@@ -80,11 +80,11 @@ class Tiki_Profile_InstallHandler_User extends Tiki_Profile_InstallHandler
 					$userlib->assign_user_to_group($user['name'], $group);
 				}
 			}
-			
+				
 			if (isset($user['defaultgroup'])) {
 				$userlib->set_default_group($user['name'], $user['defaultgroup']);
-			}			
-				
+			}
+			
 			return $userlib->get_user_id($user['name']);
 		}
 	}

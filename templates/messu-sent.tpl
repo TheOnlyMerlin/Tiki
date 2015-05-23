@@ -38,7 +38,7 @@
 	</select>
 	<label for="mess-mailcont">{tr}Containing:{/tr}</label>
 	<input type="text" name="find" id="mess-mailcont" value="{$find|escape}">
-	<input type="submit" class="btn btn-default btn-sm" name="filter" value="{tr}Filter{/tr}">
+	<input type="submit" class="btn btn-default" name="filter" value="{tr}Filter{/tr}">
 </form>
 <br>
 
@@ -49,13 +49,12 @@
 	<input type="hidden" name="flag" value="{$flag|escape}">
 	<input type="hidden" name="flagval" value="{$flagval|escape}">
 	<input type="hidden" name="priority" value="{$priority|escape}">
-	<input type="submit" class="btn btn-default btn-sm" name="delete" value="{tr}Delete{/tr}">
-	<input type="submit" class="btn btn-default btn-sm" name="archive" value="{tr}move to archive{/tr}">
-	<input type="submit" class="btn btn-default btn-sm" name="download" value="{tr}Download{/tr}">
+	<input type="submit" class="btn btn-default" name="delete" value="{tr}Delete{/tr}">
+	<input type="submit" class="btn btn-default" name="archive" value="{tr}move to archive{/tr}">
+	<input type="submit" class="btn btn-default" name="download" value="{tr}Download{/tr}">
 {jq notonready=true}
 var CHECKBOX_LIST = [{{section name=user loop=$items}'msg[{$items[user].msgId}]'{if not $smarty.section.user.last},{/if}{/section}}];
 {/jq}
-	<div class="table-responsive">
 	<table class="table normal" >
 		<tr>
 			<th><input type="checkbox" name="checkall" onclick="checkbox_list_check_all('form_messu_sent',CHECKBOX_LIST,this.checked);"></th>
@@ -66,11 +65,11 @@ var CHECKBOX_LIST = [{{section name=user loop=$items}'msg[{$items[user].msgId}]'
 			<th><a href="messu-sent.php?flag={$flag}&amp;priority={$priority}&amp;flagval={$flagval}&amp;find={$find|escape:"url"}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'isReplied_desc'}isReplied_asc{else}isReplied_desc{/if}">{tr}Replies{/tr}</a></th>
 			<th style="text-align:right;">{tr}Size{/tr}</th>
 		</tr>
-
+		{cycle values="odd,even" print=false}
 		{section name=user loop=$items}
 			<tr>
 				<td class="prio{$items[user].priority}"><input type="checkbox" name="msg[{$items[user].msgId}]"></td>
-				<td class="prio{$items[user].priority}">{if $items[user].isFlagged eq 'y'}{icon name='flag' alt="{tr}Flagged{/tr}"}{/if}</td>
+				<td class="prio{$items[user].priority}">{if $items[user].isFlagged eq 'y'}{icon _id='flag_blue' alt="{tr}Flagged{/tr}"}{/if}</td>
 				<td {if $items[user].isRead eq 'n'}style="font-weight:bold"{/if} class="prio{$items[user].priority}">{$items[user].user_to|username}</td>
 				<td {if $items[user].isRead eq 'n'}style="font-weight:bold"{/if} class="prio{$items[user].priority}"><a class="readlink" href="messu-read_sent.php?offset={$offset}&amp;flag={$flag}&amp;priority={$items[user].priority}&amp;flagval={$flagval}&amp;sort_mode={$sort_mode}&amp;find={$find|escape:"url"}&amp;msgId={$items[user].msgId}">{$items[user].subject|escape}</a></td>
 				<td {if $items[user].isRead eq 'n'}style="font-weight:bold"{/if} class="prio{$items[user].priority}">{$items[user].date|tiki_short_datetime}</td><!--date_format:"%d %b %Y [%H:%I]"-->
@@ -78,7 +77,7 @@ var CHECKBOX_LIST = [{{section name=user loop=$items}'msg[{$items[user].msgId}]'
 				<td {if $items[user].isRead eq 'n'}style="font-weight:bold"{/if} class="prio{$items[user].priority}">
 					{if $items[user].isReplied eq 'n'}{tr}No{/tr}{else}
 						<a class="readlink" href="messu-mailbox.php?replyto={$items[user].hash}">
-							{icon name='envelope' alt="{tr}Replied{/tr}"}
+							{icon _id='email_go' alt="{tr}Replied{/tr}"}
 						</a>
 						&nbsp;
 						<a href="tiki-user_information.php?view_user={$items[user].user_from}">{$items[user].user_from}</a>
@@ -90,6 +89,5 @@ var CHECKBOX_LIST = [{{section name=user loop=$items}'msg[{$items[user].msgId}]'
 			<tr><td colspan="6">{tr}No messages to display{/tr}<td></tr>
 		{/section}
 	</table>
-	</div>
 </form>
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}

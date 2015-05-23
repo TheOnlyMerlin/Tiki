@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -572,8 +572,7 @@ class WikiPlugin_Negotiator_Wiki
 
 	function button($wrapInNp = true)
 	{
-		$headerlib = TikiLib::lib('header');
-		$smarty = TikiLib::lib('smarty');
+		global $headerlib, $smarty;
 
 		if (
 			$this->isEditable() &&
@@ -594,6 +593,11 @@ class WikiPlugin_Negotiator_Wiki
 				if (!isset($_COOKIE['wiki_plugin_edit_view'])) {
 					$iconDisplayStyle = ' style="display:none;"';
 				}
+			}
+
+			$headerlib->add_jsfile('tiki-jsplugin.php?language='.$this->prefs['language'], 'dynamic');
+			if ($this->prefs['wikiplugin_module'] === 'y' && $this->prefs['wikiplugininline_module'] === 'n') {
+				$headerlib->add_jsfile('tiki-jsmodule.php?language='.$this->prefs['language'], 'dynamic');
 			}
 
 			$headerlib->add_jq_onready(
@@ -633,7 +637,7 @@ class WikiPlugin_Negotiator_Wiki
 
 	function blockFromExecution($status = '')
 	{
-		$smarty = TikiLib::lib('smarty');
+		global $smarty;
 		$smarty->assign('plugin_fingerprint', $status);
 		$smarty->assign('plugin_name', $this->name);
 		$smarty->assign('plugin_index', 0);

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -24,7 +24,6 @@ class Search_Query_WikiBuilder
 		$this->query = $query;
 		$this->paginationArguments = array(
 			'offset_arg' => 'offset',
-			'sort_arg' => 'sort_mode',
 			'max' => $max,
 		);
 	}
@@ -46,7 +45,13 @@ class Search_Query_WikiBuilder
 			$name = $match->getName();
 			$arguments = $argumentParser->parse($match->getArguments());
 
-			$this->addQueryArgument($name, $arguments);
+			foreach ($arguments as $key => $value) {
+				$function = "wpquery_{$name}_{$key}";
+
+				if (method_exists($this, $function)) {
+					call_user_func(array($this, $function), $this->query, $value, $arguments);
+				}
+			}
 		}
 
 		$offsetArg = $this->paginationArguments['offset_arg'];
@@ -55,17 +60,6 @@ class Search_Query_WikiBuilder
 			$this->query->setRange($_REQUEST[$offsetArg], $maxRecords * $this->boost);
 		} else {
 			$this->query->setRange(0, $maxRecords * $this->boost);
-		}
-	}
-
-	function addQueryArgument($name, $arguments)
-	{
-		foreach ($arguments as $key => $value) {
-			$function = "wpquery_{$name}_{$key}";
-
-			if (method_exists($this, $function)) {
-				call_user_func(array($this, $function), $this->query, $value, $arguments);
-			}
 		}
 	}
 
@@ -134,17 +128,6 @@ class Search_Query_WikiBuilder
 		$query->filterContent($value, $fields);
 	}
 
-	function wpquery_filter_exact($query, $value, array $arguments)
-	{
-		if (isset($arguments['field'])) {
-			$fields = explode(',', $arguments['field']);
-		} else {
-			$fields = TikiLib::lib('tiki')->get_preference('unified_default_content', array('contents'), true);
-		}
-
-		$query->filterIdentifier($value, $fields);
-	}
-
 	function wpquery_filter_language($query, $value)
 	{
 		$query->filterLanguage($value);
@@ -156,19 +139,7 @@ class Search_Query_WikiBuilder
 			TikiLib::lib('errorreport')->report(tr('Missing objectype or qualifier for relation filter.'));
 		}
 
-		/* custom mani for OR operation in relation filter */
-		$qualifiers = explode(' OR ', $arguments['qualifier']);
-		if(count($qualifiers) > 1) {
-			$token = '';
-			foreach ($qualifiers as $key => $qualifier) {
-				$token .= (string) new Search_Query_Relation($qualifier, $arguments['objecttype'], $value);
-				if(count($qualifiers) != ($key + 1)) {
-					$token .= " OR ";
-				}
-			}
-		} else {
-			$token = (string) new Search_Query_Relation($arguments['qualifier'], $arguments['objecttype'], $value);
-		}
+		$token = (string) new Search_Query_Relation($arguments['qualifier'], $arguments['objecttype'], $value);
 		$query->filterRelation($token);
 	}
 
@@ -244,16 +215,6 @@ class Search_Query_WikiBuilder
 			);
 		}
 
-		if (in_array('addongroups', $types)) {
-			$api = new TikiAddons_Api_Group;
-			$cats = $api->getOrganicGroupCatsForUser($targetUser);
-			if (empty($cats)) {
-				$subquery->filterCategory('impossible');
-			} else {
-				$subquery->filterCategory(implode(' ', $cats));
-			}
-		}
-
 		if (in_array('follow', $types)) {
 			$subquery->filterMultivalue($targetUser, 'user_followers');
 		}
@@ -307,16 +268,6 @@ class Search_Query_WikiBuilder
 	function wpquery_pagination_offset_arg($query, $value)
 	{
 		$this->paginationArguments['offset_arg'] = $value;
-	}
-
-	function wpquery_pagination_sort_jsvar($query, $value)
-	{
-		$this->paginationArguments['sort_jsvar'] = $value;
-	}
-
-	function wpquery_pagination_sort_arg($query, $value)
-	{
-		$this->paginationArguments['sort_arg'] = $value;
 	}
 
 	function wpquery_pagination_max($query, $value)

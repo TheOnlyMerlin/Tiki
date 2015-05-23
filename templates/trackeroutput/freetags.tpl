@@ -5,9 +5,9 @@
 		{/foreach}
 	{else}
 		{foreach from=$field.freetags item=taginfo}
-			{object_link type=freetag id=$taginfo}&nbsp; &nbsp;
-		{/foreach}
+			{object_link type=freetag id=$taginfo}&nbsp; &nbsp; 
+		{/foreach}		
 	{/if}
 {else}
-	{tr}Tags is not enabled.{/tr}
+	{tr}Freetags is not enabled.{/tr}
 {/if}
